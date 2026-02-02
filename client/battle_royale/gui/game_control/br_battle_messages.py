@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/game_control/br_battle_messages.py
 import BigWorld
 from helpers import dependency, int2roman
 from battle_royale.gui.battle_control.controllers.progression_ctrl import IProgressionListener
@@ -10,9 +12,9 @@ class ProgressionMessagesPlayer(IProgressionListener):
     def updateData(self, arenaLevelData):
         if BattleReplay.g_replayCtrl.isPlaying and BattleReplay.g_replayCtrl.isTimeWarpInProgress:
             return
+        elif arenaLevelData.level == 1 or not arenaLevelData.levelIsChanged:
+            return
         else:
-            if arenaLevelData.level == 1 or not arenaLevelData.levelIsChanged:
-                return
             ctrl = self._sessionProvider.shared.messages
             isObserver = BigWorld.player().isObserver()
             if ctrl is not None and not isObserver:

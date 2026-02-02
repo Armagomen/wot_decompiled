@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/notification/NotificationListView.py
 import typing
 from adisp import adisp_process
 from debug_utils import LOG_ERROR
@@ -85,12 +87,9 @@ class NotificationListView(NotificationsListMeta, BaseNotificationView):
         else:
             self.__currentGroup = NotificationGroup.INFO
         self._lobbyContext.getServerSettings().onServerSettingsChange += self.__onServerSettingsChange
-        self.as_setInitDataS({'scrollStepFactor': LIST_SCROLL_STEP_FACTOR, 
-           'btnBarSelectedIdx': NotificationGroup.ALL.index(self.__currentGroup), 
-           'tabsData': {'tabs': [
-                               self.__makeTabItemVO(NOTIFICATIONS_CONSTANTS.TAB_INFO, icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_NOTIF_FILTERS_INFORMATION_16X16, 16, 16, -4, 0), TOOLTIPS.NOTIFICATIONSVIEW_TAB_INFO),
-                               self.__makeTabItemVO(NOTIFICATIONS_CONSTANTS.TAB_INVITES, icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_NOTIF_FILTERS_INVITATIONS_24X16, 24, 16, -5, 0), TOOLTIPS.NOTIFICATIONSVIEW_TAB_INVITES),
-                               self.__makeTabItemVO(NOTIFICATIONS_CONSTANTS.TAB_OFFERS, icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_ICON_BELL_24X16, 24, 16, -5, 0), TOOLTIPS.NOTIFICATIONSVIEW_TAB_OFFERS)]}})
+        self.as_setInitDataS({'scrollStepFactor': LIST_SCROLL_STEP_FACTOR,
+         'btnBarSelectedIdx': NotificationGroup.ALL.index(self.__currentGroup),
+         'tabsData': {'tabs': [self.__makeTabItemVO(NOTIFICATIONS_CONSTANTS.TAB_INFO, icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_NOTIF_FILTERS_INFORMATION_16X16, 16, 16, -4, 0), TOOLTIPS.NOTIFICATIONSVIEW_TAB_INFO), self.__makeTabItemVO(NOTIFICATIONS_CONSTANTS.TAB_INVITES, icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_NOTIF_FILTERS_INVITATIONS_24X16, 24, 16, -5, 0), TOOLTIPS.NOTIFICATIONSVIEW_TAB_INVITES), self.__makeTabItemVO(NOTIFICATIONS_CONSTANTS.TAB_OFFERS, icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_ICON_BELL_24X16, 24, 16, -5, 0), TOOLTIPS.NOTIFICATIONSVIEW_TAB_OFFERS)]}})
         if self._lobbyContext.getServerSettings().getProgressiveRewardConfig().isEnabled:
             self.as_setProgressiveRewardEnabledS(True)
 
@@ -104,9 +103,7 @@ class NotificationListView(NotificationsListMeta, BaseNotificationView):
     def __updateCounters(self):
 
         def formatCount(count):
-            if count > 0:
-                return str(count)
-            return ''
+            return str(count) if count > 0 else ''
 
         counts = [ formatCount(self._model.getNotifiedMessagesCount(group)) for group in NotificationGroup.ALL ]
         if self.__countersLabels != counts:
@@ -115,20 +112,17 @@ class NotificationListView(NotificationsListMeta, BaseNotificationView):
 
     def __setNotificationList(self):
         messages = self.__getMessagesList()
-        self.as_setMessagesListS({'messages': messages, 
-           'emptyListText': self.__getEmptyListMsg(len(messages) > 0), 
-           'btnBarSelectedIdx': NotificationGroup.ALL.index(self.__currentGroup)})
+        self.as_setMessagesListS({'messages': messages,
+         'emptyListText': self.__getEmptyListMsg(len(messages) > 0),
+         'btnBarSelectedIdx': NotificationGroup.ALL.index(self.__currentGroup)})
         self._model.resetNotifiedMessagesCount(self.__currentGroup)
 
     def __getMessagesList(self):
-        filtered = [ item for item in self._model.collection.getListIterator() if item.getGroup() == self.__currentGroup
-                   ]
+        filtered = [ item for item in self._model.collection.getListIterator() if item.getGroup() == self.__currentGroup ]
         return [ self.__getListVO(item) for item in filtered ]
 
     def __getEmptyListMsg(self, hasMessages):
-        if not hasMessages:
-            return _ms(MESSENGER.LISTVIEW_EMPTYLIST_TEMPLATE, listType=_ms(MESSENGER.listview_emptylist(self.__currentGroup)))
-        return ''
+        return _ms(MESSENGER.LISTVIEW_EMPTYLIST_TEMPLATE, listType=_ms(MESSENGER.listview_emptylist(self.__currentGroup))) if not hasMessages else ''
 
     def __onNotificationReceived(self, notification):
         if notification.isAlert():
@@ -163,9 +157,9 @@ class NotificationListView(NotificationsListMeta, BaseNotificationView):
         self.__updateCounters()
 
     def __makeTabItemVO(self, tabId, label, tooltip):
-        return {'id': tabId, 
-           'label': label, 
-           'tooltip': tooltip}
+        return {'id': tabId,
+         'label': label,
+         'tooltip': tooltip}
 
     def __getListVO(self, notificaton):
         flashId = self._getFlashID(notificaton.getCounterInfo())

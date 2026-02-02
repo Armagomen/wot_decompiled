@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/base/unit/actions_validator.py
 from constants import BATTLE_MODE_VEHICLE_TAGS
 from CurrentVehicle import g_currentVehicle
 from gui.prb_control.entities.base.actions_validator import BaseActionsValidator, ActionsValidatorComposite
@@ -12,9 +14,7 @@ class UnitStateValidator(BaseActionsValidator):
         flags = self._entity.getFlags()
         if flags.isInArena():
             return ValidationResult(False, UNIT_RESTRICTION.IS_IN_ARENA)
-        if flags.isInIdle():
-            return ValidationResult(False, UNIT_RESTRICTION.IS_IN_IDLE)
-        return super(UnitStateValidator, self)._validate()
+        return ValidationResult(False, UNIT_RESTRICTION.IS_IN_IDLE) if flags.isInIdle() else super(UnitStateValidator, self)._validate()
 
 
 class UnitPlayerValidator(BaseActionsValidator):
@@ -65,10 +65,7 @@ class UnitVehiclesValidator(BaseActionsValidator):
         return not vehicle.isEvent and not bool(vehicle.tags & self._BATTLE_MODE_VEHICLE_TAGS)
 
     def _isVehicleSuitableForMode(self, vehicle):
-        if not self._isValidMode(vehicle):
-            return ValidationResult(False, UNIT_RESTRICTION.VEHICLE_WRONG_MODE)
-        else:
-            return
+        return ValidationResult(False, UNIT_RESTRICTION.VEHICLE_WRONG_MODE) if not self._isValidMode(vehicle) else None
 
     def _isCheckForRent(self):
         return True
@@ -96,9 +93,7 @@ class UnitSlotsValidator(CommanderValidator):
         stats = self._entity.getStats()
         if roster.getMinSlots() > stats.occupiedSlotsCount:
             return ValidationResult(False, UNIT_RESTRICTION.MIN_SLOTS)
-        if stats.readyCount != stats.occupiedSlotsCount:
-            return ValidationResult(False, UNIT_RESTRICTION.NOT_READY_IN_SLOTS)
-        return super(UnitSlotsValidator, self)._validate()
+        return ValidationResult(False, UNIT_RESTRICTION.NOT_READY_IN_SLOTS) if stats.readyCount != stats.occupiedSlotsCount else super(UnitSlotsValidator, self)._validate()
 
 
 class UnitLevelsValidator(ExceptDevModeValidator):
@@ -110,9 +105,7 @@ class UnitLevelsValidator(ExceptDevModeValidator):
         roster = self._entity.getRosterSettings()
         if self._areVehiclesSelected(stats) and stats.curTotalLevel < roster.getMinTotalLevel():
             return ValidationResult(False, UNIT_RESTRICTION.MIN_TOTAL_LEVEL, {'level': roster.getMinTotalLevel()})
-        if stats.curTotalLevel > roster.getMaxTotalLevel():
-            return ValidationResult(False, UNIT_RESTRICTION.MAX_TOTAL_LEVEL, {'level': roster.getMaxTotalLevel()})
-        return super(UnitLevelsValidator, self)._validate()
+        return ValidationResult(False, UNIT_RESTRICTION.MAX_TOTAL_LEVEL, {'level': roster.getMaxTotalLevel()}) if stats.curTotalLevel > roster.getMaxTotalLevel() else super(UnitLevelsValidator, self)._validate()
 
     def _areVehiclesSelected(self, stats):
         return not stats.freeSlotsCount and len(stats.levelsSeq) == stats.occupiedSlotsCount
@@ -126,8 +119,7 @@ class UnitActionsValidator(ActionsValidatorComposite):
         self._vehiclesValidator = self._createVehiclesValidator(entity)
         self._levelsValidator = self._createLevelsValidator(entity)
         self._slotsValidator = self._createSlotsValidator(entity)
-        validators = [
-         self._stateValidator,
+        validators = [self._stateValidator,
          self._playerValidator,
          self._vehiclesValidator,
          self._levelsValidator,

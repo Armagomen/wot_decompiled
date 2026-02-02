@@ -1,4 +1,7 @@
-import functools, operator
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_results/reusable/shared.py
+import functools
+import operator
 from account_shared import getFairPlayViolationName
 from constants import DEATH_REASON_ALIVE
 from debug_utils import LOG_CURRENT_EXCEPTION
@@ -32,11 +35,9 @@ def makeAchievementFromPersonal(results):
                 if 'damageRating' in results:
                     achievement.setDamageRating(results['damageRating'])
             if achievement.getName() in achievements.BATTLE_ACHIEVES_RIGHT:
-                yield (
-                 1, achievement)
+                yield (1, achievement)
             else:
-                yield (
-                 -1, achievement)
+                yield (-1, achievement)
 
     return
 
@@ -56,7 +57,9 @@ def makeMarkOfMasteryFromPersonal(results):
 
 
 def makeCritsInfo(value):
-    rv = {CRIT_MASK_SUB_TYPES.DESTROYED_DEVICES: [], CRIT_MASK_SUB_TYPES.CRITICAL_DEVICES: [], CRIT_MASK_SUB_TYPES.DESTROYED_TANKMENS: []}
+    rv = {CRIT_MASK_SUB_TYPES.DESTROYED_DEVICES: [],
+     CRIT_MASK_SUB_TYPES.CRITICAL_DEVICES: [],
+     CRIT_MASK_SUB_TYPES.DESTROYED_TANKMENS: []}
     critsCount = 0
     for subType, critType in critsParserGenerator(value):
         critsCount += 1
@@ -67,7 +70,9 @@ def makeCritsInfo(value):
 
 
 def unionCritsInfo(destination, source):
-    rv = {CRIT_MASK_SUB_TYPES.DESTROYED_DEVICES: [], CRIT_MASK_SUB_TYPES.CRITICAL_DEVICES: [], CRIT_MASK_SUB_TYPES.DESTROYED_TANKMENS: []}
+    rv = {CRIT_MASK_SUB_TYPES.DESTROYED_DEVICES: [],
+     CRIT_MASK_SUB_TYPES.CRITICAL_DEVICES: [],
+     CRIT_MASK_SUB_TYPES.DESTROYED_TANKMENS: []}
     for subType in rv.iterkeys():
         if subType not in source:
             continue
@@ -88,7 +93,7 @@ def unionCritsInfo(destination, source):
 
 
 class ItemInfo(object):
-    __slots__ = ('__wasInBattle', )
+    __slots__ = ('__wasInBattle',)
 
     def __init__(self, wasInBattle=True):
         super(ItemInfo, self).__init__()
@@ -100,7 +105,7 @@ class ItemInfo(object):
 
 
 class UnpackedInfo(object):
-    __slots__ = ('__unpackedItemsIDs', )
+    __slots__ = ('__unpackedItemsIDs',)
 
     def __init__(self):
         super(UnpackedInfo, self).__init__()
@@ -371,19 +376,7 @@ class _VehicleInfo(object):
 
 
 class VehicleDetailedInfo(_VehicleInfo):
-    __slots__ = ('_vehicle', '_killerID', '_achievementsIDs', '_critsInfo', '_spotted',
-                 '_piercings', '_piercingEnemyHits', '_piercingsReceived', '_damageDealt',
-                 '_tdamageDealt', '_sniperDamageDealt', '_artilleryFortEquipDamageDealt',
-                 '_damageBlockedByArmor', '_damageAssistedTrack', '_damageAssistedRadio',
-                 '_damageAssistedStun', '_stunNum', '_stunDuration', '_rickochetsReceived',
-                 '_noDamageDirectHitsReceived', '_targetKills', '_directHits', '_directEnemyHits',
-                 '_directHitsReceived', '_explosionHits', '_explosionHitsReceived',
-                 '_shots', '_kills', '_tkills', '_damaged', '_mileage', '_capturePoints',
-                 '_droppedCapturePoints', '_xp', '_fire', '_isTeamKiller', '_isKilledByTeamKiller',
-                 '_rollouts', '_respawns', '_deathCount', '_equipmentDamageDealt',
-                 '_equipmentDamageAssisted', '_xpForAttack', '_xpForAssist', '_xpOther',
-                 '_xpPenalty', '_numDefended', '_vehicleNumCaptured', '_numRecovered',
-                 '_destructiblesNumDestroyed', '_destructiblesDamageDealt', '_achievedLevel')
+    __slots__ = ('_vehicle', '_killerID', '_achievementsIDs', '_critsInfo', '_spotted', '_piercings', '_piercingEnemyHits', '_piercingsReceived', '_damageDealt', '_tdamageDealt', '_sniperDamageDealt', '_artilleryFortEquipDamageDealt', '_damageBlockedByArmor', '_damageAssistedTrack', '_damageAssistedRadio', '_damageAssistedStun', '_stunNum', '_stunDuration', '_rickochetsReceived', '_noDamageDirectHitsReceived', '_targetKills', '_directHits', '_directEnemyHits', '_directHitsReceived', '_explosionHits', '_explosionHitsReceived', '_shots', '_kills', '_tkills', '_damaged', '_mileage', '_capturePoints', '_droppedCapturePoints', '_xp', '_fire', '_isTeamKiller', '_isKilledByTeamKiller', '_rollouts', '_respawns', '_deathCount', '_equipmentDamageDealt', '_equipmentDamageAssisted', '_xpForAttack', '_xpForAssist', '_xpOther', '_xpPenalty', '_numDefended', '_vehicleNumCaptured', '_numRecovered', '_destructiblesNumDestroyed', '_destructiblesDamageDealt', '_achievedLevel')
 
     def __init__(self, vehicleID, vehicle, player, deathReason=DEATH_REASON_ALIVE):
         super(VehicleDetailedInfo, self).__init__(vehicleID, player, deathReason)
@@ -755,10 +748,7 @@ class VehicleSummarizeInfo(_VehicleInfo):
 
     @property
     def vehicle(self):
-        if self.__vehicles:
-            return self.__vehicles[0].vehicle
-        else:
-            return
+        return self.__vehicles[0].vehicle if self.__vehicles else None
 
     @property
     def isTeamKiller(self):
@@ -770,9 +760,7 @@ class VehicleSummarizeInfo(_VehicleInfo):
 
     @property
     def vehicles(self):
-        if self.__vehicles:
-            return self.__vehicles
-        return []
+        return self.__vehicles if self.__vehicles else []
 
     @property
     def killerID(self):
@@ -1069,7 +1057,4 @@ class FairplayViolationsInfo(object):
         return getFairPlayViolationName(self._violationsMask)
 
     def getPenaltyDetails(self):
-        if self.hasPenalties():
-            return (self.getPenaltyName(), self._penaltiesInPercent)
-        else:
-            return
+        return (self.getPenaltyName(), self._penaltiesInPercent) if self.hasPenalties() else None

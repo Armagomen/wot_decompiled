@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/sub_views/deal_base_setup.py
 from BWUtil import AsyncReturn
 from gui.impl.lobby.tank_setup.configurations.base import BaseDealPanel
 from gui.impl.lobby.tank_setup.sub_views.base_setup import BaseSetupSubView

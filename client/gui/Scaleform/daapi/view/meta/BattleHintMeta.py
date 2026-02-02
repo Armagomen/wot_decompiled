@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/BattleHintMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class BattleHintMeta(BaseDAAPIComponent):
@@ -6,13 +8,10 @@ class BattleHintMeta(BaseDAAPIComponent):
         self._printOverrideError('onFadeOutFinished')
 
     def as_showHintS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showHint(data)
+        return self.flashObject.as_showHint(data) if self._isDAAPIInited() else None
 
     def as_hideHintS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_hideHint()
+        return self.flashObject.as_hideHint() if self._isDAAPIInited() else None
 
     def as_cancelFadeOutS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_cancelFadeOut()
+        return self.flashObject.as_cancelFadeOut() if self._isDAAPIInited() else None

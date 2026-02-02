@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/tooltips/battle_selector.py
 import typing
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
 from gui.impl import backport
@@ -65,7 +67,7 @@ class SeasonalBattleSelectorTooltip(BlocksTooltipData):
                 endTime = formatDate('%H:%M', periodEnd)
                 periodsStr.append(backport.text(cls._R_BATTLE_SELECTOR_STR.timeTable.interval(), start=startTime, end=endTime))
 
-            return ('\n').join(periodsStr)
+            return '\n'.join(periodsStr)
         return backport.text(cls._R_BATTLE_SELECTOR_STR.timeTable.empty())
 
     @staticmethod

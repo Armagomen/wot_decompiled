@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/frameworks/wulf/tutorial.py
+import logging
+import typing
 from .py_object_binder import PyObjectEntity
 if typing.TYPE_CHECKING:
     from frameworks.wulf import ViewModel

@@ -1,4 +1,7 @@
-import logging, constants
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/tooltips/achievement.py
+import logging
+import constants
 from CurrentVehicle import g_currentVehicle
 from debug_utils import LOG_ERROR
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
@@ -27,19 +30,18 @@ class AchievementParamsField(ToolTipParameterField):
         else:
             label, lvlUpValue = achievement.getNextLevelInfo()
             if label and lvlUpValue and lvlUpValue > 0:
-                result[(-1)].append([label, lvlUpValue])
+                result[-1].append([label, lvlUpValue])
             if isSeriesAchievement(achievement):
                 record, maxSeries = achievement.getMaxSeriesInfo()
                 if record is not None and maxSeries:
-                    result[(-1)].append([record[1], maxSeries])
+                    result[-1].append([record[1], maxSeries])
             if achievementHasVehiclesList(achievement):
                 vehiclesList = achievement.getVehiclesData()
                 fullVehListLen = len(vehiclesList)
                 if fullVehListLen >= _ACHIEVEMENT_VEHICLES_MAX:
                     vehiclesList = vehiclesList[:_ACHIEVEMENT_VEHICLES_SHOW]
                 if fullVehListLen:
-                    result[(-1)].append([
-                     achievement.getVehiclesListTitle(), vehiclesList, fullVehListLen])
+                    result[-1].append([achievement.getVehiclesListTitle(), vehiclesList, fullVehListLen])
             return result
 
 
@@ -58,17 +60,15 @@ class AchievementIsInDossierField(ToolTipDataField):
     def _getValue(self):
         achievement = self._tooltip.item
         configuration = self._tooltip.context.getParamsConfiguration(achievement)
-        if not configuration.checkAchievementExistence:
-            return True
-        return achievement.isInDossier()
+        return True if not configuration.checkAchievementExistence else achievement.isInDossier()
 
 
 class AchievementRecordsField(ToolTipDataField):
     itemsCache = dependency.descriptor(IItemsCache)
 
     def _getValue(self):
-        records = {'current': None, 
-           'nearest': None}
+        records = {'current': None,
+         'nearest': None}
         achievement = self._tooltip.item
         configuration = self._tooltip.context.getParamsConfiguration(achievement)
         dossier = configuration.dossier
@@ -78,10 +78,7 @@ class AchievementRecordsField(ToolTipDataField):
             if achievement.getCompDescr() is not None:
                 if achievement.getPrevMarkOfMastery() < achievement.getMarkOfMastery():
                     records['current'] = makeString('#tooltips:achievement/newRecord')
-                records['nearest'] = [
-                 [
-                  makeString('#tooltips:achievement/recordOnVehicle', vehicleName=self.itemsCache.items.getItemByCD(int(achievement.getCompDescr())).shortUserName),
-                  max(achievement.getMarkOfMastery(), achievement.getPrevMarkOfMastery()) or achievement.MIN_LVL]]
+                records['nearest'] = [[makeString('#tooltips:achievement/recordOnVehicle', vehicleName=self.itemsCache.items.getItemByCD(int(achievement.getCompDescr())).shortUserName), max(achievement.getMarkOfMastery(), achievement.getPrevMarkOfMastery()) or achievement.MIN_LVL]]
         elif dossier is not None and dossierType == constants.DOSSIER_TYPE.ACCOUNT and isCurrentUserDossier:
             if achievement.getType() == 'series':
                 vehicleRecords = set()
@@ -104,8 +101,7 @@ class AchievementTooltipData(ToolTipData):
 
     def __init__(self, context):
         super(AchievementTooltipData, self).__init__(context, TOOLTIP_TYPE.ACHIEVEMENT)
-        self.fields = (
-         ToolTipMethodField(self, 'name', 'getUserName'),
+        self.fields = (ToolTipMethodField(self, 'name', 'getUserName'),
          ToolTipMethodField(self, 'icon', 'getHugeIcon'),
          ToolTipMethodField(self, 'type', 'getType'),
          ToolTipMethodField(self, 'section', 'getSection'),
@@ -128,9 +124,9 @@ class GlobalRatingTooltipData(ToolTipBaseData):
         super(GlobalRatingTooltipData, self).__init__(context, TOOLTIP_TYPE.ACHIEVEMENT)
 
     def getDisplayableData(self, *args):
-        return {'name': makeString('#achievements:globalRating'), 
-           'descr': makeString('#achievements:globalRating_descr'), 
-           'isInDossier': True}
+        return {'name': makeString('#achievements:globalRating'),
+         'descr': makeString('#achievements:globalRating_descr'),
+         'isInDossier': True}
 
 
 class BadgeTooltipData(BlocksTooltipData):
@@ -149,9 +145,7 @@ class BadgeTooltipData(BlocksTooltipData):
             _logger.warning('Missing tooltip text for %r, please check badge.po', int(badgeID))
             return blocks
         else:
-            tooltipData = [
-             formatters.packTextBlockData(text_styles.highTitle(badge.getUserName())),
-             formatters.packImageBlockData(badge.getHugeIcon(), BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=formatters.packPadding(top=-5, bottom=11))]
+            tooltipData = [formatters.packTextBlockData(text_styles.highTitle(badge.getUserName())), formatters.packImageBlockData(badge.getHugeIcon(), BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=formatters.packPadding(top=-5, bottom=11))]
             if g_currentVehicle.isPresent() and paramsConfig.showVehicle:
                 vehicle = g_currentVehicle.item
                 tooltipData.append(formatters.packBadgeInfoBlockData(badge.getThumbnailIcon(), vehicle.iconContour, text_styles.bonusPreviewText(getPlayerName()), text_styles.bonusPreviewText(vehicle.shortUserName)))

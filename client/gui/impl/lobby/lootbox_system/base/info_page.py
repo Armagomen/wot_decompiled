@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/lootbox_system/base/info_page.py
 from enum import Enum
 from frameworks.wulf import WindowFlags
 from gui.Scaleform.Waiting import Waiting
@@ -6,12 +8,11 @@ from gui.impl.pub.view_component import ViewComponent
 from gui.impl.gen.view_models.views.lobby.lootbox_system.box_model import BoxModel
 from gui.impl.gen.view_models.views.lobby.lootbox_system.info_page_model import InfoPageModel
 from gui.impl.gen.view_models.views.lobby.lootbox_system.slot_model import SlotModel
-from gui.impl.lobby.common.view_wrappers import createBackportTooltipDecorator
 from gui.impl.pub import WindowImpl
 from gui.impl.wrappers.function_helpers import replaceNoneKwargsModel
 from gui.lootbox_system.base.bonuses_packers import packBonusModelAndTooltipData
 from gui.lootbox_system.base.common import ViewID, Views
-from gui.lootbox_system.base.decorators import createTooltipContentDecorator
+from gui.lootbox_system.base.decorators import createBackportTooltipDecorator, createTooltipContentDecorator
 from gui.lootbox_system.base.sound import playInfopageEnterSound, playInfopageExitSound
 from gui.lootbox_system.base.utils import getInfoPageSettings, isCountryForShowingExternalLootList, isShopVisible, openExternalLootList
 from gui.lootbox_system.base.views_loaders import showItemPreview
@@ -51,7 +52,7 @@ class InfoPage(ViewComponent):
     def _onLoading(self, *args, **kwargs):
         super(InfoPage, self)._onLoading(*args, **kwargs)
         playInfopageEnterSound(self.__eventName)
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setHasLootListLink(isCountryForShowingExternalLootList())
             model.setHasVideoButton(getInfoPageSettings(self.__eventName, _InfoPageSetting.VIDEO))
             model.setHasShopButton(isShopVisible(self.__eventName))
@@ -66,23 +67,14 @@ class InfoPage(ViewComponent):
         super(InfoPage, self)._finalize()
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onClose, self.__onClose),
-         (
-          self.viewModel.onShowVideo, self.__showIntroPage),
-         (
-          self.viewModel.onShowShop, self.__showShop),
-         (
-          self.viewModel.onShowLootList, self.__showExternalLootList),
-         (
-          self.viewModel.onPreview, self.__showPreview),
-         (
-          self.viewModel.onChosenCategory, self.__updateCategory),
-         (
-          self.__lootBoxes.onStatusChanged, self.__onStatusChange),
-         (
-          self.__lootBoxes.onBoxesAvailabilityChanged, self.__onStatusChange))
+        return ((self.viewModel.onClose, self.__onClose),
+         (self.viewModel.onShowVideo, self.__showIntroPage),
+         (self.viewModel.onShowShop, self.__showShop),
+         (self.viewModel.onShowLootList, self.__showExternalLootList),
+         (self.viewModel.onPreview, self.__showPreview),
+         (self.viewModel.onChosenCategory, self.__updateCategory),
+         (self.__lootBoxes.onStatusChanged, self.__onStatusChange),
+         (self.__lootBoxes.onBoxesAvailabilityChanged, self.__onStatusChange))
 
     def __sortedSlotsIDs(self, slotsInfo):
         return sorted(slotsInfo.keys()) or []

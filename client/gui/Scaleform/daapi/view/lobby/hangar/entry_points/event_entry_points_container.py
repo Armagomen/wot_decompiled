@@ -1,4 +1,7 @@
-import json, logging
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/entry_points/event_entry_points_container.py
+import json
+import logging
 from operator import attrgetter
 from itertools import chain
 from constants import QUEUE_TYPE
@@ -32,8 +35,13 @@ registerBannerEntryPointLUIRule(HANGAR_ALIASES.MAPBOX_ENTRY_POINT, LUI_RULES.Map
 _logger = logging.getLogger(__name__)
 
 class _EntryPointData(object):
-    __slots__ = [
-     'id', 'startDate', 'endDate', 'priority', 'data', 'extension', '__isValidData']
+    __slots__ = ['id',
+     'startDate',
+     'endDate',
+     'priority',
+     'data',
+     'extension',
+     '__isValidData']
 
     def __init__(self, entryData):
         super(_EntryPointData, self).__init__()
@@ -79,10 +87,7 @@ class _EntryPointData(object):
 
     def getIsEnabledByValidator(self):
         configValidator = collectBannerEntryPointValidator(self.id)
-        if configValidator is not None:
-            return configValidator()
-        else:
-            return True
+        return configValidator() if configValidator is not None else True
 
     def getLUIRule(self):
         return collectBannerEntryPointLUIRule(self.id)
@@ -94,8 +99,7 @@ class EventEntryPointsContainer(EventEntryPointsContainerMeta, Notifiable, IGlob
     __lobbyContext = dependency.descriptor(ILobbyContext)
     __itemsCache = dependency.descriptor(IItemsCache)
     __luiController = dependency.descriptor(ILimitedUIController)
-    __slots__ = [
-     '__entries', '__serverSettings']
+    __slots__ = ['__entries', '__serverSettings']
 
     def __init__(self):
         super(EventEntryPointsContainer, self).__init__()
@@ -132,15 +136,11 @@ class EventEntryPointsContainer(EventEntryPointsContainerMeta, Notifiable, IGlob
         self.startGlobalListening()
 
     def _isQueueEnabled(self):
-        enabledQueues = (
-         QUEUE_TYPE.RANDOMS, QUEUE_TYPE.WINBACK)
-        return any(self.__isQueueSelected(queueType) for queueType in enabledQueues)
+        enabledQueues = (QUEUE_TYPE.RANDOMS, QUEUE_TYPE.WINBACK)
+        return any((self.__isQueueSelected(queueType) for queueType in enabledQueues))
 
     def __isQueueSelected(self, queueType):
-        if self.prbDispatcher is not None:
-            return self.prbDispatcher.getFunctionalState().isQueueSelected(queueType)
-        else:
-            return False
+        return self.prbDispatcher.getFunctionalState().isQueueSelected(queueType) if self.prbDispatcher is not None else False
 
     def __onServerSettingsChanged(self, serverSettings):
         if self.__serverSettings is not None:
@@ -193,8 +193,7 @@ class EventEntryPointsContainer(EventEntryPointsContainerMeta, Notifiable, IGlob
         for entry in self.__entries.itervalues():
             if entry.getIsEarlyDate():
                 nearestDate = min(nearestDate, entry.startDate)
-            else:
-                nearestDate = min(nearestDate, entry.endDate)
+            nearestDate = min(nearestDate, entry.endDate)
 
         return nearestDate - currentTime + _SECONDS_BEFORE_UPDATE
 
@@ -210,9 +209,9 @@ class EventEntryPointsContainer(EventEntryPointsContainerMeta, Notifiable, IGlob
                 isValidCount = count < _COUNT_VISIBLE_ENTRY_POINTS
                 if isValidCount and entry.getIsValidDateForCreation() and entry.getIsEnabledByValidator() and self.__luiController.isRuleCompleted(entry.getLUIRule()):
                     count += 1
-                    data.append({'entryLinkage': entry.id, 
-                       'swfPath': _ADDITIONAL_SWFS_MAP.get(entry.id, ''), 
-                       'extension': entry.extension})
+                    data.append({'entryLinkage': entry.id,
+                     'swfPath': _ADDITIONAL_SWFS_MAP.get(entry.id, ''),
+                     'extension': entry.extension})
 
         self.as_updateEntriesS(data)
 

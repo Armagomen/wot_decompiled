@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/gift_system/hubs/base/hub_core.py
 import typing
 from Event import Event, EventManager
 from gui.gift_system.constants import HubUpdateReason
@@ -64,8 +66,7 @@ class IGiftEventHub(object):
 
 
 class GiftEventBaseHub(IGiftEventHub):
-    __slots__ = ('onHubUpdated', '_eventManager', '_settings', '_isHistoryReceived',
-                 '_isWebStateReceived', '_gifter', '_keeper', '_messenger', '_stamper')
+    __slots__ = ('onHubUpdated', '_eventManager', '_settings', '_isHistoryReceived', '_isWebStateReceived', '_gifter', '_keeper', '_messenger', '_stamper')
 
     def __init__(self, eventSettings, isMessagesAllowed):
         self._eventManager = EventManager()
@@ -96,9 +97,7 @@ class GiftEventBaseHub(IGiftEventHub):
 
     def isWebStateRequired(self, strategy=None):
         strategy = strategy or self._settings.clientReqStrategy
-        if not self._isHistoryReceived or strategy != self._settings.clientReqStrategy:
-            return False
-        return not self._isWebStateReceived and self._isWebStateEnabled()
+        return False if not self._isHistoryReceived or strategy != self._settings.clientReqStrategy else not self._isWebStateReceived and self._isWebStateEnabled()
 
     def getGifter(self):
         return self._gifter
@@ -123,18 +122,20 @@ class GiftEventBaseHub(IGiftEventHub):
     def processHistory(self, history):
         if not self.isHistoryRequired() or history is None:
             return
-        self._messenger.pushHistoryMessage(history)
-        self._isHistoryReceived = True
-        self.onHubUpdated(HubUpdateReason.HISTORY, history)
-        return
+        else:
+            self._messenger.pushHistoryMessage(history)
+            self._isHistoryReceived = True
+            self.onHubUpdated(HubUpdateReason.HISTORY, history)
+            return
 
     def processWebState(self, webState):
         if not self.isWebStateRequired() or webState is None:
             return
-        self._keeper.processWebState(webState)
-        self._isWebStateReceived = True
-        self.onHubUpdated(HubUpdateReason.WEB_STATE, webState)
-        return
+        else:
+            self._keeper.processWebState(webState)
+            self._isWebStateReceived = True
+            self.onHubUpdated(HubUpdateReason.WEB_STATE, webState)
+            return
 
     def reset(self):
         self._isHistoryReceived = False

@@ -1,4 +1,7 @@
-import heapq, logging
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/event_bus.py
+import heapq
+import logging
 from collections import defaultdict
 from BWUtil import AsyncReturn
 from debug_utils import LOG_CURRENT_EXCEPTION
@@ -13,8 +16,11 @@ class EVENT_BUS_SCOPE(object):
     BATTLE = 3
     STRONGHOLD = 4
     DEFAULT = GLOBAL
-    ALL = (
-     GLOBAL, LOBBY, STATS, BATTLE, STRONGHOLD)
+    ALL = (GLOBAL,
+     LOBBY,
+     STATS,
+     BATTLE,
+     STRONGHOLD)
 
 
 class EventPriority(object):
@@ -31,8 +37,7 @@ class _PriorityQueue(object):
         self._finder = {}
 
     def add(self, item, priority):
-        entry = (
-         priority, item)
+        entry = (priority, item)
         self._finder[item] = entry
         heapq.heappush(self._queue, entry)
 

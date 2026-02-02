@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_pass/battle_pass_awards_view_model.py
 from enum import Enum
 from frameworks.wulf import Array
 from gui.impl.wrappers.user_list_model import UserListModel

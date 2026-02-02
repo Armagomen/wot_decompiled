@@ -1,4 +1,9 @@
-import CGF, Math, math, GenericComponents
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/vehicle_systems/components/vehicle_pickup_manager.py
+import CGF
+import Math
+import math
+import GenericComponents
 from cgf_script.managers_registrator import autoregister, onProcessQuery
 from vehicle_systems.components.vehicle_pickup_component import VehiclePickupComponent
 

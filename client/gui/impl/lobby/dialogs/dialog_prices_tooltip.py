@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/dialogs/dialog_prices_tooltip.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.windows.dialog_prices_tooltip_model import DialogPricesTooltipModel
@@ -18,7 +20,7 @@ class DialogPricesTooltip(ViewImpl):
         return super(DialogPricesTooltip, self).getViewModel()
 
     def setData(self, valueMainCost, iconMainCost, labelMainCost, valueAdditionalCost, iconAdditionalCost, labelAdditionalCost, totalCost, labelTotalCost):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setValueMainCost(valueMainCost)
             model.setIconMainCost(iconMainCost)
             model.setLabelMainCost(labelMainCost)

@@ -1,9 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_pass/chapter_choice_view_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.battle_pass.chapter_model import ChapterModel
 
 class ChapterChoiceViewModel(ViewModel):
-    __slots__ = ('onPreviewClick', 'onChapterSelect', 'onAboutClick', 'onPointsInfoClick',
-                 'onBuyClick', 'onViewLoaded', 'onClose', 'onShowPostProgression')
+    __slots__ = ('onPreviewClick', 'onChapterSelect', 'onAboutClick', 'onPointsInfoClick', 'onBuyClick', 'onViewLoaded', 'onClose', 'onShowPostProgression')
 
     def __init__(self, properties=5, commands=8):
         super(ChapterChoiceViewModel, self).__init__(properties=properties, commands=commands)

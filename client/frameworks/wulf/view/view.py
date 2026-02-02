@@ -1,4 +1,8 @@
-import logging, typing, Event
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/frameworks/wulf/view/view.py
+import logging
+import typing
+import Event
 from soft_exception import SoftException
 from sound_gui_manager import ViewSoundExtension
 from .view_event import ViewEvent
@@ -6,6 +10,7 @@ from .view_model import ViewModel
 from ..py_object_binder import PyObjectEntity, getProxy, getObject
 from ..py_object_wrappers import PyObjectView, PyObjectViewSettings
 from ..gui_constants import ViewFlags, ViewStatus, ViewEventType, ChildFlags, ShowingStatus
+from py2to3 import patched_typing
 TViewModel = typing.TypeVar('TViewModel', bound=ViewModel)
 _logger = logging.getLogger(__name__)
 if typing.TYPE_CHECKING:
@@ -13,7 +18,7 @@ if typing.TYPE_CHECKING:
     from sound_gui_manager import CommonSoundSpaceSettings
     from gui.sounds.ViewSoundManager import _ViewSoundsManager
 
-class ViewSettings(typing.Generic[TViewModel]):
+class ViewSettings(patched_typing.Generic[TViewModel]):
     __slots__ = ('__proxy', 'args', 'kwargs')
 
     def __init__(self, layoutID, flags=ViewFlags.VIEW, model=None, args=(), kwargs=None):
@@ -62,10 +67,8 @@ class ViewSettings(typing.Generic[TViewModel]):
         return
 
 
-class View(PyObjectEntity, typing.Generic[TViewModel]):
-    __slots__ = ('__viewStatus', '__showingStatus', '__viewModel', '__args', '__kwargs',
-                 'onStatusChanged', 'onShowingStatusChanged', 'onFocusChanged', '__soundExtension',
-                 '__isShown', '__isFocused', '__weakref__')
+class View(PyObjectEntity, patched_typing.Generic[TViewModel]):
+    __slots__ = ('__viewStatus', '__showingStatus', '__viewModel', '__args', '__kwargs', 'onStatusChanged', 'onShowingStatusChanged', 'onFocusChanged', '__soundExtension', '__isShown', '__isFocused', '__weakref__')
     _COMMON_SOUND_SPACE = None
 
     def __init__(self, settings, wsFlags=ViewFlags.VIEW, viewModelClazz=ViewModel, *args, **kwargs):
@@ -93,36 +96,24 @@ class View(PyObjectEntity, typing.Generic[TViewModel]):
         return
 
     def __repr__(self):
-        return ('{}(uniqueID={}, layoutID={})').format(self.__class__.__name__, self.uniqueID, self.layoutID)
+        return '{}(uniqueID={}, layoutID={})'.format(self.__class__.__name__, self.uniqueID, self.layoutID)
 
     @property
     def layoutID(self):
-        if self.proxy is not None:
-            return self.proxy.layoutID
-        else:
-            return 0
+        return self.proxy.layoutID if self.proxy is not None else 0
 
     @property
     def uniqueID(self):
-        if self.proxy is not None:
-            return self.proxy.uniqueID
-        else:
-            return 0
+        return self.proxy.uniqueID if self.proxy is not None else 0
 
     @property
     def layer(self):
         _logger.warning('Use window.layer() instead of view.layer(). Window %r. View %r', self.getWindow(), self)
-        if self.proxy is not None:
-            return ViewFlags.getViewType(self.proxy.viewFlags)
-        else:
-            return 0
+        return ViewFlags.getViewType(self.proxy.viewFlags) if self.proxy is not None else 0
 
     @property
     def viewFlags(self):
-        if self.proxy is not None:
-            return self.proxy.viewFlags
-        else:
-            return 0
+        return self.proxy.viewFlags if self.proxy is not None else 0
 
     @property
     def viewStatus(self):
@@ -141,31 +132,19 @@ class View(PyObjectEntity, typing.Generic[TViewModel]):
         return self.__soundExtension.soundManager
 
     def checkViewFlags(self, flags):
-        if self.proxy is not None:
-            return self.proxy.checkViewFlags(flags)
-        else:
-            return False
+        return self.proxy.checkViewFlags(flags) if self.proxy is not None else False
 
     def getViewModel(self):
         return self.__viewModel
 
     def getParentWindow(self):
-        if self.proxy is not None:
-            return self.proxy.getParentWindow()
-        else:
-            return
+        return self.proxy.getParentWindow() if self.proxy is not None else None
 
     def getWindow(self):
-        if self.proxy is not None:
-            return self.proxy.getWindow()
-        else:
-            return
+        return self.proxy.getWindow() if self.proxy is not None else None
 
     def getParentView(self):
-        if self.proxy is not None:
-            return self.proxy.getParent()
-        else:
-            return
+        return self.proxy.getParent() if self.proxy is not None else None
 
     def addChild(self, childId, view, loadImmediately=True):
         if self.proxy is not None:
@@ -173,22 +152,13 @@ class View(PyObjectEntity, typing.Generic[TViewModel]):
         return
 
     def getChild(self, childId):
-        if self.proxy is not None:
-            return self.proxy.getChild(childId)
-        else:
-            return
+        return self.proxy.getChild(childId) if self.proxy is not None else None
 
     def removeChild(self, childId, destroy=True):
-        if self.proxy is not None:
-            return self.proxy.removeChild(childId, destroy)
-        else:
-            return
+        return self.proxy.removeChild(childId, destroy) if self.proxy is not None else None
 
     def getChildView(self, resourceID):
-        if self.proxy is not None:
-            return self.proxy.getSubView(resourceID)
-        else:
-            return
+        return self.proxy.getSubView(resourceID) if self.proxy is not None else None
 
     def setChildView(self, resourceID, view=None, chFlags=ChildFlags.AUTO_DESTROY):
         if self.proxy is not None:
@@ -225,13 +195,13 @@ class View(PyObjectEntity, typing.Generic[TViewModel]):
         _logger.error('hide() is not defined for View. Try window.hide()')
 
     def createToolTip(self, event):
-        return
+        return None
 
     def createPopOver(self, event):
-        return
+        return None
 
     def createContextMenu(self, event):
-        return
+        return None
 
     def _onLoading(self, *args, **kwargs):
         pass
@@ -310,23 +280,22 @@ class View(PyObjectEntity, typing.Generic[TViewModel]):
         if not event.eventType:
             _logger.error('%r: type of event is not defined in view event', self)
             return False
+        elif not event.contentID:
+            _logger.error('%r: contentID is not defined in view event', self)
+            return False
+        elif not event.isOn:
+            _logger.error('%r: view should be destroyed in the core side by %r', self, event)
+            return False
         else:
-            if not event.contentID:
-                _logger.error('%r: contentID is not defined in view event', self)
-                return False
-            if not event.isOn:
-                _logger.error('%r: view should be destroyed in the core side by %r', self, event)
-                return False
             window = None
             if event.eventType == ViewEventType.TOOLTIP:
                 window = self.createToolTip(event)
-            else:
-                if event.eventType == ViewEventType.POP_OVER:
-                    window = self.createPopOver(event)
-                elif event.eventType == ViewEventType.CONTEXT_MENU:
-                    window = self.createContextMenu(event)
-                if window is not None:
-                    _logger.debug('%r: %r is loaded by %r', self, window, event)
-                    return True
+            elif event.eventType == ViewEventType.POP_OVER:
+                window = self.createPopOver(event)
+            elif event.eventType == ViewEventType.CONTEXT_MENU:
+                window = self.createContextMenu(event)
+            if window is not None:
+                _logger.debug('%r: %r is loaded by %r', self, window, event)
+                return True
             _logger.warning('%r: window is not loaded by event %r', self, event)
             return False

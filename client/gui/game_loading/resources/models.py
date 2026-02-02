@@ -1,18 +1,19 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_loading/resources/models.py
 from typing import Optional, Union, TYPE_CHECKING
 from gui.game_loading.resources.consts import InfoStyles
 if TYPE_CHECKING:
     from gui.game_loading.resources.consts import ImageVfxs
 
 class BaseResourceModel(object):
-    __slots__ = ('minShowTimeSec', )
+    __slots__ = ('minShowTimeSec',)
 
     def __init__(self, minShowTimeSec):
         self.minShowTimeSec = max(minShowTimeSec, 0)
 
 
 class LocalImageModel(BaseResourceModel):
-    __slots__ = ('imageRelativePath', 'vfx', 'localizationText', 'descriptionText',
-                 'transition')
+    __slots__ = ('imageRelativePath', 'vfx', 'localizationText', 'descriptionText', 'transition')
 
     def __init__(self, imageRelativePath, vfx=None, localizationText=None, descriptionText=None, minShowTimeSec=0, transition=0):
         super(LocalImageModel, self).__init__(minShowTimeSec=minShowTimeSec)
@@ -40,15 +41,15 @@ class LogoModel(BaseResourceModel):
         self.infoStyle = infoStyle
 
     def __repr__(self):
-        return ('<LogoModel(type={}, minShowTimeSec={}, copyright={}, version={}, transition={}, info={}, infoStyle={})>').format(self.type, self.minShowTimeSec, self.showCopyright, self.showVersion, self.transition, self.info, self.infoStyle)
+        return '<LogoModel(type={}, minShowTimeSec={}, copyright={}, version={}, transition={}, info={}, infoStyle={})>'.format(self.type, self.minShowTimeSec, self.showCopyright, self.showVersion, self.transition, self.info, self.infoStyle)
 
 
 class StatusTextModel(BaseResourceModel):
-    __slots__ = ('text', )
+    __slots__ = ('text',)
 
     def __init__(self, text, minShowTimeSec=0):
         super(StatusTextModel, self).__init__(minShowTimeSec=minShowTimeSec)
         self.text = text
 
     def __repr__(self):
-        return ('<StatusTextModel(text={}, minShowTimeSec={})>').format(self.text, self.minShowTimeSec)
+        return '<StatusTextModel(text={}, minShowTimeSec={})>'.format(self.text, self.minShowTimeSec)

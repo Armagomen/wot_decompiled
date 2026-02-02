@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/extension_stubs/comp7_controller.py
 import Event
 from skeletons.gui.game_control import IComp7Controller
 from gui.periodic_battles.models import PrimeTimeStatus
@@ -24,7 +26,7 @@ class Comp7Controller(IComp7Controller):
 
     @property
     def rating(self):
-        return 0
+        pass
 
     @property
     def isElite(self):
@@ -36,7 +38,7 @@ class Comp7Controller(IComp7Controller):
 
     @property
     def banDuration(self):
-        return 0
+        pass
 
     @property
     def isOffline(self):
@@ -44,19 +46,23 @@ class Comp7Controller(IComp7Controller):
 
     @property
     def leaderboard(self):
-        return
+        return None
+
+    @property
+    def progression(self):
+        return None
 
     @property
     def activityPoints(self):
-        return 0
+        pass
 
     @property
     def battleModifiers(self):
-        return ()
+        pass
 
     @property
     def qualificationBattlesNumber(self):
-        return 0
+        pass
 
     @property
     def qualificationBattlesStatuses(self):
@@ -64,7 +70,7 @@ class Comp7Controller(IComp7Controller):
 
     @property
     def qualificationState(self):
-        return
+        return None
 
     @property
     def remainingOfferTokensNotifications(self):
@@ -104,35 +110,34 @@ class Comp7Controller(IComp7Controller):
         return False
 
     def getClosestStateChangeTime(self, now=None):
-        return 0
+        pass
 
     def getCurrentCycleID(self):
-        return
+        return None
 
     def getCurrentCycleInfo(self):
-        return (
-         None, False)
+        return (None, False)
 
     def getCurrentOrNextActiveCycleNumber(self, season):
-        return 0
+        pass
 
     def getEventEndTimestamp(self):
-        return
+        return None
 
     def getModeSettings(self):
-        return
+        return None
 
     def getRanksConfig(self):
-        return
+        return None
 
     def getYearlyRewards(self):
-        return
+        return None
 
     def getNextSeason(self, now=None):
-        return
+        return None
 
     def getPeriodInfo(self, now=None, peripheryID=None):
-        return
+        return None
 
     def getPrimeTimes(self):
         return {}
@@ -144,10 +149,10 @@ class Comp7Controller(IComp7Controller):
         return (PrimeTimeStatus.NOT_SET, 0, False)
 
     def getPreviousSeason(self, now=None):
-        return
+        return None
 
     def getSeason(self, seasonID):
-        return
+        return None
 
     def getSeasonsPassed(self, now=None):
         return []
@@ -156,13 +161,13 @@ class Comp7Controller(IComp7Controller):
         return []
 
     def getTimer(self, now=None, peripheryID=None):
-        return 0
+        pass
 
     def getLeftTimeToPrimeTimesEnd(self, now=None):
-        return 0
+        pass
 
     def getQuestsTimerLeft(self):
-        return 0
+        pass
 
     def isEnabled(self):
         return False
@@ -174,10 +179,10 @@ class Comp7Controller(IComp7Controller):
         return False
 
     def getActualSeasonNumber(self):
-        return
+        return None
 
     def getCurrentSeason(self, now=None, includePreannounced=False):
-        return
+        return None
 
     def isQualificationActive(self):
         return False
@@ -189,28 +194,28 @@ class Comp7Controller(IComp7Controller):
         return False
 
     def isQualificationSquadAllowed(self):
-        return
+        return None
 
     def preannounceSeasonId(self):
-        return
+        return None
 
     def isInPreannounceState(self):
         return False
 
     def getPreannouncedSeason(self):
-        return
+        return None
 
     def getRoleEquipment(self, roleName):
-        return
+        return None
 
     def getEquipmentStartLevel(self, roleName):
-        return
+        return None
 
     def getRoleEquipmentOverrides(self, roleName):
-        return
+        return None
 
     def getPoiEquipmentOverrides(self, poiName):
-        return
+        return None
 
     def getViewData(self, viewAlias):
         return {}
@@ -237,14 +242,13 @@ class Comp7Controller(IComp7Controller):
         return False
 
     def getAlertBlock(self):
-        return (
-         False, None, None)
+        return (False, None, None)
 
     def getPlatoonRatingRestriction(self):
-        return
+        return None
 
     def getPlatoonMaxRankRestriction(self):
-        return 0
+        pass
 
     def getStatsSeasonsKeys(self):
         return []
@@ -253,16 +257,16 @@ class Comp7Controller(IComp7Controller):
         return {}
 
     def getMaxAvailableSeasonPoints(self):
-        return 0
+        pass
 
     def isQualificationPassedInSeason(self, seasonNumber):
         return False
 
     def getRatingForSeason(self, seasonNumber):
-        return 0
+        pass
 
     def getMaxRankNumberForSeason(self, seasonNumber=None):
-        return 0
+        pass
 
     def isEliteForSeason(self, seasonNumber=None):
         return False
@@ -271,7 +275,7 @@ class Comp7Controller(IComp7Controller):
         pass
 
     def getPlatoonRankRestriction(self, squadSize=None):
-        return 0
+        pass
 
     def tryToShowSeasonStatistics(self):
         pass

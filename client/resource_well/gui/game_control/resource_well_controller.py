@@ -1,4 +1,9 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: resource_well/scripts/client/resource_well/gui/game_control/resource_well_controller.py
+from __future__ import absolute_import
+import logging
+import typing
+from future.utils import itervalues, iteritems
 from Event import Event, EventManager
 from PlayerEvents import g_playerEvents
 from gui.shared.utils.scheduled_notifications import SimpleNotifier
@@ -15,6 +20,7 @@ from shared_utils import first, makeTupleByDict
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.resource_well import IResourceWellController
 from skeletons.gui.shared import IItemsCache
+from wg_async import AsyncSemaphore
 if typing.TYPE_CHECKING:
     from typing import Dict, Optional, Set, List, Any
     from gui.shared.gui_items.Vehicle import Vehicle
@@ -34,6 +40,7 @@ class ResourceWellController(IResourceWellController, EventsHandler):
         self.__syncData = ResourceWellSyncData()
         self.__config = None
         self.__currentPurchaseMode = None
+        self.__semaphore = None
         return
 
     @property
@@ -43,6 +50,7 @@ class ResourceWellController(IResourceWellController, EventsHandler):
         return self.__config
 
     def onLobbyInited(self, event):
+        self.__semaphore = AsyncSemaphore()
         self.__initNumberRequesters()
         self.__setNumberInitialValues()
         self._subscribe()
@@ -119,15 +127,15 @@ class ResourceWellController(IResourceWellController, EventsHandler):
             self.__currentPurchaseMode = PurchaseMode.ONE_SERIAL_PRODUCT
             rewards = self.config.rewards
             if len(rewards) > 1:
-                if any([ r.isSerial for r in rewards.values() ]):
+                if any((r.isSerial for r in itervalues(rewards))):
                     self.__currentPurchaseMode = PurchaseMode.SEQUENTIAL_PRODUCT
-                elif not any([ r.availableAfter for r in rewards.values() ]):
+                elif not any((r.availableAfter for r in itervalues(rewards))):
                     self.__currentPurchaseMode = PurchaseMode.TWO_PARALLEL_PRODUCTS
             return self.__currentPurchaseMode
 
     def getRewardVehicle(self, rewardID):
         rewardConfig = self.config.getRewardConfig(rewardID)
-        vehicleCD = first(rewardConfig.bonus.get('vehicles', {}).keys())
+        vehicleCD = first(rewardConfig.bonus.get('vehicles', {}))
         if vehicleCD is None:
             _logger.error('Vehicle is not found in config.')
             return
@@ -136,10 +144,7 @@ class ResourceWellController(IResourceWellController, EventsHandler):
 
     def getRewardStyleID(self, rewardID):
         rewardConfig = self.config.getRewardConfig(rewardID)
-        if not rewardConfig.isSerial:
-            return None
-        else:
-            return first(rewardConfig.bonus['vehicles'].values(), {}).get('customization', {}).get('styleId')
+        return None if not rewardConfig.isSerial else first(itervalues(rewardConfig.bonus['vehicles']), {}).get('customization', {}).get('styleId')
 
     def getRewardSequence(self, rewardID):
         rewardConfig = self.config.getRewardConfig(rewardID)
@@ -151,9 +156,7 @@ class ResourceWellController(IResourceWellController, EventsHandler):
 
     def isParentRewardAvailable(self, rewardID):
         rewardConfig = self.config.getRewardConfig(rewardID)
-        if not rewardConfig.availableAfter:
-            return False
-        return self.isRewardAvailable(rewardConfig.availableAfter)
+        return False if not rewardConfig.availableAfter else self.isRewardAvailable(rewardConfig.availableAfter)
 
     def isRewardAvailable(self, rewardID):
         vehicle = self.getRewardVehicle(rewardID)
@@ -194,33 +197,26 @@ class ResourceWellController(IResourceWellController, EventsHandler):
     def startNumberRequesters(self):
         if self.isEnabled():
             self.__setNumberInitialValues()
-            for requester in self.__numberRequesters.values():
+            for requester in itervalues(self.__numberRequesters):
                 requester.start()
 
     def stopNumberRequesters(self):
-        for requester in self.__numberRequesters.values():
+        for requester in itervalues(self.__numberRequesters):
             requester.stop()
 
     def _getEvents(self):
-        return (
-         (
-          self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged),)
+        return ((self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged),)
 
     def _getCallbacks(self):
-        return (
-         (
-          'tokens', self.__onTokensUpdated),
-         (
-          'inventory.1.compDescr', self.__onInventoryUpdated))
+        return (('tokens', self.__onTokensUpdated), ('inventory.1.compDescr', self.__onInventoryUpdated))
 
     def __getTimeLeft(self):
         if not self.isStarted():
             return max(0, self.config.startTime - time_utils.getServerUTCTime())
-        if not self.isFinished():
-            return max(0, self.config.finishTime - time_utils.getServerUTCTime())
-        return 0
+        return max(0, self.config.finishTime - time_utils.getServerUTCTime()) if not self.isFinished() else 0
 
     def __onEventStateChange(self):
+        self.__validateNumberRequesters()
         self.onEventUpdated()
 
     def __onInventoryUpdated(self, _):
@@ -244,12 +240,12 @@ class ResourceWellController(IResourceWellController, EventsHandler):
         if remainingValuesCount > rewardLimit:
             _logger.error('Remaining values count cannot exceed reward limit!')
             return 0
+        elif remainingValuesCount < rewardLimit / 2.0:
+            return remainingValuesCount
+        elif givenValuesCount > rewardLimit:
+            _logger.error('Given values count cannot exceed reward limit!')
+            return 0
         else:
-            if remainingValuesCount < rewardLimit / 2.0:
-                return remainingValuesCount
-            if givenValuesCount > rewardLimit:
-                _logger.error('Given values count cannot exceed reward limit!')
-                return 0
             return rewardLimit - givenValuesCount
 
     @serverSettingsChangeListener(RESOURCE_WELL_GAME_PARAMS_KEY)
@@ -257,10 +253,7 @@ class ResourceWellController(IResourceWellController, EventsHandler):
         self.__currentPurchaseMode = None
         if self.__config is not None:
             self.__config = self.__config.replace(diff[RESOURCE_WELL_GAME_PARAMS_KEY])
-        if self.isActive():
-            self.__initNumberRequesters(withStart=True)
-        else:
-            self.stopNumberRequesters()
+        self.__validateNumberRequesters()
         self.__onEventUpdated()
         self.onSettingsChanged()
         return
@@ -288,7 +281,7 @@ class ResourceWellController(IResourceWellController, EventsHandler):
 
     def __stop(self):
         self._unsubscribe()
-        for requester in self.__numberRequesters.values():
+        for requester in itervalues(self.__numberRequesters):
             requester.onUpdated -= self.__onRequesterUpdated
 
         self.stopNumberRequesters()
@@ -297,9 +290,12 @@ class ResourceWellController(IResourceWellController, EventsHandler):
         return
 
     def __clear(self):
+        if self.__semaphore is not None:
+            self.__semaphore.destroy()
         self.__clearNumberRequesters()
         self.__syncData.clear()
         self.__config = None
+        self.__semaphore = None
         self.__currentPurchaseMode = None
         if self.__notifier is not None:
             self.__notifier.clear()
@@ -308,7 +304,7 @@ class ResourceWellController(IResourceWellController, EventsHandler):
 
     def __clearNumberRequesters(self):
         wasActive = False
-        for requester in self.__numberRequesters.values():
+        for requester in itervalues(self.__numberRequesters):
             wasActive |= requester.isActive
             requester.stop()
             requester.clear()
@@ -318,22 +314,26 @@ class ResourceWellController(IResourceWellController, EventsHandler):
 
     def __initNumberRequesters(self, withStart=False):
         wasActive = self.__clearNumberRequesters()
-        for rewardID in self.config.rewards.keys():
-            self.__numberRequesters[rewardID] = requester = ResourceWellNumberRequester(rewardID)
+        for rewardID in self.config.rewards:
+            self.__numberRequesters[rewardID] = requester = ResourceWellNumberRequester(rewardID, self.__semaphore)
             requester.onUpdated += self.__onRequesterUpdated
             if withStart and wasActive:
                 requester.start()
 
+    def __validateNumberRequesters(self):
+        if self.isActive():
+            self.__initNumberRequesters(withStart=True)
+        else:
+            self.stopNumberRequesters()
+
     def __setNumberInitialValues(self):
         if self.config.rewards:
-            for rewardID, requester in self.__numberRequesters.items():
+            for rewardID, requester in iteritems(self.__numberRequesters):
                 requester.setInitialValues(self.__getInitialRemainingValues(rewardID=rewardID))
 
     def __getInitialRemainingValues(self, rewardID):
         initialAmountsInCache = self.__syncData.getInitialNumberAmounts().get(self.getRewardSequence(rewardID))
-        if initialAmountsInCache == 0:
-            return initialAmountsInCache
-        return self.getRewardLimit(rewardID)
+        return initialAmountsInCache if initialAmountsInCache == 0 else self.getRewardLimit(rewardID)
 
     def __createConfig(self):
         return makeTupleByDict(ResourceWellConfig, self.__lobbyContext.getServerSettings().getSettings().get(RESOURCE_WELL_GAME_PARAMS_KEY, {}))

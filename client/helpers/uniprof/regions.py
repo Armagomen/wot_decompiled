@@ -1,4 +1,8 @@
-import functools, logging, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/helpers/uniprof/regions.py
+import functools
+import logging
+import BigWorld
 _regions = {}
 _logger = logging.getLogger(__name__)
 _MAX_RGB_COLOR = 16581375

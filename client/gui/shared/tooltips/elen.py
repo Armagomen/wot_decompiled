@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/tooltips/elen.py
 import constants
 from CurrentVehicle import g_currentVehicle
 from gui.event_boards.event_boards_timer import FORMAT_MINUTE_STR
@@ -58,7 +60,7 @@ class ElenPreviewTooltipData(BlocksTooltipData, IGlobalListener):
             time = textData[0] if textData[0] is not 0 else 1
             timeText = textData[1] if textData[1] else FORMAT_MINUTE_STR
             timeName = EVENT_BOARDS.time_period(str(timeText))
-            text = ('{} {} {} {}').format(flagIcon, text_styles.tutorial(_ms(msgText)), text_styles.tutorial(time), text_styles.tutorial(timeName))
+            text = '{} {} {} {}'.format(flagIcon, text_styles.tutorial(_ms(msgText)), text_styles.tutorial(time), text_styles.tutorial(timeName))
         else:
             textData = currentEvent.getFormattedRemainingTime(EVENT_DATE_TYPE.END)
             msgText = TOOLTIPS.HANGAR_ELEN_HEADER_TOEND
@@ -67,10 +69,10 @@ class ElenPreviewTooltipData(BlocksTooltipData, IGlobalListener):
             timeName = EVENT_BOARDS.time_period(str(timeText))
             if currentEvent.isEndSoon():
                 flagIcon = icons.makeImageTag(RES_ICONS.MAPS_ICONS_EVENTBOARDS_FLAGICONS_TIME_ICON)
-                text = ('{} {} {} {}').format(flagIcon, text_styles.tutorial(_ms(msgText)), text_styles.tutorial(time), text_styles.tutorial(timeName))
+                text = '{} {} {} {}'.format(flagIcon, text_styles.tutorial(_ms(msgText)), text_styles.tutorial(time), text_styles.tutorial(timeName))
             else:
                 flagIcon = icons.makeImageTag(RES_ICONS.MAPS_ICONS_EVENTBOARDS_FLAGICONS_FLAG_ICON)
-                text = ('{} {} {} {}').format(flagIcon, text_styles.main(_ms(msgText)), text_styles.stats(time), text_styles.stats(timeName))
+                text = u'{} {} {} {}'.format(flagIcon, text_styles.main(_ms(msgText)), text_styles.stats(time), text_styles.stats(timeName))
         return formatters.packImageTextBlockData(title=text_styles.highTitle(_ms(TOOLTIPS.HANGAR_ELEN_HEADER_NAME, name=currentEvent.getName())), img=currentEvent.getKeyArtSmall(), txtPadding=formatters.packPadding(top=22), txtOffset=20, txtGap=-8, desc=text)
 
     def _getPrimeTimes(self, primeTimes):
@@ -79,7 +81,7 @@ class ElenPreviewTooltipData(BlocksTooltipData, IGlobalListener):
             periphery = int(pt.getServer())
             name = str(self._lobbyContext.getPeripheryName(periphery, False))
             name += ':'
-            return ('{0} {1}').format(text_styles.main(name), text_styles.standard(('{} - {}').format(pt.getStartLocalTime(), pt.getEndLocalTime())))
+            return '{0} {1}'.format(text_styles.main(name), text_styles.standard('{} - {}'.format(pt.getStartLocalTime(), pt.getEndLocalTime())))
 
         def getSortedPrimeTimes(primeTimes):
             primeTimes = sorted(primeTimes, key=lambda p: int(p.getServer()))
@@ -87,7 +89,7 @@ class ElenPreviewTooltipData(BlocksTooltipData, IGlobalListener):
             return times
 
         primeTimesData = primeTimes.getPrimeTimes()
-        validTimes = set(pt for pt in primeTimesData if pt.isActive())
+        validTimes = set((pt for pt in primeTimesData if pt.isActive()))
         invalidTimes = set(primeTimesData) - validTimes
         blocks = []
         if validTimes:
@@ -114,31 +116,28 @@ class ElenPreviewTooltipData(BlocksTooltipData, IGlobalListener):
         if battleType == constants.ARENA_GUI_TYPE.RANDOM:
             battleTypeText = TOOLTIPS.HANGAR_ELEN_BOTTOM_WRONGBATTLETYPE_RANDOM
             battleTypeBodyText = TOOLTIPS.HANGAR_ELEN_BOTTOM_ALLPERIPHERY_BODY
+        elif battleType == constants.ARENA_GUI_TYPE.RANKED:
+            battleTypeText = TOOLTIPS.HANGAR_ELEN_BOTTOM_WRONGBATTLETYPE_RANKED
+            battleTypeBodyText = TOOLTIPS.HANGAR_ELEN_BOTTOM_ALLPERIPHERY_NOTRANDOM_BODY
         else:
-            if battleType == constants.ARENA_GUI_TYPE.RANKED:
-                battleTypeText = TOOLTIPS.HANGAR_ELEN_BOTTOM_WRONGBATTLETYPE_RANKED
-                battleTypeBodyText = TOOLTIPS.HANGAR_ELEN_BOTTOM_ALLPERIPHERY_NOTRANDOM_BODY
-            else:
-                battleTypeText = ''
-                battleTypeBodyText = ''
-            inSquadState = self.prbDispatcher.getFunctionalState().isInUnit(constants.PREBATTLE_TYPE.SQUAD)
-            if inSquadState:
-                unit = prb_getters.getUnit(safe=True)
-                if len(unit.getMembers()) == 1:
-                    inSquadState = False
-            wrongSquadState = inSquadState and not currentEvent.getIsSquadAllowed()
-            if not isRegistered:
-                return formatters.packTextBlockData(text=text_styles.neutral(_ms(TOOLTIPS.HANGAR_ELEN_BOTTOM_GOREGISTER)), padding=formatters.packPadding(left=20, top=3, bottom=16))
-            if noserver:
-                return formatters.packTextBlockData(text=makeHtmlString('html_templates:lobby/textStyle', 'alignText', {'align': 'center', 
-                   'message': text_styles.critical(_ms(TOOLTIPS.HANGAR_ELEN_BOTTOM_UNAVAILABLE))}), padding=formatters.packPadding(top=3, bottom=16))
-            if wrongBattleType:
-                return formatters.packTextBlockData(text=makeHtmlString('html_templates:lobby/textStyle', 'alignText', {'align': 'center', 
-                   'message': text_styles.critical(_ms(battleTypeText))}), padding=formatters.packPadding(top=3, bottom=16))
-            if wrongSquadState:
-                return formatters.packTextBlockData(text=makeHtmlString('html_templates:lobby/textStyle', 'alignText', {'align': 'center', 
-                   'message': text_styles.critical(_ms(TOOLTIPS.HANGAR_ELEN_BOTTOM_WRONGSQUADSTATE))}), padding=formatters.packPadding(top=3, bottom=16))
-        return formatters.packImageTextBlockData(title='', desc=text_styles.standard(_ms(battleTypeBodyText)), padding=formatters.packPadding(left=20, right=20, top=3, bottom=16))
+            battleTypeText = ''
+            battleTypeBodyText = ''
+        inSquadState = self.prbDispatcher.getFunctionalState().isInUnit(constants.PREBATTLE_TYPE.SQUAD)
+        if inSquadState:
+            unit = prb_getters.getUnit(safe=True)
+            if len(unit.getMembers()) == 1:
+                inSquadState = False
+        wrongSquadState = inSquadState and not currentEvent.getIsSquadAllowed()
+        if not isRegistered:
+            return formatters.packTextBlockData(text=text_styles.neutral(_ms(TOOLTIPS.HANGAR_ELEN_BOTTOM_GOREGISTER)), padding=formatters.packPadding(left=20, top=3, bottom=16))
+        if noserver:
+            return formatters.packTextBlockData(text=makeHtmlString('html_templates:lobby/textStyle', 'alignText', {'align': 'center',
+             'message': text_styles.critical(_ms(TOOLTIPS.HANGAR_ELEN_BOTTOM_UNAVAILABLE))}), padding=formatters.packPadding(top=3, bottom=16))
+        if wrongBattleType:
+            return formatters.packTextBlockData(text=makeHtmlString('html_templates:lobby/textStyle', 'alignText', {'align': 'center',
+             'message': text_styles.critical(_ms(battleTypeText))}), padding=formatters.packPadding(top=3, bottom=16))
+        return formatters.packTextBlockData(text=makeHtmlString('html_templates:lobby/textStyle', 'alignText', {'align': 'center',
+         'message': text_styles.critical(_ms(TOOLTIPS.HANGAR_ELEN_BOTTOM_WRONGSQUADSTATE))}), padding=formatters.packPadding(top=3, bottom=16)) if wrongSquadState else formatters.packImageTextBlockData(title='', desc=text_styles.standard(_ms(battleTypeBodyText)), padding=formatters.packPadding(left=20, right=20, top=3, bottom=16))
 
 
 class BadgeTooltipData(BlocksTooltipData):
@@ -151,8 +150,7 @@ class BadgeTooltipData(BlocksTooltipData):
     def _packBlocks(self, badgeID):
         blocks = super(BadgeTooltipData, self)._packBlocks()
         badge = self.__itemsCache.items.getBadges()[badgeID]
-        tooltipData = [
-         formatters.packImageTextBlockData(title=text_styles.middleTitle(badge.getUserName()), desc=text_styles.main(badge.getUserDescription()), img=badge.getBigIcon(), txtAlign=BLOCKS_TOOLTIP_TYPES.ALIGN_LEFT, txtPadding=formatters.packPadding(left=8), padding=formatters.packPadding(bottom=-5, top=5))]
+        tooltipData = [formatters.packImageTextBlockData(title=text_styles.middleTitle(badge.getUserName()), desc=text_styles.main(badge.getUserDescription()), img=badge.getBigIcon(), txtAlign=BLOCKS_TOOLTIP_TYPES.ALIGN_LEFT, txtPadding=formatters.packPadding(left=8), padding=formatters.packPadding(bottom=-5, top=5))]
         blocks.append(formatters.packBuildUpBlockData(tooltipData))
         blocks.append(formatters.packTextBlockData(text_styles.standard(EVENT_BOARDS.BADGE_TOOLTIP_DESCRIPTION), padding=formatters.packPadding(top=-10, bottom=-5)))
         return blocks

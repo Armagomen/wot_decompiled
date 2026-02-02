@@ -1,4 +1,9 @@
-import time, weakref, BigWorld, Event
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/AOGAS.py
+import time
+import weakref
+import BigWorld
+import Event
 from constants import AOGAS_TIME, ACCOUNT_ATTR
 from debug_utils import LOG_ERROR, LOG_DEBUG
 from enumerations import AttributeEnumItem, Enumeration
@@ -7,17 +12,11 @@ from skeletons.gui.game_control import IAOGASController
 TIME_MODIFER = 3600
 AOGAS_FORCE_START_NOTIFY = False
 _DEFAULT_AOGAS_NOTIFY_TIMEOUT = 5000.0
-AOGAS_NOTIFY_MSG = Enumeration('Notification message for Anti-online game addiction system', [
- (
-  'AOND_1', {'timeout': _DEFAULT_AOGAS_NOTIFY_TIMEOUT}),
- (
-  'AOND_2', {'timeout': _DEFAULT_AOGAS_NOTIFY_TIMEOUT}),
- (
-  'AOND_3', {'timeout': _DEFAULT_AOGAS_NOTIFY_TIMEOUT}),
- (
-  'AOND_MORE_3', {'timeout': _DEFAULT_AOGAS_NOTIFY_TIMEOUT}),
- (
-  'AOND_MORE_5', {'timeout': _DEFAULT_AOGAS_NOTIFY_TIMEOUT})], instance=AttributeEnumItem)
+AOGAS_NOTIFY_MSG = Enumeration('Notification message for Anti-online game addiction system', [('AOND_1', {'timeout': _DEFAULT_AOGAS_NOTIFY_TIMEOUT}),
+ ('AOND_2', {'timeout': _DEFAULT_AOGAS_NOTIFY_TIMEOUT}),
+ ('AOND_3', {'timeout': _DEFAULT_AOGAS_NOTIFY_TIMEOUT}),
+ ('AOND_MORE_3', {'timeout': _DEFAULT_AOGAS_NOTIFY_TIMEOUT}),
+ ('AOND_MORE_5', {'timeout': _DEFAULT_AOGAS_NOTIFY_TIMEOUT})], instance=AttributeEnumItem)
 
 class AOGAS_NOTIFY_TIME(object):
     AOND_1 = 1 * TIME_MODIFER - 600
@@ -83,8 +82,7 @@ class AOGASController(IAOGASController):
         elif collect:
             self.__lastNotifyMessages.append(message)
         else:
-            self.__lastNotifyMessages = [
-             message]
+            self.__lastNotifyMessages = [message]
 
     def __requestRequiredInfo(self):
         BigWorld.player().stats.get('attrs', self.__receiveAccountAttrs)
@@ -178,20 +176,15 @@ class _AOGASNotificator(object):
 
     def __getNotifyMessages(self, AOND):
         if AOND == AOGAS_NOTIFY_TIME.AOND_1:
-            messages = (
-             AOGAS_NOTIFY_MSG.AOND_1,)
+            messages = (AOGAS_NOTIFY_MSG.AOND_1,)
         elif AOND == AOGAS_NOTIFY_TIME.AOND_2:
-            messages = (
-             AOGAS_NOTIFY_MSG.AOND_2,)
+            messages = (AOGAS_NOTIFY_MSG.AOND_2,)
         elif AOND == AOGAS_NOTIFY_TIME.AOND_3:
-            messages = (
-             AOGAS_NOTIFY_MSG.AOND_3, AOGAS_NOTIFY_MSG.AOND_MORE_3)
+            messages = (AOGAS_NOTIFY_MSG.AOND_3, AOGAS_NOTIFY_MSG.AOND_MORE_3)
         elif AOND < AOGAS_NOTIFY_TIME.AOND_5:
-            messages = (
-             AOGAS_NOTIFY_MSG.AOND_MORE_3,)
+            messages = (AOGAS_NOTIFY_MSG.AOND_MORE_3,)
         else:
-            messages = (
-             AOGAS_NOTIFY_MSG.AOND_MORE_5,)
+            messages = (AOGAS_NOTIFY_MSG.AOND_MORE_5,)
         return messages
 
     def __doNotify(self, messages):

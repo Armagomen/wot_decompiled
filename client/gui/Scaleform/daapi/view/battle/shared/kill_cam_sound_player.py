@@ -1,4 +1,7 @@
-import WWISE, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/kill_cam_sound_player.py
+import WWISE
+import BigWorld
 from AvatarInputHandler.DynamicCameras.kill_cam_camera import CallbackPauseManager
 from gui.battle_control import avatar_getter
 from gui.battle_control.controllers.kill_cam_ctrl import KillCamInfoMarkerType, DistanceMarkerData
@@ -13,8 +16,8 @@ class _DeathCamSound(object):
     DC_WW_STATE_GROUP = 'STATE_deathcam'
     DC_WW_STATE_ON = 'STATE_deathcam_on'
     DC_WW_STATE_OFF = 'STATE_deathcam_off'
-    DC_MUTE_GAME_AUDIO = {True: DC_WW_STATE_ON, 
-       False: DC_WW_STATE_OFF}
+    DC_MUTE_GAME_AUDIO = {True: DC_WW_STATE_ON,
+     False: DC_WW_STATE_OFF}
     DC_SIMULATED_SCENE_ENTER = 'dc_simulated_scene_enter'
     DC_SIMULATED_SCENE_EXIT = 'dc_simulated_scene_exit'
     DC_AMBIENT_START = 'dc_amb_start'
@@ -27,10 +30,8 @@ class _DeathCamSound(object):
     DC_UI_PAUSE_EXIT = 'dc_ui_pause_exit'
     DC_UI_EXIT = 'dc_ui_exit'
     DC_UI_MARKER_SHOW_ADDITIONAL_INFO = 'dc_ui_marker_add_info'
-    DC_UI_MARKER_STATES = {True: [
-            KillCamInfoMarkerType.IMPACT, KillCamInfoMarkerType.DISTANCE], 
-       False: [
-             KillCamInfoMarkerType.GUN, KillCamInfoMarkerType.IMPACT, KillCamInfoMarkerType.DISTANCE]}
+    DC_UI_MARKER_STATES = {True: [KillCamInfoMarkerType.IMPACT, KillCamInfoMarkerType.DISTANCE],
+     False: [KillCamInfoMarkerType.GUN, KillCamInfoMarkerType.IMPACT, KillCamInfoMarkerType.DISTANCE]}
 
 
 class KillCamSoundPlayer(CallbackPauseManager, IViewComponentsCtrlListener):
@@ -49,9 +50,7 @@ class KillCamSoundPlayer(CallbackPauseManager, IViewComponentsCtrlListener):
     @property
     def __isSimplifiedDC(self):
         avatar = BigWorld.player()
-        if avatar:
-            return avatar.isSimpleDeathCam()
-        return False
+        return avatar.isSimpleDeathCam() if avatar else False
 
     def detachedFromCtrl(self, ctrlID):
         super(KillCamSoundPlayer, self).detachedFromCtrl(ctrlID)

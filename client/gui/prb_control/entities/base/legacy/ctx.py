@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/base/legacy/ctx.py
 from CurrentVehicle import g_currentVehicle
 from constants import ARENA_BONUS_TYPE, PREBATTLE_COMMENT_MAX_LENGTH
 from external_strings_utils import truncate_utf8
@@ -31,9 +33,7 @@ class TeamSettingsCtx(LegacyRequestCtx):
         self._isRequestToCreate = isRequestToCreate
 
     def getRequestType(self):
-        if self._isRequestToCreate:
-            return _REQUEST_TYPE.CREATE
-        return _REQUEST_TYPE.CHANGE_SETTINGS
+        return _REQUEST_TYPE.CREATE if self._isRequestToCreate else _REQUEST_TYPE.CHANGE_SETTINGS
 
     def isOpened(self):
         return self.__isOpened
@@ -59,7 +59,7 @@ class TeamSettingsCtx(LegacyRequestCtx):
 
 @ReprInjector.withParent(('__prbID', 'id'), ('__prbType', 'type'))
 class JoinLegacyCtx(LegacyRequestCtx):
-    __slots__ = ('__prbID', )
+    __slots__ = ('__prbID',)
 
     def __init__(self, prbID, prbType, waitingID='', flags=_FUNCTIONAL_FLAG.UNDEFINED):
         super(JoinLegacyCtx, self).__init__(entityType=int(prbType), waitingID=waitingID, flags=flags)
@@ -75,9 +75,7 @@ class JoinLegacyCtx(LegacyRequestCtx):
         return ARENA_BONUS_TYPE.UNKNOWN
 
 
-@ReprInjector.withParent(('getID', 'prbID'), ('getPrbTypeName', 'prbType'), ('getWaitingID',
-                                                                             'waitingID'), ('getFlagsToStrings',
-                                                                                            'flags'))
+@ReprInjector.withParent(('getID', 'prbID'), ('getPrbTypeName', 'prbType'), ('getWaitingID', 'waitingID'), ('getFlagsToStrings', 'flags'))
 class LeaveLegacyCtx(LegacyRequestCtx):
     __slots__ = ()
 
@@ -88,9 +86,7 @@ class LeaveLegacyCtx(LegacyRequestCtx):
         return _REQUEST_TYPE.LEAVE
 
 
-@ReprInjector.withParent(('__pID', 'pID'), ('__roster', 'roster'), ('getPrbTypeName',
-                                                                    'prbType'), ('getWaitingID',
-                                                                                 'waitingID'))
+@ReprInjector.withParent(('__pID', 'pID'), ('__roster', 'roster'), ('getPrbTypeName', 'prbType'), ('getWaitingID', 'waitingID'))
 class AssignLegacyCtx(LegacyRequestCtx):
     __slots__ = ('__pID', '__roster', '__errorString')
 
@@ -120,10 +116,7 @@ class AssignLegacyCtx(LegacyRequestCtx):
         super(AssignLegacyCtx, self).onResponseReceived(code)
 
 
-@ReprInjector.withParent(('__roster', 'roster'), ('__fromLane', 'fromLane'), ('__toLane',
-                                                                              'toLane'), ('getPrbTypeName',
-                                                                                          'prbType'), ('getWaitingID',
-                                                                                                       'waitingID'))
+@ReprInjector.withParent(('__roster', 'roster'), ('__fromLane', 'fromLane'), ('__toLane', 'toLane'), ('getPrbTypeName', 'prbType'), ('getWaitingID', 'waitingID'))
 class GroupSwapInTeamLegacyCtx(LegacyRequestCtx):
     __slots__ = ('__roster', '__fromLane', '__toLane')
 
@@ -137,17 +130,15 @@ class GroupSwapInTeamLegacyCtx(LegacyRequestCtx):
         return self.__roster
 
     def getGroups(self):
-        return (
-         self.__fromLane, self.__toLane)
+        return (self.__fromLane, self.__toLane)
 
     def getRequestType(self):
         return _REQUEST_TYPE.EPIC_SWAP_IN_TEAM
 
 
-@ReprInjector.withParent(('__lane', 'toLane'), ('getPrbTypeName', 'prbType'), ('getWaitingID',
-                                                                               'waitingID'))
+@ReprInjector.withParent(('__lane', 'toLane'), ('getPrbTypeName', 'prbType'), ('getWaitingID', 'waitingID'))
 class GroupSwapBetweenTeamLegacyCtx(LegacyRequestCtx):
-    __slots__ = ('__lane', )
+    __slots__ = ('__lane',)
 
     def __init__(self, lane, waitingID=''):
         super(GroupSwapBetweenTeamLegacyCtx, self).__init__(entityType=prb_getters.getPrebattleType(), waitingID=waitingID)
@@ -160,9 +151,7 @@ class GroupSwapBetweenTeamLegacyCtx(LegacyRequestCtx):
         return _REQUEST_TYPE.EPIC_SWAP_BETWEEN_TEAM
 
 
-@ReprInjector.withParent(('__pID', 'pID'), ('__roster', 'roster'), ('__group', 'group'), ('getPrbTypeName',
-                                                                                          'prbType'), ('getWaitingID',
-                                                                                                       'waitingID'))
+@ReprInjector.withParent(('__pID', 'pID'), ('__roster', 'roster'), ('__group', 'group'), ('getPrbTypeName', 'prbType'), ('getWaitingID', 'waitingID'))
 class GroupAssignLegacyCtx(LegacyRequestCtx):
     __slots__ = ('__pID', '__roster', '__group')
 
@@ -185,10 +174,7 @@ class GroupAssignLegacyCtx(LegacyRequestCtx):
         return self.__group
 
 
-@ReprInjector.withParent(('__team', 'team'), ('__isReadyState', 'isReadyState'), 'getPrbTypeName', ('getWaitingID',
-                                                                                                    'waitingID'), ('__isForced',
-                                                                                                                   'isForced'), ('__gamePlayMask',
-                                                                                                                                 'gamePlayMask'))
+@ReprInjector.withParent(('__team', 'team'), ('__isReadyState', 'isReadyState'), 'getPrbTypeName', ('getWaitingID', 'waitingID'), ('__isForced', 'isForced'), ('__gamePlayMask', 'gamePlayMask'))
 class SetTeamStateCtx(LegacyRequestCtx):
     __slots__ = ('__team', '__isReadyState', '__gamePlayMask')
 
@@ -211,10 +197,7 @@ class SetTeamStateCtx(LegacyRequestCtx):
         return _REQUEST_TYPE.SET_TEAM_STATE
 
 
-@ReprInjector.withParent(('getVehicleInventoryID', 'vInventoryID'), ('__isReadyState',
-                                                                     'isReadyState'), ('__isInitial',
-                                                                                       'isInitial'), ('getWaitingID',
-                                                                                                      'waitingID'))
+@ReprInjector.withParent(('getVehicleInventoryID', 'vInventoryID'), ('__isReadyState', 'isReadyState'), ('__isInitial', 'isInitial'), ('getWaitingID', 'waitingID'))
 class SetPlayerStateCtx(LegacyRequestCtx):
     __slots__ = ('__isReadyState', '__isInitial', '__errorString')
 
@@ -262,7 +245,7 @@ class SwapTeamsCtx(LegacyRequestCtx):
 
 @ReprInjector.withParent(('__isOpened', 'isOpened'), ('getWaitingID', 'waitingID'))
 class ChangeOpenedCtx(LegacyRequestCtx):
-    __slots__ = ('__isOpened', )
+    __slots__ = ('__isOpened',)
 
     def __init__(self, isOpened, waitingID=''):
         super(ChangeOpenedCtx, self).__init__(entityType=prb_getters.getPrebattleType(), waitingID=waitingID)
@@ -280,7 +263,7 @@ class ChangeOpenedCtx(LegacyRequestCtx):
 
 @ReprInjector.withParent(('__comment', 'comment'), ('getWaitingID', 'waitingID'))
 class ChangeCommentCtx(LegacyRequestCtx):
-    __slots__ = ('__comment', )
+    __slots__ = ('__comment',)
 
     def __init__(self, comment, waitingID=''):
         super(ChangeCommentCtx, self).__init__(entityType=prb_getters.getPrebattleType(), waitingID=waitingID)
@@ -298,7 +281,7 @@ class ChangeCommentCtx(LegacyRequestCtx):
 
 @ReprInjector.withParent(('__division', 'division'), ('getWaitingID', 'waitingID'))
 class ChangeDivisionCtx(LegacyRequestCtx):
-    __slots__ = ('__division', )
+    __slots__ = ('__division',)
 
     def __init__(self, division, waitingID=''):
         super(ChangeDivisionCtx, self).__init__(entityType=prb_getters.getPrebattleType(), waitingID=waitingID)
@@ -316,7 +299,7 @@ class ChangeDivisionCtx(LegacyRequestCtx):
 
 @ReprInjector.withParent(('__pID', 'pID'))
 class KickPlayerCtx(LegacyRequestCtx):
-    __slots__ = ('__pID', )
+    __slots__ = ('__pID',)
 
     def __init__(self, pID, waitingID=''):
         super(KickPlayerCtx, self).__init__(entityType=prb_getters.getPrebattleType(), waitingID=waitingID)
@@ -331,7 +314,7 @@ class KickPlayerCtx(LegacyRequestCtx):
 
 @ReprInjector.withParent(('__prbID', 'prbID'), ('getWaitingID', 'waitingID'))
 class GetLegacyRosterCtx(LegacyRequestCtx):
-    __slots__ = ('__prbID', )
+    __slots__ = ('__prbID',)
 
     def __init__(self, prbID, prbType, waitingID=''):
         super(GetLegacyRosterCtx, self).__init__(entityType=prbType, waitingID=waitingID)
@@ -351,7 +334,7 @@ class JoinLegacyModeCtx(LegacyRequestCtx):
         super(JoinLegacyModeCtx, self).__init__(entityType=prbType, waitingID=waitingID, flags=flags)
 
     def getID(self):
-        return 0
+        pass
 
     def getBonusType(self):
         return ARENA_BONUS_TYPE.UNKNOWN

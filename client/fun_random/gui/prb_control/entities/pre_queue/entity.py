@@ -1,5 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/prb_control/entities/pre_queue/entity.py
 from __future__ import absolute_import
-import logging, typing, BigWorld
+import logging
+import typing
+import BigWorld
 from CurrentVehicle import g_currentVehicle
 from constants import QUEUE_TYPE
 from fun_random_common.fun_constants import FUN_EVENT_ID_KEY, UNKNOWN_EVENT_ID
@@ -87,11 +91,11 @@ class FunRandomEntity(PreQueueEntity, FunAssetPacksMixin):
             squadEntryPoint = FunRandomSquadEntryPoint(action.accountsToInvite)
             squadEntryPoint.setExtData({FUN_EVENT_ID_KEY: self._funRandomCtrl.subModesHolder.getDesiredSubModeID()})
             return SelectResult(True, squadEntryPoint)
+        elif action.actionName == PREBATTLE_ACTION_NAME.FUN_RANDOM:
+            self._funRandomCtrl.setDesiredSubModeID(action.extData.get(FUN_EVENT_ID_KEY, UNKNOWN_EVENT_ID))
+            g_eventDispatcher.loadHangar()
+            return SelectResult(True, None)
         else:
-            if action.actionName == PREBATTLE_ACTION_NAME.FUN_RANDOM:
-                self._funRandomCtrl.setDesiredSubModeID(action.extData.get(FUN_EVENT_ID_KEY, UNKNOWN_EVENT_ID))
-                g_eventDispatcher.loadHangar()
-                return SelectResult(True, None)
             return super(FunRandomEntity, self).doSelectAction(action)
 
     def leave(self, ctx, callback=None):

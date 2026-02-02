@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/pet_system/pet_storage_view.py
 import logging
 from itertools import chain
 from adisp import adisp_process
@@ -30,12 +32,12 @@ from shared_utils import first
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.pet_system import IPetSystemController
 _logger = logging.getLogger(__name__)
-STATE_MAPPING = {VisibilityStateEnum.ALWAYS.value: PetStateBehavior.BASIC, 
-   VisibilityStateEnum.DISABLEANIMATION.value: PetStateBehavior.CALM, 
-   VisibilityStateEnum.ONLYINTOPETPLACE.value: PetStateBehavior.HIDDEN}
-MODEL_STATE_MAPPING = {PetStateBehavior.BASIC: VisibilityStateEnum.ALWAYS, 
-   PetStateBehavior.CALM: VisibilityStateEnum.DISABLEANIMATION, 
-   PetStateBehavior.HIDDEN: VisibilityStateEnum.ONLYINTOPETPLACE}
+STATE_MAPPING = {VisibilityStateEnum.ALWAYS.value: PetStateBehavior.BASIC,
+ VisibilityStateEnum.DISABLEANIMATION.value: PetStateBehavior.CALM,
+ VisibilityStateEnum.ONLYINTOPETPLACE.value: PetStateBehavior.HIDDEN}
+MODEL_STATE_MAPPING = {PetStateBehavior.BASIC: VisibilityStateEnum.ALWAYS,
+ PetStateBehavior.CALM: VisibilityStateEnum.DISABLEANIMATION,
+ PetStateBehavior.HIDDEN: VisibilityStateEnum.ONLYINTOPETPLACE}
 
 class PetStorageView(ViewComponent):
     LAYOUT_ID = R.views.mono.pet_system.pet_storage()
@@ -51,54 +53,33 @@ class PetStorageView(ViewComponent):
 
     def _getEvents(self):
         events = super(PetStorageView, self)._getEvents()
-        return events + (
-         (
-          self.viewModel.onClose, self.__onClose),
-         (
-          self.viewModel.onPetSelect, self.__onPetSelect),
-         (
-          self.viewModel.onBonusSelect, self.__onBonusSelect),
-         (
-          self.viewModel.onCardSelect, self.__onCardSelect),
-         (
-          self.viewModel.onSaveName, self.__updatePetName),
-         (
-          self.viewModel.onCloseNameSelection, self.__updateSeenNames),
-         (
-          self.viewModel.onSaveVisibility, self.__updateStateBehavior),
-         (
-          self.viewModel.onInfoPageOpen, self.__openInfoPage),
-         (
-          self.viewModel.promotionModel.onChallengeSelect, self.__onToGameView),
-         (
-          self.viewModel.promotionModel.onPurchaseSelect, self.__onToPurchase),
-         (
-          self.__petController.onUpdateEventData, self.__tryToShowEvent),
-         (
-          self.__petController.onUpdateUnlockedPetsIDs, self.__onUpdateUnlockedPetsIDs),
-         (
-          self.__petController.onUpdateAppliedBonus, self.__updateBonusCount),
-         (
-          self.__petController.onUpdateSynergy, self.__onUpdateSynergy),
-         (
-          self.__petController.onUpdateActivePet, self.__onUpdateActivePet),
-         (
-          self.lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged))
+        return events + ((self.viewModel.onClose, self.__onClose),
+         (self.viewModel.onPetSelect, self.__onPetSelect),
+         (self.viewModel.onBonusSelect, self.__onBonusSelect),
+         (self.viewModel.onCardSelect, self.__onCardSelect),
+         (self.viewModel.onSaveName, self.__updatePetName),
+         (self.viewModel.onCloseNameSelection, self.__updateSeenNames),
+         (self.viewModel.onSaveVisibility, self.__updateStateBehavior),
+         (self.viewModel.onInfoPageOpen, self.__openInfoPage),
+         (self.viewModel.promotionModel.onChallengeSelect, self.__onToGameView),
+         (self.viewModel.promotionModel.onPurchaseSelect, self.__onToPurchase),
+         (self.__petController.onUpdateEventData, self.__tryToShowEvent),
+         (self.__petController.onUpdateUnlockedPetsIDs, self.__onUpdateUnlockedPetsIDs),
+         (self.__petController.onUpdateAppliedBonus, self.__updateBonusCount),
+         (self.__petController.onUpdateSynergy, self.__onUpdateSynergy),
+         (self.__petController.onUpdateActivePet, self.__onUpdateActivePet),
+         (self.lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged))
 
     def _getListeners(self):
         events = super(PetStorageView, self)._getListeners()
-        return events + (
-         (
-          events_constants.PetSystemEvent.LAST_SEEN_SYNERGY_LEVEL_UPDATED,
-          self.__onUpdateSynergy, EVENT_BUS_SCOPE.LOBBY),)
+        return events + ((events_constants.PetSystemEvent.LAST_SEEN_SYNERGY_LEVEL_UPDATED, self.__onUpdateSynergy, EVENT_BUS_SCOPE.LOBBY),)
 
     @property
     def viewModel(self):
         return super(PetStorageView, self).getViewModel()
 
     def createToolTipContent(self, event, contentID):
-        if contentID == R.views.mono.pet_system.tooltips.synergy_tooltip():
-            return SynergyTooltip(petID=self.getViewModel().getPetID())
+        return SynergyTooltip(petID=self.getViewModel().getPetID()) if contentID == R.views.mono.pet_system.tooltips.synergy_tooltip() else None
 
     def closeWindow(self):
         self.destroyWindow()
@@ -117,7 +98,7 @@ class PetStorageView(ViewComponent):
     def __setActivePet(self, petId=None):
         activePetId = petId or self.__petController.getActivePet()
         petInHangar = self.__petController.getPetIDInHangar()
-        with self.getViewModel().transaction() as (tx):
+        with self.getViewModel().transaction() as tx:
             tx.setActivePetID(activePetId)
             tx.setIsPetSelected(petInHangar == activePetId)
             tx.setVisibilityState(MODEL_STATE_MAPPING.get(self.__petController.getStateBehavior()))
@@ -129,7 +110,7 @@ class PetStorageView(ViewComponent):
         isPromo = currentPetId not in self.__petController.getUnlockedPets()
         itemClass = PromoPetItem if isPromo else PetItem
         if currentPetId:
-            with self.getViewModel().transaction() as (tx):
+            with self.getViewModel().transaction() as tx:
                 tx.promotionModel.setIsPromotionEnabled(isPromo)
                 if isPromo:
                     promoPetSources = self.__petController.getPetsPromoConfig().getSources(currentPetId)
@@ -152,14 +133,13 @@ class PetStorageView(ViewComponent):
                 tx.setIsPetSelected(currentPetId == activePetId)
                 tx.setHasUniqueName(itemClass.getIsDefaultNameLocked(currentPetId))
                 tx.setVisibilityState(MODEL_STATE_MAPPING.get(self.__petController.getStateBehavior()))
+                tx.setIsUnsuitableMode(not self.__petController.checkBonusCapsForPetBonus())
             self.__tryToShowEvent()
 
     def __getSynergyState(self, petID):
         if SynergyItem.isMaxSynergyLevel(petID):
             return SynergyStateEnum.COMPLETE
-        if SynergyItem.getSynergyLevel(petID) > PetUISettings.getLastSeenSynergyLevel(petID):
-            return SynergyStateEnum.UPDATEDRECENTLY
-        return SynergyStateEnum.INCOMPLETE
+        return SynergyStateEnum.UPDATEDRECENTLY if SynergyItem.getSynergyLevel(petID) > PetUISettings.getLastSeenSynergyLevel(petID) else SynergyStateEnum.INCOMPLETE
 
     def __markPromoAsSeen(self, petId, model):
         PetUISettings.addSeenPromoPetID(petId)
@@ -172,7 +152,7 @@ class PetStorageView(ViewComponent):
         self.__updateBonusCount()
         bonuses = BonusItem.getAvailableBonuses()
         if bonuses:
-            with self.getViewModel().transaction() as (tx):
+            with self.getViewModel().transaction() as tx:
                 bonusesModel = tx.getBonuses()
                 bonusesModel.clear()
                 BonusItem.packBonusModelData(bonuses, bonusesModel)
@@ -188,7 +168,7 @@ class PetStorageView(ViewComponent):
         promoPetIDs = self.__petController.getPetsPromoConfig().getAvailablePets(unlockedPetIDs)
         seenPetIDs = PetUISettings.getSeenInStoragePetIDs()
         seenPromoPetIDs = PetUISettings.getSeenPromoPetIDs()
-        with self.getViewModel().transaction() as (tx):
+        with self.getViewModel().transaction() as tx:
             cards = tx.getCards()
             cards.clear()
             for petID in chain(sorted(promoPetIDs, reverse=True), reversed(unlockedPetIDs)):
@@ -211,7 +191,7 @@ class PetStorageView(ViewComponent):
             PetUISettings.setSeenInStoragePetIDs(seenPetIDs)
 
     def __updateNameList(self):
-        with self.getViewModel().transaction() as (tx):
+        with self.getViewModel().transaction() as tx:
             availableNameIDs = self.__petController.getAvailableNames()
             seenNameIDs = PetUISettings.getSeenPetNameIDs()
             newNameIDs = availableNameIDs - seenNameIDs

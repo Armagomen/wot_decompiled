@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/bw/search_processors.py
 import chat_shared
 from constants import CHANNEL_SEARCH_RESULTS_LIMIT
 from messenger.m_constants import PROTO_TYPE
@@ -17,7 +19,7 @@ class SearchChannelsProcessor(SearchProcessor):
 
     @proto_getter(PROTO_TYPE.BW)
     def proto(self):
-        return
+        return None
 
     def fini(self):
         super(SearchChannelsProcessor, self).fini()
@@ -33,8 +35,7 @@ class SearchChannelsProcessor(SearchProcessor):
         if cooldown.isOperationInCooldownEx(chatCommand):
             result = True
             message = cooldown.getOperationInCooldownMsg(chatCommand, cooldown.getOperationCooldownPeriodEx(chatCommand))
-        return (
-         result, message)
+        return (result, message)
 
     def find(self, token, **kwargs):
         result, message = self.isInCooldown()

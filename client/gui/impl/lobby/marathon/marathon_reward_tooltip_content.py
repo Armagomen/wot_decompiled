@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/marathon/marathon_reward_tooltip_content.py
 from frameworks.wulf import ViewSettings
 from gui.impl.pub import ViewImpl
 from gui.impl.gen import R

@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/persistent_data_cache_common/manager.py
 from collections import OrderedDict
-import typing, wg_async
+import typing
+import wg_async
 from persistent_data_cache_common.common import getLogger, MeasureExecutionTime, DEFAULT_SAVING_TIMEOUT
 from persistent_data_cache_common.data_providers import PDProvider
 from soft_exception import SoftException
@@ -32,7 +35,7 @@ class DefaultPDCManager(object):
 
     def load(self, name, factory, serializer):
         if self._started:
-            raise SoftException(('Data <{}> cannot be load after manager started.').format(name))
+            raise SoftException('Data <{}> cannot be load after manager started.'.format(name))
         dataProvider = self._register(name, factory, serializer)
         data = self._loadData(dataProvider)
         self._logger.info('Data has been %s for <%s>.', 'created' if dataProvider.isDataCreated else 'loaded', name)
@@ -69,7 +72,7 @@ class DefaultPDCManager(object):
 
     def _register(self, name, factory, serializer):
         if name in self._dataProviders:
-            raise SoftException(('DataProvider with name = {} already registered.').format(name))
+            raise SoftException('DataProvider with name = {} already registered.'.format(name))
         factory = self._dataCreateTiming(factory, name)
         dataProvider = PDProvider(name, factory, serializer)
         self._dataProviders[name] = dataProvider

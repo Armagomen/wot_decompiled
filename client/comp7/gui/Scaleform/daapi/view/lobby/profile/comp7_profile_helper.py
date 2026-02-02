@@ -1,5 +1,7 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/Scaleform/daapi/view/lobby/profile/comp7_profile_helper.py
 from gui.Scaleform.daapi.view.lobby.profile.ProfileSection import DropdownData
-COMP7_SEASON_NUMBERS = (1, )
+COMP7_SEASON_NUMBERS = (1, 2)
 COMP7_ARCHIVE_NAMES = ('Griffin', 'Pegasus', 'Manticore')
 COMP7_ARCHIVE_DROPDOWN_KEY_PREFIX = 'comp7_archive_'
 COMP7_SEASON_DROPDOWN_KEY_PREFIX = 'comp7_season_'
@@ -23,11 +25,11 @@ def getSeasonName(battleType):
 
 
 def getDropdownKeyByArchiveName(archiveName):
-    return ('{}{}').format(COMP7_ARCHIVE_DROPDOWN_KEY_PREFIX, archiveName)
+    return '{}{}'.format(COMP7_ARCHIVE_DROPDOWN_KEY_PREFIX, archiveName)
 
 
 def getDropdownKeyBySeason(season):
-    return ('{}{}').format(COMP7_SEASON_DROPDOWN_KEY_PREFIX, season)
+    return '{}{}'.format(COMP7_SEASON_DROPDOWN_KEY_PREFIX, season)
 
 
 def getBattleHandlers():

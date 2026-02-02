@@ -1,4 +1,7 @@
-import typing, BattleReplay
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_hints/newbie_battle_hints_controller.py
+import typing
+import BattleReplay
 from helpers import dependency
 from PlayerEvents import g_playerEvents
 from account_helpers import AccountSettings
@@ -88,9 +91,7 @@ class NewbieBattleHintsHistory(object):
     def _create(self):
         if self._battlesCount is _MISSING:
             return _LOCKED
-        if self._battlesCount > NEWBIE_HISTORY_MAX_BATTLES:
-            return _COMPLETED
-        return {}
+        return _COMPLETED if self._battlesCount > NEWBIE_HISTORY_MAX_BATTLES else {}
 
     def _close(self):
         self._updated.clear()
@@ -109,7 +110,7 @@ class NewbieBattleHintsHistory(object):
     def _update(self, battleHint):
         if not isinstance(battleHint.model, NewbieClientHintModel) or battleHint.model.history is None:
             return
-        if battleHint.uniqueName in self._updated:
+        elif battleHint.uniqueName in self._updated:
             _historyLogger.debug('Can not update. <%s> already updated.', battleHint.uniqueName)
             return
         else:

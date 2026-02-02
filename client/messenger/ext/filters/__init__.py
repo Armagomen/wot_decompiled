@@ -1,27 +1,27 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/ext/filters/__init__.py
 from gui import GUI_SETTINGS
 from messenger import g_settings
 from messenger.ext.filters import chain, collection
 from messenger.storage import storage_getter
-__all__ = ('MessageFiltersChain', )
+__all__ = ('MessageFiltersChain',)
 
 class MessageFiltersChain(chain.FiltersChain):
 
     def __init__(self):
-        inFilters = [
-         {'name': 'htmlEscape', 
-            'filter': collection.HtmlEscapeFilter(), 
-            'order': 0, 
-            'lock': True}]
-        outFilters = [
-         {'name': 'normalizeLobbyMessage', 
-            'filter': collection.NormalizeMessageFilter(), 
-            'order': 0, 
-            'lock': False}]
+        inFilters = [{'name': 'htmlEscape',
+          'filter': collection.HtmlEscapeFilter(),
+          'order': 0,
+          'lock': True}]
+        outFilters = [{'name': 'normalizeLobbyMessage',
+          'filter': collection.NormalizeMessageFilter(),
+          'order': 0,
+          'lock': False}]
         super(MessageFiltersChain, self).__init__(inFilters, outFilters)
 
     @storage_getter('playerCtx')
     def playerCtx(self):
-        return
+        return None
 
     def init(self):
         g_settings.onUserPreferencesUpdated += self.__ms_onUserPreferencesUpdated
@@ -37,14 +37,12 @@ class MessageFiltersChain(chain.FiltersChain):
             self.addFilter('postBattleFilter', collection.PostBattleLinksFilter())
         if g_settings.userPrefs.enableOlFilter:
             if not self.hasFilter('enableOlFilter'):
-                self.addFilter('olFilter', collection.getObsceneLanguageFilter(), removed=[
-                 'coloringOlFilter'])
+                self.addFilter('olFilter', collection.getObsceneLanguageFilter(), removed=['coloringOlFilter'])
         else:
             ctx = self.playerCtx
             isAdmin = ctx.isChatAdmin() or ctx.isGameAdmin()
             if isAdmin and not self.hasFilter('coloringOlFilter'):
-                self.addFilter('coloringOlFilter', collection.ColoringObsceneLanguageFilter(), removed=[
-                 'olFilter'])
+                self.addFilter('coloringOlFilter', collection.ColoringObsceneLanguageFilter(), removed=['olFilter'])
             else:
                 self.removeFilter('olFilter')
         if g_settings.userPrefs.enableSpamFilter:
@@ -60,7 +58,6 @@ class MessageFiltersChain(chain.FiltersChain):
         ctx = self.playerCtx
         if ctx.isChatAdmin() or ctx.isGameAdmin():
             if not g_settings.userPrefs.enableOlFilter and not self.hasFilter('coloringOlFilter'):
-                self.addFilter('coloringOlFilter', collection.ColoringObsceneLanguageFilter(), removed=[
-                 'olFilter'])
+                self.addFilter('coloringOlFilter', collection.ColoringObsceneLanguageFilter(), removed=['olFilter'])
         else:
             self.removeFilter('coloringOlFilter')

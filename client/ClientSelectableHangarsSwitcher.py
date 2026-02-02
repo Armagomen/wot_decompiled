@@ -1,4 +1,7 @@
-import logging, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/ClientSelectableHangarsSwitcher.py
+import logging
+import BigWorld
 from ClientSelectableObject import ClientSelectableObject
 from helpers import dependency
 from skeletons.gui.game_control import IBattleRoyaleController
@@ -20,8 +23,8 @@ class ClientSelectableHangarsSwitcher(ClientSelectableObject):
 
     def onEnterWorld(self, prereqs):
         super(ClientSelectableHangarsSwitcher, self).onEnterWorld(prereqs)
-        self.__modeSelector = {BATTLE_ROYALE_SCENE: self.__selectRoyaleBattle, 
-           FESTIVAL_SCENE: self.__selectRandomBattle}
+        self.__modeSelector = {BATTLE_ROYALE_SCENE: self.__selectRoyaleBattle,
+         FESTIVAL_SCENE: self.__selectRandomBattle}
         g_eventBus.addListener(CameraRelatedEvents.CAMERA_ENTITY_UPDATED, self.__onCameraEntityUpdated)
 
     def onLeaveWorld(self):
@@ -33,12 +36,12 @@ class ClientSelectableHangarsSwitcher(ClientSelectableObject):
         super(ClientSelectableHangarsSwitcher, self).onMouseClick()
         if not self.destHangar:
             return
+        elif self.destHangar not in self.__modeSelector:
+            _logger.error('Unknown destination hangar: "%s"', self.destHangar)
+            return
+        elif self.__postponedMouseClickCallbackID is not None:
+            return
         else:
-            if self.destHangar not in self.__modeSelector:
-                _logger.error('Unknown destination hangar: "%s"', self.destHangar)
-                return
-            if self.__postponedMouseClickCallbackID is not None:
-                return
             selectorFunc = self.__modeSelector[self.destHangar]
             self.__postponedMouseClickCallbackID = BigWorld.callback(0, selectorFunc)
             return

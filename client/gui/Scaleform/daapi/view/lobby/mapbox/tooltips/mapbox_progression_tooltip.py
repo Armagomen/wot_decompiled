@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/mapbox/tooltips/mapbox_progression_tooltip.py
 import logging
 from gui.impl.gen import R
 from gui.impl import backport
@@ -52,11 +54,11 @@ class MapboxProgressionTooltip(BlocksTooltipData):
         sortedProgressionData = prepareProgressionData(progressionData.surveys, validMaps)
         passedSurveys = 0
         for mapName, mapData in sortedProgressionData:
-            counter = (mapData.passed or backport.text)(_STR_PATH.counter(), progress=text_styles.bonusPreviewText(min(mapData.progress, mapData.total)), total=mapData.total) if 1 else ''
+            counter = backport.text(_STR_PATH.counter(), progress=text_styles.bonusPreviewText(min(mapData.progress, mapData.total)), total=mapData.total) if not mapData.passed else ''
             iconPath = _IMG_PATH.progressionTooltip.num(mapName, _IMG_PATH.progressionTooltip.dyn(mapName))()
-            mapVOs.append({'icon': backport.image(iconPath) if iconPath != INVALID_RES_ID else '', 
-               'count': counter, 
-               'isCompleted': mapData.passed})
+            mapVOs.append({'icon': backport.image(iconPath) if iconPath != INVALID_RES_ID else '',
+             'count': counter,
+             'isCompleted': mapData.passed})
             if mapData.passed:
                 passedSurveys += 1
 
@@ -83,12 +85,12 @@ class MapboxProgressionTooltip(BlocksTooltipData):
         total = max(progressionData.rewards)
         items = []
         progressStyle = text_styles.bonusAppliedText if progress >= total else text_styles.bonusPreviewText
-        progressionCounter = [
-         formatters.packTextBlockData(text_styles.stats(backport.text(_STR_PATH.progressTitle())), blockWidth=250, padding=formatters.packPadding(left=18)),
-         formatters.packAlignedTextBlockData(backport.text(_STR_PATH.counter(), progress=progressStyle(min(progress, total)), total=text_styles.main(total)), blockWidth=85, align=BLOCKS_TOOLTIP_TYPES.ALIGN_RIGHT)]
+        progressionCounter = [formatters.packTextBlockData(text_styles.stats(backport.text(_STR_PATH.progressTitle())), blockWidth=250, padding=formatters.packPadding(left=18)), formatters.packAlignedTextBlockData(backport.text(_STR_PATH.counter(), progress=progressStyle(min(progress, total)), total=text_styles.main(total)), blockWidth=85, align=BLOCKS_TOOLTIP_TYPES.ALIGN_RIGHT)]
         items.append(formatters.packBuildUpBlockData(progressionCounter, layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_HORIZONTAL))
         progressColor = PROGRESSCOLOR_CONSTANTS.GREEN if progress >= total else PROGRESSCOLOR_CONSTANTS.ORANGE
-        items.append(formatters.packBlockDataItem(linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_EPIC_PROGRESS_BLOCK_LINKAGE, data={'value': min(progress, total), 'maxValue': total, 'progressColor': progressColor}, blockWidth=330, padding=formatters.packPadding(top=-11, bottom=8, left=20)))
+        items.append(formatters.packBlockDataItem(linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_EPIC_PROGRESS_BLOCK_LINKAGE, data={'value': min(progress, total),
+         'maxValue': total,
+         'progressColor': progressColor}, blockWidth=330, padding=formatters.packPadding(top=-11, bottom=8, left=20)))
         if progress < total:
             items.append(formatters.packTextBlockData(text_styles.main(backport.text(_STR_PATH.incomplete(), count=text_styles.stats(min([ battles for battles in progressionData.rewards.keys() if battles > progress ]) - progress))), padding=formatters.packPadding(left=18)))
         else:
@@ -97,14 +99,11 @@ class MapboxProgressionTooltip(BlocksTooltipData):
 
     @staticmethod
     def __packFrozenBlock():
-        items = [
-         formatters.packTextBlockData(text=text_styles.middleTitle(backport.text(_STR_PATH.frozen.header()))),
-         formatters.packTextBlockData(text=text_styles.main(backport.text(_STR_PATH.frozen.text())), blockWidth=420)]
+        items = [formatters.packTextBlockData(text=text_styles.middleTitle(backport.text(_STR_PATH.frozen.header()))), formatters.packTextBlockData(text=text_styles.main(backport.text(_STR_PATH.frozen.text())), blockWidth=420)]
         return formatters.packBuildUpBlockData(items, padding=formatters.packPadding(top=20, left=18))
 
     @staticmethod
     def __getMapsSublists(mapsVOs):
         mapsCount = len(mapsVOs)
         itemsInOneRow = _MAX_MAPS_IN_ROW if mapsCount % _MAX_MAPS_IN_ROW == 0 else _MAPS_IN_ROW
-        return [ mapsVOs[rowNumber:rowNumber + itemsInOneRow] for rowNumber in range(0, mapsCount, itemsInOneRow)
-               ]
+        return [ mapsVOs[rowNumber:rowNumber + itemsInOneRow] for rowNumber in range(0, mapsCount, itemsInOneRow) ]

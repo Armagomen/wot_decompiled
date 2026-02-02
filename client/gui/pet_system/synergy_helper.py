@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/pet_system/synergy_helper.py
 import typing
 from collections import namedtuple
 from helpers import dependency
@@ -31,7 +33,7 @@ class SynergyItem(object):
     @classmethod
     def getSynergyProgression(cls, petID=None):
         petID = petID or cls.petController.getActivePet()
-        return SynergyProgress(cls.getSynergyPoints(petID), cls.getSynergyLevels(petID)[(-1)])
+        return SynergyProgress(cls.getSynergyPoints(petID), cls.getSynergyLevels(petID)[-1])
 
     @classmethod
     def isMaxSynergyLevel(cls, petID=None):

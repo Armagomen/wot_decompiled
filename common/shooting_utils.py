@@ -1,7 +1,12 @@
-import WGAI, math
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/shooting_utils.py
+import WGAI
+import math
 from constants import SERVER_TICK_LENGTH, SHELL_TRAJECTORY_EPSILON_SERVER
-__DIST_LIMIT_TAGS = [
- 'lightTank', 'mediumTank', 'heavyTank', 'AT-SPG']
+__DIST_LIMIT_TAGS = ['lightTank',
+ 'mediumTank',
+ 'heavyTank',
+ 'AT-SPG']
 __STEEP_AIMING_TAGS = []
 __MIXED_AIMING_TAGS = []
 
@@ -21,15 +26,13 @@ def getMaxShotDistance(height, vehicleDescr):
     time = math.sqrt(radicand) / gravity
     sinP = (-height + gravity * time * time * 0.5) / (speed * time)
     sqrCosP = 1.0 - sinP * sinP
-    if sqrCosP <= 0.0:
-        return -1
-    return math.sqrt(sqrCosP) * speed * time
+    return -1 if sqrCosP <= 0.0 else math.sqrt(sqrCosP) * speed * time
 
 
 def getPyShootingTest(spaceID, vehicleDescr):
-    global __DIST_LIMIT_TAGS
-    global __MIXED_AIMING_TAGS
     global __STEEP_AIMING_TAGS
+    global __MIXED_AIMING_TAGS
+    global __DIST_LIMIT_TAGS
     shotDescr = vehicleDescr.shot
     gunDescr = vehicleDescr.gun
     vehicleTags = vehicleDescr.type.tags
@@ -44,13 +47,10 @@ def getPyShootingTest(spaceID, vehicleDescr):
     pitchLimitsDesc = None
     if staticPitch is not None:
         if not isPitchHullAimingEnabled:
-            zeroLimits = (
-             (
-              0.0, staticPitch), (2.0 * math.pi, staticPitch))
-            pitchLimitsDesc = {'minPitch': zeroLimits, 
-               'maxPitch': zeroLimits, 
-               'absolute': (
-                          staticPitch, staticPitch)}
+            zeroLimits = ((0.0, staticPitch), (2.0 * math.pi, staticPitch))
+            pitchLimitsDesc = {'minPitch': zeroLimits,
+             'maxPitch': zeroLimits,
+             'absolute': (staticPitch, staticPitch)}
     if pitchLimitsDesc is None:
         pitchLimitsDesc = gunDescr.pitchLimits
     shootingTest.minGunPitchLimits = pitchLimitsDesc['minPitch']

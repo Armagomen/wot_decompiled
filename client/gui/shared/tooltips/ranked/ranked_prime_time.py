@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/tooltips/ranked/ranked_prime_time.py
 from helpers import time_utils
 from gui.shared.tooltips import ToolTipBaseData, TOOLTIP_TYPE
 from helpers import dependency
@@ -35,4 +37,4 @@ class RankedServerPrimeTime(ToolTipBaseData):
             descriptionID = R.strings.ranked_battles.primeTime.tooltip.server.unavailable.inTime()
         sName = backport.text(R.strings.ranked_battles.primeTime.tooltip.server.onServer(), server=serverName)
         description = backport.text(descriptionID, time=formatedTime)
-        return {'body': ('{}\n{}').format(sName, description)}
+        return {'body': '{}\n{}'.format(sName, description)}

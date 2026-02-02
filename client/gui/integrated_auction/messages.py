@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/integrated_auction/messages.py
 from gui.SystemMessages import SM_TYPE
 from gui.impl import backport
 from gui.impl.gen import R

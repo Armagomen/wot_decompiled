@@ -1,5 +1,7 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client_common/client_request_lib/data_sources/base.py
 from abc import ABCMeta, abstractmethod
-__all__ = ('BaseDataAccessor', )
+__all__ = ('BaseDataAccessor',)
 
 class BaseDataAccessor(object):
     __metaclass__ = ABCMeta

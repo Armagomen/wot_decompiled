@@ -1,4 +1,8 @@
-import ArenaType, BigWorld, Math
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/maps_training/maps_training_view.py
+import ArenaType
+import BigWorld
+import Math
 from AvatarInputHandler.cameras import getViewProjectionMatrix
 from ClientSelectableCameraObject import ClientSelectableCameraObject
 from CurrentVehicle import g_currentPreviewVehicle
@@ -42,9 +46,7 @@ class _MapsTrainingStatesObserver(StateIdsObserver):
     def __init__(self):
         from gui.impl.lobby.maps_training.states import EntryState
         from gui.impl.lobby.maps_training.states import SelectedState
-        super(_MapsTrainingStatesObserver, self).__init__([
-         EntryState.STATE_ID,
-         SelectedState.STATE_ID])
+        super(_MapsTrainingStatesObserver, self).__init__([EntryState.STATE_ID, SelectedState.STATE_ID])
         self.onNavigationChanged = Event()
 
     def onEnterState(self, state, event):
@@ -58,10 +60,7 @@ class _MapsTrainingStatesObserver(StateIdsObserver):
 
 
 class MapsTrainingView(MapsTrainingBaseView, IGlobalListener):
-    __slots__ = ('__selectedMap', '__selectedScenario', '__ctxVehicleType', '__ctxSide',
-                 '__ctxShowAnimation', '__tooltipData', '__account', '__mapsConfig',
-                 '__isDataLoaded', '__blur', '__blurRectId', '__packer', '__tickCallback',
-                 '__preferences', '__markerPosOffset', '__finalizationInProgress')
+    __slots__ = ('__selectedMap', '__selectedScenario', '__ctxVehicleType', '__ctxSide', '__ctxShowAnimation', '__tooltipData', '__account', '__mapsConfig', '__isDataLoaded', '__blur', '__blurRectId', '__packer', '__tickCallback', '__preferences', '__markerPosOffset', '__finalizationInProgress')
     _TACTICAL_MAPS_CONFIG_PATH = 'scripts/maps_training_tactical_maps.xml'
     _SCENARIO_COUNT = len(VEHICLE_TYPE.ALL_TYPES) * len(VEHICLE_TYPE.ALL_TEAMS)
     _UPDATE_TICK_RATE = 0.1
@@ -76,7 +75,7 @@ class MapsTrainingView(MapsTrainingBaseView, IGlobalListener):
     hangarSpace = dependency.descriptor(IHangarSpace)
 
     def __init__(self, *args, **kwargs):
-        super(MapsTrainingView, self).__init__(viewResource=R.views.lobby.maps_training.MapsTrainingPage(), viewModel=MapsTrainingViewModel())
+        super(MapsTrainingView, self).__init__(viewResource=R.views.mono.maps_training.maps_training_page(), viewModel=MapsTrainingViewModel())
         self.__selectedMap = None
         self.__selectedScenario = 0
         self.__ctxVehicleType = ''
@@ -98,7 +97,7 @@ class MapsTrainingView(MapsTrainingBaseView, IGlobalListener):
         return
 
     def createToolTipContent(self, event, contentID):
-        if contentID == R.views.lobby.maps_training.ScenarioTooltip():
+        if contentID == R.views.mono.maps_training.scenario_tooltip():
             geometryID = ArenaType.g_geometryNamesToIDs[self.__selectedMap]
             data = self.__account.mapsTraining.getGeometryData(geometryID)
             mapConfig = self.__mapsConfig.getMapConfig(self.__selectedMap)
@@ -116,27 +115,17 @@ class MapsTrainingView(MapsTrainingBaseView, IGlobalListener):
         return window
 
     def _getEvents(self):
-        return super(MapsTrainingView, self)._getEvents() + (
-         (
-          self.__lsmObserver.onNavigationChanged, self.__onNavigationChanged),
-         (
-          self.viewModel.onNavigate, navigateTo),
-         (
-          self.viewModel.onBack, self.__onBack),
-         (
-          self.viewModel.onSelect, self.__onSelect),
-         (
-          self.viewModel.onScenarioSelect, self.__onScenarioSelect),
-         (
-          self.viewModel.onBlurRectUpdated, self.__onBlurRectUpdated),
-         (
-          self.viewModel.onFilteringChange, self.__filterChangeHandler),
-         (
-          self.viewModel.onInfoClicked, self.__clickInfoHandler),
-         (
-          g_currentPreviewVehicle.onChangeStarted, self.__onPreviewVehicleChangeStarted),
-         (
-          g_currentPreviewVehicle.onChanged, self.__onPreviewVehicleChanged))
+        return super(MapsTrainingView, self)._getEvents() + ((self.__lsmObserver.onNavigationChanged, self.__onNavigationChanged),
+         (self.viewModel.onNavigate, navigateTo),
+         (self.viewModel.onClose, self.__onClose),
+         (self.viewModel.onBack, self.__onBack),
+         (self.viewModel.onSelect, self.__onSelect),
+         (self.viewModel.onScenarioSelect, self.__onScenarioSelect),
+         (self.viewModel.onBlurRectUpdated, self.__onBlurRectUpdated),
+         (self.viewModel.onFilteringChange, self.__filterChangeHandler),
+         (self.viewModel.onInfoClicked, self.__clickInfoHandler),
+         (g_currentPreviewVehicle.onChangeStarted, self.__onPreviewVehicleChangeStarted),
+         (g_currentPreviewVehicle.onChanged, self.__onPreviewVehicleChanged))
 
     def _onLoading(self, *args, **kwargs):
         super(MapsTrainingView, self)._onLoading(*args, **kwargs)
@@ -177,11 +166,14 @@ class MapsTrainingView(MapsTrainingBaseView, IGlobalListener):
         self.__blur.disable()
         self.__selectedMap = selectedMap
         self.__selectedScenario = 0
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             self.__updateAllSelections(model)
         if not selectedMap:
             self.mapsTrainingController.reset()
         g_eventBus.handleEvent(events.FightButtonEvent(events.FightButtonEvent.FIGHT_BUTTON_UPDATE), scope=EVENT_BUS_SCOPE.LOBBY)
+
+    def __onClose(self):
+        self.mapsTrainingController.selectRandomMode()
 
     def __onBack(self):
         state = getLobbyStateMachine().getStateFromView(self)
@@ -194,7 +186,7 @@ class MapsTrainingView(MapsTrainingBaseView, IGlobalListener):
 
     def __onScenarioSelect(self, args):
         self.__selectedScenario = int(args.get('id'))
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             self.__updateSelectedScenario(model)
 
     def __updateSelectedMap(self, model):
@@ -208,14 +200,14 @@ class MapsTrainingView(MapsTrainingBaseView, IGlobalListener):
             trainingMaps = serverConfig['maps']
             mapModel = model.selectedMapModel
             mapModel.setId(self.__selectedMap)
-            mapModel.setImage(R.images.gui.maps.icons.map.dyn(('c_{}').format(self.__selectedMap))())
+            mapModel.setImage(R.images.gui.maps.icons.map.dyn('c_{}'.format(self.__selectedMap))())
             mapModel.setGroupId(trainingMaps[geometryID] - 1)
             scenarioModels = mapModel.getScenarios()
             scenarioModels.clear()
             for scenario in mapConfig.scenarios:
                 scenarioModel = MapsTrainingScenarioModel()
                 scenarioModel.setTeam(scenario.team)
-                scenarioModel.setScenarioNum(SCENARIO_INDEXES[(scenario.team, scenario.vehicleType)])
+                scenarioModel.setScenarioNum(SCENARIO_INDEXES[scenario.team, scenario.vehicleType])
                 scenarioModel.setVehicleType(scenario.vehicleType)
                 scenarioModel.setIsComplete(data[scenario.vehicleType][scenario.team]['completed'])
                 scenarioBonuses = self.__getRewards(geometryID, 'scenarioComplete')
@@ -223,7 +215,7 @@ class MapsTrainingView(MapsTrainingBaseView, IGlobalListener):
                 self.__fillBonusArray(bonusArray, scenarioBonuses)
                 scenarioModels.addViewModel(scenarioModel)
 
-            isNotComplete = any(not data[scenario.vehicleType][scenario.team]['completed'] for scenario in mapConfig.scenarios)
+            isNotComplete = any((not data[scenario.vehicleType][scenario.team]['completed'] for scenario in mapConfig.scenarios))
             mapBonuses = self.__getRewards(geometryID, 'mapComplete')
             finalBonusArray = mapModel.getRewards()
             finalBonusArray.clear()
@@ -262,25 +254,24 @@ class MapsTrainingView(MapsTrainingBaseView, IGlobalListener):
         vehicle, vehicleName = self.__getVehicleForScenario(scenario)
         if vehicle != self.mapsTrainingController.getSelectedVehicle():
             self.mapsTrainingController.setSelectedVehicle(vehicle)
-        else:
-            if g_currentPreviewVehicle.intCD != vehicle:
-                self.mapsTrainingController.updateSelectedVehicle()
-            selectedMapModel = model.selectedMapModel
-            selectedMapModel.setSelectedScenario(self.__selectedScenario)
-            selectedMapModel.setVehicleName(vehicleName)
-            imageResource = R.images.gui.maps.icons.mapsTraining.minimap.scenarios.dyn(('c_{}_team{}_{}').format(self.__selectedMap, scenario.team, scenario.vehicleType))
-            selectedMapModel.setScenarioImage(imageResource() if imageResource.isValid() else R.invalid())
-            points = selectedMapModel.getPoints()
-            points.clear()
-            teamData = mapConfig.teams[scenario.team]
-            for teamId, teamForBaseData in mapConfig.teams.iteritems():
-                teamPointModel = self.__createPointModel(('team{}').format(teamId), [], teamForBaseData.isLeft, teamForBaseData.tooltipImage, teamForBaseData.position, MapsTrainingMinimapPoint.POINT_TYPE_BASE if teamId == scenario.team else MapsTrainingMinimapPoint.POINT_TYPE_ENEMY_BASE)
-                points.addViewModel(teamPointModel)
+        elif g_currentPreviewVehicle.intCD != vehicle:
+            self.mapsTrainingController.updateSelectedVehicle()
+        selectedMapModel = model.selectedMapModel
+        selectedMapModel.setSelectedScenario(self.__selectedScenario)
+        selectedMapModel.setVehicleName(vehicleName)
+        imageResource = R.images.gui.maps.icons.mapsTraining.minimap.scenarios.dyn('c_{}_team{}_{}'.format(self.__selectedMap, scenario.team, scenario.vehicleType))
+        selectedMapModel.setScenarioImage(imageResource() if imageResource.isValid() else R.invalid())
+        points = selectedMapModel.getPoints()
+        points.clear()
+        teamData = mapConfig.teams[scenario.team]
+        for teamId, teamForBaseData in mapConfig.teams.iteritems():
+            teamPointModel = self.__createPointModel('team{}'.format(teamId), [], teamForBaseData.isLeft, teamForBaseData.tooltipImage, teamForBaseData.position, MapsTrainingMinimapPoint.POINT_TYPE_BASE if teamId == scenario.team else MapsTrainingMinimapPoint.POINT_TYPE_ENEMY_BASE)
+            points.addViewModel(teamPointModel)
 
-            pointsData = teamData.scenarioPoints[scenario.vehicleType]
-            for pointData in pointsData:
-                pointModel = self.__createPointModel(pointData.id, pointData.textKeys, pointData.isLeft, pointData.tooltipImage, pointData.position, MapsTrainingMinimapPoint.POINT_TYPE_DEFAULT)
-                points.addViewModel(pointModel)
+        pointsData = teamData.scenarioPoints[scenario.vehicleType]
+        for pointData in pointsData:
+            pointModel = self.__createPointModel(pointData.id, pointData.textKeys, pointData.isLeft, pointData.tooltipImage, pointData.position, MapsTrainingMinimapPoint.POINT_TYPE_DEFAULT)
+            points.addViewModel(pointModel)
 
         selectedMapModel.setIsShowCompleteAnimation(self.__ctxShowAnimation)
         self.__ctxShowAnimation = False
@@ -323,11 +314,11 @@ class MapsTrainingView(MapsTrainingBaseView, IGlobalListener):
         return config.get('scenarios', {}).get(mapId, {}).get(team, {}).get(vehType, {})
 
     def __filterChangeHandler(self, kwargs):
-        incompleteFilter = kwargs.get('incompleteFilter', False)
+        incompleteFilter = kwargs.get('incomplete', False)
         if incompleteFilter != self.__preferences.incompleteFilter:
             self.__preferences.incompleteFilter = incompleteFilter
             self.__preferences.save()
-        titleFilter = kwargs.get('titleFilter', '')
+        titleFilter = kwargs.get('title', '')
         if titleFilter != self.__preferences.titleFilter:
             self.__preferences.titleFilter = titleFilter
 
@@ -347,7 +338,7 @@ class MapsTrainingView(MapsTrainingBaseView, IGlobalListener):
             geometryType = ArenaType.g_geometryCache[geometryID]
             availableMaps.append(geometryType)
 
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setIncompleteFilter(self.__preferences.incompleteFilter)
             model.setTitleFilter(self.__preferences.titleFilter)
             groupArray = model.getGroups()
@@ -370,8 +361,8 @@ class MapsTrainingView(MapsTrainingBaseView, IGlobalListener):
                 data = self.__account.mapsTraining.getGeometryData(mapId)
                 slotModel.setIsCompleted(data['total'] >= self._SCENARIO_COUNT)
                 slotModel.setGroupId(trainingMaps.get(mapId, self._DEFAULT_MAP_DIFFICULTY) - 1)
-                slotModel.setTitle(R.strings.arenas.dyn(('c_{}').format(mapName)).name())
-                slotModel.setImage(R.images.gui.maps.icons.map.dyn(('c_{}').format(mapName))())
+                slotModel.setTitle(R.strings.arenas.dyn('c_{}'.format(mapName)).name())
+                slotModel.setImage(R.images.gui.maps.icons.map.dyn('c_{}'.format(mapName))())
                 mapsModel.addViewModel(slotModel)
 
             if self.__selectedMap:
@@ -472,5 +463,5 @@ class MapsTrainingView(MapsTrainingBaseView, IGlobalListener):
             self.mapsTrainingController.updateSelectedVehicle()
 
     def __updateMenuItems(self):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             fillMenuSharedItems(model)

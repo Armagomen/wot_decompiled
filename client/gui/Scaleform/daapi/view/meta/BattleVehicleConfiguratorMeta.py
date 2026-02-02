@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/BattleVehicleConfiguratorMeta.py
 from gui.Scaleform.framework.entities.View import View
 
 class BattleVehicleConfiguratorMeta(View):
@@ -6,17 +8,13 @@ class BattleVehicleConfiguratorMeta(View):
         self._printOverrideError('onModuleMouseOver')
 
     def as_setDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setData(data)
+        return self.flashObject.as_setData(data) if self._isDAAPIInited() else None
 
     def as_setVisibleS(self, isVisible):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setVisible(isVisible)
+        return self.flashObject.as_setVisible(isVisible) if self._isDAAPIInited() else None
 
     def as_updateModuleInfoPanelS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateModuleInfoPanel(data)
+        return self.flashObject.as_updateModuleInfoPanel(data) if self._isDAAPIInited() else None
 
     def as_updateChoiceInfoPanelS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateChoiceInfoPanel(data)
+        return self.flashObject.as_updateChoiceInfoPanel(data) if self._isDAAPIInited() else None

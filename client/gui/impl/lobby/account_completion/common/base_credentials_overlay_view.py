@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/account_completion/common/base_credentials_overlay_view.py
 from constants import EMAIL_CONFIRMATION_QUEST_ID
 from gui.impl.backport.backport_tooltip import createBackportTooltipContent
 from gui.impl.gen import R
@@ -46,7 +48,7 @@ class BaseCredentialsOverlayView(BaseWGNPOverlayView):
         self._eventsCache.onSyncCompleted += self._onSyncCompleted
         self._email.onValueChanged += self._inputValueChangeHandler
         self._email.onFocusLost += self._inputFocusLostHandler
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             self._email.clear()
             self._email.setValue(initialEmail)
             if emailError:
@@ -88,11 +90,11 @@ class BaseCredentialsOverlayView(BaseWGNPOverlayView):
         fillRewards(model, tooltipItems=self._tooltipItems)
 
     def _onSyncCompleted(self, *args):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             self._fillRewards(model)
 
     def _handleError(self, response):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             emailErrorMessage = self._getEmailErrorMessage(response)
             if not emailErrorMessage:
                 self._setWarning(errors.serverUnavailableTimed(), _WARNING_TIMEOUT)
@@ -100,4 +102,4 @@ class BaseCredentialsOverlayView(BaseWGNPOverlayView):
             model.email.setValue(self._email.value)
 
     def _getEmailErrorMessage(self, response):
-        return ''
+        pass

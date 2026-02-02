@@ -1,3 +1,6 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/veh_mechanics/battle/updaters/hotkey_updaters.py
+from __future__ import absolute_import
 import typing
 from collections import namedtuple
 import CommandMapping
@@ -26,13 +29,11 @@ class HotKeysUpdater(ViewUpdater):
 
 
 class HotKeysViewUpdater(HotKeysUpdater):
-    _DEFAULT_KEYS = (
-     None, ())
+    _DEFAULT_KEYS = (None, ())
 
     def __init__(self, commands, view):
         super(HotKeysViewUpdater, self).__init__(view)
         self.__commands = commands
 
     def _onMappingChanged(self, *_):
-        self.view.setHotkeys([ HotKeyCommand(command, *(CommandMapping.g_instance.getCommandKeys(command) or self._DEFAULT_KEYS)) for command in self.__commands
-                             ])
+        self.view.setHotkeys([ HotKeyCommand(command, *(CommandMapping.g_instance.getCommandKeys(command) or self._DEFAULT_KEYS)) for command in self.__commands ])

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/battle/battle_notifier/battle_notifier_view_model.py
 from enum import IntEnum
 from frameworks.wulf import ViewModel
 
@@ -8,7 +10,7 @@ class ResultEnum(IntEnum):
 
 
 class BattleNotifierViewModel(ViewModel):
-    __slots__ = ('onResultShown', )
+    __slots__ = ('onResultShown',)
 
     def __init__(self, properties=9, commands=1):
         super(BattleNotifierViewModel, self).__init__(properties=properties, commands=commands)

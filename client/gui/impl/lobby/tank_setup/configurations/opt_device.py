@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/configurations/opt_device.py
 import operator
 from account_helpers.AccountSettings import AccountSettings, SHOW_OPT_DEVICE_HINT_TROPHY, SHOW_OPT_DEVICE_HINT, SHOW_OPT_MODERNIZED_DEVICE_HINT
 from gui.impl.auxiliary.selected_filters import BaseSelectedFilters
@@ -14,21 +16,21 @@ class OptDeviceTabs(object):
     DELUXE = 'deluxe'
     TROPHY = 'trophy'
     MODERNIZED = 'modernized'
-    ALL = (
-     SIMPLE, TROPHY, DELUXE, MODERNIZED)
+    ALL = (SIMPLE,
+     TROPHY,
+     DELUXE,
+     MODERNIZED)
 
 
 def getOptDeviceTabByItem(item):
     if item is None:
         return OptDeviceTabs.SIMPLE
+    elif item.isDeluxe:
+        return OptDeviceTabs.DELUXE
+    elif item.isTrophy:
+        return OptDeviceTabs.TROPHY
     else:
-        if item.isDeluxe:
-            return OptDeviceTabs.DELUXE
-        if item.isTrophy:
-            return OptDeviceTabs.TROPHY
-        if item.isModernized:
-            return OptDeviceTabs.MODERNIZED
-        return OptDeviceTabs.SIMPLE
+        return OptDeviceTabs.MODERNIZED if item.isModernized else OptDeviceTabs.SIMPLE
 
 
 class OptDeviceTabsController(BaseTankSetupTabsController):
@@ -57,15 +59,13 @@ class OptDeviceTabsController(BaseTankSetupTabsController):
         return OptDeviceTabs.ALL.index(tabName)
 
     def getTabCurrency(self, tabName):
-        if tabName == OptDeviceTabs.MODERNIZED:
-            return Currency.EQUIP_COIN
-        return ''
+        return Currency.EQUIP_COIN if tabName == OptDeviceTabs.MODERNIZED else ''
 
     def _getAllProviders(self):
-        return {OptDeviceTabs.SIMPLE: SimpleOptDeviceProvider, 
-           OptDeviceTabs.DELUXE: DeluxeOptDeviceProvider, 
-           OptDeviceTabs.TROPHY: TrophyOptDeviceProvider, 
-           OptDeviceTabs.MODERNIZED: ModernisedOptDeviceProvider}
+        return {OptDeviceTabs.SIMPLE: SimpleOptDeviceProvider,
+         OptDeviceTabs.DELUXE: DeluxeOptDeviceProvider,
+         OptDeviceTabs.TROPHY: TrophyOptDeviceProvider,
+         OptDeviceTabs.MODERNIZED: ModernisedOptDeviceProvider}
 
     def __updateSpecial(self, viewModel, tabName, isFirst):
         if not self.isVisited(tabName):
@@ -114,23 +114,21 @@ class OptDeviceIntroductionController(object):
     TROPHY_INTRO = 'trophy'
     DELUXE_INTRO = 'deluxe'
     MODERNIZED_INTRO = 'modernized'
-    SETTINGS = {TROPHY_INTRO: SHOW_OPT_DEVICE_HINT_TROPHY, 
-       DELUXE_INTRO: SHOW_OPT_DEVICE_HINT, 
-       MODERNIZED_INTRO: SHOW_OPT_MODERNIZED_DEVICE_HINT}
-    INTRO_BY_TAB = {OptDeviceTabs.TROPHY: TROPHY_INTRO, 
-       OptDeviceTabs.DELUXE: DELUXE_INTRO, 
-       OptDeviceTabs.MODERNIZED: MODERNIZED_INTRO}
+    SETTINGS = {TROPHY_INTRO: SHOW_OPT_DEVICE_HINT_TROPHY,
+     DELUXE_INTRO: SHOW_OPT_DEVICE_HINT,
+     MODERNIZED_INTRO: SHOW_OPT_MODERNIZED_DEVICE_HINT}
+    INTRO_BY_TAB = {OptDeviceTabs.TROPHY: TROPHY_INTRO,
+     OptDeviceTabs.DELUXE: DELUXE_INTRO,
+     OptDeviceTabs.MODERNIZED: MODERNIZED_INTRO}
 
     @classmethod
     def getIntroduction(cls, tabName, hasItems):
         if tabName not in cls.INTRO_BY_TAB:
-            return
+            return None
         else:
             intro = cls.INTRO_BY_TAB[tabName]
             isShown = not AccountSettings.getSettings(cls.SETTINGS[intro])
-            if not isShown or not hasItems:
-                return intro
-            return
+            return intro if not isShown or not hasItems else None
 
     @classmethod
     def setIntroductionValue(cls, introName):

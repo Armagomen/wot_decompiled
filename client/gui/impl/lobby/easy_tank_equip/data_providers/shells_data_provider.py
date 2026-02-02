@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/easy_tank_equip/data_providers/shells_data_provider.py
 from collections import OrderedDict
 from copy import copy
 from typing import TYPE_CHECKING
@@ -7,7 +9,7 @@ from gui.easy_tank_equip.easy_tank_equip_helpers import getEasyTankEquipSetting,
 from gui.impl.gen.view_models.views.lobby.easy_tank_equip.shells_preset_model import ShellsPresetType
 from gui.impl.lobby.easy_tank_equip.data_providers.base_data_provider import BaseDataProvider, PresetInfo, SlotInfo
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_ZERO
-from gui.shared.items_parameters import isTwinGun, isAutoReloadGun
+from gui.shared.items_parameters import getShellsLoadSize
 from helpers import dependency
 from skeletons.gui.game_control import IEasyTankEquipController
 if TYPE_CHECKING:
@@ -44,7 +46,7 @@ class ShellsDataProvider(BaseDataProvider):
             return
         defaultPresetIndex = min(getEasyTankEquipSetting(EasyTankEquip.SHELLS_CARD_SELECTED_PRESET_INDEX), len(self.presets) - 1)
         self.currentPresetIndex, currentPreset = self._getCurrentPresetInfo(defaultPresetIndex)
-        self.isProposalSelected = sum(shell.count for shell in self.__installedShells) < self.vehicle.ammoMaxSize and not (self.lastCheckedBalance.getShortage(currentPreset.itemPrice.price) or self.isCurrentPresetDisabledForApplying())
+        self.isProposalSelected = sum((shell.count for shell in self.__installedShells)) < self.vehicle.ammoMaxSize and not (self.lastCheckedBalance.getShortage(currentPreset.itemPrice.price) or self.isCurrentPresetDisabledForApplying())
 
     def finalize(self):
         self.__installedShells = None
@@ -90,8 +92,7 @@ class ShellsDataProvider(BaseDataProvider):
         return data
 
     def __getPresetsInfo(self):
-        return [ self.__getShellsPresetInfo(presetType, items) for presetType, items in self.__shellsPresets.items()
-               ]
+        return [ self.__getShellsPresetInfo(presetType, items) for presetType, items in self.__shellsPresets.items() ]
 
     def __getShellsPresetInfo(self, presetType, shells):
         presetItems = self.__getShellsPresetItems(shells)
@@ -101,11 +102,10 @@ class ShellsDataProvider(BaseDataProvider):
         return ShellsPresetInfo(installed=self.__isShellsPresetInstalled(shells), storedItemsCount=storedItemsCount, installedItemsCount=installedItemsCount, itemPrice=itemPrice, presetType=presetType, items=presetItems)
 
     def __getShellsPresetItems(self, shells):
-        return [ ShellsPresetSlotInfo(shell=shell, info=self.__getSlotInfo(shell), slotIdx=slotIdx) for slotIdx, shell in enumerate(shells)
-               ]
+        return [ ShellsPresetSlotInfo(shell=shell, info=self.__getSlotInfo(shell), slotIdx=slotIdx) for slotIdx, shell in enumerate(shells) ]
 
     def __getSlotInfo(self, shell):
-        shellOnVehicleCount = max(item.count for item in self.vehicle.shells.setupLayouts if item == shell)
+        shellOnVehicleCount = max((item.count for item in self.vehicle.shells.setupLayouts if item == shell))
         shellInventoryCount = shell.inventoryCount
         shellAvailableCount = shellInventoryCount + shellOnVehicleCount
         isOnVehicle = 0 < shell.count <= shellOnVehicleCount
@@ -122,10 +122,10 @@ class ShellsDataProvider(BaseDataProvider):
     def __getAdvancedShells(self, shells, clipSize):
         if len(shells) <= 1 or shells[1].count != 0:
             return None
-        diff = int(round(shells[0].count * self.__easyTankEquipCtrl.config.ammunitionReductionFactor))
-        if diff == 0:
-            return None
         else:
+            diff = int(round(shells[0].count * self.__easyTankEquipCtrl.config.ammunitionReductionFactor))
+            if diff == 0:
+                return None
             if clipSize > 1:
                 diff = clipSize if diff < clipSize else diff - diff % clipSize
             advancedShells = [ copy(shell) for shell in shells ]
@@ -138,21 +138,11 @@ class ShellsDataProvider(BaseDataProvider):
         shellsMap = {shell.intCD:shell for shell in shells}
         return [ shellsMap[sampleShell.intCD] for sampleShell in sampleShells ]
 
-    @staticmethod
-    def __getClipSize(gun):
-        if isAutoReloadGun(gun):
-            clipSize = 1
-        elif isTwinGun(gun):
-            clipSize = 2
-        else:
-            clipSize = gun.clip[0]
-        return clipSize
-
     def __setShellsPresets(self):
         self.__shellsPresets.clear()
         vehicle = g_currentVehicle.item
         gunDefaultAmmo = vehicle.gun.defaultAmmo
-        clipSize = self.__getClipSize(vehicle.descriptor.gun)
+        clipSize = getShellsLoadSize(vehicle.descriptor.gun)
         defaultShells = self.__sortPresetByAnother(gunDefaultAmmo, self.__installedShells)
         self.__shellsPresets[ShellsPresetType.STANDARD] = defaultShells
         advancedShells = self.__getAdvancedShells(gunDefaultAmmo, clipSize)

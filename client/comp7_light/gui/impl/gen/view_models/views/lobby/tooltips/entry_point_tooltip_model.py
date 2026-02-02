@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_light/scripts/client/comp7_light/gui/impl/gen/view_models/views/lobby/tooltips/entry_point_tooltip_model.py
 from frameworks.wulf import Array, ViewModel
 from comp7_light.gui.impl.gen.view_models.views.lobby.season_model import SeasonModel
 

@@ -1,4 +1,8 @@
-import logging, weakref, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/pub/fullscreen_manager.py
+import logging
+import weakref
+import typing
 from frameworks.state_machine.observers import StateIdsObserver
 from frameworks.wulf import WindowLayer, WindowStatus
 from gui.impl.gen import R
@@ -11,14 +15,13 @@ from gui.Scaleform.framework.entities.sf_window import SFWindow
 if typing.TYPE_CHECKING:
     from frameworks.wulf import Window
 _logger = logging.getLogger(__name__)
-_LOW_PRIORITY_WINDOWS = (
- VIEW_ALIAS.AWARD_WINDOW, VIEW_ALIAS.AWARD_WINDOW_MODAL, VIEW_ALIAS.ADVENT_CALENDAR,
+_LOW_PRIORITY_WINDOWS = (VIEW_ALIAS.AWARD_WINDOW,
+ VIEW_ALIAS.AWARD_WINDOW_MODAL,
+ VIEW_ALIAS.ADVENT_CALENDAR,
  VIEW_ALIAS.MISSION_AWARD_WINDOW)
 registerLowPriorityWulfWindows([R.views.lobby.offers.OfferBannerWindow()])
 
 class FullscreenManager(IFullscreenManager):
-    __slots__ = ('__gui', '__notificationMgr', '__isEnabled', '__weakref__', '__observer',
-                 '__gameplay')
     __gui = dependency.descriptor(IGuiLoader)
     __gameplay = dependency.descriptor(IGameplayLogic)
     __notificationMgr = dependency.descriptor(INotificationWindowController)
@@ -71,14 +74,11 @@ class FullscreenManager(IFullscreenManager):
         if window.parent is None:
             return False
         else:
-            if window.parent == pWindow:
-                return True
-            return cls.__isParent(pWindow, window.parent)
+            return True if window.parent == pWindow else cls.__isParent(pWindow, window.parent)
 
     @staticmethod
     def __fullscreenPredicate(window):
-        return window.layer == WindowLayer.FULLSCREEN_WINDOW and window.windowStatus in (
-         WindowStatus.LOADING, WindowStatus.LOADED)
+        return window.layer == WindowLayer.FULLSCREEN_WINDOW and window.windowStatus in (WindowStatus.LOADING, WindowStatus.LOADED)
 
     @staticmethod
     def __isAllowed(window):
@@ -94,7 +94,6 @@ class FullscreenManager(IFullscreenManager):
 
 
 class _LobbyStateObserver(StateIdsObserver):
-    __slots__ = ('__manager', '__gui')
     __gui = dependency.descriptor(IGuiLoader)
 
     def __init__(self, manager):

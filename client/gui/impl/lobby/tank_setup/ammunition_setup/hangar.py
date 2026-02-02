@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/ammunition_setup/hangar.py
 import logging
 from CurrentVehicle import g_currentVehicle
 from constants import QUEUE_TYPE

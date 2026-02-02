@@ -1,4 +1,8 @@
-import re, string, unicodedata
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/external_strings_utils.py
+import re
+import string
+import unicodedata
 from debug_utils import LOG_CURRENT_EXCEPTION
 from constants import CREDENTIALS_RESTRICTION, CREDENTIALS_RESTRICTION_SET
 from soft_exception import SoftException
@@ -6,11 +10,7 @@ from struct_helpers import unpackByte, packByte
 _MAX_NORMALIZED_NAME_BYTES = 96
 
 class TextRestrictionsBasic(object):
-    __slots__ = ('ACCOUNT_NAME_RE', 'ACCOUNT_NAME_MIN_LENGTH', 'ACCOUNT_NAME_MAX_LENGTH',
-                 'ACCOUNT_NAME_MIN_LENGTH_REG', 'LOGIN_NAME_RE', 'LOGIN_NAME_MIN_LENGTH',
-                 'LOGIN_NAME_MAX_LENGTH', 'UPPERCASE_CLAN_ABBREV', 'REQUIRE_NORMALIZED_CLAN_ABBREV',
-                 'CLAN_ABBREV_RE', 'CLAN_NAME_MAX_LENGTH', 'CLAN_ABBREV_MAX_LENGTH',
-                 'CLAN_DESCR_MAX_LENGTH', 'CLAN_MOTTO_MAX_LENGTH')
+    __slots__ = ('ACCOUNT_NAME_RE', 'ACCOUNT_NAME_MIN_LENGTH', 'ACCOUNT_NAME_MAX_LENGTH', 'ACCOUNT_NAME_MIN_LENGTH_REG', 'LOGIN_NAME_RE', 'LOGIN_NAME_MIN_LENGTH', 'LOGIN_NAME_MAX_LENGTH', 'UPPERCASE_CLAN_ABBREV', 'REQUIRE_NORMALIZED_CLAN_ABBREV', 'CLAN_ABBREV_RE', 'CLAN_NAME_MAX_LENGTH', 'CLAN_ABBREV_MAX_LENGTH', 'CLAN_DESCR_MAX_LENGTH', 'CLAN_MOTTO_MAX_LENGTH')
 
     def __init__(self):
         self.ACCOUNT_NAME_RE = re.compile('^[a-zA-Z0-9_]+$')
@@ -34,9 +34,16 @@ class TextRestrictionsChinese(TextRestrictionsBasic):
 
     def __init__(self):
         super(TextRestrictionsChinese, self).__init__()
-        ACCOUNT_NAME_EXCLUDED_SYMBOLS = range(32) + [34, 38, 39, 47, 58,
-         60, 62, 64, 127]
-        self.ACCOUNT_NAME_RE = re.compile('(?u)^[^' + ('').join(map(lambda n: '\\x%0.2x' % n, ACCOUNT_NAME_EXCLUDED_SYMBOLS)) + unichr(65535) + unichr(65534) + ']+$')
+        ACCOUNT_NAME_EXCLUDED_SYMBOLS = range(32) + [34,
+         38,
+         39,
+         47,
+         58,
+         60,
+         62,
+         64,
+         127]
+        self.ACCOUNT_NAME_RE = re.compile(u'(?u)^[^' + u''.join(map(lambda n: u'\\x%0.2x' % n, ACCOUNT_NAME_EXCLUDED_SYMBOLS)) + unichr(65535) + unichr(65534) + u']+$')
         self.ACCOUNT_NAME_MIN_LENGTH_REG = self.ACCOUNT_NAME_MIN_LENGTH
         self.LOGIN_NAME_RE = re.compile('^[_a-z0-9-+@.]+$')
         self.LOGIN_NAME_MIN_LENGTH = 4
@@ -54,7 +61,7 @@ class TextRestrictionsKorea(TextRestrictionsChinese):
         self.LOGIN_NAME_MIN_LENGTH = 1
         self.LOGIN_NAME_MAX_LENGTH = 50
         self.LOGIN_NAME_RE = re.compile('^[a-z0-9_-]+(\\.[a-z0-9_-]+)*@([a-z0-9]([a-z0-9-]*[a-z0-9])?\\.)+[a-z]{2,4}$')
-        self.ACCOUNT_NAME_RE = re.compile('^[a-zA-Z0-9_가-힝]+$')
+        self.ACCOUNT_NAME_RE = re.compile(u'^[a-zA-Z0-9_\uac00-\ud79d]+$')
 
 
 class TextRestrictionsSandbox(TextRestrictionsBasic):
@@ -120,9 +127,7 @@ def utf8_accepted(utf8str, regExp, minLen, maxLen, unicodeNormalForm='NFKC', che
     def matchFn(uniStr):
         return regExp.match(uniStr) and minLen <= len(uniStr) <= maxLen
 
-    if checkBeforeNormalisation and not matchFn(plain):
-        return False
-    return matchFn(nfkc)
+    return False if checkBeforeNormalisation and not matchFn(plain) else matchFn(nfkc)
 
 
 def normalized_unicode_trim(utf8str, length, unicodeNormalForm='NFKC'):
@@ -133,9 +138,9 @@ def normalized_unicode_trim(utf8str, length, unicodeNormalForm='NFKC'):
         return unicodeStr.encode('utf8')
     except:
         LOG_CURRENT_EXCEPTION()
-        return
+        return None
 
-    return
+    return None
 
 
 def normalized_unicode_trim_u(unicodeStr, length, unicodeNormalForm='NFKC'):
@@ -146,9 +151,9 @@ def normalized_unicode_trim_u(unicodeStr, length, unicodeNormalForm='NFKC'):
         return unicodeStr
     except:
         LOG_CURRENT_EXCEPTION()
-        return
+        return None
 
-    return
+    return None
 
 
 def normalized_unicode_trim_and_lowercase(utf8str, length, unicodeNormalForm='NFKC'):
@@ -159,9 +164,9 @@ def normalized_unicode_trim_and_lowercase(utf8str, length, unicodeNormalForm='NF
         return unicodeStr.lower().encode('utf8')
     except:
         LOG_CURRENT_EXCEPTION()
-        return
+        return None
 
-    return
+    return None
 
 
 def isAccountNameValid(text, minLength=_ACCOUNT_NAME_MIN_LENGTH):
@@ -184,9 +189,9 @@ def normalizedAccountLogin(text):
         return text.lower()
     except:
         LOG_CURRENT_EXCEPTION()
-        return
+        return None
 
-    return
+    return None
 
 
 def forgeAccountNormalizedName(origNormalizedName, centerID):
@@ -219,9 +224,9 @@ def normalizedClanName(text):
         return utext.lower().encode('utf8')
     except:
         LOG_CURRENT_EXCEPTION()
-        return
+        return None
 
-    return
+    return None
 
 
 def isClanAbbrevValid(abbrev):
@@ -238,9 +243,9 @@ def normalizedClanAbbrev(abbrev):
         return abbrev.encode('utf8')
     except:
         LOG_CURRENT_EXCEPTION()
-        return
+        return None
 
-    return
+    return None
 
 
 def isChannelNameValid(channelName):
@@ -249,10 +254,7 @@ def isChannelNameValid(channelName):
 
 
 def escapeSQL(text, default='\\0'):
-    if text is None:
-        return default
-    else:
-        return text.replace('\\', '\\\\').replace("'", "\\'").replace('"', '\\"').replace('\x00', '\\0')
+    return default if text is None else text.replace('\\', '\\\\').replace("'", "\\'").replace('"', '\\"').replace('\x00', '\\0')
 
 
 def normalize_utf8(utf8str):
@@ -264,11 +266,11 @@ def truncate_utf8(utf8str, maxbytes):
         return utf8str
     if maxbytes <= 0:
         return ''
-    if _is_utf8_one_byte(utf8str[(maxbytes - 1)]):
+    if _is_utf8_one_byte(utf8str[maxbytes - 1]):
         return utf8str[:maxbytes]
     for x in xrange(1, 5):
-        if _is_utf8_first_byte(utf8str[(maxbytes - x)]):
-            ut8_len = _decode_utf8_len_byte(utf8str[(maxbytes - x)])
+        if _is_utf8_first_byte(utf8str[maxbytes - x]):
+            ut8_len = _decode_utf8_len_byte(utf8str[maxbytes - x])
             if x == ut8_len:
                 break
             return utf8str[:maxbytes - x]
@@ -295,9 +297,7 @@ def _decode_utf8_len_byte(byte):
         return 3
     if v >= 192:
         return 2
-    if v < 127:
-        return 1
-    return 0
+    return 1 if v < 127 else 0
 
 
 def strtobool(val):

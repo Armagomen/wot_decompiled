@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/FLVehicleRegenerationKitComponent.py
 import BigWorld
 from PlayerEvents import g_playerEvents
 from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE
@@ -25,10 +27,10 @@ class FLVehicleRegenerationKitComponent(BigWorld.DynamicScriptComponent):
         BigWorld.callback(self._CALLBACK_DELAY, makeCallbackWeak(self.__invalidateFLRegenerationKit))
 
     def __invalidateFLRegenerationKit(self):
-        healPointEnter = {'senderKey': 'healPoint', 
-           'isSourceVehicle': None, 
-           'isInactivation': None if not self.regenerationKit['isActive'] else self.regenerationKit['isActive'], 
-           'endTime': self.regenerationKit['endTime'], 
-           'duration': self.regenerationKit['duration']}
+        healPointEnter = {'senderKey': 'healPoint',
+         'isSourceVehicle': None,
+         'isInactivation': None if not self.regenerationKit['isActive'] else self.regenerationKit['isActive'],
+         'endTime': self.regenerationKit['endTime'],
+         'duration': self.regenerationKit['duration']}
         invalidateVehicleMarkerState(self.entity, healPointEnter, self.regenerationKit, VEHICLE_VIEW_STATE.HEALING, 'invalidateFLRegenerationKit')
         return

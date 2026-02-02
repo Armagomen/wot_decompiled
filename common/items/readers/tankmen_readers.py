@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/items/readers/tankmen_readers.py
 import ResMgr
 from constants import IS_CLIENT, IS_WEB, IS_BOT
 from items import _xml
@@ -74,12 +76,12 @@ def _readGroupTags(xmlCtx, section, subsectionName):
         restrictions = []
         for tag in tags:
             if not (tag in tankmen_components.GROUP_TAG.RANGE or vehicles.g_list.isVehicleExisting(tag)):
-                _xml.raiseWrongXml(xmlCtx, subsectionName, ('unknown tag "{}"').format(tag))
+                _xml.raiseWrongXml(xmlCtx, subsectionName, 'unknown tag "{}"'.format(tag))
             if tag in tankmen_components.GROUP_TAG.RESTRICTIONS:
                 restrictions.append(tag)
 
         if restrictions and tankmen_components.GROUP_TAG.PASSPORT_REPLACEMENT_FORBIDDEN not in restrictions:
-            _xml.raiseWrongXml(xmlCtx, subsectionName, ('Group contains tags of restrictions {}, so tag "{}" is mandatory').format(restrictions, tankmen_components.GROUP_TAG.PASSPORT_REPLACEMENT_FORBIDDEN))
+            _xml.raiseWrongXml(xmlCtx, subsectionName, 'Group contains tags of restrictions {}, so tag "{}" is mandatory'.format(restrictions, tankmen_components.GROUP_TAG.PASSPORT_REPLACEMENT_FORBIDDEN))
     else:
         tags = []
     return frozenset(tags)
@@ -92,7 +94,7 @@ def _readGroupRoles(xmlCtx, section, subsectionName):
         roles = []
         for tag in tags:
             if tag not in skills_constants.ROLES:
-                _xml.raiseWrongXml(xmlCtx, subsectionName, ('unknown tag "{}"').format(tag))
+                _xml.raiseWrongXml(xmlCtx, subsectionName, 'unknown tag "{}"'.format(tag))
             roles.append(intern(tag))
 
     else:
@@ -106,10 +108,7 @@ def _readTankmenGroup(xmlCtx, groupName, subsection, firstNames, lastNames, icon
         parseIcon = _parseIcon
     else:
         parseName = parseIcon = None
-    return tankmen_components.NationGroup(_xml.readNonNegativeInt(xmlCtx, subsection, 'groupID'), groupName, 'female' == _xml.readNonEmptyString(xmlCtx, subsection, 'sex'), subsection.readBool('notInShop', False), _readIDs((
-     xmlCtx, 'firstNames'), _xml.getChildren(xmlCtx, subsection, 'firstNames'), firstNames, parseName), _readIDs((
-     xmlCtx, 'lastNames'), _xml.getChildren(xmlCtx, subsection, 'lastNames'), lastNames, parseName), _readIDs((
-     xmlCtx, 'icons'), _xml.getChildren(xmlCtx, subsection, 'icons'), icons, parseIcon), _xml.readNonNegativeFloat(xmlCtx, subsection, 'weight'), _readGroupTags((xmlCtx, 'tags'), subsection, 'tags'), _readGroupRoles((xmlCtx, 'roles'), subsection, 'roles'))
+    return tankmen_components.NationGroup(_xml.readNonNegativeInt(xmlCtx, subsection, 'groupID'), groupName, 'female' == _xml.readNonEmptyString(xmlCtx, subsection, 'sex'), subsection.readBool('notInShop', False), _readIDs((xmlCtx, 'firstNames'), _xml.getChildren(xmlCtx, subsection, 'firstNames'), firstNames, parseName), _readIDs((xmlCtx, 'lastNames'), _xml.getChildren(xmlCtx, subsection, 'lastNames'), lastNames, parseName), _readIDs((xmlCtx, 'icons'), _xml.getChildren(xmlCtx, subsection, 'icons'), icons, parseIcon), _xml.readNonNegativeFloat(xmlCtx, subsection, 'weight'), _readGroupTags((xmlCtx, 'tags'), subsection, 'tags'), _readGroupRoles((xmlCtx, 'roles'), subsection, 'roles'))
 
 
 def _readNationConfigSection(xmlCtx, section):
@@ -138,8 +137,7 @@ def _readNationConfigSection(xmlCtx, section):
         config[kindName] = {group.groupID:group for group in groups}
 
     ranks = _readRanks((xmlCtx, 'ranks'), _xml.getChildren(xmlCtx, section, 'ranks'))
-    config['roleRanks'] = _readRoleRanks((
-     xmlCtx, 'roleRanks'), _xml.getSubsection(xmlCtx, section, 'roleRanks'), ranks)
+    config['roleRanks'] = _readRoleRanks((xmlCtx, 'roleRanks'), _xml.getSubsection(xmlCtx, section, 'roleRanks'), ranks)
     if IS_CLIENT or IS_WEB or IS_BOT:
         config['firstNames'] = firstNames
         config['lastNames'] = lastNames
@@ -162,8 +160,7 @@ def readNationConfig(xmlPath):
 
 
 def readLoreConfig(xmlPath):
-    xmlCtx = (
-     None, xmlPath)
+    xmlCtx = (None, xmlPath)
     section = ResMgr.openSection(xmlPath)
     if section is None:
         _xml.raiseWrongXml(None, xmlPath, 'can not open or read')

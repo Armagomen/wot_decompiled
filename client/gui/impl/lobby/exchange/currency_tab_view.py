@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/exchange/currency_tab_view.py
 import logging
 from frameworks.wulf.view.submodel_presenter import SubModelPresenter
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
@@ -8,14 +10,14 @@ from helpers import dependency
 from skeletons.gui.game_control import IWalletController
 from skeletons.gui.shared import IItemsCache
 _logger = logging.getLogger(__name__)
-_TYPE_TO_VALUE_PATH = {CurrencyType.CREDITS: 'actualCredits', 
-   CurrencyType.GOLD: 'actualGold', 
-   CurrencyType.CRYSTAL: 'actualCrystal', 
-   CurrencyType.FREEXP: 'actualFreeXP'}
-_CURRENCY_TOOLTIPS = {CurrencyType.GOLD: TOOLTIPS_CONSTANTS.GOLD_INFO_SIMPLE, 
-   CurrencyType.CREDITS: TOOLTIPS_CONSTANTS.CREDITS_INFO_SIMPLE, 
-   CurrencyType.CRYSTAL: TOOLTIPS_CONSTANTS.CRYSTAL_INFO_SIMPLE, 
-   CurrencyType.FREEXP: TOOLTIPS_CONSTANTS.FREEXP_INFO_SIMPLE}
+_TYPE_TO_VALUE_PATH = {CurrencyType.CREDITS: 'actualCredits',
+ CurrencyType.GOLD: 'actualGold',
+ CurrencyType.CRYSTAL: 'actualCrystal',
+ CurrencyType.FREEXP: 'actualFreeXP'}
+_CURRENCY_TOOLTIPS = {CurrencyType.GOLD: TOOLTIPS_CONSTANTS.GOLD_INFO_SIMPLE,
+ CurrencyType.CREDITS: TOOLTIPS_CONSTANTS.CREDITS_INFO_SIMPLE,
+ CurrencyType.CRYSTAL: TOOLTIPS_CONSTANTS.CRYSTAL_INFO_SIMPLE,
+ CurrencyType.FREEXP: TOOLTIPS_CONSTANTS.FREEXP_INFO_SIMPLE}
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
 def getCurrencyValueFromType(currencyType, itemsCache=None):
@@ -28,7 +30,7 @@ def getCurrencyValueFromType(currencyType, itemsCache=None):
 
 
 class CurrenciesTabView(SubModelPresenter):
-    __slots__ = ('__tooltipData', )
+    __slots__ = ('__tooltipData',)
     __wallet = dependency.descriptor(IWalletController)
     __itemsCache = dependency.descriptor(IItemsCache)
 
@@ -49,23 +51,16 @@ class CurrenciesTabView(SubModelPresenter):
         super(CurrenciesTabView, self).finalize()
 
     def _getCallbacks(self):
-        return (
-         (
-          'stats.gold', self.__onBalanceUpdated),
-         (
-          'stats.credits', self.__onBalanceUpdated),
-         (
-          'stats.crystal', self.__onBalanceUpdated),
-         (
-          'stats.freeXP', self.__onBalanceUpdated))
+        return (('stats.gold', self.__onBalanceUpdated),
+         ('stats.credits', self.__onBalanceUpdated),
+         ('stats.crystal', self.__onBalanceUpdated),
+         ('stats.freeXP', self.__onBalanceUpdated))
 
     def _getEvents(self):
-        return (
-         (
-          self.__wallet.onWalletStatusChanged, self.__onWalletChanged),)
+        return ((self.__wallet.onWalletStatusChanged, self.__onWalletChanged),)
 
     def __updateCurrencies(self):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setIsWalletAvailable(self.__wallet.isAvailable)
             currencies = model.getCurrencies()
             currencies.clear()

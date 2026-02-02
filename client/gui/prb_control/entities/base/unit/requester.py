@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/base/unit/requester.py
 import weakref
 from UnitBase import UNIT_ERROR
 from debug_utils import LOG_ERROR
@@ -68,8 +70,7 @@ class UnitRequestProcessor(IUnitRequestProcessor):
         if callable(method):
             requestID = method(*args, **kwargs)
             if requestID > 0:
-                self.__requests[requestID] = (
-                 ctx, chain)
+                self.__requests[requestID] = (ctx, chain)
                 result = True
             else:
                 LOG_ERROR('Request ID can not be null')

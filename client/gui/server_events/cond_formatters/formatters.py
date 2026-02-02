@@ -1,4 +1,8 @@
-import weakref, typing, nations
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/server_events/cond_formatters/formatters.py
+import weakref
+import typing
+import nations
 from debug_utils import LOG_ERROR
 from gui.Scaleform.genConsts.MISSIONS_ALIASES import MISSIONS_ALIASES
 from gui.Scaleform.locale.NATIONS import NATIONS
@@ -16,11 +20,11 @@ if typing.TYPE_CHECKING:
     from gui.server_events.conditions import _Condition, _Cumulativable, _VehsListCondition
     from gui.server_events.event_items import ServerEventAbstract
     from gui.server_events.formatters import PreFormattedCondition, ProgressData
-VEHICLE_CLASSES_SIMPLIFIED = {'lightTank': QUESTS.DETAILS_CONDITIONS_CLASSES_LIGHTTANK, 
-   'mediumTank': QUESTS.DETAILS_CONDITIONS_CLASSES_MEDIUMTANK, 
-   'heavyTank': QUESTS.DETAILS_CONDITIONS_CLASSES_HEAVYTANK, 
-   'SPG': QUESTS.DETAILS_CONDITIONS_CLASSES_SPG, 
-   'AT-SPG': QUESTS.DETAILS_CONDITIONS_CLASSES_AT_SPG}
+VEHICLE_CLASSES_SIMPLIFIED = {'lightTank': QUESTS.DETAILS_CONDITIONS_CLASSES_LIGHTTANK,
+ 'mediumTank': QUESTS.DETAILS_CONDITIONS_CLASSES_MEDIUMTANK,
+ 'heavyTank': QUESTS.DETAILS_CONDITIONS_CLASSES_HEAVYTANK,
+ 'SPG': QUESTS.DETAILS_CONDITIONS_CLASSES_SPG,
+ 'AT-SPG': QUESTS.DETAILS_CONDITIONS_CLASSES_AT_SPG}
 
 class ConditionsFormatter(object):
 
@@ -29,10 +33,7 @@ class ConditionsFormatter(object):
 
     def getConditionFormatter(self, conditionName):
         condFormatter = self.__formatters.get(conditionName)
-        if condFormatter:
-            return condFormatter
-        else:
-            return
+        return condFormatter if condFormatter else None
 
     def format(self, *args, **kwargs):
         return []
@@ -67,9 +68,7 @@ class CumulativableFormatter(ConditionFormatter):
     @classmethod
     def getGroupByValue(cls, condition):
         bonusData = condition.getBonusData()
-        if condition:
-            return bonusData.getGroupByValue()
-        return condition
+        return bonusData.getGroupByValue() if condition else condition
 
     @classmethod
     def formatByGroup(cls, condition, groupByKey, event):
@@ -84,17 +83,11 @@ class MissionFormatter(ConditionFormatter):
 
     def getTitle(self, condition):
         customTitle = condition.getCustomTitle()
-        if customTitle is not None:
-            return packSimpleTitle(customTitle)
-        else:
-            return self._getTitle(condition)
+        return packSimpleTitle(customTitle) if customTitle is not None else self._getTitle(condition)
 
     def getDescription(self, condition):
         customDescription = condition.getCustomDescription()
-        if customDescription is not None:
-            return packDescriptionField(customDescription)
-        else:
-            return self._getDescription(condition)
+        return packDescriptionField(customDescription) if customDescription is not None else self._getDescription(condition)
 
     @classmethod
     def _getTitle(cls, *args, **kwargs):
@@ -134,7 +127,7 @@ class EmptyMissionsFormatter(SimpleMissionsFormatter):
 
     @classmethod
     def _getIconKey(cls, condition=None):
-        return
+        return None
 
 
 class MissionsVehicleListFormatter(MissionFormatter):
@@ -155,12 +148,10 @@ class MissionsVehicleListFormatter(MissionFormatter):
 
     @classmethod
     def _getTitle(cls, condition):
-        if condition.isAnyVehicleAcceptable():
-            return FormattableField(FORMATTER_IDS.RELATION, (
-             condition.relationValue, condition.relation,
-             RELATIONS_SCHEME.DEFAULT, cls._getTitleKey(condition)))
-        return FormattableField(FORMATTER_IDS.COMPLEX_RELATION, (
-         condition.relationValue, condition.relation, cls._getTitleKey(condition)))
+        return FormattableField(FORMATTER_IDS.RELATION, (condition.relationValue,
+         condition.relation,
+         RELATIONS_SCHEME.DEFAULT,
+         cls._getTitleKey(condition))) if condition.isAnyVehicleAcceptable() else FormattableField(FORMATTER_IDS.COMPLEX_RELATION, (condition.relationValue, condition.relation, cls._getTitleKey(condition)))
 
     @classmethod
     def _getDescription(cls, condition):
@@ -173,21 +164,14 @@ class MissionsVehicleListFormatter(MissionFormatter):
             directHitsReceived = condition.getDirectHitsReceived()
             if directHitsReceived and directHitsReceived < 0:
                 labelKey = '%s/negative' % labelKey
-            return FormattableField(FORMATTER_IDS.DESCRIPTION, (
-             i18n.makeString(labelKey, classes=cls._formatClassesEnumeration(condition), directHitsReceived=abs(directHitsReceived)),))
+            return FormattableField(FORMATTER_IDS.DESCRIPTION, (i18n.makeString(labelKey, classes=cls._formatClassesEnumeration(condition), directHitsReceived=abs(directHitsReceived)),))
         if condition.getDamageDealt():
-            return FormattableField(FORMATTER_IDS.DESCRIPTION, (
-             i18n.makeString(labelKey, damage=int(condition.getDamageDealt()), classes=cls._formatClassesEnumeration(condition), amount=int(condition.relationValue)),))
+            return FormattableField(FORMATTER_IDS.DESCRIPTION, (i18n.makeString(labelKey, damage=int(condition.getDamageDealt()), classes=cls._formatClassesEnumeration(condition), amount=int(condition.relationValue)),))
         if condition.getWhileMovingAtSpeed():
-            return FormattableField(FORMATTER_IDS.DESCRIPTION, (
-             i18n.makeString(labelKey, amount=int(condition.relationValue), classes=cls._formatClassesEnumeration(condition), speed=int(condition.getWhileMovingAtSpeed())),))
+            return FormattableField(FORMATTER_IDS.DESCRIPTION, (i18n.makeString(labelKey, amount=int(condition.relationValue), classes=cls._formatClassesEnumeration(condition), speed=int(condition.getWhileMovingAtSpeed())),))
         if condition.getEnemyIsNotSpotted() or condition.getBeyondVisionRadius() or condition.getwhileEnemyInvisible():
-            return FormattableField(FORMATTER_IDS.DESCRIPTION, (
-             i18n.makeString(labelKey, amount=int(condition.relationValue), classes=cls._formatClassesEnumeration(condition)),))
-        if condition.getSpotEnemy():
-            return FormattableField(FORMATTER_IDS.DESCRIPTION, (
-             i18n.makeString(labelKey, amount=int(condition.relationValue), classes=cls._formatClassesEnumeration(condition)),))
-        return packDescriptionField(labelKey)
+            return FormattableField(FORMATTER_IDS.DESCRIPTION, (i18n.makeString(labelKey, amount=int(condition.relationValue), classes=cls._formatClassesEnumeration(condition)),))
+        return FormattableField(FORMATTER_IDS.DESCRIPTION, (i18n.makeString(labelKey, amount=int(condition.relationValue), classes=cls._formatClassesEnumeration(condition)),)) if condition.getSpotEnemy() else packDescriptionField(labelKey)
 
     @classmethod
     def _formatClassesEnumeration(cls, condition):
@@ -199,27 +183,27 @@ class MissionsVehicleListFormatter(MissionFormatter):
         return allowedClassesEnumeration
 
     def _getConditionData(self, condition):
-        data = {'description': i18n.makeString(QUESTS.MISSIONDETAILS_VEHICLE_CONDITIONS_HEADER), 
-           'list': []}
+        data = {'description': i18n.makeString(QUESTS.MISSIONDETAILS_VEHICLE_CONDITIONS_HEADER),
+         'list': []}
         if condition.isAnyVehicleAcceptable():
             return None
+        elif 'types' not in condition.data:
+            _, fNations, fLevels, fClasses, _ = condition.parseFilters()
+            data['list'].append({'label': text_styles.standard(i18n.makeString(QUESTS.MISSIONDETAILS_VEHICLE_CONDITIONS_NATIONS)),
+             'typeIcon': RES_ICONS.MAPS_ICONS_FILTERS_NATIONS_ALL,
+             'list': self._getConditionNationsList(fNations or []),
+             'def': text_styles.main(i18n.makeString(QUESTS.MISSIONDETAILS_VEHICLE_CONDITIONS_NATIONS_ALL))})
+            data['list'].append({'label': text_styles.standard(i18n.makeString(QUESTS.MISSIONDETAILS_VEHICLE_CONDITIONS_TYPE)),
+             'typeIcon': RES_ICONS.MAPS_ICONS_FILTERS_TANKS_ALL,
+             'list': self._getConditionClassesList(fClasses or []),
+             'def': text_styles.main(i18n.makeString(QUESTS.MISSIONDETAILS_VEHICLE_CONDITIONS_TYPE_ALL))})
+            data['list'].append({'label': text_styles.standard(i18n.makeString(QUESTS.MISSIONDETAILS_VEHICLE_CONDITIONS_LEVEL)),
+             'typeIcon': RES_ICONS.MAPS_ICONS_FILTERS_LEVELS_LEVEL_ALL,
+             'list': self._getConditionLevelsList(fLevels or []),
+             'def': text_styles.main(i18n.makeString(QUESTS.MISSIONDETAILS_VEHICLE_CONDITIONS_LEVEL_ALL))})
+            data['rendererLinkage'] = MISSIONS_ALIASES.VEHICLE_TYPE_RENDERER
+            return {'data': data}
         else:
-            if 'types' not in condition.data:
-                _, fNations, fLevels, fClasses, _ = condition.parseFilters()
-                data['list'].append({'label': text_styles.standard(i18n.makeString(QUESTS.MISSIONDETAILS_VEHICLE_CONDITIONS_NATIONS)), 
-                   'typeIcon': RES_ICONS.MAPS_ICONS_FILTERS_NATIONS_ALL, 
-                   'list': self._getConditionNationsList(fNations or []), 
-                   'def': text_styles.main(i18n.makeString(QUESTS.MISSIONDETAILS_VEHICLE_CONDITIONS_NATIONS_ALL))})
-                data['list'].append({'label': text_styles.standard(i18n.makeString(QUESTS.MISSIONDETAILS_VEHICLE_CONDITIONS_TYPE)), 
-                   'typeIcon': RES_ICONS.MAPS_ICONS_FILTERS_TANKS_ALL, 
-                   'list': self._getConditionClassesList(fClasses or []), 
-                   'def': text_styles.main(i18n.makeString(QUESTS.MISSIONDETAILS_VEHICLE_CONDITIONS_TYPE_ALL))})
-                data['list'].append({'label': text_styles.standard(i18n.makeString(QUESTS.MISSIONDETAILS_VEHICLE_CONDITIONS_LEVEL)), 
-                   'typeIcon': RES_ICONS.MAPS_ICONS_FILTERS_LEVELS_LEVEL_ALL, 
-                   'list': self._getConditionLevelsList(fLevels or []), 
-                   'def': text_styles.main(i18n.makeString(QUESTS.MISSIONDETAILS_VEHICLE_CONDITIONS_LEVEL_ALL))})
-                data['rendererLinkage'] = MISSIONS_ALIASES.VEHICLE_TYPE_RENDERER
-                return {'data': data}
             conditions = [ self.__makeVehicleVO(vehicle) for vehicle, _ in condition.getVehiclesData() ]
             while len(conditions) < 6:
                 conditions.append({'vehicleName': text_styles.main('---')})
@@ -231,16 +215,16 @@ class MissionsVehicleListFormatter(MissionFormatter):
     def _getConditionNationsList(self, nationIds):
         result = []
         for idx in nationIds:
-            result.append({'icon': '../maps/icons/filters/nations/%s.png' % nations.NAMES[idx], 
-               'tooltip': i18n.makeString(QUESTS.MISSIONDETAILS_VEHICLE_CONDITIONS_NATIONS_TOOLTIP, nation=i18n.makeString(NATIONS.all(nations.NAMES[idx])))})
+            result.append({'icon': '../maps/icons/filters/nations/%s.png' % nations.NAMES[idx],
+             'tooltip': i18n.makeString(QUESTS.MISSIONDETAILS_VEHICLE_CONDITIONS_NATIONS_TOOLTIP, nation=i18n.makeString(NATIONS.all(nations.NAMES[idx])))})
 
         return result
 
     def _getConditionClassesList(self, classNames):
         result = []
         for name in classNames:
-            result.append({'icon': '../maps/icons/filters/tanks/%s.png' % name, 
-               'tooltip': i18n.makeString(QUESTS.MISSIONDETAILS_VEHICLE_CONDITIONS_TYPE_TOOLTIP, type=i18n.makeString(VEHICLE_TYPES[name]))})
+            result.append({'icon': '../maps/icons/filters/tanks/%s.png' % name,
+             'tooltip': i18n.makeString(QUESTS.MISSIONDETAILS_VEHICLE_CONDITIONS_TYPE_TOOLTIP, type=i18n.makeString(VEHICLE_TYPES[name]))})
 
         return result
 
@@ -259,11 +243,11 @@ class MissionsVehicleListFormatter(MissionFormatter):
 
     @staticmethod
     def __makeVehicleVO(vehicle):
-        return {'nationIcon': '../maps/icons/filters/nations/%s.png' % vehicle.nationName, 
-           'typeIcon': '../maps/icons/filters/tanks/%s.png' % vehicle.type, 
-           'levelIcon': '../maps/icons/filters/levels/level_%s.png' % vehicle.level, 
-           'vehicleIcon': vehicle.iconSmall, 
-           'vehicleName': text_styles.vehicleName(vehicle.shortUserName)}
+        return {'nationIcon': '../maps/icons/filters/nations/%s.png' % vehicle.nationName,
+         'typeIcon': '../maps/icons/filters/tanks/%s.png' % vehicle.type,
+         'levelIcon': '../maps/icons/filters/levels/level_%s.png' % vehicle.level,
+         'vehicleIcon': vehicle.iconSmall,
+         'vehicleName': text_styles.vehicleName(vehicle.shortUserName)}
 
 
 class GroupFormatter(ConditionFormatter):
@@ -300,10 +284,10 @@ class OrGroupFormatter(GroupFormatter):
     def getConditionFormatter(self, conditionName):
         if conditionName == GROUP_TYPE.AND:
             return self._andFormatter
+        elif conditionName == GROUP_TYPE.OR:
+            LOG_ERROR("Unsupported double depth 'OR' in 'OR' in quest conditions. SSE Bug. Wrong quest xml")
+            return None
         else:
-            if conditionName == GROUP_TYPE.OR:
-                LOG_ERROR("Unsupported double depth 'OR' in 'OR' in quest conditions. SSE Bug. Wrong quest xml")
-                return None
             return super(OrGroupFormatter, self).getConditionFormatter(conditionName)
 
 
@@ -339,22 +323,18 @@ class AndGroupFormatter(GroupFormatter):
         return result
 
     def getConditionFormatter(self, conditionName):
-        if conditionName == GROUP_TYPE.AND:
-            return self._andFormatter
-        return super(AndGroupFormatter, self).getConditionFormatter(conditionName)
+        return self._andFormatter if conditionName == GROUP_TYPE.AND else super(AndGroupFormatter, self).getConditionFormatter(conditionName)
 
 
 class MissionsBattleConditionsFormatter(ConditionsFormatter):
 
     def __init__(self, formatters):
-        self.__groupConditionsFormatters = {GROUP_TYPE.AND: AndGroupFormatter(self), 
-           GROUP_TYPE.OR: OrGroupFormatter(self)}
+        self.__groupConditionsFormatters = {GROUP_TYPE.AND: AndGroupFormatter(self),
+         GROUP_TYPE.OR: OrGroupFormatter(self)}
         super(MissionsBattleConditionsFormatter, self).__init__(formatters)
 
     def getConditionFormatter(self, conditionName):
-        if conditionName in self.__groupConditionsFormatters:
-            return self.__groupConditionsFormatters[conditionName]
-        return super(MissionsBattleConditionsFormatter, self).getConditionFormatter(conditionName)
+        return self.__groupConditionsFormatters[conditionName] if conditionName in self.__groupConditionsFormatters else super(MissionsBattleConditionsFormatter, self).getConditionFormatter(conditionName)
 
     def format(self, conditions, event):
         result = []

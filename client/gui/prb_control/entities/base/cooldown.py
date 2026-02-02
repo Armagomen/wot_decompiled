@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/base/cooldown.py
 from constants import JOIN_FAILURE, REQUEST_COOLDOWN
 from debug_utils import LOG_WARNING
 from gui import SystemMessages

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/platoon/member_count_dropdown.py
 from frameworks.wulf import Array
 from gui.impl.gen.view_models.ui_kit.gf_drop_down_model import GfDropDownModel
 from gui.impl.gen.view_models.views.lobby.platoon.dropdown_item import DropdownItem

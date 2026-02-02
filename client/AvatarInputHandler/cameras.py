@@ -1,4 +1,10 @@
-import math, BigWorld, Math, Event, math_utils
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/AvatarInputHandler/cameras.py
+import math
+import BigWorld
+import Math
+import Event
+import math_utils
 
 class ImpulseReason(object):
     MY_SHOT = 0
@@ -47,7 +53,7 @@ class ICamera(object):
         pass
 
     def getReasonsAffectCameraDirectly(self):
-        return ()
+        pass
 
 
 class FreeCamera(ICamera):
@@ -92,10 +98,7 @@ class FreeCamera(ICamera):
 
 
 def readBool(dataSec, name, defaultVal):
-    if dataSec is None:
-        return defaultVal
-    else:
-        return dataSec.readBool(name, defaultVal)
+    return defaultVal if dataSec is None else dataSec.readBool(name, defaultVal)
 
 
 def readInt(dataSec, name, minVal, maxVal, defaultVal):
@@ -139,10 +142,7 @@ def readVec3(dataSec, name, minVal, maxVal, defaultVal):
 
 
 def readString(dataSec, name, defaultVal):
-    if dataSec is None:
-        return defaultVal
-    else:
-        return dataSec.readString(name, defaultVal)
+    return defaultVal if dataSec is None else dataSec.readString(name, defaultVal)
 
 
 def getScreenAspectRatio():
@@ -168,9 +168,7 @@ def isPointOnScreen(point):
         return False
     posInClip = Math.Vector4(point.x, point.y, point.z, 1)
     posInClip = getViewProjectionMatrix().applyV4Point(posInClip)
-    if posInClip.w != 0 and -1 <= posInClip.x / posInClip.w <= 1 and -1 <= posInClip.y / posInClip.w <= 1:
-        return True
-    return False
+    return posInClip.w != 0 and -1 <= posInClip.x / posInClip.w <= 1 and (True if -1 <= posInClip.y / posInClip.w <= 1 else False)
 
 
 def projectPoint(point):
@@ -254,9 +252,7 @@ class FovExtended(object):
 
     @staticmethod
     def calculateVerticalFov(horizontalFovValue):
-        if BigWorld.getAspectRatio() > FovExtended.arWide:
-            return math.radians(horizontalFovValue / FovExtended.arWide)
-        return math.radians(horizontalFovValue / FovExtended.arNormal)
+        return math.radians(horizontalFovValue / FovExtended.arWide) if BigWorld.getAspectRatio() > FovExtended.arWide else math.radians(horizontalFovValue / FovExtended.arNormal)
 
     @staticmethod
     def clampFov(fov):

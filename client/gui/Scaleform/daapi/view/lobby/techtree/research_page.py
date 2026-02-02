@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/techtree/research_page.py
 import typing
 from logging import getLogger
 from CurrentVehicle import g_currentVehicle
@@ -58,18 +60,12 @@ class _VehicleState(object):
 
 def _getPremiumBaseBenefit(benefits, root, _=None):
     if not root.isOnlyForEpicBattles:
-        benefits.append((
-         backport.image(R.images.gui.maps.shop.kpi.star_icon_benefits()),
-         backport.text(R.strings.vehicle_preview.infoPanel.premium.freeExpMultiplier()),
-         backport.text(R.strings.vehicle_preview.infoPanel.premium.freeExpText())))
+        benefits.append((backport.image(R.images.gui.maps.shop.kpi.star_icon_benefits()), backport.text(R.strings.vehicle_preview.infoPanel.premium.freeExpMultiplier()), backport.text(R.strings.vehicle_preview.infoPanel.premium.freeExpText())))
 
 
 def _getMoneyBenefits(benefits, root, _=None):
     if not (root.isSpecial or root.isOnlyForEpicBattles):
-        benefits.append((
-         backport.image(R.images.gui.maps.shop.kpi.money_benefits()),
-         backport.text(R.strings.vehicle_preview.infoPanel.premium.creditsMultiplier()),
-         backport.text(R.strings.vehicle_preview.infoPanel.premium.creditsText())))
+        benefits.append((backport.image(R.images.gui.maps.shop.kpi.money_benefits()), backport.text(R.strings.vehicle_preview.infoPanel.premium.creditsMultiplier()), backport.text(R.strings.vehicle_preview.infoPanel.premium.creditsText())))
 
 
 def _getCrewBenefits(benefits, root, _=None):
@@ -77,18 +73,12 @@ def _getCrewBenefits(benefits, root, _=None):
         text = R.strings.vehicle_preview.infoPanel.premium.crewTransferText()
         if root.ignoreRoleIncompatibility:
             text = R.strings.vehicle_preview.infoPanel.premium.noCrewTransferPenaltyText()
-        benefits.append((
-         backport.image(R.images.gui.maps.shop.kpi.crow_benefits()),
-         backport.text(R.strings.vehicle_preview.infoPanel.premium.crewTransferTitle()),
-         backport.text(text)))
+        benefits.append((backport.image(R.images.gui.maps.shop.kpi.crow_benefits()), backport.text(R.strings.vehicle_preview.infoPanel.premium.crewTransferTitle()), backport.text(text)))
 
 
 def _getCrystalsBenefit(benefits, root, _=None):
     if root.isEarnCrystals:
-        benefits.append((
-         backport.image(R.images.gui.maps.shop.kpi.bons_benefits()),
-         backport.text(R.strings.vehicle_preview.infoPanel.premium.bonsTitle()),
-         backport.text(R.strings.vehicle_preview.infoPanel.premium.bonsText())))
+        benefits.append((backport.image(R.images.gui.maps.shop.kpi.bons_benefits()), backport.text(R.strings.vehicle_preview.infoPanel.premium.bonsTitle()), backport.text(R.strings.vehicle_preview.infoPanel.premium.bonsText())))
 
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
@@ -101,10 +91,7 @@ def _getEquipmentBenefits(benefits, root, itemsCache=None):
             mainText = equipment.userName
         else:
             mainText = backport.text(R.strings.vehicle_preview.infoPanel.premium.builtInEqupmentText(), value=builtInCount)
-        benefits.append((
-         backport.image(R.images.gui.maps.shop.kpi.infinity_benefits()),
-         text_styles.concatStylesToMultiLine(text_styles.highTitle(backport.text(R.strings.vehicle_preview.infoPanel.premium.builtInEqupmentTitle()))),
-         text_styles.main(mainText)))
+        benefits.append((backport.image(R.images.gui.maps.shop.kpi.infinity_benefits()), text_styles.concatStylesToMultiLine(text_styles.highTitle(backport.text(R.strings.vehicle_preview.infoPanel.premium.builtInEqupmentTitle()))), text_styles.main(mainText)))
 
 
 def _formatBenefits(benefitData):
@@ -112,8 +99,8 @@ def _formatBenefits(benefitData):
     for i, (icon, title, body) in enumerate(benefitData, 1):
         if i > _BENEFIT_ITEMS_LIMIT:
             break
-        formattedBenefits.append({'iconSrc': icon, 
-           'labelStr': text_styles.concatStylesToMultiLine(text_styles.highTitle(title), text_styles.main(body))})
+        formattedBenefits.append({'iconSrc': icon,
+         'labelStr': text_styles.concatStylesToMultiLine(text_styles.highTitle(title), text_styles.main(body))})
 
     return formattedBenefits
 
@@ -123,22 +110,19 @@ def _getRestoreBannerStr(param):
 
 
 def _getUnlockedBannerStr(param):
-    return text_styles.concatStylesToMultiLine(text_styles.mainBig(backport.text(R.strings.blueprints.blueprintScreen.researchSale.label())), text_styles.grandTitle(('').join(('-', str(param), '%'))))
+    return text_styles.concatStylesToMultiLine(text_styles.mainBig(backport.text(R.strings.blueprints.blueprintScreen.researchSale.label())), text_styles.grandTitle(''.join(('-', str(param), '%'))))
 
 
 def _getRentBannerStr(param):
-    return text_styles.concatStylesToMultiLine(text_styles.mainBig(backport.text(R.strings.menu.research.premium.discount())), text_styles.grandTitle(('').join(('-', str(param), '%'))))
+    return text_styles.concatStylesToMultiLine(text_styles.mainBig(backport.text(R.strings.menu.research.premium.discount())), text_styles.grandTitle(''.join(('-', str(param), '%'))))
 
 
 def _getActionBannerStr(paramDiscount, paramDate=''):
-    discountStr = text_styles.grandTitle(('').join(('-', str(paramDiscount), '%')))
-    if not paramDate:
-        return discountStr
-    return text_styles.concatStylesToMultiLine(text_styles.mainBig(backport.text(R.strings.menu.barracks.notRecruitedActivateBefore(), date=paramDate)), discountStr)
+    discountStr = text_styles.grandTitle(''.join(('-', str(paramDiscount), '%')))
+    return discountStr if not paramDate else text_styles.concatStylesToMultiLine(text_styles.mainBig(backport.text(R.strings.menu.barracks.notRecruitedActivateBefore(), date=paramDate)), discountStr)
 
 
-_BENEFIT_GETTERS = (
- _getPremiumBaseBenefit,
+_BENEFIT_GETTERS = (_getPremiumBaseBenefit,
  _getMoneyBenefits,
  _getCrystalsBenefit,
  _getCrewBenefits,
@@ -151,10 +135,10 @@ class States(object):
     ACTION = 'action'
 
 
-_BANNER_GETTERS = {States.RESTORE: _getRestoreBannerStr, 
-   States.UNLOCKED: _getUnlockedBannerStr, 
-   States.RENT: _getRentBannerStr, 
-   States.ACTION: _getActionBannerStr}
+_BANNER_GETTERS = {States.RESTORE: _getRestoreBannerStr,
+ States.UNLOCKED: _getUnlockedBannerStr,
+ States.RENT: _getRentBannerStr,
+ States.ACTION: _getActionBannerStr}
 
 class Research(ResearchMeta):
     __tradeIn = dependency.descriptor(ITradeInController)
@@ -366,8 +350,8 @@ class Research(ResearchMeta):
             viewPy.setTradeInVehicle(self.vehicle)
 
     def _createExitEvent(self):
-        return events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.LOBBY_RESEARCH), ctx={BackButtonContextKeys.ROOT_CD: self._data.getRootCD(), 
-           BackButtonContextKeys.EXIT: self._exitEvent or events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.LOBBY_HANGAR))})
+        return events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.LOBBY_RESEARCH), ctx={BackButtonContextKeys.ROOT_CD: self._data.getRootCD(),
+         BackButtonContextKeys.EXIT: self._exitEvent or events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.LOBBY_HANGAR))})
 
     def _resolveLoadCtx(self, ctx=None):
         exitEvent = None
@@ -404,48 +388,45 @@ class Research(ResearchMeta):
         isNationChangeAvailable = root.isNationChangeAvailable
         isShownNationChangeTooltip = tankHasNationGroup and not isNationChangeAvailable
         tankName = root.userName
-        result = {'vehicleTitle': {'intCD': self._data.getRootCD(), 
-                            'tankTierStr': text_styles.grandTitle(tankTier), 
-                            'tankNameStr': text_styles.grandTitle(tankName), 
-                            'tankTierStrSmall': text_styles.promoTitle(tankTier), 
-                            'tankNameStrSmall': text_styles.promoTitle(tankName), 
-                            'typeIconPath': getTypeBigIconPath(root.type, root.isElite), 
-                            'isElite': root.isElite, 
-                            'statusStr': self.__getRootStatusStr(root), 
-                            'roleText': getRoleTextWithIcon(root.role, root.roleLabel)}, 
-           'vehicleButton': {'shopIconPath': getShopVehicleIconPath(STORE_CONSTANTS.ICON_SIZE_MEDIUM, root.name.split(':')[1]), 
-                             'compareBtnVisible': True, 
-                             'compareBtnEnabled': comparisonState, 
-                             'compareBtnLabel': backport.text(R.strings.menu.research.labels.button.addToCompare()), 
-                             'compareBtnTooltip': comparisonTooltip, 
-                             'previewBtnEnabled': root.isPreviewAllowed(), 
-                             'previewBtnLabel': backport.text(R.strings.menu.research.labels.button.vehiclePreview()), 
-                             'isPremium': isPremium, 
-                             'vehicleId': self._data.getRootCD(), 
-                             'vehicleState': nodeState, 
-                             'isInInventory': NODE_STATE.inInventory(nodeState), 
-                             'previewAlias': VIEW_ALIAS.LOBBY_RESEARCH, 
-                             'cmHandlerType': CONTEXT_MENU_HANDLER_TYPE.RESEARCH_VEHICLE}, 
-           'isInteractive': self.__getIsInteractive(root, rootNode), 
-           'buttonLabel': self.__getMainButtonLabel(root, rootNode), 
-           'blueprintLabel': self.__getResearchPageBlueprintLabel(rootNode), 
-           'blueprintProgress': rootNode.getBlueprintProgress(), 
-           'blueprintCanConvert': bpfProps.canConvert if bpfProps is not None else False, 
-           'bpbGlowEnabled': isNext2Unlock, 
-           'itemPrices': rootNode.getItemPrices(), 
-           'discountStr': self.__getDiscountBannerStr(root, rootNode), 
-           'rentBtnLabel': self.__getRentButtonLabel(rootNode), 
-           'changeNationBtnVisibility': tankHasNationGroup, 
-           'isTankNationChangeAvailable': isNationChangeAvailable, 
-           'nationChangeIsNew': not AccountSettings.getSettings(NATION_CHANGE_VIEWED), 
-           'nationChangeTooltip': self.__getNationChangeTooltip(root) if isShownNationChangeTooltip else ''}
+        result = {'vehicleTitle': {'intCD': self._data.getRootCD(),
+                          'tankTierStr': text_styles.grandTitle(tankTier),
+                          'tankNameStr': text_styles.grandTitle(tankName),
+                          'tankTierStrSmall': text_styles.promoTitle(tankTier),
+                          'tankNameStrSmall': text_styles.promoTitle(tankName),
+                          'typeIconPath': getTypeBigIconPath(root.type, root.isElite),
+                          'isElite': root.isElite,
+                          'statusStr': self.__getRootStatusStr(root),
+                          'roleText': getRoleTextWithIcon(root.role, root.roleLabel)},
+         'vehicleButton': {'shopIconPath': getShopVehicleIconPath(STORE_CONSTANTS.ICON_SIZE_MEDIUM, root.name.split(':')[1]),
+                           'compareBtnVisible': True,
+                           'compareBtnEnabled': comparisonState,
+                           'compareBtnLabel': backport.text(R.strings.menu.research.labels.button.addToCompare()),
+                           'compareBtnTooltip': comparisonTooltip,
+                           'previewBtnEnabled': root.isPreviewAllowed(),
+                           'previewBtnLabel': backport.text(R.strings.menu.research.labels.button.vehiclePreview()),
+                           'isPremium': isPremium,
+                           'vehicleId': self._data.getRootCD(),
+                           'vehicleState': nodeState,
+                           'isInInventory': NODE_STATE.inInventory(nodeState),
+                           'previewAlias': VIEW_ALIAS.LOBBY_RESEARCH,
+                           'cmHandlerType': CONTEXT_MENU_HANDLER_TYPE.RESEARCH_VEHICLE},
+         'isInteractive': self.__getIsInteractive(root, rootNode),
+         'buttonLabel': self.__getMainButtonLabel(root, rootNode),
+         'blueprintLabel': self.__getResearchPageBlueprintLabel(rootNode),
+         'blueprintProgress': rootNode.getBlueprintProgress(),
+         'blueprintCanConvert': bpfProps.canConvert if bpfProps is not None else False,
+         'bpbGlowEnabled': isNext2Unlock,
+         'itemPrices': rootNode.getItemPrices(),
+         'discountStr': self.__getDiscountBannerStr(root, rootNode),
+         'rentBtnLabel': self.__getRentButtonLabel(rootNode),
+         'changeNationBtnVisibility': tankHasNationGroup,
+         'isTankNationChangeAvailable': isNationChangeAvailable,
+         'nationChangeIsNew': not AccountSettings.getSettings(NATION_CHANGE_VIEWED),
+         'nationChangeTooltip': self.__getNationChangeTooltip(root) if isShownNationChangeTooltip else ''}
         return result
 
     def __getIsInteractive(self, root, rootNode):
-        if NODE_STATE.canTradeIn(rootNode.getState()):
-            return self.__tradeIn.getSelectedVehicleToSell() is None or self.__tradeIn.validatePossibleVehicleToBuy(root)
-        else:
-            return True
+        return self.__tradeIn.getSelectedVehicleToSell() is None or self.__tradeIn.validatePossibleVehicleToBuy(root) if NODE_STATE.canTradeIn(rootNode.getState()) else True
 
     def __getDiscountBannerStr(self, root, rootNode):
         htmlStr = ''
@@ -484,8 +465,8 @@ class Research(ResearchMeta):
         return result
 
     def __getBackBtnData(self):
-        result = {'backBtnLabel': backport.text(R.strings.menu.viewHeader.backBtn.label()), 
-           'backBtnDescrLabel': getLobbyStateMachine().backNavigationDescription}
+        result = {'backBtnLabel': backport.text(R.strings.menu.viewHeader.backBtn.label()),
+         'backBtnDescrLabel': getLobbyStateMachine().backNavigationDescription}
         return result
 
     def __redrawPageAfterNationWasChanged(self):
@@ -514,9 +495,7 @@ class Research(ResearchMeta):
 
     @staticmethod
     def __getRootStatusStr(root):
-        if root.isRented and not root.rentalIsOver and not root.isTelecom and not root.isPremiumIGR and not root.isWotPlus:
-            return text_styles.concatStylesToSingleLine(icons.makeImageTag(backport.image(R.images.gui.maps.icons.library.ClockIcon_1()), width=38, height=38, vSpace=-14), RentLeftFormatter(root.rentInfo).getRentLeftStr(strForSpecialTimeFormat=backport.text(R.strings.menu.research.status.rentLeft())))
-        return ''
+        return text_styles.concatStylesToSingleLine(icons.makeImageTag(backport.image(R.images.gui.maps.icons.library.ClockIcon_1()), width=38, height=38, vSpace=-14), RentLeftFormatter(root.rentInfo).getRentLeftStr(strForSpecialTimeFormat=backport.text(R.strings.menu.research.status.rentLeft()))) if root.isRented and not root.rentalIsOver and not root.isTelecom and not root.isPremiumIGR and not root.isWotPlus else ''
 
     @staticmethod
     def __getNationChangeTooltip(root):

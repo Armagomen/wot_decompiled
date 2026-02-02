@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/achievements/tooltips/wtr_main_tooltip.py
 from helpers import dependency
 from frameworks.wulf import ViewSettings
 from gui.impl.pub import ViewImpl
@@ -10,7 +12,7 @@ from skeletons.gui.shared import IItemsCache
 from skeletons.gui.lobby_context import ILobbyContext
 
 class WTRMainTooltip(ViewImpl):
-    __slots__ = ('__userId', )
+    __slots__ = ('__userId',)
     __itemsCache = dependency.descriptor(IItemsCache)
     __lobbyContext = dependency.descriptor(ILobbyContext)
 
@@ -31,7 +33,7 @@ class WTRMainTooltip(ViewImpl):
         stages = achievements20GeneralConfig.getStagesOfWTR()
         currentStage = WTRStageChecker(stages).getStage(accountWtr)
         battlesLeftCount = achievements20GeneralConfig.getRequiredCountOfBattles() - randomStats.getBattlesCount()
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setRequiredNumberOfBattles(0 if battlesLeftCount < 0 else battlesLeftCount)
             if currentStage:
                 model.setRank(currentStage[0])

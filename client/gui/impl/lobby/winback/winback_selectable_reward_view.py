@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/winback/winback_selectable_reward_view.py
 from collections import OrderedDict
 from copy import deepcopy
 from logging import getLogger
@@ -46,8 +48,11 @@ def getBonusPacker():
     return BonusUIPacker(mapping)
 
 
-_TYPES_ORDER = (
- 'heavyTank', 'mediumTank', 'lightTank', 'AT-SPG', 'SPG')
+_TYPES_ORDER = ('heavyTank',
+ 'mediumTank',
+ 'lightTank',
+ 'AT-SPG',
+ 'SPG')
 
 def _sortByNation(vehicleTuple):
     _, vehicleDict = vehicleTuple
@@ -86,11 +91,11 @@ def _sortAndClearVehicles(vehicles):
 
 def _showRewardView(result):
     if result and result.auxData and result.auxData.get(RES_SUCCESS):
-        WinbackRewardWindow(ctx={'quests': (), 
-           'bonuses': deepcopy(result.auxData[RES_SUCCESS]), 
-           'isOnlyDaily': False, 
-           'selectedRewards': True, 
-           'isLastWindow': False}).load()
+        WinbackRewardWindow(ctx={'quests': (),
+         'bonuses': deepcopy(result.auxData[RES_SUCCESS]),
+         'isOnlyDaily': False,
+         'selectedRewards': True,
+         'isLastWindow': False}).load()
 
 
 class WinbackSelectableRewardView(ViewImpl):
@@ -168,21 +173,21 @@ class WinbackSelectableRewardView(ViewImpl):
 
     def onClaimRewards(self):
         selectedRewards = self.__getSelectedRewards()
-        rewardsToChoose = [ (self.__bonuses[tabName]['selectableBonus'], [reward['id']]) for tabName, reward in selectedRewards.iteritems()
-                          ]
+        rewardsToChoose = [ (self.__bonuses[tabName]['selectableBonus'], [reward['id']]) for tabName, reward in selectedRewards.iteritems() ]
         self._selectableRewardManager.chooseRewards(rewardsToChoose, _showRewardView)
 
     def _update(self, selectableTokens):
         winbackConfig = self._winbackController.winbackConfig
         if not winbackConfig.isEnabled or not winbackConfig.isProgressionEnabled:
             return
-        selectableBonuses = self._selectableRewardManager.getAvailableSelectableBonuses(None if selectableTokens is None else (lambda tID: tID in selectableTokens))
-        for bonus in selectableBonuses:
-            level = int(getLevelFromSelectableToken(first(bonus.getValue())))
-            self.__bonuses[level] = self._createTabBonuses(level, bonus)
+        else:
+            selectableBonuses = self._selectableRewardManager.getAvailableSelectableBonuses(None if selectableTokens is None else (lambda tID: tID in selectableTokens))
+            for bonus in selectableBonuses:
+                level = int(getLevelFromSelectableToken(first(bonus.getValue())))
+                self.__bonuses[level] = self._createTabBonuses(level, bonus)
 
-        self.__bonuses = OrderedDict(sorted(self.__bonuses.iteritems(), key=lambda item: item[0]))
-        return
+            self.__bonuses = OrderedDict(sorted(self.__bonuses.iteritems(), key=lambda item: item[0]))
+            return
 
     def _createTabBonuses(self, level, bonus):
         currentTabBonuses = {}
@@ -200,13 +205,13 @@ class WinbackSelectableRewardView(ViewImpl):
                 tabType = RewardName.SELECTABLE_VEHICLE_FOR_GIFT.value
         else:
             raw = deepcopy(self._selectableRewardManager.getRawBonusOptions(bonus))
-            result = [ self.__createVehicleItem(giftId, opt, *self.__getOption(bonusType, opt)) for giftId, opt in raw.iteritems()
-                     ]
+            result = [ self.__createVehicleItem(giftId, opt, *self.__getOption(bonusType, opt)) for giftId, opt in raw.iteritems() ]
             currentTabBonuses['bonuses'] = OrderedDict(_sortAndClearVehicles(result))
         currentTabBonuses['isDiscount'] = tabType == RewardName.SELECTABLE_VEHICLE_DISCOUNT.value
         currentTabBonuses['isCompensation'] = bonusType == SelectableTypes.BLUEPRINTS
         currentTabBonuses['selectableBonus'] = bonus
-        currentTabBonuses['tooltipData'] = first(WinbackSelectableBonus(tabType, {'level': level, 'token': tokenName}).getTooltip())
+        currentTabBonuses['tooltipData'] = first(WinbackSelectableBonus(tabType, {'level': level,
+         'token': tokenName}).getTooltip())
         return currentTabBonuses
 
     def _onLoading(self, *args, **kwargs):
@@ -220,19 +225,12 @@ class WinbackSelectableRewardView(ViewImpl):
         return
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onClose, self.destroyWindow),
-         (
-          self.viewModel.onCategorySelect, self.onTabChange),
-         (
-          self.viewModel.onFilterReset, self.onFilterReset),
-         (
-          self.viewModel.onSelectReward, self.onSelectReward),
-         (
-          self.viewModel.onConfirm, self.onClaimRewards),
-         (
-          g_playerEvents.onDisconnected, self.destroyWindow))
+        return ((self.viewModel.onClose, self.destroyWindow),
+         (self.viewModel.onCategorySelect, self.onTabChange),
+         (self.viewModel.onFilterReset, self.onFilterReset),
+         (self.viewModel.onSelectReward, self.onSelectReward),
+         (self.viewModel.onConfirm, self.onClaimRewards),
+         (g_playerEvents.onDisconnected, self.destroyWindow))
 
     def _deselect(self, selectedName):
         isCompensation = self.__bonuses[self.__selectedTab]['isCompensation']
@@ -251,10 +249,7 @@ class WinbackSelectableRewardView(ViewImpl):
             for reward in self.__bonuses[self.__selectedTab]['bonuses'].itervalues():
                 reward['isSelected'] = False
 
-        if selectedName == deselectName:
-            return False
-        else:
-            return True
+        return False if selectedName == deselectName else True
 
     def _select(self, eventIdx, selectedName):
         self.__bonuses[self.__selectedTab]['bonuses'][selectedName]['isSelected'] = True
@@ -263,7 +258,7 @@ class WinbackSelectableRewardView(ViewImpl):
 
     def _updateTotalValues(self):
         selectedRewardsCount = 0
-        with self.viewModel.getCategories().transaction() as (tabs):
+        with self.viewModel.getCategories().transaction() as tabs:
             for tab in tabs:
                 count = self.__getSelectedCount(int(tab.getVehicleLevel()))
                 selectedRewardsCount += count
@@ -274,8 +269,7 @@ class WinbackSelectableRewardView(ViewImpl):
         self.viewModel.setSelectedRewardsCount(selectedRewardsCount)
 
     def __getSelectedRewards(self):
-        return OrderedDict(sorted([ (tabName, reward) for tabName, tabContent in self.__bonuses.iteritems() for reward in tabContent['bonuses'].itervalues() if reward['isSelected']
-                                  ], key=lambda item: item[0]))
+        return OrderedDict(sorted([ (tabName, reward) for tabName, tabContent in self.__bonuses.iteritems() for reward in tabContent['bonuses'].itervalues() if reward['isSelected'] ], key=lambda item: item[0]))
 
     def __getOption(self, bonusType, opt):
         intCD = -1
@@ -297,7 +291,10 @@ class WinbackSelectableRewardView(ViewImpl):
             intCD = first(option.getVehicleCDs())
             vehicle = self._itemsCache.items.getItemByCD(intCD)
         name = getNationLessName(vehicle.name)
-        return (name, intCD, vehicle, option)
+        return (name,
+         intCD,
+         vehicle,
+         option)
 
     def __selectTab(self, tabName):
         self.__selectedTab = tabName
@@ -305,8 +302,8 @@ class WinbackSelectableRewardView(ViewImpl):
         self._updateTotalValues()
 
     def __update(self):
-        with self.viewModel.transaction() as (tx):
-            with tx.getCategories().transaction() as (tabs):
+        with self.viewModel.transaction() as tx:
+            with tx.getCategories().transaction() as tabs:
                 tabs.clear()
                 for tabLevel, tabContent in self.__bonuses.iteritems():
                     newTab = tx.getCategoriesType()()
@@ -321,8 +318,8 @@ class WinbackSelectableRewardView(ViewImpl):
                     self.__selectTab(int(tabs[0].getVehicleLevel()))
 
     def __updateRewards(self):
-        with self.viewModel.transaction() as (tx):
-            with tx.getSelectableRewards().transaction() as (rewards):
+        with self.viewModel.transaction() as tx:
+            with tx.getSelectableRewards().transaction() as rewards:
                 needToApplyFilter = not self.__bonuses[self.__selectedTab]['isCompensation']
                 isNationsFilterEmpty = self.__isFilterEmpty(_NATIONS_KEY_NAME)
                 isTypesFilterEmpty = self.__isFilterEmpty(_TYPES_KEY_NAME)
@@ -332,8 +329,7 @@ class WinbackSelectableRewardView(ViewImpl):
 
                 bonuses = self.__bonuses[self.__selectedTab]['bonuses']
                 rewards.clear()
-                options = [ giftData['option'] for giftData in bonuses.itervalues() if needToApplyFilter and __isMatchFilter(giftData['vehicle']) or not needToApplyFilter
-                          ]
+                options = [ giftData['option'] for giftData in bonuses.itervalues() if needToApplyFilter and __isMatchFilter(giftData['vehicle']) or not needToApplyFilter ]
                 selectedIdx, selectedName = self.__getSelected(bonuses, options)
                 self.__tooltipData = {}
                 packMissionsBonusModelAndTooltipData(options, self._packer, rewards, self.__tooltipData)
@@ -355,35 +351,28 @@ class WinbackSelectableRewardView(ViewImpl):
         return (-1, None)
 
     def __getSelectedCount(self, tabName):
-        return sum(gift['isSelected'] for gift in self.__bonuses[tabName]['bonuses'].itervalues())
+        return sum((gift['isSelected'] for gift in self.__bonuses[tabName]['bonuses'].itervalues()))
 
     @staticmethod
     def __createBlueprintItem(giftId, gift):
-        return (
-         gift['option'].getImageCategory(),
-         {'id': giftId, 
-            'option': gift['option'], 
-            'count': gift['count'], 
-            'limit': gift['limit'], 
-            'isSelected': False})
+        return (gift['option'].getImageCategory(), {'id': giftId,
+          'option': gift['option'],
+          'count': gift['count'],
+          'limit': gift['limit'],
+          'isSelected': False})
 
     @staticmethod
     def __createVehicleItem(giftId, opt, name, intCD, vehicle, option):
-        if vehicle.isUnlocked:
-            return None
-        else:
-            return (
-             name,
-             {'id': giftId, 
-                'vehCD': intCD, 
-                'option': option, 
-                'vehicle': vehicle, 
-                'limit': opt['limit'], 
-                'count': opt['count'], 
-                'isSelected': False})
+        return None if vehicle.isUnlocked else (name, {'id': giftId,
+          'vehCD': intCD,
+          'option': option,
+          'vehicle': vehicle,
+          'limit': opt['limit'],
+          'count': opt['count'],
+          'isSelected': False})
 
     def __isFilterEmpty(self, key):
-        return not any(value for value in self.__filters[key].itervalues())
+        return not any((value for value in self.__filters[key].itervalues()))
 
     def __nationFit(self, veh):
         return self.__filters[_NATIONS_KEY_NAME][veh.nationName]
@@ -392,8 +381,8 @@ class WinbackSelectableRewardView(ViewImpl):
         return self.__filters[_TYPES_KEY_NAME][veh.type]
 
     def __resetFilters(self, init=False):
-        self.__filters = {_NATIONS_KEY_NAME: OrderedDict((nation, False) for nation in GUI_NATIONS), 
-           _TYPES_KEY_NAME: OrderedDict((t, False) for t in VEHICLE_TYPES_ORDER)}
+        self.__filters = {_NATIONS_KEY_NAME: OrderedDict(((nation, False) for nation in GUI_NATIONS)),
+         _TYPES_KEY_NAME: OrderedDict(((t, False) for t in VEHICLE_TYPES_ORDER))}
         if self.__filterPopover and self.__filterPopover.viewStatus == ViewStatus.LOADED:
             self.__filterPopover.updateFilterFromOutside(self.__filters)
         elif not init:

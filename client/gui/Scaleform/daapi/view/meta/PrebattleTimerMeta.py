@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/PrebattleTimerMeta.py
 from gui.Scaleform.daapi.view.battle.shared.prebattle_timers.timer_base import PreBattleTimerBase
 
 class PrebattleTimerMeta(PreBattleTimerBase):
@@ -9,13 +11,10 @@ class PrebattleTimerMeta(PreBattleTimerBase):
         self._printOverrideError('onHideInfo')
 
     def as_addInfoS(self, linkage, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_addInfo(linkage, data)
+        return self.flashObject.as_addInfo(linkage, data) if self._isDAAPIInited() else None
 
     def as_setInfoHintS(self, hint):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setInfoHint(hint)
+        return self.flashObject.as_setInfoHint(hint) if self._isDAAPIInited() else None
 
     def as_showInfoS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showInfo()
+        return self.flashObject.as_showInfo() if self._isDAAPIInited() else None

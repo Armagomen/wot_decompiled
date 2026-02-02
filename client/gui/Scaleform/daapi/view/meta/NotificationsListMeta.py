@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/NotificationsListMeta.py
 from gui.Scaleform.daapi.view.lobby.popover.SmartPopOverView import SmartPopOverView
 
 class NotificationsListMeta(SmartPopOverView):
@@ -18,33 +20,25 @@ class NotificationsListMeta(SmartPopOverView):
         self._printOverrideError('registerGFNotification')
 
     def as_setInitDataS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setInitData(value)
+        return self.flashObject.as_setInitData(value) if self._isDAAPIInited() else None
 
     def as_setMessagesListS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setMessagesList(value)
+        return self.flashObject.as_setMessagesList(value) if self._isDAAPIInited() else None
 
     def as_appendMessageS(self, messageData):
-        if self._isDAAPIInited():
-            return self.flashObject.as_appendMessage(messageData)
+        return self.flashObject.as_appendMessage(messageData) if self._isDAAPIInited() else None
 
     def as_updateMessageS(self, messageData):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateMessage(messageData)
+        return self.flashObject.as_updateMessage(messageData) if self._isDAAPIInited() else None
 
     def as_updateCountersS(self, counts):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateCounters(counts)
+        return self.flashObject.as_updateCounters(counts) if self._isDAAPIInited() else None
 
     def as_setProgressiveRewardEnabledS(self, isEnabled):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setProgressiveRewardEnabled(isEnabled)
+        return self.flashObject.as_setProgressiveRewardEnabled(isEnabled) if self._isDAAPIInited() else None
 
     def as_setIsNewsBlockEnabledS(self, isEnabled):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setIsNewsBlockEnabled(isEnabled)
+        return self.flashObject.as_setIsNewsBlockEnabled(isEnabled) if self._isDAAPIInited() else None
 
     def as_setCheckNewsBtnEnabledS(self, isEnabled):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setCheckNewsBtnEnabled(isEnabled)
+        return self.flashObject.as_setCheckNewsBtnEnabled(isEnabled) if self._isDAAPIInited() else None

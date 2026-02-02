@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/utils/requesters/quest_deltas_settings.py
 from UserDict import IterableUserDict
 import typing
 from account_helpers import AccountSettings

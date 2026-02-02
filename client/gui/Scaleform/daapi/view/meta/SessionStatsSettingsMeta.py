@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/SessionStatsSettingsMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class SessionStatsSettingsMeta(BaseDAAPIComponent):
@@ -15,13 +17,10 @@ class SessionStatsSettingsMeta(BaseDAAPIComponent):
         self._printOverrideError('onSettingsInputChanged')
 
     def as_setDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setData(data)
+        return self.flashObject.as_setData(data) if self._isDAAPIInited() else None
 
     def as_setControlsStateS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setControlsState(data)
+        return self.flashObject.as_setControlsState(data) if self._isDAAPIInited() else None
 
     def as_setBattleSettingsStatusS(self, value, showWarning):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setBattleSettingsStatus(value, showWarning)
+        return self.flashObject.as_setBattleSettingsStatus(value, showWarning) if self._isDAAPIInited() else None

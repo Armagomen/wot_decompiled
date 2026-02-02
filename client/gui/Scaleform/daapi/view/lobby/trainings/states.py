@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/trainings/states.py
 import typing
 from gui.Scaleform.framework.entities.View import ViewKey
 from gui.Scaleform.genConsts.PREBATTLE_ALIASES import PREBATTLE_ALIASES
@@ -34,7 +36,7 @@ class TrainingRoomState(SFViewLobbyState):
 
     @prbEntityProperty
     def prbEntity(self):
-        return
+        return None
 
     def _onEntered(self, event):
         super(TrainingRoomState, self)._onEntered(event)

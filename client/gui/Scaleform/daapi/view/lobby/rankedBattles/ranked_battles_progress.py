@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/rankedBattles/ranked_battles_progress.py
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import IS_FIRST_ENTRY_BY_DIVISION_ID
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -12,7 +14,7 @@ from skeletons.gui.game_control import IRankedBattlesController
 
 class RankedBattlesProgress(RankedBattlesDivisionProgressMeta, IResetablePage):
     __rankedController = dependency.descriptor(IRankedBattlesController)
-    __slots__ = ('__selectedDivisionIdx', )
+    __slots__ = ('__selectedDivisionIdx',)
 
     def __init__(self):
         super(RankedBattlesProgress, self).__init__()
@@ -81,12 +83,13 @@ class RankedBattlesProgress(RankedBattlesDivisionProgressMeta, IResetablePage):
 
     def __buildProgressData(self):
         selectedDivisionIDs = self.__getSelectedDivision().getRanksIDs()
-        ranksChain = self.__rankedController.getRanksChain(selectedDivisionIDs[0], selectedDivisionIDs[(-1)])
-        ranks = ranksChain[selectedDivisionIDs[0]:selectedDivisionIDs[(-1)] + 1]
+        ranksChain = self.__rankedController.getRanksChain(selectedDivisionIDs[0], selectedDivisionIDs[-1])
+        ranks = ranksChain[selectedDivisionIDs[0]:selectedDivisionIDs[-1] + 1]
         isFirstEntryMap = AccountSettings.getSettings(IS_FIRST_ENTRY_BY_DIVISION_ID)
         isFirstEntry = isFirstEntryMap.get(self.__selectedDivisionIdx, True)
         if isFirstEntry:
             isFirstEntryMap[self.__selectedDivisionIdx] = False
             AccountSettings.setSettings(IS_FIRST_ENTRY_BY_DIVISION_ID, isFirstEntryMap)
-        return {'blocks': [ divisions_vos.getRankVO(rank) for rank in ranks ], 'isLocked': not self.__getSelectedDivision().isUnlocked(), 
-           'isFirstEnter': isFirstEntry}
+        return {'blocks': [ divisions_vos.getRankVO(rank) for rank in ranks ],
+         'isLocked': not self.__getSelectedDivision().isUnlocked(),
+         'isFirstEnter': isFirstEntry}

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/achievements/views/achievements_main_view_model.py
 from enum import IntEnum
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.views.lobby.achievements.views.achievements.advanced_achievements_view_model import AdvancedAchievementsViewModel
@@ -9,7 +11,7 @@ class AchievementsViews(IntEnum):
 
 
 class AchievementsMainViewModel(ViewModel):
-    __slots__ = ('onClose', )
+    __slots__ = ('onClose',)
 
     def __init__(self, properties=4, commands=1):
         super(AchievementsMainViewModel, self).__init__(properties=properties, commands=commands)

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/consumables/opt_devices_ctrl.py
 import Event
 from PlayerEvents import g_playerEvents
 from constants import ARENA_PERIOD
@@ -7,12 +9,10 @@ from gui.battle_control.controllers.consumables.opt_device_in_battle import crea
 from gui.battle_control.controllers.consumables.opt_device_sound_ctrl import OptDeviceSoundController
 from gui.battle_control.controllers.interfaces import IBattleController
 from items import vehicles
-__all__ = ('OptionalDevicesController', )
+__all__ = ('OptionalDevicesController',)
 
 class OptionalDevicesController(IBattleController):
-    __slots__ = ('__eManager', '__optionalDevices', '__order', '__soundManager', '__sessionProvider',
-                 '__optionalDevicesInDescriptor', 'onOptionalDeviceAdded', 'onOptionalDeviceUpdated',
-                 'onOptionalDevicesCleared', 'onDescriptorDevicesChanged')
+    __slots__ = ('__eManager', '__optionalDevices', '__order', '__soundManager', '__sessionProvider', '__optionalDevicesInDescriptor', 'onOptionalDeviceAdded', 'onOptionalDeviceUpdated', 'onOptionalDevicesCleared', 'onDescriptorDevicesChanged')
 
     def __init__(self, setup):
         super(OptionalDevicesController, self).__init__()
@@ -28,7 +28,7 @@ class OptionalDevicesController(IBattleController):
         self.__optionalDevicesInDescriptor = []
 
     def __repr__(self):
-        return ('OptionalDevicesController({0!r:s})').format(self.__optionalDevices)
+        return 'OptionalDevicesController({0!r:s})'.format(self.__optionalDevices)
 
     def getControllerID(self):
         return BATTLE_CTRL_ID.OPTIONAL_DEVICES
@@ -71,13 +71,10 @@ class OptionalDevicesController(IBattleController):
 
     def isOptionalDeviceOn(self, deviceID):
         optDeviceInBattle = self.__optionalDevices.get(deviceID, None)
-        if optDeviceInBattle is not None:
-            return bool(optDeviceInBattle.getStatus())
-        else:
-            return False
+        return bool(optDeviceInBattle.getStatus()) if optDeviceInBattle is not None else False
 
     def isOptionalDeviceOnByCD(self, intCD):
-        itemID = vehicles.parseIntCompactDescr(intCD)[(-1)]
+        itemID = vehicles.parseIntCompactDescr(intCD)[-1]
         return self.isOptionalDeviceOn(itemID)
 
     def getOrderedOptionalDevicesLayout(self):
@@ -155,7 +152,7 @@ class OptionalDevicesController(IBattleController):
 
     def __invalidateOptionalDevices(self, vehicleID):
         optionalDevices = vehicle_getter.getOptionalDevicesByVehID(vehicleID)
-        optionalDevicesInDescriptor = [ d.id[1] if d is not None else None for d in optionalDevices ]
+        optionalDevicesInDescriptor = [ (d.id[1] if d is not None else None) for d in optionalDevices ]
         if optionalDevicesInDescriptor != self.__optionalDevicesInDescriptor:
             self.__soundManager.initDevices(optionalDevices)
             self.__optionalDevicesInDescriptor = optionalDevicesInDescriptor

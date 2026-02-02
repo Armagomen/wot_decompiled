@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/vse_hud_settings_ctrl/vse_hud_settings_ctrl.py
 import typing
 from Event import Event, EventManager
 from gui.battle_control.arena_info.interfaces import IVSEHUDSettingsController
@@ -14,18 +16,8 @@ from gui.battle_control.controllers.vse_hud_settings_ctrl.settings.progress_coun
 from gui.battle_control.controllers.vse_hud_settings_ctrl.settings.secondary_objective import SecondaryObjectiveClientModel
 from pve_battle_hud import getPveHudLogger, WidgetType
 _logger = getPveHudLogger()
-SettingsTypes = typing.Union[(
- AllyListClientModel,
- EnemyListClientModel,
- MinimapClientModel,
- CountdownClientModel,
- BattleCommunicationModel,
- ChatModel,
- RespawnHUDClientModel)]
-ItemSettingsTypes = typing.Union[(
- ProgressCounterClientModel,
- PrimaryObjectiveClientModel,
- SecondaryObjectiveClientModel)]
+SettingsTypes = typing.Union[AllyListClientModel, EnemyListClientModel, MinimapClientModel, CountdownClientModel, BattleCommunicationModel, ChatModel, RespawnHUDClientModel]
+ItemSettingsTypes = typing.Union[ProgressCounterClientModel, PrimaryObjectiveClientModel, SecondaryObjectiveClientModel]
 
 class VSEHUDSettingsController(IVSEHUDSettingsController):
     __slots__ = ('_settings', '_eManager', 'onSettingsChanged', 'onItemSettingsChanged')

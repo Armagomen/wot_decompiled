@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/dog_tags_common/player_dog_tag.py
 import typing
 from dog_tags_common.components_config import componentConfigAdapter
 from dog_tags_common.config.common import ComponentViewType
@@ -47,9 +49,7 @@ class PlayerDogTag(object):
         return self._components.itervalues()
 
     def __eq__(self, other):
-        if isinstance(other, PlayerDogTag):
-            return self.__dict__ == other.__dict__
-        return False
+        return self.__dict__ == other.__dict__ if isinstance(other, PlayerDogTag) else False
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -57,7 +57,7 @@ class PlayerDogTag(object):
     def __repr__(self):
         retStr = '('
         for component in self._components.values():
-            retStr += ('DogTagComponent(compId={}, value={}, grade={}), ').format(component.compId, component.value, component.grade)
+            retStr += 'DogTagComponent(compId={}, value={}, grade={}), '.format(component.compId, component.value, component.grade)
 
         retStr += ')'
         return retStr
@@ -66,13 +66,13 @@ class PlayerDogTag(object):
 
     @staticmethod
     def fromDict(dtDict):
-        comps = [ DogTagComponent(comp['id'], comp['progress'], comp['grade']) for comp in dtDict['components']
-                ]
+        comps = [ DogTagComponent(comp['id'], comp['progress'], comp['grade']) for comp in dtDict['components'] ]
         return PlayerDogTag(comps)
 
     def toDict(self):
-        return {'components': [ {'id': comp.compId, 'progress': comp.value, 'grade': comp.grade} for comp in self.getComponentIter()
-                       ]}
+        return {'components': [ {'id': comp.compId,
+                        'progress': comp.value,
+                        'grade': comp.grade} for comp in self.getComponentIter() ]}
 
 
 class DisplayableDogTag(object):
@@ -92,7 +92,7 @@ class DisplayableDogTag(object):
         return self._playerDT.getComponentByType(viewType)
 
     def __repr__(self):
-        return ('<PlayerDogTag(nickname={}, clantag={}, components={})>').format(self._nickName, self._clanTag, self._playerDT)
+        return '<PlayerDogTag(nickname={}, clantag={}, components={})>'.format(self._nickName, self._clanTag, self._playerDT)
 
     __str__ = __repr__
 

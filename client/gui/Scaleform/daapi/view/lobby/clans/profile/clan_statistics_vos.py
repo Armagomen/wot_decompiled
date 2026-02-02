@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/clans/profile/clan_statistics_vos.py
 from gui.Scaleform.daapi.view.lobby.clans.profile import getI18ArenaById
 from gui.Scaleform.daapi.view.lobby.profile.ProfileUtils import DetailedStatisticsUtils as SUtils
 from gui.Scaleform.daapi.view.lobby.profile.ProfileUtils import ProfileUtils as PUtils
@@ -10,14 +12,11 @@ from gui.shared.utils.functions import makeTooltip
 from helpers.i18n import makeString as _ms
 
 def _resourceParam(value):
-    return ('').join((text_styles.defRes(value), icons.nutStat()))
+    return ''.join((text_styles.defRes(value), icons.nutStat()))
 
 
 def _getTooltip(headerKey, bodyKey, ratingOutdated=False):
-    if ratingOutdated:
-        return makeTooltip(headerKey, bodyKey, None, CL.GLOBALMAPVIEW_TOOLTIP_RATINGOUTDATED)
-    else:
-        return makeTooltip(headerKey, bodyKey)
+    return makeTooltip(headerKey, bodyKey, None, CL.GLOBALMAPVIEW_TOOLTIP_RATINGOUTDATED) if ratingOutdated else makeTooltip(headerKey, bodyKey)
 
 
 def _getDataObject(key, i18nFunc, value, ratingOutdated=False, tooltipData=None):
@@ -32,10 +31,10 @@ def _getDataObject(key, i18nFunc, value, ratingOutdated=False, tooltipData=None)
 def _getDataObjectTruncatedValue(key, i18nFunc, value):
     tooltip = _getTooltip(_ms(i18nFunc(key + '/tooltip/header'), value=value), _ms(i18nFunc(key + '/tooltip/body'), value=value))
     data = SUtils.getDetailedDataObject(i18nFunc(key), value, tooltip)
-    data.update({'isUseTextStyle': True, 
-       'truncateVo': {'isUseTruncate': True, 
-                      'textStyle': 'statsText', 
-                      'maxWidthTF': 100}})
+    data.update({'isUseTextStyle': True,
+     'truncateVo': {'isUseTruncate': True,
+                    'textStyle': 'statsText',
+                    'maxWidthTF': 100}})
     return data
 
 
@@ -45,8 +44,7 @@ def _getLevelParams(i18nFunc, battlesCountGetter, winsEfficiencyGetter, eloRatin
     eloRating = formatField(getter=eloRatingGetter, formatter=backport.getIntegralFormat)
     place = formatField(getter=placeGetter, formatter=backport.getIntegralFormat)
     favArenaName = formatField(getter=favArenaNameGetter, formatter=getI18ArenaById)
-    return [
-     _getDataObject('battles', i18nFunc, battlesCount),
+    return [_getDataObject('battles', i18nFunc, battlesCount),
      _getDataObject('wins', i18nFunc, winsEfficiency),
      _getDataObject('eloRating', i18nFunc, eloRating),
      _getDataObject('place', i18nFunc, place, ratingOutdated),
@@ -57,23 +55,12 @@ class FortGlobalMapStatistics(BaseDictStatisticsVO):
 
     def _getHeaderData(self, data):
         stats = data['stats']
-        return (
-         PUtils.packLditItemData(formatField(getter=stats.getBattlesCount, formatter=backport.getIntegralFormat), CL.GLOBALMAPVIEW_STATS_BATTLES, CL.GLOBALMAPVIEW_STATS_BATTLES_TOOLTIP, 'battles40x32.png'),
-         PUtils.packLditItemData(formatField(getter=stats.getWinsEfficiency, formatter=PUtils.formatFloatPercent), CL.GLOBALMAPVIEW_STATS_WINS, CL.GLOBALMAPVIEW_STATS_WINS_TOOLTIP, 'wins40x32.png'),
-         PUtils.packLditItemData(formatField(getter=stats.getCapturedProvincesCount, formatter=backport.getIntegralFormat), CL.GLOBALMAPVIEW_STATS_SEIZED, CL.GLOBALMAPVIEW_STATS_SEIZED_TOOLTIP, 'seizedProvinces40x32.png'))
+        return (PUtils.packLditItemData(formatField(getter=stats.getBattlesCount, formatter=backport.getIntegralFormat), CL.GLOBALMAPVIEW_STATS_BATTLES, CL.GLOBALMAPVIEW_STATS_BATTLES_TOOLTIP, 'battles40x32.png'), PUtils.packLditItemData(formatField(getter=stats.getWinsEfficiency, formatter=PUtils.formatFloatPercent), CL.GLOBALMAPVIEW_STATS_WINS, CL.GLOBALMAPVIEW_STATS_WINS_TOOLTIP, 'wins40x32.png'), PUtils.packLditItemData(formatField(getter=stats.getCapturedProvincesCount, formatter=backport.getIntegralFormat), CL.GLOBALMAPVIEW_STATS_SEIZED, CL.GLOBALMAPVIEW_STATS_SEIZED_TOOLTIP, 'seizedProvinces40x32.png'))
 
     def _getDetailedData(self, data):
         stats = data['stats']
         ratings = data['ratings']
         favouriteAttrs = data['favouriteAttrs']
         ratingsOutDated = ratings.isGlobalMapOutdated()
-        columns = [
-         [
-          PUtils.getLabelDataObject(CL.GLOBALMAPVIEW_LEVEL10, _getLevelParams(CL.globalmapview_statistics10, stats.getBattles10LevelCount, stats.getWins10LevelEfficiency, ratings.getGlobalMapEloRating10, ratings.getGlobalMapEloRatingRank10, favouriteAttrs.getFavouriteArena10, ratingsOutDated))],
-         [
-          PUtils.getLabelDataObject(CL.GLOBALMAPVIEW_LEVEL8, _getLevelParams(CL.globalmapview_statistics8, stats.getBattles8LevelCount, stats.getWins8LevelEfficiency, ratings.getGlobalMapEloRating8, ratings.getGlobalMapEloRatingRank8, favouriteAttrs.getFavouriteArena8, ratingsOutDated))],
-         [
-          PUtils.getLabelDataObject(CL.GLOBALMAPVIEW_LEVEL6, _getLevelParams(CL.globalmapview_statistics6, stats.getBattles6LevelCount, stats.getWins6LevelEfficiency, ratings.getGlobalMapEloRating6, ratings.getGlobalMapEloRatingRank6, favouriteAttrs.getFavouriteArena6, ratingsOutDated))]]
-        return (
-         PUtils.getLabelViewTypeDataObject(CL.GLOBALMAPVIEW_TABS_STATS, columns, PUtils.VIEW_TYPE_TABLES),
-         PUtils.getLabelViewTypeDataObject(CL.GLOBALMAPVIEW_TABS_PROVINCES, None, PUtils.VIEW_TYPE_TABLE))
+        columns = [[PUtils.getLabelDataObject(CL.GLOBALMAPVIEW_LEVEL10, _getLevelParams(CL.globalmapview_statistics10, stats.getBattles10LevelCount, stats.getWins10LevelEfficiency, ratings.getGlobalMapEloRating10, ratings.getGlobalMapEloRatingRank10, favouriteAttrs.getFavouriteArena10, ratingsOutDated))], [PUtils.getLabelDataObject(CL.GLOBALMAPVIEW_LEVEL8, _getLevelParams(CL.globalmapview_statistics8, stats.getBattles8LevelCount, stats.getWins8LevelEfficiency, ratings.getGlobalMapEloRating8, ratings.getGlobalMapEloRatingRank8, favouriteAttrs.getFavouriteArena8, ratingsOutDated))], [PUtils.getLabelDataObject(CL.GLOBALMAPVIEW_LEVEL6, _getLevelParams(CL.globalmapview_statistics6, stats.getBattles6LevelCount, stats.getWins6LevelEfficiency, ratings.getGlobalMapEloRating6, ratings.getGlobalMapEloRatingRank6, favouriteAttrs.getFavouriteArena6, ratingsOutDated))]]
+        return (PUtils.getLabelViewTypeDataObject(CL.GLOBALMAPVIEW_TABS_STATS, columns, PUtils.VIEW_TYPE_TABLES), PUtils.getLabelViewTypeDataObject(CL.GLOBALMAPVIEW_TABS_PROVINCES, None, PUtils.VIEW_TYPE_TABLE))

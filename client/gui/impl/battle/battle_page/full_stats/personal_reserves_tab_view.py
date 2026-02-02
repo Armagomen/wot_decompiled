@@ -1,4 +1,8 @@
-import logging, typing, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/battle/battle_page/full_stats/personal_reserves_tab_view.py
+import logging
+import typing
+import BigWorld
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.impl.common.personal_reserves.personal_reserves_shared_constants import PERSONAL_RESOURCE_ORDER
 from gui.impl.common.personal_reserves.personal_reserves_shared_model_utils import getPersonalBoosterModelDataByResourceType, addPersonalBoostersGroup, addEventGroup
@@ -24,7 +28,7 @@ if typing.TYPE_CHECKING:
 _logger = logging.getLogger(__name__)
 
 class PersonalReservesTabView(ViewImpl):
-    __slots__ = ('_notificatorManager', )
+    __slots__ = ('_notificatorManager',)
     _boostersStateProvider = dependency.descriptor(IBoostersStateProvider)
 
     def __init__(self):
@@ -47,11 +51,7 @@ class PersonalReservesTabView(ViewImpl):
         super(PersonalReservesTabView, self)._finalize()
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onBoosterActivate, self.onBoosterActivate),
-         (
-          self._boostersStateProvider.onStateUpdated, self._update))
+        return ((self.viewModel.onBoosterActivate, self.onBoosterActivate), (self._boostersStateProvider.onStateUpdated, self._update))
 
     def handleTabChange(self, tabAlias):
         _logger.debug('_handleFullStatsSelected: alias[%s]', tabAlias)
@@ -85,7 +85,7 @@ class PersonalReservesTabView(ViewImpl):
 
     def fillViewModel(self):
         boosterModelsArgsByType = getPersonalBoosterModelDataByResourceType(self._boostersStateProvider)
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             groupArray = model.getReserveGroups()
             groupArray.clear()
             for resourceType in PERSONAL_RESOURCE_ORDER:

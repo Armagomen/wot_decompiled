@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/uilogging/advanced_achievement/logger.py
 from typing import TYPE_CHECKING
 from advanced_achievements_client.getters import getAchievementByID
 from helpers import dependency
@@ -23,11 +25,11 @@ class AdvancedAchievementMetricsLoger(MetricsLogger):
 
 
 class AdvancedAchievementLogger(AdvancedAchievementMetricsLoger):
-    __slots__ = ('_parentViewKey', )
+    __slots__ = ('_parentViewKey',)
     __achievementsController = dependency.descriptor(IAchievementsController)
-    __SUBCATEGORY = {'vehicleAchievements': {1: AdvancedAchievementSubcategory.VEHICLE, 
-                               2: AdvancedAchievementSubcategory.NATIONS}, 
-       'customizationAchievements': {1: AdvancedAchievementSubcategory.CUSTOMIZATION}}
+    __SUBCATEGORY = {'vehicleAchievements': {1: AdvancedAchievementSubcategory.VEHICLE,
+                             2: AdvancedAchievementSubcategory.NATIONS},
+     'customizationAchievements': {1: AdvancedAchievementSubcategory.CUSTOMIZATION}}
 
     def __init__(self, parentViewKey):
         super(AdvancedAchievementLogger, self).__init__()
@@ -60,9 +62,7 @@ class AdvancedAchievementLogger(AdvancedAchievementMetricsLoger):
     def __getStateInfo(self, progress):
         if progress == 0:
             return AdvancedAchievementStates.NO_PROGRESS
-        if progress >= 100:
-            return AdvancedAchievementStates.COMPLETED
-        return AdvancedAchievementStates.IN_PROGRESS
+        return AdvancedAchievementStates.COMPLETED if progress >= 100 else AdvancedAchievementStates.IN_PROGRESS
 
 
 class AdvancedAchievementEarningLogger(AdvancedAchievementMetricsLoger):
@@ -77,7 +77,7 @@ class AdvancedAchievementEarningLogger(AdvancedAchievementMetricsLoger):
 
 
 class AdvancedAchievementRewardLogger(AdvancedAchievementMetricsLoger):
-    __slots__ = ('_parentViewKey', )
+    __slots__ = ('_parentViewKey',)
 
     def __init__(self, parentViewKey):
         super(AdvancedAchievementRewardLogger, self).__init__()

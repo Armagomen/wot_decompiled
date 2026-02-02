@@ -1,6 +1,16 @@
-import imghdr, itertools, sys, inspect, uuid, struct
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/utils/__init__.py
+import imghdr
+import itertools
+import sys
+import inspect
+import uuid
+import struct
 from collections import namedtuple
-import BigWorld, AccountCommands, Settings, constants
+import BigWorld
+import AccountCommands
+import Settings
+import constants
 from debug_utils import LOG_CURRENT_EXCEPTION, LOG_ERROR, LOG_DEBUG, LOG_WARNING
 from gui.impl import backport
 from gui.impl.gen import R
@@ -14,6 +24,7 @@ RELOAD_TIME_SECS_PROP_NAME = 'reloadTimeSecs'
 RELOAD_TIME_PROP_NAME = 'reloadTime'
 RELOAD_MAGAZINE_TIME_PROP_NAME = 'reloadMagazineTime'
 SHELL_RELOADING_TIME_PROP_NAME = 'shellReloadingTime'
+SHELL_LOADING_TIME_PROP_NAME = 'shellLoadingTime'
 DISPERSION_RADIUS_PROP_NAME = 'dispersionRadius'
 SHOT_DISPERSION_ANGLE = 'shotDispersionAngle'
 DISPERSION_RADIUS = 'dispertionRadius'
@@ -35,6 +46,8 @@ BURST_FIRE_RATE = 'burstFireRate'
 BURST_TIME_INTERVAL = 'burstTimeInterval'
 BURST_COUNT = 'burstCount'
 BURST_SIZE = 'burstSize'
+TEMPERATURE_RELOAD_TIME = 'temperatureReloadTime'
+TEMPERATURE_AVG_DAMAGE_PER_MINUTE = 'temperatureAvgDamagePerMinute'
 WHEELED_SWITCH_ON_TIME = 'wheeledSwitchOnTime'
 WHEELED_SWITCH_OFF_TIME = 'wheeledSwitchOffTime'
 WHEELED_SWITCH_TIME = 'wheeledSwitchTime'
@@ -79,14 +92,12 @@ EXTRA_MODULE_INFO = 'extraModuleInfo'
 FIELD_SPECIALIZATIONS = 'specs'
 FIELD_HIGHLIGHT_TYPE = 'highlightType'
 _FLASH_OBJECT_SYS_ATTRS = ('isPrototypeOf', 'propertyIsEnumerable', 'hasOwnProperty')
-ValidationResult = namedtuple('ValidationResult', [
- 'isValid',
- 'reason'])
+ValidationResult = namedtuple('ValidationResult', ['isValid', 'reason'])
 
 def flashObject2Dict(obj):
     if hasattr(obj, 'children'):
-        filtered = itertools.ifilter(lambda (x, y): x not in _FLASH_OBJECT_SYS_ATTRS, obj.children.iteritems())
-        return dict((k, flashObject2Dict(v)) for k, v in filtered)
+        filtered = itertools.ifilter(lambda item: item[0] not in _FLASH_OBJECT_SYS_ATTRS, obj.children.iteritems())
+        return dict(((k, flashObject2Dict(v)) for k, v in filtered))
     return obj
 
 
@@ -109,9 +120,7 @@ def code2str(code):
         return 'Identical requests cooldown'
     if code == AccountCommands.RES_HIDDEN_DOSSIER:
         return 'Player dossier is hidden'
-    if code == AccountCommands.RES_CENTER_DISCONNECTED:
-        return 'Dossiers are unavailable'
-    return 'Unknown error code'
+    return 'Dossiers are unavailable' if code == AccountCommands.RES_CENTER_DISCONNECTED else 'Unknown error code'
 
 
 def isVehicleObserver(vehTypeCompDescr):
@@ -144,8 +153,6 @@ def sortByFields(fields, sequence, valueGetter=dict.get):
                     return cmp(fieldValueX, fieldValueY)
                 return cmp(fieldValueY, fieldValueX)
 
-        return 0
-
     return sorted(sequence, cmp=comparator)
 
 
@@ -156,10 +163,10 @@ def roundByModulo(value, rate):
     return value
 
 
-_STR_CASING_OPTIONS = {'el': (8, 1, 0), 
-   'ro': (24, 1, 0), 
-   'tr': (31, 1, 0)}
-_REPLACEMENTS = {'el': ('ΆΈΊΉΎΌΏ', 'ΑΕΙΗΥΟΩ')}
+_STR_CASING_OPTIONS = {'el': (8, 1, 0),
+ 'ro': (24, 1, 0),
+ 'tr': (31, 1, 0)}
+_REPLACEMENTS = {'el': (u'\u0386\u0388\u038a\u0389\u038e\u038c\u038f', u'\u0391\u0395\u0399\u0397\u03a5\u039f\u03a9')}
 
 def changeStringCasing(string, isUpper):
     langID = getLanguageCode()
@@ -204,9 +211,7 @@ class SettingRecord(dict):
         self.__setitem__(name, value)
 
     def __getattr__(self, item):
-        if item in self:
-            return self.__getitem__(item)
-        return dict.__getattribute__(self, item)
+        return self.__getitem__(item) if item in self else dict.__getattribute__(self, item)
 
     def _asdict(self):
         return dict(self)
@@ -222,11 +227,11 @@ class SettingRootRecord(SettingRecord):
         try:
             return cls(**AccountSettings.getSettings(cls._getSettingName()))
         except Exception:
-            LOG_ERROR(('There is error while unpacking {} settings').format(cls._getSettingName()), AccountSettings.getSettings(cls._getSettingName()))
+            LOG_ERROR('There is error while unpacking {} settings'.format(cls._getSettingName()), AccountSettings.getSettings(cls._getSettingName()))
             LOG_CURRENT_EXCEPTION()
-            return
+            return None
 
-        return
+        return None
 
     def save(self):
         return AccountSettings.setSettings(self._getSettingName(), self._asdict())
@@ -244,8 +249,9 @@ def mapTextureToTheMemory(textureData, uniqueID=None, temp=True):
         else:
             BigWorld.wg_addScaleformTexture(uniqueID, textureData)
         return uniqueID
-    LOG_WARNING('There is invalid data for the memory mapping', textureData, uniqueID)
-    return
+    else:
+        LOG_WARNING('There is invalid data for the memory mapping', textureData, uniqueID)
+        return
 
 
 def removeTextureFromMemory(textureID):
@@ -266,8 +272,7 @@ def getImageSize(imageData):
         elif imgType == 'jpeg':
             LOG_WARNING('JPEG image type is not supported')
             width, height = (None, None)
-    return (
-     width, height)
+    return (width, height)
 
 
 def showInvitationInWindowsBar():
@@ -286,9 +291,7 @@ def getPlayerName():
 
 
 def avg(devidend, devider):
-    if devider > 0:
-        return float(devidend) / devider
-    return 0
+    return float(devidend) / devider if devider > 0 else 0
 
 
 def weightedAvg(*args):
@@ -301,9 +304,7 @@ def weightedAvg(*args):
         valSum += values[i] * weight
         weightSum += weight
 
-    if weightSum != 0:
-        return float(valSum) / weightSum
-    return 0
+    return float(valSum) / weightSum if weightSum != 0 else 0
 
 
 def makeSearchableString(inputString):
@@ -316,14 +317,10 @@ def makeSearchableString(inputString):
 def isPopupsWindowsOpenDisabled():
     userPrefs = Settings.g_instance.userPrefs
     ds = userPrefs['development']
-    if ds is not None:
-        return ds.readBool(Settings.POPUPS_WINDOWS_DISABLED) and constants.IS_DEVELOPMENT
-    else:
-        return False
+    return ds.readBool(Settings.POPUPS_WINDOWS_DISABLED) and constants.IS_DEVELOPMENT if ds is not None else False
 
 
-_ROMAN_FORBIDDEN_LANGUAGES = {
- 'ko', 'no'}
+_ROMAN_FORBIDDEN_LANGUAGES = {'ko', 'no'}
 
 def isRomanNumberForbidden():
     return bool(_ROMAN_FORBIDDEN_LANGUAGES.intersection((backport.text(R.strings.settings.LANGUAGE_CODE()),)))

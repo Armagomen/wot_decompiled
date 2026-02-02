@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/xmpp/extensions/contact_item.py
 from messenger.proto.xmpp.extensions import PyExtension
 from messenger.proto.xmpp.extensions.ext_constants import XML_TAG_NAME as _TAG
 from messenger.proto.xmpp.extensions.wg_items import WgSharedExtension
@@ -22,5 +24,4 @@ class ContactItemExtension(PyExtension):
         else:
             jid = None
         info = self._getChildData(pyGlooxTag, 0, WgSharedExtension.getDefaultData())
-        return (
-         jid, info)
+        return (jid, info)

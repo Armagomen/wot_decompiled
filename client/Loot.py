@@ -1,4 +1,8 @@
-import BigWorld, CGF, Math
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/Loot.py
+import BigWorld
+import CGF
+import Math
 from battleground.loot_object import loadLootById
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE
 from battle_royale.gui.shared.events import LootEvent

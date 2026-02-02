@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/gift_system/hubs/base/stamper.py
 import typing
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.gift_system.hubs.subsystems import BaseHubSubsystem
@@ -28,8 +30,8 @@ class GiftEventBaseStamper(IGiftEventStamper):
         self.__updateCallback = updateCallback
         self.__isBalanceAvailable = self.__wasBalanceAvailable = False
         self.__initBalanceWatchers()
-        g_clientUpdateManager.addCallbacks({'cache.mayConsumeWalletResources': self.__updateBalanceAvailability, 
-           'cache.entitlements': self.__updateBalanceContent})
+        g_clientUpdateManager.addCallbacks({'cache.mayConsumeWalletResources': self.__updateBalanceAvailability,
+         'cache.entitlements': self.__updateBalanceContent})
 
     def destroy(self):
         self.__itemsCache.onSyncCompleted -= self.__onItemsSyncCompleted

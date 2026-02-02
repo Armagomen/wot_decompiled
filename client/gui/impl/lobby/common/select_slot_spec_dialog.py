@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/common/select_slot_spec_dialog.py
 import typing
 from BWUtil import AsyncReturn
 from wg_async import wg_async, wg_await
@@ -88,14 +90,14 @@ class SelectSlotSpecDialog(BuyAndExchange[SelectSlotSpecDialogModel]):
         self._onAccept()
 
     def _stateToContent(self):
-        return {BuyAndExchangeStateEnum.BUY_CONTENT: BuyAndExchangeBottomContentType.DEAL_PANEL, 
-           BuyAndExchangeStateEnum.BUY_NOT_REQUIRED: SelectSlotSpecDialogModel.BUY_NOT_REQUIRED_PANEL, 
-           BuyAndExchangeStateEnum.NEED_EXCHANGE: BuyAndExchangeBottomContentType.EXCHANGE_PANEL, 
-           BuyAndExchangeStateEnum.CAN_NOT_BUY: BuyAndExchangeBottomContentType.EXCHANGE_PANEL, 
-           BuyAndExchangeStateEnum.EXCHANGE_CONTENT: BuyAndExchangeBottomContentType.EXCHANGE_PANEL, 
-           BuyAndExchangeStateEnum.EXCHANGE_IN_PROCESS: BuyAndExchangeBottomContentType.EXCHANGE_PANEL, 
-           BuyAndExchangeStateEnum.GOLD_NOT_ENOUGH: BuyAndExchangeBottomContentType.EXCHANGE_PANEL, 
-           BuyAndExchangeStateEnum.EXCHANGE_NOT_REQUIRED: BuyAndExchangeBottomContentType.DEAL_PANEL}
+        return {BuyAndExchangeStateEnum.BUY_CONTENT: BuyAndExchangeBottomContentType.DEAL_PANEL,
+         BuyAndExchangeStateEnum.BUY_NOT_REQUIRED: SelectSlotSpecDialogModel.BUY_NOT_REQUIRED_PANEL,
+         BuyAndExchangeStateEnum.NEED_EXCHANGE: BuyAndExchangeBottomContentType.EXCHANGE_PANEL,
+         BuyAndExchangeStateEnum.CAN_NOT_BUY: BuyAndExchangeBottomContentType.EXCHANGE_PANEL,
+         BuyAndExchangeStateEnum.EXCHANGE_CONTENT: BuyAndExchangeBottomContentType.EXCHANGE_PANEL,
+         BuyAndExchangeStateEnum.EXCHANGE_IN_PROCESS: BuyAndExchangeBottomContentType.EXCHANGE_PANEL,
+         BuyAndExchangeStateEnum.GOLD_NOT_ENOUGH: BuyAndExchangeBottomContentType.EXCHANGE_PANEL,
+         BuyAndExchangeStateEnum.EXCHANGE_NOT_REQUIRED: BuyAndExchangeBottomContentType.DEAL_PANEL}
 
     def _onAcceptClicked(self):
         if self._getCurrentDialogState() == BuyAndExchangeStateEnum.EXCHANGE_NOT_REQUIRED:

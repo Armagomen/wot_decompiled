@@ -1,19 +1,24 @@
-import logging, typing, BigWorld, Event
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_results/service.py
+import logging
+import typing
+import BigWorld
+import Event
 from Account import PlayerAccount
 from adisp import adisp_async, adisp_process
 from constants import ARENA_BONUS_TYPE, PREMIUM_TYPE, PlayerSatisfactionRating
-from debug_utils import LOG_CURRENT_EXCEPTION, LOG_WARNING
+from frameworks.state_machine import BaseStateObserver
 from frameworks.wulf import WindowLayer
 from gui import SystemMessages
+from gui.Scaleform.lobby_entry import getLobbyStateMachine
 from gui.battle_results import context, emblems, reusable, stored_sorting
 from gui.battle_results.pbs_helpers.common import pushNoBattleResultsDataMessage
 from gui.battle_results.composer import RegularStatsComposer
 from gui.battle_results.random_stats_ctrl import RandomBattleResultStatsCtrl
 from gui.battle_results.settings import PREMIUM_STATE
-from gui.shared import event_dispatcher, events, g_eventBus
+from gui.shared import event_dispatcher, events, g_eventBus, EVENT_BUS_SCOPE
 from gui.shared.gui_items.processors.common import BattleResultsGetter, PremiumBonusApplier
 from gui.shared.gui_items.processors.player_satisfaction_rating import PlayerSatisfactionRatingProcessor
-from gui.shared.lock_overlays import lockNotificationManager
 from gui.shared.system_factory import collectBattleResultStatsCtrl
 from gui.shared.utils import decorators
 from helpers import dependency
@@ -70,6 +75,10 @@ def createStatsCtrl(reusableInfo):
     return statsCtrl(reusableInfo)
 
 
+class PostBattleResultsStateMixin(object):
+    pass
+
+
 class BattleResultsService(IBattleResultsService):
     battleMatters = dependency.descriptor(IBattleMattersController)
     itemsCache = dependency.descriptor(IItemsCache)
@@ -77,8 +86,7 @@ class BattleResultsService(IBattleResultsService):
     sessionProvider = dependency.descriptor(IBattleSessionProvider)
     wotPlusController = dependency.descriptor(IWotPlusController)
     appLoader = dependency.descriptor(IAppLoader)
-    __slots__ = ('__battleResults', '__statsCtrls', '__buy', '__eventsManager', 'onResultPosted',
-                 '__appliedAddXPBonus', '__playerSatisfactionRatings')
+    __slots__ = ('__battleResults', '__statsCtrls', '__buy', '__eventsManager', 'onResultPosted', '__appliedAddXPBonus', '__playerSatisfactionRatings')
 
     def __init__(self):
         super(BattleResultsService, self).__init__()
@@ -125,8 +133,7 @@ class BattleResultsService(IBattleResultsService):
             self.__notifyBattleResultsPosted(arenaUniqueID, needToShowUI=ctx.needToShowIfPosted())
         else:
             results = yield BattleResultsGetter(arenaUniqueID).request()
-            if not results.success and ctx.getArenaBonusType() in (ARENA_BONUS_TYPE.MAPS_TRAINING,
-             ARENA_BONUS_TYPE.EPIC_BATTLE):
+            if not results.success and ctx.getArenaBonusType() in (ARENA_BONUS_TYPE.MAPS_TRAINING, ARENA_BONUS_TYPE.EPIC_BATTLE):
                 results = yield self.waitForBattleResults(arenaUniqueID)
             isSuccess = results.success
             if not isSuccess or not self.postResult(results.auxData, ctx.needToShowIfPosted()):
@@ -142,7 +149,7 @@ class BattleResultsService(IBattleResultsService):
         if fetcher is not None:
             fetcher.fetch(callback)
         else:
-            LOG_WARNING('Icon fetcher is not found', ctx)
+            _logger.warning('Icon fetcher is not found %r', ctx)
             if callback is not None:
                 callback(None)
         return
@@ -217,10 +224,7 @@ class BattleResultsService(IBattleResultsService):
 
     def getAdditionalXPValue(self, arenaUniqueID):
         arenaInfo = self.__getAdditionalXPBattles().get(arenaUniqueID)
-        if arenaInfo is None:
-            return 0
-        else:
-            return arenaInfo.extraXP
+        return 0 if arenaInfo is None else arenaInfo.extraXP
 
     @adisp_process
     def submitPlayerSatisfactionRating(self, arenaUniqueID, rating):
@@ -247,8 +251,8 @@ class BattleResultsService(IBattleResultsService):
         arenaInfo = self.__getAdditionalXPBattles().get(arenaUniqueID)
         vehicle = self.getVehicleForArena(arenaUniqueID)
         if arenaInfo is not None and vehicle is not None:
-            currentCrew = set(tankman.invID for _, tankman in vehicle.crew if tankman is not None)
-            lastCrew = set(tankmanID for tankmanID, _ in arenaInfo.extraTmenXP)
+            currentCrew = set((tankman.invID for _, tankman in vehicle.crew if tankman is not None))
+            lastCrew = set((tankmanID for tankmanID, _ in arenaInfo.extraTmenXP))
             return currentCrew == lastCrew
         else:
             return False
@@ -256,17 +260,11 @@ class BattleResultsService(IBattleResultsService):
     def isXPToTManSameForArena(self, arenaUniqueID):
         arenaInfo = self.__getAdditionalXPBattles().get(arenaUniqueID)
         vehicle = self.getVehicleForArena(arenaUniqueID)
-        if arenaInfo is not None and vehicle is not None:
-            return vehicle.isXPToTman == arenaInfo.isXPToTMan
-        else:
-            return False
+        return vehicle.isXPToTman == arenaInfo.isXPToTMan if arenaInfo is not None and vehicle is not None else False
 
     def getVehicleForArena(self, arenaUniqueID):
         arenaInfo = self.__getAdditionalXPBattles().get(arenaUniqueID)
-        if arenaInfo is not None:
-            return self.itemsCache.items.getItemByCD(arenaInfo.vehicleID)
-        else:
-            return
+        return self.itemsCache.items.getItemByCD(arenaInfo.vehicleID) if arenaInfo is not None else None
 
     def notifyBattleResultsPosted(self, arenaUniqueID, needToShowUI=False):
         self.__notifyBattleResultsPosted(arenaUniqueID, needToShowUI)
@@ -303,6 +301,8 @@ class BattleResultsService(IBattleResultsService):
 
     def __handleLobbyViewLoaded(self, _):
         self.appLoader.getApp().containerManager.onViewLoaded += self.__onViewLoaded
+        lsm = getLobbyStateMachine()
+        lsm.connect(_PostBattleStatesObserver())
 
     def __onViewLoaded(self, view):
         if view.layer != WindowLayer.SUB_VIEW:
@@ -312,16 +312,20 @@ class BattleResultsService(IBattleResultsService):
             battleCtx = self.sessionProvider.getCtx()
             arenaUniqueID = battleCtx.lastArenaUniqueID
             arenaBonusType = battleCtx.lastArenaBonusType or ARENA_BONUS_TYPE.UNKNOWN
+            notifyProcessed = False
             if arenaUniqueID:
                 try:
-                    lockNotificationManager(True, source=type(self).__name__)
                     self.__showResults(context.RequestResultsContext(arenaUniqueID, arenaBonusType))
-                    lockNotificationManager(False, source=type(self).__name__, releasePostponed=True)
-                except Exception:
-                    LOG_CURRENT_EXCEPTION()
+                except Exception as exc:
+                    _logger.exception(exc)
+                    notifyProcessed = True
 
                 battleCtx.lastArenaUniqueID = None
                 battleCtx.lastArenaBonusType = None
+            else:
+                notifyProcessed = True
+            if notifyProcessed:
+                g_eventBus.handleEvent(events.LobbySimpleEvent(events.LobbySimpleEvent.BATTLE_RESULTS_PROCESSED), scope=EVENT_BUS_SCOPE.LOBBY)
             return
 
     @adisp_async
@@ -395,3 +399,13 @@ class BattleResultsService(IBattleResultsService):
         if callback is not None:
             callback(results)
         return
+
+
+class _PostBattleStatesObserver(BaseStateObserver):
+
+    def isObservingState(self, state):
+        return isinstance(state, PostBattleResultsStateMixin)
+
+    def onEnterState(self, state, event):
+        g_eventBus.handleEvent(events.LobbySimpleEvent(events.LobbySimpleEvent.BATTLE_RESULTS_PROCESSED), scope=EVENT_BUS_SCOPE.LOBBY)
+        _logger.info('Battle results processed in state %s', state)

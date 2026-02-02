@@ -1,4 +1,7 @@
-import typing, Event
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_light/scripts/client/comp7_light/gui/game_control/comp7_light_progression_controller.py
+import typing
+import Event
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import COMP7_LIGHT_UI_SECTION, COMP7_LIGHT_PROGRESSION_POINTS_SEEN
 from comp7_light.skeletons.gui.game_control import IComp7LightProgressionController
@@ -49,9 +52,10 @@ class ProgressionOnTokensController(IComp7LightProgressionController):
         prevPoint = self.getPrevPoints()
         if curPoings < prevPoint:
             prevPoint = 0
-        return {'curPoints': curPoings, 'pointsForLevel': self._getPointsForLevel(), 
-           'prevPoints': prevPoint, 
-           'progressionLevels': self.getProgressionLevelsData()}
+        return {'curPoints': curPoings,
+         'pointsForLevel': self._getPointsForLevel(),
+         'prevPoints': prevPoint,
+         'progressionLevels': self.getProgressionLevelsData()}
 
     def getProgressionData(self):
         return self.getProgessionPointsData()
@@ -86,9 +90,7 @@ class ProgressionOnConfig(ProgressionOnTokensController):
 
     @property
     def isFinished(self):
-        if not self.isEnabled:
-            return False
-        return self.getCurPoints() >= self._getPointsForLevel() * len(self._getStages())
+        return False if not self.isEnabled else self.getCurPoints() >= self._getPointsForLevel() * len(self._getStages())
 
     def _getStages(self):
         return sorted([ stage for stage in self.settings.get('awardList', []) if stage[0] is not None ], key=lambda stage: stage[0])
@@ -117,9 +119,9 @@ class ProgressionOnConfig(ProgressionOnTokensController):
         else:
             stagePoints = min(stagePoints, stageMaxPoints)
 
-        results = {'currentStage': curStage, 
-           'stagePoints': stagePoints, 
-           'stageMaxPoints': stageMaxPoints}
+        results = {'currentStage': curStage,
+         'stagePoints': stagePoints,
+         'stageMaxPoints': stageMaxPoints}
         return results
 
     def _getPointsForLevel(self):
@@ -182,8 +184,8 @@ class BaseProgressionWithBattleQuests(ProgressionOnConfig):
         super(BaseProgressionWithBattleQuests, self).setSettings(settings)
 
     def getBattleQuestData(self):
-        return {'battleQuests': self.questContainer.getQuests(), 
-           'questsOrder': self.questContainer.getQuestsOrder()}
+        return {'battleQuests': self.questContainer.getQuests(),
+         'questsOrder': self.questContainer.getQuestsOrder()}
 
     def getProgressionData(self):
         result = self.getProgessionPointsData()

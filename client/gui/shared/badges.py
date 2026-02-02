@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/badges.py
 from gui.doc_loaders.badges_loader import getAvailableBadges
 from helpers import dependency
 from skeletons.gui.shared.gui_items import IGuiItemsFactory

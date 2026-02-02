@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/GammaWizardViewMeta.py
 from gui.Scaleform.framework.entities.View import View
 
 class GammaWizardViewMeta(View):
@@ -18,5 +20,4 @@ class GammaWizardViewMeta(View):
         self._printOverrideError('updateTexture')
 
     def as_initDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_initData(data)
+        return self.flashObject.as_initData(data) if self._isDAAPIInited() else None

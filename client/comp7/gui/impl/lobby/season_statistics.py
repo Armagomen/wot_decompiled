@@ -1,4 +1,9 @@
-import logging, BigWorld, typing, SoundGroups
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/season_statistics.py
+import logging
+import BigWorld
+import typing
+import SoundGroups
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import COMP7_UI_SECTION, COMP7_LAST_SEASON_WHERE_STATISTICS_SHOWN
 from comp7.gui.impl.gen.view_models.views.lobby.constants import Constants
@@ -41,8 +46,7 @@ class _SeasonStatistics(ViewImpl):
         settings.model = SeasonStatisticsModel()
         super(_SeasonStatistics, self).__init__(settings)
         self.__seasonNumber = seasonNumber
-        self.__summaryStatistics = [
-         BattlesStat,
+        self.__summaryStatistics = [BattlesStat,
          DamageStat,
          PrestigePointsStat,
          FragsStat,
@@ -62,10 +66,11 @@ class _SeasonStatistics(ViewImpl):
 
     def createToolTipContent(self, event, contentID):
         if contentID == R.views.comp7.mono.lobby.tooltips.season_point_tooltip():
-            params = {'state': SeasonPointState(event.getArgument('state')), 'ignoreState': event.getArgument('ignoreState')}
+            params = {'state': SeasonPointState(event.getArgument('state')),
+             'ignoreState': event.getArgument('ignoreState')}
             return SeasonPointTooltip(params=params)
         else:
-            return
+            return None
 
     def __addListeners(self):
         self.viewModel.onClose += self.__onClose
@@ -84,7 +89,7 @@ class _SeasonStatistics(ViewImpl):
         return
 
     def __updateData(self):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             self.__updatePersonalData(tx)
             self.__updateSeasonPoints(tx)
             self.__updateSummaryStatistics(tx)
@@ -101,7 +106,7 @@ class _SeasonStatistics(ViewImpl):
         division = comp7_shared.getPlayerDivisionByRating(rating, self.__seasonNumber)
         model.setDivision(comp7_shared.getDivisionEnumValue(division))
         model.setRank(comp7_shared.getRankEnumValue(division))
-        model.setSeason(list(SeasonName)[(self.__seasonNumber - 1)])
+        model.setSeason(list(SeasonName)[self.__seasonNumber - 1])
 
     def __updateSeasonPoints(self, model):
         seasonPointsCode = seasonPointsCodeBySeasonNumber(self.__seasonNumber)
@@ -217,10 +222,7 @@ class FragsStat(SummarySeasonStat):
 
     def additionalStat(self):
         efficiency = self._seasonStats.getFragsEfficiency()
-        if efficiency is None:
-            return Constants.NOT_AVAILABLE_STATISTIC_VALUE
-        else:
-            return efficiency
+        return Constants.NOT_AVAILABLE_STATISTIC_VALUE if efficiency is None else efficiency
 
 
 class WinSeriesStat(SummarySeasonStat):

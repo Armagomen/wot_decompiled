@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/browser_filters.py
 from collections import namedtuple
 from debug_utils import LOG_DEBUG
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -9,8 +11,7 @@ from gui.shared.event_dispatcher import showPersonalMissionCampaignSelectorWindo
 from gui.shared.events import OpenLinkEvent
 
 def getFilters():
-    return {
-     _onShowInExternalBrowser,
+    return {_onShowInExternalBrowser,
      _onGoToHangar,
      _onGoToMissions,
      _onGoToPersonalMissions}

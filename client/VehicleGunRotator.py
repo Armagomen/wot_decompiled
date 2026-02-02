@@ -1,8 +1,14 @@
-import math, weakref
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/VehicleGunRotator.py
+import math
+import weakref
 from collections import namedtuple
 from functools import partial
 from math import pi, fmod
-import BattleReplay, BigWorld, Math, math_utils
+import BattleReplay
+import BigWorld
+import Math
+import math_utils
 from AvatarInputHandler import AimingSystems
 from constants import SERVER_TICK_LENGTH, AIMING_MODE, VEHICLE_SIEGE_STATE, DEFAULT_GUN_INSTALLATION_INDEX
 from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID
@@ -11,10 +17,16 @@ from helpers import dependency
 from projectile_trajectory import getShotAngles
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
-from SupportWeaponComponent import getVehicleSupportWeaponComponent
-from TwinGunController import getVehicleTwinGunController
-GunMarkerInfo = namedtuple('GunMarkerInfo', (
- 'gunInstallationIndex', 'gunIndex', 'position', 'direction', 'size', 'dualAccSize', 'sizeOffset', 'collData'))
+from vehicles.mechanics.mechanic_constants import VehicleMechanic
+from vehicles.mechanics.mechanic_helpers import getVehicleMechanicComponent
+GunMarkerInfo = namedtuple('GunMarkerInfo', ('gunInstallationIndex',
+ 'gunIndex',
+ 'position',
+ 'direction',
+ 'size',
+ 'dualAccSize',
+ 'sizeOffset',
+ 'collData'))
 
 class VehicleGunRotator(object):
     __INSUFFICIENT_TIME_DIFF = 0.02
@@ -42,10 +54,11 @@ class VehicleGunRotator(object):
         self.__turretYaw = 0.0
         self.__gunPitch = 0.0
         self.__turretRotationSpeed = 0.0
-        self.__dispersionAngles = [
-         0.0, 0.0, 0.0, 0.0]
-        self.__markerInfo = (
-         Math.Vector3(0.0, 0.0, 0.0), Math.Vector3(0.0, 1.0, 0.0), 1.0)
+        self.__dispersionAngles = [0.0,
+         0.0,
+         0.0,
+         0.0]
+        self.__markerInfo = (Math.Vector3(0.0, 0.0, 0.0), Math.Vector3(0.0, 1.0, 0.0), 1.0)
         self.__clientMode = True
         self.__showServerMarker = False
         self.__time = None
@@ -82,22 +95,19 @@ class VehicleGunRotator(object):
                     return (None, None)
                 activeGuns = ()
                 if vehicle.typeDescriptor.isDualgunVehicle:
-                    activeGuns = (
-                     vehicle.dualGunIndex,)
-                twinGun = getVehicleTwinGunController(vehicle)
+                    activeGuns = (vehicle.dualGunIndex,)
+                twinGun = getVehicleMechanicComponent(vehicle, VehicleMechanic.TWIN_GUN)
                 if twinGun is not None:
                     activeGuns = twinGun.getActiveGunIndexes()
                 multiGun = vehicle.typeDescriptor.gun.multiGun
                 if multiGun is None or not activeGuns or len(activeGuns) > 1:
                     return (None, None)
                 gunIdx = activeGuns[0]
-                if gunIdx < 0 or len(multiGun) <= gunIdx:
-                    return (None, None)
-                return (gunIdx, multiGun[gunIdx].shotPosition)
+                return (None, None) if gunIdx < 0 or len(multiGun) <= gunIdx else (gunIdx, multiGun[gunIdx].shotPosition)
 
         if self.__isStarted or not self.__speedsInitialized:
             return
-        if not self._avatar.isOnArena:
+        elif not self._avatar.isOnArena:
             return
         else:
             self.settingsCore.onSettingsChanged += self.applySettings
@@ -168,12 +178,14 @@ class VehicleGunRotator(object):
             return
         self.__turretYaw = turretYaw
         self.__gunPitch = gunPitch
-        self.__dispersionAngles = [dispAngle, dispAngle, 0.0, 0.0]
+        self.__dispersionAngles = [dispAngle,
+         dispAngle,
+         0.0,
+         0.0]
         self.__updateGunMarker(0.001)
 
     def fixShotPosition(self, turretYaw, gunPitch):
-        self.__fixedShotAngles = (
-         turretYaw, gunPitch)
+        self.__fixedShotAngles = (turretYaw, gunPitch)
 
     def unFixShotPosition(self):
         self.__fixedShotAngles = None
@@ -214,8 +226,7 @@ class VehicleGunRotator(object):
                     self.__turretYaw = closestLimit
                 self.__updateTurretMatrix(self.__turretYaw, SERVER_TICK_LENGTH)
                 self.__updateGunMatrix(self.__gunPitch, SERVER_TICK_LENGTH)
-                self.__markerInfo = (
-                 mPos, gunMarkerInfo.direction, gunMarkerInfo.size)
+                self.__markerInfo = (mPos, gunMarkerInfo.direction, gunMarkerInfo.size)
             return
 
     def predictLockedTargetShotPoint(self):
@@ -243,8 +254,7 @@ class VehicleGunRotator(object):
                 shotTurretYaw = closestLimit
         pos, vel = self.__getShotPosition(shotTurretYaw, shotGunPitch, shotDescr=overrideShotDescr)
         grav = Math.Vector3(0.0, -shot.gravity, 0.0)
-        return (
-         pos, vel, grav)
+        return (pos, vel, grav)
 
     def getCurShotPosition(self):
         return self.__getShotPosition(self.__turretYaw, self.__gunPitch)
@@ -322,21 +332,20 @@ class VehicleGunRotator(object):
             replayCtrl = BattleReplay.g_replayCtrl
             if replayCtrl.isPlaying:
                 shotPoint = replayCtrl.getGunRotatorTargetPoint()
+            elif self.__fixedShotAngles is not None:
+                shotPoint = self.__getShotPosition(*self.__fixedShotAngles)[0]
             else:
-                if self.__fixedShotAngles is not None:
-                    shotPoint = self.__getShotPosition(*self.__fixedShotAngles)[0]
-                else:
-                    predictedLockShotPoint = self.predictLockedTargetShotPoint() if usePredictedLockShotPoint else None
-                    shotPoint = self.__shotPointSourceFunctor() if predictedLockShotPoint is None else predictedLockShotPoint
-                if shotPoint is None and self.__targetLastShotPoint:
-                    shotPoint = self.__lastShotPoint
-                if replayCtrl.isRecording:
-                    if shotPoint is not None:
-                        replayCtrl.setGunRotatorTargetPoint(shotPoint)
-                self.__updateShotPointOnServer(shotPoint)
-                timeDiff = self.__getTimeDiff()
-                if timeDiff is None:
-                    return
+                predictedLockShotPoint = self.predictLockedTargetShotPoint() if usePredictedLockShotPoint else None
+                shotPoint = self.__shotPointSourceFunctor() if predictedLockShotPoint is None else predictedLockShotPoint
+            if shotPoint is None and self.__targetLastShotPoint:
+                shotPoint = self.__lastShotPoint
+            if replayCtrl.isRecording:
+                if shotPoint is not None:
+                    replayCtrl.setGunRotatorTargetPoint(shotPoint)
+            self.__updateShotPointOnServer(shotPoint)
+            timeDiff = self.__getTimeDiff()
+            if timeDiff is None:
+                return
             self.__time = BigWorld.time()
             self.updateRotationAndGunMarker(shotPoint, timeDiff)
             if replayCtrl.isPlaying:
@@ -472,8 +481,7 @@ class VehicleGunRotator(object):
             hasDualAccuracy = vehicle and vehicle.typeDescriptor and vehicle.typeDescriptor.hasDualAccuracy
             if hasDualAccuracy:
                 inputHandler.updateDualAccGunMarker(gunMarkerInfo, supportMarkersInfo, relaxTime)
-            self.__markerInfo = (
-             mPos, gunMarkerInfo.direction, gunMarkerInfo.size)
+            self.__markerInfo = (mPos, gunMarkerInfo.direction, gunMarkerInfo.size)
             self.updateMultiGunCollisionData()
             return
 
@@ -496,9 +504,7 @@ class VehicleGunRotator(object):
             if shortWayDiffLimited == shortWayDiff:
                 return self.__getTurretYawWithSpeedLimit(curAngle, shortWayDiff, speedLimit)
             longWayDiffLimited = self.__applyTurretYawLimits(longWayDiff, curAngle, angleLimits)
-            if longWayDiffLimited == longWayDiff:
-                return self.__getTurretYawWithSpeedLimit(curAngle, longWayDiff, speedLimit)
-            return self.__getTurretYawWithSpeedLimit(curAngle, shortWayDiffLimited, speedLimit)
+            return self.__getTurretYawWithSpeedLimit(curAngle, longWayDiff, speedLimit) if longWayDiffLimited == longWayDiff else self.__getTurretYawWithSpeedLimit(curAngle, shortWayDiffLimited, speedLimit)
 
     def __syncWithServerTurretYaw(self, turretYaw):
         vehicle = self._avatar.vehicle
@@ -521,24 +527,20 @@ class VehicleGunRotator(object):
             shotDiff2 = 2.0 * pi + shotDiff1
         else:
             shotDiff2 = -2.0 * pi + shotDiff1
-        if abs(shotDiff1) <= pi:
-            return (shotDiff1, shotDiff2)
-        return (shotDiff2, shotDiff1)
+        return (shotDiff1, shotDiff2) if abs(shotDiff1) <= pi else (shotDiff2, shotDiff1)
 
     def __isOutOfLimits(self, angle, limits):
         if limits is None:
             return
+        elif abs(limits[1] - angle) < 1e-05 or abs(limits[0] - angle) < 1e-05:
+            return
+        dpi = 2 * pi
+        minDiff = fmod(limits[0] - angle + dpi, dpi)
+        maxDiff = fmod(limits[1] - angle + dpi, dpi)
+        if minDiff > maxDiff:
+            return
         else:
-            if abs(limits[1] - angle) < 1e-05 or abs(limits[0] - angle) < 1e-05:
-                return
-            dpi = 2 * pi
-            minDiff = fmod(limits[0] - angle + dpi, dpi)
-            maxDiff = fmod(limits[1] - angle + dpi, dpi)
-            if minDiff > maxDiff:
-                return
-            if minDiff < dpi - maxDiff:
-                return limits[0]
-            return limits[1]
+            return limits[0] if minDiff < dpi - maxDiff else limits[1]
 
     def __applyTurretYawLimits(self, diff, angle, limits):
         if limits is None:
@@ -558,9 +560,7 @@ class VehicleGunRotator(object):
 
     def __getTurretYawWithSpeedLimit(self, angle, diff, limit):
         dpi = 2 * pi
-        if diff > 0:
-            return fmod(pi + angle + min(diff, limit), dpi) - pi
-        return fmod(-pi + angle + max(diff, -limit), dpi) + pi
+        return fmod(pi + angle + min(diff, limit), dpi) - pi if diff > 0 else fmod(-pi + angle + max(diff, -limit), dpi) + pi
 
     def getNextGunPitch(self, curAngle, shotAngle, timeDiff, angleLimits):
         replayCtrl = BattleReplay.g_replayCtrl
@@ -591,10 +591,7 @@ class VehicleGunRotator(object):
         if staticPitch is not None and self.estimatedTurretRotationTime > 0.0:
             idealYawSpeed = abs(shotDiff) / self.estimatedTurretRotationTime
             speedLimit = min(speedLimit, idealYawSpeed * timeDiff)
-        if shotDiff > 0.0:
-            return curAngle + min(shotDiff, speedLimit)
-        else:
-            return curAngle + max(shotDiff, -speedLimit)
+        return curAngle + min(shotDiff, speedLimit) if shotDiff > 0.0 else curAngle + max(shotDiff, -speedLimit)
 
     def __getShotPosition(self, turretYaw, gunPitch, gunOffset=None, shotDescr=None):
         descr = self._avatar.getVehicleDescriptor()
@@ -611,8 +608,7 @@ class VehicleGunRotator(object):
         gunWorldMatrix.setRotateX(gunPitch)
         gunWorldMatrix.postMultiply(turretWorldMatrix)
         vector = gunWorldMatrix.applyVector(Math.Vector3(0, 0, shotSpeed))
-        return (
-         position, vector)
+        return (position, vector)
 
     def getAttachedVehicleID(self):
         return self._avatar.playerVehicleID
@@ -622,7 +618,7 @@ class VehicleGunRotator(object):
         if playerVehicle is None:
             return
         else:
-            twinGun = getVehicleTwinGunController(playerVehicle)
+            twinGun = getVehicleMechanicComponent(playerVehicle, VehicleMechanic.TWIN_GUN)
             if not self._avatar.inCharge and twinGun is None:
                 return
             multiGun = playerVehicle.typeDescriptor.gun.multiGun
@@ -632,7 +628,7 @@ class VehicleGunRotator(object):
             if len(activeGuns) < 2:
                 return
             playerTeam = playerVehicle.publicInfo.team
-            collisions = tuple(self.__getTargetedEnemyForGun(multiGun[idx].shotPosition, playerTeam) for idx in activeGuns)
+            collisions = tuple((self.__getTargetedEnemyForGun(multiGun[idx].shotPosition, playerTeam) for idx in activeGuns))
             self._avatar.inputHandler.ctrl.updateTargetedEnemiesForGuns(collisions)
             return
 
@@ -652,7 +648,7 @@ class VehicleGunRotator(object):
         if playerVehicle is None:
             return ()
         else:
-            supportWeaponComponent = getVehicleSupportWeaponComponent(playerVehicle)
+            supportWeaponComponent = getVehicleMechanicComponent(playerVehicle, VehicleMechanic.SUPPORT_WEAPON)
             if supportWeaponComponent is None:
                 return ()
             supportInstallationIndex = supportWeaponComponent.getSupportInstallationIndex()
@@ -682,12 +678,15 @@ class VehicleGunRotator(object):
             return ()
         gunInstallationSlot = gunInstallations[gunInstallationIndex]
         if gunInstallationSlot.isMainInstallation():
-            return (
-             (
-              gunInstallationIndex, self.__gunIndex, vehDescr.shot,
+            return ((gunInstallationIndex,
+              self.__gunIndex,
+              vehDescr.shot,
               self.__getShotPosition(self.__turretYaw, self.__gunPitch)),)
         shotDescr = gunInstallationSlot.gun.shots[0]
-        return tuple((gunInstallationIndex, gunIndex, shotDescr, self.__getShotPosition(self.__turretYaw, self.__gunPitch, multiGunInstance.shotPosition, shotDescr)) for gunIndex, multiGunInstance in enumerate(gunInstallationSlot.gun.multiGun))
+        return tuple(((gunInstallationIndex,
+         gunIndex,
+         shotDescr,
+         self.__getShotPosition(self.__turretYaw, self.__gunPitch, multiGunInstance.shotPosition, shotDescr)) for gunIndex, multiGunInstance in enumerate(gunInstallationSlot.gun.multiGun)))
 
     def __getCappedShotTargetInfo(self, shotPos, shotVec, shotDescr):
         minBounds, maxBounds = BigWorld.player().arena.getSpaceBB()
@@ -772,11 +771,9 @@ class VehicleGunRotator(object):
             if playerVehicle is not None:
                 useGunStaticPitch |= playerVehicle.siegeState in VEHICLE_SIEGE_STATE.SWITCHING
             if useGunStaticPitch:
-                gunPitchLimits = {'minPitch': ((0.0, staticPitch), (math.pi * 2.0, staticPitch)), 'maxPitch': (
-                              (
-                               0.0, staticPitch), (math.pi * 2.0, staticPitch)), 
-                   'absolute': (
-                              staticPitch, staticPitch)}
+                gunPitchLimits = {'minPitch': ((0.0, staticPitch), (math.pi * 2.0, staticPitch)),
+                 'maxPitch': ((0.0, staticPitch), (math.pi * 2.0, staticPitch)),
+                 'absolute': (staticPitch, staticPitch)}
             return gunPitchLimits
 
     def __getGunStaticPitch(self):
@@ -799,8 +796,7 @@ class VehicleGunRotator(object):
                 useStaticTurretYaw |= playerVehicle.hasMovingFlags
                 useStaticTurretYaw |= playerVehicle.siegeState in VEHICLE_SIEGE_STATE.SWITCHING
             if useStaticTurretYaw:
-                turretYawLimits = (
-                 staticYaw, staticYaw)
+                turretYawLimits = (staticYaw, staticYaw)
             return turretYawLimits
 
     def __getTurretStaticYaw(self):
@@ -822,7 +818,5 @@ class MatrixAnimator(object):
     matrix = property(lambda self: self.__animMat)
 
     def update(self, matrix, time):
-        self.__animMat.keyframes = (
-         (
-          0.0, Math.Matrix(self.__animMat)), (time, matrix))
+        self.__animMat.keyframes = ((0.0, Math.Matrix(self.__animMat)), (time, matrix))
         self.__animMat.time = 0.0

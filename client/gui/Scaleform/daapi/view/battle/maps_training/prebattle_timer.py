@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/maps_training/prebattle_timer.py
 import BigWorld
 from gui.Scaleform.daapi.view.meta.MapsTrainingPrebattleTimerMeta import MapsTrainingPrebattleTimerMeta
 from gui.impl import backport
@@ -35,8 +37,8 @@ class MapsTrainingPreBattleTimer(MapsTrainingPrebattleTimerMeta):
         self.__playerTeam = playerVehicle['team']
         mapName = self.sessionProvider.arenaVisitor.type.getGeometryName()
         strings = R.strings.maps_training
-        scenarioIndex = SCENARIO_INDEXES[(self.__playerTeam, self.__playerClass)]
-        self.as_setSideS(backport.text(strings.prebattle.scenario(), map=backport.text(R.strings.arenas.dyn(('c_{}').format(mapName)).name()), scenario=backport.text(strings.scenarioNum()).format(scenario=scenarioIndex), vehicleType=backport.text(strings.vehicleType.dyn(self.__playerClass)())))
+        scenarioIndex = SCENARIO_INDEXES[self.__playerTeam, self.__playerClass]
+        self.as_setSideS(backport.text(strings.prebattle.scenario(), map=backport.text(R.strings.arenas.dyn('c_{}'.format(mapName)).name()), scenario=backport.text(strings.scenarioNum()).format(scenario=scenarioIndex), vehicleType=backport.text(strings.vehicleType.dyn(self.__playerClass)())))
         self.mapsTrainingController.requestInitialDataFromServer(makeCallbackWeak(self.__setGoalsData))
 
     def _isDisplayWinCondition(self):
@@ -48,7 +50,8 @@ class MapsTrainingPreBattleTimer(MapsTrainingPrebattleTimerMeta):
         mapScenarios = self.mapsTrainingController.getConfig()['scenarios'][geometryID]
         goals = mapScenarios[self.__playerTeam][self.__playerClass]['goals']
         text = backport.text(R.strings.maps_training.prebattle.targets(), count=sum(goals.values()))
-        self.as_updateS([ {'vehClass': vehCls, 'total': goals[vehCls]} for vehCls in VEHICLE_CLASSES_ORDER ], text)
+        self.as_updateS([ {'vehClass': vehCls,
+         'total': goals[vehCls]} for vehCls in VEHICLE_CLASSES_ORDER ], text)
         player = BigWorld.player()
         if not player.userSeesWorld():
             g_playerEvents.onAvatarReady += self.__onAvatarReady

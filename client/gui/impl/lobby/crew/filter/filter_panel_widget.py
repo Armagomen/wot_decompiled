@@ -1,4 +1,7 @@
-import typing, Event
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/filter/filter_panel_widget.py
+import typing
+import Event
 from frameworks.wulf import ViewFlags, ViewSettings, WindowLayer, ViewStatus
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.crew.filter_panel_widget_model import FilterPanelWidgetModel, FilterPanelType
@@ -9,16 +12,12 @@ from gui.impl.pub import ViewImpl, PopOverWindow
 if typing.TYPE_CHECKING:
     from gui.impl.lobby.crew.filter import FilterGroupSettings as GroupSettings
     from typing import Iterable, Callable, Dict, Union
-    OnUpdateState = Callable[([Dict[(str, set)], str], None)]
-    FilterGroups = Union[(Iterable[GroupSettings], None)]
+    OnUpdateState = Callable[[Dict[str, set], str], None]
+    FilterGroups = Union[Iterable[GroupSettings], None]
 
 class FilterPanelWidget(ViewImpl):
     LAYOUT_ID = R.views.lobby.crew.widgets.FilterPanelWidget
-    __slots__ = ('__state', '__mainFilterSettings', '__popoverTitle', '__isSearchEnabled',
-                 '__showResetBtn', '__searchString', '__popoverGroupSettings', '__amountInfo',
-                 '__title', '__panelType', '__popoverTooltipHeader', '__popoverTooltipBody',
-                 '__searchTooltipBody', '__searchTooltipHeader', '__searchPlaceholder',
-                 '__hasDiscountAlert', '__popoverView', 'onPopoverTooltipCreated')
+    __slots__ = ('__state', '__mainFilterSettings', '__popoverTitle', '__isSearchEnabled', '__showResetBtn', '__searchString', '__popoverGroupSettings', '__amountInfo', '__title', '__panelType', '__popoverTooltipHeader', '__popoverTooltipBody', '__searchTooltipBody', '__searchTooltipHeader', '__searchPlaceholder', '__hasDiscountAlert', '__popoverView', 'onPopoverTooltipCreated')
 
     def __init__(self, mainFilterSettings, popoverGroupSettings, popoverTitle, state, **kwargs):
         settings = ViewSettings(self.LAYOUT_ID(), flags=ViewFlags.LOBBY_SUB_VIEW, model=FilterPanelWidgetModel())
@@ -58,12 +57,11 @@ class FilterPanelWidget(ViewImpl):
             self.__popoverView.updateGroupSettings(self.__popoverGroupSettings)
 
     def updateAmountInfo(self, filteredAmount, totalAmount):
-        self.__amountInfo = (
-         filteredAmount, totalAmount)
+        self.__amountInfo = (filteredAmount, totalAmount)
         self.refreshAmountInfo()
 
     def refreshAmountInfo(self):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             filteredAmount, totalAmount = self.__amountInfo
             tx.amountInfo.setFrom(filteredAmount)
             tx.amountInfo.setTo(totalAmount)
@@ -79,7 +77,7 @@ class FilterPanelWidget(ViewImpl):
         return len(self.__state.searchString) > 0
 
     def updateFilterToggleCounter(self, filterId, count):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             filters = tx.filter.getFilters()
             for filterModel in filters:
                 if filterModel.getId() == filterId:
@@ -104,13 +102,7 @@ class FilterPanelWidget(ViewImpl):
         super(FilterPanelWidget, self).createPopOver(event)
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onSearch, self.__onSearch),
-         (
-          self.viewModel.onUpdateFilter, self.__onUpdateFilter),
-         (
-          self.viewModel.onResetFilter, self.__onResetFilter))
+        return ((self.viewModel.onSearch, self.__onSearch), (self.viewModel.onUpdateFilter, self.__onUpdateFilter), (self.viewModel.onResetFilter, self.__onResetFilter))
 
     def _onLoading(self, *args, **kwargs):
         super(FilterPanelWidget, self)._onLoading(*args, **kwargs)
@@ -140,7 +132,7 @@ class FilterPanelWidget(ViewImpl):
         self.applyStateToModel()
 
     def __fillModel(self, initial=False):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             if initial:
                 tx.setTitle(self.__title)
                 tx.setPopoverTooltipHeader(self.__popoverTooltipHeader)

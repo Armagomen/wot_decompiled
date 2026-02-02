@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/dialogs/widgets/warning_text.py
 from frameworks.wulf import ViewSettings
 from gui.impl.dialogs.dialog_template_utils import toString
 from gui.impl.gen import R
@@ -5,7 +7,7 @@ from gui.impl.gen.view_models.views.dialogs.sub_views.simple_text_view_model imp
 from gui.impl.pub import ViewImpl
 
 class WarningText(ViewImpl):
-    __slots__ = ('__text', )
+    __slots__ = ('__text',)
     LAYOUT_DYN_ACCESSOR = R.views.dialogs.widgets.WarningText
 
     def __init__(self, text, layoutID=None):
@@ -23,5 +25,5 @@ class WarningText(ViewImpl):
         self.__updateViewModel()
 
     def __updateViewModel(self):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             vm.setText(toString(self.__text))

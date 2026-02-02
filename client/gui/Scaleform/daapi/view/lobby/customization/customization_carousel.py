@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/customization_carousel.py
 import logging
 from collections import defaultdict, namedtuple, OrderedDict
 from itertools import chain
@@ -29,9 +31,14 @@ def comparisonKey(item):
     isNationalEmblem = ItemTags.NATIONAL_EMBLEM in item.tags
     isShowDisabled = ItemTags.SHOW_DISABLED in item.tags
     formfactorId = ProjectionDecalFormTags.ALL.index(item.formfactor) if hasattr(item, 'formfactor') and item.formfactor else 0
-    return (
-     typeOrder, not isNationalEmblem, not item.isRare(), not isShowDisabled,
-     item.groupID, item.showDisabled and isItemUsedUp(item), formfactorId, item.id)
+    return (typeOrder,
+     not isNationalEmblem,
+     not item.isRare(),
+     not isShowDisabled,
+     item.groupID,
+     item.showDisabled and isItemUsedUp(item),
+     formfactorId,
+     item.id)
 
 
 CustomizationBookmarkVO = namedtuple('CustomizationBookmarkVO', ('bookmarkName', 'bookmarkIndex'))
@@ -47,15 +54,15 @@ class ItemsData(object):
 
     @cached_property
     def hasUsedUpItems(self):
-        return any(isItemUsedUp(item) and not item.showDisabled for item in self.items)
+        return any((isItemUsedUp(item) and not item.showDisabled for item in self.items))
 
     @cached_property
     def hasProgressiveItems(self):
-        return any(item.isProgressive for item in self.items)
+        return any((item.isProgressive for item in self.items))
 
     @cached_property
     def hasQuestProgressItems(self):
-        return any(item.isQuestsProgression for item in self.items)
+        return any((item.isQuestsProgression for item in self.items))
 
 
 class CarouselData(object):
@@ -97,9 +104,7 @@ class CarouselCache(object):
         self.__initCache()
         if tabId == CustomizationTabs.STAT_TRACKERS:
             return (CustomizationTabs.STAT_TRACKERS,)
-        if modeId == CustomizationModes.STYLE_2D_EDITABLE:
-            return tuple(tabId for tabId in self.__itemsData[modeId][season].keys() if tabId != CustomizationTabs.STAT_TRACKERS)
-        return CustomizationTabs.ALL
+        return tuple((tabId for tabId in self.__itemsData[modeId][season].keys() if tabId != CustomizationTabs.STAT_TRACKERS)) if modeId == CustomizationModes.STYLE_2D_EDITABLE else CustomizationTabs.ALL
 
     def getEnabledTabs(self):
         season, modeId = self.__ctx.season, self.__ctx.modeId
@@ -171,7 +176,7 @@ class CarouselCache(object):
                 carouselData.bookmarks.append(bookmarkVO._asdict())
             isLastItem = idx == len(filteredItems) - 1
             if item.isQuestsProgression and not isLastItem:
-                nextItem = filteredItems[(idx + 1)]
+                nextItem = filteredItems[idx + 1]
                 nextGroupID = getGroupHelper(nextItem).getGroupID()
                 if nextItem and nextGroupID == groupID and item.descriptor.requiredTokenCount != nextItem.descriptor.requiredTokenCount:
                     arrowVO = CustomizationArrowVO(idx, item.isUnlockedByToken())
@@ -195,7 +200,7 @@ class CarouselCache(object):
         for tabId, slotType in CustomizationTabs.SLOT_TYPES.iteritems():
             if vehicleHasSlot(slotType):
                 guiItems = CustomizationTabs.ITEM_TYPES[tabId]
-                encodedGuiTypes = tuple(item << 8 | tabId for item in guiItems)
+                encodedGuiTypes = tuple((item << 8 | tabId for item in guiItems))
                 custGuiItemBuckets[tabId] = []
                 guiItemTypes.extend(encodedGuiTypes)
 
@@ -243,10 +248,10 @@ class CarouselCache(object):
                         continue
                     for modeId in modes:
                         itemsDataStorage = self.__itemsData[modeId][season]
-                        if not itemsDataStorage or tabId != itemsDataStorage.keys()[(-1)]:
+                        if not itemsDataStorage or tabId != itemsDataStorage.keys()[-1]:
                             itemsDataStorage[tabId] = ItemsData()
-                        itemsData = itemsDataStorage.values()[(-1)]
-                        if not itemsData.groups or item.groupID != itemsData.groups.keys()[(-1)]:
+                        itemsData = itemsDataStorage.values()[-1]
+                        if not itemsData.groups or item.groupID != itemsData.groups.keys()[-1]:
                             itemsData.groups[item.groupID] = item.groupUserName
                         itemsData.items.append(item)
 
@@ -281,14 +286,12 @@ class CarouselCache(object):
                 if tabId == CustomizationTabs.STAT_TRACKERS:
                     filteredItems = itemsData.items[:]
                 else:
-                    filteredItems = [ item for item in itemsData.items if itemsFilter(item.descriptor) and item.id not in questItemsIDs
-                                    ]
+                    filteredItems = [ item for item in itemsData.items if itemsFilter(item.descriptor) and item.id not in questItemsIDs ]
                 alternateItems = []
                 for itemType in itemTypes:
                     c11nType = C11N_ITEM_TYPE_MAP[itemType]
                     alternateItemIds = style.descriptor.alternateItems.get(c11nType, ())
-                    buf = [ self.__service.getItemByID(itemType, itemId) for itemId in alternateItemIds if itemId not in questItemsIDs
-                          ]
+                    buf = [ self.__service.getItemByID(itemType, itemId) for itemId in alternateItemIds if itemId not in questItemsIDs ]
                     alternateItems.extend([ i for i in buf if i.itemTypeID in itemTypes and i.season & season ])
 
                 if not any((questItems, alternateItems, filteredItems)):
@@ -300,7 +303,7 @@ class CarouselCache(object):
                     helper = getGroupHelper(item)
                     groupID = helper.getGroupID()
                     groupUserName = helper.getGroupName()
-                    if not groups or groupID != groups.keys()[(-1)]:
+                    if not groups or groupID != groups.keys()[-1]:
                         groups[groupID] = groupUserName
 
                 self.__itemsData[CustomizationModes.STYLE_2D_EDITABLE][season][tabId] = ItemsData(items, groups)
@@ -371,7 +374,7 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         return self.__selectedItem.idx
 
     def emptyItem(self):
-        return
+        return None
 
     def refresh(self):
         if not g_currentVehicle.isPresent():
@@ -440,8 +443,7 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
                         isMarkedAsDependent = isApplied
                     elif getAncestors(itemCD, styleDependencies):
                         isUnsuitable = True
-        return (
-         isMarkedAsDependent, isUnsuitable)
+        return (isMarkedAsDependent, isUnsuitable)
 
     def onModeChanged(self, modeId, prevModeId):
         visibleTabs = self.getVisibleTabs()
@@ -462,7 +464,7 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
 
     def hasAppliedFilter(self):
         isGroupSelected = self.__getSelectedGroupIdx() is not None
-        isAnyFilterApplied = any(carouselFilter.isApplied() for carouselFilter in self.__carouselFilters.itervalues())
+        isAnyFilterApplied = any((carouselFilter.isApplied() for carouselFilter in self.__carouselFilters.itervalues()))
         return isAnyFilterApplied or isGroupSelected
 
     def selectItem(self, item=None):
@@ -475,7 +477,7 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
 
     def getNextItem(self, reverse):
         if self.__selectedItem.idx == -1:
-            return
+            return None
         else:
             outfits = self.__ctx.mode.outfits
             shift = -1 if reverse else 1
@@ -488,7 +490,7 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
                     return item
                 idx += shift
 
-            return
+            return None
 
     def getFilterData(self):
         itemsData = self.__carouselCache.getItemsData()
@@ -511,20 +513,20 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         if self.__ctx.mode.tabId in CustomizationTabs.TABS_WITH_RARITY:
             rarityFilter = self.__carouselFilters[FilterTypes.RARITY]
             raritiesGroup = [ rarity in rarityFilter.values for rarity in Rarity.FILTERABLE ]
-        return {'purchasedEnabled': self.isFilterApplied(FilterTypes.INVENTORY), 
-           'historicEnabled': self.isFilterApplied(FilterTypes.HISTORIC, FilterAliases.HISTORIC), 
-           'nonHistoricEnabled': self.isFilterApplied(FilterTypes.HISTORIC, FilterAliases.NON_HISTORIC), 
-           'fantasticalEnabled': self.isFilterApplied(FilterTypes.HISTORIC, FilterAliases.FANTASTICAL), 
-           'appliedEnabled': self.isFilterApplied(FilterTypes.APPLIED), 
-           'groups': groups, 
-           'selectedGroup': selectedGroup, 
-           'groupCount': groupCount, 
-           'formfactorGroups': formfactors, 
-           'hideOnAnotherVehEnabled': self.isFilterApplied(FilterTypes.USED_UP), 
-           'showOnlyProgressionDecalsEnabled': self.isFilterApplied(FilterTypes.PROGRESSION), 
-           'showOnlyEditableStylesEnabled': self.isFilterApplied(FilterTypes.EDITABLE_STYLES, FilterAliases.EDITABLE_STYLES), 
-           'showOnlyNonEditableStylesEnabled': self.isFilterApplied(FilterTypes.EDITABLE_STYLES, FilterAliases.NON_EDITABLE_STYLES), 
-           'raritiesGroup': raritiesGroup}
+        return {'purchasedEnabled': self.isFilterApplied(FilterTypes.INVENTORY),
+         'historicEnabled': self.isFilterApplied(FilterTypes.HISTORIC, FilterAliases.HISTORIC),
+         'nonHistoricEnabled': self.isFilterApplied(FilterTypes.HISTORIC, FilterAliases.NON_HISTORIC),
+         'fantasticalEnabled': self.isFilterApplied(FilterTypes.HISTORIC, FilterAliases.FANTASTICAL),
+         'appliedEnabled': self.isFilterApplied(FilterTypes.APPLIED),
+         'groups': groups,
+         'selectedGroup': selectedGroup,
+         'groupCount': groupCount,
+         'formfactorGroups': formfactors,
+         'hideOnAnotherVehEnabled': self.isFilterApplied(FilterTypes.USED_UP),
+         'showOnlyProgressionDecalsEnabled': self.isFilterApplied(FilterTypes.PROGRESSION),
+         'showOnlyEditableStylesEnabled': self.isFilterApplied(FilterTypes.EDITABLE_STYLES, FilterAliases.EDITABLE_STYLES),
+         'showOnlyNonEditableStylesEnabled': self.isFilterApplied(FilterTypes.EDITABLE_STYLES, FilterAliases.NON_EDITABLE_STYLES),
+         'raritiesGroup': raritiesGroup}
 
     def clearFilter(self):
         for carouselFilter in self.__carouselFilters.itervalues():
@@ -557,14 +559,14 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         return self.__carouselFilters[filterType].isApplied(*alias)
 
     def __initFilters(self):
-        self.__carouselFilters[FilterTypes.HISTORIC] = DisjunctionCarouselFilter(criteria={FilterAliases.HISTORIC: REQ_CRITERIA.CUSTOMIZATION.HISTORICAL, 
-           FilterAliases.NON_HISTORIC: REQ_CRITERIA.CUSTOMIZATION.NON_HISTORICAL, 
-           FilterAliases.FANTASTICAL: REQ_CRITERIA.CUSTOMIZATION.FANTASTICAL})
+        self.__carouselFilters[FilterTypes.HISTORIC] = DisjunctionCarouselFilter(criteria={FilterAliases.HISTORIC: REQ_CRITERIA.CUSTOMIZATION.HISTORICAL,
+         FilterAliases.NON_HISTORIC: REQ_CRITERIA.CUSTOMIZATION.NON_HISTORICAL,
+         FilterAliases.FANTASTICAL: REQ_CRITERIA.CUSTOMIZATION.FANTASTICAL})
         self.__carouselFilters[FilterTypes.INVENTORY] = SimpleCarouselFilter(criteria=REQ_CRITERIA.CUSTOM(lambda item: self.__ctx.mode.getItemInventoryCount(item) > 0 and item.isUnlockedByToken()))
         self.__carouselFilters[FilterTypes.APPLIED] = SimpleCarouselFilter(criteria=REQ_CRITERIA.CUSTOM(lambda item: item.intCD in self.__ctx.mode.getAppliedItems(isOriginal=False)))
         self.__carouselFilters[FilterTypes.USED_UP] = SimpleCarouselFilter(criteria=REQ_CRITERIA.CUSTOM(lambda item: not isItemUsedUp(item) or item.showDisabled), requirements=lambda : self.__ctx.isItemsOnAnotherVeh, inverse=True)
-        self.__carouselFilters[FilterTypes.EDITABLE_STYLES] = DisjunctionCarouselFilter(criteria={FilterAliases.EDITABLE_STYLES: REQ_CRITERIA.CUSTOM(lambda item: item.canBeEditedForVehicle(g_currentVehicle.item.intCD)), 
-           FilterAliases.NON_EDITABLE_STYLES: REQ_CRITERIA.CUSTOM(lambda item: not item.canBeEditedForVehicle(g_currentVehicle.item.intCD))}, requirements=lambda : self.__ctx.mode.tabId == CustomizationTabs.STYLES_2D)
+        self.__carouselFilters[FilterTypes.EDITABLE_STYLES] = DisjunctionCarouselFilter(criteria={FilterAliases.EDITABLE_STYLES: REQ_CRITERIA.CUSTOM(lambda item: item.canBeEditedForVehicle(g_currentVehicle.item.intCD)),
+         FilterAliases.NON_EDITABLE_STYLES: REQ_CRITERIA.CUSTOM(lambda item: not item.canBeEditedForVehicle(g_currentVehicle.item.intCD))}, requirements=lambda : self.__ctx.mode.tabId == CustomizationTabs.STYLES_2D)
         self.__carouselFilters[FilterTypes.PROGRESSION] = SimpleCarouselFilter(criteria=REQ_CRITERIA.CUSTOM(lambda item: item.isProgressive), requirements=lambda : self.__ctx.isProgressiveItemsExist)
         self.__carouselFilters[FilterTypes.FORMFACTORS] = FormfactorsCarouselFilter(requirements=lambda : self.__ctx.mode.tabId == CustomizationTabs.PROJECTION_DECALS)
         self.__carouselFilters[FilterTypes.RARITY] = AttributeCarouselFilter(attribute=FilterAttributes.RARITY, requirements=lambda : self.__ctx.mode.tabId in CustomizationTabs.TABS_WITH_RARITY)
@@ -614,10 +616,7 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         return requirement
 
     def __createSortCriteria(self):
-        if self.__dependentItems:
-            return lambda item: self.processDependentParams(item)[1]
-        else:
-            return
+        return (lambda item: self.processDependentParams(item)[1]) if self.__dependentItems else None
 
     def __updateCarouselData(self):
         itemsData = self.__carouselCache.getItemsData()
@@ -727,9 +726,7 @@ class DisjunctionCarouselFilter(object):
         if not self.isAvailable:
             return False
         else:
-            if alias is not None:
-                return alias in self.__applied
-            return bool(self.__applied)
+            return alias in self.__applied if alias is not None else bool(self.__applied)
 
     def isEnabled(self, alias=None):
         return self.isApplied(alias)
@@ -760,7 +757,7 @@ class FormfactorsCarouselFilter(SimpleCarouselFilter):
         return self.__formfactors
 
     def update(self, value):
-        self.__formfactors = set(formfactor for formfactor, isApplied in value.iteritems() if isApplied)
+        self.__formfactors = set((formfactor for formfactor, isApplied in value.iteritems() if isApplied))
         super(FormfactorsCarouselFilter, self).update(bool(self.__formfactors))
 
     def clear(self):
@@ -791,7 +788,7 @@ class AttributeCarouselFilter(SimpleCarouselFilter):
         return self.__values
 
     def update(self, value):
-        self.__values = set(val for val, isApplied in value.iteritems() if isApplied)
+        self.__values = set((val for val, isApplied in value.iteritems() if isApplied))
         super(AttributeCarouselFilter, self).update(bool(self.__values))
 
     def clear(self):

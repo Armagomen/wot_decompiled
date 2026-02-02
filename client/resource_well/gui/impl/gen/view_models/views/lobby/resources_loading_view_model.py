@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: resource_well/scripts/client/resource_well/gui/impl/gen/view_models/views/lobby/resources_loading_view_model.py
 from enum import Enum
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.common.vehicle_info_model import VehicleInfoModel
@@ -13,7 +15,7 @@ class ProgressionState(Enum):
 class ResourcesLoadingViewModel(ViewModel):
     __slots__ = ('showHangar', 'close', 'loadResources')
 
-    def __init__(self, properties=6, commands=3):
+    def __init__(self, properties=7, commands=3):
         super(ResourcesLoadingViewModel, self).__init__(properties=properties, commands=commands)
 
     @property
@@ -60,6 +62,12 @@ class ResourcesLoadingViewModel(ViewModel):
     def setIsLoadingError(self, value):
         self._setBool(5, value)
 
+    def getShowBlur(self):
+        return self._getBool(6)
+
+    def setShowBlur(self, value):
+        self._setBool(6, value)
+
     def _initialize(self):
         super(ResourcesLoadingViewModel, self)._initialize()
         self._addViewModelProperty('vehicleCounter', VehicleCounterModel())
@@ -68,6 +76,7 @@ class ResourcesLoadingViewModel(ViewModel):
         self._addNumberProperty('progression', 0)
         self._addArrayProperty('resourcesTabs', Array())
         self._addBoolProperty('isLoadingError', False)
+        self._addBoolProperty('showBlur', False)
         self.showHangar = self._addCommand('showHangar')
         self.close = self._addCommand('close')
         self.loadResources = self._addCommand('loadResources')

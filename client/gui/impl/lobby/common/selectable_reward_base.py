@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/common/selectable_reward_base.py
 from collections import OrderedDict
 import typing
 from frameworks.wulf import ViewSettings
@@ -183,10 +185,8 @@ class SelectableRewardBase(ViewImpl):
                     break
                 else:
                     continue
-            else:
-                order[rewardType] = (
-                 selectableReward, [offerID])
-                break
+            order[rewardType] = (selectableReward, [offerID])
+            break
 
     def __updateTotalCount(self):
         self.viewModel.selectableRewardModel.setTotalRewardCount(self.__getTotalCount())
@@ -203,7 +203,7 @@ class SelectableRewardBase(ViewImpl):
         return result
 
     def __updateRewardsState(self):
-        with self.viewModel.selectableRewardModel.getRewards().transaction() as (vm):
+        with self.viewModel.selectableRewardModel.getRewards().transaction() as vm:
             for rewardName, _, state in self.__prepareRewardsData(self.__selectedTab):
                 for rewardModel in vm:
                     if rewardModel.getType() != rewardName:
@@ -225,7 +225,7 @@ class SelectableRewardBase(ViewImpl):
         return len(self.__cart.get(self.__selectedTab, {}).get(rewardName, {}))
 
     def __updateTabViewModel(self, tabName):
-        with self.viewModel.selectableRewardModel.getTabs().transaction() as (vm):
+        with self.viewModel.selectableRewardModel.getTabs().transaction() as vm:
             for tab in vm:
                 if tab.getType() == tabName:
                     tab.setCount(self.__tabs[tabName]['count'])
@@ -233,7 +233,7 @@ class SelectableRewardBase(ViewImpl):
     def __updateRewardViewModel(self, rewardName):
         count = self._getReceivedRewards(rewardName) + self._getRewardsInCartCount(rewardName)
         packSize = self.__tabs[self.__selectedTab]['rewards'][rewardName]['packSize']
-        with self.viewModel.selectableRewardModel.getRewards().transaction() as (vm):
+        with self.viewModel.selectableRewardModel.getRewards().transaction() as vm:
             for reward in vm:
                 if reward.getType() == rewardName:
                     reward.setCount(count)
@@ -253,7 +253,7 @@ class SelectableRewardBase(ViewImpl):
 
     def __fillRewards(self, tabName, initial=False):
         rewards = self.viewModel.selectableRewardModel.getRewards()
-        with rewards.transaction() as (vm):
+        with rewards.transaction() as vm:
             vm.clear()
             for rewardName, reward, state in self.__prepareRewardsData(tabName):
                 newReward = SelectableRewardItemModel()
@@ -277,7 +277,7 @@ class SelectableRewardBase(ViewImpl):
             yield (rewardName, reward, state)
 
     def __fillTabs(self):
-        with self.viewModel.selectableRewardModel.transaction() as (vm):
+        with self.viewModel.selectableRewardModel.transaction() as vm:
             tabs = vm.getTabs()
             tabs.clear()
             for tabName, tabContent in self.__tabs.iteritems():
@@ -322,13 +322,12 @@ class SelectableRewardBase(ViewImpl):
         return
 
     def __createReward(self, rewards, rewardName, gift, giftID, selectableReward):
-        rewards[rewardName] = {'packSize': gift['count'], 'limit': gift['limit'], 
-           'storageCount': gift['option'].getInventoryCount(), 
-           'selectableReward': [
-                              (
-                               selectableReward, giftID)], 
-           'receivedRewards': 0, 
-           'tooltip': self._packer.getToolTip(gift['option'])}
+        rewards[rewardName] = {'packSize': gift['count'],
+         'limit': gift['limit'],
+         'storageCount': gift['option'].getInventoryCount(),
+         'selectableReward': [(selectableReward, giftID)],
+         'receivedRewards': 0,
+         'tooltip': self._packer.getToolTip(gift['option'])}
 
     @staticmethod
     def __updateReward(rewards, rewardName, gift, giftID, selectableReward):
@@ -345,6 +344,4 @@ class SelectableRewardBase(ViewImpl):
             return tooltips
         else:
             tooltips = self.__tabs[self.__selectedTab]['rewards'].get(rewardType, {}).get('tooltip')
-            if tooltips:
-                return tooltips[0]
-            return
+            return tooltips[0] if tooltips else None

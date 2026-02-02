@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/platform/products_fetcher/wot_shop/descriptors/product_descriptor.py
 from gui.platform.products_fetcher.product_descriptor import ProductDescriptor as BaseDescriptor
 
 class ProductDescriptor(BaseDescriptor):
@@ -40,9 +42,7 @@ class ProductDescriptor(BaseDescriptor):
 
     @property
     def discountPrice(self):
-        if self.promotion:
-            return self.promotion.get('discounted_cost', 0)
-        return 0
+        return self.promotion.get('discounted_cost', 0) if self.promotion else 0
 
     @property
     def entitlements(self):

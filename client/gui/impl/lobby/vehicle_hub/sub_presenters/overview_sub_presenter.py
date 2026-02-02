@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/vehicle_hub/sub_presenters/overview_sub_presenter.py
 from __future__ import absolute_import
 import json
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
@@ -42,8 +44,7 @@ class OverviewSubPresenter(SubPresenterBase):
                         slotIdx = idx
                         break
 
-            args = [
-             role,
+            args = [role,
              tankmanID,
              slotIdx,
              None,
@@ -57,12 +58,10 @@ class OverviewSubPresenter(SubPresenterBase):
 
     def _getEvents(self):
         eventsTuple = super(OverviewSubPresenter, self)._getEvents()
-        return eventsTuple + (
-         (
-          self.viewModel.onWatchMechanicsVideo, self.__onShowSpecialMechanicsVideo),)
+        return eventsTuple + ((self.viewModel.onWatchMechanicsVideo, self.__onShowSpecialMechanicsVideo),)
 
     def __updateModel(self):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setHistoricalReference(self.currentVehicle.fullDescription)
             model.setCustomDescription(self.currentVehicle.longDescriptionSpecial)
             self.__updateVehicleMechanics(model)

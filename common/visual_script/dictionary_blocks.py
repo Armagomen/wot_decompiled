@@ -1,4 +1,9 @@
-import typing, base64, cPickle, weakref
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/visual_script/dictionary_blocks.py
+import typing
+import base64
+import cPickle
+import weakref
 from visual_script.block import Block, InitParam, EDITOR_TYPE, buildStrKeysValue, Meta
 from visual_script.misc import ASPECT, errorVScript
 from visual_script.slot_types import SLOT_TYPE, arrayOf
@@ -10,15 +15,15 @@ class DictionaryMeta(Meta):
 
     @classmethod
     def blockColor(cls):
-        return 11777386
+        pass
 
     @classmethod
     def blockCategory(cls):
-        return 'Dictionary'
+        pass
 
     @classmethod
     def blockIcon(cls):
-        return ':vse/blocks/python'
+        pass
 
 
 class Dictionary(VScriptType, dict):
@@ -51,29 +56,19 @@ class Dictionary(VScriptType, dict):
 
     @classmethod
     def vs_connectionColor(cls):
-        return 11777386
+        pass
 
 
-ALLOWED_DATA_TYPES = {'String': (
-            str,), 
-   'Bool': (
-          bool,), 
-   'Int': (
-         int, long), 
-   'Float': (
-           float,), 
-   'Vehicle': (
-             weakref.ProxyType,), 
-   'Dictionary': (
-                dict, Dictionary), 
-   'Vector2': (
-             Vector2,), 
-   'Vector3': (
-             Vector3,), 
-   'Vector4': (
-             Vector4,), 
-   'Matrix4': (
-             Matrix,)}
+ALLOWED_DATA_TYPES = {'String': (str,),
+ 'Bool': (bool,),
+ 'Int': (int, long),
+ 'Float': (float,),
+ 'Vehicle': (weakref.ProxyType,),
+ 'Dictionary': (dict, Dictionary),
+ 'Vector2': (Vector2,),
+ 'Vector3': (Vector3,),
+ 'Vector4': (Vector4,),
+ 'Matrix4': (Matrix,)}
 
 class EmptyDictionary(Block, DictionaryMeta):
 
@@ -117,12 +112,10 @@ class AddToDictionary(Block, DictionaryMeta):
 
     @classmethod
     def initParams(cls):
-        return [
-         InitParam('Value type', SLOT_TYPE.STR, buildStrKeysValue(*ALLOWED_DATA_TYPES.iterkeys()), EDITOR_TYPE.STR_KEY_SELECTOR),
-         InitParam('Is Array', SLOT_TYPE.BOOL, False)]
+        return [InitParam('Value type', SLOT_TYPE.STR, buildStrKeysValue(*ALLOWED_DATA_TYPES.iterkeys()), EDITOR_TYPE.STR_KEY_SELECTOR), InitParam('Is Array', SLOT_TYPE.BOOL, False)]
 
     def captionText(self):
-        return ('Add To Dictionary: {}').format(self._valueType)
+        return 'Add To Dictionary: {}'.format(self._valueType)
 
     @classmethod
     def blockAspects(cls):
@@ -146,10 +139,10 @@ class IsInDictionary(Block, DictionaryMeta):
             valueType = type(value)
             if self._isArray:
                 if valueType not in (list, tuple):
-                    errorVScript(self, ('Value type mismatch for key {} in the Dictionary.Expected {}, received {}').format(key, 'list or tuple', valueType))
+                    errorVScript(self, 'Value type mismatch for key {} in the Dictionary.Expected {}, received {}'.format(key, 'list or tuple', valueType))
                     return
                 if value and type(value[0]) not in ALLOWED_DATA_TYPES[self._valueType]:
-                    errorVScript(self, ('List value type mismatch for key {} in the Dictionary.Expected {}, received {}').format(key, self._valueType, type(value[0])))
+                    errorVScript(self, 'List value type mismatch for key {} in the Dictionary.Expected {}, received {}'.format(key, self._valueType, type(value[0])))
                     return
                 self._res.setValue(True)
                 return
@@ -160,12 +153,10 @@ class IsInDictionary(Block, DictionaryMeta):
 
     @classmethod
     def initParams(cls):
-        return [
-         InitParam('Value type', SLOT_TYPE.STR, buildStrKeysValue(*ALLOWED_DATA_TYPES.iterkeys()), EDITOR_TYPE.STR_KEY_SELECTOR),
-         InitParam('Is Array', SLOT_TYPE.BOOL, False)]
+        return [InitParam('Value type', SLOT_TYPE.STR, buildStrKeysValue(*ALLOWED_DATA_TYPES.iterkeys()), EDITOR_TYPE.STR_KEY_SELECTOR), InitParam('Is Array', SLOT_TYPE.BOOL, False)]
 
     def captionText(self):
-        return ('Is In Dictionary: {}').format(arrayOf(self._valueType) if self._isArray else self._valueType)
+        return 'Is In Dictionary: {}'.format(arrayOf(self._valueType) if self._isArray else self._valueType)
 
     @classmethod
     def blockAspects(cls):
@@ -185,15 +176,15 @@ class GetFromDictionary(Block, DictionaryMeta):
         keyValueStorage = self._dict.getValue()
         key = self._key.getValue()
         if key not in keyValueStorage:
-            errorVScript(self, ('Key {} is missing in the Dictionary').format(key))
+            errorVScript(self, 'Key {} is missing in the Dictionary'.format(key))
             return
         value = keyValueStorage[key]
         valueType = type(value)
         if valueType not in (list, tuple):
-            errorVScript(self, ('Value type mismatch for key {} in the Dictionary.Expected {}, received {}').format(key, 'list or tuple', valueType))
+            errorVScript(self, 'Value type mismatch for key {} in the Dictionary.Expected {}, received {}'.format(key, 'list or tuple', valueType))
             return
         if value and type(value[0]) not in ALLOWED_DATA_TYPES[self._valueType]:
-            errorVScript(self, ('List value type mismatch for key {} in the Dictionary.Expected {}, received {}').format(key, self._valueType, type(value[0])))
+            errorVScript(self, 'List value type mismatch for key {} in the Dictionary.Expected {}, received {}'.format(key, self._valueType, type(value[0])))
             return
         if valueType is dict:
             self._value.setValue([ Dictionary(val) for val in value ])
@@ -212,18 +203,16 @@ class GetFromDictionary(Block, DictionaryMeta):
                 else:
                     self._value.setValue(value)
             else:
-                errorVScript(self, ('Value type mismatch for key {} in the Dictionary. Expected {}, received {}').format(key, self._valueType, valueType))
+                errorVScript(self, 'Value type mismatch for key {} in the Dictionary. Expected {}, received {}'.format(key, self._valueType, valueType))
         else:
-            errorVScript(self, ('Key {} is missing in the Dictionary').format(key))
+            errorVScript(self, 'Key {} is missing in the Dictionary'.format(key))
 
     @classmethod
     def initParams(cls):
-        return [
-         InitParam('Value type', SLOT_TYPE.STR, buildStrKeysValue(*ALLOWED_DATA_TYPES.iterkeys()), EDITOR_TYPE.STR_KEY_SELECTOR),
-         InitParam('Is Array', SLOT_TYPE.BOOL, False)]
+        return [InitParam('Value type', SLOT_TYPE.STR, buildStrKeysValue(*ALLOWED_DATA_TYPES.iterkeys()), EDITOR_TYPE.STR_KEY_SELECTOR), InitParam('Is Array', SLOT_TYPE.BOOL, False)]
 
     def captionText(self):
-        return ('Get From Dictionary: {}').format(arrayOf(self._valueType) if self._isArray else self._valueType)
+        return 'Get From Dictionary: {}'.format(arrayOf(self._valueType) if self._isArray else self._valueType)
 
     @classmethod
     def blockAspects(cls):
@@ -247,15 +236,15 @@ class RemoveFromDictionary(Block, DictionaryMeta):
         keyValueStorage = self._dict.getValue()
         key = self._key.getValue()
         if key not in keyValueStorage:
-            errorVScript(self, ('Key {} is missing in the Dictionary').format(key))
+            errorVScript(self, 'Key {} is missing in the Dictionary'.format(key))
             return
         value = keyValueStorage[key]
         valueType = type(value)
         if valueType not in (list, tuple):
-            errorVScript(self, ('Value type mismatch for key {} in the Dictionary.Expected {}, received {}').format(key, 'list or tuple', valueType))
+            errorVScript(self, 'Value type mismatch for key {} in the Dictionary.Expected {}, received {}'.format(key, 'list or tuple', valueType))
             return
         if value and type(value[0]) not in ALLOWED_DATA_TYPES[self._valueType]:
-            errorVScript(self, ('List value type mismatch for key {} in the Dictionary.Expected {}, received {}').format(key, self._valueType, type(value[0])))
+            errorVScript(self, 'List value type mismatch for key {} in the Dictionary.Expected {}, received {}'.format(key, self._valueType, type(value[0])))
             return
         self._value.setValue(value)
         newDict = Dictionary(keyValueStorage)
@@ -273,25 +262,22 @@ class RemoveFromDictionary(Block, DictionaryMeta):
                 if valueType is dict:
                     self._value.setValue(Dictionary(value))
                 else:
-                    (
-                     self._value.setValue(value),)
+                    (self._value.setValue(value),)
                 newDict = Dictionary(keyValueStorage)
                 newDict.pop(key)
                 self._res.setValue(newDict)
                 self._out.call()
             else:
-                errorVScript(self, ('Value type mismatch for key {} in the Dictionary. Expected {}, received {}').format(key, self._valueType, valueType))
+                errorVScript(self, 'Value type mismatch for key {} in the Dictionary. Expected {}, received {}'.format(key, self._valueType, valueType))
         else:
-            errorVScript(self, ('Key {} is missing in the Dictionary').format(key))
+            errorVScript(self, 'Key {} is missing in the Dictionary'.format(key))
 
     @classmethod
     def initParams(cls):
-        return [
-         InitParam('Value type', SLOT_TYPE.STR, buildStrKeysValue(*ALLOWED_DATA_TYPES.iterkeys()), EDITOR_TYPE.STR_KEY_SELECTOR),
-         InitParam('Is Array', SLOT_TYPE.BOOL, False)]
+        return [InitParam('Value type', SLOT_TYPE.STR, buildStrKeysValue(*ALLOWED_DATA_TYPES.iterkeys()), EDITOR_TYPE.STR_KEY_SELECTOR), InitParam('Is Array', SLOT_TYPE.BOOL, False)]
 
     def captionText(self):
-        return ('Remove From Dictionary: {}').format(arrayOf(self._valueType) if self._isArray else self._valueType)
+        return 'Remove From Dictionary: {}'.format(arrayOf(self._valueType) if self._isArray else self._valueType)
 
     @classmethod
     def blockAspects(cls):
@@ -310,7 +296,7 @@ class GetKeysFromDictionary(Block, DictionaryMeta):
         self._keys.setValue(keyValueStorage.keys())
 
     def captionText(self):
-        return 'Get Keys From Dictionary'
+        pass
 
     @classmethod
     def blockAspects(cls):

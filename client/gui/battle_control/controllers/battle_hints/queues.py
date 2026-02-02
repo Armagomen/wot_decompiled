@@ -1,8 +1,11 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/battle_hints/queues.py
 import time
 from functools import partial
 import typing
 from typing import Optional, Dict, Union, Tuple, List, Type
-import BigWorld, SoundGroups
+import BigWorld
+import SoundGroups
 from gui.battle_control.controllers.battle_hints.common import getLogger, DEFAULT_LOGGER_NAME, HIGHEST_PRIORITY, QUEUE_HINTS_MAX_SIZE, HIDE_ANIMATION_TIMEOUT
 from shared_utils import safeCancelCallback
 from helpers.log.adapters import getWithContext
@@ -18,8 +21,7 @@ _hintLogger = getLogger('Queue', 'Hint')
 _mgrLogger = getLogger('Queues', 'Mgr')
 
 class BattleHint(object):
-    __slots__ = ('_model', '_component', '_history', '_params', '_enqueueTime', '_startDisplayTime',
-                 '_maxPriorityOffset')
+    __slots__ = ('_model', '_component', '_history', '_params', '_enqueueTime', '_startDisplayTime', '_maxPriorityOffset')
 
     def __init__(self, model, component, history=None, params=None):
         self._model = model
@@ -106,14 +108,10 @@ class BattleHint(object):
     def isOutdated(self, currentTime):
         if not self.canBeShown(currentTime):
             return True
-        if self._enqueueTime <= 0 or self._model.lifecycle.waitTime <= 0:
-            return False
-        return currentTime - self._enqueueTime >= self._model.lifecycle.waitTime
+        return False if self._enqueueTime <= 0 or self._model.lifecycle.waitTime <= 0 else currentTime - self._enqueueTime >= self._model.lifecycle.waitTime
 
     def _getLastDisplayTime(self):
-        if not self._model.history or not self._history:
-            return 0.0
-        return self._history.getLastDisplayTime(self._model.uniqueName)
+        return 0.0 if not self._model.history or not self._history else self._history.getLastDisplayTime(self._model.uniqueName)
 
     def _isOnCooldown(self, currentTime=None):
         if not self._model.history or self._model.history.cooldown <= 0:
@@ -124,9 +122,9 @@ class BattleHint(object):
     def _playSound(self):
         if not self._model.sound:
             return
+        elif self._model.sound.createAliveOnly() and not BigWorld.player().isVehicleAlive:
+            return
         else:
-            if self._model.sound.createAliveOnly() and not BigWorld.player().isVehicleAlive:
-                return
             soundFx = self._model.sound.createFx()
             if soundFx:
                 SoundGroups.g_instance.playSound2D(soundFx)
@@ -140,17 +138,14 @@ class BattleHint(object):
             return
 
     def __eq__(self, other):
-        if not isinstance(other, BattleHint):
-            return False
-        return self.uniqueName == other.uniqueName
+        return False if not isinstance(other, BattleHint) else self.uniqueName == other.uniqueName
 
     def __ne__(self, other):
         return not self.__eq__(other)
 
 
 class BattleHintsQueue(object):
-    __slots__ = ('_displayed', '_queue', '_delayerId', '_fadeOutCallbackId', '_enabled',
-                 '_maxSize', '_withFadeOut', '_logger')
+    __slots__ = ('_displayed', '_queue', '_delayerId', '_fadeOutCallbackId', '_enabled', '_maxSize', '_withFadeOut', '_logger')
     ifEnabled = condition('_enabled', logFunc=LOG_WARNING, logStack=False)
 
     def __init__(self, maxSize=QUEUE_HINTS_MAX_SIZE, withFadeOut=True):
@@ -314,7 +309,10 @@ class BattleHintQueueParams(object):
         self._maxSize = maxSize
         self._withFadeOut = withFadeOut
         self._hintClass = hintClass or BattleHint
-        self._queueId = hash((self._name, id(self._queueClass), self._maxSize, self._withFadeOut))
+        self._queueId = hash((self._name,
+         id(self._queueClass),
+         self._maxSize,
+         self._withFadeOut))
 
     @property
     def queueId(self):
@@ -327,7 +325,7 @@ class BattleHintQueueParams(object):
         return self._hintClass(model=model, component=component, history=history, params=params)
 
     def __repr__(self):
-        return ('BHQueueParams<{}, {}>').format(self._name, self._queueId)
+        return 'BHQueueParams<{}, {}>'.format(self._name, self._queueId)
 
 
 class BattleHintsQueuesMgr(object):

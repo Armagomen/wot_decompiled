@@ -1,4 +1,7 @@
-import typing, logging
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/tutorial/gui/controller.py
+import typing
+import logging
 from functools import partial
 from gui.Scaleform.genConsts.TUTORIAL_EFFECT_TYPES import TUTORIAL_EFFECT_TYPES as _EFFECT_TYPES
 from gui.Scaleform.genConsts.TUTORIAL_TRIGGER_TYPES import TUTORIAL_TRIGGER_TYPES
@@ -15,14 +18,12 @@ if typing.TYPE_CHECKING:
 _logger = logging.getLogger(__name__)
 _Event = events.TutorialEvent
 _TRIGGER_TYPES = TUTORIAL_TRIGGER_TYPES
-_COMPONENT_PROPERTY_EFFECTS = {_EFFECT_TYPES.DISPLAY: ('visible', ), 
-   _EFFECT_TYPES.ENABLED: ('enabled', )}
+_COMPONENT_PROPERTY_EFFECTS = {_EFFECT_TYPES.DISPLAY: ('visible',),
+ _EFFECT_TYPES.ENABLED: ('enabled',)}
 _R_VIEWS_PREFIX = 'R.views.'
 
 def _isRView(path):
-    if path:
-        return path.startswith(_R_VIEWS_PREFIX)
-    return False
+    return path.startswith(_R_VIEWS_PREFIX) if path else False
 
 
 def _parseRView(view):
@@ -65,9 +66,7 @@ class _ComponentViewBinding(object):
 
 
 class GuiController(IGuiController):
-    __slots__ = ('__guiImpls', '_isEnabled', '_componentViewBindings', '_components',
-                 '_componentProps', '_pendingComponentAnimations', '__hintsWithClientTriggers',
-                 '_config', '__onComponentFoundHandlers', '__descriptions')
+    __slots__ = ('__guiImpls', '_isEnabled', '_componentViewBindings', '_components', '_componentProps', '_pendingComponentAnimations', '__hintsWithClientTriggers', '_config', '__onComponentFoundHandlers', '__descriptions')
 
     def __init__(self):
         super(GuiController, self).__init__()
@@ -87,10 +86,7 @@ class GuiController(IGuiController):
         self.__hintsWithClientTriggers = clientTriggers
 
     def getViewTutorialID(self, name):
-        if not self._isEnabled:
-            return None
-        else:
-            return name
+        return None if not self._isEnabled else name
 
     def getFoundComponentsIDs(self):
         return self._components.keys()
@@ -122,11 +118,11 @@ class GuiController(IGuiController):
     def showInteractiveHint(self, componentID, content, triggers=None, silent=False):
         if not self._validate(componentID):
             return False
+        elif componentID not in self._components:
+            if not silent:
+                _logger.error('showInteractiveHint - target component is not on scene!: %r', componentID)
+            return False
         else:
-            if componentID not in self._components:
-                if not silent:
-                    _logger.error('showInteractiveHint - target component is not on scene!: %r', componentID)
-                return False
             if 'padding' not in content:
                 content['padding'] = self._config.getItem(componentID).padding
             self.__doShowEffect(componentID, _EFFECT_TYPES.HINT, content)
@@ -255,16 +251,16 @@ class GuiController(IGuiController):
     def _validate(self, componentID):
         if not self._isEnabled or self._config is None:
             return False
-        component = self._config.getItem(componentID)
-        if component is None:
-            _logger.error('Component is not found: %r', componentID)
-            return False
         else:
+            component = self._config.getItem(componentID)
+            if component is None:
+                _logger.error('Component is not found: %r', componentID)
+                return False
             return True
 
     def _getGui(self, componentID):
         if componentID not in self._components:
-            raise SoftException(("Can't find component id: {}").format(componentID))
+            raise SoftException("Can't find component id: {}".format(componentID))
         return self._components[componentID]
 
     def __onComponentFound(self, gui, componentID, viewTutorialID):
@@ -338,9 +334,7 @@ class GuiController(IGuiController):
         if binding.desiredUniqueName is not None:
             return binding.desiredUniqueName
         else:
-            if binding.actualUniqueName is not None:
-                return binding.actualUniqueName
-            return binding.alias
+            return binding.actualUniqueName if binding.actualUniqueName is not None else binding.alias
 
     def __doShowEffect(self, componentID, effectType, effectData):
         viewTutorialID = self.__getComponentViewID(componentID)

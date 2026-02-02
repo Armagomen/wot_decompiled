@@ -1,8 +1,11 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/hangar_presets/providers/base_dynamic_gui_provider.py
 import typing
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as BONUS_CAPS
 from battle_modifiers_common import BattleModifiers, BattleParams, getGlobalModifiers
 from constants import ARENA_BONUS_TYPE, IS_DEVELOPMENT
 from gui.hangar_presets.obsolete.hangar_presets_getters import IPresetsGetter, EmptyPresetsGetter
+from gui.Scaleform.daapi.view.lobby.header.helpers.controls_helpers import EmptyLobbyHeaderFooterHelper
 if typing.TYPE_CHECKING:
     from gui.prb_control.entities.base.entity import BasePrbEntity
     from gui.impl.lobby.missions.missions_helpers import IMissionsGuiHelper
@@ -41,9 +44,7 @@ class EmptyHangarDynamicGuiProvider(IHangarDynamicGuiProvider):
 
     @classmethod
     def getDefaultBattleModifiers(cls):
-        if IS_DEVELOPMENT:
-            return getGlobalModifiers()
-        return cls._DEFAULT_BATTLE_MODIFIERS
+        return getGlobalModifiers() if IS_DEVELOPMENT else cls._DEFAULT_BATTLE_MODIFIERS
 
     @classmethod
     def getDefaultBonusCapsOverrides(cls):
@@ -51,11 +52,11 @@ class EmptyHangarDynamicGuiProvider(IHangarDynamicGuiProvider):
 
     @classmethod
     def getDefaultLobbyHeaderHelper(cls):
-        return
+        return EmptyLobbyHeaderFooterHelper
 
     @classmethod
     def getDefaultMissionsHelper(cls):
-        return
+        return None
 
     @classmethod
     def getDefaultPresetsGetter(cls):
@@ -91,8 +92,7 @@ class EmptyHangarDynamicGuiProvider(IHangarDynamicGuiProvider):
 
 
 class BaseHangarDynamicGuiProvider(EmptyHangarDynamicGuiProvider):
-    _BONUS_TYPES = (
-     ARENA_BONUS_TYPE.UNKNOWN,)
+    _BONUS_TYPES = (ARENA_BONUS_TYPE.UNKNOWN,)
     _LOBBY_HEADER_HELPER = None
     _MISSIONS_HELPER = None
 

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/maps_training/arena_time_notificator.py
 from gui.battle_control.controllers.period_ctrl import IAbstractPeriodView
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
@@ -16,7 +18,7 @@ class MapsTrainingArenaTimeNotificator(IAbstractPeriodView):
     def setTotalTime(self, totalTime):
         if self.__lastNotifiedTime is None:
             self.__lastNotifiedTime = totalTime
-        if totalTime == _TIME_TO_NOTIFY_BATTLE_END or totalTime < _TIME_TO_NOTIFY_BATTLE_END < self.__lastNotifiedTime:
-            self.sessionProvider.dynamic.battleHints.showHint('maps_training.timeRunsOut', {'param1': _TIME_TO_NOTIFY_BATTLE_END})
+        if not totalTime == _TIME_TO_NOTIFY_BATTLE_END:
+            totalTime < _TIME_TO_NOTIFY_BATTLE_END < self.__lastNotifiedTime and self.sessionProvider.dynamic.battleHints.showHint('maps_training.timeRunsOut', {'param1': _TIME_TO_NOTIFY_BATTLE_END})
         self.__lastNotifiedTime = totalTime
         return

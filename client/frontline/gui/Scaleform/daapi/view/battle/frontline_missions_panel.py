@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/battle/frontline_missions_panel.py
 import math
 from frontline.gui.Scaleform.daapi.view.meta.FrontlineMissionsPanelMeta import FrontlineMissionsPanelMeta
 from helpers import dependency
@@ -61,7 +63,6 @@ class FrontlineMissionsPanel(FrontlineMissionsPanelMeta, CallbackDelayer):
             self.as_setMissionDescriptionValueS(timeStr)
             return 1
         self.as_setMissionDescriptionValueS('')
-        return -1
 
     def __onPlayerMissionUpdated(self, mission, additionalDescription=None):
         self.as_setPrimaryMissionS(mission.generateData())

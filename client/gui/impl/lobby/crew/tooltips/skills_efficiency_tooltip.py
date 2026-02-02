@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/tooltips/skills_efficiency_tooltip.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.crew.tooltips.skills_efficiency_tooltip_model import SkillsEfficiencyTooltipModel
@@ -28,7 +30,7 @@ class SkillsEfficiencyTooltip(ViewImpl):
 
     def _fillModel(self):
         tankman = self.itemsCache.items.getTankman(self.tankmanID)
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             if tankman and not self.skillEfficiency:
                 vm.setPercent(tankman.currentVehicleSkillsEfficiency)
                 vm.setCurrentXP(tankman.skillsEfficiencyXP)

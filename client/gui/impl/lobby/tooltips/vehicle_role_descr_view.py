@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tooltips/vehicle_role_descr_view.py
 from constants import ACTION_TYPE_TO_LABEL, ROLE_TYPE_TO_LABEL
 from gui.impl.gen import R
 from gui.impl.pub import ViewImpl
@@ -26,7 +28,7 @@ class VehicleRolesTooltipView(ViewImpl, IPrbListener):
         super(VehicleRolesTooltipView, self)._onLoading(*args, **kwargs)
         vehicle = self.__itemsCache.items.getItemByCD(vehicleCD)
         roleLabel = ROLE_TYPE_TO_LABEL[vehicle.role]
-        with self.getViewModel().transaction() as (model):
+        with self.getViewModel().transaction() as model:
             model.setRoleType(roleLabel)
             model.setRoleBgImage(R.images.gui.maps.icons.roleExp.actionsTooltip.headerImage.dyn(roleLabel)())
             isRoleEnable = True

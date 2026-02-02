@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/pve_base/pve_prebattle_timer.py
 from gui.Scaleform.daapi.view.battle.shared.prebattle_timers.timer_base import PreBattleTimerBase
 from gui.battle_control.battle_constants import COUNTDOWN_STATE
 from helpers import dependency

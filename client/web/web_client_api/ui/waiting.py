@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/web/web_client_api/ui/waiting.py
 from gui.Scaleform.Waiting import Waiting
 from web.web_client_api import w2c, W2CSchema, Field
 

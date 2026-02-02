@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/dict2model/extensions/color.py
 from __future__ import absolute_import
 from Math import Vector4
 from dict2model import models, validate
@@ -31,8 +33,8 @@ class ColorModel(models.Model):
         return Vector4(self.__red / 255.0, self.__green / 255.0, self.__blue / 255.0, self.alpha)
 
     def _reprArgs(self):
-        return ('code={}, alpha={}').format(self.code, self.alpha)
+        return 'code={}, alpha={}'.format(self.code, self.alpha)
 
 
-colorSchema = Schema(fields={'code': HexColorCode(), 
-   'alpha': Float(required=False, default=1.0, deserializedValidators=validate.Range(0.0, 1.0))}, modelClass=ColorModel)
+colorSchema = Schema(fields={'code': HexColorCode(),
+ 'alpha': Float(required=False, default=1.0, deserializedValidators=validate.Range(0.0, 1.0))}, modelClass=ColorModel)

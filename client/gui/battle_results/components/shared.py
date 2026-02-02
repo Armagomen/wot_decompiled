@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_results/components/shared.py
 from debug_utils import LOG_ERROR
 from dossiers2.ui.achievements import ACHIEVEMENT_TYPE
 from gui.battle_results import stored_sorting
@@ -25,8 +27,7 @@ class ClientIndexItem(base.StatsItem):
 
 
 class PlayerNameBlock(base.StatsBlock):
-    __slots__ = ('_dbID', 'fakeNameLabel', 'realNameLabel', 'clanLabel', 'fullNameLabel',
-                 'regionLabel', 'isTeamKiller', 'tags')
+    __slots__ = ('_dbID', 'fakeNameLabel', 'realNameLabel', 'clanLabel', 'fullNameLabel', 'regionLabel', 'isTeamKiller', 'tags')
 
     def __init__(self, meta=None, field='', *path):
         super(PlayerNameBlock, self).__init__(meta, field, *path)
@@ -111,9 +112,7 @@ class AchievementIcon(base.StatsBlock):
 
 
 class AchievementBlock(base.StatsBlock):
-    __slots__ = ('type', 'block', 'icon', 'specialIcon', 'title', 'description', 'hasRibbon',
-                 'customData', 'isUnique', 'rank', 'i18nValue', 'inactive', 'isRare',
-                 'rareIconID', 'arenaType', 'vehicleLevel')
+    __slots__ = ('type', 'block', 'icon', 'specialIcon', 'title', 'description', 'hasRibbon', 'customData', 'isUnique', 'rank', 'i18nValue', 'inactive', 'isRare', 'rareIconID', 'arenaType', 'vehicleLevel')
 
     def setUnique(self, value):
         self.isUnique = value

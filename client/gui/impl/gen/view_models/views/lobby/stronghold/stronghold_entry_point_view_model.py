@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/stronghold/stronghold_entry_point_view_model.py
 from enum import IntEnum
 from frameworks.wulf import ViewModel
 
@@ -13,7 +15,7 @@ class State(IntEnum):
 
 
 class StrongholdEntryPointViewModel(ViewModel):
-    __slots__ = ('onOpen', )
+    __slots__ = ('onOpen',)
 
     def __init__(self, properties=4, commands=1):
         super(StrongholdEntryPointViewModel, self).__init__(properties=properties, commands=commands)

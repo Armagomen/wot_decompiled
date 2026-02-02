@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/tutorial/gui/commands.py
 import types
 from tutorial.control import g_tutorialWeaver
 from tutorial.logger import LOG_ERROR, LOG_CURRENT_EXCEPTION
@@ -14,7 +16,7 @@ class _PyDummyMethod(GUICommand):
         pathList = cmdData.name.split('.')
         method = pathList.pop()
         clazz = pathList.pop()
-        g_tutorialWeaver.weave(('.').join(pathList), clazz, ('^{0:>s}$').format(method), avoid=True)
+        g_tutorialWeaver.weave('.'.join(pathList), clazz, '^{0:>s}$'.format(method), avoid=True)
 
 
 class _PyInvokeMethod(GUICommand):
@@ -54,7 +56,7 @@ class _PyNoGuiInvokeMethod(GUICommand):
     def invoke(self, _, cmdData):
         pathList = cmdData.name.split('.')
         methodName = pathList.pop()
-        path = ('.').join(pathList)
+        path = '.'.join(pathList)
         imported = __import__(path, globals(), locals(), [methodName])
         method = getattr(imported, methodName, None)
         if method is not None and callable(method):
@@ -71,9 +73,9 @@ class GUICommandsFactory(object):
 
     def __init__(self, typeMap=None):
         super(GUICommandsFactory, self).__init__()
-        self.__typeMap = {'python-invoke': _PyInvokeMethod, 
-           'python-dummy': _PyDummyMethod, 
-           'invoke-method': _PyNoGuiInvokeMethod}
+        self.__typeMap = {'python-invoke': _PyInvokeMethod,
+         'python-dummy': _PyDummyMethod,
+         'invoke-method': _PyNoGuiInvokeMethod}
         if typeMap is not None:
             self.__typeMap.update(typeMap)
         return

@@ -1,8 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/hangar/main_menu_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.hangar.menu_item_model import MenuItemModel
 
 class MainMenuModel(ViewModel):
-    __slots__ = ('onNavigate', )
+    __slots__ = ('onNavigate',)
     MODE_SELECTOR = 'modeSelector'
     SHOP = 'shop'
     STORAGE = 'storage'

@@ -1,4 +1,9 @@
-import logging, typing, BigWorld, resource_helper
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/battle_matters/battle_matters_main_view.py
+import logging
+import typing
+import BigWorld
+import resource_helper
 from account_helpers.settings_core.settings_constants import OnceOnlyHints
 from battle_matters_constants import QuestCardSections, CARDS_CONFIG_XML_PATH
 from frameworks.wulf import ViewFlags, ViewSettings, ViewStatus
@@ -93,9 +98,7 @@ class BattleMattersMissionComponent(InjectComponentAdaptor, BattleMattersViewMet
             return BattleMattersMainView
         if openVehicleSelection or self.__battleMattersController.isFinished() and self.__battleMattersController.hasDelayedRewards():
             return BattleMattersVehicleSelectionView
-        if openMainRewardView:
-            return BattleMattersMainRewardView
-        return BattleMattersMainView
+        return BattleMattersMainRewardView if openMainRewardView else BattleMattersMainView
 
     def __onStateChanged(self):
         controller = self.__battleMattersController
@@ -139,10 +142,7 @@ class BattleMattersMainView(ViewImpl):
 
     def getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        if tooltipId is None:
-            return
-        else:
-            return self.__tooltips.get(tooltipId)
+        return None if tooltipId is None else self.__tooltips.get(tooltipId)
 
     def createToolTipContent(self, event, contentID):
         if contentID == R.views.lobby.tooltips.AdditionalRewardsTooltip():
@@ -157,9 +157,7 @@ class BattleMattersMainView(ViewImpl):
 
             additionalRewards = [ bonus for bonus in packed[showCount:] ]
             return AdditionalRewardsTooltip(additionalRewards)
-        if contentID == R.views.lobby.battle_matters.tooltips.BattleMattersTokenTooltipView():
-            return BattleMattersTokenTooltipView()
-        return super(BattleMattersMainView, self).createToolTipContent(event, contentID)
+        return BattleMattersTokenTooltipView() if contentID == R.views.lobby.battle_matters.tooltips.BattleMattersTokenTooltipView() else super(BattleMattersMainView, self).createToolTipContent(event, contentID)
 
     def _initialize(self, *args, **kwargs):
         super(BattleMattersMainView, self)._initialize(*args, **kwargs)
@@ -174,23 +172,14 @@ class BattleMattersMainView(ViewImpl):
         super(BattleMattersMainView, self)._finalize()
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onShowManual, self.__onShowManual),
-         (
-          self.viewModel.onShowMainReward, self.__onShowMainReward),
-         (
-          self.viewModel.onShowManualForQuest, self.__onShowManualForQuest),
-         (
-          self.viewModel.onShowAnimForQuest, self.__onAnimForQuest),
-         (
-          self.viewModel.onSelectDelayedReward, self.__onSelectDelayedReward),
-         (
-          self.viewModel.onClose, showHangar),
-         (
-          self.__eventsCache.onSyncCompleted, self.__onSyncCompleted),
-         (
-          self.gui.windowsManager.onWindowStatusChanged, self.__onWindowStatusChanged))
+        return ((self.viewModel.onShowManual, self.__onShowManual),
+         (self.viewModel.onShowMainReward, self.__onShowMainReward),
+         (self.viewModel.onShowManualForQuest, self.__onShowManualForQuest),
+         (self.viewModel.onShowAnimForQuest, self.__onAnimForQuest),
+         (self.viewModel.onSelectDelayedReward, self.__onSelectDelayedReward),
+         (self.viewModel.onClose, showHangar),
+         (self.__eventsCache.onSyncCompleted, self.__onSyncCompleted),
+         (self.gui.windowsManager.onWindowStatusChanged, self.__onWindowStatusChanged))
 
     @classmethod
     def __getMissionPage(cls):
@@ -198,9 +187,7 @@ class BattleMattersMainView(ViewImpl):
 
     def __getCurrentQuestIdx(self):
         currentQuest = self.__battleMattersController.getCurrentQuest()
-        if currentQuest:
-            return currentQuest.getOrder()
-        return len(self.__battleMattersController.getCompletedBattleMattersQuests())
+        return currentQuest.getOrder() if currentQuest else len(self.__battleMattersController.getCompletedBattleMattersQuests())
 
     @staticmethod
     def __onSelectDelayedReward():
@@ -252,7 +239,7 @@ class BattleMattersMainView(ViewImpl):
     def __update(self):
         self.__updateCompensationQuestStatus()
         self.__tooltips.clear()
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             currentQuestIdx = self.__getCurrentQuestIdx()
             model.setIsRewardsViewOpen(self.__currentQuestIdx != currentQuestIdx)
             self.__currentQuestIdx = currentQuestIdx

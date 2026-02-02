@@ -1,6 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/perk_ctrl.py
 from typing import TYPE_CHECKING
 from copy import deepcopy
-import BigWorld, Event
+import BigWorld
+import Event
 from helpers import dependency
 from PlayerEvents import g_playerEvents
 from constants import ARENA_PERIOD
@@ -105,8 +108,7 @@ class PerksController(ViewComponentsController):
     def _getCurrentState(source, prevState):
         currentState = {item[_DATA_KEY_PERK_ID]:{key:item[key] for key in set(item.keys()) ^ {_DATA_KEY_PERK_ID}} for item in source}
         changes = {perkID:data for perkID, data in currentState.iteritems() if perkID not in prevState or prevState[perkID] != data}
-        return (
-         changes, currentState)
+        return (changes, currentState)
 
     def _updatePerk403(self, perkID, state, coolDown, lifeTime, vehicle=None):
         isActive = bool(state)

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/meta_view/pages/rank_rewards_page.py
 import logging
 from collections import namedtuple
 from functools import partial
@@ -86,17 +88,16 @@ class RankRewardsPage(PageSubModelPresenter):
             rank = int(event.getArgument('rank'))
             bonuses = [ d.bonus for d in self.__bonusData[rank][fromIndex:] ]
             return AdditionalRewardsTooltip(bonuses)
+        elif contentID == R.views.comp7.mono.lobby.tooltips.general_rank_tooltip():
+            params = {'rank': Rank(event.getArgument('rank')),
+             'divisions': event.getArgument('divisions'),
+             'from': event.getArgument('from'),
+             'to': event.getArgument('to')}
+            return GeneralRankTooltip(params=params)
+        elif contentID == R.views.comp7.mono.lobby.tooltips.fifth_rank_tooltip():
+            return FifthRankTooltip()
         else:
-            if contentID == R.views.comp7.mono.lobby.tooltips.general_rank_tooltip():
-                params = {'rank': Rank(event.getArgument('rank')), 'divisions': event.getArgument('divisions'), 
-                   'from': event.getArgument('from'), 
-                   'to': event.getArgument('to')}
-                return GeneralRankTooltip(params=params)
-            if contentID == R.views.comp7.mono.lobby.tooltips.fifth_rank_tooltip():
-                return FifthRankTooltip()
-            if contentID == R.views.comp7.mono.lobby.tooltips.sixth_rank_tooltip():
-                return SixthRankTooltip()
-            return
+            return SixthRankTooltip() if contentID == R.views.comp7.mono.lobby.tooltips.sixth_rank_tooltip() else None
 
     def initialize(self, **params):
         super(RankRewardsPage, self).initialize(**params)
@@ -104,7 +105,7 @@ class RankRewardsPage(PageSubModelPresenter):
         if index is None:
             index = RankRewardsModel.DEFAULT_ITEM_INDEX
         self.__itemIndex = index
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setInitialItemIndex(index)
             comp7_model_helpers.setElitePercentage(tx)
             self.__updateQuests()
@@ -119,17 +120,11 @@ class RankRewardsPage(PageSubModelPresenter):
         super(RankRewardsPage, self).finalize()
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onPreviewOpen, self.__onPreviewOpen),
-         (
-          self.__eventsCache.onSyncCompleted, self.__onEventsSyncCompleted),
-         (
-          self.__comp7Controller.onComp7RanksConfigChanged, self.__onRanksConfigChanged),
-         (
-          self.__comp7Controller.onRankUpdated, self.__onRankUpdated),
-         (
-          self.__comp7Controller.onQualificationStateUpdated, self.__onQualificationStateUpdated))
+        return ((self.viewModel.onPreviewOpen, self.__onPreviewOpen),
+         (self.__eventsCache.onSyncCompleted, self.__onEventsSyncCompleted),
+         (self.__comp7Controller.onComp7RanksConfigChanged, self.__onRanksConfigChanged),
+         (self.__comp7Controller.onRankUpdated, self.__onRankUpdated),
+         (self.__comp7Controller.onQualificationStateUpdated, self.__onQualificationStateUpdated))
 
     def __updateQuests(self):
         comp7Quests = self.__eventsCache.getAllQuests(lambda q: isComp7VisibleQuest(q.getID())).values()
@@ -170,17 +165,17 @@ class RankRewardsPage(PageSubModelPresenter):
         qualificationModel.setIsActive(self.__comp7Controller.isQualificationActive())
 
     def __onEventsSyncCompleted(self):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             self.__updateQuests()
             self.__setRanksData(tx)
 
     def __onRanksConfigChanged(self):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             comp7_model_helpers.setElitePercentage(tx)
             self.__setRanksData(tx)
 
     def __onRankUpdated(self, *_, **__):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             self.__setRanksData(tx)
 
     def __onQualificationStateUpdated(self):
@@ -194,8 +189,8 @@ class RankRewardsPage(PageSubModelPresenter):
         vehIntCD = getStylePreviewVehicle(style, makeVehicleTypeCompDescrByName(_DEFAULT_PREVIEW_VEHICLE))
         vehicle = self.__itemsCache.items.getItemByCD(vehIntCD)
         compactDescr = vehicle.descriptor.makeCompactDescr()
-        params = {'outfit': getPreviewOutfit(style, bonus.getBranchID(), bonus.getProgressLevel(), compactDescr), 
-           'backCallback': partial(comp7_events.showComp7MetaRootTab, self.pageId, index=index)}
+        params = {'outfit': getPreviewOutfit(style, bonus.getBranchID(), bonus.getProgressLevel(), compactDescr),
+         'backCallback': partial(comp7_events.showComp7MetaRootTab, self.pageId, index=index)}
         comp7_events.showComp7StylePreview(vehIntCD, style, **params)
 
     @staticmethod

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/tooltips/ranked/ranked_step_tooltip.py
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
 from gui.Scaleform.genConsts.RANKEDBATTLES_ALIASES import RANKEDBATTLES_ALIASES
 from gui.impl import backport
@@ -43,12 +45,12 @@ class RankedStepTooltip(BlocksTooltipData):
         block = []
         block.append(self._getConditionHeaderBlock(strValue=backport.text(R.strings.ranked_battles.tooltip.step.conditions.header())))
         if winEarnedCount > 0:
-            winIcon = R.images.gui.maps.icons.rankedBattles.tops.top.c_54x50.dyn(('top{}').format(winEarnedCount))
+            winIcon = R.images.gui.maps.icons.rankedBattles.tops.top.c_54x50.dyn('top{}'.format(winEarnedCount))
             block.append(formatters.packImageTextBlockData(desc=text_styles.main(backport.text(R.strings.ranked_battles.tooltip.step.conditions(), battlesNum=winEarnedCount, team=text_styles.statInfo(backport.text(R.strings.ranked_battles.tooltip.step.winners())))), img=winIcon, txtPadding=formatters.packPadding(left=17)))
         if winEarnedCount > 0 and loseEarnedCount > 0:
             block.append(self._getOrBlock(padding=formatters.packPadding(left=70, bottom=10)))
         if loseEarnedCount > 0:
-            loseIcon = R.images.gui.maps.icons.rankedBattles.tops.lose.c_54x50.dyn(('top{}').format(loseEarnedCount))
+            loseIcon = R.images.gui.maps.icons.rankedBattles.tops.lose.c_54x50.dyn('top{}'.format(loseEarnedCount))
             block.append(formatters.packImageTextBlockData(desc=text_styles.main(backport.text(R.strings.ranked_battles.tooltip.step.conditions(), battlesNum=loseEarnedCount, team=text_styles.critical(backport.text(R.strings.ranked_battles.tooltip.step.losers())))), img=loseIcon, txtPadding=formatters.packPadding(left=17)))
         return formatters.packBuildUpBlockData(block, 0, BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE)
 

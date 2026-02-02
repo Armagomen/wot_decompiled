@@ -1,4 +1,7 @@
-import typing, json
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/battle_results/submodel_presenters/battle_achievements.py
+import typing
+import json
 from frameworks.wulf import Array
 from frameworks.wulf.view.array import fillViewModelsArray
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
@@ -11,10 +14,7 @@ if typing.TYPE_CHECKING:
     from frameworks.wulf import ViewModel
     from gui.battle_results.stats_ctrl import BattleResults
     from gui.battle_results.pbs_helpers.common import _AchievementData
-AchievementTooltipType = (
- TOOLTIPS_CONSTANTS.BATTLE_STATS_MARKS_ON_GUN_ACHIEVEMENT,
- TOOLTIPS_CONSTANTS.MARK_OF_MASTERY,
- TOOLTIPS_CONSTANTS.BATTLE_STATS_ACHIEVS)
+AchievementTooltipType = (TOOLTIPS_CONSTANTS.BATTLE_STATS_MARKS_ON_GUN_ACHIEVEMENT, TOOLTIPS_CONSTANTS.MARK_OF_MASTERY, TOOLTIPS_CONSTANTS.BATTLE_STATS_ACHIEVS)
 
 class BattleAchievementsSubPresenter(BattleResultsSubPresenter):
 

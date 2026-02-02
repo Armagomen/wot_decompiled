@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/crew_helpers/skill_model_setup.py
 import typing
 from gui.impl.gen.view_models.views.lobby.crew.common.skill.skill_model import BattleBooster, SkillModel
 from helpers import dependency
@@ -21,31 +23,19 @@ class ModelProps(CONST_CONTAINER):
 
 
 def getSkillName(skill, skillName=None, **__):
-    if skillName is not None:
-        return skillName
-    else:
-        return skill.name
+    return skillName if skillName is not None else skill.name
 
 
 def getSkillLevel(skill, skillLevel=None, **__):
-    if skillLevel is not None:
-        return skillLevel
-    else:
-        return skill.level
+    return skillLevel if skillLevel is not None else skill.level
 
 
 def getSkillIconName(skill, iconName=None, **__):
-    if iconName is not None:
-        return iconName
-    else:
-        return skill.extensionLessIconName
+    return iconName if iconName is not None else skill.extensionLessIconName
 
 
 def getRoleName(skill, roleName=None, **__):
-    if roleName is not None:
-        return roleName
-    else:
-        return skill.skillRole
+    return roleName if roleName is not None else skill.skillRole
 
 
 def skillSimpleModelSetup(model, customGetters=None, **kwargs):
@@ -73,9 +63,7 @@ def getIsZero(skill, tankman, role, isZero=None, **__):
     if isZero is not None:
         return isZero
     else:
-        if not isMajor:
-            return False
-        return skill.isZero
+        return False if not isMajor else skill.isZero
 
 
 def getIsIrrelevant(skill, **__):
@@ -86,14 +74,12 @@ def getIsIrrelevant(skill, **__):
 def getModelBattleBooster(skill, tankman, itemsCache=None, **__):
     if tankman.vehicleInvID == Tankman.NO_VEHICLE_INV_ID:
         return BattleBooster.NONE
+    tankmanCurrentVehicle = itemsCache.items.getVehicle(tankman.vehicleInvID)
+    battleBooster = getBattleBooster(tankmanCurrentVehicle, skill.name)
+    if battleBooster is None:
+        return BattleBooster.NONE
     else:
-        tankmanCurrentVehicle = itemsCache.items.getVehicle(tankman.vehicleInvID)
-        battleBooster = getBattleBooster(tankmanCurrentVehicle, skill.name)
-        if battleBooster is None:
-            return BattleBooster.NONE
-        if isSkillLearnt(skill.name, tankmanCurrentVehicle):
-            return BattleBooster.IMPROVED
-        return BattleBooster.LEARNED
+        return BattleBooster.IMPROVED if isSkillLearnt(skill.name, tankmanCurrentVehicle) else BattleBooster.LEARNED
 
 
 def skillModelSetup(model, customGetters=None, checkIrrelevant=True, **kwargs):
@@ -111,10 +97,10 @@ def skillModelSetup(model, customGetters=None, checkIrrelevant=True, **kwargs):
     return getters
 
 
-defaultPropsGetters = {ModelProps.NAME: getSkillName, 
-   ModelProps.LEVEL: getSkillLevel, 
-   ModelProps.ROLE_NAME: getRoleName, 
-   ModelProps.ICON_NAME: getSkillIconName, 
-   ModelProps.IS_ZERO: getIsZero, 
-   ModelProps.IS_IRRELEVANT: getIsIrrelevant, 
-   ModelProps.BATTLE_BOOSTER: getModelBattleBooster}
+defaultPropsGetters = {ModelProps.NAME: getSkillName,
+ ModelProps.LEVEL: getSkillLevel,
+ ModelProps.ROLE_NAME: getRoleName,
+ ModelProps.ICON_NAME: getSkillIconName,
+ ModelProps.IS_ZERO: getIsZero,
+ ModelProps.IS_IRRELEVANT: getIsIrrelevant,
+ ModelProps.BATTLE_BOOSTER: getModelBattleBooster}

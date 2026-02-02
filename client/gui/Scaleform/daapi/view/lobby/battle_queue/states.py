@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/battle_queue/states.py
 import logging
 from functools import partial
 import typing
@@ -44,17 +46,16 @@ class BattleQueueContainerState(LobbyState):
 
     def __preventTransitionCheck(self, event, state=None):
         from gui.impl.lobby.battle_results.states import PostBattleResultsEntryState
-        allowedStates = [
-         PostBattleResultsEntryState] + [ type(s) for s in self.getChildrenStates() ]
+        allowedStates = [PostBattleResultsEntryState] + [ type(s) for s in self.getChildrenStates() ]
         if not state.isEntered():
             return False
+        elif self.prbDispatcher is None or not self.prbDispatcher.getFunctionalState().isNavigationDisabled():
+            return False
         else:
-            if self.prbDispatcher is None or not self.prbDispatcher.getFunctionalState().isNavigationDisabled():
-                return False
             targetID = event.targetStateID
             lsm = state.getMachine()
             target = lsm.getStateByID(targetID)
-            prevent = not any(isinstance(target, cls) for cls in allowedStates)
+            prevent = not any((isinstance(target, cls) for cls in allowedStates))
             if prevent:
                 SystemMessages.pushI18nMessage('#system_messages:queue/isInQueue', type=SystemMessages.SM_TYPE.Error, priority='high')
             return prevent

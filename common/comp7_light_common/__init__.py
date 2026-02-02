@@ -1,4 +1,7 @@
-import constants, comp7_light_constants
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_light/scripts/common/comp7_light_common/__init__.py
+import constants
+import comp7_light_constants
 from constants_utils import addArenaGuiTypesFromExtension, addPrebattleTypesFromExtension, addRosterTypes, addInvitationTypes, addClientUnitCmd
 
 def injectConsts(personality):

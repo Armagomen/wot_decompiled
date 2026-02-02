@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/battle/minimap/settings.py
 from constants import LOOT_TYPE
 
 class BattleRoyaleEntries(object):
@@ -23,12 +25,14 @@ class MarkersAs3Descr(object):
     AS_UPDATE_MARKER = 'updateIcon'
     AS_ADD_MARKER = 'show'
     AS_REMOVE_MARKER = 'hide'
-    AS_ADD_MARKER_LOOT_BY_TYPE_ID = {LOOT_TYPE.BASIC: 'loot', LOOT_TYPE.ADVANCED: 'improved_loot', 
-       LOOT_TYPE.CORPSE: 'corpse_loot', 
-       LOOT_TYPE.AIRDROP: 'airdrop'}
-    AS_ADD_MARKER_LOOT_BIG_BY_TYPE_ID = {LOOT_TYPE.BASIC: 'loot_big', LOOT_TYPE.ADVANCED: 'improved_loot_big', 
-       LOOT_TYPE.CORPSE: 'corpse_loot_big', 
-       LOOT_TYPE.AIRDROP: 'airdrop_big'}
+    AS_ADD_MARKER_LOOT_BY_TYPE_ID = {LOOT_TYPE.BASIC: 'loot',
+     LOOT_TYPE.ADVANCED: 'improved_loot',
+     LOOT_TYPE.CORPSE: 'corpse_loot',
+     LOOT_TYPE.AIRDROP: 'airdrop'}
+    AS_ADD_MARKER_LOOT_BIG_BY_TYPE_ID = {LOOT_TYPE.BASIC: 'loot_big',
+     LOOT_TYPE.ADVANCED: 'improved_loot_big',
+     LOOT_TYPE.CORPSE: 'corpse_loot_big',
+     LOOT_TYPE.AIRDROP: 'airdrop_big'}
     AS_ADD_MARKER_ENEMY_VEHICLE = 'enemyVehicle'
     AS_ADD_MARKER_ENEMY_VEHICLE_BIG = 'enemyVehicle_big'
     AS_ADD_MARKER_SQUAD_VEHICLE = 'squadVehicle'

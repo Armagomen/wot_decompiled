@@ -1,4 +1,9 @@
-import logging, operator, time, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/xmpp/messages/chat_session.py
+import logging
+import operator
+import time
+import BigWorld
 from constants import BAN_REASON
 from gui import SystemMessages
 from gui.impl import backport
@@ -44,7 +49,7 @@ class ChatSessionHistoryRequester(ClientHolder):
 
     @storage_getter('channels')
     def channelsStorage(self):
-        return
+        return None
 
     def release(self):
         if self.__isSuspend:
@@ -159,7 +164,7 @@ class ChatSessionHistoryRequester(ClientHolder):
 
 class ChatSessionsProvider(ChatProvider):
     __gameSession = dependency.descriptor(IGameSessionController)
-    __slots__ = ('__historyRQ', )
+    __slots__ = ('__historyRQ',)
 
     def __init__(self, limits):
         super(ChatSessionsProvider, self).__init__()
@@ -259,8 +264,7 @@ class ChatSessionsProvider(ChatProvider):
     def _searchChannel(self, jid, name=''):
         created = entities.XMPPChatChannelEntity(jid, name=name)
         exists = self.channelsStorage.getChannel(created)
-        return (
-         created, exists)
+        return (created, exists)
 
     def _repeatMessage(self, channel, body, filters):
         dbID = utils.getPlayerDatabaseID()
@@ -270,14 +274,10 @@ class ChatSessionsProvider(ChatProvider):
     def __getPrivateMessagesForbiddenText(self):
         if self.__gameSession.privateMessagesRestrictionReason == BAN_REASON.PARENTAL_CONTROL:
             return backport.text(R.strings.system_messages.parentControl.privateMessagesForbidden())
-        if self.__gameSession.privateMessagesRestrictionReason == BAN_REASON.COUNTRY:
-            return backport.text(R.strings.system_messages.countryRestriction.privateMessagesForbidden())
-        return backport.text(R.strings.system_messages.otherRestriction.privateMessagesForbidden())
+        return backport.text(R.strings.system_messages.countryRestriction.privateMessagesForbidden()) if self.__gameSession.privateMessagesRestrictionReason == BAN_REASON.COUNTRY else backport.text(R.strings.system_messages.otherRestriction.privateMessagesForbidden())
 
     def __getNonFriendPrivateMessagesForbiddenText(self):
-        if self.__gameSession.privateMessagesRestrictionReason == BAN_REASON.PARENTAL_CONTROL:
-            return backport.text(R.strings.system_messages.parentControl.nonFriendPrivateMessagesForbidden())
-        return backport.text(R.strings.system_messages.otherRestriction.nonFriendPrivateMessagesForbidden())
+        return backport.text(R.strings.system_messages.parentControl.nonFriendPrivateMessagesForbidden()) if self.__gameSession.privateMessagesRestrictionReason == BAN_REASON.PARENTAL_CONTROL else backport.text(R.strings.system_messages.otherRestriction.nonFriendPrivateMessagesForbidden())
 
     def sendPrivateMessagesRestrictedNotification(self):
         SystemMessages.pushI18nMessage(self.__getPrivateMessagesForbiddenText(), type=SystemMessages.SM_TYPE.Error)

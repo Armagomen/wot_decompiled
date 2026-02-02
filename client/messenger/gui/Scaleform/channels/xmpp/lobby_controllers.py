@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/gui/Scaleform/channels/xmpp/lobby_controllers.py
 import BigWorld
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE
 from gui.shared.events import MessengerEvent
@@ -31,11 +33,11 @@ class _ChannelController(LobbyLayout):
 
     @proto_getter(PROTO_TYPE.XMPP)
     def proto(self):
-        return
+        return None
 
     @proto_getter(PROTO_TYPE.BW_CHAT2)
     def proto_v2(self):
-        return
+        return None
 
     def canSendMessage(self):
         result, errorMsg = True, ''
@@ -106,7 +108,7 @@ class ChatSessionController(_ChannelController):
 
     @storage_getter('users')
     def usersStorage(self):
-        return
+        return None
 
     def isJoined(self):
         return self._channel.isJoined() and not self._isHistoryRqRequired

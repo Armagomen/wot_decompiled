@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/visual_script_client/contexts/entity_context.py
 import weakref
 from visual_script.context import VScriptContext, vse_get_property
 from visual_script.misc import ASPECT
@@ -14,7 +16,6 @@ class EntityContextClient(VScriptContext):
         self._owner = None
         return
 
-    @vse_get_property(SLOT_TYPE.ENTITY, display_name='Self', description='Return instance of current entity', aspects=[
-     ASPECT.CLIENT])
+    @vse_get_property(SLOT_TYPE.ENTITY, display_name='Self', description='Return instance of current entity', aspects=[ASPECT.CLIENT])
     def getSelf(self):
         return weakref.proxy(self._owner.entity)

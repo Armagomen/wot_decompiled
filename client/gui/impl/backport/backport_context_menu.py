@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/backport/backport_context_menu.py
 import logging
 from collections import namedtuple
 from frameworks.wulf import Window, WindowSettings, WindowFlags
@@ -12,7 +14,7 @@ def createContextMenuData(contextMenuType, args=None):
 
 class BackportContextMenuWindow(Window):
     __appLoader = dependency.descriptor(IAppLoader)
-    __slots__ = ('__contextMenuData', )
+    __slots__ = ('__contextMenuData',)
 
     def __init__(self, contextMenuData, parent):
         self.__contextMenuData = contextMenuData

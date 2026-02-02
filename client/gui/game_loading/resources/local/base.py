@@ -1,4 +1,7 @@
-import typing, itertools
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_loading/resources/local/base.py
+import typing
+import itertools
 from gui.game_loading.resources.base import BaseResources
 if typing.TYPE_CHECKING:
     from gui.game_loading.resources.models import BaseResourceModel
@@ -35,6 +38,4 @@ class LocalResources(BaseResources):
         return
 
     def _createIterator(self):
-        if self._cycle:
-            return itertools.cycle(self._source)
-        return iter(self._source)
+        return itertools.cycle(self._source) if self._cycle else iter(self._source)

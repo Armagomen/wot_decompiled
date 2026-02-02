@@ -1,4 +1,7 @@
-import CGF, GenericComponents
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/cgf_components/sequence_components.py
+import CGF
+import GenericComponents
 from cgf_script.component_meta_class import ComponentProperty, CGFMetaTypes, registerComponent
 from cgf_script.managers_registrator import onAddedQuery, onRemovedQuery, autoregister
 

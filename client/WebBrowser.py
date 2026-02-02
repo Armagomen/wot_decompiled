@@ -1,13 +1,21 @@
-import weakref, urlparse, functools, logging
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/WebBrowser.py
+import weakref
+import urlparse
+import functools
+import logging
 from enum import Enum
-import BigWorld, Keys, SoundGroups, Settings
+import BigWorld
+import Keys
+import SoundGroups
+import Settings
 from gui.shared import event_dispatcher
 from Event import Event, EventManager
 from debug_utils import LOG_CURRENT_EXCEPTION
 from gui import GUI_SETTINGS
 from web.cache.web_cache import WebExternalCache
 _logger = logging.getLogger(__name__)
-_webAppLogger = logging.getLogger(('{} (webapp)').format(__name__))
+_webAppLogger = logging.getLogger('{} (webapp)'.format(__name__))
 _BROWSER_KEY_LOGGING = False
 _WOT_CLIENT_PARAM_NAME = 'wot_client_param'
 _WOT_RESOURCE_CUSTOM_SCHEME = 'wotdata'
@@ -54,11 +62,11 @@ class LogSeverity(Enum):
     error = 4
 
 
-_LOG_SEVERITY_TO_LOG_LEVEL_MAP = {LogSeverity.disable: logging.NOTSET, 
-   LogSeverity.verbose: logging.DEBUG, 
-   LogSeverity.info: logging.INFO, 
-   LogSeverity.warning: logging.WARNING, 
-   LogSeverity.error: logging.ERROR}
+_LOG_SEVERITY_TO_LOG_LEVEL_MAP = {LogSeverity.disable: logging.NOTSET,
+ LogSeverity.verbose: logging.DEBUG,
+ LogSeverity.info: logging.INFO,
+ LogSeverity.warning: logging.WARNING,
+ LogSeverity.error: logging.ERROR}
 
 class WebBrowser(object):
     id = property(lambda self: self.__browserID)
@@ -207,8 +215,7 @@ class WebBrowser(object):
 
             def injectBrowserKeyEvent(me, e):
                 if _BROWSER_KEY_LOGGING:
-                    _logger.debug('injectBrowserKeyEvent: %s', (
-                     e.key,
+                    _logger.debug('injectBrowserKeyEvent: %s', (e.key,
                      e.isKeyDown(),
                      e.isAltDown(),
                      e.isShiftDown(),
@@ -224,37 +231,70 @@ class WebBrowser(object):
             def resetBit(value, bitMask):
                 return value & ~bitMask
 
-            self.__specialKeyHandlers = (
-             (
-              Keys.KEY_LEFTARROW, True, True, None, None, lambda me, _: me.__browser.goBack()),
-             (
-              Keys.KEY_RIGHTARROW, True, True, None, None, lambda me, _: me.__browser.goForward()),
-             (
-              Keys.KEY_F5, True, None, None, None, lambda me, _: me.__browser.reload()))
-            self.__browserKeyHandlers = (
-             (
-              Keys.KEY_LSHIFT, False, None, True, None,
+            self.__specialKeyHandlers = ((Keys.KEY_LEFTARROW,
+              True,
+              True,
+              None,
+              None,
+              lambda me, _: me.__browser.goBack()), (Keys.KEY_RIGHTARROW,
+              True,
+              True,
+              None,
+              None,
+              lambda me, _: me.__browser.goForward()), (Keys.KEY_F5,
+              True,
+              None,
+              None,
+              None,
+              lambda me, _: me.__browser.reload()))
+            self.__browserKeyHandlers = ((Keys.KEY_LSHIFT,
+              False,
+              None,
+              True,
+              None,
               lambda me, e: injectKeyUp(me, BigWorld.KeyEvent(e.key, e.repeatCount, resetBit(e.modifiers, 1), None, e.cursorPosition))),
-             (
-              Keys.KEY_RSHIFT, False, None, True, None,
+             (Keys.KEY_RSHIFT,
+              False,
+              None,
+              True,
+              None,
               lambda me, e: injectKeyUp(me, BigWorld.KeyEvent(e.key, e.repeatCount, resetBit(e.modifiers, 1), None, e.cursorPosition))),
-             (
-              Keys.KEY_LCONTROL, False, None, None, True,
+             (Keys.KEY_LCONTROL,
+              False,
+              None,
+              None,
+              True,
               lambda me, e: injectKeyUp(me, BigWorld.KeyEvent(e.key, e.repeatCount, resetBit(e.modifiers, 2), None, e.cursorPosition))),
-             (
-              Keys.KEY_RCONTROL, False, None, None, True,
+             (Keys.KEY_RCONTROL,
+              False,
+              None,
+              None,
+              True,
               lambda me, e: injectKeyUp(me, BigWorld.KeyEvent(e.key, e.repeatCount, resetBit(e.modifiers, 2), None, e.cursorPosition))),
-             (
-              None, True, None, None, None, injectKeyDown),
-             (
-              None, False, None, None, None, injectKeyUp))
+             (None,
+              True,
+              None,
+              None,
+              None,
+              injectKeyDown),
+             (None,
+              False,
+              None,
+              None,
+              None,
+              injectKeyUp))
             self.__disableKeyHandlers = []
             return True
 
     def setDisabledKeys(self, keys):
         self.__disableKeyHandlers = []
         for key, isKeyDown, isAltDown, isShiftDown, isCtrlDown in keys:
-            self.__disableKeyHandlers.append((key, isKeyDown, isAltDown, isShiftDown, isCtrlDown, lambda me, e: None))
+            self.__disableKeyHandlers.append((key,
+             isKeyDown,
+             isAltDown,
+             isShiftDown,
+             isCtrlDown,
+             lambda me, e: None))
 
     def ready(self, success):
         _logger.info('READY success: %r %s id: %s', success, self.__baseUrl, self.__browserID)
@@ -355,7 +395,11 @@ class WebBrowser(object):
 
     def __getBrowserKeyHandler(self, key, isKeyDown, isAltDown, isShiftDown, isCtrlDown):
         from itertools import izip
-        params = (key, isKeyDown, isAltDown, isShiftDown, isCtrlDown)
+        params = (key,
+         isKeyDown,
+         isAltDown,
+         isShiftDown,
+         isCtrlDown)
 
         def matches(t):
             return t[0] is None or t[0] == t[1]
@@ -365,15 +409,19 @@ class WebBrowser(object):
             browserKeyHandlers = self.__specialKeyHandlers + browserKeyHandlers
         for values in browserKeyHandlers:
             if functools.reduce(lambda a, b: a and matches(b), izip(values, params), True):
-                return values[(-1)]
+                return values[-1]
 
-        return
+        return None
 
     def handleKeyEvent(self, event):
         if not self.__isNavigationComplete:
             return True
         e = event
-        keyState = (e.key, e.isKeyDown(), e.isAltDown(), e.isShiftDown(), e.isCtrlDown())
+        keyState = (e.key,
+         e.isKeyDown(),
+         e.isAltDown(),
+         e.isShiftDown(),
+         e.isCtrlDown())
         toolTipMgr = self.__uiObj.getToolTipMgr()
         if toolTipMgr and toolTipMgr.isReadyToHandleKey(event):
             return False
@@ -498,9 +546,7 @@ class WebBrowser(object):
 
     def onResourceLoadRequest(self, url):
         result = urlparse.urlparse(url)
-        if result.scheme == _WOT_RESOURCE_CUSTOM_SCHEME:
-            return result.netloc + result.path
-        return _g_webCache.get(url)
+        return result.netloc + result.path if result.scheme == _WOT_RESOURCE_CUSTOM_SCHEME else _g_webCache.get(url)
 
     def setAllowAutoLoadingScreen(self, enabled):
         _logger.debug('setAllowAutoLoadingScreen %s', enabled)
@@ -551,9 +597,7 @@ class WebBrowser(object):
                 return False
         if self.__baseUrl == title or self.__baseUrl.endswith(title):
             return False
-        if title.startswith('http://') or title.startswith('https://'):
-            return False
-        return True
+        return False if title.startswith('http://') or title.startswith('https://') else True
 
     def __onTitleChange(self, title):
         if self.__isValidTitle(title):

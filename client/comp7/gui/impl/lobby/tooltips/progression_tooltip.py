@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/tooltips/progression_tooltip.py
 from comp7.gui.impl.gen.view_models.views.lobby.enums import SeasonName
 from comp7.gui.impl.gen.view_models.views.lobby.tooltips.progression_tooltip_model import ProgressionTooltipModel
 from comp7.gui.impl.lobby.comp7_helpers import comp7_model_helpers, comp7_shared, comp7_qualification_helpers
@@ -18,17 +20,11 @@ class ProgressionTooltip(ViewImpl):
         super(ProgressionTooltip, self).__init__(settings)
 
     def _getEvents(self):
-        return (
-         (
-          self.__comp7Controller.onRankUpdated, self.__updateData),
-         (
-          self.__comp7Controller.onModeConfigChanged, self.__updateData),
-         (
-          self.__comp7Controller.onComp7RanksConfigChanged, self.__updateData),
-         (
-          self.__comp7Controller.onQualificationBattlesUpdated, self.__updateData),
-         (
-          self.__comp7Controller.onQualificationStateUpdated, self.__updateData))
+        return ((self.__comp7Controller.onRankUpdated, self.__updateData),
+         (self.__comp7Controller.onModeConfigChanged, self.__updateData),
+         (self.__comp7Controller.onComp7RanksConfigChanged, self.__updateData),
+         (self.__comp7Controller.onQualificationBattlesUpdated, self.__updateData),
+         (self.__comp7Controller.onQualificationStateUpdated, self.__updateData))
 
     @property
     def viewModel(self):
@@ -39,7 +35,7 @@ class ProgressionTooltip(ViewImpl):
         self.__updateData()
 
     def __updateData(self):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             vm.setSeasonName(getSeasonNameEnum(self.__comp7Controller, SeasonName))
             if self.__comp7Controller.isQualificationActive():
                 self.__updateQualificationdata(vm)

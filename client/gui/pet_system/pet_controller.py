@@ -1,16 +1,22 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/pet_system/pet_controller.py
 from __future__ import absolute_import
-import random, BigWorld, SoundGroups
+import random
+import BigWorld
+import SoundGroups
 from adisp import adisp_process
+from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from chat_shared import SYS_MESSAGE_TYPE
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.lobby_entry import getLobbyStateMachine
+from gui.hangar_cameras.hangar_camera_common import CameraRelatedEvents
 from gui.impl.lobby.pet_system.states import PetEventFullscreenWindowState, PetStorageObserver
 from gui.pet_system.processor import FirstClickSynergyProcessor, PetEventOpenProcessor, PetPurchaseProcessor
 from gui.pet_system.pet_animation_helper import PetPrefabProxy, StoragePrefabProxy
 from gui.shared import EVENT_BUS_SCOPE, events, g_eventBus
 from gui.pet_system.requester import INVALID_EVENT_ID, INVALID_PET_ID
 from messenger.proto.events import g_messengerEvents
-from skeletons.gui.game_control import IFadingController, IHangarLoadingController
+from skeletons.gui.game_control import IFadingController, IHangarLoadingController, IHangarGuiController
 from skeletons.gui.shared.utils import IHangarSpace
 from gui.pet_system.constants import PS_PDATA_KEYS
 from skeletons.gui.shared import IItemsCache
@@ -31,6 +37,7 @@ class PetSystemController(IGlobalListener, IPetSystemController):
     lobbyContext = dependency.descriptor(ILobbyContext)
     hangarSpace = dependency.descriptor(IHangarSpace)
     __hangarLoadingController = dependency.descriptor(IHangarLoadingController)
+    __hangarGuiCtrl = dependency.descriptor(IHangarGuiController)
     fadeManager = dependency.descriptor(IFadingController)
 
     def __init__(self):
@@ -48,7 +55,7 @@ class PetSystemController(IGlobalListener, IPetSystemController):
         self.lsmObserver = None
         self.__petInHangar = None
         self.__medalReceived = False
-        self.__isPetObjectPresenterOpen = False
+        self.__isPetObjectPresenterOpen = 0
         return
 
     def init(self):
@@ -72,7 +79,7 @@ class PetSystemController(IGlobalListener, IPetSystemController):
 
     @property
     def isInStorage(self):
-        return self.lsmObserver.currentState
+        return False if not self.lsmObserver else self.lsmObserver.currentState
 
     @property
     def isInEventFulscreen(self):
@@ -85,7 +92,7 @@ class PetSystemController(IGlobalListener, IPetSystemController):
 
     @property
     def canInteractInHangar(self):
-        return self.__isPetObjectPresenterOpen
+        return bool(self.__isPetObjectPresenterOpen)
 
     @classmethod
     def getSystemConfig(cls):
@@ -171,29 +178,19 @@ class PetSystemController(IGlobalListener, IPetSystemController):
         return petID
 
     def getActiveEvent(self):
-        if not self.isEnabled:
-            return INVALID_EVENT_ID
-        return self.requester.getActiveEventID()
+        return INVALID_EVENT_ID if not self.isEnabled else self.requester.getActiveEventID()
 
     def isFirstClickEnable(self):
-        if not self.isEnabled:
-            return False
-        return not self.isPetInHangarPromoting() and SynergyItem.isFirstClickSynergyAvailable()
+        return False if not self.isEnabled else not self.isPetInHangarPromoting() and SynergyItem.isFirstClickSynergyAvailable()
 
     def getUnlockedPets(self):
-        if not self.isEnabled:
-            return list()
-        return self.requester.getUnlockedPetIDs()
+        return list() if not self.isEnabled else self.requester.getUnlockedPetIDs()
 
     def getStateBehavior(self):
-        if not self.isEnabled:
-            return pet_constants.PetStateBehavior.BASIC
-        return self.requester.getStateBehavior()
+        return pet_constants.PetStateBehavior.BASIC if not self.isEnabled else self.requester.getStateBehavior()
 
     def getCurrentName(self, petID):
-        if not self.isEnabled:
-            return 0
-        return self.requester.getSelectedName(petID)
+        return 0 if not self.isEnabled else self.requester.getSelectedName(petID)
 
     def addSynergyDev(self, synergyPoints, petID=None):
         if not self.isEnabled:
@@ -217,11 +214,11 @@ class PetSystemController(IGlobalListener, IPetSystemController):
         if not self.isEnabled:
             self.__petInHangar = None
             return
+        elif self.getActivePet() == INVALID_PET_ID:
+            if not self.__petInHangar or reset:
+                return self.__getRandomPromoPetID()
+            return self.__petInHangar
         else:
-            if self.getActivePet() == INVALID_PET_ID:
-                if not self.__petInHangar or reset:
-                    return self.__getRandomPromoPetID()
-                return self.__petInHangar
             self.__petInHangar = self.getActivePet()
             return self.__petInHangar
 
@@ -235,9 +232,7 @@ class PetSystemController(IGlobalListener, IPetSystemController):
         if not self.isEnabled:
             return list()
         petIDs = self.getUnlockedPets()
-        if not self.getPetsPromoConfig().isEnabled():
-            return petIDs
-        return petIDs + self.getPetsPromoConfig().getAvailablePets(petIDs)
+        return petIDs if not self.getPetsPromoConfig().isEnabled() else petIDs + self.getPetsPromoConfig().getAvailablePets(petIDs)
 
     def showEventView(self, isFullScreen=False):
         if not self.isEnabled:
@@ -251,7 +246,8 @@ class PetSystemController(IGlobalListener, IPetSystemController):
         result = yield PetEventOpenProcessor().request()
         if result:
             if result.success:
-                ctx = {'eventID': result.auxData.get('eventID'), 'rewards': result.auxData.get('bonus')}
+                ctx = {'eventID': result.auxData.get('eventID'),
+                 'rewards': result.auxData.get('bonus')}
                 if isFullScreen:
                     openPetEventFullscreenWindow(ctx)
                 else:
@@ -268,6 +264,9 @@ class PetSystemController(IGlobalListener, IPetSystemController):
     def onLobbyInited(self, event):
         self.__addListeners()
 
+    def checkBonusCapsForPetBonus(self):
+        return self.__hangarGuiCtrl.dynamicEconomics.checkCurrentBonusCaps(ARENA_BONUS_TYPE_CAPS.PET_SYSTEM_BONUSES)
+
     def __showMedalAnimation(self, event):
         if not self.isEnabled:
             return
@@ -282,7 +281,7 @@ class PetSystemController(IGlobalListener, IPetSystemController):
 
     def onAccountBecomeNonPlayer(self):
         self.__removeListeners()
-        self.__isPetObjectPresenterOpen = False
+        self.__isPetObjectPresenterOpen = 0
         g_eventBus.removeListener(events.PetSystemEvent.PET_OBJECT_PRESENTER_LOADING, self.__onPetObjectPresenterLoading, scope=EVENT_BUS_SCOPE.LOBBY)
         g_eventBus.removeListener(events.PetSystemEvent.PET_OBJECT_PRESENTER_CLOSING, self.__onPetObjectPresenterClosing, scope=EVENT_BUS_SCOPE.LOBBY)
 
@@ -316,6 +315,7 @@ class PetSystemController(IGlobalListener, IPetSystemController):
         self.lsmObserver = PetStorageObserver()
         g_eventBus.addListener(events.PetSystemEvent.MEDAL_ANIMATION_SHOW, self.__showMedalAnimation, scope=EVENT_BUS_SCOPE.LOBBY)
         g_eventBus.addListener(events.PetObjectHoverEvent.HOVER_IN, self.__playSound, scope=EVENT_BUS_SCOPE.DEFAULT)
+        g_eventBus.addListener(CameraRelatedEvents.IDLE_CAMERA, self.__cameraIdle)
         lsm = getLobbyStateMachine()
         self.__hangarLoadingController.onHangarLoadedAfterLogin += self._onHangarLoadedAfterLogin
         if lsm:
@@ -344,6 +344,7 @@ class PetSystemController(IGlobalListener, IPetSystemController):
         self.__hangarLoadingController.onHangarLoadedAfterLogin -= self._onHangarLoadedAfterLogin
         g_eventBus.removeListener(events.PetSystemEvent.MEDAL_ANIMATION_SHOW, self.__showMedalAnimation, scope=EVENT_BUS_SCOPE.LOBBY)
         g_eventBus.removeListener(events.PetObjectHoverEvent.HOVER_IN, self.__playSound, scope=EVENT_BUS_SCOPE.DEFAULT)
+        g_eventBus.removeListener(CameraRelatedEvents.IDLE_CAMERA, self.__cameraIdle)
         lsm = getLobbyStateMachine()
         if lsm and self.lsmObserver:
             lsm.disconnect(self.lsmObserver)
@@ -370,8 +371,7 @@ class PetSystemController(IGlobalListener, IPetSystemController):
             return
         if PETS_SYSTEM_PDATA_KEY in diff:
             petSystemDiff = diff[PETS_SYSTEM_PDATA_KEY]
-            if not {
-             PS_PDATA_KEYS.UNLOCKED_PETS_IDS,
+            if not {PS_PDATA_KEYS.UNLOCKED_PETS_IDS,
              PS_PDATA_KEYS.EVENTS_DATA,
              PS_PDATA_KEYS.ACTIVE_STATE_BEHAVIOR,
              PS_PDATA_KEYS.STORAGE}.isdisjoint(petSystemDiff.keys()):
@@ -390,7 +390,7 @@ class PetSystemController(IGlobalListener, IPetSystemController):
                 self.onUpdateAppliedBonus()
             if PS_PDATA_KEYS.STORAGE in petSystemDiff:
                 petStorages = petSystemDiff[PS_PDATA_KEYS.STORAGE].values()
-                if any(PS_PDATA_KEYS.SYNERGY_STORAGE in petStorage for petStorage in petStorages if petStorage is not None):
+                if any((PS_PDATA_KEYS.SYNERGY_STORAGE in petStorage for petStorage in petStorages if petStorage is not None)):
                     self.onUpdateSynergy()
 
     def __getRandomPromoPetID(self):
@@ -403,11 +403,11 @@ class PetSystemController(IGlobalListener, IPetSystemController):
             return self.__petInHangar
 
     def __onPetObjectPresenterLoading(self, _):
-        self.__isPetObjectPresenterOpen = True
+        self.__isPetObjectPresenterOpen += 1
         self.onUpdateCanInteractInHangar(self.canInteractInHangar)
 
     def __onPetObjectPresenterClosing(self, _):
-        self.__isPetObjectPresenterOpen = False
+        self.__isPetObjectPresenterOpen -= 1
         self.onUpdateCanInteractInHangar(self.canInteractInHangar)
 
     def __playSound(self, event):
@@ -424,3 +424,7 @@ class PetSystemController(IGlobalListener, IPetSystemController):
                 SoundGroups.g_instance.playSound2D(PetSounds.PET_EVENT_HIGHLIGHT)
             elif self.isPetInHangarPromoting():
                 SoundGroups.g_instance.playSound2D(PetSounds.HIGHLIGHT)
+
+    def __cameraIdle(self, event):
+        isAFKState = event.ctx['started']
+        self.petProxy.cameraIdle(isAFKState)

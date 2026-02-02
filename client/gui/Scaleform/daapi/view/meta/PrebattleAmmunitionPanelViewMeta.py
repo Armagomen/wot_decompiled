@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/PrebattleAmmunitionPanelViewMeta.py
 from gui.Scaleform.framework.entities.inject_component_adaptor import InjectComponentAdaptor
 
 class PrebattleAmmunitionPanelViewMeta(InjectComponentAdaptor):
@@ -6,17 +8,13 @@ class PrebattleAmmunitionPanelViewMeta(InjectComponentAdaptor):
         self._printOverrideError('onViewIsHidden')
 
     def as_showS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_show()
+        return self.flashObject.as_show() if self._isDAAPIInited() else None
 
     def as_hideS(self, useAnim):
-        if self._isDAAPIInited():
-            return self.flashObject.as_hide(useAnim)
+        return self.flashObject.as_hide(useAnim) if self._isDAAPIInited() else None
 
     def as_setIsInLoadingS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setIsInLoading(value)
+        return self.flashObject.as_setIsInLoading(value) if self._isDAAPIInited() else None
 
     def as_showShadowsS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showShadows(value)
+        return self.flashObject.as_showShadows(value) if self._isDAAPIInited() else None

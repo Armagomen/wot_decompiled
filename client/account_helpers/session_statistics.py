@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/account_helpers/session_statistics.py
 from functools import partial
 import AccountCommands
 from shared_utils.account_helpers.diff_utils import synchronizeDicts
@@ -39,8 +41,9 @@ class SessionStatistics(object):
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, None)
             return
-        self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
-        return
+        else:
+            self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
+            return
 
     def resetStats(self, callback=None):
         if callback is not None:
@@ -55,6 +58,7 @@ class SessionStatistics(object):
             if callback is not None:
                 callback(resultID, None)
             return
-        if callback is not None:
-            callback(resultID, self.__cache)
-        return
+        else:
+            if callback is not None:
+                callback(resultID, self.__cache)
+            return

@@ -1,4 +1,7 @@
-import CGF, Event
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/cgf_components/trigger_vse_component.py
+import CGF
+import Event
 from GenericComponents import VSEComponent
 from cgf_script.component_meta_class import ComponentProperty, CGFMetaTypes, registerComponent
 from cgf_script.managers_registrator import autoregister, onAddedQuery, onRemovedQuery

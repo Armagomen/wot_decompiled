@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/VehicleBuyWindowMeta.py
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 
 class VehicleBuyWindowMeta(AbstractWindowView):
@@ -15,25 +17,19 @@ class VehicleBuyWindowMeta(AbstractWindowView):
         self._printOverrideError('onTradeInClearVehicle')
 
     def as_setGoldS(self, gold):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setGold(gold)
+        return self.flashObject.as_setGold(gold) if self._isDAAPIInited() else None
 
     def as_setCreditsS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setCredits(value)
+        return self.flashObject.as_setCredits(value) if self._isDAAPIInited() else None
 
     def as_setInitDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setInitData(data)
+        return self.flashObject.as_setInitData(data) if self._isDAAPIInited() else None
 
     def as_updateTradeOffVehicleS(self, vehicleBuyTradeOffVo):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateTradeOffVehicle(vehicleBuyTradeOffVo)
+        return self.flashObject.as_updateTradeOffVehicle(vehicleBuyTradeOffVo) if self._isDAAPIInited() else None
 
     def as_setTradeInWarningMessagegeS(self, message):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setTradeInWarningMessagege(message)
+        return self.flashObject.as_setTradeInWarningMessagege(message) if self._isDAAPIInited() else None
 
     def as_setStateS(self, academyEnabled, schoolEnabled, freeEnabled, submitEnabled):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setState(academyEnabled, schoolEnabled, freeEnabled, submitEnabled)
+        return self.flashObject.as_setState(academyEnabled, schoolEnabled, freeEnabled, submitEnabled) if self._isDAAPIInited() else None

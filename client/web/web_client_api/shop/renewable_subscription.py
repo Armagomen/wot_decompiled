@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/web/web_client_api/shop/renewable_subscription.py
 import logging
 from typing import TYPE_CHECKING
 from constants import WoTPlusBonusType
@@ -23,10 +25,10 @@ class RenewableSubWebApiMixin(object):
     @w2c(W2CSchema, 'get_subscription_info')
     def getSubscriptionInfo(self, cmd):
         serverSettings = self._lobbyContext.getServerSettings()
-        return {'period_start': self._wotPlusCtrl.getStartTime(), 
-           'period_end': self._wotPlusCtrl.getExpiryTime(), 
-           'enabled_bonuses': self.getEnabledBonuses(serverSettings), 
-           'is_free_deluxe_demount_included': serverSettings.isFreeDeluxeEquipmentDemountingEnabled()}
+        return {'period_start': self._wotPlusCtrl.getStartTime(),
+         'period_end': self._wotPlusCtrl.getExpiryTime(),
+         'enabled_bonuses': self.getEnabledBonuses(serverSettings),
+         'is_free_deluxe_demount_included': serverSettings.isFreeDeluxeEquipmentDemountingEnabled()}
 
     def getEnabledBonuses(self, serverSettings):
         enabledBonuses = []

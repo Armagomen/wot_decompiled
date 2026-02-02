@@ -1,6 +1,11 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/wot_plus_controller.py
+import logging
+import typing
 from enum import Enum
-import AccountCommands, BigWorld, constants
+import AccountCommands
+import BigWorld
+import constants
 from BWUtil import AsyncReturn
 from Event import Event
 from PlayerEvents import g_playerEvents
@@ -169,7 +174,7 @@ class WotPlusController(IWotPlusController, CallbackDelayer):
                 if subscriptionProduct.nextBillingTime and subscriptionProduct.status == SubscriptionStatus.ACTIVE:
                     return subscriptionProduct.nextBillingTime
 
-        return
+        return None
 
     def getStartTime(self):
         return self.getExpiryTime() - SUBSCRIPTION_DURATION_LENGTH
@@ -188,17 +193,11 @@ class WotPlusController(IWotPlusController, CallbackDelayer):
 
     def getActiveExclusiveVehicle(self):
         vehicleInfo = self._lobbyContext.getServerSettings().getWotPlusExclusiveVehicleInfo()
-        if vehicleInfo:
-            return getItemByCompactDescr(vehicleInfo['vehTypeCompDescr'])
-        else:
-            return
+        return getItemByCompactDescr(vehicleInfo['vehTypeCompDescr']) if vehicleInfo else None
 
     def getActiveExclusiveVehicleName(self):
         vehicle = self.getActiveExclusiveVehicle()
-        if vehicle is not None:
-            return vehicle.userString
-        else:
-            return ''
+        return vehicle.userString if vehicle is not None else ''
 
     def getEnabledBonuses(self):
         serverSettings = self._lobbyContext.getServerSettings()
@@ -227,14 +226,10 @@ class WotPlusController(IWotPlusController, CallbackDelayer):
         return enabledBonuses
 
     def hasOptDeviceAssistLoadout(self, vehicle):
-        if self.isEnabled():
-            return self._assistant.optDeviceAssistant.vehicleHasLoadout(vehicle)
-        return False
+        return self._assistant.optDeviceAssistant.vehicleHasLoadout(vehicle) if self.isEnabled() else False
 
     def getOptDeviceAssistPresets(self, vehicle):
-        if self.isEnabled():
-            return self._assistant.optDeviceAssistant.getPopularOptDevicesPresets(vehicle)
-        return tuple()
+        return self._assistant.optDeviceAssistant.getPopularOptDevicesPresets(vehicle) if self.isEnabled() else tuple()
 
     def getMostPopularOptDevicesLoadout(self, vehicle):
         return self._assistant.optDeviceAssistant.getMostPopularLoadout(vehicle)
@@ -243,15 +238,10 @@ class WotPlusController(IWotPlusController, CallbackDelayer):
         return self.isEnabled() and self._assistant.crewAssistant.isEnabled()
 
     def hasCrewAssistOrderSets(self, vehIntCD, tankmanRole):
-        if self.isEnabled():
-            return self._assistant.crewAssistant.hasOrderSets(vehIntCD, tankmanRole)
-        return (
-         False, False)
+        return self._assistant.crewAssistant.hasOrderSets(vehIntCD, tankmanRole) if self.isEnabled() else (False, False)
 
     def getCrewAssistOrderSets(self, vehicle, tankmanRole):
-        if self.isEnabled():
-            return self._assistant.crewAssistant.getOrderSets(vehicle, tankmanRole)
-        return {}
+        return self._assistant.crewAssistant.getOrderSets(vehicle, tankmanRole) if self.isEnabled() else {}
 
     def validateCrewAssistOrderSets(self, orderSets):
         return self._assistant.crewAssistant.validateOrderSets(orderSets)
@@ -294,12 +284,10 @@ class WotPlusController(IWotPlusController, CallbackDelayer):
             return True
         isWotPlusEnabledForSteam = self._lobbyContext.getServerSettings().isWotPlusEnabledForSteam()
         isSteamAccount = self._steamCompletionCtrl.isSteamAccount
-        if not isWotPlusEnabledForSteam and isSteamAccount:
-            return False
-        return True
+        return False if not isWotPlusEnabledForSteam and isSteamAccount else True
 
     def onDailyAttendanceUpdate(self):
-        with settings.wotPlusSettings() as (dt):
+        with settings.wotPlusSettings() as dt:
             dt.increaseDailyAttendance()
         self.onAttendanceUpdated()
 
@@ -324,7 +312,7 @@ class WotPlusController(IWotPlusController, CallbackDelayer):
         isAdditionalXPEnabled = serverSettings.isAdditionalWoTPlusEnabled()
         isOptionalDevicesAssistantEnabled = serverSettings.isOptionalDevicesAssistantEnabled()
         isCrewAssistantEnabled = serverSettings.isCrewAssistantEnabled()
-        with settings.wotPlusSettings() as (dt):
+        with settings.wotPlusSettings() as dt:
             dt.setWotPlusEnabledState(isWotPlusEnabled)
             hasSubscription = self.isEnabled()
             if not isWotPlusEnabled and not hasSubscription:
@@ -378,20 +366,17 @@ class WotPlusController(IWotPlusController, CallbackDelayer):
             userSubscriptions = fetchResult.products
             if not fetchResult.isProductsReady:
                 return
-            activeSubscriptions = [ subscription for subscription in userSubscriptions if subscription.status == SubscriptionStatus.ACTIVE
-                                  ]
+            activeSubscriptions = [ subscription for subscription in userSubscriptions if subscription.status == SubscriptionStatus.ACTIVE ]
             if not activeSubscriptions:
-                hasCancelled = any(subscription.status in SUBSCRIPTION_CANCEL_STATUSES for subscription in userSubscriptions)
+                hasCancelled = any((subscription.status in SUBSCRIPTION_CANCEL_STATUSES for subscription in userSubscriptions))
                 if hasCancelled:
                     self._state = WotPlusState.CANCELLED
-            self._hasSteamSubscription = any(userSubscription.platform == SubscriptionRequestPlatform.STEAM for userSubscription in userSubscriptions)
+            self._hasSteamSubscription = any((userSubscription.platform == SubscriptionRequestPlatform.STEAM for userSubscription in userSubscriptions))
             raise AsyncReturn(None)
             return
 
     def shouldRedirectToSteam(self):
-        if not self._userSubscriptionsFetchController._fetchResult.isProductsReady:
-            return self._steamCompletionCtrl.isSteamAccount
-        return self.hasSteamSubscription()
+        return self._steamCompletionCtrl.isSteamAccount if not self._userSubscriptionsFetchController._fetchResult.isProductsReady else self.hasSteamSubscription()
 
     def _onClientUpdate(self, diff, _):
         itemDiff = {}

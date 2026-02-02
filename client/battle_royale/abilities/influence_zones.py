@@ -1,4 +1,11 @@
-import math, CGF, Math, GenericComponents, CombatSelectedArea, math_utils
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/abilities/influence_zones.py
+import math
+import CGF
+import Math
+import GenericComponents
+import CombatSelectedArea
+import math_utils
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from battle_royale.abilities.area_abilities import AreaAbilityVisualizer
 from cgf_components.marker_component import CombatMarker
@@ -98,9 +105,7 @@ class ZonePrefabLoader(object):
             multiVisualizer = go.findComponentByType(InfluenceZoneMultiVisualizer)
             if transformComponent and not multiVisualizer:
                 zoneFloat = 0.1
-                transformComponent.transform = math_utils.createSRTMatrix((
-                 self.equipment.radius, 1.0, self.equipment.radius), (0.0, 0.0, 0.0), (
-                 0.0, zoneFloat, 0.0))
+                transformComponent.transform = math_utils.createSRTMatrix((self.equipment.radius, 1.0, self.equipment.radius), (0.0, 0.0, 0.0), (0.0, zoneFloat, 0.0))
             if multiVisualizer is not None:
                 self.__multipositionSpawn(go, multiVisualizer, self.influenceZone, self.equipment, self.equipment.influenceZone.radius)
             markerComponent = go.findComponentByType(CombatMarker)

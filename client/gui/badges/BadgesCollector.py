@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/badges/BadgesCollector.py
 import operator
 from collections import defaultdict
 import typing
@@ -53,13 +55,13 @@ class BadgesCollector(object):
         for badge in badges:
             if self.__isSuffixAchivedBadge(badge):
                 self.__suffixBadges.append(badge)
-            elif badge.isCollapsible():
+            if badge.isCollapsible():
                 cache[badge.group].append(badge)
-            elif self.__isNotReceivedPrefixBadges(badge) and badge.isVisibleAsAchievable():
+            if self.__isNotReceivedPrefixBadges(badge) and badge.isVisibleAsAchievable():
                 self.__notReceivedBadges.append(badge)
-            elif self.__isNotReceivedSuffixBadge(badge) and badge.isVisibleAsAchievable():
+            if self.__isNotReceivedSuffixBadge(badge) and badge.isVisibleAsAchievable():
                 self.__notReceivedSuffixBadges.append(badge)
-            elif self.__isReceivedPrefixBadges(badge):
+            if self.__isReceivedPrefixBadges(badge):
                 self.__receivedBadges.append(badge)
 
         for cachedBadges in cache.itervalues():
@@ -67,7 +69,7 @@ class BadgesCollector(object):
             for cachedBadge in byClass:
                 if self.__isNotReceivedPrefixBadges(cachedBadge) and cachedBadge.isVisibleAsAchievable():
                     self.__notReceivedBadges.append(cachedBadge)
-                elif self.__isReceivedPrefixBadges(cachedBadge):
+                if self.__isReceivedPrefixBadges(cachedBadge):
                     self.__receivedBadges.append(cachedBadge)
                     break
 

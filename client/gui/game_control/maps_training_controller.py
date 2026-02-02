@@ -1,8 +1,12 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/maps_training_controller.py
 import typing
 from functools import partial
-import ArenaType, adisp
+import ArenaType
+import adisp
 from BattleReplay import g_replayCtrl, CallbackDataNames
-import BigWorld, Event
+import BigWorld
+import Event
 from CurrentVehicle import g_currentPreviewVehicle
 from constants import REQUEST_COOLDOWN
 from gui.impl.lobby.maps_training.maps_training_client_settings import MapsTrainingClientSettings
@@ -53,10 +57,7 @@ class MapsTrainingController(IMapsTrainingController, IGlobalListener):
 
     @property
     def isMapsTrainingPrbActive(self):
-        if self.prbEntity is None:
-            return False
-        else:
-            return bool(self.prbEntity.getModeFlags() & FUNCTIONAL_FLAG.MAPS_TRAINING)
+        return False if self.prbEntity is None else bool(self.prbEntity.getModeFlags() & FUNCTIONAL_FLAG.MAPS_TRAINING)
 
     @property
     def preferences(self):
@@ -196,9 +197,9 @@ class MapsTrainingController(IMapsTrainingController, IGlobalListener):
         self.__configIsOld = False
 
     def getPageCtx(self):
-        return {'map': ArenaType.g_geometryCache[self.__mapGeometryID].geometryName if self.__mapGeometryID != self._UNDEFINED_VALUE else '', 
-           'vehicleType': getVehicleClass(self.__vehCompDescr) if self.__vehCompDescr != self._UNDEFINED_VALUE else '', 
-           'side': self.__team}
+        return {'map': ArenaType.g_geometryCache[self.__mapGeometryID].geometryName if self.__mapGeometryID != self._UNDEFINED_VALUE else '',
+         'vehicleType': getVehicleClass(self.__vehCompDescr) if self.__vehCompDescr != self._UNDEFINED_VALUE else '',
+         'side': self.__team}
 
     def __clear(self):
         g_eventBus.removeListener(events.HangarVehicleEvent.SELECT_VEHICLE_IN_HANGAR, self.__onSelectVehicleInHangar, scope=EVENT_BUS_SCOPE.LOBBY)
@@ -235,10 +236,10 @@ class MapsTrainingController(IMapsTrainingController, IGlobalListener):
             confScenarios[mapGeometryID] = unpackMapsTrainingScenarios(availableScenarios)
             configRewards[mapGeometryID] = unpackMapsTrainingRewards(availableRewards)
 
-        self.__config.update({'maps': configMaps, 
-           'vehicles': configVehicles, 
-           'scenarios': confScenarios, 
-           'rewards': configRewards})
+        self.__config.update({'maps': configMaps,
+         'vehicles': configVehicles,
+         'scenarios': confScenarios,
+         'rewards': configRewards})
 
     def __restoreConfigFromReplay(self, config):
         if g_replayCtrl.isPlaying:

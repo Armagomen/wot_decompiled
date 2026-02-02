@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/bw_chat2/VOIPChatProvider.py
 from debug_utils import LOG_WARNING, LOG_NOTE
 from messenger.proto.bw_chat2 import errors, provider as bw2_provider
 from messenger.proto.events import g_messengerEvents
@@ -74,8 +76,7 @@ class VOIPChatProvider(bw2_provider.ResponseDictHandler, IVOIPChatProvider):
         isRejoin = args['int32Arg1']
         if not url or not pwd or self.__channelParams[0] == url:
             return
-        self.__channelParams = (
-         url, pwd)
+        self.__channelParams = (url, pwd)
         g_messengerEvents.voip.onChannelAvailable(url, pwd, isRejoin)
 
     def __onChannelLost(self, ids, args):

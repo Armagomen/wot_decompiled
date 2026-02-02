@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/mapbox/tooltips/mapbox_selector_tooltip.py
 from gui import makeHtmlString
 from gui.impl.gen import R
 from gui.impl import backport

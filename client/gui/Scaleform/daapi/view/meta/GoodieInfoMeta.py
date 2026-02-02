@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/GoodieInfoMeta.py
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 
 class GoodieInfoMeta(AbstractWindowView):
@@ -6,5 +8,4 @@ class GoodieInfoMeta(AbstractWindowView):
         self._printOverrideError('onCancelClick')
 
     def as_setInfoS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setInfo(data)
+        return self.flashObject.as_setInfo(data) if self._isDAAPIInited() else None

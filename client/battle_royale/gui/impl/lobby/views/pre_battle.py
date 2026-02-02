@@ -1,4 +1,7 @@
-import BigWorld, ArenaType
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/lobby/views/pre_battle.py
+import BigWorld
+import ArenaType
 from BattleRoyaleTournament import MAX_PLAYERS_IN_SQUAD
 from battle_royale.gui.impl.gen.view_models.views.lobby.views.pre_battle_view_model import PreBattleViewModel
 from battle_royale.gui.impl.gen.view_models.views.lobby.views.team_model import TeamModel
@@ -43,7 +46,7 @@ class PreBattleView(ViewImpl):
 
     @prbEntityProperty
     def prbEntity(self):
-        return
+        return None
 
     @property
     def viewModel(self):
@@ -113,7 +116,7 @@ class PreBattleView(ViewImpl):
         teamsRange = 20 if self.__isSolo else 10
         playersRange = 1 if self.__isSolo else MAX_PLAYERS_IN_SQUAD
         self.__initMaps()
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setTitle(R.strings.battle_royale.preBattle.title())
             model.setIsSpectator(self.__canStartBattle)
             self.__setCurrentTeam(model, [])
@@ -138,7 +141,7 @@ class PreBattleView(ViewImpl):
     def __updateParticipants(self):
         participants = self.__battleRoyaleTournamentController.getParticipants()
         players = self.__convertToPlayers(participants)
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             if not self.__isObserver:
                 databaseID = BigWorld.player().databaseID
                 teamID = next((p.teamID for p in participants if p.databaseID == databaseID and p.teamID in players), None)
@@ -156,12 +159,10 @@ class PreBattleView(ViewImpl):
                             user.setName(player['name'])
                             user.setIsReady(player['typeCD'] != 0)
                             user.setIsCurrentUser(BigWorld.player().name == player['name'])
-                        else:
-                            self.__userClearData(user)
-
-                else:
-                    for user in users:
                         self.__userClearData(user)
+
+                for user in users:
+                    self.__userClearData(user)
 
         return
 

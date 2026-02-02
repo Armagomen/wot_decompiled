@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/user_missions/tooltips/all_quests_done_tooltip.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.user_missions.tooltips.all_quests_done_tooltip_model import AllQuestsDoneTooltipModel
@@ -22,5 +24,5 @@ class AllQuestsDoneTooltip(ViewImpl):
         super(AllQuestsDoneTooltip, self)._onLoading()
 
     def _fillViewModel(self):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             vm.setCountdown(self.__questTimerLeft)

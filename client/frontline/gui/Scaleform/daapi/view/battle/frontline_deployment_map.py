@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/battle/frontline_deployment_map.py
 import GUI
 from frontline.gui.Scaleform.daapi.view.meta.FrontlineDeploymentMapMeta import FrontlineDeploymentMapMeta
 from frontline.gui.Scaleform.daapi.view.battle.frontline_minimap import _FRONT_LINE_DEV_VISUALIZATION_SUPPORTED, DevelopmentRespawnEntriesPlugin, EpicGlobalSettingsPlugin, HeadquartersStatusEntriesPlugin, MINIMAP_SCALE_TYPES, ProtectionZoneEntriesPlugin, RespawningPersonalEntriesPlugin, RecoveringVehiclesPlugin, SectorBaseEntriesPlugin, SectorOverlayEntriesPlugin, SectorStatusEntriesPlugin, StepRepairPointEntriesPlugin, EpicMinimapPingPlugin
@@ -7,7 +9,7 @@ from gui.Scaleform.genConsts.LAYER_NAMES import LAYER_NAMES
 from gui.battle_control import minimap_utils
 _S_NAME = settings.ENTRY_SYMBOL_NAME
 _C_NAME = settings.CONTAINER_NAME
-_DEPLOY_MAP_PATH = ('_level0.root.{}.main.epicDeploymentMap.mapContainer.entriesContainer').format(LAYER_NAMES.VIEWS)
+_DEPLOY_MAP_PATH = '_level0.root.{}.main.epicDeploymentMap.mapContainer.entriesContainer'.format(LAYER_NAMES.VIEWS)
 
 class FrontlineDeploymentMapComponent(FrontlineDeploymentMapMeta):
 
@@ -22,10 +24,13 @@ class FrontlineDeploymentMapComponent(FrontlineDeploymentMapMeta):
         if not self._bounds:
             return (0, 0, 0, 0)
         minSize, maxSize = self._bounds
-        return (minSize[0], maxSize[1], maxSize[0], minSize[1])
+        return (minSize[0],
+         maxSize[1],
+         maxSize[0],
+         minSize[1])
 
     def getRangeScale(self):
-        return 0.6
+        pass
 
     def canChangeAlpha(self):
         return False
@@ -46,7 +51,7 @@ class FrontlineDeploymentMapComponent(FrontlineDeploymentMapMeta):
         pass
 
     def _getFlashName(self):
-        return 'ovmap'
+        pass
 
     def _setupPlugins(self, visitor):
         setup = super(FrontlineDeploymentMapComponent, self)._setupPlugins(visitor)

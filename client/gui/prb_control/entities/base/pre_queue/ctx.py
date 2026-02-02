@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/base/pre_queue/ctx.py
 from gui.prb_control.entities.base.ctx import PrbCtrlRequestCtx
 from gui.prb_control.settings import CTRL_ENTITY_TYPE, REQUEST_TYPE
 from gui.prb_control.settings import FUNCTIONAL_FLAG
@@ -27,7 +29,7 @@ class JoinPreQueueModeCtx(_PreQueueRequestCtx):
         super(JoinPreQueueModeCtx, self).__init__(entityType=queueType, flags=flags, waitingID=waitingID)
 
     def getID(self):
-        return 0
+        pass
 
 
 @ReprInjector.withParent(('getWaitingID', 'waitingID'))

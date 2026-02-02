@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/VehiclePreviewBottomPanelMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class VehiclePreviewBottomPanelMeta(BaseDAAPIComponent):
@@ -21,29 +23,22 @@ class VehiclePreviewBottomPanelMeta(BaseDAAPIComponent):
         self._printOverrideError('onCouponSelected')
 
     def as_setBuyDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setBuyData(data)
+        return self.flashObject.as_setBuyData(data) if self._isDAAPIInited() else None
 
     def as_setSetItemsDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setSetItemsData(data)
+        return self.flashObject.as_setSetItemsData(data) if self._isDAAPIInited() else None
 
     def as_setCouponS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setCoupon(data)
+        return self.flashObject.as_setCoupon(data) if self._isDAAPIInited() else None
 
     def as_setSetVehiclesDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setSetVehiclesData(data)
+        return self.flashObject.as_setSetVehiclesData(data) if self._isDAAPIInited() else None
 
     def as_setOffersDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setOffersData(data)
+        return self.flashObject.as_setOffersData(data) if self._isDAAPIInited() else None
 
     def as_setSetTitleTooltipS(self, tooltip):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setSetTitleTooltip(tooltip)
+        return self.flashObject.as_setSetTitleTooltip(tooltip) if self._isDAAPIInited() else None
 
     def as_updateLeftTimeS(self, formattedTime, hasHoursAndMinutes=False):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateLeftTime(formattedTime, hasHoursAndMinutes)
+        return self.flashObject.as_updateLeftTime(formattedTime, hasHoursAndMinutes) if self._isDAAPIInited() else None

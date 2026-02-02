@@ -1,4 +1,8 @@
-import typing, sys, wg_async
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/platform/base/requester.py
+import typing
+import sys
+import wg_async
 from BWUtil import AsyncReturn
 from gui.Scaleform.Waiting import Waiting
 from gui.platform.base import logger

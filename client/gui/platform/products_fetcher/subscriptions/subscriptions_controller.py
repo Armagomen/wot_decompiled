@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/platform/products_fetcher/subscriptions/subscriptions_controller.py
+import logging
+import typing
 from BWUtil import AsyncReturn
 from constants import CURRENT_REALM
 from constants import WOT_PLUS_SUBSCRIPTION_PRODUCT, PRIME_GAMING_SUBSCRIPTION_PRODUCT
@@ -38,8 +41,8 @@ class SubscriptionProductsFetchController(ProductsFetchController):
     _wotPlusCtrl = dependency.descriptor(IWotPlusController)
     platformParams = PlatformSubscriptionsParams
     defaultProductDescriptor = SubscriptionDescriptor
-    productIDToDescriptor = {PRIME_GAMING_SUBSCRIPTION_PRODUCT: PrimeGamingDescriptor, 
-       WOT_PLUS_SUBSCRIPTION_PRODUCT: WotPlusDescriptor}
+    productIDToDescriptor = {PRIME_GAMING_SUBSCRIPTION_PRODUCT: PrimeGamingDescriptor,
+     WOT_PLUS_SUBSCRIPTION_PRODUCT: WotPlusDescriptor}
 
     def init(self):
         super(SubscriptionProductsFetchController, self).init()

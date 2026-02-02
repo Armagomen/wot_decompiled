@@ -1,4 +1,8 @@
-import types, BigWorld, BattleReplay
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/ext/__init__.py
+import types
+import BigWorld
+import BattleReplay
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from helpers import i18n
 from gui.Scaleform.locale.MESSENGER import MESSENGER
@@ -21,13 +25,11 @@ else:
 
 def passCensor(text):
     if text is None:
-        return ''
+        return u''
     else:
         if not isinstance(text, types.UnicodeType):
             text = unicode(text, 'utf-8')
-        if g_settings.userPrefs.enableOlFilter:
-            return g_olDictionary.searchAndReplace(text)
-        return text
+        return g_olDictionary.searchAndReplace(text) if g_settings.userPrefs.enableOlFilter else text
 
 
 def isBattleChatEnabled(common=False):
@@ -52,9 +54,7 @@ def validateAccountName(name):
     if not name:
         return (False, CLIENT_ERROR_ID.NAME_EMPTY)
     else:
-        if not isAccountNameValid(name):
-            return (False, CLIENT_ERROR_ID.NAME_INVALID)
-        return (True, None)
+        return (False, CLIENT_ERROR_ID.NAME_INVALID) if not isAccountNameValid(name) else (True, None)
 
 
 def checkAccountName(token):
@@ -63,8 +63,7 @@ def checkAccountName(token):
         reason = i18n.makeString(MESSENGER.CLIENT_WARNING_EMPTYUSERSEARCHTOKEN_MESSAGE)
     elif reason == CLIENT_ERROR_ID.NAME_INVALID:
         reason = i18n.makeString(MESSENGER.CLIENT_WARNING_INVALIDUSERSEARCHTOKEN_MESSAGE, _ACCOUNT_NAME_MIN_LENGTH, _ACCOUNT_NAME_MAX_LENGTH)
-    return (
-     result, reason)
+    return (result, reason)
 
 
 def isSenderIgnored(user):

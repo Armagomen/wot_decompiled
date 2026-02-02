@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/account_completion/steam_add_email_overlay_view.py
 import typing
 from gui.impl.backport import text as loc
 from gui.impl.gen import R
@@ -48,7 +50,7 @@ class SteamAddEmailOverlayView(BaseCredentialsOverlayView):
 
     def _handleError(self, response):
         if response.isRequestLimitExceeded:
-            with self.viewModel.transaction() as (model):
+            with self.viewModel.transaction() as model:
                 message = loc(rAccCompletion.emailOverlay.error.codeAlreadySent())
                 errorTime = max(RESTRICTED_REQUEST_MIN_TIME, getTimeDeltaFromNow(response.requestRestrictedUntilTime))
                 model.email.setErrorMessage(message)

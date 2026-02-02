@@ -1,4 +1,8 @@
-import enum, typing, VOIP
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_core/scripts/client/comp7_core/gui/Scaleform/daapi/view/battle/comp7_voip_helper.py
+import enum
+import typing
+import VOIP
 from comp7_core.gui.comp7_core_constants import BATTLE_CTRL_ID
 from gui import makeHtmlString
 from gui.impl import backport
@@ -40,8 +44,8 @@ class Comp7VoipHelper(object):
 
     def populate(self):
         component = self.__component
-        component.as_setVoiceChatDataS({'activeText': self.__makeHtmlString(backport.text(R.strings.comp7_ext.voiceChat.active())), 
-           'inactiveText': self.__makeHtmlString(backport.text(R.strings.comp7_ext.voiceChat.inactive()))})
+        component.as_setVoiceChatDataS({'activeText': self.__makeHtmlString(backport.text(R.strings.comp7_ext.voiceChat.active())),
+         'inactiveText': self.__makeHtmlString(backport.text(R.strings.comp7_ext.voiceChat.inactive()))})
         self.__update()
         self.__subscribe()
 

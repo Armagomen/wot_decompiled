@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prestige/prestige_helpers.py
+import logging
+import typing
 from collections import namedtuple
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import GUI_START_BEHAVIOR
@@ -17,24 +20,17 @@ if typing.TYPE_CHECKING:
     from typing import Tuple, List, Dict, Set
     from prestige_system.prestige_milestones_common import PrestigeLevelType, MilestonesType
     from gui.impl.gen.view_models.views.lobby.prestige.prestige_emblem_model import PrestigeEmblemModel
-PrestigeVehiclesDossiersCut = namedtuple('PrestigeVehiclesDossiersCut', [
- 'currentLevel',
- 'remainingPoints'])
+PrestigeVehiclesDossiersCut = namedtuple('PrestigeVehiclesDossiersCut', ['currentLevel', 'remainingPoints'])
 _MIN_SUB_GRADE_NUMBER = 1
 _MAX_SUB_GRADE_NUMBER = 4
 _INVALID_GRADE_NUMBER = -1
-_COMPLEX_GRADES = (
- PrestigeLevelGrade.IRON,
+_COMPLEX_GRADES = (PrestigeLevelGrade.IRON,
  PrestigeLevelGrade.BRONZE,
  PrestigeLevelGrade.SILVER,
  PrestigeLevelGrade.GOLD,
  PrestigeLevelGrade.ENAMEL)
-_SIMPLE_GRADES = (
- PrestigeLevelGrade.UNDEFINED,
- PrestigeLevelGrade.MAXIMUM)
-_gradeIDtoGradeUIMap = dict((index, value) for index, value in enumerate([ (s, g) for s in _COMPLEX_GRADES for g in range(_MIN_SUB_GRADE_NUMBER, _MAX_SUB_GRADE_NUMBER + 1) ] + [
- (
-  PrestigeLevelGrade.MAXIMUM, _INVALID_GRADE_NUMBER)], 1))
+_SIMPLE_GRADES = (PrestigeLevelGrade.UNDEFINED, PrestigeLevelGrade.MAXIMUM)
+_gradeIDtoGradeUIMap = dict(((index, value) for index, value in enumerate([ (s, g) for s in _COMPLEX_GRADES for g in range(_MIN_SUB_GRADE_NUMBER, _MAX_SUB_GRADE_NUMBER + 1) ] + [(PrestigeLevelGrade.MAXIMUM, _INVALID_GRADE_NUMBER)], 1)))
 EMPTY_GRADE_ID = 0
 MAX_GRADE_ID = max(_gradeIDtoGradeUIMap.keys())
 DEFAULT_PRESTIGE = PrestigeVehiclesDossiersCut(0, 0)
@@ -71,8 +67,7 @@ def getCurrentProgress(vehCD, currentLevel, remainingPts, lobbyContext=None):
     nextLvlXP = prestigePointsToXP(nextLevelPts, lobbyContext=lobbyContext)
     if currentXP == nextLvlXP:
         currentXP -= 1
-    return (
-     currentXP, nextLvlXP)
+    return (currentXP, nextLvlXP)
 
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
@@ -134,8 +129,7 @@ def getSortedGrades(vehCD, onlyMain=False, lobbyContext=None):
     maxLevel = len(vehiclePoints)
     if maxLevel < config.defaultMaxLevel:
         grades = [ grade for grade in grades if grade.level < maxLevel ]
-    return grades + [
-     PrestigeGrade(level=maxLevel, prestigeMarkID=MAX_GRADE_ID, main=True)]
+    return grades + [PrestigeGrade(level=maxLevel, prestigeMarkID=MAX_GRADE_ID, main=True)]
 
 
 @dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
@@ -172,8 +166,8 @@ def showPrestigeVehicleStats(vehIntCD, lobbyContext=None):
         showPrestigeOnboardingWindow()
         return
     from gui.shared.event_dispatcher import showVehicleStats
-    showVehicleStats(vehIntCD, selectedAlias=VIEW_ALIAS.PROFILE_TECHNIQUE_PAGE, initVehicleSorting={'selectedColumnSorting': 'descending', 
-       'selectedColumnStr': 'prestigeLevel'})
+    showVehicleStats(vehIntCD, selectedAlias=VIEW_ALIAS.PROFILE_TECHNIQUE_PAGE, initVehicleSorting={'selectedColumnSorting': 'descending',
+     'selectedColumnStr': 'prestigeLevel'})
 
 
 @dependency.replace_none_kwargs(notificationMgr=INotificationWindowController)

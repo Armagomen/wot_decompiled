@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/skeletons/gui/prebattle_hints/controller.py
 import typing
 if typing.TYPE_CHECKING:
     from hints_common.prebattle.schemas import BaseHintModel

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/helpers/platform/base.py
 from Event import EventManager, Event
 from skeletons.helpers.platform import IPublishPlatform
 

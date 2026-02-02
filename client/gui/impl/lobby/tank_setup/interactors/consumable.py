@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/interactors/consumable.py
 import typing
 from wg_async import wg_async, await_callback
 from gui import shop
@@ -40,7 +42,7 @@ class BaseConsumableInteractor(BaseEquipmentInteractor):
 
 
 class ConsumableInteractor(BaseConsumableInteractor):
-    __slots__ = ('__installedIndices', )
+    __slots__ = ('__installedIndices',)
 
     def getVehicleAfterInstall(self):
         vehicle = super(ConsumableInteractor, self).getVehicleAfterInstall()

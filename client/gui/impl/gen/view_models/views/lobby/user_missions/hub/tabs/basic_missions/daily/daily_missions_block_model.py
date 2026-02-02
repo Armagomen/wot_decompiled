@@ -1,9 +1,11 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/user_missions/hub/tabs/basic_missions/daily/daily_missions_block_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.user_missions.hub.tabs.basic_missions.daily.daily_bonus_mission_model import DailyBonusMissionModel
 from gui.impl.gen.view_models.views.lobby.user_missions.hub.tabs.basic_missions.daily.daily_mission_model import DailyMissionModel
 
 class DailyMissionsBlockModel(ViewModel):
-    __slots__ = ('onReroll', )
+    __slots__ = ('onReroll',)
     BONUS_CARD_DEFAULT_ID = 'BONUS_CARD'
 
     def __init__(self, properties=5, commands=1):

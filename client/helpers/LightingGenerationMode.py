@@ -1,6 +1,16 @@
-import sys, math, BigWorld, GUI, Keys, Math, ResMgr, WWISE
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/helpers/LightingGenerationMode.py
+from __future__ import absolute_import, print_function
+import sys
+import math
+import BigWorld
+import GUI
+import Keys
+import Math
+import ResMgr
+import WWISE
 from debug_utils import LOG_DEBUG, LOG_ERROR
-import game_mode_emulator
+from helpers import game_mode_emulator
 g_lightGenModeEnabled = False
 g_currentMoveRate = 0.5
 g_gui = None
@@ -12,8 +22,7 @@ FOV_ADJUST = math.radians(10)
 FOV_MIN = math.radians(10)
 FOV_MAX = math.radians(160)
 SCRIPT_ARG_NAME = 'lightingGen'
-MOUSE_TOGGLE_KEYS = [
- Keys.KEY_ESCAPE, Keys.KEY_LEFTMOUSE]
+MOUSE_TOGGLE_KEYS = [Keys.KEY_ESCAPE, Keys.KEY_LEFTMOUSE]
 
 class CameraTransform:
     matrix = Math.Matrix()
@@ -66,7 +75,7 @@ def onStartup():
     try:
         LOG_DEBUG(str(sys.argv))
         idx = sys.argv.index(SCRIPT_ARG_NAME)
-        manifestFilename = sys.argv[(idx + 1)]
+        manifestFilename = sys.argv[idx + 1]
         LOG_DEBUG(str(manifestFilename))
         spacePath = BigWorld.lightingGenLoadManifest(manifestFilename)
         LOG_DEBUG(str(spacePath))
@@ -133,7 +142,7 @@ def _offlineLoadCheck():
 
 def launch(spaceName):
     global g_lightGenModeEnabled
-    print 'Entering offline space', spaceName
+    print('Entering offline space', spaceName)
     BigWorld.clearAllSpaces()
     BigWorld.worldDrawEnabled(False)
     guitext = 'Client Lighting Generation Mode\n  entering: %s' % spaceName

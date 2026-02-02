@@ -1,6 +1,7 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/server_events/personal_progress/__init__.py
 from personal_missions_constants import CONDITION_ICON
-ORDERED_ICON_IDS = (
- CONDITION_ICON.FOLDER,
+ORDERED_ICON_IDS = (CONDITION_ICON.FOLDER,
  CONDITION_ICON.IMPROVE,
  CONDITION_ICON.AWARD,
  CONDITION_ICON.MASTER,

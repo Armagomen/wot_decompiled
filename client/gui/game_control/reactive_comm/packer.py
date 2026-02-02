@@ -1,4 +1,7 @@
-import typing, cbor
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/reactive_comm/packer.py
+import typing
+import cbor
 from gui.game_control.reactive_comm.constants import SubscriptionServerStatus
 if typing.TYPE_CHECKING:
     from gui.game_control.reactive_comm.constants import SubscriptionCommand
@@ -28,8 +31,8 @@ class ServiceMessage(object):
 
 
 def packCommand(channel, command):
-    result = cbor.dumps({'channel': channel, 
-       'cmd': command.value})
+    result = cbor.dumps({'channel': channel,
+     'cmd': command.value})
     return result
 
 

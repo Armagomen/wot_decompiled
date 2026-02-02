@@ -1,7 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/wgnc/client.py
 from gui.wgnc.settings import WGNC_GUI_TYPE
 
 class ClosePollWindowFromPopUp(object):
-    __slots__ = ('_target', )
+    __slots__ = ('_target',)
 
     def __init__(self, target):
         super(ClosePollWindowFromPopUp, self).__init__()
@@ -21,7 +23,7 @@ class ClosePollWindowFromPopUp(object):
 
 
 class ClientLogic(object):
-    __slots__ = ('_seq', )
+    __slots__ = ('_seq',)
 
     def __init__(self, seq):
         super(ClientLogic, self).__init__()

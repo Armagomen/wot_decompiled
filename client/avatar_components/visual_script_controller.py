@@ -1,4 +1,7 @@
-import cPickle, VSE
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/avatar_components/visual_script_controller.py
+import cPickle
+import VSE
 
 class VisualScriptController(object):
 

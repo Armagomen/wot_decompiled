@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/vse_hud_settings_ctrl/settings/base_models.py
 import typing
 from helpers import i18n
 from pve_battle_hud import getPveHudLogger

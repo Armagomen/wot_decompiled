@@ -1,8 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/mapbox/mapbox_progression_model.py
 from frameworks.wulf import Array, ViewModel
 
 class MapboxProgressionModel(ViewModel):
-    __slots__ = ('onShowInfo', 'onSelectMapboxBattle', 'onShowSurvey', 'onRemoveBubble',
-                 'onClose', 'onAnimationEnded')
+    __slots__ = ('onShowInfo', 'onSelectMapboxBattle', 'onShowSurvey', 'onRemoveBubble', 'onClose', 'onAnimationEnded')
 
     def __init__(self, properties=14, commands=6):
         super(MapboxProgressionModel, self).__init__(properties=properties, commands=commands)

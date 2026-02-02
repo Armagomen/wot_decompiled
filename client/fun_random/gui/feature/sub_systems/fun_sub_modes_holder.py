@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/feature/sub_systems/fun_sub_modes_holder.py
 from __future__ import absolute_import
-import operator, typing
+import operator
+import typing
 from future.utils import viewvalues
 from fun_random_common.fun_constants import FUN_EVENT_ID_KEY, UNKNOWN_EVENT_ID
 from fun_random.gui.feature.fun_constants import FunSubModeBroadcast
@@ -49,9 +52,7 @@ class FunSubModesHolder(IFunRandomController.IFunSubModesHolder):
         allSubModesIDs = list(self.__subModes.keys())
         subModesIDs = subModesIDs or allSubModesIDs
         subModes = [ self.__subModes.get(subModeID) for subModeID in subModesIDs if subModeID in allSubModesIDs ]
-        if isOrdered:
-            return sorted(subModes, key=lambda sm: sm.getPriority())
-        return subModes
+        return sorted(subModes, key=lambda sm: sm.getPriority()) if isOrdered else subModes
 
     def getSubModesIDs(self):
         return list(self.__subModes.keys())

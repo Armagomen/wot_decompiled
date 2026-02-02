@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/tutorial/gui/Scaleform/effects_player.py
 import logging
 from collections import defaultdict
 from helpers import dependency
@@ -32,7 +34,7 @@ class GUIEffect(object):
 
 class ApplicationEffect(GUIEffect):
     __tutorialLoader = dependency.descriptor(ITutorialLoader)
-    __slots__ = ('_app', )
+    __slots__ = ('_app',)
 
     def __init__(self):
         super(GUIEffect, self).__init__()
@@ -52,24 +54,22 @@ class ApplicationEffect(GUIEffect):
             return
         else:
             manager = self._app.containerManager
-            if manager is None:
-                return
-            return manager.getContainer(layer)
+            return None if manager is None else manager.getContainer(layer)
 
     def _getTutorialLayout(self):
         return self.__tutorialLoader.gui
 
 
-_GUI_EVENT_TO_TRIGGER_TYPE = {GuiEventType.CLICK: TUTORIAL_TRIGGER_TYPES.CLICK_TYPE, 
-   GuiEventType.CLICK_OUTSIDE: TUTORIAL_TRIGGER_TYPES.CLICK_OUTSIDE_TYPE, 
-   GuiEventType.ESC: TUTORIAL_TRIGGER_TYPES.ESCAPE, 
-   GuiEventType.ENABLE: TUTORIAL_TRIGGER_TYPES.ENABLED, 
-   GuiEventType.DISABLE: TUTORIAL_TRIGGER_TYPES.DISABLED, 
-   GuiEventType.ENABLED_CHANGE: TUTORIAL_TRIGGER_TYPES.ENABLED_CHANGE, 
-   GuiEventType.VISIBLE_CHANGE: TUTORIAL_TRIGGER_TYPES.VISIBLE_CHANGE}
+_GUI_EVENT_TO_TRIGGER_TYPE = {GuiEventType.CLICK: TUTORIAL_TRIGGER_TYPES.CLICK_TYPE,
+ GuiEventType.CLICK_OUTSIDE: TUTORIAL_TRIGGER_TYPES.CLICK_OUTSIDE_TYPE,
+ GuiEventType.ESC: TUTORIAL_TRIGGER_TYPES.ESCAPE,
+ GuiEventType.ENABLE: TUTORIAL_TRIGGER_TYPES.ENABLED,
+ GuiEventType.DISABLE: TUTORIAL_TRIGGER_TYPES.DISABLED,
+ GuiEventType.ENABLED_CHANGE: TUTORIAL_TRIGGER_TYPES.ENABLED_CHANGE,
+ GuiEventType.VISIBLE_CHANGE: TUTORIAL_TRIGGER_TYPES.VISIBLE_CHANGE}
 
 class ShowChainHint(ApplicationEffect):
-    __slots__ = ('_hintsDict', )
+    __slots__ = ('_hintsDict',)
 
     def __init__(self):
         super(ShowChainHint, self).__init__()
@@ -90,14 +90,15 @@ class ShowChainHint(ApplicationEffect):
         else:
             layout = self._getTutorialLayout()
             if layout is not None:
-                content = {'uniqueID': hintProps.uniqueID, 'hintText': hintProps.text, 
-                   'hasBox': hintProps.hasBox, 
-                   'hasArrow': False, 
-                   'arrowDir': '', 
-                   'arrowLoop': False, 
-                   'updateRuntime': hintProps.updateRuntime, 
-                   'hideImmediately': hintProps.hideImmediately, 
-                   'checkViewArea': hintProps.checkViewArea}
+                content = {'uniqueID': hintProps.uniqueID,
+                 'hintText': hintProps.text,
+                 'hasBox': hintProps.hasBox,
+                 'hasArrow': False,
+                 'arrowDir': '',
+                 'arrowLoop': False,
+                 'updateRuntime': hintProps.updateRuntime,
+                 'hideImmediately': hintProps.hideImmediately,
+                 'checkViewArea': hintProps.checkViewArea}
                 arrow = hintProps.arrow
                 if arrow is not None:
                     content['hasArrow'] = True
@@ -157,16 +158,16 @@ class SetCriteriaEffect(ApplicationEffect):
             return False
 
 
-_ACTION_TO_TRIGGER_TYPE = {GuiEventType.CLICK: TUTORIAL_TRIGGER_TYPES.CLICK_TYPE, 
-   GuiEventType.CLICK_OUTSIDE: TUTORIAL_TRIGGER_TYPES.CLICK_OUTSIDE_TYPE, 
-   GuiEventType.ESC: TUTORIAL_TRIGGER_TYPES.ESCAPE, 
-   GuiEventType.ENABLE: TUTORIAL_TRIGGER_TYPES.ENABLED, 
-   GuiEventType.DISABLE: TUTORIAL_TRIGGER_TYPES.DISABLED, 
-   GuiEventType.ENABLED_CHANGE: TUTORIAL_TRIGGER_TYPES.ENABLED_CHANGE, 
-   GuiEventType.VISIBLE_CHANGE: TUTORIAL_TRIGGER_TYPES.VISIBLE_CHANGE}
+_ACTION_TO_TRIGGER_TYPE = {GuiEventType.CLICK: TUTORIAL_TRIGGER_TYPES.CLICK_TYPE,
+ GuiEventType.CLICK_OUTSIDE: TUTORIAL_TRIGGER_TYPES.CLICK_OUTSIDE_TYPE,
+ GuiEventType.ESC: TUTORIAL_TRIGGER_TYPES.ESCAPE,
+ GuiEventType.ENABLE: TUTORIAL_TRIGGER_TYPES.ENABLED,
+ GuiEventType.DISABLE: TUTORIAL_TRIGGER_TYPES.DISABLED,
+ GuiEventType.ENABLED_CHANGE: TUTORIAL_TRIGGER_TYPES.ENABLED_CHANGE,
+ GuiEventType.VISIBLE_CHANGE: TUTORIAL_TRIGGER_TYPES.VISIBLE_CHANGE}
 
 class SetTriggerEffect(ApplicationEffect):
-    __slots__ = ('_triggersByItem', )
+    __slots__ = ('_triggersByItem',)
 
     def __init__(self):
         super(SetTriggerEffect, self).__init__()
@@ -223,7 +224,7 @@ class SetTriggerEffect(ApplicationEffect):
 
 
 class EffectsPlayer(object):
-    __slots__ = ('_effects', )
+    __slots__ = ('_effects',)
 
     def __init__(self, effects):
         super(EffectsPlayer, self).__init__()

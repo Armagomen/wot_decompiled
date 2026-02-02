@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/bw_chat2/wrappers.py
 from collections import namedtuple
-import types, cPickle
+import types
+import cPickle
 from gui.shared.utils import transport
 from helpers.time_utils import makeLocalServerTime
 from messenger.proto.entities import SharedUserEntity, ClanInfo
@@ -24,7 +27,7 @@ class _MessageVO(object):
 
 
 class ArenaMessageVO(_MessageVO):
-    __slots__ = ('isCommonChannel', )
+    __slots__ = ('isCommonChannel',)
 
     def __init__(self, floatArg1=0, int32Arg1=False, int64Arg1=0, strArg1='', **kwargs):
         super(ArenaMessageVO, self).__init__(floatArg1, strArg1, **kwargs)

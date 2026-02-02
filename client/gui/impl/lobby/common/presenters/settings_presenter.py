@@ -1,6 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/common/presenters/settings_presenter.py
 from __future__ import absolute_import
 from inspect import getmembers
-import logging, typing
+from past.builtins import long
+import logging
+import typing
 from account_helpers.AccountSettings import AccountSettings
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.views.lobby.common.settings_model import SettingsModel
@@ -8,7 +12,9 @@ from gui.impl.gui_decorators import args2params
 from gui.impl.pub.view_component import ViewComponent
 if typing.TYPE_CHECKING:
     from typing import Type, Dict, Any, Callable, TypedDict
-    Accessor = TypedDict('Accessor', {'value': Any, 'getter': Callable, 'setter': Callable})
+    Accessor = TypedDict('Accessor', {'value': Any,
+     'getter': Callable,
+     'setter': Callable})
 _logger = logging.getLogger(__name__)
 
 class SettingsPresenter(ViewComponent[SettingsModel]):
@@ -18,7 +24,7 @@ class SettingsPresenter(ViewComponent[SettingsModel]):
         self.__settingsKey = accountSettingsKey
         self.__readOnly = readOnly
         self.__settingsMap = {}
-        submodels = {name:value for name, value in getmembers(self.viewModel) if isinstance(value, ViewModel) if isinstance(value, ViewModel)}
+        submodels = {name:value for name, value in getmembers(self.viewModel) if isinstance(value, ViewModel)}
         validated = True
         settingsMap = {}
         for section, settings in AccountSettings.getSettings(accountSettingsKey).items():
@@ -41,13 +47,15 @@ class SettingsPresenter(ViewComponent[SettingsModel]):
                 valueT = type(value)
                 prop = getter()
                 propT = type(prop)
-                if propT is type(1):
+                if propT is long:
                     propT = int
                 if valueT is not propT:
                     _logger.error('Setting property "%s" type mismatch %s != %s', key, valueT, propT)
                     validated = False
                     break
-                settingsMap[section][key] = {'value': value, 'getter': getter, 'setter': setter}
+                settingsMap[section][key] = {'value': value,
+                 'getter': getter,
+                 'setter': setter}
 
         if not validated:
             _logger.error('Settings validation failed, check %s entry in AccountSettings and the %s model definition', self.__settingsKey, self.viewModel.__class__.__name__)
@@ -65,11 +73,7 @@ class SettingsPresenter(ViewComponent[SettingsModel]):
         super(SettingsPresenter, self)._finalize()
 
     def _getEvents(self):
-        return (
-         (
-          AccountSettings.onSettingsChanging, self.__onAccountSettingsUpdated),
-         (
-          self.viewModel.onUpdateSetting, self.__onUpdateSetting))
+        return ((AccountSettings.onSettingsChanging, self.__onAccountSettingsUpdated), (self.viewModel.onUpdateSetting, self.__onUpdateSetting))
 
     def _onLoading(self, *args, **kwargs):
         super(SettingsPresenter, self)._onLoading(*args, **kwargs)

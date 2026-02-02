@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/profile/ProfileSummaryWindow.py
 from adisp import adisp_process
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.impl import backport
@@ -59,12 +61,12 @@ class ProfileSummaryWindow(ProfileSummaryWindowMeta, ClanEmblemsHelper, ClanList
         clanDBID, clanInfo = self.itemsCache.items.getClanInfo(self._userID)
         if clanInfo is not None:
             clanInfo = ClanInfo(*clanInfo)
-            clanData = {'id': clanDBID, 
-               'header': clanInfo.getClanName(), 
-               'topLabel': _ms(PROFILE.PROFILE_SUMMARY_CLAN_POST), 
-               'topValue': text_styles.main(getClanRoleString(clanInfo.getMembersFlags())), 
-               'bottomLabel': _ms(PROFILE.PROFILE_SUMMARY_CLAN_JOINDATE), 
-               'bottomValue': text_styles.main(backport.getLongDateFormat(clanInfo.getJoiningTime()))}
+            clanData = {'id': clanDBID,
+             'header': clanInfo.getClanName(),
+             'topLabel': _ms(PROFILE.PROFILE_SUMMARY_CLAN_POST),
+             'topValue': text_styles.main(getClanRoleString(clanInfo.getMembersFlags())),
+             'bottomLabel': _ms(PROFILE.PROFILE_SUMMARY_CLAN_JOINDATE),
+             'bottomValue': text_styles.main(backport.getLongDateFormat(clanInfo.getJoiningTime()))}
             btnParams = self._getClanBtnParams(isShowClanProfileBtnVisible)
             clanData.update(btnParams)
             self.as_setClanDataS(clanData)
@@ -83,7 +85,7 @@ class ProfileSummaryWindow(ProfileSummaryWindowMeta, ClanEmblemsHelper, ClanList
         else:
             btnEnabled = False
             btnTooltip = TOOLTIPS.HEADER_ACCOUNTPOPOVER_UNAVAILABLE
-        return {'btnLabel': _ms(PROFILE.PROFILE_SUMMARY_CLAN_BTNLABEL), 
-           'btnEnabled': btnEnabled, 
-           'btnVisible': isVisible, 
-           'btnTooltip': btnTooltip}
+        return {'btnLabel': _ms(PROFILE.PROFILE_SUMMARY_CLAN_BTNLABEL),
+         'btnEnabled': btnEnabled,
+         'btnVisible': isVisible,
+         'btnTooltip': btnTooltip}

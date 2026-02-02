@@ -1,4 +1,7 @@
-import csv, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/account_helpers/optional_devices_assistant_config.py
+import csv
+import typing
 from io import StringIO
 import ResMgr
 from constants import VEHICLE_CLASS_INDICES, ROLE_LABEL_TO_TYPE

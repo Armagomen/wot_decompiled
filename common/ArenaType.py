@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/ArenaType.py
 import os
 from collections import defaultdict
 from functools import partial
@@ -47,8 +49,7 @@ def getGameplaysMask(gameplayNames):
 
 
 def getGameplayIDsForMask(gameplaysMask):
-    return [ gameplayID for gameplayID in xrange(len(ARENA_GAMEPLAY_NAMES)) if bool(gameplaysMask & 1 << gameplayID)
-           ]
+    return [ gameplayID for gameplayID in xrange(len(ARENA_GAMEPLAY_NAMES)) if bool(gameplaysMask & 1 << gameplayID) ]
 
 
 def getGameplayName(gameplayID):
@@ -60,8 +61,7 @@ def getGameplayIDForName(gameplayName):
 
 
 def parseTypeID(typeID):
-    return (
-     typeID >> 16, typeID & 65535)
+    return (typeID >> 16, typeID & 65535)
 
 
 def buildArenaTypeID(gameplayID, geometryID):
@@ -72,11 +72,11 @@ _LIST_XML = ARENA_TYPE_XML_PATH + '_list_.xml'
 _DEFAULT_XML = ARENA_TYPE_XML_PATH + '_default_.xml'
 
 def _readCache(isFullCache):
-    global g_cache
     global g_gameplayNames
+    global g_cache
+    global g_geometryNamesToIDs
     global g_gameplaysMask
     global g_geometryCache
-    global g_geometryNamesToIDs
     rootSection = ResMgr.openSection(_LIST_XML)
     if rootSection is None:
         raise SoftException("Can't open '%s'" % _LIST_XML)
@@ -102,8 +102,12 @@ def _readCache(isFullCache):
     ResMgr.purge(_DEFAULT_XML, True)
     g_gameplaysMask = getGameplaysMask(g_gameplayNames)
     g_geometryNamesToIDs = {arenaType.geometryName:arenaType.geometryID for arenaType in g_cache.itervalues()}
-    return (
-     g_cache, g_geometryCache, g_spaceCache, g_geometryNamesToIDs, g_gameplayNames, g_gameplaysMask)
+    return (g_cache,
+     g_geometryCache,
+     g_spaceCache,
+     g_geometryNamesToIDs,
+     g_gameplayNames,
+     g_gameplaysMask)
 
 
 class _CacheSerializer(WGPickleSerializer):
@@ -118,8 +122,12 @@ class _CacheSerializer(WGPickleSerializer):
         g_geometryNamesToIDs.update(geometryNamesToIDs)
         g_gameplayNames.update(gameplayNames)
         g_gameplaysMask = gameplaysMask
-        return (
-         cache, geometryCache, spaceCache, geometryNamesToIDs, gameplayNames, gameplaysMask)
+        return (cache,
+         geometryCache,
+         spaceCache,
+         geometryNamesToIDs,
+         gameplayNames,
+         gameplaysMask)
 
     def rollbackSideEffects(self):
         global g_gameplaysMask
@@ -145,10 +153,7 @@ class _BonusTypeOverridesMixin(object):
     def __getattr__(self, name):
         if name in PICKLER_PROTOCOL_METHODS:
             raise AttributeError(name)
-        if self._bonusType is not None:
-            return self.__bonusTypeCfg.get(self._bonusType, {}).get(name)
-        else:
-            return
+        return self.__bonusTypeCfg.get(self._bonusType, {}).get(name) if self._bonusType is not None else None
 
     def __enter__(self):
         return self
@@ -164,9 +169,9 @@ class _BonusTypeOverridesMixin(object):
     def setBonusTypeCfg(self, cfg):
         if self._bonusType is None:
             return
+        elif not cfg:
+            return
         else:
-            if not cfg:
-                return
             self.__bonusTypeCfg[self._bonusType] = cfg
             return
 
@@ -188,10 +193,10 @@ class ArenaType(_BonusTypeOverridesMixin):
         value = super(ArenaType, self).__getattr__(name)
         if value is not None:
             return value
+        elif name in self.__gameplayCfg:
+            return self.__gameplayCfg[name]
         else:
-            if name in self.__gameplayCfg:
-                return self.__gameplayCfg[name]
-            with self.__geometryType.useBonusTypeOverrides(self._bonusType) as (geometryTypeForBonus):
+            with self.__geometryType.useBonusTypeOverrides(self._bonusType) as geometryTypeForBonus:
                 return getattr(geometryTypeForBonus, name, None)
             return
 
@@ -204,10 +209,7 @@ class GeometryType(_BonusTypeOverridesMixin):
 
     def __getattr__(self, name):
         value = super(GeometryType, self).__getattr__(name)
-        if value is not None:
-            return value
-        else:
-            return self.__cfg.get(name)
+        return value if value is not None else self.__cfg.get(name)
 
 
 class _DroneSettingHolder(object):
@@ -224,10 +226,7 @@ class _DroneSettingHolder(object):
 
     def getValue(self, arenaTypeLabel):
         value = self.__specificValues.get(arenaTypeLabel)
-        if value is not None:
-            return value
-        else:
-            return self.__defaultValue
+        return value if value is not None else self.__defaultValue
 
     def setDefault(self, value):
         self.__defaultValue = value
@@ -268,7 +267,7 @@ def __buildCache(geometryID, geometryName, defaultXml, isFullCache, isDevelopmen
 
 def __addBonusTypeOverrides(overridable, section, defaultXml):
     for bonusTypeID, bonusType in ARENA_BONUS_TYPE_IDS.iteritems():
-        with overridable.useBonusTypeOverrides(bonusTypeID) as (overriden):
+        with overridable.useBonusTypeOverrides(bonusTypeID) as overriden:
             bonusTypeCfg = __readBonusTypeCfgs(overridable.geometryName, section, defaultXml, bonusType)
             overriden.setBonusTypeCfg(bonusTypeCfg)
 
@@ -336,9 +335,8 @@ def __readGameplayCfgs(geometryName, section, defaultXml, geometryCfg):
         if section['gameplayTypes'] is None:
             gameplayName = 'ctf'
             gameplayID = getGameplayIDForName(gameplayName)
-            return [
-             {'gameplayID': gameplayID, 
-                'gameplayName': gameplayName}]
+            return [{'gameplayID': gameplayID,
+              'gameplayName': gameplayName}]
         if not section['gameplayTypes']:
             raise SoftException("no 'gameplayTypes' section")
         cfgs = []
@@ -475,8 +473,7 @@ def __readCommonCfg(section, defaultXml, raiseIfMissing, geometryCfg):
                 layerId = item.readString('layerId')
                 path = item.readString('path')
                 layerType = item.readString('layerType')
-                result[layerId] = (
-                 path, layerType)
+                result[layerId] = (path, layerType)
 
             cfg['minimapLayers'] = result
         if __hasKey('overviewmap', section, defaultXml):
@@ -550,8 +547,7 @@ def __readWWmusicDroneSection(wwmusicDroneSetup, section, defaultXml, gameplayNa
                     outcome[settingName].setDefault(settingValue)
             else:
                 outcome[settingName].setDefault(settingValue)
-        else:
-            raise SoftException(('"{}" section missed the key "{}"!').format(settingName, valueTag))
+        raise SoftException('"{}" section missed the key "{}"!'.format(settingName, valueTag))
 
     return outcome
 
@@ -569,11 +565,11 @@ def __hasKey(key, xml, defaultXml):
 def _readString(key, xml, defaultXml, defaultValue=None):
     if xml.has_key(key):
         return xml.readString(key)
+    elif defaultXml.has_key(key):
+        return defaultXml.readString(key)
+    elif defaultValue is not None:
+        return defaultValue
     else:
-        if defaultXml.has_key(key):
-            return defaultXml.readString(key)
-        if defaultValue is not None:
-            return defaultValue
         raise SoftException("missing key '%s'" % key)
         return
 
@@ -581,11 +577,11 @@ def _readString(key, xml, defaultXml, defaultValue=None):
 def __readStrings(key, xml, defaultXml, defaultValue=None):
     if xml.has_key(key):
         return xml.readStrings(key)
+    elif defaultXml.has_key(key):
+        return defaultXml.readStrings(key)
+    elif defaultValue is not None:
+        return defaultValue
     else:
-        if defaultXml.has_key(key):
-            return defaultXml.readStrings(key)
-        if defaultValue is not None:
-            return defaultValue
         raise SoftException("missing key '%s'" % key)
         return
 
@@ -593,11 +589,11 @@ def __readStrings(key, xml, defaultXml, defaultValue=None):
 def _readInt(key, xml, defaultXml, defaultValue=None):
     if xml.has_key(key):
         return xml.readInt(key)
+    elif defaultXml.has_key(key):
+        return defaultXml.readInt(key)
+    elif defaultValue is not None:
+        return defaultValue
     else:
-        if defaultXml.has_key(key):
-            return defaultXml.readInt(key)
-        if defaultValue is not None:
-            return defaultValue
         raise SoftException("missing key '%s'" % key)
         return
 
@@ -605,11 +601,11 @@ def _readInt(key, xml, defaultXml, defaultValue=None):
 def _readFloat(key, xml, defaultXml, defaultValue=None):
     if xml.has_key(key):
         return xml.readFloat(key)
+    elif defaultXml.has_key(key):
+        return defaultXml.readFloat(key)
+    elif defaultValue is not None:
+        return defaultValue
     else:
-        if defaultXml.has_key(key):
-            return defaultXml.readFloat(key)
-        if defaultValue is not None:
-            return defaultValue
         raise SoftException("missing key '%s'" % key)
         return
 
@@ -617,11 +613,11 @@ def _readFloat(key, xml, defaultXml, defaultValue=None):
 def __readBool(key, xml, defaultXml, defaultValue=None):
     if xml.has_key(key):
         return xml.readBool(key)
+    elif defaultXml.has_key(key):
+        return defaultXml.readBool(key)
+    elif defaultValue is not None:
+        return defaultValue
     else:
-        if defaultXml.has_key(key):
-            return defaultXml.readBool(key)
-        if defaultValue is not None:
-            return defaultValue
         raise SoftException("missing key '%s'" % key)
         return
 
@@ -629,11 +625,11 @@ def __readBool(key, xml, defaultXml, defaultValue=None):
 def _readFloatArray(key, tag, xml, defaultXml, defaultValue=None):
     if xml.has_key(key):
         return xml[key].readFloats(tag)
+    elif defaultXml.has_key(key):
+        return defaultXml[key].readFloats(tag)
+    elif defaultValue is not None:
+        return defaultValue
     else:
-        if defaultXml.has_key(key):
-            return defaultXml[key].readFloats(tag)
-        if defaultValue is not None:
-            return defaultValue
         raise SoftException("missing key '%s'" % key)
         return
 
@@ -647,14 +643,12 @@ def _readBoundingBox(section):
     upperRight = section.readVector2('boundingBox/upperRight')
     if bottomLeft[0] >= upperRight[0] or bottomLeft[1] >= upperRight[1]:
         raise SoftException("wrong 'boundingBox' values")
-    return (
-     bottomLeft, upperRight)
+    return (bottomLeft, upperRight)
 
 
 def __calcSpaceBoundingBox(arenaBoundingBox):
     ARENA_EXTENT = 100
-    return (arenaBoundingBox[0] - Vector2(ARENA_EXTENT, ARENA_EXTENT),
-     arenaBoundingBox[1] + Vector2(ARENA_EXTENT, ARENA_EXTENT))
+    return (arenaBoundingBox[0] - Vector2(ARENA_EXTENT, ARENA_EXTENT), arenaBoundingBox[1] + Vector2(ARENA_EXTENT, ARENA_EXTENT))
 
 
 def __readChatCommandFlags(name, section, defaultXml):
@@ -883,8 +877,7 @@ def __readTeamNumbers(section, maxTeamsInArena):
     squadTeamNumbers = set([ int(v) for v in section.readString('squadTeamNumbers', '').split() ])
     soloTeamNumbers = set([ int(v) for v in section.readString('soloTeamNumbers', '').split() ])
     if len(squadTeamNumbers) + len(soloTeamNumbers) != maxTeamsInArena:
-        raise SoftException('Number of squad (%d) and solo (%d) teams must be equal to maxTeamsInArena (%d)' % (
-         len(squadTeamNumbers), len(soloTeamNumbers), maxTeamsInArena))
+        raise SoftException('Number of squad (%d) and solo (%d) teams must be equal to maxTeamsInArena (%d)' % (len(squadTeamNumbers), len(soloTeamNumbers), maxTeamsInArena))
     if len(squadTeamNumbers & soloTeamNumbers) > 0:
         raise SoftException('Squad and solo team numbers contains identical team numbers (%s)' % str(squadTeamNumbers & soloTeamNumbers))
     allTeamNumbers = squadTeamNumbers | soloTeamNumbers
@@ -927,10 +920,7 @@ def __readControlPoints(section):
         if name == 'controlPoint':
             res.append(value.readVector2(''))
 
-    if res:
-        return res
-    else:
-        return
+    return res if res else None
 
 
 def __readBotPoints(section):
@@ -941,10 +931,7 @@ def __readBotPoints(section):
             pos = value['position'].readVector3('')
             res[index] = pos
 
-    if res:
-        return res
-    else:
-        return
+    return res if res else None
 
 
 def __readPointsOfInterest(section):
@@ -955,7 +942,8 @@ def __readPointsOfInterest(section):
             if name == 'point':
                 pointType = value.readInt('type')
                 pointPosition = value.readVector2('position')
-                res.append({'type': pointType, 'position': pointPosition})
+                res.append({'type': pointType,
+                 'position': pointPosition})
 
     return res
 
@@ -968,7 +956,7 @@ def __readTeamBasePositions(section, maxTeamsInArena):
     else:
         for idx, teamBase in enumerate(teamBases):
             teamIdx = idx + 1
-            s = section[('team%s' % teamIdx)]
+            s = section['team%s' % teamIdx]
             if s is None:
                 continue
             for name, value in s.items():
@@ -990,13 +978,12 @@ def __readTeamSpawnPoints(section, maxTeamsInArena, nodeNameTemplate='team%d', r
     else:
         for idx, teamSpawnPoint in enumerate(allTeamSpawnPoints):
             teamIdx = idx + 1
-            s = section[(nodeNameTemplate % teamIdx)]
+            s = section[nodeNameTemplate % teamIdx]
             if s is None:
                 if required:
                     raise SoftException("missing 'teamSpawnPoints/%s'" % (nodeNameTemplate % teamIdx))
-            else:
-                for value in s.values():
-                    teamSpawnPoint.append(value.readVector2(''))
+            for value in s.values():
+                teamSpawnPoint.append(value.readVector2(''))
 
         return allTeamSpawnPoints
 
@@ -1010,45 +997,45 @@ def __readGameplayPoints(section, geometryCfg):
     repairPointIDByGUID = geometryCfg.setdefault('repairPointIDByGUID', {})
     for name, value in section.items():
         if name == 'flagSpawnPoint':
-            sps.append({'position': value.readVector3('position'), 
-               'team': value.readInt('team'), 
-               'winPoints': value.readFloat('winPoints')})
-        elif name == 'flagAbsorptionPoint':
-            aps.append({'position': value.readVector3('position'), 
-               'team': value.readInt('team'), 
-               'guid': value.readString('guid')})
-        elif name == 'repairPoint':
+            sps.append({'position': value.readVector3('position'),
+             'team': value.readInt('team'),
+             'winPoints': value.readFloat('winPoints')})
+        if name == 'flagAbsorptionPoint':
+            aps.append({'position': value.readVector3('position'),
+             'team': value.readInt('team'),
+             'guid': value.readString('guid')})
+        if name == 'repairPoint':
             guid = value.readString('guid')
-            point = {'position': value.readVector3('position'), 
-               'team': value.readInt('team'), 
-               'radius': value.readFloat('radius'), 
-               'cooldown': value.readFloat('cooldown'), 
-               'repairTime': value.readFloat('repairTime'), 
-               'repairFlags': value.readInt('repairFlags'), 
-               'guid': guid}
+            point = {'position': value.readVector3('position'),
+             'team': value.readInt('team'),
+             'radius': value.readFloat('radius'),
+             'cooldown': value.readFloat('cooldown'),
+             'repairTime': value.readFloat('repairTime'),
+             'repairFlags': value.readInt('repairFlags'),
+             'guid': guid}
             baseID = repairPointIDByGUID.get(guid, len(repairPointIDByGUID))
             rps[baseID] = point
             repairPointIDByGUID[guid] = baseID
-        elif name == 'resourcePoint':
-            rsps.append({'position': value.readVector3('position'), 
-               'radius': value.readFloat('radius'), 
-               'startDelay': value.readFloat('startDelay'), 
-               'cooldown': value.readFloat('cooldown'), 
-               'damageLockTime': value.readFloat('damageLockTime'), 
-               'amount': value.readInt('amount'), 
-               'absorptionSpeed': value.readFloat('absorptionSpeed'), 
-               'reuseCount': value.readInt('reuseCount'), 
-               'team': value.readInt('team'), 
-               'guid': value.readString('guid')})
-        elif name == 'sectorWayPoint':
-            swps.append({'position': value.readVector3('position'), 
-               'team': value.readInt('team')})
+        if name == 'resourcePoint':
+            rsps.append({'position': value.readVector3('position'),
+             'radius': value.readFloat('radius'),
+             'startDelay': value.readFloat('startDelay'),
+             'cooldown': value.readFloat('cooldown'),
+             'damageLockTime': value.readFloat('damageLockTime'),
+             'amount': value.readInt('amount'),
+             'absorptionSpeed': value.readFloat('absorptionSpeed'),
+             'reuseCount': value.readInt('reuseCount'),
+             'team': value.readInt('team'),
+             'guid': value.readString('guid')})
+        if name == 'sectorWayPoint':
+            swps.append({'position': value.readVector3('position'),
+             'team': value.readInt('team')})
 
-    cfg = {'flagSpawnPoints': sps, 
-       'flagAbsorptionPoints': aps, 
-       'repairPoints': rps, 
-       'resourcePoints': rsps, 
-       'sectorWayPoints': swps}
+    cfg = {'flagSpawnPoints': sps,
+     'flagAbsorptionPoints': aps,
+     'repairPoints': rps,
+     'resourcePoints': rsps,
+     'sectorWayPoints': swps}
     return cfg
 
 

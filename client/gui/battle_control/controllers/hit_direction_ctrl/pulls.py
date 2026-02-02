@@ -1,6 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/hit_direction_ctrl/pulls.py
 import math
 from functools import partial
-import BigWorld, SoundGroups
+import BigWorld
+import SoundGroups
 from AtGunpoint import ARTY_HIT_PREDICTION_EPSILON_YAW
 from account_helpers.settings_core.settings_constants import DAMAGE_INDICATOR
 from gui import GUI_SETTINGS
@@ -130,7 +133,7 @@ class BaseHitPull(object):
             if self._compareHits(hit, hitData):
                 return (hit, idx)
 
-        return
+        return None
 
     def _tickToHideHit(self, idx):
         self.__callbackIDs.pop(idx, None)
@@ -152,8 +155,7 @@ class BaseHitPull(object):
         for hit in self.__postponedHits:
             if self.hitNeedPostponed(hit):
                 newQueue.append(hit)
-            else:
-                self.addHit(hit)
+            self.addHit(hit)
 
         self.__postponedHits = newQueue
 
@@ -177,10 +179,10 @@ class HitDamagePull(BaseHitPull):
     def isValidHit(self, hitData):
         if hitData.isNonPlayerAttackReason() or hitData.isBattleAbilityConsumable() or hitData.isBattleConsumables():
             return False
-        isCriticalNoDamage = hitData.isCritical() and hitData.getDamage() == 0
-        if self.__damageIndicatorExtType and not self.__damageIndicatorCrits and isCriticalNoDamage:
-            return False
         else:
+            isCriticalNoDamage = hitData.isCritical() and hitData.getDamage() == 0
+            if self.__damageIndicatorExtType and not self.__damageIndicatorCrits and isCriticalNoDamage:
+                return False
             if self.__damageIndicatorExtType and not self.__damageIndicatorAllies and hitData.isFriendlyFire():
                 return False
             vehStateCtrl = self.__sessionProvider.shared.vehicleState
@@ -258,7 +260,7 @@ class ArtyHitPredictionPull(BaseHitPull):
         return
 
     def __hasHitNear(self, hitData):
-        return any(abs(hitData.getYaw() - hit.getHitData().getYaw()) <= self.__angleDelta for hit in self._pull if hit.getHitData() is not None and hit.isShown())
+        return any((abs(hitData.getYaw() - hit.getHitData().getYaw()) <= self.__angleDelta for hit in self._pull if hit.getHitData() is not None and hit.isShown()))
 
     def __pollIsFull(self):
-        return all(hit.isShown() for hit in self._pull)
+        return all((hit.isShown() for hit in self._pull))

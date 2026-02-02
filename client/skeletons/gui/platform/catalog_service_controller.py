@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/skeletons/gui/platform/catalog_service_controller.py
 import adisp
 
 class IPurchaseCache(object):
@@ -13,10 +15,10 @@ class IPurchaseCache(object):
         pass
 
     def getCachedPurchase(self, pId):
-        return
+        return None
 
     def getProductCode(self, pId):
-        return
+        return None
 
     def canBeRequestedFromProduct(self, data):
         return False

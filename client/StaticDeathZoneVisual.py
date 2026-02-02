@@ -1,4 +1,7 @@
-import enum, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/StaticDeathZoneVisual.py
+import enum
+import BigWorld
 from Math import Vector3, Vector4
 from Event import Event
 from helpers import dependency
@@ -101,10 +104,7 @@ class StaticDeathZoneVisual(DynamicScriptComponent):
     @property
     def _spaceID(self):
         player = BigWorld.player()
-        if player and player.spaceID:
-            return player.spaceID
-        else:
-            return
+        return player.spaceID if player and player.spaceID else None
 
     def __onSettingsChanged(self, diff):
         if settings_constants.GRAPHICS.COLOR_BLIND in diff:
@@ -135,9 +135,7 @@ class _BordersHelper(object):
     def getClosestPoint(self, point):
         x = min(max(point[0], self._min.x), self._max.x)
         z = min(max(point[2], self._max.z), self._min.z)
-        if x != point.x or z != point.z:
-            return Vector3(x, point.y, z)
-        return self._max
+        return Vector3(x, point.y, z) if x != point.x or z != point.z else self._max
 
     @property
     def rect(self):

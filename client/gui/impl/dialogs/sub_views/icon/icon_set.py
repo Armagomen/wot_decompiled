@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/dialogs/sub_views/icon/icon_set.py
+import logging
+import typing
 from gui.impl.dialogs.sub_views.common import IconSetData
 from gui.impl.dialogs.sub_views.icon.multiple_icons_set import MultipleIconsSet
 from gui.impl.gen.view_models.views.dialogs.sub_views.multiple_icons_set_view_model import IconPositionLogicEnum
@@ -13,7 +16,6 @@ class IconSet(MultipleIconsSet):
     _itemsCache = dependency.descriptor(IItemsCache)
 
     def __init__(self, iconResID, backgroundResIDList=None, overlayResIDList=None, layoutID=None, iconPositionLogic=IconPositionLogicEnum.CENTREDANDTHROUGHCONTENT.value):
-        iconsRes = [
-         IconSetData(iconResID, None, None)]
+        iconsRes = [IconSetData(iconResID, None, None)]
         super(IconSet, self).__init__(iconsRes, backgroundResIDList, overlayResIDList, layoutID, iconPositionLogic)
         return

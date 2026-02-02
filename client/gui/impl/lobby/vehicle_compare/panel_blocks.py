@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/vehicle_compare/panel_blocks.py
 from frameworks.wulf import Array
 from gui.Scaleform.daapi.view.lobby.vehicle_compare import cmp_helpers
 from gui.impl.gen import R
@@ -76,7 +78,7 @@ class CompareShellsBlock(BaseBlock):
 class CompareConsumablesBlock(ConsumablesBlock):
 
     def _getKeySettings(self):
-        return ()
+        pass
 
     def _updateSlotWithItem(self, model, idx, slotItem):
         super(CompareConsumablesBlock, self)._updateSlotWithItem(model, idx, slotItem)
@@ -111,13 +113,13 @@ class CompareCamouflageBlock(BaseBlock):
         return CompareToggleAmmunitionSlot()
 
     def _getLayout(self):
-        return
+        return None
 
     def _getInstalled(self):
-        return
+        return None
 
     def _getSetupLayout(self):
-        return
+        return None
 
     def _createSlots(self):
         array = Array()

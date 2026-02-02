@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hangar_widget/presenters/battle_pass_presenter.py
 from typing import Optional, Set
 import BigWorld
 from account_helpers.AccountSettings import AccountSettings, IS_BATTLE_PASS_START_ANIMATION_SEEN
@@ -43,9 +45,7 @@ class _LastEntryState(object):
         newTokensLen = len(newTokens)
         if availableTokensLen == 0:
             return 0
-        if newTokensLen == 0:
-            return self.rewardsHash
-        return self.rewardsHash + 1
+        return self.rewardsHash if newTokensLen == 0 else self.rewardsHash + 1
 
 
 _SPACE_CREATED_UPDATE_DELAY = 0.7
@@ -67,9 +67,7 @@ class BattlePassPresenter(TooltipPositionerMixin, OverlapCtrlMixin, ViewComponen
     def createToolTipContent(self, event, contentID):
         if not self.isHoliday and contentID == R.views.lobby.battle_pass.tooltips.BattlePassNoChapterTooltipView():
             return BattlePassNoChapterTooltipView()
-        if contentID == R.views.lobby.battle_pass.tooltips.BattlePassCompletedTooltipView():
-            return BattlePassCompletedTooltipView()
-        return BattlePassInProgressTooltipView()
+        return BattlePassCompletedTooltipView() if contentID == R.views.lobby.battle_pass.tooltips.BattlePassCompletedTooltipView() else BattlePassInProgressTooltipView()
 
     @property
     def hasDeferModelUpdate(self):
@@ -86,13 +84,7 @@ class BattlePassPresenter(TooltipPositionerMixin, OverlapCtrlMixin, ViewComponen
         return AccountSettings.getSettings(IS_BATTLE_PASS_START_ANIMATION_SEEN)
 
     def _getEvents(self):
-        return super(BattlePassPresenter, self)._getEvents() + (
-         (
-          self.viewModel.onOpenBattlePass, self._onClick),
-         (
-          self.viewModel.onIntroAnimationPlayed, self._onIntroAnimationPlayed),
-         (
-          self.__hangarSpace.onSpaceCreate, self._onSpaceCreate))
+        return super(BattlePassPresenter, self)._getEvents() + ((self.viewModel.onOpenBattlePass, self._onClick), (self.viewModel.onIntroAnimationPlayed, self._onIntroAnimationPlayed), (self.__hangarSpace.onSpaceCreate, self._onSpaceCreate))
 
     def _onLoading(self, *args, **kwargs):
         self.initOverlapCtrl()
@@ -131,7 +123,7 @@ class BattlePassPresenter(TooltipPositionerMixin, OverlapCtrlMixin, ViewComponen
 
     def _updateOptional(self):
         if not self.__battlePass.isDisabled():
-            hasRareLevel = any(self.__battlePass.isRareLevel(self.chapterID, lvl) for lvl in range(_g_entryLastState.level + 1, self.level + 1))
+            hasRareLevel = any((self.__battlePass.isRareLevel(self.chapterID, lvl) for lvl in range(_g_entryLastState.level + 1, self.level + 1)))
             if not hasRareLevel:
                 self._updateData()
 
@@ -142,7 +134,7 @@ class BattlePassPresenter(TooltipPositionerMixin, OverlapCtrlMixin, ViewComponen
 
     def _rawUpdate(self):
         super(BattlePassPresenter, self)._rawUpdate()
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             self._fillViewModel(tx)
 
     def _updateViewModel(self):
@@ -153,7 +145,7 @@ class BattlePassPresenter(TooltipPositionerMixin, OverlapCtrlMixin, ViewComponen
         _g_entryLastState.update(level=self.level, pointsEarned=points, chapterID=self.chapterID)
         chapterID = self.chapterID
         level = getPresentLevel(self.level)
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             self._fillModel(tx, chapterID, points, limit, level, 0)
             tx.lastSeenState.setPointsEarned(points)
             tx.lastSeenState.setLevel(level)
@@ -213,17 +205,13 @@ class BattlePassPresenter(TooltipPositionerMixin, OverlapCtrlMixin, ViewComponen
     def _getAppearAnimationState(self):
         if self._isIntroAnimationPlayed():
             return AppearAnimationState.PLAYED
-        if not self.hasDeferModelUpdate and self._readyForAnimations:
-            return AppearAnimationState.READY
-        return AppearAnimationState.WAITING
+        return AppearAnimationState.READY if not self.hasDeferModelUpdate and self._readyForAnimations else AppearAnimationState.WAITING
 
     def _getWidgetState(self, isBattlePassExtraChapterSeen, isBattlePassHolidayChapterSeen):
         if self.isCompleted and not self.isPostProgressionActive:
             return WidgetState.COMPLETED
         isIntro = self.isHoliday and not isBattlePassHolidayChapterSeen or self._needToShowExtraIntro(isBattlePassExtraChapterSeen) or not self.isChapterChosen
-        if isIntro:
-            return WidgetState.INTRO
-        return WidgetState.PROGRESSION
+        return WidgetState.INTRO if isIntro else WidgetState.PROGRESSION
 
     def _hasExtraChapter(self, chapterID):
         return self.hasExtra and self.__battlePass.getChapterState(chapterID) != ChapterState.COMPLETED

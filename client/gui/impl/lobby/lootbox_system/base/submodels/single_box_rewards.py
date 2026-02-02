@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/lootbox_system/base/submodels/single_box_rewards.py
 import logging
 from typing import TYPE_CHECKING
 import Windowing
@@ -5,13 +7,12 @@ from gui.Scaleform.framework.entities.View import ViewKey
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.lobby_entry import getLobbyStateMachine
 from gui.impl.gen.view_models.views.lobby.lootbox_system.submodels.single_box_rewards_view_model import SingleBoxRewardsViewModel
-from gui.impl.lobby.common.view_wrappers import createBackportTooltipDecorator
 from gui.impl.lobby.lootbox_system.base.common import SubViewImpl
 from gui.impl.lobby.lootbox_system.base.submodels.common import updateAnimationState
 from gui.impl.wrappers.function_helpers import replaceNoneKwargsModel
 from gui.lootbox_system.base.bonuses_packers import packBonusModelAndTooltipData
 from gui.lootbox_system.base.common import ViewID, Views
-from gui.lootbox_system.base.decorators import createTooltipContentDecorator
+from gui.lootbox_system.base.decorators import createBackportTooltipDecorator, createTooltipContentDecorator
 from gui.lootbox_system.base.sound import playVideoPauseSound, playVideoResumeSound
 from gui.lootbox_system.base.utils import isShopVisible, openBoxes
 from gui.lootbox_system.base.views_loaders import showItemPreview
@@ -23,7 +24,7 @@ from skeletons.gui.game_control import ILootBoxSystemController
 if TYPE_CHECKING:
     from typing import Dict, List
 _logger = logging.getLogger(__name__)
-_EXTRA_BONUSES_NAMES = ('slots', )
+_EXTRA_BONUSES_NAMES = ('slots',)
 
 class SingleBoxRewards(SubViewImpl):
     __lootBoxes = dependency.descriptor(ILootBoxSystemController)
@@ -49,7 +50,7 @@ class SingleBoxRewards(SubViewImpl):
 
     @createTooltipContentDecorator()
     def createToolTipContent(self, event, contentID):
-        return super(SingleBoxRewards, self).createToolTip(event)
+        return super(SingleBoxRewards, self).createToolTipContent(event, contentID)
 
     def getTooltipData(self, event):
         return self.__tooltipItems.get(event.getArgument('tooltipId', 0))
@@ -61,7 +62,7 @@ class SingleBoxRewards(SubViewImpl):
         self.__openCount = kwargs.get('count', 0)
         self.__updateBonusesData(first(kwargs.get('bonuses', []), []))
         self.__eventName = kwargs.get('eventName', '')
-        with self.viewModel.transaction() as (vmTx):
+        with self.viewModel.transaction() as vmTx:
             self.__setWindowAccessible(model=vmTx)
             self.__updateData(model=vmTx)
             self.__updateCounters(model=vmTx)
@@ -74,34 +75,22 @@ class SingleBoxRewards(SubViewImpl):
         super(SingleBoxRewards, self).finalize()
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onOpen, self.__openNext),
-         (
-          self.viewModel.onGoBack, self.__goBack),
-         (
-          self.viewModel.onPreview, self.__showPreview),
-         (
-          self.viewModel.onBuyBoxes, self.__openShop),
-         (
-          self.viewModel.onAnimationStateChanged, self.__updateAnimationState),
-         (
-          self.viewModel.onVideoPlaying, self.__setVideoPlaying),
-         (
-          self.viewModel.onClose, self.__goBack),
-         (
-          self.__lootBoxes.onBoxesCountChanged, self.__updateCounters),
-         (
-          self.__lootBoxes.onBoxesUpdated, self.__updateCounters))
+        return ((self.viewModel.onOpen, self.__openNext),
+         (self.viewModel.onGoBack, self.__goBack),
+         (self.viewModel.onPreview, self.__showPreview),
+         (self.viewModel.onBuyBoxes, self.__openShop),
+         (self.viewModel.onAnimationStateChanged, self.__updateAnimationState),
+         (self.viewModel.onVideoPlaying, self.__setVideoPlaying),
+         (self.viewModel.onClose, self.__goBack),
+         (self.__lootBoxes.onBoxesCountChanged, self.__updateCounters),
+         (self.__lootBoxes.onBoxesUpdated, self.__updateCounters))
 
     def __setVideoPlaying(self, ctx=None):
         isPlaying = ctx.get('isPlaying')
         self.__isVideoPlaying = isPlaying
 
     def _getListeners(self):
-        return (
-         (
-          events.LootBoxSystemEvent.OPENING_ERROR, self.__onErrorBack, EVENT_BUS_SCOPE.LOBBY),)
+        return ((events.LootBoxSystemEvent.OPENING_ERROR, self.__onErrorBack, EVENT_BUS_SCOPE.LOBBY),)
 
     @replaceNoneKwargsModel
     def __setWindowAccessible(self, model=None):
@@ -182,8 +171,7 @@ class SingleBoxRewards(SubViewImpl):
         for bonus in bonuses:
             if bonus.getName() in _EXTRA_BONUSES_NAMES:
                 self.__extraBonuses.append(bonus)
-            else:
-                self.__bonuses.append(bonus)
+            self.__bonuses.append(bonus)
 
     def __updateStateContext(self, bonuses):
         lsm = getLobbyStateMachine()

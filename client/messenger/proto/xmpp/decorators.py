@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/xmpp/decorators.py
 from debug_utils import LOG_WARNING
 from messenger.ext import validateAccountName
 from messenger.m_constants import CLIENT_ERROR_ID
@@ -15,10 +17,7 @@ class QUERY_SIGN(object):
 
 
 def _validateDatabaseID(dbID):
-    if not dbID:
-        return ClientError(CLIENT_ERROR_ID.DBID_INVALID)
-    else:
-        return
+    return ClientError(CLIENT_ERROR_ID.DBID_INVALID) if not dbID else None
 
 
 def _validateAccountName(name):
@@ -35,10 +34,7 @@ def _validateGroupName(name):
 
 
 def _validateOptionalGroupName(name):
-    if name is not None:
-        return _validateGroupName(name)
-    else:
-        return
+    return _validateGroupName(name) if name is not None else None
 
 
 def _validateNoteText(note):
@@ -46,20 +42,19 @@ def _validateNoteText(note):
 
 
 def _validateShadowMode(_):
-    return
+    return None
 
 
-_QUERY_SIGN_VALIDATORS = {QUERY_SIGN.DATABASE_ID: _validateDatabaseID, 
-   QUERY_SIGN.ACCOUNT_NAME: _validateAccountName, 
-   QUERY_SIGN.GROUP_NAME: _validateGroupName, 
-   QUERY_SIGN.OPT_GROUP_NAME: _validateOptionalGroupName, 
-   QUERY_SIGN.NOTE_TEXT: _validateNoteText, 
-   QUERY_SIGN.SHADOW_MODE: _validateShadowMode}
-_QUERY_OPT_SIGNS = (
- QUERY_SIGN.OPT_GROUP_NAME, QUERY_SIGN.SHADOW_MODE)
+_QUERY_SIGN_VALIDATORS = {QUERY_SIGN.DATABASE_ID: _validateDatabaseID,
+ QUERY_SIGN.ACCOUNT_NAME: _validateAccountName,
+ QUERY_SIGN.GROUP_NAME: _validateGroupName,
+ QUERY_SIGN.OPT_GROUP_NAME: _validateOptionalGroupName,
+ QUERY_SIGN.NOTE_TEXT: _validateNoteText,
+ QUERY_SIGN.SHADOW_MODE: _validateShadowMode}
+_QUERY_OPT_SIGNS = (QUERY_SIGN.OPT_GROUP_NAME, QUERY_SIGN.SHADOW_MODE)
 
 class local_query(ClientHolder):
-    __slots__ = ('_sign', )
+    __slots__ = ('_sign',)
 
     def __init__(self, *args):
         super(local_query, self).__init__()
@@ -71,15 +66,14 @@ class local_query(ClientHolder):
             error = self._validate(*args)
             if error:
                 LOG_WARNING('Request is invalid', func.__name__, error)
-                return (
-                 False, error)
+                return (False, error)
             return func(*args, **kwargs)
 
         return wrapper
 
     def _validate(self, *args):
         if not self._sign:
-            return
+            return None
         else:
             data = args[1:]
             if len(self._sign) > len(data):
@@ -99,7 +93,7 @@ class local_query(ClientHolder):
                         if error:
                             return error
 
-            return
+            return None
 
 
 class xmpp_query(local_query):
@@ -107,6 +101,4 @@ class xmpp_query(local_query):
 
     def _validate(self, *args):
         client = self.client()
-        if not client or not client.isConnected():
-            return ClientError(CLIENT_ERROR_ID.NOT_CONNECTED)
-        return super(xmpp_query, self)._validate(*args)
+        return ClientError(CLIENT_ERROR_ID.NOT_CONNECTED) if not client or not client.isConnected() else super(xmpp_query, self)._validate(*args)

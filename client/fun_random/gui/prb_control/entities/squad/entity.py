@@ -1,5 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/prb_control/entities/squad/entity.py
 from __future__ import absolute_import
-import logging, typing, account_helpers
+import logging
+import typing
+import account_helpers
 from UnitBase import UNIT_ERROR
 from constants import PREBATTLE_TYPE, QUEUE_TYPE
 from fun_random_common.fun_constants import FUN_EVENT_ID_KEY, UNKNOWN_EVENT_ID, CLIENT_UNIT_CMD
@@ -105,9 +109,7 @@ class FunRandomSquadEntity(SquadEntity, RestrictedRoleTagMixin):
 
     def getConfirmDialogMeta(self, ctx):
         desiredSubMode = self.__funRandomController.subModesHolder.getDesiredSubMode()
-        if desiredSubMode is None or not desiredSubMode.isAvailable():
-            return
-        return super(FunRandomSquadEntity, self).getConfirmDialogMeta(ctx)
+        return None if desiredSubMode is None or not desiredSubMode.isAvailable() else super(FunRandomSquadEntity, self).getConfirmDialogMeta(ctx)
 
     def getQueueType(self):
         return QUEUE_TYPE.FUN_RANDOM
@@ -118,9 +120,7 @@ class FunRandomSquadEntity(SquadEntity, RestrictedRoleTagMixin):
     @property
     def squadRestrictions(self):
         desiredSubMode = self.__funRandomController.subModesHolder.getDesiredSubMode()
-        if desiredSubMode:
-            return desiredSubMode.getSettings().filtration.squadRestrictions
-        return {}
+        return desiredSubMode.getSettings().filtration.squadRestrictions if desiredSubMode else {}
 
     def setReserve(self, ctx, callback=None):
         pass
@@ -135,11 +135,11 @@ class FunRandomSquadEntity(SquadEntity, RestrictedRoleTagMixin):
     def doSelectAction(self, action):
         if action.actionName == PREBATTLE_ACTION_NAME.FUN_RANDOM:
             return self.__doSubModeSelectAction(action)
+        elif action.actionName in (PREBATTLE_ACTION_NAME.FUN_RANDOM_SQUAD, PREBATTLE_ACTION_NAME.SQUAD):
+            g_eventDispatcher.showUnitWindow(self._prbType)
+            self._actionsHandler.processInvites(action.accountsToInvite)
+            return SelectResult(True, None)
         else:
-            if action.actionName in (PREBATTLE_ACTION_NAME.FUN_RANDOM_SQUAD, PREBATTLE_ACTION_NAME.SQUAD):
-                g_eventDispatcher.showUnitWindow(self._prbType)
-                self._actionsHandler.processInvites(action.accountsToInvite)
-                return SelectResult(True, None)
             return super(FunRandomSquadEntity, self).doSelectAction(action)
 
     def leave(self, ctx, callback=None):
@@ -199,26 +199,22 @@ class FunRandomSquadEntity(SquadEntity, RestrictedRoleTagMixin):
             result = v.level in self._rosterSettings.getLevelsRange()
             if not result:
                 return False
-        if self.isRoleRestrictionValid():
-            return self.isTagVehicleAvailable(v.tags)
-        return super(FunRandomSquadEntity, self)._vehicleStateCondition(v)
+        return self.isTagVehicleAvailable(v.tags) if self.isRoleRestrictionValid() else super(FunRandomSquadEntity, self)._vehicleStateCondition(v)
 
     def __getUnitSubModeID(self):
         extraData = self.getExtra()
-        if extraData:
-            return extraData.funEventID
-        return UNKNOWN_EVENT_ID
+        return extraData.funEventID if extraData else UNKNOWN_EVENT_ID
 
     def __doSubModeSelectAction(self, action):
         desiredSubModeID = action.extData.get(FUN_EVENT_ID_KEY, UNKNOWN_EVENT_ID)
         if desiredSubModeID == self.__getUnitSubModeID():
             g_eventDispatcher.showUnitWindow(self._prbType)
             return SelectResult(True, None)
+        elif self.isCommander():
+            g_eventDispatcher.showUnitWindow(self._prbType)
+            self.request(FunSquadChangeSubModeCtx(desiredSubModeID))
+            return SelectResult(True, None)
         else:
-            if self.isCommander():
-                g_eventDispatcher.showUnitWindow(self._prbType)
-                self.request(FunSquadChangeSubModeCtx(desiredSubModeID))
-                return SelectResult(True, None)
             return super(FunRandomSquadEntity, self).doSelectAction(action)
 
     def __notifySubModeSwitching(self, subModeID):

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/server_events/awards_formatters.py
 from gui.Scaleform.daapi.view.lobby.missions.awards_formatters import NewStyleBonusComposer
 from gui.impl import backport
 from gui.impl.gen import R
@@ -28,14 +30,14 @@ class OldStyleBonusFormatter(object):
 
     @classmethod
     def getOrder(cls):
-        return 0
+        pass
 
 
 class DossierFormatter(OldStyleBonusFormatter):
 
     @classmethod
     def getOrder(cls):
-        return 1
+        pass
 
     def accumulateBonuses(self, bonus):
         for achieve in bonus.getAchievements():
@@ -49,7 +51,7 @@ class CustomizationsFormatter(OldStyleBonusFormatter):
 
     @classmethod
     def getOrder(cls):
-        return 2
+        pass
 
     def accumulateBonuses(self, bonus):
         customizationsList = bonus.getList()
@@ -65,7 +67,7 @@ class VehiclesFormatter(OldStyleBonusFormatter):
 
     @classmethod
     def getOrder(cls):
-        return 3
+        pass
 
     def accumulateBonuses(self, bonus, event=None):
         formattedList = bonus.formattedList()
@@ -78,7 +80,7 @@ class CrewBookFormatter(OldStyleBonusFormatter):
 
     @classmethod
     def getOrder(cls):
-        return 4
+        pass
 
     def accumulateBonuses(self, bonus):
         result = []
@@ -100,7 +102,7 @@ class CrewSkinFormatter(OldStyleBonusFormatter):
 
     @classmethod
     def getOrder(cls):
-        return 5
+        pass
 
     def accumulateBonuses(self, bonus):
         result = []
@@ -119,8 +121,7 @@ class CrewSkinFormatter(OldStyleBonusFormatter):
 
 
 class BlueprintsFormatter(OldStyleBonusFormatter):
-    _ORDER = [
-     BlueprintsBonusSubtypes.FINAL_FRAGMENT,
+    _ORDER = [BlueprintsBonusSubtypes.FINAL_FRAGMENT,
      BlueprintsBonusSubtypes.UNIVERSAL_FRAGMENT,
      BlueprintsBonusSubtypes.NATION_FRAGMENT,
      BlueprintsBonusSubtypes.VEHICLE_FRAGMENT,
@@ -133,7 +134,7 @@ class BlueprintsFormatter(OldStyleBonusFormatter):
 
     @classmethod
     def getOrder(cls):
-        return 5
+        pass
 
     def accumulateBonuses(self, bonus):
         blueprintType = bonus.getBlueprintName()
@@ -222,13 +223,13 @@ class NewStyleBonusFormatter(OldStyleBonusFormatter):
 
 
 def getFormattersMap(event):
-    return {'dossier': DossierFormatter(), 
-       'customizations': CustomizationsFormatter(), 
-       'vehicles': VehiclesFormatter(event), 
-       'crewBooks': CrewBookFormatter(), 
-       'blueprints': BlueprintsFormatter(), 
-       'crewSkins': CrewSkinFormatter(), 
-       'battlePassPoints': BattlePassPointsFormatter()}
+    return {'dossier': DossierFormatter(),
+     'customizations': CustomizationsFormatter(),
+     'vehicles': VehiclesFormatter(event),
+     'crewBooks': CrewBookFormatter(),
+     'blueprints': BlueprintsFormatter(),
+     'crewSkins': CrewSkinFormatter(),
+     'battlePassPoints': BattlePassPointsFormatter()}
 
 
 class OldStyleAwardsPacker(AwardsPacker):
@@ -249,8 +250,7 @@ class OldStyleAwardsPacker(AwardsPacker):
                 if b.getName() == 'customizations':
                     isCustomizationBonusExist = True
 
-        fmts = [
-         self.__defaultFormatter, self.__newStyleFormatter]
+        fmts = [self.__defaultFormatter, self.__newStyleFormatter]
         fmts.extend(sorted(self.getFormatters().itervalues(), key=lambda f: f.getOrder()))
         for formatter in fmts:
             formattedBonuses.extend(formatter.extractFormattedBonuses(isCustomizationBonusExist))
@@ -258,15 +258,13 @@ class OldStyleAwardsPacker(AwardsPacker):
         return formattedBonuses
 
     def _getBonusFormatter(self, bonusName):
-        if bonusName in NEW_STYLE_FORMATTED_BONUSES:
-            return self.__newStyleFormatter
-        return self.getFormatters().get(bonusName, self.__defaultFormatter)
+        return self.__newStyleFormatter if bonusName in NEW_STYLE_FORMATTED_BONUSES else self.getFormatters().get(bonusName, self.__defaultFormatter)
 
 
 def getTextFormattersMap():
-    return {'default': TextBonusFormatter(), 
-       'customizations': CustomizationsFormatter(), 
-       'styleProgressToken': BattlePassStyleProgressFormatter()}
+    return {'default': TextBonusFormatter(),
+     'customizations': CustomizationsFormatter(),
+     'styleProgressToken': BattlePassStyleProgressFormatter()}
 
 
 class BattlePassTextBonusesPacker(AwardsPacker):
@@ -289,10 +287,7 @@ class BattlePassTextBonusesPacker(AwardsPacker):
 
     def _getBonusFormatter(self, bonusName):
         formattersMap = self.getFormatters()
-        if bonusName in formattersMap:
-            return formattersMap[bonusName]
-        else:
-            return formattersMap.get('default', None)
+        return formattersMap[bonusName] if bonusName in formattersMap else formattersMap.get('default', None)
 
 
 class OldStyleBonusesFormatter(QuestsBonusComposer):
@@ -311,5 +306,4 @@ def _joinUpToMax(array, separator=', '):
     else:
         label = separator.join(array)
         fullLabel = None
-    return (
-     label, fullLabel)
+    return (label, fullLabel)

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/dog_tags_common/config/common.py
 from enum import Enum
 from soft_exception import SoftException
 DOG_TAGS_FILE = 'scripts/item_defs/dog_tags/dog_tags.xml'
@@ -12,8 +14,7 @@ class ComponentViewType(Enum):
     def getTabIdx(self):
         if self == self.ENGRAVING:
             return 0
-        if self == self.BACKGROUND:
-            return 1
+        return 1 if self == self.BACKGROUND else None
 
 
 TRIUMPH_GRADES = 4
@@ -32,8 +33,7 @@ class ComponentPurpose(Enum):
     COUPLED = 'COUPLED'
 
 
-SEND_NEW_GRADING_NOTIFICATION = (
- ComponentPurpose.TRIUMPH, ComponentPurpose.DEDICATION)
+SEND_NEW_GRADING_NOTIFICATION = (ComponentPurpose.TRIUMPH, ComponentPurpose.DEDICATION)
 
 class ComponentNumberType(Enum):
     NUMBER = 'NUMBER'
@@ -57,13 +57,13 @@ class ParseException(DogTagsException):
     WRONG_PARAM_VALUE = 5
     STARTING_COMPONENT_DUPLICITY = 6
     STARTING_COMPONENT_INVALID_ID = 7
-    ERR_STR = {CAN_NOT_OPEN_XML: PREFIX + "Can not open '%s'. Error: '%s'", 
-       XML_VALIDATION_FAILED: PREFIX + "Validation failed with error: '%s'", 
-       TAG_DUPLICITY: PREFIX + 'Programming error: more than one class has tag  %s', 
-       PARAM_DUPLICITY: PREFIX + 'Programming error: more than one param has name %s', 
-       WRONG_PARAM_VALUE: PREFIX + PATH + "Wrong parameter value for '%s'", 
-       STARTING_COMPONENT_DUPLICITY: PREFIX + 'Starting components have same ID.', 
-       STARTING_COMPONENT_INVALID_ID: PREFIX + 'Component with id=%s does not exist.'}
+    ERR_STR = {CAN_NOT_OPEN_XML: PREFIX + "Can not open '%s'. Error: '%s'",
+     XML_VALIDATION_FAILED: PREFIX + "Validation failed with error: '%s'",
+     TAG_DUPLICITY: PREFIX + 'Programming error: more than one class has tag  %s',
+     PARAM_DUPLICITY: PREFIX + 'Programming error: more than one param has name %s',
+     WRONG_PARAM_VALUE: PREFIX + PATH + "Wrong parameter value for '%s'",
+     STARTING_COMPONENT_DUPLICITY: PREFIX + 'Starting components have same ID.',
+     STARTING_COMPONENT_INVALID_ID: PREFIX + 'Component with id=%s does not exist.'}
 
     def __str__(self):
         return ParseException.ERR_STR[self.err] % ((self.err,) + self.args)
@@ -84,19 +84,19 @@ class ValidateException(DogTagsException):
     CANNOT_BE_DEFAULT = 13
     UNLOCK_KEY_AND_EXTERNAL_UNLOCK = 14
     WRONG_COUPLED_COMPONENT_ID = 15
-    ERR_STR = {HAS_GRADES: PREFIX + 'Component with id = %s cannot have grades. Grades: %s', 
-       HAS_UNLOCK_KEY: PREFIX + 'Component with id = %s cannot have unlockKey. UnlockKey: %s', 
-       WRONG_NUMBER_OF_GRADES: PREFIX + 'Component with id = %s has wrong number of grades. It should have %s grades.', 
-       DEFAULT_WRONG_GRADES: PREFIX + 'Component with id = %s is default but grades are not correct. Grades: %s', 
-       WRONG_TYPE_VIEW_COMBINATION: PREFIX + 'Component with id = %s is type %s it cannot be viewType %s.', 
-       STARTING_COMPONENT_INVALID_TYPE: PREFIX + 'Starting components cannot be %s view type.', 
-       STARTING_COMPONENT_WRONG_DATA: PREFIX + 'Starting components should contain only types: %s but contains: %s', 
-       STARTING_COMPONENT_NON_DEFAULT: PREFIX + 'Starting component with id=%s is not default.', 
-       SHOULD_BE_DEFAULT_OR_HAS_UNLOCK_KEY: PREFIX + 'Component with id = %s should be default or has unlock key or has external unlock flag', 
-       DEFAULT_HIDDEN: PREFIX + 'Component with id=%s is default AND hidden. This is forbidden.', 
-       CANNOT_BE_DEFAULT: PREFIX + 'Component with id=%s is default but this is forbidden.', 
-       UNLOCK_KEY_AND_EXTERNAL_UNLOCK: PREFIX + 'Component with id=%s has unlock key and external unlock flag.', 
-       WRONG_COUPLED_COMPONENT_ID: PREFIX + 'Component with id=%s has coupledComponentId=%s.'}
+    ERR_STR = {HAS_GRADES: PREFIX + 'Component with id = %s cannot have grades. Grades: %s',
+     HAS_UNLOCK_KEY: PREFIX + 'Component with id = %s cannot have unlockKey. UnlockKey: %s',
+     WRONG_NUMBER_OF_GRADES: PREFIX + 'Component with id = %s has wrong number of grades. It should have %s grades.',
+     DEFAULT_WRONG_GRADES: PREFIX + 'Component with id = %s is default but grades are not correct. Grades: %s',
+     WRONG_TYPE_VIEW_COMBINATION: PREFIX + 'Component with id = %s is type %s it cannot be viewType %s.',
+     STARTING_COMPONENT_INVALID_TYPE: PREFIX + 'Starting components cannot be %s view type.',
+     STARTING_COMPONENT_WRONG_DATA: PREFIX + 'Starting components should contain only types: %s but contains: %s',
+     STARTING_COMPONENT_NON_DEFAULT: PREFIX + 'Starting component with id=%s is not default.',
+     SHOULD_BE_DEFAULT_OR_HAS_UNLOCK_KEY: PREFIX + 'Component with id = %s should be default or has unlock key or has external unlock flag',
+     DEFAULT_HIDDEN: PREFIX + 'Component with id=%s is default AND hidden. This is forbidden.',
+     CANNOT_BE_DEFAULT: PREFIX + 'Component with id=%s is default but this is forbidden.',
+     UNLOCK_KEY_AND_EXTERNAL_UNLOCK: PREFIX + 'Component with id=%s has unlock key and external unlock flag.',
+     WRONG_COUPLED_COMPONENT_ID: PREFIX + 'Component with id=%s has coupledComponentId=%s.'}
 
     def __str__(self):
         return ValidateException.ERR_STR[self.err] % ((self.err,) + self.args)

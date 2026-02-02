@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hub/tabs/basic/daily_section/presenters/base_block_presenter.py
 from gui.impl.backport import BackportTooltipWindow, TooltipData
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.user_missions.hub.tabs.tab_id import TabId
@@ -42,14 +44,14 @@ class BaseBlockPresenter(UpdateChildrenMixin, ViewComponent[TViewModel]):
             text = event.getArgument('text', '')
             stringifyKwargs = event.getArgument('stringifyKwargs', '')
             return ExtendedTextTooltip(text, stringifyKwargs)
+        elif contentID == R.views.lobby.tooltips.AdditionalRewardsTooltip():
+            showFromIndex = event.getArgument('showFromIndex')
+            questId = event.getArgument('questId')
+            getBonuses = self._rewardsGetterByQuestID.get(questId, None)
+            if getBonuses is None:
+                return
+            return AdditionalRewardsTooltip(getBonuses()[int(showFromIndex):])
         else:
-            if contentID == R.views.lobby.tooltips.AdditionalRewardsTooltip():
-                showFromIndex = event.getArgument('showFromIndex')
-                questId = event.getArgument('questId')
-                getBonuses = self._rewardsGetterByQuestID.get(questId, None)
-                if getBonuses is None:
-                    return
-                return AdditionalRewardsTooltip(getBonuses()[int(showFromIndex):])
             return super(BaseBlockPresenter, self).createToolTipContent(event=event, contentID=contentID)
 
     @property
@@ -61,19 +63,13 @@ class BaseBlockPresenter(UpdateChildrenMixin, ViewComponent[TViewModel]):
         self._markQuestsAsVisited()
 
     def _getCallbacks(self):
-        return (
-         (
-          'tokens', self._onSyncCompleted),)
+        return (('tokens', self._onSyncCompleted),)
 
     def _getEvents(self):
-        return (
-         (
-          self.eventsCache.onSyncCompleted, self._onSyncCompleted),)
+        return ((self.eventsCache.onSyncCompleted, self._onSyncCompleted),)
 
     def _getListeners(self):
-        return (
-         (
-          UserMissionsEvent.CHANGE_TAB, self.__onTabChange, EVENT_BUS_SCOPE.LOBBY),)
+        return ((UserMissionsEvent.CHANGE_TAB, self.__onTabChange, EVENT_BUS_SCOPE.LOBBY),)
 
     def _getTooltipData(self, event):
         missionParam = event.getArgument('tooltipId', '')

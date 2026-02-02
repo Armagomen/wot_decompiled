@@ -1,4 +1,7 @@
-import json, logging
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/gui_items/processors/offers.py
+import json
+import logging
 from functools import partial
 import BigWorld
 from AccountCommands import RES_SUCCESS, RES_FAILURE
@@ -17,14 +20,13 @@ class ReceiveOfferGiftProcessor(Processor):
     def __init__(self, offerID, giftID, cdnTitle='', skipConfirm=False):
         self.__offerID = offerID
         self.__giftID = giftID
-        plugins = [
-         ReceiveGiftConfirmator(offerID, giftID, cdnTitle, isEnabled=not skipConfirm)]
+        plugins = [ReceiveGiftConfirmator(offerID, giftID, cdnTitle, isEnabled=not skipConfirm)]
         super(ReceiveOfferGiftProcessor, self).__init__(plugins)
 
     def _errorHandler(self, code, errStr='', ctx=None):
         Waiting.hide('loadContent')
         defaultKey = 'offers/server_error'
-        return makeI18nError(('/').join((defaultKey, errStr)), defaultKey)
+        return makeI18nError('/'.join((defaultKey, errStr)), defaultKey)
 
     def _successHandler(self, code, ctx=None):
         Waiting.hide('loadContent')
@@ -64,7 +66,7 @@ class ReceiveMultipleOfferGiftsProcessor(Processor):
 
     def _errorHandler(self, code, errStr='', ctx=None):
         Waiting.hide('loadContent')
-        return makeI18nError(('/').join((self.ERROR_DEFAULT_KEY, errStr)), self.ERROR_DEFAULT_KEY)
+        return makeI18nError('/'.join((self.ERROR_DEFAULT_KEY, errStr)), self.ERROR_DEFAULT_KEY)
 
     def _successHandler(self, code, ctx=None):
         Waiting.hide('loadContent')

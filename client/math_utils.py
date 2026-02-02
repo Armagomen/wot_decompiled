@@ -1,4 +1,8 @@
-import random, math, Math
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/math_utils.py
+import random
+import math
+import Math
 from Math import Vector2, Vector3
 
 def createIdentityMatrix():
@@ -25,27 +29,7 @@ def setTranslation(matrix, translation):
     matrix.translation = translation
 
 
-clamp = --- This code section failed: ---
-
- L.  45         0  LOAD_FAST             2  'val'
-                3  LOAD_FAST             0  'minVal'
-                6  COMPARE_OP            0  <
-                9  POP_JUMP_IF_FALSE    16  'to 16'
-               12  LOAD_FAST             0  'minVal'
-               15  RETURN_END_IF_LAMBDA
-             16_0  COME_FROM             9  '9'
-               16  LOAD_FAST             2  'val'
-               19  LOAD_FAST             1  'maxVal'
-               22  COMPARE_OP            4  >
-               25  POP_JUMP_IF_FALSE    32  'to 32'
-               28  LOAD_FAST             1  'maxVal'
-               31  RETURN_END_IF_LAMBDA
-             32_0  COME_FROM            25  '25'
-               32  LOAD_FAST             2  'val'
-               35  RETURN_VALUE_LAMBDA
-               -1  LAMBDA_MARKER    
-
-Parse error at or near `None' instruction at offset -1
+clamp = lambda minVal, maxVal, val: (minVal if val < minVal else maxVal if val > maxVal else val)
 clamp01 = lambda val: clamp(0.0, 1.0, val)
 
 def clampVector3(minVal, maxVal, val):
@@ -57,9 +41,7 @@ def clampVectorLength(minLength, maxLength, vector):
         return Math.clampVector2Length(minLength, maxLength, vector)
     if isinstance(minLength, Math.Vector3):
         return Math.clampVector3Length(minLength, maxLength, vector)
-    if isinstance(minLength, Math.Vector4):
-        return Math.clampVector4Length(minLength, maxLength, vector)
-    return vector * 1.0
+    return Math.clampVector4Length(minLength, maxLength, vector) if isinstance(minLength, Math.Vector4) else vector * 1.0
 
 
 def matrixScale(vector, scaleCoeff):
@@ -319,7 +301,7 @@ class FIRFilter(object):
         self.values[self.__id] = value
         self.value = Vector3(0)
         for cID, coeff in enumerate(self.coeffs):
-            self.value += self.values[(self.__id - cID)] * coeff
+            self.value += self.values[self.__id - cID] * coeff
 
         self.__id += 1
         if self.__id >= len(self.values):
@@ -404,8 +386,7 @@ class VectorConstant(object):
 
 
 def extendBoundingBox(a, b):
-    c = (
-     Math.Vector3(), Math.Vector3(), max(a[2], b[2]))
+    c = (Math.Vector3(), Math.Vector3(), max(a[2], b[2]))
     for i in range(0, 3):
         c[0][i] = min(a[0][i], b[0][i])
 
@@ -417,4 +398,4 @@ def extendBoundingBox(a, b):
 
 def getCenterFromBox(aabb):
     centralPoint = Math.Vector3((aabb[1].x + aabb[0].x) / 2.0, (aabb[1].y + aabb[0].y) / 2.0, (aabb[1].z + aabb[0].z) / 2.0)
-    return centralPoint# Decompile failed :(
+    return centralPoint

@@ -1,8 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/achievements/views/summary/other_player_info_model.py
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.views.lobby.achievements.views.summary.dog_tag_model import DogTagModel
 
 class OtherPlayerInfoModel(ViewModel):
-    __slots__ = ('onOpenProfile', )
+    __slots__ = ('onOpenProfile',)
 
     def __init__(self, properties=7, commands=1):
         super(OtherPlayerInfoModel, self).__init__(properties=properties, commands=commands)

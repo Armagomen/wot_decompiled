@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_light/scripts/client/comp7_light/gui/impl/lobby/page/lobby_header.py
 from __future__ import absolute_import
 from comp7_light.gui.impl.lobby.page.comp7_light_fight_start import Comp7LightFightStartPresenter
 from comp7_light.gui.impl.lobby.page.comp7_light_prebattle_presenter import Comp7LightPrebattlePresenter
@@ -15,16 +17,15 @@ class Comp7LightLobbyHeader(LobbyHeader):
 
     def _getChildComponents(self):
         header = R.aliases.lobby_header.default
-        return {header.FightStart(): Comp7LightFightStartPresenter, 
-           header.NavigationBar(): NavigationPresenter, 
-           header.Prebattle(): Comp7LightPrebattlePresenter, 
-           header.Wallet(): lambda : WalletPresenter((
-                           CrystalProvider(),
+        return {header.FightStart(): Comp7LightFightStartPresenter,
+         header.NavigationBar(): NavigationPresenter,
+         header.Prebattle(): Comp7LightPrebattlePresenter,
+         header.Wallet(): lambda : WalletPresenter((CrystalProvider(),
                            GoldProvider(),
                            CreditsProvider(),
-                           FreeXpProvider())), 
-           header.UserAccount(): UserAccountPresenter, 
-           header.HeaderState(): HeaderStatePresenter, 
-           header.ReservesEntryPoint(): ReservesEntryPointPresenter, 
-           header.PremShop(): PremShopPresenter, 
-           header.CurrentVehicle(): lambda : VehiclesInfoPresenter(self._currentVehicleFilter)}
+                           FreeXpProvider())),
+         header.UserAccount(): UserAccountPresenter,
+         header.HeaderState(): HeaderStatePresenter,
+         header.ReservesEntryPoint(): ReservesEntryPointPresenter,
+         header.PremShop(): PremShopPresenter,
+         header.CurrentVehicle(): lambda : VehiclesInfoPresenter(self._currentVehicleFilter)}

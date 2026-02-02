@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/motivation_quests.py
 import os
 from pprint import pformat
 from quest_cache_helpers import readQuestsFromFile, makeI18nString
@@ -9,18 +11,15 @@ _QUESTS_FILE = 'quests.xml'
 def __parseMotivationsQuest(node):
     try:
         info = node.info
-        return (makeI18nString(info['advice']['key']),
-         makeI18nString(info['requirements']['key']),
-         makeI18nString(info['congratulation']['key']))
+        return (makeI18nString(info['advice']['key']), makeI18nString(info['requirements']['key']), makeI18nString(info['congratulation']['key']))
     except:
-        return
+        return None
 
-    return
+    return None
 
 
 class MotivationQuest(object):
-    __slots__ = ('questID', 'questName', 'questDescr', 'advice', 'requirements', 'congratulation',
-                 'questData')
+    __slots__ = ('questID', 'questName', 'questDescr', 'advice', 'requirements', 'congratulation', 'questData')
 
     def __init__(self, questID, questName, questDescr, advice, requirements, congratulation, questData):
         self.questID = questID
@@ -38,7 +37,7 @@ def motivationQuestsFromFile(pathToFile):
         questID, questName, questDescr, questClientData, node = quest
         questData = __parseMotivationsQuest(node)
         if questData is None:
-            LOG_WARNING(('Not all required fields are specified in quest for {}.').format(questID))
+            LOG_WARNING('Not all required fields are specified in quest for {}.'.format(questID))
             continue
         advice, requirements, congratulation = questData
         quests[questID] = MotivationQuest(questID, questName, questDescr, advice, requirements, congratulation, questClientData)

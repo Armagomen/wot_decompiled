@@ -1,4 +1,7 @@
-import typing, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/gui_items/processors/veh_post_progression.py
+import typing
+import BigWorld
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared.event_dispatcher import showResearchConfirmDialog
@@ -14,7 +17,7 @@ if typing.TYPE_CHECKING:
     from gui.shared.gui_items import Vehicle
 
 class PostProgressionProcessor(Processor):
-    __slots__ = ('_vehicleCD', )
+    __slots__ = ('_vehicleCD',)
     IS_GAMEFACE_SUPPORTED = True
 
     def __init__(self, vehicle):
@@ -79,15 +82,12 @@ class DiscardPairsProcessor(PostProgressionProcessor):
         super(DiscardPairsProcessor, self).__init__(vehicle)
         self.__stepIDs = stepIDs
         self.__modIDs = modIDs
-        self.addPlugins([
-         plugins.PostProgressionStepsValidator(vehicle, stepIDs, {ACTION_TYPES.PAIR_MODIFICATION}),
-         plugins.PostProgressionDiscardPairsValidator(vehicle, stepIDs)])
+        self.addPlugins([plugins.PostProgressionStepsValidator(vehicle, stepIDs, {ACTION_TYPES.PAIR_MODIFICATION}), plugins.PostProgressionDiscardPairsValidator(vehicle, stepIDs)])
 
     def _successHandler(self, code, ctx=None):
         playSound(Sounds.MODIFICATION_DESTROY)
         vehicle = self._getVehicle()
-        discardMods = [ vehicle.postProgression.getStep(stepID).action.getModificationByID(modificationID) for stepID, modificationID in zip(self.__stepIDs, self.__modIDs)
-                      ]
+        discardMods = [ vehicle.postProgression.getStep(stepID).action.getModificationByID(modificationID) for stepID, modificationID in zip(self.__stepIDs, self.__modIDs) ]
         return makeDiscardPairsMsg(vehicle, discardMods)
 
     def _errorHandler(self, code, errStr='', ctx=None):
@@ -104,9 +104,7 @@ class PurchasePairProcessor(PostProgressionProcessor):
         super(PurchasePairProcessor, self).__init__(vehicle)
         self.__stepID = stepID
         self.__modID = modificationID
-        self.addPlugins([
-         plugins.PostProgressionStepsValidator(vehicle, [stepID], {ACTION_TYPES.PAIR_MODIFICATION}),
-         plugins.PostProgressionPurchasePairValidator(vehicle, stepID, modificationID)])
+        self.addPlugins([plugins.PostProgressionStepsValidator(vehicle, [stepID], {ACTION_TYPES.PAIR_MODIFICATION}), plugins.PostProgressionPurchasePairValidator(vehicle, stepID, modificationID)])
         self.__discardMod = None
         return
 
@@ -136,9 +134,7 @@ class PurchaseStepsProcessor(PostProgressionProcessor):
         super(PurchaseStepsProcessor, self).__init__(vehicle)
         self.__price = EXT_MONEY_ZERO
         self.__stepIDs = stepIDs
-        self.addPlugins([
-         plugins.PostProgressionStepsValidator(vehicle, stepIDs, {ACTION_TYPES.FEATURE, ACTION_TYPES.MODIFICATION}),
-         plugins.PostProgressionPurchaseStepsValidator(vehicle, stepIDs)])
+        self.addPlugins([plugins.PostProgressionStepsValidator(vehicle, stepIDs, {ACTION_TYPES.FEATURE, ACTION_TYPES.MODIFICATION}), plugins.PostProgressionPurchaseStepsValidator(vehicle, stepIDs)])
 
     def _request(self, callback):
         self.__price = self.__getPrice(self._getVehicle())
@@ -188,11 +184,7 @@ class PurchaseVehSkillTreeStepsProcessor(PostProgressionProcessor):
         super(PurchaseVehSkillTreeStepsProcessor, self).__init__(vehicle)
         self.__stepIDs = stepIDs
         self.__price = self.__getPrice(self._getVehicle())
-        self.addPlugins([
-         plugins.PostProgressionStepsValidator(vehicle, stepIDs, {
-          ACTION_TYPES.FEATURE, ACTION_TYPES.MODIFICATION, ACTION_TYPES.PAIR_MODIFICATION}),
-         plugins.PostProgressionPurchaseStepsValidator(vehicle, stepIDs),
-         plugins.AsyncDialogConfirmator(showResearchConfirmDialog, self.__getResearchedPerksText(), self.__price.xp, self.__price.freeXP, isEnabled=self.__price.isXPCompound())])
+        self.addPlugins([plugins.PostProgressionStepsValidator(vehicle, stepIDs, {ACTION_TYPES.FEATURE, ACTION_TYPES.MODIFICATION, ACTION_TYPES.PAIR_MODIFICATION}), plugins.PostProgressionPurchaseStepsValidator(vehicle, stepIDs), plugins.AsyncDialogConfirmator(showResearchConfirmDialog, self.__getResearchedPerksText(), self.__price.xp, self.__price.freeXP, isEnabled=self.__price.isXPCompound())])
 
     def _request(self, callback):
         BigWorld.player().inventory.purchasePostProgressionSteps(self._vehicleCD, self.__stepIDs, lambda code, ext: self._response(code, callback, ctx=ext))

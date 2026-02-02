@@ -1,6 +1,10 @@
-import operator, time
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/restore_contoller.py
+import operator
+import time
 from operator import itemgetter
-import BigWorld, Event
+import BigWorld
+import Event
 from account_helpers.AccountSettings import AccountSettings, LAST_RESTORE_NOTIFICATION
 from gui import SystemMessages
 from gui.shared.gui_items import GUI_ITEM_TYPE
@@ -88,8 +92,7 @@ class RestoreController(IRestoreController, Notifiable):
     def getTankmenDeletedBySelling(self, *vehicles):
         newTankmen = []
         for vehicle in vehicles:
-            newTankmen += [ tankman for _, tankman in vehicle.crew if tankman is not None and tankman.isRestorable()
-                          ]
+            newTankmen += [ tankman for _, tankman in vehicle.crew if tankman is not None and tankman.isRestorable() ]
 
         return (newTankmen, self.getTankmenBeingDeleted(len(newTankmen)))
 
@@ -162,9 +165,8 @@ class RestoreController(IRestoreController, Notifiable):
 
     def __getClosestTankmanUpdateTime(self):
         if self.__tankmenList:
-            timeOfClosestDeletion = self.__tankmenList[(-1)].dismissedAt + self.__tankmanLiveTime
+            timeOfClosestDeletion = self.__tankmenList[-1].dismissedAt + self.__tankmanLiveTime
             return time_utils.getTimeDeltaFromNow(timeOfClosestDeletion) + 1
-        return 0
 
     def __checkLimitedRestoreNotification(self):
         criteria = IntCDProtectionRequestCriteria(_hasLimitedRestore, self.itemsCache.items.recycleBin.getVehiclesIntCDs())

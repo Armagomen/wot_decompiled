@@ -1,8 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/clan_supply/sidebar_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.clan_supply.tab_model import TabModel
 
 class SidebarModel(ViewModel):
-    __slots__ = ('onSideBarTabChange', )
+    __slots__ = ('onSideBarTabChange',)
 
     def __init__(self, properties=1, commands=1):
         super(SidebarModel, self).__init__(properties=properties, commands=commands)

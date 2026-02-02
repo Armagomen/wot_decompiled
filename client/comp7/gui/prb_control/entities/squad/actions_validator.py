@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/prb_control/entities/squad/actions_validator.py
 import typing
 from comp7_common.comp7_constants import BATTLE_MODE_VEH_TAGS_EXCEPT_COMP7
 from gui.prb_control.entities.base.actions_validator import ActionsValidatorComposite, BaseActionsValidator
@@ -20,18 +22,14 @@ class _UnitSlotsValidator(UnitSlotsValidator):
 
     def _validate(self):
         stats = self._entity.getStats()
-        if stats.freeSlotsCount > 0:
-            return ValidationResult(False, UNIT_RESTRICTION.UNIT_NOT_FULL)
-        return super(_UnitSlotsValidator, self)._validate()
+        return ValidationResult(False, UNIT_RESTRICTION.UNIT_NOT_FULL) if stats.freeSlotsCount > 0 else super(_UnitSlotsValidator, self)._validate()
 
 
 class _PrimeTimeValidator(CommanderValidator):
 
     def _validate(self):
         status, _, _ = dependency.instance(IComp7Controller).getPrimeTimeStatus()
-        if status != PrimeTimeStatus.AVAILABLE:
-            return ValidationResult(False, UNIT_RESTRICTION.CURFEW)
-        return super(_PrimeTimeValidator, self)._validate()
+        return ValidationResult(False, UNIT_RESTRICTION.CURFEW) if status != PrimeTimeStatus.AVAILABLE else super(_PrimeTimeValidator, self)._validate()
 
 
 class _Comp7PlayerValidator(UnitPlayerValidator):
@@ -43,9 +41,7 @@ class _Comp7PlayerValidator(UnitPlayerValidator):
             return ValidationResult(False, UNIT_RESTRICTION.BAN_IS_SET, None)
         else:
             ranks = self.__getPlayersRanks()
-            if ranks and max(ranks) - min(ranks) > self.__comp7Ctrl.getPlatoonRankRestriction():
-                return ValidationResult(False, UNIT_RESTRICTION.RANK_RESTRICTION, None)
-            return super(_Comp7PlayerValidator, self)._validate()
+            return ValidationResult(False, UNIT_RESTRICTION.RANK_RESTRICTION, None) if ranks and max(ranks) - min(ranks) > self.__comp7Ctrl.getPlatoonRankRestriction() else super(_Comp7PlayerValidator, self)._validate()
 
     def __getPlayersRanks(self):
         playersRanks = []
@@ -85,29 +81,22 @@ class _Comp7SlotValidator(CommanderValidator):
     def _validate(self):
         stats = self._entity.getStats()
         pInfo = self._entity.getPlayerInfo()
-        if stats.occupiedSlotsCount > 1 and not pInfo.isReady:
-            return ValidationResult(False, UNIT_RESTRICTION.COMMANDER_VEHICLE_NOT_SELECTED)
+        return ValidationResult(False, UNIT_RESTRICTION.COMMANDER_VEHICLE_NOT_SELECTED) if stats.occupiedSlotsCount > 1 and not pInfo.isReady else None
 
 
 class Comp7SquadActionsValidator(SquadActionsValidator):
 
     def _createVehiclesValidator(self, entity):
-        validators = [
-         _Comp7VehiclesValidator(entity),
-         _PrimeTimeValidator(entity)]
+        validators = [_Comp7VehiclesValidator(entity), _PrimeTimeValidator(entity)]
         return ActionsValidatorComposite(entity, validators=validators)
 
     def _createSlotsValidator(self, entity):
         baseValidator = super(Comp7SquadActionsValidator, self)._createSlotsValidator(entity)
-        validators = [
-         baseValidator,
-         _Comp7SlotValidator(entity)]
+        validators = [baseValidator, _Comp7SlotValidator(entity)]
         if not IS_DEVELOPMENT:
             validators.append(_UnitSlotsValidator(entity))
         return ActionsValidatorComposite(entity, validators=validators)
 
     def _createPlayerValidator(self, entity):
-        validators = [
-         _Comp7PlayerValidator(entity),
-         _Comp7ModeStatusValidator(entity)]
+        validators = [_Comp7PlayerValidator(entity), _Comp7ModeStatusValidator(entity)]
         return ActionsValidatorComposite(entity, validators=validators)

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/xmltodict.py
 try:
     from defusedexpat import pyexpat as expat
 except ImportError:
@@ -63,14 +65,10 @@ class _DictSAXHandler(object):
             return full_name
         namespace, name = full_name[:i], full_name[i + 1:]
         short_namespace = self.namespaces.get(namespace, namespace)
-        if not short_namespace:
-            return name
-        return self.namespace_separator.join((short_namespace, name))
+        return name if not short_namespace else self.namespace_separator.join((short_namespace, name))
 
     def _attrs_to_dict(self, attrs):
-        if isinstance(attrs, dict):
-            return attrs
-        return self.dict_constructor(zip(attrs[0::2], attrs[1::2]))
+        return attrs if isinstance(attrs, dict) else self.dict_constructor(zip(attrs[0::2], attrs[1::2]))
 
     def startNamespaceDecl(self, prefix, uri):
         self.namespace_declarations[prefix or ''] = uri
@@ -91,8 +89,7 @@ class _DictSAXHandler(object):
                     if self.postprocessor:
                         entry = self.postprocessor(self.path, key, value)
                     else:
-                        entry = (
-                         key, value)
+                        entry = (key, value)
                     if entry:
                         attr_entries.append(entry)
 
@@ -108,10 +105,10 @@ class _DictSAXHandler(object):
         if len(self.path) == self.item_depth:
             item = self.item
             if item is None:
-                if not self.data:
-                    item = None if 1 else self.cdata_separator.join(self.data)
-                should_continue = self.item_callback(self.path, item)
-                raise (should_continue or ParsingInterrupted)()
+                item = None if not self.data else self.cdata_separator.join(self.data)
+            should_continue = self.item_callback(self.path, item)
+            if not should_continue:
+                raise ParsingInterrupted()
         if self.stack:
             data = None if not self.data else self.cdata_separator.join(self.data)
             item = self.item
@@ -134,8 +131,7 @@ class _DictSAXHandler(object):
 
     def characters(self, data):
         if not self.data:
-            self.data = [
-             data]
+            self.data = [data]
         else:
             self.data.append(data)
 
@@ -152,12 +148,10 @@ class _DictSAXHandler(object):
             if isinstance(value, list):
                 value.append(data)
             else:
-                item[key] = [
-                 value, data]
+                item[key] = [value, data]
         except KeyError:
             if self._should_force_list(key, data):
-                item[key] = [
-                 data]
+                item[key] = [data]
             else:
                 item[key] = data
 
@@ -215,7 +209,7 @@ def _process_namespace(name, namespaces, ns_sep=':', attr_prefix='@'):
         pass
     else:
         ns_res = namespaces.get(ns.strip(attr_prefix))
-        name = ('{0}{1}{2}{3}').format(attr_prefix if ns.startswith(attr_prefix) else '', ns_res, ns_sep, name) if ns_res else name
+        name = '{0}{1}{2}{3}'.format(attr_prefix if ns.startswith(attr_prefix) else '', ns_res, ns_sep, name) if ns_res else name
 
     return name
 
@@ -228,46 +222,44 @@ def _emit(key, value, content_handler, attr_prefix='@', cdata_key='#text', depth
             return
         key, value = result
     if not hasattr(value, '__iter__') or isinstance(value, (_basestring, dict)):
-        value = [
-         value]
+        value = [value]
     for index, v in enumerate(value):
         if full_document and depth == 0 and index > 0:
             raise ValueError('document with multiple roots')
         if v is None:
             v = OrderedDict()
-        else:
-            if not isinstance(v, dict):
-                v = _unicode(v)
-            if isinstance(v, _basestring):
-                v = OrderedDict(((cdata_key, v),))
-            cdata = None
-            attrs = OrderedDict()
-            children = []
-            for ik, iv in v.items():
-                if ik == cdata_key:
-                    cdata = iv
-                    continue
-                if ik.startswith(attr_prefix):
-                    ik = _process_namespace(ik, namespaces, namespace_separator, attr_prefix)
-                    if ik == '@xmlns' and isinstance(iv, dict):
-                        for k, v in iv.items():
-                            attr = ('xmlns{0}').format((':{0}').format(k) if k else '')
-                            attrs[attr] = _unicode(v)
+        elif not isinstance(v, dict):
+            v = _unicode(v)
+        if isinstance(v, _basestring):
+            v = OrderedDict(((cdata_key, v),))
+        cdata = None
+        attrs = OrderedDict()
+        children = []
+        for ik, iv in v.items():
+            if ik == cdata_key:
+                cdata = iv
+                continue
+            if ik.startswith(attr_prefix):
+                ik = _process_namespace(ik, namespaces, namespace_separator, attr_prefix)
+                if ik == '@xmlns' and isinstance(iv, dict):
+                    for k, v in iv.items():
+                        attr = 'xmlns{0}'.format(':{0}'.format(k) if k else '')
+                        attrs[attr] = _unicode(v)
 
-                        continue
-                    if not isinstance(iv, _unicode):
-                        iv = _unicode(iv)
-                    attrs[ik[len(attr_prefix):]] = iv
                     continue
-                children.append((ik, iv))
+                if not isinstance(iv, _unicode):
+                    iv = _unicode(iv)
+                attrs[ik[len(attr_prefix):]] = iv
+                continue
+            children.append((ik, iv))
 
-            if pretty:
-                content_handler.ignorableWhitespace(depth * indent)
-            content_handler.startElement(key, AttributesImpl(attrs))
-            if pretty and children:
-                content_handler.ignorableWhitespace(newl)
-            for child_key, child_value in children:
-                _emit(child_key, child_value, content_handler, attr_prefix, cdata_key, depth + 1, preprocessor, pretty, newl, indent, namespaces=namespaces, namespace_separator=namespace_separator)
+        if pretty:
+            content_handler.ignorableWhitespace(depth * indent)
+        content_handler.startElement(key, AttributesImpl(attrs))
+        if pretty and children:
+            content_handler.ignorableWhitespace(newl)
+        for child_key, child_value in children:
+            _emit(child_key, child_value, content_handler, attr_prefix, cdata_key, depth + 1, preprocessor, pretty, newl, indent, namespaces=namespaces, namespace_separator=namespace_separator)
 
         if cdata is not None:
             content_handler.characters(cdata)
@@ -307,11 +299,13 @@ def unparse(input_dict, output=None, encoding='utf-8', full_document=True, short
             pass
 
         return value
-    return
+    else:
+        return
 
 
 if __name__ == '__main__':
-    import sys, marshal
+    import sys
+    import marshal
     try:
         stdin = sys.stdin.buffer
         stdout = sys.stdout.buffer

@@ -1,9 +1,11 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/crew/dialogs/enlarge_barracks_dialog_model.py
 from gui.impl.gen.view_models.views.dialogs.dialog_template_view_model import DialogTemplateViewModel
 from gui.impl.gen.view_models.views.dialogs.sub_views.currency_view_model import CurrencyViewModel
 from gui.impl.gen.view_models.views.lobby.crew.dialogs.stepper_view_model import StepperViewModel
 
 class EnlargeBarracksDialogModel(DialogTemplateViewModel):
-    __slots__ = ('onBunksCountChange', )
+    __slots__ = ('onBunksCountChange',)
 
     def __init__(self, properties=10, commands=3):
         super(EnlargeBarracksDialogModel, self).__init__(properties=properties, commands=commands)

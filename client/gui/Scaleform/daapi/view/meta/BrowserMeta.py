@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/BrowserMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class BrowserMeta(BaseDAAPIComponent):
@@ -30,29 +32,22 @@ class BrowserMeta(BaseDAAPIComponent):
         self._printOverrideError('setBrowserSize')
 
     def as_loadBitmapS(self, url):
-        if self._isDAAPIInited():
-            return self.flashObject.as_loadBitmap(url)
+        return self.flashObject.as_loadBitmap(url) if self._isDAAPIInited() else None
 
     def as_resizeS(self, width, height):
-        if self._isDAAPIInited():
-            return self.flashObject.as_resize(width, height)
+        return self.flashObject.as_resize(width, height) if self._isDAAPIInited() else None
 
     def as_loadingStartS(self, showContentUnderWaiting):
-        if self._isDAAPIInited():
-            return self.flashObject.as_loadingStart(showContentUnderWaiting)
+        return self.flashObject.as_loadingStart(showContentUnderWaiting) if self._isDAAPIInited() else None
 
     def as_loadingStopS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_loadingStop()
+        return self.flashObject.as_loadingStop() if self._isDAAPIInited() else None
 
     def as_showServiceViewS(self, header, description):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showServiceView(header, description)
+        return self.flashObject.as_showServiceView(header, description) if self._isDAAPIInited() else None
 
     def as_hideServiceViewS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_hideServiceView()
+        return self.flashObject.as_hideServiceView() if self._isDAAPIInited() else None
 
     def as_changeTitleS(self, title):
-        if self._isDAAPIInited():
-            return self.flashObject.as_changeTitle(title)
+        return self.flashObject.as_changeTitle(title) if self._isDAAPIInited() else None

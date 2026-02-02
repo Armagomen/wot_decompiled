@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client_common/AvatarVehiclesInfoBase.py
 import BigWorld
 from collections import namedtuple
 VehInfoDiffBufferEntry = namedtuple('VehInfoDiffBufferEntry', ('new', 'prev'))
@@ -20,10 +22,10 @@ class AvatarVehiclesInfoBase(BigWorld.DynamicScriptComponent):
     def setNested_vehiclesInfo(self, changePath, prev):
         if not self._isOwnedByPlayer:
             return
+        elif changePath[1] != '__generation':
+            self.__diffBuffer[changePath[1]] = VehInfoDiffBufferEntry(self.vehiclesInfo[changePath[0]][changePath[1]], prev)
+            return
         else:
-            if changePath[1] != '__generation':
-                self.__diffBuffer[changePath[1]] = VehInfoDiffBufferEntry(self.vehiclesInfo[changePath[0]][changePath[1]], prev)
-                return
             vehInfoIndex = changePath[0]
             vehInfo = self.vehiclesInfo[vehInfoIndex]
             self._updateVehicleInfo(vehInfo, self.__diffBuffer)

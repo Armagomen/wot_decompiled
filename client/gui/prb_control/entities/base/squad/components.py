@@ -1,4 +1,7 @@
-import typing, account_helpers
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/base/squad/components.py
+import typing
+import account_helpers
 from constants import PLATOON_RESTRICTED_VEHICLE_TAGS
 from items import vehicles
 if typing.TYPE_CHECKING:
@@ -9,11 +12,11 @@ def getRestrictedVehicleClassTag(vehicleTags):
         if tag in vehicleTags:
             return tag
 
-    return
+    return None
 
 
 class RestrictedRoleTagDataProvider(object):
-    __slots__ = ('_unitEntity', )
+    __slots__ = ('_unitEntity',)
 
     def __init__(self):
         self._unitEntity = None
@@ -65,20 +68,20 @@ class RestrictedRoleTagDataProvider(object):
         availableVehicles = self.getMaxPossibleVehicles(roleTag) - self.getCurrentVehiclesCount(roleTag)
         if self.getMaxPossibleVehicles(roleTag) == 0:
             return False
-        else:
-            if self._unitEntity.isCommander(accountDbID):
-                return True
-            if availableVehicles == 0:
-                _, _ = self._unitEntity.getUnit()
-                vInfos = self._unitEntity.getVehiclesInfo()
-                for vInfo in vInfos:
-                    if self.getRestrictionLevels(roleTag) is not None and vInfo.vehLevel not in self.getRestrictionLevels(roleTag):
-                        continue
-                    vehicleTag = getRestrictedVehicleClassTag(vehicles.getVehicleType(vInfo.vehTypeCD).tags)
-                    if roleTag == vehicleTag:
-                        return True
+        elif self._unitEntity.isCommander(accountDbID):
+            return True
+        elif availableVehicles == 0:
+            _, _ = self._unitEntity.getUnit()
+            vInfos = self._unitEntity.getVehiclesInfo()
+            for vInfo in vInfos:
+                if self.getRestrictionLevels(roleTag) is not None and vInfo.vehLevel not in self.getRestrictionLevels(roleTag):
+                    continue
+                vehicleTag = getRestrictedVehicleClassTag(vehicles.getVehicleType(vInfo.vehTypeCD).tags)
+                if roleTag == vehicleTag:
+                    return True
 
-                return False
+            return False
+        else:
             return availableVehicles > 0
 
     @property

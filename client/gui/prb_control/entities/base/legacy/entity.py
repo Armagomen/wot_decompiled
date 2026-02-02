@@ -1,4 +1,7 @@
-import BigWorld, account_helpers
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/base/legacy/entity.py
+import BigWorld
+import account_helpers
 from soft_exception import SoftException
 from PlayerEvents import g_playerEvents
 from constants import ARENA_BONUS_TYPE, PREBATTLE_ACCOUNT_STATE, REQUEST_COOLDOWN, PREBATTLE_ERRORS
@@ -49,7 +52,7 @@ class BaseLegacyEntity(BasePrbEntity):
         return prb_items.PlayerPrbInfo(-1)
 
     def getPlayerTeam(self, pID=None):
-        return 0
+        pass
 
     def getTeamState(self, team=None):
         return prb_items.TeamStateInfo(0)
@@ -58,16 +61,16 @@ class BaseLegacyEntity(BasePrbEntity):
         return prb_items.PlayersStateStats(0, False, 0, 0)
 
     def getRoles(self, pDatabaseID=None, clanDBID=None, team=None):
-        return 0
+        pass
 
     def _getRoleByDatabaseID(self, dbID=None, team=None):
-        return 0
+        pass
 
     def getPermissions(self, pID=None):
         return ILegacyPermissions()
 
     def getLimits(self):
-        return
+        return None
 
     def exitFromQueue(self):
         return False
@@ -292,14 +295,10 @@ class LegacyEntity(_LegacyEntity):
         return prb_getters.getPrebattleID()
 
     def getEntityType(self):
-        if self._settings:
-            return self._settings['type']
-        return 0
+        return self._settings['type'] if self._settings else 0
 
     def getBonusType(self):
-        if self._settings:
-            return self._settings['bonusType']
-        return 0
+        return self._settings['bonusType'] if self._settings else 0
 
     def getSettings(self):
         return self._settings
@@ -332,12 +331,13 @@ class LegacyEntity(_LegacyEntity):
     def getConfirmDialogMeta(self, ctx):
         if not self._settings or ctx.isForced():
             return None
-        prbType = self.getEntityType()
-        if self.hasLockedState():
-            meta = rally_dialog_meta.RallyLeaveDisabledDialogMeta(CTRL_ENTITY_TYPE.LEGACY, prbType)
         else:
-            meta = rally_dialog_meta.createPrbLeaveMeta(ctx, prbType, self.canSwitch(ctx))
-        return meta
+            prbType = self.getEntityType()
+            if self.hasLockedState():
+                meta = rally_dialog_meta.RallyLeaveDisabledDialogMeta(CTRL_ENTITY_TYPE.LEGACY, prbType)
+            else:
+                meta = rally_dialog_meta.createPrbLeaveMeta(ctx, prbType, self.canSwitch(ctx))
+            return meta
 
     def getRosterKey(self, pID=None):
         rosters = prb_getters.getPrebattleRosters()
@@ -454,9 +454,10 @@ class LegacyEntity(_LegacyEntity):
             if callback:
                 callback(False)
             return
-        ctx.startProcessing(callback)
-        BigWorld.player().prb_assign(ctx.getPlayerID(), ctx.getRoster(), ctx.onResponseReceived)
-        return
+        else:
+            ctx.startProcessing(callback)
+            BigWorld.player().prb_assign(ctx.getPlayerID(), ctx.getRoster(), ctx.onResponseReceived)
+            return
 
     def setTeamState(self, ctx, callback=None):
         team = ctx.getTeam()
@@ -624,25 +625,26 @@ class LegacyEntity(_LegacyEntity):
             if callback:
                 callback(False)
             return
-        result = self._limits.isTeamValid()
-
-        def _requestResponse(code, errStr):
-            msg = messages.getInvalidTeamServerMessage(errStr, entity=self)
-            if msg is not None:
-                SystemMessages.pushMessage(msg, type=SystemMessages.SM_TYPE.Error)
-            ctx.onResponseReceived(code)
-            return
-
-        if result is None or result.isValid:
-            ctx.startProcessing(callback)
-            BigWorld.player().prb_teamReady(ctx.getTeam(), ctx.isForced(), ctx.getGamePlayMask(), _requestResponse)
         else:
-            notValidReason = result.restriction
-            LOG_ERROR('Team is invalid', notValidReason)
-            if callback:
-                callback(False)
-            SystemMessages.pushMessage(messages.getInvalidTeamMessage(notValidReason, entity=self), type=SystemMessages.SM_TYPE.Error)
-        return
+            result = self._limits.isTeamValid()
+
+            def _requestResponse(code, errStr):
+                msg = messages.getInvalidTeamServerMessage(errStr, entity=self)
+                if msg is not None:
+                    SystemMessages.pushMessage(msg, type=SystemMessages.SM_TYPE.Error)
+                ctx.onResponseReceived(code)
+                return
+
+            if result is None or result.isValid:
+                ctx.startProcessing(callback)
+                BigWorld.player().prb_teamReady(ctx.getTeam(), ctx.isForced(), ctx.getGamePlayMask(), _requestResponse)
+            else:
+                notValidReason = result.restriction
+                LOG_ERROR('Team is invalid', notValidReason)
+                if callback:
+                    callback(False)
+                SystemMessages.pushMessage(messages.getInvalidTeamMessage(notValidReason, entity=self), type=SystemMessages.SM_TYPE.Error)
+            return
 
     def _setTeamNotReady(self, ctx, callback=None):
         if self._cooldown.validate(REQUEST_TYPE.SET_TEAM_STATE):
@@ -696,7 +698,8 @@ class LegacyEntity(_LegacyEntity):
             if not (ctx.isInitial() and result.restriction == PREBATTLE_RESTRICTION.VEHICLE_NOT_READY):
                 SystemMessages.pushMessage(messages.getInvalidVehicleMessage(result.restriction, self), type=SystemMessages.SM_TYPE.Error)
             return False
-        return True
+        else:
+            return True
 
     def _getPlayersStateStats(self, rosterKey):
         clientPrb = prb_getters.getClientPrebattle()
@@ -709,7 +712,7 @@ class LegacyEntity(_LegacyEntity):
             playersCount = len(players)
             team, assigned = decodeRoster(rosterKey)
             teamLimits = self._settings.getTeamLimits(team)
-            limitMaxCount = teamLimits['maxCount'][(not assigned)]
+            limitMaxCount = teamLimits['maxCount'][not assigned]
             for _, accInfo in players.iteritems():
                 state = accInfo.get('state', PREBATTLE_ACCOUNT_STATE.UNKNOWN)
                 if not state & PREBATTLE_ACCOUNT_STATE.READY:

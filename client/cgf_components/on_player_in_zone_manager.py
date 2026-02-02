@@ -1,4 +1,8 @@
-import BigWorld, CGF, Math
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/cgf_components/on_player_in_zone_manager.py
+import BigWorld
+import CGF
+import Math
 from collections import OrderedDict, defaultdict, namedtuple
 from functools import partial
 from typing import Optional
@@ -53,11 +57,11 @@ class OnPlayerInZoneManager(CGF.ComponentManager):
         if not playerVehicle:
             CGF.removeGameObject(prefab)
             return
-        playerPrefabPaths = list(path for path in self.__prefabPathMap[playerVehicle.id].itervalues())
+        playerPrefabPaths = list((path for path in self.__prefabPathMap[playerVehicle.id].itervalues()))
         if not playerPrefabPaths:
             CGF.removeGameObject(prefab)
             return
-        if vehicleId != playerVehicle.id or prefabPath != playerPrefabPaths[(-1)]:
+        if vehicleId != playerVehicle.id or prefabPath != playerPrefabPaths[-1]:
             CGF.removeGameObject(prefab)
             return
         if self.__activePrefab and self.__activePrefab.prefabGO:
@@ -71,11 +75,11 @@ class OnPlayerInZoneManager(CGF.ComponentManager):
             self.__removeActivePrefab()
             return
         else:
-            playerPrefabPaths = list(path for path in self.__prefabPathMap[playerVehicle.id].itervalues())
+            playerPrefabPaths = list((path for path in self.__prefabPathMap[playerVehicle.id].itervalues()))
             if not playerPrefabPaths:
                 self.__removeActivePrefab()
                 return
-            prefabPath = playerPrefabPaths[(-1)]
+            prefabPath = playerPrefabPaths[-1]
             if self.__activePrefab:
                 if self.__activePrefab.vehicleId == playerVehicle.id and self.__activePrefab.prefabPath == prefabPath:
                     return

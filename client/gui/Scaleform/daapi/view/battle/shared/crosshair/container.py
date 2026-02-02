@@ -1,4 +1,9 @@
-import logging, BattleReplay, GUI, WWISE
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/crosshair/container.py
+import logging
+import BattleReplay
+import GUI
+import WWISE
 from PlayerEvents import g_playerEvents
 from debug_utils import LOG_WARNING, LOG_DEBUG, LOG_ERROR
 from gui import DEPTH_OF_Aim
@@ -24,9 +29,9 @@ FADE_TIMEOUT = 7
 
 class AutoloaderBoostSoundEvents(object):
     __slots__ = ()
-    __EVENTS = {AUTOLOADERBOOSTVIEWSOUNDS.START: 'gun_rld_automat_reloading_boost_start', 
-       AUTOLOADERBOOSTVIEWSOUNDS.PROGRESS: 'gun_rld_automat_reloading_boost_progress', 
-       AUTOLOADERBOOSTVIEWSOUNDS.MAX: 'gun_rld_automat_reloading_boost_max'}
+    __EVENTS = {AUTOLOADERBOOSTVIEWSOUNDS.START: 'gun_rld_automat_reloading_boost_start',
+     AUTOLOADERBOOSTVIEWSOUNDS.PROGRESS: 'gun_rld_automat_reloading_boost_progress',
+     AUTOLOADERBOOSTVIEWSOUNDS.MAX: 'gun_rld_automat_reloading_boost_max'}
 
     @staticmethod
     def play(state):
@@ -250,8 +255,7 @@ class CrosshairPanelContainer(ExternalFlashComponent, CrosshairPanelContainerMet
             if self.as_createGunMarkerS(item.viewID, item.linkage, item.name):
                 self.__gunMarkers.addView(self.component, item.name)
                 LOG_DEBUG('Gun marker has been created', item)
-            else:
-                LOG_ERROR('Gun marker can not be created', item)
+            LOG_ERROR('Gun marker can not be created', item)
 
         self.__gunMarkers.setScale(self.getScale())
         self.__gunMarkers.switch(self.getViewID())

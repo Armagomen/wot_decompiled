@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/tooltips/crew_skin.py
 from skeletons.gui.shared import IItemsCache
 from gui.shared.formatters import text_styles
 from gui.shared.tooltips import TOOLTIP_TYPE, formatters
@@ -14,14 +16,11 @@ _MAX_USERS_DISPLAYED = 10
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
 def _skinUsersRoleAndVehicleText(fstring, item, itemsCache=None):
-    return [ fstring.format(role=backport.text(R.strings.item_types.tankman.roles.dyn(tankman.role)()), vehicle=itemsCache.items.getItemByCD(tankman.vehicleNativeDescr.type.compactDescr).shortUserName) for invID, tankman in itemsCache.items.getTankmen().iteritems() if invID in item.getTankmenIDs()
-           ]
+    return [ fstring.format(role=backport.text(R.strings.item_types.tankman.roles.dyn(tankman.role)()), vehicle=itemsCache.items.getItemByCD(tankman.vehicleNativeDescr.type.compactDescr).shortUserName) for invID, tankman in itemsCache.items.getTankmen().iteritems() if invID in item.getTankmenIDs() ]
 
 
 def _longStringListEllipsisCutoff(fstring, strings, allowedLen):
-    if len(strings) > allowedLen:
-        return fstring.join(strings[:allowedLen]) + '...'
-    return fstring.join(strings)
+    return fstring.join(strings[:allowedLen]) + '...' if len(strings) > allowedLen else fstring.join(strings)
 
 
 class CrewSkinTooltipDataBlock(BlocksTooltipData):
@@ -53,7 +52,7 @@ class CrewSkinTooltipDataBlock(BlocksTooltipData):
         if item.getNation() is not None:
             restrictions.append(backport.text(R.strings.nations.dyn(item.getNation())()))
         if restrictions:
-            restrictionText = (', ').join(restrictions)
+            restrictionText = ', '.join(restrictions)
         else:
             restrictionText = backport.text(R.strings.tooltips.crewSkins.noRestrictions())
         block.append(formatters.packTextParameterBlockData(name=text_styles.stats(restrictionText), value=text_styles.main(backport.text(R.strings.tooltips.crewSkins.restrictions())), valueWidth=115))

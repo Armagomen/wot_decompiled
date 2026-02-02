@@ -1,4 +1,8 @@
-import logging, typing, nations
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/vehicle_preview_dp.py
+import logging
+import typing
+import nations
 from gui.Scaleform import MENU
 from gui import GUI_NATIONS_ORDER_INDEX_REVERSED
 from gui.Scaleform.genConsts.STORE_CONSTANTS import STORE_CONSTANTS
@@ -43,21 +47,21 @@ def _createVehicleVO(rawItem, itemsCache):
         nation = nations.NONE_INDEX
         level = ''
         tankType = ''
-    return {'icon': icon, 
-       'iconAlt': RES_ICONS.MAPS_ICONS_LIBRARY_VEHICLE_DEFAULT, 
-       'intCD': cd, 
-       'label': label, 
-       'nation': nation, 
-       'hasCompensation': getCompensateItemsCount(rawItem, itemsCache) > 0, 
-       'level': level, 
-       'tankType': tankType}
+    return {'icon': icon,
+     'iconAlt': RES_ICONS.MAPS_ICONS_LIBRARY_VEHICLE_DEFAULT,
+     'intCD': cd,
+     'label': label,
+     'nation': nation,
+     'hasCompensation': getCompensateItemsCount(rawItem, itemsCache) > 0,
+     'level': level,
+     'tankType': tankType}
 
 
 def _createOfferVO(offer, setActive=False):
-    return {'id': offer.id, 
-       'label': offer.label, 
-       'active': setActive, 
-       'tooltipData': makeTooltip(header=offer.name, body=_ms(**_getRentTooltipData(offer)))}
+    return {'id': offer.id,
+     'label': offer.label,
+     'active': setActive,
+     'tooltipData': makeTooltip(header=offer.name, body=_ms(**_getRentTooltipData(offer)))}
 
 
 def _getRentTooltipData(offer):
@@ -72,15 +76,14 @@ def _getRentTooltipData(offer):
         else:
             key = backport.text(R.strings.vehicle_preview.buyingPanel.offer.rent.frontline.tooltip.body.timeLeft())
             value = getTillTimeString(timeLeft, MENU.TIME_TIMEVALUE)
-        return {'key': key, 
-           'value': text_styles.stats(value)}
+        return {'key': key,
+         'value': text_styles.stats(value)}
     else:
-        return
+        return None
 
 
 def _vehicleComparisonKey(vehicle):
-    return (
-     tuple(vehicle.buyPrices.itemPrice.price.iterallitems(byWeight=True)),
+    return (tuple(vehicle.buyPrices.itemPrice.price.iterallitems(byWeight=True)),
      vehicle.level,
      GUI_NATIONS_ORDER_INDEX_REVERSED[vehicle.nationName],
      vehicle.intCD)
@@ -99,9 +102,7 @@ class DefaultVehPreviewDataProvider(IVehPreviewDataProvider):
     __itemsCache = dependency.descriptor(IItemsCache)
 
     def getBuyType(self, vehicle):
-        if vehicle.isUnlocked or vehicle.isCollectible:
-            return factory.BUY_VEHICLE
-        return factory.UNLOCK_ITEM
+        return factory.BUY_VEHICLE if vehicle.isUnlocked or vehicle.isCollectible else factory.UNLOCK_ITEM
 
     def getBuyingPanelData(self, item, data=None, isHeroTank=False, itemsPack=None):
         isBuyingAvailable = not isHeroTank and (not item.isHidden or item.isRentable or item.isRestorePossible()) and not item.isWotPlus
@@ -111,24 +112,24 @@ class DefaultVehPreviewDataProvider(IVehPreviewDataProvider):
         elif not (isBuyingAvailable or isHeroTank):
             uniqueVehicleTitle = text_styles.tutorial(backport.text(R.strings.vehicle_preview.buyingPanel.uniqueVehicleLabel()))
         compensationData = self.__getCompensationData(itemsPack)
-        resultVO = {'setTitle': data.title, 
-           'uniqueVehicleTitle': uniqueVehicleTitle, 
-           'vehicleId': item.intCD, 
-           'isBuyingAvailable': isBuyingAvailable, 
-           'isMoneyEnough': data.isMoneyEnough, 
-           'buyButtonEnabled': data.enabled, 
-           'buyButtonLabel': data.label, 
-           'buyButtonIcon': data.icon, 
-           'buyButtonIconAlign': data.iconAlign, 
-           'buyButtonTooltip': data.tooltip, 
-           'isShowSpecialTooltip': data.isShowSpecial, 
-           'itemPrice': data.itemPrice, 
-           'isUnlock': data.isUnlock, 
-           'couponDiscount': 0, 
-           'showAction': data.isAction, 
-           'hasCompensation': compensationData is not None, 
-           'compensation': compensationData if compensationData is not None else {}, 
-           'warning': self.__getWarningInfo(data, item)}
+        resultVO = {'setTitle': data.title,
+         'uniqueVehicleTitle': uniqueVehicleTitle,
+         'vehicleId': item.intCD,
+         'isBuyingAvailable': isBuyingAvailable,
+         'isMoneyEnough': data.isMoneyEnough,
+         'buyButtonEnabled': data.enabled,
+         'buyButtonLabel': data.label,
+         'buyButtonIcon': data.icon,
+         'buyButtonIconAlign': data.iconAlign,
+         'buyButtonTooltip': data.tooltip,
+         'isShowSpecialTooltip': data.isShowSpecial,
+         'itemPrice': data.itemPrice,
+         'isUnlock': data.isUnlock,
+         'couponDiscount': 0,
+         'showAction': data.isAction,
+         'hasCompensation': compensationData is not None,
+         'compensation': compensationData if compensationData is not None else {},
+         'warning': self.__getWarningInfo(data, item)}
         customOffer = self.__getCustomOfferData(data)
         if customOffer is not None:
             resultVO.update({'customOffer': customOffer})
@@ -136,46 +137,47 @@ class DefaultVehPreviewDataProvider(IVehPreviewDataProvider):
 
     def getItemPackBuyingPanelData(self, data, itemsPack, couponSelected, price):
         compensationData = self.__getCompensationData(itemsPack)
-        resultVO = {'setTitle': data.title, 
-           'uniqueVehicleTitle': '', 
-           'vehicleId': 0, 
-           'couponDiscount': getCouponDiscountForItemPack(itemsPack, price).gold if couponSelected else 0, 
-           'isBuyingAvailable': True, 
-           'isMoneyEnough': data.enabled, 
-           'buyButtonEnabled': data.enabled, 
-           'buyButtonLabel': data.label, 
-           'buyButtonIcon': data.icon, 
-           'buyButtonIconAlign': data.iconAlign, 
-           'buyButtonTooltip': data.tooltip, 
-           'isShowSpecialTooltip': data.isShowSpecial, 
-           'itemPrice': data.itemPrice, 
-           'isUnlock': False, 
-           'showAction': data.isAction, 
-           'hasCompensation': compensationData is not None, 
-           'compensation': compensationData if compensationData is not None else {}, 
-           'warning': ''}
+        resultVO = {'setTitle': data.title,
+         'uniqueVehicleTitle': '',
+         'vehicleId': 0,
+         'couponDiscount': getCouponDiscountForItemPack(itemsPack, price).gold if couponSelected else 0,
+         'isBuyingAvailable': True,
+         'isMoneyEnough': data.enabled,
+         'buyButtonEnabled': data.enabled,
+         'buyButtonLabel': data.label,
+         'buyButtonIcon': data.icon,
+         'buyButtonIconAlign': data.iconAlign,
+         'buyButtonTooltip': data.tooltip,
+         'isShowSpecialTooltip': data.isShowSpecial,
+         'itemPrice': data.itemPrice,
+         'isUnlock': False,
+         'showAction': data.isAction,
+         'hasCompensation': compensationData is not None,
+         'compensation': compensationData if compensationData is not None else {},
+         'warning': ''}
         if data.customOffer is not None:
             resultVO.update({'customOffer': data.customOffer})
         return resultVO
 
     def getOffersBuyingPanelData(self, data):
-        return {'setTitle': data.title, 
-           'uniqueVehicleTitle': '', 
-           'vehicleId': 0, 
-           'couponDiscount': 0, 
-           'isBuyingAvailable': True, 
-           'isMoneyEnough': data.enabled, 
-           'buyButtonEnabled': data.enabled, 
-           'buyButtonLabel': data.label, 
-           'buyButtonIcon': data.icon, 
-           'buyButtonIconAlign': data.iconAlign, 
-           'buyButtonTooltip': data.tooltip, 
-           'isShowSpecialTooltip': data.isShowSpecial, 
-           'itemPrice': data.itemPrice, 
-           'showAction': data.isAction, 
-           'actionTooltip': data.actionTooltip, 
-           'hasCompensation': False, 
-           'compensation': {}, 'warning': ''}
+        return {'setTitle': data.title,
+         'uniqueVehicleTitle': '',
+         'vehicleId': 0,
+         'couponDiscount': 0,
+         'isBuyingAvailable': True,
+         'isMoneyEnough': data.enabled,
+         'buyButtonEnabled': data.enabled,
+         'buyButtonLabel': data.label,
+         'buyButtonIcon': data.icon,
+         'buyButtonIconAlign': data.iconAlign,
+         'buyButtonTooltip': data.tooltip,
+         'isShowSpecialTooltip': data.isShowSpecial,
+         'itemPrice': data.itemPrice,
+         'showAction': data.isAction,
+         'actionTooltip': data.actionTooltip,
+         'hasCompensation': False,
+         'compensation': {},
+         'warning': ''}
 
     def getOffersData(self, offers, activeID):
         return [ _createOfferVO(offer, offer.id == activeID) for offer in offers ]
@@ -188,11 +190,9 @@ class DefaultVehPreviewDataProvider(IVehPreviewDataProvider):
             for item in packItems:
                 if item.type in ItemPackTypeGroup.VEHICLE:
                     vehiclesItems.append(item)
-                else:
-                    ordinaryItems.append(item)
+                ordinaryItems.append(item)
 
-        return (
-         vehiclesItems, ordinaryItems)
+        return (vehiclesItems, ordinaryItems)
 
     def getItemsPackData(self, vehicle, items, vehicleItems):
         vehiclesCount = len(vehicleItems)
@@ -212,11 +212,11 @@ class DefaultVehPreviewDataProvider(IVehPreviewDataProvider):
 
     def packCouponData(self, itemsPack, price):
         labelWithDiscount = _ms(text_styles.mainBig(backport.text(R.strings.vehicle_preview.buyingPanel.frontlinePack.couponLabel())), value=moneyWithIcon(getCouponDiscountForItemPack(itemsPack, price)))
-        return {'isSelected': True, 
-           'label': labelWithDiscount, 
-           'icon': backport.image(R.images.gui.maps.shop.rewards.c_48x48.frontline_coupon()), 
-           'tooltip': TOOLTIPS_CONSTANTS.FRONTLINE_COUPON, 
-           'tooltipBonusesData': getCouponBonusesForItemPack(itemsPack)}
+        return {'isSelected': True,
+         'label': labelWithDiscount,
+         'icon': backport.image(R.images.gui.maps.shop.rewards.c_48x48.frontline_coupon()),
+         'tooltip': TOOLTIPS_CONSTANTS.FRONTLINE_COUPON,
+         'tooltipBonusesData': getCouponBonusesForItemPack(itemsPack)}
 
     def __getCompensationData(self, itemsPack):
         compensationMoney = MONEY_UNDEFINED
@@ -241,31 +241,29 @@ class DefaultVehPreviewDataProvider(IVehPreviewDataProvider):
         rIcons = R.images.gui.maps.icons.library
         currencyStyle = getStyle(currency)
         currencyFormatter = getBWFormatter(currency)
-        currencyIcon = icons.makeImageTag(backport.image(rIcons.dyn(('{}{}').format(currency.capitalize(), 'Icon_1'))()), vSpace=-2)
-        return {'iconInfo': backport.image(rIcons.info_yellow() if currency == Currency.GOLD else rIcons.info()), 
-           'description': backport.text(rBPstr.compensation()), 
-           'value': ('{} {}').format(currencyStyle(currencyFormatter(value)), currencyIcon), 
-           'tooltip': makeTooltip(body=backport.text(rBPstr.compensation.body()))}
+        currencyIcon = icons.makeImageTag(backport.image(rIcons.dyn('{}{}'.format(currency.capitalize(), 'Icon_1'))()), vSpace=-2)
+        return {'iconInfo': backport.image(rIcons.info_yellow() if currency == Currency.GOLD else rIcons.info()),
+         'description': backport.text(rBPstr.compensation()),
+         'value': '{} {}'.format(currencyStyle(currencyFormatter(value)), currencyIcon),
+         'tooltip': makeTooltip(body=backport.text(rBPstr.compensation.body()))}
 
     @staticmethod
     def __getCustomOfferData(data):
         for price in data.itemPrice:
             actions = price.get('action')
             if not actions:
-                return
+                return None
             for action in actions:
                 actionType, actionValue = action
                 if actionValue == _CUSTOM_OFFER_ACTION_PERCENT:
                     label = backport.text(R.strings.vehicle_preview.buyingPanel.customOffer.buy() if actionType in Currency.ALL else R.strings.vehicle_preview.buyingPanel.customOffer.research())
-                    value = (' {}').format(backport.text(R.strings.quests.action.discount.percent(), value=backport.getIntegralFormat(actionValue)))
-                    return text_styles.promoSubTitle(('').join((label, value)))
+                    value = ' {}'.format(backport.text(R.strings.quests.action.discount.percent(), value=backport.getIntegralFormat(actionValue)))
+                    return text_styles.promoSubTitle(''.join((label, value)))
 
-        return
+        return None
 
     @staticmethod
     def __getWarningInfo(data, item):
         if data.isUnlock and not data.isPrevItemsUnlock:
             return backport.text(R.strings.vehicle_preview.buyingPanel.notResearchedVehicleWarning())
-        if item.isCollectible and not vehicle_collector_helper.isAvailableForPurchase(item):
-            return backport.text(R.strings.vehicle_preview.buyingPanel.collectible.notResearchedVehiclesWarning(), level=int2roman(item.level), nation=backport.text(R.strings.nations.dyn(item.nationName).genetiveCase()))
-        return ''
+        return backport.text(R.strings.vehicle_preview.buyingPanel.collectible.notResearchedVehiclesWarning(), level=int2roman(item.level), nation=backport.text(R.strings.nations.dyn(item.nationName).genetiveCase())) if item.isCollectible and not vehicle_collector_helper.isAvailableForPurchase(item) else ''

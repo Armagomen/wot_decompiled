@@ -1,4 +1,7 @@
-import weakref, math
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/clans/invites/ClanInvitesViewWithTable.py
+import weakref
+import math
 from debug_utils import LOG_ERROR
 from gui.Scaleform.daapi.settings import BUTTON_LINKAGES
 from gui.clans import formatters as clans_fmts
@@ -65,29 +68,26 @@ class ClanInvitesViewWithTable(ClanInvitesViewWithTableMeta):
 
     @staticmethod
     def _packHeaderColumnData(headerId, label, buttonWidth, tooltip, icon='', sortOrder=-1, showSeparator=True, textAlign='center', enabled=True, defaultSortDirection='descending'):
-        return {'id': headerId, 
-           'label': _ms(label), 
-           'iconSource': icon, 
-           'buttonWidth': buttonWidth, 
-           'toolTip': tooltip, 
-           'sortOrder': sortOrder, 
-           'defaultSortDirection': defaultSortDirection, 
-           'buttonHeight': 34, 
-           'showSeparator': showSeparator, 
-           'textAlign': textAlign, 
-           'enabled': enabled}
+        return {'id': headerId,
+         'label': _ms(label),
+         'iconSource': icon,
+         'buttonWidth': buttonWidth,
+         'toolTip': tooltip,
+         'sortOrder': sortOrder,
+         'defaultSortDirection': defaultSortDirection,
+         'buttonHeight': 34,
+         'showSeparator': showSeparator,
+         'textAlign': textAlign,
+         'enabled': enabled}
 
     def _showDummy(self, header, body='', icon=None, btnVisible=False, btnLabel='', btnTooltip='', alignCenter=True):
-        self.as_showDummyS({'iconSource': icon, 
-           'htmlText': str().join((
-                      text_styles.middleTitle(header),
-                      clans_fmts.getHtmlLineDivider(3),
-                      text_styles.main(body))), 
-           'alignCenter': alignCenter, 
-           'btnVisible': btnVisible, 
-           'btnLabel': btnLabel, 
-           'btnTooltip': btnTooltip, 
-           'btnLinkage': BUTTON_LINKAGES.BUTTON_BLACK})
+        self.as_showDummyS({'iconSource': icon,
+         'htmlText': str().join((text_styles.middleTitle(header), clans_fmts.getHtmlLineDivider(3), text_styles.main(body))),
+         'alignCenter': alignCenter,
+         'btnVisible': btnVisible,
+         'btnLabel': btnLabel,
+         'btnTooltip': btnTooltip,
+         'btnLinkage': BUTTON_LINKAGES.BUTTON_BLACK})
 
 
 class ClanInvitesAbstractDataProvider(SortableDAAPIDataProvider):
@@ -123,7 +123,7 @@ class ClanInvitesAbstractDataProvider(SortableDAAPIDataProvider):
         return self.__isActionsAllowed
 
     def emptyItem(self):
-        return
+        return None
 
     def clear(self, clearExtra=True):
         self.__list = []
@@ -138,9 +138,7 @@ class ClanInvitesAbstractDataProvider(SortableDAAPIDataProvider):
         self.destroy()
 
     def getSelectedIdx(self):
-        if self.__selectedID in self.__listMapping:
-            return self.__listMapping[self.__selectedID]
-        return -1
+        return self.__listMapping[self.__selectedID] if self.__selectedID in self.__listMapping else -1
 
     def setSelectedID(self, clanID):
         self.__selectedID = clanID
@@ -177,8 +175,8 @@ class ClanInvitesAbstractDataProvider(SortableDAAPIDataProvider):
 
         self.__extraData = newExtra
         if showMoreButton:
-            self.__list.append({'hasShowMoreButton': True, 
-               'showMoreButtonEnabled': True})
+            self.__list.append({'hasShowMoreButton': True,
+             'showMoreButtonEnabled': True})
 
     def rebuildList(self, cache, showMoreButton=False):
         self.__showMoreBtn = showMoreButton
@@ -213,7 +211,7 @@ class ClanInvitesAbstractDataProvider(SortableDAAPIDataProvider):
         return self.getSelectedIdx()
 
     def _buildExtraData(self, item, prevExtra):
-        return
+        return None
 
     def _isDataRow(self, vo):
         return 'dbID' in vo
@@ -222,10 +220,7 @@ class ClanInvitesAbstractDataProvider(SortableDAAPIDataProvider):
         return []
 
     def _makeTooltip(self, body):
-        if body:
-            return makeTooltip(body=body)
-        else:
-            return
+        return makeTooltip(body=body) if body else None
 
     def _makeInviteStateString(self, item):
         status = item.getStatus()
@@ -239,9 +234,7 @@ class ClanInvitesAbstractDataProvider(SortableDAAPIDataProvider):
             return text_styles.standard(_ms(CLANS.CLANINVITESWINDOW_STATUS_EXPIRED))
         if status == CLAN_INVITE_STATES.EXPIRED_RESENT or status == CLAN_INVITE_STATES.DECLINED_RESENT:
             return text_styles.standard(_ms(CLANS.CLANINVITESWINDOW_STATUS_SENT))
-        if status == CLAN_INVITE_STATES.ERROR:
-            return text_styles.error(_ms(CLANS.CLANINVITESWINDOW_STATUS_ERROR))
-        return ''
+        return text_styles.error(_ms(CLANS.CLANINVITESWINDOW_STATUS_ERROR)) if status == CLAN_INVITE_STATES.ERROR else ''
 
     def __formatActiveStateString(self, item):
         if not isValueAvailable(getter=item.getCreatedAt):

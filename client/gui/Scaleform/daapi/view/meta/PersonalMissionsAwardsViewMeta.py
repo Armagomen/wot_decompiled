@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/PersonalMissionsAwardsViewMeta.py
 from gui.Scaleform.framework.entities.View import View
 
 class PersonalMissionsAwardsViewMeta(View):
@@ -15,9 +17,7 @@ class PersonalMissionsAwardsViewMeta(View):
         self._printOverrideError('buyMissionsByVehicleType')
 
     def as_setDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setData(data)
+        return self.flashObject.as_setData(data) if self._isDAAPIInited() else None
 
     def as_setHeaderDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setHeaderData(data)
+        return self.flashObject.as_setHeaderData(data) if self._isDAAPIInited() else None

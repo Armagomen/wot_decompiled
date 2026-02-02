@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/gui_items/dossier/achievements/ready_for_battle_achvs.py
 from abstract import ClassProgressAchievement, getCompletedPersonalMissionsCount
 from dossiers2.ui.achievements import ACHIEVEMENT_BLOCK as _AB
 from nations import Alliances
@@ -15,9 +17,7 @@ class ReadyForBattleAchievement(ClassProgressAchievement):
         return
 
     def getNextLevelInfo(self):
-        return (
-         'questsLeft',
-         self._lvlUpValue if self.__isCurrentUserAchievement else 0)
+        return ('questsLeft', self._lvlUpValue if self.__isCurrentUserAchievement else 0)
 
     def _readProgressValue(self, dossier):
         return dossier.getRecordValue(_AB.TOTAL, self.__name)
@@ -39,7 +39,7 @@ class ReadyForBattleALLAchievement(ReadyForBattleAchievement):
         super(ReadyForBattleALLAchievement, self).__init__(name='readyForBattleALL', classifier='battleHeroes', branch=0, dossier=dossier, value=value)
 
     def _readCurrentProgressValue(self, dossier):
-        return 0
+        pass
 
 
 class ReadyForBattleAllianceFranceAchievement(ReadyForBattleAchievement3Steps):

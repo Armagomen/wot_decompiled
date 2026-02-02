@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/prestige_system/__init__.py
 from typing import TYPE_CHECKING
 from copy import copy
 from itertools import izip
@@ -57,8 +59,7 @@ def computePrestigePoints(override):
     if not override.get('enabled', True):
         return ([], 0)
     else:
-        points = [
-         0] * PrestigeConstants.PRESTIGE_MAX_LEVEL
+        points = [0] * PrestigeConstants.PRESTIGE_MAX_LEVEL
         levelsArgs = override.get('levels') or [1, PrestigeConstants.PRESTIGE_MAX_LEVEL]
         levels = preprocessLevels(levelsArgs)
         levelCostArgs = override.get('levelCostArgs')

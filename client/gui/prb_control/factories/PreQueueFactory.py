@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/factories/PreQueueFactory.py
 from gui.prb_control import prb_getters
 from constants import QUEUE_TYPE
 from debug_utils import LOG_ERROR
@@ -16,7 +18,7 @@ from gui.prb_control.items import FunctionalState
 from gui.prb_control.settings import FUNCTIONAL_FLAG as _FLAG
 from gui.prb_control.settings import PREBATTLE_ACTION_NAME, CTRL_ENTITY_TYPE
 from gui.prb_control.storages import prequeue_storage_getter, storage_getter, RECENT_PRB_STORAGE
-__all__ = ('PreQueueFactory', )
+__all__ = ('PreQueueFactory',)
 registerQueueEntity(QUEUE_TYPE.RANDOMS, RandomEntity)
 registerQueueEntity(QUEUE_TYPE.RANKED, RankedEntity)
 registerQueueEntity(QUEUE_TYPE.MAPBOX, MapboxEntity)
@@ -47,7 +49,7 @@ class PreQueueFactory(ControlFactory):
 
     def createEntry(self, ctx):
         LOG_ERROR('preQueue functional has not any entries')
-        return
+        return None
 
     def createEntryByAction(self, action):
         result = collectEntryPoint(action.actionName)
@@ -64,9 +66,7 @@ class PreQueueFactory(ControlFactory):
         if queueType == QUEUE_TYPE.RANDOMS and self.winbackStorage.isModeAvailable():
             queueType = QUEUE_TYPE.WINBACK
         prbEntity = self.__createByQueueType(queueType)
-        if prbEntity:
-            return prbEntity
-        return self.__createDefaultEntity()
+        return prbEntity if prbEntity else self.__createDefaultEntity()
 
     def createStateEntity(self, entity):
         return FunctionalState(CTRL_ENTITY_TYPE.PREQUEUE, entity.getEntityType(), True, entity.isInQueue(), funcFlags=entity.getFunctionalFlags())
@@ -80,23 +80,23 @@ class PreQueueFactory(ControlFactory):
     def __createDefaultEntity(self):
         if self.rankedStorage.isModeSelected():
             return RankedEntity()
+        elif self.frontlineStorage.isModeSelected():
+            return self.__createByQueueType(QUEUE_TYPE.EPIC)
+        elif self.battleRoyaleStorage.isModeSelected():
+            return self.__createByQueueType(QUEUE_TYPE.BATTLE_ROYALE)
+        elif self.mapboxStorage.isModeSelected():
+            return MapboxEntity()
+        elif self.mapsTrainingStorage.isModeSelected():
+            return MapsTrainingEntity()
+        elif self.eventBattlesStorage.isModeSelected():
+            return EventBattleEntity()
+        elif self.funRandomStorage is not None and self.funRandomStorage.isModeSelected():
+            return self.__createByQueueType(QUEUE_TYPE.FUN_RANDOM)
+        elif self.comp7Storage is not None and self.comp7Storage.isModeSelected():
+            return self.__createByQueueType(QUEUE_TYPE.COMP7)
+        elif self.comp7LightStorage is not None and self.comp7LightStorage.isModeSelected():
+            return self.__createByQueueType(QUEUE_TYPE.COMP7_LIGHT)
         else:
-            if self.frontlineStorage.isModeSelected():
-                return self.__createByQueueType(QUEUE_TYPE.EPIC)
-            if self.battleRoyaleStorage.isModeSelected():
-                return self.__createByQueueType(QUEUE_TYPE.BATTLE_ROYALE)
-            if self.mapboxStorage.isModeSelected():
-                return MapboxEntity()
-            if self.mapsTrainingStorage.isModeSelected():
-                return MapsTrainingEntity()
-            if self.eventBattlesStorage.isModeSelected():
-                return EventBattleEntity()
-            if self.funRandomStorage is not None and self.funRandomStorage.isModeSelected():
-                return self.__createByQueueType(QUEUE_TYPE.FUN_RANDOM)
-            if self.comp7Storage is not None and self.comp7Storage.isModeSelected():
-                return self.__createByQueueType(QUEUE_TYPE.COMP7)
-            if self.comp7LightStorage is not None and self.comp7LightStorage.isModeSelected():
-                return self.__createByQueueType(QUEUE_TYPE.COMP7_LIGHT)
             lastBattleQueueType = self.recentPrbStorage.queueType
             if lastBattleQueueType == QUEUE_TYPE.WINBACK and not self.winbackStorage.isModeAvailable():
                 lastBattleQueueType = QUEUE_TYPE.RANDOMS
@@ -104,6 +104,4 @@ class PreQueueFactory(ControlFactory):
                 prbEntity = self.__createByQueueType(lastBattleQueueType)
                 if prbEntity:
                     return prbEntity
-            if self.winbackStorage.isModeAvailable():
-                return WinbackEntity()
-            return RandomEntity()
+            return WinbackEntity() if self.winbackStorage.isModeAvailable() else RandomEntity()

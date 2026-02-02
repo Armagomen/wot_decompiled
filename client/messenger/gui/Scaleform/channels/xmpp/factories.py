@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/gui/Scaleform/channels/xmpp/factories.py
 from messenger.gui.Scaleform.channels.xmpp import lobby_controllers
 from messenger.gui.interfaces import IControllerFactory
 from messenger.proto.xmpp import find_criteria
@@ -8,7 +10,7 @@ class LobbyControllersFactory(IControllerFactory):
 
     @storage_getter('channels')
     def channelsStorage(self):
-        return
+        return None
 
     def init(self):
         controllers = []

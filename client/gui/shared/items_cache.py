@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/items_cache.py
 from Event import Event
 from debug_utils import LOG_DEBUG
 from PlayerEvents import g_playerEvents

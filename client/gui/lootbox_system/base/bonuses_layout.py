@@ -1,4 +1,9 @@
-import copy, functools, logging, ResMgr
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/lootbox_system/base/bonuses_layout.py
+import copy
+import functools
+import logging
+import ResMgr
 from gui.impl.gen.view_models.views.lobby.lootbox_system.bonus_model import BonusRarity
 from gui.lootbox_system.base.bonuses_layout_helpers import BonusesHelper
 from gui.lootbox_system.base.common import BonusesLayoutAttrs, DEFAULT_EVENT_NAME
@@ -24,6 +29,10 @@ class BonusesLayout(object):
 
     def fini(self):
         self.__storage.clear()
+
+    def updateStorage(self):
+        self.__storage.clear()
+        self.__loadLayout()
 
     def getPriority(self, eventName, bonus=None):
         return int(self.__getParameter(eventName, BonusesLayoutAttrs.PRIORITY, _LEAST_PRIORITY, bonus))
@@ -82,14 +91,13 @@ def _parseSectionValues(storage, name, section):
     for sectionName, item in section.items():
         if sectionName == BonusesLayoutAttrs.PRIORITY:
             storage[name][sectionName] = item.asInt
-        elif sectionName == BonusesLayoutAttrs.RARITY:
+        if sectionName == BonusesLayoutAttrs.RARITY:
             storage[name][sectionName] = item.asString
-        elif sectionName == BonusesLayoutAttrs.VISIBILITY:
+        if sectionName == BonusesLayoutAttrs.VISIBILITY:
             storage[name][sectionName] = item.asBool
-        elif sectionName == BonusesLayoutAttrs.OVERRIDE:
+        if sectionName == BonusesLayoutAttrs.OVERRIDE:
             _parseOverride(storage[name], item)
-        else:
-            _parseSectionValues(storage[name], sectionName, item)
+        _parseSectionValues(storage[name], sectionName, item)
 
 
 def _parseOverride(storage, section):
@@ -98,11 +106,11 @@ def _parseOverride(storage, section):
     for name, item in section.items():
         if name == BonusesLayoutAttrs.PRIORITY:
             values[name] = item.asInt
-        elif name == BonusesLayoutAttrs.RARITY:
+        if name == BonusesLayoutAttrs.RARITY:
             values[name] = item.asString
-        elif name == BonusesLayoutAttrs.VISIBILITY:
+        if name == BonusesLayoutAttrs.VISIBILITY:
             values[name] = item.asBool
-        elif name == BonusesLayoutAttrs.ID:
+        if name == BonusesLayoutAttrs.ID:
             ids = item.asString
 
     names = ids.split(' ')
@@ -121,7 +129,6 @@ def _mergeDicts(destination, source):
                 continue
             if type(dstValue) is type(srcValue):
                 destination[key] = copy.deepcopy(srcValue)
-        else:
-            destination[key] = copy.deepcopy(source[key])
+        destination[key] = copy.deepcopy(source[key])
 
     return destination

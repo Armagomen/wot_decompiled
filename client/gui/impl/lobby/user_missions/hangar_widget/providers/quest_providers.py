@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hangar_widget/providers/quest_providers.py
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from config_schemas.umg import WeightsModel
 from config_schemas.umg_config import umgConfigSchema
@@ -10,7 +12,8 @@ from skeletons.gui.game_control import IHangarGuiController
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
 from helpers import dependency
-import typing, logging
+import typing
+import logging
 _logger = logging.getLogger(__name__)
 
 class QuestProviderBase(object):
@@ -56,7 +59,7 @@ class DailyQuestProvider(QuestProviderBase):
             rawQuests = self.storage.getDailyQuests().values()
             quests = []
             for raw in rawQuests:
-                levelKey = ('{}_{}').format(self._KEY, raw.getLevel())
+                levelKey = '{}_{}'.format(self._KEY, raw.getLevel())
                 weightConfig = self.config.getWeightByName(levelKey)
                 if weightConfig is None:
                     _logger.error('Invalid weightConfig %s', self._KEY)

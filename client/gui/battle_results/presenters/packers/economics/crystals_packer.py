@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_results/presenters/packers/economics/crystals_packer.py
 from gui.impl.gen import R
 from gui.battle_results.presenters.packers.economics.currency_packers import CurrencyPacker, CurrencyGroup
 from gui.battle_results.presenters.packers.economics.crystals_records import ORIGINAL_CRYSTALS, EVENT_CRYSTALS, AUTO_EQUIP_CRYSTALS, TOTAL_CRYSTALS

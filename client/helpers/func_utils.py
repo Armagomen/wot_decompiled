@@ -1,7 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/helpers/func_utils.py
 from collections import namedtuple
 from functools import partial, wraps
 from time import sleep, time
-import typing, BigWorld
+import typing
+import BigWorld
 from BWUtil import AsyncReturn
 from PlayerEvents import g_playerEvents
 from constants import IS_DEVELOPMENT
@@ -71,7 +74,7 @@ class CooldownCaller(object):
     __slots__ = ('__call', '__cooldown', '__paramsMerger', '__lock', '__delayedCalls')
 
     class _Lock(object):
-        __slots__ = ('__locked', )
+        __slots__ = ('__locked',)
 
         def __init__(self):
             self.__locked = False
@@ -158,8 +161,6 @@ def isDeveloperFunc(func):
 
     @wraps(func)
     def decorator(*args, **kwargs):
-        if not IS_DEVELOPMENT:
-            return
-        return func(*args, **kwargs)
+        return None if not IS_DEVELOPMENT else func(*args, **kwargs)
 
     return decorator

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/skeletons/gui/game_window_controller.py
 from adisp import adisp_process, adisp_async
 from gui.game_control.links import URLMacros
 from helpers import dependency

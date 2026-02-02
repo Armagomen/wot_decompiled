@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/__init__.py
 import logging
 from collections import defaultdict
 import nations
@@ -20,9 +22,8 @@ DEPTH_OF_PlayerBonusesPanel = 0.2
 DEPTH_OF_Aim = 0.6
 DEPTH_OF_GunMarker = 0.56
 DEPTH_OF_VehicleMarker = 0.9
-TANKMEN_ROLES_ORDER_DICT = {'plain': ('commander', 'gunner', 'driver', 'radioman', 'loader'), 
-   'enum': ('commander', 'gunner1', 'gunner2', 'driver', 'radioman1', 'radioman2', 'loader1',
- 'loader2')}
+TANKMEN_ROLES_ORDER_DICT = {'plain': ('commander', 'gunner', 'driver', 'radioman', 'loader'),
+ 'enum': ('commander', 'gunner1', 'gunner2', 'driver', 'radioman1', 'radioman2', 'loader1', 'loader2')}
 
 def onRepeatKeyEvent(event):
     safeCopy = frozenset(g_repeatKeyHandlers)
@@ -61,26 +62,19 @@ def nationCompareByName(first, second):
     if second is None:
         return -1
     else:
-        if first is None:
-            return 1
-        return GUI_NATIONS_ORDER_INDEX[first] - GUI_NATIONS_ORDER_INDEX[second]
+        return 1 if first is None else GUI_NATIONS_ORDER_INDEX[first] - GUI_NATIONS_ORDER_INDEX[second]
 
 
 def nationCompareByIndex(first, second):
 
     def getNationName(idx):
-        if idx != nations.NONE_INDEX:
-            return nations.NAMES[idx]
-        return NONE_NATION_NAME
+        return nations.NAMES[idx] if idx != nations.NONE_INDEX else NONE_NATION_NAME
 
     return nationCompareByName(getNationName(first), getNationName(second))
 
 
 def getNationIndex(nationOrderIndex):
-    if nationOrderIndex < len(GUI_NATIONS):
-        return nations.INDICES.get(GUI_NATIONS[nationOrderIndex])
-    else:
-        return
+    return nations.INDICES.get(GUI_NATIONS[nationOrderIndex]) if nationOrderIndex < len(GUI_NATIONS) else None
 
 
 HTML_TEMPLATES_DIR_PATH = 'gui/{0:>s}.xml'

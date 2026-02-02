@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hangar_widget/event_banners/pm3_event_banner.py
 from account_helpers.settings_core.settings_constants import PersonalMission3
 from gui.impl.gen import R
 from gui.impl import backport
@@ -13,9 +15,7 @@ class PM3BaseEventBanner(BaseEventBanner):
 
     @property
     def playAppearAnim(self):
-        if not isBannerAnimationShown(PersonalMission3.PM_BANNER_ANIMATION_KEY):
-            return True
-        return False
+        return True if not isBannerAnimationShown(PersonalMission3.PM_BANNER_ANIMATION_KEY) else False
 
     def onAppearAnimationPlayed(self):
         markBannerAnimationShown(PersonalMission3.PM_BANNER_ANIMATION_KEY)
@@ -34,9 +34,7 @@ class PM3EventBannerTeaser(PM3BaseEventBanner):
 
     @property
     def borderColor(self):
-        if isIntroShown(IntroKeys.MAIN_INTRO_VIEW.value):
-            return ''
-        return '#00FFAE'
+        return '' if isIntroShown(IntroKeys.MAIN_INTRO_VIEW.value) else '#00FFAE'
 
     def createToolTipContent(self, event):
         return PM3BannerTooltipView(bannerType=BannerTypeEnum.PM3ENTRYPOINTTEASER)

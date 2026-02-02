@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/gen/view_models/views/lobby/common/fun_random_mode_state_model.py
 from gui.impl.gen.view_models.views.lobby.hangar.mode_state_model import ModeStateModel
 
 class FunRandomModeStateModel(ModeStateModel):

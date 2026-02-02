@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/lobby/mode_selector/states.py
 from __future__ import absolute_import
 from frameworks.state_machine import StateFlags
 from fun_random.gui.feature.util.fun_mixins import FunAssetPacksMixin

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/xmpp/contacts/roster_tasks.py
 from messenger.m_constants import USER_ACTION_ID, USER_TAG, PROTO_TYPE, CLIENT_ACTION_ID
 from messenger.proto.events import g_messengerEvents
 from messenger.proto.xmpp import entities, errors
@@ -57,7 +59,7 @@ class RosterResultTask(SeqTask):
 
 
 class RosterItemTask(ContactTask):
-    __slots__ = ('_groups', )
+    __slots__ = ('_groups',)
 
     def __init__(self, jid, name='', groups=None):
         super(RosterItemTask, self).__init__(jid, name)
@@ -151,7 +153,7 @@ class EmptyGroupsTask(RosterItemTask):
 
 
 class ChangeRosterItemGroupsTask(RosterItemTask):
-    __slots__ = ('_exclude', )
+    __slots__ = ('_exclude',)
 
     def __init__(self, jid, name='', groups=None, exclude=None):
         super(ChangeRosterItemGroupsTask, self).__init__(jid, name, groups)
@@ -265,8 +267,7 @@ class ChangeRosterItemsGroupsChain(ChangeRosterItemGroupsTask, _RosterItemsGroup
 
     def clone(self):
         if self._chain:
-            tasks = [
-             ChangeRosterItemsGroupsChain(self._chain)]
+            tasks = [ChangeRosterItemsGroupsChain(self._chain)]
         else:
             tasks = []
         return tasks

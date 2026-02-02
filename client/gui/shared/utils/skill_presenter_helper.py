@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/utils/skill_presenter_helper.py
 import typing
 from debug_utils import LOG_WARNING
 from gui.impl import backport
@@ -9,9 +11,7 @@ if typing.TYPE_CHECKING:
     from typing import List, Tuple
 
 def getSkillIconName(skillName, customName=EMPTY_STRING):
-    if customName:
-        return customName
-    return skillName
+    return customName if customName else skillName
 
 
 def getSkillBigIconPath(skillName, customSkillName=EMPTY_STRING):
@@ -19,7 +19,7 @@ def getSkillBigIconPath(skillName, customSkillName=EMPTY_STRING):
     root = R.images.gui.maps.icons.tankmen.skills.big.dyn(iconName)
     if root.isValid():
         return backport.image(root())
-    LOG_WARNING(('no {}.png image in gui.maps.icons.tankmen.skills.big').format(iconName))
+    LOG_WARNING('no {}.png image in gui.maps.icons.tankmen.skills.big'.format(iconName))
     return EMPTY_STRING
 
 

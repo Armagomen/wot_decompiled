@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/lobby_state_machine/transitions.py
 from __future__ import absolute_import
 import sys
 from frameworks.state_machine import StateEvent, BaseTransition, State
@@ -17,9 +19,7 @@ class NavigationTransition(BaseTransition):
         return isinstance(event, NavigationEvent) and event.targetStateID == targetStateID
 
     def getPriority(self):
-        if self.record:
-            return 1
-        return 0
+        return 1 if self.record else 0
 
 
 class GuardTransition(NavigationTransition):
@@ -34,13 +34,11 @@ class GuardTransition(NavigationTransition):
     def execute(self, event):
         if not isinstance(event, NavigationEvent) or isinstance(event, _StopEvent):
             return False
-        parent = self.getSource()
-        machine = parent.getMachine()
-        target = first((state for state in machine.getRecursiveChildrenStates() if state.getStateID() == event.targetStateID), default=None)
-        if target and machine.findOwningSubtree(self.getSource()) is not machine.findOwningSubtree(target):
-            return super(GuardTransition, self).execute(event)
         else:
-            return self.condition(event)
+            parent = self.getSource()
+            machine = parent.getMachine()
+            target = first((state for state in machine.getRecursiveChildrenStates() if state.getStateID() == event.targetStateID), default=None)
+            return super(GuardTransition, self).execute(event) if target and machine.findOwningSubtree(self.getSource()) is not machine.findOwningSubtree(target) else self.condition(event)
 
 
 class HijackTransition(GuardTransition):

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/skeletons/gui/shared/utils/requesters.py
 import typing
 if typing.TYPE_CHECKING:
     from typing import Dict, Generator, List, NamedTuple, Optional, Sequence, Set, Tuple, Union

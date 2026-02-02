@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/achievements/catalog_view.py
 from functools import partial
 import typing
 from PlayerEvents import g_playerEvents
@@ -26,8 +28,7 @@ if typing.TYPE_CHECKING:
     from gui.impl.gen.view_models.views.lobby.achievements.views.catalog.details_model import DetailsModel
 
 class CatalogView(ViewImpl):
-    __slots__ = ('__tooltipData', '__closeCallback', '__breadcrumbAchievementIDs',
-                 '__achievementCategory', '__uiLogging', '__uiParentScreen', '__mainViewCallback')
+    __slots__ = ('__tooltipData', '__closeCallback', '__breadcrumbAchievementIDs', '__achievementCategory', '__uiLogging', '__uiParentScreen', '__mainViewCallback')
     __achievementsController = dependency.descriptor(IAchievementsController)
     __customizationService = dependency.descriptor(ICustomizationService)
     __appLoader = dependency.descriptor(IAppLoader)
@@ -53,31 +54,20 @@ class CatalogView(ViewImpl):
         return super(CatalogView, self).getViewModel()
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onClose, self.__onClose),
-         (
-          self.viewModel.onBreadcrumbClick, self.__onBreadcrumbClick),
-         (
-          self.viewModel.onCatalogClick, self.__onCatalogClick),
-         (
-          self.viewModel.onStylePreview, self.__onStylePreview),
-         (
-          self.viewModel.onPurchaseVehicleClick, self.__onPurchaseVehicleClick),
-         (
-          self.viewModel.onCardClick, self.__onCardClick),
-         (
-          self.viewModel.onHintClose, self.__onHintClose),
-         (
-          self.viewModel.onCardHover, self.__onCardHover),
-         (
-          self.viewModel.onDogTagPreview, self.__onDogTagPreview),
-         (
-          g_playerEvents.onDisconnected, self.destroyWindow))
+        return ((self.viewModel.onClose, self.__onClose),
+         (self.viewModel.onBreadcrumbClick, self.__onBreadcrumbClick),
+         (self.viewModel.onCatalogClick, self.__onCatalogClick),
+         (self.viewModel.onStylePreview, self.__onStylePreview),
+         (self.viewModel.onPurchaseVehicleClick, self.__onPurchaseVehicleClick),
+         (self.viewModel.onCardClick, self.__onCardClick),
+         (self.viewModel.onHintClose, self.__onHintClose),
+         (self.viewModel.onCardHover, self.__onCardHover),
+         (self.viewModel.onDogTagPreview, self.__onDogTagPreview),
+         (g_playerEvents.onDisconnected, self.destroyWindow))
 
     @createTooltipContentDecorator(AdvancedAchievementViewKey.CATALOG)
     def createToolTipContent(self, event, contentID):
-        return
+        return None
 
     @createBackportTooltipDecorator()
     def createToolTip(self, event):
@@ -85,10 +75,7 @@ class CatalogView(ViewImpl):
 
     def getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        if tooltipId is None:
-            return
-        else:
-            return self.__tooltipData.get(tooltipId)
+        return None if tooltipId is None else self.__tooltipData.get(tooltipId)
 
     def _onLoading(self, *args, **kwargs):
         self.__updatePage()
@@ -108,7 +95,7 @@ class CatalogView(ViewImpl):
 
     def __updatePage(self):
         self.__tooltipData.clear()
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             self.__updateAchievementScore(model)
             self.__updateBreadcrumbs(model)
             self.__updateAchievements(model)
@@ -127,13 +114,12 @@ class CatalogView(ViewImpl):
                 breadcrumbModel.setAchievementId(TROPHIES_ACHIEVEMENT_ID)
                 breadcrumbModel.setKey(trophiesData['key'])
                 breadcrumbs.addViewModel(breadcrumbModel)
-            else:
-                breadcrumbs.addViewModel(fillBreadcrumbModel(self.__achievementsController.getAchievementByID(achievementID, self.__achievementCategory)))
+            breadcrumbs.addViewModel(fillBreadcrumbModel(self.__achievementsController.getAchievementByID(achievementID, self.__achievementCategory)))
 
         breadcrumbs.invalidate()
 
     def __updateAchievements(self, model):
-        descriptionAchievementID = self.__breadcrumbAchievementIDs[(-1)]
+        descriptionAchievementID = self.__breadcrumbAchievementIDs[-1]
         if descriptionAchievementID == TROPHIES_ACHIEVEMENT_ID:
             self.__updateTrophiesDescription(model)
             self.__updateAchievementsList(model, self.__achievementsController.getTrophiesAchievements())
@@ -155,14 +141,14 @@ class CatalogView(ViewImpl):
         detailsModel.setIsTrophy(trophiesData['isTrophy'])
 
     def __updateAchievementsList(self, model, achievements):
-        with model.getAchievementsList().transaction() as (achievementsList):
+        with model.getAchievementsList().transaction() as achievementsList:
             achievementsList.clear()
             for achievement in achievements:
                 bubbleCount = self.__getAchievementBubbles(achievement)
                 achievementsList.addViewModel(fillAchievementCardModel(achievement, self.__tooltipData, bubbleCount))
 
     def __getAchievementBubbles(self, achievement):
-        descriptionAchievementID = self.__breadcrumbAchievementIDs[(-1)]
+        descriptionAchievementID = self.__breadcrumbAchievementIDs[-1]
         if descriptionAchievementID == TROPHIES_ACHIEVEMENT_ID:
             if achievement.getID() not in self.__achievementsController.getSeenTrophiesAdvancedAchievements(achievement.getCategory()):
                 return 1
@@ -170,7 +156,7 @@ class CatalogView(ViewImpl):
         return self.__achievementsController.getUnseenAdvancedAchievementsCount(achievement.getCategory(), achievement.getID())
 
     def __navigateToBreadcrumb(self, achievementID):
-        while self.__breadcrumbAchievementIDs[(-1)] != achievementID:
+        while self.__breadcrumbAchievementIDs[-1] != achievementID:
             self.__breadcrumbAchievementIDs.pop()
 
     def __addBreadcrumb(self, achievementID):
@@ -212,14 +198,14 @@ class CatalogView(ViewImpl):
     def __onCardHover(self, args):
         achievementId = int(args['achievementId'])
         category = args['achievementCategory']
-        if self.__breadcrumbAchievementIDs[(-1)] == TROPHIES_ACHIEVEMENT_ID:
+        if self.__breadcrumbAchievementIDs[-1] == TROPHIES_ACHIEVEMENT_ID:
             if achievementId not in self.__achievementsController.getSeenTrophiesAdvancedAchievements(category):
                 self.__achievementsController.seeUnseenTrophiesAdvancedAchievement(category, achievementId)
-                with self.viewModel.transaction() as (model):
+                with self.viewModel.transaction() as model:
                     self.__updateAchievements(model)
         elif achievementId in self.__achievementsController.getUnseenAdvancedAchievements(category):
             self.__achievementsController.seeUnseenAdvancedAchievement(category, achievementId)
-            with self.viewModel.transaction() as (model):
+            with self.viewModel.transaction() as model:
                 self.__updateAchievements(model)
 
     def __onDogTagPreview(self, args):

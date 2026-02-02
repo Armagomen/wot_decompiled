@@ -1,5 +1,11 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/hangar/presenters/loadout_presenter.py
 from __future__ import absolute_import
-import json, logging, typing, Event, adisp
+import json
+import logging
+import typing
+import Event
+import adisp
 from PlayerEvents import g_playerEvents
 from CurrentVehicle import g_currentVehicle
 from constants import LoadoutParams
@@ -39,22 +45,16 @@ if typing.TYPE_CHECKING:
 _logger = logging.getLogger(__name__)
 
 def _getSectionNameByIndices(groupIndex, sectionIndex):
-    sectionNameMap = {0: {0: TankSetupConstants.OPT_DEVICES, 
-           1: TankSetupConstants.BATTLE_BOOSTERS}, 
-       1: {0: TankSetupConstants.SHELLS, 
-           1: TankSetupConstants.CONSUMABLES}}
+    sectionNameMap = {0: {0: TankSetupConstants.OPT_DEVICES,
+         1: TankSetupConstants.BATTLE_BOOSTERS},
+     1: {0: TankSetupConstants.SHELLS,
+         1: TankSetupConstants.CONSUMABLES}}
     return sectionNameMap.get(groupIndex, {}).get(sectionIndex, '')
 
 
 class _LoadoutStatesObserver(BaseStateObserver):
     __loadoutController = dependency.descriptor(ILoadoutController)
-    _GROUP_SECTIONS_NAMES = [
-     [
-      TankSetupConstants.OPT_DEVICES,
-      TankSetupConstants.BATTLE_BOOSTERS],
-     [
-      TankSetupConstants.SHELLS,
-      TankSetupConstants.CONSUMABLES]]
+    _GROUP_SECTIONS_NAMES = [[TankSetupConstants.OPT_DEVICES, TankSetupConstants.BATTLE_BOOSTERS], [TankSetupConstants.SHELLS, TankSetupConstants.CONSUMABLES]]
 
     def __init__(self):
         super(_LoadoutStatesObserver, self).__init__()
@@ -75,8 +75,9 @@ class _LoadoutStatesObserver(BaseStateObserver):
                 self.onPanelSlotSelect('', None, AmmunitionPanelModel.NO_SLOT_SELECTED)
                 self.__loadoutController.clearInteractor()
             return
-        super(_LoadoutStatesObserver, self).onStateChanged(state, stateEntered, event)
-        return
+        else:
+            super(_LoadoutStatesObserver, self).onStateChanged(state, stateEntered, event)
+            return
 
     def onEnterState(self, state, event):
         groupIndex = event.params.get(LoadoutParams.groupIndex)
@@ -124,45 +125,35 @@ class LoadoutPresenter(ViewComponent[AmmunitionPanelModel]):
 
     @prbDispatcherProperty
     def prbDispatcher(self):
-        return
+        return None
 
     def _getChildComponents(self):
         hangar = R.aliases.hangar.shared
-        return {hangar.Equipments(): lambda : EquipmentsPresenter(self._vehInteractingItem), 
-           hangar.Instructions(): lambda : InstructionsPresenter(self._vehInteractingItem), 
-           hangar.Shells(): lambda : ShellsPresenter(self._vehInteractingItem), 
-           hangar.Consumables(): lambda : ConsumablesPresenter(self._vehInteractingItem)}
+        return {hangar.Equipments(): lambda : EquipmentsPresenter(self._vehInteractingItem),
+         hangar.Instructions(): lambda : InstructionsPresenter(self._vehInteractingItem),
+         hangar.Shells(): lambda : ShellsPresenter(self._vehInteractingItem),
+         hangar.Consumables(): lambda : ConsumablesPresenter(self._vehInteractingItem)}
+
+    @property
+    def _getGroupControllerCls(self):
+        return HangarAmmunitionGroupsController
 
     def _getEvents(self):
         model = self.getViewModel()
-        return super(LoadoutPresenter, self)._getEvents() + (
-         (
-          g_currentVehicle.onChanged, self.__onVehicleChanged),
-         (
-          self.__platoonCtrl.onMembersUpdate, self.__onMembersUpdate),
-         (
-          self.__slotSelectionObserver.onPanelSlotSelect, self.__onPanelSlotSelect),
-         (
-          self.__itemsCache.onSyncCompleted, self.__onCacheResync),
-         (
-          model.onChangeSetupIndex, self.__onChangeSetupIndex),
-         (
-          model.onOpenSlotSpecDialog, self.__onSpecializationSelect),
-         (
-          self._vehInteractingItem.onItemUpdated, self.__onItemUpdated),
-         (
-          self._vehInteractingItem.onAcceptComplete, self.__onAcceptComplete),
-         (
-          self._vehInteractingItem.onRevert, self.__onRevert),
-         (
-          g_playerEvents.onKickedFromPrebattle, self.__onKickedFromPrebattle),
-         (
-          g_playerEvents.onPrebattleLeft, self.__onPrebattleLeft))
+        return super(LoadoutPresenter, self)._getEvents() + ((g_currentVehicle.onChanged, self.__onVehicleChanged),
+         (self.__platoonCtrl.onMembersUpdate, self.__onMembersUpdate),
+         (self.__slotSelectionObserver.onPanelSlotSelect, self.__onPanelSlotSelect),
+         (self.__itemsCache.onSyncCompleted, self.__onCacheResync),
+         (model.onChangeSetupIndex, self.__onChangeSetupIndex),
+         (model.onOpenSlotSpecDialog, self.__onSpecializationSelect),
+         (self._vehInteractingItem.onItemUpdated, self.__onItemUpdated),
+         (self._vehInteractingItem.onAcceptComplete, self.__onAcceptComplete),
+         (self._vehInteractingItem.onRevert, self.__onRevert),
+         (g_playerEvents.onKickedFromPrebattle, self.__onKickedFromPrebattle),
+         (g_playerEvents.onPrebattleLeft, self.__onPrebattleLeft))
 
     def _getListeners(self):
-        return (
-         (
-          events.PrbActionEvent.LEAVE, self.__onDoLeaveAction, EVENT_BUS_SCOPE.LOBBY),)
+        return ((events.PrbActionEvent.LEAVE, self.__onDoLeaveAction, EVENT_BUS_SCOPE.LOBBY),)
 
     def _onLoading(self, *args, **kwargs):
         lsm = getLobbyStateMachine()
@@ -193,19 +184,21 @@ class LoadoutPresenter(ViewComponent[AmmunitionPanelModel]):
 
     def __getBackportTooltipData(self, event):
         tooltipId = event.getArgument('tooltip')
-        if tooltipId == TOOLTIPS_CONSTANTS.HANGAR_SLOT_SPEC:
-            return getSlotSpecTooltipData(event, tooltipId)
-        return getSlotTooltipData(event, self._vehInteractingItem.getItem(), self.getViewModel().getSelectedSlot(), self.__currentSectionName)
+        return getSlotSpecTooltipData(event, tooltipId) if tooltipId == TOOLTIPS_CONSTANTS.HANGAR_SLOT_SPEC else getSlotTooltipData(event, self._vehInteractingItem.getItem(), self.getViewModel().getSelectedSlot(), self.__currentSectionName)
 
     def __updateModel(self, recreate=False, sectionName=None):
-        with self.getViewModel().transaction() as (panelModel):
+        with self.getViewModel().transaction() as panelModel:
             if recreate:
                 self.__ammunitionGroupsController.createGroupsModels(panelModel.getGroups())
             elif sectionName is not None:
                 self.__ammunitionGroupsController.updateGroupSectionModel(sectionName, panelModel.getGroups())
             else:
                 self.__ammunitionGroupsController.updateGroupsModels(panelModel.getGroups())
-            panelModel.setVehicleId(str(g_currentVehicle.intCD) if g_currentVehicle.isPresent() else '')
+            if g_currentVehicle.isPresent():
+                panelModel.setVehicleId(str(g_currentVehicle.intCD))
+                panelModel.setHasVehSkillTree(g_currentVehicle.item.postProgression.isVehSkillTree())
+            else:
+                panelModel.setVehicleId('')
             panelModel.setIsDisabled(not self.__canChangeVehicle() or self.__isAmmunitionPanelDisabled())
             if self.__currentSlotIndex is not None:
                 panelModel.setSelectedSlot(self.__currentSlotIndex)
@@ -291,7 +284,7 @@ class LoadoutPresenter(ViewComponent[AmmunitionPanelModel]):
             eqPairs.add((vehicle.optDevices, currentVehicle.optDevices))
             eqPairs.add((vehicle.battleBoosters, currentVehicle.battleBoosters))
         else:
-            raise SoftException(('Vehicle setup group id must match for any type of equipments. groupID {}').format(groupID))
+            raise SoftException('Vehicle setup group id must match for any type of equipments. groupID {}'.format(groupID))
         return eqPairs
 
     def __updateAmmunitionGroupsController(self, recreate=False, sectionName=None):
@@ -300,7 +293,7 @@ class LoadoutPresenter(ViewComponent[AmmunitionPanelModel]):
         if self.__ammunitionGroupsController:
             self.__ammunitionGroupsController.updateVehicle(self.__getVehicle())
         else:
-            self.__ammunitionGroupsController = HangarAmmunitionGroupsController(self.__getVehicle())
+            self.__ammunitionGroupsController = self._getGroupControllerCls(self.__getVehicle())
         self.__updateModel(recreate, sectionName)
 
     @staticmethod
@@ -360,7 +353,7 @@ class LoadoutPresenter(ViewComponent[AmmunitionPanelModel]):
         self.__currentSlotIndex = slotIndex
         sectionSwitched = sectionName != self.__currentSectionName
         self.__currentSectionName = sectionName
-        with self.getViewModel().transaction() as (panelModel):
+        with self.getViewModel().transaction() as panelModel:
             panelModel.setSelectedSlot(self.__currentSlotIndex)
             panelModel.setSelectedSection(self.__currentSectionName)
         self.__loadoutController.onSlotSelected(slotIndex=slotIndex if self.__currentSlotIndex != AmmunitionPanelModel.NO_SLOT_SELECTED else 0, sectionName=sectionName, sectionSwitched=sectionSwitched)

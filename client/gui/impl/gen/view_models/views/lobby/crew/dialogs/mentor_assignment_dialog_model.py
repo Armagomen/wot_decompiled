@@ -1,8 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/crew/dialogs/mentor_assignment_dialog_model.py
 from gui.impl.gen.view_models.views.dialogs.dialog_template_view_model import DialogTemplateViewModel
 from gui.impl.gen.view_models.views.lobby.crew.dialogs.mentor_assignment_tankman_model import MentorAssignmentTankmanModel
 
 class MentorAssignmentDialogModel(DialogTemplateViewModel):
-    __slots__ = ('onInputChange', )
+    __slots__ = ('onInputChange',)
 
     def __init__(self, properties=14, commands=3):
         super(MentorAssignmentDialogModel, self).__init__(properties=properties, commands=commands)

@@ -1,4 +1,8 @@
-import BigWorld, CGF, Math
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/abilities/shot_passion.py
+import BigWorld
+import CGF
+import Math
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from battle_royale.gui.constants import BattleRoyaleEquipments
 from cgf_script.bonus_caps_rules import bonusCapsManager
@@ -7,7 +11,8 @@ from cgf_script.managers_registrator import onAddedQuery, onRemovedQuery
 from constants import IS_CLIENT
 from Event import EventsSubscriber
 from helpers import dependency
-import math_utils, GenericComponents
+import math_utils
+import GenericComponents
 from items import vehicles
 from skeletons.gui.battle_session import IBattleSessionProvider
 from vehicle_systems.model_assembler import loadAppearancePrefab
@@ -26,13 +31,12 @@ else:
         pass
 
 
-_GUN_LENGTH_RANGES = {'short': (0.0, 3.7), 
-   'med': (3.7, 4.2), 
-   'med_02': (4.2, 5.0), 
-   'long': (
-          5.0, float('inf'))}
-_NODE_NAME_IDX = {TankNodeNames.TURRET_JOINT: 0, 
-   TankNodeNames.GUN_INCLINATION: 1}
+_GUN_LENGTH_RANGES = {'short': (0.0, 3.7),
+ 'med': (3.7, 4.2),
+ 'med_02': (4.2, 5.0),
+ 'long': (5.0, float('inf'))}
+_NODE_NAME_IDX = {TankNodeNames.TURRET_JOINT: 0,
+ TankNodeNames.GUN_INCLINATION: 1}
 
 @registerComponent
 class ShotPassionComponent(object):

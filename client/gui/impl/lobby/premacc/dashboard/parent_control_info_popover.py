@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/premacc/dashboard/parent_control_info_popover.py
 from adisp import adisp_process
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/RankedBattlesSeasonCompleteViewMeta.py
 from gui.Scaleform.daapi.view.meta.WrapperViewMeta import WrapperViewMeta
 
 class RankedBattlesSeasonCompleteViewMeta(WrapperViewMeta):
@@ -12,13 +14,10 @@ class RankedBattlesSeasonCompleteViewMeta(WrapperViewMeta):
         self._printOverrideError('onSoundTrigger')
 
     def as_setDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setData(data)
+        return self.flashObject.as_setData(data) if self._isDAAPIInited() else None
 
     def as_setPlaceS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setPlace(value)
+        return self.flashObject.as_setPlace(value) if self._isDAAPIInited() else None
 
     def as_setAwardsDataS(self, awardsData):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setAwardsData(awardsData)
+        return self.flashObject.as_setAwardsData(awardsData) if self._isDAAPIInited() else None

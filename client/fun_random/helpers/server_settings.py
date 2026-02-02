@@ -1,12 +1,12 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/helpers/server_settings.py
 from __future__ import absolute_import
 from collections import namedtuple
 from future.utils import viewitems
 from fun_random_common.fun_constants import DEFAULT_ASSETS_PACK, DEFAULT_SETTINGS_KEY, DEFAULT_PRIORITY, UNKNOWN_WWISE_REMAPPING, UNKNOWN_EVENT_ID, FunSubModeImpl
 from shared_utils import makeTupleByDict
 
-class FunSubModeClientConfig(namedtuple('_FunSubModeClientConfig', ('subModeImpl', 'assetsPointer', 'settingsKey',
-                                       'priority', 'wwiseRemapping', 'battleModifiersDescr',
-                                       'postbattle', 'infoPageUrl', 'performanceAnalyzerType'))):
+class FunSubModeClientConfig(namedtuple('_FunSubModeClientConfig', ('subModeImpl', 'assetsPointer', 'settingsKey', 'priority', 'wwiseRemapping', 'battleModifiersDescr', 'postbattle', 'infoPageUrl', 'performanceAnalyzerType'))):
     __slots__ = ()
 
     def __new__(cls, **kwargs):
@@ -19,8 +19,7 @@ class FunSubModeClientConfig(namedtuple('_FunSubModeClientConfig', ('subModeImpl
         return cls(FunSubModeImpl.DEFAULT, DEFAULT_ASSETS_PACK, DEFAULT_SETTINGS_KEY, DEFAULT_PRIORITY, UNKNOWN_WWISE_REMAPPING, (), {}, '', '')
 
 
-class FunSubModeFiltrationConfig(namedtuple('FunSubModeFiltrationConfig', ('levels', 'forbiddenClassTags', 'forbiddenVehTypes',
-                                          'allowedVehTypes', 'squadRestrictions'))):
+class FunSubModeFiltrationConfig(namedtuple('FunSubModeFiltrationConfig', ('levels', 'forbiddenClassTags', 'forbiddenVehTypes', 'allowedVehTypes', 'squadRestrictions'))):
     __slots__ = ()
 
     def __new__(cls, **kwargs):
@@ -33,8 +32,7 @@ class FunSubModeFiltrationConfig(namedtuple('FunSubModeFiltrationConfig', ('leve
         return cls((), set(), set(), set())
 
 
-class FunSubModeSeasonalityConfig(namedtuple('FunSubModeSeasonalityConfig', ('isEnabled', 'peripheryIDs', 'seasons',
-                                           'primeTimes', 'cycleTimes'))):
+class FunSubModeSeasonalityConfig(namedtuple('FunSubModeSeasonalityConfig', ('isEnabled', 'peripheryIDs', 'seasons', 'primeTimes', 'cycleTimes'))):
     __slots__ = ()
 
     def __new__(cls, **kwargs):
@@ -56,8 +54,7 @@ class FunSubModeSeasonalityConfig(namedtuple('FunSubModeSeasonalityConfig', ('is
         data['seasons'] = {int(seasonID):value for seasonID, value in viewitems(data['seasons'])}
 
 
-class FunSubModeConfig(namedtuple('_FunSubModeConfig', ('eventID', 'isEnabled', 'seasonality', 'filtration',
-                                 'client'))):
+class FunSubModeConfig(namedtuple('_FunSubModeConfig', ('eventID', 'isEnabled', 'seasonality', 'filtration', 'client'))):
     __slots__ = ()
 
     def __new__(cls, **kwargs):
@@ -76,15 +73,14 @@ class FunSubModeConfig(namedtuple('_FunSubModeConfig', ('eventID', 'isEnabled', 
 
     @classmethod
     def __filterAllowedFields(cls, data, allowedFields):
-        return dict((k, v) for k, v in viewitems(data) if k in allowedFields)
+        return dict(((k, v) for k, v in viewitems(data) if k in allowedFields))
 
     @classmethod
     def __packConfigPart(cls, configPartCls, configPartName, data):
         data[configPartName] = makeTupleByDict(configPartCls, data)
 
 
-class FunProgressionConfig(namedtuple('_FunProgressionConfig', ('name', 'executors', 'triggers', 'unlimitedTrigger',
-                                     'unlimitedExecutor', 'visibleLBAwardsNames'))):
+class FunProgressionConfig(namedtuple('_FunProgressionConfig', ('name', 'executors', 'triggers', 'unlimitedTrigger', 'unlimitedExecutor', 'visibleLBAwardsNames'))):
     __slots__ = ()
 
     def __new__(cls, **kwargs):
@@ -112,11 +108,10 @@ class FunMetaProgressionConfig(namedtuple('_FunMetaProgressionConfig', ('isEnabl
 
     @classmethod
     def __packProgressionsConfigs(cls, data):
-        data['progressions'] = tuple(makeTupleByDict(FunProgressionConfig, p) for p in data['progressions'])
+        data['progressions'] = tuple((makeTupleByDict(FunProgressionConfig, p) for p in data['progressions']))
 
 
-class FunRandomConfig(namedtuple('_FunRandomConfig', ('isEnabled', 'subModes', 'metaProgression', 'assetsPointer',
-                                'settingsKey', 'infoPageUrl'))):
+class FunRandomConfig(namedtuple('_FunRandomConfig', ('isEnabled', 'subModes', 'metaProgression', 'assetsPointer', 'settingsKey', 'infoPageUrl'))):
     __slots__ = ()
 
     def __new__(cls, **kwargs):
@@ -140,7 +135,7 @@ class FunRandomConfig(namedtuple('_FunRandomConfig', ('isEnabled', 'subModes', '
 
     @classmethod
     def __filterAllowedFields(cls, data, allowedFields):
-        return dict((k, v) for k, v in viewitems(data) if k in allowedFields)
+        return dict(((k, v) for k, v in viewitems(data) if k in allowedFields))
 
     @classmethod
     def __packMetaProgressionConfig(cls, data):
@@ -151,5 +146,5 @@ class FunRandomConfig(namedtuple('_FunRandomConfig', ('isEnabled', 'subModes', '
     @classmethod
     def __packSubModesConfigs(cls, data):
         events = data['events'] if data['isEnabled'] else {}
-        data['subModes'] = {int(eID):FunSubModeConfig(**eData) for eID, eData in viewitems(events) if eData.get('isEnabled', False) and eData.get('eventID', UNKNOWN_EVENT_ID) if eData.get('isEnabled', False) and eData.get('eventID', UNKNOWN_EVENT_ID)}
+        data['subModes'] = {int(eID):FunSubModeConfig(**eData) for eID, eData in viewitems(events) if eData.get('isEnabled', False) and eData.get('eventID', UNKNOWN_EVENT_ID)}
         return data

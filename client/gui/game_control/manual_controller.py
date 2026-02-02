@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/manual_controller.py
 import logging
 from account_helpers.AccountSettings import AccountSettings, LOBBY_MENU_MANUAL_TRIGGER_SHOWN
 from gui.Scaleform.daapi.view.lobby.manual.states import ManualState, ManualChapterState
@@ -33,7 +35,7 @@ class ManualController(IManualController):
 
     @sf_lobby
     def app(self):
-        return
+        return None
 
     def getChaptersUIData(self):
         chaptersUIData = [ i['uiData'] for i in self.__getChapters() ]
@@ -51,9 +53,7 @@ class ManualController(IManualController):
         return currentChapter
 
     def pageFilter(self, pageType):
-        if pageType == ManualPageTypes.MAPS_TRAINING_PAGE:
-            return self.lobbyContext.getServerSettings().isMapsTrainingEnabled()
-        return True
+        return self.lobbyContext.getServerSettings().isMapsTrainingEnabled() if pageType == ManualPageTypes.MAPS_TRAINING_PAGE else True
 
     def clear(self):
         self.__chapters = None
@@ -107,9 +107,7 @@ class ManualController(IManualController):
 
     def getNewContentCount(self):
         number = self.__countNewContent()
-        if number and AccountSettings.getManualData(LOBBY_MENU_MANUAL_TRIGGER_SHOWN):
-            return number
-        return 0
+        return number if number and AccountSettings.getManualData(LOBBY_MENU_MANUAL_TRIGGER_SHOWN) else 0
 
     def __getChapters(self):
         if self.__chapters is None:
@@ -130,4 +128,4 @@ class ManualController(IManualController):
         return
 
     def __countNewContent(self):
-        return sum(len(i) for i in AccountSettings.getManualUnreadPages())
+        return sum((len(i) for i in AccountSettings.getManualUnreadPages()))

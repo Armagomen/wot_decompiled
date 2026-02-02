@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/battle/observer_players_panel.py
 import BigWorld
 from battle_royale.gui.Scaleform.daapi.view.battle.shared.utils import getVehicleLevel
 from Event import EventsSubscriber
@@ -120,9 +122,16 @@ class ObserverPlayersPanel(IBattleFieldListener, IArenaVehiclesController, Battl
         self.__panelUpdate()
 
     def __convertToUIVo(self, inData):
-        requiredFields = [
-         'isAlive', 'playerName', 'vehicleID', 'teamIndex', 'vehicleLevel',
-         'vehicleTypeIcon', 'vehicleName', 'fragsCount', 'isObserved', 'hasRespawn']
+        requiredFields = ['isAlive',
+         'playerName',
+         'vehicleID',
+         'teamIndex',
+         'vehicleLevel',
+         'vehicleTypeIcon',
+         'vehicleName',
+         'fragsCount',
+         'isObserved',
+         'hasRespawn']
         return {key:value for key, value in inData.items() if key in requiredFields}
 
     def __getPlayerData(self, vehicleID):
@@ -137,9 +146,7 @@ class ObserverPlayersPanel(IBattleFieldListener, IArenaVehiclesController, Battl
 
     def __updateStats(self, vStats):
         data = self.__getPlayerData(vStats.vehicleID)
-        if not data:
-            return False
-        return _comapareAndSet(data, 'fragsCount', self.__getFrags(vStats))
+        return False if not data else _comapareAndSet(data, 'fragsCount', self.__getFrags(vStats))
 
     def __updateInfo(self, vInfo):
         data = self.__getPlayerData(vInfo.vehicleID)
@@ -152,8 +159,10 @@ class ObserverPlayersPanel(IBattleFieldListener, IArenaVehiclesController, Battl
         return updated
 
     def __panelUpdate(self):
-        outList = [ ((p['rank'], p['teamIndex'], not p['isCommander'], p['playerName']), self.__convertToUIVo(p)) for p in self.__playerList.itervalues()
-                  ]
+        outList = [ ((p['rank'],
+          p['teamIndex'],
+          not p['isCommander'],
+          p['playerName']), self.__convertToUIVo(p)) for p in self.__playerList.itervalues() ]
         outList.sort()
         deadsIdx = next((idx for idx, item in enumerate(outList) if item[0][0] > 0 and not item[1]['isAlive']), -1)
         self.as_setPlayersDataS([ item[1] for item in outList ], deadsIdx)
@@ -177,24 +186,22 @@ class ObserverPlayersPanel(IBattleFieldListener, IArenaVehiclesController, Battl
     def __getFrags(self, vStats):
         if not vStats:
             return ''
-        if vStats.frags != 0:
-            return str(vStats.frags)
-        return ''
+        return str(vStats.frags) if vStats.frags != 0 else ''
 
     def __makeVOData(self, vInfo, vStats, isCommander):
-        return {'isAlive': vInfo.isAlive(), 
-           'playerName': vInfo.player.name, 
-           'vehicleID': vInfo.vehicleID, 
-           'teamIndex': vInfo.team, 
-           'vehicleLevel': int2roman(getVehicleLevel(vInfo.vehicleType)), 
-           'vehicleTypeIcon': getTypeVPanelIconPath(vInfo.vehicleType.classTag), 
-           'vehicleName': vInfo.vehicleType.name, 
-           'hasRespawn': False, 
-           'fragsCount': self.__getFrags(vStats), 
-           'rank': 0, 
-           'isCommander': isCommander, 
-           'isObserved ': False, 
-           'strCompactDescr': vInfo.vehicleType.strCompactDescr}
+        return {'isAlive': vInfo.isAlive(),
+         'playerName': vInfo.player.name,
+         'vehicleID': vInfo.vehicleID,
+         'teamIndex': vInfo.team,
+         'vehicleLevel': int2roman(getVehicleLevel(vInfo.vehicleType)),
+         'vehicleTypeIcon': getTypeVPanelIconPath(vInfo.vehicleType.classTag),
+         'vehicleName': vInfo.vehicleType.name,
+         'hasRespawn': False,
+         'fragsCount': self.__getFrags(vStats),
+         'rank': 0,
+         'isCommander': isCommander,
+         'isObserved ': False,
+         'strCompactDescr': vInfo.vehicleType.strCompactDescr}
 
     def __onTeamsMayRespawnChanged(self, teamsWithRespawn):
         self.__updateTeamRespawns(teamsWithRespawn)

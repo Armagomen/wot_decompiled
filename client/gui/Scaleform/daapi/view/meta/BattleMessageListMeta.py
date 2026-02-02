@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/BattleMessageListMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class BattleMessageListMeta(BaseDAAPIComponent):
@@ -6,37 +8,28 @@ class BattleMessageListMeta(BaseDAAPIComponent):
         self._printOverrideError('onRefreshComplete')
 
     def as_setupListS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setupList(data)
+        return self.flashObject.as_setupList(data) if self._isDAAPIInited() else None
 
     def as_clearS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_clear()
+        return self.flashObject.as_clear() if self._isDAAPIInited() else None
 
     def as_refreshS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_refresh()
+        return self.flashObject.as_refresh() if self._isDAAPIInited() else None
 
     def as_showYellowMessageS(self, key, text):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showYellowMessage(key, text)
+        return self.flashObject.as_showYellowMessage(key, text) if self._isDAAPIInited() else None
 
     def as_showRedMessageS(self, key, text):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showRedMessage(key, text)
+        return self.flashObject.as_showRedMessage(key, text) if self._isDAAPIInited() else None
 
     def as_showPurpleMessageS(self, key, text):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showPurpleMessage(key, text)
+        return self.flashObject.as_showPurpleMessage(key, text) if self._isDAAPIInited() else None
 
     def as_showGreenMessageS(self, key, text):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showGreenMessage(key, text)
+        return self.flashObject.as_showGreenMessage(key, text) if self._isDAAPIInited() else None
 
     def as_showGoldMessageS(self, key, text):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showGoldMessage(key, text)
+        return self.flashObject.as_showGoldMessage(key, text) if self._isDAAPIInited() else None
 
     def as_showSelfMessageS(self, key, text):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showSelfMessage(key, text)
+        return self.flashObject.as_showSelfMessage(key, text) if self._isDAAPIInited() else None

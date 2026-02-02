@@ -1,7 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/veh_skill_tree/rarity_reward_screen_model.py
 from frameworks.wulf import ViewModel
 
 class RarityRewardScreenModel(ViewModel):
-    __slots__ = ('onClose', )
+    __slots__ = ('onClose',)
 
     def __init__(self, properties=3, commands=1):
         super(RarityRewardScreenModel, self).__init__(properties=properties, commands=commands)

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/page/prem_shop_presenter.py
 from __future__ import absolute_import
 from gui.impl.gen.view_models.views.lobby.page.header.premium_shop_model import PremiumShopModel
 from gui.impl.pub.view_component import ViewComponent
@@ -17,9 +19,7 @@ class PremShopPresenter(ViewComponent[PremiumShopModel]):
         return super(PremShopPresenter, self).getViewModel()
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onOpenExternalPremiumShop, self.__onOpenExternalPremiumShop),)
+        return ((self.viewModel.onOpenExternalPremiumShop, self.__onOpenExternalPremiumShop),)
 
     def _onLoading(self, *args, **kwargs):
         super(PremShopPresenter, self)._onLoading(*args, **kwargs)

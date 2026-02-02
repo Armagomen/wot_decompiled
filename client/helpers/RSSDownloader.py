@@ -1,4 +1,9 @@
-import threading, helpers, BigWorld, feedparser
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/helpers/RSSDownloader.py
+import threading
+import helpers
+import BigWorld
+import feedparser
 from debug_utils import LOG_WARNING, LOG_CURRENT_EXCEPTION
 feedparser.PARSE_MICROFORMATS = 0
 feedparser.SANITIZE_HTML = 0
@@ -42,17 +47,18 @@ class RSSDownloader(object):
         self.__cbID = BigWorld.callback(self.UPDATE_INTERVAL, self.__update)
         if self.__thread is None or self.__thread.isAlive():
             return
-        if self.__thread.result is not None:
-            self.__lastRSS = self.__thread.result
-        for callback in self.__onCompleteCallbacks:
-            try:
-                callback(self.__lastRSS)
-            except Exception:
-                LOG_CURRENT_EXCEPTION()
+        else:
+            if self.__thread.result is not None:
+                self.__lastRSS = self.__thread.result
+            for callback in self.__onCompleteCallbacks:
+                try:
+                    callback(self.__lastRSS)
+                except Exception:
+                    LOG_CURRENT_EXCEPTION()
 
-        self.__onCompleteCallbacks = set()
-        self.__thread = None
-        return
+            self.__onCompleteCallbacks = set()
+            self.__thread = None
+            return
 
 
 class _WorkerThread(threading.Thread):

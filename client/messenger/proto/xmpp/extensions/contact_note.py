@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/xmpp/extensions/contact_note.py
 import types
 from helpers import html
 from messenger.proto.xmpp.extensions import PyExtension, PyQuery
@@ -8,7 +10,7 @@ from messenger.proto.xmpp.extensions.shared_handlers import IQHandler
 from messenger.proto.xmpp.gloox_constants import IQ_TYPE
 
 class NoteID(PyExtension):
-    __slots__ = ('_dbID', )
+    __slots__ = ('_dbID',)
 
     def __init__(self, dbID=0):
         super(NoteID, self).__init__('key')
@@ -16,7 +18,7 @@ class NoteID(PyExtension):
 
     @classmethod
     def getDefaultData(cls):
-        return 0
+        pass
 
     def parseTag(self, pyGlooxTag):
         data = pyGlooxTag.getCData()
@@ -27,13 +29,11 @@ class NoteID(PyExtension):
         return dbID
 
     def _makeChildrenString(self):
-        if self._dbID:
-            return str(self._dbID)
-        return ''
+        return str(self._dbID) if self._dbID else ''
 
 
 class NoteText(PyExtension):
-    __slots__ = ('_text', )
+    __slots__ = ('_text',)
 
     def __init__(self, text=''):
         super(NoteText, self).__init__('value')
@@ -41,12 +41,10 @@ class NoteText(PyExtension):
 
     @classmethod
     def getDefaultData(cls):
-        return ''
+        pass
 
     def getTag(self):
-        if self._text:
-            return super(NoteText, self).getTag()
-        return ''
+        return super(NoteText, self).getTag() if self._text else ''
 
     def parseTag(self, pyGlooxTag):
         return pyGlooxTag.getCData()
@@ -63,14 +61,12 @@ class NoteItem(PyExtension):
         self.setChild(NoteText(text))
 
     def getDefaultData(self):
-        return (
-         NoteID.getDefaultData(), NoteText.getDefaultData())
+        return (NoteID.getDefaultData(), NoteText.getDefaultData())
 
     def parseTag(self, pyGlooxTag):
         dbID = self._getChildData(pyGlooxTag, 0, NoteID.getDefaultData())
         text = self._getChildData(pyGlooxTag, 1, NoteText.getDefaultData())
-        return (
-         long(dbID), text)
+        return (long(dbID), text)
 
 
 class NoteList(PyExtension):
@@ -97,11 +93,10 @@ class NoteList(PyExtension):
                 items.append(child.parseTag(tag))
 
         padding = self._getChildData(pyGlooxTag, 1, ResultSet.getDefaultData())
-        return (
-         items, padding)
+        return (items, padding)
 
     def _getXPathAttr(self):
-        return ('name', 'contact-notes')
+        pass
 
 
 class NoteQuery(PyExtension):

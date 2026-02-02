@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/battle_hints/replay.py
 import typing
 from typing import Optional, Dict, Union
 import BattleReplay
@@ -16,11 +18,11 @@ _logger = getLogger('Replay')
 def getReplayController(battleHintsCtrl):
     if BattleReplay.isRecording():
         return BattleHintsReplayRecorder()
+    elif BattleReplay.isPlaying():
+        return BattleHintsReplayPlayer(battleHintsCtrl)
     else:
-        if BattleReplay.isPlaying():
-            return BattleHintsReplayPlayer(battleHintsCtrl)
         _logger.debug('Could not get a replay controller.')
-        return
+        return None
 
 
 class BattleHintsReplayRecorder(object):

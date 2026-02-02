@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/easy_tank_equip/dialogs/easy_tank_equip_exchange_dialog.py
 from typing import TYPE_CHECKING
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
@@ -12,7 +14,7 @@ if TYPE_CHECKING:
     from gui.shared.money import Money
 
 class ExchangeToApplyEasyTankEquip(BuyAndExchange):
-    __slots__ = ('__availableGoldAmount', )
+    __slots__ = ('__availableGoldAmount',)
 
     def __init__(self, *args, **kwargs):
         price = kwargs.pop('price', ZERO_MONEY)
@@ -32,8 +34,8 @@ class ExchangeToApplyEasyTankEquip(BuyAndExchange):
             self._onAccept()
 
     def _stateToContent(self):
-        return {BuyAndExchangeStateEnum.EXCHANGE_CONTENT: BuyAndExchangeBottomContentType.EXCHANGE_PANEL, 
-           BuyAndExchangeStateEnum.NEED_EXCHANGE: BuyAndExchangeBottomContentType.EXCHANGE_PANEL, 
-           BuyAndExchangeStateEnum.EXCHANGE_NOT_REQUIRED: BuyAndExchangeBottomContentType.EXCHANGE_PANEL, 
-           BuyAndExchangeStateEnum.EXCHANGE_IN_PROCESS: BuyAndExchangeBottomContentType.EXCHANGE_PANEL, 
-           BuyAndExchangeStateEnum.GOLD_NOT_ENOUGH: BuyAndExchangeBottomContentType.EXCHANGE_PANEL}
+        return {BuyAndExchangeStateEnum.EXCHANGE_CONTENT: BuyAndExchangeBottomContentType.EXCHANGE_PANEL,
+         BuyAndExchangeStateEnum.NEED_EXCHANGE: BuyAndExchangeBottomContentType.EXCHANGE_PANEL,
+         BuyAndExchangeStateEnum.EXCHANGE_NOT_REQUIRED: BuyAndExchangeBottomContentType.EXCHANGE_PANEL,
+         BuyAndExchangeStateEnum.EXCHANGE_IN_PROCESS: BuyAndExchangeBottomContentType.EXCHANGE_PANEL,
+         BuyAndExchangeStateEnum.GOLD_NOT_ENOUGH: BuyAndExchangeBottomContentType.EXCHANGE_PANEL}

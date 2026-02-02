@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/container_vews/skills_training/components/skills_list_component.py
 import logging
 from functools import partial
 import typing
@@ -25,7 +27,7 @@ if typing.TYPE_CHECKING:
 _logger = logging.getLogger(__name__)
 
 class SkillsListComponent(ComponentBase):
-    __slots__ = ('__toolTipMgr', )
+    __slots__ = ('__toolTipMgr',)
     __appLoader = dependency.descriptor(IAppLoader)
 
     def __init__(self, key, parent):
@@ -37,8 +39,15 @@ class SkillsListComponent(ComponentBase):
             tooltipId = event.getArgument('tooltipId')
             if tooltipId == TooltipConstants.SKILL_ALT:
                 positionX = event.getArgument('positionX', event.mouse.positionX)
-                args = [str(event.getArgument('skillName')), self.context.role, self.context.tankman.invID, None,
-                 False, True, None, -1, True]
+                args = [str(event.getArgument('skillName')),
+                 self.context.role,
+                 self.context.tankman.invID,
+                 None,
+                 False,
+                 True,
+                 None,
+                 -1,
+                 True]
                 self.__toolTipMgr.onCreateWulfTooltip(TOOLTIPS_CONSTANTS.CREW_PERK_ALT_GF, args, int(positionX), event.mouse.positionY, parent=self.parent.getParentWindow())
                 return TOOLTIPS_CONSTANTS.CREW_PERK_ALT_GF
         return super(SkillsListComponent, self).createToolTip(event)
@@ -54,17 +63,11 @@ class SkillsListComponent(ComponentBase):
         return vm.skillsList
 
     def _getEvents(self):
-        return super(SkillsListComponent, self)._getEvents() + (
-         (
-          self.viewModel.onSkillHover, self._onSkillHover),
-         (
-          self.viewModel.onSkillOut, self._onSkillOut),
-         (
-          self.viewModel.onSkillClick, self._onSkillClick),
-         (
-          self.viewModel.onTrain, self.__onTrain),
-         (
-          self.viewModel.onCancel, self.__onCancel))
+        return super(SkillsListComponent, self)._getEvents() + ((self.viewModel.onSkillHover, self._onSkillHover),
+         (self.viewModel.onSkillOut, self._onSkillOut),
+         (self.viewModel.onSkillClick, self._onSkillClick),
+         (self.viewModel.onTrain, self.__onTrain),
+         (self.viewModel.onCancel, self.__onCancel))
 
     def _fillViewModel(self, vm):
         commonSkillsList = vm.getCommonSkillsList()
@@ -163,20 +166,17 @@ class SkillsListComponent(ComponentBase):
             orderSetDataIndex = -1
             if sortingType == SortingTypeEnum.COMMON.value:
                 orderSetDataIndex = 0
-            else:
-                if sortingType == SortingTypeEnum.LEGENDARY.value:
-                    orderSetDataIndex = 1
-                if orderSetDataIndex != -1:
+            elif sortingType == SortingTypeEnum.LEGENDARY.value:
+                orderSetDataIndex = 1
+            if orderSetDataIndex != -1:
 
-                    def __getSortOrder(orderSet, dataIndex, tankmanSkill):
-                        skillOrder = orderSet.get(tankmanSkill.name, None)
-                        if skillOrder is not None:
-                            return -skillOrder[dataIndex]
-                        else:
-                            _logger.warning("Couldn't find %s order for tankman skill=%s", 'common' if dataIndex == 0 else 'legendary', tankmanSkill.name)
-                            return 0
+                def __getSortOrder(orderSet, dataIndex, tankmanSkill):
+                    skillOrder = orderSet.get(tankmanSkill.name, None)
+                    if skillOrder is not None:
+                        return -skillOrder[dataIndex]
+                    else:
+                        _logger.warning("Couldn't find %s order for tankman skill=%s", 'common' if dataIndex == 0 else 'legendary', tankmanSkill.name)
+                        return 0
 
-                    return (
-                     popularitySet, partial(__getSortOrder, popularitySet, orderSetDataIndex))
-        return (
-         popularitySet, None)
+                return (popularitySet, partial(__getSortOrder, popularitySet, orderSetDataIndex))
+        return (popularitySet, None)

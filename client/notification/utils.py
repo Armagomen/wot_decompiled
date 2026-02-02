@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/notification/utils.py
 import typing
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.framework import g_entitiesFactories

@@ -1,4 +1,11 @@
-import math, random, sys, BigWorld, ResMgr, PlayerEvents
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/MapActivities.py
+import math
+import random
+import sys
+import BigWorld
+import ResMgr
+import PlayerEvents
 from constants import ARENA_PERIOD
 import SoundGroups
 from debug_utils import LOG_ERROR, LOG_CURRENT_EXCEPTION
@@ -128,7 +135,7 @@ class MapActivities(IMapActivities):
         return
 
     def generateOfflineActivities(self, spacePath, usePossibility=True):
-        xmlName = spacePath.split('/')[(-1)]
+        xmlName = spacePath.split('/')[-1]
         settings = ResMgr.openSection('scripts/arena_defs/' + xmlName + '.xml/mapActivities')
         chooser = random.uniform if usePossibility else (lambda a, b: (a + b) / 2)
         if settings is not None:
@@ -142,8 +149,7 @@ class MapActivities(IMapActivities):
             possibility = activityXML.readFloat('possibility', 1.0)
             if possibility < chooser(0, 1) and usePossibility:
                 startTimes.append(-1)
-            else:
-                startTimes.append(Timer.getTime() + chooser(timeframe[0], timeframe[1]))
+            startTimes.append(Timer.getTime() + chooser(timeframe[0], timeframe[1]))
 
         self.__generateActivities(settings)
         self.__setStartTimes(startTimes)
@@ -209,8 +215,7 @@ class MapActivities(IMapActivities):
         if period == self.__previousPeriod:
             return
         self.__previousPeriod = period
-        isOnArena = period in (ARENA_PERIOD.PREBATTLE, ARENA_PERIOD.BATTLE,
-         ARENA_PERIOD.AFTERBATTLE)
+        isOnArena = period in (ARENA_PERIOD.PREBATTLE, ARENA_PERIOD.BATTLE, ARENA_PERIOD.AFTERBATTLE)
         if period in (ARENA_PERIOD.PREBATTLE, ARENA_PERIOD.BATTLE):
             self.__setStartTimes(periodAdditionalInfo)
         self.__isOnArena = isOnArena
@@ -446,10 +451,7 @@ class WarplaneActivity(BaseMapActivity):
         return
 
     def isVisualsPaused(self):
-        if self.__motor is not None:
-            return self.__motor.isPaused
-        else:
-            return False
+        return self.__motor.isPaused if self.__motor is not None else False
 
     def __waitEnterWorld(self):
         self.__cbID = None
@@ -500,8 +502,7 @@ class WarplaneActivity(BaseMapActivity):
             effectName = ds.asString if ds is not None else ''
             if effectName != '':
                 modelNode = self.__model.node(hardPointName)
-                self.__particle = (
-                 modelNode, PixieBG(effectName, self.__onParticlesLoaded))
+                self.__particle = (modelNode, PixieBG(effectName, self.__onParticlesLoaded))
         return
 
     def __onParticlesLoaded(self, pixieBG):
@@ -775,12 +776,10 @@ class ScenarioActivity(BaseMapActivity):
 def _createActivity(typeName):
     if typeName == 'warplane':
         return WarplaneActivity()
+    elif typeName == 'scenario':
+        return ScenarioActivity()
     else:
-        if typeName == 'scenario':
-            return ScenarioActivity()
-        if typeName == 'explosion':
-            return ExplosionActivity()
-        return
+        return ExplosionActivity() if typeName == 'explosion' else None
 
 
 def startActivity(name, timeOffset=0.0):

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/popovers/style_popover.py
 import typing
 from CurrentVehicle import g_currentVehicle
 from gui import makeHtmlString
@@ -11,8 +13,7 @@ from gui.shared.formatters import text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from helpers import dependency
 from skeletons.gui.customization import ICustomizationService
-POPOVER_SEASONS_ORDER = (
- SeasonType.ALL,) + SEASONS_ORDER
+POPOVER_SEASONS_ORDER = (SeasonType.ALL,) + SEASONS_ORDER
 
 class StylePopover(CustomizationKitPopoverMeta):
     __service = dependency.descriptor(ICustomizationService)
@@ -122,7 +123,7 @@ class StylePopoverDataProvider(SortableDAAPIDataProvider):
         return self._list
 
     def emptyItem(self):
-        return
+        return None
 
     def clear(self):
         self._list = []
@@ -144,7 +145,8 @@ class StylePopoverDataProvider(SortableDAAPIDataProvider):
             seasonTitle = makeHtmlString('html_templates:lobby/customization/StylePopoverSeasonName', seasonName, ctx={'align': 'LEFT'})
             itemsData = self.__getSeasonItemsData(style, season, vehicleDescriptor)
             if itemsData:
-                seasonGroupVO = {'name': seasonTitle, 'itemIcons': itemsData}
+                seasonGroupVO = {'name': seasonTitle,
+                 'itemIcons': itemsData}
                 self._list.append(seasonGroupVO)
 
         return
@@ -169,8 +171,7 @@ class StylePopoverDataProvider(SortableDAAPIDataProvider):
             sortedItems = sorted(items, key=self.__orderKey)
             itemsData = list(map(self.__makeItemDataVO, sortedItems))
         elif season != SeasonType.ALL:
-            itemsData = [
-             self.__makeItemDataVO(style)]
+            itemsData = [self.__makeItemDataVO(style)]
         return itemsData
 
     @staticmethod
@@ -182,12 +183,12 @@ class StylePopoverDataProvider(SortableDAAPIDataProvider):
         if isRare:
             rarityIconSource = backport.image(R.images.gui.maps.icons.customization.rarity.sign.s20x20.dyn(rarity)())
             rarityBackgroundIconSource = backport.image(R.images.gui.maps.icons.customization.rarity.glow.s104x104.dyn(rarity)())
-        itemDataVO = {'id': item.intCD, 
-           'icon': item.icon, 
-           'isWide': item.isWide(), 
-           'customizationDisplayType': item.customizationDisplayType(), 
-           'rarityIcon': rarityIconSource, 
-           'rarityBackground': rarityBackgroundIconSource}
+        itemDataVO = {'id': item.intCD,
+         'icon': item.icon,
+         'isWide': item.isWide(),
+         'customizationDisplayType': item.customizationDisplayType(),
+         'rarityIcon': rarityIconSource,
+         'rarityBackground': rarityBackgroundIconSource}
         return itemDataVO
 
     @staticmethod
@@ -195,6 +196,4 @@ class StylePopoverDataProvider(SortableDAAPIDataProvider):
         return TYPES_ORDER.index(item.itemTypeID)
 
     def __getModifiedOutfit(self, season, style, vehicleCD=''):
-        if season == SeasonType.ALL:
-            return self.__ctx.commonModifiedOutfit
-        return style.getOutfit(season, vehicleCD=vehicleCD)
+        return self.__ctx.commonModifiedOutfit if season == SeasonType.ALL else style.getOutfit(season, vehicleCD=vehicleCD)

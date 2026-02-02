@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/winback_controller.py
 from enum import Enum
-import typing, Event
+import typing
+import Event
 from account_helpers.AccountSettings import Winback
 from constants import Configs
 from gui.impl.lobby.winback.winback_helpers import getLevelFromSelectableToken, WinbackQuestTypes, TOKEN_TO_REWARD_MAPPING, getNonCompensationToken
@@ -25,7 +28,7 @@ class _WinbackState(Enum):
 
 
 class WinbackController(IWinbackController):
-    __slots__ = ('__state', )
+    __slots__ = ('__state',)
     __lobbyContext = dependency.descriptor(ILobbyContext)
     __itemsCache = dependency.descriptor(IItemsCache)
     __eventsCache = dependency.descriptor(IEventsCache)
@@ -78,38 +81,38 @@ class WinbackController(IWinbackController):
     def parseOfferToken(self, token):
         if not token or not self.isWinbackOfferToken(token):
             return None
-        token = getNonCompensationToken(token)
-        offerType = token.split(':')[2]
-        offerLevel = getLevelFromSelectableToken(token)
-        return {'name': TOKEN_TO_REWARD_MAPPING[offerType], 'level': offerLevel, 'token': token}
+        else:
+            token = getNonCompensationToken(token)
+            offerType = token.split(':')[2]
+            offerLevel = getLevelFromSelectableToken(token)
+            return {'name': TOKEN_TO_REWARD_MAPPING[offerType],
+             'level': offerLevel,
+             'token': token}
 
     def isWinbackQuest(self, quest):
         if quest is None or not self.winbackConfig.isEnabled:
             return False
-        questId = quest if isinstance(quest, str) else quest.getID()
-        return questId.startswith(self.winbackConfig.tokenQuestPrefix)
+        else:
+            questId = quest if isinstance(quest, str) else quest.getID()
+            return questId.startswith(self.winbackConfig.tokenQuestPrefix)
 
     def getQuestIdx(self, quest):
         if quest is None:
             return -1
         else:
-            if isinstance(quest, str):
-                return getIdxFromQuestID(quest)
-            return getIdxFromQuestID(quest.getID())
+            return getIdxFromQuestID(quest) if isinstance(quest, str) else getIdxFromQuestID(quest.getID())
 
     def getQuestType(self, questID):
         parts = questID.split('_')
         try:
-            result = WinbackQuestTypes(parts[(-2)])
+            result = WinbackQuestTypes(parts[-2])
         except ValueError:
             result = WinbackQuestTypes.NORMAL
 
         return result
 
     def isWinbackOfferToken(self, offerToken):
-        if not self.winbackConfig.isEnabled:
-            return False
-        return offerToken.startswith(self.winbackConfig.offerTokenPrefix)
+        return False if not self.winbackConfig.isEnabled else offerToken.startswith(self.winbackConfig.offerTokenPrefix)
 
     def hasWinbackOfferToken(self):
         tokens = self.__itemsCache.items.tokens.getTokens()
@@ -173,7 +176,7 @@ class WinbackController(IWinbackController):
         return self.__itemsCache.items.tokens.isTokenAvailable(self.winbackConfig.winbackAccessToken)
 
     def __hasModeAccessToken(self):
-        return any(self.__itemsCache.items.tokens.isTokenAvailable(token) for token in self.winbackConfig.winbackModeAccessTokens)
+        return any((self.__itemsCache.items.tokens.isTokenAvailable(token) for token in self.winbackConfig.winbackModeAccessTokens))
 
     def __hasPromoToken(self):
         return self.__itemsCache.items.tokens.isTokenAvailable(self.winbackConfig.winbackShowPromoToken)
@@ -183,8 +186,9 @@ class WinbackController(IWinbackController):
         def isActualQuest(quest):
             if quest is None or not self.winbackConfig.isEnabled:
                 return False
-            questId = quest if isinstance(quest, str) else quest.getID()
-            return questId in self.__questsChain
+            else:
+                questId = quest if isinstance(quest, str) else quest.getID()
+                return questId in self.__questsChain
 
         self.__questsChain = self.__eventsCache.getAllQuests(filterFunc=isActualQuest)
 
@@ -197,8 +201,9 @@ class WinbackController(IWinbackController):
             allWinbackQuests = self.__eventsCache.getAllQuests(self.isWinbackQuest)
             questChainChekpoints = {str(self.getQuestIdx(questID)) for questID in allWinbackQuests}
             questNames = self.getPossibleQuestsNames()
-            actualQuestsByType = {chekpoint:{WinbackQuestTypes.NORMAL: allWinbackQuests.get(questNames['cNormalQuestsBody'] + chekpoint, allWinbackQuests.get(questNames['dNormalQuestsBody'] + chekpoint)), WinbackQuestTypes.COMPENSATION: allWinbackQuests.get(questNames['cCompensationQuestsBody'] + chekpoint, allWinbackQuests.get(questNames['dCompensationQuestsBody'] + chekpoint))} for chekpoint in questChainChekpoints}
-            self.__questsChain = {quest.getID():quest for questGroup in actualQuestsByType.values() for quest in questGroup.values() if quest if quest}
+            actualQuestsByType = {chekpoint:{WinbackQuestTypes.NORMAL: allWinbackQuests.get(questNames['cNormalQuestsBody'] + chekpoint, allWinbackQuests.get(questNames['dNormalQuestsBody'] + chekpoint)),
+             WinbackQuestTypes.COMPENSATION: allWinbackQuests.get(questNames['cCompensationQuestsBody'] + chekpoint, allWinbackQuests.get(questNames['dCompensationQuestsBody'] + chekpoint))} for chekpoint in questChainChekpoints}
+            self.__questsChain = {quest.getID():quest for questGroup in actualQuestsByType.values() for quest in questGroup.values() if quest}
         else:
             self.__questsChain = {}
 

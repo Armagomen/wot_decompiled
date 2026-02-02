@@ -1,4 +1,8 @@
-import BigWorld, CGF, GenericComponents
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/cgf_components/vehicle_highlight.py
+import BigWorld
+import CGF
+import GenericComponents
 from aih_constants import CTRL_MODES, CTRL_MODE_NAME
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from cgf_script.bonus_caps_rules import bonusCapsManager

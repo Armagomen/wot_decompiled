@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/common/components_presenter.py
 import typing
 from gui.impl.common.base_sub_model_view import BaseSubModelView
 from gui.impl.pub import ViewImpl
@@ -55,10 +57,10 @@ class ComponentsPresenterView(ViewImpl):
 class BaseSubModelViewWithToolTips(BaseSubModelView):
 
     def createToolTipContent(self, event, contentID):
-        return
+        return None
 
     def createPopOverContent(self, event):
-        return
+        return None
 
     def createToolTip(self, event):
-        return
+        return None

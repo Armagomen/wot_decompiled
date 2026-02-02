@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_core/scripts/client/comp7_core/gui/impl/lobby/no_vehicles_screen.py
 from comp7_core.gui.impl.lobby.comp7_core_helpers import comp7_core_model_helpers
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.impl.backport import BackportTooltipWindow, createTooltipData
@@ -53,7 +55,7 @@ class NoVehiclesScreen(ViewImpl, IGlobalListener):
             tooltipId = event.getArgument('tooltipId')
             tooltipData = None
             if tooltipId == self._calendarDayTooltipID:
-                tooltipData = createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=(None, ))
+                tooltipData = createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=(None,))
             if tooltipData is not None:
                 window = BackportTooltipWindow(tooltipData, self.getParentWindow())
                 window.load()
@@ -84,13 +86,7 @@ class NoVehiclesScreen(ViewImpl, IGlobalListener):
         g_eventBus.removeListener(events.LobbyHeaderMenuEvent.MENU_CLICK, self.__onHeaderMenuClick, scope=EVENT_BUS_SCOPE.LOBBY)
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onClose, self.__onClose),
-         (
-          self._modeController.onModeConfigChanged, self.__onModeConfigChanged),
-         (
-          self._modeController.onStatusUpdated, self.__onStatusUpdated))
+        return ((self.viewModel.onClose, self.__onClose), (self._modeController.onModeConfigChanged, self.__onModeConfigChanged), (self._modeController.onStatusUpdated, self.__onStatusUpdated))
 
     def __onClose(self):
         showHangar()
@@ -108,7 +104,7 @@ class NoVehiclesScreen(ViewImpl, IGlobalListener):
         self.destroyWindow()
 
     def __updateData(self):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             self.__onPollServerTime()
             levelsArr = model.getVehicleLevels()
             levelsArr.clear()
@@ -125,5 +121,5 @@ class NoVehiclesScreen(ViewImpl, IGlobalListener):
             model.setErrorReason(errorReason)
 
     def __onPollServerTime(self):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             comp7_core_model_helpers.setScheduleInfo(vm.scheduleInfo, self._modeController, self._calendarDayTooltipID, self._seasonStateClazz, self._yearStateClazz, self._seasonNameClazz)

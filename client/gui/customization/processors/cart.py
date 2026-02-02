@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/customization/processors/cart.py
 from collections import namedtuple
-import logging, typing
+import logging
+import typing
 from CurrentVehicle import g_currentVehicle
 from gui.customization.constants import CustomizationModes
 from gui.customization.shared import AdditionalPurchaseGroups, PurchaseItem, PURCHASE_ITEMS_ORDER, getAncestors
@@ -19,7 +22,7 @@ class ItemsType(CONST_CONTAINER):
 ProcessResult = namedtuple('ProcessResult', ('items', 'descriptors', 'itemsType'))
 
 class ProcessorSelector(object):
-    __slots__ = ('__processors', )
+    __slots__ = ('__processors',)
 
     def __init__(self, processors):
         super(ProcessorSelector, self).__init__()
@@ -48,9 +51,7 @@ class ProcessorSelector(object):
 
 
 class BasePurchaseDescription(object):
-    __slots__ = ('intCD', 'identificator', 'selected', 'item', 'component', 'quantity',
-                 'purchaseIndices', 'progressionLevel', '_uiDataPacker', 'dependents',
-                 'dependentOn')
+    __slots__ = ('intCD', 'identificator', 'selected', 'item', 'component', 'quantity', 'purchaseIndices', 'progressionLevel', '_uiDataPacker', 'dependents', 'dependentOn')
 
     def __init__(self, item, purchaseIdx=0, quantity=1, component=None, progressionLevel=-1):
         self._uiDataPacker = None
@@ -67,10 +68,7 @@ class BasePurchaseDescription(object):
         return
 
     def getUIData(self):
-        if self._uiDataPacker is not None:
-            return self._uiDataPacker(self)
-        else:
-            return
+        return self._uiDataPacker(self) if self._uiDataPacker is not None else None
 
     def addPurchaseIndices(self, indices):
         self.quantity += 1
@@ -82,7 +80,7 @@ class BasePurchaseDescription(object):
 
 class StubItemPurchaseDescription(BasePurchaseDescription):
     __slots__ = ('isFromInventory', 'isEdited')
-    _StubItem = namedtuple('_StubItem', ('intCD', ))
+    _StubItem = namedtuple('_StubItem', ('intCD',))
 
     def __init__(self):
         super(StubItemPurchaseDescription, self).__init__(self._StubItem(-1), quantity=0)
@@ -91,8 +89,7 @@ class StubItemPurchaseDescription(BasePurchaseDescription):
 
 
 class SeparateItemPurchaseDescription(BasePurchaseDescription):
-    __slots__ = ('itemData', 'compoundPrice', 'isFromInventory', 'group', 'locked',
-                 'isEdited')
+    __slots__ = ('itemData', 'compoundPrice', 'isFromInventory', 'group', 'locked', 'isEdited')
 
     def __init__(self, purchaseItem, purchaseIdx, progressionLevel=-1):
         super(SeparateItemPurchaseDescription, self).__init__(purchaseItem.item, purchaseIdx, component=purchaseItem.component, progressionLevel=progressionLevel)
@@ -107,16 +104,25 @@ class SeparateItemPurchaseDescription(BasePurchaseDescription):
     def _generateID(self):
         if self.item.itemTypeID == GUI_ITEM_TYPE.PERSONAL_NUMBER and self.component is not None:
             number = int(self.component.number) if self.component.number else -1
-            return hash((self.intCD, self.group, self.isFromInventory, number, self.selected))
+            return hash((self.intCD,
+             self.group,
+             self.isFromInventory,
+             number,
+             self.selected))
         else:
-            if self.item.isProgressive and self.component is not None:
-                return hash((self.intCD, self.group, self.isFromInventory, self.component.progressionLevel, self.selected))
-            return hash((self.intCD, self.group, self.isFromInventory, -1, self.selected))
+            return hash((self.intCD,
+             self.group,
+             self.isFromInventory,
+             self.component.progressionLevel,
+             self.selected)) if self.item.isProgressive and self.component is not None else hash((self.intCD,
+             self.group,
+             self.isFromInventory,
+             -1,
+             self.selected))
 
 
 class ItemsProcessor(object):
-    __slots__ = ('_stubItemDescriptionClass', '_itemDescriptionClass', '_itemUiDataPacker',
-                 '_stubUiDataPacker')
+    __slots__ = ('_stubItemDescriptionClass', '_itemDescriptionClass', '_itemUiDataPacker', '_stubUiDataPacker')
 
     def __init__(self, itemPacker, stubPacker):
         self._itemUiDataPacker = itemPacker
@@ -141,8 +147,7 @@ class ItemsProcessor(object):
             if season in itemsInfo:
                 items = itemsInfo[season].flatten()
             else:
-                items = [
-                 self._getStubItemDescription()]
+                items = [self._getStubItemDescription()]
             itemsDescriptors[season] = items
 
         return itemsDescriptors
@@ -180,14 +185,20 @@ class SeparateItemsProcessor(ItemsProcessor):
     def _getKey(purchaseItem):
         if purchaseItem.item.itemTypeID == GUI_ITEM_TYPE.PERSONAL_NUMBER and purchaseItem.component is not None:
             number = int(purchaseItem.component.number) if purchaseItem.component.number else -1
-            return (
-             purchaseItem.locked, not purchaseItem.isFromInventory, purchaseItem.intCD,
-             number, purchaseItem.selected)
+            return (purchaseItem.locked,
+             not purchaseItem.isFromInventory,
+             purchaseItem.intCD,
+             number,
+             purchaseItem.selected)
         else:
-            if purchaseItem.item.isProgressive and purchaseItem.component is not None:
-                return (purchaseItem.isEdited, not purchaseItem.isFromInventory, purchaseItem.intCD,
-                 purchaseItem.component.progressionLevel, purchaseItem.selected)
-            return (not purchaseItem.isEdited, not purchaseItem.isFromInventory, purchaseItem.intCD, -1,
+            return (purchaseItem.isEdited,
+             not purchaseItem.isFromInventory,
+             purchaseItem.intCD,
+             purchaseItem.component.progressionLevel,
+             purchaseItem.selected) if purchaseItem.item.isProgressive and purchaseItem.component is not None else (not purchaseItem.isEdited,
+             not purchaseItem.isFromInventory,
+             purchaseItem.intCD,
+             -1,
              purchaseItem.selected)
 
 
@@ -294,7 +305,7 @@ class EditableStyleItemsProcessor(SeparateItemsProcessor):
                         itemTypeId = item.itemTypeID
                         if itemTypeId == GUI_ITEM_TYPE.CAMOUFLAGE:
                             camoDescriptor = descriptor
-                        elif itemTypeId != GUI_ITEM_TYPE.PAINT:
+                        if itemTypeId != GUI_ITEM_TYPE.PAINT:
                             ancestors = getAncestors(item.intCD, styleDependencies)
                             if ancestors:
                                 if baseCamoIntCD not in ancestors:

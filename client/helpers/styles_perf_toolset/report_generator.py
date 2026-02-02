@@ -1,4 +1,8 @@
-import csv, logging, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/helpers/styles_perf_toolset/report_generator.py
+import csv
+import logging
+import BigWorld
 
 class ReportGenerator(object):
 
@@ -27,10 +31,10 @@ class ReportGenerator(object):
         if self.location is None:
             logging.error('cannot start collecting data - the location for reports was not provided...')
             return
+        elif self.__isCollectingData:
+            logging.error('cannot start collecting data - the benchmarking tool is already collecting it...')
+            return
         else:
-            if self.__isCollectingData:
-                logging.error('cannot start collecting data - the benchmarking tool is already collecting it...')
-                return
             self.__isCollectingData = True
             BigWorld.startBenchmarkTool()
             self.__collectedData = None
@@ -40,10 +44,10 @@ class ReportGenerator(object):
         if self.location is None:
             logging.error('cannot stop collecting data - the location for reports was not provided...')
             return
+        elif not self.__isCollectingData:
+            logging.error('cannot stop collecting data - the benchmarking tool is not already collecting it...')
+            return
         else:
-            if not self.__isCollectingData:
-                logging.error('cannot stop collecting data - the benchmarking tool is not already collecting it...')
-                return
             self.__collectedData = None if not self.__isCollectingData else BigWorld.stopBenchmarkTool()
             self.__isCollectingData = False
             return
@@ -52,14 +56,14 @@ class ReportGenerator(object):
         if self.__location is None:
             logging.error('failed to generate a report - location was not provided (None)!')
             return
+        elif self.__isCollectingData is None:
+            logging.error('failed to generate a report - the data is still being collected! Use stopCollectingData() to complete data collection and enable report generation')
+            return
+        elif self.__collectedData is None:
+            logging.error('failed to generate a report - benchmarking data was invalid (None)!')
+            return
         else:
-            if self.__isCollectingData is None:
-                logging.error('failed to generate a report - the data is still being collected! Use stopCollectingData() to complete data collection and enable report generation')
-                return
-            if self.__collectedData is None:
-                logging.error('failed to generate a report - benchmarking data was invalid (None)!')
-                return
-            with open(self.__location, 'wb') as (f):
+            with open(self.__location, 'wb') as f:
                 writer = csv.writer(f)
                 writer.writerow(self.__collectedData.keys())
                 writer.writerow(self.__collectedData.values())

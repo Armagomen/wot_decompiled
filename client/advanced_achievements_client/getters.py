@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/advanced_achievements_client/getters.py
 from collections import namedtuple
-import typing, sys
+import typing
+import sys
 from achievements20.cache import ROOT_ACHIEVEMENT_IDS, ALLOWED_ACHIEVEMENT_TYPES, getCache
 from advanced_achievements_client import items
 from advanced_achievements_client.constants import AchievementType, NEAREST_REQUIRED_COUNT, BONUS_PRIORITY_MAP
@@ -8,10 +11,9 @@ if typing.TYPE_CHECKING:
     from typing import List
 
 class _NearestCollector(object):
-    __MATCHING_TYPES = (
-     AchievementType.CUMULATIVE, AchievementType.REGULAR)
-    __DESIRED_COUNT_BY_TYPE = {AchievementType.REGULAR: 2, 
-       AchievementType.CUMULATIVE: 1}
+    __MATCHING_TYPES = (AchievementType.CUMULATIVE, AchievementType.REGULAR)
+    __DESIRED_COUNT_BY_TYPE = {AchievementType.REGULAR: 2,
+     AchievementType.CUMULATIVE: 1}
 
     def __init__(self):
         self.__rootSpecificAchievements = []
@@ -63,8 +65,7 @@ class _NearestCollector(object):
                 achievements.pop(topAchievementIndex)
                 leftoverAchievements.extend(achievements)
 
-        return (
-         topAchievements, leftoverAchievements)
+        return (topAchievements, leftoverAchievements)
 
     def __getIndexOfTopAchievement(self, achievements):
         topIndex = 0
@@ -151,9 +152,8 @@ def getLastReceivedAchievements(dossierDescr):
             if timestamp != 0 and stage > 0 and not achievement.isDeprecated:
                 lastReceivedAchievements.append((achievementId, achievementCategory, timestamp))
 
-    sortedList = sorted(lastReceivedAchievements, key=lambda record: -record[(-1)])[:NEAREST_REQUIRED_COUNT]
-    return [ getAchievementByID(achievementId, achievementCategory, dossierDescr) for achievementId, achievementCategory, _ in sortedList
-           ]
+    sortedList = sorted(lastReceivedAchievements, key=lambda record: -record[-1])[:NEAREST_REQUIRED_COUNT]
+    return [ getAchievementByID(achievementId, achievementCategory, dossierDescr) for achievementId, achievementCategory, _ in sortedList ]
 
 
 def getNearest():
@@ -186,9 +186,15 @@ def getAchievementsEarnedBeforeTime(dossierDescr, requestedTimestamp):
             if timestamp != 0 and stage > 0 and timestamp > requestedTimestamp:
                 if not requestedTimestamp:
                     for currStage in xrange(1, stage):
-                        achievements.append((achievementId, achievementCategory, currStage, timestamp))
+                        achievements.append((achievementId,
+                         achievementCategory,
+                         currStage,
+                         timestamp))
 
-                achievements.append((achievementId, achievementCategory, stage, timestamp))
+                achievements.append((achievementId,
+                 achievementCategory,
+                 stage,
+                 timestamp))
 
     return achievements
 

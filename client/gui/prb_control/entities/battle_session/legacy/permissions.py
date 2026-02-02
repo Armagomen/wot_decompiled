@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/battle_session/legacy/permissions.py
 from gui.prb_control import prb_getters
 from gui.prb_control.entities.base.legacy.permissions import LegacyPermissions
 from gui.prb_control.entities.base.limits import TeamNoPlayersInBattle, MaxCount

@@ -1,4 +1,8 @@
-import weakref, math, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/battle/timers_panel.py
+import weakref
+import math
+import BigWorld
 from gui.Scaleform.daapi.view.meta.BattleRoyaleTimersPanelMeta import BattleRoyaleTimersPanelMeta
 from gui.battle_control.controllers.period_ctrl import IAbstractPeriodView
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE

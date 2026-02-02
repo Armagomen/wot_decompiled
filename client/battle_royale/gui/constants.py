@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/constants.py
 import enum
 ROYALE_POSTBATTLE_REWARDS_COUNT = 8
 
@@ -29,17 +31,25 @@ class BattleRoyaleComponents(object):
     FIRE_CIRCLE = 'vehicleFireCircleEffectComponent'
 
 
-BR_EQUIPMENTS_WITH_MESSAGES = frozenset([
- BattleRoyaleEquipments.TRAP_POINT, BattleRoyaleEquipments.AFTER_BURNING,
- BattleRoyaleEquipments.REGENERATION_KIT, BattleRoyaleEquipments.SELF_BUFF,
- BattleRoyaleEquipments.HEAL_POINT, BattleRoyaleEquipments.LARGE_REPAIRKIT,
- BattleRoyaleEquipments.BERSERKER, BattleRoyaleEquipments.MINE_FIELD,
- BattleRoyaleEquipments.REPAIR_POINT, BattleRoyaleEquipments.BOMBER,
- BattleRoyaleEquipments.KAMIKAZE, BattleRoyaleEquipments.SMOKE,
- BattleRoyaleEquipments.SMOKE_WITH_DAMAGE, BattleRoyaleEquipments.ARCADE_SMOKE,
+BR_EQUIPMENTS_WITH_MESSAGES = frozenset([BattleRoyaleEquipments.TRAP_POINT,
+ BattleRoyaleEquipments.AFTER_BURNING,
+ BattleRoyaleEquipments.REGENERATION_KIT,
+ BattleRoyaleEquipments.SELF_BUFF,
+ BattleRoyaleEquipments.HEAL_POINT,
+ BattleRoyaleEquipments.LARGE_REPAIRKIT,
+ BattleRoyaleEquipments.BERSERKER,
+ BattleRoyaleEquipments.MINE_FIELD,
+ BattleRoyaleEquipments.REPAIR_POINT,
+ BattleRoyaleEquipments.BOMBER,
+ BattleRoyaleEquipments.KAMIKAZE,
+ BattleRoyaleEquipments.SMOKE,
+ BattleRoyaleEquipments.SMOKE_WITH_DAMAGE,
+ BattleRoyaleEquipments.ARCADE_SMOKE,
  BattleRoyaleEquipments.FIRE_CIRCLE,
- BattleRoyaleEquipments.CORRODING_SHOT, BattleRoyaleEquipments.CLING_BRANDER,
- BattleRoyaleEquipments.ADAPTATION_HEALTH_RESTORE, BattleRoyaleEquipments.THUNDER_STRIKE,
+ BattleRoyaleEquipments.CORRODING_SHOT,
+ BattleRoyaleEquipments.CLING_BRANDER,
+ BattleRoyaleEquipments.ADAPTATION_HEALTH_RESTORE,
+ BattleRoyaleEquipments.THUNDER_STRIKE,
  BattleRoyaleEquipments.SHOT_PASSION])
 
 class AmmoTypes(object):
@@ -50,8 +60,10 @@ class AmmoTypes(object):
     CHARGE2 = 'charge2'
     CHARGE3 = 'charge3'
     CHARGE4 = 'charge4'
-    CHARGES = (
-     CHARGE1, CHARGE2, CHARGE3, CHARGE4)
+    CHARGES = (CHARGE1,
+     CHARGE2,
+     CHARGE3,
+     CHARGE4)
     SHELLS = (BASIC_SHELL, PREMIUM_SHELL)
 
 
@@ -76,8 +88,7 @@ class BattleRoyaleSubMode(object):
     SOLO_MODE_ID = 1
     SOLO_DYNAMIC_MODE_ID = 2
     SQUAD_MODE_ID = 3
-    ALL_RANGE = (
-     SOLO_MODE_ID, SOLO_DYNAMIC_MODE_ID, SQUAD_MODE_ID)
+    ALL_RANGE = (SOLO_MODE_ID, SOLO_DYNAMIC_MODE_ID, SQUAD_MODE_ID)
 
 
 class BattleRoyaleModeState(enum.Enum):

@@ -1,6 +1,10 @@
-import itertools, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/utils.py
+import itertools
+import typing
 from collections import namedtuple, defaultdict
-import Settings, SoundGroups
+import Settings
+import SoundGroups
 from SoundGroups import CREW_GENDER_SWITCHES
 from gui import GUI_NATIONS_ORDER_INDEX
 from gui.impl import backport
@@ -17,8 +21,7 @@ from skeletons.gui.goodies import IGoodiesCache
 from skeletons.gui.shared import IItemsCache
 if typing.TYPE_CHECKING:
     from gui.shared.gui_items.crew_book import CrewBook
-VEHICLE_TAGS_FILTER = (
- VEHICLE_TAGS.PREMIUM_IGR, VEHICLE_TAGS.WOT_PLUS)
+VEHICLE_TAGS_FILTER = (VEHICLE_TAGS.PREMIUM_IGR, VEHICLE_TAGS.WOT_PLUS)
 DocumentRecord = namedtuple('DocumentRecord', ['id', 'group', 'value'])
 
 class TRAINING_TIPS(CONST_CONTAINER):
@@ -36,27 +39,25 @@ class TRAINING_TIPS(CONST_CONTAINER):
     FULL_TRAINED_PERSONAL = 'FullTrainedPersonal'
     FULL_TRAINED_FEW_MEMBERS = 'FullTrainedFewMembers'
     ALL_FULL_TRAINED = 'AllFullTrained'
-    tips = {NOT_TRAINED_THIS_VEHICLE: 11, 
-       NOT_FULL_CREW: 12, 
-       NOT_FULL_AND_NOT_TRAINED_CREW: 13, 
-       LOW_PE_CREW: 14, 
-       LOW_PE_NOT_FULL_CREW: 15, 
-       LOW_PE_NOT_TRAINED_CREW: 16, 
-       LOW_PE_NOT_TRAINED_NOT_FULL_CREW: 17, 
-       LOW_PE_TIPS_PERSONAL: 18, 
-       WILL_FULL_TRAINED_PERSONAL: 19, 
-       WILL_FULL_TRAINED_FEW_MEMBERS: 20, 
-       WILL_FULL_TRAINED_CREW: 21, 
-       FULL_TRAINED_PERSONAL: 22, 
-       FULL_TRAINED_FEW_MEMBERS: 23, 
-       ALL_FULL_TRAINED: 24}
+    tips = {NOT_TRAINED_THIS_VEHICLE: 11,
+     NOT_FULL_CREW: 12,
+     NOT_FULL_AND_NOT_TRAINED_CREW: 13,
+     LOW_PE_CREW: 14,
+     LOW_PE_NOT_FULL_CREW: 15,
+     LOW_PE_NOT_TRAINED_CREW: 16,
+     LOW_PE_NOT_TRAINED_NOT_FULL_CREW: 17,
+     LOW_PE_TIPS_PERSONAL: 18,
+     WILL_FULL_TRAINED_PERSONAL: 19,
+     WILL_FULL_TRAINED_FEW_MEMBERS: 20,
+     WILL_FULL_TRAINED_CREW: 21,
+     FULL_TRAINED_PERSONAL: 22,
+     FULL_TRAINED_FEW_MEMBERS: 23,
+     ALL_FULL_TRAINED: 24}
 
 
 def setTextFormatter(tipID, forPlaceHolders):
     text = backport.text(R.strings.tooltips.quickTraining.dyn(tipID)())
-    if forPlaceHolders:
-        return i18n.makeString(text, **forPlaceHolders)
-    return text
+    return i18n.makeString(text, **forPlaceHolders) if forPlaceHolders else text
 
 
 def getTip(tipID, tipType, **forPlaceHolders):
@@ -72,13 +73,14 @@ def loadDoNotOpenTips():
     userPrefs = Settings.g_instance.userPrefs
     if userPrefs is None or not userPrefs.has_key(Settings.QUICK_TRANING_TIPS):
         return doNotOpenTips
-    ds = userPrefs[Settings.QUICK_TRANING_TIPS]
-    for tip in TRAINING_TIPS.tips:
-        isDoNotOpenTip = ds.readBool(tip, False)
-        if isDoNotOpenTip:
-            doNotOpenTips.append(tip)
+    else:
+        ds = userPrefs[Settings.QUICK_TRANING_TIPS]
+        for tip in TRAINING_TIPS.tips:
+            isDoNotOpenTip = ds.readBool(tip, False)
+            if isDoNotOpenTip:
+                doNotOpenTips.append(tip)
 
-    return doNotOpenTips
+        return doNotOpenTips
 
 
 def saveDoNotOpenTip(doNotOpenTip):
@@ -118,7 +120,7 @@ def jsonArgsConverter(fields=()):
 
         @wraps(func)
         def wrapper(self, jsonData, *args, **kwargs):
-            newArgs = tuple((loads(data) if isinstance(data, (str, unicode)) else data) for data in (jsonData.get(field) for field in fields if field)) + args
+            newArgs = tuple(((loads(data) if isinstance(data, (str, unicode)) else data) for data in (jsonData.get(field) for field in fields if field))) + args
             return func(self, *newArgs, **kwargs)
 
         return wrapper
@@ -126,8 +128,7 @@ def jsonArgsConverter(fields=()):
     return inner
 
 
-ALT_VOICES_PREVIEW = itertools.cycle(('vo_enemy_hp_damaged_by_projectile_by_player',
-                                      'vo_enemy_fire_started_by_player', 'vo_enemy_killed_by_player'))
+ALT_VOICES_PREVIEW = itertools.cycle(('vo_enemy_hp_damaged_by_projectile_by_player', 'vo_enemy_fire_started_by_player', 'vo_enemy_killed_by_player'))
 
 def playRecruitVoiceover(voiceoverParams):
     SoundGroups.g_instance.setSwitch(CREW_GENDER_SWITCHES.GROUP, voiceoverParams.genderSwitch)
@@ -138,18 +139,14 @@ def playRecruitVoiceover(voiceoverParams):
 
 
 def discountPercent(value, defaultValue):
-    if defaultValue:
-        return int(100 * (1 - float(value) / defaultValue))
-    return 0
+    return int(100 * (1 - float(value) / defaultValue)) if defaultValue else 0
 
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
 def packCompensationData(books, rewardsArray, tooltipData, itemsCache=None):
-    bookTypeOrder = [
-     CREW_BOOK_RARITY.CREW_EPIC,
-     CREW_BOOK_RARITY.CREW_RARE,
-     CREW_BOOK_RARITY.CREW_COMMON]
-    booksDataByType = defaultdict(lambda : {'amount': 0, 'books': []})
+    bookTypeOrder = [CREW_BOOK_RARITY.CREW_EPIC, CREW_BOOK_RARITY.CREW_RARE, CREW_BOOK_RARITY.CREW_COMMON]
+    booksDataByType = defaultdict(lambda : {'amount': 0,
+     'books': []})
     for key, value in books.iteritems():
         book = itemsCache.items.getItemByCD(key)
         if book is None:
@@ -178,10 +175,10 @@ def packCompensationData(books, rewardsArray, tooltipData, itemsCache=None):
     return booksAmount
 
 
-BOOSTER_ICON_MAPPING = {'enemyShotPredictorBattleBooster': 'commander_enemyShotPredictor', 
-   'practicalityBattleBooster': 'commander_practical', 
-   'lastEffortBattleBooster': 'radioman_lastEffort', 
-   'sixthSenseBattleBooster': 'commander_sixthSense'}
+BOOSTER_ICON_MAPPING = {'enemyShotPredictorBattleBooster': 'commander_enemyShotPredictor',
+ 'practicalityBattleBooster': 'commander_practical',
+ 'lastEffortBattleBooster': 'radioman_lastEffort',
+ 'sixthSenseBattleBooster': 'commander_sixthSense'}
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
 def packBoostersCompensationData(boosters, rewardsArray, tooltipData, itemsCache=None):
@@ -189,9 +186,9 @@ def packBoostersCompensationData(boosters, rewardsArray, tooltipData, itemsCache
         newEqCD = boosterReplacement['newEqCD']
         count = boosterReplacement['count']
         tooltipId = str(newEqCD)
-        tooltipData[tooltipId] = {'oldDirectiveID': boosterReplacement['oldEqCD'], 
-           'newDirectiveID': newEqCD, 
-           'amount': count}
+        tooltipData[tooltipId] = {'oldDirectiveID': boosterReplacement['oldEqCD'],
+         'newDirectiveID': newEqCD,
+         'amount': count}
         booster = itemsCache.items.getItemByCD(newEqCD)
         reward = RewardItemModel()
         reward.setItem(BOOSTER_ICON_MAPPING.get(booster.name))
@@ -206,13 +203,10 @@ def packBoostersCompensationData(boosters, rewardsArray, tooltipData, itemsCache
 
 
 def convertMoneyToTuple(money):
-    return (
-     money.credits, money.gold, money.crystal)
+    return (money.credits, money.gold, money.crystal)
 
 
 @dependency.replace_none_kwargs(goodiesCache=IGoodiesCache)
 def getMetoringLicensesAmount(goodiesCache=None):
     mentoringLicense = goodiesCache.getMentoringLicense(currency='gold')
-    if mentoringLicense:
-        return mentoringLicense.inventoryCount
-    return 0
+    return mentoringLicense.inventoryCount if mentoringLicense else 0

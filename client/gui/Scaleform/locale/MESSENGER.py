@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/locale/MESSENGER.py
 from debug_utils import LOG_WARNING
 
 class MESSENGER(object):
@@ -1263,8 +1265,11 @@ class MESSENGER(object):
     SERVICECHANNELMESSAGES_PRESTIGEMILESTONE_ERROR = '#messenger:serviceChannelMessages/prestigeMilestone/error'
     SERVICECHANNELMESSAGES_PRESTIGEMILESTONE_TITLE = '#messenger:serviceChannelMessages/prestigeMilestone/title'
     SERVICECHANNELMESSAGES_PRESTIGEMILESTONE_TEXT = '#messenger:serviceChannelMessages/prestigeMilestone/text'
-    CLIENT_ERROR_SHARED_ENUM = (
-     CLIENT_ERROR_SHARED_TRY_LATER,
+    SERVICECHANNELMESSAGES_COLLECTOR20_TITLE = '#messenger:serviceChannelMessages/collector20/title'
+    SERVICECHANNELMESSAGES_COLLECTOR20_MEDAL = '#messenger:serviceChannelMessages/collector20/medal'
+    SERVICECHANNELMESSAGES_COLLECTOR20_BADGE = '#messenger:serviceChannelMessages/collector20/badge'
+    SERVICECHANNELMESSAGES_COLLECTOR20_STRIPE = '#messenger:serviceChannelMessages/collector20/stripe'
+    CLIENT_ERROR_SHARED_ENUM = (CLIENT_ERROR_SHARED_TRY_LATER,
      CLIENT_ERROR_SHARED_GENERIC,
      CLIENT_ERROR_SHARED_LOCKED,
      CLIENT_ERROR_SHARED_NOT_CONNECTED,
@@ -1274,8 +1279,7 @@ class MESSENGER(object):
      CLIENT_ERROR_SHARED_NAME_EMPTY,
      CLIENT_ERROR_SHARED_NAME_INVALID,
      CLIENT_ERROR_SHARED_WAITING_BEFORE_START)
-    CLIENT_ERROR_CONTACT_ENUM = (
-     CLIENT_ERROR_CONTACT_CONTACT_ITEM_NOT_FOUND,
+    CLIENT_ERROR_CONTACT_ENUM = (CLIENT_ERROR_CONTACT_CONTACT_ITEM_NOT_FOUND,
      CLIENT_ERROR_CONTACT_ROSTER_ITEM_EXISTS,
      CLIENT_ERROR_CONTACT_ROSTER_ITEM_NOT_FOUND,
      CLIENT_ERROR_CONTACT_FRIENDSHIP_APPROVED,
@@ -1290,8 +1294,7 @@ class MESSENGER(object):
      CLIENT_ERROR_CONTACT_GROUP_INVALID_NAME,
      CLIENT_ERROR_CONTACT_NOTE_EMPTY,
      CLIENT_ERROR_CONTACT_NOTE_NOT_FOUND)
-    CLIENT_ERROR_CHANNEL_ENUM = (
-     CLIENT_ERROR_CHANNEL_NAME_EMPTY,
+    CLIENT_ERROR_CHANNEL_ENUM = (CLIENT_ERROR_CHANNEL_NAME_EMPTY,
      CLIENT_ERROR_CHANNEL_NAME_INVALID,
      CLIENT_ERROR_CHANNEL_PASSWORD_EMPTY,
      CLIENT_ERROR_CHANNEL_PASSWORD_INVALID,
@@ -1300,23 +1303,20 @@ class MESSENGER(object):
      CLIENT_ERROR_CHANNEL_PASSWORDS_NOT_EQUALS,
      CLIENT_ERROR_CHANNEL_LIMIT_REACHED,
      CLIENT_ERROR_CHANNEL_NAME_ALREADY_EXISTS)
-    CLIENT_ERROR_LIMIT_ENUM = (
-     CLIENT_ERROR_LIMIT_MAX_ROSTER_ITEMS,
+    CLIENT_ERROR_LIMIT_ENUM = (CLIENT_ERROR_LIMIT_MAX_ROSTER_ITEMS,
      CLIENT_ERROR_LIMIT_MAX_GROUP,
      CLIENT_ERROR_LIMIT_MAX_BLOCK_ITEMS,
      CLIENT_ERROR_LIMIT_GROUP_INVALID_LENGTH,
      CLIENT_ERROR_LIMIT_NOTE_INVALID_LENGTH,
      CLIENT_ERROR_LIMIT_CHANNEL_INVALID_LENGTH,
      CLIENT_ERROR_LIMIT_PWD_INVALID_LENGTH)
-    SERVER_ERROR_USER_ROOM_CREATION_ENUM = (
-     SERVER_ERROR_USER_ROOM_CREATION_NAME_EXISTS,
+    SERVER_ERROR_USER_ROOM_CREATION_ENUM = (SERVER_ERROR_USER_ROOM_CREATION_NAME_EXISTS,
      SERVER_ERROR_USER_ROOM_CREATION_LIMIT_COUNT,
      SERVER_ERROR_USER_ROOM_CREATION_LIMIT_PASS,
      SERVER_ERROR_USER_ROOM_CREATION_LIMIT_NAME,
      SERVER_ERROR_USER_ROOM_CREATION_WRONG_SYMBOL,
      SERVER_ERROR_USER_ROOM_CREATION_WRONG_WORD)
-    CLIENT_ACTION_ENUM = (
-     CLIENT_ACTION_ADD_FRIEND,
+    CLIENT_ACTION_ENUM = (CLIENT_ACTION_ADD_FRIEND,
      CLIENT_ACTION_REMOVE_FRIEND,
      CLIENT_ACTION_ADD_IGNORED,
      CLIENT_ACTION_REMOVE_IGNORED,
@@ -1336,34 +1336,27 @@ class MESSENGER(object):
      CLIENT_ACTION_LEAVE_USER_ROOM,
      CLIENT_ACTION_SEARCH_USER_ROOM,
      CLIENT_ACTION_FIND_USERS_BY_PREFIX)
-    CHAT_ERROR_ENUM = (
-     CHAT_ERROR_NOT_ALLOWED,
+    CHAT_ERROR_ENUM = (CHAT_ERROR_NOT_ALLOWED,
      CHAT_ERROR_USER_NOT_FOUND,
      CHAT_ERROR_CANNOT_BAN_ONESELF,
      CHAT_ERROR_WRONG_ARGS,
      CHAT_ERROR_NOT_READY,
      CHAT_ERROR_IS_BUSY,
      CHAT_ERROR_GENERIC_ERROR)
-    CHAT_ACTION_ENUM = (
-     CHAT_ACTION_BROADCAST_UNIT_MESSAGE,
+    CHAT_ACTION_ENUM = (CHAT_ACTION_BROADCAST_UNIT_MESSAGE,
      CHAT_ACTION_BROADCAST_BATTLE_MESSAGE,
      CHAT_ACTION_FIND_USERS_BY_NAME,
      CHAT_ACTION_GET_VOIP_CREDENTIALS)
-    COMMAND_SUCCESS_ENUM = (
-     COMMAND_SUCCESS_USERBAN,
-     COMMAND_SUCCESS_USERUNBAN)
-    LISTVIEW_EMPTYLIST_ENUM = (
-     LISTVIEW_EMPTYLIST_TEMPLATE,
+    COMMAND_SUCCESS_ENUM = (COMMAND_SUCCESS_USERBAN, COMMAND_SUCCESS_USERUNBAN)
+    LISTVIEW_EMPTYLIST_ENUM = (LISTVIEW_EMPTYLIST_TEMPLATE,
      LISTVIEW_EMPTYLIST_INFO,
      LISTVIEW_EMPTYLIST_INVITE,
      LISTVIEW_EMPTYLIST_OFFER)
-    SERVICECHANNELMESSAGES_BATTLERESULTS_PERSONALMISSIONS_ENUM = (
-     SERVICECHANNELMESSAGES_BATTLERESULTS_PERSONALMISSIONS_1,
+    SERVICECHANNELMESSAGES_BATTLERESULTS_PERSONALMISSIONS_ENUM = (SERVICECHANNELMESSAGES_BATTLERESULTS_PERSONALMISSIONS_1,
      SERVICECHANNELMESSAGES_BATTLERESULTS_PERSONALMISSIONS_2,
      SERVICECHANNELMESSAGES_BATTLERESULTS_PERSONALMISSIONS_3,
      SERVICECHANNELMESSAGES_BATTLERESULTS_PERSONALMISSIONS_BOTH)
-    SERVICECHANNELMESSAGES_CURRENCYUPDATE_ALL_ENUM = (
-     SERVICECHANNELMESSAGES_CURRENCYUPDATE_RECEIVED_CREDITS,
+    SERVICECHANNELMESSAGES_CURRENCYUPDATE_ALL_ENUM = (SERVICECHANNELMESSAGES_CURRENCYUPDATE_RECEIVED_CREDITS,
      SERVICECHANNELMESSAGES_CURRENCYUPDATE_RECEIVED_GOLD,
      SERVICECHANNELMESSAGES_CURRENCYUPDATE_RECEIVED_CRYSTAL,
      SERVICECHANNELMESSAGES_CURRENCYUPDATE_RECEIVED_EVENTCOIN,
@@ -1380,108 +1373,108 @@ class MESSENGER(object):
 
     @classmethod
     def client_error_shared(cls, key0):
-        outcome = ('#messenger:client_error/shared/{}').format(key0)
+        outcome = '#messenger:client_error/shared/{}'.format(key0)
         if outcome not in cls.CLIENT_ERROR_SHARED_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def client_error_contact(cls, key0):
-        outcome = ('#messenger:client_error/contact/{}').format(key0)
+        outcome = '#messenger:client_error/contact/{}'.format(key0)
         if outcome not in cls.CLIENT_ERROR_CONTACT_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def client_error_channel(cls, key0):
-        outcome = ('#messenger:client_error/channel/{}').format(key0)
+        outcome = '#messenger:client_error/channel/{}'.format(key0)
         if outcome not in cls.CLIENT_ERROR_CHANNEL_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def client_error_limit(cls, key0):
-        outcome = ('#messenger:client_error/limit/{}').format(key0)
+        outcome = '#messenger:client_error/limit/{}'.format(key0)
         if outcome not in cls.CLIENT_ERROR_LIMIT_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def server_error_user_room_creation(cls, key0):
-        outcome = ('#messenger:server_error/user_room_creation/{}').format(key0)
+        outcome = '#messenger:server_error/user_room_creation/{}'.format(key0)
         if outcome not in cls.SERVER_ERROR_USER_ROOM_CREATION_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def client_action(cls, key0):
-        outcome = ('#messenger:client_action/{}').format(key0)
+        outcome = '#messenger:client_action/{}'.format(key0)
         if outcome not in cls.CLIENT_ACTION_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def chat_error(cls, key0):
-        outcome = ('#messenger:chat_error/{}').format(key0)
+        outcome = '#messenger:chat_error/{}'.format(key0)
         if outcome not in cls.CHAT_ERROR_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def chat_action(cls, key0):
-        outcome = ('#messenger:chat_action/{}').format(key0)
+        outcome = '#messenger:chat_action/{}'.format(key0)
         if outcome not in cls.CHAT_ACTION_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def command_success(cls, key0):
-        outcome = ('#messenger:command/success/{}').format(key0)
+        outcome = '#messenger:command/success/{}'.format(key0)
         if outcome not in cls.COMMAND_SUCCESS_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def listview_emptylist(cls, key0):
-        outcome = ('#messenger:listView/emptyList/{}').format(key0)
+        outcome = '#messenger:listView/emptyList/{}'.format(key0)
         if outcome not in cls.LISTVIEW_EMPTYLIST_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def personalMissionText(cls, key0):
-        outcome = ('#messenger:serviceChannelMessages/battleResults/personalMissions/{}').format(key0)
+        outcome = '#messenger:serviceChannelMessages/battleResults/personalMissions/{}'.format(key0)
         if outcome not in cls.SERVICECHANNELMESSAGES_BATTLERESULTS_PERSONALMISSIONS_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def currencyUpdateSelect(cls, operationName, currencyName):
-        outcome = ('#messenger:serviceChannelMessages/currencyUpdate/{}/{}').format(operationName, currencyName)
+        outcome = '#messenger:serviceChannelMessages/currencyUpdate/{}/{}'.format(operationName, currencyName)
         if outcome not in cls.SERVICECHANNELMESSAGES_CURRENCYUPDATE_ALL_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome

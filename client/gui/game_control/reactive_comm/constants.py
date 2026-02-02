@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/reactive_comm/constants.py
 from enum import Enum, unique
 MAX_CHANNEL_HISTORY = 10
 CHANNEL_UNSUBSCRIPTION_DELAY = 60
@@ -24,9 +26,7 @@ class SubscriptionServerStatus(Enum):
 
     @classmethod
     def fromString(cls, value):
-        if value in [ item.value for item in cls ]:
-            return cls(value)
-        return cls.UnknownCommand
+        return cls(value) if value in [ item.value for item in cls ] else cls.UnknownCommand
 
 
 @unique

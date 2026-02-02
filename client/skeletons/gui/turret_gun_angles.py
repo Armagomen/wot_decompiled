@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/skeletons/gui/turret_gun_angles.py
 
 
 class ITurretAndGunAngles(object):

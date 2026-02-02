@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/crew/quick_training/tips_list_component_model.py
 from frameworks.wulf import Array
 from gui.impl.gen.view_models.views.lobby.crew.common.info_tip_model import InfoTipModel
 from gui.impl.gen.view_models.views.lobby.crew.components.component_base_model import ComponentBaseModel

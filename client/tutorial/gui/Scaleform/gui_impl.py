@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/tutorial/gui/Scaleform/gui_impl.py
 import typing
 from collections import defaultdict
 from Event import Event, EventManager
@@ -42,7 +44,8 @@ class ScaleformGuiImpl(IGuiImpl):
         return
 
     def showEffect(self, componentID, viewID, effectType, effectData, effectBuilder=''):
-        self.__proxy.as_showEffectS(viewID, componentID, effectType, {'data': effectData, 'builder': effectBuilder})
+        self.__proxy.as_showEffectS(viewID, componentID, effectType, {'data': effectData,
+         'builder': effectBuilder})
 
     def hideEffect(self, componentID, viewID, effectType, effectBuilder=''):
         self.__proxy.as_hideEffectS(viewID, componentID, effectType, effectBuilder)
@@ -50,9 +53,9 @@ class ScaleformGuiImpl(IGuiImpl):
     def setDescriptions(self, descriptions):
         descrs = defaultdict(list)
         for descr in descriptions:
-            descrs[descr.viewId].append({'id': descr.ID, 
-               'viewName': descr.viewId, 
-               'path': descr.path})
+            descrs[descr.viewId].append({'id': descr.ID,
+             'viewName': descr.viewId,
+             'path': descr.path})
 
         self.__proxy.as_setDescriptionsS(descrs)
 
@@ -69,8 +72,7 @@ class ScaleformGuiImpl(IGuiImpl):
         self.__proxy.as_setTriggersS(componentID, triggers)
 
     def supportedViewTypes(self):
-        return (
-         GuiType.SCALEFORM, GuiType.WULF)
+        return (GuiType.SCALEFORM, GuiType.WULF)
 
     def isInited(self):
         return self.__proxy is not None and self.__proxy.isCreated()

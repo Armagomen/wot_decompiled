@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/clans/profile/ClanProfileBaseView.py
 from adisp import adisp_process
 from gui import SystemMessages
 from gui.Scaleform.daapi.view.meta.ClanProfileBaseViewMeta import ClanProfileBaseViewMeta
@@ -72,9 +74,9 @@ class ClanProfileBaseView(ClanProfileBaseViewMeta, ClanEmblemsHelper, ClanListen
 
     def _updateClanInfo(self, clanInfo):
         creationDate = i18n.makeString(CLANS.CLAN_HEADER_CREATIONDATE, creationDate=formatField(getter=clanInfo.getCreatedAt, formatter=backport.getShortDateFormat))
-        self.as_setClanInfoS({'name': formatField(getter=clanInfo.getFullName), 
-           'bgIcon': RES_ICONS.MAPS_ICONS_CLANS_CLAN_CARD_HEADER, 
-           'creationDate': creationDate})
+        self.as_setClanInfoS({'name': formatField(getter=clanInfo.getFullName),
+         'bgIcon': RES_ICONS.MAPS_ICONS_CLANS_CLAN_CARD_HEADER,
+         'creationDate': creationDate})
 
     def _updateClanEmblem(self, clanDbID):
         self.requestClanEmblem128x128(clanDbID)
@@ -84,19 +86,19 @@ class ClanProfileBaseView(ClanProfileBaseViewMeta, ClanEmblemsHelper, ClanListen
         self.as_setHeaderStateS(self.__headerBtnStates.get(canSendApplication.reason) or self._getHeaderButtonStateVO())
 
     def _getHeaderButtonStateVO(self, actionBtnVisible=False, actionBtnLabel=None, iconBtnVisible=False, topTFVisible=False, middleTFVisible=False, actionId=None, actionBtnTooltip=None, middleTF=None, topTF=None):
-        return {'actionBtnVisible': actionBtnVisible, 
-           'iconBtnVisible': iconBtnVisible, 
-           'topTFVisible': topTFVisible, 
-           'middleTFVisible': middleTFVisible, 
-           'actionId': actionId, 
-           'middleTF': middleTF, 
-           'actionBtnTooltip': actionBtnTooltip, 
-           'actionBtnLabel': actionBtnLabel, 
-           'topTF': topTF}
+        return {'actionBtnVisible': actionBtnVisible,
+         'iconBtnVisible': iconBtnVisible,
+         'topTFVisible': topTFVisible,
+         'middleTFVisible': middleTFVisible,
+         'actionId': actionId,
+         'middleTF': middleTF,
+         'actionBtnTooltip': actionBtnTooltip,
+         'actionBtnLabel': actionBtnLabel,
+         'topTF': topTF}
 
     def _initHeaderBtnStates(self):
-        self.__headerBtnStates = {RES.NO_RESTRICTIONS: self._getHeaderButtonStateVO(True, i18n.makeString(CLANS.CLAN_HEADER_SENDREQUESTBTN), actionId=_JOIN_BTN_ACTION_ID, actionBtnTooltip=CLANS.CLAN_HEADER_SENDREQUESTBTN_TOOLTIP), 
-           RES.CLAN_APPLICATION_ALREADY_SENT: self._getHeaderButtonStateVO(middleTFVisible=True, middleTF=CLANS.CLAN_HEADER_REQUESTSENT)}
+        self.__headerBtnStates = {RES.NO_RESTRICTIONS: self._getHeaderButtonStateVO(True, i18n.makeString(CLANS.CLAN_HEADER_SENDREQUESTBTN), actionId=_JOIN_BTN_ACTION_ID, actionBtnTooltip=CLANS.CLAN_HEADER_SENDREQUESTBTN_TOOLTIP),
+         RES.CLAN_APPLICATION_ALREADY_SENT: self._getHeaderButtonStateVO(middleTFVisible=True, middleTF=CLANS.CLAN_HEADER_REQUESTSENT)}
         return self.__headerBtnStates
 
     def _showWaiting(self):
@@ -109,12 +111,9 @@ class ClanProfileBaseView(ClanProfileBaseViewMeta, ClanEmblemsHelper, ClanListen
         if self.webCtrl.isAvailable() and not self._dummyMustBeShown:
             self.as_hideDummyS()
         else:
-            self.as_showDummyS({'iconSource': RES_ICONS.MAPS_ICONS_LIBRARY_ALERTBIGICON, 
-               'htmlText': str().join((
-                          text_styles.middleTitle(i18n.makeString(CLANS.CLANPROFILE_MAINWINDOW_DUMMY_HEADER)),
-                          clans_fmts.getHtmlLineDivider(3),
-                          text_styles.main(i18n.makeString(CLANS.CLANPROFILE_MAINWINDOW_DUMMY_BODY)))), 
-               'alignCenter': False, 
-               'btnVisible': False, 
-               'btnLabel': '', 
-               'btnTooltip': ''})
+            self.as_showDummyS({'iconSource': RES_ICONS.MAPS_ICONS_LIBRARY_ALERTBIGICON,
+             'htmlText': str().join((text_styles.middleTitle(i18n.makeString(CLANS.CLANPROFILE_MAINWINDOW_DUMMY_HEADER)), clans_fmts.getHtmlLineDivider(3), text_styles.main(i18n.makeString(CLANS.CLANPROFILE_MAINWINDOW_DUMMY_BODY)))),
+             'alignCenter': False,
+             'btnVisible': False,
+             'btnLabel': '',
+             'btnTooltip': ''})

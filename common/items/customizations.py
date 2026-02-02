@@ -1,4 +1,7 @@
-import base64, copy
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/items/customizations.py
+import base64
+import copy
 from string import lower
 from typing import Dict, TypeVar, Optional, TYPE_CHECKING
 from constants import IS_CELLAPP, IS_BASEAPP
@@ -24,8 +27,7 @@ def checkItemInCompDescr(item, customizationElementCompDescr):
     elif itemType == CustomizationType.MODIFICATION:
         path = ('modifications', None)
     else:
-        path = (
-         ('{}s').format(lower(CustomizationTypeNames[itemType])), ('id', None))
+        path = ('{}s'.format(lower(CustomizationTypeNames[itemType])), ('id', None))
     return ComponentBinDeserializer(_CUSTOMIZATION_CLASSES).hasItem(customizationElementCompDescr, path, item[1])
 
 
@@ -97,9 +99,7 @@ def parseBattleOutfit(outfit, cache, arenaKind):
     if not outfit.styleId:
         return outfit
     styleOutfit = cache.styles[outfit.styleId].outfits[SeasonType.fromArenaKind(arenaKind)]
-    if not isEditedStyle(outfit):
-        return styleOutfit
-    return copy.deepcopy(styleOutfit).applyDiff(outfit)
+    return styleOutfit if not isEditedStyle(outfit) else copy.deepcopy(styleOutfit).applyDiff(outfit)
 
 
 class OutfitLogEntry(object):
@@ -143,15 +143,15 @@ class OutfitLogEntry(object):
         self.gun_personal_number1 = getPersonalNumberData(ApplyArea.GUN_3)
         getProjectionDecalData = self.__getProjectionDecalData
         for number in xrange(0, MAX_USERS_PROJECTION_DECALS):
-            setattr(self, ('projection_decal{}').format(number), getProjectionDecalData(number))
+            setattr(self, 'projection_decal{}'.format(number), getProjectionDecalData(number))
 
         getAttachmentsData = self.__getAttachmentsData
         for number in xrange(0, MAX_ATTACHMENTS):
-            setattr(self, ('attachment{}').format(number), getAttachmentsData(number))
+            setattr(self, 'attachment{}'.format(number), getAttachmentsData(number))
 
         getStatTrackersData = self.__getStatTrackersData
         for number in xrange(0, MAX_STAT_TRACKERS):
-            setattr(self, ('stat_tracker{}').format(number), getStatTrackersData(number))
+            setattr(self, 'stat_tracker{}'.format(number), getStatTrackersData(number))
 
         self.style_progression_level = outfit.styleProgressionLevel
         self.serial_number = outfit.serial_number
@@ -159,17 +159,12 @@ class OutfitLogEntry(object):
     @staticmethod
     def __getItemCompDescr(storage, area, cdFormatter):
         i = storage.get(area)
-        if not i:
-            return 0
-        return cdFormatter(i[0].id)
+        return 0 if not i else cdFormatter(i[0].id)
 
     @staticmethod
     def __getItemCompDescrWithProgression(storage, area, cdFormatter):
         i = storage.get(area)
-        if not i:
-            return (0, 0)
-        return (
-         cdFormatter(i[0].id), i[0].progressionLevel)
+        return (0, 0) if not i else (cdFormatter(i[0].id), i[0].progressionLevel)
 
     def __getPaintCd(self, area):
         return OutfitLogEntry.__getItemCompDescr(self._paints, area, cn.PaintItem.makeIntDescr)
@@ -184,11 +179,11 @@ class OutfitLogEntry(object):
         return OutfitLogEntry.__getItemCompDescr(self._personal_numbers, area, cn.PersonalNumberItem.makeIntDescr)
 
     def __getProjectionDecalData(self, number):
-        value = {'projection_decal_slot': 0, 
-           'projection_decal_cd': 0, 
-           'projection_decal_options': 0, 
-           'projection_decal_scaleFactorId': 0, 
-           'projection_decal_progression_level': 0}
+        value = {'projection_decal_slot': 0,
+         'projection_decal_cd': 0,
+         'projection_decal_options': 0,
+         'projection_decal_scaleFactorId': 0,
+         'projection_decal_progression_level': 0}
         try:
             projectionDecal = self._projection_decals[number]
             value['projection_decal_slot'] = projectionDecal.slotId
@@ -209,10 +204,10 @@ class OutfitLogEntry(object):
         return value
 
     def __getAttachmentsData(self, number):
-        value = {'attachment_cd': 0, 
-           'attachment_slot': 0, 
-           'attachment_scaleFactorId': 0, 
-           'attachment_rotated': 0}
+        value = {'attachment_cd': 0,
+         'attachment_slot': 0,
+         'attachment_scaleFactorId': 0,
+         'attachment_rotated': 0}
         try:
             attachment = self._attachments[number]
             value['attachment_cd'] = cn.AttachmentItem.makeIntDescr(attachment.id)
@@ -225,8 +220,8 @@ class OutfitLogEntry(object):
         return value
 
     def __getStatTrackersData(self, number):
-        value = {'stat_tracker_cd': 0, 
-           'stat_tracker_slot': 0}
+        value = {'stat_tracker_cd': 0,
+         'stat_tracker_slot': 0}
         try:
             statTracker = self._stat_trackers[number]
             value['stat_tracker_cd'] = cn.StatTrackerItem.makeIntDescr(statTracker.id)
@@ -237,7 +232,7 @@ class OutfitLogEntry(object):
         return value
 
     def toDict(self):
-        return {k:v for k, v in self.__dict__.iteritems() if not k.startswith('_') if not k.startswith('_')}
+        return {k:v for k, v in self.__dict__.iteritems() if not k.startswith('_')}
 
 
 def makeLogOutfitValues(outfitDescr):
@@ -246,9 +241,7 @@ def makeLogOutfitValues(outfitDescr):
 
 def getHullCamouflageCd(outfitDescr):
     i = CustomizationOutfit.applyAreaBitmaskToDict(parseOutfitDescr(outfitDescr).camouflages).get(ApplyArea.HULL)
-    if not i:
-        return 0
-    return cn.CamouflageItem.makeIntDescr(i[0].id)
+    return 0 if not i else cn.CamouflageItem.makeIntDescr(i[0].id)
 
 
 def getVehicleOutfit(outfits, vehTypeDescr, outfitType):

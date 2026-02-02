@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/ammunition_panel/blocks_controller.py
 from gui.impl.common.ammunition_panel.ammunition_blocks_controller import AmmunitionBlocksController
 from gui.impl.common.tabs_controller import tabUpdateFunc
 from gui.impl.gen.view_models.views.lobby.tank_setup.tank_setup_constants import TankSetupConstants
@@ -12,7 +14,7 @@ class HangarAmmunitionBlocksController(AmmunitionBlocksController):
 
     @prbDispatcherProperty
     def prbDispatcher(self):
-        return
+        return None
 
     @tabUpdateFunc(TankSetupConstants.SHELLS)
     def _updateShells(self, viewModel, isFirst=False):
@@ -32,7 +34,4 @@ class HangarAmmunitionBlocksController(AmmunitionBlocksController):
             if permission is not None:
                 if not permission.canChangeVehicle():
                     return True
-        if self._vehicle:
-            return self._vehicle.isInBattle or self._vehicle.isLocked or self._vehicle.isBroken
-        else:
-            return True
+        return self._vehicle.isInBattle or self._vehicle.isLocked or self._vehicle.isBroken if self._vehicle else True

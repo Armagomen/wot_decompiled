@@ -1,4 +1,7 @@
-import constants, nations
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/inhangar/__init__.py
+import constants
+import nations
 from account_helpers.AccountSettings import AccountSettings
 from account_helpers.AccountSettings import STORAGE_VEHICLES_CAROUSEL_FILTER_1
 from gui import GUI_NATIONS_ORDER_INDEX
@@ -34,7 +37,7 @@ class _ShortNameVehiclesCriteriesGroup(CriteriesGroup):
             self._criteria |= REQ_CRITERIA.VEHICLE.CLASSES(selectedVehiclesIds)
         selectedLevels = []
         for level in VEHICLE_LEVELS:
-            if filters[('level_%d' % level)]:
+            if filters['level_%d' % level]:
                 selectedLevels.append(level)
 
         if selectedLevels:
@@ -96,8 +99,7 @@ class StorageCarouselDataProvider(CarouselDataProvider):
 
     @classmethod
     def _vehicleComparisonKey(cls, vehicle):
-        return (
-         not vehicle.isInInventory,
+        return (not vehicle.isInInventory,
          not vehicle.isEvent,
          not vehicle.isOnlyForBattleRoyaleBattles,
          GUI_NATIONS_ORDER_INDEX[vehicle.nationName],

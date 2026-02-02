@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/notification/actions_handlers.py
 from __future__ import absolute_import
 from adisp import adisp_process
 from fun_random.gui.feature.util.fun_mixins import FunSubModesWatcher, FunProgressionWatcher
@@ -16,7 +18,7 @@ class SelectFunRandomMode(NavigationDisabledActionHandler, FunSubModesWatcher):
 
     @classmethod
     def getActions(cls):
-        return ('selectFunRandomMode', )
+        pass
 
     @hasMultipleSubModes(defReturn=True)
     def checkHeaderNavigation(self):
@@ -39,7 +41,7 @@ class ShowFunRandomProgression(NavigationDisabledActionHandler, FunProgressionWa
 
     @classmethod
     def getActions(cls):
-        return ('showFunRandomProgression', )
+        pass
 
     def doAction(self, model, entityID, action):
         self.showActiveProgressionPage()

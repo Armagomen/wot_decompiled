@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/ammunition_panel/base_view.py
 import logging
 from CurrentVehicle import g_currentVehicle
 from PlayerEvents import g_playerEvents
@@ -25,8 +27,7 @@ class BaseAmmunitionPanelView(ViewImpl):
     _VIEW_MODEL = AmmunitionPanelViewModel
     _itemsCache = dependency.descriptor(IItemsCache)
     _hangarSpace = dependency.descriptor(IHangarSpace)
-    __slots__ = ('_ammunitionPanel', '_wasVehicleOnLoading', 'onPanelSectionResized',
-                 'onVehicleChanged')
+    __slots__ = ('_ammunitionPanel', '_wasVehicleOnLoading', 'onPanelSectionResized', 'onVehicleChanged')
 
     def __init__(self, flags=ViewFlags.VIEW):
         settings = ViewSettings(R.views.lobby.tanksetup.AmmunitionPanel())
@@ -79,7 +80,7 @@ class BaseAmmunitionPanelView(ViewImpl):
 
     @prbDispatcherProperty
     def prbDispatcher(self):
-        return
+        return None
 
     def update(self, fullUpdate=True):
         if fullUpdate:
@@ -184,6 +185,4 @@ class BaseAmmunitionPanelView(ViewImpl):
 
     def _getBackportTooltipData(self, event):
         tooltipId = event.getArgument('tooltip')
-        if tooltipId == TOOLTIPS_CONSTANTS.HANGAR_SLOT_SPEC:
-            return getSlotSpecTooltipData(event, tooltipId)
-        return getSlotTooltipData(event, self.vehItem, self.viewModel.ammunitionPanel.getSelectedSlot())
+        return getSlotSpecTooltipData(event, tooltipId) if tooltipId == TOOLTIPS_CONSTANTS.HANGAR_SLOT_SPEC else getSlotTooltipData(event, self.vehItem, self.viewModel.ammunitionPanel.getSelectedSlot())

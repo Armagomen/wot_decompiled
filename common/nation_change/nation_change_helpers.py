@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/nation_change/nation_change_helpers.py
 import typing
 from operator import add, contains
 import nation_change
@@ -11,9 +13,7 @@ def activeInNationGroup(flag):
 
 def isMainInNationGroupSafe(vehCompDescr):
     groupID = getNationGroupID(vehCompDescr)
-    if groupID == nation_change.UNDEFINED_ID:
-        return True
-    return isMainInNationGroup(vehCompDescr)
+    return True if groupID == nation_change.UNDEFINED_ID else isMainInNationGroup(vehCompDescr)
 
 
 def isMainInNationGroup(vehCompDescr):
@@ -37,10 +37,7 @@ def hasNationGroup(vehCompactDescr):
 
 def getVehiclesInNationGroup(groupId):
     group = nation_change.g_settings.getGroupById(groupId)
-    if group is None:
-        return tuple()
-    else:
-        return tuple(group.tankList)
+    return tuple() if group is None else tuple(group.tankList)
 
 
 def getGroupByVehicleType(vehicleType):
@@ -101,9 +98,7 @@ def getMainVehicleInNationGroup(nationGroupID):
 def getMainVehicleInNationGroupByVehTypeCD(vehTypeCD):
     vehType = vehicles.getVehicleType(vehTypeCD)
     nationGroupID = vehType.nationChangeGroupId
-    if nationGroupID == nation_change.UNDEFINED_ID:
-        return vehTypeCD
-    return getMainVehicleInNationGroup(nationGroupID)
+    return vehTypeCD if nationGroupID == nation_change.UNDEFINED_ID else getMainVehicleInNationGroup(nationGroupID)
 
 
 class NationalGroupDataAccumulator(dict):
@@ -129,6 +124,4 @@ class NationalGroupDataAccumulator(dict):
     def get(self, vehTypeCD, default=None):
         if not bool(vehTypeCD):
             return default
-        if any(contains(self, x) for x in iterVehiclesWithNationGroupInOrder([vehTypeCD])):
-            return self[vehTypeCD]
-        return default
+        return self[vehTypeCD] if any((contains(self, x) for x in iterVehiclesWithNationGroupInOrder([vehTypeCD]))) else default

@@ -1,7 +1,11 @@
-import operator, logging
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/invites.py
+import operator
+import logging
 from itertools import chain
 from collections import namedtuple, defaultdict
-import BigWorld, Event
+import BigWorld
+import Event
 from PlayerEvents import g_playerEvents
 from account_helpers import isRoamingEnabled
 from constants import PREBATTLE_INVITE_STATUS, PREBATTLE_INVITE_STATUS_NAMES
@@ -49,8 +53,7 @@ class _WarningType(object):
     ANONYMIZED = 'anonymized'
 
 
-_PrbInviteData = namedtuple('_PrbInviteData', (
- 'clientID',
+_PrbInviteData = namedtuple('_PrbInviteData', ('clientID',
  'createTime',
  'type',
  'comment',
@@ -73,9 +76,7 @@ _PrbInviteData = namedtuple('_PrbInviteData', (
  'id'))
 
 def isInviteSenderIgnored(user, areFriendsOnly, isFromBattle):
-    if isFromBattle:
-        return isNotFriendSenderIgnored(user, False)
-    return isNotFriendSenderIgnored(user, areFriendsOnly)
+    return isNotFriendSenderIgnored(user, False) if isFromBattle else isNotFriendSenderIgnored(user, areFriendsOnly)
 
 
 def _getOldInviteOrderKey(item):
@@ -106,7 +107,7 @@ class PrbInviteWrapper(_PrbInviteData):
     def senderFullName(self):
         fullName = self.lobbyContext.getPlayerFullName(self.creator, clanAbbrev=self.creatorClanAbbrev)
         if fullName != '':
-            fullName = ('{}{}').format(self.getCreatorBadgeImgStr(), fullName)
+            fullName = '{}{}'.format(self.getCreatorBadgeImgStr(), fullName)
         return fullName
 
     @property
@@ -128,40 +129,24 @@ class PrbInviteWrapper(_PrbInviteData):
 
     @property
     def warning(self):
-        if self.__anonymizerController.isAnonymized:
-            return _WarningType.ANONYMIZED
-        return ''
+        return _WarningType.ANONYMIZED if self.__anonymizerController.isAnonymized else ''
 
     def getCreatorBadgeID(self):
         badge = self.creatorBadges.getBadge()
-        if badge is None:
-            return 0
-        else:
-            return badge.badgeID
+        return 0 if badge is None else badge.badgeID
 
     def getCreatorBadgeImgStr(self, size=24, vspace=-6):
         badge = self.creatorBadges.getBadge()
-        if badge is None or badge.hasDynamicContent():
-            return ''
-        return makeImageTag(badge.getThumbnailIcon(), size, size, vspace)
+        return '' if badge is None or badge.hasDynamicContent() else makeImageTag(badge.getThumbnailIcon(), size, size, vspace)
 
     def getCreateTime(self):
-        if self.createTime is not None:
-            return int(time_utils.makeLocalServerTime(self.createTime))
-        else:
-            return
+        return int(time_utils.makeLocalServerTime(self.createTime)) if self.createTime is not None else None
 
     def getExpiryTime(self):
-        if self.expiryTime is not None:
-            return int(time_utils.makeLocalServerTime(self.expiryTime))
-        else:
-            return
+        return int(time_utils.makeLocalServerTime(self.expiryTime)) if self.expiryTime is not None else None
 
     def getExtraData(self, key=None, default=None):
-        if key is not None:
-            return self.extraData.get(key, default)
-        else:
-            return self.extraData
+        return self.extraData.get(key, default) if key is not None else self.extraData
 
     def isCreatedInBattle(self):
         return not self.isFromHangar()
@@ -182,10 +167,7 @@ class PrbInviteWrapper(_PrbInviteData):
         if self.connectionMgr.peripheryID == self.peripheryID:
             BigWorld.player().prb_acceptInvite(self.prebattleID, self.peripheryID)
         else:
-            _logger.error('Invalid periphery. %s', (
-             (
-              self.prebattleID, self.peripheryID),
-             self.connectionMgr.peripheryID))
+            _logger.error('Invalid periphery. %s', ((self.prebattleID, self.peripheryID), self.connectionMgr.peripheryID))
 
     def decline(self, callback=None):
         BigWorld.player().prb_declineInvite(self.prebattleID, self.peripheryID)
@@ -278,10 +260,7 @@ class PrbInvitationWrapper(PrbInviteWrapper):
         if self.connectionMgr.peripheryID == self.peripheryID:
             BigWorld.player().prebattleInvitations.acceptInvitation(self.id, self.creatorVehID or self.creatorID, callback)
         else:
-            _logger.error('Invalid periphery. %s', (
-             (
-              self.prebattleID, self.peripheryID),
-             self.connectionMgr.peripheryID))
+            _logger.error('Invalid periphery. %s', ((self.prebattleID, self.peripheryID), self.connectionMgr.peripheryID))
 
     def decline(self, callback=None):
         BigWorld.player().prebattleInvitations.declineInvitation(self.id, self.creatorVehID or self.creatorID, callback)
@@ -312,9 +291,7 @@ def _getOldInvites():
 
 
 def _getNewInvites():
-    if hasattr(BigWorld.player(), 'prebattleInvitations'):
-        return BigWorld.player().prebattleInvitations.getInvites()
-    return {}
+    return BigWorld.player().prebattleInvitations.getInvites() if hasattr(BigWorld.player(), 'prebattleInvitations') else {}
 
 
 class InvitesManager(UsersInfoHelper):
@@ -398,7 +375,7 @@ class InvitesManager(UsersInfoHelper):
 
     @storage_getter('users')
     def users(self):
-        return
+        return None
 
     def isInited(self):
         return self.__inited == PRB_INVITES_INIT_STEP.INITED
@@ -542,15 +519,15 @@ class InvitesManager(UsersInfoHelper):
                 if inviteData and self._updateInvite(invite):
                     updated[invite.isIncoming()].append(inviteID)
 
-        for isIncoming, event in ((True, self.onReceivedInviteListModified),
-         (
-          False, self.onSentInviteListModified)):
+        for isIncoming, event in ((True, self.onReceivedInviteListModified), (False, self.onSentInviteListModified)):
             if updated[isIncoming]:
                 event([], updated[isIncoming], [])
 
     def _makeInviteID(self, prebattleID, peripheryID, senderID, receiverID):
-        inviteKey = (
-         prebattleID, peripheryID, senderID, receiverID)
+        inviteKey = (prebattleID,
+         peripheryID,
+         senderID,
+         receiverID)
         inviteID = self._IDMap.get(inviteKey)
         if inviteID is None:
             inviteID = self._IDGen.next()
@@ -609,13 +586,7 @@ class InvitesManager(UsersInfoHelper):
 
     def _rebuildInvitesLists(self):
         rosterGetter = self.users.getUser
-        self._buildReceivedInvitesList([
-         (
-          sorted(_getOldInvites().items(), key=_getOldInviteOrderKey, reverse=False),
-          self._getOldInviteMaker()),
-         (
-          sorted(_getNewInvites().values(), key=operator.itemgetter('sentAt'), reverse=False),
-          self._getNewInviteMaker(rosterGetter))])
+        self._buildReceivedInvitesList([(sorted(_getOldInvites().items(), key=_getOldInviteOrderKey, reverse=False), self._getOldInviteMaker()), (sorted(_getNewInvites().values(), key=operator.itemgetter('sentAt'), reverse=False), self._getNewInviteMaker(rosterGetter))])
 
     def _getOldInviteMaker(self):
         receiver = getPlayerName()
@@ -650,8 +621,7 @@ class InvitesManager(UsersInfoHelper):
                     user = rosterGetter(userID, scope=scope)
                     if user and user.hasValidName():
                         name, abbrev = userName, userClanAbbrev
-            return (
-             name, abbrev)
+            return (name, abbrev)
 
         def _inviteMaker(item):
             peripheryID, prebattleID = PrbInvitationWrapper.getPrbInfo(item.get('info', {}))
@@ -678,9 +648,7 @@ class InvitesManager(UsersInfoHelper):
             inviteID = self._makeInviteID(prebattleID, peripheryID, creatorID, receiverID)
             senderName, senderClanAbbrev = _getUserName(creatorID, creatorIDScope)
             receiverName, receiverClanAbbrev = _getUserName(receiverID, receiverIDScope)
-            return (
-             inviteID,
-             PrbInvitationWrapper(inviteID, creatorID=creatorID, sender=senderName, senderClanAbbrev=senderClanAbbrev, receiverID=receiverID, receiver=receiverName, receiverClanAbbrev=receiverClanAbbrev, **item))
+            return (inviteID, PrbInvitationWrapper(inviteID, creatorID=creatorID, sender=senderName, senderClanAbbrev=senderClanAbbrev, receiverID=receiverID, receiver=receiverName, receiverClanAbbrev=receiverClanAbbrev, **item))
 
         return _inviteMaker
 
@@ -771,7 +739,7 @@ class InvitesManager(UsersInfoHelper):
                 if self._addInvite(invite, creator):
                     modified = True
                     added.append(inviteID)
-            elif self._updateInvite(invite):
+            if self._updateInvite(invite):
                 modified = True
                 changed.append(inviteID)
 
@@ -783,7 +751,7 @@ class InvitesManager(UsersInfoHelper):
         added = defaultdict(list)
         changed = defaultdict(list)
         deleted = defaultdict(list)
-        modified = dict((v, False) for v in (True, False))
+        modified = dict(((v, False) for v in (True, False)))
         rosterGetter = self.users.getUser
         inviteMaker = self._getNewInviteMaker(rosterGetter)
         newInvites = {}
@@ -808,13 +776,11 @@ class InvitesManager(UsersInfoHelper):
                 if self._addInvite(invite, creator):
                     modified[isIncoming] = True
                     added[isIncoming].append(inviteID)
-            elif self._updateInvite(invite):
+            if self._updateInvite(invite):
                 modified[isIncoming] = True
                 changed[isIncoming].append(inviteID)
 
-        for isIncoming, event in ((True, self.onReceivedInviteListModified),
-         (
-          False, self.onSentInviteListModified)):
+        for isIncoming, event in ((True, self.onReceivedInviteListModified), (False, self.onSentInviteListModified)):
             if modified[isIncoming]:
                 event(added[isIncoming], changed[isIncoming], deleted[isIncoming])
 

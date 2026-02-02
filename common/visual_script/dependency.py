@@ -1,4 +1,7 @@
-import sys, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/visual_script/dependency.py
+import sys
+import typing
 from importlib import import_module
 from types import ModuleType
 from constants import IS_VS_EDITOR
@@ -41,7 +44,7 @@ if IS_VS_EDITOR:
             return
 
         def __str__(self):
-            return ''
+            pass
 
 
     MOCK_IMPORT_ERRORS = []

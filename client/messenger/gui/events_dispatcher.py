@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/gui/events_dispatcher.py
 from debug_utils import LOG_ERROR
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
@@ -14,8 +16,8 @@ def showLazyChannelWindow(clientID):
 
 
 def notifyCarousel(clientID, notify=True):
-    g_eventBus.handleEvent(events.ChannelManagementEvent(clientID, events.ChannelManagementEvent.REQUEST_TO_CHANGE, {'key': 'isNotified', 
-       'value': notify}), scope=EVENT_BUS_SCOPE.LOBBY)
+    g_eventBus.handleEvent(events.ChannelManagementEvent(clientID, events.ChannelManagementEvent.REQUEST_TO_CHANGE, {'key': 'isNotified',
+     'value': notify}), scope=EVENT_BUS_SCOPE.LOBBY)
 
 
 def showConnectToSecureChannelWindow(channel):

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/info/bottom_panel_style_progression.py
 from CurrentVehicle import g_currentPreviewVehicle
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.Scaleform.daapi.view.meta.VehiclePreviewBottomPanelStyleProgressionMeta import VehiclePreviewBottomPanelStyleProgressionMeta
@@ -77,13 +79,13 @@ class ProgressionStylesBuyingPanelView(ViewImpl):
         super(ProgressionStylesBuyingPanelView, self)._onLoading(*args, **kwargs)
         g_currentPreviewVehicle.onChangeStarted += self.__onVehicleChangeStarted
         g_currentPreviewVehicle.onChanged += self.__onVehicleChanged
-        with self.getViewModel().transaction() as (model):
+        with self.getViewModel().transaction() as model:
             model.setCurrentLevel(1)
             model.setSelectedLevel(1)
 
     def _onLoaded(self, *args, **kwargs):
         currentLevel = self.__customizationService.getCurrentProgressionStyleLevel()
-        with self.getViewModel().transaction() as (model):
+        with self.getViewModel().transaction() as model:
             model.setCurrentLevel(self.__availableLevel or 1)
             model.setSelectedLevel(currentLevel if self.__styleLevel is None else self.__styleLevel)
             model.setIsReady(True)
@@ -116,7 +118,7 @@ class ProgressionStylesBuyingPanelView(ViewImpl):
             level = args[0].get('selectedLevel')
             if level is not None:
                 level = int(level)
-                with self.viewModel.transaction() as (tx):
+                with self.viewModel.transaction() as tx:
                     tx.setSelectedLevel(level)
                 self.__customizationService.changeStyleProgressionLevelPreview(level)
                 self.__styleLevel = level

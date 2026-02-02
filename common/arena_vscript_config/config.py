@@ -1,4 +1,7 @@
-import typing, logging
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/arena_vscript_config/config.py
+import typing
+import logging
 from extension_utils import ResMgr
 import section2dict
 from arena_vscript_config.schemas import configSchema

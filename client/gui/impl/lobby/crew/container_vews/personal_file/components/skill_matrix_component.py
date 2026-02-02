@@ -1,4 +1,7 @@
-import BigWorld, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/container_vews/personal_file/components/skill_matrix_component.py
+import BigWorld
+import typing
 from itertools import chain
 from constants import NEW_PERK_SYSTEM as NPS
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
@@ -41,13 +44,20 @@ class SkillMatrixComponent(ComponentBase):
             if tooltipId == TooltipConstants.SKILL:
                 skillName = event.getArgument('skillName')
                 roleName = event.getArgument('roleName')
-                args = [skillName, roleName, self.context.tankmanID, None, True, None,
-                 event.getArgument('isBonus'), int(event.getArgument('skillIndex'))]
+                args = [skillName,
+                 roleName,
+                 self.context.tankmanID,
+                 None,
+                 True,
+                 None,
+                 event.getArgument('isBonus'),
+                 int(event.getArgument('skillIndex'))]
                 self._toolTipMgr.onCreateWulfTooltip(TOOLTIPS_CONSTANTS.CREW_PERK_GF, args, event.mouse.positionX, event.mouse.positionY, parent=self.parent.getParentWindow())
                 return TOOLTIPS_CONSTANTS.CREW_PERK_GF
             if tooltipId == TooltipConstants.DIRECTIVE:
-                return createAndLoadBackportTooltipWindow(self.parent.getParentWindow(), isSpecial=True, tooltipId=TOOLTIPS_CONSTANTS.BATTLE_BOOSTER_BLOCK, specialArgs=[
-                 int(event.getArgument('intCD')), 0, -1,
+                return createAndLoadBackportTooltipWindow(self.parent.getParentWindow(), isSpecial=True, tooltipId=TOOLTIPS_CONSTANTS.BATTLE_BOOSTER_BLOCK, specialArgs=[int(event.getArgument('intCD')),
+                 0,
+                 -1,
                  self.context.tankman.getVehicle()])
         return
 
@@ -56,40 +66,35 @@ class SkillMatrixComponent(ComponentBase):
             return QualificationTooltip(event.getArgument('index'), event.getArgument('role'), event.getArgument('isBonusQualification'), self.context.tankman.isFemale)
         if contentID == R.views.lobby.crew.tooltips.BonusPerksTooltip():
             return BonusPerksTooltip()
-        if contentID == R.views.lobby.crew.tooltips.EmptySkillTooltip():
-            return EmptySkillTooltip(self.context.tankman, int(event.getArgument('skillIndex')))
+        return EmptySkillTooltip(self.context.tankman, int(event.getArgument('skillIndex'))) if contentID == R.views.lobby.crew.tooltips.EmptySkillTooltip() else None
 
     def _getViewModel(self, vm):
         return vm.skills
 
     def _getEvents(self):
-        return super(SkillMatrixComponent, self)._getEvents() + (
-         (
-          self.viewModel.onIncrease, self._onIncrease),
-         (
-          self.viewModel.onReset, self._onReset),
-         (
-          self.viewModel.onSkillClick, self._onSkillClick),
-         (
-          self.viewModel.onSetAnimationInProgress, self._onSetAnimationInProgress))
+        return super(SkillMatrixComponent, self)._getEvents() + ((self.viewModel.onIncrease, self._onIncrease),
+         (self.viewModel.onReset, self._onReset),
+         (self.viewModel.onSkillClick, self._onSkillClick),
+         (self.viewModel.onSetAnimationInProgress, self._onSetAnimationInProgress))
 
     def _getSkillAnimationType(self, tankmanSkillModel, index, isBonus=False):
         animationType = AnimationType.NONE
         if self.context.skillAnimationsSkipped or tankmanSkillModel.getIsLocked() or tankmanSkillModel.getIsIrrelevant():
             return animationType
-        currentAnimationType = tankmanSkillModel.getAnimationType()
-        if currentAnimationType == AnimationType.SELECTED or currentAnimationType == AnimationType.UNLOCKED:
-            return
-        skillName = tankmanSkillModel.getName()
-        crewAccountController = BigWorld.player().crewAccountController
-        unlockIndexBefore = crewAccountController.indexSkillsUnlockAnimation(self.context.tankman.invID)
-        hasLearnedSkillAnimation = crewAccountController.hasLearnedSkillAnimation(self.context.tankman.invID, skillName)
-        if skillName and hasLearnedSkillAnimation:
-            animationType = AnimationType.SELECTED
-        elif unlockIndexBefore is not None:
-            index = index * 2 if isBonus else index
-            animationType = AnimationType.UNLOCKED if unlockIndexBefore <= index else animationType
-        return animationType
+        else:
+            currentAnimationType = tankmanSkillModel.getAnimationType()
+            if currentAnimationType == AnimationType.SELECTED or currentAnimationType == AnimationType.UNLOCKED:
+                return
+            skillName = tankmanSkillModel.getName()
+            crewAccountController = BigWorld.player().crewAccountController
+            unlockIndexBefore = crewAccountController.indexSkillsUnlockAnimation(self.context.tankman.invID)
+            hasLearnedSkillAnimation = crewAccountController.hasLearnedSkillAnimation(self.context.tankman.invID, skillName)
+            if skillName and hasLearnedSkillAnimation:
+                animationType = AnimationType.SELECTED
+            elif unlockIndexBefore is not None:
+                index = index * 2 if isBonus else index
+                animationType = AnimationType.UNLOCKED if unlockIndexBefore <= index else animationType
+            return animationType
 
     def _fillViewModel(self, vm):
         perksResetGracePeriod = getPerksResetGracePeriod()
@@ -109,8 +114,7 @@ class SkillMatrixComponent(ComponentBase):
         emptySkillsCount = max(0, NPS.MAX_MAJOR_PERKS - tman.earnedSkillsCount - tman.freeSkillsCount)
         skills = list(chain(freeSkills, tman.earnedSkills, [None] * emptySkillsCount))
         emptyLevelsCount = max(0, NPS.MAX_MAJOR_PERKS - len(tman.skillsLevels))
-        levels = list(chain(tman.skillsLevels, [
-         None] * emptyLevelsCount))
+        levels = list(chain(tman.skillsLevels, [None] * emptyLevelsCount))
         self._fillSkillsGroupModel(tman.role, skills, vm.mainSkills, levels)
         return
 
@@ -182,8 +186,8 @@ class SkillMatrixComponent(ComponentBase):
         self.events.onResetClick(self.context.tankmanID)
 
     def _onSkillClick(self, kwargs):
-        data = {'tankmanInvID': int(self.context.tankman.invID), 
-           'role': kwargs.get('role')}
+        data = {'tankmanInvID': int(self.context.tankman.invID),
+         'role': kwargs.get('role')}
         self.events.onSkillClick(**data)
 
     def _onSetAnimationInProgress(self, kwargs):
@@ -192,6 +196,6 @@ class SkillMatrixComponent(ComponentBase):
 
     def _onFocus(self, focused):
         if not self.__isOnFocus and focused:
-            with self.viewModel.transaction() as (vm):
+            with self.viewModel.transaction() as vm:
                 vm.setResetGracePeriodLeft(getPerksResetGracePeriod())
         self.__isOnFocus = focused

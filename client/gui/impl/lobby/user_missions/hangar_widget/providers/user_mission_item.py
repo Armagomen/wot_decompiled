@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hangar_widget/providers/user_mission_item.py
 from abc import ABCMeta
 from typing import TYPE_CHECKING
 from gui.server_events.events_helpers import EventInfoModel
@@ -37,7 +39,7 @@ class MissionItem(object):
 
     @property
     def countdown(self):
-        return 0
+        pass
 
     def getMissionPacker(self):
         raise NotImplementedError
@@ -53,7 +55,7 @@ class MissionItem(object):
 
 
 class DailyQuestMissionItem(MissionItem):
-    __slots__ = ('difficulty', )
+    __slots__ = ('difficulty',)
     _TYPE = 'daily'
 
     def __init__(self, itemId, weight, difficulty):
@@ -61,7 +63,7 @@ class DailyQuestMissionItem(MissionItem):
         self.difficulty = difficulty
 
     def __repr__(self):
-        return ('DailyQuest(id={}, type={}, weight={}, difficulty={})').format(self.itemId, self.itemType, self.weight, self.difficulty)
+        return 'DailyQuest(id={}, type={}, weight={}, difficulty={})'.format(self.itemId, self.itemType, self.weight, self.difficulty)
 
     def setItemType(self, value):
         self.itemType = value
@@ -69,9 +71,7 @@ class DailyQuestMissionItem(MissionItem):
     @property
     def countdown(self):
         dailyQuest = self._rawData
-        if dailyQuest.isBonus():
-            return EventInfoModel.getDailyProgressResetTimeDelta()
-        return super(DailyQuestMissionItem, self).countdown
+        return EventInfoModel.getDailyProgressResetTimeDelta() if dailyQuest.isBonus() else super(DailyQuestMissionItem, self).countdown
 
     def getMissionPacker(self):
         return DailyMissionItemPacker()
@@ -80,7 +80,7 @@ class DailyQuestMissionItem(MissionItem):
         return getDailyMissionsBonusPacker()
 
     def getRewardsSortFunc(self):
-        return
+        return None
 
     def getAnimationId(self):
         return '%s::%s' % (self._TYPE, self.difficulty)
@@ -94,7 +94,7 @@ class PremiumDailyQuestMissionItem(MissionItem):
         super(PremiumDailyQuestMissionItem, self).__init__(itemId, self._TYPE, weight)
 
     def __repr__(self):
-        return ('PremiumDailyQuest(id={}, type={}, weight={})').format(self.itemId, self.itemType, self.weight)
+        return 'PremiumDailyQuest(id={}, type={}, weight={})'.format(self.itemId, self.itemType, self.weight)
 
     def getMissionPacker(self):
         return DailyMissionItemPacker()
@@ -103,7 +103,7 @@ class PremiumDailyQuestMissionItem(MissionItem):
         return getDailyMissionsBonusPacker()
 
     def getRewardsSortFunc(self):
-        return
+        return None
 
     def getAnimationId(self):
         return self.itemId
@@ -120,7 +120,7 @@ class WeeklyQuestMissionItem(MissionItem):
         self._questId = questId
 
     def __repr__(self):
-        return ('WeeklyQuest(id={}, type={}, weight={}, _commonConditionId={}, _specialConditionIds={})').format(self.itemId, self.itemType, self.weight, self._commonConditionId, self._specialConditionIds)
+        return 'WeeklyQuest(id={}, type={}, weight={}, _commonConditionId={}, _specialConditionIds={})'.format(self.itemId, self.itemType, self.weight, self._commonConditionId, self._specialConditionIds)
 
     @property
     def commonConditionId(self):

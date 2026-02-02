@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/veh_post_progression/post_progression_base_component.py
 from __future__ import absolute_import
 import typing
 from future.builtins import range
@@ -30,25 +32,24 @@ if typing.TYPE_CHECKING:
     from gui.shared.gui_items import KPI
     from items.artefacts_helpers import VehicleFilter
 _NOT_SELECTED_IDX = -1
-_ACTION_TYPE_MAP = {ACTION_TYPES.MODIFICATION: ActionType.MODIFICATION, 
-   ACTION_TYPES.PAIR_MODIFICATION: ActionType.PAIRMODIFICATION, 
-   ACTION_TYPES.FEATURE: ActionType.MODIFICATIONWITHFEATURE}
-_ACTION_STATE_MAP = {PostProgressionActionState.PERSISTENT: ActionState.PERSISTENT, 
-   PostProgressionActionState.SELECTABLE: ActionState.SELECTABLE, 
-   PostProgressionActionState.CHANGEABLE: ActionState.CHANGEABLE}
-_ACTION_TOOLTIP_MAP = {PostProgressionActionTooltip.SIMPLEMOD: R.invalid(), 
-   PostProgressionActionTooltip.MULTIMOD: R.views.lobby.veh_post_progression.tooltip.PairModificationTooltipView(), 
-   PostProgressionActionTooltip.FEATURE: R.views.lobby.veh_post_progression.tooltip.SetupTooltipView(), 
-   PostProgressionActionTooltip.ROLESLOT: R.views.lobby.veh_post_progression.tooltip.RoleSlotTooltipView()}
-_CATEGORY_MAP = {SlotCategories.STEALTH: RoleCategory.STEALTH, 
-   SlotCategories.MOBILITY: RoleCategory.MOBILITY, 
-   SlotCategories.UNIVERSAL: RoleCategory.NONE, 
-   SlotCategories.FIREPOWER: RoleCategory.FIREPOWER, 
-   SlotCategories.SURVIVABILITY: RoleCategory.SURVIVABILITY}
+_ACTION_TYPE_MAP = {ACTION_TYPES.MODIFICATION: ActionType.MODIFICATION,
+ ACTION_TYPES.PAIR_MODIFICATION: ActionType.PAIRMODIFICATION,
+ ACTION_TYPES.FEATURE: ActionType.MODIFICATIONWITHFEATURE}
+_ACTION_STATE_MAP = {PostProgressionActionState.PERSISTENT: ActionState.PERSISTENT,
+ PostProgressionActionState.SELECTABLE: ActionState.SELECTABLE,
+ PostProgressionActionState.CHANGEABLE: ActionState.CHANGEABLE}
+_ACTION_TOOLTIP_MAP = {PostProgressionActionTooltip.SIMPLEMOD: R.invalid(),
+ PostProgressionActionTooltip.MULTIMOD: R.views.lobby.veh_post_progression.tooltip.PairModificationTooltipView(),
+ PostProgressionActionTooltip.FEATURE: R.views.lobby.veh_post_progression.tooltip.SetupTooltipView(),
+ PostProgressionActionTooltip.ROLESLOT: R.views.lobby.veh_post_progression.tooltip.RoleSlotTooltipView()}
+_CATEGORY_MAP = {SlotCategories.STEALTH: RoleCategory.STEALTH,
+ SlotCategories.MOBILITY: RoleCategory.MOBILITY,
+ SlotCategories.UNIVERSAL: RoleCategory.NONE,
+ SlotCategories.FIREPOWER: RoleCategory.FIREPOWER,
+ SlotCategories.SURVIVABILITY: RoleCategory.SURVIVABILITY}
 
 class _SelectionProvider(object):
-    __slots__ = ('__mainStepsBorder', '__mainStepsSelection', '__multiStepsSelection',
-                 '__postProgression')
+    __slots__ = ('__mainStepsBorder', '__mainStepsSelection', '__multiStepsSelection', '__postProgression')
 
     def __init__(self):
         self.__mainStepsBorder = 0
@@ -92,7 +93,7 @@ class _SelectionProvider(object):
             if not step.action.isMultiAction():
                 self.__mainStepsSelection.add(step.stepID)
                 self.__mainStepsBorder = step.stepID
-            elif step.action.isPurchased():
+            if step.action.isPurchased():
                 self.__multiStepsSelection[step.stepID] = step.action.getPurchasedID()
 
         progression.setState(VehicleState())
@@ -170,8 +171,7 @@ class _SelectionProvider(object):
 
 
 class PostProgressionBaseComponentView(ViewImpl):
-    __slots__ = ('onCustomProgressionState', 'onViewRendered', '_selectionProvider',
-                 '_vehicle', '_eventManager')
+    __slots__ = ('onCustomProgressionState', 'onViewRendered', '_selectionProvider', '_vehicle', '_eventManager')
 
     def __init__(self, layoutID, model, **kwargs):
         settings = ViewSettings(layoutID=layoutID, flags=ViewFlags.VIEW, model=model)
@@ -230,7 +230,7 @@ class PostProgressionBaseComponentView(ViewImpl):
             return
         postProgression = self._vehicle.postProgression
         completion = postProgression.getCompletion()
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             self._updateViewModel(model, availabilityReason, completion)
             self.__fillGridModel(model.grid, postProgression)
             self._fillPersistentBonuses(model.persistentBonuses, postProgression, completion)
@@ -306,8 +306,7 @@ class PostProgressionBaseComponentView(ViewImpl):
             stepId = int(stepId)
         if modId is not None:
             modId = int(modId)
-        return (
-         stepId, modId)
+        return (stepId, modId)
 
     def __onViewRendered(self):
         self.onViewRendered()
@@ -337,19 +336,18 @@ class PostProgressionBaseComponentView(ViewImpl):
         for step in postProgression.iterOrderedSteps():
             if step.action.isMultiAction():
                 multiStep = MultiStepModel() if multiStepsIdx >= len(multiSteps) else multiSteps[multiStepsIdx]
-                with multiStep.transaction() as (model):
+                with multiStep.transaction() as model:
                     self._fillMultiStepModel(model, step, multiSelection.get(step.stepID))
                 if multiStepsIdx >= len(multiSteps):
                     multiSteps.addViewModel(multiStep)
                 multiStepsIdx += 1
-            else:
-                singleStep = SingleStepModel() if mainStepsIdx >= len(mainSteps) else mainSteps[mainStepsIdx]
-                with singleStep.transaction() as (model):
-                    self._fillSingleStepModel(model, step)
-                if mainStepsIdx >= len(mainSteps):
-                    mainSteps.addViewModel(singleStep)
-                mainSelectedIdx = mainStepsIdx if step.stepID in mainSelection else mainSelectedIdx
-                mainStepsIdx += 1
+            singleStep = SingleStepModel() if mainStepsIdx >= len(mainSteps) else mainSteps[mainStepsIdx]
+            with singleStep.transaction() as model:
+                self._fillSingleStepModel(model, step)
+            if mainStepsIdx >= len(mainSteps):
+                mainSteps.addViewModel(singleStep)
+            mainSelectedIdx = mainStepsIdx if step.stepID in mainSelection else mainSelectedIdx
+            mainStepsIdx += 1
 
         mainSteps.invalidate()
         multiSteps.invalidate()
@@ -358,7 +356,7 @@ class PostProgressionBaseComponentView(ViewImpl):
     def __fillModificationsArray(self, modsArray, modifications):
         for idx, modification in enumerate(modifications):
             modificationModel = ModificationModel() if idx >= len(modsArray) else modsArray[idx]
-            with modificationModel.transaction() as (model):
+            with modificationModel.transaction() as model:
                 self._fillModification(model, modification)
             if idx >= len(modsArray):
                 modsArray.addViewModel(model)
@@ -380,7 +378,7 @@ class PostProgressionBaseComponentView(ViewImpl):
 
     def __updateSelection(self, needDiff=False):
         postProgression = self._vehicle.postProgression
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             self.__fillGridModel(model.grid, postProgression)
             self._fillPersistentBonuses(model.persistentBonuses, postProgression, postProgression.getCompletion())
             self._fillControlsModel(model, postProgression)

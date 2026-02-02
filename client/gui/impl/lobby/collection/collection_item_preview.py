@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/collection/collection_item_preview.py
 import logging
 from PlayerEvents import g_playerEvents
 from frameworks.wulf import ViewSettings, WindowFlags
@@ -42,7 +44,7 @@ class CollectionItemPreview(ViewImpl):
         super(CollectionItemPreview, self)._onLoading(*args, **kwargs)
         switchHangarOverlaySoundFilter(on=True)
         name, itemType, description, largeImage, mediumImage, smallImage = getItemInfo(self.__itemId, self.__collectionId)
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setName(name)
             tx.setType(itemType)
             tx.setDescription(description)
@@ -66,15 +68,10 @@ class CollectionItemPreview(ViewImpl):
         return super(CollectionItemPreview, self).getViewModel()
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onClosePreview, self.__onClosePreview),
-         (
-          self.viewModel.onOpenPreview, self.__onOpenPreview),
-         (
-          self.__collectionsSystem.onServerSettingsChanged, self.__onSettingsChanged),
-         (
-          g_playerEvents.onDisconnected, self.__onDisconnected))
+        return ((self.viewModel.onClosePreview, self.__onClosePreview),
+         (self.viewModel.onOpenPreview, self.__onOpenPreview),
+         (self.__collectionsSystem.onServerSettingsChanged, self.__onSettingsChanged),
+         (g_playerEvents.onDisconnected, self.__onDisconnected))
 
     @replaceNoneKwargsModel
     def __fillVehicleInfo(self, model=None):
@@ -102,8 +99,7 @@ class CollectionItemPreview(ViewImpl):
         self.__collectionsSystem.cache.getImagesPaths(self.__generateContentData(), self.__onContentUpdated)
 
     def __generateContentData(self):
-        return [
-         makeImageID(Group.BG, self.__collection.name, 'bgMain')]
+        return [makeImageID(Group.BG, self.__collection.name, 'bgMain')]
 
     def __onContentUpdated(self, isOk, data):
         if isOk:
@@ -136,7 +132,7 @@ class CollectionItemPreview(ViewImpl):
     def __getContent(self, group, sub, name):
         path = self.__content.get(group, {}).get(sub, {}).get(name, '')
         if not path:
-            _logger.warning('Resource: %s not found', ('/').join((group, sub, name)))
+            _logger.warning('Resource: %s not found', '/'.join((group, sub, name)))
         return path
 
 

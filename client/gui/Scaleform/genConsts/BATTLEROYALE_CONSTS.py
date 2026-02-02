@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/genConsts/BATTLEROYALE_CONSTS.py
 
 
 class BATTLEROYALE_CONSTS(object):

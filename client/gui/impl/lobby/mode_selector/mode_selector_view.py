@@ -1,6 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/mode_selector/mode_selector_view.py
 import logging
 from functools import partial
-import typing, adisp
+import typing
+import adisp
 from constants import QUEUE_TYPE
 from frameworks.wulf import ViewSettings, ViewFlags, WindowLayer, ViewStatus
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -43,8 +46,7 @@ _R_SIMPLE_TOOLTIP = R.views.common.tooltip_window.simple_tooltip_content.SimpleT
 _R_BACKPORT_TOOLTIP = R.views.common.tooltip_window.backport_tooltip_content.BackportTooltipContent
 _SIMPLE_TOOLTIPS_KEY = 'simpleTooltipIds'
 _CONTENT_TOOLTIPS_KEY = 'contentTooltipsMap'
-_SIMPLE_TOOLTIP_IDS = [
- ModeSelectorTooltipsConstants.RANKED_CALENDAR_DAY_INFO_TOOLTIP,
+_SIMPLE_TOOLTIP_IDS = [ModeSelectorTooltipsConstants.RANKED_CALENDAR_DAY_INFO_TOOLTIP,
  ModeSelectorTooltipsConstants.RANKED_STEP_TOOLTIP,
  ModeSelectorTooltipsConstants.RANKED_BATTLES_LEAGUE_TOOLTIP,
  ModeSelectorTooltipsConstants.RANKED_BATTLES_EFFICIENCY_TOOLTIP,
@@ -54,8 +56,8 @@ _SIMPLE_TOOLTIP_IDS = [
  ModeSelectorTooltipsConstants.EPIC_BATTLE_CALENDAR_TOOLTIP]
 
 def _getTooltipByContentIdMap():
-    return {R.views.lobby.battle_pass.tooltips.BattlePassCompletedTooltipView(): BattlePassCompletedTooltipView, 
-       R.views.lobby.battle_pass.tooltips.BattlePassInProgressTooltipView(): partial(BattlePassInProgressTooltipView, battleType=QUEUE_TYPE.RANDOMS)}
+    return {R.views.lobby.battle_pass.tooltips.BattlePassCompletedTooltipView(): BattlePassCompletedTooltipView,
+     R.views.lobby.battle_pass.tooltips.BattlePassInProgressTooltipView(): partial(BattlePassInProgressTooltipView, battleType=QUEUE_TYPE.RANDOMS)}
 
 
 registerModeSelectorTooltips(_SIMPLE_TOOLTIP_IDS, _getTooltipByContentIdMap())
@@ -95,9 +97,7 @@ class ModeSelectorView(ViewImpl, LobbyHeaderVisibility):
     def createToolTip(self, event):
         if event.contentID == _R_BACKPORT_TOOLTIP():
             tooltipId = event.getArgument('tooltipId')
-            if tooltipId in [
-             ModeSelectorTooltipsConstants.DISABLED_TOOLTIP,
-             ModeSelectorTooltipsConstants.CALENDAR_TOOLTIP]:
+            if tooltipId in [ModeSelectorTooltipsConstants.DISABLED_TOOLTIP, ModeSelectorTooltipsConstants.CALENDAR_TOOLTIP]:
                 index = int(event.getArgument('index'))
                 modeSelectorItem = self.__dataProvider.getItemByIndex(index)
                 if modeSelectorItem is None:
@@ -111,7 +111,7 @@ class ModeSelectorView(ViewImpl, LobbyHeaderVisibility):
             if tooltipId == ModeSelectorTooltipsConstants.RANDOM_BP_PAUSED_TOOLTIP:
                 return createSimpleTooltip(self.getParentWindow(), event, header=backport.text(R.strings.battle_pass.tooltips.entryPoint.disabled.header()), body=backport.text(R.strings.battle_pass.tooltips.entryPoint.disabled.body()))
             if tooltipId in self.__tooltipConstants.get(_SIMPLE_TOOLTIPS_KEY, []):
-                return createAndLoadBackportTooltipWindow(self.getParentWindow(), tooltipId=tooltipId, isSpecial=True, specialArgs=(None, ))
+                return createAndLoadBackportTooltipWindow(self.getParentWindow(), tooltipId=tooltipId, isSpecial=True, specialArgs=(None,))
             if tooltipId == ModeSelectorTooltipsConstants.RANKED_BATTLES_RANK_TOOLTIP:
                 rankID = int(event.getArgument('rankID'))
                 return createAndLoadBackportTooltipWindow(self.getParentWindow(), tooltipId=tooltipId, isSpecial=True, specialArgs=(rankID,))
@@ -122,7 +122,7 @@ class ModeSelectorView(ViewImpl, LobbyHeaderVisibility):
     def createToolTipContent(self, event, contentID):
         if contentID == _R_SIMPLE_TOOLTIP():
             return SimpleTooltipContent(contentID, event.getArgument('header', ''), event.getArgument('body', ''), event.getArgument('note', ''), event.getArgument('alert', ''))
-        if contentID == R.views.lobby.mode_selector.tooltips.SimplyFormatTooltip():
+        elif contentID == R.views.lobby.mode_selector.tooltips.SimplyFormatTooltip():
             modeName = event.getArgument('modeName', '')
             if modeName is None:
                 return
@@ -134,20 +134,19 @@ class ModeSelectorView(ViewImpl, LobbyHeaderVisibility):
             if not header:
                 return
             return SimplyFormatTooltipView(header, body)
+        elif contentID == R.views.lobby.common.tooltips.SimpleIconTooltip():
+            return createSimpleIconTooltip(event)
         else:
-            if contentID == R.views.lobby.common.tooltips.SimpleIconTooltip():
-                return createSimpleIconTooltip(event)
             tooltipClass = self.__tooltipConstants.get(_CONTENT_TOOLTIPS_KEY, {}).get(contentID)
-            if tooltipClass:
-                return tooltipClass()
-            return
+            return tooltipClass() if tooltipClass else None
 
     def createPopOverContent(self, event):
         if event.contentID == R.views.lobby.winback.popovers.WinbackLeaveModePopoverView():
             if self.__winbackController.isModeAvailable():
                 return WinbackLeaveModePopoverView()
             return None
-        return super(ModeSelectorView, self).createPopOverContent(event)
+        else:
+            return super(ModeSelectorView, self).createPopOverContent(event)
 
     def refresh(self):
         self.__dataProvider.forceRefresh()
@@ -223,7 +222,7 @@ class ModeSelectorView(ViewImpl, LobbyHeaderVisibility):
             return
 
     def __dataProviderListChangeHandler(self):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             self.__updateViewModel(tx)
 
     def __updateViewModel(self, vm):

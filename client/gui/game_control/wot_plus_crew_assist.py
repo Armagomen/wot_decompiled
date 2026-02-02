@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/wot_plus_crew_assist.py
+import logging
+import typing
 from constants import RENEWABLE_SUBSCRIPTION_CONFIG, PREBATTLE_TYPE
 from gui.game_control.wotlda.cache import CrewCache
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE
@@ -14,8 +17,7 @@ class CrewAssistantCtrl(object):
     CREW_ASSIST_DATA_CHANGED = 'crewAssistDataChanged'
     _lobbyContext = dependency.descriptor(ILobbyContext)
     _platoonCtrl = dependency.descriptor(IPlatoonController)
-    _SUPPORTED_PREBATTLE_TYPES = [
-     PREBATTLE_TYPE.SQUAD,
+    _SUPPORTED_PREBATTLE_TYPES = [PREBATTLE_TYPE.SQUAD,
      PREBATTLE_TYPE.STRONGHOLD,
      PREBATTLE_TYPE.CLAN,
      PREBATTLE_TYPE.TOURNAMENT,
@@ -68,8 +70,7 @@ class CrewAssistantCtrl(object):
             if hasCommonSet and hasLegendarySet:
                 break
 
-        return (
-         hasCommonSet, hasLegendarySet)
+        return (hasCommonSet, hasLegendarySet)
 
     def getOrderSets(self, vehIntCD, tankmanRole):
         if not self.__isEnabled:

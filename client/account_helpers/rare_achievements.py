@@ -1,4 +1,7 @@
-import functools, ResMgr
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/account_helpers/rare_achievements.py
+import functools
+import ResMgr
 from debug_utils import LOG_ERROR, LOG_CURRENT_EXCEPTION
 
 def __makeAchievementFileRequest(urlName, params, achievementId, callback):
@@ -51,13 +54,11 @@ def __allMedalsTextLoadedCallback(achievementId, data, onTextLoadedCallback):
 
 
 def getRareAchievementImage(achievementId, onImageLoadedCallback):
-    __makeAchievementFileRequest('rare_achievements_images', (
-     achievementId,), achievementId, onImageLoadedCallback)
+    __makeAchievementFileRequest('rare_achievements_images', (achievementId,), achievementId, onImageLoadedCallback)
 
 
 def getRareAchievementImageBig(achievementId, onImageLoadedCallback):
-    __makeAchievementFileRequest('rare_achievements_images_big', (
-     achievementId,), achievementId, onImageLoadedCallback)
+    __makeAchievementFileRequest('rare_achievements_images_big', (achievementId,), achievementId, onImageLoadedCallback)
 
 
 def __buildRareImageUrl(urlName, params):

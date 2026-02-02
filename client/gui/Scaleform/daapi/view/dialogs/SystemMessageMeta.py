@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/dialogs/SystemMessageMeta.py
 from collections import namedtuple
 from gui.Scaleform.daapi.view.dialogs import IDialogMeta
 from gui.impl import backport

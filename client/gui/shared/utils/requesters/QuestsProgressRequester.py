@@ -1,6 +1,12 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/utils/requesters/QuestsProgressRequester.py
 import functools
 from collections import namedtuple
-import copy, logging, typing, BigWorld, personal_missions
+import copy
+import logging
+import typing
+import BigWorld
+import personal_missions
 from account_helpers.AccountSettings import QUEST_DELTAS_PROGRESS, QUEST_DELTAS_COMPLETION
 from gui.server_events import events_helpers
 from gui.shared.utils.requesters.quest_deltas_settings import QuestDeltasSettings
@@ -84,8 +90,7 @@ class QuestsProgressRequester(_QuestsProgressRequester):
 
 
 class PersonalMissionsProgressRequester(_QuestsProgressRequester):
-    PersonalMissionProgress = namedtuple('PersonalMissionProgress', [
-     'state',
+    PersonalMissionProgress = namedtuple('PersonalMissionProgress', ['state',
      'flags',
      'selected',
      'unlocked',
@@ -113,21 +118,15 @@ class PersonalMissionsProgressRequester(_QuestsProgressRequester):
 
     def getPersonalMissionsFreeSlots(self, removedCount=0):
         pqProgress = self.__getQuestsData()
-        if pqProgress:
-            return pqProgress['slots'] - len(pqProgress['selected']) + removedCount
-        return 0
+        return pqProgress['slots'] - len(pqProgress['selected']) + removedCount if pqProgress else 0
 
     def getSelectedPersonalMissionsIDs(self):
         pqProgress = self.__getQuestsData()
-        if pqProgress:
-            return self.__getQuestsData()['selected']
-        return []
+        return self.__getQuestsData()['selected'] if pqProgress else []
 
     def getTankmanLastIDs(self, nationID):
         pqProgress = self.__getQuestsData()
-        if pqProgress:
-            return self.__getQuestsData()['lastIDs'].get(nationID, self._DefaultLastWomanIDs)
-        return self._DefaultLastWomanIDs
+        return self.__getQuestsData()['lastIDs'].get(nationID, self._DefaultLastWomanIDs) if pqProgress else self._DefaultLastWomanIDs
 
     def _response(self, resID, value, callback=None):
         if value is not None:
@@ -146,8 +145,7 @@ class _QuestProgressDelta(BaseDelta):
 
     def _getDataIterator(self, data):
         for questId, quest in data.get('quests', {}).iteritems():
-            yield (
-             questId, copy.deepcopy(quest.get('progress', {})))
+            yield (questId, copy.deepcopy(quest.get('progress', {})))
 
     def _getDefaultValue(self):
         return {}
@@ -160,7 +158,7 @@ class _QuestCompletionDelta(BaseDelta):
         self.questsFilters = dict()
 
     def questFilter(self, quest):
-        return events_helpers.isDailyQuest(quest.getID()) or events_helpers.isPremium(quest.getID()) or events_helpers.isWeeklyQuest(quest.getID()) or any(filterFunc(quest) for filterFunc in self.questsFilters.values())
+        return events_helpers.isDailyQuest(quest.getID()) or events_helpers.isPremium(quest.getID()) or events_helpers.isWeeklyQuest(quest.getID()) or any((filterFunc(quest) for filterFunc in self.questsFilters.values()))
 
     def clear(self):
         super(_QuestCompletionDelta, self).clear()
@@ -171,8 +169,7 @@ class _QuestCompletionDelta(BaseDelta):
         for questId in data.get('quests', {}).keys():
             quest = events.get(questId)
             if quest:
-                yield (
-                 questId, quest.isCompleted(data['quests'][questId]['progress']))
+                yield (questId, quest.isCompleted(data['quests'][questId]['progress']))
 
     def _getDefaultValue(self):
         return False

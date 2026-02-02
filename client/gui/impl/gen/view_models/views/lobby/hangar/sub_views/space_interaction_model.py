@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/hangar/sub_views/space_interaction_model.py
 from frameworks.wulf import ViewModel
 
 class SpaceInteractionModel(ViewModel):

@@ -1,4 +1,9 @@
-import weakref, zlib, cPickle, AccountCommands
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/account_helpers/SimpleStreamResponseHandler.py
+import weakref
+import zlib
+import cPickle
+import AccountCommands
 from debug_utils import LOG_CODEPOINT_WARNING, LOG_CURRENT_EXCEPTION
 
 class SimpleStreamResponseHandler(object):

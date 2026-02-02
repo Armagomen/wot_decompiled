@@ -1,25 +1,28 @@
-import Math, collections
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/PhysicsTurretShape.py
+import Math
+import collections
 from wrapped_reflection_framework import ReflectionMetaclass
 _DEBUG_WITH_SVG = False
 
 class PhysicsTurretShape:
     __metaclass__ = ReflectionMetaclass
-    PARAMS_DESC = {'zScale': (0.0, 2.0, 1.0, 0), 
-       'zPos': (-2.0, 2.0, 0.0, 1), 
-       'xScale': (0.0, 2.0, 1.0, 2), 
-       'xPos': (-2.0, 2.0, 0.0, 3), 
-       'yScale': (0.0, 2.0, 1.0, 4), 
-       'yPos': (-2.0, 2.0, 0.0, 5), 
-       'zRounding': (0.0, 1.0, 0.0, 6), 
-       'zRoundingCenter': (0.0, 1.0, 0.0, 7), 
-       'xRounding': (0.0, 1.0, 0.0, 8), 
-       'xRoundingCenter': (0.0, 1.0, 0.0, 9), 
-       'xSlope': (0.0, 1.0, 0.0, 10), 
-       'xSlopeCenter': (0.0, 1.0, 0.0, 11), 
-       'zSlope': (0.0, 1.0, 0.0, 12), 
-       'zSlopeCenter': (0.0, 1.0, 0.0, 13), 
-       'topSlope': (0.0, 1.0, 0.0, 14)}
-    PARAM_NAME_BY_INDEX = dict((desc[3], name) for name, desc in PARAMS_DESC.iteritems())
+    PARAMS_DESC = {'zScale': (0.0, 2.0, 1.0, 0),
+     'zPos': (-2.0, 2.0, 0.0, 1),
+     'xScale': (0.0, 2.0, 1.0, 2),
+     'xPos': (-2.0, 2.0, 0.0, 3),
+     'yScale': (0.0, 2.0, 1.0, 4),
+     'yPos': (-2.0, 2.0, 0.0, 5),
+     'zRounding': (0.0, 1.0, 0.0, 6),
+     'zRoundingCenter': (0.0, 1.0, 0.0, 7),
+     'xRounding': (0.0, 1.0, 0.0, 8),
+     'xRoundingCenter': (0.0, 1.0, 0.0, 9),
+     'xSlope': (0.0, 1.0, 0.0, 10),
+     'xSlopeCenter': (0.0, 1.0, 0.0, 11),
+     'zSlope': (0.0, 1.0, 0.0, 12),
+     'zSlopeCenter': (0.0, 1.0, 0.0, 13),
+     'topSlope': (0.0, 1.0, 0.0, 14)}
+    PARAM_NAME_BY_INDEX = dict(((desc[3], name) for name, desc in PARAMS_DESC.iteritems()))
 
     def __init__(self, bbMin=None, bbMax=None):
         self.__polys = None
@@ -27,8 +30,7 @@ class PhysicsTurretShape:
         self.resetParams()
         self.__box = None
         if bbMin is not None and bbMax is not None:
-            self.__box = (
-             Math.Vector3(bbMin), Math.Vector3(bbMax))
+            self.__box = (Math.Vector3(bbMin), Math.Vector3(bbMax))
         self.__isDirty = True
         self.__isSetParams = False
         return
@@ -46,12 +48,12 @@ class PhysicsTurretShape:
     def setTurretBox(self, bbMin, bbMax):
         if bbMin is None or bbMax is None:
             return
-        newBox = (
-         Math.Vector3(bbMin), Math.Vector3(bbMax))
-        if self.__box != newBox:
-            self.__isDirty = True
-            self.__box = newBox
-        return
+        else:
+            newBox = (Math.Vector3(bbMin), Math.Vector3(bbMax))
+            if self.__box != newBox:
+                self.__isDirty = True
+                self.__box = newBox
+            return
 
     def setParam(self, name, value):
         d = PhysicsTurretShape.PARAMS_DESC[name]
@@ -136,8 +138,7 @@ class PhysicsTurretShape:
         topRoundingCenterX = topMinX + roundedTopDeltaX * params['xRoundingCenter'] + alignedTopDeltaX * 0.5
         topAlignedMinX = topRoundingCenterX - alignedTopDeltaX * 0.5
         topAlignedMaxX = topRoundingCenterX + alignedTopDeltaX * 0.5
-        verts = [
-         Math.Vector3((alignedMaxX, minY, minZ)),
+        verts = [Math.Vector3((alignedMaxX, minY, minZ)),
          Math.Vector3((maxX, minY, alignedMinZ)),
          Math.Vector3((maxX, minY, alignedMaxZ)),
          Math.Vector3((alignedMaxX, minY, maxZ)),
@@ -167,14 +168,13 @@ class PhysicsTurretShape:
                 plN = v1 * v2
             if plN.length < 0.001:
                 plN = Math.Vector3((0.0, 1.0, 0.0))
-            for i in xrange(1, 7):
-                s1 = verts[i]
-                s2 = verts[(i + 8)]
-                t = _intersectPlaneSegment(plPt, plN, s1, s2)
-                verts[i + 8] = s1 + t * (s2 - s1)
+        for i in xrange(1, 7):
+            s1 = verts[i]
+            s2 = verts[i + 8]
+            t = _intersectPlaneSegment(plPt, plN, s1, s2)
+            verts[i + 8] = s1 + t * (s2 - s1)
 
-        inds = (
-         (7, 6, 5, 4, 3, 2, 1, 0),
+        inds = ((7, 6, 5, 4, 3, 2, 1, 0),
          (8, 9, 10, 11, 12, 13, 14, 15),
          (0, 1, 9, 8),
          (1, 2, 10, 9),
@@ -184,15 +184,14 @@ class PhysicsTurretShape:
          (5, 6, 14, 13),
          (6, 7, 15, 14),
          (7, 0, 8, 15))
-        self.__polys = (
-         tuple(verts), inds)
+        self.__polys = (tuple(verts), inds)
         if _DEBUG_WITH_SVG:
             scene = _Scene('turret')
             offs = 10
             for face in inds:
                 for i in xrange(len(face)):
                     v1 = verts[face[i]]
-                    v2 = verts[face[((i + 1) % len(face))]]
+                    v2 = verts[face[(i + 1) % len(face)]]
                     scene.add(_Line((offs + v1.x, offs + v1.z), (offs + v2.x, offs + v2.z)))
 
             scene.write_svg()
@@ -200,9 +199,7 @@ class PhysicsTurretShape:
 
 def _intersectPlaneSegment(planePt, planeN, seg1, seg2):
     dot = planeN.dot(seg2 - seg1)
-    if dot * dot < 1e-08:
-        return 0.0
-    return planeN.dot(planePt - seg1) / dot
+    return 0.0 if dot * dot < 1e-08 else planeN.dot(planePt - seg1) / dot
 
 
 def createPhysicsTurretShape(bbMin, bbMax):
@@ -221,8 +218,7 @@ class _Scene:
         self.items.append(item)
 
     def strarray(self):
-        var = [
-         '<?xml version="1.0"?>\n',
+        var = ['<?xml version="1.0"?>\n',
          '<svg height="%d" width="%d" >\n' % (self.height, self.width),
          ' <g style="fill-opacity:1.0; stroke:black;\n',
          '  stroke-width:1;">\n']
@@ -253,6 +249,7 @@ class _Line:
         self.end = end
 
     def strarray(self):
-        return [
-         '  <line x1="%d" y1="%d" x2="%d" y2="%d" />\n' % (
-          self.start[0], self.start[1], self.end[0], self.end[1])]
+        return ['  <line x1="%d" y1="%d" x2="%d" y2="%d" />\n' % (self.start[0],
+          self.start[1],
+          self.end[0],
+          self.end[1])]

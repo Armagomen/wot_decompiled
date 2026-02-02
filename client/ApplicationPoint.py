@@ -1,4 +1,12 @@
-import weakref, BigWorld, CGF, CombatSelectedArea, GenericComponents, Math, math_utils
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_core/scripts/client/ApplicationPoint.py
+import weakref
+import BigWorld
+import CGF
+import CombatSelectedArea
+import GenericComponents
+import Math
+import math_utils
 from helpers import dependency
 from helpers.CallbackDelayer import CallbackDelayer
 from items import vehicles
@@ -11,10 +19,7 @@ from AreaOfEffect import EffectRunner
 def _equipmentEffectFactory(entity):
     equipment = vehicles.g_cache.equipments().get(entity.equipmentID)
     effect = _EQUIPMENT_APPLICATION_POINTS.get(equipment.name)
-    if effect is not None:
-        return effect(entity, equipment)
-    else:
-        return
+    return effect(entity, equipment) if effect is not None else None
 
 
 class ApplicationPoint(BigWorld.Entity):
@@ -25,15 +30,10 @@ class ApplicationPoint(BigWorld.Entity):
 
     @property
     def areaColor(self):
-        if self._effect is not None:
-            return self._effect.equipment.areaColor
-        else:
-            return CombatSelectedArea.COLOR_WHITE
+        return self._effect.equipment.areaColor if self._effect is not None else CombatSelectedArea.COLOR_WHITE
 
     def prerequisites(self):
-        if isinstance(self._effect, EffectRunner):
-            return self._effect.prerequisites()
-        return []
+        return self._effect.prerequisites() if isinstance(self._effect, EffectRunner) else []
 
     def onEnterWorld(self, prereqs):
         if self._effect is not None:
@@ -144,8 +144,8 @@ class _Comp7ApplicationPointEffect(_ApplicationPointEffect):
     def _updateViewState(self):
         if self._isEnded():
             return
-        state = {'endTime': self._getEndTime(), 
-           'duration': self._getViewStateDuration()}
+        state = {'endTime': self._getEndTime(),
+         'duration': self._getViewStateDuration()}
         self._guiSessionProvider.shared.feedback.invalidateBuffEffect(feedbackEventID=self._getFeedbackEventId(), vehicleID=self._entity.vehicleID, data=state)
 
     def _updateCoordinates(self):
@@ -172,10 +172,7 @@ class _Comp7ApplicationPointEffect(_ApplicationPointEffect):
         self.__areaGO = gameObject
         t = gameObject.findComponentByType(GenericComponents.TransformComponent)
         floatEpsilon = 0.001
-        t.transform = math_utils.createSRTMatrix(Math.Vector3(self._getRadius(), 1.0, self._getRadius()), (0.0,
-                                                                                                           0.0,
-                                                                                                           0.0), (
-         0.0, floatEpsilon, 0.0))
+        t.transform = math_utils.createSRTMatrix(Math.Vector3(self._getRadius(), 1.0, self._getRadius()), (0.0, 0.0, 0.0), (0.0, floatEpsilon, 0.0))
 
 
 class _Comp7ReconApplicationPointEffect(_Comp7ApplicationPointEffect):

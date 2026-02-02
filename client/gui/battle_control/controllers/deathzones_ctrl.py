@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/deathzones_ctrl.py
 from collections import namedtuple
 import BigWorld
 from gui.battle_control.arena_info.interfaces import IArenaLoadController

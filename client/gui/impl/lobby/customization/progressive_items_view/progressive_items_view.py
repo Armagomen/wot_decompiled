@@ -1,4 +1,7 @@
-import logging, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/customization/progressive_items_view/progressive_items_view.py
+import logging
+import BigWorld
 from adisp import adisp_process
 from CurrentVehicle import g_currentVehicle
 from frameworks.wulf import ViewFlags, ViewSettings
@@ -30,15 +33,14 @@ from items.components.c11n_constants import CustomizationType
 _logger = logging.getLogger(__name__)
 _PREVIEW_ICON_SIZE = (512, 512)
 _PREVIEW_ICON_INNER_SIZE_DEFAULT = (504, 504)
-_PREVIEW_ICON_INNER_SIZE = {ProjectionDecalFormTags.SQUARE: (504, 504), 
-   ProjectionDecalFormTags.RECT1X2: (504, 252), 
-   ProjectionDecalFormTags.RECT1X3: (504, 168), 
-   ProjectionDecalFormTags.RECT1X4: (504, 126), 
-   ProjectionDecalFormTags.RECT1X6: (504, 84)}
+_PREVIEW_ICON_INNER_SIZE = {ProjectionDecalFormTags.SQUARE: (504, 504),
+ ProjectionDecalFormTags.RECT1X2: (504, 252),
+ ProjectionDecalFormTags.RECT1X3: (504, 168),
+ ProjectionDecalFormTags.RECT1X4: (504, 126),
+ ProjectionDecalFormTags.RECT1X6: (504, 84)}
 
 class ProgressiveItemsView(ViewImpl):
-    __slots__ = ('__c11nView', '_itemsProgressData', '_possibleItems', '_vehicle',
-                 '__blur', '__layoutID', '__urlMacros', '__guiSettings')
+    __slots__ = ('__c11nView', '_itemsProgressData', '_possibleItems', '_vehicle', '__blur', '__layoutID', '__urlMacros', '__guiSettings')
     __lobbyContext = dependency.descriptor(ILobbyContext)
     __itemsCache = dependency.descriptor(IItemsCache)
     __customizationService = dependency.descriptor(ICustomizationService)
@@ -77,7 +79,7 @@ class ProgressiveItemsView(ViewImpl):
         self._vehicle = g_currentVehicle.item
         self._possibleItems = self._getPossibleItemsForVehicle()
         self._itemsProgressData = self.__itemsCache.items.inventory.getC11nProgressionDataForVehicle(self._vehicle.intCD)
-        with self.getViewModel().transaction() as (model):
+        with self.getViewModel().transaction() as model:
             model.setTankName(self._vehicle.userName)
             model.setTankLevel(int2roman(self._vehicle.level))
             model.setTankType(self._vehicle.typeBigIconResource())
@@ -145,17 +147,16 @@ class ProgressiveItemsView(ViewImpl):
     def __showVideo(self):
         url = yield self.__urlMacros.parse(self.__guiSettings.get('url'))
         webHandlers = webApiCollection(ui_web_api.CloseViewWebApi, sound_web_api.SoundWebApi, sound_web_api.HangarSoundWebApi)
-        ctx = {'url': url, 
-           'webHandlers': webHandlers, 
-           'allowRightClick': False}
+        ctx = {'url': url,
+         'webHandlers': webHandlers,
+         'allowRightClick': False}
         showProgressiveItemsBrowserView(ctx)
 
     def _getPossibleItemsForVehicle(self):
         customizationCache = vehicles.g_cache.customization20()
         vehicleType = self._vehicle.descriptor.type
         sortedItems = sorted(customizationCache.customizationWithProgression.itervalues(), key=lambda i: i.id)
-        return [ item.compactDescr for item in sortedItems if (item.filter is None or item.filter.matchVehicleType(vehicleType)) and item.itemType == CustomizationType.PROJECTION_DECAL
-               ]
+        return [ item.compactDescr for item in sortedItems if (item.filter is None or item.filter.matchVehicleType(vehicleType)) and item.itemType == CustomizationType.PROJECTION_DECAL ]
 
     def __setItems(self, model):
         model.progressiveItems.clearItems()

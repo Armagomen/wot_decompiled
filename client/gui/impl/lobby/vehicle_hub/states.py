@@ -1,5 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/vehicle_hub/states.py
 from __future__ import absolute_import
-import logging, math, typing, BigWorld
+import logging
+import math
+import typing
+import BigWorld
 from CurrentVehicle import g_currentPreviewVehicle
 from WeakMethod import WeakMethodProxy
 from frameworks.state_machine import StateFlags
@@ -15,6 +20,7 @@ from gui.impl.lobby.vehicle_hub.camera_mover import VehicleHubCameraMover
 from gui.impl.lobby.vehicle_hub.sound_constants import VH_SOUND_SPACE
 from gui.lobby_state_machine.states import SFViewLobbyState, SubScopeSubLayerState, LobbyState, LobbyStateFlags, LobbyStateDescription
 from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
+from gui.shared.event_dispatcher import showHangar
 from gui.shared.utils.module_upd_available_helper import updateViewedItems
 from gui.shared.view_helpers.blur_manager import CachedBlur
 from gui.subhangar.subhangar_observer import selectItemByTankSize, hangarVehicleAABB
@@ -22,6 +28,7 @@ from gui.subhangar.subhangar_state_groups import SubhangarStateGroupConfigProvid
 from gui.veh_post_progression.models.progression import PostProgressionCompletion
 from helpers import dependency
 from helpers.CallbackDelayer import CallbackDelayer
+from helpers.events_handler import EventsHandler
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.shared.utils import IHangarSpace
 from sound_gui_manager import ViewSoundExtension
@@ -49,12 +56,14 @@ class _VehicleHubChildState(LobbyState, SubhangarStateGroupConfigProvider):
         super(_VehicleHubChildState, self).registerTransitions()
         self.addNavigationTransition(self, transitionType=TransitionType.EXTERNAL)
         from gui.Scaleform.daapi.view.lobby.vehicle_compare.states import VehicleCompareState
+        from gui.Scaleform.daapi.view.lobby.profile.states import ServiceRecordState
+        from gui.Scaleform.daapi.view.lobby.store.browser.states import ShopState
         lsm = self.getMachine()
         self.addNavigationTransition(lsm.getStateByCls(VehicleCompareState), record=True)
         self.addNavigationTransition(lsm.getStateByCls(BlueprintState), record=True)
+        self.addNavigationTransition(lsm.getStateByCls(ShopState), record=True)
         loadingState = lsm.getStateByCls(_LoadingState)
         self.addTransition(loadingState.makeTransition(TransitionType.INTERNAL, True), loadingState)
-        from gui.Scaleform.daapi.view.lobby.profile.states import ServiceRecordState
         self.addNavigationTransition(lsm.getStateByCls(ServiceRecordState), record=True)
 
     def _onEntered(self, event):
@@ -73,12 +82,11 @@ class _VehicleHubChildState(LobbyState, SubhangarStateGroupConfigProvider):
     def getSubhangarStateGroupConfig(self):
         if not self._SUBHANGAR_GROUPS_BY_TANK_SIZE:
             _logger.error('Subhangar groups cannot be none.')
-        return SubhangarStateGroupConfig((
-         selectItemByTankSize(_TANK_SIZE_LOWER_BOUNDS, self._SUBHANGAR_GROUPS_BY_TANK_SIZE),), self.getParent().cameraMover)
+        return SubhangarStateGroupConfig((selectItemByTankSize(_TANK_SIZE_LOWER_BOUNDS, self._SUBHANGAR_GROUPS_BY_TANK_SIZE),), self.getParent().cameraMover)
 
 
 @SubScopeSubLayerState.parentOf
-class VehicleHubState(SFViewLobbyState, SubhangarStateGroupConfigProvider):
+class VehicleHubState(SFViewLobbyState, EventsHandler, SubhangarStateGroupConfigProvider):
     STATE_ID = VIEW_ALIAS.VEHICLE_HUB
     VIEW_KEY = ViewKey(VIEW_ALIAS.VEHICLE_HUB)
     __hangarSpace = dependency.descriptor(IHangarSpace)
@@ -88,12 +96,7 @@ class VehicleHubState(SFViewLobbyState, SubhangarStateGroupConfigProvider):
     def __init__(self, flags=StateFlags.UNDEFINED):
         super(VehicleHubState, self).__init__(flags=flags | LobbyStateFlags.HANGAR)
         self.__cameraMover = None
-        self.__blur = None
         return
-
-    @property
-    def blur(self):
-        return self.__blur
 
     @property
     def cameraMover(self):
@@ -126,16 +129,14 @@ class VehicleHubState(SFViewLobbyState, SubhangarStateGroupConfigProvider):
 
     def serializeParams(self):
         view = self.getMachine().getRelatedView(self)
-        if not view:
-            return {}
-        return {'vhCtx': view.vehicleCtx}
+        return {} if not view else {'vhCtx': view.vehicleCtx}
 
     def _getViewLoadCtx(self, event):
         return {'ctx': event.params.get('vhCtx')}
 
     def _onEntered(self, event):
         super(VehicleHubState, self)._onEntered(event)
-        self.__blur = CachedBlur(enabled=False)
+        self._subscribe()
         self.__soundExtension.initSoundManager()
         self.__soundExtension.startSoundSpace()
         self.__setupTankTransformation()
@@ -150,15 +151,12 @@ class VehicleHubState(SFViewLobbyState, SubhangarStateGroupConfigProvider):
         pitch = math.radians(cfg['v_start_angles'][1])
         roll = math.radians(cfg['v_start_angles'][2])
         shadowYOffset = cfg['shadow_forward_y_offset'] if isForwardPipeline else cfg['shadow_deferred_y_offset']
-        g_eventBus.handleEvent(events.HangarCustomizationEvent(events.HangarCustomizationEvent.CHANGE_VEHICLE_MODEL_TRANSFORM, ctx={'targetPos': targetPos, 
-           'rotateYPR': (
-                       yaw, pitch, roll), 
-           'shadowYOffset': shadowYOffset}), scope=EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.handleEvent(events.HangarCustomizationEvent(events.HangarCustomizationEvent.CHANGE_VEHICLE_MODEL_TRANSFORM, ctx={'targetPos': targetPos,
+         'rotateYPR': (yaw, pitch, roll),
+         'shadowYOffset': shadowYOffset}), scope=EVENT_BUS_SCOPE.LOBBY)
 
     def _onExited(self):
-        if self.__blur is not None:
-            self.__blur.fini()
-            self.__blur = None
+        self._unsubscribe()
         self.__cameraMover = None
         self.getMachine().getRelatedView(self).stateExited()
         super(VehicleHubState, self)._onExited()
@@ -168,6 +166,12 @@ class VehicleHubState(SFViewLobbyState, SubhangarStateGroupConfigProvider):
         if self.__hangarSpace.spaceInited:
             self.__hangarSpace.space.turretAndGunAngles.reset()
         return
+
+    def _getEvents(self):
+        return ((self.__hangarSpace.onSpaceChanged, self.__onSpaceChanged),)
+
+    def __onSpaceChanged(self):
+        showHangar()
 
 
 @VehicleHubState.parentOf
@@ -209,20 +213,14 @@ class _LoadingState(LobbyState, SubhangarStateGroupConfigProvider):
 class OverviewState(_VehicleHubChildState):
     STATE_ID = VehicleHubViewModel.OVERVIEW
     TAB_NAME = VehicleHubViewModel.OVERVIEW
-    _SUBHANGAR_GROUPS_BY_TANK_SIZE = (
-     SubhangarStateGroups.VehicleHubOverviewSmallTank,
-     SubhangarStateGroups.VehicleHubOverviewMediumTank,
-     SubhangarStateGroups.VehicleHubOverviewLargeTank)
+    _SUBHANGAR_GROUPS_BY_TANK_SIZE = (SubhangarStateGroups.VehicleHubOverviewSmallTank, SubhangarStateGroups.VehicleHubOverviewMediumTank, SubhangarStateGroups.VehicleHubOverviewLargeTank)
 
 
 @VehicleHubState.parentOf
 class ModulesState(_VehicleHubChildState):
     STATE_ID = VehicleHubViewModel.MODULES
     TAB_NAME = VehicleHubViewModel.MODULES
-    _SUBHANGAR_GROUPS_BY_TANK_SIZE = (
-     SubhangarStateGroups.VehicleHubModulesSmallTank,
-     SubhangarStateGroups.VehicleHubModulesMediumTank,
-     SubhangarStateGroups.VehicleHubModulesLargeTank)
+    _SUBHANGAR_GROUPS_BY_TANK_SIZE = (SubhangarStateGroups.VehicleHubModulesSmallTank, SubhangarStateGroups.VehicleHubModulesMediumTank, SubhangarStateGroups.VehicleHubModulesLargeTank)
 
     def registerTransitions(self):
         super(ModulesState, self).registerTransitions()
@@ -242,10 +240,7 @@ class ModulesState(_VehicleHubChildState):
 class VehSkillTreeState(_VehicleHubChildState):
     STATE_ID = VehicleHubViewModel.VEH_SKILL_TREE
     TAB_NAME = VehicleHubViewModel.VEH_SKILL_TREE
-    _SUBHANGAR_GROUPS_BY_TANK_SIZE = (
-     SubhangarStateGroups.VehicleHubUpgradesSmallTank,
-     SubhangarStateGroups.VehicleHubUpgradesMediumTank,
-     SubhangarStateGroups.VehicleHubUpgradesLargeTank)
+    _SUBHANGAR_GROUPS_BY_TANK_SIZE = (SubhangarStateGroups.VehicleHubUpgradesSmallTank, SubhangarStateGroups.VehicleHubUpgradesMediumTank, SubhangarStateGroups.VehicleHubUpgradesLargeTank)
 
     def registerStates(self):
         self.addChildState(VehSkillTreeInitialState(LobbyStateFlags.INITIAL))
@@ -263,8 +258,7 @@ class _VehSkillTreeSubStateBase(LobbyState):
 
     def getNavigationDescription(self):
         from gui.shared.event_dispatcher import showVehSkillTreeIntro
-        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.vehicle_hub()), infos=(
-         LobbyStateDescription.Info(tooltipBody=backport.text(R.strings.veh_skill_tree.intro.button.tooltip()), onMoreInfoRequested=showVehSkillTreeIntro),))
+        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.vehicle_hub()), infos=(LobbyStateDescription.Info(tooltipBody=backport.text(R.strings.veh_skill_tree.intro.button.tooltip()), onMoreInfoRequested=showVehSkillTreeIntro),))
 
 
 @VehSkillTreeState.parentOf
@@ -319,28 +313,31 @@ class VehSkillTreePrestigeState(_VehSkillTreeSubStateBase):
 class StatsState(_VehicleHubChildState):
     STATE_ID = VehicleHubViewModel.STATS
     TAB_NAME = VehicleHubViewModel.STATS
-    _SUBHANGAR_GROUPS_BY_TANK_SIZE = (
-     SubhangarStateGroups.VehicleHubStatsSmallTank,
-     SubhangarStateGroups.VehicleHubStatsMediumTank,
-     SubhangarStateGroups.VehicleHubStatsLargeTank)
+    _SUBHANGAR_GROUPS_BY_TANK_SIZE = (SubhangarStateGroups.VehicleHubStatsSmallTank, SubhangarStateGroups.VehicleHubStatsMediumTank, SubhangarStateGroups.VehicleHubStatsLargeTank)
 
     def __init__(self, flags=StateFlags.UNDEFINED):
         super(StatsState, self).__init__(flags=flags)
+        self.__blur = None
+        return
 
     def _onEntered(self, event):
         super(StatsState, self)._onEntered(event)
-        self.getParent().blur.enable()
+        if self.__blur is None:
+            self.__blur = CachedBlur(enabled=False)
+        self.__blur.enable()
+        return
 
     def _onExited(self):
-        self.getParent().blur.disable()
+        if self.__blur is not None:
+            self.__blur.disable()
+            self.__blur.fini()
+            self.__blur = None
         super(StatsState, self)._onExited()
+        return
 
 
 @VehicleHubState.parentOf
 class ArmorState(_VehicleHubChildState):
     STATE_ID = VehicleHubViewModel.ARMOR
     TAB_NAME = VehicleHubViewModel.ARMOR
-    _SUBHANGAR_GROUPS_BY_TANK_SIZE = (
-     SubhangarStateGroups.VehicleHubArmorSmallTank,
-     SubhangarStateGroups.VehicleHubArmorMediumTank,
-     SubhangarStateGroups.VehicleHubArmorLargeTank)
+    _SUBHANGAR_GROUPS_BY_TANK_SIZE = (SubhangarStateGroups.VehicleHubArmorSmallTank, SubhangarStateGroups.VehicleHubArmorMediumTank, SubhangarStateGroups.VehicleHubArmorLargeTank)

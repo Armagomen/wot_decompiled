@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/dialogs/contents/common_balance_content.py
 import logging
 from itertools import chain
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
@@ -24,13 +26,13 @@ class CurrencyStatus(CONST_CONTAINER):
 class CommonBalanceContent(ViewImpl):
     __itemsCache = dependency.descriptor(IItemsCache)
     __wallet = dependency.descriptor(IWalletController)
-    __slots__ = ('__modelManager', )
-    __CURRENCY_FORMATTER = {Currency.CREDITS: NumberFormatType.INTEGRAL, 
-       Currency.GOLD: NumberFormatType.GOLD, 
-       Currency.CRYSTAL: NumberFormatType.INTEGRAL, 
-       'freeXP': NumberFormatType.INTEGRAL}
-    __SPECIAL_TOOLTIPS = {Currency.GOLD: TOOLTIPS_CONSTANTS.GOLD_STATS, 
-       Currency.CREDITS: TOOLTIPS_CONSTANTS.CREDITS_STATS}
+    __slots__ = ('__modelManager',)
+    __CURRENCY_FORMATTER = {Currency.CREDITS: NumberFormatType.INTEGRAL,
+     Currency.GOLD: NumberFormatType.GOLD,
+     Currency.CRYSTAL: NumberFormatType.INTEGRAL,
+     'freeXP': NumberFormatType.INTEGRAL}
+    __SPECIAL_TOOLTIPS = {Currency.GOLD: TOOLTIPS_CONSTANTS.GOLD_STATS,
+     Currency.CREDITS: TOOLTIPS_CONSTANTS.CREDITS_STATS}
 
     def __init__(self, *args, **kwargs):
         settings = ViewSettings(R.views.common.dialog_view.components.balance_contents.CommonBalanceContent())

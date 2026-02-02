@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/personal_reserves/__init__.py
 from frameworks.wulf import ViewFlags
 from gui.clans.clan_helpers import getStrongholdClanCardUrl
 from helpers.dependency import replace_none_kwargs
@@ -7,20 +9,19 @@ from skeletons.gui.goodies import IGoodiesCache
 
 def getStateMachineRegistrators():
     from gui.impl.lobby.personal_reserves.states import registerStates, registerTransitions
-    return (
-     registerStates, registerTransitions)
+    return (registerStates, registerTransitions)
 
 
 def getContextMenuHandlers():
-    return ()
+    pass
 
 
 def getViewSettings():
-    return ()
+    pass
 
 
 def getBusinessHandlers():
-    return ()
+    pass
 
 
 @replace_none_kwargs(goodiesCache=IGoodiesCache)

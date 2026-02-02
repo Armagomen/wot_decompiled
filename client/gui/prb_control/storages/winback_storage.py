@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/storages/winback_storage.py
 from gui.prb_control.storages.local_storage import SessionStorage
 from helpers import dependency
 from skeletons.gui.game_control import IWinbackController

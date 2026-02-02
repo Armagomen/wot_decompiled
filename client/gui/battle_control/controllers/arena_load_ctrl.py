@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/arena_load_ctrl.py
 import BigWorld
 from gui.battle_control import avatar_getter
 from gui.battle_control.arena_info.interfaces import IArenaVehiclesController
@@ -82,6 +84,4 @@ class ArenaLoadPlayer(ArenaLoadController):
 
 
 def createArenaLoadController(setup):
-    if setup.isReplayPlaying:
-        return ArenaLoadPlayer()
-    return ArenaLoadController()
+    return ArenaLoadPlayer() if setup.isReplayPlaying else ArenaLoadController()

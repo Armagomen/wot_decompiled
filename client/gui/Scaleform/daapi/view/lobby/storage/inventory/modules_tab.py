@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/inventory/modules_tab.py
 from gui.Scaleform.daapi.view.lobby.storage.inventory.filters.filter_by_vehicle import FiltrableInventoryCategoryByVehicleTabView
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
@@ -14,46 +16,44 @@ class _ModuleFilterBit(CONST_CONTAINER):
     RADIO = 16
 
 
-_TYPE_FILTER_ITEMS = [
- {'filterValue': _ModuleFilterBit.GUN, 
-    'selected': False, 
-    'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_MODULES_BTNS_TYPE_GUNS), 
-    'icon': RES_ICONS.MAPS_ICONS_STORAGE_FILTERS_ICON_BUTTON_GUN},
- {'filterValue': _ModuleFilterBit.TURRET, 
-    'selected': False, 
-    'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_MODULES_BTNS_TYPE_TOWERS), 
-    'icon': RES_ICONS.MAPS_ICONS_STORAGE_FILTERS_ICON_BUTTON_TURRET},
- {'filterValue': _ModuleFilterBit.ENGINE, 
-    'selected': False, 
-    'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_MODULES_BTNS_TYPE_ENGINES), 
-    'icon': RES_ICONS.MAPS_ICONS_STORAGE_FILTERS_ICON_BUTTON_ENGINE},
- {'filterValue': _ModuleFilterBit.CHASSIS, 
-    'selected': False, 
-    'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_MODULES_BTNS_TYPE_CHASSIS), 
-    'icon': RES_ICONS.MAPS_ICONS_STORAGE_FILTERS_ICON_BUTTON_TRUCK},
- {'filterValue': _ModuleFilterBit.RADIO, 
-    'selected': False, 
-    'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_MODULES_BTNS_TYPE_RADIOS), 
-    'icon': RES_ICONS.MAPS_ICONS_STORAGE_FILTERS_ICON_BUTTON_RADIO}]
-_TYPE_ID_BIT_TO_TYPE_ID_MAP = {_ModuleFilterBit.GUN: GUI_ITEM_TYPE.GUN, 
-   _ModuleFilterBit.TURRET: GUI_ITEM_TYPE.TURRET, 
-   _ModuleFilterBit.ENGINE: GUI_ITEM_TYPE.ENGINE, 
-   _ModuleFilterBit.CHASSIS: GUI_ITEM_TYPE.CHASSIS, 
-   _ModuleFilterBit.RADIO: GUI_ITEM_TYPE.RADIO}
+_TYPE_FILTER_ITEMS = [{'filterValue': _ModuleFilterBit.GUN,
+  'selected': False,
+  'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_MODULES_BTNS_TYPE_GUNS),
+  'icon': RES_ICONS.MAPS_ICONS_STORAGE_FILTERS_ICON_BUTTON_GUN},
+ {'filterValue': _ModuleFilterBit.TURRET,
+  'selected': False,
+  'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_MODULES_BTNS_TYPE_TOWERS),
+  'icon': RES_ICONS.MAPS_ICONS_STORAGE_FILTERS_ICON_BUTTON_TURRET},
+ {'filterValue': _ModuleFilterBit.ENGINE,
+  'selected': False,
+  'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_MODULES_BTNS_TYPE_ENGINES),
+  'icon': RES_ICONS.MAPS_ICONS_STORAGE_FILTERS_ICON_BUTTON_ENGINE},
+ {'filterValue': _ModuleFilterBit.CHASSIS,
+  'selected': False,
+  'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_MODULES_BTNS_TYPE_CHASSIS),
+  'icon': RES_ICONS.MAPS_ICONS_STORAGE_FILTERS_ICON_BUTTON_TRUCK},
+ {'filterValue': _ModuleFilterBit.RADIO,
+  'selected': False,
+  'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_MODULES_BTNS_TYPE_RADIOS),
+  'icon': RES_ICONS.MAPS_ICONS_STORAGE_FILTERS_ICON_BUTTON_RADIO}]
+_TYPE_ID_BIT_TO_TYPE_ID_MAP = {_ModuleFilterBit.GUN: GUI_ITEM_TYPE.GUN,
+ _ModuleFilterBit.TURRET: GUI_ITEM_TYPE.TURRET,
+ _ModuleFilterBit.ENGINE: GUI_ITEM_TYPE.ENGINE,
+ _ModuleFilterBit.CHASSIS: GUI_ITEM_TYPE.CHASSIS,
+ _ModuleFilterBit.RADIO: GUI_ITEM_TYPE.RADIO}
 
 class ModulesTabView(FiltrableInventoryCategoryByVehicleTabView):
     filterItems = _TYPE_FILTER_ITEMS
 
     def _getClientSectionKey(self):
-        return 'storage_modules'
+        pass
 
     def _getItemTypeID(self):
         return GUI_ITEM_TYPE.VEHICLE_MODULES
 
     def _getFilteredCriteria(self):
         criteria = super(ModulesTabView, self)._getFilteredCriteria()
-        typeIds = [ _TYPE_ID_BIT_TO_TYPE_ID_MAP[bit] for bit in _TYPE_ID_BIT_TO_TYPE_ID_MAP.iterkeys() if self._filterMask & bit
-                  ]
+        typeIds = [ _TYPE_ID_BIT_TO_TYPE_ID_MAP[bit] for bit in _TYPE_ID_BIT_TO_TYPE_ID_MAP.iterkeys() if self._filterMask & bit ]
         if typeIds:
             criteria |= REQ_CRITERIA.ITEM_TYPES(*typeIds)
         if self._selectedVehicle:

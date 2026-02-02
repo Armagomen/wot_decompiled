@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/boosters/BoostersPanelComponent.py
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.daapi.view.meta.SlotsPanelMeta import SlotsPanelMeta
 from gui.Scaleform.genConsts.BOOSTER_CONSTANTS import BOOSTER_CONSTANTS
@@ -10,13 +12,13 @@ from gui.shared.utils.requesters.ItemsRequester import REQ_CRITERIA
 from helpers import dependency
 from skeletons.gui.game_control import IBoostersController
 from skeletons.gui.goodies import IGoodiesCache
-_GUI_SLOTS_PROPS = {'slotsCount': MAX_ACTIVE_BOOSTERS_COUNT, 
-   'slotWidth': 50, 
-   'paddings': 64, 
-   'groupPadding': 18, 
-   'ySlotPosition': 5, 
-   'offsetSlot': 13, 
-   'useOnlyLeftBtn': True}
+_GUI_SLOTS_PROPS = {'slotsCount': MAX_ACTIVE_BOOSTERS_COUNT,
+ 'slotWidth': 50,
+ 'paddings': 64,
+ 'groupPadding': 18,
+ 'ySlotPosition': 5,
+ 'offsetSlot': 13,
+ 'useOnlyLeftBtn': True}
 ADD_BOOSTER_ID = 'add'
 _ADD_AVAILABLE_BOOSTER_ID = 'addAvailable'
 _EMPTY_BOOSTER_ID = 'empty'
@@ -108,31 +110,30 @@ class BoostersPanelComponent(SlotsPanelMeta):
         else:
             slotLinkage = BOOSTER_CONSTANTS.SLOT_UI
             emptyBoosterID = ADD_BOOSTER_ID
-        return (
-         emptyBoosterID, slotLinkage)
+        return (emptyBoosterID, slotLinkage)
 
     def __makeBoosterVO(self, idx, booster):
-        return {'boosterId': booster.boosterID, 
-           'id': str(idx), 
-           'icon': booster.icon, 
-           'inCooldown': booster.inCooldown, 
-           'cooldownPercent': booster.getCooldownAsPercent(), 
-           'leftTime': booster.getUsageLeftTime(), 
-           'leftTimeText': booster.getShortLeftTimeStr(), 
-           'showLeftTime': True, 
-           'isDischarging': True, 
-           'isInactive': self._isPanelInactive, 
-           'isEmpty': False, 
-           'qualityIconSrc': booster.getQualityIcon(), 
-           'slotLinkage': BOOSTER_CONSTANTS.SLOT_UI}
+        return {'boosterId': booster.boosterID,
+         'id': str(idx),
+         'icon': booster.icon,
+         'inCooldown': booster.inCooldown,
+         'cooldownPercent': booster.getCooldownAsPercent(),
+         'leftTime': booster.getUsageLeftTime(),
+         'leftTimeText': booster.getShortLeftTimeStr(),
+         'showLeftTime': True,
+         'isDischarging': True,
+         'isInactive': self._isPanelInactive,
+         'isEmpty': False,
+         'qualityIconSrc': booster.getQualityIcon(),
+         'slotLinkage': BOOSTER_CONSTANTS.SLOT_UI}
 
     def __makeEmptyBoosterVO(self, idx, slotLinkage, icon):
-        return {'id': str(idx), 
-           'isInactive': self._isPanelInactive, 
-           'isEmpty': True, 
-           'icon': icon, 
-           'slotLinkage': slotLinkage, 
-           'showLeftTime': False}
+        return {'id': str(idx),
+         'isInactive': self._isPanelInactive,
+         'isEmpty': True,
+         'icon': icon,
+         'slotLinkage': slotLinkage,
+         'showLeftTime': False}
 
     def __onUpdateGoodies(self, *args):
         self._buildList()

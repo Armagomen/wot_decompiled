@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/base/unit/ctx.py
 from account_helpers import gameplay_ctx
 from external_strings_utils import truncate_utf8
 from UnitBase import UNIT_SLOT
@@ -19,12 +21,12 @@ class UnitRequestCtx(PrbCtrlRequestCtx):
         return prb_getters.getUnitMgrID()
 
     def getCooldown(self):
-        return 5.0
+        pass
 
 
 @ReprInjector.withParent(('__rosterID', 'rosterID'))
 class CreateUnitCtx(UnitRequestCtx):
-    __slots__ = ('__rosterID', )
+    __slots__ = ('__rosterID',)
 
     def __init__(self, prbType, flags=_UNDEFINED, waitingID='', rosterID=0):
         super(CreateUnitCtx, self).__init__(entityType=prbType, waitingID=waitingID, flags=flags)
@@ -75,12 +77,12 @@ class LeaveUnitCtx(UnitRequestCtx):
         return _REQUEST_TYPE.LEAVE
 
     def getCooldown(self):
-        return 0.3
+        pass
 
 
 @ReprInjector.withParent(('__isLocked', 'isLocked'))
 class LockUnitCtx(UnitRequestCtx):
-    __slots__ = ('__isLocked', )
+    __slots__ = ('__isLocked',)
 
     def __init__(self, isLocked=True, waitingID=''):
         super(LockUnitCtx, self).__init__(waitingID=waitingID)
@@ -134,7 +136,7 @@ class SetVehicleUnitCtx(UnitRequestCtx):
 
 @ReprInjector.withParent(('__isOpened', 'isOpened'))
 class ChangeOpenedUnitCtx(UnitRequestCtx):
-    __slots__ = ('__isOpened', )
+    __slots__ = ('__isOpened',)
 
     def __init__(self, isOpened, waitingID=''):
         super(ChangeOpenedUnitCtx, self).__init__(waitingID=waitingID)
@@ -149,7 +151,7 @@ class ChangeOpenedUnitCtx(UnitRequestCtx):
 
 @ReprInjector.withParent(('__comment', 'comment'))
 class ChangeCommentUnitCtx(UnitRequestCtx):
-    __slots__ = ('__comment', )
+    __slots__ = ('__comment',)
 
     def __init__(self, comment, waitingID=''):
         super(ChangeCommentUnitCtx, self).__init__(waitingID=waitingID)
@@ -220,9 +222,7 @@ class AutoSearchUnitCtx(UnitRequestCtx):
         return self.__action
 
     def getActionName(self):
-        if self.__action > 0:
-            return 'start'
-        return 'stop'
+        return 'start' if self.__action > 0 else 'stop'
 
     def isRequestToStart(self):
         return self.__action > 0
@@ -245,10 +245,7 @@ class DeclineSearchUnitCtx(UnitRequestCtx):
         return _REQUEST_TYPE.DECLINE_SEARCH
 
 
-@ReprInjector.withParent(('selectVehInvID', 'selectVehInvID'), ('getGamePlayMask',
-                                                                'gamePlayMask'), ('getDemoArenaTypeID',
-                                                                                  'getDemoArenaTypeID'), ('getRandomFlags',
-                                                                                                          'randomFlags'))
+@ReprInjector.withParent(('selectVehInvID', 'selectVehInvID'), ('getGamePlayMask', 'gamePlayMask'), ('getDemoArenaTypeID', 'getDemoArenaTypeID'), ('getRandomFlags', 'randomFlags'))
 class BattleQueueUnitCtx(AutoSearchUnitCtx):
     __slots__ = ('selectVehInvID', '__isActionStartBattle', 'mmData')
 
@@ -294,7 +291,7 @@ class RosterSlotCtx(object):
 
 @ReprInjector.withParent(('__items', 'rostersSlots'))
 class SetRostersSlotsUnitCtx(UnitRequestCtx):
-    __slots__ = ('__items', )
+    __slots__ = ('__items',)
 
     def __init__(self, waitingID=''):
         super(SetRostersSlotsUnitCtx, self).__init__(waitingID=waitingID)
@@ -312,7 +309,7 @@ class SetRostersSlotsUnitCtx(UnitRequestCtx):
 
 @ReprInjector.withParent(('__databaseID', 'databaseID'))
 class KickPlayerUnitCtx(UnitRequestCtx):
-    __slots__ = ('__databaseID', )
+    __slots__ = ('__databaseID',)
 
     def __init__(self, databaseID, waitingID=''):
         super(KickPlayerUnitCtx, self).__init__(waitingID=waitingID)
@@ -327,7 +324,7 @@ class KickPlayerUnitCtx(UnitRequestCtx):
 
 @ReprInjector.withParent(('__databaseID', 'databaseID'))
 class GiveLeadershipUnitCtx(UnitRequestCtx):
-    __slots__ = ('__databaseID', )
+    __slots__ = ('__databaseID',)
 
     def __init__(self, databaseID, waitingID=''):
         super(GiveLeadershipUnitCtx, self).__init__(waitingID=waitingID)
@@ -342,7 +339,7 @@ class GiveLeadershipUnitCtx(UnitRequestCtx):
 
 @ReprInjector.withParent(('__division', 'division'))
 class ChangeDivisionUnitCtx(UnitRequestCtx):
-    __slots__ = ('__divisionID', )
+    __slots__ = ('__divisionID',)
 
     def __init__(self, divisionID, waitingID=''):
         super(ChangeDivisionUnitCtx, self).__init__(waitingID=waitingID)
@@ -357,7 +354,7 @@ class ChangeDivisionUnitCtx(UnitRequestCtx):
 
 @ReprInjector.withParent(('__vehsList', 'vehsList'))
 class SetVehiclesUnitCtx(UnitRequestCtx):
-    __slots__ = ('__vehsList', )
+    __slots__ = ('__vehsList',)
 
     def __init__(self, vehsList, waitingID=''):
         super(SetVehiclesUnitCtx, self).__init__(waitingID=waitingID)
@@ -367,7 +364,7 @@ class SetVehiclesUnitCtx(UnitRequestCtx):
         return _REQUEST_TYPE.SET_VEHICLE_LIST
 
     def getCooldown(self):
-        return 2.0
+        pass
 
     def getVehsList(self):
         return self.__vehsList

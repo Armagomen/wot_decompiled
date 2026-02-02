@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/impl/gen/view_models/views/lobby/comp7_bonus_model.py
 from enum import IntEnum
 from gui.impl.gen.view_models.common.missions.bonuses.icon_bonus_model import IconBonusModel
 

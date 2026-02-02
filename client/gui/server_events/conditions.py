@@ -1,4 +1,9 @@
-import logging, operator, typing, weakref
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/server_events/conditions.py
+import logging
+import operator
+import typing
+import weakref
 from abc import ABCMeta, abstractmethod, abstractproperty
 import constants
 from constants import ATTACK_REASON, ATTACK_REASONS
@@ -22,9 +27,9 @@ from soft_exception import SoftException
 if typing.TYPE_CHECKING:
     from typing import Optional
 _logger = logging.getLogger(__name__)
-_AVAILABLE_GUI_TYPES_LABELS = {constants.ARENA_BONUS_TYPE.REGULAR: constants.ARENA_GUI_TYPE.RANDOM, 
-   constants.ARENA_BONUS_TYPE.TRAINING: constants.ARENA_GUI_TYPE.TRAINING, 
-   constants.ARENA_BONUS_TYPE.TOURNAMENT_REGULAR: constants.ARENA_GUI_TYPE.TRAINING}
+_AVAILABLE_GUI_TYPES_LABELS = {constants.ARENA_BONUS_TYPE.REGULAR: constants.ARENA_GUI_TYPE.RANDOM,
+ constants.ARENA_BONUS_TYPE.TRAINING: constants.ARENA_GUI_TYPE.TRAINING,
+ constants.ARENA_BONUS_TYPE.TOURNAMENT_REGULAR: constants.ARENA_GUI_TYPE.TRAINING}
 _AVAILABLE_BONUS_TYPES_LABELS = {constants.ARENA_BONUS_TYPE.CYBERSPORT: 'team7x7'}
 _RELATIONS = formatters.RELATIONS
 _ALL_RELATIONS = _RELATIONS.ALL()
@@ -63,15 +68,8 @@ class CLASS_TYPE(CONST_CONTAINER):
     CONDITION_GROUP = 'ConditionsGroup'
 
 
-_SORT_ORDER = ('igrType', 'premiumPlusAccount', 'premiumAccount', 'inClan', 'GR', 'accountDossier',
-               'vehiclesUnlocked', 'vehiclesOwned', 'token', 'hasReceivedMultipliedXP',
-               'vehicleDossier', 'vehicleDescr', 'customization', 'bonusTypes', 'isSquad',
-               'mapCamouflageKind', 'geometryNames', 'win', 'isAlive', 'achievements',
-               'results', 'unitResults', 'vehicleKills', 'vehicleDamage', 'vehicleStun',
-               'clanKills', 'multiStunEvent', 'firstBloodcumulative', 'cumulativeExt',
-               'cumulativeSum', 'vehicleKillsCumulative', 'vehicleDamageCumulative',
-               'vehicleStunCumulative')
-_SORT_ORDER_INDICES = dict((name, idx) for idx, name in enumerate(_SORT_ORDER))
+_SORT_ORDER = ('igrType', 'premiumPlusAccount', 'premiumAccount', 'inClan', 'GR', 'accountDossier', 'vehiclesUnlocked', 'vehiclesOwned', 'token', 'hasReceivedMultipliedXP', 'vehicleDossier', 'vehicleDescr', 'customization', 'bonusTypes', 'isSquad', 'mapCamouflageKind', 'geometryNames', 'win', 'isAlive', 'achievements', 'results', 'unitResults', 'vehicleKills', 'vehicleDamage', 'vehicleStun', 'clanKills', 'multiStunEvent', 'firstBloodcumulative', 'cumulativeExt', 'cumulativeSum', 'vehicleKillsCumulative', 'vehicleDamageCumulative', 'vehicleStunCumulative')
+_SORT_ORDER_INDICES = dict(((name, idx) for idx, name in enumerate(_SORT_ORDER)))
 
 def _handleRelation(relation, source, toCompare):
     if relation == _RELATIONS.EQ:
@@ -90,10 +88,7 @@ def _handleRelation(relation, source, toCompare):
 
 def _findRelation(condDataKeys):
     res = set(_ALL_RELATIONS) & set(condDataKeys)
-    if res:
-        return res.pop()
-    else:
-        return
+    return res.pop() if res else None
 
 
 def _getNodeValue(node, key, default=None):
@@ -203,7 +198,7 @@ class _Condition(_Typeable):
                 return i18n.makeString(titleData['key'], value=_getCustomTitleValueFromConditionData(self._data))
             return getLocalizedData(self._data, 'title')
         else:
-            return
+            return None
 
     def getCustomDescription(self):
         descrData = self._data.get('description')
@@ -212,7 +207,7 @@ class _Condition(_Typeable):
                 return i18n.makeString(descrData['key'], value=_getCustomDescriptionValueFromConditionData(self._data))
             return getLocalizedData(self._data, 'description')
         else:
-            return
+            return None
 
     def isHidden(self):
         return self._data.get('hideInGui', False)
@@ -223,9 +218,7 @@ class _Condition(_Typeable):
 
     def getProgressID(self):
         data = self._data.get('value', {})
-        if not data or not len(data) > 1:
-            return None
-        return data[0]
+        return None if not data or not len(data) > 1 else data[0]
 
 
 class _ConditionsGroup(_AvailabilityCheckable, _Negatable, _Typeable):
@@ -268,7 +261,7 @@ class _ConditionsGroup(_AvailabilityCheckable, _Negatable, _Typeable):
             if cond.getName() == condName:
                 return cond
 
-        return
+        return None
 
     def findAll(self, condName):
         result = []
@@ -294,9 +287,7 @@ class _ConditionsGroup(_AvailabilityCheckable, _Negatable, _Typeable):
     def _sortItems(cls, a, b):
         if a not in _SORT_ORDER:
             return 1
-        if b not in _SORT_ORDER:
-            return -1
-        return _SORT_ORDER_INDICES[a] - _SORT_ORDER_INDICES[b]
+        return -1 if b not in _SORT_ORDER else _SORT_ORDER_INDICES[a] - _SORT_ORDER_INDICES[b]
 
     def _addNewCondition(self, cond):
         if isinstance(cond, _Updatable):
@@ -358,7 +349,11 @@ class _VehsListParser(object):
         return defaultCriteria | criteria
 
     def _isAnyVehicleAcceptable(self, data):
-        return not set(data) & {'types', 'nations', 'levels', 'classes', 'roles'}
+        return not set(data) & {'types',
+         'nations',
+         'levels',
+         'classes',
+         'roles'}
 
     def _getDefaultCriteria(self):
         return REQ_CRITERIA.DISCLOSABLE
@@ -376,8 +371,7 @@ class _VehsListParser(object):
         classes = []
         if 'classes' in data:
             acceptedClasses = _getNodeValue(data, 'classes')
-            classes = [ name for name, index in constants.VEHICLE_CLASS_INDICES.items() if index in acceptedClasses
-                      ]
+            classes = [ name for name, index in constants.VEHICLE_CLASS_INDICES.items() if index in acceptedClasses ]
         return classes
 
     def _parseFilters(self, data):
@@ -393,7 +387,11 @@ class _VehsListParser(object):
         if 'roles' in data:
             acceptedRoles = _getNodeValue(data, 'roles')
             roles = [ constants.ROLE_TYPE_TO_LABEL[roleID] for roleID in acceptedRoles ]
-        return (types, nations, levels, classes, roles)
+        return (types,
+         nations,
+         levels,
+         classes,
+         roles)
 
 
 class _VehsListCondition(_Condition, _VehsListParser):
@@ -486,10 +484,7 @@ class _VehsListRequirement(_VehsListCondition, _AvailabilityCheckable, _Negatabl
 
     def _isAvailable(self):
         vehsList = self._getVehiclesList(self._data)
-        if self._relation is not None:
-            return _handleRelation(self._relation, len(filter(self._checkVehicle, vehsList)), self._relationValue)
-        else:
-            return True
+        return _handleRelation(self._relation, len(filter(self._checkVehicle, vehsList)), self._relationValue) if self._relation is not None else True
 
     def _checkVehicle(self, vehicle):
         return True
@@ -567,10 +562,7 @@ class GlobalRating(_Requirement):
         self._relation = _RELATIONS.getOppositeRelation(self._relation)
 
     def _isAvailable(self):
-        if self._relationValue is None:
-            return False
-        else:
-            return _handleRelation(self._relation, self.itemsCache.items.stats.globalRating, self._relationValue)
+        return False if self._relationValue is None else _handleRelation(self._relation, self.itemsCache.items.stats.globalRating, self._relationValue)
 
 
 class PremiumAccount(_Requirement):
@@ -586,10 +578,7 @@ class PremiumAccount(_Requirement):
         self._needValue = not self._needValue
 
     def _isAvailable(self):
-        if self._needValue is not None:
-            return self.itemsCache.items.stats.isPremium == self._needValue
-        else:
-            return True
+        return self.itemsCache.items.stats.isPremium == self._needValue if self._needValue is not None else True
 
 
 class PremiumPlusAccount(_Requirement):
@@ -605,10 +594,7 @@ class PremiumPlusAccount(_Requirement):
         self._needValue = not self._needValue
 
     def _isAvailable(self):
-        if self._needValue is not None:
-            return self.itemsCache.items.stats.isActivePremium(constants.PREMIUM_TYPE.PLUS) == self._needValue
-        else:
-            return True
+        return self.itemsCache.items.stats.isActivePremium(constants.PREMIUM_TYPE.PLUS) == self._needValue if self._needValue is not None else True
 
 
 class WotPlus(_Requirement):
@@ -673,7 +659,6 @@ class Token(_Requirement):
         if self.isConsumable():
             consumeData, _ = self._data['consume']
             return dict(consumeData).get('value', 0)
-        return 0
 
     def getID(self):
         return self._id
@@ -704,9 +689,7 @@ class Token(_Requirement):
         self._relation = _RELATIONS.getOppositeRelation(self._relation)
 
     def getNeededCount(self):
-        if self._relation == _RELATIONS.GT:
-            return self._relationValue + 1
-        return self._relationValue
+        return self._relationValue + 1 if self._relation == _RELATIONS.GT else self._relationValue
 
     def getReceivedCount(self):
         return self.eventsCache.questsProgress.getTokenCount(self.getID())
@@ -756,9 +739,7 @@ class PremiumVehicle(_VehicleRequirement):
 
     def getFilterCriteria(self, data):
         criteria = REQ_CRITERIA.DISCLOSABLE
-        if self._needValue:
-            return criteria | REQ_CRITERIA.VEHICLE.PREMIUM
-        return criteria | ~REQ_CRITERIA.VEHICLE.PREMIUM
+        return criteria | REQ_CRITERIA.VEHICLE.PREMIUM if self._needValue else criteria | ~REQ_CRITERIA.VEHICLE.PREMIUM
 
     def _isAvailable(self, vehicle):
         return vehicle.isPremium == self._needValue
@@ -826,8 +807,8 @@ class InstalledModulesOnVehicle(_VehicleRequirement):
     def __init__(self, path, data):
         super(InstalledModulesOnVehicle, self).__init__('installedModules', dict(data), path)
         self._modulesConditions = []
-        customData = {'title': self._data.get('title'), 
-           'description': self._data.get('description')}
+        customData = {'title': self._data.get('title'),
+         'description': self._data.get('description')}
         for key, value in self._data.iteritems():
             if key in self.MODULES_KEYS:
                 path = '%s.%s' % (path, key)
@@ -976,8 +957,7 @@ class BattleClanMembership(_Condition, _Negatable):
         self.__proxy = weakref.proxy(preBattleCondProxy)
 
     def __repr__(self):
-        return 'BattleClanMembership<relation=%r; bonusType=%s>' % (
-         self._value, _getArenaBonusTypeForUnit(self.__proxy))
+        return 'BattleClanMembership<relation=%r; bonusType=%s>' % (self._value, _getArenaBonusTypeForUnit(self.__proxy))
 
     def negate(self):
         pass
@@ -1156,11 +1136,11 @@ class Customization(_Requirement):
 class _Cumulativable(_Condition):
     __metaclass__ = ABCMeta
 
-    def getProgressPerGroup(self, curProgData=None, prevProgData=None):
-        return self._parseProgress(curProgData, prevProgData)
+    def getProgressPerGroup(self, curProgData=None, prevProgData=None, isCurrentProgress=False):
+        return self._parseProgress(curProgData, prevProgData, isCurrentProgress)
 
     def getUserString(self):
-        return ''
+        pass
 
     @abstractmethod
     def getTotalValue(self):
@@ -1174,29 +1154,57 @@ class _Cumulativable(_Condition):
     def getKey(self):
         pass
 
-    def _parseProgress(self, curProgData, prevProgData):
+    def _parseProgress(self, curProgData, prevProgData, isCurrentProgress):
         result = {}
         bonus = self.getBonusData()
-        curProgData = bonus.getProgress() if curProgData is None else curProgData
-        prevProgData = {} if prevProgData is None else prevProgData
         if bonus is None:
             return result
         else:
+            curProgData = bonus.getProgress() if curProgData is None else curProgData
+            prevProgData = {} if prevProgData is None else prevProgData
             key = self.getKey()
             groupBy = bonus.getGroupByValue()
             total = self.getTotalValue()
             if groupBy is None:
                 curProg = curProgData.get(None, {})
                 prevProg = prevProgData.get(None, {})
-                diff = self.__getProgDiff(curProg, prevProg)
-                result[None] = (
-                 min(curProg.get(key, 0), total), total, diff, self.__isProgressCompleted(curProg))
+                if isCurrentProgress:
+                    diff, current = self.__getCurrentBattleProgDiff(curProg, prevProg)
+                    result[None] = (current,
+                     total,
+                     diff,
+                     self.__isProgressCompleted(curProg))
+                else:
+                    diff = self.__getProgDiff(curProg, prevProg)
+                    result[None] = (min(curProg.get(key, 0), total),
+                     total,
+                     diff,
+                     self.__isProgressCompleted(curProg))
             else:
                 for gByKey, progress in curProgData.iteritems():
                     diff = self.__getProgDiff(progress, prevProgData.get(gByKey, {}))
-                    result[gByKey] = (min(progress.get(key, 0), total), total, diff, self.__isProgressCompleted(progress))
+                    result[gByKey] = (min(progress.get(key, 0), total),
+                     total,
+                     diff,
+                     self.__isProgressCompleted(progress))
 
             return result
+
+    def __getCurrentBattleProgDiff(self, curProg, prevProg):
+        key = self.getKey()
+        total = self.getTotalValue()
+        current = min(curProg.get(key, 0), total)
+        curBonusCount = curProg.get('bonusCount', 0)
+        prevBonusCount = prevProg.get('bonusCount', 0) if prevProg else 0
+        if curBonusCount > prevBonusCount:
+            if self.__isProgressCompleted(curProg):
+                diff = total - min(prevProg.get(key, 0), total)
+                return (diff, total)
+            if current == 0:
+                diff = total - min(prevProg.get(key, 0), total)
+                return (diff, prevProg.get(key, 0) + diff)
+            return (current, current)
+        return (current - min(prevProg.get(key, 0), total), current)
 
     def __getProgDiff(self, curProg, prevProg):
         key = self.getKey()
@@ -1212,10 +1220,7 @@ class _Cumulativable(_Condition):
 
     def __isProgressCompleted(self, progress):
         bonusLimit = self.getBonusData().getBonusLimit()
-        if bonusLimit is not None:
-            return progress.get('bonusCount', 0) >= bonusLimit
-        else:
-            return False
+        return progress.get('bonusCount', 0) >= bonusLimit if bonusLimit is not None else False
 
 
 class BattlesCount(_Cumulativable):
@@ -1236,8 +1241,8 @@ class BattlesCount(_Cumulativable):
 
         if not result:
             _logger.warning('There are no matching condition strings for selected arenaBonusTypes')
-            return ''
-        return (', ').join(result)
+            return u''
+        return u', '.join(result)
 
     def getTotalValue(self):
         return _getNodeValue(self._data, 'count', 0)
@@ -1249,7 +1254,7 @@ class BattlesCount(_Cumulativable):
         return self._bonus
 
     def getKey(self):
-        return 'battlesCount'
+        pass
 
 
 class BattleResults(_Condition, _Negatable, _Updatable):
@@ -1259,8 +1264,7 @@ class BattleResults(_Condition, _Negatable, _Updatable):
     def __init__(self, path, data, localeKey='single'):
         super(BattleResults, self).__init__('results', dict(data), path)
         self._keyName = _getNodeValue(self._data, 'key')
-        self._max = (
-         self.TOP_RANGE_HIGHEST, int(_getNodeValue(self._data, 'max', self.TOP_RANGE_LOWEST)))
+        self._max = (self.TOP_RANGE_HIGHEST, int(_getNodeValue(self._data, 'max', self.TOP_RANGE_LOWEST)))
         self._isTotal = 'total' in self._data
         self._isAvg = 'average' in self._data
         self._relation = _findRelation(self._data.keys())
@@ -1278,9 +1282,12 @@ class BattleResults(_Condition, _Negatable, _Updatable):
         self._aggregatedKeys = tuple(sorted(keys))
 
     def __repr__(self):
-        return 'BattleResults<key=%s; %s=%r; max=%r; total=%r; avg=%r>' % (
-         self._keyName, self._relation, self._relationValue, self._max,
-         self._isTotal, self._isAvg)
+        return 'BattleResults<key=%s; %s=%r; max=%r; total=%r; avg=%r>' % (self._keyName,
+         self._relation,
+         self._relationValue,
+         self._max,
+         self._isTotal,
+         self._isAvg)
 
     def getAggregatedKeys(self):
         return self._aggregatedKeys
@@ -1314,18 +1321,13 @@ class BattleResults(_Condition, _Negatable, _Updatable):
         return self._max
 
     def getTopRange(self):
-        if not self._isNegative:
-            return self._max
-        return (
-         min(self._max[1] + 1, self.TOP_RANGE_LOWEST), self.TOP_RANGE_LOWEST)
+        return self._max if not self._isNegative else (min(self._max[1] + 1, self.TOP_RANGE_LOWEST), self.TOP_RANGE_LOWEST)
 
     def update(self, other, groupType):
         if groupType == GROUP_TYPE.AND:
             if other.getName() == 'results' and self.keyName == other.keyName and self.relation == other.relation:
                 topRange, otherTopRange = self.getTopRange(), other.getTopRange()
-                self._max = (
-                 max(topRange[0], otherTopRange[0]),
-                 min(topRange[1], otherTopRange[1]))
+                self._max = (max(topRange[0], otherTopRange[0]), min(topRange[1], otherTopRange[1]))
                 return True
         return False
 
@@ -1404,19 +1406,19 @@ class UnitResults(_Condition, _Negatable):
             resultData, isNegative = None, False
             if keyName == 'not' and value:
                 (_, resultData), isNegative = value[0], not isNegative
-            elif keyName == 'results':
+            if keyName == 'results':
                 resultData = value
                 if resultData is not None:
                     results = BattleResults('%s.battleResults%d' % (path, idx), resultData, localeKey=self._unitKey)
                     if isNegative:
                         results.negate()
                     self._results.append(results)
-            elif keyName == 'unitVehicleDamage':
+            if keyName == 'unitVehicleDamage':
                 if value is not None:
                     self._unitVehDamage = VehicleDamage('%s.unitVehicleDamage%d' % (path, idx), value)
                     if isNegative:
                         self._unitVehDamage.negate()
-            elif keyName == 'unitVehicleKills':
+            if keyName == 'unitVehicleKills':
                 if value is not None:
                     self._unitVehKills = VehicleKills('%s.unitVehicleKills%d' % (path, idx), value)
                     if isNegative:
@@ -1456,7 +1458,7 @@ class CumulativeResult(_Cumulativable):
         self._key, self._total = self._data.get('value', (None, 0))
         self._isUnit = isUnit
         self._unitName = _getArenaBonusTypeForUnit(preBattleCond)
-        return
+        return None
 
     def __repr__(self):
         return 'CumulativeResult<key=%s; total=%d>' % (self.getKey(), self.getTotalValue())
@@ -1475,9 +1477,7 @@ class CumulativeResult(_Cumulativable):
         return self._bonus
 
     def getKey(self):
-        if self._isUnit:
-            return 'unit_%s' % self._key
-        return self._key
+        return 'unit_%s' % self._key if self._isUnit else self._key
 
     def __getLabelString(self):
         param = i18n.makeString('#quests:details/conditions/cumulative/%s' % self._key)
@@ -1489,12 +1489,12 @@ class CumulativeResult(_Cumulativable):
 
 
 class VehicleKills(_VehsListCondition):
-    SPECIAL_LABELS = {'damageDealt': QUESTS.DETAILS_CONDITIONS_DAMAGEDEALT, 
-       'spotEnemy': QUESTS.DETAILS_CONDITIONS_SPOTENEMY, 
-       'whileMovingAtSpeed': QUESTS.DETAILS_CONDITIONS_VEHICLEKILLS_WHILEMOVINGATSPEED, 
-       'enemyIsNotSpotted': QUESTS.DETAILS_CONDITIONS_VEHICLEKILLS_ENEMYISNOTSPOTTED, 
-       'beyondVisionRadius': QUESTS.DETAILS_CONDITIONS_VEHICLEKILLS_BEYONDVISIONRADIUS, 
-       'whileEnemyInvisible': QUESTS.DETAILS_CONDITIONS_VEHICLEKILLS_WHILEENEMYINVISIBLE}
+    SPECIAL_LABELS = {'damageDealt': QUESTS.DETAILS_CONDITIONS_DAMAGEDEALT,
+     'spotEnemy': QUESTS.DETAILS_CONDITIONS_SPOTENEMY,
+     'whileMovingAtSpeed': QUESTS.DETAILS_CONDITIONS_VEHICLEKILLS_WHILEMOVINGATSPEED,
+     'enemyIsNotSpotted': QUESTS.DETAILS_CONDITIONS_VEHICLEKILLS_ENEMYISNOTSPOTTED,
+     'beyondVisionRadius': QUESTS.DETAILS_CONDITIONS_VEHICLEKILLS_BEYONDVISIONRADIUS,
+     'whileEnemyInvisible': QUESTS.DETAILS_CONDITIONS_VEHICLEKILLS_WHILEENEMYINVISIBLE}
 
     def __init__(self, path, data):
         super(VehicleKills, self).__init__('vehicleKills', dict(data), path)
@@ -1508,9 +1508,7 @@ class VehicleKills(_VehsListCondition):
         if self.getAttackReason() == ATTACK_REASON.RAM:
             return QUESTS.DETAILS_CONDITIONS_RAMKILLS
         specialConditions = set(self.data).intersection(self.SPECIAL_LABELS)
-        if specialConditions:
-            return self.SPECIAL_LABELS[specialConditions.pop()]
-        return QUESTS.DETAILS_CONDITIONS_VEHICLESKILLS
+        return self.SPECIAL_LABELS[specialConditions.pop()] if specialConditions else QUESTS.DETAILS_CONDITIONS_VEHICLESKILLS
 
     def __repr__(self):
         return 'VehicleKills<%s=%d>' % (self._relation, self._relationValue)
@@ -1529,8 +1527,9 @@ class VehicleKillsCumulative(VehicleKills, _Cumulativable):
         self._bonus = weakref.proxy(bonusCond)
 
     def __repr__(self):
-        return 'VehicleKills<key=%s; %s=%d; total=%d>' % (
-         self.getKey(), self._relation, self._relationValue,
+        return 'VehicleKills<key=%s; %s=%d; total=%d>' % (self.getKey(),
+         self._relation,
+         self._relationValue,
          self.getTotalValue())
 
     def getUserString(self):
@@ -1543,7 +1542,7 @@ class VehicleKillsCumulative(VehicleKills, _Cumulativable):
         return self._bonus
 
     def getKey(self):
-        return 'vehicleKills'
+        pass
 
 
 class _CountOrTotalEventsCondition(_VehsListCondition):
@@ -1553,11 +1552,11 @@ class _CountOrTotalEventsCondition(_VehsListCondition):
 
 
 class VehicleDamage(_CountOrTotalEventsCondition):
-    SPECIAL_LABELS = {'directHitsReceived': QUESTS.DETAILS_CONDITIONS_DIRECTHITSRECEIVED, 
-       'whileMovingAtSpeed': QUESTS.DETAILS_CONDITIONS_WHILEMOVINGATSPEED, 
-       'enemyIsNotSpotted': QUESTS.DETAILS_CONDITIONS_ENEMYISNOTSPOTTED, 
-       'beyondVisionRadius': QUESTS.DETAILS_CONDITIONS_BEYONDVISIONRADIUS, 
-       'whileEnemyInvisible': QUESTS.DETAILS_CONDITIONS_WHILEENEMYINVISIBLE}
+    SPECIAL_LABELS = {'directHitsReceived': QUESTS.DETAILS_CONDITIONS_DIRECTHITSRECEIVED,
+     'whileMovingAtSpeed': QUESTS.DETAILS_CONDITIONS_WHILEMOVINGATSPEED,
+     'enemyIsNotSpotted': QUESTS.DETAILS_CONDITIONS_ENEMYISNOTSPOTTED,
+     'beyondVisionRadius': QUESTS.DETAILS_CONDITIONS_BEYONDVISIONRADIUS,
+     'whileEnemyInvisible': QUESTS.DETAILS_CONDITIONS_WHILEENEMYINVISIBLE}
 
     def __init__(self, path, data):
         super(VehicleDamage, self).__init__('vehicleDamage', dict(data), path)
@@ -1591,8 +1590,9 @@ class VehicleDamageCumulative(VehicleDamage, _Cumulativable):
         self._bonus = weakref.proxy(bonusCond)
 
     def __repr__(self):
-        return 'VehicleDamage<key=%s; %s=%d; total=%d>' % (
-         self.getKey(), self._relation, self._relationValue,
+        return 'VehicleDamage<key=%s; %s=%d; total=%d>' % (self.getKey(),
+         self._relation,
+         self._relationValue,
          self.getTotalValue())
 
     def getUserString(self):
@@ -1605,7 +1605,7 @@ class VehicleDamageCumulative(VehicleDamage, _Cumulativable):
         return self._bonus
 
     def getKey(self):
-        return 'vehicleDamage'
+        pass
 
 
 class VehicleStun(_CountOrTotalEventsCondition):
@@ -1620,9 +1620,7 @@ class VehicleStun(_CountOrTotalEventsCondition):
         return _prepareVehData(self._getVehiclesList(self._data))
 
     def getLabelKey(self):
-        if self.isEventCount():
-            return QUESTS.DETAILS_CONDITIONS_VEHICLESTUNEVENTCOUNT
-        return QUESTS.DETAILS_CONDITIONS_VEHICLESTUN
+        return QUESTS.DETAILS_CONDITIONS_VEHICLESTUNEVENTCOUNT if self.isEventCount() else QUESTS.DETAILS_CONDITIONS_VEHICLESTUN
 
 
 class VehicleStunCumulative(VehicleStun, _Cumulativable):
@@ -1633,8 +1631,9 @@ class VehicleStunCumulative(VehicleStun, _Cumulativable):
         self._bonus = weakref.proxy(bonusCond)
 
     def __repr__(self):
-        return 'VehicleStun<key=%s; %s=%d; total=%d>' % (
-         self.getKey(), self._relation, self._relationValue,
+        return 'VehicleStun<key=%s; %s=%d; total=%d>' % (self.getKey(),
+         self._relation,
+         self._relationValue,
          self.getTotalValue())
 
     def getUserString(self):
@@ -1650,7 +1649,7 @@ class VehicleStunCumulative(VehicleStun, _Cumulativable):
         return super(VehicleStunCumulative, self).getLabelKey() + '/cumulative'
 
     def getKey(self):
-        return 'vehicleStun'
+        pass
 
 
 class MultiStunEvent(_Condition, _Negatable):
@@ -1724,14 +1723,14 @@ class CumulativeSum(_Cumulativable):
         self._bonus = weakref.proxy(bonusCond)
 
     def __repr__(self):
-        conditions = tuple(value[1] for value in self._data.get('sum', ()))
+        conditions = tuple((value[1] for value in self._data.get('sum', ())))
         return 'CumulativeSum<conditions=%s>' % conditions
 
     def getBonusData(self):
         return self._bonus
 
     def getKey(self):
-        return 'sum'
+        pass
 
     def getTotalValue(self):
         return self._relationValue
@@ -1743,6 +1742,5 @@ def getProgressFromQuestWithSingleAccumulative(quest):
         item = conditions.items[0]
         if isinstance(item, _Cumulativable):
             currentProgress, totalProgress = item.getProgressPerGroup().get(None, [])[:2]
-            return (
-             currentProgress, totalProgress)
+            return (currentProgress, totalProgress)
     return (None, None)

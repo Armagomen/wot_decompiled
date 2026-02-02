@@ -1,4 +1,7 @@
-import typing, GUI
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/overlay.py
+import typing
+import GUI
 from wg_async import wg_async, wg_await, AsyncEvent
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.lobby_entry import LobbyEntry
@@ -12,8 +15,13 @@ from skeletons.gui.shared.utils import IHangarSpace
 if typing.TYPE_CHECKING:
     pass
 _ANIMATION_DURATION = 300
-_LAYERS = (WindowLayer.MARKER, WindowLayer.VIEW, WindowLayer.WINDOW, WindowLayer.WAITING, WindowLayer.SYSTEM_MESSAGE,
- WindowLayer.FULLSCREEN_WINDOW, WindowLayer.TOP_WINDOW)
+_LAYERS = (WindowLayer.MARKER,
+ WindowLayer.VIEW,
+ WindowLayer.WINDOW,
+ WindowLayer.WAITING,
+ WindowLayer.SYSTEM_MESSAGE,
+ WindowLayer.FULLSCREEN_WINDOW,
+ WindowLayer.TOP_WINDOW)
 
 class OverlayController(IOverlayController):
     _hangarSpace = dependency.descriptor(IHangarSpace)

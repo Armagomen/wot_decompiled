@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/skeletons/gui/skill.py
 from abc import ABCMeta, abstractproperty, abstractmethod
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:

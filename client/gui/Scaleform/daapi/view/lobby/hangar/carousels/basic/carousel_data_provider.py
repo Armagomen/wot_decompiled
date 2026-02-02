@@ -1,4 +1,7 @@
-import typing, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/carousels/basic/carousel_data_provider.py
+import typing
+import BigWorld
 from account_helpers.telecom_rentals import TelecomRentals
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as _CAPS
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -59,7 +62,7 @@ class HangarCarouselDataProvider(CarouselDataProvider):
         return len(self._filteredIndices) - backItems - frontItems
 
     def getHiddenDynamicFilters(self):
-        return sorted(key for key, state in self._dynamicFiltersState.iteritems() if not state)
+        return sorted((key for key, state in self._dynamicFiltersState.iteritems() if not state))
 
     def clear(self):
         super(HangarCarouselDataProvider, self).clear()
@@ -157,13 +160,13 @@ class HangarCarouselDataProvider(CarouselDataProvider):
             text = MENU.TANKCAROUSEL_WOTPLUSSELECTIONAVAILABLE
             if self._telecomRentals.getRentsPending():
                 text = MENU.TANKCAROUSEL_WOTPLUSSELECTIONPENDING
-            self._frontSupplyItems.append({'isWotPlusSlot': True, 
-               'infoText': text_styles.vehicleStatusInfoText(text), 
-               'infoHoverText': text_styles.vehicleStatusInfoText(text), 
-               'smallInfoText': text_styles.vehicleStatusSimpleText(text), 
-               'icon': RES_ICONS.MAPS_ICONS_LIBRARY_TANKITEM_BUY_TANK, 
-               'extraImage': RES_ICONS.MAPS_ICONS_LIBRARY_RENT_ICO_BIG, 
-               'tooltip': TOOLTIPS.TANKS_CAROUSEL_WOT_PLUS_SLOT})
+            self._frontSupplyItems.append({'isWotPlusSlot': True,
+             'infoText': text_styles.vehicleStatusInfoText(text),
+             'infoHoverText': text_styles.vehicleStatusInfoText(text),
+             'smallInfoText': text_styles.vehicleStatusSimpleText(text),
+             'icon': RES_ICONS.MAPS_ICONS_LIBRARY_TANKITEM_BUY_TANK,
+             'extraImage': RES_ICONS.MAPS_ICONS_LIBRARY_RENT_ICO_BIG,
+             'tooltip': TOOLTIPS.TANKS_CAROUSEL_WOT_PLUS_SLOT})
 
     def _buildVehicle(self, vehicle):
         vo = super(HangarCarouselDataProvider, self)._buildVehicle(vehicle)
@@ -198,25 +201,25 @@ class HangarCarouselDataProvider(CarouselDataProvider):
         smallRestoreTankString, restoreTankString = getStatusStrings('restoreTank')
         smallRestoreTankCountString, restoreTankCountString = getStatusStrings('restoreTankCount', style=text_styles.main, ctx={'count': self._restorableVehiclesCount})
         smallEmptySlotsString, emptySlotsString = getStatusStrings('buyTankEmptyCount', style=text_styles.main, ctx={'count': self._emptySlotsCount})
-        self._supplyItems.append({'buyTank': True, 
-           'smallInfoText': text_styles.concatStylesToMultiLine(smallBuyTankString, smallEmptySlotsString), 
-           'infoText': text_styles.concatStylesToMultiLine(buyTankString, emptySlotsString), 
-           'icon': RES_ICONS.MAPS_ICONS_LIBRARY_TANKITEM_BUY_TANK, 
-           'tooltip': TOOLTIPS.TANKS_CAROUSEL_BUY_VEHICLE_NEW})
-        self._supplyItems.append({'restoreTank': True, 
-           'smallInfoText': text_styles.concatStylesToMultiLine(smallRestoreTankString, smallRestoreTankCountString), 
-           'infoText': text_styles.concatStylesToMultiLine(restoreTankString, restoreTankCountString), 
-           'icon': RES_ICONS.MAPS_ICONS_LIBRARY_TANKITEM_BUY_TANK, 
-           'tooltip': TOOLTIPS.TANKS_CAROUSEL_RESTORE_VEHICLE})
+        self._supplyItems.append({'buyTank': True,
+         'smallInfoText': text_styles.concatStylesToMultiLine(smallBuyTankString, smallEmptySlotsString),
+         'infoText': text_styles.concatStylesToMultiLine(buyTankString, emptySlotsString),
+         'icon': RES_ICONS.MAPS_ICONS_LIBRARY_TANKITEM_BUY_TANK,
+         'tooltip': TOOLTIPS.TANKS_CAROUSEL_BUY_VEHICLE_NEW})
+        self._supplyItems.append({'restoreTank': True,
+         'smallInfoText': text_styles.concatStylesToMultiLine(smallRestoreTankString, smallRestoreTankCountString),
+         'infoText': text_styles.concatStylesToMultiLine(restoreTankString, restoreTankCountString),
+         'icon': RES_ICONS.MAPS_ICONS_LIBRARY_TANKITEM_BUY_TANK,
+         'tooltip': TOOLTIPS.TANKS_CAROUSEL_RESTORE_VEHICLE})
         slotPriceCurrency = slotPrice.getCurrency()
-        buySlotVO = {'buySlot': True, 
-           'slotPrice': slotPrice.get(slotPriceCurrency, 0), 
-           'slotPriceCurrency': slotPriceCurrency, 
-           'icon': RES_ICONS.MAPS_ICONS_LIBRARY_TANKITEM_BUY_SLOT, 
-           'infoText': buySlotString, 
-           'smallInfoText': smallBuySlotString, 
-           'hasSale': discount is not None, 
-           'tooltip': TOOLTIPS.TANKS_CAROUSEL_BUY_SLOT}
+        buySlotVO = {'buySlot': True,
+         'slotPrice': slotPrice.get(slotPriceCurrency, 0),
+         'slotPriceCurrency': slotPriceCurrency,
+         'icon': RES_ICONS.MAPS_ICONS_LIBRARY_TANKITEM_BUY_SLOT,
+         'infoText': buySlotString,
+         'smallInfoText': smallBuySlotString,
+         'hasSale': discount is not None,
+         'tooltip': TOOLTIPS.TANKS_CAROUSEL_BUY_SLOT}
         if discount is not None:
             buySlotVO.update({'slotPriceActionData': discount})
         self._supplyItems.append(buySlotVO)

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/tank_change_view.py
 import SoundGroups
 from base_crew_view import BaseCrewView
 from crew_sounds import SOUNDS
@@ -25,8 +27,7 @@ from skeletons.gui.game_control import IRestoreController
 from skeletons.gui.shared import IItemsCache
 
 class TankChangeView(BaseCrewView):
-    __slots__ = ('__dataProvider', '__filterState', '__tankman', '__vehicle', '__selectedTmanInvID',
-                 '_filterPanelWidget')
+    __slots__ = ('__dataProvider', '__filterState', '__tankman', '__vehicle', '__selectedTmanInvID', '_filterPanelWidget')
     itemsCache = dependency.descriptor(IItemsCache)
     restore = dependency.descriptor(IRestoreController)
     platoonCtrl = dependency.descriptor(IPlatoonController)
@@ -67,9 +68,7 @@ class TankChangeView(BaseCrewView):
         return super(TankChangeView, self).getViewModel()
 
     def getFilterTypeVehicle(self):
-        if self.tankman and self.tankman.isInTank:
-            return self.tankman.getVehicle().type
-        return self.vehicle.type
+        return self.tankman.getVehicle().type if self.tankman and self.tankman.isInTank else self.vehicle.type
 
     @createBackportTooltipDecorator()
     def createToolTip(self, event):
@@ -77,15 +76,11 @@ class TankChangeView(BaseCrewView):
 
     @staticmethod
     def getTooltipData(event):
-        return backport.createTooltipData(specialAlias=event.getArgument('tooltipId'), isSpecial=True, specialArgs=(
-         event.getArgument('vehicleCD'),))
+        return backport.createTooltipData(specialAlias=event.getArgument('tooltipId'), isSpecial=True, specialArgs=(event.getArgument('vehicleCD'),))
 
     def _setWidgets(self, **kwargs):
         super(TankChangeView, self)._setWidgets(**kwargs)
-        self._filterPanelWidget = FilterPanelWidget(getVehicleLocationSettings(), (
-         getVehicleTypeSettings(R.strings.crew.filter.group.vehicleType.tankChange.title()),
-         getVehicleTierSettings(R.strings.crew.filter.group.vehicleTier.shortTitle()),
-         getVehicleGradeSettings((GRADE_PREMIUM,))), R.strings.crew.filter.popup.tankChange.title(), self.__filterState, panelType=FilterPanelType.TANKCHANGE, isSearchEnabled=True, popoverTooltipHeader=R.strings.crew.tankChange.tooltip.popover.header(), popoverTooltipBody=R.strings.crew.tankChange.tooltip.popover.body(), searchTooltipBody=backport.text(R.strings.crew.tankChange.tooltip.searchInput.body(), maxLength=SEARCH_MAX_LENGTH))
+        self._filterPanelWidget = FilterPanelWidget(getVehicleLocationSettings(), (getVehicleTypeSettings(R.strings.crew.filter.group.vehicleType.tankChange.title()), getVehicleTierSettings(R.strings.crew.filter.group.vehicleTier.shortTitle()), getVehicleGradeSettings((GRADE_PREMIUM,))), R.strings.crew.filter.popup.tankChange.title(), self.__filterState, panelType=FilterPanelType.TANKCHANGE, isSearchEnabled=True, popoverTooltipHeader=R.strings.crew.tankChange.tooltip.popover.header(), popoverTooltipBody=R.strings.crew.tankChange.tooltip.popover.body(), searchTooltipBody=backport.text(R.strings.crew.tankChange.tooltip.searchInput.body(), maxLength=SEARCH_MAX_LENGTH))
         self.setChildView(FilterPanelWidget.LAYOUT_ID(), self._filterPanelWidget)
 
     def _fillViewModel(self, vm):
@@ -98,7 +93,7 @@ class TankChangeView(BaseCrewView):
         self.__dataProvider.update()
 
     def _finalize(self):
-        isCrewEmpty = not any(True for data in self._getCrewBySlotIDX(NO_SLOT) if data[1] is not None)
+        isCrewEmpty = not any((True for data in self._getCrewBySlotIDX(NO_SLOT) if data[1] is not None))
         super(TankChangeView, self)._finalize()
         self._filterPanelWidget = None
         self.__filterState = None
@@ -116,24 +111,14 @@ class TankChangeView(BaseCrewView):
 
     def _getEvents(self):
         eventsTuple = super(TankChangeView, self)._getEvents()
-        return eventsTuple + (
-         (
-          self.viewModel.onResetFilters, self._onResetFilters),
-         (
-          self.viewModel.onVehicleSelected, self._onVehicleSelected),
-         (
-          self.__dataProvider.onDataChanged, self.__updateModelsData),
-         (
-          self.__filterState.onStateChanged, self._onFilterStateUpdated),
-         (
-          self.platoonCtrl.onMembersUpdate, self._onMembersUpdate))
+        return eventsTuple + ((self.viewModel.onResetFilters, self._onResetFilters),
+         (self.viewModel.onVehicleSelected, self._onVehicleSelected),
+         (self.__dataProvider.onDataChanged, self.__updateModelsData),
+         (self.__filterState.onStateChanged, self._onFilterStateUpdated),
+         (self.platoonCtrl.onMembersUpdate, self._onMembersUpdate))
 
     def _getCallbacks(self):
-        return (
-         (
-          'inventory', self._onInventoryUpdate),
-         (
-          'inventory.8.compDescr', self._onVehicleUpdated))
+        return (('inventory', self._onInventoryUpdate), ('inventory.8.compDescr', self._onVehicleUpdated))
 
     def _onMembersUpdate(self):
         self.destroyWindow()
@@ -197,7 +182,7 @@ class TankChangeView(BaseCrewView):
     def __updateModelsData(self):
         self.__tankman = self.itemsCache.items.getTankman(self.__selectedTmanInvID)
         if self.__tankman:
-            with self.viewModel.transaction() as (tx):
+            with self.viewModel.transaction() as tx:
                 self.__fillVehicleList(tx)
 
     def __isValidForTraining(self, vehicle):

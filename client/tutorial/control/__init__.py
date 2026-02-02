@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/tutorial/control/__init__.py
 from abc import ABCMeta, abstractmethod
 import BigWorld
 from helpers.aop import Weaver
@@ -10,10 +12,7 @@ class TutorialProxyHolder(object):
 
     @property
     def _gui(self):
-        if self._tutorial is not None:
-            return self._tutorial.getGUIProxy()
-        else:
-            return
+        return self._tutorial.getGUIProxy() if self._tutorial is not None else None
 
     @property
     def _data(self):

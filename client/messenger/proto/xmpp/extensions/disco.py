@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/xmpp/extensions/disco.py
 from collections import namedtuple
 from messenger.proto.xmpp.extensions import PyQuery, PyExtension
 from messenger.proto.xmpp.extensions.ext_constants import XML_NAME_SPACE as _NS
@@ -14,7 +16,7 @@ class IdentityElement(PyExtension):
 
     @classmethod
     def getDefaultData(cls):
-        return
+        return None
 
     def parseTag(self, pyGlooxTag):
         return Identity(pyGlooxTag.findAttribute('name'), pyGlooxTag.findAttribute('category'), pyGlooxTag.findAttribute('type'))
@@ -27,7 +29,7 @@ class FeatureElement(PyExtension):
 
     @classmethod
     def getDefaultData(cls):
-        return
+        return None
 
 
 class CreatedByElement(PyExtension):
@@ -69,11 +71,10 @@ class DiscoInfoExtension(PyExtension):
                 features.append(feature)
 
         created_by = self._getChildData(pyGlooxTag, 2, CreatedByElement.getDefaultData())
-        return (
-         identity, features, created_by)
+        return (identity, features, created_by)
 
     def _makeChildrenString(self):
-        return ''
+        pass
 
 
 class DiscoInfoQuery(PyQuery):

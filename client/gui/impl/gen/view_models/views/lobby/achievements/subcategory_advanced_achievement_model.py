@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/achievements/subcategory_advanced_achievement_model.py
 from gui.impl.gen.view_models.views.lobby.achievements.advanced_achievement_model import AdvancedAchievementModel
 
 class SubcategoryAdvancedAchievementModel(AdvancedAchievementModel):

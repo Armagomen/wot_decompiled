@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/impl/lobby/views/welcome_view.py
 from frameworks.wulf import ViewFlags, ViewSettings, WindowFlags, WindowLayer
 from gui.impl.pub import ViewImpl, WindowImpl
 from gui.impl.gen import R
@@ -14,9 +16,7 @@ class WelcomeView(ViewImpl):
         return super(WelcomeView, self).getViewModel()
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onClose, self.__onViewClose),)
+        return ((self.viewModel.onClose, self.__onViewClose),)
 
     def __onViewClose(self):
         self.destroyWindow()

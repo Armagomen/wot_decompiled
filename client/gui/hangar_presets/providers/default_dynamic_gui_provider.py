@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/hangar_presets/providers/default_dynamic_gui_provider.py
 from constants import QUEUE_TYPE
 from gui.hangar_presets.obsolete.hangar_presets_getters import DefaultPresetsGetter
 from gui.hangar_presets.providers.base_dynamic_gui_provider import BaseHangarDynamicGuiProvider

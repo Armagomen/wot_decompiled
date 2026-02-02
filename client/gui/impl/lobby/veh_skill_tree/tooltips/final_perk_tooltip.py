@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/veh_skill_tree/tooltips/final_perk_tooltip.py
 from frameworks.wulf import ViewSettings
 from helpers import dependency
 from gui.impl.gen import R

@@ -1,29 +1,24 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/common/settings/acoustic_presets.py
 import weakref
 from collections import namedtuple
-import BigWorld, SoundGroups
+import BigWorld
+import SoundGroups
 from debug_utils import LOG_WARNING, LOG_ERROR
 from gui.Scaleform.genConsts.ACOUSTICS import ACOUSTICS
 from shared_utils import findFirst
 _SOUND_DELAY = 0.5
 PresetItem = namedtuple('PresetItem', 'speakerIDs soundID')
-_PRESETS = {ACOUSTICS.TYPE_HEADPHONES: (
-                             PresetItem((ACOUSTICS.SPEAKER_ID_LEFT,), 'multichanel_test_L'),
-                             PresetItem((ACOUSTICS.SPEAKER_ID_RIGHT,), 'multichanel_test_R')), 
-   ACOUSTICS.TYPE_LAPTOP: (
-                         PresetItem((ACOUSTICS.SPEAKER_ID_LEFT,), 'multichanel_test_L'),
-                         PresetItem((ACOUSTICS.SPEAKER_ID_RIGHT,), 'multichanel_test_R')), 
-   ACOUSTICS.TYPE_ACOUSTIC_20: (
-                              PresetItem((ACOUSTICS.SPEAKER_ID_LEFT, ACOUSTICS.SPEAKER_ID_SUB), 'multichanel_test_L'),
-                              PresetItem((ACOUSTICS.SPEAKER_ID_RIGHT, ACOUSTICS.SPEAKER_ID_SUB), 'multichanel_test_R')), 
-   ACOUSTICS.TYPE_ACOUSTIC_51: (
-                              PresetItem((ACOUSTICS.SPEAKER_ID_LEFT_FRONT,), 'multichanel_test_L'),
+_PRESETS = {ACOUSTICS.TYPE_HEADPHONES: (PresetItem((ACOUSTICS.SPEAKER_ID_LEFT,), 'multichanel_test_L'), PresetItem((ACOUSTICS.SPEAKER_ID_RIGHT,), 'multichanel_test_R')),
+ ACOUSTICS.TYPE_LAPTOP: (PresetItem((ACOUSTICS.SPEAKER_ID_LEFT,), 'multichanel_test_L'), PresetItem((ACOUSTICS.SPEAKER_ID_RIGHT,), 'multichanel_test_R')),
+ ACOUSTICS.TYPE_ACOUSTIC_20: (PresetItem((ACOUSTICS.SPEAKER_ID_LEFT, ACOUSTICS.SPEAKER_ID_SUB), 'multichanel_test_L'), PresetItem((ACOUSTICS.SPEAKER_ID_RIGHT, ACOUSTICS.SPEAKER_ID_SUB), 'multichanel_test_R')),
+ ACOUSTICS.TYPE_ACOUSTIC_51: (PresetItem((ACOUSTICS.SPEAKER_ID_LEFT_FRONT,), 'multichanel_test_L'),
                               PresetItem((ACOUSTICS.SPEAKER_ID_RIGHT_FRONT,), 'multichanel_test_R'),
                               PresetItem((ACOUSTICS.SPEAKER_ID_CENTER,), 'multichanel_test_C'),
                               PresetItem((ACOUSTICS.SPEAKER_ID_SUB,), 'multichanel_test_LFE'),
                               PresetItem((ACOUSTICS.SPEAKER_ID_LEFT,), 'multichanel_test_SL'),
-                              PresetItem((ACOUSTICS.SPEAKER_ID_RIGHT,), 'multichanel_test_SR')), 
-   ACOUSTICS.TYPE_ACOUSTIC_71: (
-                              PresetItem((ACOUSTICS.SPEAKER_ID_LEFT_FRONT,), 'multichanel_test_L'),
+                              PresetItem((ACOUSTICS.SPEAKER_ID_RIGHT,), 'multichanel_test_SR')),
+ ACOUSTICS.TYPE_ACOUSTIC_71: (PresetItem((ACOUSTICS.SPEAKER_ID_LEFT_FRONT,), 'multichanel_test_L'),
                               PresetItem((ACOUSTICS.SPEAKER_ID_RIGHT_FRONT,), 'multichanel_test_R'),
                               PresetItem((ACOUSTICS.SPEAKER_ID_CENTER,), 'multichanel_test_C'),
                               PresetItem((ACOUSTICS.SPEAKER_ID_SUB,), 'multichanel_test_LFE'),
@@ -175,4 +170,4 @@ def createPlayer(view, acousticType):
         return AcousticPresetsPlayer(view, _PRESETS[acousticType])
     else:
         LOG_ERROR('Sound speakers preset is not found', acousticType)
-        return
+        return None

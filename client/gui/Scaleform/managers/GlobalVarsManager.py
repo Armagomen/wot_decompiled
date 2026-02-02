@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/managers/GlobalVarsManager.py
 import constants
 from gui import GUI_SETTINGS
 from gui.Scaleform.framework.entities.abstract.GlobalVarsMgrMeta import GlobalVarsMgrMeta
@@ -49,9 +51,7 @@ class GlobalVarsManager(GlobalVarsMgrMeta):
         return self.lobbyContext.getServerSettings().roaming.isInRoaming()
 
     def isWalletAvailable(self):
-        if self.wallet:
-            return self.wallet.isAvailable
-        return False
+        return self.wallet.isAvailable if self.wallet else False
 
     def isShowLoginRssFeed(self):
         return GUI_SETTINGS.loginRssFeed.show

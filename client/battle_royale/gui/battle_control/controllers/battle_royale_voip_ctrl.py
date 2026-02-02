@@ -1,4 +1,9 @@
-import logging, typing, VOIP, CommandMapping
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/battle_control/controllers/battle_royale_voip_ctrl.py
+import logging
+import typing
+import VOIP
+import CommandMapping
 from account_helpers.settings_core.settings_constants import SOUND
 from constants import IS_CHINA, ARENA_BONUS_TYPE
 from gui import g_keyEventHandlers

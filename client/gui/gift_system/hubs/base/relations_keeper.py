@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/gift_system/hubs/base/relations_keeper.py
 import typing
 from collections import defaultdict
 from gui.gift_system.constants import GiftMessageType, GifterResponseState
@@ -45,13 +47,12 @@ class IGiftEventKeeper(BaseMessegesDelayer):
 
 
 class GiftEventBaseKeeper(IGiftEventKeeper, Notifiable):
-    __slots__ = ('__clearCallback', '__outcomeRelations', '__incomeRelations', '__currentTimeInterval',
-                 '__expireTime', '__expireDelta', '__sendLimit')
+    __slots__ = ('__clearCallback', '__outcomeRelations', '__incomeRelations', '__currentTimeInterval', '__expireTime', '__expireDelta', '__sendLimit')
 
     def __init__(self, eventSettings, clearCallback):
         super(GiftEventBaseKeeper, self).__init__(eventSettings)
-        self._msgHandlers.update({GiftMessageType.INCOME: self._processIncomeMessage, 
-           GiftMessageType.OUTCOME: self._processOutcomeMessage})
+        self._msgHandlers.update({GiftMessageType.INCOME: self._processIncomeMessage,
+         GiftMessageType.OUTCOME: self._processOutcomeMessage})
         self.__clearCallback = clearCallback
         self.__sendLimit = _DEFAULT_SEND_LIMIT
         self.__incomeRelations = defaultdict(int)
@@ -84,14 +85,10 @@ class GiftEventBaseKeeper(IGiftEventKeeper, Notifiable):
         return self.__expireDelta
 
     def getIncomeRelations(self, implicitCopy=True):
-        if implicitCopy:
-            return self.__incomeRelations.copy()
-        return self.__incomeRelations
+        return self.__incomeRelations.copy() if implicitCopy else self.__incomeRelations
 
     def getOutcomeRelations(self, implicitCopy=True):
-        if implicitCopy:
-            return self.__outcomeRelations.copy()
-        return self.__outcomeRelations
+        return self.__outcomeRelations.copy() if implicitCopy else self.__outcomeRelations
 
     def getSendLimit(self):
         return self.__sendLimit
@@ -156,14 +153,10 @@ class GiftEventBaseKeeper(IGiftEventKeeper, Notifiable):
             self.__incomeRelations[accID] = income
 
     def __isCurrentTimestamp(self, timestamp):
-        if self.__expireDelta is None or self.__expireTime is None:
-            return False
-        return self.__getTimestampInterval(timestamp) == self.__currentTimeInterval
+        return False if self.__expireDelta is None or self.__expireTime is None else self.__getTimestampInterval(timestamp) == self.__currentTimeInterval
 
     def __getTimestampInterval(self, timestamp):
-        if self.__expireDelta:
-            return (timestamp - self.__expireTime) // self.__expireDelta
-        return _ENDLESS_INTERVAL
+        return (timestamp - self.__expireTime) // self.__expireDelta if self.__expireDelta else _ENDLESS_INTERVAL
 
     def __updateCurrentTimeInterval(self):
         self.__currentTimeInterval = self.__getTimestampInterval(int(getCurrentTimestamp()))

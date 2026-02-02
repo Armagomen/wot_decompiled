@@ -1,4 +1,7 @@
-import weakref, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/quests_controller.py
+import weakref
+import typing
 from constants import EVENT_TYPE, PremiumConfigs
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.shared.gui_items import GUI_ITEM_TYPE
@@ -95,10 +98,8 @@ class _QuestCache(object):
             for veh in suitableVehicles:
                 vehIntCD = veh.intCD
                 if vehIntCD not in self.__cache:
-                    self.__cache[vehIntCD] = {
-                     quest}
-                else:
-                    self.__cache[vehIntCD].add(quest)
+                    self.__cache[vehIntCD] = {quest}
+                self.__cache[vehIntCD].add(quest)
 
     def __setInvVehicles(self):
         requestCriteria = REQ_CRITERIA.INVENTORY
@@ -117,9 +118,7 @@ class _QuestCache(object):
             return not event.isCompleted() and event.isAvailable()[0]
         if isPremium(event.getGroupID()) and not cls.lobbyContext.getServerSettings().getPremQuestsConfig().get('enabled', False):
             return False
-        if isBattleMattersQuestID(event.getID()):
-            return False
-        return True
+        return False if isBattleMattersQuestID(event.getID()) else True
 
 
 class QuestsController(IQuestsController):
@@ -142,8 +141,8 @@ class QuestsController(IQuestsController):
             self.__quests = _QuestCache(self.eventsCache)
         else:
             self.__quests.invalidate()
-        g_clientUpdateManager.addCallbacks({'inventory.1': self.__invalidateEventsData, 
-           'stats.unlocks': self.__onStatsUnlocked})
+        g_clientUpdateManager.addCallbacks({'inventory.1': self.__invalidateEventsData,
+         'stats.unlocks': self.__onStatsUnlocked})
         self.eventsCache.onSyncCompleted += self.__invalidateEventsData
         self.eventsCache.onProgressUpdated += self.__invalidateEventsData
         self.lobbyContext.getServerSettings().onServerSettingsChange += self.__onServerSettingsChange
@@ -181,11 +180,9 @@ class QuestsController(IQuestsController):
             if vehicle.isOnlyForBattleRoyaleBattles:
                 return list(self.__battleRoyaleController.getQuests().values())
         if notCompleted:
-            quests = [ q for q in self.getQuestForVehicle(vehicle) if _isAvailableForMode(q) and q.shouldBeShown() and not q.isCompleted()
-                     ]
+            quests = [ q for q in self.getQuestForVehicle(vehicle) if _isAvailableForMode(q) and q.shouldBeShown() and not q.isCompleted() ]
             return quests
-        return [ q for q in self.getQuestForVehicle(vehicle) if _isAvailableForMode(q) and q.shouldBeShown()
-               ]
+        return [ q for q in self.getQuestForVehicle(vehicle) if _isAvailableForMode(q) and q.shouldBeShown() ]
 
     def __invalidateEventsData(self, *args):
         self.__quests.invalidate()

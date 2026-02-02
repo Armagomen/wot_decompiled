@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/locale/ARTEFACTS.py
 from debug_utils import LOG_WARNING
 
 class ARTEFACTS(object):
@@ -148,6 +150,14 @@ class ARTEFACTS(object):
     DELUXEADDITIONALINVISIBILITYDEVICE_NAME = '#artefacts:deluxeAdditionalInvisibilityDevice/name'
     DELUXEADDITIONALINVISIBILITYDEVICE_SHORT_SPECIAL = '#artefacts:deluxeAdditionalInvisibilityDevice/short_special'
     DELUXEADDITIONALINVISIBILITYDEVICE_LONG_SPECIAL = '#artefacts:deluxeAdditionalInvisibilityDevice/long_special'
+    DELUXESTEREOSCOPE_NAME = '#artefacts:deluxeStereoscope/name'
+    DELUXESTEREOSCOPE_BATTLEDESCR = '#artefacts:deluxeStereoscope/battleDescr'
+    DELUXESTEREOSCOPE_SHORT_SPECIAL = '#artefacts:deluxeStereoscope/short_special'
+    DELUXESTEREOSCOPE_LONG_SPECIAL = '#artefacts:deluxeStereoscope/long_special'
+    DELUXECAMOUFLAGENET_NAME = '#artefacts:deluxeCamouflageNet/name'
+    DELUXECAMOUFLAGENET_BATTLEDESCR = '#artefacts:deluxeCamouflageNet/battleDescr'
+    DELUXECAMOUFLAGENET_SHORT_SPECIAL = '#artefacts:deluxeCamouflageNet/short_special'
+    DELUXECAMOUFLAGENET_LONG_SPECIAL = '#artefacts:deluxeCamouflageNet/long_special'
     TROPHYBASICTANKRAMMER_NAME = '#artefacts:trophyBasicTankRammer/name'
     TROPHYBASICTANKRAMMER_SHORT_SPECIAL = '#artefacts:trophyBasicTankRammer/short_special'
     TROPHYBASICAIMDRIVES_NAME = '#artefacts:trophyBasicAimDrives/name'
@@ -663,6 +673,14 @@ class ARTEFACTS(object):
     ROLE_MT_SUPPORT_PAIR_5_1_SPLITNAME = '#artefacts:role_MT_support_pair_5_1/splitName'
     ROLE_MT_SUPPORT_PAIR_5_2_NAME = '#artefacts:role_MT_support_pair_5_2/name'
     ROLE_MT_SUPPORT_PAIR_5_2_SPLITNAME = '#artefacts:role_MT_support_pair_5_2/splitName'
+    ROLE_MT_SUPPORT_TEMPERATUREGUN_PAIR_1_1_NAME = '#artefacts:role_MT_support_temperatureGun_pair_1_1/name'
+    ROLE_MT_SUPPORT_TEMPERATUREGUN_PAIR_1_1_SPLITNAME = '#artefacts:role_MT_support_temperatureGun_pair_1_1/splitName'
+    ROLE_MT_SUPPORT_TEMPERATUREGUN_PAIR_1_2_NAME = '#artefacts:role_MT_support_temperatureGun_pair_1_2/name'
+    ROLE_MT_SUPPORT_TEMPERATUREGUN_PAIR_1_2_SPLITNAME = '#artefacts:role_MT_support_temperatureGun_pair_1_2/splitName'
+    ROLE_MT_SUPPORT_TEMPERATUREGUN_PAIR_4_1_NAME = '#artefacts:role_MT_support_temperatureGun_pair_4_1/name'
+    ROLE_MT_SUPPORT_TEMPERATUREGUN_PAIR_4_1_SPLITNAME = '#artefacts:role_MT_support_temperatureGun_pair_4_1/splitName'
+    ROLE_MT_SUPPORT_TEMPERATUREGUN_PAIR_4_2_NAME = '#artefacts:role_MT_support_temperatureGun_pair_4_2/name'
+    ROLE_MT_SUPPORT_TEMPERATUREGUN_PAIR_4_2_SPLITNAME = '#artefacts:role_MT_support_temperatureGun_pair_4_2/splitName'
     ROLE_ATSPG_PAIR_1_1_NAME = '#artefacts:role_ATSPG_pair_1_1/name'
     ROLE_ATSPG_PAIR_1_1_SPLITNAME = '#artefacts:role_ATSPG_pair_1_1/splitName'
     ROLE_ATSPG_PAIR_1_2_NAME = '#artefacts:role_ATSPG_pair_1_2/name'
@@ -855,8 +873,7 @@ class ARTEFACTS(object):
     ARCHETYPE_MODERNIZEDTURBOCHARGERROTATIONMECHANISM_NAME_NOTEMPLATE = '#artefacts:archetype/modernizedTurbochargerRotationMechanism/name/noTemplate'
     ARCHETYPE_MODERNIZEDEXTRAHEALTHRESERVEANTIFRAGMENTATIONLINING_NAME_NOTEMPLATE = '#artefacts:archetype/modernizedExtraHealthReserveAntifragmentationLining/name/noTemplate'
     ARCHETYPE_MODERNIZEDIMPROVEDSIGHTSENHANCEDAIMDRIVES_NAME_NOTEMPLATE = '#artefacts:archetype/modernizedImprovedSightsEnhancedAimDrives/name/noTemplate'
-    ALL_GAIN_ENUM = (
-     IMPROVEDCONFIGURATIONBATTLEBOOSTER_GAIN_SIMPLE,
+    ALL_GAIN_ENUM = (IMPROVEDCONFIGURATIONBATTLEBOOSTER_GAIN_SIMPLE,
      IMPROVEDCONFIGURATIONBATTLEBOOSTER_GAIN_DELUXE,
      IMPROVEDVENTILATIONBATTLEBOOSTER_GAIN_SIMPLE,
      IMPROVEDVENTILATIONBATTLEBOOSTER_GAIN_DELUXE,
@@ -874,8 +891,7 @@ class ARTEFACTS(object):
      IMPROVEDSIGHTSBATTLEBOOSTER_GAIN_DELUXE,
      ADDITINVISIBILITYDEVICEBATTLEBOOSTER_GAIN_SIMPLE,
      ADDITINVISIBILITYDEVICEBATTLEBOOSTER_GAIN_DELUXE)
-    ALL_ACTION_ENUM = (
-     CAMOUFLAGEBATTLEBOOSTER_ACTION_PERK,
+    ALL_ACTION_ENUM = (CAMOUFLAGEBATTLEBOOSTER_ACTION_PERK,
      CAMOUFLAGEBATTLEBOOSTER_ACTION_BOOST,
      SMOOTHTURRETBATTLEBOOSTER_ACTION_PERK,
      SMOOTHTURRETBATTLEBOOSTER_ACTION_BOOST,
@@ -896,32 +912,31 @@ class ARTEFACTS(object):
      PRACTICALITYBATTLEBOOSTER_ACTION_BOOST,
      ENEMYSHOTPREDICTORBATTLEBOOSTER_ACTION_PERK,
      ENEMYSHOTPREDICTORBATTLEBOOSTER_ACTION_BOOST)
-    ALL_DESCRIPTION_ENUM = (
-     SIXTHSENSEBATTLEBOOSTER_DESCRIPTION_BUILTINPERKBOOSTER,)
+    ALL_DESCRIPTION_ENUM = (SIXTHSENSEBATTLEBOOSTER_DESCRIPTION_BUILTINPERKBOOSTER,)
 
     @classmethod
     def getDeviceGainForBattleBooster(cls, boosterName, deviceType):
-        outcome = ('#artefacts:{}/gain/{}').format(boosterName, deviceType)
+        outcome = '#artefacts:{}/gain/{}'.format(boosterName, deviceType)
         if outcome not in cls.ALL_GAIN_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getCrewActionForBattleBooster(cls, crewBoosterName, crewFactor):
-        outcome = ('#artefacts:{}/action/{}').format(crewBoosterName, crewFactor)
+        outcome = '#artefacts:{}/action/{}'.format(crewBoosterName, crewFactor)
         if outcome not in cls.ALL_ACTION_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getDescriptionForBattleBooster(cls, crewBoosterName, crewFactor):
-        outcome = ('#artefacts:{}/description/{}').format(crewBoosterName, crewFactor)
+        outcome = '#artefacts:{}/description/{}'.format(crewBoosterName, crewFactor)
         if outcome not in cls.ALL_DESCRIPTION_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome

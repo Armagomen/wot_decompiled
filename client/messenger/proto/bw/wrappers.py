@@ -1,8 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/bw/wrappers.py
 from collections import namedtuple
-import time as _time, types
+import time as _time
+import types
 from chat_shared import SYS_MESSAGE_IMPORTANCE
-_ChannelData = namedtuple('_ChannelData', [
- 'id',
+_ChannelData = namedtuple('_ChannelData', ['id',
  'channelName',
  'owner',
  'ownerName',
@@ -19,8 +21,7 @@ class ChannelDataWrapper(_ChannelData):
         return _ChannelData.__new__(cls, id, unicode(channelName, 'utf-8', errors='ignore'), owner, unicode(ownerName, 'utf-8', errors='ignore'), isReadOnly, isSystem, isSecured, greeting, flags, notifyFlags)
 
 
-_ChatActionData = namedtuple('_ChatActionData', (' ').join([
- 'action',
+_ChatActionData = namedtuple('_ChatActionData', ' '.join(['action',
  'channel',
  'actionResponse',
  'group',
@@ -39,8 +40,7 @@ class ChatActionWrapper(_ChatActionData):
         return result
 
 
-_ServiceChannelData = namedtuple('_ServiceChannelData', (' ').join([
- 'messageId',
+_ServiceChannelData = namedtuple('_ServiceChannelData', ' '.join(['messageId',
  'userId',
  'type',
  'importance',

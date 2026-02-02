@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/referral_program_controller.py
 import logging
 from Event import Event
 from account_helpers import AccountSettings
@@ -54,9 +56,7 @@ class ReferralProgramController(GameWindowController, IReferralProgramController
 
     @property
     def isNewReferralSeason(self):
-        if not self.__isEnabled or not self.__referralConfig.periodNumber:
-            return False
-        return self.__referralConfig.periodNumber != self.__settingsCore.serverSettings.getViewedReferralProgramSeason()
+        return False if not self.__isEnabled or not self.__referralConfig.periodNumber else self.__referralConfig.periodNumber != self.__settingsCore.serverSettings.getViewedReferralProgramSeason()
 
     def showWindow(self, url=None, invokedFrom=None):
         self._showWindow(url, invokedFrom)
@@ -91,15 +91,15 @@ class ReferralProgramController(GameWindowController, IReferralProgramController
         browserView = self.__getBrowserView()
         if browserView:
             return
-        ctx = {'url': url, 
-           'webHandlers': createReferralWebHandlers(), 
-           'browser_alias': VIEW_ALIAS.REFERRAL_PROGRAM_WINDOW, 
-           'showCloseBtn': True, 
-           'useSpecialKeys': True, 
-           'showWaiting': True, 
-           'showActionBtn': False, 
-           'allowRightClick': True, 
-           'soundSpaceID': SUBVIEW_SOUND_SPACE.name}
+        ctx = {'url': url,
+         'webHandlers': createReferralWebHandlers(),
+         'browser_alias': VIEW_ALIAS.REFERRAL_PROGRAM_WINDOW,
+         'showCloseBtn': True,
+         'useSpecialKeys': True,
+         'showWaiting': True,
+         'showActionBtn': False,
+         'allowRightClick': True,
+         'soundSpaceID': SUBVIEW_SOUND_SPACE.name}
         g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.REFERRAL_PROGRAM_WINDOW), ctx=ctx), scope=EVENT_BUS_SCOPE.LOBBY)
         self.__setViewedSeason()
         self.__resetBubbleCount()

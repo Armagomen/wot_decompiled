@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/view_helpers/UsersInfoController.py
 import BigWorld
 from AccountCommands import isCodeValid
 from debug_utils import LOG_WARNING
@@ -29,7 +31,7 @@ class _GetGlobalRatingCtx(RequestCtx):
         return USER_INFO_RQ_TYPE.GET_GLOBAL_RATINGS
 
     def getCooldown(self):
-        return 2.0
+        pass
 
 
 @ReprInjector.withParent(('getDbIDs', 'dbIDs'))
@@ -46,15 +48,15 @@ class _GetNicknamesCtx(RequestCtx):
         return USER_INFO_RQ_TYPE.GET_NICKNAMES
 
     def getCooldown(self):
-        return 2.0
+        pass
 
 
 class UsersInfoController(RequestsController):
 
     def __init__(self):
         super(UsersInfoController, self).__init__(None)
-        self.__handlers = {USER_INFO_RQ_TYPE.GET_GLOBAL_RATINGS: self._getGlobalRatings, 
-           USER_INFO_RQ_TYPE.GET_NICKNAMES: self._getNicknames}
+        self.__handlers = {USER_INFO_RQ_TYPE.GET_GLOBAL_RATINGS: self._getGlobalRatings,
+         USER_INFO_RQ_TYPE.GET_NICKNAMES: self._getNicknames}
         return
 
     def fini(self):
@@ -63,11 +65,11 @@ class UsersInfoController(RequestsController):
 
     @proto_getter(PROTO_TYPE.XMPP)
     def proto(self):
-        return
+        return None
 
     @storage_getter('users')
     def users(self):
-        return
+        return None
 
     def requestNicknames(self, accountDbIDs, callback):
         while accountDbIDs:
@@ -103,4 +105,4 @@ class UsersInfoController(RequestsController):
         return self.__handlers.get(requestTypeID)
 
     def _getRequestTimeOut(self):
-        return 30.0
+        pass

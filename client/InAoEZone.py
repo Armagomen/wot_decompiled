@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/InAoEZone.py
 import BigWorld
 from debug_utils import LOG_DEBUG_DEV
 from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE

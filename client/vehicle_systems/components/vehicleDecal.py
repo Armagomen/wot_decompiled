@@ -1,4 +1,7 @@
-import weakref, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/vehicle_systems/components/vehicleDecal.py
+import weakref
+import BigWorld
 from helpers import dependency
 from skeletons.account_helpers.settings_core import ISettingsCore
 from vehicle_systems.tankStructure import TankPartNames
@@ -43,8 +46,9 @@ class VehicleDecal(object):
     def attach(self):
         if self.__attached or self.__appearance is None:
             return
-        self.__attach()
-        return
+        else:
+            self.__attach()
+            return
 
     def detach(self):
         if not self.__attached:
@@ -135,7 +139,7 @@ class VehicleDecal(object):
         bumpTexture = ''
         hmTexture = ''
         materialType = 4
-        visibilityMask = 4294967295
+        visibilityMask = 4294967295L
         accuracy = 2
         decal = BigWorld.WGOcclusionDecal()
         decal.create(diffuseTexture, bumpTexture, hmTexture, addTexture, priority, materialType, influence, visibilityMask, accuracy)

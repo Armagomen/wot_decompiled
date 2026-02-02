@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/locale/EVENT_BOARDS.py
 from debug_utils import LOG_WARNING
 
 class EVENT_BOARDS(object):
@@ -244,19 +246,14 @@ class EVENT_BOARDS(object):
     TOOLTIP_TOP_DESCRIPTION_MAX_DAMAGEASSISTED = '#event_boards:tooltip/top/description/max/damageAssisted'
     BADGESGROUP_TOOLTIP_HEADER = '#event_boards:badgesGroup/tooltip/header'
     BADGE_TOOLTIP_DESCRIPTION = '#event_boards:badge/tooltip/description'
-    TABLE_STRIPE_ALL_TITLE_ENUM = (
-     TABLE_STRIPE_GOLDCUSTOM_TITLE,
+    TABLE_STRIPE_ALL_TITLE_ENUM = (TABLE_STRIPE_GOLDCUSTOM_TITLE,
      TABLE_STRIPE_GOLD_TITLE,
      TABLE_STRIPE_SILVER_TITLE,
      TABLE_STRIPE_BRONZE_TITLE,
      TABLE_STRIPE_IRON_TITLE,
      TABLE_STRIPE_WOOD_TITLE)
-    SUMMARY_RESULT_ENUM = (
-     SUMMARY_RESULT_WIN,
-     SUMMARY_RESULT_LOSS,
-     SUMMARY_RESULT_DRAW)
-    SUMMARY_PARAM_ALL_ENUM = (
-     SUMMARY_PARAM_MAX_ORIGINALXP,
+    SUMMARY_RESULT_ENUM = (SUMMARY_RESULT_WIN, SUMMARY_RESULT_LOSS, SUMMARY_RESULT_DRAW)
+    SUMMARY_PARAM_ALL_ENUM = (SUMMARY_PARAM_MAX_ORIGINALXP,
      SUMMARY_PARAM_MAX_XP,
      SUMMARY_PARAM_MAX_DAMAGEDEALT,
      SUMMARY_PARAM_MAX_DAMAGEASSISTED,
@@ -277,28 +274,23 @@ class EVENT_BOARDS(object):
      SUMMARY_PARAM_SUMMSEQN_DAMAGEDEALT,
      SUMMARY_PARAM_SUMSEQN_DAMAGEASSISTED,
      SUMMARY_PARAM_SUMMSEQN_DAMAGEASSISTED)
-    SUMMARY_DESCRIPTION_SUM_ENUM = (
-     SUMMARY_DESCRIPTION_SUM_NATION,
+    SUMMARY_DESCRIPTION_SUM_ENUM = (SUMMARY_DESCRIPTION_SUM_NATION,
      SUMMARY_DESCRIPTION_SUM_LEVEL,
      SUMMARY_DESCRIPTION_SUM_CLASS,
      SUMMARY_DESCRIPTION_SUM_VEHICLE)
-    SUMMARY_DESCRIPTION_MAX_ENUM = (
-     SUMMARY_DESCRIPTION_MAX_NATION,
+    SUMMARY_DESCRIPTION_MAX_ENUM = (SUMMARY_DESCRIPTION_MAX_NATION,
      SUMMARY_DESCRIPTION_MAX_LEVEL,
      SUMMARY_DESCRIPTION_MAX_CLASS,
      SUMMARY_DESCRIPTION_MAX_VEHICLE)
-    SUMMARY_DESCRIPTION_SUMN_ENUM = (
-     SUMMARY_DESCRIPTION_SUMN_NATION,
+    SUMMARY_DESCRIPTION_SUMN_ENUM = (SUMMARY_DESCRIPTION_SUMN_NATION,
      SUMMARY_DESCRIPTION_SUMN_LEVEL,
      SUMMARY_DESCRIPTION_SUMN_CLASS,
      SUMMARY_DESCRIPTION_SUMN_VEHICLE)
-    SUMMARY_DESCRIPTION_SUMSEQN_ENUM = (
-     SUMMARY_DESCRIPTION_SUMSEQN_NATION,
+    SUMMARY_DESCRIPTION_SUMSEQN_ENUM = (SUMMARY_DESCRIPTION_SUMSEQN_NATION,
      SUMMARY_DESCRIPTION_SUMSEQN_LEVEL,
      SUMMARY_DESCRIPTION_SUMSEQN_CLASS,
      SUMMARY_DESCRIPTION_SUMSEQN_VEHICLE)
-    TASK_OBJECTIVE_ALL_ENUM = (
-     TASK_OBJECTIVE_MAX_ORIGINALXP,
+    TASK_OBJECTIVE_ALL_ENUM = (TASK_OBJECTIVE_MAX_ORIGINALXP,
      TASK_OBJECTIVE_MAX_XP,
      TASK_OBJECTIVE_MAX_DAMAGEDEALT,
      TASK_OBJECTIVE_MAX_DAMAGEASSISTED,
@@ -307,31 +299,20 @@ class EVENT_BOARDS(object):
      TASK_OBJECTIVE_SUM_DAMAGEDEALT,
      TASK_OBJECTIVE_SUM_DAMAGEASSISTED,
      TASK_OBJECTIVE_SUM_WINS)
-    TASK_SELECTION_ENUM = (
-     TASK_SELECTION_MAX,
+    TASK_SELECTION_ENUM = (TASK_SELECTION_MAX,
      TASK_SELECTION_SUMN,
      TASK_SELECTION_SUMALL,
      TASK_SELECTION_SUMSEQN,
      TASK_SELECTION_SUMMSEQN)
-    TASK_EVENTTYPE_ENUM = (
-     TASK_EVENTTYPE_VEHICLE,
+    TASK_EVENTTYPE_ENUM = (TASK_EVENTTYPE_VEHICLE,
      TASK_EVENTTYPE_LEVEL,
      TASK_EVENTTYPE_CLASS,
      TASK_EVENTTYPE_ALL,
      TASK_EVENTTYPE_NATION)
-    TIME_PERIOD_ENUM = (
-     TIME_PERIOD_DAY,
-     TIME_PERIOD_HOUR,
-     TIME_PERIOD_MINUTE)
-    TIME_DAY_ENUM = (
-     TIME_DAY_TODAY,
-     TIME_DAY_TOMORROW,
-     TIME_DAY_YESTERDAY)
-    TOOLTIP_TOP_AMOUNT_ENUM = (
-     TOOLTIP_TOP_AMOUNT_ORIGINALXP,
-     TOOLTIP_TOP_AMOUNT_XP)
-    TOOLTIP_TOP_DESCRIPTION_ALL_ENUM = (
-     TOOLTIP_TOP_DESCRIPTION_SUM_ORIGINALXP,
+    TIME_PERIOD_ENUM = (TIME_PERIOD_DAY, TIME_PERIOD_HOUR, TIME_PERIOD_MINUTE)
+    TIME_DAY_ENUM = (TIME_DAY_TODAY, TIME_DAY_TOMORROW, TIME_DAY_YESTERDAY)
+    TOOLTIP_TOP_AMOUNT_ENUM = (TOOLTIP_TOP_AMOUNT_ORIGINALXP, TOOLTIP_TOP_AMOUNT_XP)
+    TOOLTIP_TOP_DESCRIPTION_ALL_ENUM = (TOOLTIP_TOP_DESCRIPTION_SUM_ORIGINALXP,
      TOOLTIP_TOP_DESCRIPTION_SUM_XP,
      TOOLTIP_TOP_DESCRIPTION_SUM_DAMAGEDEALT,
      TOOLTIP_TOP_DESCRIPTION_SUM_DAMAGEASSISTED,
@@ -343,126 +324,126 @@ class EVENT_BOARDS(object):
 
     @classmethod
     def table_stripe_all_title(cls, key0):
-        outcome = ('#event_boards:table/stripe/{}/title').format(key0)
+        outcome = '#event_boards:table/stripe/{}/title'.format(key0)
         if outcome not in cls.TABLE_STRIPE_ALL_TITLE_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def summary_result(cls, key0):
-        outcome = ('#event_boards:summary/result/{}').format(key0)
+        outcome = '#event_boards:summary/result/{}'.format(key0)
         if outcome not in cls.SUMMARY_RESULT_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def summary_param_all(cls, key0, key1):
-        outcome = ('#event_boards:summary/param/{}/{}').format(key0, key1)
+        outcome = '#event_boards:summary/param/{}/{}'.format(key0, key1)
         if outcome not in cls.SUMMARY_PARAM_ALL_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def summary_description_sum(cls, key0):
-        outcome = ('#event_boards:summary/description/sum/{}').format(key0)
+        outcome = '#event_boards:summary/description/sum/{}'.format(key0)
         if outcome not in cls.SUMMARY_DESCRIPTION_SUM_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def summary_description_max(cls, key0):
-        outcome = ('#event_boards:summary/description/max/{}').format(key0)
+        outcome = '#event_boards:summary/description/max/{}'.format(key0)
         if outcome not in cls.SUMMARY_DESCRIPTION_MAX_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def summary_description_sumn(cls, key0):
-        outcome = ('#event_boards:summary/description/sumN/{}').format(key0)
+        outcome = '#event_boards:summary/description/sumN/{}'.format(key0)
         if outcome not in cls.SUMMARY_DESCRIPTION_SUMN_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def summary_description_sumseqn(cls, key0):
-        outcome = ('#event_boards:summary/description/sumSeqN/{}').format(key0)
+        outcome = '#event_boards:summary/description/sumSeqN/{}'.format(key0)
         if outcome not in cls.SUMMARY_DESCRIPTION_SUMSEQN_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def task_objective_all(cls, key0, key1):
-        outcome = ('#event_boards:task/objective/{}/{}').format(key0, key1)
+        outcome = '#event_boards:task/objective/{}/{}'.format(key0, key1)
         if outcome not in cls.TASK_OBJECTIVE_ALL_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def task_selection(cls, key0):
-        outcome = ('#event_boards:task/selection/{}').format(key0)
+        outcome = '#event_boards:task/selection/{}'.format(key0)
         if outcome not in cls.TASK_SELECTION_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def task_eventtype(cls, key0):
-        outcome = ('#event_boards:task/eventtype/{}').format(key0)
+        outcome = '#event_boards:task/eventtype/{}'.format(key0)
         if outcome not in cls.TASK_EVENTTYPE_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def time_period(cls, key0):
-        outcome = ('#event_boards:time/period/{}').format(key0)
+        outcome = '#event_boards:time/period/{}'.format(key0)
         if outcome not in cls.TIME_PERIOD_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def time_day(cls, key0):
-        outcome = ('#event_boards:time/day/{}').format(key0)
+        outcome = '#event_boards:time/day/{}'.format(key0)
         if outcome not in cls.TIME_DAY_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def tooltip_top_amount(cls, key0):
-        outcome = ('#event_boards:tooltip/top/amount/{}').format(key0)
+        outcome = '#event_boards:tooltip/top/amount/{}'.format(key0)
         if outcome not in cls.TOOLTIP_TOP_AMOUNT_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def tooltip_top_description_all(cls, key0, key1):
-        outcome = ('#event_boards:tooltip/top/description/{}/{}').format(key0, key1)
+        outcome = '#event_boards:tooltip/top/description/{}/{}'.format(key0, key1)
         if outcome not in cls.TOOLTIP_TOP_DESCRIPTION_ALL_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome

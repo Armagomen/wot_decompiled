@@ -1,4 +1,7 @@
-import logging, time
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/vehicle_preview_bottom_panel.py
+import logging
+import time
 from collections import namedtuple
 import BigWorld
 from CurrentVehicle import g_currentPreviewVehicle
@@ -50,10 +53,7 @@ from skeletons.gui.shared import IItemsCache
 from soft_exception import SoftException
 from uilogging.shop.loggers import ShopBundleVehiclePreviewMetricsLogger
 from web.web_client_api.common import ItemPackEntry, ItemPackTypeGroup
-_ButtonState = namedtuple('_ButtonState', ('enabled', 'itemPrice', 'label', 'icon',
-                                           'iconAlign', 'isAction', 'actionTooltip',
-                                           'tooltip', 'title', 'isMoneyEnough', 'isUnlock',
-                                           'isPrevItemsUnlock', 'customOffer', 'isShowSpecial'))
+_ButtonState = namedtuple('_ButtonState', ('enabled', 'itemPrice', 'label', 'icon', 'iconAlign', 'isAction', 'actionTooltip', 'tooltip', 'title', 'isMoneyEnough', 'isUnlock', 'isPrevItemsUnlock', 'customOffer', 'isShowSpecial'))
 _logger = logging.getLogger(__name__)
 
 def _buildBuyButtonTooltip(key):
@@ -266,11 +266,9 @@ class VehiclePreviewBottomPanel(VehiclePreviewBottomPanelMeta):
         if self.__currentOffer:
             vehicle = g_currentPreviewVehicle.item
             crew = self.__currentOffer.crew
-            g_eventBus.handleEvent(HasCtxEvent(ctx={'vehicleItems': [
-                              ItemPackEntry(id=vehicle.intCD, groupID=crew.groupID)], 
-               'crewItems': [
-                           crew], 
-               'offer': self.__currentOffer}, eventType=OFFER_CHANGED_EVENT))
+            g_eventBus.handleEvent(HasCtxEvent(ctx={'vehicleItems': [ItemPackEntry(id=vehicle.intCD, groupID=crew.groupID)],
+             'crewItems': [crew],
+             'offer': self.__currentOffer}, eventType=OFFER_CHANGED_EVENT))
             self.__buyParams = self.__currentOffer.buyParams
             self.__price = self.__currentOffer.buyPrice
             self.as_setBuyDataS(self.__previewDP.getOffersBuyingPanelData(self.__getBtnData()))
@@ -300,9 +298,9 @@ class VehiclePreviewBottomPanel(VehiclePreviewBottomPanelMeta):
     def _populate(self):
         super(VehiclePreviewBottomPanel, self)._populate()
         g_clientUpdateManager.addMoneyCallback(self.__updateBtnState)
-        g_clientUpdateManager.addCallbacks({'stats.freeXP': self.__updateBtnState, 
-           'inventory': self.__updateBtnState, 
-           'serverSettings.blueprints_config': self.__onBlueprintsModeChanged})
+        g_clientUpdateManager.addCallbacks({'stats.freeXP': self.__updateBtnState,
+         'inventory': self.__updateBtnState,
+         'serverSettings.blueprints_config': self.__onBlueprintsModeChanged})
         g_currentPreviewVehicle.onVehicleUnlocked += self.__updateBtnState
         g_currentPreviewVehicle.onChanged += self.__onVehicleChanged
         self._heroTanks.onUpdated += self.__updateBtnState
@@ -358,8 +356,8 @@ class VehiclePreviewBottomPanel(VehiclePreviewBottomPanelMeta):
 
     def __buyRequestConfirmation(self, key='buyConfirmation'):
         product = self.__title if self.__couponInfo is None else g_currentPreviewVehicle.item.shortUserName
-        return DialogsInterface.showDialog(meta=I18nConfirmDialogMeta(key=key, messageCtx={'product': product, 
-           'price': formatPrice(self.__getPackPrice(), reverse=True, useIcon=True)}, focusedID=DIALOG_BUTTON_ID.SUBMIT))
+        return DialogsInterface.showDialog(meta=I18nConfirmDialogMeta(key=key, messageCtx={'product': product,
+         'price': formatPrice(self.__getPackPrice(), reverse=True, useIcon=True)}, focusedID=DIALOG_BUTTON_ID.SUBMIT))
 
     def __onVehicleLoading(self, ctxEvent):
         vehicle = g_currentPreviewVehicle.item
@@ -392,13 +390,13 @@ class VehiclePreviewBottomPanel(VehiclePreviewBottomPanelMeta):
             hasExternalLink = yield self.__hasExternalLink()
             if hasExternalLink:
                 btnIcon = backport.image(R.images.gui.maps.icons.library.buyInWeb())
-                buyingPanelData.update({'buyButtonIcon': btnIcon, 
-                   'buyButtonIconAlign': 'right'})
+                buyingPanelData.update({'buyButtonIcon': btnIcon,
+                 'buyButtonIconAlign': 'right'})
             if self.__isHeroTank:
                 heroTankUrl = self._heroTanks.getCurrentShopUrl() or self._heroTanks.getCurrentRelatedURL()
                 if heroTankUrl or self._heroTanks.isAdventHero():
-                    buyingPanelData.update({'isBuyingAvailable': True, 
-                       'itemPrice': None})
+                    buyingPanelData.update({'isBuyingAvailable': True,
+                     'itemPrice': None})
             self.as_setBuyDataS(buyingPanelData)
             return
 
@@ -427,9 +425,7 @@ class VehiclePreviewBottomPanel(VehiclePreviewBottomPanelMeta):
             vehicle = g_currentPreviewVehicle.item
             if vehicle.isCollectible:
                 return self.__getBtnDataCollectibleVehicle(vehicle)
-            if vehicle.isUnlocked:
-                return self.__getBtnDataUnlockedVehicle(vehicle)
-            return self.__getBtnDataLockedVehicle(vehicle)
+            return self.__getBtnDataUnlockedVehicle(vehicle) if vehicle.isUnlocked else self.__getBtnDataLockedVehicle(vehicle)
 
     def __checkBtnEnableByPrice(self, price):
         currency = price.getCurrency()
@@ -568,7 +564,7 @@ class VehiclePreviewBottomPanel(VehiclePreviewBottomPanelMeta):
                 tooltip = _buildBuyButtonTooltip('notEnoughXp')
             elif not walletAvailable:
                 tooltip = _buildBuyButtonTooltip('walletUnavailable')
-            elif any(bool(cd in unlocks) for cd in g_techTreeDP.getTopLevel(nodeCD)):
+            elif any((bool(cd in unlocks) for cd in g_techTreeDP.getTopLevel(nodeCD))):
                 tooltip = _buildBuyButtonTooltip('parentModuleIsLocked')
             else:
                 tooltip = _buildBuyButtonTooltip('parentVehicleIsLocked')
@@ -581,10 +577,7 @@ class VehiclePreviewBottomPanel(VehiclePreviewBottomPanelMeta):
 
     @staticmethod
     def __getBestOfferTooltipData(eventType=None):
-        if eventType == 'frontline':
-            return VEHICLE_PREVIEW.BUYINGPANEL_OFFER_RENT_FRONTLINE_TOOLTIP_BEST_OFFER
-        else:
-            return
+        return VEHICLE_PREVIEW.BUYINGPANEL_OFFER_RENT_FRONTLINE_TOOLTIP_BEST_OFFER if eventType == 'frontline' else None
 
     def __getCurrentOfferTitle(self):
         if self.__offers and self.__currentOffer:
@@ -593,11 +586,8 @@ class VehiclePreviewBottomPanel(VehiclePreviewBottomPanelMeta):
         return self.__title
 
     def __getCurrentOfferDescription(self):
-        if self.__currentOffer and self.__currentOffer.eventType == 'frontline':
-            return {'header': backport.text(R.strings.vehicle_preview.buyingPanel.offer.rent.frontline.description.header()), 
-               'body': backport.text(R.strings.vehicle_preview.buyingPanel.offer.rent.frontline.description.body.credits())}
-        else:
-            return
+        return {'header': backport.text(R.strings.vehicle_preview.buyingPanel.offer.rent.frontline.description.header()),
+         'body': backport.text(R.strings.vehicle_preview.buyingPanel.offer.rent.frontline.description.body.credits())} if self.__currentOffer and self.__currentOffer.eventType == 'frontline' else None
 
     def __startTimer(self, interval):
         self.__stopTimer()
@@ -610,10 +600,10 @@ class VehiclePreviewBottomPanel(VehiclePreviewBottomPanelMeta):
         return
 
     def __setUsageLeftTime(self, leftTime):
-        self.as_updateLeftTimeS(formattedTime=('{} {}').format(self.__timeLeftIcon, text_styles.tutorial(time_utils.getTillTimeString(leftTime, MENU.VEHICLEPREVIEW_TIMELEFT))), hasHoursAndMinutes=True)
+        self.as_updateLeftTimeS(formattedTime='{} {}'.format(self.__timeLeftIcon, text_styles.tutorial(time_utils.getTillTimeString(leftTime, MENU.VEHICLEPREVIEW_TIMELEFT))), hasHoursAndMinutes=True)
 
     def __setShortLeftTime(self, leftTime):
-        self.as_updateLeftTimeS(formattedTime=('{} {}').format(self.__timeLeftIcon, text_styles.tutorial(time_utils.getTillTimeString(leftTime, MENU.VEHICLEPREVIEW_TIMELEFTSHORT))), hasHoursAndMinutes=True)
+        self.as_updateLeftTimeS(formattedTime='{} {}'.format(self.__timeLeftIcon, text_styles.tutorial(time_utils.getTillTimeString(leftTime, MENU.VEHICLEPREVIEW_TIMELEFTSHORT))), hasHoursAndMinutes=True)
 
     def __setDateLeftTime(self):
         tm = time_utils.getTimeStructInLocal(self.__endTime)
@@ -626,7 +616,7 @@ class VehiclePreviewBottomPanel(VehiclePreviewBottomPanelMeta):
     def __timeOver(self):
         self.__endTime = None
         self._disableBuyButton = True
-        formattedTime = ('{} {}').format(icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_ALERTICON2, vSpace=-2), text_styles.alert(MENU.VEHICLEPREVIEW_ENDTIME))
+        formattedTime = '{} {}'.format(icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_ALERTICON2, vSpace=-2), text_styles.alert(MENU.VEHICLEPREVIEW_ENDTIME))
         self.as_updateLeftTimeS(formattedTime=formattedTime)
         self.__updateBtnState()
         return

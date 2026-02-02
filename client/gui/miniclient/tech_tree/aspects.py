@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/miniclient/tech_tree/aspects.py
 import BigWorld
 from gui.DialogsInterface import showDialog
 from gui.Scaleform.daapi.view.dialogs import SimpleDialogMeta
@@ -26,7 +28,7 @@ class OnBuyVehicle(aop.Aspect):
     def atCall(self, cd):
         vehicleItem = self.itemsCache.items.getItem(GUI_ITEM_TYPE.VEHICLE, cd.self.nationID, cd.self.inNationID)
         if self.__vehicle_is_available(vehicleItem):
-            return
+            return None
         else:
             cd.avoid()
 
@@ -37,7 +39,7 @@ class OnBuyVehicle(aop.Aspect):
                     cd.self.as_setEnabledSubmitBtnS(True)
 
             showDialog(SimpleDialogMeta(title=_ms(self._localKey % 'title'), message=icons.alert() + _ms(self._localKey % 'message'), buttons=I18nConfirmDialogButtons(i18nKey='questsConfirmDialog', focusedIndex=DIALOG_BUTTON_ID.SUBMIT)), dialogButtonClickHandler)
-            return
+            return None
 
 
 class OnRestoreVehicle(OnBuyVehicle):

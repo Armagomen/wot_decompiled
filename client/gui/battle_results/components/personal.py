@@ -1,4 +1,7 @@
-import logging, random
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_results/components/personal.py
+import logging
+import random
 from math import ceil
 import BigWorld
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
@@ -27,8 +30,7 @@ from skeletons.gui.shared import IItemsCache
 _UNDEFINED_EFFICIENCY_VALUE = '-'
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
-NO_OWNER_DEATH_REASON_IDS = (
- ATTACK_REASON_INDICES[ATTACK_REASON.FORT_ARTILLERY_EQ],)
+NO_OWNER_DEATH_REASON_IDS = (ATTACK_REASON_INDICES[ATTACK_REASON.FORT_ARTILLERY_EQ],)
 
 class PremiumAccountFlag(base.StatsItem):
     __slots__ = ()
@@ -45,8 +47,7 @@ class PremiumPlusFlag(base.StatsItem):
 
 
 class DynamicPremiumState(base.StatsItem):
-    __slots__ = ('__arenaUniqueID', '__postBattlePremiumPlus', '__xpDiff', '__creditsDiff',
-                 '__hasXpBonusInBonusCaps', '__hasXpInBonusCaps')
+    __slots__ = ('__arenaUniqueID', '__postBattlePremiumPlus', '__xpDiff', '__creditsDiff', '__hasXpBonusInBonusCaps', '__hasXpInBonusCaps')
     __battleResults = dependency.descriptor(IBattleResultsService)
 
     def __init__(self, field, *path):
@@ -75,10 +76,7 @@ class DynamicPremiumState(base.StatsItem):
 
 
 class PremiumInfoBlock(base.StatsBlock):
-    __slots__ = ('creditsPremiumBonusStr', 'xpPremiumBonusStr', 'premiumBonusStr',
-                 'isGetPremium', 'isUpgradeToPremiumPlus', 'backgroundIcon', 'inBattleQueue',
-                 '__xpDiff', '__creditsDiff', '__canUpgradeToBasic', '__canUpgradeToPlus',
-                 'visibleDetailsBtn', '__adsCase')
+    __slots__ = ('creditsPremiumBonusStr', 'xpPremiumBonusStr', 'premiumBonusStr', 'isGetPremium', 'isUpgradeToPremiumPlus', 'backgroundIcon', 'inBattleQueue', '__xpDiff', '__creditsDiff', '__canUpgradeToBasic', '__canUpgradeToPlus', 'visibleDetailsBtn', '__adsCase')
     __lobbyContext = dependency.descriptor(ILobbyContext)
     __itemsCache = dependency.descriptor(IItemsCache)
     __allPremiumPlusCases = ('credits', 'premium', 'squad', 'bonus', 'quests')
@@ -146,9 +144,9 @@ class PremiumInfoBlock(base.StatsBlock):
         if not self.__itemsCache.items.stats.isActivePremium(PREMIUM_TYPE.PLUS):
             if self.__itemsCache.items.stats.isActivePremium(PREMIUM_TYPE.BASIC):
                 value = backport.text(R.strings.battle_results.common.details.premiumPlus.dyn(self.__adsCase)(), bonusCredits=text_styles.concatStylesToSingleLine(text_styles.credits(backport.getGoldFormat(piggyBankMaxAmount)), icons.makeImageTag(backport.image(R.images.gui.maps.icons.library.CreditsIcon_2()), vSpace=-5)), durationInDays=periodInDays, multiplier=multiplier)
-                iconName = ('bonus_x{}').format(multiplier) if self.__adsCase == 'bonus' else self.__adsCase
+                iconName = 'bonus_x{}'.format(multiplier) if self.__adsCase == 'bonus' else self.__adsCase
                 if isWotPlusBonusEnabledInConfig():
-                    iconName = ('plus_bonus_x{}').format(multiplier) if self.__adsCase == 'bonus' else self.__adsCase
+                    iconName = 'plus_bonus_x{}'.format(multiplier) if self.__adsCase == 'bonus' else self.__adsCase
                 icon = backport.image(R.images.gui.maps.icons.premacc.battleResult.dyn(iconName)())
             elif self.__creditsDiff < 0 or self.__xpDiff < 0:
                 value = backport.text(R.strings.battle_results.common.details.premiumPlus.premium())
@@ -184,9 +182,7 @@ class PlayerRank(base.StatsItem):
 
     def _convert(self, value, reusable):
         avatarInfo = reusable.getAvatarInfo()
-        if 'playerRank' in avatarInfo.extensionInfo:
-            return avatarInfo.extensionInfo['playerRank']
-        return 0
+        return avatarInfo.extensionInfo['playerRank'] if 'playerRank' in avatarInfo.extensionInfo else 0
 
 
 class PersonalPlayerNameBlock(shared.PlayerNameBlock):
@@ -197,7 +193,7 @@ class PersonalPlayerNameBlock(shared.PlayerNameBlock):
 
 
 class KillerPlayerNameBlock(shared.PlayerNameBlock):
-    __slots__ = ('killerID', )
+    __slots__ = ('killerID',)
 
     def __init__(self, killerID, meta=None, field='', *path):
         super(KillerPlayerNameBlock, self).__init__(meta, field, *path)
@@ -221,9 +217,7 @@ class KillerPlayerNameBlock(shared.PlayerNameBlock):
     def __getFakeNameLabel(self, killerInfo, reusable):
         killerAccountID = killerInfo.dbID
         ownAccountID = reusable.personal.avatar.accountDBID
-        if killerAccountID == ownAccountID:
-            return killerInfo.realName
-        return killerInfo.fakeName
+        return killerInfo.realName if killerAccountID == ownAccountID else killerInfo.fakeName
 
 
 class DetailsPlayerNameBlock(shared.PlayerNameBlock):
@@ -255,9 +249,7 @@ class EpicVehicleNamesBlock(PersonalVehicleNamesBlock):
 
 
 class PersonalVehicleBlock(base.StatsBlock):
-    __slots__ = ('isVehicleStatusDefined', 'vehicleIcon', 'vehicleLevel', 'nationName',
-                 'killerID', 'vehicleState', 'vehicleStatePrefix', 'vehicleStateSuffix',
-                 'isPrematureLeave', 'isKilledByTeamKiller', 'deathReason')
+    __slots__ = ('isVehicleStatusDefined', 'vehicleIcon', 'vehicleLevel', 'nationName', 'killerID', 'vehicleState', 'vehicleStatePrefix', 'vehicleStateSuffix', 'isPrematureLeave', 'isKilledByTeamKiller', 'deathReason')
 
     def setVehicle(self, item):
         if item is not None:
@@ -281,7 +273,7 @@ class PersonalVehicleBlock(base.StatsBlock):
             if self.isVehicleStatusDefined and killerID:
                 fillKillerInfoBlock(self, deathReason, killerID, reusable, result)
             elif self.isVehicleStatusDefined and deathReason in NO_OWNER_DEATH_REASON_IDS:
-                state = backport.text(R.strings.battle_results.common.vehicleState.dyn(('dead{}').format(deathReason), R.invalid)())
+                state = backport.text(R.strings.battle_results.common.vehicleState.dyn('dead{}'.format(deathReason), R.invalid)())
                 self.vehicleState = state
         else:
             self.vehicleState = backport.text(R.strings.battle_results.common.vehicleState.alive())
@@ -325,7 +317,7 @@ class EpicVehiclesBlock(PersonalVehiclesBlock):
 
 
 class _DetailsBlock(base.StatsBlock):
-    __slots__ = ('_isEmpty', )
+    __slots__ = ('_isEmpty',)
 
     def __init__(self, meta=None, field='', *path):
         super(_DetailsBlock, self).__init__(meta, field, *path)
@@ -352,12 +344,8 @@ class DamageDetailsBlock(_DetailsBlock):
         self._isEmpty = piercings <= 0
         if damageDealt > 0:
             self._isEmpty = False
-            self.damageDealtValues = [
-             backport.getIntegralFormat(damageDealt),
-             backport.getIntegralFormat(piercings)]
-            self.damageDealtNames = [
-             i18n.makeString(BATTLE_RESULTS.COMMON_TOOLTIP_DAMAGE_PART1, vals=style.getTooltipParamsStyle()),
-             i18n.makeString(BATTLE_RESULTS.COMMON_TOOLTIP_DAMAGE_PART2)]
+            self.damageDealtValues = [backport.getIntegralFormat(damageDealt), backport.getIntegralFormat(piercings)]
+            self.damageDealtNames = [i18n.makeString(BATTLE_RESULTS.COMMON_TOOLTIP_DAMAGE_PART1, vals=style.getTooltipParamsStyle()), i18n.makeString(BATTLE_RESULTS.COMMON_TOOLTIP_DAMAGE_PART2)]
 
 
 class ArmorUsingDetailsBlock(_DetailsBlock):
@@ -377,14 +365,8 @@ class ArmorUsingDetailsBlock(_DetailsBlock):
         if noDamage > 0 or damageBlocked > 0:
             self._isEmpty = False
             rickochets = result.rickochetsReceived
-            self.armorValues = [
-             backport.getIntegralFormat(rickochets),
-             backport.getIntegralFormat(noDamage),
-             backport.getIntegralFormat(damageBlocked)]
-            self.armorNames = [
-             i18n.makeString(BATTLE_RESULTS.COMMON_TOOLTIP_ARMOR_PART1),
-             i18n.makeString(BATTLE_RESULTS.COMMON_TOOLTIP_ARMOR_PART2),
-             i18n.makeString(BATTLE_RESULTS.COMMON_TOOLTIP_ARMOR_PART3, vals=style.getTooltipParamsStyle())]
+            self.armorValues = [backport.getIntegralFormat(rickochets), backport.getIntegralFormat(noDamage), backport.getIntegralFormat(damageBlocked)]
+            self.armorNames = [i18n.makeString(BATTLE_RESULTS.COMMON_TOOLTIP_ARMOR_PART1), i18n.makeString(BATTLE_RESULTS.COMMON_TOOLTIP_ARMOR_PART2), i18n.makeString(BATTLE_RESULTS.COMMON_TOOLTIP_ARMOR_PART3, vals=style.getTooltipParamsStyle())]
 
 
 class AssistDetailsBlock(_DetailsBlock):
@@ -404,15 +386,9 @@ class AssistDetailsBlock(_DetailsBlock):
         self.damageAssisted = damageAssisted
         if damageAssisted > 0:
             self._isEmpty = False
-            self.damageAssistedValues = [
-             backport.getIntegralFormat(damageAssistedRadio),
-             backport.getIntegralFormat(damageAssistedTrack),
-             backport.getIntegralFormat(damageAssisted)]
+            self.damageAssistedValues = [backport.getIntegralFormat(damageAssistedRadio), backport.getIntegralFormat(damageAssistedTrack), backport.getIntegralFormat(damageAssisted)]
             tooltipStyle = style.getTooltipParamsStyle()
-            self.damageAssistedNames = [
-             i18n.makeString(BATTLE_RESULTS.COMMON_TOOLTIP_ASSIST_PART1, vals=tooltipStyle),
-             i18n.makeString(BATTLE_RESULTS.COMMON_TOOLTIP_ASSIST_PART2, vals=tooltipStyle),
-             i18n.makeString(BATTLE_RESULTS.COMMON_TOOLTIP_ASSIST_TOTAL, vals=tooltipStyle)]
+            self.damageAssistedNames = [i18n.makeString(BATTLE_RESULTS.COMMON_TOOLTIP_ASSIST_PART1, vals=tooltipStyle), i18n.makeString(BATTLE_RESULTS.COMMON_TOOLTIP_ASSIST_PART2, vals=tooltipStyle), i18n.makeString(BATTLE_RESULTS.COMMON_TOOLTIP_ASSIST_TOTAL, vals=tooltipStyle)]
 
 
 class StunDetailsBlock(_DetailsBlock):
@@ -434,14 +410,8 @@ class StunDetailsBlock(_DetailsBlock):
         self.stunDuration = duration
         if count > 0 or assisted > 0 or duration > 0:
             self._isEmpty = False
-            self.stunValues = [
-             backport.getIntegralFormat(assisted),
-             backport.getIntegralFormat(count),
-             backport.getFractionalFormat(duration)]
-            self.stunNames = [
-             i18n.makeString(BATTLE_RESULTS.COMMON_TOOLTIP_STUN_PART1, vals=style.getTooltipParamsStyle()),
-             i18n.makeString(BATTLE_RESULTS.COMMON_TOOLTIP_STUN_PART2),
-             i18n.makeString(BATTLE_RESULTS.COMMON_TOOLTIP_STUN_PART3, vals=style.getTooltipParamsStyle(BATTLE_RESULTS.COMMON_TOOLTIP_PARAMS_VAL_SECONDS))]
+            self.stunValues = [backport.getIntegralFormat(assisted), backport.getIntegralFormat(count), backport.getFractionalFormat(duration)]
+            self.stunNames = [i18n.makeString(BATTLE_RESULTS.COMMON_TOOLTIP_STUN_PART1, vals=style.getTooltipParamsStyle()), i18n.makeString(BATTLE_RESULTS.COMMON_TOOLTIP_STUN_PART2), i18n.makeString(BATTLE_RESULTS.COMMON_TOOLTIP_STUN_PART3, vals=style.getTooltipParamsStyle(BATTLE_RESULTS.COMMON_TOOLTIP_PARAMS_VAL_SECONDS))]
 
 
 class CritsDetailsBlock(_DetailsBlock):
@@ -479,9 +449,7 @@ class CritsDetailsBlock(_DetailsBlock):
 
 
 class TeamBaseDetailsBlock(base.StatsBlock):
-    __slots__ = ('_showCapturePoints', '_showDefencePoints', 'captureTotalItems', 'defenceTotalItems',
-                 'captureValues', 'captureNames', 'defenceValues', 'defenceNames',
-                 'label', 'isEnemyBase')
+    __slots__ = ('_showCapturePoints', '_showDefencePoints', 'captureTotalItems', 'defenceTotalItems', 'captureValues', 'captureNames', 'defenceValues', 'defenceNames', 'label', 'isEnemyBase')
 
     def __init__(self, meta=None, field='', *path):
         super(TeamBaseDetailsBlock, self).__init__(meta, field, *path)
@@ -503,15 +471,11 @@ class TeamBaseDetailsBlock(base.StatsBlock):
         self.captureTotalItems = capturePoints
         self.defenceTotalItems = defencePoints
         if self._showCapturePoints and capturePoints > 0:
-            self.captureValues = (
-             backport.getIntegralFormat(capturePoints),)
-            self.captureNames = (
-             i18n.makeString(BATTLE_RESULTS.COMMON_TOOLTIP_CAPTURE_TOTALPOINTS),)
+            self.captureValues = (backport.getIntegralFormat(capturePoints),)
+            self.captureNames = (i18n.makeString(BATTLE_RESULTS.COMMON_TOOLTIP_CAPTURE_TOTALPOINTS),)
         if self._showDefencePoints and defencePoints > 0:
-            self.defenceValues = (
-             backport.getIntegralFormat(defencePoints),)
-            self.defenceNames = (
-             i18n.makeString(BATTLE_RESULTS.COMMON_TOOLTIP_DEFENCE_TOTALPOINTS),)
+            self.defenceValues = (backport.getIntegralFormat(defencePoints),)
+            self.defenceNames = (i18n.makeString(BATTLE_RESULTS.COMMON_TOOLTIP_DEFENCE_TOTALPOINTS),)
 
 
 class EnemyTeamBaseDetailBlock(TeamBaseDetailsBlock):
@@ -535,8 +499,7 @@ class AllyTeamBaseDetailBlock(TeamBaseDetailsBlock):
 
 
 class EnemyDetailsBlock(_DetailsBlock):
-    __slots__ = ('vehicleIcon', 'vehicleName', 'vehicleIntCD', 'vehicleID', 'deathReason',
-                 'spotted', 'piercings', 'damageDealt', 'killCount')
+    __slots__ = ('vehicleIcon', 'vehicleName', 'vehicleIntCD', 'vehicleID', 'deathReason', 'spotted', 'piercings', 'damageDealt', 'killCount')
 
     def setRecord(self, result, reusable):
         if result.vehicle is not None:
@@ -548,9 +511,10 @@ class EnemyDetailsBlock(_DetailsBlock):
         self.piercings = result.piercings
         self.damageDealt = result.damageDealt
         self.killCount = result.targetKills
-        blocks = (
-         DamageDetailsBlock(), ArmorUsingDetailsBlock(),
-         AssistDetailsBlock(), CritsDetailsBlock(),
+        blocks = (DamageDetailsBlock(),
+         ArmorUsingDetailsBlock(),
+         AssistDetailsBlock(),
+         CritsDetailsBlock(),
          StunDetailsBlock())
         self._isEmpty = self.spotted <= 0
         for block in blocks:
@@ -575,11 +539,7 @@ class EnemyDetailsBlock(_DetailsBlock):
 
 
 class TotalEfficiencyDetailsHeader(base.StatsBlock):
-    __slots__ = ('kills', 'damageDealt', 'criticalDamages', 'damageBlockedByArmor',
-                 'damageAssisted', 'damageAssistedStun', 'spotted', 'killsTooltip',
-                 'damageDealtTooltip', 'criticalDamagesTooltip', 'damageBlockedTooltip',
-                 'damageAssistedTooltip', 'spottedTooltip', 'damageAssistedStunTooltip',
-                 'hasEfficencyStats')
+    __slots__ = ('kills', 'damageDealt', 'criticalDamages', 'damageBlockedByArmor', 'damageAssisted', 'damageAssistedStun', 'spotted', 'killsTooltip', 'damageDealtTooltip', 'criticalDamagesTooltip', 'damageBlockedTooltip', 'damageAssistedTooltip', 'spottedTooltip', 'damageAssistedStunTooltip', 'hasEfficencyStats')
 
     def __init__(self, meta=None, field='', *path):
         super(TotalEfficiencyDetailsHeader, self).__init__(meta, field, *path)
@@ -637,11 +597,11 @@ class TotalEfficiencyDetailsHeader(base.StatsBlock):
             body = cls.__formatter(value)
             return makeTooltip(header, body)
         else:
-            return
+            return None
 
     @classmethod
     def __formatter(cls, value):
-        return ('{:,}').format(value).replace(',', ' ')
+        return '{:,}'.format(value).replace(',', ' ')
 
 
 class TotalEfficiencyDetailsBlock(base.StatsBlock):

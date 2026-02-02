@@ -1,11 +1,12 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/configurations/shell.py
 from gui.impl.common.tabs_controller import tabUpdateFunc
 from gui.impl.lobby.tank_setup.array_providers.shell import ShellProvider
 from gui.impl.lobby.tank_setup.configurations.base import BaseTankSetupTabsController, BaseDealPanel
 
 class ShellTabs(object):
     SHELLS = 'shells'
-    ALL = (
-     SHELLS,)
+    ALL = (SHELLS,)
 
 
 class ShellTabsController(BaseTankSetupTabsController):

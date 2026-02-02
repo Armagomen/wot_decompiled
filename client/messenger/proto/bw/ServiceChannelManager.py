@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/bw/ServiceChannelManager.py
 from collections import deque
 import BigWorld
 from chat_shared import CHAT_ACTIONS
@@ -48,7 +50,10 @@ class ServiceChannelManager(ChatActionsListener):
         self.__addServerMessage(message)
 
     def pushClientSysMessage(self, message, msgType, isAlert=False, priority=None, messageData=None, savedData=None):
-        return self.__addClientMessage(message, SCH_CLIENT_MSG_TYPE.SYS_MSG_TYPE, isAlert=isAlert, auxData=[msgType.name(), priority, messageData, savedData])
+        return self.__addClientMessage(message, SCH_CLIENT_MSG_TYPE.SYS_MSG_TYPE, isAlert=isAlert, auxData=[msgType.name(),
+         priority,
+         messageData,
+         savedData])
 
     def pushClientMessage(self, message, msgType, isAlert=False, auxData=None):
         return self.__addClientMessage(message, msgType, isAlert=isAlert, auxData=auxData)
@@ -59,8 +64,7 @@ class ServiceChannelManager(ChatActionsListener):
         else:
             messages = self.__messages
         for clientID, message in messages:
-            yield (
-             clientID, message)
+            yield (clientID, message)
 
     def getMessage(self, clientID):
         mapping = dict(self.__messages)
@@ -116,7 +120,7 @@ class ServiceChannelManager(ChatActionsListener):
                     customEvent = settings.getCustomEvent()
                     if customEvent is not None:
                         serviceChannel.onCustomMessageDataReceived(clientID, customEvent)
-                elif not formatter.canBeEmpty() and IS_DEVELOPMENT:
+                if not formatter.canBeEmpty() and IS_DEVELOPMENT:
                     LOG_WARNING('Not enough data to format. Action data : ', message)
 
         elif IS_DEVELOPMENT:
@@ -144,7 +148,7 @@ class ServiceChannelManager(ChatActionsListener):
                     self.__messages.append((clientID, (False, formatted, settings)))
                     self.__unreadMessagesCount += 1
                     g_messengerEvents.serviceChannel.onClientMessageReceived(clientID, formatted, settings)
-                elif IS_DEVELOPMENT:
+                if IS_DEVELOPMENT:
                     LOG_WARNING('Not enough data to format. Action data : ', message)
 
         elif IS_DEVELOPMENT:

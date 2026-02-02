@@ -1,4 +1,12 @@
-import types, os, enum, BigWorld, ResMgr, i18n, constants
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/helpers/__init__.py
+import types
+import os
+import enum
+import BigWorld
+import ResMgr
+import i18n
+import constants
 from aih_constants import CTRL_MODE_NAME, CTRL_MODES
 from debug_utils import LOG_CURRENT_EXCEPTION
 from soft_exception import SoftException
@@ -20,10 +28,7 @@ def isPlayerAvatar():
 
 
 def getLanguageCode():
-    if i18n.doesTextExist('#settings:LANGUAGE_CODE'):
-        return i18n.makeString('#settings:LANGUAGE_CODE')
-    else:
-        return
+    return i18n.makeString('#settings:LANGUAGE_CODE') if i18n.doesTextExist('#settings:LANGUAGE_CODE') else None
 
 
 def getClientLanguage():
@@ -42,9 +47,7 @@ def getClientOverride():
     if constants.IS_CHINA:
         return 'CN'
     else:
-        if getClientLanguage() == 'ko':
-            return 'KR'
-        return
+        return 'KR' if getClientLanguage() == 'ko' else None
 
 
 def getLocalizedData(dataDict, key, defVal=''):
@@ -63,9 +66,19 @@ def getLocalizedData(dataDict, key, defVal=''):
 
 
 def int2roman(number):
-    numerals = {1: 'I', 4: 'IV', 5: 'V', 9: 'IX', 10: 'X', 40: 'XL', 50: 'L', 
-       90: 'XC', 100: 'C', 400: 'CD', 500: 'D', 900: 'CM', 
-       1000: 'M'}
+    numerals = {1: 'I',
+     4: 'IV',
+     5: 'V',
+     9: 'IX',
+     10: 'X',
+     40: 'XL',
+     50: 'L',
+     90: 'XC',
+     100: 'C',
+     400: 'CD',
+     500: 'D',
+     900: 'CM',
+     1000: 'M'}
     result = ''
     for value, numeral in sorted(numerals.items(), reverse=True):
         while number >= value:
@@ -88,10 +101,7 @@ def getClientVersion(force=True):
 
 def getShortClientVersion():
     sec = ResMgr.openSection(VERSION_FILE_PATH)
-    if sec is None:
-        return ''
-    else:
-        return sec.readString('version').split('#')[0]
+    return '' if sec is None else sec.readString('version').split('#')[0]
 
 
 def getFullClientVersion():
@@ -107,16 +117,16 @@ def newFakeModel():
     return BigWorld.Model('')
 
 
-_g_alphabetOrderExcept = {1105: 1077.5, 
-   1025: 1045.5, 
-   197: 196, 
-   196: 197, 
-   229: 228, 
-   228: 229, 
-   1030: 1048, 
-   1110: 1080, 
-   1028: 1045.5, 
-   1108: 1077.5}
+_g_alphabetOrderExcept = {1105: 1077.5,
+ 1025: 1045.5,
+ 197: 196,
+ 196: 197,
+ 229: 228,
+ 228: 229,
+ 1030: 1048,
+ 1110: 1080,
+ 1028: 1045.5,
+ 1108: 1077.5}
 
 def _getSymOrderIdx(symbol):
     if not isinstance(symbol, types.UnicodeType):
@@ -154,43 +164,10 @@ def getHelperServicesConfig(manager):
     manager.addInstance(IPublishPlatform, platform, finalizer='fini')
 
 
-def isShowingKillCam--- This code section failed: ---
-
- L. 239         0  LOAD_CONST               -1
-                3  LOAD_CONST               ('DeathCamEvent',)
-                6  IMPORT_NAME           0  'gui.shared.events'
-                9  IMPORT_FROM           1  'DeathCamEvent'
-               12  STORE_FAST            0  'DeathCamEvent'
-               15  POP_TOP          
-
- L. 240        16  LOAD_GLOBAL           2  'BigWorld'
-               19  LOAD_ATTR             3  'player'
-               22  CALL_FUNCTION_0       0  None
-               25  LOAD_ATTR             4  'inputHandler'
-               28  STORE_FAST            1  'inputHandler'
-
- L. 243        31  LOAD_FAST             1  'inputHandler'
-               34  POP_JUMP_IF_FALSE    74  'to 74'
-               37  LOAD_FAST             1  'inputHandler'
-               40  LOAD_ATTR             5  'ctrlModeName'
-               43  LOAD_GLOBAL           6  'CTRL_MODE_NAME'
-               46  LOAD_ATTR             7  'KILL_CAM'
-               49  COMPARE_OP            2  ==
-               52  JUMP_IF_FALSE_OR_POP    77  'to 77'
-               55  LOAD_FAST             1  'inputHandler'
-               58  LOAD_ATTR             8  'ctrl'
-               61  LOAD_ATTR             9  'killCamState'
-               64  LOAD_FAST             0  'DeathCamEvent'
-               67  LOAD_ATTR            10  'SIMULATION_INCL_FADES'
-               70  COMPARE_OP            6  in
-               73  RETURN_END_IF    
-             74_0  COME_FROM            52  '52'
-             74_1  COME_FROM            34  '34'
-               74  LOAD_GLOBAL          11  'False'
-               77  RETURN_VALUE     
-               -1  RETURN_LAST      
-
-Parse error at or near `RETURN_END_IF' instruction at offset 73
+def isShowingKillCam():
+    from gui.shared.events import DeathCamEvent
+    inputHandler = BigWorld.player().inputHandler
+    return inputHandler.ctrlModeName == CTRL_MODE_NAME.KILL_CAM and inputHandler.ctrl.killCamState in DeathCamEvent.SIMULATION_INCL_FADES if inputHandler else False
 
 
 def getVisibilityControllerMask(controlModes):
@@ -253,4 +230,4 @@ def getPreferencesDirPath():
 
 class ExitCode(enum.IntEnum):
     SUCCESS = 0
-    FAILED = 1# Decompile failed :(
+    FAILED = 1

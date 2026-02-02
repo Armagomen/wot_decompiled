@@ -1,13 +1,12 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/gift_system/wrappers.py
 from collections import namedtuple
 from functools import wraps
 OpenedGiftData = namedtuple('OpenedGiftData', 'senderID, metaInfo')
 GiftsHistoryData = namedtuple('GiftsHistoryData', ('aggregated', 'detailed'))
-GiftsWebState = namedtuple('GiftsWebState', ('sendLimit', 'expireTime', 'expireDelta',
-                                             'executionTime', 'state'))
-IncomeSysMessage = namedtuple('IncomeSysMessage', ('eventID', 'senderID', 'giftItemID',
-                                                   'meta', 'executionTime'))
-SendGiftResponse = namedtuple('SendGiftResponse', ('state', 'receiverID', 'outCount',
-                                                   'entitlementCode', 'meta', 'executionTime'))
+GiftsWebState = namedtuple('GiftsWebState', ('sendLimit', 'expireTime', 'expireDelta', 'executionTime', 'state'))
+IncomeSysMessage = namedtuple('IncomeSysMessage', ('eventID', 'senderID', 'giftItemID', 'meta', 'executionTime'))
+SendGiftResponse = namedtuple('SendGiftResponse', ('state', 'receiverID', 'outCount', 'entitlementCode', 'meta', 'executionTime'))
 
 def ifMessagesEnabled(method):
 

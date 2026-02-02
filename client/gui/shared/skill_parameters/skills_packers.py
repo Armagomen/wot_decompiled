@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/skill_parameters/skills_packers.py
 from typing import TYPE_CHECKING
 from gui.impl.gen.view_models.views.lobby.crew.crew_constants import Color
 from gui.impl.gen.view_models.views.lobby.crew.tooltips.crew_perks_tooltip_booster_model import PerkImpactType
@@ -22,16 +24,14 @@ def packBase(descrArgs, skillLevel, *args, **kwargs):
         else:
             paramValue = paramDescArgs.value * skillLevel
             paraMaxValue = paramDescArgs.value * MAX_SKILL_LEVEL
-        color = Color.RED.value if lowEfficiency and isTmanTrainedVeh and isSkillAlreadyEarned and not hasBooster else Color.YELLOW.value if paramDescArgs.situational else Color.GREENBRIGHT.value
-        keyArgs[paramName] = {'value': formatters.getDescriptionValue(paramDescArgs, paramValue), 
-           'color': color}
+        color = Color.RED.value if lowEfficiency and isTmanTrainedVeh and isSkillAlreadyEarned and not hasBooster else (Color.YELLOW.value if paramDescArgs.situational else Color.GREENBRIGHT.value)
+        keyArgs[paramName] = {'value': formatters.getDescriptionValue(paramDescArgs, paramValue),
+         'color': color}
         if paramDescArgs.isKpiVisible:
-            kpiArgs.append((
-             formatters.getKpiValue(paramDescArgs, paraMaxValue),
-             formatters.getKpiDescription(paramDescArgs),
-             PerkImpactType.NEUTRAL.value if paramDescArgs.situational else PerkImpactType.POSITIVE.value))
+            kpiArgs.append((formatters.getKpiValue(paramDescArgs, paraMaxValue), formatters.getKpiDescription(paramDescArgs), PerkImpactType.NEUTRAL.value if paramDescArgs.situational else PerkImpactType.POSITIVE.value))
 
-    return {'keyArgs': keyArgs, 'kpiArgs': kpiArgs}
+    return {'keyArgs': keyArgs,
+     'kpiArgs': kpiArgs}
 
 
 def _packGunnerRancorous(descrArgs, skillLevel, *args, **kwargs):
@@ -94,7 +94,7 @@ def _packBadRoadsKing(descrArgs, skillLevel, *args, **kwargs):
     return packBase(descrArgs, skillLevel, *args, **kwargs)
 
 
-g_skillPackers = {SKILLS.GUNNER_RANCOROUS: _packGunnerRancorous, 
-   SKILLS.COMMANDER_ENEMY_SHOT_PREDICTOR: _packEnemyShotPredictor, 
-   SKILLS.COMMANDER_SIXTH_SENSE: _parkSixthSense, 
-   SKILLS.DRIVER_BAD_ROADS_KING: _packBadRoadsKing}
+g_skillPackers = {SKILLS.GUNNER_RANCOROUS: _packGunnerRancorous,
+ SKILLS.COMMANDER_ENEMY_SHOT_PREDICTOR: _packEnemyShotPredictor,
+ SKILLS.COMMANDER_SIXTH_SENSE: _parkSixthSense,
+ SKILLS.DRIVER_BAD_ROADS_KING: _packBadRoadsKing}

@@ -1,13 +1,12 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/items/type_traits.py
 import Math
 from typing import *
 
 def allowEqualNone(eq):
 
     def wrap(lhs, rhs, *args):
-        if lhs is None or rhs is None:
-            return lhs == rhs
-        else:
-            return eq(lhs, rhs, *args)
+        return lhs == rhs if lhs is None or rhs is None else eq(lhs, rhs, *args)
 
     return wrap
 
@@ -74,19 +73,19 @@ def equalSeq(lhs, rhs, eq=equal):
     return True
 
 
-EQUAL_COMPARATORS = {'Float': equalFloat, 
-   'String': equalString, 
-   'Vector2': equalVector2, 
-   'Vector3': equalVector3, 
-   'Vector4': equalVector4, 
-   'Matrix': equalMatrix, 
-   'Strings': lambda lhs, rhs: equalSeq(lhs, rhs), 
-   'WideStrings': lambda lhs, rhs: equalSeq(lhs, rhs), 
-   'Floats': lambda lhs, rhs: equalSeq(lhs, rhs, equalFloat), 
-   'Ints': lambda lhs, rhs: equalSeq(lhs, rhs), 
-   'Vector2s': lambda lhs, rhs: equalSeq(lhs, rhs, equalVector2), 
-   'Vector3s': lambda lhs, rhs: equalSeq(lhs, rhs, equalVector3), 
-   'Vector4s': lambda lhs, rhs: equalSeq(lhs, rhs, equalVector4)}
+EQUAL_COMPARATORS = {'Float': equalFloat,
+ 'String': equalString,
+ 'Vector2': equalVector2,
+ 'Vector3': equalVector3,
+ 'Vector4': equalVector4,
+ 'Matrix': equalMatrix,
+ 'Strings': lambda lhs, rhs: equalSeq(lhs, rhs),
+ 'WideStrings': lambda lhs, rhs: equalSeq(lhs, rhs),
+ 'Floats': lambda lhs, rhs: equalSeq(lhs, rhs, equalFloat),
+ 'Ints': lambda lhs, rhs: equalSeq(lhs, rhs),
+ 'Vector2s': lambda lhs, rhs: equalSeq(lhs, rhs, equalVector2),
+ 'Vector3s': lambda lhs, rhs: equalSeq(lhs, rhs, equalVector3),
+ 'Vector4s': lambda lhs, rhs: equalSeq(lhs, rhs, equalVector4)}
 
 def equalComparator(tp):
     try:
@@ -95,23 +94,23 @@ def equalComparator(tp):
         return equal
 
 
-DEFAULT_GETTERS = {'String': lambda : str(), 
-   'WideString': lambda : unicode(), 
-   'Float': lambda : 0.0, 
-   'Int': lambda : 0, 
-   'Int64': lambda : 0, 
-   'Vector2': lambda : Math.Vector2(), 
-   'Vector3': lambda : Math.Vector3(), 
-   'Vector4': lambda : Math.Vector4(), 
-   'Matrix': lambda : Math.Matrix(), 
-   'Bool': lambda : False, 
-   'Strings': lambda : (), 
-   'WideStrings': lambda : (), 
-   'Floats': lambda : (), 
-   'Ints': lambda : (), 
-   'Vector2s': lambda : (), 
-   'Vector3s': lambda : (), 
-   'Vector4s': lambda : ()}
+DEFAULT_GETTERS = {'String': lambda : str(),
+ 'WideString': lambda : unicode(),
+ 'Float': lambda : 0.0,
+ 'Int': lambda : 0,
+ 'Int64': lambda : 0,
+ 'Vector2': lambda : Math.Vector2(),
+ 'Vector3': lambda : Math.Vector3(),
+ 'Vector4': lambda : Math.Vector4(),
+ 'Matrix': lambda : Math.Matrix(),
+ 'Bool': lambda : False,
+ 'Strings': lambda : (),
+ 'WideStrings': lambda : (),
+ 'Floats': lambda : (),
+ 'Ints': lambda : (),
+ 'Vector2s': lambda : (),
+ 'Vector3s': lambda : (),
+ 'Vector4s': lambda : ()}
 
 def defaultGetter(tp):
     try:
@@ -124,6 +123,6 @@ def default(tp):
     try:
         return DEFAULT_GETTERS[tp]()
     except KeyError:
-        return
+        return None
 
-    return
+    return None

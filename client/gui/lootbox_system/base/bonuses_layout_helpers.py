@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/lootbox_system/base/bonuses_layout_helpers.py
 import logging
 from enum import Enum
 from typing import TYPE_CHECKING
@@ -26,9 +28,7 @@ class BonusesHelper(object):
         if value in source:
             source = source[value]
             default = source.get(parameter, default)
-        if parameter in source:
-            return source[parameter]
-        return default
+        return source[parameter] if parameter in source else default
 
     @classmethod
     def __getSubType(cls, bonus):
@@ -67,7 +67,7 @@ class _BaseSubTypeGetter(object):
     @staticmethod
     def getSubType(bonus):
         _logger.debug('No subType getter for bonus: %s', bonus.getName())
-        return
+        return None
 
 
 class _VehiclesSubTypeGetter(_BaseSubTypeGetter):
@@ -114,9 +114,7 @@ class _GoodiesSubTypeGetter(_BaseSubTypeGetter):
             return _HelperTypes.DEMOUNT_KIT
         if bonus.getRecertificationForms():
             return _HelperTypes.RECERTIFICATION_FORM
-        if bonus.getMentoringLicenses():
-            return _HelperTypes.MENTORING_LICENSE
-        return subType
+        return _HelperTypes.MENTORING_LICENSE if bonus.getMentoringLicenses() else subType
 
 
 class _ItemsSubTypeGetter(_BaseSubTypeGetter):
@@ -154,9 +152,7 @@ class _TankmanSubTypeGetter(_BaseSubTypeGetter):
         keys = bonus.getValue().keys()
         tID = first(keys)
         recruitInfo = getRecruitInfo(tID)
-        if recruitInfo.isFemale():
-            return _HelperTypes.TANKWOMAN
-        return ''
+        return _HelperTypes.TANKWOMAN if recruitInfo.isFemale() else ''
 
 
 class _CurrenciesSubTypeGetter(_BaseSubTypeGetter):
@@ -166,20 +162,20 @@ class _CurrenciesSubTypeGetter(_BaseSubTypeGetter):
         return bonus.getCode()
 
 
-_SUBTYPE_GETTERS = {'default': _BaseSubTypeGetter, 
-   'customizations': _CustomizationSubTypeGetter, 
-   'currencies': _CurrenciesSubTypeGetter, 
-   'goodies': _GoodiesSubTypeGetter, 
-   'items': _ItemsSubTypeGetter, 
-   'vehicles': _VehiclesSubTypeGetter, 
-   'tmanToken': _TankmanSubTypeGetter}
+_SUBTYPE_GETTERS = {'default': _BaseSubTypeGetter,
+ 'customizations': _CustomizationSubTypeGetter,
+ 'currencies': _CurrenciesSubTypeGetter,
+ 'goodies': _GoodiesSubTypeGetter,
+ 'items': _ItemsSubTypeGetter,
+ 'vehicles': _VehiclesSubTypeGetter,
+ 'tmanToken': _TankmanSubTypeGetter}
 
 class _BaseValueGetter(object):
 
     @classmethod
     def getValue(cls, bonus, _):
         _logger.debug('No value getter for bonus: %s', bonus.getName())
-        return
+        return None
 
 
 class _IntCDValueGetter(_BaseValueGetter):
@@ -255,16 +251,16 @@ class _LootBoxValueGetter(_BaseValueGetter):
     @classmethod
     def getValue(cls, bonus, _):
         box = bonus.getBox()
-        return ('{}_{}').format(box.getType(), box.getCategory())
+        return '{}_{}'.format(box.getType(), box.getCategory())
 
 
-_VALUE_GETTERS = {'default': _BaseValueGetter, 
-   'blueprints': _BlueprintValueGetter, 
-   'items': _IntCDValueGetter, 
-   'goodies': _IntCDValueGetter, 
-   'crewBooks': _IntCDValueGetter, 
-   'customizations': _CustomizationValueGetter, 
-   'vehicles': _VehiclesValueGetter, 
-   'tmanToken': _TankmanValueGetter, 
-   'tokens': _TokenValueGetter, 
-   'lootBox': _LootBoxValueGetter}
+_VALUE_GETTERS = {'default': _BaseValueGetter,
+ 'blueprints': _BlueprintValueGetter,
+ 'items': _IntCDValueGetter,
+ 'goodies': _IntCDValueGetter,
+ 'crewBooks': _IntCDValueGetter,
+ 'customizations': _CustomizationValueGetter,
+ 'vehicles': _VehiclesValueGetter,
+ 'tmanToken': _TankmanValueGetter,
+ 'tokens': _TokenValueGetter,
+ 'lootBox': _LootBoxValueGetter}

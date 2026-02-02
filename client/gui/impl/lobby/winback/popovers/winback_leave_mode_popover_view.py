@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/winback/popovers/winback_leave_mode_popover_view.py
 from account_helpers.AccountSettings import Winback
 from constants import WINBACK_BATTLE_TOKEN_DRAW_REASON
 from frameworks.wulf import ViewFlags, ViewSettings
@@ -26,9 +28,7 @@ class WinbackLeaveModePopoverView(PopOverViewImpl):
         return super(WinbackLeaveModePopoverView, self).getViewModel()
 
     def createToolTipContent(self, event, contentID):
-        if contentID == R.views.lobby.winback.tooltips.ModeInfoTooltip():
-            return ModeInfoTooltip()
-        return super(WinbackLeaveModePopoverView, self).createToolTipContent(event, contentID)
+        return ModeInfoTooltip() if contentID == R.views.lobby.winback.tooltips.ModeInfoTooltip() else super(WinbackLeaveModePopoverView, self).createToolTipContent(event, contentID)
 
     def _onLoading(self):
         super(WinbackLeaveModePopoverView, self)._onLoading()
@@ -44,9 +44,7 @@ class WinbackLeaveModePopoverView(PopOverViewImpl):
         super(WinbackLeaveModePopoverView, self)._finalize()
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onClick, self.__onClick),)
+        return ((self.viewModel.onClick, self.__onClick),)
 
     def __onClick(self):
         leaveWinbackMode(WINBACK_BATTLE_TOKEN_DRAW_REASON.MANUAL, showConfirmDialog=True, callback=selectRandom)

@@ -1,4 +1,7 @@
-import itertools, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/battle_matters_controller.py
+import itertools
+import typing
 from enum import Enum
 import BigWorld
 from collections import OrderedDict
@@ -160,17 +163,11 @@ class BattleMattersController(IBattleMattersController):
 
     def getFinalQuest(self):
         quests = self.getIntermediateQuests()
-        if quests:
-            return quests[(-1)]
-        else:
-            return
+        return quests[-1] if quests else None
 
     def getQuestByIdx(self, questIdx):
         quests = self.getRegularBattleMattersQuests()
-        if quests and len(quests) - 1 >= questIdx:
-            return quests[questIdx]
-        else:
-            return
+        return quests[questIdx] if quests and len(quests) - 1 >= questIdx else None
 
     def getCompletedBattleMattersQuests(self):
         currentQuest = self.getCurrentQuest()
@@ -184,9 +181,7 @@ class BattleMattersController(IBattleMattersController):
 
     def getCompletedBattleMattersQuestsCount(self):
         currentQuest = self.getCurrentQuest()
-        if currentQuest:
-            return currentQuest.getOrder() - 1
-        return len(self.getCompletedBattleMattersQuests())
+        return currentQuest.getOrder() - 1 if currentQuest else len(self.getCompletedBattleMattersQuests())
 
     def getNotCompletedBattleMattersQuests(self):
         compensationQuests = {q.getOrder():q.isCompleted() for q in self.getCompensationBattleMattersQuests()}
@@ -199,7 +194,7 @@ class BattleMattersController(IBattleMattersController):
     def getQuestsWithDelayedReward(self):
 
         def filterFunc(quest):
-            return any(self.__delayedRewardOfferVisibilityToken in bonus.getTokens() for bonus in quest.getBonuses('tokens'))
+            return any((self.__delayedRewardOfferVisibilityToken in bonus.getTokens() for bonus in quest.getBonuses('tokens')))
 
         return self.getBattleMattersQuests(filterFunc)
 
@@ -212,10 +207,7 @@ class BattleMattersController(IBattleMattersController):
 
         def findQuest(quest):
             result = BattleMattersController.isRegularBattleMattersQuest(quest)
-            if filterFunc is None:
-                return result
-            else:
-                return result and filterFunc(quest)
+            return result if filterFunc is None else result and filterFunc(quest)
 
         return self.getBattleMattersQuests(findQuest)
 
@@ -223,10 +215,7 @@ class BattleMattersController(IBattleMattersController):
 
         def findQuest(quest):
             result = BattleMattersController.isCompensationBattleMattersQuest(quest)
-            if filterFunc is None:
-                return result
-            else:
-                return result and filterFunc(quest)
+            return result if filterFunc is None else result and filterFunc(quest)
 
         return self.getBattleMattersQuests(findQuest)
 
@@ -259,15 +248,11 @@ class BattleMattersController(IBattleMattersController):
             if not isInPair or isInPair and len(self.__savedRewards[idx]['quests']) == 2:
                 self._showAward({idx: self.__savedRewards[idx]})
                 self.__savedRewards.pop(idx)
-            else:
-                break
+            break
 
     def getCurrentQuest(self):
         quests = self.getNotCompletedBattleMattersQuests()
-        if quests:
-            return quests[0]
-        else:
-            return
+        return quests[0] if quests else None
 
     def getQuestProgress(self, quest):
         compensationQuestStatus = {q.getOrder():q.isCompleted() for q in self.getCompensationBattleMattersQuests()}
@@ -285,8 +270,7 @@ class BattleMattersController(IBattleMattersController):
                     progressData = quest.getProgressData()
                     progressItems = first(progressData.values(), {})
                     currentProgress = progressItems.get(progressID, 0) if progressID and progressData else currentProgress
-        return (
-         currentProgress, maxProgress)
+        return (currentProgress, maxProgress)
 
     def getSelectedVehicle(self):
         vehicle = None
@@ -451,9 +435,7 @@ class BattleMattersController(IBattleMattersController):
     def __getRewardSequenceNumber(rewardPosition, questsCount):
         if rewardPosition < 1:
             return SequenceNumber.FIRST
-        if rewardPosition == questsCount - 1:
-            return SequenceNumber.LAST
-        return SequenceNumber.MIDDLE
+        return SequenceNumber.LAST if rewardPosition == questsCount - 1 else SequenceNumber.MIDDLE
 
 
 class _BattleMattersProgressWatcher(object):
@@ -551,6 +533,5 @@ class _BattleMattersProgressWatcher(object):
 
     @staticmethod
     def __isValidArenaBonusType():
-        arenaBonusTypeForWatching = itertools.chain(ARENA_BONUS_TYPE.RANDOM_RANGE, (
-         ARENA_BONUS_TYPE.WINBACK,))
+        arenaBonusTypeForWatching = itertools.chain(ARENA_BONUS_TYPE.RANDOM_RANGE, (ARENA_BONUS_TYPE.WINBACK,))
         return BigWorld.player().arenaBonusType in arenaBonusTypeForWatching

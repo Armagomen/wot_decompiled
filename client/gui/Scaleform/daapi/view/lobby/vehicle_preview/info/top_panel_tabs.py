@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/info/top_panel_tabs.py
+import logging
+import typing
 from CurrentVehicle import g_currentPreviewVehicle
 from frameworks.wulf import Array, ViewFlags, ViewSettings
 from gui.Scaleform.daapi.view.meta.VehiclePreviewTopPanelTabsMeta import VehiclePreviewTopPanelTabsMeta
@@ -12,11 +15,10 @@ if typing.TYPE_CHECKING:
     from typing import Dict, Optional, Tuple
     from gui.shared.gui_items.customization.c11n_items import Style
 _logger = logging.getLogger(__name__)
-_TAB_COMMAND = {TabID.VEHICLE: showVehiclePreviewWithoutBottomPanel, 
-   TabID.STYLE: showStylePreview}
+_TAB_COMMAND = {TabID.VEHICLE: showVehiclePreviewWithoutBottomPanel,
+ TabID.STYLE: showStylePreview}
 _TAB_CUSTOM_NAME_GETTER = {TabID.STYLE: lambda style: style.userName if style is not None else ''}
-PERSONAL_NUMBER_STYLE_TABS = (
- TabID.PERSONAL_NUMBER_VEHICLE, TabID.BASE_VEHICLE)
+PERSONAL_NUMBER_STYLE_TABS = (TabID.PERSONAL_NUMBER_VEHICLE, TabID.BASE_VEHICLE)
 
 class VehiclePreviewTopPanelTabs(VehiclePreviewTopPanelTabsMeta):
 
@@ -62,15 +64,13 @@ class VehiclePreviewTopPanelTabsView(ViewImpl):
         self.__parentCtx = kwargs
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onTabChanged, self.__onTabChanged),)
+        return ((self.viewModel.onTabChanged, self.__onTabChanged),)
 
     def _onLoaded(self, *args, **kwargs):
         self.__updateVMData()
 
     def __updateVMData(self, *_):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tabIDs = Array()
             tabNames = Array()
             for tabID in self.__tabIDs:
@@ -93,9 +93,10 @@ class VehiclePreviewTopPanelTabsView(ViewImpl):
         return
 
     def __makeTopPanelData(self):
-        return {'linkage': VEHPREVIEW_CONSTANTS.TOP_PANEL_TABS_LINKAGE, 'tabIDs': self.__tabIDs, 
-           'currentTabID': self.__currentTabID, 
-           'style': self.__style}
+        return {'linkage': VEHPREVIEW_CONSTANTS.TOP_PANEL_TABS_LINKAGE,
+         'tabIDs': self.__tabIDs,
+         'currentTabID': self.__currentTabID,
+         'style': self.__style}
 
     def __processPersonalNumberStyleTab(self):
         style = self.__parentCtx.get('numberStyle') if self.__currentTabID == TabID.PERSONAL_NUMBER_VEHICLE else None

@@ -1,6 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/battle_results/submodel_presenters/financial_report.py
 from math import ceil
 from functools import partial
-import typing, BigWorld
+import typing
+import BigWorld
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from constants import PremiumConfigs, PREMIUM_TYPE
 from helpers import dependency, server_settings, time_utils
@@ -76,31 +79,18 @@ class ManageableBonusSubPresenter(BattleResultsSubPresenter):
         self.getViewModel().setLocalStorage(self.parentView.getLocalStorage())
 
     def _getEvents(self):
-        return (
-         (
-          self.getViewModel().onPremiumXpBonusApplied, self.__onXpBonusApplied),
-         (
-          self.getViewModel().onLocalStorageUpdated, self.__onLocalStorageUpdated),
-         (
-          self.getViewModel().onShowDetails, self.__onShowDetails),
-         (
-          self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged),
-         (
-          self.__wotPlusController.onDataChanged, self.__onWotPlusChanged),
-         (
-          self.__gameSession.onPremiumTypeChanged, self.__onPremiumStatusChanged))
+        return ((self.getViewModel().onPremiumXpBonusApplied, self.__onXpBonusApplied),
+         (self.getViewModel().onLocalStorageUpdated, self.__onLocalStorageUpdated),
+         (self.getViewModel().onShowDetails, self.__onShowDetails),
+         (self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged),
+         (self.__wotPlusController.onDataChanged, self.__onWotPlusChanged),
+         (self.__gameSession.onPremiumTypeChanged, self.__onPremiumStatusChanged))
 
     def _getListeners(self):
-        return (
-         (
-          events.LobbySimpleEvent.PREMIUM_XP_BONUS_CHANGED, self.__onXpBonusStatusChanged),)
+        return ((events.LobbySimpleEvent.PREMIUM_XP_BONUS_CHANGED, self.__onXpBonusStatusChanged),)
 
     def _getCallbacks(self):
-        return (
-         (
-          'stats.applyAdditionalXPCount', self.__onXpBonusStatusChanged),
-         (
-          'stats.applyAdditionalWoTPlusXPCount', self.__onXpBonusStatusChanged))
+        return (('stats.applyAdditionalXPCount', self.__onXpBonusStatusChanged), ('stats.applyAdditionalWoTPlusXPCount', self.__onXpBonusStatusChanged))
 
     def __onXpBonusApplied(self):
         self._battleResults.applyAdditionalBonus(self.arenaUniqueID)
@@ -158,16 +148,10 @@ class FinancialReportSubPresenter(BattleResultsSubPresenter):
         GoldStatisticsPacker.packModel(viewModel.gold, CurrencyRecordsItemModel.GOLD, battleResults)
 
     def _getListeners(self):
-        return (
-         (
-          events.LobbySimpleEvent.PREMIUM_XP_BONUS_CHANGED, self.__onXpBonusStatusChanged),)
+        return ((events.LobbySimpleEvent.PREMIUM_XP_BONUS_CHANGED, self.__onXpBonusStatusChanged),)
 
     def _getCallbacks(self):
-        return (
-         (
-          'stats.applyAdditionalXPCount', self.__onXpBonusStatusChanged),
-         (
-          'stats.applyAdditionalWoTPlusXPCount', self.__onXpBonusStatusChanged))
+        return (('stats.applyAdditionalXPCount', self.__onXpBonusStatusChanged), ('stats.applyAdditionalWoTPlusXPCount', self.__onXpBonusStatusChanged))
 
     def __onXpBonusStatusChanged(self, _=None):
         with self.getViewModel().transaction():

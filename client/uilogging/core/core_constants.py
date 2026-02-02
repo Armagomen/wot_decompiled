@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/uilogging/core/core_constants.py
 from enum import Enum
 from constants import AUTH_TOKEN_REQUEST_TIMEOUT
 from gui.clans.settings import REQUEST_TIMEOUT

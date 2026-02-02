@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/lobby_context.py
 from helpers.server_settings import ServerSettings
 import BigWorld
 from Event import Event, EventManager
@@ -67,8 +69,6 @@ class LobbyContext(ILobbyContext):
             if cArenaID == clientArenaID:
                 return arenaUniqueID
 
-        return 0
-
     def getClientIDByArenaUniqueID(self, arenaUniqueID):
         if arenaUniqueID in self.__arenaUniqueIDs:
             return self.__arenaUniqueIDs[arenaUniqueID]
@@ -77,8 +77,7 @@ class LobbyContext(ILobbyContext):
         return clientID
 
     def setCredentials(self, login, token):
-        self.__credentials = (
-         login, token)
+        self.__credentials = (login, token)
 
     def getCredentials(self):
         return self.__credentials
@@ -130,11 +129,11 @@ class LobbyContext(ILobbyContext):
         if clanInfo and len(clanInfo) > 1:
             clanAbbrev = clanInfo[1]
         if clanAbbrev:
-            fullName = ('{0:>s} [{1:>s}]').format(pName, clanAbbrev)
+            fullName = '{0:>s} [{1:>s}]'.format(pName, clanAbbrev)
         if pDBID is not None:
             regionCode = self.getRegionCode(pDBID)
         if regionCode:
-            fullName = ('{0:>s} {1:>s}').format(fullName, regionCode)
+            fullName = '{0:>s} {1:>s}'.format(fullName, regionCode)
         return fullName
 
     def getClanAbbrev(self, clanInfo):

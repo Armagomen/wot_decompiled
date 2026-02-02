@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/manual/manual_view_base.py
 import logging
 from gui.Scaleform.framework.entities.View import View
 from helpers import dependency
@@ -15,7 +17,8 @@ class ManualViewBase(View):
     STATE_PLACE_MENU_GUIDE = 'STATE_hangar_place_menu_guide'
     BC_HANGAR_MUSIC_GUIDE_ENTER_SOUND_ID = 'bc_hangar_music_guide_enter'
     BC_HANGAR_MUSIC_GUIDE_EXIT_SOUND_ID = 'bc_hangar_music_guide_exit'
-    _COMMON_SOUND_SPACE = CommonSoundSpaceSettings(name=SOUND_SPACE, entranceStates={SOUND_STATE_PLACE: STATE_PLACE_MENU_GUIDE, StatesGroup.HANGAR_FILTERED: States.HANGAR_FILTERED_OFF}, exitStates={}, persistentSounds=(), stoppableSounds=(), priorities=(), autoStart=True, enterEvent=BC_HANGAR_MUSIC_GUIDE_ENTER_SOUND_ID, exitEvent=BC_HANGAR_MUSIC_GUIDE_EXIT_SOUND_ID)
+    _COMMON_SOUND_SPACE = CommonSoundSpaceSettings(name=SOUND_SPACE, entranceStates={SOUND_STATE_PLACE: STATE_PLACE_MENU_GUIDE,
+     StatesGroup.HANGAR_FILTERED: States.HANGAR_FILTERED_OFF}, exitStates={}, persistentSounds=(), stoppableSounds=(), priorities=(), autoStart=True, enterEvent=BC_HANGAR_MUSIC_GUIDE_ENTER_SOUND_ID, exitEvent=BC_HANGAR_MUSIC_GUIDE_EXIT_SOUND_ID)
 
     def __init__(self, ctx=None):
         super(ManualViewBase, self).__init__()

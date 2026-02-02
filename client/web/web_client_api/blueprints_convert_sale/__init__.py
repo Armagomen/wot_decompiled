@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/web/web_client_api/blueprints_convert_sale/__init__.py
 import BigWorld
 from gui.shared.gui_items.processors.blueprints_convert_sale import ProcessExchangeBlueprintsProcessor
 from nations import NAMES as NATION_NAMES
@@ -20,7 +22,8 @@ def wrap(data):
             for itemName, itemValue in items.iteritems():
                 optionItemsList.extend(getNonQuestBonuses(itemName, itemValue))
 
-            typeBonuses[optionID] = {'items': optionItemsList, 'limit': limit}
+            typeBonuses[optionID] = {'items': optionItemsList,
+             'limit': limit}
 
         result[optionType] = typeBonuses
 
@@ -59,9 +62,10 @@ class BlueprintsConvertSaleWebApi(object):
 
             nations = list(nations)
             if len(nations) > _MAX_VISIBLE_NATION_ICONS:
-                nations = [
-                 'national']
-            categories[optType] = {'id': optType, 'currencies': list(nations), 'isLQO': any(limit)}
+                nations = ['national']
+            categories[optType] = {'id': optType,
+             'currencies': list(nations),
+             'isLQO': any(limit)}
 
         return categories
 
@@ -81,17 +85,19 @@ class BlueprintsConvertSaleWebApi(object):
                     limit = configLimit
             else:
                 limit = -1
-            itemDef = {'id': optionID, 'limit': limit}
+            itemDef = {'id': optionID,
+             'limit': limit}
             for item in optionData.get('items', []):
                 if isinstance(item, VehicleBlueprintBonus):
                     price = str(-item.getValue()[1])
                     nation = item.getImageCategory()
-                    itemDef.update({'price': [{'currency': nation, 'balance': price}], 'nation': nation})
-                else:
-                    ebData = item.getWrappedEpicBonusList()
-                    if ebData:
-                        extraData = ebData[(-1)]['value'] if cmd.category == 'premium' else ebData[(-1)]['id']
-                        itemDef.update({'extraData': extraData})
+                    itemDef.update({'price': [{'currency': nation,
+                                'balance': price}],
+                     'nation': nation})
+                ebData = item.getWrappedEpicBonusList()
+                if ebData:
+                    extraData = ebData[-1]['value'] if cmd.category == 'premium' else ebData[-1]['id']
+                    itemDef.update({'extraData': extraData})
 
             result.append(itemDef)
 
@@ -99,10 +105,12 @@ class BlueprintsConvertSaleWebApi(object):
 
     @w2c(W2CSchema, 'get_blueprint_balance')
     def getBlueprintBalance(self, _):
-        balance = [{'currency': 'intelligence', 'balance': self._itemsCache.items.blueprints.getIntelligenceCount()}]
+        balance = [{'currency': 'intelligence',
+          'balance': self._itemsCache.items.blueprints.getIntelligenceCount()}]
         fragments = self._itemsCache.items.blueprints.getAllNationalFragmentsData()
         for nameID, value in fragments.iteritems():
-            balance.append({'currency': NATION_NAMES[nameID], 'balance': value})
+            balance.append({'currency': NATION_NAMES[nameID],
+             'balance': value})
 
         return balance
 
@@ -115,8 +123,6 @@ class BlueprintsConvertSaleWebApi(object):
                 milliseconds = round(aData.getFinishTimeLeft(), 3) * 1000
                 return int(milliseconds)
 
-        return 0
-
     @w2c(_ExchangeBlueprintSchema, 'blueprint_do_exchange')
     def doExchangeBlueprints(self, cmd):
         success, error = False, ''
@@ -128,5 +134,5 @@ class BlueprintsConvertSaleWebApi(object):
             success, error = response.success, response.userMsg
         else:
             error = 'Undefined server error'
-        yield {'success': success, 
-           'error': error}
+        yield {'success': success,
+         'error': error}

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/PostmortemPanelMeta.py
 from gui.Scaleform.daapi.view.meta.BasePostmortemPanelMeta import BasePostmortemPanelMeta
 
 class PostmortemPanelMeta(BasePostmortemPanelMeta):
@@ -12,45 +14,34 @@ class PostmortemPanelMeta(BasePostmortemPanelMeta):
         self._printOverrideError('onVictimDogTagInPlaySound')
 
     def as_setPlayerInfoS(self, playerInfo):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setPlayerInfo(playerInfo)
+        return self.flashObject.as_setPlayerInfo(playerInfo) if self._isDAAPIInited() else None
 
     def as_showKillerDogTagS(self, data, fadeOut):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showKillerDogTag(data, fadeOut)
+        return self.flashObject.as_showKillerDogTag(data, fadeOut) if self._isDAAPIInited() else None
 
     def as_showVictimDogTagS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showVictimDogTag(data)
+        return self.flashObject.as_showVictimDogTag(data) if self._isDAAPIInited() else None
 
     def as_preloadComponentsS(self, components):
-        if self._isDAAPIInited():
-            return self.flashObject.as_preloadComponents(components)
+        return self.flashObject.as_preloadComponents(components) if self._isDAAPIInited() else None
 
     def as_hideComponentsS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_hideComponents()
+        return self.flashObject.as_hideComponents() if self._isDAAPIInited() else None
 
     def as_handleAsReplayS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_handleAsReplay()
+        return self.flashObject.as_handleAsReplay() if self._isDAAPIInited() else None
 
     def as_togglePostmortemInfoPanelS(self, isVisible):
-        if self._isDAAPIInited():
-            return self.flashObject.as_togglePostmortemInfoPanel(isVisible)
+        return self.flashObject.as_togglePostmortemInfoPanel(isVisible) if self._isDAAPIInited() else None
 
     def as_movePostmortemPanelUpS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_movePostmortemPanelUp()
+        return self.flashObject.as_movePostmortemPanelUp() if self._isDAAPIInited() else None
 
     def as_resetPostmortemPositionS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_resetPostmortemPosition()
+        return self.flashObject.as_resetPostmortemPosition() if self._isDAAPIInited() else None
 
     def as_fadePostmortemPanelOutS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_fadePostmortemPanelOut()
+        return self.flashObject.as_fadePostmortemPanelOut() if self._isDAAPIInited() else None
 
     def as_setInDeathCamS(self, isInDeathCam):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setInDeathCam(isInDeathCam)
+        return self.flashObject.as_setInDeathCam(isInDeathCam) if self._isDAAPIInited() else None

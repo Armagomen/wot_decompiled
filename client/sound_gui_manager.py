@@ -1,12 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/sound_gui_manager.py
 from collections import namedtuple
-CommonSoundSpaceSettings = namedtuple('CommonSoundSpaceSettings', ('name', 'entranceStates',
-                                                                   'exitStates',
-                                                                   'persistentSounds',
-                                                                   'stoppableSounds',
-                                                                   'priorities',
-                                                                   'autoStart', 'enterEvent',
-                                                                   'exitEvent', 'parentSpace'))
-CommonSoundSpaceSettings.__new__.func_defaults = (None, ) * len(CommonSoundSpaceSettings._fields)
+CommonSoundSpaceSettings = namedtuple('CommonSoundSpaceSettings', ('name', 'entranceStates', 'exitStates', 'persistentSounds', 'stoppableSounds', 'priorities', 'autoStart', 'enterEvent', 'exitEvent', 'parentSpace'))
+CommonSoundSpaceSettings.__new__.func_defaults = (None,) * len(CommonSoundSpaceSettings._fields)
 
 class ViewSoundExtension(object):
     __commonSoundManagers = {}
@@ -16,9 +12,7 @@ class ViewSoundExtension(object):
 
     @property
     def soundManager(self):
-        if self.__soundSpace:
-            return self.__commonSoundManagers.get(self.__soundSpace.name)
-        return self.__soundsManager
+        return self.__commonSoundManagers.get(self.__soundSpace.name) if self.__soundSpace else self.__soundsManager
 
     def startSoundSpace(self):
         self.soundManager.startSpace(self.__soundSpace)

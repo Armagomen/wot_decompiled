@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client_common/arena_component_system/overtime_component.py
 import BigWorld
 from client_arena_component_system import ClientArenaComponent
 from constants import ARENA_SYNC_OBJECTS

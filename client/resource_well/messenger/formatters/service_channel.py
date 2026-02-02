@@ -1,3 +1,6 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: resource_well/scripts/client/resource_well/messenger/formatters/service_channel.py
+from __future__ import absolute_import
 from adisp import adisp_async, adisp_process
 from gui.impl import backport
 from gui.impl.gen import R
@@ -38,9 +41,9 @@ class ResourceWellRewardFormatter(WaitItemsSyncFormatter):
             additionalText = backport.text(R.strings.messenger.serviceChannelMessages.resourceWell.breakLine()) + backport.text(self.__R_MESSAGES.serialVehicle.additionalText(), serialNumber=serialNumber)
         else:
             text = backport.text(self.__R_MESSAGES.vehicle.text(), vehicle=text_styles.crystal(vehicleName))
-        formatted = g_settings.msgTemplates.format(self.__TEMPLATE, ctx={'title': backport.text(self.__R_MESSAGES.title(), vehicle=vehicleName), 
-           'text': text, 
-           'additionalText': additionalText})
+        formatted = g_settings.msgTemplates.format(self.__TEMPLATE, ctx={'title': backport.text(self.__R_MESSAGES.title(), vehicle=vehicleName),
+         'text': text,
+         'additionalText': additionalText})
         return MessageData(formatted, self._getGuiSettings(message, self.__TEMPLATE))
 
     def __getAdditionalMessage(self, rewardID, message):
@@ -53,7 +56,8 @@ class ResourceWellRewardFormatter(WaitItemsSyncFormatter):
                 return MessageData(None, None)
             text = g_settings.htmlTemplates.format('slotsAccruedInvoiceReceived', {'amount': backport.getIntegralFormat(slots)})
             at = TimeFormatter.getLongDatetimeFormat(time_utils.makeLocalServerTime(message.sentTime))
-            formatted = g_settings.msgTemplates.format('resourceWellInvoiceReceived', ctx={'at': at, 'text': text})
+            formatted = g_settings.msgTemplates.format('resourceWellInvoiceReceived', ctx={'at': at,
+             'text': text})
             return MessageData(formatted, self._getGuiSettings(message, self.__TEMPLATE))
 
 
@@ -75,6 +79,7 @@ class ResourceWellNoVehiclesFormatter(WaitItemsSyncFormatter):
             isSerial = message.data.get('isSerial')
             rewardID = message.data.get('rewardID')
             soldOutRewardIDs = message.data.get('soldOutRewardIDs', set())
+            hasBalance = message.data.get('hasBalance', False)
             vehicle = self.__resourceWell.getRewardVehicle(rewardID)
             if vehicle is None:
                 callback([MessageData(None, None)])
@@ -91,12 +96,11 @@ class ResourceWellNoVehiclesFormatter(WaitItemsSyncFormatter):
             elif purchaseMode is PurchaseMode.SEQUENTIAL_PRODUCT and isSerial:
                 template = self.__BUTTON_TEMPLATE
                 text = backport.text(self.__R_MESSAGES.noSerialVehicles.text(), vehicle=text_styles.crystal(vehicle.shortUserName))
-            elif self.__resourceWell.getBalance():
+            elif hasBalance:
                 text = backport.text(self.__R_MESSAGES.noVehiclesWithReturn.text())
             else:
                 text = backport.text(self.__R_MESSAGES.noVehicles.text())
-            formatted = g_settings.msgTemplates.format(template, ctx={'title': backport.text(self.__R_MESSAGES.noVehicles.title()), 
-               'text': text})
-            callback([
-             MessageData(formatted, self._getGuiSettings(message, template, decorator=ResourceWellLockButtonDecorator))])
+            formatted = g_settings.msgTemplates.format(template, ctx={'title': backport.text(self.__R_MESSAGES.noVehicles.title()),
+             'text': text})
+            callback([MessageData(formatted, self._getGuiSettings(message, template, decorator=ResourceWellLockButtonDecorator))])
             return

@@ -1,10 +1,12 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/impl/gen/view_models/views/lobby/mode_selector/mode_selector_comp7_widget_model.py
 from comp7.gui.impl.gen.view_models.views.lobby.enums import Rank, SeasonName
 from comp7.gui.impl.gen.view_models.views.lobby.division_info_model import DivisionInfoModel
 from comp7.gui.impl.gen.view_models.views.lobby.qualification_model import QualificationModel
 from gui.impl.gen.view_models.views.lobby.mode_selector.mode_selector_base_widget_model import ModeSelectorBaseWidgetModel
 
 class ModeSelectorComp7WidgetModel(ModeSelectorBaseWidgetModel):
-    __slots__ = ('onOpenMeta', )
+    __slots__ = ('onOpenMeta',)
 
     def __init__(self, properties=10, commands=1):
         super(ModeSelectorComp7WidgetModel, self).__init__(properties=properties, commands=commands)

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/battle_pass/tooltips/battle_pass_completed_tooltip_view.py
 from frameworks.wulf import ViewSettings
 from gui.battle_pass.battle_pass_helpers import getChapterType, getReceivedTankmenCount, getTankmenShopPackages
 from gui.impl.gen import R
@@ -22,11 +24,11 @@ class BattlePassCompletedTooltipView(ViewImpl):
     def _onLoading(self, *args, **kwargs):
         super(BattlePassCompletedTooltipView, self)._onLoading(*args, **kwargs)
         isBought = self.__battlePass.isAllMainChaptersBought()
-        with self.getViewModel().transaction() as (model):
+        with self.getViewModel().transaction() as model:
             model.setIsBattlePassPurchased(isBought)
             model.setNotChosenRewardCount(self.__battlePass.getNotChosenRewardCount())
             model.setChapterType(ChapterType(getChapterType(self.__battlePass.getCurrentChapterID())))
             model.setIsAvailableTankmen(self.__isAvailableTankmen(getTankmenShopPackages()))
 
     def __isAvailableTankmen(self, shopPackages):
-        return any(packageCount - getReceivedTankmenCount(tankman) != 0 for tankman, packageCount in shopPackages.iteritems())
+        return any((packageCount - getReceivedTankmenCount(tankman) != 0 for tankman, packageCount in shopPackages.iteritems()))

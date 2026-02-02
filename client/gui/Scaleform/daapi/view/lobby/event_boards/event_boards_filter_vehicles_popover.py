@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/event_boards/event_boards_filter_vehicles_popover.py
 from CurrentVehicle import g_currentVehicle
 from gui.Scaleform.daapi.view.lobby.event_boards.event_boards_vos import makeVehiclePopoverVO, vehicleValueGetter
 from gui.Scaleform.daapi.view.lobby.vehicle_compare.formatters import packHeaderColumnData
@@ -84,10 +86,9 @@ class EventBoardsFilterVehiclesPopover(EventBoardsResultFilterVehiclesPopoverVie
         return makeVehiclePopoverVO(vehicle)
 
     def __initControls(self):
-        common = {'enabled': True, 
-           'btnHeight': 34}
-        headers = [
-         packHeaderColumnData('nations', 45, icon=RES_ICONS.MAPS_ICONS_FILTERS_NATIONS_ALL, tooltip=VEH_COMPARE.ADDVEHPOPOVER_TOOLTIPS_NATION, **common),
+        common = {'enabled': True,
+         'btnHeight': 34}
+        headers = [packHeaderColumnData('nations', 45, icon=RES_ICONS.MAPS_ICONS_FILTERS_NATIONS_ALL, tooltip=VEH_COMPARE.ADDVEHPOPOVER_TOOLTIPS_NATION, **common),
          packHeaderColumnData('type', 45, icon=RES_ICONS.MAPS_ICONS_FILTERS_TANKS_ALL, tooltip=VEH_COMPARE.ADDVEHPOPOVER_TOOLTIPS_TYPE, **common),
          packHeaderColumnData('level', 45, icon=RES_ICONS.MAPS_ICONS_BUTTONS_TAB_SORT_BUTTON_LEVEL, tooltip=VEH_COMPARE.ADDVEHPOPOVER_TOOLTIPS_LEVEL, **common),
          packHeaderColumnData('name', 130, label=VEH_COMPARE.ADDVEHPOPOVER_VEHICLENAME, tooltip=VEH_COMPARE.ADDVEHPOPOVER_TOOLTIPS_TITLE, direction='ascending', **common),
@@ -96,10 +97,10 @@ class EventBoardsFilterVehiclesPopover(EventBoardsResultFilterVehiclesPopoverVie
             okButtonLabel = EVENT_BOARDS.POPOVER_BUTTONS_SELECT
         else:
             okButtonLabel = EVENT_BOARDS.POPOVER_BUTTONS_RATING
-        self.as_setInitDataS({'tableHeaders': headers, 
-           'filters': self.initFilters(), 
-           'header': text_styles.highTitle(_ms(EVENT_BOARDS.POPOVER_TITLE_VEHICLE)), 
-           'okButtonLabel': _ms(okButtonLabel)})
+        self.as_setInitDataS({'tableHeaders': headers,
+         'filters': self.initFilters(),
+         'header': text_styles.highTitle(_ms(EVENT_BOARDS.POPOVER_TITLE_VEHICLE)),
+         'okButtonLabel': _ms(okButtonLabel)})
 
     def __updateSortField(self):
         sort = self._vehDP.getLastSortMethod()
@@ -123,12 +124,11 @@ class VehiclesDataProvider(SortableDAAPIDataProvider):
         return self.__list
 
     def emptyItem(self):
-        return
+        return None
 
     def pySortOn(self, fields, order):
         if fields == ['level']:
-            fields = (
-             fields[0], 'nations', 'type')
+            fields = (fields[0], 'nations', 'type')
             order = (order[0], True, True)
         super(VehiclesDataProvider, self).pySortOn(fields, order)
         self.__sort()

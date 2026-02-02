@@ -1,11 +1,14 @@
-import BigWorld, WWISE
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/customization/progressive_items_reward/progressive_items_upgrade_view.py
+import BigWorld
+import WWISE
 from CurrentVehicle import g_currentVehicle
 from adisp import adisp_process
 from frameworks.wulf import ViewSettings
 from gui.ClientUpdateManager import g_clientUpdateManager
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.customization.shared import getItemInstalledCount
 from gui.Scaleform.daapi.view.lobby.customization.sound_constants import SOUNDS
+from gui.Scaleform.lobby_entry import getLobbyStateMachine
 from gui.customization.shared import isVehicleCanBeCustomized
 from gui.impl import backport
 from gui.impl.gen import R
@@ -14,8 +17,6 @@ from gui.impl.lobby.customization.shared import goToC11nStyledMode
 from gui.impl.pub import ViewImpl
 from gui.impl.pub.lobby_window import LobbyNotificationWindow
 from gui.impl.wrappers.function_helpers import replaceNoneKwargsModel
-from gui.shared import g_eventBus, EVENT_BUS_SCOPE
-from gui.shared.events import ViewEventType
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.processors.common import OutfitApplier
 from gui.shared.image_helper import getTextureLinkByID
@@ -68,7 +69,7 @@ class ProgressiveItemsUpgradeView(ViewImpl):
         if self.__level > 1 and not self.__itemsInNeedToUpgrade and getItemInstalledCount(self.__item) > 0:
             self.__resetItemNovelty()
         isNewItem = self.__level == 1
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setIsNewItem(isNewItem)
             showSecondButton = showSecondButton and isVehicleCanBeCustomized(self.__vehicle, GUI_ITEM_TYPE.STYLE, itemsFilter=lambda item: item.isProgressionRequiredCanBeEdited(self.__vehicle.intCD))
             if vehicleCD != UNBOUND_VEH_KEY:
@@ -90,20 +91,25 @@ class ProgressiveItemsUpgradeView(ViewImpl):
     def __addListeners(self):
         self.viewModel.onOkClick += self.__onOkClick
         self.viewModel.onSecondaryClick += self.__onShowC11nClick
-        g_eventBus.addListener(ViewEventType.LOAD_VIEW, self.__loadViewHandler, EVENT_BUS_SCOPE.LOBBY)
+        lsm = getLobbyStateMachine()
+        lsm.onVisibleRouteChanged -= self.__onVisibleRouteChanged
         g_clientUpdateManager.addCallbacks({'inventory': self._updateButtons})
         g_clientUpdateManager.addCallbacks({'cache.vehsLock': self._updateButtons})
 
     def __removeListeners(self):
         self.viewModel.onOkClick -= self.__onOkClick
         self.viewModel.onSecondaryClick -= self.__onShowC11nClick
-        g_eventBus.removeListener(ViewEventType.LOAD_VIEW, self.__loadViewHandler, EVENT_BUS_SCOPE.LOBBY)
+        lsm = getLobbyStateMachine()
+        lsm.onVisibleRouteChanged -= self.__onVisibleRouteChanged
         g_clientUpdateManager.removeObjectCallbacks(self)
 
-    def __loadViewHandler(self, event):
-        if event.alias in (VIEW_ALIAS.LOBBY_HANGAR, VIEW_ALIAS.LEGACY_LOBBY_HANGAR):
+    def __onVisibleRouteChanged(self, routeInfo):
+        from gui.lobby_state_machine.states import isInHangarState
+        from gui.Scaleform.daapi.view.lobby.vehicle_preview.states import HeroTankPreviewState
+        from gui.Scaleform.daapi.view.lobby.battle_queue.states import CommonBattleQueueState
+        if isInHangarState():
             self._updateButtons()
-        elif event.alias in (VIEW_ALIAS.HERO_VEHICLE_PREVIEW, VIEW_ALIAS.BATTLE_QUEUE):
+        elif isinstance(routeInfo.state, (HeroTankPreviewState, CommonBattleQueueState)):
             self.__updateButtons(lock=True)
 
     def __setVehicleInfo(self, model):
@@ -143,7 +149,7 @@ class ProgressiveItemsUpgradeView(ViewImpl):
     def __updateButtons(self, lock=False, model=None):
         okEnabled = True
         c11nEnabled = not lock and self.__vehicle.isCustomizationEnabled()
-        if any(handler() for handler in collectCustomizationHangarDecorator()):
+        if any((handler() for handler in collectCustomizationHangarDecorator())):
             c11nEnabled = False
         if self.__itemsInNeedToUpgrade:
             okEnabled = c11nEnabled
@@ -165,8 +171,7 @@ class ProgressiveItemsUpgradeView(ViewImpl):
         for season in SeasonType.RANGE:
             outfit = self.__vehicle.getOutfit(season)
             if outfit is not None:
-                components = [ slotData.component for slotData in outfit.slotsData() if slotData.intCD == self.__item.intCD and slotData.component.progressionLevel != 0
-                             ]
+                components = [ slotData.component for slotData in outfit.slotsData() if slotData.intCD == self.__item.intCD and slotData.component.progressionLevel != 0 ]
                 if components:
                     itemsInNeedToUpgrade.update({season: components})
 

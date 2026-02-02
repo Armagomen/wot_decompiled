@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_loading/state_machine/states/init_client/transitions.py
 import typing
 from frameworks.state_machine.transitions import StringEventTransition
 from gui.game_loading.state_machine.const import GameLoadingStatesEvents
@@ -16,10 +18,7 @@ class LogosShownToClientLoadingStubTransition(SourceToSingleTargetTransition):
 
     def _apply(self, event, source, target):
         machine = target.getMachine()
-        if machine is None:
-            return False
-        else:
-            return self._condition(machine)
+        return False if machine is None else self._condition(machine)
 
     def _condition(self, machine):
         return machine.isGameLoadingComplete

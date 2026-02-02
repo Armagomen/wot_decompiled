@@ -1,4 +1,7 @@
-import enum, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_loading/resources/cdn/consts.py
+import enum
+import typing
 MAX_CONFIG_SEQUENCE_SLIDES_COUNT = 250
 MAX_CONFIG_SEQUENCES_COUNT = 50
 MIN_SLIDES_COUNT_TO_VIEW = 5
@@ -19,5 +22,4 @@ class SequenceCohorts(str, enum.Enum):
 
     @classmethod
     def getDefaults(cls):
-        return [
-         cls.DEFAULT]
+        return [cls.DEFAULT]

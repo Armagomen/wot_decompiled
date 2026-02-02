@@ -1,8 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/serialization/component_bin_serializer.py
 import varint
 from constants import IS_EDITOR
 from serialization.definitions import FieldFlags, FieldTypes
 from serialization.exceptions import SerializationException
-__all__ = ('ComponentBinSerializer', )
+__all__ = ('ComponentBinSerializer',)
 
 class ComponentBinSerializer(object):
 
@@ -33,11 +35,11 @@ class ComponentBinSerializer(object):
             offset <<= 1
 
         result[0] = varint.encode(hasValue)
-        return ('').join(result)
+        return ''.join(result)
 
     def __serializeArray(self, value, itemType):
         result = [ self.__serialize(item, itemType) for item in value ]
-        return varint.encode(len(value)) + ('').join(result)
+        return varint.encode(len(value)) + ''.join(result)
 
     def __serializeString(self, value):
         return varint.encode(len(value)) + value

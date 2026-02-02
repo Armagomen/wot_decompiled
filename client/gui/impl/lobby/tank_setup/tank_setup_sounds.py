@@ -1,4 +1,7 @@
-import SoundGroups, WWISE
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/tank_setup_sounds.py
+import SoundGroups
+import WWISE
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_setup_model import BaseSetupModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.tank_setup_constants import TankSetupConstants
 from helpers import dependency
@@ -81,9 +84,7 @@ class ActionSoundHelper(object):
             cls.playRevertSound(vehicle)
         elif actionType == BaseSetupModel.SWAP_SLOTS_ACTION:
             cls.playSwapSound(vehicle, leftIntCD, rightIntCD)
-        elif actionType in (BaseSetupModel.DEMOUNT_SLOT_ACTION,
-         BaseSetupModel.DEMOUNT_SLOT_FROM_SETUP_ACTION,
-         BaseSetupModel.DEMOUNT_SLOT_FROM_SETUPS_ACTION):
+        elif actionType in (BaseSetupModel.DEMOUNT_SLOT_ACTION, BaseSetupModel.DEMOUNT_SLOT_FROM_SETUP_ACTION, BaseSetupModel.DEMOUNT_SLOT_FROM_SETUPS_ACTION):
             cls.playDemountSound(vehicle, intCD)
         elif actionType == BaseSetupModel.DRAG_AND_DROP_SLOT_ACTION:
             cls.playDragAndDropSound(vehicle, leftIntCD, rightIntCD)
@@ -158,15 +159,15 @@ class OptDeviceActionSound(ActionSoundHelper):
 
 
 class BattleBoostersActionSoundHelper(ActionSoundHelper):
-    _CREW_BOOSTER_SOUND = {'smoothTurretBattleBooster': 'cons_instructions_steady_hand', 
-       'virtuosoBattleBooster': 'cons_instructions_combat_course', 
-       'pedantBattleBooster': 'cons_instructions_shell_organizer', 
-       'smoothDrivingBattleBooster': 'cons_instructions_gearbox_intricacy', 
-       'fireFightingBattleBooster': 'cons_instructions_firefighters', 
-       'rancorousBattleBooster': 'cons_instructions_focus_target', 
-       'camouflageBattleBooster': 'cons_instructions_natural_cover', 
-       'enemyShotPredictorBattleBooster': 'cons_instructions_heightened_vigilance', 
-       'practicalityBattleBooster': 'cons_instructions_thorough_preparations'}
+    _CREW_BOOSTER_SOUND = {'smoothTurretBattleBooster': 'cons_instructions_steady_hand',
+     'virtuosoBattleBooster': 'cons_instructions_combat_course',
+     'pedantBattleBooster': 'cons_instructions_shell_organizer',
+     'smoothDrivingBattleBooster': 'cons_instructions_gearbox_intricacy',
+     'fireFightingBattleBooster': 'cons_instructions_firefighters',
+     'rancorousBattleBooster': 'cons_instructions_focus_target',
+     'camouflageBattleBooster': 'cons_instructions_natural_cover',
+     'enemyShotPredictorBattleBooster': 'cons_instructions_heightened_vigilance',
+     'practicalityBattleBooster': 'cons_instructions_thorough_preparations'}
 
     @classmethod
     def playSelectSound(cls, vehicle, intCD):

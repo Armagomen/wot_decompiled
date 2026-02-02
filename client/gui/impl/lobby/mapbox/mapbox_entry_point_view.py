@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/mapbox/mapbox_entry_point_view.py
 import logging
 from constants import Configs
 from frameworks.wulf import ViewFlags, ViewSettings
@@ -11,15 +13,14 @@ from helpers import dependency, time_utils, server_settings
 from skeletons.gui.game_control import IMapboxController
 from skeletons.gui.lobby_context import ILobbyContext
 _logger = logging.getLogger(__name__)
-_STATE_MAPPING = {State.BEFORE: {
-                PeriodType.BEFORE_SEASON, PeriodType.BEFORE_CYCLE, PeriodType.BETWEEN_SEASONS}, 
-   State.ACTIVE: {
-                PeriodType.AVAILABLE}, 
-   State.NOTPRIMETIME: {
-                      PeriodType.NOT_AVAILABLE, PeriodType.STANDALONE_NOT_AVAILABLE, PeriodType.ALL_NOT_AVAILABLE}, 
-   State.AFTER: {
-               PeriodType.AFTER_CYCLE, PeriodType.AFTER_SEASON, PeriodType.NOT_AVAILABLE_END,
-               PeriodType.ALL_NOT_AVAILABLE_END, PeriodType.STANDALONE_NOT_AVAILABLE_END}}
+_STATE_MAPPING = {State.BEFORE: {PeriodType.BEFORE_SEASON, PeriodType.BEFORE_CYCLE, PeriodType.BETWEEN_SEASONS},
+ State.ACTIVE: {PeriodType.AVAILABLE},
+ State.NOTPRIMETIME: {PeriodType.NOT_AVAILABLE, PeriodType.STANDALONE_NOT_AVAILABLE, PeriodType.ALL_NOT_AVAILABLE},
+ State.AFTER: {PeriodType.AFTER_CYCLE,
+               PeriodType.AFTER_SEASON,
+               PeriodType.NOT_AVAILABLE_END,
+               PeriodType.ALL_NOT_AVAILABLE_END,
+               PeriodType.STANDALONE_NOT_AVAILABLE_END}}
 
 @dependency.replace_none_kwargs(mapboxCtrl=IMapboxController)
 def isMapboxEntryPointAvailable(mapboxCtrl=None):
@@ -39,18 +40,10 @@ class MapBoxEntryPointView(ViewImpl):
         return super(MapBoxEntryPointView, self).getViewModel()
 
     def createToolTipContent(self, event, contentID):
-        if contentID == R.views.lobby.common.tooltips.SimpleIconTooltip():
-            return createSimpleIconTooltip(event)
-        return super(MapBoxEntryPointView, self).createToolTipContent(event, contentID)
+        return createSimpleIconTooltip(event) if contentID == R.views.lobby.common.tooltips.SimpleIconTooltip() else super(MapBoxEntryPointView, self).createToolTipContent(event, contentID)
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onActionClick, self.__onClick),
-         (
-          self.__mapboxCtrl.onPrimeTimeStatusUpdated, self.__onPrimeTimeUpdated),
-         (
-          self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged))
+        return ((self.viewModel.onActionClick, self.__onClick), (self.__mapboxCtrl.onPrimeTimeStatusUpdated, self.__onPrimeTimeUpdated), (self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged))
 
     def _onLoading(self, *args, **kwargs):
         super(MapBoxEntryPointView, self)._onLoading(*args, **kwargs)
@@ -90,7 +83,7 @@ class MapBoxEntryPointView(ViewImpl):
             leftTime = time_utils.getTimeDeltaFromNowInLocal(startTime)
         elif state == State.NOTPRIMETIME:
             leftTime = self.__mapboxCtrl.getLeftTimeToPrimeTimesEnd(now)
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setState(state)
             model.setStartTime(startTime)
             model.setEndTime(endTime)

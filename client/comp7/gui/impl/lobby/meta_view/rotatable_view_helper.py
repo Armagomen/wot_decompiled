@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/meta_view/rotatable_view_helper.py
 import CGF
 from enum import Enum
 from ClientSelectableCameraObject import ClientSelectableCameraObject
@@ -19,17 +21,10 @@ class RotatableViewHelper(object):
 
     def getCameraManager(self):
         spaceID = self.__hangarSpace.spaceID
-        if spaceID is not None:
-            return CGF.getManager(spaceID, HangarCameraManager)
-        else:
-            return
+        return CGF.getManager(spaceID, HangarCameraManager) if spaceID is not None else None
 
     def getCameraEvents(self, viewModel):
-        cameraEvents = [
-         (
-          viewModel.onMoveSpace, self.__onMoveSpace),
-         (
-          viewModel.onMouseOver3dScene, self.__onMouseOver3dScene)]
+        cameraEvents = [(viewModel.onMoveSpace, self.__onMoveSpace), (viewModel.onMouseOver3dScene, self.__onMouseOver3dScene)]
         return cameraEvents
 
     def switchCamera(self, cameraName, instantly):
@@ -55,7 +50,9 @@ class RotatableViewHelper(object):
             dx = args.get('dx')
             dy = args.get('dy')
             dz = args.get('dz')
-            g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.LOBBY_VIEW_MOUSE_MOVE, ctx={'dx': dx, 'dy': dy, 'dz': dz}), EVENT_BUS_SCOPE.GLOBAL)
+            g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.LOBBY_VIEW_MOUSE_MOVE, ctx={'dx': dx,
+             'dy': dy,
+             'dz': dz}), EVENT_BUS_SCOPE.GLOBAL)
             return
 
     @staticmethod

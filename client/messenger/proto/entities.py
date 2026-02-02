@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/entities.py
 from collections import deque
 from helpers import dependency, i18n
 from ids_generators import SequenceIDGenerator
@@ -26,13 +28,13 @@ class ChatEntity(object):
             return False
 
     def getID(self):
-        return
+        return None
 
     def getProtoType(self):
-        return 0
+        pass
 
     def getPersistentState(self):
-        return
+        return None
 
     def setPersistentState(self, state):
         return False
@@ -59,7 +61,7 @@ class _ChatCommand(ChatEntity):
         return MESSENGER_COMMAND_TYPE.UNDEFINED
 
     def getCommandText(self):
-        return ''
+        pass
 
 
 class OutChatCommand(_ChatCommand):
@@ -76,33 +78,33 @@ class ReceivedBattleChatCommand(_ChatCommand):
         return MESSENGER_COMMAND_TYPE.BATTLE
 
     def getSenderID(self):
-        return ''
+        pass
 
     def getPosition3D(self):
-        return
+        return None
 
     def getFirstTargetID(self):
-        return 0
+        pass
 
     def getSecondTargetID(self):
-        return 0
+        pass
 
     def getCellIndex(self):
-        return 0
+        pass
 
     def getCommandText(self):
-        return ''
+        pass
 
     def getVehMarker(self, mode=None):
         result = self._getCommandVehMarker()
         if mode and result:
-            result = ('{0:>s}{1:>s}').format(result, mode)
+            result = '{0:>s}{1:>s}'.format(result, mode)
         return result
 
     def getSenderVehMarker(self, mode=None):
         result = self._getCommandSenderVehMarker()
         if mode and result:
-            result = ('{0:>s}{1:>s}').format(result, mode)
+            result = '{0:>s}{1:>s}'.format(result, mode)
         return result
 
     def getVehMarkers(self):
@@ -118,9 +120,7 @@ class ReceivedBattleChatCommand(_ChatCommand):
 
     def isIgnored(self):
         user = storage_getter('users')().getUser(self.getSenderID(), scope=UserEntityScope.BATTLE)
-        if user:
-            return user.isIgnored()
-        return False
+        return user.isIgnored() if user else False
 
     def isOnMinimap(self):
         return False
@@ -139,9 +139,7 @@ class ReceivedBattleChatCommand(_ChatCommand):
 
     def isSender(self):
         user = storage_getter('users')().getUser(self.getSenderID(), scope=UserEntityScope.BATTLE)
-        if user:
-            return user.isCurrentPlayer()
-        return False
+        return user.isCurrentPlayer() if user else False
 
     def showMarkerForReceiver(self):
         return False
@@ -150,16 +148,16 @@ class ReceivedBattleChatCommand(_ChatCommand):
         return False
 
     def messageOnMarker(self):
-        return ''
+        pass
 
     def _getCommandVehMarker(self):
-        return ''
+        pass
 
     def _getCommandSenderVehMarker(self):
-        return ''
+        pass
 
     def _getSoundNotification(self):
-        return ''
+        pass
 
 
 class ChannelEntity(ChatEntity, ChannelEvents):
@@ -175,7 +173,7 @@ class ChannelEntity(ChatEntity, ChannelEvents):
         self._unreadMessages = []
 
     def __repr__(self):
-        return ('ChannelEntity(type={0:n}, isJoined={1!r:s}, data={2!r:s})').format(self.getProtoType(), self._isJoined, self._data)
+        return 'ChannelEntity(type={0:n}, isJoined={1!r:s}, data={2!r:s})'.format(self.getProtoType(), self._isJoined, self._data)
 
     def getClientID(self):
         return self._clientID
@@ -187,10 +185,10 @@ class ChannelEntity(ChatEntity, ChannelEvents):
         return self._data
 
     def getName(self):
-        return ''
+        pass
 
     def getFullName(self):
-        return ''
+        pass
 
     def isSystem(self):
         return False
@@ -208,7 +206,7 @@ class ChannelEntity(ChatEntity, ChannelEvents):
         return False
 
     def getPrebattleType(self):
-        return 0
+        pass
 
     def getPrimaryOrder(self):
         if self.isSystem():
@@ -331,13 +329,13 @@ class MemberEntity(ChatEntity, MemberEvents):
         return self.getID()
 
     def __repr__(self):
-        return ('MemberEntity(id={0!r:s}, nickName={1!r:s}, status={2!r:s})').format(self._memberID, self._nickName, self._status)
+        return 'MemberEntity(id={0!r:s}, nickName={1!r:s}, status={2!r:s})'.format(self._memberID, self._nickName, self._status)
 
     def getID(self):
         return self._memberID
 
     def getDatabaseID(self):
-        return 0
+        pass
 
     def getName(self):
         return self._nickName
@@ -419,8 +417,7 @@ class UserEntity(ChatEntity):
         return self._scope
 
     def getStorageKey(self):
-        return (
-         self.getID(), self.getScope())
+        return (self.getID(), self.getScope())
 
     def getName(self):
         return self._name
@@ -442,9 +439,7 @@ class UserEntity(ChatEntity):
             if USER_TAG.SUB_TO in self.getTags():
                 return USER_GUI_TYPE.FRIEND
             return USER_GUI_TYPE.OTHER
-        if self.isIgnored():
-            return USER_GUI_TYPE.IGNORED
-        return USER_GUI_TYPE.OTHER
+        return USER_GUI_TYPE.IGNORED if self.isIgnored() else USER_GUI_TYPE.OTHER
 
     def isFriend(self):
         return USER_TAG.FRIEND in self.getTags()
@@ -487,13 +482,7 @@ class UserEntity(ChatEntity):
         raise NotImplementedError
 
 
-@ReprInjector.simple((
- 'getID', 'dbID'), (
- 'getFullName', 'fullName'), (
- 'getTags', 'tags'), (
- 'getClanInfo', 'clanInfo'), (
- 'getGlobalRating', 'rating'), (
- 'getScope', 'scope'))
+@ReprInjector.simple(('getID', 'dbID'), ('getFullName', 'fullName'), ('getTags', 'tags'), ('getClanInfo', 'clanInfo'), ('getGlobalRating', 'rating'), ('getScope', 'scope'))
 class LobbyUserEntity(UserEntity):
     __slots__ = ('_note', '_clanInfo', '_globalRating')
     _lobbyContext = dependency.descriptor(ILobbyContext)
@@ -521,10 +510,10 @@ class LobbyUserEntity(UserEntity):
         return set()
 
     def getResourceID(self):
-        return
+        return None
 
     def getClientInfo(self):
-        return
+        return None
 
     def isOnline(self):
         return False
@@ -580,11 +569,7 @@ class LobbyUserEntity(UserEntity):
         return UserEntityScope.LOBBY
 
 
-@ReprInjector.simple((
- 'getID', 'avatarSessionID'), (
- 'getName', 'name'), (
- 'getTags', 'tags'), (
- 'getScope', 'scope'))
+@ReprInjector.simple(('getID', 'avatarSessionID'), ('getName', 'name'), ('getTags', 'tags'), ('getScope', 'scope'))
 class BattleUserEntity(UserEntity):
     _sessionProvider = dependency.descriptor(IBattleSessionProvider)
 
@@ -604,7 +589,7 @@ class BattleUserEntity(UserEntity):
 
 @ReprInjector.withParent(('getGOS', 'gos'))
 class SharedUserEntity(LobbyUserEntity):
-    __slots__ = ('_gos', )
+    __slots__ = ('_gos',)
 
     def __init__(self, userID, name=None, tags=None, gos=GAME_ONLINE_STATUS.UNDEFINED, clanInfo=None, globalRating=-1, note='', scope=None):
         super(SharedUserEntity, self).__init__(userID, name, tags, clanInfo, globalRating, note, scope)
@@ -626,11 +611,7 @@ class SharedUserEntity(LobbyUserEntity):
         self._gos = GAME_ONLINE_STATUS.UNDEFINED
 
 
-@ReprInjector.simple((
- 'getID', 'dbID'), (
- 'getFullName', 'fullName'), (
- 'getClanInfo', 'clanInfo'), (
- 'getScope', 'scope'))
+@ReprInjector.simple(('getID', 'dbID'), ('getFullName', 'fullName'), ('getClanInfo', 'clanInfo'), ('getScope', 'scope'))
 class CurrentLobbyUserEntity(LobbyUserEntity):
 
     def __init__(self, userID, name=None, clanInfo=None, scope=None):
@@ -651,10 +632,7 @@ class CurrentLobbyUserEntity(LobbyUserEntity):
         return True
 
 
-@ReprInjector.simple((
- 'getID', 'avatarSessionID'), (
- 'getName', 'name'), (
- 'getScope', 'scope'))
+@ReprInjector.simple(('getID', 'avatarSessionID'), ('getName', 'name'), ('getScope', 'scope'))
 class CurrentBattleUserEntity(BattleUserEntity):
 
     def getTags(self):

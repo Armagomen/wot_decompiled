@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/dialogs/enlarge_barracks_dialog.py
 import BigWorld
 from base_crew_dialog_template_view import BaseCrewDialogTemplateView
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
@@ -22,8 +24,7 @@ from helpers import dependency
 from skeletons.gui.shared import IItemsCache
 
 class EnlargeBarracksDialog(BaseCrewDialogTemplateView):
-    __slots__ = ('__berthPrice', '__berthsInPack', '__defaultBerthPrice', '__isDiscount',
-                 '__countPacksBerths', '__pricePacksBerths')
+    __slots__ = ('__berthPrice', '__berthsInPack', '__defaultBerthPrice', '__isDiscount', '__countPacksBerths', '__pricePacksBerths')
     LAYOUT_ID = R.views.lobby.crew.dialogs.EnlargeBarracksDialog()
     VIEW_MODEL = EnlargeBarracksDialogModel
     itemsCache = dependency.descriptor(IItemsCache)
@@ -39,9 +40,7 @@ class EnlargeBarracksDialog(BaseCrewDialogTemplateView):
             currency = self.__pricePacksBerths.getCurrency()
             shortage = self.__pricePacksBerths.get(currency) - self.itemsCache.items.stats.money.get(currency)
             return createBackportTooltipContent(TOOLTIPS_CONSTANTS.NOT_ENOUGH_MONEY, (shortage, currency))
-        if contentID == R.views.lobby.crew.tooltips.BunksConfirmDiscountTooltip():
-            return BunksConfirmDiscountTooltip(bunksCount=self.__berthsInPack, oldCost=self.__defaultBerthPrice.gold, newCost=self.__berthPrice.gold, isEnough=self.__isEnoughMoney())
-        return super(EnlargeBarracksDialog, self).createToolTipContent(event=event, contentID=contentID)
+        return BunksConfirmDiscountTooltip(bunksCount=self.__berthsInPack, oldCost=self.__defaultBerthPrice.gold, newCost=self.__berthPrice.gold, isEnough=self.__isEnoughMoney()) if contentID == R.views.lobby.crew.tooltips.BunksConfirmDiscountTooltip() else super(EnlargeBarracksDialog, self).createToolTipContent(event=event, contentID=contentID)
 
     @property
     def viewModel(self):
@@ -52,19 +51,12 @@ class EnlargeBarracksDialog(BaseCrewDialogTemplateView):
             showBuyGoldForBerth(self.__pricePacksBerths.gold)
             return False
         doActions = []
-        doActions.append((
-         factory.BUY_BERTHS,
-         self.__pricePacksBerths,
-         self.__countPacksBerths))
+        doActions.append((factory.BUY_BERTHS, self.__pricePacksBerths, self.__countPacksBerths))
         BigWorld.player().doActions(doActions)
         return True
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onBunksCountChange, self.__onBunksCountChange),
-         (
-          self.itemsCache.onSyncCompleted, self.__onCacheResync))
+        return ((self.viewModel.onBunksCountChange, self.__onBunksCountChange), (self.itemsCache.onSyncCompleted, self.__onCacheResync))
 
     def _onLoading(self, *args, **kwargs):
         slotsCount, freeBerthsCount = getBethsSlotsCount()
@@ -77,12 +69,10 @@ class EnlargeBarracksDialog(BaseCrewDialogTemplateView):
         super(EnlargeBarracksDialog, self)._onLoading(*args, **kwargs)
 
     def _getCallbacks(self):
-        return (
-         (
-          'stats.gold', self._onGoldUpdate),)
+        return (('stats.gold', self._onGoldUpdate),)
 
     def _onGoldUpdate(self, *_):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             vm.currency.setIsEnough(self.__isEnoughMoney())
 
     def _setResult(self, result):
@@ -91,7 +81,7 @@ class EnlargeBarracksDialog(BaseCrewDialogTemplateView):
         super(EnlargeBarracksDialog, self)._setResult(result)
 
     def _updateViewMode(self, freeBunksCount, allBunksCount):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             stepper = vm.stepper
             currency = vm.currency
             stepper.setMinimum(self.__berthsInPack)
@@ -115,7 +105,7 @@ class EnlargeBarracksDialog(BaseCrewDialogTemplateView):
     def __onBunksCountChange(self, selectedCount):
         self.__countPacksBerths = selectedCount / self.__berthsInPack
         self.__pricePacksBerths = self.__berthPrice * self.__countPacksBerths
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             vm.currency.setValue(self.__pricePacksBerths.gold)
             vm.currency.setIsEnough(self.__isEnoughMoney())
 
@@ -124,7 +114,7 @@ class EnlargeBarracksDialog(BaseCrewDialogTemplateView):
             return
         self.__prepareBerthInfo()
         if self.__isDiscount != self.viewModel.currency.getIsDiscount():
-            with self.viewModel.transaction() as (vm):
+            with self.viewModel.transaction() as vm:
                 currency = vm.currency
                 currency.setValue(self.__pricePacksBerths.gold)
                 currency.setIsEnough(self.__isEnoughMoney())

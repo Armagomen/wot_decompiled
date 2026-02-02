@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/framework/ScopeTemplates.py
 from frameworks.wulf import WindowLayer
 from soft_exception import SoftException
 
@@ -29,7 +31,7 @@ class SimpleScope(object):
         return
 
     def __repr__(self):
-        return ('{}[{}]=[scopeType={}, parentScope={}]').format(self.__class__.__name__, hex(id(self)), self.__scopeType, self.__parentScope)
+        return '{}[{}]=[scopeType={}, parentScope={}]'.format(self.__class__.__name__, hex(id(self)), self.__scopeType, self.__parentScope)
 
     def _setParentScope(self, parentScope):
         if self.__parentScope is not None:
@@ -46,8 +48,7 @@ class SimpleScope(object):
         return scopeType == self.getScopeType()
 
     def getRecommendedScopeData(self, currentScope):
-        return (
-         self.getScopeType(), False)
+        return (self.getScopeType(), False)
 
     def addDependencedScope(self, simpleScope):
         self.__dependencedScopes.append(simpleScope)
@@ -99,8 +100,7 @@ class GlobalScope(SimpleScope):
         if self.isInScope(SCOPE_TYPE.GLOBAL):
             recommendedViewScope = SCOPE_TYPE.VIEW
             scopeIsGlobal = True
-        return (
-         recommendedViewScope, scopeIsGlobal)
+        return (recommendedViewScope, scopeIsGlobal)
 
 
 GLOBAL_SCOPE = GlobalScope(SCOPE_TYPE.GLOBAL)
@@ -112,8 +112,8 @@ DEFAULT_SCOPE = VIEW_SCOPE
 LOBBY_SUB_SCOPE = SimpleScope(SCOPE_TYPE.LOBBY_SUB, DEFAULT_SCOPE)
 LOBBY_TOP_SUB_SCOPE = SimpleScope(SCOPE_TYPE.LOBBY_TOP_SUB, DEFAULT_SCOPE)
 WINDOW_VIEWED_MULTISCOPE = MultipleScope(SCOPE_TYPE.WINDOW_VIEWED_MULTISCOPE, (WINDOW_SCOPE, LOBBY_SUB_SCOPE, LOBBY_TOP_SUB_SCOPE))
-VIEW_TYPES_TO_SCOPES = {WindowLayer.VIEW: VIEW_SCOPE, 
-   WindowLayer.WINDOW: WINDOW_SCOPE, 
-   WindowLayer.TOP_WINDOW: TOP_WINDOW_SCOPE, 
-   WindowLayer.SUB_VIEW: LOBBY_SUB_SCOPE, 
-   WindowLayer.TOP_SUB_VIEW: LOBBY_TOP_SUB_SCOPE}
+VIEW_TYPES_TO_SCOPES = {WindowLayer.VIEW: VIEW_SCOPE,
+ WindowLayer.WINDOW: WINDOW_SCOPE,
+ WindowLayer.TOP_WINDOW: TOP_WINDOW_SCOPE,
+ WindowLayer.SUB_VIEW: LOBBY_SUB_SCOPE,
+ WindowLayer.TOP_SUB_VIEW: LOBBY_TOP_SUB_SCOPE}

@@ -1,4 +1,7 @@
-import os, logging
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/wotlda/cache.py
+import os
+import logging
 from typing import Dict, Any
 from helpers.local_cache import FileLocalCache
 from gui.game_control.wotlda.constants import LAST_UPDATE_TIMESTAMP, SupportedWTRRange
@@ -8,7 +11,7 @@ class WotldaCache(FileLocalCache):
     _CACHE_TYPE = ''
 
     def __init__(self):
-        super(WotldaCache, self).__init__('wotlda_cache', (self._CACHE_TYPE, 'loadouts'), async=True)
+        super(WotldaCache, self).__init__('wotlda_cache', (self._CACHE_TYPE, 'loadouts'), isAsync=True)
         self._filePath = self._buildLocalCachePath('wotlda_cache', (self._CACHE_TYPE, 'loadouts'))
         self._cache = {}
 

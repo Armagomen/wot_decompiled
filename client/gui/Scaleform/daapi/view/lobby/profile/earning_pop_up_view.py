@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/profile/earning_pop_up_view.py
 from collections import deque
 from functools import partial
 from frameworks.wulf import ViewFlags
@@ -33,8 +35,7 @@ class EarningPopUpView(EarningPopUpViewMeta):
 
 
 class _NonOverlappingViewsLifecycleHandler(IViewLifecycleHandler):
-    __NON_OVERLAPPING_VIEWS = (
-     VIEW_ALIAS.BATTLE_QUEUE,)
+    __NON_OVERLAPPING_VIEWS = (VIEW_ALIAS.BATTLE_QUEUE,)
 
     def __init__(self, stopAnimationCallback):
         super(_NonOverlappingViewsLifecycleHandler, self).__init__([ ViewKey(alias) for alias in self.__NON_OVERLAPPING_VIEWS ])
@@ -65,16 +66,10 @@ class _EarningPopUpView(ViewImpl):
         return self.getViewModel()
 
     def _getListeners(self):
-        return (
-         (
-          events.Achievements20Event.ACHIEVEMENT_EARNED, self.__achEarnedEventHandler, EVENT_BUS_SCOPE.LOBBY),)
+        return ((events.Achievements20Event.ACHIEVEMENT_EARNED, self.__achEarnedEventHandler, EVENT_BUS_SCOPE.LOBBY),)
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onShown, self.__onShown),
-         (
-          self.viewModel.onGoToAchievement, self.__onGoToAchievement))
+        return ((self.viewModel.onShown, self.__onShown), (self.viewModel.onGoToAchievement, self.__onGoToAchievement))
 
     def _initialize(self, *args, **kwargs):
         super(_EarningPopUpView, self)._initialize(*args, **kwargs)
@@ -98,10 +93,9 @@ class _EarningPopUpView(ViewImpl):
             self.__onShown()
 
     def __startAnimation(self, data):
-        achievements = sorted(data, key=lambda achievement: (
-         not achievement.isDeprecated, achievement.getScore()), reverse=True)
+        achievements = sorted(data, key=lambda achievement: (not achievement.isDeprecated, achievement.getScore()), reverse=True)
         self.__uiLogging.onViewOpen(AdvancedAchievementViewKey.EARNING)
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             achievementsModel = model.getAchievements()
             achievementsModel.clear()
             for achievement in achievements:

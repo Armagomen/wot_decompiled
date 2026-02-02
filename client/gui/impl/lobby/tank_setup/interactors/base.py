@@ -1,4 +1,7 @@
-import typing, Event
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/interactors/base.py
+import typing
+import Event
 from gui.impl.lobby.tank_setup.tank_setup_helper import NONE_ID
 from gui.shared.utils import decorators
 from helpers import dependency
@@ -44,10 +47,7 @@ class BaseAutoRenewal(object):
         raise NotImplementedError
 
     def getLocalValue(self):
-        if self._value is None:
-            return self.getValue()
-        else:
-            return self._value
+        return self.getValue() if self._value is None else self._value
 
     def setLocalValue(self, value):
         self._value = value
@@ -80,7 +80,7 @@ class BaseInteractor(object):
         return
 
     def getName(self):
-        return
+        return None
 
     def getAutoRenewal(self):
         return self.__autoRenewal
@@ -154,7 +154,7 @@ class BaseInteractor(object):
         pass
 
     def getChangedList(self):
-        setOfPrevLayout = set(item.intCD for item in self.getInstalledLayout() if item is not None)
+        setOfPrevLayout = set((item.intCD for item in self.getInstalledLayout() if item is not None))
         currentItems = []
         for item in self.getCurrentLayout():
             if item and item.intCD not in setOfPrevLayout:
@@ -181,7 +181,7 @@ class BaseInteractor(object):
         return
 
     def _createAutoRenewal(self):
-        return
+        return None
 
     def __createAutoRenewal(self):
         self.__autoRenewal = self._createAutoRenewal()

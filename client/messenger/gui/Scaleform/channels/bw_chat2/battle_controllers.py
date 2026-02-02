@@ -1,4 +1,7 @@
-import functools, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/gui/Scaleform/channels/bw_chat2/battle_controllers.py
+import functools
+import BigWorld
 from arena_component_system.sector_base_arena_component import ID_TO_BASENAME
 from debug_utils import LOG_ERROR
 from gui.Scaleform.locale.EPIC_BATTLE import EPIC_BATTLE
@@ -45,7 +48,7 @@ class _ChannelController(BattleLayout):
 
     @proto_getter(PROTO_TYPE.BW_CHAT2)
     def proto(self):
-        return
+        return None
 
     def getSettings(self):
         return self._channel.getProtoData().settings
@@ -64,18 +67,12 @@ class _ChannelController(BattleLayout):
     def canSendMessage(self):
         if not self.isEnabled():
             return (False, '')
-        if self.proto.arenaChat.isBroadcastInCooldown():
-            return (False,
-             getBroadcastIsInCoolDownMessage(MESSENGER_LIMITS.BROADCASTS_FROM_CLIENT_COOLDOWN_SEC))
-        return (True, '')
+        return (False, getBroadcastIsInCoolDownMessage(MESSENGER_LIMITS.BROADCASTS_FROM_CLIENT_COOLDOWN_SEC)) if self.proto.arenaChat.isBroadcastInCooldown() else (True, '')
 
     def _formatMessage(self, message, doFormatting=True):
         avatarSessionID = message.avatarSessionID
         isCurrent = isCurrentPlayer(avatarSessionID)
-        if not doFormatting:
-            return (isCurrent, message.text)
-        return (isCurrent,
-         self._mBuilder.setColors(avatarSessionID).setName(avatarSessionID, message.accountName).setText(message.text).build())
+        return (isCurrent, message.text) if not doFormatting else (isCurrent, self._mBuilder.setColors(avatarSessionID).setName(avatarSessionID, message.accountName).setText(message.text).build())
 
     def _formatCommand(self, command):
         raise SoftException('This method should not be reached in this context')
@@ -124,7 +121,12 @@ class TeamChannelController(_ChannelController):
 
 
 _EPIC_MINIMAP_ZOOM_MODE_SCALE = 500
-_NONCAPTURED_BASES_FOR_LANE_DICT = {1: {1: 4, 2: 1}, 2: {1: 5, 2: 2}, 3: {1: 6, 2: 3}}
+_NONCAPTURED_BASES_FOR_LANE_DICT = {1: {1: 4,
+     2: 1},
+ 2: {1: 5,
+     2: 2},
+ 3: {1: 6,
+     2: 3}}
 
 class EpicTeamChannelController(TeamChannelController):
 
@@ -150,8 +152,8 @@ class EpicTeamChannelController(TeamChannelController):
             if hqs:
                 hqActive = hqs[hqs.keys()[0]].isActive
             nonCapturedBases = sectorBaseComp.getNumNonCapturedBasesByLane(lane)
-            if 0 < sectorID < 7 and 0 < lane < 4:
-                suffix = '&lt;' + i18n.makeString(EPIC_BATTLE.ZONE_ZONE_TEXT) + ' ' + ID_TO_BASENAME[sectorID] + '&gt;'
+            if 0 < sectorID < 7:
+                suffix = 0 < lane < 4 and '&lt;' + i18n.makeString(EPIC_BATTLE.ZONE_ZONE_TEXT) + ' ' + ID_TO_BASENAME[sectorID] + '&gt;'
             elif nonCapturedBases == 0 or hqActive and sectorID > 6:
                 suffix = '&lt;' + i18n.makeString(EPIC_BATTLE.ZONE_HEADQUARTERS_TEXT) + '&gt;'
             return suffix
@@ -162,9 +164,7 @@ class EpicTeamChannelController(TeamChannelController):
         if not doFormatting:
             return (isCurrent, message.text)
         suffix = self.__getNameSuffix(avatarSessionID)
-        return (
-         isCurrent,
-         self._mBuilder.setColors(avatarSessionID).setName(avatarSessionID, message.accountName, suffix=suffix).setText(message.text).build())
+        return (isCurrent, self._mBuilder.setColors(avatarSessionID).setName(avatarSessionID, message.accountName, suffix=suffix).setText(message.text).build())
 
     def _formatCommand(self, command):
         isCurrent = False
@@ -207,10 +207,7 @@ class SquadChannelController(_ChannelController):
     def canSendMessage(self):
         if not self.isEnabled():
             return (False, '')
-        if self.proto.unitChat.isBroadcastInCooldown():
-            return (False,
-             getBroadcastIsInCoolDownMessage(MESSENGER_LIMITS.BROADCASTS_FROM_CLIENT_COOLDOWN_SEC))
-        return (True, '')
+        return (False, getBroadcastIsInCoolDownMessage(MESSENGER_LIMITS.BROADCASTS_FROM_CLIENT_COOLDOWN_SEC)) if self.proto.unitChat.isBroadcastInCooldown() else (True, '')
 
     def _broadcast(self, message):
         self.proto.unitChat.broadcast(message, 1)

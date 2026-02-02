@@ -1,4 +1,10 @@
-import logging, math, typing, BigWorld, CGF
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/cgf_components/stats_display_components.py
+import logging
+import math
+import typing
+import BigWorld
+import CGF
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as BONUS_CAPS
 from gui.shared.vehicle_stats_helper import getStatTrackersVehicleStats
 from items.components.c11n_components import adjustToAllowedStatTrackerNumber
@@ -18,10 +24,7 @@ _logger = logging.getLogger(__name__)
 @registerComponent
 class StatisticDisplayComponent(object):
     domain = CGF.DomainOption.DomainClient
-    delayList = ComponentProperty(type=CGFMetaTypes.FLOAT_LIST, editorName='Delays List', value=(0.25,
-                                                                                                 0.75,
-                                                                                                 1.25,
-                                                                                                 1.75))
+    delayList = ComponentProperty(type=CGFMetaTypes.FLOAT_LIST, editorName='Delays List', value=(0.25, 0.75, 1.25, 1.75))
     trackedStatistic = ComponentProperty(type=CGFMetaTypes.STRING, editorName='Tracked statistic', value=StatTrackerStatistic.KILLS)
 
     def __init__(self):
@@ -38,12 +41,9 @@ class DelayDisplayUpdater(object):
 
 def vehicleKillsStatsGetter(vehicle, arenaDP):
     from SimulatedVehicle import SimulatedVehicle
-    vID = (isinstance(vehicle, SimulatedVehicle) or vehicle).id if 1 else vehicle.realVehicleID
+    vID = vehicle.id if not isinstance(vehicle, SimulatedVehicle) else vehicle.realVehicleID
     vStats = arenaDP.getVehicleStats(vID)
-    if vStats is not None:
-        return vStats.enemyKills
-    else:
-        return 0
+    return vStats.enemyKills if vStats is not None else 0
 
 
 def roundDown(value, digitAfterDecimal):
@@ -51,8 +51,7 @@ def roundDown(value, digitAfterDecimal):
     return math.floor(value * digitsFactor) / digitsFactor
 
 
-MAGNITUDE_SYMBOL_LIST = [
- '', 'K', 'M']
+MAGNITUDE_SYMBOL_LIST = ['', 'K', 'M']
 OVERFLOW_SYMBOL = '!'
 
 def numberStatsFormatter(value, digitLimit):
@@ -68,13 +67,12 @@ def numberStatsFormatter(value, digitLimit):
     if magnitude:
         digitAfterDecimal = digitLimit - len(str(int(value))) - 1
     value = roundDown(value, digitAfterDecimal) if digitAfterDecimal else int(value)
-    formattedValue = ('{:.{}f}').format(value, digitAfterDecimal)
-    return ('{}{}').format(formattedValue, MAGNITUDE_SYMBOL_LIST[magnitude]).rjust(digitLimit, '0')
+    formattedValue = '{:.{}f}'.format(value, digitAfterDecimal)
+    return '{}{}'.format(formattedValue, MAGNITUDE_SYMBOL_LIST[magnitude]).rjust(digitLimit, '0')
 
 
 def displaySymbolsIterator(formattedNum):
-    return [ first if second != '.' else first + second for first, second in zip(formattedNum, formattedNum[1:] + ' ') if first != '.'
-           ]
+    return [ (first if second != '.' else first + second) for first, second in zip(formattedNum, formattedNum[1:] + ' ') if first != '.' ]
 
 
 def _isAvatarReady():

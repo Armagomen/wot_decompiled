@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/dialogs/module_deconstruct_dialogs.py
 from adisp import adisp_process
 import logging
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -72,7 +74,7 @@ class DeconstructDialogView(ViewImpl):
 
 
 class DeconstructDialogWindow(WindowImpl):
-    __slots__ = ('__blur', )
+    __slots__ = ('__blur',)
 
     def __init__(self, itemIntCD, parent=None):
         super(DeconstructDialogWindow, self).__init__(WindowFlags.WINDOW_FULLSCREEN | WindowFlags.WINDOW, content=DeconstructDialogView(itemIntCD), parent=parent)

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/progression_styles/stage_switcher.py
 import logging
 from CurrentVehicle import g_currentVehicle
 from frameworks.wulf import ViewFlags, ViewSettings
@@ -44,7 +46,7 @@ class StageSwitcherView(ViewImpl):
     def _onLoading(self, *args, **kwargs):
         super(StageSwitcherView, self)._onLoading(*args, **kwargs)
         progressionLevel = self.__ctx.mode.getStyleProgressionLevel()
-        with self.getViewModel().transaction() as (model):
+        with self.getViewModel().transaction() as model:
             model.setCurrentLevel(progressionLevel)
             model.setSelectedLevel(progressionLevel)
             style = self.__ctx.mode.modifiedStyle
@@ -66,7 +68,7 @@ class StageSwitcherView(ViewImpl):
 
     def __onItemsRemoved(self, *_, **__):
         if self.__ctx is not None and self.__ctx.modeId in CustomizationModes.BASE_STYLES:
-            with self.viewModel.transaction() as (tx):
+            with self.viewModel.transaction() as tx:
                 tx.setSelectedLevel(self.__ctx.mode.getStyleProgressionLevel())
         return
 
@@ -81,7 +83,7 @@ class StageSwitcherView(ViewImpl):
         return
 
     def __updateModel(self):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             style = self.__ctx.mode.modifiedStyle
             tx.setSelectedLevel(self.__ctx.mode.getStyleProgressionLevel())
             if style is not None:
@@ -91,7 +93,7 @@ class StageSwitcherView(ViewImpl):
     def __onChange(self, *args):
         if args and args[0]['selectedLevel'] is not None:
             selectedLevel = int(args[0]['selectedLevel'])
-            with self.viewModel.transaction() as (tx):
+            with self.viewModel.transaction() as tx:
                 tx.setSelectedLevel(selectedLevel)
             if self.__ctx is not None and self.__ctx.modeId in CustomizationModes.BASE_STYLES:
                 self.__ctx.mode.changeStyleProgressionLevel(selectedLevel)

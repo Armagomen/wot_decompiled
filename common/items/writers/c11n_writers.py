@@ -1,6 +1,11 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/items/writers/c11n_writers.py
 from collections import namedtuple
 from constants import IS_EDITOR
-import Math, ResMgr, typing, re
+import Math
+import ResMgr
+import typing
+import re
 from string import lower
 import items.vehicles as iv
 from items import _xml, parseIntCompactDescr
@@ -99,11 +104,11 @@ def writeItemType(writer, cache, folder, itemName, endGroupWriter=None):
 
     for group in groups:
         if group.editorData.sourceXml is None:
-            raise SoftException(('Group {} has no sourceXml, data format has changed?').format(group.name))
+            raise SoftException('Group {} has no sourceXml, data format has changed?'.format(group.name))
         sourceXml = group.editorData.sourceXml
         listRewriter = fileListRewriters.get(sourceXml, None)
         if listRewriter is None:
-            raise SoftException(('Group {} sourceXml not found in fileListRewriters').format(group.name))
+            raise SoftException('Group {} sourceXml not found in fileListRewriters'.format(group.name))
         groupSection = listRewriter.next(sectionPicker=GroupSectionPicker(group))
         changed = writeGroup(writer, group, groupSection, itemName, endGroupWriter)
         if changed:
@@ -154,15 +159,14 @@ def writeFontType(writer, cache, folder, itemName):
                 if isection.has_key('id'):
                     id = isection['id'].asInt
                     if id in fontsSections.keys():
-                        raise SoftException(('Some font items have the same id {}.').format(id))
+                        raise SoftException('Some font items have the same id {}.'.format(id))
                     if id in fontItems.keys():
                         fontsSections[id] = isection
                     else:
                         refSection.deleteSection(isection)
                         changedRefs.add(refSection)
 
-            return (
-             fontRefs, fontsSections)
+            return (fontRefs, fontsSections)
 
         return
 
@@ -171,14 +175,14 @@ def writeFontType(writer, cache, folder, itemName):
         return
     else:
         if sourceFiles is None:
-            raise SoftException(('Item {} has no sourceXml, data format has changed?').format(itemName + str(id)))
+            raise SoftException('Item {} has no sourceXml, data format has changed?'.format(itemName + str(id)))
         items = cache.fonts
         changedRefs = set()
         refSections, fontsSections = parseSourceSection(sourceFiles, items, changedRefs)
         for id, item in items.items():
             sourceFile = item.editorData.sourceXml
             if sourceFile not in refSections.keys():
-                raise SoftException(("writeFontType: Couldn't find file {} ").format(sourceFile))
+                raise SoftException("writeFontType: Couldn't find file {} ".format(sourceFile))
             sourceRef = refSections[sourceFile]
             if id not in fontsSections.keys():
                 fontsSections[id] = sourceRef.createSection(itemName)
@@ -212,21 +216,21 @@ def natsorted(seq):
 class VehicleFilterTagsConvertor(object):
 
     def convertToString(self, valuesList):
-        result = (' ').join(natsorted(valuesList))
+        result = ' '.join(natsorted(valuesList))
         return result
 
 
 class VehicleFilterLevelConvertor(object):
 
     def convertToString(self, valuesList):
-        result = (' ').join(map(str, sorted(valuesList)))
+        result = ' '.join(map(str, sorted(valuesList)))
         return result
 
 
 class VehicleFilterNationConvertor(object):
 
     def convertToString(self, valuesList):
-        result = (' ').join(natsorted(map(lambda item: NAMES[item], valuesList)))
+        result = ' '.join(natsorted(map(lambda item: NAMES[item], valuesList)))
         return result
 
 
@@ -243,21 +247,21 @@ class VehicleFilterVehicleConvertor(object):
                 tankName = basicInfo.name
             return tankName
 
-        result = (' ').join(natsorted(map(lambda item: getTankName(item), valuesList)))
+        result = ' '.join(natsorted(map(lambda item: getTankName(item), valuesList)))
         return result
 
 
 class StringFilterConvertor(object):
 
     def convertToString(self, valuesList):
-        result = (' ').join(natsorted(valuesList))
+        result = ' '.join(natsorted(valuesList))
         return result
 
 
 class IntegerFilterConvertor(object):
 
     def convertToString(self, valuesList):
-        result = (' ').join(map(str, sorted(valuesList)))
+        result = ' '.join(map(str, sorted(valuesList)))
         return result
 
 
@@ -267,8 +271,8 @@ class BoolFilterConvertor(object):
         return str(valuesList)
 
 
-DECAL_TYPE_STRING = {DecalType.EMBLEM: 'EMBLEM', 
-   DecalType.INSCRIPTION: 'INSCRIPTION'}
+DECAL_TYPE_STRING = {DecalType.EMBLEM: 'EMBLEM',
+ DecalType.INSCRIPTION: 'INSCRIPTION'}
 
 class ItemsFilterDecalTypeConvertor(object):
 
@@ -277,44 +281,42 @@ class ItemsFilterDecalTypeConvertor(object):
         def getDecalTypeMame(typeId):
             return DECAL_TYPE_STRING[typeId]
 
-        result = (' ').join(natsorted(map(lambda item: getDecalTypeMame(item), valuesList)))
+        result = ' '.join(natsorted(map(lambda item: getDecalTypeMame(item), valuesList)))
         return result
 
 
 Description = namedtuple('FiltedFiels', ('section', 'attributeName', 'convertor', 'defaultValue'))
-VEHICLE_FILTER_VALUE_DESCRIPTION = (
- Description('nations', 'nations', VehicleFilterNationConvertor(), ''),
+VEHICLE_FILTER_VALUE_DESCRIPTION = (Description('nations', 'nations', VehicleFilterNationConvertor(), ''),
  Description('tags', 'tags', VehicleFilterTagsConvertor(), ''),
  Description('levels', 'levels', VehicleFilterLevelConvertor(), ''),
  Description('vehicles', 'vehicles', VehicleFilterVehicleConvertor(), ''))
-ITEMS_FILTER_VALUE_DESCRIPTION = (
- Description('id', 'ids', IntegerFilterConvertor(), '0'),
+ITEMS_FILTER_VALUE_DESCRIPTION = (Description('id', 'ids', IntegerFilterConvertor(), '0'),
  Description('itemGroupName', 'itemGroupNames', StringFilterConvertor(), ''),
  Description('tags', 'tags', StringFilterConvertor(), ''),
  Description('type', 'types', ItemsFilterDecalTypeConvertor(), '-1'),
  Description('historical', 'edCustomizationDisplayTypes', IntegerFilterConvertor(), '0'))
-FILTER_ID_NAME = {CustomizationType.PROJECTION_DECAL: 'projection_decal', 
-   CustomizationType.PERSONAL_NUMBER: 'personal_number', 
-   CustomizationType.DECAL: 'decal', 
-   CustomizationType.ATTACHMENT: 'attachment'}
-ALTERNATE_TO_NAME = {CustomizationType.DECAL: 'decal', 
-   CustomizationType.PROJECTION_DECAL: 'projection_decal', 
-   CustomizationType.PAINT: 'paint', 
-   CustomizationType.CAMOUFLAGE: 'camouflage', 
-   CustomizationType.MODIFICATION: 'modification', 
-   CustomizationType.PERSONAL_NUMBER: 'personal_number'}
-CUSTOMIZATION_ITEMS_TYPE_TO_NAME = {CustomizationType.DECAL: 'decal', 
-   CustomizationType.PROJECTION_DECAL: 'projection_decal', 
-   CustomizationType.PAINT: 'paint', 
-   CustomizationType.CAMOUFLAGE: 'camouflage', 
-   CustomizationType.MODIFICATION: 'modification', 
-   CustomizationType.PERSONAL_NUMBER: 'personal_number', 
-   CustomizationType.STYLE: 'style', 
-   CustomizationType.INSIGNIA: 'insignia', 
-   CustomizationType.FONT: 'font', 
-   CustomizationType.SEQUENCE: 'sequence', 
-   CustomizationType.ATTACHMENT: 'attachment', 
-   CustomizationType.STAT_TRACKER: 'stat_tracker'}
+FILTER_ID_NAME = {CustomizationType.PROJECTION_DECAL: 'projection_decal',
+ CustomizationType.PERSONAL_NUMBER: 'personal_number',
+ CustomizationType.DECAL: 'decal',
+ CustomizationType.ATTACHMENT: 'attachment'}
+ALTERNATE_TO_NAME = {CustomizationType.DECAL: 'decal',
+ CustomizationType.PROJECTION_DECAL: 'projection_decal',
+ CustomizationType.PAINT: 'paint',
+ CustomizationType.CAMOUFLAGE: 'camouflage',
+ CustomizationType.MODIFICATION: 'modification',
+ CustomizationType.PERSONAL_NUMBER: 'personal_number'}
+CUSTOMIZATION_ITEMS_TYPE_TO_NAME = {CustomizationType.DECAL: 'decal',
+ CustomizationType.PROJECTION_DECAL: 'projection_decal',
+ CustomizationType.PAINT: 'paint',
+ CustomizationType.CAMOUFLAGE: 'camouflage',
+ CustomizationType.MODIFICATION: 'modification',
+ CustomizationType.PERSONAL_NUMBER: 'personal_number',
+ CustomizationType.STYLE: 'style',
+ CustomizationType.INSIGNIA: 'insignia',
+ CustomizationType.FONT: 'font',
+ CustomizationType.SEQUENCE: 'sequence',
+ CustomizationType.ATTACHMENT: 'attachment',
+ CustomizationType.STAT_TRACKER: 'stat_tracker'}
 CUSTOMIZATION_ITEMS_NAME_TO_TYPE = {v:k for k, v in CUSTOMIZATION_ITEMS_TYPE_TO_NAME.items()}
 
 def saveItemFilter(filter, section, filterName, valueDescription):
@@ -329,11 +331,10 @@ def saveItemFilter(filter, section, filterName, valueDescription):
         for iname, isection in filterSection.items():
             if iname == 'include':
                 includeCount += 1
-            elif iname == 'exclude':
+            if iname == 'exclude':
                 excludeCount += 1
 
-        return (
-         includeCount, excludeCount)
+        return (includeCount, excludeCount)
 
     includeSectCnt, excludeSectCnt = countFilters(filterSection)
     if includeSectCnt != includeCount or excludeSectCnt != excludeCount:
@@ -364,17 +365,16 @@ def saveItemFilter(filter, section, filterName, valueDescription):
                 needWrite = True
                 if isinstance(listOfValues, bool):
                     needWrite = listOfValues
+                elif len(listOfValues) == 0:
+                    needWrite = False
+                if needWrite is False:
+                    if subFilterSection.has_key(valueSectionName):
+                        subFilterSection.deleteSection(valueSectionName)
+                        return True
                 else:
-                    if len(listOfValues) == 0:
-                        needWrite = False
-                    if needWrite is False:
-                        if subFilterSection.has_key(valueSectionName):
-                            subFilterSection.deleteSection(valueSectionName)
-                            return True
-                    else:
-                        strValue = valuedescr.convertor.convertToString(listOfValues)
-                        if strValue is None:
-                            return False
+                    strValue = valuedescr.convertor.convertToString(listOfValues)
+                    if strValue is None:
+                        return False
                     return _xml.rewriteString(subFilterSection, valueSectionName, strValue, valuedescr.defaultValue)
                 return False
 
@@ -571,19 +571,18 @@ class ComponentXmlSerializer(object):
             if objSection is None:
                 objSection = section.createSection(key)
                 changed = True
-            for fieldName, fieldType in obj.fields.iteritems():
-                if fieldType.flags & FieldFlags.DEPRECATED:
-                    continue
-                if fieldType.flags & FieldFlags.NON_XML:
-                    continue
-                value = getattr(obj, fieldName)
-                lenght = 1
-                if hasattr(value, '__len__'):
-                    lenght = len(value)
-                if value is not None and lenght > 0:
-                    changed |= self.__encodeValue(objSection, fieldName, value, fieldType, defaultValuesDict, deprecatedFieldsToWrite, obj.customType)
-                else:
-                    changed |= objSection.deleteSection(fieldName)
+        for fieldName, fieldType in obj.fields.iteritems():
+            if fieldType.flags & FieldFlags.DEPRECATED:
+                continue
+            if fieldType.flags & FieldFlags.NON_XML:
+                continue
+            value = getattr(obj, fieldName)
+            lenght = 1
+            if hasattr(value, '__len__'):
+                lenght = len(value)
+            if value is not None and lenght > 0:
+                changed |= self.__encodeValue(objSection, fieldName, value, fieldType, defaultValuesDict, deprecatedFieldsToWrite, obj.customType)
+            changed |= objSection.deleteSection(fieldName)
 
         return changed
 
@@ -596,12 +595,12 @@ class ComponentXmlSerializer(object):
             if array is None:
                 array = section.createSection(key)
                 changed = True
-            for index, (name, child) in list(enumerate(array.items())):
-                if name != 'item' or IS_EDITOR and fieldType.saveTag and name != fieldType.saveTag.format(index):
-                    array.deleteSection(child)
-                    changed = True
+        for index, (name, child) in list(enumerate(array.items())):
+            if name != 'item' or IS_EDITOR and fieldType.saveTag and name != fieldType.saveTag.format(index):
+                array.deleteSection(child)
+                changed = True
 
-        with _xml.ListRewriter(array, 'item') as (children):
+        with _xml.ListRewriter(array, 'item') as children:
             for index, item in enumerate(value):
                 preferred = None
                 try:
@@ -628,25 +627,25 @@ class ComponentXmlSerializer(object):
             section = getEditorOnlySection(section, True)
         if fieldType.type == FieldTypes.VARINT:
             return _xml.rewriteInt(section, key, value, defaultValue)
+        elif fieldType.type == FieldTypes.FLOAT:
+            return _xml.rewriteFloat(section, key, value, defaultValue)
+        elif fieldType.type == FieldTypes.APPLY_AREA_ENUM:
+            if fieldType.flags & FieldFlags.SAVE_AS_STRING:
+                return _xml.rewriteString(section, key, encodeFlagEnum(ApplyArea, value).upper(), defaultValue)
+            return _xml.rewriteInt(section, key, value, defaultValue)
+        elif fieldType.type == FieldTypes.TAGS:
+            return _xml.rewriteString(section, key, ' '.join(value), defaultValue)
+        elif fieldType.type == FieldTypes.STRING:
+            return _xml.rewriteString(section, key, value, defaultValue)
+        elif fieldType.type == FieldTypes.OPTIONS_ENUM:
+            return _xml.rewriteInt(section, key, value, defaultValue)
+        elif fieldType.type & FieldTypes.TYPED_ARRAY:
+            ft = fieldType._asdict()
+            ft['type'] ^= FieldTypes.TYPED_ARRAY
+            return self.__encodeArray(section, key, value, FieldType(**ft), defaultValuesDict, deprecatedFieldsToWrite, valueType)
+        elif fieldType.type >= FieldTypes.CUSTOM_TYPE_OFFSET:
+            return self.__encodeCustomType(section, key, value, defaultValuesDict, deprecatedFieldsToWrite, valueType)
         else:
-            if fieldType.type == FieldTypes.FLOAT:
-                return _xml.rewriteFloat(section, key, value, defaultValue)
-            if fieldType.type == FieldTypes.APPLY_AREA_ENUM:
-                if fieldType.flags & FieldFlags.SAVE_AS_STRING:
-                    return _xml.rewriteString(section, key, encodeFlagEnum(ApplyArea, value).upper(), defaultValue)
-                return _xml.rewriteInt(section, key, value, defaultValue)
-            if fieldType.type == FieldTypes.TAGS:
-                return _xml.rewriteString(section, key, (' ').join(value), defaultValue)
-            if fieldType.type == FieldTypes.STRING:
-                return _xml.rewriteString(section, key, value, defaultValue)
-            if fieldType.type == FieldTypes.OPTIONS_ENUM:
-                return _xml.rewriteInt(section, key, value, defaultValue)
-            if fieldType.type & FieldTypes.TYPED_ARRAY:
-                ft = fieldType._asdict()
-                ft['type'] ^= FieldTypes.TYPED_ARRAY
-                return self.__encodeArray(section, key, value, FieldType(**ft), defaultValuesDict, deprecatedFieldsToWrite, valueType)
-            if fieldType.type >= FieldTypes.CUSTOM_TYPE_OFFSET:
-                return self.__encodeCustomType(section, key, value, defaultValuesDict, deprecatedFieldsToWrite, valueType)
             raise SerializationException('Unsupported field type %d' % (fieldType.type,))
             return
 
@@ -689,7 +688,7 @@ class StyleXmlWriter(BaseCustomizationItemXmlWriter):
         if seasonsMask != SeasonType.ALL:
             singleOutfit = None
         changed = False
-        with _xml.ListRewriter(section, 'outfits/outfit') as (oSections):
+        with _xml.ListRewriter(section, 'outfits/outfit') as oSections:
             if singleOutfit is None:
                 for season, outfit in outfits.iteritems():
                     changed |= self.__writeOutfit(oSections, season, outfit)
@@ -704,10 +703,10 @@ class StyleXmlWriter(BaseCustomizationItemXmlWriter):
         seasonName = encodeEnum(SeasonType, season)
         oSection = oSections.next(lambda s: s.readString('season').lower() == seasonName)
         changed |= _xml.rewriteString(oSection, 'season', seasonName)
-        defaultValuesDict = {'styleProgressionLevel': 0, 
-           'slotId': 0, 
-           'scaleFactorId': DEFAULT_SCALE_FACTOR_ID, 
-           'options': 0}
+        defaultValuesDict = {'styleProgressionLevel': 0,
+         'slotId': 0,
+         'scaleFactorId': DEFAULT_SCALE_FACTOR_ID,
+         'options': 0}
         for projectionDecal in outfit.projection_decals:
             if projectionDecal.editorData.decalType == ProjectionDecalType.POSITION:
                 projectionDecal.tags = None
@@ -715,26 +714,23 @@ class StyleXmlWriter(BaseCustomizationItemXmlWriter):
                 projectionDecal.options = None
 
                 def checkDefault(val, defaultVal):
-                    if tuple(val) != defaultVal:
-                        return val
-                    else:
-                        return
+                    return val if tuple(val) != defaultVal else None
 
                 projectionDecal.position = checkDefault(projectionDecal.position, DEFAULT_POSITION)
                 projectionDecal.rotation = checkDefault(projectionDecal.rotation, DEFAULT_ROTATION)
                 projectionDecal.scale = checkDefault(projectionDecal.scale, DEFAULT_SCALE)
                 defaultValuesDict['showOn'] = encodeFlagEnum(ApplyArea, ApplyArea.NONE).upper()
                 defaultValuesDict['doubleSided'] = 0
-            else:
-                projectionDecal.position = None
-                projectionDecal.rotation = None
-                projectionDecal.scale = None
-                projectionDecal.doubleSided = None
-                projectionDecal.showOn = None
+            projectionDecal.position = None
+            projectionDecal.rotation = None
+            projectionDecal.scale = None
+            projectionDecal.doubleSided = None
+            projectionDecal.showOn = None
 
-        deprecatedFieldsToWrite = {_C11nSerializationTypes.SEQUENCE: ('position', 'rotation'), _C11nSerializationTypes.ATTACHMENT: ('position', 'rotation'), 
-           _C11nSerializationTypes.PROJECTION_DECAL: ('tintColor', 'preview', 'progressionLevel'), 
-           _C11nSerializationTypes.DECAL: 'progressionLevel'}
+        deprecatedFieldsToWrite = {_C11nSerializationTypes.SEQUENCE: ('position', 'rotation'),
+         _C11nSerializationTypes.ATTACHMENT: ('position', 'rotation'),
+         _C11nSerializationTypes.PROJECTION_DECAL: ('tintColor', 'preview', 'progressionLevel'),
+         _C11nSerializationTypes.DECAL: 'progressionLevel'}
         changed |= self.__outfitSerializer.encode(oSection, outfit, defaultValuesDict, deprecatedFieldsToWrite)
         return changed
 
@@ -751,7 +747,7 @@ class StyleXmlWriter(BaseCustomizationItemXmlWriter):
                 changed |= True
             childCount = len(alternateItemsSection)
             childIndex = childCount - 1
-            currentItemsNames = (' ').join(natsorted(map(lambda item: ALTERNATE_TO_NAME[item], alterItems.keys())))
+            currentItemsNames = ' '.join(natsorted(map(lambda item: ALTERNATE_TO_NAME[item], alterItems.keys())))
             while childIndex >= 0:
                 childSection = alternateItemsSection.child(childIndex)
                 sectionName = childSection.name
@@ -760,14 +756,14 @@ class StyleXmlWriter(BaseCustomizationItemXmlWriter):
                     changed |= True
                 childIndex -= 1
 
-            for itemType, itemValues in alterItems.iteritems():
-                alternateItemSectionName = ALTERNATE_TO_NAME[itemType]
-                oSection = alternateItemsSection[alternateItemSectionName]
-                if oSection is None:
-                    oSection = alternateItemsSection.createSection(alternateItemSectionName)
-                    changed |= True
-                itemsValue = (' ').join(map(str, sorted(itemValues)))
-                changed |= _xml.rewriteString(oSection, 'id', itemsValue)
+        for itemType, itemValues in alterItems.iteritems():
+            alternateItemSectionName = ALTERNATE_TO_NAME[itemType]
+            oSection = alternateItemsSection[alternateItemSectionName]
+            if oSection is None:
+                oSection = alternateItemsSection.createSection(alternateItemSectionName)
+                changed |= True
+            itemsValue = ' '.join(map(str, sorted(itemValues)))
+            changed |= _xml.rewriteString(oSection, 'id', itemsValue)
 
         return changed
 
@@ -789,8 +785,8 @@ class StyleXmlWriter(BaseCustomizationItemXmlWriter):
                 changed |= resizeSection(camoSection, 1, lambda id: 'id')
                 changed |= _xml.rewriteInt(camoSection, 'id', camoId)
                 for childKey, idsList in items.iteritems():
-                    childName = ('{}').format(lower(CustomizationTypeNames[childKey]))
-                    idsStr = (' ').join(map(str, idsList))
+                    childName = '{}'.format(lower(CustomizationTypeNames[childKey]))
+                    idsStr = ' '.join(map(str, idsList))
                     changed |= _xml.rewriteString(camoSection, childName, idsStr)
 
                 sectionIndex += 1
@@ -821,32 +817,33 @@ class StyleXmlWriter(BaseCustomizationItemXmlWriter):
                 isection.deleteSection(sectionName)
                 return True
             return False
-        changed = False
-        stagesCount = len(progression)
-        if stagesCount == 0:
-            if isection.has_key(sectionName):
-                isection.deleteSection(sectionName)
-                changed |= True
         else:
-            progression3dSection = isection[sectionName]
-            if progression3dSection is None:
-                progression3dSection = isection.createSection(sectionName)
-                changed |= True
-            if stagesCount != len(progression3dSection):
-                changed |= resizeSection(progression3dSection, stagesCount, lambda id: 'stage')
-            stageIndex = 0
-            for stageName, progressionValue in progression.iteritems():
-                stageSection = progression3dSection.child(stageIndex)
-                if 'materials' in progressionValue.keys():
-                    materialsList = progressionValue['materials']
-                    materialsStr = (' ').join(materialsList)
-                    changed |= _xml.rewriteString(stageSection, 'materials', materialsStr)
-                if 'additionalOutfit' in progressionValue.keys():
-                    outfit = progressionValue['additionalOutfit']
-                    changed |= self.__writeOutfits(outfit, stageSection)
-                stageIndex += 1
+            changed = False
+            stagesCount = len(progression)
+            if stagesCount == 0:
+                if isection.has_key(sectionName):
+                    isection.deleteSection(sectionName)
+                    changed |= True
+            else:
+                progression3dSection = isection[sectionName]
+                if progression3dSection is None:
+                    progression3dSection = isection.createSection(sectionName)
+                    changed |= True
+                if stagesCount != len(progression3dSection):
+                    changed |= resizeSection(progression3dSection, stagesCount, lambda id: 'stage')
+                stageIndex = 0
+                for stageName, progressionValue in progression.iteritems():
+                    stageSection = progression3dSection.child(stageIndex)
+                    if 'materials' in progressionValue.keys():
+                        materialsList = progressionValue['materials']
+                        materialsStr = ' '.join(materialsList)
+                        changed |= _xml.rewriteString(stageSection, 'materials', materialsStr)
+                    if 'additionalOutfit' in progressionValue.keys():
+                        outfit = progressionValue['additionalOutfit']
+                        changed |= self.__writeOutfits(outfit, stageSection)
+                    stageIndex += 1
 
-        return changed
+            return changed
 
 
 class PersonalNumberXmlWriter(BaseCustomizationItemXmlWriter):
@@ -928,10 +925,10 @@ def writeFontAlphabet(item):
     xmlPath = item.editorData.alphabet
     if xmlPath is None or len(xmlPath) == 0:
         return
-    section = ResMgr.openSection(xmlPath)
-    if section is None:
-        return
     else:
+        section = ResMgr.openSection(xmlPath)
+        if section is None:
+            return
         changed = False
         if len(section.items()) != len(item.editorData.alphabetList):
             changed |= resizeSection(section, len(item.editorData.alphabetList), lambda id: 'glyph')
@@ -974,10 +971,7 @@ def _rewriteFn(tp):
 
     def read(section, name, defaultValue=None):
         r = getattr(section, readTp)
-        if defaultValue is None:
-            return r(name)
-        else:
-            return r(name, defaultValue)
+        return r(name) if defaultValue is None else r(name, defaultValue)
 
     def rewrite(section, subsectionName, item, propertyPath, defaultValue=None):
         if not _needWrite(item, propertyPath):
@@ -1010,18 +1004,18 @@ rewriteVector4 = _rewriteFn('Vector4')
 def rewriteTags(section, item):
     if not _needWrite(item, 'tags'):
         return section.deleteSection('tags')
+    tags = item.tags
+    rewrite = len(tags) > 0
+    if section.has_key('tags'):
+        if not rewrite:
+            section.deleteSection('tags')
+            return True
+        oldTags = iv._readTags(None, section, 'tags', 'customizationItem')
+        rewrite = oldTags != tags
+    if rewrite:
+        tagsStr = ' '.join(tags)
+        return _xml.rewriteString(section, 'tags', tagsStr)
     else:
-        tags = item.tags
-        rewrite = len(tags) > 0
-        if section.has_key('tags'):
-            if not rewrite:
-                section.deleteSection('tags')
-                return True
-            oldTags = iv._readTags(None, section, 'tags', 'customizationItem')
-            rewrite = oldTags != tags
-        if rewrite:
-            tagsStr = (' ').join(tags)
-            return _xml.rewriteString(section, 'tags', tagsStr)
         return False
 
 
@@ -1046,7 +1040,10 @@ def rewritePalettes(section, item):
             g = iPalette >> 8 & 255
             b = iPalette >> 16 & 255
             a = iPalette >> 24 & 255
-            colorStr = (' ').join([str(r), str(g), str(b), str(a)])
+            colorStr = ' '.join([str(r),
+             str(g),
+             str(b),
+             str(a)])
             changed |= _xml.rewriteString(paletteSection, sectName(i), colorStr)
 
     editorOnlySection = getEditorOnlySection(section, True)
@@ -1193,7 +1190,7 @@ def encodeFlagEnum(enumClass, intValue):
         intValue = intValue >> 1
         degree += 1
 
-    return (' ').join(items)
+    return ' '.join(items)
 
 
 def encodeEnum(enumClass, intValue):
@@ -1203,4 +1200,4 @@ def encodeEnum(enumClass, intValue):
         if intValue == value:
             return enum.lower()
 
-    return
+    return None

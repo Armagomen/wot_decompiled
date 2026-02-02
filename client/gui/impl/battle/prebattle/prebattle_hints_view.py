@@ -1,4 +1,7 @@
-import typing, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/battle/prebattle/prebattle_hints_view.py
+import typing
+import BigWorld
 from account_helpers.settings_core.settings_constants import GRAPHICS
 from constants import ARENA_PERIOD
 from frameworks.wulf import ViewSettings, WindowFlags, WindowLayer, ViewStatus
@@ -20,7 +23,7 @@ if typing.TYPE_CHECKING:
     from hints_common.prebattle.schemas import HintModel
 
 class PrebattleHintsView(ViewImpl, BattleGUIKeyHandler, IArenaLoadController):
-    __slots__ = ('_hintModel', )
+    __slots__ = ('_hintModel',)
     _LAYOUT_ID = R.views.battle.prebattle.PrebattleHintsView()
     _VIEW_MODEL_CLASS = PrebattleHintsViewModel
     _TRY_CLOSE_WINDOW_PERIOD = 0.1

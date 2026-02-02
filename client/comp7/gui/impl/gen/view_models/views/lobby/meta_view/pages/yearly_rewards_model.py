@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/impl/gen/view_models/views/lobby/meta_view/pages/yearly_rewards_model.py
 from enum import Enum
 from comp7.gui.impl.gen.view_models.views.lobby.enums import Rank
 from frameworks.wulf import Array, ViewModel
@@ -12,8 +14,7 @@ class BannerState(Enum):
 
 
 class YearlyRewardsModel(ViewModel):
-    __slots__ = ('onGoToStylePreview', 'onGoToVehiclePreview', 'onGoToRewardsSelection',
-                 'onIntroViewed')
+    __slots__ = ('onGoToStylePreview', 'onGoToVehiclePreview', 'onGoToRewardsSelection', 'onIntroViewed')
 
     def __init__(self, properties=8, commands=4):
         super(YearlyRewardsModel, self).__init__(properties=properties, commands=commands)

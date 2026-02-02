@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/event_boards/settings.py
 
 
 class _EventBoardSettings(object):
@@ -7,9 +9,7 @@ class _EventBoardSettings(object):
 
     def isGroupMinimized(self, event):
         groupID = event.getEventID()
-        if groupID in self.__minimized:
-            return self.__minimized[groupID]
-        return event.isFinished()
+        return self.__minimized[groupID] if groupID in self.__minimized else event.isFinished()
 
     def updateExpanded(self, event, value):
         groupID = event.getEventID()

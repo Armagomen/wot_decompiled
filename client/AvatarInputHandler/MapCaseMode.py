@@ -1,4 +1,7 @@
-import weakref, logging
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/AvatarInputHandler/MapCaseMode.py
+import weakref
+import logging
 from ArtilleryEquipment import ArtilleryEquipment
 from AvatarInputHandler import gun_marker_ctrl
 from CombatSelectedArea import CombatSelectedArea
@@ -13,7 +16,12 @@ from items.artefacts import ArcadeEquipmentConfigReader, AreaOfEffectEquipment
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.dynamic_objects_cache import IBattleDynamicObjectsCache
 from AvatarInputHandler.DynamicCameras import StrategicCamera, ArcadeCamera
-import BattleReplay, BigWorld, CommandMapping, GUI, Keys, Math
+import BattleReplay
+import BigWorld
+import CommandMapping
+import GUI
+import Keys
+import Math
 from Math import Vector2, Vector3
 from AvatarInputHandler.control_modes import IControlMode
 from AvatarInputHandler import AimingSystems
@@ -112,8 +120,7 @@ class _FLMinesSensor(object):
         return
 
     def isIntersectMine(self):
-        allyMines = [ e for e in BigWorld.entities.values() if e.__class__.__name__ == 'BasicMine' and self._sessionProvider.getArenaDP().isAlly(e.ownerVehicleID)
-                    ]
+        allyMines = [ e for e in BigWorld.entities.values() if e.__class__.__name__ == 'BasicMine' and self._sessionProvider.getArenaDP().isAlly(e.ownerVehicleID) ]
         return any(self.__intersectChecker(allyMines))
 
 
@@ -127,8 +134,7 @@ class _ArtilleryStrikeSelector(_DefaultStrikeSelector, _VehiclesSelector):
         udos = BigWorld.userDataObjects.values()
         myArtyEquipment = [ x for x in udos if isinstance(x, ArtilleryEquipment) and x.team == myTeam ]
         if len(myArtyEquipment) > 1:
-            LOG_ERROR('This map has multiple (%d) UDO of ArtilleryEquipment for team %d' % (
-             len(myArtyEquipment), myTeam))
+            LOG_ERROR('This map has multiple (%d) UDO of ArtilleryEquipment for team %d' % (len(myArtyEquipment), myTeam))
         myArtyEquipment = myArtyEquipment[0]
         self.__marker = self._createMarker(myArtyEquipment, self.equipment.areaRadius)
         self.__marker.setPosition(position)
@@ -334,9 +340,7 @@ class _ArenaBoundsAreaStrikeSelector(_AreaStrikeSelector):
         self._updatePositionsAndVisibility(position)
 
     def processSelection(self, position, reset=False):
-        if self.__wasInsideArenaBounds or reset:
-            return super(_ArenaBoundsAreaStrikeSelector, self).processSelection(position, reset)
-        return False
+        return super(_ArenaBoundsAreaStrikeSelector, self).processSelection(position, reset) if self.__wasInsideArenaBounds or reset else False
 
     def _validatePosition(self, position):
         return self.__arena.isPointInsideArenaBB(position)
@@ -520,7 +524,8 @@ class _ArcadeFLMinesSelector(_ArcadeBomberStrikeSelector, _FLMinesSensor):
             if ctrl is not None:
                 ctrl.showVehicleError('minefieldIsIntersected')
             return False
-        return _ArcadeBomberStrikeSelector.processSelection(self, position, reset)
+        else:
+            return _ArcadeBomberStrikeSelector.processSelection(self, position, reset)
 
     def tick(self):
         super(_ArcadeFLMinesSelector, self).tick()
@@ -533,9 +538,9 @@ class _ArcadeFLMinesSelector(_ArcadeBomberStrikeSelector, _FLMinesSensor):
 
     def __checkIntersectMines(self):
         if self.isIntersectMine():
-            self.area.setColor(int(4294901760))
+            self.area.setColor(int(4294901760L))
         else:
-            self.area.setColor(int(4278255360))
+            self.area.setColor(int(4278255360L))
 
 
 class _ArenaBoundArtilleryStrikeSelector(_ArenaBoundsAreaStrikeSelector, _VehiclesSelector):
@@ -561,16 +566,16 @@ class _ArenaBoundArtilleryStrikeSelector(_ArenaBoundsAreaStrikeSelector, _Vehicl
                 yield v
 
 
-_STRIKE_SELECTORS = {artefacts.RageArtillery: _ArtilleryStrikeSelector, 
-   artefacts.RageBomber: _BomberStrikeSelector, 
-   artefacts.EpicArtillery: _ArtilleryStrikeSelector, 
-   artefacts.EpicBomber: _BomberStrikeSelector, 
-   artefacts.EpicRecon: _ReconStrikeSelector, 
-   artefacts.EpicSmoke: _SmokeStrikeSelector, 
-   artefacts.FrontLineMinefield: _ArcadeFLMinesSelector, 
-   artefacts.AreaOfEffectEquipment: _ArcadeBomberStrikeSelector, 
-   artefacts.AttackBomberEquipment: _ArcadeBomberStrikeSelector, 
-   artefacts.AttackArtilleryFortEquipment: _ArenaBoundArtilleryStrikeSelector}
+_STRIKE_SELECTORS = {artefacts.RageArtillery: _ArtilleryStrikeSelector,
+ artefacts.RageBomber: _BomberStrikeSelector,
+ artefacts.EpicArtillery: _ArtilleryStrikeSelector,
+ artefacts.EpicBomber: _BomberStrikeSelector,
+ artefacts.EpicRecon: _ReconStrikeSelector,
+ artefacts.EpicSmoke: _SmokeStrikeSelector,
+ artefacts.FrontLineMinefield: _ArcadeFLMinesSelector,
+ artefacts.AreaOfEffectEquipment: _ArcadeBomberStrikeSelector,
+ artefacts.AttackBomberEquipment: _ArcadeBomberStrikeSelector,
+ artefacts.AttackArtilleryFortEquipment: _ArenaBoundArtilleryStrikeSelector}
 
 class MapCaseControlModeBase(IControlMode, CallbackDelayer):
     guiSessionProvider = dependency.descriptor(IBattleSessionProvider)
@@ -604,8 +609,11 @@ class MapCaseControlModeBase(IControlMode, CallbackDelayer):
         self.__aimingMode = 0
         self.__aimingModeUserDisabled = False
         self.__aimingCircleTerrainActivated = False
-        self.__class__.prevCtlMode = [
-         Vector3(0, 0, 0), '', 0, None, None]
+        self.__class__.prevCtlMode = [Vector3(0, 0, 0),
+         '',
+         0,
+         None,
+         None]
         return
 
     def create(self):
@@ -627,7 +635,7 @@ class MapCaseControlModeBase(IControlMode, CallbackDelayer):
         SoundGroups.g_instance.changePlayMode(2)
         arcadeState = args.get('arcadeState', None)
         overridePreferredPosition = self.guiSessionProvider.shared.equipments.consumePreferredPosition()
-        if arcadeState is None and any(cls == type(overridePreferredPosition) for cls in (Vector3, tuple)):
+        if arcadeState is None and any((cls == type(overridePreferredPosition) for cls in (Vector3, tuple))):
             targetPos = overridePreferredPosition
         else:
             targetPos = args.get('preferredPos', Vector3(0, 0, 0))
@@ -685,7 +693,7 @@ class MapCaseControlModeBase(IControlMode, CallbackDelayer):
             if shouldClose:
                 self.turnOff(sendStopEquipment=False)
             return True
-        if key == Keys.KEY_RIGHTMOUSE and mods != Keys.MODIFIER_CTRL and isDown:
+        elif key == Keys.KEY_RIGHTMOUSE and mods != Keys.MODIFIER_CTRL and isDown:
             replayCtrl = BattleReplay.g_replayCtrl
             if replayCtrl.isPlaying:
                 return True
@@ -693,7 +701,7 @@ class MapCaseControlModeBase(IControlMode, CallbackDelayer):
             if shouldClose:
                 self.turnOff()
             return True
-        if cmdMap.isFired(CommandMapping.CMD_CM_ALTERNATE_MODE, key) and isDown:
+        elif cmdMap.isFired(CommandMapping.CMD_CM_ALTERNATE_MODE, key) and isDown:
             replayCtrl = BattleReplay.g_replayCtrl
             if replayCtrl.isPlaying:
                 self.__aih.onControlModeChanged('arcade')
@@ -702,31 +710,31 @@ class MapCaseControlModeBase(IControlMode, CallbackDelayer):
                 return True
             self.turnOff()
             return True
-        else:
-            if cmdMap.isFiredList((CommandMapping.CMD_CM_CAMERA_ROTATE_LEFT,
-             CommandMapping.CMD_CM_CAMERA_ROTATE_RIGHT,
-             CommandMapping.CMD_CM_CAMERA_ROTATE_UP,
-             CommandMapping.CMD_CM_CAMERA_ROTATE_DOWN,
-             CommandMapping.CMD_CM_INCREASE_ZOOM,
-             CommandMapping.CMD_CM_DECREASE_ZOOM), key):
-                dx = dy = dz = 0.0
-                if cmdMap.isActive(CommandMapping.CMD_CM_CAMERA_ROTATE_LEFT):
-                    dx = -1.0
-                if cmdMap.isActive(CommandMapping.CMD_CM_CAMERA_ROTATE_RIGHT):
-                    dx = 1.0
-                if cmdMap.isActive(CommandMapping.CMD_CM_CAMERA_ROTATE_UP):
-                    dy = -1.0
-                if cmdMap.isActive(CommandMapping.CMD_CM_CAMERA_ROTATE_DOWN):
-                    dy = 1.0
-                if cmdMap.isActive(CommandMapping.CMD_CM_INCREASE_ZOOM):
-                    dz = 1.0
-                if cmdMap.isActive(CommandMapping.CMD_CM_DECREASE_ZOOM):
-                    dz = -1.0
-                replayCtrl = BattleReplay.g_replayCtrl
-                if replayCtrl.isPlaying and replayCtrl.isControllingCamera:
-                    return True
-                self.__cam.update(dx, dy, dz, False if dx == dy == dz == 0.0 else True, False, True)
+        elif cmdMap.isFiredList((CommandMapping.CMD_CM_CAMERA_ROTATE_LEFT,
+         CommandMapping.CMD_CM_CAMERA_ROTATE_RIGHT,
+         CommandMapping.CMD_CM_CAMERA_ROTATE_UP,
+         CommandMapping.CMD_CM_CAMERA_ROTATE_DOWN,
+         CommandMapping.CMD_CM_INCREASE_ZOOM,
+         CommandMapping.CMD_CM_DECREASE_ZOOM), key):
+            dx = dy = dz = 0.0
+            if cmdMap.isActive(CommandMapping.CMD_CM_CAMERA_ROTATE_LEFT):
+                dx = -1.0
+            if cmdMap.isActive(CommandMapping.CMD_CM_CAMERA_ROTATE_RIGHT):
+                dx = 1.0
+            if cmdMap.isActive(CommandMapping.CMD_CM_CAMERA_ROTATE_UP):
+                dy = -1.0
+            if cmdMap.isActive(CommandMapping.CMD_CM_CAMERA_ROTATE_DOWN):
+                dy = 1.0
+            if cmdMap.isActive(CommandMapping.CMD_CM_INCREASE_ZOOM):
+                dz = 1.0
+            if cmdMap.isActive(CommandMapping.CMD_CM_DECREASE_ZOOM):
+                dz = -1.0
+            replayCtrl = BattleReplay.g_replayCtrl
+            if replayCtrl.isPlaying and replayCtrl.isControllingCamera:
                 return True
+            self.__cam.update(dx, dy, dz, False if dx == dy == dz == 0.0 else True, False, True)
+            return True
+        else:
             if cmdMap.isFired(CommandMapping.CMD_CM_FREE_CAMERA, key):
                 replayCtrl = BattleReplay.g_replayCtrl
                 if replayCtrl.isPlaying:
@@ -769,10 +777,7 @@ class MapCaseControlModeBase(IControlMode, CallbackDelayer):
         return self.__aimingMode & mode == mode
 
     def getDesiredShotPoint(self, ignoreAimingMode=False):
-        if self.__aimingMode == 0 or ignoreAimingMode:
-            return self.__getDesiredShotPoint()
-        else:
-            return
+        return self.__getDesiredShotPoint() if self.__aimingMode == 0 or ignoreAimingMode else None
 
     def _createCamera(self, data, offset=Math.Vector2(0, 0)):
         raise NotImplementedError
@@ -860,10 +865,9 @@ class MapCaseControlModeBase(IControlMode, CallbackDelayer):
             self.__class__.deactivateCallback()
             self.__class__.deactivateCallback = None
         prevMode = self.__class__.prevCtlMode
-        if BigWorld.player().observerSeesAll():
-            if not prevMode[self._MODE_NAME] or prevMode[self._MODE_NAME] == self.__aih.ctrlModeName:
-                LOG_WARNING('Skip switching to previouse mode', prevMode[self._MODE_NAME])
-                return
+        if BigWorld.player().observerSeesAll() and (not prevMode[self._MODE_NAME] or prevMode[self._MODE_NAME] == self.__aih.ctrlModeName):
+            LOG_WARNING('Skip switching to previouse mode', prevMode[self._MODE_NAME])
+            return
         if not self.__aimingModeUserDisabled:
             self.__aimingMode &= -1 - AIMING_MODE.USER_DISABLED
         arcadeState = None
@@ -913,7 +917,6 @@ class MapCaseControlModeBase(IControlMode, CallbackDelayer):
 
     def __tick(self):
         self.__activeSelector.processHover(self.__getDesiredShotPoint())
-        return 0.0
 
 
 class MapCaseControlMode(MapCaseControlModeBase):
@@ -997,7 +1000,11 @@ def activateMapCase(equipmentID, deactivateCallback, controlMode):
         else:
             camDist = None
             zoomSwitcherState = None
-        controlMode.prevCtlMode = [pos, currentMode, inputHandler.ctrl.aimingMode, camDist, zoomSwitcherState]
+        controlMode.prevCtlMode = [pos,
+         currentMode,
+         inputHandler.ctrl.aimingMode,
+         camDist,
+         zoomSwitcherState]
         inputHandler.onControlModeChanged(controlMode.MODE_NAME, preferredPos=pos, aimingMode=inputHandler.ctrl.aimingMode, equipmentID=equipmentID, saveDist=False, arcadeState=arcadeState)
     return
 

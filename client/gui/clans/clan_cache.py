@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/clans/clan_cache.py
 from collections import namedtuple
-import typing, BigWorld
+import typing
+import BigWorld
 from Event import Event
 from account_helpers import getAccountDatabaseID
 from adisp import adisp_async, adisp_process
@@ -23,8 +26,10 @@ class ProviderNames(CONST_CONTAINER):
     CLAN_SUPPLY = 'CLAN_SUPPLY'
 
 
-class ClanInfo(namedtuple('ClanInfo', [
- 'clanName', 'clanAbbrev', 'chatChannelDBID', 'memberFlags',
+class ClanInfo(namedtuple('ClanInfo', ['clanName',
+ 'clanAbbrev',
+ 'chatChannelDBID',
+ 'memberFlags',
  'enteringTime'])):
 
     def getClanName(self):
@@ -58,15 +63,10 @@ class _ClanCache(object):
         from gui.clans.cache_providers.missions_provider import ClientMissionsProvider
         from gui.clans.cache_providers.stronghold_event_provider import StrongholdEventProvider
         from gui.clans.cache_providers.clan_supply_provider import ClanSupplyProvider
-        for name, clazz, args in (
-         (
-          ProviderNames.STRONGHOLD, ClientStrongholdProvider, ()),
-         (
-          ProviderNames.MISSIONS, ClientMissionsProvider, ()),
-         (
-          ProviderNames.STRONGHOLD_EVENT, StrongholdEventProvider, (self,)),
-         (
-          ProviderNames.CLAN_SUPPLY, ClanSupplyProvider, ())):
+        for name, clazz, args in ((ProviderNames.STRONGHOLD, ClientStrongholdProvider, ()),
+         (ProviderNames.MISSIONS, ClientMissionsProvider, ()),
+         (ProviderNames.STRONGHOLD_EVENT, StrongholdEventProvider, (self,)),
+         (ProviderNames.CLAN_SUPPLY, ClanSupplyProvider, ())):
             self.__registerProvider(name, clazz, args)
 
     def fini(self):
@@ -89,7 +89,7 @@ class _ClanCache(object):
 
     @storage_getter('users')
     def usersStorage(self):
-        return
+        return None
 
     @property
     def clanDBID(self):
@@ -109,10 +109,7 @@ class _ClanCache(object):
     @property
     def clanInfo(self):
         info = self.itemsCache.items.stats.clanInfo
-        if info and len(info) > 1:
-            return info
-        else:
-            return (None, None, -1, 0, 0)
+        return info if info and len(info) > 1 else (None, None, -1, 0, 0)
 
     @property
     def clanName(self):
@@ -133,9 +130,7 @@ class _ClanCache(object):
     @property
     def clanTag(self):
         result = self.clanAbbrev
-        if result:
-            return '[%s]' % result
-        return result
+        return '[%s]' % result if result else result
 
     @property
     def clanCommanderName(self):
@@ -143,7 +138,7 @@ class _ClanCache(object):
             if member.getClanRole() == CLAN_MEMBER_FLAGS.LEADER:
                 return member.getName()
 
-        return
+        return None
 
     @property
     def clanRole(self):
@@ -175,11 +170,11 @@ class _ClanCache(object):
         if not BigWorld.player().serverSettings['file_server'].has_key(fileType):
             LOG_ERROR("Invalid server's file type: %s" % fileType)
             self._valueResponse(0, (None, None), callback)
-            return
+            return None
         else:
             clanEmblems = BigWorld.player().serverSettings['file_server'][fileType]
             BigWorld.player().customFilesCache.get(clanEmblems['url_template'] % clanId, lambda url, file: self._valueResponse(0, (url, file), callback), True)
-            return
+            return None
 
     @adisp_async
     @adisp_process
@@ -204,8 +199,7 @@ class _ClanCache(object):
 
     def _valueResponse(self, resID, value, callback):
         if resID < 0:
-            LOG_ERROR('[class %s] There is error while getting data from cache: %s[%d]' % (
-             self.__class__.__name__, code2str(resID), resID))
+            LOG_ERROR('[class %s] There is error while getting data from cache: %s[%d]' % (self.__class__.__name__, code2str(resID), resID))
             return callback(value)
         callback(value)
 

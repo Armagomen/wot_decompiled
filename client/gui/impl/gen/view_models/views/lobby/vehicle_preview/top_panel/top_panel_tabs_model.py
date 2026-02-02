@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/vehicle_preview/top_panel/top_panel_tabs_model.py
 from enum import IntEnum
 from frameworks.wulf import Array, ViewModel
 
@@ -10,7 +12,7 @@ class TabID(IntEnum):
 
 
 class TopPanelTabsModel(ViewModel):
-    __slots__ = ('onTabChanged', )
+    __slots__ = ('onTabChanged',)
 
     def __init__(self, properties=3, commands=1):
         super(TopPanelTabsModel, self).__init__(properties=properties, commands=commands)

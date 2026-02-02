@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/locale/MAPS_TRAINING.py
 
 
 class MAPS_TRAINING(object):
@@ -628,3 +630,5 @@ class MAPS_TRAINING(object):
     BOTVEHICLETYPE_AT_SPG = '#maps_training:botVehicleType/AT-SPG'
     BOTVEHICLETYPE_SPG = '#maps_training:botVehicleType/SPG'
     BOTNAME = '#maps_training:botName'
+    PROGRESS = '#maps_training:progress'
+    COUNTTITLE = '#maps_training:countTitle'

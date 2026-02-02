@@ -1,4 +1,10 @@
-import weakref, functools, inspect, BigWorld, debug_utils
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/vehicle_systems/stricted_loading.py
+import weakref
+import functools
+import inspect
+import BigWorld
+import debug_utils
 from constants import IS_EDITOR
 _MAX_PRIORITY = 96
 _HIGH_PRIORITY = 128
@@ -52,16 +58,17 @@ def _weakMethodCall(selfWeak, methodWeak, predefArgs, predefKwargs, *args, **kwa
         if _LOG_LEAKS:
             debug_utils.LOG_WARNING(_LOG_MSG, stack=True)
         return
-    method = methodWeak()
-    if methodWeak is None:
-        if _LOG_LEAKS:
-            debug_utils.LOG_WARNING(_LOG_MSG, stack=True)
+    else:
+        method = methodWeak()
+        if methodWeak is None:
+            if _LOG_LEAKS:
+                debug_utils.LOG_WARNING(_LOG_MSG, stack=True)
+            return
+        finalArgs = predefArgs + args
+        finalKwargs = predefKwargs
+        finalKwargs.update(kwargs)
+        method(self, *finalArgs, **finalKwargs)
         return
-    finalArgs = predefArgs + args
-    finalKwargs = predefKwargs
-    finalKwargs.update(kwargs)
-    method(self, *finalArgs, **finalKwargs)
-    return
 
 
 def _weakCall(callbackWeak, predefArgs, predefKwargs, *args, **kwargs):

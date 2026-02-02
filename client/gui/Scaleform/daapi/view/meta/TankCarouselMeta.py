@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/TankCarouselMeta.py
 from gui.Scaleform.daapi.view.common.vehicle_carousel.carousel_environment import CarouselEnvironment
 
 class TankCarouselMeta(CarouselEnvironment):
@@ -24,17 +26,13 @@ class TankCarouselMeta(CarouselEnvironment):
         self._printOverrideError('setFilter')
 
     def as_rowCountS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_rowCount(value)
+        return self.flashObject.as_rowCount(value) if self._isDAAPIInited() else None
 
     def as_setSmallDoubleCarouselS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setSmallDoubleCarousel(value)
+        return self.flashObject.as_setSmallDoubleCarousel(value) if self._isDAAPIInited() else None
 
     def as_useExtendedCarouselS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_useExtendedCarousel(value)
+        return self.flashObject.as_useExtendedCarousel(value) if self._isDAAPIInited() else None
 
     def as_scrollToSlotS(self, slotIdx):
-        if self._isDAAPIInited():
-            return self.flashObject.as_scrollToSlot(slotIdx)
+        return self.flashObject.as_scrollToSlot(slotIdx) if self._isDAAPIInited() else None

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/post_progression/tooltip/pair_modification_tooltip_view_model.py
 from frameworks.wulf import ViewModel
 from gui.impl.gen import R
 from gui.impl.gen.view_models.common.bonuses_model import BonusesModel

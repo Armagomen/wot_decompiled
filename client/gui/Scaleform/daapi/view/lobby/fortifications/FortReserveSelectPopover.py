@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/fortifications/FortReserveSelectPopover.py
 import logging
 from gui.Scaleform.daapi.view.lobby.rally import vo_converters
 from gui.Scaleform.daapi.view.meta.FittingSelectPopoverMeta import FittingSelectPopoverMeta
@@ -12,8 +14,8 @@ from gui.shared.items_parameters import params_helper, formatters
 from helpers import dependency
 from skeletons.gui.shared import IItemsCache
 _logger = logging.getLogger(__name__)
-RESERVE_PARAMS_LIST = {ARTILLERY_STRIKE: ('maxDamage', 'areaRadius'), 
-   INSPIRATION: ('crewRolesFactor', 'commonAreaRadius', 'inactivationDelay')}
+RESERVE_PARAMS_LIST = {ARTILLERY_STRIKE: ('maxDamage', 'areaRadius'),
+ INSPIRATION: ('crewRolesFactor', 'commonAreaRadius', 'inactivationDelay')}
 
 class FortReserveSelectPopover(FittingSelectPopoverMeta, IUnitListener):
     __itemsCache = dependency.descriptor(IItemsCache)
@@ -26,9 +28,9 @@ class FortReserveSelectPopover(FittingSelectPopoverMeta, IUnitListener):
         self._selectedIndex = -1
 
     def setVehicleModule(self, newId, oldId, isRemove):
-        settings = {'newId': newId, 
-           'oldId': oldId, 
-           'isRemove': isRemove}
+        settings = {'newId': newId,
+         'oldId': oldId,
+         'isRemove': isRemove}
         self.fireEvent(CSReserveSelectEvent(CSReserveSelectEvent.RESERVE_SELECTED, settings))
         self.destroy()
 
@@ -41,13 +43,13 @@ class FortReserveSelectPopover(FittingSelectPopoverMeta, IUnitListener):
         rendererName = FITTING_TYPES.RESERVE_FITTING_ITEM_RENDERER
         rendererDataClass = FITTING_TYPES.MODULE_FITTING_RENDERER_DATA_CLASS_NAME
         width = FITTING_TYPES.RESERVE_POPOVER_WIDTH
-        self.as_updateS({'title': text_styles.highTitle(title), 
-           'rendererName': rendererName, 
-           'rendererDataClass': rendererDataClass, 
-           'availableDevices': self.__buildList(), 
-           'selectedIndex': self._selectedIndex, 
-           'preferredLayout': 0, 
-           'width': width})
+        self.as_updateS({'title': text_styles.highTitle(title),
+         'rendererName': rendererName,
+         'rendererDataClass': rendererDataClass,
+         'availableDevices': self.__buildList(),
+         'selectedIndex': self._selectedIndex,
+         'preferredLayout': 0,
+         'width': width})
 
     def __buildModuleData(self, selectedIdxs, reserve, count):
         isSelected = False
@@ -92,9 +94,8 @@ class FortReserveSelectPopover(FittingSelectPopoverMeta, IUnitListener):
 
     def __buildReserveParams(self, reserve):
         if not reserve.isUsingInBattle():
-            return [
-             {'paramValue': ('+{}%').format(reserve.getBonusPercent()), 
-                'paramName': reserve.getDescription()}]
+            return [{'paramValue': '+{}%'.format(reserve.getBonusPercent()),
+              'paramName': reserve.getDescription()}]
         else:
             paramsData = []
             item = self.__itemsCache.items.getItemByCD(int(reserve.intCD))
@@ -112,7 +113,7 @@ class FortReserveSelectPopover(FittingSelectPopoverMeta, IUnitListener):
                     paramsStrR = R.strings.menu.moduleInfo.params.short.dyn(paramName)
                     if not paramsStrR.isValid():
                         paramsStrR = R.strings.menu.moduleInfo.params.dyn(paramName)
-                    paramsData.append({'paramValue': paramValue, 
-                       'paramName': text_styles.concatStylesWithNBSP(text_styles.main(backport.text(paramsStrR())), text_styles.standard(formatters.measureUnitsForParameter(paramName)))})
+                    paramsData.append({'paramValue': paramValue,
+                     'paramName': text_styles.concatStylesWithNBSP(text_styles.main(backport.text(paramsStrR())), text_styles.standard(formatters.measureUnitsForParameter(paramName)))})
 
             return paramsData

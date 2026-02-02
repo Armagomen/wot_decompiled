@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: server_side_replay/scripts/client/server_side_replay/gui/impl/gen/view_models/views/lobby/table_base_model.py
 from enum import Enum, IntEnum
 from frameworks.wulf import Array, ViewModel
 from server_side_replay.gui.impl.gen.view_models.views.lobby.replay_model import ReplayModel

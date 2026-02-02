@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/player_ranks.py
 import typing
 from collections import namedtuple
 from typing import NamedTuple, Type
@@ -36,9 +38,7 @@ class AlgorithmSettings(object):
 
 
 class BasicThresholdSettings(AlgorithmSettings):
-    _BasicThresholdRankSettings = namedtuple('_BasicThresholdRankSettings', ('rank',
-                                                                             'order',
-                                                                             'threshold'))
+    _BasicThresholdRankSettings = namedtuple('_BasicThresholdRankSettings', ('rank', 'order', 'threshold'))
 
     def _readBasicThresholdRankSettings(self, section, order):
         rank = parseRankFromSectionName(section.name)
@@ -70,9 +70,7 @@ def makeBonusSettings(section=None):
     return BonusSettings(factor100ByRank)
 
 
-PlayerRanksSettings = NamedTuple('PlayerRankSettings', [
- (
-  'initialRank', int), ('algorithm', Type[AlgorithmSettings]), ('bonus', BonusSettings)])
+PlayerRanksSettings = NamedTuple('PlayerRankSettings', [('initialRank', int), ('algorithm', Type[AlgorithmSettings]), ('bonus', BonusSettings)])
 
 def makePlayerRankSettings(section=None):
     initialRank = section.readInt('initialRank') if section else PLAYER_RANK.NO_RANK
@@ -80,16 +78,16 @@ def makePlayerRankSettings(section=None):
     if section is None:
         algorithm = AlgorithmSettings(initialRank)
     else:
-        algorithmKeys = set(section.keys()).intersection(c.value for c in ALGORITHM_NAMES)
+        algorithmKeys = set(section.keys()).intersection((c.value for c in ALGORITHM_NAMES))
         algorithmName = algorithmKeys.pop()
         algorithm = ALGORITHM_NAME_TO_SETTINGS[ALGORITHM_NAMES(algorithmName)](initialRank, section[algorithmName])
     return PlayerRanksSettings(initialRank, algorithm, bonus)
 
 
 ALGORITHM_NAME_TO_SETTINGS = {ALGORITHM_NAMES.BASIC_THRESHOLD: BasicThresholdSettings}
-ARENA_BONUS_TYPE_TO_SETTINGS_NAME = {ARENA_BONUS_TYPE.EPIC_BATTLE: SETTINGS_NAMES.DEFAULT, 
-   ARENA_BONUS_TYPE.EPIC_BATTLE_TRAINING: SETTINGS_NAMES.DEFAULT, 
-   ARENA_BONUS_TYPE.EPIC_RANDOM_TRAINING: SETTINGS_NAMES.DEFAULT}
+ARENA_BONUS_TYPE_TO_SETTINGS_NAME = {ARENA_BONUS_TYPE.EPIC_BATTLE: SETTINGS_NAMES.DEFAULT,
+ ARENA_BONUS_TYPE.EPIC_BATTLE_TRAINING: SETTINGS_NAMES.DEFAULT,
+ ARENA_BONUS_TYPE.EPIC_RANDOM_TRAINING: SETTINGS_NAMES.DEFAULT}
 g_cache = None
 
 def init():
@@ -101,7 +99,7 @@ def init():
 
     for arenaBonusType, caps in ARENA_BONUS_TYPE_CAPS._typeToCaps.iteritems():
         if ARENA_BONUS_TYPE_CAPS.PLAYER_RANK_MECHANICS in caps:
-            continue
+            pass
 
     if SETTINGS_NAMES.NONE not in settings:
         settings[SETTINGS_NAMES.NONE] = makePlayerRankSettings()
@@ -141,7 +139,6 @@ def getRank(progressValue):
     for rankThreshold in getTresholdForRanks():
         if progressValue >= rankThreshold:
             result = result + 1
-        else:
-            break
+        break
 
     return result

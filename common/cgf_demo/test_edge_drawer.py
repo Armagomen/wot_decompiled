@@ -1,4 +1,7 @@
-import CGF, Triggers
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/cgf_demo/test_edge_drawer.py
+import CGF
+import Triggers
 from cgf_demo.demo_category import DEMO_CATEGORY
 from cgf_script.component_meta_class import ComponentProperty, CGFMetaTypes, registerComponent
 from cgf_script.managers_registrator import onAddedQuery, onRemovedQuery, autoregister, onProcessQuery

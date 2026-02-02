@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/battle_pass/intro_view.py
 from account_helpers.settings_core.settings_constants import BattlePassStorageKeys
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.battle_pass.battle_pass_helpers import getIntroSlidesNames, getIntroVideoURL
@@ -38,14 +40,10 @@ class IntroPresenter(ViewComponent[BattlePassIntroViewModel]):
         self.__updateViewModel()
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onClose, self.__setIntroShown),
-         (
-          self.viewModel.onVideo, self.__showVideo))
+        return ((self.viewModel.onClose, self.__setIntroShown), (self.viewModel.onVideo, self.__showVideo))
 
     def __updateViewModel(self):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             placeholders = self.__genResCommPlaceholders()
             slides = tx.getSlides()
             for slideName in getIntroSlidesNames():
@@ -81,6 +79,6 @@ class IntroPresenter(ViewComponent[BattlePassIntroViewModel]):
         commonResArgs['points'] = self.__battlePass.getSpecialVehicleCapBonus()
         for idx, vehIntCD in enumerate(vehIntCDs, 1):
             vehicle = getVehicleByIntCD(vehIntCD)
-            commonResArgs[('tankName{}').format(idx)] = vehicle.userName if vehicle else ''
+            commonResArgs['tankName{}'.format(idx)] = vehicle.userName if vehicle else ''
 
         return commonResArgs

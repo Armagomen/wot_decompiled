@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/bw/errors.py
 from chat_shared import CHAT_RESPONSES
 from debug_utils import LOG_ERROR, LOG_WARNING
 from gui.Scaleform.locale.MESSENGER import MESSENGER
@@ -38,11 +40,11 @@ class ChatActionError(IChatError):
 
     @classmethod
     def _makeTitle(cls, name):
-        return i18n.makeString(('#{0:>s}:server/errors/{1:>s}/title').format(MESSENGER_I18N_FILE, name))
+        return i18n.makeString('#{0:>s}:server/errors/{1:>s}/title'.format(MESSENGER_I18N_FILE, name))
 
     @classmethod
     def _makeMessage(cls, name):
-        return i18n.makeString(('#{0:>s}:server/errors/{1:>s}/message').format(MESSENGER_I18N_FILE, name))
+        return i18n.makeString('#{0:>s}:server/errors/{1:>s}/message'.format(MESSENGER_I18N_FILE, name))
 
     @classmethod
     def create(cls, chatAction):
@@ -63,8 +65,7 @@ class ChatActionError(IChatError):
                 try:
                     fullMessage = message % auxInfo
                 except TypeError:
-                    LOG_WARNING('__onResponse. An exception occurred during message formatting: %s %% (%s)' % (
-                     message[1], auxInfo))
+                    LOG_WARNING('__onResponse. An exception occurred during message formatting: %s %% (%s)' % (message[1], auxInfo))
                     fullMessage = message
 
             else:
@@ -109,7 +110,8 @@ class CommandInCooldownError(ChatActionError):
     @classmethod
     def create(cls, chatAction):
         chatActionDict = dict(chatAction)
-        data = chatActionDict.get('data', {'command': None, 'cooldownPeriod': -1})
+        data = chatActionDict.get('data', {'command': None,
+         'cooldownPeriod': -1})
         result = None
         if data['command'] is not None:
             result = CommandInCooldownError(cls._makeTitle('commandInCooldown'), getOperationInCooldownMsg(data['command'], data['cooldownPeriod']), isModal=False)
@@ -119,7 +121,7 @@ class CommandInCooldownError(ChatActionError):
 
 
 class I18nError(IChatError):
-    __slots__ = ('__message', )
+    __slots__ = ('__message',)
 
     def __init__(self, key, **kwargs):
         super(I18nError, self).__init__()

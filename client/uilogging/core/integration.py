@@ -1,4 +1,8 @@
-import json, logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/uilogging/core/integration.py
+import json
+import logging
+import typing
 from gui.impl.gen.view_models.common.ui_logger_model import UiLoggerModel
 from skeletons.gui.impl import IGuiLoader
 from helpers import dependency
@@ -8,7 +12,7 @@ _logger = logging.getLogger(__name__)
 
 class UILoggingListener(IUILoggingListener):
     _core = dependency.descriptor(IUILoggingCore)
-    __slots__ = ('__model', )
+    __slots__ = ('__model',)
 
     def __init__(self):
         super(UILoggingListener, self).__init__()

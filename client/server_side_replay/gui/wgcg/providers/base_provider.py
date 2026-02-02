@@ -1,9 +1,14 @@
-import logging, time
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: server_side_replay/scripts/client/server_side_replay/gui/wgcg/providers/base_provider.py
+import logging
+import time
 from abc import ABCMeta, abstractmethod, abstractproperty
 from collections import defaultdict, namedtuple
 from enum import Enum
 from typing import Dict, Optional, NamedTuple, Type, TYPE_CHECKING
-import BigWorld, Event, ResMgr
+import BigWorld
+import Event
+import ResMgr
 from adisp import adisp_process, adisp_async
 from data_structures import DictObj
 from client_request_lib.requester import Requester as WebRequester
@@ -22,15 +27,10 @@ class UpdatePeriodType(Enum):
     NONE = 'NONE'
 
 
-RequestSettings = NamedTuple('RequestSettings', [
- (
-  'contextClazz', Type[CommonWebRequestCtx]),
- (
-  'isCached', bool),
- (
-  'updatePeriodType', UpdatePeriodType),
- (
-  'updateKwargs', Optional[Dict])])
+RequestSettings = NamedTuple('RequestSettings', [('contextClazz', Type[CommonWebRequestCtx]),
+ ('isCached', bool),
+ ('updatePeriodType', UpdatePeriodType),
+ ('updateKwargs', Optional[Dict])])
 
 class IBaseProvider(object):
 
@@ -45,8 +45,7 @@ def _webUrlFetcher(url, callback, headers=None, timeout=30.0, method='GET', post
     return BigWorld.fetchURL(url, callback, headers, timeout, method, postData)
 
 
-ServerSideReplayServerSettings = namedtuple('ServerSideReplayServerSettings', ('url',
-                                                                               'type'))
+ServerSideReplayServerSettings = namedtuple('ServerSideReplayServerSettings', ('url', 'type'))
 
 class JwtRequestor(object):
 
@@ -141,14 +140,14 @@ class BaseProvider(IBaseProvider):
     def _requestData(self, dataName, useFake=False, *args, **kwargs):
         if not self.__isStarted:
             return
+        elif not self._dataNameContainer.hasValue(dataName):
+            return
         else:
-            if not self._dataNameContainer.hasValue(dataName):
-                return
             dataObj = self.__data[dataName]
             settings = self._getSettingsByDataName(dataName)
             if not self._isEnabled or not self.__isRequestingAvailable(settings, dataObj):
                 return
-            if useFake and dataName not in self._fakeDataStorage:
+            elif useFake and dataName not in self._fakeDataStorage:
                 _logger.error('There are not %s in fake data storage. Check _fakeDataStorage', dataName)
                 return
             ctx = settings.contextClazz(*args, **kwargs)
@@ -202,11 +201,11 @@ class BaseProvider(IBaseProvider):
     def __isRequestingAvailable(settings, dataObj):
         if dataObj.isWaitingResponse:
             return False
+        elif settings.updatePeriodType is UpdatePeriodType.AFTER_BATTLE:
+            return not dataObj.isSynced
+        elif settings.updatePeriodType is UpdatePeriodType.BY_TIME:
+            if dataObj.lastUpdate is None:
+                return True
+            return time_utils.getServerUTCTime() - dataObj.lastUpdate > settings.updateKwargs.get('updateTime', 0)
         else:
-            if settings.updatePeriodType is UpdatePeriodType.AFTER_BATTLE:
-                return not dataObj.isSynced
-            if settings.updatePeriodType is UpdatePeriodType.BY_TIME:
-                if dataObj.lastUpdate is None:
-                    return True
-                return time_utils.getServerUTCTime() - dataObj.lastUpdate > settings.updateKwargs.get('updateTime', 0)
             return True

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/hangar/menu_item_model.py
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.views.lobby.hangar.notification_model import NotificationModel
 

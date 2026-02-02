@@ -1,7 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/battle/players_panel.py
 import logging
 from functools import partial
 from sys import maxint
-import BigWorld, typing
+import BigWorld
+import typing
 from battle_royale.gui.Scaleform.daapi.view.battle.respawn_message_panel import RESPAWNING_TIMER_DELAY
 from battle_royale.gui.Scaleform.daapi.view.battle.shared.utils import getVehicleLevel
 from battle_royale.gui.battle_control.controllers.spawn_ctrl import ISpawnListener
@@ -23,8 +26,7 @@ if typing.TYPE_CHECKING:
 _logger = logging.getLogger(__name__)
 
 class PlayersPanel(IBattleFieldListener, IArenaVehiclesController, ISpawnListener, BattleRoyaleTeamPanelMeta):
-    __slots__ = ('__vehicleIDs', '__selectedByVehicleIds', '__spawnPointsViewActive',
-                 '__isRespawning', '__respawningDelayCallbackID')
+    __slots__ = ('__vehicleIDs', '__selectedByVehicleIds', '__spawnPointsViewActive', '__isRespawning', '__respawningDelayCallbackID')
     __sessionProvider = dependency.descriptor(IBattleSessionProvider)
     _HEALTH_PERCENT = 100
 
@@ -198,9 +200,7 @@ class PlayersPanel(IBattleFieldListener, IArenaVehiclesController, ISpawnListene
 
     @staticmethod
     def __getFrags(frags):
-        if frags != 0:
-            return frags
-        return ''
+        return frags if frags != 0 else ''
 
     def __onVehicleStateUpdated(self, state, value):
         if state in (VEHICLE_VIEW_STATE.SWITCHING, VEHICLE_VIEW_STATE.RESPAWNING):

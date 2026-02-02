@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/rankedBattles/ranked_battles_page.py
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import GUI_START_BEHAVIOR, RANKED_AWARDS_COUNTER, RANKED_INFO_COUNTER, RANKED_SHOP_COUNTER, RANKED_YEAR_RATING_COUNTER, RANKED_AWARDS_BUBBLE_YEAR_REACHED, RANKED_ENTITLEMENT_EVENTS_AMOUNT, RANKED_CURRENT_AWARDS_BUBBLE_YEAR_REACHED
 from gui.ranked_battles.ranked_helpers.sound_manager import RANKED_MAIN_PAGE_SOUND_SPACE
@@ -13,18 +15,17 @@ from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.game_control import IRankedBattlesController
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.server_events import IEventsCache
-_RANKED_BATTLES_VIEW_TO_ITEM_ID = {RANKEDBATTLES_ALIASES.RANKED_BATTLES_LEAGUES_VIEW_UI: RANKEDBATTLES_CONSTS.RANKED_BATTLES_RANKS_ID, 
-   RANKEDBATTLES_ALIASES.RANKED_BATTLES_DIVISIONS_VIEW_UI: RANKEDBATTLES_CONSTS.RANKED_BATTLES_RANKS_ID, 
-   RANKEDBATTLES_ALIASES.RANKED_BATTLES_SEASON_GAP_VIEW_UI: RANKEDBATTLES_CONSTS.RANKED_BATTLES_RANKS_ID, 
-   RANKEDBATTLES_ALIASES.RANKED_BATTLES_WEB_SEASON_GAP_ALIAS: RANKEDBATTLES_CONSTS.RANKED_BATTLES_RANKS_ID, 
-   RANKEDBATTLES_ALIASES.RANKED_BATTLES_REWARDS_UI: RANKEDBATTLES_CONSTS.RANKED_BATTLES_REWARDS_ID, 
-   RANKEDBATTLES_ALIASES.RANKED_BATTLES_REWARDS_SEASON_OFF_ALIAS: RANKEDBATTLES_CONSTS.RANKED_BATTLES_REWARDS_ID, 
-   RANKEDBATTLES_ALIASES.RANKED_BATTLES_SHOP_ALIAS: RANKEDBATTLES_CONSTS.RANKED_BATTLES_SHOP_ID, 
-   RANKEDBATTLES_ALIASES.RANKED_BATTLES_RAITING_ALIAS: RANKEDBATTLES_CONSTS.RANKED_BATTLES_RATING_ID, 
-   RANKEDBATTLES_ALIASES.RANKED_BATTLES_INFO_ALIAS: RANKEDBATTLES_CONSTS.RANKED_BATTLES_INFO_ID, 
-   RANKEDBATTLES_ALIASES.RANKED_BATTLES_YEAR_RAITING_ALIAS: RANKEDBATTLES_CONSTS.RANKED_BATTLES_YEAR_RATING_ID}
-_RANKED_WEB_PAGES = (
- RANKEDBATTLES_ALIASES.RANKED_BATTLES_WEB_SEASON_GAP_ALIAS,
+_RANKED_BATTLES_VIEW_TO_ITEM_ID = {RANKEDBATTLES_ALIASES.RANKED_BATTLES_LEAGUES_VIEW_UI: RANKEDBATTLES_CONSTS.RANKED_BATTLES_RANKS_ID,
+ RANKEDBATTLES_ALIASES.RANKED_BATTLES_DIVISIONS_VIEW_UI: RANKEDBATTLES_CONSTS.RANKED_BATTLES_RANKS_ID,
+ RANKEDBATTLES_ALIASES.RANKED_BATTLES_SEASON_GAP_VIEW_UI: RANKEDBATTLES_CONSTS.RANKED_BATTLES_RANKS_ID,
+ RANKEDBATTLES_ALIASES.RANKED_BATTLES_WEB_SEASON_GAP_ALIAS: RANKEDBATTLES_CONSTS.RANKED_BATTLES_RANKS_ID,
+ RANKEDBATTLES_ALIASES.RANKED_BATTLES_REWARDS_UI: RANKEDBATTLES_CONSTS.RANKED_BATTLES_REWARDS_ID,
+ RANKEDBATTLES_ALIASES.RANKED_BATTLES_REWARDS_SEASON_OFF_ALIAS: RANKEDBATTLES_CONSTS.RANKED_BATTLES_REWARDS_ID,
+ RANKEDBATTLES_ALIASES.RANKED_BATTLES_SHOP_ALIAS: RANKEDBATTLES_CONSTS.RANKED_BATTLES_SHOP_ID,
+ RANKEDBATTLES_ALIASES.RANKED_BATTLES_RAITING_ALIAS: RANKEDBATTLES_CONSTS.RANKED_BATTLES_RATING_ID,
+ RANKEDBATTLES_ALIASES.RANKED_BATTLES_INFO_ALIAS: RANKEDBATTLES_CONSTS.RANKED_BATTLES_INFO_ID,
+ RANKEDBATTLES_ALIASES.RANKED_BATTLES_YEAR_RAITING_ALIAS: RANKEDBATTLES_CONSTS.RANKED_BATTLES_YEAR_RATING_ID}
+_RANKED_WEB_PAGES = (RANKEDBATTLES_ALIASES.RANKED_BATTLES_WEB_SEASON_GAP_ALIAS,
  RANKEDBATTLES_ALIASES.RANKED_BATTLES_SHOP_ALIAS,
  RANKEDBATTLES_ALIASES.RANKED_BATTLES_RAITING_ALIAS,
  RANKEDBATTLES_ALIASES.RANKED_BATTLES_INFO_ALIAS,
@@ -84,8 +85,6 @@ class RankedMainPage(LobbySubView, RankedBattlesPageMeta):
         for idx, item in enumerate(menuItems):
             if item['id'] == self._selectedItemID and item.get('enabled', True):
                 return idx
-
-        return 0
 
     def _processContext(self, ctx):
         self._selectedItemID = ctx.get('selectedItemID', self._selectedItemID)
@@ -219,8 +218,8 @@ class RankedMainSeasonOffPage(RankedMainPage):
 
     def _updateMenuItems(self, isRankedShopEnabled, yearLBState, isYearRewardEnabled, yearLBSize):
         menuItems = main_page_vos.getRankedMainSeasonOffItems(isRankedShopEnabled, yearLBState, isYearRewardEnabled, yearLBSize)
-        self.as_setDataS({'menuItems': menuItems, 
-           'selectedIndex': self._getSelectedIdx(menuItems)})
+        self.as_setDataS({'menuItems': menuItems,
+         'selectedIndex': self._getSelectedIdx(menuItems)})
 
     def _updateSounds(self, onClose=False):
         super(RankedMainSeasonOffPage, self)._updateSounds()
@@ -279,8 +278,8 @@ class RankedMainSeasonOnPage(RankedMainPage):
     def _updateMenuItems(self, isRankedShopEnabled, yearLBState, isYearRewardEnabled, yearLBSize):
         isMastered = self.__rankedController.isAccountMastered()
         menuItems = main_page_vos.getRankedMainSeasonOnItems(isRankedShopEnabled, yearLBState, isYearRewardEnabled, yearLBSize, isMastered)
-        self.as_setDataS({'menuItems': menuItems, 
-           'selectedIndex': self._getSelectedIdx(menuItems)})
+        self.as_setDataS({'menuItems': menuItems,
+         'selectedIndex': self._getSelectedIdx(menuItems)})
 
     def _updateSounds(self, onClose=False):
         super(RankedMainSeasonOnPage, self)._updateSounds()
@@ -298,6 +297,4 @@ class RankedMainSeasonOnPage(RankedMainPage):
         return
 
     def __getTimeTillCurrentSeasonEnd(self):
-        if self.__currentSeason:
-            return time_utils.getTimeDeltaFromNowInLocal(time_utils.makeLocalServerTime(self.__currentSeason.getEndDate()))
-        return time_utils.ONE_MINUTE
+        return time_utils.getTimeDeltaFromNowInLocal(time_utils.makeLocalServerTime(self.__currentSeason.getEndDate())) if self.__currentSeason else time_utils.ONE_MINUTE

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/gen/view_models/views/lobby/feature/battle_results/fun_battle_results_view_model.py
 from enum import IntEnum
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.common.user_name_model import UserNameModel
@@ -15,7 +17,7 @@ class Tab(IntEnum):
 
 
 class FunBattleResultsViewModel(ViewModel):
-    __slots__ = ('onClose', )
+    __slots__ = ('onClose',)
 
     def __init__(self, properties=8, commands=1):
         super(FunBattleResultsViewModel, self).__init__(properties=properties, commands=commands)

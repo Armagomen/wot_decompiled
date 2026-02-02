@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/genConsts/FRONTLINE_BATTLE_VIEW_ALIASES.py
 
 
 class FRONTLINE_BATTLE_VIEW_ALIASES(object):

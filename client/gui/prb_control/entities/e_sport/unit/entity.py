@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/e_sport/unit/entity.py
 from CurrentVehicle import g_currentVehicle
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import SELECTED_INTRO_VEHICLES_FIELD
@@ -35,9 +37,9 @@ class ESportIntroEntity(UnitIntroEntity):
 
     def __init__(self):
         RQ_TYPE = settings.REQUEST_TYPE
-        handlers = {RQ_TYPE.AUTO_SEARCH: self.doAutoSearch, 
-           RQ_TYPE.ACCEPT_SEARCH: self.acceptSearch, 
-           RQ_TYPE.DECLINE_SEARCH: self.declineSearch}
+        handlers = {RQ_TYPE.AUTO_SEARCH: self.doAutoSearch,
+         RQ_TYPE.ACCEPT_SEARCH: self.acceptSearch,
+         RQ_TYPE.DECLINE_SEARCH: self.declineSearch}
         super(ESportIntroEntity, self).__init__(FUNCTIONAL_FLAG.E_SPORT, handlers, IUnitIntroListener, PREBATTLE_TYPE.E_SPORT_COMMON)
 
     def init(self, ctx=None):
@@ -45,8 +47,7 @@ class ESportIntroEntity(UnitIntroEntity):
         self._searchHandler.init()
         selectedVehs = self.getSelectedVehicles(SELECTED_INTRO_VEHICLES_FIELD)
         if not selectedVehs and g_currentVehicle.isPresent():
-            selectedVehs = [
-             g_currentVehicle.item.intCD]
+            selectedVehs = [g_currentVehicle.item.intCD]
         self.setSelectedVehicles(SELECTED_INTRO_VEHICLES_FIELD, selectedVehs)
         return super(ESportIntroEntity, self).init(ctx)
 
@@ -89,13 +90,11 @@ class ESportIntroEntity(UnitIntroEntity):
                     vehicle = self.itemsCache.items.getItemByCD(vehCD)
                     if vehicle.isInInventory:
                         selectedVehicles.append(vehCD)
-                else:
-                    LOG_WARNING('There is invalid vehicle compact descriptor in the stored unit seelected vehicles data', vehCD)
+                LOG_WARNING('There is invalid vehicle compact descriptor in the stored unit seelected vehicles data', vehCD)
 
         else:
             criteria = REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.ACTIVE_IN_NATION_GROUP
-            selectedVehicles = [ k for k, v in self.itemsCache.items.getVehicles(criteria).iteritems() if v.level in self._rosterSettings.getLevelsRange()
-                               ]
+            selectedVehicles = [ k for k, v in self.itemsCache.items.getVehicles(criteria).iteritems() if v.level in self._rosterSettings.getLevelsRange() ]
         return selectedVehicles
 
     def setSelectedVehicles(self, section, vehicles):

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/login/EULADispatcher.py
 import ResMgr
 from debug_utils import LOG_ERROR, LOG_WARNING, LOG_CURRENT_EXCEPTION
 from gui.Scaleform.Waiting import Waiting
@@ -106,7 +108,7 @@ class EULADispatcher(EventSystemEntity):
             except Exception:
                 LOG_CURRENT_EXCEPTION()
 
-            return ('').join(text)
+            return ''.join(text)
 
     def fini(self):
         self.removeListener(CloseWindowEvent.EULA_CLOSED, self.__onEulaClosed)
@@ -158,9 +160,8 @@ class _ContentTemplate(_TagTemplate):
                 processor.execute(tSection, processor, selfResult)
 
         else:
-            selfResult = [
-             section.asWideString]
-        result.append(self._template % ('').join(selfResult))
+            selfResult = [section.asWideString]
+        result.append(self._template % u''.join(selfResult))
 
 
 class _ChapterTemplate(object):

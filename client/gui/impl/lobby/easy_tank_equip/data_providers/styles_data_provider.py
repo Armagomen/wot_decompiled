@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/easy_tank_equip/data_providers/styles_data_provider.py
 import random
 from typing import TYPE_CHECKING
 from gui.Scaleform.daapi.view.lobby.customization.shared import getStyledModeRequestData
@@ -81,9 +83,7 @@ class StylesDataProvider(BaseDataProvider):
         pass
 
     def getCurrentPresetItemsIds(self):
-        if self.isProposalDisabled():
-            return []
-        return [self.__stylesPresets[self.currentPresetIndex].intCD]
+        return [] if self.isProposalDisabled() else [self.__stylesPresets[self.currentPresetIndex].intCD]
 
     def _getPresetDataForApplying(self):
         data = super(StylesDataProvider, self)._getPresetDataForApplying()
@@ -146,13 +146,9 @@ class StylesDataProvider(BaseDataProvider):
         styleProgressionLevel = outfit.progressionLevel if style.isProgressive else 0
         outfit.removeStyle()
         if style.is3D:
-            requestData = [
-             (
-              self.__c11nService.getEmptyOutfit(self.__vehicleCD), SeasonType.ALL)]
+            requestData = [(self.__c11nService.getEmptyOutfit(self.__vehicleCD), SeasonType.ALL)]
         else:
-            requestData = [
-             (
-              self.__c11nService.getCommonOutfit(), SeasonType.ALL)]
+            requestData = [(self.__c11nService.getCommonOutfit(), SeasonType.ALL)]
         data = getStyledModeRequestData(requestData, style, vehicle, styleProgressionLevel=styleProgressionLevel)
         return {key:value for value, key in data}
 

@@ -1,5 +1,7 @@
-import BigWorld, CommandMapping
-from AutoShootGunController import getPlayerVehicleAutoShootGunController
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/auto_shoot_guns/auto_shoot_ctrl.py
+import BigWorld
+import CommandMapping
 from auto_shoot_guns.auto_shoot_guns_common import BURST_VERIFYING_DELTA, BURST_CONFIRMATION_DELTA
 from debug_utils import LOG_WARNING
 from gui.battle_control.arena_info.interfaces import IAutoShootController
@@ -9,6 +11,8 @@ from helpers.CallbackDelayer import CallbackDelayer
 from math_common import isAlmostEqual
 from math_utils import clamp
 from shared_utils import findFirst
+from vehicles.mechanics.mechanic_constants import VehicleMechanic
+from vehicles.mechanics.mechanic_helpers import getPlayerVehicleMechanicComponent
 
 class AutoShootController(IAutoShootController, CallbackDelayer):
 
@@ -16,9 +20,9 @@ class AutoShootController(IAutoShootController, CallbackDelayer):
         self.clearCallbacks()
 
     def isBurstActive(self):
-        ctrl = getPlayerVehicleAutoShootGunController()
+        ctrl = getPlayerVehicleMechanicComponent(VehicleMechanic.AUTO_SHOOT_GUN)
         isBurstActive = self.hasDelayedCallback(self.__scheduledBurstVerification)
-        return isBurstActive or ctrl is not None and ctrl.isShooting()
+        return isBurstActive or ctrl is not None and ctrl.getComponentState().isShooting()
 
     def getControllerID(self):
         return BATTLE_CTRL_ID.AUTO_SHOOT_CTRL
@@ -32,13 +36,13 @@ class AutoShootController(IAutoShootController, CallbackDelayer):
         return CommandMapping.g_instance.isActive(CommandMapping.CMD_CM_SHOOT)
 
     def _sendBurstCancellation(self):
-        ctrl = getPlayerVehicleAutoShootGunController()
+        ctrl = getPlayerVehicleMechanicComponent(VehicleMechanic.AUTO_SHOOT_GUN)
         if ctrl is not None:
             ctrl.cell.deactivateShooting()
         return
 
     def _sendBurstConfirmation(self):
-        ctrl = getPlayerVehicleAutoShootGunController()
+        ctrl = getPlayerVehicleMechanicComponent(VehicleMechanic.AUTO_SHOOT_GUN)
         if ctrl is not None:
             ctrl.cell.activateShooting()
         return
@@ -53,23 +57,21 @@ class AutoShootController(IAutoShootController, CallbackDelayer):
         return BURST_CONFIRMATION_DELTA
 
     def __scheduledBurstVerification(self):
-        if self._isShootingCmdActive():
-            return self.__verifyBurst(isRepeat=True)
-        return self.__cancelBurst()
+        return self.__verifyBurst(isRepeat=True) if self._isShootingCmdActive() else self.__cancelBurst()
 
     def __verifyBurst(self, isRepeat=False):
         player = BigWorld.player()
         if player is None or not player.isOnArena or not player.isVehicleAlive:
             self.stopCallback(self.__scheduledBurstConfirmation)
             return
+        elif not player.verifyShooting(isRepeat):
+            self.stopCallback(self.__scheduledBurstConfirmation)
+            return BURST_VERIFYING_DELTA
+        elif not self.hasDelayedCallback(self.__scheduledBurstConfirmation):
+            self.delayCallback(BURST_CONFIRMATION_DELTA, self.__scheduledBurstConfirmation)
+            self._sendBurstConfirmation()
+            return BURST_VERIFYING_DELTA
         else:
-            if not player.verifyShooting(isRepeat):
-                self.stopCallback(self.__scheduledBurstConfirmation)
-                return BURST_VERIFYING_DELTA
-            if not self.hasDelayedCallback(self.__scheduledBurstConfirmation):
-                self.delayCallback(BURST_CONFIRMATION_DELTA, self.__scheduledBurstConfirmation)
-                self._sendBurstConfirmation()
-                return BURST_VERIFYING_DELTA
             return BURST_VERIFYING_DELTA
 
 
@@ -79,10 +81,25 @@ class DevAutoShootController(AutoShootController):
     _MIN_RATE_SPEED = 0
     _MAX_RATE_SPEED = 100
     _RATE_UPDATE_INTERVAL = 0.2
-    _RATES_SEQUENCE = (
-     _MIN_RATE, 60, 120, 360, 660, 1200, 1800, 2400, 3600, 6000, 9000, _MAX_RATE)
-    _RATE_SPEEDS_SEQUENCE = (
-     _MIN_RATE_SPEED, 2, 5, 10, 20, 50, _MAX_RATE_SPEED)
+    _RATES_SEQUENCE = (_MIN_RATE,
+     60,
+     120,
+     360,
+     660,
+     1200,
+     1800,
+     2400,
+     3600,
+     6000,
+     9000,
+     _MAX_RATE)
+    _RATE_SPEEDS_SEQUENCE = (_MIN_RATE_SPEED,
+     2,
+     5,
+     10,
+     20,
+     50,
+     _MAX_RATE_SPEED)
 
     def __init__(self):
         super(DevAutoShootController, self).__init__()
@@ -95,12 +112,12 @@ class DevAutoShootController(AutoShootController):
         return
 
     def startControl(self, *_):
-        self.__commandHandlers = {AutoShootDevCommand.RATE_UP: self.__increaseRate, 
-           AutoShootDevCommand.RATE_DOWN: self.__decreaseRate, 
-           AutoShootDevCommand.RATE_SPEED_UP: self.__increaseRateSpeed, 
-           AutoShootDevCommand.RATE_SPEED_DOWN: self.__decreaseRateSpeed, 
-           AutoShootDevCommand.CLAMP_BURST: self.__toggleBurstClamping, 
-           AutoShootDevCommand.RESET: self.__resetParams}
+        self.__commandHandlers = {AutoShootDevCommand.RATE_UP: self.__increaseRate,
+         AutoShootDevCommand.RATE_DOWN: self.__decreaseRate,
+         AutoShootDevCommand.RATE_SPEED_UP: self.__increaseRateSpeed,
+         AutoShootDevCommand.RATE_SPEED_DOWN: self.__decreaseRateSpeed,
+         AutoShootDevCommand.CLAMP_BURST: self.__toggleBurstClamping,
+         AutoShootDevCommand.RESET: self.__resetParams}
         self.delayCallback(self._RATE_UPDATE_INTERVAL, self._tickRateCallback)
 
     def stopControl(self):
@@ -108,7 +125,7 @@ class DevAutoShootController(AutoShootController):
         super(DevAutoShootController, self).stopControl()
 
     def processAutoShootDevCmd(self, command):
-        ctrl = getPlayerVehicleAutoShootGunController()
+        ctrl = getPlayerVehicleMechanicComponent(VehicleMechanic.AUTO_SHOOT_GUN)
         if command in self.__commandHandlers and ctrl is not None:
             self.__commandHandlers[command](ctrl)
         return
@@ -116,9 +133,7 @@ class DevAutoShootController(AutoShootController):
     def _isShootingCmdActive(self):
         burstStartTime = self.__burstStartTime or BigWorld.time()
         isClamping = self.__burstClampActive and burstStartTime + AUTO_SHOOT_DEV_BURST_CLAMP < BigWorld.time()
-        if isClamping:
-            return False
-        return super(DevAutoShootController, self)._isShootingCmdActive()
+        return False if isClamping else super(DevAutoShootController, self)._isShootingCmdActive()
 
     def _sendBurstConfirmation(self):
         super(DevAutoShootController, self)._sendBurstConfirmation()
@@ -160,11 +175,11 @@ class DevAutoShootController(AutoShootController):
         self.__updateServerRate(desiredShootRate)
 
     def __tickRate(self):
-        ctrl = getPlayerVehicleAutoShootGunController()
+        ctrl = getPlayerVehicleMechanicComponent(VehicleMechanic.AUTO_SHOOT_GUN)
         if ctrl is None:
             return
         else:
-            currentRate = int(round(ctrl.getShotRatePerSecond() * 60.0))
+            currentRate = int(round(ctrl.getComponentState().getDefaultShotRatePerSecond() * 60.0))
             if isAlmostEqual(currentRate, self.__desiredRate, epsilon=0.5):
                 self.__desiredRateInited = True
                 return
@@ -214,11 +229,11 @@ class DevAutoShootReplayController(DevAutoShootController):
 
 
 class AutoShootControllerFactory(object):
-    _AUTO_SHOOT_CONTROLLERS_MAP = {(False, False): AutoShootController, 
-       (False, True): AutoShootReplayController, 
-       (True, False): DevAutoShootController, 
-       (True, True): DevAutoShootReplayController}
+    _AUTO_SHOOT_CONTROLLERS_MAP = {(False, False): AutoShootController,
+     (False, True): AutoShootReplayController,
+     (True, False): DevAutoShootController,
+     (True, True): DevAutoShootReplayController}
 
     @classmethod
     def createAutoShootController(cls, setup):
-        return cls._AUTO_SHOOT_CONTROLLERS_MAP[(AUTO_SHOOT_DEV_KEYS, setup.isReplayPlaying)]()
+        return cls._AUTO_SHOOT_CONTROLLERS_MAP[AUTO_SHOOT_DEV_KEYS, setup.isReplayPlaying]()

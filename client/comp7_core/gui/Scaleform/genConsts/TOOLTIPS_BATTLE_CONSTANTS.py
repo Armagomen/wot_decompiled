@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_core/scripts/client/comp7_core/gui/Scaleform/genConsts/TOOLTIPS_BATTLE_CONSTANTS.py
 
 
 class TOOLTIPS_BATTLE_CONSTANTS(object):

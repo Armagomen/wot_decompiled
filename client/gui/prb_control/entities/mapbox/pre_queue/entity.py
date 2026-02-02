@@ -1,4 +1,7 @@
-import typing, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/mapbox/pre_queue/entity.py
+import typing
+import BigWorld
 from CurrentVehicle import g_currentVehicle
 from constants import QUEUE_TYPE
 from debug_utils import LOG_DEBUG
@@ -71,9 +74,7 @@ class MapboxEntity(PreQueueEntity):
 
     def doSelectAction(self, action):
         name = action.actionName
-        if name == PREBATTLE_ACTION_NAME.MAPBOX:
-            return SelectResult(True)
-        return super(MapboxEntity, self).doSelectAction(action)
+        return SelectResult(True) if name == PREBATTLE_ACTION_NAME.MAPBOX else super(MapboxEntity, self).doSelectAction(action)
 
     def getPermissions(self, pID=None, **kwargs):
         return MapboxPermissions(self.isInQueue())

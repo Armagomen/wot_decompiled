@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/winback/winback_reward_view.py
+import logging
+import typing
 from PlayerEvents import g_playerEvents
 from frameworks.wulf import ViewFlags, ViewSettings, WindowFlags
 from gui.impl.backport import BackportTooltipWindow
@@ -24,8 +27,7 @@ if typing.TYPE_CHECKING:
     from typing import List
     from gui.server_events.bonuses import SimpleBonus
 _logger = logging.getLogger(__name__)
-_AWARDS_ORDER = [
- 'premium_plus',
+_AWARDS_ORDER = ['premium_plus',
  RewardName.VEHICLE_FOR_GIFT.value,
  RewardName.SELECTABLE_VEHICLE_FOR_GIFT.value,
  RewardName.SELECTABLE_VEHICLE_DISCOUNT.value,
@@ -42,7 +44,7 @@ def _selectablesSort(bonuses):
             if not needShuffle:
                 fromIndex = idx
                 needShuffle = True
-        elif needShuffle:
+        if needShuffle:
             toIndex = idx
             break
 
@@ -51,8 +53,7 @@ def _selectablesSort(bonuses):
 
 
 class WinbackRewardView(ViewImpl):
-    __slots__ = ('__selectedRewards', '__tooltipData', '__bonuses', '__questIDs', '__isOnlyDaily',
-                 '__isLastWindow')
+    __slots__ = ('__selectedRewards', '__tooltipData', '__bonuses', '__questIDs', '__isOnlyDaily', '__isLastWindow')
     _itemsCache = dependency.descriptor(IItemsCache)
     _winbackController = dependency.descriptor(IWinbackController)
     _COMMON_SOUND_SPACE = CommonSoundSpaceSettings(name=SOUNDS.ACTIVATE_CHAPTER_STATE, entranceStates={SOUNDS.ACTIVATE_CHAPTER_STATE: SOUNDS.ACTIVATE_CHAPTER_STATE_ON}, exitStates={SOUNDS.ACTIVATE_CHAPTER_STATE: SOUNDS.ACTIVATE_CHAPTER_STATE_OFF}, persistentSounds=(), stoppableSounds=(), priorities=(), autoStart=True, enterEvent=SOUNDS.REWARD_SCREEN, exitEvent='')
@@ -94,25 +95,18 @@ class WinbackRewardView(ViewImpl):
 
     def _onLoading(self, *args, **kwargs):
         super(WinbackRewardView, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setState(self.__getState())
-            tx.setIsFirstProgressionStep(bool([ qID for qID in self.__questIDs if self._winbackController.isWinbackQuest(qID) and self._winbackController.getQuestIdx(qID) == 1
-                                              ]))
+            tx.setIsFirstProgressionStep(bool([ qID for qID in self.__questIDs if self._winbackController.isWinbackQuest(qID) and self._winbackController.getQuestIdx(qID) == 1 ]))
             tx.setIsSelectableAwardAvailable(self._winbackController.hasWinbackOfferToken())
             self.__packRewards(self.__bonuses, tx)
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onClose, self._onClose),
-         (
-          self.viewModel.onSelectReward, self._onSelectReward),
-         (
-          self.viewModel.showInHangar, self._showInHangar),
-         (
-          self.viewModel.showQuests, self._showQuests),
-         (
-          g_playerEvents.onDisconnected, self.destroyWindow))
+        return ((self.viewModel.onClose, self._onClose),
+         (self.viewModel.onSelectReward, self._onSelectReward),
+         (self.viewModel.showInHangar, self._showInHangar),
+         (self.viewModel.showQuests, self._showQuests),
+         (g_playerEvents.onDisconnected, self.destroyWindow))
 
     def _onClose(self):
         self.destroyWindow()
@@ -140,9 +134,7 @@ class WinbackRewardView(ViewImpl):
     @staticmethod
     def __sortBonusesByKey(bonus):
         bonusName = bonus.getName()
-        if bonusName in _AWARDS_ORDER:
-            return _AWARDS_ORDER.index(bonusName)
-        return len(_AWARDS_ORDER) + 1
+        return _AWARDS_ORDER.index(bonusName) if bonusName in _AWARDS_ORDER else len(_AWARDS_ORDER) + 1
 
     def __packRewards(self, bonuses, model):
         rewardsModel = model.getRewards()

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/training_room_external_handlers.py
 from account_helpers import isDemonstrator, isDemonstratorExpert
 from comp7.gui.prb_control.entities.limits import Comp7TrainingLimits
 from comp7.gui.prb_control.entities.pre_queue.vehicles_watcher import Comp7VehiclesWatcher
@@ -19,9 +21,9 @@ class Comp7TrainingRoomHandler(TrainingRoomBaseHandler):
         return _isComp7ArenaFilter
 
     def getArenaData(self):
-        return {'size': self.getMaxPlayersInTeam(), 
-           'canChangeArenaTime': False, 
-           'additionalInfo': self.getAdditionalInfo()}
+        return {'size': self.getMaxPlayersInTeam(),
+         'canChangeArenaTime': False,
+         'additionalInfo': self.getAdditionalInfo()}
 
     def getAdditionalInfo(self):
         return PREBATTLE_ALIASES.TRAINING_ADDITIONAL_INFO_COMP7
@@ -48,11 +50,7 @@ class Comp7TrainingRoomHandler(TrainingRoomBaseHandler):
         return Comp7VehiclesWatcher
 
     def getClientMessageData(self, errorType=None):
-        if errorType == PREBATTLE_ERRORS.ONSLAUGHT_ROSTER_LIMIT:
-            return (
-             SYSTEM_MESSAGES.TRAINING_ERROR_ONSLAUGHTROSTERLIMIT, {'numPlayers': self.getMaxPlayersInTeam()})
-        else:
-            return
+        return (SYSTEM_MESSAGES.TRAINING_ERROR_ONSLAUGHTROSTERLIMIT, {'numPlayers': self.getMaxPlayersInTeam()}) if errorType == PREBATTLE_ERRORS.ONSLAUGHT_ROSTER_LIMIT else None
 
     def isEnabledForGuiTypeName(self, guiTypeName=None):
         return guiTypeName == self._GUI_TYPE_NAME

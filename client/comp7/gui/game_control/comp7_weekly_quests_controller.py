@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/game_control/comp7_weekly_quests_controller.py
+import logging
+import typing
 from functools import partial
 from Event import Event, EventManager
 from PlayerEvents import g_playerEvents
@@ -114,12 +117,11 @@ class Comp7WeeklyQuestsController(IComp7WeeklyQuestsController, IGlobalListener)
                 if quest.isCompleted():
                     completedCnt += 1
                     oldQuest = quest
-                else:
-                    if not newQuest:
-                        newQuest = quest
-                    if not quest.isStarted():
-                        timeOfNewQuests = quest.getStartTime()
-                        break
+                if not newQuest:
+                    newQuest = quest
+                if not quest.isStarted():
+                    timeOfNewQuests = quest.getStartTime()
+                    break
             else:
                 timeOfNewQuests = None
 
@@ -134,9 +136,7 @@ class Comp7WeeklyQuestsController(IComp7WeeklyQuestsController, IGlobalListener)
 
 
 class _Comp7WeeklyQuests(object):
-    __slots__ = ('sortedBattleQuests', 'sortedTokenQuests', 'oldQuest', 'newQuest',
-                 'numBattleQuests', 'numCompletedBattleQuests', 'numBattleQuestsToCompleteByTokenQuestIdx',
-                 'timeOfNewQuests')
+    __slots__ = ('sortedBattleQuests', 'sortedTokenQuests', 'oldQuest', 'newQuest', 'numBattleQuests', 'numCompletedBattleQuests', 'numBattleQuestsToCompleteByTokenQuestIdx', 'timeOfNewQuests')
 
     def __init__(self, battleQuests, tokenQuests, oldQuest, newQuest, numBattleQuests, numCompletedBattleQuests, timeOfNewQuests):
         self.sortedBattleQuests = battleQuests
@@ -145,7 +145,7 @@ class _Comp7WeeklyQuests(object):
         self.newQuest = newQuest
         self.numBattleQuests = numBattleQuests
         self.numCompletedBattleQuests = numCompletedBattleQuests
-        self.numBattleQuestsToCompleteByTokenQuestIdx = tuple(quest.accountReqs.getConditions().find('token').getNeededCount() for _, quest in tokenQuests)
+        self.numBattleQuestsToCompleteByTokenQuestIdx = tuple((quest.accountReqs.getConditions().find('token').getNeededCount() for _, quest in tokenQuests))
         self.timeOfNewQuests = timeOfNewQuests
 
     def getTimeToNewQuests(self):
@@ -154,12 +154,10 @@ class _Comp7WeeklyQuests(object):
             return -1
         else:
             timeToNewQuests = time_utils.getTimeDeltaFromNowInLocal(timeOfNewQuests)
-            if timeToNewQuests < 0:
-                return 1
-            return timeToNewQuests
+            return 1 if timeToNewQuests < 0 else timeToNewQuests
 
     def __repr__(self):
-        return ('{}\n{}').format(self.__class__.__name__, ('\n').join(('{}={}').format(n, getattr(self, n, 'priv')) for n in self.__slots__))
+        return '{}\n{}'.format(self.__class__.__name__, '\n'.join(('{}={}'.format(n, getattr(self, n, 'priv')) for n in self.__slots__)))
 
 
 class _Comp7WeeklyQuestsInErrorState(_Comp7WeeklyQuests):

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tooltips/veh_post_progression_entry_point_tooltip.py
 import typing
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
@@ -35,7 +37,7 @@ class VehPostProgressionEntryPointTooltip(ViewImpl):
         modulesTotal = 0
         hasVehiclesToUnlock = True
         self.__parentScreen = parentScreen
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setHeader(R.strings.veh_post_progression.tooltips.entry_point.header())
             model.setDescription(R.strings.veh_post_progression.tooltips.entry_point.description())
             model.setStatus(self.__getStatus())
@@ -58,6 +60,4 @@ class VehPostProgressionEntryPointTooltip(ViewImpl):
             return status.notResearchedNotPurchased()
         if not isPurchased:
             return status.notPurchased()
-        if not isElite:
-            return status.notResearched()
-        return R.invalid()
+        return status.notResearched() if not isElite else R.invalid()

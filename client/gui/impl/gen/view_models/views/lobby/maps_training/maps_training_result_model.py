@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/maps_training/maps_training_result_model.py
 from enum import IntEnum
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen import R
@@ -10,7 +12,7 @@ class DoneValueEnum(IntEnum):
 
 
 class MapsTrainingResultModel(ViewModel):
-    __slots__ = ('onClose', )
+    __slots__ = ('onClose',)
 
     def __init__(self, properties=13, commands=1):
         super(MapsTrainingResultModel, self).__init__(properties=properties, commands=commands)

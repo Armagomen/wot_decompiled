@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/respawn/respawn_utils.py
 import BigWorld
 from gui import makeHtmlString
 from gui.impl import backport
@@ -34,9 +36,9 @@ def getSlotsStatesData(vehs, cooldowns, disabled, limits={}):
                     cooldownStr = backport.text(R.strings.ingame_gui.respawnView.cooldownLbl(), time=time_utils.getTimeLeftFormat(cooldown))
             else:
                 cooldownStr = backport.text(R.strings.ingame_gui.respawnView.classNotAvailable())
-        result.append({'vehicleID': compactDescr, 
-           'enabled': enabled, 
-           'cooldown': cooldownStr, 
-           'settings': v.settings})
+        result.append({'vehicleID': compactDescr,
+         'enabled': enabled,
+         'cooldown': cooldownStr,
+         'settings': v.settings})
 
     return result

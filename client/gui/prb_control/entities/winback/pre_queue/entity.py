@@ -1,4 +1,7 @@
-import logging, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/winback/pre_queue/entity.py
+import logging
+import BigWorld
 from CurrentVehicle import g_currentVehicle
 from account_helpers import gameplay_ctx
 from constants import QUEUE_TYPE
@@ -50,9 +53,7 @@ class WinbackEntity(PreQueueEntity):
 
     def doSelectAction(self, action):
         name = action.actionName
-        if name == PREBATTLE_ACTION_NAME.WINBACK:
-            return SelectResult(True)
-        return super(WinbackEntity, self).doSelectAction(action)
+        return SelectResult(True) if name == PREBATTLE_ACTION_NAME.WINBACK else super(WinbackEntity, self).doSelectAction(action)
 
     def getPermissions(self, pID=None, **kwargs):
         return WinbackPermissions(self.isInQueue())

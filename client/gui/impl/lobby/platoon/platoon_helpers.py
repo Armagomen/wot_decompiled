@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/platoon/platoon_helpers.py
 import logging
 from collections import namedtuple
 from UnitBase import BitfieldHelper
@@ -40,16 +42,12 @@ def removeNationFromTechName(string):
     result = string.split(':')
     if len(result) > 1:
         return result[1]
-    if result:
-        return result[0]
-    return ''
+    return result[0] if result else ''
 
 
 def getNationFromTechName(string):
     result = string.split(':')
-    if result:
-        return result[0]
-    return ''
+    return result[0] if result else ''
 
 
 def convertTierFilterToList(tierFilter):
@@ -73,9 +71,7 @@ def getVehicleDescriptorByIntCD(vehicleIntCD):
 
 def getQueueInfoByQueueType(queueInfo, queueType):
     defaultQueueInfo = {'numInQueue': 0}
-    if queueInfo:
-        return queueInfo.get(queueType, defaultQueueInfo)
-    return defaultQueueInfo
+    return queueInfo.get(queueType, defaultQueueInfo) if queueInfo else defaultQueueInfo
 
 
 def formatSearchEstimatedTime(seconds):

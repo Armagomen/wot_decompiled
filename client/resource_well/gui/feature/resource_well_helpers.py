@@ -1,6 +1,11 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: resource_well/scripts/client/resource_well/gui/feature/resource_well_helpers.py
+from __future__ import absolute_import
+import logging
+import typing
+from future.utils import iteritems
 from account_helpers import AccountSettings
-from account_helpers.AccountSettings import RESOURCE_WELL_END_SHOWN, RESOURCE_WELL_START_SHOWN, RESOURCE_WELL_NOTIFICATIONS
+from account_helpers.AccountSettings import ResourceWell
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from helpers import dependency, time_utils
 from resource_well.gui.feature.constants import CHANNEL_NAME_PREFIX, PurchaseMode
@@ -17,9 +22,9 @@ if typing.TYPE_CHECKING:
     from gui.shared.gui_items.Vehicle import Vehicle
     from resource_well.helpers.server_settings import RewardConfig
 _logger = logging.getLogger(__name__)
-_PurchaseModeToEventModeMap = {PurchaseMode.ONE_SERIAL_PRODUCT: EventMode.ONE_SERIAL_PRODUCT, 
-   PurchaseMode.SEQUENTIAL_PRODUCT: EventMode.SEQUENTIAL_PRODUCT, 
-   PurchaseMode.TWO_PARALLEL_PRODUCTS: EventMode.TWO_PARALLEL_PRODUCTS}
+_PurchaseModeToEventModeMap = {PurchaseMode.ONE_SERIAL_PRODUCT: EventMode.ONE_SERIAL_PRODUCT,
+ PurchaseMode.SEQUENTIAL_PRODUCT: EventMode.SEQUENTIAL_PRODUCT,
+ PurchaseMode.TWO_PARALLEL_PRODUCTS: EventMode.TWO_PARALLEL_PRODUCTS}
 
 def convertPurchaseToEventMode(mode):
     return _PurchaseModeToEventModeMap.get(mode, EventMode.ONE_SERIAL_PRODUCT)
@@ -48,21 +53,16 @@ def getSerialNumber(rewardID, resourceWell=None, itemsCache=IItemsCache):
 def getNextSerialRewardID(rewardID, resourceWell=None):
     mode = resourceWell.getPurchaseMode()
     if mode is not PurchaseMode.SEQUENTIAL_PRODUCT:
-        return
+        return None
     else:
-        result = findFirst(lambda item: item[1].availableAfter == rewardID, resourceWell.config.rewards.items())
-        if result is not None:
-            return result[0]
-        return
+        result = findFirst(lambda item: item[1].availableAfter == rewardID, iteritems(resourceWell.config.rewards))
+        return result[0] if result is not None else None
 
 
 @dependency.replace_none_kwargs(resourceWell=IResourceWellController, c11nService=ICustomizationService)
 def getRewardStyle(rewardID, resourceWell=None, c11nService=None):
     styleID = resourceWell.getRewardStyleID(rewardID)
-    if styleID is None:
-        return
-    else:
-        return c11nService.getItemByID(GUI_ITEM_TYPE.STYLE, styleID)
+    return None if styleID is None else c11nService.getItemByID(GUI_ITEM_TYPE.STYLE, styleID)
 
 
 @dependency.replace_none_kwargs(resourceWell=IResourceWellController)
@@ -73,9 +73,7 @@ def hasRequiredStyle(rewardID, rewardConfig=None, resourceWell=None):
         return True
     else:
         style = getRewardStyle(rewardID, resourceWell=resourceWell)
-        if style is not None:
-            return style.fullCount() > 0
-        return False
+        return style.fullCount() > 0 if style is not None else False
 
 
 @dependency.replace_none_kwargs(resourceWell=IResourceWellController)
@@ -103,9 +101,8 @@ def getRewardVehiclesInInventory(resourceWell=None):
 
 
 def getNotificationSettings():
-    defaults = AccountSettings.getNotificationDefault(RESOURCE_WELL_NOTIFICATIONS)
-    settings = AccountSettings.getNotifications(RESOURCE_WELL_NOTIFICATIONS, defaults)
-    return settings
+    defaults = AccountSettings.getNotificationDefault(ResourceWell.NOTIFICATIONS)
+    return AccountSettings.getNotifications(ResourceWell.NOTIFICATIONS, defaults)
 
 
 @dependency.replace_none_kwargs(resourceWell=IResourceWellController)
@@ -119,20 +116,39 @@ def isNotificationShown(sectionName, resourceWell=None):
 def setIsNotificationShown(sectionName, resourceWell=None):
     settings = getNotificationSettings()
     settings[sectionName].add(resourceWell.config.season)
-    AccountSettings.setNotifications(RESOURCE_WELL_NOTIFICATIONS, settings)
+    AccountSettings.setNotifications(ResourceWell.NOTIFICATIONS, settings)
 
 
 def isStartNotificationShown():
-    return isNotificationShown(RESOURCE_WELL_START_SHOWN)
+    return isNotificationShown(ResourceWell.START_SHOWN)
 
 
 def isFinishNotificationShown():
-    return isNotificationShown(RESOURCE_WELL_END_SHOWN)
+    return isNotificationShown(ResourceWell.END_SHOWN)
 
 
 def setStartNotificationShown():
-    return setIsNotificationShown(RESOURCE_WELL_START_SHOWN)
+    return setIsNotificationShown(ResourceWell.START_SHOWN)
 
 
 def setFinishNotificationShown():
-    return setIsNotificationShown(RESOURCE_WELL_END_SHOWN)
+    return setIsNotificationShown(ResourceWell.END_SHOWN)
+
+
+def getSettings(settingName, defaultValue=None):
+    settings = AccountSettings.getSettings(ResourceWell.SETTINGS)
+    return settings.get(settingName, defaultValue)
+
+
+@dependency.replace_none_kwargs(resourceWell=IResourceWellController)
+def setBannerSettings(settingName, resourceWell=None):
+    settings = AccountSettings.getSettings(ResourceWell.SETTINGS)
+    settings[settingName].add(resourceWell.config.season)
+    AccountSettings.setSettings(ResourceWell.SETTINGS, settings)
+
+
+@dependency.replace_none_kwargs(resourceWell=IResourceWellController)
+def isBannerSettingSet(settingName, resourceWell=None):
+    season = resourceWell.config.season
+    settings = getSettings(settingName, set())
+    return season in settings

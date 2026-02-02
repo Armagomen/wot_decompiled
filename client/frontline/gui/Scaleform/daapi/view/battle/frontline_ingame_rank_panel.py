@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/battle/frontline_ingame_rank_panel.py
 from frontline.gui.Scaleform.daapi.view.meta.FrontlineInGameRankMeta import FrontlineInGameRankMeta
 from gui.Scaleform.locale.EPIC_BATTLE import EPIC_BATTLE
 from helpers import dependency
@@ -35,18 +37,18 @@ class FrontlineInGameRankPanel(FrontlineInGameRankMeta):
 
     def __setCurrentRank(self):
         self.__currentRank = self.__getRank(self.__currentExp)
-        self.as_setRankS({'rank': self.__currentRank, 
-           'isMaxRank': self.__currentRank == _MAX_IN_GAME_RANK, 
-           'previousProgress': 0, 
-           'newProgress': self.__getThresholdPercentage(self.__currentExp), 
-           'rankText': EPIC_BATTLE.getRankLabel(self.__currentRank + 1)})
+        self.as_setRankS({'rank': self.__currentRank,
+         'isMaxRank': self.__currentRank == _MAX_IN_GAME_RANK,
+         'previousProgress': 0,
+         'newProgress': self.__getThresholdPercentage(self.__currentExp),
+         'rankText': EPIC_BATTLE.getRankLabel(self.__currentRank + 1)})
 
     def __getThresholdPercentage(self, expValue):
         activeRank = self.__getRank(expValue)
         result = 0
         if activeRank != _MAX_IN_GAME_RANK:
             normalizedExpValue = expValue - self.__rankThresholds[activeRank]
-            nextRankLevelCap = self.__rankThresholds[(activeRank + 1)] - self.__rankThresholds[activeRank]
+            nextRankLevelCap = self.__rankThresholds[activeRank + 1] - self.__rankThresholds[activeRank]
             result = float(normalizedExpValue) / float(nextRankLevelCap)
         return round(max(0.0, result - 0.005), 2)
 
@@ -55,8 +57,7 @@ class FrontlineInGameRankPanel(FrontlineInGameRankMeta):
         for rankThreshold in self.__rankThresholds:
             if progressValue >= rankThreshold:
                 result = result + 1
-            else:
-                break
+            break
 
         return result
 

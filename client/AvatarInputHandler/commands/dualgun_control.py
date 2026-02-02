@@ -1,4 +1,8 @@
-import logging, BigWorld, CommandMapping
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/AvatarInputHandler/commands/dualgun_control.py
+import logging
+import BigWorld
+import CommandMapping
 from AvatarInputHandler.commands.input_handler_command import InputHandlerCommand
 from constants import DUAL_GUN, DUALGUN_CHARGER_ACTION_TYPE, DUALGUN_CHARGER_STATUS
 from gui.battle_control import event_dispatcher as gui_event_dispatcher
@@ -99,18 +103,18 @@ class DualGunController(InputHandlerCommand):
         vehicle = BigWorld.player().getVehicleAttached()
         if vehicle is None or not vehicle.isPlayerVehicle or not vehicle.isAlive():
             return False
-        if vehicle.typeDescriptor is None or not vehicle.typeDescriptor.hasCharge:
+        elif vehicle.typeDescriptor is None or not vehicle.typeDescriptor.hasCharge:
             return False
         cmdMap = CommandMapping.g_instance
         if cmdMap.isFiredList((CommandMapping.CMD_CM_CHARGE_SHOT, CommandMapping.CMD_CM_SHOOT), key, True):
             status = DUALGUN_CHARGER_ACTION_TYPE.START_WITH_DELAY if isDown else DUALGUN_CHARGER_ACTION_TYPE.CANCEL
             self.__shotControl.shootKeyEvent(status)
             return True
+        elif cmdMap.isFired(CommandMapping.CMD_CM_CHARGE_SHOT, key):
+            status = DUALGUN_CHARGER_ACTION_TYPE.START_IMMEDIATELY if isDown else DUALGUN_CHARGER_ACTION_TYPE.CANCEL
+            self.__shotControl.shootKeyEvent(status)
+            return True
         else:
-            if cmdMap.isFired(CommandMapping.CMD_CM_CHARGE_SHOT, key):
-                status = DUALGUN_CHARGER_ACTION_TYPE.START_IMMEDIATELY if isDown else DUALGUN_CHARGER_ACTION_TYPE.CANCEL
-                self.__shotControl.shootKeyEvent(status)
-                return True
             return False
 
     def cancelShootKeyEvent(self):

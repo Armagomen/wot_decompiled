@@ -1,4 +1,7 @@
-import BigWorld, nations
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/blueprints/blueprint_screen.py
+import BigWorld
+import nations
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import VEHICLES_WITH_BLUEPRINT_CONFIRM, STORAGE_BLUEPRINTS_CAROUSEL_FILTER
 from adisp import adisp_process
@@ -34,8 +37,7 @@ from skeletons.gui.shared import IItemsCache
 class BlueprintScreen(ViewImpl):
     __itemsCache = dependency.descriptor(IItemsCache)
     __connectionMgr = dependency.descriptor(IConnectionManager)
-    __slots__ = ('__vehicle', '__xpCost', '__fullXpCost', '__discount', '__convertedIndexes',
-                 '__accountSettings')
+    __slots__ = ('__vehicle', '__xpCost', '__fullXpCost', '__discount', '__convertedIndexes', '__accountSettings')
 
     def __init__(self, viewKey, viewModelClazz=BlueprintScreenModel, ctx=None):
         settings = ViewSettings(viewKey)
@@ -66,7 +68,8 @@ class BlueprintScreen(ViewImpl):
             if window is not None:
                 window.load()
             return window
-        return super(BlueprintScreen, self).createToolTip(event)
+        else:
+            return super(BlueprintScreen, self).createToolTip(event)
 
     def _initialize(self):
         super(BlueprintScreen, self)._initialize()
@@ -82,7 +85,7 @@ class BlueprintScreen(ViewImpl):
         maxFragmentCount = bpRequester.getConvertibleFragmentCount(vehicle.intCD, vehicle.level)
         self.__updateResearchPrice()
         isAvailableForUnlock, needXpToUnlock = self.__checkIsVehicleAvailable()
-        with self.getViewModel().transaction() as (model):
+        with self.getViewModel().transaction() as model:
             model.setVehicleName(vehicle.shortUserName)
             model.setVehicleLevel(int2roman(vehicle.level))
             model.setVehicleType(vehType)
@@ -125,11 +128,11 @@ class BlueprintScreen(ViewImpl):
         return
 
     def __addListeners(self):
-        g_clientUpdateManager.addCallbacks({'stats.unlocks': self.__onUnlockVehicle, 
-           'stats.freeXP': self.__onUpdateXP, 
-           'stats.vehTypeXP': self.__onUpdateXP, 
-           'blueprints': self.__onUpdateBlueprints, 
-           'serverSettings.blueprints_config': self.__onBlueprintsSettingsChanged})
+        g_clientUpdateManager.addCallbacks({'stats.unlocks': self.__onUnlockVehicle,
+         'stats.freeXP': self.__onUpdateXP,
+         'stats.vehTypeXP': self.__onUpdateXP,
+         'blueprints': self.__onUpdateBlueprints,
+         'serverSettings.blueprints_config': self.__onBlueprintsSettingsChanged})
         self.viewModel.onGoToConversionScreen += self.__onGoToConversionScreen
         self.viewModel.onGoToAllConversion += self.__onGoToAllConversion
         self.viewModel.onClose += self.__onCloseAction
@@ -190,7 +193,7 @@ class BlueprintScreen(ViewImpl):
         filledCount, totalCount = bpRequester.getBlueprintCount(self.__vehicle.intCD, self.__vehicle.level)
         isSchemeFullCompleted = filledCount == totalCount
         maxFragCount = bpRequester.getConvertibleFragmentCount(self.__vehicle.intCD, self.__vehicle.level)
-        with self.getViewModel().transaction() as (model):
+        with self.getViewModel().transaction() as model:
             model.setCost(self.gui.systemLocale.getNumberFormat(self.__xpCost))
             model.setDiscount(self.__discount)
             model.setDiscountAbs(self.gui.systemLocale.getNumberFormat(int(self.__fullXpCost - self.__xpCost)))
@@ -207,7 +210,7 @@ class BlueprintScreen(ViewImpl):
             return
         layout = self.__getLayout()
         self.__getConvertedIndexes(layout)
-        with self.getViewModel().transaction() as (model):
+        with self.getViewModel().transaction() as model:
             model.setIsElite(self.__vehicle.isElite)
             model.setIsUnlocked(True)
             model.setCurrentStateView(BlueprintScreenModel.UPDATE)
@@ -215,7 +218,7 @@ class BlueprintScreen(ViewImpl):
 
     def __onUpdateXP(self, _):
         isAvailableForUnlock, needXpToUnlock = self.__checkIsVehicleAvailable()
-        with self.getViewModel().transaction() as (model):
+        with self.getViewModel().transaction() as model:
             model.setIsAvailableForUnlock(isAvailableForUnlock)
             model.setNeedXpToUnlock(needXpToUnlock)
 
@@ -227,8 +230,7 @@ class BlueprintScreen(ViewImpl):
         needXpToUnlock = self.__xpCost - vehicleXPs.get(self.__vehicle.intCD, 0)
         needWithFreeXP = needXpToUnlock - freeXP
         needXpToUnlock = min(needXpToUnlock, needWithFreeXP)
-        return (
-         isAvailableForUnlock, needXpToUnlock > 0)
+        return (isAvailableForUnlock, needXpToUnlock > 0)
 
     def __updateConversionData(self, model):
         bpRequester = self.__itemsCache.items.blueprints
@@ -263,9 +265,7 @@ class BlueprintScreen(ViewImpl):
             self.__xpCost, self.__discount, self.__fullXpCost = g_techTreeDP.getOldAndNewCost(self.__vehicle.intCD, self.__vehicle.level)
 
     def __isConversionAvailable(self):
-        if not self.__vehicle.isUnlocked:
-            return self.__itemsCache.items.blueprints.canConvertToVehicleFragment(self.__vehicle.intCD, self.__vehicle.level)
-        return False
+        return self.__itemsCache.items.blueprints.canConvertToVehicleFragment(self.__vehicle.intCD, self.__vehicle.level) if not self.__vehicle.isUnlocked else False
 
     def __getLayout(self):
         _, _, layout = self.__itemsCache.items.blueprints.getLayout(self.__vehicle.intCD, self.__vehicle.level)
@@ -296,17 +296,11 @@ class BlueprintScreen(ViewImpl):
         blueprintTooltip = getBlueprintTooltipData(ttId, itemCD)
         if blueprintTooltip is not None:
             return blueprintTooltip
+        elif ttId == BlueprintScreenTooltips.TOOLTIP_XP_DISCOUNT:
+            return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.PRICE_DISCOUNT, specialArgs=(self.__xpCost, self.__fullXpCost, DISCOUNT_TYPE.XP))
+        elif ttId == BlueprintScreenTooltips.TOOLTIP_BLUEPRINT and self.__vehicle.level not in SPECIAL_BLUEPRINT_LEVEL:
+            return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BLUEPRINT_INFO, specialArgs=(self.__vehicle.intCD, True))
+        elif ttId == BlueprintScreenTooltips.TOOLTIP_BLUEPRINT_ITEM_PLACE:
+            return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BLUEPRINT_EMPTY_SLOT_INFO, specialArgs=[self.__vehicle.intCD])
         else:
-            if ttId == BlueprintScreenTooltips.TOOLTIP_XP_DISCOUNT:
-                return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.PRICE_DISCOUNT, specialArgs=(
-                 self.__xpCost, self.__fullXpCost, DISCOUNT_TYPE.XP))
-            if ttId == BlueprintScreenTooltips.TOOLTIP_BLUEPRINT and self.__vehicle.level not in SPECIAL_BLUEPRINT_LEVEL:
-                return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BLUEPRINT_INFO, specialArgs=(
-                 self.__vehicle.intCD, True))
-            if ttId == BlueprintScreenTooltips.TOOLTIP_BLUEPRINT_ITEM_PLACE:
-                return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BLUEPRINT_EMPTY_SLOT_INFO, specialArgs=[
-                 self.__vehicle.intCD])
-            if ttId == BlueprintScreenTooltips.TOOLTIP_BLUEPRINT_CONVERT_COUNT:
-                return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BLUEPRINT_CONVERT_INFO, specialArgs=[
-                 self.__vehicle.intCD])
-            return
+            return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BLUEPRINT_CONVERT_INFO, specialArgs=[self.__vehicle.intCD]) if ttId == BlueprintScreenTooltips.TOOLTIP_BLUEPRINT_CONVERT_COUNT else None

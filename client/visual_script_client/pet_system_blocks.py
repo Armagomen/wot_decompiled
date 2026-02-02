@@ -1,4 +1,7 @@
-import typing, skeletons.gui.pet_system
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/visual_script_client/pet_system_blocks.py
+import typing
+import skeletons.gui.pet_system
 from pet_system_common.pet_constants import AnimationStateName, PetHangarObject, PetStateBehavior, PetStaticTrigger, PetTrigger, StorageStaticTrigger
 from visual_script.misc import EDITOR_TYPE
 from visual_script.type import VScriptEnum
@@ -12,15 +15,15 @@ class PetSystemMeta(Meta):
 
     @classmethod
     def blockColor(cls):
-        return 16776960
+        pass
 
     @classmethod
     def blockCategory(cls):
-        return 'PetSystem'
+        pass
 
     @classmethod
     def blockIcon(cls):
-        return ':vse/blocks/arena'
+        pass
 
     @classmethod
     def blockAspects(cls):
@@ -97,7 +100,7 @@ class PetTriggerEnum(VScriptEnum):
 
     @classmethod
     def vs_name(cls):
-        return 'PetTriggerT'
+        pass
 
     @classmethod
     def vs_enum(cls):
@@ -120,7 +123,7 @@ class StorageStaticTriggerEnum(VScriptEnum):
 
     @classmethod
     def vs_name(cls):
-        return 'StorageStaticTriggerT'
+        pass
 
     @classmethod
     def vs_enum(cls):
@@ -131,7 +134,7 @@ class PetStaticTriggerEnum(VScriptEnum):
 
     @classmethod
     def vs_name(cls):
-        return 'PetStaticTriggerT'
+        pass
 
     @classmethod
     def vs_enum(cls):
@@ -142,7 +145,7 @@ class AnimationStateNameEnum(VScriptEnum):
 
     @classmethod
     def vs_name(cls):
-        return 'AnimationStateNameT'
+        pass
 
     @classmethod
     def vs_enum(cls):

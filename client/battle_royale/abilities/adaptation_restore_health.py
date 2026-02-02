@@ -1,6 +1,13 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/abilities/adaptation_restore_health.py
 import logging
 from functools import partial
-import typing, BattleRoyaleAbilities, BigWorld, CGF, GenericComponents, Triggers
+import typing
+import BattleRoyaleAbilities
+import BigWorld
+import CGF
+import GenericComponents
+import Triggers
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from battle_royale.gui.constants import BattleRoyaleEquipments
 from cgf_script.bonus_caps_rules import bonusCapsManager
@@ -119,15 +126,11 @@ class AdaptationHealthRestoreEffectManager(CGF.ComponentManager):
         for partComponent, partGO in self.iterParts(effectRoot):
             if resource.elapsedTime < _START_ANIMATION_THRESHOLD:
                 self.spawnStartAnimation(partComponent, partGO)
-            else:
-                self.spawnCycleAnimation(partComponent, partGO)
+            self.spawnCycleAnimation(partComponent, partGO)
 
     @staticmethod
     def createParts(config, appearance):
-        models = (
-         appearance.typeDescriptor.hull.models.undamaged,
-         appearance.typeDescriptor.turret.models.undamaged,
-         appearance.typeDescriptor.gun.models.undamaged)
+        models = (appearance.typeDescriptor.hull.models.undamaged, appearance.typeDescriptor.turret.models.undamaged, appearance.typeDescriptor.gun.models.undamaged)
         resourcesList = []
         for entry in config:
             model = entry.get('modelPath')
@@ -188,8 +191,7 @@ class AdaptationHealthRestoreEffectManager(CGF.ComponentManager):
         for child in getChildren(effectRoot):
             part = child.findComponentByType(AdaptationHealthRestoreAbilityPart)
             if part and any([part.startAnimation, part.cycleAnimation, part.endAnimation]):
-                yield (
-                 part, child)
+                yield (part, child)
 
     @staticmethod
     def spawnEffect(effect, gameObject, loop=False):
@@ -199,7 +201,7 @@ class AdaptationHealthRestoreEffectManager(CGF.ComponentManager):
             animator = gameObject.createComponent(GenericComponents.AnimatorComponent, effect, 0, 1, repeatCount, True, '')
             return animator
         else:
-            return
+            return None
 
     @staticmethod
     def getVehicleAppearance(gameObject):

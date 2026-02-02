@@ -1,6 +1,6 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/marathon/marathon_event_controller.py
 import Event
-from frameworks.wulf import WindowLayer
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.marathon.marathon_event import MarathonEvent
 from gui.marathon.marathon_resource_manager import MarathonResourceManager
 from gui.app_loader.decorators import sf_lobby
@@ -55,24 +55,21 @@ class MarathonEventsController(IMarathonEventsController, Notifiable):
         return self.__marathons
 
     def getPrimaryMarathon(self):
-        if self.__marathons:
-            return self.__marathons[0]
-        else:
-            return
+        return self.__marathons[0] if self.__marathons else None
 
     def getFirstEnabledMarathon(self):
         for marathon in self.__marathons:
             if marathon.isEnabled():
                 return marathon
 
-        return
+        return None
 
     def getPrefix(self, eventID):
         for marathon in self.__marathons:
             if eventID.startswith(marathon.prefix):
                 return marathon.prefix
 
-        return
+        return None
 
     def getVisibleInPostBattleQuests(self):
         result = {}
@@ -83,20 +80,16 @@ class MarathonEventsController(IMarathonEventsController, Notifiable):
         return result
 
     def getQuestsData(self, prefix=None, postfix=None):
-        if self.isAnyActive():
-            return self.getPrimaryMarathon().getQuestsData(prefix, postfix)
-        return {}
+        return self.getPrimaryMarathon().getQuestsData(prefix, postfix) if self.isAnyActive() else {}
 
     def getTokensData(self, prefix=None, postfix=None):
-        if self.isAnyActive():
-            return self.getPrimaryMarathon().getTokensData(prefix, postfix)
-        return {}
+        return self.getPrimaryMarathon().getTokensData(prefix, postfix) if self.isAnyActive() else {}
 
     def isAnyActive(self):
-        return any(marathon.isAvailable() for marathon in self.__marathons)
+        return any((marathon.isAvailable() for marathon in self.__marathons))
 
     def doesShowAnyMissionsTab(self):
-        return any(marathon.isEnabled() for marathon in self.__marathons)
+        return any((marathon.isEnabled() for marathon in self.__marathons))
 
     def fini(self):
         self.__stop()
@@ -127,13 +120,12 @@ class MarathonEventsController(IMarathonEventsController, Notifiable):
             for marathon in self.__marathons:
                 marathon.showRewardScreen()
 
-    def __onViewLoaded(self, pyView, _):
+    def __onViewLoaded(self, *args):
+        from gui.lobby_state_machine.states import isInHangarState
         if self.__isLobbyInited:
-            if pyView.alias in (VIEW_ALIAS.LOBBY_HANGAR, VIEW_ALIAS.LEGACY_LOBBY_HANGAR):
-                self.__isInHangar = True
+            self.__isInHangar = isInHangarState()
+            if self.__isInHangar:
                 self.__tryShowRewardScreen()
-            elif pyView.layer == WindowLayer.SUB_VIEW:
-                self.__isInHangar = False
 
     def __onSyncCompleted(self, *args):
         self.__checkEvents()
@@ -158,9 +150,7 @@ class MarathonEventsController(IMarathonEventsController, Notifiable):
             if time != 0:
                 timeList.append(time)
 
-        if timeList:
-            return min(timeList)
-        return 0
+        return min(timeList) if timeList else 0
 
     def __reloadNotification(self):
         self.clearNotification()
@@ -181,4 +171,4 @@ class MarathonEventsController(IMarathonEventsController, Notifiable):
             if marathon.prefix == prefix:
                 return marathon
 
-        return
+        return None

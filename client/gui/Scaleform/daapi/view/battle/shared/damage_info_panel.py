@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/damage_info_panel.py
 import operator
 from debug_utils import LOG_ERROR, LOG_CURRENT_EXCEPTION, LOG_DEBUG
 from gui.Scaleform.daapi.view.meta.DamageInfoPanelMeta import DamageInfoPanelMeta
@@ -8,67 +10,67 @@ from skeletons.gui.battle_session import IBattleSessionProvider
 from gui.battle_control import avatar_getter
 from AvatarInputHandler import AvatarInputHandler
 from aih_constants import CTRL_MODE_NAME
-_DEVICE_NAME_TO_ID = {'gunHealth': DAMAGE_INFO_PANEL_CONSTS.GUN, 
-   'turretRotatorHealth': DAMAGE_INFO_PANEL_CONSTS.TURRET_ROTATOR, 
-   'surveyingDeviceHealth': DAMAGE_INFO_PANEL_CONSTS.SURVEYING_DEVICE, 
-   'engineHealth': DAMAGE_INFO_PANEL_CONSTS.ENGINE, 
-   'fuelTankHealth': DAMAGE_INFO_PANEL_CONSTS.FUEL_TANK, 
-   'radioHealth': DAMAGE_INFO_PANEL_CONSTS.RADIO, 
-   'ammoBayHealth': DAMAGE_INFO_PANEL_CONSTS.AMMO_BAY, 
-   'leftTrack0Health': DAMAGE_INFO_PANEL_CONSTS.LEFT_TRACK, 
-   'rightTrack0Health': DAMAGE_INFO_PANEL_CONSTS.RIGHT_TRACK, 
-   'commanderHealth': DAMAGE_INFO_PANEL_CONSTS.COMMANDER, 
-   'gunner1Health': DAMAGE_INFO_PANEL_CONSTS.FIRST_GUNNER, 
-   'gunner2Health': DAMAGE_INFO_PANEL_CONSTS.SECOND_GUNNER, 
-   'driverHealth': DAMAGE_INFO_PANEL_CONSTS.DRIVER, 
-   'radioman1Health': DAMAGE_INFO_PANEL_CONSTS.FIRST_RADIOMAN, 
-   'radioman2Health': DAMAGE_INFO_PANEL_CONSTS.SECOND_RADIOMAN, 
-   'loader1Health': DAMAGE_INFO_PANEL_CONSTS.FIRST_LOADER, 
-   'loader2Health': DAMAGE_INFO_PANEL_CONSTS.SECOND_LOADER, 
-   'wheel0Health': DAMAGE_INFO_PANEL_CONSTS.WHEEL, 
-   'wheel1Health': DAMAGE_INFO_PANEL_CONSTS.WHEEL, 
-   'wheel2Health': DAMAGE_INFO_PANEL_CONSTS.WHEEL, 
-   'wheel3Health': DAMAGE_INFO_PANEL_CONSTS.WHEEL, 
-   'wheel4Health': DAMAGE_INFO_PANEL_CONSTS.WHEEL, 
-   'wheel5Health': DAMAGE_INFO_PANEL_CONSTS.WHEEL, 
-   'wheel6Health': DAMAGE_INFO_PANEL_CONSTS.WHEEL, 
-   'wheel7Health': DAMAGE_INFO_PANEL_CONSTS.WHEEL}
-_DEVICE_HIDE_METHODS = {DAMAGE_INFO_PANEL_CONSTS.GUN: 'as_hideGunS', 
-   DAMAGE_INFO_PANEL_CONSTS.TURRET_ROTATOR: 'as_hideTurretRotatorS', 
-   DAMAGE_INFO_PANEL_CONSTS.SURVEYING_DEVICE: 'as_hideSurveyingDeviceS', 
-   DAMAGE_INFO_PANEL_CONSTS.ENGINE: 'as_hideEngineS', 
-   DAMAGE_INFO_PANEL_CONSTS.FUEL_TANK: 'as_hideFuelTankS', 
-   DAMAGE_INFO_PANEL_CONSTS.RADIO: 'as_hideRadioS', 
-   DAMAGE_INFO_PANEL_CONSTS.AMMO_BAY: 'as_hideAmmoBayS', 
-   DAMAGE_INFO_PANEL_CONSTS.LEFT_TRACK: 'as_hideLeftTrackS', 
-   DAMAGE_INFO_PANEL_CONSTS.RIGHT_TRACK: 'as_hideRightTrackS', 
-   DAMAGE_INFO_PANEL_CONSTS.WHEEL: 'as_hideWheelS', 
-   DAMAGE_INFO_PANEL_CONSTS.COMMANDER: 'as_hideCommanderS', 
-   DAMAGE_INFO_PANEL_CONSTS.FIRST_GUNNER: 'as_hideFirstGunnerS', 
-   DAMAGE_INFO_PANEL_CONSTS.SECOND_GUNNER: 'as_hideSecondGunnerS', 
-   DAMAGE_INFO_PANEL_CONSTS.DRIVER: 'as_hideDriverS', 
-   DAMAGE_INFO_PANEL_CONSTS.FIRST_RADIOMAN: 'as_hideFirstRadiomanS', 
-   DAMAGE_INFO_PANEL_CONSTS.SECOND_RADIOMAN: 'as_hideSecondRadiomanS', 
-   DAMAGE_INFO_PANEL_CONSTS.FIRST_LOADER: 'as_hideFirstLoaderS', 
-   DAMAGE_INFO_PANEL_CONSTS.SECOND_LOADER: 'as_hideSecondLoaderS'}
-_DEVICE_UPDATE_METHODS = {DAMAGE_INFO_PANEL_CONSTS.GUN: 'as_updateGunS', 
-   DAMAGE_INFO_PANEL_CONSTS.TURRET_ROTATOR: 'as_updateTurretRotatorS', 
-   DAMAGE_INFO_PANEL_CONSTS.SURVEYING_DEVICE: 'as_updateSurveyingDeviceS', 
-   DAMAGE_INFO_PANEL_CONSTS.ENGINE: 'as_updateEngineS', 
-   DAMAGE_INFO_PANEL_CONSTS.FUEL_TANK: 'as_updateFuelTankS', 
-   DAMAGE_INFO_PANEL_CONSTS.RADIO: 'as_updateRadioS', 
-   DAMAGE_INFO_PANEL_CONSTS.AMMO_BAY: 'as_updateAmmoBayS', 
-   DAMAGE_INFO_PANEL_CONSTS.LEFT_TRACK: 'as_updateLeftTrackS', 
-   DAMAGE_INFO_PANEL_CONSTS.RIGHT_TRACK: 'as_updateRightTrackS', 
-   DAMAGE_INFO_PANEL_CONSTS.WHEEL: 'as_updateWheelS', 
-   DAMAGE_INFO_PANEL_CONSTS.COMMANDER: 'as_updateCommanderS', 
-   DAMAGE_INFO_PANEL_CONSTS.FIRST_GUNNER: 'as_updateFirstGunnerS', 
-   DAMAGE_INFO_PANEL_CONSTS.SECOND_GUNNER: 'as_updateSecondGunnerS', 
-   DAMAGE_INFO_PANEL_CONSTS.DRIVER: 'as_updateDriverS', 
-   DAMAGE_INFO_PANEL_CONSTS.FIRST_RADIOMAN: 'as_updateFirstRadiomanS', 
-   DAMAGE_INFO_PANEL_CONSTS.SECOND_RADIOMAN: 'as_updateSecondRadiomanS', 
-   DAMAGE_INFO_PANEL_CONSTS.FIRST_LOADER: 'as_updateFirstLoaderS', 
-   DAMAGE_INFO_PANEL_CONSTS.SECOND_LOADER: 'as_updateSecondLoaderS'}
+_DEVICE_NAME_TO_ID = {'gunHealth': DAMAGE_INFO_PANEL_CONSTS.GUN,
+ 'turretRotatorHealth': DAMAGE_INFO_PANEL_CONSTS.TURRET_ROTATOR,
+ 'surveyingDeviceHealth': DAMAGE_INFO_PANEL_CONSTS.SURVEYING_DEVICE,
+ 'engineHealth': DAMAGE_INFO_PANEL_CONSTS.ENGINE,
+ 'fuelTankHealth': DAMAGE_INFO_PANEL_CONSTS.FUEL_TANK,
+ 'radioHealth': DAMAGE_INFO_PANEL_CONSTS.RADIO,
+ 'ammoBayHealth': DAMAGE_INFO_PANEL_CONSTS.AMMO_BAY,
+ 'leftTrack0Health': DAMAGE_INFO_PANEL_CONSTS.LEFT_TRACK,
+ 'rightTrack0Health': DAMAGE_INFO_PANEL_CONSTS.RIGHT_TRACK,
+ 'commanderHealth': DAMAGE_INFO_PANEL_CONSTS.COMMANDER,
+ 'gunner1Health': DAMAGE_INFO_PANEL_CONSTS.FIRST_GUNNER,
+ 'gunner2Health': DAMAGE_INFO_PANEL_CONSTS.SECOND_GUNNER,
+ 'driverHealth': DAMAGE_INFO_PANEL_CONSTS.DRIVER,
+ 'radioman1Health': DAMAGE_INFO_PANEL_CONSTS.FIRST_RADIOMAN,
+ 'radioman2Health': DAMAGE_INFO_PANEL_CONSTS.SECOND_RADIOMAN,
+ 'loader1Health': DAMAGE_INFO_PANEL_CONSTS.FIRST_LOADER,
+ 'loader2Health': DAMAGE_INFO_PANEL_CONSTS.SECOND_LOADER,
+ 'wheel0Health': DAMAGE_INFO_PANEL_CONSTS.WHEEL,
+ 'wheel1Health': DAMAGE_INFO_PANEL_CONSTS.WHEEL,
+ 'wheel2Health': DAMAGE_INFO_PANEL_CONSTS.WHEEL,
+ 'wheel3Health': DAMAGE_INFO_PANEL_CONSTS.WHEEL,
+ 'wheel4Health': DAMAGE_INFO_PANEL_CONSTS.WHEEL,
+ 'wheel5Health': DAMAGE_INFO_PANEL_CONSTS.WHEEL,
+ 'wheel6Health': DAMAGE_INFO_PANEL_CONSTS.WHEEL,
+ 'wheel7Health': DAMAGE_INFO_PANEL_CONSTS.WHEEL}
+_DEVICE_HIDE_METHODS = {DAMAGE_INFO_PANEL_CONSTS.GUN: 'as_hideGunS',
+ DAMAGE_INFO_PANEL_CONSTS.TURRET_ROTATOR: 'as_hideTurretRotatorS',
+ DAMAGE_INFO_PANEL_CONSTS.SURVEYING_DEVICE: 'as_hideSurveyingDeviceS',
+ DAMAGE_INFO_PANEL_CONSTS.ENGINE: 'as_hideEngineS',
+ DAMAGE_INFO_PANEL_CONSTS.FUEL_TANK: 'as_hideFuelTankS',
+ DAMAGE_INFO_PANEL_CONSTS.RADIO: 'as_hideRadioS',
+ DAMAGE_INFO_PANEL_CONSTS.AMMO_BAY: 'as_hideAmmoBayS',
+ DAMAGE_INFO_PANEL_CONSTS.LEFT_TRACK: 'as_hideLeftTrackS',
+ DAMAGE_INFO_PANEL_CONSTS.RIGHT_TRACK: 'as_hideRightTrackS',
+ DAMAGE_INFO_PANEL_CONSTS.WHEEL: 'as_hideWheelS',
+ DAMAGE_INFO_PANEL_CONSTS.COMMANDER: 'as_hideCommanderS',
+ DAMAGE_INFO_PANEL_CONSTS.FIRST_GUNNER: 'as_hideFirstGunnerS',
+ DAMAGE_INFO_PANEL_CONSTS.SECOND_GUNNER: 'as_hideSecondGunnerS',
+ DAMAGE_INFO_PANEL_CONSTS.DRIVER: 'as_hideDriverS',
+ DAMAGE_INFO_PANEL_CONSTS.FIRST_RADIOMAN: 'as_hideFirstRadiomanS',
+ DAMAGE_INFO_PANEL_CONSTS.SECOND_RADIOMAN: 'as_hideSecondRadiomanS',
+ DAMAGE_INFO_PANEL_CONSTS.FIRST_LOADER: 'as_hideFirstLoaderS',
+ DAMAGE_INFO_PANEL_CONSTS.SECOND_LOADER: 'as_hideSecondLoaderS'}
+_DEVICE_UPDATE_METHODS = {DAMAGE_INFO_PANEL_CONSTS.GUN: 'as_updateGunS',
+ DAMAGE_INFO_PANEL_CONSTS.TURRET_ROTATOR: 'as_updateTurretRotatorS',
+ DAMAGE_INFO_PANEL_CONSTS.SURVEYING_DEVICE: 'as_updateSurveyingDeviceS',
+ DAMAGE_INFO_PANEL_CONSTS.ENGINE: 'as_updateEngineS',
+ DAMAGE_INFO_PANEL_CONSTS.FUEL_TANK: 'as_updateFuelTankS',
+ DAMAGE_INFO_PANEL_CONSTS.RADIO: 'as_updateRadioS',
+ DAMAGE_INFO_PANEL_CONSTS.AMMO_BAY: 'as_updateAmmoBayS',
+ DAMAGE_INFO_PANEL_CONSTS.LEFT_TRACK: 'as_updateLeftTrackS',
+ DAMAGE_INFO_PANEL_CONSTS.RIGHT_TRACK: 'as_updateRightTrackS',
+ DAMAGE_INFO_PANEL_CONSTS.WHEEL: 'as_updateWheelS',
+ DAMAGE_INFO_PANEL_CONSTS.COMMANDER: 'as_updateCommanderS',
+ DAMAGE_INFO_PANEL_CONSTS.FIRST_GUNNER: 'as_updateFirstGunnerS',
+ DAMAGE_INFO_PANEL_CONSTS.SECOND_GUNNER: 'as_updateSecondGunnerS',
+ DAMAGE_INFO_PANEL_CONSTS.DRIVER: 'as_updateDriverS',
+ DAMAGE_INFO_PANEL_CONSTS.FIRST_RADIOMAN: 'as_updateFirstRadiomanS',
+ DAMAGE_INFO_PANEL_CONSTS.SECOND_RADIOMAN: 'as_updateSecondRadiomanS',
+ DAMAGE_INFO_PANEL_CONSTS.FIRST_LOADER: 'as_updateFirstLoaderS',
+ DAMAGE_INFO_PANEL_CONSTS.SECOND_LOADER: 'as_updateSecondLoaderS'}
 
 def _deviceDataConverter(deviceName, state):
     if deviceName not in _DEVICE_NAME_TO_ID:
@@ -93,15 +95,13 @@ def _defaultIterator(fetcher):
 
 def _yohIterator(fetcher):
     damagedDevices = dict(fetcher.getDamagedDevices())
-    for mainTrack, protectingTrack in (('leftTrack0Health', 'leftTrack1Health'),
-     ('rightTrack0Health', 'rightTrack1Health')):
+    for mainTrack, protectingTrack in (('leftTrack0Health', 'leftTrack1Health'), ('rightTrack0Health', 'rightTrack1Health')):
         isMainDestroyed = damagedDevices.get(mainTrack) == 'destroyed'
         isProtectingDestroyed = damagedDevices.get(protectingTrack) == 'destroyed'
         damagedDevices.pop(protectingTrack, None)
         if isMainDestroyed or isProtectingDestroyed:
             damagedDevices[mainTrack] = 'destroyed' if isMainDestroyed else 'damaged'
-        else:
-            damagedDevices.pop(mainTrack, None)
+        damagedDevices.pop(mainTrack, None)
 
     for deviceName, state in damagedDevices.iteritems():
         value = _deviceDataConverter(deviceName, state)
@@ -219,8 +219,7 @@ class DamageInfoPanel(DamageInfoPanelMeta):
                 except (AttributeError, TypeError):
                     LOG_CURRENT_EXCEPTION()
 
-            else:
-                LOG_ERROR('Method to hide device is not found', deviceID)
+            LOG_ERROR('Method to hide device is not found', deviceID)
 
         isHit = self.__vehicleID != vehicleID
         for deviceID, stateID in toUpdate.iteritems():
@@ -232,8 +231,7 @@ class DamageInfoPanel(DamageInfoPanelMeta):
                 except (AttributeError, TypeError):
                     LOG_CURRENT_EXCEPTION()
 
-            else:
-                LOG_ERROR('Method to update device is not found', deviceID)
+            LOG_ERROR('Method to update device is not found', deviceID)
 
         self.__devicesSnap = newDevicesSnap
         isInFire = fetcher.isInFire()

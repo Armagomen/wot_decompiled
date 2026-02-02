@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/stronghold_event/stronghold_event_banner.py
 from typing import Tuple
 from account_helpers.AccountSettings import StrongholdEvent
 from constants import ClansConfig
@@ -44,7 +46,7 @@ class StrongholdEventBanner(Notifiable, BaseEventBanner):
 
     @property
     def borderColor(self):
-        return '#FBA440'
+        pass
 
     @property
     def introDescription(self):
@@ -62,17 +64,11 @@ class StrongholdEventBanner(Notifiable, BaseEventBanner):
 
     @property
     def eventStartDate(self):
-        if self.__eventSettings is not None:
-            return self.__eventSettings.getEventConfig().getStartDate()
-        else:
-            return 0
+        return self.__eventSettings.getEventConfig().getStartDate() if self.__eventSettings is not None else 0
 
     @property
     def eventEndDate(self):
-        if self.__eventSettings is not None:
-            return self.__eventSettings.getEventConfig().getEndDate()
-        else:
-            return 0
+        return self.__eventSettings.getEventConfig().getEndDate() if self.__eventSettings is not None else 0
 
     @property
     def playAppearAnim(self):
@@ -85,22 +81,20 @@ class StrongholdEventBanner(Notifiable, BaseEventBanner):
     def createToolTipContent(self, event):
         if self.__eventSettings is None:
             return StrongholdEventBannerTooltip(EventBannerState.INACTIVE, 0, 0)
-        else:
-            timeNow = time_utils.getServerUTCTime()
-            primeTimeStart, primeTimeEnd, nextPrimeTimeStart = self.__getCurrentPrimeTime()
-            eventStartDate = self.__eventSettings.getEventConfig().getStartDate()
-            eventEndDate = self.__eventSettings.getEventConfig().getEndDate()
-            if timeNow < eventStartDate:
-                return StrongholdEventBannerTooltip(EventBannerState.ANNOUNCE, eventStartDate, eventEndDate)
-            if timeNow >= eventEndDate:
-                return StrongholdEventBannerTooltip(EventBannerState.INACTIVE, 0, 0)
-            if timeNow < primeTimeStart:
-                return StrongholdEventBannerTooltip(EventBannerState.INACTIVE, primeTimeStart, 0)
-            if primeTimeStart < timeNow < primeTimeEnd:
-                return StrongholdEventBannerTooltip(EventBannerState.IN_PROGRESS, 0, primeTimeEnd)
-            if primeTimeEnd < timeNow < nextPrimeTimeStart < eventEndDate:
-                return StrongholdEventBannerTooltip(EventBannerState.INACTIVE, nextPrimeTimeStart, 0)
+        timeNow = time_utils.getServerUTCTime()
+        primeTimeStart, primeTimeEnd, nextPrimeTimeStart = self.__getCurrentPrimeTime()
+        eventStartDate = self.__eventSettings.getEventConfig().getStartDate()
+        eventEndDate = self.__eventSettings.getEventConfig().getEndDate()
+        if timeNow < eventStartDate:
+            return StrongholdEventBannerTooltip(EventBannerState.ANNOUNCE, eventStartDate, eventEndDate)
+        elif timeNow >= eventEndDate:
             return StrongholdEventBannerTooltip(EventBannerState.INACTIVE, 0, 0)
+        elif timeNow < primeTimeStart:
+            return StrongholdEventBannerTooltip(EventBannerState.INACTIVE, primeTimeStart, 0)
+        elif primeTimeStart < timeNow < primeTimeEnd:
+            return StrongholdEventBannerTooltip(EventBannerState.IN_PROGRESS, 0, primeTimeEnd)
+        else:
+            return StrongholdEventBannerTooltip(EventBannerState.INACTIVE, nextPrimeTimeStart, 0) if primeTimeEnd < timeNow < nextPrimeTimeStart < eventEndDate else StrongholdEventBannerTooltip(EventBannerState.INACTIVE, 0, 0)
 
     def onClick(self):
         showStrongholds(getStrongholdEventUrl())
@@ -141,37 +135,33 @@ class StrongholdEventBanner(Notifiable, BaseEventBanner):
     def __getState(self):
         if self.__eventSettings is None:
             return (EventBannerState.INACTIVE, -1)
+        elif not getStrongholdEventEnabled():
+            return (EventBannerState.INACTIVE, -1)
+        timeNow = time_utils.getServerUTCTime()
+        eventConfig = self.__eventSettings.getEventConfig()
+        eventStartTime = eventConfig.getStartDate()
+        eventEndTime = eventConfig.getEndDate()
+        primeTimeStart, primeTimeEnd, nextPrimeTimeStart = self.__getCurrentPrimeTime()
+        if timeNow < eventStartTime:
+            return (EventBannerState.ANNOUNCE, eventStartTime - timeNow)
+        elif timeNow >= eventEndTime:
+            return (EventBannerState.FINISHED, -1)
+        elif timeNow < primeTimeStart:
+            self._timerValue = primeTimeStart - timeNow
+            return (EventBannerState.INACTIVE, primeTimeStart - timeNow)
+        elif primeTimeStart <= timeNow <= primeTimeEnd:
+            self._timerValue = 0
+            isFirstEnterMade = getSettings(StrongholdEvent.FIRST_BANNER_ENTERING_MADE, False)
+            if isFirstEnterMade is not None and not isFirstEnterMade:
+                state = EventBannerState.INTRO
+            else:
+                state = EventBannerState.IN_PROGRESS
+            return (state, primeTimeEnd - timeNow)
+        elif primeTimeEnd < timeNow < nextPrimeTimeStart < eventEndTime:
+            self._timerValue = nextPrimeTimeStart - timeNow
+            return (EventBannerState.INACTIVE, nextPrimeTimeStart - timeNow)
         else:
-            if not getStrongholdEventEnabled():
-                return (EventBannerState.INACTIVE, -1)
-            timeNow = time_utils.getServerUTCTime()
-            eventConfig = self.__eventSettings.getEventConfig()
-            eventStartTime = eventConfig.getStartDate()
-            eventEndTime = eventConfig.getEndDate()
-            primeTimeStart, primeTimeEnd, nextPrimeTimeStart = self.__getCurrentPrimeTime()
-            if timeNow < eventStartTime:
-                return (EventBannerState.ANNOUNCE, eventStartTime - timeNow)
-            if timeNow >= eventEndTime:
-                return (EventBannerState.FINISHED, -1)
-            if timeNow < primeTimeStart:
-                self._timerValue = primeTimeStart - timeNow
-                return (
-                 EventBannerState.INACTIVE, primeTimeStart - timeNow)
-            if primeTimeStart <= timeNow <= primeTimeEnd:
-                self._timerValue = 0
-                isFirstEnterMade = getSettings(StrongholdEvent.FIRST_BANNER_ENTERING_MADE, False)
-                if isFirstEnterMade is not None and not isFirstEnterMade:
-                    state = EventBannerState.INTRO
-                else:
-                    state = EventBannerState.IN_PROGRESS
-                return (
-                 state, primeTimeEnd - timeNow)
-            if primeTimeEnd < timeNow < nextPrimeTimeStart < eventEndTime:
-                self._timerValue = nextPrimeTimeStart - timeNow
-                return (
-                 EventBannerState.INACTIVE, nextPrimeTimeStart - timeNow)
-            return (
-             EventBannerState.FINISHED, eventEndTime - timeNow)
+            return (EventBannerState.FINISHED, eventEndTime - timeNow)
 
     def __onUpdate(self, *_):
         self.__eventSettings = g_clanCache.strongholdEventProvider.getSettings()
@@ -197,11 +187,10 @@ class StrongholdEventBanner(Notifiable, BaseEventBanner):
         primeTimes = self.__eventSettings.getEventConfig().primetimes
         if not primeTimes:
             return (-1, -1, -1)
-        firstPrimeStartTime = min(primeTime['start_time'] for primeTime in primeTimes)
-        lastPrimeEndTime = max(primeTime['end_time'] for primeTime in primeTimes)
+        firstPrimeStartTime = min((primeTime['start_time'] for primeTime in primeTimes))
+        lastPrimeEndTime = max((primeTime['end_time'] for primeTime in primeTimes))
         nextPrimeStartDate = firstPrimeStartTime + time_utils.ONE_DAY
-        return (
-         firstPrimeStartTime, lastPrimeEndTime, nextPrimeStartDate)
+        return (firstPrimeStartTime, lastPrimeEndTime, nextPrimeStartDate)
 
     def __getTimeToNextAction(self):
         _, timeUntilUpdate = self.__getState()

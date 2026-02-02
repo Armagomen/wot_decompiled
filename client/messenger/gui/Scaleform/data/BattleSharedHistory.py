@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/gui/Scaleform/data/BattleSharedHistory.py
 from collections import deque
 from debug_utils import LOG_WARNING
 from messenger.gui.Scaleform import FILL_COLORS

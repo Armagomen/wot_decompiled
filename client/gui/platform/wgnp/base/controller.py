@@ -1,4 +1,7 @@
-import typing, wg_async
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/platform/wgnp/base/controller.py
+import typing
+import wg_async
 from BWUtil import AsyncReturn
 from gui.platform.base.controller import PlatformRequestController
 from gui.platform.base.settings import REQUEST_TIMEOUT

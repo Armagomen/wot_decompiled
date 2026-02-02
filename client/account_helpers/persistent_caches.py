@@ -1,4 +1,11 @@
-import weakref, cPickle, os, base64, BigWorld, constants
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/account_helpers/persistent_caches.py
+import weakref
+import cPickle
+import os
+import base64
+import BigWorld
+import constants
 from soft_exception import SoftException
 from external_strings_utils import unicode_from_utf8
 
@@ -48,7 +55,7 @@ class SimpleCache(object):
             if mcacheData:
                 return mcacheData
             try:
-                with open(fileName, 'rb') as (f):
+                with open(fileName, 'rb') as f:
                     descr = cPickle.load(f)
                     data = cPickle.load(f)
                     self.__memcache[fileName] = (descr, data)
@@ -67,7 +74,7 @@ class SimpleCache(object):
             try:
                 fileName = self.getFileName()
                 self.__memcache[fileName] = (descr, data)
-                with open(fileName, 'wb') as (f):
+                with open(fileName, 'wb') as f:
                     cPickle.dump(descr, f, -1)
                     cPickle.dump(data, f, -1)
                     return True
@@ -83,8 +90,7 @@ def cacheFileName(account, cacheType, cacheName):
     cacheDir = p.join(p.dirname(prefsFilePath), cacheType)
     if not os.path.isdir(cacheDir):
         os.makedirs(cacheDir)
-    cache = p.join(cacheDir, base64.b32encode('%s_%s_%s_%s' % (
-     constants.AUTH_REALM,
+    cache = p.join(cacheDir, base64.b32encode('%s_%s_%s_%s' % (constants.AUTH_REALM,
      account.name,
      account.__class__.__name__,
      cacheName)) + '.dat')
@@ -94,7 +100,7 @@ def cacheFileName(account, cacheType, cacheName):
 def readFile(filename):
     ret = None
     try:
-        with open(filename, 'rb') as (f):
+        with open(filename, 'rb') as f:
             ret = f.read()
     except IOError:
         return
@@ -104,7 +110,7 @@ def readFile(filename):
 
 def writeFile(filename, data):
     try:
-        with open(filename, 'wb') as (f):
+        with open(filename, 'wb') as f:
             f.write(data)
     except IOError:
         return False

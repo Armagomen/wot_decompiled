@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/progressive_reward/progressive_reward_view.py
 import logging
 from frameworks.wulf import ViewSettings, WindowFlags
 from gui.impl.auxiliary.rewards_helper import fillStepsModel
@@ -60,7 +62,7 @@ class ProgressiveRewardView(ViewImpl):
             self.viewModel.setHardReset(True)
             return
         progressive = self._eventsCache.getProgressiveReward()
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             steps = tx.getSteps()
             steps.clear()
             fillStepsModel(progressive.currentStep, progressive.probability, progressive.maxSteps, False, steps)

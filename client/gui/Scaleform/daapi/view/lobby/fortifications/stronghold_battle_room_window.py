@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/fortifications/stronghold_battle_room_window.py
 from constants import PREBATTLE_TYPE
 from debug_utils import LOG_DEBUG
 from gui import SystemMessages
@@ -38,7 +40,7 @@ class StrongholdBattleRoomWindow(FortBattleRoomWindowMeta, IStrongholdListener):
 
     @prbPeripheriesHandlerProperty
     def prbPeripheriesHandler(self):
-        return
+        return None
 
     def onWindowMinimize(self):
         g_eventDispatcher.showUnitProgressInCarousel(self.getPrbType())
@@ -119,8 +121,7 @@ class StrongholdBattleRoomWindow(FortBattleRoomWindowMeta, IStrongholdListener):
 
     def onStrongholdMaintenance(self, showWindow):
         if showWindow:
-            text = ('').join((
-             icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_ALERTBIGICON, 24, 24, -6, 0),
+            text = ''.join((icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_ALERTBIGICON, 24, 24, -6, 0),
              text_styles.middleTitle(i18n.makeString(FORTIFICATIONS.MAINWINDOW_MAINTENANCE_HEADER)),
              clans_fmts.getHtmlLineDivider(10),
              text_styles.main(i18n.makeString(FORTIFICATIONS.MAINWINDOW_MAINTENANCE_BODY))))
@@ -219,12 +220,13 @@ class StrongholdBattleRoomWindow(FortBattleRoomWindowMeta, IStrongholdListener):
         self.currentState = CYBER_SPORT_ALIASES.AUTO_SEARCH_ENEMY_STATE
         self.as_enableWndCloseBtnS(False)
         permissions = self.prbEntity.getPermissions()
-        model = {'state': self.currentState, 
-           'countDownSeconds': 0, 
-           'contextMessage': '', 
-           'playersReadiness': [], 'canInvokeAutoSearch': permissions.canStartAutoSearch(), 
-           'canInvokeBattleQueue': permissions.canStopBattleQueue(), 
-           'timeDirection': -1}
+        model = {'state': self.currentState,
+         'countDownSeconds': 0,
+         'contextMessage': '',
+         'playersReadiness': [],
+         'canInvokeAutoSearch': permissions.canStartAutoSearch(),
+         'canInvokeBattleQueue': permissions.canStopBattleQueue(),
+         'timeDirection': -1}
         self.as_changeAutoSearchStateS(model)
         self.as_changeAutoSearchMainLabelS(i18n.makeString(TOOLTIPS.STRONGHOLDS_TIMER_WAITINGFORDATA))
 
@@ -235,12 +237,13 @@ class StrongholdBattleRoomWindow(FortBattleRoomWindowMeta, IStrongholdListener):
         self.currentState = CYBER_SPORT_ALIASES.AUTO_SEARCH_ENEMY_STATE
         self.as_enableWndCloseBtnS(False)
         permissions = self.prbEntity.getPermissions()
-        model = {'state': self.currentState, 
-           'countDownSeconds': self.prbEntity.getSecondsCountInPlayersMatching(), 
-           'contextMessage': '', 
-           'playersReadiness': [], 'canInvokeAutoSearch': permissions.canStartAutoSearch(), 
-           'canInvokeBattleQueue': permissions.canStopBattleQueue(), 
-           'timeDirection': 1}
+        model = {'state': self.currentState,
+         'countDownSeconds': self.prbEntity.getSecondsCountInPlayersMatching(),
+         'contextMessage': '',
+         'playersReadiness': [],
+         'canInvokeAutoSearch': permissions.canStartAutoSearch(),
+         'canInvokeBattleQueue': permissions.canStopBattleQueue(),
+         'timeDirection': 1}
         self.as_changeAutoSearchStateS(model)
         self.as_changeAutoSearchMainLabelS(i18n.makeString(TOOLTIPS.STRONGHOLDS_TIMER_LEGIONARIESSEARCH))
 

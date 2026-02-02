@@ -1,4 +1,8 @@
-import logging, typing, wg_async
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/wot_plus_assistant.py
+import logging
+import typing
+import wg_async
 from BWUtil import AsyncReturn
 from gui.game_control.wot_plus_crew_assist import CrewAssistantCtrl
 from gui.game_control.wot_plus_opt_device_assist import OptionalDevicesAssistantCtrl
@@ -17,9 +21,7 @@ def registerAllowedPrebattleType(prbType, loadoutType):
 
 
 class WotPlusAssistant(object):
-    _LOADOUT_TYPES_TO_REQUEST = {
-     SupportedWotldaLoadoutType.RANDOM,
-     SupportedWotldaLoadoutType.CREW}
+    _LOADOUT_TYPES_TO_REQUEST = {SupportedWotldaLoadoutType.RANDOM, SupportedWotldaLoadoutType.CREW}
 
     def __init__(self):
         super(WotPlusAssistant, self).__init__()

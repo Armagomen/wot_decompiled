@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/visual_script_client/event_platform_blocks.py
 import Math
 from visual_script.block import Block, Meta, InitParam
 from visual_script.dependency import dependencyImporter
@@ -9,7 +11,7 @@ class EventPlatformMeta(Meta):
 
     @classmethod
     def blockCategory(cls):
-        return 'Event Platform'
+        pass
 
     @classmethod
     def blockAspects(cls):
@@ -17,7 +19,7 @@ class EventPlatformMeta(Meta):
 
     @classmethod
     def blockIcon(cls):
-        return ':vse/blocks/rubic'
+        pass
 
 
 class AddMarkerAtPoint(Block, EventPlatformMeta):
@@ -31,7 +33,7 @@ class AddMarkerAtPoint(Block, EventPlatformMeta):
 
     @classmethod
     def blockIcon(cls):
-        return ':vse/blocks/attention'
+        pass
 
     def _execute(self):
         markerID = 0
@@ -50,7 +52,7 @@ class RemoveMarkerAtPoint(Block, EventPlatformMeta):
 
     def __init__(self, *args, **kwargs):
         super(RemoveMarkerAtPoint, self).__init__(*args, **kwargs)
-        self._number, = self._getInitParams()
+        self._number = self._getInitParams()
         self._in = self._makeEventInputSlot('in', self._execute)
         if self._number > 0:
             self._markerIds = [ self._makeDataInputSlot('markerId' + str(i), SLOT_TYPE.INT) for i in xrange(self._number) ]
@@ -58,7 +60,7 @@ class RemoveMarkerAtPoint(Block, EventPlatformMeta):
 
     @classmethod
     def blockIcon(cls):
-        return ':vse/blocks/attention'
+        pass
 
     def _execute(self):
         ctrl = self.guiSessionProvider.shared.areaMarker if isinstance(self.guiSessionProvider, battle_session.IBattleSessionProvider) else None
@@ -74,5 +76,4 @@ class RemoveMarkerAtPoint(Block, EventPlatformMeta):
 
     @classmethod
     def initParams(cls):
-        return [
-         InitParam('Should all the markers be removed? Input 0, otherwise, input tne number of markers', SLOT_TYPE.INT, 1)]
+        return [InitParam('Should all the markers be removed? Input 0, otherwise, input tne number of markers', SLOT_TYPE.INT, 1)]

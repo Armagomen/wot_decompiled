@@ -1,4 +1,10 @@
-import functools, logging, time, typing, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/utils/requesters/tokens_requester.py
+import functools
+import logging
+import time
+import typing
+import BigWorld
 from account_helpers.AccountSettings import QUEST_DELTAS_TOKENS_PROGRESS
 from constants import LOOTBOX_TOKEN_PREFIX
 from gui.shared.utils.requesters.abstract import AbstractSyncDataRequester
@@ -79,7 +85,8 @@ class TokensRequester(AbstractSyncDataRequester, ITokensRequester):
             boxType = box.getType()
             boxCount = box.getInventoryCount()
             boxCategory = box.getCategory()
-            boxResult = result.setdefault(boxType, {TOTAL_KEY: 0, 'categories': {}})
+            boxResult = result.setdefault(boxType, {TOTAL_KEY: 0,
+             'categories': {}})
             boxResult[TOTAL_KEY] += boxCount
             categories = boxResult['categories']
             categories[boxCategory] = categories.get(boxCategory, 0) + boxCount
@@ -104,9 +111,7 @@ class TokensRequester(AbstractSyncDataRequester, ITokensRequester):
             return 0
         else:
             _, limits, _ = boxesHistory[historyName]
-            if limits is None or guaranteedFrequencyName not in limits:
-                return 0
-            return limits[guaranteedFrequencyName][1]
+            return 0 if limits is None or guaranteedFrequencyName not in limits else limits[guaranteedFrequencyName][1]
 
     def getLootBoxesStats(self):
         return self.getCacheValue('lootBoxes', {}).get('stats')
@@ -118,9 +123,7 @@ class TokensRequester(AbstractSyncDataRequester, ITokensRequester):
             return 0
         else:
             _, limits, _ = boxesHistory[historyName]
-            if limits is None or probabilityBonusLimitName not in limits:
-                return 0
-            return limits[probabilityBonusLimitName][2]
+            return 0 if limits is None or probabilityBonusLimitName not in limits else limits[probabilityBonusLimitName][2]
 
     def getLastViewedProgress(self, tokenId):
         return self.__tokensProgressDelta.getPrevValue(tokenId)
@@ -159,8 +162,7 @@ class TokensRequester(AbstractSyncDataRequester, ITokensRequester):
             if lootBoxTokenID not in self.__lootBoxCache:
                 item = self.itemsFactory.createLootBox(lootBoxID, lootBoxData, 0)
                 self.__lootBoxCache[lootBoxTokenID] = item
-            else:
-                self.__lootBoxCache[lootBoxTokenID].update(lootBoxData)
+            self.__lootBoxCache[lootBoxTokenID].update(lootBoxData)
 
         return lootBoxTokensList
 
@@ -193,4 +195,4 @@ class TokensProgressDelta(BaseDelta):
             yield (tokenId, Token(*value).count)
 
     def _getDefaultValue(self):
-        return 0
+        pass

@@ -1,4 +1,8 @@
-import logging, operator, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/gui_items/processors/quests.py
+import logging
+import operator
+import BigWorld
 from constants import EVENT_TYPE
 from gui import SystemMessages
 from gui.SystemMessages import SM_TYPE
@@ -26,13 +30,13 @@ class _PMRequest(Processor):
         raise NotImplementedError
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        errorI18nKey = ('{}/server_error').format(self._getMessagePrefix())
+        errorI18nKey = '{}/server_error'.format(self._getMessagePrefix())
         if errStr:
-            errorI18nKey = ('{}/{}').format(errorI18nKey, errStr)
-        return makeI18nError(sysMsgKey=errorI18nKey, questNames=(', ').join(self._getQuestsNames()))
+            errorI18nKey = '{}/{}'.format(errorI18nKey, errStr)
+        return makeI18nError(sysMsgKey=errorI18nKey, questNames=', '.join(self._getQuestsNames()))
 
     def _successHandler(self, code, ctx=None):
-        return makeI18nSuccess(sysMsgKey=('{}/success').format(self._getMessagePrefix()), questNames=(', ').join(self._getQuestsNames()))
+        return makeI18nSuccess(sysMsgKey='{}/success'.format(self._getMessagePrefix()), questNames=', '.join(self._getQuestsNames()))
 
     def _request(self, callback):
         questIDs = self._getQuestsData(methodcaller=operator.methodcaller('getID'))
@@ -64,19 +68,15 @@ class PMQuestSelect(_PMRequest):
         super(PMQuestSelect, self).__init__(quests, branch)
         deselectedQuests = set(currentSelectedQuests).difference(set(quests))
         selectConfirmatorEnable = operation.isStarted() and oldQuest is not None and oldQuest != personalMission
-        self.addPlugins([
-         plugins.PMLockedByVehicle(self._branch, deselectedQuests),
+        self.addPlugins([plugins.PMLockedByVehicle(self._branch, deselectedQuests),
          plugins.PMSlotsValidator(self.eventsCache.getPersonalMissions().getQuestsProgress(self._branch), removedCount=int(oldQuest is not None)),
-         plugins.PMSelectConfirmator(personalMission, oldQuest, 'questsConfirmDialogShow', isEnabled=selectConfirmatorEnable and oldQuest.getOperationID() not in (5,
-                                                                                                                                                          6,
-                                                                                                                                                          7)),
+         plugins.PMSelectConfirmator(personalMission, oldQuest, 'questsConfirmDialogShow', isEnabled=selectConfirmatorEnable and oldQuest.getOperationID() not in (5, 6, 7)),
          plugins.PMSelectConfirmator(personalMission, oldQuest, 'questsConfirmDialogShowPM2', isEnabled=selectConfirmatorEnable and oldQuest.getOperationID() == 6),
-         plugins.PMProgressResetConfirmator(personalMission, oldQuest, isEnabled=selectConfirmatorEnable and oldQuest.getOperationID() in (5,
-                                                                                                                                  7))])
+         plugins.PMProgressResetConfirmator(personalMission, oldQuest, isEnabled=selectConfirmatorEnable and oldQuest.getOperationID() in (5, 7))])
         return
 
     def _getMessagePrefix(self):
-        return 'personalMissions/select'
+        pass
 
     def _removeFromSameChain(self, quests, newQuests):
         newQuestsChainIDs = [ newQuest.getChainID() for newQuest in newQuests ]
@@ -85,22 +85,20 @@ class PMQuestSelect(_PMRequest):
         for quest in quests:
             if quest.getChainID() not in newQuestsChainIDs:
                 result.append(quest)
-            else:
-                removedQuest = quest
+            removedQuest = quest
 
-        return (
-         result, removedQuest)
+        return (result, removedQuest)
 
     def _request(self, callback):
         questIDs = self._getQuestsData(methodcaller=operator.methodcaller('getID'))
-        _logger.debug('Make server request to select personal mission %s', (', ').join([ str(idn) for idn in questIDs ]))
+        _logger.debug('Make server request to select personal mission %s', ', '.join([ str(idn) for idn in questIDs ]))
         BigWorld.player().selectPersonalMissions(questIDs, self._branch, lambda code, errStr: self._response(code, callback, errStr=errStr))
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        errorI18nKey = ('{}/server_error').format(self._getMessagePrefix())
-        questNames = (', ').join(self._getQuestsNames())
+        errorI18nKey = '{}/server_error'.format(self._getMessagePrefix())
+        questNames = ', '.join(self._getQuestsNames())
         if errStr:
-            errorI18nKey = ('{}/{}').format(errorI18nKey, errStr)
+            errorI18nKey = '{}/{}'.format(errorI18nKey, errStr)
         return makeI18nError(sysMsgKey=errorI18nKey, questNames=questNames)
 
 
@@ -115,18 +113,16 @@ class PM3OperationSelect(_PMRequest):
         self.__operationID = operationID
         self.__isFirstTimeEntrance = isFirstTimeEntrance
         super(PM3OperationSelect, self).__init__(personalMissions, branch)
-        self.__inProgressPM3Operations = [ operation for operation in self.__eventsCache.getPersonalMissions().getStartedOperations(PM_BRANCH.V2_BRANCHES) if not operation.isFullCompleted()
-                                         ]
+        self.__inProgressPM3Operations = [ operation for operation in self.__eventsCache.getPersonalMissions().getStartedOperations(PM_BRANCH.V2_BRANCHES) if not operation.isFullCompleted() ]
         self.__currentActivePM3Operation = first(self.__eventsCache.getPersonalMissions().getActiveOperations(PM_BRANCH.V2_BRANCHES))
-        self.addPlugins([
-         plugins.PMLockedByOperation(operationID, not skipValidation)])
+        self.addPlugins([plugins.PMLockedByOperation(operationID, not skipValidation)])
 
     def _getMessagePrefix(self):
-        return 'personalMissions30/select'
+        pass
 
     def _request(self, callback):
         questIDs = self._getQuestsData(methodcaller=operator.methodcaller('getID'))
-        _logger.debug('Make server request to select personal mission %s', (', ').join([ str(idn) for idn in questIDs ]))
+        _logger.debug('Make server request to select personal mission %s', ', '.join([ str(idn) for idn in questIDs ]))
         BigWorld.player().selectPersonalMissions(questIDs, self._branch, lambda code, errStr: self._response(code, callback, errStr=errStr))
 
     def _successHandler(self, code, ctx=None):
@@ -150,7 +146,7 @@ class PM3OperationSelect(_PMRequest):
         return makeSuccess()
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        errorI18nKey = ('{}/server_error').format(self._getMessagePrefix())
+        errorI18nKey = '{}/server_error'.format(self._getMessagePrefix())
         return makeI18nError(sysMsgKey=errorI18nKey, type=SM_TYPE.ErrorSimple)
 
 
@@ -158,14 +154,12 @@ class PMDiscard(_PMRequest):
     eventsCache = dependency.descriptor(IEventsCache)
 
     def __init__(self, personalMission, branch):
-        quests = [
-         personalMission]
+        quests = [personalMission]
         super(PMDiscard, self).__init__(quests, branch)
         isSuitableOperation = personalMission.getOperationID() in DISCARDABLE_OPERATIONS_IDS
         namePM3 = PM_BRANCH.TYPE_TO_NAME[PM_BRANCH.PERSONAL_MISSION_3]
         isPM3Active = namePM3 in self.eventsCache.getPersonalMissions().getActiveCampaigns() or personalMission.getQuestBranch() == PM_BRANCH.PERSONAL_MISSION_3
-        self.addPlugins([
-         plugins.DiscardSuitableOperationValidator(isSuitableOperation, personalMission.getOperationID()),
+        self.addPlugins([plugins.DiscardSuitableOperationValidator(isSuitableOperation, personalMission.getOperationID()),
          plugins.PMActiveCampaignValidator(personalMission),
          plugins.PMDiscardConfirmator(personalMission, isEnabled=isSuitableOperation and not isPM3Active),
          plugins.PMLockedByVehicle(branch, quests)])
@@ -177,22 +171,19 @@ class PMDiscard(_PMRequest):
 
     def _successHandler(self, code, ctx=None):
         questName = self._getQuestsNames()[0]
-        return makeI18nSuccess(('{}/success').format(self._getMessagePrefix()), quest=questName)
+        return makeI18nSuccess('{}/success'.format(self._getMessagePrefix()), quest=questName)
 
     def _getMessagePrefix(self):
-        return 'personalMissions/discard'
+        pass
 
 
 class PMPause(_PMRequest):
 
     def __init__(self, personalMission, enable, branch):
-        quests = [
-         personalMission]
+        quests = [personalMission]
         self._enable = enable
         super(PMPause, self).__init__(quests, branch)
-        self.addPlugins([
-         plugins.PauseSuitableOperationValidator(personalMission),
-         plugins.PMActiveCampaignValidator(personalMission)])
+        self.addPlugins([plugins.PauseSuitableOperationValidator(personalMission), plugins.PMActiveCampaignValidator(personalMission)])
 
     def _request(self, callback):
         questIDs = self._getQuestsData(methodcaller=operator.methodcaller('getID'))
@@ -202,10 +193,10 @@ class PMPause(_PMRequest):
     def _successHandler(self, code, ctx=None):
         questName = self._getQuestsNames()[0]
         enable = 'pause' if self._enable else 'unpause'
-        return makeI18nSuccess(('{}/success_{}').format(self._getMessagePrefix(), enable), quest=questName)
+        return makeI18nSuccess('{}/success_{}'.format(self._getMessagePrefix(), enable), quest=questName)
 
     def _getMessagePrefix(self):
-        return 'personalMissions/pause'
+        pass
 
 
 class PMActivateSeason(_PMRequest):
@@ -220,9 +211,7 @@ class PMActivateSeason(_PMRequest):
 
         self.__isFirstTimeEntrance = isFirstTimeEntrance
         super(PMActivateSeason, self).__init__(selectedQuestsInActiveBranch, branch)
-        self.addPlugins([
-         plugins.PMLockedByVehicle(branch, selectedQuestsInActiveBranch),
-         plugins.PMActivateSameCampaignValidator(branch)])
+        self.addPlugins([plugins.PMLockedByVehicle(branch, selectedQuestsInActiveBranch), plugins.PMActivateSameCampaignValidator(branch)])
         self._season = PM_BRANCH.V1_BRANCHES if branch in PM_BRANCH.V1_BRANCHES else PM_BRANCH.V2_BRANCHES
 
     def _request(self, callback):
@@ -230,7 +219,7 @@ class PMActivateSeason(_PMRequest):
         BigWorld.player().activatePersonalMissionsSeason(self._season, lambda code, errStr: self._response(code, callback, errStr=errStr))
 
     def _getMessagePrefix(self):
-        return 'personalMissions/activateSeason'
+        pass
 
     def _successHandler(self, code, ctx=None):
         priority = NotificationPriorityLevel.LOW if self.__isFirstTimeEntrance else NotificationPriorityLevel.MEDIUM
@@ -263,15 +252,14 @@ class PMActivateSeason(_PMRequest):
         return makeSuccess()
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        errorI18nKey = ('{}/server_error').format(self._getMessagePrefix())
+        errorI18nKey = '{}/server_error'.format(self._getMessagePrefix())
         return makeI18nError(sysMsgKey=errorI18nKey)
 
 
 class _PMGetReward(Processor):
 
     def __init__(self, personalMission, needTankman, nationID, inNationID, role):
-        plugs = [
-         plugins.PMRewardValidator(personalMission)]
+        plugs = [plugins.PMRewardValidator(personalMission)]
         if needTankman:
             plugs.insert(0, plugins.VehicleCrewLockedValidator(self.itemsCache.items.getItem(ITEM_TYPES.vehicle, nationID, inNationID)))
         super(_PMGetReward, self).__init__(tuple(plugs))
@@ -282,10 +270,10 @@ class _PMGetReward(Processor):
         self.__needTankman = needTankman
 
     def _getMessagePrefix(self):
-        return 'personalMissions/reward/regular'
+        pass
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        return makeI18nError(('{}/server_error/{}').format(self._getMessagePrefix(), errStr), defaultSysMsgKey=('{}/server_error').format(self._getMessagePrefix()))
+        return makeI18nError('{}/server_error/{}'.format(self._getMessagePrefix(), errStr), defaultSysMsgKey='{}/server_error'.format(self._getMessagePrefix()))
 
     def _request(self, callback):
         _logger.debug('Make server request to get reward: %s, %s, %s, %s, %s', self.__quest, self.__needTankman, self.__nationID, self.__inNationID, self.__role)
@@ -298,7 +286,7 @@ class PMGetTankwomanReward(_PMGetReward):
         super(PMGetTankwomanReward, self).__init__(personalMission, True, nationID, inNationID, role)
 
     def _getMessagePrefix(self):
-        return 'personalMissions/reward/tankwoman'
+        pass
 
 
 class PMGetReward(_PMGetReward):
@@ -314,13 +302,13 @@ class PM3GetQuestRewards(Processor):
         self.__quest = quest
 
     def _getMessagePrefix(self):
-        return 'personalMissions/reward/pm3'
+        pass
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        return makeI18nError(('{}/server_error/{}').format(self._getMessagePrefix(), errStr), defaultSysMsgKey=('{}/server_error').format(self._getMessagePrefix()))
+        return makeI18nError('{}/server_error/{}'.format(self._getMessagePrefix(), errStr), defaultSysMsgKey='{}/server_error'.format(self._getMessagePrefix()))
 
     def _successHandler(self, code, ctx=None):
-        return makeI18nSuccess(('{}/success').format(self._getMessagePrefix()))
+        return makeI18nSuccess('{}/success'.format(self._getMessagePrefix()))
 
     def _request(self, callback):
         _logger.debug('Make server request to get reward: %s', self.__quest)
@@ -334,23 +322,20 @@ class PMPawn(Processor):
     def __init__(self, personalMission):
         namePM3 = PM_BRANCH.TYPE_TO_NAME[PM_BRANCH.PERSONAL_MISSION_3]
         isPM3Active = namePM3 in self.eventsCache.getPersonalMissions().getActiveCampaigns() or personalMission.getQuestBranch() == PM_BRANCH.PERSONAL_MISSION_3
-        super(PMPawn, self).__init__((
-         plugins.PMPawnConfirmator(personalMission, isEnabled=not isPM3Active),
+        super(PMPawn, self).__init__((plugins.PMPawnConfirmator(personalMission, isEnabled=not isPM3Active),
          plugins.PMPawnValidator([personalMission]),
          plugins.PMFreeTokensValidator(personalMission),
          plugins.PMActiveCampaignValidator(personalMission)))
         self.__quest = personalMission
 
     def _getMessagePrefix(self):
-        return 'personalMissions/pawn'
+        pass
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        if errStr == PM_SUIT_OP_PLUGIN_ERR_RESPONSE:
-            return makeI18nError(PM_SUIT_OP_PLUGIN_ERR_RESPONSE)
-        return makeI18nError(('{}/server_error/{}').format(self._getMessagePrefix(), errStr), defaultSysMsgKey=('{}/server_error').format(self._getMessagePrefix()))
+        return makeI18nError(PM_SUIT_OP_PLUGIN_ERR_RESPONSE) if errStr == PM_SUIT_OP_PLUGIN_ERR_RESPONSE else makeI18nError('{}/server_error/{}'.format(self._getMessagePrefix(), errStr), defaultSysMsgKey='{}/server_error'.format(self._getMessagePrefix()))
 
     def _successHandler(self, code, ctx=None):
-        return makeI18nSuccess(('{}/success').format(self._getMessagePrefix()), questName=self.__quest.getShortUserName(), count=self.__quest.getPawnCost())
+        return makeI18nSuccess('{}/success'.format(self._getMessagePrefix()), questName=self.__quest.getShortUserName(), count=self.__quest.getPawnCost())
 
     def _request(self, callback):
         _logger.debug('Make server request to pawn quest: %s', self.__quest)

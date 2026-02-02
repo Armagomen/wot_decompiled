@@ -1,21 +1,25 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/dialogs/buy_and_exchange.py
+import logging
+import typing
 from gui.impl.gen import R
-from gui.impl.gen.view_models.views.lobby.common.exchange_dialog_state import ExchangeDialogState
-from gui.impl.lobby.dialogs.contents.exchange_content import ExchangeContentResult, ExchangeContent, ExchangeMoneyInfo
-from gui.shared.utils import decorators
+from gui.impl.gen.view_models.views.lobby.common.buy_and_exchange_bottom_content_type import BuyAndExchangeBottomContentType
 from gui.impl.gen.view_models.views.lobby.common.dialog_with_exchange import DialogWithExchange
-from gui.impl.lobby.dialogs.full_screen_dialog_view import FullScreenDialogView
+from gui.impl.gen.view_models.views.lobby.common.exchange_dialog_state import ExchangeDialogState
 from gui.impl.lobby.dialogs.auxiliary.buy_and_exchange_state_machine import BuyAndExchangeStateEnum, BuyAndExchangeStateMachine, BuyAndExchangeEventEnum
+from gui.impl.lobby.dialogs.contents.exchange_content import ExchangeContentResult, ExchangeContent, ExchangeMoneyInfo
+from gui.impl.lobby.dialogs.full_screen_dialog_view import FullScreenDialogView
 from gui.shared.gui_items.fitting_item import canBuyWithGoldExchange
 from gui.shared.money import Currency
-from gui.impl.gen.view_models.views.lobby.common.buy_and_exchange_bottom_content_type import BuyAndExchangeBottomContentType
+from gui.shared.utils import decorators
+from py2to3 import patched_typing
 if typing.TYPE_CHECKING:
     from frameworks.wulf import ViewSettings
     from gui.shared.money import Money
 TViewModel = typing.TypeVar('TViewModel', bound=DialogWithExchange)
 _logger = logging.getLogger(__name__)
 
-class BuyAndExchange(FullScreenDialogView, typing.Generic[TViewModel]):
+class BuyAndExchange(FullScreenDialogView, patched_typing.Generic[TViewModel]):
     __slots__ = ('_exchangeContent', '__stateMachine', '__price')
 
     def __init__(self, settings, price, startState=None):
@@ -42,11 +46,8 @@ class BuyAndExchange(FullScreenDialogView, typing.Generic[TViewModel]):
         return
 
     def createToolTipContent(self, event, contentID):
-        exchangeDiscountTooltips = (R.views.lobby.personal_exchange_rates.tooltips.ExchangeLimitTooltip(),
-         R.views.lobby.personal_exchange_rates.tooltips.ExchangeRateTooltip())
-        if contentID in exchangeDiscountTooltips:
-            return self._exchangeContent.createToolTipContent(event, contentID)
-        return super(BuyAndExchange, self).createToolTipContent(event, contentID)
+        exchangeDiscountTooltips = (R.views.lobby.personal_exchange_rates.tooltips.ExchangeLimitTooltip(), R.views.lobby.personal_exchange_rates.tooltips.ExchangeRateTooltip())
+        return self._exchangeContent.createToolTipContent(event, contentID) if contentID in exchangeDiscountTooltips else super(BuyAndExchange, self).createToolTipContent(event, contentID)
 
     def _onLoading(self, *args, **kwargs):
         super(BuyAndExchange, self)._onLoading(*args, **kwargs)
@@ -94,20 +95,18 @@ class BuyAndExchange(FullScreenDialogView, typing.Generic[TViewModel]):
             self.__stateMachine.transit(BuyAndExchangeEventEnum.ACCEPT_CLICKED)
 
     def _stateToContent(self):
-        return {BuyAndExchangeStateEnum.BUY_CONTENT: BuyAndExchangeBottomContentType.DEAL_PANEL, 
-           BuyAndExchangeStateEnum.NEED_EXCHANGE: BuyAndExchangeBottomContentType.DEAL_PANEL, 
-           BuyAndExchangeStateEnum.CAN_NOT_BUY: BuyAndExchangeBottomContentType.DEAL_PANEL, 
-           BuyAndExchangeStateEnum.EXCHANGE_CONTENT: BuyAndExchangeBottomContentType.EXCHANGE_PANEL, 
-           BuyAndExchangeStateEnum.EXCHANGE_IN_PROCESS: BuyAndExchangeBottomContentType.EXCHANGE_PANEL, 
-           BuyAndExchangeStateEnum.GOLD_NOT_ENOUGH: BuyAndExchangeBottomContentType.EXCHANGE_PANEL, 
-           BuyAndExchangeStateEnum.EXCHANGE_NOT_REQUIRED: BuyAndExchangeBottomContentType.EXCHANGE_PANEL}
+        return {BuyAndExchangeStateEnum.BUY_CONTENT: BuyAndExchangeBottomContentType.DEAL_PANEL,
+         BuyAndExchangeStateEnum.NEED_EXCHANGE: BuyAndExchangeBottomContentType.DEAL_PANEL,
+         BuyAndExchangeStateEnum.CAN_NOT_BUY: BuyAndExchangeBottomContentType.DEAL_PANEL,
+         BuyAndExchangeStateEnum.EXCHANGE_CONTENT: BuyAndExchangeBottomContentType.EXCHANGE_PANEL,
+         BuyAndExchangeStateEnum.EXCHANGE_IN_PROCESS: BuyAndExchangeBottomContentType.EXCHANGE_PANEL,
+         BuyAndExchangeStateEnum.GOLD_NOT_ENOUGH: BuyAndExchangeBottomContentType.EXCHANGE_PANEL,
+         BuyAndExchangeStateEnum.EXCHANGE_NOT_REQUIRED: BuyAndExchangeBottomContentType.EXCHANGE_PANEL}
 
     def _getStartStateByStats(self):
         if self._needExchange():
             return BuyAndExchangeStateEnum.EXCHANGE_CONTENT
-        if self._needItemsForExchange() > 0:
-            return BuyAndExchangeStateEnum.CAN_NOT_BUY
-        return BuyAndExchangeStateEnum.BUY_CONTENT
+        return BuyAndExchangeStateEnum.CAN_NOT_BUY if self._needItemsForExchange() > 0 else BuyAndExchangeStateEnum.BUY_CONTENT
 
     def _needExchange(self):
         canBuy = canBuyWithGoldExchange(self.__price, self._stats.money, self._itemsCache.items.shop.exchangeRate)
@@ -157,17 +156,12 @@ class BuyAndExchange(FullScreenDialogView, typing.Generic[TViewModel]):
     def __getExchangePanelState(self, stateID):
         if stateID in (BuyAndExchangeStateEnum.GOLD_NOT_ENOUGH, BuyAndExchangeStateEnum.CAN_NOT_BUY):
             return ExchangeDialogState.NOT_POSSIBLE
-        if stateID == BuyAndExchangeStateEnum.EXCHANGE_NOT_REQUIRED:
-            return ExchangeDialogState.NOT_REQUIRED
-        return ExchangeDialogState.DEFAULT
+        return ExchangeDialogState.NOT_REQUIRED if stateID == BuyAndExchangeStateEnum.EXCHANGE_NOT_REQUIRED else ExchangeDialogState.DEFAULT
 
     def __acceptShouldDisabled(self):
-        return self.__stateMachine.getCurrentState() in (
-         BuyAndExchangeStateEnum.CAN_NOT_BUY,
-         BuyAndExchangeStateEnum.GOLD_NOT_ENOUGH,
-         BuyAndExchangeStateEnum.EXCHANGE_NOT_REQUIRED)
+        return self.__stateMachine.getCurrentState() in (BuyAndExchangeStateEnum.CAN_NOT_BUY, BuyAndExchangeStateEnum.GOLD_NOT_ENOUGH, BuyAndExchangeStateEnum.EXCHANGE_NOT_REQUIRED)
 
     def __setLacksMoney(self, lacksMoney, currencyType):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.lacksMoney.setValue(lacksMoney.get(currencyType, default=0))
             model.lacksMoney.setName(currencyType)

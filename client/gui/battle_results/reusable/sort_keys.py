@@ -1,8 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_results/reusable/sort_keys.py
 from gui.shared.gui_items import Vehicle
 from gui.shared.sort_key import SortKey
 
 class AchievementSortKey(SortKey):
-    __slots__ = ('achievement', )
+    __slots__ = ('achievement',)
 
     def __init__(self, achievement):
         super(AchievementSortKey, self).__init__()
@@ -15,12 +17,11 @@ class AchievementSortKey(SortKey):
         if result:
             return result
         result = cmp(y.getUserName(), x.getUserName())
-        if result:
-            return result
+        return result if result else None
 
 
 class _VehicleSortKey(SortKey):
-    __slots__ = ('info', )
+    __slots__ = ('info',)
 
     def __init__(self, vehicleInfo):
         super(_VehicleSortKey, self).__init__()
@@ -53,9 +54,7 @@ class _VehicleSortKey(SortKey):
             if result:
                 return result
             result = cmp(shortName, otherShortName)
-            if result:
-                return result
-            return
+            return result if result else None
 
 
 class VehicleInfoSortKey(_VehicleSortKey):
@@ -63,9 +62,7 @@ class VehicleInfoSortKey(_VehicleSortKey):
 
     def _cmp(self, other):
         result = super(VehicleInfoSortKey, self)._cmp(other)
-        if result:
-            return result
-        return cmp(self.info.player.realName, other.info.player.realName)
+        return result if result else cmp(self.info.player.realName, other.info.player.realName)
 
 
 class TeamItemSortKey(_VehicleSortKey):
@@ -73,9 +70,7 @@ class TeamItemSortKey(_VehicleSortKey):
 
     def _cmp(self, other):
         result = super(TeamItemSortKey, self)._cmp(other)
-        if result:
-            return -result
-        return cmp(self.info.player.realName, other.info.player.realName)
+        return -result if result else cmp(self.info.player.realName, other.info.player.realName)
 
 
 class VehicleXpSortKey(_VehicleSortKey):
@@ -93,7 +88,4 @@ class RankedVehicleXpSortKey(_VehicleSortKey):
 
 
 def placeSortKey(a):
-    if a.avatar is not None:
-        return (a.avatar.extensionInfo.get('playerRank', 0), a.player.realName)
-    else:
-        return (-1, 0)
+    return (a.avatar.extensionInfo.get('playerRank', 0), a.player.realName) if a.avatar is not None else (-1, 0)

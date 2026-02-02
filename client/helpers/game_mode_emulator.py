@@ -1,4 +1,7 @@
-import sys, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/helpers/game_mode_emulator.py
+import sys
+import BigWorld
 from SpaceVisibilityFlags import SpaceVisibilityFlagsFactory
 from constants import ARENA_GAMEPLAY_IDS
 GAME_MODE_ARG = 'gameMode'
@@ -23,16 +26,10 @@ def environment():
     if ENVIRONMENT_ARG not in sys.argv:
         return DEFAULT_ENVIRONMENT
     environmentArgIndex = sys.argv.index(ENVIRONMENT_ARG) + 1
-    if environmentArgIndex >= len(sys.argv):
-        return DEFAULT_ENVIRONMENT
-    return sys.argv[environmentArgIndex]
+    return DEFAULT_ENVIRONMENT if environmentArgIndex >= len(sys.argv) else sys.argv[environmentArgIndex]
 
 
 def createFakeAvatar():
-    entityID = BigWorld.createEntity('OfflineEntity', BigWorld.camera().spaceID, 0, (0,
-                                                                                     0,
-                                                                                     0), (0,
-                                                                                          0,
-                                                                                          0), {})
+    entityID = BigWorld.createEntity('OfflineEntity', BigWorld.camera().spaceID, 0, (0, 0, 0), (0, 0, 0), {})
     entity = BigWorld.entity(entityID)
     BigWorld.player = lambda : entity

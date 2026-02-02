@@ -1,3 +1,6 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: resource_well/scripts/client/resource_well/gui/feature/constants.py
+from __future__ import absolute_import
 import logging
 from enum import Enum
 _logger = logging.getLogger(__name__)
@@ -21,4 +24,4 @@ class ResourceType(Enum):
             return cls(value)
         else:
             _logger.error('%s does not exist in ResourceType values', value)
-            return
+            return None

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/shared_errors.py
 from gui.Scaleform.locale.MESSENGER import MESSENGER as I18N_MESSENGER
 from gui.impl import backport
 from helpers import i18n
@@ -5,20 +7,20 @@ from messenger.m_constants import CLIENT_ERROR_NAMES, CLIENT_ACTION_NAMES, CLIEN
 from messenger.proto.interfaces import IChatError
 
 class I18nErrorID(object):
-    __slots__ = ('errorID', )
+    __slots__ = ('errorID',)
 
     def __init__(self, errorID):
         super(I18nErrorID, self).__init__()
         self.errorID = errorID
 
     def __repr__(self):
-        return ('{0}').format(self.getName())
+        return '{0}'.format(self.getName())
 
     def getName(self):
         if self.errorID in CLIENT_ERROR_NAMES:
             errorName = CLIENT_ERROR_NAMES[self.errorID]
         else:
-            errorName = ('CLIENT_ERROR_{0}').format(self.errorID)
+            errorName = 'CLIENT_ERROR_{0}'.format(self.errorID)
         return errorName
 
     def getI18nKey(self):
@@ -26,20 +28,20 @@ class I18nErrorID(object):
 
 
 class I18nActionID(object):
-    __slots__ = ('actionID', )
+    __slots__ = ('actionID',)
 
     def __init__(self, actionID):
         super(I18nActionID, self).__init__()
         self.actionID = actionID
 
     def __repr__(self):
-        return ('{0}').format(self.getName())
+        return '{0}'.format(self.getName())
 
     def getName(self):
         if self.actionID in CLIENT_ACTION_NAMES:
             actionName = CLIENT_ACTION_NAMES[self.actionID]
         else:
-            actionName = ('CLIENT_ACTION_{0}').format(self.actionID)
+            actionName = 'CLIENT_ACTION_{0}'.format(self.actionID)
         return actionName
 
     def getI18nName(self):
@@ -58,7 +60,7 @@ class ClientError(IChatError):
         self._kwargs = kwargs
 
     def __repr__(self):
-        return ('{0}(error={1})').format(self.__class__.__name__, self._error)
+        return '{0}(error={1})'.format(self.__class__.__name__, self._error)
 
     def createError(self, errorID):
         return I18nErrorID(errorID)
@@ -76,19 +78,19 @@ class ClientError(IChatError):
         else:
             result = self._error.getName()
             if self._kwargs:
-                result = ('{0}/{1}').format(result, self._kwargs)
+                result = '{0}/{1}'.format(result, self._kwargs)
         return result
 
 
 class ClientActionError(ClientError):
-    __slots__ = ('_action', )
+    __slots__ = ('_action',)
 
     def __init__(self, actionID, errorID=None, **kwargs):
         super(ClientActionError, self).__init__((errorID or CLIENT_ERROR_ID.GENERIC), **kwargs)
         self._action = self.createAction(actionID)
 
     def __repr__(self):
-        return ('{0}(action={1}, error={2})').format(self.__class__.__name__, self._action, self._error)
+        return '{0}(action={1}, error={2})'.format(self.__class__.__name__, self._action, self._error)
 
     def createAction(self, actionID):
         return I18nActionID(actionID)

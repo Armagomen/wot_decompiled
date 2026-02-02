@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/ammunition_panel/hangar_view.py
 import logging
 from CurrentVehicle import g_currentVehicle
 from frameworks.wulf import ViewStatus
@@ -54,8 +56,9 @@ class HangarAmmunitionPanelView(BaseAmmunitionPanelView):
         newLayoutIdx = int(args.get('currentIndex', None))
         if groupID is None or newLayoutIdx is None:
             return
-        self._ammunitionPanel.onChangeSetupLayoutIndex(groupID, newLayoutIdx)
-        return
+        else:
+            self._ammunitionPanel.onChangeSetupLayoutIndex(groupID, newLayoutIdx)
+            return
 
     def __onEscKeyDown(self):
         g_eventBus.handleEvent(AmmunitionPanelViewEvent(AmmunitionPanelViewEvent.CLOSE_VIEW), EVENT_BUS_SCOPE.LOBBY)

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/auxiliary/crew_books_helper.py
 from collections import defaultdict
 from enum import Enum
 import BigWorld
@@ -56,8 +58,7 @@ class _CrewBooksViewedCache(object):
             for bookType, count in self.__booksCountByNation.iteritems():
                 if bookType in CREW_BOOK_RARITY.NO_NATION_TYPES:
                     self.__viewedItems[bookType] = count
-                else:
-                    self.__viewedItems[bookType][nationID] = count[nationID]
+                self.__viewedItems[bookType][nationID] = count[nationID]
 
             AccountSettings.setSettings(CREW_BOOKS_VIEWED, self.__viewedItems)
             self._setState()
@@ -72,7 +73,7 @@ class _CrewBooksViewedCache(object):
                 if viewedCount < count:
                     self._setState(self.STATE.UPDATE)
                     return True
-            elif self.__viewedItems[bookType].setdefault(currentNation, 0) < count[currentNation]:
+            if self.__viewedItems[bookType].setdefault(currentNation, 0) < count[currentNation]:
                 self._setState(self.STATE.UPDATE)
                 return True
 
@@ -96,7 +97,7 @@ class _CrewBooksViewedCache(object):
                 if viewedCount < count:
                     result += count - viewedCount
                     self._setState(self.STATE.UPDATE)
-            elif self.__viewedItems[bookType].setdefault(currentNation, 0) < count[currentNation]:
+            if self.__viewedItems[bookType].setdefault(currentNation, 0) < count[currentNation]:
                 result += count[currentNation] - self.__viewedItems[bookType].setdefault(currentNation, 0)
                 self._setState(self.STATE.UPDATE)
 
@@ -111,8 +112,7 @@ class _CrewBooksViewedCache(object):
         for bookType, count in self.__booksCountByNation.iteritems():
             if bookType in CREW_BOOK_RARITY.NO_NATION_TYPES:
                 result += count
-            else:
-                result += count[currentNation]
+            result += count[currentNation]
 
         return result
 
@@ -130,8 +130,7 @@ class _CrewBooksViewedCache(object):
                     count = 0
                 if item.type in CREW_BOOK_RARITY.NO_NATION_TYPES:
                     self.__booksCountByNation[item.type] = count
-                else:
-                    self.__booksCountByNation[item.type][self.__getNationID(item.nation)] = count
+                self.__booksCountByNation[item.type][self.__getNationID(item.nation)] = count
 
             self._setState(self.STATE.UPDATE)
         return
@@ -159,8 +158,7 @@ class _CrewBooksViewedCache(object):
             bookType = item.getBookType()
             if bookType in CREW_BOOK_RARITY.NO_NATION_TYPES:
                 self.__booksCountByNation[bookType] = item.getFreeCount()
-            else:
-                self.__booksCountByNation[bookType][item.getNationID()] = item.getFreeCount()
+            self.__booksCountByNation[bookType][item.getNationID()] = item.getFreeCount()
 
         self._setState(self.STATE.UPDATE)
 

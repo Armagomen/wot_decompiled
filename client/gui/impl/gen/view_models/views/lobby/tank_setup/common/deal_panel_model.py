@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/tank_setup/common/deal_panel_model.py
 from gui.impl.gen.view_models.common.price_model import PriceModel
 
 class DealPanelModel(PriceModel):

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/missions/vehicle_selector.py
 from CurrentVehicle import g_currentVehicle
 from gui.filters.carousel_filter import BasicCriteriesGroup
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -12,7 +14,7 @@ from gui.shared.formatters import text_styles
 from gui.shared.utils.requesters import REQ_CRITERIA
 
 class MissionVehicleSelectorCarousel(VehicleSelectorCarouselMeta):
-    _CAROUSEL_FILTERS = ('inventory', )
+    _CAROUSEL_FILTERS = ('inventory',)
 
     def __init__(self):
         super(MissionVehicleSelectorCarousel, self).__init__()
@@ -103,32 +105,32 @@ class MissionVehicleSelector(MissionsVehicleSelectorMeta):
             elif suitableVehicles:
                 label = QUESTS.MISSIONS_VEHICLESELECTOR_STATUS_SELECT
                 style = text_styles.premiumVehicleName
-                selectedVeh = {'buyTank': True, 
-                   'iconSmall': RES_ICONS.MAPS_ICONS_LIBRARY_EMPTY_SELECTION, 
-                   'smallInfoText': style(label), 
-                   'tooltip': TOOLTIPS.MISSIONS_VEHICLE_SELECTOR_SELECT}
+                selectedVeh = {'buyTank': True,
+                 'iconSmall': RES_ICONS.MAPS_ICONS_LIBRARY_EMPTY_SELECTION,
+                 'smallInfoText': style(label),
+                 'tooltip': TOOLTIPS.MISSIONS_VEHICLE_SELECTOR_SELECT}
                 status = ''
             else:
                 label = QUESTS.MISSIONS_VEHICLESELECTOR_STATUS_LIST
                 style = text_styles.premiumVehicleName
-                selectedVeh = {'buyTank': True, 
-                   'iconSmall': RES_ICONS.MAPS_ICONS_LIBRARY_EMPTY_SELECTION, 
-                   'smallInfoText': style(label), 
-                   'tooltip': TOOLTIPS.MISSIONS_VEHICLE_SELECTOR_LIST}
+                selectedVeh = {'buyTank': True,
+                 'iconSmall': RES_ICONS.MAPS_ICONS_LIBRARY_EMPTY_SELECTION,
+                 'smallInfoText': style(label),
+                 'tooltip': TOOLTIPS.MISSIONS_VEHICLE_SELECTOR_LIST}
                 status = self._getNotAvailableStatusText()
             selectedVeh.update(isUseRightBtn=False)
             selectedVeh.update(clickEnabled=True)
             title = self._getTitle()
-        self.as_setInitDataS({'title': title, 
-           'statusText': status})
+        self.as_setInitDataS({'title': title,
+         'statusText': status})
         self.as_showSelectedVehicleS(selectedVeh)
         return
 
     def _getTitle(self):
-        return ''
+        pass
 
     def _getNotAvailableStatusText(self):
-        return ''
+        pass
 
 
 class _MissionsCarouselDataProvider(CarouselDataProvider):
@@ -141,7 +143,7 @@ class _MissionsCarouselDataProvider(CarouselDataProvider):
     def setCriteria(self, criteria, extraConditions):
         self._baseCriteria = criteria
         self.__extraConditions = extraConditions
-        self._filter.reset(exceptions=('inventory', ))
+        self._filter.reset(exceptions=('inventory',))
 
     def getSuitableVehicles(self):
         return self.__suitableVehiclesIDs

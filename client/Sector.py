@@ -1,21 +1,25 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/Sector.py
 from functools import partial
-import BigWorld, MapActivities
+import BigWorld
+import MapActivities
 from constants import SECTOR_STATE
 from debug_utils import LOG_DEBUG
-import Math, items
+import Math
+import items
 from ReplayEvents import g_replayEvents
-SECTOR_LOCATION_TO_MAP_ACTIVITY = {(1, 1): 'zone_destr_WZ1_planes', 
-   (1, 2): 'zone_destr_WZ2_planes', 
-   (1, 3): 'zone_destr_WZ3_planes', 
-   (2, 1): 'zone_destr_CZ1_planes', 
-   (2, 2): 'zone_destr_CZ2_planes', 
-   (2, 3): 'zone_destr_CZ3_planes', 
-   (3, 1): 'zone_destr_EZ1_planes', 
-   (3, 2): 'zone_destr_EZ2_planes', 
-   (3, 3): 'zone_destr_EZ3_planes'}
-ID_IN_PLAYER_GROUP_TO_MAP_ACTIVITY_LEAD_TIME = {1: 2.0, 
-   2: 2.0, 
-   3: 23.0}
+SECTOR_LOCATION_TO_MAP_ACTIVITY = {(1, 1): 'zone_destr_WZ1_planes',
+ (1, 2): 'zone_destr_WZ2_planes',
+ (1, 3): 'zone_destr_WZ3_planes',
+ (2, 1): 'zone_destr_CZ1_planes',
+ (2, 2): 'zone_destr_CZ2_planes',
+ (2, 3): 'zone_destr_CZ3_planes',
+ (3, 1): 'zone_destr_EZ1_planes',
+ (3, 2): 'zone_destr_EZ2_planes',
+ (3, 3): 'zone_destr_EZ3_planes'}
+ID_IN_PLAYER_GROUP_TO_MAP_ACTIVITY_LEAD_TIME = {1: 2.0,
+ 2: 2.0,
+ 3: 23.0}
 BORDER_VISUALISATION_DASH_DIMENSIONS = (10, 1, 1)
 BORDER_VISUALISATION_GAP_LENGTH = 5
 
@@ -72,7 +76,7 @@ class Sector(BigWorld.Entity):
         if actualTime < actualTargetTime:
             self.__startDestructionCallback = BigWorld.callback(timeOffset, partial(self.startSectorBombingMapActivities, actualTargetTime))
             return
-        mapActivityName = SECTOR_LOCATION_TO_MAP_ACTIVITY[(self.playerGroup, self.IDInPlayerGroup)]
+        mapActivityName = SECTOR_LOCATION_TO_MAP_ACTIVITY[self.playerGroup, self.IDInPlayerGroup]
         LOG_DEBUG('mapActivityName ', mapActivityName)
         MapActivities.startActivity(mapActivityName, timeOffset)
 

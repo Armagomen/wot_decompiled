@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/profile/ProfileHof.py
 from functools import partial
 import BigWorld
 from adisp import adisp_process
@@ -21,13 +23,13 @@ from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
 class ProfileHof(ProfileHofMeta):
     _eventsCache = dependency.descriptor(IEventsCache)
     _clansController = dependency.descriptor(IWebController)
-    _errorsStatusMap = {'1004': PROFILE_CONSTANTS.HOF_SPECIAL_CASES, 
-       '1005': PROFILE_CONSTANTS.HOF_SPECIAL_CASES, 
-       '1015': PROFILE_CONSTANTS.HOF_SPECIAL_CASES, 
-       '1016': PROFILE_CONSTANTS.HOF_SPECIAL_CASES, 
-       '1003': PROFILE_CONSTANTS.HOF_RESULTS_HIDE, 
-       '1006': PROFILE_CONSTANTS.HOF_RESULTS_EXCLUSION, 
-       '1007': PROFILE_CONSTANTS.HOF_RESULTS_INCLUSION}
+    _errorsStatusMap = {'1004': PROFILE_CONSTANTS.HOF_SPECIAL_CASES,
+     '1005': PROFILE_CONSTANTS.HOF_SPECIAL_CASES,
+     '1015': PROFILE_CONSTANTS.HOF_SPECIAL_CASES,
+     '1016': PROFILE_CONSTANTS.HOF_SPECIAL_CASES,
+     '1003': PROFILE_CONSTANTS.HOF_RESULTS_HIDE,
+     '1006': PROFILE_CONSTANTS.HOF_RESULTS_EXCLUSION,
+     '1007': PROFILE_CONSTANTS.HOF_RESULTS_INCLUSION}
     _requestRetriesCount = 3
     _retryDelay = 0.5
     _bgPath = '../maps/icons/hof/hof_back_landing.png'
@@ -90,7 +92,8 @@ class ProfileHof(ProfileHofMeta):
         counters = []
         for buttonName in self._buttonsWithCounter:
             if isHofButtonNew(buttonName):
-                counters.append({'componentId': buttonName, 'count': '1'})
+                counters.append({'componentId': buttonName,
+                 'count': '1'})
 
         return counters
 
@@ -152,13 +155,13 @@ class ProfileHof(ProfileHofMeta):
 
     def __openHofBrowserView(self, url):
         self._eventsCache.onProfileVisited()
-        g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.BROWSER_VIEW), ctx={'url': url, 
-           'returnAlias': VIEW_ALIAS.LOBBY_PROFILE, 
-           'allowRightClick': True, 
-           'webHandlers': createHofWebHandlers(), 
-           'selectedAlias': VIEW_ALIAS.PROFILE_HOF, 
-           'disabledKeys': getHofDisabledKeys(), 
-           'onServerSettingsChange': onServerSettingsChange}), EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.BROWSER_VIEW), ctx={'url': url,
+         'returnAlias': VIEW_ALIAS.LOBBY_PROFILE,
+         'allowRightClick': True,
+         'webHandlers': createHofWebHandlers(),
+         'selectedAlias': VIEW_ALIAS.PROFILE_HOF,
+         'disabledKeys': getHofDisabledKeys(),
+         'onServerSettingsChange': onServerSettingsChange}), EVENT_BUS_SCOPE.LOBBY)
 
     def __onServerSettingChanged(self, diff):
         if 'hallOfFame' in diff:

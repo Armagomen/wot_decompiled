@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/aih_constants.py
 import typing
 from collections import namedtuple
 import Math
@@ -40,14 +42,15 @@ class CTRL_MODE_NAME(object):
     SM_STRATEGIC = 'smStrategic'
     SM_ENTITY_VIEW = 'smEntityView'
     DEFAULT = ARCADE
-    POSTMORTEM_CONTROL_MODES = (
-     POSTMORTEM, DEATH_FREE_CAM, KILL_CAM, RESPAWN_DEATH, LOOK_AT_KILLER)
-    KILL_CAM_MODES = (
-     LOOK_AT_KILLER, KILL_CAM)
+    POSTMORTEM_CONTROL_MODES = (POSTMORTEM,
+     DEATH_FREE_CAM,
+     KILL_CAM,
+     RESPAWN_DEATH,
+     LOOK_AT_KILLER)
+    KILL_CAM_MODES = (LOOK_AT_KILLER, KILL_CAM)
 
 
-CTRL_MODES = (
- CTRL_MODE_NAME.ARCADE,
+CTRL_MODES = (CTRL_MODE_NAME.ARCADE,
  CTRL_MODE_NAME.STRATEGIC,
  CTRL_MODE_NAME.ARTY,
  CTRL_MODE_NAME.SNIPER,
@@ -112,15 +115,13 @@ class CHARGE_MARKER_STATE(int):
     DEFAULT = DIMMED
 
 
-MAP_CASE_MODES = (
- CTRL_MODE_NAME.MAP_CASE_ARCADE_EPIC_MINEFIELD,
+MAP_CASE_MODES = (CTRL_MODE_NAME.MAP_CASE_ARCADE_EPIC_MINEFIELD,
  CTRL_MODE_NAME.MAP_CASE,
  CTRL_MODE_NAME.MAP_CASE_ARCADE,
  CTRL_MODE_NAME.MAP_CASE_EPIC,
  CTRL_MODE_NAME.SM_STRATEGIC)
 
-class GunMarkerState(namedtuple('GunMarkerState', ('gunInstallationIndex', 'gunIndex', 'position', 'direction',
-                              'size', 'collData'))):
+class GunMarkerState(namedtuple('GunMarkerState', ('gunInstallationIndex', 'gunIndex', 'position', 'direction', 'size', 'collData'))):
 
     @classmethod
     def fromGunMarkerInfo(cls, gunMarkerInfo, size=None):

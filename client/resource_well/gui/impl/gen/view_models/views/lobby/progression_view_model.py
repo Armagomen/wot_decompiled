@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: resource_well/scripts/client/resource_well/gui/impl/gen/view_models/views/lobby/progression_view_model.py
 from enum import Enum
 from resource_well.gui.impl.gen.view_models.views.lobby.enums import EventMode
 from frameworks.wulf import Array, ViewModel
@@ -11,10 +13,9 @@ class ProgressionState(Enum):
 
 
 class ProgressionViewModel(ViewModel):
-    __slots__ = ('onPreview', 'onAboutClick', 'onResourcesContribute', 'onResourcesReturn',
-                 'onHangarShow', 'onClose', 'onRewardSelected')
+    __slots__ = ('onPreview', 'onAboutClick', 'onResourcesContribute', 'onResourcesReturn', 'onHangarShow', 'onClose', 'onRewardSelected')
 
-    def __init__(self, properties=8, commands=7):
+    def __init__(self, properties=9, commands=7):
         super(ProgressionViewModel, self).__init__(properties=properties, commands=commands)
 
     def getEndDate(self):
@@ -69,6 +70,12 @@ class ProgressionViewModel(ViewModel):
     def setProgression(self, value):
         self._setNumber(7, value)
 
+    def getShowBlur(self):
+        return self._getBool(8)
+
+    def setShowBlur(self, value):
+        self._setBool(8, value)
+
     def _initialize(self):
         super(ProgressionViewModel, self)._initialize()
         self._addNumberProperty('endDate', 0)
@@ -79,6 +86,7 @@ class ProgressionViewModel(ViewModel):
         self._addStringProperty('eventMode')
         self._addStringProperty('currentRewardId', '')
         self._addNumberProperty('progression', 0)
+        self._addBoolProperty('showBlur', False)
         self.onPreview = self._addCommand('onPreview')
         self.onAboutClick = self._addCommand('onAboutClick')
         self.onResourcesContribute = self._addCommand('onResourcesContribute')

@@ -1,4 +1,7 @@
-import typing, CGF
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/cgf_components/rtpc_component_manager.py
+import typing
+import CGF
 from cgf_script.managers_registrator import autoregister, onAddedQuery, onRemovedQuery, onProcessQuery
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
@@ -26,10 +29,7 @@ class RTPCComponentManager(CGF.ComponentManager):
 
     def getVehicleComponentForRTPC(self, rtpcGameObject):
         vehicleGameObject = self.__rtpcGameObjectToVehicleGameObject.get(rtpcGameObject.id)
-        if vehicleGameObject is not None:
-            return getVehicleEntityByVehicleGameObject(vehicleGameObject)
-        else:
-            return
+        return getVehicleEntityByVehicleGameObject(vehicleGameObject) if vehicleGameObject is not None else None
 
     @onAddedQuery(CGF.GameObject, RTPCComponent, tickGroup='preInitGroup')
     def onRTPCAdded(self, gameObject, _):

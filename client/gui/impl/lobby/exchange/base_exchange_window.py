@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/exchange/base_exchange_window.py
 import typing
 from exchange.personal_discounts_helper import getDiscountsRequiredForExchange
 from gui import SystemMessages
@@ -42,9 +44,7 @@ class BaseExchangeWindow(ComponentsPresenterView, FullScreenDialogBaseView):
         if contentID == R.views.lobby.personal_exchange_rates.tooltips.ExchangeLimitTooltip():
             selectedExchangeAmount = self.viewModel.getGoldAmountForExchange()
             return LimitedDiscountInfoTooltip(self.exchangeRate.getExchangeRateName, selectedExchangeAmount)
-        if contentID == R.views.lobby.personal_exchange_rates.tooltips.ExchangeRateTooltip():
-            return DiscountInfoTooltip(self.exchangeRate.getExchangeRateName)
-        return super(BaseExchangeWindow, self).createToolTipContent(event, contentID)
+        return DiscountInfoTooltip(self.exchangeRate.getExchangeRateName) if contentID == R.views.lobby.personal_exchange_rates.tooltips.ExchangeRateTooltip() else super(BaseExchangeWindow, self).createToolTipContent(event, contentID)
 
     @property
     def exchangeRate(self):
@@ -70,28 +70,20 @@ class BaseExchangeWindow(ComponentsPresenterView, FullScreenDialogBaseView):
 
     def _getEvents(self):
         eventsTuple = super(BaseExchangeWindow, self)._getEvents()
-        return eventsTuple + (
-         (
-          self.viewModel.onClose, self.__onClose),
-         (
-          self.viewModel.onExchange, self._onExchange),
-         (
-          self.viewModel.onSelectedValueUpdated, self.__onSelectedAmountChanged),
-         (
-          self.viewModel.onOpenAllDiscountsWindow, self._onOpenAllDiscountsWindow),
-         (
-          self.exchangeRate.onUpdated, self._updateAllModel))
+        return eventsTuple + ((self.viewModel.onClose, self.__onClose),
+         (self.viewModel.onExchange, self._onExchange),
+         (self.viewModel.onSelectedValueUpdated, self.__onSelectedAmountChanged),
+         (self.viewModel.onOpenAllDiscountsWindow, self._onOpenAllDiscountsWindow),
+         (self.exchangeRate.onUpdated, self._updateAllModel))
 
     def _getCallbacks(self):
-        return (
-         (
-          'stats.gold', self.__updateData),)
+        return (('stats.gold', self.__updateData),)
 
     def _updateAllModel(self):
         if self.exchangeRate is None:
             return
         else:
-            with self.viewModel.transaction() as (model):
+            with self.viewModel.transaction() as model:
                 self._updateModel(model=model)
             return
 
@@ -100,15 +92,13 @@ class BaseExchangeWindow(ComponentsPresenterView, FullScreenDialogBaseView):
         self._onSelectedValueChanged(model=model)
 
     def _registerSubModels(self):
-        return [
-         CurrenciesTabView(self.viewModel.balance, self),
-         ExchangeDiscountView(self.exchangeRate.getExchangeRateName, self.viewModel.discount)]
+        return [CurrenciesTabView(self.viewModel.balance, self), ExchangeDiscountView(self.exchangeRate.getExchangeRateName, self.viewModel.discount)]
 
     @replaceNoneKwargsModel
     def _onSelectedValueChanged(self, params=None, model=None):
         if not params:
             currentValue = model.getResourceAmountForExchange()
-            params = (currentValue or self)._initValues if 1 else {'currency': currentValue}
+            params = self._initValues if not currentValue else {'currency': currentValue}
         selectedGold, selectedCurrency = handleAndRoundStepperInput(params, exchangeRate=self.exchangeRate, validateGold=True)
         self._setStepperValues(selectedGold, selectedCurrency, model=model)
 
@@ -146,7 +136,7 @@ class BaseExchangeWindow(ComponentsPresenterView, FullScreenDialogBaseView):
         self._setMaxAmountForExchange(maxGold=allGold, maxResource=0, model=model)
 
     def __onSelectedAmountChanged(self, params):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             self._onSelectedValueChanged(params, model=model)
         g_eventBus.handleEvent(events.ExchangeRatesDiscountsEvent(events.ExchangeRatesDiscountsEvent.ON_SELECTED_AMOUNT_CHANGED, {'amount': self.viewModel.getGoldAmountForExchange()}), scope=EVENT_BUS_SCOPE.LOBBY)
 

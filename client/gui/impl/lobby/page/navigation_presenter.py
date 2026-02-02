@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/page/navigation_presenter.py
 from __future__ import absolute_import
 import logging
 from functools import partial
@@ -17,9 +19,9 @@ _NAVIGATION_ACTION_TARGET_KEY = 'name'
 _INFO_ACTION_INDEX_KEY = 'index'
 
 class NavigationPresenter(ViewComponent[NavigationBarModel], EventsHandler):
-    __DESC_TO_BUTTON_TYPE = {LobbyStateDescription.Info.Type.INFO: ButtonType.INFO, 
-       LobbyStateDescription.Info.Type.QUESTION: ButtonType.QUESTION, 
-       LobbyStateDescription.Info.Type.VIDEO: ButtonType.VIDEO}
+    __DESC_TO_BUTTON_TYPE = {LobbyStateDescription.Info.Type.INFO: ButtonType.INFO,
+     LobbyStateDescription.Info.Type.QUESTION: ButtonType.QUESTION,
+     LobbyStateDescription.Info.Type.VIDEO: ButtonType.VIDEO}
 
     def __init__(self):
         super(NavigationPresenter, self).__init__(model=NavigationBarModel)
@@ -43,15 +45,9 @@ class NavigationPresenter(ViewComponent[NavigationBarModel], EventsHandler):
 
     def _getEvents(self):
         model = self.getViewModel()
-        events = (
-         (
-          model.onNavigate, self.__onNavigate),
-         (
-          model.onInfoAction, self.__onInfoAction))
+        events = ((model.onNavigate, self.__onNavigate), (model.onInfoAction, self.__onInfoAction))
         if self.__lsm:
-            events += (
-             (
-              self.__lsm.onVisibleRouteChanged, self.__routeChanged),)
+            events += ((self.__lsm.onVisibleRouteChanged, self.__routeChanged),)
         return events
 
     def __routeChanged(self, routeInfo):
@@ -66,7 +62,7 @@ class NavigationPresenter(ViewComponent[NavigationBarModel], EventsHandler):
         if routeInfo.currentDescription is not None:
             self.__infoActionHandlers = [ info.onMoreInfoRequested for info in routeInfo.currentDescription.infos ]
         self.__visibleState = routeInfo.state
-        with self.getViewModel().transaction() as (model):
+        with self.getViewModel().transaction() as model:
             infoButtons = model.getInfoButtons()
             infoButtons.clear()
             if routeInfo.currentDescription is not None:

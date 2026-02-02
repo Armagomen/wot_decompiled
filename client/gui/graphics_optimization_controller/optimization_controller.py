@@ -1,4 +1,8 @@
-import logging, GUI, Event
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/graphics_optimization_controller/optimization_controller.py
+import logging
+import GUI
+import Event
 from gui.graphics_optimization_controller.settings import OPTIMIZED_VIEWS_SETTINGS
 from gui.graphics_optimization_controller.utils import getRectBounds, PERMANENT_SETTING_ID, getSettingsNames
 from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE

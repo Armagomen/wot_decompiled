@@ -1,15 +1,14 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/meta/FrontlineMissionsPanelMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class FrontlineMissionsPanelMeta(BaseDAAPIComponent):
 
     def as_setPrimaryMissionS(self, messageData):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setPrimaryMission(messageData)
+        return self.flashObject.as_setPrimaryMission(messageData) if self._isDAAPIInited() else None
 
     def as_setNearestHQS(self, index):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setNearestHQ(index)
+        return self.flashObject.as_setNearestHQ(index) if self._isDAAPIInited() else None
 
     def as_setMissionDescriptionValueS(self, descValue):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setMissionDescriptionValue(descValue)
+        return self.flashObject.as_setMissionDescriptionValue(descValue) if self._isDAAPIInited() else None

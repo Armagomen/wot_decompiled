@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/ResearchMeta.py
 from gui.Scaleform.daapi.view.lobby.techtree.research_view import ResearchView
 
 class ResearchMeta(ResearchView):
@@ -30,37 +32,28 @@ class ResearchMeta(ResearchView):
         self._printOverrideError('goToPostProgression')
 
     def as_setDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setData(data)
+        return self.flashObject.as_setData(data) if self._isDAAPIInited() else None
 
     def as_setRootDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setRootData(data)
+        return self.flashObject.as_setRootData(data) if self._isDAAPIInited() else None
 
     def as_setResearchItemsS(self, nation, raw):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setResearchItems(nation, raw)
+        return self.flashObject.as_setResearchItems(nation, raw) if self._isDAAPIInited() else None
 
     def as_setFreeXPS(self, freeXP):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setFreeXP(freeXP)
+        return self.flashObject.as_setFreeXP(freeXP) if self._isDAAPIInited() else None
 
     def as_setInstalledItemsS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setInstalledItems(data)
+        return self.flashObject.as_setInstalledItems(data) if self._isDAAPIInited() else None
 
     def as_setWalletStatusS(self, walletStatus):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setWalletStatus(walletStatus)
+        return self.flashObject.as_setWalletStatus(walletStatus) if self._isDAAPIInited() else None
 
     def as_setXpInfoLinkageS(self, linkage):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setXpInfoLinkage(linkage)
+        return self.flashObject.as_setXpInfoLinkage(linkage) if self._isDAAPIInited() else None
 
     def as_setPostProgressionDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setPostProgressionData(data)
+        return self.flashObject.as_setPostProgressionData(data) if self._isDAAPIInited() else None
 
     def as_showPostProgressionUnlockAnimationS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showPostProgressionUnlockAnimation()
+        return self.flashObject.as_showPostProgressionUnlockAnimation() if self._isDAAPIInited() else None

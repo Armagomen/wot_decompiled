@@ -1,4 +1,8 @@
-import typing, BigWorld, logging
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/shared/web_view.py
+import typing
+import BigWorld
+import logging
 from adisp import adisp_process
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.hangar.BrowserView import makeBrowserParams
@@ -25,6 +29,7 @@ class WebView(BrowserScreenMeta):
         self.__browserId = 0
         self.__loadBrowserCbID = None
         self.__ctx = ctx or {}
+        self.__browserView = None
         self._url = ctx.get('url') if ctx else None
         self._forcedSkipEscape = ctx.get('forcedSkipEscape', False) if ctx else False
         self._browserParams = (ctx or {}).get('browserParams', makeBrowserParams())
@@ -34,7 +39,10 @@ class WebView(BrowserScreenMeta):
 
     @property
     def webHandlersReplacements(self):
-        return
+        return None
+
+    def getBackUrl(self):
+        return None if not self.__browserView else self.__browserView.backUrl
 
     def onEscapePress(self):
         if not self._browserParams.get('isHidden'):
@@ -59,6 +67,7 @@ class WebView(BrowserScreenMeta):
         return createWebHandlers(self.webHandlersReplacements)
 
     def _onRegisterFlashComponent(self, viewPy, alias):
+        self.__browserView = viewPy
         webHandlers = self.webHandlers()
         super(WebView, self)._onRegisterFlashComponent(viewPy, alias)
         if alias == VIEW_ALIAS.BROWSER:
@@ -83,6 +92,7 @@ class WebView(BrowserScreenMeta):
         self.removeListener(events.HideWindowEvent.HIDE_OVERLAY_BROWSER_VIEW, self.__handleBrowserClose, scope=EVENT_BUS_SCOPE.LOBBY)
         if self.__callbackOnClose is not None:
             self.__callbackOnClose()
+        self.__browserView = None
         if self.__browserId:
             self.__browserCtrl.delBrowser(self.__browserId)
         return
@@ -97,8 +107,7 @@ class WebView(BrowserScreenMeta):
     def __loadBrowser(self, width, height):
         url = self._getUrl()
         if url is not None:
-            self.__browserId = yield self.__browserCtrl.load(url=url, useBrowserWindow=False, browserSize=(
-             width, height), showBrowserCallback=self.__showBrowser, browserID=self.alias)
+            self.__browserId = yield self.__browserCtrl.load(url=url, useBrowserWindow=False, browserSize=(width, height), showBrowserCallback=self.__showBrowser, browserID=self.alias)
             self.__browser = self.__browserCtrl.getBrowser(self.__browserId)
             if self.__browser:
                 self.__browser.allowRightClick = self.__ctx.get('allowRightClick', True)

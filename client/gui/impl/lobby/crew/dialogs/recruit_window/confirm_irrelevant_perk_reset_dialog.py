@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/dialogs/recruit_window/confirm_irrelevant_perk_reset_dialog.py
 from gui.impl.auxiliary.tankman_operations import packMajorSkills
 from gui.impl.dialogs.dialog_template_button import ConfirmButton, CancelButton
 from gui.impl.gen.resources import R

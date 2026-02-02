@@ -1,4 +1,7 @@
-import typing, Event
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/dialogs/price_cards_content/base_price_list.py
+import typing
+import Event
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.impl.auxiliary.tankman_operations import packPriceList
 from gui.impl.backport.backport_tooltip import createBackportTooltipContent
@@ -38,17 +41,19 @@ class BasePriceList(ViewImpl):
             if not itemPrice:
                 return
             if itemPrice.isActionPrice():
-                specialAlias = (
-                 None, None,
+                specialAlias = (None,
+                 None,
                  convertMoneyToTuple(itemPrice.price),
                  convertMoneyToTuple(itemPrice.defPrice),
-                 True, False, None, True)
+                 True,
+                 False,
+                 None,
+                 True)
                 return createBackportTooltipContent(specialAlias=TOOLTIPS_CONSTANTS.ACTION_PRICE, specialArgs=specialAlias)
             shortage = self._itemsCache.items.stats.money.getShortage(itemPrice.defPrice)
             if bool(shortage):
                 currency = shortage.getCurrency()
-                return createBackportTooltipContent(TOOLTIPS_CONSTANTS.NOT_ENOUGH_MONEY, (
-                 shortage.get(currency), currency))
+                return createBackportTooltipContent(TOOLTIPS_CONSTANTS.NOT_ENOUGH_MONEY, (shortage.get(currency), currency))
         return super(BasePriceList, self).createToolTipContent(event, contentID)
 
     @property
@@ -74,8 +79,10 @@ class BasePriceList(ViewImpl):
             isOperationDisable = not bool(cost['gold'])
         newSE = self.__getMaxTmanSkillEfficiencyForEachOperation(cost, tankman, not sameRole, isOperationDisable, isMassRetrain)
         isOperationUseless = sameVehicle and sameRole and tankman.skillsEfficiency >= newSE
-        return (
-         isOperationUseless, isOperationDisable, isAllOperationFree, newSE)
+        return (isOperationUseless,
+         isOperationDisable,
+         isAllOperationFree,
+         newSE)
 
     @property
     def _priceListPacker(self):
@@ -108,31 +115,19 @@ class BasePriceList(ViewImpl):
         return vm.getCardsList().getValue(index)
 
     def _getPriceData(self, index):
-        if index is not None and len(self._priceData) >= index + 1:
-            return self._priceData[index]
-        else:
-            return (None, None, None)
+        return self._priceData[index] if index is not None and len(self._priceData) >= index + 1 else (None, None, None)
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onCardClick, self._onCardClick),
-         (
-          self._itemsCache.onSyncCompleted, self._onCacheResync))
+        return ((self.viewModel.onCardClick, self._onCardClick), (self._itemsCache.onSyncCompleted, self._onCacheResync))
 
     def _getCallbacks(self):
-        return (
-         (
-          'stats.gold', self._onGoldUpdate),
-         (
-          'stats.credits', self._onCreditsUpdate),
-         (
-          'inventory.8.compDescr', self._onTankmanChanged),
-         (
-          'cache.mayConsumeWalletResources', self._onConsumeWalletUpdate))
+        return (('stats.gold', self._onGoldUpdate),
+         ('stats.credits', self._onCreditsUpdate),
+         ('inventory.8.compDescr', self._onTankmanChanged),
+         ('cache.mayConsumeWalletResources', self._onConsumeWalletUpdate))
 
     def _updateViewModel(self):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             self._fillViewModel(vm)
 
     def _fillViewModel(self, vm):
@@ -164,7 +159,7 @@ class BasePriceList(ViewImpl):
             self._updateViewModel()
 
     def _onCardClick(self, args):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             self._selectCard(vm, int(args.get('index', 0)))
 
     def __getMaxTmanSkillEfficiencyForEachOperation(self, cost, tankman, isRoleChanging, isOperationDisable, isMassRetrain):
@@ -172,6 +167,4 @@ class BasePriceList(ViewImpl):
         if isOperationDisable and not isMassRetrain:
             return changingRoleSE
         isAllRetrainOptFree = isAllRetrainOperationFree(tankman.descriptor, self._retrainCost)
-        if isAllRetrainOptFree:
-            return self._retrainCost[GOLD_OPERATION]['skillsEfficiency']
-        return changingRoleSE
+        return self._retrainCost[GOLD_OPERATION]['skillsEfficiency'] if isAllRetrainOptFree else changingRoleSE

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/xmpp/xmpp_items.py
 import time
 from messenger.m_constants import USER_TAG as _TAG
 from messenger.proto.xmpp.gloox_constants import PRESENCE, SUBSCRIPTION as _SUB, SUBSCRIPTION_NAMES as _SUB_NAMES
@@ -16,7 +18,7 @@ class ContactItem(object):
         self.setTrusted(trusted)
 
     def __repr__(self):
-        return ('{0}({1})').format(self.__class__.__name__, self._jid)
+        return '{0}({1})'.format(self.__class__.__name__, self._jid)
 
     @classmethod
     def getItemType(cls):
@@ -86,10 +88,7 @@ class ContactItem(object):
                 self._removeResource(jid)
 
     def replace(self, newItem):
-        if newItem is None:
-            return ContactItem(self._jid)
-        else:
-            return newItem
+        return ContactItem(self._jid) if newItem is None else newItem
 
     def _setResource(self, jid, resource):
         self._resources.setResource(jid, resource)
@@ -98,30 +97,23 @@ class ContactItem(object):
         self._resources.removeResource(jid)
 
 
-_SUB_TAGS = {
- _TAG.SUB_NONE, _TAG.SUB_PENDING_IN, _TAG.SUB_PENDING_OUT,
- _TAG.SUB_TO, _TAG.SUB_FROM}
-_SUB_TO_TAGS = {(_SUB.OFF, _SUB.OFF): {
-                        _TAG.SUB_NONE}, 
-   (_SUB.ON, _SUB.OFF): {
-                       _TAG.SUB_TO}, 
-   (_SUB.OFF, _SUB.ON): {
-                       _TAG.SUB_FROM}, 
-   (_SUB.ON, _SUB.ON): {
-                      _TAG.SUB_TO, _TAG.SUB_FROM}, 
-   (_SUB.PENDING, _SUB.OFF): {
-                            _TAG.SUB_PENDING_OUT}, 
-   (_SUB.PENDING, _SUB.ON): {
-                           _TAG.SUB_PENDING_OUT, _TAG.SUB_FROM}, 
-   (_SUB.OFF, _SUB.PENDING): {
-                            _TAG.SUB_PENDING_IN}, 
-   (_SUB.ON, _SUB.PENDING): {
-                           _TAG.SUB_PENDING_IN, _TAG.SUB_TO}, 
-   (_SUB.PENDING, _SUB.PENDING): {
-                                _TAG.SUB_PENDING_IN, _TAG.SUB_PENDING_OUT}}
+_SUB_TAGS = {_TAG.SUB_NONE,
+ _TAG.SUB_PENDING_IN,
+ _TAG.SUB_PENDING_OUT,
+ _TAG.SUB_TO,
+ _TAG.SUB_FROM}
+_SUB_TO_TAGS = {(_SUB.OFF, _SUB.OFF): {_TAG.SUB_NONE},
+ (_SUB.ON, _SUB.OFF): {_TAG.SUB_TO},
+ (_SUB.OFF, _SUB.ON): {_TAG.SUB_FROM},
+ (_SUB.ON, _SUB.ON): {_TAG.SUB_TO, _TAG.SUB_FROM},
+ (_SUB.PENDING, _SUB.OFF): {_TAG.SUB_PENDING_OUT},
+ (_SUB.PENDING, _SUB.ON): {_TAG.SUB_PENDING_OUT, _TAG.SUB_FROM},
+ (_SUB.OFF, _SUB.PENDING): {_TAG.SUB_PENDING_IN},
+ (_SUB.ON, _SUB.PENDING): {_TAG.SUB_PENDING_IN, _TAG.SUB_TO},
+ (_SUB.PENDING, _SUB.PENDING): {_TAG.SUB_PENDING_IN, _TAG.SUB_PENDING_OUT}}
 
 class RosterItem(ContactItem):
-    __slots__ = ('_groups', )
+    __slots__ = ('_groups',)
 
     def __init__(self, jid, groups=None, sub=None, resources=None, trusted=True):
         super(RosterItem, self).__init__(jid, trusted=trusted, tags={_TAG.FRIEND}, resources=resources)
@@ -130,7 +122,7 @@ class RosterItem(ContactItem):
         self._updateSubTags()
 
     def __repr__(self):
-        return ('RosterItem(jid={0}, groups={1}, resource={2}, sub={3}/{4})').format(self._jid, self._groups, self._resources.getHighestPriority(), _SUB_NAMES[self._sub[0]], _SUB_NAMES[self._sub[1]])
+        return 'RosterItem(jid={0}, groups={1}, resource={2}, sub={3}/{4})'.format(self._jid, self._groups, self._resources.getHighestPriority(), _SUB_NAMES[self._sub[0]], _SUB_NAMES[self._sub[1]])
 
     @classmethod
     def getItemType(cls):
@@ -206,7 +198,7 @@ class BlockItem(ContactItem):
 
 
 class RosterBlockItem(BlockItem):
-    __slots__ = ('_rosterItem', )
+    __slots__ = ('_rosterItem',)
 
     def __init__(self, jid, rosterItem=None, trusted=True):
         super(RosterBlockItem, self).__init__(jid, trusted)
@@ -235,7 +227,7 @@ class RosterBlockItem(BlockItem):
 
 
 class SubPendingItem(ContactItem):
-    __slots__ = ('_receivedAt', )
+    __slots__ = ('_receivedAt',)
 
     def __init__(self, jid, trusted=True, tags=None, receivedAt=None):
         super(SubPendingItem, self).__init__(jid, trusted, tags)
@@ -248,19 +240,19 @@ class SubPendingItem(ContactItem):
     def setTrusted(self, value):
         super(SubPendingItem, self).setTrusted(value)
         if self._trusted:
-            self._tags = {
-             _TAG.SUB_PENDING_IN}
+            self._tags = {_TAG.SUB_PENDING_IN}
         else:
-            self._tags = {
-             _TAG.CACHED}
+            self._tags = {_TAG.CACHED}
 
     def receivedAt(self):
         return self._receivedAt
 
 
-_SUPPORTED_ITEMS = (
- RosterItem, BlockItem, SubPendingItem, RosterBlockItem)
-_SUPPORTED_ITEM_TYPE_TO_CLASS = dict((clazz.getItemType(), clazz) for clazz in _SUPPORTED_ITEMS)
+_SUPPORTED_ITEMS = (RosterItem,
+ BlockItem,
+ SubPendingItem,
+ RosterBlockItem)
+_SUPPORTED_ITEM_TYPE_TO_CLASS = dict(((clazz.getItemType(), clazz) for clazz in _SUPPORTED_ITEMS))
 
 def createItem(databaseID, itemType=XMPP_ITEM_TYPE.EMPTY_ITEM, trusted=True):
     jid = makeContactJID(databaseID)

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/mapbox/mapbox_prime_time_view.py
 from gui.Scaleform.daapi.view.lobby.prime_time_view_base import ServerListItemPresenter
 from gui.Scaleform.daapi.view.meta.RankedPrimeTimeMeta import RankedPrimeTimeMeta
 from helpers import dependency, time_utils
@@ -22,8 +24,10 @@ class MapboxServerPresenter(ServerListItemPresenter):
                 tooltipStr = text_styles.expText(backport.text(R.strings.mapbox.primeTimeView.serverTooltip(), server=self.getName(), time=timeStr))
             else:
                 tooltipStr = text_styles.expText(backport.text(R.strings.mapbox.primeTimeView.serverUnavailableTooltip(), time=timeStr, server=self.getName()))
-        return {'tooltip': tooltipStr, 'specialArgs': [], 'specialAlias': None, 
-           'isSpecial': None}
+        return {'tooltip': tooltipStr,
+         'specialArgs': [],
+         'specialAlias': None,
+         'isSpecial': None}
 
 
 class MapboxPrimeTimeView(RankedPrimeTimeMeta):
@@ -40,22 +44,21 @@ class MapboxPrimeTimeView(RankedPrimeTimeMeta):
 
     def _prepareData(self, serverList, serverInfo):
         isSingleServer = len(serverList) == 1
-        return {'warningIconSrc': self._getWarningIcon(), 
-           'status': self.__getStatusTitle(), 
-           'serversText': text_styles.expText(self._getServerText(serverList, serverInfo, True)), 
-           'serversDDEnabled': not isSingleServer, 
-           'serverDDVisible': not isSingleServer, 
-           'timeText': text_styles.expText(self.__getTimeText(serverInfo))}
+        return {'warningIconSrc': self._getWarningIcon(),
+         'status': self.__getStatusTitle(),
+         'serversText': text_styles.expText(self._getServerText(serverList, serverInfo, True)),
+         'serversDDEnabled': not isSingleServer,
+         'serverDDVisible': not isSingleServer,
+         'timeText': text_styles.expText(self.__getTimeText(serverInfo))}
 
     def _getActualServers(self):
         actualServers = super(MapboxPrimeTimeView, self)._getActualServers()
         if len(actualServers) > 1:
-            actualServers = [ server for server in actualServers if server.getPeripheryID() != self._connectionMgr.peripheryID
-                            ]
+            actualServers = [ server for server in actualServers if server.getPeripheryID() != self._connectionMgr.peripheryID ]
         return actualServers
 
     def _getServerText(self, serverList, serverInfo, isServerNameShort=False):
-        if any(server.isAvailable() for server in serverList):
+        if any((server.isAvailable() for server in serverList)):
             availableKey = 'availableServers' if len(serverList) > 1 else 'availableServer'
             return backport.text(R.strings.mapbox.primeTimes.dyn(availableKey)())
         return super(MapboxPrimeTimeView, self)._getServerText(serverList, serverInfo, isServerNameShort)
@@ -87,9 +90,7 @@ class MapboxPrimeTimeView(RankedPrimeTimeMeta):
             else:
                 startTime = time_formatters.formatDate('%d.%m.%Y', time_utils.getCurrentLocalServerTimestamp() + timeLeft)
             return text_styles.grandTitle(backport.text(R.strings.mapbox.primeTimeView.status.untill(), startTime=startTime, server=currServerName))
-        if status in (PrimeTimeStatus.FROZEN, PrimeTimeStatus.NOT_SET):
-            return text_styles.grandTitle(backport.text(R.strings.mapbox.primeTimeView.status.disableFirst(), server=currServerName))
-        return text_styles.grandTitle(backport.text(R.strings.mapbox.primeTimeView.status.allServersDisabled()))
+        return text_styles.grandTitle(backport.text(R.strings.mapbox.primeTimeView.status.disableFirst(), server=currServerName)) if status in (PrimeTimeStatus.FROZEN, PrimeTimeStatus.NOT_SET) else text_styles.grandTitle(backport.text(R.strings.mapbox.primeTimeView.status.allServersDisabled()))
 
     def __getTimeText(self, serverInfo):
         if serverInfo is None:

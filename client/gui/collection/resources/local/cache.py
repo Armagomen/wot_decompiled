@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/collection/resources/local/cache.py
 import typing
 from gui.collection import loggers
 from gui.impl import backport

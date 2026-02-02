@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/battle_results/sub_presenters/fun_personal_rewards.py
 from __future__ import absolute_import
 import typing
 from frameworks.wulf import Array
@@ -18,7 +20,7 @@ class FunPersonalRewardSubPresenter(BattleResultsSubPresenter):
         return Array[FunRandomRewardItemModel]
 
     def packBattleResults(self, battleResults):
-        with self.getViewModel().transaction() as (model):
+        with self.getViewModel().transaction() as model:
             FunRandomPersonalRewards.packModel(model, battleResults)
 
     def createToolTipContent(self, event, contentID):
@@ -28,10 +30,8 @@ class FunPersonalRewardSubPresenter(BattleResultsSubPresenter):
         return super(FunPersonalRewardSubPresenter, self).createToolTipContent(event, contentID)
 
     def _getListeners(self):
-        return super(FunPersonalRewardSubPresenter, self)._getListeners() + (
-         (
-          events.LobbySimpleEvent.PREMIUM_XP_BONUS_CHANGED, self.__onXpBonusStatusChanged),)
+        return super(FunPersonalRewardSubPresenter, self)._getListeners() + ((events.LobbySimpleEvent.PREMIUM_XP_BONUS_CHANGED, self.__onXpBonusStatusChanged),)
 
     def __onXpBonusStatusChanged(self, _=None):
-        with self.getViewModel().transaction() as (model):
+        with self.getViewModel().transaction() as model:
             FunRandomPersonalRewards.packModel(model, self.getBattleResults())

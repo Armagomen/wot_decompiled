@@ -1,10 +1,11 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/achievements/views/reward_view_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.achievements.advanced_achievement_model import AdvancedAchievementModel
 from gui.impl.gen.view_models.views.lobby.achievements.views.reward_view_rewards_model import RewardViewRewardsModel
 
 class RewardViewModel(ViewModel):
-    __slots__ = ('onGoToDogTag', 'onGoToAchievement', 'onOpenNextReward', 'onOpenAchievementsPage',
-                 'onClose')
+    __slots__ = ('onGoToDogTag', 'onGoToAchievement', 'onOpenNextReward', 'onOpenAchievementsPage', 'onClose')
 
     def __init__(self, properties=4, commands=5):
         super(RewardViewModel, self).__init__(properties=properties, commands=commands)

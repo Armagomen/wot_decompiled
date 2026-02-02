@@ -1,4 +1,8 @@
-import typing, time, wg_async
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/platform/wgnp/demo_account/controller.py
+import typing
+import time
+import wg_async
 from BWUtil import AsyncReturn
 from constants import EMAIL_CONFIRMATION_TOKEN_NAME
 from gui.platform.base.statuses.controller_mixin import StatusesMixin

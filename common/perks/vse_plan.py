@@ -1,4 +1,7 @@
-import BigWorld, VSE
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/perks/vse_plan.py
+import BigWorld
+import VSE
 from constants import IS_CELLAPP
 from items import perks
 from visual_script.misc import ASPECT
@@ -13,7 +16,7 @@ def callOnValidState(f):
     @wraps(f)
     def w(self, *args, **kwargs):
         if getattr(self, '_plan') is None:
-            LOG_DEBUG_DEV(('VsePlan.{} called when plan is None').format(f.__name__))
+            LOG_DEBUG_DEV('VsePlan.{} called when plan is None'.format(f.__name__))
             return
         else:
             return f(self, *args, **kwargs)
@@ -128,7 +131,7 @@ class VsePlan(object):
             self.stop()
         else:
             ownerId = self._owner.id if self._owner else -1
-            LOG_WARNING(('[PerksController] No plan for perkID:{0} vehicleID:{1} after destroy in applySelectedSetup ').format(self.perkId, ownerId))
+            LOG_WARNING('[PerksController] No plan for perkID:{0} vehicleID:{1} after destroy in applySelectedSetup '.format(self.perkId, ownerId))
         LOG_DEBUG_DEV('destroy plan', self._ownerId, self._planId)
         self._plan = None
         self._isPlanLoaded = False

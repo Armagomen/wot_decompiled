@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/lobby/platoon/view/fun_platoon_members_view.py
 from __future__ import absolute_import
 from fun_random.gui.feature.util.fun_mixins import FunAssetPacksMixin, FunSubModesWatcher
 from fun_random.gui.feature.util.fun_wrappers import hasDesiredSubMode
@@ -34,7 +36,7 @@ class FunRandomMembersView(SquadMembersView, FunAssetPacksMixin, FunSubModesWatc
         super(FunRandomMembersView, self)._removeListeners()
 
     def _updateFindPlayersButton(self, *args):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setShouldShowFindPlayersButton(value=False)
 
     def __onSubModeSelected(self, *_):

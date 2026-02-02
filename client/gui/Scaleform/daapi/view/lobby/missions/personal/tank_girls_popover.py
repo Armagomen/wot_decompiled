@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/missions/personal/tank_girls_popover.py
 from gui.server_events.events_dispatcher import showTankwomanAward
 from gui.shared.formatters import text_styles
 from gui.Scaleform.daapi.view.meta.TankgirlsPopoverMeta import TankgirlsPopoverMeta
@@ -26,10 +28,10 @@ class TankgirlsPopover(TankgirlsPopoverMeta):
     def __update(self):
         tankwomenQuests = []
         for quest, opName in events_helpers.getTankmanRewardQuests():
-            tankwomenQuests.append({'id': str(quest.getID()), 
-               'operationLabel': text_styles.standard(opName), 
-               'missionLabel': text_styles.main(quest.getShortUserName()), 
-               'recruitBtnLabel': PERSONAL_MISSIONS.PERSONALMISSIONS_TANKGIRLSPOPOVER_RECRUITBTN})
+            tankwomenQuests.append({'id': str(quest.getID()),
+             'operationLabel': text_styles.standard(opName),
+             'missionLabel': text_styles.main(quest.getShortUserName()),
+             'recruitBtnLabel': PERSONAL_MISSIONS.PERSONALMISSIONS_TANKGIRLSPOPOVER_RECRUITBTN})
 
         self.as_setListDataProviderS(tankwomenQuests)
 

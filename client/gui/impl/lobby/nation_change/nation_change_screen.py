@@ -1,4 +1,7 @@
-import SoundGroups, WWISE
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/nation_change/nation_change_screen.py
+import SoundGroups
+import WWISE
 from CurrentVehicle import g_currentVehicle
 from account_helpers.AccountSettings import NATION_CHANGE_VIEWED, AccountSettings
 from frameworks.wulf import ViewSettings
@@ -82,7 +85,7 @@ class NationChangeScreen(ViewImpl):
 
     def _initialize(self, *args, **kwargs):
         super(NationChangeScreen, self)._initialize()
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             vm.setCurrentTankLvl(int2roman(self.__currentVehicle.level))
             vm.setTargetTankLvl(int2roman(self.__targetVehicle.level))
             vm.setCurrentTankType(getVehTypeIconName(self.__currentVehicle.type, self.__currentVehicle.isElite))
@@ -112,14 +115,11 @@ class NationChangeScreen(ViewImpl):
         tooltipId = event.getArgument('tooltipId')
         vehicleIntCD = int(event.getArgument('vehicleIntCD'))
         if tooltipId == TOOLTIPS_CONSTANTS.CAROUSEL_VEHICLE:
-            args = [
-             vehicleIntCD]
+            args = [vehicleIntCD]
         elif tooltipId == TOOLTIPS_CONSTANTS.NATION_CHANGE_BATTLE_BOOSTER:
-            args = [
-             vehicleIntCD, int(event.getArgument('intCD')), int(event.getArgument('layoutIDx'))]
+            args = [vehicleIntCD, int(event.getArgument('intCD')), int(event.getArgument('layoutIDx'))]
         else:
-            args = [
-             vehicleIntCD, int(event.getArgument('intCD'))]
+            args = [vehicleIntCD, int(event.getArgument('intCD'))]
         return TooltipData(tooltip=tooltipId, isSpecial=True, specialAlias=tooltipId, specialArgs=args)
 
     def __updateTankSlot(self, tankSlotVM, vehicle):
@@ -130,14 +130,12 @@ class NationChangeScreen(ViewImpl):
         tankSetups = tankSlotVM.getSetups()
         tankSetups.clear()
         if not vehicle.postProgressionAvailability().result:
-            setupsIndexes = [
-             (vehicle.battleBoosters.setupLayouts.layoutIndex,
+            setupsIndexes = [(vehicle.battleBoosters.setupLayouts.layoutIndex,
               vehicle.consumables.setupLayouts.layoutIndex,
               vehicle.optDevices.setupLayouts.layoutIndex,
               vehicle.shells.setupLayouts.layoutIndex)]
         else:
-            setupsIndexes = [ [layoutID] * self.__LAYOUTS_IN_SETUP for layoutID in range(SWITCH_LAYOUT_CAPACITY)
-                            ]
+            setupsIndexes = [ [layoutID] * self.__LAYOUTS_IN_SETUP for layoutID in range(SWITCH_LAYOUT_CAPACITY) ]
         numSetups = 0
         for setupIndexes in setupsIndexes:
             setupModel = NationChangeTankSetupModel()
@@ -192,7 +190,7 @@ class NationChangeScreen(ViewImpl):
             tankmanVM.setSimpleTooltipBody(backport.text(dogTooltip.body()))
             tankmanVM.setIsDog(True)
             crewListVM.addViewModel(tankmanVM)
-        if any(tankman[1] is not None for tankman in guiVh.crew) or isDogInCrew:
+        if any((tankman[1] is not None for tankman in guiVh.crew)) or isDogInCrew:
             tankSlotVM.setNoCrew(False)
         return
 
@@ -295,7 +293,7 @@ class NationChangeScreen(ViewImpl):
         if not self.__lobbyContext.getServerSettings().isNationChangeEnabled():
             self.__onWindowClose()
             return
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             self.__updateTankSlot(vm.currentNation, self.__currentVehicle)
             self.__updateTankSlot(vm.targetNation, self.__targetVehicle)
 

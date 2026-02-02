@@ -1,4 +1,7 @@
-import BigWorld, Math
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/arena_border_ctrl.py
+import BigWorld
+import Math
 from gui.battle_control.arena_info.interfaces import IArenaLoadController
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
 from gui.shared import g_eventBus

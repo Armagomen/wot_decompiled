@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/doc_loaders/colors_schemes.py
 from messenger.doc_loaders import _xml_helpers
 
 def _readColors(xmlCtx, section, colorsNames, defName):
@@ -5,11 +7,11 @@ def _readColors(xmlCtx, section, colorsNames, defName):
     notFound = colorsNames[:]
     for tagName, subSec in section.items():
         if tagName != 'color':
-            raise _xml_helpers.XMLError(xmlCtx, ('Tag "{0:>s}" is invalid').format(tagName))
+            raise _xml_helpers.XMLError(xmlCtx, 'Tag "{0:>s}" is invalid'.format(tagName))
         ctx = xmlCtx.next(subSec)
         name = _xml_helpers.readNoEmptyStr(ctx, subSec, 'name', 'Section "name" is not defined')
         if name not in colorsNames:
-            raise _xml_helpers.XMLError(ctx, ('Name of color {0:>s} is invalid').format(name))
+            raise _xml_helpers.XMLError(ctx, 'Name of color {0:>s} is invalid'.format(name))
         result[name] = _xml_helpers.readRGB(ctx, subSec, 'rgb', 'Color is invalid.')
         notFound.remove(name)
 
@@ -30,7 +32,7 @@ def _readColorScheme(xmlCtx, section, colorScheme):
         if tagName == 'name':
             continue
         if tagName != 'item':
-            raise _xml_helpers.XMLError(xmlCtx, ('Tag "{0:>s}" is invalid').format(tagName))
+            raise _xml_helpers.XMLError(xmlCtx, 'Tag "{0:>s}" is invalid'.format(tagName))
         ctx = xmlCtx.next(subSec)
         name = _xml_helpers.readNoEmptyStr(ctx, subSec, 'name', 'Section "name" is not defined')
         colorsSec = subSec['colors']
@@ -42,7 +44,7 @@ def _readColorScheme(xmlCtx, section, colorScheme):
 def load(xmlCtx, section, messengerSettings):
     for tagName, subSec in section.items():
         if tagName != 'colorScheme':
-            raise _xml_helpers.XMLError(xmlCtx, ('Tag {0:>s} is invalid').format(tagName))
+            raise _xml_helpers.XMLError(xmlCtx, 'Tag {0:>s} is invalid'.format(tagName))
         ctx = xmlCtx.next(subSec)
         name = _xml_helpers.readNoEmptyStr(ctx, subSec, 'name', 'Color scheme name is not defined')
         colorScheme = messengerSettings.getColorScheme(name)

@@ -1,4 +1,8 @@
-import stringprep, types, unicodedata
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/xmpp/xmpp_string_grep.py
+import stringprep
+import types
+import unicodedata
 from soft_exception import SoftException
 
 class XmppStringPrepError(SoftException):
@@ -6,15 +10,11 @@ class XmppStringPrepError(SoftException):
 
 
 def doMappingToNothing(char):
-    if stringprep.in_table_b1(char):
-        return ''
-    return char
+    return u'' if stringprep.in_table_b1(char) else char
 
 
 def doMappingSpaceChars(char):
-    if stringprep.in_table_c12(char):
-        return ' '
-    return char
+    return u' ' if stringprep.in_table_c12(char) else char
 
 
 def normalizeToNFKC(data):
@@ -25,8 +25,14 @@ def normalizeToNFC(data):
     return unicodedata.normalize('NFC', data)
 
 
-_NODE_PREP_PROHIBITED = {
- '"', '&', "'", '/', ':', '<', '>', '@'}
+_NODE_PREP_PROHIBITED = {u'"',
+ u'&',
+ u"'",
+ u'/',
+ u':',
+ u'<',
+ u'>',
+ u'@'}
 
 def inNodeProhibitedChars(char):
     return char in _NODE_PREP_PROHIBITED
@@ -34,12 +40,12 @@ def inNodeProhibitedChars(char):
 
 def _isCharProhibited(table, char):
     if table(char):
-        raise XmppStringPrepError(('There is prohibited character: {0!r}').format(char))
+        raise XmppStringPrepError('There is prohibited character: {0!r}'.format(char))
 
 
 def _isCharUnassigned(table, char):
     if table(char):
-        raise XmppStringPrepError(('There is unassigned character: {0!r}').format(char))
+        raise XmppStringPrepError('There is unassigned character: {0!r}'.format(char))
 
 
 class _StringPrepProfile(object):
@@ -66,7 +72,7 @@ class _StringPrepProfile(object):
         for table in self._mapping:
             result = map(table, data)
 
-        return ('').join(result)
+        return u''.join(result)
 
     def _doNormalization(self, data):
         result = data
@@ -92,30 +98,35 @@ class _StringPrepProfile(object):
         for char in data:
             if stringprep.in_table_d1(char):
                 hasRorAL = True
-            elif stringprep.in_table_d2(char):
+            if stringprep.in_table_d2(char):
                 hasL = True
 
         if hasL and hasRorAL:
             raise XmppStringPrepError('String contains RandALCat characters and LCat characters')
-        if hasRorAL and (not stringprep.in_table_d1(data[0]) or not stringprep.in_table_d1(data[(-1)])):
+        if hasRorAL and (not stringprep.in_table_d1(data[0]) or not stringprep.in_table_d1(data[-1])):
             raise XmppStringPrepError('RandALCat character MUST be the first character of the string, and a RandALCat character MUST be the last character of the string')
         return data
 
 
-NodePrep = _StringPrepProfile(unassigned=(
- stringprep.in_table_a1,), mapping=(
- doMappingToNothing, stringprep.map_table_b2), normalization=normalizeToNFKC, prohibited=(
- stringprep.in_table_c11, stringprep.in_table_c12,
- stringprep.in_table_c21, stringprep.in_table_c22,
- stringprep.in_table_c3, stringprep.in_table_c4,
- stringprep.in_table_c5, stringprep.in_table_c6,
- stringprep.in_table_c7, stringprep.in_table_c8,
- stringprep.in_table_c9, inNodeProhibitedChars), bidi=True)
-ResourcePrep = _StringPrepProfile(unassigned=(
- stringprep.in_table_a1,), mapping=(
- doMappingToNothing,), normalization=normalizeToNFC, prohibited=(
- stringprep.in_table_c12, stringprep.in_table_c21,
- stringprep.in_table_c22, stringprep.in_table_c3,
- stringprep.in_table_c4, stringprep.in_table_c5,
- stringprep.in_table_c6, stringprep.in_table_c7,
- stringprep.in_table_c8, stringprep.in_table_c9), bidi=True)
+NodePrep = _StringPrepProfile(unassigned=(stringprep.in_table_a1,), mapping=(doMappingToNothing, stringprep.map_table_b2), normalization=normalizeToNFKC, prohibited=(stringprep.in_table_c11,
+ stringprep.in_table_c12,
+ stringprep.in_table_c21,
+ stringprep.in_table_c22,
+ stringprep.in_table_c3,
+ stringprep.in_table_c4,
+ stringprep.in_table_c5,
+ stringprep.in_table_c6,
+ stringprep.in_table_c7,
+ stringprep.in_table_c8,
+ stringprep.in_table_c9,
+ inNodeProhibitedChars), bidi=True)
+ResourcePrep = _StringPrepProfile(unassigned=(stringprep.in_table_a1,), mapping=(doMappingToNothing,), normalization=normalizeToNFC, prohibited=(stringprep.in_table_c12,
+ stringprep.in_table_c21,
+ stringprep.in_table_c22,
+ stringprep.in_table_c3,
+ stringprep.in_table_c4,
+ stringprep.in_table_c5,
+ stringprep.in_table_c6,
+ stringprep.in_table_c7,
+ stringprep.in_table_c8,
+ stringprep.in_table_c9), bidi=True)

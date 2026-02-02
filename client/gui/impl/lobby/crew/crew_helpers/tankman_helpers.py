@@ -1,4 +1,7 @@
-import time, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/crew_helpers/tankman_helpers.py
+import time
+import BigWorld
 from constants import GRACE_PERIOD_RESET_PERK
 from helpers import dependency
 from helpers_common import getFinalRetrainCost, getRetrainCost
@@ -16,8 +19,7 @@ def getPriceDiscountMassRetrain(retrainIndex, isUseless, tankmen, itemsCache=Non
             goldSum += gold
             creditsSum += credits
 
-    return (
-     goldSum, creditsSum)
+    return (goldSum, creditsSum)
 
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)

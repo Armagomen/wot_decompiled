@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/locale/TANK_CAROUSEL_FILTER.py
 from debug_utils import LOG_WARNING
 
 class TANK_CAROUSEL_FILTER(object):
@@ -82,17 +84,16 @@ class TANK_CAROUSEL_FILTER(object):
     INFOTIP_RENT = '#tank_carousel_filter:infotip/rent'
     INFOTIP_EVENT = '#tank_carousel_filter:infotip/event'
     INFOTIP_COUNTER = '#tank_carousel_filter:infotip/counter'
-    POPOVER_LABEL_ROLES_ENUM = (
-     POPOVER_LABEL_ROLES_LIGHTTANK,
+    POPOVER_LABEL_ROLES_ENUM = (POPOVER_LABEL_ROLES_LIGHTTANK,
      POPOVER_LABEL_ROLES_MEDIUMTANK,
      POPOVER_LABEL_ROLES_HEAVYTANK,
      POPOVER_LABEL_ROLES_AT_SPG)
 
     @classmethod
     def getRolesLabel(cls, vehType):
-        outcome = ('#tank_carousel_filter:popover/label/roles/{}').format(vehType)
+        outcome = '#tank_carousel_filter:popover/label/roles/{}'.format(vehType)
         if outcome not in cls.POPOVER_LABEL_ROLES_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome

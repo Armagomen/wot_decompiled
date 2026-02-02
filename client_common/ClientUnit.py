@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client_common/ClientUnit.py
 from typing import TYPE_CHECKING
 import struct
 from collections import namedtuple
@@ -12,12 +14,12 @@ if TYPE_CHECKING:
 PLAYER_ID_CHR = '<q'
 VEH_LEN_CHR = '<H'
 VEH_LEN_SIZE = struct.calcsize(VEH_LEN_CHR)
-_ExternalPrebattleExtra = namedtuple('ExternalPrebattleExtra', ('rev', ))
-_ExternalPrebattleExtra.__new__.__defaults__ = (0, )
-_FunRandomSquadExtra = namedtuple('FunRandomSquadExtra', ('funEventID', ))
-_FunRandomSquadExtra.__new__.__defaults__ = (0, )
-_EXTRA_BY_PRB_TYPE = {PREBATTLE_TYPE.FUN_RANDOM: _FunRandomSquadExtra, 
-   PREBATTLE_TYPE.STRONGHOLD: _ExternalPrebattleExtra}
+_ExternalPrebattleExtra = namedtuple('ExternalPrebattleExtra', ('rev',))
+_ExternalPrebattleExtra.__new__.__defaults__ = (0,)
+_FunRandomSquadExtra = namedtuple('FunRandomSquadExtra', ('funEventID',))
+_FunRandomSquadExtra.__new__.__defaults__ = (0,)
+_EXTRA_BY_PRB_TYPE = {PREBATTLE_TYPE.FUN_RANDOM: _FunRandomSquadExtra,
+ PREBATTLE_TYPE.STRONGHOLD: _ExternalPrebattleExtra}
 
 class ClientUnit(UnitBase):
 
@@ -128,9 +130,7 @@ class ClientUnit(UnitBase):
         return self._modalTimestamp
 
     def getEstimatedTimeInQueue(self):
-        if self.isInQueue() or self.isInSearch():
-            return self._estimatedTimeInQueue
-        return UNDEFINED_ESTIMATED_TIME
+        return self._estimatedTimeInQueue if self.isInQueue() or self.isInSearch() else UNDEFINED_ESTIMATED_TIME
 
     def isPlayerReadyInSlot(self, slotIdx, mask=None):
         if mask is None:
@@ -189,25 +189,19 @@ class ClientUnit(UnitBase):
         if self._extras is None:
             return
         else:
-            if self._prebattleTypeID in _EXTRA_BY_PRB_TYPE:
-                return makeTupleByDict(_EXTRA_BY_PRB_TYPE[self._prebattleTypeID], self._extras)
-            return
+            return makeTupleByDict(_EXTRA_BY_PRB_TYPE[self._prebattleTypeID], self._extras) if self._prebattleTypeID in _EXTRA_BY_PRB_TYPE else None
 
     def unpackOps(self, packedOps=''):
         invokedOps = UnitBase.unpackOps(self, packedOps)
-        if {
-         UNIT_OP.REMOVE_PLAYER, UNIT_OP.ADD_PLAYER} & invokedOps:
+        if {UNIT_OP.REMOVE_PLAYER, UNIT_OP.ADD_PLAYER} & invokedOps:
             self.onUnitPlayersListChanged()
-        if {
-         UNIT_OP.DEL_MEMBER, UNIT_OP.SET_MEMBER} & invokedOps:
+        if {UNIT_OP.DEL_MEMBER, UNIT_OP.SET_MEMBER} & invokedOps:
             self.onUnitMembersListChanged()
         if UNIT_OP.SET_SLOT in invokedOps:
             self.onUnitRosterChanged()
-        if {
-         UNIT_OP.EXTRAS_UPDATE, UNIT_OP.EXTRAS_RESET} & invokedOps:
+        if {UNIT_OP.EXTRAS_UPDATE, UNIT_OP.EXTRAS_RESET} & invokedOps:
             self.onUnitExtraChanged(self._extras)
-        if {
-         UNIT_OP.SQUAD_SIZE} & invokedOps:
+        if {UNIT_OP.SQUAD_SIZE} & invokedOps:
             self.onSquadSizeChanged()
 
     def updateUnitExtras(self, updateStr):
@@ -265,8 +259,8 @@ class ClientUnit(UnitBase):
     def _unpackPlayer(self, packedOps):
         accountDBID, hasPlayer = 0, False
         try:
-            accountDBID, = struct.unpack_from(PLAYER_ID_CHR, packedOps)
-            filtered = dict(item for item in self._players.iteritems() if item[1].get('role', 0) & UNIT_ROLE.INVITED == 0)
+            accountDBID = struct.unpack_from(PLAYER_ID_CHR, packedOps)
+            filtered = dict((item for item in self._players.iteritems() if item[1].get('role', 0) & UNIT_ROLE.INVITED == 0))
             hasPlayer = accountDBID in filtered
         except struct.error as e:
             LOG_ERROR(e)
@@ -317,7 +311,7 @@ class ClientUnit(UnitBase):
     def _unpackVehicleDict(self, packedOps):
         nextOps = UnitBase._unpackVehicleDict(self, packedOps)
         try:
-            accountDBID, = struct.unpack_from(PLAYER_ID_CHR, packedOps, offset=VEH_LEN_SIZE)
+            accountDBID = struct.unpack_from(PLAYER_ID_CHR, packedOps, offset=VEH_LEN_SIZE)
             self.onUnitPlayerVehDictChanged(accountDBID)
         except struct.error as e:
             LOG_ERROR(e)

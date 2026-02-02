@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/helpers/CallbackDelayer.py
 import functools
 from typing import Callable, Dict
 import BigWorld
@@ -63,7 +65,7 @@ class CallbackDelayer(ICallbackDelayer):
 
 
 class CallbacksSetByID(object):
-    __slots__ = ('__callbackIDs', )
+    __slots__ = ('__callbackIDs',)
 
     def __init__(self):
         super(CallbacksSetByID, self).__init__()
@@ -185,4 +187,9 @@ class CallbackPauseManager(ICallbackDelayer):
         self.__callbacks[func] = request
 
 
-DelayedRequest = namedtuple('DelayedRequest', ['ID', 'queuedTime', 'delay', 'func', 'args', 'kwargs'])
+DelayedRequest = namedtuple('DelayedRequest', ['ID',
+ 'queuedTime',
+ 'delay',
+ 'func',
+ 'args',
+ 'kwargs'])

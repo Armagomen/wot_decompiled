@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/BasePerksController.py
 from collections import defaultdict
 import weakref
 from operator import mul
@@ -13,8 +15,7 @@ if TYPE_CHECKING:
 _DO_DEBUG_LOG = False
 PERK_SHOT_DISPERSION_FACTOR = 'perkShotDispersion'
 PERK_SHOT_DISPERSION_WHILE_GUN_DAMAGED_MOD = 'perkShotDispersionWhileGunDamagedMod'
-PERK_SHOT_DISPERSION_FACTORS = (
- PERK_SHOT_DISPERSION_FACTOR, PERK_SHOT_DISPERSION_WHILE_GUN_DAMAGED_MOD)
+PERK_SHOT_DISPERSION_FACTORS = (PERK_SHOT_DISPERSION_FACTOR, PERK_SHOT_DISPERSION_WHILE_GUN_DAMAGED_MOD)
 
 def creatorTemplate(context, impl, controllerRef):
 
@@ -25,8 +26,7 @@ def creatorTemplate(context, impl, controllerRef):
 
 
 class BasePerksController(object):
-    _multiplicativeAttributeFactors = {
-     'gun/aimingTime',
+    _multiplicativeAttributeFactors = {'gun/aimingTime',
      'repairSpeed',
      'gun/shotDispersionFactors/turretRotation',
      'gun/shots/speed',
@@ -52,16 +52,14 @@ class BasePerksController(object):
      'reverseEnginePower',
      'gun/changeShell/reloadFactor',
      'crewRolesFactor'}
-    _additiveAttributeFactors = {
-     'crewLevelIncrease',
+    _additiveAttributeFactors = {'crewLevelIncrease',
      'healthBurnPerSecLossFraction',
      'stunResistanceEffect',
      'stunResistanceDuration',
      'radioDistanceFactor',
      'vehicle/bkMaxSpeedBonus',
      'vehicle/fwMaxSpeedBonus'}
-    _multiplicativeDynamicFactors = {
-     'ammoBayHealthFactor',
+    _multiplicativeDynamicFactors = {'ammoBayHealthFactor',
      'engineHealthFactor',
      'fuelTankHealthFactor',
      'turretRotatorHealthFactor',
@@ -71,8 +69,7 @@ class BasePerksController(object):
      'trackRammingDamageFactor',
      'turretRotatorCritPenaltyReduce',
      'antifragmentationLiningFactor'}
-    _additiveDynamicFactors = {
-     'criticalHitChanceBoost',
+    _additiveDynamicFactors = {'criticalHitChanceBoost',
      'damageDistributionLowerBound',
      'piercingDistributionLowerBound',
      'damageDistributionUpperBound',
@@ -89,7 +86,7 @@ class BasePerksController(object):
     _scopeContextMap = {}
 
     def __init__(self, owner, scopedPerks):
-        LOG_DEBUG_DEV(('ABILITY_SYSTEM DEBUG scopedPerks: {} ').format(scopedPerks))
+        LOG_DEBUG_DEV('ABILITY_SYSTEM DEBUG scopedPerks: {} '.format(scopedPerks))
         self._owner = owner
         self._scopedPerks = self._assignContextsToScopes(scopedPerks)
         self._modifiedFactors = defaultdict(lambda : defaultdict(list))
@@ -177,14 +174,13 @@ class BasePerksController(object):
                 collector = self._attrFactorCollectors[factorName]
             except KeyError:
                 if factorName in self._modifiedFactors:
-                    LOG_ERROR(('ABILITY_SYSTEM ERROR factor {} was modified but does not have a collector.').format(factorName))
+                    LOG_ERROR('ABILITY_SYSTEM ERROR factor {} was modified but does not have a collector.'.format(factorName))
                 continue
 
             collector(factorName, factors)
 
         if _DO_DEBUG_LOG and IS_DEVELOPMENT:
-            LOG_DEBUG(('ABILITY_SYSTEM DEBUG onCollectFactors, factors diff: {}').format([ ('{} {} -> {}').format(k, oldFactors[k], factors[k]) for k in self._modifiedFactors if k in factors and oldFactors[k] != factors[k]
-                                                                                         ]))
+            LOG_DEBUG('ABILITY_SYSTEM DEBUG onCollectFactors, factors diff: {}'.format([ '{} {} -> {}'.format(k, oldFactors[k], factors[k]) for k in self._modifiedFactors if k in factors and oldFactors[k] != factors[k] ]))
 
     def onCollectShotDispersionFactors(self, factors):
         factors[0] *= self._collectModifiersMulScopes(self._modifiedFactors[PERK_SHOT_DISPERSION_FACTOR])
@@ -244,8 +240,7 @@ class BasePerksController(object):
                         plan.stop()
                         plan.setContextArgs(perkData.args)
                         plan.start()
-                    else:
-                        LOG_ERROR(('[PerksController] No plan for perkID:{0} vehicleID:{1} after applySelectedSetup ').format(perkID, self.vehicleID))
+                    LOG_ERROR('[PerksController] No plan for perkID:{0} vehicleID:{1} after applySelectedSetup '.format(perkID, self.vehicleID))
 
         self._scopedPerks = newScopedPerks
         return
@@ -267,7 +262,7 @@ class BasePerksController(object):
 
     @classmethod
     def _isScopeHasContent(cls, scopeContextMap, scopedPerks):
-        return any(cls._getPerkIDs(scopedPerks.get(scope)) for scope in scopeContextMap.iterkeys())
+        return any((cls._getPerkIDs(scopedPerks.get(scope)) for scope in scopeContextMap.iterkeys()))
 
     def _logUpdatedPerks(self, message, vehID, scope, perks):
         if not perks:
@@ -310,20 +305,20 @@ class BasePerksController(object):
     def _buildAttributeFactorsCollectorMap(self):
         self._attrFactorCollectors.update({key:self._collectMultiplicativeAttributeFactor for key in self._multiplicativeAttributeFactors})
         self._attrFactorCollectors.update({key:self._collectAdditiveAttributeFactor for key in self._additiveAttributeFactors})
-        self._attrFactorCollectors.update({'chassis/terrainResistance': self._collectTerrainResistance, 
-           'invisibility': self._collectInvisibility, 
-           'damageMonitoringDelay': self._collectMinAttributeFactor, 
-           'artNotificationDelay': self._collectMinAttributeFactor})
+        self._attrFactorCollectors.update({'chassis/terrainResistance': self._collectTerrainResistance,
+         'invisibility': self._collectInvisibility,
+         'damageMonitoringDelay': self._collectMinAttributeFactor,
+         'artNotificationDelay': self._collectMinAttributeFactor})
 
     def _buildDynamicFactorsCollectorMap(self):
         self.dynamicFactorCollectors.update({key:self.collectMultiplicativeModsForFactor for key in self._multiplicativeDynamicFactors})
         self.dynamicFactorCollectors.update({key:self.collectAddivieModsForFactor for key in self._additiveDynamicFactors})
 
     def _collectModifiersMulScopes(self, scopes):
-        return reduce(mul, (1 + sum(v[1] for v in mods) for mods in scopes.itervalues()), 1.0)
+        return reduce(mul, (1 + sum((v[1] for v in mods)) for mods in scopes.itervalues()), 1.0)
 
     def _collectModifiersAddScopes(self, scopes):
-        return sum(sum(v[1] for v in mods) for mods in scopes.itervalues())
+        return sum((sum((v[1] for v in mods)) for mods in scopes.itervalues()))
 
     def _collectMultiplicativeAttributeFactor(self, key, factors):
         factors[key] *= self._collectModifiersMulScopes(self._modifiedFactors[key])
@@ -350,8 +345,7 @@ class BasePerksController(object):
     def _collectTerrainResistance(self, terrainResKey, factors):
         terrainResistance = factors[terrainResKey]
         for scope in self._modifiedFactors[terrainResKey].itervalues():
-            tmp = [
-             1] * 3
+            tmp = [1] * 3
             for _, mod in scope:
                 tmp[0] += mod[0]
                 tmp[1] += mod[1]

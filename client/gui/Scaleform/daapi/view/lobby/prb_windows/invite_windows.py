@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/prb_windows/invite_windows.py
 from PlayerEvents import g_playerEvents
 from adisp import adisp_process
 from gui import DialogsInterface
@@ -69,21 +71,19 @@ class AutoInviteWindow(_InviteWindow):
 
     @prbPeripheriesHandlerProperty
     def prbPeripheriesHandler(self):
-        return
+        return None
 
     @prbAutoInvitesProperty
     def prbAutoInvites(self):
-        return
+        return None
 
     @adisp_process
     def acceptInvite(self):
         yield lambda callback: callback(None)
         prbID = self._inviteInfo.getID()
         invite = self.prbAutoInvites.getInvite(prbID)
-        postActions = [
-         actions.LeavePrbModalEntity()]
-        finishActions = [
-         _DisableNotify(channel_num_gen.getClientID4LazyChannel(LAZY_CHANNEL.SPECIAL_BATTLES))]
+        postActions = [actions.LeavePrbModalEntity()]
+        finishActions = [_DisableNotify(channel_num_gen.getClientID4LazyChannel(LAZY_CHANNEL.SPECIAL_BATTLES))]
         if g_preDefinedHosts.isRoamingPeriphery(invite.peripheryID):
             success = yield DialogsInterface.showI18nConfirmDialog('changeRoamingPeriphery')
             if not success:

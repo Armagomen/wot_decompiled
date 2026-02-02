@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/items/stun.py
 from soft_exception import SoftException
 from items import _xml
 import ResMgr
@@ -8,8 +10,7 @@ def readConfig():
     section = ResMgr.openSection(_CONFIG_FILE)
     if section is None:
         _xml.raiseWrongXml(None, _CONFIG_FILE, 'can not open or read')
-    xmlCtx = (
-     None, _CONFIG_FILE)
+    xmlCtx = (None, _CONFIG_FILE)
     c = {}
     c['baseStunDuration'] = _xml.readNonNegativeFloat(xmlCtx, section, 'baseStunDuration')
     c['guaranteedStunDuration'] = _xml.readFraction(xmlCtx, section, 'guaranteedStunDuration')

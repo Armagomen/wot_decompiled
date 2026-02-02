@@ -1,4 +1,7 @@
-import cPickle, weakref
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client_common/arena_component_system/client_arena_component_system.py
+import cPickle
+import weakref
 from constants import ARENA_UPDATE, ARENA_SYNC_OBJECT_NAMES
 from debug_utils import LOG_ERROR
 import Event
@@ -46,8 +49,8 @@ class ClientArenaComponentSystem(ScriptGameObject):
         self.bonusType = bonusType
         self.arenaType = arenaType
         self.arena = weakref.ref(arena)
-        self._onUpdate = {ARENA_UPDATE.SYNC_OBJECTS: self.__onFullSyncObjectReceived, 
-           ARENA_UPDATE.SYNC_OBJECTS_DIFF: self.__onSyncObjectUpdateReceived}
+        self._onUpdate = {ARENA_UPDATE.SYNC_OBJECTS: self.__onFullSyncObjectReceived,
+         ARENA_UPDATE.SYNC_OBJECTS_DIFF: self.__onSyncObjectUpdateReceived}
         self.__syncDataObjects = {}
         for k, _ in ARENA_SYNC_OBJECT_NAMES.iteritems():
             self.__syncDataObjects[k] = ArenaSyncObject()
@@ -83,7 +86,7 @@ class ClientArenaComponentSystem(ScriptGameObject):
         if syncDataObject is not None:
             return syncDataObject.getData(key)
         else:
-            LOG_ERROR(("No arena sync data object found for object type '{}:{}'. Returning None.").format(syncDataObjectType, ARENA_SYNC_OBJECT_NAMES.get(syncDataObjectType, '<Unknown>')))
+            LOG_ERROR("No arena sync data object found for object type '{}:{}'. Returning None.".format(syncDataObjectType, ARENA_SYNC_OBJECT_NAMES.get(syncDataObjectType, '<Unknown>')))
             return
 
     def __onFullSyncObjectReceived(self, argStr):

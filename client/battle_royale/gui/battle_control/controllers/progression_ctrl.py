@@ -1,4 +1,8 @@
-import logging, BigWorld, Event
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/battle_control/controllers/progression_ctrl.py
+import logging
+import BigWorld
+import Event
 from adisp import adisp_process
 from battle_royale.gui.battle_control.controllers.notification_manager import INotificationManagerListener
 from constants import UpgradeProhibitionReason
@@ -64,10 +68,7 @@ class IProgressionListener(object):
 
 
 class _BattleRoyaleArenaLevel(object):
-    __slots__ = ('__xp', '__level', '__percent', '__baseXP', '__targetXP', '__diffXp',
-                 '__diffXpAfterLevel', '__xpToLevel', '__maxLevel', '__levelIsChanged',
-                 '__xpIsChanged', '__isMaxLvlAchieved', '__currentObservedVehicleID',
-                 '__observedVehicleIsChanged')
+    __slots__ = ('__xp', '__level', '__percent', '__baseXP', '__targetXP', '__diffXp', '__diffXpAfterLevel', '__xpToLevel', '__maxLevel', '__levelIsChanged', '__xpIsChanged', '__isMaxLvlAchieved', '__currentObservedVehicleID', '__observedVehicleIsChanged')
 
     def __init__(self):
         self.__xp = 0
@@ -110,8 +111,8 @@ class _BattleRoyaleArenaLevel(object):
                 self.__percent = IProgressionListener.MAX_PERCENT_AMOUNT
                 self.__diffXp = self.__targetXP - self.__xp
                 self.__diffXpAfterLevel = 0
-                self.__baseXP = self.__xpToLevel[(self.__maxLevel - 1)]
-                self.__targetXP = self.__xpToLevel[(self.__maxLevel - 1)]
+                self.__baseXP = self.__xpToLevel[self.__maxLevel - 1]
+                self.__targetXP = self.__xpToLevel[self.__maxLevel - 1]
                 self.__xp = xp
                 self.__level = self.__maxLevel
                 self.__levelIsChanged = True
@@ -119,7 +120,7 @@ class _BattleRoyaleArenaLevel(object):
             if newLevel > self.__level:
                 self.__level = newLevel
                 self.__diffXp = self.__targetXP - self.__xp
-                self.__baseXP = self.__xpToLevel[(self.__level - 1)]
+                self.__baseXP = self.__xpToLevel[self.__level - 1]
                 self.__targetXP = self.__xpToLevel[self.__level]
                 self.__xp = xp
                 self.__percent = self.__getPercent(self.__xp, self.__baseXP, self.__targetXP)
@@ -208,11 +209,9 @@ class _BattleRoyaleArenaLevel(object):
             if xp >= val:
                 return self.__maxLevel - idx
 
-        return 0
-
 
 class _SelectedModulesStorage(object):
-    __slots__ = ('__selectedIntCDs', )
+    __slots__ = ('__selectedIntCDs',)
 
     def __init__(self):
         super(_SelectedModulesStorage, self).__init__()
@@ -267,10 +266,7 @@ class _UpgradesAvailability(object):
 
     def onVehicleStatusChanged(self):
         avatar = BigWorld.player()
-        reasons = (
-         UpgradeProhibitionReason.OVERTURNED if avatar.isVehicleOverturned else -1,
-         UpgradeProhibitionReason.DROWNING if avatar.isVehicleDrowning else -1,
-         UpgradeProhibitionReason.COMBATING if self.__cbCooldownID is not None or self.__isStrategicMode else -1)
+        reasons = (UpgradeProhibitionReason.OVERTURNED if avatar.isVehicleOverturned else -1, UpgradeProhibitionReason.DROWNING if avatar.isVehicleDrowning else -1, UpgradeProhibitionReason.COMBATING if self.__cbCooldownID is not None or self.__isStrategicMode else -1)
         reason = max(reasons)
         if reason < 0:
             self.__enableUpgrades()
@@ -319,7 +315,7 @@ class _ProgressionWindowCtrl(object):
 
     @sf_battle
     def app(self):
-        return
+        return None
 
     def closeWindow(self):
         if self.__progressionWindow:
@@ -352,8 +348,7 @@ class _ProgressionWindowCtrl(object):
 
 
 class _VehicleHolder(object):
-    __slots__ = ('__initialVehicle', '__vehicle', '__currentVehicleLevel', '__vehicleChangeCallback',
-                 '__modulesHolder')
+    __slots__ = ('__initialVehicle', '__vehicle', '__currentVehicleLevel', '__vehicleChangeCallback', '__modulesHolder')
     __sessionProvider = dependency.descriptor(IBattleSessionProvider)
     __itemsFactory = dependency.descriptor(IGuiItemsFactory)
 
@@ -454,17 +449,13 @@ class _VehicleModulesStorage(object):
         return
 
     def getModule(self, intCD):
-        if intCD not in self.__modules:
-            return self.__registerItem(getTypeOfCompactDescr(intCD), intCD)
-        return self.__modules[intCD]
+        return self.__registerItem(getTypeOfCompactDescr(intCD), intCD) if intCD not in self.__modules else self.__modules[intCD]
 
     def getInstalledOnVehicleAnalogByIntCD(self, intCD, vehicleDescriptor):
         targetModule = self.getModule(intCD)
         currModuleDescr, _ = vehicleDescriptor.getComponentsByType(targetModule.itemTypeName)
         installedModuleIntCD = currModuleDescr.compactDescr
-        if installedModuleIntCD not in self.__modules:
-            return self.__registerItem(currModuleDescr.typeID, installedModuleIntCD)
-        return self.__modules[installedModuleIntCD]
+        return self.__registerItem(currModuleDescr.typeID, installedModuleIntCD) if installedModuleIntCD not in self.__modules else self.__modules[installedModuleIntCD]
 
     def __registerItem(self, typeCD, moduleIntCD):
         self.__modules[moduleIntCD] = newM = self.__itemsFactory.createGuiItem(typeCD, intCompactDescr=moduleIntCD)
@@ -508,8 +499,7 @@ class _ModuleChangeRequester(object):
         success, reason = moduleItem.mayInstall(vehicle)
         if success:
             success, reason = ModulesInstaller.checkModuleValidity(moduleItem.intCD, vehicle.descriptor)
-        return (
-         success, reason)
+        return (success, reason)
 
     def processResponse(self, intCD, isSuccessfull):
         if intCD not in self.__awaitingResponse:
@@ -533,12 +523,7 @@ class _ModuleChangeRequester(object):
 
 
 class ProgressionController(IProgressionController, ViewComponentsController):
-    __slots__ = ('onPageTriggered', '__progressionWindowCtrl', '__modulesStorage',
-                 '__averageLevel', '__enemiesAmount', '__vehicleModulesStorage',
-                 '__enemyTeamsAmount', '__isStarted', '__upgradesAvailability', '__tmpProgressionRecord',
-                 'onVehicleUpgradeStarted', 'onVehicleUpgradeFinished', '__vehicleHolder',
-                 '__moduleChangeReq', '__initialModulesRecord', '__battleRoyaleArenaLevel',
-                 'notificationManager', '__em')
+    __slots__ = ('onPageTriggered', '__progressionWindowCtrl', '__modulesStorage', '__averageLevel', '__enemiesAmount', '__vehicleModulesStorage', '__enemyTeamsAmount', '__isStarted', '__upgradesAvailability', '__tmpProgressionRecord', 'onVehicleUpgradeStarted', 'onVehicleUpgradeFinished', '__vehicleHolder', '__moduleChangeReq', '__initialModulesRecord', '__battleRoyaleArenaLevel', 'notificationManager', '__em')
     __itemsFactory = dependency.descriptor(IGuiItemsFactory)
     __sessionProvider = dependency.descriptor(IBattleSessionProvider)
 
@@ -571,16 +556,10 @@ class ProgressionController(IProgressionController, ViewComponentsController):
         return BATTLE_CTRL_ID.PROGRESSION_CTRL
 
     def getCurrentVehicle(self):
-        if self.__vehicleHolder:
-            return self.__vehicleHolder.getVehicle()
-        else:
-            return
+        return self.__vehicleHolder.getVehicle() if self.__vehicleHolder else None
 
     def getCurrentVehicleLevel(self):
-        if self.__vehicleHolder:
-            return self.__vehicleHolder.getVehicleLevel()
-        else:
-            return
+        return self.__vehicleHolder.getVehicleLevel() if self.__vehicleHolder else None
 
     def mayInstallModule(self, moduleItem):
         if self.__vehicleHolder and self.__moduleChangeReq:
@@ -674,7 +653,7 @@ class ProgressionController(IProgressionController, ViewComponentsController):
 
     def addRuntimeView(self, view):
         if view in self._viewComponents:
-            LOG_ERROR(('View is already added! {}').format(view))
+            LOG_ERROR('View is already added! {}'.format(view))
         else:
             if self.__isStarted:
                 view.updateData(self.__battleRoyaleArenaLevel)
@@ -689,7 +668,7 @@ class ProgressionController(IProgressionController, ViewComponentsController):
         if view in self._viewComponents:
             self._viewComponents.remove(view)
         else:
-            LOG_WARNING(('View has not been found! {}').format(view))
+            LOG_WARNING('View has not been found! {}'.format(view))
 
     def isModuleSelected(self, intCD):
         return self.__modulesStorage.isSelected(intCD)
@@ -797,14 +776,12 @@ class ProgressionController(IProgressionController, ViewComponentsController):
         for typeID, module in cachedModules.iteritems():
             if typeID != GUI_ITEM_TYPE.TURRET:
                 self.__vehicleHolder.setInitialModule(module)
-            else:
-                self.__vehicleHolder.setInitialTurret(module, cachedModules[GUI_ITEM_TYPE.GUN])
+            self.__vehicleHolder.setInitialTurret(module, cachedModules[GUI_ITEM_TYPE.GUN])
 
     def __cacheInitialModules(self, vehicle):
         if self.__initialModulesRecord.getModules():
             return
-        descriptors = (
-         vehicle.typeDescriptor.chassis.compactDescr,
+        descriptors = (vehicle.typeDescriptor.chassis.compactDescr,
          vehicle.typeDescriptor.engine.compactDescr,
          vehicle.typeDescriptor.fuelTank.compactDescr,
          vehicle.typeDescriptor.gun.compactDescr,

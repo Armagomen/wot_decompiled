@@ -1,6 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/battleground/simulation_movement_tracker.py
 import itertools
 from collections import namedtuple, deque
-import BigWorld, logging
+import BigWorld
+import logging
 from aih_constants import CTRL_MODE_NAME
 from constants import ARENA_PERIOD
 from gun_rotation_shared import decodeGunAngles
@@ -8,8 +11,12 @@ from helpers import isPlayerAvatar
 from helpers.CallbackDelayer import CallbackDelayer
 from PlayerEvents import g_playerEvents
 _logger = logging.getLogger(__name__)
-SimulationMovementData = namedtuple('SimulationMovementData', ['duration', 'position', 'direction', 'turretYaw',
- 'gunPitch', 'trackState'])
+SimulationMovementData = namedtuple('SimulationMovementData', ['duration',
+ 'position',
+ 'direction',
+ 'turretYaw',
+ 'gunPitch',
+ 'trackState'])
 ShotMapData = namedtuple('ShotMapData', ['dataID', 'lastDuration'])
 
 class SimulationMovementTracker(CallbackDelayer):
@@ -62,8 +69,7 @@ class SimulationMovementTracker(CallbackDelayer):
     def getData(self, shotID):
         shotData = self.getSnapshot(shotID, False)
         killData = self.getSnapshot(shotID, True)
-        return (
-         shotData if shotData[0] else killData, killData if killData[0] else shotData)
+        return (shotData if shotData[0] else killData, killData if killData[0] else shotData)
 
     def getSnapshot(self, shotID, isKill):
         snapshotID = self.__makeSnapshotID(shotID, isKill)
@@ -71,15 +77,14 @@ class SimulationMovementTracker(CallbackDelayer):
         if not shotData:
             _logger.info('SimulationMovementTracker.getSnapshot: Cannot get movement data for shot "%s"', snapshotID)
             return ([], 0.0)
+        dataID = shotData.dataID
+        lastDuration = shotData.lastDuration
+        data = self.__snapshots.get(dataID, None)
+        if not data:
+            _logger.info('SimulationMovementTracker.getSnapshot: Cannot find data snapshot for shot "%s"', snapshotID)
+            return ([], 0.0)
         else:
-            dataID = shotData.dataID
-            lastDuration = shotData.lastDuration
-            data = self.__snapshots.get(dataID, None)
-            if not data:
-                _logger.info('SimulationMovementTracker.getSnapshot: Cannot find data snapshot for shot "%s"', snapshotID)
-                return ([], 0.0)
-            return (
-             data[:], lastDuration)
+            return (data[:], lastDuration)
 
     def saveSnapshot(self, shotID=0, isKill=False):
         if not self.__isTrackingActive:
@@ -122,11 +127,11 @@ class SimulationMovementTracker(CallbackDelayer):
     def setPendingShotID(self, shotID):
         if not self.__isTrackingActive:
             return
+        elif not shotID:
+            _logger.error('setPendingShotID: Should always have shotID at this point!')
+            self.clearSnapshot(self.__PENDING_SHOT_ID)
+            return
         else:
-            if not shotID:
-                _logger.error('setPendingShotID: Should always have shotID at this point!')
-                self.clearSnapshot(self.__PENDING_SHOT_ID)
-                return
             pendingID = self.__makeSnapshotID(self.__PENDING_SHOT_ID, isKill=True)
             shotData = self.__shotsMap.get(pendingID, None)
             if not shotData:
@@ -152,10 +157,7 @@ class SimulationMovementTracker(CallbackDelayer):
     def __makeSnapshotID(shotID, isKill):
         if not shotID and isKill:
             shotID = SimulationMovementTracker.__PENDING_SHOT_ID
-        if not shotID:
-            return None
-        else:
-            return ('{0}_{1}').format(shotID, 'kill' if isKill else 'shot')
+        return None if not shotID else '{0}_{1}'.format(shotID, 'kill' if isKill else 'shot')
 
     def __tick(self):
         player = BigWorld.player()
@@ -170,8 +172,7 @@ class SimulationMovementTracker(CallbackDelayer):
                 continue
             turretYaw, gunPitch = self.__getGunAngles(vehicle)
             trackStates = vehicle.appearance.getTrackStates()
-            data[vehicle.id] = SimulationMovementData(currentTime - self.__lastPointTime, vehicle.position, (
-             vehicle.roll, vehicle.pitch, vehicle.yaw), turretYaw, gunPitch, trackStates)
+            data[vehicle.id] = SimulationMovementData(currentTime - self.__lastPointTime, vehicle.position, (vehicle.roll, vehicle.pitch, vehicle.yaw), turretYaw, gunPitch, trackStates)
 
         self.__lastPointTime = currentTime
         self.__data.append(data)
@@ -198,5 +199,4 @@ class SimulationMovementTracker(CallbackDelayer):
             turretYaw, gunPitch = decodeGunAngles(veh.gunAnglesPacked, veh.typeDescriptor.gun.pitchLimits['absolute'])
         else:
             turretYaw = gunPitch = 0.0
-        return (
-         turretYaw, gunPitch)
+        return (turretYaw, gunPitch)

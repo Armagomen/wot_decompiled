@@ -1,8 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/wgcg/wot_shop/contexts.py
 from gui.wgcg.base.contexts import CommonWebRequestCtx
 from gui.wgcg.settings import WebRequestDataType
 
 class WotShopGetStorefrontProductsCtx(CommonWebRequestCtx):
-    __slots__ = ('__storefront', )
+    __slots__ = ('__storefront',)
 
     def __init__(self, ctx, waitingID=''):
         self.__storefront = ctx.storefront

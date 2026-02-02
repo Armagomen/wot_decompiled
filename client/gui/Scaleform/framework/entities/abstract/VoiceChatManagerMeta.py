@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/framework/entities/abstract/VoiceChatManagerMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class VoiceChatManagerMeta(BaseDAAPIComponent):
@@ -18,5 +20,4 @@ class VoiceChatManagerMeta(BaseDAAPIComponent):
         self._printOverrideError('isVOIPAvailable')
 
     def as_onPlayerSpeakS(self, accountDBID, isSpeak, isHimseljoinUnitButtonf):
-        if self._isDAAPIInited():
-            return self.flashObject.as_onPlayerSpeak(accountDBID, isSpeak, isHimseljoinUnitButtonf)
+        return self.flashObject.as_onPlayerSpeak(accountDBID, isSpeak, isHimseljoinUnitButtonf) if self._isDAAPIInited() else None

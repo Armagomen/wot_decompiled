@@ -1,4 +1,7 @@
-import time, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/marathon/marathon_resource_manager.py
+import time
+import typing
 from collections import namedtuple
 from gui.impl import backport
 from gui.impl.gen import R
@@ -6,26 +9,8 @@ from gui.marathon.marathon_constants import MarathonState, R_TITLE_TOOLTIP, R_BU
 from gui.shared.formatters import text_styles
 from gui.shared.utils.functions import makeTooltip
 from helpers.time_utils import ONE_DAY, getTimeStructInLocal, ONE_HOUR
-MarathonEventTooltipData = namedtuple('MarathonEventTooltipData', ('header', 'body',
-                                                                   'bodyExtraVehicle',
-                                                                   'bodyExtraStyle',
-                                                                   'bodyExtraSmart',
-                                                                   'errorBattleType',
-                                                                   'errorVehType',
-                                                                   'extraStateSteps',
-                                                                   'extraStateDiscount',
-                                                                   'extraStateCompleted',
-                                                                   'stateStart',
-                                                                   'stateEnd', 'stateProgress',
-                                                                   'stateComplete',
-                                                                   'daysShort', 'hoursShort',
-                                                                   'minutesShort',
-                                                                   'previewAnnounce',
-                                                                   'previewInProgress'))
-MarathonEventIconsData = namedtuple('MarathonEventIconsData', ('tooltipHeader', 'okIcon',
-                                                               'timeIcon', 'timeIconGlow',
-                                                               'alertIcon', 'iconFlag',
-                                                               'saleIcon', 'mapFlagHeaderIcon'))
+MarathonEventTooltipData = namedtuple('MarathonEventTooltipData', ('header', 'body', 'bodyExtraVehicle', 'bodyExtraStyle', 'bodyExtraSmart', 'errorBattleType', 'errorVehType', 'extraStateSteps', 'extraStateDiscount', 'extraStateCompleted', 'stateStart', 'stateEnd', 'stateProgress', 'stateComplete', 'daysShort', 'hoursShort', 'minutesShort', 'previewAnnounce', 'previewInProgress'))
+MarathonEventIconsData = namedtuple('MarathonEventIconsData', ('tooltipHeader', 'okIcon', 'timeIcon', 'timeIconGlow', 'alertIcon', 'iconFlag', 'saleIcon', 'mapFlagHeaderIcon'))
 
 class MarathonResourceManager(object):
 
@@ -34,33 +19,33 @@ class MarathonResourceManager(object):
         self._initialize()
 
     def getBuyBtnEnabledData(self, hasIgbLink):
-        return {'enabled': True, 
-           'label': backport.text(R_BUYING_PANEL.buyBtn.label.buy()), 
-           'btnIcon': None if hasIgbLink else backport.image(R.images.gui.maps.icons.library.buyInWeb()), 
-           'btnIconAlign': BUYING_BUTTON_ICON_ALIGN, 
-           'btnTooltip': makeTooltip(body=backport.text(R_BUYING_PANEL.buyBtn.tooltip.active.body())), 
-           'customOffer': None}
+        return {'enabled': True,
+         'label': backport.text(R_BUYING_PANEL.buyBtn.label.buy()),
+         'btnIcon': None if hasIgbLink else backport.image(R.images.gui.maps.icons.library.buyInWeb()),
+         'btnIconAlign': BUYING_BUTTON_ICON_ALIGN,
+         'btnTooltip': makeTooltip(body=backport.text(R_BUYING_PANEL.buyBtn.tooltip.active.body())),
+         'customOffer': None}
 
     def getBuyBtnDiscountData(self, discount, hasIgbLink):
         discountText = text_styles.discountText(backport.text(R_BUYING_PANEL.customOffer.discount()))
         discountValue = text_styles.promoTitle(backport.text(R.strings.quests.action.discount.percent(), value=backport.getIntegralFormat(discount)))
-        return {'enabled': True, 
-           'label': backport.text(R_BUYING_PANEL.buyBtn.label.buy()), 
-           'btnIcon': None if hasIgbLink else backport.image(R.images.gui.maps.icons.library.buyInWeb()), 
-           'btnIconAlign': BUYING_BUTTON_ICON_ALIGN, 
-           'btnTooltip': makeTooltip(body=backport.text(R_BUYING_PANEL.buyBtn.tooltip.active.body())), 
-           'customOffer': (' ').join((discountText, discountValue))}
+        return {'enabled': True,
+         'label': backport.text(R_BUYING_PANEL.buyBtn.label.buy()),
+         'btnIcon': None if hasIgbLink else backport.image(R.images.gui.maps.icons.library.buyInWeb()),
+         'btnIconAlign': BUYING_BUTTON_ICON_ALIGN,
+         'btnTooltip': makeTooltip(body=backport.text(R_BUYING_PANEL.buyBtn.tooltip.active.body())),
+         'customOffer': ' '.join((discountText, discountValue))}
 
     def getBuyBtnDisabledData(self, hasIgbLink):
         questStartTime, _ = self._data.getQuestStartFinishTime()
         addInfo = backport.text(self._data.tooltips.previewAnnounce, marathonStartDate=text_styles.neutral(self._getDateTimeText(questStartTime)))
         tooltip = makeTooltip(header=backport.text(R_BUYING_PANEL.buyBtn.tooltip.inactive.header()), body=backport.text(R_BUYING_PANEL.buyBtn.tooltip.inactive.body(), addInfo=addInfo, event_name=backport.text(self._data.label)))
-        return {'enabled': False, 
-           'label': backport.text(R_BUYING_PANEL.buyBtn.label.buy()), 
-           'btnIcon': None if hasIgbLink else backport.image(R.images.gui.maps.icons.library.buyInWeb()), 
-           'btnIconAlign': BUYING_BUTTON_ICON_ALIGN, 
-           'btnTooltip': tooltip, 
-           'customOffer': None}
+        return {'enabled': False,
+         'label': backport.text(R_BUYING_PANEL.buyBtn.label.buy()),
+         'btnIcon': None if hasIgbLink else backport.image(R.images.gui.maps.icons.library.buyInWeb()),
+         'btnIconAlign': BUYING_BUTTON_ICON_ALIGN,
+         'btnTooltip': tooltip,
+         'customOffer': None}
 
     def getEmptyTooltip(self):
         return makeTooltip()
@@ -106,8 +91,8 @@ class MarathonResourceManager(object):
 
     def _getDateTimeText(self, timestamp):
         localDateTime = getTimeStructInLocal(timestamp)
-        monthName = backport.text(R.strings.menu.dateTime.months.dyn(('c_{}').format(localDateTime.tm_mon))())
-        dateTimeText = backport.text(R.strings.marathon.vehiclePreview.tooltip.dateTime(), day=localDateTime.tm_mday, monthName=monthName, year=localDateTime.tm_year, hour=localDateTime.tm_hour, min=('{min:02d}').format(min=localDateTime.tm_min))
+        monthName = backport.text(R.strings.menu.dateTime.months.dyn('c_{}'.format(localDateTime.tm_mon))())
+        dateTimeText = backport.text(R.strings.marathon.vehiclePreview.tooltip.dateTime(), day=localDateTime.tm_mday, monthName=monthName, year=localDateTime.tm_year, hour=localDateTime.tm_hour, min='{min:02d}'.format(min=localDateTime.tm_min))
         return dateTimeText.replace(' ', '&nbsp;')
 
     def _getTitleMakeTooltip(self, tooltipBody, addInfo):
@@ -122,14 +107,12 @@ class MarathonResourceManager(object):
         return MarathonEventTooltipData(header=self._getTooltipString('header')(), body=body(), bodyExtraVehicle=body.extra_vehicle(), bodyExtraStyle=body.extra_style(), bodyExtraSmart=body.extra_smart(), errorBattleType=error.battle_type(), errorVehType=error.veh_type(), extraStateSteps=extraState.steps(), extraStateDiscount=extraState.discount(), extraStateCompleted=extraState.completed(), stateStart=state.start(), stateEnd=state.end(), stateProgress=extraState(), stateComplete=state.complete(), daysShort=R.strings.tooltips.template.days.short(), hoursShort=R.strings.tooltips.template.hours.short(), minutesShort=R.strings.tooltips.template.minutes.short(), previewAnnounce=self._getVehiclePreviewBodyString('announce')(), previewInProgress=self._getVehiclePreviewBodyString('inprogress')())
 
     def _getIcons(self):
-        return MarathonEventIconsData(tooltipHeader=backport.image(R.images.gui.maps.icons.quests.dyn(self._data.marathonTooltipHeader)()), okIcon=backport.image(self._getIconsResource('ok_icon')()), timeIcon=backport.image(self._getIconsResource('time_icon')()), timeIconGlow=backport.image(self._getIconsResource('time_icon_glow')()), alertIcon=backport.image(self._getIconsResource('alert_icon')()), iconFlag=backport.image(self._getIconsResource('icon_flag')()), saleIcon=backport.image(self._getIconsResource('sale_icon')()), mapFlagHeaderIcon={MarathonState.ENABLED_STATE: backport.image(self._getIconsResource('cup_icon')()), 
-           MarathonState.DISABLED_STATE: backport.image(self._getIconsResource('cup_disable_icon')())})
+        return MarathonEventIconsData(tooltipHeader=backport.image(R.images.gui.maps.icons.quests.dyn(self._data.marathonTooltipHeader)()), okIcon=backport.image(self._getIconsResource('ok_icon')()), timeIcon=backport.image(self._getIconsResource('time_icon')()), timeIconGlow=backport.image(self._getIconsResource('time_icon_glow')()), alertIcon=backport.image(self._getIconsResource('alert_icon')()), iconFlag=backport.image(self._getIconsResource('icon_flag')()), saleIcon=backport.image(self._getIconsResource('sale_icon')()), mapFlagHeaderIcon={MarathonState.ENABLED_STATE: backport.image(self._getIconsResource('cup_icon')()),
+         MarathonState.DISABLED_STATE: backport.image(self._getIconsResource('cup_disable_icon')())})
 
     def _getLabelObject(self, obj):
         resourceObj = obj.dyn(self._data.prefix)
-        if resourceObj.isValid():
-            return resourceObj
-        return obj.marathon
+        return resourceObj if resourceObj.isValid() else obj.marathon
 
     def _getResouce(self, obj, attr):
         resourceObj = obj.dyn(self._data.prefix)

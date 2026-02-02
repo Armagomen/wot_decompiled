@@ -1,8 +1,11 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/cgf_demo_client/test_death_triggers.py
 import logging
 from cgf_script.component_meta_class import ComponentProperty, CGFMetaTypes, registerComponent
 from cgf_script.managers_registrator import autoregister, onAddedQuery
 from cgf_demo.demo_category import DEMO_CATEGORY
-import CGF, functools
+import CGF
+import functools
 from HealthComponents import DeathComponent
 from Triggers import AreaTriggerComponent
 _logger = logging.getLogger(__name__)

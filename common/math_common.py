@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/math_common.py
 from math import ceil
 _CEIL_EPS = 1
 

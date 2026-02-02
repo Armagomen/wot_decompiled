@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/dialogs/exchange_with_items.py
 import logging
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
@@ -49,10 +51,10 @@ class ExchangeWithItems(BuyAndExchange):
             self._onAccept()
 
     def _stateToContent(self):
-        return {BuyAndExchangeStateEnum.EXCHANGE_CONTENT: BuyAndExchangeBottomContentType.EXCHANGE_PANEL, 
-           BuyAndExchangeStateEnum.EXCHANGE_IN_PROCESS: BuyAndExchangeBottomContentType.EXCHANGE_PANEL, 
-           BuyAndExchangeStateEnum.GOLD_NOT_ENOUGH: BuyAndExchangeBottomContentType.EXCHANGE_PANEL, 
-           BuyAndExchangeStateEnum.EXCHANGE_NOT_REQUIRED: BuyAndExchangeBottomContentType.EXCHANGE_PANEL}
+        return {BuyAndExchangeStateEnum.EXCHANGE_CONTENT: BuyAndExchangeBottomContentType.EXCHANGE_PANEL,
+         BuyAndExchangeStateEnum.EXCHANGE_IN_PROCESS: BuyAndExchangeBottomContentType.EXCHANGE_PANEL,
+         BuyAndExchangeStateEnum.GOLD_NOT_ENOUGH: BuyAndExchangeBottomContentType.EXCHANGE_PANEL,
+         BuyAndExchangeStateEnum.EXCHANGE_NOT_REQUIRED: BuyAndExchangeBottomContentType.EXCHANGE_PANEL}
 
     @classmethod
     def _getContentClass(cls):
@@ -76,8 +78,7 @@ class ExchangeToUpgradeDevice(ExchangeWithItems):
         if not device.isUpgradable:
             _logger.warning("Device doesn't upgradable!")
         settings = ViewSettings(layoutID=R.views.lobby.tanksetup.dialogs.ExchangeToUpgradeItems(), model=ExchangeWithItemsModel())
-        super(ExchangeToUpgradeDevice, self).__init__(settings=settings, items=[
-         device], price=device.getUpgradePrice(self._itemsCache.items).price if device.isUpgradable else ZERO_MONEY)
+        super(ExchangeToUpgradeDevice, self).__init__(settings=settings, items=[device], price=device.getUpgradePrice(self._itemsCache.items).price if device.isUpgradable else ZERO_MONEY)
 
     @classmethod
     def _getContentClass(cls):

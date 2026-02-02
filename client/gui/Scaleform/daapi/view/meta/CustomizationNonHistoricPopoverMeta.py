@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/CustomizationNonHistoricPopoverMeta.py
 from gui.Scaleform.daapi.view.lobby.popover.SmartPopOverView import SmartPopOverView
 
 class CustomizationNonHistoricPopoverMeta(SmartPopOverView):
@@ -12,13 +14,10 @@ class CustomizationNonHistoricPopoverMeta(SmartPopOverView):
         self._printOverrideError('showOnlyNonHistoric')
 
     def as_setHeaderDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setHeaderData(data)
+        return self.flashObject.as_setHeaderData(data) if self._isDAAPIInited() else None
 
     def as_getDPS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_getDP()
+        return self.flashObject.as_getDP() if self._isDAAPIInited() else None
 
     def as_showClearMessageS(self, isClear, message):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showClearMessage(isClear, message)
+        return self.flashObject.as_showClearMessage(isClear, message) if self._isDAAPIInited() else None

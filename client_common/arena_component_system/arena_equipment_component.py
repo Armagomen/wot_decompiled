@@ -1,6 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client_common/arena_component_system/arena_equipment_component.py
 from collections import namedtuple
 from functools import partial
-import logging, BigWorld
+import logging
+import BigWorld
 from aih_constants import CTRL_MODE_NAME
 from battle_royale.gui.constants import BattleRoyaleEquipments
 from client_arena_component_system import ClientArenaComponent
@@ -18,8 +21,8 @@ from skeletons.gui.battle_session import IBattleSessionProvider
 from smoke_screen import SmokeScreen
 from AffectComponent import RepairAffectComponent, TrapAffectComponent, FireCircleAffectComponent
 _logger = logging.getLogger(__name__)
-_EQUIPMENT_AFFECT_COMPONENTS = {BattleRoyaleEquipments.FIRE_CIRCLE: FireCircleAffectComponent, 
-   BattleRoyaleEquipments.TRAP_POINT: TrapAffectComponent}
+_EQUIPMENT_AFFECT_COMPONENTS = {BattleRoyaleEquipments.FIRE_CIRCLE: FireCircleAffectComponent,
+ BattleRoyaleEquipments.TRAP_POINT: TrapAffectComponent}
 
 class EffectData(object):
 
@@ -88,11 +91,7 @@ class EffectData(object):
         return
 
     def getNextPeriodAndStartTime(self, currentTime, currentPeriod=None):
-        periods = ((self.EFFECT_PERIOD.EXPOSED, self.startTime),
-         (
-          self.EFFECT_PERIOD.INACTIVATION, self.inactivationStartTime),
-         (
-          self.EFFECT_PERIOD.OVER, self.inactivationEndTime))
+        periods = ((self.EFFECT_PERIOD.EXPOSED, self.startTime), (self.EFFECT_PERIOD.INACTIVATION, self.inactivationStartTime), (self.EFFECT_PERIOD.OVER, self.inactivationEndTime))
         if currentPeriod is not None:
             nextPeriod = min(currentPeriod + 1, self.EFFECT_PERIOD.OVER)
             return periods[nextPeriod]
@@ -105,10 +104,8 @@ class EffectData(object):
         return
 
 
-InspireArgs = namedtuple('InspireArgs', ('isSourceVehicle', 'isInactivation', 'endTime',
-                                         'duration', 'primary', 'equipmentID'))
-HealPointArgs = namedtuple('HealPointArgs', ('isSourceVehicle', 'isInactivation', 'endTime',
-                                             'duration', 'senderKey'))
+InspireArgs = namedtuple('InspireArgs', ('isSourceVehicle', 'isInactivation', 'endTime', 'duration', 'primary', 'equipmentID'))
+HealPointArgs = namedtuple('HealPointArgs', ('isSourceVehicle', 'isInactivation', 'endTime', 'duration', 'senderKey'))
 
 class InspireArgsAdapter(InspireArgs):
 
@@ -165,8 +162,7 @@ class ArenaEquipmentComponent(ClientArenaComponent, CallbackDelayer):
         if dynamicObjects is not None:
             arenaGuiType = BigWorld.player().arenaGuiType
             self.__inspiringEffect = Effect('inspire', InspireArgsAdapter, VEHICLE_VIEW_STATE.INSPIRE, FEEDBACK_EVENT_ID.VEHICLE_INSPIRE, dynamicObjects.getInspiringEffect())
-            if arenaGuiType in (
-             ARENA_GUI_TYPE.BATTLE_ROYALE, ARENA_GUI_TYPE.EPIC_BATTLE, ARENA_GUI_TYPE.EPIC_TRAINING):
+            if arenaGuiType in (ARENA_GUI_TYPE.BATTLE_ROYALE, ARENA_GUI_TYPE.EPIC_BATTLE, ARENA_GUI_TYPE.EPIC_TRAINING):
                 self.__healingEffect = Effect('healPoint', HealPointArgsAdapter, VEHICLE_VIEW_STATE.HEALING, FEEDBACK_EVENT_ID.VEHICLE_HEAL_POINT, dynamicObjects.getHealPointEffect())
             if arenaGuiType == ARENA_GUI_TYPE.BATTLE_ROYALE:
                 self.__repairPointEffect = Effect('repairPoint', HealPointArgsAdapter, VEHICLE_VIEW_STATE.REPAIR_POINT, FEEDBACK_EVENT_ID.VEHICLE_REPAIR_POINT, dynamicObjects.getRepairPointEffect())
@@ -407,10 +403,7 @@ class ArenaEquipmentComponent(ClientArenaComponent, CallbackDelayer):
 
     def __getMotor(self, vehicleId):
         vehicle = BigWorld.entity(vehicleId)
-        if not vehicle:
-            return None
-        else:
-            return BigWorld.Servo(makeVehicleEntityMP(vehicle))
+        return None if not vehicle else BigWorld.Servo(makeVehicleEntityMP(vehicle))
 
     def __onSmokeScreenUpdated(self, args):
         for key, value in args.iteritems():
@@ -421,9 +414,8 @@ class ArenaEquipmentComponent(ClientArenaComponent, CallbackDelayer):
                 else:
                     smokeItem = SmokeScreen(key, value)
                     self.__smokeScreen[key] = smokeItem
-            else:
-                self.__smokeScreen[key].stop()
-                self.__smokeScreen[key] = None
+            self.__smokeScreen[key].stop()
+            self.__smokeScreen[key] = None
 
         return
 

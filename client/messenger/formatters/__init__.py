@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/formatters/__init__.py
 import logging
 from time import gmtime, time as getTime
 from collections import namedtuple
@@ -8,10 +10,10 @@ from messenger import g_settings
 _logger = logging.getLogger(__name__)
 
 class TimeFormatter(object):
-    _messageDateTimeFormat = {0: 'getMessageEmptyFormatU', 
-       1: 'getMessageShortDateFormat', 
-       2: 'getMessageLongTimeFormat', 
-       3: 'getMessageLongDatetimeFormat'}
+    _messageDateTimeFormat = {0: 'getMessageEmptyFormatU',
+     1: 'getMessageShortDateFormat',
+     2: 'getMessageLongTimeFormat',
+     3: 'getMessageLongDatetimeFormat'}
 
     @classmethod
     def getMessageTimeFormat(cls, time):
@@ -20,27 +22,27 @@ class TimeFormatter(object):
 
     @classmethod
     def getShortDateFormat(cls, time):
-        return ('{0:>s}').format(backport.getShortDateFormat(time))
+        return '{0:>s}'.format(backport.getShortDateFormat(time))
 
     @classmethod
     def getLongTimeFormat(cls, time):
-        return ('{0:>s}').format(backport.getLongTimeFormat(time))
+        return '{0:>s}'.format(backport.getLongTimeFormat(time))
 
     @classmethod
     def getShortTimeFormat(cls, time):
-        return ('{0:>s}').format(backport.getShortTimeFormat(time))
+        return '{0:>s}'.format(backport.getShortTimeFormat(time))
 
     @classmethod
     def getLongDatetimeFormat(cls, time):
-        return ('{0:>s} {1:>s}').format(backport.getShortDateFormat(time), backport.getLongTimeFormat(time))
+        return '{0:>s} {1:>s}'.format(backport.getShortDateFormat(time), backport.getLongTimeFormat(time))
 
     @classmethod
     def getShortTimeDateFormat(cls, time):
-        return ('{0:>s} {1:>s}').format(backport.getShortTimeFormat(time), backport.getShortDateFormat(time))
+        return '{0:>s} {1:>s}'.format(backport.getShortTimeFormat(time), backport.getShortDateFormat(time))
 
     @classmethod
     def getShortDatetimeFormat(cls, time):
-        return ('{0:>s} {1:>s}').format(backport.getShortDateFormat(time), backport.getShortTimeFormat(time))
+        return '{0:>s} {1:>s}'.format(backport.getShortDateFormat(time), backport.getShortTimeFormat(time))
 
     @classmethod
     def getActualMsgTimeStr(cls, timestamp):
@@ -55,32 +57,32 @@ class TimeFormatter(object):
 
     @classmethod
     def getMessageEmptyFormatU(cls, _):
-        return ''
+        pass
 
     @classmethod
     def getMessageShortDateFormat(cls, time):
-        return ('({0:>s}) ').format(backport.getShortDateFormat(time)).decode('utf-8', 'ignore')
+        return '({0:>s}) '.format(backport.getShortDateFormat(time)).decode('utf-8', 'ignore')
 
     @classmethod
     def getMessageLongTimeFormat(cls, time):
-        return ('({0:>s}) ').format(backport.getLongTimeFormat(time)).decode('utf-8', 'ignore')
+        return '({0:>s}) '.format(backport.getLongTimeFormat(time)).decode('utf-8', 'ignore')
 
     @classmethod
     def getMessageLongDatetimeFormat(cls, time):
-        return ('({0:>s} {1:>s}) ').format(backport.getShortDateFormat(time), backport.getLongTimeFormat(time)).decode('utf-8', 'ignore')
+        return '({0:>s} {1:>s}) '.format(backport.getShortDateFormat(time), backport.getLongTimeFormat(time)).decode('utf-8', 'ignore')
 
 
 class NCContextItemFormatter(object):
-    _formats = {NC_CONTEXT_ITEM_TYPE.GOLD: 'getGoldFormat', 
-       NC_CONTEXT_ITEM_TYPE.INTEGRAL: 'getIntegralFormat', 
-       NC_CONTEXT_ITEM_TYPE.FRACTIONAL: 'getFractionalFormat', 
-       NC_CONTEXT_ITEM_TYPE.NICE_NUMBER: 'getNiceNumberFormat', 
-       NC_CONTEXT_ITEM_TYPE.SHORT_TIME: 'getShortTimeFormat', 
-       NC_CONTEXT_ITEM_TYPE.LONG_TIME: 'getLongTimeFormat', 
-       NC_CONTEXT_ITEM_TYPE.SHORT_DATE: 'getShortDateFormat', 
-       NC_CONTEXT_ITEM_TYPE.LONG_DATE: 'getLongDateFormat', 
-       NC_CONTEXT_ITEM_TYPE.DATETIME: 'getDateTimeFormat', 
-       NC_CONTEXT_ITEM_TYPE.STRING: 'getStringFormat'}
+    _formats = {NC_CONTEXT_ITEM_TYPE.GOLD: 'getGoldFormat',
+     NC_CONTEXT_ITEM_TYPE.INTEGRAL: 'getIntegralFormat',
+     NC_CONTEXT_ITEM_TYPE.FRACTIONAL: 'getFractionalFormat',
+     NC_CONTEXT_ITEM_TYPE.NICE_NUMBER: 'getNiceNumberFormat',
+     NC_CONTEXT_ITEM_TYPE.SHORT_TIME: 'getShortTimeFormat',
+     NC_CONTEXT_ITEM_TYPE.LONG_TIME: 'getLongTimeFormat',
+     NC_CONTEXT_ITEM_TYPE.SHORT_DATE: 'getShortDateFormat',
+     NC_CONTEXT_ITEM_TYPE.LONG_DATE: 'getLongDateFormat',
+     NC_CONTEXT_ITEM_TYPE.DATETIME: 'getDateTimeFormat',
+     NC_CONTEXT_ITEM_TYPE.STRING: 'getStringFormat'}
 
     @classmethod
     def getItemFormat(cls, itemType, itemValue):
@@ -124,7 +126,7 @@ class NCContextItemFormatter(object):
 
     @classmethod
     def getDateTimeFormat(cls, value):
-        return cls._makeLocalTimeString(value, lambda localTime: ('{0:>s} {1:>s}').format(backport.getShortDateFormat(value), backport.getLongTimeFormat(value)))
+        return cls._makeLocalTimeString(value, lambda localTime: '{0:>s} {1:>s}'.format(backport.getShortDateFormat(value), backport.getLongTimeFormat(value)))
 
     @classmethod
     def getStringFormat(cls, value):

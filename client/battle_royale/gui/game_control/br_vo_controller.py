@@ -1,4 +1,8 @@
-import BigWorld, WWISE, nations
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/game_control/br_vo_controller.py
+import BigWorld
+import WWISE
+import nations
 from constants import CURRENT_REALM, IS_CHINA
 from gui.battle_control import avatar_getter
 from items import vehicles
@@ -9,14 +13,14 @@ _SWITCH_RU_ON = 'SWITCH_ext_BR_vo_language_RU'
 _SWITCH_RU_OFF = 'SWITCH_ext_BR_vo_language_nonRU'
 _SWITCH_CN = 'SWITCH_ext_BR_vo_language_CN'
 _SWITCH_CHAR = 'SWITCH_ext_BR_vo_char'
-_SWITCH_CHAR_FOR_NATIONS = {'ussr': 'SWITCH_ext_BR_vo_char_RU', 
-   'usa': 'SWITCH_ext_BR_vo_char_US', 
-   'germany': 'SWITCH_ext_BR_vo_char_GE', 
-   'france': 'SWITCH_ext_BR_vo_char_FR', 
-   'uk': 'SWITCH_ext_BR_vo_char_UK', 
-   'sweden': 'SWITCH_ext_BR_vo_char_SE', 
-   'china': 'SWITCH_ext_BR_vo_char_CN', 
-   'poland': 'SWITCH_ext_BR_vo_char_PL'}
+_SWITCH_CHAR_FOR_NATIONS = {'ussr': 'SWITCH_ext_BR_vo_char_RU',
+ 'usa': 'SWITCH_ext_BR_vo_char_US',
+ 'germany': 'SWITCH_ext_BR_vo_char_GE',
+ 'france': 'SWITCH_ext_BR_vo_char_FR',
+ 'uk': 'SWITCH_ext_BR_vo_char_UK',
+ 'sweden': 'SWITCH_ext_BR_vo_char_SE',
+ 'china': 'SWITCH_ext_BR_vo_char_CN',
+ 'poland': 'SWITCH_ext_BR_vo_char_PL'}
 
 class BRVoiceOverController(object):
 
@@ -73,6 +77,4 @@ class BRVoiceOverController(object):
     def __switchRuValue(self):
         if IS_CHINA:
             return _SWITCH_CN
-        if self.__isRuRealm:
-            return _SWITCH_RU_ON
-        return _SWITCH_RU_OFF
+        return _SWITCH_RU_ON if self.__isRuRealm else _SWITCH_RU_OFF

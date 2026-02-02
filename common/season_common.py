@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/season_common.py
 import time
 from typing import Dict, Optional, Any, List
 from collections import namedtuple
@@ -63,10 +65,7 @@ class GameSeason(object):
     def getCycleInfo(self, cycleID=None):
         if cycleID is None:
             cycleID = self.getCycleID()
-        if cycleID is not None:
-            return self.getAllCycles().get(cycleID, None)
-        else:
-            return
+        return self.getAllCycles().get(cycleID, None) if cycleID is not None else None
 
     def getNextCycleInfo(self, now, cycleID=None):
         if cycleID is None:
@@ -86,7 +85,7 @@ class GameSeason(object):
             if cycle.startDate >= now:
                 return cycle
 
-        return
+        return None
 
     def getFirstCycleInfo(self):
         firstCycleID = min(self.getAllCycles().iterkeys())
@@ -111,10 +110,7 @@ class GameSeason(object):
 
     def getLastActiveCycleID(self, now):
         cycleInfo = self.getLastActiveCycleInfo(now)
-        if cycleInfo:
-            return cycleInfo.ID
-        else:
-            return
+        return cycleInfo.ID if cycleInfo else None
 
     def getCycleStartDate(self):
         return self.__cycleStartDate
@@ -126,7 +122,7 @@ class GameSeason(object):
         return self.getCycleInfo().ordinalNumber
 
     def getPassedCyclesNumber(self):
-        return sum(1 for cycle in self.getAllCycles().values() if cycle.status == CycleStatus.PAST)
+        return sum((1 for cycle in self.getAllCycles().values() if cycle.status == CycleStatus.PAST))
 
     def getNumber(self):
         return self.__data.get('number')
@@ -162,8 +158,11 @@ def getSeason(config, now):
         for cycleInfo in config['cycleTimes']:
             startTime, endTime, seasonID, _ = cycleInfo
             if now >= endTime:
-                if cycleInfo == config['cycleTimes'][(-1)] and isWithinSeasonTime(config, seasonID, now):
-                    return (False, (None, None, seasonID, None))
+                if cycleInfo == config['cycleTimes'][-1] and isWithinSeasonTime(config, seasonID, now):
+                    return (False, (None,
+                      None,
+                      seasonID,
+                      None))
                 continue
             cycleActive = now >= startTime
             if not cycleActive and not isWithinSeasonTime(config, seasonID, now):
@@ -176,15 +175,16 @@ def getSeason(config, now):
 def getLastActiveSeasonID(config):
     if not config or not config.get('cycleTimes', []):
         return
-    currentTime = time.time()
-    prevSeasonID = None
-    for cycleInfo in config['cycleTimes']:
-        cycleStartTime, _, seasonID, __ = cycleInfo
-        if cycleStartTime > currentTime:
-            return prevSeasonID
-        prevSeasonID = seasonID
+    else:
+        currentTime = time.time()
+        prevSeasonID = None
+        for cycleInfo in config['cycleTimes']:
+            cycleStartTime, _, seasonID, __ = cycleInfo
+            if cycleStartTime > currentTime:
+                return prevSeasonID
+            prevSeasonID = seasonID
 
-    return prevSeasonID
+        return prevSeasonID
 
 
 def getAllSeasonCycleInfos(config, inSeasonID):
@@ -203,7 +203,7 @@ def getSeasonCycleInfo(config, inCycleID):
         if inCycleID == cycleID:
             return cycleInfo
 
-    return
+    return None
 
 
 def isWithinSeasonTime(config, seasonID, now):
@@ -227,7 +227,7 @@ def getActiveSeasonCycleID(config, now):
     else:
         _, _, seasonID, cycleID = cycleInfo
         return (seasonID, cycleID)
-        return
+        return None
 
 
 def getActiveCycleConfig(config, now):
@@ -261,7 +261,7 @@ def getDateFromSeasonID(seasonID):
 def getSeasonNumber(config, seasonID):
     seasons = config.get('seasons', {})
     if not seasons:
-        return
+        return None
     else:
         seasonData = seasons.get(seasonID, {})
         return seasonData.get('number', None)
@@ -278,7 +278,4 @@ def getSeasonData(config, seasonID):
 
 def getCurrentSeasonNumber(config, currentTime=None):
     seasonFound, seasonInfo = getSeason(config, currentTime or time.time())
-    if not seasonFound:
-        return None
-    else:
-        return getSeasonNumber(config, seasonInfo[2])
+    return None if not seasonFound else getSeasonNumber(config, seasonInfo[2])

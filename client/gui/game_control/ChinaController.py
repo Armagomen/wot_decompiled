@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/ChinaController.py
 from adisp import adisp_process
 from gui.Scaleform.locale.MENU import MENU
 from helpers import dependency

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/personal_missions_30/tooltips/mission_progress_tooltip.py
 import typing
 from frameworks.wulf import ViewSettings
 from frameworks.wulf.view.array import fillStringsArray
@@ -14,21 +16,22 @@ if typing.TYPE_CHECKING:
 class MissionProgressTooltip(ViewImpl):
     __itemsCache = dependency.descriptor(IItemsCache)
 
-    def __init__(self, mission):
+    def __init__(self, mission, isCompleted):
         settings = ViewSettings(layoutID=R.views.mono.personal_missions_30.tooltips.mission_progress_tooltip(), model=MissionProgressTooltipModel())
         super(MissionProgressTooltip, self).__init__(settings)
         self.__mission = mission
+        self.__isCompleted = isCompleted
 
     @property
     def viewModel(self):
         return super(MissionProgressTooltip, self).getViewModel()
 
     def _onLoading(self):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             questConfig = getMissionConfigData(self.__mission)
             totalMissionsAmount = questConfig.maxProgressValue
             tx.setTotalMissionsAmount(totalMissionsAmount)
             battlesUniqueVehicles = sorted(self.__mission.getConditionsProgress().get('battlesUniqueVehicles', set()))
-            tx.setCompletedMissionsAmount(totalMissionsAmount if self.__mission.isCompleted() else len(battlesUniqueVehicles))
+            tx.setCompletedMissionsAmount(totalMissionsAmount if self.__isCompleted else len(battlesUniqueVehicles))
             vehicleNames = [ self.__itemsCache.items.getItemByCD(vehCD).shortUserName for vehCD in battlesUniqueVehicles ]
             fillStringsArray(vehicleNames, tx.getVehicles())

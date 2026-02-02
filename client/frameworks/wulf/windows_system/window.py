@@ -1,4 +1,8 @@
-import logging, typing, Event
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/frameworks/wulf/windows_system/window.py
+import logging
+import typing
+import Event
 from soft_exception import SoftException
 from ..py_object_binder import PyObjectEntity, getProxy, getObject
 from ..py_object_wrappers import PyObjectWindowSettings
@@ -10,7 +14,7 @@ _logger = logging.getLogger(__name__)
 NO_WINDOW_OWNER = 0
 
 class WindowSettings(object):
-    __slots__ = ('__proxy', )
+    __slots__ = ('__proxy',)
 
     def __init__(self):
         super(WindowSettings, self).__init__()
@@ -99,9 +103,7 @@ class WindowSettings(object):
 
 
 class Window(PyObjectEntity):
-    __slots__ = ('onStatusChanged', '__windowStatus', 'onShowingStatusChanged', 'onFocusChanged',
-                 'onReady', 'onSizeChanged', 'onPositionChanged', '__showingStatus',
-                 '__isReady', '__isShown', '__isFocused', '__weakref__', '__em')
+    __slots__ = ('onStatusChanged', '__windowStatus', 'onShowingStatusChanged', 'onFocusChanged', 'onReady', 'onSizeChanged', 'onPositionChanged', '__showingStatus', '__isReady', '__isShown', '__isFocused', '__weakref__', '__em')
 
     def __init__(self, settings):
         if not settings.name:
@@ -123,58 +125,37 @@ class Window(PyObjectEntity):
         return
 
     def __repr__(self):
-        return ('{}(uniqueID={}, layer={}, decorator={}, content={})').format(self.__class__.__name__, self.uniqueID, self.layer, self.decorator, self.content)
+        return '{}(uniqueID={}, layer={}, decorator={}, content={})'.format(self.__class__.__name__, self.uniqueID, self.layer, self.decorator, self.content)
 
     def getName(self):
         module = self.__class__.__module__
-        if module is None:
-            return self.__class__.__name__
-        else:
-            return ('.').join((module, self.__class__.__name__))
+        return self.__class__.__name__ if module is None else '.'.join((module, self.__class__.__name__))
 
     @property
     def decorator(self):
         proxy = self.proxy
-        if proxy is not None:
-            return proxy.decorator
-        else:
-            return
+        return proxy.decorator if proxy is not None else None
 
     @property
     def content(self):
         proxy = self.proxy
-        if proxy is not None:
-            return proxy.content
-        else:
-            return
+        return proxy.content if proxy is not None else None
 
     @property
     def parent(self):
-        if self.proxy is not None:
-            return self.proxy.parent
-        else:
-            return
+        return self.proxy.parent if self.proxy is not None else None
 
     @property
     def layer(self):
-        if self.proxy is not None:
-            return self.proxy.layer
-        else:
-            return -1
+        return self.proxy.layer if self.proxy is not None else -1
 
     @property
     def uniqueID(self):
-        if self.proxy is not None:
-            return self.proxy.uniqueID
-        else:
-            return 0
+        return self.proxy.uniqueID if self.proxy is not None else 0
 
     @property
     def windowFlags(self):
-        if self.proxy is not None:
-            return self.proxy.windowFlags
-        else:
-            return WindowFlags.UNDEFINED
+        return self.proxy.windowFlags if self.proxy is not None else WindowFlags.UNDEFINED
 
     @property
     def windowStatus(self):
@@ -205,26 +186,17 @@ class Window(PyObjectEntity):
     @property
     def position(self):
         proxy = self.proxy
-        if proxy is not None:
-            return self.proxy.windowPosition
-        else:
-            return (0.0, 0.0)
+        return self.proxy.windowPosition if proxy is not None else (0.0, 0.0)
 
     @property
     def globalPosition(self):
         proxy = self.proxy
-        if proxy is not None:
-            return self.proxy.calculateGlobalPosition
-        else:
-            return (0.0, 0.0)
+        return self.proxy.calculateGlobalPosition if proxy is not None else (0.0, 0.0)
 
     @property
     def size(self):
         proxy = self.proxy
-        if proxy is not None:
-            return self.proxy.windowSize
-        else:
-            return (0.0, 0.0)
+        return self.proxy.windowSize if proxy is not None else (0.0, 0.0)
 
     @property
     def typeFlag(self):
@@ -291,10 +263,7 @@ class Window(PyObjectEntity):
 
     def _getDecoratorViewModel(self):
         decorator = self.decorator
-        if decorator is not None:
-            return decorator.getViewModel()
-        else:
-            return
+        return decorator.getViewModel() if decorator is not None else None
 
     def _initialize(self):
         self.__attachToDecorator()

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client_common/vehicle_outfit/packers.py
 from itertools import product
 from debug_utils import LOG_WARNING
 from gui.shared.gui_items import GUI_ITEM_TYPE
@@ -35,14 +37,12 @@ def pickPacker(itemTypeID):
 
 
 def pickPackers(itemTypes):
-    packers = tuple(pickPacker(itemType) for itemType in itemTypes)
+    packers = tuple((pickPacker(itemType) for itemType in itemTypes))
     return packers
 
 
 def isComponentComplex(component):
-    if component and not isinstance(component, (long, int)):
-        return True
-    return False
+    return True if component and not isinstance(component, (long, int)) else False
 
 
 class CustomizationPacker(object):
@@ -196,7 +196,7 @@ class ModificationPacker(CustomizationPacker):
 
     @staticmethod
     def getRawComponent():
-        return
+        return None
 
 
 class ProjectionDecalPacker(CustomizationPacker):
@@ -217,11 +217,10 @@ class ProjectionDecalPacker(CustomizationPacker):
             intCD = cls.create(subcomp, CustomizationType.PROJECTION_DECAL)
             if subcomp.slotId == cls.STYLED_SLOT_ID:
                 slot.add(intCD, subcomp.slotId, subcomp)
-            elif subcomp.slotId in regions:
+            if subcomp.slotId in regions:
                 slotIdx = regions.index(subcomp.slotId)
                 slot.set(intCD, slotIdx, component=subcomp)
-            else:
-                raise SoftException('Wrong slotId for current outfit')
+            raise SoftException('Wrong slotId for current outfit')
 
     @classmethod
     def invalidate(cls, slot):

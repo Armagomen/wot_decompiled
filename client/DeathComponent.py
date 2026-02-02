@@ -1,4 +1,9 @@
-import BigWorld, CGF, GenericComponents, Math
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/DeathComponent.py
+import BigWorld
+import CGF
+import GenericComponents
+import Math
 from cgf_components_common.state_components import DeathComponentDescriptor, SpawnOnDeathComponent, RemoveOnDeathComponent
 from cgf_script.managers_registrator import onAddedQuery, onRemovedQuery, autoregister
 from cgf_script.component_meta_class import registerReplicableComponent

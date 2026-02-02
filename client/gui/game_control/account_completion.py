@@ -1,4 +1,7 @@
-import BigWorld, constants
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/account_completion.py
+import BigWorld
+import constants
 from PlayerEvents import g_playerEvents
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import SHOW_DEMO_ACC_REGISTRATION
@@ -90,7 +93,7 @@ class SteamCompletionController(ISteamCompletionController):
             return
         if status.typeIs(StatusTypes.ADD_NEEDED) and not self.isAddEmailOverlayShown:
             showSteamAddEmailOverlay()
-            lockNotificationManager(lock=False, releasePostponed=True, fireReleased=False)
+            lockNotificationManager(lock=False, releasePostponed=True)
         elif status.typeIs(StatusTypes.ADDED) and self.isConfirmEmailOverlayAllowed:
             showSteamConfirmEmailOverlay(email=status.email)
         lockNotificationManager(lock=False, releasePostponed=True)

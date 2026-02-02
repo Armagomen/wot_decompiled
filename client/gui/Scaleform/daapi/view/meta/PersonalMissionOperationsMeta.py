@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/PersonalMissionOperationsMeta.py
 from gui.Scaleform.framework.entities.View import View
 
 class PersonalMissionOperationsMeta(View):
@@ -12,9 +14,7 @@ class PersonalMissionOperationsMeta(View):
         self._printOverrideError('showInfo')
 
     def as_setOperationsS(self, operations):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setOperations(operations)
+        return self.flashObject.as_setOperations(operations) if self._isDAAPIInited() else None
 
     def as_setTitleS(self, titleVO):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setTitle(titleVO)
+        return self.flashObject.as_setTitle(titleVO) if self._isDAAPIInited() else None

@@ -1,8 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/windows/context_menu_content_model.py
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.ui_kit.list_model import ListModel
 
 class ContextMenuContentModel(ViewModel):
-    __slots__ = ('onItemClicked', )
+    __slots__ = ('onItemClicked',)
 
     def __init__(self, properties=3, commands=1):
         super(ContextMenuContentModel, self).__init__(properties=properties, commands=commands)

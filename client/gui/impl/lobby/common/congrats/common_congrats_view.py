@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/common/congrats/common_congrats_view.py
 import logging
 from frameworks.wulf import ViewSettings, WindowFlags
 from gui.impl.gen.resources import R
@@ -31,7 +33,7 @@ class _CommonCongratsView(ViewImpl):
         super(_CommonCongratsView, self)._finalize()
 
     def __updateVM(self):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             vm.setBackground(self.__ctx.background)
             vm.setTitle(self.__ctx.title)
             vm.setDescription(self.__ctx.description)

@@ -1,4 +1,7 @@
-import BattleReplay, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/app_loader/spaces.py
+import BattleReplay
+import BigWorld
 from PlayerEvents import g_playerEvents
 from adisp import adisp_process
 from constants import ARENA_GUI_TYPE, ACCOUNT_KICK_REASONS
@@ -279,7 +282,7 @@ class LobbySpace(CloseGameLoadingMixin, IGlobalSpace):
 
 
 class _ArenaSpace(IGlobalSpace):
-    __slots__ = ('_arenaGuiType', )
+    __slots__ = ('_arenaGuiType',)
 
     def __init__(self, arenaGuiType=ARENA_GUI_TYPE.UNKNOWN):
         super(_ArenaSpace, self).__init__()

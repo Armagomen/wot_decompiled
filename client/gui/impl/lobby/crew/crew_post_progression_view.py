@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/crew_post_progression_view.py
 from frameworks.wulf import ViewSettings, ViewFlags, WindowFlags, WindowLayer
 from gui import SystemMessages
 from gui.impl import backport
@@ -32,7 +34,7 @@ class CrewPostProgressionView(ViewImpl):
 
     def _onLoading(self, *args, **kwargs):
         super(CrewPostProgressionView, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             vm.setTitle(R.strings.crew_books.items.universalGuide.Name())
             vm.setDescription(backport.text(R.strings.crew_books.tooltip.universalGuide.mainText(), xp=self.__amountXpForBook()))
             vm.setIcon(R.images.gui.maps.icons.crewBooks.books.s600x450.universalGuide())
@@ -40,16 +42,10 @@ class CrewPostProgressionView(ViewImpl):
             self.__setPause(vm)
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onClaim, self.__onClaim),
-         (
-          g_playerEvents.onDisconnected, self.__onDisconnected))
+        return ((self.viewModel.onClaim, self.__onClaim), (g_playerEvents.onDisconnected, self.__onDisconnected))
 
     def _getCallbacks(self):
-        return (
-         (
-          'stats.XPpp', self.__onUpdateXpp),)
+        return (('stats.XPpp', self.__onUpdateXpp),)
 
     def __amountXpForBook(self):
         return self.__itemsCache.items.getItems(GUI_ITEM_TYPE.CREW_BOOKS, REQ_CRITERIA.CREW_ITEM.BOOK_RARITIES(CREW_BOOK_RARITY.UNIVERSAL_GUIDE)).values()[0].getXP()
@@ -65,7 +61,7 @@ class CrewPostProgressionView(ViewImpl):
         vm.setPauseReason(reason)
 
     def __onUpdateXpp(self, *args):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             self.__updateCountAndProgression(vm)
 
     def __updateCountAndProgression(self, vm):

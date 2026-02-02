@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/account_completion/utils/common.py
 import typing
 from constants import EMAIL_CONFIRMATION_QUEST_ID
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -18,26 +20,34 @@ if typing.TYPE_CHECKING:
     from gui.impl.backport import TooltipData
     from gui.server_events.event_items import TokenQuest
     from typing import Optional, List, Dict, Union
-_BONUSES_ORDER = (
- 'vehicles', 'premium', Currency.CRYSTAL, Currency.GOLD, 'freeXP', 'freeXPFactor',
- Currency.CREDITS, 'creditsFactor', 'tankmen', 'items', 'slots', 'berths', 'dossier',
- 'customizations', 'tokens', 'goodies', Currency.EVENT_COIN)
+_BONUSES_ORDER = ('vehicles',
+ 'premium',
+ Currency.CRYSTAL,
+ Currency.GOLD,
+ 'freeXP',
+ 'freeXPFactor',
+ Currency.CREDITS,
+ 'creditsFactor',
+ 'tankmen',
+ 'items',
+ 'slots',
+ 'berths',
+ 'dossier',
+ 'customizations',
+ 'tokens',
+ 'goodies',
+ Currency.EVENT_COIN)
 RESTRICTED_REQUEST_MIN_TIME = 5
 DISABLE_BUTTON_TIME = 90
 
 def _keyBonusesOrder(bonus):
-    if bonus.getName() in _BONUSES_ORDER:
-        return _BONUSES_ORDER.index(bonus.getName())
-    return len(_BONUSES_ORDER)
+    return _BONUSES_ORDER.index(bonus.getName()) if bonus.getName() in _BONUSES_ORDER else len(_BONUSES_ORDER)
 
 
 @dependency.replace_none_kwargs(eventsCache=IEventsCache)
 def getEmailConfirmationQuest(eventsCache=None):
     quests = eventsCache.getHiddenQuests(filterFunc=lambda quest: quest.getID() == EMAIL_CONFIRMATION_QUEST_ID)
-    if not quests:
-        return None
-    else:
-        return first(quests.values())
+    return None if not quests else first(quests.values())
 
 
 def getSteamEmailConfirmBonuses(rewards=None):
@@ -57,7 +67,7 @@ def fillRewards(model, rewards=None, tooltipItems=None):
 
 
 def showAccountAlreadyHasEmail(viewModel):
-    with viewModel.transaction() as (model):
+    with viewModel.transaction() as model:
         model.setIsTitleOnly(True)
         model.setTitle(R.strings.dialogs.accountCompletion.emailOverlay.alreadyConfirmed.title())
         model.setSubTitle(R.strings.dialogs.accountCompletion.emailOverlay.alreadyConfirmed.subTitle())
@@ -79,7 +89,4 @@ def _createSteamEmailConfirmBonuses(rewards):
 
 def _getSteamEmailConfirmBonusesFromQuest():
     emailConfirmationQuest = getEmailConfirmationQuest()
-    if emailConfirmationQuest is None:
-        return []
-    else:
-        return emailConfirmationQuest.getBonuses()
+    return [] if emailConfirmationQuest is None else emailConfirmationQuest.getBonuses()

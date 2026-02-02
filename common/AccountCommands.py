@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/AccountCommands.py
 from streamIDs import STREAM_ID_ACCOUNT_CMDS_MAX, STREAM_ID_ACCOUNT_CMDS_MIN
 RES_FAILURE = -1
 RES_WRONG_ARGS = -2
@@ -248,6 +250,7 @@ CMD_REROLL_WEEKLY_QUEST = 10131
 CMD_REROLL_WEEKLY_QUEST_DEV = 10132
 CMD_RESET_WEEKLY_REROLL_TIMEOUT = 10133
 CMD_COMPLETE_WEEKLY_QUEST_DEV = 10134
+CMD_ADD_CUSTOMIZATION_ITEM = 10135
 CMD_PET_SYSTEM_ADD_PET_DEV = 10400
 CMD_PET_SYSTEM_BUY_PET = 10401
 CMD_PET_SYSTEM_SELECT_ACTIVE_PET = 10402
@@ -259,7 +262,7 @@ CMD_PET_SYSTEM_SELECT_PET_NAME = 10407
 CMD_PET_SYSTEM_ADD_SYNERGY = 10408
 CMD_PET_SYSTEM_ADD_SYNERGY_DEV = 10409
 PLAYER_CMD_NAMES = dict([ (v, k) for k, v in globals().items() if k.startswith('CMD_') ])
-KEYS_ARE_UNIQUE = len(PLAYER_CMD_NAMES) == len(set(key for key in globals() if key.startswith('CMD_')))
+KEYS_ARE_UNIQUE = len(PLAYER_CMD_NAMES) == len(set((key for key in globals() if key.startswith('CMD_'))))
 
 class LOCK_REASON:
     NONE = 0

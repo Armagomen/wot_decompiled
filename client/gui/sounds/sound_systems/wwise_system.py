@@ -1,4 +1,8 @@
-import WWISE, Sound, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/sounds/sound_systems/wwise_system.py
+import WWISE
+import Sound
+import BigWorld
 from debug_utils import LOG_DEBUG, LOG_ERROR, LOG_WARNING
 from gui.sounds.abstract import SoundSystemAbstract
 from gui.sounds.sound_constants import SoundSystems, SPEAKERS_CONFIG
@@ -9,8 +13,7 @@ _QUEUE = 2
 _BATTLE_LOADING = 3
 _BATTLE = 4
 _BATTLE_RESULT = 5
-_envTransition = (
- (None, 0.0, 0.0, 0.0, 0.0, 0.0),
+_envTransition = ((None, 0.0, 0.0, 0.0, 0.0, 0.0),
  (0.0, None, 0.0, 0.0, 0.0, 0.0),
  (0.0, 2.0, None, 0.0, 0.0, 0.0),
  (0.0, 0.0, 0.0, None, 0.0, 0.0),
@@ -18,8 +21,7 @@ _envTransition = (
  (0.0, 0.0, 0.0, 0.0, 0.0, None))
 
 class _EnvironmentListNode(object):
-    __slots__ = ('__prev', '__next', '__environment', '__enterState', '__exitState',
-                 '__envID', '__cbkID')
+    __slots__ = ('__prev', '__next', '__environment', '__enterState', '__exitState', '__envID', '__cbkID')
 
     def __init__(self, environment, start_state, exit_state, envID, previous=None):
         self.__prev = previous
@@ -71,7 +73,7 @@ class _EnvironmentListNode(object):
 
     def __setEnterState(self):
         if self.__enterState:
-            LOG_DEBUG(('Set Enter UE sound state "{}" for previous finished environment: "{}"').format(self.__enterState, self.__environment))
+            LOG_DEBUG('Set Enter UE sound state "{}" for previous finished environment: "{}"'.format(self.__enterState, self.__environment))
             WWISE.WW_eventGlobalSync(self.__enterState)
         self.__cbkID = None
         return
@@ -83,24 +85,18 @@ class _EnvironmentListNode(object):
             return
         else:
             if self.__exitState:
-                LOG_DEBUG(('Set Exit UE sound state "{}" for the stopped environment "{}"').format(self.__exitState, self.__environment))
+                LOG_DEBUG('Set Exit UE sound state "{}" for the stopped environment "{}"'.format(self.__exitState, self.__environment))
                 WWISE.WW_eventGlobalSync(self.__exitState)
             return
 
 
 class _EnvironmentStatesSubSys(object):
-    _envStateDefs = {'login': (
-               'ue_01_loginscreen_enter', 'ue_01_loginscreen_exit', _LOGIN), 
-       'lobby': (
-               'ue_02_hangar_enter', 'ue_02_hangar_exit', _LOBBY), 
-       'queue': (
-               'ue_03_lobby_enter', 'ue_03_lobby_exit', _QUEUE), 
-       'battleLoading': (
-                       'ue_04_loadingscreen_enter', 'ue_04_loadingscreen_exit', _BATTLE_LOADING), 
-       'battle': (
-                'ue_05_arena_enter', 'ue_05_arena_exit', _BATTLE), 
-       'battleResults': (
-                       'ue_06_result_enter', 'ue_06_result_exit', _BATTLE_RESULT)}
+    _envStateDefs = {'login': ('ue_01_loginscreen_enter', 'ue_01_loginscreen_exit', _LOGIN),
+     'lobby': ('ue_02_hangar_enter', 'ue_02_hangar_exit', _LOBBY),
+     'queue': ('ue_03_lobby_enter', 'ue_03_lobby_exit', _QUEUE),
+     'battleLoading': ('ue_04_loadingscreen_enter', 'ue_04_loadingscreen_exit', _BATTLE_LOADING),
+     'battle': ('ue_05_arena_enter', 'ue_05_arena_exit', _BATTLE),
+     'battleResults': ('ue_06_result_enter', 'ue_06_result_exit', _BATTLE_RESULT)}
 
     def __init__(self):
         self._head = _EnvironmentListNode(None, None, None, None)
@@ -137,12 +133,12 @@ class WWISESoundSystem(SoundSystemAbstract):
     def enableDynamicPreset(self):
         wwiseEvent = 'ue_set_preset_high_dynamic_range'
         self.sendGlobalEvent(wwiseEvent)
-        LOG_DEBUG(('WWISE: triggered {0}').format(wwiseEvent))
+        LOG_DEBUG('WWISE: triggered {0}'.format(wwiseEvent))
 
     def disableDynamicPreset(self):
         wwiseEvent = 'ue_set_preset_low_dynamic_range'
         self.sendGlobalEvent(wwiseEvent)
-        LOG_DEBUG(('WWISE: triggered {0}').format(wwiseEvent))
+        LOG_DEBUG('WWISE: triggered {0}'.format(wwiseEvent))
 
     def setBassBoost(self, isEnabled):
         if isEnabled:
@@ -150,7 +146,7 @@ class WWISESoundSystem(SoundSystemAbstract):
         else:
             wwiseEvent = 'ue_set_preset_bassboost_off'
         WWISE.WW_eventGlobalSync(wwiseEvent)
-        LOG_DEBUG(('WWISE: triggered {0}').format(wwiseEvent))
+        LOG_DEBUG('WWISE: triggered {0}'.format(wwiseEvent))
 
     def getSystemSpeakersPresetID(self):
         return WWISE.WW_getSystemSpeakersConfig()
@@ -160,13 +156,13 @@ class WWISESoundSystem(SoundSystemAbstract):
 
     def setUserSpeakersPresetID(self, presetID):
         if presetID not in SPEAKERS_CONFIG.RANGE:
-            LOG_ERROR(('Invalid value of presetID {}').format(presetID))
+            LOG_ERROR('Invalid value of presetID {}'.format(presetID))
             return
         if self.getUserSpeakersPresetID() == presetID:
             LOG_DEBUG('WWISE: Sounds preset is already set. Do nothing')
         else:
             WWISE.WW_setUserSpeakersConfig(presetID)
-            LOG_DEBUG(('WWISE: New sounds preset is set. New value is {}').format(presetID))
+            LOG_DEBUG('WWISE: New sounds preset is set. New value is {}'.format(presetID))
             Sound.reloadSoundEngine()
             LOG_DEBUG('WWISE: Sound system is reinitialized')
             BigWorld.reinitVideoSound()
@@ -181,7 +177,7 @@ class WWISESoundSystem(SoundSystemAbstract):
             wwiseEvent = 'ue_set_preset_acoustic_device_reset'
             WWISE.WW_eventGlobalSync(wwiseEvent)
             WWISE.WW_setSoundSystem(soundSystemID)
-        LOG_DEBUG(('WWISE: triggered {0}').format(wwiseEvent))
+        LOG_DEBUG('WWISE: triggered {0}'.format(wwiseEvent))
         LOG_DEBUG('WWISE: sound system has been applied: %d' % soundSystemID)
 
     def sendGlobalEvent(self, eventName, **params):

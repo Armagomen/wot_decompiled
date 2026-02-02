@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/BattleHintPanelMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class BattleHintPanelMeta(BaseDAAPIComponent):
@@ -9,9 +11,7 @@ class BattleHintPanelMeta(BaseDAAPIComponent):
         self._printOverrideError('onHideComplete')
 
     def as_setDataS(self, hotKey, messageLeft, messageRight, offsetX, offsetY, reducedPanning, centeredMessage=False):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setData(hotKey, messageLeft, messageRight, offsetX, offsetY, reducedPanning, centeredMessage)
+        return self.flashObject.as_setData(hotKey, messageLeft, messageRight, offsetX, offsetY, reducedPanning, centeredMessage) if self._isDAAPIInited() else None
 
     def as_toggleS(self, isShow):
-        if self._isDAAPIInited():
-            return self.flashObject.as_toggle(isShow)
+        return self.flashObject.as_toggle(isShow) if self._isDAAPIInited() else None

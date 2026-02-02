@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/dialogs/dialog_template_focus.py
 import typing
 from gui.impl.gen.view_models.views.dialogs.dialog_base_focus_view_model import DialogBaseFocusViewModel
 from gui.impl.gen.view_models.views.dialogs.dialog_focus_view_model import DialogFocusViewModel
@@ -7,9 +9,7 @@ if typing.TYPE_CHECKING:
     from gui.impl.gen.view_models.views.dialogs.dialog_template_view_model import DialogTemplateViewModel
 
 def clampFocusIndex(value, topLimit):
-    if not -1 < value < topLimit:
-        return -1
-    return value
+    return -1 if not -1 < value < topLimit else value
 
 
 class BaseFocusPresenter(ViewImpl):
@@ -27,7 +27,7 @@ class BaseFocusPresenter(ViewImpl):
 
 
 class ButtonFocusingHandler(object):
-    __slots__ = ('__dialogTemplateViewModel', )
+    __slots__ = ('__dialogTemplateViewModel',)
 
     def __init__(self, dialogTemplateViewModel):
         super(ButtonFocusingHandler, self).__init__()
@@ -51,8 +51,7 @@ class ButtonFocusingHandler(object):
 
 
 class DialogTemplateFocusingSystem(object):
-    __slots__ = ('__dialogTemplateViewModel', '__presenters', '__currentFocusIndex',
-                 '__buttonFocusing', '__indexShifting', '__maxIndex', '__isStarted')
+    __slots__ = ('__dialogTemplateViewModel', '__presenters', '__currentFocusIndex', '__buttonFocusing', '__indexShifting', '__maxIndex', '__isStarted')
 
     def __init__(self, dialogTemplateViewModel):
         super(DialogTemplateFocusingSystem, self).__init__()

@@ -1,4 +1,7 @@
-import CGF, logging
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/cgf_components_common/managers/state_managers.py
+import CGF
+import logging
 from cgf_script.managers_registrator import onAddedQuery, onRemovedQuery, autoregister
 from GenericComponents import HealthGradationComponent, EHealthGradation, StateSwitcherComponent
 from functools import partial
@@ -36,18 +39,18 @@ class StateSwitcherManager(CGF.ComponentManager):
         if switcher is None:
             _logger.error('Failed to get StateSwitcherComponent, state is incorrect')
             return
+        elif gradationLink is None:
+            _logger.error('Failed to get HealthGradationComponent, state is incorrect')
+            return
+        zone = gradation.getHealthZone(health, maxHealth)
+        if zone == EHealthGradation.GREEN_ZONE:
+            switcher.requestState(StateSwitcherComponent.NORMAL_STATE)
+            return
+        elif zone == EHealthGradation.YELLOW_ZONE:
+            switcher.requestState(StateSwitcherComponent.DAMAGED_STATE)
+            return
+        elif zone == EHealthGradation.RED_ZONE:
+            switcher.requestState(StateSwitcherComponent.CRITICAL_STATE)
+            return
         else:
-            if gradationLink is None:
-                _logger.error('Failed to get HealthGradationComponent, state is incorrect')
-                return
-            zone = gradation.getHealthZone(health, maxHealth)
-            if zone == EHealthGradation.GREEN_ZONE:
-                switcher.requestState(StateSwitcherComponent.NORMAL_STATE)
-                return
-            if zone == EHealthGradation.YELLOW_ZONE:
-                switcher.requestState(StateSwitcherComponent.DAMAGED_STATE)
-                return
-            if zone == EHealthGradation.RED_ZONE:
-                switcher.requestState(StateSwitcherComponent.CRITICAL_STATE)
-                return
             return

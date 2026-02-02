@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/missions/regular/vehicle_selector.py
 from account_helpers.AccountSettings import MISSION_SELECTOR_FILTER, AccountSettings
 from gui.filters.carousel_filter import CarouselFilter, EventCriteriesGroup
 from gui.Scaleform import getButtonsAssetPath
@@ -18,7 +20,7 @@ class RegularMissionVehicleSelector(MissionVehicleSelector):
             suitableStyle = text_styles.unavailable
         else:
             suitableStyle = text_styles.highTitle
-        count = ('{} / {}').format(suitableStyle(suitableVehiclesCount), text_styles.main(totalVehiclesCount))
+        count = '{} / {}'.format(suitableStyle(suitableVehiclesCount), text_styles.main(totalVehiclesCount))
         return text_styles.highTitle(ms(QUESTS.MISSIONS_VEHICLESELECTOR_TITLE, count=count))
 
     @classmethod
@@ -37,13 +39,12 @@ class RegularVehicleSelectorCarousel(MissionVehicleSelectorCarousel):
 
     def _setCarouselFilters(self):
         filters = self.filter.getFilters(self._usedFilters)
-        self.as_initCarouselFilterS({'isVisible': True, 
-           'mainBtn': {'value': getButtonsAssetPath('params'), 
-                       'tooltip': TANK_CAROUSEL_FILTER.TOOLTIP_PARAMS}, 
-           'hotFilters': [
-                        {'value': QUESTS.QUESTS_TABLE_INHANGAR, 
-                           'tooltip': TANK_CAROUSEL_FILTER.TOOLTIP_INVENTORY, 
-                           'selected': filters['inventory']}]})
+        self.as_initCarouselFilterS({'isVisible': True,
+         'mainBtn': {'value': getButtonsAssetPath('params'),
+                     'tooltip': TANK_CAROUSEL_FILTER.TOOLTIP_PARAMS},
+         'hotFilters': [{'value': QUESTS.QUESTS_TABLE_INHANGAR,
+                         'tooltip': TANK_CAROUSEL_FILTER.TOOLTIP_INVENTORY,
+                         'selected': filters['inventory']}]})
 
 
 class _RegularCarouselFilter(CarouselFilter):

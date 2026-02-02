@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/wgnc/xml/gui_parsers.py
 from debug_utils import LOG_WARNING
 from gui.wgnc.settings import WGNC_POP_UP_PRIORITIES
 from gui.wgnc.xml.format_by_tags import formatText
@@ -7,7 +9,7 @@ from gui.wgnc import gui_items
 class _ButtonsParser(SectionParser):
 
     def getTagName(self):
-        return 'buttons'
+        pass
 
     def parse(self, section):
         result = []
@@ -30,7 +32,7 @@ class _ButtonsParser(SectionParser):
 class _GUIActionsParser(SectionParser):
 
     def getTagName(self):
-        return 'handlers'
+        pass
 
     def parse(self, section):
         result = []
@@ -53,7 +55,7 @@ class _GUIActionsParser(SectionParser):
 class _PopUpParser(SectionParser):
 
     def getTagName(self):
-        return 'popup'
+        pass
 
     def parse(self, section):
         body = formatText(self._readString('body', section))
@@ -61,7 +63,7 @@ class _PopUpParser(SectionParser):
         if priority not in WGNC_POP_UP_PRIORITIES:
             LOG_WARNING('Priority of pop up is not valid, uses default priority', priority)
             priority = 'medium'
-        topic = formatText(section.readWideString('topic', ''))
+        topic = formatText(section.readWideString('topic', u''))
         icon = section.readString('icon', '')
         bg = section.readString('bg', '')
         group = section.readString('group', 'info')
@@ -75,14 +77,14 @@ class _PopUpParser(SectionParser):
 
 
 class _WindowParser(SectionParser):
-    __slots__ = ('_itemClass', )
+    __slots__ = ('_itemClass',)
 
     def __init__(self, itemClass=gui_items.WindowItem):
         super(_WindowParser, self).__init__()
         self._itemClass = itemClass
 
     def getTagName(self):
-        return 'window'
+        pass
 
     def parse(self, section):
         name = self._readString('name', section)
@@ -104,13 +106,13 @@ class _PollParser(_WindowParser):
         super(_PollParser, self).__init__(itemClass)
 
     def getTagName(self):
-        return 'poll'
+        pass
 
 
 class _BrowserParser(SectionParser):
 
     def getTagName(self):
-        return 'browser'
+        pass
 
     def parse(self, section):
         sub = _GUIActionsParser()
@@ -118,13 +120,13 @@ class _BrowserParser(SectionParser):
             handlers = sub.parse(section[sub.getTagName()])
         else:
             handlers = None
-        return gui_items.BrowserItem(name=self._readString('name', section), body=self._readString('href', section), handlers=handlers, hidden=section.readBool('hidden', True), topic=section.readWideString('topic', ''))
+        return gui_items.BrowserItem(name=self._readString('name', section), body=self._readString('href', section), handlers=handlers, hidden=section.readBool('hidden', True), topic=section.readWideString('topic', u''))
 
 
 class _GUIItemsParser(ParsersCollection):
 
     def getTagName(self):
-        return 'gui'
+        pass
 
     def parse(self, section):
         items = []
@@ -137,8 +139,7 @@ class _GUIItemsParser(ParsersCollection):
 class GUIItemsParser_v2(_GUIItemsParser):
 
     def __init__(self):
-        super(GUIItemsParser_v2, self).__init__((
-         _PopUpParser(),
+        super(GUIItemsParser_v2, self).__init__((_PopUpParser(),
          _WindowParser(),
          _PollParser(),
          _BrowserParser()))

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/vehicle_preview/buying_panel/progression_styles_buying_panel_model.py
 from enum import IntEnum
 from frameworks.wulf import ViewModel
 
@@ -7,7 +9,7 @@ class SwitcherType(IntEnum):
 
 
 class ProgressionStylesBuyingPanelModel(ViewModel):
-    __slots__ = ('onChange', )
+    __slots__ = ('onChange',)
 
     def __init__(self, properties=7, commands=1):
         super(ProgressionStylesBuyingPanelModel, self).__init__(properties=properties, commands=commands)

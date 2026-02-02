@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/account_completion/common/base_wgnp_overlay_view.py
 from abc import ABCMeta, abstractmethod
-import typing, wg_async
+import typing
+import wg_async
 from gui.impl.gen import R
 from gui.impl.lobby.account_completion.common.base_overlay_view import BaseOverlayView
 from gui.impl.lobby.account_completion.curtain.curtain_view import CurtainWindow
@@ -74,7 +77,7 @@ class BaseWGNPOverlayView(BaseOverlayView):
         raise NotImplementedError
 
     def _setWarning(self, text='', countDown=0):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setWarningText(text)
             model.setWarningCountdown(countDown)
             model.setIsConfirmEnabled(not countDown)

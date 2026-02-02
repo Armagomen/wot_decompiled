@@ -1,4 +1,7 @@
-import logging, CGF
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/NetworkReplicationPointComponent.py
+import logging
+import CGF
 from BigWorld import DynamicScriptComponent
 from cgf_network import ClientReplicableDataSingleton, ReplicationState, ObjectCommand
 _logger = logging.getLogger(__name__)

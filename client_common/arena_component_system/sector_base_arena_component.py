@@ -1,13 +1,23 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client_common/arena_component_system/sector_base_arena_component.py
 from client_arena_component_system import ClientArenaComponent
 import Event
 from debug_utils import LOG_ERROR
-ID_TO_BASENAME = {1: 'A', 
-   2: 'B', 
-   3: 'C', 
-   4: 'D', 
-   5: 'E', 
-   6: 'F'}
-_MISSION_SECTOR_ID_MAPPING = {1: {0: 4, 1: 4, 2: 1}, 2: {0: 5, 1: 5, 2: 2}, 3: {0: 6, 1: 6, 2: 3}}
+ID_TO_BASENAME = {1: 'A',
+ 2: 'B',
+ 3: 'C',
+ 4: 'D',
+ 5: 'E',
+ 6: 'F'}
+_MISSION_SECTOR_ID_MAPPING = {1: {0: 4,
+     1: 4,
+     2: 1},
+ 2: {0: 5,
+     1: 5,
+     2: 2},
+ 3: {0: 6,
+     1: 6,
+     2: 3}}
 
 class SectorBaseArenaComponent(ClientArenaComponent):
     sectorBases = property(lambda self: self.__sectorBases)
@@ -52,17 +62,17 @@ class SectorBaseArenaComponent(ClientArenaComponent):
             if base.baseID == baseID:
                 return base
 
-        return
+        return None
 
     def getBaseBySectorId(self, sectorID):
         for base in self.__sectorBases:
             if base.sectorID == sectorID:
                 return base
 
-        return
+        return None
 
     def getCapturedBaseIDs(self):
-        return frozenset(base.baseID for base in self.__sectorBases if base.isCaptured)
+        return frozenset((base.baseID for base in self.__sectorBases if base.isCaptured))
 
     def getNumCapturedBasesByLane(self, lane):
         captured = 0
@@ -109,15 +119,11 @@ class SectorBaseArenaComponent(ClientArenaComponent):
         sectorBase = self.getSectorBaseById(sectorBaseId)
         if sectorBase.isPlayerTeam():
             return
-        self.__sectorBasePlayerAction[sectorBaseId] = (
-         action, nextActionTime)
+        self.__sectorBasePlayerAction[sectorBaseId] = (action, nextActionTime)
         self.onSectorBasePlayerAction(sectorBaseId, action, nextActionTime)
 
     def getSectorBasePlayerAction(self, sectorBaseId):
-        if sectorBaseId in self.__sectorBasePlayerAction:
-            return self.__sectorBasePlayerAction[sectorBaseId]
-        else:
-            return
+        return self.__sectorBasePlayerAction[sectorBaseId] if sectorBaseId in self.__sectorBasePlayerAction else None
 
     def getNonCapturedSectorBaseIdsByLane(self, lane):
         return self.__getSectorBaseIdsByLaneAndCapturedState(lane, False)

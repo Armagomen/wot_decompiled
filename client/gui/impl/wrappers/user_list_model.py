@@ -1,4 +1,8 @@
-import typing, logging, Event
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/wrappers/user_list_model.py
+import typing
+import logging
+import Event
 from gui.impl.gen.view_models.ui_kit.list_model import ListModel
 if typing.TYPE_CHECKING:
     from frameworks.wulf import Array
@@ -48,9 +52,9 @@ class UserListModel(ListModel[T]):
             return self.getItems()[index]
         except IndexError:
             _logger.error('Index %d is out of range', index)
-            return
+            return None
 
-        return
+        return None
 
     def findItems(self, predicate):
         return [ item for item in self.getItems() if predicate(item) ]
@@ -66,10 +70,7 @@ class UserListModel(ListModel[T]):
 
     def getSelectedItem(self):
         selectedItemsIndices = self.getSelectedIndices()
-        if selectedItemsIndices:
-            return self.getItem(selectedItemsIndices[0])
-        else:
-            return
+        return self.getItem(selectedItemsIndices[0]) if selectedItemsIndices else None
 
     def getSelectedItems(self):
         result = []

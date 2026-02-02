@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/framework/managers/TextManager.py
 from debug_utils import LOG_ERROR
 from gui.Scaleform.framework.entities.abstract.TextManagerMeta import TextManagerMeta
 from gui.Scaleform.genConsts.TEXT_MANAGER_STYLES import TEXT_MANAGER_STYLES as _TMS
@@ -43,6 +45,23 @@ class TextIcons(object):
     FREE_XP = 'freeXP'
     ARROW_BUTTON = 'arrowButton'
     NO_SEASON = 'noSeason'
-    ICONS = (NUT_ICON, PERCENT_ICON, ALERT_ICON, INFO_ICON, PREMIUM_IGR_SMALL, PREMIUM_IGR_BIG,
-     ORDER_IN_PROGRESS_ICON, CLOCK_ICON, CHECKMARK_ICON, NOT_AVAILABLE, LEVEL_5, LEVEL_10, SWORDS,
-     HUMANS, CREDITS, GOLD, XP, FREE_XP, ARROW_BUTTON, NO_SEASON)
+    ICONS = (NUT_ICON,
+     PERCENT_ICON,
+     ALERT_ICON,
+     INFO_ICON,
+     PREMIUM_IGR_SMALL,
+     PREMIUM_IGR_BIG,
+     ORDER_IN_PROGRESS_ICON,
+     CLOCK_ICON,
+     CHECKMARK_ICON,
+     NOT_AVAILABLE,
+     LEVEL_5,
+     LEVEL_10,
+     SWORDS,
+     HUMANS,
+     CREDITS,
+     GOLD,
+     XP,
+     FREE_XP,
+     ARROW_BUTTON,
+     NO_SEASON)

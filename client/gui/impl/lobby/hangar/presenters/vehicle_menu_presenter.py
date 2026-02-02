@@ -1,10 +1,14 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/hangar/presenters/vehicle_menu_presenter.py
 from __future__ import absolute_import
-import json, logging
+import json
+import logging
 from collections import namedtuple
 from functools import partial
 import typing
 from future.utils import iteritems
-import BigWorld, adisp
+import BigWorld
+import adisp
 from CurrentVehicle import g_currentVehicle
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import CREW_BOOKS_VIEWED
@@ -50,6 +54,7 @@ if typing.TYPE_CHECKING:
 _logger = logging.getLogger(__name__)
 _ItemInfo = namedtuple('itemInfo', ['state', 'counter', 'handler'])
 _ItemStateWithReason = namedtuple('itemStateWithReason', ['state', 'reason'])
+NOT_FULL_QS_AMMO_MULTILIER = 0.8
 
 def _handleFunctionCallForCurrentVehicle(func):
     func(g_currentVehicle.item.intCD)
@@ -81,51 +86,38 @@ class VehicleMenuPresenter(ViewComponent[VehicleMenuModel], IPrbListener):
         return self.__hangarSpace.videoCameraController
 
     def _createMenuItems(self):
-        return {VehicleMenuModel.CUSTOMIZATION: _ItemInfo(partial(self.__getStylesState, requestCriteria=~REQ_CRITERIA.CUSTOMIZATION.HAS_TAGS([ItemTags.IS_3D])), 0, self.__customizationService.showCustomization), 
-           VehicleMenuModel.CREW_AUTO_RETURN: _ItemInfo(self.__setCrewAutoReturnState, 0, self.__handleAutoReturnToggleSwitch), 
-           VehicleMenuModel.CREW_RETRAIN: _ItemInfo(self.__getCrewRetrainState, 0, self.__handleCrewRetrain), 
-           VehicleMenuModel.QUICK_TRAINING: _ItemInfo(self.__getQuickTrainingState, self.__getCrewBooksCount, showQuickTraining), 
-           VehicleMenuModel.CREW_OUT: _ItemInfo(self.__getCrewOutState, 0, self.__handleCrewOut), 
-           VehicleMenuModel.CREW_BACK: _ItemInfo(self.__getCrewBackState, 0, self.__handleCrewBack), 
-           VehicleMenuModel.EASY_EQUIP: _ItemInfo(self.__getEasyEquipState, 0, showEasyTankEquipScreen), 
-           VehicleMenuModel.NATION_CHANGE: _ItemInfo(self.__getNationChangeState, 0, partial(_handleFunctionCallForCurrentVehicle, showChangeVehicleNationDialog)), 
-           VehicleMenuModel.ARMOR_INSPECTOR: _ItemInfo(self.__getArmorState, 0, partial(_handleFunctionCallForCurrentVehicle, showVehicleHubArmor)), 
-           VehicleMenuModel.FIELD_MODIFICATION: _ItemInfo(self.__getProgressionState, 0, partial(_handleFunctionCallForCurrentVehicle, showVehPostProgressionView)), 
-           VehicleMenuModel.RESEARCH: _ItemInfo(self.__getResearchState, self.__getAvailableModulesForResearchCount, partial(_handleFunctionCallForCurrentVehicle, showVehicleHubModules)), 
-           VehicleMenuModel.ABOUT_VEHICLE: _ItemInfo(self.__getAboutVehicleState, 0, partial(_handleFunctionCallForCurrentVehicle, showVehicleHubOverview)), 
-           VehicleMenuModel.COMPARE: _ItemInfo(self.__getCompareState, 0, self.__handleCompare), 
-           VehicleMenuModel.REPAIRS: _ItemInfo(self.__getRepairState, 0, self.__handleRepair), 
-           VehicleMenuModel.VEH_SKILL_TREE: _ItemInfo(partial(self.__getProgressionState, isVehSkillTree=True), 0, partial(_handleFunctionCallForCurrentVehicle, showVehicleHubVehSkillTree))}
+        return {VehicleMenuModel.CUSTOMIZATION: _ItemInfo(partial(self.__getStylesState, requestCriteria=~REQ_CRITERIA.CUSTOMIZATION.HAS_TAGS([ItemTags.IS_3D])), 0, self.__customizationService.showCustomization),
+         VehicleMenuModel.CREW_AUTO_RETURN: _ItemInfo(self.__setCrewAutoReturnState, 0, self.__handleAutoReturnToggleSwitch),
+         VehicleMenuModel.CREW_RETRAIN: _ItemInfo(self.__getCrewRetrainState, 0, self.__handleCrewRetrain),
+         VehicleMenuModel.QUICK_TRAINING: _ItemInfo(self.__getQuickTrainingState, self.__getCrewBooksCount, showQuickTraining),
+         VehicleMenuModel.CREW_OUT: _ItemInfo(self.__getCrewOutState, 0, self.__handleCrewOut),
+         VehicleMenuModel.CREW_BACK: _ItemInfo(self.__getCrewBackState, 0, self.__handleCrewBack),
+         VehicleMenuModel.EASY_EQUIP: _ItemInfo(self._getEasyEquipState, 0, showEasyTankEquipScreen),
+         VehicleMenuModel.NATION_CHANGE: _ItemInfo(self.__getNationChangeState, 0, partial(_handleFunctionCallForCurrentVehicle, showChangeVehicleNationDialog)),
+         VehicleMenuModel.ARMOR_INSPECTOR: _ItemInfo(self.__getArmorState, 0, partial(_handleFunctionCallForCurrentVehicle, showVehicleHubArmor)),
+         VehicleMenuModel.FIELD_MODIFICATION: _ItemInfo(self.__getProgressionState, 0, partial(_handleFunctionCallForCurrentVehicle, showVehPostProgressionView)),
+         VehicleMenuModel.RESEARCH: _ItemInfo(self.__getResearchState, self.__getAvailableModulesForResearchCount, partial(_handleFunctionCallForCurrentVehicle, showVehicleHubModules)),
+         VehicleMenuModel.ABOUT_VEHICLE: _ItemInfo(self.__getAboutVehicleState, 0, partial(_handleFunctionCallForCurrentVehicle, showVehicleHubOverview)),
+         VehicleMenuModel.COMPARE: _ItemInfo(self.__getCompareState, 0, self.__handleCompare),
+         VehicleMenuModel.REPAIRS: _ItemInfo(self.__getRepairState, 0, self.__handleRepair),
+         VehicleMenuModel.VEH_SKILL_TREE: _ItemInfo(partial(self.__getProgressionState, isVehSkillTree=True), 0, partial(_handleFunctionCallForCurrentVehicle, showVehicleHubVehSkillTree))}
 
     def _getEvents(self):
-        return (
-         (
-          g_currentVehicle.onChanged, self.__onVehicleChanged),
-         (
-          g_currentVehicle.onChangeStarted, self.__onVehicleChanging),
-         (
-          AccountSettings.onSettingsChanging, self.__onAccountSettingsChanging),
-         (
-          g_playerEvents.onConfigModelUpdated, self.__configChangeHandler),
-         (
-          self.viewModel.onNavigate, self.__onNavigate),
-         (
-          self.__easyTankEquipCtrl.onUpdated, self.__onSettingsChange),
-         (
-          self.__itemsCache.onSyncCompleted, self.__onSyncCompleted),
-         (
-          self.__platoonCtrl.onMembersUpdate, self.__onPlatoonMembersUpdate),
-         (
-          self.__cmpBasket.onChange, self.__onCmpBasketChange),
-         (
-          self.__cmpBasket.onSwitchChange, self.__onVehCmpBasketStateChanged),
-         (
-          self._cameraController.onEnabledChange, self.__onCameraEnabledChage))
+        return ((g_currentVehicle.onChanged, self.__onVehicleChanged),
+         (g_currentVehicle.onChangeStarted, self.__onVehicleChanging),
+         (AccountSettings.onSettingsChanging, self.__onAccountSettingsChanging),
+         (g_playerEvents.onConfigModelUpdated, self.__configChangeHandler),
+         (self.viewModel.onNavigate, self.__onNavigate),
+         (self.__easyTankEquipCtrl.onUpdated, self.__onSettingsChange),
+         (self.__itemsCache.onSyncCompleted, self.__onSyncCompleted),
+         (self.__platoonCtrl.onMembersUpdate, self.__onPlatoonMembersUpdate),
+         (self.__cmpBasket.onChange, self.__onCmpBasketChange),
+         (self.__cmpBasket.onSwitchChange, self.__onVehCmpBasketStateChanged),
+         (self._cameraController.onEnabledChange, self.__onCameraEnabledChage),
+         (self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingChanged))
 
     def _getListeners(self):
-        return (
-         (
-          events.PrebattleEvent.SWITCHED, self.__onPrbEntitySwitched, EVENT_BUS_SCOPE.LOBBY),)
+        return ((events.PrebattleEvent.SWITCHED, self.__onPrbEntitySwitched, EVENT_BUS_SCOPE.LOBBY),)
 
     def _onLoading(self, *args, **kwargs):
         super(VehicleMenuPresenter, self)._onLoading()
@@ -153,6 +145,18 @@ class VehicleMenuPresenter(ViewComponent[VehicleMenuModel], IPrbListener):
         self.__isVehicleChanging = False
         self.__updateModel()
 
+    def _getEasyEquipState(self):
+        if not self.__easyTankEquipCtrl.config.enabled:
+            return VehicleMenuModel.UNAVAILABLE
+        if not g_currentVehicle.isPresent() or self.__isVehicleUnavailable() or g_currentVehicle.item.isOnlyForEventBattles or g_currentVehicle.isUnsuitableToQueue():
+            return VehicleMenuModel.DISABLED
+        if g_currentVehicle.isPresent() and isAvailableForVehicle(g_currentVehicle.item):
+            isHighlight = not g_currentVehicle.item.isCrewFull or not self.__isAmmoNotFull() or not g_currentVehicle.item.consumables.installed.getItems()
+            if isHighlight:
+                return VehicleMenuModel.WARNING
+            return VehicleMenuModel.ENABLED
+        return VehicleMenuModel.DISABLED
+
     def __onPlatoonMembersUpdate(self, *_):
         self.__updateModel()
 
@@ -172,10 +176,14 @@ class VehicleMenuPresenter(ViewComponent[VehicleMenuModel], IPrbListener):
     def __onSettingsChange(self):
         self.__updateMenuItemModel(VehicleMenuModel.EASY_EQUIP)
 
+    def __onServerSettingChanged(self, diff):
+        if 'isCustomizationEnabled' in diff:
+            self.__updateMenuItemModel(VehicleMenuModel.CUSTOMIZATION)
+
     def __updateModel(self):
         self.__hasInventoryTankman = bool(self.__itemsCache.items.getInventoryTankmen(limit=1))
         self.__hasTankman = bool(self.__itemsCache.items.getInventoryTankmen(REQ_CRITERIA.TANKMAN.IS_LOCK_CREW(isLocked=False), limit=1))
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             menuItems = model.getMenuItems()
             menuItems.clear()
             researchItems = model.getResearchItems()
@@ -194,8 +202,8 @@ class VehicleMenuPresenter(ViewComponent[VehicleMenuModel], IPrbListener):
         self.__setItem(menuItemName, menuItems)
 
     def __setItem(self, name, menuItems):
-        data = {'state': self.__getMenuItemState(name), 
-           'counter': 0}
+        data = {'state': self.__getMenuItemState(name),
+         'counter': 0}
         if g_currentVehicle.isPresent():
             data['counter'] = self._menuItems[name].counter if isinstance(self._menuItems[name].counter, int) else self._menuItems[name].counter()
             menuItemStateValue = self._menuItems[name].state()
@@ -210,9 +218,7 @@ class VehicleMenuPresenter(ViewComponent[VehicleMenuModel], IPrbListener):
             return VehicleMenuModel.DISABLED
         menuItemStateValue = self._menuItems[name].state()
         hasFields = isinstance(menuItemStateValue, tuple) and hasattr(menuItemStateValue, '_fields')
-        if hasFields:
-            return menuItemStateValue.state
-        return menuItemStateValue
+        return menuItemStateValue.state if hasFields else menuItemStateValue
 
     def __getUnviewedResearchModules(self):
         researchInfo = getResearchInfo(vehicle=g_currentVehicle.item)
@@ -229,8 +235,7 @@ class VehicleMenuPresenter(ViewComponent[VehicleMenuModel], IPrbListener):
                     continue
                 if module.itemTypeName == 'vehicleChassis' and module.isWheeledChassis():
                     modules.append('vehicleWheels')
-                else:
-                    modules.append(module.itemTypeName)
+                modules.append(module.itemTypeName)
 
             return modules
 
@@ -238,10 +243,12 @@ class VehicleMenuPresenter(ViewComponent[VehicleMenuModel], IPrbListener):
         return g_currentVehicle.item.isInBattle or g_currentVehicle.item.isInPrebattle
 
     def __getCrewBooksCount(self):
-        if g_currentVehicle is not None:
-            return crewBooksViewedCache().newCrewBooksAmount
-        else:
-            return 0
+        return crewBooksViewedCache().newCrewBooksAmount if g_currentVehicle is not None else 0
+
+    @staticmethod
+    def __isAmmoNotFull():
+        vehicle = g_currentVehicle.item
+        return sum((itemData[1] for itemData in vehicle.shells.installed.getStorage if itemData)) >= vehicle.ammoMaxSize * NOT_FULL_QS_AMMO_MULTILIER or vehicle.isOnlyForBattleRoyaleBattles
 
     def __getAvailableModulesForResearchCount(self):
         if g_currentVehicle is not None:
@@ -249,62 +256,60 @@ class VehicleMenuPresenter(ViewComponent[VehicleMenuModel], IPrbListener):
             if unviewedModules:
                 return len(unviewedModules)
             return 0
-        return
+        else:
+            return
 
     def __getCrewBackState(self):
         if not self.__hasTankman:
             return VehicleMenuModel.DISABLED
+        elif not g_currentVehicle.isPresent() or self.__isVehicleUnavailable():
+            return VehicleMenuModel.DISABLED
+        vehicle = g_currentVehicle.item
+        if vehicle.isCrewLocked:
+            return VehicleMenuModel.DISABLED
+        crew = vehicle.crew
+        lastCrewIDs = vehicle.lastCrew
+        if lastCrewIDs is None:
+            return _ItemStateWithReason(VehicleMenuModel.DISABLED, VehicleMenuModel.BATTLE_NEEDED)
+        freeBerths = self.__itemsCache.items.freeTankmenBerthsCount()
+        tankmenToBarracksCount = 0
+        demobilizedMembersCounter = 0
+        isCrewAlreadyInCurrentVehicle = True
+        hasReturnableTankmen = False
+        for _, tankman in crew:
+            if tankman is not None:
+                tankmenToBarracksCount += 1
+
+        for lastTankmenInvID in lastCrewIDs:
+            actualLastTankman = self.__itemsCache.items.getTankman(lastTankmenInvID)
+            if actualLastTankman is None or actualLastTankman.isDismissed:
+                demobilizedMembersCounter += 1
+                isCrewAlreadyInCurrentVehicle = False
+                continue
+            if actualLastTankman.isInTank:
+                lastTankmanVehicle = self.__itemsCache.items.getVehicle(actualLastTankman.vehicleInvID)
+                if lastTankmanVehicle:
+                    if lastTankmanVehicle.isLocked:
+                        return VehicleMenuModel.DISABLED
+                    if lastTankmanVehicle.invID != vehicle.invID:
+                        isCrewAlreadyInCurrentVehicle = False
+                        hasReturnableTankmen = True
+                    else:
+                        tankmenToBarracksCount -= 1
+            hasReturnableTankmen = True
+            isCrewAlreadyInCurrentVehicle = False
+            freeBerths += 1
+
+        if not hasReturnableTankmen:
+            return VehicleMenuModel.DISABLED
+        elif tankmenToBarracksCount > 0 and tankmenToBarracksCount > freeBerths:
+            return VehicleMenuModel.DISABLED
+        elif demobilizedMembersCounter > 0 and demobilizedMembersCounter == len(lastCrewIDs):
+            return VehicleMenuModel.DISABLED
+        elif isCrewAlreadyInCurrentVehicle:
+            return VehicleMenuModel.DISABLED
         else:
-            if not g_currentVehicle.isPresent() or self.__isVehicleUnavailable():
-                return VehicleMenuModel.DISABLED
-            vehicle = g_currentVehicle.item
-            if vehicle.isCrewLocked:
-                return VehicleMenuModel.DISABLED
-            crew = vehicle.crew
-            lastCrewIDs = vehicle.lastCrew
-            if lastCrewIDs is None:
-                return _ItemStateWithReason(VehicleMenuModel.DISABLED, VehicleMenuModel.BATTLE_NEEDED)
-            freeBerths = self.__itemsCache.items.freeTankmenBerthsCount()
-            tankmenToBarracksCount = 0
-            demobilizedMembersCounter = 0
-            isCrewAlreadyInCurrentVehicle = True
-            hasReturnableTankmen = False
-            for _, tankman in crew:
-                if tankman is not None:
-                    tankmenToBarracksCount += 1
-
-            for lastTankmenInvID in lastCrewIDs:
-                actualLastTankman = self.__itemsCache.items.getTankman(lastTankmenInvID)
-                if actualLastTankman is None or actualLastTankman.isDismissed:
-                    demobilizedMembersCounter += 1
-                    isCrewAlreadyInCurrentVehicle = False
-                    continue
-                if actualLastTankman.isInTank:
-                    lastTankmanVehicle = self.__itemsCache.items.getVehicle(actualLastTankman.vehicleInvID)
-                    if lastTankmanVehicle:
-                        if lastTankmanVehicle.isLocked:
-                            return VehicleMenuModel.DISABLED
-                        if lastTankmanVehicle.invID != vehicle.invID:
-                            isCrewAlreadyInCurrentVehicle = False
-                            hasReturnableTankmen = True
-                        else:
-                            tankmenToBarracksCount -= 1
-                else:
-                    hasReturnableTankmen = True
-                    isCrewAlreadyInCurrentVehicle = False
-                    freeBerths += 1
-
-            if not hasReturnableTankmen:
-                return VehicleMenuModel.DISABLED
-            if tankmenToBarracksCount > 0 and tankmenToBarracksCount > freeBerths:
-                return VehicleMenuModel.DISABLED
-            if demobilizedMembersCounter > 0 and demobilizedMembersCounter == len(lastCrewIDs):
-                return VehicleMenuModel.DISABLED
-            if isCrewAlreadyInCurrentVehicle:
-                return VehicleMenuModel.DISABLED
-            if 0 < demobilizedMembersCounter < len(lastCrewIDs):
-                return _ItemStateWithReason(VehicleMenuModel.ENABLED, VehicleMenuModel.CREW_MEMBERS_RETIRED)
-            return VehicleMenuModel.ENABLED
+            return _ItemStateWithReason(VehicleMenuModel.ENABLED, VehicleMenuModel.CREW_MEMBERS_RETIRED) if 0 < demobilizedMembersCounter < len(lastCrewIDs) else VehicleMenuModel.ENABLED
 
     def __onCmpBasketChange(self, *_):
         self.__updateMenuItemModel(VehicleMenuModel.COMPARE)
@@ -321,9 +326,7 @@ class VehicleMenuPresenter(ViewComponent[VehicleMenuModel], IPrbListener):
             return VehicleMenuModel.ENABLED
         criteria = requestCriteria | REQ_CRITERIA.CUSTOMIZATION.FOR_VEHICLE(g_currentVehicle.item)
         hasStyle = bool(self.__itemsCache.items.getItems(GUI_ITEM_TYPE.STYLE, criteria, limit=1))
-        if g_currentVehicle.isCustomizationEnabled and hasStyle:
-            return VehicleMenuModel.ENABLED
-        return VehicleMenuModel.DISABLED
+        return VehicleMenuModel.ENABLED if g_currentVehicle.isCustomizationEnabled and hasStyle else VehicleMenuModel.DISABLED
 
     def __getCrewRetrainState(self):
         if not self.__hasInventoryTankman:
@@ -332,9 +335,7 @@ class VehicleMenuPresenter(ViewComponent[VehicleMenuModel], IPrbListener):
             return VehicleMenuModel.DISABLED
         if g_currentVehicle.item.isCrewLocked:
             return VehicleMenuModel.DISABLED
-        if not getLowEfficiencyTankmenIDs(g_currentVehicle.item) or not g_currentVehicle.hasCrew() or self.__isVehicleUnavailable():
-            return VehicleMenuModel.DISABLED
-        return VehicleMenuModel.ENABLED
+        return VehicleMenuModel.DISABLED if not getLowEfficiencyTankmenIDs(g_currentVehicle.item) or not g_currentVehicle.hasCrew() or self.__isVehicleUnavailable() else VehicleMenuModel.ENABLED
 
     def __getCrewOutState(self):
         if not self.__hasInventoryTankman:
@@ -343,9 +344,7 @@ class VehicleMenuPresenter(ViewComponent[VehicleMenuModel], IPrbListener):
             return VehicleMenuModel.DISABLED
         if g_currentVehicle.item.isCrewLocked:
             return VehicleMenuModel.DISABLED
-        if not g_currentVehicle.hasCrew() or self.__isVehicleUnavailable():
-            return VehicleMenuModel.DISABLED
-        return VehicleMenuModel.ENABLED
+        return VehicleMenuModel.DISABLED if not g_currentVehicle.hasCrew() or self.__isVehicleUnavailable() else VehicleMenuModel.ENABLED
 
     def __getQuickTrainingState(self):
         if not self.__hasInventoryTankman:
@@ -354,100 +353,64 @@ class VehicleMenuPresenter(ViewComponent[VehicleMenuModel], IPrbListener):
             return VehicleMenuModel.DISABLED
         if not g_currentVehicle.hasCrew() or self.__isVehicleUnavailable():
             return VehicleMenuModel.DISABLED
-        if crewBooksViewedCache().haveNewCrewBooks() and not self.__isAllSkillsLearned():
-            return VehicleMenuModel.WARNING
-        return VehicleMenuModel.ENABLED
+        return VehicleMenuModel.WARNING if crewBooksViewedCache().haveNewCrewBooks() and not self.__isAllSkillsLearned() else VehicleMenuModel.ENABLED
 
     def __isAllSkillsLearned(self):
         crew = g_currentVehicle.item.crew
-        if not crew:
-            return False
-        return all(getTmanNewSkillCount(tankman, withFree=True)[1].intSkillLvl == 100 for _, tankman in crew)
+        return False if not crew else all((getTmanNewSkillCount(tankman, withFree=True)[1].intSkillLvl == 100 for _, tankman in crew if tankman is not None))
 
     def __getCompareState(self):
         cmpBasket = self.__cmpBasket
         readyToAdd = cmpBasket.isReadyToAdd(g_currentVehicle.item)
-        if not cmpBasket.isEnabled() or not readyToAdd or g_currentVehicle.isInBattle():
-            return VehicleMenuModel.DISABLED
-        return VehicleMenuModel.ENABLED
+        return VehicleMenuModel.DISABLED if not cmpBasket.isEnabled() or not readyToAdd or g_currentVehicle.isInBattle() else VehicleMenuModel.ENABLED
 
     def __getRepairState(self):
         if g_currentVehicle.isBroken():
             return VehicleMenuModel.CRITICAL
-        if g_currentVehicle.isInBattle() or g_currentVehicle.isLocked():
-            return VehicleMenuModel.DISABLED
-        return VehicleMenuModel.ENABLED
+        return VehicleMenuModel.DISABLED if g_currentVehicle.isInBattle() or g_currentVehicle.isLocked() else VehicleMenuModel.ENABLED
 
     def __getResearchState(self):
         if g_currentVehicle.isInBattle():
             return VehicleMenuModel.DISABLED
         unviewedModules = self.__getUnviewedResearchModules()
-        if unviewedModules:
-            return VehicleMenuModel.WARNING
-        return VehicleMenuModel.ENABLED
+        return VehicleMenuModel.WARNING if unviewedModules else VehicleMenuModel.ENABLED
 
     def __setCrewAutoReturnState(self):
         if not self.__hasTankman:
             return VehicleMenuModel.DISABLED
-        else:
-            if not g_currentVehicle.isPresent():
-                return VehicleMenuModel.UNAVAILABLE
-            if g_currentVehicle.item.isCrewLocked:
-                return VehicleMenuModel.UNAVAILABLE
-            if g_currentVehicle.item.lastCrew is None:
-                return _ItemStateWithReason(VehicleMenuModel.UNAVAILABLE, VehicleMenuModel.BATTLE_NEEDED)
-            if g_currentVehicle.item.isAutoReturn:
-                return VehicleMenuModel.ENABLED
-            return VehicleMenuModel.DISABLED
-
-    def __getEasyEquipState(self):
-        if not self.__easyTankEquipCtrl.config.enabled:
+        elif not g_currentVehicle.isPresent():
             return VehicleMenuModel.UNAVAILABLE
-        if not g_currentVehicle.isPresent() or self.__isVehicleUnavailable() or g_currentVehicle.item.isOnlyForEventBattles or g_currentVehicle.isUnsuitableToQueue():
-            return VehicleMenuModel.DISABLED
-        if g_currentVehicle.isPresent() and isAvailableForVehicle(g_currentVehicle.item):
-            isAmmoNotFull = g_currentVehicle.item.isAmmoFull
-            isHighlight = not g_currentVehicle.item.isCrewFull or not isAmmoNotFull or not g_currentVehicle.item.consumables.installed.getItems()
-            if isHighlight:
-                return VehicleMenuModel.WARNING
-            return VehicleMenuModel.ENABLED
-        return VehicleMenuModel.DISABLED
+        elif g_currentVehicle.item.isCrewLocked:
+            return VehicleMenuModel.UNAVAILABLE
+        elif g_currentVehicle.item.lastCrew is None:
+            return _ItemStateWithReason(VehicleMenuModel.UNAVAILABLE, VehicleMenuModel.BATTLE_NEEDED)
+        else:
+            return VehicleMenuModel.ENABLED if g_currentVehicle.item.isAutoReturn else VehicleMenuModel.DISABLED
 
     def __getNationChangeState(self):
         if g_currentVehicle.isPresent() and g_currentVehicle.item.isNationChangeAvailable:
             return VehicleMenuModel.ENABLED
-        if g_currentVehicle.item.hasNationGroup:
-            return VehicleMenuModel.DISABLED
-        return VehicleMenuModel.UNAVAILABLE
+        return VehicleMenuModel.DISABLED if g_currentVehicle.item.hasNationGroup else VehicleMenuModel.UNAVAILABLE
 
     def __getProgressionState(self, isVehSkillTree=False):
         if g_currentVehicle.item.postProgression.isVehSkillTree() != isVehSkillTree:
             return VehicleMenuModel.UNAVAILABLE
+        elif not self.__postProgressionCtrl.isExistsFor(g_currentVehicle.item.descriptor.type):
+            return VehicleMenuModel.UNAVAILABLE
         else:
-            if not self.__postProgressionCtrl.isExistsFor(g_currentVehicle.item.descriptor.type):
-                return VehicleMenuModel.UNAVAILABLE
-            if g_currentVehicle.item.postProgression.getFirstPurchasableStep(ExtendedMoney(xp=g_currentVehicle.item.xp)) is not None and (isVehSkillTree or g_currentVehicle.item.isElite) and needToShowCounter(g_currentVehicle.item):
-                return VehicleMenuModel.WARNING
-            return VehicleMenuModel.ENABLED
+            return VehicleMenuModel.WARNING if g_currentVehicle.item.postProgression.getFirstPurchasableStep(ExtendedMoney(xp=g_currentVehicle.item.xp)) is not None and (isVehSkillTree or g_currentVehicle.item.isElite) and needToShowCounter(g_currentVehicle.item) else VehicleMenuModel.ENABLED
 
     def __getArmorState(self):
         vehicle = g_currentVehicle.item
         configModel = armorInspectorConfigSchema.getModel()
-        if vehicle is None or not configModel.enabled or configModel.isDisabledForVehicle(vehicle.name) or g_currentVehicle.isInBattle():
-            return VehicleMenuModel.DISABLED
-        else:
-            return VehicleMenuModel.ENABLED
+        return VehicleMenuModel.DISABLED if vehicle is None or not configModel.enabled or configModel.isDisabledForVehicle(vehicle.name) or g_currentVehicle.isInBattle() else VehicleMenuModel.ENABLED
 
     def __getAboutVehicleState(self):
-        if g_currentVehicle.item is None or g_currentVehicle.isInBattle():
-            return VehicleMenuModel.DISABLED
-        else:
-            return VehicleMenuModel.ENABLED
+        return VehicleMenuModel.DISABLED if g_currentVehicle.item is None or g_currentVehicle.isInBattle() else VehicleMenuModel.ENABLED
 
     def __handleCrewOut(self):
         vehicle = g_currentVehicle.item
-        actions = [ (factory.UNLOAD_TANKMAN, vehicle.invID, slotIdx) for slotIdx, tmanInvId in vehicle.crew if tmanInvId is not None
-                  ]
+        actions = [ (factory.UNLOAD_TANKMAN, vehicle.invID, slotIdx) for slotIdx, tmanInvId in vehicle.crew if tmanInvId is not None ]
         BigWorld.player().doActions(actions)
         return
 
@@ -458,8 +421,7 @@ class VehicleMenuPresenter(ViewComponent[VehicleMenuModel], IPrbListener):
             SystemMessages.pushI18nMessage(result.userMsg, type=result.sysMsgType)
 
     def __handleCrewRetrain(self):
-        tankmanIDs = [ tman.invID for _, tman in g_currentVehicle.item.crew if tman is not None and not tman.isMaxCurrentVehicleSkillsEfficiency
-                     ]
+        tankmanIDs = [ tman.invID for _, tman in g_currentVehicle.item.crew if tman is not None and not tman.isMaxCurrentVehicleSkillsEfficiency ]
         vehicleCD = g_currentVehicle.item.intCD
         showRetrainMassiveDialog(tankmanIDs, vehicleCD)
         return

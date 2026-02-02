@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_light/scripts/client/comp7_light/gui/battle_control/controllers/repositories.py
 from comp7_core.gui.battle_control.controllers.appearance_cache_ctrls.comp7_appearance_cache_ctrl import Comp7AppearanceCacheController
 from comp7_core.gui.battle_control.controllers.sound_ctrls.comp7_battle_sounds import Comp7BattleSoundController
 from comp7_core.gui.battle_control.controllers.comp7_voip_ctrl import Comp7VOIPController

@@ -1,14 +1,12 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_results/context.py
 from constants import ARENA_BONUS_TYPE
 from gui.shared.utils.decorators import ReprInjector
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as _CAPS
 
-@ReprInjector.simple(('getArenaUniqueID', 'arenaUniqueID'), ('needToShowImmediately',
-                                                             'showImmediately'), ('needToShowIfPosted',
-                                                                                  'showIfPosted'), ('resetCache',
-                                                                                                    'resetCache'))
+@ReprInjector.simple(('getArenaUniqueID', 'arenaUniqueID'), ('needToShowImmediately', 'showImmediately'), ('needToShowIfPosted', 'showIfPosted'), ('resetCache', 'resetCache'))
 class RequestResultsContext(object):
-    __slots__ = ('__arenaUniqueID', '__showImmediately', '__showIfPosted', '__resetCache',
-                 '__arenaBonusType')
+    __slots__ = ('__arenaUniqueID', '__showImmediately', '__showIfPosted', '__resetCache', '__arenaBonusType')
 
     def __init__(self, arenaUniqueID, arenaBonusType=ARENA_BONUS_TYPE.UNKNOWN, showImmediately=True, showIfPosted=False, resetCache=False):
         super(RequestResultsContext, self).__init__()
@@ -54,5 +52,4 @@ class RequestEmblemContext(object):
         return self.__textureID
 
     def getUniqueID(self):
-        return (
-         self.getEmblemType(), self.__formationDBID)
+        return (self.getEmblemType(), self.__formationDBID)

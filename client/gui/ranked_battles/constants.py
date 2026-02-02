@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/ranked_battles/constants.py
 from enum import Enum, unique
 from gui.Scaleform.genConsts.RANKEDBATTLES_CONSTS import RANKEDBATTLES_CONSTS
 from gui.shared.money import Currency
@@ -15,19 +17,28 @@ class YearAwardsNames(CONST_CONTAINER):
     LARGE = RANKEDBATTLES_CONSTS.RANKED_REWARDS_YEAR_LARGE
 
 
-YEAR_AWARDS_ORDER = (
- YearAwardsNames.SMALL,
+YEAR_AWARDS_ORDER = (YearAwardsNames.SMALL,
  YearAwardsNames.MEDIUM,
  YearAwardsNames.BIG,
  YearAwardsNames.LARGE)
 ZERO_RANK_ID = 0
 ZERO_DIVISION_ID = 0
 MAX_GROUPS_IN_DIVISION = 3
-AWARDS_ORDER = (
- 'items', Currency.CREDITS, 'premium', 'premium_plus', 'premium_vip',
- Currency.GOLD, 'battleToken', 'tokens', 'entitlements', Currency.CRYSTAL)
-YEAR_AWARDS_BONUS_ORDER = (
- Currency.CRYSTAL, 'customizations', 'items', 'selectableBonus', 'vehicles')
+AWARDS_ORDER = ('items',
+ Currency.CREDITS,
+ 'premium',
+ 'premium_plus',
+ 'premium_vip',
+ Currency.GOLD,
+ 'battleToken',
+ 'tokens',
+ 'entitlements',
+ Currency.CRYSTAL)
+YEAR_AWARDS_BONUS_ORDER = (Currency.CRYSTAL,
+ 'customizations',
+ 'items',
+ 'selectableBonus',
+ 'vehicles')
 DEFAULT_REWARDS_COUNT = 7
 
 class RankedDossierKeys(CONST_CONTAINER):

@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/legacy_mechanics/dualgun_component.py
 from weakref import proxy
-import BattleReplay, BigWorld
+import BattleReplay
+import BigWorld
 from ReplayEvents import g_replayEvents
 from Vehicle import StunInfo
 from aih_constants import CTRL_MODE_NAME
@@ -89,9 +92,8 @@ class DeviceAffectPolicy(ReloadingAffectPolicy):
 
 
 class DestroyStateAffectPolicy(ReloadingAffectPolicy):
-    __AFFECT_STATES = (
-     VEHICLE_MISC_STATUS.VEHICLE_IS_OVERTURNED,)
-    __AFFECT_LEVEL = ('critical', )
+    __AFFECT_STATES = (VEHICLE_MISC_STATUS.VEHICLE_IS_OVERTURNED,)
+    __AFFECT_LEVEL = ('critical',)
 
     def __call__(self, value):
         if not isinstance(value, DestroyTimerViewState):
@@ -116,11 +118,11 @@ class DualGunComponent(DualGunPanelMeta, IPrebattleSetupsListener):
     def __init__(self):
         super(DualGunComponent, self).__init__()
         self.__reloadingState = ReloadFactorsState()
-        self.__deviceStateHandlers = {VEHICLE_VIEW_STATE.FIRE: ReloadingAffectPolicy(self.__reloadingState, VEHICLE_VIEW_STATE.FIRE), 
-           VEHICLE_VIEW_STATE.DEVICES: DeviceAffectPolicy(self.__reloadingState, VEHICLE_VIEW_STATE.DEVICES), 
-           VEHICLE_VIEW_STATE.CREW_DEACTIVATED: DeviceAffectPolicy(self.__reloadingState, VEHICLE_VIEW_STATE.CREW_DEACTIVATED), 
-           VEHICLE_VIEW_STATE.STUN: StunAffectPolicy(self.__reloadingState, VEHICLE_VIEW_STATE.STUN), 
-           VEHICLE_VIEW_STATE.DESTROY_TIMER: DestroyStateAffectPolicy(self.__reloadingState, VEHICLE_VIEW_STATE.DESTROY_TIMER)}
+        self.__deviceStateHandlers = {VEHICLE_VIEW_STATE.FIRE: ReloadingAffectPolicy(self.__reloadingState, VEHICLE_VIEW_STATE.FIRE),
+         VEHICLE_VIEW_STATE.DEVICES: DeviceAffectPolicy(self.__reloadingState, VEHICLE_VIEW_STATE.DEVICES),
+         VEHICLE_VIEW_STATE.CREW_DEACTIVATED: DeviceAffectPolicy(self.__reloadingState, VEHICLE_VIEW_STATE.CREW_DEACTIVATED),
+         VEHICLE_VIEW_STATE.STUN: StunAffectPolicy(self.__reloadingState, VEHICLE_VIEW_STATE.STUN),
+         VEHICLE_VIEW_STATE.DESTROY_TIMER: DestroyStateAffectPolicy(self.__reloadingState, VEHICLE_VIEW_STATE.DESTROY_TIMER)}
         self.__isEnabled = False
         self.__isObservingVehicle = False
         self.__isAllowedByContext = True
@@ -290,12 +292,10 @@ class DualGunComponent(DualGunPanelMeta, IPrebattleSetupsListener):
     def _convertServerStateToUI(state):
         if state == DUAL_GUN.GUN_STATE.EMPTY:
             return GunStatesUI.EMPTY
+        elif state == DUAL_GUN.GUN_STATE.RELOADING:
+            return GunStatesUI.RELOADING
         else:
-            if state == DUAL_GUN.GUN_STATE.RELOADING:
-                return GunStatesUI.RELOADING
-            if state == DUAL_GUN.GUN_STATE.READY:
-                return GunStatesUI.READY
-            return
+            return GunStatesUI.READY if state == DUAL_GUN.GUN_STATE.READY else None
 
     def __onBattleStarted(self):
         self.__updateContextAvailability()
@@ -462,10 +462,7 @@ class DualGunComponent(DualGunPanelMeta, IPrebattleSetupsListener):
 
     def __isPlayerVehicle(self):
         player = BigWorld.player()
-        if player is not None and player.vehicle is not None:
-            return player.vehicle.isPlayerVehicle
-        else:
-            return False
+        return player.vehicle.isPlayerVehicle if player is not None and player.vehicle is not None else False
 
     @noexceptReturn(False)
     def __isVisible(self):

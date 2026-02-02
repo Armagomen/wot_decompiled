@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/lobby/tooltips/fun_random_progression_tooltip_view.py
 from __future__ import absolute_import
 from frameworks.wulf import ViewSettings
 from fun_random.gui.feature.util.fun_mixins import FunAssetPacksMixin, FunProgressionWatcher, FunSubModesWatcher
@@ -29,7 +31,7 @@ class FunRandomProgressionTooltipView(ViewImpl, FunAssetPacksMixin, FunProgressi
     @hasActiveProgression()
     def __invalidateAll(self, *_):
         progression = self.getActiveProgression()
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setAssetsPointer(self.getModeAssetsPointer())
             model.setIsMultipleSubModes(len(self.getSubModes()) > 1)
             if progression.isInUnlimitedProgression:

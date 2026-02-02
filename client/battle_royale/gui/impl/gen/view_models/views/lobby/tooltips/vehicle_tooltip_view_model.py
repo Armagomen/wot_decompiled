@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/gen/view_models/views/lobby/tooltips/vehicle_tooltip_view_model.py
 from frameworks.wulf import ViewModel
 from battle_royale.gui.impl.gen.view_models.views.lobby.tooltips.tech_parameters_cmp_view_model import TechParametersCmpViewModel
 

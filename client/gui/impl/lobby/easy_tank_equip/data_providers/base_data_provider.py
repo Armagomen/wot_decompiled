@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/easy_tank_equip/data_providers/base_data_provider.py
 from enum import Enum
 from typing import TYPE_CHECKING
 import Event
@@ -104,14 +106,10 @@ class BaseDataProvider(object):
         return self.isCurrentPresetDisabled() or self.presets[self.currentPresetIndex].installed
 
     def getBalanceRemains(self):
-        if self.isProposalSelected:
-            return (self.lastCheckedBalance - self.getPresetPrice()).toNonNegative()
-        return self.lastCheckedBalance
+        return (self.lastCheckedBalance - self.getPresetPrice()).toNonNegative() if self.isProposalSelected else self.lastCheckedBalance
 
     def getPresetPrice(self):
-        if self.presets:
-            return self.presets[self.currentPresetIndex].itemPrice.price
-        return ZERO_MONEY
+        return self.presets[self.currentPresetIndex].itemPrice.price if self.presets else ZERO_MONEY
 
     def isProposalDisabled(self):
         return self.proposalDisableReason != ProposalDisableReason.NONE
@@ -125,9 +123,7 @@ class BaseDataProvider(object):
             return CardLogStatuses.DISABLED
         if self.presets[self.currentPresetIndex].installed:
             return CardLogStatuses.INSTALLED
-        if self.isProposalSelected:
-            return CardLogStatuses.SELECTED
-        return CardLogStatuses.NOT_SELECTED
+        return CardLogStatuses.SELECTED if self.isProposalSelected else CardLogStatuses.NOT_SELECTED
 
     def applyNewPresetOnVehicle(self):
         if self.isProposalSelected:
@@ -143,9 +139,7 @@ class BaseDataProvider(object):
             self.revertChangesFromSelectedPreset()
 
     def getPresetDataForApplying(self):
-        if not self.isProposalSelected or self.isCurrentPresetDisabledForApplying():
-            return None
-        return self._getPresetDataForApplying()
+        return None if not self.isProposalSelected or self.isCurrentPresetDisabledForApplying() else self._getPresetDataForApplying()
 
     def saveAccountSettings(self):
         pass
@@ -172,5 +166,4 @@ class BaseDataProvider(object):
         return {'price': self.getPresetPrice()}
 
     def _getCurrentPresetInfo(self, defaultIndex):
-        return first(((index, preset) for index, preset in enumerate(self.presets) if preset.installed), default=(
-         defaultIndex, self.presets[defaultIndex]))
+        return first(((index, preset) for index, preset in enumerate(self.presets) if preset.installed), default=(defaultIndex, self.presets[defaultIndex]))

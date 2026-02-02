@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/gift_system/proxy.py
 import logging
 from gifts.gifts_common import GiftEventID
 from gui.gift_system.wrappers import IncomeSysMessage

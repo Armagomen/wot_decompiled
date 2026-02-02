@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/epicBattle/epic_prime_time.py
 from constants import Configs
 from gui.Scaleform.daapi.view.lobby.prime_time_view_base import ServerListItemPresenter
 from gui.Scaleform.daapi.view.meta.EpicPrimeTimeMeta import EpicPrimeTimeMeta
@@ -22,9 +24,10 @@ class EpicBattleServerPresenter(ServerListItemPresenter):
                 tooltipStr = text_styles.expText(backport.text(R.strings.epic_battle.primeTime.serverTooltip(), server=self.getName(), time=timeStr))
             else:
                 tooltipStr = text_styles.expText(backport.text(R.strings.epic_battle.primeTime.serverUnavailableTooltip(), time=timeStr))
-        return {'tooltip': tooltipStr, 
-           'specialArgs': [], 'specialAlias': None, 
-           'isSpecial': None}
+        return {'tooltip': tooltipStr,
+         'specialArgs': [],
+         'specialAlias': None,
+         'isSpecial': None}
 
     def _getEndOfCycleTooltipText(self):
         return backport.text(R.strings.epic_battle.primeTime.endOfCycle(), server=self.getName())

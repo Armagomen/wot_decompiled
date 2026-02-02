@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/wgcg/tournament/contexts.py
 from account_helpers import getAccountDatabaseID
 from gui.clans.settings import DEFAULT_COOLDOWN
 from gui.wgcg.base.contexts import CommonWebRequestCtx
@@ -5,7 +7,7 @@ from gui.wgcg.settings import WebRequestDataType
 from soft_exception import SoftException
 
 class TournamentRequestCtx(CommonWebRequestCtx):
-    __slots__ = ('__unitMgrId', )
+    __slots__ = ('__unitMgrId',)
 
     def __init__(self, unitMgrId=None, **kwargs):
         super(TournamentRequestCtx, self).__init__(**kwargs)
@@ -46,7 +48,7 @@ class TournamentLeaveModeCtx(TournamentRequestCtx):
 
 
 class TournamentUpdateCtx(TournamentRequestCtx):
-    __slots__ = ('__rev', )
+    __slots__ = ('__rev',)
 
     def __init__(self, rev, **kwargs):
         super(TournamentUpdateCtx, self).__init__(**kwargs)
@@ -107,7 +109,7 @@ class TournamentUnassignCtx(TournamentRequestCtx):
 
 
 class TournamentChangeOpenedCtx(TournamentRequestCtx):
-    __slots__ = ('__isOpened', )
+    __slots__ = ('__isOpened',)
 
     def __init__(self, isOpened, **kwargs):
         super(TournamentChangeOpenedCtx, self).__init__(**kwargs)
@@ -127,7 +129,7 @@ class TournamentChangeOpenedCtx(TournamentRequestCtx):
 
 
 class TournamentSetVehicleCtx(TournamentRequestCtx):
-    __slots__ = ('__vehTypeCD', )
+    __slots__ = ('__vehTypeCD',)
 
     def __init__(self, vehTypeCD, **kwargs):
         super(TournamentSetVehicleCtx, self).__init__(**kwargs)
@@ -147,7 +149,7 @@ class TournamentSetVehicleCtx(TournamentRequestCtx):
 
 
 class TournamentSetReadyCtx(TournamentRequestCtx):
-    __slots__ = ('__isReady', )
+    __slots__ = ('__isReady',)
 
     def __init__(self, isReady, **kwargs):
         super(TournamentSetReadyCtx, self).__init__(**kwargs)
@@ -167,7 +169,7 @@ class TournamentSetReadyCtx(TournamentRequestCtx):
 
 
 class TournamentBattleQueueCtx(TournamentRequestCtx):
-    __slots__ = ('__action', )
+    __slots__ = ('__action',)
 
     def __init__(self, action, **kwargs):
         super(TournamentBattleQueueCtx, self).__init__(**kwargs)
@@ -187,7 +189,7 @@ class TournamentBattleQueueCtx(TournamentRequestCtx):
 
 
 class TournamentKickPlayerCtx(TournamentRequestCtx):
-    __slots__ = ('__pID', )
+    __slots__ = ('__pID',)
 
     def __init__(self, pID, **kwargs):
         super(TournamentKickPlayerCtx, self).__init__(**kwargs)
@@ -220,9 +222,7 @@ class TournamentGiveLeadershipCtx(TournamentRequestCtx):
         return cls(pID, unitMgrId=unitMgrId, waitingID=waitingID)
 
     def getRequestType(self):
-        if self.__pID != getAccountDatabaseID():
-            return WebRequestDataType.STRONGHOLD_GIVE_LEADERSHIP
-        return WebRequestDataType.STRONGHOLD_TAKE_LEADERSHIP
+        return WebRequestDataType.STRONGHOLD_GIVE_LEADERSHIP if self.__pID != getAccountDatabaseID() else WebRequestDataType.STRONGHOLD_TAKE_LEADERSHIP
 
     def getPlayerID(self):
         return self.__pID

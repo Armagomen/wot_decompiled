@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/items/artefacts_helpers.py
 from typing import Optional, Dict, Set, Tuple, List, TYPE_CHECKING
 import nations
 from constants import MIN_VEHICLE_LEVEL, MAX_VEHICLE_LEVEL
@@ -5,11 +7,12 @@ from items import _xml, ITEM_TYPE_NAMES, ITEM_TYPES
 from items.readers.shared_readers import readAllowedTags as _readTags
 if TYPE_CHECKING:
     from items.vehicles import VehicleType, VehicleDescriptor
-_vehicleFilterItemTypes = {'vehicle': 'vehicle', 'chassis': 'vehicleChassis', 
-   'engine': 'vehicleEngine', 
-   'fuelTank': 'vehicleFuelTank', 
-   'radio': 'vehicleRadio', 
-   'gun': 'vehicleGun'}
+_vehicleFilterItemTypes = {'vehicle': 'vehicle',
+ 'chassis': 'vehicleChassis',
+ 'engine': 'vehicleEngine',
+ 'fuelTank': 'vehicleFuelTank',
+ 'radio': 'vehicleRadio',
+ 'gun': 'vehicleGun'}
 
 class ComponentFilter(object):
 
@@ -20,7 +23,7 @@ class ComponentFilter(object):
         self._mandatoryTags = mandatoryTags
 
     def __str__(self):
-        return ('{}:[minLevel={}, maxLevel = {}, tags = {}]').format(self.__class__.__name__, self._minLevel, self._maxLevel, self._tags)
+        return '{}:[minLevel={}, maxLevel = {}, tags = {}]'.format(self.__class__.__name__, self._minLevel, self._maxLevel, self._tags)
 
     @property
     def minLevel(self):
@@ -39,9 +42,7 @@ class ComponentFilter(object):
             return False
         if self._tags and not itemDescr.tags.intersection(self._tags):
             return False
-        if self._mandatoryTags and not self._mandatoryTags.issubset(itemDescr.tags):
-            return False
-        return True
+        return False if self._mandatoryTags and not self._mandatoryTags.issubset(itemDescr.tags) else True
 
     @staticmethod
     def readComponentFilter(ctx, section, itemTypeName):
@@ -62,7 +63,10 @@ class ComponentFilter(object):
         mandatoryTags = set()
         if section.has_key('mandatoryTags'):
             mandatoryTags = _readTags(ctx, section, 'mandatoryTags', itemTypeName)
-        return (minLevel, maxLevel, tags, mandatoryTags)
+        return (minLevel,
+         maxLevel,
+         tags,
+         mandatoryTags)
 
 
 class SubFilter(object):
@@ -73,11 +77,11 @@ class SubFilter(object):
         self._compFilters = moduleFilters
 
     def __str__(self):
-        info = ('{}: nationIDs = {}, typeFilter = {}').format(self.__class__.__name__, self._nationIDs, str(self._typeFilter))
+        info = '{}: nationIDs = {}, typeFilter = {}'.format(self.__class__.__name__, self._nationIDs, str(self._typeFilter))
         if self._compFilters:
             info += ', componentFilters:\n'
             for compName, compFilter in self._compFilters.iteritems():
-                info += ('\t{}: {}\n').format(compName, str(compFilter))
+                info += '\t{}: {}\n'.format(compName, str(compFilter))
 
         return info
 
@@ -91,9 +95,7 @@ class SubFilter(object):
 
     def isVehTypeCompatible(self, vehicleType):
         nationID = vehicleType.id[0]
-        if self._nationIDs and nationID not in self._nationIDs:
-            return False
-        return self._typeFilter.isItemCompatible(vehicleType)
+        return False if self._nationIDs and nationID not in self._nationIDs else self._typeFilter.isItemCompatible(vehicleType)
 
     def isComponentsCompatible(self, vehicleDescr):
         for compName, compFilter in self._compFilters.iteritems():
@@ -130,20 +132,17 @@ class SubFilter(object):
         componentFiltersSection = filterSection['componentFilters']
         if componentFiltersSection is not None:
             for componentName, compFilterSection in componentFiltersSection.items():
-                ctx = (
-                 xmlCtx, componentName)
+                ctx = (xmlCtx, componentName)
                 componentItemName = _vehicleFilterItemTypes.get(componentName, None)
                 if componentItemName is not None:
                     componentFilter = ComponentFilter.readComponentFilter(ctx, compFilterSection, componentItemName)
                     if componentName not in moduleFilters:
                         moduleFilters[componentName] = componentFilter
                     else:
-                        _xml.raiseWrongXml(xmlCtx, componentName, ('Section {} is duplicated').format(componentName))
-                else:
-                    _xml.raiseWrongXml(ctx, '', ('unknown section name ({})').format(componentName))
+                        _xml.raiseWrongXml(xmlCtx, componentName, 'Section {} is duplicated'.format(componentName))
+                _xml.raiseWrongXml(ctx, '', 'unknown section name ({})'.format(componentName))
 
-        return (
-         filterNations, vehTypeFilter, moduleFilters)
+        return (filterNations, vehTypeFilter, moduleFilters)
 
 
 class VehicleFilter(object):
@@ -162,9 +161,7 @@ class VehicleFilter(object):
         if not isVehTypeCompatible:
             return (False, 'not for this vehicle type')
         else:
-            if not isComponentsCompatible:
-                return (False, 'not for current vehicle')
-            return (True, None)
+            return (False, 'not for current vehicle') if not isComponentsCompatible else (True, None)
 
     def checkCompatibilityWithComponents(self, vehicleDescr):
         includeFilters, excludeFilters = self._getSubFiltersForVehType(vehicleDescr.type)
@@ -189,7 +186,6 @@ class VehicleFilter(object):
                 return True
             else:
                 return False
-
         return True
 
     def compatibleNations(self):
@@ -225,8 +221,7 @@ class VehicleFilter(object):
             subFilter = SubFilter.readSubFilter(xmlCtx, subsection)
             destination.append(subFilter)
 
-        return (
-         include, exclude)
+        return (include, exclude)
 
     def _checkCompatibility(self, vehicleDescr):
         includeFilters, excludeFilters = self._getSubFiltersForVehType(vehicleDescr.type)
@@ -240,18 +235,13 @@ class VehicleFilter(object):
                     if subFilter.isComponentsCompatible(vehicleDescr):
                         return (True, True)
 
-                return (
-                 True, False)
+                return (True, False)
             else:
-                return (
-                 False, False)
-
-        return (
-         True, True)
+                return (False, False)
+        return (True, True)
 
     def _getSubFiltersForVehType(self, vehType):
-        return (
-         self._getSubFilters(self._include, vehType), self._getSubFilters(self._exclude, vehType))
+        return (self._getSubFilters(self._include, vehType), self._getSubFilters(self._exclude, vehType))
 
     @staticmethod
     def _getSubFilters(filters, vehType):
@@ -271,10 +261,9 @@ class _ArtefactFilter(object):
         for subsection in section.values():
             if subsection.name == 'installed':
                 self.__installed.update(_readTags((xmlCtx, subsection.name), subsection, '', itemTypeName))
-            elif subsection.name == 'active':
+            if subsection.name == 'active':
                 self.__active.update(_readTags((xmlCtx, subsection.name), subsection, '', itemTypeName))
-            else:
-                _xml.raiseWrongXml(xmlCtx, subsection.name, 'should be <installed> or <active>')
+            _xml.raiseWrongXml(xmlCtx, subsection.name, 'should be <installed> or <active>')
 
     def inInstalled(self, tags):
         return bool(len(self.__installed.intersection(tags)))
@@ -292,10 +281,9 @@ def readKpi(xmlCtx, section):
             return
         if kpiType == KPI.Type.ONE_OF:
             kpi.append(KPI(KPI.Name.COMPOUND_KPI, readKpi(xmlCtx, subsec), KPI.Type.ONE_OF))
-        elif kpiType == KPI.Type.AGGREGATE_MUL:
+        if kpiType == KPI.Type.AGGREGATE_MUL:
             kpi.append(_readAggregateKPI(xmlCtx, subsec, kpiType))
-        else:
-            kpi.append(_readKpiValue(xmlCtx, subsec, kpiType))
+        kpi.append(_readKpiValue(xmlCtx, subsec, kpiType))
 
     return kpi
 

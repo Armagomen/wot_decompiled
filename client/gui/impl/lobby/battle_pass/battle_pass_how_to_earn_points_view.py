@@ -1,4 +1,7 @@
-import itertools, logging
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/battle_pass/battle_pass_how_to_earn_points_view.py
+import itertools
+import logging
 from constants import ARENA_BONUS_TYPE
 from frameworks.wulf import Array, ViewSettings, WindowFlags
 from gui.impl import backport
@@ -17,8 +20,7 @@ from gui.shared.event_dispatcher import showHangar
 from helpers import dependency
 from skeletons.gui.game_control import IBattlePassController
 from skeletons.gui.shared import IItemsCache
-REVERSE_GAME_MODE_ORDER = (
- ARENA_BONUS_TYPE.BATTLE_ROYALE_SOLO,
+REVERSE_GAME_MODE_ORDER = (ARENA_BONUS_TYPE.BATTLE_ROYALE_SOLO,
  ARENA_BONUS_TYPE.EPIC_BATTLE,
  ARENA_BONUS_TYPE.COMP7_LIGHT,
  ARENA_BONUS_TYPE.COMP7,
@@ -46,28 +48,19 @@ class BattlePassHowToEarnPointsView(ViewImpl):
         self.__createGeneralModel()
 
     def _getEvents(self):
-        return (
-         (
-          self.__battlePass.onBattlePassSettingsChange, self.__onBattlePassSettingsChange),
-         (
-          self.__battlePass.onSeasonStateChanged, self.__onSeasonStateChanged),
-         (
-          self.viewModel.onLinkClick, self.__onLinkClick))
+        return ((self.__battlePass.onBattlePassSettingsChange, self.__onBattlePassSettingsChange), (self.__battlePass.onSeasonStateChanged, self.__onSeasonStateChanged), (self.viewModel.onLinkClick, self.__onLinkClick))
 
     def __getGameMode(self, arenaType):
-        if arenaType == ARENA_BONUS_TYPE.BATTLE_ROYALE_SOLO:
-            return self.__createBattleRoyalGameModel()
-        return self.__createGameModel(arenaType)
+        return self.__createBattleRoyalGameModel() if arenaType == ARENA_BONUS_TYPE.BATTLE_ROYALE_SOLO else self.__createGameModel(arenaType)
 
     def __createGeneralModel(self):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.getGameModes().clear()
             gameModeModels = Array()
             for arenaType in sorted(self.__battlePass.getVisibleGameModes(), key=REVERSE_GAME_MODE_ORDER_MAP.get, reverse=True):
-                if any(bonusType.value == arenaType for bonusType in ArenaBonusType.__members__.values()):
+                if any((bonusType.value == arenaType for bonusType in ArenaBonusType.__members__.values())):
                     gameModeModels.addViewModel(self.__getGameMode(arenaType))
-                else:
-                    _logger.error('ArenaBonusType %s is not supported in BattlePassHowToEarnPointsView', arenaType)
+                _logger.error('ArenaBonusType %s is not supported in BattlePassHowToEarnPointsView', arenaType)
 
             model.setGameModes(gameModeModels)
             model.setSyncInitiator((model.getSyncInitiator() + 1) % 1000)
@@ -125,8 +118,7 @@ class BattlePassHowToEarnPointsView(ViewImpl):
         else:
             cell.setText(backport.text(_rBattlePass.howToEarnPoints.singleLevel.num(gameType)(), level=points.label))
         previousLevel = points.label + 1
-        return (
-         cell, previousLevel)
+        return (cell, previousLevel)
 
     @staticmethod
     def __createEmptyCell():

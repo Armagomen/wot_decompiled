@@ -1,8 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/platoon/tiers_settings_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.platoon.tier_button_model import TierButtonModel
 
 class TiersSettingsModel(ViewModel):
-    __slots__ = ('onSwitchTier', )
+    __slots__ = ('onSwitchTier',)
 
     def __init__(self, properties=1, commands=1):
         super(TiersSettingsModel, self).__init__(properties=properties, commands=commands)

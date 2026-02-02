@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_core/scripts/client/comp7_core/gui/Scaleform/daapi/view/meta/Comp7BattleTankCarouselMeta.py
 from gui.Scaleform.daapi.view.common.vehicle_carousel.carousel_environment import CarouselEnvironment
 
 class Comp7BattleTankCarouselMeta(CarouselEnvironment):
@@ -9,9 +11,7 @@ class Comp7BattleTankCarouselMeta(CarouselEnvironment):
         self._printOverrideError('onViewIsHidden')
 
     def as_rowCountS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_rowCount(value)
+        return self.flashObject.as_rowCount(value) if self._isDAAPIInited() else None
 
     def as_hideS(self, useAnim):
-        if self._isDAAPIInited():
-            return self.flashObject.as_hide(useAnim)
+        return self.flashObject.as_hide(useAnim) if self._isDAAPIInited() else None

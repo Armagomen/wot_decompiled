@@ -1,4 +1,9 @@
-import typing, BattleReplay, BigWorld, SoundGroups
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/sound_ctrls/common.py
+import typing
+import BattleReplay
+import BigWorld
+import SoundGroups
 from constants import VEHICLE_HIT_FLAGS as VHF
 from Event import EventsSubscriber
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
@@ -131,7 +136,7 @@ class BaseEfficiencySoundPlayer(SoundPlayer):
 
 
 class EquipmentComponentSoundPlayer(object):
-    __slots__ = ('__eventsSubscriber', )
+    __slots__ = ('__eventsSubscriber',)
     __sessionProvider = dependency.descriptor(IBattleSessionProvider)
 
     def __init__(self):
@@ -186,21 +191,21 @@ class ShotsResultSoundController(IShotsResultSoundController):
     ENEMY_RICOCHET = 'enemy_ricochet_by_player'
     _DEFAULT_EVENT_PREFIX = ''
     _FREQUENT_EVENT_PREFIX = 'frequent_'
-    _SHOT_RESULT_SOUND_PRIORITIES = {ENEMY_AND_GUN_DAMAGED_BY_PROJECTILE: 13, 
-       ENEMY_AND_CHASSIS_DAMAGED_BY_PROJECTILE: 12, 
-       ENEMY_DAMAGED_BY_PROJECTILE: 11, 
-       ENEMY_DAMAGED_BY_NOT_PIERCING: 10, 
-       ENEMY_DAMAGED_BY_DIRECT_EXPLOSION: 9, 
-       ENEMY_DAMAGED_BY_NEAR_EXPLOSION: 8, 
-       ENEMY_NOT_DAMAGED_ATTEMPT_AND_GUN_DAMAGED: 7, 
-       ENEMY_NOT_DAMAGED_NO_ATTEMPT_AND_GUN_DAMAGED: 6, 
-       ENEMY_NOT_DAMAGED_ATTEMPT_AND_CHASSIS_DAMAGED: 5, 
-       ENEMY_NOT_DAMAGED_NO_ATTEMPT_AND_CHASSIS_DAMAGED: 4, 
-       ENEMY_NOT_DAMAGED_AND_NOT_PIERCED: 3, 
-       ENEMY_NOT_DAMAGED_ATTEMPT: 3, 
-       ENEMY_NOT_DAMAGED_NO_ATTEMPT: 2, 
-       ENEMY_NOT_DAMAGED_BY_NEAR_EXPLOSION: 1, 
-       ENEMY_RICOCHET: 0}
+    _SHOT_RESULT_SOUND_PRIORITIES = {ENEMY_AND_GUN_DAMAGED_BY_PROJECTILE: 13,
+     ENEMY_AND_CHASSIS_DAMAGED_BY_PROJECTILE: 12,
+     ENEMY_DAMAGED_BY_PROJECTILE: 11,
+     ENEMY_DAMAGED_BY_NOT_PIERCING: 10,
+     ENEMY_DAMAGED_BY_DIRECT_EXPLOSION: 9,
+     ENEMY_DAMAGED_BY_NEAR_EXPLOSION: 8,
+     ENEMY_NOT_DAMAGED_ATTEMPT_AND_GUN_DAMAGED: 7,
+     ENEMY_NOT_DAMAGED_NO_ATTEMPT_AND_GUN_DAMAGED: 6,
+     ENEMY_NOT_DAMAGED_ATTEMPT_AND_CHASSIS_DAMAGED: 5,
+     ENEMY_NOT_DAMAGED_NO_ATTEMPT_AND_CHASSIS_DAMAGED: 4,
+     ENEMY_NOT_DAMAGED_AND_NOT_PIERCED: 3,
+     ENEMY_NOT_DAMAGED_ATTEMPT: 3,
+     ENEMY_NOT_DAMAGED_NO_ATTEMPT: 2,
+     ENEMY_NOT_DAMAGED_BY_NEAR_EXPLOSION: 1,
+     ENEMY_RICOCHET: 0}
     _ARMOR_SCREEN_FLAGS = VHF.ARMOR_WITH_ZERO_DF_NOT_PIERCED_BY_PROJECTILE | VHF.DEVICE_NOT_PIERCED_BY_PROJECTILE
     __sessionProvider = dependency.descriptor(IBattleSessionProvider)
 
@@ -232,9 +237,7 @@ class ShotsResultSoundController(IShotsResultSoundController):
         if currBest is None:
             return (newSoundName, otherData, newSoundPriority)
         else:
-            if newSoundPriority > currBest[2]:
-                return (newSoundName, otherData, newSoundPriority)
-            return currBest
+            return (newSoundName, otherData, newSoundPriority) if newSoundPriority > currBest[2] else currBest
 
     def getVehicleHitResultSound(self, enemyVehID, hitFlags, enemiesHitCount):
         sound = None

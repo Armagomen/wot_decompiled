@@ -1,4 +1,9 @@
-import math, BigWorld, Math, PlayerEvents
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/TriggersManager.py
+import math
+import BigWorld
+import Math
+import PlayerEvents
 from constants import ARENA_PERIOD
 from debug_utils import LOG_CURRENT_EXCEPTION
 from helpers import isPlayerAvatar
@@ -224,21 +229,21 @@ class TriggersManager(object):
             if params['type'] == tType and params['name'] == name:
                 return params.get('position')
 
-        return
+        return None
 
     def getDistanceToTrigger(self, tType, name):
         for params in self.__autoTriggers.itervalues():
             if params['type'] == tType and params['name'] == name:
                 return params.get('distance')
 
-        return
+        return None
 
     def isAutoTriggerActive(self, tType, name):
         for tID, params in self.__autoTriggers.iteritems():
             if params['type'] == tType and params['name'] == name:
                 return tID in self.__activeAutoTriggers
 
-        return
+        return None
 
     def __onArenaPeriodChange(self, period, periodEndTime, periodLength, periodAdditionalInfo):
         isOnArena = period == ARENA_PERIOD.BATTLE

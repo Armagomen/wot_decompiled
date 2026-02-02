@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/items/components/path_builder.py
 import persistent_data_cache_common as pdc
 __all__ = ('makeIndexes', 'makePath')
 _SEPARATOR = '/'
@@ -10,8 +12,7 @@ def makeIndexes(path):
         if chain not in _chains:
             yield len(_chains)
             _chains.append(chain)
-        else:
-            yield _chains.index(chain)
+        yield _chains.index(chain)
 
 
 def makePath(*indexes):

@@ -1,6 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/login/__init__.py
 from gui import GUI_SETTINGS
 from skeletons.gui.login_manager import ILoginManager
-__all__ = ('getLoginManagerConfig', )
+__all__ = ('getLoginManagerConfig',)
 
 def getLoginManagerConfig(manager):
     if GUI_SETTINGS.socialNetworkLogin['enabled']:

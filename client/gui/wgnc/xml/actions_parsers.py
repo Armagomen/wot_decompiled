@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/wgnc/xml/actions_parsers.py
 import resource_helper
 from gui.wgnc import actions
 from gui.wgnc.wgnc_helpers import parseSize
@@ -7,7 +9,7 @@ from gui.wgnc.xml.shared_parsers import SectionParser, ParsersCollection
 class _CallbackActionParser(SectionParser):
 
     def getTagName(self):
-        return 'callback'
+        pass
 
     def parse(self, section):
         return actions.Callback(self._readString('name', section), section.readBool('purge', True))
@@ -16,7 +18,7 @@ class _CallbackActionParser(SectionParser):
 class _BrowseActionParser(SectionParser):
 
     def getTagName(self):
-        return 'browse'
+        pass
 
     def parse(self, section):
         name = self._readString('name', section)
@@ -37,14 +39,14 @@ class _BrowseActionParser(SectionParser):
         elif target == 'ranked':
             action = actions.OpenRankedBrowser(name, url)
         else:
-            raise ParseError(('The target of action "{0}" is not valid: {1}.').format(self.getTagName(), target))
+            raise ParseError('The target of action "{0}" is not valid: {1}.'.format(self.getTagName(), target))
         return action
 
 
 class _OpenWindowParser(SectionParser):
 
     def getTagName(self):
-        return 'openwindow'
+        pass
 
     def parse(self, section):
         return actions.OpenWindow(self._readString('name', section), self._readString('target', section))
@@ -53,7 +55,7 @@ class _OpenWindowParser(SectionParser):
 class _CustomActionsParser(SectionParser):
 
     def getTagName(self):
-        return 'custom_action'
+        pass
 
     def parse(self, section):
         ctx, _ = resource_helper.getRoot('')
@@ -72,28 +74,25 @@ class _CustomActionsParser(SectionParser):
         return res
 
     def __getKeyName(self, section):
-        if section['name'] is not None:
-            return section['name'].asString
-        else:
-            return section.name
+        return section['name'].asString if section['name'] is not None else section.name
 
 
 class _ReplaceButtonsAction(SectionParser):
 
     def getTagName(self):
-        return 'replace_buttons'
+        pass
 
     def parse(self, section):
         text = section.asString
         if not text:
-            raise ParseError(('The content of action "{0}" is not defined.').format(self.getTagName()))
+            raise ParseError('The content of action "{0}" is not defined.'.format(self.getTagName()))
         return actions.ReplaceButtons(self._readString('name', section), section.asString)
 
 
 class _ActionsParser(ParsersCollection):
 
     def getTagName(self):
-        return 'actions'
+        pass
 
     def parse(self, section):
         items = []
@@ -106,8 +105,7 @@ class _ActionsParser(ParsersCollection):
 class ActionsParser_v2(_ActionsParser):
 
     def __init__(self):
-        super(ActionsParser_v2, self).__init__((
-         _CallbackActionParser(),
+        super(ActionsParser_v2, self).__init__((_CallbackActionParser(),
          _BrowseActionParser(),
          _OpenWindowParser(),
          _ReplaceButtonsAction(),

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_pass/battle_pass_bonuses_packers.py
 import logging
 from contextlib import contextmanager
 from typing import TYPE_CHECKING
@@ -36,30 +38,30 @@ _logger = logging.getLogger(__name__)
 def getBattlePassBonusPacker():
     mapping = getDefaultBonusPackersMap()
     currencyBonusUIPacker = ExtendedCurrencyBonusUIPacker()
-    mapping.update({'berths': BattlePassBerthsBonusPacker(), 
-       'blueprints': BattlePassBlueprintsBonusPacker(), 
-       'crewBooks': ExtendedCrewBookBonusUIPacker(), 
-       'customizations': BattlePassCustomizationsBonusPacker(), 
-       'dossier': BattlePassDossierBonusPacker(), 
-       'freeXP': BattlePassFreeXPPacker(), 
-       'goodies': BattlePassGoodiesBonusPacker(), 
-       'items': ExtendedItemBonusUIPacker(), 
-       'lootBox': BattlePassLootBoxBonusPacker(), 
-       'premium_plus': BattlePassPremiumDaysPacker(), 
-       'slots': BattlePassSlotsBonusPacker(), 
-       'tmanToken': TmanTemplateBonusPacker(), 
-       'tokens': BattlePassTokenBonusPacker(), 
-       'vehicles': BattlePassVehiclesBonusUIPacker(), 
-       BATTLE_PASS_Q_CHAIN_BONUS_NAME: QuestChainBonusPacker(), 
-       BATTLE_PASS_RANDOM_QUEST_BONUS_NAME: RandomQuestBonusPacker(), 
-       BATTLE_PASS_SELECT_BONUS_NAME: SelectBonusPacker(), 
-       BATTLE_PASS_STYLE_PROGRESS_BONUS_NAME: BattlePassStyleProgressTokenBonusPacker(), 
-       'currencies': ExtendedCurrenciesBonusUIPacker, 
-       Currency.BPCOIN: CoinBonusPacker(), 
-       Currency.CREDITS: currencyBonusUIPacker, 
-       Currency.CRYSTAL: currencyBonusUIPacker, 
-       Currency.GOLD: currencyBonusUIPacker, 
-       Currency.EQUIP_COIN: currencyBonusUIPacker})
+    mapping.update({'berths': BattlePassBerthsBonusPacker(),
+     'blueprints': BattlePassBlueprintsBonusPacker(),
+     'crewBooks': ExtendedCrewBookBonusUIPacker(),
+     'customizations': BattlePassCustomizationsBonusPacker(),
+     'dossier': BattlePassDossierBonusPacker(),
+     'freeXP': BattlePassFreeXPPacker(),
+     'goodies': BattlePassGoodiesBonusPacker(),
+     'items': ExtendedItemBonusUIPacker(),
+     'lootBox': BattlePassLootBoxBonusPacker(),
+     'premium_plus': BattlePassPremiumDaysPacker(),
+     'slots': BattlePassSlotsBonusPacker(),
+     'tmanToken': TmanTemplateBonusPacker(),
+     'tokens': BattlePassTokenBonusPacker(),
+     'vehicles': BattlePassVehiclesBonusUIPacker(),
+     BATTLE_PASS_Q_CHAIN_BONUS_NAME: QuestChainBonusPacker(),
+     BATTLE_PASS_RANDOM_QUEST_BONUS_NAME: RandomQuestBonusPacker(),
+     BATTLE_PASS_SELECT_BONUS_NAME: SelectBonusPacker(),
+     BATTLE_PASS_STYLE_PROGRESS_BONUS_NAME: BattlePassStyleProgressTokenBonusPacker(),
+     'currencies': ExtendedCurrenciesBonusUIPacker,
+     Currency.BPCOIN: CoinBonusPacker(),
+     Currency.CREDITS: currencyBonusUIPacker,
+     Currency.CRYSTAL: currencyBonusUIPacker,
+     Currency.GOLD: currencyBonusUIPacker,
+     Currency.EQUIP_COIN: currencyBonusUIPacker})
     return BonusUIPacker(mapping)
 
 
@@ -114,7 +116,7 @@ class _BattlePassFinalBonusPacker(BaseBonusUIPacker):
     @classmethod
     def _injectAwardID(cls, item, postfix=None):
         if cls.__isBigImageUsed and postfix:
-            item.setIcon(('_').join([item.getIcon(), postfix]))
+            item.setIcon('_'.join([item.getIcon(), postfix]))
 
 
 class TmanTemplateBonusPacker(_BattlePassFinalBonusPacker):
@@ -139,7 +141,7 @@ class TmanTemplateBonusPacker(_BattlePassFinalBonusPacker):
             return
         else:
             groupName = recruitInfo.getGroupName()
-            bonusImageName = ('_').join([cls.__getBonusImageName(recruitInfo), groupName])
+            bonusImageName = '_'.join([cls.__getBonusImageName(recruitInfo), groupName])
             tankManFullName = recruitInfo.getFullUserName()
             model = RewardItemModel()
             cls._packCommon(bonus, model)
@@ -156,8 +158,7 @@ class TmanTemplateBonusPacker(_BattlePassFinalBonusPacker):
         tooltipData = []
         for tokenID in bonus.getTokens().iterkeys():
             if tokenID.startswith(RECRUIT_TMAN_TOKEN_PREFIX):
-                tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.TANKMAN_NOT_RECRUITED, specialArgs=[
-                 tokenID]))
+                tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.TANKMAN_NOT_RECRUITED, specialArgs=[tokenID]))
 
         return tooltipData
 
@@ -172,7 +173,7 @@ class TmanTemplateBonusPacker(_BattlePassFinalBonusPacker):
 
     @classmethod
     def __getBonusImageName(cls, recruitInfo):
-        baseName = ('tank{}man').format('wo' if recruitInfo.isFemale() else '')
+        baseName = 'tank{}man'.format('wo' if recruitInfo.isFemale() else '')
         return baseName
 
 
@@ -199,7 +200,7 @@ class BattlePassCustomizationsBonusPacker(_BattlePassFinalBonusPacker):
                 iconName = 'style_3d'
             elif customizationItem.isQuestsProgression:
                 iconName = 'progressionStyle'
-        bigIcon = ('_').join([iconName, str(customizationItem.intCD)])
+        bigIcon = '_'.join([iconName, str(customizationItem.intCD)])
         if not R.images.gui.maps.icons.battlePass.rewards.dyn(bigIcon).exists():
             bigIcon = iconName
         if iconName == GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.ATTACHMENT]:
@@ -262,8 +263,7 @@ class BattlePassPremiumDaysPacker(BaseBonusUIPacker):
 
     @classmethod
     def _pack(cls, bonus):
-        return [
-         cls._packSingleBonus(bonus)]
+        return [cls._packSingleBonus(bonus)]
 
     @classmethod
     def _packSingleBonus(cls, bonus):
@@ -271,7 +271,7 @@ class BattlePassPremiumDaysPacker(BaseBonusUIPacker):
         model = RewardItemModel()
         if days in cls._ICONS_AVAILABLE:
             model.setName(bonus.getName())
-            model.setBigIcon(('_').join([bonus.getName(), str(days)]))
+            model.setBigIcon('_'.join([bonus.getName(), str(days)]))
         else:
             model.setName('premium_universal')
             model.setBigIcon('premium_universal')
@@ -321,8 +321,7 @@ class SelectBonusPacker(BaseBonusUIPacker):
 
     @classmethod
     def _pack(cls, bonus):
-        return [
-         cls._packSingleBonus(bonus)]
+        return [cls._packSingleBonus(bonus)]
 
     @classmethod
     def _packSingleBonus(cls, bonus):
@@ -343,16 +342,13 @@ class SelectBonusPacker(BaseBonusUIPacker):
             return bonus.getCount()
         else:
             gift = first(offer.getAllGifts())
-            if gift is None:
-                return bonus.getCount()
-            return gift.giftCount * bonus.getCount()
+            return bonus.getCount() if gift is None else gift.giftCount * bonus.getCount()
 
     @classmethod
     def _getToolTip(cls, bonus):
         tooltipData = []
         for tokenID in bonus.getTokens().iterkeys():
-            tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BATTLE_PASS_GIFT_TOKEN, specialArgs=[
-             tokenID] + [bonus.getContext().get('isReceived', True)]))
+            tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BATTLE_PASS_GIFT_TOKEN, specialArgs=[tokenID] + [bonus.getContext().get('isReceived', True)]))
 
         return tooltipData
 
@@ -373,8 +369,7 @@ class BattlePassStyleProgressTokenBonusPacker(_BattlePassFinalBonusPacker):
 
     @classmethod
     def _pack(cls, bonus):
-        return [
-         cls._packSingleBonus(bonus)]
+        return [cls._packSingleBonus(bonus)]
 
     @classmethod
     def _packSingleBonus(cls, bonus):
@@ -394,7 +389,7 @@ class BattlePassStyleProgressTokenBonusPacker(_BattlePassFinalBonusPacker):
                 userName = backport.text(cls._rStyleProgression.newLevel(), styleName=customizationItem.userName)
             model.setUserName(userName)
             postfix = str(customizationItem.id)
-            model.setBigIcon(('_').join([cls._ICON_NAME_TEMPLATE.format(level), postfix]))
+            model.setBigIcon('_'.join([cls._ICON_NAME_TEMPLATE.format(level), postfix]))
             model.setIsCollectionEntity(cls._isCollectionItem((customizationItem.intCD, level)))
         else:
             postfix = 'undefined'
@@ -410,14 +405,11 @@ class BattlePassStyleProgressTokenBonusPacker(_BattlePassFinalBonusPacker):
     def _getToolTip(cls, bonus):
         chapter = bonus.getChapter()
         level = bonus.getLevel()
-        return [
-         TooltipData(tooltip=None, isSpecial=True, specialAlias=None, specialArgs=[
-          chapter, level])]
+        return [TooltipData(tooltip=None, isSpecial=True, specialAlias=None, specialArgs=[chapter, level])]
 
     @classmethod
     def _getContentId(cls, bonus):
-        return [
-         R.views.lobby.battle_pass.tooltips.BattlePassUpgradeStyleTooltipView()]
+        return [R.views.lobby.battle_pass.tooltips.BattlePassUpgradeStyleTooltipView()]
 
 
 class ExtendedItemBonusUIPacker(ItemBonusUIPacker):
@@ -429,7 +421,7 @@ class ExtendedItemBonusUIPacker(ItemBonusUIPacker):
         model.setItemType(item.itemTypeID)
         model.setBigIcon(item.name if item.itemTypeID == GUI_ITEM_TYPE.BATTLE_BOOSTER else item.getGUIEmblemID())
         if item.itemTypeID == GUI_ITEM_TYPE.OPTIONALDEVICE and item.isModernized:
-            model.setOverlayType(('{}_{}').format(ItemHighlightTypes.MODERNIZED, item.level))
+            model.setOverlayType('{}_{}'.format(ItemHighlightTypes.MODERNIZED, item.level))
         return model
 
     @classmethod
@@ -455,8 +447,7 @@ class ExtendedCurrencyBonusUIPacker(BaseBonusUIPacker):
 
     @classmethod
     def _pack(cls, bonus):
-        return [
-         cls._packSingleBonus(bonus)]
+        return [cls._packSingleBonus(bonus)]
 
     @classmethod
     def _packSingleBonus(cls, bonus):
@@ -473,8 +464,7 @@ class ExtendedCurrenciesBonusUIPacker(BaseBonusUIPacker):
 
     @classmethod
     def _pack(cls, bonus):
-        return [
-         cls._packSingleBonus(bonus)]
+        return [cls._packSingleBonus(bonus)]
 
     @classmethod
     def _packSingleBonus(cls, bonus):
@@ -490,9 +480,7 @@ class ExtendedCurrenciesBonusUIPacker(BaseBonusUIPacker):
     @classmethod
     def _getContentId(cls, bonus):
         code = bonus.getCode()
-        if code == CurrencyBP.TALER.value:
-            return [R.views.lobby.battle_pass.tooltips.BattlePassTalerTooltip()]
-        return super(ExtendedCurrenciesBonusUIPacker, cls)._getContentId(bonus)
+        return [R.views.lobby.battle_pass.tooltips.BattlePassTalerTooltip()] if code == CurrencyBP.TALER.value else super(ExtendedCurrenciesBonusUIPacker, cls)._getContentId(bonus)
 
 
 class CoinBonusPacker(SimpleBonusUIPacker):
@@ -510,16 +498,14 @@ class CoinBonusPacker(SimpleBonusUIPacker):
 
     @classmethod
     def _getContentId(cls, bonus):
-        return [
-         R.views.lobby.battle_pass.tooltips.BattlePassCoinTooltipView()]
+        return [R.views.lobby.battle_pass.tooltips.BattlePassCoinTooltipView()]
 
 
 class QuestChainBonusPacker(SimpleBonusUIPacker):
 
     @classmethod
     def _pack(cls, bonus):
-        return [
-         cls._packSingleBonus(bonus, None)]
+        return [cls._packSingleBonus(bonus, None)]
 
     @classmethod
     def _packSingleBonus(cls, bonus, label):
@@ -531,22 +517,18 @@ class QuestChainBonusPacker(SimpleBonusUIPacker):
 
     @classmethod
     def _getContentId(cls, bonus):
-        return [
-         R.views.lobby.battle_pass.tooltips.BattlePassQuestsChainTooltipView()]
+        return [R.views.lobby.battle_pass.tooltips.BattlePassQuestsChainTooltipView()]
 
     @classmethod
     def _getToolTip(cls, bonus):
-        return [
-         TooltipData(tooltip=None, isSpecial=True, specialAlias=None, specialArgs=[
-          bonus.tokenID])]
+        return [TooltipData(tooltip=None, isSpecial=True, specialAlias=None, specialArgs=[bonus.tokenID])]
 
 
 class RandomQuestBonusPacker(SimpleBonusUIPacker):
 
     @classmethod
     def _pack(cls, bonus):
-        return [
-         cls._packSingleBonus(bonus, None)]
+        return [cls._packSingleBonus(bonus, None)]
 
     @classmethod
     def _packSingleBonus(cls, bonus, label):
@@ -558,14 +540,11 @@ class RandomQuestBonusPacker(SimpleBonusUIPacker):
 
     @classmethod
     def _getContentId(cls, bonus):
-        return [
-         R.views.lobby.battle_pass.tooltips.RandomQuestTooltip()]
+        return [R.views.lobby.battle_pass.tooltips.RandomQuestTooltip()]
 
     @classmethod
     def _getToolTip(cls, bonus):
-        return [
-         TooltipData(tooltip=None, isSpecial=True, specialAlias=None, specialArgs=[
-          bonus.tokenID])]
+        return [TooltipData(tooltip=None, isSpecial=True, specialAlias=None, specialArgs=[bonus.tokenID])]
 
 
 class BattlePassSlotsBonusPacker(SimpleBonusUIPacker):
@@ -630,12 +609,11 @@ class BattlePassBlueprintsBonusPacker(BlueprintBonusUIPacker):
         blueprintName = bonus.getBlueprintName()
         if blueprintName == BlueprintsBonusSubtypes.UNIVERSAL_FRAGMENT:
             userName = backport.text(R.strings.tooltips.blueprint.BlueprintFragmentTooltip.intelFragment())
-        else:
-            if blueprintName == BlueprintsBonusSubtypes.NATION_FRAGMENT:
-                userName = backport.text(R.strings.blueprints.nations.dyn(imageCategory)())
-            for model in models:
-                model.setBigIcon(cls.__ICON_NAME_PREFIX.format(imageCategory))
-                model.setUserName(userName)
+        elif blueprintName == BlueprintsBonusSubtypes.NATION_FRAGMENT:
+            userName = backport.text(R.strings.blueprints.nations.dyn(imageCategory)())
+        for model in models:
+            model.setBigIcon(cls.__ICON_NAME_PREFIX.format(imageCategory))
+            model.setUserName(userName)
 
         return models
 
@@ -673,8 +651,8 @@ class BattlePassTokenBonusPacker(TokenBonusUIPacker):
     @classmethod
     def _getTokenBonusPackers(cls):
         tokenBonusPackers = super(BattlePassTokenBonusPacker, cls)._getTokenBonusPackers()
-        tokenBonusPackers.update({BATTLE_BONUS_X5_TOKEN: cls.__packBattleBonusX5Token, 
-           CREW_BONUS_X3_TOKEN: cls.__packCrewBonusX3Token})
+        tokenBonusPackers.update({BATTLE_BONUS_X5_TOKEN: cls.__packBattleBonusX5Token,
+         CREW_BONUS_X3_TOKEN: cls.__packCrewBonusX3Token})
         return tokenBonusPackers
 
     @classmethod
@@ -712,8 +690,7 @@ class BattlePassLootBoxBonusPacker(SimpleBonusUIPacker):
 
     @classmethod
     def _pack(cls, bonus):
-        return [
-         cls._packSingleBonus(bonus)]
+        return [cls._packSingleBonus(bonus)]
 
     @classmethod
     def _packSingleBonus(cls, bonus):
@@ -738,9 +715,7 @@ class BattlePassLootBoxBonusPacker(SimpleBonusUIPacker):
     @classmethod
     def _getToolTip(cls, bonus):
         box = bonus.getBox()
-        return [
-         TooltipData(tooltip=None, isSpecial=True, specialAlias=None, specialArgs=[
-          box.getCategory(), box.getType()])]
+        return [TooltipData(tooltip=None, isSpecial=True, specialAlias=None, specialArgs=[box.getCategory(), box.getType()])]
 
 
 @contextmanager

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/vehicle_compare/ammunition_panel.py
 import wg_async as future_async
 from frameworks.wulf import ViewSettings, ViewFlags
 from gui.Scaleform.daapi.view.lobby.vehicle_compare import cmp_helpers

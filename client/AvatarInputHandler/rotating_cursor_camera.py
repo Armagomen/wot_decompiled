@@ -1,4 +1,8 @@
-import math, BigWorld, math_utils
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/AvatarInputHandler/rotating_cursor_camera.py
+import math
+import BigWorld
+import math_utils
 
 class RotatingCoursorCamera(object):
 
@@ -21,7 +25,7 @@ class RotatingCoursorCamera(object):
 
     @property
     def aimingSystem(self):
-        return
+        return None
 
     def setup(self, targetPosition, initialRotations, distanceToTarget):
         if not self.__camera:

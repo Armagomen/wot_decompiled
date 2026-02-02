@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/login/SocialLoginView.py
 import BigWorld
 from gui.login.social_networks import SOCIAL_NETWORKS
 from LoginView import LoginView

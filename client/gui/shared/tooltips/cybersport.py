@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/tooltips/cybersport.py
 from gui import makeHtmlString
 from gui.Scaleform.daapi.view.lobby.rally import vo_converters
 from gui.Scaleform.daapi.view.lobby.rally.action_button_state_vo import ActionButtonStateVO
@@ -80,13 +82,10 @@ class SquadSlotSelectedToolTipData(CybersportToolTipData):
 class CybersportUnitToolTipData(CybersportToolTipData):
 
     def getDisplayableData(self, data=None):
-        if data is not None:
-            return {'unitComment': data.description, 
-               'commanderName': data.creatorName, 
-               'commanderRating': data.rating, 
-               'commanderRatingDesc': TOOLTIPS.CYBERSPORT_COMMANDER_STATS}
-        else:
-            return super(CybersportUnitToolTipData, self).getDisplayableData(data)
+        return {'unitComment': data.description,
+         'commanderName': data.creatorName,
+         'commanderRating': data.rating,
+         'commanderRatingDesc': TOOLTIPS.CYBERSPORT_COMMANDER_STATS} if data is not None else super(CybersportUnitToolTipData, self).getDisplayableData(data)
 
 
 class CybersportUnitLevelToolTipData(CybersportToolTipData):
@@ -113,14 +112,15 @@ class CybersportUnitLevelToolTipData(CybersportToolTipData):
                 elif restriction == UNIT_RESTRICTION.INVALID_TOTAL_LEVEL:
                     msg, ctx = ActionButtonStateVO.getInvalidVehicleLevelsMessage(levelsValidation.ctx)
                     reason = i18n.makeString(msg, **ctx)
-                    description = makeHtmlString('html_templates:lobby/cyberSport/unit', 'invalidLevelDescription', {'description': description, 'reason': reason})
+                    description = makeHtmlString('html_templates:lobby/cyberSport/unit', 'invalidLevelDescription', {'description': description,
+                     'reason': reason})
                 elif canDoAction and not restriction:
                     statusLevel = 'info'
-        result = {'header': ms(TOOLTIPS.CYBERSPORT_UNITLEVEL_TITLE), 
-           'description': description, 
-           'level': str(requiredLevel), 
-           'icon': RES_ICONS.MAPS_ICONS_LIBRARY_OKICON, 
-           'levelDescription': ms(TOOLTIPS.CYBERSPORT_UNITLEVEL_BODY), 
-           'statusMsg': statusMsg, 
-           'statusLevel': statusLevel}
+        result = {'header': ms(TOOLTIPS.CYBERSPORT_UNITLEVEL_TITLE),
+         'description': description,
+         'level': str(requiredLevel),
+         'icon': RES_ICONS.MAPS_ICONS_LIBRARY_OKICON,
+         'levelDescription': ms(TOOLTIPS.CYBERSPORT_UNITLEVEL_BODY),
+         'statusMsg': statusMsg,
+         'statusLevel': statusLevel}
         return result

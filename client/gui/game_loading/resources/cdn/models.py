@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_loading/resources/cdn/models.py
 from datetime import datetime
 import typing
 from typing import Optional, Union
@@ -15,7 +17,7 @@ if typing.TYPE_CHECKING:
 _logger = loggers.getCdnConfigLogger()
 
 class LocalSlideModel(LocalImageModel):
-    __slots__ = ('_historyKey', )
+    __slots__ = ('_historyKey',)
 
     def __init__(self, imageRelativePath, vfx=None, localizationText=None, descriptionText=None, minShowTimeSec=0, transition=0):
         super(LocalSlideModel, self).__init__(imageRelativePath=imageRelativePath, vfx=vfx, localizationText=localizationText, descriptionText=descriptionText, minShowTimeSec=minShowTimeSec, transition=transition)
@@ -43,12 +45,11 @@ class LocalSequenceModel(object):
         return max(len(self.slides), 1)
 
     def __repr__(self):
-        return ('<LocalSequenceModel(name={}, slides={})>').format(self.name, len(self.slides))
+        return '<LocalSequenceModel(name={}, slides={})>'.format(self.name, len(self.slides))
 
 
 class ConfigSlideModel(BaseConfigModel):
-    __slots__ = ('image', 'vfx', 'localization', '_imageCacheKey', '_localizationCacheKey',
-                 '_cacheKeysToUrls', '_langCode')
+    __slots__ = ('image', 'vfx', 'localization', '_imageCacheKey', '_localizationCacheKey', '_cacheKeysToUrls', '_langCode')
 
     def __init__(self, image, vfx, localization):
         super(ConfigSlideModel, self).__init__()
@@ -105,12 +106,11 @@ class ConfigSlideModel(BaseConfigModel):
             return LocalSlideModel(imageRelativePath=localImagePath, vfx=self.vfx, localizationText=localizationText or None, descriptionText=descriptionText or None, minShowTimeSec=minShowTimeSec, transition=transition)
 
     def __repr__(self):
-        return ('<ConfigSlideModel(image={}, vfx={}, localization={})>').format(self.image, self.vfx, self.localization)
+        return '<ConfigSlideModel(image={}, vfx={}, localization={})>'.format(self.image, self.vfx, self.localization)
 
 
 class ConfigSequenceModel(BaseConfigModel):
-    __slots__ = ('name', 'start', 'finish', 'priority', 'order', 'views', 'enabled',
-                 'cohorts', 'slides')
+    __slots__ = ('name', 'start', 'finish', 'priority', 'order', 'views', 'enabled', 'cohorts', 'slides')
 
     def __init__(self, name, order, slides, start, finish, priority, views, enabled, cohorts):
         super(ConfigSequenceModel, self).__init__()
@@ -134,7 +134,7 @@ class ConfigSequenceModel(BaseConfigModel):
         return min(max(len(self.slides), 1), MIN_SLIDES_COUNT_TO_VIEW)
 
     def __repr__(self):
-        return ('<ConfigSequenceModel(name={}, active={}, priority={}, slides={})>').format(self.name, self.isActive, self.priority, len(self.slides))
+        return '<ConfigSequenceModel(name={}, active={}, priority={}, slides={})>'.format(self.name, self.isActive, self.priority, len(self.slides))
 
 
 class ConfigModel(BaseConfigModel):
@@ -146,7 +146,7 @@ class ConfigModel(BaseConfigModel):
         self.enabled = enabled
 
     def __repr__(self):
-        return ('<ConfigModel(enabled={}, sequences={})>').format(self.enabled, len(self.sequences))
+        return '<ConfigModel(enabled={}, sequences={})>'.format(self.enabled, len(self.sequences))
 
 
 class CdnCacheDefaultsModel(object):
@@ -158,7 +158,7 @@ class CdnCacheDefaultsModel(object):
         self.transition = transition
 
     def __repr__(self):
-        return ('<CdnCacheDefaultsModel(slides={}, minShowTimeSec={}, transition={})>').format(len(self.sequence.slides), self.minShowTimeSec, self.transition)
+        return '<CdnCacheDefaultsModel(slides={}, minShowTimeSec={}, transition={})>'.format(len(self.sequence.slides), self.minShowTimeSec, self.transition)
 
 
 class CdnCacheParamsModel(object):
@@ -186,4 +186,4 @@ class CdnCacheParamsModel(object):
         return
 
     def __repr__(self):
-        return ('<CdnCacheParamsModel(configUrl={}, cohort={})>').format(self.configUrl, self.cohort)
+        return '<CdnCacheParamsModel(configUrl={}, cohort={})>'.format(self.configUrl, self.cohort)

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/impl/battle/battle_page/respawn_ammunition_panel_view.py
 import typing
 from Event import Event, EventManager
 from frameworks.wulf import ViewFlags, ViewSettings
@@ -69,8 +71,9 @@ class RespawnAmmunitionPanelView(ViewImpl):
         hudGroupID, newLayoutIdx = args.get('groupId', None), args.get('currentIndex', None)
         if self.viewModel.getIsDisabled() or hudGroupID is None or newLayoutIdx is None:
             return
-        self.__changeSetup(int(hudGroupID), int(newLayoutIdx))
-        return
+        else:
+            self.__changeSetup(int(hudGroupID), int(newLayoutIdx))
+            return
 
     def __changeSetup(self, hudGroupID, newLayoutIdx=None):
         groupID = GROUPS_MAP[hudGroupID]
@@ -79,7 +82,7 @@ class RespawnAmmunitionPanelView(ViewImpl):
             self.onSwitchLayout(self.__vehicle.intCD, groupID, newLayoutIdx)
 
     def __setVehicleData(self):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.vehicleInfo.setVehicleName(self.__vehicle.shortUserName)
             model.vehicleInfo.setVehicleType(self.__vehicle.type)
             model.vehicleInfo.setVehicleLvl(self.__vehicle.level)

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/battle/frontline_pre_battle_timer.py
 import BigWorld
 from constants import ARENA_GUI_TYPE
 from gui.impl import backport
@@ -17,6 +19,4 @@ class FrontlinePreBattleTimer(PreBattleTimerBase):
     @staticmethod
     def __getTitle():
         descriptionRes = R.strings.menu.loading.battleTypes.num(ARENA_GUI_TYPE.EPIC_BATTLE)
-        if descriptionRes.exists():
-            return backport.text(descriptionRes())
-        return ''
+        return backport.text(descriptionRes()) if descriptionRes.exists() else ''

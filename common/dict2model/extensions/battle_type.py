@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/dict2model/extensions/battle_type.py
 from __future__ import absolute_import
 import typing
 from constants import ARENA_BONUS_TYPE_NAMES, ARENA_GAMEPLAY_NAMES
@@ -17,11 +19,11 @@ class BattleTypeModel(models.Model):
         self.gameplayNames = gameplayNames
 
     def _reprArgs(self):
-        return ('arenaBonusType={}, gameplayNames={}').format(self.arenaBonusType, self.gameplayNames)
+        return 'arenaBonusType={}, gameplayNames={}'.format(self.arenaBonusType, self.gameplayNames)
 
 
-_battleTypeSchema = Schema[BattleTypeModel](fields={'arenaBonusType': String(required=True, deserializedValidators=validate.OneOf(ARENA_BONUS_TYPE_NAMES)), 
-   'gameplayNames': UniCapList(fieldOrSchema=String(deserializedValidators=validate.OneOf(ARENA_GAMEPLAY_NAMES)), required=False, default=list)}, checkUnknown=True, modelClass=BattleTypeModel)
+_battleTypeSchema = Schema[BattleTypeModel](fields={'arenaBonusType': String(required=True, deserializedValidators=validate.OneOf(ARENA_BONUS_TYPE_NAMES)),
+ 'gameplayNames': UniCapList(fieldOrSchema=String(deserializedValidators=validate.OneOf(ARENA_GAMEPLAY_NAMES)), required=False, default=list)}, checkUnknown=True, modelClass=BattleTypeModel)
 
 class BattleTypesModel(models.Model):
     __slots__ = ('battleTypes', '_gameplayByBattleType')
@@ -37,12 +39,10 @@ class BattleTypesModel(models.Model):
         if arenaBonusType not in self._gameplayByBattleType:
             return False
         gameplayNames = self._gameplayByBattleType[arenaBonusType]
-        if gameplayNames and gameplayName not in gameplayNames:
-            return False
-        return True
+        return False if gameplayNames and gameplayName not in gameplayNames else True
 
     def _reprArgs(self):
-        return ('battleTypes={}').format(self.battleTypes)
+        return 'battleTypes={}'.format(self.battleTypes)
 
 
 BattleTypesModelType = typing.TypeVar('BattleTypesModelType', bound=BattleTypesModel)

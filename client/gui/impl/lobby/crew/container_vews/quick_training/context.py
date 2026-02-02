@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/container_vews/quick_training/context.py
 import typing
 from gui.impl.auxiliary.crew_books_helper import crewBooksViewedCache
 from gui.impl.gen.view_models.views.lobby.crew.crew_constants import CrewConstants
@@ -22,13 +24,13 @@ if typing.TYPE_CHECKING:
     from gui.shared.gui_items.crew_book import CrewBook
     from gui.shared.gui_items.Tankman import Tankman
     from gui.shared.gui_items.Vehicle import Vehicle
-CREW_TIPS = {1: TRAINING_TIPS.NOT_FULL_CREW, 
-   2: TRAINING_TIPS.LOW_PE_CREW, 
-   3: TRAINING_TIPS.LOW_PE_NOT_FULL_CREW, 
-   4: TRAINING_TIPS.NOT_TRAINED_THIS_VEHICLE, 
-   5: TRAINING_TIPS.NOT_FULL_AND_NOT_TRAINED_CREW, 
-   6: TRAINING_TIPS.LOW_PE_NOT_TRAINED_CREW, 
-   7: TRAINING_TIPS.LOW_PE_NOT_TRAINED_NOT_FULL_CREW}
+CREW_TIPS = {1: TRAINING_TIPS.NOT_FULL_CREW,
+ 2: TRAINING_TIPS.LOW_PE_CREW,
+ 3: TRAINING_TIPS.LOW_PE_NOT_FULL_CREW,
+ 4: TRAINING_TIPS.NOT_TRAINED_THIS_VEHICLE,
+ 5: TRAINING_TIPS.NOT_FULL_AND_NOT_TRAINED_CREW,
+ 6: TRAINING_TIPS.LOW_PE_NOT_TRAINED_CREW,
+ 7: TRAINING_TIPS.LOW_PE_NOT_TRAINED_NOT_FULL_CREW}
 
 class TankmanAutoselector(object):
     selectedIdx = NO_SLOT
@@ -105,9 +107,7 @@ class QuickTrainingViewContext(TankmanContext):
         if self.isSingleTankman:
             return [(0, self.tankman)]
         else:
-            if self._vehicle:
-                return self._vehicle.crew
-            return [(0, None)]
+            return self._vehicle.crew if self._vehicle else [(0, None)]
 
     @property
     def crewBooks(self):
@@ -127,9 +127,7 @@ class QuickTrainingViewContext(TankmanContext):
 
     @property
     def isCurrTmanMaxTrained(self):
-        if not self.tankman:
-            return True
-        return self.tankman.descriptor.isMaxSkillXp()
+        return True if not self.tankman else self.tankman.descriptor.isMaxSkillXp()
 
     @property
     def isSingleTankman(self):
@@ -137,9 +135,7 @@ class QuickTrainingViewContext(TankmanContext):
 
     @property
     def hasCurrTmanMaxSkillsEfficiency(self):
-        if not self.tankman:
-            return True
-        return self.tankman.descriptor.hasMaxEfficiency()
+        return True if not self.tankman else self.tankman.descriptor.hasMaxEfficiency()
 
     @property
     def hasCrewMaxedTman(self):
@@ -174,9 +170,7 @@ class QuickTrainingViewContext(TankmanContext):
 
     @property
     def canCurrentTankmanUsePersonalBook(self):
-        if not self.tankman:
-            return True
-        return not self.tankman.descriptor.isMaxedXp()
+        return True if not self.tankman else not self.tankman.descriptor.isMaxedXp()
 
     @property
     def canCurrentTankmanUseMorePersonalBook(self):
@@ -221,10 +215,7 @@ class QuickTrainingViewContext(TankmanContext):
 
     @property
     def maxPossibleXpCount(self):
-        if self.tankman is None:
-            return 0
-        else:
-            return self._stepper.getMaxPossibleValue()
+        return 0 if self.tankman is None else self._stepper.getMaxPossibleValue()
 
     @property
     def crewTip(self):
@@ -266,8 +257,7 @@ class QuickTrainingViewContext(TankmanContext):
         return self._selectionData.freeXp * self.xpDiscountConversionRate
 
     def getPossibleCrewSkillsAndEfficiencies(self):
-        return (
-         self._possibleCrewSkills, self._possibleCrewSkillEfficiencis)
+        return (self._possibleCrewSkills, self._possibleCrewSkillEfficiencis)
 
     def updateOnFreeXpGlobalChange(self):
         if self._selectionData.freeXp > self.itemsCache.items.stats.freeXP:
@@ -296,10 +286,11 @@ class QuickTrainingViewContext(TankmanContext):
         self._willAnyTmanBeMaxed = False
         self._willAllTmenBeMaxed = False
         self._willAllTmenGainMaxXp = False
-        self._possibleCrewSkillEfficiencis = [
-         0] * crewLength
-        self._possibleCrewSkills = [ (CrewConstants.DONT_SHOW_LEVEL, CrewConstants.DONT_SHOW_LEVEL, SkillLvlFormatter(), SkillLvlFormatter()) for _ in range(crewLength)
-                                   ]
+        self._possibleCrewSkillEfficiencis = [0] * crewLength
+        self._possibleCrewSkills = [ (CrewConstants.DONT_SHOW_LEVEL,
+         CrewConstants.DONT_SHOW_LEVEL,
+         SkillLvlFormatter(),
+         SkillLvlFormatter()) for _ in range(crewLength) ]
         self._stepper.setAquiringPersonalXp(commonBooksXp + personalBooksXp)
         for idx, tankman in self.crew:
             if tankman is None:

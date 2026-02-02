@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/battle_matters/battle_matters_paused_view.py
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.battle_matters.battle_matters_paused_view_model import BattleMattersPausedViewModel
@@ -22,11 +24,7 @@ class BattleMattersPausedView(ViewImpl):
         return super(BattleMattersPausedView, self).getViewModel()
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.gotoHangar, self.__gotoHangar),
-         (
-          self.__battleMattersController.onStateChanged, self.__onStateChanged))
+        return ((self.viewModel.gotoHangar, self.__gotoHangar), (self.__battleMattersController.onStateChanged, self.__onStateChanged))
 
     @staticmethod
     def __gotoHangar():

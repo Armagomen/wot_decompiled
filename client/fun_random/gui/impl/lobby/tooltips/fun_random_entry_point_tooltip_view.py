@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/lobby/tooltips/fun_random_entry_point_tooltip_view.py
 from __future__ import absolute_import
 from frameworks.wulf import ViewSettings
 from fun_random.gui.feature.fun_constants import FunSubModesState
@@ -19,7 +21,7 @@ class FunRandomEntryPointTooltipView(ViewImpl, FunAssetPacksMixin, FunSubModesWa
         return super(FunRandomEntryPointTooltipView, self).getViewModel()
 
     def _onLoading(self, *args, **kwargs):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             status = self.getSubModesStatus()
             model.setAssetsPointer(self.getModeAssetsPointer())
             model.setModeState(getFunRandomEventState(status))

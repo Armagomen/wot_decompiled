@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/cyberSport/VehicleSelectorPopup.py
 from account_helpers.AccountSettings import AccountSettings
 from constants import VEHICLE_CLASSES, BATTLE_MODE_VEHICLE_TAGS
 from gui.Scaleform.daapi.view.lobby.vehicle_selector_base import VehicleSelectorBase
@@ -42,7 +44,11 @@ class VehicleSelectorPopup(VehicleSelectorPopupMeta, VehicleSelectorBase):
         self.removeListener(HideWindowEvent.HIDE_VEHICLE_SELECTOR_WINDOW, self.onWindowForceClose)
         currentFilters = self.getFilters()
         if currentFilters:
-            self.only_ = {'nation': currentFilters['nation'], 'vehicleType': currentFilters['vehicleType'], 'isMain': currentFilters['isMain'], 'level': currentFilters['level'], 'compatibleOnly': currentFilters['compatibleOnly']}
+            self.only_ = {'nation': currentFilters['nation'],
+             'vehicleType': currentFilters['vehicleType'],
+             'isMain': currentFilters['isMain'],
+             'level': currentFilters['level'],
+             'compatibleOnly': currentFilters['compatibleOnly']}
             filters = self.only_
             AccountSettings.setFilter(self.__section, filters)
         super(VehicleSelectorPopup, self)._dispose()
@@ -74,8 +80,7 @@ class VehicleSelectorPopup(VehicleSelectorPopupMeta, VehicleSelectorBase):
             vehicleVOs = self._updateData(self._vehicles)
         if self.__selectedVehicles is not None:
             vehicleGetter = self.itemsCache.items.getItemByCD
-            selected = [ makeVehicleVO(vehicleGetter(int(item))) for item in self.__selectedVehicles
-                       ]
+            selected = [ makeVehicleVO(vehicleGetter(int(item))) for item in self.__selectedVehicles ]
         else:
             selected = None
         for vehicleVO in vehicleVOs:

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/MapsTrainingBattleLoadingMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class MapsTrainingBattleLoadingMeta(BaseDAAPIComponent):
@@ -6,13 +8,10 @@ class MapsTrainingBattleLoadingMeta(BaseDAAPIComponent):
         self._printOverrideError('gotoBattle')
 
     def as_setDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setData(data)
+        return self.flashObject.as_setData(data) if self._isDAAPIInited() else None
 
     def as_setDataPageS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setDataPage(data)
+        return self.flashObject.as_setDataPage(data) if self._isDAAPIInited() else None
 
     def as_updateProgressS(self, percent):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateProgress(percent)
+        return self.flashObject.as_updateProgress(percent) if self._isDAAPIInited() else None

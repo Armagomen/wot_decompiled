@@ -1,6 +1,11 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/utils/requesters/DossierRequester.py
 import time
 from functools import partial
-import BigWorld, constants, dossiers2, AccountCommands
+import BigWorld
+import constants
+import dossiers2
+import AccountCommands
 from adisp import adisp_async
 from debug_utils import LOG_ERROR
 from gui.shared.utils import code2str
@@ -14,13 +19,15 @@ class UserDossier(object):
     __request = None
 
     def __init__(self, databaseID):
-        self.__cache = {'databaseID': int(databaseID), 
-           'account': None, 
-           'vehicles': {}, 'clan': None, 
-           'hidden': False, 
-           'available': True, 
-           'rating': None, 
-           'rated7x7Seasons': {}, 'ranked': None}
+        self.__cache = {'databaseID': int(databaseID),
+         'account': None,
+         'vehicles': {},
+         'clan': None,
+         'hidden': False,
+         'available': True,
+         'rating': None,
+         'rated7x7Seasons': {},
+         'ranked': None}
         return
 
     def __setLastResponseTime(self):
@@ -28,17 +35,15 @@ class UserDossier(object):
 
     def __nextRequestTime(self):
         t = constants.REQUEST_COOLDOWN.PLAYER_DOSSIER - (time.time() - self.__lastResponseTime)
-        if t > 0:
-            return t
-        return 0
+        return t if t > 0 else 0
 
     def __processQueue(self):
         if self.__request is not None:
             return
+        elif self.__queue:
+            self.__request = RequestProcessor(self.__nextRequestTime(), self.__queue.pop())
+            return
         else:
-            if self.__queue:
-                self.__request = RequestProcessor(self.__nextRequestTime(), self.__queue.pop())
-                return
             return
 
     def __requestPlayerInfo(self, callback):
@@ -63,8 +68,16 @@ class UserDossier(object):
             return
 
         def callBackMethod(c, code, databaseID, dossier, clanID, clanInfo, gRating, eSportSeasons, ranked, dogTag, br, wtr, layout, layoutState):
-            value = (
-             databaseID, dossier, (clanID, clanInfo), gRating, eSportSeasons, ranked, dogTag, br, wtr, layout,
+            value = (databaseID,
+             dossier,
+             (clanID, clanInfo),
+             gRating,
+             eSportSeasons,
+             ranked,
+             dogTag,
+             br,
+             wtr,
+             layout,
              layoutState)
             self.__processValueResponse(c, code, value)
 
@@ -252,14 +265,12 @@ class DossierRequester(AbstractSyncDataRequester, IDossierRequester):
         BigWorld.player().dossierCache.getCache(lambda resID, value: self._response(resID, value, callback))
 
     def getVehicleDossier(self, vehTypeCompDescr):
-        return self.getCacheValue((
-         constants.DOSSIER_TYPE.VEHICLE, vehTypeCompDescr), (0, ''))[1]
+        return self.getCacheValue((constants.DOSSIER_TYPE.VEHICLE, vehTypeCompDescr), (0, ''))[1]
 
     def getVehDossiersIterator(self):
         for (dossierType, vehIntCD), records in self._data.iteritems():
             if dossierType == constants.DOSSIER_TYPE.VEHICLE:
-                yield (
-                 vehIntCD, records[1])
+                yield (vehIntCD, records[1])
 
     def getUserDossierRequester(self, databaseID):
         databaseID = int(databaseID)
@@ -272,4 +283,4 @@ class DossierRequester(AbstractSyncDataRequester, IDossierRequester):
     def onCenterIsLongDisconnected(self, isLongDisconnected):
         if isLongDisconnected:
             return
-        self.__users = dict(item for item in self.__users.iteritems() if item[1].isAvailable)
+        self.__users = dict((item for item in self.__users.iteritems() if item[1].isAvailable))

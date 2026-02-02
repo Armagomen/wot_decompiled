@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/framework/entities/abstract/ColorSchemeManagerMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class ColorSchemeManagerMeta(BaseDAAPIComponent):
@@ -9,5 +11,4 @@ class ColorSchemeManagerMeta(BaseDAAPIComponent):
         self._printOverrideError('getIsColorBlind')
 
     def as_updateS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_update()
+        return self.flashObject.as_update() if self._isDAAPIInited() else None

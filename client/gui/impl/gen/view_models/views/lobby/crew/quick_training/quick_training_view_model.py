@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/crew/quick_training/quick_training_view_model.py
 from gui.impl.gen.view_models.views.lobby.crew.common.base_crew_view_model import BaseCrewViewModel
 from gui.impl.gen.view_models.views.lobby.crew.quick_training.books_list_component_model import BooksListComponentModel
 from gui.impl.gen.view_models.views.lobby.crew.quick_training.freeXp_book_component_model import FreeXpBookComponentModel

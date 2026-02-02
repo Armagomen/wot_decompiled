@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/xmpp/contacts/sub_tasks.py
 from messenger.m_constants import USER_TAG, USER_ACTION_ID, CLIENT_ACTION_ID
 from messenger.proto.xmpp import errors
 from messenger.proto.xmpp.contacts.roster_tasks import SyncSubscriptionTask
@@ -20,7 +22,7 @@ class AskSubscriptionTask(SyncSubscriptionTask):
 
 
 class _ChangeSubscriptionTask(SyncSubscriptionTask):
-    __slots__ = ('_auto', )
+    __slots__ = ('_auto',)
 
     def __init__(self, jid, name='', auto=False):
         super(_ChangeSubscriptionTask, self).__init__(jid, name)
@@ -28,7 +30,7 @@ class _ChangeSubscriptionTask(SyncSubscriptionTask):
 
 
 class ApproveSubscriptionTask(_ChangeSubscriptionTask):
-    __slots__ = ('_tasks', )
+    __slots__ = ('_tasks',)
 
     def __init__(self, jid, name='', auto=False):
         super(ApproveSubscriptionTask, self).__init__(jid, name, auto)

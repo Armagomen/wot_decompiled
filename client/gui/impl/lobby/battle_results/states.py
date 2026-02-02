@@ -1,10 +1,16 @@
-import logging, math, typing, BigWorld, CGF, Math
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/battle_results/states.py
+import logging
+import math
+import typing
+import BigWorld
+import CGF
+import Math
 from gui import SystemMessages
 from gui.Scaleform.Waiting import Waiting
 from gui.Scaleform.lobby_entry import getLobbyStateMachine
 from gui.impl.lobby.vehicle_hub import OverviewState
 from gui.prb_control import prbDispatcherProperty
-from gui.shared.lock_overlays import lockNotificationManager
 from ClientSelectableCameraObject import ClientSelectableCameraObject
 from CurrentVehicle import g_currentPreviewVehicle
 from WeakMethod import WeakMethodProxy
@@ -14,7 +20,7 @@ from frameworks.state_machine.transitions import TransitionType
 from gui.ClientHangarSpace import customizationHangarCFG
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.framework.entities.View import ViewKey
-from gui.battle_results.service import g_pbsFakeData
+from gui.battle_results.service import g_pbsFakeData, PostBattleResultsStateMixin
 from gui.battle_results.settings import PLAYER_TEAM_RESULT
 from gui.impl import backport
 from gui.impl.gen import R
@@ -23,7 +29,6 @@ from gui.Scaleform.daapi.view.lobby.trainings.states import TrainingRoomState
 from gui.lobby_state_machine.transitions import HijackTransition
 from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
 from gui.shared.utils.functions import getArenaImage, getViewName
-from gui.shared.view_helpers.blur_manager import ImmediateSceneBlurConfig
 from gui.subhangar.subhangar_observer import hangarVehicleAABB, selectItemByTankSize
 from gui.subhangar.subhangar_state_groups import SubhangarStateGroupConfigProvider, SubhangarStateGroups, SubhangarStateGroupConfig, CameraMover
 from helpers import dependency
@@ -31,20 +36,16 @@ from helpers.CallbackDelayer import CallbackDelayer
 from helpers.events_handler import EventsHandler
 from skeletons.gui.battle_results import IBattleResultsService
 from skeletons.gui.customization import ICustomizationService
-from skeletons.gui.game_control import IBlurController
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
 from skeletons.gui.shared.utils import IHangarSpace
 from items.components.c11n_constants import SeasonType
 _logger = logging.getLogger(__name__)
-_TANK_SIZE_LOWER_BOUNDS = (
- float('-inf'), 5.0, 8.0)
+_TANK_SIZE_LOWER_BOUNDS = (float('-inf'), 5.0, 8.0)
 _HIDDEN_TANK_LOCATION = Math.Vector3(0, -10000, 0)
 _SHOULD_GO_BACK_AFTER_LOADING = 'shouldGoBackAfterLoading'
-_PBS_SUBHANGAR_GROUPS_BY_SIZE = (
- SubhangarStateGroups.PostBattleSmall,
- SubhangarStateGroups.PostBattleMedium,
- SubhangarStateGroups.PostBattleLarge)
+_TAB_STATE_ID = 'tabStateId'
+_PBS_SUBHANGAR_GROUPS_BY_SIZE = (SubhangarStateGroups.PostBattleSmall, SubhangarStateGroups.PostBattleMedium, SubhangarStateGroups.PostBattleLarge)
 
 def registerStates(lsm):
     lsm.addState(PostBattleResultsEntryState())
@@ -107,8 +108,8 @@ class PostBattleResultsEntryState(LobbyState, SubhangarStateGroupConfigProvider)
         return self.__cachedParams
 
     @classmethod
-    def goTo(cls, arenaUniqueID, bonusType):
-        super(PostBattleResultsEntryState, cls).goTo(arenaUniqueID=arenaUniqueID, bonusType=bonusType)
+    def goTo(cls, arenaUniqueID, bonusType, tabStateId=None):
+        super(PostBattleResultsEntryState, cls).goTo(arenaUniqueID=arenaUniqueID, bonusType=bonusType, tabStateId=tabStateId)
 
     def getNavigationDescription(self):
         return LobbyStateDescription(title=backport.text(R.strings.pages.titles.battle_results()))
@@ -168,14 +169,9 @@ class _LoadingState(LobbyState, EventsHandler):
         self.addNavigationTransition(lsm.getStateByCls(PostBattleResultsState))
 
     def _getEvents(self):
-        return (
-         (
-          self.__hangarSpace.onVehicleChanged, self.__onSpaceOrVehicleChange),
-         (
-          self.__hangarSpace.onSpaceChanged, self.__onSpaceOrVehicleChange))
+        return ((self.__hangarSpace.onVehicleChanged, self.__onSpaceOrVehicleChange), (self.__hangarSpace.onSpaceChanged, self.__onSpaceOrVehicleChange))
 
     def _onEntered(self, event):
-        lockNotificationManager(True, source=self.STATE_ID)
         Waiting.show('loadingData')
         super(_LoadingState, self)._onEntered(event)
         self.__cachedParams = dict(event.params)
@@ -193,7 +189,6 @@ class _LoadingState(LobbyState, EventsHandler):
         self._unsubscribe()
         self.__callbackDelayer.clearCallbacks()
         Waiting.hide('loadingData')
-        lockNotificationManager(False, source=self.STATE_ID, releasePostponed=True)
         super(_LoadingState, self)._onExited()
 
     def __onSpaceOrVehicleChange(self):
@@ -209,7 +204,7 @@ class _LoadingState(LobbyState, EventsHandler):
                 self.goBack()
             else:
                 PostBattleResultsState.goTo(**self.__cachedParams)
-            return
+            return None
 
     def __onSpaceAvailable(self):
         self.__hangarSpace.space.turretAndGunAngles.set(gunPitch=0.0, turretYaw=0.0)
@@ -224,9 +219,7 @@ class _LoadingStateWithRetainedCamera(_LoadingState, SubhangarStateGroupConfigPr
     STATE_ID = 'loadingWithRetainedCamera'
 
     def getSubhangarStateGroupConfig(self):
-        return SubhangarStateGroupConfig((
-         selectItemByTankSize(_TANK_SIZE_LOWER_BOUNDS, _PBS_SUBHANGAR_GROUPS_BY_SIZE),
-         SubhangarStateGroups.PostBattleCommon))
+        return SubhangarStateGroupConfig((selectItemByTankSize(_TANK_SIZE_LOWER_BOUNDS, _PBS_SUBHANGAR_GROUPS_BY_SIZE), SubhangarStateGroups.PostBattleCommon))
 
     def _onEntered(self, event):
         super(_LoadingStateWithRetainedCamera, self)._onEntered(event)
@@ -238,28 +231,25 @@ class _LoadingStateWithRetainedCamera(_LoadingState, SubhangarStateGroupConfigPr
 
 
 @PostBattleResultsEntryState.parentOf
-class PostBattleResultsState(SFViewLobbyState, SubhangarStateGroupConfigProvider):
+class PostBattleResultsState(SFViewLobbyState, SubhangarStateGroupConfigProvider, PostBattleResultsStateMixin):
     STATE_ID = VIEW_ALIAS.POST_BATTLE_RESULTS
     VIEW_KEY = ViewKey(VIEW_ALIAS.POST_BATTLE_RESULTS)
-    _POST_BATTLE_BLUR_SETTINGS_KEY = 'maximum'
-    __blurCtrl = dependency.descriptor(IBlurController)
     __hangarSpace = dependency.descriptor(IHangarSpace)
     __battleResults = dependency.descriptor(IBattleResultsService)
 
     def __init__(self, flags=StateFlags.UNDEFINED):
         super(PostBattleResultsState, self).__init__(flags=flags | LobbyStateFlags.POST_BATTLE_RESULTS)
-        self.__blur = None
         self.__cachedParams = {}
-        return
+
+    def serializeParams(self):
+        return self.__cachedParams
 
     def getSubhangarStateGroupConfig(self):
         _, reusable = self.__battleResults.getStatsCtrl(self.__cachedParams.get('arenaUniqueID', None)).getResults()
         geometryName = reusable.common.arenaType.getGeometryName()
         mapImageName = getArenaImage(geometryName, 'screen')
         mapImageName = mapImageName.replace('img://', '')
-        return SubhangarStateGroupConfig((
-         selectItemByTankSize(_TANK_SIZE_LOWER_BOUNDS, _PBS_SUBHANGAR_GROUPS_BY_SIZE),
-         SubhangarStateGroups.PostBattleCommon), _PBSSceneSetup(mapImageName))
+        return SubhangarStateGroupConfig((selectItemByTankSize(_TANK_SIZE_LOWER_BOUNDS, _PBS_SUBHANGAR_GROUPS_BY_SIZE), SubhangarStateGroups.PostBattleCommon), _PBSSceneSetup(mapImageName))
 
     def registerStates(self):
         lsm = self.getMachine()
@@ -284,23 +274,20 @@ class PostBattleResultsState(SFViewLobbyState, SubhangarStateGroupConfigProvider
         prbDispatcher = self.prbDispatcher
         if prbDispatcher is None or not prbDispatcher.getFunctionalState().isNavigationDisabled():
             return False
-        targetID = event.targetStateID
-        lsm = self.getMachine()
-        target = lsm.getStateByID(targetID)
-        parentDescendants = self.getParent().getRecursiveChildrenStates()
-        battleQueueDescendants = lsm.getStateByCls(BattleQueueContainerState).getRecursiveChildrenStates()
-        battleRoyaleQueueDescendants = lsm.getStateByCls(BattleRoyaleModeState).getRecursiveChildrenStates()
-        eventTargetingOutside = target != self.getParent() and target not in parentDescendants and target not in battleQueueDescendants and target not in battleRoyaleQueueDescendants
-        if eventTargetingOutside:
-            SystemMessages.pushI18nMessage('#system_messages:queue/isInQueue', type=SystemMessages.SM_TYPE.Error, priority='high')
-        return eventTargetingOutside
+        else:
+            targetID = event.targetStateID
+            lsm = self.getMachine()
+            target = lsm.getStateByID(targetID)
+            parentDescendants = self.getParent().getRecursiveChildrenStates()
+            battleQueueDescendants = lsm.getStateByCls(BattleQueueContainerState).getRecursiveChildrenStates()
+            battleRoyaleQueueDescendants = lsm.getStateByCls(BattleRoyaleModeState).getRecursiveChildrenStates()
+            eventTargetingOutside = target != self.getParent() and target not in parentDescendants and target not in battleQueueDescendants and target not in battleRoyaleQueueDescendants
+            if eventTargetingOutside:
+                SystemMessages.pushI18nMessage('#system_messages:queue/isInQueue', type=SystemMessages.SM_TYPE.Error, priority='high')
+            return eventTargetingOutside
 
     def getNavigationDescription(self):
         return LobbyStateDescription(title=backport.text(R.strings.pages.titles.battle_results()))
-
-    @property
-    def blur(self):
-        return self.__blur
 
     def getViewKey(self, params=None):
         arenaUniqueID = self.__cachedParams.get('arenaUniqueID', '')
@@ -315,26 +302,22 @@ class PostBattleResultsState(SFViewLobbyState, SubhangarStateGroupConfigProvider
         return view.content
 
     def _onEntered(self, event):
-        lockNotificationManager(True, source=self.STATE_ID)
         self.__cachedParams = dict(event.params)
         super(PostBattleResultsState, self)._onEntered(event)
-        lockNotificationManager(False, source=self.STATE_ID, releasePostponed=True)
-        self.__blur = self.__blurCtrl.createBlur((
-         ImmediateSceneBlurConfig(spaceID=self.__hangarSpace.spaceID, settings=self.__blurCtrl.getSettingsByAlias(self._POST_BATTLE_BLUR_SETTINGS_KEY), persistent=True),))
+        if self.__cachedParams.get(_TAB_STATE_ID) is not None:
+            stateId = self.__cachedParams.pop(_TAB_STATE_ID)
+            self.getMachine().getStateByID(stateId).goTo(**self.__cachedParams)
+        return
 
     def _onExited(self):
-        self.__blur.disable()
-        self.__blur.fini()
-        self.__blur = None
         self.__cachedParams = {}
         super(PostBattleResultsState, self)._onExited()
-        return
 
     def _getViewLoadCtx(self, event):
         return {'ctx': event.params}
 
 
-class PostBattleTab(LobbyState):
+class PostBattleTab(LobbyState, EventsHandler):
     __hangarSpace = dependency.descriptor(IHangarSpace)
 
     def __init__(self, flags=StateFlags.UNDEFINED):
@@ -342,16 +325,36 @@ class PostBattleTab(LobbyState):
         self.__cachedParams = None
         return
 
+    def registerTransitions(self):
+        from gui.Scaleform.daapi.view.lobby.store.browser.states import ShopState
+        lsm = self.getMachine()
+        self.addNavigationTransition(lsm.getStateByCls(ShopState), record=True)
+        self.addNavigationTransition(lsm.getStateByCls(_LoadingState), record=True)
+
     def serializeParams(self):
         return self.__cachedParams
 
     def _onEntered(self, event):
         super(PostBattleTab, self)._onEntered(event)
-        self.__cachedParams = event.params
+        self.__cachedParams = self.getParent().serializeParams()
+        self.__cachedParams.update(event.params)
         if hangarVehicleAABB() and self.__hangarSpace.spaceInited and self.__hangarSpace.isModelLoaded:
+            self._subscribe()
             return
         self.__cachedParams[_SHOULD_GO_BACK_AFTER_LOADING] = True
         _LoadingState.goTo(**self.__cachedParams)
+
+    def _onExited(self):
+        self.__cachedParams = {}
+        self._unsubscribe()
+        super(PostBattleTab, self)._onExited()
+
+    def _getEvents(self):
+        return ((self.__hangarSpace.onSpaceChanged, self.__onSpaceChanged),)
+
+    def __onSpaceChanged(self):
+        self.__cachedParams[_TAB_STATE_ID] = self.STATE_ID
+        PostBattleResultsEntryState.goTo(**self.__cachedParams)
 
 
 @PostBattleResultsState.parentOf
@@ -361,6 +364,10 @@ class _OverviewTab(PostBattleTab):
     def getNavigationDescription(self):
         return LobbyStateDescription(title=backport.text(R.strings.pages.titles.battle_results()))
 
+    def _onEntered(self, event):
+        super(_OverviewTab, self)._onEntered(event)
+        self.getMachine().getRelatedView(self).blur.disable()
+
 
 class _BlurredResultTab(PostBattleTab):
 
@@ -369,11 +376,7 @@ class _BlurredResultTab(PostBattleTab):
 
     def _onEntered(self, event):
         super(_BlurredResultTab, self)._onEntered(event)
-        self.getParent().blur.enable()
-
-    def _onExited(self):
-        super(_BlurredResultTab, self)._onExited()
-        self.getParent().blur.disable()
+        self.getMachine().getRelatedView(self).blur.enable()
 
 
 @PostBattleResultsState.parentOf
@@ -384,6 +387,25 @@ class _TeamScoreTab(_BlurredResultTab):
 @PostBattleResultsState.parentOf
 class _MissionProgressTab(_BlurredResultTab):
     STATE_ID = 'missionProgress'
+
+    def registerTransitions(self):
+        from gui.Scaleform.daapi.view.lobby.user_missions.states import UserMissionsState
+        from gui.Scaleform.daapi.view.lobby.missions.regular.states import MissionsState as CommonMissionState
+        from gui.Scaleform.daapi.view.lobby.profile.states import ServiceRecordState
+        from gui.impl.lobby.personal_missions_30.state import MissionsState as PM3MissionsState
+        from gui.impl.lobby.battle_pass.states import STATES
+        from gui.impl.lobby.vehicle_hub import ModulesState
+        from gui.impl.lobby.vehicle_hub.states import VehicleHubState
+        super(_MissionProgressTab, self).registerTransitions()
+        lsm = self.getMachine()
+        self.addNavigationTransition(lsm.getStateByCls(PM3MissionsState), record=True)
+        self.addNavigationTransition(lsm.getStateByCls(UserMissionsState), record=True)
+        self.addNavigationTransition(lsm.getStateByCls(CommonMissionState), record=True)
+        self.addNavigationTransition(lsm.getStateByCls(ServiceRecordState), record=True)
+        self.addNavigationTransition(lsm.getStateByCls(ModulesState), record=True)
+        lsm.getStateByCls(VehicleHubState).addNavigationTransition(self)
+        for state in STATES.values():
+            self.addNavigationTransition(lsm.getStateByCls(state), record=True)
 
 
 @PostBattleResultsState.parentOf
@@ -400,11 +422,14 @@ class _PBSSceneSetup(CameraMover):
     def moveCamera(self, cameraManager, cameraName):
         super(_PBSSceneSetup, self).moveCamera(cameraManager, cameraName)
         hangarConfig = customizationHangarCFG()
-        _moveTank(hangarConfig, hangarConfig['v_start_pos'], tuple(math.radians(angle) for angle in hangarConfig['v_start_angles']))
+        _moveTank(hangarConfig, hangarConfig['v_start_pos'], tuple((math.radians(angle) for angle in hangarConfig['v_start_angles'])))
         spaceID = self.__hangarSpace.spaceID
         pbsManager = CGF.getManager(spaceID, PostBattleManager)
         if pbsManager and self.__mapImageName:
             pbsManager.applyArenaImage(self.__mapImageName)
+        Waiting.hide('loadingData')
+
+    def moveCameraFailed(self):
         Waiting.hide('loadingData')
 
 
@@ -412,8 +437,7 @@ def _getVehicleCDAndOutfit(battleResultsService, arenaUniqueID):
     statsController = battleResultsService.getStatsCtrl(arenaUniqueID)
     battleResults, reusable = statsController.getResults()
     for vehicleCD, vehicle in reusable.personal.getVehicleCDsIterator(battleResults['personal']):
-        return (
-         vehicleCD, vehicle['outfit'])
+        return (vehicleCD, vehicle['outfit'])
 
     return (None, None)
 
@@ -422,6 +446,6 @@ def _moveTank(hangarConfig, position, yawPitchRoll):
     isForwardPipeline = BigWorld.getGraphicsSetting('RENDER_PIPELINE') == 1
     shadowOffsetKey = 'shadow_forward_y_offset' if isForwardPipeline else 'shadow_deferred_y_offset'
     shadowYOffset = hangarConfig[shadowOffsetKey]
-    g_eventBus.handleEvent(events.HangarCustomizationEvent(events.HangarCustomizationEvent.CHANGE_VEHICLE_MODEL_TRANSFORM, ctx={'targetPos': position, 
-       'rotateYPR': yawPitchRoll, 
-       'shadowYOffset': shadowYOffset}), scope=EVENT_BUS_SCOPE.LOBBY)
+    g_eventBus.handleEvent(events.HangarCustomizationEvent(events.HangarCustomizationEvent.CHANGE_VEHICLE_MODEL_TRANSFORM, ctx={'targetPos': position,
+     'rotateYPR': yawPitchRoll,
+     'shadowYOffset': shadowYOffset}), scope=EVENT_BUS_SCOPE.LOBBY)

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_selector_base.py
 from constants import MIN_VEHICLE_LEVEL, MAX_VEHICLE_LEVEL
 from gui.Scaleform.genConsts.VEHICLE_SELECTOR_CONSTANTS import VEHICLE_SELECTOR_CONSTANTS
 from gui.shared.formatters.vehicle_filters import packVehicleTypesFilter, packVehicleLevelsFilter, packNationsFilter
@@ -17,11 +19,11 @@ class VehicleSelectorBase(object):
         return self.__filters
 
     def _updateFilter(self, nation=-1, vehicleType='none', isMain=False, level=-1, compatibleOnly=False):
-        self.__filters = {'nation': nation, 
-           'vehicleType': vehicleType, 
-           'isMain': isMain, 
-           'level': level, 
-           'compatibleOnly': compatibleOnly}
+        self.__filters = {'nation': nation,
+         'vehicleType': vehicleType,
+         'isMain': isMain,
+         'level': level,
+         'compatibleOnly': compatibleOnly}
 
     def _updateData(self, allVehicles, compatiblePredicate=lambda vo: vo.get('enabled')):
         criteria = REQ_CRITERIA.EMPTY | REQ_CRITERIA.VEHICLE.ACTIVE_OR_MAIN_IN_NATION_GROUP
@@ -55,30 +57,27 @@ class VehicleSelectorBase(object):
     def _parseFilters(self):
         nations, levels, classes = (None, None, None)
         if 'nation' in self.__filters and self.__filters['nation'] != -1:
-            nations = [
-             self.__filters['nation']]
+            nations = [self.__filters['nation']]
         if 'level' in self.__filters and self.__filters['level'] != -1:
-            levels = [
-             self.__filters['level']]
+            levels = [self.__filters['level']]
         if 'vehicleType' in self.__filters and self.__filters['vehicleType'] != 'none':
-            classes = [
-             self.__filters['vehicleType']]
+            classes = [self.__filters['vehicleType']]
         return (nations, levels, classes)
 
     def _initFilter(self, nation=-1, vehicleType='none', isMain=False, level=-1, compatibleOnly=False):
         levelsDP = packVehicleLevelsFilter(self._levelsRange)
         if len(levelsDP) <= 2:
             self._filterVisibility ^= VEHICLE_SELECTOR_CONSTANTS.VISIBLE_LEVEL
-        filtersData = {'vehicleTypesDP': packVehicleTypesFilter(defaultVehType='none'), 
-           'levelsDP': levelsDP, 
-           'nation': nation, 
-           'nationDP': packNationsFilter(), 
-           'vehicleType': vehicleType, 
-           'isMain': isMain, 
-           'level': level, 
-           'compatibleOnly': compatibleOnly, 
-           'visibility': self._filterVisibility, 
-           'compatibleOnlyLabel': self._compatibleOnlyLabel}
+        filtersData = {'vehicleTypesDP': packVehicleTypesFilter(defaultVehType='none'),
+         'levelsDP': levelsDP,
+         'nation': nation,
+         'nationDP': packNationsFilter(),
+         'vehicleType': vehicleType,
+         'isMain': isMain,
+         'level': level,
+         'compatibleOnly': compatibleOnly,
+         'visibility': self._filterVisibility,
+         'compatibleOnlyLabel': self._compatibleOnlyLabel}
         return filtersData
 
     def _makeVehicleVOAction(self, vehicle):

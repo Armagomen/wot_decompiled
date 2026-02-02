@@ -1,10 +1,11 @@
-import logging, weakref
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/offers/offers_banner_controller.py
+import logging
+import weakref
 from functools import partial
-import BigWorld, Event
+import BigWorld
+import Event
 from adisp import adisp_process
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.framework.entities.View import ViewKey
-from gui.app_loader.settings import APP_NAME_SPACE
 from gui.impl.lobby.offers.offer_banner_window import OfferBannerWindow
 from gui.limited_ui.lui_rules_storage import LUI_RULES
 from helpers import dependency
@@ -101,11 +102,5 @@ class OffersBannerController(IOffersBannerController):
 
     @property
     def __isHangarViewLoaded(self):
-        app = self._appLoader.getApp(APP_NAME_SPACE.SF_LOBBY)
-        if app and app.containerManager:
-            hangarView = app.containerManager.getViewByKey(ViewKey(VIEW_ALIAS.LOBBY_HANGAR))
-            if hangarView is None:
-                hangarView = app.containerManager.getViewByKey(ViewKey(VIEW_ALIAS.LEGACY_LOBBY_HANGAR))
-            return hangarView is not None
-        else:
-            return False
+        from gui.lobby_state_machine.states import isInHangarState
+        return isInHangarState()

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/offers/offers_view.py
 import ResMgr
 from adisp import adisp_process, adisp_async
 from gui.Scaleform.daapi.view.lobby.storage.storage_helpers import createStorageDefVO
@@ -72,7 +74,7 @@ class StorageCategoryOffersView(StorageCategoryOffersViewMeta):
         date = getRegionalDateTime(offer.expiration, DateTimeFormatsEnum.SHORTDATE)
         time = getRegionalDateTime(offer.expiration, DateTimeFormatsEnum.SHORTTIME)
         expiration = backport.text(R.strings.storage.offers.expiration(), date=text_styles.neutral(date), time=text_styles.neutral(time))
-        description = ('\n').join([gifts, expiration])
+        description = '\n'.join([gifts, expiration])
         localization = ResMgr.openSection(self._offersProvider.getCdnResourcePath(offer.cdnLocFilePath, relative=False))
         title = localization.readString('name') if localization else ''
         vo = createStorageDefVO(offer.id, title, description, 0, None, self._offersProvider.getCdnResourcePath(offer.cdnLogoPath, relative=False), 'altimage', contextMenuId=None, sellBtnLabel=backport.text(R.strings.storage.buttonLabel.select()))

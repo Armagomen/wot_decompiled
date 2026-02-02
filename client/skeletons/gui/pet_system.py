@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/skeletons/gui/pet_system.py
 import typing
 from skeletons.gui.game_control import IGameController
 if typing.TYPE_CHECKING:
@@ -148,4 +150,7 @@ class IPetSystemController(IGameController):
         raise NotImplementedError
 
     def getUnlockedAndPromoPets(self):
+        raise NotImplementedError
+
+    def checkBonusCapsForPetBonus(self):
         raise NotImplementedError

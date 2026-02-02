@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/lobby/views/mode_selector/items/battle_royale_mode_selector_item.py
 from helpers import dependency, time_utils
 from battle_royale_progression.skeletons.game_controller import IBRProgressionOnTokensController
 from gui.impl import backport
@@ -28,7 +30,7 @@ class BattleRoyaleModeSelectorItem(ModeSelectorLegacyItem):
         return True
 
     def getExtendedCalendarTooltip(self, parentWindow):
-        return createAndLoadBackportTooltipWindow(parentWindow, tooltipId=TOOLTIPS_CONSTANTS.BATTLE_ROYALE_SELECTOR_CALENDAR_INFO, isSpecial=True, specialArgs=(None, ))
+        return createAndLoadBackportTooltipWindow(parentWindow, tooltipId=TOOLTIPS_CONSTANTS.BATTLE_ROYALE_SELECTOR_CALENDAR_INFO, isSpecial=True, specialArgs=(None,))
 
     def handleInfoPageClick(self):
         self.__battleRoyaleController.openInfoPageWindow(True)
@@ -72,7 +74,7 @@ class BattleRoyaleModeSelectorItem(ModeSelectorLegacyItem):
         self.__fillWidgetData()
 
     def __fillViewModel(self):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             season = self.__battleRoyaleController.getCurrentSeason() or self.__battleRoyaleController.getNextSeason()
             currTime = time_utils.getCurrentLocalServerTimestamp()
             if season is None:
@@ -106,11 +108,11 @@ class BattleRoyaleModeSelectorItem(ModeSelectorLegacyItem):
 
     def __fillWidgetData(self):
         if not self.__brProgression.isEnabled:
-            with self.viewModel.widget.transaction() as (vm):
+            with self.viewModel.widget.transaction() as vm:
                 vm.setStatus(BattleRoyaleProgressionStatus.DISABLED)
             return
         data = self.__brProgression.getProgessionPointsData()
-        with self.viewModel.widget.transaction() as (vm):
+        with self.viewModel.widget.transaction() as vm:
             vm.setStatus(BattleRoyaleProgressionStatus.ACTIVE)
             vm.setCurrentStage(data['stage'])
             vm.setStageCurrentPoints(data['stageProgress'])

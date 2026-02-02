@@ -1,4 +1,7 @@
-import types, weakref
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/wgcg/requests.py
+import types
+import weakref
 from client_request_lib.exceptions import ResponseCodes
 from debug_utils import LOG_WARNING, LOG_DEBUG
 from gui.clans import formatters as clan_fmts
@@ -29,9 +32,7 @@ from gui.wgcg.wot_shop.handlers import WotShopRequestHandlers
 class WgcgRequestResponse(Response):
 
     def isSuccess(self):
-        return self.getCode() in (
-         ResponseCodes.NO_ERRORS,
-         ResponseCodes.STRONGHOLD_NOT_FOUND)
+        return self.getCode() in (ResponseCodes.NO_ERRORS, ResponseCodes.STRONGHOLD_NOT_FOUND)
 
     def getCode(self):
         return self.code
@@ -125,10 +126,7 @@ class WgcgRequestsController(RequestsController):
         return
 
     def _getHandlerByRequestType(self, requestTypeID):
-        if self.__handlers:
-            return self.__handlers.get(requestTypeID)
-        else:
-            return
+        return self.__handlers.get(requestTypeID) if self.__handlers else None
 
     def _getRequestTimeOut(self):
         return REQUEST_TIMEOUT

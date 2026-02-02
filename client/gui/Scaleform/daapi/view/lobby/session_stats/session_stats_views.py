@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/session_stats/session_stats_views.py
 from account_helpers.settings_core.settings_constants import SESSION_STATS
 from constants import ARENA_BONUS_TYPE
 from gui.Scaleform.daapi.view.lobby.session_stats.shared import packLastBattleData, packBattleEfficiencyData, packTotalData, toIntegral, toNiceNumber, getDeltaAsData, getNationIcon
@@ -31,10 +33,10 @@ class SessionBattleStatsView(SessionBattleStatsViewMeta):
     def __makeVO(self):
         data = self.itemsCache.items.sessionStats.getAccountStats(ARENA_BONUS_TYPE.REGULAR)
         parameters = SESSION_STATS.getAccountEfficiencyBlock()
-        return {'collapseLabel': text_styles.middleTitle(backport.text(R.strings.session_stats.label.battleEfficiency())), 
-           'lastBattle': packLastBattleData(data), 
-           'total': packTotalData(data), 
-           'battleEfficiency': packBattleEfficiencyData(data, parameters)}
+        return {'collapseLabel': text_styles.middleTitle(backport.text(R.strings.session_stats.label.battleEfficiency())),
+         'lastBattle': packLastBattleData(data),
+         'total': packTotalData(data),
+         'battleEfficiency': packBattleEfficiencyData(data, parameters)}
 
 
 class SessionVehicleStatsView(SessionVehicleStatsViewMeta):
@@ -61,36 +63,35 @@ class SessionVehicleStatsView(SessionVehicleStatsViewMeta):
         if vehiclesDict:
             for intCD, vehicle in vehiclesDict.iteritems():
                 data = self.itemsCache.items.sessionStats.getVehiclesStats(ARENA_BONUS_TYPE.REGULAR, intCD)
-                vehiclesSortData.append((
-                 intCD, (data.battleCnt, vehicle.level, data.averageDamage.value)))
-                vehiclesData.append({'intCD': intCD, 
-                   'icon': vehicle.iconSmall, 
-                   'label': text_styles.main(vehicle.shortUserName), 
-                   'level': vehicle.level, 
-                   'nationIcon': getNationIcon(vehicle.nationID, width=155, height=31), 
-                   'type': vehicle.type, 
-                   'total': text_styles.stats(toNiceNumber(data.battleCnt)), 
-                   'damage': text_styles.stats(toIntegral(data.averageDamage.value)), 
-                   'wtr': text_styles.stats(toNiceNumber(data.wtr.value)), 
-                   'delta': getDeltaAsData(data.wtr.delta)})
+                vehiclesSortData.append((intCD, (data.battleCnt, vehicle.level, data.averageDamage.value)))
+                vehiclesData.append({'intCD': intCD,
+                 'icon': vehicle.iconSmall,
+                 'label': text_styles.main(vehicle.shortUserName),
+                 'level': vehicle.level,
+                 'nationIcon': getNationIcon(vehicle.nationID, width=155, height=31),
+                 'type': vehicle.type,
+                 'total': text_styles.stats(toNiceNumber(data.battleCnt)),
+                 'damage': text_styles.stats(toIntegral(data.averageDamage.value)),
+                 'wtr': text_styles.stats(toNiceNumber(data.wtr.value)),
+                 'delta': getDeltaAsData(data.wtr.delta)})
 
         else:
-            vehiclesData.append({'intCD': None, 
-               'icon': backport.image(R.images.gui.maps.icons.library.empty_veh()), 
-               'total': text_styles.stats(toNiceNumber(None)), 
-               'damage': text_styles.stats(toIntegral(None)), 
-               'wtr': text_styles.stats(toNiceNumber(None))})
+            vehiclesData.append({'intCD': None,
+             'icon': backport.image(R.images.gui.maps.icons.library.empty_veh()),
+             'total': text_styles.stats(toNiceNumber(None)),
+             'damage': text_styles.stats(toIntegral(None)),
+             'wtr': text_styles.stats(toNiceNumber(None))})
         if vehiclesSortData:
             vehiclesData = self._sortedVehiclesData(vehiclesSortData, vehiclesData)
         vehiclesData = vehiclesData[0:_VEH_LIST_LEN]
-        return {'headerName': text_styles.mainBig(backport.text(R.strings.menu.inventory.menu.vehicle.name())), 
-           'headerTotalIcon': backport.image(R.images.gui.maps.icons.statistic.battles24()), 
-           'headerTotalTooltip': backport.text(R.strings.session_stats.tooltip.header.battleCount()), 
-           'headerDamageIcon': backport.image(R.images.gui.maps.icons.statistic.avgDamage24()), 
-           'headerDamageTooltip': backport.text(R.strings.session_stats.tooltip.header.avgDamage()), 
-           'headerWtrIcon': backport.image(R.images.gui.maps.icons.library.wtrIcon_24()), 
-           'headerWtrTooltip': backport.text(R.strings.session_stats.tooltip.header.wtr()), 
-           'vehicles': vehiclesData}
+        return {'headerName': text_styles.mainBig(backport.text(R.strings.menu.inventory.menu.vehicle.name())),
+         'headerTotalIcon': backport.image(R.images.gui.maps.icons.statistic.battles24()),
+         'headerTotalTooltip': backport.text(R.strings.session_stats.tooltip.header.battleCount()),
+         'headerDamageIcon': backport.image(R.images.gui.maps.icons.statistic.avgDamage24()),
+         'headerDamageTooltip': backport.text(R.strings.session_stats.tooltip.header.avgDamage()),
+         'headerWtrIcon': backport.image(R.images.gui.maps.icons.library.wtrIcon_24()),
+         'headerWtrTooltip': backport.text(R.strings.session_stats.tooltip.header.wtr()),
+         'vehicles': vehiclesData}
 
     def _sortedVehiclesData(self, vehiclesSortData, vehiclesData):
         sortedParams = sorted(vehiclesSortData, key=lambda params: params[1], reverse=True)

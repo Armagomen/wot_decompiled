@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/skeletons/gui/shared/utils/__init__.py
 from typing import TYPE_CHECKING, Optional, Dict
 from skeletons.gui.shared.utils import requesters
 if TYPE_CHECKING:

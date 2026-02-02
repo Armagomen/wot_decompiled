@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/utils/path.py
+import logging
+import typing
 from constants import GF_RES_PROTOCOL
 from gui.shared.utils.functions import getAbsoluteUrl
 if typing.TYPE_CHECKING:
@@ -13,5 +16,5 @@ def normalizeGfImagePath(imgPath):
         newPath = getAbsoluteUrl(str(imgPath))
         newPath = newPath.replace('\\', '/')
         if not newPath.startswith(GF_RES_PROTOCOL.IMG):
-            newPath = ('').join((GF_RES_PROTOCOL.IMG, newPath))
+            newPath = ''.join((GF_RES_PROTOCOL.IMG, newPath))
         return newPath

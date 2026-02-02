@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/rankedBattles/ranked_battles_qualification.py
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import IS_FIRST_ENTRY_BY_DIVISION_ID
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -79,7 +81,7 @@ class RankedBattlesQualification(RankedBattlesDivisionQualificationMeta):
             if isCompleted:
                 qualificationDescr = text_styles.concatStylesToSingleLine(icons.check(), text_styles.statInfo(backport.text(R.strings.ranked_battles.division.status.qualificationDescr.complete())))
             else:
-                qualificationDescr = text_styles.main(backport.text(R.strings.ranked_battles.division.status.qualificationDescr.progress(), battlesTotal=total, battlesList=(', ').join([ str(x) for x in numQualificationQuestBattles ])))
+                qualificationDescr = text_styles.main(backport.text(R.strings.ranked_battles.division.status.qualificationDescr.progress(), battlesTotal=total, battlesList=', '.join([ str(x) for x in numQualificationQuestBattles ])))
         self.as_setQualificationProgressS(progressTextSmall, progressTextBig, isCompleted, qualificationDescr)
 
     def __setQualificationSteps(self, divisionID):

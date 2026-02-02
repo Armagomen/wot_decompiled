@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/lobby/tooltips/banner_tooltip_view.py
 from battle_royale.gui.constants import BattleRoyalePerfProblems, BattleRoyaleModeState
 from battle_royale.gui.impl.gen.view_models.views.lobby.tooltips.banner_tooltip_view_model import BannerTooltipViewModel, PerformanceRisk
 from frameworks.wulf import ViewFlags, ViewSettings
@@ -5,9 +7,9 @@ from gui.impl.gen import R
 from gui.impl.pub import ViewImpl
 from helpers import dependency
 from skeletons.gui.game_control import IBattleRoyaleController
-PERFORMANCE_RISK_MAPPING = {BattleRoyalePerfProblems.HIGH_RISK: PerformanceRisk.HIGH, 
-   BattleRoyalePerfProblems.MEDIUM_RISK: PerformanceRisk.MEDIUM, 
-   BattleRoyalePerfProblems.LOW_RISK: PerformanceRisk.LOW}
+PERFORMANCE_RISK_MAPPING = {BattleRoyalePerfProblems.HIGH_RISK: PerformanceRisk.HIGH,
+ BattleRoyalePerfProblems.MEDIUM_RISK: PerformanceRisk.MEDIUM,
+ BattleRoyalePerfProblems.LOW_RISK: PerformanceRisk.LOW}
 
 class BannerTooltipView(ViewImpl):
     __battleController = dependency.descriptor(IBattleRoyaleController)
@@ -26,7 +28,7 @@ class BannerTooltipView(ViewImpl):
         return super(BannerTooltipView, self).getViewModel()
 
     def _onLoading(self, *args, **kwargs):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setPerformanceRisk(PERFORMANCE_RISK_MAPPING[self.__battleController.getPerformanceGroup()])
             tx.setModeState(self.__modeState)
             periodInfo = self.__battleController.getPeriodInfo()

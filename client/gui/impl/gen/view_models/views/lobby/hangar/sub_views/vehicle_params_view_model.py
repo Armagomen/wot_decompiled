@@ -1,8 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/hangar/sub_views/vehicle_params_view_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.hangar.sub_views.vehicle_param_group_view_model import VehicleParamGroupViewModel
 
 class VehicleParamsViewModel(ViewModel):
-    __slots__ = ('onGroupClick', )
+    __slots__ = ('onGroupClick',)
 
     def __init__(self, properties=1, commands=1):
         super(VehicleParamsViewModel, self).__init__(properties=properties, commands=commands)

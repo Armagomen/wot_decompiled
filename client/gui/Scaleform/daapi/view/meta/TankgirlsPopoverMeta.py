@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/TankgirlsPopoverMeta.py
 from gui.Scaleform.daapi.view.lobby.popover.SmartPopOverView import SmartPopOverView
 
 class TankgirlsPopoverMeta(SmartPopOverView):
@@ -6,5 +8,4 @@ class TankgirlsPopoverMeta(SmartPopOverView):
         self._printOverrideError('onRecruitClick')
 
     def as_setListDataProviderS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setListDataProvider(data)
+        return self.flashObject.as_setListDataProvider(data) if self._isDAAPIInited() else None

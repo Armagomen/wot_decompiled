@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/clans/clan_helpers.py
 import typing
 from constants import ClansConfig
 from helpers import dependency
@@ -25,8 +27,7 @@ def getStrongholdEventUrl(lobbyContext=None):
 
 @dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
 def getStrongholdEventBattleModeSettings(lobbyContext=None):
-    return lobbyContext.getServerSettings().getClansConfig().get(ClansConfig.STRONGHOLD_EVENT_BATTLE_MODE, ('',
-                                                                                                            0))
+    return lobbyContext.getServerSettings().getClansConfig().get(ClansConfig.STRONGHOLD_EVENT_BATTLE_MODE, ('', 0))
 
 
 @dependency.replace_none_kwargs(lobbyContext=ILobbyContext)

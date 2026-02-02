@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/visual_script_client/pve_common.py
 from enum import IntEnum
 import typing
 from constants import IS_VS_EDITOR
@@ -38,11 +40,11 @@ class ClientBattleHUDWidgetSettings(Block, PVEBattleHUDMeta):
     def __init__(self, *args, **kwargs):
         super(ClientBattleHUDWidgetSettings, self).__init__(*args, **kwargs)
         if self._SETTINGS_MODEL is None:
-            errorVScript(self, ('Missing widget settings model for "{}" block.').format(self.__name__))
+            errorVScript(self, 'Missing widget settings model for "{}" block.'.format(self.__name__))
         if self._WIDGET_TYPE is None:
-            errorVScript(self, ('Missing widget type for "{}" block.').format(self.__name__))
+            errorVScript(self, 'Missing widget type for "{}" block.'.format(self.__name__))
         if self._SETTING_TYPE is None:
-            errorVScript(self, ('Missing setting type for "{}" block.').format(self.__name__))
+            errorVScript(self, 'Missing setting type for "{}" block.'.format(self.__name__))
         self._inSlot = self._makeEventInputSlot('in', self._execute)
         self._outSlot = self._makeEventOutputSlot('out')
         self._slotSpecs = self._SETTINGS_CONFIG[:]
@@ -53,16 +55,13 @@ class ClientBattleHUDWidgetSettings(Block, PVEBattleHUDMeta):
 
     @classmethod
     def blockAspects(cls):
-        return [
-         ASPECT.CLIENT]
+        return [ASPECT.CLIENT]
 
     def validate(self):
         for idx, slotSpec in enumerate(self._slotSpecs):
             slot = self._settingsSlots[idx]
             if slotSpec.required and not slot.hasValue():
-                return ('{slotName} value is required').format(slotName=slotSpec.slotName)
-
-        return ''
+                return '{slotName} value is required'.format(slotName=slotSpec.slotName)
 
     def _execute(self):
         settings = {slotSpec.slotName:self.__getSettingValue(self._settingsSlots[idx], slotSpec.slotType) for idx, slotSpec in enumerate(self._slotSpecs)}

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/clans/invites/ClanInvitesWindow.py
 import weakref
 from functools import partial
 import gui
@@ -27,9 +29,7 @@ from helpers.i18n import makeString as _ms
 from skeletons.gui.web import IWebController
 
 class ClanInvitesWindow(ClanInvitesWindowMeta, ClanListener, ClanEmblemsHelper):
-    __coolDownRequests = [
-     WebRequestDataType.CLAN_APPLICATIONS,
-     WebRequestDataType.CLAN_INVITES]
+    __coolDownRequests = [WebRequestDataType.CLAN_APPLICATIONS, WebRequestDataType.CLAN_INVITES]
 
     def __init__(self, *args, **kwargs):
         super(ClanInvitesWindow, self).__init__()
@@ -128,7 +128,7 @@ class ClanInvitesWindow(ClanInvitesWindowMeta, ClanListener, ClanEmblemsHelper):
             elif f == CLANS_ALIASES.INVITE_WINDOW_FILTER_PROCESSED:
                 pass
             else:
-                LOG_DEBUG(('Unexpected behaviour: unknown filter {} for alias {}').format(f, alias))
+                LOG_DEBUG('Unexpected behaviour: unknown filter {} for alias {}'.format(f, alias))
         elif alias == CLANS_ALIASES.CLAN_PROFILE_INVITES_VIEW_ALIAS:
             if f == CLANS_ALIASES.INVITE_WINDOW_FILTER_ALL:
                 pass
@@ -140,7 +140,7 @@ class ClanInvitesWindow(ClanInvitesWindowMeta, ClanListener, ClanEmblemsHelper):
                 self.__processedInvitesCount = self.formatInvitesCount(paginator)
                 self.__updateTabsState()
             else:
-                LOG_DEBUG(('Unexpected behaviour: unknown filter {} for alias {}').format(f, alias))
+                LOG_DEBUG('Unexpected behaviour: unknown filter {} for alias {}'.format(f, alias))
         else:
             LOG_DEBUG('Unexpected behaviour: unknown view alias ', alias)
         self.showWaiting(False)
@@ -149,9 +149,9 @@ class ClanInvitesWindow(ClanInvitesWindowMeta, ClanListener, ClanEmblemsHelper):
         self.requestClanEmblem128x128(self.clanProfile.getClanDbID())
 
     def _updateClanInfo(self):
-        self.as_setClanInfoS({'name': self.clanProfile.getClanFullName(), 
-           'bgIcon': RES_ICONS.MAPS_ICONS_CLANS_INVITESWINDOW_CC_HEADER_BACK, 
-           'creationDate': i18n.makeString(CLANS.CLAN_HEADER_CREATIONDATE, creationDate=backport.getShortDateFormat(self.clanInfo.getCreatedAt()))})
+        self.as_setClanInfoS({'name': self.clanProfile.getClanFullName(),
+         'bgIcon': RES_ICONS.MAPS_ICONS_CLANS_INVITESWINDOW_CC_HEADER_BACK,
+         'creationDate': i18n.makeString(CLANS.CLAN_HEADER_CREATIONDATE, creationDate=backport.getShortDateFormat(self.clanInfo.getCreatedAt()))})
 
     def _updateHeaderState(self):
         freePlaces = self.clanInfo.getFreePlaces()
@@ -163,17 +163,15 @@ class ClanInvitesWindow(ClanInvitesWindowMeta, ClanListener, ClanEmblemsHelper):
         else:
             inviteButtonEnabled = True
             inviteButtonTooltip = _ms(CLANS.CLANINVITESWINDOW_TOOLTIPS_HEADER_INVITEBUTTON)
-        self.as_setHeaderStateS({'inviteButtonEnabled': inviteButtonEnabled, 
-           'inviteButtonText': CLANS.CLANINVITESWINDOW_HEADER_INVITEINCLAN, 
-           'inviteButtonTooltip': makeTooltip(body=inviteButtonTooltip), 
-           'freePlacesInClanText': freePlacesInClanText})
+        self.as_setHeaderStateS({'inviteButtonEnabled': inviteButtonEnabled,
+         'inviteButtonText': CLANS.CLANINVITESWINDOW_HEADER_INVITEINCLAN,
+         'inviteButtonTooltip': makeTooltip(body=inviteButtonTooltip),
+         'freePlacesInClanText': freePlacesInClanText})
 
     def __updateTabsState(self):
-        self.as_setDataS({'tabDataProvider': [
-                             {'label': i18n.makeString(CLANS.CLANINVITESWINDOW_TABREQUESTS, value=self.__actualRequestsCount), 
-                                'linkage': CLANS_ALIASES.CLAN_PROFILE_REQUESTS_VIEW_LINKAGE},
-                             {'label': i18n.makeString(CLANS.CLANINVITESWINDOW_TABINVITES, value=self.__processedInvitesCount), 
-                                'linkage': CLANS_ALIASES.CLAN_PROFILE_INVITES_VIEW_LINKAGE}]})
+        self.as_setDataS({'tabDataProvider': [{'label': i18n.makeString(CLANS.CLANINVITESWINDOW_TABREQUESTS, value=self.__actualRequestsCount),
+                              'linkage': CLANS_ALIASES.CLAN_PROFILE_REQUESTS_VIEW_LINKAGE}, {'label': i18n.makeString(CLANS.CLANINVITESWINDOW_TABINVITES, value=self.__processedInvitesCount),
+                              'linkage': CLANS_ALIASES.CLAN_PROFILE_INVITES_VIEW_LINKAGE}]})
 
 
 class _PaginatorsController(object):
@@ -186,7 +184,7 @@ class _PaginatorsController(object):
         self.__setUpPaginators()
 
     def getPanginator(self, viewAlias, f):
-        return self.__paginators[(viewAlias, f)]
+        return self.__paginators[viewAlias, f]
 
     def setCallback(self, callback):
         for k, v in self.__paginators.iteritems():
@@ -224,4 +222,4 @@ class _PaginatorsController(object):
         self.__addPaginator(CLANS_ALIASES.CLAN_PROFILE_INVITES_VIEW_ALIAS, CLANS_ALIASES.INVITE_WINDOW_FILTER_ALL, ClanInvitesPaginator(self.clanCtrl, ClanInvitesCtx, self.__clanDbID, list(CLAN_INVITE_STATES.ALL)))
 
     def __addPaginator(self, viewAlias, f, panginator):
-        self.__paginators[(viewAlias, f)] = panginator
+        self.__paginators[viewAlias, f] = panginator

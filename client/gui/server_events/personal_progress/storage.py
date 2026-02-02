@@ -1,4 +1,7 @@
-import typing, quest_progress
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/server_events/personal_progress/storage.py
+import typing
+import quest_progress
 from gui.server_events.personal_progress import builders
 from gui.server_events.personal_progress import collectors
 from gui.server_events.personal_progress import visitors
@@ -51,8 +54,7 @@ class ClientProgressStorage(quest_progress.ProgressStorage):
 
     @classmethod
     def _getBuilders(cls):
-        return (
-         builders.BinaryProgressBuilder,
+        return (builders.BinaryProgressBuilder,
          builders.ValueProgressBuilder,
          builders.VehicleTypesProgressBuilder,
          builders.BiathlonProgressBuilder)
@@ -87,9 +89,7 @@ class LobbyProgressStorage(ClientProgressStorage):
 
     @classmethod
     def _getMetricsVisitors(cls):
-        return (
-         visitors.LobbyValueProgressVisitor,
-         visitors.LimiterProgressVisitor)
+        return (visitors.LobbyValueProgressVisitor, visitors.LimiterProgressVisitor)
 
     @classmethod
     def _getCurrentScope(cls):
@@ -100,15 +100,14 @@ class PostBattleProgressStorage(LobbyProgressStorage):
 
     @classmethod
     def _getMetricsVisitors(cls):
-        return ()
+        pass
 
 
 class BattleProgressStorage(ClientProgressStorage):
 
     @classmethod
     def _getMetricsVisitors(cls):
-        return (
-         visitors.BinaryProgressVisitor,
+        return (visitors.BinaryProgressVisitor,
          visitors.ValueProgressVisitor,
          visitors.ValueLikeBinaryProgressVisitor,
          visitors.CounterProgressVisitor,
@@ -122,8 +121,7 @@ class BattleProgressStorage(ClientProgressStorage):
             for progress in self.getBodyProgresses(isMain=True).itervalues():
                 if progress.isInOrGroup():
                     orRelatedProgressCompletion.append(progress.isCompleted())
-                else:
-                    unrelatedProgressCompletion.append(progress.isCompleted())
+                unrelatedProgressCompletion.append(progress.isCompleted())
 
             areAllUnrelatedProgressesCompleted = all(unrelatedProgressCompletion)
             if orRelatedProgressCompletion:

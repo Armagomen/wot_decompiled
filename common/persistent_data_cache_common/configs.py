@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/persistent_data_cache_common/configs.py
 import typing
 from soft_exception import SoftException
 if typing.TYPE_CHECKING:
@@ -13,4 +15,4 @@ class BasePDCConfig(object):
         self.cacheFilePath = cacheFilePath
 
     def __repr__(self):
-        return ('<{}>(version={}, cacheFilePath={})').format(self.__class__.__name__, self.version, self.cacheFilePath)
+        return '<{}>(version={}, cacheFilePath={})'.format(self.__class__.__name__, self.version, self.cacheFilePath)

@@ -1,4 +1,8 @@
-import logging, weakref, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/battle_control/controllers/spawn_ctrl.py
+import logging
+import weakref
+import BigWorld
 from battle_royale.gui.battle_control.controllers.notification_manager import INotificationManagerListener
 from debug_utils import LOG_ERROR
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -164,7 +168,7 @@ class SpawnController(ViewComponentsController, ISpawnController):
 
     def addRuntimeView(self, view):
         if view in self._viewComponents:
-            LOG_ERROR(('View is already added! {}').format(view))
+            LOG_ERROR('View is already added! {}'.format(view))
         else:
             if self.__isSpawnPointsVisible:
                 view.showSpawnPoints()
@@ -184,7 +188,7 @@ class SpawnController(ViewComponentsController, ISpawnController):
 
     @sf_battle
     def _app(self):
-        return
+        return None
 
     def __updateCloseTime(self):
         for viewComponent in self._viewComponents:
@@ -194,7 +198,7 @@ class SpawnController(ViewComponentsController, ISpawnController):
         return max(self.__closeTime - BigWorld.serverTime(), 0)
 
     def __createNotifier(self):
-        return PeriodicNotifier(self._getDeltaTime, self.__updateCloseTime, (1, ))
+        return PeriodicNotifier(self._getDeltaTime, self.__updateCloseTime, (1,))
 
     def __closeSpawnPoints(self):
         if self._app:

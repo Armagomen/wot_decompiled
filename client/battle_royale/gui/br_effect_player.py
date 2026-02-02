@@ -1,4 +1,9 @@
-import logging, BigWorld, CGF, GenericComponents
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/br_effect_player.py
+import logging
+import BigWorld
+import CGF
+import GenericComponents
 from helpers import dependency
 from battle_royale.gui.battle_control.controllers.progression_ctrl import IProgressionListener
 from gui.battle_control.view_components import IViewComponentsCtrlListener

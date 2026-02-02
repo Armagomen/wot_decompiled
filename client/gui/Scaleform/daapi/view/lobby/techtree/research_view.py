@@ -1,4 +1,7 @@
-import typing, nations
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/techtree/research_view.py
+import typing
+import nations
 from gui import SystemMessages
 from gui.Scaleform.daapi import LobbySubView
 from gui.Scaleform.daapi.view.lobby.techtree.listeners import TTListenerDecorator
@@ -82,10 +85,10 @@ class ResearchView(LobbySubView, ResearchViewMeta):
     def invalidateUnlocks(self, unlocks):
         next2Unlock, unlocked, prevUnlocked = self._data.invalidateUnlocks(unlocks)
         if unlocked:
-            _logger.debug('unlocked: %s', (' ').join(str(intCD) for intCD in unlocked))
+            _logger.debug('unlocked: %s', ' '.join((str(intCD) for intCD in unlocked)))
             self._updateUnlockedItems(unlocked)
         if next2Unlock:
-            _logger.debug('next2Unlock: %s', (' ').join(str(intCD) for intCD in next2Unlock))
+            _logger.debug('next2Unlock: %s', ' '.join((str(intCD) for intCD in next2Unlock)))
             self.as_setNext2UnlockS(next2Unlock)
         if prevUnlocked:
             _logger.info('previouslyUnlocked %s', prevUnlocked)

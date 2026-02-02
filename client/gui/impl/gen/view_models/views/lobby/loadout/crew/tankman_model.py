@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/loadout/crew/tankman_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.loadout.crew.bonus_skills_model import BonusSkillsModel
 from gui.impl.gen.view_models.views.lobby.loadout.crew.native_vehicle import NativeVehicle

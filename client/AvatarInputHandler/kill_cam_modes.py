@@ -1,4 +1,16 @@
-import logging, weakref, typing, BigWorld, constants, Keys, Math, BattleReplay, math_utils, GUI, CommandMapping as CM
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/AvatarInputHandler/kill_cam_modes.py
+import logging
+import weakref
+import typing
+import BigWorld
+import constants
+import Keys
+import Math
+import BattleReplay
+import math_utils
+import GUI
+import CommandMapping as CM
 from PlayerEvents import g_playerEvents
 from battleground.simulated_scene import SimulatedScene, ANIMATION_DURATION_BEFORE_SHOT
 from constants import ATTACK_REASON, ATTACK_REASONS, ARENA_PERIOD, DEFAULT_GUN_INSTALLATION_INDEX, POSTMORTEM_MODIFIERS
@@ -33,16 +45,14 @@ _PAUSE_BUTTON_COOLDOWN = 0.5
 _SKIP_KILL_CAM_BEFORE_AUTORESPAWN_TIME = 15
 _RADIUS = 10
 _RADIUS_ALPHA = 2
-_BLOCKED_KEYS = {
- Keys.KEY_LCONTROL,
+_BLOCKED_KEYS = {Keys.KEY_LCONTROL,
  Keys.KEY_RCONTROL,
  Keys.KEY_T,
  Keys.KEY_M,
  Keys.KEY_B,
  Keys.KEY_N,
  Keys.KEY_TAB}
-_BLOCKED_ACTIONS = (
- CM.CMD_SHOW_HELP,)
+_BLOCKED_ACTIONS = (CM.CMD_SHOW_HELP,)
 _BLACK_BG_IMG = 'gui/maps/login/blackBg.png'
 _logger = logging.getLogger(__name__)
 
@@ -54,8 +64,12 @@ class SimulationAvailability(object):
     NOT_KILLED_BY_SHOT = 4
     NOT_SUPPORTED_MODE = 5
     NOT_ENOUGH_TIME = 6
-    NOT_AVAILABLE = (NOT_AVAILABLE_MISSING_DATA, NOT_AVAILABLE_END_OF_BATTLE, VEHICLES_TOO_CLOSE, NOT_KILLED_BY_SHOT,
-     NOT_SUPPORTED_MODE, NOT_ENOUGH_TIME)
+    NOT_AVAILABLE = (NOT_AVAILABLE_MISSING_DATA,
+     NOT_AVAILABLE_END_OF_BATTLE,
+     VEHICLES_TOO_CLOSE,
+     NOT_KILLED_BY_SHOT,
+     NOT_SUPPORTED_MODE,
+     NOT_ENOUGH_TIME)
 
 
 class KillModeBase(IControlMode, CallbackDelayer):
@@ -211,71 +225,59 @@ class KillModeBase(IControlMode, CallbackDelayer):
             vehicle = BigWorld.entity(avatar.playerVehicleID)
         if not self._canShowKillerVisionInPeriod():
             _logger.info('The battle ends soon - shorten Look At Killer rotation or skip Killer Vision')
-            return (
-             SimulationAvailability.NOT_AVAILABLE_END_OF_BATTLE, None)
+            return (SimulationAvailability.NOT_AVAILABLE_END_OF_BATTLE, None)
+        elif 'killCamData' not in vehicle.dynamicComponents:
+            _logger.info("Player doesn't have killCamData available")
+            return (SimulationAvailability.NOT_AVAILABLE_MISSING_DATA, None)
+        elif not self._isKillByShot():
+            _logger.info("Player wasn't killed by shot")
+            return (SimulationAvailability.NOT_KILLED_BY_SHOT, None)
+        simulationData = self.__getRawSimulationData(vehicle)
+        if not self._validateRawSimulationData(simulationData):
+            _logger.info('Skip KillerVision because no simulation data are available')
+            return (SimulationAvailability.NOT_AVAILABLE_MISSING_DATA, None)
         else:
-            if 'killCamData' not in vehicle.dynamicComponents:
-                _logger.info("Player doesn't have killCamData available")
-                return (
-                 SimulationAvailability.NOT_AVAILABLE_MISSING_DATA, None)
-            if not self._isKillByShot():
-                _logger.info("Player wasn't killed by shot")
-                return (
-                 SimulationAvailability.NOT_KILLED_BY_SHOT, None)
-            simulationData = self.__getRawSimulationData(vehicle)
-            if not self._validateRawSimulationData(simulationData):
-                _logger.info('Skip KillerVision because no simulation data are available')
-                return (
-                 SimulationAvailability.NOT_AVAILABLE_MISSING_DATA, None)
             return (SimulationAvailability.AVAILABLE, simulationData)
 
     def _validateRawSimulationData(self, rawSimulationData):
         if rawSimulationData is None:
             return False
+        attackerData = rawSimulationData.get('attacker', None)
+        trajectoryData = rawSimulationData.get('trajectoryData', None)
+        if not attackerData or not trajectoryData:
+            _logger.error('_validateRawSimulationData(): Missing attackerData %s, or trajectoryData %s', attackerData, trajectoryData)
+            return False
         else:
-            attackerData = rawSimulationData.get('attacker', None)
-            trajectoryData = rawSimulationData.get('trajectoryData', None)
-            if not attackerData or not trajectoryData:
-                _logger.error('_validateRawSimulationData(): Missing attackerData %s, or trajectoryData %s', attackerData, trajectoryData)
-                return False
             return True
 
     def _canSkipKillCamera(self):
-        if BigWorld.time() - self._modeEnteredTime < _NO_SKIP_DEATH_CAM_DURATION:
-            return False
-        return True
+        return False if BigWorld.time() - self._modeEnteredTime < _NO_SKIP_DEATH_CAM_DURATION else True
 
     def _canSwitchToFreecam(self):
         if not self._canSkipKillCamera():
             return False
         respawnCtrl = self.guiSessionProvider.dynamic.respawn
         needToRespawn = respawnCtrl and respawnCtrl.playerLives > 0
-        if needToRespawn:
-            return False
-        return BigWorld.player().isPostmortemFeatureEnabled(CTRL_MODE_NAME.DEATH_FREE_CAM)
+        return False if needToRespawn else BigWorld.player().isPostmortemFeatureEnabled(CTRL_MODE_NAME.DEATH_FREE_CAM)
 
     def _switchToCtrlMode(self, targetMode, **kwargs):
         if targetMode != CTRL_MODE_NAME.DEATH_FREE_CAM:
             self.selectPlayer(None)
-        newVehicleID = BigWorld.player().playerVehicleID if targetMode in (CTRL_MODE_NAME.POSTMORTEM,
-         CTRL_MODE_NAME.DEATH_FREE_CAM) else None
+        newVehicleID = BigWorld.player().playerVehicleID if targetMode in (CTRL_MODE_NAME.POSTMORTEM, CTRL_MODE_NAME.DEATH_FREE_CAM) else None
         BigWorld.player().inputHandler.onControlModeChanged(targetMode, prevModeName=CTRL_MODE_NAME.KILL_CAM, camMatrix=Math.Matrix(BigWorld.camera().matrix), curVehicleID=self._victimVehicleID, newVehicleID=newVehicleID, transitionDuration=self._cameraTransitionDurations[targetMode], **kwargs)
         return
 
     def _isKillByShot(self):
         deathReasonID = BigWorld.player().inputHandler.getDeathReason()
-        return deathReasonID is not None and ATTACK_REASONS[deathReasonID] in (
-         ATTACK_REASON.SHOT, ATTACK_REASON.FIRE)
+        return deathReasonID is not None and ATTACK_REASONS[deathReasonID] in (ATTACK_REASON.SHOT, ATTACK_REASON.FIRE)
 
     def _isFirstTenDeathsWheeledTank(self, vehicleID):
         vehicle = BigWorld.entities.get(vehicleID)
         if vehicle is None or not vehicle.isWheeledTech:
             return False
-        wheeledDeathCountLeft = AccountSettings.getSettings(WHEELED_DEATH_DELAY_COUNT)
-        if wheeledDeathCountLeft == 0:
-            return False
         else:
-            return True
+            wheeledDeathCountLeft = AccountSettings.getSettings(WHEELED_DEATH_DELAY_COUNT)
+            return False if wheeledDeathCountLeft == 0 else True
 
     def _tryDecrementWheeledDeathCounter(self, vehicleID):
         if self._isFirstTenDeathsWheeledTank(vehicleID):
@@ -410,11 +412,11 @@ class KillCamMode(KillModeBase):
                     replayCtrl.resetPlaybackSpeedIdx()
                 else:
                     replayCtrl.setPlaybackSpeedIdx(0)
-            else:
-                if self.killCamState in DeathCamEvent.SIMULATION_EXCL_FADES:
-                    self.togglePauseKillCam()
-                return True
-            if key == Keys.KEY_RIGHTARROW and not isDown and self.killCamState in DeathCamEvent.SIMULATION_EXCL_FADES:
+            elif self.killCamState in DeathCamEvent.SIMULATION_EXCL_FADES:
+                self.togglePauseKillCam()
+            return True
+        if key == Keys.KEY_RIGHTARROW and not isDown:
+            if self.killCamState in DeathCamEvent.SIMULATION_EXCL_FADES:
                 self.__fadeAndLeaveKillCam(isInterrupted=True)
                 if isReplayPaused:
                     replayCtrl.resetPlaybackSpeedIdx()
@@ -475,9 +477,7 @@ class KillCamMode(KillModeBase):
                 return False
         if self.killCamState in DeathCamEvent.SIMULATION_EXCL_FADES or self.killCamState == DeathCamEvent.State.ENDING:
             return False
-        if self.__bFadeScreenActive:
-            return False
-        return True
+        return False if self.__bFadeScreenActive else True
 
     def _switchToCtrlMode(self, targetMode, **kwargs):
         if self.killCamState == DeathCamEvent.State.PREPARING:
@@ -490,51 +490,45 @@ class KillCamMode(KillModeBase):
         if vehicle is None:
             vehicle = BigWorld.entity(avatar.playerVehicleID)
         if not self._areBothTeamsAlive():
-            return (
-             SimulationAvailability.NOT_AVAILABLE_END_OF_BATTLE, None)
+            return (SimulationAvailability.NOT_AVAILABLE_END_OF_BATTLE, None)
+        availability, simulationData = super(KillCamMode, self)._checkSimulationAvailability()
+        if availability is not SimulationAvailability.AVAILABLE:
+            return (availability, None)
+        if avatar.arenaExtraData.get('isRandomEventsAllowed', False):
+            postmortemSettings = avatar.arenaExtraData.get('postmortemSettings', {})
+            killcamConfig = postmortemSettings.get('config', {}).get('killcam', {})
+            isAllowedForRandomEvents = killcamConfig.get('isAllowedForRandomEvents', False)
+            if not isAllowedForRandomEvents:
+                _logger.info('Skip DeathCam scene because Random Events are not supported')
+                return (SimulationAvailability.NOT_SUPPORTED_MODE, None)
+        if not self.killCamCtrl:
+            _logger.warning("DeathCam is enabled but can't find killCamCtrl")
+            return (SimulationAvailability.NOT_SUPPORTED_MODE, None)
+        if 'VehicleRespawnComponent' in vehicle.dynamicComponents:
+            delay = vehicle.dynamicComponents.get('VehicleRespawnComponent').delay
+            if 0 < delay < self._skipNotEnoughTimeForDC:
+                _logger.info('Not enough time to show DeathCam before respawn!')
+                return (SimulationAvailability.NOT_ENOUGH_TIME, None)
+        battleFieldCtrl = self.guiSessionProvider.dynamic.battleField
+        if not battleFieldCtrl:
+            _logger.error('Error, battle field controller not available')
+            return (SimulationAvailability.NOT_AVAILABLE_MISSING_DATA, None)
+        elif not self.__isDistanceFarEnough(simulationData):
+            _logger.info('Skip KillerVision because vehicles are too close to each other')
+            return (SimulationAvailability.VEHICLES_TOO_CLOSE, None)
         else:
-            availability, simulationData = super(KillCamMode, self)._checkSimulationAvailability()
-            if availability is not SimulationAvailability.AVAILABLE:
-                return (availability, None)
-            if avatar.arenaExtraData.get('isRandomEventsAllowed', False):
-                postmortemSettings = avatar.arenaExtraData.get('postmortemSettings', {})
-                killcamConfig = postmortemSettings.get('config', {}).get('killcam', {})
-                isAllowedForRandomEvents = killcamConfig.get('isAllowedForRandomEvents', False)
-                if not isAllowedForRandomEvents:
-                    _logger.info('Skip DeathCam scene because Random Events are not supported')
-                    return (
-                     SimulationAvailability.NOT_SUPPORTED_MODE, None)
-            if not self.killCamCtrl:
-                _logger.warning("DeathCam is enabled but can't find killCamCtrl")
-                return (
-                 SimulationAvailability.NOT_SUPPORTED_MODE, None)
-            if 'VehicleRespawnComponent' in vehicle.dynamicComponents:
-                delay = vehicle.dynamicComponents.get('VehicleRespawnComponent').delay
-                if 0 < delay < self._skipNotEnoughTimeForDC:
-                    _logger.info('Not enough time to show DeathCam before respawn!')
-                    return (
-                     SimulationAvailability.NOT_ENOUGH_TIME, None)
-            battleFieldCtrl = self.guiSessionProvider.dynamic.battleField
-            if not battleFieldCtrl:
-                _logger.error('Error, battle field controller not available')
-                return (
-                 SimulationAvailability.NOT_AVAILABLE_MISSING_DATA, None)
-            if not self.__isDistanceFarEnough(simulationData):
-                _logger.info('Skip KillerVision because vehicles are too close to each other')
-                return (
-                 SimulationAvailability.VEHICLES_TOO_CLOSE, None)
             return (SimulationAvailability.AVAILABLE, simulationData)
 
     def _validateRawSimulationData(self, rawSimulationData):
         if not super(KillCamMode, self)._validateRawSimulationData(rawSimulationData):
             return False
+        playerData = rawSimulationData.get('player', None)
+        projectileData = rawSimulationData.get('projectile', None)
+        unspottedOrigin = rawSimulationData.get('unspottedOrigin', None)
+        if not playerData or not projectileData:
+            _logger.error('_validateRawSimulationData():Missing playerData %s, projectileData %s, or unspottedOrigin %s', playerData, projectileData, unspottedOrigin)
+            return False
         else:
-            playerData = rawSimulationData.get('player', None)
-            projectileData = rawSimulationData.get('projectile', None)
-            unspottedOrigin = rawSimulationData.get('unspottedOrigin', None)
-            if not playerData or not projectileData:
-                _logger.error('_validateRawSimulationData():Missing playerData %s, projectileData %s, or unspottedOrigin %s', playerData, projectileData, unspottedOrigin)
-                return False
             return True
 
     def __onSwitchToPostmortem(self, noRespawnPossible, respawnAvailable):
@@ -618,8 +612,7 @@ class KillCamMode(KillModeBase):
 
     def __notifyKillCamCtrl(self):
         phase1Duration, phase2Duration, phase3Duration, totalSceneDuration = self._cam.calculatePhaseDurations(self._killerIsSpotted)
-        phaseDurations = (
-         phase1Duration, phase2Duration, phase3Duration)
+        phaseDurations = (phase1Duration, phase2Duration, phase3Duration)
         projectileData = self._rawSimulationData['projectile']
         playerRelativeArmor = self._rawSimulationData['player']['relativeArmor']
         hasSpottedData = self._rawSimulationData['attacker']['hasSpottedData']
@@ -629,9 +622,7 @@ class KillCamMode(KillModeBase):
         if simulatedKiller:
             gunInstallationIndex = projectileData.get('gunInstallationIndex', DEFAULT_GUN_INSTALLATION_INDEX)
             gunIndex = projectileData.get('gunIndex', 0)
-            simulatedKillerGunInfo = (
-             simulatedKiller.gunOriginMatrix(gunInstallationIndex, gunIndex),
-             simulatedKiller.gunFireMatrix(gunInstallationIndex, gunIndex))
+            simulatedKillerGunInfo = (simulatedKiller.gunOriginMatrix(gunInstallationIndex, gunIndex), simulatedKiller.gunFireMatrix(gunInstallationIndex, gunIndex))
         else:
             simulatedKillerGunInfo = None
         self.killCamCtrl.killCamModeActive(self.__unspottedOrigin, simulatedKillerGunInfo, projectileData, phaseDurations, hasSpottedData, simulatedKiller is not None, playerRelativeArmor, playerIsSpotted, totalSceneDuration - _START_VISION_DELAY, causeOfDeath)
@@ -804,7 +795,7 @@ class LookAtKillerMode(KillModeBase):
         if enemySpottedInsideAOI:
             self._cam.setCameraToLookTowards(sourceVehicleID=self._victimVehicleID, targetVehicleID=self._killerVehicleID, mode=StartCamDirection.TOWARDS_TARGET, isInstant=False)
         elif killerIsSpotted:
-            self._cam.setCameraToLookTowards(sourceVehicleID=self._victimVehicleID, targetVehicleID=None, firstPoint=self._trajectoryPoints[0], lastPoint=self._trajectoryPoints[(-1)], isInstant=False)
+            self._cam.setCameraToLookTowards(sourceVehicleID=self._victimVehicleID, targetVehicleID=None, firstPoint=self._trajectoryPoints[0], lastPoint=self._trajectoryPoints[-1], isInstant=False)
         else:
-            self._cam.setCameraToLookTowards(sourceVehicleID=self._victimVehicleID, targetVehicleID=None, firstPoint=self._trajectoryPoints[0], lastPoint=self._trajectoryPoints[(-1)], isInstant=False, originatesFromVehicle=False)
+            self._cam.setCameraToLookTowards(sourceVehicleID=self._victimVehicleID, targetVehicleID=None, firstPoint=self._trajectoryPoints[0], lastPoint=self._trajectoryPoints[-1], isInstant=False, originatesFromVehicle=False)
         return

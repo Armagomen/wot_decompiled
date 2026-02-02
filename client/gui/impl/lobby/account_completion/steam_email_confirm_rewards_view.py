@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/account_completion/steam_email_confirm_rewards_view.py
 import typing
 from frameworks.wulf import ViewFlags, ViewSettings, WindowFlags
 from gui.battle_pass.sounds import BattlePassSounds
@@ -13,7 +15,7 @@ if typing.TYPE_CHECKING:
     from typing import Dict
 
 class SteamEmailConfirmRewardsView(ViewImpl):
-    __slots__ = ('__tooltips', )
+    __slots__ = ('__tooltips',)
     _COMMON_SOUND_SPACE = CommonSoundSpaceSettings(name=StatesGroup.OVERLAY_HANGAR_GENERAL, entranceStates={StatesGroup.OVERLAY_HANGAR_GENERAL: States.OVERLAY_HANGAR_GENERAL_ON}, exitStates={StatesGroup.OVERLAY_HANGAR_GENERAL: States.OVERLAY_HANGAR_GENERAL_OFF}, persistentSounds=(), stoppableSounds=(), priorities=(), autoStart=True, enterEvent=BattlePassSounds.REWARD_SCREEN, exitEvent='', parentSpace='')
 
     def __init__(self, rewards):
@@ -34,21 +36,16 @@ class SteamEmailConfirmRewardsView(ViewImpl):
 
     def getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        if tooltipId is None:
-            return
-        else:
-            return self.__tooltips.get(tooltipId)
+        return None if tooltipId is None else self.__tooltips.get(tooltipId)
 
     def _onLoading(self, rewards, *args, **kwargs):
         super(SteamEmailConfirmRewardsView, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             self.__updateRewards(rewards, model)
 
     def _getEvents(self):
         events = super(SteamEmailConfirmRewardsView, self)._getEvents()
-        return events + (
-         (
-          self.viewModel.onClose, self.__onClose),)
+        return events + ((self.viewModel.onClose, self.__onClose),)
 
     def __updateRewards(self, rewards, model):
         fillRewards(model, rewards, self.__tooltips)

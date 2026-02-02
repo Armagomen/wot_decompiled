@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/mode_selector/items/strongholds_mode_selector_item.py
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.impl import backport
 from gui.impl.gen import R

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/impl/lobby/views/awards_view.py
 import SoundGroups
 from frameworks.wulf import ViewSettings, WindowFlags, WindowLayer
 from gui.battle_pass.battle_pass_decorators import createBackportTooltipDecorator, createTooltipContentDecorator
@@ -15,8 +17,7 @@ from skeletons.gui.game_control import IEpicBattleMetaGameController
 MAIN_REWARDS_LIMIT = 4
 
 class AwardsView(ViewImpl):
-    __slots__ = ('__tooltipItems', '__onCloseCallback', '__onAnimationEndedCallback',
-                 '__isAnimationEnded')
+    __slots__ = ('__tooltipItems', '__onCloseCallback', '__onAnimationEndedCallback', '__isAnimationEnded')
 
     def __init__(self, bonuses, onCloseCallback=None, onAnimationEnded=None):
         settings = ViewSettings(R.views.lobby.common.AwardsView())
@@ -38,14 +39,11 @@ class AwardsView(ViewImpl):
 
     @createTooltipContentDecorator()
     def createToolTipContent(self, event, contentID):
-        return
+        return None
 
     def getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        if tooltipId is None:
-            return
-        else:
-            return self.__tooltipItems.get(tooltipId)
+        return None if tooltipId is None else self.__tooltipItems.get(tooltipId)
 
     def _finalize(self):
         super(AwardsView, self)._finalize()
@@ -57,8 +55,8 @@ class AwardsView(ViewImpl):
         if not rewards:
             return
         locales = R.strings.epic_battle.awards
-        with self.viewModel.transaction() as (vm):
-            vm.setBackground(R.images.gui.maps.icons.epicBattles.backgrounds.reward_selection())
+        with self.viewModel.transaction() as vm:
+            vm.setBackground(R.images.frontline.gui.maps.bg.reward_selection())
             vm.setTitle(locales.subTitle1() if self.__countBonuses(bonuses) > 1 else locales.subTitle2())
             vm.setSubTitle(locales.title())
             vm.setDefaultButtonTitle(locales.acceptButton())
@@ -66,9 +64,7 @@ class AwardsView(ViewImpl):
         SoundGroups.g_instance.playSound2D(EPIC_SOUND.GUI_REWARD_SCREEN)
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onAnimationEnded, self.__onAnimationEnded),)
+        return ((self.viewModel.onAnimationEnded, self.__onAnimationEnded),)
 
     def __onAnimationEnded(self):
         if not self.__isAnimationEnded:
@@ -83,13 +79,11 @@ class AwardsView(ViewImpl):
 
     @staticmethod
     def __countBonuses(bonuses):
-        if bonuses:
-            return len(bonuses[0].get('items', {}))
-        return 0
+        return len(bonuses[0].get('items', {})) if bonuses else 0
 
 
 class AwardsWindow(LobbyNotificationWindow):
-    __slots__ = ('__params', )
+    __slots__ = ('__params',)
     __epicController = dependency.descriptor(IEpicBattleMetaGameController)
 
     def __init__(self, bonuses, onCloseCallback=None, onAnimationEndedCallback=None):
@@ -97,7 +91,7 @@ class AwardsWindow(LobbyNotificationWindow):
         super(AwardsWindow, self).__init__(wndFlags=WindowFlags.SERVICE_WINDOW | WindowFlags.WINDOW_FULLSCREEN, content=AwardsView(bonuses, onCloseCallback, onAnimationEndedCallback), layer=WindowLayer.TOP_WINDOW)
 
     def isParamsEqual(self, *args, **kwargs):
-        return all(pValue in args or kwargs.get(pName) == pValue for pName, pValue in self.__params.iteritems())
+        return all((pValue in args or kwargs.get(pName) == pValue for pName, pValue in self.__params.iteritems()))
 
     def _finalize(self):
         super(AwardsWindow, self)._finalize()

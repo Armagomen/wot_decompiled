@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/tooltips/directive_conversion_tooltip.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.crew.tooltips.directive_conversion_tooltip_model import DirectiveConversionTooltipModel
@@ -24,7 +26,7 @@ class DirectiveConversionTooltip(ViewImpl):
 
     def _onLoading(self, *args, **kwargs):
         super(DirectiveConversionTooltip, self)._onLoading()
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             vm.oldDirective.setIcon(BOOSTER_ICON_MAPPING.get(self.__oldDirective.name, self.__oldDirective.name))
             vm.oldDirective.setUserName(self.__oldDirective.userName)
             vm.newDirective.setIcon(BOOSTER_ICON_MAPPING.get(self.__newDirective.name, self.__newDirective.name))

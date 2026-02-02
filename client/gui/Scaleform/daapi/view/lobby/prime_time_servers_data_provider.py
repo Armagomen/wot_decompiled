@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/prime_time_servers_data_provider.py
 from gui.impl.gen import R
 from gui.impl import backport
 from gui.Scaleform.daapi.view.servers_data_provider import ServersDataProvider
@@ -25,16 +27,16 @@ class PrimeTimesServersDataProvider(ServersDataProvider):
                 if periodStartMin is None:
                     chosenServer = server['id']
                     periodStartMin = periodStart
-                elif periodStart < periodStartMin:
+                if periodStart < periodStartMin:
                     chosenServer = server['id']
                     periodStartMin = periodStart
-                elif periodStart == periodStartMin:
+                if periodStart == periodStartMin:
                     chosenServer = None
                     getByPing = True
 
         if not getByPing or not serversList:
             return chosenServer
-        if getByPing:
+        elif getByPing:
             minPingServer = serversList[0]
             for server in serversList:
                 if server['pingValue'] < minPingServer['pingValue']:
@@ -61,7 +63,7 @@ class PrimeTimesServersDataProvider(ServersDataProvider):
         else:
             periodsStr = backport.text(R.strings.common.common.dash())
         vo['shortname'] = item['shortname']
-        vo['schedules'] = ('\n').join(periodsStr)
+        vo['schedules'] = '\n'.join(periodsStr)
         vo['selected'] = False
         vo['maxPrimeTimes'] = self.__maxPeriodLen
         return vo
@@ -69,4 +71,3 @@ class PrimeTimesServersDataProvider(ServersDataProvider):
     def __getMaxPrimeTimes(self):
         if self.primeTimes:
             return max([ len(serverPeriods) for serverPeriods in self.primeTimes.values() ])
-        return 0

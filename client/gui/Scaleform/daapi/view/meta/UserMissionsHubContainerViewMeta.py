@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/UserMissionsHubContainerViewMeta.py
 from gui.Scaleform.framework.entities.View import View
 
 class UserMissionsHubContainerViewMeta(View):
@@ -9,21 +11,16 @@ class UserMissionsHubContainerViewMeta(View):
         self._printOverrideError('onClose')
 
     def as_showFilterCounterS(self, countText, isFilterApplied):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showFilterCounter(countText, isFilterApplied)
+        return self.flashObject.as_showFilterCounter(countText, isFilterApplied) if self._isDAAPIInited() else None
 
     def as_blinkFilterCounterS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_blinkFilterCounter()
+        return self.flashObject.as_blinkFilterCounter() if self._isDAAPIInited() else None
 
     def as_updateCommonMissionsTabVisibilityS(self, isVisible):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateCommonMissionsTabVisibility(isVisible)
+        return self.flashObject.as_updateCommonMissionsTabVisibility(isVisible) if self._isDAAPIInited() else None
 
     def as_updateCommonMissionsTabPositionS(self, posY, maxHeight):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateCommonMissionsTabPosition(posY, maxHeight)
+        return self.flashObject.as_updateCommonMissionsTabPosition(posY, maxHeight) if self._isDAAPIInited() else None
 
     def as_setBackgroundS(self, source):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setBackground(source)
+        return self.flashObject.as_setBackground(source) if self._isDAAPIInited() else None

@@ -1,5 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/pve_base/postmortem_panel.py
 from enum import IntEnum
-import BattleReplay, BigWorld, WWISE
+import BattleReplay
+import BigWorld
+import WWISE
 from TeamInfoLivesComponent import TeamInfoLivesComponent
 from gui.Scaleform.daapi.view.meta.PvePostmortemPanelMeta import PvePostmortemPanelMeta
 from gui.battle_control import avatar_getter
@@ -79,10 +83,7 @@ class PvePostmortemPanel(PvePostmortemPanelMeta):
     def _respawnComponent(self):
         vehicleID = BigWorld.player().playerVehicleID
         vehicle = BigWorld.entities.get(vehicleID)
-        if vehicle:
-            return vehicle.dynamicComponents.get('VehicleRespawnComponent')
-        else:
-            return
+        return vehicle.dynamicComponents.get('VehicleRespawnComponent') if vehicle else None
 
     @property
     def _teamLives(self):

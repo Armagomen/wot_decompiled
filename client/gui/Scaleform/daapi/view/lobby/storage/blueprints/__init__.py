@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/blueprints/__init__.py
 import nations
 from account_helpers.AccountSettings import STORAGE_BLUEPRINTS_CAROUSEL_FILTER
 from gui import GUI_NATIONS_ORDER_INDEX
@@ -69,10 +71,7 @@ class ExtendedCriteriesGroup(BasicCriteriesGroup):
     @classmethod
     def __canConvert(cls, vehicle):
         data = cls.__itemsCache.items.blueprints.getBlueprintData(vehicle.intCD, vehicle.level)
-        if data is None:
-            return False
-        else:
-            return data.canConvert
+        return False if data is None else data.canConvert
 
 
 class BlueprintsStorageCarouselFilter(StorageCarouselFilter):
@@ -80,9 +79,7 @@ class BlueprintsStorageCarouselFilter(StorageCarouselFilter):
     def __init__(self, criteries=None):
         super(BlueprintsStorageCarouselFilter, self).__init__()
         self._clientSections = (STORAGE_BLUEPRINTS_CAROUSEL_FILTER,)
-        self._criteriesGroups = (
-         EventCriteriesGroup(), ExtendedCriteriesGroup(),
-         _BlueprintsCriteriesGroup()) + (criteries or tuple())
+        self._criteriesGroups = (EventCriteriesGroup(), ExtendedCriteriesGroup(), _BlueprintsCriteriesGroup()) + (criteries or tuple())
 
 
 class BlueprintsStorageCarouselDataProvider(StorageCarouselDataProvider):
@@ -123,31 +120,25 @@ class BlueprintsStorageCarouselDataProvider(StorageCarouselDataProvider):
         discount = bpRequester.getBlueprintDiscount(item.intCD, item.level)
         fragmentsProgress = self.__formatFragmentProgress(current, total, discount)
         image = item.getShopIcon(STORE_CONSTANTS.ICON_SIZE_SMALL)
-        return {'id': item.intCD, 
-           'title': name, 
-           'description': description, 
-           'image': image, 
-           'imageAlt': getShopVehicleIconPath(STORE_CONSTANTS.ICON_SIZE_SMALL, 'empty_tank'), 
-           'fragmentsCost': fragmentsCost, 
-           'intelligenceCostText': intelligenceCostText, 
-           'fragmentsProgress': fragmentsProgress, 
-           'hasDiscount': discount > 0, 
-           'availableToUnlock': availableToUnlock, 
-           'convertAvailable': availableCount > 0, 
-           'contextMenuId': CONTEXT_MENU_HANDLER_TYPE.STORAGE_BLUEPRINTS_ITEM}
+        return {'id': item.intCD,
+         'title': name,
+         'description': description,
+         'image': image,
+         'imageAlt': getShopVehicleIconPath(STORE_CONSTANTS.ICON_SIZE_SMALL, 'empty_tank'),
+         'fragmentsCost': fragmentsCost,
+         'intelligenceCostText': intelligenceCostText,
+         'fragmentsProgress': fragmentsProgress,
+         'hasDiscount': discount > 0,
+         'availableToUnlock': availableToUnlock,
+         'convertAvailable': availableCount > 0,
+         'contextMenuId': CONTEXT_MENU_HANDLER_TYPE.STORAGE_BLUEPRINTS_ITEM}
 
     @classmethod
     def _vehicleComparisonKey(cls, vehicle):
-        return (
-         GUI_NATIONS_ORDER_INDEX.get(vehicle.nationName),
-         -vehicle.level,
-         vehicle.userName)
+        return (GUI_NATIONS_ORDER_INDEX.get(vehicle.nationName), -vehicle.level, vehicle.userName)
 
     def __formatFragmentProgress(self, current, total, discount):
-        return text_styles.alignText(('').join((
-         text_styles.credits(backport.getIntegralFormat(current)),
-         text_styles.main(('').join((' / ', backport.getIntegralFormat(total)))),
-         text_styles.credits(('').join(('   ', backport.getIntegralFormat(discount), '%'))) if discount > 0 else '')), 'right')
+        return text_styles.alignText(''.join((text_styles.credits(backport.getIntegralFormat(current)), text_styles.main(''.join((' / ', backport.getIntegralFormat(total)))), text_styles.credits(''.join(('   ', backport.getIntegralFormat(discount), '%'))) if discount > 0 else '')), 'right')
 
     def __formatFragment(self, count, icon, iconWidth=23):
         return text_styles.concatStylesWithSpace(text_styles.stats(int(count)), icons.makeImageTag(source=icon, width=iconWidth, height=16))
@@ -160,9 +151,8 @@ class BlueprintsStorageCarouselDataProvider(StorageCarouselDataProvider):
             nationName = nations.MAP[nId]
             nationalsCost = self.__gui.systemLocale.getNumberFormat(cost)
             nationalIcon = backport.image(R.images.gui.maps.icons.blueprints.fragment.special.dyn(nationName)())
-            nationalCostTexts.append({'costStr': self.__formatFragment(nationalsCost, nationalIcon), 
-               'delimeterOffset': -5, 
-               'hasDelimeter': index < lastPriceIdx})
+            nationalCostTexts.append({'costStr': self.__formatFragment(nationalsCost, nationalIcon),
+             'delimeterOffset': -5,
+             'hasDelimeter': index < lastPriceIdx})
 
-        return (
-         intelligenceCostText, nationalCostTexts)
+        return (intelligenceCostText, nationalCostTexts)

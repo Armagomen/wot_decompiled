@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/personal_reserves/reserves_activation_view.py
 import logging
 from frameworks.wulf import ViewFlags, ViewSettings, Array, ViewEvent, ViewModel
 from goodies.goodie_constants import BoosterCategory
@@ -81,7 +83,7 @@ class ReservesActivationView(ViewImpl, EventSystemEntity):
 
     def fillViewModel(self):
         boosterModelsByType = getPersonalBoosterModelDataByResourceType(self._goodiesCache, self._boosters)
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             groupsArray = model.getReserveGroups()
             groupsArray.clear()
             for resourceType in PERSONAL_RESOURCE_ORDER:
@@ -160,35 +162,20 @@ class ReservesActivationView(ViewImpl, EventSystemEntity):
             return super(ReservesActivationView, self).createToolTipContent(event, contentID)
 
     def _getListeners(self):
-        return (
-         (
-          events.LobbyHeaderMenuEvent.MENU_CLICK, self.__onHeaderMenuClick, EVENT_BUS_SCOPE.LOBBY),)
+        return ((events.LobbyHeaderMenuEvent.MENU_CLICK, self.__onHeaderMenuClick, EVENT_BUS_SCOPE.LOBBY),)
 
     def _getCallbacks(self):
-        return (
-         (
-          Currency.CREDITS, self.__onCurrencyBalanceChanged),
-         (
-          Currency.GOLD, self.__onCurrencyBalanceChanged))
+        return ((Currency.CREDITS, self.__onCurrencyBalanceChanged), (Currency.GOLD, self.__onCurrencyBalanceChanged))
 
     def _getEvents(self):
-        return (
-         (
-          self._epicController.onUpdated, self.__onEpicUpdate),
-         (
-          self._boosters.onPersonalReserveTick, self.onPersonalReserveTick),
-         (
-          self._boosters.onBoostersDataUpdate, self.onBoostersDataUpdate),
-         (
-          self.viewModel.onClose, self.onClose),
-         (
-          self.viewModel.onBoosterActivate, self.onBoosterActivate),
-         (
-          self.viewModel.onNavigateToStore, self.onNavigateToStore),
-         (
-          self.viewModel.onNavigateToDepot, self.onNavigateToDepot),
-         (
-          self.viewModel.onCardHover, self.onCardHover))
+        return ((self._epicController.onUpdated, self.__onEpicUpdate),
+         (self._boosters.onPersonalReserveTick, self.onPersonalReserveTick),
+         (self._boosters.onBoostersDataUpdate, self.onBoostersDataUpdate),
+         (self.viewModel.onClose, self.onClose),
+         (self.viewModel.onBoosterActivate, self.onBoosterActivate),
+         (self.viewModel.onNavigateToStore, self.onNavigateToStore),
+         (self.viewModel.onNavigateToDepot, self.onNavigateToDepot),
+         (self.viewModel.onCardHover, self.onCardHover))
 
     def __onHeaderMenuClick(self, event):
         self.destroyWindow()

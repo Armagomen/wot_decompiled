@@ -1,6 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/app_loader/observers.py
 import weakref
 from functools import partial
-import typing, BattleReplay
+import typing
+import BattleReplay
 from constants import ARENA_GUI_TYPE, ACCOUNT_KICK_REASONS
 from frameworks.state_machine import BaseStateObserver
 from frameworks.state_machine import StateEvent
@@ -38,7 +41,7 @@ def makePredicatedObservers(predicate, *observers):
 
 
 class PredicativeSingleStateObserver(StateIdsObserver):
-    __slots__ = ('_predicates', )
+    __slots__ = ('_predicates',)
 
     def __init__(self, stateID):
         super(PredicativeSingleStateObserver, self).__init__([stateID])
@@ -56,11 +59,11 @@ class PredicativeSingleStateObserver(StateIdsObserver):
         super(PredicativeSingleStateObserver, self).onStateChanged(state, stateEntered, event)
 
     def _allPredicatesMatch(self):
-        return all(p() for p in self._predicates)
+        return all((p() for p in self._predicates))
 
 
 class AppLoaderObserver(PredicativeSingleStateObserver):
-    __slots__ = ('_proxy', )
+    __slots__ = ('_proxy',)
 
     def __init__(self, stateID, proxy):
         super(AppLoaderObserver, self).__init__(stateID)
@@ -112,10 +115,7 @@ class LoginObserver(AppLoaderObserver):
         action = None
         if event is not None:
             disconnectReason = event.getArgument('disconnectReason', DisconnectReason.REQUEST)
-            if disconnectReason in (
-             DisconnectReason.EVENT,
-             DisconnectReason.KICK,
-             DisconnectReason.ERROR):
+            if disconnectReason in (DisconnectReason.EVENT, DisconnectReason.KICK, DisconnectReason.ERROR):
                 action = spaces.DisconnectDialogAction(event.getArgument('kickReason', ''), event.getArgument('kickReasonType', ACCOUNT_KICK_REASONS.UNKNOWN), event.getArgument('expiryTime'))
         if self._proxy.getSpaceID() == GuiGlobalSpaceID.LOGIN:
             self._proxy.setupSpace(action=action)
@@ -228,7 +228,7 @@ class ReplayVersionDiffersObserver(AppLoaderObserver):
 
 
 class ReplayCreateBattleObserver(SwitchToBattleObserver):
-    __slots__ = ('__isInvoked', )
+    __slots__ = ('__isInvoked',)
 
     def __init__(self, stateID, proxy):
         super(ReplayCreateBattleObserver, self).__init__(stateID, proxy)
@@ -315,8 +315,7 @@ class NormalAppTracker(StateObserversContainer):
     __slots__ = ()
 
     def __init__(self, proxy):
-        common = (
-         CreateLobbyObserver(GameplayStateID.OFFLINE, proxy),
+        common = (CreateLobbyObserver(GameplayStateID.OFFLINE, proxy),
          LoginObserver(GameplayStateID.LOGIN, proxy),
          LobbyObserver(GameplayStateID.ACCOUNT_SHOW_GUI, proxy),
          ReplayEnteringOnlineObserver(GameplayStateID.SERVER_REPLAY_ENTERING, proxy),
@@ -354,9 +353,7 @@ class GameplayStatesObserver(BaseStateObserver):
         return
 
     def getStateIDs(self):
-        return (
-         GameplayStateID.OFFLINE,
-         GameplayStateID.BATTLE_REPLAY)
+        return (GameplayStateID.OFFLINE, GameplayStateID.BATTLE_REPLAY)
 
     def isObservingState(self, state):
         return state.getStateID() in self.getStateIDs()
@@ -364,12 +361,13 @@ class GameplayStatesObserver(BaseStateObserver):
     def onStateChanged(self, state, stateEntered, event=None):
         if not stateEntered or self.__tracker is not None:
             return
-        if state.getStateID() == GameplayStateID.BATTLE_REPLAY:
-            self.__tracker = ReplayAppTracker(self.__proxy)
         else:
-            self.__tracker = NormalAppTracker(self.__proxy)
-        self.gameplay.addStateObserver(self.__tracker)
-        return
+            if state.getStateID() == GameplayStateID.BATTLE_REPLAY:
+                self.__tracker = ReplayAppTracker(self.__proxy)
+            else:
+                self.__tracker = NormalAppTracker(self.__proxy)
+            self.gameplay.addStateObserver(self.__tracker)
+            return
 
     def __clearTracker(self):
         if self.__tracker is not None:

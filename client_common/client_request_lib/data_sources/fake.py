@@ -1,4 +1,8 @@
-import random, string, time
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client_common/client_request_lib/data_sources/fake.py
+import random
+import string
+import time
 from functools import wraps, partial
 from datetime import datetime, timedelta, time as dt_time
 from client_request_lib import exceptions
@@ -32,7 +36,7 @@ def fake_method(example):
 
         name = func.__name__
         if 'get_' in name:
-            name = name.split('get_', 1)[(-1)]
+            name = name.split('get_', 1)[-1]
         EXAMPLES[name] = example
         return wrapped
 
@@ -59,11 +63,11 @@ def paginated_method(func):
 
 def get_gift_system_state(req_event_ids):
     current_time = int(time.time())
-    event_stub = {'send_limit': 1, 
-       'execution_time': current_time - time_utils.ONE_SECOND, 
-       'expiration_time': current_time + time_utils.ONE_MINUTE, 
-       'expiration_delta': 5 * time_utils.ONE_MINUTE, 
-       'state': []}
+    event_stub = {'send_limit': 1,
+     'execution_time': current_time - time_utils.ONE_SECOND,
+     'expiration_time': current_time + time_utils.ONE_MINUTE,
+     'expiration_delta': 5 * time_utils.ONE_MINUTE,
+     'state': []}
     return {event_id:event_stub for event_id in req_event_ids}
 
 
@@ -74,9 +78,11 @@ def post_gift_system_gift(*_):
 
 
 def get_uilogging_session(*_, **__):
-    return {'auth': {'token': 'uilogging_token_stub', 'expiration': time.time() + 86400}, 'logging': {'max_logs_count': 50, 
-                   'max_log_properties_count': 250, 
-                   'url': 'https://localhost:81/logging'}}
+    return {'auth': {'token': 'uilogging_token_stub',
+              'expiration': time.time() + 86400},
+     'logging': {'max_logs_count': 50,
+                 'max_log_properties_count': 250,
+                 'url': 'https://localhost:81/logging'}}
 
 
 class FakeDataAccessor(base.BaseDataAccessor):
@@ -94,8 +100,9 @@ class FakeDataAccessor(base.BaseDataAccessor):
     def login(self, callback, account_id, spa_token, jwt):
         self.account = account_id
         self._account = self.requests_before_logout
-        access_token = ('').join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
-        result, status_code = {'access_token': access_token, 'expires_in': 36000}, 200
+        access_token = ''.join((random.choice(string.ascii_uppercase + string.digits) for _ in range(10)))
+        result, status_code = {'access_token': access_token,
+         'expires_in': 36000}, 200
         response_code = exceptions.ResponseCodes.NO_ERRORS
         _doResponse(callback, result, status_code, response_code)
 
@@ -146,10 +153,10 @@ class FakeDataAccessor(base.BaseDataAccessor):
                 extra = set(data) - set(example)
                 message = []
                 if missed:
-                    message.append('(%s) keys are missed' % (', ').join(missed))
+                    message.append('(%s) keys are missed' % ', '.join(missed))
                 if extra:
-                    message.append('(%s) keys are not needed' % (', ').join(extra))
-                raise ValueError((' and ').join(message))
+                    message.append('(%s) keys are not needed' % ', '.join(extra))
+                raise ValueError(' and '.join(message))
 
     def set_data(self, section, entity_id, data):
         example = EXAMPLES[section]
@@ -157,36 +164,41 @@ class FakeDataAccessor(base.BaseDataAccessor):
             self._compare_keys(example, data)
         self._storage.setdefault(section, {})[entity_id] = data
 
-    @fake_method(example=lambda clan_id: {'clan_id': clan_id, 
-       'xp_avg': random.randrange(1, 1000) / 10.0, 
-       'efficiency': random.randrange(1, 10000), 
-       'battles_count_avg': random.randrange(1, 10000), 
-       'wins_ratio_avg': random.randrange(1, 100), 
-       'gm_elo_rating_6': random.randrange(1, 1000), 
-       'gm_elo_rating_8': random.randrange(1, 1000), 
-       'gm_elo_rating_10': random.randrange(1, 1000), 
-       'gm_elo_rating_6_rank': random.randrange(1, 1000), 
-       'gm_elo_rating_8_rank': random.randrange(1, 1000), 
-       'gm_elo_rating_10_rank': random.randrange(1, 1000), 
-       'fb_elo_rating_8': random.randrange(1, 1000), 
-       'fb_elo_rating_10': random.randrange(1, 1000), 
-       'fb_battles_count_10_28d': random.randrange(1, 100), 
-       'fs_battles_count_10_28d': random.randrange(1, 100), 
-       'gm_battles_count_28d': random.randrange(1, 100), 
-       'fs_battles_count_28d': random.randrange(1, 100), 
-       'fb_battles_count_28d': random.randrange(1, 100)})
+    @fake_method(example=lambda clan_id: {'clan_id': clan_id,
+     'xp_avg': random.randrange(1, 1000) / 10.0,
+     'efficiency': random.randrange(1, 10000),
+     'battles_count_avg': random.randrange(1, 10000),
+     'wins_ratio_avg': random.randrange(1, 100),
+     'gm_elo_rating_6': random.randrange(1, 1000),
+     'gm_elo_rating_8': random.randrange(1, 1000),
+     'gm_elo_rating_10': random.randrange(1, 1000),
+     'gm_elo_rating_6_rank': random.randrange(1, 1000),
+     'gm_elo_rating_8_rank': random.randrange(1, 1000),
+     'gm_elo_rating_10_rank': random.randrange(1, 1000),
+     'fb_elo_rating_8': random.randrange(1, 1000),
+     'fb_elo_rating_10': random.randrange(1, 1000),
+     'fb_battles_count_10_28d': random.randrange(1, 100),
+     'fs_battles_count_10_28d': random.randrange(1, 100),
+     'gm_battles_count_28d': random.randrange(1, 100),
+     'fs_battles_count_28d': random.randrange(1, 100),
+     'fb_battles_count_28d': random.randrange(1, 100)})
     def get_clans_ratings(self, clan_ids, fields=None):
         return [ self._request_data('clans_ratings', i, fields=fields) for i in clan_ids ]
 
-    @fake_method(example=lambda clan_id: {'name': 'xxx', 
-       'tag': 'ff', 'motto': 'yyyy', 'leader_id': 666, 'members_count': 13, 
-       'clan_id': clan_id, 'created_at': datetime.now(), 
-       'accepts_join_requests': True, 
-       'treasury': 2423})
+    @fake_method(example=lambda clan_id: {'name': 'xxx',
+     'tag': 'ff',
+     'motto': 'yyyy',
+     'leader_id': 666,
+     'members_count': 13,
+     'clan_id': clan_id,
+     'created_at': datetime.now(),
+     'accepts_join_requests': True,
+     'treasury': 2423})
     def get_clans_info(self, clan_ids, fields=None):
         return [ self._request_data('clans_info', clan_id, fields=fields) for clan_id in clan_ids ]
 
-    @fake_method(example=lambda acc_id: {'id': acc_id, 'name': 'name'})
+    @fake_method(example=lambda acc_id: {'id': acc_id,
+     'name': 'name'})
     def get_accounts_names(self, account_ids, fields=None):
         return [ self._request_data('accounts_names', account_id, fields=fields) for account_id in account_ids ]
 
@@ -194,16 +206,19 @@ class FakeDataAccessor(base.BaseDataAccessor):
     def get_account_attribute_by_prefix(self, attr_prefix, fields=None):
         return self._request_data('account_attributes', attr_prefix, fields=fields)
 
-    @fake_method(example=lambda clan_id: [ {'account_id': 2324 + i, 'role_name': 'officer', 'role_bw_flag': 1 << i, 'clan_id': clan_id, 'joined_at': datetime.now()} for i in range(11)
-    ])
+    @fake_method(example=lambda clan_id: [ {'account_id': 2324 + i,
+     'role_name': 'officer',
+     'role_bw_flag': 1 << i,
+     'clan_id': clan_id,
+     'joined_at': datetime.now()} for i in range(11) ])
     def get_clan_members(self, clan_id, fields=None):
         return self._request_data('clan_members', clan_id, fields=fields)
 
-    @fake_method(example={'clan_id': 2790, 
-       'favorite_arena_6': 1, 
-       'favorite_arena_8': 3, 
-       'favorite_arena_10': 65549, 
-       'favorite_primetime': dt_time(19, 0)})
+    @fake_method(example={'clan_id': 2790,
+     'favorite_arena_6': 1,
+     'favorite_arena_8': 3,
+     'favorite_arena_10': 65549,
+     'favorite_primetime': dt_time(19, 0)})
     def get_clan_favorite_attributes(self, clan_id, fields=None):
         return self._request_data('clan_favorite_attributes', clan_id, fields=fields)
 
@@ -215,328 +230,370 @@ class FakeDataAccessor(base.BaseDataAccessor):
     def get_clan_invites_count_since(self, clan_id, since=None):
         return self._request_data('clan_invites_count_since', clan_id)
 
-    @fake_method(example={'account_id': 234, 
-       'joined_at': datetime.now(), 'clan_id': 343, 'role_bw_flag': 13, 
-       'role_name': 'commander', 'in_clan_cooldown_till': datetime.now(), 
-       'clan_tag': 'fake', 
-       'clan_color': 123})
+    @fake_method(example={'account_id': 234,
+     'joined_at': datetime.now(),
+     'clan_id': 343,
+     'role_bw_flag': 13,
+     'role_name': 'commander',
+     'in_clan_cooldown_till': datetime.now(),
+     'clan_tag': 'fake',
+     'clan_color': 123})
     def get_accounts_clans(self, account_ids, fields):
         return [ self._request_data('accounts_clans', i, fields=fields) for i in account_ids ]
 
-    @fake_method(example=lambda (account_id, statuses): [ {'status': random.choice(statuses or ('active', 'declined', 'cancelled', 'accepted', 'expired',
-                           'error', 'deleted')), 'created_at': datetime.now(), 'updated_at': datetime.now(), 'sender_id': random.randrange(1, 10000), 'id': random.randrange(1, 1000000), 'account_id': account_id, 'clan_id': random.randrange(1, 10000), 'status_changer_id': random.randrange(1, 10000), 'comment': ('Welcome {}!').format(random.randrange(1, 10000)) if random.choice((1, 0)) else ''} for i in range(random.randrange(0, 1000))
-    ])
+    @fake_method(example=lambda (account_id, statuses): [ {'status': random.choice(statuses or ('active', 'declined', 'cancelled', 'accepted', 'expired', 'error', 'deleted')),
+     'created_at': datetime.now(),
+     'updated_at': datetime.now(),
+     'sender_id': random.randrange(1, 10000),
+     'id': random.randrange(1, 1000000),
+     'account_id': account_id,
+     'clan_id': random.randrange(1, 10000),
+     'status_changer_id': random.randrange(1, 10000),
+     'comment': 'Welcome {}!'.format(random.randrange(1, 10000)) if random.choice((1, 0)) else ''} for i in range(random.randrange(0, 1000)) ])
     @paginated_method
     def get_account_applications(self, fields=None, statuses=None):
-        return self._request_data('account_applications', (
-         self.account, tuple(statuses or [])), fields=fields)
+        return self._request_data('account_applications', (self.account, tuple(statuses or [])), fields=fields)
 
-    @fake_method(example=lambda (clan_id, statuses): [ {'status': random.choice(statuses or ('active', 'declined', 'cancelled', 'accepted', 'expired',
-                           'error', 'deleted')), 'created_at': datetime.now(), 'updated_at': datetime.now(), 'sender_id': random.randrange(1, 10000), 'id': random.randrange(1, 1000000), 'account_id': random.randrange(1, 10000), 'clan_id': clan_id, 'status_changer_id': random.randrange(1, 10000), 'comment': ('Welcome {}!').format(random.randrange(1, 10000)) if random.choice((1, 0)) else ''} for i in range(random.randrange(0, 1000))
-    ])
+    @fake_method(example=lambda (clan_id, statuses): [ {'status': random.choice(statuses or ('active', 'declined', 'cancelled', 'accepted', 'expired', 'error', 'deleted')),
+     'created_at': datetime.now(),
+     'updated_at': datetime.now(),
+     'sender_id': random.randrange(1, 10000),
+     'id': random.randrange(1, 1000000),
+     'account_id': random.randrange(1, 10000),
+     'clan_id': clan_id,
+     'status_changer_id': random.randrange(1, 10000),
+     'comment': 'Welcome {}!'.format(random.randrange(1, 10000)) if random.choice((1, 0)) else ''} for i in range(random.randrange(0, 1000)) ])
     @paginated_method
     def get_clan_applications(self, clan_id, fields=None, statuses=None):
-        return self._request_data('clan_applications', (
-         clan_id, tuple(statuses or [])), fields=fields)
+        return self._request_data('clan_applications', (clan_id, tuple(statuses or [])), fields=fields)
 
-    @fake_method(example=lambda search: [] if len(search) % 2 else [ {'name': 'Clan Name %d' % random.randrange(1, 1000), 'tag': 'TCLAN', 'motto': 'Clan Motto', 'leader_id': random.randrange(1, 10000), 'clan_id': random.randrange(1, 100), 'members_count': random.randrange(1, 50), 'created_at': datetime.now(), 'accepts_join_requests': random.choice((True, False))} for i in range(random.randrange(1, 36))
-                           ])
+    @fake_method(example=lambda search: ([] if len(search) % 2 else [ {'name': 'Clan Name %d' % random.randrange(1, 1000),
+     'tag': 'TCLAN',
+     'motto': 'Clan Motto',
+     'leader_id': random.randrange(1, 10000),
+     'clan_id': random.randrange(1, 100),
+     'members_count': random.randrange(1, 50),
+     'created_at': datetime.now(),
+     'accepts_join_requests': random.choice((True, False))} for i in range(random.randrange(1, 36)) ]))
     @paginated_method
     def search_clans(self, search, fields=None):
         return self._request_data('search_clans', search)
 
-    @fake_method(example=lambda account: [ {'name': 'Clan Name %d' % random.randrange(1, 1000), 'tag': 'TCLAN', 'motto': 'Clan Motto', 'leader_id': random.randrange(1, 10000), 'clan_id': random.randrange(1, 100), 'members_count': random.randrange(1, 50), 'created_at': datetime.now(), 'accepts_join_requests': random.choice((True, False))} for i in range(random.randrange(1, 36))
-    ])
+    @fake_method(example=lambda account: [ {'name': 'Clan Name %d' % random.randrange(1, 1000),
+     'tag': 'TCLAN',
+     'motto': 'Clan Motto',
+     'leader_id': random.randrange(1, 10000),
+     'clan_id': random.randrange(1, 100),
+     'members_count': random.randrange(1, 50),
+     'created_at': datetime.now(),
+     'accepts_join_requests': random.choice((True, False))} for i in range(random.randrange(1, 36)) ])
     @paginated_method
     def get_recommended_clans(self, fields=None):
         return self._request_data('recommended_clans', self.account)
 
-    @fake_method(example=lambda (clan_id, statuses): [ {'status': random.choice(statuses or ('active', 'declined', 'cancelled', 'accepted', 'expired',
-                           'error', 'deleted')), 'created_at': datetime.now(), 'updated_at': datetime.now(), 'sender_id': random.randrange(1, 10000), 'id': random.randrange(1, 1000000), 'account_id': random.randrange(1, 10000), 'clan_id': clan_id, 'comment': ('Welcome {}!').format(random.randrange(1, 10000)) if random.choice((1, 0)) else '', 'status_changer_id': 2132} for i in range(random.randrange(0, 1000))
-    ])
+    @fake_method(example=lambda (clan_id, statuses): [ {'status': random.choice(statuses or ('active', 'declined', 'cancelled', 'accepted', 'expired', 'error', 'deleted')),
+     'created_at': datetime.now(),
+     'updated_at': datetime.now(),
+     'sender_id': random.randrange(1, 10000),
+     'id': random.randrange(1, 1000000),
+     'account_id': random.randrange(1, 10000),
+     'clan_id': clan_id,
+     'comment': 'Welcome {}!'.format(random.randrange(1, 10000)) if random.choice((1, 0)) else '',
+     'status_changer_id': 2132} for i in range(random.randrange(0, 1000)) ])
     @paginated_method
     def get_clan_invites(self, clan_id, fields=None, statuses=None):
-        return self._request_data('clan_invites', (
-         clan_id, tuple(statuses or [])), fields=fields)
+        return self._request_data('clan_invites', (clan_id, tuple(statuses or [])), fields=fields)
 
-    @fake_method(example=lambda (account_id, statuses): [ {'status': random.choice(statuses or ('active', 'declined', 'cancelled', 'accepted', 'expired',
-                           'error', 'deleted')), 'created_at': datetime.now(), 'updated_at': datetime.now(), 'sender_id': random.randrange(1, 10000), 'id': random.randrange(1, 1000000), 'account_id': account_id, 'clan_id': random.randrange(1, 10000), 'status_changer_id': 2132, 'comment': ('Welcome {}!').format(random.randrange(1, 10000)) if random.choice((1, 0)) else ''} for i in range(random.randrange(0, 1000))
-    ])
+    @fake_method(example=lambda (account_id, statuses): [ {'status': random.choice(statuses or ('active', 'declined', 'cancelled', 'accepted', 'expired', 'error', 'deleted')),
+     'created_at': datetime.now(),
+     'updated_at': datetime.now(),
+     'sender_id': random.randrange(1, 10000),
+     'id': random.randrange(1, 1000000),
+     'account_id': account_id,
+     'clan_id': random.randrange(1, 10000),
+     'status_changer_id': 2132,
+     'comment': 'Welcome {}!'.format(random.randrange(1, 10000)) if random.choice((1, 0)) else ''} for i in range(random.randrange(0, 1000)) ])
     @paginated_method
     def get_account_invites(self, fields=None, statuses=None):
-        return self._request_data('account_invites', (
-         self.account, tuple(statuses or [])), fields=fields)
+        return self._request_data('account_invites', (self.account, tuple(statuses or [])), fields=fields)
 
-    @fake_method(example=lambda account_id: {'global_rating': random.randrange(100, 10000), 
-       'battle_avg_xp': random.randrange(100, 10000), 
-       'battles_count': random.randrange(1, 1000), 
-       'battle_avg_performance': random.uniform(0, 1), 
-       'xp_amount': random.randrange(100, 1000), 
-       'account_id': account_id})
+    @fake_method(example=lambda account_id: {'global_rating': random.randrange(100, 10000),
+     'battle_avg_xp': random.randrange(100, 10000),
+     'battles_count': random.randrange(1, 1000),
+     'battle_avg_performance': random.uniform(0, 1),
+     'xp_amount': random.randrange(100, 1000),
+     'account_id': account_id})
     def get_accounts_info(self, account_ids, fields=None):
         return [ self._request_data('accounts_info', acc_id, fields=fields) for acc_id in account_ids ]
 
-    @fake_method(example=[
-     {'front_name': 'some_front', 
-        'province_id': 'some_province', 
-        'front_name_localized': 'some_front_localized', 
-        'province_id_localized': 'some_province_localized', 
-        'revenue': 324, 
-        'hq_connected': True, 
-        'prime_time': dt_time(18, 0, 0), 
-        'periphery': 333, 
-        'game_map': 'some_map', 
-        'pillage_cooldown': 1, 
-        'pillage_end_datetime': datetime.now() + timedelta(hours=3), 
-        'turns_owned': 12},
-     {'front_name': 'some_front2', 
-        'province_id': 'some_province2', 
-        'front_name_localized': 'some_front_localized2', 
-        'province_id_localized': 'some_province_localized2', 
-        'revenue': 333, 
-        'hq_connected': True, 
-        'prime_time': dt_time(19, 0, 0), 
-        'periphery': 444, 
-        'game_map': 'some_map2', 
-        'pillage_cooldown': None, 
-        'pillage_end_datetime': None, 
-        'turns_owned': 12, 
-        'arena_id': 5}])
+    @fake_method(example=[{'front_name': 'some_front',
+      'province_id': 'some_province',
+      'front_name_localized': 'some_front_localized',
+      'province_id_localized': 'some_province_localized',
+      'revenue': 324,
+      'hq_connected': True,
+      'prime_time': dt_time(18, 0, 0),
+      'periphery': 333,
+      'game_map': 'some_map',
+      'pillage_cooldown': 1,
+      'pillage_end_datetime': datetime.now() + timedelta(hours=3),
+      'turns_owned': 12}, {'front_name': 'some_front2',
+      'province_id': 'some_province2',
+      'front_name_localized': 'some_front_localized2',
+      'province_id_localized': 'some_province_localized2',
+      'revenue': 333,
+      'hq_connected': True,
+      'prime_time': dt_time(19, 0, 0),
+      'periphery': 444,
+      'game_map': 'some_map2',
+      'pillage_cooldown': None,
+      'pillage_end_datetime': None,
+      'turns_owned': 12,
+      'arena_id': 5}])
     def get_clan_provinces(self, clan_id, fields=None):
         return self._request_data('clan_provinces', clan_id, fields=fields)
 
-    @fake_method(example={'battles_lost': 12, 
-       'influence_points': 121, 
-       'provinces_captured': 23, 
-       'provinces_count': 234, 
-       'battles_played': 332, 
-       'battles_won': 232, 
-       'battles_played_on_6_level': 21, 
-       'battles_won_on_6_level': 12, 
-       'battles_played_on_8_level': 32, 
-       'battles_won_on_8_level': 21, 
-       'battles_played_on_10_level': 43, 
-       'battles_won_on_10_level': 23})
+    @fake_method(example={'battles_lost': 12,
+     'influence_points': 121,
+     'provinces_captured': 23,
+     'provinces_count': 234,
+     'battles_played': 332,
+     'battles_won': 232,
+     'battles_played_on_6_level': 21,
+     'battles_won_on_6_level': 12,
+     'battles_played_on_8_level': 32,
+     'battles_won_on_8_level': 21,
+     'battles_played_on_10_level': 43,
+     'battles_won_on_10_level': 23})
     def get_clan_globalmap_stats(self, clan_id, fields=None):
         return self._request_data('clan_globalmap_stats', clan_id, fields=fields)
 
-    @fake_method(example=[
-     {'front_name': 'front_name', 
-        'front_name_localized': 'front_name_localized', 
-        'min_vehicle_level': 2, 
-        'max_vehicle_level': 4}])
+    @fake_method(example=[{'front_name': 'front_name',
+      'front_name_localized': 'front_name_localized',
+      'min_vehicle_level': 2,
+      'max_vehicle_level': 4}])
     def get_fronts_info(self, front_names=None, fields=None):
         return self._request_data('fronts_info', front_names, fields=fields)
 
-    @fake_method(example={'defence_mode_is_activated': True, 
-       'defence_hour': dt_time(10, 0), 
-       'sortie_battles_count': 23, 
-       'sortie_wins': 12, 
-       'sortie_losses': 19, 
-       'sortie_fort_resource_in_absolute': 100, 
-       'sortie_fort_resource_in_champion': 71, 
-       'sortie_fort_resource_in_middle': 60, 
-       'defence_battles_count': 234, 
-       'defence_combat_wins': 21, 
-       'sortie_middle_battles_count': 12, 
-       'sortie_champion_battles_count': 32, 
-       'sortie_absolute_battles_count': 23, 
-       'defence_enemy_base_capture_count': 43, 
-       'defence_capture_enemy_building_total_count': 55, 
-       'defence_loss_own_building_total_count': 65, 
-       'defence_attack_efficiency': 23.2, 
-       'defence_success_attack_count': 122, 
-       'defence_attack_count': 13, 
-       'defence_defence_efficiency': 32.2, 
-       'defence_defence_count': 24, 
-       'defence_success_defence_count': 5, 
-       'total_resource_amount': 321, 
-       'defence_resource_loss_count': 112, 
-       'defence_resource_capture_count': 322, 
-       'fb_battles_count_8': 23, 
-       'fb_battles_count_10': 12, 
-       'level': 2, 
-       'buildings': [
-                   {'type': 1, 
-                      'direction': 0, 
-                      'level': 2, 
-                      'position': 2},
-                   {'type': 2, 
-                      'direction': 1, 
-                      'level': 3, 
-                      'position': 2}]})
+    @fake_method(example={'defence_mode_is_activated': True,
+     'defence_hour': dt_time(10, 0),
+     'sortie_battles_count': 23,
+     'sortie_wins': 12,
+     'sortie_losses': 19,
+     'sortie_fort_resource_in_absolute': 100,
+     'sortie_fort_resource_in_champion': 71,
+     'sortie_fort_resource_in_middle': 60,
+     'defence_battles_count': 234,
+     'defence_combat_wins': 21,
+     'sortie_middle_battles_count': 12,
+     'sortie_champion_battles_count': 32,
+     'sortie_absolute_battles_count': 23,
+     'defence_enemy_base_capture_count': 43,
+     'defence_capture_enemy_building_total_count': 55,
+     'defence_loss_own_building_total_count': 65,
+     'defence_attack_efficiency': 23.2,
+     'defence_success_attack_count': 122,
+     'defence_attack_count': 13,
+     'defence_defence_efficiency': 32.2,
+     'defence_defence_count': 24,
+     'defence_success_defence_count': 5,
+     'total_resource_amount': 321,
+     'defence_resource_loss_count': 112,
+     'defence_resource_capture_count': 322,
+     'fb_battles_count_8': 23,
+     'fb_battles_count_10': 12,
+     'level': 2,
+     'buildings': [{'type': 1,
+                    'direction': 0,
+                    'level': 2,
+                    'position': 2}, {'type': 2,
+                    'direction': 1,
+                    'level': 3,
+                    'position': 2}]})
     def get_stronghold_info(self, clan_id, fields=None):
         return self._request_data('stronghold_info', clan_id, fields=fields)
 
-    @fake_method(example={'buildings_count': 4, 
-       'directions_count': 3, 
-       'buildings': [
-                   {'type': 1, 
-                      'hp': 32, 
-                      'storage': 123, 
-                      'level': 4, 
-                      'position': 7, 
-                      'direction': 1}], 
-       'directions': [
-                    1, 2], 
-       'off_day': 3, 
-       'vacation_start': datetime.utcnow() + timedelta(days=1), 
-       'vacation_finish': datetime.utcnow() + timedelta(days=4), 
-       'periphery_id': 333, 
-       'clan_tag': 'tag', 
-       'clan_name': 'some_name', 
-       'clan_id': 21, 
-       'level': 2, 
-       'sortie_wins_period': 7, 
-       'sortie_battles_wins_percentage_period': 20.0, 
-       'sortie_battles_count_period': 122, 
-       'defence_battles_count_period': 21})
+    @fake_method(example={'buildings_count': 4,
+     'directions_count': 3,
+     'buildings': [{'type': 1,
+                    'hp': 32,
+                    'storage': 123,
+                    'level': 4,
+                    'position': 7,
+                    'direction': 1}],
+     'directions': [1, 2],
+     'off_day': 3,
+     'vacation_start': datetime.utcnow() + timedelta(days=1),
+     'vacation_finish': datetime.utcnow() + timedelta(days=4),
+     'periphery_id': 333,
+     'clan_tag': 'tag',
+     'clan_name': 'some_name',
+     'clan_id': 21,
+     'level': 2,
+     'sortie_wins_period': 7,
+     'sortie_battles_wins_percentage_period': 20.0,
+     'sortie_battles_count_period': 122,
+     'defence_battles_count_period': 21})
     def get_strongholds_statistics(self, clan_id, fields=None):
         return self._request_data('strongholds_statistics', clan_id, fields=fields)
 
-    @fake_method(example={'clan_id': 234, 'defence_hour': dt_time(10, 0)})
+    @fake_method(example={'clan_id': 234,
+     'defence_hour': dt_time(10, 0)})
     def get_strongholds_state(self, clan_id, fields=None):
         return self._request_data('strongholds_state', clan_id, fields=fields)
 
-    @fake_method(example=[{'clan_id': 234, 'account_id': 3, 'id': 23}])
+    @fake_method(example=[{'clan_id': 234,
+      'account_id': 3,
+      'id': 23}])
     def create_invites(self, clan_id, account_ids, comment, fields=None):
         return self._request_data('create_invites', (clan_id, account_ids), fields=fields)
 
-    @fake_method(example=[{'clan_id': 224, 'account_id': 3, 'id': 123}])
+    @fake_method(example=[{'clan_id': 224,
+      'account_id': 3,
+      'id': 123}])
     def create_applications(self, clan_ids, comment, fields=None):
         return self._request_data('create_applications', clan_ids, fields=fields)
 
-    @fake_method(example=lambda obj_id: {'transaction_id': 213, 
-       'id': obj_id, 'account_id': 343, 'clan_id': 17})
+    @fake_method(example=lambda obj_id: {'transaction_id': 213,
+     'id': obj_id,
+     'account_id': 343,
+     'clan_id': 17})
     def accept_application(self, application_id, fields=None):
         return self._request_data('accept_application', application_id, fields=fields)
 
-    @fake_method(example=lambda obj_id: {'id': obj_id, 'account_id': 343, 'clan_id': 17})
+    @fake_method(example=lambda obj_id: {'id': obj_id,
+     'account_id': 343,
+     'clan_id': 17})
     def decline_application(self, application_id, fields=None):
         return self._request_data('decline_application', application_id, fields=fields)
 
-    @fake_method(example=lambda obj_id: {'transaction_id': 213, 'id': obj_id, 'account_id': 343, 'clan_id': 17})
+    @fake_method(example=lambda obj_id: {'transaction_id': 213,
+     'id': obj_id,
+     'account_id': 343,
+     'clan_id': 17})
     def accept_invite(self, invite_id, fields=None):
         return self._request_data('accept_invite', invite_id, fields=fields)
 
-    @fake_method(example=lambda obj_id: {'id': obj_id, 'account_id': 343, 'clan_id': 17})
+    @fake_method(example=lambda obj_id: {'id': obj_id,
+     'account_id': 343,
+     'clan_id': 17})
     def decline_invite(self, invite_id, fields=None):
         return self._request_data('decline_invite', invite_id, fields=fields)
 
-    @fake_method(example=[{'id': 991, 'account_id': 1001, 'clan_id': 19}, {'id': 992, 'account_id': 1001, 'clan_id': 19}, {'id': 993, 'account_id': 1001, 'clan_id': 19}])
+    @fake_method(example=[{'id': 991,
+      'account_id': 1001,
+      'clan_id': 19}, {'id': 992,
+      'account_id': 1001,
+      'clan_id': 19}, {'id': 993,
+      'account_id': 1001,
+      'clan_id': 19}])
     def bulk_decline_invites(self, invite_ids):
         return self._request_data('bulk_decline_invites', invite_ids)
 
-    @fake_method(example={'permissions': {'manage_reserves': [
-                                         'commander',
+    @fake_method(example={'permissions': {'manage_reserves': ['commander',
                                          'combat_officer',
                                          'executive_officer',
-                                         'personnel_officer']}, 
-       'time_to_ready': 900, 
-       'max_level': 10, 
-       'battle_series_duration': 3600, 
-       'enemy_clan': None, 
-       'industrial_resource_multiplier': 1, 
-       'max_players_count': 15, 
-       'type': 'FORT_BATTLE', 
-       'max_legionaries_count': 0, 
-       'available_reserves': {'ARTILLERY_STRIKE': [], 'HIGH_CAPACITY_TRANSPORT': [], 'REQUISITION': [], 'AIRSTRIKE': []}, 'direction': 'A', 
-       'min_players_count': 1, 
-       'matchmaker_next_tick': 1475578800, 
-       'battle_series_status': [
-                              {'battle_reward': 0, 
-                                 'gameplay_id': 0, 
-                                 'geometry_id': 6, 
-                                 'first_resp_clan_id': None, 
-                                 'second_resp_clan_id': None, 
-                                 'attacker': None, 
-                                 'clan_owner_id': 14000012972, 
-                                 'current_battle': False, 
-                                 'map_id': 6},
-                              {'battle_reward': 0, 
-                                 'gameplay_id': 0, 
-                                 'geometry_id': 14, 
-                                 'first_resp_clan_id': None, 
-                                 'second_resp_clan_id': None, 
-                                 'attacker': None, 
-                                 'clan_owner_id': 14000012972, 
-                                 'current_battle': False, 
-                                 'map_id': 14},
-                              {'battle_reward': 0, 
-                                 'gameplay_id': 0, 
-                                 'geometry_id': 20, 
-                                 'first_resp_clan_id': None, 
-                                 'second_resp_clan_id': None, 
-                                 'attacker': None, 
-                                 'clan_owner_id': 14000012972, 
-                                 'current_battle': False, 
-                                 'map_id': 20}], 
-       'battle_duration': 600, 
-       'requisition_bonus_percent': None, 
-       'public': False, 
-       'selected_reserves': [
-                           None,
-                           None,
-                           None], 
-       'min_level': 1})
+                                         'personnel_officer']},
+     'time_to_ready': 900,
+     'max_level': 10,
+     'battle_series_duration': 3600,
+     'enemy_clan': None,
+     'industrial_resource_multiplier': 1,
+     'max_players_count': 15,
+     'type': 'FORT_BATTLE',
+     'max_legionaries_count': 0,
+     'available_reserves': {'ARTILLERY_STRIKE': [],
+                            'HIGH_CAPACITY_TRANSPORT': [],
+                            'REQUISITION': [],
+                            'AIRSTRIKE': []},
+     'direction': 'A',
+     'min_players_count': 1,
+     'matchmaker_next_tick': 1475578800,
+     'battle_series_status': [{'battle_reward': 0,
+                               'gameplay_id': 0,
+                               'geometry_id': 6,
+                               'first_resp_clan_id': None,
+                               'second_resp_clan_id': None,
+                               'attacker': None,
+                               'clan_owner_id': 14000012972L,
+                               'current_battle': False,
+                               'map_id': 6}, {'battle_reward': 0,
+                               'gameplay_id': 0,
+                               'geometry_id': 14,
+                               'first_resp_clan_id': None,
+                               'second_resp_clan_id': None,
+                               'attacker': None,
+                               'clan_owner_id': 14000012972L,
+                               'current_battle': False,
+                               'map_id': 14}, {'battle_reward': 0,
+                               'gameplay_id': 0,
+                               'geometry_id': 20,
+                               'first_resp_clan_id': None,
+                               'second_resp_clan_id': None,
+                               'attacker': None,
+                               'clan_owner_id': 14000012972L,
+                               'current_battle': False,
+                               'map_id': 20}],
+     'battle_duration': 600,
+     'requisition_bonus_percent': None,
+     'public': False,
+     'selected_reserves': [None, None, None],
+     'min_level': 1})
     def get_wgsh_unit_info(self, periphery_id, unit_id, rev, fields=None):
         return self._request_data('wgsh_unit_info', unit_id)
 
-    @fake_method(example={'permissions': {'manage_reserves': [
-                                         'commander',
+    @fake_method(example={'permissions': {'manage_reserves': ['commander',
                                          'combat_officer',
                                          'executive_officer',
-                                         'personnel_officer']}, 
-       'time_to_ready': 900, 
-       'max_level': 10, 
-       'battle_series_duration': 3600, 
-       'enemy_clan': None, 
-       'industrial_resource_multiplier': 1, 
-       'max_players_count': 15, 
-       'type': 'FORT_BATTLE', 
-       'max_legionaries_count': 0, 
-       'direction': 'A', 
-       'min_players_count': 1, 
-       'matchmaker_next_tick': 1475578800, 
-       'battle_series_status': [
-                              {'battle_reward': 0, 
-                                 'gameplay_id': 0, 
-                                 'geometry_id': 6, 
-                                 'first_resp_clan_id': None, 
-                                 'second_resp_clan_id': None, 
-                                 'attacker': None, 
-                                 'clan_owner_id': 14000012972, 
-                                 'current_battle': False, 
-                                 'map_id': 6},
-                              {'battle_reward': 0, 
-                                 'gameplay_id': 0, 
-                                 'geometry_id': 14, 
-                                 'first_resp_clan_id': None, 
-                                 'second_resp_clan_id': None, 
-                                 'attacker': None, 
-                                 'clan_owner_id': 14000012972, 
-                                 'current_battle': False, 
-                                 'map_id': 14},
-                              {'battle_reward': 0, 
-                                 'gameplay_id': 0, 
-                                 'geometry_id': 20, 
-                                 'first_resp_clan_id': None, 
-                                 'second_resp_clan_id': None, 
-                                 'attacker': None, 
-                                 'clan_owner_id': 14000012972, 
-                                 'current_battle': False, 
-                                 'map_id': 20}], 
-       'battle_duration': 600, 
-       'public': False, 
-       'min_level': 1})
+                                         'personnel_officer']},
+     'time_to_ready': 900,
+     'max_level': 10,
+     'battle_series_duration': 3600,
+     'enemy_clan': None,
+     'industrial_resource_multiplier': 1,
+     'max_players_count': 15,
+     'type': 'FORT_BATTLE',
+     'max_legionaries_count': 0,
+     'direction': 'A',
+     'min_players_count': 1,
+     'matchmaker_next_tick': 1475578800,
+     'battle_series_status': [{'battle_reward': 0,
+                               'gameplay_id': 0,
+                               'geometry_id': 6,
+                               'first_resp_clan_id': None,
+                               'second_resp_clan_id': None,
+                               'attacker': None,
+                               'clan_owner_id': 14000012972L,
+                               'current_battle': False,
+                               'map_id': 6}, {'battle_reward': 0,
+                               'gameplay_id': 0,
+                               'geometry_id': 14,
+                               'first_resp_clan_id': None,
+                               'second_resp_clan_id': None,
+                               'attacker': None,
+                               'clan_owner_id': 14000012972L,
+                               'current_battle': False,
+                               'map_id': 14}, {'battle_reward': 0,
+                               'gameplay_id': 0,
+                               'geometry_id': 20,
+                               'first_resp_clan_id': None,
+                               'second_resp_clan_id': None,
+                               'attacker': None,
+                               'clan_owner_id': 14000012972L,
+                               'current_battle': False,
+                               'map_id': 20}],
+     'battle_duration': 600,
+     'public': False,
+     'min_level': 1})
     def get_wgsh_common_unit_info(self, periphery_id, unit_id, rev, fields=None):
         return self._request_data('wgsh_common_unit_info', unit_id)
 
-    @fake_method(example={'available_reserves': {'ARTILLERY_STRIKE': [], 'HIGH_CAPACITY_TRANSPORT': [], 'REQUISITION': [], 'AIRSTRIKE': []}, 'requisition_bonus_percent': None, 
-       'selected_reserves': [
-                           None,
-                           None,
-                           None]})
+    @fake_method(example={'available_reserves': {'ARTILLERY_STRIKE': [],
+                            'HIGH_CAPACITY_TRANSPORT': [],
+                            'REQUISITION': [],
+                            'AIRSTRIKE': []},
+     'requisition_bonus_percent': None,
+     'selected_reserves': [None, None, None]})
     def get_wgsh_account_unit_info(self, periphery_id, unit_id, rev, fields=None):
         return self._request_data('wgsh_account_unit_info', unit_id)
 
@@ -592,40 +649,40 @@ class FakeDataAccessor(base.BaseDataAccessor):
     def unlock_reserve(self, periphery_id, unit_id, reserve_id, fields=None):
         return self._request_data('unlock_reserve', unit_id)
 
-    @fake_method(example=lambda clan_id: {'skirmishes_statistics': {'last_28_days_battles_count': 1, 
-                                 'last_28_days_wins_count': 1, 
-                                 'wins_count': 1, 
-                                 'loses_count': 1, 
-                                 'draws_count': 1}, 
-       'battles_statistics': {'last_28_days_battles_count': 1, 
-                              'last_28_days_wins_count': 1, 
-                              'wins_count': 1, 
-                              'loses_count': 1, 
-                              'draws_count': 1}, 
-       'skirmishes_count_last_28_days': 1, 
-       'battles_count_last_28_days': 1, 
-       'clear_wins_count': 1, 
-       'level_6_statistics': {'wins_count': 1, 
-                              'battles_count': 1}, 
-       'level_8_statistics': {'wins_count': 1, 
-                              'battles_count': 1}, 
-       'level_10_statistics': {'wins_count': 1, 
-                               'battles_count': 1}})
+    @fake_method(example=lambda clan_id: {'skirmishes_statistics': {'last_28_days_battles_count': 1,
+                               'last_28_days_wins_count': 1,
+                               'wins_count': 1,
+                               'loses_count': 1,
+                               'draws_count': 1},
+     'battles_statistics': {'last_28_days_battles_count': 1,
+                            'last_28_days_wins_count': 1,
+                            'wins_count': 1,
+                            'loses_count': 1,
+                            'draws_count': 1},
+     'skirmishes_count_last_28_days': 1,
+     'battles_count_last_28_days': 1,
+     'clear_wins_count': 1,
+     'level_6_statistics': {'wins_count': 1,
+                            'battles_count': 1},
+     'level_8_statistics': {'wins_count': 1,
+                            'battles_count': 1},
+     'level_10_statistics': {'wins_count': 1,
+                             'battles_count': 1}})
     def clan_statistics(self, clan_id, fields=None):
         return self._request_data('clan_statistics', clan_id)
 
-    @fake_method(example=lambda account_id: {'skirmishes_statistics': {'wins_count': 1, 
-                                 'loses_count': 1, 
-                                 'draws_count': 1}, 
-       'battles_statistics': {'wins_count': 1, 
-                              'loses_count': 1, 
-                              'draws_count': 1}, 
-       'industrial_resource_total': {'random_battles': 1, 
-                                     'skirmishes': 1, 
-                                     'battles': 1}, 
-       'industrial_resource_last_28_days': {'random_battles': 1, 
-                                            'skirmishes': 1, 
-                                            'battles': 1}})
+    @fake_method(example=lambda account_id: {'skirmishes_statistics': {'wins_count': 1,
+                               'loses_count': 1,
+                               'draws_count': 1},
+     'battles_statistics': {'wins_count': 1,
+                            'loses_count': 1,
+                            'draws_count': 1},
+     'industrial_resource_total': {'random_battles': 1,
+                                   'skirmishes': 1,
+                                   'battles': 1},
+     'industrial_resource_last_28_days': {'random_battles': 1,
+                                          'skirmishes': 1,
+                                          'battles': 1}})
     def account_statistics(self, account_id, fields=None):
         return self._request_data('account_statistics', account_id)
 
@@ -633,24 +690,24 @@ class FakeDataAccessor(base.BaseDataAccessor):
     def join_room(self, periphery_id, unit_id, fields=None):
         return self._request_data('join_room', unit_id)
 
-    @fake_method(example={'results': {'season': {'avg_exp': 6113244, 
-                              'total_battles': 2, 
-                              'battles_with_steps': 1, 
-                              'points': 91, 
-                              'avg_assist_damage': 2, 
-                              'avg_damage': 348}}, 
-       'meta': {'spa': {'id': 519}}})
+    @fake_method(example={'results': {'season': {'avg_exp': 6113244,
+                            'total_battles': 2,
+                            'battles_with_steps': 1,
+                            'points': 91,
+                            'avg_assist_damage': 2,
+                            'avg_damage': 348}},
+     'meta': {'spa': {'id': 519}}})
     def user_season_statistics(self, fields=None):
         return self._request_data('user_season_statistics', None)
 
-    @fake_method(example={'data': {'promo_name': 'Bang bang bang', 
-                'type': 'news', 
-                'image': '//webbrg-ru.wgcdn.co/dcont/fb/image/9.12.jpg', 
-                'video': 'https://www.youtube.com/watch?v=_jGPljdFBqA', 
-                'important': False, 
-                'promoscreen_url': '/promoscreens/<slug>/'}, 
-       'unread': 3, 
-       'sent_at': 1423813849})
+    @fake_method(example={'data': {'promo_name': 'Bang bang bang',
+              'type': 'news',
+              'image': '//webbrg-ru.wgcdn.co/dcont/fb/image/9.12.jpg',
+              'video': 'https://www.youtube.com/watch?v=_jGPljdFBqA',
+              'important': False,
+              'promoscreen_url': '/promoscreens/<slug>/'},
+     'unread': 3,
+     'sent_at': 1423813849})
     def get_teaser(self, fields=None):
         return self._request_data('teaser', None)
 
@@ -689,21 +746,21 @@ class FakeDataAccessor(base.BaseDataAccessor):
         self._storage.get('uilogging_session', {}).clear()
         return self._request_data('uilogging_session', None)
 
-    @fake_method(example={'data': {'balance': [
-                          {'code': 'fake_code', 
-                             'amount': 0, 
-                             'expires_at': '1970-01-01T00:00:00Z'}], 
-                'balance_version': 0, 
-                'on_hold': {'granted': [], 'consumed': []}}})
+    @fake_method(example={'data': {'balance': [{'code': 'fake_code',
+                           'amount': 0,
+                           'expires_at': '1970-01-01T00:00:00Z'}],
+              'balance_version': 0,
+              'on_hold': {'granted': [],
+                          'consumed': []}}})
     def get_inventory_entitlements(self, entitlement_codes):
         return self._request_data('inventory_entitlements', None)
 
-    @fake_method(example={'data': {'balance': [
-                          {'code': 'fake_code', 
-                             'amount': 0, 
-                             'expires_at': '1970-01-01T00:00:00Z', 
-                             'tags': []}], 
-                'balance_version': 0, 
-                'on_hold': {'granted': [], 'consumed': []}}})
+    @fake_method(example={'data': {'balance': [{'code': 'fake_code',
+                           'amount': 0,
+                           'expires_at': '1970-01-01T00:00:00Z',
+                           'tags': []}],
+              'balance_version': 0,
+              'on_hold': {'granted': [],
+                          'consumed': []}}})
     def get_inventory_entitlements_v5(self, entitlementsFilter):
         return self._request_data('get_inventory_entitlements_v5', None)

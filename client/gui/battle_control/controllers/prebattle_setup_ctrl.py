@@ -1,4 +1,13 @@
-import logging, BigWorld, CGF, GenericComponents, Math, typing, BattleReplay, constants
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/prebattle_setup_ctrl.py
+import logging
+import BigWorld
+import CGF
+import GenericComponents
+import Math
+import typing
+import BattleReplay
+import constants
 from Event import Event, EventManager
 from constants import ARENA_PERIOD
 from gui.battle_control import avatar_getter
@@ -28,7 +37,8 @@ class _SceneController(object):
         else:
             if not self.__pendingSpawnPoints:
                 BigWorld.player().onVehicleEnterWorld += self.__onVehicleEnterWorld
-            self.__pendingSpawnPoints[vehicleID] = {'positionNumber': positionNumber, 'status': status}
+            self.__pendingSpawnPoints[vehicleID] = {'positionNumber': positionNumber,
+             'status': status}
 
     def updateSpawnPoint(self, vehicleID, newStatus):
         if vehicleID in self.__spawnPoints:
@@ -109,9 +119,7 @@ class PrebattleSetupController(IPrebattleSetupController):
         self.onSelectionConfirmed()
 
     def isSelectionConfirmed(self):
-        if self.__currentArenaPeriod >= ARENA_PERIOD.BATTLE:
-            return True
-        return avatar_getter.getInBattleVehicleSwitchComponent().isVehicleConfirmed
+        return True if self.__currentArenaPeriod >= ARENA_PERIOD.BATTLE else avatar_getter.getInBattleVehicleSwitchComponent().isVehicleConfirmed
 
     def chooseVehicle(self, newCD):
         avatar_getter.getInBattleVehicleSwitchComponent().chooseVehicle(newCD)
@@ -122,15 +130,12 @@ class PrebattleSetupController(IPrebattleSetupController):
     @staticmethod
     def getVehiclesList():
         switchComponent = avatar_getter.getInBattleVehicleSwitchComponent()
-        if switchComponent:
-            return switchComponent.vehicleSpawnList
-        return []
+        return switchComponent.vehicleSpawnList if switchComponent else []
 
     def _updatePreBattleSetup(self, vehicleInfo):
         setups = vehicleInfo['vehSetups'].copy()
         if TankSetups.SHELLS in setups and not isinstance(setups[TankSetups.SHELLS], dict):
-            shellsLayoutKey = (
-             self.__guiVehicle.turret.intCD, self.__guiVehicle.gun.intCD)
+            shellsLayoutKey = (self.__guiVehicle.turret.intCD, self.__guiVehicle.gun.intCD)
             setups[TankSetups.SHELLS] = {shellsLayoutKey: setups[TankSetups.SHELLS]}
         self.__sessionProvider.shared.prebattleSetups.setInvData(setups)
         self.__sessionProvider.shared.prebattleSetups.updateLayoutIndexes(vehicleInfo['vehSetupsIndexes'])
@@ -143,7 +148,7 @@ class PrebattleSetupController(IPrebattleSetupController):
             self._updatePreBattleSetup(vehicleInfo)
             if prevSetups != self.__guiVehicle.setupLayouts.groups or prevCD != self.__guiVehicle.intCD:
                 if prevCD == self.__guiVehicle.intCD:
-                    self.__sessionProvider.shared.ammo.updateForNewSetup(self.__guiVehicle.descriptor, self.__guiVehicle.shells.installed.getItems())
+                    self.__sessionProvider.shared.ammo.updateForNewSetup(avatar_getter.getPlayerVehicleID(), self.__guiVehicle.descriptor, self.__guiVehicle.shells.installed.getItems())
                     playSound(Sounds.GAMEPLAY_SETUP_SWITCH)
             BattleReplay.g_replayCtrl.updateArenaInfo(self.__guiVehicle.name)
             self.onVehicleChanged(self.__guiVehicle)

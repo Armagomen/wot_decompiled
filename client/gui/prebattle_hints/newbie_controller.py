@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prebattle_hints/newbie_controller.py
 import random
 from logging import getLogger
 import typing
@@ -58,9 +60,7 @@ class NewbiePrebattleHintsController(INewbiePrebattleHintsController):
             return None
         else:
             displayCount = self.__setDefaultPrefs()[_PREFS_DISPLAY_COUNT]
-            if displayCount != _COMPLETED_DISPLAY_COUNT:
-                return hintSchema.hints[int(displayCount % hintsCount)]
-            return random.choice(hintSchema.hints)
+            return hintSchema.hints[int(displayCount % hintsCount)] if displayCount != _COMPLETED_DISPLAY_COUNT else random.choice(hintSchema.hints)
 
     def onShowHintsWindowSuccess(self, hint):
         if not isinstance(hint, NewbieHintModel):
@@ -90,7 +90,8 @@ class NewbiePrebattleHintsController(INewbiePrebattleHintsController):
     def __setDefaultPrefs(self):
         prefs = AccountSettings.getNewbieHints(_PREFS_NAME)
         if prefs is None:
-            prefs = {_PREFS_DISPLAY_COUNT: 0, _PREFS_CONFIRMATION: False}
+            prefs = {_PREFS_DISPLAY_COUNT: 0,
+             _PREFS_CONFIRMATION: False}
             if self.__battlesCount > _DISABLE_HISTORY_THRESHOLD:
                 prefs[_PREFS_DISPLAY_COUNT] = _COMPLETED_DISPLAY_COUNT
                 prefs[_PREFS_CONFIRMATION] = True

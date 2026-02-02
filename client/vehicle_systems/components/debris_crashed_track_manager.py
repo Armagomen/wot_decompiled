@@ -1,4 +1,9 @@
-import logging, random, CGF, Vehicular
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/vehicle_systems/components/debris_crashed_track_manager.py
+import logging
+import random
+import CGF
+import Vehicular
 from cgf_script.managers_registrator import autoregister, onAddedQuery, onRemovedQuery
 from items.components.component_constants import MAIN_TRACK_PAIR_IDX
 from items.vehicle_items import CHASSIS_ITEM_TYPE
@@ -21,10 +26,10 @@ class DebrisCrashedTrackManager(CGF.ComponentManager):
     def __forEachValidTrackGameObject(self, appearance, predicate):
         if appearance is None or appearance.typeDescriptor is None or appearance.tracks is None:
             return
-        chassis = appearance.typeDescriptor.chassis
-        if chassis is None:
-            return
         else:
+            chassis = appearance.typeDescriptor.chassis
+            if chassis is None:
+                return
             pairsCount = len(chassis.tracks.trackPairs) if chassis.tracks is not None else 1
             indices = xrange(pairsCount)
             for idx in indices:
@@ -67,8 +72,7 @@ class DebrisCrashedTrackManager(CGF.ComponentManager):
                 for wheelIdx in track.connectedWheels:
                     if isVisible:
                         animator.relinkTrack(wheelIdx, track.trackThickness)
-                    else:
-                        animator.unlinkFromTrack(wheelIdx, track.trackThickness)
+                    animator.unlinkFromTrack(wheelIdx, track.trackThickness)
 
             vehicleTracks = debris.wheelsGameObject.findComponentByType(Vehicular.VehicleTracks)
             amountOfBrokenTracks = 0
@@ -153,9 +157,9 @@ class DebrisCrashedTrackManager(CGF.ComponentManager):
     def __createDebris(self, track, debrisComponent):
         if not debrisComponent.shouldCreateDebris:
             return
+        elif debrisComponent.trackPairDesc.tracksDebris is None or debrisComponent.debrisDesc.physicalParams is None or not debrisComponent.wheelsGameObject.isValid():
+            return
         else:
-            if debrisComponent.trackPairDesc.tracksDebris is None or debrisComponent.debrisDesc.physicalParams is None or not debrisComponent.wheelsGameObject.isValid():
-                return
             vehicleTracks = debrisComponent.wheelsGameObject.findComponentByType(Vehicular.VehicleTracks)
             if vehicleTracks is None:
                 return

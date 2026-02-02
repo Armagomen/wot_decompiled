@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/tooltips/quick_training_discount_tooltip.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.crew.tooltips.quick_training_discount_tooltip_model import QuickTrainingDiscountTooltipModel
@@ -19,7 +21,7 @@ class QuickTrainingDiscountTooltip(ViewImpl):
         return super(QuickTrainingDiscountTooltip, self).getViewModel()
 
     def _onLoading(self, *args, **kwargs):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             vm.setOldFreeXpBaseValue(self._oldFreeXpBase)
             vm.setNewFreeXpBaseValue(self._newFreeXpBase)
             vm.setOldXpExchangeValue(self._oldXpExchange)

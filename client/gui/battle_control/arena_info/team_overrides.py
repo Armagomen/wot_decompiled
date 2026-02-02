@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/arena_info/team_overrides.py
 import VOIP
 from constants import ARENA_GUI_TYPE
 from gui.battle_control import avatar_getter
@@ -22,9 +24,7 @@ class DefaultTeamOverrides(object):
         return False
 
     def isTeamKiller(self, vo):
-        if self.isPlayerSelected(vo):
-            return self.personal.teamKillSuspected or vo.isTeamKiller(playerTeam=self.team)
-        return vo.isTeamKiller(playerTeam=self.team)
+        return self.personal.teamKillSuspected or vo.isTeamKiller(playerTeam=self.team) if self.isPlayerSelected(vo) else vo.isTeamKiller(playerTeam=self.team)
 
     def getAction(self, vo):
         return VehicleActions.getBitMask(vo.events)
@@ -50,7 +50,7 @@ class DefaultTeamOverrides(object):
         return _DELIVERY_STATUS.FORBIDDEN_BY_RECEIVER
 
     def getColorScheme(self):
-        return 'vm_enemy'
+        pass
 
     def clear(self):
         self.personal = None
@@ -58,7 +58,7 @@ class DefaultTeamOverrides(object):
 
 
 class PlayerTeamOverrides(DefaultTeamOverrides):
-    __slots__ = ('__isVoipSupported', )
+    __slots__ = ('__isVoipSupported',)
 
     def __init__(self, team, personal, isVoipSupported=False, isReplayPlaying=False):
         super(PlayerTeamOverrides, self).__init__(team, personal, isReplayPlaying)
@@ -71,7 +71,7 @@ class PlayerTeamOverrides(DefaultTeamOverrides):
         return vo.isSquadMan(prebattleID=self.personal.prebattleID)
 
     def getAction(self, vo):
-        return 0
+        pass
 
     def getPlayerStatus(self, vo, isTeamKiller=False):
         status = super(PlayerTeamOverrides, self).getPlayerStatus(vo)
@@ -84,7 +84,7 @@ class PlayerTeamOverrides(DefaultTeamOverrides):
         return vo.invitationDeliveryStatus
 
     def getColorScheme(self):
-        return 'vm_ally'
+        pass
 
 
 class PersonalInfo(object):

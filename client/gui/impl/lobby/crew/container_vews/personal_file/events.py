@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/container_vews/personal_file/events.py
 from gui.impl.lobby.crew.container_vews.common.base_personal_case_events import BasePersonalCaseComponentViewEvents
 
 class PersonalFileComponentViewEvents(BasePersonalCaseComponentViewEvents):

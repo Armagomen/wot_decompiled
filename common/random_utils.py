@@ -1,4 +1,7 @@
-import itertools, random
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/random_utils.py
+import itertools
+import random
 from bisect import bisect
 from copy import deepcopy
 import typing
@@ -10,7 +13,7 @@ class wchoices(object):
             raise IndexError
         evtLen = len(elist)
         norm = float(evtLen if wlist is None else sum(wlist[:evtLen]))
-        self.welist = tuple(((i + 1 if wlist is None else sum(wlist[:i + 1])) / norm, elist[i]) for i in xrange(evtLen))
+        self.welist = tuple((((i + 1 if wlist is None else sum(wlist[:i + 1])) / norm, elist[i]) for i in xrange(evtLen)))
         return
 
     def nseq(self, count=1):
@@ -18,7 +21,7 @@ class wchoices(object):
 
     def ncounts(self, count):
         data = sorted(self.nseq(count))
-        return dict((k, len(list(g))) for k, g in itertools.groupby(data))
+        return dict(((k, len(list(g))) for k, g in itertools.groupby(data)))
 
     def __iter__(self):
         welist = deepcopy(self.welist)

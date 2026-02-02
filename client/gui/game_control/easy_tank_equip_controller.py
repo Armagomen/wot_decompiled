@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/easy_tank_equip_controller.py
 import Event
 from typing import Optional, TYPE_CHECKING
 from constants import Configs
@@ -20,9 +22,7 @@ class EasyTankEquipController(IEasyTankEquipController):
 
     @property
     def config(self):
-        if self.__lobbyContext:
-            return self.__lobbyContext.getServerSettings().getEasyTankEquip()
-        return EasyTankEquipConfig()
+        return self.__lobbyContext.getServerSettings().getEasyTankEquip() if self.__lobbyContext else EasyTankEquipConfig()
 
     def fini(self):
         self.__em.clear()

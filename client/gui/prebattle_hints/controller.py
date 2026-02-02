@@ -1,4 +1,7 @@
-import importlib, random
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prebattle_hints/controller.py
+import importlib
+import random
 from logging import getLogger
 import typing
 from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
@@ -40,7 +43,7 @@ class PrebattleHintsController(IPrebattleHintsController):
 
     def addControlStrategy(self, arenaBonusType, strategy):
         if arenaBonusType in self.__strategies:
-            raise SoftException(('Strategy for arenaBonusType = {} already registered').format(arenaBonusType))
+            raise SoftException('Strategy for arenaBonusType = {} already registered'.format(arenaBonusType))
         self.__strategies[arenaBonusType] = strategy
 
     def removeControlStrategy(self, arenaBonusTypes):
@@ -96,14 +99,11 @@ class PrebattleHintsController(IPrebattleHintsController):
 class DefaultControlStrategy(IPrebattleHintsControlStrategy):
 
     def hasHintToShow(self, arenaBonusType):
-        return any(h for h in getInstance().iterHints() if h.isEnabledFor(arenaBonusType))
+        return any((h for h in getInstance().iterHints() if h.isEnabledFor(arenaBonusType)))
 
     def getHintToShow(self, arenaBonusType):
         hints = [ h for h in getInstance().iterHints() if h.isEnabledFor(arenaBonusType) ]
-        if not hints:
-            return None
-        else:
-            return random.choice(hints)
+        return None if not hints else random.choice(hints)
 
     def onShowHintsWindowSuccess(self, hint):
         pass

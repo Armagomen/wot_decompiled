@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/context/editable_style_mode.py
+import logging
+import typing
 from functools import partial
 from CurrentVehicle import g_currentVehicle
 from adisp import adisp_process, adisp_async
@@ -157,12 +160,12 @@ class EditableStyleMode(CustomMode):
         if item.isStyleOnly:
             slotType = ITEM_TYPE_TO_SLOT_TYPE[item.itemTypeID]
             if slotType in EDITABLE_STYLE_APPLY_TO_ALL_AREAS_TYPES:
-                availableCount = any(getAvailableRegions(areaId, slotType) for areaId in Area.ALL)
+                availableCount = any((getAvailableRegions(areaId, slotType) for areaId in Area.ALL))
             else:
-                availableCount = sum(len(getAvailableRegions(areaId, slotType)) for areaId in Area.ALL)
+                availableCount = sum((len(getAvailableRegions(areaId, slotType)) for areaId in Area.ALL))
             if slotType == GUI_ITEM_TYPE.PROJECTION_DECAL:
                 availableCount = min(availableCount, MAX_USERS_PROJECTION_DECALS)
-            suitableSeasons = tuple(season for season in SeasonType.COMMON_SEASONS if item.season & season)
+            suitableSeasons = tuple((season for season in SeasonType.COMMON_SEASONS if item.season & season))
             availableCount *= len(suitableSeasons)
             actualInventoryCount = availableCount - appliedCount + inventoryCount
         else:
@@ -182,9 +185,7 @@ class EditableStyleMode(CustomMode):
         self._ctx.events.onItemsRemoved()
 
     def getStyleProgressionLevel(self):
-        if self.__style and self.__style.isProgressive:
-            return self._modifiedOutfits[self.season].progressionLevel
-        return -1
+        return self._modifiedOutfits[self.season].progressionLevel if self.__style and self.__style.isProgressive else -1
 
     def _onStart(self):
         if not self._ctx.styleMode.currentOutfit.id:
@@ -210,15 +211,15 @@ class EditableStyleMode(CustomMode):
         if style.isProgressionRequired:
             hintShown = bool(serverSettings.getOnceOnlyHintsSetting(OnceOnlyHints.C11N_PROGRESSION_REQUIRED_STYLE_SLOT_BUTTON_HINT))
             if not hintShown:
-                serverSettings.setOnceOnlyHintsSettings({OnceOnlyHints.C11N_PROGRESSION_REQUIRED_STYLE_SLOT_HINT: HINT_SHOWN_STATUS, 
-                   OnceOnlyHints.C11N_PROGRESSION_REQUIRED_STYLE_SLOT_BUTTON_HINT: HINT_SHOWN_STATUS, 
-                   OnceOnlyHints.C11N_EDITABLE_STYLE_SLOT_HINT: HINT_SHOWN_STATUS, 
-                   OnceOnlyHints.C11N_EDITABLE_STYLE_SLOT_BUTTON_HINT: HINT_SHOWN_STATUS})
+                serverSettings.setOnceOnlyHintsSettings({OnceOnlyHints.C11N_PROGRESSION_REQUIRED_STYLE_SLOT_HINT: HINT_SHOWN_STATUS,
+                 OnceOnlyHints.C11N_PROGRESSION_REQUIRED_STYLE_SLOT_BUTTON_HINT: HINT_SHOWN_STATUS,
+                 OnceOnlyHints.C11N_EDITABLE_STYLE_SLOT_HINT: HINT_SHOWN_STATUS,
+                 OnceOnlyHints.C11N_EDITABLE_STYLE_SLOT_BUTTON_HINT: HINT_SHOWN_STATUS})
         else:
             hintShown = bool(serverSettings.getOnceOnlyHintsSetting(OnceOnlyHints.C11N_EDITABLE_STYLE_SLOT_BUTTON_HINT))
             if not hintShown:
-                serverSettings.setOnceOnlyHintsSettings({OnceOnlyHints.C11N_EDITABLE_STYLE_SLOT_HINT: HINT_SHOWN_STATUS, 
-                   OnceOnlyHints.C11N_EDITABLE_STYLE_SLOT_BUTTON_HINT: HINT_SHOWN_STATUS})
+                serverSettings.setOnceOnlyHintsSettings({OnceOnlyHints.C11N_EDITABLE_STYLE_SLOT_HINT: HINT_SHOWN_STATUS,
+                 OnceOnlyHints.C11N_EDITABLE_STYLE_SLOT_BUTTON_HINT: HINT_SHOWN_STATUS})
         super(EditableStyleMode, self)._onStart()
 
     def _onStop(self):
@@ -265,15 +266,16 @@ class EditableStyleMode(CustomMode):
             if slotData is not None and not slotData.isEmpty():
                 self.selectSlot(slotId)
             return False
-        if selItemTypeID == GUI_ITEM_TYPE.PROJECTION_DECAL:
-            ancors = self.getAnchorVOs()
-            if len(ancors) == 1 and ancors[0] is not None:
-                slotId = C11nId(**ancors[0]['slotId'])
-                self.installItem(intCD, slotId)
-                self.selectSlot(slotId)
-                return False
-        result = super(EditableStyleMode, self)._selectItem(intCD, progressionLevel)
-        return result
+        else:
+            if selItemTypeID == GUI_ITEM_TYPE.PROJECTION_DECAL:
+                ancors = self.getAnchorVOs()
+                if len(ancors) == 1 and ancors[0] is not None:
+                    slotId = C11nId(**ancors[0]['slotId'])
+                    self.installItem(intCD, slotId)
+                    self.selectSlot(slotId)
+                    return False
+            result = super(EditableStyleMode, self)._selectItem(intCD, progressionLevel)
+            return result
 
     def _iterOutfitsWithoutItem(self, item, count):
         season = g_currentVehicle.item.getAnyOutfitSeason()
@@ -289,8 +291,7 @@ class EditableStyleMode(CustomMode):
                 baseOutfit = self.__baseOutfits[season]
                 diff = getEditableStyleOutfitDiff(outfit, baseOutfit)
                 outfit = self.__style.getOutfit(season, vehicleCD=vehicleCD, diff=diff)
-            yield (
-             season, outfit)
+            yield (season, outfit)
 
     @adisp_async
     @wrapperdProcess('sellItem')
@@ -321,8 +322,7 @@ class EditableStyleMode(CustomMode):
             intCD = item.intCD if item is not None else 0
             uid = customizationSlotIdToUid(slotId)
             anchorVO = CustomizationSlotUpdateVO(slotId=slotId._asdict(), itemIntCD=intCD, uid=uid)
-            return [
-             anchorVO._asdict()]
+            return [anchorVO._asdict()]
         else:
             return super(EditableStyleMode, self)._getAnchorVOs()
 
@@ -368,8 +368,7 @@ class EditableStyleMode(CustomMode):
                     suitableItemIntCD = self.__getSuitableIntCD(uItem, camoDependencies.get(uItem.descriptor.itemType, tuple()))
                     if suitableItemIntCD is not None:
                         self.installItem(intCD=suitableItemIntCD, slotId=uSlotId, season=season, refresh=False)
-                    else:
-                        self.removeItem(uSlotId, season, refresh=False)
+                    self.removeItem(uSlotId, season, refresh=False)
 
         return
 

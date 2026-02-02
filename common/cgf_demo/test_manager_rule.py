@@ -1,4 +1,7 @@
-import CGF, logging
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/cgf_demo/test_manager_rule.py
+import CGF
+import logging
 from constants import IS_CLIENT
 from cgf_script.managers_registrator import Rule, registerManager, registerRule
 from cgf_demo.demo_category import DEMO_CATEGORY
@@ -21,26 +24,26 @@ class TestMapArenaManagerRule(Rule):
     @registerManager(TestBridgeManager)
     def registerBridge(self):
         _logger.debug('TestBridgeManager Registrator')
-        return
+        return None
 
     @registerManager(TestAxisRotatorManager, domain=CGF.DomainOption.DomainClient | CGF.DomainOption.DomainServer)
     def registerAxisRotator(self):
         _logger.debug('TestAxisRotatorManager Registrator')
-        return
+        return None
 
     @registerManager(TestTriggersManager)
     def registerTriggerManager(self):
         _logger.debug('TestTriggersManager Registrator')
-        return
+        return None
 
     @registerManager(TestComponentCreationManager)
     def registerTestComponentCreationManager(self):
         _logger.debug('TestComponentCreationManager Registrator')
-        return
+        return None
 
     if IS_CLIENT:
 
         @registerManager(TestEdgeDrawerComponentManager)
         def registerEdgeDrawerComponentManager(self):
             _logger.debug('TestEdgeDrawerComponentManager Registrator')
-            return
+            return None

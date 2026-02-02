@@ -1,4 +1,7 @@
-import operator, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/view_helpers/CooldownHelper.py
+import operator
+import BigWorld
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE
 from gui.shared.rq_cooldown import getRequestCoolDown
 

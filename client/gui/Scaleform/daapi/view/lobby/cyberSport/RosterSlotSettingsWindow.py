@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/cyberSport/RosterSlotSettingsWindow.py
 from account_helpers.AccountSettings import AccountSettings
 from gui.Scaleform.daapi.view.lobby.vehicle_selector_base import VehicleSelectorBase
 from gui.Scaleform.daapi.view.lobby.rally.vo_converters import makeVehicleVO, makeFiltersVO, makeVehicleBasicVO
@@ -13,14 +15,9 @@ from nation_change.nation_change_helpers import iterVehTypeCDsInNationGroup
 from skeletons.gui.shared import IItemsCache
 VEHICLE_SELECTOR_TAB_ID = 'vehicleSelectorTab'
 RANGE_SELECTOR_TAB_ID = 'rangeSelectorTab'
-TAB_ORDER = [
- VEHICLE_SELECTOR_TAB_ID, RANGE_SELECTOR_TAB_ID]
-TAB_DATA_MAP = {VEHICLE_SELECTOR_TAB_ID: (
-                           CYBER_SPORT_ALIASES.VEHICLE_SELECTOR_VIEW,
-                           CYBERSPORT.WINDOW_ROSTERSLOTSETTINGS_TABBTNLBL_VEHICLE), 
-   RANGE_SELECTOR_TAB_ID: (
-                         CYBER_SPORT_ALIASES.RANGE_ROSTER_SETTINGS_VIEW,
-                         CYBERSPORT.WINDOW_ROSTERSLOTSETTINGS_TABBTNLBL_RANGE)}
+TAB_ORDER = [VEHICLE_SELECTOR_TAB_ID, RANGE_SELECTOR_TAB_ID]
+TAB_DATA_MAP = {VEHICLE_SELECTOR_TAB_ID: (CYBER_SPORT_ALIASES.VEHICLE_SELECTOR_VIEW, CYBERSPORT.WINDOW_ROSTERSLOTSETTINGS_TABBTNLBL_VEHICLE),
+ RANGE_SELECTOR_TAB_ID: (CYBER_SPORT_ALIASES.RANGE_ROSTER_SETTINGS_VIEW, CYBERSPORT.WINDOW_ROSTERSLOTSETTINGS_TABBTNLBL_RANGE)}
 
 class RosterSlotSettingsWindow(RosterSlotSettingsWindowMeta, VehicleSelectorBase):
     itemsCache = dependency.descriptor(IItemsCache)
@@ -76,16 +73,17 @@ class RosterSlotSettingsWindow(RosterSlotSettingsWindowMeta, VehicleSelectorBase
         self.__setSelection(tabID)
 
     def setLimits(self):
-        self.as_setRosterLimitsS({'minLevel': self.__levelsLimits[0], 
-           'maxLevel': self.__levelsLimits[1]})
+        self.as_setRosterLimitsS({'minLevel': self.__levelsLimits[0],
+         'maxLevel': self.__levelsLimits[1]})
 
     def _dispose(self):
         currentFilters = self.getFilters()
         if currentFilters:
-            filters = {'nation': currentFilters['nation'], 'vehicleType': currentFilters['vehicleType'], 
-               'isMain': currentFilters['isMain'], 
-               'level': currentFilters['level'], 
-               'compatibleOnly': currentFilters['compatibleOnly']}
+            filters = {'nation': currentFilters['nation'],
+             'vehicleType': currentFilters['vehicleType'],
+             'isMain': currentFilters['isMain'],
+             'level': currentFilters['level'],
+             'compatibleOnly': currentFilters['compatibleOnly']}
             AccountSettings.setFilter(self.__section, filters)
         self._levelsRange = None
         self.__currentSlot = None
@@ -100,20 +98,20 @@ class RosterSlotSettingsWindow(RosterSlotSettingsWindowMeta, VehicleSelectorBase
 
     def __packStaticData(self):
         text = text_styles.main(CYBERSPORT.WINDOW_ROSTERSLOTSETTINGS_VEHICLETAB_HEADERTEXT)
-        return {'windowTitle': CYBERSPORT.WINDOW_ROSTERSLOTSETTINGS_TITLE, 
-           'headerText': '%s %s' % (text, icons.info()), 
-           'headerTextTooltip': TOOLTIPS.CYBERSPORT_ROSTERSLOTSETTINGS_HEADERTEXT, 
-           'selectedTxt': text_styles.middleTitle(CYBERSPORT.WINDOW_ROSTERSLOTSETTINGS_BOTTOMRESULT), 
-           'submitBtnLabel': CYBERSPORT.WINDOW_ROSTERSLOTSETTINGS_VEHICLETAB_SUBMITBTN, 
-           'cancelBtnLabel': CYBERSPORT.WINDOW_ROSTERSLOTSETTINGS_VEHICLETAB_CANCELBTN, 
-           'buttonBarItems': self.__packTabsData()}
+        return {'windowTitle': CYBERSPORT.WINDOW_ROSTERSLOTSETTINGS_TITLE,
+         'headerText': '%s %s' % (text, icons.info()),
+         'headerTextTooltip': TOOLTIPS.CYBERSPORT_ROSTERSLOTSETTINGS_HEADERTEXT,
+         'selectedTxt': text_styles.middleTitle(CYBERSPORT.WINDOW_ROSTERSLOTSETTINGS_BOTTOMRESULT),
+         'submitBtnLabel': CYBERSPORT.WINDOW_ROSTERSLOTSETTINGS_VEHICLETAB_SUBMITBTN,
+         'cancelBtnLabel': CYBERSPORT.WINDOW_ROSTERSLOTSETTINGS_VEHICLETAB_CANCELBTN,
+         'buttonBarItems': self.__packTabsData()}
 
     def __packTabsData(self):
         data = []
         for tabID in TAB_ORDER:
             linkage, label = TAB_DATA_MAP[tabID]
-            data.append({'label': label, 
-               'linkage': linkage})
+            data.append({'label': label,
+             'linkage': linkage})
 
         return data
 
@@ -131,17 +129,13 @@ class RosterSlotSettingsWindow(RosterSlotSettingsWindowMeta, VehicleSelectorBase
     def __makeInitialSlotData(self, currentSlotSetting):
         if currentSlotSetting is None:
             return (None, None)
+        elif currentSlotSetting.selectedVehicle > 0:
+            vehicle = self.itemsCache.items.getItemByCD(int(currentSlotSetting.selectedVehicle))
+            return (makeVehicleVO(vehicle, self.__convertLevelsRange(self._levelsRange), self.__vehicleTypes), VEHICLE_SELECTOR_TAB_ID)
+        elif currentSlotSetting.nationIDRange or currentSlotSetting.vTypeRange or currentSlotSetting.vLevelRange:
+            levelsRange = self.__convertLevelsRange(currentSlotSetting.vLevelRange or self._levelsRange)
+            return (makeFiltersVO(currentSlotSetting.nationIDRange, currentSlotSetting.vTypeRange, levelsRange), RANGE_SELECTOR_TAB_ID)
         else:
-            if currentSlotSetting.selectedVehicle > 0:
-                vehicle = self.itemsCache.items.getItemByCD(int(currentSlotSetting.selectedVehicle))
-                return (
-                 makeVehicleVO(vehicle, self.__convertLevelsRange(self._levelsRange), self.__vehicleTypes),
-                 VEHICLE_SELECTOR_TAB_ID)
-            if currentSlotSetting.nationIDRange or currentSlotSetting.vTypeRange or currentSlotSetting.vLevelRange:
-                levelsRange = self.__convertLevelsRange(currentSlotSetting.vLevelRange or self._levelsRange)
-                return (
-                 makeFiltersVO(currentSlotSetting.nationIDRange, currentSlotSetting.vTypeRange, levelsRange),
-                 RANGE_SELECTOR_TAB_ID)
             return (None, None)
 
     def __convertLevelsRange(self, levels):

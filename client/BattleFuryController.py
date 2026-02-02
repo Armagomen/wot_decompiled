@@ -1,13 +1,21 @@
-import BigWorld, typing
-from vehicles.components.vehicle_component import VehicleMechanicPrefabDynamicComponent
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/BattleFuryController.py
+import BigWorld
+import typing
+from gui.shared.utils.decorators import ReprInjector
+from vehicles.components.vehicle_component import VehicleDynamicComponent
+from vehicles.components.vehicle_prefabs import createMechanicPrefabSpawner
+from vehicles.mechanics.common import IMechanicComponent
+from vehicles.mechanics.mechanic_constants import VehicleMechanic
 from vehicles.mechanics.mechanic_states import createMechanicStatesEvents, IMechanicStatesComponent, IMechanicState
 if typing.TYPE_CHECKING:
     from vehicles.mechanics.mechanic_states import IMechanicStatesEvents
     from typing import Optional, Dict, Any
 
-class BattleFuryState(typing.NamedTuple('BattleFuryState', (
- (
-  'level', int), ('maxLevel', int), ('startTime', float), ('endTime', float))), IMechanicState):
+class BattleFuryState(typing.NamedTuple('BattleFuryState', (('level', int),
+ ('maxLevel', int),
+ ('startTime', float),
+ ('endTime', float))), IMechanicState):
 
     @classmethod
     def fromComponentStatus(cls, status):
@@ -15,9 +23,7 @@ class BattleFuryState(typing.NamedTuple('BattleFuryState', (
 
     @property
     def progress(self):
-        if self.level > 0 and self.duration > 0:
-            return max(self.endTime - BigWorld.serverTime(), 0.0) / self.duration
-        return 0.0
+        return max(self.endTime - BigWorld.serverTime(), 0.0) / self.duration if self.level > 0 and self.duration > 0 else 0.0
 
     @property
     def duration(self):
@@ -27,12 +33,18 @@ class BattleFuryState(typing.NamedTuple('BattleFuryState', (
         return self.level != other.level
 
 
-class BattleFuryController(VehicleMechanicPrefabDynamicComponent, IMechanicStatesComponent):
+@ReprInjector.withParent()
+class BattleFuryController(VehicleDynamicComponent, IMechanicComponent, IMechanicStatesComponent):
 
     def __init__(self):
         super(BattleFuryController, self).__init__()
+        self.__mechanicPrefabSpawner = createMechanicPrefabSpawner(self.entity, self)
         self.__statesEvents = createMechanicStatesEvents(self)
         self._initComponent()
+
+    @property
+    def vehicleMechanic(self):
+        return VehicleMechanic.BATTLE_FURY
 
     @property
     def statesEvents(self):
@@ -50,7 +62,9 @@ class BattleFuryController(VehicleMechanicPrefabDynamicComponent, IMechanicState
 
     def _onAppearanceReady(self):
         super(BattleFuryController, self)._onAppearanceReady()
+        self.__mechanicPrefabSpawner.loadAppearancePrefab()
         self.__statesEvents.processStatePrepared()
 
-    def _onComponentAppearanceUpdate(self):
+    def _onComponentAppearanceUpdate(self, **kwargs):
+        super(BattleFuryController, self)._onComponentAppearanceUpdate(**kwargs)
         self.__statesEvents.updateMechanicState(self.getMechanicState())

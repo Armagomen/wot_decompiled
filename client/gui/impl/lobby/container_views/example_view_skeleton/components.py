@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/container_views/example_view_skeleton/components.py
 import typing
 from gui.impl.lobby.container_views.base.components import ComponentBase
 if typing.TYPE_CHECKING:
@@ -11,11 +13,7 @@ class ExampleComponent(ComponentBase):
         return vm.exampleComponent
 
     def _getEvents(self):
-        return super(ExampleComponent, self)._getEvents() + (
-         (
-          self.viewModel.onMouseEnter, self._onMouseEnter),
-         (
-          self.viewModel.onMouseLeave, self._onMouseLeave))
+        return super(ExampleComponent, self)._getEvents() + ((self.viewModel.onMouseEnter, self._onMouseEnter), (self.viewModel.onMouseLeave, self._onMouseLeave))
 
     def _fillViewModel(self, vm):
         pass

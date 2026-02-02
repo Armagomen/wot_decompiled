@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/wgcg/agate/contexts.py
 import typing
 from enum import Enum
 from gui.wgcg.base.contexts import CommonWebRequestCtx
@@ -6,7 +8,7 @@ if typing.TYPE_CHECKING:
     from typing import Dict, List
 
 class InventoryEntitlementsCtx(CommonWebRequestCtx):
-    __slots__ = ('__entitlementCodes', )
+    __slots__ = ('__entitlementCodes',)
 
     def __init__(self, entitlementCodes=(), waitingID=''):
         super(InventoryEntitlementsCtx, self).__init__(waitingID)
@@ -40,7 +42,7 @@ class AgateGetInventoryEntitlementsCtx(CommonWebRequestCtx):
         EQ = 'eq'
         NEQ = 'neq'
 
-    __slots__ = ('__entitlementsFilter', )
+    __slots__ = ('__entitlementsFilter',)
 
     def __init__(self, entitlementsFilter, waitingID=''):
         self.__entitlementsFilter = entitlementsFilter
@@ -63,21 +65,18 @@ class AgateGetInventoryEntitlementsCtx(CommonWebRequestCtx):
 
     @classmethod
     def createFilterByTags(cls, tags):
-        tagsFilter = {'key': cls._FilterKeys.TAG.value, 
-           'operator': cls._FilterOperators.IN.value, 
-           'value': tags}
+        tagsFilter = {'key': cls._FilterKeys.TAG.value,
+         'operator': cls._FilterOperators.IN.value,
+         'value': tags}
         return {'filter': [tagsFilter]}
 
     @classmethod
     def createFilterByCodes(cls, codes):
         operator, value = cls.__makeRequestArgsForValues(codes)
-        return {'filter': [
-                    {'key': cls._FilterKeys.CODE.value, 
-                       'operator': operator, 
-                       'value': value}]}
+        return {'filter': [{'key': cls._FilterKeys.CODE.value,
+                     'operator': operator,
+                     'value': value}]}
 
     @classmethod
     def __makeRequestArgsForValues(cls, valuesList):
-        if len(valuesList) > 1:
-            return (cls._FilterOperators.IN.value, valuesList)
-        return (cls._FilterOperators.EQ.value, valuesList[0])
+        return (cls._FilterOperators.IN.value, valuesList) if len(valuesList) > 1 else (cls._FilterOperators.EQ.value, valuesList[0])

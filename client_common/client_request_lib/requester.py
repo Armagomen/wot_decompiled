@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client_common/client_request_lib/requester.py
 from functools import wraps
 from client_request_lib.data_sources.staging import StagingDataAccessor
 from client_request_lib.data_sources.fake import FakeDataAccessor
@@ -20,10 +22,7 @@ class RequestDescriptor(object):
         self.accessor = accessor_class
 
     def __get__(self, instance, owner):
-        if instance is None:
-            return self
-        else:
-            return self.accessor(instance.data_source)
+        return self if instance is None else self.accessor(instance.data_source)
 
 
 def _in_bigworld(func):
@@ -48,9 +47,7 @@ def bigworld_callback_wrapper(func):
 
 
 def bigworld_wrapped(attr):
-    if callable(attr):
-        return bigworld_callback_wrapper(attr)
-    return attr
+    return bigworld_callback_wrapper(attr) if callable(attr) else attr
 
 
 class BigworldCallbackMutator(type):
@@ -339,6 +336,9 @@ class WGElenAccessor(BaseAccessor):
     def get_player_data(self, callback, fields=None):
         return self._data_source.get_player_data(callback, fields=fields)
 
+    def get_player_progression(self, callback, event_id, leaderboard_id, fields=None):
+        return self._data_source.get_player_progression(callback, event_id, leaderboard_id, fields=fields)
+
 
 class WgrmsAccessor(BaseAccessor):
 
@@ -455,9 +455,9 @@ class IngameTournamentsAccessor(BaseAccessor):
 
 
 class Requester(object):
-    available_data_sources = {'stagings': StagingDataAccessor, 
-       'fake': FakeDataAccessor, 
-       'gateway': GatewayDataAccessor}
+    available_data_sources = {'stagings': StagingDataAccessor,
+     'fake': FakeDataAccessor,
+     'gateway': GatewayDataAccessor}
     advent_calendar = RequestDescriptor(AdventCalendarAccessor)
     global_map = RequestDescriptor(GmAccessor)
     ratings = RequestDescriptor(RatingAccessor)

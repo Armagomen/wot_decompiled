@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/items/common_extras.py
 from extension_utils import importClass
 from items import _xml
 from constants import IS_CLIENT, IS_EDITOR, IS_BOT
@@ -6,8 +8,7 @@ import collections
 def readExtras(xmlCtx, section, subsectionName, defaultModName, **kwargs):
     NoneExtra = importClass('NoneExtra', defaultModName)
     noneExtra = NoneExtra('_NoneExtra', 0, '', None)
-    extras = [
-     noneExtra]
+    extras = [noneExtra]
     extrasDict = {noneExtra.name: noneExtra}
     for extraName, extraSection in _xml.getChildren(xmlCtx, section, subsectionName):
         ctx = (xmlCtx, subsectionName + '/' + extraName)
@@ -26,8 +27,7 @@ def readExtras(xmlCtx, section, subsectionName, defaultModName, **kwargs):
             else:
                 extras.append(classExtras)
                 extrasDict[extraName] = classExtras
-        else:
-            _xml.raiseWrongXml(ctx, '', "Can't import %s" % classPath)
+        _xml.raiseWrongXml(ctx, '', "Can't import %s" % classPath)
 
     if len(extras) > 200:
         _xml.raiseWrongXml(xmlCtx, subsectionName, 'too many extras')

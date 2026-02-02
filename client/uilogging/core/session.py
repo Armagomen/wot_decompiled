@@ -1,4 +1,8 @@
-import typing, adisp, wg_async
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/uilogging/core/session.py
+import typing
+import adisp
+import wg_async
 from BWUtil import AsyncReturn
 from gui.wgcg.uilogging.contexts import UILoggingSessionCtx
 from helpers import dependency, time_utils
@@ -39,18 +43,12 @@ class SessionData(object):
     @property
     def lifetime(self):
         expiration = self.expiration
-        if expiration is None:
-            return
-        else:
-            return expiration - time_utils.getServerUTCTime()
+        return None if expiration is None else expiration - time_utils.getServerUTCTime()
 
     @property
     def isExpired(self):
         lifetime = self.lifetime
-        if lifetime is None:
-            return False
-        else:
-            return lifetime <= 0
+        return False if lifetime is None else lifetime <= 0
 
     @property
     def maxLogsCount(self):
@@ -75,7 +73,7 @@ class SessionData(object):
         return len(log) <= self.maxLogPropertiesCount
 
     def __repr__(self):
-        return ('<SessionData>(id={}, lifetime={})').format(self.id, self.lifetime)
+        return '<SessionData>(id={}, lifetime={})'.format(self.id, self.lifetime)
 
 
 class Session(object):

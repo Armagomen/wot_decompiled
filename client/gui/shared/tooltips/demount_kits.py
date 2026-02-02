@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/tooltips/demount_kits.py
 from gui import makeHtmlString
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
@@ -38,14 +40,15 @@ class GoldToolTipData(BlocksTooltipData):
             return tooltipBlocks
         else:
             valueBlock = formatters.packMoneyAndXpValueBlock(value=text_styles.gold(backport.getIntegralFormat(self._itemsCache.items.stats.money.gold)), icon=self._btnType, iconYoffset=self._ICON_Y_OFFSET)
-            return formatters.packMoneyAndXpBlocks(tooltipBlocks, btnType=self._btnType, valueBlocks=[
-             valueBlock], alternativeData={'btnClickDesc': 'goldAlternative', 'btnClickDescAlign': BLOCKS_TOOLTIP_TYPES.ALIGN_LEFT})
+            return formatters.packMoneyAndXpBlocks(tooltipBlocks, btnType=self._btnType, valueBlocks=[valueBlock], alternativeData={'btnClickDesc': 'goldAlternative',
+             'btnClickDescAlign': BLOCKS_TOOLTIP_TYPES.ALIGN_LEFT})
 
 
 class GoldStatsToolTipData(WGMCurrencyTooltip):
 
     def _getAlternativeData(self):
-        return {'btnClickDesc': 'goldAlternative', 'btnClickDescAlign': BLOCKS_TOOLTIP_TYPES.ALIGN_LEFT}
+        return {'btnClickDesc': 'goldAlternative',
+         'btnClickDescAlign': BLOCKS_TOOLTIP_TYPES.ALIGN_LEFT}
 
 
 class DemountKitToolTipData(BlocksTooltipData):
@@ -70,8 +73,7 @@ class DemountKitToolTipData(BlocksTooltipData):
     def _packHeader(self):
         image = formatters.packImageBlockData(self._item.iconInfo, BLOCKS_TOOLTIP_TYPES.ALIGN_LEFT, padding=formatters.packPadding(left=3, top=3))
         message = formatters.packTextBlockData(text_styles.highTitle(self._item.userName), useHtml=True, padding=formatters.packPadding(left=5, right=5))
-        block = formatters.packBuildUpBlockData(blocks=[
-         image, message], layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_HORIZONTAL)
+        block = formatters.packBuildUpBlockData(blocks=[image, message], layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_HORIZONTAL)
         return block
 
     def _packDescription(self):
@@ -84,30 +86,18 @@ class DemountKitToolTipData(BlocksTooltipData):
 
 
 class NotEnoughMoneyTooltipData(ToolTipBaseData):
-    RESOURCES_BY_CURRENCY = {Currency.CREDITS: (
-                        R.strings.tooltips.moduleFits.credits_error.header(),
-                        R.strings.tooltips.moduleFits.credits_error.text(),
-                        R.images.gui.maps.icons.library.CreditsIcon_2()), 
-       Currency.CRYSTAL: (
-                        R.strings.demount_kit.equipmentDemount.notEnoughBonds.text(),
-                        R.strings.demount_kit.equipmentDemount.notEnoughBonds.description(),
-                        R.images.gui.maps.icons.library.CrystalIcon_2()), 
-       Currency.GOLD: (
-                     R.strings.tooltips.moduleFits.gold_error.header(),
-                     R.strings.tooltips.moduleFits.gold_error.text(),
-                     R.images.gui.maps.icons.library.GoldIcon_2()), 
-       Currency.EQUIP_COIN: (
-                           R.strings.tooltips.moduleFits.equipcoin_error.header(),
-                           R.strings.tooltips.moduleFits.equipcoin_error.text(),
-                           R.images.gui.maps.icons.library.equipCoin_1())}
+    RESOURCES_BY_CURRENCY = {Currency.CREDITS: (R.strings.tooltips.moduleFits.credits_error.header(), R.strings.tooltips.moduleFits.credits_error.text(), R.images.gui.maps.icons.library.CreditsIcon_2()),
+     Currency.CRYSTAL: (R.strings.demount_kit.equipmentDemount.notEnoughBonds.text(), R.strings.demount_kit.equipmentDemount.notEnoughBonds.description(), R.images.gui.maps.icons.library.CrystalIcon_2()),
+     Currency.GOLD: (R.strings.tooltips.moduleFits.gold_error.header(), R.strings.tooltips.moduleFits.gold_error.text(), R.images.gui.maps.icons.library.GoldIcon_2()),
+     Currency.EQUIP_COIN: (R.strings.tooltips.moduleFits.equipcoin_error.header(), R.strings.tooltips.moduleFits.equipcoin_error.text(), R.images.gui.maps.icons.library.equipCoin_1())}
 
     def __init__(self, context):
         super(NotEnoughMoneyTooltipData, self).__init__(context, TOOLTIP_TYPE.DEMOUNT_KIT)
 
     def getDisplayableData(self, value, currencyType):
-        header, body, icon = self.RESOURCES_BY_CURRENCY.get(currencyType, ('', '',
-                                                                           '', ''))
-        formattedBody = makeHtmlString('html_templates:lobby/tooltips', 'not_enough_money_general', {'description': backport.text(body), 'value': value, 
-           'icon': backport.image(icon)})
-        return {'header': backport.text(header), 
-           'body': formattedBody}
+        header, body, icon = self.RESOURCES_BY_CURRENCY.get(currencyType, ('', '', '', ''))
+        formattedBody = makeHtmlString('html_templates:lobby/tooltips', 'not_enough_money_general', {'description': backport.text(body),
+         'value': value,
+         'icon': backport.image(icon)})
+        return {'header': backport.text(header),
+         'body': formattedBody}

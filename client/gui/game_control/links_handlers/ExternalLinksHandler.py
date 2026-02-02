@@ -1,4 +1,7 @@
-import typing, logging
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/links_handlers/ExternalLinksHandler.py
+import typing
+import logging
 from adisp import adisp_async, adisp_process
 from gui import GUI_SETTINGS
 from gui.game_control.links import URLMacros
@@ -11,32 +14,32 @@ from skeletons.gui.login_manager import ILoginManager
 if typing.TYPE_CHECKING:
     from gui.game_control.links_handlers.external import ILinksHandler
 _logger = logging.getLogger(__name__)
-_LISTENERS = {OpenLinkEvent.SPECIFIED: '_handleSpecifiedURL', 
-   OpenLinkEvent.PARSED: '_handleParsedURL', 
-   OpenLinkEvent.REGISTRATION: '_handleOpenRegistrationURL', 
-   OpenLinkEvent.RECOVERY_PASSWORD: '_handleOpenRecoveryPasswordURL', 
-   OpenLinkEvent.PAYMENT: '_handleOpenPaymentURL', 
-   OpenLinkEvent.SECURITY_SETTINGS: '_handleSecuritySettingsURL', 
-   OpenLinkEvent.CLAN_RULES: '_handleClanRulesURL', 
-   OpenLinkEvent.SUPPORT: '_handleSupportURL', 
-   OpenLinkEvent.MIGRATION: '_handleMigrationURL', 
-   OpenLinkEvent.FORT_DESC: '_handleFortDescription', 
-   OpenLinkEvent.CLAN_SEARCH: '_handleClanSearch', 
-   OpenLinkEvent.CLAN_CREATE: '_handleClanCreate', 
-   OpenLinkEvent.INVIETES_MANAGEMENT: '_handleInvitesManagementURL', 
-   OpenLinkEvent.GLOBAL_MAP_SUMMARY: '_handleGmSummaryURL', 
-   OpenLinkEvent.GLOBAL_MAP_PROMO_SUMMARY: '_handleGmPromoSummaryURL', 
-   OpenLinkEvent.GLOBAL_MAP_CAP: '_handleGmCapURL', 
-   OpenLinkEvent.GLOBAL_MAP_PROMO: '_handleGmPromoURL', 
-   OpenLinkEvent.PREM_SHOP: '_handleOpenPremShopURL', 
-   OpenLinkEvent.FRONTLINE_CHANGES: '_handleFrontlineChangesURL', 
-   OpenLinkEvent.TOKEN_SHOP: '_handleTokenShopURL', 
-   OpenLinkEvent.WOT_PLUS_STEAM_SHOP: '_handleWotPlusSteamShopURL', 
-   OpenLinkEvent.WOT_PLUS_SHOP: '_handleWotPlusShopURL', 
-   OpenLinkEvent.STEAM_SUBSCRIPTION_MANAGEMENT: '_handleSteamSubscriptionManagementURL', 
-   OpenLinkEvent.LOOT_BOXES_LIST: '_handleLootBoxesListURL', 
-   OpenLinkEvent.REPORT_CONTENT: '_handleReportContentURL', 
-   OpenLinkEvent.OPEN_BUNDLE_STEPS: '_handleOpenBundleStepsURL'}
+_LISTENERS = {OpenLinkEvent.SPECIFIED: '_handleSpecifiedURL',
+ OpenLinkEvent.PARSED: '_handleParsedURL',
+ OpenLinkEvent.REGISTRATION: '_handleOpenRegistrationURL',
+ OpenLinkEvent.RECOVERY_PASSWORD: '_handleOpenRecoveryPasswordURL',
+ OpenLinkEvent.PAYMENT: '_handleOpenPaymentURL',
+ OpenLinkEvent.SECURITY_SETTINGS: '_handleSecuritySettingsURL',
+ OpenLinkEvent.CLAN_RULES: '_handleClanRulesURL',
+ OpenLinkEvent.SUPPORT: '_handleSupportURL',
+ OpenLinkEvent.MIGRATION: '_handleMigrationURL',
+ OpenLinkEvent.FORT_DESC: '_handleFortDescription',
+ OpenLinkEvent.CLAN_SEARCH: '_handleClanSearch',
+ OpenLinkEvent.CLAN_CREATE: '_handleClanCreate',
+ OpenLinkEvent.INVIETES_MANAGEMENT: '_handleInvitesManagementURL',
+ OpenLinkEvent.GLOBAL_MAP_SUMMARY: '_handleGmSummaryURL',
+ OpenLinkEvent.GLOBAL_MAP_PROMO_SUMMARY: '_handleGmPromoSummaryURL',
+ OpenLinkEvent.GLOBAL_MAP_CAP: '_handleGmCapURL',
+ OpenLinkEvent.GLOBAL_MAP_PROMO: '_handleGmPromoURL',
+ OpenLinkEvent.PREM_SHOP: '_handleOpenPremShopURL',
+ OpenLinkEvent.FRONTLINE_CHANGES: '_handleFrontlineChangesURL',
+ OpenLinkEvent.TOKEN_SHOP: '_handleTokenShopURL',
+ OpenLinkEvent.WOT_PLUS_STEAM_SHOP: '_handleWotPlusSteamShopURL',
+ OpenLinkEvent.WOT_PLUS_SHOP: '_handleWotPlusShopURL',
+ OpenLinkEvent.STEAM_SUBSCRIPTION_MANAGEMENT: '_handleSteamSubscriptionManagementURL',
+ OpenLinkEvent.LOOT_BOXES_LIST: '_handleLootBoxesListURL',
+ OpenLinkEvent.REPORT_CONTENT: '_handleReportContentURL',
+ OpenLinkEvent.OPEN_BUNDLE_STEPS: '_handleOpenBundleStepsURL'}
 
 class ExternalLinksHandler(IExternalLinksController):
     __loginManager = dependency.descriptor(ILoginManager)

@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/prestige/prestige_profile_technique_views.py
+import logging
+import typing
 from constants import Configs
 from frameworks.wulf import ViewFlags, ViewSettings, ViewStatus
 from gui.impl.gen import R
@@ -35,11 +38,7 @@ class PrestigeProfileTechniqueCommon(ViewImpl):
             self._updateModel()
 
     def _getEvents(self):
-        return super(PrestigeProfileTechniqueCommon, self)._getEvents() + (
-         (
-          self._lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChange),
-         (
-          self._itemsCache.onSyncCompleted, self.__onSyncCompleted))
+        return super(PrestigeProfileTechniqueCommon, self)._getEvents() + ((self._lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChange), (self._itemsCache.onSyncCompleted, self.__onSyncCompleted))
 
     def _initialize(self, *args, **kwargs):
         super(PrestigeProfileTechniqueCommon, self)._initialize()
@@ -72,9 +71,7 @@ class PrestigeProfileTechniqueView(PrestigeProfileTechniqueCommon):
         pass
 
     def createToolTipContent(self, event, contentID):
-        if contentID == R.views.lobby.prestige.tooltips.EliteLevelGradesTooltip():
-            return PrestigeLevelGradesTooltipView(vehIntCD=self._selectedVehIntCD)
-        return super(PrestigeProfileTechniqueView, self).createToolTipContent(event, contentID)
+        return PrestigeLevelGradesTooltipView(vehIntCD=self._selectedVehIntCD) if contentID == R.views.lobby.prestige.tooltips.EliteLevelGradesTooltip() else super(PrestigeProfileTechniqueView, self).createToolTipContent(event, contentID)
 
     @property
     def viewModel(self):
@@ -88,7 +85,7 @@ class PrestigeProfileTechniqueView(PrestigeProfileTechniqueCommon):
         currentLevel, remainingPts = getVehiclePrestige(self._selectedVehIntCD, itemsCache=self._itemsCache)
         currentXP, nextLvlXP = getCurrentProgress(self._selectedVehIntCD, currentLevel, remainingPts, lobbyContext=self._lobbyContext)
         nextLevel = getNextGradeLevel(currentLevel, self._selectedVehIntCD)
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setCurrentProgress(currentXP)
             tx.setMaxProgress(nextLvlXP)
             fillPrestigeEmblemModel(tx.emblem, currentLevel, self._selectedVehIntCD)
@@ -107,5 +104,5 @@ class PrestigeProfileTechniqueEmblemView(PrestigeProfileTechniqueCommon):
     def _updateModel(self):
         self._checkData(self._updateModel)
         currentLevel, _ = getVehiclePrestige(self._selectedVehIntCD, databaseID=self._databaseID, itemsCache=self._itemsCache)
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             fillPrestigeEmblemModel(tx.emblem, currentLevel, self._selectedVehIntCD)

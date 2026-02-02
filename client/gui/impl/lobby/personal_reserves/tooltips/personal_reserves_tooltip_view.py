@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/personal_reserves/tooltips/personal_reserves_tooltip_view.py
 import typing
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
@@ -32,17 +34,13 @@ class PersonalReservesTooltipView(ViewImpl):
         return super(PersonalReservesTooltipView, self).getViewModel()
 
     def _getEvents(self):
-        return (
-         (
-          self._boosters.onGameModeStatusChange, self._update),
-         (
-          self._boosters.onBoostersDataUpdate, self._update))
+        return ((self._boosters.onGameModeStatusChange, self._update), (self._boosters.onBoostersDataUpdate, self._update))
 
     def _onLoading(self):
         self._update()
 
     def _update(self):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             reservesArray = model.getReserves()
             reservesArray.clear()
             boosters = getActiveBoosters(goodiesCache=self._goodiesCache, webController=self._webCtrl)

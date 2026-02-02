@@ -1,9 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_pass/awards_widget_model.py
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.views.lobby.battle_pass.collection_entry_point_view_model import CollectionEntryPointViewModel
 
 class AwardsWidgetModel(ViewModel):
-    __slots__ = ('onBpcoinClick', 'onTakeRewardsClick', 'showTankmen', 'showTickets',
-                 'showTalers')
+    __slots__ = ('onBpcoinClick', 'onTakeRewardsClick', 'showTankmen', 'showTickets', 'showTalers')
 
     def __init__(self, properties=10, commands=5):
         super(AwardsWidgetModel, self).__init__(properties=properties, commands=commands)

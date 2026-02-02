@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/inventory/filters/filter_by_vehicle.py
 from gui.Scaleform.daapi.view.lobby.rally.vo_converters import makeVehicleVO
 from gui.Scaleform.daapi.view.meta.ItemsWithVehicleFilterTabViewMeta import ItemsWithVehicleFilterTabViewMeta
 from gui.shared import events, EVENT_BUS_SCOPE
@@ -59,5 +61,5 @@ class FiltrableInventoryCategoryByVehicleTabView(ItemsWithVehicleFilterTabViewMe
             return
         else:
             vo = makeVehicleVO(vehicle)
-            vo.update({'type': ('{}_elite').format(vehicle.type) if vehicle.isPremium else vehicle.type})
+            vo.update({'type': '{}_elite'.format(vehicle.type) if vehicle.isPremium else vehicle.type})
             return vo

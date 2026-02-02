@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/web/web_client_api/ui/techtree.py
 from helpers import dependency
 from gui.shared import event_dispatcher
 from skeletons.gui.shared import IItemsCache

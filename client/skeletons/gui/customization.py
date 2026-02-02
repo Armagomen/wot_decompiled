@@ -1,9 +1,12 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/skeletons/gui/customization.py
 import typing
 from Event import Event
 if typing.TYPE_CHECKING:
     from typing import Optional
     from items.components.c11n_components import StyleItem
     from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationTabs
+    from gui.Scaleform.daapi.view.lobby.customization.context.context import CustomizationContext
     from gui.customization.constants import CustomizationModes
     from items.components.c11n_constants import SeasonType
 

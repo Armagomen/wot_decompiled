@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/RecruitParametersMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class RecruitParametersMeta(BaseDAAPIComponent):
@@ -18,17 +20,13 @@ class RecruitParametersMeta(BaseDAAPIComponent):
         self._printOverrideError('setPredefinedTankman')
 
     def as_setVehicleClassDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setVehicleClassData(data)
+        return self.flashObject.as_setVehicleClassData(data) if self._isDAAPIInited() else None
 
     def as_setVehicleDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setVehicleData(data)
+        return self.flashObject.as_setVehicleData(data) if self._isDAAPIInited() else None
 
     def as_setTankmanRoleDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setTankmanRoleData(data)
+        return self.flashObject.as_setTankmanRoleData(data) if self._isDAAPIInited() else None
 
     def as_setNationsDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setNationsData(data)
+        return self.flashObject.as_setNationsData(data) if self._isDAAPIInited() else None

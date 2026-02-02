@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/winback/tooltips/selected_rewards_tooltip.py
 from frameworks.wulf import ViewSettings
 from gui.impl.auxiliary.rewards_helper import BlueprintBonusTypes
 from gui.impl.gen import R
@@ -22,7 +24,7 @@ class SelectedRewardsTooltip(ViewImpl):
     def _onLoading(self, selectedRewards):
         super(SelectedRewardsTooltip, self)._onLoading()
         vmType = self.viewModel.getSelectedRewardsType()
-        with self.viewModel.getSelectedRewards().transaction() as (tx):
+        with self.viewModel.getSelectedRewards().transaction() as tx:
             tx.clear()
             for level, reward in selectedRewards.iteritems():
                 option = reward['option']

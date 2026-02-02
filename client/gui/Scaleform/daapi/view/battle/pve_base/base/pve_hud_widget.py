@@ -1,4 +1,7 @@
-import typing, SoundGroups
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/pve_base/base/pve_hud_widget.py
+import typing
+import SoundGroups
 from PlayerEvents import g_playerEvents
 from PveHudWidgetsStateComponent import PveHudWidgetHasCtxEvent
 from constants import ARENA_PERIOD
@@ -75,8 +78,7 @@ class BasePveHudWidget(object):
         pass
 
     def _onClientSettingsChanged(self, widgetType, widgetId):
-        widgetKey = (
-         widgetType, widgetId)
+        widgetKey = (widgetType, widgetId)
         serverSettings, clientSettings = self.getSettings(widgetKey)
         if serverSettings is None:
             return
@@ -117,8 +119,7 @@ class BasePveHudWidget(object):
         self._updateState(serverSettings)
 
     def _initState(self, serverSettings):
-        widgetKey = (
-         serverSettings.type, serverSettings.id)
+        widgetKey = (serverSettings.type, serverSettings.id)
         machine = self._getStateMachine(widgetKey)
         if machine is not None:
             if machine.isRunning():
@@ -140,8 +141,7 @@ class BasePveHudWidget(object):
         return
 
     def _changeState(self, serverSettings):
-        widgetKey = (
-         serverSettings.type, serverSettings.id)
+        widgetKey = (serverSettings.type, serverSettings.id)
         machine = self._getStateMachine(widgetKey)
         if machine is None:
             _logger.debug('Cannot change state: serverSettings=%s', serverSettings)
@@ -151,8 +151,7 @@ class BasePveHudWidget(object):
             return
 
     def _updateState(self, serverSettings):
-        widgetKey = (
-         serverSettings.type, serverSettings.id)
+        widgetKey = (serverSettings.type, serverSettings.id)
         machine = self._getStateMachine(widgetKey)
         if machine is None:
             _logger.debug('Cannot update state: serverSettings=%s', serverSettings)
@@ -165,8 +164,7 @@ class BasePveHudWidget(object):
         return serverSettings.state
 
     def _updateSettings(self, serverSettings):
-        widgetKey = (
-         serverSettings['type'], serverSettings['id'])
+        widgetKey = (serverSettings['type'], serverSettings['id'])
         serverSettings = self._getServerSettings(serverSettings)
         clientSettings = self._getClientSettings(widgetKey)
         self._setSettings(serverSettings, clientSettings)
@@ -232,8 +230,7 @@ class SingleItemPveHudWidget(BasePveHudWidget):
         return self._settings
 
     def _setSettings(self, serverSettings, clientSettings):
-        self._settings = (
-         serverSettings, clientSettings)
+        self._settings = (serverSettings, clientSettings)
 
 
 class SeveralItemsPveHudWidget(BasePveHudWidget):
@@ -264,7 +261,7 @@ class SeveralItemsPveHudWidget(BasePveHudWidget):
         return
 
     def _getActiveItems(self):
-        return {key for key, machine in self._stateMachines.iteritems() if machine.isRunning() if machine.isRunning()}
+        return {key for key, machine in self._stateMachines.iteritems() if machine.isRunning()}
 
     def _onAfterBattlePeriod(self):
         for machine in self._stateMachines.values():
@@ -281,6 +278,5 @@ class SeveralItemsPveHudWidget(BasePveHudWidget):
         return (serverSettings, clientSettings)
 
     def _setSettings(self, serverSettings, clientSettings):
-        widgetKey = (
-         serverSettings.type, serverSettings.id)
+        widgetKey = (serverSettings.type, serverSettings.id)
         self._settings[widgetKey] = (serverSettings, clientSettings)

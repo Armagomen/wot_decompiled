@@ -1,9 +1,14 @@
-import logging, re, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/comp7_helpers/comp7_quest_helpers.py
+import logging
+import re
+import typing
 from comp7_common_const import COMP7_OFFER_YEARLY_REWARD_TOKEN_PREFIX, Comp7QuestType, offerWeeklyQuestsRewardTokenPrefixBySeasonNumber, weeklyQuestsCompleteTokenName, COMP7_YEARLY_REWARD_TOKEN, COMP7_OFFER_PREFIX
-from gui.server_events.event_items import Quest
+from gui.server_events.cond_formatters.bonus import BattlesCountFormatter
 from gui.shared.items_cache import ItemsCache
+from gui.shared.missions.packers.conditions import getDefaultVehicleCondFormatter, getDefaultPostBattleCondFormatter, getDefaultMissionsBonusConditionsFormatter
 from helpers import dependency
-from shared_utils import findFirst
+from shared_utils import findFirst, first
 from skeletons.gui.game_control import IComp7Controller
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
@@ -12,6 +17,10 @@ if typing.TYPE_CHECKING:
     from comp7_ranks_common import Comp7Division
     from comp7.helpers.comp7_server_settings import Comp7RanksConfig
     from comp7.gui.game_control.comp7_controller import Comp7Controller
+    from gui.server_events.cond_formatters.bonus import MissionsBonusConditionsFormatter
+    from gui.server_events.cond_formatters.postbattle import MissionsPostBattleConditionsFormatter
+    from gui.server_events.cond_formatters.vehicle import MissionsVehicleConditionsFormatter
+    from gui.server_events.event_items import Quest
 _logger = logging.getLogger(__name__)
 
 def isComp7Quest(qID, seasonNumber=None):
@@ -26,10 +35,7 @@ def isComp7VisibleQuest(qID):
 
 def getComp7QuestType(qID):
     parsedID = Comp7ParsedQuestID(qID)
-    if parsedID:
-        return parsedID.questType
-    else:
-        return
+    return parsedID.questType if parsedID else None
 
 
 def isFirstWeeklyQuest(qID):
@@ -54,15 +60,13 @@ def getRequiredTokensCountToComplete(qID):
 @dependency.replace_none_kwargs(ctrl=IComp7Controller)
 def getComp7WeeklyQuestsCompleteToken(ctrl=None):
     actualSeasonNumber = ctrl.getActualSeasonNumber()
-    if actualSeasonNumber:
-        return weeklyQuestsCompleteTokenName(actualSeasonNumber)
+    return weeklyQuestsCompleteTokenName(actualSeasonNumber) if actualSeasonNumber else None
 
 
 @dependency.replace_none_kwargs(ctrl=IComp7Controller)
 def getComp7OfferWeeklyQuestsRewardTokenPrefix(ctrl=None):
     actualSeasonNumber = ctrl.getActualSeasonNumber()
-    if actualSeasonNumber:
-        return offerWeeklyQuestsRewardTokenPrefixBySeasonNumber(actualSeasonNumber)
+    return offerWeeklyQuestsRewardTokenPrefixBySeasonNumber(actualSeasonNumber) if actualSeasonNumber else None
 
 
 def isComp7OfferYearlyRewardToken(token):
@@ -76,7 +80,7 @@ def isComp7OfferYearlyRewardGiftToken(token):
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
 def hasAvailableOfferYearlyRewardGiftTokens(itemsCache=None):
     tokens = itemsCache.items.tokens.getTokens().iteritems()
-    return any(amount[1] > 0 and isComp7OfferYearlyRewardGiftToken(name) for name, amount in tokens)
+    return any((amount[1] > 0 and isComp7OfferYearlyRewardGiftToken(name) for name, amount in tokens))
 
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
@@ -128,14 +132,13 @@ def parseQuestsByDivision(quests, parser, questType):
         division = parser(quest.getID())
         if division is not None:
             questsByDivision[division.dvsnID] = quest
-        else:
-            _logger.error('Division number could not be parsed - %s', quest.getID())
+        _logger.error('Division number could not be parsed - %s', quest.getID())
 
     return questsByDivision
 
 
 class Comp7ParsedQuestID(object):
-    __questIDMatcher = re.compile(('comp7_(\\d+)_(\\d+)_({})_(.+)').format(('|').join(el.value for el in Comp7QuestType))).match
+    __questIDMatcher = re.compile('comp7_(\\d+)_(\\d+)_({})_(.+)'.format('|'.join((el.value for el in Comp7QuestType)))).match
     __slots__ = ('season', 'questType', 'extraInfo')
 
     def __new__(cls, questID):
@@ -147,4 +150,24 @@ class Comp7ParsedQuestID(object):
             self.questType = Comp7QuestType(questType)
             return self
         else:
-            return
+            return None
+
+
+def getDescriptionAndProgressFromC11nDecalQuest(quest, vehicleCondFormatter=getDefaultVehicleCondFormatter(), postBattleCondFormatter=getDefaultPostBattleCondFormatter(), missionsBonusCondsFmt=getDefaultMissionsBonusConditionsFormatter()):
+    vehCond = vehicleCondFormatter.format(quest.vehicleReqs, quest)
+    postBattleCond = postBattleCondFormatter.format(quest.postBattleCond, quest)
+    bonusCond = missionsBonusCondsFmt.format(quest.bonusCond, quest)
+    vehCond = first(vehCond, [])
+    bonusCond = first(bonusCond, [])
+    orItem = first(postBattleCond, [])
+    andItem = first(orItem + vehCond + bonusCond)
+    description = first(andItem.descrData.args)
+    battleCountCondition = quest.bonusCond.getConditions().find('battles')
+    if battleCountCondition is None:
+        currentProgress = andItem.current or 0
+        maxProgress = andItem.total or 0
+    else:
+        battlesCount = first(BattlesCountFormatter(bool(postBattleCond)).format(battleCountCondition, quest))
+        currentProgress = battlesCount.current
+        maxProgress = battlesCount.total
+    return (description, currentProgress, maxProgress)

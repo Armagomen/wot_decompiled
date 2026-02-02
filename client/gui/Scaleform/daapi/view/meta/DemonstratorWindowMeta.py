@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/DemonstratorWindowMeta.py
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 
 class DemonstratorWindowMeta(AbstractWindowView):
@@ -18,29 +20,22 @@ class DemonstratorWindowMeta(AbstractWindowView):
         self._printOverrideError('onBattleStart')
 
     def as_getDPS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_getDP()
+        return self.flashObject.as_getDP() if self._isDAAPIInited() else None
 
     def as_setGameplayTabsS(self, tabList, selectedTab):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setGameplayTabs(tabList, selectedTab)
+        return self.flashObject.as_setGameplayTabs(tabList, selectedTab) if self._isDAAPIInited() else None
 
     def as_setSpawnsS(self, spawnList, selectedSpawn):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setSpawns(spawnList, selectedSpawn)
+        return self.flashObject.as_setSpawns(spawnList, selectedSpawn) if self._isDAAPIInited() else None
 
     def as_setLevelsS(self, lvlList, selectedLvl):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setLevels(lvlList, selectedLvl)
+        return self.flashObject.as_setLevels(lvlList, selectedLvl) if self._isDAAPIInited() else None
 
     def as_enablePlatoonWarningS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_enablePlatoonWarning(value)
+        return self.flashObject.as_enablePlatoonWarning(value) if self._isDAAPIInited() else None
 
     def as_enableExtendedSettingsS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_enableExtendedSettings(value)
+        return self.flashObject.as_enableExtendedSettings(value) if self._isDAAPIInited() else None
 
     def as_enableBattleButtonS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_enableBattleButton(value)
+        return self.flashObject.as_enableBattleButton(value) if self._isDAAPIInited() else None

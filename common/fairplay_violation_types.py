@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/fairplay_violation_types.py
 from soft_exception import SoftException
 from extension_utils import ResMgr
 from constants import FairplayViolationType, ARENA_BONUS_TYPE, PENALTY_TYPES, IS_CLIENT
@@ -42,12 +44,10 @@ def getViolationTypesMask(violationsMask):
     return vTypesMask
 
 
-FAIRPLAY_EXCLUDED_ARENA_BONUS_TYPES = [
- ARENA_BONUS_TYPE.BATTLE_ROYALE_SOLO, ARENA_BONUS_TYPE.BATTLE_ROYALE_SQUAD]
+FAIRPLAY_EXCLUDED_ARENA_BONUS_TYPES = [ARENA_BONUS_TYPE.BATTLE_ROYALE_SOLO, ARENA_BONUS_TYPE.BATTLE_ROYALE_SQUAD]
 FAIRPLAY_VIOLATIONS_NAMES = []
 FAIRPLAY_VIOLATIONS_MASKS = {}
-BASE_VIOLATIONS = [
- 'deserter', 'suicide', 'afk']
+BASE_VIOLATIONS = ['deserter', 'suicide', 'afk']
 
 def init():
     if not FAIRPLAY_VIOLATIONS_NAMES:
@@ -65,9 +65,9 @@ def _readViolations(section):
             continue
         vType = item.readString('violationType')
         if vType and not hasattr(FairplayViolationType, vType.upper()):
-            raise SoftException(('Wrong Attibute {} in class {}').format(vType, FairplayViolations))
+            raise SoftException('Wrong Attibute {} in class {}'.format(vType, FairplayViolations))
         elif not vType:
-            raise SoftException(('Empty Attibute violationType in class {}').format(vType, FairplayViolations))
+            raise SoftException('Empty Attibute violationType in class {}'.format(vType, FairplayViolations))
         violations.append((violation, vType))
 
     return violations
@@ -76,7 +76,7 @@ def _readViolations(section):
 def initViolationTypes(violationTypes):
     for idx, (violationType, vType) in enumerate(violationTypes):
         if hasattr(FairplayViolations, violationType):
-            raise SoftException(('Attibute {} already in class {}').format(violationType, FairplayViolations))
+            raise SoftException('Attibute {} already in class {}'.format(violationType, FairplayViolations))
         violationName = violationType.lower()
         setattr(FairplayViolations, violationType, violationName)
         FairplayViolations.setViolationType(violationName, getattr(FairplayViolationType, vType))
@@ -90,16 +90,13 @@ def getPenaltyTypeAndViolationName(fairplayViolations, banDuration):
     getViolationType = FairplayViolations.getViolationType
     if banDuration:
         violationName = getFairPlayViolationName(penalty)
-        return (
-         PENALTY_TYPES.BAN, violationName, getViolationType(violationName) == FairplayViolationType.AFK)
+        return (PENALTY_TYPES.BAN, violationName, getViolationType(violationName) == FairplayViolationType.AFK)
     if penalty != 0:
         violationName = getFairPlayViolationName(penalty)
-        return (
-         PENALTY_TYPES.PENALTY, violationName, getViolationType(violationName) == FairplayViolationType.AFK)
+        return (PENALTY_TYPES.PENALTY, violationName, getViolationType(violationName) == FairplayViolationType.AFK)
     if warning != 0:
         violationName = getFairPlayViolationName(warning)
-        return (
-         PENALTY_TYPES.WARNING, violationName, getViolationType(violationName) == FairplayViolationType.AFK)
+        return (PENALTY_TYPES.WARNING, violationName, getViolationType(violationName) == FairplayViolationType.AFK)
 
 
 def getFairplayViolationLocale(violationName):

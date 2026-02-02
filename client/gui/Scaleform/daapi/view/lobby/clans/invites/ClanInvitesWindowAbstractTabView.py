@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/clans/invites/ClanInvitesWindowAbstractTabView.py
 import weakref
 from gui.Scaleform.daapi.view.meta.ClanInvitesWindowAbstractTabViewMeta import ClanInvitesWindowAbstractTabViewMeta
 from gui.Scaleform.locale.CLANS import CLANS
@@ -11,8 +13,7 @@ from helpers.i18n import makeString as _ms
 from gui.shared.utils.functions import makeTooltip
 
 class _RefreshBtnStateController(object):
-    __coolDownRequests = [
-     WebRequestDataType.CREATE_APPLICATIONS,
+    __coolDownRequests = [WebRequestDataType.CREATE_APPLICATIONS,
      WebRequestDataType.CREATE_INVITES,
      WebRequestDataType.ACCEPT_APPLICATION,
      WebRequestDataType.ACCEPT_INVITE,
@@ -108,7 +109,7 @@ class ClanInvitesWindowAbstractTabView(ClanInvitesWindowAbstractTabViewMeta, Cla
 
     def onSortChanged(self, dataProvider, sort):
         order = sort[0][1]
-        secondSort = tuple((item, order) for item in self._getSecondSortFields())
+        secondSort = tuple(((item, order) for item in self._getSecondSortFields()))
         self._sendSortRequest(self._getCurrentPaginator(), sort + secondSort)
 
     def formatInvitesCount(self, paginator):
@@ -160,11 +161,9 @@ class ClanInvitesWindowAbstractTabView(ClanInvitesWindowAbstractTabViewMeta, Cla
             status = item.getStatus()
             msgArgs = None
             if status == CLAN_INVITE_STATES.EXPIRED_RESENT or status == CLAN_INVITE_STATES.DECLINED_RESENT:
-                msgArgs = (
-                 True, None)
+                msgArgs = (True, None)
             elif status == CLAN_INVITE_STATES.ERROR:
-                msgArgs = (
-                 False, item.getStatusCode())
+                msgArgs = (False, item.getStatusCode())
             if msgArgs:
                 showClanInviteSystemMsg(item.getAccountName(), *msgArgs)
 

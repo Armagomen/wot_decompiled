@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/feature/util/fun_wrappers.py
 from __future__ import absolute_import
 from functools import wraps
 import operator
@@ -37,9 +39,7 @@ def hasActiveProgression(defReturn=None, abortAction=None):
             if progressionWatcher.getActiveProgression() is not None:
                 return method(progressionWatcher, *args, **kwargs)
             else:
-                if abortAction is not None:
-                    return operator.methodcaller(abortAction)(progressionWatcher)
-                return defReturn
+                return operator.methodcaller(abortAction)(progressionWatcher) if abortAction is not None else defReturn
 
         return wrapper
 
@@ -55,9 +55,7 @@ def hasAnySubMode(defReturn=None, abortAction=None):
             if subModesWatcher.getSubModes():
                 return method(subModesWatcher, *args, **kwargs)
             else:
-                if abortAction is not None:
-                    return operator.methodcaller(abortAction)(subModesWatcher)
-                return defReturn
+                return operator.methodcaller(abortAction)(subModesWatcher) if abortAction is not None else defReturn
 
         return wrapper
 
@@ -73,9 +71,7 @@ def hasBattleSubMode(defReturn=None, abortAction=None):
             if subModesWatcher.getBattleSubMode() is not None:
                 return method(subModesWatcher, *args, **kwargs)
             else:
-                if abortAction is not None:
-                    return operator.methodcaller(abortAction)(subModesWatcher)
-                return defReturn
+                return operator.methodcaller(abortAction)(subModesWatcher) if abortAction is not None else defReturn
 
         return wrapper
 
@@ -91,9 +87,7 @@ def hasDesiredSubMode(defReturn=None, abortAction=None):
             if subModesWatcher.getDesiredSubMode() is not None:
                 return method(subModesWatcher, *args, **kwargs)
             else:
-                if abortAction is not None:
-                    return operator.methodcaller(abortAction)(subModesWatcher)
-                return defReturn
+                return operator.methodcaller(abortAction)(subModesWatcher) if abortAction is not None else defReturn
 
         return wrapper
 
@@ -109,9 +103,7 @@ def hasHoldingSubMode(defReturn=None, abortAction=None):
             if subModesHolder.getHoldingSubMode() is not None:
                 return method(subModesHolder, *args, **kwargs)
             else:
-                if abortAction is not None:
-                    return operator.methodcaller(abortAction)(subModesHolder)
-                return defReturn
+                return operator.methodcaller(abortAction)(subModesHolder) if abortAction is not None else defReturn
 
         return wrapper
 
@@ -127,9 +119,7 @@ def hasMultipleSubModes(defReturn=None, abortAction=None):
             if len(subModesWatcher.getSubModes()) > 1:
                 return method(subModesWatcher, *args, **kwargs)
             else:
-                if abortAction is not None:
-                    return operator.methodcaller(abortAction)(subModesWatcher)
-                return defReturn
+                return operator.methodcaller(abortAction)(subModesWatcher) if abortAction is not None else defReturn
 
         return wrapper
 
@@ -145,9 +135,7 @@ def hasSingleSubMode(defReturn=None, abortAction=None):
             if len(subModesWatcher.getSubModes()) == 1:
                 return method(subModesWatcher, *args, **kwargs)
             else:
-                if abortAction is not None:
-                    return operator.methodcaller(abortAction)(subModesWatcher)
-                return defReturn
+                return operator.methodcaller(abortAction)(subModesWatcher) if abortAction is not None else defReturn
 
         return wrapper
 
@@ -163,9 +151,7 @@ def hasSpecifiedSubMode(defReturn=None, abortAction=None):
             if subModesWatcher.getSubMode(subModeID) is not None:
                 return method(subModesWatcher, subModeID, *args, **kwargs)
             else:
-                if abortAction is not None:
-                    return operator.methodcaller(abortAction)(subModesWatcher)
-                return defReturn
+                return operator.methodcaller(abortAction)(subModesWatcher) if abortAction is not None else defReturn
 
         return wrapper
 
@@ -182,9 +168,7 @@ def hasSpecifiedSubModes(defReturn=None, abortAction=None):
             if len(subModesIDs) == len(subModes):
                 return method(subModesWatcher, subModesIDs, *args, **kwargs)
             else:
-                if abortAction is not None:
-                    return operator.methodcaller(abortAction)(subModesWatcher)
-                return defReturn
+                return operator.methodcaller(abortAction)(subModesWatcher) if abortAction is not None else defReturn
 
         return wrapper
 
@@ -201,9 +185,7 @@ def avoidSubModesStates(states=(), defReturn=None, abortAction=None):
             if status.state not in states:
                 return method(subModesWatcher, status, *args, **kwargs)
             else:
-                if abortAction is not None:
-                    return operator.methodcaller(abortAction)(subModesWatcher)
-                return defReturn
+                return operator.methodcaller(abortAction)(subModesWatcher) if abortAction is not None else defReturn
 
         return wrapper
 
@@ -224,8 +206,6 @@ def skipNoSubModesAction(method):
 
     @wraps(method)
     def wrapper(controller, subModesToAction, *args, **kwargs):
-        if subModesToAction:
-            return method(controller, subModesToAction, *args, **kwargs)
-        return subModesToAction
+        return method(controller, subModesToAction, *args, **kwargs) if subModesToAction else subModesToAction
 
     return wrapper

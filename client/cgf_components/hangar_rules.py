@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/cgf_components/hangar_rules.py
 import CGF
 from cgf_script.managers_registrator import Rule, registerManager, registerRule
 from gui.pet_system.cgf_components.pet_place_component import PetPrefabManager
@@ -13,19 +15,19 @@ class SelectionRule(Rule):
 
     @registerManager(HoverManager)
     def reg1(self):
-        return
+        return None
 
     @registerManager(HighlightManager)
     def reg2(self):
-        return
+        return None
 
     @registerManager(ClickManager)
     def reg3(self):
-        return
+        return None
 
     @registerManager(HoverGroupManager)
     def reg4(self):
-        return
+        return None
 
 
 @registerRule
@@ -35,4 +37,4 @@ class PetPlaceRule(Rule):
 
     @registerManager(PetPrefabManager)
     def reg1(self):
-        return
+        return None

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/impl/gen/view_models/views/lobby/alert_message_model.py
 from enum import Enum
 from frameworks.wulf import Array, ViewModel
 
@@ -14,7 +16,7 @@ class State(Enum):
 
 
 class AlertMessageModel(ViewModel):
-    __slots__ = ('onClick', )
+    __slots__ = ('onClick',)
 
     def __init__(self, properties=4, commands=1):
         super(AlertMessageModel, self).__init__(properties=properties, commands=commands)
@@ -31,11 +33,11 @@ class AlertMessageModel(ViewModel):
     def setBanTimeleftInSeconds(self, value):
         self._setNumber(1, value)
 
-    def getStartEventTimestamp(self):
-        return self._getNumber(2)
+    def getStartEventDateTime(self):
+        return self._getString(2)
 
-    def setStartEventTimestamp(self, value):
-        self._setNumber(2, value)
+    def setStartEventDateTime(self, value):
+        self._setString(2, value)
 
     def getLevels(self):
         return self._getArray(3)
@@ -51,6 +53,6 @@ class AlertMessageModel(ViewModel):
         super(AlertMessageModel, self)._initialize()
         self._addStringProperty('state')
         self._addNumberProperty('banTimeleftInSeconds', 0)
-        self._addNumberProperty('startEventTimestamp', 0)
+        self._addStringProperty('startEventDateTime', '')
         self._addArrayProperty('levels', Array())
         self.onClick = self._addCommand('onClick')

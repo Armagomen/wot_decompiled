@@ -1,8 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/wgnc/events.py
 import Event
 
 class _WGNCEvents(object):
-    __slots__ = ('__eManager', 'onItemShowByDefault', 'onItemShowByAction', 'onItemUpdatedByAction',
-                 'onProxyDataItemShowByDefault', 'onItemActionFired')
+    __slots__ = ('__eManager', 'onItemShowByDefault', 'onItemShowByAction', 'onItemUpdatedByAction', 'onProxyDataItemShowByDefault', 'onItemActionFired')
 
     def __init__(self):
         super(_WGNCEvents, self).__init__()

@@ -1,4 +1,7 @@
-import GUI, Math
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/helpers/gui_utils.py
+import GUI
+import Math
 
 def setAnchor(component, hor, vert):
     component.horizontalAnchor = hor
@@ -19,15 +22,10 @@ def pixToClipVector2(pixVector):
 
 def buildTexMapping(texCoords, texSize, fullTexSize):
     maximum = texCoords + texSize
-    return (
-     (
-      texCoords[0] / fullTexSize[0], texCoords[1] / fullTexSize[1]),
-     (
-      texCoords[0] / fullTexSize[0], maximum[1] / fullTexSize[1]),
-     (
-      maximum[0] / fullTexSize[0], maximum[1] / fullTexSize[1]),
-     (
-      maximum[0] / fullTexSize[0], texCoords[1] / fullTexSize[1]))
+    return ((texCoords[0] / fullTexSize[0], texCoords[1] / fullTexSize[1]),
+     (texCoords[0] / fullTexSize[0], maximum[1] / fullTexSize[1]),
+     (maximum[0] / fullTexSize[0], maximum[1] / fullTexSize[1]),
+     (maximum[0] / fullTexSize[0], texCoords[1] / fullTexSize[1]))
 
 
 def hexARGBToRGBAFloatColor(hexColor):

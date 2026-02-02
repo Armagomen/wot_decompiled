@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/page/session_stats_presenter.py
 from __future__ import absolute_import
 from constants import ARENA_BONUS_TYPE, QUEUE_TYPE
 from gui.impl.gen.view_models.views.lobby.page.footer.session_stats_model import SessionStatsModel
@@ -30,11 +32,7 @@ class SessionStatsPresenter(ViewComponent[SessionStatsModel], IGlobalListener):
         super(SessionStatsPresenter, self)._onLoaded(*args, **kwargs)
 
     def _getEvents(self):
-        return (
-         (
-          self.__itemsCache.onSyncCompleted, self.__onCacheResync),
-         (
-          self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingChanged))
+        return ((self.__itemsCache.onSyncCompleted, self.__onCacheResync), (self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingChanged))
 
     def _finalize(self):
         super(SessionStatsPresenter, self)._finalize()
@@ -50,7 +48,7 @@ class SessionStatsPresenter(ViewComponent[SessionStatsModel], IGlobalListener):
             self.__updateSessionStats()
 
     def __updateSessionStats(self):
-        with self.getViewModel().transaction() as (model):
+        with self.getViewModel().transaction() as model:
             sessionStatsEnabled = self.__lobbyContext.getServerSettings().isSessionStatsEnabled()
             model.setSessionStatsEnabled(sessionStatsEnabled)
             if self.prbDispatcher is not None:

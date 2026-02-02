@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/offer_gift_vehicle_preview.py
 import logging
 from functools import partial
 import typing
@@ -23,7 +25,7 @@ class OfferGiftVehiclePreview(VehiclePreview):
     __lobbyContext = dependency.descriptor(ILobbyContext)
 
     def __init__(self, ctx):
-        if any(key not in ctx for key in ['offerID', 'giftID', 'confirmCallback']):
+        if any((key not in ctx for key in ['offerID', 'giftID', 'confirmCallback'])):
             _logger.error('Wrong context for offer preview window: %s', ctx)
         self._offer = self.__offersProvider.getOffer(ctx['offerID'])
         self._gift = self._offer.getGift(ctx['giftID'])
@@ -47,7 +49,7 @@ class OfferGiftVehiclePreview(VehiclePreview):
             itemsPack.append(ItemPackEntry(type=ItemPackType.CUSTOM_SLOT, count=1, groupID=1))
         if self._gift.bonus.isWithCrew:
             lvl = self._gift.bonus.getTmanRoleLevel(self._gift.bonus.displayedVehicleInfo)
-            crewType = getattr(ItemPackType, ('CREW_{}').format(lvl), ItemPackType.CREW_50)
+            crewType = getattr(ItemPackType, 'CREW_{}'.format(lvl), ItemPackType.CREW_50)
             itemsPack.append(ItemPackEntry(type=crewType, count=1, groupID=1))
         return itemsPack
 
@@ -61,8 +63,7 @@ class OfferGiftVehiclePreview(VehiclePreview):
 
             viewPy.setData(itemsPack=self.__itemsPack, panelDataVO=self._getBuyingPanelData(), packedItemsVO={'items': itemsData}, confirmCallback=self._confirmCallback)
         elif alias == VEHPREVIEW_CONSTANTS.CREW_TAB_INJECT:
-            viewPy.updateInjectData(None, (
-             ItemPackEntry(id=g_currentPreviewVehicle.item.intCD, groupID=1),), [ item for item in self.__itemsPack if item.type in ItemPackTypeGroup.CREW ])
+            viewPy.updateInjectData(None, (ItemPackEntry(id=g_currentPreviewVehicle.item.intCD, groupID=1),), [ item for item in self.__itemsPack if item.type in ItemPackTypeGroup.CREW ])
         return
 
     def _getPreviewDescription(self):
@@ -96,8 +97,8 @@ class OfferGiftVehiclePreview(VehiclePreview):
         return buttonLabel
 
     def _getBuyingPanelData(self):
-        return {'title': formatters.text_styles.superPromoTitle(self._getPreviewDescription()), 
-           'buyButtonLabel': backport.text(self._getButtonLabel())}
+        return {'title': formatters.text_styles.superPromoTitle(self._getPreviewDescription()),
+         'buyButtonLabel': backport.text(self._getButtonLabel())}
 
     def _populate(self):
         super(OfferGiftVehiclePreview, self)._populate()
@@ -127,15 +128,14 @@ class OfferGiftVehiclePreview(VehiclePreview):
 
     @classmethod
     def __getCrewItemPackEntry(cls, item):
-        return {'isEnabled': True, 
-           'topTitle': '', 
-           'topTitleSmall': '', 
-           'items': [
-                   {'hasCompensation': False, 
-                      'icon': backport.image(R.images.gui.maps.shop.rewards.c_48x48.prizeCrew()), 
-                      'iconAlt': backport.image(R.images.gui.maps.icons.artefact.notFound()), 
-                      'id': 'None', 
-                      'overlayType': '', 
-                      'rawData': None, 
-                      'slotIndex': 0, 
-                      'type': item.type}]}
+        return {'isEnabled': True,
+         'topTitle': '',
+         'topTitleSmall': '',
+         'items': [{'hasCompensation': False,
+                    'icon': backport.image(R.images.gui.maps.shop.rewards.c_48x48.prizeCrew()),
+                    'iconAlt': backport.image(R.images.gui.maps.icons.artefact.notFound()),
+                    'id': 'None',
+                    'overlayType': '',
+                    'rawData': None,
+                    'slotIndex': 0,
+                    'type': item.type}]}

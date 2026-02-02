@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_modifiers/scripts/common/battle_modifiers_ext/modification_cache/vehicle_modifications.py
 import copy
 from battle_modifiers_common import ModifiersContext
 from battle_modifiers_common.battle_modifiers import BattleParams
@@ -32,41 +34,37 @@ class VehicleModifier(object):
     @classmethod
     def _modifyVehType(cls, vehType, modifiers):
         if DEBUG_MODIFIERS:
-            LOG_DEBUG(("[BattleModifiers][Debug] Modify vehicle '{}'").format(vehType.name))
+            LOG_DEBUG("[BattleModifiers][Debug] Modify vehicle '{}'".format(vehType.name))
         modifiers.modificationCtx['vehType'] = vehType
         vehType = copy.copy(vehType)
         if modifiers.haveDomain(ModifierDomain.VEH_TYPE):
             invisibility = vehType.invisibility
-            vehType.invisibility = (
-             modifiers(BattleParams.INVISIBILITY_ON_MOVE, invisibility[0]),
-             modifiers(BattleParams.INVISIBILITY_ON_STILL, invisibility[1]))
+            vehType.invisibility = (modifiers(BattleParams.INVISIBILITY_ON_MOVE, invisibility[0]), modifiers(BattleParams.INVISIBILITY_ON_STILL, invisibility[1]))
             damageByStaticsChances = vehType.damageByStaticsChances
-            vehType.damageByStaticsChances = {'tankman': modifiers(BattleParams.ENV_TANKMAN_DAMAGE_CHANCE, damageByStaticsChances['tankman']), 
-               'module': modifiers(BattleParams.ENV_MODULE_DAMAGE_CHANCE, damageByStaticsChances['module'])}
+            vehType.damageByStaticsChances = {'tankman': modifiers(BattleParams.ENV_TANKMAN_DAMAGE_CHANCE, damageByStaticsChances['tankman']),
+             'module': modifiers(BattleParams.ENV_MODULE_DAMAGE_CHANCE, damageByStaticsChances['module'])}
         if modifiers.haveDomain(ModifierDomain.CHASSIS):
-            vehType.chassis = tuple(cls.__modifyChassis(chassis, modifiers) for chassis in vehType.chassis)
+            vehType.chassis = tuple((cls.__modifyChassis(chassis, modifiers) for chassis in vehType.chassis))
         if modifiers.haveDomain(ModifierDomain.TURRET_COMPONENTS):
-            vehType.turrets = tuple(tuple(cls.__modifyTurret(turret, modifiers) for turret in turretsList) for turretsList in vehType.turrets)
+            vehType.turrets = tuple((tuple((cls.__modifyTurret(turret, modifiers) for turret in turretsList)) for turretsList in vehType.turrets))
         if modifiers.haveDomain(ModifierDomain.RADIO):
-            vehType.radios = tuple(cls.__modifyRadio(radio, modifiers) for radio in vehType.radios)
+            vehType.radios = tuple((cls.__modifyRadio(radio, modifiers) for radio in vehType.radios))
         if modifiers.haveDomain(ModifierDomain.PHYSICS):
             vehType.xphysics = cls.__modifyPhysics(vehType.xphysics, modifiers)
         if modifiers.haveDomain(ModifierDomain.ENGINE):
-            vehType.engines = tuple(cls.__modifyEngine(engine, modifiers) for engine in vehType.engines)
+            vehType.engines = tuple((cls.__modifyEngine(engine, modifiers) for engine in vehType.engines))
         if modifiers.haveDomain(ModifierDomain.HULL):
-            vehType.hulls = tuple(cls.__modifyHull(hull, modifiers) for hull in vehType.hulls)
-            vehType.fuelTanks = tuple(cls.__modifyFuelTanks(fuelTank, modifiers) for fuelTank in vehType.fuelTanks)
+            vehType.hulls = tuple((cls.__modifyHull(hull, modifiers) for hull in vehType.hulls))
+            vehType.fuelTanks = tuple((cls.__modifyFuelTanks(fuelTank, modifiers) for fuelTank in vehType.fuelTanks))
         return vehType
 
     @classmethod
     def __modifyChassis(cls, chassis, modifiers):
         if DEBUG_MODIFIERS:
-            LOG_DEBUG(("[BattleModifiers][Debug] Modify chassis '{}'").format(chassis.name))
+            LOG_DEBUG("[BattleModifiers][Debug] Modify chassis '{}'".format(chassis.name))
         chassis = copy.copy(chassis)
         dispFactors = chassis.shotDispersionFactors
-        chassis.shotDispersionFactors = (
-         modifiers(BattleParams.DISP_FACTOR_CHASSIS_MOVEMENT, dispFactors[0]),
-         modifiers(BattleParams.DISP_FACTOR_CHASSIS_ROTATION, dispFactors[1]))
+        chassis.shotDispersionFactors = (modifiers(BattleParams.DISP_FACTOR_CHASSIS_MOVEMENT, dispFactors[0]), modifiers(BattleParams.DISP_FACTOR_CHASSIS_ROTATION, dispFactors[1]))
         chassis.healthParams = copy.copy(chassis.healthParams)
         chassis.healthParams.maxHealth = modifiers(BattleParams.CHASSIS_HEALTH, chassis.healthParams.maxHealth)
         chassis.healthParams.maxRegenHealth = modifiers(BattleParams.CHASSIS_HEALTH, chassis.healthParams.maxRegenHealth)
@@ -92,7 +90,7 @@ class VehicleModifier(object):
     @classmethod
     def __modifyTurret(cls, turret, modifiers):
         if DEBUG_MODIFIERS:
-            LOG_DEBUG(("[BattleModifiers][Debug] Modify turret '{}'").format(turret.name))
+            LOG_DEBUG("[BattleModifiers][Debug] Modify turret '{}'".format(turret.name))
         turret = copy.copy(turret)
         if modifiers.haveDomain(ModifierDomain.TURRET):
             turret.rotationSpeed = modifiers(BattleParams.TURRET_ROTATION_SPEED, turret.rotationSpeed)
@@ -112,13 +110,15 @@ class VehicleModifier(object):
             turret.surveyingDeviceHealth.healthRegenPerSec = modifiers(BattleParams.SURVEYING_DEVICE_HEALTH, turret.surveyingDeviceHealth.healthRegenPerSec)
             turret.surveyingDeviceHealth.healthBurnPerSec = modifiers(BattleParams.SURVEYING_DEVICE_HEALTH, turret.surveyingDeviceHealth.healthBurnPerSec)
         if modifiers.haveDomain(ModifierDomain.GUN_COMPONENTS):
-            turret.guns = tuple(cls.__modifyGun(gun, modifiers) for gun in turret.guns)
+            turret.guns = tuple((cls.__modifyGun(gun, modifiers) for gun in turret.guns))
+            if turret.secondaryGuns:
+                turret.secondaryGuns = tuple((cls.__modifyGun(gun, modifiers) for gun in turret.secondaryGuns))
         return turret
 
     @classmethod
     def __modifyGun(cls, gun, modifiers):
         if DEBUG_MODIFIERS:
-            LOG_DEBUG(("[BattleModifiers][Debug] Modify gun '{}'").format(gun.name))
+            LOG_DEBUG("[BattleModifiers][Debug] Modify gun '{}'".format(gun.name))
         modifiers.modificationCtx['gun'] = gun
         gun = copy.copy(gun)
         if modifiers.haveDomain(ModifierDomain.GUN):
@@ -138,10 +138,10 @@ class VehicleModifier(object):
                 initRadius = tan(gun.shotDispersionAngle) * 100.0
                 gun.shotDispersionAngle = atan(modifiers(BattleParams.SHOT_DISPERSION_RADIUS, initRadius) / 100.0)
             dispFactors = gun.shotDispersionFactors
-            gun.shotDispersionFactors = {'turretRotation': modifiers(BattleParams.DISP_FACTOR_TURRET_ROTATION, dispFactors['turretRotation']), 
-               'afterShot': modifiers(BattleParams.DISP_FACTOR_AFTER_SHOT, dispFactors['afterShot']), 
-               'whileGunDamaged': modifiers(BattleParams.DISP_FACTOR_WHILE_GUN_DAMAGED, dispFactors['whileGunDamaged']), 
-               'afterShotInBurst': dispFactors['afterShotInBurst']}
+            gun.shotDispersionFactors = {'turretRotation': modifiers(BattleParams.DISP_FACTOR_TURRET_ROTATION, dispFactors['turretRotation']),
+             'afterShot': modifiers(BattleParams.DISP_FACTOR_AFTER_SHOT, dispFactors['afterShot']),
+             'whileGunDamaged': modifiers(BattleParams.DISP_FACTOR_WHILE_GUN_DAMAGED, dispFactors['whileGunDamaged']),
+             'afterShotInBurst': dispFactors['afterShotInBurst']}
             if gun.dualGun != DEFAULT_GUN_DUALGUN:
                 reloadTimes = [ modifiers(BattleParams.RELOAD_TIME, reloadTime) for reloadTime in gun.dualGun.reloadTimes ]
                 gun.dualGun = gun.dualGun._replace(reloadTimes=tuple(reloadTimes))
@@ -153,19 +153,19 @@ class VehicleModifier(object):
                     gun.effects = [ modifiers(BattleParams.GUN_EFFECTS, effects) for effects in gun.effects ]
                 else:
                     gun.effects = modifiers(BattleParams.GUN_EFFECTS, gun.effects)
-                if gun.prefabs:
-                    gunPrefabs = copy.deepcopy(gun.prefabs)
-                    for outfit, prefabs in gunPrefabs.iteritems():
-                        modifiers.modificationCtx['outfit'] = outfit
-                        prefabs['main'] = tuple(modifiers(BattleParams.GUN_MAIN_PREFAB, p) for p in prefabs['main'])
+            if gun.prefabs:
+                gunPrefabs = copy.deepcopy(gun.prefabs)
+                for outfit, prefabs in gunPrefabs.iteritems():
+                    modifiers.modificationCtx['outfit'] = outfit
+                    prefabs['main'] = tuple((modifiers(BattleParams.GUN_MAIN_PREFAB, p) for p in prefabs['main']))
 
-                    gun.prefabs = gunPrefabs
-                    modifiers.modificationCtx.pop('outfit', None)
+                gun.prefabs = gunPrefabs
+                modifiers.modificationCtx.pop('outfit', None)
             gun.invisibilityFactorAtShot = modifiers(BattleParams.INVISIBILITY_FACTOR_AT_SHOT, gun.invisibilityFactorAtShot)
             if gun.forcedReloadTime != ZERO_FLOAT:
                 gun.forcedReloadTime = modifiers(BattleParams.FORCED_RELOAD_TIME, gun.forcedReloadTime)
             if gun.autoShoot != DEFAULT_GUN_AUTOSHOOT:
-                gun.autoShoot = gun.autoShoot._replace(shotDispersionPerSec=modifiers(BattleParams.AUTO_SHOOT_DISPERSION_PER_SEC, gun.autoShoot.shotDispersionPerSec), maxShotDispersion=modifiers(BattleParams.AUTO_SHOOT_MAX_SHOT_DISPERSION_FACTOR, gun.autoShoot.maxShotDispersion))
+                gun.autoShoot = gun.autoShoot._replace(shotDispersionPerShot=modifiers(BattleParams.AUTO_SHOOT_DISPERSION_PER_SHOT, gun.autoShoot.shotDispersionPerShot), maxShotDispersion=modifiers(BattleParams.AUTO_SHOOT_MAX_SHOT_DISPERSION_FACTOR, gun.autoShoot.maxShotDispersion))
             gun.healthParams = copy.copy(gun.healthParams)
             gun.healthParams.maxHealth = modifiers(BattleParams.GUN_HEALTH, gun.healthParams.maxHealth)
             gun.healthParams.maxRegenHealth = modifiers(BattleParams.GUN_HEALTH, gun.healthParams.maxRegenHealth)
@@ -173,13 +173,13 @@ class VehicleModifier(object):
                 gun.healthParams.hysteresisHealth = modifiers(BattleParams.GUN_HEALTH, gun.healthParams.hysteresisHealth)
             gun.healthParams.healthRegenPerSec = modifiers(BattleParams.GUN_HEALTH, gun.healthParams.healthRegenPerSec)
         if modifiers.haveDomain(ModifierDomain.SHOT_COMPONENTS):
-            gun.shots = tuple(cls.__modifyShot(shot, modifiers) for shot in gun.shots)
+            gun.shots = tuple((cls.__modifyShot(shot, modifiers) for shot in gun.shots))
         return gun
 
     @classmethod
     def __modifyShot(cls, shot, modifiers):
         if DEBUG_MODIFIERS:
-            LOG_DEBUG(("[BattleModifiers][Debug] Modify shell '{}'").format(shot.shell.name))
+            LOG_DEBUG("[BattleModifiers][Debug] Modify shell '{}'".format(shot.shell.name))
         modifiers.modificationCtx['shell'] = shot.shell
         shot = copy.copy(shot)
         if modifiers.haveDomain(ModifierDomain.SHOT):
@@ -206,13 +206,9 @@ class VehicleModifier(object):
             shell.damageRandomizationType = modifiers(BattleParams.DAMAGE_RANDOMIZATION_TYPE, shell.damageRandomizationType)
             shell.piercingPowerRandomization = modifiers(BattleParams.PIERCING_POWER_RANDOMIZATION, shell.piercingPowerRandomization)
             shell.piercingPowerRandomizationType = modifiers(BattleParams.PIERCING_POWER_RANDOMIZATION_TYPE, shell.piercingPowerRandomizationType)
-            shell.armorDamage = (
-             modifiers(BattleParams.ARMOR_DAMAGE_FIRST, shell.armorDamage[0]),
-             modifiers(BattleParams.ARMOR_DAMAGE_LAST, shell.armorDamage[1]))
+            shell.armorDamage = (modifiers(BattleParams.ARMOR_DAMAGE_FIRST, shell.armorDamage[0]), modifiers(BattleParams.ARMOR_DAMAGE_LAST, shell.armorDamage[1]))
             shell.isDamageMutable = shell.armorDamage[0] != shell.armorDamage[1]
-            shell.deviceDamage = (
-             modifiers(BattleParams.DEVICE_DAMAGE_FIRST, shell.deviceDamage[0]),
-             modifiers(BattleParams.DEVICE_DAMAGE_LAST, shell.deviceDamage[1]))
+            shell.deviceDamage = (modifiers(BattleParams.DEVICE_DAMAGE_FIRST, shell.deviceDamage[0]), modifiers(BattleParams.DEVICE_DAMAGE_LAST, shell.deviceDamage[1]))
             effectsIndex = shell.effectsIndex
             modifiers.modificationCtx['shotsCount'] = 1 if shell.dynamicEffectsIndexes else 0
             shell.effectsIndex = modifiers(BattleParams.SHOT_EFFECTS, effectsIndex)
@@ -244,12 +240,8 @@ class VehicleModifier(object):
             armorSpalls = copy.copy(shellType.armorSpalls)
             armorSpalls.radius = modifiers(BattleParams.ARMOR_SPALLS_IMPACT_RADIUS, armorSpalls.radius)
             armorSpalls.damageAbsorptionType = modifiers(BattleParams.ARMOR_SPALLS_DAMAGE_ABSORPTION, armorSpalls.damageAbsorptionType)
-            armorSpalls.armorDamage = (
-             modifiers(BattleParams.ARMOR_SPALLS_ARMOR_DAMAGE_FIRST, armorSpalls.armorDamage[0]),
-             modifiers(BattleParams.ARMOR_SPALLS_ARMOR_DAMAGE_LAST, armorSpalls.armorDamage[1]))
-            armorSpalls.deviceDamage = (
-             modifiers(BattleParams.ARMOR_SPALLS_DEVICE_DAMAGE_FIRST, armorSpalls.deviceDamage[0]),
-             modifiers(BattleParams.ARMOR_SPALLS_DEVICE_DAMAGE_LAST, armorSpalls.deviceDamage[1]))
+            armorSpalls.armorDamage = (modifiers(BattleParams.ARMOR_SPALLS_ARMOR_DAMAGE_FIRST, armorSpalls.armorDamage[0]), modifiers(BattleParams.ARMOR_SPALLS_ARMOR_DAMAGE_LAST, armorSpalls.armorDamage[1]))
+            armorSpalls.deviceDamage = (modifiers(BattleParams.ARMOR_SPALLS_DEVICE_DAMAGE_FIRST, armorSpalls.deviceDamage[0]), modifiers(BattleParams.ARMOR_SPALLS_DEVICE_DAMAGE_LAST, armorSpalls.deviceDamage[1]))
             armorSpalls.hasSplash = armorSpalls.radius and (any(armorSpalls.armorDamage) or any(armorSpalls.deviceDamage))
             if BattleParams.ARMOR_SPALLS_CONE_ANGLE in modifiers:
                 initAngle = acos(armorSpalls.coneAngleCos)
@@ -261,7 +253,7 @@ class VehicleModifier(object):
     @classmethod
     def __modifyRadio(cls, radio, modifiers):
         if DEBUG_MODIFIERS:
-            LOG_DEBUG(("[BattleModifiers][Debug] Modify radio '{}'").format(radio.name))
+            LOG_DEBUG("[BattleModifiers][Debug] Modify radio '{}'".format(radio.name))
         radio = copy.copy(radio)
         radio.distance = modifiers(BattleParams.RADIO_DISTANCE, radio.distance)
         return radio
@@ -269,7 +261,7 @@ class VehicleModifier(object):
     @classmethod
     def __modifyEngine(cls, engine, modifiers):
         if DEBUG_MODIFIERS:
-            LOG_DEBUG(("[BattleModifiers][Debug] Modify engine '{}'").format(engine.name))
+            LOG_DEBUG("[BattleModifiers][Debug] Modify engine '{}'".format(engine.name))
         engine = copy.copy(engine)
         engine.fireStartingChance = modifiers(BattleParams.ENGINE_FIRE_FACTOR, engine.fireStartingChance)
         engine.healthParams = copy.copy(engine.healthParams)
@@ -318,9 +310,7 @@ class VehicleModifier(object):
             LOG_DEBUG('[BattleModifiers][Debug] Modify physics')
         if IS_CELLAPP:
             return cls.__modifyPhysicsServer(physics, modifiers)
-        if IS_CLIENT:
-            return cls.__modifyPhysicsClient(physics, modifiers)
-        return physics
+        return cls.__modifyPhysicsClient(physics, modifiers) if IS_CLIENT else physics
 
     @classmethod
     def __modifyPhysicsServer(cls, physics, modifiers):
@@ -365,9 +355,7 @@ class VehicleModificationCache(ModificationCache):
     def get(self, vehType, battleModifiers):
         if not USE_VEHICLE_CACHE:
             return VehicleModifier.modifyVehicle(vehType, battleModifiers)
-        if not battleModifiers.haveDomain(ModifierDomain.VEH_TYPE_COMPONENTS):
-            return vehType
-        return self.__addModification(vehType, battleModifiers)
+        return vehType if not battleModifiers.haveDomain(ModifierDomain.VEH_TYPE_COMPONENTS) else self.__addModification(vehType, battleModifiers)
 
     def __addModification(self, vehType, battleModifiers):
         layerId = battleModifiers.id()
@@ -382,9 +370,7 @@ class VehicleModificationCache(ModificationCache):
         return vehModification
 
     def __getVehId(self, vehType):
-        if vehType.mode == VEHICLE_MODE.DEFAULT:
-            return vehType.id
-        return vehType.id + (vehType.mode,)
+        return vehType.id if vehType.mode == VEHICLE_MODE.DEFAULT else vehType.id + (vehType.mode,)
 
 
 def init():

@@ -1,8 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/currency_reserves/currency_reserves_view_model.py
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.views.lobby.currency_reserves.currency_reserve_model import CurrencyReserveModel
 
 class CurrencyReservesViewModel(ViewModel):
-    __slots__ = ('onClose', )
+    __slots__ = ('onClose',)
 
     def __init__(self, properties=3, commands=1):
         super(CurrencyReservesViewModel, self).__init__(properties=properties, commands=commands)

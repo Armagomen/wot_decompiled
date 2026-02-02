@@ -1,6 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/kill_cam_ctrl.py
 from collections import namedtuple
 from enum import Enum
-import Event, Math, logging
+import Event
+import Math
+import logging
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
 from gui.battle_control.controllers.interfaces import IBattleController
 from gui.shared.events import DeathCamEvent
@@ -107,8 +111,7 @@ class KillCameraController(IBattleController):
         phaseDuration *= 1000
         useProjectileOrigin = hasAttackerVehicle and hasSpottedData
         markerData = GunMarkerData(projectile=projectile, phaseDuration=phaseDuration, simulatedKillerGunInfo=simulatedKillerGunInfo if hasSpottedData else None, projectileOrigin=projectile['trajectoryData'][0][0] if useProjectileOrigin else unspottedOrigin)
-        return (
-         KillCamInfoMarkerType.GUN, markerData)
+        return (KillCamInfoMarkerType.GUN, markerData)
 
     def __buildDistanceMarkerData(self, projectile, phaseDuration, hasSpottedData):
         markerData = DistanceMarkerData(projectile=projectile, phaseDuration=phaseDuration * 1000, impactPoint=projectile['impactPoint'], isAttackerSpotted=hasSpottedData)

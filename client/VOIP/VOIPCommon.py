@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/VOIP/VOIPCommon.py
 CODE_SUCCESS = 0
 CODE_ERROR = 1
 STATUS_OK = 0

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_light/scripts/client/comp7_light/gui/impl/lobby/platoon/view/platoon_members_view.py
 from comp7_light.gui.impl.gen.view_models.views.lobby.platoon.comp7_light_slot_model import Comp7LightSlotModel
 from comp7_light.gui.impl.gen.view_models.views.lobby.platoon.comp7_light_window_model import Comp7LightWindowModel
 from comp7_light_constants import CLIENT_UNIT_CMD
@@ -30,12 +32,10 @@ class Comp7LightMembersView(SquadMembersView):
 
     @prbEntityProperty
     def prbEntity(self):
-        return
+        return None
 
     def createToolTipContent(self, event, contentID):
-        if contentID == R.views.lobby.premacc.tooltips.SquadBonusTooltip():
-            return SquadBonusTooltipContent(battleType=SELECTOR_BATTLE_TYPES.COMP7_LIGHT, bonusState=getPlatoonBonusState(True))
-        return super(Comp7LightMembersView, self).createToolTipContent(event=event, contentID=contentID)
+        return SquadBonusTooltipContent(battleType=SELECTOR_BATTLE_TYPES.COMP7_LIGHT, bonusState=getPlatoonBonusState(True)) if contentID == R.views.lobby.premacc.tooltips.SquadBonusTooltip() else super(Comp7LightMembersView, self).createToolTipContent(event=event, contentID=contentID)
 
     @property
     def _viewModelClass(self):
@@ -68,7 +68,7 @@ class Comp7LightMembersView(SquadMembersView):
 
     def _updateHeader(self):
         super(Comp7LightMembersView, self)._updateHeader()
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             self.__updateDropDown(model)
 
     def _getWindowInfoTooltipHeaderAndBody(self):
@@ -80,10 +80,7 @@ class Comp7LightMembersView(SquadMembersView):
         return slots
 
     def _hasFreeSlot(self):
-        if self.__unitMgr is not None and self.__unitMgr.unit is not None:
-            return len(self.__unitMgr.unit.getPlayers()) < self.__unitMgr.unit.getSquadSize()
-        else:
-            return False
+        return len(self.__unitMgr.unit.getPlayers()) < self.__unitMgr.unit.getSquadSize() if self.__unitMgr is not None and self.__unitMgr.unit is not None else False
 
     def _addListeners(self):
         super(Comp7LightMembersView, self)._addListeners()
@@ -148,5 +145,5 @@ class Comp7LightMembersView(SquadMembersView):
     @staticmethod
     def __playerTimeJoin(slot):
         player = slot['player'] or {}
-        roleIndex = -(player.get('isOffline') or slot['role']) if 1 else 0
+        roleIndex = -slot['role'] if not player.get('isOffline') else 0
         return (not player, roleIndex, player.get('timeJoin', 0))

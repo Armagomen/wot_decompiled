@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/tooltips/consumables_panel.py
 from typing import TYPE_CHECKING
 from battle_modifiers_common import BattleParams
 from constants import DAMAGE_INTERPOLATION_DIST_FIRST, DAMAGE_INTERPOLATION_DIST_LAST
@@ -49,18 +51,17 @@ def makeShellTooltip(intCD, lobbyContext=None, battleSessionProvider=None):
         footNotes = []
         if descriptor.isDamageMutable:
             showDistanceAsterisk = True
-            damageValue = ('{}-{}').format(backport.getNiceNumberFormat(shellParams.avgMutableDamage[0]), backport.getNiceNumberFormat(shellParams.avgMutableDamage[1]))
+            damageValue = '{}-{}'.format(backport.getNiceNumberFormat(shellParams.avgMutableDamage[0]), backport.getNiceNumberFormat(shellParams.avgMutableDamage[1]))
             note = ASTERISK
             footNotes.append(ASTERISK + backport.text(R.strings.menu.moduleInfo.params.piercingDistance.footnote(), minDist=int(DAMAGE_INTERPOLATION_DIST_FIRST), maxDist=int(min(vehicleDescriptor.shot.maxDistance, DAMAGE_INTERPOLATION_DIST_LAST))))
-        params = [
-         backport.text(R.strings.ingame_gui.shells_kinds.params.damage(), value=damageValue) + note]
+        params = [backport.text(R.strings.ingame_gui.shells_kinds.params.damage(), value=damageValue) + note]
         if piercingPower != 0:
             value = backport.getNiceNumberFormat(piercingPower)
             if piercingPowerTable != NO_DATA and isDistanceDependent:
                 note = ASTERISK
-                value = ('{}-{}').format(backport.getNiceNumberFormat(piercingPowerTable[0][1]), backport.getNiceNumberFormat(piercingPowerTable[(-1)][1]))
+                value = '{}-{}'.format(backport.getNiceNumberFormat(piercingPowerTable[0][1]), backport.getNiceNumberFormat(piercingPowerTable[-1][1]))
                 if not showDistanceAsterisk:
-                    footNotes.append(note + backport.text(R.strings.menu.moduleInfo.params.piercingDistance.footnote(), minDist=backport.getNiceNumberFormat(piercingPowerTable[0][0]), maxDist=backport.getNiceNumberFormat(piercingPowerTable[(-1)][0])))
+                    footNotes.append(note + backport.text(R.strings.menu.moduleInfo.params.piercingDistance.footnote(), minDist=backport.getNiceNumberFormat(piercingPowerTable[0][0]), maxDist=backport.getNiceNumberFormat(piercingPowerTable[-1][0])))
             else:
                 note = ASTERISK if not showDistanceAsterisk else ASTERISK * 2
                 footNotes.append(note + backport.text(R.strings.menu.moduleInfo.params.noPiercingDistance.footnote()))
@@ -79,12 +80,9 @@ def makeShellTooltip(intCD, lobbyContext=None, battleSessionProvider=None):
     return (header, body, fmt)
 
 
-GROUP_AND_LAYOUT = {TankSetupConstants.CONSUMABLES: (
-                                  TankSetupLayouts.EQUIPMENT, TankSetupGroupsId.EQUIPMENT_AND_SHELLS), 
-   TankSetupConstants.OPT_DEVICES: (
-                                  TankSetupLayouts.OPTIONAL_DEVICES, TankSetupGroupsId.OPTIONAL_DEVICES_AND_BOOSTERS), 
-   TankSetupConstants.BATTLE_BOOSTERS: (
-                                      TankSetupLayouts.BATTLE_BOOSTERS, TankSetupGroupsId.OPTIONAL_DEVICES_AND_BOOSTERS)}
+GROUP_AND_LAYOUT = {TankSetupConstants.CONSUMABLES: (TankSetupLayouts.EQUIPMENT, TankSetupGroupsId.EQUIPMENT_AND_SHELLS),
+ TankSetupConstants.OPT_DEVICES: (TankSetupLayouts.OPTIONAL_DEVICES, TankSetupGroupsId.OPTIONAL_DEVICES_AND_BOOSTERS),
+ TankSetupConstants.BATTLE_BOOSTERS: (TankSetupLayouts.BATTLE_BOOSTERS, TankSetupGroupsId.OPTIONAL_DEVICES_AND_BOOSTERS)}
 
 @dependency.replace_none_kwargs(battleSessionProvider=IBattleSessionProvider)
 def buildEquipmentSlotTooltipTextBySlotInfo(slotType, slotId, battleSessionProvider=None):
@@ -96,10 +94,7 @@ def buildEquipmentSlotTooltipTextBySlotInfo(slotType, slotId, battleSessionProvi
         intCD = preBattleSetups.getSlotItem(layout, group, slotId)
         if intCD:
             item = vehicles.getItemByCompactDescr(intCD)
-    if item:
-        return getEquipmentTooltipContent(item, modifiers)
-    else:
-        return ('', '')
+    return getEquipmentTooltipContent(item, modifiers) if item else ('', '')
 
 
 def getEquipmentTooltipContent(item, modifiers):
@@ -109,6 +104,5 @@ def getEquipmentTooltipContent(item, modifiers):
             cooldown = modifiers(BattleParams.EQUIPMENT_COOLDOWN, item.cooldownSeconds)
             tooltipStr = R.strings.ingame_gui.consumables_panel.equipment.cooldownSeconds()
             cooldownStr = backport.text(tooltipStr, cooldownSeconds=str(int(cooldown)))
-            body = ('\n\n').join((body, cooldownStr))
-    return (
-     item.userString, body)
+            body = '\n\n'.join((body, cooldownStr))
+    return (item.userString, body)

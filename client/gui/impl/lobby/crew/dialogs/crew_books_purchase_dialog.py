@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/dialogs/crew_books_purchase_dialog.py
 from base_crew_dialog_template_view import BaseCrewDialogTemplateView
 from gui import SystemMessages
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -91,11 +93,11 @@ class CrewBooksPurchaseDialog(BaseCrewDialogTemplateView):
         self._updatePrice()
 
     def _updateViewModel(self):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             self._fillViewModel(vm)
 
     def _updatePrice(self):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             self._setBookPrice(vm)
 
     def _fillViewModel(self, vm):

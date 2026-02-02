@@ -1,4 +1,8 @@
-import BigWorld, Math, BattleReplay
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/VehicleObserverGunRotator.py
+import BigWorld
+import Math
+import BattleReplay
 from VehicleGunRotator import VehicleGunRotator
 
 class VehicleObserverGunRotator(VehicleGunRotator):
@@ -49,14 +53,8 @@ class VehicleObserverGunRotator(VehicleGunRotator):
     def getAvatarOwnVehicleStabilisedMatrix(self):
         player = BigWorld.player()
         vehicle = player.getVehicleAttached()
-        if vehicle is not None:
-            return Math.Matrix(vehicle.matrix)
-        else:
-            return super(VehicleObserverGunRotator, self).getAvatarOwnVehicleStabilisedMatrix()
+        return Math.Matrix(vehicle.matrix) if vehicle is not None else super(VehicleObserverGunRotator, self).getAvatarOwnVehicleStabilisedMatrix()
 
     def getAttachedVehicleID(self):
         vehicle = self._avatar.getVehicleAttached()
-        if vehicle is not None:
-            return vehicle.id
-        else:
-            return super(VehicleObserverGunRotator, self).getAttachedVehicleID()
+        return vehicle.id if vehicle is not None else super(VehicleObserverGunRotator, self).getAttachedVehicleID()

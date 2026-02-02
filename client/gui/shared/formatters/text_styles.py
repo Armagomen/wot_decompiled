@@ -1,10 +1,12 @@
-import re, types
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/formatters/text_styles.py
+import re
+import types
 from gui import makeHtmlString
 from gui.shared.money import Currency
 from helpers import i18n
 from soft_exception import SoftException
-__all__ = (
- 'standard',
+__all__ = ('standard',
  'main',
  'mainBig',
  'neutral',
@@ -360,11 +362,13 @@ def hightlight(text):
 
 
 def alignText(text, align):
-    return _getStyle('alignText', {'message': text, 'align': align})
+    return _getStyle('alignText', {'message': text,
+     'align': align})
 
 
 def leadingText(text, leading):
-    return _getStyle('leadingText', {'message': text, 'leading': leading})
+    return _getStyle('leadingText', {'message': text,
+     'leading': leading})
 
 
 def alignStandartText(text, align):
@@ -540,11 +544,11 @@ def bptaler(text):
 
 
 def getRawStyles(names):
-    return dict((name, _getStyle(name)) for name in names)
+    return dict(((name, _getStyle(name)) for name in names))
 
 
 def getStyles(names):
-    return dict((name, _formatText(name)) for name in names)
+    return dict(((name, _formatText(name)) for name in names))
 
 
 def _processStyle(style):
@@ -557,19 +561,19 @@ def _processStyle(style):
 
 
 def concatStylesToSingleLine(*styles):
-    return ('').join(map(_processStyle, styles))
+    return ''.join(map(_processStyle, styles))
 
 
 def concatStylesToMultiLine(*styles):
-    return ('\n').join(map(_processStyle, styles))
+    return '\n'.join(map(_processStyle, styles))
 
 
 def concatStylesWithSpace(*styles):
-    return (' ').join(map(_processStyle, styles))
+    return ' '.join(map(_processStyle, styles))
 
 
 def concatStylesWithNBSP(*styles):
-    return ('&nbsp;').join(map(_processStyle, styles))
+    return '&nbsp;'.join(map(_processStyle, styles))
 
 
 class _StylesBuilder(object):
@@ -588,8 +592,7 @@ class _StylesBuilder(object):
         for style, text in self.__chunks:
             if isinstance(style, types.FunctionType):
                 result.append(style(text))
-            else:
-                result.append(_formatText(style, text))
+            result.append(_formatText(style, text))
 
         return self.__delimiter.join(result)
 
@@ -610,5 +613,5 @@ def formatStyledText(text):
             styledText = _formatText(style, textToStyle)
             if styledText != style:
                 splitString[1] = styledText
-                return ('').join(splitString)
+                return ''.join(splitString)
     return text

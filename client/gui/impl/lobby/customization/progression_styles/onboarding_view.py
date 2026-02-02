@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/customization/progression_styles/onboarding_view.py
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import IS_CUSTOMIZATION_INTRO_VIEWED
 from frameworks.wulf import ViewFlags, ViewSettings, WindowFlags
@@ -78,7 +80,7 @@ class OnboardingView(ViewImpl):
 
 
 class OnboardingWindow(LobbyWindow):
-    __slots__ = ('__blur', )
+    __slots__ = ('__blur',)
 
     def __init__(self, ctx, parent):
         super(OnboardingWindow, self).__init__(content=OnboardingView(ctx, R.views.lobby.customization.progression_styles.OnboardingView()), wndFlags=WindowFlags.WINDOW | WindowFlags.WINDOW_FULLSCREEN, decorator=None, parent=parent)

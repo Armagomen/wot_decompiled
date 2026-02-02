@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/help_view.py
 from frameworks.wulf import ViewFlags, ViewSettings, WindowFlags, WindowLayer
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.crew.help_view_model import HelpViewModel
@@ -6,11 +8,11 @@ from gui.impl.gen.view_models.views.lobby.crew.help_slide_section_view_model imp
 from gui.impl.auxiliary.crew_help_config_reader import getHelpViewConfig
 from gui.impl.pub import WindowImpl
 from base_crew_view import BaseCrewSubView
-SLIDE_SIZES = {SlideSectionSize.BIG.value: SlideSectionSize.BIG, 
-   SlideSectionSize.SMALL.value: SlideSectionSize.SMALL}
+SLIDE_SIZES = {SlideSectionSize.BIG.value: SlideSectionSize.BIG,
+ SlideSectionSize.SMALL.value: SlideSectionSize.SMALL}
 
 class HelpView(BaseCrewSubView):
-    __slots__ = ('__navigateFrom', )
+    __slots__ = ('__navigateFrom',)
 
     def __init__(self, layoutID=R.views.lobby.crew.HelpView(), navigateFrom=None):
         settings = ViewSettings(layoutID)
@@ -24,9 +26,7 @@ class HelpView(BaseCrewSubView):
         return super(HelpView, self).getViewModel()
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onClose, self._onViewClose),)
+        return ((self.viewModel.onClose, self._onViewClose),)
 
     def _onLoading(self, *args, **kwargs):
         super(HelpView, self)._onLoading(*args, **kwargs)
@@ -34,7 +34,7 @@ class HelpView(BaseCrewSubView):
 
     def _fillModel(self):
         slidesConfig = getHelpViewConfig()
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             slides = vm.getSlides()
             slides.clear()
             for index, slide in enumerate(slidesConfig):

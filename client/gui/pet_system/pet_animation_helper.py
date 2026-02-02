@@ -1,6 +1,6 @@
-from gui.hangar_cameras.hangar_camera_common import CameraRelatedEvents
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/pet_system/pet_animation_helper.py
 from gui.pet_system.synergy_helper import SynergyItem
-from gui.shared import g_eventBus
 from helpers.CallbackDelayer import CallbackDelayer
 from skeletons.gui.shared.utils import IHangarSpace
 from helpers import dependency
@@ -24,7 +24,6 @@ class PetPrefabProxy(CallbackDelayer):
         self.onUpdatePetStaticTrigger = Event(self.__em)
         self.onUpdatePetSynergy = Event(self.__em)
         self.__isAFKState = False
-        g_eventBus.addListener(CameraRelatedEvents.IDLE_CAMERA, self._cameraIdle)
 
     def clear(self):
         self.__em.clear()
@@ -41,9 +40,7 @@ class PetPrefabProxy(CallbackDelayer):
             return AnimationStateName.PROMOTION
         if self._ctrl.getStateBehavior() == PetStateBehavior.BASIC and not self._ctrl.isInStorage:
             return AnimationStateName.DEFAULT
-        if self._ctrl.getStateBehavior() == PetStateBehavior.HIDDEN:
-            return AnimationStateName.HIDDEN
-        return AnimationStateName.DISABLED
+        return AnimationStateName.HIDDEN if self._ctrl.getStateBehavior() == PetStateBehavior.HIDDEN else AnimationStateName.DISABLED
 
     @property
     def petStaticTrigger(self):
@@ -58,17 +55,14 @@ class PetPrefabProxy(CallbackDelayer):
     def petSynergyLevel(self):
         return SynergyItem.getSynergyLevel(self._ctrl.getPetIDInHangar())
 
-    def _cameraIdle(self, event):
-        self.__isAFKState = event.ctx['started']
+    def cameraIdle(self, isAFK):
+        self.__isAFKState = isAFK
         self.setPetStaticTrigger(self.petStaticTrigger)
 
     def getPlaceName(self, isInStorage=None):
         if isInStorage is None:
             isInStorage = self._ctrl.isInStorage
-        if isInStorage or self._ctrl.getStateBehavior() == PetStateBehavior.HIDDEN:
-            return PetPlaceName.STORAGE
-        else:
-            return PetPlaceName.DEFAULT
+        return PetPlaceName.STORAGE if isInStorage or self._ctrl.getStateBehavior() == PetStateBehavior.HIDDEN else PetPlaceName.DEFAULT
 
     def setPlaceName(self, placeName):
         self.onUpdatePetPlace(placeName)
@@ -160,9 +154,7 @@ class StoragePrefabProxy(object):
     def storageStaticTrigger(self):
         if not self._ctrl.isEnabled:
             return StorageStaticTrigger.EMPTY
-        if not self._ctrl.haveActivePromotion() and not self._ctrl.getActivePet():
-            return StorageStaticTrigger.DISABLED
-        return StorageStaticTrigger.IDLE
+        return StorageStaticTrigger.DISABLED if not self._ctrl.haveActivePromotion() and not self._ctrl.getActivePet() else StorageStaticTrigger.IDLE
 
     def setStorageStaticTrigger(self, staticTrigger):
         self.onUpdateStorageStaticTrigger(staticTrigger)

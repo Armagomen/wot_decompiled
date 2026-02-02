@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/event_boards/event_boards_table_view.py
 from functools import partial
 from collections import namedtuple
 import BigWorld
@@ -86,15 +88,15 @@ class EventBoardsTableView(LobbySubView, EventBoardsTableViewMeta):
     def showNextAward(self, visible):
         stripes = self.__stripes
         if stripes and stripes['tableDP']:
-            groupID = stripes['tableDP'][(1 if visible else 0)]['id']
+            groupID = stripes['tableDP'][1 if visible else 0]['id']
             self.__awardGroup.setActiveRewardGroup(groupID)
 
     def playerClick(self, playerID):
         for item in self.__leaderboardData.excelItems:
             if item.getSpaId() == playerID:
-                g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(EVENTBOARDS_ALIASES.EVENTBOARDS_DETAILS_BATTLE_VIEW), ctx={'eventID': self.__eventID, 
-                   'leaderboard': self.__leaderboard, 
-                   'excelItem': item}), scope=EVENT_BUS_SCOPE.LOBBY)
+                g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(EVENTBOARDS_ALIASES.EVENTBOARDS_DETAILS_BATTLE_VIEW), ctx={'eventID': self.__eventID,
+                 'leaderboard': self.__leaderboard,
+                 'excelItem': item}), scope=EVENT_BUS_SCOPE.LOBBY)
                 break
 
     @adisp_process
@@ -229,7 +231,9 @@ class EventBoardsTableView(LobbySubView, EventBoardsTableViewMeta):
             rankMin, rankMax = group.getRankMinMax()
             number = group.getRewardCategoryNumber()
             if number not in rewardCategories:
-                rewardCategories[number] = {'rank_min': leaderboardViewSize, 'rank_max': 0, 'rewards': []}
+                rewardCategories[number] = {'rank_min': leaderboardViewSize,
+                 'rank_max': 0,
+                 'rewards': []}
             category = rewardCategories[number]
             category['rank_min'] = min(rankMin, category['rank_min'])
             category['rank_max'] = max(rankMax, category['rank_max'])
@@ -237,8 +241,9 @@ class EventBoardsTableView(LobbySubView, EventBoardsTableViewMeta):
             last = max(last, rankMax)
 
         if last < leaderboardViewSize:
-            rewardCategories[self.MAX_CATEGORY] = {'rank_min': last + 1, 'rank_max': leaderboardViewSize, 
-               'rewards': []}
+            rewardCategories[self.MAX_CATEGORY] = {'rank_min': last + 1,
+             'rank_max': leaderboardViewSize,
+             'rewards': []}
         return rewardCategories
 
     def __updateRewardCategoriesPlayers(self, rewardCategories, rewards, excelItems):
@@ -254,7 +259,7 @@ class EventBoardsTableView(LobbySubView, EventBoardsTableViewMeta):
                 if category['rank_min'] <= item.getRank() <= category['rank_max']:
                     players.append(item)
                     last += 1
-                elif item.getRank() > category['rank_max']:
+                if item.getRank() > category['rank_max']:
                     break
 
     def __setPlayerData(self):
@@ -351,8 +356,7 @@ class EventBoardsTableView(LobbySubView, EventBoardsTableViewMeta):
             self.__fetchLeaderboardPageData(1, self.TOP_POSITION_RANK)
 
     def __onViewLoaded(self, view, *args, **kwargs):
-        if view.alias in (EVENTBOARDS_ALIASES.RESULT_FILTER_POPOVER_ALIAS,
-         EVENTBOARDS_ALIASES.RESULT_FILTER_POPOVER_VEHICLES_ALIAS):
+        if view.alias in (EVENTBOARDS_ALIASES.RESULT_FILTER_POPOVER_ALIAS, EVENTBOARDS_ALIASES.RESULT_FILTER_POPOVER_VEHICLES_ALIAS):
             if view.caller == 'excel':
                 view.setData(self.__eventData, self.changeLeaderboard, self.__leaderboardID)
 
@@ -425,11 +429,9 @@ class EventBoardsTableView(LobbySubView, EventBoardsTableViewMeta):
                     return idx + 1 + (currentCategoryNumber - startCategoryNumber)
                 break
 
-        return
+        return None
 
     def __getCategoryByRank(self, rank):
         for number, category in self.__rewardCategories.iteritems():
             if category['rank_min'] <= rank <= category['rank_max']:
                 return number
-
-        return 0

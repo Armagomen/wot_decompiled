@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/xmpp/messages/muc.py
 from gui.shared import utils
 from messenger import g_settings
 from messenger.m_constants import CLIENT_ACTION_ID, CLIENT_ERROR_ID
@@ -315,9 +317,7 @@ class MUCProvider(ChatProvider):
     def createJoinAction(channel, initResult=ACTION_RESULT.DO_NOTHING, name=''):
         if channel.isLazy():
             return LazyJoinAction(channel, name=name, initResult=initResult)
-        if channel.isClan():
-            return ClanJoinAction(channel, name=name, initResult=initResult)
-        return JoinAction(channel, name=name, initResult=initResult)
+        return ClanJoinAction(channel, name=name, initResult=initResult) if channel.isClan() else JoinAction(channel, name=name, initResult=initResult)
 
     @staticmethod
     def createLeaveAction(channel):
@@ -356,36 +356,29 @@ class MUCProvider(ChatProvider):
     def createRoom(self, name, password='', initResult=ACTION_RESULT.SHOW_ROOM):
         roomJID = jid_entity.makeUserRoomJID()
         if not roomJID:
-            return (False,
-             ClientActionError(CLIENT_ACTION_ID.CREATE_USER_ROOM, CLIENT_ERROR_ID.NOT_SUPPORTED))
+            return (False, ClientActionError(CLIENT_ACTION_ID.CREATE_USER_ROOM, CLIENT_ERROR_ID.NOT_SUPPORTED))
         else:
             exists = self.getChannelByName(name)
             if exists is not None:
-                return (False,
-                 ClientChannelError(CHANNEL_ERROR_ID.NAME_ALREADY_EXISTS, name))
+                return (False, ClientChannelError(CHANNEL_ERROR_ID.NAME_ALREADY_EXISTS, name))
             if roomJID not in self.__actions:
-                name = ('{0} ({1})').format(name, utils.getPlayerName())
+                name = '{0} ({1})'.format(name, utils.getPlayerName())
                 action = CreateAction(roomJID, name, password, initResult)
                 self.__actions[roomJID] = action
                 action.start()
             else:
-                return (
-                 False,
-                 ClientActionError(CLIENT_ACTION_ID.CREATE_USER_ROOM, CLIENT_ERROR_ID.LOCKED))
-            return (
-             True, None)
+                return (False, ClientActionError(CLIENT_ACTION_ID.CREATE_USER_ROOM, CLIENT_ERROR_ID.LOCKED))
+            return (True, None)
 
     def joinToRoom(self, roomJID, password='', name='', initResult=ACTION_RESULT.SHOW_ROOM):
         if not g_settings.server.XMPP.isMucServiceAllowed(hostname=roomJID.getDomain()):
-            return (False,
-             ClientActionError(CLIENT_ACTION_ID.JOIN_USER_ROOM, CLIENT_ERROR_ID.NOT_SUPPORTED))
+            return (False, ClientActionError(CLIENT_ACTION_ID.JOIN_USER_ROOM, CLIENT_ERROR_ID.NOT_SUPPORTED))
         else:
             entry, exists = self._searchChannel(roomJID)
             if exists is not None:
                 if exists.isJoined():
                     g_messengerEvents.channels.onPlayerEnterChannelByAction(exists)
-                    return (
-                     True, None)
+                    return (True, None)
                 entry = exists
             if roomJID not in self.__actions:
                 if password:
@@ -396,20 +389,17 @@ class MUCProvider(ChatProvider):
             else:
                 action = self.__actions[roomJID]
                 if not password or not action.setPassword(password):
-                    return (False,
-                     ClientActionError(CLIENT_ACTION_ID.JOIN_USER_ROOM, CLIENT_ERROR_ID.LOCKED))
+                    return (False, ClientActionError(CLIENT_ACTION_ID.JOIN_USER_ROOM, CLIENT_ERROR_ID.LOCKED))
             return (True, None)
 
     def leaveFromRoom(self, roomJID):
         _, exists = self._searchChannel(roomJID)
         if exists is None:
-            return (False,
-             ClientActionError(CLIENT_ACTION_ID.LEAVE_USER_ROOM, CLIENT_ERROR_ID.GENERIC))
+            return (False, ClientActionError(CLIENT_ACTION_ID.LEAVE_USER_ROOM, CLIENT_ERROR_ID.GENERIC))
+        elif not exists.isJoined():
+            self._removeChannel(exists)
+            return (True, None)
         else:
-            if not exists.isJoined():
-                self._removeChannel(exists)
-                return (
-                 True, None)
             entry = self.__actions.pop(roomJID, None)
             if entry is not None:
                 entry.clear()
@@ -481,8 +471,7 @@ class MUCProvider(ChatProvider):
     def _searchChannel(self, jid, name=''):
         created = entities.XMPPMucChannelEntity(jid, name)
         exists = self.channelsStorage.getChannel(created)
-        return (
-         created, exists)
+        return (created, exists)
 
     def __addMember(self, jid, dbID, nickname, presence, mucInfo):
         _, found = self._searchChannel(jid.getBareJID())

@@ -1,4 +1,7 @@
-import BigWorld, weakref
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/personal_death_zones_gui_ctrl.py
+import BigWorld
+import weakref
 from Event import EventManager, Event
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
 from gui.battle_control.controllers.interfaces import IBattleController
@@ -42,6 +45,5 @@ class PersonalDeathZonesGUIController(IBattleController):
         return
 
     def _updateWarningNotification(self, zone, visible):
-        zoneViewStateParams = (
-         visible, zone.delay if visible else 0, zone.launchTime if visible else 0)
+        zoneViewStateParams = (visible, zone.delay if visible else 0, zone.launchTime if visible else 0)
         BigWorld.player().updatePersonalDeathZoneWarningNotification(*zoneViewStateParams)

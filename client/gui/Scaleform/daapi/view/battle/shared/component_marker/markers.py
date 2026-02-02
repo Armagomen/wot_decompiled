@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/component_marker/markers.py
 import logging
 from chat_commands_consts import INVALID_TARGET_ID
 from gui.Scaleform.daapi.view.battle.shared.component_marker.markers_components import World2DMarkerComponent, MinimapMarkerComponent, AnimationSequenceMarkerComponent, DirectionIndicatorMarkerComponent, ComponentBitMask, TerrainMarkerComponent, FullscreenMapComponent
@@ -6,12 +8,12 @@ _logger = logging.getLogger(__name__)
 
 class MarkerBase(object):
     _idGen = SequenceIDGenerator()
-    COMPONENT_CLASS = {ComponentBitMask.MARKER_2D: World2DMarkerComponent, 
-       ComponentBitMask.MINIMAP_MARKER: MinimapMarkerComponent, 
-       ComponentBitMask.DIRECTION_INDICATOR: DirectionIndicatorMarkerComponent, 
-       ComponentBitMask.ANIM_SEQUENCE_MARKER: AnimationSequenceMarkerComponent, 
-       ComponentBitMask.TERRAIN_MARKER: TerrainMarkerComponent, 
-       ComponentBitMask.FULLSCREEN_MAP_MARKER: FullscreenMapComponent}
+    COMPONENT_CLASS = {ComponentBitMask.MARKER_2D: World2DMarkerComponent,
+     ComponentBitMask.MINIMAP_MARKER: MinimapMarkerComponent,
+     ComponentBitMask.DIRECTION_INDICATOR: DirectionIndicatorMarkerComponent,
+     ComponentBitMask.ANIM_SEQUENCE_MARKER: AnimationSequenceMarkerComponent,
+     ComponentBitMask.TERRAIN_MARKER: TerrainMarkerComponent,
+     ComponentBitMask.FULLSCREEN_MAP_MARKER: FullscreenMapComponent}
 
     def __init__(self, config, entity=None, targetID=INVALID_TARGET_ID):
         super(MarkerBase, self).__init__()
@@ -59,7 +61,7 @@ class MarkerBase(object):
         for component in self._components.itervalues():
             return component.position
 
-        return
+        return None
 
     def isEmpty(self):
         return not self._components

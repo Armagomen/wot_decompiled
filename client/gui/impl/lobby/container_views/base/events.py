@@ -1,7 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/container_views/base/events.py
 from functools import partial
 from Event import Event
 from debug_utils import LOG_DEBUG_DEV
-from entity_events import EntityEvents
+from events_container import EventsContainer
 from events_debugger import EventsDebugger
 
 class EventsProviderSourceProxy(object):
@@ -12,9 +14,7 @@ class EventsProviderSourceProxy(object):
 
     def __getattr__(self, name):
         attr = getattr(self.__eventsProvider, name)
-        if callable(attr) and isinstance(attr, Event):
-            return self._proxy(attr)
-        return attr
+        return self._proxy(attr) if callable(attr) and isinstance(attr, Event) else attr
 
     def _proxy(self, method):
 
@@ -24,10 +24,10 @@ class EventsProviderSourceProxy(object):
         return wrapper
 
 
-class ContainerLifecycleEvents(EntityEvents):
+class ContainerLifecycleEvents(EventsContainer):
 
     def __init__(self):
-        EntityEvents.__init__(self)
+        EventsContainer.__init__(self)
         self.onLoading = self._createEvent()
         self.onLoaded = self._createEvent()
         self.initialize = self._createEvent()
@@ -51,10 +51,10 @@ class ContainerLifecycleEvents(EntityEvents):
         return events
 
 
-class ComponentEventsBase(EntityEvents):
+class ComponentEventsBase(EventsContainer):
 
     def __init__(self):
-        EntityEvents.__init__(self)
+        EventsContainer.__init__(self)
         self.onMouseEnter = self._createEvent()
         self.onMouseLeave = self._createEvent()
         self.logClick = self._createEvent()
@@ -81,14 +81,14 @@ class ContainerLifecycleEventsDebugger(EventsDebugger):
         super(ContainerLifecycleEventsDebugger, self).__init__(events)
 
     def _getDebugPrefix(self):
-        return '[CONTAINER_LIFECYCLE_EVENT]'
+        pass
 
     def _logEvent(self, event, *args, **kwargs):
         prefix = self._getDebugPrefix()
-        LOG_DEBUG_DEV(('{prefix} {event} called with args={args}, kwargs={kwargs}').format(prefix=prefix, event=event, args=args, kwargs=kwargs))
+        LOG_DEBUG_DEV('{prefix} {event} called with args={args}, kwargs={kwargs}'.format(prefix=prefix, event=event, args=args, kwargs=kwargs))
 
 
 class ComponentEventsDebugger(ContainerLifecycleEventsDebugger):
 
     def _getDebugPrefix(self):
-        return '[COMPONENT_EVENT]'
+        pass

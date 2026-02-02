@@ -1,4 +1,8 @@
-import binascii, logging, struct
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/progression_helpers.py
+import binascii
+import logging
+import struct
 from collections import namedtuple
 from CurrentVehicle import g_currentVehicle
 from constants import EVENT_TYPE
@@ -36,15 +40,15 @@ def getProgressionPostBattleInfo(itemIntCD, vehicleIntCD, progressionData, items
             statusTooltip = backport.text(R.strings.tooltips.quests.status.customizationProgression.done(), name=item.userName, level=int2roman(level))
         else:
             statusTooltip = backport.text(R.strings.tooltips.quests.status.customizationProgression.doneFirst(), name=item.userName)
-        questInfo = {'questID': makeEventID(itemIntCD, vehicleIntCD), 
-           'eventType': EVENT_TYPE.C11N_PROGRESSION, 
-           'status': MISSIONS_STATES.IN_PROGRESS if inProgress else MISSIONS_STATES.COMPLETED, 
-           'description': backport.text(R.strings.battle_results.customizationProgress.descr(), level=int2roman(level + 1) if inProgress else int2roman(level), name=item.userName), 
-           'statusTooltip': statusTooltip}
+        questInfo = {'questID': makeEventID(itemIntCD, vehicleIntCD),
+         'eventType': EVENT_TYPE.C11N_PROGRESSION,
+         'status': MISSIONS_STATES.IN_PROGRESS if inProgress else MISSIONS_STATES.COMPLETED,
+         'description': backport.text(R.strings.battle_results.customizationProgress.descr(), level=int2roman(level + 1) if inProgress else int2roman(level), name=item.userName),
+         'statusTooltip': statusTooltip}
         isLinkEnabled, linkBtnTooltip = getC11nProgressionLinkBtnParams(vehicle)
-        info = {'questInfo': questInfo, 
-           'linkBtnEnabled': isLinkEnabled, 
-           'linkBtnTooltip': backport.text(linkBtnTooltip)}
+        info = {'questInfo': questInfo,
+         'linkBtnEnabled': isLinkEnabled,
+         'linkBtnTooltip': backport.text(linkBtnTooltip)}
         if inProgress:
             info['progressList'] = __makeProgressList(item, level, progressionData)
         else:
@@ -52,12 +56,22 @@ def getProgressionPostBattleInfo(itemIntCD, vehicleIntCD, progressionData, items
         return info
 
 
-C11nProgressionLinkBtnParams = namedtuple('C11nProgressionLinkBtnParams', ('isLinkEnabled',
-                                                                           'linkBtnTooltip'))
+def getProgressiveCustomizationProgress(reusable):
+    items = []
+    for vehicleIntCD, c11nProgression in reusable.personal.getC11nProgress().iteritems():
+        for intCD, progressionData in sorted(c11nProgression.iteritems(), key=lambda it: -it[1].get('level', 0)):
+            info = getProgressionPostBattleInfo(intCD, vehicleIntCD, progressionData)
+            if info is not None:
+                items.append(info)
+
+    return items
+
+
+C11nProgressionLinkBtnParams = namedtuple('C11nProgressionLinkBtnParams', ('isLinkEnabled', 'linkBtnTooltip'))
 
 def getC11nProgressionLinkBtnParams(vehicle):
     isLinkEnabled = vehicle.isCustomizationEnabled() if vehicle is not None else False
-    if any(handler() for handler in collectCustomizationHangarDecorator()):
+    if any((handler() for handler in collectCustomizationHangarDecorator())):
         isLinkEnabled = False
     linkBtnTooltip = R.strings.tooltips.quests.linkBtn.customizationProgression
     linkBtnTooltip = linkBtnTooltip.enabled() if isLinkEnabled else linkBtnTooltip.disabled()
@@ -76,18 +90,18 @@ def __makeAwardsVO(item, level, vehicleIntCD):
         bonusDesc = backport.text(R.strings.battle_results.customizationProgress.award.newLevel(), name=item.userName, level=level)
     else:
         bonusDesc = backport.text(R.strings.battle_results.customizationProgress.award.received(), name=item.userName, count=backport.text(R.strings.vehicle_customization.elementBonus.factor(), count=count))
-    award = {'intCD': item.intCD, 
-       'texture': item.icon, 
-       'value': count, 
-       'showPrice': False, 
-       'description': bonusDesc, 
-       'vehicleIntCD': vehicleIntCD}
+    award = {'intCD': item.intCD,
+     'texture': item.icon,
+     'value': count,
+     'showPrice': False,
+     'description': bonusDesc,
+     'vehicleIntCD': vehicleIntCD}
     return formatters.todict([formatters.packCustomizations([award])])
 
 
 def __makeProgressList(item, level, progressionData):
     progressList = []
-    conditions = item.progressionConditions[(level + 1)].get('conditions', {})
+    conditions = item.progressionConditions[level + 1].get('conditions', {})
     for path, (diff, progress) in progressionData['progress'].iteritems():
         idx = 1
         condition = None
@@ -112,10 +126,10 @@ def __makeProgressList(item, level, progressionData):
 
 
 def __makeProgressVO(conditionId, description, maxProgress, currentProgress, progressDiff):
-    return {'progrTooltip': None, 
-       'progrBarType': formatters.PROGRESS_BAR_TYPE.SIMPLE, 
-       'maxProgrVal': float(maxProgress), 
-       'currentProgrVal': float(currentProgress), 
-       'description': ('{}. {}').format(conditionId, _ms(description)), 
-       'progressDiff': ('+ {}').format(backport.getIntegralFormat(progressDiff)), 
-       'progressDiffTooltip': TOOLTIPS.QUESTS_PROGRESS_EARNEDINBATTLE}
+    return {'progrTooltip': None,
+     'progrBarType': formatters.PROGRESS_BAR_TYPE.SIMPLE,
+     'maxProgrVal': float(maxProgress),
+     'currentProgrVal': float(currentProgress),
+     'description': '{}. {}'.format(conditionId, _ms(description)),
+     'progressDiff': '+ {}'.format(backport.getIntegralFormat(progressDiff)),
+     'progressDiffTooltip': TOOLTIPS.QUESTS_PROGRESS_EARNEDINBATTLE}

@@ -1,4 +1,7 @@
-import heapq, random
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/common/wave_matrix_helpers.py
+import heapq
+import random
 from math import sqrt
 from death_zones_helpers import zoneIdFrom, idxFrom, getZoneCenterFromIdFor
 from debug_utils import LOG_DEBUG_DEV
@@ -53,7 +56,7 @@ class WaveMatrix(object):
                     continue
                 if localX >= sz:
                     break
-                self._grid[(localX + offset)] += matrixGrid[(x + matrixOffset)] * sign
+                self._grid[localX + offset] += matrixGrid[x + matrixOffset] * sign
 
     def randomSafeCell(self):
         idx = heapq.nsmallest(1, random.sample(xrange(self.size ** 2), self.size ** 2), key=lambda i: self._grid[i])[0]

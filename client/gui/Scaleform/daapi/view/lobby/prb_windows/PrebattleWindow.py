@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/prb_windows/PrebattleWindow.py
 from CurrentVehicle import g_currentVehicle
 from adisp import adisp_process
 from constants import MODULE_NAME_SEPARATOR
@@ -58,11 +60,11 @@ class PrebattleWindow(PrebattleWindowMeta, ILegacyListener):
 
     @storage_getter('users')
     def usersStorage(self):
-        return
+        return None
 
     @proto_getter(PROTO_TYPE.BW_CHAT2)
     def bwProto(self):
-        return
+        return None
 
     @adisp_process
     def requestToReady(self, value):
@@ -79,8 +81,8 @@ class PrebattleWindow(PrebattleWindowMeta, ILegacyListener):
 
     def showPrebattleSendInvitesWindow(self):
         if self.canSendInvite():
-            self.fireEvent(events.LoadViewEvent(SFViewLoadParams(PREBATTLE_ALIASES.SEND_INVITES_WINDOW_PY), ctx={'prbName': self.__prbName, 
-               'ctrlType': CTRL_ENTITY_TYPE.LEGACY}), scope=EVENT_BUS_SCOPE.LOBBY)
+            self.fireEvent(events.LoadViewEvent(SFViewLoadParams(PREBATTLE_ALIASES.SEND_INVITES_WINDOW_PY), ctx={'prbName': self.__prbName,
+             'ctrlType': CTRL_ENTITY_TYPE.LEGACY}), scope=EVENT_BUS_SCOPE.LOBBY)
 
     def showFAQWindow(self):
         self.fireEvent(events.LoadViewEvent(SFViewLoadParams(MESSENGER_VIEW_ALIAS.FAQ_WINDOW)), scope=EVENT_BUS_SCOPE.LOBBY)
@@ -146,27 +148,26 @@ class PrebattleWindow(PrebattleWindowMeta, ILegacyListener):
 
     def onPlayerStateChanged(self, entity, roster, playerInfo):
         team, assigned = decodeRoster(roster)
-        data = {'dbID': playerInfo.dbID, 
-           'state': playerInfo.state, 
-           'igrType': playerInfo.igrType, 
-           'icon': '', 
-           'vShortName': '', 
-           'vLevel': '', 
-           'vType': '', 
-           'isCurrentPayer': playerInfo.isCurrentPlayer()}
+        data = {'dbID': playerInfo.dbID,
+         'state': playerInfo.state,
+         'igrType': playerInfo.igrType,
+         'icon': '',
+         'vShortName': '',
+         'vLevel': '',
+         'vType': '',
+         'isCurrentPayer': playerInfo.isCurrentPlayer()}
         if playerInfo.isVehicleSpecified():
             moduleName = ''
             vehicle = playerInfo.getVehicle()
             badgeVisibility = playerInfo.getEnhancementVisibility()
             if badgeVisibility:
-                moduleName = MODULE_NAME_SEPARATOR.join([ self.__craftmacineConrtoller.getModuleName(module) for module in playerInfo.getEnhancementModules()
-                                                        ])
-            data.update({'icon': vehicle.iconContour, 
-               'vShortName': vehicle.shortUserName, 
-               'vLevel': int2roman(vehicle.level), 
-               'vType': vehicle.type, 
-               'isExperimentalModule': bool(badgeVisibility), 
-               'experimentalModuleName': moduleName})
+                moduleName = MODULE_NAME_SEPARATOR.join([ self.__craftmacineConrtoller.getModuleName(module) for module in playerInfo.getEnhancementModules() ])
+            data.update({'icon': vehicle.iconContour,
+             'vShortName': vehicle.shortUserName,
+             'vLevel': int2roman(vehicle.level),
+             'vType': vehicle.type,
+             'isExperimentalModule': bool(badgeVisibility),
+             'experimentalModuleName': moduleName})
         self.as_setPlayerStateS(team, assigned, data)
         if playerInfo.isCurrentPlayer():
             self.as_toggleReadyBtnS(not playerInfo.isReady())
@@ -221,33 +222,32 @@ class PrebattleWindow(PrebattleWindowMeta, ILegacyListener):
                 vehicle = account.getVehicle()
                 badgeVisibility = account.getEnhancementVisibility()
                 if badgeVisibility:
-                    moduleName = MODULE_NAME_SEPARATOR.join([ self.__craftmacineConrtoller.getModuleName(module) for module in account.getEnhancementModules()
-                                                            ])
+                    moduleName = MODULE_NAME_SEPARATOR.join([ self.__craftmacineConrtoller.getModuleName(module) for module in account.getEnhancementModules() ])
                 vContourIcon = vehicle.iconContour
                 vShortName = vehicle.shortUserName
                 vLevel = int2roman(vehicle.level)
                 vType = vehicle.type
-            result.append({'accID': account.accID, 
-               'dbID': account.dbID, 
-               'userName': account.name, 
-               'clanAbbrev': account.clanAbbrev, 
-               'region': self.lobbyContext.getRegionCode(account.dbID), 
-               'fullName': account.getFullName(), 
-               'igrType': account.igrType, 
-               'time': account.time, 
-               'isCreator': account.isCreator, 
-               'state': account.state, 
-               'icon': vContourIcon, 
-               'vShortName': vShortName, 
-               'isCurrentPayer': account.isCurrentPlayer(), 
-               'vLevel': vLevel, 
-               'vType': vType, 
-               'tags': list(user.getTags()) if user else [], 
-               'isPlayerSpeaking': isPlayerSpeaking(account.dbID), 
-               'colors': getColors(key), 
-               'isExperimentalModule': bool(badgeVisibility), 
-               'experimentalModuleName': moduleName, 
-               'hasPermissions': False})
+            result.append({'accID': account.accID,
+             'dbID': account.dbID,
+             'userName': account.name,
+             'clanAbbrev': account.clanAbbrev,
+             'region': self.lobbyContext.getRegionCode(account.dbID),
+             'fullName': account.getFullName(),
+             'igrType': account.igrType,
+             'time': account.time,
+             'isCreator': account.isCreator,
+             'state': account.state,
+             'icon': vContourIcon,
+             'vShortName': vShortName,
+             'isCurrentPayer': account.isCurrentPlayer(),
+             'vLevel': vLevel,
+             'vType': vType,
+             'tags': list(user.getTags()) if user else [],
+             'isPlayerSpeaking': isPlayerSpeaking(account.dbID),
+             'colors': getColors(key),
+             'isExperimentalModule': bool(badgeVisibility),
+             'experimentalModuleName': moduleName,
+             'hasPermissions': False})
 
         return result
 

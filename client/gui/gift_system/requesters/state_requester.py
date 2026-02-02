@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/gift_system/requesters/state_requester.py
 from adisp import adisp_async, adisp_process
 from gui.gift_system.requesters.base_requester import GiftSystemBaseRequester
 from gui.wgcg.gift_system.contexts import GiftSystemStateCtx
@@ -12,9 +14,7 @@ class GiftSystemWebStateRequester(GiftSystemBaseRequester):
     __webController = dependency.descriptor(IWebController)
 
     def _getInvokeDelay(self):
-        if self.__webController.isAvailable():
-            return _WGGG_AVAILABILITY
-        return _WGCG_AVAILABILITY
+        return _WGGG_AVAILABILITY if self.__webController.isAvailable() else _WGCG_AVAILABILITY
 
     @adisp_async
     @adisp_process

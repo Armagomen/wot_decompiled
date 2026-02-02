@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/PersonalMissionsMapViewMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class PersonalMissionsMapViewMeta(BaseDAAPIComponent):
@@ -6,9 +8,7 @@ class PersonalMissionsMapViewMeta(BaseDAAPIComponent):
         self._printOverrideError('onRegionClick')
 
     def as_setPlanDataS(self, planData):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setPlanData(planData)
+        return self.flashObject.as_setPlanData(planData) if self._isDAAPIInited() else None
 
     def as_getPmTypeS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_getPmType()
+        return self.flashObject.as_getPmType() if self._isDAAPIInited() else None

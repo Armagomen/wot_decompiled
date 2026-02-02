@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/ModuleInfoMeta.py
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 
 class ModuleInfoMeta(AbstractWindowView):
@@ -6,5 +8,4 @@ class ModuleInfoMeta(AbstractWindowView):
         self._printOverrideError('onCancelClick')
 
     def as_setModuleInfoS(self, moduleInfo):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setModuleInfo(moduleInfo)
+        return self.flashObject.as_setModuleInfo(moduleInfo) if self._isDAAPIInited() else None

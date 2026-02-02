@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/prb_control/entities/squad/entity.py
 import json
 from CurrentVehicle import g_currentPreviewVehicle
 from comp7.gui.comp7_constants import FUNCTIONAL_FLAG, PREBATTLE_ACTION_NAME
@@ -79,10 +81,7 @@ class Comp7SquadEntity(SquadEntity):
         return QUEUE_TYPE.COMP7
 
     def getConfirmDialogMeta(self, ctx):
-        if not self.__comp7Controller.isEnabled():
-            return None
-        else:
-            return super(Comp7SquadEntity, self).getConfirmDialogMeta(ctx)
+        return None if not self.__comp7Controller.isEnabled() else super(Comp7SquadEntity, self).getConfirmDialogMeta(ctx)
 
     @property
     def _showUnitActionNames(self):
@@ -107,7 +106,7 @@ class Comp7SquadEntity(SquadEntity):
 
     def __onVehicleClientStateChanged(self, intCDs):
         vehs = self.__itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY).itervalues()
-        allIntCDs = set(vehicle.intCD for vehicle in vehs)
+        allIntCDs = set((vehicle.intCD for vehicle in vehs))
         validIntCDs = allIntCDs - intCDs
         isReady = self.getPlayerInfo().isReady
         if isReady and self.__validIntCDs != validIntCDs:

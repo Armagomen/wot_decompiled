@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/account_helpers/client_badges.py
 import logging
 from functools import partial
 import AccountCommands
@@ -29,7 +31,7 @@ class ClientBadges(object):
         self.__account = account
 
     def synchronize(self, isFullSync, diff):
-        for item in ('badges', ):
+        for item in ('badges',):
             itemDiff = diff.get(item, None)
             if itemDiff is not None:
                 self.__cache[item] = itemDiff
@@ -41,31 +43,35 @@ class ClientBadges(object):
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, None)
             return
-        self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
-        return
+        else:
+            self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
+            return
 
     def get(self, item, callback):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, None)
             return
-        self.__syncData.waitForSync(partial(self.__onGetResponse, item, callback))
-        return
+        else:
+            self.__syncData.waitForSync(partial(self.__onGetResponse, item, callback))
+            return
 
     def __onGetCacheResponse(self, callback, resultID):
         if resultID < 0:
             if callback is not None:
                 callback(resultID, None)
             return
-        if callback is not None:
-            callback(resultID, self.__cache)
-        return
+        else:
+            if callback is not None:
+                callback(resultID, self.__cache)
+            return
 
     def __onGetResponse(self, item, callback, resultID):
         if resultID < 0:
             if callback is not None:
                 callback(resultID, None)
             return
-        if callback is not None:
-            callback(resultID, self.__cache.get(item))
-        return
+        else:
+            if callback is not None:
+                callback(resultID, self.__cache.get(item))
+            return

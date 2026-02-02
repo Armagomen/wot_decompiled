@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/genConsts/ANIMATION_TYPES.py
 
 
 class ANIMATION_TYPES(object):

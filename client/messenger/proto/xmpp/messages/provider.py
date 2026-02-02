@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/xmpp/messages/provider.py
 from messenger.proto.events import g_messengerEvents
 from messenger.proto.xmpp import find_criteria
 from messenger.proto.xmpp.errors import createChatBanError
@@ -11,15 +13,15 @@ class ChatProvider(ClientHolder):
 
     @storage_getter('channels')
     def channelsStorage(self):
-        return
+        return None
 
     @storage_getter('users')
     def usersStorage(self):
-        return
+        return None
 
     @storage_getter('playerCtx')
     def playerCtx(self):
-        return
+        return None
 
     def clear(self):
         pass
@@ -49,12 +51,12 @@ class ChatProvider(ClientHolder):
         _, exists = self._searchChannel(jid)
         if exists is None:
             return
+        elif self.playerCtx.isBanned(components=exists.getBanComponent()):
+            error = createChatBanError(self.playerCtx.getBanInfo())
+            if error:
+                g_messengerEvents.onErrorReceived(error)
+            return
         else:
-            if self.playerCtx.isBanned(components=exists.getBanComponent()):
-                error = createChatBanError(self.playerCtx.getBanInfo())
-                if error:
-                    g_messengerEvents.onErrorReceived(error)
-                return
             self._repeatMessage(exists, body, filters)
             self.client().sendMessage(chat_ext.ChatMessageHolder(exists.getMessageType(), jid, msgBody=body))
             return

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/Scaleform/daapi/view/meta/Comp7BattlePageMeta.py
 from gui.Scaleform.daapi.view.battle.classic.page import ClassicPage
 
 class Comp7BattlePageMeta(ClassicPage):
@@ -15,17 +17,13 @@ class Comp7BattlePageMeta(ClassicPage):
         self._printOverrideError('notifyCursorDragging')
 
     def as_updateVehicleStatusS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateVehicleStatus(data)
+        return self.flashObject.as_updateVehicleStatus(data) if self._isDAAPIInited() else None
 
     def as_onVehicleSelectionConfirmedS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_onVehicleSelectionConfirmed()
+        return self.flashObject.as_onVehicleSelectionConfirmed() if self._isDAAPIInited() else None
 
     def as_onBattleStartedS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_onBattleStarted()
+        return self.flashObject.as_onBattleStarted() if self._isDAAPIInited() else None
 
     def as_onPrebattleInputStateLockedS(self, isStateLocked):
-        if self._isDAAPIInited():
-            return self.flashObject.as_onPrebattleInputStateLocked(isStateLocked)
+        return self.flashObject.as_onPrebattleInputStateLocked(isStateLocked) if self._isDAAPIInited() else None

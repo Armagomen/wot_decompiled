@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/comp7_helpers/comp7_gui_helpers.py
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import GUI_START_BEHAVIOR, COMP7_UI_SECTION, COMP7_LAST_SEASON, COMP7_LAST_SEASON_WHERE_STATISTICS_SHOWN
 from comp7_common_const import seasonNameBySeasonNumber
@@ -20,9 +22,7 @@ def isSeasonStatisticsShouldBeShown(comp7Controller=None):
         return False
     seasonPointsCode = seasonPointsCodeBySeasonNumber(previousSeason.getNumber())
     receivedSeasonPoints = comp7Controller.getReceivedSeasonPoints().get(seasonPointsCode)
-    if not receivedSeasonPoints:
-        return False
-    return True
+    return False if not receivedSeasonPoints else True
 
 
 def isComp7OnboardingShouldBeShown():
@@ -73,3 +73,33 @@ def _hasParticipantToken(comp7Controller=None, itemsCache=None):
                 return True
 
     return False
+
+
+class ProgressCacherUI(object):
+
+    def __init__(self, uiSection, subsection, default):
+        self.__uiSection = uiSection
+        self.__settings = AccountSettings.getUIFlag(self.__uiSection)
+        self.__progress = self.__settings.setdefault(subsection, default)
+
+    def finalize(self):
+        self.setUiFlag()
+        self.__uiSection = None
+        self.__settings = None
+        self.__progress = None
+        return
+
+    def reset(self, keys):
+        for k in list(self.__progress.keys()):
+            if k not in keys:
+                del self.__progress[k]
+
+    def setUiFlag(self):
+        AccountSettings.setUIFlag(self.__uiSection, self.__settings)
+
+    def setProgress(self, key, progress):
+        self.__progress[key] = progress
+
+    def getDelta(self, key, newProgress):
+        oldProgress = self.__progress.get(key, 0)
+        return newProgress - oldProgress

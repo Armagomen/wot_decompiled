@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/entitlements_cache.py
 import logging
 from enum import Enum
 import Event
@@ -61,7 +63,8 @@ class EntitlementsCache(object):
             isSuccess, result = yield await_callback(self.__requester.requestByCodes)(entitlements, retryTimes)
             if isSuccess:
                 balance = {ent:result.get(ent, {}).get('amount', 0) for ent in entitlements}
-                comp7Entitlements = {COMP7_ENTITLEMENTS_TIMESTAMP: getServerUTCTime(), COMP7_ENTITLEMENTS_BALANCE: balance}
+                comp7Entitlements = {COMP7_ENTITLEMENTS_TIMESTAMP: getServerUTCTime(),
+                 COMP7_ENTITLEMENTS_BALANCE: balance}
                 AccountSettings.setSettings(COMP7_ENTITLEMENTS, comp7Entitlements)
                 self.__entitlements = balance
                 self.__setStatus(CacheStatus.DATA_READY)

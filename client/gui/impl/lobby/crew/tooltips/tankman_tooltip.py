@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/tooltips/tankman_tooltip.py
 from frameworks.wulf import ViewSettings
 from gui.impl import backport
 from gui.impl.auxiliary.vehicle_helper import fillVehicleInfo
@@ -41,7 +43,7 @@ class TankmanTooltip(ViewImpl):
 
     def _fillModel(self):
         tankman = self.itemsCache.items.getTankman(self.tankmanID)
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             vehicle = self.itemsCache.items.getVehicle(tankman.vehicleInvID)
             nativeVehicle = self.itemsCache.items.getItemByCD(tankman.vehicleNativeDescr.type.compactDescr)
             vm.setRole(tankman.role)
@@ -70,7 +72,7 @@ class TankmanTooltip(ViewImpl):
             if not vehicle:
                 vm.setVoiceoverReason(TooltipConstants.UNIQUE_VOICEOVER_WITCHES)
                 return
-            isAllCrewMembersWitch = all(tman and isWitchesCrew(tman.descriptor) for _, tman in vehicle.crew)
+            isAllCrewMembersWitch = all((tman and isWitchesCrew(tman.descriptor) for _, tman in vehicle.crew))
             witchesCrew = getTankmenWithTag(tankman.descriptor.nationID, tankman.descriptor.isPremium, SPECIAL_CREW_TAG.WITCHES_CREW)
             if len(witchesCrew) != len(vehicle.crew) or not isAllCrewMembersWitch:
                 vm.setVoiceoverReason(TooltipConstants.UNIQUE_VOICEOVER_WITCHES)
@@ -90,14 +92,13 @@ class TankmanTooltip(ViewImpl):
         self.__addModifier(vm.getPerks(), brotherhoodBonus, R.images.gui.maps.icons.tankmen.skills.medium.dyn(skill.extensionLessIconName)(), skill.userName)
         if not vehicle:
             return
-        isCommanderInVehicle = any(tman and tman.role == Tankman.ROLES.COMMANDER for _, tman in vehicle.crew)
+        isCommanderInVehicle = any((tman and tman.role == Tankman.ROLES.COMMANDER for _, tman in vehicle.crew))
         if tankman.role != Tankman.ROLES.COMMANDER and isCommanderInVehicle:
             commanderBonus = tankman.vehicleBonuses.get('commander', 0)
             finalEffVal += commanderBonus
             self.__addModifier(vm.getCommanderFeatures(), commanderBonus, R.images.gui.maps.icons.tankmen.skills.medium.commander_bonus(), backport.text(R.strings.tooltips.tankman.commanderBonus.title()), backport.text(R.strings.tooltips.tankman.commanderBonus.description()))
         if vehicle.optDevices.layoutCapacity:
-            criteria = REQ_CRITERIA.VEHICLE.SUITABLE([
-             vehicle], [GUI_ITEM_TYPE.OPTIONALDEVICE]) | ~REQ_CRITERIA.SECRET
+            criteria = REQ_CRITERIA.VEHICLE.SUITABLE([vehicle], [GUI_ITEM_TYPE.OPTIONALDEVICE]) | ~REQ_CRITERIA.SECRET
             optDevices = self.itemsCache.items.getItems(GUI_ITEM_TYPE.OPTIONALDEVICE, criteria, nationID=vehicle.nationID).values()
             archetypes = {}
             for optDevice in optDevices:
@@ -114,8 +115,7 @@ class TankmanTooltip(ViewImpl):
                         if isBonusInstalled:
                             archetype[0] = isBonusInstalled
                     else:
-                        archetypes[optDevice.descriptor.archetype] = [
-                         isBonusInstalled, optDevice.descriptor.archetype]
+                        archetypes[optDevice.descriptor.archetype] = [isBonusInstalled, optDevice.descriptor.archetype]
 
             for _, archetype in archetypes.items():
                 if not archetype[0]:

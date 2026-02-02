@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/prb_control/entities/pre_queue/actions_validator.py
 from CurrentVehicle import g_currentVehicle
 from comp7.gui.impl.gen.view_models.views.lobby.enums import MetaRootViews
 from gui.impl.gen import R
@@ -19,9 +21,7 @@ class Comp7Validator(BaseActionsValidator):
             return ValidationResult(False, PRE_QUEUE_RESTRICTION.MODE_NOT_SET)
         if self.__comp7Ctrl.isInPreannounceState():
             return ValidationResult(False, PRE_QUEUE_RESTRICTION.MODE_IS_IN_PREANNOUNCE)
-        if not self.__comp7Ctrl.isAvailable() or not isInPrimeTime:
-            return ValidationResult(False, PRE_QUEUE_RESTRICTION.MODE_NOT_AVAILABLE)
-        return super(Comp7Validator, self)._validate()
+        return ValidationResult(False, PRE_QUEUE_RESTRICTION.MODE_NOT_AVAILABLE) if not self.__comp7Ctrl.isAvailable() or not isInPrimeTime else super(Comp7Validator, self)._validate()
 
 
 class Comp7PlayerValidator(BaseActionsValidator):
@@ -34,9 +34,7 @@ class Comp7PlayerValidator(BaseActionsValidator):
             return ValidationResult(False, PRE_QUEUE_RESTRICTION.BAN_IS_SET)
         if self.__comp7Ctrl.isQualificationResultsProcessing():
             return ValidationResult(False, PRE_QUEUE_RESTRICTION.QUALIFICATION_RESULTS_PROCESSING)
-        if self.__comp7Ctrl.isQualificationCalculationRating():
-            return ValidationResult(False, PRE_QUEUE_RESTRICTION.QUALIFICATION_CALCULATION_RATING)
-        return super(Comp7PlayerValidator, self)._validate()
+        return ValidationResult(False, PRE_QUEUE_RESTRICTION.QUALIFICATION_CALCULATION_RATING) if self.__comp7Ctrl.isQualificationCalculationRating() else super(Comp7PlayerValidator, self)._validate()
 
 
 class Comp7VehicleValidator(BaseActionsValidator):
@@ -63,17 +61,14 @@ class Comp7ShopValidator(BaseActionsValidator):
         if not metaView:
             return
         isComp7ShopTab = metaView.tabId == MetaRootViews.SHOP
-        if not isComp7ShopTab:
-            return
-        return ValidationResult(False, PRE_QUEUE_RESTRICTION.SHOP_PAGE_OPENED)
+        return None if not isComp7ShopTab else ValidationResult(False, PRE_QUEUE_RESTRICTION.SHOP_PAGE_OPENED)
 
 
 class Comp7ActionsValidator(PreQueueActionsValidator):
 
     def _createStateValidator(self, entity):
         baseValidator = super(Comp7ActionsValidator, self)._createStateValidator(entity)
-        validators = [
-         baseValidator,
+        validators = [baseValidator,
          Comp7Validator(entity),
          Comp7PlayerValidator(entity),
          Comp7ShopValidator(entity)]
@@ -81,6 +76,4 @@ class Comp7ActionsValidator(PreQueueActionsValidator):
 
     def _createVehiclesValidator(self, entity):
         baseValidator = super(Comp7ActionsValidator, self)._createVehiclesValidator(entity)
-        return ActionsValidatorComposite(entity, [
-         Comp7VehicleValidator(entity),
-         baseValidator])
+        return ActionsValidatorComposite(entity, [Comp7VehicleValidator(entity), baseValidator])

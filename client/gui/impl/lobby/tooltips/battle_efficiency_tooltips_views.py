@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tooltips/battle_efficiency_tooltips_views.py
 from frameworks.wulf import ViewSettings
 from gui.battle_results.presenters.packers.tooltips.efficiency_tooltips import CriticalDamageTooltipPacker
 from gui.battle_results.presenters.wrappers import hasPresenter
@@ -27,9 +29,11 @@ class BattleResultsStatsTooltipView(ViewImpl):
     @hasPresenter()
     def __packContent(self, presenter=None):
         battleResults = presenter.getResults()
-        with self.getViewModel().transaction() as (model):
-            BattleEfficiencyTooltipsPacker.packTooltip(model, battleResults, ctx={'paramType': self.__efficiencyParam, 'userName': self.__userName, 'isZeroValuesVisible': False, 
-               'isAdditionalValuesVisible': True})
+        with self.getViewModel().transaction() as model:
+            BattleEfficiencyTooltipsPacker.packTooltip(model, battleResults, ctx={'paramType': self.__efficiencyParam,
+             'userName': self.__userName,
+             'isZeroValuesVisible': False,
+             'isAdditionalValuesVisible': True})
 
 
 class BattleResultsCriticalDamageTooltipView(ViewImpl):
@@ -52,6 +56,8 @@ class BattleResultsCriticalDamageTooltipView(ViewImpl):
     @hasPresenter()
     def __packContent(self, presenter=None):
         battleResults = presenter.getResults()
-        with self.getViewModel().transaction() as (model):
-            CriticalDamageTooltipPacker.packTooltip(model, battleResults, ctx={'paramType': self.__efficiencyParam, 'userName': self.__userName, 'isZeroValuesVisible': False, 
-               'isAdditionalValuesVisible': True})
+        with self.getViewModel().transaction() as model:
+            CriticalDamageTooltipPacker.packTooltip(model, battleResults, ctx={'paramType': self.__efficiencyParam,
+             'userName': self.__userName,
+             'isZeroValuesVisible': False,
+             'isAdditionalValuesVisible': True})

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/lootbox_system/submodels/no_boxes_view_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.lootbox_system.box_info_model import BoxInfoModel
 from gui.impl.gen.view_models.views.lobby.lootbox_system.submodels.statistics_model import StatisticsModel

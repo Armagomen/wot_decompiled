@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/formatters/servers.py
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared.formatters import icons
@@ -22,11 +24,9 @@ def formatPingStatus(csisStatus, isColorBlind, isSelected, pingStatus, pingValue
         if isColorBlind and pingStatus == PING_STATUSES.HIGH:
             colorBlindName = '_color_blind'
         pingStatusIcon = makePingStatusIcon(pingStatus, colorBlindName)
-        if useBigSize:
-            return text_styles.concatStylesToSingleLine(text_styles.main(' '), formattedPing, pingStatusIcon)
-        return text_styles.concatStylesToSingleLine(formattedPing, '', pingStatusIcon)
+        return text_styles.concatStylesToSingleLine(text_styles.main(' '), formattedPing, pingStatusIcon) if useBigSize else text_styles.concatStylesToSingleLine(formattedPing, '', pingStatusIcon)
 
 
 def makePingStatusIcon(pingStatus, colorBlindName=''):
-    icon = backport.image(R.images.gui.maps.icons.pingStatus.dyn(('stairs_indicator_{}{}').format(pingStatus, colorBlindName), R.invalid)())
+    icon = backport.image(R.images.gui.maps.icons.pingStatus.dyn('stairs_indicator_{}{}'.format(pingStatus, colorBlindName), R.invalid)())
     return icons.makeImageTag(icon, 14, 14, -3)

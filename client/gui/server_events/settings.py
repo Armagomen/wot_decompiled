@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/server_events/settings.py
 import time
 from contextlib import contextmanager
 from account_helpers.AccountSettings import DOG_TAGS, WOT_PLUS, TELECOM_RENTALS, PERSONAL_RESERVES, COMMENDATIONS
@@ -205,7 +207,7 @@ class _QuestSettings(utils.SettingRootRecord):
 
     @classmethod
     def _getSettingName(cls):
-        return 'quests'
+        pass
 
 
 def get():
@@ -271,7 +273,7 @@ def expandGroup(groupID, isExpanded):
 
 def updateCommonEventsSettings(svrEvents):
     s = get()
-    s.removeCompleted(set(e.getID() for e in svrEvents.itervalues() if e.isCompleted()))
+    s.removeCompleted(set((e.getID() for e in svrEvents.itervalues() if e.isCompleted())))
     s.save()
 
 

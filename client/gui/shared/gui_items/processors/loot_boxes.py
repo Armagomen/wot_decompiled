@@ -1,4 +1,7 @@
-import logging, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/gui_items/processors/loot_boxes.py
+import logging
+import BigWorld
 from debug_utils import deprecated
 from frameworks.wulf import WindowLayer
 from gui import SystemMessages
@@ -33,7 +36,7 @@ class LootBoxOpenProcessor(Processor):
 
     def _errorHandler(self, code, errStr='', ctx=None):
         defaultKey = 'lootboxes/open/server_error'
-        return makeI18nError(('/').join((defaultKey, errStr)), defaultKey)
+        return makeI18nError('/'.join((defaultKey, errStr)), defaultKey)
 
     def _successHandler(self, code, ctx=None):
         bonus = ctx.get('bonus', [])
@@ -77,7 +80,7 @@ class LootBoxSystemOpenProcessor(LootBoxOpenProcessor):
     __lootBoxes = dependency.descriptor(ILootBoxSystemController)
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        pathParts = ('serviceChannelMessages/server_error').split('/')
+        pathParts = 'serviceChannelMessages/server_error'.split('/')
         eventName = self._getLootBox().getType()
         header = backport.text(getTextResource(pathParts, eventName)())
         if errStr not in ('DISABLED', 'COOLDOWN'):
@@ -90,9 +93,9 @@ class LootBoxSystemOpenProcessor(LootBoxOpenProcessor):
     def _successHandler(self, code, ctx=None):
         eventName = self._getLootBox().getType()
         if self._getCount() > 1:
-            header = backport.text(getTextResource(('serviceChannelMessages/multipleOpen').split('/'), eventName)())
+            header = backport.text(getTextResource('serviceChannelMessages/multipleOpen'.split('/'), eventName)())
         else:
-            header = backport.text(getTextResource(('serviceChannelMessages/open').split('/'), eventName)(), boxName=self._getLootBox().getUserName())
+            header = backport.text(getTextResource('serviceChannelMessages/open'.split('/'), eventName)(), boxName=self._getLootBox().getUserName())
         rewardsList = ctx.get('bonus', [])
         for rewards in rewardsList:
             preformatRewardsInfo(rewards)
@@ -130,7 +133,7 @@ class ResetLootBoxSystemStatisticsProcessor(Processor):
 
     def __buildConfirmator(self):
         eventName = self.itemsCache.items.tokens.getLootBoxByID(self.__boxIDs[0]).getType()
-        descriptionPath = ('confirmResetLootBoxStatistics/description').split('/')
+        descriptionPath = 'confirmResetLootBoxStatistics/description'.split('/')
         builder = ConfirmCancelDialogBuilder()
         builder.setLayer(WindowLayer.OVERLAY)
         builder.setDimmerAlpha(0.8)

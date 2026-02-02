@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/visual_script/command_flow.py
 from visual_script import ASPECT
 from visual_script.block import Block, Meta
 from visual_script.slot_types import SLOT_TYPE
@@ -6,15 +8,15 @@ class _CommandFlowMeta(Meta):
 
     @classmethod
     def blockCategory(cls):
-        return 'Command Flow'
+        pass
 
     @classmethod
     def blockColor(cls):
-        return 4367861
+        pass
 
     @classmethod
     def blockIcon(cls):
-        return ':vse/blocks/cycle'
+        pass
 
     @classmethod
     def blockAspects(cls):

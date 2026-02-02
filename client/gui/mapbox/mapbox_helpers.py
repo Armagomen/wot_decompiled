@@ -1,4 +1,7 @@
-import typing, ArenaType
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/mapbox/mapbox_helpers.py
+import typing
+import ArenaType
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.periodic_battles.models import AlertData
@@ -13,16 +16,13 @@ from skeletons.gui.game_control import IMapboxController
 if typing.TYPE_CHECKING:
     from frameworks.wulf import ViewEvent
     from frameworks.wulf.windows_system.window import Window
-SPECIAL_CARDS = ('all', )
+SPECIAL_CARDS = ('all',)
 _MECHANICS_CARDS = ('fog', 'heavy_rain', 'fire', 'sandstorm')
 _ALL_NON_MAPS_CARDS = set(SPECIAL_CARDS + _MECHANICS_CARDS)
-_BATTLE_ENDED_PERIODS = frozenset((
- PeriodType.NOT_AVAILABLE_END, PeriodType.STANDALONE_NOT_AVAILABLE_END, PeriodType.ALL_NOT_AVAILABLE_END))
+_BATTLE_ENDED_PERIODS = frozenset((PeriodType.NOT_AVAILABLE_END, PeriodType.STANDALONE_NOT_AVAILABLE_END, PeriodType.ALL_NOT_AVAILABLE_END))
 
 def convertTimeFromISO(timeStr):
-    if timeStr:
-        return getTimestampFromISO(timeStr)
-    return 0
+    return getTimestampFromISO(timeStr) if timeStr else 0
 
 
 def getMapboxRewardTooltip(event, tooltipData, parentWindow):
@@ -68,8 +68,7 @@ def getMapboxBattlesStatus(mapboxCtrl=None):
     now = time_utils.getCurrentTimestamp()
     status, _, _ = mapboxCtrl.getPrimeTimeStatus(now)
     isBattlesEnded = status != PrimeTimeStatus.AVAILABLE and mapboxCtrl.getPeriodInfo(now).periodType in _BATTLE_ENDED_PERIODS
-    return (
-     status, isBattlesEnded)
+    return (status, isBattlesEnded)
 
 
 def prepareProgressionData(mapsData, validMaps):
@@ -94,7 +93,8 @@ def formatMapboxRewards(reward):
         valueAdapter = _BONUS_FORMAT_ADAPTERS.get(name)
         if valueAdapter is not None:
             value = valueAdapter(bonusItemData['value'])
-        result.append({'name': name, 'value': value})
+        result.append({'name': name,
+         'value': value})
 
     return result
 
@@ -103,8 +103,9 @@ def _adaptMapboxDossierFormat(dossierValue):
     result = {}
     for bonus in dossierValue:
         result.setdefault(bonus['dossierType'], {})
-        result[bonus['dossierType']].update({(bonus['achievementType'], bonus['achievementName']): {'value': bonus['value'], 
-                                                                  'unique': bonus['unique'], 'type': bonus['type']}})
+        result[bonus['dossierType']].update({(bonus['achievementType'], bonus['achievementName']): {'value': bonus['value'],
+                                                                'unique': bonus['unique'],
+                                                                'type': bonus['type']}})
 
     return result
 
@@ -113,7 +114,7 @@ def _adaptCDKeys(itemValue):
     return {int(key):value for key, value in itemValue.iteritems()}
 
 
-_BONUS_FORMAT_ADAPTERS = {'dossier': _adaptMapboxDossierFormat, 
-   'goodies': _adaptCDKeys, 
-   'items': _adaptCDKeys, 
-   'blueprints': _adaptCDKeys}
+_BONUS_FORMAT_ADAPTERS = {'dossier': _adaptMapboxDossierFormat,
+ 'goodies': _adaptCDKeys,
+ 'items': _adaptCDKeys,
+ 'blueprints': _adaptCDKeys}

@@ -1,4 +1,6 @@
-import logging, WWISE
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/premacc/premacc_helpers.py
+import logging
 from helpers import time_utils
 _logger = logging.getLogger(__name__)
 
@@ -20,9 +22,7 @@ class PiggyBankConstants(object):
 
 
 def validateAdditionalBonusMultiplier(multiplier):
-    if multiplier < BattleResultsBonusConstants.MIN_MULTIPLIER or multiplier > BattleResultsBonusConstants.MAX_MULTIPLIER:
-        return BattleResultsBonusConstants.MIN_MULTIPLIER
-    return int(multiplier)
+    return BattleResultsBonusConstants.MIN_MULTIPLIER if multiplier < BattleResultsBonusConstants.MIN_MULTIPLIER or multiplier > BattleResultsBonusConstants.MAX_MULTIPLIER else int(multiplier)
 
 
 def getOpenTimeHelper(config, data):
@@ -44,22 +44,3 @@ def getOpenTimeHelper(config, data):
 
 def getDeltaTimeHelper(config, data):
     return time_utils.getTimeDeltaFromNow(getOpenTimeHelper(config, data))
-
-
-class SoundViewMixin(object):
-    PREM_VIEW_STATE_TEMPL = 'STATE_hangar_filtered'
-    PREM_VIEW_STATE_ENTER = ('{}_on').format(PREM_VIEW_STATE_TEMPL)
-    PREM_VIEW_STATE_EXIT = ('{}_off').format(PREM_VIEW_STATE_TEMPL)
-    __globSoundEntryCount = 0
-
-    @classmethod
-    def _addSoundEvent(cls):
-        WWISE.WW_setState(cls.PREM_VIEW_STATE_TEMPL, cls.PREM_VIEW_STATE_ENTER)
-        SoundViewMixin.__globSoundEntryCount += 1
-
-    @classmethod
-    def _removeSoundEvent(cls):
-        if SoundViewMixin.__globSoundEntryCount > 0:
-            SoundViewMixin.__globSoundEntryCount -= 1
-        if SoundViewMixin.__globSoundEntryCount == 0:
-            WWISE.WW_setState(cls.PREM_VIEW_STATE_TEMPL, cls.PREM_VIEW_STATE_EXIT)

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_light/scripts/common/comp7_light_battle_mode.py
 import comp7_light_constants
 from constants import ARENA_BONUS_TYPE, QUEUE_TYPE
 from constants_utils import AbstractBattleMode

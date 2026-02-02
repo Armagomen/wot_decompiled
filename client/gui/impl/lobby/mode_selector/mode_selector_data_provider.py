@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/mode_selector/mode_selector_data_provider.py
 import logging
 from collections import defaultdict, OrderedDict
 import typing
@@ -75,10 +77,7 @@ class ModeSelectorDataProvider(IGlobalListener):
 
     def getItemByIndex(self, index):
         items = self.itemList
-        if len(items) > index:
-            return items[index]
-        else:
-            return
+        return items[index] if len(items) > index else None
 
     def forceRefresh(self):
         self._clearItems()
@@ -113,17 +112,11 @@ class ModeSelectorDataProvider(IGlobalListener):
 
     @staticmethod
     def _getModeSelectorLegacyItem(modeName, selectorItem):
-        if selectorItem is not None and not selectorItem.isVisible():
-            return
-        else:
-            return (collectModeSelectorItem(modeName) or ModeSelectorLegacyItem)(selectorItem)
+        return None if selectorItem is not None and not selectorItem.isVisible() else (collectModeSelectorItem(modeName) or ModeSelectorLegacyItem)(selectorItem)
 
     def _getSelectedItem(self):
         prbDispatcher = g_prbLoader.getDispatcher()
-        if not prbDispatcher:
-            return None
-        else:
-            return battle_selector_items.getItems().getSelected()
+        return None if not prbDispatcher else battle_selector_items.getItems().getSelected()
 
     def _updateItems(self, selected=None):
         self._updateItemsPosition()

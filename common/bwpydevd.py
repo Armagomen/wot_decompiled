@@ -1,4 +1,11 @@
-import os, sys, ResMgr, BigWorld, threading, bwdebug
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/bwpydevd.py
+import os
+import sys
+import ResMgr
+import BigWorld
+import threading
+import bwdebug
 REPLACE_PATHS = []
 HAS_BW_CONFIG = False
 if os.name == 'posix':

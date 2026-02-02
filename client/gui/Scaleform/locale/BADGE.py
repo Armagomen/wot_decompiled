@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/locale/BADGE.py
 from debug_utils import LOG_WARNING
 
 class BADGE(object):
@@ -479,8 +481,21 @@ class BADGE(object):
     BADGE_220_DESCR = '#badge:badge_220_descr'
     BADGE_221 = '#badge:badge_221'
     BADGE_221_DESCR = '#badge:badge_221_descr'
-    BADGE_ENUM = (
-     BADGE_0,
+    BADGE_222 = '#badge:badge_222'
+    BADGE_222_DESCR = '#badge:badge_222_descr'
+    BADGE_223 = '#badge:badge_223'
+    BADGE_223_DESCR = '#badge:badge_223_descr'
+    SUFFIX_BADGE_223 = '#badge:suffix/badge_223'
+    BADGE_224 = '#badge:badge_224'
+    BADGE_224_DESCR = '#badge:badge_224_descr'
+    BADGE_225 = '#badge:badge_225'
+    BADGE_225_DESCR = '#badge:badge_225_descr'
+    BADGE_226 = '#badge:badge_226'
+    BADGE_226_DESCR = '#badge:badge_226_descr'
+    BADGE_227 = '#badge:badge_227'
+    BADGE_227_DESCR = '#badge:badge_227_descr'
+    SUFFIX_BADGE_227 = '#badge:suffix/badge_227'
+    BADGE_ENUM = (BADGE_0,
      BADGE_0_DESCR,
      BADGE_1,
      BADGE_1_DESCR,
@@ -926,9 +941,20 @@ class BADGE(object):
      BADGE_220,
      BADGE_220_DESCR,
      BADGE_221,
-     BADGE_221_DESCR)
-    BADGE_ALL_SHORT_ENUM = (
-     BADGE_10_SHORT,
+     BADGE_221_DESCR,
+     BADGE_222,
+     BADGE_222_DESCR,
+     BADGE_223,
+     BADGE_223_DESCR,
+     BADGE_224,
+     BADGE_224_DESCR,
+     BADGE_225,
+     BADGE_225_DESCR,
+     BADGE_226,
+     BADGE_226_DESCR,
+     BADGE_227,
+     BADGE_227_DESCR)
+    BADGE_ALL_SHORT_ENUM = (BADGE_10_SHORT,
      BADGE_11_SHORT,
      BADGE_12_SHORT,
      BADGE_13_SHORT,
@@ -947,8 +973,7 @@ class BADGE(object):
      BADGE_58_SHORT,
      BADGE_59_SHORT,
      BADGE_94_SHORT)
-    BADGE_ALL_DESCR_ENUM = (
-     BADGE_0_DESCR,
+    BADGE_ALL_DESCR_ENUM = (BADGE_0_DESCR,
      BADGE_1_DESCR,
      BADGE_2_DESCR,
      BADGE_3_DESCR,
@@ -1160,42 +1185,47 @@ class BADGE(object):
      BADGE_218_DESCR,
      BADGE_219_DESCR,
      BADGE_220_DESCR,
-     BADGE_221_DESCR)
-    BADGE_ALL_DESCR_LONG_ENUM = (
-     BADGE_102_DESCR_LONG,)
+     BADGE_221_DESCR,
+     BADGE_222_DESCR,
+     BADGE_223_DESCR,
+     BADGE_224_DESCR,
+     BADGE_225_DESCR,
+     BADGE_226_DESCR,
+     BADGE_227_DESCR)
+    BADGE_ALL_DESCR_LONG_ENUM = (BADGE_102_DESCR_LONG,)
 
     @classmethod
     def badgeName(cls, key0):
-        outcome = ('#badge:badge_{}').format(key0)
+        outcome = '#badge:badge_{}'.format(key0)
         if outcome not in cls.BADGE_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getShortName(cls, key0):
-        outcome = ('#badge:badge_{}_short').format(key0)
+        outcome = '#badge:badge_{}_short'.format(key0)
         if outcome not in cls.BADGE_ALL_SHORT_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def badgeDescriptor(cls, key0):
-        outcome = ('#badge:badge_{}_descr').format(key0)
+        outcome = '#badge:badge_{}_descr'.format(key0)
         if outcome not in cls.BADGE_ALL_DESCR_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def longBadgeDescriptor(cls, key0):
-        outcome = ('#badge:badge_{}_descr_long').format(key0)
+        outcome = '#badge:badge_{}_descr_long'.format(key0)
         if outcome not in cls.BADGE_ALL_DESCR_LONG_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome

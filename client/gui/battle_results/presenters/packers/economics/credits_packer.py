@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_results/presenters/packers/economics/credits_packer.py
 from gui.battle_results.presenters.packers.economics import credits_records
 from gui.battle_results.presenters.packers.economics.currency_packers import CurrencyPacker, CurrencyGroup
 from gui.battle_results.presenters.packers.economics.common_records import AOGAS_FACTOR, AFK_VIOLATION, DESERTER_VIOLATION, SUICIDE_VIOLATION
@@ -7,8 +9,7 @@ from gui.impl.gen import R
 _STR_PATH = R.strings.battle_results.details.calculations
 
 class CreditsPacker(CurrencyPacker):
-    _EARNED = CurrencyGroup(label=None, records=(
-     credits_records.BASE_EARNED_CREDITS,
+    _EARNED = CurrencyGroup(label=None, records=(credits_records.BASE_EARNED_CREDITS,
      credits_records.SQUAD_BONUS_CREDITS,
      credits_records.ACHIEVEMENT_CREDITS,
      credits_records.BOOSTERS_CREDITS,
@@ -22,15 +23,9 @@ class CreditsPacker(CurrencyPacker):
      credits_records.FRIENDLY_FIRE_PENALTY_CREDITS,
      credits_records.FRIENDLY_FIRE_COMPENSATION_CREDITS,
      AOGAS_FACTOR))
-    _EXPENSES = CurrencyGroup(label=_STR_PATH.title.expenses, records=(
-     credits_records.AUTO_REPAIR_CREDITS,
-     credits_records.AUTO_LOAD_CREDITS,
-     credits_records.AUTO_EQUIP_CREDITS))
+    _EXPENSES = CurrencyGroup(label=_STR_PATH.title.expenses, records=(credits_records.AUTO_REPAIR_CREDITS, credits_records.AUTO_LOAD_CREDITS, credits_records.AUTO_EQUIP_CREDITS))
     _TOTAL = CurrencyGroup(label=None, records=(credits_records.TOTAL_CREDITS,))
-    _ADDITIONAL = CurrencyGroup(label=None, records=(
-     credits_records.PIGGY_BANK_CREDITS,
-     GOLD_PIGGY_BANK,
-     GOLD_EVENT_PAYMENTS))
+    _ADDITIONAL = CurrencyGroup(label=None, records=(credits_records.PIGGY_BANK_CREDITS, GOLD_PIGGY_BANK, GOLD_EVENT_PAYMENTS))
 
     @classmethod
     def _getExtractors(cls, currencyType, battleResults):

@@ -1,7 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/storages/stronghold_storage.py
 from gui.prb_control.storages.local_storage import LocalStorage
 
 class StrongholdStorage(LocalStorage):
-    __slots__ = ('_animationIdx', )
+    __slots__ = ('_animationIdx',)
 
     def __init__(self):
         super(StrongholdStorage, self).__init__()

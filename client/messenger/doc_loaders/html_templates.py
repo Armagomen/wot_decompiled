@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/doc_loaders/html_templates.py
 import types
 from debug_utils import LOG_WARNING
 from gui.shared.notifications import NotificationPriorityLevel, NotificationGroup
@@ -64,17 +66,19 @@ class MessageTemplates(templates.XMLCollection):
 
     def _make(self, source):
         sourceID = source.name
-        data = {'type': source.readString('type'), 
-           'linkage': source.readString('linkage'), 
-           'timestamp': -1, 
-           'savedData': None, 
-           'bgIcon': self._makeBgIconsData(source['bgIcon']), 
-           'bgIconSizeAuto': source.readBool('bgIconSizeAuto'), 
-           'icon': source.readString('icon'), 
-           'defaultIcon': source.readString('defaultIcon'), 
-           'filters': [], 'buttonsLayout': [], 'buttonsAlign': source.readString('buttonsAlign', 'left'), 
-           'lifeTime': source.readInt('lifeTime'), 
-           'gfViewName': source.readString('gfViewName')}
+        data = {'type': source.readString('type'),
+         'linkage': source.readString('linkage'),
+         'timestamp': -1,
+         'savedData': None,
+         'bgIcon': self._makeBgIconsData(source['bgIcon']),
+         'bgIconSizeAuto': source.readBool('bgIconSizeAuto'),
+         'icon': source.readString('icon'),
+         'defaultIcon': source.readString('defaultIcon'),
+         'filters': [],
+         'buttonsLayout': [],
+         'buttonsAlign': source.readString('buttonsAlign', 'left'),
+         'lifeTime': source.readInt('lifeTime'),
+         'gfViewName': source.readString('gfViewName')}
         priority = source.readString('priority', NotificationPriorityLevel.MEDIUM)
         if priority not in NotificationPriorityLevel.RANGE:
             LOG_WARNING('Priority is invalid', sourceID, priority)
@@ -88,8 +92,8 @@ class MessageTemplates(templates.XMLCollection):
         if section is None:
             section = {}
         for _, subSec in section.items():
-            data['filters'].append({'name': subSec.readString('name'), 
-               'color': subSec.readString('color')})
+            data['filters'].append({'name': subSec.readString('name'),
+             'color': subSec.readString('color')})
 
         section = source['bgIconHeight']
         if section is not None:
@@ -125,9 +129,9 @@ class MessageTemplates(templates.XMLCollection):
             if not buttonType and buttonType not in ('submit', 'cancel'):
                 LOG_WARNING('button/type is not defined or invalid', sourceID, buttonType)
                 return None
-            result = {'label': label, 
-               'type': buttonType, 
-               'action': action}
+            result = {'label': label,
+             'type': buttonType,
+             'action': action}
             width = section.readInt('width')
             if width > 0:
                 result['width'] = width

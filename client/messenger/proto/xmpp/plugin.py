@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/xmpp/plugin.py
 from messenger import g_settings
 from messenger.proto.xmpp.messages import MessagesManager
 from messenger.proto.xmpp.contacts import ContactsManager
@@ -9,8 +11,7 @@ from messenger.proto.xmpp.spa_requesters import NicknameResolver
 from messenger.proto.xmpp.xmpp_clan_listener import XmppClanListener
 
 class XmppPlugin(IProtoPlugin):
-    __slots__ = ('__client', '__contacts', '__connection', '__logger', '__messages',
-                 '__isClientInited', '__nicknameResolver', '__clanListener')
+    __slots__ = ('__client', '__contacts', '__connection', '__logger', '__messages', '__isClientInited', '__nicknameResolver', '__clanListener')
 
     def __init__(self):
         self.__client = None
@@ -24,7 +25,10 @@ class XmppPlugin(IProtoPlugin):
         return
 
     def __repr__(self):
-        return ('XmppPlugin(id=0x{0:08X}, ro={1!r:s},').format(id(self), ['client', 'contacts', 'messages', 'logger'])
+        return 'XmppPlugin(id=0x{0:08X}, ro={1!r:s},'.format(id(self), ['client',
+         'contacts',
+         'messages',
+         'logger'])
 
     @property
     def client(self):
@@ -125,7 +129,4 @@ class XmppPlugin(IProtoPlugin):
 
     @classmethod
     def __getClanListener(cls):
-        if g_settings.server.isXmppClansEnabled():
-            return XmppClanListener()
-        else:
-            return
+        return XmppClanListener() if g_settings.server.isXmppClansEnabled() else None

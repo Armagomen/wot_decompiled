@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_core/scripts/client/VehicleHealController.py
 import typing
 from helpers import fixed_dict
 from script_component.DynamicScriptComponent import DynamicScriptComponent
@@ -31,8 +33,7 @@ class VehicleHealController(DynamicScriptComponent):
             if stateID in self.__adaptors:
                 self.__adaptors[stateID].updateState(state)
                 removedStates.remove(stateID)
-            else:
-                self.__adaptors[stateID] = ViewStateComponentAdaptor(entity=self.entity, state=state)
+            self.__adaptors[stateID] = ViewStateComponentAdaptor(entity=self.entity, state=state)
 
         for stateID in removedStates:
             adaptor = self.__adaptors.pop(stateID)

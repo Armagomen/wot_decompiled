@@ -1,4 +1,7 @@
-import BigWorld, BattleReplay
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/debug_ctrl.py
+import BigWorld
+import BattleReplay
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
 from gui.battle_control.view_components import IViewComponentsController
 from gui.shared.utils.TimeInterval import TimeInterval
@@ -56,12 +59,12 @@ class DebugController(IViewComponentsController):
             self.statsCollector.update()
             if replayCtrl.isRecording:
                 replayCtrl.setFpsPingLag(fps, ping, isLaggingNow)
-            try:
-                ping = int(ping)
-                fps = int(fps)
-                fpsReplay = int(fpsReplay)
-            except (ValueError, OverflowError):
-                return
+        try:
+            ping = int(ping)
+            fps = int(fps)
+            fpsReplay = int(fpsReplay)
+        except (ValueError, OverflowError):
+            return
 
         if self._debugPanelUI is not None:
             self._debugPanelUI.updateDebugInfo(ping, fps, isLaggingNow, fpsReplay)

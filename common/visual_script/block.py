@@ -1,14 +1,15 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/visual_script/block.py
 from typing import List, Any, Sequence
 from misc import ASPECT, BLOCK_MODE, EDITOR_TYPE
 from itertools import imap
 
 def buildStrKeysValue(*args):
-    return (';').join(args)
+    return ';'.join(args)
 
 
 def makeResEditorData(path, *extensions):
-    return [
-     path, (';;').join(imap(lambda ext: '*.%s' % ext, extensions))]
+    return [path, ';;'.join(imap(lambda ext: '*.%s' % ext, extensions))]
 
 
 class InitParam(object):
@@ -78,15 +79,15 @@ class Meta(object):
 
     @classmethod
     def blockIcon(cls):
-        return ':vse/blocks/python'
+        pass
 
     @classmethod
     def blockColor(cls):
-        return 7189746
+        pass
 
     @classmethod
     def blockCategory(cls):
-        return 'General'
+        pass
 
     @classmethod
     def initParams(cls):
@@ -104,17 +105,15 @@ class Block(Meta):
         super(Block, self).__init__()
 
     def captionText(self):
-        return ''
+        pass
 
     def validate(self):
-        return ''
+        pass
 
     def validateAllRequired(self):
         for item in self._getSlots():
             if hasattr(item, 'hasValue') and not item.hasValue():
                 return item.name() + ' value is required'
-
-        return ''
 
     @classmethod
     def isOnFinishScriptCallRequired(cls):
@@ -144,9 +143,7 @@ class Block(Meta):
 
     def blockId(self):
         id = self.__agent.blockId()
-        if id:
-            return id
-        return self.blockName()
+        return id if id else self.blockName()
 
     def _makeDataOutputSlot(self, name, slotType, fun):
         return self.__agent.makeDataOutputSlot(name, slotType, fun)

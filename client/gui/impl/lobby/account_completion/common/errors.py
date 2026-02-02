@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/account_completion/common/errors.py
 from gui.impl.backport import text as loc
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.account_completion.common.field_email_model import FieldEmailModel

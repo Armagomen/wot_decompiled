@@ -1,8 +1,17 @@
-import logging, weakref, math
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/hangar_vehicle_appearance.py
+import logging
+import weakref
+import math
 from collections import namedtuple
 from typing import TYPE_CHECKING
 from functools import partial
-import BigWorld, Event, Math, VehicleStickers, Vehicular, math_utils
+import BigWorld
+import Event
+import Math
+import VehicleStickers
+import Vehicular
+import math_utils
 from dossiers2.ui.achievements import MARK_ON_GUN_RECORD
 from items.components.c11n_constants import EASING_TRANSITION_DURATION
 from gui import g_tankActiveCamouflage
@@ -34,7 +43,8 @@ from gui.shared import g_eventBus, EVENT_BUS_SCOPE
 from gui.ClientHangarSpace import hangarCFG
 from gui.battle_control.vehicle_getter import hasTurretRotator
 from cgf_components.hangar_camera_manager import HangarCameraManager
-import GenericComponents, CGF
+import GenericComponents
+import CGF
 if TYPE_CHECKING:
     from vehicle_outfit.outfit import Outfit as TOutfit
     from items.vehicles import VehicleDescrType
@@ -46,7 +56,11 @@ _CAMERA_CAPSULE_SCALE = Math.Vector3(1.5, 1.5, 1.5)
 _CAMERA_MIN_DIST_FACTOR = 0.8
 AnchorLocation = namedtuple('AnchorLocation', ['position', 'normal', 'up'])
 AnchorId = namedtuple('AnchorId', ('slotType', 'areaId', 'regionIdx'))
-AnchorHelper = namedtuple('AnchorHelper', ['location', 'descriptor', 'turretYaw', 'partIdx', 'attachedPartIdx'])
+AnchorHelper = namedtuple('AnchorHelper', ['location',
+ 'descriptor',
+ 'turretYaw',
+ 'partIdx',
+ 'attachedPartIdx'])
 AnchorParams = namedtuple('AnchorParams', ['location', 'descriptor', 'id'])
 _logger = logging.getLogger(__name__)
 
@@ -102,10 +116,7 @@ class HangarVehicleAppearance(ScriptGameObject):
 
     @property
     def compoundModel(self):
-        if self.__vEntity:
-            return self.__vEntity.model
-        else:
-            return
+        return self.__vEntity.model if self.__vEntity else None
 
     @property
     def id(self):
@@ -120,9 +131,10 @@ class HangarVehicleAppearance(ScriptGameObject):
 
     @property
     def filter(self):
-        return
+        return None
 
     isDestroyed = property(lambda self: self.__isVehicleDestroyed)
+    isCompositionReady = property(lambda self: self.__isCompositionReady)
 
     def __init__(self, spaceId, vEntity):
         ScriptGameObject.__init__(self, vEntity.spaceID, 'HangarVehicleAppearance')
@@ -162,6 +174,7 @@ class HangarVehicleAppearance(ScriptGameObject):
         g_currentVehicle.onChanged += self.__onVehicleChanged
         self.customizationGameObjects = []
         self.onDecalsUpdated = Event.Event()
+        self.__isCompositionReady = False
         return
 
     def recreate(self, vDesc, vState=None, callback=None, outfit=None):
@@ -228,10 +241,7 @@ class HangarVehicleAppearance(ScriptGameObject):
 
     @property
     def fakeShadowDefinedInHullTexture(self):
-        if self.__vDesc:
-            return self.__vDesc.hull.hangarShadowTexture
-        else:
-            return
+        return self.__vDesc.hull.hangarShadowTexture if self.__vDesc else None
 
     @property
     def slotPrefabs(self):
@@ -275,6 +285,9 @@ class HangarVehicleAppearance(ScriptGameObject):
     def computeFullVehicleLength(self):
         hullBB = Math.Matrix(self.__vEntity.model.getBoundsForPart(TankPartIndexes.HULL))
         return hullBB.applyVector(Math.Vector3(0.0, 0.0, 1.0)).length
+
+    def setCompositionReady(self, ready):
+        self.__isCompositionReady = ready
 
     def _getTurretYaw(self):
         return self.turretAndGunAngles.getTurretYaw()
@@ -325,26 +338,24 @@ class HangarVehicleAppearance(ScriptGameObject):
 
         from vehicle_systems import model_assembler
         resources.append(model_assembler.prepareCompoundAssembler(self.__vDesc, ModelsSetParams(modelsSet, self.__vState, self.__attachments), self.__spaceId))
-        g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.VEHICLE_LOADING, ctx={'started': True, 
-           'vEntityId': self.__vEntity.id, 
-           'intCD': self.__vDesc.type.compactDescr}), scope=EVENT_BUS_SCOPE.DEFAULT)
+        g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.VEHICLE_LOADING, ctx={'started': True,
+         'vEntityId': self.__vEntity.id,
+         'intCD': self.__vDesc.type.compactDescr}), scope=EVENT_BUS_SCOPE.DEFAULT)
         cfg = hangarCFG()
         gunScale = cfg.get('cam_capsule_gun_scale', _CAMERA_CAPSULE_GUN_SCALE)
         capsuleScale = cfg.get('cam_capsule_scale', _CAMERA_CAPSULE_SCALE)
-        hitTesterManagers = {TankPartNames.CHASSIS: vDesc.chassis.hitTesterManager, 
-           TankPartNames.HULL: vDesc.hull.hitTesterManager, 
-           TankPartNames.TURRET: vDesc.turret.hitTesterManager, 
-           TankPartNames.GUN: vDesc.gun.hitTesterManager}
+        hitTesterManagers = {TankPartNames.CHASSIS: vDesc.chassis.hitTesterManager,
+         TankPartNames.HULL: vDesc.hull.hitTesterManager,
+         TankPartNames.TURRET: vDesc.turret.hitTesterManager,
+         TankPartNames.GUN: vDesc.gun.hitTesterManager}
         bspModels = ()
         crashedBspModels = ()
         for partName, htManager in hitTesterManagers.iteritems():
             partId = TankPartNames.getIdx(partName)
-            bspModel = (
-             partId, htManager.modelHitTester.bspModelName)
+            bspModel = (partId, htManager.modelHitTester.bspModelName)
             bspModels = bspModels + (bspModel,)
             if htManager.crashedModelHitTester:
-                crashedBspModel = (
-                 partId, htManager.crashedModelHitTester.bspModelName)
+                crashedBspModel = (partId, htManager.crashedModelHitTester.bspModelName)
                 crashedBspModels = crashedBspModels + (crashedBspModel,)
 
         additionalChassisParts = ()
@@ -359,27 +370,27 @@ class HangarVehicleAppearance(ScriptGameObject):
         def _getCapsule(partIndex, partDescr, defaultScale):
             hitTester = partDescr.hitTesterManager.modelHitTester
             scale = defaultScale if hitTester.extraCapsuleScale is None else hitTester.extraCapsuleScale + defaultScale
-            return (partIndex, hitTester.bspModelName, scale, True)
+            return (partIndex,
+             hitTester.bspModelName,
+             scale,
+             True)
 
-        bspModels = bspModels + (
-         _getCapsule(self._cameraPartsIdx, vDesc.hull, capsuleScale),
-         _getCapsule(self._cameraPartsIdx + 1, vDesc.turret, capsuleScale),
-         _getCapsule(self._cameraPartsIdx + 2, vDesc.gun, gunScale))
+        bspModels = bspModels + (_getCapsule(self._cameraPartsIdx, vDesc.hull, capsuleScale), _getCapsule(self._cameraPartsIdx + 1, vDesc.turret, capsuleScale), _getCapsule(self._cameraPartsIdx + 2, vDesc.gun, gunScale))
         if vDesc.hull.hitTesterManager.crashedModelHitTester:
-            crashedBspModels = crashedBspModels + (
-             (
-              self._cameraPartsIdx,
-              vDesc.hull.hitTesterManager.crashedModelHitTester.bspModelName, capsuleScale, True),)
+            crashedBspModels = crashedBspModels + ((self._cameraPartsIdx,
+              vDesc.hull.hitTesterManager.crashedModelHitTester.bspModelName,
+              capsuleScale,
+              True),)
         if vDesc.turret.hitTesterManager.crashedModelHitTester:
-            crashedBspModels = crashedBspModels + (
-             (
-              self._cameraPartsIdx + 1,
-              vDesc.turret.hitTesterManager.crashedModelHitTester.bspModelName, capsuleScale, True),)
+            crashedBspModels = crashedBspModels + ((self._cameraPartsIdx + 1,
+              vDesc.turret.hitTesterManager.crashedModelHitTester.bspModelName,
+              capsuleScale,
+              True),)
         if vDesc.gun.hitTesterManager.crashedModelHitTester:
-            crashedBspModels = crashedBspModels + (
-             (
-              self._cameraPartsIdx + 2,
-              vDesc.gun.hitTesterManager.crashedModelHitTester.bspModelName, gunScale, True),)
+            crashedBspModels = crashedBspModels + ((self._cameraPartsIdx + 2,
+              vDesc.gun.hitTesterManager.crashedModelHitTester.bspModelName,
+              gunScale,
+              True),)
         modelCA = BigWorld.CollisionAssembler(bspModels, self.__spaceId)
         modelCA.name = 'ModelCollisions'
         resources.append(modelCA)
@@ -390,7 +401,7 @@ class HangarVehicleAppearance(ScriptGameObject):
         physicalTracksBuilders = vDesc.chassis.physicalTracks
         for name, builders in physicalTracksBuilders.iteritems():
             for index, builder in enumerate(builders):
-                resources.append(builder.createLoader(self.__spaceId, ('{0}{1}PhysicalTrack').format(name, index), modelsSet))
+                resources.append(builder.createLoader(self.__spaceId, '{0}{1}PhysicalTrack'.format(name, index), modelsSet))
 
         BigWorld.loadResourceListBG(tuple(resources), makeCallbackWeak(self.__onResourcesLoaded, self.__curBuildInd))
         return
@@ -406,18 +417,17 @@ class HangarVehicleAppearance(ScriptGameObject):
         if not self.__vDesc:
             self.__fireResourcesLoadedEvent()
             return
+        elif buildInd != self.__curBuildInd:
+            return
         else:
-            if buildInd != self.__curBuildInd:
-                return
             failedIDs = resourceRefs.failedIDs
             resources = self.__resources
             succesLoaded = True
             for resID, resource in resourceRefs.items():
                 if resID not in failedIDs:
                     resources[resID] = resource
-                else:
-                    _logger.error('Could not load %s', resID)
-                    succesLoaded = False
+                _logger.error('Could not load %s', resID)
+                succesLoaded = False
 
             if self.collisions:
                 BigWorld.removeCameraCollider(self.collisions.getColliderID())
@@ -443,9 +453,9 @@ class HangarVehicleAppearance(ScriptGameObject):
 
     def __fireResourcesLoadedEvent(self):
         compDescr = self.__vDesc.type.compactDescr if self.__vDesc is not None else None
-        g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.VEHICLE_LOADING, ctx={'started': False, 
-           'vEntityId': self.__vEntity.id, 
-           'intCD': compDescr}), scope=EVENT_BUS_SCOPE.DEFAULT)
+        g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.VEHICLE_LOADING, ctx={'started': False,
+         'vEntityId': self.__vEntity.id,
+         'intCD': compDescr}), scope=EVENT_BUS_SCOPE.DEFAULT)
         return
 
     def __onAnimatorsLoaded(self, buildInd, outfit, resourceRefs):
@@ -473,15 +483,15 @@ class HangarVehicleAppearance(ScriptGameObject):
         if g_currentPreviewVehicle.isPresent() and not g_currentPreviewVehicle.isHeroTank:
             vehicleCD = g_currentPreviewVehicle.item.descriptor.makeCompactDescr()
             return self.customizationService.getEmptyOutfitWithNationalEmblems(vehicleCD=vehicleCD)
+        elif not g_currentVehicle.isPresent():
+            if vDesc is not None:
+                vehicleCD = vDesc.makeCompactDescr()
+                outfit = self.customizationService.getEmptyOutfitWithNationalEmblems(vehicleCD=vehicleCD)
+            else:
+                _logger.error('Failed to get base vehicle outfit. VehicleDescriptor is None.')
+                outfit = self.itemsFactory.createOutfit()
+            return outfit
         else:
-            if not g_currentVehicle.isPresent():
-                if vDesc is not None:
-                    vehicleCD = vDesc.makeCompactDescr()
-                    outfit = self.customizationService.getEmptyOutfitWithNationalEmblems(vehicleCD=vehicleCD)
-                else:
-                    _logger.error('Failed to get base vehicle outfit. VehicleDescriptor is None.')
-                    outfit = self.itemsFactory.createOutfit()
-                return outfit
             vehicle = g_currentVehicle.item
             season = g_tankActiveCamouflage.get(vehicle.intCD, vehicle.getAnyOutfitSeason())
             g_tankActiveCamouflage[vehicle.intCD] = season
@@ -506,9 +516,9 @@ class HangarVehicleAppearance(ScriptGameObject):
             wheelsSteering = None
             if self.__vDesc.chassis.generalWheelsAnimatorConfig is not None:
                 scrollableWheelsCount = self.__vDesc.chassis.generalWheelsAnimatorConfig.getWheelsCount()
-                wheelsScroll = [ lambda : 0.0 for _ in xrange(scrollableWheelsCount) ]
+                wheelsScroll = [ (lambda : 0.0) for _ in xrange(scrollableWheelsCount) ]
                 steerableWheelsCount = self.__vDesc.chassis.generalWheelsAnimatorConfig.getSteerableWheelsCount()
-                wheelsSteering = [ lambda : 0.0 for _ in xrange(steerableWheelsCount) ]
+                wheelsSteering = [ (lambda : 0.0) for _ in xrange(steerableWheelsCount) ]
             chassisFashion = self.__fashions.chassis
             splineTracksImpl = model_assembler.setupSplineTracks(chassisFashion, self.__vDesc, self.__vEntity.model, self.__resources, self.__outfit.modelsSet)
             self.wheelsAnimator = model_assembler.createWheelsAnimator(self, ColliderTypes.VEHICLE_COLLIDER, self.__vDesc, lambda : 0, wheelsScroll, wheelsSteering, splineTracksImpl)
@@ -560,8 +570,7 @@ class HangarVehicleAppearance(ScriptGameObject):
         self.__setGunMatrix(gunPitchMatrix)
         if self.gameObject.findComponentByType(GenericComponents.DynamicModelComponent) is None:
             self.gameObject.createComponent(GenericComponents.DynamicModelComponent, self.compoundModel)
-        prefabMap = [ PrefabsMapItem(attachment.slotName, attachment.modelName) for attachment in self.__attachments if not attachment.hidden
-                    ] + self.slotPrefabs
+        prefabMap = [ PrefabsMapItem(attachment.slotName, attachment.modelName) for attachment in self.__attachments if not attachment.hidden ] + self.slotPrefabs
         extraSlots = getExtraSlotMap(self.__vDesc, self) + getObjectSlots(self.__vDesc)
         createVehicleComposition(gameObject=self.gameObject, prefabMap=prefabMap, followNodes=True, extraSlots=extraSlots)
         return
@@ -575,7 +584,6 @@ class HangarVehicleAppearance(ScriptGameObject):
         if self.__vDesc and self.__showMarksOnGun:
             vehicleDossier = self.itemsCache.items.getVehicleDossier(self.__vDesc.type.compactDescr)
             return vehicleDossier.getRandomStats().getAchievement(MARK_ON_GUN_RECORD).getValue()
-        return 0
 
     def _requestClanDBIDForStickers(self, callback):
         BigWorld.player().stats.get('clanDBID', callback)
@@ -600,34 +608,22 @@ class HangarVehicleAppearance(ScriptGameObject):
         gunoffset.setTranslate((0.0, 0.0, center.z + gunColBox[0].z))
         gunNode = self.__getGunNode()
         gunLink = math_utils.MatrixProviders.product(gunoffset, gunNode)
-        collisionData = (
-         (
-          TankPartNames.getIdx(TankPartNames.CHASSIS), self.__vEntity.model.matrix),
-         (
-          TankPartNames.getIdx(TankPartNames.HULL), self.__vEntity.model.node(TankPartNames.HULL)),
-         (
-          TankPartNames.getIdx(TankPartNames.TURRET), self.__vEntity.model.node(TankPartNames.TURRET)),
-         (
-          TankPartNames.getIdx(TankPartNames.GUN), gunNode))
+        collisionData = ((TankPartNames.getIdx(TankPartNames.CHASSIS), self.__vEntity.model.matrix),
+         (TankPartNames.getIdx(TankPartNames.HULL), self.__vEntity.model.node(TankPartNames.HULL)),
+         (TankPartNames.getIdx(TankPartNames.TURRET), self.__vEntity.model.node(TankPartNames.TURRET)),
+         (TankPartNames.getIdx(TankPartNames.GUN), gunNode))
         defaultPartLength = len(TankPartNames.ALL)
         additionalChassisParts = []
         trackPairs = self.typeDescriptor.chassis.trackPairs
         if not trackPairs:
-            trackPairs = [
-             None]
+            trackPairs = [None]
         for x in xrange(len(trackPairs) - 1):
             additionalChassisParts.append((defaultPartLength + x, self.compoundModel.matrix))
 
         if additionalChassisParts:
             collisionData += tuple(additionalChassisParts)
         self.collisions.connect(self.__vEntity.id, ColliderTypes.VEHICLE_COLLIDER, collisionData)
-        collisionData = (
-         (
-          self._cameraPartsIdx, self.__vEntity.model.node(TankPartNames.HULL)),
-         (
-          self._cameraPartsIdx + 1, self.__vEntity.model.node(TankPartNames.TURRET)),
-         (
-          self._cameraPartsIdx + 2, gunLink))
+        collisionData = ((self._cameraPartsIdx, self.__vEntity.model.node(TankPartNames.HULL)), (self._cameraPartsIdx + 1, self.__vEntity.model.node(TankPartNames.TURRET)), (self._cameraPartsIdx + 2, gunLink))
         self.collisions.connect(self.__vEntity.id, self._getColliderType(), collisionData)
         self._reloadColliderType(self.__vEntity.state)
         self.__reloadShadowManagerTarget(self.__vEntity.state)
@@ -646,8 +642,7 @@ class HangarVehicleAppearance(ScriptGameObject):
         if not self.collisions:
             return
         if state != CameraMovementStates.FROM_OBJECT:
-            colliderData = (
-             self.collisions.getColliderID(), tuple(self.collisions.partIndices))
+            colliderData = (self.collisions.getColliderID(), tuple(self.collisions.partIndices))
             BigWorld.appendCameraCollider(colliderData)
             cameraManager = CGF.getManager(self.__spaceId, HangarCameraManager)
             if cameraManager:
@@ -660,12 +655,13 @@ class HangarVehicleAppearance(ScriptGameObject):
     def __reloadShadowManagerTarget(self, state):
         if not self.shadowManager or not self.__vEntity.model:
             return
-        self.shadowManager.registerCompoundModel(self.__vEntity.model)
-        if state == CameraMovementStates.ON_OBJECT:
-            self.shadowManager.updatePlayerTarget(self.__vEntity.model)
-        elif state == CameraMovementStates.MOVING_TO_OBJECT:
-            self.shadowManager.updatePlayerTarget(None)
-        return
+        else:
+            self.shadowManager.registerCompoundModel(self.__vEntity.model)
+            if state == CameraMovementStates.ON_OBJECT:
+                self.shadowManager.updatePlayerTarget(self.__vEntity.model)
+            elif state == CameraMovementStates.MOVING_TO_OBJECT:
+                self.shadowManager.updatePlayerTarget(None)
+            return
 
     def __doFinalSetup(self, buildIdx):
         if buildIdx != self.__curBuildInd:
@@ -686,7 +682,7 @@ class HangarVehicleAppearance(ScriptGameObject):
         if self.compoundModel is None:
             return False
         else:
-            partHandleNotFoundErrorCode = 4294967295
+            partHandleNotFoundErrorCode = 4294967295L
             for attachment in self.__attachments:
                 if attachment.partNodeAlias is None:
                     continue
@@ -711,8 +707,9 @@ class HangarVehicleAppearance(ScriptGameObject):
     def updateAnchorsParams(self, tankPartsToUpdate=TankPartIndexes.ALL):
         if self.__anchorsHelpers is None or self.__anchorsParams is None:
             return
-        self.__updateAnchorsParams(tankPartsToUpdate)
-        return
+        else:
+            self.__updateAnchorsParams(tankPartsToUpdate)
+            return
 
     def getCentralPointForArea(self, areaIdx):
 
@@ -778,10 +775,11 @@ class HangarVehicleAppearance(ScriptGameObject):
     def rotateTurretForAnchor(self, anchorId, duration=EASING_TRANSITION_DURATION):
         if self.compoundModel is None or self.__vDesc is None:
             return False
-        defaultYaw = self._getTurretYaw()
-        turretYaw = self.__getTurretYawForAnchor(anchorId, defaultYaw)
-        self.turretRotator.start(turretYaw, rotationTime=duration)
-        return
+        else:
+            defaultYaw = self._getTurretYaw()
+            turretYaw = self.__getTurretYawForAnchor(anchorId, defaultYaw)
+            self.turretRotator.start(turretYaw, rotationTime=duration)
+            return
 
     def rotateGunToDefault(self):
         if self.compoundModel is None:
@@ -812,9 +810,7 @@ class HangarVehicleAppearance(ScriptGameObject):
             if anchorId.areaId not in slotTypeAnchorHelpers:
                 return None
             areaAnchorHelpers = slotTypeAnchorHelpers[anchorId.areaId]
-            if anchorId.regionIdx not in areaAnchorHelpers:
-                return None
-            return areaAnchorHelpers[anchorId.regionIdx]
+            return None if anchorId.regionIdx not in areaAnchorHelpers else areaAnchorHelpers[anchorId.regionIdx]
 
     def __updateAnchorHelperWithId(self, anchorId, newAnchorHelper):
         self.__anchorsHelpers[anchorId.slotType][anchorId.areaId][anchorId.regionIdx] = newAnchorHelper
@@ -1044,8 +1040,7 @@ class HangarVehicleAppearance(ScriptGameObject):
         else:
             partMatrix = Math.Matrix(self.__vEntity.model.node(TankPartIndexes.getName(anchorHelper.partIdx)))
             turretMat = Math.Matrix(self.compoundModel.node(TankPartNames.TURRET))
-            transformMatrix = math_utils.createRTMatrix((
-             turretMat.yaw, partMatrix.pitch, partMatrix.roll), partMatrix.translation)
+            transformMatrix = math_utils.createRTMatrix((turretMat.yaw, partMatrix.pitch, partMatrix.roll), partMatrix.translation)
             anchorLocationWS = self.__applyToAnchorLocation(anchorHelper.location, transformMatrix)
             position = anchorLocationWS.position
             direction = anchorLocationWS.normal
@@ -1063,10 +1058,9 @@ class HangarVehicleAppearance(ScriptGameObject):
                 turretLeftDir.normalise()
                 gunJoin = self.__vEntity.model.node('HP_gunJoint')
                 fromGunJointToAnchor = gunJoin.position - position
-                decalDiags = (
-                 cornersWorldSpace[0] - cornersWorldSpace[2], cornersWorldSpace[1] - cornersWorldSpace[3])
+                decalDiags = (cornersWorldSpace[0] - cornersWorldSpace[2], cornersWorldSpace[1] - cornersWorldSpace[3])
                 fromGunToHit = abs(fromGunJointToAnchor.dot(turretLeftDir))
-                halfDecalWidth = max(abs(decalDiag.dot(turretLeftDir)) for decalDiag in decalDiags) * 0.5
+                halfDecalWidth = max((abs(decalDiag.dot(turretLeftDir)) for decalDiag in decalDiags)) * 0.5
                 if fromGunToHit > halfDecalWidth * _PROJECTION_DECAL_OVERLAPPING_FACTOR:
                     return defaultYaw
             result = self.collisions.collideShape(TankPartIndexes.GUN, cornersWorldSpace, checkDirWorld)
@@ -1098,7 +1092,7 @@ class HangarVehicleAppearance(ScriptGameObject):
          Math.Vector3(width * 0.5, -height * 0.5, 0),
          Math.Vector3(-width * 0.5, -height * 0.5, 0),
          Math.Vector3(-width * 0.5, height * 0.5, 0))
-        return tuple(transformMatrix.applyPoint(vec) for vec in result)
+        return tuple((transformMatrix.applyPoint(vec) for vec in result))
 
     def __applyToAnchorLocation(self, anchorLocation, transform):
         position = transform.applyPoint(anchorLocation.position)

@@ -1,9 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/page/footer/chat_model.py
 from frameworks.wulf import Map, ViewModel
 from gui.impl.gen.view_models.views.lobby.page.footer.message_model import MessageModel
 
 class ChatModel(ViewModel):
-    __slots__ = ('onViewMessageAction', 'onDeleteMessageAction', 'onWindowAnchorPositionUpdated',
-                 'onChatsAction')
+    __slots__ = ('onViewMessageAction', 'onDeleteMessageAction', 'onWindowAnchorPositionUpdated', 'onChatsAction')
 
     def __init__(self, properties=1, commands=4):
         super(ChatModel, self).__init__(properties=properties, commands=commands)

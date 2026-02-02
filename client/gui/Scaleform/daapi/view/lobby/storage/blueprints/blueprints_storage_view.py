@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/blueprints/blueprints_storage_view.py
 import nations
 from constants import MIN_VEHICLE_LEVEL, MAX_VEHICLE_LEVEL
 from blueprints.BlueprintTypes import BlueprintTypes
@@ -42,8 +44,8 @@ class StorageCategoryBlueprintsView(StorageCategoryBlueprintsViewMeta, StorageCa
         super(StorageCategoryBlueprintsView, self)._populate()
         self.app.loaderManager.onViewLoaded += self.__onViewLoaded
         self._dataProvider.setEnvironment(self.app)
-        g_clientUpdateManager.addCallbacks({'blueprints': self.__onUpdateBlueprints, 
-           'serverSettings.blueprints_config.levels': self.__onUpdateBlueprints})
+        g_clientUpdateManager.addCallbacks({'blueprints': self.__onUpdateBlueprints,
+         'serverSettings.blueprints_config.levels': self.__onUpdateBlueprints})
         self.__currentFilteredVehicles = self._dataProvider.getCurrentVehiclesCount()
         self.__isFilterCounterShown = False
         self.__updateUniversalFragments()
@@ -74,11 +76,11 @@ class StorageCategoryBlueprintsView(StorageCategoryBlueprintsViewMeta, StorageCa
     def __makeFragmentVO(count, iconName, tooltipData=None):
         style = text_styles.stats if count > 0 else text_styles.main
         label = style(backport.getIntegralFormat(count))
-        return {'hasFragments': count > 0, 
-           'label': label, 
-           'iconSmall': RES_ICONS.getBlueprintFragment('small', iconName), 
-           'iconBig': RES_ICONS.getBlueprintFragment('big', iconName), 
-           'tooltipData': tooltipData}
+        return {'hasFragments': count > 0,
+         'label': label,
+         'iconSmall': RES_ICONS.getBlueprintFragment('small', iconName),
+         'iconBig': RES_ICONS.getBlueprintFragment('big', iconName),
+         'tooltipData': tooltipData}
 
     def __onViewLoaded(self, view, *args, **kwargs):
         if view.settings is not None and view.settings.alias == VIEW_ALIAS.STORAGE_BLUEPRINTS_FILTER_POPOVER:
@@ -126,12 +128,12 @@ class StorageCategoryBlueprintsView(StorageCategoryBlueprintsViewMeta, StorageCa
 
     def __areCertainLevelsChosenInFilter(self, chosenKeys):
         for level in range(MIN_VEHICLE_LEVEL, MAX_VEHICLE_LEVEL + 1):
-            key = ('level_{}').format(level)
+            key = 'level_{}'.format(level)
             chosen = self.filter.get(key)
             if chosen and key not in chosenKeys:
                 return False
 
-        return any(self.filter.get(key) for key in chosenKeys)
+        return any((self.filter.get(key) for key in chosenKeys))
 
     def __restoreCarouselState(self):
         self.as_updateCanConvertS(self.filter.get('can_convert'))

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/battle/full_stats.py
 import BigWorld
 from gui.shared.utils.functions import getArenaShortName
 from helpers import dependency
@@ -31,14 +33,16 @@ class FullStatsComponent(BattleRoyaleFullStatsMeta, IVehicleCountListener):
         self.__vehicleTeams = {}
         for classType, data in vehiclesSortedByType:
             sortedVehicles = sorted(data.items(), key=lambda (_, isDead): isDead)
-            vehiclesByType.append({'classType': classType, 'platoons': []})
+            vehiclesByType.append({'classType': classType,
+             'platoons': []})
             for vehInfo in sortedVehicles:
                 vehicleID, (isDead, _, isEnemy, teamID, isRespawn) = vehInfo
-                data = {'isEnemy': isEnemy, 'isDead': isDead and not isRespawn}
+                data = {'isEnemy': isEnemy,
+                 'isDead': isDead and not isRespawn}
                 if isEnemy or isDead and not isRespawn:
-                    vehiclesByType[(-1)]['platoons'].append(data)
+                    vehiclesByType[-1]['platoons'].append(data)
                 else:
-                    vehiclesByType[(-1)]['platoons'].insert(0, data)
+                    vehiclesByType[-1]['platoons'].insert(0, data)
                 if not isDead or isRespawn:
                     self.__vehicleTeams[vehicleID] = teamID
 
@@ -63,26 +67,25 @@ class FullStatsComponent(BattleRoyaleFullStatsMeta, IVehicleCountListener):
             squads = backport.text(R.strings.battle_royale.fragPanel.squadsCount(), squadsCount=str(self.__teamsCount))
         frags = arenaDP.getVehicleStats().frags
         playersCount = len(set(self.__vehicleTeams.keys()))
-        data = {'header': {'title': backport.text(R.strings.battle_royale.fullStats.title()), 
-                      'subTitle': backport.text(R.strings.battle_royale.fullStats.subTitle()), 
-                      'battleType': arenaDP.getPersonalDescription().getFrameLabel(), 
-                      'description': backport.text(R.strings.battle_royale.fullStats.description())}, 
-           'aliveBlock': self.__getScoreBlock('fullStatsAlive', playersCount, backport.text(R.strings.battle_royale.fullStats.alive()), squads), 
-           'destroyedBlock': self.__getScoreBlock('fullStatsDestroyed', frags, backport.text(R.strings.battle_royale.fullStats.destroyed())), 
-           'minimapItems': self.__getMinimapItems(), 
-           'mapName': getArenaShortName(BigWorld.player().arenaTypeID)}
+        data = {'header': {'title': backport.text(R.strings.battle_royale.fullStats.title()),
+                    'subTitle': backport.text(R.strings.battle_royale.fullStats.subTitle()),
+                    'battleType': arenaDP.getPersonalDescription().getFrameLabel(),
+                    'description': backport.text(R.strings.battle_royale.fullStats.description())},
+         'aliveBlock': self.__getScoreBlock('fullStatsAlive', playersCount, backport.text(R.strings.battle_royale.fullStats.alive()), squads),
+         'destroyedBlock': self.__getScoreBlock('fullStatsDestroyed', frags, backport.text(R.strings.battle_royale.fullStats.destroyed())),
+         'minimapItems': self.__getMinimapItems(),
+         'mapName': getArenaShortName(BigWorld.player().arenaTypeID)}
         self.as_setDataS(data)
 
     def __getScoreBlock(self, icon, count, descr, squads=''):
-        return {'icon': icon, 
-           'count': count, 
-           'description': descr, 
-           'squads': squads}
+        return {'icon': icon,
+         'count': count,
+         'description': descr,
+         'squads': squads}
 
     def __getMinimapItems(self):
         fullStatsIcons = R.strings.battle_royale.fullStats.icons
-        return [
-         self.__getMinimapItem('tab_corpse_loot', backport.text(fullStatsIcons.corpseLoot.description()), 'add'),
+        return [self.__getMinimapItem('tab_corpse_loot', backport.text(fullStatsIcons.corpseLoot.description()), 'add'),
          self.__getMinimapItem('tab_loot', backport.text(fullStatsIcons.defaultLoot.description()), 'add'),
          self.__getMinimapItem('tab_improved_loot', backport.text(fullStatsIcons.extendedLoot.description()), 'add'),
          self.__getMinimapItem('airdrop_loot', backport.text(fullStatsIcons.airDrop.description()), 'add'),
@@ -90,9 +93,9 @@ class FullStatsComponent(BattleRoyaleFullStatsMeta, IVehicleCountListener):
          self.__getMinimapItem('deathzone_info_closed', backport.text(R.strings.battle_royale.fullStats.deathZone.closed.description()))]
 
     def __getMinimapItem(self, icon, description, blendMode='normal'):
-        return {'icon': icon, 
-           'description': description, 
-           'blendMode': blendMode}
+        return {'icon': icon,
+         'description': description,
+         'blendMode': blendMode}
 
     def __updateScore(self, frags=None):
         arenaDP = self.sessionProvider.getArenaDP()

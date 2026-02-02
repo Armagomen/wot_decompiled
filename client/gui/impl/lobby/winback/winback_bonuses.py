@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/winback/winback_bonuses.py
 from collections import OrderedDict
 from goodies.goodie_helpers import getPriceWithDiscount
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
@@ -49,16 +51,13 @@ class WinbackSelectableBonus(SimpleBonus):
     def getFirstGift(self):
         tokenName = getNonCompensationToken(self.getToken())
         selectableBonus = first(WinbackSelectableRewardManager.getSelectableBonuses(lambda tID: tID == tokenName))
-        if selectableBonus is not None:
-            return WinbackSelectableRewardManager.getFirstOfferGift(selectableBonus)
-        else:
-            return
+        return WinbackSelectableRewardManager.getFirstOfferGift(selectableBonus) if selectableBonus is not None else None
 
     def getTooltip(self):
-        return [{'level': self.getLevel(), 
-            'isDiscount': self._isDiscount, 
-            'purchaseDiscount': self.getPurchaseDiscount(), 
-            'researchDiscount': self.getResearchDiscount()}]
+        return [{'level': self.getLevel(),
+          'isDiscount': self._isDiscount,
+          'purchaseDiscount': self.getPurchaseDiscount(),
+          'researchDiscount': self.getResearchDiscount()}]
 
 
 class WinbackVehicleBonus(SimpleBonus):
@@ -86,15 +85,13 @@ class WinbackVehicleBonus(SimpleBonus):
             if rentValue > 0:
                 return rentName
 
-        return ''
-
     def getRentType(self, vehCD):
         rentName = self.getRentName(vehCD)
         for rentType in RentType.__members__.values():
             if rentType.value == rentName:
                 return rentType
 
-        return
+        return None
 
     def getCrewLevel(self, vehCD):
         return self._getVehData(vehCD).get('crewLvl', -1)
@@ -117,8 +114,7 @@ class WinbackVehicleBonus(SimpleBonus):
         rentSeason = None
         rentCycle = None
         isSeniority = False
-        specialArgs = (
-         vehicleCD,
+        specialArgs = (vehicleCD,
          crewLevel,
          rentValue if rentName == RentType.TIME.value else 0,
          rentValue if rentName == RentType.BATTLES.value else 0,
@@ -148,8 +144,7 @@ class WinbackVehicleDiscountBonus(WinbackVehicleBonus):
             vehicle = self.getVehicle(vehCD)
             self._value[vehCD]['prices'] = self._getPrices(vehicle)
             _, cost, _, defCost, _ = getUnlockPrice(vehicle.intCD, None, vehicle.level, self._getBlueprintCount(vehCD))
-            self._value[vehCD]['xps'] = (
-             defCost, cost)
+            self._value[vehCD]['xps'] = (defCost, cost)
 
         return
 
@@ -174,8 +169,7 @@ class WinbackVehicleDiscountBonus(WinbackVehicleBonus):
         return (goodieID, self._getBlueprintCount(vehCD))
 
     def _createVehicleTooltip(self, vehicleCD):
-        return backport.createTooltipData(isSpecial=True, specialArgs=[
-         vehicleCD,
+        return backport.createTooltipData(isSpecial=True, specialArgs=[vehicleCD,
          None,
          None,
          None,
@@ -199,6 +193,4 @@ def getWinbackRewardsTimeLeft(winbackController=None):
         return 0
     else:
         winbackOffer = WinbackSelectableRewardManager.getBonusOffer(selectableBonus)
-        if winbackOffer and winbackController.isEnabled() and not winbackController.isProgressionAvailable():
-            return max(0, min(winbackOffer.expiration - getServerUTCTime(), 30 * ONE_DAY))
-        return 0
+        return max(0, min(winbackOffer.expiration - getServerUTCTime(), 30 * ONE_DAY)) if winbackOffer and winbackController.isEnabled() and not winbackController.isProgressionAvailable() else 0

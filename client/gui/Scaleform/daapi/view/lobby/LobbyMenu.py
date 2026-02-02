@@ -1,4 +1,7 @@
-import BigWorld, constants
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/LobbyMenu.py
+import BigWorld
+import constants
 from account_helpers.AccountSettings import AccountSettings, LOBBY_MENU_MANUAL_TRIGGER_SHOWN
 from account_helpers.counter_settings import getCountNewSettings
 from adisp import adisp_process
@@ -29,8 +32,7 @@ from skeletons.gui.lobby_context import ILobbyContext
 from tutorial.control.context import GLOBAL_FLAG
 
 def _getVersionMessage():
-    return (
-     ('{0} {1}').format(text_styles.main(i18n.makeString(MENU.PROMO_PATCH_MESSAGE)), text_styles.stats(getShortClientVersion())),)
+    return ('{0} {1}'.format(text_styles.main(i18n.makeString(MENU.PROMO_PATCH_MESSAGE)), text_styles.stats(getShortClientVersion())),)
 
 
 class LobbyMenu(LobbyMenuMeta):
@@ -159,14 +161,14 @@ class LobbyMenu(LobbyMenuMeta):
         if userLogin == '':
             return
         toShow, toHide = [], []
-        counts = {'settingsBtn': getCountNewSettings(), 
-           'postBtn': self.promo.getPromoCount(), 
-           'manualBtn': self.manualController.getNewContentCount()}
+        counts = {'settingsBtn': getCountNewSettings(),
+         'postBtn': self.promo.getPromoCount(),
+         'manualBtn': self.manualController.getNewContentCount()}
         for componentID, count in counts.iteritems():
             if count > 0:
-                toShow.append({'componentId': componentID, 'count': str(count)})
-            else:
-                toHide.append(componentID)
+                toShow.append({'componentId': componentID,
+                 'count': str(count)})
+            toHide.append(componentID)
 
         if toShow:
             self.as_setCounterS(toShow)

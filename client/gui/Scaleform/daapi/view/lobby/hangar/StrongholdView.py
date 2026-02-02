@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/StrongholdView.py
 from typing import TYPE_CHECKING
 import BigWorld
 from adisp import adisp_process
@@ -53,8 +55,7 @@ class StrongholdView(LobbySubView, StrongholdViewMeta):
     @adisp_process
     def __loadBrowser(self, width, height):
         if self.__url:
-            self.__browserId = yield self.browserCtrl.load(url=self.__url, useBrowserWindow=False, browserSize=(
-             width, height), showBrowserCallback=self.__showBrowser)
+            self.__browserId = yield self.browserCtrl.load(url=self.__url, useBrowserWindow=False, browserSize=(width, height), showBrowserCallback=self.__showBrowser)
             self.__browser = self.browserCtrl.getBrowser(self.__browserId)
             if self.__browser:
                 self.__browser.allowRightClick = True

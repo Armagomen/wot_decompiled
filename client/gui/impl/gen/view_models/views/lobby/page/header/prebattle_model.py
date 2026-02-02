@@ -1,8 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/page/header/prebattle_model.py
 from frameworks.wulf import Map, ViewModel
 from gui.impl.gen.view_models.views.lobby.common.vehicle_model import VehicleModel
 
 class PrebattleModel(ViewModel):
-    __slots__ = ('onAction', )
+    __slots__ = ('onAction',)
     PLAYER_CREATOR = 'playerCreator'
     PLAYER_READY = 'playerReady'
     READINESS_AVAILABLE = 'readinessAvailable'

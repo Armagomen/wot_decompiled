@@ -1,4 +1,8 @@
-import logging, math, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/exchange/personal_discounts_helper.py
+import logging
+import math
+import typing
 from exchange.personal_discounts_constants import ExchangeDiscountInfo, ExchangeDiscountType, ExchangeRate, ExchangeRateShowFormat
 if typing.TYPE_CHECKING:
     from typing import Tuple, List, Optional, Dict
@@ -7,8 +11,7 @@ _logger = logging.getLogger(__name__)
 def sortExchangeRatesDiscountsRule(discount1, discount2):
 
     def _getComparisonKeys(discount):
-        return (
-         float(discount.resourceRateValue) / discount.goldRateValue,
+        return (float(discount.resourceRateValue) / discount.goldRateValue,
          not discount.isPersonal,
          discount.discountType == ExchangeDiscountType.UNLIMITED,
          discount.amountOfDiscount,
@@ -39,9 +42,8 @@ def getDiscountsRequiredForExchange(discounts, goldExchangeAmount, currentTime):
         if discount.amountOfDiscount >= leftAmount or discount.discountType == ExchangeDiscountType.UNLIMITED:
             discountWillBeUsed[discount] = leftAmount
             break
-        else:
-            leftAmount -= discount.amountOfDiscount
-            discountWillBeUsed[discount] = discount.amountOfDiscount
+        leftAmount -= discount.amountOfDiscount
+        discountWillBeUsed[discount] = discount.amountOfDiscount
 
     return discountWillBeUsed
 
@@ -59,27 +61,23 @@ def getPersonalDiscountsAndCommonDiscount(discounts):
         if not i.isPersonal or i.discountType == ExchangeDiscountType.UNLIMITED:
             return (discounts[:index] or None, i)
 
-    return (
-     discounts or None, None)
+    return (discounts or None, None)
 
 
 def calculateGoldExchange(discount, goldExchangeAmount):
     if discount.amountOfDiscount >= goldExchangeAmount or discount.discountType == ExchangeDiscountType.UNLIMITED:
         return (goldExchangeAmount, goldExchangeAmount * discount.resourceRateValue)
     resourceWithDiscount = discount.amountOfDiscount * discount.resourceRateValue
-    return (
-     discount.amountOfDiscount, resourceWithDiscount)
+    return (discount.amountOfDiscount, resourceWithDiscount)
 
 
 def calculateRequiredGoldFromSelectedResource(discount, resourceAmount):
     isUnlimited = discount.discountType == ExchangeDiscountType.UNLIMITED
     if discount.amountOfDiscount * discount.resourceRateValue >= resourceAmount or isUnlimited:
         goldAmount = int(math.ceil(float(resourceAmount) / discount.resourceRateValue))
-        return (
-         goldAmount, goldAmount * discount.resourceRateValue)
+        return (goldAmount, goldAmount * discount.resourceRateValue)
     resourceWithDiscount = discount.amountOfDiscount * discount.resourceRateValue
-    return (
-     discount.amountOfDiscount, resourceWithDiscount)
+    return (discount.amountOfDiscount, resourceWithDiscount)
 
 
 def calculateGoldExchangeWithDiscounts(discounts, goldExchangeAmount, defaultRate, currentTime):
@@ -100,7 +98,6 @@ def calculateGoldExchangeWithDiscounts(discounts, goldExchangeAmount, defaultRat
             return receivedResource
 
     _logger.error('Error calculating gold exchange, left amount=%d, defaultRate=%d ', leftGoldToExchange, defaultRate.resourceRateValue)
-    return 0
 
 
 def calculateResourceExchangeWithDiscounts(discounts, resourceAmount, defaultRate, currentTime):
@@ -118,8 +115,6 @@ def calculateResourceExchangeWithDiscounts(discounts, resourceAmount, defaultRat
             leftResourceAmount -= received
             requiredGold += exchangedGold
         if leftResourceAmount <= 0:
-            return (
-             requiredGold, -leftResourceAmount + resourceAmount)
+            return (requiredGold, -leftResourceAmount + resourceAmount)
 
     _logger.error('Error calculating resource exchange, left amount=%d, defaultRate=%d ', leftResourceAmount, defaultRate.resourceRateValue)
-    return (0, 0)

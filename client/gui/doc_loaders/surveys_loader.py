@@ -1,3 +1,6 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/doc_loaders/surveys_loader.py
+from __future__ import absolute_import
 from collections import namedtuple, defaultdict
 import logging
 from gui.mapbox.mapbox_survey_helper import Condition, QuantifierTypes, AlternativeOneManyQuestion, AlternativeQuestion, getQuestionClass, findQuestionById
@@ -8,16 +11,14 @@ _logger = logging.getLogger(__name__)
 _SURVEYS_XML_PATH = 'gui/surveys.xml'
 _SURVEYS = None
 _Survey = namedtuple('_Survey', ('surveyGroup', 'surveyId', 'questions'))
-_GuiParams = namedtuple('_GuiParams', ('pathPrefix', 'image', 'showIcons', 'useMapId',
-                                       'useLinkedParams'))
+_GuiParams = namedtuple('_GuiParams', ('pathPrefix', 'image', 'showIcons', 'useMapId', 'useLinkedParams'))
 _AdditionalParam = namedtuple('_AdditionalParam', ('fromQuestion', 'answers', 'options'))
 _TextParams = namedtuple('_TextParams', ('param', 'isJoined'))
 _Responses = namedtuple('_Responses', ('variants', 'responseGroups'))
 
 def _readConditions(section, isRequired):
     if section.has_key('condition'):
-        simpleCondition = [
-         _readCondition(section['condition'], isRequired)]
+        simpleCondition = [_readCondition(section['condition'], isRequired)]
     else:
         simpleCondition = None
     if section.has_key('optionalConditions'):
@@ -32,13 +33,13 @@ def _readConditions(section, isRequired):
 def _readCondition(section, isRequired):
     requiredQuestionId = section['requiredQuestionId'].asString
     requiredOptionId = section.readString('requiredOptionId')
-    requiredAnswers = [ answerId for answerId in section['requiredAnswers'].asString.split(' ') ]
+    requiredAnswers = list(section['requiredAnswers'].asString.split(' '))
     if not requiredAnswers:
         raise SoftException('Unfilled required answers for the condition')
     innerSubsection = section['requiredAnswers']
-    if not innerSubsection.keys():
-        quantifier = QuantifierTypes.SINGLE.value if 1 else innerSubsection['quantifier'].asString
-        raise (QuantifierTypes.hasValue(quantifier) or SoftException)('Unsupported condition type for the mapbox survey')
+    quantifier = QuantifierTypes.SINGLE.value if not innerSubsection.keys() else innerSubsection['quantifier'].asString
+    if not QuantifierTypes.hasValue(quantifier):
+        raise SoftException('Unsupported condition type for the mapbox survey')
     return Condition(requiredQuestionId, requiredOptionId, requiredAnswers, quantifier, isRequired)
 
 
@@ -50,10 +51,7 @@ def _readSourceSection(section):
         questionId, answers = _readSomeSourceSection(section, 'useAnswers')
     elif section.has_key('useOptions'):
         questionId, options = _readSomeSourceSection(section, 'useOptions')
-    if questionId is not None:
-        return _AdditionalParam(questionId, answers, options)
-    else:
-        return
+    return _AdditionalParam(questionId, answers, options) if questionId is not None else None
 
 
 def _readSomeSourceSection(section, sectionName):
@@ -61,23 +59,22 @@ def _readSomeSourceSection(section, sectionName):
         answers = section.readString(sectionName).split(' ')
         innerSubsection = section[sectionName]
         if not innerSubsection.has_key('questionID'):
-            raise SoftException(('Invalid {} section for the mapbox survey').format(sectionName))
+            raise SoftException('Invalid {} section for the mapbox survey'.format(sectionName))
         questionId = innerSubsection['questionID'].asString
-        return (
-         questionId, answers)
+        return (questionId, answers)
     else:
         return (None, None)
 
 
 def _readLinkedParameters(section):
     if not section.has_key('linkedParameters'):
-        return
+        return None
     else:
         param = _readSourceSection(section['linkedParameters'])
         if param:
             isJoined = section['linkedParameters'].readBool('join')
             return _TextParams(param, isJoined)
-        return
+        return None
 
 
 def _readGuiParameters(section):
@@ -86,13 +83,11 @@ def _readGuiParameters(section):
 
 def _readOptions(section):
     if not section.has_key('options'):
-        return
+        return None
     else:
         optionsSection = section['options']
         result = _readSourceSection(optionsSection)
-        if result is not None:
-            return result
-        return _AdditionalParam(fromQuestion=None, answers=optionsSection.asString.split(' '), options=None)
+        return result if result is not None else _AdditionalParam(fromQuestion=None, answers=optionsSection.asString.split(' '), options=None)
 
 
 def _readResponses(section):
@@ -121,8 +116,7 @@ def _readQuestion(surveyGroup, questionSection, questionTypes):
 
 
 def _readAlternativeQuestion(surveyGroup, questionSection, questionTypes, qId):
-    alternativeQuestions = [ _readQuestion(surveyGroup, variant, questionTypes) for variant in questionSection['alternatives'].values()
-                           ]
+    alternativeQuestions = [ _readQuestion(surveyGroup, variant, questionTypes) for variant in questionSection['alternatives'].values() ]
     isSynchronizedAnswers = questionSection.readBool('synchronizeAnswers')
     clz = AlternativeOneManyQuestion if isSynchronizedAnswers else AlternativeQuestion
     return clz(questionId=qId, alternatives=alternativeQuestions, isSynchronizedAnswers=isSynchronizedAnswers)

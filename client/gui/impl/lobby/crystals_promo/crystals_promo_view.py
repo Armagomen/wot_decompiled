@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crystals_promo/crystals_promo_view.py
 from account_helpers.AccountSettings import AccountSettings, CRYSTALS_INFO_SHOWN
 from constants import ARENA_BONUS_TYPE, IS_CHINA
 from frameworks.wulf import ViewFlags, ViewSettings
@@ -37,9 +39,9 @@ class CrystalsPromoView(ViewImpl, LobbyHeaderVisibility):
         super(CrystalsPromoView, self)._initialize()
         self.__lobbyContext.getServerSettings().onServerSettingsChange += self.__onServerSettingsChanged
         self.viewModel.goToShop += self.__goToShopHandler
-        self.__shopUrlsMap = {CrystalsPromoViewModel.TANKS_TAB: getBonsVehiclesUrl(), 
-           CrystalsPromoViewModel.EQUIPMENT_TAB: getBonsDevicesUrl(), 
-           CrystalsPromoViewModel.INSTRUCTIONS_TAB: getBonsInstructionsUrl()}
+        self.__shopUrlsMap = {CrystalsPromoViewModel.TANKS_TAB: getBonsVehiclesUrl(),
+         CrystalsPromoViewModel.EQUIPMENT_TAB: getBonsDevicesUrl(),
+         CrystalsPromoViewModel.INSTRUCTIONS_TAB: getBonsInstructionsUrl()}
 
     def _onLoading(self, *args, **kwargs):
         super(CrystalsPromoView, self)._onLoading(*args, **kwargs)
@@ -47,7 +49,7 @@ class CrystalsPromoView(ViewImpl, LobbyHeaderVisibility):
         isFirstOpen = not AccountSettings.getSettings(CRYSTALS_INFO_SHOWN)
         if isFirstOpen:
             AccountSettings.setSettings(CRYSTALS_INFO_SHOWN, True)
-        with self.getViewModel().transaction() as (model):
+        with self.getViewModel().transaction() as model:
             model.setSelectedTab(1 if isFirstOpen else 0)
             model.setEquipmentPrice(getIntegralFormat(_DEFAULT_EQUIPMENT_PRICE))
             model.setInstructionPrice(getIntegralFormat(_DEFAULT_INSTRUCTION_PRICE))
@@ -75,7 +77,7 @@ class CrystalsPromoView(ViewImpl, LobbyHeaderVisibility):
 
     @server_settings.serverSettingsChangeListener('crystal_rewards_config')
     def __onServerSettingsChanged(self, *_):
-        with self.getViewModel().transaction() as (model):
+        with self.getViewModel().transaction() as model:
             self.__updateCondition(model)
             model.setSyncInitiator(not model.getSyncInitiator())
 
@@ -88,9 +90,7 @@ class CrystalsPromoView(ViewImpl, LobbyHeaderVisibility):
 
     @classmethod
     def __fillBattleItemModel(cls, model, item, bonusTypeLabel):
-        conditions = [
-         cls.__createConditionModel(item.firstTopLength, item.winTop3, item.loseTop3),
-         cls.__createConditionModel(item.topLength, item.winTop10, item.loseTop10)]
+        conditions = [cls.__createConditionModel(item.firstTopLength, item.winTop3, item.loseTop3), cls.__createConditionModel(item.topLength, item.winTop10, item.loseTop10)]
         model.setTitle(R.strings.menu.crystals.info.tab.get.dyn(bonusTypeLabel)())
         model.setIcon(R.images.gui.maps.icons.crystalsInfo.get.dyn(bonusTypeLabel)())
         model.conditions.clearItems()

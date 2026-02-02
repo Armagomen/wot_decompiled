@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/auxiliary/bonus_list_manager.py
 from gui.impl.auxiliary.rewards_helper import getRewardRendererModelPresenter
 from gui.impl.backport import createTooltipData, BackportTooltipWindow, TooltipData
 from gui.impl.gen import R
@@ -5,7 +7,7 @@ from gui.impl.gen.view_models.views.lobby.blueprints.blueprint_screen_tooltips i
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 
 class BonusListManager(object):
-    __slots__ = ('__tooltipsData', )
+    __slots__ = ('__tooltipsData',)
 
     def __init__(self):
         self.__tooltipsData = {}
@@ -34,21 +36,20 @@ class BonusListManager(object):
             if tooltipData is not None:
                 return BackportTooltipWindow(tooltipData, parentWindow, event)
             return
-        return
+        else:
+            return
 
     def __getBackportTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
         if tooltipId is None:
             return
+        elif tooltipId in self.__tooltipsData:
+            return self.__tooltipsData[tooltipId]
+        elif tooltipId == BlueprintScreenTooltips.TOOLTIP_BLUEPRINT:
+            vehicleCD = event.getArgument('vehicleCD')
+            return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BLUEPRINT_INFO, specialArgs=(vehicleCD, True))
+        elif tooltipId == BlueprintScreenTooltips.TOOLTIP_BLUEPRINT_CONVERT_COUNT:
+            vehicleCD = event.getArgument('vehicleCD')
+            return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BLUEPRINT_CONVERT_INFO, specialArgs=[vehicleCD])
         else:
-            if tooltipId in self.__tooltipsData:
-                return self.__tooltipsData[tooltipId]
-            if tooltipId == BlueprintScreenTooltips.TOOLTIP_BLUEPRINT:
-                vehicleCD = event.getArgument('vehicleCD')
-                return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BLUEPRINT_INFO, specialArgs=(
-                 vehicleCD, True))
-            if tooltipId == BlueprintScreenTooltips.TOOLTIP_BLUEPRINT_CONVERT_COUNT:
-                vehicleCD = event.getArgument('vehicleCD')
-                return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BLUEPRINT_CONVERT_INFO, specialArgs=[
-                 vehicleCD])
             return

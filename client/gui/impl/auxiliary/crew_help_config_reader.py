@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/auxiliary/crew_help_config_reader.py
 import resource_helper
 from functools import reduce
 from operator import attrgetter
@@ -30,13 +32,13 @@ def readListSection(ctx, node):
     return listSection
 
 
-resource_readers = {'resource': readResourceValue, 
-   'string': readStringValue, 
-   'list': readListSection}
+resource_readers = {'resource': readResourceValue,
+ 'string': readStringValue,
+ 'list': readListSection}
 
 def getHelpViewConfig():
     global config
     if not config:
-        with resource_helper.root_generator(GUI_CONFIG_PATH) as (rootCtx, slides):
+        with resource_helper.root_generator(GUI_CONFIG_PATH) as rootCtx, slides:
             config = readListSection(rootCtx, slides)
     return config

@@ -1,9 +1,13 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/skeletons/gui/battle_session.py
 import typing
 if typing.TYPE_CHECKING:
     from gui.armor_flashlight.interfaces import IArmorFlashlightBattleController
     from gui.battle_control.arena_info.interfaces import IAppearanceCacheController, IPointsOfInterestController, IMapZonesController, IProgressionController, IRadarController, ISpawnController, IArenaVehiclesController, IVehicleCountController, IOverrideSettingsController, IVSEHUDSettingsController, IBattleSpamController, IPrebattleSetupController
     from gui.battle_control.controllers.consumables.ammo_ctrl import AmmoController
     from gui.battle_control.controllers.consumables.equipment_ctrl import EquipmentsController
+    from gui.battle_control.controllers.vehicles_tracking import IVehiclesTrackingController
+    from gui.battle_control.controllers.spotting_indicators_ctrl import ISpottingIndicatorsController
     from gui.battle_control.controllers.vehicle_passenger import IVehiclePassengerController
     from gui.battle_control.controllers.vehicle_state_ctrl import VehicleStateController
 
@@ -32,6 +36,10 @@ class ISharedControllersLocator(object):
 
     @property
     def vehiclePassenger(self):
+        raise NotImplementedError
+
+    @property
+    def vehiclesTracking(self):
         raise NotImplementedError
 
     @property
@@ -132,6 +140,10 @@ class ISharedControllersLocator(object):
 
     @property
     def armorFlashlight(self):
+        raise NotImplementedError
+
+    @property
+    def spottingIndicatorsCtrl(self):
         raise NotImplementedError
 
 
@@ -711,7 +723,7 @@ class IBattleSessionProvider(object):
 
     @property
     def battleCache(self):
-        return
+        return None
 
     @property
     def isReplayPlaying(self):

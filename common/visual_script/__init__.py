@@ -1,8 +1,25 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/visual_script/__init__.py
 from visual_script.misc import ASPECT
 from visual_script.registrar import VSBlockRegistrar
 from visual_script.contexts.perks_context import PerkContext, CrewContext, PerkNotifyState
 from visual_script.contexts.cgf_context import CGFGameObjectContext
-import ability_common, example, general, vehicle_blocks, qa_blocks, qa_education_blocks, balance, entity_blocks, arena_blocks, bitmask_blocks_common, dictionary_blocks, debug_manager_blocks, cgf_blocks, commendations_common, vehicle_mechanics_blocks, command_flow
+import ability_common
+import example
+import general
+import vehicle_blocks
+import qa_blocks
+import qa_education_blocks
+import balance
+import entity_blocks
+import arena_blocks
+import bitmask_blocks_common
+import dictionary_blocks
+import debug_manager_blocks
+import cgf_blocks
+import commendations_common
+import vehicle_mechanics_blocks
+import command_flow
 g_blockRegistrar = VSBlockRegistrar(ASPECT.CLIENT, ASPECT.SERVER)
 g_blockRegistrar.regBlocksFromModule(example)
 g_blockRegistrar.regTypesFromModule(example)
@@ -40,4 +57,9 @@ g_blockRegistrar.regType(vehicle_mechanics_blocks.OverheatGainStateEnum)
 g_blockRegistrar.regType(vehicle_mechanics_blocks.StationaryReloadEnum)
 g_blockRegistrar.regType(vehicle_mechanics_blocks.StationaryReloadLockEnum)
 g_blockRegistrar.regType(vehicle_mechanics_blocks.TargetDesignatorStateEnum)
+g_blockRegistrar.regType(vehicle_mechanics_blocks.OverheatGunEnum)
+g_blockRegistrar.regType(vehicle_mechanics_blocks.TemperatureGunEnum)
+g_blockRegistrar.regType(vehicle_mechanics_blocks.HeatingZonesGunEnum)
+g_blockRegistrar.regType(vehicle_mechanics_blocks.PhasedMechanicStateEnum)
+g_blockRegistrar.regType(vehicle_mechanics_blocks.AcceleratorStatusEnum)
 g_blockRegistrar.regBlocksFromModule(command_flow)

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/promo/promo_logger.py
 import logging
 from functools import partial
 import BigWorld
@@ -38,13 +40,24 @@ class PromoLogSourceType(CONST_CONTAINER):
 
 
 def _getPlayerDatabaseID():
-    if isPlayerAccount():
-        return BigWorld.player().databaseID
+    return BigWorld.player().databaseID if isPlayerAccount() else None
 
 
 class PromoLogger(IPromoLogger):
-    __PARAMS_MAP = {'action': {'set': PromoLogActions.ALL()}, 'type': {'set': PromoLogSubjectType.ALL(), 'default': PromoLogSubjectType.TEASER}, 'teaserid': {}, 'slug': {}, 'spaid': {'default': _getPlayerDatabaseID}, 'time': {'default': time_utils.getCurrentTimestamp}, 'success': {}, 'lang': {'default': getLanguageCode}, 'source': {'set': PromoLogSourceType.ALL()}, 'url': {}}
-    __TEASER_PARAMS_MAP = {'promoID': 'teaserid', 'url': 'url', 'slug': 'slug'}
+    __PARAMS_MAP = {'action': {'set': PromoLogActions.ALL()},
+     'type': {'set': PromoLogSubjectType.ALL(),
+              'default': PromoLogSubjectType.TEASER},
+     'teaserid': {},
+     'slug': {},
+     'spaid': {'default': _getPlayerDatabaseID},
+     'time': {'default': time_utils.getCurrentTimestamp},
+     'success': {},
+     'lang': {'default': getLanguageCode},
+     'source': {'set': PromoLogSourceType.ALL()},
+     'url': {}}
+    __TEASER_PARAMS_MAP = {'promoID': 'teaserid',
+     'url': 'url',
+     'slug': 'slug'}
     __lobbyContext = dependency.descriptor(ILobbyContext)
     __webController = dependency.descriptor(IWebController)
     __ANSWER_WAITING_TIME = 30
@@ -106,7 +119,7 @@ class PromoLogger(IPromoLogger):
                     _logger.error('Wrong value for enumerable %s', paramName)
                     continue
                 result[paramName] = value
-            elif 'default' in settings:
+            if 'default' in settings:
                 default = settings['default']
                 result[paramName] = default() if callable(default) else default
 

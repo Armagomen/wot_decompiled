@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/pet_system_common/pet_constants.py
 from dossiers2.custom.records import RECORD_DB_IDS
 PETS_SYSTEM_CONFIG = 'pets_system_config'
 PETS_SYSTEM_PDATA_KEY = 'pets_system'
@@ -68,8 +70,7 @@ class PetBonusesConsts(object):
     BONUS = 'bonus'
     BONUS_ID = 'id'
     BONUS_RESOURCE = 'bonusResource'
-    EMPTY_BONUS = (
-     0, 0, False)
+    EMPTY_BONUS = (0, 0, False)
 
 
 class PET_SYSTEM_BONUS_RESOURCE_TYPE(object):
@@ -77,17 +78,15 @@ class PET_SYSTEM_BONUS_RESOURCE_TYPE(object):
     CREDITS = 1
 
 
-PET_SYSTEM_BONUS_TEXT_TO_RESOURCE = {'unknown': PET_SYSTEM_BONUS_RESOURCE_TYPE.UNKNOWN, 
-   'credits': PET_SYSTEM_BONUS_RESOURCE_TYPE.CREDITS}
+PET_SYSTEM_BONUS_TEXT_TO_RESOURCE = {'unknown': PET_SYSTEM_BONUS_RESOURCE_TYPE.UNKNOWN,
+ 'credits': PET_SYSTEM_BONUS_RESOURCE_TYPE.CREDITS}
 PET_SYSTEM_RESOURCE_TO_TEXT = {v:k for k, v in PET_SYSTEM_BONUS_TEXT_TO_RESOURCE.iteritems()}
 
 class SYNERGY_POINTS_TYPE(object):
     EVENT_INTERACTION = 'eventInteraction'
     FIRST_CLICK = 'firstClick'
-    SERVER_ONLY = (
-     EVENT_INTERACTION,)
-    ALL = (
-     EVENT_INTERACTION, FIRST_CLICK)
+    SERVER_ONLY = (EVENT_INTERACTION,)
+    ALL = (EVENT_INTERACTION, FIRST_CLICK)
 
 
 SYNERGY_POINTS_TYPE_TO_IDX = {key:idx for idx, key in enumerate(SYNERGY_POINTS_TYPE.ALL, 1)}
@@ -108,8 +107,7 @@ class PetStateBehavior(object):
     BASIC = 0
     CALM = 1
     HIDDEN = 2
-    ALL = (
-     BASIC, CALM, HIDDEN)
+    ALL = (BASIC, CALM, HIDDEN)
 
 
 class PetTrigger(object):
@@ -120,8 +118,13 @@ class PetTrigger(object):
     FIRST_CLICK = 'firstClick'
     TO_EVENT_SCREEN = 'toEventScreen'
     FROM_EVENT_SCREEN = 'fromEventScreen'
-    ALL = (
-     LOGIN, TO_STORAGE, FROM_STORAGE, MEDAL, FIRST_CLICK, TO_EVENT_SCREEN, FROM_EVENT_SCREEN)
+    ALL = (LOGIN,
+     TO_STORAGE,
+     FROM_STORAGE,
+     MEDAL,
+     FIRST_CLICK,
+     TO_EVENT_SCREEN,
+     FROM_EVENT_SCREEN)
 
 
 class StorageStaticTrigger(object):
@@ -135,8 +138,10 @@ class AnimationStateName(object):
     DISABLED = 'disabled'
     HIDDEN = 'hidden'
     PROMOTION = 'promotion'
-    ALL = (
-     DEFAULT, DISABLED, HIDDEN, PROMOTION)
+    ALL = (DEFAULT,
+     DISABLED,
+     HIDDEN,
+     PROMOTION)
 
 
 class PetStaticTrigger(object):
@@ -148,8 +153,7 @@ class PetStaticTrigger(object):
 class PetHangarObject(object):
     STORAGE = 'petStorage'
     PET = 'pet'
-    ALL = (
-     STORAGE, PET)
+    ALL = (STORAGE, PET)
 
 
 class PetAchievementAnimation(object):

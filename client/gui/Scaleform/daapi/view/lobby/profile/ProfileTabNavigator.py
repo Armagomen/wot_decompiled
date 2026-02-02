@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/profile/ProfileTabNavigator.py
 from gui.Scaleform.daapi.view.lobby.profile.ProfileSection import ProfileSection
 from gui.Scaleform.daapi.view.meta.ProfileTabNavigatorMeta import ProfileTabNavigatorMeta
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -5,8 +7,7 @@ from gui.impl.lobby.achievements.achievements_main_view import AchievementsViewC
 from gui.shared import events, g_eventBus, EVENT_BUS_SCOPE
 
 class ProfileTabNavigator(ProfileTabNavigatorMeta):
-    gf_views_map = [
-     VIEW_ALIAS.PROFILE_TOTAL_PAGE, VIEW_ALIAS.PROFILE_ACHIEVEMENTS_PAGE]
+    gf_views_map = [VIEW_ALIAS.PROFILE_TOTAL_PAGE, VIEW_ALIAS.PROFILE_ACHIEVEMENTS_PAGE]
 
     def __init__(self, *args):
         ProfileTabNavigatorMeta.__init__(self)

@@ -1,4 +1,7 @@
-import typing, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/utils/requesters/EpicMetaGameRequester.py
+import typing
+import BigWorld
 from gui.shared.utils.requesters.abstract import AbstractSyncDataRequester
 from skeletons.gui.shared.utils.requesters import IEpicMetaGameRequester
 
@@ -18,10 +21,7 @@ class EpicMetaGameRequester(AbstractSyncDataRequester, IEpicMetaGameRequester):
 
     def selectedSkills(self, vehicleCD):
         skillsDict = self.getCacheValue('selectedAbilities', None)
-        if skillsDict is not None:
-            return skillsDict.get(vehicleCD, [])
-        else:
-            return []
+        return skillsDict.get(vehicleCD, []) if skillsDict is not None else []
 
     @property
     def skillLevels(self):
@@ -33,14 +33,10 @@ class EpicMetaGameRequester(AbstractSyncDataRequester, IEpicMetaGameRequester):
 
     @property
     def averageXP(self):
-        if self.battleCount > 0:
-            return self.getCacheValue('famePts', 0) / self.battleCount
-        return 0
+        return self.getCacheValue('famePts', 0) / self.battleCount if self.battleCount > 0 else 0
 
     def _requestCache(self, callback=None):
         BigWorld.player().epicMetaGame.getCache(lambda resID, value: self._response(resID, value, callback))
 
     def _preprocessValidData(self, data):
-        if 'epicMetaGame' in data:
-            return dict(data['epicMetaGame'])
-        return dict()
+        return dict(data['epicMetaGame']) if 'epicMetaGame' in data else dict()

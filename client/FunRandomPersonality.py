@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/FunRandomPersonality.py
 from __future__ import absolute_import
 from fun_random.gui.battle_control import registerFunRandomBattle
 from fun_random.gui.game_control import registerFunRandomAwardControllers
@@ -12,10 +14,7 @@ from gui.override_scaleform_views_manager import g_overrideScaleFormViewsConfig
 from gui.prb_control.prb_utils import initGuiTypes, initRequestType
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.genConsts.FUNRANDOM_ALIASES import FUNRANDOM_ALIASES
-_LOBBY_EXT_PACKAGES = [
- 'fun_random.gui.impl.lobby.feature',
- 'fun_random.gui.impl.lobby.hangar',
- 'fun_random.gui.impl.lobby.mode_selector']
+_LOBBY_EXT_PACKAGES = ['fun_random.gui.impl.lobby.feature', 'fun_random.gui.impl.lobby.hangar', 'fun_random.gui.impl.lobby.mode_selector']
 
 class ClientFunRandomBattleMode(FunRandomBattleMode):
     _CLIENT_BATTLE_PAGE = VIEW_ALIAS.CLASSIC_BATTLE_PAGE
@@ -114,9 +113,7 @@ class ClientFunRandomBattleMode(FunRandomBattleMode):
     def _client_platoonLayouts(self):
         from gui.impl.gen import R
         from gui.impl.lobby.platoon.platoon_config import EPlatoonLayout, MembersWindow, PlatoonLayout
-        return [
-         (
-          EPlatoonLayout.MEMBER, PlatoonLayout(R.views.lobby.platoon.MembersWindow(), MembersWindow))]
+        return [(EPlatoonLayout.MEMBER, PlatoonLayout(R.views.lobby.platoon.MembersWindow(), MembersWindow))]
 
     @property
     def _client_arenaDescrClass(self):
@@ -131,21 +128,19 @@ class ClientFunRandomBattleMode(FunRandomBattleMode):
     @property
     def _client_notificationActionHandlers(self):
         from fun_random.notification.actions_handlers import SelectFunRandomMode, ShowFunRandomProgression
-        return (
-         SelectFunRandomMode, ShowFunRandomProgression)
+        return (SelectFunRandomMode, ShowFunRandomProgression)
 
     @property
     def _client_messengerClientFormatters(self):
         from fun_random.messenger.formatters.service_channel import FunRandomNotificationsFormatter
         from fun_random.messenger.formatters.token_quest_subformatters import FunProgressionRewardsSyncFormatter
-        return {fun_gui_constants.SCH_CLIENT_MSG_TYPE.FUN_RANDOM_NOTIFICATIONS: FunRandomNotificationsFormatter(), 
-           fun_gui_constants.SCH_CLIENT_MSG_TYPE.FUN_RANDOM_PROGRESSION: FunProgressionRewardsSyncFormatter()}
+        return {fun_gui_constants.SCH_CLIENT_MSG_TYPE.FUN_RANDOM_NOTIFICATIONS: FunRandomNotificationsFormatter(),
+         fun_gui_constants.SCH_CLIENT_MSG_TYPE.FUN_RANDOM_PROGRESSION: FunProgressionRewardsSyncFormatter()}
 
     @property
     def _client_tokenQuestsSubFormatters(self):
         from fun_random.messenger.formatters.token_quest_subformatters import FunProgressionRewardsAsyncFormatter, FunModeItemsQuestAsyncFormatter
-        return (
-         FunProgressionRewardsAsyncFormatter(), FunModeItemsQuestAsyncFormatter())
+        return (FunProgressionRewardsAsyncFormatter(), FunModeItemsQuestAsyncFormatter())
 
     @property
     def _client_lootBoxAutoOpenSubFormatters(self):

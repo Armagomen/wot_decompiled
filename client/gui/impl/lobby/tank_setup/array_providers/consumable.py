@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/array_providers/consumable.py
 from gui.impl.gen.view_models.constants.item_highlight_types import ItemHighlightTypes
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.consumable_slot_model import ConsumableSlotModel
 from gui.impl.lobby.tank_setup.array_providers.base import VehicleBaseArrayProvider
@@ -57,11 +59,7 @@ class ConsumableDeviceProvider(VehicleBaseArrayProvider):
         isFit, reason = item.mayInstall(vehicle, slotID)
         vehicle.consumables.setInstalled(*installed)
         installedItem = layout[slotID]
-        if installedItem is not None and installedItem.isBuiltIn and item not in layout:
-            return (False, '')
-        else:
-            return (
-             isFit, reason)
+        return (False, '') if installedItem is not None and installedItem.isBuiltIn and item not in layout else (isFit, reason)
 
     @classmethod
     def _getItemTypeID(cls):

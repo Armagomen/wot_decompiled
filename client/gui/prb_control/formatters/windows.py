@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/formatters/windows.py
 from gui.impl import backport
 from gui.impl.gen import R
 from helpers import dependency
@@ -25,12 +27,10 @@ class SwitchPeripheryCtx(object):
         raise NotImplementedError
 
     def getUpdateTime(self):
-        return 0
+        pass
 
     def isPeripheryAvailable(self, peripheryID):
-        if self.__isForbidden:
-            return peripheryID not in self._getForbiddenPeripherieIDs()
-        return peripheryID in self._getAllowedPeripherieIDs()
+        return peripheryID not in self._getForbiddenPeripherieIDs() if self.__isForbidden else peripheryID in self._getAllowedPeripherieIDs()
 
     def _getForbiddenPeripherieIDs(self):
         raise NotImplementedError
@@ -55,7 +55,7 @@ class SwitchPeripheryFortCtx(SwitchPeripheryCtx):
         return backport.msgid(R.strings.prebattle.switchPeripheryWindow.fort.applySwitchLabel())
 
     def getExtraChainSteps(self):
-        return
+        return None
 
     def _getForbiddenPeripherieIDs(self):
         return self.lobbyContext.getServerSettings().getForbiddenSortiePeripheryIDs()

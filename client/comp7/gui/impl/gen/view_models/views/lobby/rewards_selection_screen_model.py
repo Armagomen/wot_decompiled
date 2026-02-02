@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/impl/gen/view_models/views/lobby/rewards_selection_screen_model.py
 from gui.impl.gen.view_models.views.lobby.common.selectable_reward_base_model import SelectableRewardBaseModel
 
 class RewardsSelectionScreenModel(SelectableRewardBaseModel):

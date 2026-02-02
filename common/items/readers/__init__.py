@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/items/readers/__init__.py
 from items.readers import chassis_readers
 from items.readers import gun_readers
 from items.readers import shared_readers
@@ -10,8 +12,7 @@ try:
 except ImportError:
     vehicle_reader = None
 
-__all__ = ('chassis_readers', 'gun_readers', 'shared_readers', 'skills_readers', 'sound_readers',
-           'tankmen_readers', 'json_vehicle_reader')
+__all__ = ('chassis_readers', 'gun_readers', 'shared_readers', 'skills_readers', 'sound_readers', 'tankmen_readers', 'json_vehicle_reader')
 if HAS_DEV_RESOURCES:
     json_vehicle_reader = vehicle_reader
 else:

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/account_helpers/festivity_manager.py
 import logging
 from functools import partial
 import AccountCommands
@@ -39,31 +41,35 @@ class FestivityManager(object):
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, None)
             return
-        self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
-        return
+        else:
+            self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
+            return
 
     def get(self, itemName, callback):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, None)
             return
-        self.__syncData.waitForSync(partial(self.__onGetResponse, itemName, callback))
-        return
+        else:
+            self.__syncData.waitForSync(partial(self.__onGetResponse, itemName, callback))
+            return
 
     def __onGetCacheResponse(self, callback, resultID):
         if resultID < 0:
             if callback is not None:
                 callback(resultID, None)
             return
-        if callback is not None:
-            callback(resultID, self.__cache)
-        return
+        else:
+            if callback is not None:
+                callback(resultID, self.__cache)
+            return
 
     def __onGetResponse(self, itemName, callback, resultID):
         if resultID < 0:
             if callback is not None:
                 callback(resultID, None)
             return
-        if callback is not None:
-            callback(resultID, self.__cache[self.__festivityKey].get(itemName, None))
-        return
+        else:
+            if callback is not None:
+                callback(resultID, self.__cache[self.__festivityKey].get(itemName, None))
+            return

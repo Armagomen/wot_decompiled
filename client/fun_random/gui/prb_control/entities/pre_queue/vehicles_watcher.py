@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/prb_control/entities/pre_queue/vehicles_watcher.py
 from __future__ import absolute_import
 from itertools import chain
 from fun_random_common.fun_constants import BATTLE_MODE_VEH_TAGS_EXCEPT_FUN
@@ -22,10 +24,7 @@ class FunRandomVehiclesWatcher(LimitedLevelVehiclesWatcher, RestrictedVehiclesWa
         super(FunRandomVehiclesWatcher, self).stop()
 
     def _getUnsuitableVehicles(self, onClear=False):
-        return chain.from_iterable((
-         LimitedLevelVehiclesWatcher._getUnsuitableVehicles(self, onClear),
-         RestrictedVehiclesWatcher._getUnsuitableVehicles(self, onClear),
-         self._getUnsuitableVehiclesBase()))
+        return chain.from_iterable((LimitedLevelVehiclesWatcher._getUnsuitableVehicles(self, onClear), RestrictedVehiclesWatcher._getUnsuitableVehicles(self, onClear), self._getUnsuitableVehiclesBase()))
 
     @hasDesiredSubMode(defReturn=set())
     def _getAllowedVehicleTypes(self):

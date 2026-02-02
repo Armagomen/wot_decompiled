@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/lootbox_system/base/awards_manager.py
 from typing import TYPE_CHECKING
 from gui.lootbox_system.base.bonuses_layout import BonusesLayout
 from gui.server_events.bonuses import getNonQuestBonuses, mergeBonuses, splitBonuses
@@ -23,6 +25,10 @@ class AwardsManager(object):
     @classmethod
     def finalize(cls):
         cls.__bonusesLayout.fini()
+
+    @classmethod
+    def bonusesLayoutUpdate(cls):
+        cls.__bonusesLayout.updateStorage()
 
     @classmethod
     def composeBonuses(cls, eventName, rewards, ctx=None):

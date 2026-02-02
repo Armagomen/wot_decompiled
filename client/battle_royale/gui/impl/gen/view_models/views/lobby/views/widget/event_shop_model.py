@@ -1,7 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/gen/view_models/views/lobby/views/widget/event_shop_model.py
 from frameworks.wulf import ViewModel
 
 class EventShopModel(ViewModel):
-    __slots__ = ('openShop', )
+    __slots__ = ('openShop',)
 
     def __init__(self, properties=2, commands=1):
         super(EventShopModel, self).__init__(properties=properties, commands=commands)

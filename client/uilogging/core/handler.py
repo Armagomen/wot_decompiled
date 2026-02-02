@@ -1,4 +1,10 @@
-import typing, json, zlib, base64, binascii
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/uilogging/core/handler.py
+import typing
+import json
+import zlib
+import base64
+import binascii
 from functools import wraps, partial
 import BigWorld
 from Event import SafeEvent
@@ -63,24 +69,19 @@ class FeatureSettings(object):
 
     @property
     def params(self):
-        return (
-         self.feature, self.enabled, self.loglevel)
+        return (self.feature, self.enabled, self.loglevel)
 
     def verifyLog(self, log):
-        if log.feature != self.feature or not self.enabled or log.level < self.loglevel:
-            return False
-        return True
+        return False if log.feature != self.feature or not self.enabled or log.level < self.loglevel else True
 
     def __eq__(self, other):
-        if isinstance(other, FeatureSettings):
-            return self.params == other.params
-        return False
+        return self.params == other.params if isinstance(other, FeatureSettings) else False
 
     def __ne__(self, other):
         return not self.__eq__(other)
 
     def __str__(self):
-        return ('<FeatureSettings: {}>').format(self.params)
+        return '<FeatureSettings: {}>'.format(self.params)
 
     def __repr__(self):
         return self.__str__()
@@ -100,7 +101,7 @@ class FeaturesSettings(object):
                 _new = FeatureSettings(feature, enabled=True, params=accepted[feature])
                 self._features[feature] = _new
                 self._logger.debug('Enabled %s.', _new)
-            elif _current.enabled:
+            if _current.enabled:
                 _new = FeatureSettings(feature, enabled=True, params=accepted[feature])
                 if _current != _new:
                     self._features[feature] = _new
@@ -180,9 +181,7 @@ class LogHandler(object):
             session = self._getSession()
             if session:
                 return session.lifetime
-            if self._destroyed:
-                return None
-            return 0
+            return None if self._destroyed else 0
 
     @_ifDestroyed(None)
     def startSender(self):
@@ -216,10 +215,7 @@ class LogHandler(object):
         return isPlayerAccount()
 
     def _getSession(self):
-        if self._session.update():
-            return None
-        else:
-            return self._session.get() or self.destroy()
+        return None if self._session.update() else self._session.get() or self.destroy()
 
     def _send(self, session, logs, wait=True):
         self._logger.debug('Sending %s logs from player=%s.', len(logs), self._playerID)
@@ -231,12 +227,16 @@ class LogHandler(object):
             try:
                 jsonData = json.dumps([ _log.toDict() for _log in logs ])
                 postData = base64.b64encode(zlib.compress(jsonData.encode('utf-8'), DEFAULT_COMPRESSION_LEVEL))
-            except (binascii.Error, zlib.error, UnicodeError, TypeError, ValueError):
+            except (binascii.Error,
+             zlib.error,
+             UnicodeError,
+             TypeError,
+             ValueError):
                 self._logger.exception('Logs compression failed.')
                 return
 
-            headers = {HttpHeaders.CONTENT_TYPE.value: 'application/octet-stream', 
-               HttpHeaders.USER_ID.value: str(self._playerID)}
+            headers = {HttpHeaders.CONTENT_TYPE.value: 'application/octet-stream',
+             HttpHeaders.USER_ID.value: str(self._playerID)}
             if session.token is not None:
                 headers[HttpHeaders.AUTH_TOKEN.value] = str(session.token)
             BigWorld.fetchURL(url=session.url, callback=partial(self._receive, session.id, logs) if wait else (lambda x: x), headers=headers, timeout=HTTP_DEFAULT_TIMEOUT, method='POST', postData=postData)
@@ -251,7 +251,7 @@ class LogHandler(object):
                 self.add(log)
 
             return
-        if response.responseCode != HTTP_OK_STATUS:
+        elif response.responseCode != HTTP_OK_STATUS:
             self.destroy()
             return
         else:
@@ -292,9 +292,7 @@ class LogHandler(object):
                 self._logsBatchWaitingTime = 0
             else:
                 self._logsBatchWaitingTime += LOGS_SEND_PERIOD
-            if self._destroyed:
-                return None
-            return LOGS_SEND_PERIOD
+            return None if self._destroyed else LOGS_SEND_PERIOD
 
     def _startSender(self, *args, **kwargs):
         if self._sender is None and self._logs:

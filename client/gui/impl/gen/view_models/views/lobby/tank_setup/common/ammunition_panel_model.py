@@ -1,9 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/tank_setup/common/ammunition_panel_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.common.ammunition_items_group import AmmunitionItemsGroup
 
 class AmmunitionPanelModel(ViewModel):
-    __slots__ = ('onSectionSelect', 'onDragDropSwap', 'onSlotClear', 'onSectionResized',
-                 'onChangeSetupIndex', 'onSpecializationSelect')
+    __slots__ = ('onSectionSelect', 'onDragDropSwap', 'onSlotClear', 'onSectionResized', 'onChangeSetupIndex', 'onSpecializationSelect')
 
     def __init__(self, properties=6, commands=6):
         super(AmmunitionPanelModel, self).__init__(properties=properties, commands=commands)

@@ -1,10 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/ctrl_events.py
 import Event
 
 class _PrbCtrlEvents(object):
-    __slots__ = ('__eManager', 'onLegacyIntroModeJoined', 'onLegacyIntroModeLeft',
-                 'onUnitIntroModeLeft', 'onLegacyInited', 'onUnitIntroModeJoined',
-                 'onUnitBrowserModeLeft', 'onUnitCreationFailure', 'onPreQueueJoined',
-                 'onPreQueueJoinFailure', 'onPreQueueLeft', 'onVehicleClientStateChanged')
+    __slots__ = ('__eManager', 'onLegacyIntroModeJoined', 'onLegacyIntroModeLeft', 'onUnitIntroModeLeft', 'onLegacyInited', 'onUnitIntroModeJoined', 'onUnitBrowserModeLeft', 'onUnitCreationFailure', 'onPreQueueJoined', 'onPreQueueJoinFailure', 'onPreQueueLeft', 'onVehicleClientStateChanged')
 
     def __init__(self):
         super(_PrbCtrlEvents, self).__init__()

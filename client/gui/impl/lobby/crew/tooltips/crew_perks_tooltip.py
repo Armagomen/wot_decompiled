@@ -1,4 +1,7 @@
-import copy, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/tooltips/crew_perks_tooltip.py
+import copy
+import typing
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.crew.tooltips.crew_perks_tooltip_booster_model import CrewPerksTooltipBoosterModel
@@ -22,10 +25,7 @@ if typing.TYPE_CHECKING:
 class CrewPerksTooltip(ViewImpl):
     _itemsCache = dependency.descriptor(IItemsCache)
     _itemsFactory = dependency.descriptor(IGuiItemsFactory)
-    __slots__ = ('_skillName', '_tankman', '_tankmanVehicle', '_skill', '_skillLevel',
-                 '_skillBooster', '_showAdditionalInfo', '_isTmanTrainedVeh', '_isFakeSkill',
-                 '_isFakeSkillLvl', '_isCmpSkill', '_skillLevelWithoutEff', '_isBonus',
-                 '_isIrrelevant', '_isUntrained')
+    __slots__ = ('_skillName', '_tankman', '_tankmanVehicle', '_skill', '_skillLevel', '_skillBooster', '_showAdditionalInfo', '_isTmanTrainedVeh', '_isFakeSkill', '_isFakeSkillLvl', '_isCmpSkill', '_skillLevelWithoutEff', '_isBonus', '_isIrrelevant', '_isUntrained')
 
     def __init__(self, skillName, skillRole, tankmanId, skillLevel=None, showAdditionalInfo=True, *args, **kwargs):
         settings = ViewSettings(R.views.lobby.crew.tooltips.CrewPerksTooltip(), args=args, kwargs=kwargs)
@@ -65,20 +65,16 @@ class CrewPerksTooltip(ViewImpl):
         if tankman is not None:
             return tankman
         else:
-            if tankmanId:
-                return self._itemsCache.items.getTankman(int(tankmanId))
-            return
+            return self._itemsCache.items.getTankman(int(tankmanId)) if tankmanId else None
 
     def _getVehicle(self, **kwargs):
         vehicle = kwargs.get('vehicle', None)
         if vehicle is not None:
             return vehicle
-        else:
-            if self._tankman is None:
-                return
-            if self._tankman.isInTank:
-                return self._itemsCache.items.getVehicle(self._tankman.vehicleInvID)
+        elif self._tankman is None:
             return
+        else:
+            return self._itemsCache.items.getVehicle(self._tankman.vehicleInvID) if self._tankman.isInTank else None
 
     def _getIsIrrelevant(self):
         if not self._tankman:
@@ -96,7 +92,7 @@ class CrewPerksTooltip(ViewImpl):
                 if bonusSkill and self._skill.name == bonusSkill.name:
                     return bonusRole
 
-        return
+        return None
 
     def _isGroupSkill(self):
         if not self._tankmanVehicle:
@@ -132,7 +128,7 @@ class CrewPerksTooltip(ViewImpl):
         return False
 
     def _fillModel(self):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             vm.setIconName(self._skill.extensionLessIconName)
             vm.setUserName(self._skill.userName)
             vm.setLevel(self._skillLevelWithoutEff)
@@ -242,7 +238,7 @@ class CrewPerksTooltip(ViewImpl):
                         self._skillLevelWithoutEff = tankmanPersonalSkillLevel(maxSkillsEffTman, self._skillName, booster=skillBooster)
             else:
                 realSkillLevel = crewMemberRealSkillLevel(self._tankmanVehicle, self._skill.name, commonWithIncrease=True)
-                if any(tman and not tman.isMaxCurrentVehicleSkillsEfficiency for _, tman in self._tankmanVehicle.crew):
+                if any((tman and not tman.isMaxCurrentVehicleSkillsEfficiency for _, tman in self._tankmanVehicle.crew)):
                     perfectCrew = self._tankmanVehicle.getPerfectCrew()
                     idealCrewVehicle = copy.copy(self._tankmanVehicle)
                     idealCrewVehicle.crew = perfectCrew

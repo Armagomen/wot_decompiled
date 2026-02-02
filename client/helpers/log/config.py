@@ -1,4 +1,10 @@
-import logging, logging.config, os, BWLogging, resource_helper
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/helpers/log/config.py
+import logging
+import logging.config
+import os
+import BWLogging
+import resource_helper
 from . import handlers
 from . import hooks
 ENV_KEY = 'PY_LOGGING_CFG'
@@ -17,15 +23,14 @@ class LogConfigurator(logging.config.DictConfigurator):
     def _clearConvertor(cls, convertor):
         if isinstance(convertor, dict):
             iterator = convertor.itervalues()
+        elif isinstance(convertor, (tuple, list)):
+            iterator = convertor
         else:
-            if isinstance(convertor, (tuple, list)):
-                iterator = convertor
-            else:
-                return
-            for item in iterator:
-                cls._clearConvertor(item)
-                convertor.configurator = None
-                convertor.parent = None
+            return
+        for item in iterator:
+            cls._clearConvertor(item)
+            convertor.configurator = None
+            convertor.parent = None
 
         return
 

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/BattleRoyalePersonality.py
 from battle_royale.gui.battle_control.controllers.repository import registerBRBattleRepo
 from battle_royale.gui.Scaleform import registerBRBattlePackages, registerBRLobbyPackages, registerBRTooltipsBuilders, registerCustomSwf, registerBRBattleQueueProvider, registerBRHangarPresetGetter
 from battle_royale.gui.battle_control.controllers.equipment_items import registerBREquipmentsItems

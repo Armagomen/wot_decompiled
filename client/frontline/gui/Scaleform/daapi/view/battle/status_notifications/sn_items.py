@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/battle/status_notifications/sn_items.py
 import typing
 from constants import VEHICLE_MISC_STATUS
 from frontline.gui.Scaleform.daapi.view.battle.status_notifications.frontline_helpers import getSmokeDataByPredicate, getEquipmentById

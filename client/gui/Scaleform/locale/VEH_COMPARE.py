@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/locale/VEH_COMPARE.py
 from debug_utils import LOG_WARNING
 
 class VEH_COMPARE(object):
@@ -189,17 +191,16 @@ class VEH_COMPARE(object):
     SKILLSELECT_BUTTON_CANCEL = '#veh_compare:skillSelect/button/cancel'
     SKILLSELECT_BUTTON_ADDTOCOMPARE = '#veh_compare:skillSelect/button/addToCompare'
     SKILLSELECT_TOOLTIPHINT = '#veh_compare:skillSelect/tooltipHint'
-    CARTPOPOVER_CONFIGURATIONTYPE_ENUM = (
-     CARTPOPOVER_CONFIGURATIONTYPE_BASIC,
+    CARTPOPOVER_CONFIGURATIONTYPE_ENUM = (CARTPOPOVER_CONFIGURATIONTYPE_BASIC,
      CARTPOPOVER_CONFIGURATIONTYPE_CUSTOM,
      CARTPOPOVER_CONFIGURATIONTYPE_CURRENT,
      CARTPOPOVER_CONFIGURATIONTYPE_PREMIUM)
 
     @classmethod
     def cartpopover_configurationtype(cls, key0):
-        outcome = ('#veh_compare:cartPopover/configurationType/{}').format(key0)
+        outcome = '#veh_compare:cartPopover/configurationType/{}'.format(key0)
         if outcome not in cls.CARTPOPOVER_CONFIGURATIONTYPE_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome

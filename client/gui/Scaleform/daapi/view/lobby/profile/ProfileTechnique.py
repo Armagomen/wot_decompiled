@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/profile/ProfileTechnique.py
 from constants import Configs
 from shared_utils import findFirst
 from account_helpers import AccountSettings
@@ -59,13 +61,13 @@ class ProfileTechnique(ProfileTechniqueMeta):
     def showVehiclesRating(self):
         setHofButtonOld(PROFILE_CONSTANTS.HOF_VIEW_RATING_BUTTON)
         self.eventsCache.onProfileVisited()
-        g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.BROWSER_VIEW), ctx={'url': getHofRatingUrlForVehicle(self._selectedVehicleIntCD), 
-           'returnAlias': VIEW_ALIAS.LOBBY_PROFILE, 
-           'allowRightClick': True, 
-           'webHandlers': createHofWebHandlers(), 
-           'itemCD': self._selectedVehicleIntCD, 
-           'disabledKeys': getHofDisabledKeys(), 
-           'onServerSettingsChange': onServerSettingsChange}), EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.BROWSER_VIEW), ctx={'url': getHofRatingUrlForVehicle(self._selectedVehicleIntCD),
+         'returnAlias': VIEW_ALIAS.LOBBY_PROFILE,
+         'allowRightClick': True,
+         'webHandlers': createHofWebHandlers(),
+         'itemCD': self._selectedVehicleIntCD,
+         'disabledKeys': getHofDisabledKeys(),
+         'onServerSettingsChange': onServerSettingsChange}), EVENT_BUS_SCOPE.LOBBY)
 
     def _populate(self):
         event = ProfileTechniqueEvent(ProfileTechniqueEvent.SELECT_BATTLE_TYPE)
@@ -97,21 +99,25 @@ class ProfileTechnique(ProfileTechniqueMeta):
             if tabData is not None:
                 storedData['selectedColumn'] = tabHeaderData.index(tabData)
                 storedData['selectedColumnSorting'] = initVehicleSorting.get('selectedColumnSorting', 'descending')
-        initData = {'dropDownProvider': self._makeBattleTypesDropDown(accountDossier, forVehiclesPage=True), 'tableHeader': tabHeaderData, 
-           'selectedColumn': storedData['selectedColumn'], 
-           'selectedColumnSorting': storedData['selectedColumnSorting']}
+        initData = {'dropDownProvider': self._makeBattleTypesDropDown(accountDossier, forVehiclesPage=True),
+         'tableHeader': tabHeaderData,
+         'selectedColumn': storedData['selectedColumn'],
+         'selectedColumnSorting': storedData['selectedColumnSorting']}
         self._seasonsManagers.addSeasonsDropdown(initData)
         return initData
 
     def _setRatingButton(self):
         if self._battlesType == PROFILE_DROPDOWN_KEYS.ALL and self.lobbyContext.getServerSettings().isHofEnabled():
-            self.as_setRatingButtonS({'enabled': True, 'visible': True})
+            self.as_setRatingButtonS({'enabled': True,
+             'visible': True})
             if isHofButtonNew(PROFILE_CONSTANTS.HOF_VIEW_RATING_BUTTON):
-                self.as_setBtnCountersS([{'componentId': PROFILE_CONSTANTS.HOF_VIEW_RATING_BUTTON, 'count': '1'}])
+                self.as_setBtnCountersS([{'componentId': PROFILE_CONSTANTS.HOF_VIEW_RATING_BUTTON,
+                  'count': '1'}])
             else:
                 self.as_setBtnCountersS([])
         else:
-            self.as_setRatingButtonS({'enabled': False, 'visible': False})
+            self.as_setRatingButtonS({'enabled': False,
+             'visible': False})
 
     def setSelectedTableColumn(self, index, sortDirection):
         storedDataId = self._getStorageId()
@@ -132,8 +138,7 @@ class ProfileTechnique(ProfileTechniqueMeta):
 
     def _getDefaultTableHeader(self, isFallout=False, showMarkOfMastery=True):
         isPrestigeVisible = self._isPrestigeVisible()
-        result = [
-         self._createTableBtnInfo('nationIndex', 36, 0, PROFILE.SECTION_TECHNIQUE_SORT_TOOLTIP_NATION, 'ascending', iconSource=RES_ICONS.MAPS_ICONS_FILTERS_NATIONS_ALL, inverted=True),
+        result = [self._createTableBtnInfo('nationIndex', 36, 0, PROFILE.SECTION_TECHNIQUE_SORT_TOOLTIP_NATION, 'ascending', iconSource=RES_ICONS.MAPS_ICONS_FILTERS_NATIONS_ALL, inverted=True),
          self._createTableBtnInfo('typeIndex', 34, 1, PROFILE.SECTION_TECHNIQUE_SORT_TOOLTIP_TECHNIQUE, 'descending', iconSource=RES_ICONS.MAPS_ICONS_FILTERS_TANKS_ALL),
          self._createTableBtnInfo('level', 32, 2, PROFILE.SECTION_TECHNIQUE_SORT_TOOLTIP_LVL, 'descending', iconSource=RES_ICONS.MAPS_ICONS_BUTTONS_TAB_SORT_BUTTON_LEVEL),
          self._createTableBtnInfo('shortUserName', 154, 7, PROFILE.SECTION_TECHNIQUE_SORT_TOOLTIP_NAME, 'ascending', label=PROFILE.SECTION_TECHNIQUE_BUTTONBAR_VEHICLENAME, inverted=True, sortType='string'),
@@ -148,45 +153,42 @@ class ProfileTechnique(ProfileTechniqueMeta):
         return result
 
     def _createTableBtnInfo(self, iconId, buttonWidth, sortOrder, toolTip, defaultSortDirection, label='', iconSource='', inverted=False, sortType='numeric', showSeparator=True, enabled=True):
-        return {'id': iconId, 
-           'buttonWidth': buttonWidth, 
-           'sortOrder': sortOrder, 
-           'toolTip': toolTip, 
-           'defaultSortDirection': defaultSortDirection, 
-           'label': label, 
-           'iconSource': iconSource, 
-           'inverted': inverted, 
-           'sortType': sortType, 
-           'showSeparator': showSeparator, 
-           'ascendingIconSource': RES_ICONS.MAPS_ICONS_BUTTONS_TAB_SORT_BUTTON_ASCPROFILESORTARROW, 
-           'descendingIconSource': RES_ICONS.MAPS_ICONS_BUTTONS_TAB_SORT_BUTTON_DESCPROFILESORTARROW, 
-           'buttonHeight': 40, 
-           'enabled': enabled}
+        return {'id': iconId,
+         'buttonWidth': buttonWidth,
+         'sortOrder': sortOrder,
+         'toolTip': toolTip,
+         'defaultSortDirection': defaultSortDirection,
+         'label': label,
+         'iconSource': iconSource,
+         'inverted': inverted,
+         'sortType': sortType,
+         'showSeparator': showSeparator,
+         'ascendingIconSource': RES_ICONS.MAPS_ICONS_BUTTONS_TAB_SORT_BUTTON_ASCPROFILESORTARROW,
+         'descendingIconSource': RES_ICONS.MAPS_ICONS_BUTTONS_TAB_SORT_BUTTON_DESCPROFILESORTARROW,
+         'buttonHeight': 40,
+         'enabled': enabled}
 
     def _getEmptyScreenLabel(self):
-        emptyScreenLabelsDictionary = {PROFILE_DROPDOWN_KEYS.ALL: PROFILE.SECTION_TECHNIQUE_EMPTYSCREENLABEL_BATTLETYPE_ALL, 
-           PROFILE_DROPDOWN_KEYS.FALLOUT: PROFILE.SECTION_TECHNIQUE_EMPTYSCREENLABEL_BATTLETYPE_FALLOUT, 
-           PROFILE_DROPDOWN_KEYS.TEAM: PROFILE.SECTION_TECHNIQUE_EMPTYSCREENLABEL_BATTLETYPE_TEAM, 
-           PROFILE_DROPDOWN_KEYS.STATICTEAM: PROFILE.SECTION_TECHNIQUE_EMPTYSCREENLABEL_BATTLETYPE_STATICTEAM, 
-           PROFILE_DROPDOWN_KEYS.HISTORICAL: PROFILE.SECTION_TECHNIQUE_EMPTYSCREENLABEL_BATTLETYPE_HISTORICAL, 
-           PROFILE_DROPDOWN_KEYS.CLAN: PROFILE.SECTION_TECHNIQUE_EMPTYSCREENLABEL_BATTLETYPE_GLOBALMAP, 
-           PROFILE_DROPDOWN_KEYS.RANKED: PROFILE.SECTION_TECHNIQUE_EMPTYSCREENLABEL_BATTLETYPE_RANKED, 
-           PROFILE_DROPDOWN_KEYS.RANKED_10X10: PROFILE.SECTION_TECHNIQUE_EMPTYSCREENLABEL_BATTLETYPE_RANKED, 
-           PROFILE_DROPDOWN_KEYS.FORTIFICATIONS_BATTLES: PROFILE.SECTION_TECHNIQUE_EMPTYSCREENLABEL_BATTLETYPE_FORTBATTLES, 
-           PROFILE_DROPDOWN_KEYS.FORTIFICATIONS_SORTIES: PROFILE.SECTION_TECHNIQUE_EMPTYSCREENLABEL_BATTLETYPE_FORTSORTIES, 
-           PROFILE_DROPDOWN_KEYS.EPIC_RANDOM: PROFILE.SECTION_TECHNIQUE_EMPTYSCREENLABEL_BATTLETYPE_EPICRANDOM, 
-           PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SOLO: PROFILE.SECTION_TECHNIQUE_EMPTYSCREENLABEL_BATTLETYPE_BATTLEROYALESOLO, 
-           PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SQUAD: PROFILE.SECTION_TECHNIQUE_EMPTYSCREENLABEL_BATTLETYPE_BATTLEROYALESQUAD}
+        emptyScreenLabelsDictionary = {PROFILE_DROPDOWN_KEYS.ALL: PROFILE.SECTION_TECHNIQUE_EMPTYSCREENLABEL_BATTLETYPE_ALL,
+         PROFILE_DROPDOWN_KEYS.FALLOUT: PROFILE.SECTION_TECHNIQUE_EMPTYSCREENLABEL_BATTLETYPE_FALLOUT,
+         PROFILE_DROPDOWN_KEYS.TEAM: PROFILE.SECTION_TECHNIQUE_EMPTYSCREENLABEL_BATTLETYPE_TEAM,
+         PROFILE_DROPDOWN_KEYS.STATICTEAM: PROFILE.SECTION_TECHNIQUE_EMPTYSCREENLABEL_BATTLETYPE_STATICTEAM,
+         PROFILE_DROPDOWN_KEYS.HISTORICAL: PROFILE.SECTION_TECHNIQUE_EMPTYSCREENLABEL_BATTLETYPE_HISTORICAL,
+         PROFILE_DROPDOWN_KEYS.CLAN: PROFILE.SECTION_TECHNIQUE_EMPTYSCREENLABEL_BATTLETYPE_GLOBALMAP,
+         PROFILE_DROPDOWN_KEYS.RANKED: PROFILE.SECTION_TECHNIQUE_EMPTYSCREENLABEL_BATTLETYPE_RANKED,
+         PROFILE_DROPDOWN_KEYS.RANKED_10X10: PROFILE.SECTION_TECHNIQUE_EMPTYSCREENLABEL_BATTLETYPE_RANKED,
+         PROFILE_DROPDOWN_KEYS.FORTIFICATIONS_BATTLES: PROFILE.SECTION_TECHNIQUE_EMPTYSCREENLABEL_BATTLETYPE_FORTBATTLES,
+         PROFILE_DROPDOWN_KEYS.FORTIFICATIONS_SORTIES: PROFILE.SECTION_TECHNIQUE_EMPTYSCREENLABEL_BATTLETYPE_FORTSORTIES,
+         PROFILE_DROPDOWN_KEYS.EPIC_RANDOM: PROFILE.SECTION_TECHNIQUE_EMPTYSCREENLABEL_BATTLETYPE_EPICRANDOM,
+         PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SOLO: PROFILE.SECTION_TECHNIQUE_EMPTYSCREENLABEL_BATTLETYPE_BATTLEROYALESOLO,
+         PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SQUAD: PROFILE.SECTION_TECHNIQUE_EMPTYSCREENLABEL_BATTLETYPE_BATTLEROYALESQUAD}
         return i18n.makeString(emptyScreenLabelsDictionary[self._battlesType])
 
     def _getNecessaryStats(self, accountDossier=None):
         if accountDossier is None:
             accountDossier = self.itemsCache.items.getAccountDossier(self._userID)
         seasonStats = self._seasonsManagers.getStats(accountDossier)
-        if seasonStats:
-            return seasonStats
-        else:
-            return super(ProfileTechnique, self)._getNecessaryStats(accountDossier)
+        return seasonStats if seasonStats else super(ProfileTechnique, self)._getNecessaryStats(accountDossier)
 
     def _sendAccountData(self, targetData, accountDossier):
         super(ProfileTechnique, self)._sendAccountData(targetData, accountDossier)
@@ -194,10 +196,7 @@ class ProfileTechnique(ProfileTechniqueMeta):
         self.as_responseDossierS(self._battlesType, self._getTechniqueListVehicles(targetData), '', self._getEmptyScreenLabel())
 
     def __getTableHeader(self, isFallout):
-        if self._battlesType in (PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SOLO,
-         PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SQUAD):
-            return self.__getBattleRoyaleTableHeader()
-        return self._getDefaultTableHeader(isFallout)
+        return self.__getBattleRoyaleTableHeader() if self._battlesType in (PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SOLO, PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SQUAD) else self._getDefaultTableHeader(isFallout)
 
     def __getBattleRoyaleTechniqueListVehicles(self, targetData):
         result = []
@@ -211,27 +210,26 @@ class ProfileTechnique(ProfileTechniqueMeta):
             vehicle = self.itemsCache.items.getItemByCD(vehicleCD)
             iconResId = R.images.gui.maps.icons.battleRoyale.vehicles.dyn(getIconResourceName(vehicle.name))()
             if vehicle is not None:
-                result.append({'id': vehicleCD, 
-                   'inventoryID': vehicle.invID, 
-                   'shortUserName': vehicle.shortUserName, 
-                   'battlesCount': battlesCount, 
-                   'avgExperience': avgXP, 
-                   'userName': vehicle.userName, 
-                   'typeIndex': VEHICLE_TABLE_TYPES_ORDER_INDICES_REVERSED[vehicle.type], 
-                   'nationIndex': GUI_NATIONS_ORDER_INDEX[NAMES[vehicle.nationID]], 
-                   'nationID': vehicle.nationID, 
-                   'level': vehicle.level, 
-                   'tankIconPath': backport.image(iconResId), 
-                   'typeIconPath': '../maps/icons/filters/tanks/%s.png' % vehicle.type, 
-                   'winsCount': winsCount, 
-                   'avgDamage': avgDamage, 
-                   'avgFrags': avgFrags})
+                result.append({'id': vehicleCD,
+                 'inventoryID': vehicle.invID,
+                 'shortUserName': vehicle.shortUserName,
+                 'battlesCount': battlesCount,
+                 'avgExperience': avgXP,
+                 'userName': vehicle.userName,
+                 'typeIndex': VEHICLE_TABLE_TYPES_ORDER_INDICES_REVERSED[vehicle.type],
+                 'nationIndex': GUI_NATIONS_ORDER_INDEX[NAMES[vehicle.nationID]],
+                 'nationID': vehicle.nationID,
+                 'level': vehicle.level,
+                 'tankIconPath': backport.image(iconResId),
+                 'typeIconPath': '../maps/icons/filters/tanks/%s.png' % vehicle.type,
+                 'winsCount': winsCount,
+                 'avgDamage': avgDamage,
+                 'avgFrags': avgFrags})
 
         return result
 
     def __getBattleRoyaleTableHeader(self):
-        return (
-         self._createTableBtnInfo('nationIndex', 36, 0, PROFILE.SECTION_TECHNIQUE_SORT_TOOLTIP_NATION, 'ascending', iconSource=backport.image(R.images.gui.maps.icons.filters.nations.all()), inverted=True),
+        return (self._createTableBtnInfo('nationIndex', 36, 0, PROFILE.SECTION_TECHNIQUE_SORT_TOOLTIP_NATION, 'ascending', iconSource=backport.image(R.images.gui.maps.icons.filters.nations.all()), inverted=True),
          self._createTableBtnInfo('typeIndex', 34, 1, PROFILE.SECTION_TECHNIQUE_SORT_TOOLTIP_CLASS, 'descending', iconSource=backport.image(R.images.gui.maps.icons.filters.tanks.all())),
          self._createTableBtnInfo('shortUserName', 171, 7, PROFILE.SECTION_TECHNIQUE_SORT_TOOLTIP_NAME, 'ascending', label=backport.text(R.strings.profile.section.technique.buttonBar.vehicleName()), inverted=True, sortType='string'),
          self._createTableBtnInfo('battlesCount', 64, 2, PROFILE.SECTION_TECHNIQUE_SORT_TOOLTIP_BATTLESCOUNT, 'descending', iconSource=backport.image(R.images.gui.maps.icons.battleRoyale.achievements.battles())),
@@ -241,19 +239,14 @@ class ProfileTechnique(ProfileTechniqueMeta):
          self._createTableBtnInfo('avgFrags', 67, 6, PROFILE.SECTION_TECHNIQUE_SORT_TOOLTIP_AVGFRAGS, 'descending', iconSource=backport.image(R.images.gui.maps.icons.battleRoyale.achievements.avgFrags())))
 
     def _getTechniqueListVehicles(self, targetData, addVehiclesThatInHangarOnly=False):
-        if self._battlesType in (PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SOLO,
-         PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SQUAD):
-            return self.__getBattleRoyaleTechniqueListVehicles(targetData)
-        return self.__getDefaultVehicleList(targetData, addVehiclesThatInHangarOnly)
+        return self.__getBattleRoyaleTechniqueListVehicles(targetData) if self._battlesType in (PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SOLO, PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SQUAD) else self.__getDefaultVehicleList(targetData, addVehiclesThatInHangarOnly)
 
     def __getDefaultVehicleList(self, targetData, addVehiclesThatInHangarOnly=False):
         result = []
         if self.lobbyContext.getServerSettings().isEpicRandomMarkOfMasteryEnabled():
-            __markOfMasteryBattles = (
-             PROFILE_DROPDOWN_KEYS.ALL, PROFILE_DROPDOWN_KEYS.EPIC_RANDOM)
+            __markOfMasteryBattles = (PROFILE_DROPDOWN_KEYS.ALL, PROFILE_DROPDOWN_KEYS.EPIC_RANDOM)
         else:
-            __markOfMasteryBattles = (
-             PROFILE_DROPDOWN_KEYS.ALL,)
+            __markOfMasteryBattles = (PROFILE_DROPDOWN_KEYS.ALL,)
         showMarkOfMastery = self._battlesType in __markOfMasteryBattles and targetData.getMarksOfMastery() != UNAVAILABLE_MARKS_OF_MASTERY
         isPrestigeVisible = self._isPrestigeVisible()
         prestigeVehicles = self._dossier.getPrestigeStats().getVehicles()
@@ -283,27 +276,27 @@ class ProfileTechnique(ProfileTechniqueMeta):
                         prestigeLevel = ProfileUtils.UNAVAILABLE_VALUE
                 else:
                     prestigeLevel = ProfileUtils.UNAVAILABLE_VALUE
-                result.append({'id': intCD, 
-                   'inventoryID': vehicle.invID, 
-                   'isOtherPlayer': self._userID is not None, 
-                   'shortUserName': vehicle.shortUserName, 
-                   'battlesCount': battlesCount, 
-                   'winsEfficiency': winsEfficiency, 
-                   'winsEfficiencyStr': winsEfficiencyStr, 
-                   'avgExperience': avgXP, 
-                   'userName': vehicle.userName, 
-                   'typeIndex': VEHICLE_TABLE_TYPES_ORDER_INDICES_REVERSED[vehicle.type], 
-                   'nationIndex': GUI_NATIONS_ORDER_INDEX[NAMES[vehicle.nationID]], 
-                   'nationID': vehicle.nationID, 
-                   'level': vehicle.level, 
-                   'markOfMastery': markOfMastery, 
-                   'markOfMasteryBlock': ACHIEVEMENT_BLOCK.TOTAL, 
-                   'tankIconPath': vehicle.iconSmall, 
-                   'typeIconPath': '../maps/icons/filters/tanks/%s.png' % vehicle.type, 
-                   'isInHangar': isInHangar, 
-                   'compareModeAvailable': self.comparisonBasket.isEnabled(), 
-                   'prestigePoints': avgPrestigePoints, 
-                   'prestigeLevel': prestigeLevel})
+                result.append({'id': intCD,
+                 'inventoryID': vehicle.invID,
+                 'isOtherPlayer': self._userID is not None,
+                 'shortUserName': vehicle.shortUserName,
+                 'battlesCount': battlesCount,
+                 'winsEfficiency': winsEfficiency,
+                 'winsEfficiencyStr': winsEfficiencyStr,
+                 'avgExperience': avgXP,
+                 'userName': vehicle.userName,
+                 'typeIndex': VEHICLE_TABLE_TYPES_ORDER_INDICES_REVERSED[vehicle.type],
+                 'nationIndex': GUI_NATIONS_ORDER_INDEX[NAMES[vehicle.nationID]],
+                 'nationID': vehicle.nationID,
+                 'level': vehicle.level,
+                 'markOfMastery': markOfMastery,
+                 'markOfMasteryBlock': ACHIEVEMENT_BLOCK.TOTAL,
+                 'tankIconPath': vehicle.iconSmall,
+                 'typeIconPath': '../maps/icons/filters/tanks/%s.png' % vehicle.type,
+                 'isInHangar': isInHangar,
+                 'compareModeAvailable': self.comparisonBasket.isEnabled(),
+                 'prestigePoints': avgPrestigePoints,
+                 'prestigeLevel': prestigeLevel})
 
         return result
 
@@ -381,8 +374,8 @@ class ProfileTechnique(ProfileTechniqueMeta):
             else:
                 isPrestigeVisible = self._isPrestigeVisible() and hasVehiclePrestige(self._selectedVehicleIntCD, checkElite=False) and getVehiclePrestige(self._selectedVehicleIntCD, databaseID=self._userID) != DEFAULT_PRESTIGE
             self.as_setPrestigeVisibleS(isPrestigeVisible)
-            self.as_responseVehicleDossierS({'detailedData': preparedStatistics, 
-               'achievements': achievementsList})
+            self.as_responseVehicleDossierS({'detailedData': preparedStatistics,
+             'achievements': achievementsList})
             return
 
     def _onRegisterFlashComponent(self, viewPy, alias):
@@ -403,9 +396,7 @@ class ProfileTechnique(ProfileTechniqueMeta):
             return FALLOUT_STATISTICS_LAYOUT
         if self._battlesType == PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SOLO:
             return BATTLE_ROYALE_VEHICLE_STATISTICS_LAYOUT
-        if self._battlesType == PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SQUAD:
-            return BATTLE_ROYALE_VEHICLE_STATISTICS_LAYOUT
-        return STATISTICS_LAYOUT
+        return BATTLE_ROYALE_VEHICLE_STATISTICS_LAYOUT if self._battlesType == PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SQUAD else STATISTICS_LAYOUT
 
     def _unpackVehicleParams(self, vehParams):
         if self._battlesType == PROFILE_DROPDOWN_KEYS.FALLOUT:
@@ -414,11 +405,13 @@ class ProfileTechnique(ProfileTechniqueMeta):
         else:
             battlesCount, wins, xp = vehParams
             avgPrestigePoints = ProfileUtils.UNAVAILABLE_VALUE
-        return (battlesCount, wins, xp, avgPrestigePoints)
+        return (battlesCount,
+         wins,
+         xp,
+         avgPrestigePoints)
 
     def _isPrestigeVisible(self):
-        return self.lobbyContext.getServerSettings().prestigeConfig.isEnabled and self._battlesType not in (PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SOLO,
-         PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SQUAD)
+        return self.lobbyContext.getServerSettings().prestigeConfig.isEnabled and self._battlesType not in (PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SOLO, PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SQUAD)
 
     def __getAchievementsList(self, targetData, vehDossier, vehDossierDumped):
         packedList = []

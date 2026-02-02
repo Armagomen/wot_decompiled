@@ -1,6 +1,10 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/missions/packers/conditions.py
+import logging
+import typing
 from gui.Scaleform.genConsts.MISSIONS_ALIASES import MISSIONS_ALIASES
-from gui.Scaleform.locale.QUESTS import QUESTS
+from gui.impl import backport
+from gui.impl.gen import R
 from gui.impl.gen.view_models.common.missions.conditions.condition_group_model import ConditionGroupModel
 from gui.impl.gen.view_models.common.missions.conditions.preformatted_condition_model import PreformattedConditionModel
 from gui.server_events import formatters
@@ -11,7 +15,6 @@ from gui.server_events.cond_formatters.bonus import BattlesCountFormatter
 from gui.server_events.cond_formatters.bonus import MissionsBonusConditionsFormatter
 from gui.server_events.formatters import PreFormattedCondition
 from gui.shared.formatters.plain_text import PlainTextFormatter
-from helpers import i18n
 from personal_missions_constants import CONDITION_ICON
 from soft_exception import SoftException
 if typing.TYPE_CHECKING:
@@ -26,13 +29,11 @@ CONDITION_GROUP_OR = 'or'
 CONDITION_GROUP_NOP = 'nop'
 CONDITION_GROUP_NOT = 'not'
 CONDITION_DEFAULT_NAME = 'play'
-CONDITION_GROUP_TYPE_LIST = (
- CONDITION_GROUP_AND,
+CONDITION_GROUP_TYPE_LIST = (CONDITION_GROUP_AND,
  CONDITION_GROUP_OR,
  CONDITION_GROUP_NOP,
  CONDITION_GROUP_NOT)
-CONDITION_SPECIFIC_TYPE_LIST = (
- CONDITION_DEFAULT_NAME,)
+CONDITION_SPECIFIC_TYPE_LIST = (CONDITION_DEFAULT_NAME,)
 CONDITION_TYPE_LIST = CONDITION_GROUP_TYPE_LIST + CONDITION_SPECIFIC_TYPE_LIST
 
 class PreFormattedConditionModelPacker(object):
@@ -70,7 +71,8 @@ class PreFormattedConditionModelPacker(object):
 class UIConditionPacker(object):
 
     def _packConditions(self, conditions, event):
-        ctx = {'data': conditions, 'event': event}
+        ctx = {'data': conditions,
+         'event': event}
         classType = None
         try:
             classType = ctx['data'].classType
@@ -119,7 +121,8 @@ class UIConditionPacker(object):
         conditionName = condition.getName()
         preFormattedCondition = self._convertConditionIntoPreFormattedCondition(ctx)
         if not preFormattedCondition:
-            _logger.error('Should not be reached: preFormattedConditionTuple was not received.')
+            if not ctx['event'].isGuiDisabled():
+                _logger.error('Should not be reached: preFormattedConditionTuple was not received.')
             return None
         else:
             if len(preFormattedCondition) > 1:
@@ -140,11 +143,11 @@ class UIConditionPacker(object):
             booleanOperation = contextData.getName()
             ctx['data'] = contextData.items
             return self._traversConditionGroup(ctx, booleanOperation)
+        elif classType == 'Condition':
+            if contextData.isHidden():
+                return
+            return self._traversCondition(ctx)
         else:
-            if classType == 'Condition':
-                if contextData.isHidden():
-                    return
-                return self._traversCondition(ctx)
             _logger.error('Condition packer for %s type is not implemented yet.', type(contextData))
             return
 
@@ -176,7 +179,7 @@ class BonusConditionPacker(UIConditionPacker):
         isItemAddedToBonusCondModel = False
         if not bonusCondsModelList:
             _logger.debug('BonusConditions were not received for event %s.', event.getID())
-            return
+            return None
         else:
             for bonusCondModel in bonusCondsModelList:
                 if not bonusCondModel:
@@ -186,7 +189,7 @@ class BonusConditionPacker(UIConditionPacker):
 
             if isItemAddedToBonusCondModel:
                 model.setConditionType(typeOfBonusConditionGroup)
-            return
+            return None
 
 
 class PostBattleConditionPacker(UIConditionPacker):
@@ -209,7 +212,7 @@ class PostBattleConditionPacker(UIConditionPacker):
         postBattleCondsModelList, typeOfPostBattleConditionGroup = self._packConditions(postBattleConditions, event)
         if not postBattleCondsModelList:
             _logger.debug('PostBattleConditions were not received for event %s.', event.getID())
-            return
+            return None
         else:
             for postBattleCondModel in postBattleCondsModelList:
                 if not postBattleCondModel:
@@ -217,19 +220,22 @@ class PostBattleConditionPacker(UIConditionPacker):
                 model.getItems().addViewModel(postBattleCondModel)
 
             model.setConditionType(typeOfPostBattleConditionGroup)
-            return
+            return None
 
     @classmethod
-    def packDefaultCondition(cls, model):
-        model.getItems().addViewModel(cls.getPlayBattleCondition())
+    def packDefaultCondition(cls, event, model):
+        model.getItems().addViewModel(cls.getPlayBattleCondition(event))
         model.setConditionType(CONDITION_GROUP_AND)
 
     @staticmethod
-    def getPlayBattleCondition(packer=PreFormattedConditionModelPacker):
-        titleArgs = (
-         i18n.makeString(QUESTS.DETAILS_CONDITIONS_PLAYBATTLE_TITLE),)
-        descrArgs = (i18n.makeString(QUESTS.MISSIONDETAILS_CONDITIONS_PLAYBATTLE),)
-        playBattleCondition = formatters.packMissionIconCondition(FormattableField(FORMATTER_IDS.SIMPLE_TITLE, titleArgs), MISSIONS_ALIASES.NONE, FormattableField(FORMATTER_IDS.DESCRIPTION, descrArgs), CONDITION_ICON.BATTLES)
+    def getPlayBattleCondition(event, packer=PreFormattedConditionModelPacker):
+        if event.isGuiDisabled():
+            icon = CONDITION_ICON.FOLDER
+        else:
+            icon = CONDITION_ICON.BATTLES
+        titleArgs = (backport.text(R.strings.quests.details.conditions.playBattle.title()),)
+        descrArgs = (backport.text(R.strings.quests.missionDetails.conditions.playBattle()),)
+        playBattleCondition = formatters.packMissionIconCondition(FormattableField(FORMATTER_IDS.SIMPLE_TITLE, titleArgs), MISSIONS_ALIASES.NONE, FormattableField(FORMATTER_IDS.DESCRIPTION, descrArgs), icon)
         return packer.pack(playBattleCondition, CONDITION_DEFAULT_NAME)
 
 

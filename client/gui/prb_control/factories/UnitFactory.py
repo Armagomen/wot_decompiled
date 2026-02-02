@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/factories/UnitFactory.py
 from constants import PREBATTLE_TYPE
 from debug_utils import LOG_ERROR
 from gui.shared.system_factory import registerUnitEntity, collectUnitEntity
@@ -17,7 +19,7 @@ from gui.prb_control.entities.random.squad.entity import RandomSquadEntity, Rand
 from gui.prb_control.items import PlayerDecorator, FunctionalState
 from gui.prb_control.settings import FUNCTIONAL_FLAG
 from gui.prb_control.settings import PREBATTLE_ACTION_NAME, CTRL_ENTITY_TYPE
-__all__ = ('UnitFactory', )
+__all__ = ('UnitFactory',)
 registerUnitEntryPoint(PREBATTLE_ACTION_NAME.SQUAD, RandomSquadEntryPoint)
 registerUnitEntryPoint(PREBATTLE_ACTION_NAME.EVENT_SQUAD, EventBattleSquadEntryPoint)
 registerUnitEntryPoint(PREBATTLE_ACTION_NAME.E_SPORT, ESportIntroEntry)
@@ -30,8 +32,8 @@ registerUnitEntryPointByType(PREBATTLE_TYPE.UNIT, PublicEntryPoint)
 registerUnitEntryPointByType(PREBATTLE_TYPE.STRONGHOLD, StrongholdEntryPoint)
 registerUnitEntryPointByType(PREBATTLE_TYPE.MAPBOX, MapboxSquadEntryPoint)
 _SUPPORTED_INTRO_BY_TYPE = {PREBATTLE_TYPE.E_SPORT_COMMON: ESportIntroEntity}
-_SUPPORTED_BROWSER_BY_TYPE = {PREBATTLE_TYPE.UNIT: PublicBrowserEntity, 
-   PREBATTLE_TYPE.STRONGHOLD: StrongholdBrowserEntity}
+_SUPPORTED_BROWSER_BY_TYPE = {PREBATTLE_TYPE.UNIT: PublicBrowserEntity,
+ PREBATTLE_TYPE.STRONGHOLD: StrongholdBrowserEntity}
 registerUnitEntity(PREBATTLE_TYPE.SQUAD, RandomSquadEntity)
 registerUnitEntity(PREBATTLE_TYPE.EVENT, EventBattleSquadEntity)
 registerUnitEntity(PREBATTLE_TYPE.UNIT, PublicEntity)
@@ -71,29 +73,24 @@ class UnitFactory(ControlFactory):
         unitMrg = prb_getters.getClientUnitMgr()
         if unitMrg is None:
             return
+        elif unitMrg.id:
+            entity = prb_getters.getUnit(safe=True)
+            if entity is None:
+                LOG_ERROR('Unit is not found in unit manager', unitMrg.id, unitMrg.unit)
+                unitMrg.leave()
+                return
+            return collectUnitEntity(entity.getPrebattleType())
         else:
-            if unitMrg.id:
-                entity = prb_getters.getUnit(safe=True)
-                if entity is None:
-                    LOG_ERROR('Unit is not found in unit manager', unitMrg.id, unitMrg.unit)
-                    unitMrg.leave()
-                    return
-                return collectUnitEntity(entity.getPrebattleType())
             return self.__createByPrbType(ctx)
 
     def __createByFlags(self, ctx):
-        if not ctx.hasFlags(FUNCTIONAL_FLAG.UNIT):
-            return self.__createByAccountState(ctx)
-        else:
-            return
+        return self.__createByAccountState(ctx) if not ctx.hasFlags(FUNCTIONAL_FLAG.UNIT) else None
 
     def __createByPrbType(self, ctx):
         if ctx.getCtrlType() != CTRL_ENTITY_TYPE.UNIT:
-            return
+            return None
         else:
             prbType = ctx.getEntityType()
             if prbType in _SUPPORTED_INTRO_BY_TYPE:
                 return self._createEntityByType(prbType, _SUPPORTED_INTRO_BY_TYPE)
-            if prbType in _SUPPORTED_BROWSER_BY_TYPE and ctx.hasFlags(FUNCTIONAL_FLAG.UNIT_BROWSER):
-                return self._createEntityByType(prbType, _SUPPORTED_BROWSER_BY_TYPE)
-            return
+            return self._createEntityByType(prbType, _SUPPORTED_BROWSER_BY_TYPE) if prbType in _SUPPORTED_BROWSER_BY_TYPE and ctx.hasFlags(FUNCTIONAL_FLAG.UNIT_BROWSER) else None

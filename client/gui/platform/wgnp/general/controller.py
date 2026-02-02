@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/platform/wgnp/general/controller.py
 import typing
 from BWUtil import AsyncReturn
 import wg_async

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/frontline_bonus_packers.py
 import typing
 from epic_constants import FRONTLINE_BONUSES_ORDER, EPIC_SKILL_TOKEN_NAME, EPIC_SELECT_BONUS_NAME
 from frontline.gui.bonus import FrontlineSkillBonus
@@ -10,20 +12,18 @@ if typing.TYPE_CHECKING:
 
 def getFrontlineBonusPacker():
     mapping = getDefaultBonusPackersMap()
-    mapping.update({'battlePassPoints': FrontlineBattlePassPointsBonusPacker(), 
-       EPIC_SELECT_BONUS_NAME: FrontlineTokenBonusPacker(), 
-       'goodies': FrontlineGoodiesBonusPacker(), 
-       'crewBooks': FrontlineCrewBookBonusPacker(), 
-       Currency.CRYSTAL: FrontlineCrystalBonusPacker(), 
-       EPIC_SKILL_TOKEN_NAME: FrontlineAbilityTokenPacker()})
+    mapping.update({'battlePassPoints': FrontlineBattlePassPointsBonusPacker(),
+     EPIC_SELECT_BONUS_NAME: FrontlineTokenBonusPacker(),
+     'goodies': FrontlineGoodiesBonusPacker(),
+     'crewBooks': FrontlineCrewBookBonusPacker(),
+     Currency.CRYSTAL: FrontlineCrystalBonusPacker(),
+     EPIC_SKILL_TOKEN_NAME: FrontlineAbilityTokenPacker()})
     return BonusUIPacker(mapping)
 
 
 def _keySortOrder(bonus):
     name = bonus.getName()
-    if name in FRONTLINE_BONUSES_ORDER:
-        return FRONTLINE_BONUSES_ORDER.index(name)
-    return len(FRONTLINE_BONUSES_ORDER)
+    return FRONTLINE_BONUSES_ORDER.index(name) if name in FRONTLINE_BONUSES_ORDER else len(FRONTLINE_BONUSES_ORDER)
 
 
 def packBonusModelAndTooltipData(bonuses, listVM, tooltipData=None):
@@ -71,8 +71,7 @@ class FrontlineCrystalBonusPacker(SimpleBonusUIPacker):
 
     @classmethod
     def _getToolTip(cls, bonus):
-        return [
-         createTooltipData(bonus.getTooltip())]
+        return [createTooltipData(bonus.getTooltip())]
 
 
 class FrontlineTokenBonusPacker(SimpleBonusUIPacker):
@@ -83,8 +82,7 @@ class FrontlineTokenBonusPacker(SimpleBonusUIPacker):
 
     @classmethod
     def _pack(cls, bonus):
-        return [
-         cls._packSingleBonus(bonus)]
+        return [cls._packSingleBonus(bonus)]
 
     @classmethod
     def _packSingleBonus(cls, bonus, **kwargs):
@@ -99,8 +97,7 @@ class FrontlineTokenBonusPacker(SimpleBonusUIPacker):
 
     @classmethod
     def _getToolTip(cls, bonus):
-        return [
-         bonus.getTooltip()]
+        return [bonus.getTooltip()]
 
 
 class FrontlineBattlePassPointsBonusPacker(BattlePassPointsBonusPacker):
@@ -150,8 +147,7 @@ class FrontlineAbilityTokenPacker(SimpleBonusUIPacker):
 
     @classmethod
     def _pack(cls, bonus):
-        return [
-         cls._packSingleBonus(bonus)]
+        return [cls._packSingleBonus(bonus)]
 
     @classmethod
     def _packSingleBonus(cls, bonus, *args):

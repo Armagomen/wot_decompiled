@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/event/squad/entity.py
 import BigWorld
 from CurrentVehicle import g_currentVehicle
 from debug_utils import LOG_DEBUG
@@ -22,7 +24,7 @@ from skeletons.gui.game_control import IEventBattlesController
 
 @ReprInjector.withParent()
 class EventSquadSettingsCtx(SquadSettingsCtx):
-    __slots__ = ('_keepCurrentView', )
+    __slots__ = ('_keepCurrentView',)
 
     def __init__(self, waitingID='', accountsToInvite=None, keepCurrentView=False):
         super(EventSquadSettingsCtx, self).__init__(PREBATTLE_TYPE.EVENT, waitingID, prb_settings.FUNCTIONAL_FLAG.UNDEFINED, accountsToInvite, False)
@@ -74,7 +76,7 @@ class EventBattleSquadEntity(SquadEntity):
     def getLeaderEventEnqueueData(self):
         selfDBID = getPlayerDatabaseID()
         if self.isCommander(dbID=selfDBID):
-            return
+            return None
         else:
             unitId, unit = self.getUnit()
             for slot in self.getSlotsIterator(unitId, unit):
@@ -85,7 +87,7 @@ class EventBattleSquadEntity(SquadEntity):
                 if pInfo.isReady and self.isCommander(dbID=dbID):
                     return pInfo.extraData.get('eventEnqueueData', {})
 
-            return
+            return None
 
     def getConfirmDialogMeta(self, ctx):
         if not self.__eventBattlesCtrl.isEnabled():

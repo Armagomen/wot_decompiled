@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/wgcg/loadouts_assistant/context.py
 from typing import List, Set
 from gui.wgcg.base.contexts import CommonWebRequestCtx
 from gui.wgcg.settings import WebRequestDataType
@@ -20,15 +22,14 @@ class LoadoutsAssistantCtx(CommonWebRequestCtx):
         return [ type_.value for type_ in self._LOADOUT_TYPES ]
 
     def getLoadoutTypesForRequest(self):
-        return (',').join([ type_.value for type_ in self._LOADOUT_TYPES ])
+        return ','.join([ type_.value for type_ in self._LOADOUT_TYPES ])
 
     def isAuthorizationRequired(self):
         return True
 
 
 class EasyTankEquipCtx(LoadoutsAssistantCtx):
-    _LOADOUT_TYPES = {
-     SupportedWotldaLoadoutType.EASY_TANK_EQUIP}
+    _LOADOUT_TYPES = {SupportedWotldaLoadoutType.EASY_TANK_EQUIP}
 
 
 class GenericLoadoutAssistanceCtx(LoadoutsAssistantCtx):

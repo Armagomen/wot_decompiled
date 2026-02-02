@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/offers/offer_gift_dialog.py
 import logging
 from functools import partial
 from account_helpers.offers.events_data import OfferGift, OfferEventData
@@ -15,9 +17,9 @@ from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.offers import IOffersDataProvider
 from gui.impl.lobby.dialogs.contents.prices_content import DialogPricesContent
 _logger = logging.getLogger(__name__)
-RENT_VALUE_DESCR_BY_TYPE = {RentType.TIME_RENT: R.strings.offers.description.rentValue.days(), 
-   RentType.WINS_RENT: R.strings.offers.description.rentValue.wins(), 
-   RentType.BATTLES_RENT: R.strings.offers.description.rentValue.battles()}
+RENT_VALUE_DESCR_BY_TYPE = {RentType.TIME_RENT: R.strings.offers.description.rentValue.days(),
+ RentType.WINS_RENT: R.strings.offers.description.rentValue.wins(),
+ RentType.BATTLES_RENT: R.strings.offers.description.rentValue.battles()}
 
 class OffersDialogWindowMixin(object):
     _lobbyContext = dependency.descriptor(ILobbyContext)
@@ -62,7 +64,7 @@ class OffersDialogWindowMixin(object):
     def __updatePrice(self):
         offer = self._offersProvider.getOffer(self._offerID)
         if offer.showPrice:
-            with self.bottomContentViewModel.transaction() as (model):
+            with self.bottomContentViewModel.transaction() as model:
                 model.valueMain.setValue(str(self._price))
                 tokenIcon = backport.image(R.images.gui.maps.icons.offers.token())
                 if offer.cdnGiftsTokenImgPath:
@@ -70,7 +72,7 @@ class OffersDialogWindowMixin(object):
                 model.valueMain.setIcon(tokenIcon)
 
     def _getResultData(self):
-        return
+        return None
 
 
 class OffersSimpleDialogWindow(OffersDialogWindowMixin, SimpleDialogWindow):

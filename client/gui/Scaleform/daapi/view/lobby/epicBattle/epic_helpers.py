@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/epicBattle/epic_helpers.py
 import logging
 from gui.impl import backport
 from gui.impl.gen import R
@@ -13,56 +15,56 @@ from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.game_control import IEpicBattleMetaGameController
 _logger = logging.getLogger(__name__)
 FRONTLINE_HIDDEN_TAG = 'fr_hidden'
-_EPIC_GAME_PARAMS = {'artillery': {'cooldownTime': 'Cooldown', 
-                 'delay': 'Deployment', 
-                 'areaRadius': 'Dispersion', 
-                 'shotsNumber': 'Shells', 
-                 'duration-artillery': 'Duration'}, 
-   'bomber': {'cooldownTime': 'Cooldown', 
-              'delay': 'Deployment', 
-              'areaLength_areaWidth-dropArea': 'Targeted Area', 
-              'bombsNumber': 'Bombs', 
-              'shellCompactDescr': 'Stun'}, 
-   'recon': {'cooldownTime': 'Cooldown', 
-             'delay-recon': 'Deployment_ReconFlight', 
-             '#epic_battle:abilityInfo/params/recon/revealedArea/value': 'Revealed Area', 
-             'entitiesToSearch/Vehicle/spottingDuration': 'Spotting Duration'}, 
-   'inspire': {'cooldownTime': 'Cooldown', 
-               'radius': 'Effect Radius', 
-               'duration-inspire': 'Duration', 
-               'increaseFactors/crewRolesFactor': 'Crew Performance', 
-               'selfIncreaseFactors/crewRolesFactor': 'Self crew Perfomance', 
-               'inactivationDelay': 'Effect Cooldown'}, 
-   'smoke': {'cooldownTime': 'Cooldown', 
-             'minDelay': 'Deployment', 
-             'areaLength_areaWidth-targetedArea': 'Targeted Area (length, width)', 
-             'projectilesNumber': 'Grenades', 
-             'totalDuration': 'Smoke Lifetime', 
-             'attrFactorMods/circularVisionRadius': 'visionRadiusFactor', 
-             'attrFactorMods/crewRolesFactor': 'crewRoles'}, 
-   'passive_engineering': {'resupplyCooldownFactor': 'Resupply Circle Refresh', 
-                           'resupplyHealthPointsFactor': 'Resupply Speed', 
-                           'captureSpeedFactor': 'Capture Speed', 
-                           'captureBlockBonusTime': 'Capture Block Time', 
-                           'resupplyShellsFactor': 'Speed of shells supply'}, 
-   'arcade_minefield': {'cooldownTime': 'Cooldown', 
-                        'bombsNumber-minefield': 'Mines', 
-                        'mineParams/activationDelay': 'Deployment', 
-                        'mineParams/lifetime': 'Duration_MineField', 
-                        'mineParams/shell': 'Stun'}, 
-   'regenerationKit': {'cooldownTime': 'Cooldown', 
-                       'healTime': 'HealTime', 
-                       'healthRegenPerTick': 'RegenPerTick', 
-                       'initialHeal': 'InitialHeal', 
-                       'resupplyHealthPointsFactor': 'ResupplyHealthPointsFactor', 
-                       '#epic_battle:abilityInfo/params/fl_regenerationKit/minesDamageReduceFactor/value': 'MinesDamageReduceFactor'}, 
-   'stealthRadar': {'passiveCircularVisionRadius': 'PassiveCircularVisionRadius', 
-                    'duration-stealth_radar': 'Duration_Stealth', 
-                    'cooldownTime': 'Cooldown', 
-                    'inactivationDelay': 'ActivationDelay', 
-                    'overridableFactors/invisibility': 'InvisibilityAdditiveTerm', 
-                    'increaseFactors/demaskMovingFactor': 'DemaskMovingFactor', 
-                    'increaseFactors/demaskFoliageFactor': 'DemaskFoliageFactor'}}
+_EPIC_GAME_PARAMS = {'artillery': {'cooldownTime': 'Cooldown',
+               'delay': 'Deployment',
+               'areaRadius': 'Dispersion',
+               'shotsNumber': 'Shells',
+               'duration-artillery': 'Duration'},
+ 'bomber': {'cooldownTime': 'Cooldown',
+            'delay': 'Deployment',
+            'areaLength_areaWidth-dropArea': 'Targeted Area',
+            'bombsNumber': 'Bombs',
+            'shellCompactDescr': 'Stun'},
+ 'recon': {'cooldownTime': 'Cooldown',
+           'delay-recon': 'Deployment_ReconFlight',
+           '#epic_battle:abilityInfo/params/recon/revealedArea/value': 'Revealed Area',
+           'entitiesToSearch/Vehicle/spottingDuration': 'Spotting Duration'},
+ 'inspire': {'cooldownTime': 'Cooldown',
+             'radius': 'Effect Radius',
+             'duration-inspire': 'Duration',
+             'increaseFactors/crewRolesFactor': 'Crew Performance',
+             'selfIncreaseFactors/crewRolesFactor': 'Self crew Perfomance',
+             'inactivationDelay': 'Effect Cooldown'},
+ 'smoke': {'cooldownTime': 'Cooldown',
+           'minDelay': 'Deployment',
+           'areaLength_areaWidth-targetedArea': 'Targeted Area (length, width)',
+           'projectilesNumber': 'Grenades',
+           'totalDuration': 'Smoke Lifetime',
+           'attrFactorMods/circularVisionRadius': 'visionRadiusFactor',
+           'attrFactorMods/crewRolesFactor': 'crewRoles'},
+ 'passive_engineering': {'resupplyCooldownFactor': 'Resupply Circle Refresh',
+                         'resupplyHealthPointsFactor': 'Resupply Speed',
+                         'captureSpeedFactor': 'Capture Speed',
+                         'captureBlockBonusTime': 'Capture Block Time',
+                         'resupplyShellsFactor': 'Speed of shells supply'},
+ 'arcade_minefield': {'cooldownTime': 'Cooldown',
+                      'bombsNumber-minefield': 'Mines',
+                      'mineParams/activationDelay': 'Deployment',
+                      'mineParams/lifetime': 'Duration_MineField',
+                      'mineParams/shell': 'Stun'},
+ 'regenerationKit': {'cooldownTime': 'Cooldown',
+                     'healTime': 'HealTime',
+                     'healthRegenPerTick': 'RegenPerTick',
+                     'initialHeal': 'InitialHeal',
+                     'resupplyHealthPointsFactor': 'ResupplyHealthPointsFactor',
+                     '#epic_battle:abilityInfo/params/fl_regenerationKit/minesDamageReduceFactor/value': 'MinesDamageReduceFactor'},
+ 'stealthRadar': {'passiveCircularVisionRadius': 'PassiveCircularVisionRadius',
+                  'duration-stealth_radar': 'Duration_Stealth',
+                  'cooldownTime': 'Cooldown',
+                  'inactivationDelay': 'ActivationDelay',
+                  'overridableFactors/invisibility': 'InvisibilityAdditiveTerm',
+                  'increaseFactors/demaskMovingFactor': 'DemaskMovingFactor',
+                  'increaseFactors/demaskFoliageFactor': 'DemaskFoliageFactor'}}
 
 def _getAttrName(param):
     return param.split('-')[0]
@@ -71,16 +73,12 @@ def _getAttrName(param):
 def _cutDigits(value):
     if abs(value) > 99:
         return round(value)
-    if abs(value) > 9:
-        return round(value, 1)
-    return round(value, 3)
+    return round(value, 1) if abs(value) > 9 else round(value, 3)
 
 
 def _getFormattedNum(value):
     cutValue = _cutDigits(value)
-    if cutValue.is_integer():
-        return int(cutValue)
-    return cutValue
+    return int(cutValue) if cutValue.is_integer() else cutValue
 
 
 class AbilityParam(object):
@@ -123,7 +121,7 @@ class NestedValuesMixin(DisplayValuesMixin):
         for key in params[1:]:
             if isinstance(data, dict):
                 data = data.get(key, {})
-            elif hasattr(data, key):
+            if hasattr(data, key):
                 data = getattr(data, key)
 
         return data
@@ -239,8 +237,8 @@ class MultiTextParam(AbilityParam, DisplayValuesMixin):
     def updateParams(cls, curEq, param):
         values = cls._getParamValue(curEq, param)
         unitLocalization = backport.text(R.strings.ingame_gui.marker.meters())
-        value = (' x ').join(str(value) for value in values)
-        value = ('{} {}').format(value, unitLocalization)
+        value = ' x '.join((str(value) for value in values))
+        value = '{} {}'.format(value, unitLocalization)
         return value
 
 
@@ -311,47 +309,47 @@ class MultipleMetersTextParam(MultiTextParam, MultiValuesMixin):
     pass
 
 
-epicEquipmentParameterFormaters = {'cooldownTime': DirectNumericTextParam.updateParams, 
-   'delay': DirectNumericTextParam.updateParams, 
-   'delay-recon': DirectNumericTextParam.updateParams, 
-   'areaRadius': DirectNumericTextParam.updateParams, 
-   'shotsNumber': DirectNumericTextParam.updateParams, 
-   'duration-inspire': DirectNumericTextParam.updateParams, 
-   'duration-artillery': DirectNumericTextParam.updateParams, 
-   'areaLength_areaWidth-targetedArea': MultipleMetersTextParam.updateParams, 
-   'areaLength_areaWidth-dropArea': MultipleMetersTextParam.updateParams, 
-   'bombsNumber': DirectNumericTextParam.updateParams, 
-   'shellCompactDescr': ShellStunSecondsDeltaBarParam.updateParams, 
-   '#epic_battle:abilityInfo/params/recon/revealedArea/value': FixedTextParam.updateParams, 
-   'entitiesToSearch/Vehicle/spottingDuration': NestedNumericTextParam.updateParams, 
-   'minDelay': DirectNumericTextParam.updateParams, 
-   'projectilesNumber': DirectNumericTextParam.updateParams, 
-   'totalDuration': DirectNumericTextParam.updateParams, 
-   'increaseFactors[crewRolesFactor]': NestedPercentNumericTextParam.updateParams, 
-   'inactivationDelay': DirectNumericTextParam.updateParams, 
-   'resupplyCooldownFactor': ReciprocalNumericTextParam.updateParams, 
-   'resupplyHealthPointsFactor': PercentNumericTextParam.updateParams, 
-   'captureSpeedFactor': PercentNumericTextParam.updateParams, 
-   'captureBlockBonusTime': DirectNumericTextParam.updateParams, 
-   'mineParams/activationDelay': NestedNumericTextParam.updateParams, 
-   'mineParams/lifetime': NestedNumericTextParam.updateParams, 
-   'mineParams/shell': NestedShellStunSecondsDeltaBarParam.updateParams, 
-   'healTime': DirectNumericTextParam.updateParams, 
-   'healthRegenPerTick': DirectPercentNumericTextParam.updateParams, 
-   'initialHeal': DirectPercentNumericTextParam.updateParams, 
-   'duration-stealth_radar': DirectSecondsTextParam.updateParams, 
-   'overridableFactors/invisibility': NestedDirectPercentNumericTextParam.updateParams, 
-   'increaseFactors/demaskMovingFactor': NestedPercentNumericTextParam.updateParams, 
-   'increaseFactors/demaskFoliageFactor': NestedPercentNumericTextParam.updateParams, 
-   'passiveCircularVisionRadius': DirectMetersTextParam.updateParams, 
-   'bombsNumber-minefield': DirectNumericTextParam.updateParams, 
-   'increaseFactors/crewRolesFactor': NestedPercentNumericTextParam.updateParams, 
-   'selfIncreaseFactors/crewRolesFactor': NestedPercentNumericTextParam.updateParams, 
-   'resupplyShellsFactor': PercentNumericTextParam.updateParams, 
-   '#epic_battle:abilityInfo/params/fl_regenerationKit/minesDamageReduceFactor/value': FixedTextParam.updateParams, 
-   'attrFactorMods/circularVisionRadius': NestedAbsPercentNumbericTextParam.updateParams, 
-   'attrFactorMods/crewRolesFactor': NestedAbsPercentNumbericTextParam.updateParams, 
-   'radius': DirectMetersTextParam.updateParams}
+epicEquipmentParameterFormaters = {'cooldownTime': DirectNumericTextParam.updateParams,
+ 'delay': DirectNumericTextParam.updateParams,
+ 'delay-recon': DirectNumericTextParam.updateParams,
+ 'areaRadius': DirectNumericTextParam.updateParams,
+ 'shotsNumber': DirectNumericTextParam.updateParams,
+ 'duration-inspire': DirectNumericTextParam.updateParams,
+ 'duration-artillery': DirectNumericTextParam.updateParams,
+ 'areaLength_areaWidth-targetedArea': MultipleMetersTextParam.updateParams,
+ 'areaLength_areaWidth-dropArea': MultipleMetersTextParam.updateParams,
+ 'bombsNumber': DirectNumericTextParam.updateParams,
+ 'shellCompactDescr': ShellStunSecondsDeltaBarParam.updateParams,
+ '#epic_battle:abilityInfo/params/recon/revealedArea/value': FixedTextParam.updateParams,
+ 'entitiesToSearch/Vehicle/spottingDuration': NestedNumericTextParam.updateParams,
+ 'minDelay': DirectNumericTextParam.updateParams,
+ 'projectilesNumber': DirectNumericTextParam.updateParams,
+ 'totalDuration': DirectNumericTextParam.updateParams,
+ 'increaseFactors[crewRolesFactor]': NestedPercentNumericTextParam.updateParams,
+ 'inactivationDelay': DirectNumericTextParam.updateParams,
+ 'resupplyCooldownFactor': ReciprocalNumericTextParam.updateParams,
+ 'resupplyHealthPointsFactor': PercentNumericTextParam.updateParams,
+ 'captureSpeedFactor': PercentNumericTextParam.updateParams,
+ 'captureBlockBonusTime': DirectNumericTextParam.updateParams,
+ 'mineParams/activationDelay': NestedNumericTextParam.updateParams,
+ 'mineParams/lifetime': NestedNumericTextParam.updateParams,
+ 'mineParams/shell': NestedShellStunSecondsDeltaBarParam.updateParams,
+ 'healTime': DirectNumericTextParam.updateParams,
+ 'healthRegenPerTick': DirectPercentNumericTextParam.updateParams,
+ 'initialHeal': DirectPercentNumericTextParam.updateParams,
+ 'duration-stealth_radar': DirectSecondsTextParam.updateParams,
+ 'overridableFactors/invisibility': NestedDirectPercentNumericTextParam.updateParams,
+ 'increaseFactors/demaskMovingFactor': NestedPercentNumericTextParam.updateParams,
+ 'increaseFactors/demaskFoliageFactor': NestedPercentNumericTextParam.updateParams,
+ 'passiveCircularVisionRadius': DirectMetersTextParam.updateParams,
+ 'bombsNumber-minefield': DirectNumericTextParam.updateParams,
+ 'increaseFactors/crewRolesFactor': NestedPercentNumericTextParam.updateParams,
+ 'selfIncreaseFactors/crewRolesFactor': NestedPercentNumericTextParam.updateParams,
+ 'resupplyShellsFactor': PercentNumericTextParam.updateParams,
+ '#epic_battle:abilityInfo/params/fl_regenerationKit/minesDamageReduceFactor/value': FixedTextParam.updateParams,
+ 'attrFactorMods/circularVisionRadius': NestedAbsPercentNumbericTextParam.updateParams,
+ 'attrFactorMods/crewRolesFactor': NestedAbsPercentNumbericTextParam.updateParams,
+ 'radius': DirectMetersTextParam.updateParams}
 
 def checkIfVehicleIsHidden(intCD):
     return FRONTLINE_HIDDEN_TAG in vehicles.getVehicleType(intCD).tags
@@ -389,8 +387,7 @@ def getFrontLineSkills():
                 param = createEpicParam(curLvlEq, tooltipIdentifier)
                 if param:
                     skillInfo['params'].setdefault(paramName, []).append(param)
-                else:
-                    skillInfo['params'].setdefault(paramName, [])
+                skillInfo['params'].setdefault(paramName, [])
 
         result.append(skillInfo)
 
@@ -399,10 +396,7 @@ def getFrontLineSkills():
 
 def createEpicParam(curLvlEq, tooltipIdentifier):
     formatter = epicEquipmentParameterFormaters.get(tooltipIdentifier)
-    if formatter:
-        return formatter(curLvlEq, tooltipIdentifier)
-    else:
-        return
+    return formatter(curLvlEq, tooltipIdentifier) if formatter else None
 
 
 def getTimeToEndStr(timeStamp):
@@ -423,10 +417,7 @@ def getAlertStatusVO(epicController=None):
     status, timeLeft, _ = epicController.getPrimeTimeStatus()
     showPrimeTimeAlert = status != PrimeTimeStatus.AVAILABLE
     hasAvailableServers = epicController.hasAvailablePrimeTimeServers()
-    if isInfoAlert:
-        return AlertData(alertIcon=backport.image(R.images.gui.maps.icons.library.alertBigIcon()) if showPrimeTimeAlert else None, buttonLabel=backport.text(R.strings.epic_battle.widgetAlertMessageBlock.button()), buttonVisible=showPrimeTimeAlert and hasAvailableServers, statusText=_getAlertStatusText(timeLeft, hasAvailableServers), shadowFilterVisible=showPrimeTimeAlert)
-    else:
-        return AlertData(state=ALERTMESSAGE_CONSTANTS.ALERT_MESSAGE_STATE_INFO, statusText=backport.text(R.strings.epic_battle.widgetAlertMessageBlock.details()), additionalText=backport.text(R.strings.epic_battle.widgetAlertMessageBlock.modification()), shadowFilterVisible=True, tooltip=makeTooltip(body=backport.text(R.strings.epic_battle.widgetAlertMessageBlock.tooltip.body())), isSimpleTooltip=True)
+    return AlertData(alertIcon=backport.image(R.images.gui.maps.icons.library.alertBigIcon()) if showPrimeTimeAlert else None, buttonLabel=backport.text(R.strings.epic_battle.widgetAlertMessageBlock.button()), buttonVisible=showPrimeTimeAlert and hasAvailableServers, statusText=_getAlertStatusText(timeLeft, hasAvailableServers), shadowFilterVisible=showPrimeTimeAlert) if isInfoAlert else AlertData(state=ALERTMESSAGE_CONSTANTS.ALERT_MESSAGE_STATE_INFO, statusText=backport.text(R.strings.epic_battle.widgetAlertMessageBlock.details()), additionalText=backport.text(R.strings.epic_battle.widgetAlertMessageBlock.modification()), shadowFilterVisible=True, tooltip=makeTooltip(body=backport.text(R.strings.epic_battle.widgetAlertMessageBlock.tooltip.body())), isSimpleTooltip=True)
 
 
 @dependency.replace_none_kwargs(epicController=IEpicBattleMetaGameController, connectionMgr=IConnectionManager)

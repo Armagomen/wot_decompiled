@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/platform/products_fetcher/wot_shop/controller.py
 import logging
 from gui.platform.products_fetcher.controller import ProductsFetchController
 from gui.platform.products_fetcher.wot_shop.descriptors.account_limits_descriptor import AccountLimitsDescriptor

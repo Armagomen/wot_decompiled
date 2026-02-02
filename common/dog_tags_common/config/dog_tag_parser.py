@@ -1,4 +1,8 @@
-import typing, ResMgr, dog_tag_framework as dtf
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/dog_tags_common/config/dog_tag_parser.py
+import typing
+import ResMgr
+import dog_tag_framework as dtf
 from constants import IS_CLIENT, IS_BASEAPP
 from dog_tags_common.config.common import ParseException, ParameterType, Visibility, ComponentPurpose, ComponentViewType, DOG_TAGS_FILE, ComponentNumberType
 from soft_exception import SoftException
@@ -67,15 +71,15 @@ def _parseNumberType(attrValue, path):
         raise ParseException(ParseException.WRONG_PARAM_VALUE, path)
 
 
-PARAM_PARSERS = {ParameterType.INT: _parseInt, 
-   ParameterType.STR: _parseStr, 
-   ParameterType.BOOL: _parseBool, 
-   ParameterType.INT_LIST: _parseIntList, 
-   ParameterType.STR_LIST: _parseStrList, 
-   ParameterType.VIEW_TYPE: _parseViewType, 
-   ParameterType.TYPE: _parseType, 
-   ParameterType.NUMBER_TYPE: _parseNumberType, 
-   ParameterType.FLOAT_LIST: _parseFloatList}
+PARAM_PARSERS = {ParameterType.INT: _parseInt,
+ ParameterType.STR: _parseStr,
+ ParameterType.BOOL: _parseBool,
+ ParameterType.INT_LIST: _parseIntList,
+ ParameterType.STR_LIST: _parseStrList,
+ ParameterType.VIEW_TYPE: _parseViewType,
+ ParameterType.TYPE: _parseType,
+ ParameterType.NUMBER_TYPE: _parseNumberType,
+ ParameterType.FLOAT_LIST: _parseFloatList}
 
 def _parseSection(sectionName, section, *builderAttrs):
     operationName, cls, operationParamNames, operationParamsInfo, operationDefaults = dtf.parserInfo[sectionName]
@@ -111,10 +115,9 @@ def readDogTags(xmlPath=DOG_TAGS_FILE):
             component = _parseSection(sectionName, section)
             componentId = component.componentId
             if componentId in componentsIds:
-                raise SoftException(('Error in {}. Component id {} is not unique').format(xmlPath, componentId))
+                raise SoftException('Error in {}. Component id {} is not unique'.format(xmlPath, componentId))
             componentsIds.add(componentId)
             components.append(component)
 
     startingComponent = _parseSection('startingComponents', xmlFile['startingComponents'], components)
-    return (
-     startingComponent, components)
+    return (startingComponent, components)

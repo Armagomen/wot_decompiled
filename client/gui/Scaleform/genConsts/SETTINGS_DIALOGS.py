@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/genConsts/SETTINGS_DIALOGS.py
 
 
 class SETTINGS_DIALOGS(object):

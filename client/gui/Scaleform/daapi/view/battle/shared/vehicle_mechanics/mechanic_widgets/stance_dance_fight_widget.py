@@ -1,5 +1,10 @@
-import typing, CommandMapping
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/vehicle_mechanics/mechanic_widgets/stance_dance_fight_widget.py
+from __future__ import absolute_import
+import typing
+import CommandMapping
 from constants import ARENA_PERIOD
+from events_containers.common.containers import ContainersListener
 from events_handler import eventHandler
 from gui.Scaleform.daapi.view.battle.shared.vehicle_mechanics.mechanic_widgets.vehicle_mechanic_widget import HotKeyData
 from helpers import dependency
@@ -7,10 +12,9 @@ from gui.Scaleform.daapi.view.meta.StanceDanceFightWidgetMeta import StanceDance
 from gui.Scaleform.genConsts.MECHANICS_WIDGET_CONST import MECHANICS_WIDGET_CONST
 from gui.veh_mechanics.battle.updaters.crosshair_type_updater import CrosshairTypeUpdater
 from gui.veh_mechanics.battle.updaters.hotkey_updaters import HotKeysViewUpdater
-from gui.veh_mechanics.battle.updaters.mechanic_passenger_view_updater import VehicleMechanicPassengerUpdater
-from gui.veh_mechanics.battle.updaters.mechanic_states_view_updater import VehicleMechanicStatesUpdater
+from gui.veh_mechanics.battle.updaters.mechanics.mechanic_passenger_updater import VehicleMechanicPassengerUpdater
+from gui.veh_mechanics.battle.updaters.mechanics.mechanic_states_updater import VehicleMechanicStatesUpdater
 from gui.veh_mechanics.battle.updaters.replay_paused_view_updater import ReplayPausedViewUpdater
-from vehicles.components.component_events import ComponentListener
 from vehicles.mechanics.mechanic_constants import VehicleMechanicCommand, VehicleMechanic
 from vehicles.mechanics.mechanic_states import IMechanicStatesListenerLogic
 from skeletons.gui.battle_session import IBattleSessionProvider
@@ -33,16 +37,12 @@ def _getWidgetState(prev, state):
         if state.energyFight == state.params.maxEnergy:
             return (MECHANICS_WIDGET_CONST.READY, prev != MECHANICS_WIDGET_CONST.PREPARING)
         return (MECHANICS_WIDGET_CONST.PREPARING, False)
-    if state.isSwitchingState:
-        return (MECHANICS_WIDGET_CONST.TRANSITION, False)
-    return (MECHANICS_WIDGET_CONST.IDLE, False)
+    return (MECHANICS_WIDGET_CONST.TRANSITION, False) if state.isSwitchingState else (MECHANICS_WIDGET_CONST.IDLE, False)
 
 
-class StanceDanceFightMechanicWidget(StanceDanceFightWidgetMeta, ComponentListener, IMechanicStatesListenerLogic):
-    _HOT_KEY_MAP = {CommandMapping.CMD_CM_VEHICLE_SWITCH_AUTOROTATION: [
-                                                         HotKeyData(VehicleMechanicCommand.ALTERNATIVE_ACTIVATE.value, False)], 
-       CommandMapping.CMD_CM_SPECIAL_ABILITY: [
-                                             HotKeyData(VehicleMechanicCommand.ACTIVATE.value, False)]}
+class StanceDanceFightMechanicWidget(StanceDanceFightWidgetMeta, ContainersListener, IMechanicStatesListenerLogic):
+    _HOT_KEY_MAP = {CommandMapping.CMD_CM_VEHICLE_SWITCH_AUTOROTATION: [HotKeyData(VehicleMechanicCommand.ALTERNATIVE_ACTIVATE.value, False)],
+     CommandMapping.CMD_CM_SPECIAL_ABILITY: [HotKeyData(VehicleMechanicCommand.ACTIVATE.value, False)]}
     __sessionProvider = dependency.descriptor(IBattleSessionProvider)
 
     def __init__(self):
@@ -81,10 +81,9 @@ class StanceDanceFightMechanicWidget(StanceDanceFightWidgetMeta, ComponentListen
         self.as_pauseReplayS(self.__isPaused)
 
     def _getViewUpdaters(self):
-        return [
-         VehicleMechanicStatesUpdater(VehicleMechanic.STANCE_DANCE, self),
+        return [VehicleMechanicStatesUpdater(VehicleMechanic.STANCE_DANCE, self),
          VehicleMechanicPassengerUpdater(VehicleMechanic.STANCE_DANCE, self),
-         HotKeysViewUpdater(self._HOT_KEY_MAP.keys(), self),
+         HotKeysViewUpdater(list(self._HOT_KEY_MAP.keys()), self),
          CrosshairTypeUpdater(self),
          ReplayPausedViewUpdater(self)]
 

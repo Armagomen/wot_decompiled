@@ -1,4 +1,7 @@
-import BigWorld, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_light/scripts/client/comp7_light/gui/prb_control/entities/pre_queue/entity.py
+import BigWorld
+import typing
 from CurrentVehicle import g_currentVehicle
 from comp7_light.gui.comp7_light_constants import FUNCTIONAL_FLAG, PREBATTLE_ACTION_NAME
 from comp7_light.gui.prb_control.entities.comp7_light_prb_helpers import Comp7LightViewPresenter
@@ -84,9 +87,7 @@ class Comp7LightEntity(PreQueueEntity):
         super(Comp7LightEntity, self).leave(ctx, callback)
 
     def doSelectAction(self, action):
-        if action.actionName in (PREBATTLE_ACTION_NAME.COMP7_LIGHT,):
-            return SelectResult(True)
-        return super(Comp7LightEntity, self).doSelectAction(action)
+        return SelectResult(True) if action.actionName in (PREBATTLE_ACTION_NAME.COMP7_LIGHT,) else super(Comp7LightEntity, self).doSelectAction(action)
 
     def getPermissions(self, *_):
         return Comp7LightPermissions(self.isInQueue())

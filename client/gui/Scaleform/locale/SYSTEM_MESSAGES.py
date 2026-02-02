@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/locale/SYSTEM_MESSAGES.py
 from debug_utils import LOG_WARNING
 
 class SYSTEM_MESSAGES(object):
@@ -1452,12 +1454,8 @@ class SYSTEM_MESSAGES(object):
     VEHICLEMILESTONES_VANITYAVAILABLE_TEXT = '#system_messages:vehicleMilestones/vanityAvailable/text'
     VEHICLESKILLTREEPROGRESSION_PROCESSORERROR_TITLE = '#system_messages:vehicleSkillTreeProgression/processorError/title'
     VEHICLESKILLTREEPROGRESSION_PROCESSORERROR_BODY = '#system_messages:vehicleSkillTreeProgression/processorError/body'
-    UNIT_NOTIFICATION_DIVISIONTYPE_ENUM = (
-     UNIT_NOTIFICATION_DIVISIONTYPE_MIDDLE,
-     UNIT_NOTIFICATION_DIVISIONTYPE_CHAMPION,
-     UNIT_NOTIFICATION_DIVISIONTYPE_ABSOLUTE)
-    UNIT_ERRORS_ENUM = (
-     UNIT_ERRORS_ALREADY_JOINED_UNIT,
+    UNIT_NOTIFICATION_DIVISIONTYPE_ENUM = (UNIT_NOTIFICATION_DIVISIONTYPE_MIDDLE, UNIT_NOTIFICATION_DIVISIONTYPE_CHAMPION, UNIT_NOTIFICATION_DIVISIONTYPE_ABSOLUTE)
+    UNIT_ERRORS_ENUM = (UNIT_ERRORS_ALREADY_JOINED_UNIT,
      UNIT_ERRORS_CANT_CHANGE_DIVISION,
      UNIT_ERRORS_SORTIES_FORBIDDEN,
      UNIT_ERRORS_UNIT_MGR_ENTITY_CREATION_FAIL,
@@ -1514,8 +1512,7 @@ class SYSTEM_MESSAGES(object):
      UNIT_ERRORS_ACCOUNT_BANNED,
      UNIT_ERRORS_NO_ARENA_VEHICLES,
      UNIT_ERRORS_COMP7_QUALIFICATION)
-    UNIT_WARNINGS_ENUM = (
-     UNIT_WARNINGS_NO_CLAN_MEMBERS,
+    UNIT_WARNINGS_ENUM = (UNIT_WARNINGS_NO_CLAN_MEMBERS,
      UNIT_WARNINGS_CANT_PICK_LEADER,
      UNIT_WARNINGS_EXTERNAL_LEGIONARIES_MATCHING_CANCELED,
      UNIT_WARNINGS_KICKED_CANDIDATE,
@@ -1539,8 +1536,7 @@ class SYSTEM_MESSAGES(object):
      UNIT_WARNINGS_EXPIRED_PLAY_LIMITS,
      UNIT_WARNINGS_EXPIRED_PLAY_LIMITS_TO_COMMANDER,
      UNIT_WARNINGS_WGSHEVENT_VEHICLEUNFROZEN)
-    UNIT_NOTIFICATION_ENUM = (
-     UNIT_NOTIFICATION_PLAYER_BECOME_EQUIPMENT_COMMANDER,
+    UNIT_NOTIFICATION_ENUM = (UNIT_NOTIFICATION_PLAYER_BECOME_EQUIPMENT_COMMANDER,
      UNIT_NOTIFICATION_PLAYEROFFLINE,
      UNIT_NOTIFICATION_PLAYERONLINE,
      UNIT_NOTIFICATION_PLAYERADDED,
@@ -1551,10 +1547,8 @@ class SYSTEM_MESSAGES(object):
      UNIT_NOTIFICATION_DIVISIONTYPE_MIDDLE,
      UNIT_NOTIFICATION_DIVISIONTYPE_CHAMPION,
      UNIT_NOTIFICATION_DIVISIONTYPE_ABSOLUTE)
-    UNITBROWSER_ERRORS_ENUM = (
-     UNITBROWSER_ERRORS_BAD_ACCEPT_CONTEXT,)
-    PREBATTLE_REQUEST_NAME_ENUM = (
-     PREBATTLE_REQUEST_NAME_CHANGE_SETTINGS,
+    UNITBROWSER_ERRORS_ENUM = (UNITBROWSER_ERRORS_BAD_ACCEPT_CONTEXT,)
+    PREBATTLE_REQUEST_NAME_ENUM = (PREBATTLE_REQUEST_NAME_CHANGE_SETTINGS,
      PREBATTLE_REQUEST_NAME_CHANGE_ARENA_VOIP,
      PREBATTLE_REQUEST_NAME_CHANGE_USER_STATUS,
      PREBATTLE_REQUEST_NAME_SWAP_TEAMS,
@@ -1571,8 +1565,7 @@ class SYSTEM_MESSAGES(object):
      PREBATTLE_REQUEST_NAME_CHANGE_FALLOUT_QUEUE_TYPE,
      PREBATTLE_REQUEST_NAME_AUTO_SEARCH,
      PREBATTLE_REQUEST_NAME_CHANGE_FUN_SUB_MODE)
-    RANKED_NOTIFICATIONSALL_BONUSNAME_ENUM = (
-     RANKED_NOTIFICATIONS_BONUSNAME_YEARPOINTS,
+    RANKED_NOTIFICATIONSALL_BONUSNAME_ENUM = (RANKED_NOTIFICATIONS_BONUSNAME_YEARPOINTS,
      RANKED_NOTIFICATIONS_BONUSNAME_SELECTABLEREWARD,
      RANKED_NOTIFICATIONS_BONUSNAME_CRYSTAL,
      RANKED_NOTIFICATIONS_BONUSNAME_EVENTCOIN,
@@ -1582,15 +1575,13 @@ class SYSTEM_MESSAGES(object):
      RANKED_NOTIFICATIONS_BONUSNAME_BADGES,
      RANKED_NOTIFICATIONS_BONUSNAME_STYLE,
      RANKED_NOTIFICATIONS_BONUSNAME_STYLES)
-    WALLET_ENUM = (
-     WALLET_AVAILABLE,
+    WALLET_ENUM = (WALLET_AVAILABLE,
      WALLET_AVAILABLE_GOLD,
      WALLET_AVAILABLE_FREEXP,
      WALLET_NOT_AVAILABLE,
      WALLET_NOT_AVAILABLE_GOLD,
      WALLET_NOT_AVAILABLE_FREEXP)
-    ALL_ENUM = (
-     REPAIR_SUCCESS,
+    ALL_ENUM = (REPAIR_SUCCESS,
      REPAIR_CREDITS_ERROR,
      REPAIR_SERVER_ERROR,
      CHARGE_CREDITS_ERROR_GOLD,
@@ -3044,81 +3035,81 @@ class SYSTEM_MESSAGES(object):
 
     @classmethod
     def unit_notification_divisiontype(cls, key0):
-        outcome = ('#system_messages:unit/notification/divisionType/{}').format(key0)
+        outcome = '#system_messages:unit/notification/divisionType/{}'.format(key0)
         if outcome not in cls.UNIT_NOTIFICATION_DIVISIONTYPE_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def unit_errors(cls, key0):
-        outcome = ('#system_messages:unit/errors/{}').format(key0)
+        outcome = '#system_messages:unit/errors/{}'.format(key0)
         if outcome not in cls.UNIT_ERRORS_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def unit_warnings(cls, key0):
-        outcome = ('#system_messages:unit/warnings/{}').format(key0)
+        outcome = '#system_messages:unit/warnings/{}'.format(key0)
         if outcome not in cls.UNIT_WARNINGS_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def unit_notification(cls, key0):
-        outcome = ('#system_messages:unit/notification/{}').format(key0)
+        outcome = '#system_messages:unit/notification/{}'.format(key0)
         if outcome not in cls.UNIT_NOTIFICATION_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def unitbrowser_errors(cls, key0):
-        outcome = ('#system_messages:unitBrowser/errors/{}').format(key0)
+        outcome = '#system_messages:unitBrowser/errors/{}'.format(key0)
         if outcome not in cls.UNITBROWSER_ERRORS_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def prebattle_request_name(cls, key0):
-        outcome = ('#system_messages:prebattle/request/name/{}').format(key0)
+        outcome = '#system_messages:prebattle/request/name/{}'.format(key0)
         if outcome not in cls.PREBATTLE_REQUEST_NAME_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getRankedNotificationBonusName(cls, extra, name):
-        outcome = ('#system_messages:ranked/notifications{}/bonusName/{}').format(extra, name)
+        outcome = '#system_messages:ranked/notifications{}/bonusName/{}'.format(extra, name)
         if outcome not in cls.RANKED_NOTIFICATIONSALL_BONUSNAME_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getWalletStatus(cls, status):
-        outcome = ('#system_messages:wallet/{}').format(status)
+        outcome = '#system_messages:wallet/{}'.format(status)
         if outcome not in cls.WALLET_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def all(cls, key0):
-        outcome = ('#system_messages:{}').format(key0)
+        outcome = '#system_messages:{}'.format(key0)
         if outcome not in cls.ALL_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome

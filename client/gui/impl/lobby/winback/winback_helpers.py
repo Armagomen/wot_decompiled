@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/winback/winback_helpers.py
 import logging
 from collections import OrderedDict, defaultdict
 from copy import deepcopy
@@ -35,9 +37,9 @@ class WinbackQuestTypes(Enum):
     COMPENSATION = 'compensation'
 
 
-TOKEN_TO_REWARD_MAPPING = {SelectableTypes.VEHICLE: RewardName.SELECTABLE_VEHICLE_FOR_GIFT.value, 
-   SelectableTypes.BLUEPRINTS: RewardName.SELECTABLE_VEHICLE_FOR_GIFT.value, 
-   SelectableTypes.DISCOUNT: RewardName.SELECTABLE_VEHICLE_DISCOUNT.value}
+TOKEN_TO_REWARD_MAPPING = {SelectableTypes.VEHICLE: RewardName.SELECTABLE_VEHICLE_FOR_GIFT.value,
+ SelectableTypes.BLUEPRINTS: RewardName.SELECTABLE_VEHICLE_FOR_GIFT.value,
+ SelectableTypes.DISCOUNT: RewardName.SELECTABLE_VEHICLE_DISCOUNT.value}
 
 @dependency.replace_none_kwargs(goodiesCache=IGoodiesCache)
 def getDiscountFromGoody(goodyID, goodiesCache=None):
@@ -51,8 +53,7 @@ def getDiscountFromGoody(goodyID, goodiesCache=None):
         currency = RESOURCES.get(resource.resourceType)
         if currency is None:
             _logger.error('Not supported discount type')
-    return (
-     discount, currency)
+    return (discount, currency)
 
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache, lobbyContext=ILobbyContext)
@@ -68,14 +69,14 @@ def getDiscountFromBlueprint(blueprintCD, count=1, itemsCache=None, lobbyContext
 
 
 def getLevelFromSelectableToken(tokenID):
-    return tokenID.replace('_gift', '').rsplit(':', 1)[(-1)]
+    return tokenID.replace('_gift', '').rsplit(':', 1)[-1]
 
 
 @dependency.replace_none_kwargs(eventsCache=IEventsCache)
 def getWinbackCompletedQuestsCount(eventsCache=None):
     countCompletedQuests = 0
     epicQuest = eventsCache.getDailyEpicQuest()
-    epicDailyToken = first(t for t in epicQuest.accountReqs.getTokens() if t.isDailyQuest())
+    epicDailyToken = first((t for t in epicQuest.accountReqs.getTokens() if t.isDailyQuest()))
     if epicDailyToken is not None:
         countCompletedQuests = eventsCache.questsProgress.getTokenCount(epicDailyToken.getID())
     return countCompletedQuests
@@ -88,9 +89,7 @@ def getNonCompensationToken(tokenId, itemsCache=None):
     if itemsCache.items.tokens.getTokenCount(vehicleToken):
         return vehicleToken
     else:
-        if itemsCache.items.tokens.getTokenCount(discountToken):
-            return discountToken
-        return
+        return discountToken if itemsCache.items.tokens.getTokenCount(discountToken) else None
 
 
 def getWinbackQuestsData(sortedQuests, dailyQuestTokensCount):
@@ -121,7 +120,8 @@ def getWinbackQuestsData(sortedQuests, dailyQuestTokensCount):
 
 @dependency.replace_none_kwargs(winbackController=IWinbackController)
 def getSortedWinbackQuests(winBackQuests, dailyQuestTokensCount, winbackController=None):
-    questsPairs = defaultdict(lambda : {WinbackQuestTypes.NORMAL: [], WinbackQuestTypes.COMPENSATION: []})
+    questsPairs = defaultdict(lambda : {WinbackQuestTypes.NORMAL: [],
+     WinbackQuestTypes.COMPENSATION: []})
     for quest in winBackQuests.values():
         questNumber = winbackController.getQuestIdx(quest)
         if questNumber > 0:
@@ -143,7 +143,7 @@ def getLastWinbackQuestData(sortedQuests, winBackData):
         extendLastQuestBonuses(bonuses)
     lastQuestData['bonuses'] = bonuses
     winBackData['quests'][lastQuestNumber]['bonuses'] = []
-    lastQuestDailyToken = first(t for t in lastQuest.accountReqs.getTokens() if t.isDailyQuest())
+    lastQuestDailyToken = first((t for t in lastQuest.accountReqs.getTokens() if t.isDailyQuest()))
     lastQuestData['token'] = lastQuestDailyToken
     return lastQuestData
 
@@ -163,7 +163,7 @@ def filterWinbackQuests(questsPairs, countCompletedQuests):
         compensation = first(questPair.get(WinbackQuestTypes.COMPENSATION))
         if compensation is not None and compensation.getProgressData():
             result.append((questNumber, compensation))
-        elif normal is not None:
+        if normal is not None:
             if questNumber > countCompletedQuests:
                 for cond in normal.accountReqs.getConditions().items:
                     if isinstance(cond, conditions.VehiclesUnlocked):

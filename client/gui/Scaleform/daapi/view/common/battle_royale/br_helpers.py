@@ -1,4 +1,9 @@
-import logging, math, BigWorld, CommandMapping
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/common/battle_royale/br_helpers.py
+import logging
+import math
+import BigWorld
+import CommandMapping
 from constants import BATTLE_ROYALE_SCENE
 from helpers import dependency
 from items import vehicles, parseIntCompactDescr, ITEM_TYPES
@@ -14,17 +19,14 @@ def getEquipmentById(equipmentId):
 def getSmokeDataByPredicate(smokeInfo, predicate):
     if smokeInfo is None or not predicate:
         return (None, None)
-    if predicate(smokeInfo['equipmentID']):
-        return (smokeInfo['endTime'], getEquipmentById(smokeInfo['equipmentID']))
     else:
-        return (None, None)
+        return (smokeInfo['endTime'], getEquipmentById(smokeInfo['equipmentID'])) if predicate(smokeInfo['equipmentID']) else (None, None)
 
 
 def parseSmokeData(smokesInfo):
     if smokesInfo:
-        maxEndTime, eqId = max((smokeInfo['endTime'], smokeInfo['equipmentID']) for smokeInfo in smokesInfo)
-        return (
-         maxEndTime, getEquipmentById(eqId))
+        maxEndTime, eqId = max(((smokeInfo['endTime'], smokeInfo['equipmentID']) for smokeInfo in smokesInfo))
+        return (maxEndTime, getEquipmentById(eqId))
     else:
         return (None, None)
 
@@ -48,7 +50,7 @@ def getCircularVisionAngle(vehicle=None):
 
 
 def getHotKeyString(command):
-    return (' +').join(getHotKeyList(command))
+    return ' +'.join(getHotKeyList(command))
 
 
 def getHotKeyInfoListByIndex(index):

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/DamagePanelMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class DamagePanelMeta(BaseDAAPIComponent):
@@ -18,85 +20,64 @@ class DamagePanelMeta(BaseDAAPIComponent):
         self._printOverrideError('getTooltipData')
 
     def as_setPlayerInfoS(self, playerName, clanName, regionName, vehicleTypeName):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setPlayerInfo(playerName, clanName, regionName, vehicleTypeName)
+        return self.flashObject.as_setPlayerInfo(playerName, clanName, regionName, vehicleTypeName) if self._isDAAPIInited() else None
 
     def as_setupS(self, healthStr, progress, indicatorType, crewLayout, yawLimits, hasTurretRotator, hasWheel, isAutoRotationOn, hasYoh):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setup(healthStr, progress, indicatorType, crewLayout, yawLimits, hasTurretRotator, hasWheel, isAutoRotationOn, hasYoh)
+        return self.flashObject.as_setup(healthStr, progress, indicatorType, crewLayout, yawLimits, hasTurretRotator, hasWheel, isAutoRotationOn, hasYoh) if self._isDAAPIInited() else None
 
     def as_setupWheeledS(self, wheelsCount):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setupWheeled(wheelsCount)
+        return self.flashObject.as_setupWheeled(wheelsCount) if self._isDAAPIInited() else None
 
     def as_updateHealthS(self, healthStr, progress):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateHealth(healthStr, progress)
+        return self.flashObject.as_updateHealth(healthStr, progress) if self._isDAAPIInited() else None
 
     def as_updateSpeedS(self, speed):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateSpeed(speed)
+        return self.flashObject.as_updateSpeed(speed) if self._isDAAPIInited() else None
 
     def as_setCruiseModeS(self, mode):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setCruiseMode(mode)
+        return self.flashObject.as_setCruiseMode(mode) if self._isDAAPIInited() else None
 
     def as_setAutoRotationS(self, isOn):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setAutoRotation(isOn)
+        return self.flashObject.as_setAutoRotation(isOn) if self._isDAAPIInited() else None
 
     def as_updateDeviceStateS(self, deviceName, deviceState):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateDeviceState(deviceName, deviceState)
+        return self.flashObject.as_updateDeviceState(deviceName, deviceState) if self._isDAAPIInited() else None
 
     def as_updateRepairingDeviceS(self, deviceName, percents, seconds, repairMode):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateRepairingDevice(deviceName, percents, seconds, repairMode)
+        return self.flashObject.as_updateRepairingDevice(deviceName, percents, seconds, repairMode) if self._isDAAPIInited() else None
 
     def as_setVehicleDestroyedS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setVehicleDestroyed()
+        return self.flashObject.as_setVehicleDestroyed() if self._isDAAPIInited() else None
 
     def as_setCrewDeactivatedS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setCrewDeactivated()
+        return self.flashObject.as_setCrewDeactivated() if self._isDAAPIInited() else None
 
     def as_showS(self, isShow):
-        if self._isDAAPIInited():
-            return self.flashObject.as_show(isShow)
+        return self.flashObject.as_show(isShow) if self._isDAAPIInited() else None
 
     def as_setFireInVehicleS(self, isInFire):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setFireInVehicle(isInFire)
+        return self.flashObject.as_setFireInVehicle(isInFire) if self._isDAAPIInited() else None
 
     def as_setStaticDataS(self, fireMsg):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setStaticData(fireMsg)
+        return self.flashObject.as_setStaticData(fireMsg) if self._isDAAPIInited() else None
 
     def as_resetS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_reset()
+        return self.flashObject.as_reset() if self._isDAAPIInited() else None
 
     def as_setPlaybackSpeedS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setPlaybackSpeed(value)
+        return self.flashObject.as_setPlaybackSpeed(value) if self._isDAAPIInited() else None
 
     def as_showStatusS(self, statusID, time, animated):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showStatus(statusID, time, animated)
+        return self.flashObject.as_showStatus(statusID, time, animated) if self._isDAAPIInited() else None
 
     def as_hideStatusS(self, statusID, animated):
-        if self._isDAAPIInited():
-            return self.flashObject.as_hideStatus(statusID, animated)
+        return self.flashObject.as_hideStatus(statusID, animated) if self._isDAAPIInited() else None
 
     def as_setStatusTimerSnapshotS(self, statusID, timeLeft):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setStatusTimerSnapshot(statusID, timeLeft)
+        return self.flashObject.as_setStatusTimerSnapshot(statusID, timeLeft) if self._isDAAPIInited() else None
 
     def as_setSpeedModeS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setSpeedMode(value)
+        return self.flashObject.as_setSpeedMode(value) if self._isDAAPIInited() else None
 
     def as_setRepairTimesVisibleS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setRepairTimesVisible(value)
+        return self.flashObject.as_setRepairTimesVisible(value) if self._isDAAPIInited() else None

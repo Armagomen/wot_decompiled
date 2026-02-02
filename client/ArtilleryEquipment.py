@@ -1,4 +1,7 @@
-import math_utils, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/ArtilleryEquipment.py
+import math_utils
+import BigWorld
 
 class ArtilleryEquipment(BigWorld.UserDataObject):
     launchVelocity = property(lambda self: self.__launchVelocity)

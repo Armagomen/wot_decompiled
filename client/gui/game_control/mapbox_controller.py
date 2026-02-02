@@ -1,10 +1,14 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/mapbox_controller.py
 import random
 from collections import namedtuple
 from functools import partial
-import logging, typing
+import logging
+import typing
 from account_helpers.AccountSettings import AccountSettings, MAPBOX_PROGRESSION
 from wg_async import wg_async, wg_await, await_callback, BrokenPromiseError
-import adisp, BigWorld
+import adisp
+import BigWorld
 from BWUtil import AsyncReturn
 from constants import QUEUE_TYPE, PREBATTLE_TYPE, Configs
 import Event
@@ -33,7 +37,11 @@ from skeletons.gui.web import IWebController
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.system_messages import ISystemMessages
 _logger = logging.getLogger(__name__)
-ProgressionData = namedtuple('ProgressionData', ('surveys', 'rewards', 'minRank', 'totalBattles', 'nextSubstage'))
+ProgressionData = namedtuple('ProgressionData', ('surveys',
+ 'rewards',
+ 'minRank',
+ 'totalBattles',
+ 'nextSubstage'))
 MapData = namedtuple('MapData', ('progress', 'total', 'passed'))
 RewardData = namedtuple('RewardData', ('bonusList', 'status'))
 _LAST_PERIOD = 0
@@ -150,10 +158,7 @@ class MapboxController(Notifiable, SeasonProvider, IMapboxController, IGlobalLis
             return False
 
     def isMapboxPrbActive(self):
-        if self.prbEntity is None:
-            return False
-        else:
-            return bool(self.prbEntity.getModeFlags() & FUNCTIONAL_FLAG.MAPBOX)
+        return False if self.prbEntity is None else bool(self.prbEntity.getModeFlags() & FUNCTIONAL_FLAG.MAPBOX)
 
     def isMapVisited(self, mapName):
         return self.__settingsManager.isMapVisited(mapName)
@@ -177,8 +182,8 @@ class MapboxController(Notifiable, SeasonProvider, IMapboxController, IGlobalLis
         progressionData = self.__progressionDataProvider.getProgressionData()
         if not self.isEnabled() or self.getCurrentCycleID() is None or progressionData is None:
             return 0
-        return len([ mapName for mapName, mapData in progressionData.surveys.iteritems() if not self.__settingsManager.isMapVisited(mapName) and mapData.progress >= mapData.total
-                   ])
+        else:
+            return len([ mapName for mapName, mapData in progressionData.surveys.iteritems() if not self.__settingsManager.isMapVisited(mapName) and mapData.progress >= mapData.total ])
 
     @wg_async
     def forceUpdateProgressData(self):
@@ -216,8 +221,7 @@ class MapboxController(Notifiable, SeasonProvider, IMapboxController, IGlobalLis
 
     def showMapboxInfoPage(self):
         url = self.getModeSettings().infoPageUrl
-        showBrowserOverlayView(url, VIEW_ALIAS.WEB_VIEW_TRANSPARENT, hiddenLayers=(
-         WindowLayer.MARKER, WindowLayer.VIEW, WindowLayer.WINDOW))
+        showBrowserOverlayView(url, VIEW_ALIAS.WEB_VIEW_TRANSPARENT, hiddenLayers=(WindowLayer.MARKER, WindowLayer.VIEW, WindowLayer.WINDOW))
 
     def showSurvey(self, mapName):
         progressionData = self.getProgressionData()
@@ -247,11 +251,10 @@ class MapboxController(Notifiable, SeasonProvider, IMapboxController, IGlobalLis
             currServerTime = time_utils.getCurrentLocalServerTimestamp()
             actualSeason = self.getCurrentSeason() or self.getNextSeason()
             actualCycle = actualSeason.getCycleInfo() or actualSeason.getNextCycleInfo(currServerTime)
-            lastPrimeTimeEnd = max([ period[1] for primeTime in self.getPrimeTimes().values() for period in primeTime.getPeriodsBetween(int(currServerTime), actualCycle.endDate, True)
-                                   ])
+            lastPrimeTimeEnd = max([ period[1] for primeTime in self.getPrimeTimes().values() for period in primeTime.getPeriodsBetween(int(currServerTime), actualCycle.endDate, True) ])
             return lastPrimeTimeEnd
         else:
-            return
+            return None
 
     def __onUnitJoined(self, *args):
         self.__modeEntered()
@@ -327,8 +330,7 @@ class MapboxProgressionDataProvider(Notifiable):
     __lobbyContext = dependency.descriptor(ILobbyContext)
     __mapboxCtrl = dependency.descriptor(IMapboxController)
     __eventsCache = dependency.descriptor(IEventsCache)
-    __slots__ = ('onProgressionDataUpdated', '__progressionData', '__isSyncing', '__isShuttingDown',
-                 '__isStarted', '__restartNotifier', '__randomRestartProgressionDelay')
+    __slots__ = ('onProgressionDataUpdated', '__progressionData', '__isSyncing', '__isShuttingDown', '__isStarted', '__restartNotifier', '__randomRestartProgressionDelay')
 
     def __init__(self):
         super(MapboxProgressionDataProvider, self).__init__()
@@ -375,15 +377,10 @@ class MapboxProgressionDataProvider(Notifiable):
         self.__isStarted = False
 
     def getProgressionData(self):
-        if not self.__progressionData:
-            return None
-        else:
-            return ProgressionData({key:MapData(value['progress'], value['total'], value['passed']) for key, value in self.__progressionData.get('surveys', {}).iteritems()}, {value['battles']:RewardData(formatMapboxBonuses(value['reward']), value['status']) for value in self.__progressionData.get('rewards', [])}, self.__progressionData.get('min_rank'), self.__progressionData.get('total_battles_amount'), self.__getProgressionRestartTimeWithRandomDelay())
+        return None if not self.__progressionData else ProgressionData({key:MapData(value['progress'], value['total'], value['passed']) for key, value in self.__progressionData.get('surveys', {}).iteritems()}, {value['battles']:RewardData(formatMapboxBonuses(value['reward']), value['status']) for value in self.__progressionData.get('rewards', [])}, self.__progressionData.get('min_rank'), self.__progressionData.get('total_battles_amount'), self.__getProgressionRestartTimeWithRandomDelay())
 
     def getProgressionRestartTime(self):
-        if self.__progressionData:
-            return self.__getProgressionRestartTimeWithRandomDelay()
-        return _LAST_PERIOD
+        return self.__getProgressionRestartTimeWithRandomDelay() if self.__progressionData else _LAST_PERIOD
 
     def getTimer(self):
         return self.__mapboxCtrl.getModeSettings().progressionUpdateInterval
@@ -447,13 +444,11 @@ class MapboxProgressionDataProvider(Notifiable):
 
     def __getProgressionRestartTimeWithRandomDelay(self):
         endTime = self.__progressionData.get('next_substage_at')
-        if endTime:
-            return convertTimeFromISO(endTime) + self.__randomRestartProgressionDelay
-        return _LAST_PERIOD
+        return convertTimeFromISO(endTime) + self.__randomRestartProgressionDelay if endTime else _LAST_PERIOD
 
 
 class MapboxSettingsManager(object):
-    __slots__ = ('__settings', )
+    __slots__ = ('__settings',)
 
     def __init__(self):
         self.__settings = None

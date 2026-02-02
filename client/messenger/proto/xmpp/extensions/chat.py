@@ -1,6 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/xmpp/extensions/chat.py
 import calendar
 from datetime import datetime
-import json, time
+import json
+import time
 from debug_utils import LOG_CURRENT_EXCEPTION
 from messenger.proto.xmpp.extensions import PyExtension, PyHandler, PyQuery
 from messenger.proto.xmpp.extensions.dataform import DataForm, Field
@@ -36,7 +39,7 @@ class ChatStateExtension(PyExtension):
         return name
 
     def parseTag(self, pyGlooxTag):
-        result = pyGlooxTag.filterXPath(('|').join(CHAT_STATE.RANGE))
+        result = pyGlooxTag.filterXPath('|'.join(CHAT_STATE.RANGE))
         if result:
             state = result[0].getTagName()
             if state not in CHAT_STATE.RANGE:
@@ -61,7 +64,7 @@ class DelayExtension(PyExtension):
         if stamp:
             try:
                 tm = time.strptime(stamp, '%Y-%m-%dT%H:%M:%SZ')
-                tm = tm[0:8] + (0, )
+                tm = tm[0:8] + (0,)
                 sentAt = calendar.timegm(tm)
             except ValueError:
                 try:
@@ -84,7 +87,7 @@ class MessageIDExtension(PyExtension):
 
     @classmethod
     def getDefaultData(cls):
-        return ''
+        pass
 
     def parseTag(self, pyGlooxTag):
         return pyGlooxTag.findAttribute('uuid')
@@ -128,13 +131,12 @@ class _MucPrivilegesExtension(PyExtension):
 
     @classmethod
     def getDefaultData(cls):
-        return ('none', 'none')
+        pass
 
     def parseTag(self, pyGlooxTag):
         affiliation = pyGlooxTag.findAttribute('affiliation') or 'none'
         role = pyGlooxTag.findAttribute('role') or 'none'
-        return (
-         affiliation, role)
+        return (affiliation, role)
 
 
 class MessageWgSharedExtension(WgSharedExtension):
@@ -197,14 +199,14 @@ class ChatMessageHolder(MessageQuery):
 
 
 class MessageHandler(PyHandler):
-    __slots__ = ('_typeAttr', )
+    __slots__ = ('_typeAttr',)
 
     def __init__(self, typeAttr):
         self._typeAttr = typeAttr
         super(MessageHandler, self).__init__(_MessageCustomExtension(self._typeAttr, CHAT_STATE.UNDEFINED))
 
     def getFilterString(self):
-        return ("/{0}[@type='{1}']").format(self._ext.getName(), self._typeAttr)
+        return "/{0}[@type='{1}']".format(self._ext.getName(), self._typeAttr)
 
 
 class ChatMessageHandler(MessageHandler):
@@ -267,15 +269,12 @@ class OwnerConfigurationFormHandler(IQHandler):
 class UserRoomConfigurationFormSet(OwnerConfigurationFormSet):
 
     def __init__(self, to, room, password=''):
-        fields = (
-         Field('text-single', 'muc#roomconfig_roomname', room),
+        fields = (Field('text-single', 'muc#roomconfig_roomname', room),
          Field('boolean', 'muc#roomconfig_persistentroom', 1),
          Field('boolean', 'muc#roomconfig_publicroom', 1),
          Field('boolean', 'muc#roomconfig_membersonly', 0),
          Field('boolean', 'muc#roomconfig_allowinvites', 1),
          Field('boolean', 'muc#roomconfig_survive_reboot', 1))
         if password:
-            fields += (
-             Field('boolean', 'muc#roomconfig_passwordprotectedroom', 1),
-             Field('text-single', 'muc#roomconfig_roomsecret', password))
+            fields += (Field('boolean', 'muc#roomconfig_passwordprotectedroom', 1), Field('text-single', 'muc#roomconfig_roomsecret', password))
         super(UserRoomConfigurationFormSet, self).__init__(to, fields)

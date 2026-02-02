@@ -1,4 +1,7 @@
-import os, types
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client_common/adisp.py
+import os
+import types
 from functools import partial, wraps
 from debug_utils import LOG_WRAPPED_CURRENT_EXCEPTION, LOG_ERROR
 from soft_exception import SoftException
@@ -17,8 +20,7 @@ class CallbackDispatcher(object):
     def call(self, callers):
         single = not hasattr(callers, '__iter__')
         if single:
-            callers = [
-             callers]
+            callers = [callers]
         self.call_count = len(list(callers))
         self.results = [None] * self.call_count
         for count, caller in enumerate(callers):
@@ -68,8 +70,7 @@ def adisp_process(func, stepCallback=lambda stop: None):
     def wrapper(*args, **kwargs):
         generator = func(*args, **kwargs)
         if not isinstance(generator, types.GeneratorType):
-            LOG_ERROR('Method %s from %s marked as adisp_process is not a generator!' % (
-             func.__name__, os.path.relpath(func.func_code.co_filename)))
+            LOG_ERROR('Method %s from %s marked as adisp_process is not a generator!' % (func.__name__, os.path.relpath(func.func_code.co_filename)))
             return generator
         doCall(func, partial(CallbackDispatcher, generator, stepCallback))
 

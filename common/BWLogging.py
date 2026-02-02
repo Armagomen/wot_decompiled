@@ -1,4 +1,10 @@
-import encodings, json, logging, sys, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/BWLogging.py
+import encodings
+import json
+import logging
+import sys
+import BigWorld
 
 class BWLogger(logging.Logger):
     TRACE = logging.DEBUG - 1
@@ -21,17 +27,17 @@ class BWLogger(logging.Logger):
             self._log(BWLogger.HACK, msg, args, **kw)
 
 
-logLevelToBigWorldFunction = {logging.NOTSET: BigWorld.logTrace, 
-   BWLogger.TRACE: BigWorld.logTrace, 
-   logging.DEBUG: BigWorld.logDebug, 
-   logging.INFO: BigWorld.logInfo, 
-   BWLogger.NOTICE: BigWorld.logNotice, 
-   logging.WARN: BigWorld.logWarning, 
-   logging.WARNING: BigWorld.logWarning, 
-   logging.ERROR: BigWorld.logError, 
-   logging.CRITICAL: BigWorld.logCritical, 
-   logging.FATAL: BigWorld.logCritical, 
-   BWLogger.HACK: BigWorld.logHack}
+logLevelToBigWorldFunction = {logging.NOTSET: BigWorld.logTrace,
+ BWLogger.TRACE: BigWorld.logTrace,
+ logging.DEBUG: BigWorld.logDebug,
+ logging.INFO: BigWorld.logInfo,
+ BWLogger.NOTICE: BigWorld.logNotice,
+ logging.WARN: BigWorld.logWarning,
+ logging.WARNING: BigWorld.logWarning,
+ logging.ERROR: BigWorld.logError,
+ logging.CRITICAL: BigWorld.logCritical,
+ logging.FATAL: BigWorld.logCritical,
+ BWLogger.HACK: BigWorld.logHack}
 
 class BWLogRedirectionHandler(logging.Handler):
 

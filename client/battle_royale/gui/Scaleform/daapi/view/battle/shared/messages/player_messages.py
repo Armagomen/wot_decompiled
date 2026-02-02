@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/battle/shared/messages/player_messages.py
 import logging
 from gui.Scaleform.daapi.view.battle.shared.messages import player_messages
 from items import vehicles
@@ -13,21 +15,17 @@ class SHPlayerMessages(player_messages.PlayerMessages):
             if equipmentID:
                 equipment = vehicles.g_cache.equipments().get(equipmentID)
                 if equipment is not None:
-                    postfix = ('_').join((postfix, equipment.name.split('_')[0].upper()))
+                    postfix = '_'.join((postfix, equipment.name.split('_')[0].upper()))
             if postfix in ('ENEMY_ENEMY', 'ENEMY_ALLY') and self.__isVehicleBot(attackerID) and code.startswith('DEATH'):
                 code = 'DEATH_BY_BOT'
-            self.showMessage(code, {'target': self._getFullName(targetID), 
-               'attacker': self._getFullName(attackerID)}, extra=(
-             (
-              'target', targetID), ('attacker', attackerID)), postfix=postfix)
+            self.showMessage(code, {'target': self._getFullName(targetID),
+             'attacker': self._getFullName(attackerID)}, extra=(('target', targetID), ('attacker', attackerID)), postfix=postfix)
             return
 
     def _getFullName(self, vehicleID):
         isBot = self.__isVehicleBot(vehicleID)
         getFullName = self.sessionProvider.getCtx().getPlayerFullName
-        if isBot:
-            return self.sessionProvider.getCtx().getPlayerFullNameParts(vehicleID, showClan=False).vehicleName
-        return getFullName(vehicleID, showClan=False)
+        return self.sessionProvider.getCtx().getPlayerFullNameParts(vehicleID, showClan=False).vehicleName if isBot else getFullName(vehicleID, showClan=False)
 
     def __isVehicleBot(self, vehicleID):
         return self.sessionProvider.getArenaDP().getVehicleInfo(vehicleID).team == 21

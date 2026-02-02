@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_core/scripts/client/comp7_core/gui/impl/lobby/comp7_core_helpers/comp7_core_model_helpers.py
 from comp7_core.gui.impl.lobby.comp7_core_helpers import comp7_core_shared
 from gui.periodic_battles.models import PrimeTimeStatus
 from helpers.time_utils import getServerUTCTime
@@ -23,11 +25,12 @@ def getValidSeason(modeController, season=None):
 def getSeasonNameEnum(modeController, seasonNameClazz, season=None):
     season = getValidSeason(modeController, season)
     if season:
-        seasonNameByNumber = {1: seasonNameClazz.FIRST, 2: seasonNameClazz.SECOND, 
-           3: seasonNameClazz.THIRD}
+        seasonNameByNumber = {1: seasonNameClazz.FIRST,
+         2: seasonNameClazz.SECOND,
+         3: seasonNameClazz.THIRD}
         return seasonNameByNumber.get(season.getNumber())
     else:
-        return
+        return None
 
 
 def setSeasonInfo(model, modeController, seasonStateClazz, seasonNameClazz, season=None):

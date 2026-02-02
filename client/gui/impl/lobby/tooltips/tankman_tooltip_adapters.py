@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tooltips/tankman_tooltip_adapters.py
 import typing
 from gui.impl import backport
 from gui.impl.gen import R
@@ -27,7 +29,7 @@ class TankmanAdapter(object):
 
 
 class TokenTankmanInfoAdapter(TankmanAdapter):
-    __slots__ = ('_tankmanInfo', )
+    __slots__ = ('_tankmanInfo',)
 
     def __init__(self, recruitID):
         self._tankmanInfo = NotRecruitedTankmanContext().buildItem(recruitID)
@@ -43,17 +45,13 @@ class TokenTankmanInfoAdapter(TankmanAdapter):
         icon = _IMG_PATH.tankmen.icons.special.dyn(iconName)
         if not icon.exists():
             icon = _IMG_PATH.tankmen.icons.big.dyn(iconName)
-        if icon.exists():
-            return backport.image(icon())
-        return ''
+        return backport.image(icon()) if icon.exists() else ''
 
     def getDescription(self):
         return makeString(self._tankmanInfo.getDescription())
 
     def getSkillsLabel(self):
-        if self._getSkills():
-            return backport.text(R.strings.tooltips.vehiclePreview.tankman.skillsTitle())
-        return ''
+        return backport.text(R.strings.tooltips.vehiclePreview.tankman.skillsTitle()) if self._getSkills() else ''
 
     def getSkills(self):
         return [ backport.image(_IMG_PATH.tankmen.skills.big.dyn(skill)()) for skill in self._getSkills() ]
@@ -63,7 +61,7 @@ class TokenTankmanInfoAdapter(TankmanAdapter):
 
 
 class TankmanInfoAdapter(TankmanAdapter):
-    __slots__ = ('_tankmanInfo', )
+    __slots__ = ('_tankmanInfo',)
 
     def __init__(self, tankman):
         self._tankmanInfo = tankman
@@ -78,18 +76,13 @@ class TankmanInfoAdapter(TankmanAdapter):
         return backport.image(_IMG_PATH.tankmen.icons.big.dyn(self._tankmanInfo.extensionLessIcon)())
 
     def getDescription(self):
-        return ''
+        pass
 
     def getSkillsLabel(self):
-        if self._tankmanInfo.skills:
-            return backport.text(R.strings.tooltips.vehiclePreview.tankman.skillsTitle())
-        return ''
+        return backport.text(R.strings.tooltips.vehiclePreview.tankman.skillsTitle()) if self._tankmanInfo.skills else ''
 
     def getSkills(self):
-        return [ backport.image(_IMG_PATH.artefact.dyn(skill.name)()) for skill in self._tankmanInfo.skills
-               ]
+        return [ backport.image(_IMG_PATH.artefact.dyn(skill.name)()) for skill in self._tankmanInfo.skills ]
 
     def _getVehicleName(self):
-        if self._tankmanInfo.isInTank:
-            return self._tankmanInfo.vehicleDescr.getName()
-        return ''
+        return self._tankmanInfo.vehicleDescr.getName() if self._tankmanInfo.isInTank else ''

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/sub_views/opt_device_setup.py
 from functools import partial
 from gui.shared.event_dispatcher import showDeconstructionDeviceWindow
 from wg_async import wg_async, wg_await

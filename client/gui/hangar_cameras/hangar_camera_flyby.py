@@ -1,4 +1,9 @@
-import logging, math, CGF, Math
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/hangar_cameras/hangar_camera_flyby.py
+import logging
+import math
+import CGF
+import Math
 from shared_utils import first
 import math_utils
 from helpers import dependency
@@ -19,9 +24,7 @@ class FlyByComponent(object):
 
 
 class HangarCameraFlyby(object):
-    __slots__ = ('__camera', '__callback', '__callbackDelayer', '__timeDeltaMeter',
-                 '__isActive', '__timeFromStart', '__yawEasing', '__pitchEasing',
-                 '__distEasing')
+    __slots__ = ('__camera', '__callback', '__callbackDelayer', '__timeDeltaMeter', '__isActive', '__timeFromStart', '__yawEasing', '__pitchEasing', '__distEasing')
     __hangarSpace = dependency.descriptor(IHangarSpace)
 
     def __init__(self, camera):
@@ -111,7 +114,7 @@ class HangarCameraFlyby(object):
             gameObject, _ = first(currentCameraQuery)
             return gameObject.findComponentByType(FlyByComponent)
         else:
-            return
+            return None
 
 
 class _FlybyEasing(object):
@@ -129,9 +132,7 @@ class _PitchDistEasing(_FlybyEasing):
 
     def update(self, time):
         halfDuration = self._duration * 0.5
-        if time <= halfDuration:
-            return math_utils.easeInCubic(time, self._end - self._start, halfDuration) + self._start
-        return math_utils.easeOutCubic(time - halfDuration, self._start - self._end, halfDuration) + self._end
+        return math_utils.easeInCubic(time, self._end - self._start, halfDuration) + self._start if time <= halfDuration else math_utils.easeOutCubic(time - halfDuration, self._start - self._end, halfDuration) + self._end
 
 
 class _YawEasing(_FlybyEasing):

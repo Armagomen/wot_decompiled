@@ -1,4 +1,8 @@
-import logging, time, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/wgcg/gift_system/contexts.py
+import logging
+import time
+import typing
 from gui.gift_system.wrappers import GiftsWebState, SendGiftResponse
 from gui.wgcg.base.contexts import CommonWebRequestCtx
 from gui.wgcg.settings import WebRequestDataType
@@ -8,18 +12,19 @@ _logger = logging.getLogger(__name__)
 def _packEventWebState(eventData):
     if eventData is None or not isinstance(eventData, dict):
         return
-    try:
-        result = {'sendLimit': eventData['send_limit'], 
-           'expireTime': eventData['expiration_time'], 
-           'expireDelta': eventData['expiration_delta'], 
-           'executionTime': eventData['execution_time'], 
-           'state': eventData['state']}
-        result = makeTupleByDict(GiftsWebState, result)
-    except (KeyError, TypeError):
-        _logger.exception('Can not _packEventWebState because of invalid eventData')
-        result = None
+    else:
+        try:
+            result = {'sendLimit': eventData['send_limit'],
+             'expireTime': eventData['expiration_time'],
+             'expireDelta': eventData['expiration_delta'],
+             'executionTime': eventData['execution_time'],
+             'state': eventData['state']}
+            result = makeTupleByDict(GiftsWebState, result)
+        except (KeyError, TypeError):
+            _logger.exception('Can not _packEventWebState because of invalid eventData')
+            result = None
 
-    return result
+        return result
 
 
 class GiftSystemStateCtx(CommonWebRequestCtx):
@@ -44,10 +49,7 @@ class GiftSystemStateCtx(CommonWebRequestCtx):
         return self.__reqEventIds
 
     def getDataObj(self, incomeData):
-        if incomeData is None or not isinstance(incomeData, dict):
-            return self.getDefDataObj()
-        else:
-            return {eventID:_packEventWebState(incomeData.get(str(eventID))) for eventID in self.__reqEventIds}
+        return self.getDefDataObj() if incomeData is None or not isinstance(incomeData, dict) else {eventID:_packEventWebState(incomeData.get(str(eventID))) for eventID in self.__reqEventIds}
 
     def getDefDataObj(self):
         return {eventID:None for eventID in self.__reqEventIds}
@@ -90,9 +92,9 @@ class GiftSystemSendGiftCtx(CommonWebRequestCtx):
         return makeTupleByDict(SendGiftResponse, resultData)
 
     def getDefDataObj(self, state):
-        return {'state': state, 
-           'outCount': None, 
-           'meta': self.__metaInfo, 
-           'receiverID': self.__receiverID, 
-           'entitlementCode': self.__entitlementCode, 
-           'executionTime': int(time.time())}
+        return {'state': state,
+         'outCount': None,
+         'meta': self.__metaInfo,
+         'receiverID': self.__receiverID,
+         'entitlementCode': self.__entitlementCode,
+         'executionTime': int(time.time())}

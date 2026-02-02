@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/web/web_client_api/platform/__init__.py
 import typing
 from web.web_client_api import w2capi
 from constants import WGC_PUBLICATION
@@ -13,14 +15,14 @@ if typing.TYPE_CHECKING:
 
 @w2capi(name='platform', key='action')
 class PlatformWebApi(object):
-    __slots__ = ('__mapping', )
+    __slots__ = ('__mapping',)
     __loginManager = dependency.descriptor(ILoginManager)
 
     def __init__(self):
         super(PlatformWebApi, self).__init__()
-        self.__mapping = {WGC_PUBLICATION.WGC_STEAM: SteamPlatformWebApi(), 
-           WGC_PUBLICATION.WGC_360: China360PlatformWebApi(), 
-           WGC_PUBLICATION.WGC_PC: WgPlatformWebApi()}
+        self.__mapping = {WGC_PUBLICATION.WGC_STEAM: SteamPlatformWebApi(),
+         WGC_PUBLICATION.WGC_360: China360PlatformWebApi(),
+         WGC_PUBLICATION.WGC_PC: WgPlatformWebApi()}
 
     @w2c(W2CSchema, 'get_type')
     def getType(self, _):

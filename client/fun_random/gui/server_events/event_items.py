@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/server_events/event_items.py
 from __future__ import absolute_import
 from future.utils import viewitems
 from fun_random.gui.feature.fun_constants import FEP_PROGRESSION_TRIGGER_QUEST_ID, PROGRESSION_COUNTER_TEMPLATE, FEP_PROGRESSION_ALT_TRIGGER_QUEST_ID, FEP_PROGRESSION_UNLIMITED_TRIGGER_QUEST_ID, FEP_PROGRESSION_UNLIMITED_ALT_TRIGGER_QUEST_ID, PROGRESSION_UNLIMITED_COUNTER_TEMPLATE
@@ -43,9 +45,7 @@ class FunProgressionTriggerQuest(Quest, FunProgressionWatcher):
 
     def getCurrentProgress(self):
         altQuest = self.getAltQuest()
-        if altQuest:
-            return self.getBonusCount() + altQuest.getBonusCount()
-        return self.getBonusCount()
+        return self.getBonusCount() + altQuest.getBonusCount() if altQuest else self.getBonusCount()
 
     def getTotalProgress(self):
         return self.bonusCond.getBonusLimit()
@@ -59,9 +59,7 @@ class FunProgressionTriggerQuest(Quest, FunProgressionWatcher):
     def getEarnedPoints(self):
         points = self.getBonusCounterNumber() * self.getBonusCount()
         altQuest = self.getAltQuest()
-        if altQuest:
-            return points + altQuest.getEarnedPoints()
-        return points
+        return points + altQuest.getEarnedPoints() if altQuest else points
 
     def getBonusCounterNumber(self):
         bonuses = self.getBonuses('tokens')
@@ -70,20 +68,14 @@ class FunProgressionTriggerQuest(Quest, FunProgressionWatcher):
                 if tID == self.__counterName:
                     return data.count
 
-        return 0
-
     def getQuestCondition(self):
         if self.isForActiveProgression():
             for trigger in self.getActiveProgression().config.triggers:
                 if trigger['id'] == self.__triggerId:
                     return trigger['condition']
 
-        return ''
-
     def isCompleted(self, progress=None):
-        if self.getAltQuest():
-            return self.getCurrentProgress() >= self.getTotalProgress()
-        return super(FunProgressionTriggerQuest, self).isCompleted(progress)
+        return self.getCurrentProgress() >= self.getTotalProgress() if self.getAltQuest() else super(FunProgressionTriggerQuest, self).isCompleted(progress)
 
 
 class FunProgressionUnlimitedTriggerQuest(FunProgressionTriggerQuest):
@@ -92,9 +84,7 @@ class FunProgressionUnlimitedTriggerQuest(FunProgressionTriggerQuest):
     ALT_TRIGGER_QUEST_ID = FEP_PROGRESSION_UNLIMITED_ALT_TRIGGER_QUEST_ID
 
     def getQuestCondition(self):
-        if self.isForActiveProgression():
-            return self.getActiveProgression().config.unlimitedTrigger['condition']
-        return ''
+        return self.getActiveProgression().config.unlimitedTrigger['condition'] if self.isForActiveProgression() else ''
 
 
 class FunProgressionTriggerQuestBuilder(IQuestBuilder):

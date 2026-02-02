@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/lobby/views/presenters/alert_message_presenter.py
 import json
 from gui.impl.pub.view_component import ViewComponent
 from gui.prb_control.entities.listener import IGlobalListener
@@ -8,11 +10,11 @@ from skeletons.gui.lobby_context import ILobbyContext
 from battle_royale.gui.constants import BattleRoyaleModeState
 from battle_royale.gui.impl.gen.view_models.views.lobby.views.alert_message_model import AlertMessageModel, AlertType
 from battle_royale.gui.shared.event_dispatcher import showBattleRoyalePrimeTime
-_BATTLE_ROYALE_MODE_STATE_TO_ALERT_TYPE = {BattleRoyaleModeState.CeasefireCurrentServer: AlertType.CEASEFIRECURRENTSERVER, 
-   BattleRoyaleModeState.CeasefireAllServers: AlertType.CEASEFIREALLSERVERS, 
-   BattleRoyaleModeState.Finished: AlertType.MODEISFINISHED, 
-   BattleRoyaleModeState.Unavailable: AlertType.MODEISUNAVAILABLE, 
-   BattleRoyaleModeState.Regular: AlertType.NONE}
+_BATTLE_ROYALE_MODE_STATE_TO_ALERT_TYPE = {BattleRoyaleModeState.CeasefireCurrentServer: AlertType.CEASEFIRECURRENTSERVER,
+ BattleRoyaleModeState.CeasefireAllServers: AlertType.CEASEFIREALLSERVERS,
+ BattleRoyaleModeState.Finished: AlertType.MODEISFINISHED,
+ BattleRoyaleModeState.Unavailable: AlertType.MODEISUNAVAILABLE,
+ BattleRoyaleModeState.Regular: AlertType.NONE}
 
 class AlertMessagePresenter(ViewComponent[AlertMessageModel], IGlobalListener):
     __battleRoyaleController = dependency.descriptor(IBattleRoyaleController)
@@ -26,13 +28,7 @@ class AlertMessagePresenter(ViewComponent[AlertMessageModel], IGlobalListener):
         return super(AlertMessagePresenter, self).getViewModel()
 
     def _getEvents(self):
-        return super(AlertMessagePresenter, self)._getEvents() + (
-         (
-          self.viewModel.onChangeServer, self.__onChangeServer),
-         (
-          self.__battleRoyaleController.onWidgetUpdate, self.__update),
-         (
-          self.__battleRoyaleController.onPrimeTimeStatusUpdated, self.__update))
+        return super(AlertMessagePresenter, self)._getEvents() + ((self.viewModel.onChangeServer, self.__onChangeServer), (self.__battleRoyaleController.onWidgetUpdate, self.__update), (self.__battleRoyaleController.onPrimeTimeStatusUpdated, self.__update))
 
     def onPrbEntitySwitched(self):
         self.__update()
@@ -47,7 +43,7 @@ class AlertMessagePresenter(ViewComponent[AlertMessageModel], IGlobalListener):
         return super(AlertMessagePresenter, self)._finalize()
 
     def __update(self, *_):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             modeState = self.__battleRoyaleController.getModeState()
             model.setAlertType(_BATTLE_ROYALE_MODE_STATE_TO_ALERT_TYPE.get(modeState, AlertType.NONE))
             self.__updateBattleSchedule(model)

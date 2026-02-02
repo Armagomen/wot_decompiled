@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/awards/multiple_awards_view.py
+import logging
+import typing
 from adisp import adisp_process
 from constants import RentType
 from frameworks.wulf import ViewSettings, ViewStatus, ViewFlags
@@ -60,12 +63,13 @@ class MultipleAwardsView(ViewImpl):
         tooltipId = event.getArgument('tooltipId')
         if event.contentID == R.views.common.tooltip_window.loot_box_compensation_tooltip.LootBoxVehicleCompensationTooltipContent():
             if tooltipId in self.__tooltipItems:
-                tooltipData = {'iconBefore': event.getArgument('iconBefore', ''), 'labelBefore': event.getArgument('labelBefore', ''), 
-                   'iconAfter': event.getArgument('iconAfter', ''), 
-                   'labelAfter': event.getArgument('labelAfter', ''), 
-                   'bonusName': event.getArgument('bonusName', ''), 
-                   'countBefore': event.getArgument('countBefore', 1), 
-                   'tooltipType': LootBoxCompensationTooltipTypes.VEHICLE}
+                tooltipData = {'iconBefore': event.getArgument('iconBefore', ''),
+                 'labelBefore': event.getArgument('labelBefore', ''),
+                 'iconAfter': event.getArgument('iconAfter', ''),
+                 'labelAfter': event.getArgument('labelAfter', ''),
+                 'bonusName': event.getArgument('bonusName', ''),
+                 'countBefore': event.getArgument('countBefore', 1),
+                 'tooltipType': LootBoxCompensationTooltipTypes.VEHICLE}
                 tooltipData.update(self.__tooltipItems[tooltipId].specialArgs)
                 settings = ViewSettings(R.views.common.tooltip_window.loot_box_compensation_tooltip.LootBoxVehicleCompensationTooltipContent())
                 settings.flags = ViewFlags.VIEW
@@ -81,14 +85,11 @@ class MultipleAwardsView(ViewImpl):
                 settings.kwargs = self.__tooltipItems[tooltipId].specialArgs
                 return VehicleForChooseTooltipContent(settings)
             _logger.warning("Couldn't find corresponded tooltip! tooltipId=%s", str(tooltipId))
-        return
+        return None
 
     def getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        if tooltipId is None:
-            return
-        else:
-            return self.__tooltipItems.get(tooltipId)
+        return None if tooltipId is None else self.__tooltipItems.get(tooltipId)
 
     @adisp_process
     def _onLoading(self, rewards, tooltips, productCode, *args, **kwargs):
@@ -99,7 +100,7 @@ class MultipleAwardsView(ViewImpl):
             purchasePackage = yield self.__purchaseCache.requestPurchaseByID(productCode)
             if self.__isDestroyed():
                 return
-            with self.viewModel.transaction() as (model):
+            with self.viewModel.transaction() as model:
                 productTitle = purchasePackage.getTitleID()
                 if productTitle:
                     model.setTitle(backport.text(R.strings.awards.multipleAwards.steam.dyn(productTitle)(), name=purchasePackage.getProductName()))
@@ -197,7 +198,7 @@ class MultipleAwardsView(ViewImpl):
 
 
 class MultipleAwardsViewWindow(LobbyNotificationWindow):
-    __slots__ = ('__blur', )
+    __slots__ = ('__blur',)
 
     def __init__(self, rewards, tooltips, productCode):
         super(MultipleAwardsViewWindow, self).__init__(content=self._getContentView(rewards, tooltips, productCode))

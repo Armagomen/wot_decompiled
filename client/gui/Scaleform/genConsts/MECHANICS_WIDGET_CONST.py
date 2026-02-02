@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/genConsts/MECHANICS_WIDGET_CONST.py
 
 
 class MECHANICS_WIDGET_CONST(object):
@@ -9,4 +11,13 @@ class MECHANICS_WIDGET_CONST(object):
     IDLE = 'idle'
     PRIME = 'prime'
     TRANSITION = 'transition'
-    MECHANICS_WIDGET_STATE = [PREPARING, ACTIVE, PASSIVE_ACTIVE, READY, DISABLE, IDLE, PRIME, TRANSITION]
+    EMPTY = 'empty'
+    MECHANICS_WIDGET_STATE = [PREPARING,
+     ACTIVE,
+     PASSIVE_ACTIVE,
+     READY,
+     DISABLE,
+     IDLE,
+     PRIME,
+     TRANSITION,
+     EMPTY]

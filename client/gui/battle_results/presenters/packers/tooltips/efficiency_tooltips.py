@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_results/presenters/packers/tooltips/efficiency_tooltips.py
 import typing
 from constants import DEATH_REASON_ALIVE
 from frameworks.wulf.view.array import fillResourcesArray
@@ -37,19 +39,13 @@ def getStunValues(playerResult, isZeroValuesVisible=False):
     assisted = playerResult.damageAssistedStun
     count = playerResult.stunNum
     duration = playerResult.stunDuration
-    if isZeroValuesVisible or count > 0 or assisted > 0 or duration > 0:
-        return (assisted, count, duration)
-    else:
-        return
+    return (assisted, count, duration) if isZeroValuesVisible or count > 0 or assisted > 0 or duration > 0 else None
 
 
 def getDamageValues(playerResult, isZeroValuesVisible=False):
     piercings = playerResult.piercings
     damageDealt = playerResult.damageDealt
-    if isZeroValuesVisible or damageDealt > 0:
-        return (damageDealt, piercings)
-    else:
-        return
+    return (damageDealt, piercings) if isZeroValuesVisible or damageDealt > 0 else None
 
 
 def getArmorValues(playerResult, isZeroValuesVisible=False):
@@ -57,51 +53,38 @@ def getArmorValues(playerResult, isZeroValuesVisible=False):
     damageBlocked = playerResult.damageBlockedByArmor
     if isZeroValuesVisible or noDamage > 0 or damageBlocked > 0:
         rickochets = playerResult.rickochetsReceived
-        return (
-         rickochets, noDamage, damageBlocked)
+        return (rickochets, noDamage, damageBlocked)
     else:
-        return
+        return None
 
 
 def getAssistValues(playerResult, isZeroValuesVisible=False):
     damageAssistedTrack = playerResult.damageAssistedTrack
     damageAssistedRadio = playerResult.damageAssistedRadio
     total = damageAssistedTrack + damageAssistedRadio
-    if isZeroValuesVisible or total > 0:
-        return (damageAssistedRadio, damageAssistedTrack, total)
-    else:
-        return
+    return (damageAssistedRadio, damageAssistedTrack, total) if isZeroValuesVisible or total > 0 else None
 
 
 def getKilledReasons(reusable, results, userName, isZeroValuesVisible=False):
     if userName:
-        reason = [ enemy.deathReason for enemy in getEnemies(reusable, results) if enemy.player.realName == userName and enemy.targetKills and enemy.deathReason >= DEATH_REASON_ALIVE
-                 ]
+        reason = [ enemy.deathReason for enemy in getEnemies(reusable, results) if enemy.player.realName == userName and enemy.targetKills and enemy.deathReason >= DEATH_REASON_ALIVE ]
         return reason
     else:
         allReasons = [ enemy.deathReason for enemy in getEnemies(reusable, results) if enemy.targetKills and enemy.deathReason >= DEATH_REASON_ALIVE ]
-        if isZeroValuesVisible and len(allReasons) == 1:
-            return allReasons
-        return
+        return allReasons if isZeroValuesVisible and len(allReasons) == 1 else None
 
 
 def getCapturePointsValues(playerResult):
-    if playerResult.capturePoints > 0:
-        return (playerResult.capturePoints,)
-    else:
-        return
+    return (playerResult.capturePoints,) if playerResult.capturePoints > 0 else None
 
 
 def getDefencePointsValues(playerResult):
-    if playerResult.droppedCapturePoints > 0:
-        return (playerResult.droppedCapturePoints,)
-    else:
-        return
+    return (playerResult.droppedCapturePoints,) if playerResult.droppedCapturePoints > 0 else None
 
 
 class BaseParameter(object):
-    _UNITS_TO_RESOURCE_IDS_MAP = {Unit.COUNT: _STR_PATH.tooltip.params.val, 
-       Unit.SEC: _STR_PATH.tooltip.params.val.seconds}
+    _UNITS_TO_RESOURCE_IDS_MAP = {Unit.COUNT: _STR_PATH.tooltip.params.val,
+     Unit.SEC: _STR_PATH.tooltip.params.val.seconds}
     _TITLE = None
     _DESCRIPTION = None
     _ICON = None
@@ -126,11 +109,11 @@ class BaseParameter(object):
 
     @classmethod
     def getValues(cls, *args):
-        return
+        return None
 
     @classmethod
     def getStatuses(cls, *args):
-        return
+        return None
 
 
 class SpottedParameter(BaseParameter):
@@ -143,32 +126,22 @@ class CapturePointsParameter(BaseParameter):
     _TITLE = _STR_PATH.tooltip.capture.header
     _DESCRIPTION = _STR_PATH.tooltip.capture.description
     _ICON = _IMG_PATH.capturePoints
-    _ITEM_LABELS = (
-     (
-      _STR_PATH.tooltip.capture.totalPoints, None),)
+    _ITEM_LABELS = ((_STR_PATH.tooltip.capture.totalPoints, None),)
 
     @classmethod
     def getValues(cls, playerResult, isAdditionalValuesVisible, _):
-        if not isAdditionalValuesVisible:
-            return None
-        else:
-            return getCapturePointsValues(playerResult)
+        return None if not isAdditionalValuesVisible else getCapturePointsValues(playerResult)
 
 
 class DefencePointsParameter(BaseParameter):
     _TITLE = _STR_PATH.tooltip.defence.header
     _DESCRIPTION = _STR_PATH.tooltip.defence.description
     _ICON = _IMG_PATH.droppedCapturePoints
-    _ITEM_LABELS = (
-     (
-      _STR_PATH.tooltip.defence.totalPoints, None),)
+    _ITEM_LABELS = ((_STR_PATH.tooltip.defence.totalPoints, None),)
 
     @classmethod
     def getValues(cls, playerResult, isAdditionalValuesVisible, _):
-        if not isAdditionalValuesVisible:
-            return None
-        else:
-            return getDefencePointsValues(playerResult)
+        return None if not isAdditionalValuesVisible else getDefencePointsValues(playerResult)
 
 
 class KillsParameter(BaseParameter):
@@ -185,7 +158,7 @@ class KillsParameter(BaseParameter):
         else:
             statuses = []
             for deathReason in reasons:
-                killStatus = cls._STATUS.dyn(('kill{}').format(deathReason))
+                killStatus = cls._STATUS.dyn('kill{}'.format(deathReason))
                 if killStatus != R.invalid():
                     statuses.append(killStatus.description())
 
@@ -196,11 +169,7 @@ class DamageDealtParameter(BaseParameter):
     _TITLE = _STR_PATH.tooltip.damage.header
     _DESCRIPTION = _STR_PATH.tooltip.damage.description
     _ICON = _IMG_PATH.damageDealt
-    _ITEM_LABELS = (
-     (
-      _STR_PATH.totalTooltip.damage.part1, Unit.COUNT),
-     (
-      _STR_PATH.totalTooltip.damage.part2, None))
+    _ITEM_LABELS = ((_STR_PATH.totalTooltip.damage.part1, Unit.COUNT), (_STR_PATH.totalTooltip.damage.part2, None))
 
     @classmethod
     def getValues(cls, playerResult, _, isZeroValuesVisible=False):
@@ -211,13 +180,7 @@ class StunParameter(BaseParameter):
     _TITLE = _STR_PATH.tooltip.stun.header
     _DESCRIPTION = _STR_PATH.tooltip.stun.description
     _ICON = _IMG_PATH.damageAssistedStun
-    _ITEM_LABELS = (
-     (
-      _STR_PATH.totalTooltip.stun.part1, Unit.COUNT),
-     (
-      _STR_PATH.totalTooltip.stun.part2, None),
-     (
-      _STR_PATH.totalTooltip.stun.part3, Unit.SEC))
+    _ITEM_LABELS = ((_STR_PATH.totalTooltip.stun.part1, Unit.COUNT), (_STR_PATH.totalTooltip.stun.part2, None), (_STR_PATH.totalTooltip.stun.part3, Unit.SEC))
 
     @classmethod
     def getValues(cls, playerResult, _, isZeroValuesVisible=False):
@@ -228,13 +191,7 @@ class DamageAssistedParameter(BaseParameter):
     _TITLE = _STR_PATH.tooltip.assist.header
     _DESCRIPTION = _STR_PATH.tooltip.assist.description
     _ICON = _IMG_PATH.damageAssisted
-    _ITEM_LABELS = (
-     (
-      _STR_PATH.totalTooltip.assist.part1, Unit.COUNT),
-     (
-      _STR_PATH.totalTooltip.assist.part2, Unit.COUNT),
-     (
-      _STR_PATH.totalTooltip.assist.total, Unit.COUNT))
+    _ITEM_LABELS = ((_STR_PATH.totalTooltip.assist.part1, Unit.COUNT), (_STR_PATH.totalTooltip.assist.part2, Unit.COUNT), (_STR_PATH.totalTooltip.assist.total, Unit.COUNT))
 
     @classmethod
     def getValues(cls, playerResult, _, isZeroValuesVisible=False):
@@ -245,27 +202,21 @@ class DamageBlockedByArmorParameter(BaseParameter):
     _TITLE = _STR_PATH.tooltip.armor.header
     _DESCRIPTION = _STR_PATH.tooltip.armor.description
     _ICON = _IMG_PATH.damageBlockedByArmor
-    _ITEM_LABELS = (
-     (
-      _STR_PATH.totalTooltip.armor.part1, None),
-     (
-      _STR_PATH.totalTooltip.armor.part2, None),
-     (
-      _STR_PATH.totalTooltip.armor.part3, Unit.COUNT))
+    _ITEM_LABELS = ((_STR_PATH.totalTooltip.armor.part1, None), (_STR_PATH.totalTooltip.armor.part2, None), (_STR_PATH.totalTooltip.armor.part3, Unit.COUNT))
 
     @classmethod
     def getValues(cls, playerResult, _, isZeroValuesVisible=False):
         return getArmorValues(playerResult, isZeroValuesVisible)
 
 
-PARAMETERS_TO_TOOLTIP_MAP = {EfficiencyParamConstants.STUN: StunParameter, 
-   EfficiencyParamConstants.DAMAGE_DEALT: DamageDealtParameter, 
-   EfficiencyParamConstants.DAMAGE_BLOCKED_BY_ARMOR: DamageBlockedByArmorParameter, 
-   EfficiencyParamConstants.DAMAGE_ASSISTED: DamageAssistedParameter, 
-   EfficiencyParamConstants.SPOTTED: SpottedParameter, 
-   EfficiencyParamConstants.KILLS: KillsParameter, 
-   EfficiencyParamConstants.CAPTURE_POINTS: CapturePointsParameter, 
-   EfficiencyParamConstants.DROPPED_CAPTURE_POINTS: DefencePointsParameter}
+PARAMETERS_TO_TOOLTIP_MAP = {EfficiencyParamConstants.STUN: StunParameter,
+ EfficiencyParamConstants.DAMAGE_DEALT: DamageDealtParameter,
+ EfficiencyParamConstants.DAMAGE_BLOCKED_BY_ARMOR: DamageBlockedByArmorParameter,
+ EfficiencyParamConstants.DAMAGE_ASSISTED: DamageAssistedParameter,
+ EfficiencyParamConstants.SPOTTED: SpottedParameter,
+ EfficiencyParamConstants.KILLS: KillsParameter,
+ EfficiencyParamConstants.CAPTURE_POINTS: CapturePointsParameter,
+ EfficiencyParamConstants.DROPPED_CAPTURE_POINTS: DefencePointsParameter}
 
 class EfficiencyTooltipsPacker(ITooltipPacker):
     __slots__ = ()

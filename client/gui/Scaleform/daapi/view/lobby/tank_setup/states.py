@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/tank_setup/states.py
+import logging
+import typing
 from WeakMethod import WeakMethodProxy
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.framework.entities.View import ViewKey
@@ -25,10 +28,7 @@ def registerTransitions(machine):
 def _getAmmunitionSubView(appLoader=None):
     app = appLoader.getApp()
     view = app.containerManager.getViewByKey(LegacyAmmunitionState.VIEW_KEY)
-    if not view:
-        return None
-    else:
-        return view.injectedView
+    return None if not view else view.injectedView
 
 
 @SubScopeTopLayerState.parentOf
@@ -42,9 +42,7 @@ class LegacyAmmunitionState(SFViewLobbyState):
 
     def _hasChanges(self, _):
         ammunitionSubView = _getAmmunitionSubView()
-        if ammunitionSubView:
-            return ammunitionSubView.hasChanged()
-        return False
+        return ammunitionSubView.hasChanged() if ammunitionSubView else False
 
 
 @TopScopeTopLayerState.parentOf
@@ -52,7 +50,7 @@ class LegacyAmmunitionConfirmationState(LobbyState):
     STATE_ID = 'legacyAmmuntionConfirmLeave'
 
     def getNavigationDescription(self):
-        return
+        return None
 
     @wg_async
     def _onEntered(self, event):

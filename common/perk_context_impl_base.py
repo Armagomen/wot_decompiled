@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/perk_context_impl_base.py
 from visual_script.misc import ASPECT
 
 class PerkContextImplBase(object):

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/cyberSport/CyberSportUnitsListView.py
 from UnitBase import UNIT_BROWSER_TYPE
 from gui.Scaleform.daapi.view.lobby.rally.rally_dps import ManualSearchDataProvider
 from gui.Scaleform.daapi.view.meta.CyberSportUnitsListMeta import CyberSportUnitsListMeta
@@ -27,8 +29,7 @@ class CyberSportUnitsListView(CyberSportUnitsListMeta):
         return ManualSearchDataProvider()
 
     def getCoolDownRequests(self):
-        return [
-         REQUEST_TYPE.UNITS_LIST]
+        return [REQUEST_TYPE.UNITS_LIST]
 
     def loadPrevious(self):
         listReq = self.prbEntity.getBrowser()
@@ -64,11 +65,11 @@ class CyberSportUnitsListView(CyberSportUnitsListMeta):
         super(CyberSportUnitsListView, self)._populate()
         self._cooldown.start()
         self.prbEntity.getBrowser().start(self.__onUnitsListUpdated)
-        self.as_setHeaderS({'title': text_styles.promoTitle(CYBERSPORT.WINDOW_UNITLISTVIEW_TITLE), 
-           'createBtnLabel': CYBERSPORT.WINDOW_UNITLISTVIEW_CREATE_BTN, 
-           'createBtnTooltip': None, 
-           'createBtnEnabled': True, 
-           'columnHeaders': self.__getColumnHeaders()})
+        self.as_setHeaderS({'title': text_styles.promoTitle(CYBERSPORT.WINDOW_UNITLISTVIEW_TITLE),
+         'createBtnLabel': CYBERSPORT.WINDOW_UNITLISTVIEW_CREATE_BTN,
+         'createBtnTooltip': None,
+         'createBtnEnabled': True,
+         'columnHeaders': self.__getColumnHeaders()})
         self.itemsCache.onSyncCompleted += self.__refreshData
         return
 
@@ -83,10 +84,10 @@ class CyberSportUnitsListView(CyberSportUnitsListMeta):
         self.__updateView(user)
 
     def _doEnableNavButtons(self, isEnabled):
-        self.as_updateNavigationBlockS({'previousVisible': True, 
-           'previousEnabled': isEnabled, 
-           'nextVisible': True, 
-           'nextEnabled': isEnabled})
+        self.as_updateNavigationBlockS({'previousVisible': True,
+         'previousEnabled': isEnabled,
+         'nextVisible': True,
+         'nextEnabled': isEnabled})
 
     def _onCooldownHandle(self, isInCooldown):
         self._doEnableNavButtons(not isInCooldown)
@@ -105,18 +106,17 @@ class CyberSportUnitsListView(CyberSportUnitsListMeta):
             return
 
     def __getColumnHeaders(self):
-        return [
-         self.__createHedader('', 82, 'center', RES_ICONS.MAPS_ICONS_STATISTIC_RATING24),
+        return [self.__createHedader('', 82, 'center', RES_ICONS.MAPS_ICONS_STATISTIC_RATING24),
          self.__createHedader(CYBERSPORT.WINDOW_UNIT_UNITLISTVIEW_COMMANDER, 152),
          self.__createHedader(CYBERSPORT.WINDOW_UNIT_UNITLISTVIEW_DESCRIPTION, 220),
          self.__createHedader(CYBERSPORT.WINDOW_UNIT_UNITLISTVIEW_PLAYERS, 76)]
 
     def __createHedader(self, label, buttonWidth, position='left', iconSource=None):
-        return {'label': label, 
-           'buttonWidth': buttonWidth, 
-           'iconSource': iconSource, 
-           'enabled': False, 
-           'textAlign': position}
+        return {'label': label,
+         'buttonWidth': buttonWidth,
+         'iconSource': iconSource,
+         'enabled': False,
+         'textAlign': position}
 
     def __updateVehicleLabel(self):
         settings = self.prbEntity.getRosterSettings()
@@ -135,14 +135,14 @@ class CyberSportUnitsListView(CyberSportUnitsListMeta):
             self.as_setDummyVisibleS(False)
         else:
             self.as_setDummyVisibleS(True)
-            self.as_setDummyS({'htmlText': text_styles.main(CYBERSPORT.WINDOW_UNITLISTVIEW_NOITEMS), 
-               'alignCenter': True})
+            self.as_setDummyS({'htmlText': text_styles.main(CYBERSPORT.WINDOW_UNITLISTVIEW_NOITEMS),
+             'alignCenter': True})
         return
 
     def __setDetails(self, vo):
         linkage = CYBER_SPORT_ALIASES.COMMNAD_DETAILS_LINKAGE_JOIN_TO_NONSTATIC
-        self.as_setDetailsS({'viewLinkage': linkage, 
-           'data': vo})
+        self.as_setDetailsS({'viewLinkage': linkage,
+         'data': vo})
         self.__updateVehicleLabel()
 
     def __refreshDetails(self, idx):

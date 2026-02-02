@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/hangar_presets/obsolete/hangar_gui_config.py
 from collections import namedtuple
 import typing
 if typing.TYPE_CHECKING:

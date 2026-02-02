@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/common/fade_manager.py
 import typing
 from frameworks.wulf import Window, View, WindowSettings, ViewSettings, WindowFlags, WindowStatus
 from gui.impl.gen import R
@@ -7,9 +9,12 @@ from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.game_control import IFadingController
 from skeletons.gui.impl import IGuiLoader
 from wg_async import AsyncSemaphore, AsyncEvent
-import logging, time
+import logging
+import time
 from functools import wraps
-import BattleReplay, BigWorld, adisp
+import BattleReplay
+import BigWorld
+import adisp
 from frameworks.wulf import WindowLayer
 from gui.shared import g_eventBus, events
 from helpers import dependency
@@ -33,7 +38,7 @@ class ICover(object):
 
 
 class DefaultFadingCover(View, ICover):
-    __slots__ = ('_onComplete', )
+    __slots__ = ('_onComplete',)
 
     def __init__(self, background=None, fadeInDuration=FADE_IN_DURATION, fadeOutDuration=FADE_OUT_DURATION):
         model = FadingCoverViewModel()
@@ -241,8 +246,7 @@ class AsyncEventWithTimout(AsyncEvent):
 
 
 class UseFading(object):
-    __slots__ = ('_hide', '_show', '_layer', '_waitForLayoutReady', '_currentFunctions',
-                 '_callback')
+    __slots__ = ('_hide', '_show', '_layer', '_waitForLayoutReady', '_currentFunctions', '_callback')
     _fadeManager = dependency.descriptor(IFadingController)
 
     def __init__(self, show=True, hide=True, layer=WindowLayer.OVERLAY, waitForLayoutReady=None, callback=None):

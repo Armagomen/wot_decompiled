@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/account_dashboard/dog_tags_model.py
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.views.lobby.account_dashboard.dog_tag_model import DogTagModel
 

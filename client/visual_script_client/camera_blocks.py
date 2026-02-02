@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/visual_script_client/camera_blocks.py
 from visual_script import ASPECT
 from visual_script.block import Block, Meta
 from visual_script.dependency import dependencyImporter
@@ -8,15 +10,15 @@ class CameraMeta(Meta):
 
     @classmethod
     def blockColor(cls):
-        return 6750207
+        pass
 
     @classmethod
     def blockCategory(cls):
-        return 'Camera'
+        pass
 
     @classmethod
     def blockIcon(cls):
-        return ':vse/blocks/camera'
+        pass
 
     @classmethod
     def blockAspects(cls):

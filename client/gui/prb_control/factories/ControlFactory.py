@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/factories/ControlFactory.py
 from debug_utils import LOG_DEBUG
 from gui.prb_control.items import PlayerDecorator
 from gui.prb_control.settings import FUNCTIONAL_FLAG
@@ -33,7 +35,7 @@ class ControlFactory(object):
             result.configure(action)
             return result
         else:
-            return
+            return None
 
     @classmethod
     def _createEntryByType(cls, entryType, available):
@@ -41,7 +43,7 @@ class ControlFactory(object):
             clazz = available[entryType]
             return clazz()
         else:
-            return
+            return None
 
     @classmethod
     def _createEntityByType(cls, entityType, available, **kwargs):
@@ -49,4 +51,4 @@ class ControlFactory(object):
             clazz = available[entityType]
             return clazz(**kwargs)
         else:
-            return
+            return None

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/account_completion/steam_confirm_email_overlay_view.py
 import typing
 from gui.impl.backport import text as loc
 from gui.impl.gen import R

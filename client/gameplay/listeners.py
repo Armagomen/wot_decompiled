@@ -1,11 +1,14 @@
-import weakref, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gameplay/listeners.py
+import weakref
+import BigWorld
 from PlayerEvents import g_playerEvents
 from constants import ARENA_GUI_TYPE
 from frameworks.state_machine.events import StringEvent
 from skeletons.gameplay import PlayerEventID, ReplayEventID
 
 class PlayerEventsAdaptor(object):
-    __slots__ = ('_machine', )
+    __slots__ = ('_machine',)
 
     def __init__(self, machine):
         super(PlayerEventsAdaptor, self).__init__()

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/miniclient/lobby/header/create_squad.py
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.shared.event_bus import EVENT_BUS_SCOPE
 from helpers import aop
@@ -14,5 +16,4 @@ class _OnCreateSquadClickAspect(aop.Aspect):
 class OnCreateSquadClickPointcut(aop.Pointcut):
 
     def __init__(self):
-        aop.Pointcut.__init__(self, 'gui.Scaleform.daapi.view.lobby.header.LobbyHeader', 'LobbyHeader', 'showSquad', aspects=(
-         _OnCreateSquadClickAspect,))
+        aop.Pointcut.__init__(self, 'gui.Scaleform.daapi.view.lobby.header.LobbyHeader', 'LobbyHeader', 'showSquad', aspects=(_OnCreateSquadClickAspect,))

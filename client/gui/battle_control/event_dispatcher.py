@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/event_dispatcher.py
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.framework.entities.View import ViewKey
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
@@ -10,8 +12,8 @@ from skeletons.gui.app_loader import IAppLoader
 _SCOPE = EVENT_BUS_SCOPE.BATTLE
 
 def _makeKeyCtx(key=0, isDown=False):
-    return {'key': key, 
-       'isDown': isDown}
+    return {'key': key,
+     'isDown': isDown}
 
 
 @dependency.replace_none_kwargs(appLoader=IAppLoader)
@@ -156,9 +158,9 @@ def controlModeChange(mode):
 
 
 def sniperCameraTransition(ctrlModeName, transitionTime, transitionSide):
-    g_eventBus.handleEvent(GameEvent(GameEvent.SNIPER_CAMERA_TRANSITION, {'ctrlModeName': ctrlModeName, 
-       'transitionTime': transitionTime, 
-       'transitionSide': transitionSide}), scope=_SCOPE)
+    g_eventBus.handleEvent(GameEvent(GameEvent.SNIPER_CAMERA_TRANSITION, {'ctrlModeName': ctrlModeName,
+     'transitionTime': transitionTime,
+     'transitionSide': transitionSide}), scope=_SCOPE)
 
 
 def showCommanderCamHint(show):

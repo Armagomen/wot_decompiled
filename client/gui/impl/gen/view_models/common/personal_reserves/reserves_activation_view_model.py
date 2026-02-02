@@ -1,9 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/common/personal_reserves/reserves_activation_view_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.common.personal_reserves.reserves_group_model import ReservesGroupModel
 
 class ReservesActivationViewModel(ViewModel):
-    __slots__ = ('onNavigateToStore', 'onClose', 'onBoosterActivate', 'onNavigateToDepot',
-                 'onCardHover')
+    __slots__ = ('onNavigateToStore', 'onClose', 'onBoosterActivate', 'onNavigateToDepot', 'onCardHover')
 
     def __init__(self, properties=5, commands=5):
         super(ReservesActivationViewModel, self).__init__(properties=properties, commands=commands)

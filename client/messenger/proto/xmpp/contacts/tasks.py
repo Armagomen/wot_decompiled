@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/xmpp/contacts/tasks.py
 from collections import defaultdict, namedtuple
 import Event
 from messenger.m_constants import PROTO_TYPE
@@ -20,7 +22,7 @@ class TaskResult(CONST_CONTAINER):
 _ShadowPath = namedtuple('_ShadowPath', 'actionID, isFinal')
 
 class _Task(ClientHolder):
-    __slots__ = ('_result', )
+    __slots__ = ('_result',)
 
     def __init__(self):
         super(_Task, self).__init__()
@@ -28,7 +30,7 @@ class _Task(ClientHolder):
 
     @storage_getter('users')
     def usersStorage(self):
-        return
+        return None
 
     def clear(self):
         self._result = TaskResult.UNDEFINED
@@ -73,8 +75,7 @@ class IQTask(_Task):
         self._shadowPath = _ShadowPath(actionID, isFinal)
 
     def getShadowData(self):
-        return (
-         self._shadowPath, self._error)
+        return (self._shadowPath, self._error)
 
     def run(self):
         client = self.client()
@@ -118,7 +119,7 @@ class IQTask(_Task):
         raise NotImplementedError
 
     def _getError(self, pyGlooxTag):
-        return
+        return None
 
 
 class SeqTask(IQTask):
@@ -152,8 +153,7 @@ class SeqTaskQueue(object):
             for index, task in enumerate(self.__queue):
                 if task.isRequired():
                     self.__wait.append(index)
-                else:
-                    self.__others.append(index)
+                self.__others.append(index)
 
             self.__queue[0].run()
 
@@ -233,13 +233,13 @@ class ContactTask(IQTask):
         return self._jid
 
     def getContext(self):
-        return -1
+        pass
 
     def clone(self):
         return []
 
     def createSeqTask(self):
-        return
+        return None
 
     def clear(self):
         self._jid = None
@@ -318,7 +318,7 @@ class ContactTaskQueue(object):
 
     def sync(self, jid, name='', groups=None, sub=None, clanInfo=None, defaultTask=None):
         if not jid.getDatabaseID():
-            g_logOutput.error(_LOG_AREA.SYNC, ('JID "{0}" is invalid').format(jid))
+            g_logOutput.error(_LOG_AREA.SYNC, 'JID "{0}" is invalid'.format(jid))
             return
         generator = self._getSyncGenerator(jid, name, groups, sub, clanInfo)
         if not self._handleTasksResult(jid, generator) and defaultTask:
@@ -361,13 +361,11 @@ class ContactTaskQueue(object):
 
     def _getIQGenerator(self, jid, iqID, iqType, pyGlooxTag):
         for task in self.__queue[jid][:]:
-            yield (
-             task.handleIQ(iqID, iqType, pyGlooxTag), task)
+            yield (task.handleIQ(iqID, iqType, pyGlooxTag), task)
 
     def _getSyncGenerator(self, jid, name, groups, sub, clanInfo):
         for task in self.__queue[jid][:]:
-            yield (
-             task.sync(name, groups, sub, clanInfo), task)
+            yield (task.sync(name, groups, sub, clanInfo), task)
 
     def _doRunFirstTask(self, jid):
         tasks = self.__queue[jid]

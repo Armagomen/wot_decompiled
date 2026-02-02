@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/account_helpers/client_blueprints.py
+import logging
+import typing
 from functools import partial
 import AccountCommands
 from gui.shared.utils.requesters.blueprints_requester import getFragmentNationID
@@ -49,16 +52,18 @@ class ClientBlueprints(object):
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, None)
             return
-        self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
-        return
+        else:
+            self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
+            return
 
     def get(self, callback):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, None)
             return
-        self.__syncData.waitForSync(partial(self.__onGetResponse, callback))
-        return
+        else:
+            self.__syncData.waitForSync(partial(self.__onGetResponse, callback))
+            return
 
     def convertBlueprintFragment(self, fragmentTypeCD, position, requestedCount, usedNationalFragments, callback):
         _logger.debug('Account.convertBlueprintFragment: fragmentTypeCD=%s', fragmentTypeCD)
@@ -92,15 +97,17 @@ class ClientBlueprints(object):
             if callback is not None:
                 callback(resultID, None)
             return
-        if callback is not None:
-            callback(resultID, {'cache': self.__cache})
-        return
+        else:
+            if callback is not None:
+                callback(resultID, {'cache': self.__cache})
+            return
 
     def __onGetResponse(self, callback, resultID):
         if resultID < 0:
             if callback is not None:
                 callback(resultID, None)
             return
-        if callback is not None:
-            callback(resultID, self.__cache.get(_BLUEPRINT_KEY, None))
-        return
+        else:
+            if callback is not None:
+                callback(resultID, self.__cache.get(_BLUEPRINT_KEY, None))
+            return

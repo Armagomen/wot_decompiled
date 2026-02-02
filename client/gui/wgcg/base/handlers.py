@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/wgcg/base/handlers.py
 from gui.wgcg.settings import WebRequestDataType
 
 class RequestHandlers(object):
@@ -9,9 +11,9 @@ class RequestHandlers(object):
 class BaseRequestHandlers(RequestHandlers):
 
     def get(self):
-        handlers = {WebRequestDataType.LOGIN: self.__login, 
-           WebRequestDataType.LOGOUT: self.__logout, 
-           WebRequestDataType.PING: self.__ping}
+        handlers = {WebRequestDataType.LOGIN: self.__login,
+         WebRequestDataType.LOGOUT: self.__logout,
+         WebRequestDataType.PING: self.__ping}
         return handlers
 
     def __login(self, ctx, callback=None):

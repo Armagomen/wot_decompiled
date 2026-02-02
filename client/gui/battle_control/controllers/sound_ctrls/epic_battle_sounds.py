@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/sound_ctrls/epic_battle_sounds.py
 import SoundGroups
 from BattleFeedbackCommon import BATTLE_EVENT_TYPE
 from constants import EQUIPMENT_STAGES, VEHICLE_HIT_FLAGS as VHF
@@ -15,8 +17,7 @@ class EpicBattleSoundController(SoundPlayersController):
 
     def __init__(self):
         super(EpicBattleSoundController, self).__init__()
-        self._soundPlayers = (
-         _MineFieldSoundPlayer(),
+        self._soundPlayers = (_MineFieldSoundPlayer(),
          _StealthSoundPlayer(),
          _EquipmentSoundPlayer(),
          _RepairPointAndRegenerationKitSoundPlayer(),
@@ -94,15 +95,14 @@ class _EquipmentSoundPlayer(object):
             if soundName in itemName:
                 return EPIC_SOUND.EQUIPMENT_ACTIVATED.get(soundName)
 
-        return
+        return None
 
     def __onEquipmentUpdated(self, _, item):
         if item.getPrevStage() == item.getStage():
             return
         else:
             prevStageIsReady = item.getPrevStage() in (EQUIPMENT_STAGES.READY, EQUIPMENT_STAGES.PREPARING)
-            currentStageIsActive = item.getStage() in (EQUIPMENT_STAGES.ACTIVE, EQUIPMENT_STAGES.COOLDOWN,
-             EQUIPMENT_STAGES.EXHAUSTED)
+            currentStageIsActive = item.getStage() in (EQUIPMENT_STAGES.ACTIVE, EQUIPMENT_STAGES.COOLDOWN, EQUIPMENT_STAGES.EXHAUSTED)
             if prevStageIsReady and currentStageIsActive:
                 eventName = self.__getEventName(item.getDescriptor().name)
                 if eventName is not None:

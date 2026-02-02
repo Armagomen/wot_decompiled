@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/ModuleInfoWindow.py
 from gui.Scaleform.daapi.view.meta.ModuleInfoMeta import ModuleInfoMeta
 from gui.Scaleform.framework.entities.View import View
 from gui.Scaleform.locale.MENU import MENU
@@ -48,9 +50,8 @@ class ModuleInfoWindow(ModuleInfoMeta):
         if itemTypeID == GUI_ITEM_TYPE.SHELL:
             titleArr = [module.userType, module.shortUserName, _ms(MENU.MODULEINFO_TITLE)]
         else:
-            titleArr = [
-             module.longUserName, _ms(MENU.MODULEINFO_TITLE)]
-        data['windowTitle'] = (' ').join(titleArr)
+            titleArr = [module.longUserName, _ms(MENU.MODULEINFO_TITLE)]
+        data['windowTitle'] = ' '.join(titleArr)
         data['overlayType'] = module.getOverlayType()
         data['highlightType'] = module.getBigHighlightType()
         self._updateModuleInfo(data)

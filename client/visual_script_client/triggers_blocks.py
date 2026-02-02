@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/visual_script_client/triggers_blocks.py
 import BigWorld
 from visual_script.block import Block, Meta
 from visual_script.slot_types import SLOT_TYPE
@@ -8,20 +10,19 @@ class TriggerMeta(Meta):
 
     @classmethod
     def blockColor(cls):
-        return 16738047
+        pass
 
     @classmethod
     def blockCategory(cls):
-        return 'Arena'
+        pass
 
     @classmethod
     def blockIcon(cls):
-        return ':vse/blocks/input'
+        pass
 
     @classmethod
     def blockAspects(cls):
-        return [
-         ASPECT.CLIENT]
+        return [ASPECT.CLIENT]
 
 
 class TriggerExternal(Block, TriggerMeta):
@@ -36,9 +37,7 @@ class TriggerExternal(Block, TriggerMeta):
         self._active = False
 
     def validate(self):
-        if not self._eventIDSlot.hasValue():
-            return 'EventID value is required'
-        return super(TriggerExternal, self).validate()
+        return 'EventID value is required' if not self._eventIDSlot.hasValue() else super(TriggerExternal, self).validate()
 
     def onStartScript(self):
         isActive = self._isActiveInputSlot.getValue() if self._isActiveInputSlot.hasValue() else True

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/vehicle_compare/panel.py
 from gui.impl.gen.view_models.views.lobby.tank_setup.common.ammunition_items_section import AmmunitionItemsSection
 from gui.impl.gen.view_models.views.lobby.tank_setup.common.ammunition_panel_constants import AmmunitionPanelConstants
 from gui.impl.gen.view_models.views.lobby.tank_setup.tank_setup_constants import TankSetupConstants
@@ -6,10 +8,11 @@ from gui.impl.common.ammunition_panel.ammunition_groups_controller import Ammuni
 from gui.impl.common.ammunition_panel.base import BaseAmmunitionPanel
 from gui.impl.common.ammunition_panel.ammunition_blocks_controller import BaseAmmunitionBlocksController
 from gui.impl.lobby.vehicle_compare.panel_blocks import CompareOptDeviceBlock, CompareShellsBlock, CompareConsumablesBlock, CompareBattleBoostersBlock, CompareCamouflageBlock
-_COMPARE_GROUPS = (
- GroupData(AmmunitionPanelConstants.NO_GROUP, (
-  TankSetupConstants.OPT_DEVICES, TankSetupConstants.TOGGLE_SHELLS, TankSetupConstants.CONSUMABLES,
-  TankSetupConstants.BATTLE_BOOSTERS, TankSetupConstants.TOGGLE_CAMOUFLAGE)),)
+_COMPARE_GROUPS = (GroupData(AmmunitionPanelConstants.NO_GROUP, (TankSetupConstants.OPT_DEVICES,
+  TankSetupConstants.TOGGLE_SHELLS,
+  TankSetupConstants.CONSUMABLES,
+  TankSetupConstants.BATTLE_BOOSTERS,
+  TankSetupConstants.TOGGLE_CAMOUFLAGE)),)
 
 class CompareAmmunitionBlocksController(BaseAmmunitionBlocksController):
     __slots__ = ()
@@ -42,10 +45,7 @@ class CompareAmmunitionGroupsController(AmmunitionGroupsController):
     __slots__ = ()
 
     def _getGroups(self):
-        if self._vehicle is None:
-            return []
-        else:
-            return _COMPARE_GROUPS
+        return [] if self._vehicle is None else _COMPARE_GROUPS
 
     def _createAmmunitionBlockController(self, vehicle, ctx=None):
         return CompareAmmunitionBlocksController(vehicle, ctx=ctx)

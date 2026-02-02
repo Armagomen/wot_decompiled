@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/loot_box_vehicle_compensation_tooltip_model.py
 from gui.impl.gen.view_models.views.loot_box_compensation_tooltip_model import LootBoxCompensationTooltipModel
 
 class LootBoxVehicleCompensationTooltipModel(LootBoxCompensationTooltipModel):

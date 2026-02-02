@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/hangar/presenters/teaser_presenter.py
 from __future__ import absolute_import
 from functools import partial
 import SoundGroups
@@ -38,11 +40,7 @@ class TeaserPresenter(ViewComponent[TeaserModel]):
         super(TeaserPresenter, self)._finalize()
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onClose, self.__onClose),
-         (
-          self.viewModel.onClick, self.__onClick))
+        return ((self.viewModel.onClose, self.__onClose), (self.viewModel.onClick, self.__onClick))
 
     def __clear(self):
         if self.__imageId:
@@ -75,7 +73,7 @@ class TeaserPresenter(ViewComponent[TeaserModel]):
             ImageHelper.removeTextureFromMemory(self.__imageId)
         self.__imageId = ImageHelper.getMemoryTexturePath(image, False)
         isSalesPromoType = self.__teaserData.get('promoType') == self._SALE_PROMO_TYPE
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setPostCounter(self.__promoCount)
             model.setDescription(self.__teaserData['description'])
             model.setText(self.__teaserData.get('version', ''))

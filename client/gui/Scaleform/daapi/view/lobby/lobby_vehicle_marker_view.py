@@ -1,9 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/lobby_vehicle_marker_view.py
 import typing
 from collections import defaultdict
-import GUI, Math
+import GUI
+import Math
 from gui.Scaleform.daapi.view.meta.LobbyVehicleMarkerViewMeta import LobbyVehicleMarkerViewMeta
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.framework.entities.sf_window import SFWindow
 from gui.shared.gui_items.Vehicle import getVehicleClassTag
 from gui.shared import events, EVENT_BUS_SCOPE
 from gui.hangar_cameras.hangar_camera_common import CameraRelatedEvents, CameraMovementStates
@@ -17,8 +18,7 @@ if typing.TYPE_CHECKING:
     from cgf_components.marker_component import LobbyFlashMarker
 
 class LobbyVehicleMarkerView(LobbyVehicleMarkerViewMeta):
-    __LAYERS_WITHOUT_MARKERS = {
-     WindowLayer.FULLSCREEN_WINDOW,
+    __LAYERS_WITHOUT_MARKERS = {WindowLayer.FULLSCREEN_WINDOW,
      WindowLayer.OVERLAY,
      WindowLayer.SUB_VIEW,
      WindowLayer.TOP_SUB_VIEW}
@@ -82,10 +82,10 @@ class LobbyVehicleMarkerView(LobbyVehicleMarkerViewMeta):
         entityId = event.ctx['entityId']
         if self.__isMarkerDisabled or self.__markersCache[entityId] is None:
             return
-        state = event.ctx['state']
-        if state == CameraMovementStates.FROM_OBJECT:
-            return
         else:
+            state = event.ctx['state']
+            if state == CameraMovementStates.FROM_OBJECT:
+                return
             self.__markersCache[entityId].markerSetActive(self.hangarSpace.space.vehicleEntityId == entityId)
             return
 
@@ -104,8 +104,8 @@ class LobbyVehicleMarkerView(LobbyVehicleMarkerViewMeta):
     def _canShowMarkers(self):
         windowsManager = self.guiLoader.windowsManager
         windows = windowsManager.findWindows(lambda w: w.layer in self.__LAYERS_WITHOUT_MARKERS)
-        hangarIsExist = len(windowsManager.findWindows(lambda w: isinstance(w, SFWindow) and w.loadParams.viewKey.alias == VIEW_ALIAS.LEGACY_LOBBY_HANGAR)) > 0
-        return len(windows) == 1 and hangarIsExist
+        from gui.lobby_state_machine.states import isInHangarState
+        return len(windows) == 1 and isInHangarState()
 
     @staticmethod
     def __getVehicleInfo(vehicle):
@@ -113,8 +113,7 @@ class LobbyVehicleMarkerView(LobbyVehicleMarkerViewMeta):
         vClass = getVehicleClassTag(vehicleType.tags)
         vName = vehicleType.userString
         vMatrix = LobbyVehicleMarkerView.__getCorrectedHPGuiMatrix(vehicle)
-        return (
-         vClass, vName, vMatrix)
+        return (vClass, vName, vMatrix)
 
     @staticmethod
     def __getCorrectedHPGuiMatrix(vehicle):

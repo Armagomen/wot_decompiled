@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/main_tank_setup/hangar.py
 from BWUtil import AsyncReturn
 from wg_async import wg_async
 from gui.impl.lobby.tank_setup.intro_ammunition_setup_view import showIntro
@@ -9,10 +11,7 @@ class HangarMainTankSetupView(MainTankSetupView):
     @property
     def currentInteractor(self):
         selectedView = self.getCurrentSubView()
-        if selectedView:
-            return selectedView.getInteractor()
-        else:
-            return
+        return selectedView.getInteractor() if selectedView else None
 
     @wg_async
     def _doSwitch(self, setupName, slotID):

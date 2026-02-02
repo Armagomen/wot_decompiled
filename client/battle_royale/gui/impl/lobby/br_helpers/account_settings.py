@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/lobby/br_helpers/account_settings.py
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import BR_UI_SECTION, BR_PROGRESSION_SEEN_QUESTS
 

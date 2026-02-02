@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_results/presenters/battle_results_sub_presenter.py
 import typing
 from frameworks.wulf.view.submodel_presenter import SubModelPresenter
 from helpers import dependency
@@ -21,7 +23,7 @@ class BattleResultsSubPresenter(SubModelPresenter):
         if hasattr(viewModelType, '__origin__'):
             viewModelType = viewModelType.__origin__
         if not isinstance(viewModel, viewModelType):
-            raise UnexpectedViewModelException(('Expected an instance of {}, got {}').format(self.getViewModelType(), viewModel.__class__))
+            raise UnexpectedViewModelException('Expected an instance of {}, got {}'.format(self.getViewModelType(), viewModel.__class__))
         super(BattleResultsSubPresenter, self).__init__(viewModel, parentView)
         self._subPresenters = []
 

@@ -1,7 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/account_completion/common/field_email_model.py
 from gui.impl.gen.view_models.views.lobby.account_completion.common.base_field_model import BaseFieldModel
 
 class FieldEmailModel(BaseFieldModel):
-    __slots__ = ('onErrorTimer', )
+    __slots__ = ('onErrorTimer',)
     EMAIL_LEN_MAX = 50
     EMAIL_LEN_MIN = 4
 

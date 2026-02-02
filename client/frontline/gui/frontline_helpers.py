@@ -1,9 +1,14 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/frontline_helpers.py
+from typing import List
 import BigWorld
 from collections import defaultdict
 from itertools import chain
-import CommandMapping, typing
+import CommandMapping
+import typing
 from frontline.gui.impl.gen.view_models.views.lobby.views.frontline_const import FrontlineState
 from frontline_common.frontline_constants import RESERVES_MODIFIER_NAMES
+from constants import FINISH_REASON
 from gui.Scaleform.daapi.view.common.keybord_helpers import getHotKeysInfo
 from gui.Scaleform.daapi.view.lobby.epicBattle.epic_helpers import createEpicParam
 from gui.impl import backport
@@ -14,14 +19,13 @@ from items import vehicles
 from skeletons.gui.game_control import IEpicBattleMetaGameController
 
 @dependency.replace_none_kwargs(epicController=IEpicBattleMetaGameController)
-def geFrontlineState(withPrimeTime=False, epicController=None):
+def getFrontlineState(withPrimeTime=False, epicController=None):
     now = time_utils.getCurrentLocalServerTimestamp()
     startDate, endDate = epicController.getSeasonTimeRange()
     if now > endDate:
         season = epicController.getCurrentSeason()
         endSeasonDate = season.getEndDate() if season else 0
-        return (
-         FrontlineState.FINISHED, endSeasonDate, int(endSeasonDate - now))
+        return (FrontlineState.FINISHED, endSeasonDate, int(endSeasonDate - now))
     if now < startDate:
         return (FrontlineState.ANNOUNCE, startDate, int(startDate - now))
     primeTimeStatus, timeLeft, _ = epicController.getPrimeTimeStatus()
@@ -29,23 +33,19 @@ def geFrontlineState(withPrimeTime=False, epicController=None):
         if withPrimeTime:
             return (FrontlineState.FROZEN, int(now + timeLeft), timeLeft)
         return (FrontlineState.FROZEN, endDate, int(endDate - now))
-    if not epicController.isEnabled():
-        return (FrontlineState.FINISHED, 0, 0)
-    return (FrontlineState.ACTIVE, endDate, int(endDate - now))
+    return (FrontlineState.FINISHED, 0, 0) if not epicController.isEnabled() else (FrontlineState.ACTIVE, endDate, int(endDate - now))
 
 
 def getStatesUnavailableForHangar():
-    return [
-     FrontlineState.FINISHED, FrontlineState.ANNOUNCE]
+    return [FrontlineState.FINISHED]
 
 
 def getReserveIconPath(icon):
-    return ('img://gui/maps/icons/artefact/{}.png').format(icon)
+    return 'img://gui/maps/icons/artefact/{}.png'.format(icon)
 
 
 def getHotKeyListCommands():
-    return [
-     CommandMapping.CMD_CM_VEHICLE_UPGRADE_PANEL_LEFT, CommandMapping.CMD_CM_VEHICLE_UPGRADE_PANEL_RIGHT]
+    return [CommandMapping.CMD_CM_VEHICLE_UPGRADE_PANEL_LEFT, CommandMapping.CMD_CM_VEHICLE_UPGRADE_PANEL_RIGHT]
 
 
 def getHotKeyInfoListByIndex(index):
@@ -54,7 +54,7 @@ def getHotKeyInfoListByIndex(index):
 
 
 def isHangarAvailable():
-    frontlineState, _, _ = geFrontlineState()
+    frontlineState, _, _ = getFrontlineState()
     return frontlineState not in getStatesUnavailableForHangar()
 
 
@@ -79,9 +79,7 @@ class FLBattleTypeDescription(object):
         else:
             modifier = RESERVES_MODIFIER_NAMES[reservesModifier]
             iconRes = FLBattleTypeDescription.__getRI().dyn(sizeFolder).dyn(modifier)
-            if iconRes.exists():
-                return backport.image(iconRes())
-            return ''
+            return backport.image(iconRes()) if iconRes.exists() else ''
 
     @staticmethod
     def __getDescription(descriptionType, reservesModifier):
@@ -90,9 +88,7 @@ class FLBattleTypeDescription(object):
         else:
             modifier = RESERVES_MODIFIER_NAMES[reservesModifier]
             descriptionRes = FLBattleTypeDescription.__getRS().dyn(descriptionType).dyn(modifier)
-            if descriptionRes.exists():
-                return backport.text(descriptionRes())
-            return ''
+            return backport.text(descriptionRes()) if descriptionRes.exists() else ''
 
     @staticmethod
     def __getRS():
@@ -134,22 +130,22 @@ class AbilitiesTemplates(object):
         templateSeconds = self.seconds
         templateMeters = self.meters
         templatePercents = self.percents
-        return {'FixedTextParam': templateDefault, 
-           'DirectNumericTextParam': templateDefault, 
-           'DirectSecondsTextParam': templateSeconds, 
-           'DirectMetersTextParam': templateMeters, 
-           'MulDirectPercentageTextParam': templatePercents, 
-           'AddDirectPercentageTextParam': self.percentsBySecond, 
-           'MulReciprocalPercentageTextParam': templatePercents, 
-           'AddReciprocalPercentageTextParam': templatePercents, 
-           'ShellStunSecondsTextParam': templateSeconds, 
-           'MultiMetersTextParam': templateMeters, 
-           'NestedMetersTextParam': templateMeters, 
-           'NestedSecondsTextParam': templateSeconds, 
-           'MulNestedPercentageTextParam': templatePercents, 
-           'AddNestedPercentageTextParam': templatePercents, 
-           'NestedShellStunSecondsTextParam': templateSeconds, 
-           'MulNestedPercentageTextTupleValueParam': templatePercents}
+        return {'FixedTextParam': templateDefault,
+         'DirectNumericTextParam': templateDefault,
+         'DirectSecondsTextParam': templateSeconds,
+         'DirectMetersTextParam': templateMeters,
+         'MulDirectPercentageTextParam': templatePercents,
+         'AddDirectPercentageTextParam': self.percentsBySecond,
+         'MulReciprocalPercentageTextParam': templatePercents,
+         'AddReciprocalPercentageTextParam': templatePercents,
+         'ShellStunSecondsTextParam': templateSeconds,
+         'MultiMetersTextParam': templateMeters,
+         'NestedMetersTextParam': templateMeters,
+         'NestedSecondsTextParam': templateSeconds,
+         'MulNestedPercentageTextParam': templatePercents,
+         'AddNestedPercentageTextParam': templatePercents,
+         'NestedShellStunSecondsTextParam': templateSeconds,
+         'MulNestedPercentageTextTupleValueParam': templatePercents}
 
 
 TEMPLATES = AbilitiesTemplates(R.strings.fl_battle_abilities_setup.infoPanel.param.valueTemplate)
@@ -170,12 +166,12 @@ def getSkillParams(skillLevelData):
                 tooltipName, tooltipRenderer = g_battleAbilityTooltipMgr.getTooltipInfo(tooltipIdentifier)
                 paramId += 1
                 tooltipParams = params.setdefault(lvl, {}).setdefault(tooltipIdentifier, [])
-                tooltipParams.append({'id': tooltipIdentifier, 
-                   'name': i18n.makeString(tooltipName) if i18n.isValidKey(tooltipName) else '', 
-                   'value': str(param), 
-                   'sign': SKILL_PARAM_SIGN.get(tooltipIdentifier, ''), 
-                   'isDynamic': False, 
-                   'valueTemplate': str(backport.text(TEMPLATES.default if isinstance(param, str) else TEMPLATES.skillParams.get(tooltipRenderer, TEMPLATES.default)))})
+                tooltipParams.append({'id': tooltipIdentifier,
+                 'name': i18n.makeString(tooltipName) if i18n.isValidKey(tooltipName) else '',
+                 'value': str(param),
+                 'sign': SKILL_PARAM_SIGN.get(tooltipIdentifier, ''),
+                 'isDynamic': False,
+                 'valueTemplate': str(backport.text(TEMPLATES.default if isinstance(param, str) else TEMPLATES.skillParams.get(tooltipRenderer, TEMPLATES.default)))})
 
     paramsById = defaultdict(list)
     valuesById = defaultdict(set)
@@ -199,6 +195,23 @@ def becomeNonPlayerState():
     return result
 
 
-def isFinishedCycleState():
-    frontlineState, _, _ = geFrontlineState()
+def isFinishedCycleState(frontlineState=None):
+    if not frontlineState:
+        frontlineState, _, _ = getFrontlineState()
     return frontlineState == FrontlineState.FINISHED
+
+
+def isAnnouncedCycleState(frontlineState=None):
+    if not frontlineState:
+        frontlineState, _, _ = getFrontlineState()
+    return frontlineState == FrontlineState.ANNOUNCE
+
+
+def makeNewEpicBattleFinishResultLabel(finishReason, teamResult):
+    from gui.battle_results.settings import PLAYER_TEAM_RESULT
+    frontlineBattleFinishReason = {FINISH_REASON.TIMEOUT: (FINISH_REASON.DESTROYED_OBJECTS, PLAYER_TEAM_RESULT.DEFEAT),
+     FINISH_REASON.DESTROYED_OBJECTS: (FINISH_REASON.DESTROYED_OBJECTS, PLAYER_TEAM_RESULT.WIN)}
+    frontlineBattleSpecificFinishReason = {FINISH_REASON.EXTERMINATION, FINISH_REASON.TIMEOUT, FINISH_REASON.DESTROYED_OBJECTS}
+    resFinishReason, resTeamResult = frontlineBattleFinishReason.get(finishReason, (finishReason, teamResult))
+    reasonKey = 'c_{}{}'.format(resFinishReason, resTeamResult) if resFinishReason in frontlineBattleSpecificFinishReason else 'c_{}'.format(resFinishReason)
+    return backport.text(R.strings.fl_post_battle_results.battleInfo.finishReason.dyn(reasonKey)())

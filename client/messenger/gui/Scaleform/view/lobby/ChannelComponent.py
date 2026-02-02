@@ -1,4 +1,7 @@
-import weakref, constants
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/gui/Scaleform/view/lobby/ChannelComponent.py
+import weakref
+import constants
 from debug_utils import LOG_DEBUG
 from gui.impl.gen import R
 from messenger.gui import events_dispatcher
@@ -64,7 +67,7 @@ class ChannelComponent(ChannelComponentMeta):
     def getHistory(self):
         result = ''
         if self._controller():
-            result = ('\n').join(self._controller().getHistory())
+            result = '\n'.join(self._controller().getHistory())
         return result
 
     def addNotification(self, text):

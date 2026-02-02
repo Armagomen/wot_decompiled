@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/visual_script/cgf_blocks.py
 import weakref
 from visual_script.block import Meta, Block
 from visual_script.misc import ASPECT
@@ -8,15 +10,15 @@ class CGFMeta(Meta):
 
     @classmethod
     def blockColor(cls):
-        return 16540163
+        pass
 
     @classmethod
     def blockCategory(cls):
-        return 'CGF'
+        pass
 
     @classmethod
     def blockIcon(cls):
-        return ':vse/blocks/cgf'
+        pass
 
     @classmethod
     def blockAspects(cls):

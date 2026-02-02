@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/rally/vo_converters.py
 import BigWorld
 from UnitBase import UNIT_ROLE
 from constants import MAX_VEHICLE_LEVEL, MIN_VEHICLE_LEVEL, PREBATTLE_TYPE
@@ -94,20 +96,20 @@ def makeVehicleBasicVO(vehicle, levelsRange=None, vehicleTypes=None):
         elif vehicleTypes is not None and vehicle.type not in vehicleTypes:
             enabled, tooltip = False, TOOLTIPS.VEHICLESELECTOR_INCOMPATIBLETYPE
         iconPath = backport.image(R.images.gui.maps.icons.vehicle.small.dyn(getIconResourceName(vehicle.name))())
-        return {'intCD': vehicle.intCD, 
-           'nationID': vehicle.nationID, 
-           'name': vehicle.name, 
-           'userName': vehicle.userName, 
-           'shortUserName': vehicle.shortUserName, 
-           'level': (vehicle.isOnlyForBattleRoyaleBattles or vehicle).level if 1 else 0, 
-           'type': (vehicle.isOnlyForBattleRoyaleBattles or vehicle).type if 1 else '', 
-           'typeIndex': VEHICLE_TABLE_TYPES_ORDER_INDICES_REVERSED[vehicle.type], 
-           'smallIconPath': iconPath, 
-           'isReadyToFight': True, 
-           'enabled': enabled, 
-           'tooltip': tooltip, 
-           'state': '', 
-           'isEventVehicle': False}
+        return {'intCD': vehicle.intCD,
+         'nationID': vehicle.nationID,
+         'name': vehicle.name,
+         'userName': vehicle.userName,
+         'shortUserName': vehicle.shortUserName,
+         'level': vehicle.level if not vehicle.isOnlyForBattleRoyaleBattles else 0,
+         'type': vehicle.type if not vehicle.isOnlyForBattleRoyaleBattles else '',
+         'typeIndex': VEHICLE_TABLE_TYPES_ORDER_INDICES_REVERSED[vehicle.type],
+         'smallIconPath': iconPath,
+         'isReadyToFight': True,
+         'enabled': enabled,
+         'tooltip': tooltip,
+         'state': '',
+         'isEventVehicle': False}
 
 
 def makeVehicleVO(vehicle, levelsRange=None, vehicleTypes=None, isCurrentPlayer=True):
@@ -138,9 +140,9 @@ def makeIntroVehicleVO(vehicle, isReadyVehicle, warnTooltip, levelsRange=None, v
 
 
 def makeFiltersVO(nationIDRange, vTypeRange, vLevelRange):
-    return {'nationIDRange': nationIDRange, 
-       'vTypeRange': vTypeRange, 
-       'vLevelRange': vLevelRange}
+    return {'nationIDRange': nationIDRange,
+     'vTypeRange': vTypeRange,
+     'vLevelRange': vLevelRange}
 
 
 @dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
@@ -155,22 +157,22 @@ def makeUserVO(user, colorGetter, isPlayerSpeaking=False, lobbyContext=None):
         regionCode = lobbyContext.getRegionCode(user.getID())
     else:
         regionCode = None
-    return {'isInvite': False, 
-       'dbID': user.getID(), 
-       'accID': -1, 
-       'isCommander': True, 
-       'userName': user.getName(), 
-       'fullName': user.getFullName(), 
-       'clanAbbrev': user.getClanAbbrev(), 
-       'region': regionCode, 
-       'colors': colors, 
-       'rating': None, 
-       'readyState': False, 
-       'tags': tags, 
-       'isPlayerSpeaking': isPlayerSpeaking, 
-       'isOffline': not user.isOnline(), 
-       'igrType': 0, 
-       'isRatingAvailable': True}
+    return {'isInvite': False,
+     'dbID': user.getID(),
+     'accID': -1,
+     'isCommander': True,
+     'userName': user.getName(),
+     'fullName': user.getFullName(),
+     'clanAbbrev': user.getClanAbbrev(),
+     'region': regionCode,
+     'colors': colors,
+     'rating': None,
+     'readyState': False,
+     'tags': tags,
+     'isPlayerSpeaking': isPlayerSpeaking,
+     'isOffline': not user.isOnline(),
+     'igrType': 0,
+     'isRatingAvailable': True}
 
 
 def makePlayerVO(pInfo, user, colorGetter, isPlayerSpeaking=False, isIncludeAccountWTR=False):
@@ -183,25 +185,25 @@ def makePlayerVO(pInfo, user, colorGetter, isPlayerSpeaking=False, isIncludeAcco
     rating = backport.getIntegralFormat(pInfo.rating)
     badge = pInfo.getBadge()
     badgeVO = badge.getBadgeVO(ICONS_SIZES.X24, {'isAtlasSource': False}) if badge else {}
-    playerVO = {'isInvite': pInfo.isInvite(), 
-       'dbID': pInfo.dbID, 
-       'accID': pInfo.accID, 
-       'isCommander': pInfo.isCommander(), 
-       'userName': pInfo.name, 
-       'fullName': pInfo.getFullName(), 
-       'clanAbbrev': pInfo.clanAbbrev, 
-       'region': pInfo.getRegion(), 
-       'colors': colors, 
-       'rating': rating, 
-       'readyState': pInfo.isReady, 
-       'tags': tags, 
-       'isPlayerSpeaking': isPlayerSpeaking, 
-       'isOffline': pInfo.isOffline(), 
-       'igrType': pInfo.igrType, 
-       'isRatingAvailable': True, 
-       'badgeVisualVO': badgeVO, 
-       'timeJoin': pInfo.getTimeJoin(), 
-       'extraData': pInfo.getExtraData()}
+    playerVO = {'isInvite': pInfo.isInvite(),
+     'dbID': pInfo.dbID,
+     'accID': pInfo.accID,
+     'isCommander': pInfo.isCommander(),
+     'userName': pInfo.name,
+     'fullName': pInfo.getFullName(),
+     'clanAbbrev': pInfo.clanAbbrev,
+     'region': pInfo.getRegion(),
+     'colors': colors,
+     'rating': rating,
+     'readyState': pInfo.isReady,
+     'tags': tags,
+     'isPlayerSpeaking': isPlayerSpeaking,
+     'isOffline': pInfo.isOffline(),
+     'igrType': pInfo.igrType,
+     'isRatingAvailable': True,
+     'badgeVisualVO': badgeVO,
+     'timeJoin': pInfo.getTimeJoin(),
+     'extraData': pInfo.getExtraData()}
     if isIncludeAccountWTR:
         playerVO['accountWTR'] = backport.getIntegralFormat(pInfo.accountWTR) if pInfo.accountWTR else '-'
     return playerVO
@@ -234,17 +236,15 @@ def makeCandidateIconPath(pInfo, user):
     tags = user.getTags() if user else {}
     if USER_TAG.PRESENCE_DND in tags:
         return RES_ICONS.MAPS_ICONS_LIBRARY_USERSTATUS_SMALL_BUSY
-    if USER_TAG.FRIEND in tags and USER_TAG.SUB_PENDING_OUT not in tags and USER_TAG.SUB_NONE not in tags or USER_TAG.CLAN_MEMBER in tags:
-        return RES_ICONS.MAPS_ICONS_LIBRARY_USERSTATUS_SMALL_ONLINE
-    return RES_ICONS.MAPS_ICONS_LIBRARY_USERSTATUS_SMALL_OFFLINE
+    return RES_ICONS.MAPS_ICONS_LIBRARY_USERSTATUS_SMALL_ONLINE if USER_TAG.FRIEND in tags and USER_TAG.SUB_PENDING_OUT not in tags and USER_TAG.SUB_NONE not in tags or USER_TAG.CLAN_MEMBER in tags else RES_ICONS.MAPS_ICONS_LIBRARY_USERSTATUS_SMALL_OFFLINE
 
 
-_UNIT_RESTRICTION_TO_LABEL = {UNIT_RESTRICTION.MAX_TOTAL_LEVEL: 'levelError', 
-   UNIT_RESTRICTION.MIN_TOTAL_LEVEL: 'levelError', 
-   UNIT_RESTRICTION.INVALID_TOTAL_LEVEL: 'levelWarning'}
-_ROLE_ICONS = {UNIT_ROLE.CAN_USE_EXTRA_EQUIPMENTS: 'gunner', 
-   UNIT_ROLE.CAN_USE_BOOST_EQUIPMENTS: 'inspire', 
-   UNIT_ROLE.CAN_USE_EXTRA_EQUIPMENTS | UNIT_ROLE.CAN_USE_BOOST_EQUIPMENTS: 'gunnerAndInspire'}
+_UNIT_RESTRICTION_TO_LABEL = {UNIT_RESTRICTION.MAX_TOTAL_LEVEL: 'levelError',
+ UNIT_RESTRICTION.MIN_TOTAL_LEVEL: 'levelError',
+ UNIT_RESTRICTION.INVALID_TOTAL_LEVEL: 'levelWarning'}
+_ROLE_ICONS = {UNIT_ROLE.CAN_USE_EXTRA_EQUIPMENTS: 'gunner',
+ UNIT_ROLE.CAN_USE_BOOST_EQUIPMENTS: 'inspire',
+ UNIT_ROLE.CAN_USE_EXTRA_EQUIPMENTS | UNIT_ROLE.CAN_USE_BOOST_EQUIPMENTS: 'gunnerAndInspire'}
 
 def makeTotalLevelLabel(unitStats, restriction=''):
     templateKey = 'sumLevelLabel'
@@ -333,25 +333,25 @@ def _getSlotsData(unitMgrID, fullData, levelsRange=None, checkForVehicles=True, 
         else:
             isLocked = True
         equipmentCommanderRoles = UNIT_ROLE.CAN_USE_BOOST_EQUIPMENTS | UNIT_ROLE.CAN_USE_EXTRA_EQUIPMENTS
-        slot = {'rallyIdx': unitMgrID, 
-           'isCommanderState': isPlayerCreator, 
-           'isCurrentUserInSlot': isPlayerInSlot, 
-           'playerStatus': playerStatus, 
-           'isClosed': slotState.isClosed, 
-           'isFreezed': unitState.isFreezed(), 
-           'slotLabel': slotLabel, 
-           'player': slotPlayerUI, 
-           'canBeTaken': canAssign and canTakeSlot, 
-           'compatibleVehiclesCount': vehCount, 
-           'selectedVehicle': vehicleVO, 
-           'selectedVehicleLevel': 1 if slotState.isClosed else slotLevel, 
-           'restrictions': restrictions, 
-           'isEvent': False, 
-           'rating': rating, 
-           'isLegionaries': isLegionaries, 
-           'isLocked': isLocked, 
-           'role': role, 
-           'roleIcon': _ROLE_ICONS.get(role & equipmentCommanderRoles, '')}
+        slot = {'rallyIdx': unitMgrID,
+         'isCommanderState': isPlayerCreator,
+         'isCurrentUserInSlot': isPlayerInSlot,
+         'playerStatus': playerStatus,
+         'isClosed': slotState.isClosed,
+         'isFreezed': unitState.isFreezed(),
+         'slotLabel': slotLabel,
+         'player': slotPlayerUI,
+         'canBeTaken': canAssign and canTakeSlot,
+         'compatibleVehiclesCount': vehCount,
+         'selectedVehicle': vehicleVO,
+         'selectedVehicleLevel': 1 if slotState.isClosed else slotLevel,
+         'restrictions': restrictions,
+         'isEvent': False,
+         'rating': rating,
+         'isLegionaries': isLegionaries,
+         'isLocked': isLocked,
+         'role': role,
+         'roleIcon': _ROLE_ICONS.get(role & equipmentCommanderRoles, '')}
         if slotInfo.profileVehicle is not None and slotInfo.profileVehicle.prestigeLevel > 0:
             slot['prestigeLevel'] = slotInfo.profileVehicle.prestigeLevel
         if withPrem:
@@ -367,8 +367,8 @@ def _getSlotsData(unitMgrID, fullData, levelsRange=None, checkForVehicles=True, 
             additionMsg = ''
             if isVisibleAdtMsg:
                 additionMsg = i18n.makeString(MESSENGER.DIALOGS_EVENTSQUAD_VEHICLE, vehName='')
-            slot.update({'isVisibleAdtMsg': isVisibleAdtMsg, 
-               'additionalMsg': additionMsg})
+            slot.update({'isVisibleAdtMsg': isVisibleAdtMsg,
+             'additionalMsg': additionMsg})
         elif unit.getPrebattleType() == PREBATTLE_TYPE.EPIC and squadPremBonusEnabled:
             slot.update(_updateEpicBattleSlotInfo(player, vehicle))
         slots.append(slot)
@@ -384,8 +384,8 @@ def _getBalancedSquadInfo(isPlayerCreator, levelsRange, player, unit, vehicle):
         additionMsg = i18n.makeString(PLATOON.MEMBERS_CARD_SELECTVEHICLE, level=rangeString)
     else:
         additionMsg = ''
-    return {'isVisibleAdtMsg': isVisibleAdtMsg, 
-       'additionalMsg': additionMsg}
+    return {'isVisibleAdtMsg': isVisibleAdtMsg,
+     'additionalMsg': additionMsg}
 
 
 def _updateEpicBattleSlotInfo(player, vehicle):
@@ -397,8 +397,8 @@ def _updateSpecialBattleSlotInfo(player, vehicle, message):
     if vehicle is None:
         isVisibleAdtMsg = player and player.isCurrentPlayer()
         additionalMsg = message
-        result = {'isVisibleAdtMsg': isVisibleAdtMsg, 
-           'additionalMsg': additionalMsg}
+        result = {'isVisibleAdtMsg': isVisibleAdtMsg,
+         'additionalMsg': additionalMsg}
     return result
 
 
@@ -410,7 +410,7 @@ def _getXPFactorSlotInfo(unit, eventsCache, slotInfo):
     unitHasXpBonus = True
     unitHasXpPenalty = False
     if vehicles:
-        distance = levels[(-1)] - levels[0]
+        distance = levels[-1] - levels[0]
         unitHasXpBonus = distance in eventsCache.getSquadBonusLevelDistance()
         unitHasXpPenalty = distance in eventsCache.getSquadPenaltyLevelDistance()
         isVisibleAdtMsg = unitHasXpBonus and slotInfo.player and slotInfo.player.isCurrentPlayer() and not slotInfo.vehicle
@@ -426,8 +426,9 @@ def _getXPFactorSlotInfo(unit, eventsCache, slotInfo):
             slotNotificationIcon = RES_ICONS.MAPS_ICONS_LIBRARY_CYBERSPORT_ALERTICON
         elif not unitHasXpBonus:
             slotNotificationIcon = RES_ICONS.MAPS_ICONS_LIBRARY_ATTENTIONICON
-    return {'isVisibleAdtMsg': isVisibleAdtMsg, 'additionalMsg': additionalMsg, 
-       'slotNotificationIcon': slotNotificationIcon}
+    return {'isVisibleAdtMsg': isVisibleAdtMsg,
+     'additionalMsg': additionalMsg,
+     'slotNotificationIcon': slotNotificationIcon}
 
 
 def makeSlotsVOs(unitEntity, unitMgrID=None, maxPlayerCount=MAX_PLAYER_COUNT_ALL, withPrem=False):
@@ -437,16 +438,15 @@ def makeSlotsVOs(unitEntity, unitMgrID=None, maxPlayerCount=MAX_PLAYER_COUNT_ALL
     else:
         slots = _getSlotsData(unitMgrID, fullData, unitEntity.getRosterSettings().getLevelsRange(), maxPlayerCount=maxPlayerCount, withPrem=withPrem)
         isRosterSet = fullData.unit.isRosterSet(ignored=settings.CREATOR_ROSTER_SLOT_INDEXES)
-        return (
-         isRosterSet, slots)
+        return (isRosterSet, slots)
 
 
 def makeUnitShortVO(unitEntity, unitMgrID=None, maxPlayerCount=MAX_PLAYER_COUNT_ALL):
     fullData = unitEntity.getUnitFullData(unitMgrID=unitMgrID)
-    return {'isFreezed': fullData.flags.isLocked(), 
-       'hasRestrictions': fullData.unit.isRosterSet(ignored=settings.CREATOR_ROSTER_SLOT_INDEXES), 
-       'slots': _getSlotsData(unitMgrID, fullData, unitEntity.getRosterSettings().getLevelsRange(), maxPlayerCount=maxPlayerCount), 
-       'description': unitEntity.getCensoredComment(unitMgrID=unitMgrID)}
+    return {'isFreezed': fullData.flags.isLocked(),
+     'hasRestrictions': fullData.unit.isRosterSet(ignored=settings.CREATOR_ROSTER_SLOT_INDEXES),
+     'slots': _getSlotsData(unitMgrID, fullData, unitEntity.getRosterSettings().getLevelsRange(), maxPlayerCount=maxPlayerCount),
+     'description': unitEntity.getCensoredComment(unitMgrID=unitMgrID)}
 
 
 def makeMsg(value):
@@ -457,17 +457,17 @@ def makeSimpleClanListRenderVO(member, intTotalMining, intWeekMining, role, role
     week = text_styles.defRes(backport.getIntegralFormat(intWeekMining))
     allTime = text_styles.defRes(backport.getIntegralFormat(intTotalMining))
     databaseID = member.getID()
-    return {'dbID': databaseID, 
-       'uid': databaseID, 
-       'himself': bool(BigWorld.player().databaseID == databaseID), 
-       'userName': member.getName(), 
-       'playerRole': role, 
-       'playerRoleID': roleID, 
-       'thisWeek': week, 
-       'allTime': allTime, 
-       'intWeekMining': intWeekMining, 
-       'intTotalMining': intTotalMining, 
-       'fullName': member.getFullName()}
+    return {'dbID': databaseID,
+     'uid': databaseID,
+     'himself': bool(BigWorld.player().databaseID == databaseID),
+     'userName': member.getName(),
+     'playerRole': role,
+     'playerRoleID': roleID,
+     'thisWeek': week,
+     'allTime': allTime,
+     'intWeekMining': intWeekMining,
+     'intTotalMining': intTotalMining,
+     'fullName': member.getFullName()}
 
 
 def makeUnitVO(unitEntity, unitMgrID=None, maxPlayerCount=MAX_PLAYER_COUNT_ALL, withPrem=False):
@@ -476,16 +476,16 @@ def makeUnitVO(unitEntity, unitMgrID=None, maxPlayerCount=MAX_PLAYER_COUNT_ALL, 
     levelsValidation = unitEntity.validateLevels()
     canDoAction, restriction = levelsValidation.isValid, levelsValidation.restriction
     sumLevelsStr = makeTotalLevelLabel(fullData.stats, restriction)
-    return {'isCommander': isPlayerCreator, 
-       'isFreezed': fullData.flags.isLocked(), 
-       'hasRestrictions': fullData.unit.isRosterSet(ignored=settings.CREATOR_ROSTER_SLOT_INDEXES), 
-       'statusLbl': makeUnitStateLabel(fullData.flags), 
-       'statusValue': fullData.flags.isOpened(), 
-       'sumLevelsInt': fullData.stats.curTotalLevel, 
-       'sumLevels': sumLevelsStr, 
-       'sumLevelsError': canDoAction, 
-       'slots': _getSlotsData(unitMgrID, fullData, unitEntity.getRosterSettings().getLevelsRange(), maxPlayerCount=maxPlayerCount, withPrem=withPrem), 
-       'description': unitEntity.getCensoredComment(unitMgrID=unitMgrID)}
+    return {'isCommander': isPlayerCreator,
+     'isFreezed': fullData.flags.isLocked(),
+     'hasRestrictions': fullData.unit.isRosterSet(ignored=settings.CREATOR_ROSTER_SLOT_INDEXES),
+     'statusLbl': makeUnitStateLabel(fullData.flags),
+     'statusValue': fullData.flags.isOpened(),
+     'sumLevelsInt': fullData.stats.curTotalLevel,
+     'sumLevels': sumLevelsStr,
+     'sumLevelsError': canDoAction,
+     'slots': _getSlotsData(unitMgrID, fullData, unitEntity.getRosterSettings().getLevelsRange(), maxPlayerCount=maxPlayerCount, withPrem=withPrem),
+     'description': unitEntity.getCensoredComment(unitMgrID=unitMgrID)}
 
 
 def makeUnitRosterVO(unit, pInfo, index=None, levelsRange=None):
@@ -508,8 +508,7 @@ def makeUnitRosterConditions(slots, isDefaultSlot, index=None, levelsRange=None)
     else:
         itemsCache = dependency.instance(IItemsCache)
         vehicleGetter = itemsCache.items.getItemByCD
-        rosterSlotConditions = [
-         None, None]
+        rosterSlotConditions = [None, None]
         rosterSlotIdx = index * 2
         if rosterSlotIdx in slots:
             rosterSlotConditions[0] = slots[rosterSlotIdx]
@@ -524,32 +523,30 @@ def makeUnitRosterConditions(slots, isDefaultSlot, index=None, levelsRange=None)
             vehTypeCD = rosterSlot.vehTypeCompDescr
             if vehTypeCD is not None:
                 conditions.append({'vehicle': makeVehicleVO(vehicleGetter(vehTypeCD), levelsRange)})
-            else:
-                params = {'nationIDRange': tuple(), 
-                   'vTypeRange': tuple(), 
-                   'vLevelRange': tuple()}
-                isDefault = isDefaultSlot(rosterSlot)
-                if not isDefault:
-                    if not rosterSlot.isNationMaskFull():
-                        nationMask = rosterSlot.nationMask
-                        params['nationIDRange'] = filter(lambda k, mask=nationMask: 1 << NATIONS_INDICES[k] & mask, NATIONS_NAMES)
-                    if not rosterSlot.isVehClassMaskFull():
-                        vehClassMask = rosterSlot.vehClassMask
-                        params['vTypeRange'] = filter(lambda k, mask=vehClassMask: 1 << VEHICLE_CLASS_INDICES[k] & mask, VEHICLE_CLASSES)
-                    levels = rosterSlot.levels
-                    if levels != rosterSlot.DEFAULT_LEVELS:
-                        params['vLevelRange'] = levels
-                    conditions.append(params)
-                else:
-                    conditions.append(None)
+            params = {'nationIDRange': tuple(),
+             'vTypeRange': tuple(),
+             'vLevelRange': tuple()}
+            isDefault = isDefaultSlot(rosterSlot)
+            if not isDefault:
+                if not rosterSlot.isNationMaskFull():
+                    nationMask = rosterSlot.nationMask
+                    params['nationIDRange'] = filter(lambda k, mask=nationMask: 1 << NATIONS_INDICES[k] & mask, NATIONS_NAMES)
+                if not rosterSlot.isVehClassMaskFull():
+                    vehClassMask = rosterSlot.vehClassMask
+                    params['vTypeRange'] = filter(lambda k, mask=vehClassMask: 1 << VEHICLE_CLASS_INDICES[k] & mask, VEHICLE_CLASSES)
+                levels = rosterSlot.levels
+                if levels != rosterSlot.DEFAULT_LEVELS:
+                    params['vLevelRange'] = levels
+                conditions.append(params)
+            conditions.append(None)
 
         return conditions
 
 
 def getUnitRosterModel(vehiclesData, conditions, isCreator):
-    return {'vehicles': vehiclesData, 
-       'conditions': conditions, 
-       'isCreator': isCreator}
+    return {'vehicles': vehiclesData,
+     'conditions': conditions,
+     'isCreator': isCreator}
 
 
 def getUnitRosterData(unitEntity, unitMgrID=None, index=None):
@@ -578,51 +575,52 @@ def makeBuildingIndicatorsVO(buildingLevel, progress, hpVal, hpTotalVal, defResV
     else:
         hpValueFormatter = text_styles.defRes(FORMAT_PATTERN)
     hpTotalFormatted = str(backport.getIntegralFormat(hpTotalVal)) + ' '
-    formattedHpTotal = ('').join((
-     text_styles.standard(hpTotalFormatted), icons.nut()))
+    formattedHpTotal = ''.join((text_styles.standard(hpTotalFormatted), icons.nut()))
     defResValueFormatter = text_styles.alert(FORMAT_PATTERN) if defResVal > maxDefResVal else text_styles.defRes(FORMAT_PATTERN)
     maxDefDerFormatted = str(backport.getIntegralFormat(maxDefResVal)) + ' '
-    formattedDefResTotal = ('').join((
-     text_styles.standard(maxDefDerFormatted), icons.nut()))
-    hpProgressLabels = {'currentValue': str(backport.getIntegralFormat(hpVal)), 'currentValueFormatter': hpValueFormatter, 
-       'totalValue': formattedHpTotal, 
-       'separator': '/'}
-    storeProgressLabels = {'currentValue': str(backport.getIntegralFormat(defResVal)), 'currentValueFormatter': defResValueFormatter, 
-       'totalValue': formattedDefResTotal, 
-       'separator': '/'}
-    result = {'hpLabel': i18n.makeString(FORTIFICATIONS.BUILDINGPOPOVER_INDICATORS_HPLBL), 'defResLabel': i18n.makeString(FORTIFICATIONS.BUILDINGPOPOVER_INDICATORS_DEFRESLBL), 
-       'hpCurrentValue': hpVal, 
-       'hpTotalValue': hpTotalVal, 
-       'defResCurrentValue': defResVal, 
-       'defResCompensationValue': max(0, defResVal - maxDefResVal), 
-       'defResTotalValue': maxDefResVal, 
-       'hpProgressLabels': hpProgressLabels, 
-       'defResProgressLabels': storeProgressLabels}
+    formattedDefResTotal = ''.join((text_styles.standard(maxDefDerFormatted), icons.nut()))
+    hpProgressLabels = {'currentValue': str(backport.getIntegralFormat(hpVal)),
+     'currentValueFormatter': hpValueFormatter,
+     'totalValue': formattedHpTotal,
+     'separator': '/'}
+    storeProgressLabels = {'currentValue': str(backport.getIntegralFormat(defResVal)),
+     'currentValueFormatter': defResValueFormatter,
+     'totalValue': formattedDefResTotal,
+     'separator': '/'}
+    result = {'hpLabel': i18n.makeString(FORTIFICATIONS.BUILDINGPOPOVER_INDICATORS_HPLBL),
+     'defResLabel': i18n.makeString(FORTIFICATIONS.BUILDINGPOPOVER_INDICATORS_DEFRESLBL),
+     'hpCurrentValue': hpVal,
+     'hpTotalValue': hpTotalVal,
+     'defResCurrentValue': defResVal,
+     'defResCompensationValue': max(0, defResVal - maxDefResVal),
+     'defResTotalValue': maxDefResVal,
+     'hpProgressLabels': hpProgressLabels,
+     'defResProgressLabels': storeProgressLabels}
     return result
 
 
-__emptyTypeMap = {SUPPORT_TYPE: 'fireSupportPlus', 
-   BOOST_TYPE: 'inspirePlus', 
-   REQUISITION_TYPE: 'requisitionPlus', 
-   HEAVYTRUCKS_TYPE: 'heavyTrucksPlus'}
+__emptyTypeMap = {SUPPORT_TYPE: 'fireSupportPlus',
+ BOOST_TYPE: 'inspirePlus',
+ REQUISITION_TYPE: 'requisitionPlus',
+ HEAVYTRUCKS_TYPE: 'heavyTrucksPlus'}
 
 def makeReserveSlotVO(reserveType, groupType, reserveId, level, slotIndex, tooltip, tooltipType):
     if reserveType is None:
         slotType = __emptyTypeMap[groupType]
     else:
         slotType = getReserveNameVO(reserveType)
-    return {'slotType': slotType, 
-       'level': level, 
-       'slotIndex': slotIndex, 
-       'id': reserveId, 
-       'tooltipType': tooltipType, 
-       'tooltip': tooltip}
+    return {'slotType': slotType,
+     'level': level,
+     'slotIndex': slotIndex,
+     'id': reserveId,
+     'tooltipType': tooltipType,
+     'tooltip': tooltip}
 
 
-__locTypeMap = {SUPPORT_TYPE: FORTIFICATIONS.STRONGHOLDRESERVE_SUPPORT, 
-   BOOST_TYPE: FORTIFICATIONS.STRONGHOLDRESERVE_BOOST, 
-   REQUISITION_TYPE: FORTIFICATIONS.STRONGHOLDRESERVE_REQUISITION, 
-   HEAVYTRUCKS_TYPE: FORTIFICATIONS.STRONGHOLDRESERVE_HEAVYTRUCKS}
+__locTypeMap = {SUPPORT_TYPE: FORTIFICATIONS.STRONGHOLDRESERVE_SUPPORT,
+ BOOST_TYPE: FORTIFICATIONS.STRONGHOLDRESERVE_BOOST,
+ REQUISITION_TYPE: FORTIFICATIONS.STRONGHOLDRESERVE_REQUISITION,
+ HEAVYTRUCKS_TYPE: FORTIFICATIONS.STRONGHOLDRESERVE_HEAVYTRUCKS}
 
 def getReserveGroupTitle(groupType):
     return i18n.makeString(__locTypeMap[groupType])
@@ -651,14 +649,14 @@ def makeReserveSlotTooltipVO(reserve, groupType, empty, havePermissions, isInBat
     return (makeTooltip(header, description), tooltipType)
 
 
-__typeMapVO = {ARTILLERY_STRIKE: 'artillerySupport', 
-   REQUISITION: 'requisition', 
-   HIGH_CAPACITY_TRANSPORT: 'heavyTrucks', 
-   INSPIRATION: 'inspire'}
-__reserveTooltipMap = {ARTILLERY_STRIKE: TOOLTIPS_CONSTANTS.RESERVE_MODULE, 
-   REQUISITION: TOOLTIPS_CONSTANTS.OLD_RESERVE_MODULE, 
-   HIGH_CAPACITY_TRANSPORT: TOOLTIPS_CONSTANTS.OLD_RESERVE_MODULE, 
-   INSPIRATION: TOOLTIPS_CONSTANTS.RESERVE_MODULE}
+__typeMapVO = {ARTILLERY_STRIKE: 'artillerySupport',
+ REQUISITION: 'requisition',
+ HIGH_CAPACITY_TRANSPORT: 'heavyTrucks',
+ INSPIRATION: 'inspire'}
+__reserveTooltipMap = {ARTILLERY_STRIKE: TOOLTIPS_CONSTANTS.RESERVE_MODULE,
+ REQUISITION: TOOLTIPS_CONSTANTS.OLD_RESERVE_MODULE,
+ HIGH_CAPACITY_TRANSPORT: TOOLTIPS_CONSTANTS.OLD_RESERVE_MODULE,
+ INSPIRATION: TOOLTIPS_CONSTANTS.RESERVE_MODULE}
 
 def getReserveNameVO(name):
     return __typeMapVO.get(name, None)
@@ -669,14 +667,14 @@ def geReserveTooltipType(name):
 
 
 def makeReserveModuleData(mID, moduleType, level, count, isSelected, showExtendedParams, paramsItems):
-    return {'id': mID, 
-       'moduleLabel': getReserveNameVO(moduleType), 
-       'level': level, 
-       'count': count, 
-       'isSelected': isSelected, 
-       'showExtendedParams': showExtendedParams, 
-       'paramsItems': paramsItems, 
-       'tooltipType': geReserveTooltipType(moduleType)}
+    return {'id': mID,
+     'moduleLabel': getReserveNameVO(moduleType),
+     'level': level,
+     'count': count,
+     'isSelected': isSelected,
+     'showExtendedParams': showExtendedParams,
+     'paramsItems': paramsItems,
+     'tooltipType': geReserveTooltipType(moduleType)}
 
 
 def makeFortClanBattleRoomVO(mapId, headerDescr, mineClanName, enemyClanName, waitForBattleDescr, isMapEnabled, isBattleTimerVisible, isSortie):
@@ -684,26 +682,26 @@ def makeFortClanBattleRoomVO(mapId, headerDescr, mineClanName, enemyClanName, wa
     mapName = getArenaShortName(mapId) if mapId else i18n.makeString(FORTIFICATIONS.STRONGHOLDMAP_RANDOMMAP)
     if mapId == 0:
         isMapEnabled = False
-    return {'mapID': mapId, 
-       'mapName': mapName, 
-       'headerDescr': headerDescr, 
-       'mineClanName': mineClanName, 
-       'enemyClanName': enemyClanName, 
-       'waitForBattleDescr': waitForBattleDescr, 
-       'isMapEnabled': isMapEnabled, 
-       'isBattleTimerVisible': timerVisible, 
-       'isBattleType': not isSortie, 
-       'teamHeader': i18n.makeString(FORTIFICATIONS.STRONGHOLD_TEAMHEADER)}
+    return {'mapID': mapId,
+     'mapName': mapName,
+     'headerDescr': headerDescr,
+     'mineClanName': mineClanName,
+     'enemyClanName': enemyClanName,
+     'waitForBattleDescr': waitForBattleDescr,
+     'isMapEnabled': isMapEnabled,
+     'isBattleTimerVisible': timerVisible,
+     'isBattleType': not isSortie,
+     'teamHeader': i18n.makeString(FORTIFICATIONS.STRONGHOLD_TEAMHEADER)}
 
 
 def makeClanBattleTimerVO(deltaTime, htmlFormatter, alertHtmlFormatter, glowColor, alertGlowColor, timerDefaultValue, hintState):
-    return {'deltaTime': deltaTime, 
-       'htmlFormatter': htmlFormatter, 
-       'alertHtmlFormatter': alertHtmlFormatter, 
-       'glowColor': glowColor, 
-       'alertGlowColor': alertGlowColor, 
-       'timerDefaultValue': timerDefaultValue, 
-       'state': hintState}
+    return {'deltaTime': deltaTime,
+     'htmlFormatter': htmlFormatter,
+     'alertHtmlFormatter': alertHtmlFormatter,
+     'glowColor': glowColor,
+     'alertGlowColor': alertGlowColor,
+     'timerDefaultValue': timerDefaultValue,
+     'state': hintState}
 
 
 __attack = ('attack1', 'attack2', 'attack3', 'attack4', 'attack5')
@@ -719,9 +717,7 @@ def makeDirectionVO(buildIdx, isAttack, battleIdx):
                 return 'attack0'
             return 'defense0'
         size = len(__defense)
-        if isAttack:
-            return __attack[(buildIdx - 1)]
-        return __defense[(size - buildIdx - 1)]
+        return __attack[buildIdx - 1] if isAttack else __defense[size - buildIdx - 1]
 
 
 def makeOpenRoomButtonVO(isOpen):
@@ -733,37 +729,34 @@ def makeOpenRoomButtonVO(isOpen):
 
 
 def makeConfigureButtonVO(isEnabled, isRoomStatusEnabled):
-    return {'isEnabled': isEnabled, 
-       'isRoomStatusEnabled': isRoomStatusEnabled}
+    return {'isEnabled': isEnabled,
+     'isRoomStatusEnabled': isRoomStatusEnabled}
 
 
 def makeTableHeaderVO(currentPlayerCount, maxPlayerCount, currentLegCount, maxLegCount):
     total = i18n.makeString(FORTIFICATIONS.SORTIE_LISTVIEW_TEAMMEMBERS, current=str(currentPlayerCount), max=str(maxPlayerCount))
     legionariesIcon = icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_FORTIFICATION_LEGIONNAIRE, 16, 16, -4, 0)
     label = total + ' (' + legionariesIcon + ' ' + str(currentLegCount) + ' / ' + str(maxLegCount) + ')'
-    return [
-     {'buttonWidth': 212, 
-        'buttonHeight': 40, 
-        'sortOrder': 0, 
-        'toolTip': '-', 
-        'defaultSortDirection': 'ascending', 
-        'label': label, 
-        'showSeparator': True, 
-        'textAlign': 'left'},
-     {'buttonWidth': 67, 
-        'buttonHeight': 40, 
-        'sortOrder': 0, 
-        'toolTip': '-', 
-        'defaultSortDirection': 'ascending', 
-        'label': i18n.makeString(FORTIFICATIONS.STRONGHOLDTABLE_RATING), 
-        'showSeparator': True},
-     {'buttonWidth': 216, 
-        'buttonHeight': 40, 
-        'sortOrder': 0, 
-        'toolTip': '-', 
-        'defaultSortDirection': 'ascending', 
-        'label': i18n.makeString(FORTIFICATIONS.STRONGHOLDTABLE_TECH), 
-        'showSeparator': False}]
+    return [{'buttonWidth': 212,
+      'buttonHeight': 40,
+      'sortOrder': 0,
+      'toolTip': '-',
+      'defaultSortDirection': 'ascending',
+      'label': label,
+      'showSeparator': True,
+      'textAlign': 'left'}, {'buttonWidth': 67,
+      'buttonHeight': 40,
+      'sortOrder': 0,
+      'toolTip': '-',
+      'defaultSortDirection': 'ascending',
+      'label': i18n.makeString(FORTIFICATIONS.STRONGHOLDTABLE_RATING),
+      'showSeparator': True}, {'buttonWidth': 216,
+      'buttonHeight': 40,
+      'sortOrder': 0,
+      'toolTip': '-',
+      'defaultSortDirection': 'ascending',
+      'label': i18n.makeString(FORTIFICATIONS.STRONGHOLDTABLE_TECH),
+      'showSeparator': False}]
 
 
 def getDirection(direction):

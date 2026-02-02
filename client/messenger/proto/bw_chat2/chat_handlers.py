@@ -1,6 +1,11 @@
-import logging, operator, weakref
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/bw_chat2/chat_handlers.py
+import logging
+import operator
+import weakref
 from collections import namedtuple, deque
-import BigWorld, BattleReplay
+import BigWorld
+import BattleReplay
 from WeakMethod import WeakMethodProxy
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as BONUS_CAPS
 from chat_commands_consts import INVALID_VEHICLE_POSITION
@@ -40,11 +45,11 @@ class _EntityChatHandler(bw2_provider.ResponseSeqHandler):
 
     @storage_getter('channels')
     def channelsStorage(self):
-        return
+        return None
 
     @storage_getter('users')
     def usersStorage(self):
-        return
+        return None
 
     def isInited(self):
         return self.__isInited
@@ -132,7 +137,7 @@ class _EntityChatHandler(bw2_provider.ResponseSeqHandler):
         if channel and self.channelsStorage.removeChannel(channel, clear=False):
             g_messengerEvents.channels.onChannelDestroyed(channel)
             channel.clear()
-        return
+        return None
 
     def _addMessage(self, message):
         message = self._preprocessMessage(message)
@@ -147,7 +152,7 @@ class _EntityChatHandler(bw2_provider.ResponseSeqHandler):
             user = self._getUser(message)
             if not (user and user.isIgnored()):
                 return message
-        return
+        return None
 
     def _getUser(self, message):
         raise NotImplementedError
@@ -227,9 +232,7 @@ class ArenaChatHandler(_EntityChatHandler):
         return channel
 
     def _getClientIDForCommand(self):
-        if self.__teamChannel:
-            return self.__teamChannel.getClientID()
-        return 0
+        return self.__teamChannel.getClientID() if self.__teamChannel else 0
 
     def _getUser(self, message):
         return self.usersStorage.getUser(message.avatarSessionID, scope=UserEntityScope.BATTLE)
@@ -323,16 +326,11 @@ class UnitChatHandler(_EntityChatHandler):
         return self.__channel
 
     def _getClientIDForCommand(self):
-        if self.__channel:
-            return self.__channel.getClientID()
-        return 0
+        return self.__channel.getClientID() if self.__channel else 0
 
     def _getUser(self, message):
         battleUser = self.usersStorage.getUser(message.avatarSessionID, scope=UserEntityScope.BATTLE)
-        if battleUser is not None:
-            return battleUser
-        else:
-            return self.usersStorage.getUser(message.accountDBID)
+        return battleUser if battleUser is not None else self.usersStorage.getUser(message.accountDBID)
 
     def _onMessageBroadcast(self, _, args):
         self.addHistory()
@@ -445,8 +443,8 @@ class BattleChatCommandHandler(bw2_provider.ResponseDictHandler, IBattleCommandF
         self.battleCommunications.onChanged -= self.__onBattleCommunicationSettingsChanged
         super(BattleChatCommandHandler, self).unregisterHandlers()
 
-    def createByName(self, name):
-        return self.__factory.createByName(name)
+    def createByName(self, name, args=None):
+        return self.__factory.createByName(name, args)
 
     def createSPGAimTargetCommand(self, targetID, reloadTime):
         return self.__factory.createSPGAimTargetCommand(targetID, reloadTime)
@@ -506,9 +504,7 @@ class BattleChatCommandHandler(bw2_provider.ResponseDictHandler, IBattleCommandF
                 return False
             minimapCenter = mapsCtrl.getMinimapCenterPosition()
             halfMinimapWidth = mapsCtrl.getMinimapZoomMode() * _EPIC_MINIMAP_ZOOM_MODE_SCALE
-            if not minimapCenter.x - halfMinimapWidth <= position.x <= minimapCenter.x + halfMinimapWidth or not minimapCenter.z - halfMinimapWidth <= position.z <= minimapCenter.z + halfMinimapWidth:
-                return False
-            return True
+            return False if not minimapCenter.x - halfMinimapWidth <= position.x <= minimapCenter.x + halfMinimapWidth or not minimapCenter.z - halfMinimapWidth <= position.z <= minimapCenter.z + halfMinimapWidth else True
 
         shouldBeSilent = False
         if senderVID != BigWorld.player().playerVehicleID:
@@ -535,7 +531,7 @@ class BattleChatCommandHandler(bw2_provider.ResponseDictHandler, IBattleCommandF
         arenaDP = self.__sessionProvider.getArenaDP()
         if not cmd.isMuteTypeMessage() or cmd.getSenderID() == '' or arenaDP is None:
             return False
-        if arenaDP.getVehIDBySessionID(cmd.getSenderID()) == arenaDP.getPlayerVehicleID():
+        elif arenaDP.getVehIDBySessionID(cmd.getSenderID()) == arenaDP.getPlayerVehicleID():
             return False
         else:
             silentMode = False
@@ -580,12 +576,12 @@ class BattleChatCommandHandler(bw2_provider.ResponseDictHandler, IBattleCommandF
             g_mutedMessages[cmd.getFirstTargetID()] = cmd
             _logger.debug("Chat command id: %s, text: '%s' is ignored", cmd.getID(), cmd.getCommandText())
             return
+        elif cmd.isPrivate() and not (cmd.isReceiver() or cmd.isSender()):
+            return
         else:
-            if cmd.isPrivate() and not (cmd.isReceiver() or cmd.isSender()):
-                return
             arenaDP = self.__sessionProvider.getArenaDP()
-            if arenaDP is not None and arenaDP.isObserver(arenaDP.getPlayerVehicleID()):
-                if cmd.isReply() or cmd.isCancelReply() or cmd.isAutoCommit():
+            if arenaDP is not None:
+                if arenaDP.isObserver(arenaDP.getPlayerVehicleID()) and (cmd.isReply() or cmd.isCancelReply() or cmd.isAutoCommit()):
                     return
             g_messengerEvents.channels.onCommandReceived(cmd)
             return
@@ -611,8 +607,7 @@ class AdminChatCommandHandler(bw2_provider.ResponseDictHandler):
                 decorator = admin_chat_cmd.makeDecorator(result, clientID)
                 if self.send(decorator):
                     cmd = decorator
-            return (
-             True, cmd)
+            return (True, cmd)
 
     def send(self, decorator):
         provider = self.provider()
@@ -692,7 +687,8 @@ def getCoolDownConfig(bonusChecker):
         if spamProtection is not None:
             return BattleChatCmdGameModeCoolDownData(*spamProtection.settingValues)
         return DEFAULT_SPAM_PROTECTION_SETTING
-    return
+    else:
+        return
 
 
 g_mutedMessages = {}

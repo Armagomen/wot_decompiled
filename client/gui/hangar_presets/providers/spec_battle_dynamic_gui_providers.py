@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/hangar_presets/providers/spec_battle_dynamic_gui_providers.py
 import typing
 from collections import namedtuple
 from constants import QUEUE_TYPE, ARENA_GUI_TYPE, ARENA_BONUS_TYPE
@@ -8,8 +10,7 @@ from gui.impl.lobby.missions.missions_helpers import DefaultMissionsGuiHelper
 from gui.Scaleform.daapi.view.lobby.header.helpers.controls_helpers import DefaultLobbyHeaderHelper
 if typing.TYPE_CHECKING:
     from gui.prb_control.entities.base.legacy.entity import BaseLegacyEntity
-SpecBattleGuiSettings = namedtuple('SpecBattleGuiSettings', ('bonusType', 'modifiersGetter',
-                                                             'lobbyHelper', 'missionsHelper'))
+SpecBattleGuiSettings = namedtuple('SpecBattleGuiSettings', ('bonusType', 'modifiersGetter', 'lobbyHelper', 'missionsHelper'))
 DEFAULT_SPEC_GUI_SETTINGS = SpecBattleGuiSettings(ARENA_BONUS_TYPE.UNKNOWN, EmptyHangarDynamicGuiProvider.getDefaultBattleModifiers, DefaultLobbyHeaderHelper, DefaultMissionsGuiHelper)
 
 class SpecBattleHangarDynamicGuiProvider(BaseHangarDynamicGuiProvider):

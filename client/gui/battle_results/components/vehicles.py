@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_results/components/vehicles.py
 from constants import DEATH_REASON_ALIVE
 from epic_constants import EPIC_BATTLE_TEAM_ID
 from gui.Scaleform.genConsts.RANKEDBATTLES_ALIASES import RANKEDBATTLES_ALIASES
@@ -18,8 +20,8 @@ from messenger.m_constants import USER_TAG
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.game_control import IRankedBattlesController
 from skeletons.gui.lobby_context import ILobbyContext
-_STAT_VALUES_VO_REPLACER = {'damageAssisted': 'damageAssistedSelf', 
-   'damageAssistedStun': 'damageAssistedStunSelf'}
+_STAT_VALUES_VO_REPLACER = {'damageAssisted': 'damageAssistedSelf',
+ 'damageAssistedStun': 'damageAssistedStunSelf'}
 _STAT_STUN_FIELD_NAMES = ('damageAssistedStun', 'stunNum', 'stunDuration')
 
 def _getStunFilter():
@@ -31,7 +33,7 @@ def _getStunFilter():
 
 
 class TeamPlayerNameBlock(shared.PlayerNameBlock):
-    __slots__ = ('igrType', )
+    __slots__ = ('igrType',)
 
     def setPlayerInfo(self, playerInfo):
         super(TeamPlayerNameBlock, self).setPlayerInfo(playerInfo)
@@ -42,14 +44,7 @@ class TeamPlayerNameBlock(shared.PlayerNameBlock):
 
 
 class RegularVehicleStatsBlock(base.StatsBlock):
-    __slots__ = ('_isObserver', 'achievements', 'achievementsCount', 'vehicleState',
-                 'vehicleStatePrefix', 'vehicleStateSuffix', 'killerID', 'deathReason',
-                 'isPrematureLeave', 'vehicleName', 'vehicleShortName', 'vehicleIcon',
-                 'vehicleSort', 'isPersonal', 'isTeamKiller', 'kills', 'tkills',
-                 'realKills', 'xp', 'damageDealt', 'vehicles', 'playerID', 'player',
-                 'statValues', 'fortResource', 'squadIndex', 'isPersonalSquad', 'xpSort',
-                 'intCD', 'rank', 'rankIcon', 'suffixBadgeIcon', 'isKilledByTeamKiller',
-                 'playerRank', 'respawns', 'badge', 'hasSelectedBadge', 'suffixBadgeStripIcon')
+    __slots__ = ('_isObserver', 'achievements', 'achievementsCount', 'vehicleState', 'vehicleStatePrefix', 'vehicleStateSuffix', 'killerID', 'deathReason', 'isPrematureLeave', 'vehicleName', 'vehicleShortName', 'vehicleIcon', 'vehicleSort', 'isPersonal', 'isTeamKiller', 'kills', 'tkills', 'realKills', 'xp', 'damageDealt', 'vehicles', 'playerID', 'player', 'statValues', 'fortResource', 'squadIndex', 'isPersonalSquad', 'xpSort', 'intCD', 'rank', 'rankIcon', 'suffixBadgeIcon', 'isKilledByTeamKiller', 'playerRank', 'respawns', 'badge', 'hasSelectedBadge', 'suffixBadgeStripIcon')
 
     def __init__(self, meta=None, field='', *path):
         super(RegularVehicleStatsBlock, self).__init__(meta, field, *path)
@@ -76,7 +71,7 @@ class RegularVehicleStatsBlock(base.StatsBlock):
                 self._setBadge(result, reusable)
             if avatar.suffixBadge:
                 self.suffixBadgeIcon = style.makeBadgeIcon(avatar.suffixBadge)
-                stripImg = R.images.gui.maps.icons.library.badges.strips.c_64x24.dyn(('strip_{}').format(avatar.suffixBadge))
+                stripImg = R.images.gui.maps.icons.library.badges.strips.c_64x24.dyn('strip_{}'.format(avatar.suffixBadge))
                 self.suffixBadgeStripIcon = backport.image(stripImg()) if stripImg else ''
         self._processVehicles(result)
         self._setPlayerInfo(player)
@@ -142,7 +137,7 @@ class RegularVehicleStatsBlock(base.StatsBlock):
             if self.killerID:
                 fillKillerInfoBlock(self, self.deathReason, self.killerID, reusable, result)
             elif self.deathReason in NO_OWNER_DEATH_REASON_IDS:
-                state = backport.text(R.strings.battle_results.common.vehicleState.dyn(('dead{}').format(self.deathReason), R.invalid)())
+                state = backport.text(R.strings.battle_results.common.vehicleState.dyn('dead{}'.format(self.deathReason), R.invalid)())
                 self.vehicleState = state
         else:
             self.vehicleState = backport.text(R.strings.battle_results.common.vehicleState.alive())
@@ -175,9 +170,7 @@ class RankedBattlesVehicleStatsBlock(RegularVehicleStatsBlock):
 
     def __makeRankIcon(self, rankID):
         displayInfo = self.__rankedController.getRankDisplayInfoForBattle(rankID)
-        if displayInfo.isGroup:
-            return backport.image(R.images.gui.maps.icons.rankedBattles.ranks.c_24x24.dyn(('ranks_group{}_{}').format(displayInfo.division, displayInfo.level))())
-        return backport.image(R.images.gui.maps.icons.rankedBattles.ranks.c_24x24.dyn(('rank{}_{}').format(displayInfo.division, displayInfo.level))())
+        return backport.image(R.images.gui.maps.icons.rankedBattles.ranks.c_24x24.dyn('ranks_group{}_{}'.format(displayInfo.division, displayInfo.level))()) if displayInfo.isGroup else backport.image(R.images.gui.maps.icons.rankedBattles.ranks.c_24x24.dyn('rank{}_{}'.format(displayInfo.division, displayInfo.level))())
 
 
 class EpicVehicleStatsBlock(RegularVehicleStatsBlock):
@@ -193,7 +186,8 @@ class EpicVehicleStatsBlock(RegularVehicleStatsBlock):
             self._setVehicleInfo(vehicleInfo.vehicle)
 
     def _setVehicleInfo(self, vehicle):
-        self.vehicles.append({'icon': getIconPath(vehicle.name), 'label': vehicle.shortUserName})
+        self.vehicles.append({'icon': getIconPath(vehicle.name),
+         'label': vehicle.shortUserName})
 
     def setRecord(self, result, reusable):
         super(EpicVehicleStatsBlock, self).setRecord(result, reusable)
@@ -207,7 +201,8 @@ class EpicVehicleStatsBlock(RegularVehicleStatsBlock):
 
     def getVO(self):
         if len(self.vehicles) > 1 and not self.__allAdded:
-            self.vehicles.insert(0, {'label': i18n.makeString(BATTLE_RESULTS.ALLVEHICLES), 'icon': RES_ICONS.MAPS_ICONS_LIBRARY_EPICVEHICLESALL})
+            self.vehicles.insert(0, {'label': i18n.makeString(BATTLE_RESULTS.ALLVEHICLES),
+             'icon': RES_ICONS.MAPS_ICONS_LIBRARY_EPICVEHICLESALL})
             self.__allAdded = True
         return super(EpicVehicleStatsBlock, self).getVO()
 
@@ -217,12 +212,7 @@ class StrongholdVehicleStatsBlock(RegularVehicleStatsBlock):
 
 
 class RegularVehicleStatValuesBlock(base.StatsBlock):
-    __slots__ = ('_isPersonal', '_filters', 'shots', 'hits', 'explosionHits', 'damageDealt',
-                 'sniperDamageDealt', 'directHitsReceived', 'piercingsReceived',
-                 'noDamageDirectHitsReceived', 'explosionHitsReceived', 'damageBlockedByArmor',
-                 'teamHitsDamage', 'spotted', 'damagedKilled', 'damageAssisted',
-                 'damageAssistedStun', 'stunNum', 'stunDuration', 'capturePoints',
-                 'mileage', '__rawDamageAssistedStun', '__rawStunNum')
+    __slots__ = ('_isPersonal', '_filters', 'shots', 'hits', 'explosionHits', 'damageDealt', 'sniperDamageDealt', 'directHitsReceived', 'piercingsReceived', 'noDamageDirectHitsReceived', 'explosionHitsReceived', 'damageBlockedByArmor', 'teamHitsDamage', 'spotted', 'damagedKilled', 'damageAssisted', 'damageAssistedStun', 'stunNum', 'stunDuration', 'capturePoints', 'mileage', '__rawDamageAssistedStun', '__rawStunNum')
     lobbyContext = dependency.descriptor(ILobbyContext)
 
     def __init__(self, meta=None, field='', *path):
@@ -286,24 +276,17 @@ class RankedVehicleStatValuesBlock(RegularVehicleStatValuesBlock):
 
 
 class StrongholdVehicleStatValuesBlock(RegularVehicleStatValuesBlock):
-    __slots__ = ('artilleryFortEquipDamageDealt', )
+    __slots__ = ('artilleryFortEquipDamageDealt',)
 
     def setRecord(self, result, reusable):
         super(StrongholdVehicleStatValuesBlock, self).setRecord(result, reusable)
         self.artilleryFortEquipDamageDealt = style.getIntegralFormatIfNoEmpty(result.artilleryFortEquipDamageDealt)
         if result.artilleryFortEquipDamageDealt == 0:
-            self.addFilters(('artilleryFortEquipDamageDealt', ))
+            self.addFilters(('artilleryFortEquipDamageDealt',))
 
 
 class EpicVehicleStatValuesBlock(base.StatsBlock):
-    __slots__ = ('_team', '_isPersonal', '_filters', 'shots', 'directHits', 'piercingHits',
-                 'explosionHits', 'damageDealt', 'sniperDamageDealt', 'destructiblesDamageDealt',
-                 'equipmentDamageDealt', 'directHitsReceived', 'piercingsReceived',
-                 'noDamageDirectHitsReceived', 'explosionHitsReceived', 'damageBlockedByArmor',
-                 'teamHitsDamage', 'spotted', 'damagedKilled', 'damageAssisted',
-                 'equipmentDamageAssisted', 'damageAssistedStun', 'stunNum', 'capturePoints',
-                 'timesDestroyed', 'teamSpecificStat', '__rawDamageAssistedStun',
-                 '__rawStunNum')
+    __slots__ = ('_team', '_isPersonal', '_filters', 'shots', 'directHits', 'piercingHits', 'explosionHits', 'damageDealt', 'sniperDamageDealt', 'destructiblesDamageDealt', 'equipmentDamageDealt', 'directHitsReceived', 'piercingsReceived', 'noDamageDirectHitsReceived', 'explosionHitsReceived', 'damageBlockedByArmor', 'teamHitsDamage', 'spotted', 'damagedKilled', 'damageAssisted', 'equipmentDamageAssisted', 'damageAssistedStun', 'stunNum', 'capturePoints', 'timesDestroyed', 'teamSpecificStat', '__rawDamageAssistedStun', '__rawStunNum')
 
     def __init__(self, meta=None, field='', *path):
         super(EpicVehicleStatValuesBlock, self).__init__(meta, field, *path)
@@ -319,10 +302,10 @@ class EpicVehicleStatValuesBlock(base.StatsBlock):
         self.timesDestroyed = str(result.deathCount)
         self._team = result.player.team
         if self._team == EPIC_BATTLE_TEAM_ID.TEAM_ATTACKER:
-            self.teamSpecificStat = ('{0}/{1}').format(result.numCaptured, result.numDestroyed)
+            self.teamSpecificStat = '{0}/{1}'.format(result.numCaptured, result.numDestroyed)
         else:
             numDestructiblesDefended = reusable.common.numDefended
-            self.teamSpecificStat = ('{0}/{1}').format(result.numDefended, numDestructiblesDefended)
+            self.teamSpecificStat = '{0}/{1}'.format(result.numDefended, numDestructiblesDefended)
         self.__rawDamageAssistedStun = result.damageAssistedStun
         self.__rawStunNum = result.stunNum
         if self.__rawStunNum == 0:
@@ -351,7 +334,8 @@ class EpicVehicleStatValuesBlock(base.StatsBlock):
 
     def getVO(self):
         vo = []
-        _TEAM_SPECIFIC_STAT_REPLACE = {EPIC_BATTLE_TEAM_ID.TEAM_ATTACKER: 'atkObjectives', EPIC_BATTLE_TEAM_ID.TEAM_DEFENDER: 'defObjectives'}
+        _TEAM_SPECIFIC_STAT_REPLACE = {EPIC_BATTLE_TEAM_ID.TEAM_ATTACKER: 'atkObjectives',
+         EPIC_BATTLE_TEAM_ID.TEAM_DEFENDER: 'defObjectives'}
         for component in self._components:
             field = component.getField()
             if field in self._filters:
@@ -487,7 +471,7 @@ class PersonalVehiclesStrongholdStatsBlock(base.StatsBlock):
 
 
 class TeamStatsBlock(base.StatsBlock):
-    __slots__ = ('__class', )
+    __slots__ = ('__class',)
 
     def __init__(self, class_, meta=None, field='', *path):
         super(TeamStatsBlock, self).__init__(meta, field, *path)
@@ -672,13 +656,11 @@ class RankedResultsTeamDataStatsBlock(base.StatsBlock):
             listsSteps.append(step)
             i += 1
 
-        return (
-         lists, listsSteps)
+        return (lists, listsSteps)
 
 
 class RankedResultsTeamPartDataStatsBlock(base.StatsBlock):
-    __slots__ = ('listData', 'backgroundType', 'backgroundBlink', 'icon', 'capacity',
-                 'isColorBlind', 'iconType')
+    __slots__ = ('listData', 'backgroundType', 'backgroundBlink', 'icon', 'capacity', 'isColorBlind', 'iconType')
     settingsCore = dependency.descriptor(ISettingsCore)
 
     def __init__(self, meta=None, field='', *path):
@@ -717,8 +699,7 @@ class RankedResultsTeamPartDataStatsBlock(base.StatsBlock):
 
 
 class RankedResultsListItemStatsBlock(base.StatsBlock):
-    __slots__ = ('nickName', 'nickNameHuge', 'fakeName', 'fakeNameHuge', 'points',
-                 'pointsHuge', 'selected', 'standoff', 'tags')
+    __slots__ = ('nickName', 'nickNameHuge', 'fakeName', 'fakeNameHuge', 'points', 'pointsHuge', 'selected', 'standoff', 'tags')
     settingsCore = dependency.descriptor(ISettingsCore)
 
     def setRecord(self, result, reusable):

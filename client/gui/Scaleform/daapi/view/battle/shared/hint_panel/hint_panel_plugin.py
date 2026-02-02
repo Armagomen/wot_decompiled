@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/hint_panel/hint_panel_plugin.py
 from collections import namedtuple
 from datetime import datetime
 from helpers import time_utils
@@ -29,11 +31,18 @@ class HelpHintContext(object):
     COMMANDER_CAMERA = 'commanderCamera'
 
 
-HintData = namedtuple('HintData', ('vKey', 'key', 'isKeyLong', 'messageLeft', 'messageRight',
-                                   'offsetX', 'offsetY', 'priority', 'reducedPanning',
-                                   'hintCtx', 'centeredMessage'))
-HintData.__new__.__defaults__ = (
- '', '', False, '', '', 0, 0, HintPriority.HELP, False, None, False)
+HintData = namedtuple('HintData', ('vKey', 'key', 'isKeyLong', 'messageLeft', 'messageRight', 'offsetX', 'offsetY', 'priority', 'reducedPanning', 'hintCtx', 'centeredMessage'))
+HintData.__new__.__defaults__ = ('',
+ '',
+ False,
+ '',
+ '',
+ 0,
+ 0,
+ HintPriority.HELP,
+ False,
+ None,
+ False)
 
 class HintPanelPlugin(IPlugin):
     __slots__ = ()
@@ -49,7 +58,7 @@ class HintPanelPlugin(IPlugin):
         pass
 
     def _getHint(self):
-        return
+        return None
 
     @staticmethod
     def _shouldDelayHideTimeout(activeHint, btnID):
@@ -91,6 +100,4 @@ class HintPanelPlugin(IPlugin):
 
     @staticmethod
     def _haveHintsLeft(setting):
-        if not setting:
-            return False
-        return setting[HINTS_LEFT] > 0
+        return False if not setting else setting[HINTS_LEFT] > 0

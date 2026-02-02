@@ -1,4 +1,7 @@
-import logging, Event
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/achievements20_controller.py
+import logging
+import Event
 from PlayerEvents import g_playerEvents
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import ACHIEVEMENTS_INFO, ACHIEVEMENTS_WTR_RANKS, ACHIEVEMENTS_WTR_INFO, ACHIEVEMENTS_WTR_PREV_POINTS, ACHIEVEMENTS_WTR_PREV_RANK, ACHIEVEMENTS_WTR_PREV_SUB_RANK, ACHIEVEMENTS_RATING_CALCULATED_STATUS, ACHIEVEMENTS_MEDAL_ADDED_STATUS, ACHIEVEMENTS_EDITING_ENABLED_STATUS, ACHIEVEMENTS_RATING_CHANGED_STATUS, ACHIEVEMENTS_FIRST_ENTRY_STATUS, ACHIEVEMENTS_MEDAL_COUNT_INFO, PREV_ACHIEVEMENTS_NAME_LIST, ACHIEVEMENTS_WTR_PREV_POINTS_NOTIFICATION, ACHIEVEMENTS_INITIAL_BATTLE_COUNT, ACHIEVEMENTS_MAX_WTR_POINTS
@@ -58,9 +61,9 @@ class Achievements20Controller(IAchievements20Controller):
         g_playerEvents.onBattleResultsReceived += self.__onUpdate
         g_playerEvents.onDossiersResync += self.__onUpdate
         g_playerEvents.onClientUpdated += self.__onUpdate
-        g_clientUpdateManager.addCallbacks({'stats.credits': self.__onUpdate, 
-           'stats.gold': self.__onUpdate, 
-           'goodies': self.__onUpdate})
+        g_clientUpdateManager.addCallbacks({'stats.credits': self.__onUpdate,
+         'stats.gold': self.__onUpdate,
+         'goodies': self.__onUpdate})
 
     def onAccountBecomeNonPlayer(self):
         self.__stop()
@@ -81,7 +84,9 @@ class Achievements20Controller(IAchievements20Controller):
         checker = WTRStageChecker(getStagesOfWTR())
         rating = getNormalizedValue(self.__itemsCache.items.sessionStats.getAccountWtr())
         rank, subRank, _ = checker.getStage(rating)
-        self.__pushAchievements20SystemMessage({'type': Achievements20SystemMessages.RATING_UPGRADE, 'rank': rank, 'subRank': subRank})
+        self.__pushAchievements20SystemMessage({'type': Achievements20SystemMessages.RATING_UPGRADE,
+         'rank': rank,
+         'subRank': subRank})
 
     def showRatingChanged(self):
         self.__pushAchievements20SystemMessage({'type': Achievements20SystemMessages.RATING_DOWNGRADE})
@@ -90,7 +95,9 @@ class Achievements20Controller(IAchievements20Controller):
         checker = WTRStageChecker(getStagesOfWTR())
         rating = getNormalizedValue(self.__itemsCache.items.sessionStats.getAccountWtr())
         rank, subRank, _ = checker.getStage(rating)
-        self.__pushAchievements20SystemMessage({'type': Achievements20SystemMessages.RATING_COMPLETE, 'rank': rank, 'subRank': subRank})
+        self.__pushAchievements20SystemMessage({'type': Achievements20SystemMessages.RATING_COMPLETE,
+         'rank': rank,
+         'subRank': subRank})
 
     def showEditAvailable(self):
         self.__pushAchievements20SystemMessage({'type': Achievements20SystemMessages.EDITING_AVAILABLE})
@@ -223,7 +230,7 @@ class Achievements20Controller(IAchievements20Controller):
 
 
 class Achievements20SettingsManager(object):
-    __slots__ = ('__settings', )
+    __slots__ = ('__settings',)
 
     def __init__(self):
         self.__settings = dict()

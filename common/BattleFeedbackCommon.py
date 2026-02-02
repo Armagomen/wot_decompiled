@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/BattleFeedbackCommon.py
 from constants import ATTACK_REASON, ATTACK_REASON_INDICES
 BATTLE_EVENTS_PROCESSING_TIMEOUT = 0.2
 CAPTURE_POINTS_TO_REPORT = 10
@@ -31,30 +33,63 @@ class BATTLE_EVENT_TYPE:
     DETECTED = 22
     EQUIPMENT_TIMER_EXPIRED = 23
     VEHICLE_HEALTH_ADDED = 24
-    HIDE_IF_TARGET_INVISIBLE = (
-     CRIT, DAMAGE, TRACK_ASSIST, STUN_ASSIST, RADIO_ASSIST, MULTI_STUN, INSPIRE_ASSIST)
-    DISCLOSED_ATTACK_REASON_IDS = (
-     ATTACK_REASON_INDICES[ATTACK_REASON.MINEFIELD_EQ],
+    HIDE_IF_TARGET_INVISIBLE = (CRIT,
+     DAMAGE,
+     TRACK_ASSIST,
+     STUN_ASSIST,
+     RADIO_ASSIST,
+     MULTI_STUN,
+     INSPIRE_ASSIST)
+    DISCLOSED_ATTACK_REASON_IDS = (ATTACK_REASON_INDICES[ATTACK_REASON.MINEFIELD_EQ],
      ATTACK_REASON_INDICES[ATTACK_REASON.FIRE_CIRCLE],
      ATTACK_REASON_INDICES[ATTACK_REASON.CORRODING_SHOT],
      ATTACK_REASON_INDICES[ATTACK_REASON.THUNDER_STRIKE],
      ATTACK_REASON_INDICES[ATTACK_REASON.BRANDER_RAM],
      ATTACK_REASON_INDICES[ATTACK_REASON.CLING_BRANDER_RAM])
-    DAMAGE_EVENTS = frozenset([RADIO_ASSIST, TRACK_ASSIST, STUN_ASSIST, TANKING, DAMAGE, RECEIVED_DAMAGE,
-     SMOKE_ASSIST, INSPIRE_ASSIST, DESTRUCTIBLE_DAMAGED])
+    DAMAGE_EVENTS = frozenset([RADIO_ASSIST,
+     TRACK_ASSIST,
+     STUN_ASSIST,
+     TANKING,
+     DAMAGE,
+     RECEIVED_DAMAGE,
+     SMOKE_ASSIST,
+     INSPIRE_ASSIST,
+     DESTRUCTIBLE_DAMAGED])
     CRITS_EVENTS = frozenset([CRIT, RECEIVED_CRIT])
     TARGET_EVENTS = frozenset([SPOTTED, KILL, DETECTED])
     POINTS_EVENTS = frozenset([BASE_CAPTURE_POINTS, BASE_CAPTURE_DROPPED, BASE_CAPTURE_BLOCKED])
     VISIBILITY_EVENTS = frozenset([TARGET_VISIBILITY])
     STUN_EVENTS = frozenset([MULTI_STUN])
-    TARGET_POINTS_EVENTS = frozenset([DESTRUCTIBLE_DESTROYED, DESTRUCTIBLES_DEFENDED,
-     ENEMY_SECTOR_CAPTURED, DEFENDER_BONUS])
+    TARGET_POINTS_EVENTS = frozenset([DESTRUCTIBLE_DESTROYED,
+     DESTRUCTIBLES_DEFENDED,
+     ENEMY_SECTOR_CAPTURED,
+     DEFENDER_BONUS])
     EQUIPMENT_EVENTS = frozenset([EQUIPMENT_TIMER_EXPIRED, VEHICLE_HEALTH_ADDED])
-    ALL = frozenset([SPOTTED, RADIO_ASSIST, TRACK_ASSIST, STUN_ASSIST, BASE_CAPTURE_POINTS, BASE_CAPTURE_DROPPED,
-     TANKING, CRIT, DAMAGE, KILL, RECEIVED_CRIT, RECEIVED_DAMAGE, TARGET_VISIBILITY,
-     ENEMY_SECTOR_CAPTURED, DESTRUCTIBLE_DAMAGED, DESTRUCTIBLE_DESTROYED, DESTRUCTIBLES_DEFENDED,
-     DEFENDER_BONUS, SMOKE_ASSIST, INSPIRE_ASSIST, BASE_CAPTURE_BLOCKED, MULTI_STUN, DETECTED,
-     EQUIPMENT_TIMER_EXPIRED, VEHICLE_HEALTH_ADDED])
+    ALL = frozenset([SPOTTED,
+     RADIO_ASSIST,
+     TRACK_ASSIST,
+     STUN_ASSIST,
+     BASE_CAPTURE_POINTS,
+     BASE_CAPTURE_DROPPED,
+     TANKING,
+     CRIT,
+     DAMAGE,
+     KILL,
+     RECEIVED_CRIT,
+     RECEIVED_DAMAGE,
+     TARGET_VISIBILITY,
+     ENEMY_SECTOR_CAPTURED,
+     DESTRUCTIBLE_DAMAGED,
+     DESTRUCTIBLE_DESTROYED,
+     DESTRUCTIBLES_DEFENDED,
+     DEFENDER_BONUS,
+     SMOKE_ASSIST,
+     INSPIRE_ASSIST,
+     BASE_CAPTURE_BLOCKED,
+     MULTI_STUN,
+     DETECTED,
+     EQUIPMENT_TIMER_EXPIRED,
+     VEHICLE_HEALTH_ADDED])
 
     @staticmethod
     def packDamage(damage, attackReasonID, isBurst=False, shellTypeID=NONE_SHELL_TYPE, shellIsGold=False, secondaryAttackReasonID=ATTACK_REASON_INDICES[ATTACK_REASON.NONE], isRoleAction=False, isAutoShoot=False, attackReasonExtID=-1):
@@ -65,10 +100,15 @@ class BATTLE_EVENT_TYPE:
         attackReasonExtID = packedDamage >> 43 & 255
         if attackReasonExtID & 128:
             attackReasonExtID = ~(~attackReasonExtID & 255)
-        return (
-         packedDamage >> 25 & 65535, packedDamage >> 17 & 255, packedDamage >> 16 & 1,
-         packedDamage >> 9 & 127, packedDamage >> 8 & 1, packedDamage & 255, packedDamage >> 41 & 1,
-         packedDamage >> 42 & 1, attackReasonExtID)
+        return (packedDamage >> 25 & 65535,
+         packedDamage >> 17 & 255,
+         packedDamage >> 16 & 1,
+         packedDamage >> 9 & 127,
+         packedDamage >> 8 & 1,
+         packedDamage & 255,
+         packedDamage >> 41 & 1,
+         packedDamage >> 42 & 1,
+         attackReasonExtID)
 
     @staticmethod
     def unpackAttackReason(packedDamage):
@@ -83,9 +123,13 @@ class BATTLE_EVENT_TYPE:
         attackReasonExtID = packedCrits >> 41 & 255
         if attackReasonExtID & 128:
             attackReasonExtID = ~(~attackReasonExtID & 255)
-        return (
-         packedCrits >> 24 & 65535, packedCrits >> 16 & 255, packedCrits >> 9 & 127,
-         packedCrits >> 8 & 1, packedCrits & 255, packedCrits >> 40 & 1, attackReasonExtID)
+        return (packedCrits >> 24 & 65535,
+         packedCrits >> 16 & 255,
+         packedCrits >> 9 & 127,
+         packedCrits >> 8 & 1,
+         packedCrits & 255,
+         packedCrits >> 40 & 1,
+         attackReasonExtID)
 
     @staticmethod
     def packVisibility(isVisible, isDirect, isRoleAction):
@@ -93,5 +137,4 @@ class BATTLE_EVENT_TYPE:
 
     @staticmethod
     def unpackVisibility(packedVisibility):
-        return (
-         packedVisibility & 1, packedVisibility & 2, packedVisibility & 4)
+        return (packedVisibility & 1, packedVisibility & 2, packedVisibility & 4)

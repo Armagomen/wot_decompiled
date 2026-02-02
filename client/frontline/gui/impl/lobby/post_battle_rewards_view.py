@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/impl/lobby/post_battle_rewards_view.py
 from collections import defaultdict
 import SoundGroups
 from epic_constants import EPIC_SELECT_BONUS_NAME, EPIC_SKILL_TOKEN_NAME
@@ -23,8 +25,7 @@ from PlayerEvents import g_playerEvents
 
 class _PostBattleRewardsCtx(object):
     __epicController = dependency.descriptor(IEpicBattleMetaGameController)
-    __slots__ = ('__ctx', '__currLevel', '__currFamePoints', '__currProgress', '__prevLevel',
-                 '__prevFamePoints', '__prevProgress')
+    __slots__ = ('__ctx', '__currLevel', '__currFamePoints', '__currProgress', '__prevLevel', '__prevFamePoints', '__prevProgress')
 
     def __init__(self, ctx=None):
         self.__ctx = ctx or {}
@@ -93,9 +94,7 @@ class _PostBattleRewardsCtx(object):
 
     def __packLevel(self, level, famePoints):
         getPointsProgressForLevel = self.__epicController.getPointsProgressForLevel
-        if level == self.maxLevel:
-            return self.maxLevel
-        return level + float(famePoints) / getPointsProgressForLevel(level)
+        return self.maxLevel if level == self.maxLevel else level + float(famePoints) / getPointsProgressForLevel(level)
 
     def __getBonuses(self):
         bonuses = []
@@ -111,19 +110,17 @@ class _PostBattleRewardsCtx(object):
 
     def __getAbilityPointsRewardBonus(self, level):
         abilityPts = self.__epicController.getAbilityPointsForLevel()
-        if abilityPts and abilityPts[(level - 1)] and level <= len(abilityPts):
-            return [FrontlineSkillBonus(abilityPts[(level - 1)])]
-        return []
+        return [FrontlineSkillBonus(abilityPts[level - 1])] if abilityPts and abilityPts[level - 1] and level <= len(abilityPts) else []
 
 
 class PostBattleRewardsView(ViewImpl, LobbyHeaderVisibility, IGlobalListener):
     _MAX_VISIBLE_AWARDS = 6
-    _BONUS_ORDER_PRIORITY = {'battlePassPoints': 1, 
-       EPIC_SKILL_TOKEN_NAME: 2, 
-       'crystal': 3, 
-       'goodies': 4, 
-       EPIC_SELECT_BONUS_NAME: 5, 
-       'crewBooks': 6}
+    _BONUS_ORDER_PRIORITY = {'battlePassPoints': 1,
+     EPIC_SKILL_TOKEN_NAME: 2,
+     'crystal': 3,
+     'goodies': 4,
+     EPIC_SELECT_BONUS_NAME: 5,
+     'crewBooks': 6}
     _MIDDLE_PRIORITY = 50
     __battleResultsService = dependency.descriptor(IBattleResultsService)
     __epicController = dependency.descriptor(IEpicBattleMetaGameController)
@@ -152,10 +149,7 @@ class PostBattleRewardsView(ViewImpl, LobbyHeaderVisibility, IGlobalListener):
 
     def getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        if tooltipId:
-            return self.__tooltipItems.get(tooltipId)
-        else:
-            return
+        return self.__tooltipItems.get(tooltipId) if tooltipId else None
 
     def createToolTipContent(self, event, contentID):
         showCount = int(event.getArgument('showCount')) - 1
@@ -165,23 +159,14 @@ class PostBattleRewardsView(ViewImpl, LobbyHeaderVisibility, IGlobalListener):
         return AdditionalRewardsTooltip(additionalRewards)
 
     def _getEvents(self):
-        return [
-         (
-          self.viewModel.onClaimRewards, self.__onClaimRewards),
-         (
-          self.viewModel.onClose, self.__onClose),
-         (
-          self.viewModel.onContinue, self.__onContinue),
-         (
-          self.viewModel.onIntroStartsPlaying, self.__onIntroStartsPlaying),
-         (
-          self.viewModel.onRibbonStartsPlaying, self.__onRibbonStartsPlaying),
-         (
-          self.viewModel.onProgressBarAnimationStart, self.__onProgressBarAnimationStart),
-         (
-          self.viewModel.onProgressBarAnimationComplete, self.__onProgressBarAnimationComplete),
-         (
-          g_playerEvents.onDisconnected, self.__onClose)]
+        return [(self.viewModel.onClaimRewards, self.__onClaimRewards),
+         (self.viewModel.onClose, self.__onClose),
+         (self.viewModel.onContinue, self.__onContinue),
+         (self.viewModel.onIntroStartsPlaying, self.__onIntroStartsPlaying),
+         (self.viewModel.onRibbonStartsPlaying, self.__onRibbonStartsPlaying),
+         (self.viewModel.onProgressBarAnimationStart, self.__onProgressBarAnimationStart),
+         (self.viewModel.onProgressBarAnimationComplete, self.__onProgressBarAnimationComplete),
+         (g_playerEvents.onDisconnected, self.__onClose)]
 
     def _onLoading(self, *args, **kwargs):
         super(PostBattleRewardsView, self)._onLoading(*args, **kwargs)
@@ -194,7 +179,7 @@ class PostBattleRewardsView(ViewImpl, LobbyHeaderVisibility, IGlobalListener):
         self._removeListeners()
 
     def _fillModel(self):
-        with self.getViewModel().transaction() as (vm):
+        with self.getViewModel().transaction() as vm:
             vm.setRank(self.__ctx.playerRank)
             vm.setPrevProgress(self.__ctx.prevProgress)
             vm.setCurrProgress(self.__ctx.currProgress)
@@ -222,8 +207,7 @@ class PostBattleRewardsView(ViewImpl, LobbyHeaderVisibility, IGlobalListener):
                     splitKey = key.rsplit(':', 2)[0]
                     tokenBonusesGroups[splitKey].append(sourceBonus)
 
-            else:
-                otherBonuses.append(sourceBonus)
+            otherBonuses.append(sourceBonus)
 
         tokenBonuses = []
         for tokenBonusesGroup in tokenBonusesGroups.values():

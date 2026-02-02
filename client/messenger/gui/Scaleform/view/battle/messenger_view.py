@@ -1,4 +1,7 @@
-import weakref, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/gui/Scaleform/view/battle/messenger_view.py
+import weakref
+import BigWorld
 from gui.battle_control import avatar_getter
 from helpers import dependency
 from helpers import i18n
@@ -31,9 +34,7 @@ from skeletons.gui.battle_session import IBattleSessionProvider
 from ReplayEvents import g_replayEvents
 _UNKNOWN_RECEIVER_LABEL = 'N/A'
 _UNKNOWN_RECEIVER_ORDER = 100
-_CONSUMERS_LOCK_ENTER = (
- BATTLE_VIEW_ALIASES.RADIAL_MENU,
- BATTLE_VIEW_ALIASES.FULLSCREEN_MAP)
+_CONSUMERS_LOCK_ENTER = (BATTLE_VIEW_ALIASES.RADIAL_MENU, BATTLE_VIEW_ALIASES.FULLSCREEN_MAP)
 
 def _getToolTipText(arenaVisitor):
     settings = g_settings.battle
@@ -63,17 +64,17 @@ def _getToolTipText(arenaVisitor):
 
 def _makeSettingsVO(arenaVisitor):
     settings = g_settings.battle
-    return {'lifeTime': settings.messageLifeCycle.lifeTime * 1000, 
-       'alphaSpeed': settings.messageLifeCycle.alphaSpeed * 1000, 
-       'maxLinesCount': -1, 
-       'inactiveStateAlpha': settings.inactiveStateAlpha / 100.0, 
-       'maxMessageLength': CHAT_MESSAGE_MAX_LENGTH_IN_BATTLE, 
-       'toolTipStr': _getToolTipText(arenaVisitor), 
-       'numberOfMessagesInHistory': settings.numberOfMessagesInHistory, 
-       'lastMessageAlpha': settings.alphaForLastMessages / 100.0, 
-       'recoveredLatestMessagesAlpha': settings.recoveredLatestMessages / 100.0, 
-       'recoveredMessagesLifeTime': settings.lifeTimeRecoveredMessages * 1000, 
-       'isHistoryEnabled': settings.numberOfMessagesInHistory > 0}
+    return {'lifeTime': settings.messageLifeCycle.lifeTime * 1000,
+     'alphaSpeed': settings.messageLifeCycle.alphaSpeed * 1000,
+     'maxLinesCount': -1,
+     'inactiveStateAlpha': settings.inactiveStateAlpha / 100.0,
+     'maxMessageLength': CHAT_MESSAGE_MAX_LENGTH_IN_BATTLE,
+     'toolTipStr': _getToolTipText(arenaVisitor),
+     'numberOfMessagesInHistory': settings.numberOfMessagesInHistory,
+     'lastMessageAlpha': settings.alphaForLastMessages / 100.0,
+     'recoveredLatestMessagesAlpha': settings.recoveredLatestMessages / 100.0,
+     'recoveredMessagesLifeTime': settings.lifeTimeRecoveredMessages * 1000,
+     'isHistoryEnabled': settings.numberOfMessagesInHistory > 0}
 
 
 def _makeReceiverVO(clientID, settings, isChatEnabled):
@@ -98,12 +99,12 @@ def _makeReceiverVO(clientID, settings, isChatEnabled):
         isByDefault = False
         inputColor = ''
         orderIndex = _UNKNOWN_RECEIVER_ORDER
-    vo = {'clientId': clientID, 
-       'labelStr': recvLabelStr, 
-       'orderIndex': orderIndex, 
-       'isByDefault': isByDefault, 
-       'inputColor': inputColor, 
-       'isEnabled': isChatEnabled}
+    vo = {'clientId': clientID,
+     'labelStr': recvLabelStr,
+     'orderIndex': orderIndex,
+     'isByDefault': isByDefault,
+     'inputColor': inputColor,
+     'isEnabled': isChatEnabled}
     return vo
 
 
@@ -126,17 +127,16 @@ class BattleMessengerView(BattleMessengerMeta, IBattleChannelView, IContactsAndP
         self._avatarSessionID = ''
         self._toxicPanelMsgID = ''
         self._addedMsgIDs = set()
-        self._ignoreActionCooldown = CooldownHelper((
-         CLIENT_ACTION_ID.ADD_IGNORED, CLIENT_ACTION_ID.REMOVE_IGNORED), self._onIgnoreActionCooldownHandle, CoolDownEvent.BATTLE_ACTION)
+        self._ignoreActionCooldown = CooldownHelper((CLIENT_ACTION_ID.ADD_IGNORED, CLIENT_ACTION_ID.REMOVE_IGNORED), self._onIgnoreActionCooldownHandle, CoolDownEvent.BATTLE_ACTION)
         return
 
     @storage_getter('users')
     def usersStorage(self):
-        return
+        return None
 
     @proto_getter(PROTO_TYPE.BW_CHAT2)
     def protoBwChat2(self):
-        return
+        return None
 
     def getControllerID(self):
         return BATTLE_CTRL_ID.GUI
@@ -255,8 +255,7 @@ class BattleMessengerView(BattleMessengerMeta, IBattleChannelView, IContactsAndP
             return
 
     def enableToSendMessage(self):
-        if self._arenaVisitor.getArenaBonusType() in (ARENA_BONUS_TYPE.BATTLE_ROYALE_TRN_SOLO,
-         ARENA_BONUS_TYPE.BATTLE_ROYALE_TRN_SQUAD) and avatar_getter.isObserverSeesAll():
+        if self._arenaVisitor.getArenaBonusType() in (ARENA_BONUS_TYPE.BATTLE_ROYALE_TRN_SOLO, ARENA_BONUS_TYPE.BATTLE_ROYALE_TRN_SQUAD) and avatar_getter.isObserverSeesAll():
             return
         self.__isEnabled = True
         self.as_enableToSendMessageS()
@@ -384,9 +383,9 @@ class BattleMessengerView(BattleMessengerMeta, IBattleChannelView, IContactsAndP
 
     def __buildToxicStateVO(self, avatarSessionID):
         contact = self.usersStorage.getUser(avatarSessionID, scope=UserEntityScope.BATTLE)
-        return {'messageID': avatarSessionID, 
-           'vehicleID': self._battleCtx.getVehIDBySessionID(avatarSessionID), 
-           'blackList': self.__buildBlackListVO(contact)}
+        return {'messageID': avatarSessionID,
+         'vehicleID': self._battleCtx.getVehIDBySessionID(avatarSessionID),
+         'blackList': self.__buildBlackListVO(contact)}
 
     def __buildBlackListVO(self, contact):
         isEnabled = not self._ignoreActionCooldown.isInCooldown()
@@ -408,9 +407,9 @@ class BattleMessengerView(BattleMessengerMeta, IBattleChannelView, IContactsAndP
             status = BATTLE_MESSAGES_CONSTS.ADD_IN_BLACKLIST
             header = INGAME_GUI.BATTLEMESSENGER_TOXIC_BLACKLIST_ADD_IN_BLACKLIST_HEADER
             body = INGAME_GUI.BATTLEMESSENGER_TOXIC_BLACKLIST_ADD_IN_BLACKLIST_BODY
-        return {'status': status, 
-           'tooltip': makeTooltip(header=header, body=body), 
-           'enabled': isEnabled}
+        return {'status': status,
+         'tooltip': makeTooltip(header=header, body=body),
+         'enabled': isEnabled}
 
     def __canSendMessage(self, clientID):
         result = True
@@ -453,8 +452,7 @@ class BattleMessengerView(BattleMessengerMeta, IBattleChannelView, IContactsAndP
         receiver = (clientID, guiSettings, isChatEnabled)
         self.__receivers.append(receiver)
         self.__receivers = sorted(self.__receivers, key=lambda item: item[1].order)
-        return (
-         receiver, isReset)
+        return (receiver, isReset)
 
     def __setGuiMode(self, value):
         if value:
@@ -492,9 +490,7 @@ class BattleMessengerView(BattleMessengerMeta, IBattleChannelView, IContactsAndP
         self.__invalidateReceiverIndex()
 
     def __invalidateReceiverIndex(self):
-        if not self.__isReceiverAvailable(self.__receiverIndex):
-            return self.__findNextReceiverIndex()
-        return False
+        return self.__findNextReceiverIndex() if not self.__isReceiverAvailable(self.__receiverIndex) else False
 
     def __findNextReceiverIndex(self):
         receiversCount = len(self.__receivers)

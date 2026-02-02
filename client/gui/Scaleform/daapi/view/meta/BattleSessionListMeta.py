@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/BattleSessionListMeta.py
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 
 class BattleSessionListMeta(AbstractWindowView):
@@ -9,5 +11,4 @@ class BattleSessionListMeta(AbstractWindowView):
         self._printOverrideError('getClientID')
 
     def as_refreshListS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_refreshList(data)
+        return self.flashObject.as_refreshList(data) if self._isDAAPIInited() else None

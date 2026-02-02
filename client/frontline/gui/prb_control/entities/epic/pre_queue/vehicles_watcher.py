@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/prb_control/entities/epic/pre_queue/vehicles_watcher.py
 from itertools import chain
 import typing
 from constants import BATTLE_MODE_VEH_TAGS_EXCEPT_EPIC
@@ -11,8 +13,8 @@ from skeletons.gui.shared import IItemsCache
 
 class EpicVehiclesWatcher(BaseVehiclesWatcher):
     _BATTLE_MODE_VEHICLE_TAGS = BATTLE_MODE_VEH_TAGS_EXCEPT_EPIC
-    _VEH_STATE_PRIORITIES = {Vehicle.VEHICLE_STATE.UNSUITABLE_TO_QUEUE: 1, 
-       Vehicle.VEHICLE_STATE.WILL_BE_UNLOCKED_IN_BATTLE: 0}
+    _VEH_STATE_PRIORITIES = {Vehicle.VEHICLE_STATE.UNSUITABLE_TO_QUEUE: 1,
+     Vehicle.VEHICLE_STATE.WILL_BE_UNLOCKED_IN_BATTLE: 0}
     itemsCache = dependency.descriptor(IItemsCache)
     lobbyContext = dependency.descriptor(ILobbyContext)
 

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_results/reusable/records.py
 import operator
 from ValueReplay import ValueReplay
 from debug_utils import LOG_ERROR
@@ -14,17 +16,17 @@ class ResultRecord(object):
     __slots__ = ()
 
     def getRecord(self, *args):
-        return 0
+        pass
 
     def findRecord(self, criteria):
         return self.getRecord(criteria)
 
     def getFactor(self, *args):
-        return 1.0
+        pass
 
 
 class RawRecords(ResultRecord):
-    __slots__ = ('_records', )
+    __slots__ = ('_records',)
 
     def __init__(self, records):
         super(RawRecords, self).__init__()
@@ -58,9 +60,7 @@ class ReplayRecord(ResultRecord):
         name = self._name.lower()
         if name.endswith('factor100') or name.endswith('factors100'):
             return 100
-        if name.endswith('factor10') or name.endswith('factors10'):
-            return 10
-        return 1
+        return 10 if name.endswith('factor10') or name.endswith('factors10') else 1
 
 
 class SubReplayRecord(ReplayRecord):
@@ -87,16 +87,16 @@ class CoefficientReplayRecord(ReplayRecord):
         return self._diff
 
 
-_SUPPORTED_OPS = {ValueReplay.SET: ReplayRecord, 
-   ValueReplay.ADD: ReplayRecord, 
-   ValueReplay.SUB: SubReplayRecord, 
-   ValueReplay.MUL: FactorReplayRecord, 
-   ValueReplay.FACTOR: FactorReplayRecord, 
-   ValueReplay.ADDCOEFF: CoefficientReplayRecord, 
-   ValueReplay.SUBCOEFF: CoefficientReplayRecord}
+_SUPPORTED_OPS = {ValueReplay.SET: ReplayRecord,
+ ValueReplay.ADD: ReplayRecord,
+ ValueReplay.SUB: SubReplayRecord,
+ ValueReplay.MUL: FactorReplayRecord,
+ ValueReplay.FACTOR: FactorReplayRecord,
+ ValueReplay.ADDCOEFF: CoefficientReplayRecord,
+ ValueReplay.SUBCOEFF: CoefficientReplayRecord}
 
 class ReplayRecords(ResultRecord):
-    __slots__ = ('_records', )
+    __slots__ = ('_records',)
 
     def __init__(self, replay, *last):
         super(ReplayRecords, self).__init__()
@@ -135,9 +135,7 @@ class ReplayRecords(ResultRecord):
         return result
 
     def _getRecord(self, name):
-        if name in self._records:
-            return self._records[name].getRecord()
-        return 0
+        return self._records[name].getRecord() if name in self._records else 0
 
     def _addRecord(self, op, name, value, diff):
         if op in _SUPPORTED_OPS:
@@ -158,11 +156,11 @@ class RecordsIterator(ResultRecord):
         return self
 
     def next(self):
-        while 1:
-            if self._indexes:
-                idx = self._indexes.pop(0)
-                return idx or self
-            return self._seq[(idx - 1)]
+        while self._indexes:
+            idx = self._indexes.pop(0)
+            if not idx:
+                return self
+            return self._seq[idx - 1]
 
         raise StopIteration()
 
@@ -178,13 +176,11 @@ class RecordsIterator(ResultRecord):
 
     def getFactor(self, name):
         getter = operator.methodcaller('getFactor', name)
-        if self._seq:
-            return max(getter(item) for item in self._seq)
-        return 1
+        return max((getter(item) for item in self._seq)) if self._seq else 1
 
     def _rebuild(self):
         self._indexes = range(len(self._seq) + 1)
 
     def _sum(self, method, *names):
         getter = operator.methodcaller(method, *names)
-        return sum(getter(item) for item in self._seq)
+        return sum((getter(item) for item in self._seq))

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/base/squad/entity.py
 from debug_utils import LOG_ERROR
 from gui.prb_control.ctrl_events import g_prbCtrlEvents
 from gui.prb_control.entities.base.squad.actions_handler import SquadActionsHandler
@@ -67,8 +69,7 @@ class SquadEntity(UnitEntity):
         else:
             criteria = REQ_CRITERIA.INVENTORY
         vehicles = self.itemsCache.items.getVehicles(criteria)
-        updatedVehicles = [ intCD for intCD, v in vehicles.iteritems() if v.getCustomState() != Vehicle.VEHICLE_STATE.UNSUITABLE_TO_QUEUE and self._updateVehicleState(v, state)
-                          ]
+        updatedVehicles = [ intCD for intCD, v in vehicles.iteritems() if v.getCustomState() != Vehicle.VEHICLE_STATE.UNSUITABLE_TO_QUEUE and self._updateVehicleState(v, state) ]
         if updatedVehicles:
             g_prbCtrlEvents.onVehicleClientStateChanged(updatedVehicles)
 
@@ -76,7 +77,7 @@ class SquadEntity(UnitEntity):
         return False
 
     def getSquadLevelBounds(self):
-        return (0, 0)
+        pass
 
     def showDialog(self, meta, callback, parent=None):
         self.__showDefaultDialog(meta, callback, parent=parent)
@@ -95,7 +96,7 @@ class SquadEntity(UnitEntity):
 
     @property
     def _showUnitActionNames(self):
-        return ()
+        pass
 
     def _buildPermissions(self, roles, flags, isCurrentPlayer=False, isPlayerReady=False, hasLockedState=False):
         return SquadPermissions(roles, flags, isCurrentPlayer, isPlayerReady)

@@ -1,4 +1,8 @@
-import typing, BigWorld, game_loading_bindings
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_loading/state_machine/states/init_client/client_loading_stub.py
+import typing
+import BigWorld
+import game_loading_bindings
 from shared_utils import safeCancelCallback
 from helpers.time_utils import MS_IN_SECOND
 from gui.game_loading import loggers
@@ -10,7 +14,7 @@ if typing.TYPE_CHECKING:
 _logger = loggers.getStatesLogger()
 
 class ClientLoadingStubState(StaticSlideState):
-    __slots__ = ('_minDurationTimerId', )
+    __slots__ = ('_minDurationTimerId',)
 
     def __init__(self, images):
         super(ClientLoadingStubState, self).__init__(GameLoadingStates.CLIENT_INIT_LOADING_STUB.value, images, ImageViewSettingsModel(showSmallLogo=False, showVfx=False))

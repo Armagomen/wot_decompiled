@@ -1,4 +1,7 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/prb_control/entities/epic/pre_queue/actions_validator.py
 from CurrentVehicle import g_currentVehicle
+from frontline.gui.frontline_helpers import isAnnouncedCycleState
 from gui.Scaleform.daapi.view.lobby.epicBattle.epic_helpers import isVehLevelUnlockableInBattle
 from gui.prb_control.entities.base.actions_validator import BaseActionsValidator, ActionsValidatorComposite
 from gui.prb_control.entities.base.pre_queue.actions_validator import PreQueueActionsValidator
@@ -14,14 +17,11 @@ class EpicVehicleValidator(BaseActionsValidator):
         lobbyContext = dependency.instance(ILobbyContext)
         vehicle = g_currentVehicle.item
         config = lobbyContext.getServerSettings().epicBattles
-        vehicleLevelsForStartBattle = [ level for level in config.validVehicleLevels if level not in config.unlockableInBattleVehLevels
-                                      ]
+        vehicleLevelsForStartBattle = [ level for level in config.validVehicleLevels if level not in config.unlockableInBattleVehLevels ]
         if vehicle.level not in config.validVehicleLevels:
             return ValidationResult(False, PRE_QUEUE_RESTRICTION.LIMIT_LEVEL, {'levels': vehicleLevelsForStartBattle})
-        if isVehLevelUnlockableInBattle(vehicle.level):
-            return ValidationResult(False, PRE_QUEUE_RESTRICTION.VEHICLE_WILL_BE_UNLOCKED, {'unlockableInBattleVehLevels': config.unlockableInBattleVehLevels, 
-               'vehicleLevelsForStartBattle': vehicleLevelsForStartBattle})
-        return super(EpicVehicleValidator, self)._validate()
+        return ValidationResult(False, PRE_QUEUE_RESTRICTION.VEHICLE_WILL_BE_UNLOCKED, {'unlockableInBattleVehLevels': config.unlockableInBattleVehLevels,
+         'vehicleLevelsForStartBattle': vehicleLevelsForStartBattle}) if isVehLevelUnlockableInBattle(vehicle.level) else super(EpicVehicleValidator, self)._validate()
 
 
 class EpicActionsValidator(PreQueueActionsValidator):
@@ -39,9 +39,9 @@ class EpicActionsValidator(PreQueueActionsValidator):
         result = super(EpicActionsValidator, self)._validate()
         if not (self.__epicController.isEnabled() and self.__epicController.isInPrimeTime()):
             result = ValidationResult(False, PREBATTLE_RESTRICTION.UNDEFINED)
-        if result and result.restriction in (
-         PREBATTLE_RESTRICTION.VEHICLE_NOT_SUPPORTED,
-         PREBATTLE_RESTRICTION.CREW_NOT_FULL):
+        if isAnnouncedCycleState():
+            result = ValidationResult(False, PRE_QUEUE_RESTRICTION.MODE_IS_IN_PREANNOUNCE)
+        if result and result.restriction in (PREBATTLE_RESTRICTION.VEHICLE_NOT_SUPPORTED, PREBATTLE_RESTRICTION.CREW_NOT_FULL):
             epicValidationResult = self.__epicVehicleValidator.canPlayerDoAction()
             if epicValidationResult and not epicValidationResult.isValid:
                 result = epicValidationResult

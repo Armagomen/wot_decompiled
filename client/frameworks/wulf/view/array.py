@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/frameworks/wulf/view/array.py
 import typing
 from contextlib import contextmanager
 from ..py_object_binder import PyObjectEntity
@@ -14,7 +16,7 @@ class Array(PyObjectEntity, typing.Iterable[T]):
         super(Array, self).__init__(PyObjectArray())
 
     def __repr__(self):
-        return ('Array(size={})').format(self.proxy.getSize() if self.proxy is not None else 0)
+        return 'Array(size={})'.format(self.proxy.getSize() if self.proxy is not None else 0)
 
     def __str__(self):
         return self.proxy.toString()
@@ -27,7 +29,7 @@ class Array(PyObjectEntity, typing.Iterable[T]):
             return (self.proxy.getValue(i) for i in xrange(index.start or 0, index.stop or len(self), index.step or 1))
         if index < 0:
             if abs(index) > self.proxy.getSize():
-                raise IndexError(('Array index %d out of range').format(index))
+                raise IndexError('Array index %d out of range'.format(index))
             index = len(self) + index
         return self.proxy.getValue(index)
 

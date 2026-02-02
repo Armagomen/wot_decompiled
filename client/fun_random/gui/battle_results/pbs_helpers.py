@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/battle_results/pbs_helpers.py
 from __future__ import absolute_import
 import typing
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as _CAPS
@@ -15,12 +17,11 @@ if typing.TYPE_CHECKING:
     from gui.battle_results.stats_ctrl import BattleResults
     from gui.impl.gen_utils import DynAccessor
     from fun_random.gui.feature.sub_modes.base_sub_mode import IFunSubMode
-_CURRENCY_TO_PREM_BONUS_CAPS_MAP = {CurrenciesConstants.CREDITS: _CAPS.PREM_CREDITS, 
-   CurrenciesConstants.XP_COST: _CAPS.PREM_XP, 
-   CurrenciesConstants.FREE_XP: _CAPS.PREM_XP, 
-   CurrenciesConstants.TMEN_XP: _CAPS.PREM_TMEN_XP}
-_ADD_XP_BONUS_AVAILABLE_STATUSES = {
- BRPS.PLUS_YOU_ROCK, BRPS.PREMIUM_BONUS, BRPS.PLUS_EARNINGS}
+_CURRENCY_TO_PREM_BONUS_CAPS_MAP = {CurrenciesConstants.CREDITS: _CAPS.PREM_CREDITS,
+ CurrenciesConstants.XP_COST: _CAPS.PREM_XP,
+ CurrenciesConstants.FREE_XP: _CAPS.PREM_XP,
+ CurrenciesConstants.TMEN_XP: _CAPS.PREM_TMEN_XP}
+_ADD_XP_BONUS_AVAILABLE_STATUSES = {BRPS.PLUS_YOU_ROCK, BRPS.PREMIUM_BONUS, BRPS.PLUS_EARNINGS}
 _ADD_XP_BONUS_AVAILABLE_STATUSES_FOR_PREM = {BRPS.PREMIUM_EARNINGS, BRPS.PLUS_INFO}
 
 def isCreditsShown(value, hasFines, _, reusable):
@@ -47,10 +48,7 @@ def isFreeXpShown(value, hasFines, rewardValues, reusable):
 @dependency.replace_none_kwargs(funRandomCtrl=IFunRandomController)
 def isTmenXpShown(value, _, __, reusable, funRandomCtrl=None):
     subMode = funRandomCtrl.subModesHolder.getSubMode(getEventID(reusable))
-    if subMode is not None:
-        return subMode.getSettings().client.postbattle.get('isCrewXpShown')
-    else:
-        return False
+    return subMode.getSettings().client.postbattle.get('isCrewXpShown') if subMode is not None else False
 
 
 def isPremiumAdvertisingShown(currencyType, battleResults):
@@ -59,9 +57,7 @@ def isPremiumAdvertisingShown(currencyType, battleResults):
         return False
     else:
         bonusCaps = _CURRENCY_TO_PREM_BONUS_CAPS_MAP.get(currencyType)
-        if bonusCaps is not None:
-            return reusable.common.checkBonusCaps(bonusCaps)
-        return False
+        return reusable.common.checkBonusCaps(bonusCaps) if bonusCaps is not None else False
 
 
 def getAdvertising(extractor, record, label, battleResults):
@@ -81,18 +77,17 @@ def getTmenXp(reusable):
 
 
 def getTotalTMenXPToShow(reusable, _=None, __=None):
-    return sum(item[1] for item in getTmenXp(reusable))
+    return sum((item[1] for item in getTmenXp(reusable)))
 
 
 def getTotalGoldToShow(reusable):
     records = getDirectMoneyRecords(reusable).extraValue
-    return sum(records.findRecord(recordName) for recordName in ('eventGoldList_', ))
+    return sum((records.findRecord(recordName) for recordName in ('eventGoldList_',)))
 
 
 def isFunAddXpBonusStatusAcceptable(status, reusable, hasPremiumPlus):
     if status in _ADD_XP_BONUS_AVAILABLE_STATUSES:
         return True
-    if status in _ADD_XP_BONUS_AVAILABLE_STATUSES_FOR_PREM:
-        if hasPremiumPlus or reusable.personal.isPremiumPlus and reusable.isPersonalTeamWin():
-            return True
+    if status in _ADD_XP_BONUS_AVAILABLE_STATUSES_FOR_PREM and (hasPremiumPlus or reusable.personal.isPremiumPlus and reusable.isPersonalTeamWin()):
+        return True
     return False

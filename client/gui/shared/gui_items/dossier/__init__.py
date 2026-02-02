@@ -1,6 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/gui_items/dossier/__init__.py
 import math
 from typing import Dict, List, Optional
-import cPickle, dossiers2
+import cPickle
+import dossiers2
 from constants import DOSSIER_TYPE
 from gui.Scaleform.locale.MENU import MENU
 from gui.impl import backport
@@ -74,8 +77,9 @@ class VehicleDossier(_Dossier, stats.VehicleDossierStats):
         return self.__vehTypeCompDescr
 
     def pack(self):
-        return (
-         VehicleDossier, self._dossier.makeCompDescr(), self.__vehTypeCompDescr,
+        return (VehicleDossier,
+         self._dossier.makeCompDescr(),
+         self.__vehTypeCompDescr,
          self._playerDBID)
 
     @staticmethod
@@ -86,8 +90,7 @@ class VehicleDossier(_Dossier, stats.VehicleDossierStats):
         return self
 
     def __repr__(self):
-        return 'VehicleDossier<vehTypeCD=%d; playerDBID=%r; roaming=%r>' % (
-         self.__vehTypeCompDescr, self._playerDBID, self.isInRoaming())
+        return 'VehicleDossier<vehTypeCD=%d; playerDBID=%r; roaming=%r>' % (self.__vehTypeCompDescr, self._playerDBID, self.isInRoaming())
 
 
 class AccountDossier(_Dossier, stats.AccountDossierStats):
@@ -101,8 +104,9 @@ class AccountDossier(_Dossier, stats.AccountDossierStats):
         return self.itemsCache.items.stats.globalRating
 
     def pack(self):
-        return (
-         AccountDossier, self._dossier.makeCompDescr(), self._playerDBID,
+        return (AccountDossier,
+         self._dossier.makeCompDescr(),
+         self._playerDBID,
          self._rated7x7Seasons)
 
     @staticmethod
@@ -126,8 +130,7 @@ class AccountDossier(_Dossier, stats.AccountDossierStats):
         return self
 
     def __repr__(self):
-        return 'AccountDossier<playerDBID=%r; roaming=%r>' % (
-         self._playerDBID, self.isInRoaming())
+        return 'AccountDossier<playerDBID=%r; roaming=%r>' % (self._playerDBID, self.isInRoaming())
 
 
 class TankmanDossier(_Dossier, stats.TankmanDossierStats):
@@ -148,8 +151,10 @@ class TankmanDossier(_Dossier, stats.TankmanDossierStats):
         return
 
     def pack(self):
-        return (TankmanDossier, self.tmanDescr.makeCompactDescr(),
-         self._dossier.makeCompDescr(), self.__extDossierDump)
+        return (TankmanDossier,
+         self.tmanDescr.makeCompactDescr(),
+         self._dossier.makeCompDescr(),
+         self.__extDossierDump)
 
     @staticmethod
     def unpack(tmanCompDescr, dossierCD, extDossierDump):
@@ -158,19 +163,14 @@ class TankmanDossier(_Dossier, stats.TankmanDossierStats):
     def getAvgXP(self):
         totalXP = self.__totalStats.getXP() - self.__clanStats.getXP() + self.__globalMapStats.getXP()
         totalBattles = self.__totalStats.getBattlesCount() - self.__clanStats.getBattlesCount() + self.__globalMapStats.getBattlesCount()
-        if totalBattles == 0:
-            return 0
-        return totalXP / totalBattles
+        return 0 if totalBattles == 0 else totalXP / totalBattles
 
     def getBattlesCount(self):
         return self.getTotalStats().getBattlesCount()
 
     def getStats(self, tankman):
-        result = [
-         {'label': 'common', 
-            'stats': (
-                    self.__packStat('battlesCount', self.getBattlesCount()),
-                    self.__packStat('avgExperience', self.getAvgXP()))}]
+        result = [{'label': 'common',
+          'stats': (self.__packStat('battlesCount', self.getBattlesCount()), self.__packStat('avgExperience', self.getAvgXP()))}]
         studyingBlock = self._getStudyingBlock(tankman)
         if studyingBlock is not None:
             result.append(studyingBlock)
@@ -181,13 +181,11 @@ class TankmanDossier(_Dossier, stats.TankmanDossierStats):
             return None
         else:
             imageType, image = self.__getCurrentSkillIcon(tankman)
-            studyingBlock = {'label': 'studying', 
-               'secondLabel': i18n.makeString(MENU.CONTEXTMENU_PERSONALCASE_STATSBLOCKTITLE), 
-               'isRowSeparator': True, 
-               'isPremium': self.__currentVehicleIsPremium, 
-               'stats': [
-                       self.__packStat('nextSkillXPLeft', tankman.getNextLevelXpCost(), imageType=imageType, image=image, isSecondActive=self.__currentVehicleIsPremium),
-                       self.__packStat('nextSkillBattlesLeft', self.__getNextSkillBattlesLeft(tankman), usePremiumXpFactor=True, isSecondActive=self.__currentVehicleIsPremium)]}
+            studyingBlock = {'label': 'studying',
+             'secondLabel': i18n.makeString(MENU.CONTEXTMENU_PERSONALCASE_STATSBLOCKTITLE),
+             'isRowSeparator': True,
+             'isPremium': self.__currentVehicleIsPremium,
+             'stats': [self.__packStat('nextSkillXPLeft', tankman.getNextLevelXpCost(), imageType=imageType, image=image, isSecondActive=self.__currentVehicleIsPremium), self.__packStat('nextSkillBattlesLeft', self.__getNextSkillBattlesLeft(tankman), usePremiumXpFactor=True, isSecondActive=self.__currentVehicleIsPremium)]}
             showPassiveCrewXpInfo = self._wotPlusCtrl.isEnabled() and self.lobbyContext.getServerSettings().isRenewableSubPassiveCrewXPEnabled()
             if showPassiveCrewXpInfo:
                 statsBlock = studyingBlock.get('stats', [])
@@ -203,9 +201,7 @@ class TankmanDossier(_Dossier, stats.TankmanDossierStats):
     def __getCurrentSkillIcon(self, tankman):
         if self.__isNewSkillReady(tankman):
             return ('new_skill', 'new_skill.png')
-        if self.tmanDescr.roleLevel != tankmen.MAX_SKILL_LEVEL or not self.tmanDescr.skills:
-            return ('role', '%s.png' % self.tmanDescr.role)
-        return ('skill', tankman.skills[(-1)].icon)
+        return ('role', '%s.png' % self.tmanDescr.role) if self.tmanDescr.roleLevel != tankmen.MAX_SKILL_LEVEL or not self.tmanDescr.skills else ('skill', tankman.skills[-1].icon)
 
     def __getNextSkillBattlesLeft(self, tankman):
         if not self.getBattlesCount():
@@ -220,10 +216,7 @@ class TankmanDossier(_Dossier, stats.TankmanDossierStats):
         return result
 
     def __formatValueForUI(self, value):
-        if value is None:
-            return i18n.makeString('#menu:profile/stats/items/empty')
-        else:
-            return backport.getIntegralFormat(value)
+        return i18n.makeString('#menu:profile/stats/items/empty') if value is None else backport.getIntegralFormat(value)
 
     def __getBattlesLeftOnPremiumVehicle(self, value):
         xpFactorToUse = self.PREMIUM_TANK_DEFAULT_CREW_XP_FACTOR
@@ -233,7 +226,8 @@ class TankmanDossier(_Dossier, stats.TankmanDossierStats):
             if value != 0:
                 return max(1, value / xpFactorToUse)
             return 0
-        return
+        else:
+            return
 
     def __packWotPlus(self, tankman):
         tankManIsEligible = False
@@ -247,12 +241,12 @@ class TankmanDossier(_Dossier, stats.TankmanDossierStats):
         xpPerSecond = float(xpPerMinute) / _SECONDS_IN_MINUTE
         secUntilNextLevel = tankman.getNextLevelXpCost() / xpPerSecond
         timeStr = time_utils.getTillTimeString(secUntilNextLevel, MENU.TIME_TIMEVALUE, removeLeadingZeros=True) if tankManIsEligible and secUntilNextLevel else '--'
-        return {'name': 'timeUntilNextLevel', 
-           'value': timeStr, 
-           'secondValue': timeStr, 
-           'isLabelActive': tankHasPassiveXp and tankManIsEligible, 
-           'isValueActive': tankHasPassiveXp and tankManIsEligible and not self.__currentVehicleIsPremium, 
-           'isSecondValueActive': tankHasPassiveXp and tankManIsEligible and self.__currentVehicleIsPremium}
+        return {'name': 'timeUntilNextLevel',
+         'value': timeStr,
+         'secondValue': timeStr,
+         'isLabelActive': tankHasPassiveXp and tankManIsEligible,
+         'isValueActive': tankHasPassiveXp and tankManIsEligible and not self.__currentVehicleIsPremium,
+         'isSecondValueActive': tankHasPassiveXp and tankManIsEligible and self.__currentVehicleIsPremium}
 
     def __packStat(self, name, value, imageType=None, image=None, usePremiumXpFactor=False, isSecondActive=False):
         if usePremiumXpFactor:
@@ -261,13 +255,13 @@ class TankmanDossier(_Dossier, stats.TankmanDossierStats):
             secondValue = value
         value = self.__formatValueForUI(value)
         secondValue = self.__formatValueForUI(secondValue)
-        return {'name': name, 
-           'value': value, 
-           'secondValue': secondValue, 
-           'isValueActive': not isSecondActive, 
-           'isSecondValueActive': isSecondActive, 
-           'imageType': imageType, 
-           'image': image}
+        return {'name': name,
+         'value': value,
+         'secondValue': secondValue,
+         'isValueActive': not isSecondActive,
+         'isSecondValueActive': isSecondActive,
+         'imageType': imageType,
+         'image': image}
 
     def __repr__(self):
         return 'TankmanDossier<stats.__totalStats=%r>' % self.__totalStats
@@ -279,8 +273,7 @@ class FortDossier(_Dossier, stats.FortDossierStats):
         super(FortDossier, self).__init__(dossier, DOSSIER_TYPE.FORTIFIED_REGIONS, playerDBID)
 
     def pack(self):
-        return (
-         FortDossier, self._dossier.makeCompDescr(), self._playerDBID)
+        return (FortDossier, self._dossier.makeCompDescr(), self._playerDBID)
 
     @staticmethod
     def unpack(dossierCD, playerDBID):
@@ -290,8 +283,7 @@ class FortDossier(_Dossier, stats.FortDossierStats):
         return self
 
     def __repr__(self):
-        return 'FortDossier<playerDBID=%r; roaming=%r>' % (
-         self._playerDBID, self.isInRoaming())
+        return 'FortDossier<playerDBID=%r; roaming=%r>' % (self._playerDBID, self.isInRoaming())
 
 
 class ClubDossier(_Dossier, stats.ClubDossierStats):
@@ -301,8 +293,7 @@ class ClubDossier(_Dossier, stats.ClubDossierStats):
         self._clubDbID = clubDbID
 
     def pack(self):
-        return (
-         ClubDossier, self._dossier.makeCompDescr(), self._clubDbID)
+        return (ClubDossier, self._dossier.makeCompDescr(), self._clubDbID)
 
     @staticmethod
     def unpack(dossierCD, clubDbID):
@@ -322,8 +313,9 @@ class ClubMemberDossier(_Dossier, stats.ClubMemberDossierStats):
         self._clubDbID = clubDbID
 
     def pack(self):
-        return (
-         ClubMemberDossier, self._dossier.makeCompactDescr(), self._clubDbID,
+        return (ClubMemberDossier,
+         self._dossier.makeCompactDescr(),
+         self._clubDbID,
          self._playerDBID)
 
     @staticmethod

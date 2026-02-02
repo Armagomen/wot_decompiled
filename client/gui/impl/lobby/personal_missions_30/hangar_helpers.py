@@ -1,14 +1,17 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/personal_missions_30/hangar_helpers.py
 import logging
 from functools import partial
 from typing import TYPE_CHECKING
-import CGF, Event, SoundGroups
+import CGF
+import Event
+import SoundGroups
 from GenericComponents import Sequence
 from cgf_components.hangar_camera_manager import HangarCameraManager
 from cgf_components.pm30_hangar_components import HangarOperationsManager
 from gui.hangar_cameras.hangar_camera_common import CameraRelatedEvents
-from gui.impl.lobby.personal_missions_30.personal_mission_constants import OperationIDs, CameraNameTemplates, StageAdditions, STAGES_CONFIG, TopCameras, CAMERA_IMMEDIATE_TRANSITION_DURATION, SoundsKeys, SoundsStateKeys
+from gui.impl.lobby.personal_missions_30.personal_mission_constants import OperationIDs, CameraNameTemplates, StageAdditions, STAGES_CONFIG, TopCameras, SoundsKeys, SoundsStateKeys
 from gui.impl.lobby.personal_missions_30.personal_mission_constants import StageInfo
-from gui.impl.lobby.personal_missions_30.views_helpers import hasAssemblingVideo
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE, events
 from gui.shared.event_dispatcher import showPM30OperationAssemblingVideoWindow
 from helpers import dependency
@@ -38,13 +41,19 @@ class AssemblingManager(object):
         self.__stageFade = None
         self.__activeComponents = StageInfo(0, 0, set(), set())
         self.__cameraSwitchingCallback = None
+        self.__inited = False
         return
 
     def init(self):
         cameraManager = self.getCameraManager()
         if cameraManager is not None:
             cameraManager.onCameraSwitched += self.__onCameraSwitched
+        self.__inited = True
         return
+
+    @property
+    def inited(self):
+        return self.__inited
 
     def deactivate(self):
         self.deactivateVehicleGO()
@@ -64,6 +73,7 @@ class AssemblingManager(object):
         self.__stageFade = None
         self.__activeComponents = None
         self.__cameraSwitchingCallback = None
+        self.__inited = False
         self.onCameraFlightStarted.clear()
         self.onCameraFlightFinished.clear()
         self.onAssemblingVideoFinished.clear()
@@ -86,13 +96,13 @@ class AssemblingManager(object):
         return self.__cameraManager
 
     def assembleStage(self, stageNumber, isFinalStage=False):
+        self.onAssemblingAnimationStarted()
         self.__stageNumberForAssembling = stageNumber
         if isFinalStage:
             self.__activateStages(self.__stageNumberForAssembling)
             return
         self.__stageFade = self.__getStage(self.__stageNumberForAssembling, isFade=True)
         if self.__stageFade:
-            self.onAssemblingAnimationStarted()
             self.switchCameraToStagePosition(stageNumber, callback=partial(self.__activateStageFade, self.__stageFade))
         else:
             showPM30OperationAssemblingVideoWindow(self.__operationID, stageNumber, closingCallback=self.__onVideoFinished)
@@ -112,9 +122,13 @@ class AssemblingManager(object):
         cameraName = CameraNameTemplates.FREE.format(self.__operationID)
         self.__switchByCameraName(cameraName, instantly=instantly, callback=callback)
 
+    def switchCameraToFreeFarPosition(self, instantly=False, callback=None):
+        cameraName = CameraNameTemplates.FREE_FAR.format(self.__operationID)
+        self.__switchByCameraName(cameraName, instantly=instantly, callback=callback)
+
     def switchCameraToMainPosition(self, isOperationFullCompleted, instantly=False, callback=None):
         if isOperationFullCompleted:
-            self.switchCameraToFreePosition(instantly=instantly, callback=callback)
+            self.switchCameraToFreeFarPosition(instantly=instantly, callback=callback)
         else:
             self.switchCameraToTopPosition(TopCameras.SECOND, instantly=instantly, callback=callback)
 
@@ -130,11 +144,7 @@ class AssemblingManager(object):
             self.__setAndActivateVehicleGO(vehicleGOForOperation, vehicleStagesComponent, operationID, currentStage)
 
     def getCameraEvents(self, viewModel):
-        return [
-         (
-          viewModel.onMoveSpace, self.__onMoveSpace),
-         (
-          viewModel.onMouseOver3dScene, self.__onMouseOver3dScene)]
+        return [(viewModel.onMoveSpace, self.__onMoveSpace), (viewModel.onMouseOver3dScene, self.__onMouseOver3dScene)]
 
     def activateSelectableLogic(self):
         self.hangarSpace.lockVehicleSelectable(self)
@@ -160,10 +170,6 @@ class AssemblingManager(object):
         self.switchCameraToTopPosition(TopCameras.FIRST, instantly=True)
         nextTick(partial(self.switchCameraToTopPosition, TopCameras.SECOND))()
 
-    def showStageAssemblingVideo(self, stageNumber):
-        if hasAssemblingVideo(self.__operationID, stageNumber):
-            showPM30OperationAssemblingVideoWindow(self.__operationID, stageNumber)
-
     @staticmethod
     def setHangarProgressionStateOn():
         SoundGroups.g_instance.setState(SoundsStateKeys.HANGAR_PROGRESSION_STATE, SoundsStateKeys.HANGAR_PROGRESSION_ON_STATE)
@@ -180,17 +186,15 @@ class AssemblingManager(object):
         if not cameraManager:
             _logger.warning('[PM3.0] CameraManager is not found')
             return
-        topCameras = [
-         CameraNameTemplates.TOP.format(self.__operationID, TopCameras.FIRST),
-         CameraNameTemplates.TOP.format(self.__operationID, TopCameras.SECOND)]
+        topCameras = [CameraNameTemplates.TOP.format(self.__operationID, TopCameras.FIRST), CameraNameTemplates.TOP.format(self.__operationID, TopCameras.SECOND)]
         return cameraManager.getCurrentCameraName() not in topCameras
 
-    def isSwitchingToFreeCameraNeeded(self):
+    def isSwitchingToFreeFarCameraNeeded(self):
         cameraManager = self.getCameraManager()
         if not cameraManager:
             _logger.warning('[PM3.0] CameraManager is not found')
             return
-        return not cameraManager.getCurrentCameraName() == CameraNameTemplates.FREE.format(self.__operationID)
+        return not cameraManager.getCurrentCameraName() == CameraNameTemplates.FREE_FAR.format(self.__operationID)
 
     def __activateVehicleGO(self):
         if self.__vehicleGO:
@@ -209,7 +213,6 @@ class AssemblingManager(object):
                 self.__cameraSwitchingCallback = callback
             currentCameraName = cameraManager.getCurrentCameraName()
             if currentCameraName == cameraName:
-                cameraManager.resetCameraTarget(CAMERA_IMMEDIATE_TRANSITION_DURATION)
                 self.__onCameraSwitched(None)
             else:
                 freeCameraName = CameraNameTemplates.FREE.format(self.__operationID)
@@ -228,8 +231,7 @@ class AssemblingManager(object):
         vehicleStagesComponent = None
         if not manager:
             _logger.warning('[PM3.0] HangarOperationsManager is not found')
-            return (
-             vehicleGO, vehicleStagesComponent)
+            return (vehicleGO, vehicleStagesComponent)
         else:
             if operationID == OperationIDs.OPERATION_FIRST:
                 vehicleGO, vehicleStagesComponent = manager.vehicleForOperation8, manager.stagesComponentForOperation8
@@ -310,7 +312,7 @@ class AssemblingManager(object):
     def __activateStageFade(self, stageFade):
         sequence = stageFade.findComponentByType(Sequence)
         if sequence:
-            self.__hangarOperationsManager.addTimer(('assemblingAnimation_{}').format(self.__stageNumberForAssembling), sequence.duration, self.__onAnimationFinished)
+            self.__hangarOperationsManager.addTimer('assemblingAnimation_{}'.format(self.__stageNumberForAssembling), sequence.duration, self.__onAnimationFinished)
             soundEvent = SoundsKeys.PLAY_ANIMATION_EVENT % (self.__operationID, self.__stageNumberForAssembling)
             SoundGroups.g_instance.playSound2D(soundEvent)
             stageFade.activate()
@@ -321,7 +323,7 @@ class AssemblingManager(object):
             self.__stageFade.deactivate()
             self.__stageFade = None
         else:
-            _logger.warning('[PM3.0] GO for %s is not found or invalid', ('stage_{}_fade').format(self.__stageNumberForAssembling))
+            _logger.warning('[PM3.0] GO for %s is not found or invalid', 'stage_{}_fade'.format(self.__stageNumberForAssembling))
         return
 
     def __onAnimationFinished(self):
@@ -345,7 +347,9 @@ class AssemblingManager(object):
         if args is None:
             return
         else:
-            ctx = {'dx': args.get('dx'), 'dy': args.get('dy'), 'dz': args.get('dz')}
+            ctx = {'dx': args.get('dx'),
+             'dy': args.get('dy'),
+             'dz': args.get('dz')}
             g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.LOBBY_VIEW_MOUSE_MOVE, ctx=ctx), EVENT_BUS_SCOPE.GLOBAL)
             return
 

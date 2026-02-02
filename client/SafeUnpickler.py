@@ -1,11 +1,19 @@
-import sys, cPickle, StringIO
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/SafeUnpickler.py
+import sys
+import cPickle
+import StringIO
 
 class SafeUnpickler(object):
-    PICKLE_SAFE = {'__builtin__': set(['object', 'set', 'frozenset', 'list', 'tuple']), 
-       'datetime': set(['datetime']), 
-       '_BWp': set(['Array', 'FixedDict']), 
-       'Math': set(['Vector2', 'Vector3']), 
-       'items.components.shared_components': None}
+    PICKLE_SAFE = {'__builtin__': set(['object',
+                     'set',
+                     'frozenset',
+                     'list',
+                     'tuple']),
+     'datetime': set(['datetime']),
+     '_BWp': set(['Array', 'FixedDict']),
+     'Math': set(['Vector2', 'Vector3']),
+     'items.components.shared_components': None}
 
     @classmethod
     def find_class(cls, module, name):

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/common/ammunition_panel/ammunition_groups_controller.py
 from collections import namedtuple
 from post_progression_common import TankSetupGroupsId
 from gui.impl.gen.view_models.views.lobby.tank_setup.common.ammunition_items_group import AmmunitionItemsGroup
@@ -6,13 +8,9 @@ from gui.impl.gen.view_models.views.lobby.tank_setup.common.ammunition_panel_con
 from gui.impl.gen.view_models.views.lobby.tank_setup.tank_setup_constants import TankSetupConstants
 from gui.impl.common.ammunition_panel.ammunition_blocks_controller import AmmunitionBlocksController
 GroupData = namedtuple('GroupData', 'groupID sections')
-GROUPS_MAP = {AmmunitionPanelConstants.OPTIONAL_DEVICES_AND_BOOSTERS: TankSetupGroupsId.OPTIONAL_DEVICES_AND_BOOSTERS, 
-   AmmunitionPanelConstants.EQUIPMENT_AND_SHELLS: TankSetupGroupsId.EQUIPMENT_AND_SHELLS}
-RANDOM_GROUPS = (
- GroupData(AmmunitionPanelConstants.OPTIONAL_DEVICES_AND_BOOSTERS, (
-  TankSetupConstants.OPT_DEVICES, TankSetupConstants.BATTLE_BOOSTERS)),
- GroupData(AmmunitionPanelConstants.EQUIPMENT_AND_SHELLS, (
-  TankSetupConstants.SHELLS, TankSetupConstants.CONSUMABLES)))
+GROUPS_MAP = {AmmunitionPanelConstants.OPTIONAL_DEVICES_AND_BOOSTERS: TankSetupGroupsId.OPTIONAL_DEVICES_AND_BOOSTERS,
+ AmmunitionPanelConstants.EQUIPMENT_AND_SHELLS: TankSetupGroupsId.EQUIPMENT_AND_SHELLS}
+RANDOM_GROUPS = (GroupData(AmmunitionPanelConstants.OPTIONAL_DEVICES_AND_BOOSTERS, (TankSetupConstants.OPT_DEVICES, TankSetupConstants.BATTLE_BOOSTERS)), GroupData(AmmunitionPanelConstants.EQUIPMENT_AND_SHELLS, (TankSetupConstants.SHELLS, TankSetupConstants.CONSUMABLES)))
 
 class AmmunitionGroupsController(object):
     __slots__ = ('_vehicle', '_controller', '_autoCreating')
@@ -89,7 +87,7 @@ class AmmunitionGroupsController(object):
             if groupID == group.groupID:
                 return group.sections
 
-        return
+        return None
 
     def getCurrentSection(self):
         return self._controller.getCurrentSection()
@@ -140,15 +138,13 @@ class AmmunitionGroupsController(object):
         hudGroupID = groupSettings.groupID
         if hudGroupID == AmmunitionPanelConstants.NO_GROUP or self._vehicle is None:
             return False
-        groupID = GROUPS_MAP.get(hudGroupID, None)
-        return groupID is not None and self._vehicle.isSetupSwitchActive(groupID)
+        else:
+            groupID = GROUPS_MAP.get(hudGroupID, None)
+            return groupID is not None and self._vehicle.isSetupSwitchActive(groupID)
 
     def _isPrebattleSwitchDisabled(self, groupSettings):
         groupID = GROUPS_MAP.get(groupSettings.groupID)
-        if groupID is None:
-            return False
-        else:
-            return self._vehicle.postProgression.isPrebattleSwitchDisabled(groupID)
+        return False if groupID is None else self._vehicle.postProgression.isPrebattleSwitchDisabled(groupID)
 
     def _getGroups(self):
         return []

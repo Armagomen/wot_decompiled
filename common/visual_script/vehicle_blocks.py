@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/visual_script/vehicle_blocks.py
 from block import Block, Meta
 from constants import NULL_ENTITY_ID
 from slot_types import SLOT_TYPE
@@ -8,30 +10,30 @@ class VehicleMeta(Meta):
 
     @classmethod
     def blockColor(cls):
-        return 16738047
+        pass
 
     @classmethod
     def blockCategory(cls):
-        return 'Vehicle'
+        pass
 
     @classmethod
     def blockIcon(cls):
-        return ':vse/blocks/tank'
+        pass
 
 
 class VehicleEventsMeta(Meta):
 
     @classmethod
     def blockColor(cls):
-        return 16738047
+        pass
 
     @classmethod
     def blockCategory(cls):
-        return 'Vehicle'
+        pass
 
     @classmethod
     def blockIcon(cls):
-        return ':vse/blocks/arena_event'
+        pass
 
 
 class GetVehicleId(Block, VehicleMeta):

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/exchange/exchange_gold_window.py
 import logging
 from gui.shared.utils.decorators import adisp_process
 from exchange.personal_discounts_constants import EXCHANGE_RATE_GOLD_NAME

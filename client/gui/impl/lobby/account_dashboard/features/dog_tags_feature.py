@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/account_dashboard/features/dog_tags_feature.py
 import BigWorld
 from account_helpers.AccountSettings import AccountSettings, DOG_TAGS
 from constants import DOG_TAGS_CONFIG

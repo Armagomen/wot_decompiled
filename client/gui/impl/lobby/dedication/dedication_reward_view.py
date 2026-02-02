@@ -1,9 +1,11 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/dedication/dedication_reward_view.py
 from frameworks.wulf import ViewSettings, WindowFlags
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.dedication.dedication_reward_view_model import DedicationRewardViewModel
 from gui.impl.pub import ViewImpl
-from gui.impl.pub.lobby_window import LobbyWindow
+from gui.impl.pub.lobby_window import LobbyNotificationWindow
 from gui.server_events.bonuses import getNonQuestBonuses
 from gui.shared.missions.packers.bonus import packMissionsBonusModelAndTooltipData, getDefaultBonusPacker
 from gui.sounds.filters import switchHangarOverlaySoundFilter
@@ -69,12 +71,12 @@ class DedicationRewardView(ViewImpl):
 
     def _setAwards(self, bonuses, data):
         rewards = self._convertNonQuestBonuses(bonuses)
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setLevel(str(data.get('reason', '')))
             packMissionsBonusModelAndTooltipData(rewards, getDefaultBonusPacker(), tx.getMainRewards(), tooltipData=self.__tooltipItems)
 
 
-class DedicationRewardWindow(LobbyWindow):
+class DedicationRewardWindow(LobbyNotificationWindow):
     __slots__ = ()
 
     def __init__(self, bonuses, data, closeCallback):

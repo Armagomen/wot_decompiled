@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/inhangar/restore_vehicles_tab.py
 from gui import DialogsInterface
 from gui.Scaleform.daapi.view.dialogs.ExchangeDialogMeta import RestoreExchangeCreditsMeta
 from gui.Scaleform.daapi.view.lobby.storage.inhangar import StorageCarouselDataProvider, StorageCarouselFilter
@@ -45,14 +47,14 @@ class _RestoreVehiclesDataProvider(StorageCarouselDataProvider):
         restorePrice = ItemPrice(item.restorePrice, item.restorePrice)
         enoughCredits, _ = enoughCreditsForRestore(restoreCreditsPrice, self._itemsCache)
         restoreAvailable, timerText, description, timerIcon = getVehicleRestoreInfo(item)
-        vo.update({'price': getItemPricesVO(restorePrice)[0], 
-           'isMoneyEnough': enoughCredits, 
-           'enabled': enoughCredits and restoreAvailable, 
-           'description': description, 
-           'timerText': timerText, 
-           'timerIcon': timerIcon, 
-           'contextMenuId': CONTEXT_MENU_HANDLER_TYPE.STORAGE_VEHICLES_RESTORE_ITEM, 
-           'sellButtonLabel': backport.text(R.strings.storage.buttonLabel.restore())})
+        vo.update({'price': getItemPricesVO(restorePrice)[0],
+         'isMoneyEnough': enoughCredits,
+         'enabled': enoughCredits and restoreAvailable,
+         'description': description,
+         'timerText': timerText,
+         'timerIcon': timerIcon,
+         'contextMenuId': CONTEXT_MENU_HANDLER_TYPE.STORAGE_VEHICLES_RESTORE_ITEM,
+         'sellButtonLabel': backport.text(R.strings.storage.buttonLabel.restore())})
         return vo
 
 
@@ -88,10 +90,7 @@ class RestoreVehiclesTabView(RestoreVehiclesTabViewMeta):
         return _RestoreVehiclesDataProvider(_RestoreStorageCarouselFilter(), self._itemsCache)
 
     def _onCacheResync(self, reason, diff):
-        forceUpdateReasons = (
-         CACHE_SYNC_REASON.SHOP_RESYNC,
-         CACHE_SYNC_REASON.DOSSIER_RESYNC,
-         CACHE_SYNC_REASON.CLIENT_UPDATE)
+        forceUpdateReasons = (CACHE_SYNC_REASON.SHOP_RESYNC, CACHE_SYNC_REASON.DOSSIER_RESYNC, CACHE_SYNC_REASON.CLIENT_UPDATE)
         if reason in forceUpdateReasons:
             self.__updateVehicles()
         elif GUI_ITEM_TYPE.VEHICLE in diff:

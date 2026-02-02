@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/skeletons/gui/impl.py
 import typing
 from skeletons.gui.game_control import IGameController
 if typing.TYPE_CHECKING:
@@ -45,7 +47,6 @@ class IGuiLoader(object):
 
 
 class INotificationWindowController(IGameController):
-    __slots__ = ('onPostponedQueueUpdated', )
     if typing.TYPE_CHECKING:
         onPostponedQueueUpdated = None
 

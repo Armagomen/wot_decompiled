@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/gui/Scaleform/view/lobby/ConnectToSecureChannelWindow.py
 from gui.Scaleform.locale.MESSENGER import MESSENGER
 from helpers import i18n
 from messenger.gui.Scaleform.meta.ConnectToSecureChannelWindowMeta import ConnectToSecureChannelWindowMeta
@@ -13,7 +15,7 @@ class ConnectToSecureChannelWindow(ConnectToSecureChannelWindowMeta):
 
     @proto_getter(PROTO_TYPE.MIGRATION)
     def proto(self):
-        return
+        return None
 
     def onWindowClose(self):
         self.destroy()

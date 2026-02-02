@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/gifts/gifts_common.py
 from constants import IS_DEVELOPMENT
 from soft_exception import SoftException
 UNKNOWN_SENDER_ID = 0
@@ -27,10 +29,8 @@ class GiftStatus(object):
     NEW = 1
     AVAILABLE = 2
     OPENED = 3
-    ACTIVE = (
-     NEW, AVAILABLE)
-    ALL = (
-     NEW, AVAILABLE, OPENED)
+    ACTIVE = (NEW, AVAILABLE)
+    ALL = (NEW, AVAILABLE, OPENED)
 
 
 class Gift(object):
@@ -62,8 +62,7 @@ class Gift(object):
         self._status = value
 
     def toOpenExtra(self):
-        return (
-         self._senderID, self._meta)
+        return (self._senderID, self._meta)
 
     def __str__(self):
-        return ('Gift:[giftID: {}, senderID: {}, giftItemID: {}, meta: {}, status: {}]').format(self._giftID, self._senderID, self._giftItemID, self._meta, self._status)
+        return 'Gift:[giftID: {}, senderID: {}, giftItemID: {}, meta: {}, status: {}]'.format(self._giftID, self._senderID, self._giftItemID, self._meta, self._status)

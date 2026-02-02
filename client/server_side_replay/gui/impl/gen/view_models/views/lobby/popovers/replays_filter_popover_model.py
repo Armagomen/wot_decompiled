@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: server_side_replay/scripts/client/server_side_replay/gui/impl/gen/view_models/views/lobby/popovers/replays_filter_popover_model.py
 from enum import Enum, IntEnum
 from frameworks.wulf import Array, ViewModel
 from server_side_replay.gui.impl.gen.view_models.views.lobby.filter_toggle_group_model import FilterToggleGroupModel
@@ -14,8 +16,7 @@ class Checkboxes(IntEnum):
 
 
 class ReplaysFilterPopoverModel(ViewModel):
-    __slots__ = ('onCheckboxSelect', 'onLastDaysOptionSelect', 'onUpdateFilter', 'onSelectVehicle',
-                 'onResetFilter', 'onApplyFilter', 'onSortVehiclesByColumn')
+    __slots__ = ('onCheckboxSelect', 'onLastDaysOptionSelect', 'onUpdateFilter', 'onSelectVehicle', 'onResetFilter', 'onApplyFilter', 'onSortVehiclesByColumn')
 
     def __init__(self, properties=8, commands=7):
         super(ReplaysFilterPopoverModel, self).__init__(properties=properties, commands=commands)

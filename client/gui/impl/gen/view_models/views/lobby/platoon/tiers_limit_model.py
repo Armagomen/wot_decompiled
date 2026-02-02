@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/platoon/tiers_limit_model.py
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.views.lobby.platoon.button_model import ButtonModel
 from gui.impl.gen.view_models.views.lobby.platoon.show_settings_button_model import ShowSettingsButtonModel

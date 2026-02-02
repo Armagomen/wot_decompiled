@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_compare/cmp_view.py
 from __future__ import absolute_import
 from future.builtins import range
 from gui import SystemMessages
@@ -75,8 +77,8 @@ class VehicleCompareView(LobbySubView, VehicleCompareViewMeta):
 
     def onParamDeltaRequested(self, index, paramID):
         deltas = self.__paramsCache.getParametersDelta(int(index), paramID)
-        self.as_setParamsDeltaS({'paramID': paramID, 
-           'deltas': deltas})
+        self.as_setParamsDeltaS({'paramID': paramID,
+         'deltas': deltas})
         self.__updateDifferenceAttention()
 
     def onBackClick(self):
@@ -131,8 +133,7 @@ class VehicleCompareView(LobbySubView, VehicleCompareViewMeta):
     def __updateDifferenceAttention(self):
         vehiclesCount = self.comparisonBasket.getVehiclesCount()
         if vehiclesCount > 1 and len(set(self.comparisonBasket.getVehiclesCDs())) > 1:
-            comparisonDataIter = self.comparisonBasket.getVehiclesPropertiesIter(lambda vehCmpData: (
-             vehCmpData.getConfigurationType(), vehCmpData.getCrewData()))
+            comparisonDataIter = self.comparisonBasket.getVehiclesPropertiesIter(lambda vehCmpData: (vehCmpData.getConfigurationType(), vehCmpData.getCrewData()))
             prevModuleType, prevCrewData = next(comparisonDataIter)
             for moduleType, crewData in comparisonDataIter:
                 if prevModuleType != moduleType or prevCrewData != crewData:
@@ -161,7 +162,7 @@ class VehiclesDataProvider(ListDAAPIDataProvider, IVehCompareView):
         return self.__list
 
     def emptyItem(self):
-        return
+        return None
 
     def buildList(self, *args):
         self.__list = args[0] if args else []

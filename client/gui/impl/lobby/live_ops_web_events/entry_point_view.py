@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/live_ops_web_events/entry_point_view.py
 import Event
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.Scaleform.daapi.view.meta.LiveOpsWebEventsEntryPointInjectMeta import LiveOpsWebEventsEntryPointInjectMeta
@@ -10,9 +12,9 @@ from gui.impl.pub import ViewImpl
 from helpers import dependency
 from shared_utils import nextTick
 from skeletons.gui.game_control import ILiveOpsWebEventsController
-EVENT_STATE_TO_UI_STATE_MAPPING = {EventState.PRE_EVENT: State.PRE_EVENT, 
-   EventState.EVENT_ACTIVE: State.EVENT_ACTIVE, 
-   EventState.POST_EVENT: State.POST_EVENT}
+EVENT_STATE_TO_UI_STATE_MAPPING = {EventState.PRE_EVENT: State.PRE_EVENT,
+ EventState.EVENT_ACTIVE: State.EVENT_ACTIVE,
+ EventState.POST_EVENT: State.POST_EVENT}
 
 class LiveOpsWebEventsEntryPointComponent(LiveOpsWebEventsEntryPointInjectMeta):
 
@@ -57,13 +59,7 @@ class LiveOpsWebEventsEntryPointView(ViewImpl):
         super(LiveOpsWebEventsEntryPointView, self).createToolTipContent(event, contentID)
 
     def _getEvents(self):
-        return (
-         (
-          self.__liveOpsWebEventsController.onSettingsChanged, self.__onSettingsChanged),
-         (
-          self.__liveOpsWebEventsController.onEventStateChanged, self.__updateViewModel),
-         (
-          self.viewModel.onClick, self.__onClick))
+        return ((self.__liveOpsWebEventsController.onSettingsChanged, self.__onSettingsChanged), (self.__liveOpsWebEventsController.onEventStateChanged, self.__updateViewModel), (self.viewModel.onClick, self.__onClick))
 
     def _onLoading(self, *args, **kwargs):
         super(LiveOpsWebEventsEntryPointView, self)._onLoading(*args, **kwargs)
@@ -75,7 +71,7 @@ class LiveOpsWebEventsEntryPointView(ViewImpl):
             isFirstEntry = self.__liveOpsWebEventsController.getIsFirstEventEntry()
             state = self.__liveOpsWebEventsController.eventState
             previousState = self.__liveOpsWebEventsController.previousEventState
-            with self.viewModel.transaction() as (tx):
+            with self.viewModel.transaction() as tx:
                 tx.setState(EVENT_STATE_TO_UI_STATE_MAPPING[state])
                 tx.setIsFirstEntry(isFirstEntry)
                 tx.setIsVisited(not self.__liveOpsWebEventsController.getEventTabVisited())

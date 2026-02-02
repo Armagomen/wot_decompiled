@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/missions/regular/missions_views.py
 from functools import partial
 import BigWorld
 from adisp import adisp_process
@@ -69,14 +71,14 @@ class MissionsGroupedView(_GroupedMissionsView):
 
     @staticmethod
     def _getDummy():
-        return {'iconSource': RES_ICONS.MAPS_ICONS_LIBRARY_ALERTBIGICON, 
-           'htmlText': text_styles.main(_ms(QUESTS.MISSIONS_NOTASKSMARATHON_DUMMY_TEXT)), 
-           'alignCenter': False, 
-           'btnVisible': True, 
-           'btnLabel': '', 
-           'btnTooltip': '', 
-           'btnEvent': 'OpenCategoriesEvent', 
-           'btnLinkage': BUTTON_LINKAGES.BUTTON_LINK}
+        return {'iconSource': RES_ICONS.MAPS_ICONS_LIBRARY_ALERTBIGICON,
+         'htmlText': text_styles.main(_ms(QUESTS.MISSIONS_NOTASKSMARATHON_DUMMY_TEXT)),
+         'alignCenter': False,
+         'btnVisible': True,
+         'btnLabel': '',
+         'btnTooltip': '',
+         'btnEvent': 'OpenCategoriesEvent',
+         'btnLinkage': BUTTON_LINKAGES.BUTTON_LINK}
 
     def _getViewQuestFilter(self):
         return lambda q: isMarathon(q.getGroupID())
@@ -138,8 +140,7 @@ class MissionsMarathonView(MissionsMarathonViewMeta):
         if alias == VIEW_ALIAS.BROWSER and self._marathonEvent:
             if self.__browserID is None:
                 url = yield self._marathonEvent.getUrl()
-                browserID = yield self._browserCtrl.load(url=url, useBrowserWindow=False, browserID=self.__browserID, browserSize=(
-                 self._width, self._height))
+                browserID = yield self._browserCtrl.load(url=url, useBrowserWindow=False, browserID=self.__browserID, browserSize=(self._width, self._height))
                 self.__browserID = browserID
                 viewPy.init(browserID, self._marathonEvent.createMarathonWebHandlers(), alias=alias)
                 self.__browserView = viewPy
@@ -206,8 +207,9 @@ class MissionsEventBoardsView(MissionsEventBoardsViewMeta):
 
     @checkEventExist
     def orderClick(self, eventID):
-        ctx = {'eventID': eventID, 'title': _ms(EVENT_BOARDS.ORDERS_TITLE), 
-           'url': self.__eventsData.getEvent(eventID).getManual()}
+        ctx = {'eventID': eventID,
+         'title': _ms(EVENT_BOARDS.ORDERS_TITLE),
+         'url': self.__eventsData.getEvent(eventID).getManual()}
         self.__openDetailsContainer(EVENTBOARDS_ALIASES.EVENTBOARDS_DETAILS_BROWSER_VIEW, ctx)
 
     @checkEventExist
@@ -230,8 +232,7 @@ class MissionsEventBoardsView(MissionsEventBoardsViewMeta):
         reloginCtrl = dependency.instance(IReloginController)
         success = yield DialogsInterface.showI18nConfirmDialog('changePeriphery')
         if success:
-            reloginCtrl.doRelogin(int(serverID), extraChainSteps=(
-             actions.OnLobbyInitedAction(onInited=doJoin),))
+            reloginCtrl.doRelogin(int(serverID), extraChainSteps=(actions.OnLobbyInitedAction(onInited=doJoin),))
 
     @checkEventExist
     @adisp_process
@@ -303,11 +304,11 @@ class MissionsEventBoardsView(MissionsEventBoardsViewMeta):
 
     @checkEventExist
     def __onFilterApply(self, eventID, leaderboardsID):
-        g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.LOBBY_EVENT_BOARDS_TABLE), ctx={'eventID': eventID, 'leaderboardID': int(leaderboardsID)}), scope=EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.LOBBY_EVENT_BOARDS_TABLE), ctx={'eventID': eventID,
+         'leaderboardID': int(leaderboardsID)}), scope=EVENT_BUS_SCOPE.LOBBY)
 
     def __onViewLoaded(self, view, *args, **kwargs):
-        if view.alias in (EVENTBOARDS_ALIASES.RESULT_FILTER_POPOVER_ALIAS,
-         EVENTBOARDS_ALIASES.RESULT_FILTER_POPOVER_VEHICLES_ALIAS):
+        if view.alias in (EVENTBOARDS_ALIASES.RESULT_FILTER_POPOVER_ALIAS, EVENTBOARDS_ALIASES.RESULT_FILTER_POPOVER_VEHICLES_ALIAS):
             if view.caller == 'missions':
                 eventID = view.eventID
                 eventData = self.__eventsData.getEvent(eventID)
@@ -368,9 +369,7 @@ class MissionsCategoriesView(_GroupedMissionsView):
         return RES_ICONS.MAPS_ICONS_MISSIONS_BACKGROUNDS_CATEGORIES
 
     def _getViewQuestFilter(self):
-        if self.__showDQInMissionsTab:
-            return self.getViewQuestFilterIncludingDailyQuests()
-        return self.getViewQuestFilter()
+        return self.getViewQuestFilterIncludingDailyQuests() if self.__showDQInMissionsTab else self.getViewQuestFilter()
 
     def __onServerSettingsChange(self, diff):
         if PremiumConfigs.PREM_QUESTS not in diff:

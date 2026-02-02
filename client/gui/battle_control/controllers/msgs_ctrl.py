@@ -1,6 +1,10 @@
-import weakref, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/msgs_ctrl.py
+import weakref
+import BigWorld
 from helpers import dependency
-import BattleReplay, Event
+import BattleReplay
+import Event
 from ReplayEvents import g_replayEvents
 from constants import ATTACK_REASON_INDICES as _AR_INDICES
 from gui.battle_control.arena_info.arena_vos import EPIC_BATTLE_KEYS
@@ -17,41 +21,37 @@ class _ENTITY_TYPE(object):
     SUICIDE = 'suicide'
 
 
-_ATTACK_REASON_CODE = {_AR_INDICES['shot']: 'DEATH_FROM_SHOT', 
-   _AR_INDICES['fire']: 'DEATH_FROM_SHOT', 
-   _AR_INDICES['ramming']: 'DEATH_FROM_RAMMING', 
-   _AR_INDICES['world_collision']: 'DEATH_FROM_WORLD_COLLISION', 
-   _AR_INDICES['death_zone']: 'DEATH_FROM_DEATH_ZONE', 
-   _AR_INDICES['static_deathzone']: 'DEATH_FROM_STATIC_DEATH_ZONE', 
-   _AR_INDICES['minefield_zone']: 'DEATH_FROM_MINEFIELD_ZONE', 
-   _AR_INDICES['drowning']: 'DEATH_FROM_DROWNING', 
-   _AR_INDICES['overturn']: 'DEATH_FROM_OVERTURN', 
-   _AR_INDICES['artillery_protection']: 'DEATH_FROM_ARTILLERY_PROTECTION', 
-   _AR_INDICES['artillery_sector']: 'DEATH_FROM_SECTOR_PROTECTION', 
-   _AR_INDICES['bombers']: 'DEATH_FROM_SECTOR_BOMBERS', 
-   _AR_INDICES['recovery']: 'DEATH_FROM_RECOVERY', 
-   _AR_INDICES['artillery_eq']: 'DEATH_FROM_SHOT', 
-   _AR_INDICES['bomber_eq']: 'DEATH_FROM_SHOT', 
-   _AR_INDICES['minefield_eq']: 'DEATH_FROM_SHOT', 
-   _AR_INDICES['spawned_bot_explosion']: 'DEATH_FROM_SHOT', 
-   _AR_INDICES['fort_artillery_eq']: 'DEATH_FROM_SHOT', 
-   _AR_INDICES['thunderStrike']: 'DEATH_FROM_SHOT', 
-   _AR_INDICES['corrodingShot']: 'DEATH_FROM_SHOT', 
-   _AR_INDICES['fireCircle']: 'DEATH_FROM_SHOT', 
-   _AR_INDICES['clingBrander']: 'DEATH_FROM_SHOT', 
-   _AR_INDICES['battleship']: 'DEATH_FROM_SHOT', 
-   _AR_INDICES['destroyer']: 'DEATH_FROM_SHOT'}
+_ATTACK_REASON_CODE = {_AR_INDICES['shot']: 'DEATH_FROM_SHOT',
+ _AR_INDICES['fire']: 'DEATH_FROM_SHOT',
+ _AR_INDICES['ramming']: 'DEATH_FROM_RAMMING',
+ _AR_INDICES['world_collision']: 'DEATH_FROM_WORLD_COLLISION',
+ _AR_INDICES['death_zone']: 'DEATH_FROM_DEATH_ZONE',
+ _AR_INDICES['static_deathzone']: 'DEATH_FROM_STATIC_DEATH_ZONE',
+ _AR_INDICES['minefield_zone']: 'DEATH_FROM_MINEFIELD_ZONE',
+ _AR_INDICES['drowning']: 'DEATH_FROM_DROWNING',
+ _AR_INDICES['overturn']: 'DEATH_FROM_OVERTURN',
+ _AR_INDICES['artillery_protection']: 'DEATH_FROM_ARTILLERY_PROTECTION',
+ _AR_INDICES['artillery_sector']: 'DEATH_FROM_SECTOR_PROTECTION',
+ _AR_INDICES['bombers']: 'DEATH_FROM_SECTOR_BOMBERS',
+ _AR_INDICES['recovery']: 'DEATH_FROM_RECOVERY',
+ _AR_INDICES['artillery_eq']: 'DEATH_FROM_SHOT',
+ _AR_INDICES['bomber_eq']: 'DEATH_FROM_SHOT',
+ _AR_INDICES['minefield_eq']: 'DEATH_FROM_SHOT',
+ _AR_INDICES['spawned_bot_explosion']: 'DEATH_FROM_SHOT',
+ _AR_INDICES['fort_artillery_eq']: 'DEATH_FROM_SHOT',
+ _AR_INDICES['thunderStrike']: 'DEATH_FROM_SHOT',
+ _AR_INDICES['corrodingShot']: 'DEATH_FROM_SHOT',
+ _AR_INDICES['fireCircle']: 'DEATH_FROM_SHOT',
+ _AR_INDICES['clingBrander']: 'DEATH_FROM_SHOT',
+ _AR_INDICES['battleship']: 'DEATH_FROM_SHOT',
+ _AR_INDICES['destroyer']: 'DEATH_FROM_SHOT'}
 _PLAYER_KILL_ENEMY_SOUND = 'enemy_killed_by_player'
 _PLAYER_KILL_ALLY_SOUND = 'ally_killed_by_player'
 _ALLY_KILLED_SOUND = 'ally_killed_by_enemy'
 _ENEMY_KILLED_SOUND = 'enemy_killed_by_ally'
 
 class BattleMessagesController(IBattleController):
-    __slots__ = ('_battleCtx', '_arenaDP', '_arenaVisitor', '_eManager', '_buffer',
-                 '_isUIPopulated', 'onShowVehicleMessageByCode', 'onShowVehicleMessageByKey',
-                 'onShowVehicleErrorByKey', 'onShowPlayerMessageByCode', 'onShowPlayerMessageByKey',
-                 'onShowDestructibleEntityMessageByCode', '__weakref__', '__specEntityStringByCode',
-                 '_attackReasonCodes')
+    __slots__ = ('_battleCtx', '_arenaDP', '_arenaVisitor', '_eManager', '_buffer', '_isUIPopulated', 'onShowVehicleMessageByCode', 'onShowVehicleMessageByKey', 'onShowVehicleErrorByKey', 'onShowPlayerMessageByCode', 'onShowPlayerMessageByKey', 'onShowDestructibleEntityMessageByCode', '__weakref__', '__specEntityStringByCode', '_attackReasonCodes')
 
     def __init__(self, setup):
         self._battleCtx = weakref.proxy(setup.battleCtx)
@@ -107,9 +107,9 @@ class BattleMessagesController(IBattleController):
         isMyVehicle = targetID == playerVehicleID
         if isMyVehicle:
             return
+        elif targetID == attackerID and self._battleCtx.isObserver(targetID):
+            return
         else:
-            if targetID == attackerID and self._battleCtx.isObserver(targetID):
-                return
             if not avatar.isVehicleAlive:
                 if avatar.isObserver() and targetID == avatar.observedVehicleID:
                     return
@@ -137,9 +137,7 @@ class BattleMessagesController(IBattleController):
         return
 
     def showAllyHitMessage(self, vehicleID=None):
-        self.onShowPlayerMessageByKey('ALLY_HIT', {'entity': self._battleCtx.getPlayerFullName(vID=vehicleID)}, (
-         (
-          'entity', vehicleID),))
+        self.onShowPlayerMessageByKey('ALLY_HIT', {'entity': self._battleCtx.getPlayerFullName(vID=vehicleID)}, (('entity', vehicleID),))
 
     def _getAttackReasonCodes(self, reason):
         return self._attackReasonCodes.get(reason)
@@ -149,17 +147,12 @@ class BattleMessagesController(IBattleController):
             return _ENTITY_TYPE.SELF
         if self._battleCtx.isAlly(entityID):
             return _ENTITY_TYPE.ALLY
-        if self._battleCtx.isEnemy(entityID):
-            return _ENTITY_TYPE.ENEMY
-        return _ENTITY_TYPE.UNKNOWN
+        return _ENTITY_TYPE.ENEMY if self._battleCtx.isEnemy(entityID) else _ENTITY_TYPE.UNKNOWN
 
     def __getEntityString(self, avatar, entityID, code):
         func = self.__specEntityStringByCode.get(code)
         res = func(avatar, entityID, code) if func is not None else None
-        if res:
-            return res
-        else:
-            return self._getEntityType(avatar, entityID)
+        return res if res else self._getEntityType(avatar, entityID)
 
     def __getEntityStringDeathZone(self, avatar, entityID, code):
         observedVehicleID = BigWorld.player().getObservedVehicleID()
@@ -171,7 +164,7 @@ class BattleMessagesController(IBattleController):
                 return _ENTITY_TYPE.ALLY
             return _ENTITY_TYPE.ENEMY
         else:
-            return
+            return None
 
     def __getDamageInfo(self, avatar, code, entityID, targetID):
         target = self.__getEntityString(avatar, targetID, code)
@@ -200,7 +193,10 @@ class BattleMessagesController(IBattleController):
             soundExt = _ALLY_KILLED_SOUND
         elif target == _ENTITY_TYPE.ENEMY or target == _ENTITY_TYPE.SUICIDE and attacker == _ENTITY_TYPE.ENEMY:
             soundExt = _ENEMY_KILLED_SOUND
-        return (code, '%s_%s' % (attacker.upper(), target.upper()), sound, soundExt)
+        return (code,
+         '%s_%s' % (attacker.upper(), target.upper()),
+         sound,
+         soundExt)
 
     def __initSpecEntittyStringFuncsByCode(self):
         self.__specEntityStringByCode['DEATH_FROM_DEATH_ZONE'] = self.__getEntityStringDeathZone
@@ -323,10 +319,9 @@ def _getSpawnedBotMsgData(vehicleID, battleSessionProvider=None):
     if isSpawnedBot(vTypeInfoVO.tags):
         botMasterPlayer = ctx.getPlayerFullName(vehicleID, showVehShortName=False)
         playerInfo = '%s (%s)' % (botMasterPlayer, vTypeInfoVO.shortNameWithPrefix)
-        return (
-         'ALLY_HIT', {'entity': playerInfo}, (('entity', vehicleID),))
+        return ('ALLY_HIT', {'entity': playerInfo}, (('entity', vehicleID),))
     else:
-        return
+        return None
 
 
 class _BRBattleMessagesMixin(object):
@@ -337,9 +332,7 @@ class _BRBattleMessagesMixin(object):
             return _ENTITY_TYPE.SELF
         if self._battleCtx.isEnemy(entityID) or self._battleCtx.isAlly(entityID) and self._playerChangedTeam():
             return _ENTITY_TYPE.ENEMY
-        if self._battleCtx.isAlly(entityID):
-            return _ENTITY_TYPE.ALLY
-        return _ENTITY_TYPE.UNKNOWN
+        return _ENTITY_TYPE.ALLY if self._battleCtx.isAlly(entityID) else _ENTITY_TYPE.UNKNOWN
 
     def _playerChangedTeam(self):
         if 'observer' in BigWorld.player().vehicleTypeDescriptor.type.tags:

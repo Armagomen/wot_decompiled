@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/controls_helpers.py
 import typing
 from gui.impl import backport
 from gui.impl.gen import R
@@ -8,13 +10,7 @@ from helpers import dependency
 from skeletons.gui.game_control import IEasyTankEquipController, ILimitedUIController
 if typing.TYPE_CHECKING:
     from gui.vehicle_view_states import IVehicleViewState
-EasyTankEquipSetupData = typing.NamedTuple('EasyTankEquipSetupData', [
- (
-  'visible', bool),
- (
-  'enabled', bool),
- (
-  'tooltip', str)])
+EasyTankEquipSetupData = typing.NamedTuple('EasyTankEquipSetupData', [('visible', bool), ('enabled', bool), ('tooltip', str)])
 
 class IHangarControlsHelper(object):
     __slots__ = ()

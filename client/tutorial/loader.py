@@ -1,4 +1,10 @@
-import logging, weakref, typing, BigWorld, account_helpers
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/tutorial/loader.py
+import logging
+import weakref
+import typing
+import BigWorld
+import account_helpers
 from CurrentVehicle import g_currentVehicle
 from skeletons.tutorial import ITutorialLoader
 from tutorial.gui.Scaleform.gui_impl import ScaleformGuiImpl
@@ -29,9 +35,7 @@ def _getGuiImplementations():
 
 
 class RunCtx(object):
-    __slots__ = ('cache', 'isFirstStart', 'databaseID', 'isAfterBattle', 'restart',
-                 'bonusCompleted', 'battlesCount', 'newbieBattlesCount', 'initialChapter',
-                 'globalFlags', 'canResolveChapterOnStart', 'byRequest')
+    __slots__ = ('cache', 'isFirstStart', 'databaseID', 'isAfterBattle', 'restart', 'bonusCompleted', 'battlesCount', 'newbieBattlesCount', 'initialChapter', 'globalFlags', 'canResolveChapterOnStart', 'byRequest')
 
     def __init__(self, cache, **kwargs):
         super(RunCtx, self).__init__()
@@ -50,7 +54,7 @@ class RunCtx(object):
         return
 
     def __repr__(self):
-        return ('RunCtx(databaseID={}, restart={}, first={}, battle={}, bonuses={}, battles={}, newbie={}, chapter={}, flags={} cache={})').format(self.databaseID, self.restart, self.isFirstStart, self.isAfterBattle, self.bonusCompleted, self.battlesCount, self.newbieBattlesCount, self.initialChapter, self.globalFlags, self.cache)
+        return 'RunCtx(databaseID={}, restart={}, first={}, battle={}, bonuses={}, battles={}, newbie={}, chapter={}, flags={} cache={})'.format(self.databaseID, self.restart, self.isFirstStart, self.isAfterBattle, self.bonusCompleted, self.battlesCount, self.newbieBattlesCount, self.initialChapter, self.globalFlags, self.cache)
 
 
 class TutorialLoader(ITutorialLoader):
@@ -211,7 +215,7 @@ class TutorialLoader(ITutorialLoader):
             if self.__doRun(settings, state):
                 return settings
 
-        return
+        return None
 
     def __doRun(self, settings, state):
         if not settings.enabled:
@@ -286,8 +290,7 @@ class TutorialLoader(ITutorialLoader):
         self.__doRestore()
 
     def __updateConditionalState(self, state):
-        chaptersList = ('goldTankmanCost', 'goldTankmanCostMultiplier', 'creditsTankmanCost',
-                        'creditsTankmanCostMultiplier')
+        chaptersList = ('goldTankmanCost', 'goldTankmanCostMultiplier', 'creditsTankmanCost', 'creditsTankmanCostMultiplier')
         if state['initialChapter'] in chaptersList:
             vehicle = g_currentVehicle.item
             everyone100 = True

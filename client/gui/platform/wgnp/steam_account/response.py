@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/platform/wgnp/steam_account/response.py
 from gui.platform.base.response import PlatformResponse
 
 class WGNPSteamEmailActionResponse(PlatformResponse):

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/personal_missions_30/tooltips/missions_category_tooltip.py
 import typing
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
@@ -24,7 +26,7 @@ class MissionsCategoryTooltip(ViewImpl):
 
     def _onLoading(self):
         minLevel, maxLevel = self.__eventsCache.getPersonalMissions().getVehicleLevelRestrictions(self.__operation.getID())
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             vm.setCategory(self.__category)
             vm.setOperationName(self.__operation.getShortUserName())
             vm.setMinLevel(minLevel)

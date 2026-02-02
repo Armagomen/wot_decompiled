@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/vehicle_compare/opt_device.py
 from gui.impl.lobby.tank_setup.array_providers.opt_device import SimpleOptDeviceProvider, DeluxeOptDeviceProvider, TrophyOptDeviceProvider, ModernisedOptDeviceProvider
 from gui.impl.lobby.tank_setup.configurations.opt_device import OptDeviceTabsController, OptDeviceTabs, OptDeviceSelectedFilters, getOptDeviceTabByItem
 from gui.impl.lobby.vehicle_compare.base_sub_view import CompareBaseSetupSubView
@@ -51,10 +53,10 @@ class _CompareModernisedOptDeviceProvider(ModernisedOptDeviceProvider):
 class _CompareOptDeviceTabsController(OptDeviceTabsController):
 
     def _getAllProviders(self):
-        return {OptDeviceTabs.SIMPLE: _CompareSimpleOptDeviceProvider, 
-           OptDeviceTabs.DELUXE: _CompareDeluxeOptDeviceProvider, 
-           OptDeviceTabs.TROPHY: _CompareTrophyOptDeviceProvider, 
-           OptDeviceTabs.MODERNIZED: _CompareModernisedOptDeviceProvider}
+        return {OptDeviceTabs.SIMPLE: _CompareSimpleOptDeviceProvider,
+         OptDeviceTabs.DELUXE: _CompareDeluxeOptDeviceProvider,
+         OptDeviceTabs.TROPHY: _CompareTrophyOptDeviceProvider,
+         OptDeviceTabs.MODERNIZED: _CompareModernisedOptDeviceProvider}
 
 
 class CompareOptDeviceSetupSubView(CompareBaseSetupSubView):

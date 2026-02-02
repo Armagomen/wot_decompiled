@@ -1,6 +1,11 @@
-import itertools, logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/items/readers/shared_readers.py
+import itertools
+import logging
+import typing
 from copy import deepcopy
-import ResMgr, Math
+import ResMgr
+import Math
 from constants import IS_CLIENT, IS_BOT, ITEM_DEFS_PATH, IS_EDITOR, DeviceRepairMode, IS_UE_EDITOR
 from items import _xml, getTypeInfoByName
 from items.components import component_constants
@@ -16,8 +21,7 @@ _HANGERS_PATH = ITEM_DEFS_PATH + '/customization/attachments/hangers.xml'
 _logger = logging.getLogger(__name__)
 
 def _readEmblemSlot(ctx, subsection, slotType):
-    descr = shared_components.EmblemSlot(_xml.readVector3(ctx, subsection, 'rayStart'), _xml.readVector3(ctx, subsection, 'rayEnd'), _xml.readVector3(ctx, subsection, 'rayUp'), _xml.readPositiveFloat(ctx, subsection, 'size'), subsection.readBool('hideIfDamaged', False), slotType, subsection.readBool('isMirrored', slotType in ('insignia',
-                                                                                                                                                                                                                                                                                                                                        'insigniaOnGun')), subsection.readBool('isUVProportional', True), _xml.readIntOrNone(ctx, subsection, 'emblemId'), _xml.readInt(ctx, subsection, 'slotId'), subsection.readBool('applyToFabric', True), _readCompatibleModels(subsection, ctx))
+    descr = shared_components.EmblemSlot(_xml.readVector3(ctx, subsection, 'rayStart'), _xml.readVector3(ctx, subsection, 'rayEnd'), _xml.readVector3(ctx, subsection, 'rayUp'), _xml.readPositiveFloat(ctx, subsection, 'size'), subsection.readBool('hideIfDamaged', False), slotType, subsection.readBool('isMirrored', slotType in ('insignia', 'insigniaOnGun')), subsection.readBool('isUVProportional', True), _xml.readIntOrNone(ctx, subsection, 'emblemId'), _xml.readInt(ctx, subsection, 'slotId'), subsection.readBool('applyToFabric', True), _readCompatibleModels(subsection, ctx))
     _verifySlotId(ctx, slotType, descr.slotId)
     return descr
 
@@ -29,7 +33,7 @@ def _readMiscSlot(ctx, subsection, slotType):
 
 
 def _readAttachmentSlot(ctx, subsection, slotType):
-    descr = shared_components.AttachmentSlotDescription(slotType=slotType, slotId=_xml.readInt(ctx, subsection, 'slotId'), position=_xml.readVector3(ctx, subsection, 'position', c11n_constants.DEFAULT_POSITION), rotation=_xml.readVector3(ctx, subsection, 'rotation', c11n_constants.DEFAULT_ROTATION), scale=_xml.readVector3(ctx, subsection, 'scale', c11n_constants.DEFAULT_SCALE), attachNode=_xml.readStringOrNone(ctx, subsection, 'attachNode'), hiddenForUser=_xml.readBool(ctx, subsection, 'hiddenForUser', False), applyType=_xml.readStringOrEmpty(ctx, subsection, 'applyType'), size=_xml.readStringOrEmpty(ctx, subsection, 'size'), hangerId=_xml.readNonNegativeInt(ctx, subsection, 'hangerId', 0), hangerRotation=_xml.readVector3(ctx, subsection, 'hangerRotation', Math.Vector3(0, 0, 0)))
+    descr = shared_components.AttachmentSlotDescription(slotType=slotType, slotId=_xml.readInt(ctx, subsection, 'slotId'), position=_xml.readVector3(ctx, subsection, 'position', c11n_constants.DEFAULT_POSITION), rotation=_xml.readVector3(ctx, subsection, 'rotation', c11n_constants.DEFAULT_ROTATION), scale=_xml.readVector3(ctx, subsection, 'scale', c11n_constants.DEFAULT_SCALE), attachNode=_xml.readStringOrNone(ctx, subsection, 'attachNode'), hiddenForUser=_xml.readBool(ctx, subsection, 'hiddenForUser', False), enableVisTunnel=_xml.readBool(ctx, subsection, 'enableVisTunnel', False), applyType=_xml.readStringOrEmpty(ctx, subsection, 'applyType'), size=_xml.readStringOrEmpty(ctx, subsection, 'size'), hangerId=_xml.readNonNegativeInt(ctx, subsection, 'hangerId', 0), hangerRotation=_xml.readVector3(ctx, subsection, 'hangerRotation', Math.Vector3(0, 0, 0)))
     _verifySlotId(ctx, slotType, descr.slotId)
     if subsection.has_key('compatibleModels'):
         descr.compatibleModels = _xml.readTupleOfStrings(ctx, subsection, 'compatibleModels')
@@ -112,10 +116,7 @@ def getAttachmentHangingEffect(applyType, rarity):
 
 
 def getCustomizationSlotIdRanges():
-    if IS_EDITOR:
-        return __getInitedSlotIdRanges()
-    else:
-        return
+    return __getInitedSlotIdRanges() if IS_EDITOR else None
 
 
 def _initCustomizationConstants():
@@ -147,9 +148,10 @@ def _initCustomizationConstants():
                 premountSize = _xml.readVector3(xmlCtx, item, 'premount_size')
                 mountSize = _xml.readVector3(xmlCtx, item, 'mount_size')
                 shift = _xml.readVector2(xmlCtx, item, 'shift')
-                __customizationConstants['attachment_slot_sizes'][typeName][sizeName] = {'size': size, 'premountSize': premountSize, 
-                   'mountSize': mountSize, 
-                   'shift': shift}
+                __customizationConstants['attachment_slot_sizes'][typeName][sizeName] = {'size': size,
+                 'premountSize': premountSize,
+                 'mountSize': mountSize,
+                 'shift': shift}
 
         __customizationConstants['attachment_hanging_effects'] = dict()
         attachmentSlotTypes = _xml.getSubsection(xmlCtx, section, 'attachment_hanging_effects')
@@ -176,7 +178,8 @@ def _initHangers():
             id = _xml.readInt(xmlCtx, item, 'id')
             modelName = _xml.readString(xmlCtx, item, 'modelName')
             crashModelName = _xml.readStringOrNone(xmlCtx, item, 'crashModelName')
-            hanger = {'modelName': modelName, 'crashModelName': crashModelName}
+            hanger = {'modelName': modelName,
+             'crashModelName': crashModelName}
             __hangers[id] = hanger
 
         return
@@ -221,9 +224,7 @@ def _verifyMatchingSlotSettings(xmlCtx, descr):
         if formFactorTag is None:
             _xml.raiseWrongXml(xmlCtx, 'tags', 'slot:%s with matching tag must have form factor tag!' % descr.slotId)
         if matchingTag != c11n_constants.ProjectionDecalMatchingTags.COVER:
-            directionTags = (c11n_constants.ProjectionDecalDirectionTags.LEFT,
-             c11n_constants.ProjectionDecalDirectionTags.RIGHT,
-             c11n_constants.ProjectionDecalDirectionTags.FRONT)
+            directionTags = (c11n_constants.ProjectionDecalDirectionTags.LEFT, c11n_constants.ProjectionDecalDirectionTags.RIGHT, c11n_constants.ProjectionDecalDirectionTags.FRONT)
             directionTag = findTag(lambda tag: tag in directionTags, descr.tags)
             if directionTag is None:
                 _xml.raiseWrongXml(xmlCtx, 'tags', 'slot:%s with matching tag must have direction tag!' % descr.slotId)
@@ -266,8 +267,8 @@ def readCustomizationSlots(xmlCtx, section, subsectionName):
     slotIDs = set()
     for sname, subsection in _xml.getChildren(xmlCtx, section, subsectionName):
         if sname != slot_tag_name:
-            _xml.raiseWrongXml(xmlCtx, ('customizationSlots/{}').format(sname), ('expected {}').format(slot_tag_name))
-        ctx = (xmlCtx, ('customizationSlots/{}').format(sname))
+            _xml.raiseWrongXml(xmlCtx, 'customizationSlots/{}'.format(sname), 'expected {}'.format(slot_tag_name))
+        ctx = (xmlCtx, 'customizationSlots/{}'.format(sname))
         slotType = _xml.readString(ctx, subsection, 'slotType')
         descr = None
         if slotType in component_constants.ALLOWED_EMBLEM_SLOTS:
@@ -286,27 +287,24 @@ def readCustomizationSlots(xmlCtx, section, subsectionName):
             descr = _readMiscSlot(ctx, subsection, slotType)
             anchors.append(descr)
         else:
-            _xml.raiseWrongXml(xmlCtx, ('customizationSlots/{}/{}').format(sname, slotType), ('expected value is {}').format(_ALLOWED_EMBLEM_SLOTS + _ALLOWED_SLOTS_ANCHORS + _ALLOWED_MISC_SLOTS + _ALLOWED_PROJECTION_DECALS_ANCHORS))
+            _xml.raiseWrongXml(xmlCtx, 'customizationSlots/{}/{}'.format(sname, slotType), 'expected value is {}'.format(_ALLOWED_EMBLEM_SLOTS + _ALLOWED_SLOTS_ANCHORS + _ALLOWED_MISC_SLOTS + _ALLOWED_PROJECTION_DECALS_ANCHORS))
         if descr is not None and descr.slotId not in slotIDs:
             slotIDs.add(descr.slotId)
-        else:
-            xmlContext, fileName = xmlCtx
-            while xmlContext is not None:
-                xmlContext, fileName = xmlContext
+        xmlContext, fileName = xmlCtx
+        while xmlContext is not None:
+            xmlContext, fileName = xmlContext
 
-            _logger.error('Repeated customization slot ID%s for %s', descr.slotId, fileName)
+        _logger.error('Repeated customization slot ID%s for %s', descr.slotId, fileName)
 
-    return (
-     tuple(slots), tuple(anchors))
+    return (tuple(slots), tuple(anchors))
 
 
 def readEmblemSlots(xmlCtx, section, subsectionName):
     slots = []
     for sname, subsection in _xml.getChildren(xmlCtx, section, subsectionName):
         if sname not in component_constants.ALLOWED_EMBLEM_SLOTS:
-            _xml.raiseWrongXml(xmlCtx, ('emblemSlots/{}').format(sname), ('expected {}').format(_ALLOWED_EMBLEM_SLOTS))
-        ctx = (
-         xmlCtx, ('emblemSlots/{}').format(sname))
+            _xml.raiseWrongXml(xmlCtx, 'emblemSlots/{}'.format(sname), 'expected {}'.format(_ALLOWED_EMBLEM_SLOTS))
+        ctx = (xmlCtx, 'emblemSlots/{}'.format(sname))
         descr = shared_components.EmblemSlot(_xml.readVector3(ctx, subsection, 'rayStart'), _xml.readVector3(ctx, subsection, 'rayEnd'), _xml.readVector3(ctx, subsection, 'rayUp'), _xml.readPositiveFloat(ctx, subsection, 'size'), subsection.readBool('hideIfDamaged', False), _ALLOWED_EMBLEM_SLOTS[_ALLOWED_EMBLEM_SLOTS.index(sname)], subsection.readBool('isMirrored', False), subsection.readBool('isUVProportional', True), _xml.readIntOrNone(ctx, subsection, 'emblemId'), _readCompatibleModels(subsection, ctx))
         slots.append(descr)
 
@@ -380,17 +378,15 @@ def _readRepairSpeedLimiter(xmlCtx, section):
     else:
         ctx, subsection = _xml.getSubSectionWithContext(xmlCtx, section, 'repairSpeedLimiter')
         repairSpeedModifier = _xml.readNonNegativeFloat(ctx, subsection, 'repairSpeedModifier')
-        return {'repairSpeedModifier': repairSpeedModifier, 
-           'speedToStartLimitedRepair': component_constants.KMH_TO_MS * _xml.readNonNegativeFloat(ctx, subsection, 'speedToStartLimitedRepair'), 
-           'speedToStopLimitedRepair': component_constants.KMH_TO_MS * _xml.readNonNegativeFloat(ctx, subsection, 'speedToStopLimitedRepair'), 
-           'repairMode': DeviceRepairMode.SLOWED if repairSpeedModifier > 0.0 else DeviceRepairMode.SUSPENDED}
+        return {'repairSpeedModifier': repairSpeedModifier,
+         'speedToStartLimitedRepair': component_constants.KMH_TO_MS * _xml.readNonNegativeFloat(ctx, subsection, 'speedToStartLimitedRepair'),
+         'speedToStopLimitedRepair': component_constants.KMH_TO_MS * _xml.readNonNegativeFloat(ctx, subsection, 'speedToStopLimitedRepair'),
+         'repairMode': DeviceRepairMode.SLOWED if repairSpeedModifier > 0.0 else DeviceRepairMode.SUSPENDED}
 
 
 def _refDefaultCamouflageAttribute(defaultCamo, attr):
     val = getattr(defaultCamo, attr)
-    if IS_EDITOR:
-        return deepcopy(val)
-    return val
+    return deepcopy(val) if IS_EDITOR else val
 
 
 def readCamouflage(xmlCtx, section, sectionName, default=None):
@@ -428,7 +424,7 @@ def readBuilder(xmlCtx, section, subsectionName, builderType):
         product = builderType(subsection)
         if product is not None:
             return product
-        _xml.raiseWrongXml(xmlCtx, subsectionName, ('Failed builder {0} loading from {1}').format(builderType, subsectionName))
+        _xml.raiseWrongXml(xmlCtx, subsectionName, 'Failed builder {0} loading from {1}'.format(builderType, subsectionName))
     else:
         _xml.raiseWrongSection(xmlCtx, subsectionName)
     return
@@ -442,7 +438,7 @@ def readBuilders(xmlCtx, section, subsectionName, builderType):
             if product is not None:
                 products.append(product)
             else:
-                _xml.raiseWrongXml(xmlCtx, subsectionName, ('Failed builder {0} loading from {1}').format(builderType, subsectionName))
+                _xml.raiseWrongXml(xmlCtx, subsectionName, 'Failed builder {0} loading from {1}'.format(builderType, subsectionName))
 
     if not products:
         _xml.raiseWrongSection(xmlCtx, subsectionName)
@@ -454,9 +450,7 @@ def readFloatPair(xmlCtx, section, subsectionName):
     count = len(values)
     if count < 1 or count > 2:
         _xml.raiseWrongXml(xmlCtx, subsectionName, 'One or two elements are expected')
-    if count == 1:
-        return (values[0], values[0])
-    return values
+    return (values[0], values[0]) if count == 1 else values
 
 
 def readPrefabsSets(section, prefabsKeys):
@@ -484,7 +478,7 @@ def readObjectSlots(xmlCtx, section):
     def readSlot(ctx, subsection):
         slotType = _xml.readString(ctx, subsection, 'type')
         if slotType not in component_constants.ObjectSlotType.ALL:
-            _xml.raiseWrongXml(ctx, 'type', ('Unsupported object slot type: {}').format(slotType))
+            _xml.raiseWrongXml(ctx, 'type', 'Unsupported object slot type: {}'.format(slotType))
         return shared_components.ObjectSlot(name=_xml.readString(ctx, subsection, 'name'), type=slotType, position=_xml.readVector3(ctx, subsection, 'position', component_constants.ZERO_VECTOR3), rotation=_xml.readVector3(ctx, subsection, 'rotation', component_constants.ZERO_VECTOR3))
 
     slotsCtx, slotsSection = _xml.getSubSectionWithContext(xmlCtx, section, 'objectSlots', throwIfMissing=False)

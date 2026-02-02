@@ -1,4 +1,8 @@
-import logging, adisp, nations
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/web/web_client_api/shop/stats.py
+import logging
+import adisp
+import nations
 from wg_async import wg_async, wg_await
 from constants import PREM_TYPE_TO_ENTITLEMENT
 from gui.shared.money import Currency
@@ -29,8 +33,8 @@ class BalanceWebApiMixin(object):
         else:
             premiumExpireISOTime = None
         response = formatBalance(stats)
-        response.update({'walletStatus': formatWalletCurrencyStatuses(stats), 
-           'premiumExpireDate': premiumExpireISOTime})
+        response.update({'walletStatus': formatWalletCurrencyStatuses(stats),
+         'premiumExpireDate': premiumExpireISOTime})
         return response
 
     @w2c(W2CSchema, 'get_stats')
@@ -42,28 +46,30 @@ class BalanceWebApiMixin(object):
             try:
                 return [ price for price in prices if price.get(currency, None) ][0][currency]
             except IndexError:
-                msg = ('unspecified price for currency {}').format(currency)
+                msg = 'unspecified price for currency {}'.format(currency)
                 _logger.warning(msg)
                 return 0.0
 
-            return
+            return None
 
-        getters = {'changeRoleCost': lambda stats: stats.changeRoleCost, 'freeXPConversionDiscrecity': lambda stats: stats.freeXPConversion[0], 
-           'creditsSlotsPrices': lambda stats: stats.slotsPrices[1][0][1] if stats.slotsPrices[1][0][0] == Currency.CREDITS else 0, 
-           'goldSlotsPrices': lambda stats: stats.slotsPrices[1][0][1] if stats.slotsPrices[1][0][0] == Currency.GOLD else 0, 
-           'berthsPrices': lambda stats: stats.berthsPrices[2][0], 
-           'goldTankmanCost': lambda stats: getTrainingCost(stats.tankmanCost, Currency.GOLD), 
-           'creditsTankmanCost': lambda stats: getTrainingCost(stats.tankmanCost, Currency.CREDITS), 
-           'goldDropSkillsCost': lambda stats: getTrainingCost(stats.dropSkillsCost, Currency.GOLD), 
-           'creditsDropSkillsCost': lambda stats: getTrainingCost(stats.dropSkillsCost, Currency.CREDITS), 
-           'freeXPToTManXPRate': lambda stats: stats.freeXPToTManXPRate, 
-           'paidRemovalCostGold': lambda stats: stats.paidRemovalCost, 
-           'exchangeRate': lambda stats: stats.exchangeRate, 
-           'dailyXPFactor': lambda stats: stats.dailyXPFactor, 
-           'clanCreationCost': lambda stats: stats.clanCreationCost}
+        getters = {'changeRoleCost': lambda stats: stats.changeRoleCost,
+         'freeXPConversionDiscrecity': lambda stats: stats.freeXPConversion[0],
+         'creditsSlotsPrices': lambda stats: stats.slotsPrices[1][0][1] if stats.slotsPrices[1][0][0] == Currency.CREDITS else 0,
+         'goldSlotsPrices': lambda stats: stats.slotsPrices[1][0][1] if stats.slotsPrices[1][0][0] == Currency.GOLD else 0,
+         'berthsPrices': lambda stats: stats.berthsPrices[2][0],
+         'goldTankmanCost': lambda stats: getTrainingCost(stats.tankmanCost, Currency.GOLD),
+         'creditsTankmanCost': lambda stats: getTrainingCost(stats.tankmanCost, Currency.CREDITS),
+         'goldDropSkillsCost': lambda stats: getTrainingCost(stats.dropSkillsCost, Currency.GOLD),
+         'creditsDropSkillsCost': lambda stats: getTrainingCost(stats.dropSkillsCost, Currency.CREDITS),
+         'freeXPToTManXPRate': lambda stats: stats.freeXPToTManXPRate,
+         'paidRemovalCostGold': lambda stats: stats.paidRemovalCost,
+         'exchangeRate': lambda stats: stats.exchangeRate,
+         'dailyXPFactor': lambda stats: stats.dailyXPFactor,
+         'clanCreationCost': lambda stats: stats.clanCreationCost}
         currentStats = self.itemsCache.items.shop
         defaultStats = self.itemsCache.items.shop.defaults
-        return {key:{'current': getter(currentStats), 'default': getter(defaultStats)} for key, getter in getters.iteritems()}
+        return {key:{'current': getter(currentStats),
+         'default': getter(defaultStats)} for key, getter in getters.iteritems()}
 
     @w2c(W2CSchema, 'get_premium_info')
     def getPremiumInfo(self, cmd):
@@ -84,10 +90,11 @@ class BalanceWebApiMixin(object):
             granted = self.__entitlementsController.getGrantedEntitlementFromCache(code)
             grantedAmount = granted.getAmount() if granted is not None else 0
             if entitlement is not None:
-                entitlements[code] = {'amount': entitlement.getAmount() + grantedAmount, 'expires_at': entitlement.getExpiresAtData()}
+                entitlements[code] = {'amount': entitlement.getAmount() + grantedAmount,
+                 'expires_at': entitlement.getExpiresAtData()}
 
-        yield {'success': result and self.__entitlementsController.isCacheInited() and not self.__entitlementsController.isCodesWasFailedInLastRequest(cmd.codes), 
-           'entitlements': entitlements}
+        yield {'success': result and self.__entitlementsController.isCacheInited() and not self.__entitlementsController.isCodesWasFailedInLastRequest(cmd.codes),
+         'entitlements': entitlements}
         return
 
     @adisp.adisp_async

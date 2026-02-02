@@ -1,17 +1,18 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/AvatarInputHandler/commands/siege_mode_control.py
 import BigWorld
 from weakref import ref
 from constants import ARENA_PERIOD, VEHICLE_SIEGE_STATE, VEHICLE_SETTING
 import CommandMapping
 from AvatarInputHandler.commands.input_handler_command import InputHandlerCommand
 from AvatarInputHandler.player_notifications.siege_mode.sound_notifications import playUnavailableSound, playTriggerSound
-from debug_utils import LOG_DEBUG
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
 
 class SiegeModeControl(InputHandlerCommand):
     __sessionProvider = dependency.descriptor(IBattleSessionProvider)
-    __CANT_SWITCH_ERRORS = {'gun': 'cantSwitchGunDestroyed', 
-       'engine': 'cantSwitchEngineDestroyed'}
+    __CANT_SWITCH_ERRORS = {'gun': 'cantSwitchGunDestroyed',
+     'engine': 'cantSwitchEngineDestroyed'}
 
     def __init__(self, notifier):
         self.__currentState = VEHICLE_SIEGE_STATE.DISABLED
@@ -49,9 +50,9 @@ class SiegeModeControl(InputHandlerCommand):
         vehicle = BigWorld.entities.get(vehicleID)
         if vehicle is None or not (vehicle.isPlayerVehicle or vehicleID == avatar.observedVehicleID):
             return
-        LOG_DEBUG(('SiegeMode: new state received: {}').format((newState, timeToNextMode)))
-        self.__currentState = newState
-        return
+        else:
+            self.__currentState = newState
+            return
 
     def __switchSiegeMode(self, vehicle):
         player = BigWorld.player()

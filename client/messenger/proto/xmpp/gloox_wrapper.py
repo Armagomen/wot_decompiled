@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/xmpp/gloox_wrapper.py
 from collections import defaultdict
-import weakref, BigWorld
+import weakref
+import BigWorld
 from debug_utils import LOG_CURRENT_EXCEPTION
 from external_strings_utils import unicode_from_utf8
 from messenger.proto.xmpp.extensions.wg_items import makeWGInfoFromPresence
@@ -8,35 +11,20 @@ from messenger.proto.xmpp.jid import ContactBareJID, JID
 from messenger.proto.xmpp.log_output import CLIENT_LOG_AREA, g_logOutput
 from messenger.proto.xmpp.resources import Resource
 from messenger.proto.xmpp.wrappers import makeClanInfo, makeMucInfo
-_GLOOX_EVENTS_LISTENERS = (
- (
-  'onConnect', 'onConnected'),
- (
-  'onReady', 'onLogin'),
- (
-  'onDisconnect', 'onDisconnected'),
- (
-  'onRosterResultReceived', 'onRosterResultReceived'),
- (
-  'onNewRosterItem', 'onRosterItemSet'),
- (
-  'onRosterItemRemove', 'onRosterItemRemoved'),
- (
-  'onSubscribe', 'onSubscriptionRequest'),
- (
-  'onLog', 'onLog'),
- (
-  'onHandleIq', 'onHandleIq'),
- (
-  'onRosterQuerySend', 'onRosterQuerySend'),
- (
-  'onHandleMsg', 'onHandleMsg'),
- (
-  'onHandleMsgError', 'onHandleMsgError'),
- (
-  'onHandlePresence', 'onHandlePresence'),
- (
-  'onHandlePresenceError', 'onHandlePresenceError'))
+_GLOOX_EVENTS_LISTENERS = (('onConnect', 'onConnected'),
+ ('onReady', 'onLogin'),
+ ('onDisconnect', 'onDisconnected'),
+ ('onRosterResultReceived', 'onRosterResultReceived'),
+ ('onNewRosterItem', 'onRosterItemSet'),
+ ('onRosterItemRemove', 'onRosterItemRemoved'),
+ ('onSubscribe', 'onSubscriptionRequest'),
+ ('onLog', 'onLog'),
+ ('onHandleIq', 'onHandleIq'),
+ ('onRosterQuerySend', 'onRosterQuerySend'),
+ ('onHandleMsg', 'onHandleMsg'),
+ ('onHandleMsgError', 'onHandleMsgError'),
+ ('onHandlePresence', 'onHandlePresence'),
+ ('onHandlePresenceError', 'onHandlePresenceError'))
 
 class ClientDecorator(object):
 
@@ -111,9 +99,7 @@ class ClientDecorator(object):
 
     def isConnecting(self):
         state = self.__client.connectionState
-        return state in [
-         CONNECTION_STATE.CONNECTING, CONNECTION_STATE.AUTHENTICATING,
-         CONNECTION_STATE.INITIALIZING]
+        return state in [CONNECTION_STATE.CONNECTING, CONNECTION_STATE.AUTHENTICATING, CONNECTION_STATE.INITIALIZING]
 
     def getClientPresence(self):
         return self.__client.presence
@@ -198,15 +184,16 @@ class ClientDecorator(object):
 
         def generator():
             for jid, name, groups, to, from_, clanInfo in roster:
-                yield (
-                 ContactBareJID(jid), name, groups, (to, from_),
+                yield (ContactBareJID(jid),
+                 name,
+                 groups,
+                 (to, from_),
                  makeClanInfo(*clanInfo))
 
         self.__handleEvent(GLOOX_EVENT.ROSTER_RESULT, generator)
 
     def onRosterItemSet(self, jid, name, groups, to, from_, clanInfo):
-        self.__handleEvent(GLOOX_EVENT.ROSTER_ITEM_SET, ContactBareJID(jid), name, groups, (
-         to, from_), makeClanInfo(*clanInfo))
+        self.__handleEvent(GLOOX_EVENT.ROSTER_ITEM_SET, ContactBareJID(jid), name, groups, (to, from_), makeClanInfo(*clanInfo))
 
     def onRosterItemRemoved(self, jid):
         remainingInboundSubs = [ sub for sub in self.__inboundSubs if sub[0] != jid ]
@@ -223,8 +210,10 @@ class ClientDecorator(object):
 
     def onSubscriptionRequest(self, jid, message, nickname, wgexts):
         self.__cancelInboundSubsCallback()
-        self.__inboundSubs.append((
-         ContactBareJID(jid), nickname, message, makeWGInfoFromPresence(wgexts)))
+        self.__inboundSubs.append((ContactBareJID(jid),
+         nickname,
+         message,
+         makeWGInfoFromPresence(wgexts)))
         if len(self.__inboundSubs) >= INBOUND_SUB_BATCH_SIZE:
             self.__fireInboundSubsEvent()
         else:
@@ -276,7 +265,7 @@ class ClientDecorator(object):
 
 
 class ClientHolder(object):
-    __slots__ = ('_client', )
+    __slots__ = ('_client',)
     _client = None
 
     @classmethod

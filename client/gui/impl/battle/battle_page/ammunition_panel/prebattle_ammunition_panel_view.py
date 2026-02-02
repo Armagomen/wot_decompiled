@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/battle/battle_page/ammunition_panel/prebattle_ammunition_panel_view.py
 from typing import TYPE_CHECKING
 import CommandMapping
 from Event import Event, EventManager
@@ -19,13 +21,10 @@ from skeletons.account_helpers.settings_core import ISettingsCore
 if TYPE_CHECKING:
     from typing import Optional
     from frameworks.wulf import ViewEvent, View
-_R_SIMPLE_TOOLTIPS = (
- R.views.common.tooltip_window.simple_tooltip_content.SimpleTooltipContent(),
- R.views.common.tooltip_window.simple_tooltip_content.SimpleTooltipHtmlContent())
+_R_SIMPLE_TOOLTIPS = (R.views.common.tooltip_window.simple_tooltip_content.SimpleTooltipContent(), R.views.common.tooltip_window.simple_tooltip_content.SimpleTooltipHtmlContent())
 
 class PrebattleAmmunitionPanelView(ViewImpl):
-    __slots__ = ('onSwitchLayout', 'onViewLoaded', '__ammunitionPanel', '__vehicle',
-                 '__eventManager')
+    __slots__ = ('onSwitchLayout', 'onViewLoaded', '__ammunitionPanel', '__vehicle', '__eventManager')
     __settingsCore = dependency.descriptor(ISettingsCore)
 
     def __init__(self, vehicle, *args):
@@ -51,10 +50,7 @@ class PrebattleAmmunitionPanelView(ViewImpl):
         elif slotType in (TankSetupConstants.BATTLE_BOOSTERS, TankSetupConstants.CONSUMABLES):
             slotId = int(event.getArgument('slotId'))
             header, body = buildEquipmentSlotTooltipTextBySlotInfo(slotType=slotType, slotId=slotId)
-        if header or body:
-            return SimpleTooltipContent(R.views.common.tooltip_window.simple_tooltip_content.SimpleTooltipHtmlContent(), header, body)
-        else:
-            return
+        return SimpleTooltipContent(R.views.common.tooltip_window.simple_tooltip_content.SimpleTooltipHtmlContent(), header, body) if header or body else None
 
     def createContextMenu(self, event):
         pass
@@ -126,8 +122,9 @@ class PrebattleAmmunitionPanelView(ViewImpl):
         hudGroupID, newLayoutIdx = args.get('groupId', None), args.get('currentIndex', None)
         if self.viewModel.getIsDisabled() or hudGroupID is None or newLayoutIdx is None:
             return
-        self.__changeSetup(int(hudGroupID), int(newLayoutIdx))
-        return
+        else:
+            self.__changeSetup(int(hudGroupID), int(newLayoutIdx))
+            return
 
     def __onChangeSetupByKey(self, event):
         key = event.ctx['key']
@@ -139,8 +136,9 @@ class PrebattleAmmunitionPanelView(ViewImpl):
             hudGroupID = COMMAND_MAPPING[CommandMapping.CMD_AMMUNITION_SHORTCUT_SWITCH_SETUP_2]
         if self.viewModel.getIsDisabled() or hudGroupID is None:
             return
-        self.__changeSetup(hudGroupID)
-        return
+        else:
+            self.__changeSetup(hudGroupID)
+            return
 
     def __changeSetup(self, hudGroupID, newLayoutIdx=None):
         groupID = GROUPS_MAP[hudGroupID]

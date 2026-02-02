@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/dialogs/sub_views/icon/item_icon.py
 import logging
 from gui.impl.gen import R
 from gui.impl.dialogs.sub_views.common import IconSetData
@@ -17,8 +19,7 @@ if TYPE_CHECKING:
 
 def vehicleToIconSetDataFormatter(vehicle, backgrounds, overlays):
     artefacts = R.images.gui.maps.shop.vehicles.num('180x135')
-    return IconSetData(artefacts.dyn(getNationLessName(replaceHyphenToUnderscore(vehicle.name)))(), ('{}  %(typeIcon)  {}').format(int2roman(vehicle.level), vehicle.shortUserName), [
-     ImageSubstitution(R.images.gui.maps.icons.vehicleTypes.dyn(getIconResourceName(vehicle.type))(), 'typeIcon', 3, -5, -5, -5)])
+    return IconSetData(artefacts.dyn(getNationLessName(replaceHyphenToUnderscore(vehicle.name)))(), '{}  %(typeIcon)  {}'.format(int2roman(vehicle.level), vehicle.shortUserName), [ImageSubstitution(R.images.gui.maps.icons.vehicleTypes.dyn(getIconResourceName(vehicle.type))(), 'typeIcon', 3, -5, -5, -5)])
 
 
 def optionalDeviceToIconSetDataFormatter(optDevice, backgrounds, overlays):
@@ -28,8 +29,8 @@ def optionalDeviceToIconSetDataFormatter(optDevice, backgrounds, overlays):
     return IconSetData(artefacts.dyn(optDevice.descriptor.iconName)(), None, None)
 
 
-ITEM_FORMATTERS = {GUI_ITEM_TYPE.VEHICLE: vehicleToIconSetDataFormatter, 
-   GUI_ITEM_TYPE.OPTIONALDEVICE: optionalDeviceToIconSetDataFormatter}
+ITEM_FORMATTERS = {GUI_ITEM_TYPE.VEHICLE: vehicleToIconSetDataFormatter,
+ GUI_ITEM_TYPE.OPTIONALDEVICE: optionalDeviceToIconSetDataFormatter}
 
 class ItemIcons(MultipleIconsSet):
     __slots__ = ()

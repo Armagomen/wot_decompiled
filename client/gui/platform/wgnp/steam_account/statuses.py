@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/platform/wgnp/steam_account/statuses.py
 import typing
 from gui.platform.base.response import Codes
 from gui.platform.base.statuses.constants import StatusTypes

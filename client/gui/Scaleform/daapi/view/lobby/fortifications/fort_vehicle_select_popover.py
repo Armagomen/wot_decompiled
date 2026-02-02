@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/fortifications/fort_vehicle_select_popover.py
 from constants import QUEUE_TYPE
 from gui import makeHtmlString
 from gui.Scaleform import MENU
@@ -20,17 +22,12 @@ from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers import dependency
 from helpers.i18n import makeString
 from skeletons.gui.shared import IItemsCache
-_IGNORED_VEHICLE_STATES = (
- Vehicle.VEHICLE_STATE.UNDAMAGED,
- Vehicle.VEHICLE_STATE.IN_PREBATTLE,
- Vehicle.GROUP_STATES)
+_IGNORED_VEHICLE_STATES = (Vehicle.VEHICLE_STATE.UNDAMAGED, Vehicle.VEHICLE_STATE.IN_PREBATTLE, Vehicle.GROUP_STATES)
 
 def convertState(vState):
     if vState in _IGNORED_VEHICLE_STATES:
         return ''
-    if vState == Vehicle.VEHICLE_STATE.IN_PREMIUM_IGR_ONLY:
-        return makeHtmlString('html_templates:lobby', 'inPremiumIgrOnly')
-    return makeString(MENU.tankcarousel_vehiclestates(vState))
+    return makeHtmlString('html_templates:lobby', 'inPremiumIgrOnly') if vState == Vehicle.VEHICLE_STATE.IN_PREMIUM_IGR_ONLY else makeString(MENU.tankcarousel_vehiclestates(vState))
 
 
 def getVehicleCriteria(levelsRange, inHangar=False):
@@ -92,7 +89,8 @@ class FortVehicleSelectPopover(FortVehicleSelectPopoverMeta, VehicleSelectorBase
         if not self._isMultiSelect:
             self.fireEvent(CSVehicleSelectEvent(CSVehicleSelectEvent.VEHICLE_SELECTED, list(vehicles)))
         else:
-            self.fireEvent(StrongholdEvent(StrongholdEvent.STRONGHOLD_VEHICLES_SELECTED, {'items': list(vehicles), 'slotIndex': self._slotIndex}))
+            self.fireEvent(StrongholdEvent(StrongholdEvent.STRONGHOLD_VEHICLES_SELECTED, {'items': list(vehicles),
+             'slotIndex': self._slotIndex}))
         self.onWindowClose()
 
     def _populate(self):
@@ -103,9 +101,7 @@ class FortVehicleSelectPopover(FortVehicleSelectPopoverMeta, VehicleSelectorBase
         self.updateAddButtonLabel()
 
     def _getHeader(self):
-        if self._isMultiSelect:
-            return FORTIFICATIONS.STRONGHOLDPOPOVER_COMMANDERHEADER
-        return FORTIFICATIONS.STRONGHOLDPOPOVER_HEADER
+        return FORTIFICATIONS.STRONGHOLDPOPOVER_COMMANDERHEADER if self._isMultiSelect else FORTIFICATIONS.STRONGHOLDPOPOVER_HEADER
 
     def _parseFilters(self):
         nations, _, _ = super(FortVehicleSelectPopover, self)._parseFilters()
@@ -120,9 +116,9 @@ class FortVehicleSelectPopover(FortVehicleSelectPopoverMeta, VehicleSelectorBase
         filtersData['nationTooltip'] = makeTooltip(MENU.NATIONS_TITLE, TOOLTIPS.VEHICLESELECTOR_FILTER_NATION)
         if self._showMainBtn:
             entry = 'favorite'
-            filtersData['mainBtn'] = {'value': getButtonsAssetPath(entry), 
-               'tooltip': makeTooltip(('#tank_carousel_filter:tooltip/{}/header').format(entry), makeString(('#tank_carousel_filter:tooltip/{}/body').format(entry))), 
-               'selected': False}
+            filtersData['mainBtn'] = {'value': getButtonsAssetPath(entry),
+             'tooltip': makeTooltip('#tank_carousel_filter:tooltip/{}/header'.format(entry), makeString('#tank_carousel_filter:tooltip/{}/body'.format(entry))),
+             'selected': False}
         return filtersData
 
     def _dispose(self):
@@ -140,49 +136,49 @@ class FortVehicleSelectPopover(FortVehicleSelectPopoverMeta, VehicleSelectorBase
         if self.prbEntity is not None and self.prbEntity.getQueueType() == QUEUE_TYPE.STRONGHOLD_UNITS:
             frozenVehicles = self.prbEntity.getEventFrozenVehicles()
             isFrozen = frozenVehicles is not None and (frozenVehicles == FrozenVehiclesConstants.ALL_VEHICLES_FROZEN or vehicle.intCD in frozenVehicles)
-        return {'dbID': vehicle.intCD, 
-           'level': vehicle.level, 
-           'shortUserName': vehicle.shortUserName, 
-           'smallIconPath': getSmallIconPath(vehicle.name), 
-           'nationID': vehicle.nationID, 
-           'type': vehicle.type, 
-           'typeIcon': getTypeSmallIconPath(vehicle.type, vehicle.isPremium), 
-           'selected': checkSelectedFunc(vehicle), 
-           'inHangar': False, 
-           'isMultiSelect': self._isMultiSelect, 
-           'isReadyToFight': vehicle.isReadyToFight, 
-           'enabled': vehicle.isReadyToFight, 
-           'isFrozen': isFrozen, 
-           'tooltip': makeTooltip('#tooltips:vehicleStatus/%s/header' % vState, '#tooltips:vehicleStatus/body'), 
-           'state': 'frozenVehicle' if isFrozen and vehicle.isReadyToFight else convertState(vState)}
+        return {'dbID': vehicle.intCD,
+         'level': vehicle.level,
+         'shortUserName': vehicle.shortUserName,
+         'smallIconPath': getSmallIconPath(vehicle.name),
+         'nationID': vehicle.nationID,
+         'type': vehicle.type,
+         'typeIcon': getTypeSmallIconPath(vehicle.type, vehicle.isPremium),
+         'selected': checkSelectedFunc(vehicle),
+         'inHangar': False,
+         'isMultiSelect': self._isMultiSelect,
+         'isReadyToFight': vehicle.isReadyToFight,
+         'enabled': vehicle.isReadyToFight,
+         'isFrozen': isFrozen,
+         'tooltip': makeTooltip('#tooltips:vehicleStatus/%s/header' % vState, '#tooltips:vehicleStatus/body'),
+         'state': 'frozenVehicle' if isFrozen and vehicle.isReadyToFight else convertState(vState)}
 
     def _isSelected(self, entry):
         return entry.intCD in self._selectedVehicles
 
     def __initControls(self):
-        common = {'btnHeight': 34, 'enabled': True}
+        common = {'btnHeight': 34,
+         'enabled': True}
         nameWidth = 200 if self._isMultiSelect else 245
-        headers = [
-         packHeaderColumnData('nations', 43, icon=RES_ICONS.MAPS_ICONS_FILTERS_NATIONS_ALL, tooltip=VEH_COMPARE.ADDVEHPOPOVER_TOOLTIPS_NATION, **common),
+        headers = [packHeaderColumnData('nations', 43, icon=RES_ICONS.MAPS_ICONS_FILTERS_NATIONS_ALL, tooltip=VEH_COMPARE.ADDVEHPOPOVER_TOOLTIPS_NATION, **common),
          packHeaderColumnData('type', 33, icon=RES_ICONS.MAPS_ICONS_FILTERS_TANKS_ALL, tooltip=VEH_COMPARE.ADDVEHPOPOVER_TOOLTIPS_TYPE, **common),
          packHeaderColumnData('level', 33, icon=RES_ICONS.MAPS_ICONS_BUTTONS_TAB_SORT_BUTTON_LEVEL, tooltip=VEH_COMPARE.ADDVEHPOPOVER_TOOLTIPS_LEVEL, btnHeight=34, enabled=False),
          packHeaderColumnData('name', nameWidth, label=VEH_COMPARE.ADDVEHPOPOVER_VEHICLENAME, tooltip=VEH_COMPARE.ADDVEHPOPOVER_TOOLTIPS_TITLE, direction='ascending', **common)]
         if self._isMultiSelect:
             headers.insert(0, packHeaderColumnData('check', 45, icon=RES_ICONS.MAPS_ICONS_BUTTONS_ICON_TABLE_COMPARISON_CHECKMARK, **common))
-        self.as_setInitDataS({'tableHeaders': headers, 
-           'filters': self.initFilters(), 
-           'header': text_styles.highTitle(makeString(self._getHeader())), 
-           'btnCancel': VEH_COMPARE.ADDVEHPOPOVER_BTNCANCEL, 
-           'isMultiSelect': self._isMultiSelect})
+        self.as_setInitDataS({'tableHeaders': headers,
+         'filters': self.initFilters(),
+         'header': text_styles.highTitle(makeString(self._getHeader())),
+         'btnCancel': VEH_COMPARE.ADDVEHPOPOVER_BTNCANCEL,
+         'isMultiSelect': self._isMultiSelect})
 
     def __getAssetPath(self, assetType, extension='.png'):
-        return ('').join(['../maps/icons/filters/tanks/', assetType, extension])
+        return ''.join(['../maps/icons/filters/tanks/', assetType, extension])
 
     def __createFilterToggles(self):
         filterToggles = []
         for entry in VEHICLE_TYPES_ORDER:
-            filterToggles.append({'value': self.__getAssetPath(entry), 
-               'tooltip': makeTooltip(('#menu:carousel_tank_filter/{}').format(entry), '#tank_carousel_filter:tooltip/vehicleTypes/body'), 
-               'selected': False})
+            filterToggles.append({'value': self.__getAssetPath(entry),
+             'tooltip': makeTooltip('#menu:carousel_tank_filter/{}'.format(entry), '#tank_carousel_filter:tooltip/vehicleTypes/body'),
+             'selected': False})
 
         return filterToggles

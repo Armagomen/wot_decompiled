@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/windows/piggy_bank_reward_window_content_model.py
 from gui.impl.gen.view_models.windows.reward_window_content_model import RewardWindowContentModel
 
 class PiggyBankRewardWindowContentModel(RewardWindowContentModel):

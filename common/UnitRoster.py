@@ -1,4 +1,7 @@
-import struct, nations
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/UnitRoster.py
+import struct
+import nations
 from items import vehicles
 from constants import VEHICLE_CLASSES, VEHICLE_CLASS_INDICES, MAX_VEHICLE_LEVEL
 _BAD_CLASS_INDEX = 16
@@ -23,16 +26,16 @@ class BaseUnitRoster:
         if packedRoster:
             self.unpack(packedRoster)
             return
-        self.limits = self.LIMITS_TYPE(**limitsDefs)
-        if slotCount is None:
-            slotCount = self.limits.get('maxSlotCount', self.MAX_SLOTS)
-        if slotDefs and isinstance(slotDefs, dict) and len(slotDefs) <= slotCount * 2 and min(slotDefs.iterkeys()) >= 0 and max(slotDefs.iterkeys()) < slotCount * 2:
-            self.slots = dict((i, self.SLOT_TYPE(**slotDef)) for i, slotDef in slotDefs.iteritems())
-            self.pack()
-            return
         else:
+            self.limits = self.LIMITS_TYPE(**limitsDefs)
+            if slotCount is None:
+                slotCount = self.limits.get('maxSlotCount', self.MAX_SLOTS)
+            if slotDefs and isinstance(slotDefs, dict) and len(slotDefs) <= slotCount * 2 and min(slotDefs.iterkeys()) >= 0 and max(slotDefs.iterkeys()) < slotCount * 2:
+                self.slots = dict(((i, self.SLOT_TYPE(**slotDef)) for i, slotDef in slotDefs.iteritems()))
+                self.pack()
+                return
             if slotCount:
-                self.slots = dict((i * 2, self.SLOT_TYPE()) for i in xrange(0, slotCount))
+                self.slots = dict(((i * 2, self.SLOT_TYPE()) for i in xrange(0, slotCount)))
             else:
                 self.slots = {}
             self._packed = None
@@ -138,8 +141,7 @@ class BaseUnitRoster:
                     if res:
                         return (res, chosenSlotIdx)
 
-            return (
-             False, None)
+            return (False, None)
 
     def checkVehicleLevel(self, vehTypeCompDescr):
         vehClass = vehicles.getVehicleClass(vehTypeCompDescr)
@@ -147,9 +149,7 @@ class BaseUnitRoster:
         vehLevel = vehicles.getVehicleType(vehTypeCompDescr).level
         if not self.limits.checkVehicleLevel(vehClassIdx, vehLevel):
             return False
-        if not self.SLOT_TYPE.DEFAULT_LEVELS[0] <= vehLevel <= self.SLOT_TYPE.DEFAULT_LEVELS[1]:
-            return False
-        return True
+        return False if not self.SLOT_TYPE.DEFAULT_LEVELS[0] <= vehLevel <= self.SLOT_TYPE.DEFAULT_LEVELS[1] else True
 
     def getLegionariesMaxCount(self):
         return self.MAX_LEGIONARIES_COUNT
@@ -161,8 +161,7 @@ class BaseUnitRoster:
             if slot and slot.checkVehicle(vehTypeCompDescr):
                 return (True, unitSlotIdx)
 
-        return (
-         False, unitSlotIdx)
+        return (False, unitSlotIdx)
 
 
 def _makeBitMask(nameList, nameIndex, power=8):
@@ -209,14 +208,17 @@ def buildNamesDict(constDefClass):
 
 
 def _vehType__repr__(self):
-    return 'VehicleType( name=%r, id=%s, vehTypeCompDescr=%s, tags=%s, level=%s, description=%r )' % (
-     self.name, str(self.id), self.compactDescr, str(self.tags), self.level, getattr(self, 'description', ''))
+    return 'VehicleType( name=%r, id=%s, vehTypeCompDescr=%s, tags=%s, level=%s, description=%r )' % (self.name,
+     str(self.id),
+     self.compactDescr,
+     str(self.tags),
+     self.level,
+     getattr(self, 'description', ''))
 
 
 class BaseUnitRosterSlot(object):
     __EXACT_TYPE_PREFIX = '\x00'
-    DEFAULT_LEVELS = (
-     1, MAX_VEHICLE_LEVEL)
+    DEFAULT_LEVELS = (1, MAX_VEHICLE_LEVEL)
     DEFAULT_NATIONS = []
     DEFAULT_VEHICLE_CLASSES = []
     NATION_MASK_POWER = 16
@@ -240,8 +242,7 @@ class BaseUnitRosterSlot(object):
             self.vehClassMask = _makeBitMask(vehClassNames, VEHICLE_CLASS_INDICES, self.VEH_CLASS_MASK_POWER)
             levelRange = xrange(self.DEFAULT_LEVELS[0], self.DEFAULT_LEVELS[1] + 1)
             if isinstance(levels, int) and levels in levelRange:
-                self.levels = (
-                 levels, levels)
+                self.levels = (levels, levels)
                 return
             if isinstance(levels, tuple) and len(levels) == 2:
                 if levels[0] in levelRange and levels[1] in levelRange:
@@ -254,12 +255,14 @@ class BaseUnitRosterSlot(object):
         if self.vehTypeCompDescr is None:
             strNations = _reprBitMask(self.nationMask, nations.NAMES)
             strVehicles = _reprBitMask(self.vehClassMask, VEHICLE_CLASSES)
-            return '%s( levels=%s, nationMask=0x%02X, vehClassMask=0x%02X, nations=[%s], classes=[%s] )' % (
-             self.__class__.__name__, self.levels, self.nationMask, self.vehClassMask,
-             strNations, strVehicles)
+            return '%s( levels=%s, nationMask=0x%02X, vehClassMask=0x%02X, nations=[%s], classes=[%s] )' % (self.__class__.__name__,
+             self.levels,
+             self.nationMask,
+             self.vehClassMask,
+             strNations,
+             strVehicles)
         else:
-            return 'RosterSlot( vehTypeCompDescr=%s ) -- packed:%r' % (
-             self.vehTypeCompDescr, self.pack())
+            return 'RosterSlot( vehTypeCompDescr=%s ) -- packed:%r' % (self.vehTypeCompDescr, self.pack())
 
     _VEHICLE_MASKS = '<BHB'
     _VEHICLE_MASKS_SIZE = struct.calcsize(_VEHICLE_MASKS)
@@ -295,9 +298,7 @@ class BaseUnitRosterSlot(object):
 
     @staticmethod
     def getPackSize(firstByte):
-        if firstByte != BaseUnitRosterSlot.__EXACT_TYPE_PREFIX:
-            return BaseUnitRosterSlot._VEHICLE_MASKS_SIZE
-        return BaseUnitRosterSlot._VEHICLE_TYPE_SIZE
+        return BaseUnitRosterSlot._VEHICLE_MASKS_SIZE if firstByte != BaseUnitRosterSlot.__EXACT_TYPE_PREFIX else BaseUnitRosterSlot._VEHICLE_TYPE_SIZE
 
     def checkVehicle(self, vehTypeCompDescr):
         if self.vehTypeCompDescr is not None:
@@ -311,16 +312,13 @@ class BaseUnitRosterSlot(object):
                 return False
             classTag = vehicles.getVehicleClass(vehTypeCompDescr)
             classIndex = VEHICLE_CLASS_INDICES.get(classTag, _BAD_CLASS_INDEX)
-            if not self.vehClassMask & 1 << classIndex:
-                return False
-            return True
+            return False if not self.vehClassMask & 1 << classIndex else True
 
 
 _DEFAULT_ROSTER_SLOT_PACK = BaseUnitRosterSlot().pack()
 
 class BaseUnitRosterLimits(object):
-    _ROSTER_LIMIT_NAMES = [
-     'maxSlotCount',
+    _ROSTER_LIMIT_NAMES = ['maxSlotCount',
      'maxEmptySlotCount',
      'totalLevelLimits',
      'vehicleLevelLimits',
@@ -328,20 +326,18 @@ class BaseUnitRosterLimits(object):
      'vehicleClasses',
      'vehicleNations',
      'vehicleTypes']
-    _ROSTER_LIMIT_INDICES = dict((x[1], x[0]) for x in enumerate(_ROSTER_LIMIT_NAMES))
-    _LIMITS_PACK_FORMAT = {'maxSlotCount': ('<B', 1), 
-       'maxEmptySlotCount': ('<B', 1), 
-       'totalLevelLimits': ('<2H', 4), 
-       'vehicleLevelLimits': ('<2H', 4), 
-       'vehicleLevelLimitsByClass': (
-                                   ('<B', 1), ('<B2H', 5)), 
-       'vehicleClasses': ('<B', 1), 
-       'vehicleNations': ('<H', 2), 
-       'vehicleTypes': (
-                      ('<H', 2), ('<H2B', 4))}
+    _ROSTER_LIMIT_INDICES = dict(((x[1], x[0]) for x in enumerate(_ROSTER_LIMIT_NAMES)))
+    _LIMITS_PACK_FORMAT = {'maxSlotCount': ('<B', 1),
+     'maxEmptySlotCount': ('<B', 1),
+     'totalLevelLimits': ('<2H', 4),
+     'vehicleLevelLimits': ('<2H', 4),
+     'vehicleLevelLimitsByClass': (('<B', 1), ('<B2H', 5)),
+     'vehicleClasses': ('<B', 1),
+     'vehicleNations': ('<H', 2),
+     'vehicleTypes': (('<H', 2), ('<H2B', 4))}
 
     def __init__(self, **limitsDefs):
-        limits = self.limits = {key:value for key, value in limitsDefs.iteritems() if value is not None if value is not None}
+        limits = self.limits = {key:value for key, value in limitsDefs.iteritems() if value is not None}
         if not limits:
             self.mask = 0
             return
@@ -359,9 +355,7 @@ class BaseUnitRosterLimits(object):
             return
 
     def __repr__(self):
-        if self.mask != 0:
-            return str(self.limits)
-        return 'NO LIMITS'
+        return str(self.limits) if self.mask != 0 else 'NO LIMITS'
 
     def _packLimit(self, limitName):
         limitValue = self.limits.get(limitName)
@@ -403,10 +397,11 @@ class BaseUnitRosterLimits(object):
                 packed = packed[limitSize:]
 
             return packed
-        limitValue = struct.unpack_from(packFormat[0], packed)
-        isTuple = limitName in ('totalLevelLimits', 'vehicleLevelLimits')
-        limits[limitName] = limitValue if isTuple else limitValue[0]
-        return packed[packFormat[1]:]
+        else:
+            limitValue = struct.unpack_from(packFormat[0], packed)
+            isTuple = limitName in ('totalLevelLimits', 'vehicleLevelLimits')
+            limits[limitName] = limitValue if isTuple else limitValue[0]
+            return packed[packFormat[1]:]
 
     def unpack(self, packed):
         mask = self.mask = struct.unpack_from('<H', packed)[0]
@@ -420,121 +415,33 @@ class BaseUnitRosterLimits(object):
         return packed
 
     def get(self, limitName, defaultValue=None):
+        return defaultValue if self.mask == 0 else self.limits.get(limitName, defaultValue)
+
+    def checkVehicleLevel(self, vehicleClassIdx, vehicleLevel):
         if self.mask == 0:
-            return defaultValue
-        return self.limits.get(limitName, defaultValue)
-
-    def checkVehicleLevel--- This code section failed: ---
-
- L. 536         0  LOAD_FAST             0  'self'
-                3  LOAD_ATTR             0  'mask'
-                6  LOAD_CONST               0
-                9  COMPARE_OP            2  ==
-               12  POP_JUMP_IF_FALSE    19  'to 19'
-
- L. 537        15  LOAD_GLOBAL           1  'True'
-               18  RETURN_END_IF    
-             19_0  COME_FROM            12  '12'
-
- L. 538        19  LOAD_FAST             0  'self'
-               22  LOAD_ATTR             2  'limits'
-               25  LOAD_ATTR             3  'get'
-               28  LOAD_CONST               'vehicleLevelLimitsByClass'
-               31  LOAD_CONST               None
-               34  CALL_FUNCTION_2       2  None
-               37  STORE_FAST            3  'vehicleLevelLimitsByClass'
-
- L. 539        40  LOAD_FAST             3  'vehicleLevelLimitsByClass'
-               43  LOAD_CONST               None
-               46  COMPARE_OP            9  is-not
-               49  POP_JUMP_IF_FALSE   117  'to 117'
-
- L. 540        52  LOAD_FAST             3  'vehicleLevelLimitsByClass'
-               55  LOAD_ATTR             3  'get'
-               58  LOAD_FAST             1  'vehicleClassIdx'
-               61  LOAD_CONST               None
-               64  CALL_FUNCTION_2       2  None
-               67  STORE_FAST            4  'vehicleLevelClassLimits'
-
- L. 541        70  LOAD_FAST             4  'vehicleLevelClassLimits'
-               73  LOAD_CONST               None
-               76  COMPARE_OP            9  is-not
-               79  POP_JUMP_IF_FALSE   117  'to 117'
-
- L. 542        82  LOAD_FAST             4  'vehicleLevelClassLimits'
-               85  LOAD_CONST               0
-               88  BINARY_SUBSCR    
-               89  LOAD_FAST             2  'vehicleLevel'
-               92  DUP_TOP          
-               93  ROT_THREE        
-               94  COMPARE_OP            1  <=
-               97  JUMP_IF_FALSE_OR_POP   111  'to 111'
-              100  LOAD_FAST             4  'vehicleLevelClassLimits'
-              103  LOAD_CONST               1
-              106  BINARY_SUBSCR    
-              107  COMPARE_OP            1  <=
-              110  RETURN_VALUE     
-            111_0  COME_FROM            97  '97'
-              111  ROT_TWO          
-              112  POP_TOP          
-              113  RETURN_END_IF    
-            114_0  COME_FROM            79  '79'
-              114  JUMP_FORWARD          0  'to 117'
-            117_0  COME_FROM           114  '114'
-
- L. 543       117  LOAD_FAST             0  'self'
-              120  LOAD_ATTR             2  'limits'
-              123  LOAD_ATTR             3  'get'
-              126  LOAD_CONST               'vehicleLevelLimits'
-              129  LOAD_CONST               None
-              132  CALL_FUNCTION_2       2  None
-              135  STORE_FAST            5  'vehicleLevelLimits'
-
- L. 545       138  LOAD_FAST             5  'vehicleLevelLimits'
-              141  LOAD_CONST               None
-              144  COMPARE_OP            9  is-not
-              147  POP_JUMP_IF_FALSE   184  'to 184'
-              150  LOAD_FAST             5  'vehicleLevelLimits'
-              153  LOAD_CONST               0
-              156  BINARY_SUBSCR    
-              157  LOAD_FAST             2  'vehicleLevel'
-              160  DUP_TOP          
-              161  ROT_THREE        
-              162  COMPARE_OP            1  <=
-              165  JUMP_IF_FALSE_OR_POP   181  'to 181'
-              168  LOAD_FAST             5  'vehicleLevelLimits'
-              171  LOAD_CONST               1
-              174  BINARY_SUBSCR    
-              175  COMPARE_OP            1  <=
-              178  JUMP_ABSOLUTE       187  'to 187'
-            181_0  COME_FROM           165  '165'
-              181  ROT_TWO          
-              182  POP_TOP          
-              183  RETURN_END_IF    
-            184_0  COME_FROM           147  '147'
-              184  LOAD_GLOBAL           1  'True'
-              187  RETURN_VALUE     
-
-Parse error at or near `JUMP_ABSOLUTE' instruction at offset 178
+            return True
+        vehicleLevelLimitsByClass = self.limits.get('vehicleLevelLimitsByClass', None)
+        if vehicleLevelLimitsByClass is not None:
+            vehicleLevelClassLimits = vehicleLevelLimitsByClass.get(vehicleClassIdx, None)
+            if vehicleLevelClassLimits is not None:
+                return vehicleLevelClassLimits[0] <= vehicleLevel <= vehicleLevelClassLimits[1]
+        vehicleLevelLimits = self.limits.get('vehicleLevelLimits', None)
+        if vehicleLevelLimits is not None:
+            return vehicleLevelLimits[0] <= vehicleLevel <= vehicleLevelLimits[1]
+        else:
+            return True
 
     def _checkVehicleClass(self, vehicleClassIdx):
         vehicleClasses = self.limits.get('vehicleClasses', 0)
-        if vehicleClasses == 0:
-            return True
-        return vehicleClasses & 1 << vehicleClassIdx
+        return True if vehicleClasses == 0 else vehicleClasses & 1 << vehicleClassIdx
 
     def _checkVehicleNation(self, vehicleNationIdx):
         vehicleNations = self.limits.get('vehicleNations', 0)
-        if vehicleNations == 0:
-            return True
-        return vehicleNations & 1 << vehicleNationIdx
+        return True if vehicleNations == 0 else vehicleNations & 1 << vehicleNationIdx
 
     def _checkVehicleType(self, vehTypeCompDescr):
         vehicleTypes = self.limits.get('vehicleTypes', None)
-        if vehicleTypes is None:
-            return True
-        else:
-            return vehTypeCompDescr in vehicleTypes
+        return True if vehicleTypes is None else vehTypeCompDescr in vehicleTypes
 
     def checkVehicle(self, vehTypeCompDescr):
         if self.mask == 0:
@@ -549,6 +456,4 @@ Parse error at or near `JUMP_ABSOLUTE' instruction at offset 178
         if not self._checkVehicleClass(vehClassIdx):
             return False
         vehLevel = vehType.level
-        if not self.checkVehicleLevel(vehClassIdx, vehLevel):
-            return False
-        return True# Decompile failed :(
+        return False if not self.checkVehicleLevel(vehClassIdx, vehLevel) else True

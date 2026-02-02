@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/inventory/opt_devices_tab.py
 from collections import OrderedDict
 from enum import IntEnum
 from PlayerEvents import g_playerEvents
@@ -21,26 +23,20 @@ class _OptDeviceTypeFilter(IntEnum):
     MODERNIZED = 8
 
 
-_TYPE_FILTER_ITEMS = [
- {'id': int(_OptDeviceTypeFilter.ALL), 
-    'label': backport.text(R.strings.storage.devices.filters.all())},
- {'id': int(_OptDeviceTypeFilter.SIMPLE), 
-    'label': backport.text(R.strings.storage.devices.filters.simple())},
- {'id': int(_OptDeviceTypeFilter.TROPHY), 
-    'label': backport.text(R.strings.storage.devices.filters.trophy())},
- {'id': int(_OptDeviceTypeFilter.DELUXE), 
-    'label': backport.text(R.strings.storage.devices.filters.deluxe())},
- {'id': int(_OptDeviceTypeFilter.MODERNIZED), 
-    'label': backport.text(R.strings.storage.devices.filters.modernized())}]
-_BIT_TO_DEVICE_TYPE_MAP = OrderedDict((
- (
-  _OptDeviceTypeFilter.SIMPLE, REQ_CRITERIA.OPTIONAL_DEVICE.SIMPLE),
- (
-  _OptDeviceTypeFilter.TROPHY, REQ_CRITERIA.OPTIONAL_DEVICE.TROPHY),
- (
-  _OptDeviceTypeFilter.DELUXE, REQ_CRITERIA.OPTIONAL_DEVICE.DELUXE),
- (
-  _OptDeviceTypeFilter.MODERNIZED, REQ_CRITERIA.OPTIONAL_DEVICE.MODERNIZED)))
+_TYPE_FILTER_ITEMS = [{'id': int(_OptDeviceTypeFilter.ALL),
+  'label': backport.text(R.strings.storage.devices.filters.all())},
+ {'id': int(_OptDeviceTypeFilter.SIMPLE),
+  'label': backport.text(R.strings.storage.devices.filters.simple())},
+ {'id': int(_OptDeviceTypeFilter.TROPHY),
+  'label': backport.text(R.strings.storage.devices.filters.trophy())},
+ {'id': int(_OptDeviceTypeFilter.DELUXE),
+  'label': backport.text(R.strings.storage.devices.filters.deluxe())},
+ {'id': int(_OptDeviceTypeFilter.MODERNIZED),
+  'label': backport.text(R.strings.storage.devices.filters.modernized())}]
+_BIT_TO_DEVICE_TYPE_MAP = OrderedDict(((_OptDeviceTypeFilter.SIMPLE, REQ_CRITERIA.OPTIONAL_DEVICE.SIMPLE),
+ (_OptDeviceTypeFilter.TROPHY, REQ_CRITERIA.OPTIONAL_DEVICE.TROPHY),
+ (_OptDeviceTypeFilter.DELUXE, REQ_CRITERIA.OPTIONAL_DEVICE.DELUXE),
+ (_OptDeviceTypeFilter.MODERNIZED, REQ_CRITERIA.OPTIONAL_DEVICE.MODERNIZED)))
 
 class OptDevicesTabView(StorageDevicesTabViewMeta):
 
@@ -54,9 +50,9 @@ class OptDevicesTabView(StorageDevicesTabViewMeta):
         super(OptDevicesTabView, self)._dispose()
 
     def _getTypeFilters(self, items):
-        return {'items': items, 
-           'minSelectedItems': 0, 
-           'filterTypeName': backport.text(R.strings.storage.storage.tabs.devices.filter.type.label())}
+        return {'items': items,
+         'minSelectedItems': 0,
+         'filterTypeName': backport.text(R.strings.storage.storage.tabs.devices.filter.type.label())}
 
     def navigateToStore(self):
         showShop(getBuyOptionalDevicesUrl())
@@ -70,10 +66,12 @@ class OptDevicesTabView(StorageDevicesTabViewMeta):
         index = 0
         if self._filterMask in _BIT_TO_DEVICE_TYPE_MAP:
             index = _BIT_TO_DEVICE_TYPE_MAP.keys().index(self._filterMask) + 1
-        self.as_initModulesFilterS({'enabled': True, 'selectedIndex': index, 'data': _TYPE_FILTER_ITEMS})
+        self.as_initModulesFilterS({'enabled': True,
+         'selectedIndex': index,
+         'data': _TYPE_FILTER_ITEMS})
 
     def _getClientSectionKey(self):
-        return 'storage_opt_devices'
+        pass
 
     def _getItemTypeID(self):
         return GUI_ITEM_TYPE.OPTIONALDEVICE

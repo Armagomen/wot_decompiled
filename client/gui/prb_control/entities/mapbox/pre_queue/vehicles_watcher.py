@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/mapbox/pre_queue/vehicles_watcher.py
 from itertools import chain
 from constants import Configs
 from gui.prb_control.entities.base.pre_queue.vehicles_watcher import LimitedLevelVehiclesWatcher, RestrictedVehiclesWatcher
@@ -20,10 +22,7 @@ class MapboxVehiclesWatcher(LimitedLevelVehiclesWatcher, RestrictedVehiclesWatch
         super(MapboxVehiclesWatcher, self).stop()
 
     def _getUnsuitableVehicles(self, onClear=False):
-        return chain.from_iterable((
-         LimitedLevelVehiclesWatcher._getUnsuitableVehicles(self, onClear),
-         RestrictedVehiclesWatcher._getUnsuitableVehicles(self, onClear),
-         self._getUnsuitableVehiclesBase()))
+        return chain.from_iterable((LimitedLevelVehiclesWatcher._getUnsuitableVehicles(self, onClear), RestrictedVehiclesWatcher._getUnsuitableVehicles(self, onClear), self._getUnsuitableVehiclesBase()))
 
     def _getForbiddenVehicleClasses(self):
         return self.__mapboxCtrl.getModeSettings().forbiddenClassTags

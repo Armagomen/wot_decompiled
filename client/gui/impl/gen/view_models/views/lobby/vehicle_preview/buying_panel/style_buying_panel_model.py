@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/vehicle_preview/buying_panel/style_buying_panel_model.py
 from enum import IntEnum
 from frameworks.wulf import ViewModel
 
@@ -8,7 +10,7 @@ class StyleBuyingStatus(IntEnum):
 
 
 class StyleBuyingPanelModel(ViewModel):
-    __slots__ = ('onBuy', )
+    __slots__ = ('onBuy',)
 
     def __init__(self, properties=5, commands=1):
         super(StyleBuyingPanelModel, self).__init__(properties=properties, commands=commands)

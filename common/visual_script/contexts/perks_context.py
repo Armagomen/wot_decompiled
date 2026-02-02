@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/visual_script/contexts/perks_context.py
 import weakref
 from VSPlanEvents import OnVehicleEquipmentActivated, OnInnerDeviceWasCrit, OnVehicleTotalDamageDealtIncrease, OnVehicleAssistIncrease, OnVehicleInRange, OnVehicleShotDamagedEnemyVehicle, OnVehicleRadioDistanceChange, OnWitnessEnemyDamaged, OnTankmanStatusChanged
 from items.components.perks_constants import PerkState
@@ -9,7 +11,7 @@ class PerkNotifyState(VScriptEnum):
 
     @classmethod
     def vs_name(cls):
-        return 'state'
+        pass
 
     @classmethod
     def vs_enum(cls):
@@ -91,13 +93,11 @@ class PerkContext(VScriptContext):
     def getVehicleID(self):
         return self._aspectImpl.vehicleID
 
-    @vse_func_call(None, (
-     SLOT_TYPE.STR, SLOT_TYPE.FLOAT), display_name='AddFactorModifier', description='Adds a modifier for a specified factor', display_group='Perk')
+    @vse_func_call(None, (SLOT_TYPE.STR, SLOT_TYPE.FLOAT), display_name='AddFactorModifier', description='Adds a modifier for a specified factor', display_group='Perk')
     def addFactorModifier(self, factor, value):
         self._aspectImpl.addFactorModifier(factor, value)
 
-    @vse_func_call(None, (
-     SLOT_TYPE.STR, SLOT_TYPE.INT), display_name='RemoveFactorModifiers', description='Remove modifier by count', display_group='Perk')
+    @vse_func_call(None, (SLOT_TYPE.STR, SLOT_TYPE.INT), display_name='RemoveFactorModifiers', description='Remove modifier by count', display_group='Perk')
     def removeFactorModifiers(self, factor, numMods):
         self._aspectImpl.removeFactorModifiers(factor, numMods)
 
@@ -108,8 +108,7 @@ class PerkContext(VScriptContext):
     def setPerkLevel(self, level):
         self._aspectImpl.perkLevel = level
 
-    @vse_func_call(None, (
-     PerkNotifyState.slotType(), SLOT_TYPE.FLOAT), display_name='NotifyOnClient', description='Notify client on perk state change to perks panel', display_group='Perk')
+    @vse_func_call(None, (PerkNotifyState.slotType(), SLOT_TYPE.FLOAT), display_name='NotifyOnClient', description='Notify client on perk state change to perks panel', display_group='Perk')
     def notifyOnClient(self, state, lifeTime):
         self._aspectImpl.notifyOnClient(state, lifeTime)
 
@@ -132,8 +131,7 @@ class CrewContext(PerkContext):
     def needTankmanUpdate(self):
         return self._aspectImpl.needTankmanUpdate
 
-    @vse_func_call(None, (
-     SLOT_TYPE.FLOAT,), display_name='SetAmmoChangeFactorForVehicle', description='Set ammo change factor for vehicle (information only, does not change TTC)', display_group='Perk_403')
+    @vse_func_call(None, (SLOT_TYPE.FLOAT,), display_name='SetAmmoChangeFactorForVehicle', description='Set ammo change factor for vehicle (information only, does not change TTC)', display_group='Perk_403')
     def setAmmoChangeFactorForVehicle(self, factor):
         self._aspectImpl.setAmmoChangeFactorForVehicle(factor)
 

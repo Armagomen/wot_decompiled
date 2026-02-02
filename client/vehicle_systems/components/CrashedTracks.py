@@ -1,4 +1,9 @@
-import weakref, math_utils, Math, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/vehicle_systems/components/CrashedTracks.py
+import weakref
+import math_utils
+import Math
+import BigWorld
 from cgf_obsolete_script.auto_properties import AutoProperty
 from cgf_obsolete_script.py_component import Component
 from items.components.component_constants import MAIN_TRACK_PAIR_IDX, DEFAULT_TRACK_HIT_VECTOR, TrackState
@@ -135,8 +140,7 @@ class CrashedTrackController(Component):
 
     def __loadModel(self, trackAssembler):
         if not IS_EDITOR:
-            BigWorld.loadResourceListBG((
-             trackAssembler,), makeCallbackWeak(self.__onModelLoaded), loadingPriority(self.__entity.id))
+            BigWorld.loadResourceListBG((trackAssembler,), makeCallbackWeak(self.__onModelLoaded), loadingPriority(self.__entity.id))
             self.__loading = True
         else:
             self.__loading = True
@@ -148,8 +152,8 @@ class CrashedTrackController(Component):
 
     def __resetBrokenTracks(self):
         pairsCount = self.getPairsCnt()
-        self.__crashedTracks = {_TRACK_SIDE.LEFT: self.__getEmptyTrackStates(pairsCount), 
-           _TRACK_SIDE.RIGHT: self.__getEmptyTrackStates(pairsCount)}
+        self.__crashedTracks = {_TRACK_SIDE.LEFT: self.__getEmptyTrackStates(pairsCount),
+         _TRACK_SIDE.RIGHT: self.__getEmptyTrackStates(pairsCount)}
 
     def __reset(self):
         if self.__entity is None:
@@ -175,8 +179,7 @@ class CrashedTrackController(Component):
         if (self.__vehicleDesc.chassis.chassisType == CHASSIS_ITEM_TYPE.MONOLITHIC or self.__vehicleDesc.chassis.chassisType == CHASSIS_ITEM_TYPE.TRACK_WITHIN_TRACK) and tracksPresent:
             trackIndices = list(xrange(len(self.__vehicleDesc.chassis.tracks.trackPairs)))
         elif tracksPresent:
-            trackIndices = [
-             MAIN_TRACK_PAIR_IDX]
+            trackIndices = [MAIN_TRACK_PAIR_IDX]
         if self.baseTracksComponent is not None and self.baseTracksComponent.valid:
             for i in trackIndices:
                 hideLeftTrack = force or self.__crashedTracks[_TRACK_SIDE.LEFT][i].isBroken
@@ -202,25 +205,26 @@ class CrashedTrackController(Component):
     def __onModelLoaded(self, resources):
         if self.__entity is None or not self.__loading:
             return
-        self.__loading = False
-        model = resources[TankPartNames.CHASSIS]
-        self.__model = model
-        self.__model.matrix = self.__entity.filter.groundPlacingMatrix
-        self.__fashion = BigWorld.WGVehicleFashion()
-        matHandlers = self.__baseTrackFashion.getMaterialHandlers()
-        for handler in matHandlers:
-            self.__fashion.addMaterialHandler(handler)
+        else:
+            self.__loading = False
+            model = resources[TankPartNames.CHASSIS]
+            self.__model = model
+            self.__model.matrix = self.__entity.filter.groundPlacingMatrix
+            self.__fashion = BigWorld.WGVehicleFashion()
+            matHandlers = self.__baseTrackFashion.getMaterialHandlers()
+            for handler in matHandlers:
+                self.__fashion.addMaterialHandler(handler)
 
-        matHandlers = self.__baseTrackFashion.getTrackMaterialHandlers()
-        for handler in matHandlers:
-            self.__fashion.addTrackMaterialHandler(handler)
+            matHandlers = self.__baseTrackFashion.getTrackMaterialHandlers()
+            for handler in matHandlers:
+                self.__fashion.addTrackMaterialHandler(handler)
 
-        model_assembler.setupTracksFashion(self.__vehicleDesc, self.__fashion)
-        self.__model.setupFashions([self.__fashion])
-        rotationMProv = math_utils.MatrixProviders.product(self.__entity.model.node('hull'), Math.MatrixInverse(self.__model.node('Tank')))
-        self.__model.node('V', rotationMProv)
-        self.__setupTracksHiding()
-        if self.__isActive:
-            self.__entity.addModel(self.__model)
-            self.__applyVisibilityMask()
-        return
+            model_assembler.setupTracksFashion(self.__vehicleDesc, self.__fashion)
+            self.__model.setupFashions([self.__fashion])
+            rotationMProv = math_utils.MatrixProviders.product(self.__entity.model.node('hull'), Math.MatrixInverse(self.__model.node('Tank')))
+            self.__model.node('V', rotationMProv)
+            self.__setupTracksHiding()
+            if self.__isActive:
+                self.__entity.addModel(self.__model)
+                self.__applyVisibilityMask()
+            return

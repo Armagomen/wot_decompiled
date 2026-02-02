@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/info/bottom_panel_offer_gift.py
 import typing
 from gui.Scaleform.daapi.view.lobby.vehicle_preview.items_kit_helper import lookupItem, showItemTooltip
 from gui.Scaleform.daapi.view.meta.VehiclePreviewBottomPanelOfferGiftMeta import VehiclePreviewBottomPanelOfferGiftMeta

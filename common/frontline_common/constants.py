@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/common/frontline_common/constants.py
 
 
 class AccountSettingsKeys(object):
@@ -12,5 +14,7 @@ class CallbackDataNames(object):
     FL_MODIFIER = 'fl_modifier'
 
 
-ACCOUNT_DEFAULT_SETTINGS = {AccountSettingsKeys.EVENT_KEY: {AccountSettingsKeys.SKILL_POINTS_SHOWN: {}, AccountSettingsKeys.WELCOME_SCREEN_VIEWED: {}, AccountSettingsKeys.RENT_BANNER_CLICKED: False, 
-                                   AccountSettingsKeys.REWARD_TOKENS_RECEIVED: []}}
+ACCOUNT_DEFAULT_SETTINGS = {AccountSettingsKeys.EVENT_KEY: {AccountSettingsKeys.SKILL_POINTS_SHOWN: {},
+                                 AccountSettingsKeys.WELCOME_SCREEN_VIEWED: {},
+                                 AccountSettingsKeys.RENT_BANNER_CLICKED: False,
+                                 AccountSettingsKeys.REWARD_TOKENS_RECEIVED: []}}

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_light/scripts/client/comp7_light/gui/Scaleform/daapi/view/battle/stats_exchange.py
 import VOIP
 from comp7_core.gui.Scaleform.daapi.view.meta.Comp7BattleStatisticDataControllerMeta import Comp7BattleStatisticDataControllerMeta
 from comp7_core.gui.battle_control.arena_info.arena_vos import Comp7CoreKeys
@@ -18,19 +20,18 @@ class Comp7LightVehicleInfoComponent(vehicle.VehicleInfoComponent):
 
     def addVehicleInfo(self, vInfoVO, overrides):
         super(Comp7LightVehicleInfoComponent, self).addVehicleInfo(vInfoVO, overrides)
-        return self._data.update({'role': ROLE_TYPE_TO_LABEL.get(vInfoVO.vehicleType.role, ''), 
-           'skillLevel': vInfoVO.gameModeSpecific.getValue(Comp7CoreKeys.ROLE_SKILL_LEVEL, default=0), 
-           'voiceChatConnected': self.__getVoiceChatConnected(vInfoVO), 
-           'isSuperSquad': self.__isSuperSquad(vInfoVO)})
+        return self._data.update({'role': ROLE_TYPE_TO_LABEL.get(vInfoVO.vehicleType.role, ''),
+         'skillLevel': vInfoVO.gameModeSpecific.getValue(Comp7CoreKeys.ROLE_SKILL_LEVEL, default=0),
+         'voiceChatConnected': self.__getVoiceChatConnected(vInfoVO),
+         'isSuperSquad': self.__isSuperSquad(vInfoVO)})
 
     @classmethod
     def __getVoiceChatConnected(cls, vInfoVO):
         voipCtrl = cls.__sessionProvider.dynamic.getControllerByID(BATTLE_CTRL_ID.COMP7_VOIP_CTRL)
         if voipCtrl is None or not voipCtrl.isTeamVoipEnabled:
             return True
-        if vInfoVO.isEnemy() or not vInfoVO.isPlayer():
-            return True
-        return vInfoVO.gameModeSpecific.getValue(Comp7CoreKeys.VOIP_CONNECTED, default=False)
+        else:
+            return True if vInfoVO.isEnemy() or not vInfoVO.isPlayer() else vInfoVO.gameModeSpecific.getValue(Comp7CoreKeys.VOIP_CONNECTED, default=False)
 
     def __isSuperSquad(self, vInfoVO):
         superSquads = self.__sessionProvider.arenaVisitor.getArenaExtraData().get('superSquads', [])
@@ -47,15 +48,9 @@ class Comp7LightStatisticsDataController(Comp7BattleStatisticDataControllerMeta)
 
     def _createExchangeBroker(self, exchangeCtx):
         exchangeBroker = createExchangeBroker(exchangeCtx)
-        exchangeBroker.setVehiclesInfoExchange(vehicle.VehiclesExchangeBlock(Comp7LightVehicleInfoComponent(), positionComposer=broker.BiDirectionComposer(), idsComposers=(
-         vehicle.TeamsSortedIDsComposer(sortKey=vos_collections.Comp7LightSortKey),
-         vehicle.TeamsCorrelationIDsComposer()), statsComposers=None))
-        exchangeBroker.setVehiclesStatsExchange(vehicle.VehiclesExchangeBlock(DynamicVehicleStatsComponent(), positionComposer=broker.BiDirectionComposer(), idsComposers=None, statsComposers=(
-         vehicle.TotalStatsComposer(),)))
-        exchangeBroker.setVehicleStatusExchange(vehicle.VehicleStatusComponent(idsComposers=(
-         vehicle.TeamsSortedIDsComposer(sortKey=vos_collections.Comp7LightSortKey),
-         vehicle.TeamsCorrelationIDsComposer()), statsComposers=(
-         vehicle.TotalStatsComposer(),)))
+        exchangeBroker.setVehiclesInfoExchange(vehicle.VehiclesExchangeBlock(Comp7LightVehicleInfoComponent(), positionComposer=broker.BiDirectionComposer(), idsComposers=(vehicle.TeamsSortedIDsComposer(sortKey=vos_collections.Comp7LightSortKey), vehicle.TeamsCorrelationIDsComposer()), statsComposers=None))
+        exchangeBroker.setVehiclesStatsExchange(vehicle.VehiclesExchangeBlock(DynamicVehicleStatsComponent(), positionComposer=broker.BiDirectionComposer(), idsComposers=None, statsComposers=(vehicle.TotalStatsComposer(),)))
+        exchangeBroker.setVehicleStatusExchange(vehicle.VehicleStatusComponent(idsComposers=(vehicle.TeamsSortedIDsComposer(sortKey=vos_collections.Comp7LightSortKey), vehicle.TeamsCorrelationIDsComposer()), statsComposers=(vehicle.TotalStatsComposer(),)))
         return exchangeBroker
 
     def _getArenaWinTextShort(self):

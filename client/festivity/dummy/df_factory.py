@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/festivity/dummy/df_factory.py
 from festivity.dummy.df_controller import DummyController
 from festivity.dummy.df_processor import DummyCommandsProcessor
 from festivity.dummy.df_requester import DummyRequester

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/nation_change/NationChangeSettings.py
 from typing import List, Dict, Iterable
 from realm_utils import ResMgr
 from items import _xml
@@ -23,7 +25,7 @@ class NationChangeSettings(object):
             if vehicleTypeName in group.tankList:
                 return group
 
-        return
+        return None
 
     def iterGroups(self):
         return self.__groupById.itervalues()
@@ -41,8 +43,7 @@ class NationChangeSettings(object):
             for vehicle in changeableVehicles.values():
                 vehicleType = vehicle.asString
                 if vehicleType in unique:
-                    ctx = (
-                     xmlCtx, 'group')
+                    ctx = (xmlCtx, 'group')
                     _xml.raiseWrongXml(ctx, '', '%s is not unique' % (vehicleType,))
                     continue
                 unique.add(vehicleType)

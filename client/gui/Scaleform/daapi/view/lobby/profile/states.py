@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/profile/states.py
 import typing
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.framework.entities.View import ViewKey
@@ -26,17 +28,17 @@ class ServiceRecordState(SFViewLobbyState):
     def registerTransitions(self):
         from gui.impl.lobby.vehicle_hub import OverviewState, ModulesState
         from gui.impl.lobby.collection.states import CollectionState
+        from gui.Scaleform.daapi.view.lobby.store.browser.states import ShopState
         lsm = self.getMachine()
         self.addNavigationTransition(lsm.getStateByCls(OverviewState), record=True)
         self.addNavigationTransition(lsm.getStateByCls(ModulesState), record=True)
         self.addNavigationTransition(lsm.getStateByCls(CollectionState), record=True)
+        self.addNavigationTransition(lsm.getStateByCls(ShopState), record=True)
 
     def serializeParams(self):
         view = self.getMachine().getRelatedView(self)
         tabId = view.tabId
-        if tabId:
-            return {'ctx': {'selectedAlias': tabId}}
-        return {}
+        return {'ctx': {'selectedAlias': tabId}} if tabId else {}
 
     def getNavigationDescription(self):
         return LobbyStateDescription(title=backport.text(R.strings.pages.titles.service_record()))

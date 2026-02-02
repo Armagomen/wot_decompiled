@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/wgnc/proxy_data.py
 import logging
 from account_helpers import getAccountDatabaseID
 from adisp import adisp_process
@@ -325,8 +327,8 @@ class ShowMapboxSurveyAvailableMessage(_ProxyDataItem):
         return WGNC_DATA_PROXY_TYPE.MAPBOX_SURVEY_AVAILABLE_NOTIFICATION
 
     def show(self, _):
-        self.__systemMessages.proto.serviceChannel.pushClientMessage({'map': self.__mapName, 
-           'msgType': SCH_CLIENT_MSG_TYPE.MAPBOX_SURVEY_AVAILABLE}, SCH_CLIENT_MSG_TYPE.MAPBOX_SURVEY_AVAILABLE)
+        self.__systemMessages.proto.serviceChannel.pushClientMessage({'map': self.__mapName,
+         'msgType': SCH_CLIENT_MSG_TYPE.MAPBOX_SURVEY_AVAILABLE}, SCH_CLIENT_MSG_TYPE.MAPBOX_SURVEY_AVAILABLE)
 
 
 class ShowMapboxEventStartedMessage(_ProxyDataItem):
@@ -359,10 +361,10 @@ class ShowMapboxRewardReceivedMessage(_ProxyDataItem):
         return WGNC_DATA_PROXY_TYPE.MAPBOX_REWARD_RECEIVED_NOTIFICATION
 
     def show(self, _):
-        self.__systemMessages.proto.serviceChannel.pushClientMessage({'rewards': self.__rewardData['rewards'], 
-           'battles': self.__rewardData['battles'], 
-           'isFinal': self.__rewardData['isFinal'], 
-           'msgType': SCH_CLIENT_MSG_TYPE.MAPBOX_PROGRESSION_REWARD}, SCH_CLIENT_MSG_TYPE.MAPBOX_PROGRESSION_REWARD)
+        self.__systemMessages.proto.serviceChannel.pushClientMessage({'rewards': self.__rewardData['rewards'],
+         'battles': self.__rewardData['battles'],
+         'isFinal': self.__rewardData['isFinal'],
+         'msgType': SCH_CLIENT_MSG_TYPE.MAPBOX_PROGRESSION_REWARD}, SCH_CLIENT_MSG_TYPE.MAPBOX_PROGRESSION_REWARD)
 
 
 class ShowAuctionRateErrorMessage(_ProxyDataItem):
@@ -395,7 +397,8 @@ class ShowAuctionLostRateMessage(_ProxyDataItem):
         return WGNC_DATA_PROXY_TYPE.INTEGRATED_AUCTION_RATE_LOST
 
     def show(self, _):
-        self.__systemMessages.proto.serviceChannel.pushClientMessage({'data': self.__messageData, 'msgType': SCH_CLIENT_MSG_TYPE.INTEGRATED_AUCTION_LOST_RATE}, SCH_CLIENT_MSG_TYPE.INTEGRATED_AUCTION_LOST_RATE)
+        self.__systemMessages.proto.serviceChannel.pushClientMessage({'data': self.__messageData,
+         'msgType': SCH_CLIENT_MSG_TYPE.INTEGRATED_AUCTION_LOST_RATE}, SCH_CLIENT_MSG_TYPE.INTEGRATED_AUCTION_LOST_RATE)
 
 
 class ClanSupplyQuestUpdateMessage(_ProxyDataItem):

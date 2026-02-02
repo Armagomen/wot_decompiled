@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/hangar_presets/sub_systems/hangar_gui_dynamic_economics.py
 import typing
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as BONUS_CAPS
 from constants import ARENA_BONUS_TYPE
@@ -24,9 +26,7 @@ class HangarGuiDynamicEconomics(IHangarGuiController.IHangarGuiDynamicEconomics)
     def checkCurrentBonusCaps(self, bonusCaps, default=False):
         guiProvider = self.__providersHolder.getCurrentGuiProvider()
         bType = guiProvider.getSuggestedBonusType()
-        if bType != ARENA_BONUS_TYPE.UNKNOWN:
-            return self.__checkBonusCaps(bType, bonusCaps, guiProvider)
-        return default
+        return self.__checkBonusCaps(bType, bonusCaps, guiProvider) if bType != ARENA_BONUS_TYPE.UNKNOWN else default
 
     def checkCrystalRewards(self, bonusType):
         guiProvider = self.__providersHolder.getBonusGuiProvider(bonusType)
@@ -35,9 +35,7 @@ class HangarGuiDynamicEconomics(IHangarGuiController.IHangarGuiDynamicEconomics)
     def checkCurrentCrystalRewards(self, default=False):
         guiProvider = self.__providersHolder.getCurrentGuiProvider()
         bType = guiProvider.getSuggestedBonusType()
-        if bType != ARENA_BONUS_TYPE.UNKNOWN:
-            return self.__checkCrystalRewards(bType, guiProvider)
-        return default
+        return self.__checkCrystalRewards(bType, guiProvider) if bType != ARENA_BONUS_TYPE.UNKNOWN else default
 
     def __checkBonusCaps(self, bonusType, bonusCaps, guiProvider):
         return BONUS_CAPS.checkAny(bonusType, bonusCaps, specificOverrides=guiProvider.getBonusCapsOverrides())

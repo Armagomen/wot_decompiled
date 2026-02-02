@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_results/simple_stats_parameter_model.py
 from enum import Enum, IntEnum
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen import R
@@ -14,6 +16,7 @@ class RegularParamType(Enum):
     EXPLOSIONHITS = 'explosionHits'
     DAMAGEDEALT = 'damageDealt'
     SNIPERDAMAGEDEALT = 'sniperDamageDealt'
+    ARTILLERYSTRIKE = 'artilleryStrike'
     DIRECTHITSRECEIVED = 'directHitsReceived'
     PIERCINGSRECEIVED = 'piercingsReceived'
     NODAMAGEDIRECTHITSRECEIVED = 'noDamageDirectHitsReceived'

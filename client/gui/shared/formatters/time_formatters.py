@@ -1,12 +1,15 @@
-import math, time
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/formatters/time_formatters.py
+import math
+import time
 from gui.Scaleform.locale.MENU import MENU
 from gui.impl import backport
 from helpers import i18n, time_utils
 from rent_common import SeasonRentDuration
 from constants import GameSeasonType
 from season_common import getDateFromSeasonID
-_SEASON_TYPE_KEY = {GameSeasonType.EPIC: 'epic', 
-   GameSeasonType.RANKED: 'ranked'}
+_SEASON_TYPE_KEY = {GameSeasonType.EPIC: 'epic',
+ GameSeasonType.RANKED: 'ranked'}
 
 class RentDurationKeys(object):
     SEASON = 'season'
@@ -42,7 +45,6 @@ def getTimeLeftInfo(timeLeft, timeStyle=None):
         if timeLeft > time_utils.ONE_DAY:
             return (RentDurationKeys.DAYS, formatTime(timeLeft, time_utils.ONE_DAY, timeStyle))
         return (RentDurationKeys.HOURS, formatTime(timeLeft, time_utils.ONE_HOUR, timeStyle))
-    return ('inf', '')
 
 
 def getTimeLeftStr(localization, timeLeft, timeStyle=None, ctx=None, formatter=None):
@@ -62,14 +64,11 @@ def getDueDateOrTimeStr(finishTime, localization='', isShortDateFormat=False):
         return ''
     if time_utils.isToday(finishTime):
         strTime = backport.getShortTimeFormat(finishTime)
+    elif isShortDateFormat:
+        strTime = backport.getShortDateFormat(finishTime)
     else:
-        if isShortDateFormat:
-            strTime = backport.getShortDateFormat(finishTime)
-        else:
-            strTime = backport.getLongDateFormat(finishTime)
-        if localization:
-            return (' ').join([localization, strTime])
-    return strTime
+        strTime = backport.getLongDateFormat(finishTime)
+    return ' '.join([localization, strTime]) if localization else strTime
 
 
 def getTimeDurationStr(seconds, useRoundUp=False):
@@ -119,9 +118,7 @@ class RentLeftFormatter(object):
             return getTimeLeftStr(localization, self.__rentInfo.getTimeLeft(), timeStyle, ctx, formatter)
 
     def getUntilTimeLeftStr(self, finishTime, localization=''):
-        if self.__isIGR:
-            return ''
-        return getDueDateOrTimeStr(finishTime, localization)
+        return '' if self.__isIGR else getDueDateOrTimeStr(finishTime, localization)
 
     def getRentBattlesLeftStr(self, localization=None, formatter=None):
         if localization is None:
@@ -129,10 +126,7 @@ class RentLeftFormatter(object):
         if formatter is None:
             formatter = defaultFormatter
         battlesLeft = self.__rentInfo.battlesLeft
-        if battlesLeft > 0:
-            return formatter(localization, RentDurationKeys.BATTLES, battlesLeft)
-        else:
-            return ''
+        return formatter(localization, RentDurationKeys.BATTLES, battlesLeft) if battlesLeft > 0 else ''
 
     def getRentWinsLeftStr(self, localization=None, formatter=None):
         if localization is None:
@@ -140,10 +134,7 @@ class RentLeftFormatter(object):
         if formatter is None:
             formatter = defaultFormatter
         winsLeft = self.__rentInfo.winsLeft
-        if winsLeft > 0:
-            return formatter(localization, RentDurationKeys.WINS, winsLeft)
-        else:
-            return ''
+        return formatter(localization, RentDurationKeys.WINS, winsLeft) if winsLeft > 0 else ''
 
     def getRentSeasonLeftStr(self, rentData, localization=None, formatter=None, timeStyle=None, ctx=None):
         ctx = ctx or {}
@@ -160,9 +151,7 @@ class RentLeftFormatter(object):
             return i18n.makeString(localization % _SEASON_TYPE_KEY[rentData.seasonType] + '/base')
         else:
             ctx.update(extraData)
-            if not identifier:
-                return ''
-            return formatter(localization % _SEASON_TYPE_KEY[rentData.seasonType] + '/%s', identifier, timeLeftString, ctx)
+            return '' if not identifier else formatter(localization % _SEASON_TYPE_KEY[rentData.seasonType] + '/%s', identifier, timeLeftString, ctx)
 
     def getRentRankedSeasonLeftStr(self, rentData, timeStyle):
         ctx = {}

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/FLAccountComponent.py
 import AccountCommands
 from BaseAccountExtensionComponent import BaseAccountExtensionComponent
 from PlayerEvents import g_playerEvents as events
@@ -21,8 +23,7 @@ class FLAccountComponent(BaseAccountExtensionComponent):
 
     def enqueueEpic(self, vehInvID):
         if not events.isPlayerEntityChanging:
-            self.base.doCmdIntArr(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_ENQUEUE_IN_BATTLE_QUEUE, [
-             QUEUE_TYPE.EPIC, vehInvID])
+            self.base.doCmdIntArr(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_ENQUEUE_IN_BATTLE_QUEUE, [QUEUE_TYPE.EPIC, vehInvID])
 
     def dequeueEpic(self):
         if not events.isPlayerEntityChanging:

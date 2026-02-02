@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/xmpp/contacts/__init__.py
 from PlayerEvents import g_playerEvents
 from constants import IS_IGR_ENABLED, ARENA_GUI_TYPE, ARENA_GUI_TYPE_LABEL
 from helpers import dependency
@@ -29,7 +31,7 @@ _MAX_TRIES_FAILED_IN_LOBBY = 2
 _MAX_TRIES_FAILED_IN_BATTLE = 1
 
 class _UserPresence(ClientHolder):
-    __slots__ = ('__scope', )
+    __slots__ = ('__scope',)
     igrCtrl = dependency.descriptor(IIGRController)
     sessionProvider = dependency.descriptor(IBattleSessionProvider)
     connectionMgr = dependency.descriptor(IConnectionManager)
@@ -52,25 +54,21 @@ class _UserPresence(ClientHolder):
             return False
         if self.__scope == MESSENGER_SCOPE.BATTLE:
             if initial:
-                seq = (
-                 PRESENCE.AVAILABLE, PRESENCE.DND)
+                seq = (PRESENCE.AVAILABLE, PRESENCE.DND)
             else:
-                seq = (
-                 PRESENCE.DND,)
+                seq = (PRESENCE.DND,)
+        elif self.__scope == MESSENGER_SCOPE.LOBBY:
+            seq = (PRESENCE.AVAILABLE,)
         else:
-            if self.__scope == MESSENGER_SCOPE.LOBBY:
-                seq = (
-                 PRESENCE.AVAILABLE,)
-            else:
-                return False
-            for presence in seq:
-                if not initial and client.getClientPresence() == presence:
-                    continue
-                query = self.__createQuery(presence)
-                if IS_IGR_ENABLED:
-                    if self.igrCtrl:
-                        query.setIgrID(self.igrCtrl.getRoomType())
-                client.sendPresence(query)
+            return False
+        for presence in seq:
+            if not initial and client.getClientPresence() == presence:
+                continue
+            query = self.__createQuery(presence)
+            if IS_IGR_ENABLED:
+                if self.igrCtrl:
+                    query.setIgrID(self.igrCtrl.getRoomType())
+            client.sendPresence(query)
 
         return True
 
@@ -104,11 +102,11 @@ class VoipHandler(object):
 
     @storage_getter('users')
     def usersStorage(self):
-        return
+        return None
 
     @storage_getter('playerCtx')
     def playerCtx(self):
-        return
+        return None
 
     def addListeners(self):
         events = g_messengerEvents.voip
@@ -136,8 +134,7 @@ class VoipHandler(object):
 
 
 class ContactsManager(ClientEventsHandler):
-    __slots__ = ('__seq', '__tasks', '__cooldown', '__presence', '__voip', '__rqRestrictions',
-                 '__subsBatch', '__subsRestrictions')
+    __slots__ = ('__seq', '__tasks', '__cooldown', '__presence', '__voip', '__rqRestrictions', '__subsBatch', '__subsRestrictions')
 
     def __init__(self):
         super(ContactsManager, self).__init__()
@@ -157,11 +154,11 @@ class ContactsManager(ClientEventsHandler):
 
     @storage_getter('users')
     def usersStorage(self):
-        return
+        return None
 
     @storage_getter('playerCtx')
     def playerCtx(self):
-        return
+        return None
 
     def isInited(self):
         return self.__seq.isInited()
@@ -274,8 +271,7 @@ class ContactsManager(ClientEventsHandler):
         if contact.getItemType() not in XMPP_ITEM_TYPE.ROSTER_ITEMS:
             return (False, ClientContactError(CONTACT_ERROR_ID.ROSTER_ITEM_NOT_FOUND, contact.getFullName()))
         jid = contact.getJID()
-        tasks = [
-         roster_tasks.RemoveRosterItemTask(jid, contact.getName(), groups=contact.getGroups())]
+        tasks = [roster_tasks.RemoveRosterItemTask(jid, contact.getName(), groups=contact.getGroups())]
         if note_tasks.canNoteAutoDelete(contact):
             tasks.append(note_tasks.RemoveNoteTask(jid))
         if not shadowMode:
@@ -290,21 +286,17 @@ class ContactsManager(ClientEventsHandler):
         else:
             contact = self.usersStorage.getUser(dbID, PROTO_TYPE.XMPP)
             if not contact:
-                return (False,
-                 ClientContactError(CONTACT_ERROR_ID.CONTACT_ITEM_NOT_FOUND))
+                return (False, ClientContactError(CONTACT_ERROR_ID.CONTACT_ITEM_NOT_FOUND))
             if contact.getItemType() not in XMPP_ITEM_TYPE.ROSTER_ITEMS:
-                return (False,
-                 ClientContactError(CONTACT_ERROR_ID.ROSTER_ITEM_NOT_FOUND, contact.getFullName()))
+                return (False, ClientContactError(CONTACT_ERROR_ID.ROSTER_ITEM_NOT_FOUND, contact.getFullName()))
             groups = contact.getGroups()
             if include:
                 if not self.usersStorage.isGroupExists(include):
-                    return (False,
-                     ClientContactError(CONTACT_ERROR_ID.GROUP_NOT_FOUND, include))
+                    return (False, ClientContactError(CONTACT_ERROR_ID.GROUP_NOT_FOUND, include))
                 groups.add(include)
             if exclude:
                 if not self.usersStorage.isGroupExists(exclude):
-                    return (False,
-                     ClientContactError(CONTACT_ERROR_ID.GROUP_NOT_FOUND, exclude))
+                    return (False, ClientContactError(CONTACT_ERROR_ID.GROUP_NOT_FOUND, exclude))
                 groups.discard(exclude)
             if contact.getGroups() == groups:
                 return (True, None)
@@ -317,36 +309,30 @@ class ContactsManager(ClientEventsHandler):
         error = self._checkCooldown(CLIENT_ACTION_ID.ADD_GROUP)
         if error:
             return (False, error)
+        elif self.usersStorage.isGroupExists(name):
+            return (False, ClientContactError(CONTACT_ERROR_ID.GROUP_EXISTS, name))
+        elif len(self.usersStorage.getGroups()) >= CONTACT_LIMIT.GROUPS_MAX_COUNT:
+            return (False, ClientIntLimitError(LIMIT_ERROR_ID.MAX_GROUP, CONTACT_LIMIT.GROUPS_MAX_COUNT))
         else:
-            if self.usersStorage.isGroupExists(name):
-                return (False,
-                 ClientContactError(CONTACT_ERROR_ID.GROUP_EXISTS, name))
-            if len(self.usersStorage.getGroups()) >= CONTACT_LIMIT.GROUPS_MAX_COUNT:
-                return (False,
-                 ClientIntLimitError(LIMIT_ERROR_ID.MAX_GROUP, CONTACT_LIMIT.GROUPS_MAX_COUNT))
             self.usersStorage.addEmptyGroup(name)
             g_messengerEvents.users.onEmptyGroupsChanged({name}, None)
             self.__cooldown.process(CLIENT_ACTION_ID.ADD_GROUP)
-            return (
-             True, None)
+            return (True, None)
 
     @xmpp_query(QUERY_SIGN.GROUP_NAME, QUERY_SIGN.GROUP_NAME)
     def renameGroup(self, oldName, newName):
         error = self._checkCooldown(CLIENT_ACTION_ID.CHANGE_GROUP)
         if error:
             return (False, error)
+        elif self.usersStorage.isGroupExists(newName):
+            return (False, ClientContactError(CONTACT_ERROR_ID.GROUP_EXISTS))
+        elif newName == oldName:
+            return (False, ClientActionError(CLIENT_ACTION_ID.CHANGE_GROUP, CLIENT_ERROR_ID.GENERIC))
+        elif self.usersStorage.isGroupEmpty(oldName):
+            self.usersStorage.changeEmptyGroup(oldName, newName)
+            g_messengerEvents.users.onEmptyGroupsChanged({newName}, {oldName})
+            return (True, None)
         else:
-            if self.usersStorage.isGroupExists(newName):
-                return (False, ClientContactError(CONTACT_ERROR_ID.GROUP_EXISTS))
-            if newName == oldName:
-                return (False,
-                 ClientActionError(CLIENT_ACTION_ID.CHANGE_GROUP, CLIENT_ERROR_ID.GENERIC))
-            if self.usersStorage.isGroupEmpty(oldName):
-                self.usersStorage.changeEmptyGroup(oldName, newName)
-                g_messengerEvents.users.onEmptyGroupsChanged({
-                 newName}, {oldName})
-                return (
-                 True, None)
             task = self.__makeChangeGroupsChain(oldName, newName)
             self.__cooldown.process(CLIENT_ACTION_ID.CHANGE_GROUP)
             return self.__addTasks(CLIENT_ACTION_ID.CHANGE_GROUP, task.getJID(), False, task)
@@ -356,15 +342,13 @@ class ContactsManager(ClientEventsHandler):
         error = self._checkCooldown(CLIENT_ACTION_ID.CHANGE_GROUP)
         if error:
             return (False, error)
+        elif not self.usersStorage.isGroupExists(name):
+            return (False, ClientContactError(CONTACT_ERROR_ID.GROUP_NOT_FOUND, name))
+        elif self.usersStorage.isGroupEmpty(name):
+            self.usersStorage.changeEmptyGroup(name)
+            g_messengerEvents.users.onEmptyGroupsChanged(None, {name})
+            return (True, None)
         else:
-            if not self.usersStorage.isGroupExists(name):
-                return (False,
-                 ClientContactError(CONTACT_ERROR_ID.GROUP_NOT_FOUND, name))
-            if self.usersStorage.isGroupEmpty(name):
-                self.usersStorage.changeEmptyGroup(name)
-                g_messengerEvents.users.onEmptyGroupsChanged(None, {name})
-                return (
-                 True, None)
             if isForced:
                 task = self.__makeRemoveItemsByGroupChain(name)
             else:
@@ -379,28 +363,21 @@ class ContactsManager(ClientEventsHandler):
             return (False, error)
         contact = self.usersStorage.getUser(dbID, PROTO_TYPE.XMPP)
         if not contact or contact.isCurrentPlayer():
-            return (False,
-             ClientContactError(CONTACT_ERROR_ID.CONTACT_ITEM_NOT_FOUND))
+            return (False, ClientContactError(CONTACT_ERROR_ID.CONTACT_ITEM_NOT_FOUND))
         itemType = contact.getItemType()
         if itemType == XMPP_ITEM_TYPE.BLOCK_ITEM:
-            return (False,
-             ClientContactError(CONTACT_ERROR_ID.BLOCK_ITEM_EXISTS, contact.getFullName()))
+            return (False, ClientContactError(CONTACT_ERROR_ID.BLOCK_ITEM_EXISTS, contact.getFullName()))
         if itemType not in XMPP_ITEM_TYPE.ROSTER_ITEMS:
-            return (False,
-             ClientContactError(CONTACT_ERROR_ID.ROSTER_ITEM_NOT_FOUND, contact.getFullName()))
+            return (False, ClientContactError(CONTACT_ERROR_ID.ROSTER_ITEM_NOT_FOUND, contact.getFullName()))
         jid = contact.getJID()
         self.__cooldown.process(CLIENT_ACTION_ID.RQ_FRIENDSHIP)
         return self.__addTasks(CLIENT_ACTION_ID.RQ_FRIENDSHIP, jid, False, sub_tasks.AskSubscriptionTask(jid))
 
     def canApproveFriendship(self, contact):
-        if not self.client() or not self.client().isConnected():
-            return (False, ClientError(CLIENT_ERROR_ID.NOT_CONNECTED))
-        return self.__subsRestrictions.canApproveFriendship(contact)
+        return (False, ClientError(CLIENT_ERROR_ID.NOT_CONNECTED)) if not self.client() or not self.client().isConnected() else self.__subsRestrictions.canApproveFriendship(contact)
 
     def canCancelFriendship(self, contact):
-        if not self.client() or not self.client().isConnected():
-            return (False, ClientError(CLIENT_ERROR_ID.NOT_CONNECTED))
-        return self.__subsRestrictions.canCancelFriendship(contact)
+        return (False, ClientError(CLIENT_ERROR_ID.NOT_CONNECTED)) if not self.client() or not self.client().isConnected() else self.__subsRestrictions.canCancelFriendship(contact)
 
     @xmpp_query(QUERY_SIGN.DATABASE_ID)
     def approveFriendship(self, dbID):
@@ -410,15 +387,12 @@ class ContactsManager(ClientEventsHandler):
             return (result, error)
         if contact.getItemType() in XMPP_ITEM_TYPE.ROSTER_ITEMS:
             jid = contact.getJID()
-            tasks = [
-             sub_tasks.ApproveSubscriptionTask(jid)]
+            tasks = [sub_tasks.ApproveSubscriptionTask(jid)]
             if contact.getSubscription()[0] == _SUB.OFF:
                 tasks.append(sub_tasks.AskSubscriptionTask(jid))
         else:
             jid = makeContactJID(dbID)
-            tasks = (
-             sub_tasks.ApproveSubscriptionTask(jid),
-             sub_tasks.AskSubscriptionTask(jid))
+            tasks = (sub_tasks.ApproveSubscriptionTask(jid), sub_tasks.AskSubscriptionTask(jid))
         return self.__addTasks(CLIENT_ACTION_ID.APPROVE_FRIENDSHIP, jid, False, *tasks)
 
     @xmpp_query(QUERY_SIGN.DATABASE_ID)
@@ -479,8 +453,7 @@ class ContactsManager(ClientEventsHandler):
         if itemType not in XMPP_ITEM_TYPE.PERSISTENT_BLOCKING_LIST:
             return (False, ClientContactError(CONTACT_ERROR_ID.BLOCK_ITEM_NOT_FOUND, contact.getFullName()))
         jid = contact.getJID()
-        tasks = [
-         block_tasks.RemoveBlockItemTask(jid, contact.getName())]
+        tasks = [block_tasks.RemoveBlockItemTask(jid, contact.getName())]
         if itemType == XMPP_ITEM_TYPE.ROSTER_BLOCK_ITEM:
             tasks.append(roster_tasks.RemoveRosterItemTask(jid, contact.getName(), groups=contact.getItem().getRosterGroups()))
         if note_tasks.canNoteAutoDelete(contact):
@@ -505,9 +478,9 @@ class ContactsManager(ClientEventsHandler):
         contact = self.usersStorage.getUser(dbID)
         if not contact:
             return (False, ClientContactError(CONTACT_ERROR_ID.CONTACT_ITEM_NOT_FOUND))
+        elif not contact.isMuted():
+            return (False, ClientContactError(CONTACT_ERROR_ID.MUTED_ITEM_NOT_FOUND, contact.getFullName()))
         else:
-            if not contact.isMuted():
-                return (False, ClientContactError(CONTACT_ERROR_ID.MUTED_ITEM_NOT_FOUND, contact.getFullName()))
             contact.removeTags({USER_TAG.MUTED})
             g_messengerEvents.users.onUserActionReceived(USER_ACTION_ID.MUTE_UNSET, contact, False)
             return (True, None)
@@ -519,8 +492,7 @@ class ContactsManager(ClientEventsHandler):
             return (False, error)
         contact = self.usersStorage.getUser(dbID)
         if not contact or not contact.getTags():
-            return (False,
-             ClientContactError(CONTACT_ERROR_ID.CONTACT_ITEM_NOT_FOUND))
+            return (False, ClientContactError(CONTACT_ERROR_ID.CONTACT_ITEM_NOT_FOUND))
         jid = makeContactJID(dbID)
         self.__cooldown.process(CLIENT_ACTION_ID.SET_NOTE)
         return self.__addTasks(CLIENT_ACTION_ID.SET_NOTE, jid, False, note_tasks.SetNoteTask(jid, note))
@@ -532,11 +504,9 @@ class ContactsManager(ClientEventsHandler):
             return (False, error)
         contact = self.usersStorage.getUser(dbID)
         if not contact or not contact.getTags():
-            return (False,
-             ClientContactError(CONTACT_ERROR_ID.CONTACT_ITEM_NOT_FOUND))
+            return (False, ClientContactError(CONTACT_ERROR_ID.CONTACT_ITEM_NOT_FOUND))
         if not contact.getNote():
-            return (False,
-             ClientContactError(CONTACT_ERROR_ID.NOTE_NOT_FOUND, name=contact.getFullName()))
+            return (False, ClientContactError(CONTACT_ERROR_ID.NOTE_NOT_FOUND, name=contact.getFullName()))
         jid = makeContactJID(dbID)
         self.__cooldown.process(CLIENT_ACTION_ID.REMOVE_NOTE)
         return self.__addTasks(CLIENT_ACTION_ID.SET_NOTE, jid, False, note_tasks.RemoveNoteTask(jid))
@@ -580,15 +550,14 @@ class ContactsManager(ClientEventsHandler):
                 for task in tasks[:-1]:
                     task.setShadowMode(actionID, False)
 
-                tasks[(-1)].setShadowMode(actionID, True)
+                tasks[-1].setShadowMode(actionID, True)
             else:
                 g_logOutput.error(_LOG.PY_WRAPPER, "Trying to shadow tasks seq, but some tasks can't be shadowed")
                 g_messengerEvents.shadow.onActionFailed(jid.getDatabaseID(), actionID, None)
         if self.__tasks.addTasks(jid, *tasks):
             self.__tasks.runFirstTask(jid)
         else:
-            return (
-             False, ClientActionError(actionID, CLIENT_ERROR_ID.LOCKED))
+            return (False, ClientActionError(actionID, CLIENT_ERROR_ID.LOCKED))
         return (True, None)
 
     def __handleConnected(self):

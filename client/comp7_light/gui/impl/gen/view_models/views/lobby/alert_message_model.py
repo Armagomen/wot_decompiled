@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_light/scripts/client/comp7_light/gui/impl/gen/view_models/views/lobby/alert_message_model.py
 from enum import Enum
 from frameworks.wulf import ViewModel
 
@@ -10,7 +12,7 @@ class State(Enum):
 
 
 class AlertMessageModel(ViewModel):
-    __slots__ = ('onClick', )
+    __slots__ = ('onClick',)
 
     def __init__(self, properties=1, commands=1):
         super(AlertMessageModel, self).__init__(properties=properties, commands=commands)

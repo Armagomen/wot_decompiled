@@ -1,8 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/user_missions/hub/tabs/basic_missions/premium_daily/premium_daily_missions_block_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.user_missions.hub.tabs.basic_missions.premium_daily.premium_daily_mission_model import PremiumDailyMissionModel
 
 class PremiumDailyMissionsBlockModel(ViewModel):
-    __slots__ = ('onPurchasePremium', )
+    __slots__ = ('onPurchasePremium',)
 
     def __init__(self, properties=2, commands=1):
         super(PremiumDailyMissionsBlockModel, self).__init__(properties=properties, commands=commands)

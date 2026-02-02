@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/hangar_presets/obsolete/hangar_gui_sf_controller.py
 import typing
 from gui.hangar_presets.obsolete.hangar_gui_helpers import hasCurrentPreset
 from skeletons.gui.game_control import IHangarGuiController
@@ -53,16 +55,17 @@ class HangarGuiScaleformController(IHangarGuiController.IHangarGuiScaleformContr
             self.__isChangeableComponentsVisible = None
         if isVisible == self.__isChangeableComponentsVisible or self.__hangar is None:
             return
-        components = self.__getChangeableComponents()
-        isChangeableComponentsVisible = len(components) > 0 and isVisible
-        if isChangeableComponentsVisible:
-            shownComponents, hiddenComponents = components, []
         else:
-            shownComponents, hiddenComponents = [], components
-        self.__hangar.as_setControlsVisibleS(isChangeableComponentsVisible)
-        self.__hangar.as_updateHangarComponentsS(shownComponents, hiddenComponents)
-        self.__isChangeableComponentsVisible = isChangeableComponentsVisible
-        return
+            components = self.__getChangeableComponents()
+            isChangeableComponentsVisible = len(components) > 0 and isVisible
+            if isChangeableComponentsVisible:
+                shownComponents, hiddenComponents = components, []
+            else:
+                shownComponents, hiddenComponents = [], components
+            self.__hangar.as_setControlsVisibleS(isChangeableComponentsVisible)
+            self.__hangar.as_updateHangarComponentsS(shownComponents, hiddenComponents)
+            self.__isChangeableComponentsVisible = isChangeableComponentsVisible
+            return
 
     @hasCurrentPreset(defReturn=())
     def __getChangeableComponents(self, preset=None):

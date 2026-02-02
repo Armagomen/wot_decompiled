@@ -1,6 +1,11 @@
-import sys, weakref, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/battle_hints/controller.py
+import sys
+import weakref
+import typing
 from typing import Optional, Dict, Tuple, Union
-import BattleReplay, replay
+import BattleReplay
+import replay
 from PlayerEvents import g_playerEvents
 from debug_utils import LOG_DEBUG
 from gui.battle_control.view_components import ViewComponentsController
@@ -16,12 +21,11 @@ from wotdecorators import condition
 if typing.TYPE_CHECKING:
     from hints.battle.schemas.base import CHMType
     from gui.battle_control.controllers.battle_hints.queues import BattleHintsQueue, BattleHint
-    BHComponentTypes = Optional[Union[(weakref.ProxyType[BattleHintComponent], BattleHintComponent)]]
+    BHComponentTypes = Optional[Union[weakref.ProxyType[BattleHintComponent], BattleHintComponent]]
 _logger = getLogger('Controller')
 
 class BattleHintsController(ViewComponentsController):
-    __slots__ = ('_modelsMgr', '_queuesMgr', '_history', '_maxPriorityOffset', '_components',
-                 '__weakref__', '_replayController', '_closeOnRoundFinished', '_started')
+    __slots__ = ('_modelsMgr', '_queuesMgr', '_history', '_maxPriorityOffset', '_components', '__weakref__', '_replayController', '_closeOnRoundFinished', '_started')
     ifStarted = condition('_started', logFunc=LOG_DEBUG, logStack=False)
 
     def __init__(self, closeOnRoundFinished=True):
@@ -151,14 +155,14 @@ class BattleHintsController(ViewComponentsController):
         if not self._modelsMgr:
             _logger.warning('Models manager not initialized.')
             return None
+        model = self._modelsMgr.get(hintName)
+        if not model:
+            _logger.error('Unknown hint <%s>.', hintName)
+            return None
+        elif not model.validate():
+            _logger.debug('Not suitable hint <%s> or hint is disabled.', hintName)
+            return None
         else:
-            model = self._modelsMgr.get(hintName)
-            if not model:
-                _logger.error('Unknown hint <%s>.', hintName)
-                return None
-            if not model.validate():
-                _logger.debug('Not suitable hint <%s> or hint is disabled.', hintName)
-                return None
             return model
 
     def _findComponent(self, alias):

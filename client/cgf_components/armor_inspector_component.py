@@ -1,6 +1,11 @@
-import typing, logging
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/cgf_components/armor_inspector_component.py
+import typing
+import logging
 from functools import partial
-import BigWorld, CGF, armor_inspector
+import BigWorld
+import CGF
+import armor_inspector
 from account_helpers.settings_core.settings_constants import GRAPHICS
 from cgf_script.component_meta_class import registerComponent
 from cgf_script.managers_registrator import autoregister, onAddedQuery, onRemovedQuery
@@ -11,7 +16,7 @@ from skeletons.account_helpers.settings_core import ISettingsCore
 from cgf_common.cgf_helpers import getParentComponentByGameObject
 if typing.TYPE_CHECKING:
     from gui.impl.lobby.vehicle_hub.sub_presenters.armor.config.models import TierModel
-    MatInfo = typing.Tuple[(int, float, float)]
+    MatInfo = typing.Tuple[int, float, float]
 _logger = logging.getLogger(__name__)
 
 @registerComponent
@@ -61,9 +66,7 @@ class ArmorInspectorManager(CGF.ComponentManager):
             return
 
     def _show(self, tankID, collision, materials, tierModel):
-        armor_inspector.show(self.spaceID, tankID, collision, materials, (
-         tierModel.normalArmor.min, tierModel.normalArmor.max), (
-         tierModel.spacedArmor.min, tierModel.spacedArmor.max))
+        armor_inspector.show(self.spaceID, tankID, collision, materials, (tierModel.normalArmor.min, tierModel.normalArmor.max), (tierModel.spacedArmor.min, tierModel.spacedArmor.max))
         self._stopTimer(tankID)
 
     @onRemovedQuery(ArmorInspectorComponent)

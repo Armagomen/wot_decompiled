@@ -1,28 +1,30 @@
-import cPickle, Event
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client_common/ClientPrebattle.py
+import cPickle
+import Event
 from constants import PREBATTLE_UPDATE, PREBATTLE_TEAM_STATE
 from debug_utils import LOG_DEBUG_DEV
 
 class ClientPrebattle(object):
-    __onUpdate = {PREBATTLE_UPDATE.ROSTER: '_ClientPrebattle__onRosterReceived', 
-       PREBATTLE_UPDATE.PLAYER_ADDED: '_ClientPrebattle__onPlayerAdded', 
-       PREBATTLE_UPDATE.PLAYER_REMOVED: '_ClientPrebattle__onPlayerRemoved', 
-       PREBATTLE_UPDATE.PLAYER_STATE: '_ClientPrebattle__onPlayerStateChanged', 
-       PREBATTLE_UPDATE.PLAYER_ROSTER: '_ClientPrebattle__onPlayerRosterChanged', 
-       PREBATTLE_UPDATE.PLAYER_GROUP: '_ClientPrebattle__onPlayerGroupChanged', 
-       PREBATTLE_UPDATE.TEAM_STATES: '_ClientPrebattle__onTeamStatesReceived', 
-       PREBATTLE_UPDATE.SETTINGS: '_ClientPrebattle__onSettingsReceived', 
-       PREBATTLE_UPDATE.SETTING: '_ClientPrebattle__onSettingUpdated', 
-       PREBATTLE_UPDATE.KICKED_FROM_QUEUE: '_ClientPrebattle__onKickedFromQueue', 
-       PREBATTLE_UPDATE.PROPERTIES: '_ClientPrebattle__onPropertiesReceived', 
-       PREBATTLE_UPDATE.PROPERTY: '_ClientPrebattle__onPropertyUpdated'}
+    __onUpdate = {PREBATTLE_UPDATE.ROSTER: '_ClientPrebattle__onRosterReceived',
+     PREBATTLE_UPDATE.PLAYER_ADDED: '_ClientPrebattle__onPlayerAdded',
+     PREBATTLE_UPDATE.PLAYER_REMOVED: '_ClientPrebattle__onPlayerRemoved',
+     PREBATTLE_UPDATE.PLAYER_STATE: '_ClientPrebattle__onPlayerStateChanged',
+     PREBATTLE_UPDATE.PLAYER_ROSTER: '_ClientPrebattle__onPlayerRosterChanged',
+     PREBATTLE_UPDATE.PLAYER_GROUP: '_ClientPrebattle__onPlayerGroupChanged',
+     PREBATTLE_UPDATE.TEAM_STATES: '_ClientPrebattle__onTeamStatesReceived',
+     PREBATTLE_UPDATE.SETTINGS: '_ClientPrebattle__onSettingsReceived',
+     PREBATTLE_UPDATE.SETTING: '_ClientPrebattle__onSettingUpdated',
+     PREBATTLE_UPDATE.KICKED_FROM_QUEUE: '_ClientPrebattle__onKickedFromQueue',
+     PREBATTLE_UPDATE.PROPERTIES: '_ClientPrebattle__onPropertiesReceived',
+     PREBATTLE_UPDATE.PROPERTY: '_ClientPrebattle__onPropertyUpdated'}
 
     def __init__(self, prebattleID):
         self.id = prebattleID
         self.settings = None
         self.properties = None
         self.rosters = {}
-        self.teamStates = [
-         None, PREBATTLE_TEAM_STATE.NOT_READY, PREBATTLE_TEAM_STATE.NOT_READY]
+        self.teamStates = [None, PREBATTLE_TEAM_STATE.NOT_READY, PREBATTLE_TEAM_STATE.NOT_READY]
         self.__eventManager = Event.EventManager()
         em = self.__eventManager
         self.onRosterReceived = Event.Event(em)
@@ -50,19 +52,18 @@ class ClientPrebattle(object):
 
     def __accInfoAsDict(self, accInfoAsTuple):
         pID, name, dbID, badges, roster, state, time, vehCompDescr, igrType, clanDBID, clanAbbrev, group, vehEnhancements, role = accInfoAsTuple
-        return (roster, pID,
-         {'name': name, 
-            'dbID': dbID, 
-            'badges': badges, 
-            'state': state, 
-            'time': time, 
-            'vehCompDescr': vehCompDescr, 
-            'clanDBID': clanDBID, 
-            'clanAbbrev': clanAbbrev, 
-            'igrType': igrType, 
-            'group': group, 
-            'vehEnhancements': vehEnhancements, 
-            'role': role})
+        return (roster, pID, {'name': name,
+          'dbID': dbID,
+          'badges': badges,
+          'state': state,
+          'time': time,
+          'vehCompDescr': vehCompDescr,
+          'clanDBID': clanDBID,
+          'clanAbbrev': clanAbbrev,
+          'igrType': igrType,
+          'group': group,
+          'vehEnhancements': vehEnhancements,
+          'role': role})
 
     def __onRosterReceived(self, argStr):
         rostersAsList = cPickle.loads(argStr)

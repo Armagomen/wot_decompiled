@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/framework/entities/BaseDAAPIComponent.py
 import logging
 from gui.Scaleform.framework.entities.BaseDAAPIModule import BaseDAAPIModule
 from gui.Scaleform.framework.entities.abstract.BaseDAAPIComponentMeta import BaseDAAPIComponentMeta
@@ -7,11 +9,12 @@ _logger = logging.getLogger(__name__)
 def _registerReloadedComponent(viewPy, componentsSnapshot):
     if viewPy is None or not componentsSnapshot:
         return
-    for flashObject, alias, snapshot in componentsSnapshot:
-        viewPy.registerFlashComponent(flashObject, alias)
-        _registerReloadedComponent(viewPy.getComponent(alias), snapshot)
+    else:
+        for flashObject, alias, snapshot in componentsSnapshot:
+            viewPy.registerFlashComponent(flashObject, alias)
+            _registerReloadedComponent(viewPy.getComponent(alias), snapshot)
 
-    return
+        return
 
 
 class BaseDAAPIComponent(BaseDAAPIComponentMeta):
@@ -29,8 +32,7 @@ class BaseDAAPIComponent(BaseDAAPIComponentMeta):
 
     @property
     def componentsSnapshot(self):
-        return [ (viewPy.flashObject, viewAlias, getattr(viewPy, 'componentsSnapshot', [])) for viewAlias, viewPy in self.__components.iteritems()
-               ]
+        return [ (viewPy.flashObject, viewAlias, getattr(viewPy, 'componentsSnapshot', [])) for viewAlias, viewPy in self.__components.iteritems() ]
 
     def getComponent(self, alias):
         if alias in self.__components:

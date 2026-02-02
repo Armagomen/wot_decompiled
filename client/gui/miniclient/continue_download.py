@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/miniclient/continue_download.py
 import BigWorld
 from gui import GUI_SETTINGS
 from gui.DialogsInterface import showDialog
@@ -17,8 +19,7 @@ class _PrepareLibrariesListAspect(aop.Aspect):
 class PrepareLibrariesListPointcut(aop.Pointcut):
 
     def __init__(self):
-        aop.Pointcut.__init__(self, 'gui.Scaleform.lobby_entry', 'LobbyEntry', '_getRequiredLibraries', aspects=(
-         _PrepareLibrariesListAspect,))
+        aop.Pointcut.__init__(self, 'gui.Scaleform.lobby_entry', 'LobbyEntry', '_getRequiredLibraries', aspects=(_PrepareLibrariesListAspect,))
 
 
 class _OnHyperlinkClickAspect(aop.Aspect):
@@ -48,29 +49,25 @@ class _OnFailLoadingFrameAspect(aop.Aspect):
 class OnHyperlinkClickPointcut(aop.Pointcut):
 
     def __init__(self):
-        aop.Pointcut.__init__(self, 'gui.Scaleform.daapi.view.meta.MiniClientComponentMeta', 'MiniClientComponentMeta', 'onHyperlinkClick', aspects=(
-         _OnHyperlinkClickAspect,))
+        aop.Pointcut.__init__(self, 'gui.Scaleform.daapi.view.meta.MiniClientComponentMeta', 'MiniClientComponentMeta', 'onHyperlinkClick', aspects=(_OnHyperlinkClickAspect,))
 
 
 class OnSquadHyperlinkClickPointcut(aop.Pointcut):
 
     def __init__(self):
-        aop.Pointcut.__init__(self, 'gui.Scaleform.daapi.view.lobby.prb_windows.SquadPromoWindow', 'SquadPromoWindow', 'onHyperlinkClick', aspects=(
-         _OnHyperlinkClickAspect,))
+        aop.Pointcut.__init__(self, 'gui.Scaleform.daapi.view.lobby.prb_windows.SquadPromoWindow', 'SquadPromoWindow', 'onHyperlinkClick', aspects=(_OnHyperlinkClickAspect,))
 
 
 class OnBrowserHyperlinkClickPointcut(aop.Pointcut):
 
     def __init__(self):
-        aop.Pointcut.__init__(self, 'WebBrowser', 'EventListener', 'onFilterNavigation', aspects=(
-         _OnBrowserHyperlinkClickAspect,))
+        aop.Pointcut.__init__(self, 'WebBrowser', 'EventListener', 'onFilterNavigation', aspects=(_OnBrowserHyperlinkClickAspect,))
 
 
 class OnFailLoadingFramePointcut(aop.Pointcut):
 
     def __init__(self):
-        aop.Pointcut.__init__(self, 'WebBrowser', 'EventListener', 'onFailLoadingFrame', aspects=(
-         _OnFailLoadingFrameAspect,))
+        aop.Pointcut.__init__(self, 'WebBrowser', 'EventListener', 'onFailLoadingFrame', aspects=(_OnFailLoadingFrameAspect,))
 
 
 def _show_continue_client_download_dialog():

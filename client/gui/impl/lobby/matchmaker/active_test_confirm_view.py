@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/matchmaker/active_test_confirm_view.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.matchmaker.active_test_confirm_view_model import ActiveTestConfirmViewModel
@@ -24,7 +26,7 @@ class ActiveTestConfirmView(FullScreenDialogView):
 
     def _onLoading(self, *args, **kwargs):
         super(ActiveTestConfirmView, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setClusterName(self.__connectionMgr.serverUserNameShort)
             tx.setTimeRangeStart(self.__startTime)
             tx.setTimeRangeEnd(self.__finishTime)

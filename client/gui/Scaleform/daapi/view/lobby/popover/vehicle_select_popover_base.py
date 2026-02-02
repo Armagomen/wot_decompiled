@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/popover/vehicle_select_popover_base.py
 import nations
 from gui import GUI_NATIONS_ORDER_INDEX_REVERSED
 from gui.Scaleform.daapi.view.meta.VehicleSelectPopoverMeta import VehicleSelectPopoverMeta
@@ -48,15 +50,13 @@ class VehiclesDataProvider(SortableDAAPIDataProvider):
         self.__selectedDbID = 0
         self.__list = None
         self.__listMapping = {}
-        self._sort = (
-         (
-          'level', False),)
-        self.__sortMapping = {'check': lambda v: v['selected'], 
-           'nations': lambda v: GUI_NATIONS_ORDER_INDEX_REVERSED[nations.NAMES[v['nationID']]], 
-           'type': lambda v: VEHICLE_TYPES_ORDER_INDICES_REVERSED[v['type']], 
-           'level': lambda v: v['level'] << 16 | GUI_NATIONS_ORDER_INDEX_REVERSED[nations.NAMES[v['nationID']]] << 8 | VEHICLE_TYPES_ORDER_INDICES_REVERSED[v['type']], 
-           'name': lambda v: v['shortUserName'], 
-           'hangar': lambda v: v['inHangar']}
+        self._sort = (('level', False),)
+        self.__sortMapping = {'check': lambda v: v['selected'],
+         'nations': lambda v: GUI_NATIONS_ORDER_INDEX_REVERSED[nations.NAMES[v['nationID']]],
+         'type': lambda v: VEHICLE_TYPES_ORDER_INDICES_REVERSED[v['type']],
+         'level': lambda v: v['level'] << 16 | GUI_NATIONS_ORDER_INDEX_REVERSED[nations.NAMES[v['nationID']]] << 8 | VEHICLE_TYPES_ORDER_INDICES_REVERSED[v['type']],
+         'name': lambda v: v['shortUserName'],
+         'hangar': lambda v: v['inHangar']}
         return
 
     @property
@@ -68,7 +68,7 @@ class VehiclesDataProvider(SortableDAAPIDataProvider):
         return self.__list
 
     def emptyItem(self):
-        return
+        return None
 
     def pySortOn(self, fields, order):
         super(VehiclesDataProvider, self).pySortOn(fields, order)
@@ -97,7 +97,7 @@ class VehiclesDataProvider(SortableDAAPIDataProvider):
         self.refresh()
 
     def getSelected(self):
-        return tuple(v['dbID'] for v in self.__listMapping.itervalues() if v['selected'])
+        return tuple((v['dbID'] for v in self.__listMapping.itervalues() if v['selected']))
 
     def getLastSortMethod(self):
         return self._sort

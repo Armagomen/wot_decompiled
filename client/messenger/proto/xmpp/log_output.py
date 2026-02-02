@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/xmpp/log_output.py
 from debug_utils import LOG_DEBUG, LOG_WARNING, LOG_ERROR
 
 class CLIENT_LOG_AREA(object):
@@ -40,11 +42,11 @@ class ConsoleLogOutput(ILogOutput):
             name = CLIENT_LOG_AREA_NAMES[area]
         else:
             name = 'N/A'
-        return ('XMPP_PY::{0}. {1}').format(name, message)
+        return 'XMPP_PY::{0}. {1}'.format(name, message)
 
 
 class _LogOutputDecorator(ILogOutput):
-    __slots__ = ('__outputs', )
+    __slots__ = ('__outputs',)
 
     def __init__(self):
         super(_LogOutputDecorator, self).__init__()

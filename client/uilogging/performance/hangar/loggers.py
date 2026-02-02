@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/uilogging/performance/hangar/loggers.py
+import logging
+import typing
 from uilogging.base.logger import _BaseLogger as Logger, createPartnerID
 from uilogging.constants import DEFAULT_LOGGER_NAME
 from uilogging.performance.hangar.constants import Features, Groups, LogActions
@@ -56,8 +59,8 @@ class HangarMetricsLogger(object):
     __slots__ = ('_loggers', '_defaultLogger')
 
     def __init__(self):
-        self._loggers = {Groups.SPACE.value: _HangarSpaceMetricsLogger(), 
-           Groups.VIEWS.value: _HangarViewsMetricsLogger()}
+        self._loggers = {Groups.SPACE.value: _HangarSpaceMetricsLogger(),
+         Groups.VIEWS.value: _HangarViewsMetricsLogger()}
         self._defaultLogger = self._loggers[Groups.SPACE.value]
 
     def initialize(self):

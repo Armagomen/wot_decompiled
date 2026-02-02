@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/web/client_web_api/shop/unified_trade_in.py
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.framework.entities.EventSystemEntity import EventSystemEntity
 from gui.shared import events
@@ -29,4 +31,4 @@ class UnifiedTradeInEventHandler(C2WHandler, EventSystemEntity):
 
     @c2w(name='unified_trade_in_update')
     def __onTradeInDataChanged(self, *args, **kwargs):
-        return
+        return None

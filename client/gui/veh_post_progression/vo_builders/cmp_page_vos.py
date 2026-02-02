@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/veh_post_progression/vo_builders/cmp_page_vos.py
 import typing
 from gui.impl import backport
 from gui.impl.gen import R
@@ -8,7 +10,8 @@ if typing.TYPE_CHECKING:
 
 def _getButtonsVO(vehicle):
     baseVO = getBaseButtonsVO(vehicle)
-    baseVO.update({'compareBtnVisible': False, 'goToVehicleViewBtnVisible': False})
+    baseVO.update({'compareBtnVisible': False,
+     'goToVehicleViewBtnVisible': False})
     return baseVO
 
 
@@ -22,6 +25,6 @@ def getTitleVO(vehicle):
     baseVO = getBaseTitleVO(vehicle)
     tankUserName = vehicle.userName
     titleRes = R.strings.veh_post_progression.vehPostProgressionCmpView.title()
-    baseVO.update({'tankNameStr': text_styles.grandTitle(backport.text(titleRes, title=tankUserName)), 
-       'tankNameStrSmall': text_styles.promoTitle(backport.text(titleRes, title=tankUserName))})
+    baseVO.update({'tankNameStr': text_styles.grandTitle(backport.text(titleRes, title=tankUserName)),
+     'tankNameStrSmall': text_styles.promoTitle(backport.text(titleRes, title=tankUserName))})
     return baseVO

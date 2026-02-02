@@ -1,4 +1,8 @@
-import logging, typing, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/pet_system/requester.py
+import logging
+import typing
+import BigWorld
 from gui.pet_system.constants import PS_PDATA_KEYS
 from gui.shared.utils.requesters.abstract import AbstractSyncDataRequester
 from pet_system_common.pet_constants import PETS_SYSTEM_PDATA_KEY, PetStateBehavior

@@ -1,4 +1,7 @@
-import math, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/battle/frontline_respawn_view.py
+import math
+import BigWorld
 from frontline.gui.Scaleform.daapi.view.meta.FrontlineRespawnViewMeta import FrontlineRespawnViewMeta
 from frontline.gui.Scaleform.genConsts.FRONTLINE_BATTLE_VIEW_ALIASES import FRONTLINE_BATTLE_VIEW_ALIASES
 from frontline.gui.battle_control.controllers.frontline_respawn_ctrl import IFrontlineRespawnView
@@ -13,9 +16,8 @@ from gui.Scaleform.daapi.view.battle.shared.respawn import respawn_utils
 from gui.sounds.epic_sound_constants import EPIC_SOUND, EPIC_TIME_WWEVENTS
 import SoundGroups
 _BF_EB_COUNT_DOWN_SOUND_SECONDS = 10
-_DEFAULT_RESPAWN_POSITIONS = (
- {'position': (0, 0, 0), 
-    'isEnemyNear': 0},)
+_DEFAULT_RESPAWN_POSITIONS = ({'position': (0, 0, 0),
+  'isEnemyNear': 0},)
 
 class FrontlineRespawnView(FrontlineRespawnViewMeta, IFrontlineRespawnView):
     sessionProvider = dependency.descriptor(IBattleSessionProvider)
@@ -161,8 +163,8 @@ class FrontlineRespawnView(FrontlineRespawnViewMeta, IFrontlineRespawnView):
 
     def setSelectedPoint(self, pointId):
         ctrl = self.sessionProvider.dynamic.respawn
-        if ctrl is not None and 0 <= pointId < len(self.__lastRespawnPositions):
-            ctrl.requestPointForRespawn(self.__lastRespawnPositions[pointId]['position'])
+        if ctrl is not None:
+            0 <= pointId < len(self.__lastRespawnPositions) and ctrl.requestPointForRespawn(self.__lastRespawnPositions[pointId]['position'])
             self.__selectedPointID = pointId
         return
 
@@ -181,8 +183,7 @@ class FrontlineRespawnView(FrontlineRespawnViewMeta, IFrontlineRespawnView):
         def getY(p):
             return convert(p[2], height)
 
-        self.as_setRespawnLocationsS([ self.__makePointVO(getX(point['position']), getY(point['position']), bool(point['isEnemyNear'])) for point in self.__lastRespawnPositions
-                                     ])
+        self.as_setRespawnLocationsS([ self.__makePointVO(getX(point['position']), getY(point['position']), bool(point['isEnemyNear'])) for point in self.__lastRespawnPositions ])
         positions = [ point['position'] for point in self.__lastRespawnPositions ]
         self.__selectedPointID = positions.index(respawnInfo.chosenRespawnZone) if respawnInfo and respawnInfo.chosenRespawnZone in positions else -1
         self.as_setSelectedLocationS(self.__selectedPointID)
@@ -199,9 +200,9 @@ class FrontlineRespawnView(FrontlineRespawnViewMeta, IFrontlineRespawnView):
         self.__battleCtx = battleCtx
 
     def __makePointVO(self, x=0, y=0, isEnemyNear=False):
-        return {'x': x, 
-           'y': y, 
-           'isEnemyNear': isEnemyNear}
+        return {'x': x,
+         'y': y,
+         'isEnemyNear': isEnemyNear}
 
     def __playCountDownSound(self, play):
         if play is True:

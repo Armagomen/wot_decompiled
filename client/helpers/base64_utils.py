@@ -1,4 +1,10 @@
-import logging, base64, binascii, cPickle, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/helpers/base64_utils.py
+import logging
+import base64
+import binascii
+import cPickle
+import typing
 _logger = logging.getLogger(__name__)
 
 def base64UrlDecode(encodedValue):
@@ -13,16 +19,25 @@ def base64UrlDecode(encodedValue):
 def pack(raw):
     try:
         return base64.b64encode(cPickle.dumps(raw, cPickle.HIGHEST_PROTOCOL))
-    except (binascii.Error, cPickle.PickleError, UnicodeError, TypeError, ValueError):
+    except (binascii.Error,
+     cPickle.PickleError,
+     UnicodeError,
+     TypeError,
+     ValueError):
         _logger.exception('Packing data fail.')
 
-    return
+    return None
 
 
 def unpack(packed, default=None):
     try:
         return cPickle.loads(base64.b64decode(packed))
-    except (binascii.Error, cPickle.PickleError, UnicodeError, TypeError, ValueError, EOFError):
+    except (binascii.Error,
+     cPickle.PickleError,
+     UnicodeError,
+     TypeError,
+     ValueError,
+     EOFError):
         _logger.exception('Unpacking data fail.')
 
     return default

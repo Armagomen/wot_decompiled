@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/interactors/base_equipment.py
 from wg_async import wg_await, wg_async
 from BWUtil import AsyncReturn
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_setup_model import BaseSetupModel
@@ -57,7 +59,7 @@ class BaseEquipmentInteractor(BaseInteractor):
 
     @wg_async
     def showExitConfirmDialog(self):
-        result = yield wg_await(showTankSetupExitConfirmDialog(items=self.getChangedList(), vehicle=self.getItem(), fromSection=self.getName(), startState=(self.getChangedList() or BuyAndExchangeStateEnum).BUY_NOT_REQUIRED if 1 else None))
+        result = yield wg_await(showTankSetupExitConfirmDialog(items=self.getChangedList(), vehicle=self.getItem(), fromSection=self.getName(), startState=BuyAndExchangeStateEnum.BUY_NOT_REQUIRED if not self.getChangedList() else None))
         raise AsyncReturn(result)
         return
 

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/awards/items_collection_provider.py
 import logging
 from copy import deepcopy
 import typing
@@ -21,22 +23,20 @@ def _addCompensation(compensation, toUpdate):
     for ckey, cValue in compensation.iteritems():
         if ckey not in toUpdate:
             toUpdate[ckey] = cValue
-        else:
-            toUpdDataStruct = toUpdate[ckey]
-            if isinstance(cValue, dict):
-                if isinstance(toUpdDataStruct, dict):
-                    toUpdDataStruct.update(cValue)
-                elif isinstance(toUpdDataStruct, list):
-                    for kCV, vCV in cValue.iteritems():
-                        toUpdDataStruct.append({kCV: vCV})
+        toUpdDataStruct = toUpdate[ckey]
+        if isinstance(cValue, dict):
+            if isinstance(toUpdDataStruct, dict):
+                toUpdDataStruct.update(cValue)
+            elif isinstance(toUpdDataStruct, list):
+                for kCV, vCV in cValue.iteritems():
+                    toUpdDataStruct.append({kCV: vCV})
 
-            elif isinstance(cValue, list):
-                if isinstance(toUpdDataStruct, list):
-                    toUpdDataStruct.extend(cValue)
-                else:
-                    _logger.warning('The type of compensation and updatable must be list! Updatable is %s, item=%s', type(toUpdDataStruct).__name__, toUpdDataStruct)
+        if isinstance(cValue, list):
+            if isinstance(toUpdDataStruct, list):
+                toUpdDataStruct.extend(cValue)
             else:
-                _logger.warning('Unsupported data type for compensation applying: %')
+                _logger.warning('The type of compensation and updatable must be list! Updatable is %s, item=%s', type(toUpdDataStruct).__name__, toUpdDataStruct)
+        _logger.warning('Unsupported data type for compensation applying: %')
 
 
 class _OrderHelper(object):
@@ -113,10 +113,9 @@ class _OrderHelper(object):
                 if itemID == vItem['id']:
                     validSection.pop(i)
                     return vItem
-            else:
-                _logger.warning('"id" key has not been found in data item: %s in %s', vItem, validSection)
+            _logger.warning('"id" key has not been found in data item: %s in %s', vItem, validSection)
 
-        return
+        return None
 
 
 @adisp_async

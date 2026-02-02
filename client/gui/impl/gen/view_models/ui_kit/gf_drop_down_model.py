@@ -1,8 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/ui_kit/gf_drop_down_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.ui_kit.gf_drop_down_item import GfDropDownItem
 
 class GfDropDownModel(ViewModel):
-    __slots__ = ('onChange', )
+    __slots__ = ('onChange',)
 
     def __init__(self, properties=3, commands=1):
         super(GfDropDownModel, self).__init__(properties=properties, commands=commands)

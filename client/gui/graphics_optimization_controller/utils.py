@@ -1,4 +1,7 @@
-import Math, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/graphics_optimization_controller/utils.py
+import Math
+import typing
 PERMANENT_SETTING_ID = ''
 
 class OptimizationSetting(object):
@@ -19,14 +22,18 @@ class OptimizationSetting(object):
 
 
 def getRectBounds(x, y, width, height):
-    x, y, width, height = (
-     int(x), int(y), int(width), int(height))
+    x, y, width, height = (int(x),
+     int(y),
+     int(width),
+     int(height))
     return Math.Vector4(x, y, x + width, y + height)
 
 
 def rescaleRectBounds(scale, x, y, width, height):
-    return (
-     x * scale, y * scale, width * scale, height * scale)
+    return (x * scale,
+     y * scale,
+     width * scale,
+     height * scale)
 
 
 def getSettingsNames(config):

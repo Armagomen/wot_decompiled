@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/messenger/formatters/token_quest_subformatters.py
 from __future__ import absolute_import
 from future.utils import viewkeys, viewvalues
 from typing import Dict, List
@@ -54,10 +56,7 @@ class FunProgressionRewardsBaseFormatter(ServiceChannelFormatter, TokenQuestsSub
             msgId = self.__RES_SHORTCUT.progressionComplete.infiniteStarted()
         messageText = backport.text(msgId, modeName=self.getModeUserName())
         messageText = text_styles.concatStylesToMultiLine(messageText, rewardsFmt)
-        if resetText:
-            return text_styles.concatStylesToMultiLine(messageText, '', resetText)
-        else:
-            return messageText
+        return text_styles.concatStylesToMultiLine(messageText, '', resetText) if resetText else messageText
 
     @hasActiveProgression(defReturn=MessageData(None, None))
     def _formatSingleQuestCompletion(self, qInfo, rewards):
@@ -65,10 +64,13 @@ class FunProgressionRewardsBaseFormatter(ServiceChannelFormatter, TokenQuestsSub
         currProgression = self.getActiveProgression()
         messageHeader = backport.text(self.__RES_SHORTCUT.congratulation())
         rewardsFmt = self._getAchievesFormatter().formatQuestAchieves(rewards, asBattleFormatter=False)
-        messageText, template, priority, decorator = (None, self.__INFO_TEMPLATE, NotificationPriorityLevel.MEDIUM, None)
+        messageText, template, priority, decorator = (None,
+         self.__INFO_TEMPLATE,
+         NotificationPriorityLevel.MEDIUM,
+         None)
         if rewardsFmt and currProgression.config.name == pName and pCounter in currProgression.config.executors:
             executors = currProgression.config.executors
-            if pCounter != executors[(-1)]:
+            if pCounter != executors[-1]:
                 stageIndex = executors.index(pCounter) + 1
                 template, decorator = self.__PROGRESSION_STAGE_TEMPLATE, FunRandomProgressionStageMessageDecorator
                 messageText = backport.text(self.__RES_SHORTCUT.progressionStageComplete(), modeName=self.getModeUserName(), stage=stageIndex)
@@ -76,10 +78,8 @@ class FunProgressionRewardsBaseFormatter(ServiceChannelFormatter, TokenQuestsSub
             else:
                 messageText = self._formatProgressionCompletion(currProgression, rewardsFmt)
                 priority = NotificationPriorityLevel.HIGH
-        if messageText:
-            return MessageData(g_settings.msgTemplates.format(template, {'header': messageHeader, 'text': messageText}), self._getGuiSettings(None, key=template, priorityLevel=priority, decorator=decorator))
-        else:
-            return MessageData(None, None)
+        return MessageData(g_settings.msgTemplates.format(template, {'header': messageHeader,
+         'text': messageText}), self._getGuiSettings(None, key=template, priorityLevel=priority, decorator=decorator)) if messageText else MessageData(None, None)
 
 
 class FunProgressionRewardsAsyncFormatter(AsyncTokenQuestsSubFormatter, FunProgressionRewardsBaseFormatter):
@@ -132,9 +132,10 @@ class FunRandomLootBoxFormatter(QuestAchievesFormatter, FunAssetPacksMixin):
                 lootBox = cls._itemsCache.items.tokens.getLootBoxByTokenID(token)
                 if lootBox and lootBox.getCategory() == FEP_CATEGORY:
                     lbName = backport.text(cls.getModeLocalsResRoot().lootbox.dyn(lootBox.getType())())
-                    result.append(g_settings.htmlTemplates.format('funRandomLootBox', {'text': lbName, 'count': tokensData[token].get('count', 1)}))
+                    result.append(g_settings.htmlTemplates.format('funRandomLootBox', {'text': lbName,
+                     'count': tokensData[token].get('count', 1)}))
 
-        return ('\n').join(result)
+        return '\n'.join(result)
 
     @classmethod
     def _sortTokenFunc(cls, tokenId):
@@ -142,7 +143,6 @@ class FunRandomLootBoxFormatter(QuestAchievesFormatter, FunAssetPacksMixin):
             lootBox = cls._itemsCache.items.tokens.getLootBoxByTokenID(tokenId)
             if lootBox and lootBox.getType() in FunRandomLootBoxTypes.ORDERED:
                 return FunRandomLootBoxTypes.ORDERED.index(lootBox.getType())
-        return -1
 
 
 class FunModeItemsQuestAsyncFormatter(AsyncTokenQuestsSubFormatter, FunAssetPacksMixin):
@@ -172,5 +172,6 @@ class FunModeItemsQuestAsyncFormatter(AsyncTokenQuestsSubFormatter, FunAssetPack
         template = self.__INFO_TEMPLATE
         messageHeader = self.getModeUserName()
         messageText = self._achievesFormatter.formatQuestAchieves(rewards, asBattleFormatter=False)
-        messageData = g_settings.msgTemplates.format(template, {'header': messageHeader, 'text': messageText})
+        messageData = g_settings.msgTemplates.format(template, {'header': messageHeader,
+         'text': messageText})
         return MessageData(messageData, self._getGuiSettings(None, key=template))

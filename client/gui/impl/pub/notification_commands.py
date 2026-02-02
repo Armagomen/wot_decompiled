@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/pub/notification_commands.py
 import typing
 from frameworks.wulf import WindowStatus
 from gui.Scaleform.framework.entities.sf_window import SFWindow
@@ -39,16 +41,14 @@ class NotificationCommand(object):
 
 
 class WindowNotificationCommand(NotificationCommand):
-    __slots__ = ('__window', )
+    __slots__ = ('__window',)
 
     def __init__(self, window):
         super(WindowNotificationCommand, self).__init__()
         self.__window = window
 
     def __eq__(self, other):
-        if not isinstance(other, WindowNotificationCommand):
-            return False
-        return self.__window == other.getWindow()
+        return False if not isinstance(other, WindowNotificationCommand) else self.__window == other.getWindow()
 
     def init(self):
         pass
@@ -64,16 +64,14 @@ class WindowNotificationCommand(NotificationCommand):
 
 
 class EventNotificationCommand(NotificationCommand):
-    __slots__ = ('__event', )
+    __slots__ = ('__event',)
 
     def __init__(self, event):
         super(EventNotificationCommand, self).__init__()
         self.__event = event
 
     def __eq__(self, other):
-        if not isinstance(other, EventNotificationCommand):
-            return False
-        return self.__event == other.getEvent()
+        return False if not isinstance(other, EventNotificationCommand) else self.__event == other.getEvent()
 
     def init(self):
         pass
@@ -85,7 +83,7 @@ class EventNotificationCommand(NotificationCommand):
         self.__event()
 
     def getWindow(self):
-        return
+        return None
 
     def getEvent(self):
         return self.__event

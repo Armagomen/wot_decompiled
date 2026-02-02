@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/EventBoardsTableViewMeta.py
 from gui.Scaleform.framework.entities.View import View
 
 class EventBoardsTableViewMeta(View):
@@ -18,57 +20,43 @@ class EventBoardsTableViewMeta(View):
         self._printOverrideError('showNextAward')
 
     def as_setHeaderDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setHeaderData(data)
+        return self.flashObject.as_setHeaderData(data) if self._isDAAPIInited() else None
 
     def as_setStatusDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setStatusData(data)
+        return self.flashObject.as_setStatusData(data) if self._isDAAPIInited() else None
 
     def as_setTableDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setTableData(data)
+        return self.flashObject.as_setTableData(data) if self._isDAAPIInited() else None
 
     def as_setTableHeaderDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setTableHeaderData(data)
+        return self.flashObject.as_setTableHeaderData(data) if self._isDAAPIInited() else None
 
     def as_setBackgroundS(self, source):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setBackground(source)
+        return self.flashObject.as_setBackground(source) if self._isDAAPIInited() else None
 
     def as_setScrollPosS(self, value, centered):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setScrollPos(value, centered)
+        return self.flashObject.as_setScrollPos(value, centered) if self._isDAAPIInited() else None
 
     def as_setMyPlaceVisibleS(self, visible):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setMyPlaceVisible(visible)
+        return self.flashObject.as_setMyPlaceVisible(visible) if self._isDAAPIInited() else None
 
     def as_setMyPlaceS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setMyPlace(value)
+        return self.flashObject.as_setMyPlace(value) if self._isDAAPIInited() else None
 
     def as_setMyPlaceTooltipS(self, tooltip):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setMyPlaceTooltip(tooltip)
+        return self.flashObject.as_setMyPlaceTooltip(tooltip) if self._isDAAPIInited() else None
 
     def as_setStatusVisibleS(self, visible):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setStatusVisible(visible)
+        return self.flashObject.as_setStatusVisible(visible) if self._isDAAPIInited() else None
 
     def as_setWaitingS(self, visible, message):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setWaiting(visible, message)
+        return self.flashObject.as_setWaiting(visible, message) if self._isDAAPIInited() else None
 
     def as_setMaintenanceS(self, visible, message1, message2, buttonLabel):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setMaintenance(visible, message1, message2, buttonLabel)
+        return self.flashObject.as_setMaintenance(visible, message1, message2, buttonLabel) if self._isDAAPIInited() else None
 
     def as_setAwardsStripesS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setAwardsStripes(data)
+        return self.flashObject.as_setAwardsStripes(data) if self._isDAAPIInited() else None
 
     def as_setEmptyDataS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setEmptyData(value)
+        return self.flashObject.as_setEmptyData(value) if self._isDAAPIInited() else None

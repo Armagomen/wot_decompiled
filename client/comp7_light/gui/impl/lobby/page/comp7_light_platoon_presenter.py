@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_light/scripts/client/comp7_light/gui/impl/lobby/page/comp7_light_platoon_presenter.py
 from __future__ import absolute_import
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.impl.lobby.page.platoon_presenter import PlatoonPresenter
@@ -9,13 +11,7 @@ class Comp7LightPlatoonPresenter(PlatoonPresenter):
     __platoonController = dependency.descriptor(IPlatoonController)
 
     def _getEvents(self):
-        return (
-         (
-          self.__comp7LightController.onModeConfigChanged, self._onUpdatePlatoon),
-         (
-          self.__platoonController.onMembersUpdate, self._onUpdatePlatoon),
-         (
-          self.viewModel.onInPlatoonAction, self._onInPlatoonAction))
+        return ((self.__comp7LightController.onModeConfigChanged, self._onUpdatePlatoon), (self.__platoonController.onMembersUpdate, self._onUpdatePlatoon), (self.viewModel.onInPlatoonAction, self._onInPlatoonAction))
 
     def _initialize(self, *args, **kwargs):
         super(Comp7LightPlatoonPresenter, self)._initialize(args, kwargs)

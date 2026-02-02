@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/lobby/battle_royale_prime_time.py
 from constants import Configs
 from gui.Scaleform.daapi.view.lobby.epicBattle.epic_prime_time import EpicBattlesPrimeTimeView
 from gui.Scaleform.daapi.view.lobby.epicBattle.epic_prime_time import EpicBattleServerPresenter
@@ -44,9 +46,7 @@ class BattleRoyalePrimeTimeView(EpicBattlesPrimeTimeView):
             _, timeLeft, _ = self._getController().getPrimeTimeStatus()
             serverName = ''
         currentSeason = self._getController().getCurrentSeason()
-        if currentSeason and not timeLeft:
-            return backport.text(R.strings.battle_royale.primeTime.tooltip.endOfCycleOnThisServer(), server=serverName)
-        return super(BattleRoyalePrimeTimeView, self)._getTimeText(serverInfo)
+        return backport.text(R.strings.battle_royale.primeTime.tooltip.endOfCycleOnThisServer(), server=serverName) if currentSeason and not timeLeft else super(BattleRoyalePrimeTimeView, self)._getTimeText(serverInfo)
 
     def _getCycleFinishedOnThisServerText(self, cycleNumber, serverName):
         return backport.text(R.strings.battle_royale.primeTime.status.cycleFinishedOnThisServer(), cycleNo=cycleNumber, server=serverName)

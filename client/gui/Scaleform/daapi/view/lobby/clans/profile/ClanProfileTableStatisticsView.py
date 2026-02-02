@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/clans/profile/ClanProfileTableStatisticsView.py
 from adisp import adisp_process
 from debug_utils import LOG_ERROR
 from gui.Scaleform.daapi.view.lobby.clans.profile import getI18ArenaById
@@ -18,17 +20,17 @@ from helpers.i18n import makeString as _ms
 from skeletons.gui.web import IWebController
 
 def _packColumn(columndID, label, buttonWidth, tooltip, enabled, icon='', sortOrder=-1, showSeparator=True, textAlign='left'):
-    return {'id': columndID, 
-       'label': _ms(label), 
-       'iconSource': icon, 
-       'buttonWidth': buttonWidth, 
-       'toolTip': tooltip, 
-       'sortOrder': sortOrder, 
-       'defaultSortDirection': 'ascending', 
-       'buttonHeight': 34, 
-       'showSeparator': showSeparator, 
-       'textAlign': textAlign, 
-       'enabled': enabled}
+    return {'id': columndID,
+     'label': _ms(label),
+     'iconSource': icon,
+     'buttonWidth': buttonWidth,
+     'toolTip': tooltip,
+     'sortOrder': sortOrder,
+     'defaultSortDirection': 'ascending',
+     'buttonHeight': 34,
+     'showSeparator': showSeparator,
+     'textAlign': textAlign,
+     'enabled': enabled}
 
 
 class _SORT_IDS(object):
@@ -61,11 +63,11 @@ class ClanProfileTableStatisticsView(ClanProfileTableStatisticsViewMeta):
             listItemRendererLinkage = CLANS_ALIASES.CLAN_PROFILE_SELF_PROVINCE_RENDERER
         else:
             listItemRendererLinkage = CLANS_ALIASES.CLAN_PROFILE_PROVINCE_RENDERER
-        data = {'rendererLinkage': listItemRendererLinkage, 
-           'headers': headers, 
-           'isListVisible': hasProvinces, 
-           'noDataText': text_styles.highTitle(_ms(CLANS.GLOBALMAPVIEW_NOPROVINCE)), 
-           'isNoDataTextVisible': not hasProvinces}
+        data = {'rendererLinkage': listItemRendererLinkage,
+         'headers': headers,
+         'isListVisible': hasProvinces,
+         'noDataText': text_styles.highTitle(_ms(CLANS.GLOBALMAPVIEW_NOPROVINCE)),
+         'isNoDataTextVisible': not hasProvinces}
         if hasProvinces:
             data['defaultSortField'] = _SORT_IDS.PROVINCE
             data['defaultSortDirection'] = 'ascending'
@@ -84,19 +86,11 @@ class ClanProfileTableStatisticsView(ClanProfileTableStatisticsViewMeta):
         return
 
     def _prepareHeaders(self, showTreasury, enabled):
-        headers = [
-         _packColumn(_SORT_IDS.FRONT, CLANS.GLOBALMAPVIEW_TABLE_FRONT, 200, CLANS.GLOBALMAPVIEW_TABLE_FRONT_TOOLTIP, enabled),
-         _packColumn(_SORT_IDS.PROVINCE, CLANS.GLOBALMAPVIEW_TABLE_PROVINCE, 200, CLANS.GLOBALMAPVIEW_TABLE_PROVINCE_TOOLTIP, enabled),
-         _packColumn(_SORT_IDS.MAP, CLANS.GLOBALMAPVIEW_TABLE_MAP, 200, CLANS.GLOBALMAPVIEW_TABLE_MAP_TOOLTIP, enabled)]
+        headers = [_packColumn(_SORT_IDS.FRONT, CLANS.GLOBALMAPVIEW_TABLE_FRONT, 200, CLANS.GLOBALMAPVIEW_TABLE_FRONT_TOOLTIP, enabled), _packColumn(_SORT_IDS.PROVINCE, CLANS.GLOBALMAPVIEW_TABLE_PROVINCE, 200, CLANS.GLOBALMAPVIEW_TABLE_PROVINCE_TOOLTIP, enabled), _packColumn(_SORT_IDS.MAP, CLANS.GLOBALMAPVIEW_TABLE_MAP, 200, CLANS.GLOBALMAPVIEW_TABLE_MAP_TOOLTIP, enabled)]
         if showTreasury:
-            headers.extend([
-             _packColumn(_SORT_IDS.PRIMETIME, CLANS.GLOBALMAPVIEW_TABLE_PRIMETIME, 130, CLANS.GLOBALMAPVIEW_TABLE_PRIMETIME_TOOLTIP, enabled, textAlign='right'),
-             _packColumn(_SORT_IDS.DAYS, CLANS.GLOBALMAPVIEW_TABLE_DAYS, 130, CLANS.GLOBALMAPVIEW_TABLE_DAYS_TOOLTIP, enabled, textAlign='right'),
-             _packColumn(_SORT_IDS.INCOME, CLANS.GLOBALMAPVIEW_TABLE_INCOME, 118, CLANS.GLOBALMAPVIEW_TABLE_INCOME_TOOLTIP, enabled, textAlign='right')])
+            headers.extend([_packColumn(_SORT_IDS.PRIMETIME, CLANS.GLOBALMAPVIEW_TABLE_PRIMETIME, 130, CLANS.GLOBALMAPVIEW_TABLE_PRIMETIME_TOOLTIP, enabled, textAlign='right'), _packColumn(_SORT_IDS.DAYS, CLANS.GLOBALMAPVIEW_TABLE_DAYS, 130, CLANS.GLOBALMAPVIEW_TABLE_DAYS_TOOLTIP, enabled, textAlign='right'), _packColumn(_SORT_IDS.INCOME, CLANS.GLOBALMAPVIEW_TABLE_INCOME, 118, CLANS.GLOBALMAPVIEW_TABLE_INCOME_TOOLTIP, enabled, textAlign='right')])
         else:
-            headers.extend([
-             _packColumn(_SORT_IDS.PRIMETIME, CLANS.GLOBALMAPVIEW_TABLE_PRIMETIME, 200, CLANS.GLOBALMAPVIEW_TABLE_PRIMETIME_TOOLTIP, enabled, textAlign='right'),
-             _packColumn(_SORT_IDS.DAYS, CLANS.GLOBALMAPVIEW_TABLE_DAYS, 178, CLANS.GLOBALMAPVIEW_TABLE_DAYS_TOOLTIP, enabled, textAlign='right')])
+            headers.extend([_packColumn(_SORT_IDS.PRIMETIME, CLANS.GLOBALMAPVIEW_TABLE_PRIMETIME, 200, CLANS.GLOBALMAPVIEW_TABLE_PRIMETIME_TOOLTIP, enabled, textAlign='right'), _packColumn(_SORT_IDS.DAYS, CLANS.GLOBALMAPVIEW_TABLE_DAYS, 178, CLANS.GLOBALMAPVIEW_TABLE_DAYS_TOOLTIP, enabled, textAlign='right')])
         return headers
 
 
@@ -110,12 +104,12 @@ class _ClanProfileProvinceDataProvider(SortableDAAPIDataProvider):
         self.__showTreasuryData = showTreasuryData
         self.__dataList = []
         self.__commonRevenue = 0
-        self.__sortMapping = {_SORT_IDS.FRONT: self.__getFront, 
-           _SORT_IDS.PROVINCE: self.__getProvinceName, 
-           _SORT_IDS.MAP: self.__getMap, 
-           _SORT_IDS.PRIMETIME: self.__getPrimeTime, 
-           _SORT_IDS.DAYS: self.__getDays, 
-           _SORT_IDS.INCOME: self.__getIncome}
+        self.__sortMapping = {_SORT_IDS.FRONT: self.__getFront,
+         _SORT_IDS.PROVINCE: self.__getProvinceName,
+         _SORT_IDS.MAP: self.__getMap,
+         _SORT_IDS.PRIMETIME: self.__getPrimeTime,
+         _SORT_IDS.DAYS: self.__getDays,
+         _SORT_IDS.INCOME: self.__getIncome}
         return
 
     def getCommonRevenue(self):
@@ -130,7 +124,7 @@ class _ClanProfileProvinceDataProvider(SortableDAAPIDataProvider):
         return self._list
 
     def emptyItem(self):
-        return
+        return None
 
     def clear(self):
         self._list = []
@@ -145,9 +139,7 @@ class _ClanProfileProvinceDataProvider(SortableDAAPIDataProvider):
         self.destroy()
 
     def getSelectedIdx(self):
-        if self.__selectedID in self.__mapping:
-            return self.__mapping[self.__selectedID]
-        return -1
+        return self.__mapping[self.__selectedID] if self.__selectedID in self.__mapping else -1
 
     def setSelectedID(self, clanID):
         self.__selectedID = clanID
@@ -178,9 +170,7 @@ class _ClanProfileProvinceDataProvider(SortableDAAPIDataProvider):
     def refreshItem(self, cache, clanDBID):
         isSelected = self.__selectedID == clanDBID
         self.buildList(cache)
-        if isSelected and clanDBID not in self.__mapping:
-            return True
-        return False
+        return True if isSelected and clanDBID not in self.__mapping else False
 
     def pyGetSelectedIdx(self):
         return self.getSelectedIdx()
@@ -194,20 +184,19 @@ class _ClanProfileProvinceDataProvider(SortableDAAPIDataProvider):
 
     def _makeVO(self, province):
         isRobbed = self.__isRobbed(province)
-        result = {'front': '%s %s' % (self.__getFront(province),
-                   text_styles.standard(formatField(province.getFrontLevel, formatter=int2roman))), 
-           'province': self.__getProvinceName(province), 
-           'map': self.__getMap(province), 
-           'primeTime': text_styles.main(province.getUserPrimeTime()), 
-           'days': text_styles.main(backport.getIntegralFormat(self.__getDays(province))), 
-           'isRobbed': isRobbed}
+        result = {'front': '%s %s' % (self.__getFront(province), text_styles.standard(formatField(province.getFrontLevel, formatter=int2roman))),
+         'province': self.__getProvinceName(province),
+         'map': self.__getMap(province),
+         'primeTime': text_styles.main(province.getUserPrimeTime()),
+         'days': text_styles.main(backport.getIntegralFormat(self.__getDays(province))),
+         'isRobbed': isRobbed}
         if isRobbed:
             restoreTime = province.getPillageEndDatetime()
             result.update({'robbedTooltip': makeTooltip(None, text_styles.concatStylesToMultiLine(text_styles.main(_ms(CLANS.GLOBALMAPVIEW_TABLE_PROVINCEROBBED_TOOLTIP_NOINCOME)), text_styles.neutral(_ms(CLANS.GLOBALMAPVIEW_TABLE_PROVINCEROBBED_TOOLTIP_RESTORETIME, date=text_styles.main(formatters.formatShortDateShortTimeString(restoreTime))))))})
         if self.__showTreasuryData:
-            result.update({'income': text_styles.gold(backport.getIntegralFormat(self.__getIncome(province))), 
-               'noIncomeIconVisible': not province.isHqConnected() or isRobbed, 
-               'noIncomeTooltip': CLANS.GLOBALMAPVIEW_NOINCOME_TOOLTIP})
+            result.update({'income': text_styles.gold(backport.getIntegralFormat(self.__getIncome(province))),
+             'noIncomeIconVisible': not province.isHqConnected() or isRobbed,
+             'noIncomeTooltip': CLANS.GLOBALMAPVIEW_NOINCOME_TOOLTIP})
         return result
 
     def __sortingMethod(self, item, field):

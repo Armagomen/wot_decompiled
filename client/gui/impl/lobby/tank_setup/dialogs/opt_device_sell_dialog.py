@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/dialogs/opt_device_sell_dialog.py
 import typing
 from frameworks.wulf import ViewSettings, WindowFlags, WindowLayer
 from gui import SystemMessages
@@ -17,7 +19,7 @@ if typing.TYPE_CHECKING:
     from gui.shared.gui_items.artefacts import OptionalDevice
 
 def _initItem(viewModel, device, currency):
-    with viewModel.transaction() as (model):
+    with viewModel.transaction() as model:
         equipType = ModuleType.STANDARD
         if device.isDeluxe:
             equipType = ModuleType.IMPROVED
@@ -35,7 +37,7 @@ def _initItem(viewModel, device, currency):
 
 class OptDeviceSellDialog(ViewImpl):
     __itemsCache = dependency.descriptor(IItemsCache)
-    __slots__ = ('__device', )
+    __slots__ = ('__device',)
     LAYOUT_ID = R.views.lobby.tanksetup.dialogs.Sell()
 
     def __init__(self, itemIntCD):
@@ -82,7 +84,7 @@ class OptDeviceSellDialog(ViewImpl):
 
 
 class OptDeviceSellDialogWindow(WindowImpl):
-    __slots__ = ('__blur', )
+    __slots__ = ('__blur',)
 
     def __init__(self, itemIntCD, parent=None):
         super(OptDeviceSellDialogWindow, self).__init__(WindowFlags.WINDOW_FULLSCREEN | WindowFlags.WINDOW, content=OptDeviceSellDialog(itemIntCD), parent=parent)

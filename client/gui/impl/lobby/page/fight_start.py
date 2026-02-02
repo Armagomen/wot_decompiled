@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/page/fight_start.py
 from __future__ import absolute_import
 import typing
 from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
@@ -16,7 +18,7 @@ from gui.lobby_state_machine.states import LobbyStateFlags
 
 def isNotPBSPreview():
     lsm = getLobbyStateMachine()
-    inPBS = any(s.getFlags() & LobbyStateFlags.POST_BATTLE_RESULTS for s in lsm.getNonEmptyEnteredStates(onlyLeaves=False))
+    inPBS = any((s.getFlags() & LobbyStateFlags.POST_BATTLE_RESULTS for s in lsm.getNonEmptyEnteredStates(onlyLeaves=False)))
     return g_currentPreviewVehicle.isPresent() and not inPBS
 
 
@@ -33,22 +35,14 @@ class FightStartPresenter(ViewComponent[FightStartModel], IPrbListener):
         return super(FightStartPresenter, self).getViewModel()
 
     def _getEvents(self):
-        return (
-         (
-          g_currentVehicle.onChanged, self._onFightButtonUpdate),
-         (
-          g_currentPreviewVehicle.onChanged, self._onFightButtonUpdate))
+        return ((g_currentVehicle.onChanged, self._onFightButtonUpdate), (g_currentPreviewVehicle.onChanged, self._onFightButtonUpdate))
 
     def _onLoading(self, *args, **kwargs):
         super(FightStartPresenter, self)._onLoading(*args, **kwargs)
         self._onFightButtonUpdate()
 
     def _getListeners(self):
-        return (
-         (
-          events.LobbyHeaderMenuEvent.UPDATE_PREBATTLE_CONTROLS, self.__onUpdatePrbControls, EVENT_BUS_SCOPE.LOBBY),
-         (
-          events.FightButtonEvent.FIGHT_BUTTON_UPDATE, self.__onUpdatePrbControls, EVENT_BUS_SCOPE.LOBBY))
+        return ((events.LobbyHeaderMenuEvent.UPDATE_PREBATTLE_CONTROLS, self.__onUpdatePrbControls, EVENT_BUS_SCOPE.LOBBY), (events.FightButtonEvent.FIGHT_BUTTON_UPDATE, self.__onUpdatePrbControls, EVENT_BUS_SCOPE.LOBBY))
 
     def __onUpdatePrbControls(self, _):
         self._onFightButtonUpdate()
@@ -59,7 +53,7 @@ class FightStartPresenter(ViewComponent[FightStartModel], IPrbListener):
         pValidation = prbEntity.canPlayerDoAction()
         isNavigationEnabled = not pFuncState.isNavigationDisabled()
         controlsHelper = self.__hangarGuiCtrl.currentGuiProvider.getLobbyHeaderHelper()
-        isInSquad = any(pFuncState.isInUnit(prbType) for prbType in PREBATTLE_TYPE.SQUAD_PREBATTLES)
+        isInSquad = any((pFuncState.isInUnit(prbType) for prbType in PREBATTLE_TYPE.SQUAD_PREBATTLES))
         isButtonLocked = not pValidation.isValid
         if isNavigationEnabled:
             tooltip = None

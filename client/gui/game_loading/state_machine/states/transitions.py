@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_loading/state_machine/states/transitions.py
 import typing
 from frameworks.state_machine.transitions import StringEventTransition
 from gui.game_loading import loggers
@@ -11,7 +13,7 @@ if typing.TYPE_CHECKING:
     from gui.game_loading.state_machine.states.init_client.logos_loading import LogosLoadingState
     from gui.game_loading.state_machine.states.init_client.client_loading import ClientLoadingSlideState
     from gui.game_loading.state_machine.states.init_client.client_loading_stub import ClientLoadingStubState
-    _ClientInitStates = typing.Union[(LogosLoadingState, ClientLoadingSlideState, ClientLoadingStubState)]
+    _ClientInitStates = typing.Union[LogosLoadingState, ClientLoadingSlideState, ClientLoadingStubState]
 _logger = loggers.getTransitionsLogger()
 
 class SourceToSingleTargetTransition(StringEventTransition):

@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/gui_items/factories.py
+import logging
+import typing
 from debug_utils import LOG_WARNING
 from items import vehicles, EQUIPMENT_TYPES, getTypeOfCompactDescr
 from items.components.c11n_constants import CustomizationType, DecalType
@@ -14,7 +17,8 @@ import gui.shared.gui_items.badge as badges
 from gui.shared.gui_items.loot_box import LootBox
 from gui.shared.gui_items.crew_skin import CrewSkin
 from gui.shared.gui_items.crew_book import CrewBook
-from gui.shared.gui_items.vehicle_mechanic_item import VehicleMechanicItem
+from gui.shared.gui_items.vehicle_mechanics.module_mechanic_item import ModuleMechanicItem, GunMechanicItem, ChassisMechanicItem, EngineMechanicItem
+from gui.shared.gui_items.vehicle_mechanics.vehicle_mechanic_item import VehicleMechanicItem
 from gui.veh_post_progression.models.progression import PostProgressionItem
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
 if typing.TYPE_CHECKING:
@@ -23,18 +27,18 @@ if typing.TYPE_CHECKING:
     from vehicles.mechanics.mechanic_constants import VehicleMechanic
 _logger = logging.getLogger(__name__)
 _NONE_GUI_ITEM_TYPE = 0
-_CUSTOMIZATION_TYPE_TO_CLS = {CustomizationType.CAMOUFLAGE: Camouflage, 
-   CustomizationType.PAINT: Paint, 
-   CustomizationType.MODIFICATION: Modification, 
-   CustomizationType.STYLE: Style, 
-   CustomizationType.PERSONAL_NUMBER: PersonalNumber, 
-   CustomizationType.PROJECTION_DECAL: ProjectionDecal, 
-   CustomizationType.INSIGNIA: Insignia, 
-   CustomizationType.SEQUENCE: Sequence, 
-   CustomizationType.ATTACHMENT: Attachment, 
-   CustomizationType.STAT_TRACKER: StatTracker}
-_DECAL_TYPE_TO_CLS = {DecalType.EMBLEM: Emblem, 
-   DecalType.INSCRIPTION: Inscription}
+_CUSTOMIZATION_TYPE_TO_CLS = {CustomizationType.CAMOUFLAGE: Camouflage,
+ CustomizationType.PAINT: Paint,
+ CustomizationType.MODIFICATION: Modification,
+ CustomizationType.STYLE: Style,
+ CustomizationType.PERSONAL_NUMBER: PersonalNumber,
+ CustomizationType.PROJECTION_DECAL: ProjectionDecal,
+ CustomizationType.INSIGNIA: Insignia,
+ CustomizationType.SEQUENCE: Sequence,
+ CustomizationType.ATTACHMENT: Attachment,
+ CustomizationType.STAT_TRACKER: StatTracker}
+_DECAL_TYPE_TO_CLS = {DecalType.EMBLEM: Emblem,
+ DecalType.INSCRIPTION: Inscription}
 
 class GuiItemFactory(IGuiItemsFactory):
 
@@ -48,15 +52,14 @@ class GuiItemFactory(IGuiItemsFactory):
             _logger.warning('Could not create GUI items with idx %r. There is no class associated with this idx.', itemTypeIdx)
             return []
         mappingFn = _ITEM_TYPES_MAPPING[itemTypeIdx]
-        return [ mappingFn(self, compactDescr, proxy, *args, **kwargs) for compactDescr in compactDecrs
-               ]
+        return [ mappingFn(self, compactDescr, proxy, *args, **kwargs) for compactDescr in compactDecrs ]
 
     def createGuiItem(self, itemTypeIdx, *args, **kwargs):
         item = None
         if itemTypeIdx in _ITEM_TYPES_MAPPING:
             item = _ITEM_TYPES_MAPPING[itemTypeIdx](self, *args, **kwargs)
         else:
-            LOG_WARNING(('Could not create GUI item with idx {}. There is no class associated with this idx.').format(itemTypeIdx))
+            LOG_WARNING('Could not create GUI item with idx {}. There is no class associated with this idx.'.format(itemTypeIdx))
         return item
 
     def createGuiItemFromCompactDescr(self, compactDescr, *args, **kwargs):
@@ -160,41 +163,53 @@ class GuiItemFactory(IGuiItemsFactory):
             vehType = vehicles.g_cache.vehicle(vehNationID, vehID)
         return PostProgressionItem(state, vehType)
 
+    def createModuleMechanicItem(self, mechanic, moduleType):
+        if moduleType == GUI_ITEM_TYPE.GUN:
+            cls = GunMechanicItem
+        elif moduleType == GUI_ITEM_TYPE.ENGINE:
+            cls = EngineMechanicItem
+        elif moduleType == GUI_ITEM_TYPE.CHASSIS:
+            cls = ChassisMechanicItem
+        else:
+            cls = ModuleMechanicItem
+        return cls(mechanic)
+
     def createVehicleMechanicItem(self, mechanic, vehIntCD):
         return VehicleMechanicItem(mechanic, vehIntCD)
 
 
-_ITEM_TYPES_MAPPING = {_NONE_GUI_ITEM_TYPE: lambda *args, **kwargs: None, 
-   GUI_ITEM_TYPE.SHELL: GuiItemFactory.createShell, 
-   GUI_ITEM_TYPE.EQUIPMENT: GuiItemFactory.createEquipment, 
-   GUI_ITEM_TYPE.BATTLE_BOOSTER: GuiItemFactory.createEquipment, 
-   GUI_ITEM_TYPE.BATTLE_ABILITY: GuiItemFactory.createEquipment, 
-   GUI_ITEM_TYPE.OPTIONALDEVICE: GuiItemFactory.createOptionalDevice, 
-   GUI_ITEM_TYPE.GUN: GuiItemFactory.createVehicleGun, 
-   GUI_ITEM_TYPE.CHASSIS: GuiItemFactory.createVehicleChassis, 
-   GUI_ITEM_TYPE.TURRET: GuiItemFactory.createVehicleTurret, 
-   GUI_ITEM_TYPE.ENGINE: GuiItemFactory.createVehicleEngine, 
-   GUI_ITEM_TYPE.RADIO: GuiItemFactory.createVehicleRadio, 
-   GUI_ITEM_TYPE.FUEL_TANK: GuiItemFactory.createVehicleFuelTank, 
-   GUI_ITEM_TYPE.VEHICLE: GuiItemFactory.createVehicle, 
-   GUI_ITEM_TYPE.TANKMAN: GuiItemFactory.createTankman, 
-   GUI_ITEM_TYPE.TANKMAN_DOSSIER: GuiItemFactory.createTankmanDossier, 
-   GUI_ITEM_TYPE.ACCOUNT_DOSSIER: GuiItemFactory.createAccountDossier, 
-   GUI_ITEM_TYPE.VEHICLE_DOSSIER: GuiItemFactory.createVehicleDossier, 
-   GUI_ITEM_TYPE.BADGE: GuiItemFactory.createBadge, 
-   GUI_ITEM_TYPE.LOOT_BOX: GuiItemFactory.createLootBox, 
-   GUI_ITEM_TYPE.CUSTOMIZATION: GuiItemFactory.createCustomization, 
-   GUI_ITEM_TYPE.PAINT: GuiItemFactory.createCustomization, 
-   GUI_ITEM_TYPE.CAMOUFLAGE: GuiItemFactory.createCustomization, 
-   GUI_ITEM_TYPE.MODIFICATION: GuiItemFactory.createCustomization, 
-   GUI_ITEM_TYPE.DECAL: GuiItemFactory.createCustomization, 
-   GUI_ITEM_TYPE.STYLE: GuiItemFactory.createCustomization, 
-   GUI_ITEM_TYPE.PROJECTION_DECAL: GuiItemFactory.createCustomization, 
-   GUI_ITEM_TYPE.SEQUENCE: GuiItemFactory.createCustomization, 
-   GUI_ITEM_TYPE.ATTACHMENT: GuiItemFactory.createCustomization, 
-   GUI_ITEM_TYPE.STAT_TRACKER: GuiItemFactory.createCustomization, 
-   GUI_ITEM_TYPE.OUTFIT: GuiItemFactory.createOutfit, 
-   GUI_ITEM_TYPE.CREW_SKINS: GuiItemFactory.createCrewSkin, 
-   GUI_ITEM_TYPE.CREW_BOOKS: GuiItemFactory.createCrewBook, 
-   GUI_ITEM_TYPE.VEH_POST_PROGRESSION: GuiItemFactory.createVehPostProgression, 
-   GUI_ITEM_TYPE.VEHICLE_MECHANIC: GuiItemFactory.createVehicleMechanicItem}
+_ITEM_TYPES_MAPPING = {_NONE_GUI_ITEM_TYPE: lambda *args, **kwargs: None,
+ GUI_ITEM_TYPE.SHELL: GuiItemFactory.createShell,
+ GUI_ITEM_TYPE.EQUIPMENT: GuiItemFactory.createEquipment,
+ GUI_ITEM_TYPE.BATTLE_BOOSTER: GuiItemFactory.createEquipment,
+ GUI_ITEM_TYPE.BATTLE_ABILITY: GuiItemFactory.createEquipment,
+ GUI_ITEM_TYPE.OPTIONALDEVICE: GuiItemFactory.createOptionalDevice,
+ GUI_ITEM_TYPE.GUN: GuiItemFactory.createVehicleGun,
+ GUI_ITEM_TYPE.CHASSIS: GuiItemFactory.createVehicleChassis,
+ GUI_ITEM_TYPE.TURRET: GuiItemFactory.createVehicleTurret,
+ GUI_ITEM_TYPE.ENGINE: GuiItemFactory.createVehicleEngine,
+ GUI_ITEM_TYPE.RADIO: GuiItemFactory.createVehicleRadio,
+ GUI_ITEM_TYPE.FUEL_TANK: GuiItemFactory.createVehicleFuelTank,
+ GUI_ITEM_TYPE.VEHICLE: GuiItemFactory.createVehicle,
+ GUI_ITEM_TYPE.TANKMAN: GuiItemFactory.createTankman,
+ GUI_ITEM_TYPE.TANKMAN_DOSSIER: GuiItemFactory.createTankmanDossier,
+ GUI_ITEM_TYPE.ACCOUNT_DOSSIER: GuiItemFactory.createAccountDossier,
+ GUI_ITEM_TYPE.VEHICLE_DOSSIER: GuiItemFactory.createVehicleDossier,
+ GUI_ITEM_TYPE.BADGE: GuiItemFactory.createBadge,
+ GUI_ITEM_TYPE.LOOT_BOX: GuiItemFactory.createLootBox,
+ GUI_ITEM_TYPE.CUSTOMIZATION: GuiItemFactory.createCustomization,
+ GUI_ITEM_TYPE.PAINT: GuiItemFactory.createCustomization,
+ GUI_ITEM_TYPE.CAMOUFLAGE: GuiItemFactory.createCustomization,
+ GUI_ITEM_TYPE.MODIFICATION: GuiItemFactory.createCustomization,
+ GUI_ITEM_TYPE.DECAL: GuiItemFactory.createCustomization,
+ GUI_ITEM_TYPE.STYLE: GuiItemFactory.createCustomization,
+ GUI_ITEM_TYPE.PROJECTION_DECAL: GuiItemFactory.createCustomization,
+ GUI_ITEM_TYPE.SEQUENCE: GuiItemFactory.createCustomization,
+ GUI_ITEM_TYPE.ATTACHMENT: GuiItemFactory.createCustomization,
+ GUI_ITEM_TYPE.STAT_TRACKER: GuiItemFactory.createCustomization,
+ GUI_ITEM_TYPE.OUTFIT: GuiItemFactory.createOutfit,
+ GUI_ITEM_TYPE.CREW_SKINS: GuiItemFactory.createCrewSkin,
+ GUI_ITEM_TYPE.CREW_BOOKS: GuiItemFactory.createCrewBook,
+ GUI_ITEM_TYPE.VEH_POST_PROGRESSION: GuiItemFactory.createVehPostProgression,
+ GUI_ITEM_TYPE.VEHICLE_MECHANIC: GuiItemFactory.createVehicleMechanicItem,
+ GUI_ITEM_TYPE.MODULE_MECHANIC: GuiItemFactory.createModuleMechanicItem}

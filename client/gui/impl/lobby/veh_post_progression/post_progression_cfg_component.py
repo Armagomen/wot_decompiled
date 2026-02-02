@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/veh_post_progression/post_progression_cfg_component.py
 from __future__ import absolute_import
 import typing
 from future.utils import iteritems
@@ -36,29 +38,29 @@ if typing.TYPE_CHECKING:
     from gui.impl.gen.view_models.views.lobby.post_progression.single_step_model import SingleStepModel
     from gui.veh_post_progression.models.progression import PostProgressionItem
     from gui.veh_post_progression.models.progression_step import PostProgressionStepItem
-_AVAILABILITY_MAP = {PostProgressionAvailability.AVAILABLE: ProgressionAvailability.AVAILABLE, PostProgressionAvailability.VEH_NOT_ELITE: ProgressionAvailability.UNAVAILABLEELITE, 
-   PostProgressionAvailability.VEH_NOT_IN_INVENTORY: ProgressionAvailability.UNAVAILABLEPURCHASE, 
-   PostProgressionAvailability.VEH_IS_RENTED: ProgressionAvailability.UNAVAILABLERENT, 
-   PostProgressionAvailability.VEH_IS_RENT_OVER: ProgressionAvailability.UNAVAILABLERENTOVER, 
-   PostProgressionAvailability.VEH_IN_BATTLE: ProgressionAvailability.UNAVAILABLEBATTLE, 
-   PostProgressionAvailability.VEH_IN_QUEUE: ProgressionAvailability.UNAVAILABLEBATTLE, 
-   PostProgressionAvailability.VEH_IN_FORMATION: ProgressionAvailability.UNAVAILABLEFORMATION, 
-   PostProgressionAvailability.VEH_IN_BREAKER: ProgressionAvailability.UNAVAILABLEBREAKER, 
-   PostProgressionAvailability.VEH_IS_BROKEN: ProgressionAvailability.UNAVAILABLEBROKEN}
-_COMPLETION_MAP = {PostProgressionCompletion.EMPTY: ProgressionState.INITIAL, 
-   PostProgressionCompletion.PARTIAL: ProgressionState.TRANSITIONAL, 
-   PostProgressionCompletion.FULL: ProgressionState.FINAL}
-_STEP_STATE_MAP = {PostProgressionStepState.RESTRICTED: StepState.RESTRICTED, 
-   PostProgressionStepState.LOCKED: StepState.UNAVAILABLELOCKED, 
-   PostProgressionStepState.RECEIVED: StepState.RECEIVED, 
-   PostProgressionStepState.UNLOCKED: StepState.AVAILABLEPURCHASE}
+_AVAILABILITY_MAP = {PostProgressionAvailability.AVAILABLE: ProgressionAvailability.AVAILABLE,
+ PostProgressionAvailability.VEH_NOT_ELITE: ProgressionAvailability.UNAVAILABLEELITE,
+ PostProgressionAvailability.VEH_NOT_IN_INVENTORY: ProgressionAvailability.UNAVAILABLEPURCHASE,
+ PostProgressionAvailability.VEH_IS_RENTED: ProgressionAvailability.UNAVAILABLERENT,
+ PostProgressionAvailability.VEH_IS_RENT_OVER: ProgressionAvailability.UNAVAILABLERENTOVER,
+ PostProgressionAvailability.VEH_IN_BATTLE: ProgressionAvailability.UNAVAILABLEBATTLE,
+ PostProgressionAvailability.VEH_IN_QUEUE: ProgressionAvailability.UNAVAILABLEBATTLE,
+ PostProgressionAvailability.VEH_IN_FORMATION: ProgressionAvailability.UNAVAILABLEFORMATION,
+ PostProgressionAvailability.VEH_IN_BREAKER: ProgressionAvailability.UNAVAILABLEBREAKER,
+ PostProgressionAvailability.VEH_IS_BROKEN: ProgressionAvailability.UNAVAILABLEBROKEN}
+_COMPLETION_MAP = {PostProgressionCompletion.EMPTY: ProgressionState.INITIAL,
+ PostProgressionCompletion.PARTIAL: ProgressionState.TRANSITIONAL,
+ PostProgressionCompletion.FULL: ProgressionState.FINAL}
+_STEP_STATE_MAP = {PostProgressionStepState.RESTRICTED: StepState.RESTRICTED,
+ PostProgressionStepState.LOCKED: StepState.UNAVAILABLELOCKED,
+ PostProgressionStepState.RECEIVED: StepState.RECEIVED,
+ PostProgressionStepState.UNLOCKED: StepState.AVAILABLEPURCHASE}
 _TOGGLING_COOLDOWN = 1.0
 
 class PostProgressionCfgComponentView(PostProgressionBaseComponentView):
     __itemsCache = dependency.descriptor(IItemsCache)
     __walletController = dependency.descriptor(IWalletController)
-    __slots__ = ('onGoBackAction', 'onResearchAction', '__intCD', '__balance', '__creditsRate',
-                 '__togglingSteps', '__lockTogglingCallbackID')
+    __slots__ = ('onGoBackAction', 'onResearchAction', '__intCD', '__balance', '__creditsRate', '__togglingSteps', '__lockTogglingCallbackID')
 
     def __init__(self, layoutID=R.views.lobby.veh_post_progression.VehiclePostProgressionView(), **kwargs):
         super(PostProgressionCfgComponentView, self).__init__(layoutID, PostProgressionCfgViewModel(), **kwargs)
@@ -81,17 +83,15 @@ class PostProgressionCfgComponentView(PostProgressionBaseComponentView):
         stepId, modId = self._parseTooltipEvent(event)
         if contentID == R.views.lobby.veh_post_progression.tooltip.PairModificationTooltipView() and stepId is not None and modId is not None:
             return CfgPairModificationTooltipView(self._vehicle, stepId, modId)
+        elif contentID == R.views.lobby.veh_post_progression.tooltip.RoleSlotTooltipView() and stepId is not None:
+            step = self._vehicle.postProgression.getStep(stepId)
+            return RoleSlotTooltipView(step=step)
+        elif contentID == R.views.lobby.veh_post_progression.tooltip.SetupTooltipView() and stepId is not None:
+            step = self._vehicle.postProgression.getStep(stepId)
+            feature = vehicles.g_cache.postProgression().getAction(ACTION_TYPES.FEATURE, GROUP_ID_BY_FEATURE[step.action.getTechName()])
+            return SetupTooltipView(step=step, feature=feature)
         else:
-            if contentID == R.views.lobby.veh_post_progression.tooltip.RoleSlotTooltipView() and stepId is not None:
-                step = self._vehicle.postProgression.getStep(stepId)
-                return RoleSlotTooltipView(step=step)
-            if contentID == R.views.lobby.veh_post_progression.tooltip.SetupTooltipView() and stepId is not None:
-                step = self._vehicle.postProgression.getStep(stepId)
-                feature = vehicles.g_cache.postProgression().getAction(ACTION_TYPES.FEATURE, GROUP_ID_BY_FEATURE[step.action.getTechName()])
-                return SetupTooltipView(step=step, feature=feature)
-            if contentID == R.views.lobby.veh_post_progression.tooltip.PostProgressionLevelTooltipView() and stepId is not None:
-                return CfgProgressionLevelTooltipView(self._vehicle, stepId)
-            return super(PostProgressionCfgComponentView, self).createToolTipContent(event, contentID)
+            return CfgProgressionLevelTooltipView(self._vehicle, stepId) if contentID == R.views.lobby.veh_post_progression.tooltip.PostProgressionLevelTooltipView() and stepId is not None else super(PostProgressionCfgComponentView, self).createToolTipContent(event, contentID)
 
     def _finalize(self):
         self.__cancelLockToggling()
@@ -122,7 +122,7 @@ class PostProgressionCfgComponentView(PostProgressionBaseComponentView):
         self.viewModel.grid.onPrebattleSwitchToggleClick += self._onPrebattleSwitchToggleClick
         self.__itemsCache.onSyncCompleted += self.__onSyncCompleted
         self.__walletController.onWalletStatusChanged += self._updateAll
-        g_clientUpdateManager.addCallbacks({('stats.{}').format(c):self.__updateMoney for c in ExtendedCurrency.ALL})
+        g_clientUpdateManager.addCallbacks({'stats.{}'.format(c):self.__updateMoney for c in ExtendedCurrency.ALL})
 
     def _removeListeners(self):
         self.viewModel.purchasePreview.onPurchaseClick -= self.__onPurchaseClick
@@ -145,9 +145,9 @@ class PostProgressionCfgComponentView(PostProgressionBaseComponentView):
         stepID = int(args['stepID'])
         if stepID in self.__togglingSteps:
             return
+        elif self.__lockTogglingCallbackID is not None:
+            return
         else:
-            if self.__lockTogglingCallbackID is not None:
-                return
             self.__lockToggling()
             self.__togglingSteps.add(stepID)
             featureName = self._vehicle.postProgression.getStep(stepID).action.getTechName()
@@ -270,7 +270,7 @@ class PostProgressionCfgComponentView(PostProgressionBaseComponentView):
         return
 
     def __updateTogglingLock(self, isLocked):
-        with self.viewModel.grid.transaction() as (gridModel):
+        with self.viewModel.grid.transaction() as gridModel:
             for singleStep in gridModel.getMainSteps():
                 singleStep.setIsPrebattleSwitchLocked(isLocked)
 

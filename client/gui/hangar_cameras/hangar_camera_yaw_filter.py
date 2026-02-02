@@ -1,4 +1,7 @@
-import math, math_utils
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/hangar_cameras/hangar_camera_yaw_filter.py
+import math
+import math_utils
 _EPS = 0.001
 
 class HangarCameraYawFilter(object):

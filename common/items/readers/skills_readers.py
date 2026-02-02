@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/items/readers/skills_readers.py
 from collections import namedtuple
 import ResMgr
 from constants import IS_CLIENT, IS_WEB, TTC_TOOLTIP_SECTIONS
@@ -5,10 +7,8 @@ from items import _xml
 from items.components import component_constants, skills_constants
 from items.components import skills_components
 from items.components.skills_constants import ParamMeasureType, ParamSignType, SkillTypeName
-SkillUISettings = namedtuple('SkillUISettings', ('tooltipSection', 'typeName', 'kpi',
-                                                 'params', 'descrArgs'))
-SkillDescrsArg = namedtuple('SkillDescrsArg', ('situational', 'name', 'measureType',
-                                               'sign', 'value', 'isKpiVisible'))
+SkillUISettings = namedtuple('SkillUISettings', ('tooltipSection', 'typeName', 'kpi', 'params', 'descrArgs'))
+SkillDescrsArg = namedtuple('SkillDescrsArg', ('situational', 'name', 'measureType', 'sign', 'value', 'isKpiVisible'))
 TTCParamsArg = namedtuple('TTCParamsArg', ('name', 'situational', 'value'))
 
 def _readSkillBasics(xmlCtx, section, subsectionName):
@@ -47,8 +47,7 @@ def _readDescrArgs(xmlCtx, section, subsectionName):
             sign = ParamSignType.PLUS
         elif value < 0:
             sign = ParamSignType.MINUS
-        settings.append((name,
-         SkillDescrsArg(situational=_xml.readBool(xmlCtx, argSection, 'situationalParam', False), isKpiVisible=_xml.readBool(xmlCtx, argSection, 'isKpiVisible', True), name=name, measureType=_xml.readStringWithDefaultValue(xmlCtx, argSection, 'measureType', ParamMeasureType.PERCENTS), sign=_xml.readStringWithDefaultValue(xmlCtx, argSection, 'sign', sign), value=value)))
+        settings.append((name, SkillDescrsArg(situational=_xml.readBool(xmlCtx, argSection, 'situationalParam', False), isKpiVisible=_xml.readBool(xmlCtx, argSection, 'isKpiVisible', True), name=name, measureType=_xml.readStringWithDefaultValue(xmlCtx, argSection, 'measureType', ParamMeasureType.PERCENTS), sign=_xml.readStringWithDefaultValue(xmlCtx, argSection, 'sign', sign), value=value)))
 
     return settings
 
@@ -100,44 +99,43 @@ def _readCommanderEnemyShotPredictorSkill(xmlCtx, section, subsectionName):
     return skills_components.CommanderEnemyShotPredictor(skill, _xml.readNonNegativeFloat(xmlCtx, section, 'minExplosionRadius'), _xml.readNonNegativeFloat(xmlCtx, section, 'explosionMultiplier'), _xml.readNonNegativeFloat(xmlCtx, section, 'recalculatingHeight'), _xml.readNonNegativeFloat(xmlCtx, section, 'targetRadius'))
 
 
-_g_skillConfigReaders = {'repair': _readRole, 
-   'camouflage': _readRole, 
-   'brotherhood': _readBrotherhoodSkill, 
-   'commander_tutor': _readCommanderTutorSkill, 
-   'commander_coordination': _readCommonSkill, 
-   'commander_sixthSense': _readCommanderSkillWithDelaySkill, 
-   'commander_emergency': _readCrewMasterySkill, 
-   'commander_enemyShotPredictor': _readCommanderEnemyShotPredictorSkill, 
-   'commander_eagleEye': _readCommonSkill, 
-   'commander_practical': _readCommonSkill, 
-   'driver_smoothDriving': _readCommonSkill, 
-   'driver_virtuoso': _readCommonSkill, 
-   'driver_badRoadsKing': _readCommonSkill, 
-   'driver_rammingMaster': _readCommonSkill, 
-   'driver_motorExpert': _readCommonSkill, 
-   'driver_reliablePlacement': _readCommonSkill, 
-   'gunner_smoothTurret': _readCommonSkill, 
-   'gunner_sniper': _readCommonSkill, 
-   'gunner_rancorous': _readCommonSkill, 
-   'gunner_armorer': _readCommonSkill, 
-   'gunner_focus': _readCommonSkill, 
-   'gunner_quickAiming': _readCommonSkill, 
-   'loader_pedant': _readCommonSkill, 
-   'loader_desperado': _readCommonSkill, 
-   'loader_intuition': _readCommonSkill, 
-   'loader_perfectCharge': _readCommonSkill, 
-   'loader_ammunitionImprove': _readCommonSkill, 
-   'loader_melee': _readCommonSkill, 
-   'radioman_finder': _readCommonSkill, 
-   'radioman_expert': _readCrewMasterySkill, 
-   'radioman_sideBySide': _readCrewMasterySkill, 
-   'fireFighting': _readCommonSkill, 
-   'radioman_interference': _readCommonSkill, 
-   'radioman_signalInterception': _readCommonSkill}
+_g_skillConfigReaders = {'repair': _readRole,
+ 'camouflage': _readRole,
+ 'brotherhood': _readBrotherhoodSkill,
+ 'commander_tutor': _readCommanderTutorSkill,
+ 'commander_coordination': _readCommonSkill,
+ 'commander_sixthSense': _readCommanderSkillWithDelaySkill,
+ 'commander_emergency': _readCrewMasterySkill,
+ 'commander_enemyShotPredictor': _readCommanderEnemyShotPredictorSkill,
+ 'commander_eagleEye': _readCommonSkill,
+ 'commander_practical': _readCommonSkill,
+ 'driver_smoothDriving': _readCommonSkill,
+ 'driver_virtuoso': _readCommonSkill,
+ 'driver_badRoadsKing': _readCommonSkill,
+ 'driver_rammingMaster': _readCommonSkill,
+ 'driver_motorExpert': _readCommonSkill,
+ 'driver_reliablePlacement': _readCommonSkill,
+ 'gunner_smoothTurret': _readCommonSkill,
+ 'gunner_sniper': _readCommonSkill,
+ 'gunner_rancorous': _readCommonSkill,
+ 'gunner_armorer': _readCommonSkill,
+ 'gunner_focus': _readCommonSkill,
+ 'gunner_quickAiming': _readCommonSkill,
+ 'loader_pedant': _readCommonSkill,
+ 'loader_desperado': _readCommonSkill,
+ 'loader_intuition': _readCommonSkill,
+ 'loader_perfectCharge': _readCommonSkill,
+ 'loader_ammunitionImprove': _readCommonSkill,
+ 'loader_melee': _readCommonSkill,
+ 'radioman_finder': _readCommonSkill,
+ 'radioman_expert': _readCrewMasterySkill,
+ 'radioman_sideBySide': _readCrewMasterySkill,
+ 'fireFighting': _readCommonSkill,
+ 'radioman_interference': _readCommonSkill,
+ 'radioman_signalInterception': _readCommonSkill}
 
 def readSkillsConfig(xmlPath):
-    xmlCtx = (
-     None, xmlPath)
+    xmlCtx = (None, xmlPath)
     section = ResMgr.openSection(xmlPath)
     if section is None:
         _xml.raiseWrongXml(None, xmlPath, 'can not open or read')
@@ -158,8 +156,7 @@ def readSkillsConfig(xmlPath):
 
 def readAutoFillConfig(xmlPath):
     cfg = {}
-    xmlCtx = (
-     None, xmlPath)
+    xmlCtx = (None, xmlPath)
     section = ResMgr.openSection(xmlPath)
     if section is None:
         _xml.raiseWrongXml(None, xmlPath, 'can not open or read')

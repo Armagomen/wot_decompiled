@@ -1,4 +1,9 @@
-import logging, weakref, BigWorld, BattleReplay
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/battle/respawn_message_panel.py
+import logging
+import weakref
+import BigWorld
+import BattleReplay
 from Event import EventsSubscriber
 from ReplayEvents import g_replayEvents
 from VehicleBRRespawnEffectComponent import VehicleBRRespawnEffectComponent
@@ -202,8 +207,7 @@ class RespawnMessagePanel(BRRespawnMessagePanelMeta, ISpawnListener, IArenaPerio
 
     def __addMessage(self, message):
         if self.notificationManager():
-            if message.msgType in (MessageType.respActivatedMsg, MessageType.allyInBattleMsg,
-             MessageType.stayInCoverMsg):
+            if message.msgType in (MessageType.respActivatedMsg, MessageType.allyInBattleMsg, MessageType.stayInCoverMsg):
                 message.showBefore = BigWorld.serverTime() + message.time
             else:
                 message.showBefore = BigWorld.serverTime() + ONE_MINUTE

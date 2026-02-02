@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/container_vews/common/base_personal_case_context.py
 import typing
 from gui.impl.lobby.container_views.base.context import TankmanContext
 from gui.shared.gui_items.gui_item_economics import ItemPrice

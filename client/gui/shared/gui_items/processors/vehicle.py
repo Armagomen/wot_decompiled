@@ -1,6 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/gui_items/processors/vehicle.py
 import logging
 from itertools import chain
-import AccountCommands, BigWorld
+import AccountCommands
+import BigWorld
 from AccountCommands import VEHICLE_SETTINGS_FLAG
 from adisp import adisp_process, adisp_async
 from constants import RentType, SEASON_NAME_BY_TYPE, CLIENT_COMMAND_SOURCES
@@ -34,8 +37,8 @@ from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 from soft_exception import SoftException
 _logger = logging.getLogger(__name__)
-_SEASON_RENT_DURATION_KEY = {RentType.SEASON_RENT: 'season', 
-   RentType.SEASON_CYCLE_RENT: 'cycle'}
+_SEASON_RENT_DURATION_KEY = {RentType.SEASON_RENT: 'season',
+ RentType.SEASON_CYCLE_RENT: 'cycle'}
 
 def getSumPrice(result, vehicle, crewType, buyShells, consumables):
     if crewType != -1:
@@ -106,8 +109,7 @@ class VehicleBuyer(VehicleReceiveProcessor):
         super(VehicleBuyer, self).__init__(vehicle, buyShell=buyShell, crewType=crewType)
 
     def _getPluginsList(self):
-        return (
-         proc_plugs.MoneyValidator(self.price),
+        return (proc_plugs.MoneyValidator(self.price),
          proc_plugs.VehicleSlotsConfirmator(self.showNotEnoughSlotMsg and not self.buySlot),
          proc_plugs.VehicleFreeLimitConfirmator(self.item, self.crewType),
          proc_plugs.CollectibleVehiclesValidator(self.item.intCD))
@@ -119,7 +121,7 @@ class VehicleBuyer(VehicleReceiveProcessor):
     def _errorHandler(self, code, errStr='', ctx=None, itemsCache=None):
         if not errStr:
             errStr = 'server_error' if code != AccountCommands.RES_CENTER_DISCONNECTED else 'server_error_centerDown'
-        msg = ('vehicle_buy/{}').format(errStr)
+        msg = 'vehicle_buy/{}'.format(errStr)
         slotsEnough = itemsCache.items.inventory.getFreeSlots(itemsCache.items.stats.vehicleSlots) > 0
         if not self.showNotEnoughSlotMsg and not slotsEnough:
             errStr = 'slot_error'
@@ -131,9 +133,7 @@ class VehicleBuyer(VehicleReceiveProcessor):
     def _getSysMsgType(self):
         mainCurrency = self.item.buyPrices.itemPrice.getCurrency(byWeight=False)
         allCurrencies = self.price.getSetCurrencies(byWeight=True)
-        if mainCurrency == Currency.CREDITS and Currency.GOLD in allCurrencies:
-            return SM_TYPE.PurchaseForGoldAndCredits
-        return CURRENCY_TO_SM_TYPE.get(mainCurrency, SM_TYPE.Information)
+        return SM_TYPE.PurchaseForGoldAndCredits if mainCurrency == Currency.CREDITS and Currency.GOLD in allCurrencies else CURRENCY_TO_SM_TYPE.get(mainCurrency, SM_TYPE.Information)
 
     def _getApplyingConsumables(self):
         consumablesInfo = [ item.defaultLayoutValue for item in self.consumables ]
@@ -154,9 +154,7 @@ class VehicleRenter(VehicleReceiveProcessor):
         super(VehicleRenter, self).__init__(vehicle, buyShell, crewType)
 
     def _getPluginsList(self):
-        return (
-         proc_plugs.MoneyValidator(self.price),
-         proc_plugs.VehicleFreeLimitConfirmator(self.item, self.crewType))
+        return (proc_plugs.MoneyValidator(self.price), proc_plugs.VehicleFreeLimitConfirmator(self.item, self.crewType))
 
     def _getPrice(self):
         return getSumPrice(self.rentPrice, self.item, self.crewType, self.buyShell, self.consumables)
@@ -165,7 +163,7 @@ class VehicleRenter(VehicleReceiveProcessor):
         if not errStr:
             msg = 'vehicle_rent/server_error' if code != AccountCommands.RES_CENTER_DISCONNECTED else 'vehicle_rent/server_error_centerDown'
         else:
-            msg = ('vehicle_rent/{}').format(errStr)
+            msg = 'vehicle_rent/{}'.format(errStr)
         return makeI18nError(sysMsgKey=msg, defaultSysMsgKey='vehicle_rent/server_error', vehName=self.item.userName)
 
     def _successHandler(self, code, ctx=None):
@@ -175,9 +173,9 @@ class VehicleRenter(VehicleReceiveProcessor):
         elif rentType in (RentType.SEASON_CYCLE_RENT, RentType.SEASON_RENT):
             seasonName = SEASON_NAME_BY_TYPE[self.rentPackage['seasonType']]
             durationKey = _SEASON_RENT_DURATION_KEY.get(rentType)
-            rentPackageName = makeString(('#system_messages:vehicle_rent/{}/{}').format(seasonName, durationKey))
+            rentPackageName = makeString('#system_messages:vehicle_rent/{}/{}'.format(seasonName, durationKey))
         else:
-            raise SoftException(('Unknown rent type [{}]!').format(rentType))
+            raise SoftException('Unknown rent type [{}]!'.format(rentType))
         if not self.item.isDisabledForBuy and not self.item.isHidden:
             buyOption = makeString(SYSTEM_MESSAGES.VEHICLE_RENT_BUYOPTION)
         else:
@@ -212,7 +210,7 @@ class VehicleRestoreProcessor(VehicleBuyer):
         if not errStr:
             msg = 'vehicle_restore/server_error' if code != AccountCommands.RES_CENTER_DISCONNECTED else 'vehicle_restore/server_error_centerDown'
         else:
-            msg = ('vehicle_restore/{}').format(errStr)
+            msg = 'vehicle_restore/{}'.format(errStr)
         return makeI18nError(sysMsgKey=msg, defaultSysMsgKey='vehicle_restore/server_error', vehName=self.item.userName)
 
     def _successHandler(self, code, ctx=None):
@@ -222,10 +220,7 @@ class VehicleRestoreProcessor(VehicleBuyer):
         return SM_TYPE.Restore
 
     def _getPluginsList(self):
-        return (
-         proc_plugs.MoneyValidator(self.price),
-         proc_plugs.VehicleSlotsConfirmator(not self.buySlot),
-         proc_plugs.IsLongDisconnectedFromCenter())
+        return (proc_plugs.MoneyValidator(self.price), proc_plugs.VehicleSlotsConfirmator(not self.buySlot), proc_plugs.IsLongDisconnectedFromCenter())
 
     def _request(self, callback):
         _logger.debug('Make request to restore vehicle: %s, %s, %s, %s', self.item, self.crewType, self.buyShell, self.price)
@@ -239,10 +234,7 @@ class VehicleTradeInProcessorBase(VehicleBuyer):
         super(VehicleTradeInProcessorBase, self).__init__(vehicleToBuy, buySlot, buyShell=buyShell, crewType=crewType, consumables=consumables)
 
     def _getPluginsList(self):
-        return (
-         proc_plugs.VehicleValidator(self.itemToTradeOff, setAll=True),
-         proc_plugs.VehicleSellValidator(self.itemToTradeOff),
-         proc_plugs.MoneyValidator(self.price))
+        return (proc_plugs.VehicleValidator(self.itemToTradeOff, setAll=True), proc_plugs.VehicleSellValidator(self.itemToTradeOff), proc_plugs.MoneyValidator(self.price))
 
     def _successHandler(self, code, ctx=None):
         return makeI18nSuccess(sysMsgKey='vehicle_trade_in/success', vehName=self.item.userName, tradeOffVehName=self.itemToTradeOff.userName, price=formatPrice(self.price), type=self._getSysMsgType())
@@ -254,7 +246,7 @@ class VehicleTradeInProcessorBase(VehicleBuyer):
         if not errStr:
             msg = 'vehicle_trade_in/server_error' if code != AccountCommands.RES_CENTER_DISCONNECTED else 'vehicle_trade_in/server_error_centerDown'
         else:
-            msg = ('vehicle_trade_in/{}').format(errStr)
+            msg = 'vehicle_trade_in/{}'.format(errStr)
         return makeI18nError(sysMsgKey=msg, defaultSysMsgKey='vehicle_trade_in/server_error', vehName=self.item.userName, tradeOffVehName=self.itemToTradeOff.userName)
 
     def _request(self, callback):
@@ -276,8 +268,7 @@ class VehicleTradeInProcessor(VehicleTradeInProcessorBase):
         return BigWorld.player().shop.tradeInVehicle
 
     def _getPluginsList(self):
-        return super(VehicleTradeInProcessor, self)._getPluginsList() + (
-         proc_plugs.VehicleTradeInValidator(self.item, self.itemToTradeOff),)
+        return super(VehicleTradeInProcessor, self)._getPluginsList() + (proc_plugs.VehicleTradeInValidator(self.item, self.itemToTradeOff),)
 
 
 class VehicleSlotBuyer(Processor):
@@ -297,14 +288,11 @@ class VehicleSlotBuyer(Processor):
                 img = RES_ICONS.MAPS_ICONS_LIBRARY_CREDITSICON_2
             style = getStyle(currency) if currency in Currency.ALL else text_styles.credits
             ctx = {'goldCost': text_styles.concatStylesWithSpace(style(backport.getIntegralFormat(abs(slotCost.get(currency)))), icons.makeImageTag(img))}
-        super(VehicleSlotBuyer, self).__init__((
-         proc_plugs.MessageInformator(('buySlotNotEnough/{}').format(currency), activeHandler=lambda : not proc_plugs.MoneyValidator(slotCost).validate().success, isEnabled=showWarning),
-         proc_plugs.MessageConfirmator(confirmationType, isEnabled=showConfirm, ctx=ctx),
-         proc_plugs.MoneyValidator(slotCost)))
+        super(VehicleSlotBuyer, self).__init__((proc_plugs.MessageInformator('buySlotNotEnough/{}'.format(currency), activeHandler=lambda : not proc_plugs.MoneyValidator(slotCost).validate().success, isEnabled=showWarning), proc_plugs.MessageConfirmator(confirmationType, isEnabled=showConfirm, ctx=ctx), proc_plugs.MoneyValidator(slotCost)))
         return
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        return makeI18nError(sysMsgKey=('vehicle_slot_buy/{}').format(errStr), defaultSysMsgKey='vehicle_slot_buy/server_error')
+        return makeI18nError(sysMsgKey='vehicle_slot_buy/{}'.format(errStr), defaultSysMsgKey='vehicle_slot_buy/server_error')
 
     def _successHandler(self, code, ctx=None):
         price = self.__getSlotPrice()
@@ -330,10 +318,7 @@ class VehicleSlotBuyer(Processor):
 class VehicleSeller(ItemProcessor):
     __restore = dependency.descriptor(IRestoreController)
     __lobbyContext = dependency.descriptor(ILobbyContext)
-    __slots__ = ('vehicle', 'nationGroupVehs', 'shells', 'eqs', 'optDevs', 'gainMoney',
-                 'spendMoney', 'inventory', 'customizationItems', 'boosters', 'itemsForDemountKit',
-                 'itemsFreeToDemount', 'isCrewDismiss', 'isDismantlingForMoney',
-                 'isRemovedAfterRent', 'usedDemountKitsCount', '__hasPairModification')
+    __slots__ = ('vehicle', 'nationGroupVehs', 'shells', 'eqs', 'optDevs', 'gainMoney', 'spendMoney', 'inventory', 'customizationItems', 'boosters', 'itemsForDemountKit', 'itemsFreeToDemount', 'isCrewDismiss', 'isDismantlingForMoney', 'isRemovedAfterRent', 'usedDemountKitsCount', '__hasPairModification')
 
     def __init__(self, vehicle, shells=None, eqs=None, optDevs=None, inventory=None, customizationItems=None, boosters=None, isCrewDismiss=False, itemsForDemountKit=None, itemsForFreeDemount=None):
         shells = shells or []
@@ -351,7 +336,7 @@ class VehicleSeller(ItemProcessor):
         self.eqs = eqs
         self.optDevs = optDevs
         self.gainMoney, self.spendMoney = self.__getGainSpendMoney(vehicle, nationGroupVehs, shells, eqs, boosters, optDevs, inventory, customizationItems, itemsForDemountKit, itemsForFreeDemount)
-        self.inventory = set(m.intCD for m in inventory)
+        self.inventory = set((m.intCD for m in inventory))
         self.customizationItems = set(customizationItems)
         self.boosters = boosters
         self.itemsForDemountKit = itemsForDemountKit
@@ -364,13 +349,13 @@ class VehicleSeller(ItemProcessor):
             countOfDeleted = len(deletedTankmen)
             if countOfDeleted > 0:
                 isBufferOverflowed = True
-                bufferOverflowCtx['deleted'] = deletedTankmen[(-1)]
-                bufferOverflowCtx['dismissed'] = tankmenGoingToBuffer[(-1)]
+                bufferOverflowCtx['deleted'] = deletedTankmen[-1]
+                bufferOverflowCtx['dismissed'] = tankmenGoingToBuffer[-1]
                 if countOfDeleted > 1:
                     bufferOverflowCtx['multiple'] = True
                     bufferOverflowCtx['extraCount'] = countOfDeleted - 1
-        plugins = [
-         proc_plugs.VehicleValidator(vehicle, False, prop={'isBroken': True, 'isLocked': True}),
+        plugins = [proc_plugs.VehicleValidator(vehicle, False, prop={'isBroken': True,
+          'isLocked': True}),
          proc_plugs.VehicleSellValidator(vehicle),
          proc_plugs.MoneyValidator(self.spendMoney - self.gainMoney),
          proc_plugs.VehicleSellsLeftValidator(vehicle, not (vehicle.isRented and vehicle.rentalIsOver)),
@@ -384,7 +369,7 @@ class VehicleSeller(ItemProcessor):
         self.usedDemountKitsCount = len(itemsForDemountKit)
         self.isDismantlingForMoney = bool(self.spendMoney) or self.usedDemountKitsCount
         self.isRemovedAfterRent = vehicle.isRented
-        self.__hasPairModification = any(step.action.getPurchasedID() is not None for step in vehicle.postProgression.iterUnorderedSteps() if step.action.isMultiAction())
+        self.__hasPairModification = any((step.action.getPurchasedID() is not None for step in vehicle.postProgression.iterUnorderedSteps() if step.action.isMultiAction()))
 
     def _errorHandler(self, code, errStr='', ctx=None):
         localKey = 'vehicle_sell/{}'
@@ -463,9 +448,8 @@ class VehicleSeller(ItemProcessor):
         result = {}
         for vehicle in self.nationGroupVehs:
             itemTypeIds = (GUI_ITEM_TYPE.SHELL,) + GUI_ITEM_TYPE.VEHICLE_MODULES
-            vehInv = self.itemsCache.items.getItems(itemTypeID=itemTypeIds, criteria=REQ_CRITERIA.VEHICLE.SUITABLE([
-             vehicle], itemTypeIds) | REQ_CRITERIA.INVENTORY, nationID=vehicle.nationID).values()
-            result[vehicle.invID] = set(m.intCD for m in vehInv) & self.inventory
+            vehInv = self.itemsCache.items.getItems(itemTypeID=itemTypeIds, criteria=REQ_CRITERIA.VEHICLE.SUITABLE([vehicle], itemTypeIds) | REQ_CRITERIA.INVENTORY, nationID=vehicle.nationID).values()
+            result[vehicle.invID] = set((m.intCD for m in vehInv)) & self.inventory
 
         full = reduce(lambda acc, inv: acc | inv, result.itervalues())
         unique = reduce(lambda acc, inv: acc ^ inv, result.itervalues())
@@ -523,21 +507,23 @@ class VehicleSeller(ItemProcessor):
                     itemsFreeToDemount.add(od.intCD)
                     self.itemsFreeToDemount.remove(od)
 
-            result.append((vehicle.invID, self.isCrewDismiss, list(itemsFromVehicle),
-             list(itemsFromInventory[vehicle.invID]), customizationItems, list(itemsForDemountKit),
+            result.append((vehicle.invID,
+             self.isCrewDismiss,
+             list(itemsFromVehicle),
+             list(itemsFromInventory[vehicle.invID]),
+             customizationItems,
+             list(itemsForDemountKit),
              list(itemsFreeToDemount)))
 
         return result
 
     @staticmethod
     def getCurrencyString(currencyCode, isReceived=True):
-        if currencyCode not in Currency.ALL:
-            return backport.text(R.strings.messenger.platformCurrencyMsg.dyn('received' if isReceived else 'debited').dyn(currencyCode)())
-        return backport.text(R.strings.messenger.serviceChannelMessages.currencyUpdate.dyn('received' if isReceived else 'debited').dyn(currencyCode)())
+        return backport.text(R.strings.messenger.platformCurrencyMsg.dyn('received' if isReceived else 'debited').dyn(currencyCode)()) if currencyCode not in Currency.ALL else backport.text(R.strings.messenger.serviceChannelMessages.currencyUpdate.dyn('received' if isReceived else 'debited').dyn(currencyCode)())
 
     def __formatPrice(self, price, isReceived=True):
         separator = ',\n'
-        bullet = '• '
+        bullet = u'\u2022 '
         cSpace = ': '
         items = []
         if self.usedDemountKitsCount and not isReceived:
@@ -552,13 +538,12 @@ class VehicleSeller(ItemProcessor):
             styler = getStyle(c)
             cFormatted = styler(cFormatted)
             cIdentifier = self.getCurrencyString(c, isReceived)
-            items.append(('').join((
-             cIdentifier, cSpace, cFormatted)))
+            items.append(''.join((cIdentifier, cSpace, cFormatted)))
 
         if not items:
             return ''
         else:
-            result = separator.join(('{} {}').format(bullet, item) for item in items) if items else ''
+            result = separator.join(('{} {}'.format(bullet, item) for item in items)) if items else ''
             return result
 
 
@@ -568,8 +553,7 @@ def getDismantlingForMoneyToInventoryDevices(optDevicesToSell, itemsForDemountKi
     for dev in getDismantlingToInventoryDevices(optDevicesToSell, *vehicles):
         if dev.intCD in itemsForDk:
             itemsForDk.remove(dev.intCD)
-        else:
-            result.append(dev)
+        result.append(dev)
 
     return result
 
@@ -619,7 +603,7 @@ class VehicleTmenXPAccelerator(VehicleSettingsProcessor):
         super(VehicleTmenXPAccelerator, self).__init__(vehicle, VEHICLE_SETTINGS_FLAG.XP_TO_TMAN, value, plugins)
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        return makeI18nError(sysMsgKey=('vehicle_tmenxp_accelerator/{}').format(errStr), defaultSysMsgKey='vehicle_tmenxp_accelerator/server_error', vehName=self.item.userName)
+        return makeI18nError(sysMsgKey='vehicle_tmenxp_accelerator/{}'.format(errStr), defaultSysMsgKey='vehicle_tmenxp_accelerator/server_error', vehName=self.item.userName)
 
     def _successHandler(self, code, ctx=None):
         return makeI18nSuccess(sysMsgKey='vehicle_tmenxp_accelerator/success' + str(self._value), vehName=self.item.userName, type=SM_TYPE.Information)
@@ -677,15 +661,14 @@ class VehicleRepairer(ItemProcessor):
 
     def __init__(self, vehicle):
         self._repairCost = Money(credits=vehicle.repairCost)
-        super(VehicleRepairer, self).__init__(vehicle, (
-         proc_plugs.MoneyValidator(self._repairCost),))
+        super(VehicleRepairer, self).__init__(vehicle, (proc_plugs.MoneyValidator(self._repairCost),))
 
     def _request(self, callback):
         BigWorld.player().inventory.repair(self.item.invID, lambda code: self._response(code, callback))
 
     def _errorHandler(self, code, errStr='', ctx=None):
         needed = Money(credits=self._repairCost.credits - self.itemsCache.items.stats.credits)
-        return makeI18nError(sysMsgKey=('vehicle_repair/{}').format(errStr), defaultSysMsgKey='vehicle_repair/server_error', vehName=self.item.userName, needed=formatPrice(needed))
+        return makeI18nError(sysMsgKey='vehicle_repair/{}'.format(errStr), defaultSysMsgKey='vehicle_repair/server_error', vehName=self.item.userName, needed=formatPrice(needed))
 
     def _successHandler(self, code, ctx=None):
         return makeI18nSuccess(sysMsgKey='vehicle_repair/success', vehName=self.item.userName, money=formatPrice(self._repairCost), type=SM_TYPE.Repair)
@@ -729,13 +712,13 @@ def _getUniqueVehicleSellConfirmator(vehicle, lobbyContext=None, itemsCache=None
             restoreCfg = itemsCache.items.shop.vehiclesRestoreConfig
             info = VehicleRestoreInfo(restoreType, changedAt, restoreCfg.restoreDuration, restoreCfg.restoreCooldown)
     sellForGold = vehicle.getSellPrice(preferred=True).getCurrency(byWeight=True) == Currency.GOLD
-    if lobbyContext is not None and lobbyContext.getServerSettings().isVehicleRestoreEnabled() and not sellForGold and not vehicle.isUnrecoverable:
-        if info is not None and vehicle.isPurchased and info.isInCooldown():
-            return proc_plugs.MessageConfirmator('vehicleSell/restoreCooldown', ctx={'cooldown': formatTime(info.getRestoreCooldownTimeLeft(), time_utils.ONE_DAY)}, isEnabled=vehicle.isUnique)
-        if vehicle.isPurchased:
-            return proc_plugs.MessageConfirmator('vehicleSell/restoreUnlimited', isEnabled=vehicle.isUnique)
-    if vehicle.isCrewLocked:
-        dialogI18n = 'vehicleSell/unique/crewLocked'
+    if lobbyContext is not None and lobbyContext.getServerSettings().isVehicleRestoreEnabled():
+        if not sellForGold and not vehicle.isUnrecoverable:
+            if info is not None and vehicle.isPurchased and info.isInCooldown():
+                return proc_plugs.MessageConfirmator('vehicleSell/restoreCooldown', ctx={'cooldown': formatTime(info.getRestoreCooldownTimeLeft(), time_utils.ONE_DAY)}, isEnabled=vehicle.isUnique)
+            if vehicle.isPurchased:
+                return proc_plugs.MessageConfirmator('vehicleSell/restoreUnlimited', isEnabled=vehicle.isUnique)
+        dialogI18n = vehicle.isCrewLocked and 'vehicleSell/unique/crewLocked'
     else:
         dialogI18n = 'vehicleSell/unique'
     return proc_plugs.MessageConfirmator(dialogI18n, isEnabled=vehicle.isUnique)
@@ -768,18 +751,14 @@ class OptDevicesInstaller(Processor):
 
     def __init__(self, vehicle):
         super(OptDevicesInstaller, self).__init__()
-        self.__buyItems = [ item for item in vehicle.optDevices.layout.getItems() if not item.isInInventory and not vehicle.optDevices.setupLayouts.isInSetup(item)
-                          ]
+        self.__buyItems = [ item for item in vehicle.optDevices.layout.getItems() if not item.isInInventory and not vehicle.optDevices.setupLayouts.isInSetup(item) ]
         self.__price = getVehicleOptionalDevicesLayoutPrice(vehicle).price
         self._vehicle = vehicle
         self.__devices = vehicle.optDevices.layout.getIntCDs()
         self._setupPlugins()
 
     def _setupPlugins(self):
-        self.addPlugins((
-         proc_plugs.VehicleValidator(self._vehicle),
-         proc_plugs.MoneyValidator(self.__price, byCurrencyError=False),
-         proc_plugs.OptionalDevicesInstallValidator(self._vehicle)))
+        self.addPlugins((proc_plugs.VehicleValidator(self._vehicle), proc_plugs.MoneyValidator(self.__price, byCurrencyError=False), proc_plugs.OptionalDevicesInstallValidator(self._vehicle)))
 
     def _request(self, callback):
         BigWorld.player().inventory.equipOptDevsSequence(self._vehicle.invID, self.__devices, lambda code, errStr, ctx: self._response(code, callback, errStr=errStr, ctx=None))
@@ -802,10 +781,7 @@ class BuyAndInstallConsumablesProcessor(Processor):
         self._setupPlugins()
 
     def _setupPlugins(self):
-        self.addPlugins((
-         proc_plugs.VehicleValidator(self._vehicle),
-         proc_plugs.MoneyValidator(getVehicleConsumablesLayoutPrice(self._vehicle).price, byCurrencyError=False),
-         proc_plugs.ConsumablesInstallValidator(self._vehicle)))
+        self.addPlugins((proc_plugs.VehicleValidator(self._vehicle), proc_plugs.MoneyValidator(getVehicleConsumablesLayoutPrice(self._vehicle).price, byCurrencyError=False), proc_plugs.ConsumablesInstallValidator(self._vehicle)))
 
     def _request(self, callback):
         BigWorld.player().inventory.setAndFillLayouts(self._vehicle.invID, None, self.__getLayoutRaw(), EQUIPMENT_TYPES.regular, lambda code, errStr, ext: self._response(code, callback, errStr=errStr, ctx=ext))
@@ -814,18 +790,15 @@ class BuyAndInstallConsumablesProcessor(Processor):
     def _successHandler(self, code, ctx=None):
         additionalMessages = []
         if ctx:
-            additionalMessages = [ ItemBuyProcessorMessage(self.itemsCache.items.getItemByCD(cd), count, Money.makeFromMoneyTuple(price)).makeSuccessMsg() for cd, price, count in ctx.get('eqs', [])
-                                 ]
+            additionalMessages = [ ItemBuyProcessorMessage(self.itemsCache.items.getItemByCD(cd), count, Money.makeFromMoneyTuple(price)).makeSuccessMsg() for cd, price, count in ctx.get('eqs', []) ]
         return makeSuccess(auxData=additionalMessages)
 
     def _errorHandler(self, code, errStr='', ctx=None):
         return ConsumablesApplyProcessorMessage(self._vehicle).makeErrorMsg(errStr)
 
     def __getLayoutRaw(self):
-        layout = [ item.defaultLayoutValue if item is not None else (0, 0) for item in self._vehicle.consumables.layout
-                 ]
-        currentBoosters = [ item.defaultLayoutValue if item is not None else (0, 0) for item in self._vehicle.battleBoosters.installed
-                          ]
+        layout = [ (item.defaultLayoutValue if item is not None else (0, 0)) for item in self._vehicle.consumables.layout ]
+        currentBoosters = [ (item.defaultLayoutValue if item is not None else (0, 0)) for item in self._vehicle.battleBoosters.installed ]
         layout.extend(currentBoosters)
         return [ v for v in chain.from_iterable(layout) ]
 
@@ -847,12 +820,15 @@ class EasyTankEquipApplyProcessor(Processor):
         self.__eqsLayout = eqsData.get('eqs', [])
         self.__styleData = styleData.get('styleData', {})
         buyingPrice = ZERO_MONEY
-        for data in [optDevicesData, shellsData, eqsData, styleData]:
+        for data in [optDevicesData,
+         shellsData,
+         eqsData,
+         styleData]:
             buyingPrice += data.get('price', ZERO_MONEY)
 
-        addPlugins = [
-         proc_plugs.MoneyValidator(buyingPrice, byCurrencyError=False),
-         proc_plugs.VehicleValidator(self.__currentVehicle, False, prop={'isBroken': True, 'isLocked': True}),
+        addPlugins = [proc_plugs.MoneyValidator(buyingPrice, byCurrencyError=False),
+         proc_plugs.VehicleValidator(self.__currentVehicle, False, prop={'isBroken': True,
+          'isLocked': True}),
          proc_plugs.OptionalDevicesInstallValidator(self.__currentVehicle),
          proc_plugs.DismountForDemountKitValidator(self.__currentVehicle, self.__demountByDemountKit),
          proc_plugs.FreeToDemountValidator(self.__demountForFree)]
@@ -892,20 +868,17 @@ class EasyTankEquipApplyProcessor(Processor):
     def __successHandlerForEqs(self, eqs):
         if not eqs:
             return []
-        return [ ItemBuyProcessorMessage(self.itemsCache.items.getItemByCD(cd), count, responsePrice=Money.makeFromMoneyTuple(price)).makeSuccessMsg() for eqsCtx in eqs for cd, price, count in eqsCtx
-               ]
+        return [ ItemBuyProcessorMessage(self.itemsCache.items.getItemByCD(cd), count, responsePrice=Money.makeFromMoneyTuple(price)).makeSuccessMsg() for eqsCtx in eqs for cd, price, count in eqsCtx ]
 
     def __successHandlerForDemountedOptDevices(self, demountedOptDevices):
         if not demountedOptDevices:
             return []
-        return [ OptDeviceRemoveProcessorMessage(self.itemsCache.items.getItemByCD(optDevice), removalPrice=Money.makeMoney(price), useDemountKit=useDemountKit).makeSuccessMsg() for demountedOptDevicesCtx in demountedOptDevices for optDevice, price, useDemountKit in demountedOptDevicesCtx
-               ]
+        return [ OptDeviceRemoveProcessorMessage(self.itemsCache.items.getItemByCD(optDevice), removalPrice=Money.makeMoney(price), useDemountKit=useDemountKit).makeSuccessMsg() for demountedOptDevicesCtx in demountedOptDevices for optDevice, price, useDemountKit in demountedOptDevicesCtx ]
 
     def __successHandlerForOptDevices(self, optDevices):
         if not optDevices:
             return []
-        return [ ItemBuyProcessorMessage(self.itemsCache.items.getItemByCD(optDevice), 1, responsePrice=Money.makeMoney(price)).makeSuccessMsg() for optDevicesCtx in optDevices for optDevice, price in optDevicesCtx
-               ]
+        return [ ItemBuyProcessorMessage(self.itemsCache.items.getItemByCD(optDevice), 1, responsePrice=Money.makeMoney(price)).makeSuccessMsg() for optDevicesCtx in optDevices for optDevice, price in optDevicesCtx ]
 
     def __successHandlerForStyle(self, style):
         messages = []
@@ -916,10 +889,10 @@ class EasyTankEquipApplyProcessor(Processor):
                     price = Money.makeFromMoneyTuple(cost)
                     sysMsgType = CURRENCY_TO_SM_TYPE.get(price.getCurrency(byWeight=True), SM_TYPE.PurchaseForGold)
                     styleItemType = backport.text(R.strings.item_types.customization.style())
-                    msgCtx = {'itemType': styleItemType, 
-                       'itemName': item.userName, 
-                       'count': backport.getIntegralFormat(1), 
-                       'money': formatPrice(price, useStyle=True)}
+                    msgCtx = {'itemType': styleItemType,
+                     'itemName': item.userName,
+                     'count': backport.getIntegralFormat(1),
+                     'money': formatPrice(price, useStyle=True)}
                     msg = backport.text(R.strings.messenger.serviceChannelMessages.sysMsg.customization.buyOne(), **msgCtx)
                     messages.append(makeSuccess(userMsg=msg, msgType=sysMsgType))
 
@@ -929,8 +902,7 @@ class EasyTankEquipApplyProcessor(Processor):
         return messages
 
     def __getEasyTankEquipData(self):
-        return (
-         self.__currentVehicle.invID,
+        return (self.__currentVehicle.invID,
          self.__getOptDevicesForDemountKit(),
          self.__getOptDevicesFreeDemount(),
          self.__getApplyingOptDevices(),
@@ -952,7 +924,7 @@ class EasyTankEquipApplyProcessor(Processor):
         return list(chain.from_iterable(shellsInfo))
 
     def __getApplyingConsumables(self):
-        consumablesInfo = [ eq.defaultLayoutValue if eq is not None else (0, 0) for eq in self.__eqsLayout ]
+        consumablesInfo = [ (eq.defaultLayoutValue if eq is not None else (0, 0)) for eq in self.__eqsLayout ]
         return list(chain.from_iterable(consumablesInfo))
 
     def __getApplyingStyle(self):
@@ -973,10 +945,7 @@ class BuyAndInstallShellsProcessor(Processor):
         self._setupPlugins()
 
     def _setupPlugins(self):
-        self.addPlugins((
-         proc_plugs.VehicleValidator(self.__vehicle),
-         proc_plugs.MoneyValidator(getVehicleShellsLayoutPrice(self.__vehicle).price, byCurrencyError=False),
-         proc_plugs.ShellsInstallValidator(self.__vehicle)))
+        self.addPlugins((proc_plugs.VehicleValidator(self.__vehicle), proc_plugs.MoneyValidator(getVehicleShellsLayoutPrice(self.__vehicle).price, byCurrencyError=False), proc_plugs.ShellsInstallValidator(self.__vehicle)))
 
     def _request(self, callback):
         BigWorld.player().inventory.setAndFillLayouts(self.__vehicle.invID, self.__getShellsRaw(), None, 0, lambda code, errStr, ext: self._response(code, callback, errStr=errStr, ctx=ext))
@@ -1012,27 +981,21 @@ class BuyAndInstallBattleBoostersProcessor(Processor):
         self._setupPlugins()
 
     def _setupPlugins(self):
-        self.addPlugins((
-         proc_plugs.VehicleValidator(self.__vehicle),
-         proc_plugs.MoneyValidator(getVehicleBattleBoostersLayoutPrice(self.__vehicle).price, byCurrencyError=False),
-         proc_plugs.BattleBoostersInstallValidator(self.__vehicle)))
+        self.addPlugins((proc_plugs.VehicleValidator(self.__vehicle), proc_plugs.MoneyValidator(getVehicleBattleBoostersLayoutPrice(self.__vehicle).price, byCurrencyError=False), proc_plugs.BattleBoostersInstallValidator(self.__vehicle)))
 
     def _request(self, callback):
         BigWorld.player().inventory.setAndFillLayouts(self.__vehicle.invID, None, self.__getLayoutRaw(), EQUIPMENT_TYPES.battleBoosters, lambda code, errStr, ext: self._response(code, callback, errStr=errStr, ctx=ext))
         return
 
     def _successHandler(self, code, ctx=None):
-        return makeSuccess(auxData=[ ItemBuyProcessorMessage(i, 1).makeSuccessMsg() for i in self.__boosters if not i.isInInventory and not self.__vehicle.battleBoosters.setupLayouts.isInOtherLayout(i)
-                                   ])
+        return makeSuccess(auxData=[ ItemBuyProcessorMessage(i, 1).makeSuccessMsg() for i in self.__boosters if not i.isInInventory and not self.__vehicle.battleBoosters.setupLayouts.isInOtherLayout(i) ])
 
     def _errorHandler(self, code, errStr='', ctx=None):
         return BattleBoostersApplyProcessorMessage().makeErrorMsg(errStr)
 
     def __getLayoutRaw(self):
-        desiredBoosters = [ item.defaultLayoutValue if item is not None else (0, 0) for item in self.__vehicle.battleBoosters.layout
-                          ]
-        layout = [ item.defaultLayoutValue if item is not None else (0, 0) for item in self.__vehicle.consumables.installed
-                 ]
+        desiredBoosters = [ (item.defaultLayoutValue if item is not None else (0, 0)) for item in self.__vehicle.battleBoosters.layout ]
+        layout = [ (item.defaultLayoutValue if item is not None else (0, 0)) for item in self.__vehicle.consumables.installed ]
         layout.extend(desiredBoosters)
         return [ v for v in chain.from_iterable(layout) ]
 
@@ -1046,8 +1009,7 @@ class AutoFillVehicleLayoutProcessor(Processor):
 
     def _setupPlugins(self):
         price = self.__getPrice()
-        self.addPlugins((
-         proc_plugs.VehicleValidator(self.__vehicle),
+        self.addPlugins((proc_plugs.VehicleValidator(self.__vehicle),
          proc_plugs.MoneyValidator(price),
          proc_plugs.ShellsInstallValidator(self.__vehicle),
          proc_plugs.ConsumablesInstallValidator(self.__vehicle)))
@@ -1066,8 +1028,7 @@ class AutoFillVehicleLayoutProcessor(Processor):
 
             if totalPrice:
                 additionalMessages.append(LayoutApplyProcessorMessage(self.__vehicle, totalPrice).makeSuccessMsg())
-            additionalMessages.extend([ ItemBuyProcessorMessage(self.itemsCache.items.getItemByCD(cd), count, Money.makeFromMoneyTuple(price)).makeSuccessMsg() for cd, price, count in ctx.get('eqs', [])
-                                      ])
+            additionalMessages.extend([ ItemBuyProcessorMessage(self.itemsCache.items.getItemByCD(cd), count, Money.makeFromMoneyTuple(price)).makeSuccessMsg() for cd, price, count in ctx.get('eqs', []) ])
         return makeSuccess(auxData=additionalMessages)
 
     def _errorHandler(self, code, errStr='', ctx=None):
@@ -1078,8 +1039,7 @@ class AutoFillVehicleLayoutProcessor(Processor):
         return [ v for v in chain.from_iterable(itemsIntAndCount) ]
 
     def __getConsumablesRaw(self):
-        itemsIntAndCount = [ item.defaultLayoutValue if item is not None else (0, 0) for item in self.__vehicle.consumables.layout
-                           ]
+        itemsIntAndCount = [ (item.defaultLayoutValue if item is not None else (0, 0)) for item in self.__vehicle.consumables.layout ]
         return [ v for v in chain.from_iterable(itemsIntAndCount) ]
 
     def __getPrice(self):
@@ -1096,9 +1056,7 @@ class InstallBattleAbilitiesProcessor(Processor):
         self._setupPlugins()
 
     def _setupPlugins(self):
-        self.addPlugins((
-         proc_plugs.VehicleValidator(self.__vehicle),
-         proc_plugs.BattleAbilitiesValidator(self.__vehicle)))
+        self.addPlugins((proc_plugs.VehicleValidator(self.__vehicle), proc_plugs.BattleAbilitiesValidator(self.__vehicle)))
 
     def _request(self, callback):
         self.__epicMetaGameCtrl.changeEquippedSkills(self.__getCurrentSkills(), self.__vehicle.intCD, lambda code, _: self._response(code, callback), self.__classVehs)
@@ -1111,8 +1069,7 @@ class InstallBattleAbilitiesProcessor(Processor):
 
     def __getCurrentSkills(self):
         skillToAbilitiesIds = {skillID:skillInfo.eqID for skillID, skillInfo in self.__epicMetaGameCtrl.getAllUnlockedSkillInfoBySkillId().iteritems()}
-        currentSkills = [
-         -1] * self.__epicMetaGameCtrl.getNumAbilitySlots(self.__vehicle.descriptor.type)
+        currentSkills = [-1] * self.__epicMetaGameCtrl.getNumAbilitySlots(self.__vehicle.descriptor.type)
         for slotIdx, item in enumerate(self.__vehicle.battleAbilities.layout):
             for skillID, battleAbilitiesID in skillToAbilitiesIds.iteritems():
                 if item != EMPTY_ITEM and item.innationID == battleAbilitiesID:

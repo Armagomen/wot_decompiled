@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/prb_control/entities/epic/squad/actions_validator.py
 from CurrentVehicle import g_currentVehicle
 from constants import BATTLE_MODE_VEH_TAGS_EXCEPT_EPIC
 from gui.prb_control.entities.base.actions_validator import ActionsValidatorComposite
@@ -20,9 +22,7 @@ class _EpicBalancedSquadVehiclesValidator(BalancedSquadVehiclesValidator):
     def _validate(self):
         availableLevels = self.__epicCtrl.getSuitableForQueueVehicleLevels()
         pInfo = self._entity.getPlayerInfo()
-        if not pInfo.isReady and g_currentVehicle.isPresent() and g_currentVehicle.item.level not in availableLevels:
-            return ValidationResult(False, UNIT_RESTRICTION.VEHICLE_INVALID_LEVEL)
-        return super(_EpicBalancedSquadVehiclesValidator, self)._validate()
+        return ValidationResult(False, UNIT_RESTRICTION.VEHICLE_INVALID_LEVEL) if not pInfo.isReady and g_currentVehicle.isPresent() and g_currentVehicle.item.level not in availableLevels else super(_EpicBalancedSquadVehiclesValidator, self)._validate()
 
 
 class _EpicStateValidator(UnitStateValidator):
@@ -39,19 +39,14 @@ class _EpicStateValidator(UnitStateValidator):
 class EpicSquadActionsValidator(SquadActionsValidator):
 
     def _createVehiclesValidator(self, entity):
-        return ActionsValidatorComposite(entity, validators=[
-         _EpicBalancedSquadVehiclesValidator(entity),
-         _EpicVehiclesValidator(entity),
-         RoleForbiddenSquadVehiclesValidator(entity)])
+        return ActionsValidatorComposite(entity, validators=[_EpicBalancedSquadVehiclesValidator(entity), _EpicVehiclesValidator(entity), RoleForbiddenSquadVehiclesValidator(entity)])
 
     def _createStateValidator(self, entity):
         return _EpicStateValidator(entity)
 
     def _createSlotsValidator(self, entity):
         baseValidator = super(EpicSquadActionsValidator, self)._createSlotsValidator(entity)
-        return ActionsValidatorComposite(entity, validators=[
-         baseValidator,
-         EpicSquadSlotsValidator(entity)])
+        return ActionsValidatorComposite(entity, validators=[baseValidator, EpicSquadSlotsValidator(entity)])
 
 
 class EpicSquadSlotsValidator(CommanderValidator):
@@ -59,5 +54,4 @@ class EpicSquadSlotsValidator(CommanderValidator):
     def _validate(self):
         stats = self._entity.getStats()
         pInfo = self._entity.getPlayerInfo()
-        if stats.occupiedSlotsCount > 1 and not pInfo.isReady:
-            return ValidationResult(False, UNIT_RESTRICTION.COMMANDER_VEHICLE_NOT_SELECTED)
+        return ValidationResult(False, UNIT_RESTRICTION.COMMANDER_VEHICLE_NOT_SELECTED) if stats.occupiedSlotsCount > 1 and not pInfo.isReady else None

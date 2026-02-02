@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/session_stats/session_stats_popover.py
 from gui.Scaleform.daapi.view.meta.SessionStatsPopoverMeta import SessionStatsPopoverMeta
 from gui.Scaleform.genConsts.SESSION_STATS_CONSTANTS import SESSION_STATS_CONSTANTS
 from gui.Scaleform.daapi.view.lobby.session_stats.session_stats_settings import SessionStatsSettings
@@ -13,8 +15,8 @@ class SessionStatsPopover(SessionStatsPopoverMeta):
 
     def _populate(self):
         super(SessionStatsPopover, self)._populate()
-        data = {'alias': SESSION_STATS_CONSTANTS.SESSION_STATS_OVERVIEW_PY_ALIAS, 
-           'linkage': SESSION_STATS_CONSTANTS.SESSION_STATS_OVERVIEW_VIEW_LINKAGE}
+        data = {'alias': SESSION_STATS_CONSTANTS.SESSION_STATS_OVERVIEW_PY_ALIAS,
+         'linkage': SESSION_STATS_CONSTANTS.SESSION_STATS_OVERVIEW_VIEW_LINKAGE}
         self.as_setDataS(data)
 
     def _dispose(self):
@@ -34,13 +36,13 @@ class SessionStatsPopover(SessionStatsPopoverMeta):
             self.__sessionSettings.onShowStats += self.onShowStats
 
     def onShowSettings(self):
-        data = {'alias': SESSION_STATS_CONSTANTS.SESSION_STATS_SETTINGS_PY_ALIAS, 
-           'linkage': SESSION_STATS_CONSTANTS.SESSION_STATS_SETTINGS_VIEW_LINKAGE}
+        data = {'alias': SESSION_STATS_CONSTANTS.SESSION_STATS_SETTINGS_PY_ALIAS,
+         'linkage': SESSION_STATS_CONSTANTS.SESSION_STATS_SETTINGS_VIEW_LINKAGE}
         self.as_setDataS(data)
 
     def onShowStats(self):
-        data = {'alias': SESSION_STATS_CONSTANTS.SESSION_STATS_OVERVIEW_PY_ALIAS, 
-           'linkage': SESSION_STATS_CONSTANTS.SESSION_STATS_OVERVIEW_VIEW_LINKAGE}
+        data = {'alias': SESSION_STATS_CONSTANTS.SESSION_STATS_OVERVIEW_PY_ALIAS,
+         'linkage': SESSION_STATS_CONSTANTS.SESSION_STATS_OVERVIEW_VIEW_LINKAGE}
         if self.__sessionBattleStats is not None:
             self.__sessionBattleStats.updateData()
         self.as_setDataS(data)

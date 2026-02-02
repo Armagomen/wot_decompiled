@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/battle_results/submodel_presenters/team_statistics.py
 import typing
 from helpers import dependency
 from skeletons.connection_mgr import IConnectionManager
@@ -26,7 +28,7 @@ class TeamStatisticsSubPresenter(BattleResultsSubPresenter):
             databaseID = int(event.getArgument('databaseID', default=-1))
             if databaseID == self.__connectionMgr.databaseID:
                 return
-            vehicleCD = event.getArgument('vehicleCD')
+            vehicleCD = event.getArgument('vehicleCD', 0)
             contextMenuData = createContextMenuData(CONTEXT_MENU_HANDLER_TYPE.BATTLE_RESULTS_USER, self.__getContextMenuArgs(databaseID, vehicleCD))
             if contextMenuData is not None:
                 window = BackportContextMenuWindow(contextMenuData, self.getParentWindow())
@@ -35,9 +37,7 @@ class TeamStatisticsSubPresenter(BattleResultsSubPresenter):
         return
 
     def _getEvents(self):
-        return (
-         (
-          self.getViewModel().onStatsSorted, self.__onTeamStatsSorted),)
+        return ((self.getViewModel().onStatsSorted, self.__onTeamStatsSorted),)
 
     def __getContextMenuArgs(self, databaseID, vehicleCD):
         reusable = self.getBattleResults().reusable

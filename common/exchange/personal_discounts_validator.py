@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/exchange/personal_discounts_validator.py
 from abc import ABCMeta
 from exchange.personal_discounts_constants import ExchangeDiscountType, EXCHANGE_RATE_GOLD_NAME, MAX_DISCOUNT_COEFFICIENT, MAX_TIMESTAMP_VALUE, MAX_DISCOUNT_VALUE, ExchangeDiscountInfo, ExchangeRate, ExchangeRateShowFormat
 
@@ -75,9 +77,7 @@ class BaseExchangeValidator(object):
 
     @property
     def isValidShowFormat(self):
-        if self.discount.discountType == ExchangeDiscountType.UNLIMITED and self.discount.showFormat == ExchangeRateShowFormat.LIMITED:
-            return False
-        return True
+        return False if self.discount.discountType == ExchangeDiscountType.UNLIMITED and self.discount.showFormat == ExchangeRateShowFormat.LIMITED else True
 
 
 class GoldExchangeValidator(BaseExchangeValidator):

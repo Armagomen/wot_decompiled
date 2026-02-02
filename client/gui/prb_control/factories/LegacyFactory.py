@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/factories/LegacyFactory.py
 from constants import PREBATTLE_TYPE
 from gui.shared.system_factory import registerLegacyEntity, collectLegacyEntity
 from gui.shared.system_factory import registerLegacyEntryPoint, collectLegacyEntryPoint
@@ -10,7 +12,7 @@ from gui.prb_control.entities.battle_session.legacy.entity import BattleSessionE
 from gui.prb_control.entities.training.legacy.entity import TrainingEntryPoint, TrainingIntroEntryPoint, TrainingEntity, TrainingIntroEntity
 from gui.prb_control.items import PlayerDecorator, FunctionalState
 from gui.prb_control.settings import FUNCTIONAL_FLAG, PREBATTLE_ACTION_NAME, CTRL_ENTITY_TYPE
-__all__ = ('LegacyFactory', )
+__all__ = ('LegacyFactory',)
 registerLegacyEntryPointByType(PREBATTLE_TYPE.TRAINING, TrainingEntryPoint)
 registerLegacyEntryPointByType(PREBATTLE_TYPE.TOURNAMENT, BattleSessionEntryPoint)
 registerLegacyEntryPointByType(PREBATTLE_TYPE.CLAN, BattleSessionEntryPoint)
@@ -29,9 +31,7 @@ class LegacyFactory(ControlFactory):
 
     def createEntry(self, ctx):
         prbType = ctx.getEntityType()
-        if not prbType:
-            return LegacyIntroEntryPoint(FUNCTIONAL_FLAG.UNDEFINED, ctx.getEntityType())
-        return collectLegacyEntryPointByType(prbType)
+        return LegacyIntroEntryPoint(FUNCTIONAL_FLAG.UNDEFINED, ctx.getEntityType()) if not prbType else collectLegacyEntryPointByType(prbType)
 
     def createEntryByAction(self, action):
         result = collectLegacyEntryPoint(action.actionName)
@@ -71,16 +71,11 @@ class LegacyFactory(ControlFactory):
         return self.__createByPrbType(ctx)
 
     def __createByFlags(self, ctx):
-        if not ctx.hasFlags(FUNCTIONAL_FLAG.LEGACY):
-            return self.__createByAccountState(ctx)
-        else:
-            return
+        return self.__createByAccountState(ctx) if not ctx.hasFlags(FUNCTIONAL_FLAG.LEGACY) else None
 
     def __createByPrbType(self, ctx):
         if ctx.getCtrlType() != CTRL_ENTITY_TYPE.LEGACY:
-            return
+            return None
         else:
             prbType = ctx.getEntityType()
-            if prbType in _SUPPORTED_INTRO_BY_TYPE:
-                return self._createEntityByType(prbType, _SUPPORTED_INTRO_BY_TYPE)
-            return
+            return self._createEntityByType(prbType, _SUPPORTED_INTRO_BY_TYPE) if prbType in _SUPPORTED_INTRO_BY_TYPE else None

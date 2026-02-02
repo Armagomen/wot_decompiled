@@ -1,8 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/tutorial/data/client_triggers.py
 import logging
 from gui.Scaleform.genConsts.TUTORIAL_TRIGGER_TYPES import TUTORIAL_TRIGGER_TYPES
 _logger = logging.getLogger(__name__)
-_COMPONENT_STATE_TRIGGERS = {'visible': TUTORIAL_TRIGGER_TYPES.VISIBLE_CHANGE, 
-   'enabled': TUTORIAL_TRIGGER_TYPES.ENABLED_CHANGE}
+_COMPONENT_STATE_TRIGGERS = {'visible': TUTORIAL_TRIGGER_TYPES.VISIBLE_CHANGE,
+ 'enabled': TUTORIAL_TRIGGER_TYPES.ENABLED_CHANGE}
 
 class _ComponentState(object):
 
@@ -72,14 +74,14 @@ class ClientTriggers(object):
     def updateRealState(self, itemID, state=None, newStateValue=None):
         if itemID not in self.__hintRealStates:
             return
-        else:
-            if state is None:
-                for _ in self.__hintRealStates[itemID].keys():
-                    self.__hintRealStates[itemID][state] = _ComponentState()
+        elif state is None:
+            for _ in self.__hintRealStates[itemID].keys():
+                self.__hintRealStates[itemID][state] = _ComponentState()
 
-                return
-            if state not in self.__hintRealStates[itemID]:
-                return
+            return
+        elif state not in self.__hintRealStates[itemID]:
+            return
+        else:
             self.__hintRealStates[itemID][state].updateState(newStateValue)
             return
 

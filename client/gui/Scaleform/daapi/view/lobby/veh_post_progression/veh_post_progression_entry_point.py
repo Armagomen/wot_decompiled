@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/veh_post_progression/veh_post_progression_entry_point.py
 from __future__ import absolute_import
 import typing
 from account_helpers import AccountSettings
@@ -16,12 +18,11 @@ if typing.TYPE_CHECKING:
 
 def _validateVehicle(vehicle):
     if not isinstance(vehicle, Vehicle):
-        raise SoftException(('vehicle has to be valid gui_items.Vehicle, got: {}').format(vehicle))
+        raise SoftException('vehicle has to be valid gui_items.Vehicle, got: {}'.format(vehicle))
 
 
 class VehPostProgressionEntryPoint(EventSystemEntity):
-    __slots__ = ('_eliteWatchedList', '_watchedListDirty', '_parentObj', '_vehicle',
-                 '_modulesToUnlock')
+    __slots__ = ('_eliteWatchedList', '_watchedListDirty', '_parentObj', '_vehicle', '_modulesToUnlock')
 
     def __init__(self, parentObj):
         super(VehPostProgressionEntryPoint, self).__init__()
@@ -48,7 +49,7 @@ class VehPostProgressionEntryPoint(EventSystemEntity):
         self.__updatePostProgressionData()
 
     def invalidateUnlocks(self, unlocks):
-        if any(cd in self._modulesToUnlock for cd, _ in unlocks):
+        if any((cd in self._modulesToUnlock for cd, _ in unlocks)):
             self.__updatePostProgressionData()
 
     @property
@@ -88,11 +89,11 @@ class VehPostProgressionEntryPoint(EventSystemEntity):
             return {'state': POSTPROGRESSION_CONSTS.RESEARCH_STATE_HIDDEN}
         eliteProgress = vehicle.getEliteStatusProgress()
         self._modulesToUnlock = eliteProgress.toUnlock
-        return {'state': self.__getUnlockState(), 
-           'vehicleId': vehicle.intCD, 
-           'moduleIds': eliteProgress.toUnlock, 
-           'label': self.__getLabel(eliteProgress), 
-           'showCounter': needToShowCounter(vehicle)}
+        return {'state': self.__getUnlockState(),
+         'vehicleId': vehicle.intCD,
+         'moduleIds': eliteProgress.toUnlock,
+         'label': self.__getLabel(eliteProgress),
+         'showCounter': needToShowCounter(vehicle)}
 
     def __getLabel(self, eliteProgress):
         isPurchased = self._vehicle.isPurchased
@@ -111,6 +112,4 @@ class VehPostProgressionEntryPoint(EventSystemEntity):
             return labelResId and backport.text(labelResId())
 
     def __getUnlockState(self):
-        if self._vehicle.postProgressionAvailability(unlockOnly=True) and self.isUnlockShowed:
-            return POSTPROGRESSION_CONSTS.RESEARCH_STATE_UNLOCKED
-        return POSTPROGRESSION_CONSTS.RESEARCH_STATE_LOCKED
+        return POSTPROGRESSION_CONSTS.RESEARCH_STATE_UNLOCKED if self._vehicle.postProgressionAvailability(unlockOnly=True) and self.isUnlockShowed else POSTPROGRESSION_CONSTS.RESEARCH_STATE_LOCKED

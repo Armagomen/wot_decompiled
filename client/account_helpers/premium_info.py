@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/account_helpers/premium_info.py
 from constants import PREMIUM_TYPE
 
 class PremiumInfo(object):
@@ -19,14 +21,12 @@ class PremiumInfo(object):
     @property
     def totalPremiumExpiryTime(self):
         premiumMask = self._rawPremiumInfo['premMask']
-        return max(tuple(self._rawPremiumInfo[p] for p in PREMIUM_TYPE.TYPES_SORTED if bool(premiumMask & p)) + (0, ))
+        return max(tuple((self._rawPremiumInfo[p] for p in PREMIUM_TYPE.TYPES_SORTED if bool(premiumMask & p))) + (0,))
 
     @property
     def activePremiumExpiryTime(self):
         activePremiumType = self.activePremiumType
-        if activePremiumType != PREMIUM_TYPE.NONE:
-            return self._rawPremiumInfo[activePremiumType]
-        return 0
+        return self._rawPremiumInfo[activePremiumType] if activePremiumType != PREMIUM_TYPE.NONE else 0
 
     @property
     def activePremiumType(self):
@@ -35,4 +35,5 @@ class PremiumInfo(object):
     @property
     def data(self):
         premiumMask = self._rawPremiumInfo['premMask']
-        return {pType:{'active': bool(premiumMask & pType), 'expiryTime': self._rawPremiumInfo[pType]} for pType in PREMIUM_TYPE.TYPES_SORTED}
+        return {pType:{'active': bool(premiumMask & pType),
+         'expiryTime': self._rawPremiumInfo[pType]} for pType in PREMIUM_TYPE.TYPES_SORTED}

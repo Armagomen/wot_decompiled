@@ -1,6 +1,10 @@
-import json, logging
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/platform/catalog_service/controller.py
+import json
+import logging
 from collections import namedtuple
-import BigWorld, adisp
+import BigWorld
+import adisp
 from gui.macroses import getLanguageCode
 from gui.shared.money import Currency
 from helpers import dependency
@@ -20,9 +24,9 @@ def _getEmptyDescriptor():
 
 class _ProductExtraData(object):
     _MAX_ORDER_INDEX = 10000
-    _SPECIAL_CURRENCIES = {'free_xp': 'freeXP', 
-       'equip_coin': 'equipCoin'}
-    _EXTRA_ENTITLEMENTS = ('premium_plus', )
+    _SPECIAL_CURRENCIES = {'free_xp': 'freeXP',
+     'equip_coin': 'equipCoin'}
+    _EXTRA_ENTITLEMENTS = ('premium_plus',)
 
     def __init__(self, entitlements=None, currencies=None):
         super(_ProductExtraData, self).__init__()
@@ -71,9 +75,7 @@ class _ProductExtraData(object):
 
 
 class _PurchaseDescriptor(object):
-    __slots__ = ('__entitlements', '__metadataWot', '__currencies', '__isEntitlementsInvalid',
-                 '__tokens', '__titleID', '__productExtraData', '__iconID', '__productName',
-                 '__mainAmount', '__displayWays')
+    __slots__ = ('__entitlements', '__metadataWot', '__currencies', '__isEntitlementsInvalid', '__tokens', '__titleID', '__productExtraData', '__iconID', '__productName', '__mainAmount', '__displayWays')
 
     def __init__(self, entitlements=None, currencies=None, metadataWot=None):
         super(_PurchaseDescriptor, self).__init__()
@@ -132,11 +134,11 @@ class _PurchaseDescriptor(object):
                     if entCode.startswith(TOKEN_ENTITLEMENT_PREFIX):
                         if entCode[len(TOKEN_ENTITLEMENT_PREFIX):] == tID:
                             dataIndex = entitlement.get('order', 1) - 1
-                            metadataPrefix = ('entitlements_{}').format(dataIndex)
-                            title = self.__getMetadataValueByName(('{}_title').format(metadataPrefix))
-                            description = self.__getMetadataValueByName(('{}_description').format(metadataPrefix))
-                            imgBig = self.__extractValue(self.__metadataWot.get(('{}_image_large').format(metadataPrefix), {}).get('data', {}).get('url', {}))
-                            imgSmall = self.__extractValue(self.__metadataWot.get(('{}_icon_url_big').format(metadataPrefix), {}).get('data', {}).get('url', {}))
+                            metadataPrefix = 'entitlements_{}'.format(dataIndex)
+                            title = self.__getMetadataValueByName('{}_title'.format(metadataPrefix))
+                            description = self.__getMetadataValueByName('{}_description'.format(metadataPrefix))
+                            imgBig = self.__extractValue(self.__metadataWot.get('{}_image_large'.format(metadataPrefix), {}).get('data', {}).get('url', {}))
+                            imgSmall = self.__extractValue(self.__metadataWot.get('{}_icon_url_big'.format(metadataPrefix), {}).get('data', {}).get('url', {}))
 
                 self.__tokens[tID] = _TokenDescriptor(imgSmall, imgBig, title, description)
             return self.__tokens[tID]
@@ -306,13 +308,11 @@ class PurchaseCache(IPurchaseCache):
             if productUrl:
                 return productUrl
             _logger.error('Could not find product_code in meta section of invoice!')
-        return
+        return None
 
     def canBeRequestedFromProduct(self, data):
         metaSection = data.get('meta', {})
-        if metaSection:
-            return 'scenario' in metaSection.get('tags', [])
-        return False
+        return 'scenario' in metaSection.get('tags', []) if metaSection else False
 
     def __constructFullUrl(self, productCode):
         urlTemplate = self.__lobbyContext.getServerSettings().productCatalog.url
@@ -320,4 +320,4 @@ class PurchaseCache(IPurchaseCache):
             return urlTemplate.format(id=productCode, language=getLanguageCode())
         else:
             _logger.error("Couldn't get productCatalog.url from the server settings")
-            return
+            return None

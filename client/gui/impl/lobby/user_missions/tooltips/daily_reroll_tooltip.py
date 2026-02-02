@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/user_missions/tooltips/daily_reroll_tooltip.py
 from frameworks.wulf.view.view import ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.user_missions.tooltips.daily_reroll_tooltip_model import DailyRerollTooltipModel

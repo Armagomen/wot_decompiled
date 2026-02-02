@@ -1,10 +1,12 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/gen/view_models/views/lobby/views/loadout_view_model.py
 from frameworks.wulf import Array, ViewModel
 from battle_royale.gui.impl.gen.view_models.views.lobby.views.battle_royale_equipment_model import BattleRoyaleEquipmentModel
 from battle_royale.gui.impl.gen.view_models.views.lobby.views.battle_royale_respawn_ability_model import BattleRoyaleRespawnAbilityModel
 from battle_royale.gui.impl.gen.view_models.views.lobby.views.battle_royale_shell_model import BattleRoyaleShellModel
 
 class LoadoutViewModel(ViewModel):
-    __slots__ = ('showUpgrades', )
+    __slots__ = ('showUpgrades',)
 
     def __init__(self, properties=3, commands=1):
         super(LoadoutViewModel, self).__init__(properties=properties, commands=commands)

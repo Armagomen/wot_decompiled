@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/exchange/all_personal_discounts_window.py
+import logging
+import typing
 from frameworks.wulf import WindowFlags, WindowLayer, ViewSettings
 from gui.impl.gen.view_models.views.lobby.exchange.exchange_rate_all_personal_discounts_model import ExchangeRateAllPersonalDiscountsModel, CurrencyType
 from gui.impl.lobby.exchange.exchange_rates_helper import EXCHANGE_RATE_NAME_TO_CURRENCIES, fillAllDiscountsModel, MAX_SHOW_DISCOUNTS_INDEX, getAllLimitedDiscountsAmount
@@ -33,11 +36,7 @@ class AllPersonalDiscountsView(ViewImpl):
         self.__createModel()
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onClose, self.__onClose),
-         (
-          self.exchangeRate.onUpdated, self.__updateAllModel))
+        return ((self.viewModel.onClose, self.__onClose), (self.exchangeRate.onUpdated, self.__updateAllModel))
 
     def _updateModel(self, model=None):
         if self.exchangeRate is None or len(self.exchangeRate.allPersonalLimitedDiscounts) <= MAX_SHOW_DISCOUNTS_INDEX:
@@ -57,7 +56,7 @@ class AllPersonalDiscountsView(ViewImpl):
         self.__createModel()
 
     def __createModel(self):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             self._updateModel(model=model)
 
     def __updateDiscounts(self, model):

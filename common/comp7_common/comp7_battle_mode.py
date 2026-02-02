@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/common/comp7_common/comp7_battle_mode.py
 from comp7_common import comp7_constants
 from comp7_common.comp7_battle_results import comp7
 from constants import ARENA_BONUS_TYPE, QUEUE_TYPE
@@ -17,8 +19,7 @@ class Comp7BattleMode(AbstractBattleMode):
     _SEASON_TYPE = comp7_constants.GameSeasonType.COMP7
     _SEASON_MANAGER_TYPE = (comp7_constants.GameSeasonType.COMP7, 'comp7_config')
     _SM_TYPE_BATTLE_RESULT = 'comp7BattleResults'
-    _SM_TYPES = [
-     _SM_TYPE_BATTLE_RESULT]
+    _SM_TYPES = [_SM_TYPE_BATTLE_RESULT]
 
     def registerAdditionalBattleResultSysMsgType(self):
         from battle_results import ARENA_BONUS_TYPE_TO_SM_TYPE_BATTLE_RESULT

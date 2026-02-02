@@ -1,4 +1,8 @@
-import logging, typing, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/missions/daily_quests_widget_view.py
+import logging
+import typing
+import BigWorld
 from frameworks.wulf import Array, ViewFlags, WindowFlags
 from frameworks.wulf.view.view import ViewSettings
 from gui.impl.gen import R
@@ -81,7 +85,7 @@ class DailyQuestsWidgetView(ViewImpl, ClientMainWindowStateWatcher, IGlobalListe
     def setVisible(self, value):
         if value == self.getViewModel().getVisible():
             return
-        with self.getViewModel().transaction() as (tx):
+        with self.getViewModel().transaction() as tx:
             if value:
                 quests = sorted(self.eventsCache.getDailyQuests().values(), key=dailyQuestsSortFunc)
                 self.__updateQuestsToBeIndicatedCompleted(tx, quests, True)
@@ -104,9 +108,7 @@ class DailyQuestsWidgetView(ViewImpl, ClientMainWindowStateWatcher, IGlobalListe
     def _getFirstConditionModelFromQuestModel(cls, dailyQuestModel):
         postBattleModel = findFirstConditionModel(dailyQuestModel.postBattleCondition)
         bonusConditionModel = findFirstConditionModel(dailyQuestModel.bonusCondition)
-        if postBattleModel:
-            return postBattleModel
-        return bonusConditionModel
+        return postBattleModel if postBattleModel else bonusConditionModel
 
     def _updateViewModel(self):
         _logger.debug('DailyQuests::UpdatingViewModel')
@@ -115,7 +117,7 @@ class DailyQuestsWidgetView(ViewImpl, ClientMainWindowStateWatcher, IGlobalListe
         if not needToUpdateQuestsInModel(quests, self.getViewModel().getQuests()):
             return
         else:
-            with self.getViewModel().transaction() as (tx):
+            with self.getViewModel().transaction() as tx:
                 tx.setCountdown(newCountdownVal)
                 modelQuests = tx.getQuests()
                 modelQuests.clear()
@@ -160,7 +162,7 @@ class DailyQuestsWidgetView(ViewImpl, ClientMainWindowStateWatcher, IGlobalListe
 
     def _onClientMainWindowStateChanged(self, isWindowVisible):
         if isWindowVisible:
-            with self.viewModel.transaction() as (tx):
+            with self.viewModel.transaction() as tx:
                 newCountdownVal = EventInfoModel.getDailyProgressResetTimeDelta()
                 tx.setCountdown(newCountdownVal)
 

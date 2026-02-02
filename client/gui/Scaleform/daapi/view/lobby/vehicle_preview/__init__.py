@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/__init__.py
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.vehicle_preview.info.crew_tab_view import CrewTabInject
@@ -7,7 +9,7 @@ from gui.app_loader import settings as app_settings
 from gui.shared import EVENT_BUS_SCOPE
 
 def getContextMenuHandlers():
-    return ()
+    pass
 
 
 def getViewSettings():
@@ -36,8 +38,7 @@ def getViewSettings():
     from gui.Scaleform.daapi.view.lobby.vehicle_preview.info.bottom_panel_showcase_style_buying import VehiclePreviewBottomPanelShowcaseStyleBuying
     from gui.Scaleform.daapi.view.lobby.vehicle_preview.info.bottom_panel_style_progression import VehiclePreviewBottomPanelStyleProgression
     from gui.Scaleform.daapi.view.lobby.vehicle_preview.rental_vehicle_preview import VehiclePreviewBottomPanelRental
-    return (
-     ViewSettings(VIEW_ALIAS.VEHICLE_PREVIEW, VehiclePreview, 'vehiclePreview.swf', WindowLayer.SUB_VIEW, VIEW_ALIAS.VEHICLE_PREVIEW, ScopeTemplates.LOBBY_SUB_SCOPE),
+    return (ViewSettings(VIEW_ALIAS.VEHICLE_PREVIEW, VehiclePreview, 'vehiclePreview.swf', WindowLayer.SUB_VIEW, VIEW_ALIAS.VEHICLE_PREVIEW, ScopeTemplates.LOBBY_SUB_SCOPE),
      ViewSettings(VIEW_ALIAS.HERO_VEHICLE_PREVIEW, VehiclePreview, 'vehiclePreview.swf', WindowLayer.SUB_VIEW, VIEW_ALIAS.HERO_VEHICLE_PREVIEW, ScopeTemplates.LOBBY_SUB_SCOPE),
      ViewSettings(VIEW_ALIAS.CONFIGURABLE_VEHICLE_PREVIEW, ConfigurableVehiclePreview, 'vehiclePreview.swf', WindowLayer.SUB_VIEW, VIEW_ALIAS.CONFIGURABLE_VEHICLE_PREVIEW, ScopeTemplates.LOBBY_SUB_SCOPE),
      ViewSettings(VIEW_ALIAS.RENTAL_VEHICLE_PREVIEW, RentalVehiclePreview, 'vehiclePreview.swf', WindowLayer.SUB_VIEW, VIEW_ALIAS.RENTAL_VEHICLE_PREVIEW, ScopeTemplates.LOBBY_SUB_SCOPE),
@@ -66,42 +67,27 @@ def getViewSettings():
 
 
 def getBusinessHandlers():
-    return (
-     VehPreviewPackageBusinessHandler(),)
+    return (VehPreviewPackageBusinessHandler(),)
 
 
 def getStateMachineRegistrators():
     from gui.Scaleform.daapi.view.lobby.vehicle_preview.states import registerStates, registerTransitions
-    return (
-     registerStates, registerTransitions)
+    return (registerStates, registerTransitions)
 
 
 class VehPreviewPackageBusinessHandler(PackageBusinessHandler):
 
     def __init__(self):
-        listeners = (
-         (
-          VIEW_ALIAS.PACK_ITEM_POPOVER, self.loadViewByCtxEvent),
-         (
-          VIEW_ALIAS.VEHICLE_PREVIEW, self.loadViewByCtxEvent),
-         (
-          VIEW_ALIAS.HERO_VEHICLE_PREVIEW, self.loadViewByCtxEvent),
-         (
-          VIEW_ALIAS.CONFIGURABLE_VEHICLE_PREVIEW, self.loadViewByCtxEvent),
-         (
-          VIEW_ALIAS.RENTAL_VEHICLE_PREVIEW, self.loadViewByCtxEvent),
-         (
-          VIEW_ALIAS.TRADE_IN_VEHICLE_PREVIEW, self.loadViewByCtxEvent),
-         (
-          VIEW_ALIAS.MARATHON_VEHICLE_PREVIEW, self.loadViewByCtxEvent),
-         (
-          VIEW_ALIAS.OFFER_GIFT_VEHICLE_PREVIEW, self.loadViewByCtxEvent),
-         (
-          VIEW_ALIAS.STYLE_PREVIEW, self.loadViewByCtxEvent),
-         (
-          VIEW_ALIAS.STYLE_PROGRESSION_PREVIEW, self.loadViewByCtxEvent),
-         (
-          VIEW_ALIAS.STYLE_BUYING_PREVIEW, self.loadViewByCtxEvent),
-         (
-          VIEW_ALIAS.SHOWCASE_STYLE_BUYING_PREVIEW, self.loadViewByCtxEvent))
+        listeners = ((VIEW_ALIAS.PACK_ITEM_POPOVER, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.VEHICLE_PREVIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.HERO_VEHICLE_PREVIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.CONFIGURABLE_VEHICLE_PREVIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.RENTAL_VEHICLE_PREVIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.TRADE_IN_VEHICLE_PREVIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.MARATHON_VEHICLE_PREVIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.OFFER_GIFT_VEHICLE_PREVIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.STYLE_PREVIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.STYLE_PROGRESSION_PREVIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.STYLE_BUYING_PREVIEW, self.loadViewByCtxEvent),
+         (VIEW_ALIAS.SHOWCASE_STYLE_BUYING_PREVIEW, self.loadViewByCtxEvent))
         super(VehPreviewPackageBusinessHandler, self).__init__(listeners, app_settings.APP_NAME_SPACE.SF_LOBBY, EVENT_BUS_SCOPE.LOBBY)

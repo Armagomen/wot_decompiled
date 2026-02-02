@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/ranked_battles/ranked_builders/postbattle_awards_vos.py
 import typing
 from collections import namedtuple
 from gui.impl import backport
@@ -22,12 +24,11 @@ def getVOsSequence(awardBlocks, ranks, rankedInfo):
                 result.append(_getQualificationQuestCongVO(awardBlock))
             else:
                 result.append(_getQualificationCongVO(awardBlock, ranks, rankedInfo))
-        else:
-            result.append(_getRankCongVO(awardBlock, rank))
-            if rank.isInitialForNextDivision():
-                result.append(_getDivisionCongVO(awardBlock, ranks, rankedInfo))
-            if rank.isFinal():
-                result.append(_getLeagueCongVO(rankedInfo))
+        result.append(_getRankCongVO(awardBlock, rank))
+        if rank.isInitialForNextDivision():
+            result.append(_getDivisionCongVO(awardBlock, ranks, rankedInfo))
+        if rank.isFinal():
+            result.append(_getLeagueCongVO(rankedInfo))
 
     return result
 
@@ -43,13 +44,13 @@ def _getQualificationQuestCongVO(awardBlock):
 
 def _getQualificationCongVO(awardBlock, ranks, rankedInfo):
     division = ranks[awardBlock.rankID].getDivision()
-    newDivision = ranks[(awardBlock.rankID + 1)].getDivision()
+    newDivision = ranks[awardBlock.rankID + 1].getDivision()
     return _getBlockVO(RANKEDBATTLES_ALIASES.AWARD_VIEW_QUAL_STATE, backport.text(R.strings.ranked_battles.awards.gotQualification()), qualificationVO=_getQualificationVO(division, newDivision), awards=awardBlock.awards, **_getBonusBattleFields(rankedInfo.stepsBonusBattles, rankedInfo.efficiencyBonusBattles, False))
 
 
 def _getDivisionCongVO(awardBlock, ranks, rankedInfo):
     division = ranks[awardBlock.rankID].getDivision()
-    newDivision = ranks[(awardBlock.rankID + 1)].getDivision()
+    newDivision = ranks[awardBlock.rankID + 1].getDivision()
     return _getBlockVO(RANKEDBATTLES_ALIASES.AWARD_VIEW_DIVISION_STATE, backport.text(R.strings.ranked_battles.awards.gotDivision()), divisionVO=_getDivisionVO(division, newDivision), **_getBonusBattleFields(rankedInfo.stepsBonusBattles, rankedInfo.efficiencyBonusBattles, False))
 
 
@@ -58,20 +59,20 @@ def _getLeagueCongVO(rankedInfo):
 
 
 def _getQualificationVO(division, newDivision):
-    return {'division': division.getID(), 
-       'newDivision': newDivision.getID()}
+    return {'division': division.getID(),
+     'newDivision': newDivision.getID()}
 
 
 def _getDivisionVO(division, newDivision):
-    return {'division': division.getID(), 
-       'divisionName': text_styles.middleTitle(backport.text(R.strings.ranked_battles.division.dyn(division.getUserID())())), 
-       'newDivision': newDivision.getID(), 
-       'newDivisionName': text_styles.middleTitle(backport.text(R.strings.ranked_battles.division.dyn(newDivision.getUserID())()))}
+    return {'division': division.getID(),
+     'divisionName': text_styles.middleTitle(backport.text(R.strings.ranked_battles.division.dyn(division.getUserID())())),
+     'newDivision': newDivision.getID(),
+     'newDivisionName': text_styles.middleTitle(backport.text(R.strings.ranked_battles.division.dyn(newDivision.getUserID())()))}
 
 
 def _getBonusBattleFields(stepsBonus, efficiencyBonus, isDaily):
-    return {'bonusBattleText': _getBonusBattlesDiffLabel(stepsBonus + efficiencyBonus), 
-       'bonusBattleTooltip': _getBonusBattlesTooltip(stepsBonus, efficiencyBonus, isDaily)}
+    return {'bonusBattleText': _getBonusBattlesDiffLabel(stepsBonus + efficiencyBonus),
+     'bonusBattleTooltip': _getBonusBattlesTooltip(stepsBonus, efficiencyBonus, isDaily)}
 
 
 def _getBonusBattlesDiffLabel(bonusBattlesDiff):
@@ -85,11 +86,11 @@ def _getBonusBattlesTooltip(stepsBonus, efficiencyBonus, isDaily):
 
 
 def _getBlockVO(state, subTitle='', rankVO=None, qualificationVO=None, divisionVO=None, awards=None, bonusBattleText='', bonusBattleTooltip=''):
-    return {'state': state, 
-       'subTitle': subTitle, 
-       'rankVO': rankVO, 
-       'qualVO': qualificationVO, 
-       'divisionVO': divisionVO, 
-       'awards': awards, 
-       'bonusBattleText': bonusBattleText, 
-       'bonusBattleTooltip': bonusBattleTooltip}
+    return {'state': state,
+     'subTitle': subTitle,
+     'rankVO': rankVO,
+     'qualVO': qualificationVO,
+     'divisionVO': divisionVO,
+     'awards': awards,
+     'bonusBattleText': bonusBattleText,
+     'bonusBattleTooltip': bonusBattleTooltip}

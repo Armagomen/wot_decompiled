@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/ingame_help/fun_random_pages.py
 from __future__ import absolute_import
 from fun_random_common.fun_constants import ARENA_GUI_TYPE
 from fun_random.gui.ingame_help import HelpPagePriority
@@ -9,7 +11,7 @@ from gui.ingame_help.detailed_help_pages import addPage, DetailedHelpPagesBuilde
 from gui.shared.formatters import text_styles
 
 class FunRandomHelpPagesBuilder(DetailedHelpPagesBuilder, FunSubModesWatcher):
-    _SUITABLE_CTX_KEYS = ('isFunRandom', )
+    _SUITABLE_CTX_KEYS = ('isFunRandom',)
 
     @classmethod
     def priority(cls):

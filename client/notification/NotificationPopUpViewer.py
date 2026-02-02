@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/notification/NotificationPopUpViewer.py
 import logging
 from typing import TYPE_CHECKING
 from PlayerEvents import g_playerEvents
@@ -119,8 +121,10 @@ class NotificationPopUpViewer(NotificationPopUpViewerMeta, BaseNotificationView)
 
     def __onNotificationRemoved(self, typeID, entityID, groupID, countOnce):
         self._model.decrementNotifiedMessagesCount(groupID, typeID, entityID, countOnce)
-        notificationInfo = (
-         groupID, typeID, entityID, countOnce)
+        notificationInfo = (groupID,
+         typeID,
+         entityID,
+         countOnce)
         self.as_removeMessageS(typeID, self._getFlashID(notificationInfo))
 
     def __sendMessageForDisplay(self, notification):
@@ -176,7 +180,7 @@ class NotificationPopUpViewer(NotificationPopUpViewerMeta, BaseNotificationView)
         self.__lockedNotificationUseQueue = True
         if key in self.__lockedNotificationPriority:
             del self.__lockedNotificationPriority[key]
-        if self.__pendingMessagesQueue and any(self.__isLocked(n) for n in self.__pendingMessagesQueue):
+        if self.__pendingMessagesQueue and any((self.__isLocked(n) for n in self.__pendingMessagesQueue)):
             return
         self.__showMessagesFromQueue()
 

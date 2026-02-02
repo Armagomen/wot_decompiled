@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_results/settings.py
 
 
 class BATTLE_RESULTS_RECORD(object):
@@ -7,8 +9,11 @@ class BATTLE_RESULTS_RECORD(object):
     PLAYERS = 'players'
     VEHICLES = 'vehicles'
     AVATARS = 'avatars'
-    TOP_LEVEL_RECORDS = (
-     COMMON, PERSONAL, PLAYERS, VEHICLES, AVATARS)
+    TOP_LEVEL_RECORDS = (COMMON,
+     PERSONAL,
+     PLAYERS,
+     VEHICLES,
+     AVATARS)
     PERSONAL_AVATAR = 'avatar'
     COMMON_BOTS = 'bots'
 

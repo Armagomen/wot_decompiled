@@ -1,6 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/offers/data_provider.py
 import logging
 from functools import wraps
-import typing, adisp
+import typing
+import adisp
 from BWUtil import AsyncReturn
 from Event import Event, EventManager
 from PlayerEvents import g_playerEvents
@@ -29,10 +32,7 @@ _CDN_SYNC_TIMEOUT = 60.0
 
 def _getEventsOffersData():
     data = getEventsData(EVENT_CLIENT_DATA.OFFER)
-    if data is not None:
-        return data
-    else:
-        return {}
+    return data if data is not None else {}
 
 
 def _ifFeatureDisabled(result):
@@ -113,7 +113,7 @@ class OffersDataProvider(IOffersDataProvider):
         _logger.debug('[Offers provider] not ready to notify')
 
     def update(self, diff):
-        changed = any(token.startswith(OFFER_TOKEN_PREFIX) for token in diff.get('tokens', {})) or 'offersData' in diff or 'eventsData' in diff and EVENT_CLIENT_DATA.OFFER in diff['eventsData'] or 'serverSettings' in diff and OFFERS_ENABLED_KEY in diff['serverSettings']
+        changed = any((token.startswith(OFFER_TOKEN_PREFIX) for token in diff.get('tokens', {}))) or 'offersData' in diff or 'eventsData' in diff and EVENT_CLIENT_DATA.OFFER in diff['eventsData'] or 'serverSettings' in diff and OFFERS_ENABLED_KEY in diff['serverSettings']
         if changed:
             self._pendingNotify = True
             self._cache.clear()
@@ -157,7 +157,7 @@ class OffersDataProvider(IOffersDataProvider):
             if offer.token == token:
                 return offer
 
-        return
+        return None
 
     @_ifFeatureDisabled(())
     @_ifNotSynced(())
@@ -190,10 +190,10 @@ class OffersDataProvider(IOffersDataProvider):
             if includeAllOffers:
                 if offer.isOfferUnlocked:
                     yield offer
-            elif offer.showWhenZeroCurrency:
+            if offer.showWhenZeroCurrency:
                 if offer.isOfferUnlocked:
                     yield offer
-            elif offer.isOfferAvailable:
+            if offer.isOfferAvailable:
                 yield offer
 
     def getUnlockedOffers(self, onlyVisible=True, includeAllOffers=True):
@@ -289,7 +289,7 @@ class OffersDataProvider(IOffersDataProvider):
                     msgKey = SYSTEM_MESSAGES.OFFERS_UNAVAILABLE_MANY
                     kwargs = {'count': missing}
                 SystemMessages.pushI18nMessage(msgKey, type=SM_TYPE.Warning, **kwargs)
-        self._lastAvailableOffers = set(offer.id for offer in self.iAvailableOffers())
+        self._lastAvailableOffers = set((offer.id for offer in self.iAvailableOffers()))
         return
 
     @_ifFeatureDisabled(())

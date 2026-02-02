@@ -1,7 +1,12 @@
-import logging, typing, json
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/pub/view_impl.py
+import logging
+import json
+import typing
 from frameworks.wulf import View, ViewEvent, ViewModel, Window, WindowLayer, WindowStatus
 from helpers import dependency
 from helpers.events_handler import EventsHandler
+from py2to3 import patched_typing
 from skeletons.gui.impl import IGuiLoader
 from soft_exception import SoftException
 from ..gen.resources import R
@@ -11,11 +16,11 @@ from .tooltip_window import AdvancedToolTipWindow, SimpleToolTipWindow, ToolTipW
 from .view_impl_helpers import createBackportContextMenuWindow, createParamTooltipWindow, createWulfTooltipWindow
 TViewModel = typing.TypeVar('TViewModel', bound=ViewModel)
 _logger = logging.getLogger(__name__)
-_BACKPORT_POPOVER_DIRECTION_OVERRIDE = {1: 3, 
-   3: 0, 
-   0: 1}
+_BACKPORT_POPOVER_DIRECTION_OVERRIDE = {1: 3,
+ 3: 0,
+ 0: 1}
 
-class ViewImpl(View, EventsHandler, typing.Generic[TViewModel]):
+class ViewImpl(View, EventsHandler, patched_typing.Generic[TViewModel]):
     __slots__ = ()
     gui = dependency.descriptor(IGuiLoader)
 
@@ -28,13 +33,13 @@ class ViewImpl(View, EventsHandler, typing.Generic[TViewModel]):
         super(ViewImpl, self)._finalize()
 
     def createToolTipContent(self, event, contentID):
-        return
+        return None
 
     def createPopOverContent(self, event):
-        return
+        return None
 
     def createContextMenuContent(self, event):
-        return
+        return None
 
     def prepareBackportTooltipArgs(self, args):
         return args
@@ -65,8 +70,7 @@ class ViewImpl(View, EventsHandler, typing.Generic[TViewModel]):
     def createPopOver(self, event):
         window = None
         directionOverride = None
-        if event.contentID in (R.views.common.pop_over_window.backport_pop_over.BackportPopOverContent(),
-         R.aliases.common.popOver.Backport()):
+        if event.contentID in (R.views.common.pop_over_window.backport_pop_over.BackportPopOverContent(), R.aliases.common.popOver.Backport()):
             directionOverride = _BACKPORT_POPOVER_DIRECTION_OVERRIDE.get(event.direction, None)
         if event.contentID == R.aliases.common.popOver.Backport():
             content = self.__createBackportPopOverContent(event)

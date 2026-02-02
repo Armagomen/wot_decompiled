@@ -1,4 +1,7 @@
-import time, datetime
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/event_boards/event_boards_timer.py
+import time
+import datetime
 from gui.impl import backport
 from helpers import time_utils
 FORMAT_EMPTY_STR = ''
@@ -18,10 +21,7 @@ def isPeripheryActiveAtCurrentMoment(primeTime):
     if primeTime.getStartTime() and primeTime.getEndTime():
         prStartTimeUTC, prEndTimeUTC = _calculatePeripheryTimeHelper(currentTimeUTC, primeTime)
         active = prStartTimeUTC <= currentTimeUTC <= prEndTimeUTC
-        return (
-         active,
-         int((prStartTimeUTC - currentTimeUTC).total_seconds()),
-         int((prEndTimeUTC - currentTimeUTC).total_seconds()))
+        return (active, int((prStartTimeUTC - currentTimeUTC).total_seconds()), int((prEndTimeUTC - currentTimeUTC).total_seconds()))
     return (False, 0, 0)
 
 
@@ -65,8 +65,7 @@ def getFormattedRemainingTime(strEndDate, isRoundUp=False):
         dtime = endDate - currentTimestampUTC
         if dtime >= 0 and dtime != float('inf'):
             return _remainingTimeToEndHelper(dtime, isRoundUp)
-    return (
-     0, FORMAT_EMPTY_STR)
+    return (0, FORMAT_EMPTY_STR)
 
 
 def getTimeStatus(strDate):
@@ -83,8 +82,7 @@ def getTimeStatus(strDate):
             value, txtid = _remainingTimeToEndHelper(-dtime, False)
             if txtid:
                 return (-value, txtid)
-    return (
-     0, FORMAT_EMPTY_STR)
+    return (0, FORMAT_EMPTY_STR)
 
 
 def getUpdateStatus_ts(tsUpdateDate):
@@ -104,9 +102,7 @@ def getUpdateStatus_ts(tsUpdateDate):
 def getDayMonthYear(strDate):
     if strDate:
         dateLocal = time.localtime(getTimeStampFromDate(strDate))
-        return (
-         dateLocal.tm_mday, dateLocal.tm_mon, dateLocal.tm_year)
-    return (0, 0, 0)
+        return (dateLocal.tm_mday, dateLocal.tm_mon, dateLocal.tm_year)
 
 
 def getShortTimeString(strDate):
@@ -126,15 +122,10 @@ def _remainingTimeToEndHelper(dtime, isRoundUp):
         dtime += time_utils.ONE_MINUTE
     if dtime >= time_utils.ONE_DAY:
         lctime = time.localtime(dtime - time_utils.ONE_DAY)
-        return (
-         time.struct_time(lctime).tm_yday, FORMAT_DAY_STR)
+        return (time.struct_time(lctime).tm_yday, FORMAT_DAY_STR)
     if dtime >= time_utils.ONE_HOUR:
-        return (
-         int(dtime / time_utils.ONE_HOUR), FORMAT_HOUR_STR)
-    if dtime >= 0:
-        return (
-         int(dtime / time_utils.ONE_MINUTE), FORMAT_MINUTE_STR)
-    return (0, FORMAT_EMPTY_STR)
+        return (int(dtime / time_utils.ONE_HOUR), FORMAT_HOUR_STR)
+    return (int(dtime / time_utils.ONE_MINUTE), FORMAT_MINUTE_STR) if dtime >= 0 else (0, FORMAT_EMPTY_STR)
 
 
 def _getCurrentUTCTime():

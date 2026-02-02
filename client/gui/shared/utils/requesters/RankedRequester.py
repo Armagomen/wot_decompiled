@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/utils/requesters/RankedRequester.py
 import BigWorld
 from gui.shared.utils.requesters.abstract import AbstractSyncDataRequester
 from skeletons.gui.shared.utils.requesters import IRankedRequester
@@ -48,6 +50,4 @@ class RankedRequester(AbstractSyncDataRequester, IRankedRequester):
         BigWorld.player().ranked.getCache(lambda resID, value: self._response(resID, value, callback))
 
     def _preprocessValidData(self, data):
-        if 'ranked' in data:
-            return dict(data['ranked'])
-        return dict()
+        return dict(data['ranked']) if 'ranked' in data else dict()

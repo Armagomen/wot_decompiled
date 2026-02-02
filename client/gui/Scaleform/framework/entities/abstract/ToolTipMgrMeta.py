@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/framework/entities/abstract/ToolTipMgrMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class ToolTipMgrMeta(BaseDAAPIComponent):
@@ -15,9 +17,7 @@ class ToolTipMgrMeta(BaseDAAPIComponent):
         self._printOverrideError('onCreateWulfTooltip')
 
     def as_showS(self, tooltipData, linkage, redraw=False):
-        if self._isDAAPIInited():
-            return self.flashObject.as_show(tooltipData, linkage, redraw)
+        return self.flashObject.as_show(tooltipData, linkage, redraw) if self._isDAAPIInited() else None
 
     def as_hideS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_hide()
+        return self.flashObject.as_hide() if self._isDAAPIInited() else None

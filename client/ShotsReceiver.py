@@ -1,25 +1,23 @@
-import BigWorld, CGF, GenericComponents, Math, logging
-from Event import Event
-from cgf_components_common.material_component import MaterialComponent
-from cgf_script.managers_registrator import onAddedQuery, onRemovedQuery, autoregister
-from material_kinds import EFFECT_MATERIAL_INDEXES_BY_IDS, EFFECT_MATERIAL_INDEXES_BY_NAMES
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/ShotsReceiver.py
+import logging
 from functools import partial
-from constants import IS_EDITOR
+import BigWorld
+import CGF
+import GenericComponents
+import Math
+from cgf_client_common.entity_dyn_components import ReplicableDynamicScriptComponent
+from cgf_components_common.material_component import MaterialComponent
 from cgf_components.on_shot_components import EffectOnShotComponent, SoundOnShotComponent
 from cgf_script.component_meta_class import registerReplicableComponent
+from cgf_script.managers_registrator import onAddedQuery, onRemovedQuery, autoregister
+from Event import Event
+from material_kinds import EFFECT_MATERIAL_INDEXES_BY_IDS, EFFECT_MATERIAL_INDEXES_BY_NAMES
 _logger = logging.getLogger(__name__)
 _DIR_UP = Math.Vector3(0.0, 1.0, 0.0)
-if IS_EDITOR:
-
-    class DynamicScriptComponent(object):
-        pass
-
-
-else:
-    from BigWorld import DynamicScriptComponent
 
 @registerReplicableComponent
-class ShotsReceiver(DynamicScriptComponent):
+class ShotsReceiver(ReplicableDynamicScriptComponent):
 
     def __init__(self):
         super(ShotsReceiver, self).__init__()
@@ -41,23 +39,27 @@ class ShotReceiverManager(CGF.ComponentManager):
         shotsReceiver.onShot -= self.__onShot
 
     def __onShot(self, go, hitPoint, hitDir, speed, normal, shotID, effectIndex, prefabEffectIndex, shellType, shellCaliber, matKind, damagedDestructibles):
-        effectQuery = CGF.Query(self.spaceID, (CGF.GameObject, ShotsReceiver,
-         EffectOnShotComponent, GenericComponents.TransformComponent))
-        soundQuery = CGF.Query(self.spaceID, (CGF.GameObject, ShotsReceiver,
-         SoundOnShotComponent, GenericComponents.TransformComponent))
+        effectQuery = CGF.Query(self.spaceID, (CGF.GameObject,
+         ShotsReceiver,
+         EffectOnShotComponent,
+         GenericComponents.TransformComponent))
+        soundQuery = CGF.Query(self.spaceID, (CGF.GameObject,
+         ShotsReceiver,
+         SoundOnShotComponent,
+         GenericComponents.TransformComponent))
         explosionQuery = CGF.Query(self.spaceID, (CGF.GameObject, ShotsReceiver, CGF.No(EffectOnShotComponent)))
         normal.normalise()
-        shot = {'hitPoint': hitPoint, 
-           'hitDir': hitDir, 
-           'speed': speed, 
-           'normal': normal, 
-           'shotID': int(shotID), 
-           'effectIndex': int(effectIndex), 
-           'prefabEffectIndex': int(prefabEffectIndex), 
-           'shellType': int(shellType), 
-           'caliber': float(shellCaliber), 
-           'matKind': int(matKind), 
-           'damagedDestructibles': damagedDestructibles}
+        shot = {'hitPoint': hitPoint,
+         'hitDir': hitDir,
+         'speed': speed,
+         'normal': normal,
+         'shotID': int(shotID),
+         'effectIndex': int(effectIndex),
+         'prefabEffectIndex': int(prefabEffectIndex),
+         'shellType': int(shellType),
+         'caliber': float(shellCaliber),
+         'matKind': int(matKind),
+         'damagedDestructibles': damagedDestructibles}
         for gameObject, _, effectComponent, transform in effectQuery:
             if gameObject.id == go.id:
                 self.__processEffect(gameObject, shot, effectComponent.effectPath, transform)

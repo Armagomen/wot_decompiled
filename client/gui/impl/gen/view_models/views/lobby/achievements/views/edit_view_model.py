@@ -1,10 +1,11 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/achievements/views/edit_view_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.achievements.achievement_model import AchievementModel
 from gui.impl.gen.view_models.views.lobby.achievements.views.achievement_section_model import AchievementSectionModel
 
 class EditViewModel(ViewModel):
-    __slots__ = ('onChangeAutoSelect', 'onReplaceAchievement', 'onSave', 'onCancel',
-                 'onExitConfirm', 'onHideFirstEntryState')
+    __slots__ = ('onChangeAutoSelect', 'onReplaceAchievement', 'onSave', 'onCancel', 'onExitConfirm', 'onHideFirstEntryState')
 
     def __init__(self, properties=5, commands=6):
         super(EditViewModel, self).__init__(properties=properties, commands=commands)

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/pve_base/stats_exchange.py
 import typing
 from TeamInfoLivesComponent import TeamInfoLivesComponent
 from constants import BOT_DISPLAY_STATUS
@@ -19,7 +21,7 @@ def updatedInfoPredicate(isEnemy, settings):
 
 
 class PveVehicleInfoSortKey(VehicleInfoSortKey):
-    __slots__ = ('_sortAlive', )
+    __slots__ = ('_sortAlive',)
 
     def __init__(self, item):
         super(PveVehicleInfoSortKey, self).__init__(item)
@@ -48,9 +50,7 @@ class PveVehicleInfoSortKey(VehicleInfoSortKey):
         if result:
             return result
         result = cmp(aInfo.vehicleType.shortName, bInfo.vehicleType.shortName)
-        if result:
-            return result
-        return cmp(aInfo.player, bInfo.player)
+        return result if result else cmp(aInfo.player, bInfo.player)
 
 
 class PveVehicleInfoSortKeyEnemyList(PveVehicleInfoSortKey):
@@ -76,13 +76,13 @@ class PveVehicleInfoComponent(VehicleInfoComponent):
         super(PveVehicleInfoComponent, self).addVehicleInfo(vInfoVO, overrides)
         teamLives = TeamInfoLivesComponent.getInstance()
         livesCnt = teamLives.getLives(vInfoVO.vehicleID) if teamLives else self._EMPTY_LIVES_COUNTER
-        self._data.update({'prestigeMarkId': 0, 
-           'prestigeLevel': 0, 
-           'teamPanelMode': vInfoVO.teamPanelMode, 
-           'highlight': False, 
-           'showFrags': True, 
-           'showVehicleTypeIcon': False, 
-           'countLives': livesCnt})
+        self._data.update({'prestigeMarkId': 0,
+         'prestigeLevel': 0,
+         'teamPanelMode': vInfoVO.teamPanelMode,
+         'highlight': False,
+         'showFrags': True,
+         'showVehicleTypeIcon': False,
+         'countLives': livesCnt})
         canHighlight = vInfoVO.botDisplayStatus != BOT_DISPLAY_STATUS.REGULAR
         settingsCtrl = self._sessionProvider.dynamic.vseHUDSettings
         if settingsCtrl is not None:
@@ -141,8 +141,7 @@ class PveStatisticsDataController(ClassicStatisticsDataController):
         if settingsID == WidgetType.ENEMY_LIST:
             updatedStats = [ (INVALIDATE_OP.VEHICLE_STATS, arenaDP.getVehicleStats(vInfo.vehicleID)) for vInfo in arenaDP.getVehiclesInfoIterator() if arenaDP.isEnemyTeam(vInfo.team) ]
             self.updateVehiclesStats(updatedStats, arenaDP)
-        updatedInfo = [ (INVALIDATE_OP.VEHICLE_INFO, arenaDP.getVehicleInfo(vInfo.vehicleID)) for vInfo in arenaDP.getVehiclesInfoIterator() if updatedInfoPredicate(arenaDP.isEnemyTeam(vInfo.team), settingsID)
-                      ]
+        updatedInfo = [ (INVALIDATE_OP.VEHICLE_INFO, arenaDP.getVehicleInfo(vInfo.vehicleID)) for vInfo in arenaDP.getVehiclesInfoIterator() if updatedInfoPredicate(arenaDP.isEnemyTeam(vInfo.team), settingsID) ]
         self.updateVehiclesInfo(updatedInfo, arenaDP)
 
     def _onTeamLivesUpdated(self):
@@ -150,11 +149,7 @@ class PveStatisticsDataController(ClassicStatisticsDataController):
 
     def _createExchangeBroker(self, exchangeCtx):
         exchangeBroker = createExchangeBroker(exchangeCtx)
-        exchangeBroker.setVehiclesInfoExchange(vehicle.VehiclesExchangeBlock(PveVehicleInfoComponent(), positionComposer=broker.BiDirectionComposer(), idsComposers=(
-         PveTeamsSortedIDsComposer(),), statsComposers=None))
-        exchangeBroker.setVehiclesStatsExchange(vehicle.VehiclesExchangeBlock(PveDynamicVehicleStatsComponent(), positionComposer=broker.BiDirectionComposer(), idsComposers=None, statsComposers=(
-         vehicle.TotalStatsComposer(),)))
-        exchangeBroker.setVehicleStatusExchange(vehicle.VehicleStatusComponent(idsComposers=(
-         PveTeamsSortedIDsComposer(),), statsComposers=(
-         vehicle.TotalStatsComposer(),)))
+        exchangeBroker.setVehiclesInfoExchange(vehicle.VehiclesExchangeBlock(PveVehicleInfoComponent(), positionComposer=broker.BiDirectionComposer(), idsComposers=(PveTeamsSortedIDsComposer(),), statsComposers=None))
+        exchangeBroker.setVehiclesStatsExchange(vehicle.VehiclesExchangeBlock(PveDynamicVehicleStatsComponent(), positionComposer=broker.BiDirectionComposer(), idsComposers=None, statsComposers=(vehicle.TotalStatsComposer(),)))
+        exchangeBroker.setVehicleStatusExchange(vehicle.VehicleStatusComponent(idsComposers=(PveTeamsSortedIDsComposer(),), statsComposers=(vehicle.TotalStatsComposer(),)))
         return exchangeBroker

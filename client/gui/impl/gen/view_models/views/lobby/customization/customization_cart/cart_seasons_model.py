@@ -1,8 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/customization/customization_cart/cart_seasons_model.py
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.views.lobby.customization.customization_cart.cart_season_model import CartSeasonModel
 
 class CartSeasonsModel(ViewModel):
-    __slots__ = ('onSelectItem', )
+    __slots__ = ('onSelectItem',)
 
     def __init__(self, properties=4, commands=1):
         super(CartSeasonsModel, self).__init__(properties=properties, commands=commands)

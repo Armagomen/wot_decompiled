@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/prb_control/entities/squad/ctx.py
 from __future__ import absolute_import
 from constants import PREBATTLE_TYPE
 from fun_random.gui.fun_gui_constants import REQUEST_TYPE, FUNCTIONAL_FLAG
@@ -7,7 +9,7 @@ from gui.shared.utils.decorators import ReprInjector
 
 @ReprInjector.withParent(('getDesiredSubModeID', 'desiredSubModeID'))
 class FunSquadSettingsCtx(SquadSettingsCtx):
-    __slots__ = ('__desiredSubModeID', )
+    __slots__ = ('__desiredSubModeID',)
 
     def __init__(self, desiredSubModeID, flags=FUNCTIONAL_FLAG.UNDEFINED, accountsToInvite=None, isForced=False):
         prebattleType, waitingID = PREBATTLE_TYPE.FUN_RANDOM, 'prebattle/create'
@@ -21,14 +23,14 @@ class FunSquadSettingsCtx(SquadSettingsCtx):
 
 @ReprInjector.withParent(('getDesiredSubModeID', 'desiredSubModeID'))
 class FunSquadChangeSubModeCtx(UnitRequestCtx):
-    __slots__ = ('__desiredSubModeID', )
+    __slots__ = ('__desiredSubModeID',)
 
     def __init__(self, desiredSubModeID):
         super(FunSquadChangeSubModeCtx, self).__init__()
         self.__desiredSubModeID = desiredSubModeID
 
     def getCooldown(self):
-        return 2.0
+        pass
 
     def getDesiredSubModeID(self):
         return self.__desiredSubModeID

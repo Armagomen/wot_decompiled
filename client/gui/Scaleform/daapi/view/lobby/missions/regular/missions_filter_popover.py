@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/missions/regular/missions_filter_popover.py
 from account_helpers.AccountSettings import AccountSettings, MISSIONS_PAGE
 from gui.Scaleform.daapi.view.lobby.missions.missions_helper import HIDE_DONE, HIDE_UNAVAILABLE
 from gui.Scaleform.daapi.view.meta.MissionsFilterPopoverViewMeta import MissionsFilterPopoverViewMeta
@@ -16,8 +18,8 @@ class MissionsFilterPopoverView(MissionsFilterPopoverViewMeta):
         return
 
     def changeFilter(self, hideUnavailable, hideDone):
-        newData = {HIDE_DONE: hideDone, 
-           HIDE_UNAVAILABLE: hideUnavailable}
+        newData = {HIDE_DONE: hideDone,
+         HIDE_UNAVAILABLE: hideUnavailable}
         if self.__filterData != newData:
             self.__filterData = newData
             AccountSettings.setFilter(MISSIONS_PAGE, self.__filterData)
@@ -39,9 +41,9 @@ class MissionsFilterPopoverView(MissionsFilterPopoverViewMeta):
         return
 
     def __getInitialVO(self):
-        dataVO = {'titleLabel': text_styles.highTitle(QUESTS.MISSIONS_FILTER_POPOVER_TITLE), 
-           'hideDoneLabel': _ms(QUESTS.MISSIONS_FILTER_POPOVER_HIDEDONE), 
-           'hideUnavailableLabel': _ms(QUESTS.MISSIONS_FILTER_POPOVER_HIDEUNAVAILABLE), 
-           'defaultButtonLabel': _ms(QUESTS.MISSIONS_FILTER_POPOVER_DEFAULTBUTTON_LABEL), 
-           'defaultButtonTooltip': makeTooltip(QUESTS.MISSIONS_FILTER_POPOVER_DEFAULTBUTTON_HEADER, QUESTS.MISSIONS_FILTER_POPOVER_DEFAULTBUTTON_BODY)}
+        dataVO = {'titleLabel': text_styles.highTitle(QUESTS.MISSIONS_FILTER_POPOVER_TITLE),
+         'hideDoneLabel': _ms(QUESTS.MISSIONS_FILTER_POPOVER_HIDEDONE),
+         'hideUnavailableLabel': _ms(QUESTS.MISSIONS_FILTER_POPOVER_HIDEUNAVAILABLE),
+         'defaultButtonLabel': _ms(QUESTS.MISSIONS_FILTER_POPOVER_DEFAULTBUTTON_LABEL),
+         'defaultButtonTooltip': makeTooltip(QUESTS.MISSIONS_FILTER_POPOVER_DEFAULTBUTTON_HEADER, QUESTS.MISSIONS_FILTER_POPOVER_DEFAULTBUTTON_BODY)}
         return dataVO

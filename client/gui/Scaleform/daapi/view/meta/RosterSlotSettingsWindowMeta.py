@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/RosterSlotSettingsWindowMeta.py
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 
 class RosterSlotSettingsWindowMeta(AbstractWindowView):
@@ -15,33 +17,25 @@ class RosterSlotSettingsWindowMeta(AbstractWindowView):
         self._printOverrideError('cancelButtonHandler')
 
     def as_setVehicleSelectionS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setVehicleSelection(data)
+        return self.flashObject.as_setVehicleSelection(data) if self._isDAAPIInited() else None
 
     def as_setRangeSelectionS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setRangeSelection(data)
+        return self.flashObject.as_setRangeSelection(data) if self._isDAAPIInited() else None
 
     def as_resetSelectionS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_resetSelection()
+        return self.flashObject.as_resetSelection() if self._isDAAPIInited() else None
 
     def as_selectTabS(self, index):
-        if self._isDAAPIInited():
-            return self.flashObject.as_selectTab(index)
+        return self.flashObject.as_selectTab(index) if self._isDAAPIInited() else None
 
     def as_setListDataS(self, listData):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setListData(listData)
+        return self.flashObject.as_setListData(listData) if self._isDAAPIInited() else None
 
     def as_setStaticDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setStaticData(data)
+        return self.flashObject.as_setStaticData(data) if self._isDAAPIInited() else None
 
     def as_setRosterLimitsS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setRosterLimits(data)
+        return self.flashObject.as_setRosterLimits(data) if self._isDAAPIInited() else None
 
     def as_updateVehicleFiltersS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateVehicleFilters(data)
+        return self.flashObject.as_updateVehicleFilters(data) if self._isDAAPIInited() else None

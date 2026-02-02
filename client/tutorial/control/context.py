@@ -1,16 +1,19 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/tutorial/control/context.py
 from abc import ABCMeta, abstractmethod
 from helpers import dependency
 from skeletons.gui.lobby_context import ILobbyContext
 from tutorial.control import TutorialProxyHolder
 from tutorial.logger import LOG_MEMORY, LOG_ERROR
-import SoundGroups, Event
+import SoundGroups
+import Event
 __all__ = ('StartReqs', 'BonusesRequester', 'SoundPlayer', 'GlobalStorage', 'SOUND_EVENT')
 
 class StartReqs(object):
     lobbyContext = dependency.descriptor(ILobbyContext)
 
     def __del__(self):
-        LOG_MEMORY(('StartReqs deleted: {0:>s}').format(self))
+        LOG_MEMORY('StartReqs deleted: {0:>s}'.format(self))
 
     def isEnabled(self):
         return False
@@ -125,16 +128,19 @@ class GLOBAL_FLAG(object):
     RESEARCH_VEH_POST_PROGRESSION_PURCHASABLE = '_ResearchVehPostProgressionPurchasable'
     VISITED_ACHIEVEMENTS_FROM_NOTIFICATION = '_VisitedAchievementsFromNotification'
     UNLOCKED_3D_CUSTOMIZATION = '_Unlocked3DCustomization'
-    ALL = (
-     MAY_PAWN_PERSONAL_MISSION,
-     HAVE_NEW_BADGE, HAVE_NEW_SUFFIX_BADGE, BADGE_PAGE_HAS_NEW_SUFFIX_BADGE,
-     COLLECTIBLE_VEHICLE_PREVIEW_ENABLED, DOGTAGS_ENABLED,
-     HAVE_NEW_ANIMATED_DOGTAG, VISITED_ACHIEVEMENTS_FROM_NOTIFICATION,
+    ALL = (MAY_PAWN_PERSONAL_MISSION,
+     HAVE_NEW_BADGE,
+     HAVE_NEW_SUFFIX_BADGE,
+     BADGE_PAGE_HAS_NEW_SUFFIX_BADGE,
+     COLLECTIBLE_VEHICLE_PREVIEW_ENABLED,
+     DOGTAGS_ENABLED,
+     HAVE_NEW_ANIMATED_DOGTAG,
+     VISITED_ACHIEVEMENTS_FROM_NOTIFICATION,
      UNLOCKED_3D_CUSTOMIZATION)
 
 
 class GlobalStorage(object):
-    __slots__ = ('attribute', )
+    __slots__ = ('attribute',)
     __storage = {}
     __default = {}
     onSetValue = Event.Event()
@@ -145,16 +151,13 @@ class GlobalStorage(object):
             self.__storage[attribute] = defaultValue
 
     def __repr__(self):
-        return ('GlobalStorage {0:s}: {1!r:s}').format(self.attribute, self.__storage.get(self.attribute))
+        return 'GlobalStorage {0:s}: {1!r:s}'.format(self.attribute, self.__storage.get(self.attribute))
 
     def __set__(self, _, value):
         self.__storage[self.attribute] = value
 
     def __get__(self, instance, owner=None):
-        if instance is None:
-            return self
-        else:
-            return self.__storage[self.attribute]
+        return self if instance is None else self.__storage[self.attribute]
 
     def value(self):
         return self.__storage[self.attribute]

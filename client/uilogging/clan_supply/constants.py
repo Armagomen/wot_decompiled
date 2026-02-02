@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/uilogging/clan_supply/constants.py
 from enum import Enum
 FEATURE = 'clan_supply'
 

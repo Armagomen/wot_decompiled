@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/system_factory.py
 from collections import defaultdict, namedtuple, OrderedDict
 BATTLE_REPO = 1
 EQUIPMENT_ITEMS = 2
@@ -72,6 +74,10 @@ VIEWS_FOR_MONITORING = 70
 LIFECYCLE_HANDLED_SUB_VIEWS = 71
 BATTLE_BUTTON_MANUAL_CONTROL = 72
 PREBATTLE_CONTROL_MODE = 73
+CLASS_TAG_GETTER = 74
+BATTLE_RESULT_PROGRESS_PRESENTER = 75
+BATTLE_ENTRY = 76
+DYNAMIC_VIEWS_FOR_MONITORING = 77
 
 class _CollectEventsManager(object):
 
@@ -153,7 +159,8 @@ def registerEquipmentItem(equipmentName, itemCls, replayItemCls):
 
 
 def collectEquipmentItem(equipmentName, isReplay, args):
-    return __collectEM.handleEvent((EQUIPMENT_ITEMS, equipmentName), {'args': args, 'isReplay': isReplay}).get('item', None)
+    return __collectEM.handleEvent((EQUIPMENT_ITEMS, equipmentName), {'args': args,
+     'isReplay': isReplay}).get('item', None)
 
 
 def registerEquipmentTrigger(equipmentPrefix, itemCls, replayItemCls):
@@ -168,7 +175,8 @@ def registerEquipmentTrigger(equipmentPrefix, itemCls, replayItemCls):
 
 
 def collectEquipmentTrigger(equipmentName, isReplay):
-    return __collectEM.handleEvent(EQUIPMENT_TRIGGERS, {'equipmentName': equipmentName, 'isReplay': isReplay}).get('item', None)
+    return __collectEM.handleEvent(EQUIPMENT_TRIGGERS, {'equipmentName': equipmentName,
+     'isReplay': isReplay}).get('item', None)
 
 
 def registerGameControllers(controllersList):
@@ -348,21 +356,19 @@ def collectArenaDescrs(guiType):
 def registerSquadFinder(guiType, squadFinderClass, rosterClass):
 
     def onCollect(ctx):
-        ctx['squad_finder_data'] = (
-         squadFinderClass, rosterClass)
+        ctx['squad_finder_data'] = (squadFinderClass, rosterClass)
 
     __collectEM.addListener((ARENA_SQUAD_FINDER, guiType), onCollect)
 
 
 def collectSquadFinder(guiType):
-    return __collectEM.handleEvent((ARENA_SQUAD_FINDER, guiType), ctx={}).get('squad_finder_data', (None,
-                                                                                                    None))
+    return __collectEM.handleEvent((ARENA_SQUAD_FINDER, guiType), ctx={}).get('squad_finder_data', (None, None))
 
 
 def registerNotificationsListeners(listenerClasses):
 
     def onCollect(ctx):
-        ctx['listeners'].extend(listenerCls() for listenerCls in listenerClasses)
+        ctx['listeners'].extend((listenerCls() for listenerCls in listenerClasses))
 
     __collectEM.addListener(NOTIFICATIONS_LISTENERS, onCollect)
 
@@ -484,10 +490,7 @@ def registerModeNameKwargsGetterByPrb(prbType, prbModeNameKwargsKwargsGetter):
 
 def collectModeNameKwargsByPrbType(prbType):
     getter = __collectEM.handleEvent((PRB_MODE_NAME_KWARGS, prbType), ctx={}).get('prbModeNameKwargsGetter')
-    if getter is not None:
-        return getter()
-    else:
-        return {}
+    return getter() if getter is not None else {}
 
 
 def registerModeNameKwargsGetterByQueue(queueType, queueModeNameKwargsKwargsGetter):
@@ -500,10 +503,7 @@ def registerModeNameKwargsGetterByQueue(queueType, queueModeNameKwargsKwargsGett
 
 def collectModeNameKwargsByQueueType(queueType):
     getter = __collectEM.handleEvent((QUEUE_MODE_NAME_KWARGS, queueType), ctx={}).get('queueModeNameKwargsGetter')
-    if getter is not None:
-        return getter()
-    else:
-        return {}
+    return getter() if getter is not None else {}
 
 
 def registerModeNameKwargsGetterByBonusType(bonusType, prbModeNameKwargsKwargsGetter):
@@ -516,10 +516,7 @@ def registerModeNameKwargsGetterByBonusType(bonusType, prbModeNameKwargsKwargsGe
 
 def collectModeNameKwargsByBonusType(bonusType):
     getter = __collectEM.handleEvent((BONUS_TYPE_MODE_NAME_KWARGS, bonusType), ctx={}).get('bonusModeNameKwargsGetter')
-    if getter is not None:
-        return getter()
-    else:
-        return {}
+    return getter() if getter is not None else {}
 
 
 def registerPrebattleConditionIconGetter(bonusType, prebattleConditionIconGetter):
@@ -532,10 +529,7 @@ def registerPrebattleConditionIconGetter(bonusType, prebattleConditionIconGetter
 
 def collectPrebattleConditionIcon(bonusType):
     getter = __collectEM.handleEvent((PRB_CONDITION_ICON, bonusType), ctx={}).get('prbConditionIconGetter')
-    if getter is not None:
-        return getter()
-    else:
-        return
+    return getter() if getter is not None else None
 
 
 def registerModeSelectorItem(prbActionName, itemCls):
@@ -560,7 +554,8 @@ def registerModeSelectorTooltips(simpleTooltipIds, contentTooltipsMap):
 
 
 def collectModeSelectorTooltips():
-    return __collectEM.handleEvent(MODE_SELECTOR_TOOLTIP, ctx={'modeSelectorTooltips': {'simpleTooltipIds': [], 'contentTooltipsMap': {}}}).get('modeSelectorTooltips')
+    return __collectEM.handleEvent(MODE_SELECTOR_TOOLTIP, ctx={'modeSelectorTooltips': {'simpleTooltipIds': [],
+                              'contentTooltipsMap': {}}}).get('modeSelectorTooltips')
 
 
 def registerBannerEntryPointValidator(alias, validator):
@@ -697,8 +692,7 @@ def registerCanSelectPrbEntity(queueType, itemFun):
 
 
 def collectCanSelectPrbEntity(queueType):
-    return __collectEM.handleEvent((
-     CAN_SELECT_PRB_ENTITY, queueType), ctx={}).get('itemFun', lambda *args, **kwargs: False)
+    return __collectEM.handleEvent((CAN_SELECT_PRB_ENTITY, queueType), ctx={}).get('itemFun', lambda *args, **kwargs: False)
 
 
 def registerBattleResultStatsCtrl(bonusType, itemCls):
@@ -711,6 +705,18 @@ def registerBattleResultStatsCtrl(bonusType, itemCls):
 
 def collectBattleResultStatsCtrl(bonusType):
     return __collectEM.handleEvent((BATTLE_RESULT_STATS_CONTROLLER, bonusType), ctx={}).get('item', None)
+
+
+def registerProgressionPresenter(questCategory, itemClsTuplesList):
+
+    def onCollect(ctx):
+        ctx['questCategory'][questCategory] = itemClsTuplesList
+
+    __collectEM.addListener(BATTLE_RESULT_PROGRESS_PRESENTER, onCollect)
+
+
+def collectProgressionPresenters():
+    return __collectEM.handleEvent(BATTLE_RESULT_PROGRESS_PRESENTER, {'questCategory': {}})['questCategory']
 
 
 def registerSeasonProviderHandler(seasonType, seasonControllerHandler):
@@ -754,7 +760,8 @@ def registerHangarDynamicGuiProvider(queueType, processor):
 
 
 def collectHangarDynamicGuiProviders(config):
-    return __collectEM.handleEvent(HANGAR_DYNAMIC_GUI_PROVIDERS, {'dynamicGuiProviders': {}, 'config': config})['dynamicGuiProviders']
+    return __collectEM.handleEvent(HANGAR_DYNAMIC_GUI_PROVIDERS, {'dynamicGuiProviders': {},
+     'config': config})['dynamicGuiProviders']
 
 
 def registerHangarPresetsReader(reader):
@@ -868,15 +875,13 @@ def collectBattleChanelController(battleChanelType, guiType):
 def registerHitDirectionController(guiType, hitDirectionType, hitDirectionPlayerType):
 
     def onCollect(ctx):
-        ctx[guiType] = (
-         hitDirectionType, hitDirectionPlayerType)
+        ctx[guiType] = (hitDirectionType, hitDirectionPlayerType)
 
     __collectEM.addListener((HIT_DIRECTION_CONTROLLER, guiType), onCollect)
 
 
 def collectHitDirectionController(guiType, defaultHitDirectionType, defaultHitDirectionPlayerType):
-    defaultValue = (
-     defaultHitDirectionType, defaultHitDirectionPlayerType)
+    defaultValue = (defaultHitDirectionType, defaultHitDirectionPlayerType)
     return __collectEM.handleEvent((HIT_DIRECTION_CONTROLLER, guiType), ctx={}).get(guiType, defaultValue)
 
 
@@ -1012,9 +1017,7 @@ def collectGameModeArenaInfoKeys(guiType):
     return __collectEM.handleEvent((GAME_MODE_ARENA_INFO_KEYS, guiType), ctx={}).get('game_mode_specific_keys')
 
 
-GuiItemsCacheInvalidatorParams = namedtuple('GuiItemsCacheInvalidatorParams', ('inventory',
-                                                                               'invalidate',
-                                                                               'diff'))
+GuiItemsCacheInvalidatorParams = namedtuple('GuiItemsCacheInvalidatorParams', ('inventory', 'invalidate', 'diff'))
 
 def registerGuiItemsCacheInvalidators(invalidatorsList):
 
@@ -1060,6 +1063,22 @@ def registerViewsForMonitoring(viewsForMonitoring):
     __collectEM.addListener(VIEWS_FOR_MONITORING, onCollect)
 
 
+def collectViewsForMonitoring():
+    return __collectEM.handleEvent(VIEWS_FOR_MONITORING, ctx={'viewsForMonitoring': []})['viewsForMonitoring']
+
+
+def registerDynamicViewsForMonitoring(dynamicViewsForMonitoring):
+
+    def onCollect(ctx):
+        ctx['dynamicViewsForMonitoring'].extend(dynamicViewsForMonitoring)
+
+    __collectEM.addListener(DYNAMIC_VIEWS_FOR_MONITORING, onCollect)
+
+
+def collectDynamicViewsForMonitoring():
+    return __collectEM.handleEvent(DYNAMIC_VIEWS_FOR_MONITORING, ctx={'dynamicViewsForMonitoring': []})['dynamicViewsForMonitoring']
+
+
 def registerLifecycleHandledSubViews(subViews):
 
     def onCollect(ctx):
@@ -1070,10 +1089,6 @@ def registerLifecycleHandledSubViews(subViews):
 
 def collectLifecycleHandledSubViews():
     return __collectEM.handleEvent(LIFECYCLE_HANDLED_SUB_VIEWS, {'subViews': []})['subViews']
-
-
-def collectViewsForMonitoring():
-    return __collectEM.handleEvent(VIEWS_FOR_MONITORING, ctx={'viewsForMonitoring': []})['viewsForMonitoring']
 
 
 def registerBattleButtonManualControl(queueType, handler):
@@ -1098,3 +1113,27 @@ def registerPrebattleCtrlMode(bonusType, controlModes):
 
 def collectPrebattleCtrlMode():
     return __collectEM.handleEvent(PREBATTLE_CONTROL_MODE, ctx={'prebattleCtrlMode': {}})['prebattleCtrlMode']
+
+
+def registerDisplayedClassTagGetter(guiType, getterFunc):
+
+    def onCollect(ctx):
+        ctx['classTagGetter'] = getterFunc
+
+    __collectEM.addListener((CLASS_TAG_GETTER, guiType), onCollect)
+
+
+def collectDisplayedClassTagGetter(guiType):
+    return __collectEM.handleEvent((CLASS_TAG_GETTER, guiType), ctx={}).get('classTagGetter')
+
+
+def registerBattleEntry(arenaGuiType, resId):
+
+    def onCollect(ctx):
+        ctx['battleEntryResID'] = resId
+
+    __collectEM.addListener((BATTLE_ENTRY, arenaGuiType), onCollect)
+
+
+def collectBattleEntry(arenaGuiType):
+    return __collectEM.handleEvent((BATTLE_ENTRY, arenaGuiType), ctx={}).get('battleEntryResID', 0)

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/crew_header_tooltip_view.py
 import typing
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
@@ -13,7 +15,7 @@ if typing.TYPE_CHECKING:
 _MINUTES_MULTIPLICATOR = 5
 
 class CrewHeaderTooltipView(ViewImpl):
-    __slots__ = ('_serverSettings', )
+    __slots__ = ('_serverSettings',)
     _lobbyContext = dependency.descriptor(ILobbyContext)
     _wotPlusCtrl = dependency.descriptor(IWotPlusController)
     _itemsCache = dependency.descriptor(IItemsCache)
@@ -30,7 +32,7 @@ class CrewHeaderTooltipView(ViewImpl):
         return super(CrewHeaderTooltipView, self).getViewModel()
 
     def _onLoading(self, idleCrewBonus):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setBonusXpPerFiveMinutes(self._serverSettings.getRenewableSubCrewXPPerMinute() * _MINUTES_MULTIPLICATOR)
             tx.setIdleCrewBonus(idleCrewBonus)
             vehicle = self._itemsCache.items.getVehicle(self._wotPlusCtrl.getVehicleIDWithIdleXP())

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/platform/wgnp/demo_account/request.py
 from constants import WG_GAMES
 from gui.platform.base.request import Params, ContentType
 from gui.platform.wgnp.demo_account.response import WGNPDemoAccCredentialsAddResponse, WGNPDemoAccCredentialsConfirmResponse, WGNPDemoAccChangeNicknameResponse, WGNPDemoAccValidateNicknameResponse
@@ -43,7 +45,8 @@ class ValidateNicknameParams(Params):
     response = WGNPDemoAccValidateNicknameResponse
     headers = {'Content-Type': ContentType.FORM_URLENCODED.value}
     url = './personal/account/nicknames/{nickname}/'
-    postData = {'suggestions': 1, 'use_pattern': 1}
+    postData = {'suggestions': 1,
+     'use_pattern': 1}
     method = 'POST'
     auth = False
     addUserAgentHeader = False
@@ -58,7 +61,8 @@ class ChangeNicknameParams(Params):
     url = './personal/api/v2/account/name/update/'
     headers = {'Content-Type': ContentType.FORM_URLENCODED.value}
     method = 'POST'
-    postData = {'game': WG_GAMES.TANKS, 'via': WG_GAMES.TANKS}
+    postData = {'game': WG_GAMES.TANKS,
+     'via': WG_GAMES.TANKS}
 
     def __init__(self, urlHost, nickname, cost):
         super(ChangeNicknameParams, self).__init__(urlHost)

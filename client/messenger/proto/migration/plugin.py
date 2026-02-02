@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/migration/plugin.py
 import weakref
 from messenger import g_settings
 from messenger.m_constants import PROTO_TYPE

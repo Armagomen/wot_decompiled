@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/account_helpers/settings_core/settings_disable/aop.py
 from helpers import aop
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:

@@ -1,7 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/utils/requesters/blueprints_requester.py
 import logging
 from collections import namedtuple, defaultdict, OrderedDict
 from copy import copy
-import BigWorld, nations
+import BigWorld
+import nations
 from blueprints.BlueprintTypes import BlueprintTypes
 from blueprints.FragmentLayouts import Layout
 from blueprints.FragmentTypes import NationalBlueprintFragment, IntelligenceDataFragment
@@ -14,7 +17,7 @@ from skeletons.gui.shared.utils.requesters import IBlueprintsRequester
 _logger = logging.getLogger(__name__)
 _BlueprintData = namedtuple('BlueprintData', ('filledCount', 'totalCount', 'canConvert'))
 SPECIAL_BLUEPRINT_LEVEL = frozenset([1])
-_DEFAULT_LAYOUT = (1, 1, (1, ))
+_DEFAULT_LAYOUT = (1, 1, (1,))
 
 def getFragmentNationID(fragmentCD):
     return fragmentCD >> 4 & 15
@@ -25,20 +28,16 @@ def getNationalFragmentCD(nationID):
 
 
 def getVehicleCD(fragmentCD):
-    return fragmentCD & 4294967281
+    return fragmentCD & 4294967281L
 
 
 def getVehicleCDForIntelligence(fragmentCD):
-    if fragmentCD == 1:
-        return fragmentCD & 4294967282
-    return fragmentCD & 4294967281
+    return fragmentCD & 4294967282L if fragmentCD == 1 else fragmentCD & 4294967281L
 
 
 def getVehicleCDForNational(fragmentCD):
-    vehicleCD = fragmentCD & 4294967281
-    if vehicleCD:
-        return vehicleCD + 1
-    return 1
+    vehicleCD = fragmentCD & 4294967281L
+    return vehicleCD + 1 if vehicleCD else 1
 
 
 def makeIntelligenceCD(vehicleCD):
@@ -57,14 +56,13 @@ def getUniqueBlueprints(blueprints, isFullNationCD=False):
         fragmentType = getFragmentType(fragmentCD)
         if fragmentType == BlueprintTypes.VEHICLE:
             vehicleFragments[getVehicleCD(fragmentCD)] += count
-        elif fragmentType == BlueprintTypes.NATIONAL:
+        if fragmentType == BlueprintTypes.NATIONAL:
             nationID = fragmentCD & 255 if isFullNationCD else getFragmentNationID(fragmentCD)
             nationalFragments[nationID] += count
-        elif fragmentType == BlueprintTypes.INTELLIGENCE_DATA:
+        if fragmentType == BlueprintTypes.INTELLIGENCE_DATA:
             intelligenceData += count
 
-    return (
-     vehicleFragments, nationalFragments, intelligenceData)
+    return (vehicleFragments, nationalFragments, intelligenceData)
 
 
 def _isUnsuitableForBlueprints(vehicle):
@@ -92,8 +90,7 @@ class BlueprintsRequester(AbstractSyncDataRequester, IBlueprintsRequester):
         if vehicleCD in self.__itemsCache.items.stats.unlocks:
             return (totalCount, totalCount)
         filledCount = self.__vehicleFragments[vehicleCD].filledCount if vehicleCD in self.__vehicleFragments else 0
-        return (
-         filledCount, totalCount)
+        return (filledCount, totalCount)
 
     def getBlueprintData(self, vehicleCD, vLevel):
         _logger.debug('Extract blueprint data for the vehicle=%s, level=%s ', vehicleCD, vLevel)
@@ -129,8 +126,7 @@ class BlueprintsRequester(AbstractSyncDataRequester, IBlueprintsRequester):
 
     def getFragmentDiscountAndCost(self, vehicleCD, vLevel, xpFullCost):
         _, fragmentDiscount = self.getRequiredCountAndDiscount(vehicleCD, vLevel)
-        return (
-         fragmentDiscount, int(round(xpFullCost * fragmentDiscount * 0.01)))
+        return (fragmentDiscount, int(round(xpFullCost * fragmentDiscount * 0.01)))
 
     def getAllNationalFragmentsData(self):
         nationalFragments = {}
@@ -140,33 +136,25 @@ class BlueprintsRequester(AbstractSyncDataRequester, IBlueprintsRequester):
         return nationalFragments
 
     def calculateCost(self, oldCost, discount):
-        if not discount:
-            return oldCost
-        return int(round(oldCost * (100 - discount) * 0.01))
+        return oldCost if not discount else int(round(oldCost * (100 - discount) * 0.01))
 
     def getNationalFragments(self, fragmentCD):
         if not self.__nationalFragments:
             return 0
         nationID = getFragmentNationID(fragmentCD)
-        if nationID in self.__nationalFragments:
-            return sum(self.__nationalFragments[nationID].values())
-        return 0
+        return sum(self.__nationalFragments[nationID].values()) if nationID in self.__nationalFragments else 0
 
     def getNationalAllianceFragments(self, fragmentCD, vehicleLevel):
         allianceNationIds = sorted(self.__getAllyConversionCoefs(fragmentCD, vehicleLevel).keys())
-        if not self.__nationalFragments:
-            return OrderedDict((nId, 0) for nId in allianceNationIds)
-        return OrderedDict((nId, sum(self.__nationalFragments[nId].values()) if nId in self.__nationalFragments else 0) for nId in allianceNationIds)
+        return OrderedDict(((nId, 0) for nId in allianceNationIds)) if not self.__nationalFragments else OrderedDict(((nId, sum(self.__nationalFragments[nId].values()) if nId in self.__nationalFragments else 0) for nId in allianceNationIds))
 
     def getNationalRequiredOptions(self, vehicleCD, vehicleLevel):
         national, _ = self.getRequiredIntelligenceAndNational(vehicleLevel)
         allyCoefs = self.__getAllyConversionCoefs(vehicleCD, vehicleLevel)
-        return OrderedDict((nId, round(national * allyCoef)) for nId, allyCoef in sorted(allyCoefs.iteritems()))
+        return OrderedDict(((nId, round(national * allyCoef)) for nId, allyCoef in sorted(allyCoefs.iteritems())))
 
     def getIntelligenceCount(self):
-        if not self.__intelligence:
-            return 0
-        return sum(self.__intelligence.values())
+        return 0 if not self.__intelligence else sum(self.__intelligence.values())
 
     def getRequiredIntelligenceAndNational(self, vehicleLevel):
         return self._bpfConfig.getRequiredFragmentsForConversion(vehicleLevel)
@@ -186,7 +174,7 @@ class BlueprintsRequester(AbstractSyncDataRequester, IBlueprintsRequester):
             return False
         existingAllianceFragments = self.getNationalAllianceFragments(vehicleCD, vehicleLevel)
         allyConversionCoefs = self.__getAllyConversionCoefs(vehicleCD, vehicleLevel)
-        return any(existingAllianceFragments[nId] >= round(allyConversionCoefs[nId] * national) for nId in existingAllianceFragments.iterkeys())
+        return any((existingAllianceFragments[nId] >= round(allyConversionCoefs[nId] * national) for nId in existingAllianceFragments.iterkeys()))
 
     def getConvertibleFragmentCount(self, vehicleCD, vehicleLevel):
         national, intelligence = self._bpfConfig.getRequiredFragmentsForConversion(vehicleLevel)
@@ -198,15 +186,15 @@ class BlueprintsRequester(AbstractSyncDataRequester, IBlueprintsRequester):
         need = totalCount - filledCount
         availableIntelligence = int(existingIntelligence / intelligence) if intelligence else 0
         allyConversionCoefs = self.__getAllyConversionCoefs(vehicleCD, vehicleLevel)
-        availableNational = sum(int(existingAlliance[nId] / round(national * allyConversionCoefs[nId])) for nId in existingAlliance.iterkeys())
+        availableNational = sum((int(existingAlliance[nId] / round(national * allyConversionCoefs[nId])) for nId in existingAlliance.iterkeys()))
         return min((need, availableNational, availableIntelligence))
 
     def getLayout(self, vehicleCD, vLevel):
         if self.__vehicleFragments is None or self.__itemsCache.items.getItemByCD(vehicleCD).isPremium:
             return (0, 0, [])
+        elif vehicleCD in self.__itemsCache.items.stats.unlocks:
+            return self.__createLayoutData(vehicleCD, vLevel, True)
         else:
-            if vehicleCD in self.__itemsCache.items.stats.unlocks:
-                return self.__createLayoutData(vehicleCD, vLevel, True)
             layoutObject = self.__vehicleFragments.get(vehicleCD, None)
             if layoutObject is None:
                 return self.__createLayoutData(vehicleCD, vLevel, False)
@@ -232,13 +220,14 @@ class BlueprintsRequester(AbstractSyncDataRequester, IBlueprintsRequester):
         _logger.debug('Preprocess blueprint cache')
         if data is None or 'cache' not in data:
             return data
-        self.clear()
-        blueprintsDecodeData = self.__bpfDecoder(data['cache'])
-        if blueprintsDecodeData is not None:
-            self.__vehicleFragments = blueprintsDecodeData[0]
-            self.__nationalFragments = blueprintsDecodeData[1]
-            self.__intelligence = blueprintsDecodeData[2]
-        return data
+        else:
+            self.clear()
+            blueprintsDecodeData = self.__bpfDecoder(data['cache'])
+            if blueprintsDecodeData is not None:
+                self.__vehicleFragments = blueprintsDecodeData[0]
+                self.__nationalFragments = blueprintsDecodeData[1]
+                self.__intelligence = blueprintsDecodeData[2]
+            return data
 
     def __getAllyConversionCoefs(self, vehicleCD, vehicleLevel):
         nationId = getFragmentNationID(vehicleCD)
@@ -257,8 +246,7 @@ class BlueprintsRequester(AbstractSyncDataRequester, IBlueprintsRequester):
                 return (0, 0, ())
             rows = fragments / columns
             layout = [int(hasBlueprints)] * rows * columns
-            return (
-             rows, columns, layout)
+            return (rows, columns, layout)
 
     @classmethod
     def __bpfDecoder(cls, blueprintData):
@@ -274,16 +262,15 @@ class BlueprintsRequester(AbstractSyncDataRequester, IBlueprintsRequester):
                     vehicleCD = getVehicleCD(fragmentCD)
                     layout = Layout.fromInt(count)
                     vehicleFragments[vehicleCD] = layout
-                elif fragmentType == BlueprintTypes.NATIONAL:
+                if fragmentType == BlueprintTypes.NATIONAL:
                     vehicleCD = getVehicleCDForNational(fragmentCD)
                     nationID = getFragmentNationID(fragmentCD)
                     if nationID in nationalFragments:
                         nationalFragments[nationID].update({vehicleCD: count})
                     else:
                         nationalFragments[nationID] = {vehicleCD: count}
-                elif fragmentType == BlueprintTypes.INTELLIGENCE_DATA:
+                if fragmentType == BlueprintTypes.INTELLIGENCE_DATA:
                     vehicleCD = getVehicleCDForIntelligence(fragmentCD)
                     intelligenceData[vehicleCD] += count
 
-            return (
-             vehicleFragments, nationalFragments, intelligenceData)
+            return (vehicleFragments, nationalFragments, intelligenceData)

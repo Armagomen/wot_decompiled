@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_light/scripts/client/comp7_light/gui/impl/gen/view_models/views/lobby/platoon/comp7_light_window_model.py
 from frameworks.wulf import Array
 from comp7_light.gui.impl.gen.view_models.views.lobby.platoon.comp7_light_header_model import Comp7LightHeaderModel
 from comp7_light.gui.impl.gen.view_models.views.lobby.platoon.comp7_light_slot_model import Comp7LightSlotModel

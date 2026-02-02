@@ -1,10 +1,11 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/loadout/crew/crew_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.loadout.crew.slot_model import SlotModel
 from gui.impl.gen.view_models.views.lobby.loadout.crew.tankman_model import TankmanModel
 
 class CrewModel(ViewModel):
-    __slots__ = ('onOpenCrew', 'onOpenBarracks', 'onToggleAcceleratedTraining', 'onToggleIntensiveTraining',
-                 'onDogMoreInfoClick')
+    __slots__ = ('onOpenCrew', 'onOpenBarracks', 'onToggleAcceleratedTraining', 'onToggleIntensiveTraining', 'onDogMoreInfoClick')
     DEFAULT_STATE = 'default'
     DISABLED_STATE = 'disabled'
     ON_TRAINING_STATE = 'on'

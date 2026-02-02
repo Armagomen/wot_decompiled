@@ -1,4 +1,7 @@
-import logging, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/area_marker_ctrl.py
+import logging
+import BigWorld
 from helpers import dependency
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
 from skeletons.gui.battle_session import IBattleSessionProvider
@@ -29,7 +32,7 @@ class AreaMarkersController(BaseMarkerController):
         return BATTLE_CTRL_ID.AREA_MARKER
 
     def getPluginID(self):
-        return 'area_markers'
+        pass
 
     def spaceLoadCompleted(self):
         self.start()

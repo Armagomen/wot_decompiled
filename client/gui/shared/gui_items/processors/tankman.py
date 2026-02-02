@@ -1,4 +1,7 @@
-import logging, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/gui_items/processors/tankman.py
+import logging
+import BigWorld
 from gui import SystemMessages, makeHtmlString
 from gui.SystemMessages import CURRENCY_TO_SM_TYPE, SM_TYPE
 from gui.game_control.restore_contoller import getTankmenRestoreInfo
@@ -23,18 +26,14 @@ _logger = logging.getLogger(__name__)
 def _getSysMsgType(price):
     currency = price.getCurrency(byWeight=False)
     amount = price.get(currency, default=0)
-    if amount > 0:
-        return CURRENCY_TO_SM_TYPE.get(currency, SM_TYPE.Information)
-    return SM_TYPE.Information
+    return CURRENCY_TO_SM_TYPE.get(currency, SM_TYPE.Information) if amount > 0 else SM_TYPE.Information
 
 
 def _getFinancialTransactionSysMsgType(price):
     currency = price.getCurrency(byWeight=False)
     if currency == Currency.CREDITS:
         return SM_TYPE.FinancialTransactionWithCredits
-    if currency == Currency.GOLD:
-        return SM_TYPE.FinancialTransactionWithGold
-    return SM_TYPE.Information
+    return SM_TYPE.FinancialTransactionWithGold if currency == Currency.GOLD else SM_TYPE.Information
 
 
 class TankmanDismiss(ItemProcessor):
@@ -42,12 +41,10 @@ class TankmanDismiss(ItemProcessor):
 
     def __init__(self, tankman):
         vehicle = self.itemsCache.items.getVehicle(tankman.vehicleInvID)
-        super(TankmanDismiss, self).__init__(tankman, [
-         plugins.TankmanLockedValidator(tankman),
-         plugins.VehicleValidator(vehicle, isEnabled=tankman.vehicleInvID > 0)])
+        super(TankmanDismiss, self).__init__(tankman, [plugins.TankmanLockedValidator(tankman), plugins.VehicleValidator(vehicle, isEnabled=tankman.vehicleInvID > 0)])
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        return makeI18nError(sysMsgKey=('dismiss_tankman/{}').format(errStr), defaultSysMsgKey='dismiss_tankman/server_error')
+        return makeI18nError(sysMsgKey='dismiss_tankman/{}'.format(errStr), defaultSysMsgKey='dismiss_tankman/server_error')
 
     def _successHandler(self, code, ctx=None):
         additionalMsgs = []
@@ -68,8 +65,7 @@ class TankmanRecruit(Processor):
 
     def __init__(self, nationID, vehTypeID, role, tmanCostTypeIdx):
         self.vehicle = self.itemsCache.items.getItemByCD(makeIntCompactDescrByID('vehicle', nationID, vehTypeID))
-        super(TankmanRecruit, self).__init__([
-         plugins.VehicleCrewLockedValidator(self.vehicle),
+        super(TankmanRecruit, self).__init__([plugins.VehicleCrewLockedValidator(self.vehicle),
          plugins.MoneyValidator(_getRecruitPrice(tmanCostTypeIdx)),
          plugins.FreeTankmanValidator(isEnabled=tmanCostTypeIdx == 0),
          plugins.IsLongDisconnectedFromCenter()])
@@ -79,13 +75,11 @@ class TankmanRecruit(Processor):
         self.tmanCostTypeIdx = tmanCostTypeIdx
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        return makeI18nError(sysMsgKey=('recruit_window/{}').format(errStr), defaultSysMsgKey='recruit_window/server_error', auxData=ctx)
+        return makeI18nError(sysMsgKey='recruit_window/{}'.format(errStr), defaultSysMsgKey='recruit_window/server_error', auxData=ctx)
 
     def _successHandler(self, code, ctx=None):
         tmanCost = _getRecruitPrice(self.tmanCostTypeIdx)
-        if tmanCost:
-            return makeI18nSuccess(sysMsgKey='recruit_window/financial_success', auxData=ctx, vehName=self.vehicle.userName, price=formatPrice(tmanCost, useStyle=True), type=_getFinancialTransactionSysMsgType(tmanCost))
-        return makeI18nSuccess('recruit_window/success', type=_getSysMsgType(self.tmanCostTypeIdx), auxData=ctx)
+        return makeI18nSuccess(sysMsgKey='recruit_window/financial_success', auxData=ctx, vehName=self.vehicle.userName, price=formatPrice(tmanCost, useStyle=True), type=_getFinancialTransactionSysMsgType(tmanCost)) if tmanCost else makeI18nSuccess('recruit_window/success', type=_getSysMsgType(self.tmanCostTypeIdx), auxData=ctx)
 
     def _request(self, callback):
         _logger.debug('Make server request to recruit tankman: %s, %s, %s, %s', self.nationID, self.vehTypeID, self.role, self.tmanCostTypeIdx)
@@ -96,9 +90,7 @@ class TankmanTokenRecruit(Processor):
 
     def __init__(self, nationID, vehTypeID, role, tokenName, tokenData):
         vehicle = self.itemsCache.items.getItemByCD(makeIntCompactDescrByID('vehicle', nationID, vehTypeID))
-        super(TankmanTokenRecruit, self).__init__([
-         plugins.VehicleCrewLockedValidator(vehicle),
-         plugins.IsLongDisconnectedFromCenter()])
+        super(TankmanTokenRecruit, self).__init__([plugins.VehicleCrewLockedValidator(vehicle), plugins.IsLongDisconnectedFromCenter()])
         self.nationID = nationID
         self.vehTypeID = vehTypeID
         self.role = role
@@ -107,14 +99,14 @@ class TankmanTokenRecruit(Processor):
         self.vehicleName = vehicle.shortUserName
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        return makeI18nError(sysMsgKey=('recruit_window/{}').format(errStr), defaultSysMsgKey='recruit_window/server_error', auxData=ctx)
+        return makeI18nError(sysMsgKey='recruit_window/{}'.format(errStr), defaultSysMsgKey='recruit_window/server_error', auxData=ctx)
 
     def _successHandler(self, code, ctx=None):
-        html = makeHtmlString(path='html_templates:lobby/processors/system_messages', key='recruit', ctx={'fullName': self.recruitInfo.getFullUserName(), 
-           'rank': Tankman.getRankUserName(self.nationID, self.recruitInfo.getRankID()), 
-           'role': getRoleUserName(self.role), 
-           'vehicleName': self.vehicleName, 
-           'roleLevel': self.recruitInfo.getRoleLevel()})
+        html = makeHtmlString(path='html_templates:lobby/processors/system_messages', key='recruit', ctx={'fullName': self.recruitInfo.getFullUserName(),
+         'rank': Tankman.getRankUserName(self.nationID, self.recruitInfo.getRankID()),
+         'role': getRoleUserName(self.role),
+         'vehicleName': self.vehicleName,
+         'roleLevel': self.recruitInfo.getRoleLevel()})
         return makeSuccess(html, msgType=SM_TYPE.Information, auxData=ctx)
 
     def _request(self, callback):
@@ -126,25 +118,33 @@ class TankmanEquip(GroupedRequestProcessor):
 
     def __init__(self, tankmanInvID, vehicleInvID, vehicleSlotIdx, groupID=0, groupSize=1):
         self.__tankmanInvID = tankmanInvID
-        self.__vehicleInvID = vehicleInvID
+        self._vehicleInvID = vehicleInvID
         self.__vehicleSlotIdx = vehicleSlotIdx
         tankman = self.itemsCache.items.getTankman(tankmanInvID)
         vehicle = self.itemsCache.items.getVehicle(vehicleInvID)
-        self.__sysMsgPrefix = 'equip_tankman'
+        self._sysMsgPrefix = 'equip_tankman'
         anotherTankman = dict(vehicle.crew).get(vehicleSlotIdx)
         if tankman is not None and anotherTankman is not None and anotherTankman.invID != tankman.invID:
-            self.__sysMsgPrefix = 'reequip_tankman'
-        super(TankmanEquip, self).__init__(BigWorld.player().inventory.equipTankman, vehicleInvID, vehicleSlotIdx, tankmanInvID, groupID=groupID, groupSize=groupSize, plugins=(
-         plugins.TankmanLockedValidator(tankman),
-         plugins.VehicleCrewLockedValidator(vehicle),
-         plugins.VehicleValidator(vehicle, False, prop={'isLocked': True})))
+            self._sysMsgPrefix = 'reequip_tankman'
+        super(TankmanEquip, self).__init__(BigWorld.player().inventory.equipTankman, vehicleInvID, vehicleSlotIdx, tankmanInvID, groupID=groupID, groupSize=groupSize, plugins=(plugins.TankmanLockedValidator(tankman), plugins.VehicleCrewLockedValidator(vehicle), plugins.VehicleValidator(vehicle, False, prop={'isLocked': True})))
         return
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        return makeI18nError(sysMsgKey=('{}/{}').format(self.__sysMsgPrefix, errStr), defaultSysMsgKey=('{}/server_error').format(self.__sysMsgPrefix), auxData=self._makeErrorData(errStr), type=SM_TYPE.NotEnoughBerthError if errStr == 'not_enough_space' else SM_TYPE.Error)
+        return makeI18nError(sysMsgKey='{}/{}'.format(self._sysMsgPrefix, errStr), defaultSysMsgKey='{}/server_error'.format(self._sysMsgPrefix), auxData=self._makeErrorData(errStr), type=SM_TYPE.NotEnoughBerthError if errStr == 'not_enough_space' else SM_TYPE.Error)
 
     def _successHandler(self, code, ctx=None):
-        return makeI18nSuccess(sysMsgKey=('{}/success').format(self.__sysMsgPrefix), vehName=self.itemsCache.items.getVehicle(self.__vehicleInvID).userName, auxData=self._makeSuccessData(ctx))
+        return makeI18nSuccess(sysMsgKey='{}/success'.format(self._sysMsgPrefix), vehName=self.itemsCache.items.getVehicle(self._vehicleInvID).userName, auxData=self._makeSuccessData(ctx))
+
+
+class QuickServiceTankmanEquip(TankmanEquip):
+
+    def _successHandler(self, code, ctx=None):
+        additionalMessages = []
+        for act in ctx:
+            if act.itemCount == 1:
+                additionalMessages.append(makeI18nSuccess(sysMsgKey='{}/success'.format(self._sysMsgPrefix), vehName=self.itemsCache.items.getVehicle(self._vehicleInvID).userName, auxData=self._makeSuccessData(ctx)))
+
+        return makeI18nSuccess(sysMsgKey='{}/success'.format(self._sysMsgPrefix), vehName=self.itemsCache.items.getVehicle(self._vehicleInvID).userName, auxData=additionalMessages[1:])
 
 
 class TankmanRecruitAndEquip(Processor):
@@ -155,8 +155,7 @@ class TankmanRecruitAndEquip(Processor):
         self.slot = slot
         self.tmanCostTypeIdx = tmanCostTypeIdx
         self.isReplace = dict(vehicle.crew).get(slot) is not None
-        self.addPlugins((
-         plugins.VehicleValidator(vehicle, False, prop={'isLocked': True}),
+        self.addPlugins((plugins.VehicleValidator(vehicle, False, prop={'isLocked': True}),
          plugins.VehicleCrewLockedValidator(vehicle),
          plugins.MoneyValidator(_getRecruitPrice(tmanCostTypeIdx)),
          plugins.FreeTankmanValidator(isEnabled=tmanCostTypeIdx == 0)))
@@ -168,19 +167,17 @@ class TankmanRecruitAndEquip(Processor):
 
     def _errorHandler(self, code, errStr='', ctx=None):
         prefix = self.__getSysMsgPrefix()
-        return makeI18nError(sysMsgKey=('{}/{}').format(prefix, errStr), defaultSysMsgKey=('{}/server_error').format(prefix), auxData=ctx)
+        return makeI18nError(sysMsgKey='{}/{}'.format(prefix, errStr), defaultSysMsgKey='{}/server_error'.format(prefix), auxData=ctx)
 
     def _successHandler(self, code, ctx=None):
         tmanCost = _getRecruitPrice(self.tmanCostTypeIdx)
         if tmanCost:
             currency = tmanCost.getCurrency()
-            return makeI18nSuccess(sysMsgKey=('recruit_window/financial_success_{}').format(currency), auxData=ctx, vehName=self.vehicle.userName, price=formatPriceValue(tmanCost.get(currency), currency, useStyle=True), type=_getFinancialTransactionSysMsgType(tmanCost))
+            return makeI18nSuccess(sysMsgKey='recruit_window/financial_success_{}'.format(currency), auxData=ctx, vehName=self.vehicle.userName, price=formatPriceValue(tmanCost.get(currency), currency, useStyle=True), type=_getFinancialTransactionSysMsgType(tmanCost))
         return makeI18nSuccess(sysMsgKey='recruit_window/success', auxData=ctx, vehName=self.vehicle.userName, type=_getSysMsgType(tmanCost))
 
     def __getSysMsgPrefix(self):
-        if not self.isReplace:
-            return 'buy_and_equip_tankman'
-        return 'buy_and_reequip_tankman'
+        return 'buy_and_equip_tankman' if not self.isReplace else 'buy_and_reequip_tankman'
 
 
 class CrewSkinsProcessorBase(Processor):
@@ -218,22 +215,18 @@ class TankmanUnload(GroupedRequestProcessor):
         self.__vehicleInvID = vehicleInvID
         self.__vehicleSlotIdx = vehicleSlotIdx
         vehicle = self.itemsCache.items.getVehicle(vehicleInvID)
-        super(TankmanUnload, self).__init__(BigWorld.player().inventory.equipTankman, vehicleInvID, vehicleSlotIdx, None, groupID=groupID, groupSize=groupSize, plugins=(
-         plugins.VehicleValidator(vehicle, False, prop={'isLocked': True}),
-         plugins.VehicleCrewLockedValidator(vehicle)))
+        super(TankmanUnload, self).__init__(BigWorld.player().inventory.equipTankman, vehicleInvID, vehicleSlotIdx, None, groupID=groupID, groupSize=groupSize, plugins=(plugins.VehicleValidator(vehicle, False, prop={'isLocked': True}), plugins.VehicleCrewLockedValidator(vehicle)))
         return
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        return makeI18nError(sysMsgKey=('{}/{}').format(self.__sysMsgPrefix(ctx), errStr), defaultSysMsgKey=('{}/server_error').format(self.__sysMsgPrefix(ctx)), auxData=self._makeErrorData(errStr), type=SM_TYPE.NotEnoughBerthError if errStr == 'not_enough_space' else SM_TYPE.Error)
+        return makeI18nError(sysMsgKey='{}/{}'.format(self.__sysMsgPrefix(ctx), errStr), defaultSysMsgKey='{}/server_error'.format(self.__sysMsgPrefix(ctx)), auxData=self._makeErrorData(errStr), type=SM_TYPE.NotEnoughBerthError if errStr == 'not_enough_space' else SM_TYPE.Error)
 
     def _successHandler(self, code, ctx=None):
-        return makeI18nSuccess(sysMsgKey=('{}/success').format(self.__sysMsgPrefix(ctx)), auxData=self._makeSuccessData(ctx))
+        return makeI18nSuccess(sysMsgKey='{}/success'.format(self.__sysMsgPrefix(ctx)), auxData=self._makeSuccessData(ctx))
 
     @staticmethod
     def __sysMsgPrefix(ctx):
-        if TankmanUnload.__tmanQuantity(ctx) > 1:
-            return 'unload_crew'
-        return 'unload_tankman'
+        return 'unload_crew' if TankmanUnload.__tmanQuantity(ctx) > 1 else 'unload_tankman'
 
     @staticmethod
     def __tmanQuantity(ctx):
@@ -245,10 +238,7 @@ class TankmanReturn(Processor):
     def __init__(self, vehicle, validators=None):
         self.__vehicle = vehicle
         validators = validators or ()
-        super(TankmanReturn, self).__init__((
-         plugins.VehicleValidator(self.__vehicle, False, prop={'isLocked': True}),
-         plugins.VehicleCrewLockedValidator(self.__vehicle),
-         plugins.PreviousCrewValidator(self.__vehicle)) + validators)
+        super(TankmanReturn, self).__init__((plugins.VehicleValidator(self.__vehicle, False, prop={'isLocked': True}), plugins.VehicleCrewLockedValidator(self.__vehicle), plugins.PreviousCrewValidator(self.__vehicle)) + validators)
 
     @property
     def vehicle(self):
@@ -259,9 +249,9 @@ class TankmanReturn(Processor):
 
     def _errorHandler(self, code, errStr='', ctx=None, **kwargs):
         if errStr == 'return_unavailable':
-            kwargs.update({'msgPriority': NotificationPriorityLevel.MEDIUM, 
-               'type': SM_TYPE.Information})
-        return makeI18nError(sysMsgKey=('return_crew/{}').format(errStr), defaultSysMsgKey='return_crew/server_error', **kwargs)
+            kwargs.update({'msgPriority': NotificationPriorityLevel.MEDIUM,
+             'type': SM_TYPE.Information})
+        return makeI18nError(sysMsgKey='return_crew/{}'.format(errStr), defaultSysMsgKey='return_crew/server_error', **kwargs)
 
     def _request(self, callback):
         _logger.debug('Make server request to return crew. VehicleItem: %s', self.__vehicle)
@@ -273,16 +263,13 @@ class TankmanAutoReturn(TankmanReturn):
     def __init__(self, vehicle, validators=None):
         self.validator = AutoReturnValidator(vehicle)
         validators = validators or ()
-        super(TankmanAutoReturn, self).__init__(vehicle, (
-         self.validator,) + validators)
+        super(TankmanAutoReturn, self).__init__(vehicle, (self.validator,) + validators)
 
     def _errorHandler(self, code, errStr='', ctx=None):
         hasSkipTmans, curCrewData = self.validator.getCrewData()
         if hasSkipTmans:
             BigWorld.player().crewAccountController.setAutoReturnCrewData(self.vehicle.intCD, curCrewData)
-        if not errStr:
-            return makeError()
-        return super(TankmanAutoReturn, self)._errorHandler(code, errStr, ctx)
+        return makeError() if not errStr else super(TankmanAutoReturn, self)._errorHandler(code, errStr, ctx)
 
     def _successHandler(self, code, ctx=None):
         return makeSuccess()
@@ -292,10 +279,10 @@ class ResetAllTankmenSkills(Processor):
     __PREFIX = 'reset_all_tankmen_skills'
 
     def _successHandler(self, code, ctx=None):
-        return makeI18nSuccess(sysMsgKey=('{}/success').format(self.__PREFIX), type=SM_TYPE.Information)
+        return makeI18nSuccess(sysMsgKey='{}/success'.format(self.__PREFIX), type=SM_TYPE.Information)
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        return makeI18nError(sysMsgKey=('{}/{}').format(self.__PREFIX, errStr), defaultSysMsgKey=('{}/server_error').format(self.__PREFIX))
+        return makeI18nError(sysMsgKey='{}/{}'.format(self.__PREFIX, errStr), defaultSysMsgKey='{}/server_error'.format(self.__PREFIX))
 
     def _request(self, callback):
         _logger.debug('Make server request to reset all tankmen skills')
@@ -312,31 +299,26 @@ class TankmanRetraining(GroupedRequestProcessor):
         self.__isRoleChange = isRoleChange
         tankman = self.itemsCache.items.getTankman(tankmanInvID)
         vehicle = self.itemsCache.items.getItemByCD(vehicleIntCD)
-        super(TankmanRetraining, self).__init__(BigWorld.player().inventory.respecTankman, tankmanInvID, vehicleIntCD, tmanCostTypeIdx, plugins=(
-         plugins.VehicleValidator(vehicle, False),
-         plugins.TankmanLockedValidator(tankman),
-         plugins.VehicleCrewLockedValidator(vehicle)), groupID=groupID, groupSize=groupSize)
+        super(TankmanRetraining, self).__init__(BigWorld.player().inventory.respecTankman, tankmanInvID, vehicleIntCD, tmanCostTypeIdx, plugins=(plugins.VehicleValidator(vehicle, False), plugins.TankmanLockedValidator(tankman), plugins.VehicleCrewLockedValidator(vehicle)), groupID=groupID, groupSize=groupSize)
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        return makeI18nError(sysMsgKey=('{}/{}').format(self.__sysMessagePrefix(ctx), errStr), auxData=ctx, defaultSysMsgKey='retraining_tankman/server_error')
+        return makeI18nError(sysMsgKey='{}/{}'.format(self.__sysMessagePrefix(ctx), errStr), auxData=ctx, defaultSysMsgKey='retraining_tankman/server_error')
 
     def _successHandler(self, code, ctx=None):
         currency = self.__tmanCost.getCurrency(byWeight=False)
         vehicle = self.itemsCache.items.getItemByCD(self.__vehicleIntCD)
-        amount = sum(list(item.itemCount for item in iter(ctx) if item.itemID == currency))
+        amount = sum(list((item.itemCount for item in iter(ctx) if item.itemID == currency)))
         sysMessagePrefix = self.__sysMessagePrefix(ctx)
         changeRoleMsg = backport.text(R.strings.system_messages.retraining_change_tankman_role.success()) + '\n' if self.__isRoleChange else ''
         if amount:
             successMsg = backport.text(R.strings.system_messages.dyn(sysMessagePrefix).success(), vehName=vehicle.shortUserName)
-            spendMsg = backport.text(R.strings.system_messages.dyn(sysMessagePrefix).dyn(('financial_success_{}').format(currency))(), money=formatPriceValue(amount, currency, useStyle=True))
+            spendMsg = backport.text(R.strings.system_messages.dyn(sysMessagePrefix).dyn('financial_success_{}'.format(currency))(), money=formatPriceValue(amount, currency, useStyle=True))
             return makeSuccess(changeRoleMsg + successMsg + '\n' + spendMsg, _getFinancialTransactionSysMsgType(self.__tmanCost), self._makeSuccessData(ctx))
         return makeSuccess(changeRoleMsg + backport.text(R.strings.system_messages.dyn(sysMessagePrefix).financial_success_free(), vehName=vehicle.shortUserName), auxData=self._makeSuccessData(ctx))
 
     def __sysMessagePrefix(self, ctx):
         amount = len(ctx) / 3
-        if amount > 1:
-            return 'retraining_crew'
-        return 'retraining_tankman'
+        return 'retraining_crew' if amount > 1 else 'retraining_tankman'
 
 
 class TankmanFreeToOwnXpConvertor(GroupedRequestProcessor):
@@ -347,10 +329,10 @@ class TankmanFreeToOwnXpConvertor(GroupedRequestProcessor):
         super(TankmanFreeToOwnXpConvertor, self).__init__(BigWorld.player().inventory.freeXPToTankman, tankmanInvID, selectedXpForConvert, groupID=groupID, groupSize=groupSize)
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        return makeI18nError(sysMsgKey=('free_xp_to_tman_skill/error/{}').format(errStr), auxData=self._makeErrorData(errStr), defaultSysMsgKey='free_xp_to_tman_skill/server_error')
+        return makeI18nError(sysMsgKey='free_xp_to_tman_skill/error/{}'.format(errStr), auxData=self._makeErrorData(errStr), defaultSysMsgKey='free_xp_to_tman_skill/server_error')
 
     def _successHandler(self, code, ctx=None):
-        return makeSuccess(backport.text(R.strings.system_messages.free_xp_to_tman_skill.success(), money=sum(item.itemCount for item in iter(ctx) if item.itemID == 'freeXP')))
+        return makeSuccess(backport.text(R.strings.system_messages.free_xp_to_tman_skill.success(), money=sum((item.itemCount for item in iter(ctx) if item.itemID == 'freeXP'))))
 
 
 class TankmanAddSkills(ItemProcessor):
@@ -360,22 +342,19 @@ class TankmanAddSkills(ItemProcessor):
         self.skillsRole = skillsRole
         self.utilizationType = utilizationType
         tankman = self.itemsCache.items.getTankman(tmanInvID)
-        super(TankmanAddSkills, self).__init__(tankman, (
-         plugins.TankmanAddSkillsValidator(tankman.descriptor, utilizationType, skillNames),))
+        super(TankmanAddSkills, self).__init__(tankman, (plugins.TankmanAddSkillsValidator(tankman.descriptor, utilizationType, skillNames),))
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        return makeI18nError(sysMsgKey=('{}/{}').format(self.__getSysMsgKey(), errStr), defaultSysMsgKey=('{}/server_error').format(self.__getSysMsgKey()))
+        return makeI18nError(sysMsgKey='{}/{}'.format(self.__getSysMsgKey(), errStr), defaultSysMsgKey='{}/server_error'.format(self.__getSysMsgKey()))
 
     def _successHandler(self, code, ctx=None):
-        return makeI18nSuccess(sysMsgKey=('{}/success').format(self.__getSysMsgKey()), type=SM_TYPE.Information, skill=(', ').join(getTankmanSkill(skillName, self.skillsRole, self.item).userName for skillName in self.skillNames))
+        return makeI18nSuccess(sysMsgKey='{}/success'.format(self.__getSysMsgKey()), type=SM_TYPE.Information, skill=', '.join((getTankmanSkill(skillName, self.skillsRole, self.item).userName for skillName in self.skillNames)))
 
     def _request(self, callback):
         BigWorld.player().inventory.addTankmanSkills(self.item.invID, self.utilizationType, self.skillNames, lambda code: self._response(code, callback))
 
     def __getSysMsgKey(self):
-        if len(self.skillNames) == 1:
-            return 'add_tankman_skill'
-        return 'add_tankman_skills'
+        return 'add_tankman_skill' if len(self.skillNames) == 1 else 'add_tankman_skills'
 
 
 class TankmanAddSkill(ItemProcessor):
@@ -384,11 +363,10 @@ class TankmanAddSkill(ItemProcessor):
         self.utilizationType = utilizationType
         self.skillName = skillName
         tankman = self.itemsCache.items.getTankman(tmanInvID)
-        super(TankmanAddSkill, self).__init__(tankman, (
-         plugins.TankmanAddSkillValidator(tankman.descriptor, utilizationType, skillName),))
+        super(TankmanAddSkill, self).__init__(tankman, (plugins.TankmanAddSkillValidator(tankman.descriptor, utilizationType, skillName),))
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        return makeI18nError(sysMsgKey=('add_tankman_skill/{}').format(errStr), defaultSysMsgKey='add_tankman_skill/server_error')
+        return makeI18nError(sysMsgKey='add_tankman_skill/{}'.format(errStr), defaultSysMsgKey='add_tankman_skill/server_error')
 
     def _successHandler(self, code, ctx=None):
         return makeI18nSuccess(sysMsgKey='add_tankman_skill/success', skill=getTankmanSkill(self.skillName, self.item.role, self.item).userName, type=SM_TYPE.Information)
@@ -408,27 +386,25 @@ class TankmanChangeRole(GroupedRequestProcessor):
         tankman = self.itemsCache.items.getTankman(tankmanInvID)
         self.__vehicle = self.itemsCache.items.getItemByCD(self.__vehTypeCompDescr)
         self.__retrainVehicle = True if tankman.vehicleNativeDescr.type.compactDescr != self.__vehicle.intCD else False
-        super(TankmanChangeRole, self).__init__(BigWorld.player().inventory.changeTankmanRole, tankmanInvID, self.__roleIdx, self.__vehTypeCompDescr, groupID=groupID, groupSize=groupSize, plugins=(
-         plugins.TankmanLockedValidator(tankman),
+        super(TankmanChangeRole, self).__init__(BigWorld.player().inventory.changeTankmanRole, tankmanInvID, self.__roleIdx, self.__vehTypeCompDescr, groupID=groupID, groupSize=groupSize, plugins=(plugins.TankmanLockedValidator(tankman),
          plugins.VehicleCrewLockedValidator(self.__vehicle),
          plugins.VehicleValidator(self.__vehicle, False),
          plugins.VehicleRoleValidator(self.__vehicle, role, tankman),
          plugins.MoneyValidator(Money(gold=self.__changeRoleCost))))
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        return makeI18nError(sysMsgKey=('change_tankman_role/{}').format(errStr), defaultSysMsgKey='change_tankman_role/server_error', auxData=self._makeErrorData(errStr))
+        return makeI18nError(sysMsgKey='change_tankman_role/{}'.format(errStr), defaultSysMsgKey='change_tankman_role/server_error', auxData=self._makeErrorData(errStr))
 
 
 class TankmanDropSkills(ItemProcessor):
 
     def __init__(self, tankman, dropSkillCostIdx, useRecertificationForm):
-        super(TankmanDropSkills, self).__init__(tankman, (
-         plugins.TankmanDropSkillValidator(tankman, True),))
+        super(TankmanDropSkills, self).__init__(tankman, (plugins.TankmanDropSkillValidator(tankman, True),))
         self.dropSkillCostIdx = dropSkillCostIdx
         self.useRecertificationForm = useRecertificationForm
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        return makeI18nError(sysMsgKey=('drop_tankman_skill/{}').format(errStr), defaultSysMsgKey='drop_tankman_skill/server_error')
+        return makeI18nError(sysMsgKey='drop_tankman_skill/{}'.format(errStr), defaultSysMsgKey='drop_tankman_skill/server_error')
 
     def _successHandler(self, code, ctx=None):
         msgType = self.__getTankmanSysMsgType(self.dropSkillCostIdx)
@@ -436,7 +412,7 @@ class TankmanDropSkills(ItemProcessor):
         cost = Money(**price)
         if cost:
             currency = cost.getCurrency()
-            return makeI18nSuccess(sysMsgKey=('drop_tankman_skill/finance_success_{}').format(currency), auxData=ctx, money=formatPriceValue(cost.get(currency), currency, useStyle=True), type=msgType)
+            return makeI18nSuccess(sysMsgKey='drop_tankman_skill/finance_success_{}'.format(currency), auxData=ctx, money=formatPriceValue(cost.get(currency), currency, useStyle=True), type=msgType)
         return makeI18nSuccess(sysMsgKey='drop_tankman_skill/success', auxData=ctx, type=msgType)
 
     def _request(self, callback):
@@ -446,17 +422,14 @@ class TankmanDropSkills(ItemProcessor):
     def __getTankmanSysMsgType(self, dropSkillCostIdx):
         if dropSkillCostIdx == 1:
             return SM_TYPE.FinancialTransactionWithCredits
-        if dropSkillCostIdx == 2:
-            return SM_TYPE.FinancialTransactionWithGold
-        return SM_TYPE.Information
+        return SM_TYPE.FinancialTransactionWithGold if dropSkillCostIdx == 2 else SM_TYPE.Information
 
 
 class TankmanChangePassport(ItemProcessor):
 
     def __init__(self, tankmanInvID, firstNameID, firstNameGroup, lastNameID, lastNameGroup, iconID, iconGroup):
         tankman = self.itemsCache.items.getTankman(tankmanInvID)
-        super(TankmanChangePassport, self).__init__(tankman, (
-         plugins.TankmanChangePassportValidator(tankman),))
+        super(TankmanChangePassport, self).__init__(tankman, (plugins.TankmanChangePassportValidator(tankman),))
         self.firstNameID = firstNameID
         self.firstNameGroup = firstNameGroup
         self.lastNameID = lastNameID
@@ -470,7 +443,7 @@ class TankmanChangePassport(ItemProcessor):
         return makeI18nSuccess(sysMsgKey='replace_tankman/success', type=SM_TYPE.Information)
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        return makeI18nError(sysMsgKey=('replace_tankman/{}').format(errStr), defaultSysMsgKey='replace_tankman/server_error')
+        return makeI18nError(sysMsgKey='replace_tankman/{}'.format(errStr), defaultSysMsgKey='replace_tankman/server_error')
 
     def _request(self, callback):
         _logger.debug('Make server request to change tankman passport: %s, %s, %s, %s, %s, %s, %s', self.item.invID, self.isPremium, self.isFemale, self.firstNameGroup, self.firstNameID, self.lastNameGroup, self.lastNameID)
@@ -493,13 +466,10 @@ class TankmanRestore(GroupedRequestProcessor):
     def __init__(self, tankman, groupID=0, groupSize=1):
         self.__tankmanInvID = tankman.invID
         self.__restorePrice, _ = getTankmenRestoreInfo(tankman)
-        super(TankmanRestore, self).__init__(BigWorld.player().recycleBin.restoreTankman, tankman.invID, groupID=groupID, groupSize=groupSize, plugins=(
-         plugins.TankmanLockedValidator(tankman),
-         plugins.MoneyValidator(self.__restorePrice),
-         plugins.IsLongDisconnectedFromCenter()))
+        super(TankmanRestore, self).__init__(BigWorld.player().recycleBin.restoreTankman, tankman.invID, groupID=groupID, groupSize=groupSize, plugins=(plugins.TankmanLockedValidator(tankman), plugins.MoneyValidator(self.__restorePrice), plugins.IsLongDisconnectedFromCenter()))
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        return makeI18nError(sysMsgKey=('restore_tankman/{}').format(errStr), defaultSysMsgKey='restore_tankman/server_error', auxData=self._makeErrorData())
+        return makeI18nError(sysMsgKey='restore_tankman/{}'.format(errStr), defaultSysMsgKey='restore_tankman/server_error', auxData=self._makeErrorData())
 
     def _successHandler(self, code, ctx=None):
         if self.__restorePrice:

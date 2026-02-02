@@ -1,4 +1,7 @@
-import new, weakref
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/WeakMixin.py
+import new
+import weakref
 from inspect import getmodule
 
 class Tapped(object):
@@ -29,7 +32,7 @@ class WeakMixin(object):
                 break
 
         if not kls:
-            mixinName = ('_{}_weakMixin').format(srcKlass.__name__)
+            mixinName = '_{}_weakMixin'.format(srcKlass.__name__)
             module = getmodule(cls)
             kls = new.classobj(mixinName, (cls, srcKlass), {})
             if module is not None:

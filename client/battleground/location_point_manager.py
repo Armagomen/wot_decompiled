@@ -1,6 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/battleground/location_point_manager.py
 import logging
 from collections import namedtuple
-import BigWorld, Math, ResMgr
+import BigWorld
+import Math
+import ResMgr
 from avatar_components.CombatEquipmentManager import CombatEquipmentManager
 from chat_commands_consts import BATTLE_CHAT_COMMAND_NAMES, MarkerType, LocationMarkerSubType, _DEFAULT_ACTIVE_COMMAND_TIME
 from gui.battle_control import avatar_getter
@@ -10,29 +14,32 @@ from messenger_common_chat2 import MESSENGER_ACTION_IDS as _ACTIONS
 from skeletons.gui.battle_session import IBattleSessionProvider
 from vehicle_systems.stricted_loading import makeCallbackWeak
 _logger = logging.getLogger(__name__)
-_EquipmentAdapter = namedtuple('_EquipmentAdapter', ['areaWidth', 'areaLength', 'areaVisual',
- 'areaColor', 'areaMarker'])
+_EquipmentAdapter = namedtuple('_EquipmentAdapter', ['areaWidth',
+ 'areaLength',
+ 'areaVisual',
+ 'areaColor',
+ 'areaMarker'])
 _DYNAMIC_OBJECTS_CONFIG_FILE = 'scripts/dynamic_objects.xml'
-_AREA_VISUAL_SECTION = {BATTLE_CHAT_COMMAND_NAMES.SPG_AIM_AREA: 'stunAreaVisual', 
-   BATTLE_CHAT_COMMAND_NAMES.SHOOTING_POINT: 'shootAreaVisual'}
+_AREA_VISUAL_SECTION = {BATTLE_CHAT_COMMAND_NAMES.SPG_AIM_AREA: 'stunAreaVisual',
+ BATTLE_CHAT_COMMAND_NAMES.SHOOTING_POINT: 'shootAreaVisual'}
 _DIR_UP = Math.Vector3(0.0, 1.0, 0.0)
-_STUN_AREA_DEFAULTS = {'radius': 15.0, 
-   'areasNum': 3, 
-   'color': '0xff000000', 
-   'visual': 'content/Interface/CheckPoint/CheckPoint_white.visual', 
-   'lineColor': '0x0ff00000', 
-   'lineWidth': 3.0, 
-   'lineHeight': 3.0}
+_STUN_AREA_DEFAULTS = {'radius': 15.0,
+ 'areasNum': 3,
+ 'color': '0xff000000',
+ 'visual': 'content/Interface/CheckPoint/CheckPoint_white.visual',
+ 'lineColor': '0x0ff00000',
+ 'lineWidth': 3.0,
+ 'lineHeight': 3.0}
 _CHECK_DISTANCE_CALLBACK_TIME = 1.5
 _DISTANCE_FOR_MARKER_REMOVAL = 15.0
-COMMAND_NAME_TO_LOCATION_MARKER_SUBTYPE = {BATTLE_CHAT_COMMAND_NAMES.GOING_THERE: LocationMarkerSubType.GOING_TO_MARKER_SUBTYPE, 
-   BATTLE_CHAT_COMMAND_NAMES.ATTENTION_TO_POSITION: LocationMarkerSubType.ATTENTION_TO_MARKER_SUBTYPE, 
-   BATTLE_CHAT_COMMAND_NAMES.PREBATTLE_WAYPOINT: LocationMarkerSubType.PREBATTLE_WAYPOINT_SUBTYPE, 
-   BATTLE_CHAT_COMMAND_NAMES.SPG_AIM_AREA: LocationMarkerSubType.SPG_AIM_AREA_SUBTYPE, 
-   BATTLE_CHAT_COMMAND_NAMES.VEHICLE_SPOTPOINT: LocationMarkerSubType.VEHICLE_SPOTPOINT_SUBTYPE, 
-   BATTLE_CHAT_COMMAND_NAMES.SHOOTING_POINT: LocationMarkerSubType.SHOOTING_POINT_SUBTYPE, 
-   BATTLE_CHAT_COMMAND_NAMES.NAVIGATION_POINT: LocationMarkerSubType.NAVIGATION_POINT_SUBTYPE, 
-   BATTLE_CHAT_COMMAND_NAMES.FLAG_POINT: LocationMarkerSubType.FLAG_POINT_SUBTYPE}
+COMMAND_NAME_TO_LOCATION_MARKER_SUBTYPE = {BATTLE_CHAT_COMMAND_NAMES.GOING_THERE: LocationMarkerSubType.GOING_TO_MARKER_SUBTYPE,
+ BATTLE_CHAT_COMMAND_NAMES.ATTENTION_TO_POSITION: LocationMarkerSubType.ATTENTION_TO_MARKER_SUBTYPE,
+ BATTLE_CHAT_COMMAND_NAMES.PREBATTLE_WAYPOINT: LocationMarkerSubType.PREBATTLE_WAYPOINT_SUBTYPE,
+ BATTLE_CHAT_COMMAND_NAMES.SPG_AIM_AREA: LocationMarkerSubType.SPG_AIM_AREA_SUBTYPE,
+ BATTLE_CHAT_COMMAND_NAMES.VEHICLE_SPOTPOINT: LocationMarkerSubType.VEHICLE_SPOTPOINT_SUBTYPE,
+ BATTLE_CHAT_COMMAND_NAMES.SHOOTING_POINT: LocationMarkerSubType.SHOOTING_POINT_SUBTYPE,
+ BATTLE_CHAT_COMMAND_NAMES.NAVIGATION_POINT: LocationMarkerSubType.NAVIGATION_POINT_SUBTYPE,
+ BATTLE_CHAT_COMMAND_NAMES.FLAG_POINT: LocationMarkerSubType.FLAG_POINT_SUBTYPE}
 
 class LocationPointData(object):
 
@@ -55,7 +62,7 @@ class LocationPointManager(CallbackDelayer):
         self.__markedAreas = dict()
         self.__activeLocationMarkerID = None
         self.__resources = {}
-        self.__visualisationData = dict((k, self.__getAreaParamsConfig(v)) for k, v in _AREA_VISUAL_SECTION.iteritems())
+        self.__visualisationData = dict(((k, self.__getAreaParamsConfig(v)) for k, v in _AREA_VISUAL_SECTION.iteritems()))
         return
 
     def activate(self):
@@ -99,7 +106,7 @@ class LocationPointManager(CallbackDelayer):
                 params = self.__visualisationData[commandName]
                 isServerCommand = creatorID == self.sessionProvider.arenaVisitor.getArenaUniqueID()
                 if isServerCommand and commandName == BATTLE_CHAT_COMMAND_NAMES.SHOOTING_POINT and markerText:
-                    params = dict((k, v if k != 'radius' else float(markerText)) for k, v in params.iteritems())
+                    params = dict(((k, v if k != 'radius' else float(markerText)) for k, v in params.iteritems()))
                     markerText = ''
                 self.__addVisualisationArea(targetID, position, params, not isServerCommand)
             if isTargetForPlayer:
@@ -130,8 +137,7 @@ class LocationPointManager(CallbackDelayer):
         for chatCmd, params in self.__visualisationData.iteritems():
             if params['visual'] not in resourceRefs.failedIDs:
                 self.__resources[chatCmd] = resourceRefs
-            else:
-                _logger.warning('Resource is not found: %s', self.__resources['visual'])
+            _logger.warning('Resource is not found: %s', self.__resources['visual'])
 
     def __removeMarkedArea(self, targetID):
         if targetID in self.__markedAreas:
@@ -166,14 +172,15 @@ class LocationPointManager(CallbackDelayer):
     def __checkDistanceForRepliersCB(self):
         if self.__activeLocationMarkerID is None or self.__activeLocationMarkerID not in self.__markedAreas:
             return
-        distanceToWaypoint = (self.__markedAreas[self.__activeLocationMarkerID].position - avatar_getter.getOwnVehiclePosition()).length
-        if distanceToWaypoint < _DISTANCE_FOR_MARKER_REMOVAL:
-            commandName = _ACTIONS.battleChatCommandFromActionID(self.__markedAreas[self.__activeLocationMarkerID].commandID).name
-            targetID = self.__markedAreas[self.__activeLocationMarkerID].targetID
-            commands = self.sessionProvider.shared.chatCommands
-            if commands is not None:
-                commands.sendCancelReplyChatCommand(targetID, commandName)
-        return _CHECK_DISTANCE_CALLBACK_TIME
+        else:
+            distanceToWaypoint = (self.__markedAreas[self.__activeLocationMarkerID].position - avatar_getter.getOwnVehiclePosition()).length
+            if distanceToWaypoint < _DISTANCE_FOR_MARKER_REMOVAL:
+                commandName = _ACTIONS.battleChatCommandFromActionID(self.__markedAreas[self.__activeLocationMarkerID].commandID).name
+                targetID = self.__markedAreas[self.__activeLocationMarkerID].targetID
+                commands = self.sessionProvider.shared.chatCommands
+                if commands is not None:
+                    commands.sendCancelReplyChatCommand(targetID, commandName)
+            return _CHECK_DISTANCE_CALLBACK_TIME
 
     def __onRemoveCommandReceived(self, removeID, markerType):
         if markerType != MarkerType.LOCATION_MARKER_TYPE:
@@ -205,13 +212,13 @@ class LocationPointManager(CallbackDelayer):
         configSection = ResMgr.openSection(_DYNAMIC_OBJECTS_CONFIG_FILE)
         if configSection and configSection.has_key(section):
             configSection = configSection[section]
-            return {'radius': configSection.readFloat('radius', _STUN_AREA_DEFAULTS['radius']), 
-               'areasNum': configSection.readInt('areasNum', _STUN_AREA_DEFAULTS['areasNum']), 
-               'color': int(configSection.readString('color', _STUN_AREA_DEFAULTS['color']), 0), 
-               'visual': configSection.readString('visual', _STUN_AREA_DEFAULTS['visual']), 
-               'lineColor': int(configSection.readString('lineColor', _STUN_AREA_DEFAULTS['lineColor']), 0), 
-               'lineWidth': configSection.readFloat('lineWidth', _STUN_AREA_DEFAULTS['lineWidth']), 
-               'lineHeight': configSection.readFloat('lineHeight', _STUN_AREA_DEFAULTS['lineHeight'])}
+            return {'radius': configSection.readFloat('radius', _STUN_AREA_DEFAULTS['radius']),
+             'areasNum': configSection.readInt('areasNum', _STUN_AREA_DEFAULTS['areasNum']),
+             'color': int(configSection.readString('color', _STUN_AREA_DEFAULTS['color']), 0),
+             'visual': configSection.readString('visual', _STUN_AREA_DEFAULTS['visual']),
+             'lineColor': int(configSection.readString('lineColor', _STUN_AREA_DEFAULTS['lineColor']), 0),
+             'lineWidth': configSection.readFloat('lineWidth', _STUN_AREA_DEFAULTS['lineWidth']),
+             'lineHeight': configSection.readFloat('lineHeight', _STUN_AREA_DEFAULTS['lineHeight'])}
         return _STUN_AREA_DEFAULTS
 
     @property

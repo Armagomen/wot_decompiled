@@ -1,4 +1,9 @@
-import logging, time, weakref, threading
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/helpers/threads.py
+import logging
+import time
+import weakref
+import threading
 from Queue import PriorityQueue, Empty as QueueEmptyError
 _logger = logging.getLogger(__name__)
 INFINITE_QUEUE_SIZE = 0
@@ -48,10 +53,7 @@ class Worker(threading.Thread):
         return
 
     def __repr__(self):
-        if not self._terminated:
-            return '%s(name = %s)' % (
-             self.__class__.__name__, self.name)
-        return '%s(terminated)' % self.__class__.__name__
+        return '%s(name = %s)' % (self.__class__.__name__, self.name) if not self._terminated else '%s(terminated)' % self.__class__.__name__
 
 
 class ThreadPool(object):
@@ -108,5 +110,4 @@ class ThreadPool(object):
         self._jobs.put_nowait((_DEFAULT_PRIORITY, job))
 
     def __repr__(self):
-        return '%s(workers = %d; jobs = %d)' % (
-         self.__class__.__name__, len(self._workers), self._jobs.qsize())
+        return '%s(workers = %d; jobs = %d)' % (self.__class__.__name__, len(self._workers), self._jobs.qsize())

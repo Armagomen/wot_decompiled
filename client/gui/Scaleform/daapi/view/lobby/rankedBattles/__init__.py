@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/rankedBattles/__init__.py
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.framework import ScopeTemplates, ComponentSettings, ViewSettings
 from gui.Scaleform.framework.package_layout import PackageBusinessHandler
@@ -7,7 +9,7 @@ from gui.app_loader import settings as app_settings
 from gui.shared import EVENT_BUS_SCOPE
 
 def getContextMenuHandlers():
-    return ()
+    pass
 
 
 def getViewSettings():
@@ -28,8 +30,7 @@ def getViewSettings():
     from gui.Scaleform.daapi.view.lobby.rankedBattles.ranked_battles_qualification import RankedBattlesQualification
     from gui.Scaleform.daapi.view.lobby.rankedBattles.ranked_entry_point import RankedBattlesEntryPoint
     from gui.Scaleform.daapi.view.lobby.rankedBattles.ranked_qualification_rewards import RankedQualificationRewards
-    return (
-     ViewSettings(RANKEDBATTLES_ALIASES.RANKED_BATTLES_PAGE_ALIAS, RankedMainSeasonOnPage, 'rankedBattlesPage.swf', WindowLayer.SUB_VIEW, RANKEDBATTLES_ALIASES.RANKED_BATTLES_PAGE_ALIAS, ScopeTemplates.LOBBY_SUB_SCOPE),
+    return (ViewSettings(RANKEDBATTLES_ALIASES.RANKED_BATTLES_PAGE_ALIAS, RankedMainSeasonOnPage, 'rankedBattlesPage.swf', WindowLayer.SUB_VIEW, RANKEDBATTLES_ALIASES.RANKED_BATTLES_PAGE_ALIAS, ScopeTemplates.LOBBY_SUB_SCOPE),
      ViewSettings(RANKEDBATTLES_ALIASES.RANKED_BATTLES_PAGE_SEASON_OFF_ALIAS, RankedMainSeasonOffPage, 'rankedBattlesPage.swf', WindowLayer.SUB_VIEW, RANKEDBATTLES_ALIASES.RANKED_BATTLES_PAGE_SEASON_OFF_ALIAS, ScopeTemplates.LOBBY_SUB_SCOPE),
      ViewSettings(RANKEDBATTLES_ALIASES.RANKED_BATTLES_INTRO_ALIAS, RankedBattlesIntro, 'rankedBattlesIntro.swf', WindowLayer.SUB_VIEW, RANKEDBATTLES_ALIASES.RANKED_BATTLES_INTRO_ALIAS, ScopeTemplates.LOBBY_SUB_SCOPE),
      ComponentSettings(RANKEDBATTLES_ALIASES.RANKED_BATTLES_REWARDS_UI, RankedRewardsSeasonOnView, ScopeTemplates.DEFAULT_SCOPE),
@@ -61,34 +62,21 @@ def getViewSettings():
 
 
 def getBusinessHandlers():
-    return (
-     RankedBattlesPackageBusinessHandler(),)
+    return (RankedBattlesPackageBusinessHandler(),)
 
 
 class RankedBattlesPackageBusinessHandler(PackageBusinessHandler):
 
     def __init__(self):
-        listeners = (
-         (
-          RANKEDBATTLES_ALIASES.RANKED_BATTLES_PAGE_ALIAS, self.loadViewByCtxEvent),
-         (
-          RANKEDBATTLES_ALIASES.RANKED_BATTLES_PAGE_SEASON_OFF_ALIAS, self.loadViewByCtxEvent),
-         (
-          RANKEDBATTLES_ALIASES.RANKED_BATTLES_INTRO_ALIAS, self.loadViewByCtxEvent),
-         (
-          RANKEDBATTLES_ALIASES.RANKED_BATTLES_UNREACHABLE_VIEW_ALIAS, self.loadViewByCtxEvent),
-         (
-          RANKEDBATTLES_ALIASES.RANKED_BATTLES_BATTLE_RESULTS, self.loadViewByCtxEvent),
-         (
-          RANKEDBATTLES_ALIASES.RANKED_BATTLES_AWARD, self.loadViewByCtxEvent),
-         (
-          RANKEDBATTLES_ALIASES.RANKED_BATTLES_SEASON_COMPLETE, self.loadViewByCtxEvent),
-         (
-          RANKEDBATTLES_ALIASES.RANKED_BATTLE_PRIME_TIME, self.loadViewByCtxEvent),
-         (
-          RANKEDBATTLES_ALIASES.RANKED_BATTLE_SHOP_LANDING, self.loadViewByCtxEvent),
-         (
-          RANKEDBATTLES_ALIASES.RANKED_BATTLE_YEAR_RATING_LANDING, self.loadViewByCtxEvent),
-         (
-          RANKEDBATTLES_ALIASES.RANKED_WEB_OVERLAY, self.loadViewByCtxEvent))
+        listeners = ((RANKEDBATTLES_ALIASES.RANKED_BATTLES_PAGE_ALIAS, self.loadViewByCtxEvent),
+         (RANKEDBATTLES_ALIASES.RANKED_BATTLES_PAGE_SEASON_OFF_ALIAS, self.loadViewByCtxEvent),
+         (RANKEDBATTLES_ALIASES.RANKED_BATTLES_INTRO_ALIAS, self.loadViewByCtxEvent),
+         (RANKEDBATTLES_ALIASES.RANKED_BATTLES_UNREACHABLE_VIEW_ALIAS, self.loadViewByCtxEvent),
+         (RANKEDBATTLES_ALIASES.RANKED_BATTLES_BATTLE_RESULTS, self.loadViewByCtxEvent),
+         (RANKEDBATTLES_ALIASES.RANKED_BATTLES_AWARD, self.loadViewByCtxEvent),
+         (RANKEDBATTLES_ALIASES.RANKED_BATTLES_SEASON_COMPLETE, self.loadViewByCtxEvent),
+         (RANKEDBATTLES_ALIASES.RANKED_BATTLE_PRIME_TIME, self.loadViewByCtxEvent),
+         (RANKEDBATTLES_ALIASES.RANKED_BATTLE_SHOP_LANDING, self.loadViewByCtxEvent),
+         (RANKEDBATTLES_ALIASES.RANKED_BATTLE_YEAR_RATING_LANDING, self.loadViewByCtxEvent),
+         (RANKEDBATTLES_ALIASES.RANKED_WEB_OVERLAY, self.loadViewByCtxEvent))
         super(RankedBattlesPackageBusinessHandler, self).__init__(listeners, app_settings.APP_NAME_SPACE.SF_LOBBY, EVENT_BUS_SCOPE.LOBBY)

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/info/dyn_currencies_utils.py
 import typing
 from battle_pass_common import CurrencyBP
 from gui.game_control.seniority_awards_controller import WDR_CURRENCY
@@ -10,8 +12,8 @@ from skeletons.gui.shared import IItemsCache
 from soft_exception import SoftException
 if typing.TYPE_CHECKING:
     from typing import Dict, Iterable, Callable, Optional, Union
-_BUY_PRODUCT_USING_DYN = {CurrencyBP.BIT.value: showBuyProductOverlay, 
-   WDR_CURRENCY: showBuyProductOverlay}
+_BUY_PRODUCT_USING_DYN = {CurrencyBP.BIT.value: showBuyProductOverlay,
+ WDR_CURRENCY: showBuyProductOverlay}
 _DYN_CURRENCIES = tuple(_BUY_PRODUCT_USING_DYN.keys())
 
 class DynMoney(object):
@@ -47,9 +49,7 @@ def isDynMoney(money):
 
 
 def getMoney(price, dynPrice):
-    if dynPrice:
-        return DynMoney(dynPrice)
-    return Money(**price)
+    return DynMoney(dynPrice) if dynPrice else Money(**price)
 
 
 def getBuyProductMethod(money):
@@ -60,7 +60,7 @@ def getBuyProductMethod(money):
 
 
 def separatePrice(price):
-    return ({c:v for c, v in price.iteritems() if isCurrency(c) if isCurrency(c)}, {c:v for c, v in price.iteritems() if isDynCurrency(c) if isDynCurrency(c)})
+    return ({c:v for c, v in price.iteritems() if isCurrency(c)}, {c:v for c, v in price.iteritems() if isDynCurrency(c)})
 
 
 def mayObtainForMoney(money):
@@ -68,7 +68,7 @@ def mayObtainForMoney(money):
         return event_dispatcher.mayObtainForMoney(money)
     if isDynMoney(money):
         return _mayObtainForDynCurrency(money)
-    raise SoftException(('Unsupported currency: {}').format(money.getCurrency()))
+    raise SoftException('Unsupported currency: {}'.format(money.getCurrency()))
 
 
 def mayObtainWithMoneyExchange(money):
@@ -76,7 +76,7 @@ def mayObtainWithMoneyExchange(money):
         return event_dispatcher.mayObtainWithMoneyExchange(money)
     if isDynMoney(money):
         return False
-    raise SoftException(('Unsupported currency: {}').format(money.getCurrency()))
+    raise SoftException('Unsupported currency: {}'.format(money.getCurrency()))
 
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
@@ -85,7 +85,7 @@ def getUserMoney(currency, itemsCache=None):
         return _getUserMoney(currency, itemsCache=itemsCache)
     if currency in _DYN_CURRENCIES:
         return _getUserDynCurrency(currency, itemsCache=itemsCache)
-    raise SoftException(('Unsupported currency: {}').format(currency))
+    raise SoftException('Unsupported currency: {}'.format(currency))
 
 
 def _mayObtainForDynCurrency(money):

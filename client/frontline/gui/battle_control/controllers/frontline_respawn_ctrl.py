@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/battle_control/controllers/frontline_respawn_ctrl.py
 import BigWorld
 from debug_utils import LOG_ERROR, LOG_DEBUG
 from gui.battle_control import avatar_getter
@@ -92,32 +94,31 @@ class FrontlineRespawnsController(BaseRespawnsController):
         playerDataComp = getattr(self.sessionProvider.arenaVisitor.getComponentSystem(), 'playerDataComponent', None)
         if not arena or not playerDataComp or not self.isRespawnVisible():
             return
-        for viewCmp in self._viewComponents:
-            viewCmp.setRespawnInfo(self.respawnInfo)
+        else:
+            for viewCmp in self._viewComponents:
+                viewCmp.setRespawnInfo(self.respawnInfo)
 
-        vehicleLimits = self.getLimits()
-        limit = arena.arenaType.playerGroupLimit
-        selectedVehicleID = 0
-        availableLanes = [ lane for lane in range(EB_MIN_RESPAWN_LANE_IDX, EB_MAX_RESPAWN_LANE_IDX) if playerDataComp.getPlayersForTeamAndGroup(avatar_getter.getPlayerTeam(), lane) < limit
-                         ]
-        if self.respawnInfo:
-            selectedVehicleID = self.respawnInfo.vehicleID
-        for lane in range(EB_MIN_RESPAWN_LANE_IDX, EB_MAX_RESPAWN_LANE_IDX):
-            if playerDataComp.respawnLane == lane:
-                isEnoughPlace = True
-            else:
-                isEnoughPlace = playerDataComp.getPlayersForTeamAndGroup(avatar_getter.getPlayerTeam(), lane) < limit
-            isVehicleBlocked = lane in vehicleLimits and selectedVehicleID in vehicleLimits[lane]
-            isAvailableForPlayer = (isEnoughPlace or playerDataComp.respawnLane == lane and not availableLanes) and not isVehicleBlocked
-            reasonText = ''
-            if not isEnoughPlace:
-                reasonText = backport.text(R.strings.epic_battle.deploymentMap.lanePlayerLimitReached())
-            else:
-                if isVehicleBlocked:
+            vehicleLimits = self.getLimits()
+            limit = arena.arenaType.playerGroupLimit
+            selectedVehicleID = 0
+            availableLanes = [ lane for lane in range(EB_MIN_RESPAWN_LANE_IDX, EB_MAX_RESPAWN_LANE_IDX) if playerDataComp.getPlayersForTeamAndGroup(avatar_getter.getPlayerTeam(), lane) < limit ]
+            if self.respawnInfo:
+                selectedVehicleID = self.respawnInfo.vehicleID
+            for lane in range(EB_MIN_RESPAWN_LANE_IDX, EB_MAX_RESPAWN_LANE_IDX):
+                if playerDataComp.respawnLane == lane:
+                    isEnoughPlace = True
+                else:
+                    isEnoughPlace = playerDataComp.getPlayersForTeamAndGroup(avatar_getter.getPlayerTeam(), lane) < limit
+                isVehicleBlocked = lane in vehicleLimits and selectedVehicleID in vehicleLimits[lane]
+                isAvailableForPlayer = (isEnoughPlace or playerDataComp.respawnLane == lane and not availableLanes) and not isVehicleBlocked
+                reasonText = ''
+                if not isEnoughPlace:
+                    reasonText = backport.text(R.strings.epic_battle.deploymentMap.lanePlayerLimitReached())
+                elif isVehicleBlocked:
                     reasonText = backport.text(R.strings.epic_battle.deploymentMap.spgLimitReached())
                 if not isEnoughPlace or isVehicleBlocked:
                     LOG_DEBUG('lane %d is blocked for %d ', lane, selectedVehicleID, isVehicleBlocked, 0 if lane not in vehicleLimits else vehicleLimits[lane])
                 for viewCmp in self._viewComponents:
                     viewCmp.setLaneState(lane, isAvailableForPlayer, reasonText)
 
-        return
+            return

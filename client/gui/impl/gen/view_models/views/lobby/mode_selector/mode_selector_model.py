@@ -1,9 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/mode_selector/mode_selector_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.mode_selector.mode_selector_card_model import ModeSelectorCardModel
 
 class ModeSelectorModel(ViewModel):
-    __slots__ = ('onItemClicked', 'onShowMapSelectionClicked', 'onShowWidgetsClicked',
-                 'onInfoClicked')
+    __slots__ = ('onItemClicked', 'onShowMapSelectionClicked', 'onShowWidgetsClicked', 'onInfoClicked')
 
     def __init__(self, properties=5, commands=4):
         super(ModeSelectorModel, self).__init__(properties=properties, commands=commands)

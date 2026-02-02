@@ -1,4 +1,7 @@
-import json, logging
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hangar_widget/services/events_service.py
+import json
+import logging
 from itertools import chain
 from typing import List
 from PlayerEvents import g_playerEvents
@@ -15,6 +18,7 @@ from gui.impl.lobby.stronghold_event.stronghold_event_banner import StrongholdEv
 from gui.impl.lobby.stronghold_event.stronghold_event_helpers import isStrongholdEventBannerAvailable
 from gui.impl.lobby.user_missions.hangar_widget.event_banners.event_banners_container import EventBannersContainer
 from gui.impl.lobby.user_missions.hangar_widget.services import IEventsService
+from gui.integrated_auction.auction_event_banner import IntegratedAuctionEventBanner, isAuctionEventBannerAvailable
 from gui.shared.system_factory import registerBannerEntryPointValidator, collectBannerEntryPointValidator
 from gui.shared.utils.scheduled_notifications import Notifiable, SimpleNotifier
 from helpers import dependency
@@ -27,16 +31,22 @@ from gui.impl.lobby.user_missions.hangar_widget.services.service_events import S
 _HANGAR_ENTRY_POINTS = 'hangarEntryPoints'
 _SECONDS_BEFORE_UPDATE = 2
 EventBannersContainer().registerEventBanner(StrongholdEventBanner)
+EventBannersContainer().registerEventBanner(IntegratedAuctionEventBanner)
 registerBannerEntryPointValidator(HANGAR_ALIASES.CRAFT_MACHINE_ENTRY_POINT, getCraftMachineEntryPointIsActive)
 registerBannerEntryPointValidator(RANKEDBATTLES_ALIASES.ENTRY_POINT, isRankedEntryPointAvailable)
 registerBannerEntryPointValidator(HANGAR_ALIASES.MAPBOX_ENTRY_POINT, isMapboxEntryPointAvailable)
 registerBannerEntryPointValidator(HANGAR_ALIASES.MARATHON_ENTRY_POINT, isMarathonEntryPointAvailable)
 registerBannerEntryPointValidator(StrongholdEventBanner.NAME, isStrongholdEventBannerAvailable)
+registerBannerEntryPointValidator(IntegratedAuctionEventBanner.NAME, isAuctionEventBannerAvailable)
 _logger = logging.getLogger(__name__)
 
 class _EntryPointData(object):
-    __slots__ = [
-     'id', 'startDate', 'endDate', 'weight', 'data', '__isValidData']
+    __slots__ = ['id',
+     'startDate',
+     'endDate',
+     'weight',
+     'data',
+     '__isValidData']
 
     def __init__(self, entryData):
         super(_EntryPointData, self).__init__()
@@ -85,18 +95,14 @@ class _EntryPointData(object):
 
     def isEnabledByValidator(self):
         configValidator = collectBannerEntryPointValidator(self.id)
-        if configValidator is not None:
-            return configValidator()
-        else:
-            return True
+        return configValidator() if configValidator is not None else True
 
 
 class EventsService(IEventsService, Notifiable, ServiceEvents):
     __notificationsCtrl = dependency.descriptor(IEventsNotificationsController)
     __lobbyContext = dependency.descriptor(ILobbyContext)
     __itemsCache = dependency.descriptor(IItemsCache)
-    __slots__ = [
-     '__entries', '__serverSettings']
+    __slots__ = ['__entries', '__serverSettings']
 
     def __init__(self):
         super(EventsService, self).__init__()
@@ -115,6 +121,9 @@ class EventsService(IEventsService, Notifiable, ServiceEvents):
 
     def getEntries(self):
         return self.__visibleEntries
+
+    def getEntryData(self, id):
+        return self.__entries.get(id)
 
     def updateEntries(self):
         self.__updateEntries()
@@ -145,15 +154,11 @@ class EventsService(IEventsService, Notifiable, ServiceEvents):
         self.stopServiceEvents()
 
     def _isQueueEnabled(self):
-        enabledQueues = (
-         QUEUE_TYPE.RANDOMS, QUEUE_TYPE.WINBACK)
-        return any(self.__isQueueSelected(queueType) for queueType in enabledQueues)
+        enabledQueues = (QUEUE_TYPE.RANDOMS, QUEUE_TYPE.WINBACK, QUEUE_TYPE.COMP7)
+        return any((self.__isQueueSelected(queueType) for queueType in enabledQueues))
 
     def __isQueueSelected(self, queueType):
-        if self.prbDispatcher is not None:
-            return self.prbDispatcher.getFunctionalState().isQueueSelected(queueType)
-        else:
-            return False
+        return self.prbDispatcher.getFunctionalState().isQueueSelected(queueType) if self.prbDispatcher is not None else False
 
     def __onServerSettingsChanged(self, serverSettings):
         if self.__serverSettings is not None:
@@ -207,8 +212,7 @@ class EventsService(IEventsService, Notifiable, ServiceEvents):
         for entry in self.__entries.itervalues():
             if entry.isEarlyDate():
                 nearestDate = min(nearestDate, entry.startDate)
-            else:
-                nearestDate = min(nearestDate, entry.endDate)
+            nearestDate = min(nearestDate, entry.endDate)
 
         return nearestDate - currentTime + _SECONDS_BEFORE_UPDATE
 

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/notations.py
 from debug_utils import LOG_NOTE
 from messenger import g_settings
 from messenger.m_constants import PROTO_TYPE_NAMES
@@ -33,4 +35,4 @@ class contacts(_profile):
         return g_settings.server.useToShowContacts(self._protoType)
 
     def log(self, name):
-        LOG_NOTE(('Routine {0} is blocked. Client can not send request on changing contacts by {1} protocol').format(name, PROTO_TYPE_NAMES[self._protoType]))
+        LOG_NOTE('Routine {0} is blocked. Client can not send request on changing contacts by {1} protocol'.format(name, PROTO_TYPE_NAMES[self._protoType]))

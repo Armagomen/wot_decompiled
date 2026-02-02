@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/gift_system/mixins.py
 import typing
 from gifts.gifts_common import GiftEventID, GiftEventState
 from gui.gift_system.constants import HubUpdateReason
@@ -29,14 +31,10 @@ class GiftEventHubWatcher(object):
 
     def getGiftEventState(self, isCached=True):
         eventHub = self.getGiftEventHub(isCached)
-        if eventHub:
-            return eventHub.getSettings().giftEventState
-        return GiftEventState.DISABLED
+        return eventHub.getSettings().giftEventState if eventHub else GiftEventState.DISABLED
 
     def getGiftEventHub(self, isCached=True):
-        if isCached:
-            return self._eventHub
-        return self.__giftsController.getEventHub(self._GIFT_EVENT_ID)
+        return self._eventHub if isCached else self.__giftsController.getEventHub(self._GIFT_EVENT_ID)
 
     def catchGiftEventHub(self, autoSub=True):
         self._eventHub = self.__giftsController.getEventHub(self._GIFT_EVENT_ID)

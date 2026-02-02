@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/uilogging/vehicle_hub/loggers.py
 import typing
 from uilogging.base.logger import MetricsLogger, createPartnerID
 from uilogging.vehicle_hub.constants import LogActions, Features, Tabs, TIME_LIMIT

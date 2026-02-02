@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/collection/tooltips/collection_item_tooltip_view.py
 from frameworks.wulf import ViewSettings
 from gui.collection.collections_helpers import getItemResKey, getCollectionRes, getItemName, getImagePath
 from gui.impl import backport
@@ -27,7 +29,7 @@ class CollectionItemTooltipView(ViewImpl):
 
     def _onLoading(self, *args, **kwargs):
         super(CollectionItemTooltipView, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setName(getItemName(self.__collectionId, self.__item, collectionsSystem=self.__collectionsSystem))
             model.setImagePath(self.__getImage())
             model.setDescription(self.__getDescription())

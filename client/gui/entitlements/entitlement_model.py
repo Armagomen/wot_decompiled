@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/entitlements/entitlement_model.py
 from helpers import time_utils
 
 class AgateEntitlement(object):
@@ -20,10 +22,7 @@ class AgateEntitlement(object):
         return self.__expiresAt
 
     def getExpiresAtInTimestamp(self):
-        if self.__expiresAt is not None:
-            return time_utils.getTimestampFromISO(self.__expiresAt)
-        else:
-            return 0
+        return time_utils.getTimestampFromISO(self.__expiresAt) if self.__expiresAt is not None else 0
 
     def isExpires(self):
         return not self.__isOnHold and self.getExpiresAtInTimestamp() <= time_utils.getServerUTCTime()
@@ -36,7 +35,7 @@ class AgateEntitlement(object):
         return AgateEntitlement(data.get('code', ''), data.get('amount', 0), expiresAt=data.get('expires_at', None), onHold=onHold)
 
     def __repr__(self):
-        return ('<AgateEntitlement(name={}, amount={}, expiresAt={}, onHold={})>').format(self.__name, self.__amount, self.__expiresAt, self.__isOnHold)
+        return '<AgateEntitlement(name={}, amount={}, expiresAt={}, onHold={})>'.format(self.__name, self.__amount, self.__expiresAt, self.__isOnHold)
 
 
 class AgateEntitlementsModel(object):

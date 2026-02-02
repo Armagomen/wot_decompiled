@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/ManualMainViewMeta.py
 from gui.Scaleform.framework.entities.View import View
 
 class ManualMainViewMeta(View):
@@ -12,21 +14,16 @@ class ManualMainViewMeta(View):
         self._printOverrideError('onBackButton')
 
     def as_setChaptersS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setChapters(data)
+        return self.flashObject.as_setChapters(data) if self._isDAAPIInited() else None
 
     def as_setPageBackgroundS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setPageBackground(value)
+        return self.flashObject.as_setPageBackground(value) if self._isDAAPIInited() else None
 
     def as_showCloseBtnS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showCloseBtn(value)
+        return self.flashObject.as_showCloseBtn(value) if self._isDAAPIInited() else None
 
     def as_showBackBtnS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showBackBtn(value)
+        return self.flashObject.as_showBackBtn(value) if self._isDAAPIInited() else None
 
     def as_setDescrLabelBackBtnS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setDescrLabelBackBtn(value)
+        return self.flashObject.as_setDescrLabelBackBtn(value) if self._isDAAPIInited() else None

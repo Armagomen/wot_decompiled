@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/tooltips/ranked/ranked_quests_preview_tooltip.py
 from gui.impl.gen import R
 from gui.impl import backport
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
@@ -43,13 +45,11 @@ class RankedQuestsPreviewTooltip(BlocksTooltipData):
 
     def __packBottom(self, diff):
         text = text_styles.main(backport.text(R.strings.ranked_battles.questsTooltip.bottom(), number=diff))
-        if diff > 0:
-            return [formatters.packTextBlockData(text_styles.alignText(text, 'center'), padding=formatters.packPadding(top=-7, bottom=12))]
-        return []
+        return [formatters.packTextBlockData(text_styles.alignText(text, 'center'), padding=formatters.packPadding(top=-7, bottom=12))] if diff > 0 else []
 
     def __packDescription(self, quests, season, isLeagues, isAnyPrimeNow, isAnyPrimeLeftTotal):
         resShortCut = R.strings.ranked_battles.questsTooltip
-        isAllCompleted = all(q.isCompleted() for q in quests)
+        isAllCompleted = all((q.isCompleted() for q in quests))
         isAnyPrimeLeftNextDay = self.__rankedController.hasPrimeTimesNextDayLeft()
         icon = icons.markerBlocked()
         timeDelta = time_utils.getTimeDeltaFromNowInLocal(time_utils.makeLocalServerTime(season.getEndDate()))
@@ -76,9 +76,7 @@ class RankedQuestsPreviewTooltip(BlocksTooltipData):
         return formatters.packImageTextBlockData(title=text_styles.highTitle(backport.text(R.strings.ranked_battles.questsTooltip.header())), desc=text_styles.main(description), img=backport.image(R.images.gui.maps.icons.quests.ranked_quests_infotip()), txtPadding=formatters.packPadding(top=18), descPadding=formatters.packPadding(top=15), txtOffset=20)
 
     def __packQuest(self, quest, isGlobalAvailable, awardsFormatter):
-        return formatters.packBuildUpBlockData([
-         self.__packQuestInfo(quest, isGlobalAvailable),
-         self.__packQuestRewards(quest, awardsFormatter)])
+        return formatters.packBuildUpBlockData([self.__packQuestInfo(quest, isGlobalAvailable), self.__packQuestRewards(quest, awardsFormatter)])
 
     def __packQuestInfo(self, quest, isGlobalAvailable):
         titleIcon = ''
@@ -102,5 +100,4 @@ class RankedQuestsPreviewTooltip(BlocksTooltipData):
         isMultiBonus = bonus.label.startswith('x')
         iconBlock = formatters.packImageBlockData(img=bonus.getImage(AWARDS_SIZES.SMALL), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER)
         textBlock = formatters.packAlignedTextBlockData(text=bonus.getFormattedLabel(), align=BLOCKS_TOOLTIP_TYPES.ALIGN_RIGHT if isMultiBonus else BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=formatters.packPadding(top=-16, right=12) if isMultiBonus else formatters.packPadding(top=-16))
-        return formatters.packBuildUpBlockData(blocks=[
-         iconBlock, textBlock], blockWidth=72, align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=formatters.packPadding(top=-8, bottom=-6))
+        return formatters.packBuildUpBlockData(blocks=[iconBlock, textBlock], blockWidth=72, align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=formatters.packPadding(top=-8, bottom=-6))

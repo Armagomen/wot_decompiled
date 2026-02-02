@@ -1,4 +1,9 @@
-import typing, logging, time, types
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/dispatcher.py
+import typing
+import logging
+import time
+import types
 from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
 from PlayerEvents import g_playerEvents
 from adisp import adisp_async, adisp_process
@@ -96,9 +101,7 @@ class _PreBattleDispatcher(ListenersCollection):
             return FunctionalState()
         else:
             factory = self.__factories.get(self.__entity.getCtrlType())
-            if factory is not None:
-                return factory.createStateEntity(self.__entity)
-            return FunctionalState()
+            return factory.createStateEntity(self.__entity) if factory is not None else FunctionalState()
 
     @adisp_async
     @adisp_process
@@ -108,36 +111,37 @@ class _PreBattleDispatcher(ListenersCollection):
             if callback is not None:
                 callback(False)
             return
-        if prb_getters.isParentControlActivated():
+        elif prb_getters.isParentControlActivated():
             g_eventDispatcher.showParentControlNotification()
             if callback is not None:
                 callback(False)
             return
-        entry = self.__factories.createEntry(ctx)
-        if entry is None:
-            LOG_ERROR('Entry not found', ctx)
-            if callback is not None:
-                callback(False)
+        else:
+            entry = self.__factories.createEntry(ctx)
+            if entry is None:
+                LOG_ERROR('Entry not found', ctx)
+                if callback is not None:
+                    callback(False)
+                return
+            elif not entry.canCreate():
+                if callback is not None:
+                    callback(False)
+                return
+            ctx.addFlags(entry.getFunctionalFlags() | FUNCTIONAL_FLAG.SWITCH)
+            if not self.__validateJoinOp(ctx):
+                if callback is not None:
+                    callback(False)
+                return
+            result = yield self.unlock(ctx, fadeCtx=fadeCtx)
+            if not result:
+                if callback is not None:
+                    callback(False)
+                return
+            ctx.setForced(True)
+            LOG_DEBUG('Request to create', ctx)
+            self.__requestCtx = ctx
+            dispatcherFadeWrapper(entry.create, fadeCtx, ctx, callback=callback)
             return
-        if not entry.canCreate():
-            if callback is not None:
-                callback(False)
-            return
-        ctx.addFlags(entry.getFunctionalFlags() | FUNCTIONAL_FLAG.SWITCH)
-        if not self.__validateJoinOp(ctx):
-            if callback is not None:
-                callback(False)
-            return
-        result = yield self.unlock(ctx, fadeCtx=fadeCtx)
-        if not result:
-            if callback is not None:
-                callback(False)
-            return
-        ctx.setForced(True)
-        LOG_DEBUG('Request to create', ctx)
-        self.__requestCtx = ctx
-        dispatcherFadeWrapper(entry.create, fadeCtx, ctx, callback=callback)
-        return
 
     @adisp_async
     @adisp_process
@@ -147,31 +151,32 @@ class _PreBattleDispatcher(ListenersCollection):
             if callback is not None:
                 callback(False)
             return
-        entry = self.__factories.createEntry(ctx)
-        if entry is None:
-            LOG_ERROR('Entry not found', ctx)
-            if callback is not None:
-                callback(False)
+        else:
+            entry = self.__factories.createEntry(ctx)
+            if entry is None:
+                LOG_ERROR('Entry not found', ctx)
+                if callback is not None:
+                    callback(False)
+                return
+            if not entry.canJoin():
+                if callback is not None:
+                    callback(False)
+                return
+            ctx.addFlags(entry.getFunctionalFlags() | FUNCTIONAL_FLAG.SWITCH)
+            if not self.__validateJoinOp(ctx):
+                if callback is not None:
+                    callback(False)
+                return
+            result = yield self.unlock(ctx, fadeCtx=fadeCtx)
+            if not result:
+                if callback is not None:
+                    callback(False)
+                return
+            ctx.setForced(True)
+            LOG_DEBUG('Request to join', ctx)
+            self.__requestCtx = ctx
+            dispatcherFadeWrapper(entry.join, fadeCtx, ctx, callback=callback)
             return
-        if not entry.canJoin():
-            if callback is not None:
-                callback(False)
-            return
-        ctx.addFlags(entry.getFunctionalFlags() | FUNCTIONAL_FLAG.SWITCH)
-        if not self.__validateJoinOp(ctx):
-            if callback is not None:
-                callback(False)
-            return
-        result = yield self.unlock(ctx, fadeCtx=fadeCtx)
-        if not result:
-            if callback is not None:
-                callback(False)
-            return
-        ctx.setForced(True)
-        LOG_DEBUG('Request to join', ctx)
-        self.__requestCtx = ctx
-        dispatcherFadeWrapper(entry.join, fadeCtx, ctx, callback=callback)
-        return
 
     @adisp_async
     def leave(self, ctx, callback=None, ignoreConfirmation=False, parent=None, fadeCtx=None):
@@ -180,27 +185,29 @@ class _PreBattleDispatcher(ListenersCollection):
             if callback is not None:
                 callback(False)
             return
-        if self.__requestCtx.isProcessing():
+        elif self.__requestCtx.isProcessing():
             LOG_ERROR('Request is processing', self.__requestCtx)
             if callback is not None:
                 callback(False)
             return
-        entity = self.__entity
-        if not ignoreConfirmation:
-            meta = entity.getConfirmDialogMeta(ctx)
-            if meta:
-                entity.showDialog(meta, lambda result: self.__leaveCallback(result, ctx, fadeCtx, callback), parent=parent)
-                return
-        self.__leaveLogic(ctx, fadeCtx, callback)
-        return
+        else:
+            entity = self.__entity
+            if not ignoreConfirmation:
+                meta = entity.getConfirmDialogMeta(ctx)
+                if meta:
+                    entity.showDialog(meta, lambda result: self.__leaveCallback(result, ctx, fadeCtx, callback), parent=parent)
+                    return
+            self.__leaveLogic(ctx, fadeCtx, callback)
+            return
 
     def __leaveCallback(self, result, ctx, fadeCtx, callback=None):
         if not result:
             if callback is not None:
                 callback(False)
             return
-        self.__leaveLogic(ctx, fadeCtx, callback)
-        return
+        else:
+            self.__leaveLogic(ctx, fadeCtx, callback)
+            return
 
     def __leaveLogic(self, ctx, fadeCtx, callback):
         entity = self.__entity
@@ -208,17 +215,18 @@ class _PreBattleDispatcher(ListenersCollection):
             if callback is not None:
                 callback(False)
             return
-        ctrlType = ctx.getCtrlType()
-        if entity.hasLockedState():
-            entityType = entity.getEntityType()
-            SystemMessages.pushI18nMessage(messages.getLeaveDisabledMessage(ctrlType, entityType), type=SystemMessages.SM_TYPE.Warning)
-            if callback is not None:
-                callback(False)
+        else:
+            ctrlType = ctx.getCtrlType()
+            if entity.hasLockedState():
+                entityType = entity.getEntityType()
+                SystemMessages.pushI18nMessage(messages.getLeaveDisabledMessage(ctrlType, entityType), type=SystemMessages.SM_TYPE.Warning)
+                if callback is not None:
+                    callback(False)
+                return
+            LOG_DEBUG('Request to leave formation', ctx)
+            self.__requestCtx = ctx
+            dispatcherFadeWrapper(entity.leave, fadeCtx, ctx, callback=callback)
             return
-        LOG_DEBUG('Request to leave formation', ctx)
-        self.__requestCtx = ctx
-        dispatcherFadeWrapper(entity.leave, fadeCtx, ctx, callback=callback)
-        return
 
     @adisp_async
     @adisp_process
@@ -227,19 +235,20 @@ class _PreBattleDispatcher(ListenersCollection):
             if callback is not None:
                 callback(True)
             return
-        state = self.getFunctionalState()
-        ctrlType = state.ctrlTypeID
-        factory = self.__factories.get(ctrlType)
-        if factory is None:
-            LOG_ERROR('Factory is not found', state)
+        else:
+            state = self.getFunctionalState()
+            ctrlType = state.ctrlTypeID
+            factory = self.__factories.get(ctrlType)
+            if factory is None:
+                LOG_ERROR('Factory is not found', state)
+                if callback is not None:
+                    callback(True)
+                return
+            ctx = factory.createLeaveCtx(unlockCtx.getFlags(), self.__entity.getEntityType())
+            result = yield self.leave(ctx, fadeCtx=fadeCtx)
             if callback is not None:
-                callback(True)
+                callback(result)
             return
-        ctx = factory.createLeaveCtx(unlockCtx.getFlags(), self.__entity.getEntityType())
-        result = yield self.leave(ctx, fadeCtx=fadeCtx)
-        if callback is not None:
-            callback(result)
-        return
 
     @adisp_async
     @adisp_process
@@ -250,19 +259,20 @@ class _PreBattleDispatcher(ListenersCollection):
             if callback is not None:
                 callback(False)
             return
-        if entry.isVisualOnly():
-            result = True
         else:
-            result = yield self.unlock(ctx, fadeCtx=fadeCtx)
-        if not result:
-            if callback is not None:
-                callback(False)
+            if entry.isVisualOnly():
+                result = True
+            else:
+                result = yield self.unlock(ctx, fadeCtx=fadeCtx)
+            if not result:
+                if callback is not None:
+                    callback(False)
+                return
+            ctx.setForced(True)
+            LOG_DEBUG('Request to select', ctx)
+            self.__requestCtx = ctx
+            dispatcherFadeWrapper(entry.select, fadeCtx, ctx, callback=callback)
             return
-        ctx.setForced(True)
-        LOG_DEBUG('Request to select', ctx)
-        self.__requestCtx = ctx
-        dispatcherFadeWrapper(entry.select, fadeCtx, ctx, callback=callback)
-        return
 
     @adisp_async
     def sendPrbRequest(self, ctx, callback=None):
@@ -270,10 +280,7 @@ class _PreBattleDispatcher(ListenersCollection):
 
     def getPlayerInfo(self):
         factory = self.__factories.get(self.__entity.getCtrlType())
-        if factory is not None:
-            return factory.createPlayerInfo(self.__entity)
-        else:
-            return PlayerDecorator()
+        return factory.createPlayerInfo(self.__entity) if factory is not None else PlayerDecorator()
 
     def doAction(self, action=None):
         if not (g_currentVehicle.isPresent() or g_currentPreviewVehicle.isPresent() or self.__entity.canDoActionWithoutVehicle()):
@@ -323,15 +330,14 @@ class _PreBattleDispatcher(ListenersCollection):
             flags = FUNCTIONAL_FLAG.UNDEFINED
             if action.isExit:
                 flags = FUNCTIONAL_FLAG.EXIT
-            else:
-                if self.__entity.canKeepMode():
-                    flags = self.__entity.getModeFlags()
-                ctx = factory.createLeaveCtx(flags, entityType=self.__entity.getEntityType())
-                if self.__entity.isInCoolDown(ctx.getRequestType()):
-                    if callback is not None:
-                        callback(True)
-                    g_eventDispatcher.dispatchSwitchResult(True)
-                    return
+            elif self.__entity.canKeepMode():
+                flags = self.__entity.getModeFlags()
+            ctx = factory.createLeaveCtx(flags, entityType=self.__entity.getEntityType())
+            if self.__entity.isInCoolDown(ctx.getRequestType()):
+                if callback is not None:
+                    callback(True)
+                g_eventDispatcher.dispatchSwitchResult(True)
+                return
             self.__entity.setCoolDown(ctx.getRequestType(), ctx.getCooldown())
             result = yield self.leave(ctx, ignoreConfirmation=action.ignoreConfirmation, parent=action.parent, fadeCtx=fadeCtx)
             if callback is not None:
@@ -736,10 +742,7 @@ class _PrbPeripheriesHandler(object):
                     return
             else:
                 actionsList = []
-            actionsList.extend([
-             actions.DisconnectFromPeriphery(loginViewPreselectedPeriphery=peripheryID),
-             actions.ConnectToPeriphery(peripheryID),
-             self.__enableAction])
+            actionsList.extend([actions.DisconnectFromPeriphery(loginViewPreselectedPeriphery=peripheryID), actions.ConnectToPeriphery(peripheryID), self.__enableAction])
             if finishActions:
                 if isinstance(finishActions, types.ListType):
                     actionsList.extend(finishActions)
@@ -780,8 +783,7 @@ class _PrbPeripheriesHandler(object):
 
 
 class _PrbControlLoader(IPrbControlLoader):
-    __slots__ = ('__prbDispatcher', '__invitesManager', '__autoNotifier', '__peripheriesHandler',
-                 '__storage', '__isEnabled')
+    __slots__ = ('__prbDispatcher', '__invitesManager', '__autoNotifier', '__peripheriesHandler', '__storage', '__isEnabled')
 
     def __init__(self):
         super(_PrbControlLoader, self).__init__()

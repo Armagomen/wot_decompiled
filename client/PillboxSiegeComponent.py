@@ -1,11 +1,17 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/PillboxSiegeComponent.py
 import weakref
 from collections import namedtuple
-import BigWorld, CGF
+import BigWorld
+import CGF
 from constants import VEHICLE_SIEGE_STATE
+from gui.shared.utils.decorators import ReprInjector
 from vehicles.components.component_wrappers import ifPlayerVehicle, ifObservedVehicle
+from vehicles.components.vehicle_component import VehicleDynamicComponent
+from vehicles.components.vehicle_prefabs import createMechanicPrefabSpawner
+from vehicles.mechanics.common import IMechanicComponent
 from vehicles.mechanics.mechanic_commands import createMechanicCommandsEvents, IMechanicCommandsEvents, IMechanicCommandsComponent
-from vehicles.components.vehicle_component import VehicleMechanicPrefabDynamicComponent
-from vehicles.mechanics.mechanic_constants import VehicleMechanicCommand
+from vehicles.mechanics.mechanic_constants import VehicleMechanic, VehicleMechanicCommand
 from vehicles.mechanics.mechanic_states import IMechanicStatesComponent, createMechanicStatesEvents, IMechanicStatesEvents, IMechanicState
 from Input import InputAction, InputTriggerHold, TriggerEvent, InputSingleton, InputTriggerTap
 from CommandMapping import CMD_CM_VEHICLE_SWITCH_AUTOROTATION
@@ -25,9 +31,7 @@ class PillboxSiegeModeState(namedtuple('PillboxSiegeModeState', ('state', 'nextS
 
     @property
     def progress(self):
-        if self.baseTime > 0:
-            return 1.0 - self.timeLeft / self.baseTime
-        return 1.0
+        return 1.0 - self.timeLeft / self.baseTime if self.baseTime > 0 else 1.0
 
     @property
     def timeLeft(self):
@@ -45,12 +49,11 @@ class PillboxSiegeModeState(namedtuple('PillboxSiegeModeState', ('state', 'nextS
         nextMode = self.nextState
         if currentMode > nextMode:
             return VEHICLE_SIEGE_STATE.SWITCHING_OFF
-        if currentMode < nextMode:
-            return VEHICLE_SIEGE_STATE.SWITCHING_ON
-        return currentMode
+        return VEHICLE_SIEGE_STATE.SWITCHING_ON if currentMode < nextMode else currentMode
 
 
-class PillboxSiegeComponent(VehicleMechanicPrefabDynamicComponent, IMechanicCommandsComponent, IMechanicStatesComponent):
+@ReprInjector.withParent()
+class PillboxSiegeComponent(VehicleDynamicComponent, IMechanicComponent, IMechanicCommandsComponent, IMechanicStatesComponent):
     TAP_TIME = 0.25
     HOLD_TIME = 1.0
     DURATION = HOLD_TIME - TAP_TIME
@@ -62,10 +65,15 @@ class PillboxSiegeComponent(VehicleMechanicPrefabDynamicComponent, IMechanicComm
         self.__tapAction = None
         self.__holdAction = None
         self.__holdTime = None
-        self.__commandsEvents = createMechanicCommandsEvents()
+        self.__mechanicPrefabSpawner = createMechanicPrefabSpawner(self.entity, self)
+        self.__commandsEvents = createMechanicCommandsEvents(self)
         self.__statesEvents = createMechanicStatesEvents(self)
         self._initComponent()
         return
+
+    @property
+    def vehicleMechanic(self):
+        return VehicleMechanic.PILLBOX_SIEGE_MODE
 
     @property
     def commandsEvents(self):
@@ -85,13 +93,13 @@ class PillboxSiegeComponent(VehicleMechanicPrefabDynamicComponent, IMechanicComm
         dst = self.publicStatus.nextState
         return PillboxSiegeModeState(src, dst, baseTime, endTime)
 
-    def set_publicStatus(self, _):
-        self._updateComponentAppearance()
-
     def set_status(self, _):
         player = BigWorld.player()
         if not self.isPlayerVehicle(player):
             self._updateComponentAppearance()
+
+    def set_publicStatus(self, _):
+        self._updateComponentAppearance()
 
     def onDestroy(self):
         self.__commandsEvents.destroy()
@@ -100,36 +108,37 @@ class PillboxSiegeComponent(VehicleMechanicPrefabDynamicComponent, IMechanicComm
         super(PillboxSiegeComponent, self).onDestroy()
 
     def _onAppearanceReady(self):
-        self.__statesEvents.processStatePrepared()
         super(PillboxSiegeComponent, self)._onAppearanceReady()
+        self.__mechanicPrefabSpawner.loadAppearancePrefab()
+        self.__statesEvents.processStatePrepared()
 
-    def _onComponentAppearanceUpdate(self):
+    def _onComponentAppearanceUpdate(self, **kwargs):
+        super(PillboxSiegeComponent, self)._onComponentAppearanceUpdate(**kwargs)
         mechanicState = self.getMechanicState()
         self.__statesEvents.updateMechanicState(mechanicState)
         self.__notifyStateChange(mechanicState=mechanicState)
 
-    def _onAvatarReady(self, player=None):
+    def _onAvatarReady(self, player):
+        super(PillboxSiegeComponent, self)._onAvatarReady(player)
         self.__attachInput()
-        super(PillboxSiegeComponent, self)._onComponentAvatarUpdate(player)
 
     @ifPlayerVehicle
     def __attachInput(self, _):
         if self.__tapAction is not None or self.__holdAction is not None:
             return
-        self.__tapAction = tapAction = InputAction(CMD_CM_VEHICLE_SWITCH_AUTOROTATION, [
-         InputTriggerTap(self.TAP_TIME)], PlayerVehicleInputPredicate(self.entity))
-        tapAction.bindEventReaction(TriggerEvent.Triggered, self.__onTapCompleted)
-        tapAction.bindEventReaction(TriggerEvent.Canceled, self.__onTapCanceled)
-        self.__holdAction = holdAction = InputAction(CMD_CM_VEHICLE_SWITCH_AUTOROTATION, [
-         InputTriggerHold(self.HOLD_TIME)], PlayerVehicleInputPredicate(self.entity))
-        holdAction.bindEventReaction(TriggerEvent.Started, self.__onHoldStarted)
-        holdAction.bindEventReaction(TriggerEvent.Canceled, self.__onHoldCanceled)
-        holdAction.bindEventReaction(TriggerEvent.Completed, self.__onHoldCompleted)
-        inputSingleton = CGF.findSingleton(self.entity.spaceID, InputSingleton)
-        if inputSingleton is not None:
-            inputSingleton.addAction(self.TAP_ACTION_NAME, tapAction)
-            inputSingleton.addAction(self.HOLD_ACTION_NAME, holdAction)
-        return
+        else:
+            self.__tapAction = tapAction = InputAction(CMD_CM_VEHICLE_SWITCH_AUTOROTATION, [InputTriggerTap(self.TAP_TIME)], PlayerVehicleInputPredicate(self.entity))
+            tapAction.bindEventReaction(TriggerEvent.Triggered, self.__onTapCompleted)
+            tapAction.bindEventReaction(TriggerEvent.Canceled, self.__onTapCanceled)
+            self.__holdAction = holdAction = InputAction(CMD_CM_VEHICLE_SWITCH_AUTOROTATION, [InputTriggerHold(self.HOLD_TIME)], PlayerVehicleInputPredicate(self.entity))
+            holdAction.bindEventReaction(TriggerEvent.Started, self.__onHoldStarted)
+            holdAction.bindEventReaction(TriggerEvent.Canceled, self.__onHoldCanceled)
+            holdAction.bindEventReaction(TriggerEvent.Completed, self.__onHoldCompleted)
+            inputSingleton = CGF.findSingleton(self.entity.spaceID, InputSingleton)
+            if inputSingleton is not None:
+                inputSingleton.addAction(self.TAP_ACTION_NAME, tapAction)
+                inputSingleton.addAction(self.HOLD_ACTION_NAME, holdAction)
+            return
 
     @ifPlayerVehicle
     def __detachInput(self, _):

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/tooltips/customization_builders.py
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.Scaleform.daapi.view.lobby.customization.tooltips import ElementTooltip
 from gui.Scaleform.daapi.view.lobby.customization.tooltips import ElementIconTooltip
@@ -6,11 +8,10 @@ from gui.Scaleform.daapi.view.lobby.customization.tooltips import ElementPurchas
 from gui.shared.tooltips import contexts
 from gui.shared.tooltips.builders import DataBuilder
 from gui.Scaleform.daapi.view.lobby.customization.tooltips.element import NonHistoricTooltip, FantasticalTooltip, PopoverTooltip, ChainedTooltip
-__all__ = ('getTooltipBuilders', )
+__all__ = ('getTooltipBuilders',)
 
 def getTooltipBuilders():
-    return (
-     DataBuilder(TOOLTIPS_CONSTANTS.TECH_CUSTOMIZATION_ITEM, TOOLTIPS_CONSTANTS.TECH_CUSTOMIZATION_ITEM_UI, ElementTooltip(contexts.TechCustomizationContext())),
+    return (DataBuilder(TOOLTIPS_CONSTANTS.TECH_CUSTOMIZATION_ITEM, TOOLTIPS_CONSTANTS.TECH_CUSTOMIZATION_ITEM_UI, ElementTooltip(contexts.TechCustomizationContext())),
      DataBuilder(TOOLTIPS_CONSTANTS.TECH_CUSTOMIZATION_NONHISTORIC_ITEM, TOOLTIPS_CONSTANTS.TECH_CUSTOMIZATION_ITEM_UI, NonHistoricTooltip(contexts.TechCustomizationContext())),
      DataBuilder(TOOLTIPS_CONSTANTS.TECH_CUSTOMIZATION_FANTASTICAL_ITEM, TOOLTIPS_CONSTANTS.TECH_CUSTOMIZATION_ITEM_UI, FantasticalTooltip(contexts.TechCustomizationContext())),
      DataBuilder(TOOLTIPS_CONSTANTS.TECH_CUSTOMIZATION_CHAINED_ITEM, TOOLTIPS_CONSTANTS.TECH_CUSTOMIZATION_ITEM_UI, ChainedTooltip(contexts.TechCustomizationContext())),

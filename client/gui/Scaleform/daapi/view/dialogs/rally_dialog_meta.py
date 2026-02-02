@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/dialogs/rally_dialog_meta.py
 from constants import PREBATTLE_TYPE, QUEUE_TYPE
 from debug_utils import LOG_DEBUG
 from gui.Scaleform.daapi.view.dialogs import I18nDialogMeta, I18nInfoDialogMeta, I18nConfirmDialogMeta, I18nConfirmDialogButtons, I18nInfoDialogButtons, DIALOG_BUTTON_ID
@@ -10,11 +12,11 @@ from gui.Scaleform.framework.ScopeTemplates import VIEW_SCOPE, WINDOW_SCOPE, Sim
 _P_TYPE = PREBATTLE_TYPE
 _Q_TYPE = QUEUE_TYPE
 _C_TYPE = CTRL_ENTITY_TYPE
-_VIEW_SCOPES = {(_C_TYPE.UNIT, _P_TYPE.UNIT): SimpleScope(CYBER_SPORT_ALIASES.UNIT_VIEW_PY, VIEW_SCOPE), 
-   (_C_TYPE.LEGACY, _P_TYPE.CLAN): SimpleScope(PREBATTLE_ALIASES.BATTLE_SESSION_ROOM_WINDOW_PY, WINDOW_SCOPE), 
-   (_C_TYPE.LEGACY, _P_TYPE.TOURNAMENT): SimpleScope(PREBATTLE_ALIASES.BATTLE_SESSION_ROOM_WINDOW_PY, WINDOW_SCOPE), 
-   (_C_TYPE.LEGACY, _P_TYPE.TRAINING): SimpleScope(PREBATTLE_ALIASES.TRAINING_ROOM_VIEW_PY, VIEW_SCOPE), 
-   (_C_TYPE.LEGACY, _P_TYPE.EPIC): SimpleScope(PREBATTLE_ALIASES.EPIC_TRAINING_ROOM_VIEW_PY, VIEW_SCOPE)}
+_VIEW_SCOPES = {(_C_TYPE.UNIT, _P_TYPE.UNIT): SimpleScope(CYBER_SPORT_ALIASES.UNIT_VIEW_PY, VIEW_SCOPE),
+ (_C_TYPE.LEGACY, _P_TYPE.CLAN): SimpleScope(PREBATTLE_ALIASES.BATTLE_SESSION_ROOM_WINDOW_PY, WINDOW_SCOPE),
+ (_C_TYPE.LEGACY, _P_TYPE.TOURNAMENT): SimpleScope(PREBATTLE_ALIASES.BATTLE_SESSION_ROOM_WINDOW_PY, WINDOW_SCOPE),
+ (_C_TYPE.LEGACY, _P_TYPE.TRAINING): SimpleScope(PREBATTLE_ALIASES.TRAINING_ROOM_VIEW_PY, VIEW_SCOPE),
+ (_C_TYPE.LEGACY, _P_TYPE.EPIC): SimpleScope(PREBATTLE_ALIASES.EPIC_TRAINING_ROOM_VIEW_PY, VIEW_SCOPE)}
 
 class _RallyInfoDialogMeta(I18nInfoDialogMeta):
 
@@ -79,17 +81,17 @@ class RallyScopeConfirmDialogMeta(_RallyScopeDialogMeta):
         super(RallyScopeConfirmDialogMeta, self).__init__(ctrlType, entityType, _RallyConfirmDialogMeta(ctrlType, entityType, prefix))
 
 
-_ENTITY_TO_ANOTHER_PREFIX = {(_C_TYPE.PREQUEUE, _Q_TYPE.RANDOMS): ('', 'goToAnother'), 
-   (_C_TYPE.PREQUEUE, _Q_TYPE.UNKNOWN): ('', 'goToAnother'), 
-   (_C_TYPE.LEGACY, _P_TYPE.TRAINING): ('goToIntro', 'goToAnother'), 
-   (_C_TYPE.LEGACY, _P_TYPE.CLAN): ('', 'goToAnother'), 
-   (_C_TYPE.LEGACY, _P_TYPE.TOURNAMENT): ('', 'goToAnother'), 
-   (_C_TYPE.UNIT, _P_TYPE.UNIT): ('goToIntro', 'goToAnother'), 
-   (_C_TYPE.UNIT, _P_TYPE.SQUAD): ('goToSquad', 'goToAnother'), 
-   (_C_TYPE.UNIT, _P_TYPE.EVENT): ('goToSquad', 'goToAnother'), 
-   (_C_TYPE.UNIT, _P_TYPE.MAPBOX): ('goToSquad', 'goToAnother'), 
-   (_C_TYPE.UNIT, _P_TYPE.BATTLE_ROYALE): ('goToSquad', 'goToAnotherSubMode'), 
-   (_C_TYPE.PREQUEUE, _Q_TYPE.EPIC): ('', 'goToAnother')}
+_ENTITY_TO_ANOTHER_PREFIX = {(_C_TYPE.PREQUEUE, _Q_TYPE.RANDOMS): ('', 'goToAnother'),
+ (_C_TYPE.PREQUEUE, _Q_TYPE.UNKNOWN): ('', 'goToAnother'),
+ (_C_TYPE.LEGACY, _P_TYPE.TRAINING): ('goToIntro', 'goToAnother'),
+ (_C_TYPE.LEGACY, _P_TYPE.CLAN): ('', 'goToAnother'),
+ (_C_TYPE.LEGACY, _P_TYPE.TOURNAMENT): ('', 'goToAnother'),
+ (_C_TYPE.UNIT, _P_TYPE.UNIT): ('goToIntro', 'goToAnother'),
+ (_C_TYPE.UNIT, _P_TYPE.SQUAD): ('goToSquad', 'goToAnother'),
+ (_C_TYPE.UNIT, _P_TYPE.EVENT): ('goToSquad', 'goToAnother'),
+ (_C_TYPE.UNIT, _P_TYPE.MAPBOX): ('goToSquad', 'goToAnother'),
+ (_C_TYPE.UNIT, _P_TYPE.BATTLE_ROYALE): ('goToSquad', 'goToAnotherSubMode'),
+ (_C_TYPE.PREQUEUE, _Q_TYPE.EPIC): ('', 'goToAnother')}
 _DEFAULT_CONFIRM = 'leave'
 
 def _createLeaveRallyMeta(unlockCtx, leftCtrlType, leftEntityType, isSwitching=False):
@@ -105,15 +107,12 @@ def _createLeaveRallyMeta(unlockCtx, leftCtrlType, leftEntityType, isSwitching=F
     return RallyScopeConfirmDialogMeta(leftCtrlType, leftEntityType, prefix)
 
 
-_INTRO_TO_ANOTHER_PREFIX = {(_C_TYPE.UNIT, _P_TYPE.SQUAD): 'goToSquad', 
-   (_C_TYPE.UNIT, _P_TYPE.EVENT): 'goToSquad'}
+_INTRO_TO_ANOTHER_PREFIX = {(_C_TYPE.UNIT, _P_TYPE.SQUAD): 'goToSquad',
+ (_C_TYPE.UNIT, _P_TYPE.EVENT): 'goToSquad'}
 
 def _createLeaveIntroMeta(unlockCtx, leftCtrlType, leftEntityType, isSwitching=False):
     key = (unlockCtx.getCtrlType(), unlockCtx.getEntityType())
-    if key in _INTRO_TO_ANOTHER_PREFIX:
-        return RallyScopeConfirmDialogMeta(leftCtrlType, leftEntityType, _INTRO_TO_ANOTHER_PREFIX[key])
-    else:
-        return
+    return RallyScopeConfirmDialogMeta(leftCtrlType, leftEntityType, _INTRO_TO_ANOTHER_PREFIX[key]) if key in _INTRO_TO_ANOTHER_PREFIX else None
 
 
 def createPrbIntroLeaveMeta(unlockCtx, leftPrbType, isSwitching=False):

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/xmpp/spa_requesters.py
 from adisp import adisp_async
 from messenger.m_constants import CLIENT_ERROR_ID
 from messenger.proto.entities import SharedUserEntity
@@ -21,7 +23,7 @@ class NicknameResolver(ClientEventsHandler):
 
     @storage_getter('users')
     def usersStorage(self):
-        return
+        return None
 
     def clear(self):
         self.__cached.clear()
@@ -61,8 +63,7 @@ class NicknameResolver(ClientEventsHandler):
             user = getter(dbID)
             if user and user.hasValidName():
                 result[dbID] = user.getName()
-            else:
-                required.append(dbID)
+            required.append(dbID)
 
         if not required:
             self.__doCallback(result=result)

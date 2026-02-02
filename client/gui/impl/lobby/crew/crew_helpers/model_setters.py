@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/crew_helpers/model_setters.py
 import math
 from collections import defaultdict
 from itertools import chain
@@ -38,7 +40,7 @@ def setTankmanModel(tm, tman, tmanNativeVeh, tmanVeh=None):
         tm.setTankmanKind(TankmanKind.TANKMAN)
         tm.setHasPostProgression(tdescr.isMaxSkillXp())
         tm.setIsInSkin(tman.isInSkin)
-        tm.setLocation(TankmanLocation.DISMISSED if tman.isDismissed else TankmanLocation.INTANK if tman.isInTank else TankmanLocation.INBARRACKS)
+        tm.setLocation(TankmanLocation.DISMISSED if tman.isDismissed else (TankmanLocation.INTANK if tman.isInTank else TankmanLocation.INBARRACKS))
         tm.setIsMainActionDisabled(tman.isLockedByVehicle())
         newSkillsCount, lastNewSkillLvl = getTmanNewSkillCount(tman)
         lastSkillLvl = CrewConstants.DONT_SHOW_LEVEL
@@ -80,19 +82,18 @@ def setTmanSkillsModel(sm, tman, useOnlyFull=False, possibleSkillsLevels=None, f
             setTmanBonusSkillsModel(sm.getBonusSkills(), tman)
         if possibleSkillsLevels is None:
             return
-    _, possCnt, _, possLvl = possibleSkillsLevels
-    if possCnt >= 0:
-        possibleTotalMajorSkillProgress = tman.freeSkillsCount * MAX_SKILL_LEVEL + (possCnt - 1) * MAX_SKILL_LEVEL + possLvl.intSkillLvl
-        possibleBonusSkillsProgress = possibleTotalMajorSkillProgress / NPS.BONUS_SKILL_ENABLING_FREQUENCY
-        lastBonusSkillLvl = math.ceil(possibleBonusSkillsProgress % MAX_SKILL_LEVEL)
-        possibleFullBonusSkillsCount, possibleLastBonusSkillLvl = int(possibleBonusSkillsProgress) / MAX_SKILL_LEVEL, MAX_SKILL_LEVEL if MAX_SKILL_LEVEL - lastBonusSkillLvl < 1 else int(lastBonusSkillLvl)
-        possibleBonusSkillsLvl = [
-         MAX_SKILL_LEVEL] * possibleFullBonusSkillsCount + [possibleLastBonusSkillLvl]
-        possibleBonusSkillsLvl = possibleBonusSkillsLvl[:NPS.MAX_BONUS_SKILLS_PER_ROLE]
-    else:
-        possibleBonusSkillsLvl = None
-    if fillBonusSkills:
-        setTmanBonusSkillsModel(sm.getBonusSkills(), tman, bonusSlotsLevels=possibleBonusSkillsLvl)
+        _, possCnt, _, possLvl = possibleSkillsLevels
+        if possCnt >= 0:
+            possibleTotalMajorSkillProgress = tman.freeSkillsCount * MAX_SKILL_LEVEL + (possCnt - 1) * MAX_SKILL_LEVEL + possLvl.intSkillLvl
+            possibleBonusSkillsProgress = possibleTotalMajorSkillProgress / NPS.BONUS_SKILL_ENABLING_FREQUENCY
+            lastBonusSkillLvl = math.ceil(possibleBonusSkillsProgress % MAX_SKILL_LEVEL)
+            possibleFullBonusSkillsCount, possibleLastBonusSkillLvl = int(possibleBonusSkillsProgress) / MAX_SKILL_LEVEL, MAX_SKILL_LEVEL if MAX_SKILL_LEVEL - lastBonusSkillLvl < 1 else int(lastBonusSkillLvl)
+            possibleBonusSkillsLvl = [MAX_SKILL_LEVEL] * possibleFullBonusSkillsCount + [possibleLastBonusSkillLvl]
+            possibleBonusSkillsLvl = possibleBonusSkillsLvl[:NPS.MAX_BONUS_SKILLS_PER_ROLE]
+        else:
+            possibleBonusSkillsLvl = None
+        if fillBonusSkills:
+            setTmanBonusSkillsModel(sm.getBonusSkills(), tman, bonusSlotsLevels=possibleBonusSkillsLvl)
     return
 
 
@@ -107,8 +108,7 @@ def setTmanMajorSkillsModel(listVM, tman, useOnlyFull=False, possibleSkillsLevel
             skillVM.setIsIrrelevant(False)
         if skill.isMaxLevel:
             listVM.addViewModel(skillVM)
-        else:
-            notFullEarnedSkillMdl = skillVM
+        notFullEarnedSkillMdl = skillVM
 
     for _ in xrange(tman.newFreeSkillsCount):
         listVM.addViewModel(getNewSkillCrewWidgetTmanSkillModelNPS(MAX_SKILL_LEVEL, True))
@@ -160,8 +160,7 @@ def setTmanBonusSkillsModel(listVM, tman, bonusSlotsLevels=None, selectedRole=No
             key = 'full' if lvl == MAX_SKILL_LEVEL else 'notfull'
             if skillName:
                 selected[key].append(skillVM)
-            else:
-                empty[key].append(skillVM)
+            empty[key].append(skillVM)
 
     listVM.clear()
     skillModels = list(chain(selected['full'], empty['full'], selected['notfull'], empty['notfull']))

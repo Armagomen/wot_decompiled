@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/Scaleform/daapi/view/lobby/profile/comp7_profile_technique_window.py
 from comp7.gui.Scaleform.daapi.view.lobby.profile.comp7_profile_helper import getBattleHandlers
 from comp7.gui.Scaleform.daapi.view.lobby.profile.profile_utils import COMP7_VEHICLE_STATISTICS_LAYOUT
 from comp7.gui.Scaleform.daapi.view.lobby.profile.seasons_manager import getComp7SeasonManagers
@@ -22,9 +24,7 @@ class Comp7ProfileTechniqueWindow(ProfileTechniqueWindow):
         return result
 
     def _getEmptyScreenLabel(self):
-        if self._battlesType == PROFILE_DROPDOWN_KEYS.COMP7:
-            return backport.text(R.strings.profile.section.technique.emptyScreenLabel.battleType.comp7())
-        return super(Comp7ProfileTechniqueWindow, self)._getEmptyScreenLabel()
+        return backport.text(R.strings.profile.section.technique.emptyScreenLabel.battleType.comp7()) if self._battlesType == PROFILE_DROPDOWN_KEYS.COMP7 else super(Comp7ProfileTechniqueWindow, self)._getEmptyScreenLabel()
 
     def _getDefaultTableHeader(self, isFallout=False, showMarkOfMastery=False):
         isComp7BattleType = self._battlesType == PROFILE_DROPDOWN_KEYS.COMP7
@@ -37,11 +37,11 @@ class Comp7ProfileTechniqueWindow(ProfileTechniqueWindow):
         if self._battlesType == PROFILE_DROPDOWN_KEYS.COMP7:
             battlesCount, wins, xp, prestigePoints = vehParams
             avgPrestigePoints = round(float(prestigePoints) / float(battlesCount))
-            return (
-             battlesCount, wins, xp, avgPrestigePoints)
+            return (battlesCount,
+             wins,
+             xp,
+             avgPrestigePoints)
         return super(Comp7ProfileTechniqueWindow, self)._unpackVehicleParams(vehParams)
 
     def _getLayout(self):
-        if self._battlesType == PROFILE_DROPDOWN_KEYS.COMP7:
-            return COMP7_VEHICLE_STATISTICS_LAYOUT
-        return super(Comp7ProfileTechniqueWindow, self)._getLayout()
+        return COMP7_VEHICLE_STATISTICS_LAYOUT if self._battlesType == PROFILE_DROPDOWN_KEYS.COMP7 else super(Comp7ProfileTechniqueWindow, self)._getLayout()

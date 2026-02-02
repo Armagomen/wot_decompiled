@@ -1,6 +1,10 @@
-import datetime, time
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/stronghold/unit/entity.py
+import datetime
+import time
 from functools import partial
-import BigWorld, account_helpers
+import BigWorld
+import account_helpers
 from client_request_lib.exceptions import ResponseCodes
 from constants import PREBATTLE_TYPE, QUEUE_TYPE
 from debug_utils import LOG_DEBUG, LOG_ERROR
@@ -227,10 +231,10 @@ class StrongholdEntity(UnitEntity):
             unitMgr.onUnitNotifyReceived += self.onUnitNotifyReceived
             unitMgr.onUnitErrorReceived += self.onUnitErrorReceived
         self.__strongholdSettings.init()
-        self.__strongholdUpdateEventsMapping = {'header': self.__onUpdateHeader, 
-           'timer': self.__onUpdateTimer, 
-           'state': self.__onUpdateState, 
-           'reserve': self.__onUpdateReserve}
+        self.__strongholdUpdateEventsMapping = {'header': self.__onUpdateHeader,
+         'timer': self.__onUpdateTimer,
+         'state': self.__onUpdateState,
+         'reserve': self.__onUpdateReserve}
         playerInfo = self.getPlayerInfo()
         self.__isInSlot = playerInfo.isInSlot
         if self.canShowStrongholdsBattleQueue():
@@ -488,9 +492,7 @@ class StrongholdEntity(UnitEntity):
         self.setCoolDown(settings.REQUEST_TYPE.ASSIGN, coolDown=self.SH_REQUEST_COOLDOWN.PREBATTLE_ASSIGN)
 
     def canKeepMode(self):
-        if not isStrongholdsEnabled():
-            return False
-        return super(StrongholdEntity, self).canKeepMode()
+        return False if not isStrongholdsEnabled() else super(StrongholdEntity, self).canKeepMode()
 
     def changeOpened(self, ctx, callback=None):
         self._requestsProcessor.doRequest(ctx, 'openUnit', isOpen=ctx.isOpened(), callback=callback)
@@ -499,29 +501,27 @@ class StrongholdEntity(UnitEntity):
     def canPlayerDoAction(self):
         if self.__errorCount > 0:
             return ValidationResult(False, UNIT_RESTRICTION.UNIT_MAINTENANCE)
+        elif self.isStrongholdUnitFreezed() or self.isStrongholdUnitWaitingForData():
+            isPlayerInSlot = self._isPlayerInSlot()
+            if isPlayerInSlot and self.isStrongholdUnitWaitingForData():
+                return ValidationResult(False, UNIT_RESTRICTION.UNIT_WAITINGFORDATA)
+            if isPlayerInSlot and self._hasInArenaMembers():
+                return ValidationResult(False, UNIT_RESTRICTION.IS_IN_ARENA)
+            result = self._actionsValidator.canPlayerDoAction() or ValidationResult(False, UNIT_RESTRICTION.UNDEFINED)
+            return ValidationResult(False, result.restriction, result.ctx)
         else:
-            if self.isStrongholdUnitFreezed() or self.isStrongholdUnitWaitingForData():
-                isPlayerInSlot = self._isPlayerInSlot()
-                if isPlayerInSlot and self.isStrongholdUnitWaitingForData():
-                    return ValidationResult(False, UNIT_RESTRICTION.UNIT_WAITINGFORDATA)
-                if isPlayerInSlot and self._hasInArenaMembers():
-                    return ValidationResult(False, UNIT_RESTRICTION.IS_IN_ARENA)
-                result = self._actionsValidator.canPlayerDoAction() or ValidationResult(False, UNIT_RESTRICTION.UNDEFINED)
-                return ValidationResult(False, result.restriction, result.ctx)
-            else:
-                matchingCommanderRestriction = None
-                isStrongholdSettingsValid = self.isStrongholdSettingsValid()
-                self.__isInactiveMatchingButton = self.__doClockworkLogic(returnMatchingButtonIsInactive=True)
-                if isStrongholdSettingsValid and self.__isInactiveMatchingButton and self.isCommander() and not self.getFlags().isInIdle():
-                    resultId = UNIT_RESTRICTION.UNIT_INACTIVE_PERIPHERY_UNDEF
-                    if isStrongholdSettingsValid:
-                        if self.isSortie():
-                            resultId = UNIT_RESTRICTION.UNIT_INACTIVE_PERIPHERY_SORTIE
-                        else:
-                            resultId = UNIT_RESTRICTION.UNIT_INACTIVE_PERIPHERY_BATTLE
-                    matchingCommanderRestriction = ValidationResult(False, resultId)
-                return matchingCommanderRestriction or self._actionsValidator.canPlayerDoAction() or ValidationResult(True, UNIT_RESTRICTION.UNDEFINED)
-
+            matchingCommanderRestriction = None
+            isStrongholdSettingsValid = self.isStrongholdSettingsValid()
+            self.__isInactiveMatchingButton = self.__doClockworkLogic(returnMatchingButtonIsInactive=True)
+            if isStrongholdSettingsValid and self.__isInactiveMatchingButton and self.isCommander() and not self.getFlags().isInIdle():
+                resultId = UNIT_RESTRICTION.UNIT_INACTIVE_PERIPHERY_UNDEF
+                if isStrongholdSettingsValid:
+                    if self.isSortie():
+                        resultId = UNIT_RESTRICTION.UNIT_INACTIVE_PERIPHERY_SORTIE
+                    else:
+                        resultId = UNIT_RESTRICTION.UNIT_INACTIVE_PERIPHERY_BATTLE
+                matchingCommanderRestriction = ValidationResult(False, resultId)
+            return matchingCommanderRestriction or self._actionsValidator.canPlayerDoAction() or ValidationResult(True, UNIT_RESTRICTION.UNDEFINED)
             return
 
     def isPlayerJoined(self, ctx):
@@ -552,7 +552,7 @@ class StrongholdEntity(UnitEntity):
             return {}
         else:
             players = unit.getPlayers()
-            memberIDs = set(value['accountDBID'] for value in unit.getMembers().itervalues())
+            memberIDs = set((value['accountDBID'] for value in unit.getMembers().itervalues()))
             dbIDs = set(players.keys()).difference(memberIDs)
             result = {}
             for dbID, data in players.iteritems():
@@ -586,9 +586,7 @@ class StrongholdEntity(UnitEntity):
         return self.__strongholdSettings.isSortie()
 
     def getRosterSettings(self):
-        if self.isStrongholdSettingsValid():
-            return self.__updateRosterSettings()
-        return self._rosterSettings
+        return self.__updateRosterSettings() if self.isStrongholdSettingsValid() else self._rosterSettings
 
     def animationNotAvailable(self):
         battleIdx = self.__strongholdSettings.getHeader().getBattleIdx()
@@ -668,7 +666,8 @@ class StrongholdEntity(UnitEntity):
         return [ slot_id for slot_id in self.getSlotFilters().keys() ]
 
     def getSlotFilters(self):
-        slotFilters = {item['slot_id']:{'vehicle_types': item['vehicle_types'], 'vehicle_cds': item['vehicle_cds']} for item in self.__slotVehicleFilters}
+        slotFilters = {item['slot_id']:{'vehicle_types': item['vehicle_types'],
+         'vehicle_cds': item['vehicle_cds']} for item in self.__slotVehicleFilters}
         return slotFilters
 
     def hasLockedState(self):
@@ -795,8 +794,7 @@ class StrongholdEntity(UnitEntity):
             if not pInfo.isLegionary():
                 clanMembers.append(memberDBID)
 
-        return (
-         members, clanMembers)
+        return (members, clanMembers)
 
     def _buildPermissions(self, roles, flags, isCurrentPlayer=False, isPlayerReady=False, hasLockedState=False):
         playerInfo = self.getPlayerInfo()
@@ -812,12 +810,12 @@ class StrongholdEntity(UnitEntity):
     def _getRequestHandlers(self):
         RQ_TYPE = settings.REQUEST_TYPE
         handlers = super(StrongholdEntity, self)._getRequestHandlers()
-        handlers.update({RQ_TYPE.SET_RESERVE: self.setReserve, 
-           RQ_TYPE.UNSET_RESERVE: self.unsetReserve, 
-           RQ_TYPE.SET_EQUIPMENT_COMMANDER: self.setEquipmentCommander, 
-           RQ_TYPE.SET_SLOT_VEHICLE_TYPE_FILTER: self.setVehicleTypeFilter, 
-           RQ_TYPE.SET_SLOT_VEHICLES_FILTER: self.setVehiclesFilter, 
-           RQ_TYPE.STOP_PLAYERS_MATCHING: self.stopPlayersMatching})
+        handlers.update({RQ_TYPE.SET_RESERVE: self.setReserve,
+         RQ_TYPE.UNSET_RESERVE: self.unsetReserve,
+         RQ_TYPE.SET_EQUIPMENT_COMMANDER: self.setEquipmentCommander,
+         RQ_TYPE.SET_SLOT_VEHICLE_TYPE_FILTER: self.setVehicleTypeFilter,
+         RQ_TYPE.SET_SLOT_VEHICLES_FILTER: self.setVehiclesFilter,
+         RQ_TYPE.STOP_PLAYERS_MATCHING: self.stopPlayersMatching})
         return handlers
 
     def _buildPlayerInfo(self, unitMgrID, unit, dbID, slotIdx=-1, data=None):
@@ -844,11 +842,9 @@ class StrongholdEntity(UnitEntity):
             slotsWithPlayers.append(slotInfo.index)
             if not player.isLegionary():
                 clanMembersInRoster += 1
-            else:
-                legionariesInRoster += 1
+            legionariesInRoster += 1
 
-        playersMatchingSlotsCount = len([ slotId for slotId in self.getSlotsInPlayersMatching() if slotId not in slotsWithPlayers
-                                        ])
+        playersMatchingSlotsCount = len([ slotId for slotId in self.getSlotsInPlayersMatching() if slotId not in slotsWithPlayers ])
         unitStatsDict = unitStats._asdict()
         return StrongholdUnitStats(clanMembersInRoster=clanMembersInRoster, legionariesInRoster=legionariesInRoster, playersMatchingSlotsCount=playersMatchingSlotsCount, **unitStatsDict)
 
@@ -856,8 +852,7 @@ class StrongholdEntity(UnitEntity):
         return StrongholdUnitRequestProcessor()
 
     def _getCurrentUTCTime(self):
-        return (
-         time_utils.getDateTimeInUTC(time_utils.getServerUTCTime()), datetime.datetime.utcnow())
+        return (time_utils.getDateTimeInUTC(time_utils.getServerUTCTime()), datetime.datetime.utcnow())
 
     def _convertUTCStructToLocalTimestamp(self, val):
         val = time_utils.utcToLocalDatetime(val).timetuple()
@@ -865,10 +860,7 @@ class StrongholdEntity(UnitEntity):
 
     def _getUnitRevision(self):
         extra = self.getExtra()
-        if extra is not None:
-            return extra.rev
-        else:
-            return 0
+        return extra.rev if extra is not None else 0
 
     def __updateRosterSettings(self):
         _, unit = self.getUnit(safe=True)
@@ -897,9 +889,7 @@ class StrongholdEntity(UnitEntity):
         header = self.__strongholdSettings.getHeader()
         if header.getType() != battleMode:
             return False
-        if not header.getMinLevel() <= lvl <= header.getMaxLevel():
-            return False
-        return True
+        return False if not header.getMinLevel() <= lvl <= header.getMaxLevel() else True
 
     def __checkStrongholdEvent(self):
         if not self.__isStrongholdEventEnabled():
@@ -950,11 +940,11 @@ class StrongholdEntity(UnitEntity):
 
     def __checkBattleMode(self, header, isFirstBattle):
         if isFirstBattle:
-            gettersMapping = {'type': header.getType, 'direction': header.getDirection, 
-               'max_level': header.getMaxLevel, 
-               'max_players_count': header.getMaxPlayersCount}
-            battleModeFields = (
-             ('type', 'STRONGHOLDS_MODE_CHANGED'),
+            gettersMapping = {'type': header.getType,
+             'direction': header.getDirection,
+             'max_level': header.getMaxLevel,
+             'max_players_count': header.getMaxPlayersCount}
+            battleModeFields = (('type', 'STRONGHOLDS_MODE_CHANGED'),
              ('direction', 'STRONGHOLDS_DIRECTION_CHANGED'),
              ('max_level', 'STRONGHOLDS_MODE_CHANGED'),
              ('max_players_count', 'STRONGHOLDS_MODE_CHANGED'))
@@ -1007,7 +997,7 @@ class StrongholdEntity(UnitEntity):
             if isinstance(data, dict):
                 webReqID = data.get('web_request_id')
                 if webReqID is not None:
-                    LOG_DEBUG(('Web response requestID = {}').format(webReqID))
+                    LOG_DEBUG('Web response requestID = {}'.format(webReqID))
                     self.__waitingManager.onResponseWebReqID(webReqID)
                 if 'extra_data' in data:
                     data = data['extra_data']
@@ -1121,10 +1111,10 @@ class StrongholdEntity(UnitEntity):
                         textid = FORTIFICATIONS.SORTIE_INTROVIEW_FORTBATTLES_NEXTTIMEOFBATTLETODAY
         else:
             textid = FORTIFICATIONS.ROSTERINTROWINDOW_INTROVIEW_FORTBATTLES_UNAVAILABLE
-            dtime = isInactivePeriphery or time_utils.ONE_YEAR
-            matchmakerNextTick = timer.getTimeToReady()
-            if matchmakerNextTick is not None:
-                dtime = int(matchmakerNextTick - currentTimestampUTC)
+            if not isInactivePeriphery:
+                dtime = time_utils.ONE_YEAR
+                matchmakerNextTick = timer.getTimeToReady()
+                dtime = matchmakerNextTick is not None and int(matchmakerNextTick - currentTimestampUTC)
             else:
                 matchmakerNextTick = timer.getMatchmakerNextTick()
                 if matchmakerNextTick is not None:
@@ -1169,24 +1159,22 @@ class StrongholdEntity(UnitEntity):
             self.__prevMatchmakingTimerState = textid
         if invokeListeners:
             header = self.__strongholdSettings.getHeader()
-            g_eventDispatcher.strongholdsOnTimer({'peripheryStartTimestamp': peripheryStartTimestampUTC, 
-               'matchmakerNextTick': matchmakerNextTick, 
-               'clan': header.getClan(), 
-               'enemyClan': header.getEnemyClan(), 
-               'textid': textid, 
-               'dtime': dtime, 
-               'isSortie': self.__strongholdSettings.isSortie(), 
-               'isFirstBattle': self.__strongholdSettings.isFirstBattle(), 
-               'currentBattle': header.getCurrentBattle(), 
-               'maxLevel': header.getMaxLevel(), 
-               'direction': header.getDirection(), 
-               'forceUpdateBuildings': forceUpdateBuildings})
+            g_eventDispatcher.strongholdsOnTimer({'peripheryStartTimestamp': peripheryStartTimestampUTC,
+             'matchmakerNextTick': matchmakerNextTick,
+             'clan': header.getClan(),
+             'enemyClan': header.getEnemyClan(),
+             'textid': textid,
+             'dtime': dtime,
+             'isSortie': self.__strongholdSettings.isSortie(),
+             'isFirstBattle': self.__strongholdSettings.isFirstBattle(),
+             'currentBattle': header.getCurrentBattle(),
+             'maxLevel': header.getMaxLevel(),
+             'direction': header.getDirection(),
+             'forceUpdateBuildings': forceUpdateBuildings})
         if returnMatchingButtonIsInactive:
             return inactiveMatchingButton
         else:
-            if returnMatchmakerNextTick:
-                return matchmakerNextTick
-            return
+            return matchmakerNextTick if returnMatchmakerNextTick else None
 
     def __onExternalLegionariesMatchingToggle(self, inExternalLegionariesMatching):
         if inExternalLegionariesMatching:
@@ -1218,7 +1206,7 @@ class StrongholdEntity(UnitEntity):
 
     def __isAnyPlayerEquipmentCommander(self):
         equipRoles = UNIT_ROLE.CAN_USE_EXTRA_EQUIPMENTS | UNIT_ROLE.CAN_USE_BOOST_EQUIPMENTS
-        return any(slot.player and slot.player.role & equipRoles > 0 for slot in self.getSlotsIterator(*self.getUnit()))
+        return any((slot.player and slot.player.role & equipRoles > 0 for slot in self.getSlotsIterator(*self.getUnit())))
 
     @staticmethod
     def __isEquipmentRoleChanged(left, right):

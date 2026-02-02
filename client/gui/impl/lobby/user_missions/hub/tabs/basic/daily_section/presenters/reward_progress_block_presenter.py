@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hub/tabs/basic/daily_section/presenters/reward_progress_block_presenter.py
 import typing
 from constants import OFFERS_ENABLED_KEY, DAILY_QUESTS_CONFIG
 from gui.impl.gen import R
@@ -50,9 +52,7 @@ class RewardProgressBlockPresenter(BaseBlockPresenter[RewardProgressBlockModel])
             tooltipData = self._tooltipData.get(tooltipId)
             if tooltipData:
                 return SelectableRewardTooltip(**tooltipData)
-        if contentID == R.views.lobby.winback.tooltips.MainRewardTooltip():
-            return MainRewardTooltip(self._winbackData.get('lastQuest', {}).get('bonuses', []))
-        return super(RewardProgressBlockPresenter, self).createToolTipContent(event, contentID)
+        return MainRewardTooltip(self._winbackData.get('lastQuest', {}).get('bonuses', [])) if contentID == R.views.lobby.winback.tooltips.MainRewardTooltip() else super(RewardProgressBlockPresenter, self).createToolTipContent(event, contentID)
 
     def _markQuestsAsVisited(self):
         if self.progressType == RewardProgressTypes.EPICQUEST:
@@ -65,7 +65,7 @@ class RewardProgressBlockPresenter(BaseBlockPresenter[RewardProgressBlockModel])
 
     def _onSyncCompleted(self, *_):
         self._updateWinbackData()
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             self._updateModel(tx)
             self._updateCommonData(tx)
         super(RewardProgressBlockPresenter, self)._onSyncCompleted(*_)
@@ -73,26 +73,19 @@ class RewardProgressBlockPresenter(BaseBlockPresenter[RewardProgressBlockModel])
     def _onLoading(self, *args, **kwargs):
         super(RewardProgressBlockPresenter, self)._onLoading()
         self._updateWinbackData()
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             self._updateModel(tx)
             self._updateCommonData(tx)
 
     def _getEvents(self):
         vm = self.viewModel
         eventsTuple = super(RewardProgressBlockPresenter, self)._getEvents()
-        return eventsTuple + (
-         (
-          vm.winBackProgress.onTakeReward, self._onTakeReward),
-         (
-          vm.winBackProgress.onTakeAllRewards, self._onTakeAllReward),
-         (
-          vm.epicQuestProgress.onTakeWinBackReward, self._onTakeAllReward),
-         (
-          self.lobbyContext.getServerSettings().onServerSettingsChange, self._onServerSettingsChanged),
-         (
-          self.battlePassController.onBattlePassSettingsChange, self._onUpdateBattlePassData),
-         (
-          self.winbackController.onConfigUpdated, self._onWinbackConfigUpdated))
+        return eventsTuple + ((vm.winBackProgress.onTakeReward, self._onTakeReward),
+         (vm.winBackProgress.onTakeAllRewards, self._onTakeAllReward),
+         (vm.epicQuestProgress.onTakeWinBackReward, self._onTakeAllReward),
+         (self.lobbyContext.getServerSettings().onServerSettingsChange, self._onServerSettingsChanged),
+         (self.battlePassController.onBattlePassSettingsChange, self._onUpdateBattlePassData),
+         (self.winbackController.onConfigUpdated, self._onWinbackConfigUpdated))
 
     def _updateModel(self, model):
         progressType = getRewardProgressType(self._winbackData)
@@ -200,21 +193,21 @@ class RewardProgressBlockPresenter(BaseBlockPresenter[RewardProgressBlockModel])
             dqDiff = diff[DAILY_QUESTS_CONFIG]
             epicRewardEnabled = self.viewModel.getProgressType() == RewardProgressTypes.EPICQUEST
             epicRewardEnabledChanged = 'epicRewardEnabled' in dqDiff and dqDiff['epicRewardEnabled'] != epicRewardEnabled
-            with self.viewModel.transaction() as (tx):
+            with self.viewModel.transaction() as tx:
                 if epicRewardEnabledChanged:
                     self._updateModel(tx)
         if OFFERS_ENABLED_KEY in diff:
-            with self.viewModel.transaction() as (tx):
+            with self.viewModel.transaction() as tx:
                 self._updateOffersData(tx)
 
     def _onWinbackConfigUpdated(self, *_):
         self._updateWinbackData()
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             self._updateModel(vm)
             self._updateCommonData(vm)
 
     def _onUpdateBattlePassData(self, *args, **kwargs):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             self._updateBattlePassData(vm)
 
     def _onTakeAllReward(self):

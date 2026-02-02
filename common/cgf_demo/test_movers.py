@@ -1,4 +1,7 @@
-import CGF, GenericComponents
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/cgf_demo/test_movers.py
+import CGF
+import GenericComponents
 from Math import Matrix
 from cgf_script.component_meta_class import ComponentProperty, CGFMetaTypes, registerComponent
 from cgf_script.managers_registrator import autoregister, tickGroup, onAddedQuery
@@ -10,27 +13,7 @@ def createRotationMatrix(rotation):
     return result
 
 
-clamp = --- This code section failed: ---
-
- L.  20         0  LOAD_FAST             2  'val'
-                3  LOAD_FAST             0  'minVal'
-                6  COMPARE_OP            0  <
-                9  POP_JUMP_IF_FALSE    16  'to 16'
-               12  LOAD_FAST             0  'minVal'
-               15  RETURN_END_IF_LAMBDA
-             16_0  COME_FROM             9  '9'
-               16  LOAD_FAST             2  'val'
-               19  LOAD_FAST             1  'maxVal'
-               22  COMPARE_OP            4  >
-               25  POP_JUMP_IF_FALSE    32  'to 32'
-               28  LOAD_FAST             1  'maxVal'
-               31  RETURN_END_IF_LAMBDA
-             32_0  COME_FROM            25  '25'
-               32  LOAD_FAST             2  'val'
-               35  RETURN_VALUE_LAMBDA
-               -1  LAMBDA_MARKER    
-
-Parse error at or near `None' instruction at offset -1
+clamp = lambda minVal, maxVal, val: (minVal if val < minVal else maxVal if val > maxVal else val)
 
 @registerComponent
 class TestScriptAxisRotator(object):
@@ -79,9 +62,7 @@ class TestAxisRotatorManager(CGF.ComponentManager):
         delta = self.clock.gameDelta
         for transformComp, axisrotator in self.queryRotator:
             transform = transformComp.transform
-            m = createRotationMatrix((clamp(-100, 100, axisrotator.rotationSpeedYaw * delta),
-             clamp(-100, 100, axisrotator.rotationSpeedPitch * delta),
-             clamp(-100, 100, axisrotator.rotationSpeedRoll * delta)))
+            m = createRotationMatrix((clamp(-100, 100, axisrotator.rotationSpeedYaw * delta), clamp(-100, 100, axisrotator.rotationSpeedPitch * delta), clamp(-100, 100, axisrotator.rotationSpeedRoll * delta)))
             transform.preMultiply(m)
             transformComp.transform = transform
 
@@ -101,4 +82,4 @@ class TestAxisRotatorManager(CGF.ComponentManager):
         if t > 1.0:
             t = 2 - t
         transform.position = startPos + shift * t
-        return# Decompile failed :(
+        return

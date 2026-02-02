@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/dialogs/full_screen_param_dialog_view.py
 import logging
 from frameworks.wulf import ViewSettings
 from gui.impl.gen.view_models.views.dialogs.dialog_template_param_view_model import DialogTemplateParamViewModel
@@ -28,7 +30,7 @@ class FullScreenParamDialogView(FullScreenDialogBaseView):
     def _onLoading(self, *args, **kwargs):
         self.viewModel.onAction += self._actionHandler
         self.viewModel.onClose += self._closeHandler
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setType(self.__type)
             model.setParams(self.__params)
         super(FullScreenParamDialogView, self)._onLoading(*args, **kwargs)

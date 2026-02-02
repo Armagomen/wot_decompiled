@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/missions/personal/free_sheet_popover.py
 import operator
 from gui.Scaleform.daapi.view.meta.FreeSheetPopoverMeta import FreeSheetPopoverMeta
 from gui.Scaleform.locale.PERSONAL_MISSIONS import PERSONAL_MISSIONS
@@ -49,10 +51,10 @@ class FreeSheetPopover(FreeSheetPopoverMeta):
                     _, quests = o.getChainByClassifierAttr(classifier)
                     for quest in sorted(quests.itervalues(), key=lambda q: q.getID()):
                         if quest.areTokensPawned():
-                            freeSheetsQuests.append({'taskId': str(quest.getID()), 
-                               'taskText': text_styles.standard(operationName), 
-                               'descrText': text_styles.main(quest.getUserName()), 
-                               'animDelay': self.__ANIMATION_DELAY * idx if self.__playAnimation else -1})
+                            freeSheetsQuests.append({'taskId': str(quest.getID()),
+                             'taskText': text_styles.standard(operationName),
+                             'descrText': text_styles.main(quest.getUserName()),
+                             'animDelay': self.__ANIMATION_DELAY * idx if self.__playAnimation else -1})
                             idx += 1
                             pawnedSheets += quest.getPawnCost()
 
@@ -61,13 +63,13 @@ class FreeSheetPopover(FreeSheetPopoverMeta):
             pawnedSheetsDescrText = PERSONAL_MISSIONS.FREESHEETPOPOVER_PAWNEDSHEETSINFO_DESCR_NOONE
         else:
             pawnedSheetsDescrText = PERSONAL_MISSIONS.FREESHEETPOPOVER_PAWNEDSHEETSINFO_DESCR
-        self.as_setDataS({'titleText': text_styles.highTitle(PERSONAL_MISSIONS.FREESHEETPOPOVER_TITLE), 
-           'freeSheetsInfo': {'imgSource': AwardSheetPresenter.getIcon(AwardSheetPresenter.Size.SMALL), 
-                              'titleText': text_styles.middleTitle(_ms(PERSONAL_MISSIONS.FREESHEETPOPOVER_FREESHEETSINFO_TITLE, count=freeSheets)), 
-                              'descrText': text_styles.standard(PERSONAL_MISSIONS.FREESHEETPOPOVER_FREESHEETSINFO_DESCR)}, 
-           'pawnedSheetsInfo': {'imgSource': AwardSheetPresenter.getPawnedIcon(), 
-                                'titleText': text_styles.middleTitle(_ms(PERSONAL_MISSIONS.FREESHEETPOPOVER_PAWNEDSHEETSINFO_TITLE, count=pawnedSheets)), 
-                                'descrText': text_styles.standard(pawnedSheetsDescrText)}, 
-           'hasPawnedSheets': pawnedSheets > 0})
+        self.as_setDataS({'titleText': text_styles.highTitle(PERSONAL_MISSIONS.FREESHEETPOPOVER_TITLE),
+         'freeSheetsInfo': {'imgSource': AwardSheetPresenter.getIcon(AwardSheetPresenter.Size.SMALL),
+                            'titleText': text_styles.middleTitle(_ms(PERSONAL_MISSIONS.FREESHEETPOPOVER_FREESHEETSINFO_TITLE, count=freeSheets)),
+                            'descrText': text_styles.standard(PERSONAL_MISSIONS.FREESHEETPOPOVER_FREESHEETSINFO_DESCR)},
+         'pawnedSheetsInfo': {'imgSource': AwardSheetPresenter.getPawnedIcon(),
+                              'titleText': text_styles.middleTitle(_ms(PERSONAL_MISSIONS.FREESHEETPOPOVER_PAWNEDSHEETSINFO_TITLE, count=pawnedSheets)),
+                              'descrText': text_styles.standard(pawnedSheetsDescrText)},
+         'hasPawnedSheets': pawnedSheets > 0})
         if pawnedSheets > 0:
             self.as_setListDataProviderS(freeSheetsQuests)

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/locale/READABLE_KEY_NAMES.py
 from debug_utils import LOG_WARNING
 
 class READABLE_KEY_NAMES(object):
@@ -188,8 +190,7 @@ class READABLE_KEY_NAMES(object):
     KEY_LCDKB_DOWN = '#readable_key_names:KEY_LCDKB_DOWN'
     KEY_LCDKB_MENU = '#readable_key_names:KEY_LCDKB_MENU'
     KEY_IME_CHAR = '#readable_key_names:KEY_IME_CHAR'
-    KEY_ENUM = (
-     KEY_NONE,
+    KEY_ENUM = (KEY_NONE,
      KEY_NONE_ALT,
      KEY_ESCAPE,
      KEY_1,
@@ -379,9 +380,9 @@ class READABLE_KEY_NAMES(object):
 
     @classmethod
     def key(cls, bwKey):
-        outcome = ('#readable_key_names:KEY_{}').format(bwKey)
+        outcome = '#readable_key_names:KEY_{}'.format(bwKey)
         if outcome not in cls.KEY_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome

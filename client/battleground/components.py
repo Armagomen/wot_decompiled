@@ -1,4 +1,10 @@
-import BigWorld, Math, AnimationSequence, CGF, math_utils
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/battleground/components.py
+import BigWorld
+import Math
+import AnimationSequence
+import CGF
+import math_utils
 from cgf_script.component_meta_class import ComponentProperty, CGFMetaTypes, registerComponent
 from cgf_obsolete_script.py_component import Component
 from battleground.iself_assembler import ISelfAssembler

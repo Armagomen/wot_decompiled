@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/hangar_presets/obsolete/hangar_presets_getters.py
 import typing
 from gui.hangar_presets.obsolete.hangar_gui_helpers import ifComponentInPreset
 from gui.Scaleform.daapi.view.lobby.hangar.controls_helpers import DefaultHangarControlsHelper, RandomHangarControlsHelper
@@ -60,7 +62,7 @@ class EmptyPresetsGetter(IPresetsGetter):
 
     @classmethod
     def getDefaultHangarControlsHelper(cls):
-        return
+        return None
 
     @classmethod
     def getDefaultHangarHeaderBlock(cls):
@@ -68,11 +70,11 @@ class EmptyPresetsGetter(IPresetsGetter):
 
     @classmethod
     def getDefaultHangarWidgetAlias(cls):
-        return
+        return None
 
     @classmethod
     def getDefaultPreset(cls):
-        return
+        return None
 
     def getAmmoInjectViewAlias(self):
         return self.getDefaultAmmoInjectViewAlias()

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/account_dashboard/account_dashboard_model.py
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.views.lobby.account_dashboard.bonus_xp_model import BonusXpModel
 from gui.impl.gen.view_models.views.lobby.account_dashboard.dog_tags_model import DogTagsModel
@@ -10,7 +12,7 @@ from gui.impl.gen.view_models.views.lobby.account_dashboard.reserve_stock_model 
 from gui.impl.gen.view_models.views.lobby.account_dashboard.subscriptions_entry_point_model import SubscriptionsEntryPointModel
 
 class AccountDashboardModel(ViewModel):
-    __slots__ = ('onClose', )
+    __slots__ = ('onClose',)
 
     def __init__(self, properties=11, commands=1):
         super(AccountDashboardModel, self).__init__(properties=properties, commands=commands)

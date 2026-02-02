@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/conversion_awards_view.py
 import SoundGroups
 from PlayerEvents import g_playerEvents
 from frameworks.wulf import ViewFlags, ViewSettings, WindowFlags, WindowLayer
@@ -35,7 +37,7 @@ class ConversionAwardsView(BaseCrewSubView):
     def _onLoading(self, *args, **kwargs):
         super(ConversionAwardsView, self)._onLoading(*args, **kwargs)
         locales = R.strings.crew.conversionAwards
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setBackground(R.images.gui.maps.icons.windows.background())
             tx.setTitle(locales.title())
             tx.setUnderTitle(locales.underTitle())
@@ -48,11 +50,7 @@ class ConversionAwardsView(BaseCrewSubView):
         SoundGroups.g_instance.playSound2D(SOUNDS.CONVERSION_AWARD)
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onClose, self._onClose),
-         (
-          g_playerEvents.onDisconnected, self.__onDisconnected))
+        return ((self.viewModel.onClose, self._onClose), (g_playerEvents.onDisconnected, self.__onDisconnected))
 
     def _onClose(self, *_):
         self.destroyWindow()

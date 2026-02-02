@@ -1,7 +1,10 @@
-import weakref, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/battle_entry.py
+import weakref
+import BigWorld
 from frameworks.wulf import WindowLayer
 from gui import DEPTH_OF_Battle
-from gui.shared.system_factory import collectBattleTooltipsBuilders
+from gui.shared.system_factory import collectBattleEntry, collectBattleTooltipsBuilders
 from gui.Scaleform import SCALEFORM_SWF_PATH_V3
 from gui.Scaleform.flash_wrapper import InputKeyMode
 from gui.Scaleform.framework.managers.TutorialManager import ScaleformTutorialManager
@@ -56,7 +59,7 @@ class TopWindowContainer(PopUpContainer):
 class BattleEntry(AppEntry):
 
     def __init__(self, appNS, ctrlModeFlags, arenaGuiType):
-        super(BattleEntry, self).__init__(R.entries.battle(), appNS, ctrlModeFlags, daapiBridge=DAAPIRootBridge(initCallback='registerBattleTest'))
+        super(BattleEntry, self).__init__(collectBattleEntry(arenaGuiType) or R.entries.default.battle(), appNS, ctrlModeFlags, daapiBridge=DAAPIRootBridge(initCallback='registerBattleTest'))
         self._arenaGuiType = arenaGuiType
         self.__input = None
         return
@@ -76,10 +79,7 @@ class BattleEntry(AppEntry):
         return
 
     def handleKey(self, isDown, key, mods):
-        if self.__input is not None:
-            return self.__input.handleKey(isDown, key, mods)
-        else:
-            return False
+        return self.__input.handleKey(isDown, key, mods) if self.__input is not None else False
 
     def enterGuiControlMode(self, consumerID, cursorVisible=True, enableAiming=True, stopVehicle=False):
         if self.__input is not None:
@@ -92,10 +92,7 @@ class BattleEntry(AppEntry):
         return
 
     def hasGuiControlModeConsumers(self, *consumersIDs):
-        if self.__input is not None:
-            return self.__input.hasGuiControlModeConsumers(*consumersIDs)
-        else:
-            return False
+        return self.__input.hasGuiControlModeConsumers(*consumersIDs) if self.__input is not None else False
 
     def registerGuiKeyHandler(self, handler):
         if self.__input is not None:
@@ -174,7 +171,4 @@ class BattleEntry(AppEntry):
         return BATTLE_REQUIRED_LIBRARIES + ADDITIONAL_BATTLE_REQUIRED_LIBRARIES.get(self._arenaGuiType, [])
 
     def __getCursorFromContainer(self):
-        if self._containerMgr is not None:
-            return self._containerMgr.getView(WindowLayer.CURSOR)
-        else:
-            return
+        return self._containerMgr.getView(WindowLayer.CURSOR) if self._containerMgr is not None else None

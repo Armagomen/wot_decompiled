@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: server_side_replay/scripts/client/server_side_replay/gui/impl/lobby/pages/find_replay_page.py
 import logging
 from typing import TYPE_CHECKING
 import BigWorld
@@ -38,24 +40,18 @@ class FindReplayPage(PageSubModelPresenter):
         super(FindReplayPage, self).initialize(*args, **kwargs)
 
     def _getEvents(self):
-        return super(FindReplayPage, self)._getEvents() + (
-         (
-          self.__serverReplayProvider.onDataReceived, self.__onDataReceived),
-         (
-          self.__serverReplayProvider.onDataFailed, self.__onDataFailed),
-         (
-          self.viewModel.onFind, self.__onFind),
-         (
-          self.viewModel.onWatch, self.__onWatch),
-         (
-          self.viewModel.onRefresh, self.__onRefresh))
+        return super(FindReplayPage, self)._getEvents() + ((self.__serverReplayProvider.onDataReceived, self.__onDataReceived),
+         (self.__serverReplayProvider.onDataFailed, self.__onDataFailed),
+         (self.viewModel.onFind, self.__onFind),
+         (self.viewModel.onWatch, self.__onWatch),
+         (self.viewModel.onRefresh, self.__onRefresh))
 
     def __updateState(self):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setState(State.INITIAL)
 
     def __onRefresh(self):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setState(State.INITIAL)
             self.__foundReplay = None
         return
@@ -63,7 +59,7 @@ class FindReplayPage(PageSubModelPresenter):
     @args2params(unicode)
     def __onFind(self, searchText):
         _logger.info('__onFind: %s', searchText)
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setState(State.INITIAL)
             tx.setIsLoading(True)
             self.__serverReplayProvider.findReplay(searchText)
@@ -82,7 +78,7 @@ class FindReplayPage(PageSubModelPresenter):
 
     def __onDataReceived(self, dataName, data):
         if dataName == DataNames.FIND_REPLAY:
-            with self.viewModel.transaction() as (tx):
+            with self.viewModel.transaction() as tx:
                 tx.setState(State.SUCCESS)
                 tx.setIsLoading(False)
                 self.__foundReplay = data
@@ -90,7 +86,7 @@ class FindReplayPage(PageSubModelPresenter):
 
     def __onDataFailed(self, dataName):
         if dataName == DataNames.FIND_REPLAY:
-            with self.viewModel.transaction() as (tx):
+            with self.viewModel.transaction() as tx:
                 tx.setState(State.ERROR)
                 tx.setIsLoading(False)
             return

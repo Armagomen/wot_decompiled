@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_core/scripts/client/comp7_core/gui/Scaleform/daapi/view/battle/filter_popover.py
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import COMP7_PREBATTLE_CAROUSEL_ROW_VALUE
 from comp7_core.gui.Scaleform.daapi.view.battle.common import getSavedRowCountValue, rowValueToRowCount, rowCountToRowValue
@@ -49,11 +51,10 @@ class Comp7TankCarouselFilterPopover(TankCarouselFilterPopover):
 
     def _generateMapping(self, hasRented, hasEvent, hasRoles, hasCustomization, **kwargs):
         mapping = super(Comp7TankCarouselFilterPopover, self)._generateMapping(hasRented, hasEvent, hasRoles, hasCustomization, **kwargs)
-        mapping[FILTER_POPOVER_SECTION.SPECIALS] = [
-         'rented', 'favorite']
+        mapping[FILTER_POPOVER_SECTION.SPECIALS] = ['rented', 'favorite']
         vehicleLevels = kwargs.get('vehicleLevelsFilter', list())
         if len(vehicleLevels) > 1:
-            mapping[FILTER_POPOVER_SECTION.LEVELS] = [ ('level_{}').format(lvl) for lvl in vehicleLevels ]
+            mapping[FILTER_POPOVER_SECTION.LEVELS] = [ 'level_{}'.format(lvl) for lvl in vehicleLevels ]
         else:
             mapping[FILTER_POPOVER_SECTION.LEVELS] = []
         return mapping

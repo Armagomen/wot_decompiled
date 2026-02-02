@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/crewOperations/CrewOperationsPopOver.py
 import BigWorld
 from CurrentVehicle import g_currentVehicle
 from gui import SystemMessages
@@ -22,7 +24,7 @@ OPERATION_DROP_IN_BARRACK = 'dropInBarrack'
 
 class CrewOperationsPopOver(CrewOperationsPopOverMeta):
     itemsCache = dependency.descriptor(IItemsCache)
-    __slots__ = ('_ctxData', )
+    __slots__ = ('_ctxData',)
 
     def __init__(self, ctx):
         super(CrewOperationsPopOver, self).__init__()
@@ -89,10 +91,7 @@ class CrewOperationsPopOver(CrewOperationsPopOverMeta):
 
     def __update(self):
         vehicle = g_currentVehicle.item
-        dataForUpdate = {'operationsArray': [
-                             self.__getRetrainOperationData(vehicle),
-                             self.__getReturnOperationData(vehicle),
-                             self.__getDropInBarrackOperationData(vehicle)]}
+        dataForUpdate = {'operationsArray': [self.__getRetrainOperationData(vehicle), self.__getReturnOperationData(vehicle), self.__getDropInBarrackOperationData(vehicle)]}
         self.as_updateS(dataForUpdate)
 
     def __getRetrainOperationData(self, vehicle):
@@ -101,65 +100,58 @@ class CrewOperationsPopOver(CrewOperationsPopOverMeta):
             return self.__getInitCrewOperationObject(OPERATION_RETRAIN, 'locked')
         if self.__isNoCrew(crew):
             return self.__getInitCrewOperationObject(OPERATION_RETRAIN, 'noCrew')
-        if self.__isTopCrewForCurrentVehicle(vehicle):
-            return self.__getInitCrewOperationObject(OPERATION_RETRAIN, 'alreadyRetrained')
-        return self.__getInitCrewOperationObject(OPERATION_RETRAIN)
+        return self.__getInitCrewOperationObject(OPERATION_RETRAIN, 'alreadyRetrained') if self.__isTopCrewForCurrentVehicle(vehicle) else self.__getInitCrewOperationObject(OPERATION_RETRAIN)
 
     def __getReturnOperationData(self, vehicle):
         if vehicle.isInBattle:
             return self.__getInitCrewOperationObject(OPERATION_RETURN, 'vehicleInBattle')
+        crew = vehicle.crew
+        lastCrewIDs = vehicle.lastCrew
+        if lastCrewIDs is None:
+            return self.__getInitCrewOperationObject(OPERATION_RETURN, 'noPrevious')
+        freeBerths = self.itemsCache.items.freeTankmenBerthsCount()
+        tankmenToBarracksCount = 0
+        demobilizedMembersCounter = 0
+        isCrewAlreadyInCurrentVehicle = True
+        for _, tankman in crew:
+            if tankman is not None:
+                tankmenToBarracksCount += 1
+
+        for slotIdx, lastTankmenInvID in enumerate(lastCrewIDs):
+            actualLastTankman = self.itemsCache.items.getTankman(lastTankmenInvID)
+            if actualLastTankman is None or actualLastTankman.isDismissed:
+                demobilizedMembersCounter += 1
+                continue
+            if vehicle.descriptor.type.crewRoles[slotIdx][0] != actualLastTankman.role:
+                continue
+            if actualLastTankman.isInTank:
+                lastTankmanVehicle = self.itemsCache.items.getVehicle(actualLastTankman.vehicleInvID)
+                if lastTankmanVehicle:
+                    if lastTankmanVehicle.isLocked:
+                        return self.__getInitCrewOperationObject(OPERATION_RETURN, None, CREW_OPERATIONS.RETURN_WARNING_MEMBERSINBATTLE_TOOLTIP, True)
+                    if lastTankmanVehicle.invID != vehicle.invID:
+                        isCrewAlreadyInCurrentVehicle = False
+                    else:
+                        tankmenToBarracksCount -= 1
+            isCrewAlreadyInCurrentVehicle = False
+            freeBerths += 1
+
+        if demobilizedMembersCounter > 0 and demobilizedMembersCounter == len(lastCrewIDs):
+            return self.__getInitCrewOperationObject(OPERATION_RETURN, 'allDemobilized')
+        elif isCrewAlreadyInCurrentVehicle:
+            warningId = 'lockCrew' if 'lockCrew' in vehicle.descriptor.type.tags else ''
+            return self.__getInitCrewOperationObject(OPERATION_RETURN, 'alreadyOnPlaces', warningId=warningId)
         else:
-            crew = vehicle.crew
-            lastCrewIDs = vehicle.lastCrew
-            if lastCrewIDs is None:
-                return self.__getInitCrewOperationObject(OPERATION_RETURN, 'noPrevious')
-            freeBerths = self.itemsCache.items.freeTankmenBerthsCount()
-            tankmenToBarracksCount = 0
-            demobilizedMembersCounter = 0
-            isCrewAlreadyInCurrentVehicle = True
-            for _, tankman in crew:
-                if tankman is not None:
-                    tankmenToBarracksCount += 1
-
-            for slotIdx, lastTankmenInvID in enumerate(lastCrewIDs):
-                actualLastTankman = self.itemsCache.items.getTankman(lastTankmenInvID)
-                if actualLastTankman is None or actualLastTankman.isDismissed:
-                    demobilizedMembersCounter += 1
-                    continue
-                if vehicle.descriptor.type.crewRoles[slotIdx][0] != actualLastTankman.role:
-                    continue
-                if actualLastTankman.isInTank:
-                    lastTankmanVehicle = self.itemsCache.items.getVehicle(actualLastTankman.vehicleInvID)
-                    if lastTankmanVehicle:
-                        if lastTankmanVehicle.isLocked:
-                            return self.__getInitCrewOperationObject(OPERATION_RETURN, None, CREW_OPERATIONS.RETURN_WARNING_MEMBERSINBATTLE_TOOLTIP, True)
-                        if lastTankmanVehicle.invID != vehicle.invID:
-                            isCrewAlreadyInCurrentVehicle = False
-                        else:
-                            tankmenToBarracksCount -= 1
-                else:
-                    isCrewAlreadyInCurrentVehicle = False
-                    freeBerths += 1
-
-            if demobilizedMembersCounter > 0 and demobilizedMembersCounter == len(lastCrewIDs):
-                return self.__getInitCrewOperationObject(OPERATION_RETURN, 'allDemobilized')
-            if isCrewAlreadyInCurrentVehicle:
-                warningId = 'lockCrew' if 'lockCrew' in vehicle.descriptor.type.tags else ''
-                return self.__getInitCrewOperationObject(OPERATION_RETURN, 'alreadyOnPlaces', warningId=warningId)
-            if 0 < demobilizedMembersCounter < len(lastCrewIDs):
-                return self.__getInitCrewOperationObject(OPERATION_RETURN, None, CREW_OPERATIONS.RETURN_WARNING_MEMBERDEMOBILIZED_TOOLTIP, True)
-            return self.__getInitCrewOperationObject(OPERATION_RETURN)
+            return self.__getInitCrewOperationObject(OPERATION_RETURN, None, CREW_OPERATIONS.RETURN_WARNING_MEMBERDEMOBILIZED_TOOLTIP, True) if 0 < demobilizedMembersCounter < len(lastCrewIDs) else self.__getInitCrewOperationObject(OPERATION_RETURN)
 
     def __getDropInBarrackOperationData(self, vehicle):
         crew = vehicle.crew
         if self.__isNoCrew(crew):
             return self.__getInitCrewOperationObject(OPERATION_DROP_IN_BARRACK, 'noCrew')
+        elif vehicle.isInBattle:
+            return self.__getInitCrewOperationObject(OPERATION_DROP_IN_BARRACK, None, CREW_OPERATIONS.DROPINBARRACK_WARNING_INBATTLE_TOOLTIP)
         else:
-            if vehicle.isInBattle:
-                return self.__getInitCrewOperationObject(OPERATION_DROP_IN_BARRACK, None, CREW_OPERATIONS.DROPINBARRACK_WARNING_INBATTLE_TOOLTIP)
-            if vehicle.isCrewLocked:
-                return self.__getInitCrewOperationObject(OPERATION_DROP_IN_BARRACK, None, CREW_OPERATIONS.DROPINBARRACK_WARNING_CREWISLOCKED_TOOLTIP)
-            return self.__getInitCrewOperationObject(OPERATION_DROP_IN_BARRACK)
+            return self.__getInitCrewOperationObject(OPERATION_DROP_IN_BARRACK, None, CREW_OPERATIONS.DROPINBARRACK_WARNING_CREWISLOCKED_TOOLTIP) if vehicle.isCrewLocked else self.__getInitCrewOperationObject(OPERATION_DROP_IN_BARRACK)
 
     def __isTopCrewForCurrentVehicle(self, vehicle):
         return not bool(getLowEfficiencyCrew(vehicle))
@@ -187,7 +179,8 @@ class CrewOperationsPopOver(CrewOperationsPopOverMeta):
             btnLabelText = i18n.makeString(cOpId + '/button/label')
         warningInfo = None
         if warningId != '' and warningId != 'lockCrew':
-            warningInfo = {'operationAvailable': operationAvailable, 'tooltipId': warningId}
+            warningInfo = {'operationAvailable': operationAvailable,
+             'tooltipId': warningId}
         hasToggleBlock = operationId == OPERATION_RETURN
         toggleBlockErrorText = ''
         toggleBlockToggleText = ''
@@ -196,18 +189,19 @@ class CrewOperationsPopOver(CrewOperationsPopOverMeta):
                 toggleBlockErrorText = i18n.makeString(cOpId + '/error/' + errorId)
             else:
                 toggleBlockToggleText = i18n.makeString(cOpId + '/toggle/label')
-        return {'id': operationId, 'iconPath': iconPathContext % (operationId, '.png'), 
-           'title': i18n.makeString(cOpId + '/title'), 
-           'description': i18n.makeString(cOpId + '/description'), 
-           'error': errorText, 
-           'warning': warningInfo, 
-           'btnLabel': btnLabelText, 
-           'btnNotificationEnabled': False, 
-           'hasToggleBlock': hasToggleBlock, 
-           'toggleBlockDescription': i18n.makeString(cOpId + '/toggle/description'), 
-           'toggleBlockError': toggleBlockErrorText, 
-           'toggleBlockToggleLabel': toggleBlockToggleText, 
-           'isToggleSelected': g_currentVehicle.item.isAutoReturn}
+        return {'id': operationId,
+         'iconPath': iconPathContext % (operationId, '.png'),
+         'title': i18n.makeString(cOpId + '/title'),
+         'description': i18n.makeString(cOpId + '/description'),
+         'error': errorText,
+         'warning': warningInfo,
+         'btnLabel': btnLabelText,
+         'btnNotificationEnabled': False,
+         'hasToggleBlock': hasToggleBlock,
+         'toggleBlockDescription': i18n.makeString(cOpId + '/toggle/description'),
+         'toggleBlockError': toggleBlockErrorText,
+         'toggleBlockToggleLabel': toggleBlockToggleText,
+         'isToggleSelected': g_currentVehicle.item.isAutoReturn}
 
     def __unitMgrOnUnitLeft(self, _, __):
         self._destroy()
@@ -219,10 +213,7 @@ class CrewOperationsPopOver(CrewOperationsPopOverMeta):
         for slotIdx, tmanInvID in veh.crew:
             if tmanInvID is None:
                 continue
-            doActions.append((
-             factory.UNLOAD_TANKMAN,
-             veh.invID,
-             slotIdx))
+            doActions.append((factory.UNLOAD_TANKMAN, veh.invID, slotIdx))
 
         BigWorld.player().doActions(doActions)
         return

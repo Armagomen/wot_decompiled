@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/dialogs/retrain_single_dialog.py
 import BigWorld
 from typing import Any, Optional
 import SoundGroups
@@ -32,10 +34,7 @@ from skeletons.gui.shared import IItemsCache
 _LOC = R.strings.dialogs.retrain
 
 class RetrainSingleDialog(BaseCrewDialogTemplateView):
-    __slots__ = ('_tankman', '_vehicle', '_priceListContent', '_roles', '_targetRole',
-                 '_isChangeRoleVisible', '_beforeActions', '_isRoleChangeForced',
-                 '_lastChangeRoleChecked', '_toolTipMgr', '_targetSlotIdx', '_originalTargetSlotIdx',
-                 '_nativeTankmanRoles')
+    __slots__ = ('_tankman', '_vehicle', '_priceListContent', '_roles', '_targetRole', '_isChangeRoleVisible', '_beforeActions', '_isRoleChangeForced', '_lastChangeRoleChecked', '_toolTipMgr', '_targetSlotIdx', '_originalTargetSlotIdx', '_nativeTankmanRoles')
     LAYOUT_ID = R.views.lobby.crew.dialogs.RetrainSingleDialog()
     VIEW_MODEL = RetrainSingleDialogModel
     _itemsCache = dependency.descriptor(IItemsCache)
@@ -51,8 +50,7 @@ class RetrainSingleDialog(BaseCrewDialogTemplateView):
         if targetRole is None and targetSlotIdx is not None:
             targetRole = self._vehicle.descriptor.type.crewRoles[targetSlotIdx][0]
         ro = Tankman.TANKMEN_ROLES_ORDER
-        vehicleRoles = list(dict.fromkeys([ role[0] for role in self._vehicle.descriptor.type.crewRoles if role[0] in self._nativeTankmanRoles
-                                          ]))
+        vehicleRoles = list(dict.fromkeys([ role[0] for role in self._vehicle.descriptor.type.crewRoles if role[0] in self._nativeTankmanRoles ]))
         self._roles = sorted(vehicleRoles, cmp=lambda a, b: ro[a] - ro[b])
         if self._tankman.role in self._roles:
             self._roles.remove(self._tankman.role)
@@ -60,7 +58,7 @@ class RetrainSingleDialog(BaseCrewDialogTemplateView):
             self._targetRole = targetRole or self._tankman.role
         else:
             self._lastChangeRoleChecked = self._isRoleChangeForced = True
-            self._targetRole = self._vehicle.descriptor.type.crewRoles[(targetSlotIdx or 0)][0]
+            self._targetRole = self._vehicle.descriptor.type.crewRoles[targetSlotIdx or 0][0]
         self._originalTargetSlotIdx = targetSlotIdx or self.__getSlotByVehicleRole(self._targetRole, self._vehicle)
         self._targetSlotIdx = self._originalTargetSlotIdx
         self._priceListContent = RetrainSinglePriceList(tankmanId, vehicleCD, self._targetRole)
@@ -79,27 +77,16 @@ class RetrainSingleDialog(BaseCrewDialogTemplateView):
                 self._toolTipMgr.onCreateWulfTooltip(TOOLTIPS_CONSTANTS.CREW_SKILL_UNTRAINED, args, event.mouse.positionX, event.mouse.positionY, parent=self.getParentWindow())
                 return TOOLTIPS_CONSTANTS.CREW_SKILL_UNTRAINED
             if tooltipId == TooltipConstants.SKILLS_EFFICIENCY:
-                args = (
-                 event.getArgument('tankmanInvId'), event.getArgument('skillEfficiency'))
+                args = (event.getArgument('tankmanInvId'), event.getArgument('skillEfficiency'))
                 self._toolTipMgr.onCreateWulfTooltip(TOOLTIPS_CONSTANTS.SKILLS_EFFICIENCY, args, event.mouse.positionX, event.mouse.positionY, parent=self.getParentWindow())
                 return tooltipId
         return super(RetrainSingleDialog, self).createToolTip(event)
 
     def _getCallbacks(self):
-        return (
-         (
-          'inventory.1.compDescr', self._onVehiclesInventoryUpdate),
-         (
-          'cache.mayConsumeWalletResources', self._onConsumeWalletUpdate))
+        return (('inventory.1.compDescr', self._onVehiclesInventoryUpdate), ('cache.mayConsumeWalletResources', self._onConsumeWalletUpdate))
 
     def _getEvents(self):
-        return (
-         (
-          self._priceListContent.onPriceChange, self._onPriceChange),
-         (
-          self.viewModel.onRoleCheckChanged, self._onRoleChanged),
-         (
-          self.viewModel.onRoleSelected, self._onRoleSelected))
+        return ((self._priceListContent.onPriceChange, self._onPriceChange), (self.viewModel.onRoleCheckChanged, self._onRoleChanged), (self.viewModel.onRoleSelected, self._onRoleSelected))
 
     def _onConsumeWalletUpdate(self, *_):
         submitBtn = self.getButton(DialogButtons.SUBMIT)
@@ -122,7 +109,7 @@ class RetrainSingleDialog(BaseCrewDialogTemplateView):
         self._targetRole = self._roles[idx]
         self._targetSlotIdx = self.__getSlotByVehicleRole(self._targetRole, self._vehicle)
         self._priceListContent.updateTargetRole(self._targetRole)
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             vm.roleChange.setSelectedIdx(idx)
             self._updateTankmanAfter(vm)
 
@@ -131,7 +118,7 @@ class RetrainSingleDialog(BaseCrewDialogTemplateView):
         if submitBtn is not None:
             isWGMAvailable = self._itemsCache.items.stats.mayConsumeWalletResources
             submitBtn.isDisabled = index is None or not isWGMAvailable
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             self._updateTankmanAfter(vm)
             vm.setIsPriceSelected(index is not None)
             if self._isChangeRoleVisible:
@@ -154,12 +141,10 @@ class RetrainSingleDialog(BaseCrewDialogTemplateView):
 
     def _getWarning(self):
         isIrrelevant = self.__hasIrrelevantPerk()
-        if isIrrelevant:
-            return R.strings.dialogs.retrain.warning.irrelevantPerk()
-        return R.invalid()
+        return R.strings.dialogs.retrain.warning.irrelevantPerk() if isIrrelevant else R.invalid()
 
     def _initModel(self):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             isRoleChange = self.__isRoleChanging()
             vm.setTitle(_LOC.title.single.complex() if isRoleChange else _LOC.title.single.simple())
             vm.setWarning(self._getWarning())
@@ -196,13 +181,11 @@ class RetrainSingleDialog(BaseCrewDialogTemplateView):
 
     def _getRoleChangeDisableState(self):
         role = self._tankman.role
-        if not any(roles[0] in self._nativeTankmanRoles and roles[0] != role for roles in self._vehicle.descriptor.type.crewRoles):
+        if not any((roles[0] in self._nativeTankmanRoles and roles[0] != role for roles in self._vehicle.descriptor.type.crewRoles)):
             return DisableState.CREWLOCK
         if self._isRoleChangeForced:
             return DisableState.FORCED
-        if not self._priceListContent.isRoleChangeAvailable:
-            return DisableState.FREEOPERATION
-        return DisableState.AVAILABLE
+        return DisableState.FREEOPERATION if not self._priceListContent.isRoleChangeAvailable else DisableState.AVAILABLE
 
     def _updateRoles(self, vm):
         state = self._getRoleChangeDisableState()
@@ -228,14 +211,12 @@ class RetrainSingleDialog(BaseCrewDialogTemplateView):
             return False
         doActions = self._beforeActions
         if self._targetSlotIdx != NO_SLOT and self.__isRoleChanging() and retrainKey > 0:
-            doActions.append((
-             factory.CHANGE_ROLE_TANKMAN,
+            doActions.append((factory.CHANGE_ROLE_TANKMAN,
              self._tankman.invID,
              self._targetRole,
              self._vehicle.intCD,
              self._targetSlotIdx))
-        doActions.append((
-         factory.RETRAIN_TANKMAN,
+        doActions.append((factory.RETRAIN_TANKMAN,
          self._tankman.invID,
          self._vehicle.intCD,
          retrainKey,
@@ -243,16 +224,12 @@ class RetrainSingleDialog(BaseCrewDialogTemplateView):
         tman = self._tankman
         if not (tman.isInTank and tman.role == self._targetRole and tman.vehicleInvID == self._vehicle.invID and tman.vehicleSlotIdx == self._targetSlotIdx):
             if self._targetSlotIdx != NO_SLOT and self.__isVehicleReady(self._vehicle):
-                doActions.append((
-                 factory.EQUIP_TANKMAN,
+                doActions.append((factory.EQUIP_TANKMAN,
                  self._tankman.invID,
                  self._vehicle.invID,
                  self._targetSlotIdx))
             elif self._tankman.isInTank:
-                doActions.append((
-                 factory.UNLOAD_TANKMAN,
-                 self._tankman.vehicleInvID,
-                 self._tankman.vehicleSlotIdx))
+                doActions.append((factory.UNLOAD_TANKMAN, self._tankman.vehicleInvID, self._tankman.vehicleSlotIdx))
         BigWorld.player().doActions(doActions)
         return True
 
@@ -299,7 +276,7 @@ class RetrainSingleDialog(BaseCrewDialogTemplateView):
         return countSlots
 
     def __hasIrrelevantPerk(self):
-        return any(not skill.isRelevant for skill in self._tankman.skills)
+        return any((not skill.isRelevant for skill in self._tankman.skills))
 
     def __getTankmanWithTargetRole(self):
         tmanDescr = TankmanDescr(self._tankman.strCD)

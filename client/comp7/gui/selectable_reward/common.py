@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/selectable_reward/common.py
+import logging
+import typing
 from comp7.gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS as COMP7_TOOLTIPS
 from comp7.gui.selectable_reward.constants import Features
 from gui.impl.backport import TooltipData
@@ -17,11 +20,7 @@ class Comp7SelectableRewardManager(SelectableRewardManager):
     @classmethod
     def getTabTooltipData(cls, selectableBonus):
         tokenID = selectableBonus.getValue().keys()[0]
-        if cls.isFeatureReward(tokenID):
-            return TooltipData(tooltip=None, isSpecial=True, specialAlias=COMP7_TOOLTIPS.COMP7_SELECTABLE_REWARD, specialArgs=(
-             tokenID,))
-        else:
-            return
+        return TooltipData(tooltip=None, isSpecial=True, specialAlias=COMP7_TOOLTIPS.COMP7_SELECTABLE_REWARD, specialArgs=(tokenID,)) if cls.isFeatureReward(tokenID) else None
 
     @classmethod
     def getGiftCount(cls, bonus):
@@ -40,7 +39,4 @@ class Comp7SelectableRewardManager(SelectableRewardManager):
     @classmethod
     def __getTokenGiftCount(cls, token, count):
         token = cls._offersDataProvider.getOfferByToken(token)
-        if token is not None:
-            return token.giftTokenCount * count
-        else:
-            return count
+        return token.giftTokenCount * count if token is not None else count

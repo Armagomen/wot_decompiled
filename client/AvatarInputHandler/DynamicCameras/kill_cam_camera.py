@@ -1,10 +1,16 @@
-import logging, math
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/AvatarInputHandler/DynamicCameras/kill_cam_camera.py
+import logging
+import math
 from collections import namedtuple
 from enum import Enum
 from typing import Callable
 from AvatarInputHandler.DynamicCameras.arcade_camera_helper import MinMax
 from constants import IS_DEVELOPMENT
-import BattleReplay, BigWorld, Math, math_utils
+import BattleReplay
+import BigWorld
+import Math
+import math_utils
 from AvatarInputHandler.DynamicCameras.ArcadeCamera import ArcadeCamera
 from Math import MatrixAnimation, Vector2, Vector3
 from gui.shared.events import DeathCamEvent
@@ -12,8 +18,15 @@ from helpers import dependency
 from helpers.CallbackDelayer import CallbackPauseManager
 from skeletons.gui.battle_session import IBattleSessionProvider
 _logger = logging.getLogger(__name__)
-PausedMomentInfo = namedtuple('PausedMomentInfo', ['cameraMatrix', 'keyframes', 'elapsedTime', 'keyFramesTime',
- 'yaw', 'pitch', 'distance', 'heightAboveBase', 'focusRadius'])
+PausedMomentInfo = namedtuple('PausedMomentInfo', ['cameraMatrix',
+ 'keyframes',
+ 'elapsedTime',
+ 'keyFramesTime',
+ 'yaw',
+ 'pitch',
+ 'distance',
+ 'heightAboveBase',
+ 'focusRadius'])
 _MIN_TIME_TO_PLAYER = 2.0
 _MAX_TIME_TO_PLAYER = 4.0
 _MIN_DISTANCE_TO_PLAYER = 50
@@ -305,18 +318,20 @@ class KillCamera(ArcadeCamera):
         marker2Duration -= _MARKER_FADEOUT_DELAY
         marker3Duration -= _MARKER_FADEOUT_DELAY
         totalSceneDuration = phase1Duration + phase2Duration + phase3Duration
-        return (
-         marker1Duration, marker2Duration, marker3Duration, totalSceneDuration)
+        return (marker1Duration,
+         marker2Duration,
+         marker3Duration,
+         totalSceneDuration)
 
     def isCameraRotationInverted(self, forInitialSpin=False):
         if self.__isRicochet and forInitialSpin and len(self.__trajectoryPoints) > 2:
             firstLeg = self.__trajectoryPoints[1] - self.__trajectoryPoints[0]
-            secondLeg = self.__trajectoryPoints[(-1)] - self.__trajectoryPoints[(-2)]
+            secondLeg = self.__trajectoryPoints[-1] - self.__trajectoryPoints[-2]
             firstLeg.normalise()
             secondLeg.normalise()
             return (firstLeg * secondLeg).y > 0
-        lastPoint = self.__trajectoryPoints[(-1)]
-        secondLastPoint = Vector3(self.__trajectoryPoints[(-2)])
+        lastPoint = self.__trajectoryPoints[-1]
+        secondLastPoint = Vector3(self.__trajectoryPoints[-2])
         hitVectorInverted = secondLastPoint - lastPoint
         hitVector2D = Vector2(hitVectorInverted.x, hitVectorInverted.z)
         hitVector2D.normalise()
@@ -333,9 +348,7 @@ class KillCamera(ArcadeCamera):
         hitVector90DegreeRotated2D = Vector2(triNormNorm.z, -triNormNorm.x)
         hitVector90DegreeRotated2D.normalise()
         result = hitVector2D.dot(hitVector90DegreeRotated2D) > 0
-        if self.__isRicochet:
-            return not result
-        return result
+        return not result if self.__isRicochet else result
 
     def setCameraToLookTowards(self, sourceVehicleID, targetVehicleID=None, mode=None, firstPoint=None, lastPoint=None, isInstant=True, isInverted=False, originatesFromVehicle=True):
         if not targetVehicleID and not sourceVehicleID:
@@ -360,8 +373,7 @@ class KillCamera(ArcadeCamera):
                 else:
                     yaw += _LOOK_AT_KILLER_YAW_OFFSET
                 if isInstant:
-                    self.__setCameraSettings(pivotSettings=self.__configPivotSettings, cameraDistance=self.__configCamDistance, yawPitch=(
-                     yaw, pitch))
+                    self.__setCameraSettings(pivotSettings=self.__configPivotSettings, cameraDistance=self.__configCamDistance, yawPitch=(yaw, pitch))
                     return
                 offset = Vector2(_LOOK_AT_KILLER_YAW_OFFSET, _LOOK_AT_KILLER_PITCH_OFFSET)
                 self.camera.startLockOnMatrix(LOOK_AT_KILLER_DURATION, sourceVehicle.matrix, targetVehicle.matrix, offset, _LOOK_AT_KILLER_TRANSITION, None)
@@ -376,8 +388,7 @@ class KillCamera(ArcadeCamera):
             unwardsPitchLimit = 0 if targetVehicleID is None and not originatesFromVehicle else 0.5
             pitch = math_utils.clamp(-math.pi * 0.5, math.pi * unwardsPitchLimit, pitch)
             if isInstant:
-                self.__setCameraSettings(pivotSettings=self.__configPivotSettings, cameraDistance=self.__configCamDistance, yawPitch=(
-                 yaw, pitch))
+                self.__setCameraSettings(pivotSettings=self.__configPivotSettings, cameraDistance=self.__configCamDistance, yawPitch=(yaw, pitch))
                 return
             self.camera.startYawAndPitch(LOOK_AT_KILLER_DURATION + _LOOK_AT_KILLER_TRANSITION, yaw, pitch, None)
             return
@@ -414,7 +425,7 @@ class KillCamera(ArcadeCamera):
         if self.__isSPG:
             self.__isCamAngleInverted = not self.__isCamAngleInverted
         firstPoint = self.__trajectoryPoints[0]
-        lastPoint = self.__trajectoryPoints[(-1)]
+        lastPoint = self.__trajectoryPoints[-1]
         projHitPoint = self.__projectileData['impactPoint']
         if projHitPoint:
             center = projHitPoint
@@ -433,8 +444,7 @@ class KillCamera(ArcadeCamera):
         initCamOffset = convertDegreeToRad(self.__unspottedInitAngle)
         newYaw = dirVec.yaw - initCamOffset if self.__isCamAngleInverted else dirVec.yaw + initCamOffset
         self.__setKillCamDistance(self.__unspottedRadius, self.__unspottedHERadiusOffset)
-        self.__setCameraSettings(pivotSettings=self.__configPivotSettings, yawPitch=(
-         newYaw, dirVec.pitch - self.__unspottedPitchOffset))
+        self.__setCameraSettings(pivotSettings=self.__configPivotSettings, yawPitch=(newYaw, dirVec.pitch - self.__unspottedPitchOffset))
         self.__delayMgr.delayCallback(_PHASE_TRANSITION_DELAY, self.__startPhaseOneUnspotted)
 
     @staticmethod
@@ -474,7 +484,7 @@ class KillCamera(ArcadeCamera):
             return position
         else:
             skipFlags = 2 | 4 | 1
-            previousTrajectoryPoint = Vector3(self.__trajectoryPoints[(-2)])
+            previousTrajectoryPoint = Vector3(self.__trajectoryPoints[-2])
             collision = BigWorld.wg_collideSegment(spaceID, previousTrajectoryPoint, position, skipFlags)
             if collision is None:
                 return position
@@ -496,9 +506,7 @@ class KillCamera(ArcadeCamera):
         return position
 
     def __shouldHideBushes(self, state):
-        if state == DeathCamEvent.EventType.MOVING_TO_PLAYER:
-            return _HIDE_BUSHES_DURING_TRAJECTORY
-        return True
+        return _HIDE_BUSHES_DURING_TRAJECTORY if state == DeathCamEvent.EventType.MOVING_TO_PLAYER else True
 
     def __setCurrentState(self, state):
         self.__currentState = state
@@ -513,12 +521,9 @@ class KillCamera(ArcadeCamera):
         BigWorld.wg_enableTreeHiding(isHidden)
 
     def __setCursorCollision(self):
-        collisionPhases = [
-         DeathCamEvent.EventType.LAST_ROTATION]
+        collisionPhases = [DeathCamEvent.EventType.LAST_ROTATION]
         if self.hasProjectilePierced or self.hasNonPiercedDamage:
-            collisionPhases += [DeathCamEvent.EventType.ROTATING_KILLER,
-             DeathCamEvent.EventType.UNSPOTTED_PHASE_ONE,
-             DeathCamEvent.EventType.UNSPOTTED_PHASE_TWO]
+            collisionPhases += [DeathCamEvent.EventType.ROTATING_KILLER, DeathCamEvent.EventType.UNSPOTTED_PHASE_ONE, DeathCamEvent.EventType.UNSPOTTED_PHASE_TWO]
         isCollisionPhase = self.__currentState in collisionPhases
         if isCollisionPhase and not self.__isPaused:
             spaceID = BigWorld.player().spaceID
@@ -536,7 +541,7 @@ class KillCamera(ArcadeCamera):
 
     def __collisionLoop(self, spaceID):
         skipFlags = 2 | 4 | 1
-        pointToCheck = self.__trajectoryPoints[0] if self.__currentState == DeathCamEvent.EventType.ROTATING_KILLER else self.__trajectoryPoints[(-1)]
+        pointToCheck = self.__trajectoryPoints[0] if self.__currentState == DeathCamEvent.EventType.ROTATING_KILLER else self.__trajectoryPoints[-1]
         collision = BigWorld.wg_collideSegment(spaceID, pointToCheck, BigWorld.camera().position, skipFlags)
         if collision is not None:
             if self.__currentState == DeathCamEvent.EventType.LAST_ROTATION:
@@ -638,17 +643,11 @@ class KillCamera(ArcadeCamera):
             self.__pausedInfo = PausedMomentInfo(beginningMatrix, (), 0.0, 0.0, self.aimingSystem.yaw, self.aimingSystem.pitch, self.aimingSystem.distanceFromFocus, heightAboveBase, focusRadius)
             destVehicleMatrix = Math.Matrix(BigWorld.entity(self.__playerHuskID).matrix)
             if self.__isSPG:
-                destVehicleMatrix.setRotateYPR((destVehicleMatrix.yaw + self.__spottedKillerExplosionYawOffset,
-                 destVehicleMatrix.pitch + self.__spottedKillerExplosionPitchOffset,
-                 destVehicleMatrix.roll))
+                destVehicleMatrix.setRotateYPR((destVehicleMatrix.yaw + self.__spottedKillerExplosionYawOffset, destVehicleMatrix.pitch + self.__spottedKillerExplosionPitchOffset, destVehicleMatrix.roll))
             if self.__trajectoryPoints:
                 self.__prepareMatrixWithTrajectoryPoints()
             else:
-                self.__matrixAnimator.keyframes = (
-                 (
-                  0.0, beginningMatrix),
-                 (
-                  self.__configMovementDuration, destVehicleMatrix))
+                self.__matrixAnimator.keyframes = ((0.0, beginningMatrix), (self.__configMovementDuration, destVehicleMatrix))
             self.__matrixAnimator.time = 0.0
             self.vehicleMProv = self.__matrixAnimator
             self.__setKillCamDistance(self.__spottedPlayerRadius, self.__spottedPlayerHERadiusOffset, self.__configMovementDuration)
@@ -677,8 +676,8 @@ class KillCamera(ArcadeCamera):
             trajectory[-1] = self.__projectileData['impactPoint']
         if self.isNonPenetratingExplosion:
             cameraLength = self.__getCameraLength()
-            center = self.__getPointBeforeCollision(trajectory[(-1)], cameraLength)
-            dirVec = self.__trajectoryPoints[0] - self.__trajectoryPoints[(-1)]
+            center = self.__getPointBeforeCollision(trajectory[-1], cameraLength)
+            dirVec = self.__trajectoryPoints[0] - self.__trajectoryPoints[-1]
             dirVec.normalise()
             trajectory[-1] = center + dirVec * 0.1
         for point in trajectory:
@@ -708,9 +707,7 @@ class KillCamera(ArcadeCamera):
         self.__isPaused = True
         self.__setCursorCollision()
         self.camera.pause()
-        self.__matrixAnimator.keyframes = (
-         (
-          0.0, self.__pausedInfo.cameraMatrix),)
+        self.__matrixAnimator.keyframes = ((0.0, self.__pausedInfo.cameraMatrix),)
         self.__enableTreeHiding(True)
 
     def __resumeMove(self):

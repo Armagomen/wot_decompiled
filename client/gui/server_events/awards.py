@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/server_events/awards.py
 from collections import namedtuple
 import constants
 from gui import makeHtmlString
@@ -19,8 +21,7 @@ from helpers.i18n import makeString as _ms
 from items.components.shared_components import i18n
 from shared_utils import findFirst
 from skeletons.gui.server_events import IEventsCache
-AwardsRibbonInfo = namedtuple('AwardsRibbonInfo', [
- 'awardForCompleteText',
+AwardsRibbonInfo = namedtuple('AwardsRibbonInfo', ['awardForCompleteText',
  'isAwardForCompleteVisible',
  'awardReceivedText',
  'isAwardsReceivedVisible',
@@ -36,31 +37,31 @@ def packRibbonInfo(awards=None, awardForCompleteText='', awardReceivedText='', a
 class AwardAbstract(object):
 
     def getWindowTitle(self):
-        return ''
+        pass
 
     def getBackgroundImage(self):
-        return ''
+        pass
 
     def useBackgroundAnimation(self):
         return False
 
     def getBackgroundAnimationData(self):
-        return
+        return None
 
     def getAwardImage(self):
-        return
+        return None
 
     def getHeader(self):
-        return ''
+        pass
 
     def getDescription(self):
-        return ''
+        pass
 
     def getAdditionalText(self):
-        return ''
+        pass
 
     def getTextAreaIconPath(self):
-        return ''
+        pass
 
     def getTextAreaIconIsShow(self):
         return False
@@ -72,8 +73,7 @@ class AwardAbstract(object):
         return False
 
     def getButtonStates(self):
-        return (
-         True, False, False)
+        return (True, False, False)
 
     def getOkButtonText(self):
         return i18n.makeString(MENU.AWARDWINDOW_OKBUTTON)
@@ -82,13 +82,13 @@ class AwardAbstract(object):
         return i18n.makeString(MENU.AWARDWINDOW_CLOSEBUTTON)
 
     def getBodyButtonText(self):
-        return ''
+        pass
 
     def getBodyButtonLinkage(self):
         return AWARDWINDOW_CONSTANTS.BODY_BUTTON_LINKAGE_DEFAULT
 
     def getRibbonInfo(self):
-        return
+        return None
 
     def handleOkButton(self):
         pass
@@ -103,49 +103,49 @@ class AwardAbstract(object):
         pass
 
     def getSound(self):
-        return
+        return None
 
 
 class MissionAwardAbstract(AwardAbstract):
 
     def getRibbonImage(self):
-        return ''
+        pass
 
     def getCurrentQuestHeader(self):
-        return ''
+        pass
 
     def getCurrentQuestConditions(self):
         return []
 
     def getNextQuestHeader(self):
-        return ''
+        pass
 
     def getNextQuestConditions(self):
         return []
 
     def getNextQuestConditionsHeader(self):
-        return ''
+        pass
 
     def getAdditionalStatusText(self):
-        return ''
+        pass
 
     def getMainStatusText(self):
-        return ''
+        pass
 
     def getMainStatusIcon(self):
-        return ''
+        pass
 
     def getAvailableText(self):
-        return ''
+        pass
 
     def getAdditionalStatusIcon(self):
-        return ''
+        pass
 
     def getNextButtonText(self):
-        return ''
+        pass
 
     def getNextButtonTooltip(self):
-        return ''
+        pass
 
     def isNextAvailable(self):
         return False
@@ -179,12 +179,9 @@ class ExplosionBackAward(AwardAbstract):
         return self.__useAnimation
 
     def getBackgroundAnimationData(self):
-        if self.__useAnimation:
-            return {'image': self.getAwardImage(), 
-               'animationPath': AWARDWINDOW_CONSTANTS.EXPLOSION_BACK_ANIMATION_PATH, 
-               'animationLinkage': AWARDWINDOW_CONSTANTS.EXPLOSION_BACK_ANIMATION_LINKAGE}
-        else:
-            return
+        return {'image': self.getAwardImage(),
+         'animationPath': AWARDWINDOW_CONSTANTS.EXPLOSION_BACK_ANIMATION_PATH,
+         'animationLinkage': AWARDWINDOW_CONSTANTS.EXPLOSION_BACK_ANIMATION_LINKAGE} if self.__useAnimation else None
 
 
 class AchievementsAward(AwardAbstract):
@@ -213,16 +210,16 @@ class AchievementsAward(AwardAbstract):
             if noteInfo:
                 descr.append(noteInfo)
 
-        return text_styles.main(('\n\n').join(descr))
+        return text_styles.main('\n\n'.join(descr))
 
     def getExtraFields(self):
         result = []
         for a in self.__achieves:
-            result.append({'type': a.getRecordName()[1], 
-               'block': a.getBlock(), 
-               'rank': a.getValue(), 
-               'icon': {'big': a.getHugeIcon(), 
-                        'small': a.getSmallIcon()}})
+            result.append({'type': a.getRecordName()[1],
+             'block': a.getBlock(),
+             'rank': a.getValue(),
+             'icon': {'big': a.getHugeIcon(),
+                      'small': a.getSmallIcon()}})
 
         return {'achievements': result}
 
@@ -242,14 +239,12 @@ class FormattedAward(AwardAbstract):
             self._tooltip = tooltip
 
         def __call__(self, bonus):
-            return [
-             self._BonusFmt(self._icon, backport.getIntegralFormat(bonus.getValue()), self._tooltip, None)]
+            return [self._BonusFmt(self._icon, backport.getIntegralFormat(bonus.getValue()), self._tooltip, None)]
 
     class _SimpleNoValueFormatter(_SimpleFormatter):
 
         def __call__(self, bonus):
-            return [
-             self._BonusFmt(self._icon, '', self._tooltip, None)]
+            return [self._BonusFmt(self._icon, '', self._tooltip, None)]
 
     class _ItemsFormatter(_BonusFormatter):
 
@@ -278,34 +273,31 @@ class FormattedAward(AwardAbstract):
 
         @staticmethod
         def __makeBoosterVO(booster):
-            return {'icon': booster.icon, 
-               'showCount': False, 
-               'qualityIconSrc': booster.getQualityIcon(), 
-               'slotLinkage': BOOSTER_CONSTANTS.SLOT_UI, 
-               'showLeftTime': False, 
-               'boosterId': booster.boosterID}
+            return {'icon': booster.icon,
+             'showCount': False,
+             'qualityIconSrc': booster.getQualityIcon(),
+             'slotLinkage': BOOSTER_CONSTANTS.SLOT_UI,
+             'showLeftTime': False,
+             'boosterId': booster.boosterID}
 
     def __init__(self):
-        self._formatters = {Currency.GOLD: self._SimpleFormatter(RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_GOLD, tooltip=TOOLTIPS.AWARDITEM_GOLD), 
-           Currency.CREDITS: self._SimpleFormatter(RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_CREDITS, tooltip=TOOLTIPS.AWARDITEM_CREDITS), 
-           Currency.CRYSTAL: self._SimpleFormatter(RES_ICONS.MAPS_ICONS_LIBRARY_CRYSTALICONBIG_1, tooltip=TOOLTIPS.AWARDITEM_CRYSTAL), 
-           Currency.EVENT_COIN: self._SimpleFormatter(RES_ICONS.MAPS_ICONS_LIBRARY_EVENTCOINICONBIG_1, tooltip=TOOLTIPS.AWARDITEM_EVENTCOIN), 
-           Currency.BPCOIN: self._SimpleFormatter(RES_ICONS.MAPS_ICONS_LIBRARY_BPCOINICON_1, tooltip=TOOLTIPS.AWARDITEM_BPCOIN), 
-           Currency.EQUIP_COIN: self._SimpleFormatter(RES_ICONS.MAPS_ICONS_LIBRARY_EQUIPCOINICON_1, tooltip=TOOLTIPS.AWARDITEM_EQUIPCOIN), 
-           'freeXP': self._SimpleFormatter(RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_FREEEXP, tooltip=TOOLTIPS.AWARDITEM_FREEXP), 
-           'premium': self._SimpleNoValueFormatter(RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_PREMIUM_1, tooltip=TOOLTIPS.AWARDITEM_PREMIUM), 
-           'items': self._ItemsFormatter(), 
-           'goodies': self._BoostersFormatter()}
+        self._formatters = {Currency.GOLD: self._SimpleFormatter(RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_GOLD, tooltip=TOOLTIPS.AWARDITEM_GOLD),
+         Currency.CREDITS: self._SimpleFormatter(RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_CREDITS, tooltip=TOOLTIPS.AWARDITEM_CREDITS),
+         Currency.CRYSTAL: self._SimpleFormatter(RES_ICONS.MAPS_ICONS_LIBRARY_CRYSTALICONBIG_1, tooltip=TOOLTIPS.AWARDITEM_CRYSTAL),
+         Currency.EVENT_COIN: self._SimpleFormatter(RES_ICONS.MAPS_ICONS_LIBRARY_EVENTCOINICONBIG_1, tooltip=TOOLTIPS.AWARDITEM_EVENTCOIN),
+         Currency.BPCOIN: self._SimpleFormatter(RES_ICONS.MAPS_ICONS_LIBRARY_BPCOINICON_1, tooltip=TOOLTIPS.AWARDITEM_BPCOIN),
+         Currency.EQUIP_COIN: self._SimpleFormatter(RES_ICONS.MAPS_ICONS_LIBRARY_EQUIPCOINICON_1, tooltip=TOOLTIPS.AWARDITEM_EQUIPCOIN),
+         'freeXP': self._SimpleFormatter(RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_FREEEXP, tooltip=TOOLTIPS.AWARDITEM_FREEXP),
+         'premium': self._SimpleNoValueFormatter(RES_ICONS.MAPS_ICONS_QUESTS_BONUSES_SMALL_PREMIUM_1, tooltip=TOOLTIPS.AWARDITEM_PREMIUM),
+         'items': self._ItemsFormatter(),
+         'goodies': self._BoostersFormatter()}
 
     def clear(self):
         self._formatters.clear()
 
     def getRibbonInfo(self):
         awards, strAwards = self._getMainAwards(self._getBonuses())
-        if strAwards or awards:
-            return packRibbonInfo(awardForCompleteText=_ms(MENU.AWARDWINDOW_QUESTS_TASKCOMPLETE_AWARDFORCOMLETE), awardBonusStrText=strAwards, awards=awards)
-        else:
-            return
+        return packRibbonInfo(awardForCompleteText=_ms(MENU.AWARDWINDOW_QUESTS_TASKCOMPLETE_AWARDFORCOMLETE), awardBonusStrText=strAwards, awards=awards) if strAwards or awards else None
 
     def _getBonuses(self):
         return []
@@ -318,20 +310,18 @@ class FormattedAward(AwardAbstract):
             formatter = self._formatters.get(b.getName(), None)
             if callable(formatter):
                 for bonus in formatter(b):
-                    awards.append({'value': bonus.value, 
-                       'itemSource': bonus.icon, 
-                       'tooltip': bonus.tooltip, 
-                       'boosterVO': bonus.bonusVO})
+                    awards.append({'value': bonus.value,
+                     'itemSource': bonus.icon,
+                     'tooltip': bonus.tooltip,
+                     'boosterVO': bonus.bonusVO})
 
-            else:
-                formattedBonus = b.format()
-                if formattedBonus:
-                    strAwardsList.append(text_styles.warning(formattedBonus))
+            formattedBonus = b.format()
+            if formattedBonus:
+                strAwardsList.append(text_styles.warning(formattedBonus))
 
         if strAwardsList:
-            strAwards = (', ').join(strAwardsList)
-        return (
-         awards, strAwards)
+            strAwards = ', '.join(strAwardsList)
+        return (awards, strAwards)
 
 
 class MotiveQuestAward(FormattedAward):
@@ -397,10 +387,10 @@ class MissionAward(MissionAwardAbstract):
         return _ms('#menu:awardWindow/title/taskComplete')
 
     def getBackgroundImage(self):
-        return '../maps/icons/quests/awards/mission_award_bg.png'
+        pass
 
     def getRibbonImage(self):
-        return '../maps/icons/quests/awardRibbon.png'
+        pass
 
     def getDescription(self):
         return text_styles.promoTitle('#menu:awardWindow/mission/complete')
@@ -456,25 +446,24 @@ class OperationUnlockedAward(MissionAward):
         return _ms(PERSONAL_MISSIONS.OPERATIONUNLOCKEDWINDOW_TITLE)
 
     def getBackgroundImage(self):
-        return ('../maps/icons/quests/awards/operation_{}_award_bg.png').format(self._nextOperation.getID())
+        return '../maps/icons/quests/awards/operation_{}_award_bg.png'.format(self._nextOperation.getID())
 
     def getHeader(self):
-        return text_styles.superPromoTitle(makeHtmlString('html_templates:lobby/textStyle', 'alignText', {'align': 'center', 
-           'message': _ms(PERSONAL_MISSIONS.OPERATIONUNLOCKEDWINDOW_HEADER, title=self._nextOperation.getShortUserName())}))
+        return text_styles.superPromoTitle(makeHtmlString('html_templates:lobby/textStyle', 'alignText', {'align': 'center',
+         'message': _ms(PERSONAL_MISSIONS.OPERATIONUNLOCKEDWINDOW_HEADER, title=self._nextOperation.getShortUserName())}))
 
     def getDescription(self):
-        return ''
+        pass
 
     def getAdditionalText(self):
-        return text_styles.main(makeHtmlString('html_templates:lobby/textStyle', 'alignText', {'align': 'center', 
-           'message': _ms(PERSONAL_MISSIONS.OPERATIONUNLOCKEDWINDOW_DESCR, label=_ms(PERSONAL_MISSIONS.OPERATIONUNLOCKEDWINDOW_NEXTBUTTON))}))
+        return text_styles.main(makeHtmlString('html_templates:lobby/textStyle', 'alignText', {'align': 'center',
+         'message': _ms(PERSONAL_MISSIONS.OPERATIONUNLOCKEDWINDOW_DESCR, label=_ms(PERSONAL_MISSIONS.OPERATIONUNLOCKEDWINDOW_NEXTBUTTON))}))
 
     def getRibbonInfo(self):
         return packRibbonInfo(awardReceivedText=text_styles.highlightText(_ms(PERSONAL_MISSIONS.OPERATIONUNLOCKEDWINDOW_AWARDTEXT, title=self._nextOperation.getShortUserName())))
 
     def getButtonStates(self):
-        return (
-         False, False, True)
+        return (False, False, True)
 
     def getBodyButtonLinkage(self):
         return self.BODY_BUTTON_LINKAGE

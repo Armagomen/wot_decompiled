@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/lobby/feature/fun_random_event_banner_view.py
 from __future__ import absolute_import
 import typing
 from account_helpers.AccountSettings import AccountSettings, FUN_RANDOM_BANNER_INTRO_CLICK_TIMESTAMP
@@ -53,16 +55,16 @@ class FunRandomEventBannerView(BaseEventBanner, FunSubModesWatcher):
     @property
     def iconsPath(self):
         assetsPointer = FunAssetPacksMixin.getModeAssetsPointer()
-        return ('fun_random.gui.maps.icons.feature.asset_packs.modes.{}').format(assetsPointer)
+        return 'fun_random.gui.maps.icons.feature.asset_packs.modes.{}'.format(assetsPointer)
 
     @property
     def videosPath(self):
         assetsPointer = FunAssetPacksMixin.getModeAssetsPointer()
-        return ('fun_random.asset_packs.modes.{}').format(assetsPointer)
+        return 'fun_random.asset_packs.modes.{}'.format(assetsPointer)
 
     @property
     def borderColor(self):
-        return '#61BAFF'
+        pass
 
     @property
     def bannerState(self):

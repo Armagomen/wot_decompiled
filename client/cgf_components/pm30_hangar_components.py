@@ -1,4 +1,8 @@
-import typing, CGF, Event
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/cgf_components/pm30_hangar_components.py
+import typing
+import CGF
+import Event
 from cgf_components.hover_component import SelectionComponent
 from cgf_script.component_meta_class import CGFMetaTypes, ComponentProperty, registerComponent
 from cgf_script.managers_registrator import onAddedQuery, registerRule, Rule, registerManager, onRemovedQuery, tickGroup
@@ -84,7 +88,8 @@ class HangarOperationsManager(CGF.ComponentManager):
                     callback()
 
     def addTimer(self, timerName, duration, callback):
-        self.timers.update({timerName: {'duration': duration, 'callback': callback}})
+        self.timers.update({timerName: {'duration': duration,
+                     'callback': callback}})
 
     def onVehicleClickAction(self):
         self.onVehicleClick()
@@ -97,7 +102,7 @@ class HangarOperationsRule(Rule):
 
     @registerManager(HangarOperationsManager)
     def reg1(self):
-        return
+        return None
 
 
 def getComponentProperties(stageKey):

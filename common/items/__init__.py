@@ -1,4 +1,7 @@
-import typing, nations
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/items/__init__.py
+import typing
+import nations
 from constants import IS_CLIENT, ITEM_DEFS_PATH
 from extension_utils import ResMgr
 from items import _xml
@@ -8,10 +11,7 @@ if IS_CLIENT:
     from helpers import i18n
 _g_itemTypes = None
 UNDEFINED_ITEM_CD = 0
-ITEM_TYPE_NAMES = ('_reserved', 'vehicle', 'vehicleChassis', 'vehicleTurret', 'vehicleGun',
-                   'vehicleEngine', 'vehicleFuelTank', 'vehicleRadio', 'tankman',
-                   'optionalDevice', 'shell', 'equipment', 'customizationItem', 'crewSkin',
-                   'crewBook', 'pet')
+ITEM_TYPE_NAMES = ('_reserved', 'vehicle', 'vehicleChassis', 'vehicleTurret', 'vehicleGun', 'vehicleEngine', 'vehicleFuelTank', 'vehicleRadio', 'tankman', 'optionalDevice', 'shell', 'equipment', 'customizationItem', 'crewSkin', 'crewBook', 'pet')
 
 class ITEM_TYPES(dict):
 
@@ -25,13 +25,10 @@ class ITEM_TYPES(dict):
 
 ITEM_TYPES = ITEM_TYPES()
 ITEM_TYPE_INDICES = ITEM_TYPES
-SIMPLE_ITEM_TYPE_NAMES = ('vehicleChassis', 'vehicleTurret', 'vehicleGun', 'vehicleEngine',
-                          'vehicleFuelTank', 'vehicleRadio', 'optionalDevice', 'shell',
-                          'equipment', 'crewBook')
-SIMPLE_ITEM_TYPE_INDICES = tuple(ITEM_TYPE_INDICES[x] for x in SIMPLE_ITEM_TYPE_NAMES)
-VEHICLE_COMPONENT_TYPE_NAMES = ('vehicleChassis', 'vehicleTurret', 'vehicleGun', 'vehicleEngine',
-                                'vehicleFuelTank', 'vehicleRadio')
-VEHICLE_COMPONENT_TYPE_INDICES = tuple(ITEM_TYPE_INDICES[x] for x in VEHICLE_COMPONENT_TYPE_NAMES)
+SIMPLE_ITEM_TYPE_NAMES = ('vehicleChassis', 'vehicleTurret', 'vehicleGun', 'vehicleEngine', 'vehicleFuelTank', 'vehicleRadio', 'optionalDevice', 'shell', 'equipment', 'crewBook')
+SIMPLE_ITEM_TYPE_INDICES = tuple((ITEM_TYPE_INDICES[x] for x in SIMPLE_ITEM_TYPE_NAMES))
+VEHICLE_COMPONENT_TYPE_NAMES = ('vehicleChassis', 'vehicleTurret', 'vehicleGun', 'vehicleEngine', 'vehicleFuelTank', 'vehicleRadio')
+VEHICLE_COMPONENT_TYPE_INDICES = tuple((ITEM_TYPE_INDICES[x] for x in VEHICLE_COMPONENT_TYPE_NAMES))
 EQUIPMENT_TYPE_NAMES = ('regular', 'battleBoosters', 'battleAbilities')
 
 class EQUIPMENT_TYPES(dict):
@@ -47,14 +44,12 @@ EQUIPMENT_TYPES = EQUIPMENT_TYPES()
 
 class ITEM_OPERATION:
     UPGRADE = 'upgrade'
-    ALL = (
-     UPGRADE,)
+    ALL = (UPGRADE,)
 
 
 HEAL_GROUP_HEAL_POINT = 100
 HEAL_GROUP_HOT = 101
-PREDEFINED_HEAL_GROUPS = (
- HEAL_GROUP_HEAL_POINT, HEAL_GROUP_HOT)
+PREDEFINED_HEAL_GROUPS = (HEAL_GROUP_HEAL_POINT, HEAL_GROUP_HOT)
 
 class ItemsPrices(object):
 
@@ -101,9 +96,7 @@ class ItemsPrices(object):
         return isinstance(obj, ItemsPrices) and obj._itemsPriceInfo == self._itemsPriceInfo
 
     def get(self, key, defaultValue=None):
-        if key in self._itemsPriceInfo:
-            return self.__getitem__(key)
-        return defaultValue
+        return self.__getitem__(key) if key in self._itemsPriceInfo else defaultValue
 
     def items(self):
         return [ (compDescr, self._tuplePrice(prices)) for compDescr, prices in self._itemsPriceInfo.iteritems() ]
@@ -156,10 +149,9 @@ class ItemsPrices(object):
         for compDescr, priceInfo in myStorage.iteritems():
             if compDescr in otherStorage:
                 result[compDescr] = otherStorage[compDescr]
-            elif compDescr in itemToPriceGroup and itemToPriceGroup[compDescr] in otherStorage:
+            if compDescr in itemToPriceGroup and itemToPriceGroup[compDescr] in otherStorage:
                 result[compDescr] = otherStorage[itemToPriceGroup[compDescr]]
-            else:
-                result[compDescr] = priceInfo
+            result[compDescr] = priceInfo
 
         return ItemsPrices(result)
 
@@ -230,18 +222,14 @@ def makeIntCompactDescrByID(itemTypeName, nationID, itemID):
     itemTypeID = ITEM_TYPES[itemTypeName]
     if itemTypeID <= 15:
         return (itemID << 8) + itemTypeID + (nationID << 4)
-    if itemTypeID <= 255:
-        return (itemTypeID << 24) + (itemID << 8) + (nationID << 4)
+    return (itemTypeID << 24) + (itemID << 8) + (nationID << 4) if itemTypeID <= 255 else None
 
 
 def parseIntCompactDescr(compactDescr):
     itemTypeID = compactDescr & 15
     if itemTypeID == 0:
         itemTypeID = compactDescr >> 24 & 255
-    return (
-     itemTypeID,
-     compactDescr >> 4 & 15,
-     compactDescr >> 8 & 65535)
+    return (itemTypeID, compactDescr >> 4 & 15, compactDescr >> 8 & 65535)
 
 
 def filterIntCDsByItemType(intCDs, itemTypeID):
@@ -270,8 +258,7 @@ def _readItemTypes():
     section = ResMgr.openSection(xmlPath)
     if section is None:
         _xml.raiseWrongXml(None, xmlPath, 'can not open or read')
-    xmlCtx = (
-     None, xmlPath)
+    xmlCtx = (None, xmlPath)
     res = {}
     for index, name in enumerate(ITEM_TYPE_NAMES):
         if name.startswith('_'):
@@ -285,16 +272,17 @@ def _readItemTypes():
                 tagName = intern(tagSection.name)
                 if tags.has_key(tagName):
                     _xml.raiseWrongXml(xmlCtx, 'tags' + tagName, 'tag name is not unique')
-                tagDescr = {'name': tagName, 
-                   'index': len(tagNames)}
+                tagDescr = {'name': tagName,
+                 'index': len(tagNames)}
                 if IS_CLIENT:
                     tagDescr['userString'] = i18n.makeString(tagSection.readString('userString'))
                     tagDescr['description'] = i18n.makeString(tagSection.readString('description'))
                 tags[tagName] = tagDescr
                 tagNames.append(tagName)
 
-        itemType = {'index': index, 'tags': tags, 
-           'tagNames': tuple(tagNames)}
+        itemType = {'index': index,
+         'tags': tags,
+         'tagNames': tuple(tagNames)}
         if IS_CLIENT:
             itemType['userString'] = i18n.makeString(itemSection.readString('userString'))
             itemType['description'] = i18n.makeString(itemSection.readString('description'))
@@ -316,13 +304,12 @@ def decodeEnum(value, enum):
         except:
             itemValue = getattr(enum, item, None)
             if not isinstance(itemValue, int):
-                raise SoftException(("Invalid item '{0}'").format(item))
+                raise SoftException("Invalid item '{0}'".format(item))
             if itemValue is None or itemValue not in enum.RANGE:
-                raise SoftException(("Unsupported item '{0}'").format(item))
+                raise SoftException("Unsupported item '{0}'".format(item))
 
         if itemValue in result:
-            raise SoftException(('Duplicated item {0} with value {1}').format(item, itemValue))
+            raise SoftException('Duplicated item {0} with value {1}'.format(item, itemValue))
         result.append(itemValue)
 
-    return (
-     reduce(int.__or__, result, 0), tuple(splitted))
+    return (reduce(int.__or__, result, 0), tuple(splitted))

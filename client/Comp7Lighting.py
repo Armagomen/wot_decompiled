@@ -1,4 +1,8 @@
-import logging, AnimationSequence, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/Comp7Lighting.py
+import logging
+import AnimationSequence
+import BigWorld
 from enum import Enum
 import math_utils
 _logger = logging.getLogger(__name__)

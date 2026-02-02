@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/gui_items/crew_skin.py
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import CREW_SKINS_VIEWED
 from helpers import i18n
@@ -15,14 +17,14 @@ def localizedFullName(crewSkin):
 
 
 class GenderRestrictionsLocales(object):
-    KEYS = {TANKMAN_SEX.MALE: 'man', 
-       TANKMAN_SEX.FEMALE: 'woman'}
+    KEYS = {TANKMAN_SEX.MALE: 'man',
+     TANKMAN_SEX.FEMALE: 'woman'}
 
 
 class Rarity(object):
-    STRINGS = {CREW_SKIN_RARITY.COMMON: 'common', 
-       CREW_SKIN_RARITY.RARE: 'rare', 
-       CREW_SKIN_RARITY.EPIC: 'epic'}
+    STRINGS = {CREW_SKIN_RARITY.COMMON: 'common',
+     CREW_SKIN_RARITY.RARE: 'rare',
+     CREW_SKIN_RARITY.EPIC: 'epic'}
 
 
 class CrewSkin(FittingItem):
@@ -97,9 +99,7 @@ class CrewSkin(FittingItem):
     def getNewCount(self):
         totalCount = self.getTotalCount()
         viewedCount = AccountSettings.getSettings(CREW_SKINS_VIEWED).get(self.__id, 0)
-        if viewedCount < totalCount:
-            return totalCount - viewedCount
-        return 0
+        return totalCount - viewedCount if viewedCount < totalCount else 0
 
     def _getDescriptor(self):
         return tankmen.getItemByCompactDescr(self.intCD)

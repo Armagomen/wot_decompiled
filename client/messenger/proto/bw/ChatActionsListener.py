@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/bw/ChatActionsListener.py
 from ChatManager import chatManager
 from debug_utils import LOG_ERROR
 
@@ -24,9 +26,8 @@ class ChatActionsListener(object):
         handler = self._responseHandlers.get(actionResponse)
         if handler is None:
             return False
+        elif hasattr(self, handler):
+            return getattr(self, handler)(actionResponse, chatAction)
         else:
-            if hasattr(self, handler):
-                return getattr(self, handler)(actionResponse, chatAction)
-            LOG_ERROR('handleChatActionFailureEvent: response handler for response %s(%s) not registered' % (
-             actionResponse, actionResponse.index()))
+            LOG_ERROR('handleChatActionFailureEvent: response handler for response %s(%s) not registered' % (actionResponse, actionResponse.index()))
             return False

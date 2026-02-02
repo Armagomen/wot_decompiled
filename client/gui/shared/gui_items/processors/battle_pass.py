@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/gui_items/processors/battle_pass.py
 import logging
 from functools import partial
 import BigWorld
@@ -24,9 +26,7 @@ class _BattlePassActivateChapterValidator(SyncValidator):
         self.__chapterID = chapterID
 
     def _validate(self):
-        if self.__isValid():
-            return plugins.makeSuccess()
-        return plugins.makeError()
+        return plugins.makeSuccess() if self.__isValid() else plugins.makeError()
 
     def __isValid(self):
         return self.__chapterID in self.__battlePassController.getChapterIDs()
@@ -52,9 +52,7 @@ class BattlePassActivateChapterProcessor(Processor):
         self.__chapterID = chapterID
         self.__seasonID = seasonID
         self.__hasActiveChapter = self.__battlePassController.hasActiveChapter()
-        self.addPlugins((
-         _BattlePassActivateChapterValidator(self.__chapterID),
-         _BattlePassActivateChapterConfirmator(self.__chapterID)))
+        self.addPlugins((_BattlePassActivateChapterValidator(self.__chapterID), _BattlePassActivateChapterConfirmator(self.__chapterID)))
 
     def _request(self, callback):
         Waiting.show(self.__WAITING_TEXT)
@@ -102,18 +100,17 @@ class BuyBattlePass(Processor):
             description = backport.text(R.strings.messenger.serviceChannelMessages.battlePassHReward.buyWithoutRewards.text())
         else:
             description = backport.text(R.strings.messenger.serviceChannelMessages.battlePassReward.buyWithoutRewards.text(), chapter=text_styles.credits(chapterName))
-        return makeSuccess(msgType=SM_TYPE.BattlePassBuy, userMsg='', auxData={'header': backport.text(R.strings.messenger.serviceChannelMessages.battlePassReward.header.buyBP()), 
-           'description': description, 
-           'additionalText': self.__makePriceString()})
+        return makeSuccess(msgType=SM_TYPE.BattlePassBuy, userMsg='', auxData={'header': backport.text(R.strings.messenger.serviceChannelMessages.battlePassReward.header.buyBP()),
+         'description': description,
+         'additionalText': self.__makePriceString()})
 
     def __makePriceString(self):
         return self.__makeCurrencyString(*next(self.__battlePass.getBattlePassCost(self.__chapterID)[self.__priceID].iteritems()))
 
     @staticmethod
     def __makeCurrencyString(currency, amount):
-        if amount:
-            return g_settings.htmlTemplates.format('battlePassCurrency', {'currency': backport.text(R.strings.messenger.serviceChannelMessages.battlePassReward.buy.dyn(currency)()), 'amount': getBWFormatter(currency)(amount)})
-        return ''
+        return g_settings.htmlTemplates.format('battlePassCurrency', {'currency': backport.text(R.strings.messenger.serviceChannelMessages.battlePassReward.buy.dyn(currency)()),
+         'amount': getBWFormatter(currency)(amount)}) if amount else ''
 
     def _request(self, callback):
         _logger.debug('Make server request to buy battle pass %d for chapter %d', self.__seasonID, self.__chapterID)

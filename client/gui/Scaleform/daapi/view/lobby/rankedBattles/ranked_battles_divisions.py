@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/rankedBattles/ranked_battles_divisions.py
 from gui.Scaleform.daapi.view.lobby.rankedBattles.ranked_battles_page import IResetablePage
 from gui.Scaleform.daapi.view.meta.RankedBattlesDivisionsViewMeta import RankedBattlesDivisionsViewMeta
 from gui.Scaleform.genConsts.RANKEDBATTLES_ALIASES import RANKEDBATTLES_ALIASES
@@ -7,7 +9,7 @@ from skeletons.gui.game_control import IRankedBattlesController
 
 class RankedBattlesDivisionsView(RankedBattlesDivisionsViewMeta, IResetablePage):
     __rankedController = dependency.descriptor(IRankedBattlesController)
-    __slots__ = ('__selectedDivisionIdx', )
+    __slots__ = ('__selectedDivisionIdx',)
 
     def __init__(self):
         super(RankedBattlesDivisionsView, self).__init__()
@@ -56,15 +58,14 @@ class RankedBattlesDivisionsView(RankedBattlesDivisionsViewMeta, IResetablePage)
             if division.isCurrent():
                 currentDivisionIdx = division.getID()
 
-        return (
-         data, currentDivisionIdx)
+        return (data, currentDivisionIdx)
 
     def __setDivisionHeader(self):
         divisions, newSelectedDivisionIdx = self.__getDivisionsData()
         if self.__selectedDivisionIdx is None:
             self.__selectedDivisionIdx = newSelectedDivisionIdx
-        self.as_setDataS({'divisions': divisions, 
-           'selectedDivisionIdx': self.__selectedDivisionIdx})
+        self.as_setDataS({'divisions': divisions,
+         'selectedDivisionIdx': self.__selectedDivisionIdx})
         return
 
     def __updateSounds(self):

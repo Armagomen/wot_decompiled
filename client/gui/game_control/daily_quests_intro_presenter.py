@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/daily_quests_intro_presenter.py
 from account_helpers.AccountSettings import Winback
 from frameworks.wulf import ViewStatus
 from gui.impl.gen import R

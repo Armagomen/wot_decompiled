@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/rental_vehicle_preview.py
 import BigWorld
 from CurrentVehicle import g_currentPreviewVehicle
 from gui.Scaleform.daapi.view.lobby.vehicle_preview.vehicle_preview import VehiclePreview
@@ -21,8 +23,8 @@ class VehiclePreviewBottomPanelRental(VehiclePreviewBottomPanelWotPlusMeta):
 
     def _populate(self):
         super(VehiclePreviewBottomPanelRental, self)._populate()
-        self.as_setDataS({'rentButtonLabel': backport.text(R.strings.subscription.rentButton.label()), 
-           'isRentButtonEnable': True})
+        self.as_setDataS({'rentButtonLabel': backport.text(R.strings.subscription.rentButton.label()),
+         'isRentButtonEnable': True})
 
     def onRentClick(self):
         self.__purchaseSubRent()

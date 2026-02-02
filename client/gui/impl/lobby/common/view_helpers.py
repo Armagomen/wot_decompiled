@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/common/view_helpers.py
+import logging
+import typing
 from gui.shared.missions.packers.bonus import getDefaultBonusPacker
 if typing.TYPE_CHECKING:
     from typing import TypeVar
@@ -34,10 +37,11 @@ def packBonusModelAndTooltipData(bonuses, bonusModelsList, tooltipData=None, pac
 def _packBonusTooltip(bonusModel, bonusIndex, bonusTooltipList, bonusContentIdList, tooltipData, tooltipIndex):
     if tooltipData is None or not bonusTooltipList and not bonusContentIdList:
         return tooltipIndex
-    tooltipIdx = str(tooltipIndex)
-    bonusModel.setTooltipId(tooltipIdx)
-    if bonusTooltipList:
-        tooltipData[tooltipIdx] = bonusTooltipList[bonusIndex]
-    if bonusContentIdList:
-        bonusModel.setTooltipContentId(str(bonusContentIdList[bonusIndex]))
-    return tooltipIndex + 1
+    else:
+        tooltipIdx = str(tooltipIndex)
+        bonusModel.setTooltipId(tooltipIdx)
+        if bonusTooltipList:
+            tooltipData[tooltipIdx] = bonusTooltipList[bonusIndex]
+        if bonusContentIdList:
+            bonusModel.setTooltipContentId(str(bonusContentIdList[bonusIndex]))
+        return tooltipIndex + 1

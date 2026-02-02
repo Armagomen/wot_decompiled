@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/framework/entities/EventSystemEntity.py
 from gui.Scaleform.framework.entities.DisposableEntity import DisposableEntity
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE, EventPriority
 

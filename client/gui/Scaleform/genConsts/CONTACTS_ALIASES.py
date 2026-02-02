@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/genConsts/CONTACTS_ALIASES.py
 
 
 class CONTACTS_ALIASES(object):
@@ -26,7 +28,11 @@ class CONTACTS_ALIASES(object):
     IGNORED_GROUP_RESERVED_ID = 101
     PENDING_FRIENDS_GROUP_RESERVED_ID = 102
     CLAN_GROUP_RESERVED_ID = 103
-    CAN_MOVE_TO_FRIENDS_GROUPS_IDS = [101, 102, 103, 104, 105]
+    CAN_MOVE_TO_FRIENDS_GROUPS_IDS = [101,
+     102,
+     103,
+     104,
+     105]
     GROUP_IS_RESIZABLE = 1
     GROUP_IS_DROP_ALLOWED = 2
     GROUP_CAN_BE_MANAGED = 4

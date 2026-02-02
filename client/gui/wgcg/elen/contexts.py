@@ -1,8 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/wgcg/elen/contexts.py
 from gui.wgcg.settings import WebRequestDataType
 from gui.shared.utils.requesters import RequestCtx
 
 class EventBoardsRequestCtx(RequestCtx):
-    __slots__ = ('_needShowErrorNotification', )
+    __slots__ = ('_needShowErrorNotification',)
 
     def __init__(self):
         super(EventBoardsRequestCtx, self).__init__()
@@ -42,7 +44,7 @@ class EventBoardsGetPlayerDataCtx(EventBoardsRequestCtx):
 
 
 class EventBoardsJoinEventCtx(EventBoardsRequestCtx):
-    __slots__ = ('__eventID', )
+    __slots__ = ('__eventID',)
 
     def __init__(self, eventID, needShowErrorNotification=True):
         super(EventBoardsJoinEventCtx, self).__init__()
@@ -57,7 +59,7 @@ class EventBoardsJoinEventCtx(EventBoardsRequestCtx):
 
 
 class EventBoardsLeaveEventCtx(EventBoardsRequestCtx):
-    __slots__ = ('__eventID', )
+    __slots__ = ('__eventID',)
 
     def __init__(self, eventID, needShowErrorNotification=True):
         super(EventBoardsLeaveEventCtx, self).__init__()
@@ -72,7 +74,7 @@ class EventBoardsLeaveEventCtx(EventBoardsRequestCtx):
 
 
 class EventBoardsGetMyEventTopCtx(EventBoardsRequestCtx):
-    __slots__ = ('__eventID', )
+    __slots__ = ('__eventID',)
 
     def __init__(self, eventID, needShowErrorNotification=False):
         super(EventBoardsGetMyEventTopCtx, self).__init__()
@@ -99,8 +101,7 @@ class EventBoardsGetMyLeaderboardPositionCtx(EventBoardsRequestCtx):
         return WebRequestDataType.EVENT_BOARDS_GET_MY_LEADERBOARD_POSITION
 
     def getSingulizerKey(self):
-        return (
-         self.getRequestType(), self.__eventID, self.__leaderboardID)
+        return (self.getRequestType(), self.__eventID, self.__leaderboardID)
 
     def getEventID(self):
         return self.__eventID
@@ -123,8 +124,10 @@ class EventBoardsGetLeaderboardCtx(EventBoardsRequestCtx):
         return WebRequestDataType.EVENT_BOARDS_GET_LEADERBOARD
 
     def getSingulizerKey(self):
-        return (
-         self.getRequestType(), self.__eventID, self.__leaderboardID, self.__pageNumber)
+        return (self.getRequestType(),
+         self.__eventID,
+         self.__leaderboardID,
+         self.__pageNumber)
 
     def getEventID(self):
         return self.__eventID
@@ -144,3 +147,25 @@ class EventBoardsGetHangarFlagCtx(EventBoardsRequestCtx):
 
     def getRequestType(self):
         return WebRequestDataType.EVENT_BOARDS_GET_HANGAR_FLAG
+
+
+class EventBoardsGetPlayerProgressionCtx(EventBoardsRequestCtx):
+    __slots__ = ('__eventID', '__leaderboardID')
+
+    def __init__(self, eventID, leaderboardID, needShowErrorNotification=True):
+        super(EventBoardsGetPlayerProgressionCtx, self).__init__()
+        self.__eventID = eventID
+        self.__leaderboardID = leaderboardID
+        self._needShowErrorNotification = needShowErrorNotification
+
+    def getRequestType(self):
+        return WebRequestDataType.EVENT_BOARDS_GET_PLAYER_PROGRESSION
+
+    def getSingulizerKey(self):
+        return (self.getRequestType(), self.__eventID, self.__leaderboardID)
+
+    def getEventID(self):
+        return self.__eventID
+
+    def getLeaderboardID(self):
+        return self.__leaderboardID

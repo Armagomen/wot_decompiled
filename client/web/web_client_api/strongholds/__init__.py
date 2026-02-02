@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/web/web_client_api/strongholds/__init__.py
 import logging
 from functools import partial
 from adisp import adisp_process
@@ -86,8 +88,7 @@ class StrongholdsWebApi(object):
             success = yield DialogsInterface.showI18nConfirmDialog('changePeriphery')
             if success:
                 reloginCtrl = dependency.instance(IReloginController)
-                reloginCtrl.doRelogin(cmd.periphery_id, extraChainSteps=(
-                 actions.OnLobbyInitedAction(onInited=partial(doJoin, False)),))
+                reloginCtrl.doRelogin(cmd.periphery_id, extraChainSteps=(actions.OnLobbyInitedAction(onInited=partial(doJoin, False)),))
         else:
             doJoin(True)
 

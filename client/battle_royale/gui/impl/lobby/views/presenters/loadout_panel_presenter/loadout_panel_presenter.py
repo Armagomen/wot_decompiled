@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/lobby/views/presenters/loadout_panel_presenter/loadout_panel_presenter.py
 from gui.impl.pub.view_component import ViewComponent
 from gui.impl.pub.view_impl import TViewModel
 from gui.impl.gen import R
@@ -8,13 +10,11 @@ from gui.Scaleform.daapi.view.common.battle_royale.br_helpers import isIncorrect
 
 class LoadoutContainerPresenter(ViewComponent[TViewModel]):
     _BATTLE_ROYALE_LOADOUT = R.aliases.battle_royale.loadoutPanelContainer
-    _CHILDREN = {_BATTLE_ROYALE_LOADOUT.Loadout(): BattleRoyaleLoadoutPresenter, 
-       _BATTLE_ROYALE_LOADOUT.Commander(): CommanderPresenter}
+    _CHILDREN = {_BATTLE_ROYALE_LOADOUT.Loadout(): BattleRoyaleLoadoutPresenter,
+     _BATTLE_ROYALE_LOADOUT.Commander(): CommanderPresenter}
 
     def _getEvents(self):
-        return (
-         (
-          g_currentVehicle.onChanged, self.__onCurrentVehicleChanged),)
+        return ((g_currentVehicle.onChanged, self.__onCurrentVehicleChanged),)
 
     def _onLoading(self, *args, **kwargs):
         self.__onCurrentVehicleChanged()

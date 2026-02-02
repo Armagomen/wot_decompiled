@@ -1,6 +1,10 @@
-import itertools, logging
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_pass/battle_pass_helpers.py
+import itertools
+import logging
 from collections import namedtuple
-import nations, typing
+import nations
+import typing
 from battle_pass_common import BattlePassConsts, BattlePassTankmenSource, HOLIDAY_SEASON_OFFSET, TANKMAN_QUEST_CHAIN_ENTITLEMENT_POSTFIX, isPostProgressionChapter, FinalReward
 from constants import ARENA_BONUS_TYPE, QUEUE_TYPE
 from enum import Enum
@@ -52,8 +56,7 @@ class ChapterType(str, Enum):
     POST_PROGRESSION = 'postProgression'
 
 
-_BATTLE_PASS_PRICE_CURRENCY_PRIORITY = (
- Currency.GOLD,)
+_BATTLE_PASS_PRICE_CURRENCY_PRIORITY = (Currency.GOLD,)
 
 @dependency.replace_none_kwargs(battlePass=IBattlePassController)
 def getChapterType(chapterID, battlePass=None):
@@ -61,9 +64,7 @@ def getChapterType(chapterID, battlePass=None):
         return ChapterType.HOLIDAY
     if battlePass.isExtraChapter(chapterID):
         return ChapterType.EXTRA
-    if isPostProgressionChapter(chapterID):
-        return ChapterType.POST_PROGRESSION
-    return ChapterType.COMMON
+    return ChapterType.POST_PROGRESSION if isPostProgressionChapter(chapterID) else ChapterType.COMMON
 
 
 def isBattlePassActiveSeason():
@@ -88,9 +89,7 @@ def getFormattedTimeLeft(seconds):
 
 
 def getBattlePassUrl(urlPathName):
-    return ('').join((
-     GUI_SETTINGS.baseUrls['webBridgeRootURL'],
-     GUI_SETTINGS.battlePassUrls.get(urlPathName)))
+    return ''.join((GUI_SETTINGS.baseUrls['webBridgeRootURL'], GUI_SETTINGS.battlePassUrls.get(urlPathName)))
 
 
 def getInfoPageURL():
@@ -138,7 +137,7 @@ def chaptersWithLogoBg():
         if chaptersInfo is None:
             _logger.warning('"hasChapterLogoInBg" section is missed in battlePassVisuals->chapter settings')
             return set()
-        return {int(chapterID) for chapterID, hasLogo in chaptersInfo.iteritems() if hasLogo if hasLogo}
+        return {int(chapterID) for chapterID, hasLogo in chaptersInfo.iteritems() if hasLogo}
 
 
 @dependency.replace_none_kwargs(battlePass=IBattlePassController)
@@ -150,13 +149,13 @@ def getSupportedArenaBonusTypeFor(queueType, isInUnit):
     if queueType == QUEUE_TYPE.BATTLE_ROYALE:
         arenaBonusType = ARENA_BONUS_TYPE.BATTLE_ROYALE_SQUAD if isInUnit else ARENA_BONUS_TYPE.BATTLE_ROYALE_SOLO
     else:
-        arenaBonusTypeByQueueType = {QUEUE_TYPE.RANDOMS: ARENA_BONUS_TYPE.REGULAR, 
-           QUEUE_TYPE.RANKED: ARENA_BONUS_TYPE.RANKED, 
-           QUEUE_TYPE.MAPBOX: ARENA_BONUS_TYPE.MAPBOX, 
-           QUEUE_TYPE.EPIC: ARENA_BONUS_TYPE.EPIC_BATTLE, 
-           QUEUE_TYPE.COMP7: ARENA_BONUS_TYPE.COMP7, 
-           QUEUE_TYPE.COMP7_LIGHT: ARENA_BONUS_TYPE.COMP7_LIGHT, 
-           QUEUE_TYPE.WINBACK: ARENA_BONUS_TYPE.WINBACK}
+        arenaBonusTypeByQueueType = {QUEUE_TYPE.RANDOMS: ARENA_BONUS_TYPE.REGULAR,
+         QUEUE_TYPE.RANKED: ARENA_BONUS_TYPE.RANKED,
+         QUEUE_TYPE.MAPBOX: ARENA_BONUS_TYPE.MAPBOX,
+         QUEUE_TYPE.EPIC: ARENA_BONUS_TYPE.EPIC_BATTLE,
+         QUEUE_TYPE.COMP7: ARENA_BONUS_TYPE.COMP7,
+         QUEUE_TYPE.COMP7_LIGHT: ARENA_BONUS_TYPE.COMP7_LIGHT,
+         QUEUE_TYPE.WINBACK: ARENA_BONUS_TYPE.WINBACK}
         arenaBonusType = arenaBonusTypeByQueueType.get(queueType, ARENA_BONUS_TYPE.UNKNOWN)
     return arenaBonusType
 
@@ -182,18 +181,16 @@ def getTankmanFirstNationGroup(tankmanGroupName):
 
 
 def makeProgressionStyleMediaName(chapterID, styleLevel):
-    return ('{}_{}{}_{}{}').format(BattlePassMediaPatterns.STYLE, BattlePassMediaPatterns.CHAPTER, getMainChaptersNumbers()[chapterID], BattlePassMediaPatterns.LEVEL, styleLevel)
+    return '{}_{}{}_{}{}'.format(BattlePassMediaPatterns.STYLE, BattlePassMediaPatterns.CHAPTER, getMainChaptersNumbers()[chapterID], BattlePassMediaPatterns.LEVEL, styleLevel)
 
 
 def makeChapterMediaName(chapterID, part=''):
-    mediaName = ('{}_{}{}').format(BattlePassMediaPatterns.MEDIA, BattlePassMediaPatterns.CHAPTER, getMainChaptersNumbers().get(chapterID, 0))
-    if part:
-        return ('{}_{}{}').format(mediaName, BattlePassMediaPatterns.PART, part)
-    return mediaName
+    mediaName = '{}_{}{}'.format(BattlePassMediaPatterns.MEDIA, BattlePassMediaPatterns.CHAPTER, getMainChaptersNumbers().get(chapterID, 0))
+    return '{}_{}{}'.format(mediaName, BattlePassMediaPatterns.PART, part) if part else mediaName
 
 
 def asBPVideoName(filename):
-    return ('.').join(('battle_pass', filename))
+    return '.'.join(('battle_pass', filename))
 
 
 def showBPFullscreenVideo(videoName, audioName, onVideoClosed=None):
@@ -216,9 +213,7 @@ def getRewardSourceByType(reward, chapter, battlePass=None):
             return BattlePassConsts.REWARD_BOTH
         return BattlePassConsts.REWARD_FREE
     else:
-        if reward in paidRewards:
-            return BattlePassConsts.REWARD_PAID
-        return
+        return BattlePassConsts.REWARD_PAID if reward in paidRewards else None
 
 
 @replace_none_kwargs(battlePass=IBattlePassController, c11nService=ICustomizationService)
@@ -226,21 +221,16 @@ def getStyleForChapter(chapter, battlePass=None, c11nService=None):
     stylesConfig = battlePass.getStylesConfig()
     if chapter not in stylesConfig:
         _logger.error('Invalid chapterID: %s', chapter)
-        return
+        return None
     else:
         styleID = stylesConfig[chapter]
-        if styleID is not None:
-            return c11nService.getItemByID(GUI_ITEM_TYPE.STYLE, styleID)
-        return
+        return c11nService.getItemByID(GUI_ITEM_TYPE.STYLE, styleID) if styleID is not None else None
 
 
 @replace_none_kwargs(battlePass=IBattlePassController)
 def getStyleInfoForChapter(chapter, battlePass=None):
     style = getStyleForChapter(chapter, battlePass=battlePass)
-    if style is not None:
-        return (style.intCD, style.getProgressionLevel())
-    else:
-        return (None, None)
+    return (style.intCD, style.getProgressionLevel()) if style is not None else (None, None)
 
 
 @replace_none_kwargs(battlePass=IBattlePassController, c11nService=ICustomizationService)
@@ -251,8 +241,7 @@ def getVehicleInfoForChapter(chapter, battlePass=None, c11nService=None, awardSo
             vehicle, vehInfo = bonus.getVehicles()[0]
             styleId = vehInfo.get('customization', {}).get('styleId')
             style = c11nService.getItemByID(GUI_ITEM_TYPE.STYLE, styleId) if styleId is not None else None
-            return (
-             vehicle, style)
+            return (vehicle, style)
 
     _logger.error("In chapterID: %s in final level doesn't have vehicle", chapter)
     return (None, None)
@@ -266,13 +255,11 @@ def getRecruitNation(recruitInfo):
 def getTankmanInfo(bonus):
     if bonus is None:
         return
+    elif bonus.getName() != TANKMAN_BONUS_NAME:
+        return
     else:
-        if bonus.getName() != TANKMAN_BONUS_NAME:
-            return
         tmanToken = first(bonus.getValue().keys())
-        if tmanToken is None:
-            return
-        return getRecruitInfo(tmanToken)
+        return None if tmanToken is None else getRecruitInfo(tmanToken)
 
 
 def getDataByTankman(tankman):
@@ -282,8 +269,11 @@ def getDataByTankman(tankman):
     freeSkills = tankman.getFreeSkills()
     earnedSkills = tankman.getEarnedSkills(True)
     groupName = tankman.getGroupName()
-    return (
-     iconName, tankmanName, freeSkills, earnedSkills, groupName)
+    return (iconName,
+     tankmanName,
+     freeSkills,
+     earnedSkills,
+     groupName)
 
 
 @replace_none_kwargs(battlePass=IBattlePassController)
@@ -291,10 +281,7 @@ def getReceivedTankmenCount(tankman, tankmanPostfix='', battlePass=None):
     tankmanInfo = getRecruitInfo(tankman)
     groupName = tankmanInfo.getGroupName() + tankmanPostfix if tankmanInfo is not None else ''
     entitlement = battlePass.getTankmenEntitlements().get(groupName)
-    if entitlement is not None:
-        return entitlement.amount
-    else:
-        return 0
+    return entitlement.amount if entitlement is not None else 0
 
 
 @replace_none_kwargs(battlePass=IBattlePassController)
@@ -305,7 +292,7 @@ def getTankmenShopPackages(battlePass=None):
         source = tankmanInfo.get('source')
         if source == BattlePassTankmenSource.SHOP:
             shopPackages[tankman] = tankmanInfo.get('availableCount', 0)
-        elif source == BattlePassTankmenSource.QUEST_CHAIN:
+        if source == BattlePassTankmenSource.QUEST_CHAIN:
             packageName = tankman + TANKMAN_QUEST_CHAIN_ENTITLEMENT_POSTFIX
             shopPackages[packageName] = tankmanInfo.get('availableCount', 0)
 
@@ -331,7 +318,7 @@ def fillBattlePassCompoundPrice(compoundPriceModel, compoundPrice):
 
 
 def getCompoundPriceDefaultID(compoundPrice):
-    return next(priceID for currency in _BATTLE_PASS_PRICE_CURRENCY_PRIORITY for priceID, priceData in compoundPrice.iteritems() if currency in priceData and priceData[currency])
+    return next((priceID for currency in _BATTLE_PASS_PRICE_CURRENCY_PRIORITY for priceID, priceData in compoundPrice.iteritems() if currency in priceData and priceData[currency]))
 
 
 @replace_none_kwargs(battlePass=IBattlePassController)
@@ -395,16 +382,14 @@ def showFinalRewardPreviewBattlePassState(chapterID, bonusID=None, level=None, i
         showBattlePassStyleProgressionPreview(vehicleCD, styleInfo, styleInfo.getDescription(), chapterId=chapterID, styleLevel=int(level or styleInfo.getProgressionLevel() or 1))
         return
     else:
-        previewItemPack = (
-         ItemPackEntry(type=ItemPackType.CREW_100, groupID=1),)
+        previewItemPack = (ItemPackEntry(type=ItemPackType.CREW_100, groupID=1),)
         if not bonusID and FinalReward.VEHICLE in allRewardTypes:
             vehicle, style = getVehicleInfoForChapter(chapterID, awardSource=BattlePassConsts.REWARD_BOTH)
             if styleInfo is not None:
-                showStylePreview(vehicle.intCD, style=styleInfo, topPanelData={'linkage': VEHPREVIEW_CONSTANTS.TOP_PANEL_TABS_LINKAGE, 
-                   'tabIDs': (
-                            TabID.VEHICLE, TabID.STYLE), 
-                   'currentTabID': TabID.STYLE, 
-                   'style': styleInfo}, itemsPack=previewItemPack)
+                showStylePreview(vehicle.intCD, style=styleInfo, topPanelData={'linkage': VEHPREVIEW_CONSTANTS.TOP_PANEL_TABS_LINKAGE,
+                 'tabIDs': (TabID.VEHICLE, TabID.STYLE),
+                 'currentTabID': TabID.STYLE,
+                 'style': styleInfo}, itemsPack=previewItemPack)
             else:
                 showVehiclePreviewWithoutBottomPanel(vehicle.intCD, itemsPack=previewItemPack, style=style)
         else:

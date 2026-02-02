@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/locale/QUESTS.py
 from debug_utils import LOG_WARNING
 
 class QUESTS(object):
@@ -1698,6 +1700,7 @@ class QUESTS(object):
     DAILYQUESTS_POSTBATTLE_GENERICTITLE_HARD = '#quests:dailyQuests/postBattle/genericTitle_hard'
     DAILYQUESTS_POSTBATTLE_GENERICTITLE_BONUS = '#quests:dailyQuests/postBattle/genericTitle_bonus'
     DAILYQUESTS_POSTBATTLE_GENERICTITLE_EPIC = '#quests:dailyQuests/postBattle/genericTitle_epic'
+    DAILYQUESTS_POSTBATTLE_EPIC_DESCRIPTION = '#quests:dailyQuests/postBattle/epic/description'
     DAILYQUESTS_BONUSQUEST_BONUSMISSIONTITLE = '#quests:dailyQuests/bonusQuest/bonusMissionTitle'
     DAILYQUESTS_BONUSQUEST_COUNTDOWN_HRS = '#quests:dailyQuests/bonusQuest/countDown_hrs'
     DAILYQUESTS_BONUSQUEST_COUNTDOWN_MINSEC = '#quests:dailyQuests/bonusQuest/countDown_minSec'
@@ -1779,8 +1782,7 @@ class QUESTS(object):
     DAILYQUESTS_CONDITION_BATTLE_SINGULAR = '#quests:dailyQuests/condition/battle_singular'
     DETAILS_CONDITIONS_CUMULATIVE_DAMAGEDHP = '#quests:details/conditions/cumulative/damagedHp'
     DETAILS_CONDITIONS_CUMULATIVE_COMP7PRESTIGEPOINTS = '#quests:details/conditions/cumulative/comp7PrestigePoints'
-    TOKEN_DEFAULT_ENUM = (
-     TOKEN_DEFAULT_USSR,
+    TOKEN_DEFAULT_ENUM = (TOKEN_DEFAULT_USSR,
      TOKEN_DEFAULT_GERMANY,
      TOKEN_DEFAULT_USA,
      TOKEN_DEFAULT_FRANCE,
@@ -1811,8 +1813,7 @@ class QUESTS(object):
      TOKEN_DEFAULT_TANKREWARDS,
      TOKEN_DEFAULT_BATTLE_ROYALE,
      TOKEN_DEFAULT_COMP7_LIGHT)
-    BONUSNAME_ENUM = (
-     BONUSNAME_BLUEPRINTS_ANY,
+    BONUSNAME_ENUM = (BONUSNAME_BLUEPRINTS_ANY,
      BONUSNAME_BLUEPRINTS_VEHICLE,
      BONUSNAME_BLUEPRINTS_VEHICLE_ANY,
      BONUSNAME_BLUEPRINTS_NATION,
@@ -1909,8 +1910,7 @@ class QUESTS(object):
      BONUSNAME_BADGES,
      BONUSNAME_ADDITIONAL_BONUSES,
      BONUSNAME_OPTIONAL_DEVICES_ASSISTANT)
-    ACTION_ENUM = (
-     ACTION_AUTO_CALENDAR,
+    ACTION_ENUM = (ACTION_AUTO_CALENDAR,
      ACTION_FULL_CALENDAR,
      ACTION_HERO_FULL_CALENDAR,
      ACTION_BUTTON_CALENDAR,
@@ -2166,8 +2166,7 @@ class QUESTS(object):
      ACTION_BOOSTER_BOOSTER_CREDITS,
      ACTION_BOOSTER_BOOSTER_REPAIR,
      ACTION_EXCHANGERATE_GOLD2CREDIT)
-    DETAILS_DOSSIER_ALL_ENUM = (
-     DETAILS_DOSSIER_RANDOM_XP,
+    DETAILS_DOSSIER_ALL_ENUM = (DETAILS_DOSSIER_RANDOM_XP,
      DETAILS_DOSSIER_RANDOM_MAXXP,
      DETAILS_DOSSIER_RANDOM_WINS,
      DETAILS_DOSSIER_RANDOM_LOSSES,
@@ -2304,8 +2303,7 @@ class QUESTS(object):
      DETAILS_DOSSIER_43_BATTLESCOUNT,
      DETAILS_DOSSIER_44_BATTLESCOUNT,
      DETAILS_DOSSIER_49_BATTLESCOUNT)
-    PERSONALMISSION_STATUS_ADDBOTTOM_VEHICLETYPE_ENUM = (
-     PERSONALMISSION_STATUS_ADDBOTTOM_VEHICLETYPE_ALLIANCE_USSR,
+    PERSONALMISSION_STATUS_ADDBOTTOM_VEHICLETYPE_ENUM = (PERSONALMISSION_STATUS_ADDBOTTOM_VEHICLETYPE_ALLIANCE_USSR,
      PERSONALMISSION_STATUS_ADDBOTTOM_VEHICLETYPE_ALLIANCE_GERMANY,
      PERSONALMISSION_STATUS_ADDBOTTOM_VEHICLETYPE_ALLIANCE_USA,
      PERSONALMISSION_STATUS_ADDBOTTOM_VEHICLETYPE_ALLIANCE_FRANCE,
@@ -2317,45 +2315,45 @@ class QUESTS(object):
 
     @classmethod
     def getTokenTitle(cls, style):
-        outcome = ('#quests:token/default/{}').format(style)
+        outcome = '#quests:token/default/{}'.format(style)
         if outcome not in cls.TOKEN_DEFAULT_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getBonusName(cls, bonusName):
-        outcome = ('#quests:bonusName/{}').format(bonusName)
+        outcome = '#quests:bonusName/{}'.format(bonusName)
         if outcome not in cls.BONUSNAME_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getActionDescription(cls, action):
-        outcome = ('#quests:action/{}').format(action)
+        outcome = '#quests:action/{}'.format(action)
         if outcome not in cls.ACTION_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getDetailsDossier(cls, battleTypeName, keyName):
-        outcome = ('#quests:details/dossier/{}/{}').format(battleTypeName, keyName)
+        outcome = '#quests:details/dossier/{}/{}'.format(battleTypeName, keyName)
         if outcome not in cls.DETAILS_DOSSIER_ALL_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getAddBottomVehType(cls, alliance):
-        outcome = ('#quests:personalMission/status/addBottom/vehicleType/{}').format(alliance)
+        outcome = '#quests:personalMission/status/addBottom/vehicleType/{}'.format(alliance)
         if outcome not in cls.PERSONALMISSION_STATUS_ADDBOTTOM_VEHICLETYPE_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome

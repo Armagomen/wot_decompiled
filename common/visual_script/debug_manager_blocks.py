@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/visual_script/debug_manager_blocks.py
 import Math
 from visual_script.slot_types import SLOT_TYPE, arrayOf
 from debug_manager_blocks_base import DebugManagerBlock, DEFAULT_COLOR

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hub/tabs/basic/daily_section/daily_missions_section_presenter.py
 from constants import PremiumConfigs, DAILY_QUESTS_CONFIG
 from gui.impl import backport
 from gui.impl.gen import R
@@ -38,20 +40,16 @@ class DailyMissionsSectionPresenter(UpdateChildrenMixin, ViewComponent[DailyMiss
         return super(DailyMissionsSectionPresenter, self).getViewModel()
 
     def _getListeners(self):
-        return (
-         (
-          UserMissionsEvent.CHANGE_TAB, self.__onTabChange, EVENT_BUS_SCOPE.LOBBY),)
+        return ((UserMissionsEvent.CHANGE_TAB, self.__onTabChange, EVENT_BUS_SCOPE.LOBBY),)
 
     def _getEvents(self):
-        return (
-         (
-          self.lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged),)
+        return ((self.lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged),)
 
     def _getChildComponents(self):
         userMissions = R.aliases.user_missions.hub.basicMissions.DailyMissionsSection
-        return {userMissions.DailyBlock(): DailyMissionsBlockPresenter, 
-           userMissions.PremiumBlock(): PremiumDailyMissionsBlockPresenter, 
-           userMissions.RewardProgressBlock(): self.__addRewardProgressChild}
+        return {userMissions.DailyBlock(): DailyMissionsBlockPresenter,
+         userMissions.PremiumBlock(): PremiumDailyMissionsBlockPresenter,
+         userMissions.RewardProgressBlock(): self.__addRewardProgressChild}
 
     def _onLoading(self, *args, **kwargs):
         super(DailyMissionsSectionPresenter, self)._onLoading()
@@ -62,7 +60,7 @@ class DailyMissionsSectionPresenter(UpdateChildrenMixin, ViewComponent[DailyMiss
         return self._rewardProgressChild
 
     def __updateModel(self):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             isDailyEnabled = isDailyQuestsEnable()
             tx.dailyMissionsBlockStatus.setIsEnabled(isDailyEnabled)
             tx.setTargetQuestId(self._targetQuestId)
@@ -84,6 +82,6 @@ class DailyMissionsSectionPresenter(UpdateChildrenMixin, ViewComponent[DailyMiss
 
     def __onTabChange(self, ume):
         if self._targetQuestId and ume.tabID != TabId.BASIC:
-            with self.viewModel.transaction() as (tx):
+            with self.viewModel.transaction() as tx:
                 self._targetQuestId = ''
                 tx.setTargetQuestId(self._targetQuestId)

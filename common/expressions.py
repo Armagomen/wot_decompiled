@@ -1,5 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/expressions.py
 from soft_exception import SoftException
-import cStringIO, tokenize, token
+import cStringIO
+import tokenize
+import token
 
 class ParserException(SoftException):
 
@@ -19,7 +23,10 @@ class _Tokenizer:
             while True:
                 toknum, tokval, _, _, _ = self.tokenizer.next()
                 self.__currentToken = (toknum, tokval)
-                if toknum not in (tokenize.NL, token.NEWLINE, token.INDENT, token.DEDENT):
+                if toknum not in (tokenize.NL,
+                 token.NEWLINE,
+                 token.INDENT,
+                 token.DEDENT):
                     break
 
         except StopIteration:
@@ -37,26 +44,25 @@ class _Tokenizer:
             self.__next()
         currentToken = self.__currentToken
         if currentToken is None or toknum != currentToken[0]:
-            raise ParserException('unexpected token %s "%s", expected %s' % (
-             token.tok_name[currentToken[0]], currentToken[1],
-             token.tok_name[toknum]))
+            raise ParserException('unexpected token %s "%s", expected %s' % (token.tok_name[currentToken[0]], currentToken[1], token.tok_name[toknum]))
         if tokval is not None and tokval != currentToken[1]:
-            raise ParserException('unexpected token %s "%s", expected %s "%s"' % (
-             token.tok_name[currentToken[0]], currentToken[1],
-             token.tok_name[toknum], tokval))
+            raise ParserException('unexpected token %s "%s", expected %s "%s"' % (token.tok_name[currentToken[0]],
+             currentToken[1],
+             token.tok_name[toknum],
+             tokval))
         self.__currentToken = None
         return currentToken[1]
 
 
 class ExpressionParser(object):
-    _CMP_OPERATORS = {'==': lambda left, right: lambda context: left(context) == right(context), 
-       '!=': lambda left, right: lambda context: left(context) != right(context), 
-       '<': lambda left, right: lambda context: left(context) < right(context), 
-       '<=': lambda left, right: lambda context: left(context) <= right(context), 
-       '>': lambda left, right: lambda context: left(context) > right(context), 
-       '>=': lambda left, right: lambda context: left(context) >= right(context)}
-    _SUM_OPERATORS = {'+': lambda left, right: lambda context: left(context) + right(context), 
-       '-': lambda left, right: lambda context: left(context) - right(context)}
+    _CMP_OPERATORS = {'==': lambda left, right: lambda context: left(context) == right(context),
+     '!=': lambda left, right: lambda context: left(context) != right(context),
+     '<': lambda left, right: lambda context: left(context) < right(context),
+     '<=': lambda left, right: lambda context: left(context) <= right(context),
+     '>': lambda left, right: lambda context: left(context) > right(context),
+     '>=': lambda left, right: lambda context: left(context) >= right(context)}
+    _SUM_OPERATORS = {'+': lambda left, right: lambda context: left(context) + right(context),
+     '-': lambda left, right: lambda context: left(context) - right(context)}
 
     def __init__(self):
         self.tokens = set()
@@ -73,8 +79,8 @@ class ExpressionParser(object):
             tokenizer.match(toknum)
             return operators[tokval]
         else:
-            return
-            return
+            return None
+            return None
 
     def _parseExpression(self, tokenizer):
         return self._parseOrExpression(tokenizer)
@@ -86,13 +92,13 @@ class ExpressionParser(object):
             tokenizer.match(token.NAME)
             right = self._parseOrExpression(tokenizer)
             return lambda context: left(context) or right(context)
+        elif tokval == 'if':
+            tokenizer.match(token.NAME)
+            condition = self._parseCondition(tokenizer)
+            tokenizer.match(token.NAME)
+            right = self._parseExpression(tokenizer)
+            return lambda context: left(context) if condition(context) else right(context)
         else:
-            if tokval == 'if':
-                tokenizer.match(token.NAME)
-                condition = self._parseCondition(tokenizer)
-                tokenizer.match(token.NAME)
-                right = self._parseExpression(tokenizer)
-                return lambda context: left(context) if condition(context) else right(context)
             return left
 
     def _parseAndExpression(self, tokenizer):

@@ -1,9 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/impl/gen/view_models/views/lobby/views/post_battle_rewards_view_model.py
 from frameworks.wulf import Array, ViewModel
 from frontline.gui.impl.gen.view_models.views.lobby.views.frontline_reward_model import FrontlineRewardModel
 
 class PostBattleRewardsViewModel(ViewModel):
-    __slots__ = ('onClaimRewards', 'onContinue', 'onClose', 'onIntroStartsPlaying',
-                 'onRibbonStartsPlaying', 'onProgressBarAnimationStart', 'onProgressBarAnimationComplete')
+    __slots__ = ('onClaimRewards', 'onContinue', 'onClose', 'onIntroStartsPlaying', 'onRibbonStartsPlaying', 'onProgressBarAnimationStart', 'onProgressBarAnimationComplete')
 
     def __init__(self, properties=8, commands=7):
         super(PostBattleRewardsViewModel, self).__init__(properties=properties, commands=commands)

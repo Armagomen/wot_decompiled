@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_compare/cmp_helpers.py
 from __future__ import absolute_import
 import typing
 from future.utils import itervalues
@@ -28,18 +30,13 @@ MODULES_INSTALLING_ORDER = (GUI_ITEM_TYPE.CHASSIS,
  GUI_ITEM_TYPE.ENGINE,
  GUI_ITEM_TYPE.RADIO)
 NOT_AFFECTED_DEVICES = {}
-NOT_AFFECTED_EQUIPMENTS = {
- 'smallRepairkit',
- 'smallMedkit',
- 'handExtinguishers'}
+NOT_AFFECTED_EQUIPMENTS = {'smallRepairkit', 'smallMedkit', 'handExtinguishers'}
 OPTIONAL_DEVICE_TYPE_NAME = GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.OPTIONALDEVICE]
 EQUIPMENT_TYPE_NAME = GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.EQUIPMENT]
 BATTLE_BOOSTER_TYPE_NAME = GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.BATTLE_BOOSTER]
 
 def createTankman(nationID, vehicleTypeID, role, roleLevel, skills, vehicle, vehicleSlotIDx, rolesBonusSkills=None, bonusSkillNamesMaxLvl=None):
-    bonusSkillsLevels = [
-     [
-      tankmen.MAX_SKILL_LEVEL] * NPS.MAX_BONUS_SKILLS_PER_ROLE, bonusSkillNamesMaxLvl or []]
+    bonusSkillsLevels = [[tankmen.MAX_SKILL_LEVEL] * NPS.MAX_BONUS_SKILLS_PER_ROLE, bonusSkillNamesMaxLvl or []]
     descr = tankmen.generateCompactDescr(tankmen.generatePassport(nationID), vehicleTypeID, role, roleLevel, skills, rolesBonusSkills=rolesBonusSkills)
     newTankmen = Tankman(descr, vehicle=vehicle, vehicleSlotIdx=vehicleSlotIDx, bonusSkillsLevels=bonusSkillsLevels)
     if BROTHERHOOD_SKILL_NAME in skills:
@@ -59,14 +56,13 @@ def getVehCrewInfo(vehIntCD, itemsCache=None):
                 levelsByIndexes[roleIdx] = int(tman.roleLevel)
                 nativeVehiclesByIndexes[roleIdx] = itemsCache.items.getItemByCD(tman.vehicleNativeDescr.type.compactDescr)
 
-    return (
-     levelsByIndexes, nativeVehiclesByIndexes)
+    return (levelsByIndexes, nativeVehiclesByIndexes)
 
 
 def isEquipmentSame(equipment1, equipment2):
     if equipment1 is None or equipment2 is None:
         return False
-    if len(equipment1) != len(equipment2):
+    elif len(equipment1) != len(equipment2):
         return False
     else:
         for i, value in enumerate(equipment1):
@@ -122,8 +118,7 @@ def removeVehicleCamouflages(vehicle):
 
 
 def getVehicleModules(vehicle):
-    return (
-     vehicle.chassis,
+    return (vehicle.chassis,
      vehicle.turret,
      vehicle.gun,
      vehicle.engine,
@@ -150,10 +145,8 @@ def splitSkills(selectedSkills):
         for skillName in skills:
             if isSkillMajor(skillName, mainRole):
                 skillsByIdx.setdefault(idx, []).append(skillName)
-            else:
-                role = list(ROLES_BY_SKILLS.get(skillName))[0]
-                bonusSkillsByIdx.setdefault(idx, {}).setdefault(role, []).append(skillName)
-                bonusSkillNamesMaxLvl.append(skillName)
+            role = list(ROLES_BY_SKILLS.get(skillName))[0]
+            bonusSkillsByIdx.setdefault(idx, {}).setdefault(role, []).append(skillName)
+            bonusSkillNamesMaxLvl.append(skillName)
 
-    return (
-     skillsByIdx, bonusSkillsByIdx, bonusSkillNamesMaxLvl)
+    return (skillsByIdx, bonusSkillsByIdx, bonusSkillNamesMaxLvl)

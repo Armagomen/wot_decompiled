@@ -1,4 +1,8 @@
-import logging, typing, Event
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/app_loader/loader.py
+import logging
+import typing
+import Event
 from constants import ARENA_GUI_TYPE
 from gui import GUI_CTRL_MODE_FLAG as _CTRL_FLAG
 from gui.app_loader.observers import GameplayStatesObserver
@@ -14,18 +18,18 @@ class _EmptyWaitingWorker(IWaitingWorker):
 
     def getWaitingView(self, isBlocking):
         _logger.error('Waiting widget is not defined')
-        return
+        return None
 
     def isWaitingShown(self, messageID=None):
         return False
 
     def getWaitingTask(self, messageID):
         _logger.error('Waiting task is not defined')
-        return
+        return None
 
     def getSuspendedWaitingTask(self, messageID):
         _logger.error('Waiting suspended task is not defined')
-        return
+        return None
 
     def show(self, messageID, isSingle=False, interruptCallback=None, isBlocking=True, isAlwaysOnTop=False, backgroundImage=None, softStart=False, showBg=True):
         _logger.error('Waiting is not found. Method "show" is ignored: %r', messageID)
@@ -189,8 +193,7 @@ class AppLoader(IAppLoader):
     def __getCreatedApps(self):
         for appNS, appState in self.__appsStates.iteritems():
             if appState != ApplicationStateID.NOT_CREATED:
-                yield (
-                 appNS, appState)
+                yield (appNS, appState)
 
     def __onAppInitializing(self, event):
         appNS = event.ns

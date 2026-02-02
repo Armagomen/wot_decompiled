@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/conversion_confirm_view.py
 from frameworks.wulf import ViewFlags, ViewSettings, WindowFlags, WindowLayer
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.crew.conversion_confirm_view_model import ConversionConfirmViewModel
@@ -39,19 +41,12 @@ class ConversionConfirmView(BaseCrewSubView):
         self.__dataProvider.update()
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onCancel, self._onCancel),
-         (
-          self.viewModel.onClose, self._onClose),
-         (
-          self.viewModel.onConfirm, self._onConfirm),
-         (
-          self.viewModel.onShowTankman, self._onShowTankman),
-         (
-          self.__dataProvider.onDataChanged, self.__onUpdate),
-         (
-          g_playerEvents.onDisconnected, self.__onDisconnected))
+        return ((self.viewModel.onCancel, self._onCancel),
+         (self.viewModel.onClose, self._onClose),
+         (self.viewModel.onConfirm, self._onConfirm),
+         (self.viewModel.onShowTankman, self._onShowTankman),
+         (self.__dataProvider.onDataChanged, self.__onUpdate),
+         (g_playerEvents.onDisconnected, self.__onDisconnected))
 
     def __onDisconnected(self):
         self.destroyWindow()
@@ -74,7 +69,7 @@ class ConversionConfirmView(BaseCrewSubView):
         xpByNation = crew_junk_convert_helper.calculateXpFromTankmen([ item.descriptor for item in items ])
         books = crew_junk_convert_helper.getNationBooksFromXp(xpByNation)
         self.__tmanConversionResult = books
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             self.__tooltipData = {}
             rewards = tx.getRewards()
             rewards.clear()

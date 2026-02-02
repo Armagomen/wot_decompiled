@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_core/scripts/client/comp7_core/gui/Scaleform/daapi/view/battle/messages/player_messages.py
 import typing
 from comp7_core_constants import ROLE_EQUIPMENT_TAG
 from constants import EQUIPMENT_STAGES, ROLE_TYPE_TO_LABEL
@@ -56,19 +58,20 @@ class Comp7CorePlayerMessages(PlayerMessages):
         elif vehicleID == ENEMY_VEHICLE_ID:
             self.showMessage(_POI_EQUIPMENT_USED_BY_ENEMY, {'equipment': equipment.userString})
         else:
-            self.showMessage(_POI_EQUIPMENT_USED_BY_ALLY, {'name': self.sessionProvider.getCtx().getPlayerFullName(vehicleID, showClan=False), 
-               'equipment': equipment.userString})
+            self.showMessage(_POI_EQUIPMENT_USED_BY_ALLY, {'name': self.sessionProvider.getCtx().getPlayerFullName(vehicleID, showClan=False),
+             'equipment': equipment.userString})
 
     def __onRoleEquipmentStateChanged(self, state, previousState=None):
         if state is None or previousState is None:
             return
-        if state.level > previousState.level:
-            vehicle = self.sessionProvider.shared.vehicleState.getControllingVehicle()
-            if vehicle is None or not hasattr(vehicle, 'typeDescriptor'):
-                return
-            roleType = ROLE_TYPE_TO_LABEL.get(vehicle.typeDescriptor.role)
-            equipment = self._modeController.getRoleEquipment(roleType)
-            if equipment is None:
-                return
-            self.sessionProvider.shared.messages.showVehicleMessage(_ROLE_EQUIPMENT_PROMOTED, {'name': equipment.userString})
-        return
+        else:
+            if state.level > previousState.level:
+                vehicle = self.sessionProvider.shared.vehicleState.getControllingVehicle()
+                if vehicle is None or not hasattr(vehicle, 'typeDescriptor'):
+                    return
+                roleType = ROLE_TYPE_TO_LABEL.get(vehicle.typeDescriptor.role)
+                equipment = self._modeController.getRoleEquipment(roleType)
+                if equipment is None:
+                    return
+                self.sessionProvider.shared.messages.showVehicleMessage(_ROLE_EQUIPMENT_PROMOTED, {'name': equipment.userString})
+            return

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/base/squad/actions_validator.py
 from CurrentVehicle import g_currentVehicle
 from constants import VEHICLE_CLASS_INDICES
 from gui.prb_control.entities.base.actions_validator import BaseActionsValidator
@@ -14,11 +16,9 @@ class SquadBalanceValidator(BaseActionsValidator):
     def _validate(self):
         _, unit = self._entity.getUnit()
         levels = unit.getSelectedVehicleLevels()
-        distance = levels[(-1)] - levels[0] if levels else 0
+        distance = levels[-1] - levels[0] if levels else 0
         unitHasPenalty = distance in self.eventsCache.getSquadPenaltyLevelDistance()
-        if unitHasPenalty:
-            return ValidationResult(True, UNIT_RESTRICTION.XP_PENALTY_VEHICLE_LEVELS)
-        return super(SquadBalanceValidator, self)._validate()
+        return ValidationResult(True, UNIT_RESTRICTION.XP_PENALTY_VEHICLE_LEVELS) if unitHasPenalty else super(SquadBalanceValidator, self)._validate()
 
     def _isEnabled(self):
         return self.eventsCache.isSquadXpFactorsEnabled()

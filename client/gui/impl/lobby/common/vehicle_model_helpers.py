@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/common/vehicle_model_helpers.py
 import typing
 from frameworks.wulf.view.array import fillViewModelsArray
 from gui.impl.gen.view_models.common.vehicle_mechanic_model import VehicleMechanicModel
@@ -21,16 +23,21 @@ def fillVehicleModel(model, vehicleItem, tags=None):
     model.setVehicleCD(vehicleItem.compactDescr)
     if not tags:
         return
-    model.setTags((',').join(frozenset(tags) & vehicleItem.tags))
+    model.setTags(','.join(frozenset(tags) & vehicleItem.tags))
+
+
+def fillVehicleMechanicModel(mechanicModel, mechanicItem):
+    mechanicModel.setName(mechanicItem.guiName)
+    mechanicModel.setPriority(mechanicItem.priority)
+    mechanicModel.setRank(mechanicItem.rank)
+    mechanicModel.setHasVideo(mechanicItem.hasVideo)
 
 
 def fillVehicleMechanicsArray(mechanicsArray, vehicleItem):
     mechanics = []
-    for mechanic in vehicleItem.getVehicleMechanicItems():
+    for mechanic in (item for item in vehicleItem.getVehicleMechanicItems() if not item.isHidden):
         mechanicModel = VehicleMechanicModel()
-        mechanicModel.setName(mechanic.guiName)
-        mechanicModel.setIsSpecial(mechanic.isSpecial)
-        mechanicModel.setHasVideo(mechanic.hasVideo)
+        fillVehicleMechanicModel(mechanicModel, mechanic)
         mechanics.append(mechanicModel)
 
     fillViewModelsArray(mechanics, mechanicsArray)

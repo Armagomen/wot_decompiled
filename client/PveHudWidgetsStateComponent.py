@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/PveHudWidgetsStateComponent.py
 import typing
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE
 from gui.shared.events import HasCtxEvent

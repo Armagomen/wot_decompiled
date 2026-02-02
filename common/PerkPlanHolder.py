@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/PerkPlanHolder.py
 from collections import defaultdict
 from constants import IS_CELLAPP, IS_BASEAPP
 from typing import TYPE_CHECKING, List, Optional
@@ -74,22 +76,20 @@ class PCPlanHolder(object):
         if not self._contextEventsScheme:
             return
         if IS_CELLAPP or IS_BASEAPP:
-            serverActiveStatuses = (
-             VEHICLE_STATUS.FIGHTING, VEHICLE_STATUS.BEFORE_ARENA)
+            serverActiveStatuses = (VEHICLE_STATUS.FIGHTING, VEHICLE_STATUS.BEFORE_ARENA)
             if self._owner.status not in serverActiveStatuses:
                 return
         if isinstance(event, str):
             eventName = event
+        elif isinstance(event, tuple) and hasattr(event, '_fields'):
+            eventName = event.__class__.__name__
         else:
-            if isinstance(event, tuple) and hasattr(event, '_fields'):
-                eventName = event.__class__.__name__
-            else:
-                return
-            plans = []
-            if eventName in self._contextEventsScheme:
-                plans = self._contextEventsScheme[eventName]
-            for plan in plans:
-                plan.triggerVSPlanEvent(event)
+            return
+        plans = []
+        if eventName in self._contextEventsScheme:
+            plans = self._contextEventsScheme[eventName]
+        for plan in plans:
+            plan.triggerVSPlanEvent(event)
 
     def reload(self, scopedPerks):
         self._forceClean()
@@ -132,7 +132,7 @@ class PCPlanHolder(object):
             if plan.perkId == perkID and plan.scopeId == scopeID:
                 return plan
 
-        return
+        return None
 
     def _setReady(self, ready=True):
         self._isReadyForEvent.clear()
@@ -167,7 +167,7 @@ class PCPlanHolder(object):
         del self._delayedEvents[:]
 
     def _checkIsAllPlansReady(self):
-        return all(plan.isPlanStarted for plan in self._plans)
+        return all((plan.isPlanStarted for plan in self._plans))
 
     def _checkIsAllPlansLoaded(self):
-        return all(plan.isPlanLoaded for plan in self._plans)
+        return all((plan.isPlanLoaded for plan in self._plans))

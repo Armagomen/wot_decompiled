@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/hit_direction_ctrl/base.py
 from enum import Enum
 import BigWorld
 
@@ -46,7 +48,7 @@ class HitDirection(object):
         return
 
     def __repr__(self):
-        return ('_HitDirection(idx={0}, hitData={1}, startTime={2}, isShown={3}, hasUI={4})').format(self.__idx, self.__hitData, self.__startTime, self.__isShown, self.__indicator is not None)
+        return '_HitDirection(idx={0}, hitData={1}, startTime={2}, isShown={3}, hasUI={4})'.format(self.__idx, self.__hitData, self.__startTime, self.__isShown, self.__indicator is not None)
 
     def clear(self):
         self.__hitData = None

@@ -1,4 +1,8 @@
-import logging, typing, ArenaType
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/account_dashboard/features/excluded_maps_feature.py
+import logging
+import typing
+import ArenaType
 from constants import PremiumConfigs, PREMIUM_TYPE, EMPTY_GEOMETRY_ID, RENEWABLE_SUBSCRIPTION_CONFIG
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.impl.gen.view_models.views.lobby.account_dashboard.map_model import MapModel, SlotStateEnum
@@ -73,8 +77,7 @@ class ExcludedMapsFeature(FeatureItem):
         wotPlusSlots = mapsConfig['wotPlusSlots'] if serverSettings.isWotPlusExcludedMapEnabled() else 0
         totalSlots = defaultSlots + premiumSlots + wotPlusSlots
         slotsMap = buildSlotsMap()
-        maps = [ (mapId, selectedTime) for mapId, selectedTime in self.__itemsCache.items.stats.getMapsBlackList() if mapId > 0
-               ]
+        maps = [ (mapId, selectedTime) for mapId, selectedTime in self.__itemsCache.items.stats.getMapsBlackList() if mapId > 0 ]
         mapsLen = len(maps)
         isPremiumAcc = self.__itemsCache.items.stats.isActivePremium(PREMIUM_TYPE.PLUS)
         isWotPlusAcc = self.__wotPlus.isEnabled()
@@ -86,9 +89,7 @@ class ExcludedMapsFeature(FeatureItem):
         serverUTCTime = time_utils.getServerUTCTime()
 
         def _getEmptyState(isSpecialSlot):
-            if isSpecialSlot:
-                return SlotStateEnum.EMPTY
-            return SlotStateEnum.DISABLED
+            return SlotStateEnum.EMPTY if isSpecialSlot else SlotStateEnum.DISABLED
 
         for i in range(totalSlots):
             slotModel = MapModel()

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/customization_inscription_controller.py
 import SoundGroups
 from account_helpers.AccountSettings import AccountSettings, CUSTOMIZATION_SECTION
 from gui import SystemMessages
@@ -67,9 +69,7 @@ class CustomizationInscriptionController(CustomizationInscriptionControllerMeta,
             component = self.__ctx.mode.getComponentFromSlot(self.__slotId)
             if component is None:
                 return
-            if component.customType != PersonalNumberComponent.customType:
-                return
-            return component
+            return None if component.customType != PersonalNumberComponent.customType else component
 
     @property
     def _digitsCount(self):
@@ -94,11 +94,11 @@ class CustomizationInscriptionController(CustomizationInscriptionControllerMeta,
     def _currentNumber(self, number):
         if not self.visible:
             return
+        elif self.__currentNumber == number:
+            return
+        elif self._component is None:
+            return
         else:
-            if self.__currentNumber == number:
-                return
-            if self._component is None:
-                return
             self.__currentNumber = number
             self._component.number = self.__currentNumber
             self.__ctx.refreshOutfit()
@@ -119,22 +119,21 @@ class CustomizationInscriptionController(CustomizationInscriptionControllerMeta,
         return False
 
     def handleDelBtn(self):
-        if self.visible:
-            return True
-        return False
+        return True if self.visible else False
 
     def start(self, slotId):
         item = self.__ctx.mode.getItemFromSlot(slotId)
         if item is None or item.itemTypeID != GUI_ITEM_TYPE.PERSONAL_NUMBER:
             return
-        self.__slotId = slotId
-        self._digitsCount = item.digitsCount
-        self._currentNumber = EMPTY_PERSONAL_NUMBER
-        component = self.__ctx.mode.getComponentFromSlot(slotId)
-        if component is not None and component.isFilled():
-            self.__storedNumber = component.number
-        self.show()
-        return
+        else:
+            self.__slotId = slotId
+            self._digitsCount = item.digitsCount
+            self._currentNumber = EMPTY_PERSONAL_NUMBER
+            component = self.__ctx.mode.getComponentFromSlot(slotId)
+            if component is not None and component.isFilled():
+                self.__storedNumber = component.number
+            self.show()
+            return
 
     def finish(self, cancelIfEmpty=False):
         if not self.visible:
@@ -238,10 +237,11 @@ class CustomizationInscriptionController(CustomizationInscriptionControllerMeta,
                     self._currentNumber = EMPTY_PERSONAL_NUMBER
                     self.__showProhibitedHint(newNumber)
             return
-        component = self.__ctx.mode.getComponentFromSlot(slotId)
-        if component is not None and not component.isFilled():
-            self.start(slotId)
-        return
+        else:
+            component = self.__ctx.mode.getComponentFromSlot(slotId)
+            if component is not None and not component.isFilled():
+                self.start(slotId)
+            return
 
     def sendChar(self, char):
         if len(self._currentNumber) == self._digitsCount:
@@ -319,10 +319,10 @@ class CustomizationInscriptionController(CustomizationInscriptionControllerMeta,
         self.as_showHintS(hintVO)
 
     def __getHintVO(self, hintMessage, icons=None, duration=0, delay=0):
-        return {'hintMessage': hintMessage, 
-           'icons': icons, 
-           'duration': duration, 
-           'delay': delay}
+        return {'hintMessage': hintMessage,
+         'icons': icons,
+         'duration': duration,
+         'delay': delay}
 
     def __onPersonalNumberCleared(self, number):
         self.__showProhibitedHint(number)

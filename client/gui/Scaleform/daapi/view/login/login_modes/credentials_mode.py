@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/login/login_modes/credentials_mode.py
 from collections import namedtuple
-import WWISE, constants
+import WWISE
+import constants
 from external_strings_utils import _LOGIN_NAME_MIN_LENGTH
 from external_strings_utils import isAccountLoginValid
 from gui import GUI_SETTINGS
@@ -9,8 +12,7 @@ from gui.impl import backport
 from gui.impl.gen import R
 from helpers.i18n import makeString as _ms
 from base_mode import BaseMode, INVALID_FIELDS
-_ValidateCredentialsResult = namedtuple('ValidateCredentialsResult', ('isValid', 'errorMessage',
-                                                                      'invalidFields'))
+_ValidateCredentialsResult = namedtuple('ValidateCredentialsResult', ('isValid', 'errorMessage', 'invalidFields'))
 
 class CredentialsMode(BaseMode):
     firstRun = True
@@ -21,9 +23,7 @@ class CredentialsMode(BaseMode):
 
     @property
     def login(self):
-        if GUI_SETTINGS.clearLoginValue:
-            return ''
-        return self._loginManager.getPreference('login')
+        return '' if GUI_SETTINGS.clearLoginValue else self._loginManager.getPreference('login')
 
     @property
     def rememberUser(self):
@@ -31,9 +31,7 @@ class CredentialsMode(BaseMode):
 
     @property
     def password(self):
-        if self._rememberUser and not GUI_SETTINGS.clearLoginValue:
-            return '*' * self._loginManager.getPreference('password_length')
-        return ''
+        return '*' * self._loginManager.getPreference('password_length') if self._rememberUser and not GUI_SETTINGS.clearLoginValue else ''
 
     @property
     def rememberPassVisible(self):

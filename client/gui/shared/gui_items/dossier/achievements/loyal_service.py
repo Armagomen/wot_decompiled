@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/gui_items/dossier/achievements/loyal_service.py
 from gui.impl import backport
 from gui.shared.gui_items.dossier.achievements.abstract import DeprecatedAchievement
 from helpers import i18n
@@ -13,6 +15,4 @@ class LoyalServiceAchievement(DeprecatedAchievement):
         return
 
     def getUserDescription(self):
-        if self.__registrationDate:
-            return i18n.makeString(('#achievements:{}_descr').format(self._getActualName()), regDate=self.__registrationDate)
-        return ''
+        return i18n.makeString('#achievements:{}_descr'.format(self._getActualName()), regDate=self.__registrationDate) if self.__registrationDate else ''

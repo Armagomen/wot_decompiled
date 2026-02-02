@@ -1,5 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/hangar/presenters/hero_tank_presenter.py
 from __future__ import absolute_import
-import logging, BigWorld, Math
+import logging
+import BigWorld
+import Math
 from GUI import WGMarkerPositionController
 from HeroTank import HeroTank
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -42,18 +46,10 @@ class HeroTankPresenter(ViewComponent[HeroTankModel]):
         return
 
     def _getEvents(self):
-        return (
-         (
-          self.__itemsCache.onSyncCompleted, self.__onCacheResync),
-         (
-          self.__space.onSpaceDestroy, self.__clearMarkers))
+        return ((self.__itemsCache.onSyncCompleted, self.__onCacheResync), (self.__space.onSpaceDestroy, self.__clearMarkers))
 
     def _getListeners(self):
-        return (
-         (
-          CameraRelatedEvents.CAMERA_ENTITY_UPDATED, self.__handleSelectedEntityUpdated),
-         (
-          HangarVehicleEvent.ON_HERO_TANK_LOADED, self.__fillHeroTank, EVENT_BUS_SCOPE.LOBBY))
+        return ((CameraRelatedEvents.CAMERA_ENTITY_UPDATED, self.__handleSelectedEntityUpdated), (HangarVehicleEvent.ON_HERO_TANK_LOADED, self.__fillHeroTank, EVENT_BUS_SCOPE.LOBBY))
 
     def __clearMarkers(self, _):
         if self.__markerCtrl is not None:
@@ -72,7 +68,7 @@ class HeroTankPresenter(ViewComponent[HeroTankModel]):
         return worldPosition
 
     def __fillHeroTank(self, *args):
-        with self.getViewModel().transaction() as (model):
+        with self.getViewModel().transaction() as model:
             heroTankEntityList = [ entity for entity in BigWorld.entities.values() if isinstance(entity, HeroTank) ]
             if not heroTankEntityList:
                 return

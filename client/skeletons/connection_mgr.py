@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/skeletons/connection_mgr.py
 from Event import Event
 
 class DisconnectReason(object):

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/server_events/cond_formatters/bonus.py
 from debug_utils import LOG_WARNING, LOG_ERROR
 from gui.Scaleform.genConsts.MISSIONS_ALIASES import MISSIONS_ALIASES
 from gui.Scaleform.locale.QUESTS import QUESTS
@@ -17,60 +19,56 @@ DEFAULT_GROUP_BY_KEY = None
 def packMissionVehicleProgress(groupByKey, current, total):
     itemsCache = dependency.instance(IItemsCache)
     vehicle = itemsCache.items.getItemByCD(groupByKey)
-    return {'progressLabel': formatters.minimizedTitleCumulativeFormat(current, total), 
-       'nationIcon': '../maps/icons/filters/nations/%s.png' % vehicle.nationName, 
-       'vehicleIcon': vehicle.iconSmall, 
-       'vehicleName': vehicle.shortUserName, 
-       'vTypeIcon': '../maps/icons/filters/tanks/%s.png' % vehicle.type, 
-       'level': vehicle.level, 
-       'progress': {'maxValue': total, 
-                    'value': current}}
+    return {'progressLabel': formatters.minimizedTitleCumulativeFormat(current, total),
+     'nationIcon': '../maps/icons/filters/nations/%s.png' % vehicle.nationName,
+     'vehicleIcon': vehicle.iconSmall,
+     'vehicleName': vehicle.shortUserName,
+     'vTypeIcon': '../maps/icons/filters/tanks/%s.png' % vehicle.type,
+     'level': vehicle.level,
+     'progress': {'maxValue': total,
+                  'value': current}}
 
 
 def packMissionNationProgress(groupByKey, current, total):
-    return {'progressLabel': formatters.minimizedTitleCumulativeFormat(current, total), 
-       'nationIcon': '../maps/icons/filters/nations/%s.png' % groupByKey, 
-       'nationName': i18n.makeString('#menu:nations/%s' % groupByKey), 
-       'progress': {'maxValue': total, 
-                    'value': current}}
+    return {'progressLabel': formatters.minimizedTitleCumulativeFormat(current, total),
+     'nationIcon': '../maps/icons/filters/nations/%s.png' % groupByKey,
+     'nationName': i18n.makeString('#menu:nations/%s' % groupByKey),
+     'progress': {'maxValue': total,
+                  'value': current}}
 
 
 def packMissionLevelProgress(groupByKey, current, total):
     levelValue = int(groupByKey.replace('level ', ''))
-    return {'progressLabel': formatters.minimizedTitleCumulativeFormat(current, total), 
-       'level': levelValue, 
-       'levelLabel': i18n.makeString(QUESTS.MISSIONDETAILS_CONDITIONS_LEVEL), 
-       'progress': {'maxValue': total, 
-                    'value': current}}
+    return {'progressLabel': formatters.minimizedTitleCumulativeFormat(current, total),
+     'level': levelValue,
+     'levelLabel': i18n.makeString(QUESTS.MISSIONDETAILS_CONDITIONS_LEVEL),
+     'progress': {'maxValue': total,
+                  'value': current}}
 
 
 def packMissionClassProgress(groupByKey, current, total):
-    return {'progressLabel': formatters.minimizedTitleCumulativeFormat(current, total), 
-       'vTypeIcon': '../maps/icons/filters/tanks/%s.png' % groupByKey, 
-       'vTypeLabel': i18n.makeString('#quests:classes/small/%s' % groupByKey), 
-       'progress': {'maxValue': total, 
-                    'value': current}}
+    return {'progressLabel': formatters.minimizedTitleCumulativeFormat(current, total),
+     'vTypeIcon': '../maps/icons/filters/tanks/%s.png' % groupByKey,
+     'vTypeLabel': i18n.makeString('#quests:classes/small/%s' % groupByKey),
+     'progress': {'maxValue': total,
+                  'value': current}}
 
 
-GROUP_BY_FORMATTERS_DATA = {'vehicle': (
-             packMissionVehicleProgress, MISSIONS_ALIASES.GROUPBY_VEHICLE_RENDERER), 
-   'nation': (
-            packMissionNationProgress, MISSIONS_ALIASES.GROUPBY_NATION_RENDERER), 
-   'level': (
-           packMissionLevelProgress, MISSIONS_ALIASES.GROUPBY_LEVEL_RENDERER), 
-   'class': (
-           packMissionClassProgress, MISSIONS_ALIASES.GROUPBY_VEH_TYPE_RENDERER)}
+GROUP_BY_FORMATTERS_DATA = {'vehicle': (packMissionVehicleProgress, MISSIONS_ALIASES.GROUPBY_VEHICLE_RENDERER),
+ 'nation': (packMissionNationProgress, MISSIONS_ALIASES.GROUPBY_NATION_RENDERER),
+ 'level': (packMissionLevelProgress, MISSIONS_ALIASES.GROUPBY_LEVEL_RENDERER),
+ 'class': (packMissionClassProgress, MISSIONS_ALIASES.GROUPBY_VEH_TYPE_RENDERER)}
 
 class MissionsBonusConditionsFormatter(MissionsBattleConditionsFormatter):
 
     def __init__(self):
-        super(MissionsBonusConditionsFormatter, self).__init__({'vehicleKillsCumulative': _VehicleKillsCumulativeFormatter(), 
-           'vehicleDamageCumulative': _VehicleDamageCumulativeFormatter(), 
-           'vehicleStunCumulative': _VehicleStunCumulativeFormatter(), 
-           'cumulative': _CumulativeResultFormatter(), 
-           'cumulativeExt': _CumulativeResultFormatter(), 
-           'unit': _CumulativeResultFormatter(), 
-           'cumulativeSum': _CumulativeSumFormatter()})
+        super(MissionsBonusConditionsFormatter, self).__init__({'vehicleKillsCumulative': _VehicleKillsCumulativeFormatter(),
+         'vehicleDamageCumulative': _VehicleDamageCumulativeFormatter(),
+         'vehicleStunCumulative': _VehicleStunCumulativeFormatter(),
+         'cumulative': _CumulativeResultFormatter(),
+         'cumulativeExt': _CumulativeResultFormatter(),
+         'unit': _CumulativeResultFormatter(),
+         'cumulativeSum': _CumulativeSumFormatter()})
 
 
 class _CumulativableFormatter(MissionFormatter, CumulativableFormatter):
@@ -108,14 +106,11 @@ class _CumulativableFormatter(MissionFormatter, CumulativableFormatter):
             formatterData = GROUP_BY_FORMATTERS_DATA.get(groupByValue)
             if formatterData:
                 formatter, rendererLinkage = formatterData
-                items = sorted(condition.getProgressPerGroup().iteritems(), key=lambda (_, progress): progress[0], reverse=True)
+                items = sorted(condition.getProgressPerGroup().iteritems(), key=lambda it: it[1][0], reverse=True)
                 for groupByKey, (current, total, _, _) in items:
                     result.append(formatter(groupByKey, current, total))
 
-        if result and rendererLinkage is not None:
-            return formatters.packProgressData(rendererLinkage, result)
-        else:
-            return
+        return formatters.packProgressData(rendererLinkage, result) if result and rendererLinkage is not None else None
 
     def _groupedByFormat(self, condition, event, progressData):
         result = []
@@ -146,12 +141,12 @@ class _CumulativeResultFormatter(_CumulativableFormatter):
     def _getIconKey(cls, condition=None):
         if condition.keyName in BATTLE_RESULTS_KEYS:
             return BATTLE_RESULTS_KEYS[condition.keyName]
+        elif condition.keyName in POSSIBLE_BATTLE_RESUTLS_KEYS:
+            LOG_WARNING("Condition's text description is not supported.", condition.keyName)
+            return POSSIBLE_BATTLE_RESUTLS_KEYS[condition.keyName]
         else:
-            if condition.keyName in POSSIBLE_BATTLE_RESUTLS_KEYS:
-                LOG_WARNING("Condition's text description is not supported.", condition.keyName)
-                return POSSIBLE_BATTLE_RESUTLS_KEYS[condition.keyName]
             LOG_ERROR('Condition is not supported.', condition.keyName)
-            return
+            return None
 
     def _getDescription(self, condition):
         return packDescriptionField(condition.getUserString())
@@ -198,9 +193,7 @@ class _VehicleCumulativeFormatter(_CumulativableFormatter, MissionsVehicleListFo
 
     @classmethod
     def _getConditionTitle(cls, condition, current, total):
-        if condition.isAnyVehicleAcceptable():
-            return cls._getTitle(current, total)
-        return cls._getComplexTitle(current, total)
+        return cls._getTitle(current, total) if condition.isAnyVehicleAcceptable() else cls._getComplexTitle(current, total)
 
 
 class _VehicleKillsCumulativeFormatter(_VehicleCumulativeFormatter, VehiclesKillFormatter):

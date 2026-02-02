@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/HangarMeta.py
 from gui.Scaleform.framework.entities.View import View
 
 class HangarMeta(View):
@@ -18,81 +20,61 @@ class HangarMeta(View):
         self._printOverrideError('onTeaserClick')
 
     def as_setCarouselEnabledS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setCarouselEnabled(value)
+        return self.flashObject.as_setCarouselEnabled(value) if self._isDAAPIInited() else None
 
     def as_setupAmmunitionPanelS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setupAmmunitionPanel(data)
+        return self.flashObject.as_setupAmmunitionPanel(data) if self._isDAAPIInited() else None
 
     def as_setControlsVisibleS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setControlsVisible(value)
+        return self.flashObject.as_setControlsVisible(value) if self._isDAAPIInited() else None
 
     def as_setEventTournamentBannerVisibleS(self, alias, isVisible):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setEventTournamentBannerVisible(alias, isVisible)
+        return self.flashObject.as_setEventTournamentBannerVisible(alias, isVisible) if self._isDAAPIInited() else None
 
     def as_setPrestigeWidgetVisibleS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setPrestigeWidgetVisible(value)
+        return self.flashObject.as_setPrestigeWidgetVisible(value) if self._isDAAPIInited() else None
 
     def as_setVisibleS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setVisible(value)
+        return self.flashObject.as_setVisible(value) if self._isDAAPIInited() else None
 
     def as_showHelpLayoutS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showHelpLayout()
+        return self.flashObject.as_showHelpLayout() if self._isDAAPIInited() else None
 
     def as_closeHelpLayoutS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_closeHelpLayout()
+        return self.flashObject.as_closeHelpLayout() if self._isDAAPIInited() else None
 
     def as_showMiniClientInfoS(self, description, hyperlink):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showMiniClientInfo(description, hyperlink)
+        return self.flashObject.as_showMiniClientInfo(description, hyperlink) if self._isDAAPIInited() else None
 
     def as_show3DSceneTooltipS(self, id, args):
-        if self._isDAAPIInited():
-            return self.flashObject.as_show3DSceneTooltip(id, args)
+        return self.flashObject.as_show3DSceneTooltip(id, args) if self._isDAAPIInited() else None
 
     def as_hide3DSceneTooltipS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_hide3DSceneTooltip()
+        return self.flashObject.as_hide3DSceneTooltip() if self._isDAAPIInited() else None
 
     def as_setCarouselS(self, linkage, alias):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setCarousel(linkage, alias)
+        return self.flashObject.as_setCarousel(linkage, alias) if self._isDAAPIInited() else None
 
     def as_showTeaserS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showTeaser(data)
+        return self.flashObject.as_showTeaser(data) if self._isDAAPIInited() else None
 
     def as_setTeaserTimerS(self, timeLabel):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setTeaserTimer(timeLabel)
+        return self.flashObject.as_setTeaserTimer(timeLabel) if self._isDAAPIInited() else None
 
     def as_hideTeaserTimerS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_hideTeaserTimer()
+        return self.flashObject.as_hideTeaserTimer() if self._isDAAPIInited() else None
 
     def as_animateHangarViewsS(self, isShow):
-        if self._isDAAPIInited():
-            return self.flashObject.as_animateHangarViews(isShow)
+        return self.flashObject.as_animateHangarViews(isShow) if self._isDAAPIInited() else None
 
     def as_setDQWidgetLayoutS(self, layout):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setDQWidgetLayout(layout)
+        return self.flashObject.as_setDQWidgetLayout(layout) if self._isDAAPIInited() else None
 
     def as_updateCarouselEventEntryStateS(self, isVisible):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateCarouselEventEntryState(isVisible)
+        return self.flashObject.as_updateCarouselEventEntryState(isVisible) if self._isDAAPIInited() else None
 
     def as_updateHangarComponentsS(self, showComponents=None, hideComponents=None):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateHangarComponents(showComponents, hideComponents)
+        return self.flashObject.as_updateHangarComponents(showComponents, hideComponents) if self._isDAAPIInited() else None
 
     def as_setComp7SpaceLoadedS(self, isLoaded):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setComp7SpaceLoaded(isLoaded)
+        return self.flashObject.as_setComp7SpaceLoaded(isLoaded) if self._isDAAPIInited() else None

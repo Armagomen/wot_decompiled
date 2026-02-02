@@ -1,5 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/base/unit/entity.py
 from typing import TYPE_CHECKING
-import cgi, time, BigWorld, account_helpers
+import cgi
+import time
+import BigWorld
+import account_helpers
 from ClientUnit import ClientUnit
 from CurrentVehicle import g_currentVehicle
 from PlayerEvents import g_playerEvents
@@ -57,7 +62,7 @@ class BaseUnitEntity(BasePrbEntity):
         return (0, None)
 
     def getExtra(self, unitMgrID=None):
-        return
+        return None
 
     def getUnitFullData(self, unitMgrID=None):
         return unit_items.UnitFullData()
@@ -75,8 +80,7 @@ class BaseUnitEntity(BasePrbEntity):
         return unit_items.SlotState()
 
     def getSlotsIterator(self, unitMgrID, unit):
-        return (
-         unit_items.SlotInfo(-1, self.getSlotState(-1)),)
+        return (unit_items.SlotInfo(-1, self.getSlotState(-1)),)
 
     def getPlayers(self, unitMgrID=None):
         return {}
@@ -88,17 +92,16 @@ class BaseUnitEntity(BasePrbEntity):
         return {}
 
     def getRosterType(self, unitMgrID=None):
-        return 0
+        pass
 
     def getRoster(self, unitMgrID=None):
-        return
+        return None
 
     def getVehiclesInfo(self, dbID=None, unitMgrID=None):
-        return (
-         unit_items.VehicleInfo(),)
+        return (unit_items.VehicleInfo(),)
 
     def invalidateSelectedVehicles(self, vehCDs):
-        return
+        return None
 
     def getFlags(self, unitMgrID=None):
         return unit_items.UnitFlags(0)
@@ -107,10 +110,10 @@ class BaseUnitEntity(BasePrbEntity):
         return unit_items.UnitStats()
 
     def getComment(self, unitMgrID=None):
-        return ''
+        pass
 
     def getCensoredComment(self, unitMgrID=None):
-        return ''
+        pass
 
     def getShowLeadershipNotification(self):
         return False
@@ -238,10 +241,7 @@ class _UnitEntity(BaseUnitEntity, ListenersCollection):
                 else:
                     newVehicleIDs.append(vInfo.vehInvID)
 
-        if hasInvalidation:
-            return SetVehicleUnitCtx(waitingID='prebattle/change_settings')
-        else:
-            return
+        return SetVehicleUnitCtx(waitingID='prebattle/change_settings') if hasInvalidation else None
 
     def request(self, ctx, callback=None):
         requestType = ctx.getRequestType()
@@ -296,10 +296,7 @@ class _UnitEntity(BaseUnitEntity, ListenersCollection):
         if dbID is None:
             dbID = account_helpers.getAccountDatabaseID()
         _, unit = self.getUnit(unitMgrID=unitMgrID, safe=True)
-        if unit is not None:
-            return UnitPermissions.isCommander(unit.getPlayers().get(dbID, {}).get('role', 0))
-        else:
-            return super(_UnitEntity, self).isCommander(dbID=dbID)
+        return UnitPermissions.isCommander(unit.getPlayers().get(dbID, {}).get('role', 0)) if unit is not None else super(_UnitEntity, self).isCommander(dbID=dbID)
 
     def isParentControlActivated(self, callback=None):
         if prb_getters.isParentControlActivated():
@@ -344,8 +341,7 @@ class _UnitEntity(BaseUnitEntity, ListenersCollection):
                 else:
                     freeSlotsCount += 1
                 openedSlotsCount += 1
-            else:
-                curTotalLevel += 1
+            curTotalLevel += 1
 
         levelsSeq = []
         for vehicles in unit.getVehicles().itervalues():
@@ -356,8 +352,7 @@ class _UnitEntity(BaseUnitEntity, ListenersCollection):
         return unit_items.UnitStats(readyCount, occupiedSlotsCount, openedSlotsCount, freeSlotsCount, curTotalLevel, levelsSeq)
 
     def _buildFlags(self, unit):
-        return unit_items.UnitFlags(unit.getFlags(), isReady=unit.arePlayersReady(ignored=[
-         settings.CREATOR_SLOT_INDEX]))
+        return unit_items.UnitFlags(unit.getFlags(), isReady=unit.arePlayersReady(ignored=[settings.CREATOR_SLOT_INDEX]))
 
 
 class _UnitIntroEntity(_UnitEntity):
@@ -549,17 +544,12 @@ class UnitEntity(_UnitEntity):
 
     def isInQueue(self):
         _, unit = self.getUnit(safe=True)
-        if unit is not None:
-            return unit.isInQueue()
-        else:
-            return super(UnitEntity, self).isInQueue()
+        return unit.isInQueue() if unit is not None else super(UnitEntity, self).isInQueue()
 
     def getConfirmDialogMeta(self, ctx):
         if self.hasLockedState():
             return rally_dialog_meta.RallyLeaveDisabledDialogMeta(CTRL_ENTITY_TYPE.UNIT, self._prbType)
-        if self.isCommander() and len(self.getPlayers()) == 1:
-            return super(UnitEntity, self).getConfirmDialogMeta(ctx)
-        return rally_dialog_meta.createUnitLeaveMeta(ctx, self._prbType, self.canSwitch(ctx))
+        return super(UnitEntity, self).getConfirmDialogMeta(ctx) if self.isCommander() and len(self.getPlayers()) == 1 else rally_dialog_meta.createUnitLeaveMeta(ctx, self._prbType, self.canSwitch(ctx))
 
     def getID(self):
         return prb_getters.getUnitMgrID()
@@ -606,7 +596,7 @@ class UnitEntity(_UnitEntity):
             isPlayerReady = unit.isPlayerReadyInSlot
             for slotIdx in self._rosterSettings.getAllSlotsRange():
                 isClosed = isSlotClosed(slotIdx)
-                result.append((isClosed or isPlayerReady)(slotIdx) if 1 else None)
+                result.append(isPlayerReady(slotIdx) if not isClosed else None)
 
             return result
 
@@ -614,10 +604,7 @@ class UnitEntity(_UnitEntity):
         if dbID is None:
             dbID = account_helpers.getAccountDatabaseID()
         unitMgrID, unit = self.getUnit(unitMgrID=unitMgrID, safe=True)
-        if unit is not None:
-            return self._buildPlayerInfo(unitMgrID, unit, dbID, unit.getPlayerSlotIdx(dbID), unit.getPlayer(dbID))
-        else:
-            return super(UnitEntity, self).getPlayerInfo(dbID=dbID, unitMgrID=unitMgrID)
+        return self._buildPlayerInfo(unitMgrID, unit, dbID, unit.getPlayerSlotIdx(dbID), unit.getPlayer(dbID)) if unit is not None else super(UnitEntity, self).getPlayerInfo(dbID=dbID, unitMgrID=unitMgrID)
 
     def getPlayers(self, unitMgrID=None):
         result = {}
@@ -650,7 +637,7 @@ class UnitEntity(_UnitEntity):
             return super(UnitEntity, self).getCandidates(unitMgrID=unitMgrID)
         else:
             players = unit.getPlayers()
-            memberIDs = set(value['accountDBID'] for value in unit.getMembers().itervalues())
+            memberIDs = set((value['accountDBID'] for value in unit.getMembers().itervalues()))
             dbIDs = set(players.keys()).difference(memberIDs)
             result = {}
             for dbID, data in players.iteritems():
@@ -662,17 +649,11 @@ class UnitEntity(_UnitEntity):
 
     def getRosterType(self, unitMgrID=None):
         _, unit = self.getUnit(unitMgrID=unitMgrID, safe=True)
-        if unit is not None:
-            return unit.getRosterType()
-        else:
-            return super(UnitEntity, self).getRosterType(unitMgrID=unitMgrID)
+        return unit.getRosterType() if unit is not None else super(UnitEntity, self).getRosterType(unitMgrID=unitMgrID)
 
     def getRoster(self, unitMgrID=None):
         _, unit = self.getUnit(unitMgrID=unitMgrID, safe=True)
-        if unit is not None:
-            return unit.getRoster()
-        else:
-            return super(UnitEntity, self).getRoster(unitMgrID=unitMgrID)
+        return unit.getRoster() if unit is not None else super(UnitEntity, self).getRoster(unitMgrID=unitMgrID)
 
     def getVehiclesInfo(self, dbID=None, unitMgrID=None):
         if dbID is None:
@@ -688,31 +669,19 @@ class UnitEntity(_UnitEntity):
 
     def getSlotState(self, slotIdx, unitMgrID=None):
         _, unit = self.getUnit(unitMgrID=unitMgrID, safe=True)
-        if unit is not None:
-            return unit_items.SlotState(unit.isSlotClosed(slotIdx), unit.isSlotFree(slotIdx))
-        else:
-            return super(UnitEntity, self).getSlotState(slotIdx, unitMgrID=unitMgrID)
+        return unit_items.SlotState(unit.isSlotClosed(slotIdx), unit.isSlotFree(slotIdx)) if unit is not None else super(UnitEntity, self).getSlotState(slotIdx, unitMgrID=unitMgrID)
 
     def getFlags(self, unitMgrID=None):
         _, unit = self.getUnit(unitMgrID=unitMgrID, safe=True)
-        if unit is not None:
-            return self._buildFlags(unit)
-        else:
-            return super(UnitEntity, self).getFlags(unitMgrID=unitMgrID)
+        return self._buildFlags(unit) if unit is not None else super(UnitEntity, self).getFlags(unitMgrID=unitMgrID)
 
     def getStats(self, unitMgrID=None):
         _, unit = self.getUnit(unitMgrID=unitMgrID, safe=True)
-        if unit is not None:
-            return self._buildStats(unitMgrID, unit)
-        else:
-            return super(UnitEntity, self).getStats(unitMgrID=unitMgrID)
+        return self._buildStats(unitMgrID, unit) if unit is not None else super(UnitEntity, self).getStats(unitMgrID=unitMgrID)
 
     def getComment(self, unitMgrID=None):
         _, unit = self.getUnit(unitMgrID=unitMgrID, safe=True)
-        if unit is not None:
-            return unit.getComment()
-        else:
-            return super(UnitEntity, self).getComment(unitMgrID=unitMgrID)
+        return unit.getComment() if unit is not None else super(UnitEntity, self).getComment(unitMgrID=unitMgrID)
 
     def getCensoredComment(self, unitMgrID=None):
         _, unit = self.getUnit(unitMgrID=unitMgrID, safe=True)
@@ -720,16 +689,11 @@ class UnitEntity(_UnitEntity):
             return super(UnitEntity, self).getCensoredComment(unitMgrID=unitMgrID)
         else:
             pInfo = self.getPlayerInfo(unitMgrID=unitMgrID)
-            if not pInfo.isCommander():
-                return passCensor(unit.getComment())
-            return unit.getComment()
+            return passCensor(unit.getComment()) if not pInfo.isCommander() else unit.getComment()
 
     def getExtra(self, unitMgrID=None):
         _, unit = self.getUnit(unitMgrID=unitMgrID, safe=True)
-        if unit is not None:
-            return unit.getExtra()
-        else:
-            return super(UnitEntity, self).getExtra(unitMgrID=unitMgrID)
+        return unit.getExtra() if unit is not None else super(UnitEntity, self).getExtra(unitMgrID=unitMgrID)
 
     def resetPlayerState(self):
         flags = self.getFlags()
@@ -1130,10 +1094,7 @@ class UnitEntity(_UnitEntity):
 
     def isDynamic(self):
         _, unit = self.getUnit()
-        if unit is not None:
-            return unit.isDynamic()
-        else:
-            return False
+        return unit.isDynamic() if unit is not None else False
 
     def getCooldownTime(self, rqTypeID):
         return self._cooldown.getTime(rqTypeID)
@@ -1331,21 +1292,21 @@ class UnitEntity(_UnitEntity):
 
     def _getRequestHandlers(self):
         RQ_TYPE = settings.REQUEST_TYPE
-        return {RQ_TYPE.ASSIGN: self.assign, 
-           RQ_TYPE.LOCK: self.lock, 
-           RQ_TYPE.CHANGE_OPENED: self.changeOpened, 
-           RQ_TYPE.CHANGE_COMMENT: self.changeComment, 
-           RQ_TYPE.SET_VEHICLE: self.setVehicle, 
-           RQ_TYPE.SET_PLAYER_STATE: self.setPlayerReady, 
-           RQ_TYPE.SET_ROSTERS_SLOTS: self.setRostersSlots, 
-           RQ_TYPE.CLOSE_SLOT: self.closeSlot, 
-           RQ_TYPE.SEND_INVITE: self.invite, 
-           RQ_TYPE.KICK: self.kick, 
-           RQ_TYPE.AUTO_SEARCH: self.doAutoSearch, 
-           RQ_TYPE.BATTLE_QUEUE: self.doBattleQueue, 
-           RQ_TYPE.GIVE_LEADERSHIP: self.giveLeadership, 
-           RQ_TYPE.CHANGE_DIVISION: self.changeDivision, 
-           RQ_TYPE.SET_VEHICLE_LIST: self.setVehicleList}
+        return {RQ_TYPE.ASSIGN: self.assign,
+         RQ_TYPE.LOCK: self.lock,
+         RQ_TYPE.CHANGE_OPENED: self.changeOpened,
+         RQ_TYPE.CHANGE_COMMENT: self.changeComment,
+         RQ_TYPE.SET_VEHICLE: self.setVehicle,
+         RQ_TYPE.SET_PLAYER_STATE: self.setPlayerReady,
+         RQ_TYPE.SET_ROSTERS_SLOTS: self.setRostersSlots,
+         RQ_TYPE.CLOSE_SLOT: self.closeSlot,
+         RQ_TYPE.SEND_INVITE: self.invite,
+         RQ_TYPE.KICK: self.kick,
+         RQ_TYPE.AUTO_SEARCH: self.doAutoSearch,
+         RQ_TYPE.BATTLE_QUEUE: self.doBattleQueue,
+         RQ_TYPE.GIVE_LEADERSHIP: self.giveLeadership,
+         RQ_TYPE.CHANGE_DIVISION: self.changeDivision,
+         RQ_TYPE.SET_VEHICLE_LIST: self.setVehicleList}
 
     def _createActionsHandler(self):
         return UnitActionsHandler(self)
@@ -1471,11 +1432,12 @@ class UnitEntity(_UnitEntity):
             if callback:
                 callback(True)
             return
-        setReadyAfterVehicleSelect = ctx.setReady
-        self._requestsProcessor.doRequest(ctx, 'setVehicle', vehInvID=vehInvID, setReady=setReadyAfterVehicleSelect, callback=callback)
-        if setReadyAfterVehicleSelect:
-            self._cooldown.process(settings.REQUEST_TYPE.SET_PLAYER_STATE, coolDown=ctx.getCooldown())
-        return
+        else:
+            setReadyAfterVehicleSelect = ctx.setReady
+            self._requestsProcessor.doRequest(ctx, 'setVehicle', vehInvID=vehInvID, setReady=setReadyAfterVehicleSelect, callback=callback)
+            if setReadyAfterVehicleSelect:
+                self._cooldown.process(settings.REQUEST_TYPE.SET_PLAYER_STATE, coolDown=ctx.getCooldown())
+            return
 
     def _clearVehicle(self, ctx, callback=None):
         vInfos = self.getVehiclesInfo()
@@ -1484,8 +1446,9 @@ class UnitEntity(_UnitEntity):
             if callback:
                 callback(True)
             return
-        self._requestsProcessor.doRequest(ctx, 'setVehicle', INV_ID_CLEAR_VEHICLE, callback=callback)
-        return
+        else:
+            self._requestsProcessor.doRequest(ctx, 'setVehicle', INV_ID_CLEAR_VEHICLE, callback=callback)
+            return
 
     def _getTimeLeftInIdle(self):
         _, unit = self.getUnit(safe=True)

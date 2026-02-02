@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/utils/requesters/BattleRoyaleRequester.py
 import BigWorld
 from gui.shared.utils.requesters.abstract import AbstractSyncDataRequester
 from skeletons.gui.shared.utils.requesters import IBattleRoyaleRequester
@@ -21,14 +23,10 @@ class BattleRoyaleRequester(AbstractSyncDataRequester, IBattleRoyaleRequester):
         return self.getCacheValue('BRSoloTop1Count') + self.getCacheValue('BRSquadTop1Count')
 
     def getStats(self, arenaBonusType, playerDatabaseID=None):
-        if playerDatabaseID:
-            return {}
-        return self.getCacheValue('brBattleStats').get(arenaBonusType, {})
+        return {} if playerDatabaseID else self.getCacheValue('brBattleStats').get(arenaBonusType, {})
 
     def _requestCache(self, callback=None):
         BigWorld.player().battleRoyale.getCache(lambda resID, value: self._response(resID, value, callback))
 
     def _preprocessValidData(self, data):
-        if 'battleRoyale' in data:
-            return dict(data['battleRoyale'])
-        return dict()
+        return dict(data['battleRoyale']) if 'battleRoyale' in data else dict()

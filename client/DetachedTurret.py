@@ -1,6 +1,11 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/DetachedTurret.py
 import GenericComponents
 from soft_exception import SoftException
-import math_utils, BigWorld, Math, logging
+import math_utils
+import BigWorld
+import Math
+import logging
 from debug_utils import LOG_ERROR
 import material_kinds
 from VehicleEffects import DamageFromShotDecoder
@@ -46,8 +51,8 @@ class DetachedTurret(BigWorld.Entity, ScriptGameObject):
         turretModel, gunModel = self.__getModels()
         assembler.addRootPart(turretModel, TankPartNames.TURRET)
         assembler.emplacePart(gunModel, TankNodeNames.GUN_JOINT, TankPartNames.GUN)
-        parts = {TankPartNames.TURRET: self.__vehDescr.turret, 
-           TankPartNames.GUN: self.__vehDescr.gun}
+        parts = {TankPartNames.TURRET: self.__vehDescr.turret,
+         TankPartNames.GUN: self.__vehDescr.gun}
         bspModels = ()
         for partName, part in parts.iteritems():
             partID = TankPartNames.getIdx(partName)
@@ -58,8 +63,7 @@ class DetachedTurret(BigWorld.Entity, ScriptGameObject):
             bspModels = bspModels + (bspModel,)
 
         collisionAssembler = BigWorld.CollisionAssembler(bspModels, self.spaceID)
-        return [
-         assembler, collisionAssembler]
+        return [assembler, collisionAssembler]
 
     def __getModels(self):
         vehicle = BigWorld.entity(self.vehicleID)
@@ -72,8 +76,7 @@ class DetachedTurret(BigWorld.Entity, ScriptGameObject):
         else:
             modelsSetParams = ModelsSetParams(style.modelsSet, ModelStates.EXPLODED, [])
             _, _, turretModel, gunModel = getPartModelsFromDesc(self.__vehDescr, modelsSetParams)
-            return (
-             turretModel, gunModel)
+            return (turretModel, gunModel)
 
     def prerequisites(self):
         LOG_DEBUG('prerequisites')
@@ -97,17 +100,12 @@ class DetachedTurret(BigWorld.Entity, ScriptGameObject):
             self.__detachmentEffects = None
         self.__hitEffects = _HitEffects(self.model)
         self.addComponent(self.__hitEffects)
-        self.__componentsDesc = (
-         self.__vehDescr.turret, self.__vehDescr.gun)
+        self.__componentsDesc = (self.__vehDescr.turret, self.__vehDescr.gun)
         from helpers.CallbackDelayer import CallbackDelayer
         self.__isBeingPulledCallback = CallbackDelayer()
         self.__isBeingPulledCallback.delayCallback(self.__checkIsBeingPulled(), self.__checkIsBeingPulled)
         DetachedTurret.allTurrets.append(self)
-        collisionData = (
-         (
-          TankPartNames.getIdx(TankPartNames.TURRET), self.model.matrix),
-         (
-          TankPartNames.getIdx(TankPartNames.GUN), self.model.node(TankPartNames.GUN)))
+        collisionData = ((TankPartNames.getIdx(TankPartNames.TURRET), self.model.matrix), (TankPartNames.getIdx(TankPartNames.GUN), self.model.node(TankPartNames.GUN)))
         self.collisions.connect(self.id, ColliderTypes.DYNAMIC_COLLIDER, collisionData)
         ScriptGameObject.activate(self)
         avatar = BigWorld.player()
@@ -179,8 +177,7 @@ class DetachedTurret(BigWorld.Entity, ScriptGameObject):
         for shotPoint in parsedPoints:
             if shotPoint.componentName == TankPartNames.TURRET or shotPoint.componentName == TankPartNames.GUN:
                 self.__hitEffects.showHit(shotPoint, effectsIndex, shotPoint.componentName)
-            else:
-                LOG_ERROR("Detached turret got hit into %s component, but it's impossible" % shotPoint.componentName)
+            LOG_ERROR("Detached turret got hit into %s component, but it's impossible" % shotPoint.componentName)
 
     def set_isUnderWater(self, prev):
         if self.__detachmentEffects is not None:
@@ -221,7 +218,8 @@ class _TurretDetachmentEffects(Component):
         FLYING = 0
         ON_GROUND = 1
 
-    __EFFECT_NAMES = {State.FLYING: 'flight', State.ON_GROUND: 'flamingOnGround'}
+    __EFFECT_NAMES = {State.FLYING: 'flight',
+     State.ON_GROUND: 'flamingOnGround'}
     _MAX_COLLISION_ENERGY = 98.10000000000001
     _MIN_COLLISION_ENERGY = _MIN_COLLISION_SPEED ** 2 * 0.5
     _MIN_NORMALIZED_ENERGY = 0.1
@@ -266,8 +264,7 @@ class _TurretDetachmentEffects(Component):
             stages, effectsList, _ = self.__detachmentEffectsDesc['collision'][effectMaterialIdx]
             normalizedEnergy = self.__normalizeEnergy(energy)
             dropEnergyParam = SoundStartParam(_TurretDetachmentEffects._DROP_ENERGY_PARAM, normalizedEnergy)
-            BigWorld.player().terrainEffects.addNew(collisionPoint, effectsList, stages, None, soundParams=[
-             dropEnergyParam])
+            BigWorld.player().terrainEffects.addNew(collisionPoint, effectsList, stages, None, soundParams=[dropEnergyParam])
         if self.__state != self.State.ON_GROUND:
             self.__state = self.State.ON_GROUND
             if not underWater:
@@ -334,12 +331,10 @@ class VehicleEnterTimer(object):
         vehicle = BigWorld.entity(self.__vehicleID)
         if vehicle is None:
             return
+        elif not vehicle.inWorld or not vehicle.isStarted:
+            return
         else:
-            if not vehicle.inWorld or not vehicle.isStarted:
-                return
-            if not self._canAcceptVehicle(vehicle):
-                return
-            return vehicle
+            return None if not self._canAcceptVehicle(vehicle) else vehicle
 
     def __startCallback(self):
         if self.__time < self.__maxTime:

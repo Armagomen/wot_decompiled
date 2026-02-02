@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/backport/backport_system_locale.py
 from frameworks import wulf
 
 def getIntegralFormat(value):
@@ -37,11 +39,11 @@ def getYearMonthFormat(value):
 
 
 def getDateTimeFormat(value):
-    return ('{0:>s} {1:>s}').format(wulf.getDateFormat(value, wulf.DateFormatType.LONG_FORMAT), wulf.getTimeFormat(value, wulf.TimeFormatType.SHORT_FORMAT))
+    return u'{0:>s} {1:>s}'.format(wulf.getDateFormat(value, wulf.DateFormatType.LONG_FORMAT), wulf.getTimeFormat(value, wulf.TimeFormatType.SHORT_FORMAT))
 
 
 def getShortDateTimeFormat(value):
-    return ('{0:>s} {1:>s}').format(wulf.getDateFormat(value, wulf.DateFormatType.SHORT_FORMAT), wulf.getTimeFormat(value, wulf.TimeFormatType.SHORT_FORMAT))
+    return u'{0:>s} {1:>s}'.format(wulf.getDateFormat(value, wulf.DateFormatType.SHORT_FORMAT), wulf.getTimeFormat(value, wulf.TimeFormatType.SHORT_FORMAT))
 
 
 def upper(value):

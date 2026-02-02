@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/feature/util/fun_mixins.py
 from __future__ import absolute_import
-import logging, typing
+import logging
+import typing
 from adisp import adisp_async, adisp_process
 from fun_random_common.fun_constants import UNKNOWN_EVENT_ID
 from fun_random.gui.fun_gui_constants import SELECTOR_BATTLE_TYPES

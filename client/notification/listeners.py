@@ -1,9 +1,14 @@
-import json, logging, time, uuid, weakref
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/notification/listeners.py
+import json
+import logging
+import time
+import uuid
+import weakref
 from abc import ABCMeta
 from collections import defaultdict
 from functools import partial
 from typing import TYPE_CHECKING
-import WWISE
 from account_helpers.AccountSettings import INTEGRATED_AUCTION_NOTIFICATIONS, IS_BATTLE_PASS_EXTRA_START_NOTIFICATION_SEEN, IS_BATTLE_PASS_START_NOTIFICATION_SEEN, LOOT_BOXES_WAS_FINISHED, LOOT_BOXES_WAS_STARTED, PROGRESSIVE_REWARD_VISITED, RECRUITS_NOTIFICATIONS, SENIORITY_AWARDS_COINS_REMINDER_SHOWN_TIMESTAMP, VEH_SKILL_TREE_POPUP_SHOWN, VEH_SKILL_TREE_RECORDED_NOFITICATION_NODE, BattleMatters
 from account_helpers.settings_core.settings_constants import SeniorityAwardsStorageKeys
 from gui.Scaleform.locale.SYSTEM_MESSAGES import SYSTEM_MESSAGES
@@ -13,6 +18,7 @@ from gui.Scaleform.framework.entities.View import ViewKey
 from gui.impl.lobby.gf_notifications import GFNotificationTemplates
 from gui.impl.lobby.gf_notifications.cache import getCache
 from gui.impl.lobby.vehicle_hub.sub_presenters.veh_skill_tree.utils import getCheapestAvailablePerk
+from gui.server_events.pm_constants import IS_PM3_QUEST_ENABLED, DISABLED_PM_OPERATIONS, DISABLED_PM_MISSIONS, IS_PM2_QUEST_ENABLED, IS_REGULAR_QUEST_ENABLED
 from helpers.events_handler import EventsHandler
 from helpers.time_utils import getTimestampByStrDate
 from PlayerEvents import g_playerEvents
@@ -153,105 +159,39 @@ class _StateExtractor(object):
         return cls.__lobbyContext.getServerSettings().isMapsTrainingEnabled()
 
 
-_FEATURES_DATA = {PremiumConfigs.DAILY_BONUS: {_FeatureState.ON: (
-                                                 R.strings.system_messages.daily_xp_bonus.switch_on.title(),
-                                                 R.strings.system_messages.daily_xp_bonus.switch_on.body(),
-                                                 SystemMessages.SM_TYPE.FeatureSwitcherOn), 
-                                _FeatureState.OFF: (
-                                                  R.strings.system_messages.daily_xp_bonus.switch_off.title(),
-                                                  R.strings.system_messages.daily_xp_bonus.switch_off.body(),
-                                                  SystemMessages.SM_TYPE.FeatureSwitcherOff), 
-                                _FUNCTION: _StateExtractor.getAdditionalBonusState}, 
-   PremiumConfigs.PREM_SQUAD: {_FeatureState.ON: (
-                                                R.strings.system_messages.squad_bonus.switch_on.title(),
-                                                R.strings.system_messages.squad_bonus.switch_on.body(),
-                                                SystemMessages.SM_TYPE.FeatureSwitcherOn), 
-                               _FeatureState.OFF: (
-                                                 R.strings.system_messages.squad_bonus.switch_off.title(),
-                                                 R.strings.system_messages.squad_bonus.switch_off.body(),
-                                                 SystemMessages.SM_TYPE.FeatureSwitcherOff), 
-                               _FUNCTION: _StateExtractor.getSquadPremiumState}, 
-   PremiumConfigs.IS_PREFERRED_MAPS_ENABLED: {_FeatureState.ON: (
-                                                               R.strings.system_messages.maps_black_list.switch_on.title(),
-                                                               R.strings.system_messages.maps_black_list.switch_on.body(),
-                                                               SystemMessages.SM_TYPE.FeatureSwitcherOn), 
-                                              _FeatureState.OFF: (
-                                                                R.strings.system_messages.maps_black_list.switch_off.title(),
-                                                                R.strings.system_messages.maps_black_list.switch_off.body(),
-                                                                SystemMessages.SM_TYPE.FeatureSwitcherOff), 
-                                              _FUNCTION: _StateExtractor.getPreferredMapsState}, 
-   PremiumConfigs.PIGGYBANK: {_FeatureState.ON: (
-                                               R.strings.system_messages.piggybank.switch_on.title(),
-                                               R.strings.system_messages.piggybank.switch_on.body(),
-                                               SystemMessages.SM_TYPE.FeatureSwitcherOn), 
-                              _FeatureState.OFF: (
-                                                R.strings.system_messages.piggybank.switch_off.title(),
-                                                R.strings.system_messages.piggybank.switch_off.body(),
-                                                SystemMessages.SM_TYPE.FeatureSwitcherOff), 
-                              _FUNCTION: _StateExtractor.getPiggyBankState}, 
-   PremiumConfigs.PREM_QUESTS: {_FeatureState.ON: (
-                                                 R.strings.system_messages.premium_quests.switch_on.title(),
-                                                 R.strings.system_messages.premium_quests.switch_on.body(),
-                                                 SystemMessages.SM_TYPE.FeatureSwitcherOn), 
-                                _FeatureState.OFF: (
-                                                  R.strings.system_messages.premium_quests.switch_off.title(),
-                                                  R.strings.system_messages.premium_quests.switch_off.body(),
-                                                  SystemMessages.SM_TYPE.FeatureSwitcherOff), 
-                                _FUNCTION: _StateExtractor.getPremQuestsState}, 
-   DAILY_QUESTS_CONFIG: {_FeatureState.ON: (
-                                          R.strings.system_messages.daily_quests.switch_on.title(),
-                                          R.strings.system_messages.daily_quests.switch_on.body(),
-                                          SystemMessages.SM_TYPE.FeatureSwitcherOn), 
-                         _FeatureState.OFF: (
-                                           R.strings.system_messages.daily_quests.switch_off.title(),
-                                           R.strings.system_messages.daily_quests.switch_off.body(),
-                                           SystemMessages.SM_TYPE.FeatureSwitcherOff), 
-                         _FUNCTION: _StateExtractor.getDailyQuestsState}, 
-   Configs.WEEKLY_QUESTS_CONFIG.value: {_FeatureState.ON: (
-                                                         None,
-                                                         R.strings.system_messages.weekly_quests.switch_on.body(),
-                                                         SystemMessages.SM_TYPE.MediumInfo), 
-                                        _FeatureState.OFF: (
-                                                          None,
-                                                          R.strings.system_messages.weekly_quests.switch_off.body(),
-                                                          SystemMessages.SM_TYPE.ErrorSimple), 
-                                        _FUNCTION: _StateExtractor.getWeeklyQuestsState}, 
-   CollectorVehicleConsts.CONFIG_NAME: {_FeatureState.ON: (
-                                                         R.strings.system_messages.collectorVehicle.switch_on.title(),
-                                                         R.strings.system_messages.collectorVehicle.switch_on.body(),
-                                                         SystemMessages.SM_TYPE.FeatureSwitcherOn), 
-                                        _FeatureState.OFF: (
-                                                          R.strings.system_messages.collectorVehicle.switch_off.title(),
-                                                          R.strings.system_messages.collectorVehicle.switch_off.body(),
-                                                          SystemMessages.SM_TYPE.FeatureSwitcherOff), 
-                                        _FUNCTION: _StateExtractor.getCollectorVehicleState}, 
-   DOG_TAGS_CONFIG: {_FeatureState.ON: (
-                                      R.strings.system_messages.dog_tags.switch_on.title(),
-                                      R.strings.system_messages.dog_tags.switch_on.body(),
-                                      SystemMessages.SM_TYPE.FeatureSwitcherOn), 
-                     _FeatureState.OFF: (
-                                       R.strings.system_messages.dog_tags.switch_off.title(),
-                                       R.strings.system_messages.dog_tags.switch_off.body(),
-                                       SystemMessages.SM_TYPE.FeatureSwitcherOff), 
-                     _FUNCTION: _StateExtractor.getDogTagsUnlockingState}, 
-   PLAYER_SUBSCRIPTIONS_CONFIG: {_FeatureState.ON: (
-                                                  R.strings.system_messages.player_subscriptions.switch_on.title(),
-                                                  R.strings.system_messages.player_subscriptions.switch_on.body(),
-                                                  SystemMessages.SM_TYPE.FeatureSwitcherOn), 
-                                 _FeatureState.OFF: (
-                                                   R.strings.system_messages.player_subscriptions.switch_off.title(),
-                                                   R.strings.system_messages.player_subscriptions.switch_off.body(),
-                                                   SystemMessages.SM_TYPE.FeatureSwitcherOff), 
-                                 _FUNCTION: _StateExtractor.getPlayerSubscriptionsState}, 
-   MAPS_TRAINING_ENABLED_KEY: {_FeatureState.ON: (
-                                                R.strings.system_messages.maps_training.switch.title(),
-                                                R.strings.system_messages.maps_training.switch_on.body(),
-                                                SystemMessages.SM_TYPE.FeatureSwitcherOn), 
-                               _FeatureState.OFF: (
-                                                 R.strings.system_messages.maps_training.switch.title(),
-                                                 R.strings.system_messages.maps_training.switch_off.body(),
-                                                 SystemMessages.SM_TYPE.FeatureSwitcherOff), 
-                               _FUNCTION: _StateExtractor.getMapsTrainingState}}
+_FEATURES_DATA = {PremiumConfigs.DAILY_BONUS: {_FeatureState.ON: (R.strings.system_messages.daily_xp_bonus.switch_on.title(), R.strings.system_messages.daily_xp_bonus.switch_on.body(), SystemMessages.SM_TYPE.FeatureSwitcherOn),
+                              _FeatureState.OFF: (R.strings.system_messages.daily_xp_bonus.switch_off.title(), R.strings.system_messages.daily_xp_bonus.switch_off.body(), SystemMessages.SM_TYPE.FeatureSwitcherOff),
+                              _FUNCTION: _StateExtractor.getAdditionalBonusState},
+ PremiumConfigs.PREM_SQUAD: {_FeatureState.ON: (R.strings.system_messages.squad_bonus.switch_on.title(), R.strings.system_messages.squad_bonus.switch_on.body(), SystemMessages.SM_TYPE.FeatureSwitcherOn),
+                             _FeatureState.OFF: (R.strings.system_messages.squad_bonus.switch_off.title(), R.strings.system_messages.squad_bonus.switch_off.body(), SystemMessages.SM_TYPE.FeatureSwitcherOff),
+                             _FUNCTION: _StateExtractor.getSquadPremiumState},
+ PremiumConfigs.IS_PREFERRED_MAPS_ENABLED: {_FeatureState.ON: (R.strings.system_messages.maps_black_list.switch_on.title(), R.strings.system_messages.maps_black_list.switch_on.body(), SystemMessages.SM_TYPE.FeatureSwitcherOn),
+                                            _FeatureState.OFF: (R.strings.system_messages.maps_black_list.switch_off.title(), R.strings.system_messages.maps_black_list.switch_off.body(), SystemMessages.SM_TYPE.FeatureSwitcherOff),
+                                            _FUNCTION: _StateExtractor.getPreferredMapsState},
+ PremiumConfigs.PIGGYBANK: {_FeatureState.ON: (R.strings.system_messages.piggybank.switch_on.title(), R.strings.system_messages.piggybank.switch_on.body(), SystemMessages.SM_TYPE.FeatureSwitcherOn),
+                            _FeatureState.OFF: (R.strings.system_messages.piggybank.switch_off.title(), R.strings.system_messages.piggybank.switch_off.body(), SystemMessages.SM_TYPE.FeatureSwitcherOff),
+                            _FUNCTION: _StateExtractor.getPiggyBankState},
+ PremiumConfigs.PREM_QUESTS: {_FeatureState.ON: (R.strings.system_messages.premium_quests.switch_on.title(), R.strings.system_messages.premium_quests.switch_on.body(), SystemMessages.SM_TYPE.FeatureSwitcherOn),
+                              _FeatureState.OFF: (R.strings.system_messages.premium_quests.switch_off.title(), R.strings.system_messages.premium_quests.switch_off.body(), SystemMessages.SM_TYPE.FeatureSwitcherOff),
+                              _FUNCTION: _StateExtractor.getPremQuestsState},
+ DAILY_QUESTS_CONFIG: {_FeatureState.ON: (R.strings.system_messages.daily_quests.switch_on.title(), R.strings.system_messages.daily_quests.switch_on.body(), SystemMessages.SM_TYPE.FeatureSwitcherOn),
+                       _FeatureState.OFF: (R.strings.system_messages.daily_quests.switch_off.title(), R.strings.system_messages.daily_quests.switch_off.body(), SystemMessages.SM_TYPE.FeatureSwitcherOff),
+                       _FUNCTION: _StateExtractor.getDailyQuestsState},
+ Configs.WEEKLY_QUESTS_CONFIG.value: {_FeatureState.ON: (None, R.strings.system_messages.weekly_quests.switch_on.body(), SystemMessages.SM_TYPE.MediumInfo),
+                                      _FeatureState.OFF: (None, R.strings.system_messages.weekly_quests.switch_off.body(), SystemMessages.SM_TYPE.ErrorSimple),
+                                      _FUNCTION: _StateExtractor.getWeeklyQuestsState},
+ CollectorVehicleConsts.CONFIG_NAME: {_FeatureState.ON: (R.strings.system_messages.collectorVehicle.switch_on.title(), R.strings.system_messages.collectorVehicle.switch_on.body(), SystemMessages.SM_TYPE.FeatureSwitcherOn),
+                                      _FeatureState.OFF: (R.strings.system_messages.collectorVehicle.switch_off.title(), R.strings.system_messages.collectorVehicle.switch_off.body(), SystemMessages.SM_TYPE.FeatureSwitcherOff),
+                                      _FUNCTION: _StateExtractor.getCollectorVehicleState},
+ DOG_TAGS_CONFIG: {_FeatureState.ON: (R.strings.system_messages.dog_tags.switch_on.title(), R.strings.system_messages.dog_tags.switch_on.body(), SystemMessages.SM_TYPE.FeatureSwitcherOn),
+                   _FeatureState.OFF: (R.strings.system_messages.dog_tags.switch_off.title(), R.strings.system_messages.dog_tags.switch_off.body(), SystemMessages.SM_TYPE.FeatureSwitcherOff),
+                   _FUNCTION: _StateExtractor.getDogTagsUnlockingState},
+ PLAYER_SUBSCRIPTIONS_CONFIG: {_FeatureState.ON: (R.strings.system_messages.player_subscriptions.switch_on.title(), R.strings.system_messages.player_subscriptions.switch_on.body(), SystemMessages.SM_TYPE.FeatureSwitcherOn),
+                               _FeatureState.OFF: (R.strings.system_messages.player_subscriptions.switch_off.title(), R.strings.system_messages.player_subscriptions.switch_off.body(), SystemMessages.SM_TYPE.FeatureSwitcherOff),
+                               _FUNCTION: _StateExtractor.getPlayerSubscriptionsState},
+ MAPS_TRAINING_ENABLED_KEY: {_FeatureState.ON: (R.strings.system_messages.maps_training.switch.title(), R.strings.system_messages.maps_training.switch_on.body(), SystemMessages.SM_TYPE.FeatureSwitcherOn),
+                             _FeatureState.OFF: (R.strings.system_messages.maps_training.switch.title(), R.strings.system_messages.maps_training.switch_off.body(), SystemMessages.SM_TYPE.FeatureSwitcherOff),
+                             _FUNCTION: _StateExtractor.getMapsTrainingState}}
 
 class _NotificationListener(object):
 
@@ -284,7 +224,7 @@ class ServiceChannelListener(_NotificationListener):
 
     @proto_getter(PROTO_TYPE.BW)
     def proto(self):
-        return
+        return None
 
     def start(self, model):
         result = super(ServiceChannelListener, self).start(model)
@@ -321,53 +261,43 @@ class ServiceChannelListener(_NotificationListener):
         return messageType in (SYS_MESSAGE_TYPE.collectionsItems.index(), SYS_MESSAGE_TYPE.collectionsReward.index())
 
     def __isCollectionsSMType(self, settings):
-        auxData = getattr(settings, 'auxData', (None, ))
-        if auxData:
-            return SM_TYPE.lookup(auxData[0]) == SM_TYPE.CollectionStart
-        else:
-            return
+        auxData = getattr(settings, 'auxData', (None,))
+        return SM_TYPE.lookup(auxData[0]) == SM_TYPE.CollectionStart if auxData else None
 
     def __needToLowerPriority(self, messageType):
-        excludedTypes = (
-         SYS_MESSAGE_TYPE.premiumBought.index(),
-         SYS_MESSAGE_TYPE.premiumExtended.index(),
-         SYS_MESSAGE_TYPE.bonusExcludedMap.index())
+        excludedTypes = (SYS_MESSAGE_TYPE.premiumBought.index(), SYS_MESSAGE_TYPE.premiumExtended.index(), SYS_MESSAGE_TYPE.bonusExcludedMap.index())
         return messageType in excludedTypes and findActiveWindow(R.views.mono.lootbox.main()) is not None
 
     def __getMessageDecorator(self, settings, messageType, messageSubtype):
         if settings.decorator is not None:
             return settings.decorator
-        else:
-            if messageType == SYS_MESSAGE_TYPE.autoMaintenance.index():
-                if messageSubtype in (AUTO_MAINTENANCE_RESULT.RENT_IS_OVER, AUTO_MAINTENANCE_RESULT.RENT_IS_ALMOST_OVER):
-                    return C11nMessageDecorator
-            if messageType == SYS_MESSAGE_TYPE.customizationChanged.index():
+        if messageType == SYS_MESSAGE_TYPE.autoMaintenance.index():
+            if messageSubtype in (AUTO_MAINTENANCE_RESULT.RENT_IS_OVER, AUTO_MAINTENANCE_RESULT.RENT_IS_ALMOST_OVER):
                 return C11nMessageDecorator
-            if messageType == SYS_MESSAGE_TYPE.customizationProgress.index():
-                return C11nProgressiveItemDecorator
-            if messageType == SYS_MESSAGE_TYPE.personalMissionFailed.index():
-                return LockButtonMessageDecorator
-            if messageType in {SYS_MESSAGE_TYPE.postProgressionUnlocked.index(),
-             SYS_MESSAGE_TYPE.postProgressionCompleted.index()}:
-                return PostProgressionDecorator
-            if messageType == SYS_MESSAGE_TYPE.prestigeLevelChanged.index():
-                return PrestigeLvlUpDecorator
-            if messageType == SYS_MESSAGE_TYPE.battlePassReward.index():
-                return BattlePassLockButtonDecorator
-            if messageSubtype in (
-             SCH_CLIENT_MSG_TYPE.MAPBOX_PROGRESSION_REWARD, SCH_CLIENT_MSG_TYPE.MAPBOX_SURVEY_AVAILABLE):
-                return MapboxButtonDecorator
-            if messageType == SYS_MESSAGE_TYPE.customization2dProgressionChanged.index():
-                return C2DProgressionStyleDecorator
-            if self.__isCollectionsSysMessageTypes(messageType) or self.__isCollectionsSMType(settings):
-                return CollectionsLockButtonDecorator
-            if messageType == SYS_MESSAGE_TYPE.personalMission3Quest.index():
-                return PersonalMission3QuestDecorator
-            if self.__needToLowerPriority(messageType):
-                return LowPriorityDecorator
-            if messageType == SYS_MESSAGE_TYPE.petAdded.index():
-                return PetSystemDecorator
-            return MessageDecorator
+        if messageType == SYS_MESSAGE_TYPE.customizationChanged.index():
+            return C11nMessageDecorator
+        elif messageType == SYS_MESSAGE_TYPE.customizationProgress.index():
+            return C11nProgressiveItemDecorator
+        elif messageType == SYS_MESSAGE_TYPE.personalMissionFailed.index():
+            return LockButtonMessageDecorator
+        elif messageType in {SYS_MESSAGE_TYPE.postProgressionUnlocked.index(), SYS_MESSAGE_TYPE.postProgressionCompleted.index()}:
+            return PostProgressionDecorator
+        elif messageType == SYS_MESSAGE_TYPE.prestigeLevelChanged.index():
+            return PrestigeLvlUpDecorator
+        elif messageType == SYS_MESSAGE_TYPE.battlePassReward.index():
+            return BattlePassLockButtonDecorator
+        elif messageSubtype in (SCH_CLIENT_MSG_TYPE.MAPBOX_PROGRESSION_REWARD, SCH_CLIENT_MSG_TYPE.MAPBOX_SURVEY_AVAILABLE):
+            return MapboxButtonDecorator
+        elif messageType == SYS_MESSAGE_TYPE.customization2dProgressionChanged.index():
+            return C2DProgressionStyleDecorator
+        elif self.__isCollectionsSysMessageTypes(messageType) or self.__isCollectionsSMType(settings):
+            return CollectionsLockButtonDecorator
+        elif messageType == SYS_MESSAGE_TYPE.personalMission3Quest.index():
+            return PersonalMission3QuestDecorator
+        elif self.__needToLowerPriority(messageType):
+            return LowPriorityDecorator
+        else:
+            return PetSystemDecorator if messageType == SYS_MESSAGE_TYPE.petAdded.index() else MessageDecorator
 
 
 class BaseReminderListener(_NotificationListener):
@@ -384,7 +314,7 @@ class BaseReminderListener(_NotificationListener):
         return False
 
     def _createNotificationData(self, **ctx):
-        return
+        return None
 
     def _createDecorator(self, notificationData):
         raise NotImplementedError
@@ -407,16 +337,16 @@ class BaseReminderListener(_NotificationListener):
         model = self._model()
         if not model:
             return False
+        data = self._createNotificationData(**ctx)
+        notification = self._createDecorator(data)
+        prevNotification = model.getNotification(self._getNotificationType(), notification.getID())
+        if prevNotification is None:
+            model.addNotification(notification)
+            return True
+        elif not self._cmpNotifications(notification, prevNotification):
+            model.updateNotification(notification.getType(), notification.getID(), notification.getEntity(), isStateChanged)
+            return True
         else:
-            data = self._createNotificationData(**ctx)
-            notification = self._createDecorator(data)
-            prevNotification = model.getNotification(self._getNotificationType(), notification.getID())
-            if prevNotification is None:
-                model.addNotification(notification)
-                return True
-            if not self._cmpNotifications(notification, prevNotification):
-                model.updateNotification(notification.getType(), notification.getID(), notification.getEntity(), isStateChanged)
-                return True
             return False
 
 
@@ -445,7 +375,7 @@ class PrbInvitesListener(_NotificationListener, IGlobalListener):
 
     @prbInvitesProperty
     def prbInvites(self):
-        return
+        return None
 
     def start(self, model):
         result = super(PrbInvitesListener, self).start(model)
@@ -538,7 +468,7 @@ class FriendshipRqsListener(_NotificationListener):
 
     @proto_getter(PROTO_TYPE.XMPP)
     def proto(self):
-        return
+        return None
 
     def start(self, model):
         result = super(FriendshipRqsListener, self).start(model)
@@ -601,13 +531,9 @@ class FriendshipRqsListener(_NotificationListener):
     def __me_onUserActionReceived(self, actionID, contact, shadowMode):
         if contact.getProtoType() != PROTO_TYPE.XMPP:
             return
-        if actionID in (
-         USER_ACTION_ID.SUBSCRIPTION_CHANGED,
-         USER_ACTION_ID.IGNORED_ADDED):
+        if actionID in (USER_ACTION_ID.SUBSCRIPTION_CHANGED, USER_ACTION_ID.IGNORED_ADDED):
             self.__updateRequest(contact)
-        elif actionID in (
-         USER_ACTION_ID.FRIEND_ADDED,
-         USER_ACTION_ID.FRIEND_REMOVED):
+        elif actionID in (USER_ACTION_ID.FRIEND_ADDED, USER_ACTION_ID.FRIEND_REMOVED):
             self.__updateRequests()
 
 
@@ -627,8 +553,7 @@ class _ClanNotificationsCommonListener(_WGNCNotificationListener, ClanListener):
             return
         storedItems = self._getStoredReceivedItems()
         itemsByTypeCount = len(storedItems)
-        LOG_DEBUG('Clan WGNC new notifications count with type "%d": %d' % (
-         self._getNewReceivedItemType(), itemsByTypeCount))
+        LOG_DEBUG('Clan WGNC new notifications count with type "%d": %d' % (self._getNewReceivedItemType(), itemsByTypeCount))
         if itemsByTypeCount:
             if itemsByTypeCount > 1:
                 self._addMultiNotification(storedItems)
@@ -656,22 +581,22 @@ class _ClanNotificationsCommonListener(_WGNCNotificationListener, ClanListener):
     def _onProxyDataItemShow(self, notID, item):
         if not self._canBeShown():
             return True
-        else:
-            if self._getNewReceivedItemType() == item.getType():
-                model = self._model()
-                if self.__startTime:
-                    if time_utils.getCurrentTimestamp() - self.__startTime < 5:
-                        multiNot = self._getMultiNotification()
-                        if multiNot:
-                            model.updateNotification(multiNot.getType(), multiNot.getID(), multiNot.getEntity() + 1, False)
-                        else:
-                            self._addSingleNotification(item)
+        elif self._getNewReceivedItemType() == item.getType():
+            model = self._model()
+            if self.__startTime:
+                if time_utils.getCurrentTimestamp() - self.__startTime < 5:
+                    multiNot = self._getMultiNotification()
+                    if multiNot:
+                        model.updateNotification(multiNot.getType(), multiNot.getID(), multiNot.getEntity() + 1, False)
                     else:
-                        self.__startTime = None
                         self._addSingleNotification(item)
                 else:
+                    self.__startTime = None
                     self._addSingleNotification(item)
-                return True
+            else:
+                self._addSingleNotification(item)
+            return True
+        else:
             return False
 
     def _getStoredReceivedItems(self):
@@ -716,9 +641,7 @@ class _ClanNotificationsCommonListener(_WGNCNotificationListener, ClanListener):
 
 
 class _ClanAppsListener(_ClanNotificationsCommonListener, UsersInfoHelper):
-    _TYPES_EXPECTED_USERS_NAMES = (
-     NOTIFICATION_TYPE.CLAN_APP,
-     NOTIFICATION_TYPE.CLAN_INVITE_ACTION)
+    _TYPES_EXPECTED_USERS_NAMES = (NOTIFICATION_TYPE.CLAN_APP, NOTIFICATION_TYPE.CLAN_INVITE_ACTION)
 
     def __init__(self):
         super(_ClanAppsListener, self).__init__()
@@ -734,8 +657,7 @@ class _ClanAppsListener(_ClanNotificationsCommonListener, UsersInfoHelper):
     def onAccountClanProfileChanged(self, profile):
         if not profile.isInClan() or not profile.getMyClanPermissions().canHandleClanInvites():
             model = self._model()
-            for notification in model.collection.getListIterator((NOTIFICATION_TYPE.CLAN_APP,
-             NOTIFICATION_TYPE.CLAN_APPS)):
+            for notification in model.collection.getListIterator((NOTIFICATION_TYPE.CLAN_APP, NOTIFICATION_TYPE.CLAN_APPS)):
                 model.removeNotification(notification.getType(), notification.getID())
 
     def onUserNamesReceived(self, names):
@@ -809,15 +731,11 @@ class _ClanAppsListener(_ClanNotificationsCommonListener, UsersInfoHelper):
 
     def _updateAllNotifications(self):
         model = self._model()
-        for notifications in model.collection.getListIterator((NOTIFICATION_TYPE.CLAN_APP,
-         NOTIFICATION_TYPE.CLAN_APPS)):
+        for notifications in model.collection.getListIterator((NOTIFICATION_TYPE.CLAN_APP, NOTIFICATION_TYPE.CLAN_APPS)):
             model.updateNotification(notifications.getType(), notifications.getID(), notifications.getEntity(), False)
 
     def _removeAllNotifications(self):
-        self._removeNotifications((
-         NOTIFICATION_TYPE.CLAN_APP,
-         NOTIFICATION_TYPE.CLAN_APPS,
-         NOTIFICATION_TYPE.CLAN_INVITE_ACTION))
+        self._removeNotifications((NOTIFICATION_TYPE.CLAN_APP, NOTIFICATION_TYPE.CLAN_APPS, NOTIFICATION_TYPE.CLAN_INVITE_ACTION))
 
     def _canBeShown(self):
         canBeShown = super(_ClanAppsListener, self)._canBeShown()
@@ -835,7 +753,7 @@ class _ClanAppsListener(_ClanNotificationsCommonListener, UsersInfoHelper):
         notification = clazz(userName=userName, *args)
         notificationType = notification.getType()
         if notificationType not in self._TYPES_EXPECTED_USERS_NAMES:
-            LOG_ERROR(('Unexpected notification type "{}"').format(notificationType))
+            LOG_ERROR('Unexpected notification type "{}"'.format(notificationType))
         else:
             self._model().addNotification(notification)
 
@@ -860,8 +778,7 @@ class _ClanPersonalInvitesListener(_ClanNotificationsCommonListener):
     def onAccountClanProfileChanged(self, profile):
         if profile.isInClan():
             model = self._model()
-            for notDecorator in model.collection.getListIterator((NOTIFICATION_TYPE.CLAN_INVITE,
-             NOTIFICATION_TYPE.CLAN_INVITES)):
+            for notDecorator in model.collection.getListIterator((NOTIFICATION_TYPE.CLAN_INVITE, NOTIFICATION_TYPE.CLAN_INVITES)):
                 model.removeNotification(notDecorator.getType(), notDecorator.getID())
 
     def onClanInvitesStateChanged(self, inviteIds, state):
@@ -877,12 +794,10 @@ class _ClanPersonalInvitesListener(_ClanNotificationsCommonListener):
         if not isProcessed:
             itemType = item.getType()
             if itemType == WGNC_DATA_PROXY_TYPE.CLAN_APP_DECLINED:
-                self._model().addNotification(ClanAppActionDecorator(item.getApplicationId(), 'appDeclined', (
-                 item.getClanName(), item.getClanTag())))
+                self._model().addNotification(ClanAppActionDecorator(item.getApplicationId(), 'appDeclined', (item.getClanName(), item.getClanTag())))
                 isProcessed = True
             elif itemType == WGNC_DATA_PROXY_TYPE.CLAN_APP_ACCEPTED:
-                self._model().addNotification(ClanAppActionDecorator(item.getApplicationId(), 'appAccepted', (
-                 item.getClanName(), item.getClanTag())))
+                self._model().addNotification(ClanAppActionDecorator(item.getApplicationId(), 'appAccepted', (item.getClanName(), item.getClanTag())))
                 isProcessed = True
         return isProcessed
 
@@ -908,10 +823,7 @@ class _ClanPersonalInvitesListener(_ClanNotificationsCommonListener):
             model.updateNotification(notDecorator.getType(), notDecorator.getID(), notDecorator.getEntity(), False)
 
     def _removeAllNotifications(self):
-        self._removeNotifications((
-         NOTIFICATION_TYPE.CLAN_INVITE,
-         NOTIFICATION_TYPE.CLAN_INVITES,
-         NOTIFICATION_TYPE.CLAN_APP_ACTION))
+        self._removeNotifications((NOTIFICATION_TYPE.CLAN_INVITE, NOTIFICATION_TYPE.CLAN_INVITES, NOTIFICATION_TYPE.CLAN_APP_ACTION))
 
     def _canBeShown(self):
         isCtrlrEnabled = super(_ClanPersonalInvitesListener, self)._canBeShown()
@@ -1049,7 +961,7 @@ class ProgressiveRewardListener(_NotificationListener):
 
 
 class SwitcherListener(_NotificationListener):
-    slots = ('__currentStates', )
+    slots = ('__currentStates',)
     __lobbyContext = dependency.descriptor(ILobbyContext)
 
     def __init__(self):
@@ -1092,7 +1004,7 @@ class SwitcherListener(_NotificationListener):
 
 
 class NDQSwitcherListener(_NotificationListener):
-    slots = ('__currentState', )
+    slots = ('__currentState',)
     __lobbyContext = dependency.descriptor(ILobbyContext)
 
     def __init__(self):
@@ -1174,11 +1086,11 @@ class BattlePassListener(_NotificationListener):
         super(BattlePassListener, self).start(model)
         self.__isStarted = self.__battlePass.isActive()
         self.__isFinished = self.__battlePass.isSeasonFinished()
-        self.__arenaBonusTypesHandlers = {ARENA_BONUS_TYPE.RANKED: self.__pushEnableChangeRanked, 
-           ARENA_BONUS_TYPE.BATTLE_ROYALE_SOLO: self.__pushBattleRoyaleEnableChange, 
-           ARENA_BONUS_TYPE.EPIC_BATTLE: self.__pushEpicBattleModeChanged, 
-           ARENA_BONUS_TYPE.COMP7: self.__pushComp7ModeChanged, 
-           ARENA_BONUS_TYPE.COMP7_LIGHT: self.__pushComp7LightModeChanged}
+        self.__arenaBonusTypesHandlers = {ARENA_BONUS_TYPE.RANKED: self.__pushEnableChangeRanked,
+         ARENA_BONUS_TYPE.BATTLE_ROYALE_SOLO: self.__pushBattleRoyaleEnableChange,
+         ARENA_BONUS_TYPE.EPIC_BATTLE: self.__pushEpicBattleModeChanged,
+         ARENA_BONUS_TYPE.COMP7: self.__pushComp7ModeChanged,
+         ARENA_BONUS_TYPE.COMP7_LIGHT: self.__pushComp7LightModeChanged}
         self.__battlePass.onSeasonStateChanged += self.__onSeasonStateChange
         self.__battlePass.onBattlePassSettingsChange += self.__onBattlePassSettingsChange
         self.__notificationCtrl.onEventNotificationsChanged += self.__onEventNotification
@@ -1203,9 +1115,9 @@ class BattlePassListener(_NotificationListener):
             msgType = eventNotification.eventType
             if msgType == SERVER_CMD_BP_GAMEMODE_ENABBLED:
                 self.__notifyGamemodeEnabled(eventNotification)
-            elif msgType == SERVER_CMD_BP_EXTRA_FINISH:
+            if msgType == SERVER_CMD_BP_EXTRA_FINISH:
                 self.__notifyFinishExtra(eventNotification.data)
-            elif msgType == SERVER_CMD_BP_EXTRA_WILL_END_SOON:
+            if msgType == SERVER_CMD_BP_EXTRA_WILL_END_SOON:
                 self.__notifyExtraWillEndSoon(eventNotification.data)
 
     def __onBattlePassSettingsChange(self, newMode, oldMode):
@@ -1300,7 +1212,8 @@ class BattlePassListener(_NotificationListener):
     def __pushFinished(self):
         if self.__battlePass.isHoliday():
             header = backport.text(R.strings.system_messages.battlePassH.switch_disable.title(), seasonName=backport.text(R.strings.battle_pass.season.fullName.num(self.__battlePass.getSeasonNum())()))
-            SystemMessages.pushMessage(text=backport.text(R.strings.system_messages.battlePassH.switch_disable.body()), priority=NotificationPriorityLevel.HIGH, type=SystemMessages.SM_TYPE.BattlePassDefault, messageData={'header': header, 'additionalText': ''})
+            SystemMessages.pushMessage(text=backport.text(R.strings.system_messages.battlePassH.switch_disable.body()), priority=NotificationPriorityLevel.HIGH, type=SystemMessages.SM_TYPE.BattlePassDefault, messageData={'header': header,
+             'additionalText': ''})
 
     def __pushStarted(self):
         if self.__battlePass.isHoliday():
@@ -1309,7 +1222,8 @@ class BattlePassListener(_NotificationListener):
         else:
             text = backport.text(R.strings.system_messages.battlePass.switch_started.body())
             header = backport.text(R.strings.system_messages.battlePass.switch_started.title(), seasonNum=self.__battlePass.getSeasonNum())
-        SystemMessages.pushMessage(text=text, priority=NotificationPriorityLevel.HIGH, type=SystemMessages.SM_TYPE.BattlePassDefault, messageData={'header': header, 'additionalText': ''})
+        SystemMessages.pushMessage(text=text, priority=NotificationPriorityLevel.HIGH, type=SystemMessages.SM_TYPE.BattlePassDefault, messageData={'header': header,
+         'additionalText': ''})
         AccountSettings.setSettings(IS_BATTLE_PASS_START_NOTIFICATION_SEEN, True)
 
     def __pushEnabled(self):
@@ -1413,7 +1327,7 @@ class BattlePassSwitchChapterReminder(BaseReminderListener):
 
 
 class UpgradeTrophyDeviceListener(_NotificationListener):
-    __slots__ = ('__enabled', )
+    __slots__ = ('__enabled',)
     __lobbyContext = dependency.descriptor(ILobbyContext)
 
     def __init__(self):
@@ -1441,7 +1355,7 @@ class UpgradeTrophyDeviceListener(_NotificationListener):
 
 
 class RecertificationFormStateListener(_NotificationListener):
-    __slots__ = ('_state', )
+    __slots__ = ('_state',)
     __goodiesCache = dependency.descriptor(IGoodiesCache)
     __lobbyContext = dependency.descriptor(ILobbyContext)
 
@@ -1461,9 +1375,7 @@ class RecertificationFormStateListener(_NotificationListener):
         super(RecertificationFormStateListener, self).stop()
 
     def _getState(self):
-        if not self.__goodiesCache.getRecertificationForm(currency='gold').enabled:
-            return SwitchState.DISABLED.value
-        return self.__lobbyContext.getServerSettings().recertificationFormState()
+        return SwitchState.DISABLED.value if not self.__goodiesCache.getRecertificationForm(currency='gold').enabled else self.__lobbyContext.getServerSettings().recertificationFormState()
 
     def __onServerSettingsChange(self, diff):
         newSwitchState = diff.get('recertificationFormState')
@@ -1474,8 +1386,9 @@ class RecertificationFormStateListener(_NotificationListener):
             if self._state == newState:
                 return
             if self._state != SwitchState.DISABLED.value and newState != SwitchState.DISABLED.value:
-                action = {'sentTime': time.time(), 'data': {'type': SYS_MESSAGE_TYPE.recertificationAvailability.index(), 
-                            'data': {'state': newState}}}
+                action = {'sentTime': time.time(),
+                 'data': {'type': SYS_MESSAGE_TYPE.recertificationAvailability.index(),
+                          'data': {'state': newState}}}
                 MessengerEntry.g_instance.protos.BW.serviceChannel.onReceivePersonalSysMessage(action)
             self._state = newState
             return
@@ -1516,7 +1429,8 @@ class RecruitReminderListener(BaseReminderListener):
             lc = self.__loginManager.getPreference('loginCount')
             if lc == self._INCREASE_LIMIT_LOGIN:
                 priorityLevel = NotificationPriorityLevel.MEDIUM
-        savedData = {'count': recruitsCount, 'expiryTime': expiryTime}
+        savedData = {'count': recruitsCount,
+         'expiryTime': expiryTime}
         return NotificationData(entityID, savedData, priorityLevel, None)
 
     def _createDecorator(self, notificationData):
@@ -1606,13 +1520,12 @@ class VehiclePostProgressionUnlockListener(_NotificationListener):
 
 
 class SeniorityAwardsTokenListener(BaseReminderListener):
-    __slots__ = ('__uiCoinsNotificationLogger', )
     __itemsCache = dependency.descriptor(IItemsCache)
     __seniorityAwardCtrl = dependency.descriptor(ISeniorityAwardsController)
     __TYPE = NOTIFICATION_TYPE.SENIORITY_AWARDS_TOKENS
     __ENTITY_ID = 0
     __DAYS_BETWEEN_NOTIFICATIONS = 30
-    __TEMPLATE = 'seniorityAwardsTokens'
+    __TEMPLATE = GFNotificationTemplates.SENIORITY_AWARD_TOKENS_NOTIFICATION
 
     def __init__(self):
         super(SeniorityAwardsTokenListener, self).__init__(self.__TYPE, self.__ENTITY_ID)
@@ -1622,7 +1535,7 @@ class SeniorityAwardsTokenListener(BaseReminderListener):
         result = super(SeniorityAwardsTokenListener, self).start(model)
         if result:
             self.__seniorityAwardCtrl.onUpdated += self.__onUpdated
-            g_clientUpdateManager.addCallbacks({('cache.dynamicCurrencies.{}').format(WDR_CURRENCY): self.__onBalanceUpdate})
+            g_clientUpdateManager.addCallbacks({'cache.dynamicCurrencies.{}'.format(WDR_CURRENCY): self.__onBalanceUpdate})
             self.__tryNotify()
         return result
 
@@ -1636,18 +1549,15 @@ class SeniorityAwardsTokenListener(BaseReminderListener):
         count = self.__seniorityAwardCtrl.getSACoin()
         isClockOn = timestamp - self.__seniorityAwardCtrl.clockOnNotification > 0
         timeLeft = self.__seniorityAwardCtrl.timeLeft
-        if isClockOn and timeLeft > 0:
-            rTimeLeft = R.strings.seniority_awards.notifications.tokens.timer()
-            timeLeftStr = time_formatters.getTillTimeByResource(timeLeft, R.strings.seniority_awards.notifications.tokens.timeLeft, removeLeadingZeros=True)
-            finishTime = text_styles.tutorial(backport.text(rTimeLeft, timeLeft=timeLeftStr))
-        else:
-            finishTime = ''
-        data = {'count': str(count), 
-           'finishTime': finishTime}
-        return NotificationData(self._getNotificationId(), data, priority, None)
+        if not isClockOn or timeLeft <= 0:
+            timeLeft = 0
+        gfDataID = str(uuid.uuid4())
+        getCache().setPayload(gfDataID, {'count': str(count),
+         'timeLeft': timeLeft})
+        return NotificationData(self._getNotificationId(), {'gfDataID': gfDataID}, priority, None)
 
     def _createDecorator(self, data):
-        return SeniorityAwardsDecorator(data.entityID, self._getNotificationType(), data.savedData, self._model(), self.__TEMPLATE, data.priorityLevel)
+        return SeniorityAwardsDecorator(data.entityID, notificationType=self._getNotificationType(), savedData=data.savedData, model=self._model(), template=self.__TEMPLATE, priority=data.priorityLevel)
 
     def __onBalanceUpdate(self, *_):
         self.__tryNotify()
@@ -1676,8 +1586,6 @@ class SeniorityAwardsTokenListener(BaseReminderListener):
                 priority = NotificationPriorityLevel.LOW
                 parentScreen = SeniorityAwardsLogSpaces.NOTIFICATION_CENTER
             if self._notify(priority=priority):
-                if priority != NotificationPriorityLevel.LOW:
-                    WWISE.WW_eventGlobal(backport.sound(R.sounds.wdr_hangar_notification()))
                 self.__updateLastShownTimestamp()
                 self.__uiCoinsNotificationLogger.handleDisplayedAction(parentScreen)
             return
@@ -1688,20 +1596,19 @@ class SeniorityAwardsTokenListener(BaseReminderListener):
         AccountSettings.setNotifications(SENIORITY_AWARDS_COINS_REMINDER_SHOWN_TIMESTAMP, currentTimestamp)
 
 
-class SeniorityAwardsQuestListener(_NotificationListener):
-    __slots__ = ('__uiRewardNotificationLogger', )
+class SeniorityAwardsManualClaimListener(_NotificationListener):
     __TYPE = NOTIFICATION_TYPE.SENIORITY_AWARDS_QUEST
-    __TEMPLATE = 'seniorityAwardsQuest22'
+    __TEMPLATE = GFNotificationTemplates.SENIORITY_AWARD_MANUAL_CLAIM_NOTIFICATION
     __ENTITY_ID = 0
     __seniorityAwardCtrl = dependency.descriptor(ISeniorityAwardsController)
     __limitedUIController = dependency.descriptor(ILimitedUIController)
 
     def __init__(self):
-        super(SeniorityAwardsQuestListener, self).__init__()
+        super(SeniorityAwardsManualClaimListener, self).__init__()
         self.__uiRewardNotificationLogger = RewardNotificationLogger()
 
     def start(self, model):
-        result = super(SeniorityAwardsQuestListener, self).start(model)
+        result = super(SeniorityAwardsManualClaimListener, self).start(model)
         self.__seniorityAwardCtrl.onUpdated += self.__tryNotify
         self.__limitedUIController.startObserve(LUI_RULES.WDRNewbieReward, self.__NotifyHandler)
         self.__tryNotify()
@@ -1710,7 +1617,7 @@ class SeniorityAwardsQuestListener(_NotificationListener):
     def stop(self):
         self.__seniorityAwardCtrl.onUpdated -= self.__tryNotify
         self.__limitedUIController.stopObserve(LUI_RULES.WDRNewbieReward, self.__NotifyHandler)
-        super(SeniorityAwardsQuestListener, self).stop()
+        super(SeniorityAwardsManualClaimListener, self).stop()
 
     def __NotifyHandler(self, *_):
         self.__tryNotify()
@@ -1719,26 +1626,23 @@ class SeniorityAwardsQuestListener(_NotificationListener):
         model = self._model()
         if not model:
             return
-        else:
-            if self.__seniorityAwardCtrl.isNeedToShowRewardNotification:
-                limitedUIRuleCompleted = self.__limitedUIController.isRuleCompleted(LUI_RULES.WDRNewbieReward)
-                showRewardNotification = self.__seniorityAwardCtrl.showRewardHangarNotification
-                isHangarNotification = showRewardNotification and limitedUIRuleCompleted
-                priority = NotificationPriorityLevel.MEDIUM if isHangarNotification else NotificationPriorityLevel.LOW
-                prevNotification = model.getNotification(self.__TYPE, self.__ENTITY_ID)
-                if prevNotification:
-                    if prevNotification.getPriorityLevel() == priority:
-                        return
-                    model.removeNotification(self.__TYPE, self.__ENTITY_ID)
-                model.addNotification(SeniorityAwardsDecorator(self.__ENTITY_ID, self.__TYPE, None, model, self.__TEMPLATE, priority, useCounterOnce=False, isNotify=self.__seniorityAwardCtrl.isNeedToShowNotificationBullet))
-                parentScreen = SeniorityAwardsLogSpaces.NOTIFICATION_CENTER
-                if priority != NotificationPriorityLevel.LOW:
-                    parentScreen = SeniorityAwardsLogSpaces.HANGAR
-                    WWISE.WW_eventGlobal(backport.sound(R.sounds.wdr_hangar_notification()))
-                self.__uiRewardNotificationLogger.handleDisplayedAction(parentScreen, limitedUIRuleCompleted, self.__seniorityAwardCtrl.isNeedToShowNotificationBullet)
-            else:
+        if self.__seniorityAwardCtrl.isNeedToShowRewardNotification:
+            limitedUIRuleCompleted = self.__limitedUIController.isRuleCompleted(LUI_RULES.WDRNewbieReward)
+            showRewardNotification = self.__seniorityAwardCtrl.showRewardHangarNotification
+            isHangarNotification = showRewardNotification and limitedUIRuleCompleted
+            priority = NotificationPriorityLevel.MEDIUM if isHangarNotification else NotificationPriorityLevel.LOW
+            prevNotification = model.getNotification(self.__TYPE, self.__ENTITY_ID)
+            if prevNotification:
+                if prevNotification.getPriorityLevel() == priority:
+                    return
                 model.removeNotification(self.__TYPE, self.__ENTITY_ID)
-            return
+            model.addNotification(SeniorityAwardsDecorator(self.__ENTITY_ID, self.__TYPE, {'gfDataID': str(uuid.uuid4())}, model, self.__TEMPLATE, priority, useCounterOnce=False, isNotify=self.__seniorityAwardCtrl.isNeedToShowNotificationBullet))
+            parentScreen = SeniorityAwardsLogSpaces.NOTIFICATION_CENTER
+            if priority != NotificationPriorityLevel.LOW:
+                parentScreen = SeniorityAwardsLogSpaces.HANGAR
+            self.__uiRewardNotificationLogger.handleDisplayedAction(parentScreen, limitedUIRuleCompleted, self.__seniorityAwardCtrl.isNeedToShowNotificationBullet)
+        else:
+            model.removeNotification(self.__TYPE, self.__ENTITY_ID)
 
 
 class SeniorityAwardsStateListener(_NotificationListener):
@@ -1776,12 +1680,11 @@ class SeniorityAwardsStateListener(_NotificationListener):
 
 
 class SeniorityAwardsVehicleSelectionListener(BaseReminderListener):
-    __slots__ = ('__uiVehicleSelectionNotificationLogger', )
     __seniorityAwardCtrl = dependency.descriptor(ISeniorityAwardsController)
     __TYPE = NOTIFICATION_TYPE.SENIORITY_AWARDS_VEHICLE_SELECTION
     __ENTITY_ID = 0
     __PRIORITY = NotificationPriorityLevel.LOW
-    __TEMPLATE = 'seniorityAwardsVehicleSelection'
+    __TEMPLATE = GFNotificationTemplates.SENIORITY_AWARD_VEHICLE_SELECTION_NOTIFICATION
 
     def __init__(self):
         super(SeniorityAwardsVehicleSelectionListener, self).__init__(self.__TYPE, self.__ENTITY_ID)
@@ -1803,11 +1706,12 @@ class SeniorityAwardsVehicleSelectionListener(BaseReminderListener):
     def _createNotificationData(self, priority, **ctx):
         vehiclesCanSelect = self.__seniorityAwardCtrl.getVehiclesForSelectionCount
         allVehiclesForSelection = len(self.__seniorityAwardCtrl.getAvailableVehicleSelectionRewards())
-        data = {'count': str(min(vehiclesCanSelect, allVehiclesForSelection))}
-        return NotificationData(self._getNotificationId(), data, priority, None)
+        gfDataID = str(uuid.uuid4())
+        getCache().setPayload(gfDataID, {'count': str(min(vehiclesCanSelect, allVehiclesForSelection))})
+        return NotificationData(entityID=self._getNotificationId(), savedData={'gfDataID': gfDataID}, priorityLevel=priority, entity=None)
 
     def _createDecorator(self, data):
-        return SeniorityAwardsDecorator(data.entityID, self._getNotificationType(), data.savedData, self._model(), self.__TEMPLATE, data.priorityLevel)
+        return SeniorityAwardsDecorator(data.entityID, notificationType=self._getNotificationType(), savedData=data.savedData, model=self._model(), template=self.__TEMPLATE, priority=data.priorityLevel)
 
     def __onUpdated(self):
         self.__tryNotify()
@@ -1826,10 +1730,10 @@ class SeniorityAwardsVehicleSelectionListener(BaseReminderListener):
 class IntegratedAuctionListener(_NotificationListener):
     __slots__ = ('__startNotifiers', '__finishNotifiers')
     __eventNotifications = dependency.descriptor(IEventsNotificationsController)
-    __EVENT_TYPE_TO_SETTING = {AUCTION_START_EVENT_TYPE: AUCTION_STAGE_START_SEEN, 
-       AUCTION_FINISH_EVENT_TYPE: AUCTION_FINISH_STAGE_SEEN}
-    __EVENT_TYPE_TO_DECORATOR = {AUCTION_START_EVENT_TYPE: IntegratedAuctionStageStartDecorator, 
-       AUCTION_FINISH_EVENT_TYPE: IntegratedAuctionStageFinishDecorator}
+    __EVENT_TYPE_TO_SETTING = {AUCTION_START_EVENT_TYPE: AUCTION_STAGE_START_SEEN,
+     AUCTION_FINISH_EVENT_TYPE: AUCTION_FINISH_STAGE_SEEN}
+    __EVENT_TYPE_TO_DECORATOR = {AUCTION_START_EVENT_TYPE: IntegratedAuctionStageStartDecorator,
+     AUCTION_FINISH_EVENT_TYPE: IntegratedAuctionStageFinishDecorator}
     __TIME_TO_SHOW_SOON = 2
 
     def __init__(self):
@@ -1874,21 +1778,22 @@ class IntegratedAuctionListener(_NotificationListener):
         model = self._model()
         if model is None:
             return
-        settings = AccountSettings.getNotifications(INTEGRATED_AUCTION_NOTIFICATIONS)
-        settingName = self.__EVENT_TYPE_TO_SETTING[eventType]
-        notificationID = str(data['id'])
-        if notificationID not in settings[settingName]:
-            startDate = getTimestampByStrDate(str(data['startDate']))
-            endDate = getTimestampByStrDate(str(data['endDate']))
-            if startDate <= time_utils.getServerUTCTime() < endDate and self.__isNotificationNeeded(eventType):
-                decorator = self.__EVENT_TYPE_TO_DECORATOR.get(eventType)
-                if callable(decorator):
-                    model.addNotification(decorator(entityID=int(notificationID)))
-                    self.__setNotificationShown(settings, settingName, notificationID)
-                    self.__removeNotifier(notificationID, eventType)
-            elif startDate > time_utils.getServerUTCTime():
-                self.__addNotifier(notificationID, eventType, startDate)
-        return
+        else:
+            settings = AccountSettings.getNotifications(INTEGRATED_AUCTION_NOTIFICATIONS)
+            settingName = self.__EVENT_TYPE_TO_SETTING[eventType]
+            notificationID = str(data['id'])
+            if notificationID not in settings[settingName]:
+                startDate = getTimestampByStrDate(str(data['startDate']))
+                endDate = getTimestampByStrDate(str(data['endDate']))
+                if startDate <= time_utils.getServerUTCTime() < endDate and self.__isNotificationNeeded(eventType):
+                    decorator = self.__EVENT_TYPE_TO_DECORATOR.get(eventType)
+                    if callable(decorator):
+                        model.addNotification(decorator(entityID=int(notificationID)))
+                        self.__setNotificationShown(settings, settingName, notificationID)
+                        self.__removeNotifier(notificationID, eventType)
+                elif startDate > time_utils.getServerUTCTime():
+                    self.__addNotifier(notificationID, eventType, startDate)
+            return
 
     def __addNotifier(self, notificationID, eventType, startDate):
         notifiers = self.__startNotifiers if eventType == AUCTION_START_EVENT_TYPE else self.__finishNotifiers
@@ -1944,11 +1849,7 @@ class CollectionsListener(_NotificationListener, EventsHandler):
         super(CollectionsListener, self).stop()
 
     def _getEvents(self):
-        return (
-         (
-          self.__eventNotifications.onEventNotificationsChanged, self.__onEventNotification),
-         (
-          self.__collections.onAvailabilityChanged, self.__onAvailabilityChanged))
+        return ((self.__eventNotifications.onEventNotificationsChanged, self.__onEventNotification), (self.__collections.onAvailabilityChanged, self.__onAvailabilityChanged))
 
     def __onEventNotification(self, added, _):
         self.__tryNotify(added)
@@ -1990,7 +1891,8 @@ class CollectionsListener(_NotificationListener, EventsHandler):
     def __pushCollectionsCustomMessage(self, title, text, messageType, notificationType, entityID, savedData=None):
         model = self._model()
         if not model.hasNotification(notificationType, entityID):
-            message = {'title': title, 'text': text}
+            message = {'title': title,
+             'text': text}
             notification = CollectionCustomMessageDecorator(entityID=entityID, message=message, messageType=messageType, notificationType=notificationType, savedData=savedData, model=model)
             model.addNotification(notification)
 
@@ -2067,13 +1969,7 @@ class BattleMattersTaskReminderListener(BaseReminderListener, EventsHandler):
         super(BattleMattersTaskReminderListener, self).stop()
 
     def _getEvents(self):
-        return (
-         (
-          self.__bmCtrl.progressWatcher.onStateChanged, self.__onStateChanged),
-         (
-          self.__bmCtrl.progressWatcher.onProgressReset, self.__onProgressReset),
-         (
-          self.__bmCtrl.progressWatcher.onBackFromBattle, self.__onBackFromBattle))
+        return ((self.__bmCtrl.progressWatcher.onStateChanged, self.__onStateChanged), (self.__bmCtrl.progressWatcher.onProgressReset, self.__onProgressReset), (self.__bmCtrl.progressWatcher.onBackFromBattle, self.__onBackFromBattle))
 
     def _createNotificationData(self, priority, **ctx):
         currentQuest = self.__bmCtrl.getCurrentQuest()
@@ -2173,8 +2069,11 @@ class PrestigeListener(_NotificationListener):
             text = backport.text(self.__PRESTIGE_MESSAGES.firstEntry.text())
             title = backport.text(self.__PRESTIGE_MESSAGES.firstEntry.title())
             gradeType, grade = mapGradeIDToUI(MAX_GRADE_ID)
-            messageData = {'title': title, 'text': text}
-            linkageData = {'type': gradeType.value, 'grade': grade, 'lvl': None}
+            messageData = {'title': title,
+             'text': text}
+            linkageData = {'type': gradeType.value,
+             'grade': grade,
+             'lvl': None}
             model.addNotification(PrestigeFirstEntryDecorator(message=messageData, linkageData=linkageData, entityID=self.__START_ENTITY_ID, model=model))
             setFirstEntryNotificationShown()
             return
@@ -2187,10 +2086,10 @@ class BaseExchangeRateWithDiscountsListener(BaseReminderListener):
     __PRIORITY_LEVEL = NotificationPriorityLevel.LOW
     _TYPE = None
     _EXCHANGE_TYPE = None
-    __NOTIFICATION_FORMAT_MAPPING = {ExchangeRateShowFormat.COEFFICIENT: PERSONAL_EXCHANGE_RATES.NOTIFICATION_TYPE_FACTOR, 
-       ExchangeRateShowFormat.INTEGER: PERSONAL_EXCHANGE_RATES.NOTIFICATION_TYPE_INT, 
-       ExchangeRateShowFormat.TEMPORARY: PERSONAL_EXCHANGE_RATES.NOTIFICATION_TYPE_TEMP, 
-       ExchangeRateShowFormat.LIMITED: PERSONAL_EXCHANGE_RATES.NOTIFICATION_TYPE_FACTOR}
+    __NOTIFICATION_FORMAT_MAPPING = {ExchangeRateShowFormat.COEFFICIENT: PERSONAL_EXCHANGE_RATES.NOTIFICATION_TYPE_FACTOR,
+     ExchangeRateShowFormat.INTEGER: PERSONAL_EXCHANGE_RATES.NOTIFICATION_TYPE_INT,
+     ExchangeRateShowFormat.TEMPORARY: PERSONAL_EXCHANGE_RATES.NOTIFICATION_TYPE_TEMP,
+     ExchangeRateShowFormat.LIMITED: PERSONAL_EXCHANGE_RATES.NOTIFICATION_TYPE_FACTOR}
     __exchangeRatesProvider = dependency.descriptor(IExchangeRatesWithDiscountsProvider)
 
     def __init__(self):
@@ -2221,10 +2120,10 @@ class BaseExchangeRateWithDiscountsListener(BaseReminderListener):
         return self._exchangeRate.exchangeDiscountPercent
 
     def _createNotificationData(self, priority, **ctx):
-        data = {'type': self._discountTypeName, 
-           'format': self.__discountShowFormat, 
-           'endTime': self.__discountEndTime, 
-           'discountPercent': self._discountPercent}
+        data = {'type': self._discountTypeName,
+         'format': self.__discountShowFormat,
+         'endTime': self.__discountEndTime,
+         'discountPercent': self._discountPercent}
         return NotificationData(self._getNotificationId(), data, priority, None)
 
     def _createDecorator(self, data):
@@ -2309,7 +2208,7 @@ class EasyTankEquipStateListener(_NotificationListener):
 class LootBoxSystemListener(_NotificationListener):
     __slots__ = ('__isActive', '__isLootBoxesWasStarted')
     __lootBoxes = dependency.descriptor(ILootBoxSystemController)
-    __nameRes = ('eventName/lowerCase').split('/')
+    __nameRes = 'eventName/lowerCase'.split('/')
     __START_ENTITY_ID = 0
 
     def __init__(self):
@@ -2359,32 +2258,32 @@ class LootBoxSystemListener(_NotificationListener):
         return
 
     def __pushStarted(self, eventName):
-        res = ('serviceChannelMessages/start').split('/')
+        res = 'serviceChannelMessages/start'.split('/')
         model = self._model()
         if model is not None:
             _, finish = self.__lootBoxes.getActiveTime(eventName)
             localFinishTime = time_utils.makeLocalServerTime(finish)
             eventNameText = backport.text(getTextResource(self.__nameRes, eventName)())
-            messageData = {'header': backport.text(getTextResource(res + [NotificationPathPart.HEADER], eventName)(), eventName=eventNameText), 
-               'text': backport.text(getTextResource(res + [NotificationPathPart.TEXT], eventName)(), date=TimeFormatter.getShortDateFormat(localFinishTime))}
+            messageData = {'header': backport.text(getTextResource(res + [NotificationPathPart.HEADER], eventName)(), eventName=eventNameText),
+             'text': backport.text(getTextResource(res + [NotificationPathPart.TEXT], eventName)(), date=TimeFormatter.getShortDateFormat(localFinishTime))}
             model.addNotification(LootBoxSystemDecorator(message=messageData, entityID=self.__START_ENTITY_ID, model=model, savedData={'eventName': eventName}))
             self.__lootBoxes.setSetting(eventName, LOOT_BOXES_WAS_STARTED, True)
         return
 
     def __pushFinished(self, eventName, boxesCount):
-        res = ('serviceChannelMessages/finish').split('/')
+        res = 'serviceChannelMessages/finish'.split('/')
         eventNameText = backport.text(getTextResource(self.__nameRes, eventName)())
         SystemMessages.pushMessage(text=backport.text(R.strings.lootbox_system.helpers.doubleBreakLine()) + backport.text(getTextResource(res + [NotificationPathPart.TEXT], eventName)()) if boxesCount > 0 else '', priority=NotificationPriorityLevel.MEDIUM, type=SystemMessages.SM_TYPE.LootBoxSystemFinish, messageData={'header': backport.text(getTextResource(res + [NotificationPathPart.HEADER], eventName)(), eventName=eventNameText)})
         self.__lootBoxes.setSetting(eventName, LOOT_BOXES_WAS_FINISHED, True)
 
     @staticmethod
     def __pushLootBoxesEnabled(eventName):
-        res = ('serviceChannelMessages/lootBoxesEnabled').split('/')
+        res = 'serviceChannelMessages/lootBoxesEnabled'.split('/')
         SystemMessages.pushMessage(text=backport.text(getTextResource(res + [NotificationPathPart.TEXT], eventName)()), priority=NotificationPriorityLevel.HIGH, type=SystemMessages.SM_TYPE.LootBoxSystemEnabled, messageData={'header': backport.text(getTextResource(res + [NotificationPathPart.HEADER], eventName)())})
 
     @staticmethod
     def __pushLootBoxesDisabled(eventName):
-        res = ('serviceChannelMessages/lootBoxesDisabled').split('/')
+        res = 'serviceChannelMessages/lootBoxesDisabled'.split('/')
         SystemMessages.pushMessage(text=backport.text(getTextResource(res + [NotificationPathPart.TEXT], eventName)()), priority=NotificationPriorityLevel.HIGH, type=SystemMessages.SM_TYPE.LootBoxSystemDisabled, messageData={'header': backport.text(getTextResource(res + [NotificationPathPart.HEADER], eventName)())})
 
 
@@ -2415,13 +2314,13 @@ class PM3NotificationListener(_NotificationListener):
         self.__currentDisabledMissions = set(self.__lobbyContext.getServerSettings().getDisabledPersonalMissions())
 
     def __onServerSettingsChange(self, diff):
-        if 'isPM3QuestEnabled' in diff and 'isPM2QuestEnabled' in diff and 'isRegularQuestEnabled' in diff:
+        if IS_PM3_QUEST_ENABLED in diff and IS_PM2_QUEST_ENABLED in diff and IS_REGULAR_QUEST_ENABLED in diff:
             self.__allCampaignsSwitcherNotify(diff)
         else:
             self.__campaignSwitcherNotify(diff)
-        if diff.get('disabledPMOperations') is not None:
+        if diff.get(DISABLED_PM_OPERATIONS) is not None:
             self.__operationSwitcherNotify(diff)
-        if diff.get('disabledPersonalMissions') is not None:
+        if diff.get(DISABLED_PM_MISSIONS) is not None:
             self.__missionSwitcherNotify(diff)
         return
 
@@ -2430,13 +2329,9 @@ class PM3NotificationListener(_NotificationListener):
         SystemMessages.pushMessage(text=text, type=messageType, priority=priority, messageData={'title': title})
 
     def __allCampaignsSwitcherNotify(self, diff):
-        if all((diff['isPM3QuestEnabled'],
-         diff['isPM2QuestEnabled'],
-         diff['isRegularQuestEnabled'])):
+        if all((diff[IS_PM3_QUEST_ENABLED], diff[IS_PM2_QUEST_ENABLED], diff[IS_REGULAR_QUEST_ENABLED])):
             SystemMessages.pushI18nMessage(SYSTEM_MESSAGES.PERSONALMISSION_SWITCHERNOTIFICATION_ALLCAMPAIGNSON, type=SystemMessages.SM_TYPE.Information, priority=NotificationPriorityLevel.HIGH)
-        if not any((diff['isPM3QuestEnabled'],
-         diff['isPM2QuestEnabled'],
-         diff['isRegularQuestEnabled'])):
+        if not any((diff[IS_PM3_QUEST_ENABLED], diff[IS_PM2_QUEST_ENABLED], diff[IS_REGULAR_QUEST_ENABLED])):
             SystemMessages.pushI18nMessage(SYSTEM_MESSAGES.PERSONALMISSION_SWITCHERNOTIFICATION_ALLCAMPAIGNSOFF, type=SystemMessages.SM_TYPE.ErrorSimple, priority=NotificationPriorityLevel.HIGH)
 
     def __campaignSwitcherNotify(self, diff):
@@ -2480,7 +2375,7 @@ class PM3NotificationListener(_NotificationListener):
         return
 
     def __missionSwitcherNotify(self, diff):
-        newDisabledMissions = set(diff.get('disabledPersonalMissions', {}))
+        newDisabledMissions = set(diff.get(DISABLED_PM_MISSIONS, {}))
         newDisabledMissionsToNotify = newDisabledMissions - self.__currentDisabledMissions
         newEnabledMissions = self.__currentDisabledMissions - newDisabledMissions
         allMissions = self.__eventsCache.getPersonalMissions().getAllQuests(PM_BRANCH.ALL)
@@ -2537,8 +2432,8 @@ class SkillTreePerkAvailableListener(BaseReminderListener):
 
     def _createNotificationData(self, priority, vehCD, nodeID, **ctx):
         gfDataID = str(uuid.uuid4())
-        getCache().setPayload(gfDataID, {'vehCD': vehCD, 
-           'nodeID': nodeID})
+        getCache().setPayload(gfDataID, {'vehCD': vehCD,
+         'nodeID': nodeID})
         data = {'gfDataID': gfDataID}
         return NotificationData(vehCD, data, priority, None)
 
@@ -2582,23 +2477,39 @@ class SkillTreePerkAvailableListener(BaseReminderListener):
     def __getCurrentViewVehicleCD():
         appLoader = dependency.instance(IAppLoader)
         view = appLoader.getApp().containerManager.getViewByKey(ViewKey(VIEW_ALIAS.VEHICLE_HUB))
-        if view is not None:
-            return view.content.vehicleCtx.intCD
-        else:
-            return
+        return view.content.vehicleCtx.intCD if view is not None else None
 
 
-registerNotificationsListeners((
- ServiceChannelListener, MissingEventsListener, PrbInvitesListener, FriendshipRqsListener, _WGNCListenersContainer,
- ProgressiveRewardListener, SwitcherListener, TankPremiumListener,
- BattlePassListener, UpgradeTrophyDeviceListener, RecertificationFormStateListener, RecruitReminderListener,
- EmailConfirmationReminderListener, VehiclePostProgressionUnlockListener,
- BattlePassSwitchChapterReminder, IntegratedAuctionListener, SeniorityAwardsStateListener,
- SeniorityAwardsQuestListener, SeniorityAwardsTokenListener, CollectionsListener,
- WinbackSelectableRewardReminder, BattleMattersTaskReminderListener,
- PrestigeListener, SeniorityAwardsVehicleSelectionListener, NDQSwitcherListener,
- XpTranslationRatesDiscountsListener, GoldExchangeRatesDiscountsListener,
- LootBoxSystemListener, EasyTankEquipStateListener, PM3NotificationListener,
+registerNotificationsListeners((ServiceChannelListener,
+ MissingEventsListener,
+ PrbInvitesListener,
+ FriendshipRqsListener,
+ _WGNCListenersContainer,
+ ProgressiveRewardListener,
+ SwitcherListener,
+ TankPremiumListener,
+ BattlePassListener,
+ UpgradeTrophyDeviceListener,
+ RecertificationFormStateListener,
+ RecruitReminderListener,
+ EmailConfirmationReminderListener,
+ VehiclePostProgressionUnlockListener,
+ BattlePassSwitchChapterReminder,
+ IntegratedAuctionListener,
+ SeniorityAwardsStateListener,
+ SeniorityAwardsManualClaimListener,
+ SeniorityAwardsTokenListener,
+ CollectionsListener,
+ WinbackSelectableRewardReminder,
+ BattleMattersTaskReminderListener,
+ PrestigeListener,
+ SeniorityAwardsVehicleSelectionListener,
+ NDQSwitcherListener,
+ XpTranslationRatesDiscountsListener,
+ GoldExchangeRatesDiscountsListener,
+ LootBoxSystemListener,
+ EasyTankEquipStateListener,
+ PM3NotificationListener,
  SkillTreePerkAvailableListener))
 
 class NotificationsListeners(_NotificationListener):

@@ -1,7 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/dialogs/dialog_focus_view_model.py
 from gui.impl.gen.view_models.views.dialogs.dialog_base_focus_view_model import DialogBaseFocusViewModel
 
 class DialogFocusViewModel(DialogBaseFocusViewModel):
-    __slots__ = ('onTabPressed', )
+    __slots__ = ('onTabPressed',)
     NOT_FOCUSED_INDEX = -1
     DEFAULT_FOCUSED_INDEX = 0
 

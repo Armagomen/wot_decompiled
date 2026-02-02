@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/messages/fading_messages.py
 import operator
 from soft_exception import SoftException
 from account_helpers.settings_core.settings_constants import GRAPHICS
@@ -11,12 +13,12 @@ from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
 _MESSAGES_SETTINGS_PATH = 'gui/{}'
 _EXTRA_COLOR_FORMAT = '<font color="#{0:02X}{1:02X}{2:02X}">{3:>s}</font>'
-_COLOR_TO_METHOD = {BATTLE_MESSAGES_CONSTS.COLOR_YELLOW: 'as_showYellowMessageS', 
-   BATTLE_MESSAGES_CONSTS.COLOR_RED: 'as_showRedMessageS', 
-   BATTLE_MESSAGES_CONSTS.COLOR_PURPLE: 'as_showPurpleMessageS', 
-   BATTLE_MESSAGES_CONSTS.COLOR_GREEN: 'as_showGreenMessageS', 
-   BATTLE_MESSAGES_CONSTS.COLOR_GOLD: 'as_showGoldMessageS', 
-   BATTLE_MESSAGES_CONSTS.COLOR_SELF: 'as_showSelfMessageS'}
+_COLOR_TO_METHOD = {BATTLE_MESSAGES_CONSTS.COLOR_YELLOW: 'as_showYellowMessageS',
+ BATTLE_MESSAGES_CONSTS.COLOR_RED: 'as_showRedMessageS',
+ BATTLE_MESSAGES_CONSTS.COLOR_PURPLE: 'as_showPurpleMessageS',
+ BATTLE_MESSAGES_CONSTS.COLOR_GREEN: 'as_showGreenMessageS',
+ BATTLE_MESSAGES_CONSTS.COLOR_GOLD: 'as_showGoldMessageS',
+ BATTLE_MESSAGES_CONSTS.COLOR_SELF: 'as_showSelfMessageS'}
 
 class FadingMessages(BattleMessageListMeta):
     sessionProvider = dependency.descriptor(IBattleSessionProvider)
@@ -34,7 +36,7 @@ class FadingMessages(BattleMessageListMeta):
         return
 
     def __del__(self):
-        LOG_DEBUG(('{0} is deleted').format(self.__name))
+        LOG_DEBUG('{0} is deleted'.format(self.__name))
 
     def setSettingFile(self, mFile):
         self.__settingsFilePath = _MESSAGES_SETTINGS_PATH.format(mFile)
@@ -45,14 +47,14 @@ class FadingMessages(BattleMessageListMeta):
 
     @sf_battle
     def app(self):
-        return
+        return None
 
     def clear(self):
         self.as_clearS()
 
     def showMessage(self, key, args=None, extra=None, postfix=''):
         if postfix:
-            extKey = ('{0}_{1}').format(key, postfix)
+            extKey = u'{0}_{1}'.format(key, postfix)
             if extKey in self._messages:
                 self.__doShowMessage(extKey, args, extra)
                 return
@@ -118,7 +120,7 @@ class FadingMessages(BattleMessageListMeta):
         if color in _COLOR_TO_METHOD:
             method = _COLOR_TO_METHOD[color]
         else:
-            raise SoftException(('Can not recognize color for message "{}". List "{}"').format(key, self.__name))
+            raise SoftException('Can not recognize color for message "{}". List "{}"'.format(key, self.__name))
         LOG_DEBUG('Show message in a battle', self.__name, key)
         operator.methodcaller(method, key, msgText)(self)
         return

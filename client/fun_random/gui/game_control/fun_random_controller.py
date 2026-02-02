@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/game_control/fun_random_controller.py
 from __future__ import absolute_import
 import typing
 from account_helpers import AccountSettings
@@ -102,10 +104,7 @@ class FunRandomController(IFunRandomController, IGlobalListener):
         return self.__funRandomSettings.isEnabled
 
     def isFunRandomPrbActive(self):
-        if self.prbEntity is None:
-            return False
-        else:
-            return bool(self.prbEntity.getModeFlags() & FUNCTIONAL_FLAG.FUN_RANDOM)
+        return False if self.prbEntity is None else bool(self.prbEntity.getModeFlags() & FUNCTIONAL_FLAG.FUN_RANDOM)
 
     def getAssetsPointer(self):
         return self.__funRandomSettings.assetsPointer
@@ -135,9 +134,12 @@ class FunRandomController(IFunRandomController, IGlobalListener):
         notifyCaller(callback, result)
 
     def __getSubSystems(self):
-        return (
-         self.__hiddenVehicles, self.__notifications, self.__progressions,
-         self.__subscription, self.__subModesInfo, self.__subModesHolder)
+        return (self.__hiddenVehicles,
+         self.__notifications,
+         self.__progressions,
+         self.__subscription,
+         self.__subModesInfo,
+         self.__subModesHolder)
 
     def __onServerSettingsChanged(self, serverSettings):
         if self.__serverSettings is not None:

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/xmpp/extensions/dataform.py
 from collections import namedtuple
 from messenger.proto.xmpp.extensions import PyExtension, SimpleExtension
 from messenger.proto.xmpp.extensions.ext_constants import XML_NAME_SPACE as _NS
@@ -18,7 +20,7 @@ class FieldElement(PyExtension):
 
     @classmethod
     def getDefaultData(cls):
-        return
+        return None
 
     def parseTag(self, pyGlooxTag):
         fieldType = pyGlooxTag.findAttribute('type')
@@ -51,9 +53,7 @@ class DataForm(PyExtension):
         return (FORM_TYPE.UNDEFINED, ())
 
     def getTag(self):
-        if self._isEmpty:
-            return ''
-        return super(DataForm, self).getTag()
+        return '' if self._isEmpty else super(DataForm, self).getTag()
 
     def parseTag(self, pyGlooxTag):
         formType = pyGlooxTag.findAttribute('type')
@@ -67,5 +67,4 @@ class DataForm(PyExtension):
                 if field is not None:
                     fields.append(field)
 
-        return (
-         formType, fields)
+        return (formType, fields)

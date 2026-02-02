@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/PersonalMissionsPageMeta.py
 from gui.Scaleform.framework.entities.View import View
 
 class PersonalMissionsPageMeta(View):
@@ -21,45 +23,34 @@ class PersonalMissionsPageMeta(View):
         self._printOverrideError('showAwards')
 
     def as_setContentVisibleS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setContentVisible(value)
+        return self.flashObject.as_setContentVisible(value) if self._isDAAPIInited() else None
 
     def as_initViewS(self, pmType, chainsLen):
-        if self._isDAAPIInited():
-            return self.flashObject.as_initView(pmType, chainsLen)
+        return self.flashObject.as_initView(pmType, chainsLen) if self._isDAAPIInited() else None
 
     def as_reInitViewS(self, pmType, chainsLen):
-        if self._isDAAPIInited():
-            return self.flashObject.as_reInitView(pmType, chainsLen)
+        return self.flashObject.as_reInitView(pmType, chainsLen) if self._isDAAPIInited() else None
 
     def as_setHeaderDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setHeaderData(data)
+        return self.flashObject.as_setHeaderData(data) if self._isDAAPIInited() else None
 
     def as_updateSideBarDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateSideBarData(data)
+        return self.flashObject.as_updateSideBarData(data) if self._isDAAPIInited() else None
 
     def as_setStatusDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setStatusData(data)
+        return self.flashObject.as_setStatusData(data) if self._isDAAPIInited() else None
 
     def as_setSelectedBranchIndexS(self, index):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setSelectedBranchIndex(index)
+        return self.flashObject.as_setSelectedBranchIndex(index) if self._isDAAPIInited() else None
 
     def as_showFirstAwardSheetObtainedPopupS(self, useAnim, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showFirstAwardSheetObtainedPopup(useAnim, data)
+        return self.flashObject.as_showFirstAwardSheetObtainedPopup(useAnim, data) if self._isDAAPIInited() else None
 
     def as_showFourAwardSheetsObtainedPopupS(self, useAnim, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showFourAwardSheetsObtainedPopup(useAnim, data)
+        return self.flashObject.as_showFourAwardSheetsObtainedPopup(useAnim, data) if self._isDAAPIInited() else None
 
     def as_hideAwardSheetObtainedPopupS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_hideAwardSheetObtainedPopup()
+        return self.flashObject.as_hideAwardSheetObtainedPopup() if self._isDAAPIInited() else None
 
     def as_showAwardsPopoverForTutorS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showAwardsPopoverForTutor()
+        return self.flashObject.as_showAwardsPopoverForTutor() if self._isDAAPIInited() else None

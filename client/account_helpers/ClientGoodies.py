@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/account_helpers/ClientGoodies.py
 from functools import partial
 import AccountCommands
 from shared_utils.account_helpers.diff_utils import synchronizeDicts
@@ -39,31 +41,35 @@ class ClientGoodies(object):
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, None)
             return
-        self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
-        return
+        else:
+            self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
+            return
 
     def getItems(self, itemsType, callback):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, None)
             return
-        self.__syncData.waitForSync(partial(self.__onGetItemsResponse, itemsType, callback))
-        return
+        else:
+            self.__syncData.waitForSync(partial(self.__onGetItemsResponse, itemsType, callback))
+            return
 
     def __onGetCacheResponse(self, callback, resultID):
         if resultID < 0:
             if callback is not None:
                 callback(resultID, None)
             return
-        if callback is not None:
-            callback(resultID, self.__cache)
-        return
+        else:
+            if callback is not None:
+                callback(resultID, self.__cache)
+            return
 
     def __onGetItemsResponse(self, itemsType, callback, resultID):
         if resultID < 0:
             if callback is not None:
                 callback(resultID, None)
             return
-        if callback is not None:
-            callback(resultID, self.__cache.get(itemsType, None))
-        return
+        else:
+            if callback is not None:
+                callback(resultID, self.__cache.get(itemsType, None))
+            return

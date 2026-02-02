@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/missions/daily_quests_view_model.py
 from enum import Enum
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.views.lobby.missions.daily_quests_model import DailyQuestsModel
@@ -17,8 +19,7 @@ class OffersState(Enum):
 
 
 class DailyQuestsViewModel(ViewModel):
-    __slots__ = ('onClose', 'onReroll', 'onTabClick', 'onInfoToggle', 'onBuyPremiumBtnClick',
-                 'onRerollEnabled', 'onClaimRewards')
+    __slots__ = ('onClose', 'onReroll', 'onTabClick', 'onInfoToggle', 'onBuyPremiumBtnClick', 'onRerollEnabled', 'onClaimRewards')
 
     def __init__(self, properties=13, commands=7):
         super(DailyQuestsViewModel, self).__init__(properties=properties, commands=commands)

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/rankedBattles/ranked_battles_prime_time_view.py
 from helpers import dependency
 from gui.impl import backport
 from gui.impl.gen import R
@@ -15,9 +17,7 @@ class RankedServerPresenter(ServerListItemPresenter):
     def __cmp__(self, other):
         peripheryID = self._connectionMgr.peripheryID
         result = cmp(self.getPeripheryID() == peripheryID, other.getPeripheryID() == peripheryID)
-        if result:
-            return result
-        return self.orderID - other.orderID
+        return result if result else self.orderID - other.orderID
 
 
 class RankedBattlesPrimeTimeView(RankedPrimeTimeMeta):

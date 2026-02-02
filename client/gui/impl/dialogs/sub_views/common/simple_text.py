@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/dialogs/sub_views/common/simple_text.py
 from collections import namedtuple
 import typing
 from frameworks.wulf import ViewSettings
@@ -19,8 +21,8 @@ class SimpleText(ViewImpl):
     def __init__(self, text, imageSubstitutions=None, layoutID=None):
         settings = ViewSettings(layoutID or self._LAYOUT_DYN_ACCESSOR())
         settings.model = SimpleTextViewModel()
-        settings.kwargs = {'text': text, 
-           'imageSubstitutions': imageSubstitutions}
+        settings.kwargs = {'text': text,
+         'imageSubstitutions': imageSubstitutions}
         super(SimpleText, self).__init__(settings)
 
     def _onLoading(self, text, imageSubstitutions, *args, **kwargs):

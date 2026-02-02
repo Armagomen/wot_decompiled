@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/login/LoginView.py
 import json
 from collections import defaultdict
 import BigWorld
@@ -35,10 +37,10 @@ from skeletons.gui.impl import IGuiLoader
 from skeletons.gui.login_manager import ILoginManager
 from skeletons.helpers.statistics import IStatisticsCollector
 from wg_async import wg_async, wg_await
-_STATUS_TO_INVALID_FIELDS_MAPPING = defaultdict(lambda : INVALID_FIELDS.ALL_VALID, {LOGIN_STATUS.LOGIN_REJECTED_INVALID_PASSWORD: INVALID_FIELDS.LOGIN_PWD_INVALID, 
-   LOGIN_STATUS.LOGIN_REJECTED_ILLEGAL_CHARACTERS: INVALID_FIELDS.LOGIN_PWD_INVALID, 
-   LOGIN_STATUS.LOGIN_REJECTED_SERVER_NOT_READY: INVALID_FIELDS.SERVER_INVALID, 
-   LOGIN_STATUS.SESSION_END: INVALID_FIELDS.PWD_INVALID})
+_STATUS_TO_INVALID_FIELDS_MAPPING = defaultdict(lambda : INVALID_FIELDS.ALL_VALID, {LOGIN_STATUS.LOGIN_REJECTED_INVALID_PASSWORD: INVALID_FIELDS.LOGIN_PWD_INVALID,
+ LOGIN_STATUS.LOGIN_REJECTED_ILLEGAL_CHARACTERS: INVALID_FIELDS.LOGIN_PWD_INVALID,
+ LOGIN_STATUS.LOGIN_REJECTED_SERVER_NOT_READY: INVALID_FIELDS.SERVER_INVALID,
+ LOGIN_STATUS.SESSION_END: INVALID_FIELDS.PWD_INVALID})
 
 class CustomLoginStatuses(CONST_CONTAINER):
     ANOTHER_PERIPHERY = 'another_periphery'
@@ -175,13 +177,14 @@ class LoginView(LoginPageMeta):
         return
 
     def update(self):
-        self.as_setDefaultValuesS({'loginName': self._loginMode.login, 'pwd': self._loginMode.password, 
-           'memberMe': self._loginMode.rememberUser, 
-           'memberMeVisible': self._loginMode.rememberPassVisible, 
-           'isIgrCredentialsReset': GUI_SETTINGS.igrCredentialsReset, 
-           'showRecoveryLink': not GUI_SETTINGS.isEmpty('recoveryPswdURL'), 
-           'keyboardLang': self.__lang, 
-           'capsLockState': self.__capsLockState})
+        self.as_setDefaultValuesS({'loginName': self._loginMode.login,
+         'pwd': self._loginMode.password,
+         'memberMe': self._loginMode.rememberUser,
+         'memberMeVisible': self._loginMode.rememberPassVisible,
+         'isIgrCredentialsReset': GUI_SETTINGS.igrCredentialsReset,
+         'showRecoveryLink': not GUI_SETTINGS.isEmpty('recoveryPswdURL'),
+         'keyboardLang': self.__lang,
+         'capsLockState': self.__capsLockState})
         self._loginMode.updateForm()
         self.__updateServersList()
 
@@ -204,9 +207,9 @@ class LoginView(LoginPageMeta):
         elif peripheryID == -4:
             self.__customLoginStatus = CustomLoginStatuses.ACCESS_FORBIDDEN_TO_PERIPHERY
         if not self.__loginRetryDialogShown and peripheryID >= 0:
-            self.__showLoginRetryDialog({'waitingOpen': backport.text(R.strings.waiting.titles.dyn(self.__customLoginStatus)()), 
-               'waitingClose': backport.msgid(R.strings.waiting.buttons.cease()), 
-               'message': backport.text(R.strings.waiting.message.dyn(self.__customLoginStatus)(), self.__getServerText(self.__customLoginStatus, self.connectionMgr.serverUserName))})
+            self.__showLoginRetryDialog({'waitingOpen': backport.text(R.strings.waiting.titles.dyn(self.__customLoginStatus)()),
+             'waitingClose': backport.msgid(R.strings.waiting.buttons.cease()),
+             'message': backport.text(R.strings.waiting.message.dyn(self.__customLoginStatus)(), self.__getServerText(self.__customLoginStatus, self.connectionMgr.serverUserName))})
 
     def _onHandleQueue(self, queueNumber):
         serverName = self.connectionMgr.serverUserName
@@ -225,10 +228,10 @@ class LoginView(LoginPageMeta):
             self.addListener(LoginEventEx.ON_LOGIN_QUEUE_CLOSED, self._onLoginQueueClosed, EVENT_BUS_SCOPE.LOBBY)
             self.addListener(LoginEventEx.SWITCH_LOGIN_QUEUE_TO_AUTO, self._onLoginQueueSwitched, EVENT_BUS_SCOPE.LOBBY)
         else:
-            ctx = {'title': backport.msgid(R.strings.waiting.titles.queue()), 
-               'message': message, 
-               'cancelLabel': cancelBtnLbl, 
-               'showAutoLoginBtn': showAutoSearchBtn}
+            ctx = {'title': backport.msgid(R.strings.waiting.titles.queue()),
+             'message': message,
+             'cancelLabel': cancelBtnLbl,
+             'showAutoLoginBtn': showAutoSearchBtn}
             self.fireEvent(ArgsEvent(ArgsEvent.UPDATE_ARGS, VIEW_ALIAS.LOGIN_QUEUE, ctx), EVENT_BUS_SCOPE.LOBBY)
 
     def _onLoginQueueClosed(self, event):
@@ -246,9 +249,7 @@ class LoginView(LoginPageMeta):
                 self.__loginRejectedBan(responseData)
             elif loginStatus == LOGIN_STATUS.LOGIN_REJECTED_RATE_LIMITED:
                 self.__loginRejectedRateLimited()
-            elif loginStatus in (
-             LOGIN_STATUS.LOGIN_REJECTED_BAD_DIGEST,
-             LOGIN_STATUS.LOGIN_BAD_PROTOCOL_VERSION):
+            elif loginStatus in (LOGIN_STATUS.LOGIN_REJECTED_BAD_DIGEST, LOGIN_STATUS.LOGIN_BAD_PROTOCOL_VERSION):
                 self.__loginRejectedUpdateNeeded()
             elif loginStatus == LOGIN_STATUS.NOT_SET and self.__customLoginStatus is not None:
                 self.__loginRejectedWithCustomState()
@@ -296,14 +297,14 @@ class LoginView(LoginPageMeta):
         backport.text(R.strings.menu.login.status.LOGIN_REJECTED_RATE_LIMITED())
         self.as_setErrorMessageS(backport.text(R.strings.menu.login.status.LOGIN_REJECTED_RATE_LIMITED()), INVALID_FIELDS.ALL_VALID)
         if not self.__loginRetryDialogShown:
-            self.__showLoginRetryDialog({'waitingOpen': backport.msgid(R.strings.waiting.titles.queue()), 
-               'waitingClose': backport.msgid(R.strings.waiting.buttons.exitQueue()), 
-               'message': backport.text(R.strings.waiting.message.autoLogin(), self.__getServerText('overload', self.connectionMgr.serverUserName))})
+            self.__showLoginRetryDialog({'waitingOpen': backport.msgid(R.strings.waiting.titles.queue()),
+             'waitingClose': backport.msgid(R.strings.waiting.buttons.exitQueue()),
+             'message': backport.text(R.strings.waiting.message.autoLogin(), self.__getServerText('overload', self.connectionMgr.serverUserName))})
 
     def __loginRejectedWithCustomState(self):
         if self.__customLoginStatus == CustomLoginStatuses.ACCESS_FORBIDDEN_TO_PERIPHERY:
             if self.connectionMgr.peripheryRoutingGroup is not None:
-                peripheriesStr = (', ').join(p.shortName for p in self.connectionMgr.availableHosts)
+                peripheriesStr = ', '.join((p.shortName for p in self.connectionMgr.availableHosts))
             else:
                 peripheriesStr = ''
             msg = backport.text(R.strings.menu.login.status.dyn(self.__customLoginStatus)(), peripheries=peripheriesStr)

@@ -1,6 +1,14 @@
-import logging, math, BigWorld, GUI
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/AvatarInputHandler/DynamicCameras/SniperCamera.py
+import logging
+import math
+import BigWorld
+import GUI
 from Math import Vector2, Vector3, Matrix
-import BattleReplay, Settings, constants, math_utils
+import BattleReplay
+import Settings
+import constants
+import math_utils
 from AvatarInputHandler import AimingSystems
 from AvatarInputHandler import cameras, aih_global_binding
 from BigWorld import SniperAimingSystem, SniperAimingSystemRemote
@@ -88,9 +96,7 @@ class SniperCamera(CameraWithSettings, CallbackDelayer):
         self.__aimingSystem = self._aimingSystemClass()()
 
     def _aimingSystemClass(self):
-        if BigWorld.player().isObserver():
-            return SniperAimingSystemRemote
-        return SniperAimingSystem
+        return SniperAimingSystemRemote if BigWorld.player().isObserver() else SniperAimingSystem
 
     def destroy(self):
         self.disable()
@@ -189,7 +195,7 @@ class SniperCamera(CameraWithSettings, CallbackDelayer):
 
     def setMaxZoom(self):
         zooms = self.__getZooms()
-        self.__zoom = zooms[(-1)]
+        self.__zoom = zooms[-1]
         self._cfg['zoom'] = self.__zoom
         self.__applyZoom(self.__zoom)
 
@@ -236,7 +242,7 @@ class SniperCamera(CameraWithSettings, CallbackDelayer):
     def __updateZoom(self):
         cfg = self._cfg
         zooms = self.__getZooms()
-        self.__zoom = cfg['zoom'] = math_utils.clamp(zooms[0], zooms[(-1)], self.__zoom)
+        self.__zoom = cfg['zoom'] = math_utils.clamp(zooms[0], zooms[-1], self.__zoom)
         if self.camera is BigWorld.camera():
             self.delayCallback(0.0, self.__applyZoom, self.__zoom)
 
@@ -318,13 +324,12 @@ class SniperCamera(CameraWithSettings, CallbackDelayer):
             binocularsOffset = self.__calcAimOffset()
             if replayCtrl.isRecording:
                 replayCtrl.setAimClipPosition(aimOffset)
-            self.__aimOffset = aimOffset
-            self.__binoculars.setMaskCenter(binocularsOffset.x, binocularsOffset.y)
-            player = BigWorld.player()
-            if allowModeChange and (self.__isPositionUnderwater(self.__aimingSystem.matrixProvider.translation) or player.isGunLocked and not player.isObserverFPV):
-                self.__onChangeControlMode(False)
-                return -1
-        return 0.0
+        self.__aimOffset = aimOffset
+        self.__binoculars.setMaskCenter(binocularsOffset.x, binocularsOffset.y)
+        player = BigWorld.player()
+        if allowModeChange and (self.__isPositionUnderwater(self.__aimingSystem.matrixProvider.translation) or player.isGunLocked and not player.isObserverFPV):
+            self.__onChangeControlMode(False)
+            return -1
 
     def __calcAimOffset(self, aimLocalTransform=None):
         aimingSystemMatrix = self.__aimingSystem.matrix
@@ -361,9 +366,7 @@ class SniperCamera(CameraWithSettings, CallbackDelayer):
             self.__impulseOscillator.reset()
             self.__movementOscillator.reset()
             self.__noiseOscillator.reset()
-            return (
-             math_utils.createRotationMatrix(math_utils.VectorConstant.Vector3Zero),
-             math_utils.createRotationMatrix(math_utils.VectorConstant.Vector3Zero))
+            return (math_utils.createRotationMatrix(math_utils.VectorConstant.Vector3Zero), math_utils.createRotationMatrix(math_utils.VectorConstant.Vector3Zero))
         oscillatorAcceleration = self.__calcCurOscillatorAcceleration(deltaTime)
         self.__movementOscillator.externalForce += oscillatorAcceleration
         self.__impulseOscillator.update(deltaTime)
@@ -391,9 +394,7 @@ class SniperCamera(CameraWithSettings, CallbackDelayer):
         self.__impulseOscillator.externalForce = Vector3(0)
         self.__movementOscillator.externalForce = Vector3(0)
         self.__noiseOscillator.externalForce = Vector3(0)
-        return (
-         math_utils.createRotationMatrix(Vector3(deviation.x, deviation.y, deviation.z)),
-         math_utils.createRotationMatrix(impulseDeviation))
+        return (math_utils.createRotationMatrix(Vector3(deviation.x, deviation.y, deviation.z)), math_utils.createRotationMatrix(impulseDeviation))
 
     def __isPositionUnderwater(self, position):
         return BigWorld.wg_collideWater(position, position + Vector3(0, 1, 0), False) > -1.0
@@ -415,13 +416,7 @@ class SniperCamera(CameraWithSettings, CallbackDelayer):
         self.__movementOscillator = createOscillatorFromSection(dynamicsSection['movementOscillator'])
         self.__noiseOscillator = createOscillatorFromSection(dynamicsSection['randomNoiseOscillatorSpherical'])
         self.__dynamicCfg.readImpulsesConfig(dynamicsSection)
-        self.__dynamicCfg['accelerationSensitivity'] = readVec3(dynamicsSection, 'accelerationSensitivity', (-1000,
-                                                                                                             -1000,
-                                                                                                             -1000), (1000,
-                                                                                                                      1000,
-                                                                                                                      1000), (0.5,
-                                                                                                                              0.5,
-                                                                                                                              0.5))
+        self.__dynamicCfg['accelerationSensitivity'] = readVec3(dynamicsSection, 'accelerationSensitivity', (-1000, -1000, -1000), (1000, 1000, 1000), (0.5, 0.5, 0.5))
         accelerationThreshold = readFloat(dynamicsSection, 'accelerationThreshold', 0.0, 1000.0, 0.1)
         self.__dynamicCfg['accelerationThreshold'] = accelerationThreshold
         self.__dynamicCfg['accelerationMax'] = readFloat(dynamicsSection, 'accelerationMax', 0.0, 1000.0, 0.1)
@@ -454,7 +449,7 @@ class SniperCamera(CameraWithSettings, CallbackDelayer):
         ucfg['vertInvert'] = False
         ucfg['increasedZoom'] = True
         ucfg['sniperModeByShift'] = False
-        ucfg['zoom'] = readFloat(dataSec, 'zoom', bcfg['zooms'][0], bcfg['zooms'][(-1)], bcfg['zooms'][0])
+        ucfg['zoom'] = readFloat(dataSec, 'zoom', bcfg['zooms'][0], bcfg['zooms'][-1], bcfg['zooms'][0])
         ucfg['keySensitivity'] = readFloat(dataSec, 'keySensitivity', 0.0, 10.0, 1.0)
         ucfg['sensitivity'] = readFloat(dataSec, 'sensitivity', 0.0, 10.0, 1.0)
         ucfg['scrollSensitivity'] = readFloat(dataSec, 'scrollSensitivity', 0.0, 10.0, 1.0)

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/web/web_client_api/ui/notification.py
 from gui.SystemMessages import SM_TYPE, pushI18nMessage, pushMessage
 from web.web_client_api import WebCommandException, w2c, W2CSchema, Field
 
@@ -31,14 +33,18 @@ class NotificationWebApiMixin(object):
             pushMessage(cmd.message, type=smType, messageData=cmd.message_data)
         elif cmd.hasI18nKey():
             parameters = cmd.i18n_data
-            params = {'type': smType, 'key': cmd.i18n_key, 'messageData': cmd.message_data}
+            params = {'type': smType,
+             'key': cmd.i18n_key,
+             'messageData': cmd.message_data}
             for key, value in parameters.iteritems():
                 params[key] = value
 
             pushI18nMessage(**params)
         elif cmd.hasKey():
             custom_parameters = cmd.custom_parameters
-            params = {'type': smType, 'key': cmd.key, 'messageData': cmd.message_data}
+            params = {'type': smType,
+             'key': cmd.key,
+             'messageData': cmd.message_data}
             for key, value in custom_parameters.iteritems():
                 params[key] = value
 

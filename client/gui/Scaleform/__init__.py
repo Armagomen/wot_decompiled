@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/__init__.py
 import os
 from gui.Scaleform.locale.MENU import MENU
 from nations import NAMES
@@ -19,29 +21,27 @@ LEVEL_FILTER_ICONS_DIR_PARH = '../maps/icons/filters/levels/'
 DEFAULT_VIDEO_BUFFERING_TIME = 2.0
 
 def getVehicleTypeAssetPath(vehicleType, extension='.png'):
-    return ('').join([VEHICLE_TYPES_ICONS_DIR_PATH, vehicleType, extension])
+    return ''.join([VEHICLE_TYPES_ICONS_DIR_PATH, vehicleType, extension])
 
 
 def getCustomizationTypeAssetPath(type, extension='.png'):
-    return ('').join([CUSTOMIZATION_TYPES_ICONS_DIR_PATH, type, extension])
+    return ''.join([CUSTOMIZATION_TYPES_ICONS_DIR_PATH, type, extension])
 
 
 def getButtonsAssetPath(button, extension='.png'):
-    return ('').join((BUTTON_FILTER_ICONS_DIR_PARH, button, extension))
+    return ''.join((BUTTON_FILTER_ICONS_DIR_PARH, button, extension))
 
 
 def getNationsFilterAssetPath(nationName, extension='.png'):
-    return ('').join((NATION_FILTER_ICONS_DIR_PATH, nationName, extension))
+    return ''.join((NATION_FILTER_ICONS_DIR_PATH, nationName, extension))
 
 
 def getLevelsAssetPath(level_str, extension='.png'):
-    return ('').join([LEVEL_FILTER_ICONS_DIR_PARH, level_str, extension])
+    return ''.join([LEVEL_FILTER_ICONS_DIR_PARH, level_str, extension])
 
 
 def getNecessaryArenaFrameName(arenaSubType, hasBase=None):
-    if arenaSubType.startswith('assault'):
-        return ('{0}{1}').format('assault', '1' if hasBase else '2')
-    return arenaSubType
+    return '{0}{1}'.format('assault', '1' if hasBase else '2') if arenaSubType.startswith('assault') else arenaSubType
 
 
 def getPathForFlash(path, base=SCALEFORM_SWF_PATH_V3):

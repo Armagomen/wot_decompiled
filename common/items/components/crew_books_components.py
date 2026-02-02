@@ -1,10 +1,12 @@
-import items, nations
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/items/components/crew_books_components.py
+import items
+import nations
 from items.components.crew_books_constants import CrewBookCacheType, CREW_BOOK_RARITY
 
 class CrewBook(object):
     itemType = CrewBookCacheType.CREW_BOOK
-    __slots__ = ('id', 'tags', 'priceGroup', 'iconID', 'name', 'description', 'nation',
-                 'type', 'priceGroupTags')
+    __slots__ = ('id', 'tags', 'priceGroup', 'iconID', 'name', 'description', 'nation', 'type', 'priceGroupTags')
 
     def __init__(self, ID, priceGroup, name, description, iconID, type, tags):
         self.id = ID
@@ -20,7 +22,7 @@ class CrewBook(object):
 
     @property
     def itemTypeName(self):
-        return 'crewBook'
+        pass
 
     @property
     def compactDescr(self):
@@ -28,7 +30,7 @@ class CrewBook(object):
 
     @property
     def level(self):
-        return
+        return None
 
     def getExtensionLessIcon(self):
         return self.iconID.split('.png')[0]
@@ -58,8 +60,7 @@ class PriceGroup(object):
 
 
 class CrewBooksCache(object):
-    __slots__ = ('priceGroups', 'priceGroupNames', 'books', 'rarityGroups', 'priceGroupTags',
-                 'itemToPriceGroup')
+    __slots__ = ('priceGroups', 'priceGroupNames', 'books', 'rarityGroups', 'priceGroupTags', 'itemToPriceGroup')
 
     def __init__(self):
         self.priceGroupTags = {}
@@ -80,9 +81,7 @@ class CrewBooksCache(object):
             return False
         else:
             nation = nations.NAMES[nationID]
-            if item.nation and item.nation != nation:
-                return False
-            return True
+            return False if item.nation and item.nation != nation else True
 
     def validateBookPersonality(self, itemId, tmanInvID):
         item = self.books.get(itemId, None)

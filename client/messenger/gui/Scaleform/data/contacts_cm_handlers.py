@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/gui/Scaleform/data/contacts_cm_handlers.py
 from gui.Scaleform.daapi.view.lobby.user_cm_handlers import BaseUserCMHandler
 from gui.Scaleform.framework.entities.EventSystemEntity import EventSystemEntity
 from gui.Scaleform.framework.managers.context_menu import AbstractContextMenuCollectEventsHandler
@@ -36,9 +38,7 @@ class SimpleContactsCMHandler(AbstractContextMenuCollectEventsHandler, EventSyst
         return collectLobbyContexMenuHandler
 
     def _generateOptions(self, ctx=None):
-        return [
-         self._makeItem(CONTACTS_ACTION_ID.EDIT_GROUP, MESSENGER.MESSENGER_CONTACTS_CONTEXTMENU_EDITGROUP),
-         self._makeItem(CONTACTS_ACTION_ID.REMOVE_GROUP, MESSENGER.MESSENGER_CONTACTS_CONTEXTMENU_REMOVEGROUP)]
+        return [self._makeItem(CONTACTS_ACTION_ID.EDIT_GROUP, MESSENGER.MESSENGER_CONTACTS_CONTEXTMENU_EDITGROUP), self._makeItem(CONTACTS_ACTION_ID.REMOVE_GROUP, MESSENGER.MESSENGER_CONTACTS_CONTEXTMENU_REMOVEGROUP)]
 
     def _initFlashValues(self, ctx):
         self.targetGroupName = normalizeGroupId(ctx.targetGroupName)
@@ -49,11 +49,13 @@ class SimpleContactsCMHandler(AbstractContextMenuCollectEventsHandler, EventSyst
 
 
 def createContactNote(cm):
-    cm.fireEvent(events.ContactsEvent(events.ContactsEvent.CREATE_CONTACT_NOTE, ctx={'databaseID': cm.databaseID, 'userName': cm.userName}), scope=EVENT_BUS_SCOPE.LOBBY)
+    cm.fireEvent(events.ContactsEvent(events.ContactsEvent.CREATE_CONTACT_NOTE, ctx={'databaseID': cm.databaseID,
+     'userName': cm.userName}), scope=EVENT_BUS_SCOPE.LOBBY)
 
 
 def editContactNote(cm):
-    cm.fireEvent(events.ContactsEvent(events.ContactsEvent.EDIT_CONTACT_NOTE, ctx={'databaseID': cm.databaseID, 'userName': cm.userName}), scope=EVENT_BUS_SCOPE.LOBBY)
+    cm.fireEvent(events.ContactsEvent(events.ContactsEvent.EDIT_CONTACT_NOTE, ctx={'databaseID': cm.databaseID,
+     'userName': cm.userName}), scope=EVENT_BUS_SCOPE.LOBBY)
 
 
 def removeContactNote(cm):
@@ -99,9 +101,7 @@ class PlayerContactsCMHandler(BaseUserCMHandler):
         if self.showUserNotes and self.proto.contacts.isNoteSupported():
             userNote = userCMInfo.getNote()
             if userNote:
-                options.extend([
-                 self._makeItem(CONTACTS_ACTION_ID.EDIT_CONTACT_NOTE, MENU.contextmenu(CONTACTS_ACTION_ID.EDIT_CONTACT_NOTE)),
-                 self._makeItem(CONTACTS_ACTION_ID.REMOVE_CONTACT_NOTE, MENU.contextmenu(CONTACTS_ACTION_ID.REMOVE_CONTACT_NOTE))])
+                options.extend([self._makeItem(CONTACTS_ACTION_ID.EDIT_CONTACT_NOTE, MENU.contextmenu(CONTACTS_ACTION_ID.EDIT_CONTACT_NOTE)), self._makeItem(CONTACTS_ACTION_ID.REMOVE_CONTACT_NOTE, MENU.contextmenu(CONTACTS_ACTION_ID.REMOVE_CONTACT_NOTE))])
             else:
                 options.append(self._makeItem(CONTACTS_ACTION_ID.CREATE_CONTACT_NOTE, MENU.contextmenu(CONTACTS_ACTION_ID.CREATE_CONTACT_NOTE)))
         return options

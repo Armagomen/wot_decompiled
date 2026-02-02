@@ -1,6 +1,11 @@
-import inspect, itertools, logging
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/framework/tooltip_mgr.py
+import inspect
+import itertools
+import logging
 from collections import namedtuple
-import BigWorld, Keys
+import BigWorld
+import Keys
 from Event import SafeEvent, EventManager
 from PlayerEvents import g_playerEvents
 from frameworks.wulf import ViewStatus
@@ -51,10 +56,7 @@ class ToolTip(ToolTipMgrMeta):
 
     @property
     def tooltipWindow(self):
-        if self.__tooltipWindowId:
-            return self.gui.windowsManager.getWindow(self.__tooltipWindowId)
-        else:
-            return
+        return self.gui.windowsManager.getWindow(self.__tooltipWindowId) if self.__tooltipWindowId else None
 
     def show(self, data, linkage):
         self.as_showS(data, linkage, self.__fastRedraw)
@@ -90,26 +92,25 @@ class ToolTip(ToolTipMgrMeta):
         if provider is None:
             raise SoftException('"%s" does not have any provider', builder.__name__)
         spec = inspect.getargspec(provider.context.buildItem)
-        return tuple(reversed([ (argName, defaultValue) for argName, defaultValue in itertools.izip_longest(reversed(spec.args), reversed(spec.defaults or [])) if argName != 'self'
-                              ]))
+        return tuple(reversed([ (argName, defaultValue) for argName, defaultValue in itertools.izip_longest(reversed(spec.args), reversed(spec.defaults or [])) if argName != 'self' ]))
 
     def onCreateTypedTooltip(self, tooltipType, args, stateType):
         if self._areTooltipsDisabled:
             return
+        elif not self._isAllowedTypedTooltip:
+            return
         else:
-            if not self._isAllowedTypedTooltip:
-                return
             _logger.debug('onCreateTypedTooltip type: %r args: %r stateType: %r', tooltipType, args, stateType)
             id = _id_generator.next()
-            region = ('Typed tooltip {} {}').format(tooltipType, id)
-            name = ('tooltip {}').format(tooltipType)
+            region = 'Typed tooltip {} {}'.format(tooltipType, id)
+            name = 'tooltip {}'.format(tooltipType)
             info = ToolTipInfo(id, region, name)
             self.__tooltipInfos.append(info)
             uniprof.enterToRegion(region, LIVE_REGION_COLOR)
             BigWorld.notify(BigWorld.EventType.VIEW_CREATED, name, id, name)
             builder = self._builders.getBuilder(tooltipType)
             if builder is not None:
-                region = ('Loading {} {}').format(tooltipType, id)
+                region = 'Loading {} {}'.format(tooltipType, id)
                 uniprof.enterToRegion(region, LOADING_REGION_COLOR)
                 BigWorld.notify(BigWorld.EventType.LOADING_VIEW, name, id, name)
                 try:
@@ -159,7 +160,7 @@ class ToolTip(ToolTipMgrMeta):
             return
         else:
             id = _id_generator.next()
-            region = ('Complex tooltip {} {}').format(tooltipID, id)
+            region = 'Complex tooltip {} {}'.format(tooltipID, id)
             info = ToolTipInfo(id, region, None)
             self.__tooltipInfos.append(info)
             uniprof.enterToRegion(region, LIVE_REGION_COLOR)
@@ -226,10 +227,7 @@ class ToolTip(ToolTipMgrMeta):
     def isSupportAdvanced(self, tooltipType, *args):
         isComplex = self.__tooltipVariant == _TOOLTIP_VARIANT_COMPLEX
         builder = self._complex if isComplex else self._builders.getBuilder(tooltipType)
-        if builder is None:
-            return False
-        else:
-            return builder.supportAdvanced(tooltipType, *args)
+        return False if builder is None else builder.supportAdvanced(tooltipType, *args)
 
     def __cacheTooltipData(self, tooltipType, tooltipID, args, stateType):
         self.__tooltipVariant = tooltipType

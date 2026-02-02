@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/context/styled_mode.py
+import logging
+import typing
 from CurrentVehicle import g_currentVehicle
 from adisp import adisp_async, adisp_process
 from constants import CLIENT_COMMAND_SOURCES
@@ -59,15 +62,10 @@ class StyledMode(CustomizationMode):
         return OutfitInfo(self.__originalStyle, self.__modifiedStyle)
 
     def getPurchaseItems(self):
-        if self.__modifiedStyle is not None:
-            return getStylePurchaseItems(self.__modifiedStyle, self._modifiedOutfits, prolongRent=self.__prolongRent, progressionLevel=self.getStyleProgressionLevel())
-        else:
-            return []
+        return getStylePurchaseItems(self.__modifiedStyle, self._modifiedOutfits, prolongRent=self.__prolongRent, progressionLevel=self.getStyleProgressionLevel()) if self.__modifiedStyle is not None else []
 
     def getDependenciesData(self):
-        if self.__modifiedStyle:
-            return self.__modifiedStyle.getDependenciesIntCDs()
-        return {}
+        return self.__modifiedStyle.getDependenciesIntCDs() if self.__modifiedStyle else {}
 
     def removeStyle(self, intCD, refresh=True):
         if self.__modifiedStyle is not None and self.__modifiedStyle.intCD == intCD:
@@ -100,9 +98,7 @@ class StyledMode(CustomizationMode):
         return
 
     def getStyleProgressionLevel(self):
-        if self.__modifiedStyle and self.__modifiedStyle.isProgressive:
-            return self._modifiedOutfits[self.season].progressionLevel
-        return 0
+        return self._modifiedOutfits[self.season].progressionLevel if self.__modifiedStyle and self.__modifiedStyle.isProgressive else 0
 
     def clearStyle(self):
         style = self.__modifiedStyle
@@ -167,8 +163,8 @@ class StyledMode(CustomizationMode):
             if item.isProgressionRequiredCanBeEdited(g_currentVehicle.item.intCD):
                 wasVisited = bool(serverSettings.getOnceOnlyHintsSetting(OnceOnlyHints.C11N_PROGRESSION_REQUIRED_STYLE_SLOT_HINT))
                 if not wasVisited:
-                    serverSettings.setOnceOnlyHintsSettings({OnceOnlyHints.C11N_EDITABLE_STYLE_SLOT_HINT: HINT_SHOWN_STATUS, 
-                       OnceOnlyHints.C11N_PROGRESSION_REQUIRED_STYLE_SLOT_HINT: HINT_SHOWN_STATUS})
+                    serverSettings.setOnceOnlyHintsSettings({OnceOnlyHints.C11N_EDITABLE_STYLE_SLOT_HINT: HINT_SHOWN_STATUS,
+                     OnceOnlyHints.C11N_PROGRESSION_REQUIRED_STYLE_SLOT_HINT: HINT_SHOWN_STATUS})
             elif item.isEditable:
                 wasVisited = bool(serverSettings.getOnceOnlyHintsSetting(OnceOnlyHints.C11N_EDITABLE_STYLE_SLOT_HINT))
                 if not wasVisited and item.canBeEditedForVehicle(g_currentVehicle.item.intCD):
@@ -281,7 +277,7 @@ class StyledMode(CustomizationMode):
                 return False
             if not isInstalled:
                 return True
-        isStyleChanged = any(not self._originalOutfits[season].isEqual(self._modifiedOutfits[season]) for season in SeasonType.COMMON_SEASONS)
+        isStyleChanged = any((not self._originalOutfits[season].isEqual(self._modifiedOutfits[season]) for season in SeasonType.COMMON_SEASONS))
         isAutoRentChanged = False if not g_currentVehicle.item else self.__autoRentEnabled != g_currentVehicle.item.isAutoRentStyle
         return isStyleChanged or isAutoRentChanged
 
@@ -293,8 +289,7 @@ class StyledMode(CustomizationMode):
             uid = customizationSlotIdToUid(slotId)
             intCD = self.modifiedStyle.intCD if self.modifiedStyle is not None else 0
             anchorVO = CustomizationSlotUpdateVO(slotId=slotId._asdict(), itemIntCD=intCD, uid=uid)
-            return [
-             anchorVO._asdict()]
+            return [anchorVO._asdict()]
 
     def _onVehicleChangeStarted(self):
         self.__prolongRent = False

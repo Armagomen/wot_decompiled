@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/tutorial/control/states.py
 from tutorial.control import TutorialProxyHolder
 from tutorial.logger import LOG_DEBUG
 STATE_LOADING = 0
@@ -140,7 +142,7 @@ class TutorialStateRunEffects(_TutorialState):
                 if currentEffect is None:
                     stop = True
                     self._tutorial.evaluateState()
-                elif currentEffect.isAllConditionsOK():
+                if currentEffect.isAllConditionsOK():
                     LOG_DEBUG('Trigger effect', '(GLOBAL)' if currentEffect.isGlobal() else '(SCENE)', currentEffect.getEffect())
                     success = currentEffect.triggerEffect()
                     if self._interrupt:
@@ -180,11 +182,11 @@ class TutorialStateRunEffects(_TutorialState):
         return
 
 
-_statesFactory = {STATE_LOADING: TutorialStateLoading, 
-   STATE_WAIT_SCENE: TutorialStateWaitScene, 
-   STATE_NEXT_SCENE: TutorialStateNextScene, 
-   STATE_LEARNING: TutorialStateLearning, 
-   STATE_RUN_EFFECTS: TutorialStateRunEffects}
+_statesFactory = {STATE_LOADING: TutorialStateLoading,
+ STATE_WAIT_SCENE: TutorialStateWaitScene,
+ STATE_NEXT_SCENE: TutorialStateNextScene,
+ STATE_LEARNING: TutorialStateLearning,
+ STATE_RUN_EFFECTS: TutorialStateRunEffects}
 
 def factory(stateIndex):
     return _statesFactory.get(stateIndex)

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/items/components/perks_components.py
 from collections import namedtuple
 import typing
 from items.components.perks_constants import PerkMasks, PerkTags
@@ -5,7 +7,7 @@ from soft_exception import SoftException
 PerkArgument = namedtuple('PerkArgument', ('value', 'postValues'))
 
 def convertPerksListToDict(perksList):
-    return {perksList[i]:perksList[(i + 1)] for i in xrange(0, len(perksList), 2)}
+    return {perksList[i]:perksList[i + 1] for i in xrange(0, len(perksList), 2)}
 
 
 def convertPerksDictToList(perksDict):
@@ -17,8 +19,7 @@ def packPerk(perkID, level):
 
 
 def unpackPerk(val):
-    return (
-     val & PerkMasks.PERK_ID_MASK, val >> 10 & PerkMasks.PERK_LEVEL_MASK)
+    return (val & PerkMasks.PERK_ID_MASK, val >> 10 & PerkMasks.PERK_LEVEL_MASK)
 
 
 class Perk(object):
@@ -36,16 +37,16 @@ class Perk(object):
     def getArgBonusByLevel(self, argName, perkLevel):
         argRecord = self.defaultBlockSettings.get(argName)
         if not argRecord:
-            raise SoftException(('Perk item do not contain argument {}').format(argName))
+            raise SoftException('Perk item do not contain argument {}'.format(argName))
         simpleLevel = perkLevel
         value = argRecord.value * simpleLevel
         postValues = argRecord.postValues
         postLevel = min(perkLevel - simpleLevel, len(postValues))
         if postLevel > 0:
-            value += sum(postValues[i] for i in xrange(postLevel))
+            value += sum((postValues[i] for i in xrange(postLevel)))
         overloadLevel = perkLevel - simpleLevel - postLevel
         if overloadLevel > 0:
-            overloadValue = postValues[(-1)] if postValues else argRecord.value
+            overloadValue = postValues[-1] if postValues else argRecord.value
             value += overloadValue * overloadLevel
         return value
 

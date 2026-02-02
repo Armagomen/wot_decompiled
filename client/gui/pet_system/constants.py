@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/pet_system/constants.py
 PET_NAME_FORMAT = 'petName_{0:d}'
 EVENT_NAME_FORMAT = 'event_{0:d}'
 
@@ -21,12 +23,10 @@ class PS_PDATA_KEYS(object):
 class PetPlaceName(object):
     DEFAULT = 'default'
     STORAGE = 'storage'
-    ALL = (
-     DEFAULT, STORAGE)
+    ALL = (DEFAULT, STORAGE)
 
 
 class StorageStateKey(object):
     ACTIVE = 'active'
     LOCKED = 'locked'
-    ALL = (
-     ACTIVE, LOCKED)
+    ALL = (ACTIVE, LOCKED)

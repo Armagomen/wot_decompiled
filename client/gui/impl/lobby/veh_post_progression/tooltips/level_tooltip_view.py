@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/veh_post_progression/tooltips/level_tooltip_view.py
 from __future__ import absolute_import
 import typing
 from frameworks.wulf import ViewSettings
@@ -31,7 +33,7 @@ class BaseProgressionLevelTooltipView(ViewImpl):
         super(BaseProgressionLevelTooltipView, self)._onLoading(*args, **kwargs)
         step = vehicle.postProgression.getStep(stepID)
         modification = step.action
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setLevel(step.getLevel())
             model.setIsUnlocked(self._getIsUnlocked(step))
             model.setNameRes(modification.getLocNameRes()())
@@ -63,9 +65,7 @@ class CmpProgressionLevelTooltipView(BaseProgressionLevelTooltipView):
     __slots__ = ()
 
     def _getModificationType(self, postProgression, step):
-        if any(postProgression.getStep(stepId).action.isMultiAction() for stepId in step.getNextStepIDs()):
-            return ModificationType.PAIRMODIFICATION
-        return ModificationType.FEATURE
+        return ModificationType.PAIRMODIFICATION if any((postProgression.getStep(stepId).action.isMultiAction() for stepId in step.getNextStepIDs())) else ModificationType.FEATURE
 
 
 class CfgProgressionLevelTooltipView(CmpProgressionLevelTooltipView):

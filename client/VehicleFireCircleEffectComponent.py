@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/VehicleFireCircleEffectComponent.py
 from typing import TYPE_CHECKING
 from battle_royale.gui.constants import BattleRoyaleEquipments
 from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE
@@ -27,7 +29,6 @@ class VehicleFireCircleEffectComponent(VehicleAbilityBaseComponent):
 
     def _destroy(self):
         super(VehicleFireCircleEffectComponent, self)._destroy()
-        otherComp = first([ comp for comp in self.entity.dynamicComponents.values() if isinstance(comp, VehicleFireCircleEffectComponent) and comp is not self
-                          ])
+        otherComp = first([ comp for comp in self.entity.dynamicComponents.values() if isinstance(comp, VehicleFireCircleEffectComponent) and comp is not self ])
         if otherComp:
             otherComp.set_finishTime()

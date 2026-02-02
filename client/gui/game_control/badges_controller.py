@@ -1,4 +1,8 @@
-import typing, Event, constants
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/badges_controller.py
+import typing
+import Event
+import constants
 from adisp import adisp_process
 from gui import SystemMessages
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -43,8 +47,8 @@ class BadgesController(IBadgesController, Notifiable):
     def onLobbyStarted(self, ctx):
         self.__initCurrentBadges()
         self.__badgesProcessing()
-        g_clientUpdateManager.addCallbacks({'badges': self.__updateBadges, 
-           'stats.dossier': self.__updateBadges})
+        g_clientUpdateManager.addCallbacks({'badges': self.__updateBadges,
+         'stats.dossier': self.__updateBadges})
 
     def select(self, badges):
         self.__selectOnClient(badges)
@@ -78,7 +82,7 @@ class BadgesController(IBadgesController, Notifiable):
         for badge in self.__itemsCache.items.getReceivedBadges(onlySelected=True).values():
             if badge.isPrefixLayout():
                 self.__currentSelectedPrefix = badge
-            elif badge.isSuffixLayout():
+            if badge.isSuffixLayout():
                 self.__currentSelectedSuffix = badge
 
         return

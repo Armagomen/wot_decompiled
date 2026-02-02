@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/exchange/discount_presentation.py
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.views.lobby.exchange.exchange_rate_model import ExchangeRateModel
 

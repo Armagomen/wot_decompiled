@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/platoon/tooltip/platoon_wtr_tooltip.py
 from gui.impl.gen import R
 from frameworks.wulf import ViewSettings
 from gui.impl.gen.view_models.views.lobby.platoon.common_player_data_model import CommonPlayerDataModel
@@ -18,7 +20,7 @@ class WTRTooltip(ViewImpl):
         return self.getViewModel()
 
     def _onLoading(self, *args, **kwargs):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setName(self.__name)
             model.setClanTag(self.__clanTag)
             model.setBadgeID(self.__badgeID)

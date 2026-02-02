@@ -1,4 +1,8 @@
-import logging, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/seniority_awards/seniority_awards_helper.py
+from __future__ import absolute_import
+import logging
+import BigWorld
 from account_helpers.settings_core.settings_constants import SeniorityAwardsStorageKeys
 from frameworks.wulf import ViewFlags
 from gui import SystemMessages
@@ -21,10 +25,10 @@ def getVehicleCD(value):
         vehicleCD = int(value)
     except ValueError:
         _logger.warning('Wrong vehicle compact descriptor: %s!', value)
-        return
+        return None
 
     return vehicleCD
-    return
+    return None
 
 
 @dependency.replace_none_kwargs(settings=ISettingsCore)
@@ -45,9 +49,7 @@ def setSeniorityAwardsServerSetting(settingsSection, settings=None):
 
 @dependency.replace_none_kwargs(seniorityAwardsController=ISeniorityAwardsController)
 def getRewardCategoryForUI(seniorityAwardsController=None):
-    if seniorityAwardsController.rewardCategory and seniorityAwardsController.testGroup:
-        return ('{}_{}').format(seniorityAwardsController.rewardCategory, seniorityAwardsController.testGroup)
-    return seniorityAwardsController.rewardCategory or seniorityAwardsController.testGroup
+    return '{}_{}'.format(seniorityAwardsController.rewardCategory, seniorityAwardsController.testGroup) if seniorityAwardsController.rewardCategory and seniorityAwardsController.testGroup else seniorityAwardsController.rewardCategory or seniorityAwardsController.testGroup
 
 
 def showRestrictedSysMessage():
@@ -78,24 +80,26 @@ def getLootboxRendererModelPresenter(reward):
 def getRewardTooltipContent(event):
     tContent = R.views.common.tooltip_window.loot_box_compensation_tooltip.LootBoxCompensationTooltipContent()
     if event.contentID == tContent:
-        tooltipData = {'iconBefore': event.getArgument('iconBefore', ''), 'labelBefore': event.getArgument('labelBefore', ''), 
-           'iconAfter': event.getArgument('iconAfter', ''), 
-           'labelAfter': event.getArgument('labelAfter', ''), 
-           'bonusName': event.getArgument('bonusName', '')}
+        tooltipData = {'iconBefore': event.getArgument('iconBefore', ''),
+         'labelBefore': event.getArgument('labelBefore', ''),
+         'iconAfter': event.getArgument('iconAfter', ''),
+         'labelAfter': event.getArgument('labelAfter', ''),
+         'bonusName': event.getArgument('bonusName', '')}
         return CompensationTooltipContent(content=tContent, viewFlag=ViewFlags.VIEW, model=LootBoxCompensationTooltipModel, **tooltipData)
     else:
         tContent = R.views.common.tooltip_window.loot_box_compensation_tooltip.LootBoxVehicleCompensationTooltipContent()
         if event.contentID == tContent:
-            tooltipData = {'iconBefore': event.getArgument('iconBefore', ''), 'labelBefore': event.getArgument('labelBefore', ''), 
-               'iconAfter': event.getArgument('iconAfter', ''), 
-               'labelAfter': event.getArgument('labelAfter', ''), 
-               'bonusName': event.getArgument('bonusName', ''), 
-               'vehicleName': event.getArgument('vehicleName', ''), 
-               'vehicleType': event.getArgument('vehicleType', ''), 
-               'isElite': event.getArgument('isElite', True), 
-               'vehicleLvl': event.getArgument('vehicleLvl', '')}
+            tooltipData = {'iconBefore': event.getArgument('iconBefore', ''),
+             'labelBefore': event.getArgument('labelBefore', ''),
+             'iconAfter': event.getArgument('iconAfter', ''),
+             'labelAfter': event.getArgument('labelAfter', ''),
+             'bonusName': event.getArgument('bonusName', ''),
+             'vehicleName': event.getArgument('vehicleName', ''),
+             'vehicleType': event.getArgument('vehicleType', ''),
+             'isElite': event.getArgument('isElite', True),
+             'vehicleLvl': event.getArgument('vehicleLvl', '')}
             return VehicleCompensationTooltipContent(**tooltipData)
-        return
+        return None
 
 
 def _closeLootBoxWindows():

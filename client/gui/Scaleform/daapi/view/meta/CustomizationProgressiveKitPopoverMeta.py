@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/CustomizationProgressiveKitPopoverMeta.py
 from gui.Scaleform.daapi.view.lobby.popover.SmartPopOverView import SmartPopOverView
 
 class CustomizationProgressiveKitPopoverMeta(SmartPopOverView):
@@ -15,17 +17,13 @@ class CustomizationProgressiveKitPopoverMeta(SmartPopOverView):
         self._printOverrideError('onFilterChanged')
 
     def as_setHeaderS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setHeader(value)
+        return self.flashObject.as_setHeader(value) if self._isDAAPIInited() else None
 
     def as_showClearMessageS(self, message):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showClearMessage(message)
+        return self.flashObject.as_showClearMessage(message) if self._isDAAPIInited() else None
 
     def as_setDefaultButtonEnabledS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setDefaultButtonEnabled(value)
+        return self.flashObject.as_setDefaultButtonEnabled(value) if self._isDAAPIInited() else None
 
     def as_setItemsS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setItems(value)
+        return self.flashObject.as_setItems(value) if self._isDAAPIInited() else None

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/dialogs/need_repair.py
 import typing
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R

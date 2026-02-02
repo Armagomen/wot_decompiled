@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/awards/badge_award_view.py
 import typing
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
@@ -22,7 +24,7 @@ class BadgeAwardView(ViewImpl):
         return super(BadgeAwardView, self).getViewModel()
 
     def _onLoading(self, badge):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setBadgeId(badge.badgeID)
 
 

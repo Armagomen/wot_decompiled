@@ -1,6 +1,10 @@
-import time, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/AvatarInputHandler/DynamicCameras/camera_switcher.py
+import time
+import typing
 from enum import Enum
-import BigWorld, math_utils
+import BigWorld
+import math_utils
 
 class SwitchTypes(Enum):
     FROM_MAX_DIST = 0
@@ -20,9 +24,7 @@ TRANSITION_DIST_HYSTERESIS = 0.01
 class CameraSwitcher(object):
     _TIMEOUT_TIME = 0.35
     _INTERVAL_TO_SWITCH = 0.2
-    __slots__ = ('__switchType', '__switchToName', '__switchToPos', '__lastDist', '__intervalToSwitch',
-                 '__lastScrollTime', '__hasTimeout', '__timeoutCallback', '__timeoutTime',
-                 '__transitionValue', '__switchToPlaceType')
+    __slots__ = ('__switchType', '__switchToName', '__switchToPos', '__lastDist', '__intervalToSwitch', '__lastScrollTime', '__hasTimeout', '__timeoutCallback', '__timeoutTime', '__transitionValue', '__switchToPlaceType')
 
     def __init__(self, switchType, switchToName, switchToPos, intervalToSwitch=_INTERVAL_TO_SWITCH, timeoutTime=_TIMEOUT_TIME):
         self.__switchType = switchType
@@ -46,8 +48,7 @@ class CameraSwitcher(object):
         return
 
     def getSwitchParams(self):
-        return (
-         self.__switchToName, self.__switchToPos, self.__switchToPlaceType)
+        return (self.__switchToName, self.__switchToPos, self.__switchToPlaceType)
 
     def needToSwitch(self, zValue, dist, minValue, maxValue, transitionValue=None):
         if transitionValue is not None:

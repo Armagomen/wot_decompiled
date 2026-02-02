@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/items/basic_item.py
 from items import ITEM_TYPE_NAMES
 from items.components import legacy_stuff, shared_components, component_constants
 _LONG_DESCR_PROPERTY = 'longDescriptionSpecial'
@@ -17,7 +19,7 @@ class BasicItem(legacy_stuff.LegacyStuff):
         return
 
     def __repr__(self):
-        return ('{}(id={}, name={})').format(self.__class__.__name__, self.id, self.name)
+        return '{}(id={}, name={})'.format(self.__class__.__name__, self.id, self.name)
 
     @property
     def itemTypeName(self):
@@ -25,24 +27,15 @@ class BasicItem(legacy_stuff.LegacyStuff):
 
     @property
     def userString(self):
-        if self.i18n is not None:
-            return self.i18n.userString
-        else:
-            return ''
+        return self.i18n.userString if self.i18n is not None else ''
 
     @property
     def shortUserString(self):
-        if self.i18n is not None:
-            return self.i18n.shortString
-        else:
-            return ''
+        return self.i18n.shortString if self.i18n is not None else ''
 
     @property
     def description(self):
-        if self.i18n is not None:
-            return self.i18n.description
-        else:
-            return ''
+        return self.i18n.description if self.i18n is not None else ''
 
     @property
     def shortDescriptionSpecial(self):
@@ -53,10 +46,7 @@ class BasicItem(legacy_stuff.LegacyStuff):
         return self._getDescription(_LONG_DESCR_PROPERTY)
 
     def _getDescription(self, descr):
-        if self.i18n is not None:
-            return self.i18n.__getattribute__(descr)
-        else:
-            return ''
+        return self.i18n.__getattribute__(descr) if self.i18n is not None else ''
 
     def copy(self):
         component = self.__class__(self.typeID, self.id, self.name, self.compactDescr)

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/lobby_state_machine/lobby_state_machine.py
 from __future__ import absolute_import
 import logging
 from collections import deque
@@ -56,14 +58,11 @@ class LobbyStateMachine(StateMachine, EventsHandler):
         self.__stateConfigurators = []
         self.__transitionConfigurators = []
         self.__removableStateSelectors = []
-        self.__backNavigationDescription = ''
+        self.__backNavigationDescription = u''
         self.__recordedStates = None
         self.__viewKillingObserver = None
         self.__stateClosingObserver = None
-        self.__subtreePriorities = [
-         TopScopeTopLayerState.STATE_ID,
-         SubScopeTopLayerState.STATE_ID,
-         SubScopeSubLayerState.STATE_ID]
+        self.__subtreePriorities = [TopScopeTopLayerState.STATE_ID, SubScopeTopLayerState.STATE_ID, SubScopeSubLayerState.STATE_ID]
         return
 
     @property
@@ -72,10 +71,7 @@ class LobbyStateMachine(StateMachine, EventsHandler):
 
     @property
     def visibleState(self):
-        if self.__visibleRouteInfo:
-            return self.__visibleRouteInfo.state
-        else:
-            return
+        return self.__visibleRouteInfo.state if self.__visibleRouteInfo else None
 
     @property
     def visibleRouteInfo(self):
@@ -92,7 +88,7 @@ class LobbyStateMachine(StateMachine, EventsHandler):
 
     def getStateByCls(self, cls):
         if not issubclass(cls, LobbyState):
-            raise StateMachineError(('LobbyStateMachine cannot contain states of type {}.').format(cls))
+            raise StateMachineError('LobbyStateMachine cannot contain states of type {}.'.format(cls))
         return self.getStateByID(cls.STATE_ID)
 
     def getStateByID(self, stateID):
@@ -107,7 +103,7 @@ class LobbyStateMachine(StateMachine, EventsHandler):
                     return child
                 stack.extend(child.getChildrenStates())
 
-            return
+            return None
 
     def getUntrackedStateFor(self, scope, layer):
         state = self.__scopeToLayerToStateMap.get(scope, {}).get(layer, None)
@@ -126,25 +122,24 @@ class LobbyStateMachine(StateMachine, EventsHandler):
             return first(emptyStates)
 
     def getNonEmptyEnteredStates(self, predicate=None, onlyLeaves=True, withNavigationDescription=False):
-        return [ state for state in self._entered if not isinstance(state, EmptyState) and not state.getParent().isParallel() and (predicate is None or predicate(state)) and (not any(state.getEnteredChildrenStates()) if onlyLeaves else True) and (getNavigationDescriptionSafe(state) is not None if withNavigationDescription else True)
-               ]
+        return [ state for state in self._entered if not isinstance(state, EmptyState) and not state.getParent().isParallel() and (predicate is None or predicate(state)) and (not any(state.getEnteredChildrenStates()) if onlyLeaves else True) and (getNavigationDescriptionSafe(state) is not None if withNavigationDescription else True) ]
 
     def getRelatedView(self, state):
         if not isinstance(state, LobbyState):
             return
+        elif not state.getViewKey():
+            return self.getRelatedView(state.getParent())
+        uiLoader = dependency.instance(IGuiLoader)
+        if uiLoader is None or uiLoader.windowsManager is None:
+            return
+        windowsManager = uiLoader.windowsManager
+        windows = windowsManager.findWindows(lambda w: compareViewKeys(w.content, state.getViewKey()))
+        if windows:
+            view = first(windows).content
+            if isinstance(view, WulfPackageLayoutAdapter):
+                return view.content
+            return view
         else:
-            if not state.getViewKey():
-                return self.getRelatedView(state.getParent())
-            uiLoader = dependency.instance(IGuiLoader)
-            if uiLoader is None or uiLoader.windowsManager is None:
-                return
-            windowsManager = uiLoader.windowsManager
-            windows = windowsManager.findWindows(lambda w: compareViewKeys(w.content, state.getViewKey()))
-            if windows:
-                view = first(windows).content
-                if isinstance(view, WulfPackageLayoutAdapter):
-                    return view.content
-                return view
             return
 
     def getStateFromView(self, view):
@@ -173,7 +168,7 @@ class LobbyStateMachine(StateMachine, EventsHandler):
                 if isDescendantOf(state, subtreeState) or state is subtreeState:
                     return subtreeState
 
-        return
+        return None
 
     def addState(self, state):
         inferredParent = self.getStateByCls(state._PARENT_CLS())
@@ -205,9 +200,9 @@ class LobbyStateMachine(StateMachine, EventsHandler):
         topScopeState.addChildState(topScopeTopLayerState)
         self.addChildState(subScopeState)
         self.addChildState(topScopeState)
-        self.__scopeToLayerToStateMap = {ScopeTemplates.LOBBY_SUB_SCOPE: {WindowLayer.SUB_VIEW: subScopeSubLayerState, 
-                                            WindowLayer.TOP_SUB_VIEW: subScopeTopLayerState}, 
-           ScopeTemplates.LOBBY_TOP_SUB_SCOPE: {WindowLayer.TOP_SUB_VIEW: topScopeTopLayerState}}
+        self.__scopeToLayerToStateMap = {ScopeTemplates.LOBBY_SUB_SCOPE: {WindowLayer.SUB_VIEW: subScopeSubLayerState,
+                                          WindowLayer.TOP_SUB_VIEW: subScopeTopLayerState},
+         ScopeTemplates.LOBBY_TOP_SUB_SCOPE: {WindowLayer.TOP_SUB_VIEW: topScopeTopLayerState}}
         for fn in self.__stateConfigurators:
             fn(self, *args, **kwargs)
 
@@ -234,21 +229,19 @@ class LobbyStateMachine(StateMachine, EventsHandler):
         self.__recordedStates.removableStateSelectors.extend(self.__removableStateSelectors)
         self.__stateClosingObserver = _StateClosingObserver(self)
         self.connect(self.__stateClosingObserver)
-        self.__viewKillingObserver = _ViewKillingObserver(self)
+        self.__viewKillingObserver = _ViewKillingObserver(self, self.__recordedStates)
         self.connect(self.__viewKillingObserver)
         self._subscribe()
         if doValidate:
             for state in self.visitInOrder(lambda node: isinstance(node, LobbyState)):
                 parentClsRef = getattr(type(state), '_PARENT_CLS', None)
                 if parentClsRef is not None and not isinstance(state.getParent(), parentClsRef()):
-                    raise NodeError('State %s declared as child of %s, but its parent is %s' % (
-                     state, parentClsRef(), state.getParent()))
+                    raise NodeError('State %s declared as child of %s, but its parent is %s' % (state, parentClsRef(), state.getParent()))
                 for transition in state.getChildren(lambda node: isinstance(node, NavigationTransition)):
                     targetState = first(transition.getTargets())
                     sameSubtree = self.findOwningSubtree(state) == self.findOwningSubtree(targetState)
                     if not sameSubtree and transition.record:
-                        raise TransitionError('%s from %s to %s is a cross subtree transition with record flag set!Record flags on cross subtree transitions are not allowed.' % (
-                         type(transition), state.getStateID(), targetState.getStateID()))
+                        raise TransitionError('%s from %s to %s is a cross subtree transition with record flag set!Record flags on cross subtree transitions are not allowed.' % (type(transition), state.getStateID(), targetState.getStateID()))
 
         super(LobbyStateMachine, self).start(doValidate)
         return
@@ -265,7 +258,7 @@ class LobbyStateMachine(StateMachine, EventsHandler):
             self.post(_StopEvent(_SubScopeSubLayerFinalState.STATE_ID))
             self.__currentlyProcessedEvent = None
             self.__navigationQueue = []
-            self.__backNavigationDescription = ''
+            self.__backNavigationDescription = u''
             self.__recordedStates.clear()
             self.__eventManager.clear()
             self.__viewAliasesToStates = {}
@@ -281,7 +274,7 @@ class LobbyStateMachine(StateMachine, EventsHandler):
 
     def post(self, event):
         if not isinstance(event, (NavigationEvent, BackNavigationEvent, _BackNavigationEvent)):
-            raise StateMachineError(('LobbyStateMachine only accepts events of NavigationEvent type. Invalid event: {}').format(event))
+            raise StateMachineError('LobbyStateMachine only accepts events of NavigationEvent type. Invalid event: {}'.format(event))
         if not self.isRunning():
             _logger.info('State machine is not running. Ignoring navigation to %r', event)
             return
@@ -315,23 +308,18 @@ class LobbyStateMachine(StateMachine, EventsHandler):
             return
 
     def _getListeners(self):
-        return (
-         (
-          NavigationEvent.EVENT_ID, self.post, EVENT_BUS_SCOPE.LOBBY),
-         (
-          BackNavigationEvent.EVENT_ID, self.post, EVENT_BUS_SCOPE.LOBBY),
-         (
-          _BackNavigationEvent.EVENT_ID, self.post, EVENT_BUS_SCOPE.LOBBY),
-         (
-          _NonViewClosingBackNavigationEvent.EVENT_ID, self.post, EVENT_BUS_SCOPE.LOBBY))
+        return ((NavigationEvent.EVENT_ID, self.post, EVENT_BUS_SCOPE.LOBBY),
+         (BackNavigationEvent.EVENT_ID, self.post, EVENT_BUS_SCOPE.LOBBY),
+         (_BackNavigationEvent.EVENT_ID, self.post, EVENT_BUS_SCOPE.LOBBY),
+         (_NonViewClosingBackNavigationEvent.EVENT_ID, self.post, EVENT_BUS_SCOPE.LOBBY))
 
     def _process(self, transitions, event):
         relevantTransition = self.__findRelevantTransition(transitions)
         isTransitioningByBackNavigation = isinstance(event, _BackNavigationGeneratedNavigationEvent)
         if isinstance(relevantTransition, GuardTransition) and isTransitioningByBackNavigation:
-            self.__recordedStates.push(self.getStateByID(event.targetStateID))
+            self.__recordedStates.push(self.getStateByID(event.targetStateID), event.params)
         self.__recordedStates.pushRecordedTransitionSource(relevantTransition, isTransitioningByBackNavigation)
-        super(LobbyStateMachine, self)._process(transitions, event)
+        super(LobbyStateMachine, self)._process([relevantTransition], event)
         targetState = relevantTransition.getTargets()[0]
         self.__recordedStates.clearCycles(self, targetState, self.__currentlyProcessedEvent.params)
         if self.__navigationQueue:
@@ -360,7 +348,7 @@ class LobbyStateMachine(StateMachine, EventsHandler):
         if visualBackNavigationTarget:
             self.__backNavigationDescription = visualBackNavigationTarget.getBackNavigationDescription(recordedParams)
         _logger.debug('Visible route: %s', visibleState.getStateID() if visibleState else 'NO STATE VISIBLE')
-        _logger.debug('Routes: [%s]', (', ').join(s.getStateID() for s in enteredLeafStates))
+        _logger.debug('Routes: [%s]', ', '.join((s.getStateID() for s in enteredLeafStates)))
         _logger.debug('Current state description: "%s" (state: %s)', currentNavigationDescription, visibleStateWithDescription.getStateID() if visibleStateWithDescription else None)
         if visibleStateWithDescription is not visibleState:
             _logger.debug('\tDescription derived from (%s) instead of visible state (%s) because it has no description', visibleStateWithDescription.getStateID() if visibleStateWithDescription else None, visibleState.getStateID() if visibleState else None)
@@ -375,8 +363,7 @@ class LobbyStateMachine(StateMachine, EventsHandler):
         return
 
     def __findRelevantTransition(self, transitions):
-        filteredTransitions = [ transition for transition in transitions if isinstance(transition, NavigationTransition)
-                              ]
+        filteredTransitions = [ transition for transition in transitions if isinstance(transition, NavigationTransition) ]
         if len(filteredTransitions) <= 1:
             return first(filteredTransitions)
         recordTransitions = [ t for t in filteredTransitions if t.record ]
@@ -384,23 +371,18 @@ class LobbyStateMachine(StateMachine, EventsHandler):
             return first(recordTransitions)
         if len(recordTransitions) > 1:
             raise TransitionError('Multiple record transitions are not allowed.')
-        target = first(filteredTransitions).getTargets()[0]
-        if any(target not in t.getTargets() for t in filteredTransitions):
-            raise TransitionError(('Event {} caused multiple transitions with different targets').format(self.__currentlyProcessedEvent))
-        crossSubtreeTransitions = [ t for t in filteredTransitions if not any(self.findOwningSubtree(t.getSource()) is self.findOwningSubtree(target) for target in t.getTargets())
-                                  ]
-        if crossSubtreeTransitions:
-            return first(crossSubtreeTransitions)
-        return first(filteredTransitions)
+        filteredTransitions.sort(key=lambda t: t.getPriority(), reverse=True)
+        crossSubtreeTransitions = [ t for t in filteredTransitions if not any((self.findOwningSubtree(t.getSource()) is self.findOwningSubtree(target) for target in t.getTargets())) ]
+        return first(crossSubtreeTransitions) if crossSubtreeTransitions else first(filteredTransitions)
 
     def __findPreviousVisibleState(self, state):
         defaultState = self.getStateByCls(SubScopeSubLayerState)
         if state is None:
             return (defaultState, buildSerializedParamsTopDown(defaultState))
+        elif isinstance(state, EmptyState):
+            state = first(self.getNonEmptyEnteredStates(lambda s: s is not state, withNavigationDescription=True)[::-1])
+            return self.__findPreviousVisibleState(state)
         else:
-            if isinstance(state, EmptyState):
-                state = first(self.getNonEmptyEnteredStates(lambda s: s is not state, withNavigationDescription=True)[::-1])
-                return self.__findPreviousVisibleState(state)
             subtree = self.findOwningSubtree(state)
             recordedState, recordedParams = self.__recordedStates.peek()
             if recordedState and self.findOwningSubtree(recordedState) is subtree:
@@ -417,9 +399,7 @@ class LobbyStateMachine(StateMachine, EventsHandler):
             otherSubtree = self.findOwningSubtree(otherTarget)
             eventSubtreePriority = self.__subtreePriorities.index(subtree.getStateID())
             otherSubtreePriority = self.__subtreePriorities.index(otherSubtree.getStateID())
-            if eventSubtreePriority == otherSubtreePriority:
-                return int(isinstance(target, EmptyState)) - int(isinstance(otherTarget, EmptyState))
-            return eventSubtreePriority - otherSubtreePriority
+            return int(isinstance(target, EmptyState)) - int(isinstance(otherTarget, EmptyState)) if eventSubtreePriority == otherSubtreePriority else eventSubtreePriority - otherSubtreePriority
 
         self.__navigationQueue.sort(key=cmp_to_key(eventComparator))
 

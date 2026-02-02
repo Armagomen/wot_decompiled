@@ -1,4 +1,8 @@
-import logging, typing, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/battle/postmortem_panel/postmortem_panel_view.py
+import logging
+import typing
+import BigWorld
 from PlayerEvents import g_playerEvents
 from aih_constants import CTRL_MODE_NAME
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as BONUS_TYPE
@@ -21,12 +25,11 @@ if typing.TYPE_CHECKING:
     from Event import Event
     from constants import FINISH_REASON
 _logger = logging.getLogger(__name__)
-_MODEL_TO_COMMON_ENUM_MAP = {RateButtonEnum.WORSE: PlayerSatisfactionRating.WORSE, 
-   RateButtonEnum.USUAL: PlayerSatisfactionRating.USUAL, 
-   RateButtonEnum.BETTER: PlayerSatisfactionRating.BETTER, 
-   RateButtonEnum.UNSET: PlayerSatisfactionRating.NONE}
-SELECTION_ORDER = (
- PlayerSatisfactionRating.NONE,
+_MODEL_TO_COMMON_ENUM_MAP = {RateButtonEnum.WORSE: PlayerSatisfactionRating.WORSE,
+ RateButtonEnum.USUAL: PlayerSatisfactionRating.USUAL,
+ RateButtonEnum.BETTER: PlayerSatisfactionRating.BETTER,
+ RateButtonEnum.UNSET: PlayerSatisfactionRating.NONE}
+SELECTION_ORDER = (PlayerSatisfactionRating.NONE,
  PlayerSatisfactionRating.WORSE,
  PlayerSatisfactionRating.USUAL,
  PlayerSatisfactionRating.BETTER)
@@ -45,52 +48,14 @@ class PostmortemPanelView(ViewImpl, CallbackDelayer):
         return super(PostmortemPanelView, self).getViewModel()
 
     @property
-    def isRatingWidgetEnabled--- This code section failed: ---
-
- L.  69         0  LOAD_FAST             0  'self'
-                3  LOAD_ATTR             0  'sessionProvider'
-                6  LOAD_ATTR             1  'arenaVisitor'
-                9  LOAD_ATTR             2  'bonus'
-               12  STORE_FAST            1  'bonusTypeVistor'
-
- L.  70        15  LOAD_FAST             1  'bonusTypeVistor'
-               18  LOAD_ATTR             3  'hasBonusCap'
-               21  LOAD_GLOBAL           4  'BONUS_TYPE'
-               24  LOAD_ATTR             5  'PLAYER_SATISFACTION_RATING'
-               27  CALL_FUNCTION_1       1  None
-               30  STORE_FAST            2  'hasBonusCap'
-
- L.  71        33  LOAD_GLOBAL           6  'playerSatisfactionSchema'
-               36  LOAD_ATTR             7  'getModel'
-               39  CALL_FUNCTION_0       0  None
-               42  STORE_FAST            3  'config'
-
- L.  72        45  LOAD_FAST             3  'config'
-               48  POP_JUMP_IF_FALSE    76  'to 76'
-               51  LOAD_FAST             2  'hasBonusCap'
-               54  JUMP_IF_FALSE_OR_POP    79  'to 79'
-               57  LOAD_FAST             3  'config'
-               60  LOAD_ATTR             8  'enabledInterfaces'
-               63  LOAD_ATTR             9  'spectatorMode'
-               66  JUMP_IF_FALSE_OR_POP    79  'to 79'
-               69  LOAD_FAST             3  'config'
-               72  LOAD_ATTR            10  'enabled'
-               75  RETURN_END_IF    
-             76_0  COME_FROM            66  '66'
-             76_1  COME_FROM            54  '54'
-             76_2  COME_FROM            48  '48'
-               76  LOAD_GLOBAL          11  'False'
-               79  RETURN_VALUE     
-               -1  RETURN_LAST      
-
-Parse error at or near `RETURN_END_IF' instruction at offset 75
+    def isRatingWidgetEnabled(self):
+        bonusTypeVistor = self.sessionProvider.arenaVisitor.bonus
+        hasBonusCap = bonusTypeVistor.hasBonusCap(BONUS_TYPE.PLAYER_SATISFACTION_RATING)
+        config = playerSatisfactionSchema.getModel()
+        return hasBonusCap and config.enabledInterfaces.spectatorMode and config.enabled if config else False
 
     def _getEvents(self):
-        events = [
-         (
-          self.viewModel.onRateButtonClick, self.__onRateButtonClick),
-         (
-          g_playerEvents.onRoundFinished, self._onRoundFinished)]
+        events = [(self.viewModel.onRateButtonClick, self.__onRateButtonClick), (g_playerEvents.onRoundFinished, self._onRoundFinished)]
         killCamCtrl = self.sessionProvider.shared.killCamCtrl
         if killCamCtrl:
             events.append((killCamCtrl.onKillCamModeStateChanged, self.__onKillCamStateChanged))
@@ -101,7 +66,7 @@ Parse error at or near `RETURN_END_IF' instruction at offset 75
 
     def _initialize(self, *args, **kwargs):
         super(PostmortemPanelView, self)._initialize()
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setIsRatingWidgetEnabled(self.isRatingWidgetEnabled)
             self._setButtonConfig(model)
             isFrontline = self.sessionProvider.arenaVisitor.getArenaGuiType() in ARENA_GUI_TYPE.EPIC_RANGE
@@ -113,10 +78,10 @@ Parse error at or near `RETURN_END_IF' instruction at offset 75
         super(PostmortemPanelView, self)._finalize()
         self.stopCallback(self.__stopHint)
 
-    def __onPostMortemSwitched(self, _, respawnAvailable):
+    def __onPostMortemSwitched(self, *_):
         self.__startHint()
         if self.sessionProvider.arenaVisitor.getArenaGuiType() in ARENA_GUI_TYPE.EPIC_RANGE:
-            self.viewModel.setHasLivesAvailable(respawnAvailable)
+            self.viewModel.setHasLivesAvailable(False)
 
     def __onKillCamStateChanged(self, state, _):
         if state is DeathCamEvent.State.FINISHED:
@@ -150,4 +115,4 @@ Parse error at or near `RETURN_END_IF' instruction at offset 75
             buttonModel.setButtonVariant(_COMMON_TO_MODEL_ENUM_MAP[rating])
             buttonArray.addViewModel(buttonModel)
 
-        buttonArray.invalidate()# Decompile failed :(
+        buttonArray.invalidate()

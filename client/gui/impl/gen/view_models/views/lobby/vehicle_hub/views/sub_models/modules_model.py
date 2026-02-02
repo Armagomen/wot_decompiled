@@ -1,11 +1,12 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/vehicle_hub/views/sub_models/modules_model.py
 from frameworks.wulf import Array, Map, ViewModel
 from gui.impl.gen.view_models.views.lobby.vehicle_hub.research_item_display_model import ResearchItemDisplayModel
 from gui.impl.gen.view_models.views.lobby.vehicle_hub.research_item_model import ResearchItemModel
 from gui.impl.gen.view_models.views.lobby.vehicle_hub.views.sub_models.field_modification_model import FieldModificationModel
 
 class ModulesModel(ViewModel):
-    __slots__ = ('onVehicleChange', 'onInstallItem', 'onUnlockItem', 'onBuyAndInstallItem',
-                 'onSellItem')
+    __slots__ = ('onVehicleChange', 'onInstallItem', 'onUnlockItem', 'onBuyAndInstallItem', 'onSellItem')
 
     def __init__(self, properties=4, commands=5):
         super(ModulesModel, self).__init__(properties=properties, commands=commands)

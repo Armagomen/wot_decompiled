@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/dict2model/exceptions.py
 from __future__ import absolute_import
-import typing, pprint
+import typing
+import pprint
 from soft_exception import SoftException
 from dict2model import utils
 
@@ -34,7 +37,7 @@ class ValidationErrorMessage(object):
 
     def __add__(self, other):
         if not isinstance(other, ValidationErrorMessage):
-            raise SoftException(('Unsupported error message type: {}').format(type(other)))
+            raise SoftException('Unsupported error message type: {}'.format(type(other)))
         return ValidationErrorMessage(utils.mergeDicts({}, self.data, other.data, deep=False))
 
     @property
@@ -49,6 +52,10 @@ class ValidationError(SoftException):
             error = ValidationErrorMessage(error)
         self.error = error
         super(ValidationError, self).__init__(self.error)
+
+
+class CumulativeIterableValidationError(ValidationError):
+    pass
 
 
 class AccessToFieldDeniedError(SoftException):

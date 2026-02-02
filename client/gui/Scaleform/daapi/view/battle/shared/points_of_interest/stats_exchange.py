@@ -1,4 +1,9 @@
-import logging, enum, typing, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/points_of_interest/stats_exchange.py
+import logging
+import enum
+import typing
+import BigWorld
 from gui.Scaleform.daapi.view.battle.shared.points_of_interest.constants import POI_TYPE_UI_MAPPING
 from gui.Scaleform.daapi.view.battle.shared.points_of_interest.poi_helpers import getPoiEquipmentByType
 from helpers import dependency
@@ -58,10 +63,10 @@ class PointsOfInterestStatsController(PointsOfInterestListener):
             result = item.update()
             if result == PoiStatusItemUpdateResult.VALID:
                 continue
-            elif result == PoiStatusItemUpdateResult.INVALID:
+            if result == PoiStatusItemUpdateResult.INVALID:
                 self.__statsDataController.as_removePointOfInterestS(vehicleID=vehicleID, type=item.type)
                 del statusItems[poiID]
-            elif result == PoiStatusItemUpdateResult.UPDATED:
+            if result == PoiStatusItemUpdateResult.UPDATED:
                 self.__statsDataController.as_updatePointOfInterestS(data=item.getVO())
 
         if invader:
@@ -155,6 +160,6 @@ class PoiStatusItem(object):
         self.__invader = vehId
 
     def getVO(self):
-        return {'vehicleID': self.invader, 
-           'type': self.type, 
-           'progress': 1 if self.isCaptured else self.progress / 100}
+        return {'vehicleID': self.invader,
+         'type': self.type,
+         'progress': 1 if self.isCaptured else self.progress / 100}

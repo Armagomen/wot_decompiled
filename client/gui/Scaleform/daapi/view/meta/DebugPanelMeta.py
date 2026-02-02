@@ -1,23 +1,20 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/DebugPanelMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class DebugPanelMeta(BaseDAAPIComponent):
 
     def as_updatePingInfoS(self, pingValue):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updatePingInfo(pingValue)
+        return self.flashObject.as_updatePingInfo(pingValue) if self._isDAAPIInited() else None
 
     def as_updateFPSInfoS(self, fpsValue):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateFPSInfo(fpsValue)
+        return self.flashObject.as_updateFPSInfo(fpsValue) if self._isDAAPIInited() else None
 
     def as_updateLagInfoS(self, isLagging):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateLagInfo(isLagging)
+        return self.flashObject.as_updateLagInfo(isLagging) if self._isDAAPIInited() else None
 
     def as_updatePingFPSInfoS(self, pingValue, fpsValue):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updatePingFPSInfo(pingValue, fpsValue)
+        return self.flashObject.as_updatePingFPSInfo(pingValue, fpsValue) if self._isDAAPIInited() else None
 
     def as_updatePingFPSLagInfoS(self, pingValue, fpsValue, isLagging):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updatePingFPSLagInfo(pingValue, fpsValue, isLagging)
+        return self.flashObject.as_updatePingFPSLagInfo(pingValue, fpsValue, isLagging) if self._isDAAPIInited() else None

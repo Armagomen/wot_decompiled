@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/customization/progressive_items_view/progressive_items_view_model.py
 from frameworks.wulf import ViewModel
 from gui.impl.gen import R
 from gui.impl.wrappers.user_list_model import UserListModel
@@ -5,7 +7,7 @@ from gui.impl.gen.view_models.views.lobby.customization.progressive_items_view.i
 from gui.impl.gen.view_models.views.lobby.customization.progressive_items_view.progression_cases_tutorial_model import ProgressionCasesTutorialModel
 
 class ProgressiveItemsViewModel(ViewModel):
-    __slots__ = ('onSelectItem', )
+    __slots__ = ('onSelectItem',)
 
     def __init__(self, properties=7, commands=1):
         super(ProgressiveItemsViewModel, self).__init__(properties=properties, commands=commands)

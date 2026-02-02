@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/formatters/chat_message.py
 from helpers import dependency
 from messenger import g_settings
 from messenger.ext.player_helpers import isCurrentPlayer
@@ -12,10 +14,10 @@ class _BattleMessageBuilder(object):
 
     def __init__(self):
         super(_BattleMessageBuilder, self).__init__()
-        self._ctx = {'playerColor': '', 
-           'playerName': '', 
-           'messageColor': '', 
-           'messageText': ''}
+        self._ctx = {'playerColor': '',
+         'playerName': '',
+         'messageColor': '',
+         'messageText': ''}
 
     def setColors(self, avatarSessionID):
         getter = g_settings.getColorScheme
@@ -108,7 +110,7 @@ class LobbyMessageBuilder(object):
 
     @storage_getter('users')
     def usersStorage(self):
-        return
+        return None
 
     def setTime(self, time_):
         self.__time = TimeFormatter.getMessageTimeFormat(time_)

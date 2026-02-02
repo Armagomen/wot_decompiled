@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/daily_quest_widget.py
 import typing
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from BonusCaps import BonusCapsConst
@@ -94,10 +96,7 @@ class BaseQuestsWidgetComponent(object):
 
     def __isQueueSelected(self, queueType):
         injector = self._injector
-        if injector.prbDispatcher is None:
-            return False
-        else:
-            return injector.prbDispatcher.getFunctionalState().isQueueSelected(queueType)
+        return False if injector.prbDispatcher is None else injector.prbDispatcher.getFunctionalState().isQueueSelected(queueType)
 
     def __animateHide(self):
         injector = self._injector

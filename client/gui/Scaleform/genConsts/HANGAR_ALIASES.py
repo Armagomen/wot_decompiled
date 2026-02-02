@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/genConsts/HANGAR_ALIASES.py
 
 
 class HANGAR_ALIASES(object):
@@ -33,7 +35,7 @@ class HANGAR_ALIASES(object):
     BATTLE_PASSS_ENTRY_POINT = 'battlePassEntryPoint'
     BATTLE_ROYALE_TOURNAMENT = 'battleRoyaleTournament'
     SECONDARY_ENTRY_POINT = 'secondaryEntryPoint'
-    RESOURCE_WELL_ENTRY_POINT = 'resourceWellEntryPoint'
+    RESOURCE_WELL_EVENT_BANNER = 'resourceWellEventBanner'
     BATTLE_MATTERS_ENTRY_POINT = 'battleMattersEntryPoint'
     LIVE_OPS_WEB_EVENTS_ENTRY_POINT = 'liveOpsWebEventsEntryPoint'
     AMMUNITION_SETUP_VIEW_VEHICLE_PARAMS = 'ammunitionSetupViewVehicleParams'

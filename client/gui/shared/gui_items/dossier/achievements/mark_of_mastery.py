@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/gui_items/dossier/achievements/mark_of_mastery.py
 from helpers import i18n
 from abstract import ClassProgressAchievement
 from dossiers2.ui.achievements import ACHIEVEMENT_BLOCK as _AB, MARK_OF_MASTERY
@@ -39,9 +41,7 @@ class MarkOfMasteryAchievement(ClassProgressAchievement):
         self.__compDescr = compDescr
 
     def getIconName(self):
-        if self.__prevMarkOfMastery < self._value:
-            return 'markOfMastery%drecord' % (self._value or self.MIN_LVL)
-        return 'markOfMastery%d' % (self._value or self.MIN_LVL)
+        return 'markOfMastery%drecord' % (self._value or self.MIN_LVL) if self.__prevMarkOfMastery < self._value else 'markOfMastery%d' % (self._value or self.MIN_LVL)
 
     def _getUserNameCtx(self):
         return {'name': i18n.makeString('#achievements:achievement/master%d' % (self._value or self.MIN_LVL))}

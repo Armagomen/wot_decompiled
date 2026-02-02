@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/HangarVehicle.py
 from gui.hangar_cameras.hangar_camera_common import CameraMovementStates, CameraDistanceModes
 from ClientSelectableCameraVehicle import ClientSelectableCameraVehicle
 from helpers import dependency

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/extension_stubs/fun_random_controller.py
 from collections import namedtuple
 from skeletons.gui.game_control import IFunRandomController
 from gui.impl.gen import R
@@ -41,10 +43,10 @@ class _FunProgressions(IFunRandomController.IFunProgressions):
         return False
 
     def getActiveProgression(self):
-        return
+        return None
 
     def getProgressionTimer(self):
-        return 0
+        pass
 
     def getSettings(self):
         return _FUN_PROGRESS_CONFIG_STUB
@@ -83,19 +85,19 @@ class _FunSubscription(IFunRandomController.IFunSubscription):
 class _FunSubModesHolder(IFunRandomController.IFunSubModesHolder):
 
     def getBattleSubMode(self, arenaVisitor=None):
-        return
+        return None
 
     def getBattleSubModeID(self, arenaVisitor=None):
-        return 0
+        pass
 
     def getDesiredSubMode(self):
-        return
+        return None
 
     def getDesiredSubModeID(self):
-        return 0
+        pass
 
     def getSubMode(self, subModeID):
-        return
+        return None
 
     def getSubModes(self, subModesIDs=None, isOrdered=False):
         return []
@@ -125,10 +127,10 @@ class _FunSubModesInfo(IFunRandomController.IFunSubModesInfo):
         return False
 
     def getEventEndDate(self, now=None, subModesIDs=None):
-        return 0
+        pass
 
     def getLeftTimeToPrimeTimesEnd(self, now=None, subModes=None):
-        return 0
+        pass
 
     def getPrimeTimesForDay(self, selectedTime, groupIdentical=False):
         return {}
@@ -137,7 +139,7 @@ class _FunSubModesInfo(IFunRandomController.IFunSubModesInfo):
         return _FUN_STATUS_STUB
 
     def getPerformanceAlertGroup(self, subModesIDs=None):
-        return 0
+        pass
 
 
 class FunRandomController(IFunRandomController):
@@ -185,17 +187,13 @@ class FunRandomController(IFunRandomController):
         return False
 
     def getAssetsPointer(self):
-        return 'undefined'
+        pass
 
     def getIconsResRoot(self):
-        if R.images.dyn('fun_random'):
-            return R.images.fun_random.gui.maps.icons.feature.asset_packs.modes.undefined
-        return R.invalid
+        return R.images.fun_random.gui.maps.icons.feature.asset_packs.modes.undefined if R.images.dyn('fun_random') else R.invalid
 
     def getLocalsResRoot(self):
-        if R.strings.dyn('fun_random'):
-            return R.strings.fun_random.modes.undefined
-        return R.invalid
+        return R.strings.fun_random.modes.undefined if R.strings.dyn('fun_random') else R.invalid
 
     def getSettings(self):
         return _FUN_CONFIG_STUB

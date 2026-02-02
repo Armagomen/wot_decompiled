@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/events_notifications.py
 from collections import namedtuple
-import BigWorld, Event
+import BigWorld
+import Event
 from PlayerEvents import g_playerEvents
 from helpers import getLocalizedData
 from skeletons.gui.game_control import IEventsNotificationsController
@@ -28,9 +31,7 @@ class EventsNotificationsController(IEventsNotificationsController):
 
     def getEventsNotifications(self, filterFunc=None):
         player = BigWorld.player()
-        if player:
-            return filter(filterFunc or (lambda a: True), map(EventNotification.make, player.eventNotifications))
-        return ()
+        return filter(filterFunc or (lambda a: True), map(EventNotification.make, player.eventNotifications)) if player else ()
 
     def __stop(self):
         self.__eventMgr.clear()

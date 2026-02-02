@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/framework/entities/abstract/GraphicsOptimizationManagerMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class GraphicsOptimizationManagerMeta(BaseDAAPIComponent):
@@ -21,9 +23,7 @@ class GraphicsOptimizationManagerMeta(BaseDAAPIComponent):
         self._printOverrideError('switchOptimizationEnabled')
 
     def as_invalidateRectanglesS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_invalidateRectangles()
+        return self.flashObject.as_invalidateRectangles() if self._isDAAPIInited() else None
 
     def as_switchOptimizationEnabledS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_switchOptimizationEnabled(value)
+        return self.flashObject.as_switchOptimizationEnabled(value) if self._isDAAPIInited() else None

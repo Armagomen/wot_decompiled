@@ -1,10 +1,11 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/vehicle_hub/views/sub_models/armor_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.vehicle_hub.views.sub_models.armor_value_model import ArmorValueModel
 
 class ArmorModel(ViewModel):
-    __slots__ = ('onLinkButtonPressed', 'onLegendClicked', 'onLegendTooltipOpened',
-                 'onLegendTooltipClosed')
+    __slots__ = ('onLinkButtonPressed', 'onLegendClicked', 'onLegendTooltipOpened', 'onLegendTooltipClosed')
 
     def __init__(self, properties=5, commands=4):
         super(ArmorModel, self).__init__(properties=properties, commands=commands)

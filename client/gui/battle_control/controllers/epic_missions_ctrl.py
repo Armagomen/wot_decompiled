@@ -1,6 +1,11 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/epic_missions_ctrl.py
 from collections import defaultdict
 from collections import namedtuple
-import BattleReplay, BigWorld, Event, typing
+import BattleReplay
+import BigWorld
+import Event
+import typing
 from ReplayEvents import g_replayEvents
 from constants import SECTOR_STATE, PLAYER_RANK
 from debug_utils import verify, LOG_ERROR, LOG_DEBUG
@@ -24,29 +29,28 @@ from skeletons.gui.game_control import IEpicBattleMetaGameController
 if typing.TYPE_CHECKING:
     from SectorBase import SectorBase
 TIMER_WARNINGS = [(5, 0), (2, 0)]
-RANK_TO_TRANSLATION = {0: '', 
-   1: EPIC_BATTLE.RANK_RANK1, 
-   2: EPIC_BATTLE.RANK_RANK2, 
-   3: EPIC_BATTLE.RANK_RANK3, 
-   4: EPIC_BATTLE.RANK_RANK4, 
-   5: EPIC_BATTLE.RANK_RANK5, 
-   6: EPIC_BATTLE.RANK_RANK6}
+RANK_TO_TRANSLATION = {0: '',
+ 1: EPIC_BATTLE.RANK_RANK1,
+ 2: EPIC_BATTLE.RANK_RANK2,
+ 3: EPIC_BATTLE.RANK_RANK3,
+ 4: EPIC_BATTLE.RANK_RANK4,
+ 5: EPIC_BATTLE.RANK_RANK5,
+ 6: EPIC_BATTLE.RANK_RANK6}
 MSG_ID_TO_DURATION = defaultdict(lambda : 4.5)
 MSG_ID_TO_DURATION.update({GAME_MESSAGES_CONSTS.OVERTIME: 4.5})
 MSG_ID_TO_PRIORITY = defaultdict(lambda : GAME_MESSAGES_CONSTS.GAME_MESSAGE_PRIORITY_LOW)
-MSG_ID_TO_PRIORITY.update({GAME_MESSAGES_CONSTS.WIN: GAME_MESSAGES_CONSTS.GAME_MESSAGE_PRIORITY_HIGH, 
-   GAME_MESSAGES_CONSTS.DEFEAT: GAME_MESSAGES_CONSTS.GAME_MESSAGE_PRIORITY_HIGH, 
-   GAME_MESSAGES_CONSTS.DRAW: GAME_MESSAGES_CONSTS.GAME_MESSAGE_PRIORITY_HIGH, 
-   GAME_MESSAGES_CONSTS.TIME_REMAINING: GAME_MESSAGES_CONSTS.GAME_MESSAGE_PRIORITY_HIGH, 
-   GAME_MESSAGES_CONSTS.TIME_REMAINING_POSITIVE: GAME_MESSAGES_CONSTS.GAME_MESSAGE_PRIORITY_HIGH, 
-   GAME_MESSAGES_CONSTS.OVERTIME: GAME_MESSAGES_CONSTS.GAME_MESSAGE_PRIORITY_HIGH})
+MSG_ID_TO_PRIORITY.update({GAME_MESSAGES_CONSTS.WIN: GAME_MESSAGES_CONSTS.GAME_MESSAGE_PRIORITY_HIGH,
+ GAME_MESSAGES_CONSTS.DEFEAT: GAME_MESSAGES_CONSTS.GAME_MESSAGE_PRIORITY_HIGH,
+ GAME_MESSAGES_CONSTS.DRAW: GAME_MESSAGES_CONSTS.GAME_MESSAGE_PRIORITY_HIGH,
+ GAME_MESSAGES_CONSTS.TIME_REMAINING: GAME_MESSAGES_CONSTS.GAME_MESSAGE_PRIORITY_HIGH,
+ GAME_MESSAGES_CONSTS.TIME_REMAINING_POSITIVE: GAME_MESSAGES_CONSTS.GAME_MESSAGE_PRIORITY_HIGH,
+ GAME_MESSAGES_CONSTS.OVERTIME: GAME_MESSAGES_CONSTS.GAME_MESSAGE_PRIORITY_HIGH})
 HQ_DAMAGE_DEBOUNCE_PERIOD = 120
 CONTESTED_DEBOUNCE_PERIOD = 120
 CONTESTED_CAPTURE_POINTS_THRESHOLD = 0.1
 
 class PlayerMission(object):
-    PlayerMissionData = namedtuple('PlayerMissionData', ('objectiveType', 'objectiveID',
-                                                         'missionText', 'subText'))
+    PlayerMissionData = namedtuple('PlayerMissionData', ('objectiveType', 'objectiveID', 'missionText', 'subText'))
 
     def __init__(self):
         self.missionType = EPIC_CONSTS.PRIMARY_EMPTY_MISSION
@@ -55,10 +59,10 @@ class PlayerMission(object):
         self.id = -1
 
     def generateData(self):
-        return {'objectiveType': self.missionType, 
-           'objectiveID': self.id, 
-           'missionText': i18n.makeString(self.missionText), 
-           'subText': self.subText}
+        return {'objectiveType': self.missionType,
+         'objectiveID': self.id,
+         'missionText': i18n.makeString(self.missionText),
+         'subText': self.subText}
 
     def isEmptyMission(self):
         return self.missionType == EPIC_CONSTS.PRIMARY_EMPTY_MISSION
@@ -82,13 +86,13 @@ class EpicMissionsController(IViewComponentsController):
         self.__ready = False
         self.__ui = None
         self.__currentMission = PlayerMission()
-        self.__activeMissionData = {'lane': 0, 
-           'bases': 0, 
-           'hqActive': False, 
-           'destroyedHQs': 0, 
-           'endTime': -1, 
-           'sectorGroup': 0, 
-           'isInHQSector': False}
+        self.__activeMissionData = {'lane': 0,
+         'bases': 0,
+         'hqActive': False,
+         'destroyedHQs': 0,
+         'endTime': -1,
+         'sectorGroup': 0,
+         'isInHQSector': False}
         self.__numDestructiblesToDestroy = None
         self.__currentEndTime = 0
         self.__currentLane = 0
@@ -100,14 +104,11 @@ class EpicMissionsController(IViewComponentsController):
         self.__isRegisterEpicMissionPanel = False
         self.__missionPanelDelayQueue = set()
         self.__orderBattleAbilities = list()
-        self.__isLaneContested = [
-         False, False, False]
-        self.__contestedEndTime = [
-         0, 0, 0]
+        self.__isLaneContested = [False, False, False]
+        self.__contestedEndTime = [0, 0, 0]
         self.__lastTimeHQDamaged = defaultdict(lambda : 0)
         self.__retreatMissionResults = {}
-        self.__activeMessages = [
-         0] * (max(EPIC_NOTIFICATION.ALL()) + 1)
+        self.__activeMessages = [0] * (max(EPIC_NOTIFICATION.ALL()) + 1)
         self.__eManager = Event.EventManager()
         self.__capturedBases = set()
         self.onPlayerMissionUpdated = Event.Event(self.__eManager)
@@ -116,11 +117,11 @@ class EpicMissionsController(IViewComponentsController):
         self.onNearestObjectiveChanged = Event.Event(self.__eManager)
         self.onObjectiveBattleStarted = Event.Event(self.__eManager)
         self.onIngameMessageReady = Event.Event(self.__eManager)
-        self._notificationTypeToMissionTriggerArgs = {EPIC_NOTIFICATION.ZONE_CAPTURED: MissionTriggerArgs(forceMissionUpdate=True, callback=lambda : self.__setNearestObjective() if self.__activeMissionData['bases'] == 0 else None), 
-           EPIC_NOTIFICATION.HQ_ACTIVE: MissionTriggerArgs(forceMissionUpdate=True, callback=self.__setNearestObjective), 
-           EPIC_NOTIFICATION.BASE_ACTIVE: MissionTriggerArgs(forceMissionUpdate=True, callback=None), 
-           EPIC_NOTIFICATION.HQ_DESTROYED: MissionTriggerArgs(forceMissionUpdate=False, callback=None), 
-           EPIC_NOTIFICATION.RETREAT: MissionTriggerArgs(forceMissionUpdate=False, callback=None)}
+        self._notificationTypeToMissionTriggerArgs = {EPIC_NOTIFICATION.ZONE_CAPTURED: MissionTriggerArgs(forceMissionUpdate=True, callback=lambda : self.__setNearestObjective() if self.__activeMissionData['bases'] == 0 else None),
+         EPIC_NOTIFICATION.HQ_ACTIVE: MissionTriggerArgs(forceMissionUpdate=True, callback=self.__setNearestObjective),
+         EPIC_NOTIFICATION.BASE_ACTIVE: MissionTriggerArgs(forceMissionUpdate=True, callback=None),
+         EPIC_NOTIFICATION.HQ_DESTROYED: MissionTriggerArgs(forceMissionUpdate=False, callback=None),
+         EPIC_NOTIFICATION.RETREAT: MissionTriggerArgs(forceMissionUpdate=False, callback=None)}
         return
 
     def epicMissionPanelDelayQueue(self, value):
@@ -262,30 +263,28 @@ class EpicMissionsController(IViewComponentsController):
         return self.__currentMission
 
     def getNearestObjectiveData(self):
-        return (
-         self.__nearestObjective, self.__nearestObjectiveDistance)
+        return (self.__nearestObjective, self.__nearestObjectiveDistance)
 
     def getRankUpdateData(self, newRank):
         if not self.__orderBattleAbilities:
             return (None, None)
+        arena = self.__sessionProvider.arenaVisitor.getArenaSubscription()
+        vehicle = self.__sessionProvider.shared.vehicleState.getControllingVehicle()
+        vehClass = getVehicleClassFromVehicleType(vehicle.typeDescriptor.type)
+        if arena is None:
+            return (None, None)
+        inBattleReserves = arena.settings.get('epic_config', {}).get('epicMetaGame', {}).get('inBattleReservesByRank')
+        if not inBattleReserves:
+            return (None, None)
+        elif newRank not in range(0, len(inBattleReserves['slotActions'][vehClass])):
+            return (None, None)
+        updateData = inBattleReserves['slotActions'][vehClass]
+        updateList = inBattleReserves['slotActions'][vehClass][newRank]
+        if updateList:
+            firstSlot = updateList[0]
+            firstUnlocked = next((i for i, x in enumerate(updateData) if firstSlot in x), 0) == newRank
+            return (firstUnlocked, self.__orderBattleAbilities[firstSlot])
         else:
-            arena = self.__sessionProvider.arenaVisitor.getArenaSubscription()
-            vehicle = self.__sessionProvider.shared.vehicleState.getControllingVehicle()
-            vehClass = getVehicleClassFromVehicleType(vehicle.typeDescriptor.type)
-            if arena is None:
-                return (None, None)
-            inBattleReserves = arena.settings.get('epic_config', {}).get('epicMetaGame', {}).get('inBattleReservesByRank')
-            if not inBattleReserves:
-                return (None, None)
-            if newRank not in range(0, len(inBattleReserves['slotActions'][vehClass])):
-                return (None, None)
-            updateData = inBattleReserves['slotActions'][vehClass]
-            updateList = inBattleReserves['slotActions'][vehClass][newRank]
-            if updateList:
-                firstSlot = updateList[0]
-                firstUnlocked = next((i for i, x in enumerate(updateData) if firstSlot in x), 0) == newRank
-                return (
-                 firstUnlocked, self.__orderBattleAbilities[firstSlot])
             return (None, None)
 
     def __isAttacker(self):
@@ -315,9 +314,9 @@ class EpicMissionsController(IViewComponentsController):
     def __onGameNotificationRecieved(self, notificationType, data):
         if len(self.__activeMessages) > notificationType:
             self.__activeMessages[notificationType] -= 1
-            verify(not any(count < 0 for count in self.__activeMessages))
+            verify(not any((count < 0 for count in self.__activeMessages)))
         missionTriggerArgs = self._notificationTypeToMissionTriggerArgs.get(notificationType, None)
-        if missionTriggerArgs and not any(self.__activeMessages[notificationId] != 0 for notificationId in self._notificationTypeToMissionTriggerArgs):
+        if missionTriggerArgs and not any((self.__activeMessages[notificationId] != 0 for notificationId in self._notificationTypeToMissionTriggerArgs)):
             self.__invalidateMissionStatus(force=missionTriggerArgs.forceMissionUpdate)
             if missionTriggerArgs.callback is not None:
                 missionTriggerArgs.callback()
@@ -349,7 +348,7 @@ class EpicMissionsController(IViewComponentsController):
                 return
             baseLane = sectorBaseComp.getSectorForSectorBase(baseId).playerGroup
             baseLaneIdx = baseLane - 1
-            sectorIdToCapture = sectorComp.playerGroups[baseLane].sectors[(sectorBaseComp.getNumCapturedBasesByLane(baseLane) + 1)]
+            sectorIdToCapture = sectorComp.playerGroups[baseLane].sectors[sectorBaseComp.getNumCapturedBasesByLane(baseLane) + 1]
             validBase = sectorBaseComp.getBaseBySectorId(sectorIdToCapture)
             onPlayerLane = baseLaneIdx == self.__currentLane - 1
             time = BigWorld.serverTime()
@@ -368,9 +367,9 @@ class EpicMissionsController(IViewComponentsController):
             return
 
     def __showBaseContestedMessage(self, points, baseId):
-        self.__sendIngameMessage(self.__makeMessageData(GAME_MESSAGES_CONSTS.BASE_CONTESTED_POSITIVE if self.__isAttacker() else GAME_MESSAGES_CONSTS.BASE_CONTESTED, {'baseID': baseId, 
-           'title': EPIC_BATTLE.BASE_CONTESTED_ATK if self.__isAttacker() else EPIC_BATTLE.BASE_CONTESTED_DEF, 
-           'progress': points}))
+        self.__sendIngameMessage(self.__makeMessageData(GAME_MESSAGES_CONSTS.BASE_CONTESTED_POSITIVE if self.__isAttacker() else GAME_MESSAGES_CONSTS.BASE_CONTESTED, {'baseID': baseId,
+         'title': EPIC_BATTLE.BASE_CONTESTED_ATK if self.__isAttacker() else EPIC_BATTLE.BASE_CONTESTED_DEF,
+         'progress': points}))
 
     def __onPlayerPhysicalLaneUpdated(self, laneID):
         componentSystem = self.__sessionProvider.arenaVisitor.getComponentSystem()
@@ -494,8 +493,8 @@ class EpicMissionsController(IViewComponentsController):
                 mission.subText = EPIC_BATTLE.MISSION_ZONE_CLOSING_ATK if self.__isAttacker() else EPIC_BATTLE.MISSION_ZONE_CLOSING_DEF
             else:
                 mission.subText = EPIC_BATTLE.MISSIONS_PRIMARY_ATK_HQ_SUB_TITLE if self.__isAttacker() else EPIC_BATTLE.MISSIONS_PRIMARY_DEF_HQ_SUB_TITLE
-                additionalDescription = makeHtmlString(path='html_templates:battle/epicBattle/additionalHqMissionInfo', key='attacker' if self.__isAttacker() else 'defender', ctx={'destroyed': destroyed, 
-                   'toDestroy': toDestroy})
+                additionalDescription = makeHtmlString(path='html_templates:battle/epicBattle/additionalHqMissionInfo', key='attacker' if self.__isAttacker() else 'defender', ctx={'destroyed': destroyed,
+                 'toDestroy': toDestroy})
             mission.missionText = EPIC_BATTLE.MISSIONS_PRIMARY_ATK_HQ if self.__isAttacker() else EPIC_BATTLE.MISSIONS_PRIMARY_DEF_HQ
             self.__updatePositions()
         else:
@@ -509,8 +508,7 @@ class EpicMissionsController(IViewComponentsController):
                 mission.id = next(iter(sectorBaseComp.getNonCapturedSectorBaseIdsByLane(self.__currentLane)), None)
             else:
                 LOG_ERROR('Expected SectorBaseComponent not present!')
-        return (
-         mission, additionalDescription)
+        return (mission, additionalDescription)
 
     def __onWaypointsForPlayerActivated(self, waypointSectorTimeTuple):
         _, _, currentEndTime = waypointSectorTimeTuple
@@ -574,10 +572,10 @@ class EpicMissionsController(IViewComponentsController):
                 seconds += epicPlayerDataComp.getGameTimeToAddWhenAllCaptured()
             minutes = int(seconds / 60)
             seconds -= minutes * 60
-            self.__sendIngameMessage(self.__makeMessageData(GAME_MESSAGES_CONSTS.BASE_CAPTURED_POSITIVE if self.__isAttacker() else GAME_MESSAGES_CONSTS.BASE_CAPTURED, {'baseID': baseId, 
-               'title': EPIC_BATTLE.ZONE_CAPTURED_TEXT if self.__isAttacker() else EPIC_BATTLE.ZONE_LOST_TEXT, 
-               'timerText': backport.text(R.strings.epic_battle.zone.time_added(), minutes=(':').join((('{:02d}').format(int(minutes)), ('{:02d}').format(int(seconds))))), 
-               'descriptionText': backport.text(R.strings.epic_battle.missions.unlockTankLevel()) if vehiclesUnlocked else ''}))
+            self.__sendIngameMessage(self.__makeMessageData(GAME_MESSAGES_CONSTS.BASE_CAPTURED_POSITIVE if self.__isAttacker() else GAME_MESSAGES_CONSTS.BASE_CAPTURED, {'baseID': baseId,
+             'title': EPIC_BATTLE.ZONE_CAPTURED_TEXT if self.__isAttacker() else EPIC_BATTLE.ZONE_LOST_TEXT,
+             'timerText': backport.text(R.strings.epic_battle.zone.time_added(), minutes=':'.join(('{:02d}'.format(int(minutes)), '{:02d}'.format(int(seconds))))),
+             'descriptionText': backport.text(R.strings.epic_battle.missions.unlockTankLevel()) if vehiclesUnlocked else ''}))
             if onPlayerLane:
                 if self.__isAttacker():
                     self.__nextObjectiveMessage(self.__isAttacker())
@@ -633,14 +631,14 @@ class EpicMissionsController(IViewComponentsController):
     def __onDestructibleEntityHealthChanged(self, objID, newHealth, maxHealth, attackerID, attackReason, hitFlags):
         if newHealth == 0:
             msgType = GAME_MESSAGES_CONSTS.OBJECTIVE_DESTROYED_POSITIVE if self.__isAttacker() else GAME_MESSAGES_CONSTS.OBJECTIVE_DESTROYED
-            msgData = {'hqID': objID, 
-               'title': EPIC_BATTLE.ZONE_DESTROYED_TEXT if self.__isAttacker() else EPIC_BATTLE.ZONE_LOST_TEXT}
+            msgData = {'hqID': objID,
+             'title': EPIC_BATTLE.ZONE_DESTROYED_TEXT if self.__isAttacker() else EPIC_BATTLE.ZONE_LOST_TEXT}
         elif self.__lastTimeHQDamaged[objID] + CONTESTED_DEBOUNCE_PERIOD <= BigWorld.serverTime():
             self.__lastTimeHQDamaged[objID] = BigWorld.serverTime()
             msgType = GAME_MESSAGES_CONSTS.OBJECTIVE_UNDER_ATTACK_POSITIVE if self.__isAttacker() else GAME_MESSAGES_CONSTS.OBJECTIVE_UNDER_ATTACK
-            msgData = {'hqID': objID, 
-               'title': EPIC_BATTLE.HQ_UNDER_ATTACK_ATK if self.__isAttacker() else EPIC_BATTLE.HQ_UNDER_ATTACK_DEF, 
-               'destroyedProgress': newHealth / maxHealth}
+            msgData = {'hqID': objID,
+             'title': EPIC_BATTLE.HQ_UNDER_ATTACK_ATK if self.__isAttacker() else EPIC_BATTLE.HQ_UNDER_ATTACK_DEF,
+             'destroyedProgress': newHealth / maxHealth}
         else:
             return
         self.__sendIngameMessage(self.__makeMessageData(msgType, msgData))
@@ -684,9 +682,9 @@ class EpicMissionsController(IViewComponentsController):
             subTitleAddition = i18n.makeString(EPIC_BATTLE.RANK_CREWROLESFACTORPROMOTION, percent=newFactor)
         else:
             subTitleAddition = i18n.makeString(EPIC_BATTLE.RANK_CREWROLESFACTORPROMOTION1, percent=maxImpact)
-        subTitle = i18n.makeString(EPIC_BATTLE.RANK_PROMOTION, rank=i18n.makeString(RANK_TO_TRANSLATION[(allyNewRank + 1)]), placeholder='\n' + subTitleAddition)
-        self.__sendIngameMessage(self.__makeMessageData(GAME_MESSAGES_CONSTS.GENERAL_RANK_REACHED, {'title': self.__sessionProvider.getCtx().getPlayerFullName(vID=allyVehID, showVehShortName=False, showClan=True, showRegion=False), 
-           'subTitle': subTitle}))
+        subTitle = i18n.makeString(EPIC_BATTLE.RANK_PROMOTION, rank=i18n.makeString(RANK_TO_TRANSLATION[allyNewRank + 1]), placeholder='\n' + subTitleAddition)
+        self.__sendIngameMessage(self.__makeMessageData(GAME_MESSAGES_CONSTS.GENERAL_RANK_REACHED, {'title': self.__sessionProvider.getCtx().getPlayerFullName(vID=allyVehID, showVehShortName=False, showClan=True, showRegion=False),
+         'subTitle': subTitle}))
 
     def __onPlayerRankUpdated(self, rank, crewRoleFactor=0.0):
         subTitleText = self.EMPTY_SUB_TITLE_TEXT
@@ -694,7 +692,7 @@ class EpicMissionsController(IViewComponentsController):
         rRank = R.strings.epic_battle.rank
         arenaDP = self.__sessionProvider.getArenaDP()
         if arenaDP and arenaDP.getReservesModifier() == FLBattleReservesModifier.RANDOM:
-            subTitleText = backport.text(rRank.slotUnlocked(), slotNumber=backport.text(rRank.dyn(('slot_{}').format(rankIdx))())) if rankIdx in [PLAYER_RANK.SERGEANT, PLAYER_RANK.LIEUTENANT] else backport.text(rRank.allReserveUpgraded()) if rankIdx != PLAYER_RANK.GENERAL else self.EMPTY_SUB_TITLE_TEXT
+            subTitleText = backport.text(rRank.slotUnlocked(), slotNumber=backport.text(rRank.dyn('slot_{}'.format(rankIdx))())) if rankIdx in [PLAYER_RANK.SERGEANT, PLAYER_RANK.LIEUTENANT] else (backport.text(rRank.allReserveUpgraded()) if rankIdx != PLAYER_RANK.GENERAL else self.EMPTY_SUB_TITLE_TEXT)
         else:
             firstUnlocked, updateInfo = self.getRankUpdateData(rank)
             eqCtrl = self.__sessionProvider.shared.equipments
@@ -709,16 +707,16 @@ class EpicMissionsController(IViewComponentsController):
             if subTitleText:
                 subTitleText += '\n'
             subTitleText += i18n.makeString(EPIC_BATTLE.RANK_CREWROLESFACTORSELF, percent=crewRoleFactor)
-        self.__sendIngameMessage(self.__makeMessageData(GAME_MESSAGES_CONSTS.RANK_UP, {'rank': rankIdx, 
-           'title': RANK_TO_TRANSLATION[rankIdx], 
-           'subTitle': subTitleText}))
+        self.__sendIngameMessage(self.__makeMessageData(GAME_MESSAGES_CONSTS.RANK_UP, {'rank': rankIdx,
+         'title': RANK_TO_TRANSLATION[rankIdx],
+         'subTitle': subTitleText}))
         return
 
     def __onOvertimeStart(self, endTime):
         self.__overTimeEnd = endTime
         timeLeft = int(endTime - BigWorld.serverTime())
-        self.__sendIngameMessage(self.__makeMessageData(GAME_MESSAGES_CONSTS.OVERTIME, {'timestamp': timeLeft, 
-           'title': EPIC_BATTLE.OVERTIME_LABEL}))
+        self.__sendIngameMessage(self.__makeMessageData(GAME_MESSAGES_CONSTS.OVERTIME, {'timestamp': timeLeft,
+         'title': EPIC_BATTLE.OVERTIME_LABEL}))
         self.__overtimeCB = BigWorld.callback(1, self.__overtimeTick)
 
     def __onOvertimeOver(self):
@@ -731,8 +729,8 @@ class EpicMissionsController(IViewComponentsController):
     def __overtimeTick(self):
         timeLeft = int(self.__overTimeEnd - BigWorld.serverTime())
         if timeLeft in OVERTIME_DURATION_WARNINGS:
-            self.__sendIngameMessage(self.__makeMessageData(GAME_MESSAGES_CONSTS.OVERTIME, {'timestamp': timeLeft, 
-               'title': EPIC_BATTLE.OVERTIME_LABEL}))
+            self.__sendIngameMessage(self.__makeMessageData(GAME_MESSAGES_CONSTS.OVERTIME, {'timestamp': timeLeft,
+             'title': EPIC_BATTLE.OVERTIME_LABEL}))
         if timeLeft > 0:
             self.__overtimeCB = BigWorld.callback(1, self.__overtimeTick)
         else:
@@ -763,7 +761,7 @@ class EpicMissionsController(IViewComponentsController):
         return
 
     def __isWaitingForNotification(self):
-        return any(self.__activeMessages[notificationId] > 0 for notificationId in self._notificationTypeToMissionTriggerArgs)
+        return any((self.__activeMessages[notificationId] > 0 for notificationId in self._notificationTypeToMissionTriggerArgs))
 
     def __onReplayTimeWarpStart(self):
         self.__resetMission()

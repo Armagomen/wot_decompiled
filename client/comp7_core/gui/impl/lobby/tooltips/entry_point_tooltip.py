@@ -1,9 +1,15 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_core/scripts/client/comp7_core/gui/impl/lobby/tooltips/entry_point_tooltip.py
 from comp7_core.gui.impl.lobby.comp7_core_helpers.comp7_core_shared import getModeSeasonState
 from comp7_core.gui.impl.lobby.comp7_core_helpers.comp7_core_model_helpers import setSeasonInfo
 from gui.impl.pub import ViewImpl
 from helpers.time_utils import getServerUTCTime
 
 class Comp7CoreEntryPointTooltip(ViewImpl):
+
+    def __init__(self, settings, eventBanner):
+        super(Comp7CoreEntryPointTooltip, self).__init__(settings)
+        self._banner = eventBanner
 
     @property
     def _modeController(self):
@@ -22,13 +28,7 @@ class Comp7CoreEntryPointTooltip(ViewImpl):
         return super(Comp7CoreEntryPointTooltip, self).getViewModel()
 
     def _getEvents(self):
-        return (
-         (
-          self._modeController.onStatusUpdated, self._onStatusUpdated),
-         (
-          self._modeController.onStatusTick, self._onStatusTick),
-         (
-          self.viewModel.season.pollServerTime, self.__onPollServerTime))
+        return ((self._modeController.onStatusUpdated, self._onStatusUpdated), (self._modeController.onStatusTick, self._onStatusTick), (self.viewModel.season.pollServerTime, self.__onPollServerTime))
 
     def _onLoading(self, *args, **kwargs):
         super(Comp7CoreEntryPointTooltip, self)._onLoading(*args, **kwargs)
@@ -41,11 +41,10 @@ class Comp7CoreEntryPointTooltip(ViewImpl):
         self._updateState()
 
     def _updateState(self):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             season = self._modeController.getCurrentSeason() or self._modeController.getNextSeason() or self._modeController.getPreviousSeason()
             setSeasonInfo(tx.season, self._modeController, self._seasonStateClazz, self._seasonNameClazz, season)
-            periodInfo = self._modeController.getPeriodInfo()
-            tx.setTimeLeftUntilPrimeTime(periodInfo.primeDelta)
+            tx.setTimeLeftUntilPrimeTime(self._banner.timerValue)
             tx.season.setState(getModeSeasonState(self._modeController, self._seasonStateClazz))
             levelsArr = tx.getVehicleLevels()
             levelsArr.clear()
@@ -55,5 +54,5 @@ class Comp7CoreEntryPointTooltip(ViewImpl):
             levelsArr.invalidate()
 
     def __onPollServerTime(self):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.season.setServerTimestamp(round(getServerUTCTime()))

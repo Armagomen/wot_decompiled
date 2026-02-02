@@ -1,4 +1,7 @@
-import logging, weakref
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/framework/application.py
+import logging
+import weakref
 from account_helpers.settings_core import settings_constants
 from frameworks.wulf import WindowStatus
 from gui import g_guiResetters, g_repeatKeyHandlers, GUI_CTRL_MODE_FLAG
@@ -148,7 +151,7 @@ class AppEntry(FlashComponentWrapper, ApplicationMeta):
 
     @property
     def waitingManager(self):
-        return
+        return None
 
     @property
     def cursorMgr(self):
@@ -411,7 +414,8 @@ class AppEntry(FlashComponentWrapper, ApplicationMeta):
         if self.__initialized:
             self.fireEvent(event, scope=scope)
         else:
-            self.__firingsAfterInit[event.eventType] = {'event': event, 'scope': scope}
+            self.__firingsAfterInit[event.eventType] = {'event': event,
+             'scope': scope}
 
     def setBackgroundAlpha(self, value, notSilentChange=True):
         self.movie.backgroundAlpha = value
@@ -465,64 +469,64 @@ class AppEntry(FlashComponentWrapper, ApplicationMeta):
         return
 
     def _getRequiredLibraries(self):
-        return ()
+        pass
 
     def _createLoaderManager(self):
-        return
+        return None
 
     def _createContainerManager(self):
-        return
+        return None
 
     def _createToolTipManager(self):
-        return
+        return None
 
     def _createGlobalVarsManager(self):
-        return
+        return None
 
     def _createSoundManager(self):
-        return
+        return None
 
     def _createCursorManager(self):
-        return
+        return None
 
     def _createColorSchemeManager(self):
-        return
+        return None
 
     def _createEventLogMgr(self):
-        return
+        return None
 
     def _createContextMenuManager(self):
-        return
+        return None
 
     def _createPopoverManager(self):
-        return
+        return None
 
     def _createVoiceChatManager(self):
-        return
+        return None
 
     def _createUtilsManager(self):
-        return
+        return None
 
     def _createTweenManager(self):
-        return
+        return None
 
     def _createGameInputManager(self):
-        return
+        return None
 
     def _createCacheManager(self):
-        return
+        return None
 
     def _createImageManager(self):
-        return
+        return None
 
     def _createTutorialManager(self):
-        return
+        return None
 
     def _createUILoggerManager(self):
-        return
+        return None
 
     def _createGraphicsOptimizationManager(self):
-        return
+        return None
 
     def _setup(self):
         raise NotImplementedError('App._setup must be overridden')

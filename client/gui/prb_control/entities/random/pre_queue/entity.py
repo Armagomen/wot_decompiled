@@ -1,4 +1,7 @@
-import BigWorld, ArenaType
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/random/pre_queue/entity.py
+import BigWorld
+import ArenaType
 from CurrentVehicle import g_currentVehicle
 from account_helpers import gameplay_ctx
 from constants import QUEUE_TYPE
@@ -44,9 +47,7 @@ class RandomEntity(PreQueueEntity):
 
     def doSelectAction(self, action):
         name = action.actionName
-        if name == PREBATTLE_ACTION_NAME.RANDOM:
-            return SelectResult(True)
-        return super(RandomEntity, self).doSelectAction(action)
+        return SelectResult(True) if name == PREBATTLE_ACTION_NAME.RANDOM else super(RandomEntity, self).doSelectAction(action)
 
     def _doQueue(self, ctx):
         mmData = ctx.getDemoArenaTypeID()

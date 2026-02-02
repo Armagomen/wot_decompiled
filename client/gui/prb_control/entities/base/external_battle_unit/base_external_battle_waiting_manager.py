@@ -1,8 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/base/external_battle_unit/base_external_battle_waiting_manager.py
 import logging
 from gui.Scaleform.Waiting import Waiting
 from gui.prb_control.settings import REQUEST_TYPE
-REQUEST_HANDLER = {
- REQUEST_TYPE.SET_RESERVE,
+REQUEST_HANDLER = {REQUEST_TYPE.SET_RESERVE,
  REQUEST_TYPE.UNSET_RESERVE,
  REQUEST_TYPE.CHANGE_OPENED,
  REQUEST_TYPE.SET_VEHICLE,

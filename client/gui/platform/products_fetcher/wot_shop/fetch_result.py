@@ -1,7 +1,12 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/platform/products_fetcher/wot_shop/fetch_result.py
 from collections import namedtuple
 from gui.platform.products_fetcher.fetch_result import FetchResult, ResponseStatus
 ResponseData = namedtuple('ResponseData', ('status', 'products', 'accountLimits', 'categories'))
-ResponseData.__new__.__defaults__ = (ResponseStatus.UNDEFINED, None, None, None)
+ResponseData.__new__.__defaults__ = (ResponseStatus.UNDEFINED,
+ None,
+ None,
+ None)
 
 class WotShopFetchResult(FetchResult):
 
@@ -23,9 +28,7 @@ class WotShopFetchResult(FetchResult):
         self.__categories = categories
 
     def getData(self):
-        if self.isProcessed:
-            return ResponseData(status=self.status, products=self.getProducts(), accountLimits=self.getAccountLimits(), categories=self.getCategories())
-        return ResponseData(status=self.status)
+        return ResponseData(status=self.status, products=self.getProducts(), accountLimits=self.getAccountLimits(), categories=self.getCategories()) if self.isProcessed else ResponseData(status=self.status)
 
     def stop(self):
         super(WotShopFetchResult, self).stop()

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/visual_script/misc.py
 import typing
 from debug_utils import LOG_ERROR, LOG_WARNING
 if typing.TYPE_CHECKING:
@@ -15,8 +17,7 @@ class ASPECT(object):
     SERVER = 'SERVER'
     CLIENT = 'CLIENT'
     HANGAR = 'HANGAR'
-    ALL = [
-     CLIENT, SERVER, HANGAR]
+    ALL = [CLIENT, SERVER, HANGAR]
 
 
 class EDITOR_TYPE(object):
@@ -37,11 +38,12 @@ class BLOCK_MODE(object):
     UNIQUE = 32
     DEV = 64
     HIDE_FROM_LIB = 256
+    DEPRECATED = 512
     CAN_BE_CONST_EXPR = 2048
 
 
 def makePlanPath(planName):
-    return ('vscript/plans/{}.xml').format(planName)
+    return 'vscript/plans/{}.xml'.format(planName)
 
 
 def errorVScript(owner, msg):
@@ -60,8 +62,7 @@ def readVisualScriptPlanParams(section, commonParams={}):
         for name, subsection in section['params'].items():
             if subsection.has_key('item'):
                 params[name] = [ value.asString for idx, value in subsection.items() ]
-            else:
-                params[name] = subsection.asString
+            params[name] = subsection.asString
 
     return params
 
@@ -93,13 +94,13 @@ def readVisualScriptSection(section, aspects=None):
         aspects = ASPECT.ALL
     if not aspects:
         return {}
+    elif section.has_key(VisualScriptTag):
+        vseSection = section[VisualScriptTag]
+        commonParams = {}
+        if vseSection.has_key('common'):
+            commonParams = readVisualScriptPlanParams(vseSection['common'])
+        return {aspect:_readVisualScriptAspect(vseSection, aspect.lower(), commonParams) for aspect in aspects}
     else:
-        if section.has_key(VisualScriptTag):
-            vseSection = section[VisualScriptTag]
-            commonParams = {}
-            if vseSection.has_key('common'):
-                commonParams = readVisualScriptPlanParams(vseSection['common'])
-            return {aspect:_readVisualScriptAspect(vseSection, aspect.lower(), commonParams) for aspect in aspects}
         return {aspect:[] for aspect in aspects}
 
 

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_light/scripts/client/comp7_light/gui/shared/event_dispatcher.py
 
 
 def showComp7LightNoVehiclesScreen():
@@ -28,8 +30,7 @@ def showComp7LightInfoPage():
     from gui.impl.lobby.mode_selector.items.base_item import getInfoPageKey
     from gui.shared.event_dispatcher import showBrowserOverlayView
     url = GUI_SETTINGS.lookup(getInfoPageKey(SELECTOR_BATTLE_TYPES.COMP7_LIGHT))
-    showBrowserOverlayView(url, VIEW_ALIAS.WEB_VIEW_TRANSPARENT, hiddenLayers=(
-     WindowLayer.MARKER, WindowLayer.VIEW, WindowLayer.WINDOW))
+    showBrowserOverlayView(url, VIEW_ALIAS.WEB_VIEW_TRANSPARENT, hiddenLayers=(WindowLayer.MARKER, WindowLayer.VIEW, WindowLayer.WINDOW))
 
 
 def showBattleQuestAwardsWindow(stage):

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/skeletons/ui_logging.py
 import typing
 if typing.TYPE_CHECKING:
     from uilogging.types import FeatureType, GroupType, ActionType, LogLevelType

@@ -1,4 +1,11 @@
-import logging, BigWorld, NetworkComponents, Math, CGF, ResMgr
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/abilities/dynamic_cache_loader.py
+import logging
+import BigWorld
+import NetworkComponents
+import Math
+import CGF
+import ResMgr
 from constants import IS_CLIENT
 from helpers import dependency
 from helpers.EffectsList import effectsFromSection
@@ -28,9 +35,7 @@ def _getPlayerVehicleImpl(who):
         return
     else:
         playerEntityImpl = playerEntityRef.implementation
-        if not isinstance(playerEntityImpl, Vehicle.Vehicle):
-            return
-        return playerEntityImpl
+        return None if not isinstance(playerEntityImpl, Vehicle.Vehicle) else playerEntityImpl
 
 
 class DynamicObjectsCacheLoader(object):
@@ -110,8 +115,7 @@ class DynamicObjectsCacheLoader(object):
             else:
                 zoneHeight = pointDescr.height
                 zoneDepth = pointDescr.depth
-            scale = (
-             x, zoneHeight + zoneDepth, z)
+            scale = (x, zoneHeight + zoneDepth, z)
             from battleground.components import SequenceComponent
             yShift = -zoneDepth
             position = position + Math.Vector3(0, yShift, 0)
@@ -130,9 +134,7 @@ class DynamicObjectsCacheLoader(object):
         if not pointEffect:
             return None
         else:
-            if self.guiSessionProvider.getArenaDP().isAllyTeam(self.team):
-                return pointEffect.ally
-            return pointEffect.enemy
+            return pointEffect.ally if self.guiSessionProvider.getArenaDP().isAllyTeam(self.team) else pointEffect.enemy
 
     def _onUpdateObservedVehicleData(self, vehicleID, *args):
         self.deactivate()

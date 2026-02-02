@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/view_helpers/UsersInfoHelper.py
 import logging
 from collections import defaultdict
 from Event import Event
@@ -48,11 +50,11 @@ class UsersInfoHelper(object):
 
     @storage_getter('users')
     def users(self):
-        return
+        return None
 
     @proto_getter(PROTO_TYPE.XMPP)
     def proto(self):
-        return
+        return None
 
     def getContact(self, userID, scope=UserEntityScope.LOBBY):
         user = self.users.getUser(userID, scope=scope)
@@ -84,12 +86,12 @@ class UsersInfoHelper(object):
     def buildGuiUserData(self, user):
         userDbID = user.getID()
         colorGetter = g_settings.getColorScheme('rosters').getColors
-        return {'userName': self.getGuiUserName(userDbID), 
-           'clanAbbrev': self.getUserClanAbbrev(userDbID), 
-           'region': self.getUserRegionCode(userDbID), 
-           'tags': user.getTags() if user else [], 
-           'dbID': userDbID, 
-           'colors': colorGetter(user.getGuiType() if user else USER_GUI_TYPE.OTHER)}
+        return {'userName': self.getGuiUserName(userDbID),
+         'clanAbbrev': self.getUserClanAbbrev(userDbID),
+         'region': self.getUserRegionCode(userDbID),
+         'tags': user.getTags() if user else [],
+         'dbID': userDbID,
+         'colors': colorGetter(user.getGuiType() if user else USER_GUI_TYPE.OTHER)}
 
     def getGuiUserData(self, userDbID):
         user = self.getContact(userDbID)
@@ -101,15 +103,11 @@ class UsersInfoHelper(object):
 
     def getGuiUserName(self, userID, formatter=lambda v: v, scope=UserEntityScope.LOBBY):
         userName = self.getUserName(userID, scope=scope)
-        if userName:
-            return formatter(userName)
-        return ''
+        return formatter(userName) if userName else ''
 
     def getGuiUserRating(self, userDbID, formatter=lambda v: v):
         userRating = self.getUserRating(userDbID)
-        if userRating != '0':
-            return formatter(shared_fmts.getGlobalRatingFmt(userRating))
-        return '-1'
+        return formatter(shared_fmts.getGlobalRatingFmt(userRating)) if userRating != '0' else '-1'
 
     def getUserTags(self, userID, igrType):
         contact = self.users.getUser(userID, scope=UserEntityScope.BATTLE)

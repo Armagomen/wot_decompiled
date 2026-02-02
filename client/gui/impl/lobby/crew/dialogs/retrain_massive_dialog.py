@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/dialogs/retrain_massive_dialog.py
 from typing import TYPE_CHECKING
-import BigWorld, SoundGroups
+import BigWorld
+import SoundGroups
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.customization.shared import getPurchaseGoldForCredits, getPurchaseMoneyState, MoneyForPurchase
 from gui.impl.auxiliary.tankman_operations import ITEM_PRICE_FREE, packRetrainTankman
@@ -37,8 +40,7 @@ if TYPE_CHECKING:
 _LOC = R.strings.dialogs.retrain
 
 class RetrainMassiveDialog(BaseCrewDialogTemplateView):
-    __slots__ = ('_tankmen', '_vehicle', '_selectedTankmenIds', '_priceListContent',
-                 '_toolTipMgr', '_retrainCost')
+    __slots__ = ('_tankmen', '_vehicle', '_selectedTankmenIds', '_priceListContent', '_toolTipMgr', '_retrainCost')
     LAYOUT_ID = R.views.lobby.crew.dialogs.RetrainMassiveDialog()
     VIEW_MODEL = RetrainMassiveDialogModel
     _itemsCache = dependency.descriptor(IItemsCache)
@@ -73,16 +75,10 @@ class RetrainMassiveDialog(BaseCrewDialogTemplateView):
         return super(RetrainMassiveDialog, self).createToolTip(event)
 
     def _getCallbacks(self):
-        return (
-         (
-          'inventory.1.compDescr', self._onVehiclesInventoryUpdate),
-         (
-          'cache.mayConsumeWalletResources', self._onConsumeWalletUpdate))
+        return (('inventory.1.compDescr', self._onVehiclesInventoryUpdate), ('cache.mayConsumeWalletResources', self._onConsumeWalletUpdate))
 
     def _getEvents(self):
-        return (
-         (
-          self._priceListContent.onPriceChange, self._onPriceChange),)
+        return ((self._priceListContent.onPriceChange, self._onPriceChange),)
 
     def _onConsumeWalletUpdate(self, *_):
         submitBtn = self.getButton(DialogButtons.SUBMIT)
@@ -95,7 +91,7 @@ class RetrainMassiveDialog(BaseCrewDialogTemplateView):
         if submitBtn is not None:
             isWGMAvailable = self._itemsCache.items.stats.mayConsumeWalletResources
             submitBtn.isDisabled = index is None or not isWGMAvailable
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             vm.setIsPriceSelected(index is not None)
             self._updateTankmen(vm)
             self._updatePrice(vm, index)
@@ -118,7 +114,7 @@ class RetrainMassiveDialog(BaseCrewDialogTemplateView):
         super(RetrainMassiveDialog, self)._onLoading(*args, **kwargs)
 
     def _initModel(self):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             tankmenVL = vm.getTankmen()
             tankmenVL.clear()
             for _, tankman in enumerate(self._tankmen):
@@ -129,7 +125,7 @@ class RetrainMassiveDialog(BaseCrewDialogTemplateView):
             fillVehicleInfo(vm.targetVehicle, self._vehicle, tags=[VEHICLE_TAGS.PREMIUM])
 
     def _updateViewModel(self):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             self._fillViewModel(vm)
 
     def _fillViewModel(self, vm):
@@ -167,11 +163,12 @@ class RetrainMassiveDialog(BaseCrewDialogTemplateView):
         vm.setIsPriceVisible(itemPrice and itemPrice != ITEM_PRICE_FREE)
         if price is None or itemPrice is None:
             return
-        goldSum, creditsSum = getPriceDiscountMassRetrain(idx, priceData['isPriceApplicable'], self._tankmen)
-        finalPrice = Money(credits=creditsSum, gold=goldSum)
-        itemPrice = ItemPrice(price=finalPrice, defPrice=Money(credits=itemPrice.defPrice.credits, gold=itemPrice.defPrice.gold) * len(self._selectedTankmenIds))
-        price.updatePrice(itemPrice)
-        return
+        else:
+            goldSum, creditsSum = getPriceDiscountMassRetrain(idx, priceData['isPriceApplicable'], self._tankmen)
+            finalPrice = Money(credits=creditsSum, gold=goldSum)
+            itemPrice = ItemPrice(price=finalPrice, defPrice=Money(credits=itemPrice.defPrice.credits, gold=itemPrice.defPrice.gold) * len(self._selectedTankmenIds))
+            price.updatePrice(itemPrice)
+            return
 
     def _setResult(self, result):
         if result == DialogButtons.SUBMIT:
@@ -187,18 +184,17 @@ class RetrainMassiveDialog(BaseCrewDialogTemplateView):
         if purchaseMoneyState is MoneyForPurchase.NOT_ENOUGH:
             showBuyGoldForCrew(goldSum)
             return False
+        elif purchaseMoneyState is MoneyForPurchase.ENOUGH_WITH_EXCHANGE:
+            purchaseGold = getPurchaseGoldForCredits(money)
+            event_dispatcher.showExchangeCurrencyWindowModal(gold=purchaseGold, backgroundImage=R.images.gui.maps.icons.windows.background())
+            return False
         else:
-            if purchaseMoneyState is MoneyForPurchase.ENOUGH_WITH_EXCHANGE:
-                purchaseGold = getPurchaseGoldForCredits(money)
-                event_dispatcher.showExchangeCurrencyWindowModal(gold=purchaseGold, backgroundImage=R.images.gui.maps.icons.windows.background())
-                return False
             doActions = []
             for tankmanInvID in self._selectedTankmenIds:
                 tankman = self._itemsCache.items.getTankman(tankmanInvID)
                 if tankman is None:
                     continue
-                doActions.append((
-                 factory.RETRAIN_TANKMAN,
+                doActions.append((factory.RETRAIN_TANKMAN,
                  tankmanInvID,
                  self._vehicle.intCD,
                  retrainKey,

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/points_of_interest/registrars.py
 import CGF
 from cgf_script.managers_registrator import Rule, registerManager, registerRule
 from points_of_interest.managers import PoiStateManager, PoiViewStateManager, PoiSoundManager
@@ -9,12 +11,12 @@ class PointsOfInterestRule(Rule):
 
     @registerManager(PoiStateManager)
     def registerPoiStateManager(self):
-        return
+        return None
 
     @registerManager(PoiViewStateManager)
     def registerPoiViewStateManager(self):
-        return
+        return None
 
     @registerManager(PoiSoundManager)
     def registerPoiSoundManager(self):
-        return
+        return None

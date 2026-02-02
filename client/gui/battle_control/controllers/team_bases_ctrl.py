@@ -1,5 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/team_bases_ctrl.py
 from collections import defaultdict
-import BattleReplay, BigWorld, SoundGroups
+import BattleReplay
+import BigWorld
+import SoundGroups
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
 from constants import TEAMS_IN_ARENA
@@ -12,8 +16,12 @@ _BASE_CAPTURE_SOUND_NAME_ENEMY = 'base_capture_2'
 _BASE_CAPTURE_SOUND_NAME_ALLY = 'base_capture_1'
 _AVAILABLE_TEAMS_NUMBERS = range(1, TEAMS_IN_ARENA.MAX_TEAMS + 1)
 _UPDATE_POINTS_DELAY = 1.0
-_ENEMY_OFFSET_DISABLED_BY_GAMEPLAY = (
- 'assault', 'assault2', 'domination', 'domination30x30', 'epic', 'comp7')
+_ENEMY_OFFSET_DISABLED_BY_GAMEPLAY = ('assault',
+ 'assault2',
+ 'domination',
+ 'domination30x30',
+ 'epic',
+ 'comp7')
 
 def makeClientTeamBaseID(team, baseID):
     if baseID is None:
@@ -61,8 +69,7 @@ class ITeamBasesListener(object):
 
 class BattleTeamsBasesController(ITeamsBasesController, ViewComponentsController):
     sessionProvider = dependency.descriptor(IBattleSessionProvider)
-    __slots__ = ('__battleCtx', '__arenaVisitor', '__clientIDs', '__points', '__sounds',
-                 '__callbackIDs', '__snap', '__captured')
+    __slots__ = ('__battleCtx', '__arenaVisitor', '__clientIDs', '__points', '__sounds', '__callbackIDs', '__snap', '__captured')
 
     def __init__(self):
         super(BattleTeamsBasesController, self).__init__()
@@ -124,7 +131,7 @@ class BattleTeamsBasesController(ITeamsBasesController, ViewComponentsController
                     isCapturing = True
                     viewCmp.addCapturedTeamBase(clientID, playerTeam, timeLeft, invadersCnt)
 
-            elif points and not BigWorld.player().isObserver():
+            if points and not BigWorld.player().isObserver():
                 for viewCmp in self._viewComponents:
                     isCapturing = True
                     viewCmp.addCapturingTeamBase(clientID, playerTeam, points, self._getProgressRate(), timeLeft, invadersCnt, stopped)
@@ -155,7 +162,10 @@ class BattleTeamsBasesController(ITeamsBasesController, ViewComponentsController
             prevTeamBaseLeft = self._teamBaseLeft(prevPoints, prevInvCount)
         else:
             prevTeamBaseLeft = True
-        self.__points[clientID] = (points, timeLeft, invadersCnt, capturingStopped)
+        self.__points[clientID] = (points,
+         timeLeft,
+         invadersCnt,
+         capturingStopped)
         if self._teamBaseLeft(points, invadersCnt):
             if clientID in self.__clientIDs:
                 if not invadersCnt:
@@ -233,8 +243,7 @@ class BattleTeamsBasesController(ITeamsBasesController, ViewComponentsController
         return self.__snap[clientID]
 
     def _setSnapForClientID(self, clientID, points, rate, timeLeft):
-        self.__snap[clientID] = (
-         points, rate, timeLeft)
+        self.__snap[clientID] = (points, rate, timeLeft)
 
     def _addCapturingTeamBase(self, clientID, playerTeam, points, timeLeft, invadersCnt, capturingStopped):
         for viewCmp in self._viewComponents:
@@ -250,7 +259,7 @@ class BattleTeamsBasesController(ITeamsBasesController, ViewComponentsController
         self.__clientIDs.clear()
 
     def _getProgressRate(self):
-        return 1
+        pass
 
     def __hasBaseID(self, team, exclude=-1):
         return len([ i for i in self.__clientIDs if i & team != 0 and i != exclude ]) > 0
@@ -296,8 +305,7 @@ class BattleTeamsBasesController(ITeamsBasesController, ViewComponentsController
             return
         rate = self._getProgressRate()
         if self._viewComponents and self.__snap[clientID] != (points, rate, timeLeft) and points > 0:
-            self.__snap[clientID] = (
-             points, rate, timeLeft)
+            self.__snap[clientID] = (points, rate, timeLeft)
             for viewCmp in self._viewComponents:
                 viewCmp.updateTeamBasePoints(clientID, points, rate, timeLeft, invadersCnt)
 

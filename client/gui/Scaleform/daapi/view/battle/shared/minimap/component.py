@@ -1,4 +1,10 @@
-import logging, weakref, GUI, Math, SoundGroups
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/minimap/component.py
+import logging
+import weakref
+import GUI
+import Math
+import SoundGroups
 from AvatarInputHandler import AvatarInputHandler
 from gui.Scaleform.daapi.view.battle.shared.map_zones.minimap import MapZonesEntriesPlugin
 from gui.Scaleform.daapi.view.battle.shared.minimap import settings, plugins
@@ -102,10 +108,7 @@ class MinimapComponent(MinimapMeta, IMinimapComponent):
         return True
 
     def getPlugin(self, name):
-        if self.__plugins is not None:
-            return self.__plugins.getPlugin(name)
-        else:
-            return
+        return self.__plugins.getPlugin(name) if self.__plugins is not None else None
 
     def getPlugins(self):
         return self.__plugins
@@ -148,13 +151,13 @@ class MinimapComponent(MinimapMeta, IMinimapComponent):
         return
 
     def _setupPlugins(self, arenaVisitor):
-        setup = {'equipments': plugins.EquipmentsPlugin, 
-           'vehicles': plugins.ArenaVehiclesPlugin, 
-           'personal': plugins.PersonalEntriesPlugin, 
-           'area': plugins.AreaStaticMarkerPlugin, 
-           'area_markers': plugins.AreaMarkerEntriesPlugin, 
-           'spgShot': plugins.EnemySPGShotPlugin, 
-           'map_zones': MapZonesEntriesPlugin}
+        setup = {'equipments': plugins.EquipmentsPlugin,
+         'vehicles': plugins.ArenaVehiclesPlugin,
+         'personal': plugins.PersonalEntriesPlugin,
+         'area': plugins.AreaStaticMarkerPlugin,
+         'area_markers': plugins.AreaMarkerEntriesPlugin,
+         'spgShot': plugins.EnemySPGShotPlugin,
+         'map_zones': MapZonesEntriesPlugin}
         return setup
 
     def _createFlashComponent(self):
@@ -164,7 +167,7 @@ class MinimapComponent(MinimapMeta, IMinimapComponent):
         return minimap_utils.MINIMAP_SIZE
 
     def _getFlashName(self):
-        return 'minimap'
+        pass
 
     def _getMinimapTexture(self, arenaVisitor):
         return self.getImagePath(arenaVisitor.type.getMinimapTexture())
@@ -203,10 +206,10 @@ class MinimapComponent(MinimapMeta, IMinimapComponent):
         return _DEFUALT_MINIMAP_DIMENSION
 
     def getCellIdFromPosition(self, position, boundingBox):
-        return
+        return None
 
     def getCellName(self, cellId):
-        return ''
+        pass
 
 
 class MinimapPluginsCollection(PluginsCollection):

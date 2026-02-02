@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/inventory/inventory_view.py
 import copy
 from gui import GUI_NATIONS_ORDER_INDICES
 from gui.Scaleform.daapi.view.lobby.storage import storage_helpers
@@ -15,48 +17,45 @@ from skeletons.gui.lobby_context import ILobbyContext
 from constants import SwitchState
 from gui.shared.event_dispatcher import showSellDialog
 VERSION = 1
-_TABS_DATA = (
- {'id': STORAGE_CONSTANTS.INVENTORY_TAB_ALL, 
-    'label': R.strings.storage.storage.tabs.all, 
-    'linkage': STORAGE_CONSTANTS.STORAGE_REGULAR_ITEMS_TAB},
- {'id': STORAGE_CONSTANTS.INVENTORY_TAB_EQUIPMENT, 
-    'label': R.strings.storage.storage.tabs.equipment, 
-    'linkage': STORAGE_CONSTANTS.STORAGE_DEVICES_TAB},
- {'id': STORAGE_CONSTANTS.INVENTORY_TAB_CONSUMABLE, 
-    'label': R.strings.storage.storage.tabs.consumable, 
-    'linkage': STORAGE_CONSTANTS.STORAGE_CONSUMABLES_TAB},
- {'id': STORAGE_CONSTANTS.INVENTORY_TAB_MODULES, 
-    'label': R.strings.storage.storage.tabs.modules, 
-    'linkage': STORAGE_CONSTANTS.STORAGE_MODULES_TAB},
- {'id': STORAGE_CONSTANTS.INVENTORY_TAB_SHELLS, 
-    'label': R.strings.storage.storage.tabs.shells, 
-    'linkage': STORAGE_CONSTANTS.STORAGE_SHELLS_TAB},
- {'id': STORAGE_CONSTANTS.INVENTORY_TAB_CREW_BOOKS, 
-    'label': R.strings.storage.storage.tabs.crewBooks, 
-    'linkage': STORAGE_CONSTANTS.STORAGE_CREW_BOOKS_TAB})
+_TABS_DATA = ({'id': STORAGE_CONSTANTS.INVENTORY_TAB_ALL,
+  'label': R.strings.storage.storage.tabs.all,
+  'linkage': STORAGE_CONSTANTS.STORAGE_REGULAR_ITEMS_TAB},
+ {'id': STORAGE_CONSTANTS.INVENTORY_TAB_EQUIPMENT,
+  'label': R.strings.storage.storage.tabs.equipment,
+  'linkage': STORAGE_CONSTANTS.STORAGE_DEVICES_TAB},
+ {'id': STORAGE_CONSTANTS.INVENTORY_TAB_CONSUMABLE,
+  'label': R.strings.storage.storage.tabs.consumable,
+  'linkage': STORAGE_CONSTANTS.STORAGE_CONSUMABLES_TAB},
+ {'id': STORAGE_CONSTANTS.INVENTORY_TAB_MODULES,
+  'label': R.strings.storage.storage.tabs.modules,
+  'linkage': STORAGE_CONSTANTS.STORAGE_MODULES_TAB},
+ {'id': STORAGE_CONSTANTS.INVENTORY_TAB_SHELLS,
+  'label': R.strings.storage.storage.tabs.shells,
+  'linkage': STORAGE_CONSTANTS.STORAGE_SHELLS_TAB},
+ {'id': STORAGE_CONSTANTS.INVENTORY_TAB_CREW_BOOKS,
+  'label': R.strings.storage.storage.tabs.crewBooks,
+  'linkage': STORAGE_CONSTANTS.STORAGE_CREW_BOOKS_TAB})
 
 def _getTabDataIndexById(tabID):
     for i, section in enumerate(_TABS_DATA):
         if section['id'] == tabID:
             return i
 
-    return -1
-
 
 _TABS_ITEM_TYPES = {STORAGE_CONSTANTS.INVENTORY_TAB_ALL: GUI_ITEM_TYPE.VEHICLE_COMPONENTS + (GUI_ITEM_TYPE.CREW_BOOKS,
                                        GUI_ITEM_TYPE.DEMOUNT_KIT,
                                        GUI_ITEM_TYPE.RECERTIFICATION_FORM,
-                                       GUI_ITEM_TYPE.MENTORING_LICENSE), 
-   STORAGE_CONSTANTS.INVENTORY_TAB_EQUIPMENT: GUI_ITEM_TYPE.OPTIONALDEVICE, 
-   STORAGE_CONSTANTS.INVENTORY_TAB_CONSUMABLE: (
-                                              GUI_ITEM_TYPE.EQUIPMENT, GUI_ITEM_TYPE.BATTLE_BOOSTER,
-                                              GUI_ITEM_TYPE.DEMOUNT_KIT, GUI_ITEM_TYPE.RECERTIFICATION_FORM,
-                                              GUI_ITEM_TYPE.MENTORING_LICENSE), 
-   STORAGE_CONSTANTS.INVENTORY_TAB_MODULES: GUI_ITEM_TYPE.VEHICLE_MODULES, 
-   STORAGE_CONSTANTS.INVENTORY_TAB_SHELLS: GUI_ITEM_TYPE.SHELL, 
-   STORAGE_CONSTANTS.INVENTORY_TAB_CREW_BOOKS: GUI_ITEM_TYPE.CREW_BOOKS}
-TABS_SORT_ORDER = {n:idx for idx, n in enumerate((
- GUI_ITEM_TYPE.OPTIONALDEVICE,
+                                       GUI_ITEM_TYPE.MENTORING_LICENSE),
+ STORAGE_CONSTANTS.INVENTORY_TAB_EQUIPMENT: GUI_ITEM_TYPE.OPTIONALDEVICE,
+ STORAGE_CONSTANTS.INVENTORY_TAB_CONSUMABLE: (GUI_ITEM_TYPE.EQUIPMENT,
+                                              GUI_ITEM_TYPE.BATTLE_BOOSTER,
+                                              GUI_ITEM_TYPE.DEMOUNT_KIT,
+                                              GUI_ITEM_TYPE.RECERTIFICATION_FORM,
+                                              GUI_ITEM_TYPE.MENTORING_LICENSE),
+ STORAGE_CONSTANTS.INVENTORY_TAB_MODULES: GUI_ITEM_TYPE.VEHICLE_MODULES,
+ STORAGE_CONSTANTS.INVENTORY_TAB_SHELLS: GUI_ITEM_TYPE.SHELL,
+ STORAGE_CONSTANTS.INVENTORY_TAB_CREW_BOOKS: GUI_ITEM_TYPE.CREW_BOOKS}
+TABS_SORT_ORDER = {n:idx for idx, n in enumerate((GUI_ITEM_TYPE.OPTIONALDEVICE,
  GUI_ITEM_TYPE.EQUIPMENT,
  GUI_ITEM_TYPE.BATTLE_BOOSTER,
  GUI_ITEM_TYPE.GUN,
@@ -74,17 +73,14 @@ def _defaultInGroupComparator(a, b):
     return cmp(storage_helpers.getStorageItemName(a), storage_helpers.getStorageItemName(b))
 
 
-_OPT_DEVICE_TYPE_ORDER = (
- REQ_CRITERIA.OPTIONAL_DEVICE.SIMPLE,
+_OPT_DEVICE_TYPE_ORDER = (REQ_CRITERIA.OPTIONAL_DEVICE.SIMPLE,
  REQ_CRITERIA.OPTIONAL_DEVICE.TROPHY,
  REQ_CRITERIA.OPTIONAL_DEVICE.DELUXE,
  REQ_CRITERIA.OPTIONAL_DEVICE.MODERNIZED)
 
 def _getDeviceCategoriesOrder(optDevice):
     categories = optDevice.descriptor.categories
-    if categories:
-        return min(storage_helpers.OPT_DEVICE_CATEGORIES_ORDER.get(category, storage_helpers.CATEGORIES_COUNT) for category in categories)
-    return storage_helpers.CATEGORIES_COUNT
+    return min((storage_helpers.OPT_DEVICE_CATEGORIES_ORDER.get(category, storage_helpers.CATEGORIES_COUNT) for category in categories)) if categories else storage_helpers.CATEGORIES_COUNT
 
 
 def _upgradableDeviceComparator(a, b):
@@ -92,7 +88,6 @@ def _upgradableDeviceComparator(a, b):
         if a.isUpgradable:
             return 1
         return -1
-    return 0
 
 
 def _optionalDevicesComparator(a, b):
@@ -124,19 +119,19 @@ def _crewBookComparator(a, b):
     return crewBookCmp(a, b) or _defaultInGroupComparator(a, b)
 
 
-IN_GROUP_COMPARATOR = {GUI_ITEM_TYPE.OPTIONALDEVICE: _optionalDevicesComparator, 
-   GUI_ITEM_TYPE.EQUIPMENT: _defaultInGroupComparator, 
-   GUI_ITEM_TYPE.BATTLE_BOOSTER: _defaultInGroupComparator, 
-   GUI_ITEM_TYPE.TURRET: _defaultInGroupComparator, 
-   GUI_ITEM_TYPE.ENGINE: _defaultInGroupComparator, 
-   GUI_ITEM_TYPE.GUN: _gunsComparator, 
-   GUI_ITEM_TYPE.RADIO: _defaultInGroupComparator, 
-   GUI_ITEM_TYPE.CHASSIS: _defaultInGroupComparator, 
-   GUI_ITEM_TYPE.SHELL: _shellsComparator, 
-   GUI_ITEM_TYPE.CREW_BOOKS: _crewBookComparator, 
-   GUI_ITEM_TYPE.DEMOUNT_KIT: _defaultInGroupComparator, 
-   GUI_ITEM_TYPE.RECERTIFICATION_FORM: _defaultInGroupComparator, 
-   GUI_ITEM_TYPE.MENTORING_LICENSE: _defaultInGroupComparator}
+IN_GROUP_COMPARATOR = {GUI_ITEM_TYPE.OPTIONALDEVICE: _optionalDevicesComparator,
+ GUI_ITEM_TYPE.EQUIPMENT: _defaultInGroupComparator,
+ GUI_ITEM_TYPE.BATTLE_BOOSTER: _defaultInGroupComparator,
+ GUI_ITEM_TYPE.TURRET: _defaultInGroupComparator,
+ GUI_ITEM_TYPE.ENGINE: _defaultInGroupComparator,
+ GUI_ITEM_TYPE.GUN: _gunsComparator,
+ GUI_ITEM_TYPE.RADIO: _defaultInGroupComparator,
+ GUI_ITEM_TYPE.CHASSIS: _defaultInGroupComparator,
+ GUI_ITEM_TYPE.SHELL: _shellsComparator,
+ GUI_ITEM_TYPE.CREW_BOOKS: _crewBookComparator,
+ GUI_ITEM_TYPE.DEMOUNT_KIT: _defaultInGroupComparator,
+ GUI_ITEM_TYPE.RECERTIFICATION_FORM: _defaultInGroupComparator,
+ GUI_ITEM_TYPE.MENTORING_LICENSE: _defaultInGroupComparator}
 
 class InventoryCategoryStorageView(StorageCategoryStorageViewMeta):
     __storageNovelty = dependency.descriptor(IStorageNovelty)
@@ -186,9 +181,11 @@ class InventoryCategoryStorageView(StorageCategoryStorageViewMeta):
         super(InventoryCategoryStorageView, self)._onRegisterFlashComponent(viewPy, alias)
         if alias == STORAGE_CONSTANTS.STORAGE_REGULAR_ITEMS_TAB:
             self.__views[STORAGE_CONSTANTS.INVENTORY_TAB_ALL] = viewPy
-        if alias not in (STORAGE_CONSTANTS.STORAGE_MODULES_TAB, STORAGE_CONSTANTS.STORAGE_SHELLS_TAB,
+        if alias not in (STORAGE_CONSTANTS.STORAGE_MODULES_TAB,
+         STORAGE_CONSTANTS.STORAGE_SHELLS_TAB,
          STORAGE_CONSTANTS.STORAGE_DEVICES_TAB,
-         STORAGE_CONSTANTS.STORAGE_CREW_BOOKS_TAB, STORAGE_CONSTANTS.STORAGE_CONSUMABLES_TAB):
+         STORAGE_CONSTANTS.STORAGE_CREW_BOOKS_TAB,
+         STORAGE_CONSTANTS.STORAGE_CONSUMABLES_TAB):
             viewPy.setTabId(self.__currentTabId)
 
     def _updateTabCounters(self):
@@ -225,13 +222,12 @@ class RegularInventoryCategoryTabView(InventoryCategoryView):
         for itemType in self._getItemTypeIDs():
             if itemType == GUI_ITEM_TYPE.DEMOUNT_KIT:
                 items.update(self._goodiesCache.getDemountKits(REQ_CRITERIA.DEMOUNT_KIT.IN_ACCOUNT | REQ_CRITERIA.DEMOUNT_KIT.IS_ENABLED))
-            elif itemType == GUI_ITEM_TYPE.RECERTIFICATION_FORM:
+            if itemType == GUI_ITEM_TYPE.RECERTIFICATION_FORM:
                 if self.__lobbyContext.getServerSettings().recertificationFormState() != SwitchState.DISABLED.value:
                     items.update(self._goodiesCache.getRecertificationForms(REQ_CRITERIA.DEMOUNT_KIT.IN_ACCOUNT | REQ_CRITERIA.DEMOUNT_KIT.IS_ENABLED))
-            elif itemType == GUI_ITEM_TYPE.MENTORING_LICENSE:
+            if itemType == GUI_ITEM_TYPE.MENTORING_LICENSE:
                 items.update(self._goodiesCache.getMentoringLicenses(REQ_CRITERIA.DEMOUNT_KIT.IN_ACCOUNT | REQ_CRITERIA.DEMOUNT_KIT.IS_ENABLED))
-            else:
-                items.update(self._itemsCache.items.getItems(itemType, criteria, nationID=None))
+            items.update(self._itemsCache.items.getItems(itemType, criteria, nationID=None))
 
         return items
 
@@ -243,8 +239,7 @@ class RegularInventoryCategoryTabView(InventoryCategoryView):
         if self._currentTabId in (STORAGE_CONSTANTS.INVENTORY_TAB_ALL, STORAGE_CONSTANTS.INVENTORY_TAB_MODULES):
             criteria |= REQ_CRITERIA.TYPE_CRITERIA(GUI_ITEM_TYPE.VEHICLE_MODULES, REQ_CRITERIA.VEHICLE.SUITABLE(invVehicles))
         if self._currentTabId in (STORAGE_CONSTANTS.INVENTORY_TAB_ALL, STORAGE_CONSTANTS.INVENTORY_TAB_SHELLS):
-            criteria |= REQ_CRITERIA.TYPE_CRITERIA((
-             GUI_ITEM_TYPE.SHELL,), storage_helpers.getStorageShellsCriteria(self._itemsCache, invVehicles, True))
+            criteria |= REQ_CRITERIA.TYPE_CRITERIA((GUI_ITEM_TYPE.SHELL,), storage_helpers.getStorageShellsCriteria(self._itemsCache, invVehicles, True))
         return criteria
 
     def _getVO(self, item):

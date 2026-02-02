@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/fortifications/__init__.py
 from frameworks.wulf import WindowLayer
 from gui.shared import EVENT_BUS_SCOPE
 from gui.app_loader import settings as app_settings
@@ -7,7 +9,7 @@ from gui.Scaleform.framework import ScopeTemplates, ComponentSettings, GroupedVi
 from gui.Scaleform.genConsts.FORTIFICATION_ALIASES import FORTIFICATION_ALIASES
 
 def getContextMenuHandlers():
-    return ()
+    pass
 
 
 def getViewSettings():
@@ -17,8 +19,7 @@ def getViewSettings():
     from gui.Scaleform.daapi.view.lobby.fortifications.FortReserveSelectPopover import FortReserveSelectPopover
     from gui.Scaleform.daapi.view.lobby.fortifications.StrongholdSendInvitesWindow import StrongholdSendInvitesWindow
     from gui.Scaleform.daapi.view.lobby.fortifications.fort_vehicle_select_popover import FortVehicleSelectPopover
-    return (
-     GroupedViewSettings(FORTIFICATION_ALIASES.STRONGHOLD_SEND_INVITES_WINDOW_PY, StrongholdSendInvitesWindow, 'sendInvitesWindow.swf', WindowLayer.WINDOW, '', FORTIFICATION_ALIASES.STRONGHOLD_SEND_INVITES_WINDOW_PY, ScopeTemplates.DEFAULT_SCOPE, True),
+    return (GroupedViewSettings(FORTIFICATION_ALIASES.STRONGHOLD_SEND_INVITES_WINDOW_PY, StrongholdSendInvitesWindow, 'sendInvitesWindow.swf', WindowLayer.WINDOW, '', FORTIFICATION_ALIASES.STRONGHOLD_SEND_INVITES_WINDOW_PY, ScopeTemplates.DEFAULT_SCOPE, True),
      GroupedViewSettings(FORTIFICATION_ALIASES.FORT_RESERVE_SELECT_POPOVER_ALIAS, FortReserveSelectPopover, FORTIFICATION_ALIASES.FORT_FITTING_SELECT_POPOVER_UI, WindowLayer.WINDOW, FORTIFICATION_ALIASES.FORT_RESERVE_SELECT_POPOVER_ALIAS, FORTIFICATION_ALIASES.FORT_RESERVE_SELECT_POPOVER_ALIAS, ScopeTemplates.DEFAULT_SCOPE),
      GroupedViewSettings(FORTIFICATION_ALIASES.FORT_VEHICLE_SELECT_POPOVER_ALIAS, FortVehicleSelectPopover, FORTIFICATION_ALIASES.FORT_VEHICLE_SELECT_POPOVER_UI, WindowLayer.WINDOW, FORTIFICATION_ALIASES.FORT_VEHICLE_SELECT_POPOVER_ALIAS, FORTIFICATION_ALIASES.FORT_VEHICLE_SELECT_POPOVER_ALIAS, ScopeTemplates.WINDOW_VIEWED_MULTISCOPE),
      GroupedViewSettings(FORTIFICATION_ALIASES.STRONGHOLD_BATTLE_ROOM_WINDOW_ALIAS, StrongholdBattleRoomWindow, FORTIFICATION_ALIASES.FORT_BATTLE_ROOM_WINDOW_UI, WindowLayer.WINDOW, '', FORTIFICATION_ALIASES.STRONGHOLD_BATTLE_ROOM_WINDOW_ALIAS, ScopeTemplates.DEFAULT_SCOPE, True),
@@ -27,22 +28,16 @@ def getViewSettings():
 
 
 def getBusinessHandlers():
-    return (
-     _FortsBusinessHandler(),)
+    return (_FortsBusinessHandler(),)
 
 
 class _FortsBusinessHandler(PackageBusinessHandler):
 
     def __init__(self):
-        listeners = (
-         (
-          FORTIFICATION_ALIASES.STRONGHOLD_BATTLE_ROOM_WINDOW_ALIAS, self.__showStrongholdBattleRoomWindow),
-         (
-          FORTIFICATION_ALIASES.FORT_RESERVE_SELECT_POPOVER_ALIAS, self.loadViewByCtxEvent),
-         (
-          FORTIFICATION_ALIASES.FORT_VEHICLE_SELECT_POPOVER_ALIAS, self.loadViewByCtxEvent),
-         (
-          FORTIFICATION_ALIASES.STRONGHOLD_SEND_INVITES_WINDOW_PY, self.__showPrebattleWindow))
+        listeners = ((FORTIFICATION_ALIASES.STRONGHOLD_BATTLE_ROOM_WINDOW_ALIAS, self.__showStrongholdBattleRoomWindow),
+         (FORTIFICATION_ALIASES.FORT_RESERVE_SELECT_POPOVER_ALIAS, self.loadViewByCtxEvent),
+         (FORTIFICATION_ALIASES.FORT_VEHICLE_SELECT_POPOVER_ALIAS, self.loadViewByCtxEvent),
+         (FORTIFICATION_ALIASES.STRONGHOLD_SEND_INVITES_WINDOW_PY, self.__showPrebattleWindow))
         super(_FortsBusinessHandler, self).__init__(listeners, app_settings.APP_NAME_SPACE.SF_LOBBY, EVENT_BUS_SCOPE.LOBBY)
 
     def __showStrongholdBattleRoomWindow(self, event):

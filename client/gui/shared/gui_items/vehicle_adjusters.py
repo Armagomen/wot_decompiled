@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/gui_items/vehicle_adjusters.py
 from gui.Scaleform.daapi.view.lobby.vehicle_compare import cmp_helpers
 from helpers import dependency
 from adisp import adisp_process
@@ -38,7 +40,7 @@ def installModulesSet(vehicle, modules, notFitted):
             if isFit:
                 yield installer_module.getPreviewInstallerProcessor(vehicle, module).request()
                 __updateVehicleModule(vehicle, module)
-            elif notFitReason == 'need turret':
+            if notFitReason == 'need turret':
                 turretIndex = __findModuleIndex(modules, GUI_ITEM_TYPE.TURRET)
                 if turretIndex != UNDEFINED_INDEX:
                     modules.append(module)
@@ -47,7 +49,7 @@ def installModulesSet(vehicle, modules, notFitted):
                     break
                 else:
                     notFitted.append(notFitReason)
-            elif notFitReason == 'need gun':
+            if notFitReason == 'need gun':
                 gunIndex = __findModuleIndex(modules, GUI_ITEM_TYPE.GUN)
                 if gunIndex != UNDEFINED_INDEX:
                     modules.append(module)
@@ -67,7 +69,7 @@ def installEquipment(vehicle, intCD, slotIndex, itemsCache=None):
     if equipment:
         success, reason = equipment.mayInstall(vehicle, slotIndex)
         if not success:
-            LOG_WARNING(('Equipment could not been installed, reason: ').format(reason))
+            LOG_WARNING('Equipment could not been installed, reason: '.format(reason))
             return
     vehicle.consumables.installed[slotIndex] = equipment
     vehicle.consumables.layout[slotIndex] = equipment
@@ -89,7 +91,7 @@ def installOptionalDevice(vehicle, newId, slotIndex, itemsCache=None):
         vehicle.optDevices.installed[slotIndex] = optDev
         vehicle.optDevices.layout[slotIndex] = optDev
     else:
-        LOG_WARNING(('Component "{}" has not been installed. Reason: {}.').format(itemTypeID, reason))
+        LOG_WARNING('Component "{}" has not been installed. Reason: {}.'.format(itemTypeID, reason))
     return (mayInstall, reason)
 
 
@@ -99,12 +101,10 @@ def removeOptionalDevice(vehicle, slotIndex):
         vehicle.descriptor.removeOptionalDevice(slotIndex)
         vehicle.optDevices.installed[slotIndex] = None
         vehicle.optDevices.layout[slotIndex] = None
-        return (
-         True, None)
+        return (True, None)
     else:
-        LOG_WARNING(("Couldn't remove optional device from slot {} because slot is already empty!").format(slotIndex))
-        return (
-         False, 'slot is empty')
+        LOG_WARNING("Couldn't remove optional device from slot {} because slot is already empty!".format(slotIndex))
+        return (False, 'slot is empty')
 
 
 def swapOptionalDevice(vehicle, leftID, rigthID):
@@ -113,9 +113,8 @@ def swapOptionalDevice(vehicle, leftID, rigthID):
         vehicle.descriptor.swapOptionalDevice(leftID, rigthID)
         vehicle.optDevices.swap(leftID, rigthID)
     else:
-        LOG_WARNING(('Slots "{}" has not been swapped. Reason: {}.').format((leftID, rigthID), reason))
-    return (
-     maySwap, reason)
+        LOG_WARNING('Slots "{}" has not been swapped. Reason: {}.'.format((leftID, rigthID), reason))
+    return (maySwap, reason)
 
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
@@ -144,5 +143,4 @@ def applyTankmanSkillOnVehicle(vehicle, skillsByRolesIdx):
         if skills:
             prevRoleLevel = tankmen.MAX_SKILL_LEVEL
             role = tman.role
-            crew[idx] = (roleIdx,
-             cmp_helpers.createTankman(nationID, vehicleTypeID, role, prevRoleLevel, skills, vehicle, roleIdx))
+            crew[idx] = (roleIdx, cmp_helpers.createTankman(nationID, vehicleTypeID, role, prevRoleLevel, skills, vehicle, roleIdx))

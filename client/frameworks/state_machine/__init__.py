@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/frameworks/state_machine/__init__.py
 from .events import StateEvent
 from .events import StringEvent
 from .machine import StateMachine
@@ -9,6 +11,4 @@ from .observers import StateObserversContainer
 from .transitions import BaseTransition
 from .transitions import ConditionTransition
 from .transitions import StringEventTransition
-__all__ = ('StateEvent', 'StringEvent', 'StateMachine', 'State', 'StateFlags', 'BaseStateObserver',
-           'StateIdsObserver', 'StateObserversContainer', 'BaseTransition', 'ConditionTransition',
-           'StringEventTransition')
+__all__ = ('StateEvent', 'StringEvent', 'StateMachine', 'State', 'StateFlags', 'BaseStateObserver', 'StateIdsObserver', 'StateObserversContainer', 'BaseTransition', 'ConditionTransition', 'StringEventTransition')

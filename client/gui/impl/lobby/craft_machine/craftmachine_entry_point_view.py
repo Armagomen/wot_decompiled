@@ -1,4 +1,8 @@
-import json, logging, time
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/craft_machine/craftmachine_entry_point_view.py
+import json
+import logging
+import time
 from datetime import datetime
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.Scaleform.genConsts.HANGAR_ALIASES import HANGAR_ALIASES
@@ -82,7 +86,7 @@ class CraftmachineEntryPointView(ViewImpl):
             return
 
     def __updateViewModel(self):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setStartDate(0)
             if self.__startDateUI:
                 startDateUI = time.mktime(datetime.strptime(self.__startDateUI, _TIME_FORMAT).timetuple())

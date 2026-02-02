@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/battle/battle_page/ammunition_panel/blocks_controller.py
 from typing import TYPE_CHECKING
 from gui.impl.common.ammunition_panel.ammunition_blocks_controller import AmmunitionBlocksController
 from gui.impl.gen.view_models.views.battle.battle_page.prebattle_shell_ammunition_slot import PrebattleShellAmmunitionSlot, ShellBattleState
@@ -37,13 +39,13 @@ class PrebattleShellsBlock(ShellsBlock):
 class RespawnConsumablesBlock(ConsumablesBlock):
 
     def _getKeySettings(self):
-        return ()
+        pass
 
 
 class RespawnShellsBlock(ShellsBlock):
 
     def _getKeySettings(self):
-        return ()
+        pass
 
 
 class PrebattleAmmunitionBlocksController(AmmunitionBlocksController):

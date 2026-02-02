@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/uilogging/advanced_achievement/logging_constants.py
 from enum import Enum
 FEATURE = 'advanced_achievement'
 

@@ -1,5 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/persistent_data_cache/caches.py
 from functools import partial
-import typing, BigWorld, wg_async
+import typing
+import BigWorld
+import wg_async
 from helpers.threads import ThreadPool, Job
 from persistent_data_cache_common.caches import DefaultPDCache
 from persistent_data_cache_common.common import getLogger, DEFAULT_SAVING_TIMEOUT
@@ -32,7 +36,7 @@ class _ThreadJob(Job):
 
 
 class ThreadSavingPDCache(DefaultPDCache):
-    __slots__ = ('_threadWorker', )
+    __slots__ = ('_threadWorker',)
 
     def __init__(self, config, eventsDispatcher):
         super(ThreadSavingPDCache, self).__init__(config, eventsDispatcher)

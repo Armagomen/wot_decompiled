@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/ResearchPanel.py
 import typing
 from CurrentVehicle import g_currentVehicle
 from gui.Scaleform.genConsts.RESEARCH_COUNTER_STATES import RESEARCH_COUNTER_STATES
@@ -36,10 +38,10 @@ class ResearchPanel(ResearchPanelMeta):
 
     def _populate(self):
         super(ResearchPanel, self)._populate()
-        g_clientUpdateManager.addCallbacks({'stats.vehTypeXP': self.onVehicleTypeXPChanged, 
-           'stats.eliteVehicles': self.onVehicleBecomeElite, 
-           'blueprints': self.__onUpdateBlueprints, 
-           'serverSettings.blueprints_config': self.__onBlueprintsSettingsChanged})
+        g_clientUpdateManager.addCallbacks({'stats.vehTypeXP': self.onVehicleTypeXPChanged,
+         'stats.eliteVehicles': self.onVehicleBecomeElite,
+         'blueprints': self.__onUpdateBlueprints,
+         'serverSettings.blueprints_config': self.__onBlueprintsSettingsChanged})
         self.onCurrentVehicleChanged()
         self.comparisonBasket.onChange += self.__onCompareBasketChanged
         self.comparisonBasket.onSwitchChange += self.onCurrentVehicleChanged
@@ -80,11 +82,11 @@ class ResearchPanel(ResearchPanelMeta):
             xps = self.itemsCache.items.stats.vehiclesXPs
             vehicle = g_currentVehicle.item
             xp = xps.get(vehicle.intCD, 0)
-            self.as_updateCurrentVehicleS({'earnedXP': xp, 
-               'isElite': vehicle.isElite, 
-               'vehCompareData': self.__getVehCompareData(vehicle), 
-               'vehPostProgressionData': self.__getVehPostProgressionData(vehicle), 
-               'intCD': vehicle.intCD})
+            self.as_updateCurrentVehicleS({'earnedXP': xp,
+             'isElite': vehicle.isElite,
+             'vehCompareData': self.__getVehCompareData(vehicle),
+             'vehPostProgressionData': self.__getVehPostProgressionData(vehicle),
+             'intCD': vehicle.intCD})
         else:
             self.as_updateCurrentVehicleS({'earnedXP': 0})
         self.__onIgrTypeChanged()
@@ -140,9 +142,9 @@ class ResearchPanel(ResearchPanelMeta):
 
     def __getVehCompareData(self, vehicle):
         state, tooltip = resolveStateTooltip(self.comparisonBasket, vehicle, enabledTooltip=VEH_COMPARE.VEHPREVIEW_COMPAREVEHICLEBTN_TOOLTIPS_ADDTOCOMPARE, fullTooltip=VEH_COMPARE.VEHPREVIEW_COMPAREVEHICLEBTN_TOOLTIPS_DISABLED)
-        return {'modeAvailable': self.comparisonBasket.isEnabled(), 
-           'btnEnabled': state, 
-           'btnTooltip': tooltip}
+        return {'modeAvailable': self.comparisonBasket.isEnabled(),
+         'btnEnabled': state,
+         'btnTooltip': tooltip}
 
     def __getVehPostProgressionData(self, vehicle):
         isHintEnabled = False
@@ -155,6 +157,6 @@ class ResearchPanel(ResearchPanelMeta):
         tutorialStorage = getTutorialGlobalStorage()
         if tutorialStorage is not None:
             tutorialStorage.setValue(GLOBAL_FLAG.HANGAR_VEH_POST_PROGRESSION_PURCHASABLE, isHintEnabled)
-        return {'showCounter': needToShowCounter(vehicle), 
-           'btnEnabled': isAvailable, 
-           'btnVisible': isVisible}
+        return {'showCounter': needToShowCounter(vehicle),
+         'btnEnabled': isAvailable,
+         'btnVisible': isVisible}

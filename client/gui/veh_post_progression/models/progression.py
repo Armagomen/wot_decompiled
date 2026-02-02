@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/veh_post_progression/models/progression.py
 import typing
 from collections import namedtuple
 from enum import Enum, unique
@@ -45,11 +47,11 @@ class AvailabilityCheckResult(namedtuple('AvailabilityCheckResult', 'result, rea
         return self.result
 
 
-_LOCK_TO_STATE = {LOCK_REASON.ON_ARENA: PostProgressionAvailability.VEH_IN_BATTLE, 
-   LOCK_REASON.IN_QUEUE: PostProgressionAvailability.VEH_IN_QUEUE, 
-   LOCK_REASON.PREBATTLE: PostProgressionAvailability.VEH_IN_FORMATION, 
-   LOCK_REASON.UNIT: PostProgressionAvailability.VEH_IN_FORMATION, 
-   LOCK_REASON.BREAKER: PostProgressionAvailability.VEH_IN_BREAKER}
+_LOCK_TO_STATE = {LOCK_REASON.ON_ARENA: PostProgressionAvailability.VEH_IN_BATTLE,
+ LOCK_REASON.IN_QUEUE: PostProgressionAvailability.VEH_IN_QUEUE,
+ LOCK_REASON.PREBATTLE: PostProgressionAvailability.VEH_IN_FORMATION,
+ LOCK_REASON.UNIT: PostProgressionAvailability.VEH_IN_FORMATION,
+ LOCK_REASON.BREAKER: PostProgressionAvailability.VEH_IN_BREAKER}
 
 class PostProgressionItem(object):
     __postProgressionCtrl = dependency.descriptor(IVehiclePostProgressionController)
@@ -63,7 +65,7 @@ class PostProgressionItem(object):
         self.__vehType = vehType
 
     def __repr__(self):
-        return ('PostProgressionItem <vehCD: {}, treeID: {}>').format(self.__vehType.compactDescr, self.__vehType.postProgressionTree)
+        return 'PostProgressionItem <vehCD: {}, treeID: {}>'.format(self.__vehType.compactDescr, self.__vehType.postProgressionTree)
 
     @property
     def itemTypeID(self):
@@ -132,12 +134,11 @@ class PostProgressionItem(object):
             if stepItem.mayPurchase(balance):
                 return stepItem
 
-        return
+        return None
 
     def getActiveModifications(self, vehicle, ignoreDisabled=False):
         if self.isExists() and (ignoreDisabled or not self.isDisabled(vehicle)):
-            return [ stepItem.action.getActiveID() for stepItem in self.iterUnorderedSteps() if stepItem.isReceived() and stepItem.action.getActiveID() is not None
-                   ]
+            return [ stepItem.action.getActiveID() for stepItem in self.iterUnorderedSteps() if stepItem.isReceived() and stepItem.action.getActiveID() is not None ]
         else:
             return []
 
@@ -158,9 +159,7 @@ class PostProgressionItem(object):
         return self.__tree
 
     def getState(self, implicitCopy=True):
-        if implicitCopy:
-            return VehicleState(self.__state.toRawData())
-        return self.__state
+        return VehicleState(self.__state.toRawData()) if implicitCopy else self.__state
 
     def getStep(self, stepID):
         return self.__stepsCache.get(stepID) or self.__buildPostProgressionStep(stepID)
@@ -176,14 +175,10 @@ class PostProgressionItem(object):
         return PostProgressionItem(self.getState(), self.__vehType)
 
     def iterOrderedSteps(self):
-        if self.isExists():
-            return OrderedStepsIterator(self)
-        return ()
+        return OrderedStepsIterator(self) if self.isExists() else ()
 
     def iterUnorderedSteps(self):
-        if self.isExists():
-            return UnorederdStepsIterator(self)
-        return ()
+        return UnorederdStepsIterator(self) if self.isExists() else ()
 
     def __buildPostProgressionStep(self, stepID):
         stepItem = self.__stepsCache[stepID] = PostProgressionStepItem(self.__tree.steps[stepID], self)

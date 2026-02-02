@@ -1,4 +1,7 @@
-import importlib, inspect
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/resource_helper.py
+import importlib
+import inspect
 from contextlib import contextmanager
 import ResMgr
 from collections import namedtuple
@@ -29,7 +32,7 @@ class ResourceError(SoftException):
         self.message = message
 
     def __str__(self):
-        return ('Error in {0:>s}. {1:>s}').format(self.ctx, self.message)
+        return 'Error in {0:>s}. {1:>s}'.format(self.ctx, self.message)
 
 
 class ResourceCtx(object):
@@ -59,14 +62,14 @@ class ResourceCtx(object):
     def __str__(self):
         path = self.__xpath[:]
         path.insert(0, self.__filePath)
-        return ('/').join(path)
+        return '/'.join(path)
 
 
 def getRoot(filePath, msg='', safe=False):
     section = ResMgr.openSection(filePath)
     ctx = ResourceCtx(filePath)
     if section is None and safe:
-        raise ResourceError(ctx, msg or ('File {0} is not found.').format(filePath))
+        raise ResourceError(ctx, msg or 'File {0} is not found.'.format(filePath))
     return (ctx, section)
 
 
@@ -83,8 +86,7 @@ def root_generator(filePath):
     else:
         try:
             try:
-                yield (
-                 ctx, section)
+                yield (ctx, section)
             except:
                 LOG_CURRENT_EXCEPTION()
 
@@ -95,7 +97,7 @@ def root_generator(filePath):
 def root_iterator(filePath, customReaders=None, nameFromSection=False):
     readers = customReaders or {}
     _ITEM_VALUE_READERS.update(readers)
-    with root_generator(filePath) as (ctx, section):
+    with root_generator(filePath) as ctx, section:
         for ctx, subSection in getIterator(ctx, section):
             sectionName = subSection.name if nameFromSection else 'setting'
             yield readItem(ctx, subSection, name=sectionName, nameFromSection=nameFromSection)
@@ -107,7 +109,7 @@ def root_iterator(filePath, customReaders=None, nameFromSection=False):
 def getSubSection(ctx, section, name, safe=False):
     subSection = section[name]
     if subSection is None and not safe:
-        raise ResourceError(ctx, ('Section {0} is not found.').format(name))
+        raise ResourceError(ctx, 'Section {0} is not found.'.format(name))
     return (ctx.next(name), subSection)
 
 
@@ -115,8 +117,7 @@ def getIterator(xmlCtx, section):
     if section is None:
         raise ResourceError(xmlCtx, 'Section is not found')
     for _, subSection in section.items():
-        yield (
-         xmlCtx.next(subSection), subSection)
+        yield (xmlCtx.next(subSection), subSection)
 
     return
 
@@ -127,16 +128,14 @@ def readItemAttr(xmlCtx, section, attr, default=None, keys=None):
     if attr not in keys:
         value = default
         if default is None:
-            raise ResourceError(xmlCtx, ('Attribute {0} is not found.').format(attr))
+            raise ResourceError(xmlCtx, 'Attribute {0} is not found.'.format(attr))
     else:
         value = section[attr].asString
     return value
 
 
 def readItemName(xmlCtx, section, keys=None, nameFromSection=False):
-    if nameFromSection:
-        return section.name
-    return readItemAttr(xmlCtx, section, 'name', default='', keys=keys)
+    return section.name if nameFromSection else readItemAttr(xmlCtx, section, 'name', default='', keys=keys)
 
 
 def _readItemType(xmlCtx, section, keys=None):
@@ -218,7 +217,7 @@ def readDict(xmlCtx, section, valueName='value', nameFromSection=False):
     for nextCtx, nextSection in getIterator(subCtx, subSection):
         item = readItem(nextCtx, nextSection)
         if not item.name:
-            raise ResourceError(nextCtx, ('{0}: name is required in each item').format(name))
+            raise ResourceError(nextCtx, '{0}: name is required in each item'.format(name))
         result[item.name] = item.value
 
     return ResourceItem(RESOURCE_ITEM_TYPE.DICT, name, result)
@@ -242,34 +241,34 @@ def readClassItem(xmlCtx, section, nameFromSection=False):
         value = section.asString
     parts = value.split('.')
     if len(parts) == 1:
-        raise ResourceError(xmlCtx, ('Class path {0} is invalid').format(value))
+        raise ResourceError(xmlCtx, 'Class path {0} is invalid'.format(value))
     try:
-        module = importlib.import_module(('.').join(parts[:-1]))
+        module = importlib.import_module('.'.join(parts[:-1]))
     except ImportError:
-        raise ResourceError(xmlCtx, ('Class path {0} is invalid').format(value))
+        raise ResourceError(xmlCtx, 'Class path {0} is invalid'.format(value))
 
-    clazz = getattr(module, parts[(-1)], None)
+    clazz = getattr(module, parts[-1], None)
     if clazz is None or not inspect.isclass(clazz):
-        raise ResourceError(xmlCtx, ('There is not path to class {0}').format(value))
+        raise ResourceError(xmlCtx, 'There is not path to class {0}'.format(value))
     return ResourceItem(RESOURCE_ITEM_TYPE.STRING, readItemName(xmlCtx, section, nameFromSection=nameFromSection), clazz)
 
 
-_ITEM_VALUE_READERS = {RESOURCE_ITEM_TYPE.BOOL: readBoolItem, 
-   RESOURCE_ITEM_TYPE.INTEGER: readIntItem, 
-   RESOURCE_ITEM_TYPE.FLOAT: readFloatItem, 
-   RESOURCE_ITEM_TYPE.STRING: readStringItem, 
-   RESOURCE_ITEM_TYPE.URL: readStringItem, 
-   RESOURCE_ITEM_TYPE.VECTOR2: readVector2Item, 
-   RESOURCE_ITEM_TYPE.VECTOR3: readVector3Item, 
-   RESOURCE_ITEM_TYPE.VECTOR4: readVector4Item, 
-   RESOURCE_ITEM_TYPE.LIST: readList, 
-   RESOURCE_ITEM_TYPE.DICT: readDict, 
-   RESOURCE_ITEM_TYPE.SEQ_PAIRS: readSeqPairs, 
-   RESOURCE_ITEM_TYPE.CLASS: readClassItem}
+_ITEM_VALUE_READERS = {RESOURCE_ITEM_TYPE.BOOL: readBoolItem,
+ RESOURCE_ITEM_TYPE.INTEGER: readIntItem,
+ RESOURCE_ITEM_TYPE.FLOAT: readFloatItem,
+ RESOURCE_ITEM_TYPE.STRING: readStringItem,
+ RESOURCE_ITEM_TYPE.URL: readStringItem,
+ RESOURCE_ITEM_TYPE.VECTOR2: readVector2Item,
+ RESOURCE_ITEM_TYPE.VECTOR3: readVector3Item,
+ RESOURCE_ITEM_TYPE.VECTOR4: readVector4Item,
+ RESOURCE_ITEM_TYPE.LIST: readList,
+ RESOURCE_ITEM_TYPE.DICT: readDict,
+ RESOURCE_ITEM_TYPE.SEQ_PAIRS: readSeqPairs,
+ RESOURCE_ITEM_TYPE.CLASS: readClassItem}
 
 def readItem(ctx, section, name='item', nameFromSection=False):
     if section.name != name:
-        raise ResourceError(ctx, ('Resource {0} is invalid').format(section.name))
+        raise ResourceError(ctx, 'Resource {0} is invalid'.format(section.name))
     keys = section.keys()
     itemType = _readItemType(ctx, section, keys=keys)
     name = readItemName(ctx, section, keys=keys, nameFromSection=nameFromSection)
@@ -277,5 +276,5 @@ def readItem(ctx, section, name='item', nameFromSection=False):
         reader = _ITEM_VALUE_READERS[itemType]
         item = reader(ctx, section, nameFromSection=nameFromSection)
     else:
-        raise ResourceError(ctx, ('"{0}: type {1} is invalid.').format(name, itemType))
+        raise ResourceError(ctx, '"{0}: type {1} is invalid.'.format(name, itemType))
     return item

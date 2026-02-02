@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/uilogging/veh_skill_tree/logger.py
 import typing
 from uilogging.base.logger import MetricsLogger
 from uilogging.veh_skill_tree.logging_constants import VehSkillTreeActions, VehSkillTreeItems, FEATURE_VEH_SKILL_TREE, VEH_SKILL_TREE_SCREEN

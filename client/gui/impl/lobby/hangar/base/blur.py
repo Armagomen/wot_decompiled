@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/hangar/base/blur.py
 from __future__ import absolute_import
 from gui.shared.view_helpers.blur_manager import ImmediateSceneBlurConfig
 from helpers import dependency
@@ -5,8 +7,7 @@ from skeletons.gui.game_control import IBlurController, IBlurEffect
 from skeletons.gui.shared.utils import IHangarSpace
 
 def createConfig(enabled=False, spaceID=0, settings=None, persistent=False):
-    return (
-     ImmediateSceneBlurConfig(spaceID=spaceID, settings=settings, enabled=enabled, persistent=persistent),)
+    return (ImmediateSceneBlurConfig(spaceID=spaceID, settings=settings, enabled=enabled, persistent=persistent),)
 
 
 class RandomHangarBlur(object):
@@ -15,8 +16,7 @@ class RandomHangarBlur(object):
 
     def __init__(self, settings=None, enabled=True, persistent=True):
         self.__settings = settings if settings is not None else self.__blurCtrl.getSettingsByAlias('maximum')
-        self.__blur = self.__blurCtrl.createBlur((
-         ImmediateSceneBlurConfig(spaceID=self.__hangarSpace.spaceID, settings=self.__settings, enabled=enabled, persistent=persistent),))
+        self.__blur = self.__blurCtrl.createBlur((ImmediateSceneBlurConfig(spaceID=self.__hangarSpace.spaceID, settings=self.__settings, enabled=enabled, persistent=persistent),))
         return
 
     def init(self):

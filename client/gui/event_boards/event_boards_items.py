@@ -1,4 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/event_boards/event_boards_items.py
 import itertools
+import logging
+import typing
 from collections import defaultdict
 import BigWorld
 from gui import GUI_NATIONS
@@ -11,6 +15,9 @@ from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.Vehicle import VEHICLE_TYPES_ORDER
 from helpers import time_utils
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
+if typing.TYPE_CHECKING:
+    from typing import Optional
+_logger = logging.getLogger(__name__)
 
 class CALCULATION_METHODS(CONST_CONTAINER):
     MAX = 'max'
@@ -107,17 +114,40 @@ class EventBoardsSettings(object):
 
 
 class EventsSettings(object):
-    EXPECTED_FIELDS = [
-     'battle_type', 'end_date', 'event_id', 'is_squad_allowed', 'leaderboard_view_size', 'limits',
-     'manual', 'method', 'name', 'objective_parameter', 'participants_freeze_deadline',
-     'prime_times', 'publish_date', 'rewarding_date', 'rewards_by_rank', 'start_date', 'type']
+    EXPECTED_FIELDS = ['battle_type',
+     'end_date',
+     'event_id',
+     'is_squad_allowed',
+     'leaderboard_view_size',
+     'limits',
+     'manual',
+     'method',
+     'name',
+     'objective_parameter',
+     'participants_freeze_deadline',
+     'prime_times',
+     'publish_date',
+     'rewarding_date',
+     'rewards_by_rank',
+     'start_date',
+     'type']
     EXPECTED_FIELDS_PRIME_TIMES = ['server', 'start_time', 'end_time']
-    EXPECTED_FIELDS_LIMITS = ['win_rate_min', 'win_rate_max', 'registration_date_max', 'is_registration_needed',
-     'battles_count_min', 'nations', 'vehicles', 'vehicles_levels', 'vehicles_classes']
+    EXPECTED_FIELDS_LIMITS = ['win_rate_min',
+     'win_rate_max',
+     'registration_date_max',
+     'is_registration_needed',
+     'battles_count_min',
+     'nations',
+     'vehicles',
+     'vehicles_levels',
+     'vehicles_classes']
     EXPECTED_FIELDS_REWARDS_CATEGORIES = ['leaderboard_id', 'categories']
     EXPECTED_FIELDS_REWARDS_CATEGORIES_CATEGORY = ['rank_min', 'rank_max', 'reward_category_number']
     EXPECTED_FIELDS_REWARDS_BY_RANK = ['leaderboard_id', 'reward_groups']
-    EXPECTED_FIELDS_REWARDS_BY_RANK_GROUP = ['reward_category_number', 'rank_min', 'rank_max', 'rewards']
+    EXPECTED_FIELDS_REWARDS_BY_RANK_GROUP = ['reward_category_number',
+     'rank_min',
+     'rank_max',
+     'rewards']
     EXPECTED_FIELDS_METHOD = ['name']
 
     def __init__(self):
@@ -161,14 +191,14 @@ class EventsSettings(object):
             if event.getEventID() == eventId:
                 return event
 
-        return
+        return None
 
     def getEventForVehicle(self, vehCD):
         for event in self.__events:
             if vehCD in event.getLimits().getVehiclesWhiteList():
                 return event
 
-        return
+        return None
 
     def hasActiveEvents(self):
         for event in self.__events:
@@ -220,15 +250,12 @@ class EventsSettings(object):
 
 
 class EventSettings(object):
-    __mapping = {EVENT_TYPE.VEHICLE: ('vehicles', 'vehicles', None), 
-       EVENT_TYPE.NATION: (
-                         'nations', 'nation', GUI_NATIONS), 
-       EVENT_TYPE.LEVEL: (
-                        'vehicles_levels', 'level', range(1, 11)), 
-       EVENT_TYPE.CLASS: (
-                        'vehicles_classes', 'class', VEHICLE_TYPES_ORDER), 
-       EVENT_TYPE.TEAMS: ('teams', 'team', None), 
-       EVENT_TYPE.ROLE: ('roles', 'role', None)}
+    __mapping = {EVENT_TYPE.VEHICLE: ('vehicles', 'vehicles', None),
+     EVENT_TYPE.NATION: ('nations', 'nation', GUI_NATIONS),
+     EVENT_TYPE.LEVEL: ('vehicles_levels', 'level', range(1, 11)),
+     EVENT_TYPE.CLASS: ('vehicles_classes', 'class', VEHICLE_TYPES_ORDER),
+     EVENT_TYPE.TEAMS: ('teams', 'team', None),
+     EVENT_TYPE.ROLE: ('roles', 'role', None)}
     _CUSTOM_UI_BATTLE_TYPES = []
     EVENT_DAYS_LEFT_TO_START = 5
     EVENT_FINISHED_DURATION = 5 * time_utils.ONE_DAY
@@ -367,9 +394,7 @@ class EventSettings(object):
             return event_boards_timer.getFormattedRemainingTime(self.__participantsFreezeDeadline)
         if dateType == EVENT_DATE_TYPE.END:
             return event_boards_timer.getFormattedRemainingTime(self.__endDate)
-        if dateType == EVENT_DATE_TYPE.REWARDING:
-            return event_boards_timer.getFormattedRemainingTime(self.__rewardingDate)
-        return event_boards_timer.getFormattedRemainingTime('')
+        return event_boards_timer.getFormattedRemainingTime(self.__rewardingDate) if dateType == EVENT_DATE_TYPE.REWARDING else event_boards_timer.getFormattedRemainingTime('')
 
     def isStarted(self):
         value, _ = event_boards_timer.getTimeStatus(self.__startDate)
@@ -434,10 +459,7 @@ class EventSettings(object):
         return self.__rewardsByRank
 
     def isAvailableServer(self, peripheryID):
-        if self.__primeTimes.isEmpty():
-            return True
-        else:
-            return findFirst(lambda pt: pt.isActive() and pt.getServer() == str(peripheryID), self.__primeTimes.getPrimeTimes(), None) is not None
+        return True if self.__primeTimes.isEmpty() else findFirst(lambda pt: pt.isActive() and pt.getServer() == str(peripheryID), self.__primeTimes.getPrimeTimes(), None) is not None
 
     def getAvailableServers(self):
         return [ pt for pt in self.__primeTimes.getPrimeTimes() if pt.isActive() ]
@@ -467,7 +489,7 @@ class EventSettings(object):
         if url not in self.__images:
             self.__requestImage(url)
             return default
-        return ('img://{}').format(self.__images[url])
+        return 'img://{}'.format(self.__images[url])
 
     def __prefetchImages(self, prefetchKeyArtBig):
         if prefetchKeyArtBig:
@@ -654,9 +676,7 @@ class Limits(object):
 
     def __doesVehicleExist(self, vehIntCD):
         itemTypeID, _, _ = parseIntCompactDescr(vehIntCD)
-        if itemTypeID == GUI_ITEM_TYPE.VEHICLE:
-            return True
-        return False
+        return True if itemTypeID == GUI_ITEM_TYPE.VEHICLE else False
 
 
 class RewardsByRank(object):
@@ -683,9 +703,9 @@ class RewardsByRank(object):
             return next(itertools.ifilter(lambda l: l.getLeaderboardID() is leaderboardID, self.__rewardsByRank))
         except StopIteration:
             LOG_ERROR('leaderboardID not found in data. leaderboardID=', leaderboardID)
-            return
+            return None
 
-        return
+        return None
 
 
 class RewardByRank(object):
@@ -753,8 +773,7 @@ class RewardGroups(object):
         return self.__rewardCategoryNumber
 
     def getRankMinMax(self):
-        return (
-         self.__rankMin, self.__rankMax)
+        return (self.__rankMin, self.__rankMax)
 
 
 class RewardGroup(object):
@@ -776,9 +795,12 @@ class RewardGroup(object):
 
 
 class PlayerEventsData(object):
-    EXPECTED_FIELDS = [
-     'all_battles_count', 'win_rate', 'events_list']
-    EXPECTED_FIELDS_EVENTS_LIST = ['event_id', 'player_state', 'can_join', 'player_state_reasons', 'players_in_event']
+    EXPECTED_FIELDS = ['all_battles_count', 'win_rate', 'events_list']
+    EXPECTED_FIELDS_EVENTS_LIST = ['event_id',
+     'player_state',
+     'can_join',
+     'player_state_reasons',
+     'players_in_event']
 
     def __init__(self):
         self.__winRate = None
@@ -823,7 +845,7 @@ class PlayerEventsData(object):
                 if eventData and eventData.getEventID() == eventId:
                     return eventData
 
-        return
+        return None
 
     def getEventsList(self):
         return self.__eventsList
@@ -876,13 +898,14 @@ class EventsList(object):
 
 
 class MyEventsTop(object):
-    EXPECTED_FIELDS = [
-     'data', 'event_id']
+    EXPECTED_FIELDS = ['data', 'event_id']
     EXPECTED_FIELDS_DATA = ['meta', 'data']
-    EXPECTED_FIELDS_ITEM_DATA = ['leaderboard_id', 'my_position', 'battles_count', 'my_value',
+    EXPECTED_FIELDS_ITEM_DATA = ['leaderboard_id',
+     'my_position',
+     'battles_count',
+     'my_value',
      'last_in_leaderboard_value']
-    EXPECTED_FIELDS_ITEM_META = ['recalculation_interval', 'last_leaderboard_recalculation_ts',
-     'next_leaderboard_recalculation_ts']
+    EXPECTED_FIELDS_ITEM_META = ['recalculation_interval', 'last_leaderboard_recalculation_ts', 'next_leaderboard_recalculation_ts']
 
     def __init__(self):
         self.__myEventsTopList = []
@@ -1005,9 +1028,16 @@ class TopItem(object):
 
 
 class MyInfoInLeaderBoard(object):
-    EXPECTED_FIELDS = [
-     'rank', 'p1', 'p2', 'p3', 'page_number', 'is_inside_viewsize', 'last_in_leaderboard_value',
-     'battles_count', 'clan_tag', 'clan_color']
+    EXPECTED_FIELDS = ['rank',
+     'p1',
+     'p2',
+     'p3',
+     'page_number',
+     'is_inside_viewsize',
+     'last_in_leaderboard_value',
+     'battles_count',
+     'clan_tag',
+     'clan_color']
 
     def __init__(self):
         self.__eventID = None
@@ -1080,33 +1110,66 @@ class MyInfoInLeaderBoard(object):
         return self.__clanColor
 
     def __isDataStructureValid(self, data):
-        if data and isDataSchemaValid(self.EXPECTED_FIELDS, data):
-            return True
-        return False
+        return True if data and isDataSchemaValid(self.EXPECTED_FIELDS, data) else False
 
 
 class LeaderBoard(object):
-    EXPECTED_FIELDS = [
-     'meta', 'data']
-    EXPECTED_FIELDS_META = ['page_number', 'pages_amount', 'rewards', 'recalculation_interval',
-     'last_leaderboard_recalculation_ts', 'next_leaderboard_recalculation_ts']
-    EXPECTED_FIELDS_DATA = ['spa_id', 'name', 'clan_tag', 'clan_color', 'rank', 'p1', 'p2', 'p3', 'info']
+    EXPECTED_FIELDS = ['meta', 'data']
+    EXPECTED_FIELDS_META = ['page_number',
+     'pages_amount',
+     'rewards',
+     'recalculation_interval',
+     'last_leaderboard_recalculation_ts',
+     'next_leaderboard_recalculation_ts']
+    EXPECTED_FIELDS_DATA = ['spa_id',
+     'name',
+     'clan_tag',
+     'clan_color',
+     'rank',
+     'p1',
+     'p2',
+     'p3',
+     'info']
     EXPECTED_FIELDS_META_REWARDS = ['reward_category_number', 'page_number']
-    CALCULATION_METHODS_EXPECTED_FIELDS = {CALCULATION_METHODS.MAX: [
-                               'battle_ts', 'vehicle_cd', 'battle_result', 'is_in_squad', 'exp', 'damage',
-                               'assisted_damage', 'frags', 'blocked_damage'], 
-       CALCULATION_METHODS.SUMN: [
-                                'battle_ts', 'vehicle_cd', 'battle_result', 'is_in_squad', 'exp', 'damage',
-                                'assisted_damage', 'frags'], 
-       CALCULATION_METHODS.SUMSEQN: [
-                                   'battle_ts', 'vehicle_cd', 'battle_result', 'is_in_squad', 'exp', 'damage',
-                                   'assisted_damage', 'frags'], 
-       CALCULATION_METHODS.SUMALL: [
-                                  'avg_exp', 'avg_damage_dealt', 'avg_damage_assisted', 'win_rate'], 
-       CALCULATION_METHODS.SUMMSEQN: [
-                                    'battle_ts', 'vehicle_cd', 'battle_result', 'is_in_squad', 'exp', 'damage',
-                                    'assisted_damage', 'frags', 'used_in_calculations'], 
-       CALCULATION_METHODS.BATTLECOUNTSTAT3: []}
+    CALCULATION_METHODS_EXPECTED_FIELDS = {CALCULATION_METHODS.MAX: ['battle_ts',
+                               'vehicle_cd',
+                               'battle_result',
+                               'is_in_squad',
+                               'exp',
+                               'damage',
+                               'assisted_damage',
+                               'frags',
+                               'blocked_damage'],
+     CALCULATION_METHODS.SUMN: ['battle_ts',
+                                'vehicle_cd',
+                                'battle_result',
+                                'is_in_squad',
+                                'exp',
+                                'damage',
+                                'assisted_damage',
+                                'frags'],
+     CALCULATION_METHODS.SUMSEQN: ['battle_ts',
+                                   'vehicle_cd',
+                                   'battle_result',
+                                   'is_in_squad',
+                                   'exp',
+                                   'damage',
+                                   'assisted_damage',
+                                   'frags'],
+     CALCULATION_METHODS.SUMALL: ['avg_exp',
+                                  'avg_damage_dealt',
+                                  'avg_damage_assisted',
+                                  'win_rate'],
+     CALCULATION_METHODS.SUMMSEQN: ['battle_ts',
+                                    'vehicle_cd',
+                                    'battle_result',
+                                    'is_in_squad',
+                                    'exp',
+                                    'damage',
+                                    'assisted_damage',
+                                    'frags',
+                                    'used_in_calculations'],
+     CALCULATION_METHODS.BATTLECOUNTSTAT3: []}
 
     def __init__(self):
         self.__infoByType = {}
@@ -1197,8 +1260,7 @@ class LeaderBoard(object):
             if not isDataSchemaValid(self.EXPECTED_FIELDS_META_REWARDS, rewardItem):
                 return False
 
-        singleMethods = (
-         CALCULATION_METHODS.MAX, CALCULATION_METHODS.SUMALL)
+        singleMethods = (CALCULATION_METHODS.MAX, CALCULATION_METHODS.SUMALL)
         if infoType in singleMethods:
             for dataItem in data:
                 if not isDataSchemaValid(self.EXPECTED_FIELDS_DATA, dataItem):
@@ -1215,6 +1277,24 @@ class LeaderBoard(object):
                         return False
 
         return True
+
+
+class IPlayerProgression(object):
+
+    @classmethod
+    def fromRawData(cls, rawData, eventID, leaderboardID):
+        if not cls._isDataStructureValid(rawData):
+            _logger.warning('PlayerProgression error: data structure invalid')
+            return None
+        else:
+            return cls(rawData, eventID, leaderboardID)
+
+    def __init__(self, rawData, eventID, leaderboardID):
+        pass
+
+    @classmethod
+    def _isDataStructureValid(cls, data):
+        raise NotImplementedError
 
 
 class InfoItem(object):
@@ -1408,11 +1488,11 @@ class InfoSumMSeqN(InfoItem):
         return self.__usedInCalculations
 
 
-CALCULATION_METHODS_TYPE = {CALCULATION_METHODS.MAX: InfoMax, 
-   CALCULATION_METHODS.SUMN: InfoSumM, 
-   CALCULATION_METHODS.SUMSEQN: InfoSumSeqN, 
-   CALCULATION_METHODS.SUMALL: InfoSumAll, 
-   CALCULATION_METHODS.SUMMSEQN: InfoSumMSeqN}
+CALCULATION_METHODS_TYPE = {CALCULATION_METHODS.MAX: InfoMax,
+ CALCULATION_METHODS.SUMN: InfoSumM,
+ CALCULATION_METHODS.SUMSEQN: InfoSumSeqN,
+ CALCULATION_METHODS.SUMALL: InfoSumAll,
+ CALCULATION_METHODS.SUMMSEQN: InfoSumMSeqN}
 
 class ExcelItem(object):
 
@@ -1468,8 +1548,7 @@ class ExcelItem(object):
         return self.__info
 
     def __setInfoData(self, methodType, data):
-        singleMethods = (
-         CALCULATION_METHODS.MAX, CALCULATION_METHODS.SUMALL)
+        singleMethods = (CALCULATION_METHODS.MAX, CALCULATION_METHODS.SUMALL)
         if methodType in singleMethods:
             self.__info = CALCULATION_METHODS_TYPE[methodType](methodType, data)
         else:
@@ -1497,8 +1576,7 @@ class RewardItem(object):
 
 
 class HangarFlagData(object):
-    EXPECTED_FIELDS = [
-     'meta', 'data']
+    EXPECTED_FIELDS = ['meta', 'data']
     EXPECTED_FIELDS_META = ['is_special_account']
     EXPECTED_FIELDS_DATA = ['event_id', 'player_state']
 
@@ -1530,24 +1608,15 @@ class HangarFlagData(object):
 
     def isRegistered(self, eventID):
         playerEventState = self.__hangarFlags.get(eventID, None)
-        if playerEventState is not None:
-            return playerEventState == EVENT_STATE.JOINED
-        else:
-            return False
+        return playerEventState == EVENT_STATE.JOINED if playerEventState is not None else False
 
     def canJoin(self, eventID):
         playerEventState = self.__hangarFlags.get(eventID, None)
-        if playerEventState is not None:
-            return playerEventState == EVENT_STATE.UNDEFINED
-        else:
-            return False
+        return playerEventState == EVENT_STATE.UNDEFINED if playerEventState is not None else False
 
     def wasCanceled(self, eventID):
         playerEventState = self.__hangarFlags.get(eventID, None)
-        if playerEventState is not None:
-            return playerEventState == EVENT_STATE.CANCELED
-        else:
-            return False
+        return playerEventState == EVENT_STATE.CANCELED if playerEventState is not None else False
 
     def __isDataStructureValid(self, rawData):
         if rawData:
@@ -1566,8 +1635,9 @@ class HangarFlagData(object):
 def isDataSchemaValid(expectedFields, data):
     if expectedFields is None or data is None:
         return False
-    for field in expectedFields:
-        if field not in data:
-            return False
+    else:
+        for field in expectedFields:
+            if field not in data:
+                return False
 
-    return True
+        return True

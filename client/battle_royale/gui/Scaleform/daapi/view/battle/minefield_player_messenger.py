@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/battle/minefield_player_messenger.py
 from battle_royale.gui.battle_control.controllers.progression_ctrl import IProgressionListener
 from Event import EventsSubscriber
 from gui.battle_control.view_components import IViewComponentsCtrlListener

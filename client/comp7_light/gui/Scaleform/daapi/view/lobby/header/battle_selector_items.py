@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_light/scripts/client/comp7_light/gui/Scaleform/daapi/view/lobby/header/battle_selector_items.py
 from __future__ import absolute_import
 from comp7_light_constants import PREBATTLE_TYPE
 from comp7_light.gui.comp7_light_constants import PREBATTLE_ACTION_NAME, SELECTOR_BATTLE_TYPES

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/pub/tooltip_window.py
 import typing
 from frameworks.wulf import WindowFlags, View, ViewSettings, PositionAnchor
 from gui.impl.gen import R
@@ -62,7 +64,10 @@ class SimpleTooltipContent(View):
     def __init__(self, contentID, header='', body='', note='', alert=''):
         settings = ViewSettings(contentID)
         settings.model = SimpleTooltipContentModel()
-        settings.args = (header, body, note, alert)
+        settings.args = (header,
+         body,
+         note,
+         alert)
         super(SimpleTooltipContent, self).__init__(settings)
 
     @property
@@ -70,7 +75,7 @@ class SimpleTooltipContent(View):
         return super(SimpleTooltipContent, self).getViewModel()
 
     def _onLoading(self, header, body, note, alert):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setHeader(header)
             tx.setBody(body)
             tx.setNote(note)
@@ -129,7 +134,7 @@ class AdvancedAnimatedTooltipContent(View):
 
     def _onLoading(self, header, body, animation):
         super(AdvancedAnimatedTooltipContent, self)._initialize()
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setBody(body)
             tx.setHeader(header)
             tx.setAnimation(animation)

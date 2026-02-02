@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_results/random/random_battle_info_model.py
 from gui.impl.gen.view_models.views.lobby.battle_results.battle_info_model import BattleInfoModel
 
 class RandomBattleInfoModel(BattleInfoModel):

@@ -1,4 +1,7 @@
-import typing, nations
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/blueprints/__init__.py
+import typing
+import nations
 from constants import IS_CLIENT, MIN_VEHICLE_LEVEL, MAX_VEHICLE_LEVEL
 from debug_utils import LOG_CURRENT_EXCEPTION
 from soft_exception import SoftException
@@ -15,10 +18,10 @@ def wipe(blueprints_cfg, pdata, leaveGold):
 
 
 def makeDefaults():
-    return {'isEnabled': False, 
-       'useBlueprintsForUnlock': False, 
-       'allowBlueprintsConversion': False, 
-       'levels': {}}
+    return {'isEnabled': False,
+     'useBlueprintsForUnlock': False,
+     'allowBlueprintsConversion': False,
+     'levels': {}}
 
 
 def readConfig(verbose, **overrides):
@@ -32,8 +35,7 @@ def readConfig(verbose, **overrides):
             continue
         if k in ('isEnabled', 'useBlueprintsForUnlock', 'allowBlueprintsConversion'):
             result[k] &= overrides[k]
-        else:
-            result[k] = overrides[k]
+        result[k] = overrides[k]
 
     return result
 
@@ -52,17 +54,19 @@ def _readBlueprints(reader, subsectionName):
             _, lvl = str(lname).split('_', 1)
             parts = lsection.readInt('parts', 0)
             progress = lsection.readFloat('progress', 0)
-            requires = tuple(int(i) for i in lsection.readString('requires').split()) or (0,
-                                                                                          0)
-            decays = tuple(float(i) for i in lsection.readString('decays').split()) or (0,
-                                                                                        0)
+            requires = tuple((int(i) for i in lsection.readString('requires').split())) or (0, 0)
+            decays = tuple((float(i) for i in lsection.readString('decays').split())) or (0, 0)
             allyConversionCoef = _readConversionCoefs(lsection, 'allyConversionCoefs')
-            levels[int(lvl)] = (parts, progress, requires, decays, allyConversionCoef)
+            levels[int(lvl)] = (parts,
+             progress,
+             requires,
+             decays,
+             allyConversionCoef)
 
-        return {'isEnabled': isEnabled, 
-           'useBlueprintsForUnlock': useBlueprintsForUnlock, 
-           'allowBlueprintsConversion': allowBlueprintsConversion, 
-           'levels': levels}
+        return {'isEnabled': isEnabled,
+         'useBlueprintsForUnlock': useBlueprintsForUnlock,
+         'allowBlueprintsConversion': allowBlueprintsConversion,
+         'levels': levels}
 
 
 def _readConversionCoefs(section, subsectionName):

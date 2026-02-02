@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/battle/frontline_consumables_panel.py
 from functools import partial
 import BigWorld
 from ReservesEvents import randomReservesEvents
@@ -70,12 +72,10 @@ class FrontlineBattleConsumablesPanel(FrontlineBattleConsumablesPanelMeta, Consu
                 return index + self._ORDERS_START_IDX - 1
             if intCD in self._cds:
                 return self._cds.index(intCD)
-        return
+        return None
 
     def _getEquipmentKeyHandler(self, intCD, idx=0):
-        if self._ORDERS_START_IDX <= idx <= self._ORDERS_END_IDX:
-            return partial(self._handleEquipmentPressedStack, intCD, idx)
-        return super(FrontlineBattleConsumablesPanel, self)._getEquipmentKeyHandler(intCD, idx)
+        return partial(self._handleEquipmentPressedStack, intCD, idx) if self._ORDERS_START_IDX <= idx <= self._ORDERS_END_IDX else super(FrontlineBattleConsumablesPanel, self)._getEquipmentKeyHandler(intCD, idx)
 
     def _setEquipmentKeyHandler(self, item, bwKey, idx):
         if item.getQuantity() > 0 and bwKey not in self._keys:
@@ -90,10 +90,7 @@ class FrontlineBattleConsumablesPanel(FrontlineBattleConsumablesPanelMeta, Consu
         self._handleEquipmentPressed(intCD, idx=serverIdx)
 
     def _getToolTipEquipmentSlot(self, item, idx=None):
-        if self.isRandomBattleReserves and not self._isEquipmentSlot(self.__currentSlotIdx if idx is None else idx):
-            return TOOLTIPS_CONSTANTS.FRONTLINE_RANDOM_RESERVE
-        else:
-            return super(FrontlineBattleConsumablesPanel, self)._getToolTipEquipmentSlot(item)
+        return TOOLTIPS_CONSTANTS.FRONTLINE_RANDOM_RESERVE if self.isRandomBattleReserves and not self._isEquipmentSlot(self.__currentSlotIdx if idx is None else idx) else super(FrontlineBattleConsumablesPanel, self)._getToolTipEquipmentSlot(item)
 
     def _getSlotIndex(self, index):
         return self._ORDERS_START_IDX + index
@@ -149,8 +146,7 @@ class FrontlineBattleConsumablesPanel(FrontlineBattleConsumablesPanelMeta, Consu
             if idx < self._ORDERS_START_IDX:
                 return
             if idx not in self.__battleReserveSlots:
-                self.__battleReserveSlots[idx] = (
-                 intCD, item.getQuantity())
+                self.__battleReserveSlots[idx] = (intCD, item.getQuantity())
                 self.__addEquipmentLevelToSlot(idx, item)
                 if not self.isRandomBattleReserves:
                     self.__addLockedInformationToEpicEquipment(idx)
@@ -159,9 +155,7 @@ class FrontlineBattleConsumablesPanel(FrontlineBattleConsumablesPanelMeta, Consu
             return
 
     def _getEquipmentIcon(self, idx, item, icon):
-        if idx in self.__battleReserveSlots:
-            return backport.image(self._R_EPIC_EQUIPMENT_ICON.dyn(icon)())
-        return super(FrontlineBattleConsumablesPanel, self)._getEquipmentIcon(idx, item, icon)
+        return backport.image(self._R_EPIC_EQUIPMENT_ICON.dyn(icon)()) if idx in self.__battleReserveSlots else super(FrontlineBattleConsumablesPanel, self)._getEquipmentIcon(idx, item, icon)
 
     def _resetEquipmentSlot(self, idx, intCD, item):
         super(FrontlineBattleConsumablesPanel, self)._resetEquipmentSlot(idx, intCD, item)
@@ -220,7 +214,6 @@ class FrontlineBattleConsumablesPanel(FrontlineBattleConsumablesPanelMeta, Consu
             self.as_setGlowS(idx, self.__glowUpdateInfo[idx])
 
         self.__glowUpdateInfo.clear()
-        return -1
 
     def _onEquipmentReset(self, oldIntCD, intCD, item):
         if item and item.index > 0:
@@ -239,7 +232,7 @@ class FrontlineBattleConsumablesPanel(FrontlineBattleConsumablesPanelMeta, Consu
         else:
             vehClass = getVehicleClassFromVehicleType(vehicle.typeDescriptor.type)
             if self.isRandomBattleReserves:
-                slotEventsConfig = list([idx] for idx in range(self._ORDERS_END_IDX - self._ORDERS_START_IDX + 1))
+                slotEventsConfig = list(([idx] for idx in range(self._ORDERS_END_IDX - self._ORDERS_START_IDX + 1)))
             else:
                 slotEventsConfig = arena.settings.get('epic_config', {}).get('epicMetaGame', {}).get('inBattleReservesByRank').get('slotActions', {}).get(vehClass, {})
             if not slotEventsConfig:
@@ -258,7 +251,7 @@ class FrontlineBattleConsumablesPanel(FrontlineBattleConsumablesPanelMeta, Consu
         itemName = item.getDescriptor().name
         if 'level' not in itemName:
             return
-        levelStr = itemName.partition('level')[(-1)]
+        levelStr = itemName.partition('level')[-1]
         if not levelStr.isdigit():
             return
         self.as_updateLevelInformationS(idx, int(levelStr))

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/VehicleMarkersManagerMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class VehicleMarkersManagerMeta(BaseDAAPIComponent):
@@ -6,25 +8,19 @@ class VehicleMarkersManagerMeta(BaseDAAPIComponent):
         self._printOverrideError('onMarkerBeingHovered')
 
     def as_setMarkerDurationS(self, duration):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setMarkerDuration(duration)
+        return self.flashObject.as_setMarkerDuration(duration) if self._isDAAPIInited() else None
 
     def as_setMarkerSettingsS(self, settings):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setMarkerSettings(settings)
+        return self.flashObject.as_setMarkerSettings(settings) if self._isDAAPIInited() else None
 
     def as_setShowExInfoFlagS(self, flag):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setShowExInfoFlag(flag)
+        return self.flashObject.as_setShowExInfoFlag(flag) if self._isDAAPIInited() else None
 
     def as_updateMarkersSettingsS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateMarkersSettings()
+        return self.flashObject.as_updateMarkersSettings() if self._isDAAPIInited() else None
 
     def as_setColorBlindS(self, isColorBlind):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setColorBlind(isColorBlind)
+        return self.flashObject.as_setColorBlind(isColorBlind) if self._isDAAPIInited() else None
 
     def as_setColorSchemesS(self, defaultSchemes, colorBlindSchemes):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setColorSchemes(defaultSchemes, colorBlindSchemes)
+        return self.flashObject.as_setColorSchemes(defaultSchemes, colorBlindSchemes) if self._isDAAPIInited() else None

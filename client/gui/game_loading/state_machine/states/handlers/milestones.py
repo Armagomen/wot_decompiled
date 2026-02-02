@@ -1,4 +1,8 @@
-import time, typing, Event
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_loading/state_machine/states/handlers/milestones.py
+import time
+import typing
+import Event
 from PlayerEvents import g_playerEvents
 from constants import IS_DEVELOPMENT
 from gui.game_loading import loggers
@@ -9,8 +13,7 @@ if typing.TYPE_CHECKING:
 _logger = loggers.getStatesLogger()
 
 class MilestonesHandler(object):
-    __slots__ = ('onMilestoneReached', 'onMilestoneTypeChanged', '_milestonesSettings',
-                 '_milestones', '_milestone', '_time')
+    __slots__ = ('onMilestoneReached', 'onMilestoneTypeChanged', '_milestonesSettings', '_milestones', '_milestone', '_time')
 
     def __init__(self, milestonesSettings):
         self._milestone = None
@@ -56,10 +59,10 @@ class MilestonesHandler(object):
         if newMilestone is None:
             _logger.debug('[%s] Unknown milestone: %s. Available: %s', self, milestoneName, self._milestones)
             return
+        elif self._milestone is not None and self._milestone.percent >= newMilestone.percent:
+            _logger.debug('[%s] Try to apply previous milestone: %s %s', self, self._milestone, newMilestone)
+            return
         else:
-            if self._milestone is not None and self._milestone.percent >= newMilestone.percent:
-                _logger.debug('[%s] Try to apply previous milestone: %s %s', self, self._milestone, newMilestone)
-                return
             self._milestone = newMilestone
             self.onMilestoneReached(newMilestone)
             if IS_DEVELOPMENT:
@@ -72,7 +75,7 @@ class MilestonesHandler(object):
         self._time = current
 
     def __repr__(self):
-        return ('{}').format(self.__class__.__name__)
+        return '{}'.format(self.__class__.__name__)
 
 
 class StatusTextMilestonesHandler(MilestonesHandler):

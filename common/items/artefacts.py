@@ -1,8 +1,11 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/items/artefacts.py
 import os
 from re import findall
 from enum import Enum, unique
 from typing import TYPE_CHECKING, NamedTuple, Set, Dict, Optional, Any, Tuple, List
-import items, nations
+import items
+import nations
 from ArenaType import readVisualScriptSection
 from ResMgr import DataSection
 from constants import IS_CLIENT, IS_CELLAPP, IS_WEB, VEHICLE_TTC_ASPECTS, ATTACK_REASON, ATTACK_REASON_INDICES, SERVER_TICK_LENGTH, SkillProcessorArgs, GroupSkillProcessorArgs, TTC_TOOLTIP_SECTIONS
@@ -67,7 +70,7 @@ class CommonXmlSectionReader(object):
                 continue
             reader = self.__readersMap.get(key, None)
             if reader is None:
-                raise SoftException(("Cannot read '{}' xml tag for key '{}'. Reader for this tag wasn't found. Please make sure CommonXmlSectionReader was configured properly").format(tag_name, key))
+                raise SoftException("Cannot read '{}' xml tag for key '{}'. Reader for this tag wasn't found. Please make sure CommonXmlSectionReader was configured properly".format(tag_name, key))
             result[key] = reader(xmlCtx, subsection, tag_name)
 
         return result
@@ -99,10 +102,7 @@ class VehicleFactorsXmlReader(CommonXmlSectionReader):
 
 
 class Artefact(BasicItem):
-    __slots__ = ('icon', 'removable', 'price', 'showInShop', '_vehWeightFraction',
-                 '_weight', '_exportParams', '__archetype', '__vehicleFilter', '__artefactFilter',
-                 '__tooltipSection', 'isImproved', 'kpi', 'iconName', '_groupName',
-                 '__weakref__')
+    __slots__ = ('icon', 'removable', 'price', 'showInShop', '_vehWeightFraction', '_weight', '_exportParams', '__archetype', '__vehicleFilter', '__artefactFilter', '__tooltipSection', 'isImproved', 'kpi', 'iconName', '_groupName', '__weakref__')
 
     def __init__(self, typeID, itemID, itemName, compactDescr):
         super(Artefact, self).__init__(typeID, itemID, itemName, compactDescr)
@@ -125,8 +125,7 @@ class Artefact(BasicItem):
 
     def init(self, xmlCtx, section):
         self._readBasicConfig(xmlCtx, section)
-        xmlCtx = (
-         xmlCtx, 'script')
+        xmlCtx = (xmlCtx, 'script')
         section = section['script']
         self._readWeight(xmlCtx, section)
         self._readConfig(xmlCtx, section)
@@ -172,43 +171,30 @@ class Artefact(BasicItem):
             self._weight = 0.0
 
     def weightOnVehicle(self, vehicleDescr):
-        return (
-         self._vehWeightFraction, self._weight)
+        return (self._vehWeightFraction, self._weight)
 
     def checkCompatibilityWithVehicle(self, vehicleDescr):
-        if self.__vehicleFilter is None:
-            return (True, None)
-        else:
-            return self.__vehicleFilter.checkCompatibility(vehicleDescr)
+        return (True, None) if self.__vehicleFilter is None else self.__vehicleFilter.checkCompatibility(vehicleDescr)
 
     def checkCompatibilityWithOther(self, other):
         if self is other:
             return False
         else:
             filter = self.__artefactFilter
-            if filter is None:
-                return True
-            return not filter.inInstalled(other.tags)
+            return True if filter is None else not filter.inInstalled(other.tags)
 
     def checkCompatibilityWithActiveOther(self, other):
         if self is other:
             return False
         else:
             filter = self.__artefactFilter
-            if filter is None:
-                return True
-            return not filter.inActive(other.tags)
+            return True if filter is None else not filter.inActive(other.tags)
 
     def compatibleNations(self):
-        if self.__vehicleFilter:
-            return self.__vehicleFilter.compatibleNations()
-        return {nations.INDICES[n] for n in nations.AVAILABLE_NAMES}
+        return self.__vehicleFilter.compatibleNations() if self.__vehicleFilter else {nations.INDICES[n] for n in nations.AVAILABLE_NAMES}
 
     def checkCompatibilityWithComponents(self, vehicleDescr):
-        if self.__vehicleFilter is None:
-            return True
-        else:
-            return self.__vehicleFilter.checkCompatibilityWithComponents(vehicleDescr)
+        return True if self.__vehicleFilter is None else self.__vehicleFilter.checkCompatibilityWithComponents(vehicleDescr)
 
     def _readConfig(self, xmlCtx, scriptSection):
         pass
@@ -272,8 +258,7 @@ class Artefact(BasicItem):
 
 
 class OptionalDevice(Artefact):
-    __slots__ = ('categories', '_overridableFactors', '_tier', '_tierlessName', '_isModernized',
-                 '_isUpgradable', '_isUpgraded')
+    __slots__ = ('categories', '_overridableFactors', '_tier', '_tierlessName', '_isModernized', '_isUpgradable', '_isUpgraded')
 
     def __init__(self):
         super(OptionalDevice, self).__init__(items.ITEM_TYPES.optionalDevice, 0, '', 0)
@@ -291,10 +276,10 @@ class OptionalDevice(Artefact):
         self._readCategories(xmlCtx, section)
         self._readTier(xmlCtx, section)
         self._readSpecFactorsFromConfig(xmlCtx, section['script'])
-        self._isModernized = any(l.startswith('modernized') for l in self.tags)
+        self._isModernized = any((l.startswith('modernized') for l in self.tags))
 
     def extraName(self):
-        return
+        return None
 
     @property
     def tier(self):
@@ -344,10 +329,7 @@ class OptionalDevice(Artefact):
 
     def defineActiveLevel(self, vehicleDescr):
         supplySlot = vehicleDescr.getOptDevSupplySlot(self.compactDescr)
-        if supplySlot is None:
-            return
-        else:
-            return SupplySlotFilter.defineActiveValuesLevel(supplySlot.categories, self.categories)
+        return None if supplySlot is None else SupplySlotFilter.defineActiveValuesLevel(supplySlot.categories, self.categories)
 
     def defineActiveValueForSpecFactor(self, vehicleDescr, factorName, level=None):
         if level is None:
@@ -356,9 +338,7 @@ class OptionalDevice(Artefact):
             return
         else:
             factor = self._defineFactorFor(vehicleDescr, factorName)
-            if factor is None:
-                return
-            return factor.getActiveValue(level)
+            return None if factor is None else factor.getActiveValue(level)
 
     def _defineFactorFor(self, vehicleDescr, factorName):
         vehOverridedFactor = vehicleDescr.type.optDevsOverrides.get(self.tierlessName, {}).get(factorName, None)
@@ -384,7 +364,7 @@ class OptionalDevice(Artefact):
             self.categories = set(_xml.readTupleOfStrings(xmlCtx, section, 'categories'))
             for category in self.categories:
                 if category not in SlotCategories.ALL:
-                    raise SoftException(("Unknown category '{}'").format(category))
+                    raise SoftException("Unknown category '{}'".format(category))
 
     def _readTier(self, xmlCtx, section):
         tierParts = self.name.split('_tier')
@@ -394,7 +374,7 @@ class OptionalDevice(Artefact):
 
 
 class StaticOptionalDevice(OptionalDevice):
-    __slots__ = ('_factors', )
+    __slots__ = ('_factors',)
 
     def __init__(self):
         super(StaticOptionalDevice, self).__init__()
@@ -427,12 +407,12 @@ class StaticOptionalDevice(OptionalDevice):
     def updateVehicleDescrAttrs(self, vehicleDescr):
         level = self.defineActiveLevel(vehicleDescr)
         if level is None:
-            LOG_DEBUG_DEV(('updateVehicleDescrAttrs: optional device ({}) is not installed').format(self))
+            LOG_DEBUG_DEV('updateVehicleDescrAttrs: optional device ({}) is not installed'.format(self))
             return
         else:
             for splitted, factor in self._factors.iteritems():
                 modulePath = splitted[:-1]
-                shortName = splitted[(-1)]
+                shortName = splitted[-1]
                 attrDict = self.defineAttrsDict(vehicleDescr, modulePath)
                 factor.applyLevelToAttrsDict(level, attrDict, shortName)
 
@@ -448,11 +428,11 @@ class StaticOptionalDevice(OptionalDevice):
             return factor.getActiveValue(level)
 
     def factorsContainCrewLevelIncrease(self):
-        return any('crewLevelIncrease' in splitted for splitted, _ in self._factors.iteritems())
+        return any(('crewLevelIncrease' in splitted for splitted, _ in self._factors.iteritems()))
 
 
 class StillVehicleOptionalDevice(StaticOptionalDevice):
-    __slots__ = ('activateWhenStillSec', )
+    __slots__ = ('activateWhenStillSec',)
 
     def _readConfig(self, xmlCtx, scriptSection):
         self.activateWhenStillSec = _xml.readNonNegativeFloat(xmlCtx, scriptSection, 'activateWhenStillSec')
@@ -479,11 +459,11 @@ class StillVehicleOptionalDevice(StaticOptionalDevice):
 
 
 class Stereoscope(StillVehicleOptionalDevice):
-    __slots__ = ('circularVisionRadiusFactor', )
+    __slots__ = ('circularVisionRadiusFactor',)
     CIRCULAR_VISION_RADIUS = 'circularVisionRadius'
 
     def extraName(self):
-        return 'stereoscope'
+        pass
 
     def _checkAspect(self, aspect):
         return aspect in (VEHICLE_TTC_ASPECTS.DEFAULT, VEHICLE_TTC_ASPECTS.WHEN_STILL)
@@ -500,7 +480,7 @@ class Stereoscope(StillVehicleOptionalDevice):
         return res
 
     def updateFactorsDictWithTransformed(self, factorsDict, transformedFactors):
-        transformedCVRFactor, = transformedFactors
+        transformedCVRFactor = transformedFactors
         AttrsOperation.updateDictWithAttribute(factorsDict, self.CIRCULAR_VISION_RADIUS, AttrsOperation.MUL, transformedCVRFactor)
 
 
@@ -509,11 +489,11 @@ class CamouflageNet(StillVehicleOptionalDevice):
     invisibilityAttr = 'invisibility'
 
     def extraName(self):
-        return 'camouflageNet'
+        pass
 
     @property
     def competesBy(self):
-        return 'invisibilityAdditiveTerm'
+        pass
 
     def transformFactors(self, level, vehicleDescr):
         cnActiveValue = self.defineActiveValueForSpecFactor(vehicleDescr, self.invisibilityBonusName, level)
@@ -523,7 +503,7 @@ class CamouflageNet(StillVehicleOptionalDevice):
         return res
 
     def updateFactorsDictWithTransformed(self, factorsDict, transformedFactors):
-        activeValue, = transformedFactors
+        activeValue = transformedFactors
         factorsDict[self.invisibilityAttr][0] += activeValue
 
     def _checkAspect(self, aspect):
@@ -544,7 +524,7 @@ class ImprovedConfiguration(StaticOptionalDevice):
     __slots__ = ('engineReduceFineFactor', 'ammoBayReduceFineFactor')
 
     def extraName(self):
-        return 'improvedConfiguration'
+        pass
 
     def _readConfig(self, xmlCtx, scriptSection):
         super(ImprovedConfiguration, self)._readConfig(xmlCtx, scriptSection)
@@ -553,10 +533,7 @@ class ImprovedConfiguration(StaticOptionalDevice):
 
 
 class Equipment(Artefact):
-    __slots__ = ('equipmentType', 'reuseCount', 'cooldownSeconds', 'soundNotification',
-                 'stunResistanceEffect', 'stunResistanceDuration', 'repeatedStunDurationFactor',
-                 'clientSelector', 'ownerPrefab', 'usagePrefab', 'usagePrefabEnemy',
-                 'playerMessagesKey', 'messagePostfix')
+    __slots__ = ('equipmentType', 'reuseCount', 'cooldownSeconds', 'soundNotification', 'stunResistanceEffect', 'stunResistanceDuration', 'repeatedStunDurationFactor', 'clientSelector', 'ownerPrefab', 'usagePrefab', 'usagePrefabEnemy', 'playerMessagesKey', 'messagePostfix')
 
     def __init__(self):
         super(Equipment, self).__init__(items.ITEM_TYPES.equipment, 0, '', 0)
@@ -630,15 +607,15 @@ class Grousers(StaticOptionalDevice):
         super(Grousers, self).updateVehicleDescrAttrs(vehicleDescr)
         level = self.defineActiveLevel(vehicleDescr)
         if level is None:
-            LOG_DEBUG_DEV(('updateVehicleDescrAttrs: optional device ({}) is not installed').format(self))
+            LOG_DEBUG_DEV('updateVehicleDescrAttrs: optional device ({}) is not installed'.format(self))
             return
         else:
             rotationFactorActiveValue = self.rotationFactor.getActiveValue(level)
             rollingFrictionFactorActiveValue = self.rollingFrictionFactor.getActiveValue(level)
             r = vehicleDescr.physics['terrainResistance']
-            vehicleDescr.physics['terrainResistance'] = tuple(ri * rotationFactorActiveValue for ri in r)
+            vehicleDescr.physics['terrainResistance'] = tuple((ri * rotationFactorActiveValue for ri in r))
             rff = vehicleDescr.physics['rollingFrictionFactors']
-            vehicleDescr.physics['rollingFrictionFactors'] = list(rffi * rollingFrictionFactorActiveValue for rffi in rff)
+            vehicleDescr.physics['rollingFrictionFactors'] = list((rffi * rollingFrictionFactorActiveValue for rffi in rff))
             return
 
     def _readConfig(self, xmlCtx, section):
@@ -648,21 +625,20 @@ class Grousers(StaticOptionalDevice):
 
 
 class RotationMechanisms(StaticOptionalDevice):
-    __slots__ = ('trackMoveSpeedFactor', 'wheelMoveSpeedFactor', 'trackRotateSpeedFactor',
-                 'wheelRotateSpeedFactor', 'wheelCenterRotationFwdSpeed')
+    __slots__ = ('trackMoveSpeedFactor', 'wheelMoveSpeedFactor', 'trackRotateSpeedFactor', 'wheelRotateSpeedFactor', 'wheelCenterRotationFwdSpeed')
 
     def updateVehicleDescrAttrs(self, vehicleDescr):
         super(RotationMechanisms, self).updateVehicleDescrAttrs(vehicleDescr)
         level = self.defineActiveLevel(vehicleDescr)
         if level is None:
-            LOG_DEBUG_DEV(('updateVehicleDescrAttrs: optional device ({}) is not installed').format(self))
+            LOG_DEBUG_DEV('updateVehicleDescrAttrs: optional device ({}) is not installed'.format(self))
             return
         else:
             isWheeledVehicle = vehicleDescr.type.isWheeledVehicle
             miscAttrs = vehicleDescr.miscAttrs
-            onMoveFactor = (isWheeledVehicle or self).trackMoveSpeedFactor if 1 else self.wheelMoveSpeedFactor
+            onMoveFactor = self.trackMoveSpeedFactor if not isWheeledVehicle else self.wheelMoveSpeedFactor
             miscAttrs['onMoveRotationSpeedFactor'] *= onMoveFactor.getActiveValue(level)
-            onRotationFactor = (isWheeledVehicle or self).trackRotateSpeedFactor if 1 else self.wheelRotateSpeedFactor
+            onRotationFactor = self.trackRotateSpeedFactor if not isWheeledVehicle else self.wheelRotateSpeedFactor
             miscAttrs['onStillRotationSpeedFactor'] *= onRotationFactor.getActiveValue(level)
             miscAttrs['centerRotationFwdSpeedFactor'] *= self.wheelCenterRotationFwdSpeed.getActiveValue(level)
             return
@@ -719,7 +695,7 @@ class Fuel(Equipment):
 
 
 class Stimulator(Equipment):
-    __slots__ = ('crewLevelIncrease', )
+    __slots__ = ('crewLevelIncrease',)
 
     def __init__(self):
         super(Stimulator, self).__init__()
@@ -730,7 +706,7 @@ class Stimulator(Equipment):
 
 
 class Repairkit(Equipment):
-    __slots__ = ('bonusValue', )
+    __slots__ = ('bonusValue',)
 
     def __init__(self):
         super(Repairkit, self).__init__()
@@ -741,7 +717,7 @@ class Repairkit(Equipment):
 
 
 class CountableConsumableConfigReader(object):
-    _CONSUMABLE_SLOTS = ('consumeAmmo', )
+    _CONSUMABLE_SLOTS = ('consumeAmmo',)
 
     def initCountableConsumableSlots(self):
         self.consumeAmmo = False
@@ -770,8 +746,7 @@ class RemovedRpmLimiter(Equipment):
 
 
 class Afterburning(Equipment):
-    __slots__ = ('deploySeconds', 'consumeSeconds', 'rechargeSeconds', 'enginePowerFactor',
-                 'maxSpeedFactor')
+    __slots__ = ('deploySeconds', 'consumeSeconds', 'rechargeSeconds', 'enginePowerFactor', 'maxSpeedFactor')
 
     def __init__(self):
         super(Afterburning, self).__init__()
@@ -811,9 +786,7 @@ class RageEquipmentConfigReader(object):
 
 
 class SharedCooldownConsumableConfigReader(object):
-    _SHARED_COOLDOWN_CONSUMABLE_SLOTS = ('prepareTime', 'cooldownTime', 'cooldownFactors',
-                                         'sharedCooldownTime', 'consumeAmmo', 'disableAllyDamage',
-                                         'setUnavailableAfterAmmoLeft')
+    _SHARED_COOLDOWN_CONSUMABLE_SLOTS = ('prepareTime', 'cooldownTime', 'cooldownFactors', 'sharedCooldownTime', 'consumeAmmo', 'disableAllyDamage', 'setUnavailableAfterAmmoLeft')
 
     def initSharedCooldownConsumableSlots(self):
         self.cooldownTime = component_constants.ZERO_FLOAT
@@ -855,8 +828,7 @@ class CooldownConsumableConfigReader(object):
 
 
 class TooltipConfigReader(object):
-    _SHARED_TOOLTIPS_CONSUMABLE_SLOTS = ('shortDescription', 'longDescription', 'longFilterAlert',
-                                         'tooltipIdentifiers')
+    _SHARED_TOOLTIPS_CONSUMABLE_SLOTS = ('shortDescription', 'longDescription', 'longFilterAlert', 'tooltipIdentifiers')
 
     def initTooltipInformation(self):
         self.shortDescription = component_constants.EMPTY_STRING
@@ -896,8 +868,7 @@ class BaseMarkerConfigReader(object):
 
 
 class AreaMarkerConfigReader(BaseMarkerConfigReader):
-    _MARKER_SLOTS_ = BaseMarkerConfigReader._MARKER_SLOTS_ + ('areaRadius', 'areaLength',
-                                                              'areaWidth')
+    _MARKER_SLOTS_ = BaseMarkerConfigReader._MARKER_SLOTS_ + ('areaRadius', 'areaLength', 'areaWidth')
 
     def initMarkerInformation(self):
         super(AreaMarkerConfigReader, self).initMarkerInformation()
@@ -912,7 +883,7 @@ class AreaMarkerConfigReader(BaseMarkerConfigReader):
 
 
 class EffectsConfigReader(object):
-    _EFFECTS_SLOTS_ = ('effects', )
+    _EFFECTS_SLOTS_ = ('effects',)
 
     def initEffectsInformation(self):
         self.effects = None
@@ -928,16 +899,16 @@ class EffectsConfigReader(object):
         else:
             sOrderTypeName = section.readString('sequencesOrderType', OrderTypes.RANDOM.value)
             if sOrderTypeName not in OrderTypes.values():
-                raise SoftException(('Wrong sequencesOrderType. <{}> not in {}.').format(sOrderTypeName, OrderTypes.values()))
-            effect = {'shotEffects': section.readString('shotEffects').split(), 
-               'sequences': self._readSequencesConfig(section['sequences']), 
-               'sequencesOrderType': OrderTypes(sOrderTypeName), 
-               'groundRaycast': section.readBool('groundRaycast'), 
-               'offsetDeviation': section.readFloat('offsetDeviation'), 
-               'repeatCount': section.readInt('repeatCount', 1), 
-               'repeatDelay': section.readFloat('repeatDelay'), 
-               'areaColor': _xml.readIntOrNone(xmlCtx, section, 'areaColor'), 
-               'repeatDelayDeviationPercent': 0}
+                raise SoftException('Wrong sequencesOrderType. <{}> not in {}.'.format(sOrderTypeName, OrderTypes.values()))
+            effect = {'shotEffects': section.readString('shotEffects').split(),
+             'sequences': self._readSequencesConfig(section['sequences']),
+             'sequencesOrderType': OrderTypes(sOrderTypeName),
+             'groundRaycast': section.readBool('groundRaycast'),
+             'offsetDeviation': section.readFloat('offsetDeviation'),
+             'repeatCount': section.readInt('repeatCount', 1),
+             'repeatDelay': section.readFloat('repeatDelay'),
+             'areaColor': _xml.readIntOrNone(xmlCtx, section, 'areaColor'),
+             'repeatDelayDeviationPercent': 0}
             if section.has_key('repeatDelayDeviationPercent'):
                 effect['repeatDelayDeviationPercent'] = _xml.readInt(xmlCtx, section, 'repeatDelayDeviationPercent', minVal=0, maxVal=100)
             return effect
@@ -955,12 +926,7 @@ class EffectsConfigReader(object):
 
 
 class ArtilleryConfigReader(AreaMarkerConfigReader):
-    _ARTILLERY_SLOTS = AreaMarkerConfigReader._MARKER_SLOTS_ + ('delay', 'duration',
-                                                                'shotsNumber', 'areaRadius',
-                                                                'shellCompactDescr',
-                                                                'piercingPower',
-                                                                'noOwner', 'shotSoundPreDelay',
-                                                                'wwsoundShot', 'wwsoundEquipmentUsed')
+    _ARTILLERY_SLOTS = AreaMarkerConfigReader._MARKER_SLOTS_ + ('delay', 'duration', 'shotsNumber', 'areaRadius', 'shellCompactDescr', 'piercingPower', 'noOwner', 'shotSoundPreDelay', 'wwsoundShot', 'wwsoundEquipmentUsed')
 
     def initArtillerySlots(self):
         super(ArtilleryConfigReader, self).__init__()
@@ -989,8 +955,7 @@ class ArtilleryConfigReader(AreaMarkerConfigReader):
 
 
 class PlaneConfigReader(object):
-    _PLANE_SLOTS = ('delay', 'speed', 'modelName', 'soundEvent', 'heights', 'areaVisual',
-                    'areaColor', 'areaMarker')
+    _PLANE_SLOTS = ('delay', 'speed', 'modelName', 'soundEvent', 'heights', 'areaVisual', 'areaColor', 'areaMarker')
 
     def initPlaneSlots(self):
         self.delay = component_constants.ZERO_FLOAT
@@ -1016,13 +981,7 @@ class PlaneConfigReader(object):
 
 
 class BomberConfigReader(PlaneConfigReader):
-    _BOMBER_SLOTS = PlaneConfigReader._PLANE_SLOTS + ('areaLength', 'areaWidth', 'antepositions',
-                                                      'lateropositions', 'bombingMask',
-                                                      'waveFraction', 'bombsNumber',
-                                                      'shellCompactDescr', 'tracerKind',
-                                                      'piercingPower', 'gravity',
-                                                      'noOwner', 'wwsoundEquipmentUsed',
-                                                      'shootingDistance')
+    _BOMBER_SLOTS = PlaneConfigReader._PLANE_SLOTS + ('areaLength', 'areaWidth', 'antepositions', 'lateropositions', 'bombingMask', 'waveFraction', 'bombsNumber', 'shellCompactDescr', 'tracerKind', 'piercingPower', 'gravity', 'noOwner', 'wwsoundEquipmentUsed', 'shootingDistance')
 
     def initBomberSlots(self):
         self.initPlaneSlots()
@@ -1048,7 +1007,7 @@ class BomberConfigReader(PlaneConfigReader):
         self.areaWidth = _xml.readPositiveFloat(xmlCtx, section, 'areaWidth')
         self.antepositions = _xml.readTupleOfFloats(xmlCtx, section, 'antepositions')
         self.lateropositions = _xml.readTupleOfFloats(xmlCtx, section, 'lateropositions')
-        self.bombingMask = tuple(bool(v) for v in _xml.readTupleOfInts(xmlCtx, section, 'bombingMask'))
+        self.bombingMask = tuple((bool(v) for v in _xml.readTupleOfInts(xmlCtx, section, 'bombingMask')))
         if not len(self.antepositions) == len(self.lateropositions) == len(self.bombingMask):
             _xml.raiseWrongSection(xmlCtx, 'bombers number mismatch')
         self.waveFraction = _xml.readPositiveFloat(xmlCtx, section, 'waveFraction')
@@ -1063,14 +1022,7 @@ class BomberConfigReader(PlaneConfigReader):
 
 
 class SmokeConfigReader(object):
-    _SMOKE_SLOTS = ('minDelay', 'deltaDelayRange', 'smokeModelName', 'startRadius',
-                    'expandedRadius', 'startHeight', 'expandedHeight', 'heightUpFraction',
-                    'postEffectTeams', 'expansionDuration', 'dispersionRadius', 'totalDuration',
-                    'smokeOpacity', 'visionRadiusFactor', 'dotParams', 'areaLength',
-                    'areaWidth', 'projectilesNumber', 'shellCompactDescr', 'areaVisual',
-                    'areaMarker', 'noOwner', 'smokeEffectNameAlly', 'smokeEffectNameEnemy',
-                    'shotSoundPreDelay', 'wwsoundShot', 'orthogonalDir', 'randomizeDuration',
-                    'vignetteColor', 'vignetteIntensity')
+    _SMOKE_SLOTS = ('minDelay', 'deltaDelayRange', 'smokeModelName', 'startRadius', 'expandedRadius', 'startHeight', 'expandedHeight', 'heightUpFraction', 'postEffectTeams', 'expansionDuration', 'dispersionRadius', 'totalDuration', 'smokeOpacity', 'visionRadiusFactor', 'dotParams', 'areaLength', 'areaWidth', 'projectilesNumber', 'shellCompactDescr', 'areaVisual', 'areaMarker', 'noOwner', 'smokeEffectNameAlly', 'smokeEffectNameEnemy', 'shotSoundPreDelay', 'wwsoundShot', 'orthogonalDir', 'randomizeDuration', 'vignetteColor', 'vignetteIntensity')
 
     def initSmokeSlots(self):
         self.minDelay = component_constants.ZERO_FLOAT
@@ -1151,9 +1103,7 @@ class SmokeConfigReader(object):
 
     def _readAttrFactorMods(self, xmlCtx, section):
         for factor, subSection in section.items():
-            self.attrFactorMods[factor] = (
-             _xml.readFloat(xmlCtx, subSection, 'value'),
-             _xml.readBool(xmlCtx, subSection, 'ignoreAllies', True))
+            self.attrFactorMods[factor] = (_xml.readFloat(xmlCtx, subSection, 'value'), _xml.readBool(xmlCtx, subSection, 'ignoreAllies', True))
 
     def _readPostEffectTeams(self, _, section):
         if section.has_key('enemy'):
@@ -1163,10 +1113,7 @@ class SmokeConfigReader(object):
 
 
 class ReconConfigReader(PlaneConfigReader):
-    _RECON_SLOTS = PlaneConfigReader._PLANE_SLOTS + ('areaRadius', 'entitiesToSearch',
-                                                     'scanPointsAmount', 'antepositions',
-                                                     'lateropositions', 'areaWidth',
-                                                     'areaLength', 'wwsoundEquipmentUsed')
+    _RECON_SLOTS = PlaneConfigReader._PLANE_SLOTS + ('areaRadius', 'entitiesToSearch', 'scanPointsAmount', 'antepositions', 'lateropositions', 'areaWidth', 'areaLength', 'wwsoundEquipmentUsed')
 
     def initReconSlots(self):
         self.initPlaneSlots()
@@ -1197,7 +1144,8 @@ class ReconConfigReader(PlaneConfigReader):
             entityClassName = _xml.readString(xmlCtx, entity, 'name')
             radius = _xml.readPositiveFloat(xmlCtx, entity, 'radius')
             spottingDuration = _xml.readPositiveFloat(xmlCtx, entity, 'spottingDuration')
-            entitiesToSearch[entityClassName] = {'radius': radius, 'spottingDuration': spottingDuration}
+            entitiesToSearch[entityClassName] = {'radius': radius,
+             'spottingDuration': spottingDuration}
 
         return entitiesToSearch
 
@@ -1220,7 +1168,7 @@ class BuffConfigReader(object):
 
 
 class InspireConfigReader(BuffConfigReader):
-    _INSPIRE_SLOTS = BuffConfigReader._BUFF_SLOTS + ('increaseFactors', )
+    _INSPIRE_SLOTS = BuffConfigReader._BUFF_SLOTS + ('increaseFactors',)
 
     def initInspireSlots(self):
         super(InspireConfigReader, self).initBuffSlots()
@@ -1232,9 +1180,7 @@ class InspireConfigReader(BuffConfigReader):
 
 
 class HealPointConfigReader(BuffConfigReader):
-    _HEAL_POINT_SLOTS = BuffConfigReader._BUFF_SLOTS + ('healPerTick', 'expireByDamageReceived',
-                                                        'healGroup', 'tickInterval',
-                                                        'height', 'depth')
+    _HEAL_POINT_SLOTS = BuffConfigReader._BUFF_SLOTS + ('healPerTick', 'expireByDamageReceived', 'healGroup', 'tickInterval', 'height', 'depth')
 
     def initHealPointSlots(self):
         super(HealPointConfigReader, self).initBuffSlots()
@@ -1266,7 +1212,7 @@ class ArenaAimLimits(object):
         return
 
     def __repr__(self):
-        return ('ArenaAimLimits (Radius:{}, Visual:{}, Color:{}, )').format(self.insetRadius, self.areaSwitch, self.areaColor)
+        return 'ArenaAimLimits (Radius:{}, Visual:{}, Color:{}, )'.format(self.insetRadius, self.areaSwitch, self.areaColor)
 
     def _readConfig(self, xmlCtx, section):
         self.insetRadius = _xml.readPositiveFloat(xmlCtx, section, 'insetRadius', 0)
@@ -1294,21 +1240,22 @@ class Marker(object):
 
     def readConfig(self, xmlCtx, section):
         if not self._sectionName or not section.has_key(self._sectionName):
-            return
-        markerSection = section[self._sectionName]
-        self.name = _xml.readStringOrNone(xmlCtx, markerSection, 'name')
-        self.textColor = _xml.readStringOrNone(xmlCtx, markerSection, 'textColor')
-        self._validate()
-        return
+            return None
+        else:
+            markerSection = section[self._sectionName]
+            self.name = _xml.readStringOrNone(xmlCtx, markerSection, 'name')
+            self.textColor = _xml.readStringOrNone(xmlCtx, markerSection, 'textColor')
+            self._validate()
+            return None
 
     def _validate(self):
         if IS_CLIENT:
             from gui.Scaleform.daapi.view.battle.shared.minimap.settings import EQ_MARKER_TO_SYMBOL
             from gui.Scaleform.genConsts.BATTLE_MARKERS_CONSTS import BATTLE_MARKERS_CONSTS
             if self.name is not None and EQ_MARKER_TO_SYMBOL.get(self.name) is None:
-                raise SoftException(('Unknown minimap symbol for marker: {}. Supported: {}.').format(self.name, list(EQ_MARKER_TO_SYMBOL)))
+                raise SoftException('Unknown minimap symbol for marker: {}. Supported: {}.'.format(self.name, list(EQ_MARKER_TO_SYMBOL)))
             if self.textColor is not None and self.textColor not in BATTLE_MARKERS_CONSTS.COLORS:
-                raise SoftException(('Unknown text colors for marker: {}. Supported: {}.').format(self.name, BATTLE_MARKERS_CONSTS.COLORS))
+                raise SoftException('Unknown text colors for marker: {}. Supported: {}.'.format(self.name, BATTLE_MARKERS_CONSTS.COLORS))
         return
 
 
@@ -1323,17 +1270,18 @@ class Markers(object):
 
     def readConfig(self, xmlCtx, section):
         if not self._sectionName or not section.has_key(self._sectionName):
-            return
-        markersSection = section[self._sectionName]
-        self.ally = Marker('ally')
-        self.enemy = Marker('enemy')
-        self.ally.readConfig(xmlCtx, markersSection)
-        self.enemy.readConfig(xmlCtx, markersSection)
-        return
+            return None
+        else:
+            markersSection = section[self._sectionName]
+            self.ally = Marker('ally')
+            self.enemy = Marker('enemy')
+            self.ally.readConfig(xmlCtx, markersSection)
+            self.enemy.readConfig(xmlCtx, markersSection)
+            return None
 
 
 class MarkersConfigReader(object):
-    _MARKERS_CONFIG_SLOTS = ('markers', )
+    _MARKERS_CONFIG_SLOTS = ('markers',)
 
     def initMarkers(self):
         self.markers = None
@@ -1345,8 +1293,7 @@ class MarkersConfigReader(object):
 
 
 class ArcadeEquipmentConfigReader(object):
-    _SHARED_ARCADE_SLOTS = ('minApplyRadius', 'maxApplyRadius', 'applyRadiusVisible',
-                            'cameraPivotPosMin', 'cameraPivotPosMax', 'arenaAimLimits')
+    _SHARED_ARCADE_SLOTS = ('minApplyRadius', 'maxApplyRadius', 'applyRadiusVisible', 'cameraPivotPosMin', 'cameraPivotPosMax', 'arenaAimLimits')
 
     def initArcadeInformation(self):
         self.minApplyRadius = component_constants.ZERO_FLOAT
@@ -1362,7 +1309,7 @@ class ArcadeEquipmentConfigReader(object):
         self.maxApplyRadius = _xml.readNonNegativeFloat(xmlCtx, section, 'maxApplyRadius', component_constants.ZERO_FLOAT)
         self.applyRadiusVisible = _xml.readBool(xmlCtx, section, 'applyRadiusVisible', False)
         if (self.minApplyRadius or self.maxApplyRadius) and self.minApplyRadius >= self.maxApplyRadius:
-            raise SoftException(('Aiming radius limits: min[{}] >= max[{}]').format(self.minApplyRadius, self.maxApplyRadius))
+            raise SoftException('Aiming radius limits: min[{}] >= max[{}]'.format(self.minApplyRadius, self.maxApplyRadius))
         self.arenaAimLimits = ArenaAimLimits.readConfig(xmlCtx, section, 'arenaAimLimits')
         if IS_CLIENT:
             self.cameraPivotPosMin = _xml.readVector3OrNone(xmlCtx, section, 'cameraPivotPosMin')
@@ -1370,7 +1317,7 @@ class ArcadeEquipmentConfigReader(object):
 
 
 class DynamicEquipment(Equipment):
-    __slots__ = ('_config', )
+    __slots__ = ('_config',)
 
     def __init__(self):
         super(DynamicEquipment, self).__init__()
@@ -1381,15 +1328,14 @@ class DynamicEquipment(Equipment):
         for subsection in section.values():
             if subsection.name == 'level':
                 self._config.append(self._readLevelConfig(xmlCtx, subsection))
-            else:
-                _xml.raiseWrongXml(xmlCtx, subsection.name, 'should be <params>')
+            _xml.raiseWrongXml(xmlCtx, subsection.name, 'should be <params>')
 
     def getLevelIDForVehicle(self, vehicleDescr):
         for levelID, (levelFilter, _) in enumerate(self._config):
             if levelFilter.checkCompatibility(vehicleDescr):
                 return levelID
 
-        return
+        return None
 
     def doesDependOnOptionalDevice(self):
         return True
@@ -1399,10 +1345,10 @@ class DynamicEquipment(Equipment):
             if levelFilter.checkCompatibilityWithDevice(optionalDevice):
                 return levelParams
 
-        return
+        return None
 
     def configContainCrewLevelIncrease(self):
-        return any(levelParams is not None and 'crewLevelIncrease' in levelParams for _, levelParams in self._config)
+        return any((levelParams is not None and 'crewLevelIncrease' in levelParams for _, levelParams in self._config))
 
     def updateVehicleAttrFactorsForAspect(self, vehicleDescr, factors, _, *args, **kwargs):
         levelID = self.getLevelIDForVehicle(vehicleDescr)
@@ -1483,7 +1429,7 @@ class SkillEquipment(Equipment):
 
 
 class FactorSkillBattleBooster(SkillEquipment):
-    __slots__ = ('efficiencyFactor', )
+    __slots__ = ('efficiencyFactor',)
 
     def __init__(self):
         super(FactorSkillBattleBooster, self).__init__()
@@ -1504,7 +1450,7 @@ class FactorSkillBattleBooster(SkillEquipment):
 
 
 class SixthSenseBattleBooster(SkillEquipment):
-    __slots__ = ('delay', )
+    __slots__ = ('delay',)
 
     def __init__(self):
         super(SixthSenseBattleBooster, self).__init__()
@@ -1525,7 +1471,7 @@ class SixthSenseBattleBooster(SkillEquipment):
 
 
 class PedantBattleBooster(SkillEquipment):
-    __slots__ = ('ammoBayHealthFactor', )
+    __slots__ = ('ammoBayHealthFactor',)
 
     def __init__(self):
         super(PedantBattleBooster, self).__init__()
@@ -1573,10 +1519,9 @@ class _OptionalDeviceFilter(object):
         for subsection in section['tags'].values():
             if subsection.name == 'required':
                 self.__requiredTags.update(_readTags((xmlCtx, subsection.name), subsection, '', 'equipment'))
-            elif subsection.name == 'incompatible':
+            if subsection.name == 'incompatible':
                 self.__incompatibleTags.update(_readTags((xmlCtx, subsection.name), subsection, '', 'equipment'))
-            else:
-                _xml.raiseWrongXml(xmlCtx, subsection.name, 'should be <required> or/and <incompatible>')
+            _xml.raiseWrongXml(xmlCtx, subsection.name, 'should be <required> or/and <incompatible>')
 
     def checkCompatibility(self, vehicleDescr):
         for device in vehicleDescr.optionalDevices:
@@ -1590,9 +1535,7 @@ class _OptionalDeviceFilter(object):
 
     def checkCompatibilityWithDevice(self, optionalDevice):
         tags = optionalDevice.tags
-        if self.__requiredTags.issubset(tags) and len(self.__incompatibleTags.intersection(tags)) == 0:
-            return True
-        return False
+        return True if self.__requiredTags.issubset(tags) and len(self.__incompatibleTags.intersection(tags)) == 0 else False
 
 
 class RageArtillery(Equipment, RageEquipmentConfigReader, ArtilleryConfigReader):
@@ -1708,11 +1651,7 @@ class PassiveConsumable(Equipment, TooltipConfigReader):
 
 
 class PassiveEngineering(Equipment, TooltipConfigReader):
-    __slots__ = TooltipConfigReader._SHARED_TOOLTIPS_CONSUMABLE_SLOTS + ('captureStopping',
-                                                                         'captureBlockBonusTime',
-                                                                         'captureSpeedFactor',
-                                                                         'resupplyCooldownFactor',
-                                                                         'resupplyShellsFactor')
+    __slots__ = TooltipConfigReader._SHARED_TOOLTIPS_CONSUMABLE_SLOTS + ('captureStopping', 'captureBlockBonusTime', 'captureSpeedFactor', 'resupplyCooldownFactor', 'resupplyShellsFactor')
 
     def __init__(self):
         super(PassiveEngineering, self).__init__()
@@ -1749,7 +1688,7 @@ class EpicSmoke(ConsumableSmoke):
 
 
 class EpicInspire(ConsumableInspire):
-    __slots__ = ('selfIncreaseFactors', )
+    __slots__ = ('selfIncreaseFactors',)
 
     def __init__(self):
         super(EpicInspire, self).__init__()
@@ -1769,11 +1708,7 @@ class FortConsumableInspire(ConsumableInspire):
 
 
 class AreaOfEffectEquipment(Equipment, TooltipConfigReader, SharedCooldownConsumableConfigReader, ArcadeEquipmentConfigReader, EffectsConfigReader, MarkersConfigReader):
-    __slots__ = ('delay', 'duration', 'lifetime', 'shotsNumber', 'areaRadius', 'areaLength',
-                 'areaWidth', 'areaVisual', 'areaColor', 'areaColorBlind', 'areaShow',
-                 'noOwner', 'attackerType', 'areaVisibleToEnemies', 'shotSoundPreDelay',
-                 'wwsoundShot', 'wwsoundEquipmentUsed', 'shotEffect', 'actionsConfig',
-                 'explodeDestructible', 'areaUsedPrefab', 'areaAccurateCollision') + TooltipConfigReader._SHARED_TOOLTIPS_CONSUMABLE_SLOTS + SharedCooldownConsumableConfigReader._SHARED_COOLDOWN_CONSUMABLE_SLOTS + ArcadeEquipmentConfigReader._SHARED_ARCADE_SLOTS + EffectsConfigReader._EFFECTS_SLOTS_ + MarkersConfigReader._MARKERS_CONFIG_SLOTS
+    __slots__ = ('delay', 'duration', 'lifetime', 'shotsNumber', 'areaRadius', 'areaLength', 'areaWidth', 'areaVisual', 'areaColor', 'areaColorBlind', 'areaShow', 'noOwner', 'attackerType', 'areaVisibleToEnemies', 'shotSoundPreDelay', 'wwsoundShot', 'wwsoundEquipmentUsed', 'shotEffect', 'actionsConfig', 'explodeDestructible', 'areaUsedPrefab', 'areaAccurateCollision') + TooltipConfigReader._SHARED_TOOLTIPS_CONSUMABLE_SLOTS + SharedCooldownConsumableConfigReader._SHARED_COOLDOWN_CONSUMABLE_SLOTS + ArcadeEquipmentConfigReader._SHARED_ARCADE_SLOTS + EffectsConfigReader._EFFECTS_SLOTS_ + MarkersConfigReader._MARKERS_CONFIG_SLOTS
 
     def __init__(self):
         super(AreaOfEffectEquipment, self).__init__()
@@ -1821,10 +1756,10 @@ class AreaOfEffectEquipment(Equipment, TooltipConfigReader, SharedCooldownConsum
         else:
             actionType = section.readString('type')
             actionClass = importClass(actionType, 'actions.vehicle')
-            return {'type': actionType, 
-               'applyTo': section.readString('applyTo', ''), 
-               'applyToShotIDs': tuple(map(int, section.readString('applyToShotIDs').split())), 
-               'args': actionClass.parseXML(section['args'])}
+            return {'type': actionType,
+             'applyTo': section.readString('applyTo', ''),
+             'applyToShotIDs': tuple(map(int, section.readString('applyToShotIDs').split())),
+             'args': actionClass.parseXML(section['args'])}
 
 
 class AttackBomberEquipment(AreaOfEffectEquipment):
@@ -1851,9 +1786,7 @@ class AttackArtilleryFortEquipment(AreaOfEffectEquipment):
         if section.readString('type') != 'DamageVehicle':
             return 0
         args = section['args']
-        if args.has_key('damage'):
-            return args.readInt('damage')
-        return 0
+        return args.readInt('damage') if args.has_key('damage') else 0
 
 
 UpgradeInfo = NamedTuple('UpgradeInfo', [('upgradedCompDescr', int)])
@@ -1975,8 +1908,7 @@ class UpgradedLowNoiseTracks(LowNoiseTracks, UpgradedItem):
 
 
 class Bomber(Equipment, TooltipConfigReader, CountableConsumableConfigReader, BomberConfigReader):
-    __slots__ = TooltipConfigReader._SHARED_TOOLTIPS_CONSUMABLE_SLOTS + CountableConsumableConfigReader._CONSUMABLE_SLOTS + CooldownConsumableConfigReader._CONSUMABLE_SLOTS + BomberConfigReader._BOMBER_SLOTS + ('influenceZone',
-                                                                                                                                                                                                                   'cooldownTime')
+    __slots__ = TooltipConfigReader._SHARED_TOOLTIPS_CONSUMABLE_SLOTS + CountableConsumableConfigReader._CONSUMABLE_SLOTS + CooldownConsumableConfigReader._CONSUMABLE_SLOTS + BomberConfigReader._BOMBER_SLOTS + ('influenceZone', 'cooldownTime')
 
     def __init__(self):
         super(Bomber, self).__init__()
@@ -1995,7 +1927,7 @@ class Bomber(Equipment, TooltipConfigReader, CountableConsumableConfigReader, Bo
 
 
 class Smoke(Equipment, TooltipConfigReader, CountableConsumableConfigReader, SmokeConfigReader):
-    __slots__ = ('cooldownTime', ) + TooltipConfigReader._SHARED_TOOLTIPS_CONSUMABLE_SLOTS + CountableConsumableConfigReader._CONSUMABLE_SLOTS + SmokeConfigReader._SMOKE_SLOTS
+    __slots__ = ('cooldownTime',) + TooltipConfigReader._SHARED_TOOLTIPS_CONSUMABLE_SLOTS + CountableConsumableConfigReader._CONSUMABLE_SLOTS + SmokeConfigReader._SMOKE_SLOTS
 
     def __init__(self):
         super(Smoke, self).__init__()
@@ -2014,8 +1946,7 @@ class Smoke(Equipment, TooltipConfigReader, CountableConsumableConfigReader, Smo
 
 
 class DOTParams(object):
-    __slots__ = ('damagePerTick', 'restoreHealth', 'tickInterval', 'canDie', 'groupID',
-                 'attackReasonID')
+    __slots__ = ('damagePerTick', 'restoreHealth', 'tickInterval', 'canDie', 'groupID', 'attackReasonID')
 
     def __init__(self, attackReasonID=ATTACK_REASON_INDICES[ATTACK_REASON.NONE]):
         self.damagePerTick = 0.0
@@ -2026,7 +1957,7 @@ class DOTParams(object):
         self.attackReasonID = attackReasonID
 
     def __repr__(self):
-        return ('dotParams (Damage:{}, Tick:{}, RestoreHealth:{}, CanKill:{}, groupId:{}, attackReasonId:{})').format(self.damagePerTick, self.tickInterval, self.restoreHealth, self.canDie, self.groupID, self.attackReasonID)
+        return 'dotParams (Damage:{}, Tick:{}, RestoreHealth:{}, CanKill:{}, groupId:{}, attackReasonId:{})'.format(self.damagePerTick, self.tickInterval, self.restoreHealth, self.canDie, self.groupID, self.attackReasonID)
 
     def _readConfig(self, xmlCtx, scriptSection):
         self.tickInterval = _xml.readPositiveFloat(xmlCtx, scriptSection, 'tickInterval', 1.0)
@@ -2048,7 +1979,7 @@ class HOTParams(object):
         return
 
     def __repr__(self):
-        return ('hotParams ({},{},{},{})').format(self.healPerTick, self.healCrew, self.healDevices, self.tickInterval)
+        return 'hotParams ({},{},{},{})'.format(self.healPerTick, self.healCrew, self.healDevices, self.tickInterval)
 
     def _readConfig(self, xmlCtx, scriptSection):
         self.healPerTick = _xml.readPositiveFloat(xmlCtx, scriptSection, 'healPerTick', 0.0)
@@ -2059,8 +1990,7 @@ class HOTParams(object):
 
 
 class FLRegenerationKit(Equipment, SharedCooldownConsumableConfigReader, TooltipConfigReader):
-    __slots__ = SharedCooldownConsumableConfigReader._SHARED_COOLDOWN_CONSUMABLE_SLOTS + TooltipConfigReader._SHARED_TOOLTIPS_CONSUMABLE_SLOTS + ('expireByDamageReceived',
-                                                                                                                                                  'resupplyHealthPointsFactor')
+    __slots__ = SharedCooldownConsumableConfigReader._SHARED_COOLDOWN_CONSUMABLE_SLOTS + TooltipConfigReader._SHARED_TOOLTIPS_CONSUMABLE_SLOTS + ('expireByDamageReceived', 'resupplyHealthPointsFactor')
 
     def __init__(self):
         super(FLRegenerationKit, self).__init__()
@@ -2088,9 +2018,7 @@ class FLRegenerationKit(Equipment, SharedCooldownConsumableConfigReader, Tooltip
 
 
 class FLAvatarStealthRadar(Equipment, SharedCooldownConsumableConfigReader, CooldownConsumableConfigReader, TooltipConfigReader, InspireConfigReader):
-    __slots__ = SharedCooldownConsumableConfigReader._SHARED_COOLDOWN_CONSUMABLE_SLOTS + TooltipConfigReader._SHARED_TOOLTIPS_CONSUMABLE_SLOTS + CooldownConsumableConfigReader._CONSUMABLE_SLOTS + InspireConfigReader._INSPIRE_SLOTS + ('passiveCircularVisionRadius',
-                                                                                                                                                                                                                                          'detectionTime',
-                                                                                                                                                                                                                                          'overridableFactors')
+    __slots__ = SharedCooldownConsumableConfigReader._SHARED_COOLDOWN_CONSUMABLE_SLOTS + TooltipConfigReader._SHARED_TOOLTIPS_CONSUMABLE_SLOTS + CooldownConsumableConfigReader._CONSUMABLE_SLOTS + InspireConfigReader._INSPIRE_SLOTS + ('passiveCircularVisionRadius', 'detectionTime', 'overridableFactors')
 
     def __init__(self):
         super(FLAvatarStealthRadar, self).__init__()
@@ -2126,9 +2054,7 @@ class FLAvatarStealthRadar(Equipment, SharedCooldownConsumableConfigReader, Cool
 
 
 class MineParams(object):
-    __slots__ = ('triggerRadius', 'triggerHeight', 'triggerDepth', 'influenceType',
-                 'lifetime', 'activationDelay', 'damage', 'shell', 'shellLowDamage',
-                 'destroyMyMinesOverlappingAlliedMines', 'resistAllyDamage', 'directDetectionTypes')
+    __slots__ = ('triggerRadius', 'triggerHeight', 'triggerDepth', 'influenceType', 'lifetime', 'activationDelay', 'damage', 'shell', 'shellLowDamage', 'destroyMyMinesOverlappingAlliedMines', 'resistAllyDamage', 'directDetectionTypes')
 
     def __init__(self):
         self.triggerRadius = 1.0
@@ -2145,7 +2071,7 @@ class MineParams(object):
         return
 
     def __repr__(self):
-        return ('motParams ({}, {}, {}, {}, {}, {}, {}, {})').format(self.triggerRadius, self.triggerHeight, self.triggerDepth, self.influenceType, self.lifetime, self.damage, self.shell, self.shellLowDamage)
+        return 'motParams ({}, {}, {}, {}, {}, {}, {}, {})'.format(self.triggerRadius, self.triggerHeight, self.triggerDepth, self.influenceType, self.lifetime, self.damage, self.shell, self.shellLowDamage)
 
     def _readConfig(self, xmlCtx, section):
         self.activationDelay = section.readInt('activationDelay', 0)
@@ -2164,14 +2090,16 @@ class MineParams(object):
         if section.has_key('destroyMyMinesOverlappingAlliedMines'):
             self.resistAllyDamage = _xml.readBool(xmlCtx, section, 'destroyMyMinesOverlappingAlliedMines')
         if section.has_key('directDetectionTypes'):
-            mapping = {'RAYTRACE': 0, 'RECON': 1, 'RADAR': 2, 'STEALTH_RADAR': 3}
+            mapping = {'RAYTRACE': 0,
+             'RECON': 1,
+             'RADAR': 2,
+             'STEALTH_RADAR': 3}
             DDTypes = _xml.readTupleOfStrings(xmlCtx, section, 'directDetectionTypes')
             self.directDetectionTypes = [ mapping[t] for t in DDTypes ]
 
 
 class Minefield(Equipment, TooltipConfigReader, ArcadeEquipmentConfigReader, CountableConsumableConfigReader):
-    __slots__ = ('mineParams', 'noOwner', 'areaLength', 'areaWidth', 'areaVisual',
-                 'areaColor', 'cooldownTime', 'disableAllyDamage') + CountableConsumableConfigReader._CONSUMABLE_SLOTS + TooltipConfigReader._SHARED_TOOLTIPS_CONSUMABLE_SLOTS + ArcadeEquipmentConfigReader._SHARED_ARCADE_SLOTS
+    __slots__ = ('mineParams', 'noOwner', 'areaLength', 'areaWidth', 'areaVisual', 'areaColor', 'cooldownTime', 'disableAllyDamage') + CountableConsumableConfigReader._CONSUMABLE_SLOTS + TooltipConfigReader._SHARED_TOOLTIPS_CONSUMABLE_SLOTS + ArcadeEquipmentConfigReader._SHARED_ARCADE_SLOTS
 
     def __init__(self):
         super(Minefield, self).__init__()
@@ -2191,7 +2119,7 @@ class Minefield(Equipment, TooltipConfigReader, ArcadeEquipmentConfigReader, Cou
 
     def _readConfig(self, xmlCtx, section):
         bombs = _xml.readTupleOfFloats(xmlCtx, section, 'bombsPattern')
-        self.bombsPattern = [ (bombs[b], bombs[(b + 1)]) for b in range(0, len(bombs) - 1, 2) ]
+        self.bombsPattern = [ (bombs[b], bombs[b + 1]) for b in range(0, len(bombs) - 1, 2) ]
         self.mineParams._readConfig(xmlCtx, section['mineParams'])
         self.cooldownTime = _xml.readInt(xmlCtx, section, 'cooldownSeconds')
         self.disableAllyDamage = _xml.readBool(xmlCtx, section, 'disableAllyDamage')
@@ -2206,8 +2134,7 @@ class Minefield(Equipment, TooltipConfigReader, ArcadeEquipmentConfigReader, Cou
 
 
 class FrontLineMinefield(Equipment, TooltipConfigReader, SharedCooldownConsumableConfigReader, ArcadeEquipmentConfigReader, CooldownConsumableConfigReader):
-    __slots__ = ('bombsPattern', 'mineParams', 'noOwner', 'areaLength', 'areaWidth',
-                 'areaVisual', 'areaColor', 'areaMarker', 'bombsNumber')
+    __slots__ = ('bombsPattern', 'mineParams', 'noOwner', 'areaLength', 'areaWidth', 'areaVisual', 'areaColor', 'areaMarker', 'bombsNumber')
 
     def __init__(self):
         super(FrontLineMinefield, self).__init__()
@@ -2227,7 +2154,7 @@ class FrontLineMinefield(Equipment, TooltipConfigReader, SharedCooldownConsumabl
 
     def _readConfig(self, xmlCtx, section):
         bombs = _xml.readTupleOfFloats(xmlCtx, section, 'bombsPattern')
-        self.bombsPattern = [ (bombs[b], bombs[(b + 1)]) for b in range(0, len(bombs) - 1, 2) ]
+        self.bombsPattern = [ (bombs[b], bombs[b + 1]) for b in range(0, len(bombs) - 1, 2) ]
         self.mineParams._readConfig(xmlCtx, section['mineParams'])
         self.noOwner = _xml.readBool(xmlCtx, section, 'noOwner')
         self.areaLength = _xml.readPositiveFloat(xmlCtx, section, 'areaLength')
@@ -2243,7 +2170,7 @@ class FrontLineMinefield(Equipment, TooltipConfigReader, SharedCooldownConsumabl
 
 
 class VisualScriptEquipment(Equipment):
-    __slots__ = ('visualScript', )
+    __slots__ = ('visualScript',)
 
     def __init__(self):
         super(VisualScriptEquipment, self).__init__()
@@ -2264,7 +2191,7 @@ class VisualScriptEquipment(Equipment):
 
 
 class LevelBasedVisualScriptEquipment(VisualScriptEquipment):
-    _LEVEL_BASED_SLOTS = ('radius', )
+    _LEVEL_BASED_SLOTS = ('radius',)
 
     def __init__(self):
         super(LevelBasedVisualScriptEquipment, self).__init__()
@@ -2277,7 +2204,7 @@ class LevelBasedVisualScriptEquipment(VisualScriptEquipment):
             _xml.raiseWrongXml(xmlCtx, 'radius', 'should be multiple values separated by space.')
 
     def getRadiusBasedOnSkillLevel(self, skillLevel):
-        return self.radius[(skillLevel - 1)]
+        return self.radius[skillLevel - 1]
 
 
 class DynComponentsGroupEquipment(Equipment):
@@ -2290,7 +2217,7 @@ class DynComponentsGroupEquipment(Equipment):
 
 
 class PoiRadarEquipment(VisualScriptEquipment):
-    __slots__ = ('duration', )
+    __slots__ = ('duration',)
 
     def _readConfig(self, xmlCtx, section):
         super(PoiRadarEquipment, self)._readConfig(xmlCtx, section)
@@ -2299,14 +2226,7 @@ class PoiRadarEquipment(VisualScriptEquipment):
 
 
 class PoiArtilleryEquipment(VisualScriptEquipment, BaseMarkerConfigReader, EffectsConfigReader):
-    __slots__ = BaseMarkerConfigReader._MARKER_SLOTS_ + EffectsConfigReader._EFFECTS_SLOTS_ + ('delay',
-                                                                                               'radius',
-                                                                                               'damage',
-                                                                                               'stunDuration',
-                                                                                               'duration',
-                                                                                               'areaShow',
-                                                                                               'fraction',
-                                                                                               'requireAssists')
+    __slots__ = BaseMarkerConfigReader._MARKER_SLOTS_ + EffectsConfigReader._EFFECTS_SLOTS_ + ('delay', 'radius', 'damage', 'stunDuration', 'duration', 'areaShow', 'fraction', 'requireAssists')
 
     def __init__(self):
         super(PoiArtilleryEquipment, self).__init__()
@@ -2339,9 +2259,7 @@ def _readStun(xmlCtx, scriptSection):
 
 
 def _readReuseParams(xmlCtx, scriptSection):
-    return (
-     _xml.readInt(xmlCtx, scriptSection, 'reuseCount', minVal=-1) if scriptSection.has_key('reuseCount') else 0,
-     _xml.readInt(xmlCtx, scriptSection, 'cooldownSeconds', minVal=0) if scriptSection.has_key('cooldownSeconds') else 0)
+    return (_xml.readInt(xmlCtx, scriptSection, 'reuseCount', minVal=-1) if scriptSection.has_key('reuseCount') else 0, _xml.readInt(xmlCtx, scriptSection, 'cooldownSeconds', minVal=0) if scriptSection.has_key('cooldownSeconds') else 0)
 
 
 class OPT_DEV_TYPE_TAG(object):
@@ -2351,8 +2269,12 @@ class OPT_DEV_TYPE_TAG(object):
     MODERNIZED1 = 'modernized_1'
     MODERNIZED2 = 'modernized_2'
     MODERNIZED3 = 'modernized_3'
-    ALL = {
-     TROPHY_BASIC, TROPHY_UPGRADED, DELUXE, MODERNIZED1, MODERNIZED2, MODERNIZED3}
+    ALL = {TROPHY_BASIC,
+     TROPHY_UPGRADED,
+     DELUXE,
+     MODERNIZED1,
+     MODERNIZED2,
+     MODERNIZED3}
 
     @staticmethod
     def checkTags(tags):

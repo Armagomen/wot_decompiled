@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/lobby/footer/battle_royale_lobby_footer.py
 from __future__ import absolute_import
 from gui.impl.gen import R
 from gui.impl.lobby.page.chats_presenter import ChatsPresenter

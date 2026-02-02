@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/gui/Scaleform/channels/bw_chat2/lobby_controllers.py
 from gui.prb_control.entities.base.legacy.listener import ILegacyListener
 from gui.prb_control.settings import PREBATTLE_ROSTER
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE
@@ -18,7 +20,7 @@ class UnitChannelController(LobbyLayout):
 
     @proto_getter(PROTO_TYPE.BW_CHAT2)
     def proto(self):
-        return
+        return None
 
     def setView(self, view):
         super(UnitChannelController, self).setView(view)
@@ -50,12 +52,12 @@ class UnitChannelController(LobbyLayout):
         return self._mBuilder.setGuiType(dbID).setName(dbID, message.accountName).setTime(message.sentAt).setText(message.text).build()
 
     def _fireInitEvent(self):
-        g_eventBus.handleEvent(MessengerEvent(MessengerEvent.PRB_CHANNEL_CTRL_INITED, {'prbType': self._channel.getPrebattleType(), 
-           'controller': self}), scope=EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.handleEvent(MessengerEvent(MessengerEvent.PRB_CHANNEL_CTRL_INITED, {'prbType': self._channel.getPrebattleType(),
+         'controller': self}), scope=EVENT_BUS_SCOPE.LOBBY)
 
     def _fireDestroyEvent(self):
-        g_eventBus.handleEvent(MessengerEvent(MessengerEvent.PRB_CHANNEL_CTRL_DESTROYED, {'prbType': self._channel.getPrebattleType(), 
-           'controller': self}), scope=EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.handleEvent(MessengerEvent(MessengerEvent.PRB_CHANNEL_CTRL_DESTROYED, {'prbType': self._channel.getPrebattleType(),
+         'controller': self}), scope=EVENT_BUS_SCOPE.LOBBY)
 
 
 class LobbyChannelController(UnitChannelController):
@@ -100,8 +102,7 @@ class TrainingChannelController(LobbyChannelController, ILegacyListener):
         super(TrainingChannelController, self).setView(view)
 
     def onPlayerAdded(self, entity, pInfo):
-        self._channel.addMembers([
-         BWMemberEntity(pInfo.dbID, pInfo.name)])
+        self._channel.addMembers([BWMemberEntity(pInfo.dbID, pInfo.name)])
         self._refreshMembersDP()
 
     def onPlayerRemoved(self, entity, playerInfo):
@@ -113,8 +114,7 @@ class TrainingChannelController(LobbyChannelController, ILegacyListener):
             self._channel.removeMembers([pInfo.dbID])
             self._refreshMembersDP()
         elif not self._channel.hasMember(pInfo.dbID):
-            self._channel.addMembers([
-             BWMemberEntity(pInfo.dbID, pInfo.name)])
+            self._channel.addMembers([BWMemberEntity(pInfo.dbID, pInfo.name)])
             self._refreshMembersDP()
 
     def _removeListeners(self):

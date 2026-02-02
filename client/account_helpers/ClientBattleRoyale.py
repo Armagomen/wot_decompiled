@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/account_helpers/ClientBattleRoyale.py
 from functools import partial
 import AccountCommands
 from shared_utils.account_helpers.diff_utils import synchronizeDicts
@@ -27,8 +29,7 @@ class ClientBattleRoyale(object):
         self.__account = account
 
     def synchronize(self, isFullSync, diff):
-        dataResetKey = (
-         self.__DATA_KEY, '_r')
+        dataResetKey = (self.__DATA_KEY, '_r')
         if dataResetKey in diff:
             self.__cache[self.__DATA_KEY] = diff[dataResetKey]
         if self.__DATA_KEY in diff:
@@ -39,31 +40,35 @@ class ClientBattleRoyale(object):
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, None)
             return
-        self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
-        return
+        else:
+            self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
+            return
 
     def get(self, itemName, callback):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, None)
             return
-        self.__syncData.waitForSync(partial(self.__onGetResponse, itemName, callback))
-        return
+        else:
+            self.__syncData.waitForSync(partial(self.__onGetResponse, itemName, callback))
+            return
 
     def __onGetCacheResponse(self, callback, resultID):
         if resultID < 0:
             if callback is not None:
                 callback(resultID, None)
             return
-        if callback is not None:
-            callback(resultID, self.__cache)
-        return
+        else:
+            if callback is not None:
+                callback(resultID, self.__cache)
+            return
 
     def __onGetResponse(self, itemName, callback, resultID):
         if resultID < 0:
             if callback is not None:
                 callback(resultID, None)
             return
-        if callback is not None:
-            callback(resultID, self.__cache['battleRoyale'].get(itemName, None))
-        return
+        else:
+            if callback is not None:
+                callback(resultID, self.__cache['battleRoyale'].get(itemName, None))
+            return

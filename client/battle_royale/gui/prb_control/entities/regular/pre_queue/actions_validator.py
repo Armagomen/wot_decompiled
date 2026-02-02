@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/prb_control/entities/regular/pre_queue/actions_validator.py
 from CurrentVehicle import g_currentVehicle
 from gui.prb_control.entities.base.actions_validator import BaseActionsValidator, ActionsValidatorComposite
 from gui.prb_control.entities.base.pre_queue.actions_validator import PreQueueActionsValidator
@@ -12,15 +14,11 @@ class BattleRoyaleValidator(BaseActionsValidator):
     def _validate(self):
         brController = dependency.instance(IBattleRoyaleController)
         status, _, _ = brController.getPrimeTimeStatus()
-        if g_currentVehicle.isOnlyForBattleRoyaleBattles() and status != PrimeTimeStatus.AVAILABLE:
-            return ValidationResult(False, PRE_QUEUE_RESTRICTION.MODE_NOT_AVAILABLE)
-        return super(BattleRoyaleValidator, self)._validate()
+        return ValidationResult(False, PRE_QUEUE_RESTRICTION.MODE_NOT_AVAILABLE) if g_currentVehicle.isOnlyForBattleRoyaleBattles() and status != PrimeTimeStatus.AVAILABLE else super(BattleRoyaleValidator, self)._validate()
 
 
 class BattleRoyaleActionsValidator(PreQueueActionsValidator):
 
     def _createStateValidator(self, entity):
         baseValidator = super(BattleRoyaleActionsValidator, self)._createStateValidator(entity)
-        return ActionsValidatorComposite(entity, [
-         baseValidator,
-         BattleRoyaleValidator(entity)])
+        return ActionsValidatorComposite(entity, [baseValidator, BattleRoyaleValidator(entity)])

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/personal_reserves/states.py
 import typing
 from frameworks.state_machine.transitions import TransitionType
 from gui.Scaleform.framework import ScopeTemplates
@@ -29,5 +31,4 @@ class PersonalReservesState(GuiImplViewLobbyState):
 
     def getNavigationDescription(self):
         from gui.shared.event_dispatcher import showPersonalReservesInfomationScreen
-        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.personal_reserves()), infos=(
-         LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=showPersonalReservesInfomationScreen),))
+        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.personal_reserves()), infos=(LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=showPersonalReservesInfomationScreen),))

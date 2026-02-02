@@ -1,4 +1,8 @@
-import WWISE, math_utils, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/legacy_mechanics/dualgun_sounds.py
+import WWISE
+import math_utils
+import BigWorld
 from gui.battle_control.battle_constants import CANT_SHOOT_ERROR
 from helpers.CallbackDelayer import CallbackDelayer
 
@@ -48,7 +52,6 @@ class ChargeSoundRTPCInterpolator(CallbackDelayer):
         if elapsedTime > self.__totalInterpolationTime:
             self.delayCallback(0.0, self.disable)
             return 10.0
-        return 0.0
 
 
 class DualGunSounds(CallbackDelayer):

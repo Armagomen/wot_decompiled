@@ -1,6 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/AvatarInputHandler/DynamicCameras/__init__.py
 import math
 from collections import defaultdict
-import BigWorld, Math
+import BigWorld
+import Math
 from Math import Vector3, Matrix
 import math_utils
 from AvatarInputHandler.cameras import readVec3, ICamera, readFloat, ImpulseReason
@@ -13,17 +16,13 @@ def createCrosshairMatrix(offsetFromNearPlane):
 
 
 def createOscillatorFromSection(oscillatorSection, constraintsAsAngle=True):
-    constraints = readVec3(oscillatorSection, 'constraints', (0.0, 0.0, 0.0), (175.0,
-                                                                               175.0,
-                                                                               175.0), 10.0)
+    constraints = readVec3(oscillatorSection, 'constraints', (0.0, 0.0, 0.0), (175.0, 175.0, 175.0), 10.0)
     if constraintsAsAngle:
-        constraints = Vector3((math.radians(constraints.x),
-         math.radians(constraints.y),
-         math.radians(constraints.z)))
-    constructorParams = {'oscillator': __getOscillatorParams, 
-       'noiseOscillator': __getNoiseOscillatorParams, 
-       'randomNoiseOscillatorFlat': __getRandomNoiseOscillatorFlatParams, 
-       'randomNoiseOscillatorSpherical': __getRandomNoiseOscillatorSphericalParams}.get(oscillatorSection.name, __getOscillatorParams)(oscillatorSection)
+        constraints = Vector3((math.radians(constraints.x), math.radians(constraints.y), math.radians(constraints.z)))
+    constructorParams = {'oscillator': __getOscillatorParams,
+     'noiseOscillator': __getNoiseOscillatorParams,
+     'randomNoiseOscillatorFlat': __getRandomNoiseOscillatorFlatParams,
+     'randomNoiseOscillatorSpherical': __getRandomNoiseOscillatorSphericalParams}.get(oscillatorSection.name, __getOscillatorParams)(oscillatorSection)
     oscillator = None
     if oscillatorSection.name == 'noiseOscillator':
         oscillator = Math.PyNoiseOscillator(*constructorParams)
@@ -38,30 +37,19 @@ def createOscillatorFromSection(oscillatorSection, constraintsAsAngle=True):
 
 
 def calcYawPitchDelta(cfg, curSense, dx, dy):
-    return (
-     dx * curSense * (-1 if cfg['horzInvert'] else 1),
-     dy * curSense * (-1 if cfg['vertInvert'] else 1))
+    return (dx * curSense * (-1 if cfg['horzInvert'] else 1), dy * curSense * (-1 if cfg['vertInvert'] else 1))
 
 
 def __getOscillatorParams(oscillatorSection):
-    return [
-     readFloat(oscillatorSection, 'mass', 1e-05, 9000, 3.5),
-     readVec3(oscillatorSection, 'stiffness', (1e-05, 1e-05, 1e-05), (9000, 9000, 9000), 60.0),
-     readVec3(oscillatorSection, 'drag', (1e-05, 1e-05, 1e-05), (9000, 9000, 9000), 9.0)]
+    return [readFloat(oscillatorSection, 'mass', 1e-05, 9000, 3.5), readVec3(oscillatorSection, 'stiffness', (1e-05, 1e-05, 1e-05), (9000, 9000, 9000), 60.0), readVec3(oscillatorSection, 'drag', (1e-05, 1e-05, 1e-05), (9000, 9000, 9000), 9.0)]
 
 
 def __getNoiseOscillatorParams(oscillatorSection):
-    return [
-     readFloat(oscillatorSection, 'mass', 1e-05, 9000, 3.5),
-     readVec3(oscillatorSection, 'stiffness', (1e-05, 1e-05, 1e-05), (9000, 9000, 9000), 60.0),
-     readVec3(oscillatorSection, 'drag', (1e-05, 1e-05, 1e-05), (9000, 9000, 9000), 9.0)]
+    return [readFloat(oscillatorSection, 'mass', 1e-05, 9000, 3.5), readVec3(oscillatorSection, 'stiffness', (1e-05, 1e-05, 1e-05), (9000, 9000, 9000), 60.0), readVec3(oscillatorSection, 'drag', (1e-05, 1e-05, 1e-05), (9000, 9000, 9000), 9.0)]
 
 
 def __getRandomNoiseOscillatorFlatParams(oscillatorSection):
-    return [
-     readFloat(oscillatorSection, 'mass', 1e-05, 9000, 3.5),
-     readFloat(oscillatorSection, 'stiffness', 1e-05, 9000, 3.5),
-     readFloat(oscillatorSection, 'drag', 1e-05, 9000, 3.5)]
+    return [readFloat(oscillatorSection, 'mass', 1e-05, 9000, 3.5), readFloat(oscillatorSection, 'stiffness', 1e-05, 9000, 3.5), readFloat(oscillatorSection, 'drag', 1e-05, 9000, 3.5)]
 
 
 def __getRandomNoiseOscillatorSphericalParams(oscillatorSection):
@@ -71,14 +59,14 @@ def __getRandomNoiseOscillatorSphericalParams(oscillatorSection):
 
 
 class CameraDynamicConfig(dict):
-    REASONS_AS_STR = {ImpulseReason.MY_SHOT: 'shot', 
-       ImpulseReason.ME_HIT: 'hit', 
-       ImpulseReason.OTHER_SHOT: 'otherShot', 
-       ImpulseReason.SPLASH: 'splash', 
-       ImpulseReason.COLLISION: 'collision', 
-       ImpulseReason.VEHICLE_EXPLOSION: 'vehicleExplosion', 
-       ImpulseReason.PROJECTILE_HIT: 'projectileHit', 
-       ImpulseReason.HE_EXPLOSION: 'vehicleExplosion'}
+    REASONS_AS_STR = {ImpulseReason.MY_SHOT: 'shot',
+     ImpulseReason.ME_HIT: 'hit',
+     ImpulseReason.OTHER_SHOT: 'otherShot',
+     ImpulseReason.SPLASH: 'splash',
+     ImpulseReason.COLLISION: 'collision',
+     ImpulseReason.VEHICLE_EXPLOSION: 'vehicleExplosion',
+     ImpulseReason.PROJECTILE_HIT: 'projectileHit',
+     ImpulseReason.HE_EXPLOSION: 'vehicleExplosion'}
 
     def readImpulsesConfig(self, rootDataSec):
         self.__readReasonProjection('impulseSensitivities', rootDataSec)
@@ -283,14 +271,10 @@ class SPGScrollSmoother(object):
             self.__targetValue = value
 
     def update(self, dt):
-        if self.__isEnabled and self.__isStarted:
-            return self.__easing.update(dt)
-        return self.__targetValue
+        return self.__easing.update(dt) if self.__isEnabled and self.__isStarted else self.__targetValue
 
     def setTime(self, smoothingTime):
         self.__smoothingTime = smoothingTime
 
     def getCurrentValue(self):
-        if self.__isEnabled and self.__isStarted:
-            return self.__easing.value
-        return self.__targetValue
+        return self.__easing.value if self.__isEnabled and self.__isStarted else self.__targetValue

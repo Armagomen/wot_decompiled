@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_light/scripts/client/comp7_light/gui/impl/lobby/hangar/presenters/comp7_light_loadout_presenter.py
 import typing
 from gui.Scaleform.lobby_entry import getLobbyStateMachine
 from gui.impl.gen import R
@@ -22,10 +24,10 @@ class Comp7LightLoadoutPresenter(LoadoutPresenter):
 
     def _getChildComponents(self):
         hangar = R.aliases.hangar.shared
-        return {hangar.Equipments(): lambda : EquipmentsPresenter(self._vehInteractingItem), 
-           hangar.Instructions(): lambda : InstructionsPresenter(self._vehInteractingItem), 
-           hangar.Shells(): lambda : Comp7LightShellsPresenter(self._vehInteractingItem), 
-           hangar.Consumables(): lambda : ConsumablesPresenter(self._vehInteractingItem)}
+        return {hangar.Equipments(): lambda : EquipmentsPresenter(self._vehInteractingItem),
+         hangar.Instructions(): lambda : InstructionsPresenter(self._vehInteractingItem),
+         hangar.Shells(): lambda : Comp7LightShellsPresenter(self._vehInteractingItem),
+         hangar.Consumables(): lambda : ConsumablesPresenter(self._vehInteractingItem)}
 
 
 class Comp7LightShellsPresenter(ShellsPresenter):

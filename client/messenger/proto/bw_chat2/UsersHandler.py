@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/bw_chat2/UsersHandler.py
 from messenger.m_constants import GAME_ONLINE_STATUS, USER_TAG
 from messenger.proto.bw_chat2 import provider as bw2_provider, limits
 from messenger.proto.bw_chat2.wrappers import SearchResultIterator
@@ -14,7 +16,7 @@ class UsersHandler(bw2_provider.ResponseDictHandler):
 
     @storage_getter('users')
     def usersStorage(self):
-        return
+        return None
 
     def findUsers(self, namePattern, searchOnlineOnly=None):
         provider = self.provider()

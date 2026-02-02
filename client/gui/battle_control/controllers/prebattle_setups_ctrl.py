@@ -1,4 +1,8 @@
-import logging, BigWorld, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/prebattle_setups_ctrl.py
+import logging
+import BigWorld
+import typing
 from account_helpers.settings_core.settings_constants import GAME
 from battle_modifiers_common import EXT_DATA_MODIFIERS_KEY
 from constants import ARENA_PERIOD, VEHICLE_SIEGE_STATE
@@ -27,10 +31,10 @@ _EXT_ENHANCEMENTS_KEY = 'extEnhancements'
 _EXT_PROGRESSION_MODS = 'extActiveProgression'
 _EXT_RESPAWN_BOOST = 'respawnReloadTimeFactor'
 _EXT_SIEGE_STATE_KEY = 'extSiegeState'
-_SETUP_NAME_TO_LAYOUT = {TankSetups.SHELLS: TankSetupLayouts.SHELLS, 
-   TankSetups.EQUIPMENT: TankSetupLayouts.EQUIPMENT, 
-   TankSetups.OPTIONAL_DEVICES: TankSetupLayouts.OPTIONAL_DEVICES, 
-   TankSetups.BATTLE_BOOSTERS: TankSetupLayouts.BATTLE_BOOSTERS}
+_SETUP_NAME_TO_LAYOUT = {TankSetups.SHELLS: TankSetupLayouts.SHELLS,
+ TankSetups.EQUIPMENT: TankSetupLayouts.EQUIPMENT,
+ TankSetups.OPTIONAL_DEVICES: TankSetupLayouts.OPTIONAL_DEVICES,
+ TankSetups.BATTLE_BOOSTERS: TankSetupLayouts.BATTLE_BOOSTERS}
 
 class _States(CONST_CONTAINER):
     IDLE = 0
@@ -76,8 +80,7 @@ class PrebattleSetupsController(MethodsRules, IPrebattleSetupsController):
     __itemsFactory = dependency.descriptor(IGuiItemsFactory)
     __sessionProvider = dependency.descriptor(IBattleSessionProvider)
     __settingsCore = dependency.descriptor(ISettingsCore)
-    __slots__ = ('__state', '__playerVehicleID', '__vehicle', '__invData', '__extData',
-                 '__hasValidCaps', '__cooldown', '__arenaLoaded')
+    __slots__ = ('__state', '__playerVehicleID', '__vehicle', '__invData', '__extData', '__hasValidCaps', '__cooldown', '__arenaLoaded')
 
     def __init__(self):
         super(PrebattleSetupsController, self).__init__()
@@ -95,15 +98,10 @@ class PrebattleSetupsController(MethodsRules, IPrebattleSetupsController):
         return BATTLE_CTRL_ID.PREBATTLE_SETUPS_CTRL
 
     def getPrebattleSetupsVehicle(self):
-        if self.isSelectionStarted():
-            return self.__vehicle
-        else:
-            return
+        return self.__vehicle if self.isSelectionStarted() else None
 
     def getPrebattleVehicleID(self):
-        if self.isSelectionStarted():
-            return self.__playerVehicleID
-        return 0
+        return self.__playerVehicleID if self.isSelectionStarted() else 0
 
     def startControl(self, battleCtx, arenaVisitor):
         self.__hasValidCaps = arenaVisitor.bonus.hasSwitchSetups()
@@ -266,15 +264,15 @@ class PrebattleSetupsController(MethodsRules, IPrebattleSetupsController):
     def switchLayout(self, groupID, layoutIdx):
         if self.__sessionProvider.isReplayPlaying:
             return
+        elif not self.isSelectionStarted():
+            return
+        elif self.__cooldown.isInProcess(_SWITCH_SETUPS_ACTION):
+            return
+        elif not self.__vehicle.isSetupSwitchActive(groupID):
+            return
+        elif self.__vehicle.postProgression.isPrebattleSwitchDisabled(groupID):
+            return
         else:
-            if not self.isSelectionStarted():
-                return
-            if self.__cooldown.isInProcess(_SWITCH_SETUPS_ACTION):
-                return
-            if not self.__vehicle.isSetupSwitchActive(groupID):
-                return
-            if self.__vehicle.postProgression.isPrebattleSwitchDisabled(groupID):
-                return
             playerVehicle = BigWorld.entities.get(self.__playerVehicleID)
             if playerVehicle is None:
                 return
@@ -285,12 +283,10 @@ class PrebattleSetupsController(MethodsRules, IPrebattleSetupsController):
 
     def getSlotItem(self, group, layout, slotId):
         if group not in self.__invData:
-            return
+            return None
         else:
             layoutIndex = 0 if not self.__invData['layoutIndexes'] else self.__invData['layoutIndexes'][layout]
-            if layoutIndex < len(self.__invData[group]) and slotId < len(self.__invData[group][layoutIndex]):
-                return self.__invData[group][layoutIndex][slotId]
-            return
+            return self.__invData[group][layoutIndex][slotId] if layoutIndex < len(self.__invData[group]) and slotId < len(self.__invData[group][layoutIndex]) else None
 
     def __isSelectionAvailable(self):
         if not self.__hasValidCaps:
@@ -305,14 +301,10 @@ class PrebattleSetupsController(MethodsRules, IPrebattleSetupsController):
         return bool(self.__state & _States.SELECTION_STOPPED)
 
     def __isSelectionShouldEnded(self):
-        if self.__settingsCore.getSetting(GAME.SWITCH_SETUPS_IN_LOADING):
-            return self.__arenaLoaded and self.__isSelectionStopped()
-        return self.__isSelectionStopped()
+        return self.__arenaLoaded and self.__isSelectionStopped() if self.__settingsCore.getSetting(GAME.SWITCH_SETUPS_IN_LOADING) else self.__isSelectionStopped()
 
     def __isSelectionShouldStarted(self):
-        if self.__settingsCore.getSetting(GAME.SWITCH_SETUPS_IN_LOADING):
-            return self.__state & _States.INIT_COMPLETE and self.__isSelectionAvailable()
-        return self.__state & _States.INIT_COMPLETE and self.__isSelectionAvailable() and self.isArenaLoaded()
+        return self.__state & _States.INIT_COMPLETE and self.__isSelectionAvailable() if self.__settingsCore.getSetting(GAME.SWITCH_SETUPS_IN_LOADING) else self.__state & _States.INIT_COMPLETE and self.__isSelectionAvailable() and self.isArenaLoaded()
 
     def __onInitStepCompleted(self, stepState):
         if self.__state & _States.INIT_COMPLETE:
@@ -320,8 +312,7 @@ class PrebattleSetupsController(MethodsRules, IPrebattleSetupsController):
         self.__updateState(stepState)
         if self.__state & _States.INIT_READY == _States.INIT_READY:
             shellsCDs = [ shell.intCD for shell in self.__vehicle.gun.defaultAmmo ]
-            shellsLayoutKey = (
-             self.__vehicle.turret.intCD, self.__vehicle.gun.intCD)
+            shellsLayoutKey = (self.__vehicle.turret.intCD, self.__vehicle.gun.intCD)
             self.__invData['shells'] = getInstalledShells(shellsCDs, self.__invData[TankSetupLayouts.SHELLS])
             self.__invData[TankSetupLayouts.SHELLS] = {shellsLayoutKey: self.__invData[TankSetupLayouts.SHELLS]}
             self.__updateGuiVehicle()
@@ -341,12 +332,12 @@ class PrebattleSetupsController(MethodsRules, IPrebattleSetupsController):
             self.__updateState(_States.SELECTION_STARTED)
 
     def __updateAmmoCtrl(self):
-        self.__sessionProvider.shared.ammo.updateForNewSetup(self.__vehicle.descriptor, self.__vehicle.shells.installed.getItems())
+        self.__sessionProvider.shared.ammo.updateForNewSetup(self.__playerVehicleID, self.__vehicle.descriptor, self.__vehicle.shells.installed.getItems())
 
     def __updateAmmoCtrlParams(self, factors):
         ammoCtrl = self.__sessionProvider.shared.ammo
         quantity = ammoCtrl.getShellsQuantityLeft()
-        hasAmmo = any(shell.count for shell in self.__vehicle.shells.installed.getItems())
+        hasAmmo = any((shell.count for shell in self.__vehicle.shells.installed.getItems()))
         reloadTime = getFirstReloadTime(self.__vehicle.descriptor, factors, shellsAmount=quantity) if hasAmmo else 0.0
         ammoCtrl.setGunReloadTime(-1, reloadTime, skipAutoLoader=True)
 

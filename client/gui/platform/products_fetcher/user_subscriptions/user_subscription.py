@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/platform/products_fetcher/user_subscriptions/user_subscription.py
 import logging
 from enum import Enum
 from typing import Dict
@@ -12,10 +14,7 @@ class SubscriptionStatus(Enum):
     NEXT_PAYMENT_UNAVAILABLE = 'NEXT_PAYMENT_UNAVAILABLE'
 
 
-SUBSCRIPTION_CANCEL_STATUSES = [
- SubscriptionStatus.INACTIVE,
- SubscriptionStatus.GDPR_SUSPENDED,
- SubscriptionStatus.NEXT_PAYMENT_UNAVAILABLE]
+SUBSCRIPTION_CANCEL_STATUSES = [SubscriptionStatus.INACTIVE, SubscriptionStatus.GDPR_SUSPENDED, SubscriptionStatus.NEXT_PAYMENT_UNAVAILABLE]
 _logger = logging.getLogger(__name__)
 
 class SubscriptionRequestPlatform(Enum):
@@ -51,4 +50,4 @@ class UserSubscription(object):
             _logger.warning('Unknown subscription type in subscription: %s', subscriptionData.get('platform'))
 
     def __str__(self):
-        return ('subscriptionId: {}, productCode: {}, status: {}, nextBillingTime: {}, platform: {}').format(self.subscriptionId, self.productCode, self.status, self.nextBillingTime, self.platform)
+        return 'subscriptionId: {}, productCode: {}, status: {}, nextBillingTime: {}, platform: {}'.format(self.subscriptionId, self.productCode, self.status, self.nextBillingTime, self.platform)

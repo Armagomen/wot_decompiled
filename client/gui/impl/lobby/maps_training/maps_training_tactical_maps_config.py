@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/maps_training/maps_training_tactical_maps_config.py
 from collections import namedtuple
 import ResMgr
 from maps_training_common.maps_training_constants import VEHICLE_CLASSES_ORDER
@@ -44,8 +46,7 @@ class TacticalMapsConfigReader(object):
                     if not pointsSection:
                         scenarioPoints[vehicleType] = tuple()
                         continue
-                    scenarioPoints[vehicleType] = tuple([ Point(pointSection.readString('id', ''), pointSection.readString('textKeys', '').split(), pointSection.readVector2('position') + _POINT_OFFSET, pointSection.readString('tooltipImage', ''), pointSection.readBool('isLeft', False)) for pointSection in pointsSection.values()
-                                                        ])
+                    scenarioPoints[vehicleType] = tuple([ Point(pointSection.readString('id', ''), pointSection.readString('textKeys', '').split(), pointSection.readVector2('position') + _POINT_OFFSET, pointSection.readString('tooltipImage', ''), pointSection.readBool('isLeft', False)) for pointSection in pointsSection.values() ])
 
                 teamsData[teamId] = Team(teamPosition, teamTooltipImage, teamIsLeft, scenarioPoints)
 

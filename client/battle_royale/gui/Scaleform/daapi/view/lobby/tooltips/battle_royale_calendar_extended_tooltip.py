@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/lobby/tooltips/battle_royale_calendar_extended_tooltip.py
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared.formatters import text_styles
@@ -39,8 +41,5 @@ class BattleRoyaleCalendarExtendedTooltip(BlocksTooltipData):
         return formatters.packBuildUpBlockData(getPrimeTableBlocks(primeTime, currentCycleEnd, R.strings.ranked_battles.selectorTooltip), 7, blockWidth=self.__TOOLTIP_MIN_WIDTH)
 
     def __getTillEndBlock(self, timeLeft):
-        res = ('').join([
-         text_styles.main(backport.text(R.strings.ranked_battles.selectorTooltip.tillEnd())),
-         ' ',
-         text_styles.stats(backport.getTillTimeStringByRClass(timeLeft, R.strings.menu.headerButtons.battle.types.ranked.availability))])
+        res = ''.join([text_styles.main(backport.text(R.strings.ranked_battles.selectorTooltip.tillEnd())), ' ', text_styles.stats(backport.getTillTimeStringByRClass(timeLeft, R.strings.menu.headerButtons.battle.types.ranked.availability))])
         return formatters.packTextBlockData(text=res, blockWidth=self.__TOOLTIP_MIN_WIDTH)

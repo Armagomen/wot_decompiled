@@ -1,4 +1,7 @@
-import typing, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/pve_base/base/state_machine/transitions.py
+import typing
+import BigWorld
 from frameworks.state_machine import StringEventTransition, ConditionTransition, StateEvent
 from gui.Scaleform.daapi.view.battle.pve_base.base.state_machine.events import OneSecondEvent
 if typing.TYPE_CHECKING:
@@ -30,9 +33,7 @@ class PostponedTransition(ConditionTransition):
         return isCondition
 
     def _timerCondition(self, event):
-        if isinstance(event, OneSecondEvent):
-            return event.currentTime >= self._startCheckTransition + self._transitionDelay
-        return False
+        return event.currentTime >= self._startCheckTransition + self._transitionDelay if isinstance(event, OneSecondEvent) else False
 
 
 class BaseTimerCondition(ConditionTransition):

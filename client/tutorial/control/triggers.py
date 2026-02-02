@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/tutorial/control/triggers.py
 from tutorial.control import TutorialProxyHolder
 from tutorial.data.has_id import IHasID
 from tutorial.logger import LOG_ERROR, LOG_DEBUG
@@ -50,8 +52,7 @@ class Trigger(TutorialProxyHolder, IHasID):
                 trigger = getter(triggerID)
                 if trigger is not None:
                     trigger.clear()
-                else:
-                    LOG_ERROR('Trigger not found', triggerID)
+                LOG_ERROR('Trigger not found', triggerID)
 
         if effects and self._tutorial is not None:
             self._tutorial.storeEffectsInQueue(effects, benefit=benefit, isGlobal=True)
@@ -97,8 +98,7 @@ class TriggerWithValidateVar(Trigger):
         if hasattr(var, '__iter__'):
             var = set(var)
         else:
-            var = {
-             var}
+            var = {var}
         return var
 
     def setVar(self, value):

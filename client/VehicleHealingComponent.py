@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/VehicleHealingComponent.py
 from gui.Scaleform.genConsts.BATTLE_MARKER_STATES import BATTLE_MARKER_STATES
 from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE
 from VehicleAbilityBaseComponent import VehicleAbilityBaseComponent
@@ -30,7 +32,7 @@ class VehicleHealingComponent(VehicleAbilityBaseComponent):
         return self._getEquipment(BattleRoyaleEquipments.HEAL_POINT).duration
 
     def _getHealingArgs(self):
-        return {'isInactivation': self.isInactivation, 
-           'isSourceVehicle': self.isSourceVehicle, 
-           'isDestroying': self._isDestroying, 
-           'senderKey': BattleRoyaleEquipments.HEAL_POINT}
+        return {'isInactivation': self.isInactivation,
+         'isSourceVehicle': self.isSourceVehicle,
+         'isDestroying': self._isDestroying,
+         'senderKey': BattleRoyaleEquipments.HEAL_POINT}

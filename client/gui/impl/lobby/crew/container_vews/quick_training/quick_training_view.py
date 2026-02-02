@@ -1,4 +1,7 @@
-import typing, SoundGroups
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/container_vews/quick_training/quick_training_view.py
+import typing
+import SoundGroups
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.impl.auxiliary.crew_books_helper import crewBooksViewedCache
 from gui.impl.gen import R
@@ -29,8 +32,7 @@ class QuickTrainingView(ContainerBase, BaseCrewWidgetView):
         super(QuickTrainingView, self).__init__(settings, **kwargs)
 
     def _getComponents(self):
-        return [
-         FreeXpBookComponent(key='freeXp', parent=self),
+        return [FreeXpBookComponent(key='freeXp', parent=self),
          BooksListComponent(key='books_list', parent=self),
          LearningResultsComponent(key='learning_results', parent=self),
          MentoringLicenseComponent(key='mentoring_entry', parent=self),
@@ -43,22 +45,13 @@ class QuickTrainingView(ContainerBase, BaseCrewWidgetView):
         return QuickTrainingInteractionController
 
     def _getEvents(self):
-        return super(QuickTrainingView, self)._getEvents() + (
-         (
-          self.viewModel.mouseLeave, self._onCardMouseLeave),
-         (
-          self.viewModel.goToProfile, self._goToProfile))
+        return super(QuickTrainingView, self)._getEvents() + ((self.viewModel.mouseLeave, self._onCardMouseLeave), (self.viewModel.goToProfile, self._goToProfile))
 
     def _getCallbacks(self):
-        return (
-         (
-          'inventory', self._onInventoryChange),
-         (
-          'goodies', self._onGoodiesUpdate),
-         (
-          'stats.freeXP', self._onFreeXpChange),
-         (
-          'stats.XPpp', self._onFreeXpChange))
+        return (('inventory', self._onInventoryChange),
+         ('goodies', self._onGoodiesUpdate),
+         ('stats.freeXP', self._onFreeXpChange),
+         ('stats.XPpp', self._onFreeXpChange))
 
     def _onLoading(self, *args, **kwargs):
         super(QuickTrainingView, self)._onLoading(*args, **kwargs)
@@ -93,8 +86,7 @@ class QuickTrainingView(ContainerBase, BaseCrewWidgetView):
             self.destroyWindow()
 
     def _getCrewWidgetBaseData(self):
-        return (
-         QuickTrainingCrewWidget, QuickTrainingCrewWidget.LAYOUT_DYN_ACCESSOR())
+        return (QuickTrainingCrewWidget, QuickTrainingCrewWidget.LAYOUT_DYN_ACCESSOR())
 
     def _onTankmanSlotClick(self, tankmanID, slotIdx):
         self.interactionCtrl.onChangeTankman(tankmanID, slotIdx)

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/CalendarMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class CalendarMeta(BaseDAAPIComponent):
@@ -12,25 +14,19 @@ class CalendarMeta(BaseDAAPIComponent):
         self._printOverrideError('formatYMHeader')
 
     def as_openMonthS(self, rawDate):
-        if self._isDAAPIInited():
-            return self.flashObject.as_openMonth(rawDate)
+        return self.flashObject.as_openMonth(rawDate) if self._isDAAPIInited() else None
 
     def as_selectDateS(self, rawDate):
-        if self._isDAAPIInited():
-            return self.flashObject.as_selectDate(rawDate)
+        return self.flashObject.as_selectDate(rawDate) if self._isDAAPIInited() else None
 
     def as_setMinAvailableDateS(self, rawDate):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setMinAvailableDate(rawDate)
+        return self.flashObject.as_setMinAvailableDate(rawDate) if self._isDAAPIInited() else None
 
     def as_setMaxAvailableDateS(self, rawDate):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setMaxAvailableDate(rawDate)
+        return self.flashObject.as_setMaxAvailableDate(rawDate) if self._isDAAPIInited() else None
 
     def as_setHighlightedDaysS(self, hightlightedTimestamps):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setHighlightedDays(hightlightedTimestamps)
+        return self.flashObject.as_setHighlightedDays(hightlightedTimestamps) if self._isDAAPIInited() else None
 
     def as_setDayTooltipTypeS(self, tooltipType):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setDayTooltipType(tooltipType)
+        return self.flashObject.as_setDayTooltipType(tooltipType) if self._isDAAPIInited() else None

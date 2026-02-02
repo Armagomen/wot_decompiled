@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/marathon/marathon_reward_view.py
 import logging
 from account_helpers import AccountSettings
 from frameworks.wulf import ViewSettings, WindowFlags
@@ -32,7 +34,7 @@ class MarathonRewardView(ViewImpl):
             specialRewardData = args[0]
             self.__congratsSourceId = specialRewardData.congratsSourceId
             self.__videoShownKey = specialRewardData.videoShownKey
-            with self.viewModel.transaction() as (model):
+            with self.viewModel.transaction() as model:
                 model.setIsGoToVehicleBtnEnabled(specialRewardData.goToVehicleBtn)
                 model.setVideoSource(specialRewardData.sourceName)
                 model.setVehicleLvl(specialRewardData.vehicleLvl)

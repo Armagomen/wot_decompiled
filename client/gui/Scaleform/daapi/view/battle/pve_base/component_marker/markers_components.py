@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/pve_base/component_marker/markers_components.py
 import ResMgr
 from chat_commands_consts import MarkerType
 from gui.Scaleform.daapi.view.battle.shared.component_marker.markers_components import BaseMinimapMarkerComponent, World2DActionMarkerComponent, ComponentBitMask, World2DLocationMarkerComponent
@@ -8,8 +10,8 @@ class PveAttackDirectionComponent(BaseMinimapMarkerComponent):
     @classmethod
     def configReader(cls, section):
         config = super(PveAttackDirectionComponent, cls).configReader(section)
-        config.update({'bitmapName': section.readString('bitmapName', ''), 
-           'isFlipped': section.readBool('isFlipped', False)})
+        config.update({'bitmapName': section.readString('bitmapName', ''),
+         'isFlipped': section.readBool('isFlipped', False)})
         return config
 
     def _setupMarker(self, gui, **kwargs):
@@ -93,8 +95,8 @@ class PveFlagVehicleMarkerComponent(World2DActionMarkerComponent):
     @classmethod
     def configReader(cls, section):
         config = super(PveFlagVehicleMarkerComponent, cls).configReader(section)
-        config.update({'symbolIndex': section.readInt('symbolIndex', 0), 
-           'symbolOffset': section.readInt('symbolOffset', 0)})
+        config.update({'symbolIndex': section.readInt('symbolIndex', 0),
+         'symbolOffset': section.readInt('symbolOffset', 0)})
         return config
 
     def attachGUI(self, guiProvider, **kwargs):
@@ -119,10 +121,7 @@ class PveFlagVehicleMarkerComponent(World2DActionMarkerComponent):
         super(PveFlagVehicleMarkerComponent, self)._deleteMarker()
 
     def _getVehicleMarker(self):
-        if self._vehicleMarkerGUI:
-            return self._vehicleMarkerGUI.getVehicleMarker(self._targetID)
-        else:
-            return
+        return self._vehicleMarkerGUI.getVehicleMarker(self._targetID) if self._vehicleMarkerGUI else None
 
     def _insertSymbol(self):
         vehicleMarker = self._getVehicleMarker()
@@ -141,18 +140,8 @@ class PveFlagVehicleMarkerComponent(World2DActionMarkerComponent):
             self._vehicleMarkerGUI.invokeMarker(vehicleMarker.getMarkerID(), 'callInsertedSymbolMethod', self._config['symbol'], 'setDistance', getIntegralFormat(distance))
 
 
-class PveBitmapComponent(BaseMinimapMarkerComponent):
+class PveAnimatedFlagMarkerComponent(World2DLocationMarkerComponent):
 
     @property
-    def maskType(self):
-        return ComponentBitMask.MINIMAP_MARKER
-
-    @classmethod
-    def configReader(cls, section):
-        config = super(PveBitmapComponent, cls).configReader(section)
-        config.update({'bitmapName': section.readString('bitmapName', '')})
-        return config
-
-    def _setupMarker(self, gui, **kwargs):
-        super(PveBitmapComponent, self)._setupMarker(gui, **kwargs)
-        gui.invoke(self._componentID, 'setIcon', self._config['bitmapName'])
+    def bcMarkerType(self):
+        return MarkerType.NON_INTERACTIVE

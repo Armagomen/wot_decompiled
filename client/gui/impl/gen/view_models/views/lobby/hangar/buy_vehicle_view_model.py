@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/hangar/buy_vehicle_view_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.common.vehicle_model import VehicleModel
 from gui.impl.gen.view_models.views.lobby.hangar.buy_vehicle_option_model import BuyVehicleOptionModel
@@ -5,8 +7,7 @@ from gui.impl.gen.view_models.views.lobby.hangar.buy_vehicle_price_model import 
 from gui.impl.gen.view_models.views.lobby.hangar.buy_vehicle_simple_tooltip_model import BuyVehicleSimpleTooltipModel
 
 class BuyVehicleViewModel(ViewModel):
-    __slots__ = ('onCloseBtnClick', 'onBuyBtnClick', 'onBackClick', 'onOptionClick',
-                 'onSelectTradeInVehicleToSell', 'onClearTradeInVehicleToSell', 'onDisclaimerClick')
+    __slots__ = ('onCloseBtnClick', 'onBuyBtnClick', 'onBackClick', 'onOptionClick', 'onSelectTradeInVehicleToSell', 'onClearTradeInVehicleToSell', 'onDisclaimerClick')
     VEHICLE_NOT_SELECTED_CD = -1
     BUYING_RENT_IDX = -1
     RENT_NOT_SELECTED_IDX = -2

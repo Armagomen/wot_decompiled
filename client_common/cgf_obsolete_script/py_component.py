@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client_common/cgf_obsolete_script/py_component.py
 from cgf_obsolete_script.auto_properties import AutoPropertyInitMetaclass
 
 class Component(object):

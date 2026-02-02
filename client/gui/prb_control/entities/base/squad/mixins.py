@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/base/squad/mixins.py
 from gui.prb_control.entities.base.squad.components import RestrictedRoleTagDataProvider
 
 class RestrictedRoleTagMixin(object):

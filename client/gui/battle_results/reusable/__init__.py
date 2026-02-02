@@ -1,4 +1,7 @@
-import weakref, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_results/reusable/__init__.py
+import weakref
+import typing
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as _CAPS
 from account_helpers import getAccountDatabaseID
 from constants import ARENA_BONUS_TYPE
@@ -26,16 +29,17 @@ def _fetchRecord(results, recordName):
         if record is None:
             LOG_WARNING('Record is not valid in the results. Perhaps, client and server versions of battle_results.g_config are different.', recordName)
         return record
-    LOG_WARNING('Record is not found in the results', recordName, results.keys())
-    return
-    return
+    else:
+        LOG_WARNING('Record is not found in the results', recordName, results.keys())
+        return
+        return
 
 
 def createReusableInfo(results):
     if _RECORD.ARENA_UNIQUE_ID in results:
         arenaUniqueID = results[_RECORD.ARENA_UNIQUE_ID]
     else:
-        LOG_WARNING(('Battle results must be contain key {}').format(_RECORD.ARENA_UNIQUE_ID), results.keys())
+        LOG_WARNING('Battle results must be contain key {}'.format(_RECORD.ARENA_UNIQUE_ID), results.keys())
         return
     unpackedRecords = []
 
@@ -79,9 +83,7 @@ def createReusableInfo(results):
 
 
 class _ReusableInfo(object):
-    __slots__ = ('__arenaUniqueID', '__clientIndex', '__premiumState', '__common',
-                 '__personal', '__players', '__vehicles', '__avatars', '__squadFinder',
-                 '__premiumPlusState', '__isAddXPBonusApplied', '__battlePassProgress')
+    __slots__ = ('__arenaUniqueID', '__clientIndex', '__premiumState', '__common', '__personal', '__players', '__vehicles', '__avatars', '__squadFinder', '__premiumPlusState', '__isAddXPBonusApplied', '__battlePassProgress')
     itemsCache = dependency.descriptor(IItemsCache)
     lobbyContext = dependency.descriptor(ILobbyContext)
 
@@ -285,19 +287,16 @@ class _ReusableInfo(object):
                 sortable = vehicleDetailedInfoCls.makeForEnemy(vehicleID, vehicle, playerInfo, data, vehicleInfo.deathReason, vehicleInfo.isTeamKiller)
                 if not sortable.haveInteractionDetails():
                     continue
-                if (
-                 vehicleID, intCD) not in totalSortable:
+                if (vehicleID, intCD) not in totalSortable:
                     vehicleSummarizeInfoCls = ReusableInfoFactory.vehicleSummarizeInfoForBonusType(self.bonusType)
-                    totalSortable[(vehicleID, intCD)] = vehicleSummarizeInfoCls(vehicleID, playerInfo)
-                totalSortable[(vehicleID, intCD)].addVehicleInfo(sortable)
+                    totalSortable[vehicleID, intCD] = vehicleSummarizeInfoCls(vehicleID, playerInfo)
+                totalSortable[vehicleID, intCD].addVehicleInfo(sortable)
                 enemies.append(sortable)
 
             teamBasesInfoCls = ReusableInfoFactory.teamBasesInfoForBonusType(self.bonusType)
             bases = teamBasesInfoCls(vData.get('capturePoints', 0), vData.get('droppedCapturePoints', 0))
             totalBases.append(bases)
-            yield (
-             (
-              bases,), sorted(enemies, key=sort_keys.VehicleInfoSortKey))
+            yield ((bases,), sorted(enemies, key=sort_keys.VehicleInfoSortKey))
 
         yield (totalBases, sorted(totalSortable.itervalues(), key=sort_keys.VehicleInfoSortKey))
         return
@@ -354,16 +353,14 @@ class _ReusableInfo(object):
             info.addAvatarInfo(weakref.proxy(getAvatarInfo(dbID)))
             if playerTeam == player.team:
                 allies.append(info)
-            else:
-                enemies.append(info)
+            enemies.append(info)
 
         bots = self.__common.getBots()
         for bot in bots.iteritems():
             info = self.__vehicles.getAIBotVehicleSummarizeInfo(bot[0], bot[1], result)
             if playerTeam == bot[1].team:
                 allies.append(info)
-            else:
-                enemies.append(info)
+            enemies.append(info)
 
         def __allies():
             for ally in sorted(allies, key=sortKey):
@@ -381,8 +378,7 @@ class _ReusableInfo(object):
         squadHasBonus = False
         if showSquadLabels:
             showSquadLabels, squadHasBonus = self.__personal.avatar.getPersonalSquadFlags(self.__vehicles)
-        return (
-         showSquadLabels, squadHasBonus)
+        return (showSquadLabels, squadHasBonus)
 
     def updateXPEarnings(self, additionalXPValues):
         self.__personal.updateXPEarnings(additionalXPValues)
@@ -402,15 +398,15 @@ class _ReusableInfo(object):
             setter(getAccountID(vehicleID), squadIndex)
 
 
-ReusableInfoFactory.setDefaults({ReusableInfoFactory.Keys.COMMON: CommonInfo, 
-   ReusableInfoFactory.Keys.AVATARS: AvatarsInfo, 
-   ReusableInfoFactory.Keys.AVATAR: AvatarInfo, 
-   ReusableInfoFactory.Keys.PERSONAL: PersonalInfo, 
-   ReusableInfoFactory.Keys.PLAYERS: PlayersInfo, 
-   ReusableInfoFactory.Keys.PLAYER: PlayerInfo, 
-   ReusableInfoFactory.Keys.TEAM_BASES: TeamBasesInfo, 
-   ReusableInfoFactory.Keys.VEHICLE_DETAILED: VehicleDetailedInfo, 
-   ReusableInfoFactory.Keys.VEHICLE_SUMMARIZED: VehicleSummarizeInfo, 
-   ReusableInfoFactory.Keys.VEHICLES: VehiclesInfo, 
-   ReusableInfoFactory.Keys.FAIRPLAY_VIOLATIONS: FairplayViolationsInfo, 
-   ReusableInfoFactory.Keys.SQUAD_BONUS: SquadBonusInfo})
+ReusableInfoFactory.setDefaults({ReusableInfoFactory.Keys.COMMON: CommonInfo,
+ ReusableInfoFactory.Keys.AVATARS: AvatarsInfo,
+ ReusableInfoFactory.Keys.AVATAR: AvatarInfo,
+ ReusableInfoFactory.Keys.PERSONAL: PersonalInfo,
+ ReusableInfoFactory.Keys.PLAYERS: PlayersInfo,
+ ReusableInfoFactory.Keys.PLAYER: PlayerInfo,
+ ReusableInfoFactory.Keys.TEAM_BASES: TeamBasesInfo,
+ ReusableInfoFactory.Keys.VEHICLE_DETAILED: VehicleDetailedInfo,
+ ReusableInfoFactory.Keys.VEHICLE_SUMMARIZED: VehicleSummarizeInfo,
+ ReusableInfoFactory.Keys.VEHICLES: VehiclesInfo,
+ ReusableInfoFactory.Keys.FAIRPLAY_VIOLATIONS: FairplayViolationsInfo,
+ ReusableInfoFactory.Keys.SQUAD_BONUS: SquadBonusInfo})

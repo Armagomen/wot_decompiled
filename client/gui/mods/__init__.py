@@ -1,4 +1,8 @@
-import importlib, string, ResMgr
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/mods/__init__.py
+import importlib
+import string
+import ResMgr
 from constants import IS_DEVELOPMENT
 from debug_utils import LOG_DEBUG, LOG_ERROR, LOG_CURRENT_EXCEPTION, LOG_WARNING
 from shared_utils import forEach
@@ -43,8 +47,7 @@ def _findValidMODs(path=None, package=None):
         for scriptName in set(map(string.lower, modsFolder.keys())):
             if _isValidMOD(scriptName):
                 try:
-                    moduleName = '%s.%s' % (
-                     package, scriptName.replace(_MOD_NAME_POSTFIX, ''))
+                    moduleName = '%s.%s' % (package, scriptName.replace(_MOD_NAME_POSTFIX, ''))
                     result[moduleName] = importlib.import_module(moduleName)
                     LOG_DEBUG('Gui mod found', moduleName, result[moduleName])
                 except ImportError:

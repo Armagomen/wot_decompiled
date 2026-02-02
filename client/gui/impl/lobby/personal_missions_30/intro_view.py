@@ -1,3 +1,6 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/personal_missions_30/intro_view.py
+import SoundGroups
 from frameworks.wulf import ViewFlags, ViewSettings, WindowFlags, WindowLayer
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.personal_missions_30.intro_screen_model import IntroScreenModel
@@ -24,10 +27,11 @@ class IntroView(ViewImpl):
 
     def _onLoading(self, *args, **kwargs):
         setVideoOverlayOn()
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setVideoPath(self.videoKey.lower())
 
     def _finalize(self):
+        SoundGroups.g_instance.playSound2D('vid_pm_stop')
         setVideoOverlayOff()
         super(IntroView, self)._finalize()
 

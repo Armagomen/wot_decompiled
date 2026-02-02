@@ -1,6 +1,10 @@
-import base64, cPickle
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/NotifyController.py
+import base64
+import cPickle
 from collections import namedtuple
-import BigWorld, Settings
+import BigWorld
+import Settings
 from adisp import adisp_async, adisp_process
 from debug_utils import LOG_DEBUG, LOG_ERROR
 from frameworks.wulf import WindowLayer
@@ -16,9 +20,7 @@ from skeletons.gui.game_control import INotifyController
 from gui.impl import backport
 from gui.impl.gen import R
 from gui import makeHtmlString
-_Settings = namedtuple('_Settings', [
- 'presetChangingVersion',
- 'lastBattleAvgFps'])
+_Settings = namedtuple('_Settings', ['presetChangingVersion', 'lastBattleAvgFps'])
 
 class NotifyController(INotifyController):
     LOW_FPS_VALUE = 20
@@ -35,7 +37,7 @@ class NotifyController(INotifyController):
 
     @ap_decorators.sf_lobby
     def app(self):
-        return
+        return None
 
     def init(self):
         self.__readSettings()

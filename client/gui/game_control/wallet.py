@@ -1,4 +1,9 @@
-import logging, BigWorld, Event, constants
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/wallet.py
+import logging
+import BigWorld
+import Event
+import constants
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import GUI_START_BEHAVIOR
 from adisp import adisp_process
@@ -69,16 +74,16 @@ class WalletController(IWalletController):
 
     @property
     def componentsStatuses(self):
-        return {'gold': self.__currentStatus if self.__useGold else self.STATUS.AVAILABLE, 
-           'freeXP': self.__currentStatus if self.__useFreeXP else self.STATUS.AVAILABLE, 
-           'credits': (constants.IS_CHINA or self).__currentStatus if 1 else self.STATUS.AVAILABLE, 
-           'crystal': (constants.IS_CHINA or self).__currentStatus if 1 else self.STATUS.AVAILABLE, 
-           'eventCoin': (constants.IS_CHINA or self).__currentStatus if 1 else self.STATUS.AVAILABLE, 
-           'bpcoin': (constants.IS_CHINA or self).__currentStatus if 1 else self.STATUS.AVAILABLE}
+        return {'gold': self.__currentStatus if self.__useGold else self.STATUS.AVAILABLE,
+         'freeXP': self.__currentStatus if self.__useFreeXP else self.STATUS.AVAILABLE,
+         'credits': self.__currentStatus if not constants.IS_CHINA else self.STATUS.AVAILABLE,
+         'crystal': self.__currentStatus if not constants.IS_CHINA else self.STATUS.AVAILABLE,
+         'eventCoin': self.__currentStatus if not constants.IS_CHINA else self.STATUS.AVAILABLE,
+         'bpcoin': self.__currentStatus if not constants.IS_CHINA else self.STATUS.AVAILABLE}
 
     @property
     def dynamicComponentsStatuses(self):
-        return {currencyCode:(self.__currentStatus if 1 else self.STATUS.AVAILABLE) for currencyCode in self.itemsCache.items.stats.dynamicCurrencies.keys() if not constants.IS_CHINA}
+        return {currencyCode:(self.__currentStatus if not constants.IS_CHINA else self.STATUS.AVAILABLE) for currencyCode in self.itemsCache.items.stats.dynamicCurrencies.keys()}
 
     @property
     def isSyncing(self):
@@ -158,8 +163,7 @@ class WalletController(IWalletController):
             return
         self.__weaver = Weaver()
         if self.__weaver.findPointcut(UnlockItemPointcut) == -1:
-            self.__weaver.weave(pointcut=UnlockItemPointcut, aspects=[
-             ShowXPInfoDialogAspect(self.cleanWeave)])
+            self.__weaver.weave(pointcut=UnlockItemPointcut, aspects=[ShowXPInfoDialogAspect(self.cleanWeave)])
 
     def __sendNotification(self, status):
         msgType = SM_TYPE.Information if status == 'available' else SM_TYPE.Warning

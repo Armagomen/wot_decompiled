@@ -1,4 +1,11 @@
-import logging, os, BigWorld, CommandMapping, GUI, Math
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/epic/minimap.py
+import logging
+import os
+import BigWorld
+import CommandMapping
+import GUI
+import Math
 from account_helpers import AccountSettings
 from account_helpers.settings_core.settings_constants import CONTROLS
 from aih_constants import CTRL_MODE_NAME
@@ -32,7 +39,7 @@ _RESPAWN_VISUALIZATION_ENTRY_2 = 1
 _RESPAWN_VISUALIZATION_ENTRY_3 = 2
 _IS_COORDINATOR = bool(os.getenv('WOT_COORDINATOR', False))
 _FRONT_LINE_DEV_VISUALIZATION_SUPPORTED = IS_DEVELOPMENT
-_MINI_MINIMAP_HIGHLIGHT_PATH = ('_level0.root.{}.main.minimap.mapShortcutLabel.sectorOverview.mmapAreaHighlight').format(LAYER_NAMES.VIEWS)
+_MINI_MINIMAP_HIGHLIGHT_PATH = '_level0.root.{}.main.minimap.mapShortcutLabel.sectorOverview.mmapAreaHighlight'.format(LAYER_NAMES.VIEWS)
 _MINI_MINIMAP_SIZE = 46
 _ZOOM_MODE_MIN = 1
 _ZOOM_MODE_STEP = 0.5
@@ -222,9 +229,8 @@ class RecoveringVehiclesPlugin(ArenaVehiclesPlugin):
 
 
 class RespawningPersonalEntriesPlugin(PersonalEntriesPlugin):
-    __slots__ = ('__lastCtrlMode', )
-    RESPAWN_MODES = (
-     CTRL_MODE_NAME.DEATH_FREE_CAM, CTRL_MODE_NAME.RESPAWN_DEATH)
+    __slots__ = ('__lastCtrlMode',)
+    RESPAWN_MODES = (CTRL_MODE_NAME.DEATH_FREE_CAM, CTRL_MODE_NAME.RESPAWN_DEATH)
 
     def __init__(self, parentObj):
         super(RespawningPersonalEntriesPlugin, self).__init__(parentObj)
@@ -266,9 +272,7 @@ class RespawningPersonalEntriesPlugin(PersonalEntriesPlugin):
             super(RespawningPersonalEntriesPlugin, self)._invalidateMarkup(forceInvalidate)
 
     def _enableCameraEntryInCtrlMode(self, ctrlMode):
-        if ctrlMode == CTRL_MODE_NAME.RESPAWN_DEATH:
-            return False
-        return True
+        return False if ctrlMode == CTRL_MODE_NAME.RESPAWN_DEATH else True
 
     def _updateCirlcesState(self):
         if not self._isInPostmortemMode() and not self._isInRespawnDeath():
@@ -323,8 +327,7 @@ class CenteredPersonalEntriesPlugin(RespawningPersonalEntriesPlugin):
 
 
 class SectorBaseEntriesPlugin(common.EntriesPlugin):
-    __slots__ = ('__personalTeam', '__markerIDs', '__symbolAlly', '__symbolEnemy',
-                 '__hasActiveCommit')
+    __slots__ = ('__personalTeam', '__markerIDs', '__symbolAlly', '__symbolEnemy', '__hasActiveCommit')
 
     def __init__(self, parentObj, symbolAlly=_S_NAME.EPIC_SECTOR_ALLY_BASE, symbolEnemy=_S_NAME.EPIC_SECTOR_ENEMY_BASE):
         super(SectorBaseEntriesPlugin, self).__init__(parentObj)
@@ -409,12 +412,11 @@ class SectorBaseEntriesPlugin(common.EntriesPlugin):
     def __onActionAddedToObjectiveMarkerReceived(self, senderID, commandID, markerType, objectID):
         if markerType != MarkerType.BASE_MARKER_TYPE or objectID not in self.__markerIDs:
             return
-        model = self.__markerIDs[objectID]
-        if model is None:
-            return
         else:
-            if _ACTIONS.battleChatCommandFromActionID(commandID).name in (BATTLE_CHAT_COMMAND_NAMES.ATTACKING_BASE,
-             BATTLE_CHAT_COMMAND_NAMES.DEFENDING_BASE):
+            model = self.__markerIDs[objectID]
+            if model is None:
+                return
+            if _ACTIONS.battleChatCommandFromActionID(commandID).name in (BATTLE_CHAT_COMMAND_NAMES.ATTACKING_BASE, BATTLE_CHAT_COMMAND_NAMES.DEFENDING_BASE):
                 self.__onReplyFeedbackReceived(objectID, senderID, MarkerType.BASE_MARKER_TYPE, 0, 1)
                 return
             self._invoke(model.getID(), BATTLE_MINIMAP_CONSTS.SET_STATE, BATTLE_MINIMAP_CONSTS.STATE_ATTACK)
@@ -490,25 +492,24 @@ class SectorStatusEntriesPlugin(SimplePlugin):
         if sectorGroupId not in self._zonesDict:
             self._zonesDict[sectorGroupId] = self.__addZoneEntry(self._symbol, center)
             self._posDict[sectorGroupId] = center
-        else:
-            if self._posDict[sectorGroupId] != center:
-                matrix = Math.Matrix()
-                matrix.setTranslate(center)
-                sectorGroup = self._zonesDict[sectorGroupId]
-                self._setMatrix(sectorGroup, matrix)
-                self._posDict[sectorGroupId] = center
-            entryID = self._zonesDict[sectorGroupId]
-            if entryID is not None:
-                sectorStateID = SECTOR_STATE_ID[state]
-                if sectorComponent is not None and sectorGroupId in sectorComponent.sectorGroups:
-                    group = sectorComponent.sectorGroups[sectorGroupId]
-                    self._invoke(entryID, 'changeSectorState', sectorStateID, self.__personalTeam == EPIC_BATTLE_TEAM_ID.TEAM_ATTACKER, group.numSubSectors > 1)
-                else:
-                    _logger.error('Expected SectorComponent not present!')
-            sectors = []
-            for groupID in sectorComponent.sectorGroups:
-                group = sectorComponent.sectorGroups[groupID]
-                sectors.append(SECTOR_STATE_ID[group.state])
+        elif self._posDict[sectorGroupId] != center:
+            matrix = Math.Matrix()
+            matrix.setTranslate(center)
+            sectorGroup = self._zonesDict[sectorGroupId]
+            self._setMatrix(sectorGroup, matrix)
+            self._posDict[sectorGroupId] = center
+        entryID = self._zonesDict[sectorGroupId]
+        if entryID is not None:
+            sectorStateID = SECTOR_STATE_ID[state]
+            if sectorComponent is not None and sectorGroupId in sectorComponent.sectorGroups:
+                group = sectorComponent.sectorGroups[sectorGroupId]
+                self._invoke(entryID, 'changeSectorState', sectorStateID, self.__personalTeam == EPIC_BATTLE_TEAM_ID.TEAM_ATTACKER, group.numSubSectors > 1)
+            else:
+                _logger.error('Expected SectorComponent not present!')
+        sectors = []
+        for groupID in sectorComponent.sectorGroups:
+            group = sectorComponent.sectorGroups[groupID]
+            sectors.append(SECTOR_STATE_ID[group.state])
 
         data = dict()
         data['amount'] = len(sectorComponent.sectorGroups)
@@ -604,8 +605,7 @@ class HeadquartersStatusEntriesPlugin(SimplePlugin):
         modelID = self.__hqsDict[hqId]
         if modelID == 0:
             return
-        if cmdName in (BATTLE_CHAT_COMMAND_NAMES.ATTACKING_OBJECTIVE,
-         BATTLE_CHAT_COMMAND_NAMES.DEFENDING_OBJECTIVE):
+        if cmdName in (BATTLE_CHAT_COMMAND_NAMES.ATTACKING_OBJECTIVE, BATTLE_CHAT_COMMAND_NAMES.DEFENDING_OBJECTIVE):
             self.__onReplyFeedbackReceived(hqId, senderID, MarkerType.HEADQUARTER_MARKER_TYPE, 0, 1)
             return
         self._invoke(modelID, BATTLE_MINIMAP_CONSTS.SET_STATE, BATTLE_MINIMAP_CONSTS.STATE_ATTACK)
@@ -632,7 +632,7 @@ class HeadquartersStatusEntriesPlugin(SimplePlugin):
 
 
 class DevelopmentRespawnEntriesPlugin(SimplePlugin):
-    __slots__ = ('__markers', )
+    __slots__ = ('__markers',)
 
     def __init__(self, parentObj):
         super(DevelopmentRespawnEntriesPlugin, self).__init__(parentObj)
@@ -678,8 +678,7 @@ class DevelopmentRespawnEntriesPlugin(SimplePlugin):
         return
 
     def __addRPEntry(self, symbol, pos):
-        position = (
-         pos.x, 0, pos.y)
+        position = (pos.x, 0, pos.y)
         matrix = Math.Matrix()
         matrix.setTranslate(position)
         return self._addEntry(symbol, _EPIC_TEAM_POINTS, matrix=matrix, active=True)
@@ -692,7 +691,7 @@ class EpicGlobalSettingsPlugin(GlobalSettingsPlugin):
 
 
 class StepRepairPointEntriesPlugin(SimplePlugin):
-    __slots__ = ('__ptDict', )
+    __slots__ = ('__ptDict',)
 
     def __init__(self, parentObj):
         super(StepRepairPointEntriesPlugin, self).__init__(parentObj)
@@ -792,9 +791,7 @@ class ProtectionZoneEntriesPlugin(SimplePlugin):
             isPlayerTeam = self.__personalTeam == zone.team
             isVertical = avatar_getter.getArena().arenaType.epicSectorGrid.mainDirection in (AAD.PLUS_Z, AAD.MINUS_Z)
             frontPosition = upperright if zone.team == EPIC_BATTLE_TEAM_ID.TEAM_ATTACKER else lowerleft
-            frontPosition = (center.x if isVertical else center.y,
-             0,
-             frontPosition.y if isVertical else frontPosition.x)
+            frontPosition = (center.x if isVertical else center.y, 0, frontPosition.y if isVertical else frontPosition.x)
             if protZone not in self._zonesDict:
                 self._zonesDict[protZone] = entryID = self.__addProtectionZoneEntry(self._symbol, frontPosition)
             else:
@@ -937,9 +934,7 @@ class EpicMinimapPingPlugin(plugins.MinimapPingPlugin):
         else:
             closestHqIdx, distance = destructibleComponent.getNearestDestructibleEntityID(clickPos)
             destEntity = destructibleComponent.getDestructibleEntity(closestHqIdx)
-            if distance <= range_ and (destEntity.isActive or self.__hqInteractionActive):
-                return (closestHqIdx, destEntity.team)
-            return (None, None)
+            return (closestHqIdx, destEntity.team) if distance <= range_ and (destEntity.isActive or self.__hqInteractionActive) else (None, None)
 
     def __getNearestBaseForPosition(self, clickPos, range_):
         sectorBaseComponent = getattr(self.sessionProvider.arenaVisitor.getComponentSystem(), 'sectorBaseComponent', None)
@@ -947,8 +942,7 @@ class EpicMinimapPingPlugin(plugins.MinimapPingPlugin):
             _logger.error('Expected SectorBaseComponent not present!')
             return (None, None, None)
         else:
-            openBases = [ base for base in sectorBaseComponent.sectorBases if not base.isCaptured and base.active() or self.__baseInteractionList[base.baseID]
-                        ]
+            openBases = [ base for base in sectorBaseComponent.sectorBases if not base.isCaptured and base.active() or self.__baseInteractionList[base.baseID] ]
             if not openBases:
                 return (None, None, None)
 
@@ -956,9 +950,7 @@ class EpicMinimapPingPlugin(plugins.MinimapPingPlugin):
                 return entity.position.flatDistTo(clickPos)
 
             closestBase = min(openBases, key=getDistance)
-            if getDistance(closestBase) <= range_:
-                return (closestBase.baseID, closestBase.team, ID_TO_BASENAME[closestBase.baseID])
-            return (None, None, None)
+            return (closestBase.baseID, closestBase.team, ID_TO_BASENAME[closestBase.baseID]) if getDistance(closestBase) <= range_ else (None, None, None)
 
 
 class EpicTeleportPlugin(EpicMinimapPingPlugin):
@@ -970,8 +962,6 @@ class EpicTeleportPlugin(EpicMinimapPingPlugin):
             player = BigWorld.player()
             if player is not None and player.isTeleport:
                 position = self._getClickPosition(x, y)
-                result = BigWorld.collide(player.spaceID, (position.x, 1000.0, position.z), (
-                 position.x, -1000.0, position.z))
-                player.base.vehicle_teleport((
-                 position[0], result[0][1], position[2]), 0)
+                result = BigWorld.collide(player.spaceID, (position.x, 1000.0, position.z), (position.x, -1000.0, position.z))
+                player.base.vehicle_teleport((position[0], result[0][1], position[2]), 0)
             return

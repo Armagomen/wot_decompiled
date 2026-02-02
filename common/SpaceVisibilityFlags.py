@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/SpaceVisibilityFlags.py
 from constants import ARENA_GAMEPLAY_IDS, HANGAR_VISIBILITY_TAGS
 import ResMgr
 from soft_exception import SoftException
@@ -39,7 +41,7 @@ class SpaceVisibilityFlags(object):
         return 1 << self.typeIDToIndex[gameplayID]
 
     def getMaskForGameplayIDs(self, gameplayIDs):
-        return sum(self.getMaskForGameplayID(gameplayID) for gameplayID in gameplayIDs)
+        return sum((self.getMaskForGameplayID(gameplayID) for gameplayID in gameplayIDs))
 
     def __formMapping(self, flagsSection):
         if flagsSection is not None:
@@ -51,15 +53,11 @@ class SpaceVisibilityFlags(object):
                     if not tag or bitIndex < 0 or bitIndex >= SpaceVisibilityFlags._SERVER_FLAGS_NUMBER or self.types[tag] in typeIDToIndex:
                         return False
                     typeIDToIndex[self.types[tag]] = bitIndex
-                else:
-                    return False
+                return False
 
         else:
-            self.typeIDToIndex = dict((i, i) for i in self.types.itervalues() if 0 <= i < SpaceVisibilityFlags._SERVER_FLAGS_NUMBER)
-        if len(self.typeIDToIndex) == 0:
-            return False
-        else:
-            return True
+            self.typeIDToIndex = dict(((i, i) for i in self.types.itervalues() if 0 <= i < SpaceVisibilityFlags._SERVER_FLAGS_NUMBER))
+        return False if len(self.typeIDToIndex) == 0 else True
 
     @staticmethod
     def __isHangarSpace(settingsSection):
@@ -67,7 +65,7 @@ class SpaceVisibilityFlags(object):
 
     @staticmethod
     def __formSettingPath(geometryName):
-        return ('{config_directory}/{geometryName}/{file}').format(config_directory=SpaceVisibilityFlags._CONFIG_DIRECTORY, geometryName=geometryName, file=SpaceVisibilityFlags._CONFIG_FILE)
+        return '{config_directory}/{geometryName}/{file}'.format(config_directory=SpaceVisibilityFlags._CONFIG_DIRECTORY, geometryName=geometryName, file=SpaceVisibilityFlags._CONFIG_FILE)
 
 
 def _openSection(path):

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/platform/wgnp/demo_account/statuses.py
 import typing
 from constants import EMAIL_CONFIRMATION_TOKEN_NAME
 from gui.platform.base.response import Codes
@@ -47,7 +49,8 @@ def createCredentialStatusFromResponse(response):
         elif state == 'spa_generic_conflict':
             data = None
         elif state == 'spa_weak_password':
-            statusType, data = StatusTypes.ADD_NEEDED, {'error': 'spa_weak_password', 'login': login}
+            statusType, data = StatusTypes.ADD_NEEDED, {'error': 'spa_weak_password',
+             'login': login}
         else:
             return createCredentialsConfirmationStatus()
     else:

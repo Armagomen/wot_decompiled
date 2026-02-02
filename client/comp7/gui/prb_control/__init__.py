@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/prb_control/__init__.py
 
 
 def registerComp7OthersPrbParams():
@@ -17,9 +19,8 @@ def registerComp7OthersPrbParams():
     from gui.prb_control.storages import makeQueueName
     from gui.shared.system_factory import registerModeSelectorTooltips, registerPrbStorage
     from UnitBase import UNIT_ERROR
-    registerModeSelectorTooltips([
-     ModeSelectorTooltipsConstants.COMP7_CALENDAR_DAY_EXTENDED_INFO], {R.views.comp7.mono.lobby.tooltips.progression_tooltip(): ProgressionTooltip, 
-       R.views.comp7.mono.lobby.tooltips.rank_inactivity_tooltip(): RankInactivityTooltip})
+    registerModeSelectorTooltips([ModeSelectorTooltipsConstants.COMP7_CALENDAR_DAY_EXTENDED_INFO], {R.views.comp7.mono.lobby.tooltips.progression_tooltip(): ProgressionTooltip,
+     R.views.comp7.mono.lobby.tooltips.rank_inactivity_tooltip(): RankInactivityTooltip})
     registerPrbStorage(makeQueueName(QUEUE_TYPE.COMP7), Comp7Storage())
     _PRB_TO_QUEUE.update({PREBATTLE_TYPE.COMP7: QUEUE_TYPE.COMP7})
     _arenaBonusTypeByModeName.update({PREBATTLE_ACTION_NAME.COMP7: ARENA_BONUS_TYPE.COMP7})

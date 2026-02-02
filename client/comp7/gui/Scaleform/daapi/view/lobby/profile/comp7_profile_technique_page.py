@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/Scaleform/daapi/view/lobby/profile/comp7_profile_technique_page.py
 from comp7.gui.Scaleform.daapi.view.lobby.profile.comp7_profile_helper import getBattleHandlers
 from comp7.gui.Scaleform.daapi.view.lobby.profile.profile_utils import COMP7_VEHICLE_STATISTICS_LAYOUT
 from comp7.gui.Scaleform.daapi.view.lobby.profile.seasons_manager import getComp7SeasonManagers
@@ -14,6 +16,13 @@ class Comp7ProfileTechniquePage(ProfileTechniquePage):
         super(Comp7ProfileTechniquePage, self).__init__(*args)
         self._battleTypeHandlers.update(getBattleHandlers())
         self._seasonsManagers.update(getComp7SeasonManagers())
+        data = self._selectedData
+        if data is not None and data.get('battlesType') == PROFILE_DROPDOWN_KEYS.COMP7:
+            self.requestDossier(PROFILE_DROPDOWN_KEYS.COMP7)
+            vehicleCD = data.get('vehicleCD')
+            if vehicleCD is not None:
+                self.requestData(vehicleCD)
+        return
 
     @classmethod
     def _makeBattleTypesDropDown(cls, accountDossier, forVehiclesPage=False):
@@ -22,9 +31,7 @@ class Comp7ProfileTechniquePage(ProfileTechniquePage):
         return result
 
     def _getEmptyScreenLabel(self):
-        if self._battlesType == PROFILE_DROPDOWN_KEYS.COMP7:
-            return backport.text(R.strings.profile.section.technique.emptyScreenLabel.battleType.comp7())
-        return super(Comp7ProfileTechniquePage, self)._getEmptyScreenLabel()
+        return backport.text(R.strings.profile.section.technique.emptyScreenLabel.battleType.comp7()) if self._battlesType == PROFILE_DROPDOWN_KEYS.COMP7 else super(Comp7ProfileTechniquePage, self)._getEmptyScreenLabel()
 
     def _getDefaultTableHeader(self, isFallout=False, showMarkOfMastery=False):
         isComp7BattleType = self._battlesType == PROFILE_DROPDOWN_KEYS.COMP7
@@ -37,11 +44,11 @@ class Comp7ProfileTechniquePage(ProfileTechniquePage):
         if self._battlesType == PROFILE_DROPDOWN_KEYS.COMP7:
             battlesCount, wins, xp, prestigePoints = vehParams
             avgPrestigePoints = round(float(prestigePoints) / float(battlesCount))
-            return (
-             battlesCount, wins, xp, avgPrestigePoints)
+            return (battlesCount,
+             wins,
+             xp,
+             avgPrestigePoints)
         return super(Comp7ProfileTechniquePage, self)._unpackVehicleParams(vehParams)
 
     def _getLayout(self):
-        if self._battlesType == PROFILE_DROPDOWN_KEYS.COMP7:
-            return COMP7_VEHICLE_STATISTICS_LAYOUT
-        return super(Comp7ProfileTechniquePage, self)._getLayout()
+        return COMP7_VEHICLE_STATISTICS_LAYOUT if self._battlesType == PROFILE_DROPDOWN_KEYS.COMP7 else super(Comp7ProfileTechniquePage, self)._getLayout()

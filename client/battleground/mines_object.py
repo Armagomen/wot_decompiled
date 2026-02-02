@@ -1,4 +1,9 @@
-import BigWorld, Math, AnimationSequence, SoundGroups
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/battleground/mines_object.py
+import BigWorld
+import Math
+import AnimationSequence
+import SoundGroups
 from PlayerEvents import g_playerEvents
 from gui.battle_control import avatar_getter
 from helpers import dependency
@@ -71,8 +76,7 @@ class MinesObject(TerrainAreaGameObject, CompositeLoaderMixin):
         self.__soundTimerEventEnd = 'eb_ability_minefield_zone_timer_end'
         self.__soundTimerObjStart = None
         self.__soundTimerObjEnd = None
-        self.__children = (
-         self.startEffectPlayer,
+        self.__children = (self.startEffectPlayer,
          self.idleEffectPlayer,
          self.destroyEffectPlayer,
          self.blowUpEffectPlayer,
@@ -151,7 +155,7 @@ class MinesObject(TerrainAreaGameObject, CompositeLoaderMixin):
         return SoundGroups.g_instance.WWgetSoundObject(self.__getSoundObjName(name), mPos)
 
     def __getSoundObjName(self, eventName):
-        return ('{}_{}').format(eventName, self.id)
+        return '{}_{}'.format(eventName, self.id)
 
     def __isFirstMine(self):
         return self.mineNumber == 0

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/meta_view/pages/shop_page.py
 import logging
 from functools import partial
 import typing
@@ -90,11 +92,7 @@ def __onVehicleLoadFinished(ctxEvent, service=None, hangarSpace=None):
 
 
 class ShopPage(PageSubModelPresenter):
-    __slots__ = ('__currentPreviewVehicle', '__currentPreviewStyle', '__currentItemCD',
-                 '__productSelectorMethods', '__productSetterMethods', '__blur',
-                 '__rotationHelper', '__requestStatus', '__products', '__productItems',
-                 '__productCdToCode', '__switchCameraToDefault', '__switchVehicleToDefault',
-                 '__hangarVehId')
+    __slots__ = ('__currentPreviewVehicle', '__currentPreviewStyle', '__currentItemCD', '__productSelectorMethods', '__productSetterMethods', '__blur', '__rotationHelper', '__requestStatus', '__products', '__productItems', '__productCdToCode', '__switchCameraToDefault', '__switchVehicleToDefault', '__hangarVehId')
     __appLoader = dependency.descriptor(IAppLoader)
     __comp7Controller = dependency.descriptor(IComp7Controller)
     __comp7ShopController = dependency.descriptor(IComp7ShopController)
@@ -142,12 +140,8 @@ class ShopPage(PageSubModelPresenter):
             tooltipId = event.getArgument('tooltipId', None)
             itemCD = int(event.getArgument('id'))
             tooltipData = None
-            if tooltipId in (
-             TOOLTIPS_CONSTANTS.SHOP_VEHICLE,
-             TOOLTIPS_CONSTANTS.SHOP_MODULE,
-             TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM):
-                tooltipData = TooltipData(tooltip=tooltipId, isSpecial=True, specialAlias=tooltipId, specialArgs=[
-                 itemCD])
+            if tooltipId in (TOOLTIPS_CONSTANTS.SHOP_VEHICLE, TOOLTIPS_CONSTANTS.SHOP_MODULE, TOOLTIPS_CONSTANTS.SHOP_CUSTOMIZATION_ITEM):
+                tooltipData = TooltipData(tooltip=tooltipId, isSpecial=True, specialAlias=tooltipId, specialArgs=[itemCD])
             if tooltipData:
                 window = BackportTooltipWindow(tooltipData, self.getParentWindow())
                 window.load()
@@ -156,19 +150,20 @@ class ShopPage(PageSubModelPresenter):
 
     def createToolTipContent(self, event, contentID):
         if contentID == R.views.comp7.mono.lobby.tooltips.general_rank_tooltip():
-            params = {'rank': Rank(event.getArgument('rank')), 'divisions': event.getArgument('divisions'), 
-               'from': event.getArgument('from'), 
-               'to': event.getArgument('to')}
+            params = {'rank': Rank(event.getArgument('rank')),
+             'divisions': event.getArgument('divisions'),
+             'from': event.getArgument('from'),
+             'to': event.getArgument('to')}
             return GeneralRankTooltip(params=params)
+        elif contentID == R.views.comp7.mono.lobby.tooltips.fifth_rank_tooltip():
+            return FifthRankTooltip()
+        elif contentID == R.views.comp7.mono.lobby.tooltips.sixth_rank_tooltip():
+            return SixthRankTooltip()
+        elif contentID == R.views.lobby.ranked.tooltips.RankedBattlesRolesTooltipView():
+            vehicleCD = int(event.getArgument('vehicleCD'))
+            return VehicleRolesTooltipView(vehicleCD)
         else:
-            if contentID == R.views.comp7.mono.lobby.tooltips.fifth_rank_tooltip():
-                return FifthRankTooltip()
-            if contentID == R.views.comp7.mono.lobby.tooltips.sixth_rank_tooltip():
-                return SixthRankTooltip()
-            if contentID == R.views.lobby.ranked.tooltips.RankedBattlesRolesTooltipView():
-                vehicleCD = int(event.getArgument('vehicleCD'))
-                return VehicleRolesTooltipView(vehicleCD)
-            return
+            return None
 
     def initialize(self, **params):
         self.__rotationHelper = RotatableViewHelper()
@@ -177,9 +172,9 @@ class ShopPage(PageSubModelPresenter):
         self.__rotationHelper.switchCamera(Comp7Cameras.SHOP.value, False)
         self.__disableBackgroundAlpha()
         super(ShopPage, self).initialize(**params)
-        self.__productSelectorMethods = {GUI_ITEM_TYPE.VEHICLE: self.__selectVehicle, 
-           GUI_ITEM_TYPE.STYLE: self.__selectStyle, 
-           GUI_ITEM_TYPE.OPTIONALDEVICE: self.__selectEquipment}
+        self.__productSelectorMethods = {GUI_ITEM_TYPE.VEHICLE: self.__selectVehicle,
+         GUI_ITEM_TYPE.STYLE: self.__selectStyle,
+         GUI_ITEM_TYPE.OPTIONALDEVICE: self.__selectEquipment}
         if 'productCD' in params:
             self.__currentItemCD = params['productCD']
         self.__blur = CachedBlur(blurRadius=self.__BLUR_INTENSITY)
@@ -210,31 +205,18 @@ class ShopPage(PageSubModelPresenter):
 
     def _getEvents(self):
         events = self.__rotationHelper.getCameraEvents(self.viewModel)
-        events.extend([
-         (
-          self.viewModel.onAddToVehicleCompare, self.__onAddToVehicleCompare),
-         (
-          self.viewModel.onGoToPreview, self.__goToPreview),
-         (
-          self.viewModel.onGoToHangar, self.__goToVehicle),
-         (
-          self.viewModel.onGoToCustomization, self.__goToStyle),
-         (
-          self.viewModel.onProductPurchase, self.__openPurchaseView),
-         (
-          self.viewModel.onProductRestore, self.__openRestoreView),
-         (
-          self.viewModel.onProductSelect, self.__onProductSelect),
-         (
-          self.viewModel.onProductSeen, self.__onProductSeen),
-         (
-          self.__itemsCache.onSyncCompleted, self.__onSyncCompleted),
-         (
-          self.__comp7ShopController.onShopStateChanged, self.__onShopStateChanged),
-         (
-          self.__comp7ShopController.onDataUpdated, self.__onDataUpdated),
-         (
-          self.__comparisonBasket.onChange, self.__switchComparisonBasketState)])
+        events.extend([(self.viewModel.onAddToVehicleCompare, self.__onAddToVehicleCompare),
+         (self.viewModel.onGoToPreview, self.__goToPreview),
+         (self.viewModel.onGoToHangar, self.__goToVehicle),
+         (self.viewModel.onGoToCustomization, self.__goToStyle),
+         (self.viewModel.onProductPurchase, self.__openPurchaseView),
+         (self.viewModel.onProductRestore, self.__openRestoreView),
+         (self.viewModel.onProductSelect, self.__onProductSelect),
+         (self.viewModel.onProductSeen, self.__onProductSeen),
+         (self.__itemsCache.onSyncCompleted, self.__onSyncCompleted),
+         (self.__comp7ShopController.onShopStateChanged, self.__onShopStateChanged),
+         (self.__comp7ShopController.onDataUpdated, self.__onDataUpdated),
+         (self.__comparisonBasket.onChange, self.__switchComparisonBasketState)])
         return events
 
     def __disableBackgroundAlpha(self):
@@ -254,7 +236,7 @@ class ShopPage(PageSubModelPresenter):
             self.__showWaiting()
 
     def __processData(self):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             self.__products = self.__products or self.__comp7ShopController.getProducts()
             hasDataError = len(self.__products) == 0
             if hasDataError:
@@ -322,7 +304,7 @@ class ShopPage(PageSubModelPresenter):
         return
 
     def __updateProductDiscounts(self):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             discountItems = []
             productCode = self.__productCdToCode[self.__currentItemCD]
             product = self.__products[productCode]
@@ -342,15 +324,13 @@ class ShopPage(PageSubModelPresenter):
 
     def __sortingKey(self, product):
         if product.getType() == ProductTypes.VEHICLE:
-            return (
-             -product.getRank(),
+            return (-product.getRank(),
              _PRODUCT_TYPE_ORDER.index(product.getType()),
              product.vehicleInfo.getTier(),
              product.vehicleInfo.getNation(),
              product.vehicleInfo.getName())
         productName = product.getName() if product.getType() == ProductTypes.STYLE3D else product.reward.getLabel()
-        return (
-         -product.getRank(),
+        return (-product.getRank(),
          _PRODUCT_TYPE_ORDER.index(product.getType()),
          0,
          '',
@@ -359,9 +339,9 @@ class ShopPage(PageSubModelPresenter):
     def __goToPreview(self):
         itemType = getItemType(self.__currentItemCD)
         if itemType == GUI_ITEM_TYPE.VEHICLE:
-            params = {'resetAppearance': False, 'heroInteractive': False, 
-               'hiddenBlocks': (
-                              OptionalBlocks.BUYING_PANEL,)}
+            params = {'resetAppearance': False,
+             'heroInteractive': False,
+             'hiddenBlocks': (OptionalBlocks.BUYING_PANEL,)}
             comp7_events.showComp7VehiclePreview(self.__currentItemCD, **params)
         elif itemType == GUI_ITEM_TYPE.STYLE:
             vehCD, style = getVehicleCDAndStyle(self.__currentItemCD)
@@ -409,16 +389,14 @@ class ShopPage(PageSubModelPresenter):
         self.__comparisonBasket.addVehicle(self.__currentItemCD)
 
     def __switchComparisonBasketState(self, _):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             self.__checkComparisonBasketState(tx)
 
     def __getStartProductCD(self, products):
         if self.__currentItemCD:
             return self.__currentItemCD
         notPurchasedProduct = self.__getFirstNotPurchasedProduct(products)
-        if notPurchasedProduct:
-            return notPurchasedProduct.getId()
-        return products[0].getId()
+        return notPurchasedProduct.getId() if notPurchasedProduct else products[0].getId()
 
     def __getFirstNotPurchasedProduct(self, products):
         return findFirst(lambda product: product.getState() != ProductState.PURCHASED, products)
@@ -429,7 +407,7 @@ class ShopPage(PageSubModelPresenter):
             selectorMethod = self.__productSelectorMethods[itemType]
         else:
             selectorMethod = self.__productSelectorMethods[self.__DEFAULT_PRODUCT_SELECTOR_NAME]
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setSelectedProductId(self.__currentItemCD)
         selectorMethod()
         self.__updateProductDiscounts()
@@ -445,7 +423,7 @@ class ShopPage(PageSubModelPresenter):
             g_currentPreviewVehicle.selectVehicle(self.__currentItemCD)
         else:
             g_currentPreviewVehicle.onHeroStateUpdated += self.__onHeroStateChanged
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             self.__checkComparisonBasketState(tx)
         self.__blur.disable()
 

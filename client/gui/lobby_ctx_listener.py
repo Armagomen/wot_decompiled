@@ -1,12 +1,12 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/lobby_ctx_listener.py
 _CHANGE_NOTIFIERS = []
 
 def _getValueFromPath(path, data):
     if not path:
         return data
     else:
-        if path[0] in data:
-            return _getValueFromPath(path[1:], data[path[0]])
-        return
+        return _getValueFromPath(path[1:], data[path[0]]) if path[0] in data else None
 
 
 class LobbyContextChangeListener(object):

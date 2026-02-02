@@ -1,4 +1,8 @@
-import CGF, enum, BattleReplay
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/cgf_components/client_worlds_helpers.py
+import CGF
+import enum
+import BattleReplay
 from cgf_script.managers_registrator import autoregister
 from constants import IS_UE_EDITOR
 from helpers import isPlayerAccount, isPlayerAvatar

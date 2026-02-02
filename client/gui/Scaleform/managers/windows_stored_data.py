@@ -1,6 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/managers/windows_stored_data.py
 import logging
 from collections import namedtuple, defaultdict
-import functools, types
+import functools
+import types
 from gui.Scaleform.daapi.view.meta.WindowViewMeta import WindowViewMeta
 from gui.doc_loaders.WindowsStoredDataLoader import WindowsStoredDataLoader
 from messenger.ext.channel_num_gen import isClientIDValid
@@ -12,8 +15,7 @@ class DATA_TYPE(object):
     UNIQUE_WINDOW = 1
     CAROUSEL_WINDOW = 2
     CHANNEL_WINDOW = 3
-    RANGE = (
-     UNIQUE_WINDOW, CAROUSEL_WINDOW, CHANNEL_WINDOW)
+    RANGE = (UNIQUE_WINDOW, CAROUSEL_WINDOW, CHANNEL_WINDOW)
 
 
 class TARGET_ID(object):
@@ -137,7 +139,7 @@ class WindowStoredData(object):
 
 
 class UniqueWindowStoredData(WindowStoredData):
-    __slots__ = ('_uniqueName', )
+    __slots__ = ('_uniqueName',)
 
     def __init__(self, name, *args):
         super(UniqueWindowStoredData, self).__init__(*args)
@@ -148,7 +150,7 @@ class UniqueWindowStoredData(WindowStoredData):
         self._uniqueName = name
 
     def __repr__(self):
-        return ('UniqueWindowStoredData(uniqueName = {0:>s}, geometry = {1!r:s}, trusted = {2!r:s})').format(self._uniqueName, self._geometry, self._trusted)
+        return 'UniqueWindowStoredData(uniqueName = {0:>s}, geometry = {1!r:s}, trusted = {2!r:s})'.format(self._uniqueName, self._geometry, self._trusted)
 
     @classmethod
     def make(cls, window):
@@ -160,11 +162,9 @@ class UniqueWindowStoredData(WindowStoredData):
 
     def pack(self):
         if not self._uniqueName:
-            return
+            return None
         else:
-            if self._geometry is None:
-                return
-            return (self._uniqueName,) + self._geometry
+            return None if self._geometry is None else (self._uniqueName,) + self._geometry
 
     def getFindCriteria(self):
         return self._uniqueName
@@ -174,7 +174,7 @@ class UniqueWindowStoredData(WindowStoredData):
 
 
 class CarouselWindowStoredData(WindowStoredData):
-    __slots__ = ('_clientID', )
+    __slots__ = ('_clientID',)
 
     def __init__(self, clientID, *args):
         super(CarouselWindowStoredData, self).__init__(*args)
@@ -182,7 +182,7 @@ class CarouselWindowStoredData(WindowStoredData):
         self._trusted = isClientIDValid(clientID)
 
     def __repr__(self):
-        return ('CarouselWindowStoredData(clientID = {0:n}, geometry = {1!r:s}, trusted = {2!r:s})').format(self._clientID, self._geometry, self._trusted)
+        return 'CarouselWindowStoredData(clientID = {0:n}, geometry = {1!r:s}, trusted = {2!r:s})'.format(self._clientID, self._geometry, self._trusted)
 
     @classmethod
     def make(cls, window):
@@ -200,11 +200,9 @@ class CarouselWindowStoredData(WindowStoredData):
 
     def pack(self):
         if not self._clientID:
-            return
+            return None
         else:
-            if self._geometry is None:
-                return
-            return (self._clientID,) + self._geometry
+            return None if self._geometry is None else (self._clientID,) + self._geometry
 
     def getFindCriteria(self):
         return self._clientID
@@ -227,7 +225,7 @@ class ChannelWindowStoredData(WindowStoredData):
         self._trusted = False
 
     def __repr__(self):
-        return ('ChannelWindowStoredData(protoType = {0:n}, channelID = {1!r:s}, geometry = {2!r:s}, trusted = {3!r:s})').format(self._protoType, self._channelID, self._geometry, self._trusted)
+        return 'ChannelWindowStoredData(protoType = {0:n}, channelID = {1!r:s}, geometry = {2!r:s}, trusted = {3!r:s})'.format(self._protoType, self._channelID, self._geometry, self._trusted)
 
     @classmethod
     def make(cls, window):
@@ -251,13 +249,11 @@ class ChannelWindowStoredData(WindowStoredData):
 
     def pack(self):
         if not self._protoType:
-            return
+            return None
+        elif not self._channelID:
+            return None
         else:
-            if not self._channelID:
-                return
-            if self._geometry is None:
-                return
-            return (self._protoType, self._channelID) + self._geometry
+            return None if self._geometry is None else (self._protoType, self._channelID) + self._geometry
 
     def getFindCriteria(self):
         return (self._protoType, self._channelID)
@@ -281,7 +277,7 @@ class _WindowsStoredDataManager(object):
         self.__storedData = defaultdict(list)
         self.__targetMask = DEF_TARGET_MASK
         self.__loader = None
-        self.__supported = dict((clazz.getDataType(), clazz) for clazz in supported)
+        self.__supported = dict(((clazz.getDataType(), clazz) for clazz in supported))
         self.__trustedCriteria = defaultdict(set)
         self.__isStarted = False
         return
@@ -355,9 +351,9 @@ class _WindowsStoredDataManager(object):
     def removeTarget(self, targetID):
         if not self.__targetMask & targetID:
             return
+        elif not targetID & TARGET_ID.ALL:
+            return
         else:
-            if not targetID & TARGET_ID.ALL:
-                return
             self.__targetMask ^= targetID
             self.__storedData.pop(targetID, None)
             return
@@ -365,10 +361,10 @@ class _WindowsStoredDataManager(object):
     def addData(self, targetID, dataType, window):
         if not self.isTargetEnabled(targetID):
             return
+        elif dataType not in self.__supported:
+            _logger.error('Data type is not supported: %r', dataType)
+            return
         else:
-            if dataType not in self.__supported:
-                _logger.error('Data type is not supported: %r', dataType)
-                return
             clazz = self.__supported[dataType]
             data = clazz.make(window)
             if data is not None:
@@ -404,5 +400,4 @@ class _WindowsStoredDataManager(object):
                 item.setTrusted(True)
 
 
-g_windowsStoredData = _WindowsStoredDataManager((
- UniqueWindowStoredData, CarouselWindowStoredData, ChannelWindowStoredData))
+g_windowsStoredData = _WindowsStoredDataManager((UniqueWindowStoredData, CarouselWindowStoredData, ChannelWindowStoredData))

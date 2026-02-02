@@ -1,4 +1,7 @@
-import logging, CGF
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/cgf_components/arena_camera_manager.py
+import logging
+import CGF
 from GenericComponents import TransformComponent
 from cgf_script.managers_registrator import onAddedQuery, onRemovedQuery, autoregister
 from CameraComponents import CameraComponent

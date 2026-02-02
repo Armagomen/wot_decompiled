@@ -1,4 +1,9 @@
-import BigWorld, BattleReplay, VOIP, CommandMapping
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/bw_chat2/VOIPChatController.py
+import BigWorld
+import BattleReplay
+import VOIP
+import CommandMapping
 from VOIP.voip_constants import VOIP_SUPPORTED_API
 from constants import ARENA_BONUS_TYPE_IDS
 from debug_utils import LOG_WARNING
@@ -51,9 +56,7 @@ class VOIPChatController(IVOIPChatController):
         return VOIP.getVOIPManager().isInitialized()
 
     def isPlayerSpeaking(self, accountDBID):
-        if self.isVOIPEnabled():
-            return bool(VOIP.getVOIPManager().isParticipantTalking(accountDBID))
-        return False
+        return bool(VOIP.getVOIPManager().isParticipantTalking(accountDBID)) if self.isVOIPEnabled() else False
 
     def isVOIPEnabled(self):
         return GUI_SETTINGS.voiceChat

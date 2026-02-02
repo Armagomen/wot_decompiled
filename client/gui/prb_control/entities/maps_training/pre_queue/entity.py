@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/maps_training/pre_queue/entity.py
 import BigWorld
 from constants import QUEUE_TYPE
 from debug_utils import LOG_DEBUG
@@ -46,9 +48,7 @@ class MapsTrainingEntity(PreQueueEntity):
         super(MapsTrainingEntity, self).leave(ctx, callback)
 
     def doSelectAction(self, action):
-        if action.actionName == PREBATTLE_ACTION_NAME.MAPS_TRAINING:
-            return SelectResult(True)
-        return super(MapsTrainingEntity, self).doSelectAction(action)
+        return SelectResult(True) if action.actionName == PREBATTLE_ACTION_NAME.MAPS_TRAINING else super(MapsTrainingEntity, self).doSelectAction(action)
 
     def getPermissions(self, pID=None, **kwargs):
         return MapsTrainingPermissions(self.isInQueue())

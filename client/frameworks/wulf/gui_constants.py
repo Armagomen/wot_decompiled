@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/frameworks/wulf/gui_constants.py
 from enum import Enum
 from shared_utils import CONST_CONTAINER
 
@@ -34,8 +36,7 @@ class ViewFlags(CONST_CONTAINER):
             return WindowLayer.VIEW
         if flags == ViewFlags.LOBBY_SUB_VIEW:
             return WindowLayer.SUB_VIEW
-        if flags == ViewFlags.LOBBY_TOP_SUB_VIEW:
-            return WindowLayer.TOP_SUB_VIEW
+        return WindowLayer.TOP_SUB_VIEW if flags == ViewFlags.LOBBY_TOP_SUB_VIEW else None
 
 
 class ViewEventType(CONST_CONTAINER):

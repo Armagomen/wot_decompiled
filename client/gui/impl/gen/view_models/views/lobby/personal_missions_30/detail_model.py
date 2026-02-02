@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/personal_missions_30/detail_model.py
 from enum import Enum
 from frameworks.wulf import ViewModel
 

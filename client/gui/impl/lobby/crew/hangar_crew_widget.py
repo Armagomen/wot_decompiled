@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/hangar_crew_widget.py
 from CurrentVehicle import g_currentVehicle
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.impl.gen import R
@@ -11,7 +13,7 @@ from helpers import dependency
 from skeletons.gui.shared import IItemsCache
 
 class HangarCrewWidget(ViewImpl):
-    __slots__ = ('crewWidget', )
+    __slots__ = ('crewWidget',)
     itemsCache = dependency.descriptor(IItemsCache)
 
     def __init__(self):
@@ -37,9 +39,7 @@ class HangarCrewWidget(ViewImpl):
         self.setChildView(CrewWidget.LAYOUT_DYN_ACCESSOR(), self.crewWidget)
 
     def _getEvents(self):
-        return (
-         (
-          self.crewWidget.onSlotClick, self.__onWidgetSlotClick),)
+        return ((self.crewWidget.onSlotClick, self.__onWidgetSlotClick),)
 
     def __onWidgetSlotClick(self, tankmanID, slotIdx):
         if tankmanID == NO_TANKMAN:

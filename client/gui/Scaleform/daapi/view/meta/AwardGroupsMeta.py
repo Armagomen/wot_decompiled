@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/AwardGroupsMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class AwardGroupsMeta(BaseDAAPIComponent):
@@ -6,17 +8,13 @@ class AwardGroupsMeta(BaseDAAPIComponent):
         self._printOverrideError('showGroup')
 
     def as_setDataS(self, groups):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setData(groups)
+        return self.flashObject.as_setData(groups) if self._isDAAPIInited() else None
 
     def as_setTooltipsS(self, tooltips):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setTooltips(tooltips)
+        return self.flashObject.as_setTooltips(tooltips) if self._isDAAPIInited() else None
 
     def as_setSelectedS(self, id, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setSelected(id, value)
+        return self.flashObject.as_setSelected(id, value) if self._isDAAPIInited() else None
 
     def as_setEnabledS(self, id, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setEnabled(id, value)
+        return self.flashObject.as_setEnabled(id, value) if self._isDAAPIInited() else None

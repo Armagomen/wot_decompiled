@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/Scaleform/daapi/view/lobby/feature/prime_time_view.py
 from __future__ import absolute_import
 from past.builtins import cmp
 from fun_random.gui.feature.util.fun_mixins import FunAssetPacksMixin, FunSubModeHolder
@@ -17,9 +19,7 @@ class FunRandomServerPresenter(ServerListItemPresenter):
     def __cmp__(self, other):
         peripheryID = self._connectionMgr.peripheryID
         result = cmp(self.getPeripheryID() == peripheryID, other.getPeripheryID() == peripheryID)
-        if result:
-            return result
-        return self.orderID - other.orderID
+        return result if result else self.orderID - other.orderID
 
 
 class FunRandomPrimeTimeView(RankedPrimeTimeMeta, FunAssetPacksMixin, FunSubModeHolder):
@@ -58,7 +58,7 @@ class FunRandomPrimeTimeView(RankedPrimeTimeMeta, FunAssetPacksMixin, FunSubMode
         return PREBATTLE_ACTION_NAME.FUN_RANDOM
 
     def _getServerText(self, serverList, serverInfo, isServerNameShort=False):
-        if any(server.isAvailable() for server in serverList):
+        if any((server.isAvailable() for server in serverList)):
             if len(serverList) > 1:
                 return backport.text(R.strings.fun_random.primeTimes.availableServers())
             return makeServerString(serverInfo, isServerNameShort=isServerNameShort, customTextId=R.strings.fun_random.primeTimes.availableServer)

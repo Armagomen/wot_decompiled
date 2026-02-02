@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/event_boards/event_boards_details_container_view.py
 from gui.shared import events, event_bus_handlers, EVENT_BUS_SCOPE
 from gui.Scaleform.daapi.view.meta.EventBoardsDetailsContainerViewMeta import EventBoardsDetailsContainerViewMeta
 from gui.Scaleform.genConsts.EVENTBOARDS_ALIASES import EVENTBOARDS_ALIASES
@@ -22,8 +24,8 @@ class EventBoardsDetailsContainerView(EventBoardsDetailsContainerViewMeta):
 
     def _populate(self):
         super(EventBoardsDetailsContainerView, self)._populate()
-        data = {'linkage': self._linkage, 
-           'title': text_styles.superPromoTitle(self.eventData.getName())}
+        data = {'linkage': self._linkage,
+         'title': text_styles.superPromoTitle(self.eventData.getName())}
         data.update(self._extra)
         self.as_setInitDataS(data)
 
@@ -46,9 +48,11 @@ class EventBoardsDetailsVehiclesView(EventBoardsDetailsContainerView):
 
 class EventBoardsDetailsAwardsView(EventBoardsDetailsContainerView):
     _linkage = EVENTBOARDS_ALIASES.EVENTBOARDS_DETAILS_AWARDS_LINKAGE
-    _extra = {'bgWidth': 753, 'bgHeight': 509}
+    _extra = {'bgWidth': 753,
+     'bgHeight': 509}
 
 
 class EventBoardsDetailsBattleView(EventBoardsDetailsContainerView):
     _linkage = EVENTBOARDS_ALIASES.EVENTBOARDS_DETAILS_BATTLE_LINKAGE
-    _extra = {'bgWidth': 753, 'bgHeight': 549}
+    _extra = {'bgWidth': 753,
+     'bgHeight': 549}

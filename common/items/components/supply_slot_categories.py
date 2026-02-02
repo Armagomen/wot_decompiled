@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/items/components/supply_slot_categories.py
 from typing import Set, Any, Optional, List, Dict, Tuple
 from ResMgr import DataSection
 from debug_utils import LOG_CODEPOINT_WARNING, LOG_WARNING
@@ -13,13 +15,25 @@ class SlotCategories(object):
     FIRESUPPORT = 'firesupport'
     RECONNAISSANCE = 'reconnaissance'
     UNIVERSAL = 'universal'
-    ORDER = (
-     FIREPOWER, SURVIVABILITY, MOBILITY, STEALTH, TACTICS, FIRESUPPORT, RECONNAISSANCE)
-    ALL = frozenset([FIREPOWER, SURVIVABILITY, MOBILITY, STEALTH, TACTICS, FIRESUPPORT, RECONNAISSANCE, UNIVERSAL])
+    ORDER = (FIREPOWER,
+     SURVIVABILITY,
+     MOBILITY,
+     STEALTH,
+     TACTICS,
+     FIRESUPPORT,
+     RECONNAISSANCE)
+    ALL = frozenset([FIREPOWER,
+     SURVIVABILITY,
+     MOBILITY,
+     STEALTH,
+     TACTICS,
+     FIRESUPPORT,
+     RECONNAISSANCE,
+     UNIVERSAL])
 
 
 class CategoriesHolder(object):
-    __slots__ = ('categories', )
+    __slots__ = ('categories',)
 
     def __init__(self):
         super(CategoriesHolder, self).__init__()
@@ -32,28 +46,24 @@ class CategoriesHolder(object):
 class SupplySlotFactorLevels(object):
     REGULAR = 0
     IMPROVED = 1
-    ALL = (
-     REGULAR, IMPROVED)
+    ALL = (REGULAR, IMPROVED)
 
 
 class SupplySlotFilter(object):
 
     @staticmethod
     def defineActiveValuesLevel(slotCategories, supplyCategories):
-        if slotCategories & supplyCategories:
-            return SupplySlotFactorLevels.IMPROVED
-        return SupplySlotFactorLevels.REGULAR
+        return SupplySlotFactorLevels.IMPROVED if slotCategories & supplyCategories else SupplySlotFactorLevels.REGULAR
 
 
 class AttrsOperation(object):
     MUL = 'mul'
     ADD = 'add'
-    ALL = (
-     MUL, ADD)
-    _DEFAULT_VALUES = {MUL: 1.0, 
-       ADD: 0.0}
-    _OPERATIONS = {MUL: lambda x, y: x * y, 
-       ADD: lambda x, y: x + y}
+    ALL = (MUL, ADD)
+    _DEFAULT_VALUES = {MUL: 1.0,
+     ADD: 0.0}
+    _OPERATIONS = {MUL: lambda x, y: x * y,
+     ADD: lambda x, y: x + y}
 
     @staticmethod
     def updateDictWithAttribute(attrsDict, attrName, opType, value):
@@ -72,12 +82,10 @@ class LevelsFactor(object):
         self.opType = opType
 
     def __str__(self):
-        return ('{}: (opType={}, values={})').format(self.__class__.__name__, self.opType, self.values)
+        return '{}: (opType={}, values={})'.format(self.__class__.__name__, self.opType, self.values)
 
     def getActiveValue(self, level):
-        if level < len(self.values):
-            return self.values[level]
-        return self.values[(-1)]
+        return self.values[level] if level < len(self.values) else self.values[-1]
 
     def applyLevelToAttrsDict(self, level, attrsDict, attrName):
         if self.opType is None:
@@ -93,7 +101,7 @@ class LevelsFactor(object):
         attrName = _xml.readString(xmlCtx, factorSection, 'attribute')
         opTypeName = _xml.readString(xmlCtx, factorSection, 'type')
         if opTypeName not in AttrsOperation.ALL:
-            raise SoftException(('Unknown opTypeName ({}) for LevelsFactor').format(opTypeName))
+            raise SoftException('Unknown opTypeName ({}) for LevelsFactor'.format(opTypeName))
         values = LevelsFactor._readFactorValues(xmlCtx, factorSection, 'valueByLevel')
         return (attrName, LevelsFactor(values, opTypeName))
 

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/skeletons/tutorial.py
 from __future__ import absolute_import
 import typing
 if typing.TYPE_CHECKING:

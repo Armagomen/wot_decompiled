@@ -1,6 +1,15 @@
-import math, logging
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/customization/service.py
+import math
+import logging
 from itertools import chain
-import typing, BigWorld, CGF, Math, Windowing, Event, nations
+import typing
+import BigWorld
+import CGF
+import Math
+import Windowing
+import Event
+import nations
 from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
 from gui.server_events.events_helpers import getC11nQuestsConfig, isC11nQuest
 from helpers import dependency, time_utils
@@ -94,15 +103,10 @@ class _ServiceHelpersMixin(object):
 
     def getCurrentStyle(self):
         commonOutfitComponent = parseOutfitDescr(self.itemsCache.items.inventory.getOutfitData(g_currentVehicle.item.intCD, SeasonType.ALL))
-        if commonOutfitComponent.styleId:
-            return self.getItemByID(GUI_ITEM_TYPE.STYLE, commonOutfitComponent.styleId)
-        else:
-            return
+        return self.getItemByID(GUI_ITEM_TYPE.STYLE, commonOutfitComponent.styleId) if commonOutfitComponent.styleId else None
 
     def getCustomOutfit(self, season):
-        if not self.isStyleInstalled():
-            return self.getCurrentOutfit(season)
-        return self.getEmptyOutfitWithNationalEmblems(self._getVehicleCD())
+        return self.getCurrentOutfit(season) if not self.isStyleInstalled() else self.getEmptyOutfitWithNationalEmblems(self._getVehicleCD())
 
     def getCommonOutfit(self):
         commonOutfitComponent = parseOutfitDescr(self.itemsCache.items.inventory.getOutfitData(g_currentVehicle.item.intCD, SeasonType.ALL))
@@ -365,10 +369,9 @@ class CustomizationService(_ServiceItemShopMixin, _ServiceHelpersMixin, ICustomi
         pitch = math.radians(cfg['v_start_angles'][1])
         roll = math.radians(cfg['v_start_angles'][2])
         shadowYOffset = cfg['shadow_forward_y_offset'] if BigWorld.getGraphicsSetting('RENDER_PIPELINE') == 1 else cfg['shadow_deferred_y_offset']
-        g_eventBus.handleEvent(events.HangarCustomizationEvent(events.HangarCustomizationEvent.CHANGE_VEHICLE_MODEL_TRANSFORM, ctx={'targetPos': targetPos, 
-           'rotateYPR': (
-                       yaw, pitch, roll), 
-           'shadowYOffset': shadowYOffset}), scope=EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.handleEvent(events.HangarCustomizationEvent(events.HangarCustomizationEvent.CHANGE_VEHICLE_MODEL_TRANSFORM, ctx={'targetPos': targetPos,
+         'rotateYPR': (yaw, pitch, roll),
+         'shadowYOffset': shadowYOffset}), scope=EVENT_BUS_SCOPE.LOBBY)
 
     def setSelectingRegionEnabled(self, enable):
         if self._helper:
@@ -386,8 +389,10 @@ class CustomizationService(_ServiceItemShopMixin, _ServiceHelpersMixin, ICustomi
         if self._notHandleHighlighterEvent:
             self._notHandleHighlighterEvent = False
             return
-        areaID, regionID, highlightingType, highlightingResult = (
-         -1, -1, True, False)
+        areaID, regionID, highlightingType, highlightingResult = (-1,
+         -1,
+         True,
+         False)
         if args:
             areaID, regionID, highlightingType, highlightingResult = args
         self.onRegionHighlighted(areaID, regionID, highlightingType, highlightingResult)
@@ -474,20 +479,21 @@ class CustomizationService(_ServiceItemShopMixin, _ServiceHelpersMixin, ICustomi
         entity = self.hangarSpace.getVehicleEntity()
         if not entity or not level or not entity.isVehicleLoaded:
             return 1
-        outfit = entity.appearance.outfit
-        if not outfit.style or not outfit.style.isProgression:
+        else:
+            outfit = entity.appearance.outfit
+            if not outfit.style or not outfit.style.isProgression:
+                return 1
+            if g_currentPreviewVehicle.isPresent():
+                vehicle = g_currentPreviewVehicle.item
+                if vehicle:
+                    season = g_tankActiveCamouflage.get(vehicle.intCD, vehicle.getAnyOutfitSeason())
+                    resOutfit = getStyleProgressionOutfit(outfit, level, season)
+                    self.tryOnOutfit(resOutfit)
+                    if self.__customizationCtx is not None:
+                        slotID = C11nId(areaId=Area.MISC, slotType=GUI_ITEM_TYPE.STYLE, regionIdx=0)
+                        self.__customizationCtx.events.onComponentChanged(slotID, True)
+                    return resOutfit.progressionLevel
             return 1
-        if g_currentPreviewVehicle.isPresent():
-            vehicle = g_currentPreviewVehicle.item
-            if vehicle:
-                season = g_tankActiveCamouflage.get(vehicle.intCD, vehicle.getAnyOutfitSeason())
-                resOutfit = getStyleProgressionOutfit(outfit, level, season)
-                self.tryOnOutfit(resOutfit)
-                if self.__customizationCtx is not None:
-                    slotID = C11nId(areaId=Area.MISC, slotType=GUI_ITEM_TYPE.STYLE, regionIdx=0)
-                    self.__customizationCtx.events.onComponentChanged(slotID, True)
-                return resOutfit.progressionLevel
-        return 1
 
     def getCurrentProgressionStyleLevel(self):
         entity = self.hangarSpace.getVehicleEntity()
@@ -529,10 +535,7 @@ class CustomizationService(_ServiceItemShopMixin, _ServiceHelpersMixin, ICustomi
 
     def getStyleItemByQuestID(self, eventID):
         itemCD = self.getItemCDByQuestID(eventID)
-        if itemCD is None:
-            return
-        else:
-            return vehicles.g_cache.customization20().itemToQuestProgressionStyle.get(itemCD)
+        return None if itemCD is None else vehicles.g_cache.customization20().itemToQuestProgressionStyle.get(itemCD)
 
     def __updateProgressionQuests(self):
         cache = vehicles.g_cache.customization20()

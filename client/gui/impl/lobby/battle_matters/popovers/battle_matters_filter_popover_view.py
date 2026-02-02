@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/battle_matters/popovers/battle_matters_filter_popover_view.py
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.impl.gen.view_models.views.lobby.battle_matters.popovers.battle_matters_filter_popover_view_model import BattleMattersFilterPopoverViewModel
 from gui.impl.gen.view_models.views.lobby.battle_matters.popovers.filter_control_view_model import FilterControlViewModel
@@ -20,8 +22,8 @@ class BattleMattersFilterPopoverView(PopOverViewImpl):
         return super(BattleMattersFilterPopoverView, self).getViewModel()
 
     def onToggleFilter(self, event):
-        changesFromEvent = {'Types': event.get(BattleMattersFilterPopoverViewModel.ARG_CONTROL_TYPE, {}), 
-           'Nations': event.get(BattleMattersFilterPopoverViewModel.ARG_CONTROL_NATION, {})}
+        changesFromEvent = {'Types': event.get(BattleMattersFilterPopoverViewModel.ARG_CONTROL_TYPE, {}),
+         'Nations': event.get(BattleMattersFilterPopoverViewModel.ARG_CONTROL_NATION, {})}
         changes = {k:{v: not self.__filters[k][v]} for k, v in changesFromEvent.iteritems() if k and v}
         self._updateFilter(changes)
 
@@ -38,7 +40,7 @@ class BattleMattersFilterPopoverView(PopOverViewImpl):
         return
 
     def _update(self):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             for key in self.__filters:
                 filterArray = getattr(tx, 'get' + key)()
                 filterArray.clear()
@@ -65,7 +67,7 @@ class BattleMattersFilterPopoverView(PopOverViewImpl):
         for filterName in self.__filters:
             self.__filters[filterName].update(changes.get(filterName, {}))
 
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             for change in changes:
                 self._changeVMValue(tx, changes[change], change)
 

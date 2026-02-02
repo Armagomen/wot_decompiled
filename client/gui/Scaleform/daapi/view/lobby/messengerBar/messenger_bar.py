@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/messengerBar/messenger_bar.py
 from account_helpers.settings_core.settings_constants import SESSION_STATS
 from adisp import adisp_process
 from constants import IS_DEVELOPMENT, QUEUE_TYPE
@@ -30,7 +32,9 @@ from soft_exception import SoftException
 from skeletons.gui.lobby_context import ILobbyContext
 
 def _formatIcon(iconName, width=32, height=32, path='html_templates:lobby/messengerBar'):
-    return makeHtmlString(path, 'iconTemplate', {'iconName': iconName, 'width': width, 'height': height})
+    return makeHtmlString(path, 'iconTemplate', {'iconName': iconName,
+     'width': width,
+     'height': height})
 
 
 class _CompareBasketListener(object):
@@ -59,16 +63,16 @@ class _CompareBasketListener(object):
         if changedData.addedCDs:
             cMgr = self.__getContainerManager()
             if not cMgr.isViewAvailable(WindowLayer.SUB_VIEW, {POP_UP_CRITERIA.VIEW_ALIAS: VIEW_ALIAS.VEHICLE_COMPARE}):
-                vehCmpData = self.comparisonBasket.getVehicleAt(changedData.addedIDXs[(-1)])
+                vehCmpData = self.comparisonBasket.getVehicleAt(changedData.addedIDXs[-1])
                 if not vehCmpData.isFromCache():
                     if self.comparisonBasket.getVehiclesCount() == 1:
                         self.__view.as_openVehicleCompareCartPopoverS(True)
                     else:
                         vehicle = self.itemsCache.items.getItemByCD(vehCmpData.getVehicleCD())
-                        vehName = ('  ').join([int2roman(vehicle.level), vehicle.shortUserName])
+                        vehName = '  '.join([int2roman(vehicle.level), vehicle.shortUserName])
                         vehTypeIcon = RES_ICONS.maps_icons_vehicletypes_gold(vehicle.type + '.png')
-                        self.__view.as_showAddVehicleCompareAnimS({'vehName': vehName, 
-                           'vehType': vehTypeIcon})
+                        self.__view.as_showAddVehicleCompareAnimS({'vehName': vehName,
+                         'vehType': vehTypeIcon})
         if changedData.addedCDs or changedData.removedCDs:
             self.__updateBtnVisibility()
 
@@ -108,7 +112,7 @@ class MessengerBar(MessengerBarMeta, IGlobalListener):
 
     @prbDispatcherProperty
     def prbDispatcher(self):
-        return
+        return None
 
     def channelButtonClick(self):
         if not self.__manageWindow(MESSENGER_VIEW_ALIAS.CHANNEL_MANAGEMENT_WINDOW):
@@ -143,18 +147,18 @@ class MessengerBar(MessengerBarMeta, IGlobalListener):
         self.startGlobalListening()
         bubbleCount = self._referralCtrl.getBubbleCount()
         referralTooltip, isSpecial = self.__getReferralButtonTooltip(bubbleCount)
-        self.as_setInitDataS({'channelsHtmlIcon': _formatIcon('iconChannels'), 
-           'isReferralEnabled': self._referralCtrl.isEnabled, 
-           'referralCounter': bubbleCount, 
-           'isReferralFirstIndication': self._referralCtrl.isFirstIndication(), 
-           'referralHtmlIcon': _formatIcon('iconReferral', width=38, height=29, path='html_templates:lobby/referralButton'), 
-           'referralTooltip': referralTooltip, 
-           'isSpecialReferralTooltip': isSpecial, 
-           'contactsHtmlIcon': _formatIcon('iconContacts', width=16), 
-           'vehicleCompareHtmlIcon': _formatIcon('iconComparison'), 
-           'contactsTooltip': TOOLTIPS.LOBY_MESSENGER_CONTACTS_BUTTON, 
-           'vehicleCompareTooltip': TOOLTIPS.LOBY_MESSENGER_VEHICLE_COMPARE_BUTTON, 
-           'sessionStatsHtmlIcon': _formatIcon('iconSessionStats')})
+        self.as_setInitDataS({'channelsHtmlIcon': _formatIcon('iconChannels'),
+         'isReferralEnabled': self._referralCtrl.isEnabled,
+         'referralCounter': bubbleCount,
+         'isReferralFirstIndication': self._referralCtrl.isFirstIndication(),
+         'referralHtmlIcon': _formatIcon('iconReferral', width=38, height=29, path='html_templates:lobby/referralButton'),
+         'referralTooltip': referralTooltip,
+         'isSpecialReferralTooltip': isSpecial,
+         'contactsHtmlIcon': _formatIcon('iconContacts', width=16),
+         'vehicleCompareHtmlIcon': _formatIcon('iconComparison'),
+         'contactsTooltip': TOOLTIPS.LOBY_MESSENGER_CONTACTS_BUTTON,
+         'vehicleCompareTooltip': TOOLTIPS.LOBY_MESSENGER_VEHICLE_COMPARE_BUTTON,
+         'sessionStatsHtmlIcon': _formatIcon('iconSessionStats')})
         sessionStatsSettings = SessionStatsSettingsController().getSettings()
         self.__sessionStatsBtnOnlyOnceHintShow = not sessionStatsSettings[SESSION_STATS.ONLY_ONCE_HINT_SHOWN_FIELD]
         self.__updateSessionStatsBtn()
@@ -205,19 +209,15 @@ class MessengerBar(MessengerBarMeta, IGlobalListener):
         isSpecialTooltip = False
         if self._referralCtrl.isNewReferralSeason and bubbleCount:
             isSpecialTooltip = True
-            return (
-             TOOLTIPS.LOBY_MESSENGER_REFERRAL_BUTTON_NEW_SEASON, isSpecialTooltip)
-        return (
-         TOOLTIPS.LOBY_MESSENGER_REFERRAL_BUTTON, isSpecialTooltip)
+            return (TOOLTIPS.LOBY_MESSENGER_REFERRAL_BUTTON_NEW_SEASON, isSpecialTooltip)
+        return (TOOLTIPS.LOBY_MESSENGER_REFERRAL_BUTTON, isSpecialTooltip)
 
     @adisp_process
     def __updateSessionStatsBtn(self):
         dispatcher = self.prbDispatcher
         if dispatcher is not None:
             queueType = dispatcher.getEntity().getQueueType()
-            isInSupportedMode = queueType in (
-             QUEUE_TYPE.RANDOMS,
-             QUEUE_TYPE.MAPBOX)
+            isInSupportedMode = queueType in (QUEUE_TYPE.RANDOMS, QUEUE_TYPE.MAPBOX)
         else:
             isInSupportedMode = False
         isSessionStatsEnabled = self._lobbyContext.getServerSettings().isSessionStatsEnabled()

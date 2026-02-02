@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/header/helpers/controls_helpers.py
 from __future__ import absolute_import
 import typing
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as BONUS_CAPS
@@ -31,6 +33,26 @@ class ILobbyHeaderControlsHelper(object):
     @classmethod
     def getFooterType(cls):
         raise NotImplementedError
+
+
+class EmptyLobbyHeaderFooterHelper(ILobbyHeaderControlsHelper):
+    __slots__ = ()
+
+    @classmethod
+    def getFightControlTooltipData(cls, prbValidation, isInSquad, isFightBtnDisabled, isNavigationEnabled):
+        return ('', False)
+
+    @classmethod
+    def getSquadControlTooltipData(cls, prbValidation, isInSquad):
+        return (R.invalid(), R.invalid(), {})
+
+    @classmethod
+    def getHeaderType(cls):
+        return LobbyHeader
+
+    @classmethod
+    def getFooterType(cls):
+        return LobbyFooter
 
 
 class DefaultLobbyHeaderHelper(ILobbyHeaderControlsHelper):

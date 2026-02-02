@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/gf_notifications/cache.py
 import typing
 from wotdecorators import singleton
 
@@ -6,7 +8,7 @@ def getCache():
 
 
 class IGFNotificationsCache(object):
-    __slots__ = ('__data', )
+    __slots__ = ('__data',)
 
     def setPayload(self, id, payload):
         raise NotImplementedError

@@ -1,4 +1,8 @@
-import logging, Event, constants
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/dialogs/recruit_window/recruit_content.py
+import logging
+import Event
+import constants
 from gui import GUI_NATIONS
 from gui.impl.lobby.crew.dialogs.recruit_window.recruit_dialog_utils import getSortedItems
 from gui.impl import backport
@@ -19,10 +23,7 @@ FIRST_ELEMENT = 0
 _logger = logging.getLogger(__name__)
 
 class RecruitContent(object):
-    __slots__ = ('__viewModel', '__selectedNationID', '__selectedNation', '__selectedVehType',
-                 '__selectedVehicle', '__selectedSpecialization', 'onRecruitContentChanged',
-                 '__isFemale', '__predefinedNations', '__predefinedRoles', '__vehIntCD',
-                 '__slotSpecialization', '__isSlotChanged')
+    __slots__ = ('__viewModel', '__selectedNationID', '__selectedNation', '__selectedVehType', '__selectedVehicle', '__selectedSpecialization', 'onRecruitContentChanged', '__isFemale', '__predefinedNations', '__predefinedRoles', '__vehIntCD', '__slotSpecialization', '__isSlotChanged')
     _itemsCache = dependency.descriptor(IItemsCache)
 
     def __init__(self, predefinedData, model=None):
@@ -65,7 +66,7 @@ class RecruitContent(object):
     def __fillModel(self):
         if self.__vehIntCD is not None:
             self.__isSlotChanged = int(self.__selectedVehicle) != self.__vehIntCD or self.__slotSpecialization != self.__selectedSpecialization
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setIsSlotChanged(self.__isSlotChanged)
             self.__fillNations()
             self.__fillVehTypes()
@@ -126,9 +127,9 @@ class RecruitContent(object):
 
     def __getVehTypeList(self):
         nationVehTypes = self._itemsCache.items.getVehicles(self.__getClassesCriteria(self.__selectedNationID)).values()
-        filteredVehTypes = set(v.type for v in nationVehTypes)
+        filteredVehTypes = set((v.type for v in nationVehTypes))
         if self.__predefinedRoles:
-            vehTypesByRole = set(v.type for v in nationVehTypes if set(self.__predefinedRoles).intersection(set(r[FIRST_ELEMENT] for r in v.descriptor.type.crewRoles)))
+            vehTypesByRole = set((v.type for v in nationVehTypes if set(self.__predefinedRoles).intersection(set((r[FIRST_ELEMENT] for r in v.descriptor.type.crewRoles)))))
             filteredVehTypes = filteredVehTypes.intersection(vehTypesByRole)
             if not filteredVehTypes and self.__selectedNation != NO_DATA_VALUE:
                 _logger.warning("Couldn't get vehTypes intersections with predefinedRoles: %s Check Token settings", self.__predefinedRoles)
@@ -152,7 +153,7 @@ class RecruitContent(object):
         vehiclesByNation = self._itemsCache.items.getVehicles(vehiclesCriteria).items()
         filteredVehicles = set(vehiclesByNation)
         if self.__predefinedRoles:
-            vehiclesByRole = set(i for i in vehiclesByNation if set(self.__predefinedRoles).intersection(set(r[FIRST_ELEMENT] for r in i[1].descriptor.type.crewRoles)))
+            vehiclesByRole = set((i for i in vehiclesByNation if set(self.__predefinedRoles).intersection(set((r[FIRST_ELEMENT] for r in i[1].descriptor.type.crewRoles)))))
             filteredVehicles = filteredVehicles.intersection(vehiclesByRole)
             if not filteredVehicles and self.__selectedVehType != NO_DATA_VALUE:
                 _logger.warning("Couldn't get vehicles intersections with predefinedRoles: %s Check Token settings", self.__predefinedRoles)
@@ -174,7 +175,7 @@ class RecruitContent(object):
     def __getRolesList(self):
         _, _, vehTypeID = vehicles.parseIntCompactDescr(int(self.__selectedVehicle))
         modulesAll = self._itemsCache.items.getVehicles(self.__getRoleCriteria(self.__selectedNationID, self.__selectedVehType, vehTypeID)).values()
-        filteredRoles = set(r[FIRST_ELEMENT] for v in modulesAll for r in v.descriptor.type.crewRoles)
+        filteredRoles = set((r[FIRST_ELEMENT] for v in modulesAll for r in v.descriptor.type.crewRoles))
         if self.__predefinedRoles:
             filteredRoles = filteredRoles.intersection(set(self.__predefinedRoles))
             if not filteredRoles:
@@ -249,9 +250,7 @@ class RecruitContent(object):
     def __getDropDownState(self, isPredefined, isPrevSelected):
         if isPredefined:
             return DropDownState.LOCKED
-        if isPrevSelected:
-            return DropDownState.NORMAL
-        return DropDownState.DISABLED
+        return DropDownState.NORMAL if isPrevSelected else DropDownState.DISABLED
 
     def __updateDropDownsStates(self):
         self.viewModel.setNationState(self.__getDropDownState(self.__isSingleValue(self.__predefinedNations), True))
@@ -269,9 +268,7 @@ class RecruitContent(object):
         return lst is not None and len(lst) == 1
 
     def __choosePredefined(self, predefinedList, defaultValue):
-        if len(predefinedList) == 1:
-            return predefinedList[0]
-        return defaultValue
+        return predefinedList[0] if len(predefinedList) == 1 else defaultValue
 
     def __getNationsCriteria(self):
         rqc = REQ_CRITERIA

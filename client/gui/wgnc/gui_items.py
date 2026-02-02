@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/wgnc/gui_items.py
 from collections import namedtuple
 from functools import partial
 from debug_utils import LOG_WARNING, LOG_DEBUG
@@ -12,8 +14,7 @@ from gui.wgnc.settings import WGNC_GUI_TYPE, WGNC_GUI_INVALID_SEQS, convertToLoc
 from helpers import dependency
 from ids_generators import SequenceIDGenerator
 from skeletons.gui.game_control import IPromoController
-_ButtonData = namedtuple('_ButtonData', [
- 'label',
+_ButtonData = namedtuple('_ButtonData', ['label',
  'action',
  'visible',
  'focused'])
@@ -22,7 +23,7 @@ _ButtonData = namedtuple('_ButtonData', [
 class _GUIItem(object):
     __slots__ = ('_name', '_topic', '_body', '_note', '_buttons', '_hidden')
 
-    def __init__(self, name, body, topic='', buttons=None, hidden=True):
+    def __init__(self, name, body, topic=u'', buttons=None, hidden=True):
         super(_GUIItem, self).__init__()
         self._name = name
         self._body = body
@@ -56,16 +57,10 @@ class _GUIItem(object):
         return [ b._asdict() for b in self.getButtons() ]
 
     def getSubmitButton(self):
-        if self._buttons:
-            return self._buttons[0]
-        else:
-            return
+        return self._buttons[0] if self._buttons else None
 
     def getCancelButton(self):
-        if len(self._buttons) > 1:
-            return self._buttons[(-1)]
-        else:
-            return
+        return self._buttons[-1] if len(self._buttons) > 1 else None
 
     def hideButtons(self):
         pass
@@ -80,7 +75,7 @@ class _GUIItem(object):
         raise NotImplementedError
 
     def getClientLogic(self):
-        return
+        return None
 
     def validate(self, actionsHolder):
         for idx, button in enumerate(self._buttons[:]):
@@ -97,14 +92,12 @@ class _GUIItem(object):
 
 _idGen = SequenceIDGenerator()
 
-@ReprInjector.withParent(('_priority', 'priority'), ('_icon', 'icon'), ('_bg', 'bg'), ('_group',
-                                                                                       'group'), ('_isNotify',
-                                                                                                  'isNotify'))
+@ReprInjector.withParent(('_priority', 'priority'), ('_icon', 'icon'), ('_bg', 'bg'), ('_group', 'group'), ('_isNotify', 'isNotify'))
 class PopUpItem(_GUIItem):
     __slots__ = ('_priority', '_icon', '_bg', '_group', '_isNotify')
 
     def __init__(self, body, topic, priority, buttons=None, icon='information', bg='', group='info', isNotify=True):
-        super(PopUpItem, self).__init__(('pop-up-{0}').format(_idGen.next()), body, topic, buttons, False)
+        super(PopUpItem, self).__init__('pop-up-{0}'.format(_idGen.next()), body, topic, buttons, False)
         self._priority = priority
         self._icon = icon
         self._bg = bg
@@ -141,9 +134,9 @@ class PopUpItem(_GUIItem):
 
 @ReprInjector.withParent(('_modal', 'modal'))
 class WindowItem(_GUIItem):
-    __slots__ = ('_modal', )
+    __slots__ = ('_modal',)
 
-    def __init__(self, name, body, topic='', buttons=None, modal=False, hidden=True):
+    def __init__(self, name, body, topic=u'', buttons=None, modal=False, hidden=True):
         super(WindowItem, self).__init__(name, body, topic, buttons, hidden)
         self._modal = modal
 
@@ -177,7 +170,7 @@ class PollItem(WindowItem):
 
     def validate(self, actionsHolder):
         if len(self._buttons) < 2:
-            raise ValidationError(('Poll item "{0}" must has two buttons.').format(self._name))
+            raise ValidationError('Poll item "{0}" must has two buttons.'.format(self._name))
         super(PollItem, self).validate(actionsHolder)
 
 
@@ -186,7 +179,7 @@ class BrowserItem(_GUIItem):
     promoCtrl = dependency.descriptor(IPromoController)
     _CLOSE_CALLBACK_KEY = 'close_window'
 
-    def __init__(self, name, body, topic='', handlers=None, buttons=None, hidden=True):
+    def __init__(self, name, body, topic=u'', handlers=None, buttons=None, hidden=True):
         super(BrowserItem, self).__init__(name, body, topic, buttons, hidden)
         self._handlers = handlers
         if handlers:
@@ -213,7 +206,7 @@ class BrowserItem(_GUIItem):
 
 @ReprInjector.simple(('__items', 'items'))
 class GUIHolder(object):
-    __slots__ = ('__items', )
+    __slots__ = ('__items',)
 
     def __init__(self, items):
         super(GUIHolder, self).__init__()
@@ -239,7 +232,7 @@ class GUIHolder(object):
             if item.getName() == name:
                 return item
 
-        return
+        return None
 
     def getItemsNames(self):
         names = set()
@@ -276,7 +269,7 @@ class GUIHolder(object):
     def validate(self, actionsHolder=None):
         combination = sum(self.__items.keys())
         if combination in WGNC_GUI_INVALID_SEQS:
-            raise ValidationError(('Combination of GUI items is not valid: {0}').format(combination))
+            raise ValidationError('Combination of GUI items is not valid: {0}'.format(combination))
         if not actionsHolder:
             return
         for _, item in self.__items.iteritems():

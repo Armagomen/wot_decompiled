@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/gui_items/dossier/achievements/regular_achvs.py
 from abstract import RegularAchievement
 from abstract.mixins import NoProgressBar
 from dossiers2.ui.achievements import ACHIEVEMENT_BLOCK as _AB
@@ -19,15 +21,12 @@ class HonoredRankAchievement(RegularAchievement):
 
     def getIcons(self):
         iconName = self.getIconName()
-        return {self.ICON_TYPE.IT_180X180: '%s/%s.png' % (self.ICON_PATH_180X180, iconName), 
-           self.ICON_TYPE.IT_67X71: '%s/%s.png' % (self.ICON_PATH_67X71, iconName)}
+        return {self.ICON_TYPE.IT_180X180: '%s/%s.png' % (self.ICON_PATH_180X180, iconName),
+         self.ICON_TYPE.IT_67X71: '%s/%s.png' % (self.ICON_PATH_67X71, iconName)}
 
     @classmethod
     def checkIsInDossier(cls, block, name, dossier):
-        if dossier is not None:
-            return bool(cls.__getCount(dossier))
-        else:
-            return False
+        return bool(cls.__getCount(dossier)) if dossier is not None else False
 
     @classmethod
     def checkIsValid(cls, block, name, dossier):

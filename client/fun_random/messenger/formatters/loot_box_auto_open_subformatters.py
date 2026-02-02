@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/messenger/formatters/loot_box_auto_open_subformatters.py
 from __future__ import absolute_import
 from future.utils import listitems, viewitems
 from adisp import adisp_async, adisp_process
@@ -55,15 +57,15 @@ class FunRandomMessageAwardsComposer(CurtailingAwardsComposer):
             iconAfterRes = R.images.gui.maps.icons.quests.bonuses.big.dyn(bonus.bonusName)
             if not iconAfterRes.exists():
                 iconAfterRes = R.images.gui.maps.icons.quests.bonuses.big.gold
-            specialArgs = {'labelBefore': '', 
-               'iconAfter': backport.image(iconAfterRes()), 
-               'labelAfter': bonus.getFormattedLabel(), 
-               'bonusName': bonus.bonusName, 
-               'countBefore': 1, 
-               'tooltipType': LootBoxCompensationTooltipTypes.VEHICLE}
+            specialArgs = {'labelBefore': '',
+             'iconAfter': backport.image(iconAfterRes()),
+             'labelAfter': bonus.getFormattedLabel(),
+             'bonusName': bonus.bonusName,
+             'countBefore': 1,
+             'tooltipType': LootBoxCompensationTooltipTypes.VEHICLE}
             uiData = getVehicleUIData(vehicle)
             formattedTypeName = uiData['vehicleType']
-            uiData['vehicleType'] = ('{}_elite').format(formattedTypeName) if vehicle.isElite else formattedTypeName
+            uiData['vehicleType'] = '{}_elite'.format(formattedTypeName) if vehicle.isElite else formattedTypeName
             specialArgs.update(uiData)
             vehicleName = getNationLessName(vehicle.name)
             vehIcon = R.images.gui.maps.shop.vehicles.c_180x135.dyn(vehicleName)()
@@ -91,8 +93,8 @@ class FunRandomLootboxAutoOpenFormatter(AsyncAutoLootBoxSubFormatter, FunAssetPa
         isSynced = yield self._waitForSyncItems()
         if isSynced:
             data = message.data or {}
-            formattedRewards = g_settings.msgTemplates.format(self.__MESSAGE_TEMPLATE, ctx={'header': self.getModeUserName(), 
-               'rewardText': backport.text(R.strings.fun_random.notification.lootboxAutoOpen.rewardText())}, data={'linkageData': self._collectBonusesData(data)})
+            formattedRewards = g_settings.msgTemplates.format(self.__MESSAGE_TEMPLATE, ctx={'header': self.getModeUserName(),
+             'rewardText': backport.text(R.strings.fun_random.notification.lootboxAutoOpen.rewardText())}, data={'linkageData': self._collectBonusesData(data)})
             settingsRewards = self._getGuiSettings(message, self.__MESSAGE_TEMPLATE, decorator=FunRandomProgressionStageMessageDecorator)
             callback([MessageData(formattedRewards, settingsRewards)])
         else:
@@ -116,20 +118,21 @@ class FunRandomLootboxAutoOpenFormatter(AsyncAutoLootBoxSubFormatter, FunAssetPa
         legendaryFormatted = composer.getFormattedBonuses(self.__getRawBonuses(legendaryRewards), AWARDS_SIZES.S232X174)
         bgIcon = backport.image(self.getModeIconsResRoot().library.notification_bg())
         if len(legendaryFormatted) == 1:
-            return {'mainReward': first(legendaryFormatted), 
-               'rewards': composer.getFormattedBonuses(self.__getRawBonuses(otherRewards), AWARDS_SIZES.SMALL), 
-               'bgIcon': bgIcon}
+            return {'mainReward': first(legendaryFormatted),
+             'rewards': composer.getFormattedBonuses(self.__getRawBonuses(otherRewards), AWARDS_SIZES.SMALL),
+             'bgIcon': bgIcon}
         else:
             legendaryRewards.extend(otherRewards)
             rawBonuses = self.__getRawBonuses(legendaryRewards)
             mainFormatted = composer.getFormattedBonuses(rawBonuses, AWARDS_SIZES.S232X174)
             if len(mainFormatted) == 1:
-                return {'mainReward': first(mainFormatted), 
-                   'rewards': [], 'bgIcon': bgIcon}
-            return {'mainReward': None, 
-               'rewards': composer.getFormattedBonuses(rawBonuses, AWARDS_SIZES.SMALL), 
-               'bgIcon': bgIcon}
-            return
+                return {'mainReward': first(mainFormatted),
+                 'rewards': [],
+                 'bgIcon': bgIcon}
+            return {'mainReward': None,
+             'rewards': composer.getFormattedBonuses(rawBonuses, AWARDS_SIZES.SMALL),
+             'bgIcon': bgIcon}
+            return None
 
     def __getRawBonuses(self, rewards):
         mergedRewards = getMergedCompensatedBonuses(rewards)

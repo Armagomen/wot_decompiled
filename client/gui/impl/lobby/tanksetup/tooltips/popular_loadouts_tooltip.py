@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tanksetup/tooltips/popular_loadouts_tooltip.py
 import typing
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
@@ -25,7 +27,7 @@ class PopularLoadoutsTooltip(ViewImpl):
         return super(PopularLoadoutsTooltip, self).getViewModel()
 
     def _onLoading(self, *args, **kwargs):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setOptionalDevicesResultType(self._optionalDevicesResultType)
             if self._vehCompDescr:
                 vehicle = self.__itemsCache.items.getItemByCD(self._vehCompDescr)

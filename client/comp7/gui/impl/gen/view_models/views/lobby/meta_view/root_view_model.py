@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/impl/gen/view_models/views/lobby/meta_view/root_view_model.py
 from comp7.gui.impl.gen.view_models.views.lobby.enums import MetaRootViews
 from frameworks.wulf import ViewModel
 from comp7.gui.impl.gen.view_models.views.lobby.meta_view.claim_rewards_model import ClaimRewardsModel
@@ -12,7 +14,7 @@ from comp7.gui.impl.gen.view_models.views.lobby.meta_view.sidebar_model import S
 from comp7.gui.impl.gen.view_models.views.lobby.schedule_info_model import ScheduleInfoModel
 
 class RootViewModel(ViewModel):
-    __slots__ = ('onClose', )
+    __slots__ = ('onClose',)
 
     def __init__(self, properties=11, commands=1):
         super(RootViewModel, self).__init__(properties=properties, commands=commands)

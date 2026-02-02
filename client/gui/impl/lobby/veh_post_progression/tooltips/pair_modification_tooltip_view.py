@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/veh_post_progression/tooltips/pair_modification_tooltip_view.py
 from __future__ import absolute_import
 import typing
 from frameworks.wulf import ViewSettings
@@ -37,7 +39,7 @@ class BasePairModificationTooltipView(ViewImpl):
         pairModification = step.action
         currentModification = pairModification.getModificationByID(modificationId)
         state = self._getState(step, modificationId)
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setNameRes(currentModification.getLocNameRes()())
             model.setLevel(step.getLevel())
             model.multiStep.setReceivedIdx(pairModification.getPurchasedIdx())
@@ -53,9 +55,7 @@ class BasePairModificationTooltipView(ViewImpl):
             purchasedId = step.action.getPurchasedID()
             if purchasedId == modificationId:
                 return StepState.RECEIVED
-            if purchasedId is None:
-                return StepState.AVAILABLEPURCHASE
-            return StepState.RESTRICTED
+            return StepState.AVAILABLEPURCHASE if purchasedId is None else StepState.RESTRICTED
 
     def __fillModifications(self, modifications, pairModification):
         modifications.clear()
@@ -115,6 +115,6 @@ class CfgPairModificationTooltipView(BasePairModificationTooltipView):
             return
         currentModification = vehicle.postProgression.getStep(stepID).action.getModificationByID(modificationId)
         moneyShortage = self._itemsCache.items.stats.money.getShortage(currentModification.getPrice())
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             BuyPriceModelBuilder.fillPriceModel(model.price, currentModification.getPrice(), checkBalanceAvailability=True)
             PriceModelBuilder.fillPriceModel(model.moneyShortage, moneyShortage)

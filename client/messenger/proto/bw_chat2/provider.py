@@ -1,6 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/bw_chat2/provider.py
 import weakref
 from collections import defaultdict, deque
-import BattleReplay, BigWorld, Event
+import BattleReplay
+import BigWorld
+import Event
 from BattleReplay import CallbackDataNames
 from chat_commands_consts import CHAT_COMMANDS_THAT_IGNORE_COOLDOWNS
 from debug_utils import LOG_ERROR, LOG_WARNING, LOG_CURRENT_EXCEPTION
@@ -20,12 +24,11 @@ class _ChatCooldownManager(RequestCooldownManager):
         return _ACTIONS.getActionName(rqTypeID)
 
     def getDefaultCoolDown(self):
-        return 5.0
+        pass
 
 
 class BWChatProvider(object):
-    __slots__ = ('__weakref__', '__handlers', '__msgFilters', '__coolDown', '__idGen',
-                 '__isEnabled', '__queue', '__battleCmdCooldowns', '__replayHelper')
+    __slots__ = ('__weakref__', '__handlers', '__msgFilters', '__coolDown', '__idGen', '__isEnabled', '__queue', '__battleCmdCooldowns', '__replayHelper')
 
     def __init__(self):
         super(BWChatProvider, self).__init__()
@@ -71,8 +74,7 @@ class BWChatProvider(object):
                 success = self.__sendAction(actionID, reqID, args)
             else:
                 success = self.__addActionToQueue(actionID, reqID, args)
-        return (
-         success, reqID)
+        return (success, reqID)
 
     def onActionReceived(self, actionID, reqID, args):
         self.__replayHelper.onActionReceived(actionID, reqID, args)
@@ -134,8 +136,7 @@ class BWChatProvider(object):
     def clearBattleActionCoolDown(self, requestID, actionID):
         command = _ACTIONS.battleChatCommandFromActionID(actionID)
         if command:
-            removeList = [ cdData for cdData in self.__battleCmdCooldowns if cdData.reqID == requestID and cdData.cmdID == command.id
-                         ]
+            removeList = [ cdData for cdData in self.__battleCmdCooldowns if cdData.reqID == requestID and cdData.cmdID == command.id ]
             if removeList:
                 for dataForRemoval in removeList:
                     self.__battleCmdCooldowns.remove(dataForRemoval)
@@ -210,9 +211,7 @@ class BWChatProvider(object):
             currTime = BigWorld.time()
             targetID = args['int32Arg1']
             sndrBlockReason = areSenderCooldownsActive(currTime, self.__battleCmdCooldowns, actionID, targetID)
-            if sndrBlockReason is not None:
-                return sndrBlockReason.cooldownType != CHAT_COMMAND_COOLDOWN_TYPE_IDS.TIMEFRAME_DATA_COOLDOWN
-            return False
+            return sndrBlockReason.cooldownType != CHAT_COMMAND_COOLDOWN_TYPE_IDS.TIMEFRAME_DATA_COOLDOWN if sndrBlockReason is not None else False
 
 
 class ActionsHandler(object):
@@ -303,7 +302,7 @@ class ResponseDictHandler(ResponseHandler):
         result = False
         if value in self._reqIDs.values():
             result = True
-            self._reqIDs = dict(item for item in self._reqIDs.iteritems() if item[1] != value)
+            self._reqIDs = dict((item for item in self._reqIDs.iteritems() if item[1] != value))
         return result
 
 
@@ -349,6 +348,7 @@ class ChatProviderReplayHelper(object):
 
     @staticmethod
     def __isActionWrittenToReplay(actionID):
-        return actionID in (
-         _ACTIONS.INIT_BATTLE_CHAT, _ACTIONS.INIT_UNIT_CHAT,
-         _ACTIONS.DEINIT_BATTLE_CHAT, _ACTIONS.DEINIT_UNIT_CHAT) or _ACTIONS.battleChatCommandFromActionID(actionID) is not None
+        return actionID in (_ACTIONS.INIT_BATTLE_CHAT,
+         _ACTIONS.INIT_UNIT_CHAT,
+         _ACTIONS.DEINIT_BATTLE_CHAT,
+         _ACTIONS.DEINIT_UNIT_CHAT) or _ACTIONS.battleChatCommandFromActionID(actionID) is not None

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/post_progression/tooltip/feature_tooltip_view_model.py
 from frameworks.wulf import ViewModel
 
 class FeatureTooltipViewModel(ViewModel):

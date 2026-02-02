@@ -1,4 +1,7 @@
-import typing, SCALEFORM
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/Browser.py
+import typing
+import SCALEFORM
 from Event import Event
 from gui.browser import BrowserViewWebHandlers
 from gui.Scaleform.daapi.view.meta.BrowserMeta import BrowserMeta
@@ -12,11 +15,12 @@ from skeletons.gui.game_control import IBrowserController
 from soft_exception import SoftException
 if typing.TYPE_CHECKING:
     from WebBrowser import WebBrowser
-_CURSOR_TYPES = {CURSOR_TYPES.Hand: CursorManager.HAND, CURSOR_TYPES.Pointer: CursorManager.ARROW, 
-   CURSOR_TYPES.IBeam: CursorManager.IBEAM, 
-   CURSOR_TYPES.Grab: CursorManager.DRAG_OPEN, 
-   CURSOR_TYPES.Grabbing: CursorManager.DRAG_CLOSE, 
-   CURSOR_TYPES.ColumnResize: CursorManager.MOVE}
+_CURSOR_TYPES = {CURSOR_TYPES.Hand: CursorManager.HAND,
+ CURSOR_TYPES.Pointer: CursorManager.ARROW,
+ CURSOR_TYPES.IBeam: CursorManager.IBEAM,
+ CURSOR_TYPES.Grab: CursorManager.DRAG_OPEN,
+ CURSOR_TYPES.Grabbing: CursorManager.DRAG_CLOSE,
+ CURSOR_TYPES.ColumnResize: CursorManager.MOVE}
 
 def _getCursorType(cursorType):
     return _CURSOR_TYPES.get(cursorType) or CursorManager.ARROW
@@ -33,6 +37,7 @@ class Browser(BrowserMeta):
         self.__isLoaded = True
         self.__httpStatusCode = None
         self.__webCommandHandler = None
+        self.__backUrl = None
         self.showContentUnderLoading = True
         self.onError = Event()
         return
@@ -40,6 +45,10 @@ class Browser(BrowserMeta):
     @property
     def browser(self):
         return self.__browser
+
+    @property
+    def backUrl(self):
+        return self.__backUrl
 
     def init(self, browserID, webHandlersMap=None, alias=''):
         if self.__browserID == browserID:
@@ -59,6 +68,9 @@ class Browser(BrowserMeta):
 
     def onWindowClose(self):
         self.destroy()
+
+    def setBackUrl(self, url):
+        self.__backUrl = url
 
     def browserAction(self, action):
         if self.__browser is not None:
@@ -101,8 +113,7 @@ class Browser(BrowserMeta):
         return
 
     def setBrowserSize(self, width, height, scale):
-        self.__size = (
-         width, height, scale)
+        self.__size = (width, height, scale)
         if self.__browser is not None:
             self.__browser.updateSize(self.__size)
         return
@@ -129,6 +140,7 @@ class Browser(BrowserMeta):
             SCALEFORM.resetScaleformWebRender(self.__browser.id)
         self.__browserCtrl.delBrowser(self.__browserID)
         self.__browser = None
+        self.__backUrl = None
         self.app.cursorMgr.setCursorForced(CursorManager.ARROW)
         super(Browser, self)._dispose()
         return
@@ -169,9 +181,7 @@ class Browser(BrowserMeta):
     def __checkIsPageLoaded(self):
         if not self.__isLoaded:
             return False
-        if self.__httpStatusCode and self.__httpStatusCode >= 400:
-            return False
-        return True
+        return False if self.__httpStatusCode and self.__httpStatusCode >= 400 else True
 
     def __onNavigate(self, _):
         self.as_hideServiceViewS()

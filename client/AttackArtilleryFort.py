@@ -1,4 +1,7 @@
-import BigWorld, Math
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/AttackArtilleryFort.py
+import BigWorld
+import Math
 from AreaOfEffect import AreaOfEffect
 from account_helpers.settings_core.settings_constants import GRAPHICS
 from helpers import dependency

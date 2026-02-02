@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/gen/view_models/views/lobby/views/battle_result_view/battle_pass_progress.py
 from enum import Enum
 from frameworks.wulf import ViewModel
 
@@ -8,7 +10,7 @@ class ChapterStates(Enum):
 
 
 class BattlePassProgress(ViewModel):
-    __slots__ = ('onSubmitClick', )
+    __slots__ = ('onSubmitClick',)
     BP_STATE_NORMAL = 'normal'
     BP_STATE_BOUGHT = 'bought'
     BP_STATE_DISABLED = 'disabled'

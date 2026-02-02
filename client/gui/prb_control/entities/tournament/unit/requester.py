@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/tournament/unit/requester.py
 from adisp import adisp_process
 from debug_utils import LOG_ERROR
 from gui.prb_control import settings, prb_getters
@@ -13,21 +15,21 @@ class TournamentUnitRequestProcessor(IUnitRequestProcessor):
 
     def init(self):
         REQUEST_TYPE = settings.REQUEST_TYPE
-        self.__unitContextRemap = {REQUEST_TYPE.LEAVE: TournamentLeaveModeCtx, 
-           REQUEST_TYPE.ASSIGN: TournamentAssignCtx, 
-           REQUEST_TYPE.UNASSIGN: TournamentUnassignCtx, 
-           REQUEST_TYPE.CHANGE_OPENED: TournamentChangeOpenedCtx, 
-           REQUEST_TYPE.SET_VEHICLE: TournamentSetVehicleCtx, 
-           REQUEST_TYPE.SET_PLAYER_STATE: TournamentSetReadyCtx, 
-           REQUEST_TYPE.KICK: TournamentKickPlayerCtx, 
-           REQUEST_TYPE.BATTLE_QUEUE: TournamentBattleQueueCtx, 
-           REQUEST_TYPE.GIVE_LEADERSHIP: TournamentGiveLeadershipCtx, 
-           REQUEST_TYPE.SEND_INVITE: TournamentSendInvitesCtx, 
-           REQUEST_TYPE.JOIN: TournamentJoinBattleCtx, 
-           REQUEST_TYPE.MATCHMAKING_INFO: TournamentMatchmakingInfoCtx, 
-           REQUEST_TYPE.SET_SLOT_VEHICLE_TYPE_FILTER: TournamentSetSlotVehicleTypeFilter, 
-           REQUEST_TYPE.SET_SLOT_VEHICLES_FILTER: TournamentSetSlotVehiclesFilter, 
-           REQUEST_TYPE.STOP_PLAYERS_MATCHING: TournamentStopPlayersMatchingCtx}
+        self.__unitContextRemap = {REQUEST_TYPE.LEAVE: TournamentLeaveModeCtx,
+         REQUEST_TYPE.ASSIGN: TournamentAssignCtx,
+         REQUEST_TYPE.UNASSIGN: TournamentUnassignCtx,
+         REQUEST_TYPE.CHANGE_OPENED: TournamentChangeOpenedCtx,
+         REQUEST_TYPE.SET_VEHICLE: TournamentSetVehicleCtx,
+         REQUEST_TYPE.SET_PLAYER_STATE: TournamentSetReadyCtx,
+         REQUEST_TYPE.KICK: TournamentKickPlayerCtx,
+         REQUEST_TYPE.BATTLE_QUEUE: TournamentBattleQueueCtx,
+         REQUEST_TYPE.GIVE_LEADERSHIP: TournamentGiveLeadershipCtx,
+         REQUEST_TYPE.SEND_INVITE: TournamentSendInvitesCtx,
+         REQUEST_TYPE.JOIN: TournamentJoinBattleCtx,
+         REQUEST_TYPE.MATCHMAKING_INFO: TournamentMatchmakingInfoCtx,
+         REQUEST_TYPE.SET_SLOT_VEHICLE_TYPE_FILTER: TournamentSetSlotVehicleTypeFilter,
+         REQUEST_TYPE.SET_SLOT_VEHICLES_FILTER: TournamentSetSlotVehiclesFilter,
+         REQUEST_TYPE.STOP_PLAYERS_MATCHING: TournamentStopPlayersMatchingCtx}
 
     def fini(self):
         self.__unitContextRemap.clear()

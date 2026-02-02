@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/exchange/discount_info_tooltip.py
+import logging
+import typing
 from exchange.personal_discounts_constants import ExchangeRateShowFormat, ExchangeRate
 from frameworks.wulf import ViewSettings, ViewFlags
 from gui.impl.gen import R
@@ -49,9 +52,7 @@ class DiscountInfoTooltip(ViewImpl):
         return self.exchangeRate.unlimitedDiscountRate
 
     def _getEvents(self):
-        return (
-         (
-          self.exchangeRate.onUpdated, self.__updateData),)
+        return ((self.exchangeRate.onUpdated, self.__updateData),)
 
     def _onLoading(self, *args, **kwargs):
         self.__updateData()
@@ -100,11 +101,7 @@ class LimitedDiscountInfoTooltip(DiscountInfoTooltip):
 
     def _getListeners(self):
         super(LimitedDiscountInfoTooltip, self)._getListeners()
-        return (
-         (
-          events.ExchangeRatesDiscountsEvent.ON_SELECTED_AMOUNT_CHANGED,
-          self.__updateSelectedAmount,
-          EVENT_BUS_SCOPE.LOBBY),)
+        return ((events.ExchangeRatesDiscountsEvent.ON_SELECTED_AMOUNT_CHANGED, self.__updateSelectedAmount, EVENT_BUS_SCOPE.LOBBY),)
 
     @replaceNoneKwargsModel
     def _update(self, model=None):

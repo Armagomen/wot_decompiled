@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/tooltips/efficiency.py
 from gui import makeHtmlString
 from gui.Scaleform.locale.BATTLE_RESULTS import BATTLE_RESULTS
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
@@ -20,8 +22,10 @@ class HeaderItemPacker(object):
 
     def pack(self, data):
         titleStr = text_styles.highTitle(self.__headerTitle)
-        return [
-         formatters.packImageTextBlockData(titleStr, img=self.__icon, txtPadding={'left': 18, 'top': 9, 'bottom': 1}, padding={'left': 2, 'top': 7})]
+        return [formatters.packImageTextBlockData(titleStr, img=self.__icon, txtPadding={'left': 18,
+          'top': 9,
+          'bottom': 1}, padding={'left': 2,
+          'top': 7})]
 
 
 class TermsItemPacker(HeaderItemPacker):
@@ -49,7 +53,7 @@ class KillItemPacker(TermsItemPacker):
         items = super(KillItemPacker, self).pack(data)
         reason = data.get('killReason', None)
         if reason is not None and reason >= 0:
-            rKill = R.strings.battle_results.common.tooltip.dyn(('kill{}').format(reason))
+            rKill = R.strings.battle_results.common.tooltip.dyn('kill{}'.format(reason))
             if rKill:
                 text = makeHtmlText('tooltip_add_info_label', backport.text(rKill.description()))
                 items.append(formatters.packTextBlockData(text))

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/impl/lobby/tooltips/carousel_vehicle_tooltip.py
 import typing
 from gui.impl.lobby.tooltips.carousel_vehicle_tooltip import CarouselVehicleTooltipView
 if typing.TYPE_CHECKING:
@@ -6,7 +8,7 @@ if typing.TYPE_CHECKING:
 class FLCarouselVehicleTooltipView(CarouselVehicleTooltipView):
 
     def _getDailyXPFactor(self, vehicle):
-        return -1
+        pass
 
     def _getBpProgression(self, vehicleIntCD):
         bpPoints, _ = self._battlePass.getVehicleProgression(vehicleIntCD)

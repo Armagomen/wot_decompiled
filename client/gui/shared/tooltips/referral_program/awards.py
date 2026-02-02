@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/tooltips/referral_program/awards.py
 import logging
 from helpers import dependency
 from gui.impl import backport
@@ -30,9 +32,7 @@ class AwardsTooltipData(BlocksTooltipData):
 
     def _packBlocks(self, *args, **kwargs):
         data = args[0] if args else []
-        if not data:
-            return self.__packHeader('')
-        return [self.__packHeader()] + [self.__packItemBlock(data.get('items', []))]
+        return self.__packHeader('') if not data else [self.__packHeader()] + [self.__packItemBlock(data.get('items', []))]
 
     def __packHeader(self):
         name = backport.text(self.__resPath.header())
@@ -60,13 +60,13 @@ class AwardsTooltipData(BlocksTooltipData):
         rawItem = ItemPackEntry(type=itemType, id=itemId)
         if itemType in ItemPackTypeGroup.CUSTOMIZATION:
             return self.__getCustomization(rawItem, itemId)
+        elif itemType == ItemPackType.DEMOUNT_KIT:
+            return self.__getDemountKit(itemId)
+        item = lookupItem(rawItem, self.__itemsCache, self.__goodiesCache)
+        if item is None:
+            _logger.warning("Award '%r' not supported", itemType)
+            return ('', '')
         else:
-            if itemType == ItemPackType.DEMOUNT_KIT:
-                return self.__getDemountKit(itemId)
-            item = lookupItem(rawItem, self.__itemsCache, self.__goodiesCache)
-            if item is None:
-                _logger.warning("Award '%r' not supported", itemType)
-                return ('', '')
             return (item.icon, item.userName)
 
     def __getCustomization(self, rawItem, itemId):
@@ -80,8 +80,4 @@ class AwardsTooltipData(BlocksTooltipData):
         kits = self.__goodiesCache.getDemountKits()
         item = kits.get(itemId)
         icon = item.getIcon(_ICON_SIZE)
-        if item is None:
-            return ('', '')
-        else:
-            return (
-             icon, item.userName)
+        return ('', '') if item is None else (icon, item.userName)

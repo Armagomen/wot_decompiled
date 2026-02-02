@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/image_view/image_view.py
 from gui.Scaleform.daapi.view.meta.ImageViewMeta import ImageViewMeta
 from gui.sounds.filters import switchHangarFilteredFilter
 _IMAGE_ROOT_PATH = '../maps/icons/imageView'
@@ -18,5 +20,5 @@ class ImageView(ImageViewMeta):
         switchHangarFilteredFilter(on=False)
 
     def setBgPath(self):
-        image = ('').join((_IMAGE_ROOT_PATH, '/', self.__image))
+        image = ''.join((_IMAGE_ROOT_PATH, '/', self.__image))
         self.flashObject.as_setBgPath(image)

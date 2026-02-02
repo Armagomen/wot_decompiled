@@ -1,4 +1,9 @@
-import logging, typing, BigWorld, Event
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/websocket/client.py
+import logging
+import typing
+import BigWorld
+import Event
 from gui.shared.utils import backoff
 from .constants import ConnectionStatus, OpCode
 _logger = logging.getLogger(__name__)

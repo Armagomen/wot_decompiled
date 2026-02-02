@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/login/login_modes/base_mode.py
 import weakref
 from helpers import dependency
 from skeletons.gui.login_manager import ILoginManager
@@ -41,7 +43,7 @@ class BaseMode(object):
 
     @property
     def password(self):
-        return ''
+        pass
 
     @property
     def rememberPassVisible(self):

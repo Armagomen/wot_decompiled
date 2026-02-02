@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/windows/advanced_tooltip_content_model.py
 from frameworks.wulf import ViewModel
 
 class AdvancedTooltipContentModel(ViewModel):

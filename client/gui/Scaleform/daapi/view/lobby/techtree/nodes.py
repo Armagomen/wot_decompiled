@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/techtree/nodes.py
 import typing
 from gui.Scaleform.daapi.view.lobby.techtree.settings import DEFAULT_UNLOCK_PROPS
 from gui.shared.formatters import text_styles
@@ -12,8 +14,7 @@ if typing.TYPE_CHECKING:
     from gui.shared.gui_items.vehicle_modules import VehicleModule
 
 class BaseNode(object):
-    __slots__ = ('nodeName', 'nodeCD', 'nationID', 'itemTypeID', 'isFound', 'isAnnouncement',
-                 'order')
+    __slots__ = ('nodeName', 'nodeCD', 'nationID', 'itemTypeID', 'isFound', 'isAnnouncement', 'order')
 
     def __init__(self, nodeName, nationID, itemTypeID, nodeCD, isFound=True, isAnnouncement=False, order=0):
         super(BaseNode, self).__init__()
@@ -27,8 +28,7 @@ class BaseNode(object):
 
 
 class ExposedNode(object):
-    __slots__ = ('__nodeCD', '__earnedXP', '__state', '__unlockProps', '__bpfProps',
-                 '__displayInfo')
+    __slots__ = ('__nodeCD', '__earnedXP', '__state', '__unlockProps', '__bpfProps', '__displayInfo')
 
     def __init__(self, nodeCD, earnedXP, state, displayInfo, unlockProps=None, bpfProps=None):
         super(ExposedNode, self).__init__()
@@ -149,7 +149,7 @@ class ExposedNode(object):
 
 
 class RealNode(ExposedNode):
-    __slots__ = ('__item', )
+    __slots__ = ('__item',)
     __eventsCache = dependency.descriptor(IEventsCache)
     __tradeIn = dependency.descriptor(ITradeInController)
 
@@ -197,12 +197,10 @@ class RealNode(ExposedNode):
         unlockProps = self.getUnlockProps()
         if item.canTradeIn:
             return getItemPricesVO(self.__tradeIn.getTradeInPrice(item))
+        elif not item.isUnlocked and unlockProps is not None and not item.isCollectible:
+            return getItemUnlockPricesVO(unlockProps)
         else:
-            if not item.isUnlocked and unlockProps is not None and not item.isCollectible:
-                return getItemUnlockPricesVO(unlockProps)
-            if item.isRestoreAvailable():
-                return getItemRestorePricesVO(item.restorePrice)
-            return getItemPricesVO(item.getBuyPrice())
+            return getItemRestorePricesVO(item.restorePrice) if item.isRestoreAvailable() else getItemPricesVO(item.getBuyPrice())
 
     def getBuyPrices(self):
         return getItemPricesVO(self.__item.getBuyPrice())
@@ -234,7 +232,7 @@ class RealNode(ExposedNode):
         bpfProps = self.getBpfProps()
         label = ''
         if bpfProps is not None:
-            label = text_styles.counterLabelText((' ').join((str(bpfProps.filledCount), '/', str(bpfProps.totalCount))))
+            label = text_styles.counterLabelText(' '.join((str(bpfProps.filledCount), '/', str(bpfProps.totalCount))))
         return label
 
     def getBlueprintProgress(self):
@@ -250,28 +248,21 @@ class RealNode(ExposedNode):
         if not actions:
             return 0
         bestAction = self.__eventsCache.getActions().get(actions[0][1], '')
-        if bestAction:
-            return bestAction.getFinishTime()
-        return 0
+        return bestAction.getFinishTime() if bestAction else 0
 
     def getRestoreFinishTime(self):
-        if self.__item.isRestorePossible() and self.__item.hasLimitedRestore():
-            return self.__item.restoreInfo.getRestoreTimeLeft() + getCurrentTimestamp()
-        return 0
+        return self.__item.restoreInfo.getRestoreTimeLeft() + getCurrentTimestamp() if self.__item.isRestorePossible() and self.__item.hasLimitedRestore() else 0
 
     def getRentInfo(self):
         rentMoney = self.__item.minRentPrice
-        if rentMoney:
-            return (rentMoney, rentMoney.getCurrency())
-        else:
-            return (0, None)
+        return (rentMoney, rentMoney.getCurrency()) if rentMoney else (0, None)
 
     def hasItemNationGroup(self):
         return self.__item.hasNationGroup
 
 
 class AnnouncementNode(ExposedNode):
-    __slots__ = ('__announcementInfo', )
+    __slots__ = ('__announcementInfo',)
 
     def __init__(self, nodeCD, info, state, displayInfo):
         super(AnnouncementNode, self).__init__(nodeCD, 0, state, displayInfo, unlockProps=None, bpfProps=None)
@@ -290,7 +281,7 @@ class AnnouncementNode(ExposedNode):
         return self.__announcementInfo.level
 
     def getNationID(self):
-        return 0
+        pass
 
     def getTypeName(self):
         return GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.VEHICLE]
@@ -311,38 +302,37 @@ class AnnouncementNode(ExposedNode):
         return True
 
     def getItemPrices(self):
-        return
+        return None
 
     def getBuyPrices(self):
-        return
+        return None
 
     def getActionDetails(self):
-        return (
-         0, False)
+        return (0, False)
 
     def getCompareData(self):
         return {}
 
     def getExtraInfo(self, rootItem):
-        return
+        return None
 
     def isActionPrice(self):
         return False
 
     def getActionDiscount(self):
-        return 0
+        pass
 
     def getBlueprintLabel(self):
-        return ''
+        pass
 
     def getBlueprintProgress(self):
-        return 0
+        pass
 
     def getActionFinishTime(self):
-        return 0
+        pass
 
     def getRestoreFinishTime(self):
-        return 0
+        pass
 
     def getRentInfo(self):
         return (0, None)

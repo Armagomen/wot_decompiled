@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/tournament/tournament_helpers.py
 import typing
 from constants import TOURNAMENT_CONFIG
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -23,10 +25,10 @@ def isTournamentEnabled():
 def showTournaments(url=None):
     from gui.Scaleform.daapi.view.lobby.strongholds.web_handlers import createStrongholdsWebHandlers
     alias = VIEW_ALIAS.LOBBY_TOURNAMENTS
-    g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(alias, getUniqueViewName(alias)), ctx={'url': url or getIgbHost(), 
-       'webHandlers': createStrongholdsWebHandlers(), 
-       'returnAlias': VIEW_ALIAS.LOBBY_HANGAR, 
-       'onServerSettingsChange': _serverSettingChanged}), EVENT_BUS_SCOPE.LOBBY)
+    g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(alias, getUniqueViewName(alias)), ctx={'url': url or getIgbHost(),
+     'webHandlers': createStrongholdsWebHandlers(),
+     'returnAlias': VIEW_ALIAS.LOBBY_HANGAR,
+     'onServerSettingsChange': _serverSettingChanged}), EVENT_BUS_SCOPE.LOBBY)
 
 
 def _serverSettingChanged(browser, diff):

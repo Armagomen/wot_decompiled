@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/trade_in.py
 import logging
 from contextlib import contextmanager
 import typing
@@ -48,7 +50,7 @@ class TradeInDiscounts(object):
         return self.minDiscountVehicleCD is not None and self.maxDiscountVehicleCD is not None and self.minDiscountVehicleCD != self.maxDiscountVehicleCD
 
     def __str__(self):
-        return ('TradeInDiscounts [{}, {}, {}, {}, {}]').format(self.minDiscountVehicleCD, self.minDiscountPrice, self.maxDiscountVehicleCD, self.maxDiscountPrice, self.freeExchange)
+        return 'TradeInDiscounts [{}, {}, {}, {}, {}]'.format(self.minDiscountVehicleCD, self.minDiscountPrice, self.maxDiscountVehicleCD, self.maxDiscountPrice, self.freeExchange)
 
     def __eq__(self, other):
         return self.minDiscountVehicleCD == other.minDiscountVehicleCD and self.minDiscountPrice == other.minDiscountPrice and self.maxDiscountVehicleCD == other.maxDiscountVehicleCD and self.maxDiscountPrice == other.maxDiscountPrice and self.freeExchange == other.freeExchange
@@ -67,9 +69,7 @@ class TradeInConfig(object):
 
         def tokenSatisfied(info):
             token = info.conversionRule.accessToken
-            if not token:
-                return True
-            return token in tokens
+            return True if not token else token in tokens
 
         rules = self._config.get('conversionRules', {})
         infos = (TradeInInfo(sellGroupId, buyGroupId, ConversionRule(*conversionRule)) for (sellGroupId, buyGroupId), conversionRule in rules.iteritems())
@@ -105,7 +105,7 @@ class TradeInConfig(object):
             if vehCD in self.getVehiclesInGroup(sellGroupId):
                 return tradeInInfo
 
-        return
+        return None
 
     def getTradeInInfosByVehicleToBuy(self, vehCD):
         tradeInInfos = []
@@ -122,7 +122,6 @@ class TradeInConfig(object):
             if tradeInInfo.conversionRule.freeExchange:
                 return 1.0
             return tradeInInfo.conversionRule.sellPriceFactor
-        return 0.0
 
 
 class _TradeInInfoWithVehicles(object):
@@ -147,10 +146,7 @@ class _TradeInVehicle(object):
 
     @property
     def vehicle(self):
-        if not self.isSelected():
-            return None
-        else:
-            return self.itemsCache.items.getItemByCD(self.vehicleCD)
+        return None if not self.isSelected() else self.itemsCache.items.getItemByCD(self.vehicleCD)
 
 
 class _TradeInVehicleToBuy(_TradeInVehicle):
@@ -257,20 +253,18 @@ class TradeInController(ITradeInController):
     def getActionExpirationTime(self):
 
         def tradeInActionFilter(act):
-            return any(mod.getName() == 'tradein' for mod in act.getModifiers())
+            return any((mod.getName() == 'tradein' for mod in act.getModifiers()))
 
         actions = self.eventsCache.getActions(tradeInActionFilter).values()
         for action in actions:
             return action.getFinishTime()
-
-        return 0
 
     def getTokenExpirationTime(self):
         tokens = self.getConfig().allAccessTokenSet
         availableTokens = [ token for token in tokens if self.itemsCache.items.tokens.isTokenAvailable(token) ]
         if not availableTokens:
             return 0
-        minExpireTime = min(self.itemsCache.items.tokens.getTokenExpiryTime(token) for token in availableTokens)
+        minExpireTime = min((self.itemsCache.items.tokens.getTokenExpiryTime(token) for token in availableTokens))
         return minExpireTime
 
     def getExpirationTime(self):
@@ -312,38 +306,38 @@ class TradeInController(ITradeInController):
     def getTradeInDiscounts(self, vehicle):
         if not vehicle.canTradeIn:
             return
+        tradeInDiscountsCache = self.__cache.get('tradeInDiscounts', {})
+        if vehicle.intCD in tradeInDiscountsCache:
+            return tradeInDiscountsCache[vehicle.intCD]
+
+        def goldGetter(price):
+            return price.getSignValue(Currency.GOLD)
+
+        vehToBuyPrice = Money(gold=int(vehicle.buyPrices.itemPrice.defPrice.gold))
+        tradeInDiscounts = None
+        buyToSellConversionCache = self.__cache.get('buyToSellConversionCache', {})
+        for conversionRule, vehToSell in buyToSellConversionCache.get(vehicle.intCD, []):
+            if not vehToSell.canTradeOff:
+                continue
+            vehToSellCD = vehToSell.intCD
+            vehToSellPrice = min(vehToSell.tradeOffPrice, vehToBuyPrice, key=goldGetter)
+            if conversionRule.freeExchange:
+                vehToSellPrice = vehToBuyPrice
+            if tradeInDiscounts is None:
+                tradeInDiscounts = TradeInDiscounts(vehToSellCD, vehToSellPrice, vehToSellCD, vehToSellPrice, conversionRule.freeExchange)
+                continue
+            if goldGetter(tradeInDiscounts.minDiscountPrice) > goldGetter(vehToSellPrice):
+                tradeInDiscounts.minDiscountPrice = vehToSellPrice
+                tradeInDiscounts.minDiscountVehicleCD = vehToSellCD
+            if goldGetter(tradeInDiscounts.maxDiscountPrice) < goldGetter(vehToSellPrice):
+                tradeInDiscounts.maxDiscountPrice = vehToSellPrice
+                tradeInDiscounts.maxDiscountVehicleCD = vehToSellCD
+            tradeInDiscounts.freeExchange |= conversionRule.freeExchange
+
+        if tradeInDiscounts:
+            tradeInDiscountsCache[vehicle.intCD] = tradeInDiscounts
+            return tradeInDiscounts
         else:
-            tradeInDiscountsCache = self.__cache.get('tradeInDiscounts', {})
-            if vehicle.intCD in tradeInDiscountsCache:
-                return tradeInDiscountsCache[vehicle.intCD]
-
-            def goldGetter(price):
-                return price.getSignValue(Currency.GOLD)
-
-            vehToBuyPrice = Money(gold=int(vehicle.buyPrices.itemPrice.defPrice.gold))
-            tradeInDiscounts = None
-            buyToSellConversionCache = self.__cache.get('buyToSellConversionCache', {})
-            for conversionRule, vehToSell in buyToSellConversionCache.get(vehicle.intCD, []):
-                if not vehToSell.canTradeOff:
-                    continue
-                vehToSellCD = vehToSell.intCD
-                vehToSellPrice = min(vehToSell.tradeOffPrice, vehToBuyPrice, key=goldGetter)
-                if conversionRule.freeExchange:
-                    vehToSellPrice = vehToBuyPrice
-                if tradeInDiscounts is None:
-                    tradeInDiscounts = TradeInDiscounts(vehToSellCD, vehToSellPrice, vehToSellCD, vehToSellPrice, conversionRule.freeExchange)
-                    continue
-                if goldGetter(tradeInDiscounts.minDiscountPrice) > goldGetter(vehToSellPrice):
-                    tradeInDiscounts.minDiscountPrice = vehToSellPrice
-                    tradeInDiscounts.minDiscountVehicleCD = vehToSellCD
-                if goldGetter(tradeInDiscounts.maxDiscountPrice) < goldGetter(vehToSellPrice):
-                    tradeInDiscounts.maxDiscountPrice = vehToSellPrice
-                    tradeInDiscounts.maxDiscountVehicleCD = vehToSellCD
-                tradeInDiscounts.freeExchange |= conversionRule.freeExchange
-
-            if tradeInDiscounts:
-                tradeInDiscountsCache[vehicle.intCD] = tradeInDiscounts
-                return tradeInDiscounts
             return
 
     def getAllPossibleVehiclesToSell(self):
@@ -356,14 +350,10 @@ class TradeInController(ITradeInController):
         return self.__cache.get('possibleVehiclesToBuy', set())
 
     def getVehiclesToSell(self, respectSelectedVehicleToBuy):
-        if respectSelectedVehicleToBuy and self._vehicleToBuyInfo.isSelected():
-            return self.itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.CAN_TRADE_OFF | REQ_CRITERIA.VEHICLE.SPECIFIC_BY_CD(self._vehicleToBuyInfo.possibleVehiclesToTradeInCDs) | REQ_CRITERIA.VEHICLE.ACTIVE_IN_NATION_GROUP)
-        return self.itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.CAN_TRADE_OFF | REQ_CRITERIA.VEHICLE.ACTIVE_IN_NATION_GROUP)
+        return self.itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.CAN_TRADE_OFF | REQ_CRITERIA.VEHICLE.SPECIFIC_BY_CD(self._vehicleToBuyInfo.possibleVehiclesToTradeInCDs) | REQ_CRITERIA.VEHICLE.ACTIVE_IN_NATION_GROUP) if respectSelectedVehicleToBuy and self._vehicleToBuyInfo.isSelected() else self.itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY | REQ_CRITERIA.VEHICLE.CAN_TRADE_OFF | REQ_CRITERIA.VEHICLE.ACTIVE_IN_NATION_GROUP)
 
     def getVehiclesToBuy(self, respectSelectedVehicleToSell):
-        if respectSelectedVehicleToSell and self._vehicleToSellInfo.isSelected():
-            return self.itemsCache.items.getVehicles(REQ_CRITERIA.VEHICLE.CAN_TRADE_IN | REQ_CRITERIA.VEHICLE.SPECIFIC_BY_CD(self._vehicleToSellInfo.possibleVehiclesToTradeInCDs) | REQ_CRITERIA.VEHICLE.ACTIVE_IN_NATION_GROUP)
-        return self.itemsCache.items.getVehicles(REQ_CRITERIA.VEHICLE.CAN_TRADE_IN | REQ_CRITERIA.VEHICLE.ACTIVE_IN_NATION_GROUP | REQ_CRITERIA.VEHICLE.SPECIFIC_BY_CD(self.getPossibleVehiclesToBuy()))
+        return self.itemsCache.items.getVehicles(REQ_CRITERIA.VEHICLE.CAN_TRADE_IN | REQ_CRITERIA.VEHICLE.SPECIFIC_BY_CD(self._vehicleToSellInfo.possibleVehiclesToTradeInCDs) | REQ_CRITERIA.VEHICLE.ACTIVE_IN_NATION_GROUP) if respectSelectedVehicleToSell and self._vehicleToSellInfo.isSelected() else self.itemsCache.items.getVehicles(REQ_CRITERIA.VEHICLE.CAN_TRADE_IN | REQ_CRITERIA.VEHICLE.ACTIVE_IN_NATION_GROUP | REQ_CRITERIA.VEHICLE.SPECIFIC_BY_CD(self.getPossibleVehiclesToBuy()))
 
     def validatePossibleVehicleToBuy(self, vehicle):
         return vehicle.intCD in self._vehicleToSellInfo.possibleVehiclesToTradeInCDs
@@ -445,8 +435,7 @@ class TradeInController(ITradeInController):
                         vehsToBuy.append(vehToBuy)
 
                     if vehsToBuy:
-                        sellToBuyConversionCache[vehToSell.intCD] = (
-                         tradeInInfo.conversionRule, vehsToBuy)
+                        sellToBuyConversionCache[vehToSell.intCD] = (tradeInInfo.conversionRule, vehsToBuy)
 
             for intCD in self.getVehiclesToSell(False):
                 _, vehiclesToBuy = sellToBuyConversionCache.get(intCD, (None, []))

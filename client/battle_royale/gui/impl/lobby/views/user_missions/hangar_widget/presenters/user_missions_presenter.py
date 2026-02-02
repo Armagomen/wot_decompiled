@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/lobby/views/user_missions/hangar_widget/presenters/user_missions_presenter.py
 import typing
 from battle_royale.gui.impl.lobby.views.user_missions.hangar_widget.overlap_ctrl import BattleRoyaleOverlapCtrlMixin
 from battle_royale.gui.impl.lobby.views.user_missions.hangar_widget.presenters.event_shop_presenter import BattleRoyaleEventShopPresenter
@@ -20,8 +22,8 @@ class BattleRoyaleUserMissionsPresenter(UserMissionsPresenter):
     __brProgression = dependency.descriptor(IBRProgressionOnTokensController)
     _WIDGET_ALIAS = R.aliases.user_missions.hangarWidget
     _BATTLE_ROYALE_WIDGET_ALIAS = R.aliases.battle_royale.hangarWidget
-    _CHILDREN = {_WIDGET_ALIAS.BattlePass(): _BattlePassPresenter, 
-       _WIDGET_ALIAS.Quests(): BattleRoayaleQuestsPresenter}
+    _CHILDREN = {_WIDGET_ALIAS.BattlePass(): _BattlePassPresenter,
+     _WIDGET_ALIAS.Quests(): BattleRoayaleQuestsPresenter}
 
     def __init__(self):
         super(BattleRoyaleUserMissionsPresenter, self).__init__()
@@ -29,8 +31,8 @@ class BattleRoyaleUserMissionsPresenter(UserMissionsPresenter):
         return
 
     def _getChildComponents(self):
-        return {self._BATTLE_ROYALE_WIDGET_ALIAS.Progression(): BattleRoyaleProgressionPresenter, 
-           self._BATTLE_ROYALE_WIDGET_ALIAS.EventShop(): BattleRoyaleEventShopPresenter}
+        return {self._BATTLE_ROYALE_WIDGET_ALIAS.Progression(): BattleRoyaleProgressionPresenter,
+         self._BATTLE_ROYALE_WIDGET_ALIAS.EventShop(): BattleRoyaleEventShopPresenter}
 
     def _updateEntryPoints(self, vm):
         vm.setIsAnyEntryPointAvailable(True)

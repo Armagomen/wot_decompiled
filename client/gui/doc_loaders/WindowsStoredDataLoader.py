@@ -1,4 +1,10 @@
-import base64, cPickle, Settings
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/doc_loaders/WindowsStoredDataLoader.py
+from __future__ import absolute_import
+import base64
+from future.moves import pickle
+from future.utils import lmap
+import Settings
 from debug_utils import LOG_ERROR, LOG_CURRENT_EXCEPTION
 
 class WindowsStoredDataLoader(object):
@@ -12,8 +18,7 @@ class WindowsStoredDataLoader(object):
     def load(self):
         if Settings.g_instance is None:
             LOG_ERROR('Settings is not defined, can not load data')
-            return (
-             self.__defMask, [])
+            return (self.__defMask, [])
         else:
             section = Settings.g_instance.userPrefs[Settings.KEY_WINDOWS_STORED_DATA]
             if section is None:
@@ -26,12 +31,12 @@ class WindowsStoredDataLoader(object):
 
                 def decode(value):
                     try:
-                        return cPickle.loads(base64.b64decode(value))
+                        return pickle.loads(base64.b64decode(value))
                     except TypeError:
                         LOG_CURRENT_EXCEPTION()
-                        return
+                        return None
 
-                    return
+                    return None
 
                 if dataSec is not None:
                     for _, subSec in dataSec.items():
@@ -39,8 +44,7 @@ class WindowsStoredDataLoader(object):
                         if record:
                             records.append(record)
 
-            return (
-             mask, records)
+            return (mask, records)
 
     def flush(self, mask, records):
         if Settings.g_instance is None:
@@ -59,8 +63,8 @@ class WindowsStoredDataLoader(object):
                 records = records[:self.__maxRecordLen]
 
                 def encode(value):
-                    return base64.b64encode(cPickle.dumps(value))
+                    return base64.b64encode(pickle.dumps(value))
 
-                dataSec.writeStrings('record', map(encode, records))
+                dataSec.writeStrings('record', lmap(encode, records))
             Settings.g_instance.save()
             return

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/main_tank_setup/base.py
 import logging
 from BWUtil import AsyncReturn
 from wg_async import wg_async, wg_await, await_callback
@@ -56,10 +58,7 @@ class MainTankSetupView(BaseSubModelView):
         return self.getSubView(selectedSetup)
 
     def getSubView(self, sectionName):
-        if sectionName in self._subViews:
-            return self._subViews[sectionName]
-        else:
-            return
+        return self._subViews[sectionName] if sectionName in self._subViews else None
 
     def update(self, fullUpdate=False):
         if self.__isLocked:

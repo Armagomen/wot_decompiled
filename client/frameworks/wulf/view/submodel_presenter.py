@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/frameworks/wulf/view/submodel_presenter.py
 import typing
 from helpers.events_handler import EventsHandler
 if typing.TYPE_CHECKING:
@@ -39,19 +41,19 @@ class SubModelPresenter(EventsHandler):
         return
 
     def createToolTipContent(self, event, contentID):
-        return
+        return None
 
     def createPopOverContent(self, event):
-        return
+        return None
 
     def createContextMenuContent(self, event):
-        return
+        return None
 
     def createToolTip(self, event):
-        return
+        return None
 
     def createPopOver(self, event):
-        return
+        return None
 
     def createContextMenu(self, event):
-        return
+        return None

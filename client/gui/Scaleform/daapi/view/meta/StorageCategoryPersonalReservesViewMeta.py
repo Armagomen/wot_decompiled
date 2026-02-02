@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/StorageCategoryPersonalReservesViewMeta.py
 from gui.Scaleform.daapi.view.lobby.storage.category_view import BaseCategoryView
 
 class StorageCategoryPersonalReservesViewMeta(BaseCategoryView):
@@ -18,17 +20,13 @@ class StorageCategoryPersonalReservesViewMeta(BaseCategoryView):
         self._printOverrideError('onInfoClicked')
 
     def as_initS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_init(data)
+        return self.flashObject.as_init(data) if self._isDAAPIInited() else None
 
     def as_initFilterS(self, typeFiltersVO):
-        if self._isDAAPIInited():
-            return self.flashObject.as_initFilter(typeFiltersVO)
+        return self.flashObject.as_initFilter(typeFiltersVO) if self._isDAAPIInited() else None
 
     def as_resetFilterS(self, resetData):
-        if self._isDAAPIInited():
-            return self.flashObject.as_resetFilter(resetData)
+        return self.flashObject.as_resetFilter(resetData) if self._isDAAPIInited() else None
 
     def as_updateCounterS(self, shouldShow, displayString, isZeroCount):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateCounter(shouldShow, displayString, isZeroCount)
+        return self.flashObject.as_updateCounter(shouldShow, displayString, isZeroCount) if self._isDAAPIInited() else None

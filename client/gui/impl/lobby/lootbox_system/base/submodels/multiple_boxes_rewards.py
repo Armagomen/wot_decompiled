@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/lootbox_system/base/submodels/multiple_boxes_rewards.py
 from typing import TYPE_CHECKING
 import Windowing
 from frameworks.wulf import Array
@@ -6,13 +8,12 @@ from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.lobby_entry import getLobbyStateMachine
 from gui.impl.gen.view_models.views.lobby.lootbox_system.main_view_model import SubViewID
 from gui.impl.gen.view_models.views.lobby.lootbox_system.submodels.multiple_boxes_rewards_view_model import MultipleBoxesRewardsViewModel
-from gui.impl.lobby.common.view_wrappers import createBackportTooltipDecorator
 from gui.impl.lobby.lootbox_system.base.common import SubViewImpl
 from gui.impl.lobby.lootbox_system.base.submodels.common import updateAnimationState
 from gui.impl.wrappers.function_helpers import replaceNoneKwargsModel
 from gui.lootbox_system.base.bonuses_packers import packBonusModelAndTooltipData
 from gui.lootbox_system.base.common import ViewID, Views
-from gui.lootbox_system.base.decorators import createTooltipContentDecorator
+from gui.lootbox_system.base.decorators import createBackportTooltipDecorator, createTooltipContentDecorator
 from gui.lootbox_system.base.sound import enterLootBoxesMultipleRewardState, exitLootBoxesMultipleRewardState, playVideoPauseSound, playVideoResumeSound
 from gui.lootbox_system.base.utils import isShopVisible, openBoxes
 from gui.lootbox_system.base.views_loaders import showItemPreview
@@ -47,7 +48,7 @@ class MultipleBoxesRewards(SubViewImpl):
 
     @createTooltipContentDecorator()
     def createToolTipContent(self, event, contentID):
-        return super(MultipleBoxesRewards, self).createToolTip(event)
+        return super(MultipleBoxesRewards, self).createToolTipContent(event, contentID)
 
     def getTooltipData(self, event):
         return self.__tooltipItems.get(event.getArgument('tooltipId', 0))
@@ -60,7 +61,7 @@ class MultipleBoxesRewards(SubViewImpl):
         self.__openCount = kwargs.get('count', 0)
         self.__bonuses = kwargs.get('bonuses', [])
         self.__eventName = kwargs.get('eventName', '')
-        with self.viewModel.transaction() as (vmTx):
+        with self.viewModel.transaction() as vmTx:
             self.__setWindowAccessible(model=vmTx)
             self.__updateData(model=vmTx)
             self.__updateCounters(model=vmTx)
@@ -74,30 +75,18 @@ class MultipleBoxesRewards(SubViewImpl):
         super(MultipleBoxesRewards, self).finalize()
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onOpen, self.__openNext),
-         (
-          self.viewModel.onGoBack, self.__goBack),
-         (
-          self.viewModel.onPreview, self.__showPreview),
-         (
-          self.viewModel.onBuyBoxes, self.__openShop),
-         (
-          self.viewModel.onAnimationStateChanged, self.__updateAnimationState),
-         (
-          self.viewModel.onVideoPlaying, self.__setVideoPlaying),
-         (
-          self.viewModel.onClose, self.__goBack),
-         (
-          self.__lootBoxes.onBoxesCountChanged, self.__updateCounters),
-         (
-          self.__lootBoxes.onBoxesUpdated, self.__updateCounters))
+        return ((self.viewModel.onOpen, self.__openNext),
+         (self.viewModel.onGoBack, self.__goBack),
+         (self.viewModel.onPreview, self.__showPreview),
+         (self.viewModel.onBuyBoxes, self.__openShop),
+         (self.viewModel.onAnimationStateChanged, self.__updateAnimationState),
+         (self.viewModel.onVideoPlaying, self.__setVideoPlaying),
+         (self.viewModel.onClose, self.__goBack),
+         (self.__lootBoxes.onBoxesCountChanged, self.__updateCounters),
+         (self.__lootBoxes.onBoxesUpdated, self.__updateCounters))
 
     def _getListeners(self):
-        return (
-         (
-          events.LootBoxSystemEvent.OPENING_ERROR, self.__onErrorBack, EVENT_BUS_SCOPE.LOBBY),)
+        return ((events.LootBoxSystemEvent.OPENING_ERROR, self.__onErrorBack, EVENT_BUS_SCOPE.LOBBY),)
 
     def __setVideoPlaying(self, ctx=None):
         isPlaying = ctx.get('isPlaying')

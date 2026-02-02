@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/prb_windows/SquadPromoWindow.py
 from gui.Scaleform.daapi.settings import BUTTON_LINKAGES
 from helpers.i18n import makeString as _ms
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
@@ -24,9 +26,8 @@ class SquadPromoWindow(SquadPromoWindowMeta):
         self.as_setWindowTitleS(_ms('#menu:headerButtons/btnLabel/inSquad'))
         self.as_setTextS(_ms('#miniclient:squad_promo_window/header'), _ms('#miniclient:squad_promo_window/description'))
         self.as_setHyperlinkS(_ms('#miniclient:personal_quests_welcome_view/continue_download'))
-        self.as_setButtonsS([
-         {'label': _ms('#miniclient:squad_promo_window/btn'), 
-            'btnLinkage': BUTTON_LINKAGES.BUTTON_NORMAL, 
-            'action': self._CLOSE_BTN_ACTION, 
-            'isFocused': True, 
-            'tooltip': ''}], TEXT_ALIGN.RIGHT, self._BTN_WIDTH)
+        self.as_setButtonsS([{'label': _ms('#miniclient:squad_promo_window/btn'),
+          'btnLinkage': BUTTON_LINKAGES.BUTTON_NORMAL,
+          'action': self._CLOSE_BTN_ACTION,
+          'isFocused': True,
+          'tooltip': ''}], TEXT_ALIGN.RIGHT, self._BTN_WIDTH)

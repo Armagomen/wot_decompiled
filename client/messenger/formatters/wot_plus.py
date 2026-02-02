@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/formatters/wot_plus.py
 import typing
 from gui.impl import backport
 from gui.impl.gen import R
@@ -94,7 +96,8 @@ class PassiveXpSwitchedFormatter(GeneralFormatter):
         newVehTypeCD = message.data.get('newVehTypeCD')
         oldVehName = getUserName(getVehicleType(oldVehTypeCD))
         newVehName = getUserName(getVehicleType(newVehTypeCD))
-        return {'oldVehName': oldVehName, 'newVehName': newVehName}
+        return {'oldVehName': oldVehName,
+         'newVehName': newVehName}
 
 
 class PassiveXpIncompatibleCrewFormatter(GeneralFormatter):
@@ -124,7 +127,6 @@ class WotPlusSwitchFormatter(ServiceChannelFormatter):
     def format(self, template, *args):
         if template:
             formatted = g_settings.msgTemplates.format(template)
-            return [
-             MessageData(formatted, self._getGuiSettings(None, template))]
+            return [MessageData(formatted, self._getGuiSettings(None, template))]
         else:
             return []

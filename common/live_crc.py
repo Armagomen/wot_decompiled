@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/live_crc.py
 from types import *
-import zlib, cPickle
+import zlib
+import cPickle
 
 def _iterDict__skip(x, skip=set()):
     a = list(x.items())
@@ -36,11 +39,11 @@ def _iterList__skip(x, skip=set()):
             yield i
 
 
-t2sort__skip = {dict: _iterDict__skip, 
-   set: _iterSet__skip, 
-   frozenset: _iterSet__skip, 
-   list: _iterList__skip, 
-   tuple: _iterList__skip}
+t2sort__skip = {dict: _iterDict__skip,
+ set: _iterSet__skip,
+ frozenset: _iterSet__skip,
+ list: _iterList__skip,
+ tuple: _iterList__skip}
 
 def _iterDict(x):
     a = x.items()
@@ -75,30 +78,30 @@ def _iterList(x):
         yield i
 
 
-t2sort = {dict: _iterDict, 
-   set: _iterSet, 
-   frozenset: _iterSet, 
-   list: _iterList, 
-   tuple: _iterList}
+t2sort = {dict: _iterDict,
+ set: _iterSet,
+ frozenset: _iterSet,
+ list: _iterList,
+ tuple: _iterList}
 
 class EnterTagType:
-    __hash = hash(b'\x01Enter\xff')
+    __hash = hash('\x01Enter\xff')
 
     def __hash__(self):
         return EnterTagType.__hash
 
     def __repr__(self):
-        return 'ENTER'
+        pass
 
 
 class LeaveTagType:
-    __hash = hash(b'\x01Leave\xff')
+    __hash = hash('\x01Leave\xff')
 
     def __hash__(self):
         return LeaveTagType.__hash
 
     def __repr__(self):
-        return 'LEAVE'
+        pass
 
 
 ENTER = EnterTagType()
@@ -207,11 +210,11 @@ def _sortret(a):
     return a
 
 
-t2hashable = {dict: lambda x: _sortret(x.items()), 
-   set: lambda x: _sortret(list(x)), 
-   frozenset: lambda x: _sortret(list(x)), 
-   list: lambda x: x, 
-   tuple: lambda x: x}
+t2hashable = {dict: lambda x: _sortret(x.items()),
+ set: lambda x: _sortret(list(x)),
+ frozenset: lambda x: _sortret(list(x)),
+ list: lambda x: x,
+ tuple: lambda x: x}
 
 def convert2(x):
     iterator = t2hashable.get(type(x), True)
@@ -248,8 +251,7 @@ def livehash__skipDeep_fn1(skip={}):
         if isinstance(x[1], dict) or isinstance(x[1], set):
             skipNextLevel.append((x[0], livehash__skipDeep_fn(x[1])))
 
-    return lambda data: livehash_combine(livehash__skip(data, skipThisLevel), *[ fn(data[k]) if k in data else livehash_emptyVal for k, fn in skipNextLevel
-                                                       ])
+    return lambda data: livehash_combine(livehash__skip(data, skipThisLevel), *[ (fn(data[k]) if k in data else livehash_emptyVal) for k, fn in skipNextLevel ])
 
 
 livehash__skipDeep_fn = livehash__skipDeep_fn1
@@ -281,8 +283,7 @@ def __split_use(use):
         if isinstance(x[1], dict) or isinstance(x[1], set):
             useNextLevel.append(x)
 
-    return (
-     includeThisLevel, excludeThisLevel, useNextLevel)
+    return (includeThisLevel, excludeThisLevel, useNextLevel)
 
 
 def __is_iterable(data):
@@ -304,90 +305,14 @@ def gen_livehash_fn(use={}):
     if includeThisLevel:
         includeThisLevel = sorted(list(includeThisLevel))
         if useNextLevel:
-            return lambda data: livehash_combine(*([ livehash(data[k]) if k in data else livehash_emptyVal for k in includeThisLevel ] + [ fn(data[k]) if k in data else livehash_emptyVal for k, fn in useNextLevel ])) if __is_iterable(data) else livehash(data)
-        return --- This code section failed: ---
-
- L. 507         0  LOAD_GLOBAL           0  '__is_iterable'
-                3  LOAD_FAST             0  'data'
-                6  CALL_FUNCTION_1       1  None
-                9  POP_JUMP_IF_FALSE    69  'to 69'
-               12  LOAD_GLOBAL           1  'livehash_combine'
-               15  BUILD_LIST_0          0 
-               18  LOAD_DEREF            0  'includeThisLevel'
-               21  GET_ITER         
-               22  FOR_ITER             40  'to 65'
-               25  STORE_FAST            1  'k'
-               28  LOAD_FAST             1  'k'
-               31  LOAD_FAST             0  'data'
-               34  COMPARE_OP            6  in
-               37  POP_JUMP_IF_FALSE    56  'to 56'
-               40  LOAD_GLOBAL           2  'livehash'
-               43  LOAD_FAST             0  'data'
-               46  LOAD_FAST             1  'k'
-               49  BINARY_SUBSCR    
-               50  CALL_FUNCTION_1       1  None
-               53  JUMP_FORWARD          3  'to 59'
-               56  LOAD_GLOBAL           3  'livehash_emptyVal'
-             59_0  COME_FROM            53  '53'
-               59  LIST_APPEND           2  None
-               62  JUMP_BACK            22  'to 22'
-               65  CALL_FUNCTION_VAR_0     0  None
-               68  RETURN_VALUE_LAMBDA
-             69_0  COME_FROM             9  '9'
-               69  LOAD_GLOBAL           2  'livehash'
-               72  LOAD_FAST             0  'data'
-               75  CALL_FUNCTION_1       1  None
-               78  RETURN_VALUE_LAMBDA
-               -1  LAMBDA_MARKER    
-
-Parse error at or near `None' instruction at offset -1
+            return lambda data: (livehash_combine(*([ (livehash(data[k]) if k in data else livehash_emptyVal) for k in includeThisLevel ] + [ (fn(data[k]) if k in data else livehash_emptyVal) for k, fn in useNextLevel ])) if __is_iterable(data) else livehash(data))
+        else:
+            return lambda data: (livehash_combine(*[ (livehash(data[k]) if k in data else livehash_emptyVal) for k in includeThisLevel ]) if __is_iterable(data) else livehash(data))
     elif excludeThisLevel:
         if useNextLevel:
-            return --- This code section failed: ---
-
- L. 515         0  LOAD_GLOBAL           0  '__is_iterable'
-                3  LOAD_FAST             0  'data'
-                6  CALL_FUNCTION_1       1  None
-                9  POP_JUMP_IF_FALSE    87  'to 87'
-               12  LOAD_GLOBAL           1  'livehash_combine'
-               15  LOAD_GLOBAL           2  'livehash__skip'
-               18  LOAD_FAST             0  'data'
-               21  LOAD_DEREF            0  'excludeThisLevel'
-               24  CALL_FUNCTION_2       2  None
-               27  BUILD_LIST_0          0 
-               30  LOAD_DEREF            1  'useNextLevel'
-               33  GET_ITER         
-               34  FOR_ITER             46  'to 83'
-               37  UNPACK_SEQUENCE_2     2 
-               40  STORE_FAST            1  'k'
-               43  STORE_FAST            2  'fn'
-               46  LOAD_FAST             1  'k'
-               49  LOAD_FAST             0  'data'
-               52  COMPARE_OP            6  in
-               55  POP_JUMP_IF_FALSE    74  'to 74'
-               58  LOAD_FAST             2  'fn'
-               61  LOAD_FAST             0  'data'
-               64  LOAD_FAST             1  'k'
-               67  BINARY_SUBSCR    
-               68  CALL_FUNCTION_1       1  None
-               71  JUMP_FORWARD          3  'to 77'
-               74  LOAD_GLOBAL           3  'livehash_emptyVal'
-             77_0  COME_FROM            71  '71'
-               77  LIST_APPEND           2  None
-               80  JUMP_BACK            34  'to 34'
-               83  CALL_FUNCTION_VAR_1     1  None
-               86  RETURN_VALUE_LAMBDA
-             87_0  COME_FROM             9  '9'
-               87  LOAD_GLOBAL           4  'livehash'
-               90  LOAD_FAST             0  'data'
-               93  CALL_FUNCTION_1       1  None
-               96  RETURN_VALUE_LAMBDA
-               -1  LAMBDA_MARKER    
-
-Parse error at or near `None' instruction at offset -1
+            return lambda data: (livehash_combine(livehash__skip(data, excludeThisLevel), *[ (fn(data[k]) if k in data else livehash_emptyVal) for k, fn in useNextLevel ]) if __is_iterable(data) else livehash(data))
         else:
             return lambda data: livehash__skip(data, excludeThisLevel)
-
     else:
         return livehash
 
@@ -431,7 +356,6 @@ def gen_delSubkeys_fn(use={}):
                 return data
 
             return func
-
     elif excludeThisLevel:
         if useNextLevel:
 
@@ -464,7 +388,6 @@ def gen_delSubkeys_fn(use={}):
                 return data
 
             return func
-
     else:
         return lambda data: data
 
@@ -485,8 +408,7 @@ def gen_mergeCache_fn(overwrite=False):
                         _mergeAll_overwrite(d, v)
                     else:
                         data[k] = v
-                else:
-                    data[k] = v
+                data[k] = v
 
             return data
 
@@ -504,8 +426,7 @@ def gen_mergeCache_fn(overwrite=False):
                     d = data[k]
                     if __is_iterable(v) and __is_iterable(d):
                         _mergeAll_nooverwrite(d, v)
-                else:
-                    data[k] = v
+                data[k] = v
 
             return data
 
@@ -548,7 +469,6 @@ def gen_extract_fn(use={}):
                 return ret
 
             return func
-
     elif excludeThisLevel:
         if useNextLevel:
 
@@ -580,6 +500,5 @@ def gen_extract_fn(use={}):
                 return ret
 
             return func
-
     else:
-        return lambda data: data# Decompile failed :(
+        return lambda data: data

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/gui/Scaleform/data/ChannelsCarouselHandler.py
 import typing
 from debug_utils import LOG_ERROR
 from frameworks.wulf import WindowLayer
@@ -40,7 +42,7 @@ class ChannelsCarouselHandler(object):
 
     @sf_lobby
     def app(self):
-        return
+        return None
 
     @property
     def handlers(self):
@@ -136,12 +138,12 @@ class ChannelsCarouselHandler(object):
             order = channel_num_gen.genOrder4Channel(channel)
             openHandler = lambda : events_dispatcher.showLobbyChannelWindow(clientID)
         self.__handlers[clientID] = (ChannelFindCriteria(clientID), openHandler, WindowLayer.WINDOW)
-        self.__channelsDP.addItem(clientID, {'label': channel.getFullName(), 
-           'canClose': not isSystem, 
-           'isNotified': isNotified, 
-           'icon': None, 
-           'order': order, 
-           'isInProgress': False})
+        self.__channelsDP.addItem(clientID, {'label': channel.getFullName(),
+         'canClose': not isSystem,
+         'isNotified': isNotified,
+         'icon': None,
+         'order': order,
+         'isInProgress': False})
         return
 
     def removeChannel(self, channel):
@@ -226,8 +228,7 @@ class ChannelsCarouselHandler(object):
                 return
             clientID = event.clientID
             if clientID not in self.__handlers:
-                self.__handlers[clientID] = (
-                 criteria, openHandler, layer)
+                self.__handlers[clientID] = (criteria, openHandler, layer)
                 targetList.addItem(clientID, ctx)
             return
 
@@ -262,8 +263,7 @@ class ChannelsCarouselHandler(object):
                 return
             clientID = event.clientID
             if 'isShowByReq' in ctx and ctx['isShowByReq'] is True:
-                self.__showByReqs[clientID] = (
-                 key, value)
+                self.__showByReqs[clientID] = (key, value)
                 isShow = ctx.get('showIfClosed', False)
                 if isShow:
                     if clientID not in self.__handlers:
@@ -305,11 +305,11 @@ class ChannelsCarouselHandler(object):
             controller.notifyMinorChatRestriction()
             self.__closeNonSystemChannel(clientID)
             return
+        elif not clientID:
+            return
+        elif clientID not in self.__handlers:
+            return
         else:
-            if not clientID:
-                return
-            if clientID not in self.__handlers:
-                return
             criteria, openHandler, layer = self.__handlers[clientID]
             viewContainer = self.app.containerManager
             if layer == WindowLayer.WINDOW:
@@ -327,7 +327,8 @@ class ChannelsCarouselHandler(object):
                 if hasattr(view, 'onWindowMinimize') and callable(getattr(view, 'onWindowMinimize')):
                     view.onWindowMinimize()
                     return
-            fields = {'isNotified': False, 'isInProgress': False}
+            fields = {'isNotified': False,
+             'isInProgress': False}
             if not self.__channelsDP.setItemFields(clientID, fields):
                 self.__preBattleChannelsDP.setItemFields(clientID, fields)
             if clientID in self.__notifiedMessages:
@@ -390,9 +391,9 @@ class ChannelsCarouselHandler(object):
     def __closeChannel(self, clientID):
         if not clientID:
             return
+        elif clientID not in self.__handlers:
+            return
         else:
-            if clientID not in self.__handlers:
-                return
             self.__showByReqs.pop(clientID, None)
             viewContainer = self.app.containerManager
             criteria, _, layer = self.__handlers[clientID]

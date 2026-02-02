@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/CrosshairPanelContainerMeta.py
 from gui.Scaleform.daapi.view.meta.DAAPISimpleContainerMeta import DAAPISimpleContainerMeta
 
 class CrosshairPanelContainerMeta(DAAPISimpleContainerMeta):
@@ -6,265 +8,202 @@ class CrosshairPanelContainerMeta(DAAPISimpleContainerMeta):
         self._printOverrideError('as_playSound')
 
     def as_setSettingsS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setSettings(data)
+        return self.flashObject.as_setSettings(data) if self._isDAAPIInited() else None
 
     def as_setSizeS(self, width, height):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setSize(width, height)
+        return self.flashObject.as_setSize(width, height) if self._isDAAPIInited() else None
 
     def as_setScaleS(self, scale):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setScale(scale)
+        return self.flashObject.as_setScale(scale) if self._isDAAPIInited() else None
 
     def as_setViewS(self, viewId, settingId):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setView(viewId, settingId)
+        return self.flashObject.as_setView(viewId, settingId) if self._isDAAPIInited() else None
 
     def as_recreateDeviceS(self, offsetX, offsetY):
-        if self._isDAAPIInited():
-            return self.flashObject.as_recreateDevice(offsetX, offsetY)
+        return self.flashObject.as_recreateDevice(offsetX, offsetY) if self._isDAAPIInited() else None
 
     def as_setReloadingCounterShownS(self, visible):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setReloadingCounterShown(visible)
+        return self.flashObject.as_setReloadingCounterShown(visible) if self._isDAAPIInited() else None
 
     def as_setReloadingS(self, duration, baseTime, startTime, isReloading, isShotAvailable=False):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setReloading(duration, baseTime, startTime, isReloading, isShotAvailable)
+        return self.flashObject.as_setReloading(duration, baseTime, startTime, isReloading, isShotAvailable) if self._isDAAPIInited() else None
 
     def as_setReloadingAsPercentS(self, time, percent, isReloading, isShotAvailable=False):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setReloadingAsPercent(time, percent, isReloading, isShotAvailable)
+        return self.flashObject.as_setReloadingAsPercent(time, percent, isReloading, isShotAvailable) if self._isDAAPIInited() else None
 
     def as_setIsInControllableReloadS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setIsInControllableReload(value)
+        return self.flashObject.as_setIsInControllableReload(value) if self._isDAAPIInited() else None
 
     def as_setBoostAsPercentS(self, percent, duration):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setBoostAsPercent(percent, duration)
+        return self.flashObject.as_setBoostAsPercent(percent, duration) if self._isDAAPIInited() else None
 
     def as_setHealthS(self, percent):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setHealth(percent)
+        return self.flashObject.as_setHealth(percent) if self._isDAAPIInited() else None
 
     def as_setAmmoStockS(self, quantity, quantityInClip, clipState, clipReloaded=False):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setAmmoStock(quantity, quantityInClip, clipState, clipReloaded)
+        return self.flashObject.as_setAmmoStock(quantity, quantityInClip, clipState, clipReloaded) if self._isDAAPIInited() else None
 
     def as_setClipParamsS(self, clipCapacity, burst, reloadingType):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setClipParams(clipCapacity, burst, reloadingType)
+        return self.flashObject.as_setClipParams(clipCapacity, burst, reloadingType) if self._isDAAPIInited() else None
 
     def as_setDistanceS(self, dist):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setDistance(dist)
+        return self.flashObject.as_setDistance(dist) if self._isDAAPIInited() else None
 
     def as_clearDistanceS(self, immediate):
-        if self._isDAAPIInited():
-            return self.flashObject.as_clearDistance(immediate)
+        return self.flashObject.as_clearDistance(immediate) if self._isDAAPIInited() else None
 
     def as_setAverageDamageS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setAverageDamage(value)
+        return self.flashObject.as_setAverageDamage(value) if self._isDAAPIInited() else None
 
     def as_clearAverageDamageS(self, immediate):
-        if self._isDAAPIInited():
-            return self.flashObject.as_clearAverageDamage(immediate)
+        return self.flashObject.as_clearAverageDamage(immediate) if self._isDAAPIInited() else None
 
     def as_updatePlayerInfoS(self, info):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updatePlayerInfo(info)
+        return self.flashObject.as_updatePlayerInfo(info) if self._isDAAPIInited() else None
 
     def as_updateAmmoStateS(self, ammoState):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateAmmoState(ammoState)
+        return self.flashObject.as_updateAmmoState(ammoState) if self._isDAAPIInited() else None
 
     def as_setZoomS(self, zoomStr, zoomFactor):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setZoom(zoomStr, zoomFactor)
+        return self.flashObject.as_setZoom(zoomStr, zoomFactor) if self._isDAAPIInited() else None
 
     def as_createGunMarkerS(self, viewID, linkage, name):
-        if self._isDAAPIInited():
-            return self.flashObject.as_createGunMarker(viewID, linkage, name)
+        return self.flashObject.as_createGunMarker(viewID, linkage, name) if self._isDAAPIInited() else None
 
     def as_destroyGunMarkerS(self, name):
-        if self._isDAAPIInited():
-            return self.flashObject.as_destroyGunMarker(name)
+        return self.flashObject.as_destroyGunMarker(name) if self._isDAAPIInited() else None
 
     def as_setGunMarkerColorS(self, name, colorName):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setGunMarkerColor(name, colorName)
+        return self.flashObject.as_setGunMarkerColor(name, colorName) if self._isDAAPIInited() else None
 
     def as_setNetVisibleS(self, mask):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setNetVisible(mask)
+        return self.flashObject.as_setNetVisible(mask) if self._isDAAPIInited() else None
 
     def as_setNetSeparatorVisibleS(self, isVisible):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setNetSeparatorVisible(isVisible)
+        return self.flashObject.as_setNetSeparatorVisible(isVisible) if self._isDAAPIInited() else None
 
     def as_setNetTypeS(self, netType):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setNetType(netType)
+        return self.flashObject.as_setNetType(netType) if self._isDAAPIInited() else None
 
     def as_autoloaderUpdateS(self, timeLeft, baseTime, isCritical=False, isTimerOn=False, isRedText=False):
-        if self._isDAAPIInited():
-            return self.flashObject.as_autoloaderUpdate(timeLeft, baseTime, isCritical, isTimerOn, isRedText)
+        return self.flashObject.as_autoloaderUpdate(timeLeft, baseTime, isCritical, isTimerOn, isRedText) if self._isDAAPIInited() else None
 
     def as_setAutoloaderReloadingS(self, duration, baseTime):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setAutoloaderReloading(duration, baseTime)
+        return self.flashObject.as_setAutoloaderReloading(duration, baseTime) if self._isDAAPIInited() else None
 
     def as_showBoostS(self, duration, baseTime):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showBoost(duration, baseTime)
+        return self.flashObject.as_showBoost(duration, baseTime) if self._isDAAPIInited() else None
 
     def as_hideBoostS(self, showAnimation):
-        if self._isDAAPIInited():
-            return self.flashObject.as_hideBoost(showAnimation)
+        return self.flashObject.as_hideBoost(showAnimation) if self._isDAAPIInited() else None
 
     def as_showShotS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showShot()
+        return self.flashObject.as_showShot() if self._isDAAPIInited() else None
 
     def as_setAutoloaderReloadasPercentS(self, percent):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setAutoloaderReloadasPercent(percent)
+        return self.flashObject.as_setAutoloaderReloadasPercent(percent) if self._isDAAPIInited() else None
 
     def as_setAutoloaderPercentS(self, percent, sec, isCritical, isTimerOn, isTimerRed):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setAutoloaderPercent(percent, sec, isCritical, isTimerOn, isTimerRed)
+        return self.flashObject.as_setAutoloaderPercent(percent, sec, isCritical, isTimerOn, isTimerRed) if self._isDAAPIInited() else None
 
     def as_setSpeedModeS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setSpeedMode(value)
+        return self.flashObject.as_setSpeedMode(value) if self._isDAAPIInited() else None
 
     def as_updateSpeedS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateSpeed(value)
+        return self.flashObject.as_updateSpeed(value) if self._isDAAPIInited() else None
 
     def as_updateBurnoutS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateBurnout(value)
+        return self.flashObject.as_updateBurnout(value) if self._isDAAPIInited() else None
 
     def as_addSpeedometerS(self, maxSpeedNormalMode, maxSpeedSpeedMode):
-        if self._isDAAPIInited():
-            return self.flashObject.as_addSpeedometer(maxSpeedNormalMode, maxSpeedSpeedMode)
+        return self.flashObject.as_addSpeedometer(maxSpeedNormalMode, maxSpeedSpeedMode) if self._isDAAPIInited() else None
 
     def as_removeSpeedometerS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_removeSpeedometer()
+        return self.flashObject.as_removeSpeedometer() if self._isDAAPIInited() else None
 
     def as_setBurnoutWarningS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setBurnoutWarning(value)
+        return self.flashObject.as_setBurnoutWarning(value) if self._isDAAPIInited() else None
 
     def as_stopBurnoutWarningS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_stopBurnoutWarning()
+        return self.flashObject.as_stopBurnoutWarning() if self._isDAAPIInited() else None
 
     def as_setEngineCrushErrorS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setEngineCrushError(value)
+        return self.flashObject.as_setEngineCrushError(value) if self._isDAAPIInited() else None
 
     def as_stopEngineCrushErrorS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_stopEngineCrushError()
+        return self.flashObject.as_stopEngineCrushError() if self._isDAAPIInited() else None
 
     def as_startDualGunChargingS(self, timeLeft, totalTime):
-        if self._isDAAPIInited():
-            return self.flashObject.as_startDualGunCharging(timeLeft, totalTime)
+        return self.flashObject.as_startDualGunCharging(timeLeft, totalTime) if self._isDAAPIInited() else None
 
     def as_cancelDualGunChargeS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_cancelDualGunCharge()
+        return self.flashObject.as_cancelDualGunCharge() if self._isDAAPIInited() else None
 
     def as_updateDualGunMarkerStateS(self, markerState):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateDualGunMarkerState(markerState)
+        return self.flashObject.as_updateDualGunMarkerState(markerState) if self._isDAAPIInited() else None
 
     def as_setTwinGunMarkerActiveS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setTwinGunMarkerActive(value)
+        return self.flashObject.as_setTwinGunMarkerActive(value) if self._isDAAPIInited() else None
 
     def as_setTwinGunMarkerStateS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setTwinGunMarkerState(value)
+        return self.flashObject.as_setTwinGunMarkerState(value) if self._isDAAPIInited() else None
 
     def as_showPenetrationFxS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showPenetrationFx()
+        return self.flashObject.as_showPenetrationFx() if self._isDAAPIInited() else None
 
     def as_runCameraTransitionFxS(self, direction, duration):
-        if self._isDAAPIInited():
-            return self.flashObject.as_runCameraTransitionFx(direction, duration)
+        return self.flashObject.as_runCameraTransitionFx(direction, duration) if self._isDAAPIInited() else None
 
     def as_updateScaleWidgetS(self, positionValue):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateScaleWidget(positionValue)
+        return self.flashObject.as_updateScaleWidget(positionValue) if self._isDAAPIInited() else None
 
     def as_setGunMarkersIndicatorsS(self, indicators):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setGunMarkersIndicators(indicators)
+        return self.flashObject.as_setGunMarkersIndicators(indicators) if self._isDAAPIInited() else None
 
     def as_setShotFlyTimesS(self, shotFlyTimes):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setShotFlyTimes(shotFlyTimes)
+        return self.flashObject.as_setShotFlyTimes(shotFlyTimes) if self._isDAAPIInited() else None
 
     def as_setShellChangeTimeS(self, quickChangerIsActive, shellChangeTime):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setShellChangeTime(quickChangerIsActive, shellChangeTime)
+        return self.flashObject.as_setShellChangeTime(quickChangerIsActive, shellChangeTime) if self._isDAAPIInited() else None
 
     def as_isFadedS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_isFaded(value)
+        return self.flashObject.as_isFaded(value) if self._isDAAPIInited() else None
 
     def as_blinkReloadTimeS(self, blinkType):
-        if self._isDAAPIInited():
-            return self.flashObject.as_blinkReloadTime(blinkType)
-
-    def as_setDualAccActiveS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setDualAccActive(value)
+        return self.flashObject.as_blinkReloadTime(blinkType) if self._isDAAPIInited() else None
 
     def as_setAimDamageStageS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setAimDamageStage(value)
+        return self.flashObject.as_setAimDamageStage(value) if self._isDAAPIInited() else None
 
     def as_setOverheatVisibleS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setOverheatVisible(value)
+        return self.flashObject.as_setOverheatVisible(value) if self._isDAAPIInited() else None
 
     def as_setAccuracyStacksProgressS(self, count):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setAccuracyStacksProgress(count)
+        return self.flashObject.as_setAccuracyStacksProgress(count) if self._isDAAPIInited() else None
 
     def as_setChargeGunActiveS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setChargeGunActive(value)
+        return self.flashObject.as_setChargeGunActive(value) if self._isDAAPIInited() else None
 
     def as_setChargeGunStateS(self, progress, stacks, isShootBlock):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setChargeGunState(progress, stacks, isShootBlock)
+        return self.flashObject.as_setChargeGunState(progress, stacks, isShootBlock) if self._isDAAPIInited() else None
 
     def as_setReloadBoostS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setReloadBoost(value)
+        return self.flashObject.as_setReloadBoost(value) if self._isDAAPIInited() else None
 
     def as_setReloadBoostBorderS(self, boostVisible, active):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setReloadBoostBorder(boostVisible, active)
+        return self.flashObject.as_setReloadBoostBorder(boostVisible, active) if self._isDAAPIInited() else None
 
     def as_setReloadBoostBorderBlinkS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setReloadBoostBorderBlink()
+        return self.flashObject.as_setReloadBoostBorderBlink() if self._isDAAPIInited() else None
 
     def as_setNetSeparatorTypeS(self, netSeparatorType):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setNetSeparatorType(netSeparatorType)
+        return self.flashObject.as_setNetSeparatorType(netSeparatorType) if self._isDAAPIInited() else None
 
     def as_setChargeableBurstModeS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setChargeableBurstMode(value)
+        return self.flashObject.as_setChargeableBurstMode(value) if self._isDAAPIInited() else None
+
+    def as_setSecondaryGunMarkerActiveS(self, value):
+        return self.flashObject.as_setSecondaryGunMarkerActive(value) if self._isDAAPIInited() else None
+
+    def as_setDispersionCircleThicknessS(self, isBold):
+        return self.flashObject.as_setDispersionCircleThickness(isBold) if self._isDAAPIInited() else None

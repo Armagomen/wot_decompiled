@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/container_vews/skills_training/skills_training_view.py
 import typing
 from PlayerEvents import g_playerEvents
 from frameworks.wulf import ViewSettings, WindowFlags, WindowLayer
@@ -57,13 +59,10 @@ class SkillsTrainingView(ContainerBase, ViewImpl):
 
     def createToolTipContent(self, event, contentID):
         sortingDDlayoutId = R.views.lobby.crew.tooltips.SortingDropdownTooltip()
-        if contentID == sortingDDlayoutId:
-            return SortingDropdownTooltip(sortingDDlayoutId, event.getArgument('isWarningShown', False), event.getArgument('isSortingDisabled', False))
-        return super(SkillsTrainingView, self).createToolTipContent(event, contentID)
+        return SortingDropdownTooltip(sortingDDlayoutId, event.getArgument('isWarningShown', False), event.getArgument('isSortingDisabled', False)) if contentID == sortingDDlayoutId else super(SkillsTrainingView, self).createToolTipContent(event, contentID)
 
     def _getComponents(self):
-        return [
-         SkillsListComponent(key=self._SKILLS_COMPONENT_NAME, parent=self)]
+        return [SkillsListComponent(key=self._SKILLS_COMPONENT_NAME, parent=self)]
 
     def _getContext(self, *args, **kwargs):
         return SkillsTrainingViewContext(kwargs.get('tankmanID'), kwargs.get('role'))
@@ -72,19 +71,12 @@ class SkillsTrainingView(ContainerBase, ViewImpl):
         return SkillsTrainingInteractionController
 
     def _getEvents(self):
-        return (
-         (
-          self._crewWidget.onSlotClick, self._onWidgetSlotClick),
-         (
-          self.viewModel.onClose, self.__onClose),
-         (
-          self.viewModel.onSortingSelectionChange, self.__onSortSelectionChanged),
-         (
-          g_playerEvents.onDisconnected, self.__onDisconnected),
-         (
-          self.platoonCtrl.onMembersUpdate, self.__onMembersUpdate),
-         (
-          self.wotPlus.onEnabledStatusChanged, self.__onEnabledStatusChanged))
+        return ((self._crewWidget.onSlotClick, self._onWidgetSlotClick),
+         (self.viewModel.onClose, self.__onClose),
+         (self.viewModel.onSortingSelectionChange, self.__onSortSelectionChanged),
+         (g_playerEvents.onDisconnected, self.__onDisconnected),
+         (self.platoonCtrl.onMembersUpdate, self.__onMembersUpdate),
+         (self.wotPlus.onEnabledStatusChanged, self.__onEnabledStatusChanged))
 
     def _onLoading(self, *args, **kwargs):
         self._crewWidget = SkillsTrainingCrewWidget(tankmanID=self.context.tankmanID, currentViewID=R.views.lobby.crew.SkillsTrainingView(), previousViewID=R.views.lobby.crew.TankmanContainerView(), isButtonBarVisible=False)
@@ -140,7 +132,7 @@ class SkillsTrainingView(ContainerBase, ViewImpl):
         self.__refreshSorting(sortingType)
 
     def __refreshSorting(self, sortingType):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             self.__fillSortingDropDown(vm, sortingType)
             self.__refreshSkillsComponent(vm)
 

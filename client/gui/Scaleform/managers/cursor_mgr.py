@@ -1,4 +1,8 @@
-import logging, GUI, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/managers/cursor_mgr.py
+import logging
+import GUI
+import BigWorld
 from gui import GUI_CTRL_MODE_FLAG as _CTRL_FLAG
 from gui.Scaleform.framework.entities.abstract.CursorManagerMeta import CursorManagerMeta
 from gui.shared import EVENT_BUS_SCOPE
@@ -88,8 +92,7 @@ class CursorManager(CursorManagerMeta):
         self.__saveDeviceMousePosition(mouseLeft, mouseTop)
 
     def __saveDeviceMousePosition(self, mouseLeft, mouseTop):
-        self.__savedMCursorPos = (
-         mouseLeft, mouseTop)
+        self.__savedMCursorPos = (mouseLeft, mouseTop)
 
     def __restoreDeviceMousePosition(self):
         if self.__savedMCursorPos is not None:

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/bonus_caps_config.py
 from arena_bonus_type_caps import ALLOWED_ARENA_BONUS_TYPE_CAPS
 from constants import ARENA_BONUS_TYPE_NAMES
 from soft_exception import SoftException
@@ -20,12 +22,12 @@ def _readArenaTypes(section):
             if name == _XML_NAMESPACE:
                 continue
             if ARENA_BONUS_TYPE_NAMES.get(name, None) is None:
-                raise SoftException(('Unknown arena type {}').format(name))
+                raise SoftException('Unknown arena type {}'.format(name))
             nameID = ARENA_BONUS_TYPE_NAMES.get(name, None)
             if nameID is None:
-                raise SoftException(('Incorrect arena type name: {}').format(name))
+                raise SoftException('Incorrect arena type name: {}'.format(name))
             if nameID in config:
-                raise SoftException(('Duplicate arena type: {}').format(name))
+                raise SoftException('Duplicate arena type: {}'.format(name))
             config[nameID] = _readBonuses(data)
 
         missedArenaTypes = []
@@ -34,7 +36,7 @@ def _readArenaTypes(section):
                 missedArenaTypes.append(arenaType)
 
         if missedArenaTypes:
-            raise SoftException(('Some arena types was missed: {}').format(missedArenaTypes))
+            raise SoftException('Some arena types was missed: {}'.format(missedArenaTypes))
         return config
 
 
@@ -46,6 +48,6 @@ def _readBonuses(data):
         caps = frozenset(data.readString('').split())
         for bonusType in caps:
             if bonusType not in ALLOWED_ARENA_BONUS_TYPE_CAPS:
-                raise SoftException(("Invalid bonus type: bonusType='{}' is not in allowed list").format(bonusType))
+                raise SoftException("Invalid bonus type: bonusType='{}' is not in allowed list".format(bonusType))
 
         return caps

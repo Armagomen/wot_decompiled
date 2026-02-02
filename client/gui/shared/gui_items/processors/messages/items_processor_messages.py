@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/gui_items/processors/messages/items_processor_messages.py
 import logging
 from gui.SystemMessages import SM_TYPE, CURRENCY_TO_SM_TYPE, CURRENCY_TO_SM_TYPE_DISMANTLING
 from gui.impl import backport
@@ -13,13 +15,13 @@ from skeletons.gui.game_control import IWotPlusController
 _logger = logging.getLogger(__name__)
 
 class _ItemProcessorMessage(object):
-    _ITEMS_MSG_PREFIXES = {GUI_ITEM_TYPE.SHELL: 'shell', 
-       GUI_ITEM_TYPE.EQUIPMENT: 'artefact', 
-       GUI_ITEM_TYPE.OPTIONALDEVICE: 'artefact', 
-       GUI_ITEM_TYPE.BATTLE_BOOSTER: 'battleBooster', 
-       GUI_ITEM_TYPE.CREW_BOOKS: 'crewBooks'}
+    _ITEMS_MSG_PREFIXES = {GUI_ITEM_TYPE.SHELL: 'shell',
+     GUI_ITEM_TYPE.EQUIPMENT: 'artefact',
+     GUI_ITEM_TYPE.OPTIONALDEVICE: 'artefact',
+     GUI_ITEM_TYPE.BATTLE_BOOSTER: 'battleBooster',
+     GUI_ITEM_TYPE.CREW_BOOKS: 'crewBooks'}
     _ITEMS_MSG_PREFIXES.update({typeID:'module' for typeID in GUI_ITEM_TYPE.VEHICLE_MODULES})
-    __slots__ = ('_item', )
+    __slots__ = ('_item',)
 
     def __init__(self, item):
         self._item = item
@@ -33,7 +35,7 @@ class _ItemProcessorMessage(object):
         return makeSuccess(backport.text((msgKey() if msgKey else ''), **self._getMsgCtx()), self._getSuccessMsgType())
 
     def _formMessage(self):
-        return ('{itemType}_{opType}').format(itemType=self._ITEMS_MSG_PREFIXES.get(self._item.itemTypeID, ''), opType=self._getOperation())
+        return '{itemType}_{opType}'.format(itemType=self._ITEMS_MSG_PREFIXES.get(self._item.itemTypeID, ''), opType=self._getOperation())
 
     def _getErrorMsgType(self):
         return SM_TYPE.Error
@@ -60,13 +62,13 @@ class ItemBuyProcessorMessage(_ItemProcessorMessage):
 
     def _getMsgCtx(self):
         price = self.__getPrice().price if self.__responsePrice is None else self.__responsePrice
-        return {'name': self._item.userName, 
-           'kind': self._item.userType, 
-           'count': backport.getIntegralFormat(int(self.__count)), 
-           'money': formatPrice(price, ignoreZeros=True)}
+        return {'name': self._item.userName,
+         'kind': self._item.userType,
+         'count': backport.getIntegralFormat(int(self.__count)),
+         'money': formatPrice(price, ignoreZeros=True)}
 
     def _getOperation(self):
-        return 'buy'
+        pass
 
     def __getPrice(self):
         return self._item.getBuyPrice()
@@ -75,34 +77,34 @@ class ItemBuyProcessorMessage(_ItemProcessorMessage):
 class ItemInstallProcessorMessage(_ItemProcessorMessage):
 
     def _getMsgCtx(self):
-        return {'name': self._item.userName, 
-           'kind': self._item.userType}
+        return {'name': self._item.userName,
+         'kind': self._item.userType}
 
     def _getOperation(self):
-        return 'apply'
+        pass
 
 
 class ItemDestroyProcessorMessage(_ItemProcessorMessage):
 
     def _getMsgCtx(self):
-        return {'name': self._item.userName, 
-           'kind': self._item.userType}
+        return {'name': self._item.userName,
+         'kind': self._item.userType}
 
     def _getOperation(self):
-        return 'destroy'
+        pass
 
 
 class ItemDeconstructionProcessorMessage(_ItemProcessorMessage):
-    __slots__ = ('_count', )
+    __slots__ = ('_count',)
 
     def __init__(self, item, count):
         super(ItemDeconstructionProcessorMessage, self).__init__(item)
         self._count = count
 
     def _getMsgCtx(self):
-        return {'name': self._item.userName, 
-           'count': backport.getIntegralFormat(int(self._count)), 
-           'money': formatPrice(self._getOpPrice().price)}
+        return {'name': self._item.userName,
+         'count': backport.getIntegralFormat(int(self._count)),
+         'money': formatPrice(self._getOpPrice().price)}
 
     def _getOpPrice(self):
         return self._item.sellPrices.itemPrice * self._count
@@ -111,11 +113,11 @@ class ItemDeconstructionProcessorMessage(_ItemProcessorMessage):
         return SM_TYPE.Deconstructing
 
     def _getOperation(self):
-        return 'deconstructing'
+        pass
 
 
 class MultItemsDeconstructionProcessorMessage(ItemDeconstructionProcessorMessage):
-    __slots__ = ('__items', )
+    __slots__ = ('__items',)
 
     def __init__(self, items):
         self.__items = items
@@ -123,8 +125,8 @@ class MultItemsDeconstructionProcessorMessage(ItemDeconstructionProcessorMessage
         super(MultItemsDeconstructionProcessorMessage, self).__init__(firstItem, count)
 
     def _getMsgCtx(self):
-        return {'names': self.getNames(), 
-           'money': formatPrice(self._getOpPrice().price)}
+        return {'names': self.getNames(),
+         'money': formatPrice(self._getOpPrice().price)}
 
     def _getOpPrice(self):
         price = ITEM_PRICE_EMPTY
@@ -140,20 +142,20 @@ class MultItemsDeconstructionProcessorMessage(ItemDeconstructionProcessorMessage
             itemStr = backport.text(templateKey, name=item.userName, count=count)
             names.append(itemStr)
 
-        return (', ').join(names)
+        return ', '.join(names)
 
     def _getOperation(self):
-        return 'deconstructingMult'
+        pass
 
 
 class ItemRemoveProcessorMessage(_ItemProcessorMessage):
 
     def _getMsgCtx(self):
-        return {'name': self._item.userName, 
-           'kind': self._item.userType}
+        return {'name': self._item.userName,
+         'kind': self._item.userType}
 
     def _getOperation(self):
-        return 'remove'
+        pass
 
 
 class OptDeviceRemoveProcessorMessage(ItemRemoveProcessorMessage):
@@ -178,14 +180,12 @@ class OptDeviceRemoveProcessorMessage(ItemRemoveProcessorMessage):
     def _getSuccessMsgType(self):
         if self.__useDemountKit:
             return SM_TYPE.DismantlingForDemountKit
-        if self.__wotPlusController.isFreeToDemount(self._item):
-            return SM_TYPE.DismantlingForFreeWotPlus
-        return CURRENCY_TO_SM_TYPE_DISMANTLING.get(self.__removalPrice.getCurrency(), SM_TYPE.DismantlingForGold)
+        return SM_TYPE.DismantlingForFreeWotPlus if self.__wotPlusController.isFreeToDemount(self._item) else CURRENCY_TO_SM_TYPE_DISMANTLING.get(self.__removalPrice.getCurrency(), SM_TYPE.DismantlingForGold)
 
     def _getMsgCtx(self):
-        return {'name': self._item.userName, 
-           'kind': self._item.userType, 
-           'money': formatPrice(self.__removalPrice, ignoreZeros=True)}
+        return {'name': self._item.userName,
+         'kind': self._item.userType,
+         'money': formatPrice(self.__removalPrice, ignoreZeros=True)}
 
 
 class BaseLayoutProcessorMessage(object):
@@ -202,7 +202,7 @@ class BaseLayoutProcessorMessage(object):
         return makeSuccess(backport.text((msgKey() if msgKey else ''), **self._getMsgCtx()), self._getSuccessMsgType())
 
     def _formMessage(self):
-        return ('{layoutType}_{opType}').format(layoutType=self._getLayoutPrefix(), opType=self._getOperation())
+        return '{layoutType}_{opType}'.format(layoutType=self._getLayoutPrefix(), opType=self._getOperation())
 
     def _getErrorMsgType(self):
         return SM_TYPE.Error
@@ -211,13 +211,13 @@ class BaseLayoutProcessorMessage(object):
         return SM_TYPE.Information
 
     def _getLayoutPrefix(self):
-        return ''
+        pass
 
     def _getMsgCtx(self):
         return {}
 
     def _getOperation(self):
-        return ''
+        pass
 
 
 class LayoutApplyProcessorMessage(BaseLayoutProcessorMessage):
@@ -236,85 +236,84 @@ class LayoutApplyProcessorMessage(BaseLayoutProcessorMessage):
         return CURRENCY_TO_SM_TYPE.get(self.__getPrice().getCurrency(byWeight=False), SM_TYPE.Information)
 
     def _getLayoutPrefix(self):
-        return 'layout'
+        pass
 
     def _getMsgCtx(self):
         price = self.__getPrice().price if self.__responsePrice is None else self.__responsePrice
-        return {'vehName': self._vehicle.userName, 
-           'money': formatPrice(price, ignoreZeros=True)}
+        return {'vehName': self._vehicle.userName,
+         'money': formatPrice(price, ignoreZeros=True)}
 
     def _getOperation(self):
-        return 'apply'
+        pass
 
     def __getPrice(self):
-        return sum([ item.getBuyPrice() for item in self._vehicle.shells.layout.getItems() if not item.isInInventory and item not in self._vehicle.shells.installed
-                   ], ITEM_PRICE_ZERO)
+        return sum([ item.getBuyPrice() for item in self._vehicle.shells.layout.getItems() if not item.isInInventory and item not in self._vehicle.shells.installed ], ITEM_PRICE_ZERO)
 
 
 class OptDevicesApplyProcessorMessage(BaseLayoutProcessorMessage):
     __slots__ = ()
 
     def _getLayoutPrefix(self):
-        return 'optionalDevices'
+        pass
 
     def _getOperation(self):
-        return 'apply'
+        pass
 
 
 class OptDevicesDemountProcessorMessage(BaseLayoutProcessorMessage):
     __slots__ = ()
 
     def _getLayoutPrefix(self):
-        return 'optionalDevices'
+        pass
 
     def _getOperation(self):
-        return 'remove'
+        pass
 
 
 class BattleAbilitiesApplyProcessorMessage(BaseLayoutProcessorMessage):
     __slots__ = ()
 
     def _getLayoutPrefix(self):
-        return 'battleAbilities'
+        pass
 
     def _getOperation(self):
-        return 'apply'
+        pass
 
 
 class ShellsApplyProcessorMessage(LayoutApplyProcessorMessage):
     __slots__ = ()
 
     def _getLayoutPrefix(self):
-        return 'shells'
+        pass
 
     def _getOperation(self):
-        return 'apply'
+        pass
 
 
 class ConsumablesApplyProcessorMessage(LayoutApplyProcessorMessage):
     __slots__ = ()
 
     def _getLayoutPrefix(self):
-        return 'consumables'
+        pass
 
     def _getOperation(self):
-        return 'apply'
+        pass
 
 
 class BattleBoostersApplyProcessorMessage(BaseLayoutProcessorMessage):
     __slots__ = ()
 
     def _getLayoutPrefix(self):
-        return 'battleBoosters'
+        pass
 
     def _getOperation(self):
-        return 'apply'
+        pass
 
 
 class EasyTankEquipApplyProcessorMessage(BaseLayoutProcessorMessage):
 
     def _getLayoutPrefix(self):
-        return 'easyTankEquip'
+        pass
 
     def _getOperation(self):
-        return 'apply'
+        pass

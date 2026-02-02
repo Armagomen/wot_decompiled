@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/info/bottom_panel_trade_in.py
 from CurrentVehicle import g_currentPreviewVehicle
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.meta.VehiclePreviewBottomPanelTradeInMeta import VehiclePreviewBottomPanelTradeInMeta
@@ -57,42 +59,48 @@ class VehiclePreviewBottomPanelTradeIn(VehiclePreviewBottomPanelTradeInMeta):
 
     def __getVO(self):
         statusText, statusOk, tradeOffAvailable, isFreeExchange = self.__getStatus()
-        return {'currentPrice': getItemPricesVO(self.__tradeIn.getTradeInPrice(self.__tradeInVehicleToBuy)), 
-           'selectedPrice': None if isFreeExchange else self.__getSelectedPrice(), 
-           'statusText': text_styles.greenText(statusText) if isFreeExchange else statusText, 
-           'statusOk': statusOk, 
-           'tradeOffAvailable': tradeOffAvailable}
+        return {'currentPrice': getItemPricesVO(self.__tradeIn.getTradeInPrice(self.__tradeInVehicleToBuy)),
+         'selectedPrice': None if isFreeExchange else self.__getSelectedPrice(),
+         'statusText': text_styles.greenText(statusText) if isFreeExchange else statusText,
+         'statusOk': statusOk,
+         'tradeOffAvailable': tradeOffAvailable}
 
     def __updateTradeVehicles(self):
         self.__tradeInVehicleToBuy = g_currentPreviewVehicle.item
         self.__tradeInVehicleToSell = self.__tradeIn.getSelectedVehicleToSell()
 
     def __getSelectedPrice(self):
-        if self.__tradeInVehicleToSell is None:
-            return
-        else:
-            return getItemPricesVO(ItemPrice(self.__tradeInVehicleToSell.tradeOffPrice, self.__tradeInVehicleToSell.tradeOffPrice))
+        return None if self.__tradeInVehicleToSell is None else getItemPricesVO(ItemPrice(self.__tradeInVehicleToSell.tradeOffPrice, self.__tradeInVehicleToSell.tradeOffPrice))
 
     def __getStatus(self):
         if not self.__tradeIn.isEnabled():
-            return (backport.text(_RScopeTradeIn.expired()), False, True, False)
-        else:
-            if self.__tradeInVehicleToSell is not None and self.__tradeInVehicleToBuy is not None:
-                isValidSelected = self.__tradeIn.validatePossibleVehicleToBuy(self.__tradeInVehicleToBuy)
-                isFreeExchange = self.__tradeInVehicleToSell.isFreeExchange
-                if isValidSelected:
-                    if isFreeExchange:
-                        text = _RScopeTradeIn.tradeOffPriceFreeText()
-                    else:
-                        text = _RScopeTradeIn.tradeOffPriceText()
+            return (backport.text(_RScopeTradeIn.expired()),
+             False,
+             True,
+             False)
+        elif self.__tradeInVehicleToSell is not None and self.__tradeInVehicleToBuy is not None:
+            isValidSelected = self.__tradeIn.validatePossibleVehicleToBuy(self.__tradeInVehicleToBuy)
+            isFreeExchange = self.__tradeInVehicleToSell.isFreeExchange
+            if isValidSelected:
+                if isFreeExchange:
+                    text = _RScopeTradeIn.tradeOffPriceFreeText()
                 else:
-                    text = _RScopeTradeIn.invalidTradeOffVehicle()
-                    isFreeExchange = False
-                return (backport.text(text), isValidSelected, isValidSelected, isFreeExchange)
-            if self.__tradeIn.getVehiclesToSell(False) and self.__tradeInVehicleToBuy is not None:
-                return (backport.text(_RScopeTradeIn.footerNote()), True, True, False)
-            return (
-             backport.text(_RScopeTradeIn.notAvailableTradeOffVehicles()), False, True, False)
+                    text = _RScopeTradeIn.tradeOffPriceText()
+            else:
+                text = _RScopeTradeIn.invalidTradeOffVehicle()
+                isFreeExchange = False
+            return (backport.text(text),
+             isValidSelected,
+             isValidSelected,
+             isFreeExchange)
+        else:
+            return (backport.text(_RScopeTradeIn.footerNote()),
+             True,
+             True,
+             False) if self.__tradeIn.getVehiclesToSell(False) and self.__tradeInVehicleToBuy is not None else (backport.text(_RScopeTradeIn.notAvailableTradeOffVehicles()),
+             False,
+             True,
+             False)
 
     def __onCacheSyncCompleted(self, updateReason, _=None):
         if updateReason in (CACHE_SYNC_REASON.SHOP_RESYNC, CACHE_SYNC_REASON.INVENTORY_RESYNC):

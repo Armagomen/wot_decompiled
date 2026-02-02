@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/platform/products_fetcher/subscriptions/subscription_descriptors.py
 from typing import TYPE_CHECKING
 from gui.impl.gen.view_models.views.lobby.player_subscriptions.subscription_model import SubscriptionTypeEnum
 from gui.impl.gen.view_models.views.lobby.player_subscriptions.wot_subscription_model import WotSubscriptionStateEnum
@@ -32,7 +34,7 @@ class SubscriptionDescriptor(ProductDescriptor):
 
     @property
     def expirationTime(self):
-        return 0
+        pass
 
     def hasDepotRewards(self):
         return False
@@ -44,14 +46,10 @@ class SubscriptionDescriptor(ProductDescriptor):
         return self._offerToken
 
     def getOfferID(self):
-        return
+        return None
 
     def _getEvents(self):
-        return (
-         (
-          self._lobbyContext.getServerSettings().onServerSettingsChange, self._onServerSettingsChange),
-         (
-          self._connectionMgr.onDisconnected, self._onServerSettingsChange))
+        return ((self._lobbyContext.getServerSettings().onServerSettingsChange, self._onServerSettingsChange), (self._connectionMgr.onDisconnected, self._onServerSettingsChange))
 
     def _onServerSettingsChange(self, *args, **kwargs):
         self._offerToken = None
@@ -75,9 +73,7 @@ class PrimeGamingDescriptor(SubscriptionDescriptor):
     @property
     def expirationTime(self):
         quest = self.getPrimeGamingQuest()
-        if quest:
-            return quest.getFinishTimeRaw()
-        return 0
+        return quest.getFinishTimeRaw() if quest else 0
 
     def hasDepotRewards(self):
         offerID = self.getOfferToken()
@@ -85,9 +81,7 @@ class PrimeGamingDescriptor(SubscriptionDescriptor):
 
     def isRewardsClaimed(self):
         quest = self.getPrimeGamingQuest()
-        if quest:
-            return quest.isCompleted()
-        return False
+        return quest.isCompleted() if quest else False
 
     def getPrimeGamingQuest(self):
         if self.__primeGamingQuest:
@@ -95,7 +89,7 @@ class PrimeGamingDescriptor(SubscriptionDescriptor):
         quests = self.__eventsCache.getAllQuests(self.__twitchFilterFunc)
         for quest in quests.values():
             conditionTokens = quest.accountReqs.getTokens()
-            isPrimeGamingQuest = all(self.__PRIME_GAMING_FILTER_STR in token.getID() for token in conditionTokens)
+            isPrimeGamingQuest = all((self.__PRIME_GAMING_FILTER_STR in token.getID() for token in conditionTokens))
             if isPrimeGamingQuest:
                 self.__primeGamingQuest = quest
 
@@ -117,10 +111,7 @@ class PrimeGamingDescriptor(SubscriptionDescriptor):
 
     def getOfferID(self):
         offerToken = self.getOfferToken()
-        if offerToken and self.__offersProvider.isOfferUnlocked(offerToken):
-            return self.__offersProvider.getOfferByToken(offerToken).id
-        else:
-            return
+        return self.__offersProvider.getOfferByToken(offerToken).id if offerToken and self.__offersProvider.isOfferUnlocked(offerToken) else None
 
     def _onServerSettingsChange(self, *args, **kwargs):
         super(PrimeGamingDescriptor, self)._onServerSettingsChange(args, kwargs)
@@ -133,9 +124,9 @@ class PrimeGamingDescriptor(SubscriptionDescriptor):
 
 class WotPlusDescriptor(SubscriptionDescriptor):
     _wotPlusCtrl = dependency.descriptor(IWotPlusController)
-    _WOT_PLUS_COMMON_STATE_TO_UI = {WotPlusState.INACTIVE: WotSubscriptionStateEnum.INACTIVE, 
-       WotPlusState.ACTIVE: WotSubscriptionStateEnum.ACTIVE, 
-       WotPlusState.CANCELLED: WotSubscriptionStateEnum.CANCELLED}
+    _WOT_PLUS_COMMON_STATE_TO_UI = {WotPlusState.INACTIVE: WotSubscriptionStateEnum.INACTIVE,
+     WotPlusState.ACTIVE: WotSubscriptionStateEnum.ACTIVE,
+     WotPlusState.CANCELLED: WotSubscriptionStateEnum.CANCELLED}
 
     @property
     def type(self):

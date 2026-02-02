@@ -1,9 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/mode_selector/battle_session_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.hangar.menu_item_model import MenuItemModel
 
 class BattleSessionModel(ViewModel):
-    __slots__ = ('onTournamentsClicked', 'onGlobalMapClicked', 'onClanClicked', 'onCloseClicked',
-                 'onNavigate')
+    __slots__ = ('onTournamentsClicked', 'onGlobalMapClicked', 'onClanClicked', 'onCloseClicked', 'onNavigate')
 
     def __init__(self, properties=7, commands=5):
         super(BattleSessionModel, self).__init__(properties=properties, commands=commands)

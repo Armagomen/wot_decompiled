@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/rally/BaseRallyRoomView.py
 import account_helpers
 from CurrentVehicle import g_currentVehicle
 from UnitBase import UNIT_SLOT
@@ -127,8 +129,7 @@ class BaseRallyRoomView(BaseRallyRoomViewMeta):
         LOG_DEBUG('CyberSportUnitView.setItemId passed team id is:', initialData)
 
     def getCoolDownRequests(self):
-        return [
-         REQUEST_TYPE.SET_PLAYER_STATE, REQUEST_TYPE.CHANGE_UNIT_STATE]
+        return [REQUEST_TYPE.SET_PLAYER_STATE, REQUEST_TYPE.CHANGE_UNIT_STATE]
 
     def initCandidatesDP(self):
         pass
@@ -193,16 +194,16 @@ class BaseRallyRoomView(BaseRallyRoomViewMeta):
         vehicles = playerInfo.getSlotsToVehicles(True).get(slotIdx)
         if vehicles is not None:
             vehicles = self.itemsCache.items.getVehicles(REQ_CRITERIA.VEHICLE.SPECIFIC_BY_CD(vehicles))
-        self.fireEvent(events.LoadViewEvent(SFViewLoadParams(CYBER_SPORT_ALIASES.VEHICLE_SELECTOR_POPUP_PY), ctx={'isMultiSelect': False, 
-           'vehicles': vehicles, 
-           'titleText': CYBERSPORT.WINDOW_VEHICLESELECTOR_TITLE, 
-           'selectButton': CYBERSPORT.WINDOW_VEHICLESELECTOR_BUTTONS_SELECT, 
-           'cancelButton': CYBERSPORT.WINDOW_VEHICLESELECTOR_BUTTONS_CANCEL, 
-           'infoText': self._getVehicleSelectorDescription(), 
-           'compatibleOnlyLabel': CYBERSPORT.WINDOW_VEHICLESELECTOR_FILTERS_MATCHES, 
-           'selectedVehicles': self._getVehicleSelectorVehicles(), 
-           'section': 'cs_unit_view_vehicle', 
-           'levelsRange': levelsRange}), scope=EVENT_BUS_SCOPE.LOBBY)
+        self.fireEvent(events.LoadViewEvent(SFViewLoadParams(CYBER_SPORT_ALIASES.VEHICLE_SELECTOR_POPUP_PY), ctx={'isMultiSelect': False,
+         'vehicles': vehicles,
+         'titleText': CYBERSPORT.WINDOW_VEHICLESELECTOR_TITLE,
+         'selectButton': CYBERSPORT.WINDOW_VEHICLESELECTOR_BUTTONS_SELECT,
+         'cancelButton': CYBERSPORT.WINDOW_VEHICLESELECTOR_BUTTONS_CANCEL,
+         'infoText': self._getVehicleSelectorDescription(),
+         'compatibleOnlyLabel': CYBERSPORT.WINDOW_VEHICLESELECTOR_FILTERS_MATCHES,
+         'selectedVehicles': self._getVehicleSelectorVehicles(),
+         'section': 'cs_unit_view_vehicle',
+         'levelsRange': levelsRange}), scope=EVENT_BUS_SCOPE.LOBBY)
         return
 
     def chooseVehicleRequest(self):
@@ -210,8 +211,8 @@ class BaseRallyRoomView(BaseRallyRoomViewMeta):
         self._chooseVehicleRequest(levelsRange)
 
     def inviteFriendRequest(self):
-        self.fireEvent(events.LoadViewEvent(SFViewLoadParams(PREBATTLE_ALIASES.SEND_INVITES_WINDOW_PY), ctx={'prbName': 'unit', 
-           'ctrlType': CTRL_ENTITY_TYPE.UNIT}), scope=EVENT_BUS_SCOPE.LOBBY)
+        self.fireEvent(events.LoadViewEvent(SFViewLoadParams(PREBATTLE_ALIASES.SEND_INVITES_WINDOW_PY), ctx={'prbName': 'unit',
+         'ctrlType': CTRL_ENTITY_TYPE.UNIT}), scope=EVENT_BUS_SCOPE.LOBBY)
 
     def toggleReadyStateRequest(self):
         self.prbEntity.doAction()
@@ -300,7 +301,7 @@ class BaseRallyRoomView(BaseRallyRoomViewMeta):
         return pInfo.isReady
 
     def _getVehicleSelectorDescription(self):
-        return ''
+        pass
 
     def _getVehicleSelectorVehicles(self):
         selected = []
@@ -313,20 +314,18 @@ class BaseRallyRoomView(BaseRallyRoomViewMeta):
     def __getRosterSlotCtx(self, item):
         if item is None:
             return RosterSlotCtx()
+        elif item.selectedVehicle > 0:
+            return RosterSlotCtx(item.selectedVehicle)
         else:
-            if item.selectedVehicle > 0:
-                return RosterSlotCtx(item.selectedVehicle)
-            else:
-                settings = self.prbEntity.getRosterSettings()
-                levels = (settings.getMinLevel(), settings.getMaxLevel())
-                if len(item.vLevelRange) == 2:
-                    i0 = int(item.vLevelRange[0])
-                    i1 = int(item.vLevelRange[1])
-                    levels = (i0, i1) if i0 != i1 else i0
-                elif len(item.vLevelRange) == 1:
-                    levels = int(item.vLevelRange[0])
-                return RosterSlotCtx(nationNames=item.nationIDRange, levels=levels, vehClassNames=item.vTypeRange)
-
+            settings = self.prbEntity.getRosterSettings()
+            levels = (settings.getMinLevel(), settings.getMaxLevel())
+            if len(item.vLevelRange) == 2:
+                i0 = int(item.vLevelRange[0])
+                i1 = int(item.vLevelRange[1])
+                levels = (i0, i1) if i0 != i1 else i0
+            elif len(item.vLevelRange) == 1:
+                levels = int(item.vLevelRange[0])
+            return RosterSlotCtx(nationNames=item.nationIDRange, levels=levels, vehClassNames=item.vTypeRange)
             return
 
     def __setMemberStatus(self, pInfo):

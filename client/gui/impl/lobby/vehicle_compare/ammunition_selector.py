@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/vehicle_compare/ammunition_selector.py
 from frameworks.wulf import ViewSettings, ViewFlags
 from gui.Scaleform.daapi.view.lobby.vehicle_compare import cmp_helpers
 from gui.impl.auxiliary.vehicle_helper import fillVehicleInfo
@@ -42,12 +44,12 @@ class CompareAmmunitionSelectorView(ViewImpl):
     def createToolTipContent(self, event, contentID):
         if contentID == R.views.lobby.tanksetup.tooltips.SetupTabTooltipView():
             return SetupTabTooltipView(event.getArgument('name', ''))
+        elif event.contentID == R.views.lobby.tanksetup.tooltips.WarningTooltipView():
+            reason = WarningDescription(event.getArgument('reason'))
+            isCritical = event.getArgument('isCritical')
+            return WarningTooltipView(reason, isCritical)
         else:
-            if event.contentID == R.views.lobby.tanksetup.tooltips.WarningTooltipView():
-                reason = WarningDescription(event.getArgument('reason'))
-                isCritical = event.getArgument('isCritical')
-                return WarningTooltipView(reason, isCritical)
-            return
+            return None
 
     def _onLoading(self, selectedSection='', selectedSlot=None):
         super(CompareAmmunitionSelectorView, self)._onLoading()

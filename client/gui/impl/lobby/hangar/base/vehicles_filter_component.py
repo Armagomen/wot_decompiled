@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/hangar/base/vehicles_filter_component.py
 from __future__ import absolute_import
 import typing
 from future.utils import viewkeys
@@ -10,10 +12,7 @@ from helpers import dependency
 from skeletons.gui.shared import IItemsCache
 if typing.TYPE_CHECKING:
     from gui.shared.utils.requesters import RequestCriteria
-_VEHICLE_UPDATES = (
- CACHE_SYNC_REASON.SHOP_RESYNC,
- CACHE_SYNC_REASON.DOSSIER_RESYNC,
- CACHE_SYNC_REASON.CLIENT_UPDATE)
+_VEHICLE_UPDATES = (CACHE_SYNC_REASON.SHOP_RESYNC, CACHE_SYNC_REASON.DOSSIER_RESYNC, CACHE_SYNC_REASON.CLIENT_UPDATE)
 
 class VehiclesFilterComponent(IVehicleFilter):
     _itemsCache = dependency.descriptor(IItemsCache)

@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/account_helpers/gift_system.py
+import logging
+import typing
 from functools import partial
 import AccountCommands
 from gui.gift_system.wrappers import GiftsHistoryData
@@ -9,7 +12,8 @@ _CACHE_DIFF_KEY = 'cache'
 _GIFT_SYSTEM_KEY = 'giftsData'
 
 def _packEventHistoryData(eventExt):
-    return makeTupleByDict(GiftsHistoryData, {'aggregated': eventExt, 'detailed': []})
+    return makeTupleByDict(GiftsHistoryData, {'aggregated': eventExt,
+     'detailed': []})
 
 
 class _RequestHistoryProxy(object):
@@ -46,8 +50,9 @@ class GiftSystem(object):
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, None)
             return
-        self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
-        return
+        else:
+            self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
+            return
 
     def requestGiftsHistory(self, reqEventIds, callback):
         proxy = _RequestHistoryProxy(reqEventIds, callback)
@@ -66,6 +71,7 @@ class GiftSystem(object):
             if callback is not None:
                 callback(resultID, None)
             return
-        if callback is not None:
-            callback(resultID, self.__cache)
-        return
+        else:
+            if callback is not None:
+                callback(resultID, self.__cache)
+            return

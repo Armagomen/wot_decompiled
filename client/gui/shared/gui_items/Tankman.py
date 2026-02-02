@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/gui_items/Tankman.py
 import time
 from collections import OrderedDict, namedtuple
 from copy import copy
@@ -33,8 +35,10 @@ class CrewTypes(object):
     SKILL_75 = 75
     SKILL_50 = 50
     CURRENT = -1
-    ALL = (
-     SKILL_100, SKILL_75, SKILL_50, CURRENT)
+    ALL = (SKILL_100,
+     SKILL_75,
+     SKILL_50,
+     CURRENT)
     CREW_AVAILABLE_SKILLS = (SKILL_50, SKILL_75, SKILL_100)
 
 
@@ -62,9 +66,7 @@ class TankmenCollection(ItemsCollection):
         if role is not None and item.descriptor.role != role:
             return False
         else:
-            if isInTank is not None and item.isInTank != isInTank:
-                return False
-            return ItemsCollection._filterItem(self, item, nation)
+            return False if isInTank is not None and item.isInTank != isInTank else ItemsCollection._filterItem(self, item, nation)
 
 
 class TankmenComparator(object):
@@ -75,10 +77,10 @@ class TankmenComparator(object):
     def __call__(self, first, second):
         if first is None or second is None:
             return 1
-        res = nationCompareByIndex(first.nationID, second.nationID)
-        if res:
-            return res
         else:
+            res = nationCompareByIndex(first.nationID, second.nationID)
+            if res:
+                return res
             if first.isInTank and not second.isInTank:
                 return -1
             if not first.isInTank and second.isInTank:
@@ -102,11 +104,7 @@ class TankmenComparator(object):
 class Tankman(GUIItem):
     NO_VEHICLE_INV_ID = -1
     _itemsCache = dependency.descriptor(IItemsCache)
-    __slots__ = ('__descriptor', '_invID', '_nationID', '_itemTypeID', '_itemTypeName',
-                 '_combinedRoles', '_dismissedAt', '_isDismissed', '_vehicleNativeDescr',
-                 '_vehicleInvID', '_vehicleDescr', '_vehicleBonuses', '_vehicleSlotIdx',
-                 '_skills', '_skillsMap', '_bonusSkills', '_skinID', '_comparator',
-                 '__brotherhoodMarkedAsActive')
+    __slots__ = ('__descriptor', '_invID', '_nationID', '_itemTypeID', '_itemTypeName', '_combinedRoles', '_dismissedAt', '_isDismissed', '_vehicleNativeDescr', '_vehicleInvID', '_vehicleDescr', '_vehicleBonuses', '_vehicleSlotIdx', '_skills', '_skillsMap', '_bonusSkills', '_skinID', '_comparator', '__brotherhoodMarkedAsActive')
 
     class ROLES(object):
         COMMANDER = 'commander'
@@ -115,17 +113,11 @@ class Tankman(GUIItem):
         GUNNER = 'gunner'
         LOADER = 'loader'
 
-    TANKMEN_ROLES_ORDER = OrderedDict((
-     (
-      ROLES.COMMANDER, 0),
-     (
-      ROLES.GUNNER, 1),
-     (
-      ROLES.DRIVER, 2),
-     (
-      ROLES.RADIOMAN, 3),
-     (
-      ROLES.LOADER, 4)))
+    TANKMEN_ROLES_ORDER = OrderedDict(((ROLES.COMMANDER, 0),
+     (ROLES.GUNNER, 1),
+     (ROLES.DRIVER, 2),
+     (ROLES.RADIOMAN, 3),
+     (ROLES.LOADER, 4)))
     _NON_COMMANDER_SKILLS = skills_constants.ACTIVE_SKILLS.difference(skills_constants.COMMANDER_SKILLS)
 
     def __init__(self, strCompactDescr, inventoryID=-1, vehicle=None, dismissedAt=None, proxy=None, vehicleSlotIdx=-1, bonusSkillsLevels=None):
@@ -141,8 +133,7 @@ class Tankman(GUIItem):
         self._dismissedAt = dismissedAt
         self._isDismissed = self.dismissedAt is not None
         self.__brotherhoodMarkedAsActive = False
-        self._vehicleNativeDescr = vehicles.VehicleDescr(typeID=(
-         self.nationID, _descr.vehicleTypeID))
+        self._vehicleNativeDescr = vehicles.VehicleDescr(typeID=(self.nationID, _descr.vehicleTypeID))
         self._vehicleInvID = self.NO_VEHICLE_INV_ID
         self._vehicleDescr = None
         self._vehicleBonuses = dict()
@@ -265,8 +256,7 @@ class Tankman(GUIItem):
         newSkills, lastNewSkillLevel = self.newSkillsCount
         newSkills += self.newFreeSkillsCount
         if newSkills or lastNewSkillLevel:
-            levels = [
-             MAX_SKILL_LEVEL] * self.descriptor.getFullSkillsCount(withFree=True)
+            levels = [MAX_SKILL_LEVEL] * self.descriptor.getFullSkillsCount(withFree=True)
             if lastNewSkillLevel != MAX_SKILL_LEVEL:
                 levels.append(lastNewSkillLevel)
             return levels
@@ -296,8 +286,7 @@ class Tankman(GUIItem):
 
     @property
     def bonusSlotsLevels(self):
-        milestones = [ idx * NPS.BONUS_SKILL_ENABLING_FREQUENCY * MAX_SKILL_LEVEL for idx in range(NPS.MAX_BONUS_SKILLS_PER_ROLE)
-                     ]
+        milestones = [ idx * NPS.BONUS_SKILL_ENABLING_FREQUENCY * MAX_SKILL_LEVEL for idx in range(NPS.MAX_BONUS_SKILLS_PER_ROLE) ]
         majorSkillsProgress = sum(self.skillsLevels)
         levels = []
         for slotIDX, lvl in enumerate(self.descriptor.bonusSkillsLevels):
@@ -355,7 +344,10 @@ class Tankman(GUIItem):
         eqsBonus = self.vehicleBonuses.get('equipment', 0)
         optDevsBonus = self.vehicleBonuses.get('optDevices', 0)
         levelIncrease = commBonus + brothersBonus + eqsBonus + optDevsBonus
-        return (levelIncrease, (commBonus, brothersBonus, eqsBonus, optDevsBonus))
+        return (levelIncrease, (commBonus,
+          brothersBonus,
+          eqsBonus,
+          optDevsBonus))
 
     @property
     def nativeTankRealRoleLevel(self):
@@ -385,10 +377,7 @@ class Tankman(GUIItem):
 
     @property
     def isInPremiumTank(self):
-        if self.vehicleDescr is None:
-            return False
-        else:
-            return self.vehicleDescr.type.isPremium and self.vehicleDescr.type.compactDescr != self.vehicleNativeDescr.type.compactDescr
+        return False if self.vehicleDescr is None else self.vehicleDescr.type.isPremium and self.vehicleDescr.type.compactDescr != self.vehicleNativeDescr.type.compactDescr
 
     @property
     def isInSkin(self):
@@ -396,10 +385,7 @@ class Tankman(GUIItem):
 
     @property
     def skin(self):
-        if self.isInSkin:
-            return self._itemsCache.items.getCrewSkin(self.skinID)
-        else:
-            return
+        return self._itemsCache.items.getCrewSkin(self.skinID) if self.isInSkin else None
 
     @property
     def role(self):
@@ -419,18 +405,14 @@ class Tankman(GUIItem):
 
     @property
     def canUseSkillsInCurrentVehicle(self):
-        if not self.isInTank:
-            return False
-        return self.descriptor.isOwnVehicleOrPremium(self.vehicleDescr.type)
+        return False if not self.isInTank else self.descriptor.isOwnVehicleOrPremium(self.vehicleDescr.type)
 
     @property
     def currentVehicleSkillsEfficiency(self):
         descr = self.descriptor
         if not self.isInTank:
             return descr.skillsEfficiency
-        if self.canUseSkillsInCurrentVehicle:
-            return descr.skillsEfficiency
-        return SKILL_EFFICIENCY_UNTRAINED
+        return descr.skillsEfficiency if self.canUseSkillsInCurrentVehicle else SKILL_EFFICIENCY_UNTRAINED
 
     @property
     def isMaxCurrentVehicleSkillsEfficiency(self):
@@ -549,7 +531,6 @@ class Tankman(GUIItem):
             if self.roleLevel == tankmen.MAX_SKILL_LEVEL:
                 skillSeqNum = lastSkillNumValue
             return descr.levelUpXpCost(nextSkillLevel, skillSeqNum) - descr.freeXP
-        return 0
 
     def getNextSkillXpCost(self):
         descr = self.descriptor
@@ -567,7 +548,6 @@ class Tankman(GUIItem):
                 needXp += descr.levelUpXpCost(level, skillSeqNum)
 
             return needXp - descr.freeXP
-        return 0
 
     @property
     def isMaxRoleLevel(self):
@@ -588,24 +568,16 @@ class Tankman(GUIItem):
 
     @property
     def bigIconDynAccessorWithSkin(self):
-        if self.isInSkin:
-            return R.images.gui.maps.icons.tankmen.icons.big.crewSkins
-        return R.images.gui.maps.icons.tankmen.icons.big
+        return R.images.gui.maps.icons.tankmen.icons.big.crewSkins if self.isInSkin else R.images.gui.maps.icons.tankmen.icons.big
 
     def getExtensionLessIconWithSkin(self):
-        if self.isInSkin:
-            return getDynIconName(self.skin.getIconID())
-        return getExtensionLessIconName(self.nationID, self.descriptor.iconID)
+        return getDynIconName(self.skin.getIconID()) if self.isInSkin else getExtensionLessIconName(self.nationID, self.descriptor.iconID)
 
     def getDescription(self):
-        if self.isInSkin:
-            return i18n.makeString(self.skin.getDescription())
-        return self.loreDescription
+        return i18n.makeString(self.skin.getDescription()) if self.isInSkin else self.loreDescription
 
     def getFullUserNameWithSkin(self):
-        if self.isInSkin:
-            return self.skin.getLocalizedFullName()
-        return self.fullUserName
+        return self.skin.getLocalizedFullName() if self.isInSkin else self.fullUserName
 
     def isSearchableByName(self, name):
         return name.lower() in self.fullUserName.lower()
@@ -627,9 +599,7 @@ class Tankman(GUIItem):
             vehicle = self._itemsCache.items.getVehicle(self.vehicleInvID)
             if vehicle.isLocked:
                 return False
-        if self.isDismissed:
-            return False
-        return True
+        return False if self.isDismissed else True
 
     def skillAlreadyLearned(self, skillName):
         return skillName in self.skillsMap and self.skillsMap[skillName].level == tankmen.MAX_SKILL_LEVEL
@@ -641,8 +611,7 @@ class Tankman(GUIItem):
         return self.skillAlreadyLearned(skillName) and self.canUseSkillsInCurrentVehicle and self.isMaxSkillEfficiency
 
     def allSkillsLearned(self):
-        allowedGroups = [
-         'common'] + list(self.combinedRoles)
+        allowedGroups = ['common'] + list(self.combinedRoles)
         for group, skills in self.getPossibleSkillsByRole().iteritems():
             if group not in allowedGroups:
                 continue
@@ -677,8 +646,7 @@ class Tankman(GUIItem):
                         continue
                     if currentSkill in self._skillsMap:
                         result.setdefault(role, []).append(self._skillsMap[currentSkill])
-                    else:
-                        result.setdefault(role, []).append(getTankmanSkill(currentSkill, role, tankman=self))
+                    result.setdefault(role, []).append(getTankmanSkill(currentSkill, role, tankman=self))
 
         for role in self.roles():
             fillSkills(role)
@@ -708,8 +676,7 @@ class Tankman(GUIItem):
             if roles and self.role == roles[0]:
                 return roles
 
-        return (
-         self.role,)
+        return (self.role,)
 
     def getKpi(self, vehicle):
         return collectKpi(self.descriptor, vehicle)
@@ -736,28 +703,22 @@ class Tankman(GUIItem):
             self._vehicleBonuses = dict(vehicle.bonuses)
 
     def getVehicle(self):
-        if not self.isInTank:
-            return None
-        else:
-            return self._itemsCache.items.getVehicle(self.vehicleInvID)
+        return None if not self.isInTank else self._itemsCache.items.getVehicle(self.vehicleInvID)
 
     def __packSkill(self, skillItem):
-        return {'id': skillItem.name, 
-           'iconName': skillItem.extensionLessIconName, 
-           'name': skillItem.userName, 
-           'desc': skillItem.shortDescription, 
-           'enabled': True, 
-           'tankmanID': self.invID, 
-           'isSituational': skillItem.isSituational}
+        return {'id': skillItem.name,
+         'iconName': skillItem.extensionLessIconName,
+         'name': skillItem.userName,
+         'desc': skillItem.shortDescription,
+         'enabled': True,
+         'tankmanID': self.invID,
+         'isSituational': skillItem.isSituational}
 
     def __eq__(self, other):
-        if other is None or not isinstance(other, Tankman):
-            return False
-        return self.invID == other.invID
+        return False if other is None or not isinstance(other, Tankman) else self.invID == other.invID
 
     def __repr__(self):
-        return 'Tankman<id:%d, nation:%d, vehicleID:%d>' % (
-         self.invID, self.nationID, self.vehicleInvID)
+        return 'Tankman<id:%d, nation:%d, vehicleID:%d>' % (self.invID, self.nationID, self.vehicleInvID)
 
 
 class BaseBookConvertingFormatter(object):
@@ -766,7 +727,7 @@ class BaseBookConvertingFormatter(object):
     def getTextMessage(self, header, qtyPrefix=''):
         formatedDate = str(time.strftime('%d.%m.%Y %H:%M:%S', time.localtime(time.time())))
         message = backport.text(header, at=formatedDate)
-        message += (',\n').join(('{} ({}{})').format(crewBook['name'], qtyPrefix, crewBook['count']) for crewBook in self.__crewBooks) + '.'
+        message += ',\n'.join(('{} ({}{})'.format(crewBook['name'], qtyPrefix, crewBook['count']) for crewBook in self.__crewBooks)) + '.'
         return message
 
     def setCrewBooks(self, crewBooks, itemsCache):
@@ -787,24 +748,18 @@ def __getIconPath(nationID, iconID, iconType):
     iconName = getDynIconName(getExtensionLessIconName(nationID, iconID))
     iconPath = R.images.gui.maps.icons.tankmen.icons.dyn(iconType)
     dynAccessor = iconPath.dyn(iconName)
-    if dynAccessor.isValid():
-        return backport.image(dynAccessor())
-    return backport.image(iconPath.tankman())
+    return backport.image(dynAccessor()) if dynAccessor.isValid() else backport.image(iconPath.tankman())
 
 
 def __tankmanHasSkill(tankman, skillName):
     if tankman is None:
         return False
     else:
-        if skillName not in tankman.skillsMap:
-            return False
-        return True
+        return False if skillName not in tankman.skillsMap else True
 
 
 def __getPersonalSkillLearningProgress(tankman, skillName):
-    if __tankmanHasSkill(tankman, skillName):
-        return tankman.skillsMap[skillName].level
-    return tankmen.NO_SKILL
+    return tankman.skillsMap[skillName].level if __tankmanHasSkill(tankman, skillName) else tankmen.NO_SKILL
 
 
 def __isCommonSkillLearnt(skillName, vehicle):
@@ -843,11 +798,11 @@ def _getSkillLevelWithIncrease(booster, skillLevel, tankman):
     realSkillLevel = skillLevel + tankman.crewLevelIncrease[0]
     if booster is None:
         return realSkillLevel
+    elif tankman.currentVehicleSkillsEfficiency == SKILL_EFFICIENCY_UNTRAINED or skillLevel == tankmen.NO_SKILL:
+        return tankmen.MAX_SKILL_LEVEL
+    elif not tankman.isMaxCurrentVehicleSkillsEfficiency or skillLevel < tankmen.MAX_SKILL_LEVEL:
+        return tankmen.MAX_SKILL_LEVEL + tankman.crewLevelIncrease[0]
     else:
-        if tankman.currentVehicleSkillsEfficiency == SKILL_EFFICIENCY_UNTRAINED or skillLevel == tankmen.NO_SKILL:
-            return tankmen.MAX_SKILL_LEVEL
-        if not tankman.isMaxCurrentVehicleSkillsEfficiency or skillLevel < tankmen.MAX_SKILL_LEVEL:
-            return tankmen.MAX_SKILL_LEVEL + tankman.crewLevelIncrease[0]
         boostFactor = booster.perkLevelMultiplier or 1
         return realSkillLevel * boostFactor
 
@@ -855,35 +810,34 @@ def _getSkillLevelWithIncrease(booster, skillLevel, tankman):
 def _boostSkill(crew, skillName, tankmenSkillLevels, booster):
     if booster is None:
         return tankmenSkillLevels
-    else:
-        allTankmenHaveSkillAtMaxLevel = True
-        allTankmenHaveMaxEfficiency = True
-        allHasActiveSkill = True
-        for slot, tankman, hasActiveSkill in tankmenSkillLevels:
-            tankman = next((tankman for idxInCrew, tankman in crew if idxInCrew == slot), None)
-            if tankman is None:
-                allTankmenHaveSkillAtMaxLevel = False
-                allTankmenHaveMaxEfficiency = False
-                continue
-            if not tankman.isMaxCurrentVehicleSkillsEfficiency:
-                allTankmenHaveMaxEfficiency = False
-                continue
-            if skillName not in tankman.skillsMap:
-                allTankmenHaveSkillAtMaxLevel = False
-                continue
-            if tankman.skillsMap[skillName].level < tankmen.MAX_SKILL_LEVEL:
-                allTankmenHaveSkillAtMaxLevel = False
-                continue
-            if not hasActiveSkill:
-                allHasActiveSkill = False
+    allTankmenHaveSkillAtMaxLevel = True
+    allTankmenHaveMaxEfficiency = True
+    allHasActiveSkill = True
+    for slot, tankman, hasActiveSkill in tankmenSkillLevels:
+        tankman = next((tankman for idxInCrew, tankman in crew if idxInCrew == slot), None)
+        if tankman is None:
+            allTankmenHaveSkillAtMaxLevel = False
+            allTankmenHaveMaxEfficiency = False
+            continue
+        if not tankman.isMaxCurrentVehicleSkillsEfficiency:
+            allTankmenHaveMaxEfficiency = False
+            continue
+        if skillName not in tankman.skillsMap:
+            allTankmenHaveSkillAtMaxLevel = False
+            continue
+        if tankman.skillsMap[skillName].level < tankmen.MAX_SKILL_LEVEL:
+            allTankmenHaveSkillAtMaxLevel = False
+            continue
+        if not hasActiveSkill:
+            allHasActiveSkill = False
 
-        if allTankmenHaveSkillAtMaxLevel and allTankmenHaveMaxEfficiency and allHasActiveSkill:
-            multiplier = booster.perkLevelMultiplier if booster.perkLevelMultiplier is not None else 1.0
-            return [ (slot, level * multiplier, isActive) for slot, level, isActive in tankmenSkillLevels ]
-        if sum(v for _, v, _ in tankmenSkillLevels) > tankmen.MAX_SKILL_LEVEL * len(tankmenSkillLevels):
-            return tankmenSkillLevels
-        return [ (slot, tankmen.MAX_SKILL_LEVEL if skillLevel <= 0 else skillLevel, isActive) for slot, skillLevel, isActive in tankmenSkillLevels
-               ]
+    if allTankmenHaveSkillAtMaxLevel and allTankmenHaveMaxEfficiency and allHasActiveSkill:
+        multiplier = booster.perkLevelMultiplier if booster.perkLevelMultiplier is not None else 1.0
+        return [ (slot, level * multiplier, isActive) for slot, level, isActive in tankmenSkillLevels ]
+    elif sum((v for _, v, _ in tankmenSkillLevels)) > tankmen.MAX_SKILL_LEVEL * len(tankmenSkillLevels):
+        return tankmenSkillLevels
+    else:
+        return [ (slot, tankmen.MAX_SKILL_LEVEL if skillLevel <= 0 else skillLevel, isActive) for slot, skillLevel, isActive in tankmenSkillLevels ]
 
 
 def getFirstUserName(nationID, firstNameID):
@@ -906,7 +860,6 @@ def getLoreDescr(group, nationID):
     if key:
         loc = R.strings.lore.tankman.lore
         return str(backport.text(loc.dyn(replaceHyphenToUnderscore(key))()))
-    return ''
 
 
 def getRankUserName(nationID, rankID):
@@ -955,9 +908,7 @@ def calculateRankID(startRoleLevel, freeXpValue=0, typeID=(0, 0), skills=(), fre
 
 def isSkillLearnt(skillName, vehicle):
     isCommonSkill = skillName in tankmen.COMMON_SKILLS
-    if isCommonSkill:
-        return __isCommonSkillLearnt(skillName, vehicle)
-    return __isPersonalSkillLearnt(skillName, vehicle)
+    return __isCommonSkillLearnt(skillName, vehicle) if isCommonSkill else __isPersonalSkillLearnt(skillName, vehicle)
 
 
 def crewMemberRealSkillLevel(vehicle, skillName, commonWithIncrease=True, skipIrrelevantState=False, shouldIncrease=True):
@@ -980,7 +931,7 @@ def crewMemberRealSkillLevel(vehicle, skillName, commonWithIncrease=True, skipIr
             if not tdescr.isOwnVehicleOrPremium(vehicle.descriptor.type) and not hasBoosterForSkill:
                 if isCommonSkill or skillRoleType in vehicle.descriptor.type.crewRoles[slot]:
                     tankmenSkillLevels.append((slot, tankmen.NO_SKILL, True))
-            elif skillRoleType in tankman.combinedRoles or isCommonSkill:
+            if skillRoleType in tankman.combinedRoles or isCommonSkill:
                 withoutPerkLvlMul = None
                 if booster:
                     withoutPerkLvlMul = copy(booster)
@@ -1008,7 +959,7 @@ def crewMemberRealSkillLevel(vehicle, skillName, commonWithIncrease=True, skipIr
             tankmenSkillLevels = _boostSkill(vehicle.crew, skillName, tankmenSkillLevels, booster)
         if not vehicle.crew:
             return tankmen.NO_SKILL
-        if all(hasSkill == tankmen.NO_SKILL for _, hasSkill, _ in tankmenSkillLevels):
+        if all((hasSkill == tankmen.NO_SKILL for _, hasSkill, _ in tankmenSkillLevels)):
             return tankmen.NO_SKILL
         validSkillLevels = [ level for _, level, _ in tankmenSkillLevels if level != tankmen.NO_SKILL ]
         return sum(validSkillLevels) / float(len(tankmenSkillLevels))
@@ -1033,4 +984,4 @@ def getBattleBooster(vehicle, skillName):
         if installedBoosters:
             boosters = [ booster.descriptor for booster in installedBoosters ]
             return findFirst(lambda a, name=skillName: isinstance(a, SkillEquipment) and a.skillName == name, boosters, default=None)
-    return
+    return None

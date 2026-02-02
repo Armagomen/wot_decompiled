@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/varint.py
 from cStringIO import StringIO as BytesIO
 from struct_helpers import unpackByte, packByte
 
@@ -16,9 +18,8 @@ def encode(number):
         number >>= 7
         if number:
             buf.write(packByte(towrite | 128))
-        else:
-            buf.write(packByte(towrite))
-            break
+        buf.write(packByte(towrite))
+        break
 
     return buf.getvalue()
 

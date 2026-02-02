@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/dialogs/contents/exchange_content.py
 import logging
 from enum import Enum
 from adisp import adisp_process, adisp_async
@@ -63,15 +65,13 @@ class ExchangeContent(ExchangeDiscountView):
             result = yield self.__exchanger.tryExchange(fromItemCount, withConfirm=False)
             if result and result.userMsg:
                 SystemMessages.pushI18nMessage(result.userMsg, type=result.sysMsgType)
-            callback((result.success or ExchangeContentResult).SERVER_ERROR if 1 else ExchangeContentResult.IS_OK)
+            callback(ExchangeContentResult.SERVER_ERROR if not result.success else ExchangeContentResult.IS_OK)
 
     def createToolTipContent(self, event, contentID):
         if contentID == R.views.lobby.personal_exchange_rates.tooltips.ExchangeLimitTooltip():
             selectedExchangeAmount = self._viewModel.fromItem.getValue()
             return LimitedDiscountInfoTooltip(self._exchangeRate.getExchangeRateName, selectedExchangeAmount)
-        if contentID == R.views.lobby.personal_exchange_rates.tooltips.ExchangeRateTooltip():
-            return DiscountInfoTooltip(self._exchangeRate.getExchangeRateName)
-        return super(ExchangeContent, self).createToolTipContent(event, contentID)
+        return DiscountInfoTooltip(self._exchangeRate.getExchangeRateName) if contentID == R.views.lobby.personal_exchange_rates.tooltips.ExchangeRateTooltip() else super(ExchangeContent, self).createToolTipContent(event, contentID)
 
     def _addListeners(self):
         self._viewModel.exchangeRate.onOpenAllDiscountsWindow += self.__onOpenAllDiscountsWindow
@@ -118,7 +118,7 @@ class ExchangeContent(ExchangeDiscountView):
         return valid
 
     def __fillItemsModel(self, fromItemCount, toItemCount):
-        with self._viewModel.transaction() as (ts):
+        with self._viewModel.transaction() as ts:
             self.__fromItem.updateItemModel(ts.fromItem, fromItemCount)
             self.__toItem.updateItemModel(ts.toItem, toItemCount)
             ts.exchangeRate.setAmountOfPersonalDiscounts(len(getDiscountsRequiredForExchange(self._exchangeRate.allPersonalLimitedDiscounts, fromItemCount, getCurrentTime())))

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/AmmunitionPanelMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class AmmunitionPanelMeta(BaseDAAPIComponent):
@@ -18,17 +20,13 @@ class AmmunitionPanelMeta(BaseDAAPIComponent):
         self._printOverrideError('showEasyTankEquip')
 
     def as_setMaintenanceWarningStateS(self, stateWarning):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setMaintenanceWarningState(stateWarning)
+        return self.flashObject.as_setMaintenanceWarningState(stateWarning) if self._isDAAPIInited() else None
 
     def as_highlightEasyTankEquipS(self, isHighlight):
-        if self._isDAAPIInited():
-            return self.flashObject.as_highlightEasyTankEquip(isHighlight)
+        return self.flashObject.as_highlightEasyTankEquip(isHighlight) if self._isDAAPIInited() else None
 
     def as_updateVehicleStatusS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateVehicleStatus(data)
+        return self.flashObject.as_updateVehicleStatus(data) if self._isDAAPIInited() else None
 
     def as_setCustomizationBtnCounterS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setCustomizationBtnCounter(value)
+        return self.flashObject.as_setCustomizationBtnCounter(value) if self._isDAAPIInited() else None

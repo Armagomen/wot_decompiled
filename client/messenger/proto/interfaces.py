@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/interfaces.py
 import typing
 if typing.TYPE_CHECKING:
     from typing import Optional
@@ -5,7 +7,7 @@ if typing.TYPE_CHECKING:
     from messenger.proto.bw_chat2.battle_chat_cmd import _OutCmdDecorator
 
 class IProtoPlugin(object):
-    __slots__ = ('__weakref__', )
+    __slots__ = ('__weakref__',)
 
     def connect(self, scope):
         pass
@@ -58,32 +60,32 @@ class IProtoLimits(object):
 
 class IBattleCommandFactory(object):
 
-    def createByName(self, name):
-        return
+    def createByName(self, name, args=None):
+        return None
 
     def createByNameTarget(self, name, targetID):
-        return
+        return None
 
     def createByPosition(self, position, name, reloadTime=0.0):
-        return
+        return None
 
     def createByObjectiveIndex(self, idx, isAtk, actionName):
-        return
+        return None
 
     def createByBaseIndexAndName(self, pointID, commandName, baseName):
-        return
+        return None
 
     def create4Reload(self, isCassetteClip, timeLeft, quantity):
-        return
+        return None
 
     def createReplyByName(self, replyID, replyType, replierID):
-        return
+        return None
 
     def createCancelReplyByName(self, replyID, replyType, replierID):
-        return
+        return None
 
     def createClearChatCommandsFromTarget(self, targetID, targetMarkerType):
-        return
+        return None
 
 
 class IUnitCommandFactory(object):
@@ -120,19 +122,19 @@ class ISearchProcessor(object):
         pass
 
     def getSearchResultLimit(self):
-        return 0
+        pass
 
 
 class IChatMessage(object):
 
     def getMessage(self):
-        return ''
+        pass
 
 
 class IChatError(IChatMessage):
 
     def getTitle(self):
-        return ''
+        pass
 
     def isModal(self):
         return False
@@ -141,7 +143,7 @@ class IChatError(IChatMessage):
 class IVOIPChatProvider(object):
 
     def getChannelParams(self):
-        return ('', '')
+        pass
 
     def requestCredentials(self, reset=0):
         pass

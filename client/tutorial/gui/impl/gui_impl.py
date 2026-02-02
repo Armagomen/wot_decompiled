@@ -1,4 +1,7 @@
-import typing, logging
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/tutorial/gui/impl/gui_impl.py
+import typing
+import logging
 from collections import defaultdict
 from Event import Event, EventManager
 from gui.Scaleform.genConsts.TUTORIAL_EFFECT_TYPES import TUTORIAL_EFFECT_TYPES
@@ -26,8 +29,10 @@ _logger = logging.getLogger(__name__)
 
 class WulfGuiImpl(IGuiImpl):
     __slots__ = ('__model', '__proxy', '__eventMgr', '__effectsFactory')
-    _SUPPORTED_TRIGGERS = frozenset((TUTORIAL_TRIGGER_TYPES.ENABLED, TUTORIAL_TRIGGER_TYPES.DISABLED,
-     TUTORIAL_TRIGGER_TYPES.VISIBLE_CHANGE, TUTORIAL_TRIGGER_TYPES.ENABLED_CHANGE,
+    _SUPPORTED_TRIGGERS = frozenset((TUTORIAL_TRIGGER_TYPES.ENABLED,
+     TUTORIAL_TRIGGER_TYPES.DISABLED,
+     TUTORIAL_TRIGGER_TYPES.VISIBLE_CHANGE,
+     TUTORIAL_TRIGGER_TYPES.ENABLED_CHANGE,
      TUTORIAL_TRIGGER_TYPES.ESCAPE))
     _FORCE_PROXIED_TRIGGERS = frozenset((TUTORIAL_TRIGGER_TYPES.ESCAPE,))
     _PROXIED_TRIGGERS = frozenset(TUTORIAL_TRIGGER_TYPES.ALL) - _SUPPORTED_TRIGGERS | _FORCE_PROXIED_TRIGGERS
@@ -59,7 +64,7 @@ class WulfGuiImpl(IGuiImpl):
             return ef.getComponentId() == componentId and ef.getViewId() == viewId and ef.getType() == effectType and ef.getBuilder() == effectBuilder
 
         foundEffects = findItems(self.__model.effects.getItems(), _findPredicate)
-        with self.__model.effects.transaction() as (effects):
+        with self.__model.effects.transaction() as effects:
             if foundEffects:
                 effect = foundEffects[0]
             else:
@@ -97,7 +102,7 @@ class WulfGuiImpl(IGuiImpl):
             views[descr.viewId].getComponents().addViewModel(cmpDescr)
             views[descr.viewId].setViewId(descr.viewId)
 
-        with self.__model.descriptions.transaction() as (descriptionsModel):
+        with self.__model.descriptions.transaction() as descriptionsModel:
             for view in views.values():
                 descriptionsModel.getViews().addViewModel(view)
 
@@ -107,7 +112,7 @@ class WulfGuiImpl(IGuiImpl):
         self.__model.setEnabled(enabled)
 
     def setCriteria(self, name, value):
-        with self.__model.criteria.transaction() as (criteria):
+        with self.__model.criteria.transaction() as criteria:
             items = criteria.getItems()
             foundCriteria = findItems(items, lambda item: item.getName() == name)
             if foundCriteria:
@@ -120,7 +125,7 @@ class WulfGuiImpl(IGuiImpl):
             criterion.setValue(value)
 
     def setViewCriteria(self, componentId, viewUniqueName):
-        with self.__model.viewCriteria.transaction() as (viewCriteria):
+        with self.__model.viewCriteria.transaction() as viewCriteria:
             items = viewCriteria.getItems()
             criteria = findItems(items, lambda item: item.getComponentId() == componentId)
             if criteria:
@@ -150,7 +155,7 @@ class WulfGuiImpl(IGuiImpl):
             self.__proxy.setTriggers(componentId, proxiedTriggers)
         supportedTriggers = allTriggers & self._SUPPORTED_TRIGGERS
         if supportedTriggers:
-            with self.__model.triggers.transaction() as (triggersList):
+            with self.__model.triggers.transaction() as triggersList:
                 foundTriggers = findItems(triggersList.getItems(), _findPredicate)
                 if foundTriggers:
                     triggersModel = foundTriggers[0]
@@ -167,8 +172,7 @@ class WulfGuiImpl(IGuiImpl):
                     triggersList.getItems().invalidate()
 
     def supportedViewTypes(self):
-        return (
-         GuiType.WULF,)
+        return (GuiType.WULF,)
 
     def isInited(self):
         return self.__model is not None
@@ -213,7 +217,7 @@ class WulfGuiImpl(IGuiImpl):
         effects = self.__model.effects.getItems()
         indexes = findIndexes(effects, _predicate)
         if not indexes:
-            raise SoftException(("Can't find effect. viewId: {}, componentId: {}, type: {}").format(viewId, componentId, effectType))
+            raise SoftException("Can't find effect. viewId: {}, componentId: {}, type: {}".format(viewId, componentId, effectType))
         effects.remove(indexes[0])
         effects.invalidate()
         self.onEffectCompleted(componentId, effectType)

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/mode_selector/items/winback_mode_selector_item.py
 from account_helpers.AccountSettings import Winback, AccountSettings
 from gui.Scaleform.daapi.view.lobby.header import battle_selector_items
 from gui.impl.gen import R

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/locale/BATTLE_RESULTS.py
 from debug_utils import LOG_WARNING
 
 class BATTLE_RESULTS(object):
@@ -75,6 +77,9 @@ class BATTLE_RESULTS(object):
     COMMON_CREWMEMBER_NEWSKILL = '#battle_results:common/crewMember/newSkill'
     COMMON_CREWMEMBER_DESCRIPTION = '#battle_results:common/crewMember/description'
     COMMON_NOPROGRESS = '#battle_results:common/noProgress'
+    COMMON_MISSIONS_NOPROGRESS_HEADER = '#battle_results:common/missions/noProgress/header'
+    COMMON_MISSIONS_NOPROGRESS_DESCRIPTION = '#battle_results:common/missions/noProgress/description'
+    COMMON_MISSIONS_NOPROGRESS_BUTTON = '#battle_results:common/missions/noProgress/button'
     COMMON_TOOLTIP_DAMAGE_HEADER = '#battle_results:common/tooltip/damage/header'
     COMMON_TOOLTIP_DAMAGE_DESCRIPTION = '#battle_results:common/tooltip/damage/description'
     COMMON_TOOLTIP_DAMAGE_PART1 = '#battle_results:common/tooltip/damage/part1'
@@ -430,7 +435,16 @@ class BATTLE_RESULTS(object):
     CUSTOMIZATIONPROGRESS_AWARD_NEWLEVEL = '#battle_results:customizationProgress/award/newLevel'
     PRESTIGE_TITLE = '#battle_results:prestige/title'
     PRESTIGE_COMMON_DESCRIPTION = '#battle_results:prestige/common/description'
+    PRESTIGE_NEWLEVELACHIEVED_DESCRIPTION = '#battle_results:prestige/newLevelAchieved/description'
+    PRESTIGE_MAXLEVELREACHED_DESCRIPTION = '#battle_results:prestige/maxLevelReached/description'
     PRESTIGE_MAX_DESCRIPTION = '#battle_results:prestige/max/description'
+    PROGRESSION_COMPLETEDPOINTSFROM_WITHOUTLABEL = '#battle_results:progression/completedPointsFrom/withoutLabel'
+    PROGRESSION_COMPLETEDPOINTSFROM_WITHLABEL = '#battle_results:progression/completedPointsFrom/withLabel'
+    PROGRESSION_MISSIONSCOMPLETECOUNTER = '#battle_results:progression/missionsCompleteCounter'
+    PROGRESSION_COMPLETED = '#battle_results:progression/completed'
+    PROGRESSION_TOTALEARNED = '#battle_results:progression/totalEarned'
+    PROGRESSION_PROGRESSUNAVAILABLE = '#battle_results:progression/progressUnavailable'
+    PROGRESSION_LINKBTN_INFO = '#battle_results:progression/linkBtn/info'
     BATTLERESULT_TEAM_PRESTIGEPOINTS_HEADER = '#battle_results:battleResult/team/prestigePoints/header'
     BATTLERESULT_TEAM_PRESTIGEPOINTS_BODY = '#battle_results:battleResult/team/prestigePoints/body'
     BATTLERESULT_COMP7LIGHT_TEAM_PRESTIGEPOINTS_HEADER = '#battle_results:battleResult/comp7Light/team/prestigePoints/header'
@@ -440,6 +454,7 @@ class BATTLE_RESULTS(object):
     TEAM_STATS_PARAMETER_EXPLOSIONHITS = '#battle_results:team/stats/parameter/explosionHits'
     TEAM_STATS_PARAMETER_DAMAGEDEALT = '#battle_results:team/stats/parameter/damageDealt'
     TEAM_STATS_PARAMETER_SNIPERDAMAGEDEALT = '#battle_results:team/stats/parameter/sniperDamageDealt'
+    TEAM_STATS_PARAMETER_ARTILLERYFORTEQUIPDAMAGEDEALT = '#battle_results:team/stats/parameter/artilleryFortEquipDamageDealt'
     TEAM_STATS_PARAMETER_DIRECTHITSRECEIVED = '#battle_results:team/stats/parameter/directHitsReceived'
     TEAM_STATS_PARAMETER_PIERCINGSRECEIVED = '#battle_results:team/stats/parameter/piercingsReceived'
     TEAM_STATS_PARAMETER_NODAMAGEDIRECTHITSRECEIVED = '#battle_results:team/stats/parameter/noDamageDirectHitsReceived'
@@ -475,15 +490,34 @@ class BATTLE_RESULTS(object):
     BATTLERATING_TOOLTIP_USUAL_BODY = '#battle_results:battleRating/tooltip/usual/body'
     BATTLERATING_TOOLTIP_BETTER_HEADER = '#battle_results:battleRating/tooltip/better/header'
     BATTLERATING_TOOLTIP_BETTER_BODY = '#battle_results:battleRating/tooltip/better/body'
-    DETAILS_TIME_LBL_ENUM = (
-     DETAILS_TIME_LBL_OBJECTIVESREACHED,
+    MISSIONSPROGRESS_ABOUTVEHICLE_TITLE = '#battle_results:missionsProgress/aboutVehicle/title'
+    MISSIONSPROGRESS_ABOUTVEHICLE_DESCRIPTION = '#battle_results:missionsProgress/aboutVehicle/description'
+    MISSIONSPROGRESS_ABOUTVEHICLE_PREDICTION = '#battle_results:missionsProgress/aboutVehicle/prediction'
+    MISSIONSPROGRESS_ABOUTVEHICLE_BUTTON = '#battle_results:missionsProgress/aboutVehicle/button'
+    MISSIONSPROGRESS_BATTLEMATTERS_TITLE = '#battle_results:missionsProgress/battleMatters/title'
+    MISSIONSPROGRESS_BATTLEMATTERS_DONEINFO = '#battle_results:missionsProgress/battleMatters/doneInfo'
+    MISSIONSPROGRESS_NOTIFICATIONSTABS_DAILY = '#battle_results:missionsProgress/notificationsTabs/daily'
+    MISSIONSPROGRESS_NOTIFICATIONSTABS_PREMIUM = '#battle_results:missionsProgress/notificationsTabs/premium'
+    MISSIONSPROGRESS_NOTIFICATIONSTABS_EPIC = '#battle_results:missionsProgress/notificationsTabs/epic'
+    MISSIONSPROGRESS_NOTIFICATIONSTABS_COMMON = '#battle_results:missionsProgress/notificationsTabs/common'
+    MISSIONSPROGRESS_NOTIFICATIONSTABS_ABOUTVEHICLE_VEHICLE = '#battle_results:missionsProgress/notificationsTabs/aboutVehicle/vehicle'
+    MISSIONSPROGRESS_NOTIFICATIONSTABS_ABOUTVEHICLE_MODULE = '#battle_results:missionsProgress/notificationsTabs/aboutVehicle/module'
+    MISSIONSPROGRESS_NOTIFICATIONSTABS_WEEKLY = '#battle_results:missionsProgress/notificationsTabs/weekly'
+    MISSIONSPROGRESS_NOTIFICATIONSTABS_BATTLEPASS_CHAPTERCOMPLETE = '#battle_results:missionsProgress/notificationsTabs/battlePass/chapterComplete'
+    MISSIONSPROGRESS_NOTIFICATIONSTABS_BATTLEPASS_STAGECOMPLETE = '#battle_results:missionsProgress/notificationsTabs/battlePass/stageComplete'
+    MISSIONSPROGRESS_NOTIFICATIONSTABS_ELITESYSTEM_NEWLEVEL = '#battle_results:missionsProgress/notificationsTabs/eliteSystem/newLevel'
+    MISSIONSPROGRESS_NOTIFICATIONSTABS_ELITESYSTEM_MAXLEVEL = '#battle_results:missionsProgress/notificationsTabs/eliteSystem/maxLevel'
+    MISSIONSPROGRESS_NOTIFICATIONSTABS_BATTLEMATTERS = '#battle_results:missionsProgress/notificationsTabs/battleMatters'
+    MISSIONSPROGRESS_NOTIFICATIONSTABS_PERSONALMISSIONS_OPERATION_MISSION_COMPLETE = '#battle_results:missionsProgress/notificationsTabs/personalMissions/operation_mission_complete'
+    CONDITIONS_TYPE_OR = '#battle_results:conditions/type/or'
+    CONDITIONS_TYPE_AND = '#battle_results:conditions/type/and'
+    DETAILS_TIME_LBL_ENUM = (DETAILS_TIME_LBL_OBJECTIVESREACHED,
      DETAILS_TIME_LBL_OBJECTIVESDESTROYED,
      DETAILS_TIME_LBL_BASESCAPTURED,
      DETAILS_TIME_LBL_ARENACREATETIMEONLYSTR,
      DETAILS_TIME_LBL_DURATION,
      DETAILS_TIME_LBL_PLAYERKILLED)
-    DETAILS_CALCULATIONS_ENUM = (
-     DETAILS_CALCULATIONS_BOOSTERS,
+    DETAILS_CALCULATIONS_ENUM = (DETAILS_CALCULATIONS_BOOSTERS,
      DETAILS_CALCULATIONS_BATTLEPAYMENTS,
      DETAILS_CALCULATIONS_TACTICALTRAINING,
      DETAILS_CALCULATIONS_MILITARYMANEUVERS,
@@ -541,8 +575,7 @@ class BATTLE_RESULTS(object):
      DETAILS_CALCULATIONS_CRYSTAL_EVENTS,
      DETAILS_CALCULATIONS_PETCREDITS_FULLLABEL,
      DETAILS_CALCULATIONS_PETCREDITS_SIMPLELABEL)
-    TEAM_STATS_LABELS_ENUM = (
-     TEAM_STATS_LABELS_XP,
+    TEAM_STATS_LABELS_ENUM = (TEAM_STATS_LABELS_XP,
      TEAM_STATS_LABELS_XPFORATTACK,
      TEAM_STATS_LABELS_XPFORASSIST,
      TEAM_STATS_LABELS_XPOTHER,
@@ -587,16 +620,9 @@ class BATTLE_RESULTS(object):
      TEAM_STATS_LABELS_DESTROYRECOVERYRATIO,
      TEAM_STATS_LABELS_ATKOBJECTIVES,
      TEAM_STATS_LABELS_DEFOBJECTIVES)
-    TEAM_STATS_INFOTIP_ALL_HEADER_ENUM = (
-     TEAM_STATS_INFOTIP_XPFORATTACK_HEADER,
-     TEAM_STATS_INFOTIP_XPFORASSIST_HEADER,
-     TEAM_STATS_INFOTIP_XPOTHER_HEADER)
-    TEAM_STATS_INFOTIP_ALL_BODY_ENUM = (
-     TEAM_STATS_INFOTIP_XPFORATTACK_BODY,
-     TEAM_STATS_INFOTIP_XPFORASSIST_BODY,
-     TEAM_STATS_INFOTIP_XPOTHER_BODY)
-    COMMON_VEHICLESTATE_DEAD_ENUM = (
-     COMMON_VEHICLESTATE_DEAD0,
+    TEAM_STATS_INFOTIP_ALL_HEADER_ENUM = (TEAM_STATS_INFOTIP_XPFORATTACK_HEADER, TEAM_STATS_INFOTIP_XPFORASSIST_HEADER, TEAM_STATS_INFOTIP_XPOTHER_HEADER)
+    TEAM_STATS_INFOTIP_ALL_BODY_ENUM = (TEAM_STATS_INFOTIP_XPFORATTACK_BODY, TEAM_STATS_INFOTIP_XPFORASSIST_BODY, TEAM_STATS_INFOTIP_XPOTHER_BODY)
+    COMMON_VEHICLESTATE_DEAD_ENUM = (COMMON_VEHICLESTATE_DEAD0,
      COMMON_VEHICLESTATE_DEAD0_WITH_KILLERNAME,
      COMMON_VEHICLESTATE_DEAD0_WITH_KILLERNAME_AND_CLAN,
      COMMON_VEHICLESTATE_DEAD1,
@@ -627,54 +653,54 @@ class BATTLE_RESULTS(object):
 
     @classmethod
     def getDetailsTimeLbl(cls, statName):
-        outcome = ('#battle_results:details/time/lbl_{}').format(statName)
+        outcome = '#battle_results:details/time/lbl_{}'.format(statName)
         if outcome not in cls.DETAILS_TIME_LBL_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getDetailsCalculation(cls, statName):
-        outcome = ('#battle_results:details/calculations/{}').format(statName)
+        outcome = '#battle_results:details/calculations/{}'.format(statName)
         if outcome not in cls.DETAILS_CALCULATIONS_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getTeamStatsLabel(cls, statName):
-        outcome = ('#battle_results:team/stats/labels_{}').format(statName)
+        outcome = '#battle_results:team/stats/labels_{}'.format(statName)
         if outcome not in cls.TEAM_STATS_LABELS_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getTeamStatsInfotipHeader(cls, statName):
-        outcome = ('#battle_results:team/stats/infotip_{}/header').format(statName)
+        outcome = '#battle_results:team/stats/infotip_{}/header'.format(statName)
         if outcome not in cls.TEAM_STATS_INFOTIP_ALL_HEADER_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getTeamStatsInfotipBody(cls, statName):
-        outcome = ('#battle_results:team/stats/infotip_{}/body').format(statName)
+        outcome = '#battle_results:team/stats/infotip_{}/body'.format(statName)
         if outcome not in cls.TEAM_STATS_INFOTIP_ALL_BODY_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getVehicleDeadState(cls, intType):
-        outcome = ('#battle_results:common/vehicleState/dead{}').format(intType)
+        outcome = '#battle_results:common/vehicleState/dead{}'.format(intType)
         if outcome not in cls.COMMON_VEHICLESTATE_DEAD_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome

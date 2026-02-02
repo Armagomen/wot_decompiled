@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/common/frontline_common/frontline_account_commands.py
 CMD_FL_SET_FPR = 900
 CMD_FL_GET_FPR = 901
 CMD_CREATE_PREBATTLE_EPIC_TRAINING = 902

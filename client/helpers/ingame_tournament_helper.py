@@ -1,4 +1,11 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/helpers/ingame_tournament_helper.py
 from enum import Enum
+
+class IngameTournamentType(Enum):
+    WCI = 'wci'
+    OLS = 'ols'
+
 
 class IngameTournamentState(Enum):
     INTRO = 'tournament_intro'

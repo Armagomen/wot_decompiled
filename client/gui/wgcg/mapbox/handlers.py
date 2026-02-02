@@ -1,12 +1,14 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/wgcg/mapbox/handlers.py
 from gui.wgcg.base.handlers import RequestHandlers
 from gui.wgcg.settings import WebRequestDataType
 
 class MapboxRequestHandlers(RequestHandlers):
 
     def get(self):
-        handlers = {WebRequestDataType.MAPBOX_PROGRESSION: self.__getMapboxProgression, 
-           WebRequestDataType.MAPBOX_SURVEY_COMPLETE: self.__completeSurvey, 
-           WebRequestDataType.MAPBOX_SURVEY_URL: self.__requestAuthorizedSurveyURL}
+        handlers = {WebRequestDataType.MAPBOX_PROGRESSION: self.__getMapboxProgression,
+         WebRequestDataType.MAPBOX_SURVEY_COMPLETE: self.__completeSurvey,
+         WebRequestDataType.MAPBOX_SURVEY_URL: self.__requestAuthorizedSurveyURL}
         return handlers
 
     def __getMapboxProgression(self, ctx, callback):

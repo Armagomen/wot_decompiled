@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/shared/tooltips/contexts.py
 from gui.shared.tooltips import TOOLTIP_COMPONENT
 from gui.shared.tooltips.contexts import ToolTipContext
 from helpers import dependency
@@ -25,7 +27,4 @@ class Comp7RoleSkillLobbyContext(ToolTipContext):
     def buildItem(self, equipmentName):
         cache = vehicles.g_cache
         equipmentID = cache.equipmentIDs().get(equipmentName)
-        if equipmentID is not None:
-            return cache.equipments().get(equipmentID)
-        else:
-            return
+        return cache.equipments().get(equipmentID) if equipmentID is not None else None

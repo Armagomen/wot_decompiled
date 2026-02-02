@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/formatters/ranges.py
 from helpers import int2roman
 
 def toRangeString(sequence, step=1, itemDelimiter=', ', rangeDelimiter='-'):
@@ -32,18 +34,14 @@ def numberRanges(sequence, step):
         q = sorted(sequence)
         i = 0
         for j in xrange(1, length):
-            if q[j] > step + q[(j - 1)]:
+            if q[j] > step + q[j - 1]:
                 if i == j - 1:
-                    yield (
-                     q[i],)
+                    yield (q[i],)
                 else:
-                    yield (
-                     q[i], q[(j - 1)])
+                    yield (q[i], q[j - 1])
                 i = j
 
         if i == length - 1:
-            yield (
-             q[i],)
+            yield (q[i],)
         else:
-            yield (
-             q[i], q[(-1)])
+            yield (q[i], q[-1])

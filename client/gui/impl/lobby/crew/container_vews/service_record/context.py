@@ -1,7 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/container_vews/service_record/context.py
 from gui.impl.lobby.crew.container_vews.common.base_personal_case_context import BasePersonalCaseContext
 
 class ServiceRecordViewContext(BasePersonalCaseContext):
-    __slots__ = ('_dossier', )
+    __slots__ = ('_dossier',)
 
     def __init__(self, tankmanID):
         self._dossier = None

@@ -1,16 +1,18 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/sub_views/shell_setup.py
 from functools import partial
 from gui.shared import sound_helpers
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_setup_model import BaseSetupModel
 from gui.impl.lobby.tank_setup.configurations.shell import ShellTabsController, ShellDealPanel
 from gui.impl.lobby.tank_setup.sub_views.deal_base_setup import DealBaseSetupSubView
-from gui.shared.items_parameters import isAutoReloadGun, isTwinGun
+from gui.shared.items_parameters import getShellsLoadSize
 from gui.shared.event_dispatcher import showModuleInfo
 
 class ShellSetupSubView(DealBaseSetupSubView):
     __slots__ = ()
 
     def updateSlots(self, slotID, fullUpdate=True, updateData=True):
-        self.__setupClipCount(self._interactor.getItem().descriptor.gun)
+        self._viewModel.setClipCount(getShellsLoadSize(self._interactor.getItem().descriptor.gun))
         super(ShellSetupSubView, self).updateSlots(slotID, fullUpdate, updateData)
 
     def _createTabsController(self):
@@ -34,7 +36,7 @@ class ShellSetupSubView(DealBaseSetupSubView):
 
     def _updateSlots(self, fullUpdate=True, updateData=True):
         self._viewModel.setMaxCount(self._interactor.getItem().ammoMaxSize)
-        self._viewModel.setInstalledCount(sum(shell.count for shell in self._interactor.getCurrentLayout()))
+        self._viewModel.setInstalledCount(sum((shell.count for shell in self._interactor.getCurrentLayout())))
         super(ShellSetupSubView, self)._updateSlots(fullUpdate, updateData)
 
     def __onItemsSyncCompleted(self, *_):
@@ -58,12 +60,3 @@ class ShellSetupSubView(DealBaseSetupSubView):
         self._interactor.changeShell(intCD, newCount)
         sound_helpers.playSliderUpdateSound(oldCount, newCount, totalCount)
         self.update()
-
-    def __setupClipCount(self, gun):
-        if isAutoReloadGun(gun):
-            clipCount = 1
-        elif isTwinGun(gun):
-            clipCount = 2
-        else:
-            clipCount = gun.clip[0]
-        self._viewModel.setClipCount(clipCount)

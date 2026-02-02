@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/fading_controller.py
 from gui.impl.common.fade_manager import FadeManager, DefaultFadingCover
 from wg_async import wg_await, wg_async
 from skeletons.gui.game_control import IFadingController

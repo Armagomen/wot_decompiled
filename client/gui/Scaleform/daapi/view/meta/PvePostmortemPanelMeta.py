@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/PvePostmortemPanelMeta.py
 from gui.Scaleform.daapi.view.battle.shared.postmortem_panel import PostmortemPanel
 
 class PvePostmortemPanelMeta(PostmortemPanel):
@@ -6,25 +8,19 @@ class PvePostmortemPanelMeta(PostmortemPanel):
         self._printOverrideError('updateTime')
 
     def as_setHintTitleS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setHintTitle(value)
+        return self.flashObject.as_setHintTitle(value) if self._isDAAPIInited() else None
 
     def as_setHintDescrS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setHintDescr(value)
+        return self.flashObject.as_setHintDescr(value) if self._isDAAPIInited() else None
 
     def as_setTimerS(self, totalTime, currentTime):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setTimer(totalTime, currentTime)
+        return self.flashObject.as_setTimer(totalTime, currentTime) if self._isDAAPIInited() else None
 
     def as_setCanExitS(self, canExit):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setCanExit(canExit)
+        return self.flashObject.as_setCanExit(canExit) if self._isDAAPIInited() else None
 
     def as_showLockedLivesS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showLockedLives()
+        return self.flashObject.as_showLockedLives() if self._isDAAPIInited() else None
 
     def as_hidePanelS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_hidePanel()
+        return self.flashObject.as_hidePanel() if self._isDAAPIInited() else None

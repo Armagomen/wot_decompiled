@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/container_vews/skills_training/controller.py
 from BWUtil import AsyncReturn
 import BigWorld
 from gui.impl.dialogs.dialogs import showSkillsTrainingConfirmDialog
@@ -17,19 +19,12 @@ class SkillsTrainingInteractionController(InteractionController):
         return SkillsTrainingComponentViewEvents()
 
     def _getEvents(self):
-        return [
-         (
-          self.eventsProvider.onSkillHover, self._onSkillHover),
-         (
-          self.eventsProvider.onSkillOut, self._onSkillOut),
-         (
-          self.eventsProvider.onSkillClick, self._onSkillClick),
-         (
-          self.eventsProvider.onTrain, self._onTrain),
-         (
-          self.eventsProvider.onCancel, self._onCancel),
-         (
-          self.eventsProvider.onClose, self._onClose)]
+        return [(self.eventsProvider.onSkillHover, self._onSkillHover),
+         (self.eventsProvider.onSkillOut, self._onSkillOut),
+         (self.eventsProvider.onSkillClick, self._onSkillClick),
+         (self.eventsProvider.onTrain, self._onTrain),
+         (self.eventsProvider.onCancel, self._onCancel),
+         (self.eventsProvider.onClose, self._onClose)]
 
     @wg_async
     def onChangeTankman(self, tankmanInvID, slotIdx):
@@ -51,10 +46,10 @@ class SkillsTrainingInteractionController(InteractionController):
     def _onSkillHover(self, skillId):
         self.context.updateHoveredSkill(skillId)
         highlightedSkills = []
-        if any(skill.name == skillId and skill.level == MAX_SKILL_LEVEL for skill in self.context.tankman.skills):
+        if any((skill.name == skillId and skill.level == MAX_SKILL_LEVEL for skill in self.context.tankman.skills)):
             highlightedSkills.append(skillId)
         for _, bonusSkills in self.context.tankman.bonusSkills.iteritems():
-            if any(skill.name == skillId and skill.level == MAX_SKILL_LEVEL for skill in bonusSkills if skill):
+            if any((skill.name == skillId and skill.level == MAX_SKILL_LEVEL for skill in bonusSkills if skill)):
                 highlightedSkills.append(skillId)
 
         if skillId not in self.context.selectedSkills:

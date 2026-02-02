@@ -1,10 +1,12 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/impl/gen/view_models/views/lobby/meta_view/pages/rank_rewards_model.py
 from frameworks.wulf import Array
 from comp7.gui.impl.gen.view_models.views.lobby.meta_view.pages.rank_rewards_item_model import RankRewardsItemModel
 from comp7.gui.impl.gen.view_models.views.lobby.meta_view.progression_base_model import ProgressionBaseModel
 from comp7.gui.impl.gen.view_models.views.lobby.qualification_model import QualificationModel
 
 class RankRewardsModel(ProgressionBaseModel):
-    __slots__ = ('onPreviewOpen', )
+    __slots__ = ('onPreviewOpen',)
     DEFAULT_ITEM_INDEX = -1
 
     def __init__(self, properties=5, commands=1):

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/lobby/hangar/presenters/fun_random_loadout_presenter.py
 from __future__ import absolute_import
 import typing
 from gui.impl.gen import R
@@ -23,10 +25,10 @@ class FunRandomLoadoutPresenter(LoadoutPresenter):
 
     def _getChildComponents(self):
         hangar = R.aliases.hangar.shared
-        return {hangar.Equipments(): lambda : EquipmentsPresenter(self._vehInteractingItem), 
-           hangar.Instructions(): lambda : InstructionsPresenter(self._vehInteractingItem), 
-           hangar.Shells(): lambda : FunRandomShellsPresenter(self._vehInteractingItem), 
-           hangar.Consumables(): lambda : ConsumablesPresenter(self._vehInteractingItem)}
+        return {hangar.Equipments(): lambda : EquipmentsPresenter(self._vehInteractingItem),
+         hangar.Instructions(): lambda : InstructionsPresenter(self._vehInteractingItem),
+         hangar.Shells(): lambda : FunRandomShellsPresenter(self._vehInteractingItem),
+         hangar.Consumables(): lambda : ConsumablesPresenter(self._vehInteractingItem)}
 
 
 class FunRandomShellsPresenter(ShellsPresenter):

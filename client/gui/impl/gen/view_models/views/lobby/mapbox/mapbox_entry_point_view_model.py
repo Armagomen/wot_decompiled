@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/mapbox/mapbox_entry_point_view_model.py
 from enum import IntEnum
 from frameworks.wulf import ViewModel
 
@@ -10,7 +12,7 @@ class State(IntEnum):
 
 
 class MapboxEntryPointViewModel(ViewModel):
-    __slots__ = ('onActionClick', )
+    __slots__ = ('onActionClick',)
 
     def __init__(self, properties=5, commands=1):
         super(MapboxEntryPointViewModel, self).__init__(properties=properties, commands=commands)

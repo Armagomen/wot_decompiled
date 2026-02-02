@@ -1,4 +1,7 @@
-import typing, BattleReplay
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/battle/frontline_game_messages_panel.py
+import typing
+import BattleReplay
 from ReservesEvents import randomReservesEvents
 from gui.Scaleform.daapi.view.meta.GameMessagesPanelMeta import GameMessagesPanelMeta
 from helpers import dependency
@@ -28,9 +31,9 @@ class FrontlineMessagePanel(BattleHintComponent, GameMessagesPanelMeta):
         else:
             messageType = GAME_MESSAGES_CONSTS.WIN if isWinner else GAME_MESSAGES_CONSTS.DEFEAT
             title = EPIC_BATTLE.GAME_VICTORY if isWinner else EPIC_BATTLE.GAME_DEFEAT
-        endGameMsgData = {'title': title, 
-           'reason': reason, 
-           'subTitle': makeEpicBattleFinishResultLabel(reason, messageType)}
+        endGameMsgData = {'title': title,
+         'reason': reason,
+         'subTitle': makeEpicBattleFinishResultLabel(reason, messageType)}
         msg = PlayerMessageData(messageType, GAME_MESSAGES_CONSTS.DEFAULT_MESSAGE_LENGTH, GAME_MESSAGES_CONSTS.GAME_MESSAGE_PRIORITY_END_GAME, endGameMsgData)
         self.__onIngameMessageReady(msg)
         self.__blockNewMessages = True
@@ -39,13 +42,15 @@ class FrontlineMessagePanel(BattleHintComponent, GameMessagesPanelMeta):
         ctrl = self.sessionProvider.dynamic.gameNotifications
         if ctrl is not None:
             randomReservesEvents.hidePanel(True)
-            ctrl.onMessagePlaybackStarted(messageType, {'id': id_, 'modificator': modificator})
+            ctrl.onMessagePlaybackStarted(messageType, {'id': id_,
+             'modificator': modificator})
         return
 
     def onMessagePhaseStarted(self, messageType, modificator, id_):
         ctrl = self.sessionProvider.dynamic.gameNotifications
         if ctrl is not None:
-            ctrl.onMessagePlaybackPhaseStarted(messageType, {'id': id_, 'modificator': modificator})
+            ctrl.onMessagePlaybackPhaseStarted(messageType, {'id': id_,
+             'modificator': modificator})
         return
 
     def onMessageEnded(self, messageType, id_):

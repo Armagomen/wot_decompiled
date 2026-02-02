@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/account_helpers/pet_system.py
 import typing
 from functools import partial
 import AccountCommands
@@ -7,10 +9,7 @@ if typing.TYPE_CHECKING:
     from typing import Callable, Dict, Optional
 
 def _getProxy(callback):
-    if callback is not None:
-        return lambda requestID, resultID, errorStr, ext={}: callback(resultID, errorStr, ext)
-    else:
-        return
+    return (lambda requestID, resultID, errorStr, ext={}: callback(resultID, errorStr, ext)) if callback is not None else None
 
 
 class PetSystem(object):
@@ -32,8 +31,9 @@ class PetSystem(object):
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, None)
             return
-        self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
-        return
+        else:
+            self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
+            return
 
     def synchronize(self, isFullSync, diff):
         if isFullSync and self.__cache:
@@ -76,6 +76,7 @@ class PetSystem(object):
             if callback is not None:
                 callback(resultID, None)
             return
-        if callback is not None:
-            callback(resultID, self.__cache)
-        return
+        else:
+            if callback is not None:
+                callback(resultID, self.__cache)
+            return

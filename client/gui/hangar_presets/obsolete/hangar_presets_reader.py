@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/hangar_presets/obsolete/hangar_presets_reader.py
 import ResMgr
 from gui.hangar_presets.obsolete.hangar_gui_config import HangarGuiPreset, HangarGuiSettings, PresetSettings
 from soft_exception import SoftException
@@ -58,12 +60,12 @@ class DefaultPresetReader(IPresetReader):
     def __readGuiHangarConfig(cls, configPath, fullConfig):
         config = ResMgr.openSection(configPath)
         if config is None:
-            raise SoftException(('[HangarGUI] Cannot open or read config {}').format(configPath))
+            raise SoftException('[HangarGUI] Cannot open or read config {}'.format(configPath))
         presets = {}
         if config.has_key('presets'):
             presets = cls.__readPresets(config['presets'], fullConfig)
         if not config.has_key('queueTypePresets'):
-            raise SoftException(('[HangarGUI] Missing queueTypePresets section in the config').format(configPath))
+            raise SoftException('[HangarGUI] Missing queueTypePresets section in the config'.format(configPath))
         queueTypePresets = cls.__readPresetsForQueueTypes(config['queueTypePresets'])
         return HangarGuiSettings(presets, queueTypePresets)
 
@@ -133,7 +135,7 @@ class DefaultSubPresetReader(DefaultPresetReader):
     @classmethod
     def _getPreset(cls, presetName, config):
         if not config.has_key(cls._SUB_TYPES_KEY):
-            raise SoftException(('Missing {} section for {}').format(cls._SUB_TYPES_KEY, cls._CONFIG_PATH))
+            raise SoftException('Missing {} section for {}'.format(cls._SUB_TYPES_KEY, cls._CONFIG_PATH))
         return {subType:presetName for subType in map(int, config[cls._SUB_TYPES_KEY].asString.split())}
 
     @classmethod

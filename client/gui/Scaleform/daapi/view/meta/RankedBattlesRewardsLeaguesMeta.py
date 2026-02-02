@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/RankedBattlesRewardsLeaguesMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class RankedBattlesRewardsLeaguesMeta(BaseDAAPIComponent):
@@ -6,5 +8,4 @@ class RankedBattlesRewardsLeaguesMeta(BaseDAAPIComponent):
         self._printOverrideError('onStyleClick')
 
     def as_setRewardsS(self, rewards):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setRewards(rewards)
+        return self.flashObject.as_setRewards(rewards) if self._isDAAPIInited() else None

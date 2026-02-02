@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/web/web_client_api/ui/util.py
 import typing
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import NEW_LOBBY_TAB_COUNTER
@@ -36,18 +38,18 @@ _COUNTER_IDS_MAP = {'shop': VIEW_ALIAS.LOBBY_STORE}
 
 def _itemTypeValidator(itemType, _=None):
     if not ItemPackType.hasValue(itemType):
-        raise WebCommandException(('unsupported item type "{}"').format(itemType))
+        raise WebCommandException('unsupported item type "{}"'.format(itemType))
     return True
 
 
 def _counterIdValidator(counterId, _=None):
     if counterId not in _COUNTER_IDS_MAP:
-        raise WebCommandException(('unsupported counter id "{}"').format(counterId))
+        raise WebCommandException('unsupported counter id "{}"'.format(counterId))
     return True
 
 
 def _counterIdsValidator(idList, _=None):
-    return all(_counterIdValidator(id) for id in idList)
+    return all((_counterIdValidator(id) for id in idList))
 
 
 class _SetCounterSchema(W2CSchema):
@@ -144,7 +146,8 @@ class UtilWebApiMixin(object):
     def setCounterState(self, cmd):
         alias = _COUNTER_IDS_MAP.get(cmd.id)
         if alias is not None:
-            g_eventBus.handleEvent(HasCtxEvent(eventType=HEADER_BUTTONS_COUNTERS_CHANGED_EVENT, ctx={'alias': alias, 'value': cmd.value or ''}))
+            g_eventBus.handleEvent(HasCtxEvent(eventType=HEADER_BUTTONS_COUNTERS_CHANGED_EVENT, ctx={'alias': alias,
+             'value': cmd.value or ''}))
         return
 
     @w2c(_GetCountersSchema, 'get_counters')
@@ -167,21 +170,25 @@ class UtilWebApiMixin(object):
         tooltipType = cmd.tooltipType
         itemId = cmd.itemId
         args = []
-        withLongIntArgs = (
-         TC.AWARD_SHELL,)
-        withLongOnlyArgs = (TC.AWARD_VEHICLE, TC.AWARD_MODULE, TC.INVENTORY_BATTLE_BOOSTER, TC.BOOSTERS_BOOSTER_INFO,
-         TC.BADGE, TC.TECH_CUSTOMIZATION_ITEM)
+        withLongIntArgs = (TC.AWARD_SHELL,)
+        withLongOnlyArgs = (TC.AWARD_VEHICLE,
+         TC.AWARD_MODULE,
+         TC.INVENTORY_BATTLE_BOOSTER,
+         TC.BOOSTERS_BOOSTER_INFO,
+         TC.BADGE,
+         TC.TECH_CUSTOMIZATION_ITEM)
         if tooltipType in withLongIntArgs:
-            args = [
-             itemId, 0]
+            args = [itemId, 0]
         elif tooltipType in withLongOnlyArgs:
-            args = [
-             itemId]
+            args = [itemId]
         elif tooltipType == TC.ACHIEVEMENT:
             dossier = self.itemsCache.items.getAccountDossier()
             dossierCompDescr = dumpDossier(self.itemsCache.items.getAccountDossier())
             achievement = dossier.getTotalStats().getAchievement((cmd.blockId, itemId))
-            args = [dossier.getDossierType(), dossierCompDescr, achievement.getBlock(), cmd.itemId,
+            args = [dossier.getDossierType(),
+             dossierCompDescr,
+             achievement.getBlock(),
+             cmd.itemId,
              isRareAchievement(achievement)]
         self.__getTooltipMgr().onCreateTypedTooltip(tooltipType, args, 'INFO')
 
@@ -255,7 +262,7 @@ class UtilWebApiMixin(object):
 
     @storage_getter('users')
     def usersStorage(self):
-        return
+        return None
 
     @w2c(_ChatAvailabilitySchema, 'check_if_chat_available')
     def checkIfChatAvailable(self, cmd):
@@ -286,9 +293,7 @@ class UtilWebApiMixin(object):
 
     @staticmethod
     def __getErrorResponse(data, defaultError=''):
-        if data:
-            return data
-        return {'description': defaultError}
+        return data if data else {'description': defaultError}
 
     @w2c(_SelectBattleTypeSchema, 'select_battle_type')
     def selectBattleType(self, cmd):

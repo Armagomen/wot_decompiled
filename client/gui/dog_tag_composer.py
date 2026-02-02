@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/dog_tag_composer.py
 from enum import Enum
-import logging, typing
+import logging
+import typing
 from dog_tags_common.components_config import componentConfigAdapter as componentConfig
 from dog_tags_common.config.common import ComponentViewType, ComponentPurpose
 from gui.impl import backport
@@ -16,8 +19,8 @@ class AssetSize(Enum):
     MINI = 'mini'
 
 
-ViewTypeToImageFolderMap = {ComponentViewType.ENGRAVING: 'engravings', 
-   ComponentViewType.BACKGROUND: 'backgrounds'}
+ViewTypeToImageFolderMap = {ComponentViewType.ENGRAVING: 'engravings',
+ ComponentViewType.BACKGROUND: 'backgrounds'}
 
 def getResourceRoot(component):
     resourceString = component.resourceRoot
@@ -31,12 +34,21 @@ def getResourceRoot(component):
 
 
 LANGUAGE_CODE = R.strings.settings.LANGUAGE_CODE()
-SUPPORTED_LANGUAGES = ['de', 'es', 'fr', 'hu', 'it', 'pl', 'pt_br', 'ru', 'tr', 'uk', 'zh_cn', 'cs']
+SUPPORTED_LANGUAGES = ['de',
+ 'es',
+ 'fr',
+ 'hu',
+ 'it',
+ 'pl',
+ 'pt_br',
+ 'ru',
+ 'tr',
+ 'uk',
+ 'zh_cn',
+ 'cs']
 
 def getLocalizePostfix():
-    if backport.text(LANGUAGE_CODE) in SUPPORTED_LANGUAGES:
-        return ('_{}').format(backport.text(LANGUAGE_CODE))
-    return ''
+    return '_{}'.format(backport.text(LANGUAGE_CODE)) if backport.text(LANGUAGE_CODE) in SUPPORTED_LANGUAGES else ''
 
 
 class DogTagComposerClient(object):
@@ -47,13 +59,11 @@ class DogTagComposerClient(object):
         if grade < 0:
             _logger.error('Tried loading an image with incorrect grade: %d for component %d', grade, componentId)
             grade = 0
-        return ('{}_{}_{}{}').format(componentConfig.getComponentById(componentId).viewType.value.lower(), componentId, grade, getLocalizePostfix() if localized else '')
+        return '{}_{}_{}{}'.format(componentConfig.getComponentById(componentId).viewType.value.lower(), componentId, grade, getLocalizePostfix() if localized else '')
 
     @staticmethod
     def getBottomPlateImage(backgroundId):
-        if componentConfig.getComponentById(backgroundId).purpose != ComponentPurpose.COUPLED:
-            return ''
-        return ('bottom_plate_{}').format(backgroundId)
+        return '' if componentConfig.getComponentById(backgroundId).purpose != ComponentPurpose.COUPLED else 'bottom_plate_{}'.format(backgroundId)
 
     @classmethod
     def getComponentImageFullPath(cls, size, componentId, grade=0):
@@ -108,10 +118,7 @@ class DogTagComposerClient(object):
 
     @staticmethod
     def getAnimationSrc(animation):
-        if animation is None:
-            return ''
-        else:
-            return ('animations/dogtags/{}.swf').format(animation)
+        return '' if animation is None else 'animations/dogtags/{}.swf'.format(animation)
 
 
 dogTagComposer = DogTagComposerClient()

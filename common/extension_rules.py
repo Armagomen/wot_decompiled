@@ -1,4 +1,7 @@
-import re, ResMgr
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/extension_rules.py
+import re
+import ResMgr
 from soft_exception import SoftException
 EXTENSION_RULES_FILE = 'scripts/extension_rules.xml'
 g_cache = None
@@ -31,8 +34,7 @@ def init():
             params = None if rule['params'] is None else rule['params'].asString
             return prepareRuleParams(params)
 
-        g_cache['merge_whitelist'] = [ (re.compile(rule['pattern'].asString), rule['type'].asString, getParams(rule)) for rule in whitelist.values()
-                                     ]
+        g_cache['merge_whitelist'] = [ (re.compile(rule['pattern'].asString), rule['type'].asString, getParams(rule)) for rule in whitelist.values() ]
         ResMgr.purge(EXTENSION_RULES_FILE, True)
         return
 
@@ -46,5 +48,4 @@ def isExtXML(path):
             if bool(pattern.match(path)):
                 return (True, method, params)
 
-        return (
-         False, None, None)
+        return (False, None, None)

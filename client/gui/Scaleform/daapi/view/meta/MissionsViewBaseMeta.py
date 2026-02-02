@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/MissionsViewBaseMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class MissionsViewBaseMeta(BaseDAAPIComponent):
@@ -6,17 +8,13 @@ class MissionsViewBaseMeta(BaseDAAPIComponent):
         self._printOverrideError('dummyClicked')
 
     def as_showDummyS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showDummy(data)
+        return self.flashObject.as_showDummy(data) if self._isDAAPIInited() else None
 
     def as_hideDummyS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_hideDummy()
+        return self.flashObject.as_hideDummy() if self._isDAAPIInited() else None
 
     def as_setWaitingVisibleS(self, visible):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setWaitingVisible(visible)
+        return self.flashObject.as_setWaitingVisible(visible) if self._isDAAPIInited() else None
 
     def as_setBackgroundS(self, source):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setBackground(source)
+        return self.flashObject.as_setBackground(source) if self._isDAAPIInited() else None

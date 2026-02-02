@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/ProfileFormationsPageMeta.py
 from gui.Scaleform.daapi.view.lobby.profile.ProfileSection import ProfileSection
 
 class ProfileFormationsPageMeta(ProfileSection):
@@ -12,13 +14,10 @@ class ProfileFormationsPageMeta(ProfileSection):
         self._printOverrideError('onClanLinkNavigate')
 
     def as_setClanInfoS(self, clanInfo):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setClanInfo(clanInfo)
+        return self.flashObject.as_setClanInfo(clanInfo) if self._isDAAPIInited() else None
 
     def as_setFortInfoS(self, fortInfo):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setFortInfo(fortInfo)
+        return self.flashObject.as_setFortInfo(fortInfo) if self._isDAAPIInited() else None
 
     def as_setClanEmblemS(self, clanIcon):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setClanEmblem(clanIcon)
+        return self.flashObject.as_setClanEmblem(clanIcon) if self._isDAAPIInited() else None

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/vehicle_compare/upgrades_panel.py
 from helpers import dependency
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.Scaleform.daapi.view.lobby.vehicle_compare import cmp_helpers
@@ -25,7 +27,7 @@ class CompareUpgradesPanelView(ViewImpl):
 
     def update(self):
         selectedState = self.__getSelectedState()
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             upgrades = vm.getUpgrades()
             upgrades.clear()
             upgrades.addViewModel(self.__createUpgradesModel(UpgradesState.ZERO_UPGRADES, selectedState == UpgradesState.ZERO_UPGRADES))
@@ -36,9 +38,7 @@ class CompareUpgradesPanelView(ViewImpl):
 
     def _getEvents(self):
         events = super(CompareUpgradesPanelView, self)._getEvents()
-        return events + (
-         (
-          self.viewModel.onSelectUpgrades, self.__onSelectUpgrades),)
+        return events + ((self.viewModel.onSelectUpgrades, self.__onSelectUpgrades),)
 
     def _onLoading(self, *args, **kwargs):
         super(CompareUpgradesPanelView, self)._onLoading(*args, **kwargs)
@@ -67,12 +67,10 @@ class CompareUpgradesPanelView(ViewImpl):
         completition = vehicle.postProgression.getCompletion()
         if completition == PostProgressionCompletion.FULL:
             return UpgradesState.FULL_UPGRADES
+        elif completition == PostProgressionCompletion.EMPTY:
+            return UpgradesState.ZERO_UPGRADES
         else:
-            if completition == PostProgressionCompletion.EMPTY:
-                return UpgradesState.ZERO_UPGRADES
-            if self.__hasPartialUpgrades() and completition == PostProgressionCompletion.PARTIAL:
-                return UpgradesState.PARTIAL_UPGRADES
-            return
+            return UpgradesState.PARTIAL_UPGRADES if self.__hasPartialUpgrades() and completition == PostProgressionCompletion.PARTIAL else None
 
     def __hasPartialUpgrades(self):
         originalVehicle = self.__itemsCache.items.getItemByCD(self.__vehItem.getItem().intCD)

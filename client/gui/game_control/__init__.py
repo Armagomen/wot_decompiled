@@ -1,5 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/__init__.py
 from typing import TYPE_CHECKING
-import skeletons.gui.pet_system, constants, skeletons.gui.resource_well
+import skeletons.gui.pet_system
+import constants
+import skeletons.gui.resource_well
 from shared_utils import CONST_CONTAINER
 from gui.graphics_optimization_controller.optimization_controller import GraphicsOptimizationController
 from gui.shared.system_factory import collectGameControllers

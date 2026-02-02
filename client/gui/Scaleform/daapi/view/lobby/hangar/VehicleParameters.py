@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/VehicleParameters.py
 from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
 from account_helpers.AccountSettings import AccountSettings
 from gui.Scaleform.daapi.view.meta.VehicleParametersMeta import VehicleParametersMeta
@@ -19,11 +21,11 @@ class VehicleParameters(VehicleParametersMeta):
         super(VehicleParameters, self).__init__()
         self._vehParamsDP = None
         self._alreadyShowed = False
-        self._expandedGroups = {'relativePower': AccountSettings.getSettings('relativePower'), 
-           'relativeArmor': AccountSettings.getSettings('relativeArmor'), 
-           'relativeMobility': AccountSettings.getSettings('relativeMobility'), 
-           'relativeVisibility': AccountSettings.getSettings('relativeVisibility'), 
-           'relativeCamouflage': AccountSettings.getSettings('relativeCamouflage')}
+        self._expandedGroups = {'relativePower': AccountSettings.getSettings('relativePower'),
+         'relativeArmor': AccountSettings.getSettings('relativeArmor'),
+         'relativeMobility': AccountSettings.getSettings('relativeMobility'),
+         'relativeVisibility': AccountSettings.getSettings('relativeVisibility'),
+         'relativeCamouflage': AccountSettings.getSettings('relativeCamouflage')}
         return
 
     def onParamClick(self, paramID):
@@ -94,8 +96,8 @@ class VehiclePreviewParameters(VehicleParameters):
 
 class _VehParamsGenerator(VehParamsBaseGenerator):
     _AVERAGE_PARAMS = ('avgDamage', 'avgPiercingPower')
-    _AVERAGE_TOOLTIPS_MAP = {TOOLTIPS_CONSTANTS.VEHICLE_ADVANCED_PARAMETERS: TOOLTIPS_CONSTANTS.VEHICLE_AVG_PARAMETERS, 
-       TOOLTIPS_CONSTANTS.VEHICLE_PREVIEW_ADVANCED_PARAMETERS: TOOLTIPS_CONSTANTS.VEHICLE_PREVIEW_AVG_PARAMETERS}
+    _AVERAGE_TOOLTIPS_MAP = {TOOLTIPS_CONSTANTS.VEHICLE_ADVANCED_PARAMETERS: TOOLTIPS_CONSTANTS.VEHICLE_AVG_PARAMETERS,
+     TOOLTIPS_CONSTANTS.VEHICLE_PREVIEW_ADVANCED_PARAMETERS: TOOLTIPS_CONSTANTS.VEHICLE_PREVIEW_AVG_PARAMETERS}
     itemsCache = dependency.descriptor(IItemsCache)
 
     def __init__(self, tooltipType=TOOLTIPS_CONSTANTS.VEHICLE_ADVANCED_PARAMETERS):
@@ -119,27 +121,25 @@ class _VehParamsGenerator(VehParamsBaseGenerator):
         state, diff = param.state
         if state == PARAM_STATE.WORSE:
             delta = -abs(diff)
-        data.update({'isEnabled': True, 
-           'tooltip': self._tooltipType, 
-           'indicatorVO': SimplifiedBarVO(value=param.value, delta=delta, markerValue=stockParams[param.name], useAnim=self.useAnim)})
+        data.update({'isEnabled': True,
+         'tooltip': self._tooltipType,
+         'indicatorVO': SimplifiedBarVO(value=param.value, delta=delta, markerValue=stockParams[param.name], useAnim=self.useAnim)})
         return data
 
     def _getAdvancedParamTooltip(self, param):
-        if param.name in self._AVERAGE_PARAMS and self._tooltipType in self._AVERAGE_TOOLTIPS_MAP:
-            return self._AVERAGE_TOOLTIPS_MAP[self._tooltipType]
-        return self._tooltipType
+        return self._AVERAGE_TOOLTIPS_MAP[self._tooltipType] if param.name in self._AVERAGE_PARAMS and self._tooltipType in self._AVERAGE_TOOLTIPS_MAP else self._tooltipType
 
     def _makeAdvancedParamVO(self, param, parentID, highlight):
         if param.value or isValidEmptyValue(param.name, param.value):
             data = super(_VehParamsGenerator, self)._makeAdvancedParamVO(param, parentID, highlight)
-            data.update({'titleText': formatters.formatVehicleParamName(param.name, False), 
-               'valueText': formatters.colorizedFullFormatParameter(param, self._getAdvancedFormatters()), 
-               'iconSource': formatters.getParameterSmallIconPath(param.name), 
-               'isEnabled': False, 
-               'tooltip': self._getAdvancedParamTooltip(param)})
+            data.update({'titleText': formatters.formatVehicleParamName(param.name, False),
+             'valueText': formatters.colorizedFullFormatParameter(param, self._getAdvancedFormatters()),
+             'iconSource': formatters.getParameterSmallIconPath(param.name),
+             'isEnabled': False,
+             'tooltip': self._getAdvancedParamTooltip(param)})
             return data
         else:
-            return
+            return None
 
     def _isExtraParamEnabled(self):
         return True
@@ -149,44 +149,43 @@ class _VehParamsGenerator(VehParamsBaseGenerator):
             data, _ = super(_VehParamsGenerator, self)._makeExtraParamVO(param, parentID, highlight)
             isPositive = param.value >= 0
             title = backport.text(getVehicleParameterText(param.name, isTTC=True, isPositive=isPositive))
-            data.update({'titleText': text_styles.leadingText(text_styles.main(title), 2), 
-               'valueText': formatters.colorizedFullFormatParameter(param, self._getExtraFormatters()), 
-               'isEnabled': False, 
-               'tooltip': self._getAdvancedParamTooltip(param), 
-               'iconSource': formatters.getParameterSmallIconPath(param.name)})
-            return (
-             data, title.count('\n'))
+            data.update({'titleText': text_styles.leadingText(text_styles.main(title), 2),
+             'valueText': formatters.colorizedFullFormatParameter(param, self._getExtraFormatters()),
+             'isEnabled': False,
+             'tooltip': self._getAdvancedParamTooltip(param),
+             'iconSource': formatters.getParameterSmallIconPath(param.name)})
+            return (data, title.count('\n'))
         else:
             return (None, 0)
 
     def _makeSimpleParamHeaderVO(self, param, isOpen, comparator):
         data = super(_VehParamsGenerator, self)._makeSimpleParamHeaderVO(param, isOpen, comparator)
-        data.update({'titleText': formatters.formatVehicleParamName(param.name), 
-           'valueText': self._getSimplifiedValue(param), 
-           'isEnabled': True, 
-           'tooltip': self._tooltipType, 
-           'isOpen': isOpen, 
-           'buffIconSrc': formatters.getGroupPenaltyIcon(param, comparator)})
+        data.update({'titleText': formatters.formatVehicleParamName(param.name),
+         'valueText': self._getSimplifiedValue(param),
+         'isEnabled': True,
+         'tooltip': self._tooltipType,
+         'isOpen': isOpen,
+         'buffIconSrc': formatters.getGroupPenaltyIcon(param, comparator)})
         return data
 
     def _makeSeparator(self, parentID):
-        return {'state': HANGAR_ALIASES.VEH_PARAM_RENDERER_STATE_SEPARATOR, 
-           'isEnabled': False, 
-           'tooltip': '', 
-           'parentID': parentID}
+        return {'state': HANGAR_ALIASES.VEH_PARAM_RENDERER_STATE_SEPARATOR,
+         'isEnabled': False,
+         'tooltip': '',
+         'parentID': parentID}
 
     def _makeExtraAdditionalBlock(self, paramID, parentID, tooltip):
-        return {'state': HANGAR_ALIASES.VEH_PARAM_RENDERER_STATE_SEPARATOR, 
-           'isEnabled': False, 
-           'tooltip': tooltip, 
-           'paramID': paramID, 
-           'parentID': parentID}
+        return {'state': HANGAR_ALIASES.VEH_PARAM_RENDERER_STATE_SEPARATOR,
+         'isEnabled': False,
+         'tooltip': tooltip,
+         'paramID': paramID,
+         'parentID': parentID}
 
     def _makeLineSeparator(self, parentID):
-        return {'state': HANGAR_ALIASES.VEH_PARAM_RENDERER_STATE_LINE_SEPARATOR, 
-           'isEnabled': False, 
-           'tooltip': '', 
-           'parentID': parentID}
+        return {'state': HANGAR_ALIASES.VEH_PARAM_RENDERER_STATE_LINE_SEPARATOR,
+         'isEnabled': False,
+         'tooltip': '',
+         'parentID': parentID}
 
 
 class _PreviewVehParamsGenerator(_VehParamsGenerator):
@@ -206,7 +205,8 @@ class _PreviewVehParamsGenerator(_VehParamsGenerator):
         value = param.value
         if delta > 0:
             value -= delta
-        vo['indicatorVO'].update({'value': value, 'delta': delta})
+        vo['indicatorVO'].update({'value': value,
+         'delta': delta})
         return vo
 
 
@@ -235,7 +235,7 @@ class _VehParamsDataProvider(SortableDAAPIDataProvider):
         return self._list
 
     def emptyItem(self):
-        return
+        return None
 
     def clear(self):
         self._list = []
@@ -275,7 +275,7 @@ class _VehParamsDataProvider(SortableDAAPIDataProvider):
         return params_helper.similarCrewComparator(self._cache.item)
 
     def _getDiffComparator(self):
-        return
+        return None
 
     def _getSimplifiedValue(self, param):
         return formatters.colorizedFormatParameter(param, formatters.NO_BONUS_SIMPLIFIED_SCHEME)

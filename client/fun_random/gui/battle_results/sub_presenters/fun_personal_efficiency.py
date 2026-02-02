@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/battle_results/sub_presenters/fun_personal_efficiency.py
 from __future__ import absolute_import
 import typing
 from frameworks.wulf import Array
@@ -17,7 +19,7 @@ class FunPersonalEfficiencySubPresenter(BattleResultsSubPresenter):
         return Array[FunStatsEfficiencyModel]
 
     def packBattleResults(self, battleResults):
-        with self.getViewModel().transaction() as (model):
+        with self.getViewModel().transaction() as model:
             FunRandomPersonalEfficiency.packModel(model, battleResults)
 
     def createToolTipContent(self, event, contentID):

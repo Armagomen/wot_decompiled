@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/auxiliary/tooltips/compensation_tooltip.py
 from gui.impl.gen.view_models.views.loot_box_compensation_tooltip_model import LootBoxCompensationTooltipModel
 from gui.impl.gen.view_models.views.loot_box_compensation_tooltip_types import LootBoxCompensationTooltipTypes
 from gui.impl.gen.view_models.views.loot_box_vehicle_compensation_tooltip_model import LootBoxVehicleCompensationTooltipModel
@@ -11,7 +13,7 @@ class CompensationTooltipContent(ViewImpl):
         return super(CompensationTooltipContent, self).getViewModel()
 
     def _initialize(self, *args, **kwargs):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setIconBefore(kwargs.get('iconBefore', ''))
             tx.setLabelBefore(kwargs.get('labelBefore', ''))
             tx.setIconAfter(kwargs.get('iconAfter', ''))
@@ -26,7 +28,7 @@ class CrewSkinsCompensationTooltipContent(CompensationTooltipContent):
 
     def _initialize(self, *args, **kwargs):
         super(CrewSkinsCompensationTooltipContent, self)._initialize(*args, **kwargs)
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setLabelBefore(kwargs.get('labelBefore', ''))
 
 
@@ -39,7 +41,7 @@ class VehicleCompensationTooltipContent(CompensationTooltipContent):
 
     def _initialize(self, *args, **kwargs):
         super(VehicleCompensationTooltipContent, self)._initialize(*args, **kwargs)
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setVehicleName(kwargs.get('vehicleName', ''))
             tx.setVehicleType(kwargs.get('vehicleType', ''))
             tx.setIsElite(kwargs.get('isElite', True))

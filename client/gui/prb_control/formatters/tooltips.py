@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/formatters/tooltips.py
 from CurrentVehicle import g_currentVehicle
 from debug_utils import LOG_ERROR
 from gui.prb_control import prb_getters
@@ -25,23 +27,23 @@ def getCrewNotFullTooltip():
 
 
 def getVehicleStateInvalidTooltip(restriction):
-    return ('#tooltips:redButton/disabled/{0:>s}').format(restriction)
+    return '#tooltips:redButton/disabled/{0:>s}'.format(restriction)
 
 
 def getVehicleClassInvalidTooltip(teamsLimit, restriction):
     classTag = PREBATTLE_RESTRICTION.getVehClassRestrictions().get(restriction)
     minLevel, maxLevel = prb_getters.getClassLevelLimits(teamsLimit, classTag)
-    return makeTooltip(i18n.makeString(('#tooltips:redButton/disabled/{0:>s}/header').format(restriction)), i18n.makeString(('#tooltips:redButton/disabled/{0:>s}/body').format(restriction), minLevel, maxLevel))
+    return makeTooltip(i18n.makeString('#tooltips:redButton/disabled/{0:>s}/header'.format(restriction)), i18n.makeString('#tooltips:redButton/disabled/{0:>s}/body'.format(restriction), minLevel, maxLevel))
 
 
 def getLevelInvalidTooltip(teamLimits, restriction):
     minLevel, maxLevel = prb_getters.getLevelLimits(teamLimits)
-    return makeTooltip(i18n.makeString(('#tooltips:redButton/disabled/{0:>s}/header').format(restriction)), i18n.makeString(('#tooltips:redButton/disabled/{0:>s}/body').format(restriction), minLevel, maxLevel))
+    return makeTooltip(i18n.makeString('#tooltips:redButton/disabled/{0:>s}/header'.format(restriction)), i18n.makeString('#tooltips:redButton/disabled/{0:>s}/body'.format(restriction), minLevel, maxLevel))
 
 
 def getTotalLevelInvalidTooltip(teamsLimit, restriction):
     minLevel, maxLevel = prb_getters.getTotalLevelLimits(teamsLimit)
-    return makeTooltip(i18n.makeString(('#tooltips:redButton/disabled/{0:>s}/header').format(restriction)), i18n.makeString(('#tooltips:redButton/disabled/{0:>s}/body').format(restriction), minLevel, maxLevel))
+    return makeTooltip(i18n.makeString('#tooltips:redButton/disabled/{0:>s}/header'.format(restriction)), i18n.makeString('#tooltips:redButton/disabled/{0:>s}/body'.format(restriction), minLevel, maxLevel))
 
 
 def getActionDisabledTooltip(restriction, entity=None):

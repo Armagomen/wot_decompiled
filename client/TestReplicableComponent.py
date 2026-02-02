@@ -1,20 +1,16 @@
-import CGF, GenericComponents, GameplayDebug
-from Event import Event
-from cgf_script.managers_registrator import onAddedQuery, onProcessQuery
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/TestReplicableComponent.py
+import CGF
+import GenericComponents
+import GameplayDebug
+from cgf_client_common.entity_dyn_components import ReplicableDynamicScriptComponent
 from cgf_demo.test_replicable import TestReplicableComponentDescriptor
+from cgf_script.managers_registrator import onAddedQuery, onProcessQuery
 from cgf_script.component_meta_class import registerReplicableComponent
-from constants import IS_EDITOR
-if IS_EDITOR:
-
-    class DynamicScriptComponent(object):
-        pass
-
-
-else:
-    from BigWorld import DynamicScriptComponent
+from Event import Event
 
 @registerReplicableComponent
-class TestReplicableComponent(DynamicScriptComponent, TestReplicableComponentDescriptor):
+class TestReplicableComponent(ReplicableDynamicScriptComponent, TestReplicableComponentDescriptor):
 
     def __init__(self):
         super(TestReplicableComponent, self).__init__()
@@ -51,12 +47,12 @@ class DisplayReplicableValuesManager(CGF.ComponentManager):
 
     @onProcessQuery(TestReplicableComponent, GameplayDebug.DebugTextComponent)
     def displayValues(self, r, text):
-        text.addFrameText(('Total Replication Count: {0}').format(self.totalReplicationCount))
-        text.addFrameText(('int: {0}').format(r.replicableInt))
-        text.addFrameText(('float: {0}').format(r.replicableFloat))
-        text.addFrameText(('Vector3: {0}').format(r.replicableVector3))
+        text.addFrameText('Total Replication Count: {0}'.format(self.totalReplicationCount))
+        text.addFrameText('int: {0}'.format(r.replicableInt))
+        text.addFrameText('float: {0}'.format(r.replicableFloat))
+        text.addFrameText('Vector3: {0}'.format(r.replicableVector3))
         text.addFrameText(r.replicableString)
-        text.addFrameText(('List: {0}').format(r.replicableStringList))
+        text.addFrameText('List: {0}'.format(r.replicableStringList))
 
     def __onReplicationDone(self, prev, new):
         self.totalReplicationCount += 1

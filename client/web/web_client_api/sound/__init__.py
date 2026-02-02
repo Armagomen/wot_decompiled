@@ -1,4 +1,7 @@
-import SoundGroups, WWISE
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/web/web_client_api/sound/__init__.py
+import SoundGroups
+import WWISE
 from helpers import dependency
 from skeletons.gui.app_loader import IAppLoader
 from web.web_client_api import w2c, w2capi, W2CSchema, Field
@@ -18,17 +21,17 @@ class _HangarSoundSchema(W2CSchema):
 
 @w2capi()
 class SoundWebApi(object):
-    _ENTER_EXIT_SOUND_MAPPING = {'eb_ambient_progress_page_enter': 'eb_ambient_progress_page_exit', 
-       'main_unit_enter': 'main_unit_exit', 
-       'clans_quests_enter': 'clans_quests_exit', 
-       'fa_enter': 'fa_exit', 
-       'ads_enter': 'ads_exit', 
-       'global_map_enter': 'global_map_exit', 
-       'craft_machine_enter': 'craft_machine_exit', 
-       'clans_battles_global_map_enter': 'clans_battles_global_map_exit', 
-       'clans_winner_reward_enter': 'clans_winner_reward_exit', 
-       'gui_cq_progress_bar_start': 'gui_cq_progress_bar_stop', 
-       'gui_cq_progression_start': 'gui_cq_progression_stop'}
+    _ENTER_EXIT_SOUND_MAPPING = {'eb_ambient_progress_page_enter': 'eb_ambient_progress_page_exit',
+     'main_unit_enter': 'main_unit_exit',
+     'clans_quests_enter': 'clans_quests_exit',
+     'fa_enter': 'fa_exit',
+     'ads_enter': 'ads_exit',
+     'global_map_enter': 'global_map_exit',
+     'craft_machine_enter': 'craft_machine_exit',
+     'clans_battles_global_map_enter': 'clans_battles_global_map_exit',
+     'clans_winner_reward_enter': 'clans_winner_reward_exit',
+     'gui_cq_progress_bar_start': 'gui_cq_progress_bar_stop',
+     'gui_cq_progression_start': 'gui_cq_progression_stop'}
 
     def __init__(self):
         super(SoundWebApi, self).__init__()
@@ -54,10 +57,10 @@ class SoundWebApi(object):
 
 @w2capi()
 class SoundStateWebApi(object):
-    _ON_EXIT_STATES = {'STATE_overlay_hangar_general': 'STATE_overlay_hangar_general_off', 
-       'STATE_video_overlay': 'STATE_video_overlay_off', 
-       'STATE_clans_craft': 'STATE_clans_craft_progress_off', 
-       'STATE_gamemode_progress_page': 'STATE_gamemode_progress_page_off'}
+    _ON_EXIT_STATES = {'STATE_overlay_hangar_general': 'STATE_overlay_hangar_general_off',
+     'STATE_video_overlay': 'STATE_video_overlay_off',
+     'STATE_clans_craft': 'STATE_clans_craft_progress_off',
+     'STATE_gamemode_progress_page': 'STATE_gamemode_progress_page_off'}
 
     def __init__(self):
         super(SoundStateWebApi, self).__init__()

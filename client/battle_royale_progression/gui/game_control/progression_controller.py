@@ -1,4 +1,8 @@
-import logging, typing, Event
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale_progression/scripts/client/battle_royale_progression/gui/game_control/progression_controller.py
+import logging
+import typing
+import Event
 from PlayerEvents import g_playerEvents
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import BR_PROGRESSION_POINTS_SEEN, BR_UI_SECTION
@@ -43,8 +47,8 @@ class ProgressionOnTokensController(IBRProgressionOnTokensController):
         prevPoints = self.getPrevPoints()
         if curPoints < prevPoints:
             prevPoints = 0
-        return {'curPoints': curPoints, 
-           'prevPoints': prevPoints}
+        return {'curPoints': curPoints,
+         'prevPoints': prevPoints}
 
     def _getProgressionLevels(self):
         return []
@@ -83,9 +87,7 @@ class ProgressionOnConfig(ProgressionOnTokensController):
 
     @property
     def isFinished(self):
-        if not self.isEnabled:
-            return False
-        return self.getCurPoints() >= self._getMaxPoints()
+        return False if not self.isEnabled else self.getCurPoints() >= self._getMaxPoints()
 
     def setSettings(self, settings):
         self.settings = settings
@@ -117,15 +119,15 @@ class ProgressionOnConfig(ProgressionOnTokensController):
                 prevStagePoints = maxPoints - prevStageMaxPoints
             prevStageMaxPoints = maxPoints
 
-        return {'curPoints': curPoints, 
-           'prevPoints': prevPoints, 
-           'stage': curStage, 
-           'prevStage': prevStage, 
-           'stageProgress': stageProgress, 
-           'prevStageProgress': prevStageProgress, 
-           'stagePoints': stagePoints, 
-           'prevStagePoints': prevStagePoints, 
-           'totalPoints': maxPoints}
+        return {'curPoints': curPoints,
+         'prevPoints': prevPoints,
+         'stage': curStage,
+         'prevStage': prevStage,
+         'stageProgress': stageProgress,
+         'prevStageProgress': prevStageProgress,
+         'stagePoints': stagePoints,
+         'prevStagePoints': prevStagePoints,
+         'totalPoints': maxPoints}
 
     def _getProgressionLevels(self):
         progressionLevels = []
@@ -149,7 +151,7 @@ class ProgressionOnConfig(ProgressionOnTokensController):
         if len(self.settings) < 2:
             _logger.error('ProgressionOnConfig cant find stages')
             return 0
-        lastStage = stages[(-1)]
+        lastStage = stages[-1]
         return lastStage[0]
 
 

@@ -1,4 +1,8 @@
-import copy, logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/gui/gameface/channels/GFChannelController.py
+import copy
+import logging
+import typing
 from gui import SystemMessages
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE
 from gui.shared.events import MessengerEvent
@@ -29,7 +33,7 @@ class GFChannelController(IChannelController):
 
     @proto_getter(PROTO_TYPE.BW_CHAT2)
     def proto(self):
-        return
+        return None
 
     def deactivate(self, entryClosing=False):
         self._removeListeners()
@@ -74,10 +78,7 @@ class GFChannelController(IChannelController):
         return self.__channel
 
     def getClientID(self):
-        if self.__channel:
-            return self.__channel.getClientID()
-        else:
-            return
+        return self.__channel.getClientID() if self.__channel else None
 
     def sendMessage(self, message):
         result, errorMsg = self.canSendMessage()
@@ -93,7 +94,7 @@ class GFChannelController(IChannelController):
     def addMessage(self, message, doFormatting=True, isHistoryMessage=False):
         if self.__channel:
             if isinstance(message, (str, unicode)):
-                message = UnitMessageVO(0, -1, message, '')
+                message = UnitMessageVO(0, -1, message, u'')
             if doFormatting:
                 message = copy.copy(message)
                 message.text = self.__formatText(message.text)
@@ -128,8 +129,8 @@ class GFChannelController(IChannelController):
                 self.removeView()
 
     def _fireInitEvent(self):
-        g_eventBus.handleEvent(MessengerEvent(MessengerEvent.PRB_CHANNEL_CTRL_INITED, {'prbType': self.__channel.getPrebattleType(), 
-           'controller': self}), scope=EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.handleEvent(MessengerEvent(MessengerEvent.PRB_CHANNEL_CTRL_INITED, {'prbType': self.__channel.getPrebattleType(),
+         'controller': self}), scope=EVENT_BUS_SCOPE.LOBBY)
         self.__notifyViews()
 
     def _getChat(self):

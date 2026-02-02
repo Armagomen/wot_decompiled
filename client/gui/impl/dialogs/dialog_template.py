@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/dialogs/dialog_template.py
 import typing
 from frameworks.wulf import ViewSettings, ViewStatus
 from gui.impl.dialogs.dialog_template_focus import BaseFocusPresenter, DialogTemplateFocusingSystem
@@ -123,7 +125,7 @@ class DialogTemplateView(FullScreenDialogBaseView):
         self.viewModel.setDimmerAlpha(alpha)
 
     def setDisplayFlags(self, *flags):
-        with self.viewModel.getDisplayFlags().transaction() as (tx):
+        with self.viewModel.getDisplayFlags().transaction() as tx:
             for flag in flags:
                 tx.addString(flag)
 

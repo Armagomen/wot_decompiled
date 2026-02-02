@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/gen/view_models/views/lobby/tooltips/fun_random_economic_tooltip_view_model.py
 from enum import Enum
 from gui.impl.gen.view_models.views.lobby.battle_results.financial_details_model import FinancialDetailsModel
 

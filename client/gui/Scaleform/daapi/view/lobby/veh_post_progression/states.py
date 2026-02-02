@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/veh_post_progression/states.py
 from __future__ import absolute_import
 import typing
 from frameworks.state_machine import StateFlags
@@ -38,8 +40,7 @@ class VehiclePostProgressionState(ViewLobbyState):
         return self.__cachedParams
 
     def getNavigationDescription(self):
-        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.vehicle_post_progression()), infos=(
-         LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=lambda : getPostProgressionInfoWindowProc().show()),))
+        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.vehicle_post_progression()), infos=(LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=lambda : getPostProgressionInfoWindowProc().show()),))
 
     def _onEntered(self, event):
         super(VehiclePostProgressionState, self)._onEntered(event)
@@ -50,9 +51,9 @@ class VehiclePostProgressionState(ViewLobbyState):
         self.__cachedParams = {}
 
     def _getViewLoadCtx(self, event):
-        return {'ctx': {'intCD': event.params['intCD'], 
-                   'overrideVehiclePreviewEvent': event.params.get('overrideVehiclePreviewEvent', False), 
-                   'goToVehicleAllowed': event.params.get('goToVehicleAllowed', False)}}
+        return {'ctx': {'intCD': event.params['intCD'],
+                 'overrideVehiclePreviewEvent': event.params.get('overrideVehiclePreviewEvent', False),
+                 'goToVehicleAllowed': event.params.get('goToVehicleAllowed', False)}}
 
 
 @SubScopeTopLayerState.parentOf

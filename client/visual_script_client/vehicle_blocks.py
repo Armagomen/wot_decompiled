@@ -1,4 +1,10 @@
-import typing, random, weakref, BigWorld, GenericComponents
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/visual_script_client/vehicle_blocks.py
+import typing
+import random
+import weakref
+import BigWorld
+import GenericComponents
 from constants import IS_VS_EDITOR, VEHICLE_CLASSES, OVERTURN_WARNING_LEVEL, DROWN_WARNING_LEVEL
 from debug_utils import LOG_DEBUG_DEV
 from visual_script.block import Block, InitParam, buildStrKeysValue
@@ -17,13 +23,13 @@ if typing.TYPE_CHECKING:
     from typing import Optional
     from Vehicle import Vehicle
     from items.components.gun_installation_components import GunInstallationSlot
-OwnVehicle, = dependencyImporter('OwnVehicle')
+OwnVehicle = dependencyImporter('OwnVehicle')
 
 class OverturnWarningLevelEnum(VScriptEnum):
 
     @classmethod
     def slotType(cls):
-        return 'EOverturnWarningLevel'
+        pass
 
     @classmethod
     def vs_enum(cls):
@@ -38,7 +44,7 @@ class DrownWarningLevelEnum(VScriptEnum):
 
     @classmethod
     def slotType(cls):
-        return 'EDrownWarningLevel'
+        pass
 
     @classmethod
     def vs_enum(cls):
@@ -70,8 +76,7 @@ class GetVehicleLabel(Block, VehicleMeta):
 
 
 class OnAnyVehicleDestroyed(TunableEventBlock, VehicleMeta):
-    _EVENT_SLOT_NAMES = [
-     'onDestroyed']
+    _EVENT_SLOT_NAMES = ['onDestroyed']
 
     def __init__(self, *args, **kwargs):
         super(OnAnyVehicleDestroyed, self).__init__(*args, **kwargs)
@@ -81,7 +86,7 @@ class OnAnyVehicleDestroyed(TunableEventBlock, VehicleMeta):
 
     @classmethod
     def blockIcon(cls):
-        return ':vse/blocks/arena_event'
+        pass
 
     def onStartScript(self):
         if hasattr(BigWorld.player(), 'arena'):
@@ -117,8 +122,7 @@ class OnAnyVehicleDestroyed(TunableEventBlock, VehicleMeta):
 
 
 class OnAnyVehicleDamaged(TunableEventBlock, VehicleMeta):
-    _EVENT_SLOT_NAMES = [
-     'onDamaged']
+    _EVENT_SLOT_NAMES = ['onDamaged']
 
     def __init__(self, *args, **kwargs):
         super(OnAnyVehicleDamaged, self).__init__(*args, **kwargs)
@@ -129,7 +133,7 @@ class OnAnyVehicleDamaged(TunableEventBlock, VehicleMeta):
 
     @classmethod
     def blockIcon(cls):
-        return ':vse/blocks/arena_event'
+        pass
 
     def onStartScript(self):
         if hasattr(BigWorld.player(), 'arena'):
@@ -300,17 +304,15 @@ class VehicleClipFullAndReady(VehicleClipFullAndReadyBase):
 
 
 class GetNearestAliveVehicle(Block, VehicleMeta):
-    _settingTypes = [
-     'Ally', 'Enemy', 'Any']
+    _settingTypes = ['Ally', 'Enemy', 'Any']
 
     @classmethod
     def initParams(cls):
-        return [
-         InitParam('Vehicle Team', SLOT_TYPE.STR, buildStrKeysValue(*cls._settingTypes), EDITOR_TYPE.STR_KEY_SELECTOR)]
+        return [InitParam('Vehicle Team', SLOT_TYPE.STR, buildStrKeysValue(*cls._settingTypes), EDITOR_TYPE.STR_KEY_SELECTOR)]
 
     def __init__(self, *args, **kwargs):
         super(GetNearestAliveVehicle, self).__init__(*args, **kwargs)
-        self._settingType, = self._getInitParams()
+        self._settingType = self._getInitParams()
         self._position = self._makeDataInputSlot('position', SLOT_TYPE.VECTOR3)
         self._vehicle = self._makeDataOutputSlot('vehicle', SLOT_TYPE.VEHICLE, self._execute)
 
@@ -322,9 +324,7 @@ class GetNearestAliveVehicle(Block, VehicleMeta):
             return False
         if self._settingType == 'Ally':
             return vehicle.publicInfo.team == player.team
-        if self._settingType == 'Enemy':
-            return vehicle.publicInfo.team != player.team
-        return True
+        return vehicle.publicInfo.team != player.team if self._settingType == 'Enemy' else True
 
     def _execute(self):
         player = BigWorld.player()
@@ -346,17 +346,15 @@ class GetNearestAliveVehicle(Block, VehicleMeta):
 
 
 class GetAnyVehicle(Block, VehicleMeta):
-    _settingTypes = [
-     'Ally', 'Enemy', 'Any']
+    _settingTypes = ['Ally', 'Enemy', 'Any']
 
     @classmethod
     def initParams(cls):
-        return [
-         InitParam('Vehicle Team', SLOT_TYPE.STR, buildStrKeysValue(*cls._settingTypes), EDITOR_TYPE.STR_KEY_SELECTOR)]
+        return [InitParam('Vehicle Team', SLOT_TYPE.STR, buildStrKeysValue(*cls._settingTypes), EDITOR_TYPE.STR_KEY_SELECTOR)]
 
     def __init__(self, *args, **kwargs):
         super(GetAnyVehicle, self).__init__(*args, **kwargs)
-        self._settingType, = self._getInitParams()
+        self._settingType = self._getInitParams()
         self._vehicle = self._makeDataOutputSlot('vehicle', SLOT_TYPE.VEHICLE, self._execute)
 
     def __checkVehicle(self, vehicle):
@@ -367,9 +365,7 @@ class GetAnyVehicle(Block, VehicleMeta):
             return False
         if self._settingType == 'Ally':
             return vehicle.publicInfo.team == player.team
-        if self._settingType == 'Enemy':
-            return vehicle.publicInfo.team != player.team
-        return True
+        return vehicle.publicInfo.team != player.team if self._settingType == 'Enemy' else True
 
     def _execute(self):
         player = BigWorld.player()
@@ -452,8 +448,7 @@ class GetVehicleTier(Block):
 
 
 class OnAnyVehicleRespawned(TunableEventBlock, VehicleMeta):
-    _EVENT_SLOT_NAMES = [
-     'onRespawn']
+    _EVENT_SLOT_NAMES = ['onRespawn']
 
     def __init__(self, *args, **kwargs):
         super(OnAnyVehicleRespawned, self).__init__(*args, **kwargs)
@@ -462,7 +457,7 @@ class OnAnyVehicleRespawned(TunableEventBlock, VehicleMeta):
 
     @classmethod
     def blockIcon(cls):
-        return ':vse/blocks/arena_event'
+        pass
 
     def onStartScript(self):
         VehicleRespawnComponent.onVehicleRespawned += self._vehicleRespawnHandler
@@ -511,9 +506,11 @@ class OnVehicleCollided(Block, VehicleMeta):
             BigWorld.player().inputHandler.OnVehicleCollided -= self._onVehicleCollided
 
     def _onVehicleCollided(self, vehicleId, velocity):
-        self._vehicle.setValue(weakref.proxy(BigWorld.entity(vehicleId)))
-        self._velocity.setValue(velocity)
-        self._out.call()
+        vehicle = BigWorld.entity(vehicleId)
+        if vehicle:
+            self._vehicle.setValue(weakref.proxy(vehicle))
+            self._velocity.setValue(velocity)
+            self._out.call()
 
     @classmethod
     def blockAspects(cls):
@@ -540,9 +537,11 @@ class OnVehicleShaked(Block, VehicleMeta):
             BigWorld.player().inputHandler.OnVehicleShaked -= self._onVehicleShaked
 
     def _onVehicleShaked(self, vehicleId, shakeReason):
-        self._vehicle.setValue(weakref.proxy(BigWorld.entity(vehicleId)))
-        self._shakeReason.setValue(shakeReason)
-        self._out.call()
+        vehicle = BigWorld.entity(vehicleId)
+        if vehicle:
+            self._vehicle.setValue(weakref.proxy(vehicle))
+            self._shakeReason.setValue(shakeReason)
+            self._out.call()
 
     @classmethod
     def blockAspects(cls):
@@ -604,7 +603,7 @@ class OnDiscreteShotDone(Block, VehicleMeta):
             errorVScript(self, 'vehicle not found')
             return
         else:
-            vehicle.onDiscreteShotDone += self.__onDiscreteShotDone
+            vehicle.events.onDiscreteShotDone += self.__onDiscreteShotDone
             return
 
     def __unsubscribe(self):
@@ -612,7 +611,7 @@ class OnDiscreteShotDone(Block, VehicleMeta):
         if vehicle is None:
             return
         else:
-            vehicle.onDiscreteShotDone -= self.__onDiscreteShotDone
+            vehicle.events.onDiscreteShotDone -= self.__onDiscreteShotDone
             return
 
     def __onDiscreteShotDone(self, gunInstallationSlot):

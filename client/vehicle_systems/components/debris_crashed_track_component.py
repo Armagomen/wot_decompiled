@@ -1,4 +1,7 @@
-import logging, CGF
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/vehicle_systems/components/debris_crashed_track_component.py
+import logging
+import CGF
 _logger = logging.getLogger(__name__)
 
 class DebrisCrashedTrackComponent(object):
@@ -15,9 +18,7 @@ class DebrisCrashedTrackComponent(object):
 
     @property
     def debrisDesc(self):
-        if self.isLeft:
-            return self.trackPairDesc.tracksDebris.left
-        return self.trackPairDesc.tracksDebris.right
+        return self.trackPairDesc.tracksDebris.left if self.isLeft else self.trackPairDesc.tracksDebris.right
 
     @property
     def hitPoint(self):

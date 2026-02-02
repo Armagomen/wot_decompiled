@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/dialogs/document_change_dialog.py
 import operator
 from base_crew_dialog_template_view import BaseCrewDialogTemplateView
 from gui.impl import backport
@@ -16,8 +18,7 @@ from items import tankmen
 from skeletons.gui.shared import IItemsCache
 
 class DocumentChangeDialog(BaseCrewDialogTemplateView):
-    __slots__ = ('__tankmanInvID', '__initialData', '__firstNamesList', '__lastNamesList',
-                 '__firstNameIdx', '__lastNameIdx')
+    __slots__ = ('__tankmanInvID', '__initialData', '__firstNamesList', '__lastNamesList', '__firstNameIdx', '__lastNameIdx')
     LAYOUT_ID = R.views.lobby.crew.dialogs.DocumentChangeDialog()
     VIEW_MODEL = DocumentChangeDialogModel
     _INVALID_IDX = -1
@@ -37,11 +38,7 @@ class DocumentChangeDialog(BaseCrewDialogTemplateView):
         return self.getViewModel()
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onChangeFirstName, self._onChangeFirstName),
-         (
-          self.viewModel.onChangeLastName, self._onChangeLastName))
+        return ((self.viewModel.onChangeFirstName, self._onChangeFirstName), (self.viewModel.onChangeLastName, self._onChangeLastName))
 
     def _onLoading(self, *args, **kwargs):
         tankman = self._itemsCache.items.getTankman(self.__tankmanInvID)
@@ -66,7 +63,7 @@ class DocumentChangeDialog(BaseCrewDialogTemplateView):
         config = tankmen.getNationConfig(tankman.nationID)
         self.__firstNamesList = getDocGroupValues(tankman, config, operator.attrgetter('firstNamesList'), config.getFirstName)
         self.__lastNamesList = getDocGroupValues(tankman, config, operator.attrgetter('lastNamesList'), config.getLastName)
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             if self.__initialData:
                 firstName, lastName = self.__initialData.firstName.value, self.__initialData.lastName.value
                 self.__updateSubmitBtnModel(firstName == tankman.firstUserName and lastName == tankman.lastUserName)
@@ -79,12 +76,12 @@ class DocumentChangeDialog(BaseCrewDialogTemplateView):
             vm.setLastNameIndex(self.__lastNameIdx)
 
     def _onChangeFirstName(self, args):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             vm.setFirstNameIndex(args.get('index'))
         self.__updateSubmitBtnModel(not self.__updateSelectionIdxs())
 
     def _onChangeLastName(self, args):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             vm.setLastNameIndex(args.get('index'))
         self.__updateSubmitBtnModel(not self.__updateSelectionIdxs())
 

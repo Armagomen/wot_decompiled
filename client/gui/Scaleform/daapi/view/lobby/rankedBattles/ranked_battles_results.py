@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/rankedBattles/ranked_battles_results.py
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import ENABLE_RANKED_ANIMATIONS
 from gui.Scaleform.daapi.view.meta.RankedBattlesBattleResultsMeta import RankedBattlesBattleResultsMeta
@@ -7,8 +9,7 @@ from skeletons.gui.game_control import IRankedBattlesController
 
 class RankedBattlesResults(RankedBattlesBattleResultsMeta):
     rankedController = dependency.descriptor(IRankedBattlesController)
-    __slots__ = ('__rankedResultsVO', '__rankInfo', '__questsProgress', '__showRankedWidget__currentRanks',
-                 '__currentRankID', '__lastRankID', '__lastMaxRankID')
+    __slots__ = ('__rankedResultsVO', '__rankInfo', '__questsProgress', '__showRankedWidget__currentRanks', '__currentRankID', '__lastRankID', '__lastMaxRankID')
 
     def __init__(self, ctx=None):
         super(RankedBattlesResults, self).__init__()
@@ -17,8 +18,7 @@ class RankedBattlesResults(RankedBattlesBattleResultsMeta):
         self.__questsProgress = ctx['questsProgress']
         self.__showRankedWidget = self.__rankedResultsVO.get('showWidgetAnimation', True)
         if self.__showRankedWidget:
-            prevAccProgress = (
-             self.__rankInfo.prevAccRank, self.__rankInfo.prevAccStep)
+            prevAccProgress = (self.__rankInfo.prevAccRank, self.__rankInfo.prevAccStep)
             accProgress = (self.__rankInfo.accRank, self.__rankInfo.accStep)
             maxProgress = (self.__rankInfo.prevMaxRank, self.__rankInfo.prevMaxStep)
             prevShields = self.__rankInfo.prevShields

@@ -1,23 +1,22 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/tooltips/boosters_builders.py
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.shared.tooltips import advanced, battle_booster, boosters, contexts, common
 from gui.shared.tooltips.builders import DataBuilder, AdvancedDataBuilder, TooltipWindowBuilder
-__all__ = ('getTooltipBuilders', )
+__all__ = ('getTooltipBuilders',)
 
 def _advancedBlockCondition(context):
 
     def advancedTooltipExist(*args):
         item = context.buildItem(*args)
         itemID = item.getGUIEmblemID()
-        if 'crewSkillBattleBooster' in item.tags:
-            return itemID in advanced.SKILL_MOVIES
-        return itemID in advanced.MODULE_MOVIES
+        return itemID in advanced.SKILL_MOVIES if 'crewSkillBattleBooster' in item.tags else itemID in advanced.MODULE_MOVIES
 
     return advancedTooltipExist
 
 
 def getTooltipBuilders():
-    return (
-     AdvancedDataBuilder(TOOLTIPS_CONSTANTS.INVENTORY_BATTLE_BOOSTER, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI, battle_booster.BattleBoosterBlockTooltipData(contexts.InventoryBattleBoosterContext()), advanced.HangarBoosterAdvanced(contexts.InventoryBattleBoosterContext()), condition=_advancedBlockCondition(contexts.InventoryBattleBoosterContext())),
+    return (AdvancedDataBuilder(TOOLTIPS_CONSTANTS.INVENTORY_BATTLE_BOOSTER, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI, battle_booster.BattleBoosterBlockTooltipData(contexts.InventoryBattleBoosterContext()), advanced.HangarBoosterAdvanced(contexts.InventoryBattleBoosterContext()), condition=_advancedBlockCondition(contexts.InventoryBattleBoosterContext())),
      AdvancedDataBuilder(TOOLTIPS_CONSTANTS.AWARD_BATTLE_BOOSTER, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI, battle_booster.BattleBoosterBlockTooltipData(contexts.AwardBattleBoosterContext()), advanced.HangarBoosterAdvanced(contexts.AwardBattleBoosterContext()), condition=_advancedBlockCondition(contexts.AwardBattleBoosterContext())),
      AdvancedDataBuilder(TOOLTIPS_CONSTANTS.EPIC_AWARD_BATTLE_BOOSTER, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI, battle_booster.EpicBattleBoosterBlockTooltipData(contexts.AwardBattleBoosterContext()), advanced.HangarBoosterAdvanced(contexts.AwardBattleBoosterContext()), condition=_advancedBlockCondition(contexts.AwardBattleBoosterContext())),
      AdvancedDataBuilder(TOOLTIPS_CONSTANTS.SHOP_BATTLE_BOOSTER, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI, battle_booster.BattleBoosterBlockTooltipData(contexts.ShopBattleBoosterContext()), advanced.HangarBoosterAdvanced(contexts.ShopBattleBoosterContext()), condition=_advancedBlockCondition(contexts.ShopBattleBoosterContext())),

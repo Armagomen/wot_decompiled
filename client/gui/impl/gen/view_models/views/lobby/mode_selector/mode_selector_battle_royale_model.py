@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/mode_selector/mode_selector_battle_royale_model.py
 from gui.impl.gen.view_models.views.lobby.mode_selector.mode_selector_battle_royale_widget_model import ModeSelectorBattleRoyaleWidgetModel
 from gui.impl.gen.view_models.views.lobby.mode_selector.mode_selector_normal_card_model import ModeSelectorNormalCardModel
 

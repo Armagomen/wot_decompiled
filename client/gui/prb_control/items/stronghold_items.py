@@ -1,5 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/items/stronghold_items.py
 from collections import namedtuple
-import logging, itertools, typing
+import logging
+import itertools
+import typing
 from UnitBase import UNIT_ROLE
 from debug_utils import LOG_ERROR
 from helpers.time_utils import ONE_MINUTE, ONE_HOUR
@@ -15,51 +19,79 @@ REQUISITION_TYPE = 'REQUISITION'
 HEAVYTRUCKS_TYPE = 'HEAVYTRUCKS'
 ARTILLERY_COMMANDER = 'artillery_commander'
 INSPIRE_COMMANDER = 'inspiring_commander'
-RESERVE_STRONGHOLD_ORDER = (
- BOOST_TYPE,
+RESERVE_STRONGHOLD_ORDER = (BOOST_TYPE,
  SUPPORT_TYPE,
  HEAVYTRUCKS_TYPE,
  REQUISITION_TYPE)
-RESERVE_SORTIE_ORDER = (
- BOOST_TYPE,
- SUPPORT_TYPE,
- HEAVYTRUCKS_TYPE)
-SUPPORT_ORDER = (
- ARTILLERY_STRIKE,)
-RESERVE_ITEMS = {BOOST_TYPE: (
-              INSPIRATION,), 
-   SUPPORT_TYPE: (
-                ARTILLERY_STRIKE,), 
-   REQUISITION_TYPE: (
-                    REQUISITION,), 
-   HEAVYTRUCKS_TYPE: (
-                    HIGH_CAPACITY_TRANSPORT,)}
-UNIT_ROLE_BY_RESERVE_TYPE = {BOOST_TYPE: UNIT_ROLE.CAN_USE_BOOST_EQUIPMENTS, 
-   SUPPORT_TYPE: UNIT_ROLE.CAN_USE_EXTRA_EQUIPMENTS}
-_OldStrongholdDataScheme = (
- 'type', 'min_level', 'max_level', 'min_players_count', 'max_players_count',
- 'industrial_resource_multiplier', 'max_legionaries_count', 'public', 'battle_duration',
- 'battle_series_duration', 'battle_idx', 'matchmaker_next_tick', 'time_to_ready',
- 'direction', 'requisition_bonus_percent', 'enemy_clan', 'clan', 'available_reserves',
- 'permissions', 'ready_button_enabled', 'selected_reserves', 'battle_series_status',
- 'battles_end_time', 'battles_start_time', 'fort_battles_before_start_lag',
- 'sorties_before_start_lag', 'sorties_before_end_lag', 'is_players_matching_available',
+RESERVE_SORTIE_ORDER = (BOOST_TYPE, SUPPORT_TYPE, HEAVYTRUCKS_TYPE)
+SUPPORT_ORDER = (ARTILLERY_STRIKE,)
+RESERVE_ITEMS = {BOOST_TYPE: (INSPIRATION,),
+ SUPPORT_TYPE: (ARTILLERY_STRIKE,),
+ REQUISITION_TYPE: (REQUISITION,),
+ HEAVYTRUCKS_TYPE: (HIGH_CAPACITY_TRANSPORT,)}
+UNIT_ROLE_BY_RESERVE_TYPE = {BOOST_TYPE: UNIT_ROLE.CAN_USE_BOOST_EQUIPMENTS,
+ SUPPORT_TYPE: UNIT_ROLE.CAN_USE_EXTRA_EQUIPMENTS}
+_OldStrongholdDataScheme = ('type',
+ 'min_level',
+ 'max_level',
+ 'min_players_count',
+ 'max_players_count',
+ 'industrial_resource_multiplier',
+ 'max_legionaries_count',
+ 'public',
+ 'battle_duration',
+ 'battle_series_duration',
+ 'battle_idx',
+ 'matchmaker_next_tick',
+ 'time_to_ready',
+ 'direction',
+ 'requisition_bonus_percent',
+ 'enemy_clan',
+ 'clan',
+ 'available_reserves',
+ 'permissions',
+ 'ready_button_enabled',
+ 'selected_reserves',
+ 'battle_series_status',
+ 'battles_end_time',
+ 'battles_start_time',
+ 'fort_battles_before_start_lag',
+ 'sorties_before_start_lag',
+ 'sorties_before_end_lag',
+ 'is_players_matching_available',
  'slots_locked_by_filter')
-_OldStrongholdDataProxyScheme = {'header': (
-            'max_legionaries_count', 'max_players_count', 'direction', 'battle_duration', 'min_level', 'max_level',
-            'industrial_resource_multiplier', 'type', 'min_players_count', 'battle_idx', 'battle_series_status',
-            'battle_series_duration', 'enemy_clan', 'clan'), 
-   'timer': (
-           'sorties_before_start_lag', 'fort_battles_before_start_lag', 'sorties_before_end_lag', 'time_to_ready',
-           'matchmaker_next_tick', 'battles_start_time', 'battles_end_time'), 
-   'state': (
-           'public', 'is_players_matching_available', 'slots_locked_by_filter'), 
-   'reserve': (
-             'available_reserves', 'selected_reserves', 'requisition_bonus_percent', 'permissions'), 
-   'all': (
-         'ready_button_enabled',)}
-_StrongholdDataScheme = (
- 'header', 'timer', 'state', 'reserve', 'all')
+_OldStrongholdDataProxyScheme = {'header': ('max_legionaries_count',
+            'max_players_count',
+            'direction',
+            'battle_duration',
+            'min_level',
+            'max_level',
+            'industrial_resource_multiplier',
+            'type',
+            'min_players_count',
+            'battle_idx',
+            'battle_series_status',
+            'battle_series_duration',
+            'enemy_clan',
+            'clan'),
+ 'timer': ('sorties_before_start_lag',
+           'fort_battles_before_start_lag',
+           'sorties_before_end_lag',
+           'time_to_ready',
+           'matchmaker_next_tick',
+           'battles_start_time',
+           'battles_end_time'),
+ 'state': ('public', 'is_players_matching_available', 'slots_locked_by_filter'),
+ 'reserve': ('available_reserves',
+             'selected_reserves',
+             'requisition_bonus_percent',
+             'permissions'),
+ 'all': ('ready_button_enabled',)}
+_StrongholdDataScheme = ('header',
+ 'timer',
+ 'state',
+ 'reserve',
+ 'all')
 
 def isEnemyBattleIndex(index):
     return index >= 3
@@ -70,19 +102,19 @@ class StrongholdSettings(object):
     def __init__(self):
         self.__data = StrongholdData()
         self.__rawData = None
-        self.__setDataMapping = {'header': self.__setHeader, 
-           'timer': self.__setTimer, 
-           'state': self.__setState, 
-           'reserve': self.__setReserve, 
-           'all': self.__setReadyButtonEnabled}
+        self.__setDataMapping = {'header': self.__setHeader,
+         'timer': self.__setTimer,
+         'state': self.__setState,
+         'reserve': self.__setReserve,
+         'all': self.__setReadyButtonEnabled}
         return
 
     def init(self):
-        self.__setDataMapping = {'header': self.__setHeader, 
-           'timer': self.__setTimer, 
-           'state': self.__setState, 
-           'reserve': self.__setReserve, 
-           'all': self.__setReadyButtonEnabled}
+        self.__setDataMapping = {'header': self.__setHeader,
+         'timer': self.__setTimer,
+         'state': self.__setState,
+         'reserve': self.__setReserve,
+         'all': self.__setReadyButtonEnabled}
 
     def fini(self):
         self.__setDataMapping = {}
@@ -135,9 +167,7 @@ class StrongholdSettings(object):
         return self.__data.getState().getSlotsLockedByFilter()
 
     def getReserveOrder(self):
-        if self.isSortie():
-            return RESERVE_SORTIE_ORDER
-        return RESERVE_STRONGHOLD_ORDER
+        return RESERVE_SORTIE_ORDER if self.isSortie() else RESERVE_STRONGHOLD_ORDER
 
     def __validateData(self, rawData):
         for field in _OldStrongholdDataScheme:
@@ -293,8 +323,7 @@ class StrongholdData(object):
             self.__battle_idx = data['battle_idx']
             self.__battle_series_duration = data['battle_series_duration']
             self.__industrial_resource_multiplier = data['industrial_resource_multiplier']
-            self.__battle_series_status = [ self.StrongholdBattleSeriesItem(index, v) for index, v in enumerate(data['battle_series_status'])
-                                          ]
+            self.__battle_series_status = [ self.StrongholdBattleSeriesItem(index, v) for index, v in enumerate(data['battle_series_status']) ]
             self.__current_battle = None
             for bs in self.__battle_series_status:
                 if bs.getCurrentBattle():
@@ -426,8 +455,7 @@ class StrongholdData(object):
     class StrongholdDataReserve(object):
 
         class StrongholdReserveItem(object):
-            __slots__ = ('__id', '__type', '__level', '__bonus_percent', '__description',
-                         '__title', '__production_elapsed', '__intCD')
+            __slots__ = ('__id', '__type', '__level', '__bonus_percent', '__description', '__title', '__production_elapsed', '__intCD')
 
             def __init__(self, data):
                 self.__id = data['id']
@@ -476,9 +504,7 @@ class StrongholdData(object):
                 return self.getGroupType() == REQUISITION
 
             def __eq__(self, other):
-                if isinstance(other, self.__class__):
-                    return self.__type == other.__type and self.__level == other.__level
-                return False
+                return self.__type == other.__type and self.__level == other.__level if isinstance(other, self.__class__) else False
 
             def __cmp__(self, other):
                 if not isinstance(other, self.__class__):
@@ -486,8 +512,7 @@ class StrongholdData(object):
                 group = RESERVE_ITEMS[self.getGroupType()]
                 typeOrder1 = group.index(self.__type)
                 typeOrder2 = group.index(other.__type)
-                return cmp((other.__level, typeOrder1), (
-                 self.__level, typeOrder2))
+                return cmp((other.__level, typeOrder1), (self.__level, typeOrder2))
 
         def __init__(self):
             self.__permissions = None
@@ -517,19 +542,19 @@ class StrongholdData(object):
         def getReserveById(self, reserveId):
             if reserveId is None or self.__available_reserves is None:
                 return
-            for reserve in itertools.chain(*self.__available_reserves.itervalues()):
-                if reserve.getId() == reserveId:
-                    return reserve
+            else:
+                for reserve in itertools.chain(*self.__available_reserves.itervalues()):
+                    if reserve.getId() == reserveId:
+                        return reserve
 
-            return
+                return
 
         def getUniqueReservesByGroupType(self, groupType):
             reserves = []
             for rType in RESERVE_ITEMS[groupType]:
                 if rType in self.__available_reserves:
                     reserves.extend(self.__available_reserves[rType])
-                else:
-                    _logger.warning('%s not in available reserves. Check wgsh settings.', rType)
+                _logger.warning('%s not in available reserves. Check wgsh settings.', rType)
 
             unique = []
             for reserve in self.__selected_reserves:
@@ -590,8 +615,7 @@ class StrongholdData(object):
         self.__reserve.setData(data)
 
 
-StrongholdUnitStats = namedtuple('UnitStats', (
- 'readyCount',
+StrongholdUnitStats = namedtuple('UnitStats', ('readyCount',
  'occupiedSlotsCount',
  'openedSlotsCount',
  'freeSlotsCount',
@@ -600,5 +624,12 @@ StrongholdUnitStats = namedtuple('UnitStats', (
  'clanMembersInRoster',
  'legionariesInRoster',
  'playersMatchingSlotsCount'))
-StrongholdUnitStats.__new__.__defaults__ = (
- 0, 0, 0, 0, 0, (), 0, 0, 0)
+StrongholdUnitStats.__new__.__defaults__ = (0,
+ 0,
+ 0,
+ 0,
+ 0,
+ (),
+ 0,
+ 0,
+ 0)

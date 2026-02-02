@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/ammunition_panel.py
 from adisp import adisp_process, adisp_async
 from account_helpers.settings_core.settings_constants import OnceOnlyHints
 from constants import ROLE_TYPE
@@ -133,15 +135,15 @@ class AmmunitionPanel(AmmunitionPanelMeta, IGlobalListener):
             self.__updateMaintenanceWarning(vehicle)
             self.__highlightEasyTankEquip(vehicle)
             isElite = vehicle.isElite and viewState.isEliteShown()
-            self.as_updateVehicleStatusS({'message': msgString, 
-               'rentAvailable': rentAvailable, 
-               'isElite': isElite, 
-               'tankType': ('{}_elite').format(vehicle.type) if isElite else vehicle.type, 
-               'vehicleLevel': ('{}').format(int2roman(vehicle.level)) if viewState.isLevelShown() else '', 
-               'vehicleName': ('{}').format(vehicle.shortUserName), 
-               'roleId': vehicle.role if viewState.isRoleShown() else ROLE_TYPE.NOT_DEFINED, 
-               'roleMessage': getRoleMessage(g_currentVehicle.item.role) if viewState.isRoleShown() else '', 
-               'vehicleCD': vehicle.intCD})
+            self.as_updateVehicleStatusS({'message': msgString,
+             'rentAvailable': rentAvailable,
+             'isElite': isElite,
+             'tankType': '{}_elite'.format(vehicle.type) if isElite else vehicle.type,
+             'vehicleLevel': '{}'.format(int2roman(vehicle.level)) if viewState.isLevelShown() else '',
+             'vehicleName': '{}'.format(vehicle.shortUserName),
+             'roleId': vehicle.role if viewState.isRoleShown() else ROLE_TYPE.NOT_DEFINED,
+             'roleMessage': getRoleMessage(g_currentVehicle.item.role) if viewState.isRoleShown() else '',
+             'vehicleCD': vehicle.intCD})
 
     def __inventoryUpdateCallBack(self, *args):
         self.update()

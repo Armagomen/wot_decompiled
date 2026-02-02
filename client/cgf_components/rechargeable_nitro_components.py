@@ -1,4 +1,7 @@
-import CGF, SoundGroups
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/cgf_components/rechargeable_nitro_components.py
+import CGF
+import SoundGroups
 from cgf_script.component_meta_class import registerComponent, ComponentProperty, CGFMetaTypes
 from cgf_script.managers_registrator import autoregister, onProcessQuery, onAddedQuery, onRemovedQuery
 from constants import IS_CLIENT
@@ -56,6 +59,4 @@ class RechargeableNitroMechanicManager(CGF.ComponentManager):
     @classmethod
     def __getRechargeableNitroActiveProgress(cls, rechargeableNitroControllerGO):
         rechargeableNitroController = rechargeableNitroControllerGO.findComponentByType(RechargeableNitroController)
-        if not rechargeableNitroController:
-            return 0.0
-        return 100 * (1 - rechargeableNitroController.getMechanicState().progress)
+        return 0.0 if not rechargeableNitroController else 100 * (1 - rechargeableNitroController.getMechanicState().progress)

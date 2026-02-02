@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/dialogs/dialogs.py
 import typing
 from BWUtil import AsyncReturn
 from frameworks.wulf import WindowStatus
@@ -110,6 +112,7 @@ def showCustomBlurSingleDialog(wrappedViewClass, layoutID, parent=None, gui=None
         dialog = FullScreenDialogWindowWrapper(wrappedViewClass(*args, **kwargs), parent, doBlur=False)
     if dialog is not None:
         result = yield wg_await(showSimpleWithResultData(dialog))
+        raise AsyncReturn(SingleDialogResult(busy=False, result=result))
     raise AsyncReturn(SingleDialogResult(busy=True, result=result))
     return
 

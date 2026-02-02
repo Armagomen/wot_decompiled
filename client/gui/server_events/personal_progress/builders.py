@@ -1,4 +1,7 @@
-import typing, quest_progress
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/server_events/personal_progress/builders.py
+import typing
+import quest_progress
 from gui.server_events.personal_progress import progress
 from gui.server_events.personal_progress import strategy
 from personal_missions_constants import DISPLAY_TYPE, CONTAINER, DESCRIPTIONS
@@ -40,9 +43,7 @@ class ClientProgressBuilder(quest_progress.IProgressBuilder):
             return strategy.BiathlonLabelGetter
         if displayType == DISPLAY_TYPE.SERIES:
             return strategy.SeriesLabelGetter
-        if displayType == DISPLAY_TYPE.LIMITED:
-            return strategy.LimitedTriesLabelGetter
-        return strategy.CounterLabelGetter
+        return strategy.LimitedTriesLabelGetter if displayType == DISPLAY_TYPE.LIMITED else strategy.CounterLabelGetter
 
 
 class BinaryProgressBuilder(ClientProgressBuilder, quest_progress.BinaryProgressBuilder):
@@ -60,15 +61,11 @@ class ValueProgressBuilder(ClientProgressBuilder, quest_progress.ValueProgressBu
 
     @classmethod
     def _getValuesStrategy(cls, clientData):
-        if isinstance(clientData, DESCRIPTIONS.AVERAGE):
-            return strategy.AverageProgressGetter
-        return strategy.ValueProgressGetter
+        return strategy.AverageProgressGetter if isinstance(clientData, DESCRIPTIONS.AVERAGE) else strategy.ValueProgressGetter
 
     @classmethod
     def _createBodyProgress(cls, commonProgress, clientData):
-        if isinstance(clientData, DESCRIPTIONS.AVERAGE):
-            return progress.AverageProgress(commonProgress, clientData, cls.getTemplateID())
-        return progress.BodyProgress(commonProgress, clientData, cls.getTemplateID())
+        return progress.AverageProgress(commonProgress, clientData, cls.getTemplateID()) if isinstance(clientData, DESCRIPTIONS.AVERAGE) else progress.BodyProgress(commonProgress, clientData, cls.getTemplateID())
 
     @classmethod
     def _getCommonProgress(cls, progressID, progressData):

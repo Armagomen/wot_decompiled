@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/states.py
 import typing
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.storage.storage_view import StorageView
@@ -36,14 +38,14 @@ class StorageState(SFViewLobbyState):
         self.addNavigationTransition(lsm.getStateByCls(StylePreviewState), record=True)
 
     def _getViewLoadCtx(self, event):
-        return {'ctx': {'defaultSection': event.params.get('defaultSection', STORAGE_CONSTANTS.FOR_SELL), 
-                   'defaultTab': event.params.get('defaultTab', None)}}
+        return {'ctx': {'defaultSection': event.params.get('defaultSection', STORAGE_CONSTANTS.FOR_SELL),
+                 'defaultTab': event.params.get('defaultTab', None)}}
 
     def serializeParams(self):
         storageView = self.__appLoader.getApp().containerManager.getViewByKey(self.getViewKey())
         section, tab = storageView.findActiveSectionAndTabId()
-        return {'defaultSection': section, 
-           'defaultTab': tab}
+        return {'defaultSection': section,
+         'defaultTab': tab}
 
     def getNavigationDescription(self):
         return LobbyStateDescription(title=backport.text(R.strings.pages.titles.depot()))

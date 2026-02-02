@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/Scaleform/daapi/view/lobby/header/battle_selector_items.py
 from __future__ import absolute_import
 from comp7.gui.comp7_constants import PREBATTLE_ACTION_NAME, SELECTOR_BATTLE_TYPES
 from comp7.gui.prb_control.entities import comp7_prb_helpers
@@ -33,7 +35,7 @@ class _Comp7Item(SelectorItem):
     def getFormattedLabel(self):
         battleTypeName = super(_Comp7Item, self).getFormattedLabel()
         scheduleStr = self.__getScheduleStr()
-        label = ('{}\n{}').format(battleTypeName, scheduleStr) if scheduleStr else battleTypeName
+        label = '{}\n{}'.format(battleTypeName, scheduleStr) if scheduleStr else battleTypeName
         return label
 
     def getSmallIcon(self):
@@ -43,9 +45,7 @@ class _Comp7Item(SelectorItem):
         return backport.image(R.images.comp7.gui.maps.icons.battleTypes.c_64x64.dyn(self._data)())
 
     def getSpecialBGIcon(self):
-        if self.__comp7Controller.isAvailable():
-            return backport.image(R.images.gui.maps.icons.buttons.selectorRendererBGEvent())
-        return ''
+        return backport.image(R.images.gui.maps.icons.buttons.selectorRendererBGEvent()) if self.__comp7Controller.isAvailable() else ''
 
     def _update(self, state):
         self._isSelected = state.isQueueSelected(QUEUE_TYPE.COMP7)
@@ -60,9 +60,7 @@ class _Comp7Item(SelectorItem):
         if previousSeason is None and currentSeason is None and nextSeason is None:
             return ''
         else:
-            if cls.__comp7Controller.isFrozen():
-                return text_styles.main(backport.text(R.strings.menu.headerButtons.battle.types.comp7.extra.frozen()))
-            return _getSeasonInfoStr(cls.__comp7Controller, SELECTOR_BATTLE_TYPES.COMP7)
+            return text_styles.main(backport.text(R.strings.menu.headerButtons.battle.types.comp7.extra.frozen())) if cls.__comp7Controller.isFrozen() else _getSeasonInfoStr(cls.__comp7Controller, SELECTOR_BATTLE_TYPES.COMP7)
 
 
 class _Comp7SquadItem(SpecialSquadItem):

@@ -1,4 +1,8 @@
-import math, typing, nations
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/customization/customization_view.py
+import math
+import typing
+import nations
 from adisp import adisp_process
 from gui import DialogsInterface
 from gui.Scaleform.daapi.view.dialogs.confirm_customization_item_dialog_meta import ConfirmC11nSellMeta
@@ -36,26 +40,16 @@ class _CustomizationFilterBit(CONST_CONTAINER):
     STAT_TRACKER = 256
 
 
-_TYPE_BIT_TO_CUSTOMIZATION_TYPE_MAP = {_CustomizationFilterBit.STYLE: (
-                                 GUI_ITEM_TYPE.STYLE,), 
-   _CustomizationFilterBit.PAINT: (
-                                 GUI_ITEM_TYPE.PAINT,), 
-   _CustomizationFilterBit.CAMOUFLAGE: (
-                                      GUI_ITEM_TYPE.CAMOUFLAGE,), 
-   _CustomizationFilterBit.PROJECTION_DECAL: (
-                                            GUI_ITEM_TYPE.PROJECTION_DECAL,), 
-   _CustomizationFilterBit.EMBLEM: (
-                                  GUI_ITEM_TYPE.EMBLEM,), 
-   _CustomizationFilterBit.PERSONAL_NUMBER: (
-                                           GUI_ITEM_TYPE.PERSONAL_NUMBER, GUI_ITEM_TYPE.INSCRIPTION), 
-   _CustomizationFilterBit.MODIFICATION: (
-                                        GUI_ITEM_TYPE.MODIFICATION,), 
-   _CustomizationFilterBit.ATTACHMENT: (
-                                      GUI_ITEM_TYPE.ATTACHMENT,), 
-   _CustomizationFilterBit.STAT_TRACKER: (
-                                        GUI_ITEM_TYPE.STAT_TRACKER,)}
-_CUSTOMIZATION_ITEM_TYPES = (
- GUI_ITEM_TYPE.STYLE,
+_TYPE_BIT_TO_CUSTOMIZATION_TYPE_MAP = {_CustomizationFilterBit.STYLE: (GUI_ITEM_TYPE.STYLE,),
+ _CustomizationFilterBit.PAINT: (GUI_ITEM_TYPE.PAINT,),
+ _CustomizationFilterBit.CAMOUFLAGE: (GUI_ITEM_TYPE.CAMOUFLAGE,),
+ _CustomizationFilterBit.PROJECTION_DECAL: (GUI_ITEM_TYPE.PROJECTION_DECAL,),
+ _CustomizationFilterBit.EMBLEM: (GUI_ITEM_TYPE.EMBLEM,),
+ _CustomizationFilterBit.PERSONAL_NUMBER: (GUI_ITEM_TYPE.PERSONAL_NUMBER, GUI_ITEM_TYPE.INSCRIPTION),
+ _CustomizationFilterBit.MODIFICATION: (GUI_ITEM_TYPE.MODIFICATION,),
+ _CustomizationFilterBit.ATTACHMENT: (GUI_ITEM_TYPE.ATTACHMENT,),
+ _CustomizationFilterBit.STAT_TRACKER: (GUI_ITEM_TYPE.STAT_TRACKER,)}
+_CUSTOMIZATION_ITEM_TYPES = (GUI_ITEM_TYPE.STYLE,
  GUI_ITEM_TYPE.ATTACHMENT,
  GUI_ITEM_TYPE.STAT_TRACKER,
  GUI_ITEM_TYPE.PAINT,
@@ -65,55 +59,54 @@ _CUSTOMIZATION_ITEM_TYPES = (
  GUI_ITEM_TYPE.PERSONAL_NUMBER,
  GUI_ITEM_TYPE.INSCRIPTION,
  GUI_ITEM_TYPE.MODIFICATION)
-_TYPE_FILTER_ITEMS = [
- {'filterValue': _CustomizationFilterBit.STYLE, 
-    'selected': False, 
-    'tooltip': makeTooltip(body=backport.text(R.strings.tooltips.customization.storage.filters.style.title())), 
-    'icon': backport.image(R.images.gui.maps.icons.storage.filters.style())},
- {'filterValue': _CustomizationFilterBit.ATTACHMENT, 
-    'selected': False, 
-    'tooltip': makeTooltip(body=backport.text(R.strings.tooltips.customization.storage.filters.attachments.title())), 
-    'icon': backport.image(R.images.gui.maps.icons.storage.filters.attachments())},
- {'filterValue': _CustomizationFilterBit.STAT_TRACKER, 
-    'selected': False, 
-    'tooltip': makeTooltip(body=backport.text(R.strings.tooltips.customization.storage.filters.statTrackers.title())), 
-    'icon': backport.image(R.images.gui.maps.icons.storage.filters.statTrackers())},
- {'filterValue': _CustomizationFilterBit.PAINT, 
-    'selected': False, 
-    'tooltip': makeTooltip(body=backport.text(R.strings.tooltips.customization.storage.filters.paints.title())), 
-    'icon': backport.image(R.images.gui.maps.icons.storage.filters.paints())},
- {'filterValue': _CustomizationFilterBit.CAMOUFLAGE, 
-    'selected': False, 
-    'tooltip': makeTooltip(body=backport.text(R.strings.tooltips.customization.storage.filters.camouflage.title())), 
-    'icon': backport.image(R.images.gui.maps.icons.storage.filters.camouflage())},
- {'filterValue': _CustomizationFilterBit.PROJECTION_DECAL, 
-    'selected': False, 
-    'tooltip': makeTooltip(body=backport.text(R.strings.tooltips.customization.storage.filters.decals.title())), 
-    'icon': backport.image(R.images.gui.maps.icons.storage.filters.decals())},
- {'filterValue': _CustomizationFilterBit.EMBLEM, 
-    'selected': False, 
-    'tooltip': makeTooltip(body=backport.text(R.strings.tooltips.customization.storage.filters.emblems.title())), 
-    'icon': backport.image(R.images.gui.maps.icons.storage.filters.emblems())},
- {'filterValue': _CustomizationFilterBit.PERSONAL_NUMBER, 
-    'selected': False, 
-    'tooltip': makeTooltip(body=backport.text(R.strings.tooltips.customization.storage.filters.text.title())), 
-    'icon': backport.image(R.images.gui.maps.icons.storage.filters.text())},
- {'filterValue': _CustomizationFilterBit.MODIFICATION, 
-    'selected': False, 
-    'tooltip': makeTooltip(body=backport.text(R.strings.tooltips.customization.storage.filters.effects.title())), 
-    'icon': backport.image(R.images.gui.maps.icons.storage.filters.effects())}]
-_TABS_SORT_ORDER = {GUI_ITEM_TYPE.ATTACHMENT: 1, 
-   GUI_ITEM_TYPE.STAT_TRACKER: 2, 
-   GUI_ITEM_TYPE.PAINT: 4, 
-   GUI_ITEM_TYPE.CAMOUFLAGE: 5, 
-   GUI_ITEM_TYPE.PROJECTION_DECAL: 6, 
-   GUI_ITEM_TYPE.EMBLEM: 7, 
-   GUI_ITEM_TYPE.PERSONAL_NUMBER: 8, 
-   GUI_ITEM_TYPE.INSCRIPTION: 9, 
-   GUI_ITEM_TYPE.MODIFICATION: 10}
+_TYPE_FILTER_ITEMS = [{'filterValue': _CustomizationFilterBit.STYLE,
+  'selected': False,
+  'tooltip': makeTooltip(body=backport.text(R.strings.tooltips.customization.storage.filters.style.title())),
+  'icon': backport.image(R.images.gui.maps.icons.storage.filters.style())},
+ {'filterValue': _CustomizationFilterBit.ATTACHMENT,
+  'selected': False,
+  'tooltip': makeTooltip(body=backport.text(R.strings.tooltips.customization.storage.filters.attachments.title())),
+  'icon': backport.image(R.images.gui.maps.icons.storage.filters.attachments())},
+ {'filterValue': _CustomizationFilterBit.STAT_TRACKER,
+  'selected': False,
+  'tooltip': makeTooltip(body=backport.text(R.strings.tooltips.customization.storage.filters.statTrackers.title())),
+  'icon': backport.image(R.images.gui.maps.icons.storage.filters.statTrackers())},
+ {'filterValue': _CustomizationFilterBit.PAINT,
+  'selected': False,
+  'tooltip': makeTooltip(body=backport.text(R.strings.tooltips.customization.storage.filters.paints.title())),
+  'icon': backport.image(R.images.gui.maps.icons.storage.filters.paints())},
+ {'filterValue': _CustomizationFilterBit.CAMOUFLAGE,
+  'selected': False,
+  'tooltip': makeTooltip(body=backport.text(R.strings.tooltips.customization.storage.filters.camouflage.title())),
+  'icon': backport.image(R.images.gui.maps.icons.storage.filters.camouflage())},
+ {'filterValue': _CustomizationFilterBit.PROJECTION_DECAL,
+  'selected': False,
+  'tooltip': makeTooltip(body=backport.text(R.strings.tooltips.customization.storage.filters.decals.title())),
+  'icon': backport.image(R.images.gui.maps.icons.storage.filters.decals())},
+ {'filterValue': _CustomizationFilterBit.EMBLEM,
+  'selected': False,
+  'tooltip': makeTooltip(body=backport.text(R.strings.tooltips.customization.storage.filters.emblems.title())),
+  'icon': backport.image(R.images.gui.maps.icons.storage.filters.emblems())},
+ {'filterValue': _CustomizationFilterBit.PERSONAL_NUMBER,
+  'selected': False,
+  'tooltip': makeTooltip(body=backport.text(R.strings.tooltips.customization.storage.filters.text.title())),
+  'icon': backport.image(R.images.gui.maps.icons.storage.filters.text())},
+ {'filterValue': _CustomizationFilterBit.MODIFICATION,
+  'selected': False,
+  'tooltip': makeTooltip(body=backport.text(R.strings.tooltips.customization.storage.filters.effects.title())),
+  'icon': backport.image(R.images.gui.maps.icons.storage.filters.effects())}]
+_TABS_SORT_ORDER = {GUI_ITEM_TYPE.ATTACHMENT: 1,
+ GUI_ITEM_TYPE.STAT_TRACKER: 2,
+ GUI_ITEM_TYPE.PAINT: 4,
+ GUI_ITEM_TYPE.CAMOUFLAGE: 5,
+ GUI_ITEM_TYPE.PROJECTION_DECAL: 6,
+ GUI_ITEM_TYPE.EMBLEM: 7,
+ GUI_ITEM_TYPE.PERSONAL_NUMBER: 8,
+ GUI_ITEM_TYPE.INSCRIPTION: 9,
+ GUI_ITEM_TYPE.MODIFICATION: 10}
 
 class _VehiclesFilter(object):
-    __slots__ = ('vehicles', )
+    __slots__ = ('vehicles',)
 
     def __init__(self, invVehicles):
         self.vehicles = {nation:{level:[] for level in LEVELS_RANGE} for nation in nations.MAP}
@@ -148,9 +141,9 @@ def _getCustomizationCriteria(invVehicles):
         if item.isVehicleBound:
             boundVehicles = item.getBoundVehicles()
             if boundVehicles:
-                inventoryVehicles = set(vehicle.intCD for vehicle in invVehicles.getVehicles(item))
+                inventoryVehicles = set((vehicle.intCD for vehicle in invVehicles.getVehicles(item)))
                 return not boundVehicles.issubset(inventoryVehicles)
-        return all(not item.mayInstall(vehicle) for vehicle in invVehicles.getVehicles(item))
+        return all((not item.mayInstall(vehicle) for vehicle in invVehicles.getVehicles(item)))
 
     return criteria
 
@@ -188,7 +181,7 @@ class StorageCategoryCustomizationView(StorageCategoryCustomizationViewMeta):
         pass
 
     def _getClientSectionKey(self):
-        return 'storage_customization'
+        pass
 
     def _getFilteredCriteria(self):
         criteria = super(StorageCategoryCustomizationView, self)._getFilteredCriteria()
@@ -235,19 +228,18 @@ class StorageCategoryCustomizationView(StorageCategoryCustomizationViewMeta):
         return dataProviderVoItemsList
 
     def _calcItemsCount(self, itemList):
-        return sum((item['count'] if 1 else 1) for item in itemList if not item['isRentable'])
+        return sum(((item['count'] if not item['isRentable'] else 1) for item in itemList))
 
     def _getVoListForItem(self, item):
         if not item.isVehicleBound:
-            voList = [
-             self._getVO(item)]
+            voList = [self._getVO(item)]
         else:
             voList = []
             inventoryVehicles = tuple(_VehiclesFilter(self._invVehicles).getVehicles(item))
             if item.boundInventoryCount() > 0:
-                vehicleDiff = item.getBoundVehicles().difference(vehicle.intCD for vehicle in inventoryVehicles)
+                vehicleDiff = item.getBoundVehicles().difference((vehicle.intCD for vehicle in inventoryVehicles))
                 voList = [ self._getVO(item, vehicle) for vehicle in vehicleDiff if item.boundInventoryCount(vehicle) ]
-            if item.inventoryCount > 0 and all(not item.mayInstall(vehicle) for vehicle in inventoryVehicles):
+            if item.inventoryCount > 0 and all((not item.mayInstall(vehicle) for vehicle in inventoryVehicles)):
                 voList.append(self._getVO(item))
         return voList
 
@@ -282,7 +274,7 @@ class StorageCategoryCustomizationView(StorageCategoryCustomizationViewMeta):
                         levelIconPath = R.images.gui.maps.icons.customization.progression_styles.icons
                     else:
                         levelIconPath = R.images.gui.maps.icons.customization.progression_icons
-                    levelIcon = backport.image(levelIconPath.dyn(('level_{}').format(level))())
+                    levelIcon = backport.image(levelIconPath.dyn('level_{}'.format(level))())
                     if item.itemTypeID == GUI_ITEM_TYPE.PROJECTION_DECAL:
                         icon = item.previewIconUrlByProgressionLevel(level)
                     else:
@@ -297,16 +289,16 @@ class StorageCategoryCustomizationView(StorageCategoryCustomizationViewMeta):
             rarityIcon = backport.image(R.images.gui.maps.icons.customization.rarity.sign.s52x52.dyn(rarity)())
             rarityBackground = backport.image(R.images.gui.maps.icons.customization.rarity.glow.s360x270.dyn(rarity)())
         vo = createStorageDefVO(itemID=item.intCD, title=title, description=self._getSuitableText(item, vehicleCD), count=count, price=priceVO if isAvailableForSell else None, image=icon, imageAlt='altimage', contextMenuId=CONTEXT_MENU_HANDLER_TYPE.STORAGE_CUSTOMZIZATION_ITEM, enabled=isAvailableForSell)
-        vo.update({'previewAvailable': isPreviewAvailable, 
-           'previewTooltip': backport.text(R.strings.storage.stylePreview.tooltip()), 
-           'progressiveLevelIcon': levelIcon, 
-           'formfactor': formfactor, 
-           'vehicleCD': vehicleCD, 
-           'isWideImage': item.isWide(), 
-           'isRentable': item.isRentable, 
-           'rarityIcon': rarityIcon, 
-           'rarityBackground': rarityBackground, 
-           'hasRarity': hasRarity})
+        vo.update({'previewAvailable': isPreviewAvailable,
+         'previewTooltip': backport.text(R.strings.storage.stylePreview.tooltip()),
+         'progressiveLevelIcon': levelIcon,
+         'formfactor': formfactor,
+         'vehicleCD': vehicleCD,
+         'isWideImage': item.isWide(),
+         'isRentable': item.isRentable,
+         'rarityIcon': rarityIcon,
+         'rarityBackground': rarityBackground,
+         'hasRarity': hasRarity})
         return vo
 
     def _getComparisonKey(self, item):

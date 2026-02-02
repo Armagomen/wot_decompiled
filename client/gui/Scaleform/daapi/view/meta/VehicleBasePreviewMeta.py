@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/VehicleBasePreviewMeta.py
 from gui.Scaleform.framework.entities.View import View
 
 class VehicleBasePreviewMeta(View):
@@ -9,25 +11,19 @@ class VehicleBasePreviewMeta(View):
         self._printOverrideError('onOpenInfoTab')
 
     def as_setDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setData(data)
+        return self.flashObject.as_setData(data) if self._isDAAPIInited() else None
 
     def as_setAdditionalInfoS(self, info):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setAdditionalInfo(info)
+        return self.flashObject.as_setAdditionalInfo(info) if self._isDAAPIInited() else None
 
     def as_show3DSceneTooltipS(self, id, args):
-        if self._isDAAPIInited():
-            return self.flashObject.as_show3DSceneTooltip(id, args)
+        return self.flashObject.as_show3DSceneTooltip(id, args) if self._isDAAPIInited() else None
 
     def as_hide3DSceneTooltipS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_hide3DSceneTooltip()
+        return self.flashObject.as_hide3DSceneTooltip() if self._isDAAPIInited() else None
 
     def as_setTopPanelS(self, linkage):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setTopPanel(linkage)
+        return self.flashObject.as_setTopPanel(linkage) if self._isDAAPIInited() else None
 
     def as_setBottomPanelS(self, linkage):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setBottomPanel(linkage)
+        return self.flashObject.as_setBottomPanel(linkage) if self._isDAAPIInited() else None

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/tournament/unit/actions_validator.py
 from gui.prb_control.entities.base.squad.actions_validator import UnitActionsValidator
 from gui.prb_control.entities.base.unit.actions_validator import UnitVehiclesValidator, CommanderValidator, UnitStateValidator
 from gui.prb_control.items import ValidationResult
@@ -29,9 +31,7 @@ class TournamentUnitSlotsValidator(CommanderValidator):
 class TournamentUnitStateValidator(UnitStateValidator):
 
     def _validate(self):
-        if self._entity.inPlayersMatchingMode():
-            return ValidationResult(False, UNIT_RESTRICTION.UNIT_IS_IN_PLAYERS_MATCHING)
-        return super(TournamentUnitStateValidator, self)._validate()
+        return ValidationResult(False, UNIT_RESTRICTION.UNIT_IS_IN_PLAYERS_MATCHING) if self._entity.inPlayersMatchingMode() else super(TournamentUnitStateValidator, self)._validate()
 
 
 class TournamentActionsValidator(UnitActionsValidator):

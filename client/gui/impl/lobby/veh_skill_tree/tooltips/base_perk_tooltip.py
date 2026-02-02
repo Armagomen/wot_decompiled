@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/veh_skill_tree/tooltips/base_perk_tooltip.py
 from frameworks.wulf import Array
 from gui.veh_post_progression.models.modifications import SimpleModItem
 from helpers import dependency
@@ -19,7 +21,7 @@ class BasePerkTooltipView(ViewImpl):
     def _onLoading(self, vehCD, step, stepStatus, *args, **kwargs):
         super(BasePerkTooltipView, self)._onLoading(*args, **kwargs)
         vehicle = self.__itemsCache.items.getItemByCD(vehCD)
-        with self.getViewModel().transaction() as (vm):
+        with self.getViewModel().transaction() as vm:
             fillNodeModel(vm.node, step, stepStatus, vehicle)
             self.__fillModifiers(vehicle, vm.getKpis(), step.action)
 

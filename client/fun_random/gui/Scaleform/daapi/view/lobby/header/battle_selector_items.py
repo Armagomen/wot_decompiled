@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/Scaleform/daapi/view/lobby/header/battle_selector_items.py
 from __future__ import absolute_import
 from adisp import adisp_process
 from constants import QUEUE_TYPE, PREBATTLE_TYPE
@@ -18,8 +20,7 @@ def addFunRandomSquadType(items):
 
 
 class _FunRandomItem(SelectorItem, FunAssetPacksMixin, FunSubModesWatcher):
-    _HIDDEN_STATES = (
-     FunSubModesState.UNDEFINED, FunSubModesState.AFTER_SEASON)
+    _HIDDEN_STATES = (FunSubModesState.UNDEFINED, FunSubModesState.AFTER_SEASON)
 
     def __init__(self, data, order, selectorType=None, isVisible=True):
         super(_FunRandomItem, self).__init__('', data, order, selectorType, isVisible)
@@ -59,7 +60,7 @@ class _FunRandomSquadItem(SpecialSquadItem, FunAssetPacksMixin, FunSubModesWatch
         self._prebattleType = PREBATTLE_TYPE.FUN_RANDOM
 
     def getFormattedLabel(self):
-        return ''
+        pass
 
     def getSmallIcon(self):
         return backport.image(self.getModeIconsResRoot().battleTypes.c_40x40.fun_random_squad())

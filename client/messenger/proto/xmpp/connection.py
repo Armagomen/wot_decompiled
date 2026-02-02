@@ -1,4 +1,7 @@
-import random, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/xmpp/connection.py
+import random
+import BigWorld
 from constants import TOKEN_TYPE
 from adisp import adisp_process
 from gui.shared.utils import backoff, getPlayerDatabaseID
@@ -91,8 +94,7 @@ class ConnectionsInfo(object):
                 self.__backOff = backOff
         cType, host, port = self.__iterator.next()
         self.__address = (host, port)
-        return (
-         cType, host, port)
+        return (cType, host, port)
 
     def getNextDelay(self):
         return self.__backOff.next()
@@ -252,7 +254,7 @@ class ConnectionHandler(ClientEventsHandler):
         if self.isInGameServer() and reason != DISCONNECT_REASON.BY_REQUEST:
             delay = self.__connectionsInfo.getNextDelay()
             self.__reconnectCallbackID = BigWorld.callback(delay, self.__doNextConnect)
-            g_logOutput.debug(CLIENT_LOG_AREA.CONNECTION, ('Will try to reconnect after {0} seconds').format(delay), description)
+            g_logOutput.debug(CLIENT_LOG_AREA.CONNECTION, 'Will try to reconnect after {0} seconds'.format(delay), description)
             host, port = self.__connectionsInfo.getLastAddress()
             tries = self.__connectionsInfo.getTries()
             self.__invokeConnectFailedEvent(tries)
@@ -266,7 +268,7 @@ class ConnectionHandler(ClientEventsHandler):
         if tries < _MAX_REQ_TOKEN_TRIES:
             delay = self.__reqTokenBackOff.next()
             self.__reqTokenCallbackID = BigWorld.callback(delay, self.__doNextLogin)
-            g_logOutput.debug(CLIENT_LOG_AREA.TOKEN, ('Will try to request token after {0} seconds').format(delay))
+            g_logOutput.debug(CLIENT_LOG_AREA.TOKEN, 'Will try to request token after {0} seconds'.format(delay))
             self.__invokeConnectFailedEvent(tries)
         else:
             self.client().disconnect()

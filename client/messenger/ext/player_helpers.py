@@ -1,4 +1,7 @@
-import logging, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/ext/player_helpers.py
+import logging
+import BigWorld
 from avatar_helpers import getAvatarSessionID
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.shared.utils import getPlayerDatabaseID, getPlayerName
@@ -12,8 +15,7 @@ _CLAN_INFO_ABBREV_INDEX = 1
 _CLAN_INFO_ROLE_INDEX = 3
 
 def _getInfo4AccountPlayer():
-    return (
-     getPlayerDatabaseID(), getPlayerName(), None)
+    return (getPlayerDatabaseID(), getPlayerName(), None)
 
 
 def _getInfo4AvatarPlayer():
@@ -27,8 +29,7 @@ def _getInfo4AvatarPlayer():
             dbID = vehData['accountDBID']
             name = vehData['name']
             clanAbbrev = vehData['clanAbbrev']
-    return (
-     dbID, name, clanAbbrev)
+    return (dbID, name, clanAbbrev)
 
 
 def isCurrentPlayer(userID):
@@ -40,11 +41,11 @@ class CurrentPlayerHelper(object):
 
     @storage_getter('playerCtx')
     def playerCtx(self):
-        return
+        return None
 
     @storage_getter('users')
     def usersStorage(self):
-        return
+        return None
 
     def clear(self):
         g_clientUpdateManager.removeObjectCallbacks(self)
@@ -65,8 +66,8 @@ class CurrentPlayerHelper(object):
         self.__setAccountAttrs(accountAttrs)
         clanInfo = self.itemsCache.items.stats.clanInfo
         self.__setClanInfo(clanInfo)
-        g_clientUpdateManager.addCallbacks({'account.attrs': self.__setAccountAttrs, 
-           'stats.clanInfo': self.__setClanInfo})
+        g_clientUpdateManager.addCallbacks({'account.attrs': self.__setAccountAttrs,
+         'stats.clanInfo': self.__setClanInfo})
 
     def onAvatarShowGUI(self):
         dbID, name, clanAbbrev = _getInfo4AvatarPlayer()

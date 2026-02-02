@@ -1,8 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/items/tankman_flags.py
 
 
 class TankmanFlags(object):
-    __slots__ = ('_len', 'extendedVehicleTypeID', 'isPremium', 'isFemale', 'hasFreeSkills',
-                 'hasBonusSkills', 'firstSkillResetDisabled')
+    __slots__ = ('_len', 'extendedVehicleTypeID', 'isPremium', 'isFemale', 'hasFreeSkills', 'hasBonusSkills', 'firstSkillResetDisabled')
     EXTENDED_VEHICLE_TYPE_ID_FLAG = 128
     IS_PREMIUM_FLAG = 64
     IS_FEMALE_FLAG = 32

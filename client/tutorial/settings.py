@@ -1,8 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/tutorial/settings.py
 from collections import namedtuple
 from soft_exception import SoftException
 TUTORIAL_VERSION = '0.4.0'
 DOC_DIRECTORY = 'scripts/tutorial_docs'
-BONUSES_REFS_FILE_PATH = ('{0:>s}/bonuses-refs.xml').format(DOC_DIRECTORY)
+BONUSES_REFS_FILE_PATH = '{0:>s}/bonuses-refs.xml'.format(DOC_DIRECTORY)
 
 class INITIAL_FLAG(object):
     GUI_LOADED = 1
@@ -10,10 +12,7 @@ class INITIAL_FLAG(object):
     INITIALIZED = GUI_LOADED | CHAPTER_RESOLVED
 
 
-_SettingsDesc = namedtuple('_SettingsDesc', ('id', 'enabled', 'cacheEnabled', 'hintsEnabled',
-                                             'findChapterInCache', 'space', 'descriptorPath',
-                                             'descriptorParser', 'reqs', 'ctrl',
-                                             'gui', 'dispatcher', 'exParsers', 'chapterParser'))
+_SettingsDesc = namedtuple('_SettingsDesc', ('id', 'enabled', 'cacheEnabled', 'hintsEnabled', 'findChapterInCache', 'space', 'descriptorPath', 'descriptorParser', 'reqs', 'ctrl', 'gui', 'dispatcher', 'exParsers', 'chapterParser'))
 _ClassPath = namedtuple('_ClassPath', ('module', 'clazz', 'args'))
 TUTORIAL_LOBBY_DISPATCHER = _ClassPath('gui.Scaleform.lobby', 'SfLobbyDispatcher', ())
 TUTORIAL_BATTLE_DISPATCHER = _ClassPath('tutorial.gui.Scaleform.battle_v2', 'SfBattleDispatcher', ())
@@ -21,7 +20,7 @@ TUTORIAL_DESCRIPTOR_PARSER = _ClassPath('tutorial.doc_loader.parsers', 'Descript
 TUTORIAL_CHAPTER_PARSER = _ClassPath('tutorial.doc_loader.parsers', 'ChapterParser', ())
 
 class TUTORIAL_SETTINGS(object):
-    SALES_TRIGGERS = _SettingsDesc('SALES_TRIGGERS', True, True, True, False, 'SALES_TRIGGERS', ('{0:>s}/sales-descriptor.xml').format(DOC_DIRECTORY), TUTORIAL_DESCRIPTOR_PARSER, _ClassPath('tutorial.control.sales.context', 'SalesStartReqs', ()), _ClassPath('tutorial.control.sales', 'SalesControlsFactory', ()), _ClassPath('gui.Scaleform.sales.proxy', 'SfSalesProxy', ()), TUTORIAL_LOBBY_DISPATCHER, 'tutorial.doc_loader.sub_parsers.sales', TUTORIAL_CHAPTER_PARSER)
+    SALES_TRIGGERS = _SettingsDesc('SALES_TRIGGERS', True, True, True, False, 'SALES_TRIGGERS', '{0:>s}/sales-descriptor.xml'.format(DOC_DIRECTORY), TUTORIAL_DESCRIPTOR_PARSER, _ClassPath('tutorial.control.sales.context', 'SalesStartReqs', ()), _ClassPath('tutorial.control.sales', 'SalesControlsFactory', ()), _ClassPath('gui.Scaleform.sales.proxy', 'SfSalesProxy', ()), TUTORIAL_LOBBY_DISPATCHER, 'tutorial.doc_loader.sub_parsers.sales', TUTORIAL_CHAPTER_PARSER)
 
 
 class _SettingsCollection(dict):
@@ -35,10 +34,7 @@ class _SettingsCollection(dict):
 
     def getSettings(self, settingsID):
         settings = None
-        if settingsID in self:
-            return self[settingsID]
-        else:
-            return settings
+        return self[settingsID] if settingsID in self else settings
 
 
 def createSettingsCollection():
@@ -48,10 +44,9 @@ def createSettingsCollection():
 
 
 def createTutorialElement(classPath, init=None):
-    imported = __import__(classPath.module, globals(), locals(), [
-     classPath.clazz])
+    imported = __import__(classPath.module, globals(), locals(), [classPath.clazz])
     if not imported:
-        raise SoftException(('Can not find class {0.module} in {0.clazz}').format(classPath))
+        raise SoftException('Can not find class {0.module} in {0.clazz}'.format(classPath))
     clazz = getattr(imported, classPath.clazz)
     if init is None:
         init = classPath.args

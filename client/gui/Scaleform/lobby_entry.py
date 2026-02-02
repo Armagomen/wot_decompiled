@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/lobby_entry.py
 from collections import namedtuple
-import typing, BigWorld
+import typing
+import BigWorld
 from PlayerEvents import g_playerEvents
 from frameworks.state_machine import BaseStateObserver
 from frameworks.wulf import WindowLayer
@@ -46,11 +49,8 @@ _logger = getLogger(__name__)
 def getLobbyStateMachine():
     from skeletons.gui.app_loader import IAppLoader
     appLoader = dependency.instance(IAppLoader)
-    app = appLoader.getApp()
-    if app:
-        return getattr(app, 'stateMachine', None)
-    else:
-        return
+    app = appLoader.getDefLobbyApp()
+    return getattr(app, 'stateMachine', None) if app else None
 
 
 _UntrackedStateForwardedParams = namedtuple('_UntrackedStateForwardedParams', ['loadParams', 'args', 'kwargs'])
@@ -83,7 +83,7 @@ class _UntrackedStateObserver(BaseStateObserver):
 class LobbyEntry(AppEntry):
 
     def __init__(self, appNS, ctrlModeFlags):
-        super(LobbyEntry, self).__init__(R.entries.lobby(), appNS, ctrlModeFlags)
+        super(LobbyEntry, self).__init__(R.entries.default.lobby(), appNS, ctrlModeFlags)
         self.__stateMachine = LobbyStateMachine()
         self.__untrackedStateObserver = _UntrackedStateObserver()
         self.__subhangarObserver = None
@@ -240,7 +240,4 @@ class LobbyEntry(AppEntry):
         return
 
     def __getWaitingFromContainer(self):
-        if self._containerMgr is not None:
-            return self._containerMgr.getView(WindowLayer.WAITING)
-        else:
-            return
+        return self._containerMgr.getView(WindowLayer.WAITING) if self._containerMgr is not None else None

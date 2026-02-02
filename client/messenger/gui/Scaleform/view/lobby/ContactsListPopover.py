@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/gui/Scaleform/view/lobby/ContactsListPopover.py
 from account_helpers.AccountSettings import AccountSettings, CONTACTS
 from debug_utils import LOG_DEBUG, LOG_WARNING
 from gui.Scaleform.genConsts.CONTACTS_ALIASES import CONTACTS_ALIASES
@@ -20,11 +22,11 @@ class ContactsListPopover(ContactsListPopoverMeta, ContactsCMListener):
 
     @proto_getter(PROTO_TYPE.MIGRATION)
     def proto(self):
-        return
+        return None
 
     @storage_getter('users')
     def usersStorage(self):
-        return
+        return None
 
     @property
     def pyTree(self):
@@ -63,8 +65,7 @@ class ContactsListPopover(ContactsListPopoverMeta, ContactsCMListener):
         settings = self.settingsCore.serverSettings.getSection(CONTACTS, AccountSettings.getFilterDefault(CONTACTS))
         onlineMode = None if settings['showOfflineUsers'] else True
         showOthers = bool(settings['showOthersCategory'])
-        return (
-         onlineMode, showOthers)
+        return (onlineMode, showOthers)
 
     def _onRegisterFlashComponent(self, viewPy, alias):
         super(ContactsListPopover, self)._onRegisterFlashComponent(viewPy, alias)

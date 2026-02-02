@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/upgradable_device/UpgradeDeviceView.py
 import logging
 from frameworks.wulf import Array
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -76,14 +78,14 @@ class UpgradableDeviceUpgradeConfirmView(DialogTemplateView):
         return self.__currentModule.mayPurchaseUpgrade(self.__itemsCache.items)
 
     def __canGetMoreCurrency(self):
-        return any(item.intCD != self.__currentModule.intCD or item.inventoryCount > 1 for item in self.__itemsCache.items.getItems(GUI_ITEM_TYPE.OPTIONALDEVICE, REQ_CRITERIA.INVENTORY | REQ_CRITERIA.OPTIONAL_DEVICE.MODERNIZED).values())
+        return any((item.intCD != self.__currentModule.intCD or item.inventoryCount > 1 for item in self.__itemsCache.items.getItems(GUI_ITEM_TYPE.OPTIONALDEVICE, REQ_CRITERIA.INVENTORY | REQ_CRITERIA.OPTIONAL_DEVICE.MODERNIZED).values()))
 
     def __initBalance(self):
         initBalance(self.viewModel.getBalance(), (Currency.EQUIP_COIN,), self.__itemsCache)
 
     def __setUpgradeCost(self):
         upgradeCurrency = self.__upgradePrice.getCurrency()
-        with self.viewModel.prices.transaction() as (model):
+        with self.viewModel.prices.transaction() as model:
             model.setName(upgradeCurrency)
             model.setValue(self.__upgradePrice.get(upgradeCurrency))
             model.setIsEnough(self.__currentModule.mayPurchaseUpgrade(self.__itemsCache.items))
@@ -94,15 +96,14 @@ class UpgradableDeviceUpgradeConfirmView(DialogTemplateView):
         self.__initBalance()
 
     def __getConfirmButtonTxtRes(self):
-        if self.__canPurchaseUpgrade():
-            return R.strings.dialogs.equipmentUpgrade.confirmButton()
-        return R.strings.dialogs.equipmentUpgrade.getMoreCurrencyButton()
+        return R.strings.dialogs.equipmentUpgrade.confirmButton() if self.__canPurchaseUpgrade() else R.strings.dialogs.equipmentUpgrade.getMoreCurrencyButton()
 
     def __optDevicesUpdated(self, _, diff):
         if diff is None or GUI_ITEM_TYPE.OPTIONALDEVICE not in diff:
             return
-        self.__updateUpgradeStatus()
-        return
+        else:
+            self.__updateUpgradeStatus()
+            return
 
     def __updateUpgradeStatus(self):
         canGetMoreCurrency = self.__canGetMoreCurrency()
@@ -115,10 +116,7 @@ class UpgradableDeviceUpgradeConfirmView(DialogTemplateView):
 
     def __getSubmitTooltipFactory(self):
         body = backport.text(R.strings.dialogs.equipmentUpgrade.getMoreCurrencyButtonTooltip.body())
-        if self.__isSubmitDisabled():
-            return getSimpleTooltipFactory(body=body)
-        else:
-            return
+        return getSimpleTooltipFactory(body=body) if self.__isSubmitDisabled() else None
 
     def __isSubmitDisabled(self, canGetMoreCurrency=None):
         if canGetMoreCurrency is None:
@@ -127,7 +125,7 @@ class UpgradableDeviceUpgradeConfirmView(DialogTemplateView):
 
 
 def _fillDeviceInfo(modules, currentModule, viewModel):
-    with viewModel.transaction() as (model):
+    with viewModel.transaction() as model:
         model.setDeviceName(currentModule.name)
         model.setDeviceImg(currentModule.getShopIcon(size=STORE_CONSTANTS.ICON_SIZE_SMALL))
         model.setOverlayType(ItemHighlightTypes.MODERNIZED)
@@ -139,7 +137,7 @@ def _fillDeviceInfo(modules, currentModule, viewModel):
                 kpi = modules[i].getKpi()[j]
                 kpiName = kpi.name
                 kpiValue = kpi.value
-                if any(module.getKpi()[j].name != kpiName for module in modules):
+                if any((module.getKpi()[j].name != kpiName for module in modules)):
                     _logger.error('KPI in basic and upgraded module dont have same order')
                     continue
                 kpiModel = KpiItemModel()

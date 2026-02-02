@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/tooltips/filter.py
 import constants
 from frameworks.wulf import WindowLayer
 from helpers import dependency
@@ -51,8 +53,7 @@ class VehicleFilterTooltip(BlocksTooltipData):
             return []
         else:
             self.__gatherData(tankCarousel)
-            items = [
-             self._packHeaderBlock()]
+            items = [self._packHeaderBlock()]
             if self.__hasBody():
                 items.append(self._packBodyBlock())
             if not self._event or not self._rented:
@@ -63,9 +64,7 @@ class VehicleFilterTooltip(BlocksTooltipData):
             return items
 
     def _packSearchNameVehicle(self):
-        subBlocks = [
-         self.__getParagraphNameBlock(TANK_CAROUSEL_FILTER.INFOTIP_SEARCHNAMEVEHICLE),
-         self.__packSearchNameVehicle(self._searchNameVehicle)]
+        subBlocks = [self.__getParagraphNameBlock(TANK_CAROUSEL_FILTER.INFOTIP_SEARCHNAMEVEHICLE), self.__packSearchNameVehicle(self._searchNameVehicle)]
         return formatters.packBuildUpBlockData(subBlocks, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE)
 
     def _packHeaderBlock(self):
@@ -78,7 +77,7 @@ class VehicleFilterTooltip(BlocksTooltipData):
         if not self._event:
             icon = icons.makeImageTag(RES_ICONS.MAPS_ICONS_BATTLETYPES_40X40_EVENT, width=22, height=22, vSpace=-8)
             text = text_styles.main(TANK_CAROUSEL_FILTER.INFOTIP_EVENT)
-            subBlocks.append(formatters.packTextBlockData(text=('{}      {}').format(icon, text), padding=formatters.packPadding(left=6, top=5, bottom=0)))
+            subBlocks.append(formatters.packTextBlockData(text='{}      {}'.format(icon, text), padding=formatters.packPadding(left=6, top=5, bottom=0)))
         return formatters.packBuildUpBlockData(subBlocks, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE)
 
     def _packCounterBlock(self):
@@ -114,12 +113,12 @@ class VehicleFilterTooltip(BlocksTooltipData):
         return formatters.packImageListParameterBlockData(listIconSrc=[ formatters.packImageListIconData(getVehicleTypeAssetPath(v)) for v in self._vehicleTypes ], columnWidth=27, rowHeight=20, padding=formatters.packPadding(bottom=8, left=7))
 
     def __packLevelBlock(self):
-        string = (', ').join(int2roman(level) for level in self._levels)
+        string = ', '.join((int2roman(level) for level in self._levels))
         return formatters.packTextBlockData(text=text_styles.stats(string), padding=formatters.packPadding(bottom=8, top=-5, left=15))
 
     def __packSpecialTypeBlock(self):
         string = ''
-        addComma = lambda str: ('{0}, ').format(str) if str else str
+        addComma = lambda str: '{0}, '.format(str) if str else str
         if self._specials['premium']:
             string += _ms(TANK_CAROUSEL_FILTER.INFOTIP_ONLY_PREMIUM)
         if self._specials['elite']:
@@ -130,9 +129,9 @@ class VehicleFilterTooltip(BlocksTooltipData):
             string += _ms(TANK_CAROUSEL_FILTER.INFOTIP_ONLY_FAVORITE)
         if self._specials['bonus']:
             icon = icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_MULTYXP)
-            xpRate = text_styles.stats(('x{0}').format(self.itemsCache.items.shop.dailyXPFactor))
+            xpRate = text_styles.stats('x{0}'.format(self.itemsCache.items.shop.dailyXPFactor))
             string = addComma(string)
-            string += ('{0}{1}').format(icon, xpRate)
+            string += '{0}{1}'.format(icon, xpRate)
         if self._specials['igr']:
             string = addComma(string)
             string += icons.premiumIgrSmall()
@@ -149,17 +148,17 @@ class VehicleFilterTooltip(BlocksTooltipData):
         self._vehicleTypes = [ vehType for vehType in VEHICLE_TYPES_ORDER if filters[vehType] ]
         self._levels = []
         for level in VEHICLE_LEVELS:
-            if filters[('level_%d' % level)]:
+            if filters['level_%d' % level]:
                 self._levels.append(level)
 
         self._rented = filters['rented']
         self._event = filters['event']
         self._searchNameVehicle = filters['searchNameVehicle']
-        self._specials = {'premium': filters['premium'], 
-           'elite': filters['elite'], 
-           'igr': filters['igr'] if constants.IS_KOREA else False, 
-           'bonus': filters['bonus'], 
-           'favorite': filters['favorite']}
+        self._specials = {'premium': filters['premium'],
+         'elite': filters['elite'],
+         'igr': filters['igr'] if constants.IS_KOREA else False,
+         'bonus': filters['bonus'],
+         'favorite': filters['favorite']}
 
     def __hasBody(self):
         return bool(self._nations) or bool(self._vehicleTypes) or bool(self._levels and len(self._levels)) or any(self._specials.values())

@@ -1,4 +1,7 @@
-import BigWorld, Settings
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/login/Servers.py
+import BigWorld
+import Settings
 from gui import GUI_SETTINGS
 from Event import Event
 from predefined_hosts import g_preDefinedHosts, REQUEST_RATE
@@ -38,9 +41,9 @@ class Servers(object):
         for idx, (hostName, friendlyName, csisStatus, _) in enumerate(baseServerList):
             if serverName == hostName:
                 self._selectedServerIdx = idx
-            self._serverList.append({'label': friendlyName, 
-               'data': hostName, 
-               'csisStatus': csisStatus})
+            self._serverList.append({'label': friendlyName,
+             'data': hostName,
+             'csisStatus': csisStatus})
 
     def startListenCsisQuery(self, startListen):
         if GUI_SETTINGS.csisRequestRate == REQUEST_RATE.ON_REQUEST:
@@ -68,10 +71,7 @@ class Servers(object):
 
     @property
     def selectedServer(self):
-        if self._selectedServerIdx < len(self._serverList):
-            return self._serverList[self._selectedServerIdx]
-        else:
-            return
+        return self._serverList[self._selectedServerIdx] if self._selectedServerIdx < len(self._serverList) else None
 
     def __onServerUpdate(self, _=None):
         self.updateServerList()
@@ -91,8 +91,7 @@ class DevelopmentServers(Servers):
     def updateServerList(self):
 
         def _serverDottedHost(ip):
-            return '%d.%d.%d.%d' % (
-             ip >> 24 & 255,
+            return '%d.%d.%d.%d' % (ip >> 24 & 255,
              ip >> 16 & 255,
              ip >> 8 & 255,
              ip >> 0 & 255)
@@ -113,13 +112,11 @@ class DevelopmentServers(Servers):
                 name += ' (' + details.ownerName + ')'
             return name
 
-        servers = [ (_serverNiceName(server), server.serverString) for server in BigWorld.serverDiscovery.servers
-                  ]
+        servers = [ (_serverNiceName(server), server.serverString) for server in BigWorld.serverDiscovery.servers ]
         baseServerList = g_preDefinedHosts.shortList()
         for friendlyName, hostName in servers:
             if not g_preDefinedHosts.predefined(hostName):
-                baseServerList.append((
-                 hostName,
+                baseServerList.append((hostName,
                  friendlyName,
                  g_preDefinedHosts.getDefaultCSISStatus(),
                  None))

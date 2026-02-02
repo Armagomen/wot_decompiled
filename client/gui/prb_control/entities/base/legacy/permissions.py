@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/base/legacy/permissions.py
 from constants import PREBATTLE_ACCOUNT_STATE, PREBATTLE_ROLE, PREBATTLE_TEAM_STATE
 from gui.prb_control.entities.base.permissions import IPrbPermissions
 from gui.prb_control.items.prb_items import TeamStateInfo

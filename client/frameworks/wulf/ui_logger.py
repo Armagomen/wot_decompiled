@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/frameworks/wulf/ui_logger.py
 from .py_object_binder import PyObjectEntity
 
 class UILogger(PyObjectEntity):

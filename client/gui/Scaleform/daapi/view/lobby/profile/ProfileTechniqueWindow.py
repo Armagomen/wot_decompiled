@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/profile/ProfileTechniqueWindow.py
 from gui.Scaleform.daapi.view.lobby.profile.QueuedVehicleDossierReceiver import QueuedVehicleDossierReceiver
 from gui.Scaleform.daapi.view.lobby.profile.ProfileTechnique import ProfileTechnique
 
@@ -30,7 +32,8 @@ class ProfileTechniqueWindow(ProfileTechnique):
         return
 
     def _setRatingButton(self):
-        self.as_setRatingButtonS({'enabled': False, 'visible': False})
+        self.as_setRatingButtonS({'enabled': False,
+         'visible': False})
 
     def __requestedDataReceived(self, databaseID, vehicleID):
         if self.__currentlyRequestingVehicleId == vehicleID:

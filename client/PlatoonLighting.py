@@ -1,6 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/PlatoonLighting.py
 import logging
 from enum import Enum
-import BigWorld, AnimationSequence, Math
+import BigWorld
+import AnimationSequence
+import Math
 from gui.shared import EVENT_BUS_SCOPE, g_eventBus, events
 from skeletons.gui.game_control import IPlatoonController
 from vehicle_systems.stricted_loading import makeCallbackWeak
@@ -37,8 +41,7 @@ class PlatoonLighting(ClientSelectableObject):
         _logger.debug('Starting platoon lighting state machine.')
         if self.animationStateMachine:
             animationLoader = AnimationSequence.Loader(self.animationStateMachine, self.spaceID)
-            BigWorld.loadResourceListBG((
-             animationLoader,), makeCallbackWeak(self.__onAnimatorLoaded))
+            BigWorld.loadResourceListBG((animationLoader,), makeCallbackWeak(self.__onAnimatorLoaded))
         super(PlatoonLighting, self).onEnterWorld(prereqs)
 
     def onLeaveWorld(self):
@@ -82,8 +85,7 @@ class PlatoonLighting(ClientSelectableObject):
 
     def __onPlatoonTankLeave(self, event):
         name = self.__animator.getCurrNodeName()
-        if name in (_PlatoonLightingStateMachineStates.PLAYER_PLATOON_LIGHTING.value,
-         _PlatoonLightingStateMachineStates.PLAYER_ORIGINAL_LIGHTING.value):
+        if name in (_PlatoonLightingStateMachineStates.PLAYER_PLATOON_LIGHTING.value, _PlatoonLightingStateMachineStates.PLAYER_ORIGINAL_LIGHTING.value):
             return
         _logger.debug('Tank leave platoon %s.', name)
         entity = event.ctx['entity']

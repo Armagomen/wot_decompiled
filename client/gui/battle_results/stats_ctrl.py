@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_results/stats_ctrl.py
 import typing
 from collections import namedtuple
 from frameworks.wulf import ViewModel
@@ -22,7 +24,7 @@ class IBattleResultStatsCtrl(object):
         raise NotImplementedError
 
     def getResults(self):
-        return
+        return None
 
     def getVO(self):
         raise NotImplementedError

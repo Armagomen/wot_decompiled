@@ -1,6 +1,13 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/server_events/pm_constants.py
 from sound_gui_manager import CommonSoundSpaceSettings
 from shared_utils import CONST_CONTAINER
 from personal_missions import PM_BRANCH
+IS_PM3_QUEST_ENABLED = 'isPM3QuestEnabled'
+IS_PM2_QUEST_ENABLED = 'isPM2QuestEnabled'
+IS_REGULAR_QUEST_ENABLED = 'isRegularQuestEnabled'
+DISABLED_PM_OPERATIONS = 'disabledPMOperations'
+DISABLED_PM_MISSIONS = 'disabledPersonalMissions'
 
 class SOUNDS(CONST_CONTAINER):
     COMMON_SOUND_SPACE = 'personalMissions'
@@ -26,22 +33,19 @@ class SOUNDS(CONST_CONTAINER):
     ONE_AWARD_LIST_RECEIVED = 'pm_greeting_order_form'
     ONE_AWARD_LIST_RECEIVED_CONFIRM = 'pm_greeting_order_form_confirm'
     FOUR_AWARD_LISTS_RECEIVED = 'pm_conversion_order_form'
-    RTCP_MISSION_BRANCH = {PM_BRANCH.REGULAR: 'RTPC_ext_mission_zoom_green', 
-       PM_BRANCH.PERSONAL_MISSION_2: 'RTPC_ext_mission_zoom_blue'}
+    RTCP_MISSION_BRANCH = {PM_BRANCH.REGULAR: 'RTPC_ext_mission_zoom_green',
+     PM_BRANCH.PERSONAL_MISSION_2: 'RTPC_ext_mission_zoom_blue'}
     BRANCH_DEFAULT = 0
     BRANCH_SELECTED = 100
     MIN_MISSIONS_ZOOM = 0
     MAX_MISSIONS_ZOOM = 100
 
 
-_SOUNDS_PRIORITIES = (
- SOUNDS.AWARD_WINDOW, SOUNDS.WOMAN_AWARD_WINDOW, SOUNDS.TANK_AWARD_WINDOW)
-PERSONAL_MISSIONS_SOUND_SPACE = CommonSoundSpaceSettings(name=SOUNDS.COMMON_SOUND_SPACE, entranceStates={SOUNDS.STATE_PLACE: SOUNDS.STATE_PLACE_MISSIONS}, exitStates={}, persistentSounds=(
- SOUNDS.MUSIC, SOUNDS.AMBIENT), stoppableSounds=(), priorities=_SOUNDS_PRIORITIES, autoStart=True, enterEvent='', exitEvent='')
+_SOUNDS_PRIORITIES = (SOUNDS.AWARD_WINDOW, SOUNDS.WOMAN_AWARD_WINDOW, SOUNDS.TANK_AWARD_WINDOW)
+PERSONAL_MISSIONS_SOUND_SPACE = CommonSoundSpaceSettings(name=SOUNDS.COMMON_SOUND_SPACE, entranceStates={SOUNDS.STATE_PLACE: SOUNDS.STATE_PLACE_MISSIONS}, exitStates={}, persistentSounds=(SOUNDS.MUSIC, SOUNDS.AMBIENT), stoppableSounds=(), priorities=_SOUNDS_PRIORITIES, autoStart=True, enterEvent='', exitEvent='')
 PERSONAL_MISSIONS_SILENT_SOUND_SPACE = CommonSoundSpaceSettings(SOUNDS.COMMON_SOUND_SPACE, {}, {}, (), (), _SOUNDS_PRIORITIES, False, '', '')
 
 class PM_TUTOR_FIELDS(CONST_CONTAINER):
-    GREETING_SCREEN_SHOWN = 'pm_greeting_screen_shown'
     FIRST_ENTRY_AWARDS_SHOWN = 'pm_first_entry_awards_shown'
     INITIAL_FAL_COUNT = 'pm_initial_free_award_lists_count'
     ONE_FAL_SHOWN = 'pm_first_free_award_list_shown'
@@ -50,6 +54,6 @@ class PM_TUTOR_FIELDS(CONST_CONTAINER):
     PM2_MULTIPLE_FAL_SHOWN = 'pm2_four_free_award_lists_shown'
 
 
-PAUSABLE_OPERATIONS_IDS = (7, )
-DISCARDABLE_OPERATIONS_IDS = (7, )
+PAUSABLE_OPERATIONS_IDS = (7,)
+DISCARDABLE_OPERATIONS_IDS = (7,)
 PM_SUIT_OP_PLUGIN_ERR_RESPONSE = 'WRONG_OPERATION'

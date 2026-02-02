@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/tooltips/crew_perks_additional_tooltip.py
 import typing
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
@@ -22,8 +24,7 @@ if typing.TYPE_CHECKING:
 class CrewPerksAdditionalTooltip(ViewImpl):
     _itemsCache = dependency.descriptor(IItemsCache)
     _wotPlusCtrl = dependency.descriptor(IWotPlusController)
-    __slots__ = ('_skillName', '_tankman', '_tankmanVehicle', '_skill', '_skillBooster',
-                 '_skillIdx', '_showCrewAssist')
+    __slots__ = ('_skillName', '_tankman', '_tankmanVehicle', '_skill', '_skillBooster', '_skillIdx', '_showCrewAssist')
 
     def __init__(self, skillName, skillRole, tankmanId=None, skillIdx=-1, showCrewAssist=False):
         settings = ViewSettings(R.views.lobby.crew.tooltips.CrewPerksAdditionalTooltip())
@@ -47,7 +48,7 @@ class CrewPerksAdditionalTooltip(ViewImpl):
         self._fillModel()
 
     def _fillModel(self):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             vm.setIconName(self._skill.extensionLessIconName)
             vm.setSkillType(self._skill.typeName)
             vm.setUserName(self._skill.userName)
@@ -90,9 +91,7 @@ class CrewPerksAdditionalTooltip(ViewImpl):
         if self._tankman is None:
             return
         else:
-            if self._tankman.isInTank:
-                return self._itemsCache.items.getVehicle(self._tankman.vehicleInvID)
-            return
+            return self._itemsCache.items.getVehicle(self._tankman.vehicleInvID) if self._tankman.isInTank else None
 
     def _getBoosterType(self):
         if self._skillBooster and not self._isIrrelevant():
@@ -102,6 +101,4 @@ class CrewPerksAdditionalTooltip(ViewImpl):
         return BoosterType.NONE
 
     def _isIrrelevant(self):
-        if not self._tankman:
-            return False
-        return not self._skill.isEnable or not self._skill.isRelevant
+        return False if not self._tankman else not self._skill.isEnable or not self._skill.isRelevant

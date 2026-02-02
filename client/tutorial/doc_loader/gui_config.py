@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/tutorial/doc_loader/gui_config.py
 from collections import namedtuple
 from operator import getitem
 import resource_helper
@@ -12,7 +14,7 @@ def readConfig(path, forced=False):
         return _cache[path]
     else:
         scenes, items, commands = (None, None, None)
-        with resource_helper.root_generator(path) as (ctx, root):
+        with resource_helper.root_generator(path) as ctx, root:
             scenes = _readConfig(ctx, root, 'scenes', 'scene', _SceneConfig)
             items = _readConfig(ctx, root, 'gui-items', 'item', _ItemConfig)
             commands = _readConfig(ctx, root, 'gui-commands', 'command', _CommandData)
@@ -91,22 +93,22 @@ class _ItemConfig(object):
 
     @staticmethod
     def _defaultPadding():
-        return {'left': 0, 
-           'top': 0, 
-           'right': 0, 
-           'bottom': 0}
+        return {'left': 0,
+         'top': 0,
+         'right': 0,
+         'bottom': 0}
 
     @staticmethod
     def _defaultAnimConfig():
-        return {'tween': {'flags': TWEEN_EFFECT_TYPES.ALPHA, 
-                     'delay': 0}, 
-           'clip': {'linkage': 'BCLobbySlotUI', 
-                    'offsetX': 0, 
-                    'offsetY': 0}, 
-           'overlay': {'x': 0, 
-                       'y': 0, 
-                       'width': 100, 
-                       'height': 100}}
+        return {'tween': {'flags': TWEEN_EFFECT_TYPES.ALPHA,
+                   'delay': 0},
+         'clip': {'linkage': 'BCLobbySlotUI',
+                  'offsetX': 0,
+                  'offsetY': 0},
+         'overlay': {'x': 0,
+                     'y': 0,
+                     'width': 100,
+                     'height': 100}}
 
 
 _SceneConfig = namedtuple('_SceneConfig', ('sceneID', 'event'))
@@ -131,35 +133,30 @@ class _TutorialConfig(object):
             return ''
 
     def getSceneEvent(self, sceneID):
-        scenes = dict((scene.sceneID, scene.event) for scene in self.__scenes.itervalues())
+        scenes = dict(((scene.sceneID, scene.event) for scene in self.__scenes.itervalues()))
         try:
             return scenes[sceneID]
         except KeyError:
             return ''
 
     def getItem(self, targetID):
-        if targetID in self.__guiItems:
-            return self.__guiItems[targetID]
-        else:
-            return
+        return self.__guiItems[targetID] if targetID in self.__guiItems else None
 
     def getItems(self):
         for itemID, item in self.__guiItems.iteritems():
-            yield (
-             itemID, item)
+            yield (itemID, item)
 
     def getCommand(self, commandID):
         try:
             return self.__commands[commandID]
         except KeyError:
-            return
+            return None
 
-        return
+        return None
 
     def getCommands(self):
         for commandID, command in self.__commands.iteritems():
-            yield (
-             commandID, command)
+            yield (commandID, command)
 
 
 _ITEM_TYPE = resource_helper.RESOURCE_ITEM_TYPE
@@ -173,7 +170,7 @@ def _readConfig(ctx, root, parentTag, childTag, itemClass):
         item = resource_helper.readItem(xmlCtx, subSection, childTag)
         name = item.name
         if name in config:
-            raise resource_helper.ResourceError(xmlCtx, ('Item {0} is duplicated.').format(name))
+            raise resource_helper.ResourceError(xmlCtx, 'Item {0} is duplicated.'.format(name))
         config[name] = itemClass(**item.value)
 
     return config

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/battle_matters/battle_matters_exchange_rewards.py
 from functools import partial
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
@@ -20,13 +22,9 @@ class BattleMattersExchangeRewards(FullScreenDialogBaseView):
 
     def _onLoading(self, vehicleName, vehicleUserName):
         super(BattleMattersExchangeRewards, self)._onLoading()
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setVehicleName(vehicleName)
             tx.setVehicleUserName(vehicleUserName)
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onConfirm, partial(self._setResult, DialogButtons.SUBMIT)),
-         (
-          self.viewModel.onClose, partial(self._setResult, DialogButtons.CANCEL)))
+        return ((self.viewModel.onConfirm, partial(self._setResult, DialogButtons.SUBMIT)), (self.viewModel.onClose, partial(self._setResult, DialogButtons.CANCEL)))

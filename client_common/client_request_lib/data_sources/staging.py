@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client_common/client_request_lib/data_sources/staging.py
 from itertools import groupby
 import json
 from urllib import urlencode
@@ -12,8 +14,7 @@ def _doResponse(callback, result, status_code, response_code):
 
 
 EXAMPLES = {}
-SUCCESS_STATUSES = [
- 200, 201, 304]
+SUCCESS_STATUSES = [200, 201, 304]
 
 def convert_data(data_mapping, paginated=False):
 
@@ -28,8 +29,7 @@ def convert_data(data_mapping, paginated=False):
                     if paginated:
                         listed_data = data.get('items', [])
                     if not isinstance(listed_data, list):
-                        listed_data = [
-                         listed_data]
+                        listed_data = [listed_data]
                     for portion in listed_data:
                         if field in portion:
                             portion[field] = converter(portion[field])
@@ -74,7 +74,7 @@ def translate_field_names(response, field_mapping, requested_fields=None):
                     inner_mapping[our.split('.', 1)[1]] = their.split('.', 1)[1]
                 else:
                     sibling_mapping[our] = their.split('.', 1)[1]
-            elif their in response:
+            if their in response:
                 result[our] = response[their]
 
         if key in response:
@@ -88,13 +88,12 @@ def translate_field_names(response, field_mapping, requested_fields=None):
 
 
 def generate_docstring_mapping(field_mapping):
-    result = [
-     '\n        .. list-table::\n            :widths: 50 50\n            :header-rows: 1\n\n            * - client_request_lib\n            - Backend\n    ']
+    result = ['\n        .. list-table::\n            :widths: 50 50\n            :header-rows: 1\n\n            * - client_request_lib\n            - Backend\n    ']
     for our, their in field_mapping.iteritems():
-        row = ('\n            * - ``{our}``\n            - ``{their}``\n        ').format(our=our, their=their)
+        row = '\n            * - ``{our}``\n            - ``{their}``\n        '.format(our=our, their=their)
         result.append(row)
 
-    return ('').join(result)
+    return ''.join(result)
 
 
 def mapped_fields(field_mapping, paginated=False, accept_fields_argument=True):
@@ -117,14 +116,12 @@ def mapped_fields(field_mapping, paginated=False, accept_fields_argument=True):
             def wrapped_callback(response, status_code, response_code):
                 if status_code in SUCCESS_STATUSES:
                     if paginated:
-                        new_response = {'items': [ translate_field_names(i, field_mapping, requested_fields=old_fields) for i in response['items']
-                                  ]}
+                        new_response = {'items': [ translate_field_names(i, field_mapping, requested_fields=old_fields) for i in response['items'] ]}
                         if kwargs.get('get_total_count'):
                             new_response['total'] = response['total']
                         response = new_response
                     elif isinstance(response, list):
-                        response = [ translate_field_names(i, field_mapping, requested_fields=old_fields) for i in response
-                                   ]
+                        response = [ translate_field_names(i, field_mapping, requested_fields=old_fields) for i in response ]
                     else:
                         response = translate_field_names(response, field_mapping, requested_fields=old_fields)
                 callback(response, status_code, response_code)
@@ -133,48 +130,47 @@ def mapped_fields(field_mapping, paginated=False, accept_fields_argument=True):
             return
 
         if wrapped.__doc__ is not None:
-            wrapped.__doc__ = ('\n\n').join([
-             wrapped.__doc__, generate_docstring_mapping(field_mapping)])
+            wrapped.__doc__ = '\n\n'.join([wrapped.__doc__, generate_docstring_mapping(field_mapping)])
         return wrapped
 
     return wrapper
 
 
 def get_clan_error(data):
-    error_map = {'DATA_ERROR': exceptions.BadRequest, 
-       'SPA_ERROR': exceptions.SpaError, 
-       'PERMISSION_DENIED': exceptions.PermissionDenied, 
-       'ACCOUNT_ALREADY_IN_CLAN': exceptions.AccountInClanError, 
-       'ACCOUNT_NOT_IN_CLAN': exceptions.AccountNotInClanError, 
-       'STRONGHOLD_NOT_FOUND': exceptions.StrongholdNotFoundError, 
-       'TOO_MANY_INVITES': exceptions.TooManyInvitesError, 
-       'WGCCFE_ERROR': exceptions.WgccfeError, 
-       'ACCOUNT_DOES_NOT_MEET_REQUIREMENTS': exceptions.AccountRequirementsError, 
-       'APPLICATION_DOES_NOT_EXIST': exceptions.ApplicationDoesNotExistError, 
-       'CLAN_ALREADY_DISBANDED': exceptions.ClanDisbandedError, 
-       'INVITE_IS_NOT_ACTIVE': exceptions.InviteIsNotActiveError, 
-       'CLAN_IS_FULL': exceptions.ClanIsFullError, 
-       'INVITE_DOES_NOT_EXIST': exceptions.InviteDoesNotExistError, 
-       'RECRUITING_POLICY_MISMATCH': exceptions.RecruitingPolicyError, 
-       'ACCOUNT_BANNED': exceptions.AccountBannedError, 
-       'TOO_MANY_APPLICATIONS': exceptions.TooManyApplicationsError, 
-       'APPLICATION_IS_NOT_ACTIVE': exceptions.ApplicationIsNotActiveError, 
-       'WGCCBE_ERROR': exceptions.WgccbeError, 
-       'CLAN_DOES_NOT_EXIST': exceptions.ClanDoesNotExistError, 
-       'UNKNOWN_ACCOUNT': exceptions.UnknownAccountError, 
-       'CLAN_IS_NOT_ACTIVE': exceptions.ClanIsNotActiveError}
+    error_map = {'DATA_ERROR': exceptions.BadRequest,
+     'SPA_ERROR': exceptions.SpaError,
+     'PERMISSION_DENIED': exceptions.PermissionDenied,
+     'ACCOUNT_ALREADY_IN_CLAN': exceptions.AccountInClanError,
+     'ACCOUNT_NOT_IN_CLAN': exceptions.AccountNotInClanError,
+     'STRONGHOLD_NOT_FOUND': exceptions.StrongholdNotFoundError,
+     'TOO_MANY_INVITES': exceptions.TooManyInvitesError,
+     'WGCCFE_ERROR': exceptions.WgccfeError,
+     'ACCOUNT_DOES_NOT_MEET_REQUIREMENTS': exceptions.AccountRequirementsError,
+     'APPLICATION_DOES_NOT_EXIST': exceptions.ApplicationDoesNotExistError,
+     'CLAN_ALREADY_DISBANDED': exceptions.ClanDisbandedError,
+     'INVITE_IS_NOT_ACTIVE': exceptions.InviteIsNotActiveError,
+     'CLAN_IS_FULL': exceptions.ClanIsFullError,
+     'INVITE_DOES_NOT_EXIST': exceptions.InviteDoesNotExistError,
+     'RECRUITING_POLICY_MISMATCH': exceptions.RecruitingPolicyError,
+     'ACCOUNT_BANNED': exceptions.AccountBannedError,
+     'TOO_MANY_APPLICATIONS': exceptions.TooManyApplicationsError,
+     'APPLICATION_IS_NOT_ACTIVE': exceptions.ApplicationIsNotActiveError,
+     'WGCCBE_ERROR': exceptions.WgccbeError,
+     'CLAN_DOES_NOT_EXIST': exceptions.ClanDoesNotExistError,
+     'UNKNOWN_ACCOUNT': exceptions.UnknownAccountError,
+     'CLAN_IS_NOT_ACTIVE': exceptions.ClanIsNotActiveError}
     error_key = data and data['title']
     return error_map.get(error_key, exceptions.WgccbeError)
 
 
 def get_stronghold_error(data):
-    error_map = {'VALIDATION_ERROR': exceptions.BadRequest, 
-       'SPA_ACCOUNT_DOES_NOT_EXIST': exceptions.UnknownAccountError, 
-       'SPA_ERROR': exceptions.SpaError, 
-       'CLAN_DOES_NOT_EXIST': exceptions.ClanDoesNotExistError, 
-       'BE_ERROR': exceptions.WgccbeError, 
-       'CLAN_IS_DISBANDED': exceptions.ClanDisbandedError, 
-       'STRONGHOLD_NOT_FOUND': exceptions.StrongholdNotFoundError}
+    error_map = {'VALIDATION_ERROR': exceptions.BadRequest,
+     'SPA_ACCOUNT_DOES_NOT_EXIST': exceptions.UnknownAccountError,
+     'SPA_ERROR': exceptions.SpaError,
+     'CLAN_DOES_NOT_EXIST': exceptions.ClanDoesNotExistError,
+     'BE_ERROR': exceptions.WgccbeError,
+     'CLAN_IS_DISBANDED': exceptions.ClanDisbandedError,
+     'STRONGHOLD_NOT_FOUND': exceptions.StrongholdNotFoundError}
     error_key = data and data['error']
     return error_map.get(error_key, exceptions.WgccfeError)
 
@@ -189,9 +185,7 @@ def get_global_map_error(data):
 
 def get_exporter_error(data):
     error = 'Ensure each value is less than or equal to 9223372036854775807.'
-    if data and error in data.get('account_ids', []):
-        return exceptions.BadRequest
-    return exceptions.ExporterError
+    return exceptions.BadRequest if data and error in data.get('account_ids', []) else exceptions.ExporterError
 
 
 def get_ratings_error(data):
@@ -202,13 +196,13 @@ def get_wgsh_error(data):
     return exceptions.WgshError
 
 
-ERROR_MAP = {'ratings': get_ratings_error, 
-   'exporter': get_exporter_error, 
-   'global_map': get_global_map_error, 
-   'clans': get_clan_error, 
-   'spa': get_spa_error, 
-   'strongholds': get_stronghold_error, 
-   'wgsh': get_wgsh_error}
+ERROR_MAP = {'ratings': get_ratings_error,
+ 'exporter': get_exporter_error,
+ 'global_map': get_global_map_error,
+ 'clans': get_clan_error,
+ 'spa': get_spa_error,
+ 'strongholds': get_stronghold_error,
+ 'wgsh': get_wgsh_error}
 
 def preprocess_callback(callback, service):
 
@@ -271,36 +265,37 @@ class StagingDataAccessor(base.BaseDataAccessor):
 
     def _request_data(self, callback, service, url, method='GET', postData=None):
         service_host = self.staging_hosts[service].strip('/')
-        url = ('/').join([service_host] + url.strip('/').split('/'))
+        url = '/'.join([service_host] + url.strip('/').split('/'))
         if '?' not in url:
             url = url + '/'
-        args = [
-         None, 30.0, method]
+        args = [None, 30.0, method]
         if postData:
             args.append(json.dumps(postData))
         self.url_fetcher(url, callback, *args)
         return
 
-    @mapped_fields({'efficiency': 'efficiency', 
-       'clan_id': 'clan_id', 'battles_count_avg': 'battles_count_avg', 
-       'wins_ratio_avg': 'wins_ratio_avg', 
-       'xp_avg': 'xp_avg', 'gm_elo_rating_6': 'gm_elo_rating_6', 
-       'gm_elo_rating_8': 'gm_elo_rating_8', 
-       'gm_elo_rating_10': 'gm_elo_rating_10', 
-       'gm_elo_rating_6_rank': 'gm_elo_rating_6_rank', 
-       'gm_elo_rating_8_rank': 'gm_elo_rating_8_rank', 
-       'gm_elo_rating_10_rank': 'gm_elo_rating_10_rank', 
-       'fb_elo_rating_8': 'fb_elo_rating_8', 
-       'fb_elo_rating_10': 'fb_elo_rating_10', 
-       'fb_battles_count_10_28d': 'fb_battles_count_10_28d', 
-       'fs_battles_count_10_28d': 'fs_battles_count_10_28d', 
-       'gm_battles_count_28d': 'gm_battles_count_28d', 
-       'fs_battles_count_28d': 'fs_battles_count_28d', 
-       'fb_battles_count_28d': 'fb_battles_count_28d'})
+    @mapped_fields({'efficiency': 'efficiency',
+     'clan_id': 'clan_id',
+     'battles_count_avg': 'battles_count_avg',
+     'wins_ratio_avg': 'wins_ratio_avg',
+     'xp_avg': 'xp_avg',
+     'gm_elo_rating_6': 'gm_elo_rating_6',
+     'gm_elo_rating_8': 'gm_elo_rating_8',
+     'gm_elo_rating_10': 'gm_elo_rating_10',
+     'gm_elo_rating_6_rank': 'gm_elo_rating_6_rank',
+     'gm_elo_rating_8_rank': 'gm_elo_rating_8_rank',
+     'gm_elo_rating_10_rank': 'gm_elo_rating_10_rank',
+     'fb_elo_rating_8': 'fb_elo_rating_8',
+     'fb_elo_rating_10': 'fb_elo_rating_10',
+     'fb_battles_count_10_28d': 'fb_battles_count_10_28d',
+     'fs_battles_count_10_28d': 'fs_battles_count_10_28d',
+     'gm_battles_count_28d': 'gm_battles_count_28d',
+     'fs_battles_count_28d': 'fs_battles_count_28d',
+     'fb_battles_count_28d': 'fb_battles_count_28d'})
     def get_clans_ratings(self, callback, clan_ids, fields=None):
-        get_params = {'project': 'api', 
-           'fields': (',').join(fields), 
-           'ids': (',').join(map(str, clan_ids))}
+        get_params = {'project': 'api',
+         'fields': ','.join(fields),
+         'ids': ','.join(map(str, clan_ids))}
         url = 'api/wot/clans/bulks/?%s' % urlencode(get_params)
 
         @preprocess_callback(callback, 'ratings')
@@ -310,13 +305,18 @@ class StagingDataAccessor(base.BaseDataAccessor):
         return self._request_data(inner_callback, 'ratings', url)
 
     @convert_data({'created_at': from_iso})
-    @mapped_fields({'name': 'name', 
-       'tag': 'tag', 'motto': 'motto', 'leader_id': 'leader_id', 
-       'members_count': 'members_count', 'created_at': 'created_at', 
-       'clan_id': 'id', 'treasury': 'treasury', 'accepts_join_requests': 'accepts_join_requests'})
+    @mapped_fields({'name': 'name',
+     'tag': 'tag',
+     'motto': 'motto',
+     'leader_id': 'leader_id',
+     'members_count': 'members_count',
+     'created_at': 'created_at',
+     'clan_id': 'id',
+     'treasury': 'treasury',
+     'accepts_join_requests': 'accepts_join_requests'})
     def get_clans_info(self, callback, clan_ids, fields=None):
-        get_params = {'ids': (',').join(map(str, clan_ids)), 
-           'fields': (',').join(fields)}
+        get_params = {'ids': ','.join(map(str, clan_ids)),
+         'fields': ','.join(fields)}
         url = '/clans/?%s' % urlencode(get_params)
 
         @preprocess_callback(callback, 'clans')
@@ -325,49 +325,52 @@ class StagingDataAccessor(base.BaseDataAccessor):
 
         return self._request_data(inner_callback, 'clans', url)
 
-    @mapped_fields({'id': 'id', 'name': 'name'})
+    @mapped_fields({'id': 'id',
+     'name': 'name'})
     def get_accounts_names(self, callback, account_ids, fields=None):
         get_params = {'id': account_ids}
         url = '/spa/accounts/names/?%s' % urlencode(get_params, doseq=True)
 
         @preprocess_callback(callback, 'spa')
         def inner_callback(data):
-            return [ {'id': k, 'name': v} for k, v in data.iteritems() ]
+            return [ {'id': k,
+             'name': v} for k, v in data.iteritems() ]
 
         return self._request_data(inner_callback, 'spa', url)
 
     @convert_data({'joined_at': from_iso})
-    @mapped_fields({'account_id': 'id', 
-       'joined_at': 'joined_at', 
-       'clan_id': 'clan_id', 
-       'role_bw_flag': 'role.bw_flag', 
-       'role_name': 'role.name'})
+    @mapped_fields({'account_id': 'id',
+     'joined_at': 'joined_at',
+     'clan_id': 'clan_id',
+     'role_bw_flag': 'role.bw_flag',
+     'role_name': 'role.name'})
     def get_clan_members(self, callback, clan_id, fields=None):
-        get_params = {'fields': (',').join(fields)}
+        get_params = {'fields': ','.join(fields)}
         url = '/clans/%s/members?%s' % (clan_id, urlencode(get_params))
         return self._request_data(preprocess_callback(callback, 'clans'), 'clans', url)
 
     @convert_data({'favorite_primetime': lambda x: x and datetime.strptime(x, '%H:%M').time()})
-    @mapped_fields({'favorite_arena_6': 'favorite_arena_6', 
-       'favorite_arena_8': 'favorite_arena_8', 
-       'favorite_arena_10': 'favorite_arena_10', 
-       'clan_id': 'clan_id', 
-       'favorite_primetime': 'favorite_primetime'})
+    @mapped_fields({'favorite_arena_6': 'favorite_arena_6',
+     'favorite_arena_8': 'favorite_arena_8',
+     'favorite_arena_10': 'favorite_arena_10',
+     'clan_id': 'clan_id',
+     'favorite_primetime': 'favorite_primetime'})
     def get_clan_favorite_attributes(self, callback, clan_id, fields=None):
         get_params = {'clan_id': clan_id}
         url = '/gm/clans/favorite_attributes/?%s' % urlencode(get_params)
         return self._request_data(preprocess_callback(callback, 'clans'), 'clans', url)
 
-    @convert_data({'joined_at': from_iso, 'in_clan_cooldown_till': from_iso})
-    @mapped_fields({'account_id': 'id', 
-       'joined_at': 'joined_at', 
-       'clan_id': 'clan_id', 
-       'role_bw_flag': 'role.bw_flag', 
-       'role_name': 'role.name', 
-       'in_clan_cooldown_till': 'in_clan_cooldown_till'})
+    @convert_data({'joined_at': from_iso,
+     'in_clan_cooldown_till': from_iso})
+    @mapped_fields({'account_id': 'id',
+     'joined_at': 'joined_at',
+     'clan_id': 'clan_id',
+     'role_bw_flag': 'role.bw_flag',
+     'role_name': 'role.name',
+     'in_clan_cooldown_till': 'in_clan_cooldown_till'})
     def get_accounts_clans(self, callback, account_ids, fields=None):
-        get_params = {'fields': (',').join(fields), 
-           'ids': (',').join(map(str, account_ids))}
+        get_params = {'fields': ','.join(fields),
+         'ids': ','.join(map(str, account_ids))}
         url = '/accounts/?%s' % urlencode(get_params)
 
         @preprocess_callback(callback, 'clans')
@@ -378,66 +381,80 @@ class StagingDataAccessor(base.BaseDataAccessor):
 
     @mapped_fields({'total': 'total'}, accept_fields_argument=False)
     def get_account_applications_count_since(self, callback, account_id, since=None):
-        get_params = {'fields': 'id', 
-           'account_id': account_id, 
-           'created_after': since.isoformat()}
+        get_params = {'fields': 'id',
+         'account_id': account_id,
+         'created_after': since.isoformat()}
         url = '/applications/?%s' % urlencode(get_params)
         return self._request_data(preprocess_callback(callback, 'clans'), 'clans', url)
 
     @mapped_fields({'total': 'total'}, accept_fields_argument=False)
     def get_clan_invites_count_since(self, callback, clan_id, since=None):
-        get_params = {'fields': 'id', 
-           'clan_id': clan_id, 
-           'created_after': since.isoformat()}
+        get_params = {'fields': 'id',
+         'clan_id': clan_id,
+         'created_after': since.isoformat()}
         url = '/invites/?%s' % urlencode(get_params)
         return self._request_data(preprocess_callback(callback, 'clans'), 'clans', url)
 
-    @convert_data({'created_at': from_iso, 'updated_at': from_iso}, paginated=True)
-    @mapped_fields({'status': 'status', 
-       'created_at': 'created_at', 
-       'updated_at': 'updated_at', 
-       'sender_id': 'sender_id', 
-       'id': 'id', 
-       'account_id': 'account_id', 
-       'clan_id': 'clan_id', 
-       'comment': 'data.comment', 
-       'status_changer_id': 'data.status_changer_id'}, paginated=True)
+    @convert_data({'created_at': from_iso,
+     'updated_at': from_iso}, paginated=True)
+    @mapped_fields({'status': 'status',
+     'created_at': 'created_at',
+     'updated_at': 'updated_at',
+     'sender_id': 'sender_id',
+     'id': 'id',
+     'account_id': 'account_id',
+     'clan_id': 'clan_id',
+     'comment': 'data.comment',
+     'status_changer_id': 'data.status_changer_id'}, paginated=True)
     def get_account_applications(self, callback, fields=None, statuses=None, get_total_count=False, limit=18, offset=0):
-        statuses = statuses or ['active', 'declined', 'accepted', 'expired', 'error', 'deleted']
-        get_params = {'fields': (',').join(fields), 
-           'account_id': self._account, 
-           'statuses': (',').join(statuses), 
-           'limit': limit, 
-           'offset': offset}
+        statuses = statuses or ['active',
+         'declined',
+         'accepted',
+         'expired',
+         'error',
+         'deleted']
+        get_params = {'fields': ','.join(fields),
+         'account_id': self._account,
+         'statuses': ','.join(statuses),
+         'limit': limit,
+         'offset': offset}
         url = '/applications/?%s' % urlencode(get_params)
         return self._request_data(preprocess_callback(callback, 'clans'), 'clans', url)
 
-    @convert_data({'created_at': from_iso, 'updated_at': from_iso}, paginated=True)
-    @mapped_fields({'status': 'status', 
-       'created_at': 'created_at', 
-       'updated_at': 'updated_at', 
-       'sender_id': 'sender_id', 
-       'id': 'id', 
-       'account_id': 'account_id', 
-       'clan_id': 'clan_id', 
-       'comment': 'data.comment', 
-       'status_changer_id': 'data.status_changer_id'}, paginated=True)
+    @convert_data({'created_at': from_iso,
+     'updated_at': from_iso}, paginated=True)
+    @mapped_fields({'status': 'status',
+     'created_at': 'created_at',
+     'updated_at': 'updated_at',
+     'sender_id': 'sender_id',
+     'id': 'id',
+     'account_id': 'account_id',
+     'clan_id': 'clan_id',
+     'comment': 'data.comment',
+     'status_changer_id': 'data.status_changer_id'}, paginated=True)
     def get_clan_applications(self, callback, clan_id, fields=None, statuses=None, get_total_count=False, limit=18, offset=0):
-        statuses = statuses or ['active', 'declined', 'accepted', 'expired', 'error', 'deleted']
-        get_params = {'fields': (',').join(fields), 
-           'clan_id': clan_id, 
-           'statuses': (',').join(statuses), 
-           'limit': limit, 
-           'offset': offset}
+        statuses = statuses or ['active',
+         'declined',
+         'accepted',
+         'expired',
+         'error',
+         'deleted']
+        get_params = {'fields': ','.join(fields),
+         'clan_id': clan_id,
+         'statuses': ','.join(statuses),
+         'limit': limit,
+         'offset': offset}
         url = '/applications/?%s' % urlencode(get_params)
         return self._request_data(preprocess_callback(callback, 'clans'), 'clans', url)
 
-    @mapped_fields({'clan_id': 'clan_id', 'id': 'id', 'account_id': 'account_id'})
+    @mapped_fields({'clan_id': 'clan_id',
+     'id': 'id',
+     'account_id': 'account_id'})
     def create_applications(self, callback, clan_ids, comment, fields=None):
         url = '/applications/'
-        data = {'account_id': self._account, 
-           'clan_ids': clan_ids, 
-           'comment': comment}
+        data = {'account_id': self._account,
+         'clan_ids': clan_ids,
+         'comment': comment}
 
         @preprocess_callback(callback, 'clans')
         def inner_callback(data):
@@ -445,13 +462,14 @@ class StagingDataAccessor(base.BaseDataAccessor):
 
         return self._request_data(inner_callback, 'clans', url, method='POST', postData=data)
 
-    @mapped_fields({'transaction_id': 'transaction_id', 
-       'id': 'id', 
-       'account_id': 'account_id', 
-       'clan_id': 'clan_id'})
+    @mapped_fields({'transaction_id': 'transaction_id',
+     'id': 'id',
+     'account_id': 'account_id',
+     'clan_id': 'clan_id'})
     def accept_application(self, callback, application_id, fields=None):
         url = '/applications/%s/' % application_id
-        data = {'initiator_id': self._account, 'status': 'accepted'}
+        data = {'initiator_id': self._account,
+         'status': 'accepted'}
 
         @preprocess_callback(callback, 'clans')
         def inner_callback(data):
@@ -462,13 +480,14 @@ class StagingDataAccessor(base.BaseDataAccessor):
 
         return self._request_data(inner_callback, 'clans', url, method='PATCH', postData=data)
 
-    @mapped_fields({'transaction_id': 'transaction_id', 
-       'id': 'id', 
-       'account_id': 'account_id', 
-       'clan_id': 'clan_id'})
+    @mapped_fields({'transaction_id': 'transaction_id',
+     'id': 'id',
+     'account_id': 'account_id',
+     'clan_id': 'clan_id'})
     def decline_application(self, callback, application_id, fields=None):
         url = '/applications/%s/' % application_id
-        data = {'initiator_id': self._account, 'status': 'declined'}
+        data = {'initiator_id': self._account,
+         'status': 'declined'}
 
         @preprocess_callback(callback, 'clans')
         def inner_callback(data):
@@ -478,13 +497,15 @@ class StagingDataAccessor(base.BaseDataAccessor):
 
         return self._request_data(inner_callback, 'clans', url, method='PATCH', postData=data)
 
-    @mapped_fields({'clan_id': 'clan_id', 'id': 'id', 'account_id': 'account_id'})
+    @mapped_fields({'clan_id': 'clan_id',
+     'id': 'id',
+     'account_id': 'account_id'})
     def create_invites(self, callback, clan_id, account_ids, comment, fields=None):
         url = '/invites/'
-        data = {'initiator_id': self._account, 
-           'clan_id': clan_id, 
-           'account_ids': account_ids, 
-           'comment': comment}
+        data = {'initiator_id': self._account,
+         'clan_id': clan_id,
+         'account_ids': account_ids,
+         'comment': comment}
 
         @preprocess_callback(callback, 'clans')
         def inner_callback(data):
@@ -492,13 +513,14 @@ class StagingDataAccessor(base.BaseDataAccessor):
 
         return self._request_data(inner_callback, 'clans', url, method='POST', postData=data)
 
-    @mapped_fields({'transaction_id': 'transaction_id', 
-       'id': 'id', 
-       'account_id': 'account_id', 
-       'clan_id': 'clan_id'})
+    @mapped_fields({'transaction_id': 'transaction_id',
+     'id': 'id',
+     'account_id': 'account_id',
+     'clan_id': 'clan_id'})
     def accept_invite(self, callback, invite_id, fields=None):
         url = '/invites/%s/' % invite_id
-        data = {'initiator_id': self._account, 'status': 'accepted'}
+        data = {'initiator_id': self._account,
+         'status': 'accepted'}
 
         @preprocess_callback(callback, 'clans')
         def inner_callback(data):
@@ -509,13 +531,14 @@ class StagingDataAccessor(base.BaseDataAccessor):
 
         return self._request_data(inner_callback, 'clans', url, method='PATCH', postData=data)
 
-    @mapped_fields({'transaction_id': 'transaction_id', 
-       'id': 'id', 
-       'account_id': 'account_id', 
-       'clan_id': 'clan_id'})
+    @mapped_fields({'transaction_id': 'transaction_id',
+     'id': 'id',
+     'account_id': 'account_id',
+     'clan_id': 'clan_id'})
     def decline_invite(self, callback, invite_id, fields=None):
         url = '/invites/%s/' % invite_id
-        data = {'initiator_id': self._account, 'status': 'declined'}
+        data = {'initiator_id': self._account,
+         'status': 'declined'}
 
         @preprocess_callback(callback, 'clans')
         def inner_callback(data):
@@ -525,10 +548,14 @@ class StagingDataAccessor(base.BaseDataAccessor):
 
         return self._request_data(inner_callback, 'clans', url, method='PATCH', postData=data)
 
-    @mapped_fields({'id': 'id', 'clan_id': 'clan_id', 'account_id': 'account_id'})
+    @mapped_fields({'id': 'id',
+     'clan_id': 'clan_id',
+     'account_id': 'account_id'})
     def bulk_decline_invites(self, callback, invite_ids, fields=None):
         url = '/invites/'
-        data = {'initiator_id': self._account, 'status': 'declined', 'ids': invite_ids}
+        data = {'initiator_id': self._account,
+         'status': 'declined',
+         'ids': invite_ids}
 
         @preprocess_callback(callback, 'clans')
         def inner_callback(data):
@@ -538,84 +565,106 @@ class StagingDataAccessor(base.BaseDataAccessor):
         return self._request_data(inner_callback, 'clans', url, method='PATCH', postData=data)
 
     @convert_data({'created_at': from_iso}, paginated=True)
-    @mapped_fields({'name': 'name', 
-       'tag': 'tag', 'motto': 'motto', 'leader_id': 'leader_id', 
-       'members_count': 'members_count', 'created_at': 'created_at', 
-       'clan_id': 'id', 'treasury': 'treasury', 'accepts_join_requests': 'accepts_join_requests'}, paginated=True)
+    @mapped_fields({'name': 'name',
+     'tag': 'tag',
+     'motto': 'motto',
+     'leader_id': 'leader_id',
+     'members_count': 'members_count',
+     'created_at': 'created_at',
+     'clan_id': 'id',
+     'treasury': 'treasury',
+     'accepts_join_requests': 'accepts_join_requests'}, paginated=True)
     def search_clans(self, callback, search, get_total_count=False, fields=None, offset=0, limit=18):
-        get_params = {'search': search, 
-           'game': 'wot', 
-           'fields': (',').join(fields), 
-           'limit': limit, 
-           'offset': offset}
+        get_params = {'search': search,
+         'game': 'wot',
+         'fields': ','.join(fields),
+         'limit': limit,
+         'offset': offset}
         url = '/clans/search/?%s' % urlencode(get_params)
         return self._request_data(preprocess_callback(callback, 'clans'), 'clans', url)
 
     @convert_data({'created_at': from_iso}, paginated=True)
-    @mapped_fields({'name': 'name', 
-       'tag': 'tag', 'motto': 'motto', 'leader_id': 'leader_id', 
-       'members_count': 'members_count', 'created_at': 'created_at', 
-       'clan_id': 'id', 'treasury': 'treasury', 'accepts_join_requests': 'accepts_join_requests'}, paginated=True)
+    @mapped_fields({'name': 'name',
+     'tag': 'tag',
+     'motto': 'motto',
+     'leader_id': 'leader_id',
+     'members_count': 'members_count',
+     'created_at': 'created_at',
+     'clan_id': 'id',
+     'treasury': 'treasury',
+     'accepts_join_requests': 'accepts_join_requests'}, paginated=True)
     def get_recommended_clans(self, callback, get_total_count=False, fields=None, offset=0, limit=18):
-        get_params = {'game': 'wot', 
-           'fields': (',').join(fields), 
-           'limit': limit, 
-           'offset': offset}
+        get_params = {'game': 'wot',
+         'fields': ','.join(fields),
+         'limit': limit,
+         'offset': offset}
         url = '/clans/?%s' % urlencode(get_params)
         return self._request_data(preprocess_callback(callback, 'clans'), 'clans', url)
 
-    @convert_data({'created_at': from_iso, 'updated_at': from_iso}, paginated=True)
-    @mapped_fields({'status': 'status', 
-       'created_at': 'created_at', 
-       'updated_at': 'updated_at', 
-       'sender_id': 'sender_id', 
-       'id': 'id', 
-       'account_id': 'account_id', 
-       'clan_id': 'clan_id', 
-       'comment': 'data.comment', 
-       'status_changer_id': 'data.status_changer_id'}, paginated=True)
+    @convert_data({'created_at': from_iso,
+     'updated_at': from_iso}, paginated=True)
+    @mapped_fields({'status': 'status',
+     'created_at': 'created_at',
+     'updated_at': 'updated_at',
+     'sender_id': 'sender_id',
+     'id': 'id',
+     'account_id': 'account_id',
+     'clan_id': 'clan_id',
+     'comment': 'data.comment',
+     'status_changer_id': 'data.status_changer_id'}, paginated=True)
     def get_clan_invites(self, callback, clan_id, fields=None, statuses=None, get_total_count=False, limit=18, offset=0):
-        statuses = statuses or ['active', 'declined', 'accepted', 'expired', 'error', 'deleted']
-        get_params = {'fields': (',').join(fields), 
-           'clan_id': clan_id, 
-           'statuses': (',').join(statuses), 
-           'limit': limit, 
-           'offset': offset}
+        statuses = statuses or ['active',
+         'declined',
+         'accepted',
+         'expired',
+         'error',
+         'deleted']
+        get_params = {'fields': ','.join(fields),
+         'clan_id': clan_id,
+         'statuses': ','.join(statuses),
+         'limit': limit,
+         'offset': offset}
         url = '/invites/?%s' % urlencode(get_params)
         return self._request_data(preprocess_callback(callback, 'clans'), 'clans', url)
 
-    @convert_data({'created_at': from_iso, 'updated_at': from_iso}, paginated=True)
-    @mapped_fields({'status': 'status', 
-       'created_at': 'created_at', 
-       'updated_at': 'updated_at', 
-       'sender_id': 'sender_id', 
-       'id': 'id', 
-       'account_id': 'account_id', 
-       'clan_id': 'clan_id', 
-       'comment': 'data.comment', 
-       'status_changer_id': 'data.status_changer_id'}, paginated=True)
+    @convert_data({'created_at': from_iso,
+     'updated_at': from_iso}, paginated=True)
+    @mapped_fields({'status': 'status',
+     'created_at': 'created_at',
+     'updated_at': 'updated_at',
+     'sender_id': 'sender_id',
+     'id': 'id',
+     'account_id': 'account_id',
+     'clan_id': 'clan_id',
+     'comment': 'data.comment',
+     'status_changer_id': 'data.status_changer_id'}, paginated=True)
     def get_account_invites(self, callback, fields=None, statuses=None, get_total_count=False, limit=18, offset=0):
-        statuses = statuses or ['active', 'declined', 'accepted', 'expired', 'error', 'deleted']
-        get_params = {'fields': (',').join(fields), 
-           'account_id': self._account, 
-           'statuses': (',').join(statuses), 
-           'limit': limit, 
-           'offset': offset}
+        statuses = statuses or ['active',
+         'declined',
+         'accepted',
+         'expired',
+         'error',
+         'deleted']
+        get_params = {'fields': ','.join(fields),
+         'account_id': self._account,
+         'statuses': ','.join(statuses),
+         'limit': limit,
+         'offset': offset}
         url = '/invites/?%s' % urlencode(get_params)
         return self._request_data(preprocess_callback(callback, 'clans'), 'clans', url)
 
-    @mapped_fields({'global_rating': 'summary.global_rating', 
-       'battle_avg_xp': 'summary.battle_avg_xp', 
-       'battles_count': 'summary.battles_count', 
-       'battle_avg_performance': 'summary.battle_avg_performance', 
-       'xp_amount': 'summary.xp_amount', 
-       'account_id': 'account_id'})
+    @mapped_fields({'global_rating': 'summary.global_rating',
+     'battle_avg_xp': 'summary.battle_avg_xp',
+     'battles_count': 'summary.battles_count',
+     'battle_avg_performance': 'summary.battle_avg_performance',
+     'xp_amount': 'summary.xp_amount',
+     'account_id': 'account_id'})
     def get_accounts_info(self, callback, account_ids, fields=None):
         fields = [ i.split('.', 1) for i in fields if i != 'account_id' ]
         grouped = groupby(sorted(fields), key=lambda x: x[0])
-        sections = [ '%s[%s]' % (k, (',').join([ j[1] for j in v ])) for k, v in grouped ]
-        get_params = {'account_ids': (',').join(map(str, account_ids)), 
-           'sections': (',').join(sections)}
+        sections = [ '%s[%s]' % (k, ','.join([ j[1] for j in v ])) for k, v in grouped ]
+        get_params = {'account_ids': ','.join(map(str, account_ids)),
+         'sections': ','.join(sections)}
         url = '/wot/accounts/?%s' % urlencode(get_params)
 
         @preprocess_callback(callback, 'exporter')
@@ -629,23 +678,23 @@ class StagingDataAccessor(base.BaseDataAccessor):
 
         return self._request_data(inner_callback, 'exporter', url)
 
-    @convert_data({'pillage_end_datetime': from_iso, 
-       'prime_time': lambda x: x and datetime.strptime(x, '%H:%M').time()})
-    @mapped_fields({'front_name': 'frontname', 
-       'province_id': 'province_id', 
-       'front_name_localized': 'frontname_localized', 
-       'province_id_localized': 'province_id_localized', 
-       'revenue': 'daily_revenue', 
-       'hq_connected': 'hq_connected', 
-       'prime_time': 'primetime', 
-       'game_map': 'game_map', 
-       'periphery': 'periphery_id', 
-       'turns_owned': 'turns_owned', 
-       'pillage_cooldown': 'pillage_cooldown', 
-       'pillage_end_datetime': 'pillage_end_datetime', 
-       'arena_id': 'arena_id'})
+    @convert_data({'pillage_end_datetime': from_iso,
+     'prime_time': lambda x: x and datetime.strptime(x, '%H:%M').time()})
+    @mapped_fields({'front_name': 'frontname',
+     'province_id': 'province_id',
+     'front_name_localized': 'frontname_localized',
+     'province_id_localized': 'province_id_localized',
+     'revenue': 'daily_revenue',
+     'hq_connected': 'hq_connected',
+     'prime_time': 'primetime',
+     'game_map': 'game_map',
+     'periphery': 'periphery_id',
+     'turns_owned': 'turns_owned',
+     'pillage_cooldown': 'pillage_cooldown',
+     'pillage_end_datetime': 'pillage_end_datetime',
+     'arena_id': 'arena_id'})
     def get_clan_provinces(self, callback, clan_id, fields=None):
-        get_params = {'clans': (',').join(map(str, [clan_id]))}
+        get_params = {'clans': ','.join(map(str, [clan_id]))}
         url = '/clans/provinces/?%s' % urlencode(get_params)
 
         @preprocess_callback(callback, 'global_map')
@@ -659,20 +708,20 @@ class StagingDataAccessor(base.BaseDataAccessor):
 
         return self._request_data(inner_callback, 'global_map', url)
 
-    @mapped_fields({'battles_lost': 'battles_lost', 
-       'battles_played': 'battles_played', 
-       'battles_played_on_10_level': 'battles_played_on_10_level', 
-       'battles_played_on_6_level': 'battles_played_on_6_level', 
-       'battles_played_on_8_level': 'battles_played_on_8_level', 
-       'battles_won': 'battles_won', 
-       'battles_won_on_10_level': 'battles_won_on_10_level', 
-       'battles_won_on_6_level': 'battles_won_on_6_level', 
-       'battles_won_on_8_level': 'battles_won_on_8_level', 
-       'influence_points': 'influence_points', 
-       'provinces_captured': 'provinces_captured', 
-       'provinces_count': 'provinces_count'})
+    @mapped_fields({'battles_lost': 'battles_lost',
+     'battles_played': 'battles_played',
+     'battles_played_on_10_level': 'battles_played_on_10_level',
+     'battles_played_on_6_level': 'battles_played_on_6_level',
+     'battles_played_on_8_level': 'battles_played_on_8_level',
+     'battles_won': 'battles_won',
+     'battles_won_on_10_level': 'battles_won_on_10_level',
+     'battles_won_on_6_level': 'battles_won_on_6_level',
+     'battles_won_on_8_level': 'battles_won_on_8_level',
+     'influence_points': 'influence_points',
+     'provinces_captured': 'provinces_captured',
+     'provinces_count': 'provinces_count'})
     def get_clan_globalmap_stats(self, callback, clan_id, fields=None):
-        get_params = {'clans': (',').join(map(str, [clan_id]))}
+        get_params = {'clans': ','.join(map(str, [clan_id]))}
         url = '/clans/stats?%s' % urlencode(get_params)
 
         @preprocess_callback(callback, 'global_map')
@@ -681,10 +730,10 @@ class StagingDataAccessor(base.BaseDataAccessor):
 
         return self._request_data(inner_callback, 'global_map', url)
 
-    @mapped_fields({'front_name': 'id', 
-       'front_name_localized': 'id_localized', 
-       'min_vehicle_level': 'min_vehicle_level', 
-       'max_vehicle_level': 'max_vehicle_level'})
+    @mapped_fields({'front_name': 'id',
+     'front_name_localized': 'id_localized',
+     'min_vehicle_level': 'min_vehicle_level',
+     'max_vehicle_level': 'max_vehicle_level'})
     def get_fronts_info(self, callback, front_names=None, fields=None):
         url = '/fronts/'
 
@@ -699,38 +748,38 @@ class StagingDataAccessor(base.BaseDataAccessor):
         return self._request_data(inner_callback, 'global_map', url)
 
     @convert_data({'defence_hour': lambda x: dt_time(x, 0) if x >= 0 else None})
-    @mapped_fields({'buildings.direction': 'buildings.direction', 
-       'buildings.type': 'buildings.type', 
-       'buildings.level': 'buildings.level', 
-       'buildings.position': 'buildings.position', 
-       'defence_attack_efficiency': 'defence_attack_efficiency', 
-       'defence_battles_count': 'defence_battles_count', 
-       'defence_capture_enemy_building_total_count': 'defence_capture_enemy_building_total_count', 
-       'defence_combat_wins': 'defence_combat_wins', 
-       'defence_defence_efficiency': 'defence_defence_efficiency', 
-       'defence_enemy_base_capture_count': 'defence_enemy_base_capture_count', 
-       'defence_loss_own_building_total_count': 'defence_loss_own_building_total_count', 
-       'defence_resource_capture_count': 'defence_resource_capture_count', 
-       'defence_resource_loss_count': 'defence_resource_loss_count', 
-       'sortie_absolute_battles_count': 'sortie_absolute_battles_count', 
-       'sortie_battles_count': 'sortie_battles_count', 
-       'sortie_champion_battles_count': 'sortie_champion_battles_count', 
-       'sortie_middle_battles_count': 'sortie_middle_battles_count', 
-       'defence_attack_count': 'defence_attack_count', 
-       'defence_defence_count': 'defence_defence_count', 
-       'defence_success_attack_count': 'defence_success_attack_count', 
-       'defence_success_defence_count': 'defence_success_defence_count', 
-       'sortie_fort_resource_in_absolute': 'sortie_fort_resource_in_absolute', 
-       'sortie_fort_resource_in_champion': 'sortie_fort_resource_in_champion', 
-       'sortie_fort_resource_in_middle': 'sortie_fort_resource_in_middle', 
-       'sortie_losses': 'sortie_losses', 
-       'sortie_wins': 'sortie_wins', 
-       'level': 'level', 
-       'defence_hour': 'defence_hour', 
-       'defence_mode_is_activated': 'defence_mode_is_activated', 
-       'fb_battles_count_10': 'fb_battles_count_10', 
-       'fb_battles_count_8': 'fb_battles_count_8', 
-       'total_resource_amount': 'total_resource_amount'})
+    @mapped_fields({'buildings.direction': 'buildings.direction',
+     'buildings.type': 'buildings.type',
+     'buildings.level': 'buildings.level',
+     'buildings.position': 'buildings.position',
+     'defence_attack_efficiency': 'defence_attack_efficiency',
+     'defence_battles_count': 'defence_battles_count',
+     'defence_capture_enemy_building_total_count': 'defence_capture_enemy_building_total_count',
+     'defence_combat_wins': 'defence_combat_wins',
+     'defence_defence_efficiency': 'defence_defence_efficiency',
+     'defence_enemy_base_capture_count': 'defence_enemy_base_capture_count',
+     'defence_loss_own_building_total_count': 'defence_loss_own_building_total_count',
+     'defence_resource_capture_count': 'defence_resource_capture_count',
+     'defence_resource_loss_count': 'defence_resource_loss_count',
+     'sortie_absolute_battles_count': 'sortie_absolute_battles_count',
+     'sortie_battles_count': 'sortie_battles_count',
+     'sortie_champion_battles_count': 'sortie_champion_battles_count',
+     'sortie_middle_battles_count': 'sortie_middle_battles_count',
+     'defence_attack_count': 'defence_attack_count',
+     'defence_defence_count': 'defence_defence_count',
+     'defence_success_attack_count': 'defence_success_attack_count',
+     'defence_success_defence_count': 'defence_success_defence_count',
+     'sortie_fort_resource_in_absolute': 'sortie_fort_resource_in_absolute',
+     'sortie_fort_resource_in_champion': 'sortie_fort_resource_in_champion',
+     'sortie_fort_resource_in_middle': 'sortie_fort_resource_in_middle',
+     'sortie_losses': 'sortie_losses',
+     'sortie_wins': 'sortie_wins',
+     'level': 'level',
+     'defence_hour': 'defence_hour',
+     'defence_mode_is_activated': 'defence_mode_is_activated',
+     'fb_battles_count_10': 'fb_battles_count_10',
+     'fb_battles_count_8': 'fb_battles_count_8',
+     'total_resource_amount': 'total_resource_amount'})
     def get_stronghold_info(self, callback, clan_id=None, fields=None):
         get_params = urlencode({'performer_id': self._account})
         try:
@@ -741,7 +790,7 @@ class StagingDataAccessor(base.BaseDataAccessor):
 
         url = 'api/strongholds/%s/' % clan_id
         if self._account:
-            url = ('?').join([url, get_params])
+            url = '?'.join([url, get_params])
 
         @preprocess_callback(callback, 'strongholds')
         def inner_callback(data):
@@ -749,28 +798,29 @@ class StagingDataAccessor(base.BaseDataAccessor):
 
         return self._request_data(inner_callback, 'strongholds', url)
 
-    @convert_data({'vacation_finish': timestamp_to_datetime, 'vacation_start': timestamp_to_datetime})
-    @mapped_fields({'buildings.type': 'buildings.type', 
-       'buildings.hp': 'buildings.hp', 
-       'buildings.direction': 'buildings.direction', 
-       'buildings.position': 'buildings.position', 
-       'buildings.storage': 'buildings.resource_amount', 
-       'buildings.level': 'buildings.level', 
-       'buildings_count': 'buildings_count', 
-       'clan_id': 'clan_id', 
-       'level': 'level', 
-       'clan_name': 'clan_name', 
-       'clan_tag': 'clan_tag', 
-       'directions': 'directions', 
-       'directions_count': 'directions_count', 
-       'off_day': 'off_day', 
-       'periphery_id': 'periphery_id', 
-       'vacation_finish': 'vacation_finish', 
-       'vacation_start': 'vacation_start', 
-       'sortie_wins_period': 'sortie_wins_period', 
-       'sortie_battles_wins_percentage_period': 'sortie_battles_wins_percentage_period', 
-       'sortie_battles_count_period': 'sortie_battles_count_period', 
-       'defence_battles_count_period': 'defence_battles_count_period'})
+    @convert_data({'vacation_finish': timestamp_to_datetime,
+     'vacation_start': timestamp_to_datetime})
+    @mapped_fields({'buildings.type': 'buildings.type',
+     'buildings.hp': 'buildings.hp',
+     'buildings.direction': 'buildings.direction',
+     'buildings.position': 'buildings.position',
+     'buildings.storage': 'buildings.resource_amount',
+     'buildings.level': 'buildings.level',
+     'buildings_count': 'buildings_count',
+     'clan_id': 'clan_id',
+     'level': 'level',
+     'clan_name': 'clan_name',
+     'clan_tag': 'clan_tag',
+     'directions': 'directions',
+     'directions_count': 'directions_count',
+     'off_day': 'off_day',
+     'periphery_id': 'periphery_id',
+     'vacation_finish': 'vacation_finish',
+     'vacation_start': 'vacation_start',
+     'sortie_wins_period': 'sortie_wins_period',
+     'sortie_battles_wins_percentage_period': 'sortie_battles_wins_percentage_period',
+     'sortie_battles_count_period': 'sortie_battles_count_period',
+     'defence_battles_count_period': 'defence_battles_count_period'})
     def get_strongholds_statistics(self, callback, clan_id, fields=None):
         get_params = urlencode({'performer_id': self._account})
         try:
@@ -781,7 +831,7 @@ class StagingDataAccessor(base.BaseDataAccessor):
 
         url = '/api/strongholds/statistics/%s/' % clan_id
         if self._account:
-            url = ('?').join([url, get_params])
+            url = '?'.join([url, get_params])
 
         @preprocess_callback(callback, 'strongholds')
         def inner_callback(data):
@@ -797,7 +847,7 @@ class StagingDataAccessor(base.BaseDataAccessor):
             error = exceptions.BadRequest()
             return callback({'description': error.description}, error.status_code, error.response_code)
 
-        url = ('/unit_api/periphery/{periphery_id}/units/{unit_server_id}/?rev={rev}').format(periphery_id=periphery_id, unit_server_id=unit_server_id, rev=rev)
+        url = '/unit_api/periphery/{periphery_id}/units/{unit_server_id}/?rev={rev}'.format(periphery_id=periphery_id, unit_server_id=unit_server_id, rev=rev)
 
         @preprocess_callback(callback, 'wgsh')
         def inner_callback(data):
@@ -813,10 +863,10 @@ class StagingDataAccessor(base.BaseDataAccessor):
             error = exceptions.BadRequest()
             return callback({'description': error.description}, error.status_code, error.response_code)
 
-        get_params = {'periphery_id': periphery_id, 
-           'unit_server_id': unit_server_id, 
-           'rev': rev}
-        url = ('/unit_api/periphery/units/info/?{get_params}').format(get_params=urlencode(get_params))
+        get_params = {'periphery_id': periphery_id,
+         'unit_server_id': unit_server_id,
+         'rev': rev}
+        url = '/unit_api/periphery/units/info/?{get_params}'.format(get_params=urlencode(get_params))
 
         @preprocess_callback(callback, 'wgsh')
         def inner_callback(data):
@@ -832,10 +882,10 @@ class StagingDataAccessor(base.BaseDataAccessor):
             error = exceptions.BadRequest()
             return callback({'description': error.description}, error.status_code, error.response_code)
 
-        get_params = {'periphery_id': periphery_id, 
-           'unit_server_id': unit_server_id, 
-           'rev': rev}
-        url = ('/unit_api/periphery/units/account_info/?{get_params}').format(get_params=urlencode(get_params))
+        get_params = {'periphery_id': periphery_id,
+         'unit_server_id': unit_server_id,
+         'rev': rev}
+        url = '/unit_api/periphery/units/account_info/?{get_params}'.format(get_params=urlencode(get_params))
 
         @preprocess_callback(callback, 'wgsh')
         def inner_callback(data):
@@ -851,7 +901,7 @@ class StagingDataAccessor(base.BaseDataAccessor):
             error = exceptions.BadRequest()
             return callback({'description': error.description}, error.status_code, error.response_code)
 
-        url = ('/unit_api/periphery/{periphery_id}/units/{unit_server_id}/members/{account_id}/vehicles').format(periphery_id=periphery_id, unit_server_id=unit_server_id, account_id=self._account)
+        url = '/unit_api/periphery/{periphery_id}/units/{unit_server_id}/members/{account_id}/vehicles'.format(periphery_id=periphery_id, unit_server_id=unit_server_id, account_id=self._account)
         patch_data = {'vehicle_cd': vehicle_cd}
 
         @preprocess_callback(callback, 'wgsh')
@@ -868,9 +918,9 @@ class StagingDataAccessor(base.BaseDataAccessor):
             error = exceptions.BadRequest()
             return callback({'description': error.description}, error.status_code, error.response_code)
 
-        url = ('/unit_api/periphery/{periphery_id}/units/{unit_server_id}/members/{account_id}/readiness').format(periphery_id=periphery_id, unit_server_id=unit_server_id, account_id=self._account)
-        patch_data = {'is_ready': is_ready, 
-           'reset_vehicle': reset_vehicle}
+        url = '/unit_api/periphery/{periphery_id}/units/{unit_server_id}/members/{account_id}/readiness'.format(periphery_id=periphery_id, unit_server_id=unit_server_id, account_id=self._account)
+        patch_data = {'is_ready': is_ready,
+         'reset_vehicle': reset_vehicle}
 
         @preprocess_callback(callback, 'wgsh')
         def inner_callback(data):
@@ -886,9 +936,9 @@ class StagingDataAccessor(base.BaseDataAccessor):
             error = exceptions.BadRequest()
             return callback({'description': error.description}, error.status_code, error.response_code)
 
-        url = ('/unit_api/periphery/{periphery_id}/units/{unit_server_id}/participants/{account_id}/invite').format(periphery_id=periphery_id, unit_server_id=unit_server_id, account_id=self._account)
-        post_data = {'accounts_to_invite': accounts_to_invite, 
-           'comment': comment}
+        url = '/unit_api/periphery/{periphery_id}/units/{unit_server_id}/participants/{account_id}/invite'.format(periphery_id=periphery_id, unit_server_id=unit_server_id, account_id=self._account)
+        post_data = {'accounts_to_invite': accounts_to_invite,
+         'comment': comment}
 
         @preprocess_callback(callback, 'wgsh')
         def inner_callback(data):
@@ -904,7 +954,7 @@ class StagingDataAccessor(base.BaseDataAccessor):
             error = exceptions.BadRequest()
             return callback({'description': error.description}, error.status_code, error.response_code)
 
-        url = ('/unit_api/periphery/{periphery_id}/units/{unit_server_id}/participants/{account_id}/assign').format(periphery_id=periphery_id, unit_server_id=unit_server_id, account_id=self._account)
+        url = '/unit_api/periphery/{periphery_id}/units/{unit_server_id}/participants/{account_id}/assign'.format(periphery_id=periphery_id, unit_server_id=unit_server_id, account_id=self._account)
         post_data = {'account_to_assign': account_to_assign}
 
         @preprocess_callback(callback, 'wgsh')
@@ -921,7 +971,7 @@ class StagingDataAccessor(base.BaseDataAccessor):
             error = exceptions.BadRequest()
             return callback({'description': error.description}, error.status_code, error.response_code)
 
-        url = ('/unit_api/periphery/{periphery_id}/units/{unit_server_id}/participants/{account_id}/unassign').format(periphery_id=periphery_id, unit_server_id=unit_server_id, account_id=self._account)
+        url = '/unit_api/periphery/{periphery_id}/units/{unit_server_id}/participants/{account_id}/unassign'.format(periphery_id=periphery_id, unit_server_id=unit_server_id, account_id=self._account)
         post_data = {'account_to_unassign': account_to_unassign}
 
         @preprocess_callback(callback, 'wgsh')
@@ -938,7 +988,7 @@ class StagingDataAccessor(base.BaseDataAccessor):
             error = exceptions.BadRequest()
             return callback({'description': error.description}, error.status_code, error.response_code)
 
-        url = ('/unit_api/periphery/{periphery_id}/units/{unit_server_id}/members/{account_id}/give_leadership').format(periphery_id=periphery_id, unit_server_id=unit_server_id, account_id=self._account)
+        url = '/unit_api/periphery/{periphery_id}/units/{unit_server_id}/members/{account_id}/give_leadership'.format(periphery_id=periphery_id, unit_server_id=unit_server_id, account_id=self._account)
         post_data = {'target_account_id': target_account_id}
 
         @preprocess_callback(callback, 'wgsh')
@@ -955,9 +1005,9 @@ class StagingDataAccessor(base.BaseDataAccessor):
             error = exceptions.BadRequest()
             return callback({'description': error.description}, error.status_code, error.response_code)
 
-        url = ('/unit_api/periphery/{periphery_id}/units/{unit_server_id}/members/{account_id}/equipment_commander').format(periphery_id=periphery_id, unit_server_id=unit_server_id, account_id=self._account)
-        post_data = {'equipment_commander_id': target_account_id, 
-           'role': role}
+        url = '/unit_api/periphery/{periphery_id}/units/{unit_server_id}/members/{account_id}/equipment_commander'.format(periphery_id=periphery_id, unit_server_id=unit_server_id, account_id=self._account)
+        post_data = {'equipment_commander_id': target_account_id,
+         'role': role}
 
         @preprocess_callback(callback, 'wgsh')
         def inner_callback(data):
@@ -973,7 +1023,7 @@ class StagingDataAccessor(base.BaseDataAccessor):
             error = exceptions.BadRequest()
             return callback({'description': error.description}, error.status_code, error.response_code)
 
-        url = ('/unit_api/periphery/{periphery_id}/units/{unit_server_id}/participants/{account_id}/leave').format(periphery_id=periphery_id, unit_server_id=unit_server_id, account_id=self._account)
+        url = '/unit_api/periphery/{periphery_id}/units/{unit_server_id}/participants/{account_id}/leave'.format(periphery_id=periphery_id, unit_server_id=unit_server_id, account_id=self._account)
 
         @preprocess_callback(callback, 'wgsh')
         def inner_callback(data):
@@ -989,7 +1039,7 @@ class StagingDataAccessor(base.BaseDataAccessor):
             error = exceptions.BadRequest()
             return callback({'description': error.description}, error.status_code, error.response_code)
 
-        url = ('/unit_api/periphery/{periphery}/units/{unit}/participants/{account}/take_away_leadership').format(periphery=periphery_id, unit=unit_server_id, account=self._account)
+        url = '/unit_api/periphery/{periphery}/units/{unit}/participants/{account}/take_away_leadership'.format(periphery=periphery_id, unit=unit_server_id, account=self._account)
 
         @preprocess_callback(callback, 'wgsh')
         def inner_callback(data):
@@ -1005,7 +1055,7 @@ class StagingDataAccessor(base.BaseDataAccessor):
             error = exceptions.BadRequest()
             return callback({'description': error.description}, error.status_code, error.response_code)
 
-        url = ('/unit_api/periphery/{periphery_id}/units/{unit_server_id}/members/{account_id}/kick').format(periphery_id=periphery_id, unit_server_id=unit_server_id, account_id=self._account)
+        url = '/unit_api/periphery/{periphery_id}/units/{unit_server_id}/members/{account_id}/kick'.format(periphery_id=periphery_id, unit_server_id=unit_server_id, account_id=self._account)
         post_data = {'account_to_kick': account_to_kick}
 
         @preprocess_callback(callback, 'wgsh')
@@ -1022,7 +1072,7 @@ class StagingDataAccessor(base.BaseDataAccessor):
             error = exceptions.BadRequest()
             return callback({'description': error.description}, error.status_code, error.response_code)
 
-        url = ('/unit_api/periphery/{periphery_id}/units/{unit_server_id}/participants/{account_id}/set_open').format(periphery_id=periphery_id, unit_server_id=unit_server_id, account_id=self._account)
+        url = '/unit_api/periphery/{periphery_id}/units/{unit_server_id}/participants/{account_id}/set_open'.format(periphery_id=periphery_id, unit_server_id=unit_server_id, account_id=self._account)
         post_data = {'is_open': is_open}
 
         @preprocess_callback(callback, 'wgsh')
@@ -1039,7 +1089,7 @@ class StagingDataAccessor(base.BaseDataAccessor):
             error = exceptions.BadRequest()
             return callback({'description': error.description}, error.status_code, error.response_code)
 
-        url = ('/unit_api/periphery/{periphery_id}/units/{unit_server_id}/members/{account_id}/lock_reserve').format(periphery_id=periphery_id, unit_server_id=unit_server_id, account_id=self._account)
+        url = '/unit_api/periphery/{periphery_id}/units/{unit_server_id}/members/{account_id}/lock_reserve'.format(periphery_id=periphery_id, unit_server_id=unit_server_id, account_id=self._account)
         post_data = {'reserve_id': reserve_id}
 
         @preprocess_callback(callback, 'wgsh')
@@ -1056,7 +1106,7 @@ class StagingDataAccessor(base.BaseDataAccessor):
             error = exceptions.BadRequest()
             return callback({'description': error.description}, error.status_code, error.response_code)
 
-        url = ('/unit_api/periphery/{periphery_id}/units/{unit_server_id}/members/{account_id}/unlock_reserve').format(periphery_id=periphery_id, unit_server_id=unit_server_id, account_id=self._account)
+        url = '/unit_api/periphery/{periphery_id}/units/{unit_server_id}/members/{account_id}/unlock_reserve'.format(periphery_id=periphery_id, unit_server_id=unit_server_id, account_id=self._account)
         post_data = {'reserve_id': reserve_id}
 
         @preprocess_callback(callback, 'wgsh')
@@ -1072,7 +1122,7 @@ class StagingDataAccessor(base.BaseDataAccessor):
             error = exceptions.BadRequest()
             return callback({'description': error.description}, error.status_code, error.response_code)
 
-        url = ('/external_api/v1/clan_card/{clan_id}').format(clan_id=clan_id)
+        url = '/external_api/v1/clan_card/{clan_id}'.format(clan_id=clan_id)
 
         @preprocess_callback(callback, 'wgsh')
         def inner_callback(data):
@@ -1114,7 +1164,7 @@ class StagingDataAccessor(base.BaseDataAccessor):
             error = exceptions.BadRequest()
             return callback({'description': error.description}, error.status_code, error.response_code)
 
-        url = ('/external_api/accounts/{account_id}').format(account_id=account_id)
+        url = '/external_api/accounts/{account_id}'.format(account_id=account_id)
 
         @preprocess_callback(callback, 'wgsh')
         def inner_callback(data):
@@ -1130,7 +1180,7 @@ class StagingDataAccessor(base.BaseDataAccessor):
             error = exceptions.BadRequest()
             return callback({'description': error.description}, error.status_code, error.response_code)
 
-        url = ('/unit_api/periphery/{periphery_id}/units/{unit_server_id}/members/{account_id}/join').format(periphery_id=periphery_id, unit_server_id=unit_server_id, account_id=self._account)
+        url = '/unit_api/periphery/{periphery_id}/units/{unit_server_id}/members/{account_id}/join'.format(periphery_id=periphery_id, unit_server_id=unit_server_id, account_id=self._account)
 
         @preprocess_callback(callback, 'wgsh')
         def inner_callback(data):
@@ -1139,7 +1189,7 @@ class StagingDataAccessor(base.BaseDataAccessor):
         return self._request_data(inner_callback, 'wgsh', url, method='POST')
 
     def user_ranked_position(self, callback, fields=None):
-        url = ('/user-position/{account_id}/').format(account_id=self._account)
+        url = '/user-position/{account_id}/'.format(account_id=self._account)
 
         @preprocess_callback(callback, 'rblb')
         def inner_callback(data):
@@ -1148,7 +1198,7 @@ class StagingDataAccessor(base.BaseDataAccessor):
         return self._request_data(inner_callback, 'rblb', url, method='GET')
 
     def user_ranked_year_position(self, callback):
-        url = ('/user-yearly-position/{account_id}/').format(account_id=self._account)
+        url = '/user-yearly-position/{account_id}/'.format(account_id=self._account)
 
         @preprocess_callback(callback, 'rblb')
         def inner_callback(data):
@@ -1157,7 +1207,8 @@ class StagingDataAccessor(base.BaseDataAccessor):
         return self._request_data(inner_callback, 'rblb', url, method='GET')
 
     @convert_data({'defence_hour': lambda x: dt_time(x, 0) if x >= 0 else None})
-    @mapped_fields({'clan_id': 'clan_id', 'defence_hour': 'defence_hour'})
+    @mapped_fields({'clan_id': 'clan_id',
+     'defence_hour': 'defence_hour'})
     def get_strongholds_state(self, callback, clan_id, fields=None):
         get_params = {'clan_id': clan_id}
         try:

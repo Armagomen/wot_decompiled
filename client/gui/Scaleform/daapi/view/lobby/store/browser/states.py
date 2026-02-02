@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/store/browser/states.py
 import typing
 from frameworks.state_machine import StateFlags
 from frameworks.state_machine.transitions import TransitionType
@@ -25,6 +27,11 @@ class ShopState(SFViewLobbyState):
         self.__cachedParams = {}
 
     def serializeParams(self):
+        view = self.getMachine().getRelatedView(self)
+        url = view.getBackUrl()
+        if url:
+            ctx = self.__cachedParams.get('ctx', {})
+            ctx.update(url=url)
         return self.__cachedParams
 
     def registerTransitions(self):

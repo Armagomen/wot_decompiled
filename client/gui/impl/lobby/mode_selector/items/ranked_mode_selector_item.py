@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/mode_selector/items/ranked_mode_selector_item.py
 import typing
 from gui.impl import backport
 from gui.impl.gen import R
@@ -40,14 +42,12 @@ class RankedModeSelectorItem(ModeSelectorLegacyItem):
     def _getDisabledTooltipText(self):
         if self.__rankedBattleController.isUnset():
             return backport.text(R.strings.menu.headerButtons.battle.types.ranked.availability.notSet())
-        if self.__rankedBattleController.isFrozen():
-            return backport.text(R.strings.menu.headerButtons.battle.types.ranked.availability.frozen())
-        return super(RankedModeSelectorItem, self)._getDisabledTooltipText()
+        return backport.text(R.strings.menu.headerButtons.battle.types.ranked.availability.frozen()) if self.__rankedBattleController.isFrozen() else super(RankedModeSelectorItem, self)._getDisabledTooltipText()
 
     def __onGameModeUpdated(self, *_):
         statusNotActive = self.__getRankedNotActiveStatus()
         timeLeft = self.__getTimeLeft()
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             vm.setEventName(self.__getRankedName())
             vm.setStatusNotActive(statusNotActive)
             vm.setTimeLeft(str(timeLeft))
@@ -56,9 +56,7 @@ class RankedModeSelectorItem(ModeSelectorLegacyItem):
 
     def __getRankedName(self):
         currentSeason = self.__rankedBattleController.getCurrentSeason()
-        if currentSeason:
-            return self.__getRankedBattlesSeasonName(currentSeason)
-        return ''
+        return self.__getRankedBattlesSeasonName(currentSeason) if currentSeason else ''
 
     def __getRankedNotActiveStatus(self):
         msR = R.strings.mode_selector.event

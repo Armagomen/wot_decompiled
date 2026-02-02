@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/StorageCategoryForSellViewMeta.py
 from gui.Scaleform.daapi.view.lobby.storage.category_view import InventoryCategoryView
 
 class StorageCategoryForSellViewMeta(InventoryCategoryView):
@@ -18,5 +20,4 @@ class StorageCategoryForSellViewMeta(InventoryCategoryView):
         self._printOverrideError('sellAll')
 
     def as_initS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_init(data)
+        return self.flashObject.as_init(data) if self._isDAAPIInited() else None

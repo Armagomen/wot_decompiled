@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/prb_windows/PrebattleUserCMHandler.py
 from adisp import adisp_process
 from gui.Scaleform.locale.MENU import MENU
 from gui.Scaleform.daapi.view.lobby.user_cm_handlers import AppealCMHandler
@@ -24,7 +26,7 @@ class PrebattleUserCMHandler(AppealCMHandler, ILegacyListener):
 
     @proto_getter(PROTO_TYPE.BW_CHAT2)
     def bwProto(self):
-        return
+        return None
 
     def fini(self):
         self._isCreator = None

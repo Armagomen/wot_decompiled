@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/server_events/cond_formatters/__init__.py
 from collections import namedtuple
 import typing
 from gui.Scaleform.locale.QUESTS import QUESTS
@@ -19,99 +21,99 @@ class CONDITION_SIZE(object):
     MINIMIZED = 'minimized'
 
 
-POSSIBLE_BATTLE_RESUTLS_KEYS = {'damagedWhileMoving': CONDITION_ICON.DAMAGE, 
-   'totalDamaged': CONDITION_ICON.DAMAGE, 
-   'soloFlagCapture': CONDITION_ICON.BASE_CAPTURE, 
-   'autoAimedShots': CONDITION_ICON.HIT, 
-   'movingAvgDamage': CONDITION_ICON.DAMAGE, 
-   'tdestroyedModules': CONDITION_ICON.MODULE_CRIT}
-BATTLE_RESULTS_KEYS = {'capturePoints': CONDITION_ICON.BASE_CAPTURE, 
-   'critsCount': CONDITION_ICON.MODULE_CRIT, 
-   'damageAssistedRadio': CONDITION_ICON.ASSIST_RADIO, 
-   'damageAssistedRadioWhileInvisible': CONDITION_ICON.ASSIST_RADIO, 
-   'damageAssistedStun': CONDITION_ICON.ASSIST_STUN, 
-   'damageAssistedStunWhileInvisible': CONDITION_ICON.ASSIST_STUN, 
-   'damageAssistedTrack': CONDITION_ICON.ASSIST_TRACK, 
-   'damageAssistedTrackWhileInvisible': CONDITION_ICON.ASSIST_TRACK, 
-   'damageBlockedByArmor': CONDITION_ICON.DAMAGE_BLOCK, 
-   'damaged': CONDITION_ICON.HURT_VEHICLES, 
-   'damagedHp': CONDITION_ICON.HURT_VEHICLES, 
-   'damageDealt': CONDITION_ICON.DAMAGE, 
-   'damagedVehicleCntAssistedRadio': CONDITION_ICON.ASSIST_RADIO, 
-   'damagedVehicleCntAssistedStun': CONDITION_ICON.ASSIST_STUN, 
-   'damagedVehicleCntAssistedTrack': CONDITION_ICON.ASSIST_TRACK, 
-   'damagedWhileEnemyMoving': CONDITION_ICON.DAMAGE, 
-   'damageReceived': CONDITION_ICON.GET_DAMAGE, 
-   'directEnemyHits': CONDITION_ICON.HIT, 
-   'directHits': CONDITION_ICON.HIT, 
-   'directHitsReceived': CONDITION_ICON.GET_HIT, 
-   'directTeamHits': CONDITION_ICON.HIT, 
-   'droppedCapturePoints': CONDITION_ICON.BASE_DEF, 
-   'explosionEnemyHits': CONDITION_ICON.HIT, 
-   'explosionHits': CONDITION_ICON.HIT, 
-   'explosionHitsReceived': CONDITION_ICON.GET_HIT, 
-   'fortResource': CONDITION_ICON.FOLDER, 
-   'freeXP': CONDITION_ICON.EXPERIENCE, 
-   'subtotalXP': CONDITION_ICON.EXPERIENCE, 
-   'factualXP': CONDITION_ICON.EXPERIENCE, 
-   'health': CONDITION_ICON.SAVE_HP, 
-   'inBattleMaxPiercingSeries': CONDITION_ICON.HIT, 
-   'inBattleMaxSniperSeries': CONDITION_ICON.HIT, 
-   'innerModuleCritCount': CONDITION_ICON.MODULE_CRIT, 
-   'innerModuleDestrCount': CONDITION_ICON.MODULE_CRIT, 
-   'killedAndDamagedByAllSquadmates': CONDITION_ICON.KILL_VEHICLES, 
-   'kills': CONDITION_ICON.KILL_VEHICLES, 
-   'killsAssistedRadio': CONDITION_ICON.ASSIST_RADIO, 
-   'killsAssistedStun': CONDITION_ICON.ASSIST_STUN, 
-   'killsAssistedTrack': CONDITION_ICON.ASSIST_TRACK, 
-   'lifeTime': CONDITION_ICON.SEC_ALIVE, 
-   'markOfMastery': CONDITION_ICON.MASTER, 
-   'marksOnGun': CONDITION_ICON.BARREL_MARK, 
-   'mileage': CONDITION_ICON.METERS, 
-   'noDamageDirectHitsReceived': CONDITION_ICON.DAMAGE_BLOCK, 
-   'originalCredits': CONDITION_ICON.CREDITS, 
-   'originalXP': CONDITION_ICON.EXPERIENCE, 
-   'percentFromTotalTeamDamage': CONDITION_ICON.DAMAGE, 
-   'winAloneAgainstVehicleCount': CONDITION_ICON.KILL_VEHICLES, 
-   'piercingEnemyHits': CONDITION_ICON.DAMAGE, 
-   'piercings': CONDITION_ICON.DAMAGE, 
-   'piercingsReceived': CONDITION_ICON.TIMES_GET_DAMAGE, 
-   'potentialDamageDealt': CONDITION_ICON.DAMAGE, 
-   'potentialDamageReceived': CONDITION_ICON.GET_DAMAGE, 
-   'shots': CONDITION_ICON.HIT, 
-   'sniperDamageDealt': CONDITION_ICON.DAMAGE, 
-   'soloHitsAssisted': CONDITION_ICON.ASSIST_RADIO, 
-   'spotted': CONDITION_ICON.DISCOVER, 
-   'spottedAndDamagedSPG': CONDITION_ICON.DISCOVER, 
-   'stunDuration': CONDITION_ICON.ASSIST_STUN_DURATION, 
-   'stunned': CONDITION_ICON.ASSIST_STUN, 
-   'stunNum': CONDITION_ICON.ASSIST_STUN, 
-   'tdamageDealt': CONDITION_ICON.DAMAGE, 
-   'tkills': CONDITION_ICON.KILL_VEHICLES, 
-   'xp': CONDITION_ICON.EXPERIENCE, 
-   'xp/attack': CONDITION_ICON.EXPERIENCE, 
-   'xp/assist': CONDITION_ICON.EXPERIENCE, 
-   'xp/other': CONDITION_ICON.EXPERIENCE, 
-   'spottedBeforeWeBecameSpotted': CONDITION_ICON.DISCOVER, 
-   'isEnemyBaseCaptured': CONDITION_ICON.BASE_CAPTURE, 
-   'isAnyOurCrittedInnerModules': CONDITION_ICON.SURVIVE, 
-   'isNotSpotted': CONDITION_ICON.SURVIVE, 
-   'rankChange': CONDITION_ICON.RANK_UP, 
-   'brPosInBattle': CONDITION_ICON.TOP, 
-   'poiCapturedByOwnTeam': CONDITION_ICON.BASE_CAPTURE, 
-   'comp7PrestigePoints': CONDITION_ICON.PRESTIGE_POINTS, 
-   'win': CONDITION_ICON.WIN, 
-   'credits': CONDITION_ICON.CREDITS}
-BATTLE_RESULTS_AGGREGATED_KEYS = {tuple(sorted(['damagedVehicleCntAssistedTrack', 'damagedVehicleCntAssistedRadio'])): CONDITION_ICON.ASSIST, 
-   tuple(sorted(['killsAssistedTrack', 'killsAssistedRadio'])): CONDITION_ICON.ASSIST, 
-   tuple(sorted(['damageAssistedStun', 'damageAssistedTrack'])): CONDITION_ICON.ASSIST, 
-   tuple(sorted(['killsAssistedStun', 'killsAssistedTrack'])): CONDITION_ICON.ASSIST, 
-   tuple(sorted(['damagedVehicleCntAssistedStun', 'damagedVehicleCntAssistedTrack'])): CONDITION_ICON.ASSIST}
-VEHICLE_TYPES = {'heavyTank': '#item_types:vehicle/tags/heavy_tank/name', 
-   'mediumTank': '#item_types:vehicle/tags/medium_tank/name', 
-   'lightTank': '#item_types:vehicle/tags/light_tank/name', 
-   'AT-SPG': '#item_types:vehicle/tags/at-spg/name', 
-   'SPG': '#item_types:vehicle/tags/spg/name'}
+POSSIBLE_BATTLE_RESUTLS_KEYS = {'damagedWhileMoving': CONDITION_ICON.DAMAGE,
+ 'totalDamaged': CONDITION_ICON.DAMAGE,
+ 'soloFlagCapture': CONDITION_ICON.BASE_CAPTURE,
+ 'autoAimedShots': CONDITION_ICON.HIT,
+ 'movingAvgDamage': CONDITION_ICON.DAMAGE,
+ 'tdestroyedModules': CONDITION_ICON.MODULE_CRIT}
+BATTLE_RESULTS_KEYS = {'capturePoints': CONDITION_ICON.BASE_CAPTURE,
+ 'critsCount': CONDITION_ICON.MODULE_CRIT,
+ 'damageAssistedRadio': CONDITION_ICON.ASSIST_RADIO,
+ 'damageAssistedRadioWhileInvisible': CONDITION_ICON.ASSIST_RADIO,
+ 'damageAssistedStun': CONDITION_ICON.ASSIST_STUN,
+ 'damageAssistedStunWhileInvisible': CONDITION_ICON.ASSIST_STUN,
+ 'damageAssistedTrack': CONDITION_ICON.ASSIST_TRACK,
+ 'damageAssistedTrackWhileInvisible': CONDITION_ICON.ASSIST_TRACK,
+ 'damageBlockedByArmor': CONDITION_ICON.DAMAGE_BLOCK,
+ 'damaged': CONDITION_ICON.HURT_VEHICLES,
+ 'damagedHp': CONDITION_ICON.HURT_VEHICLES,
+ 'damageDealt': CONDITION_ICON.DAMAGE,
+ 'damagedVehicleCntAssistedRadio': CONDITION_ICON.ASSIST_RADIO,
+ 'damagedVehicleCntAssistedStun': CONDITION_ICON.ASSIST_STUN,
+ 'damagedVehicleCntAssistedTrack': CONDITION_ICON.ASSIST_TRACK,
+ 'damagedWhileEnemyMoving': CONDITION_ICON.DAMAGE,
+ 'damageReceived': CONDITION_ICON.GET_DAMAGE,
+ 'directEnemyHits': CONDITION_ICON.HIT,
+ 'directHits': CONDITION_ICON.HIT,
+ 'directHitsReceived': CONDITION_ICON.GET_HIT,
+ 'directTeamHits': CONDITION_ICON.HIT,
+ 'droppedCapturePoints': CONDITION_ICON.BASE_DEF,
+ 'explosionEnemyHits': CONDITION_ICON.HIT,
+ 'explosionHits': CONDITION_ICON.HIT,
+ 'explosionHitsReceived': CONDITION_ICON.GET_HIT,
+ 'fortResource': CONDITION_ICON.FOLDER,
+ 'freeXP': CONDITION_ICON.EXPERIENCE,
+ 'subtotalXP': CONDITION_ICON.EXPERIENCE,
+ 'factualXP': CONDITION_ICON.EXPERIENCE,
+ 'health': CONDITION_ICON.SAVE_HP,
+ 'inBattleMaxPiercingSeries': CONDITION_ICON.HIT,
+ 'inBattleMaxSniperSeries': CONDITION_ICON.HIT,
+ 'innerModuleCritCount': CONDITION_ICON.MODULE_CRIT,
+ 'innerModuleDestrCount': CONDITION_ICON.MODULE_CRIT,
+ 'killedAndDamagedByAllSquadmates': CONDITION_ICON.KILL_VEHICLES,
+ 'kills': CONDITION_ICON.KILL_VEHICLES,
+ 'killsAssistedRadio': CONDITION_ICON.ASSIST_RADIO,
+ 'killsAssistedStun': CONDITION_ICON.ASSIST_STUN,
+ 'killsAssistedTrack': CONDITION_ICON.ASSIST_TRACK,
+ 'lifeTime': CONDITION_ICON.SEC_ALIVE,
+ 'markOfMastery': CONDITION_ICON.MASTER,
+ 'marksOnGun': CONDITION_ICON.BARREL_MARK,
+ 'mileage': CONDITION_ICON.METERS,
+ 'noDamageDirectHitsReceived': CONDITION_ICON.DAMAGE_BLOCK,
+ 'originalCredits': CONDITION_ICON.CREDITS,
+ 'originalXP': CONDITION_ICON.EXPERIENCE,
+ 'percentFromTotalTeamDamage': CONDITION_ICON.DAMAGE,
+ 'winAloneAgainstVehicleCount': CONDITION_ICON.KILL_VEHICLES,
+ 'piercingEnemyHits': CONDITION_ICON.DAMAGE,
+ 'piercings': CONDITION_ICON.DAMAGE,
+ 'piercingsReceived': CONDITION_ICON.TIMES_GET_DAMAGE,
+ 'potentialDamageDealt': CONDITION_ICON.DAMAGE,
+ 'potentialDamageReceived': CONDITION_ICON.GET_DAMAGE,
+ 'shots': CONDITION_ICON.HIT,
+ 'sniperDamageDealt': CONDITION_ICON.DAMAGE,
+ 'soloHitsAssisted': CONDITION_ICON.ASSIST_RADIO,
+ 'spotted': CONDITION_ICON.DISCOVER,
+ 'spottedAndDamagedSPG': CONDITION_ICON.DISCOVER,
+ 'stunDuration': CONDITION_ICON.ASSIST_STUN_DURATION,
+ 'stunned': CONDITION_ICON.ASSIST_STUN,
+ 'stunNum': CONDITION_ICON.ASSIST_STUN,
+ 'tdamageDealt': CONDITION_ICON.DAMAGE,
+ 'tkills': CONDITION_ICON.KILL_VEHICLES,
+ 'xp': CONDITION_ICON.EXPERIENCE,
+ 'xp/attack': CONDITION_ICON.EXPERIENCE,
+ 'xp/assist': CONDITION_ICON.EXPERIENCE,
+ 'xp/other': CONDITION_ICON.EXPERIENCE,
+ 'spottedBeforeWeBecameSpotted': CONDITION_ICON.DISCOVER,
+ 'isEnemyBaseCaptured': CONDITION_ICON.BASE_CAPTURE,
+ 'isAnyOurCrittedInnerModules': CONDITION_ICON.SURVIVE,
+ 'isNotSpotted': CONDITION_ICON.SURVIVE,
+ 'rankChange': CONDITION_ICON.RANK_UP,
+ 'brPosInBattle': CONDITION_ICON.TOP,
+ 'poiCapturedByOwnTeam': CONDITION_ICON.BASE_CAPTURE,
+ 'comp7PrestigePoints': CONDITION_ICON.PRESTIGE_POINTS,
+ 'win': CONDITION_ICON.WIN,
+ 'credits': CONDITION_ICON.CREDITS}
+BATTLE_RESULTS_AGGREGATED_KEYS = {tuple(sorted(['damagedVehicleCntAssistedTrack', 'damagedVehicleCntAssistedRadio'])): CONDITION_ICON.ASSIST,
+ tuple(sorted(['killsAssistedTrack', 'killsAssistedRadio'])): CONDITION_ICON.ASSIST,
+ tuple(sorted(['damageAssistedStun', 'damageAssistedTrack'])): CONDITION_ICON.ASSIST,
+ tuple(sorted(['killsAssistedStun', 'killsAssistedTrack'])): CONDITION_ICON.ASSIST,
+ tuple(sorted(['damagedVehicleCntAssistedStun', 'damagedVehicleCntAssistedTrack'])): CONDITION_ICON.ASSIST}
+VEHICLE_TYPES = {'heavyTank': '#item_types:vehicle/tags/heavy_tank/name',
+ 'mediumTank': '#item_types:vehicle/tags/medium_tank/name',
+ 'lightTank': '#item_types:vehicle/tags/light_tank/name',
+ 'AT-SPG': '#item_types:vehicle/tags/at-spg/name',
+ 'SPG': '#item_types:vehicle/tags/spg/name'}
 
 class FORMATTER_IDS(object):
     DESCRIPTION = 'descriptionFormatter'
@@ -139,7 +141,8 @@ def packSimpleTitle(title):
 
 
 def packText(text, styler=None):
-    return {'text': text, 'styler': styler}
+    return {'text': text,
+     'styler': styler}
 
 
 def intersperse(sequence, item):
@@ -154,9 +157,7 @@ def intersperse(sequence, item):
 
 
 def getSeparator(groupType=GROUP_TYPE.AND):
-    if groupType == GROUP_TYPE.OR:
-        return i18n.makeString('#quests:details/groups/or')
-    return ''
+    return i18n.makeString('#quests:details/groups/or') if groupType == GROUP_TYPE.OR else ''
 
 
 def getSeparatorBlock(groupType=GROUP_TYPE.AND):
@@ -166,7 +167,7 @@ def getSeparatorBlock(groupType=GROUP_TYPE.AND):
         item.update(isSeparator=True)
         return item
     else:
-        return
+        return None
 
 
 def packTokenProgress(tokenId, questId, title, image, gotCount, needCount, isBigSize=False):
@@ -175,13 +176,13 @@ def packTokenProgress(tokenId, questId, title, image, gotCount, needCount, isBig
     else:
         tokensGot = text_styles.stats(gotCount)
     tokensNeed = text_styles.standard(needCount)
-    counterText = text_styles.disabled(('{} / {}').format(tokensGot, tokensNeed))
-    return {'tokenId': tokenId, 
-       'questId': questId, 
-       'titleText': title, 
-       'isNormalSize': not isBigSize, 
-       'imgSrc': image, 
-       'countText': counterText}
+    counterText = text_styles.disabled('{} / {}'.format(tokensGot, tokensNeed))
+    return {'tokenId': tokenId,
+     'questId': questId,
+     'titleText': title,
+     'isNormalSize': not isBigSize,
+     'imgSrc': image,
+     'countText': counterText}
 
 
 def getResultsData(condition):
@@ -196,9 +197,9 @@ def getResultsData(condition):
         key = i18n.makeString('#quests:details/conditions/cumulative/%s' % condition.keyName)
     else:
         labels = [ i18n.makeString('#quests:details/conditions/cumulative/%s' % key) for key in condition.getAggregatedKeys() ]
-        aggregated = ('\n').join(labels)
+        aggregated = '\n'.join(labels)
         if aggregated:
-            key = ('\n').join([i18n.makeString(QUESTS.DETAILS_CONDITIONS_CUMULATIVE_AGGREGATED), aggregated])
+            key = '\n'.join([i18n.makeString(QUESTS.DETAILS_CONDITIONS_CUMULATIVE_AGGREGATED), aggregated])
     labelKey = '#quests:details/conditions/results'
     topRangeUpper, topRangeLower = condition.getMaxRange()
     if topRangeLower < TOP_RANGE_LOWEST:
@@ -238,8 +239,10 @@ def getResultsData(condition):
             i18nValueKey = '#quests:details/conditions/cumulative/markOfMastery%d' % int(condition.relationValue)
             i18nLabel = i18n.makeString('#quests:details/conditions/cumulative/markOfMastery')
             label, value, relation = i18nLabel, i18n.makeString(i18nValueKey), condition.relation
-    return (
-     label, relation, relationI18nType, value)
+    return (label,
+     relation,
+     relationI18nType,
+     value)
 
 
 def _get128CondIcon(iconKey):
@@ -251,6 +254,4 @@ def _get90CondIcon(iconKey):
 
 
 def getCondIconBySize(size, iconKey):
-    if size == CONDITION_SIZE.NORMAL:
-        return _get128CondIcon(iconKey)
-    return _get90CondIcon(iconKey)
+    return _get128CondIcon(iconKey) if size == CONDITION_SIZE.NORMAL else _get90CondIcon(iconKey)

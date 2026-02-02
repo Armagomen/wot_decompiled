@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/tutorial/data/chapter.py
 import operator
 from tutorial.data.has_id import HasID, HasTargetID, HasIDAndTarget
 
@@ -86,10 +88,7 @@ class Chapter(HasID):
 
     def isInScene(self, scene, nextSceneID):
         sceneID = scene.getID()
-        if self.__defaultSceneID is not None and self.__initialSceneID is not None and self.__defaultSceneID == self.__initialSceneID and nextSceneID not in self.__sceneMap:
-            return True
-        else:
-            return sceneID == nextSceneID
+        return True if self.__defaultSceneID is not None and self.__initialSceneID is not None and self.__defaultSceneID == self.__initialSceneID and nextSceneID not in self.__sceneMap else sceneID == nextSceneID
 
     def addHasIDEntity(self, entity):
         self.__hasID[entity.getID()] = entity
@@ -140,9 +139,7 @@ class Chapter(HasID):
         self.__valid = flag
 
     def __getEffectsList(self, isPostScene):
-        if isPostScene:
-            return self.__effectsPostScene
-        return self.__effectsPreScene
+        return self.__effectsPostScene if isPostScene else self.__effectsPreScene
 
 
 class Scene(HasID):
@@ -231,7 +228,7 @@ class HasIDConditions(HasID):
         self.__conditions = conditions
 
     def __repr__(self):
-        return ('HasIDConditions({0:s}): {1!r:s}, {2!r:s}').format(self._id, self.__conditions[:], self.__conditions.eitherBlocks())
+        return 'HasIDConditions({0:s}): {1!r:s}, {2!r:s}'.format(self._id, self.__conditions[:], self.__conditions.eitherBlocks())
 
     def __iter__(self):
         return iter(self.__conditions)
@@ -295,7 +292,7 @@ class ActionsHolder(HasID):
         self.__actions = {}
 
     def addAction(self, action):
-        self.__actions[(action.getType(), action.getTargetID())] = action
+        self.__actions[action.getType(), action.getTargetID()] = action
 
     def removeAction(self, action):
         self.__actions.pop((action.getType(), action.getTargetID()), None)
@@ -303,10 +300,7 @@ class ActionsHolder(HasID):
 
     def getAction(self, event):
         key = event.getActionCriteria()
-        if key in self.__actions:
-            return self.__actions[key]
-        else:
-            return
+        return self.__actions[key] if key in self.__actions else None
 
     def getActionTypes(self):
         return map(operator.itemgetter(0), self.__actions.keys())
@@ -315,7 +309,7 @@ class ActionsHolder(HasID):
         return self.__actions.values()
 
     def setActions(self, actions):
-        self.__actions = dict(((action.getType(), action.getTargetID()), action) for action in actions)
+        self.__actions = dict((((action.getType(), action.getTargetID()), action) for action in actions))
 
     def clear(self):
         self.__actions.clear()
@@ -342,8 +336,7 @@ class SimpleImagePath(HasID):
         self._image = image
 
     def getImagePaths(self, varSummary):
-        return (
-         self._image, '')
+        return (self._image, '')
 
 
 class ChainHint(ActionsHolder, HasTargetID):

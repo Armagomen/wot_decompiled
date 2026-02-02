@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/vehicle_compare/select_slot_spec_compare_dialog.py
 import typing
 from BWUtil import AsyncReturn
 from wg_async import wg_async, wg_await

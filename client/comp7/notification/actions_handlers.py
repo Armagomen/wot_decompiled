@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/notification/actions_handlers.py
 from comp7.gui.impl.gen.view_models.views.lobby.enums import MetaRootViews
 from comp7.gui.prb_control.entities import comp7_prb_helpers
 from comp7.gui.shared.event_dispatcher import showComp7BanWindow
@@ -21,18 +23,18 @@ class OpenComp7ShopHandler(NavigationDisabledActionHandler):
 
     @classmethod
     def getActions(cls):
-        return ('openComp7Shop', )
+        pass
 
     def doAction(self, model, entityID, action):
         if not self.__comp7Controller.isModePrbActive():
             self.__spaceSwitchController.onSpaceUpdated += self.__onSpaceUpdated
             comp7_prb_helpers.selectComp7()
             return
+        elif self.__customizationService.getCtx() is not None:
+            self.__customizationService.onVisibilityChanged += self.__onC11nVisibilityChanged
+            shared_events.showHangar()
+            return
         else:
-            if self.__customizationService.getCtx() is not None:
-                self.__customizationService.onVisibilityChanged += self.__onC11nVisibilityChanged
-                shared_events.showHangar()
-                return
             self.__goToShop()
             return
 
@@ -59,7 +61,7 @@ class OpenBondEquipmentSelection(NavigationDisabledActionHandler):
 
     @classmethod
     def getActions(cls):
-        return ('openBondEquipmentSelection', )
+        pass
 
     def doAction(self, model, entityID, action):
         showComp7AllRewardsSelectionWindow()

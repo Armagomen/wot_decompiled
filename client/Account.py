@@ -1,6 +1,15 @@
-import cPickle, copy, logging, weakref, zlib
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/Account.py
+import cPickle
+import copy
+import logging
+import weakref
+import zlib
 from collections import namedtuple
-import BigWorld, AccountCommands, ClientPrebattle, Event
+import BigWorld
+import AccountCommands
+import ClientPrebattle
+import Event
 from ChatManager import chatManager
 from ClientChat import ClientChat
 from ClientGlobalMap import ClientGlobalMap
@@ -44,9 +53,13 @@ from skeletons.gui.shared.utils import IHangarSpace
 from soft_exception import SoftException
 from streamIDs import STREAM_ID_CHAT_MAX, STREAM_ID_CHAT_MIN, RangeStreamIDCallbacks
 from schema_manager import getSchemaManager
-StreamData = namedtuple('StreamData', ['data', 'isCorrupted', 'origPacketLen', 'packetLen', 'origCrc32', 'crc32'])
-StreamData.__new__.__defaults__ = (
- None,) * len(StreamData._fields)
+StreamData = namedtuple('StreamData', ['data',
+ 'isCorrupted',
+ 'origPacketLen',
+ 'packetLen',
+ 'origCrc32',
+ 'crc32'])
+StreamData.__new__.__defaults__ = (None,) * len(StreamData._fields)
 _logger = logging.getLogger(__name__)
 
 def _isInt(a):
@@ -70,33 +83,19 @@ def _isStrList(l):
 
 
 class _ClientCommandProxy(object):
-    _COMMAND_SIGNATURES = (
-     (
-      'doCmdStr', lambda args: len(args) == 1 and _isStr(args[0])),
-     (
-      'doCmdIntStr', lambda args: len(args) == 2 and _isInt(args[0]) and _isStr(args[1])),
-     (
-      'doCmdInt', lambda args: len(args) == 1 and _isInt(args[0])),
-     (
-      'doCmdInt2', lambda args: len(args) == 2 and all([ _isInt(arg) for arg in args ])),
-     (
-      'doCmdInt3', lambda args: len(args) == 3 and all([ _isInt(arg) for arg in args ])),
-     (
-      'doCmdInt4', lambda args: len(args) == 4 and all([ _isInt(arg) for arg in args ])),
-     (
-      'doCmdInt2Str', lambda args: len(args) == 3 and _isStr(args[2]) and all([ _isInt(arg) for arg in args[:2] ])),
-     (
-      'doCmdInt3Str', lambda args: len(args) == 4 and _isStr(args[3]) and all([ _isInt(arg) for arg in args[:3] ])),
-     (
-      'doCmdIntArr', lambda args: len(args) == 1 and _isIntList(args[0])),
-     (
-      'doCmdIntStrArr', lambda args: len(args) == 2 and _isInt(args[0]) and _isStrList(args[1])),
-     (
-      'doCmdStrArr', lambda args: len(args) == 1 and _isStrList(args[0])),
-     (
-      'doCmdIntArrStrArr', lambda args: len(args) == 2 and _isIntList(args[0]) and _isStrList(args[1])),
-     (
-      'doCmdNoArgs', lambda args: len(args) == 0))
+    _COMMAND_SIGNATURES = (('doCmdStr', lambda args: len(args) == 1 and _isStr(args[0])),
+     ('doCmdIntStr', lambda args: len(args) == 2 and _isInt(args[0]) and _isStr(args[1])),
+     ('doCmdInt', lambda args: len(args) == 1 and _isInt(args[0])),
+     ('doCmdInt2', lambda args: len(args) == 2 and all([ _isInt(arg) for arg in args ])),
+     ('doCmdInt3', lambda args: len(args) == 3 and all([ _isInt(arg) for arg in args ])),
+     ('doCmdInt4', lambda args: len(args) == 4 and all([ _isInt(arg) for arg in args ])),
+     ('doCmdInt2Str', lambda args: len(args) == 3 and _isStr(args[2]) and all([ _isInt(arg) for arg in args[:2] ])),
+     ('doCmdInt3Str', lambda args: len(args) == 4 and _isStr(args[3]) and all([ _isInt(arg) for arg in args[:3] ])),
+     ('doCmdIntArr', lambda args: len(args) == 1 and _isIntList(args[0])),
+     ('doCmdIntStrArr', lambda args: len(args) == 2 and _isInt(args[0]) and _isStrList(args[1])),
+     ('doCmdStrArr', lambda args: len(args) == 1 and _isStrList(args[0])),
+     ('doCmdIntArrStrArr', lambda args: len(args) == 2 and _isIntList(args[0]) and _isStrList(args[1])),
+     ('doCmdNoArgs', lambda args: len(args) == 0))
 
     def __init__(self):
         super(_ClientCommandProxy, self).__init__()
@@ -109,21 +108,21 @@ class _ClientCommandProxy(object):
     def perform(self, commandName, *args):
         if self.__commandGateway is None:
             raise SoftException('Client command proxy is not ready')
-        callback = args[(-1)]
+        callback = args[-1]
         commandArgs = args[:-1]
         for commandType, signatureCheck in self._COMMAND_SIGNATURES:
             if signatureCheck(commandArgs):
                 self.__commandGateway(commandType, commandName, callback, *commandArgs)
                 break
         else:
-            raise SoftException(('Command "{}" failed. Given signature is not supported.').format(commandName))
+            raise SoftException('Command "{}" failed. Given signature is not supported.'.format(commandName))
 
         return
 
 
 class PlayerAccount(BigWorld.Entity, ClientChat):
-    __onStreamCompletePredef = {AccountCommands.REQUEST_ID_PREBATTLES: 'receivePrebattles', 
-       AccountCommands.REQUEST_ID_PREBATTLE_ROSTER: 'receivePrebattleRoster'}
+    __onStreamCompletePredef = {AccountCommands.REQUEST_ID_PREBATTLES: 'receivePrebattles',
+     AccountCommands.REQUEST_ID_PREBATTLE_ROSTER: 'receivePrebattleRoster'}
     lobbyContext = dependency.descriptor(ILobbyContext)
     connectionMgr = dependency.descriptor(IConnectionManager)
     hangarSpace = dependency.descriptor(IHangarSpace)
@@ -636,7 +635,11 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
 
     def requestPrebattles(self, prbType, sort_key, idle, start, end):
         if not events.isPlayerEntityChanging:
-            self.base.doCmdIntArr(AccountCommands.REQUEST_ID_PREBATTLES, AccountCommands.CMD_REQ_PREBATTLES, [prbType, sort_key, int(idle), start, end])
+            self.base.doCmdIntArr(AccountCommands.REQUEST_ID_PREBATTLES, AccountCommands.CMD_REQ_PREBATTLES, [prbType,
+             sort_key,
+             int(idle),
+             start,
+             end])
 
     def requestPrebattlesByName(self, prbType, idle, creatorMask):
         if not events.isPlayerEntityChanging:
@@ -688,8 +691,11 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
     def enqueueRandom(self, vehInvID, gameplaysMask=ARENA_GAMEPLAY_MASK_DEFAULT, arenaTypeID=0, randomFlags=0):
         if events.isPlayerEntityChanging:
             return
-        self.base.doCmdIntArr(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_ENQUEUE_IN_BATTLE_QUEUE, [
-         QUEUE_TYPE.RANDOMS, vehInvID, gameplaysMask, arenaTypeID, randomFlags])
+        self.base.doCmdIntArr(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_ENQUEUE_IN_BATTLE_QUEUE, [QUEUE_TYPE.RANDOMS,
+         vehInvID,
+         gameplaysMask,
+         arenaTypeID,
+         randomFlags])
 
     def dequeueRandom(self):
         if not events.isPlayerEntityChanging:
@@ -697,8 +703,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
 
     def enqueueEventBattles(self, vehInvID):
         if not events.isPlayerEntityChanging:
-            self.base.doCmdIntArr(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_ENQUEUE_IN_BATTLE_QUEUE, [
-             QUEUE_TYPE.EVENT_BATTLES, vehInvID])
+            self.base.doCmdIntArr(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_ENQUEUE_IN_BATTLE_QUEUE, [QUEUE_TYPE.EVENT_BATTLES, vehInvID])
 
     def dequeueEventBattles(self):
         if not events.isPlayerEntityChanging:
@@ -707,8 +712,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
     def enqueueRanked(self, vehInvID):
         if events.isPlayerEntityChanging:
             return
-        self.base.doCmdIntArr(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_ENQUEUE_IN_BATTLE_QUEUE, [
-         QUEUE_TYPE.RANKED, vehInvID, 0])
+        self.base.doCmdIntArr(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_ENQUEUE_IN_BATTLE_QUEUE, [QUEUE_TYPE.RANKED, vehInvID, 0])
 
     def dequeueRanked(self):
         if not events.isPlayerEntityChanging:
@@ -716,8 +720,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
 
     def enqueueMapbox(self, vehInvID):
         if not events.isPlayerEntityChanging:
-            self.base.doCmdIntArr(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_ENQUEUE_IN_BATTLE_QUEUE, [
-             QUEUE_TYPE.MAPBOX, vehInvID])
+            self.base.doCmdIntArr(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_ENQUEUE_IN_BATTLE_QUEUE, [QUEUE_TYPE.MAPBOX, vehInvID])
 
     def dequeueMapbox(self):
         if not events.isPlayerEntityChanging:
@@ -725,8 +728,10 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
 
     def enqueueMapsTraininig(self, mapGeometryID, vehCompDescr, team):
         if not events.isPlayerEntityChanging:
-            self.base.doCmdIntArr(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_ENQUEUE_IN_BATTLE_QUEUE, [
-             QUEUE_TYPE.MAPS_TRAINING, vehCompDescr, mapGeometryID, team])
+            self.base.doCmdIntArr(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_ENQUEUE_IN_BATTLE_QUEUE, [QUEUE_TYPE.MAPS_TRAINING,
+             vehCompDescr,
+             mapGeometryID,
+             team])
 
     def dequeueMapsTraininig(self):
         if not events.isPlayerEntityChanging:
@@ -735,8 +740,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
     def enqueueWinback(self, vehInvID, winbackFlags=0):
         if events.isPlayerEntityChanging:
             return
-        self.base.doCmdIntArr(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_ENQUEUE_IN_BATTLE_QUEUE, [
-         QUEUE_TYPE.WINBACK, vehInvID, winbackFlags])
+        self.base.doCmdIntArr(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_ENQUEUE_IN_BATTLE_QUEUE, [QUEUE_TYPE.WINBACK, vehInvID, winbackFlags])
 
     def dequeueWinback(self):
         if not events.isPlayerEntityChanging:
@@ -880,20 +884,17 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         return
 
     def selectPersonalMissions(self, personalMissionsIDs, questType, callback):
-        args = [
-         questType]
+        args = [questType]
         args.extend(personalMissionsIDs)
         self._doCmdIntArr(AccountCommands.CMD_SELECT_POTAPOV_QUESTS, args, lambda requestID, resultID, errorCode: callback(resultID, errorCode))
 
     def resetPersonalMissions(self, personalMissionsIDs, questType, callback):
-        args = [
-         questType]
+        args = [questType]
         args.extend(personalMissionsIDs)
         self._doCmdIntArr(AccountCommands.CMD_RESET_POTAPOV_QUESTS, args, lambda requestID, resultID, errorCode: callback(resultID, errorCode))
 
     def pausePersonalMissions(self, personalMissionsIDs, questType, enable, callback):
-        args = [
-         questType, enable]
+        args = [questType, enable]
         args.extend(personalMissionsIDs)
         self._doCmdIntArr(AccountCommands.CMD_PAUSE_POTAPOV_QUESTS, args, lambda requestID, resultID, errorCode: callback(resultID, errorCode))
 
@@ -910,8 +911,12 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         return
 
     def getPersonalMissionReward(self, personalMissionsIDs, questType, needTamkman=False, tmanNation=0, tmanInnation=0, roleID=1, callback=None):
-        arr = [
-         questType, personalMissionsIDs, needTamkman, tmanNation, tmanInnation, roleID]
+        arr = [questType,
+         personalMissionsIDs,
+         needTamkman,
+         tmanNation,
+         tmanInnation,
+         roleID]
         if callback is not None:
             proxy = lambda requestID, resultID, errorCode, ctx: callback(resultID, errorCode, ctx)
         else:
@@ -941,7 +946,10 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
             proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID, errorStr, ext)
         else:
             proxy = None
-        intArr = [accountDBID, restrType, banPeriod, isBan]
+        intArr = [accountDBID,
+         restrType,
+         banPeriod,
+         isBan]
         strArr = [reason]
         self._doCmdIntArrStrArr(AccountCommands.CMD_BAN_UNBAN_USER, intArr, strArr, proxy)
         return
@@ -987,8 +995,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         self._doCmdIntStrArr(AccountCommands.CMD_RUN_QUEST, questType, questIDs, lambda requestID, resultID, errorStr: callback(resultID))
 
     def pawnFreeAwardList(self, questType, questID, callback):
-        args = [
-         questType, questID]
+        args = [questType, questID]
         self._doCmdIntArr(AccountCommands.CMD_PAWN_FREE_AWARD_LIST, args, lambda requestID, resultID, errorStr: callback(resultID))
 
     def requestSingleToken(self, tokenName, callback=None):
@@ -1000,7 +1007,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
         MessengerEntry.g_instance.protos.BW_CHAT2.onActionReceived(actionID, reqID, args)
 
     def addBlueprintFragment(self, fragmentTypeCD, requestedCount, other=-1):
-        LOG_DEBUG(('Account.addBlueprintFragment: fragmentTypeCD={}, count={}').format(fragmentTypeCD, requestedCount))
+        LOG_DEBUG('Account.addBlueprintFragment: fragmentTypeCD={}, count={}'.format(fragmentTypeCD, requestedCount))
         self.base.doCmdInt3(AccountCommands.REQUEST_ID_NO_RESPONSE, AccountCommands.CMD_BPF_ADD_FRAGMENTS_DEV, requestedCount, fragmentTypeCD, other)
 
     def processInvitations(self, invitations):
@@ -1187,15 +1194,14 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
 
                 for vehInvID, lockReason in diff.get('cache', {}).get('vehsLock', {}).iteritems():
                     if lockReason is None:
-                        lockReason = (
-                         AccountCommands.LOCK_REASON.NONE, 0)
+                        lockReason = (AccountCommands.LOCK_REASON.NONE, 0)
                     events.onVehicleLockChanged(vehInvID, lockReason)
 
             return True
 
     def _synchronizeCacheDict(self, repDict, diffDict, key, syncMode, event):
         if syncMode not in ('update', 'replace'):
-            raise SoftException(('Mode {} is not supported on the client').format(syncMode))
+            raise SoftException('Mode {} is not supported on the client'.format(syncMode))
         if diffDict is None:
             return
         else:
@@ -1212,9 +1218,8 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
                             continue
                         if syncMode == 'replace':
                             repDict[k] = v
-                        else:
-                            repDict.setdefault(k, {})
-                            repDict[k].update(v)
+                        repDict.setdefault(k, {})
+                        repDict[k].update(v)
 
                 else:
                     LOG_WARNING('_synchronizeCacheDict: bad diff=%r for key=%r' % (diff, key))
@@ -1245,7 +1250,8 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
             tm.setTimeCorrection(ctx['serverUTC'])
 
     def _synchronizeEventNotifications(self, diff):
-        diffDict = {'added': [], 'removed': []}
+        diffDict = {'added': [],
+         'removed': []}
         if diff is None:
             return
         else:
@@ -1295,8 +1301,7 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
                         if isinstance(value, dict):
                             serverSettings.setdefault(key, {})
                             serverSettings[key].update(value)
-                        else:
-                            serverSettings[key] = value
+                        serverSettings[key] = value
 
                 else:
                     LOG_WARNING('_synchronizeCacheDict: bad diff=%r for key=%r' % (serverSettingsDiff, key))
@@ -1317,14 +1322,13 @@ class PlayerAccount(BigWorld.Entity, ClientChat):
                                 serverSettings.setdefault(sectionKey, {})
                                 serverSettings[sectionKey] = serverSettingsDiff[sectionKey]
                             else:
-                                LOG_WARNING('_synchronizeCacheDict: bad diff=%r for key=%r' % (
-                                 serverSettingsDiff, sectionKey))
+                                LOG_WARNING('_synchronizeCacheDict: bad diff=%r for key=%r' % (serverSettingsDiff, sectionKey))
 
             return
 
     @prbEntityProperty
     def _prbEntity(self):
-        return
+        return None
 
     def __getRequestID(self):
         if g_accountRepository is None:

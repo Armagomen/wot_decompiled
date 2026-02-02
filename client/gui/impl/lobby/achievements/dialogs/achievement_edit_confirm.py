@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/achievements/dialogs/achievement_edit_confirm.py
 import typing
 from BWUtil import AsyncReturn
 from PlayerEvents import g_playerEvents
@@ -32,24 +34,18 @@ class EditConfirm(FullScreenDialogView):
 
     def _onLoading(self, *args, **kwargs):
         super(EditConfirm, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setDialogType(self.__dialogType)
 
     def _addListeners(self):
         pass
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onAccept, self._onAccept),
-         (
-          self.viewModel.onCancel, self.__onCancelAction),
-         (
-          self.viewModel.onClose, self._onExitClicked),
-         (
-          g_playerEvents.onAccountBecomeNonPlayer, self.destroyWindow),
-         (
-          self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged))
+        return ((self.viewModel.onAccept, self._onAccept),
+         (self.viewModel.onCancel, self.__onCancelAction),
+         (self.viewModel.onClose, self._onExitClicked),
+         (g_playerEvents.onAccountBecomeNonPlayer, self.destroyWindow),
+         (self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged))
 
     def _removeListeners(self):
         pass

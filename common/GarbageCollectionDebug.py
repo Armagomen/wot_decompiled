@@ -1,7 +1,13 @@
-import re, sys, itertools
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/GarbageCollectionDebug.py
+import re
+import sys
+import itertools
 from bwdebug import DEBUG_MSG
 from bwdebug import ERROR_MSG
-import BigWorld, StringIO, objgraph
+import BigWorld
+import StringIO
+import objgraph
 LIMIT_LEN = False
 MAX_LEN = 5
 MAX_DEPTH = 1
@@ -85,14 +91,14 @@ def get_loops_graph(content):
     objs = [ g.findall(i) for i in lines ]
     edges = [ i for i in objs if len(i) == 2 ]
     unique_loops = get_all_unique_loops(edges)
-    nodes = set(j for i in unique_loops for j in i)
+    nodes = set((j for i in unique_loops for j in i))
     result = []
     for line in lines:
         line_nodes = g.findall(line)
-        if not line_nodes or all(i in nodes for i in line_nodes):
+        if not line_nodes or all((i in nodes for i in line_nodes)):
             result.append(line)
 
-    return (';').join(result)
+    return ';'.join(result)
 
 
 def gcDump():
@@ -139,13 +145,14 @@ def get_refs(obj, source_list, known_ids, get_unknown_referents=False):
     unknown_referents = []
     for i in gc.get_referents(obj):
         if id(i) in known_ids:
-            res.append({'target': id(i), 'source': id(obj)})
-        elif get_unknown_referents:
+            res.append({'target': id(i),
+             'source': id(obj)})
+        if get_unknown_referents:
             unknown_referents.append(i)
-            res.append({'target': id(i), 'source': id(obj)})
+            res.append({'target': id(i),
+             'source': id(obj)})
 
-    return (
-     res, unknown_referents)
+    return (res, unknown_referents)
 
 
 def get_graph_text_repr(graph, garbage_ids, extra_info=False, refcounts=False, shortnames=True):
@@ -157,13 +164,14 @@ def get_graph_text_repr(graph, garbage_ids, extra_info=False, refcounts=False, s
         target = garbage_ids[obj_id]
         for obj_id in (edge_data['source'], edge_data['target']):
             obj = garbage_ids[obj_id]
-            node_names[obj_id] = {'id': obj_id, 
-               'label': objgraph._obj_label(obj, extra_info, refcounts, shortnames)}
+            node_names[obj_id] = {'id': obj_id,
+             'label': objgraph._obj_label(obj, extra_info, refcounts, shortnames)}
 
         source = garbage_ids[edge_data['target']]
         edge_data['label'] = objgraph._edge_label(target, source)
 
-    return {'nodes': node_names, 'edges': graph}
+    return {'nodes': node_names,
+     'edges': graph}
 
 
 def getGarbageGraph(depth=0):
@@ -196,16 +204,14 @@ def getGarbageGraph(depth=0):
         del garbage_list[:]
         graph_info = get_graph_text_repr(gc_refs, garbage_ids, shortnames=False)
         result = 'digraph ObjectGraph { node[shape=box, style=filled, fillcolor=white];  %s }'
-        node_items = [ 'o%s[label="%s"]' % (i['id'], i['label']) for i in graph_info['nodes'].values()
-                     ]
-        edge_items = [ 'o%s -> o%s %s' % (i['source'], i['target'], i.get('label', '')) for i in graph_info['edges']
-                     ]
+        node_items = [ 'o%s[label="%s"]' % (i['id'], i['label']) for i in graph_info['nodes'].values() ]
+        edge_items = [ 'o%s -> o%s %s' % (i['source'], i['target'], i.get('label', '')) for i in graph_info['edges'] ]
         garbage_ids.clear()
         graph_info['nodes'].clear()
         del graph_info['edges'][:]
         del gc_refs[:]
         del gc_dump[:]
-        return result % ('; ').join(itertools.chain(node_items, edge_items))
+        return result % '; '.join(itertools.chain(node_items, edge_items))
 
 
 class TestLeak:
@@ -328,13 +334,15 @@ def getObjectReferrers(obj, ignore):
 
 
 def saveOptimizedGarbage(path):
-    import gc, sys, inspect
+    import gc
+    import sys
+    import inspect
     delimiter = '=-=' * 100 + '\n'
     logPattern = '{}Representation str(garbageObject):\n{}\nObject type: {}\nRef count: {}\nModule of object: {}\n'
     gc.collect()
     gcGarbageCopy = gc.garbage[:]
     del gc.garbage[:]
-    with open(path, 'w') as (f):
+    with open(path, 'w') as f:
         for garbageObject in gcGarbageCopy:
             try:
                 f.write(logPattern.format(delimiter, str(garbageObject), type(garbageObject), sys.getrefcount(garbageObject), inspect.getmodule(garbageObject)))

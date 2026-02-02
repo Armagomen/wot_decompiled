@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/gui/Scaleform/channels/bw/factories.py
 from messenger.gui.Scaleform.channels.bw import lobby_controllers
 from messenger.gui.interfaces import IControllerFactory
 from messenger.m_constants import LAZY_CHANNEL
@@ -8,7 +10,7 @@ class LobbyControllersFactory(IControllerFactory):
 
     @storage_getter('channels')
     def channelsStorage(self):
-        return
+        return None
 
     def init(self):
         controllers = []

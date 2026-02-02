@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/InBattleUpgrades.py
 import BigWorld
 from aih_constants import CTRL_MODE_NAME
 from wotdecorators import noexcept
@@ -72,7 +74,7 @@ def onBattleRoyalePrerequisites(vehicle, oldTypeDescriptor, forceReloading):
                 player = BigWorld.player()
                 if player.isObserver():
                     vehicle.guiSessionProvider.shared.ammo.clearAmmo()
-                    vehicle.guiSessionProvider.shared.ammo.setGunSettings(vehicle.typeDescriptor)
+                    vehicle.guiSessionProvider.shared.ammo.setGunSettings(vehicle.id, vehicle.typeDescriptor)
                 player.gunRotator.switchActiveGun([0])
 
     if forceReloading:

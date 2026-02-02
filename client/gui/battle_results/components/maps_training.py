@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_results/components/maps_training.py
 import logging
 from ArenaType import parseTypeID
 from gui.battle_results.components import base
@@ -39,8 +41,8 @@ class StatsBlock(base.StatsBlock):
         info = reusable.getPersonalVehiclesInfo(result['personal'])
         for statType, statFieldName in BATTLE_STATS_RESULT_FIELDS.iteritems():
             statVal = info.__getattribute__(statFieldName)
-            self.addNextComponent(base.DirectStatsItem('', {'id': statType, 
-               'value': statVal}))
+            self.addNextComponent(base.DirectStatsItem('', {'id': statType,
+             'value': statVal}))
 
         questKills = 0
         vseBattleResults = result['personal']['avatar']['vseBattleResults']
@@ -49,8 +51,8 @@ class StatsBlock(base.StatsBlock):
                 continue
             questKills += goal if kills > goal else kills
 
-        self.addNextComponent(base.DirectStatsItem('', {'id': 'questKills', 
-           'value': questKills}))
+        self.addNextComponent(base.DirectStatsItem('', {'id': 'questKills',
+         'value': questKills}))
 
 
 class GeometryIdItem(base.StatsItem):
@@ -87,8 +89,7 @@ class MTProgressMixin(object):
         rewardsConfig = config.get('rewards', {}).get(geometryID, {})
         scenarioConfig = config.get('scenarios', {}).get(geometryID, {}).get(team, {}).get(vehType, {})
         playerProgress = result['personal']['avatar']['scenarioProgress']
-        return (
-         scenarioConfig, rewardsConfig, playerProgress)
+        return (scenarioConfig, rewardsConfig, playerProgress)
 
 
 class DoneValueItem(base.StatsItem):
@@ -104,10 +105,7 @@ class ScenarioProgressBlock(base.StatsBlock, MTProgressMixin):
     def setRecord(self, result, reusable):
         scenarioConfig, _, playerProgress = self._getScenarioData(result, reusable)
         totalTargets = sum(scenarioConfig['goals'].values())
-        self.addNextComponent(base.DirectStatsItem('', (
-         totalTargets,
-         playerProgress['level'] > 0,
-         playerProgress['level'] > 0 and playerProgress['prevBest'] > 0)))
+        self.addNextComponent(base.DirectStatsItem('', (totalTargets, playerProgress['level'] > 0, playerProgress['level'] > 0 and playerProgress['prevBest'] > 0)))
 
 
 class RewardsBlock(base.StatsBlock, MTProgressMixin):

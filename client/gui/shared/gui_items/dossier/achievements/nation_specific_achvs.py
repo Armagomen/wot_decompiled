@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/gui_items/dossier/achievements/nation_specific_achvs.py
 from dossiers2.custom.helpers import getMechanicEngineerRequirements, getVehicleCollectorRequirements, getTankExpertRequirements, getAllCollectorVehicles
 from abstract import NationSpecificAchievement
 from abstract.mixins import HasVehiclesList
@@ -26,15 +28,12 @@ class MechEngineerAchievement(HasVehiclesList, NationSpecificAchievement):
 
     @classmethod
     def _parseVehiclesDescrsList(cls, name, nationID, dossier):
-        if dossier is not None and dossier.isCurrentUser():
-            return getMechanicEngineerRequirements(set(), cls.itemsCache.items.stats.unlocks, nationID).get(name, [])
-        else:
-            return []
+        return getMechanicEngineerRequirements(set(), cls.itemsCache.items.stats.unlocks, nationID).get(name, []) if dossier is not None and dossier.isCurrentUser() else []
 
 
 class VehicleCollectorAchievement(HasVehiclesList, NationSpecificAchievement):
     __itemsCache = dependency.descriptor(IItemsCache)
-    __slots__ = ('__hasCollectibleVehicles', )
+    __slots__ = ('__hasCollectibleVehicles',)
     _MEDAL_NAME = CollectorVehicleConsts.COLLECTOR_MEDAL_PREFIX
     _NATIONAL_VEHICLES = 'collectorVehiclesByNations'
     _LIST_NAME = 'vehiclesToBuy'
@@ -64,14 +63,11 @@ class VehicleCollectorAchievement(HasVehiclesList, NationSpecificAchievement):
 
     @classmethod
     def _parseVehiclesDescrsList(cls, name, nationID, dossier, inventoryVehicles=None):
-        if dossier is not None and dossier.isCurrentUser():
-            return getVehicleCollectorRequirements(cls.__getInventoryCollectibleVehicles(nationID) if inventoryVehicles is None else inventoryVehicles, nationID).get(name, [])
-        else:
-            return []
+        return getVehicleCollectorRequirements(cls.__getInventoryCollectibleVehicles(nationID) if inventoryVehicles is None else inventoryVehicles, nationID).get(name, []) if dossier is not None and dossier.isCurrentUser() else []
 
     @classmethod
     def __getInventoryCollectibleVehicles(cls, nationID):
-        return set(v for v in getAllCollectorVehicles(nationID) if cls.__itemsCache.items.inventory.getItemData(v) is not None)
+        return set((v for v in getAllCollectorVehicles(nationID) if cls.__itemsCache.items.inventory.getItemData(v) is not None))
 
 
 class TankExpertAchievement(HasVehiclesList, NationSpecificAchievement):
@@ -95,7 +91,4 @@ class TankExpertAchievement(HasVehiclesList, NationSpecificAchievement):
 
     @classmethod
     def _parseVehiclesDescrsList(cls, name, dossier):
-        if dossier is not None:
-            return getTankExpertRequirements(dossier.getBlock('vehTypeFrags')).get(name, [])
-        else:
-            return []
+        return getTankExpertRequirements(dossier.getBlock('vehTypeFrags')).get(name, []) if dossier is not None else []

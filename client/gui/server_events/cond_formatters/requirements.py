@@ -1,4 +1,7 @@
-import types, nations
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/server_events/cond_formatters/requirements.py
+import types
+import nations
 from constants import EVENT_TYPE, IGR_TYPE, IS_CHINA
 from gui import makeHtmlString
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
@@ -17,7 +20,8 @@ from skeletons.gui.shared import IItemsCache
 from soft_exception import SoftException
 
 def packTokens(tokens):
-    return {'tokens': tokens, 'isNeedShowIcon': False}
+    return {'tokens': tokens,
+     'isNeedShowIcon': False}
 
 
 def relate(relation, value, label):
@@ -27,7 +31,7 @@ def relate(relation, value, label):
         value = value
     relation = backport.text(R.strings.quests.details.requirementsRelation.dyn(relation)())
     rlabel = backport.text(R.strings.quests.details.requirements.relation(), relation=relation, value=value)
-    return ('{}{}').format(label, rlabel)
+    return u'{}{}'.format(label, rlabel)
 
 
 def prepareAccountConditionsGroup(conditions, event):
@@ -48,9 +52,7 @@ def _isVehicleConditionAvailable(condition, suitableVehicles):
 def _getAdapter(condition, suitableVehicles):
     if condition.getName() == GROUP_TYPE.AND:
         return VehicleGroupAndAdapter(condition, suitableVehicles)
-    if condition.getName() == GROUP_TYPE.OR:
-        return VehicleGroupOrAdapter(condition, suitableVehicles)
-    return VehicleConditionAdapter(condition, suitableVehicles)
+    return VehicleGroupOrAdapter(condition, suitableVehicles) if condition.getName() == GROUP_TYPE.OR else VehicleConditionAdapter(condition, suitableVehicles)
 
 
 class RecursiveFormatter(ConditionsFormatter):
@@ -126,9 +128,9 @@ class VehicleGroupAndAdapter(VehicleGroupAdapter):
 class AccountRequirementsFormatter(ConditionsFormatter):
 
     def __init__(self, formatters=None):
-        super(AccountRequirementsFormatter, self).__init__(formatters or {'and': RecursiveGroupFormatter(), 
-           'or': RecursiveGroupFormatter(), 
-           'single': SingleGroupFormatter()})
+        super(AccountRequirementsFormatter, self).__init__(formatters or {'and': RecursiveGroupFormatter(),
+         'or': RecursiveGroupFormatter(),
+         'single': SingleGroupFormatter()})
 
     def format(self, conditions, event):
         if event.isGuiDisabled():
@@ -137,10 +139,8 @@ class AccountRequirementsFormatter(ConditionsFormatter):
         formatter = self._getGroupFormatter(group)
         requirements, passed, total = formatter.format(group, event)
         conclusion = formatter.conclusion(group, event, requirements, passed, total)
-        if not requirements and not conclusion:
-            return {}
-        return {'header': conclusion, 
-           'requirements': self._processRequirements(requirements)}
+        return {} if not requirements and not conclusion else {'header': conclusion,
+         'requirements': self._processRequirements(requirements)}
 
     @staticmethod
     def _processRequirements(requirements):
@@ -155,11 +155,7 @@ class AccountRequirementsFormatter(ConditionsFormatter):
         return requirements
 
     def _getGroupFormatter(self, group):
-        if len(group.items) == 1 and first(group.items).getName() not in ('token',
-                                                                          'and',
-                                                                          'or'):
-            return self.getConditionFormatter('single')
-        return self.getConditionFormatter(group.getName())
+        return self.getConditionFormatter('single') if len(group.items) == 1 and first(group.items).getName() not in ('token', 'and', 'or') else self.getConditionFormatter(group.getName())
 
     def _packCondition(self, *args, **kwargs):
         raise SoftException('This method should not be reached in this context')
@@ -174,9 +170,9 @@ class AccountRequirementsFormatter(ConditionsFormatter):
 class TQAccountRequirementsFormatter(AccountRequirementsFormatter):
 
     def __init__(self):
-        super(TQAccountRequirementsFormatter, self).__init__({'and': TQRecursiveGroupFormatter(), 
-           'or': TQRecursiveGroupFormatter(), 
-           'single': SingleGroupFormatter()})
+        super(TQAccountRequirementsFormatter, self).__init__({'and': TQRecursiveGroupFormatter(),
+         'or': TQRecursiveGroupFormatter(),
+         'single': SingleGroupFormatter()})
 
     def _getGroupFormatter(self, group):
         return self.getConditionFormatter(group.getName())
@@ -185,16 +181,16 @@ class TQAccountRequirementsFormatter(AccountRequirementsFormatter):
 class SingleGroupFormatter(ConditionsFormatter):
 
     def __init__(self):
-        super(SingleGroupFormatter, self).__init__({'premiumAccount': PremiumAccountFormatter(), 
-           'premiumPlusAccount': PremiumPlusAccountFormatter(), 
-           'wotPlus': WotPlusFormatter(), 
-           'inClan': InClanRequirementFormatter(), 
-           'igrType': IgrTypeRequirementFormatter(), 
-           'GR': GlobalRatingRequirementFormatter(), 
-           'accountDossier': AccountDossierRequirementFormatter(), 
-           'vehiclesUnlocked': VehiclesRequirementFormatter(), 
-           'vehiclesOwned': VehiclesRequirementFormatter(), 
-           'hasReceivedMultipliedXP': HasReceivedMultipliedXPFormatter()})
+        super(SingleGroupFormatter, self).__init__({'premiumAccount': PremiumAccountFormatter(),
+         'premiumPlusAccount': PremiumPlusAccountFormatter(),
+         'wotPlus': WotPlusFormatter(),
+         'inClan': InClanRequirementFormatter(),
+         'igrType': IgrTypeRequirementFormatter(),
+         'GR': GlobalRatingRequirementFormatter(),
+         'accountDossier': AccountDossierRequirementFormatter(),
+         'vehiclesUnlocked': VehiclesRequirementFormatter(),
+         'vehiclesOwned': VehiclesRequirementFormatter(),
+         'hasReceivedMultipliedXP': HasReceivedMultipliedXPFormatter()})
 
     def conclusion(self, group, event, requirements, passed, total):
         if group.isAvailable():
@@ -202,8 +198,7 @@ class SingleGroupFormatter(ConditionsFormatter):
             style = text_styles.standard
             header = '#quests:missionDetails/requirements/header/available'
         else:
-            icon = (
-             icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_MARKER_BLOCKED, width=14, height=14, vSpace=-1, hSpace=-2),)
+            icon = (icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_MARKER_BLOCKED, width=14, height=14, vSpace=-1, hSpace=-2),)
             style = text_styles.error
             header = '#quests:missionDetails/requirements/header/unavailable'
         result = []
@@ -227,9 +222,7 @@ class SingleGroupFormatter(ConditionsFormatter):
 
     @staticmethod
     def _styler(isRequirementMet):
-        if isRequirementMet:
-            return text_styles.standard
-        return text_styles.main
+        return text_styles.standard if isRequirementMet else text_styles.main
 
     def _packCondition(self, *args, **kwargs):
         raise SoftException('This method should not be reached in this context')
@@ -244,16 +237,16 @@ class SingleGroupFormatter(ConditionsFormatter):
 class RecursiveGroupFormatter(RecursiveFormatter):
 
     def __init__(self, formatters=None):
-        super(RecursiveGroupFormatter, self).__init__(formatters=formatters or {'premiumAccount': PremiumAccountFormatter(), 
-           'premiumPlusAccount': PremiumPlusAccountFormatter(), 
-           'wotPlus': WotPlusFormatter(), 
-           'inClan': InClanRequirementFormatter(), 
-           'igrType': IgrTypeRequirementFormatter(), 
-           'GR': GlobalRatingRequirementFormatter(), 
-           'accountDossier': AccountDossierRequirementFormatter(), 
-           'vehiclesUnlocked': VehiclesRequirementFormatter(), 
-           'vehiclesOwned': VehiclesRequirementFormatter(), 
-           'hasReceivedMultipliedXP': HasReceivedMultipliedXPFormatter()}, gatheringFormatters={'token': TokenGatheringRequirementFormatter})
+        super(RecursiveGroupFormatter, self).__init__(formatters=formatters or {'premiumAccount': PremiumAccountFormatter(),
+         'premiumPlusAccount': PremiumPlusAccountFormatter(),
+         'wotPlus': WotPlusFormatter(),
+         'inClan': InClanRequirementFormatter(),
+         'igrType': IgrTypeRequirementFormatter(),
+         'GR': GlobalRatingRequirementFormatter(),
+         'accountDossier': AccountDossierRequirementFormatter(),
+         'vehiclesUnlocked': VehiclesRequirementFormatter(),
+         'vehiclesOwned': VehiclesRequirementFormatter(),
+         'hasReceivedMultipliedXP': HasReceivedMultipliedXPFormatter()}, gatheringFormatters={'token': TokenGatheringRequirementFormatter})
 
     def conclusion(self, group, event, requirements, passed, total):
         if not total:
@@ -269,8 +262,7 @@ class RecursiveGroupFormatter(RecursiveFormatter):
                 reason = '#quests:missionDetails/requirements/conclusion/available'
             count = total
         else:
-            icon = (
-             icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_MARKER_BLOCKED, width=14, height=14, vSpace=-1, hSpace=-2),)
+            icon = (icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_MARKER_BLOCKED, width=14, height=14, vSpace=-1, hSpace=-2),)
             headerStyle = text_styles.error
             reasonStyle = text_styles.main
             header = '#quests:missionDetails/requirements/header/unavailable'
@@ -298,22 +290,21 @@ class RecursiveGroupFormatter(RecursiveFormatter):
                 result.extend(branch)
                 if separator:
                     result.append(separator)
+            if conditionName in gatheringFmts:
+                fmt = gatheringFmts.get(conditionName)
+                fmt.gather(condition, event)
+                branch = []
+            elif self.hasFormatter(conditionName):
+                fmt = self.getConditionFormatter(conditionName)
+                branch = fmt.format(condition, event, self._styler)
             else:
-                if conditionName in gatheringFmts:
-                    fmt = gatheringFmts.get(conditionName)
-                    fmt.gather(condition, event)
-                    branch = []
-                elif self.hasFormatter(conditionName):
-                    fmt = self.getConditionFormatter(conditionName)
-                    branch = fmt.format(condition, event, self._styler)
-                else:
-                    branch = []
-                if branch:
-                    total += 1
-                    isAvailable = condition.isAvailable()
-                    if isAvailable:
-                        passed += 1
-                    result.extend(self._processNonGroupConditions(branch, isNested, isAvailable, separator, topHasOrGroup))
+                branch = []
+            if branch:
+                total += 1
+                isAvailable = condition.isAvailable()
+                if isAvailable:
+                    passed += 1
+                result.extend(self._processNonGroupConditions(branch, isNested, isAvailable, separator, topHasOrGroup))
 
         for fmt in gatheringFmts.itervalues():
             branch = fmt.format(self._styler)
@@ -322,7 +313,7 @@ class RecursiveGroupFormatter(RecursiveFormatter):
                 isAvailable = fmt.isAvailable()
                 result.extend(self._processNonGroupConditions(branch, isNested, isAvailable, separator, topHasOrGroup))
 
-        if result and result[(-1)].get('isSeparator'):
+        if result and result[-1].get('isSeparator'):
             result.pop()
         return (result, passed, total)
 
@@ -340,15 +331,11 @@ class RecursiveGroupFormatter(RecursiveFormatter):
 
     @staticmethod
     def _getIcon(isAvailable):
-        if isAvailable:
-            return RES_ICONS.MAPS_ICONS_LIBRARY_OKICON
-        return RES_ICONS.MAPS_ICONS_LIBRARY_CYBERSPORT_NOTAVAILABLEICON
+        return RES_ICONS.MAPS_ICONS_LIBRARY_OKICON if isAvailable else RES_ICONS.MAPS_ICONS_LIBRARY_CYBERSPORT_NOTAVAILABLEICON
 
     @staticmethod
     def _styler(isRequirementMet):
-        if isRequirementMet:
-            return text_styles.success
-        return text_styles.main
+        return text_styles.success if isRequirementMet else text_styles.main
 
     @staticmethod
     def _iconize(isAvailable, isNested, branch):
@@ -363,16 +350,16 @@ class RecursiveGroupFormatter(RecursiveFormatter):
 class TQRecursiveGroupFormatter(RecursiveGroupFormatter):
 
     def __init__(self):
-        super(TQRecursiveGroupFormatter, self).__init__(formatters={'premiumAccount': PremiumAccountFormatter(), 
-           'premiumPlusAccount': PremiumPlusAccountFormatter(), 
-           'wotPlus': WotPlusFormatter(), 
-           'inClan': InClanRequirementFormatter(), 
-           'igrType': IgrTypeRequirementFormatter(), 
-           'GR': GlobalRatingRequirementFormatter(), 
-           'accountDossier': AccountDossierRequirementFormatter(), 
-           'vehiclesUnlocked': VehiclesRequirementFormatter(), 
-           'vehiclesOwned': VehiclesRequirementFormatter(), 
-           'hasReceivedMultipliedXP': HasReceivedMultipliedXPFormatter()})
+        super(TQRecursiveGroupFormatter, self).__init__(formatters={'premiumAccount': PremiumAccountFormatter(),
+         'premiumPlusAccount': PremiumPlusAccountFormatter(),
+         'wotPlus': WotPlusFormatter(),
+         'inClan': InClanRequirementFormatter(),
+         'igrType': IgrTypeRequirementFormatter(),
+         'GR': GlobalRatingRequirementFormatter(),
+         'accountDossier': AccountDossierRequirementFormatter(),
+         'vehiclesUnlocked': VehiclesRequirementFormatter(),
+         'vehiclesOwned': VehiclesRequirementFormatter(),
+         'hasReceivedMultipliedXP': HasReceivedMultipliedXPFormatter()})
 
 
 class PremiumAccountFormatter(ConditionFormatter):
@@ -385,8 +372,7 @@ class PremiumAccountFormatter(ConditionFormatter):
             labelKey = 'notPremiumAccount'
         label = backport.text(R.strings.quests.details.requirements.dyn(labelKey)())
         style = styler(condition.isAvailable())
-        return [
-         packText(text=label, styler=style)]
+        return [packText(text=label, styler=style)]
 
 
 class PremiumPlusAccountFormatter(ConditionFormatter):
@@ -399,8 +385,7 @@ class PremiumPlusAccountFormatter(ConditionFormatter):
             labelKey = 'notPremiumAccount'
         label = backport.text(R.strings.quests.details.requirements.dyn(labelKey)())
         style = styler(condition.isAvailable())
-        return [
-         packText(text=label, styler=style)]
+        return [packText(text=label, styler=style)]
 
 
 class WotPlusFormatter(ConditionFormatter):
@@ -410,8 +395,7 @@ class WotPlusFormatter(ConditionFormatter):
         style = styler(condition.isAvailable())
         labelKey = 'wotPlus' if condition.isWotPlusNeeded() else 'withoutWotPlus'
         label = backport.text(R.strings.quests.details.requirements.dyn(labelKey)())
-        return [
-         packText(text=label, styler=style)]
+        return [packText(text=label, styler=style)]
 
 
 class InClanRequirementFormatter(ConditionFormatter):
@@ -440,8 +424,7 @@ class InClanRequirementFormatter(ConditionFormatter):
         if labelKey is not None:
             label = backport.text(R.strings.quests.details.requirements.dyn(labelKey)())
             style = styler(condition.isAvailable())
-            return [
-             packText(text=label, styler=style)]
+            return [packText(text=label, styler=style)]
         else:
             return []
 
@@ -461,8 +444,7 @@ class IgrTypeRequirementFormatter(ConditionFormatter):
             key = 'igr'
         label = backport.text(R.strings.quests.details.requirements.dyn(key)())
         style = styler(condition.isAvailable())
-        return [
-         packText(text=makeHtmlString('html_templates:lobby/quests', 'playInIgr', {'label': style(label)}))]
+        return [packText(text=makeHtmlString('html_templates:lobby/quests', 'playInIgr', {'label': style(label)}))]
 
 
 class GlobalRatingRequirementFormatter(ConditionFormatter):
@@ -473,8 +455,7 @@ class GlobalRatingRequirementFormatter(ConditionFormatter):
         label = backport.text(R.strings.quests.details.requirements.globalRating())
         label = relate(relation, value, label)
         style = styler(condition.isAvailable())
-        return [
-         packText(text=label, styler=style)]
+        return [packText(text=label, styler=style)]
 
 
 class VehiclesRequirementFormatter(ConditionFormatter):
@@ -482,10 +463,10 @@ class VehiclesRequirementFormatter(ConditionFormatter):
     @classmethod
     def format(cls, condition, event, styler):
         style = styler(condition.isAvailable())
-        labelKey = ('#quests:details/requirements/{}').format(condition.getName())
+        labelKey = '#quests:details/requirements/{}'.format(condition.getName())
         result = []
         if condition.isAnyVehicleAcceptable():
-            label = ms(('{}/all').format(labelKey))
+            label = ms('{}/all'.format(labelKey))
             result.append(packText(text=label, styler=style))
         elif 'types' not in condition.data:
             _, fnations, flevels, fclasses, _ = condition.parseFilters()
@@ -493,28 +474,28 @@ class VehiclesRequirementFormatter(ConditionFormatter):
             if fnations:
                 keys.append('nation')
                 names = [ nations.NAMES[nationId] for nationId in fnations ]
-                names = [ ms(('#menu:nations/{}').format(name)) for name in names ]
-                kwargs['nation'] = (', ').join(names)
+                names = [ ms('#menu:nations/{}'.format(name)) for name in names ]
+                kwargs['nation'] = ', '.join(names)
             if fclasses:
                 keys.append('type')
-                names = [ ms(('#menu:classes/{}').format(name)) for name in fclasses ]
-                kwargs['type'] = (', ').join(names)
+                names = [ ms('#menu:classes/{}'.format(name)) for name in fclasses ]
+                kwargs['type'] = ', '.join(names)
             if flevels:
                 keys.append('level')
                 names = [ int2roman(lvl) for lvl in flevels ]
-                kwargs['level'] = (', ').join(names)
-            labelKey = ('{}/{}').format(labelKey, ('_').join(keys))
+                kwargs['level'] = ', '.join(names)
+            labelKey = '{}/{}'.format(labelKey, '_'.join(keys))
             if condition.relationValue is None and condition.isNegative():
-                labelKey = ('{}/not').format(labelKey)
+                labelKey = '{}/not'.format(labelKey)
             label = ms(labelKey, **kwargs)
             label = relate(condition.relation, condition.relationValue, label)
             result.append(packText(text=label, styler=style))
         else:
             if condition.isNegative():
-                labelKey = ('{}/not').format(labelKey)
+                labelKey = '{}/not'.format(labelKey)
             label = ms(labelKey)
             names = [ vehicle.userName for vehicle in condition.getVehiclesList() ]
-            result.append(packText(text=('{}: {}').format(label, (', ').join(names)), styler=style))
+            result.append(packText(text='{}: {}'.format(label, ', '.join(names)), styler=style))
         return result
 
 
@@ -527,8 +508,7 @@ class HasReceivedMultipliedXPFormatter(ConditionFormatter):
         xpKey = 'receivedMultXp' if condition.getValue() else 'notReceivedMultXp'
         key = R.strings.quests.details.requirements.vehicle.dyn(xpKey)()
         label = backport.text(key, mult=cls.itemsCache.items.shop.dailyXPFactor)
-        return [
-         packText(text=label, styler=style)]
+        return [packText(text=label, styler=style)]
 
 
 class AccountDossierRequirementFormatter(ConditionFormatter):
@@ -545,8 +525,7 @@ class AccountDossierRequirementFormatter(ConditionFormatter):
         labelKey = R.strings.quests.details.dossier.dyn(battleMode).dyn(record)()
         label = backport.text(titleKey, label=backport.text(labelKey))
         label = relate(condition.relation, condition.relationValue, label)
-        return [
-         packText(text=label, styler=style)]
+        return [packText(text=label, styler=style)]
 
     @classmethod
     def _dossierBlock2BattleMode(cls, block):
@@ -562,9 +541,7 @@ class AccountDossierRequirementFormatter(ConditionFormatter):
             return 'ladder'
         if block == 'historical':
             return 'historical'
-        if block == 'achievements':
-            return 'achievements'
-        return 'random'
+        return 'achievements' if block == 'achievements' else 'random'
 
 
 class TokenGatheringRequirementFormatter(ConditionFormatter):
@@ -578,8 +555,7 @@ class TokenGatheringRequirementFormatter(ConditionFormatter):
         style = styler(self._isAvailable)
         result = []
         if self._tokens:
-            result = [packText(text='#quests:details/requirements/token', styler=style),
-             packTokens(self._tokens)]
+            result = [packText(text='#quests:details/requirements/token', styler=style), packTokens(self._tokens)]
         return result
 
     def gather(self, condition, event):

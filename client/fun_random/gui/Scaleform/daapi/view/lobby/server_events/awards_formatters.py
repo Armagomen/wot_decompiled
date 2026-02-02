@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/Scaleform/daapi/view/lobby/server_events/awards_formatters.py
 from __future__ import absolute_import
 from future.utils import viewvalues
 from constants import PREMIUM_ENTITLEMENTS
@@ -50,7 +52,7 @@ class FunRandomLootBoxFormatter(TokenBonusFormatter, FunAssetPacksMixin):
 
     def _getLootboxIcon(self, lootBox, size):
         if lootBox.getType() in FunRandomLootBoxTypes.ALL:
-            rarity = lootBox.getType().split('_')[(-1)]
+            rarity = lootBox.getType().split('_')[-1]
             return backport.image(self._getIconPath(rarity))
         return super(FunRandomLootBoxFormatter, self)._getLootboxIcon(lootBox, size)
 

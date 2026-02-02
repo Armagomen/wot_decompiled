@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/gui/Scaleform/channels/layout.py
 import BattleReplay
 from debug_utils import LOG_DEBUG, LOG_ERROR
 from gui import SystemMessages
@@ -73,9 +75,7 @@ class LobbyLayout(IChannelController):
                 self.addMessage(message)
 
     def getHistory(self):
-        if self._channel:
-            return self._channel.getHistory()
-        return []
+        return self._channel.getHistory() if self._channel else []
 
     def setMembersDP(self, membersDP):
         if self._membersDP:
@@ -180,9 +180,7 @@ class BattleLayout(IChannelController):
         raise NotImplementedError
 
     def getHistory(self):
-        if self._channel:
-            return self._channel.getHistory()
-        return []
+        return self._channel.getHistory() if self._channel else []
 
     def isEnabled(self):
         return isBattleChatEnabled()

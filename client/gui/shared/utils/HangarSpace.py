@@ -1,7 +1,15 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/utils/HangarSpace.py
 import weakref
 from Queue import Queue
 from functools import wraps, partial
-import BigWorld, Math, CGF, Event, Keys, ResMgr, constants
+import BigWorld
+import Math
+import CGF
+import Event
+import Keys
+import ResMgr
+import constants
 from debug_utils import LOG_DEBUG
 from PlayerEvents import g_playerEvents
 from gui import g_mouseEventHandlers, InputHandler
@@ -31,7 +39,7 @@ _Q_CHECK_DELAY = 0.0
 
 class _execute_after_hangar_space_inited(object):
     hangarSpace = dependency.descriptor(IHangarSpace)
-    __slots__ = ('__queue', )
+    __slots__ = ('__queue',)
 
     def __init__(self):
         self.__queue = Queue()
@@ -115,9 +123,7 @@ class HangarVideoCameraController(object):
                     self.__enableVideoCamera()
                 else:
                     self.__disableVideoCamera()
-            if self.isEnabled:
-                return self.__videoCamera.handleKeyEvent(event.key, event.isKeyDown())
-            return False
+            return self.__videoCamera.handleKeyEvent(event.key, event.isKeyDown()) if self.isEnabled else False
 
     def __setEnabled(self, enabled):
         self.__enabled = enabled
@@ -153,9 +159,7 @@ class HangarVideoCameraController(object):
         if self.__videoCamera is None:
             return
         else:
-            if self.isEnabled:
-                return self.__videoCamera.handleMouseEvent(event.dx, event.dy, event.dz)
-            return False
+            return self.__videoCamera.handleMouseEvent(event.dx, event.dy, event.dz) if self.isEnabled else False
 
 
 class HangarSpace(IHangarSpace):
@@ -210,17 +214,11 @@ class HangarSpace(IHangarSpace):
 
     @property
     def space(self):
-        if self.spaceInited:
-            return self.__space
-        else:
-            return
+        return self.__space if self.spaceInited else None
 
     @property
     def spaceID(self):
-        if self.__space:
-            return self.__space.getSpaceID()
-        else:
-            return
+        return self.__space.getSpaceID() if self.__space else None
 
     @property
     def inited(self):
@@ -244,23 +242,14 @@ class HangarSpace(IHangarSpace):
 
     @property
     def spacePath(self):
-        if self.__space is None:
-            return
-        else:
-            return self.__space.spacePath
+        return None if self.__space is None else self.__space.spacePath
 
     @property
     def visibilityMask(self):
-        if self.__space is None:
-            return
-        else:
-            return self.__space.visibilityMask
+        return None if self.__space is None else self.__space.visibilityMask
 
     def spaceLoading(self):
-        if self.__space is not None:
-            return self.__space.spaceLoading()
-        else:
-            return False
+        return self.__space.spaceLoading() if self.__space is not None else False
 
     def getAnchorParams(self, slotId, areaId, regionId):
         return self.__space.getAnchorParams(slotId, areaId, regionId)
@@ -311,13 +300,13 @@ class HangarSpace(IHangarSpace):
         else:
             self.onSpaceRefresh()
             if not self.__spaceInited and self.__space.spaceLoading():
-                LOG_DEBUG(('HangarSpace::refreshSpace(isPremium={0!r:s}) - is delayed until space load is done').format(isPremium))
+                LOG_DEBUG('HangarSpace::refreshSpace(isPremium={0!r:s}) - is delayed until space load is done'.format(isPremium))
                 if self.__delayedRefreshCallback is None:
                     self.__delayedRefreshCallback = BigWorld.callback(0.1, self.__delayedRefresh)
                 self.__delayedIsPremium = isPremium
                 self.__delayedForceRefresh = forceRefresh
                 return
-            LOG_DEBUG(('HangarSpace::refreshSpace(isPremium={0!r:s})').format(isPremium))
+            LOG_DEBUG('HangarSpace::refreshSpace(isPremium={0!r:s})'.format(isPremium))
             self.destroy()
             self.init(isPremium)
             self.__isSpacePremium = isPremium
@@ -399,24 +388,18 @@ class HangarSpace(IHangarSpace):
             self.__lastUpdatedVehicle = vehicle
 
     def getVehicleEntity(self):
-        if self.__inited:
-            return self.__space.getVehicleEntity()
+        return self.__space.getVehicleEntity() if self.__inited else None
 
     def getVehicleEntityAppearance(self):
         entity = self.getVehicleEntity()
-        if entity is not None:
-            return entity.appearance
-        else:
-            return
+        return entity.appearance if entity is not None else None
 
     def updateVehicleOutfit(self, outfit):
         if self.__inited:
             self.__space.updateVehicleCustomization(outfit)
 
     def getCentralPointForArea(self, areaId):
-        if self.__inited:
-            return self.__space.getCentralPointForArea(areaId)
-        return Math.Vector3(0.0)
+        return self.__space.getCentralPointForArea(areaId) if self.__inited else Math.Vector3(0.0)
 
     @g_execute_after_hangar_space_inited
     def removeVehicle(self):

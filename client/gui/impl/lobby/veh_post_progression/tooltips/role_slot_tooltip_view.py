@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/veh_post_progression/tooltips/role_slot_tooltip_view.py
 from __future__ import absolute_import
 import typing
 from gui.Scaleform.daapi.view.lobby.veh_post_progression.veh_post_progression_vehicle import g_postProgressionVehicle
@@ -28,7 +30,7 @@ class RoleSlotTooltipView(BaseFeatureTooltipView):
         if not g_postProgressionVehicle.isPresent():
             return
         moneyShortage = self._itemsCache.items.stats.money.getShortage(step.action.getPrice())
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             self.__fillRolesData(model)
             BuyPriceModelBuilder.fillPriceModel(model.price, step.action.getPrice(), checkBalanceAvailability=True)
             PriceModelBuilder.fillPriceModel(model.moneyShortage, moneyShortage)

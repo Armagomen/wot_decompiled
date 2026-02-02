@@ -1,4 +1,8 @@
-import logging, time, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/account_helpers/offers/events_data.py
+import logging
+import time
+import typing
 from constants import PREMIUM_ENTITLEMENTS, RentType
 from gui.impl import backport
 from gui.impl.gen import R
@@ -10,11 +14,23 @@ from skeletons.gui.offers import IOffersDataProvider
 from skeletons.gui.shared import IItemsCache
 _logger = logging.getLogger(__name__)
 CDN_KEY = 'cdn'
-OFFER_BONUSES_PRIORITY = (
- 'vehicles', Currency.GOLD, Currency.CRYSTAL, Currency.CREDITS,
- 'freeXP', 'items', PREMIUM_ENTITLEMENTS.PLUS,
- PREMIUM_ENTITLEMENTS.BASIC, 'customizations', 'tankmen', 'crewSkins',
- 'goodies', 'slots', 'berths', 'blueprints', 'blueprintsAny', 'tokens')
+OFFER_BONUSES_PRIORITY = ('vehicles',
+ Currency.GOLD,
+ Currency.CRYSTAL,
+ Currency.CREDITS,
+ 'freeXP',
+ 'items',
+ PREMIUM_ENTITLEMENTS.PLUS,
+ PREMIUM_ENTITLEMENTS.BASIC,
+ 'customizations',
+ 'tankmen',
+ 'crewSkins',
+ 'goodies',
+ 'slots',
+ 'berths',
+ 'blueprints',
+ 'blueprintsAny',
+ 'tokens')
 DEFAULT_PRIORITY = len(OFFER_BONUSES_PRIORITY)
 
 class OfferEventData(object):
@@ -66,9 +82,7 @@ class OfferEventData(object):
     @property
     def cdnLocFilePath(self):
         _path = self._data.get(CDN_KEY, {}).get('localization')
-        if _path:
-            return _path % self._langCode
-        return ''
+        return _path % self._langCode if _path else ''
 
     @property
     def cdnBannerLogoPath(self):
@@ -100,13 +114,11 @@ class OfferEventData(object):
         if received is None:
             return []
         else:
-            return [ OfferGift(giftID, settings) for giftID, settings in self._data.get('gift', {}).iteritems() if giftID not in received or not settings.get('limit', 1) or giftID in received and settings.get('limit', 1) and received[giftID] < settings.get('limit', 1)
-                   ]
+            return [ OfferGift(giftID, settings) for giftID, settings in self._data.get('gift', {}).iteritems() if giftID not in received or not settings.get('limit', 1) or giftID in received and settings.get('limit', 1) and received[giftID] < settings.get('limit', 1) ]
 
     def getGift(self, giftID):
         giftsData = self._data.get('gift')
-        if giftsData and giftID in giftsData:
-            return OfferGift(giftID, self._data['gift'][giftID])
+        return OfferGift(giftID, self._data['gift'][giftID]) if giftsData and giftID in giftsData else None
 
     def getGiftAvailableCount(self, giftID):
         received = self._receivedGifts
@@ -123,14 +135,13 @@ class OfferEventData(object):
             return -1
 
     def getAllGifts(self):
-        return [ OfferGift(giftID, settings) for giftID, settings in self._data.get('gift', {}).iteritems()
-               ]
+        return [ OfferGift(giftID, settings) for giftID, settings in self._data.get('gift', {}).iteritems() ]
 
     def getFirstGift(self):
         for giftID, settings in self._data.get('gift', {}).iteritems():
             return OfferGift(giftID, settings)
 
-        return
+        return None
 
     @property
     def clicksCount(self):
@@ -167,10 +178,7 @@ class OfferEventData(object):
 
     @property
     def expiration(self):
-        return min(value for value in [
-         self._tokensCache.getTokenExpiryTime(self.token),
-         self._tokensCache.getTokenExpiryTime(self.giftToken),
-         self.getFinishTime()] if value != 0)
+        return min((value for value in [self._tokensCache.getTokenExpiryTime(self.token), self._tokensCache.getTokenExpiryTime(self.giftToken), self.getFinishTime()] if value != 0))
 
     @property
     def isOfferAvailable(self):
@@ -185,9 +193,7 @@ class OfferEventData(object):
         return self.getFinishTimeLeft() <= 0
 
     def getFinishTime(self):
-        if 'finishTime' in self._data:
-            return time_utils.makeLocalServerTime(self._data['finishTime'])
-        return time.time()
+        return time_utils.makeLocalServerTime(self._data['finishTime']) if 'finishTime' in self._data else time.time()
 
     def getFinishTimeLeft(self):
         return time_utils.getTimeDeltaFromNowInLocal(self.getFinishTime())
@@ -218,9 +224,7 @@ class OfferGift(object):
     @property
     def cdnLocFilePath(self):
         _path = self._data.get(CDN_KEY, {}).get('localization')
-        if _path:
-            return _path % self._langCode
-        return ''
+        return _path % self._langCode if _path else ''
 
     @property
     def cdnImagePath(self):
@@ -236,9 +240,7 @@ class OfferGift(object):
 
     @property
     def title(self):
-        if not self.fromCdn and self.bonus:
-            return self.bonus.getOfferName()
-        return ''
+        return self.bonus.getOfferName() if not self.fromCdn and self.bonus else ''
 
     @property
     def description(self):
@@ -258,15 +260,13 @@ class OfferGift(object):
                     itemsInfo = backport.text(R.strings.offers.giftDescription.tank.base(), items=backport.text(items))
                 if description and itemsInfo:
                     separator = ' ' if description.endswith('.') else '. '
-            return ('').join([description, separator, itemsInfo])
+            return ''.join([description, separator, itemsInfo])
         else:
             return ''
 
     @property
     def icon(self):
-        if not self.fromCdn and self.bonus:
-            return getGfImagePath(self.bonus.getOfferIcon())
-        return ''
+        return getGfImagePath(self.bonus.getOfferIcon()) if not self.fromCdn and self.bonus else ''
 
     @property
     def price(self):
@@ -284,21 +284,15 @@ class OfferGift(object):
 
     @property
     def highlight(self):
-        if not self.fromCdn and self.bonus:
-            return self.bonus.getOfferHighlight()
-        return ''
+        return self.bonus.getOfferHighlight() if not self.fromCdn and self.bonus else ''
 
     @property
     def giftCount(self):
-        if self.bonus:
-            return self.bonus.getGiftCount()
-        return 0
+        return self.bonus.getGiftCount() if self.bonus else 0
 
     @property
     def inventoryCount(self):
-        if self.bonus:
-            return self.bonus.getInventoryCount()
-        return 0
+        return self.bonus.getInventoryCount() if self.bonus else 0
 
     @property
     def rentType(self):
@@ -314,13 +308,12 @@ class OfferGift(object):
             _, vInfo = self.bonus.getVehicles()[0]
             _, rentValue = self.bonus.getRentInfo(vInfo)
             return rentValue
-        return 0
 
     @property
     def isDisabled(self):
         disabled = True
         if self.bonuses:
-            disabled = any(bonus.isMaxCountExceeded() for bonus in self.bonuses)
+            disabled = any((bonus.isMaxCountExceeded() for bonus in self.bonuses))
         return disabled
 
     @property
@@ -357,9 +350,7 @@ class OfferGift(object):
 
     @property
     def buttonLabel(self):
-        if self.isVehicle:
-            return R.strings.offers.giftsWindow.previewButtonLabel()
-        return R.strings.offers.giftsWindow.takeButtonLabel()
+        return R.strings.offers.giftsWindow.previewButtonLabel() if self.isVehicle else R.strings.offers.giftsWindow.takeButtonLabel()
 
     @property
     def isVehicle(self):
@@ -367,7 +358,4 @@ class OfferGift(object):
 
     @property
     def bonusType(self):
-        if self.bonus:
-            return self.bonus.getName()
-        else:
-            return
+        return self.bonus.getName() if self.bonus else None

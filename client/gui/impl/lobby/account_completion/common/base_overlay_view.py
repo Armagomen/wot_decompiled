@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/account_completion/common/base_overlay_view.py
 import typing
 from PlayerEvents import g_playerEvents
 from gui.impl.lobby.account_completion.curtain.curtain_base_sub_view import CurtainBaseSubView
@@ -7,7 +9,7 @@ if typing.TYPE_CHECKING:
     from gui.impl.gen.view_models.views.lobby.account_completion.common.base_overlay_view_model import BaseOverlayViewModel
 
 class BaseOverlayView(CurtainBaseSubView):
-    __slots__ = ('_onClose', )
+    __slots__ = ('_onClose',)
     _IS_CLOSE_BUTTON_VISIBLE = True
 
     def __init__(self):

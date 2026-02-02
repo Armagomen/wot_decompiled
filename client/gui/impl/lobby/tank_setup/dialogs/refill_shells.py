@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/dialogs/refill_shells.py
 import typing
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
@@ -75,7 +77,7 @@ class RefillShells(BuyAndExchange):
 
 
 class ExitFromShellsConfirm(RefillShells):
-    __slots__ = ('__rollBack', )
+    __slots__ = ('__rollBack',)
 
     def __init__(self, *args, **kwargs):
         super(ExitFromShellsConfirm, self).__init__(*args, **kwargs)

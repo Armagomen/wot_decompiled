@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/stronghold_event/tooltips/stronghold_event_banner_tooltip.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen.view_models.views.lobby.stronghold_event.stronghold_event_banner_tooltip_view_model import StrongholdEventBannerTooltipViewModel
 from gui.impl.pub import ViewImpl
@@ -18,7 +20,7 @@ class StrongholdEventBannerTooltip(ViewImpl):
         return super(StrongholdEventBannerTooltip, self).getViewModel()
 
     def _onLoading(self, state, startDate, endDate):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             vm.setState(state)
             vm.setStartDate(startDate)
             vm.setEndDate(endDate)

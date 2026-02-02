@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/tooltips/tankman.py
 from typing import List, Optional
 import nations
 from gui import makeHtmlString
@@ -19,13 +21,7 @@ from items.tankmen import TankmanDescr, MAX_SKILL_LEVEL
 from skeletons.gui.game_control import IBattleRoyaleController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-_TIME_FORMAT_UNITS = [
- (
-  'days', time_utils.ONE_DAY),
- (
-  'hours', time_utils.ONE_HOUR),
- (
-  'minutes', time_utils.ONE_MINUTE)]
+_TIME_FORMAT_UNITS = [('days', time_utils.ONE_DAY), ('hours', time_utils.ONE_HOUR), ('minutes', time_utils.ONE_MINUTE)]
 
 def getSkillIcon(skillName, customCrewName):
     if skillName == 'new_skill':
@@ -46,10 +42,10 @@ class TankmanSkillListField(ToolTipDataField):
     def _getBaseSkills(tankman):
         skillsList = []
         for idx, skill in enumerate(tankman.skills):
-            skillsList.append({'id': str(idx), 
-               'label': skill.userName, 
-               'level': skill.level, 
-               'enabled': tankman.isInTank or skill.isEnable})
+            skillsList.append({'id': str(idx),
+             'label': skill.userName,
+             'level': skill.level,
+             'enabled': tankman.isInTank or skill.isEnable})
 
         return skillsList
 
@@ -57,22 +53,19 @@ class TankmanSkillListField(ToolTipDataField):
         newSkillsCount, newSkillLevel = tankman.newSkillsCount
         if newSkillsCount > 0:
             if newSkillsCount > 2:
-                newSkills = [
-                 str(newSkillsCount - 1) + 'x100']
+                newSkills = [str(newSkillsCount - 1) + 'x100']
+            elif newSkillsCount == 2:
+                newSkills = [100]
             else:
-                if newSkillsCount == 2:
-                    newSkills = [
-                     100]
-                else:
-                    newSkills = []
-                if newSkillLevel > 0:
-                    newSkills.append(newSkillLevel)
-                newSkillStr = makeString(TOOLTIPS.BARRACKS_TANKMEN_RECOVERY_NEWSKILL)
-                for idx, skillLevel in enumerate(newSkills, start=len(skillsList)):
-                    skillsList.append({'id': str(idx), 
-                       'label': newSkillStr, 
-                       'level': skillLevel, 
-                       'enabled': False})
+                newSkills = []
+            if newSkillLevel > 0:
+                newSkills.append(newSkillLevel)
+            newSkillStr = makeString(TOOLTIPS.BARRACKS_TANKMEN_RECOVERY_NEWSKILL)
+            for idx, skillLevel in enumerate(newSkills, start=len(skillsList)):
+                skillsList.append({'id': str(idx),
+                 'label': newSkillStr,
+                 'level': skillLevel,
+                 'enabled': False})
 
 
 class BattleRoyaleTankmanSkillListField(TankmanSkillListField):
@@ -82,10 +75,10 @@ class BattleRoyaleTankmanSkillListField(TankmanSkillListField):
         skills = self.__battleRoyaleController.getBrCommanderSkills()
         skillsList = []
         for idx, skill in enumerate(skills):
-            skillsList.append({'id': str(idx), 
-               'label': skill.userName, 
-               'level': skill.level, 
-               'enabled': skill.isEnable})
+            skillsList.append({'id': str(idx),
+             'label': skill.userName,
+             'level': skill.level,
+             'enabled': skill.isEnable})
 
         return skillsList
 
@@ -123,17 +116,15 @@ class NotRecruitedTooltipData(BlocksTooltipData):
         if freeSkills:
             customCrewName = item.getCrewCustomName()
             blocks.append(formatters.packTextBlockData(text_styles.middleTitle(TOOLTIPS.NOTRECRUITEDTANKMAN_FREESKILLSTITLE), useHtml=True, padding=formatters.packPadding(top=17 if hasDescr else 18, bottom=10)))
-            blocks.append(formatters.packImageListParameterBlockData(listIconSrc=[ formatters.packImageListIconData(getSkillIcon(skillName, customCrewName)) for skillName in freeSkills
-                                                                                 ], columnWidth=52, rowHeight=52, verticalGap=10, horizontalGap=10))
+            blocks.append(formatters.packImageListParameterBlockData(listIconSrc=[ formatters.packImageListIconData(getSkillIcon(skillName, customCrewName)) for skillName in freeSkills ], columnWidth=52, rowHeight=52, verticalGap=10, horizontalGap=10))
         skills = item.getEarnedSkills(multiplyNew=True)
         if skills:
             customCrewName = item.getCrewCustomName()
             blocks.append(formatters.packTextBlockData(text_styles.middleTitle(TOOLTIPS.NOTRECRUITEDTANKMAN_SKILLSTITLE), useHtml=True, padding=formatters.packPadding(top=17 if hasDescr else 18, bottom=10)))
-            blocks.append(formatters.packImageListParameterBlockData(listIconSrc=[ formatters.packImageListIconData(getSkillIcon(skillName, customCrewName)) for skillName in skills
-                                                                                 ], columnWidth=52, rowHeight=52, verticalGap=10, horizontalGap=10))
+            blocks.append(formatters.packImageListParameterBlockData(listIconSrc=[ formatters.packImageListIconData(getSkillIcon(skillName, customCrewName)) for skillName in skills ], columnWidth=52, rowHeight=52, verticalGap=10, horizontalGap=10))
         expiryTime = item.getExpiryTime()
         if expiryTime:
-            blocks.append(formatters.packTextBlockData(text_styles.middleTitle(TOOLTIPS.NOTRECRUITEDTANKMAN_EXPIRETITLE), useHtml=True, padding=formatters.packPadding(top=20 if skills else 17 if hasDescr else 16, bottom=2)))
+            blocks.append(formatters.packTextBlockData(text_styles.middleTitle(TOOLTIPS.NOTRECRUITEDTANKMAN_EXPIRETITLE), useHtml=True, padding=formatters.packPadding(top=20 if skills else (17 if hasDescr else 16), bottom=2)))
             expireDateStr = makeString(TOOLTIPS.NOTRECRUITEDTANKMAN_USEBEFORE, date=expiryTime)
             blocks.append(formatters.packTextParameterWithIconBlockData(name=text_styles.premiumVehicleName(expireDateStr), value='', icon=ICON_TEXT_FRAMES.RENTALS, padding=formatters.packPadding(left=-60, bottom=-18), iconYOffset=3))
         items.append(formatters.packBuildUpBlockData(blocks, padding=formatters.packPadding(bottom=-5)))
@@ -172,7 +163,7 @@ class SpecialTankmanTooltipData(BlocksTooltipData):
         skillsCost = 0
         while skillsCost <= freeXP:
             skillNum += 1
-            skillsCost += sum(TankmanDescr.levelUpXpCost(level, skillNum) for level in xrange(0, MAX_SKILL_LEVEL))
+            skillsCost += sum((TankmanDescr.levelUpXpCost(level, skillNum) for level in xrange(0, MAX_SKILL_LEVEL)))
 
         return skillNum - 1
 
@@ -180,9 +171,9 @@ class SpecialTankmanTooltipData(BlocksTooltipData):
 class BattleRoyaleTankmanTooltipDataBlock(BlocksTooltipData):
     _itemsCache = dependency.descriptor(IItemsCache)
     _lobbyContext = dependency.descriptor(ILobbyContext)
-    _skillIconNamePadding = {'padding': formatters.packPadding(left=65), 
-       'titlePadding': formatters.packPadding(left=6), 
-       'iconPadding': formatters.packPadding(top=-1)}
+    _skillIconNamePadding = {'padding': formatters.packPadding(left=65),
+     'titlePadding': formatters.packPadding(left=6),
+     'iconPadding': formatters.packPadding(top=-1)}
 
     def __init__(self, context):
         super(BattleRoyaleTankmanTooltipDataBlock, self).__init__(context, TOOLTIP_TYPE.SKILL)
@@ -214,9 +205,7 @@ class BattleRoyaleTankmanTooltipDataBlock(BlocksTooltipData):
         return items
 
     def _getSign(self, val):
-        if val < 0:
-            return ''
-        return '+'
+        return '' if val < 0 else '+'
 
     def _getBonusValue(self, tankman, ids):
         result = 0
@@ -228,9 +217,7 @@ class BattleRoyaleTankmanTooltipDataBlock(BlocksTooltipData):
         return int(result)
 
     def _getVehicleName(self, vehicle=None, nativeVehicle=None):
-        if not vehicle or nativeVehicle.shortUserName == vehicle.shortUserName:
-            return text_styles.main(nativeVehicle.shortUserName)
-        return text_styles.critical(nativeVehicle.shortUserName)
+        return text_styles.main(nativeVehicle.shortUserName) if not vehicle or nativeVehicle.shortUserName == vehicle.shortUserName else text_styles.critical(nativeVehicle.shortUserName)
 
     def _createLabel(self, innerBlock):
         innerBlock.append(formatters.packTextBlockData(text=makeHtmlString('html_templates:lobby/textStyle', 'grayTitle', {'message': backport.text(R.strings.tooltips.hangar.crew.assignedTo())})))

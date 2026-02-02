@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/inventory/filters/filter_by_nation.py
 import nations
 from gui import GUI_NATIONS
 from gui.Scaleform.daapi.view.meta.ItemsWithTypeAndNationFilterTabViewMeta import ItemsWithTypeAndNationFilterTabViewMeta
@@ -30,12 +32,16 @@ class FiltrableInventoryCategoryByNationTabView(ItemsWithTypeAndNationFilterTabV
 
     def _initFilter(self):
         super(FiltrableInventoryCategoryByNationTabView, self)._initFilter()
-        nationsIds = [{'id': nations.NONE_INDEX, 'label': backport.text(R.strings.storage.crewBooks.filters.nation.all())}]
+        nationsIds = [{'id': nations.NONE_INDEX,
+          'label': backport.text(R.strings.storage.crewBooks.filters.nation.all())}]
         for name in GUI_NATIONS:
             if name in nations.AVAILABLE_NAMES:
-                nationsIds.append({'id': nations.INDICES[name], 'label': backport.text(R.strings.menu.nations.dyn(name)())})
+                nationsIds.append({'id': nations.INDICES[name],
+                 'label': backport.text(R.strings.menu.nations.dyn(name)())})
 
-        self.as_initNationFilterS({'enabled': True, 'selectedIndex': 0, 'data': nationsIds})
+        self.as_initNationFilterS({'enabled': True,
+         'selectedIndex': 0,
+         'data': nationsIds})
 
     def _shouldShowCounter(self):
         return super(FiltrableInventoryCategoryByNationTabView, self)._shouldShowCounter() or self.__selectedNationID != nations.NONE_INDEX

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/personal_missions_30/personal_mission_constants.py
 from enum import Enum
 from typing import TYPE_CHECKING
 from gui.impl.gen import R
@@ -10,19 +12,18 @@ if TYPE_CHECKING:
     from typing import Optional, Set
 PM3_CAMPAIGN_ID = 3
 MAX_DETAIL_ID = 15
-CAMERA_IMMEDIATE_TRANSITION_DURATION = 0.0
 MAX_DAILY_QUESTS_PM_POINTS = 25
 MAX_NEWBIE_DAILY_QUESTS_PM_POINTS = 15
-MISSIONS_ROLES_TO_CATEGORIES = {'Assault': MissionCategory.ASSAULT, 
-   'Sniper': MissionCategory.SNIPER, 
-   'Support': MissionCategory.SUPPORT}
-REWARDS_VIEW_TYPES = {'vehicleDetail': RewardsViewType.VEHICLE_PART, 
-   'operationWithHonor': RewardsViewType.OPERATION_WITH_HONORS, 
-   'campaignWithHonor': RewardsViewType.CAMPAIGN_WITH_HONORS, 
-   'operation': RewardsViewType.OPERATION}
-REWARD_CLASSES = {RewardsType.MAIN: 'operation', 
-   RewardsType.CAMPAIGN: 'campaign', 
-   RewardsType.OPERATION: 'honor'}
+MISSIONS_ROLES_TO_CATEGORIES = {'Assault': MissionCategory.ASSAULT,
+ 'Sniper': MissionCategory.SNIPER,
+ 'Support': MissionCategory.SUPPORT}
+REWARDS_VIEW_TYPES = {'vehicleDetail': RewardsViewType.VEHICLE_PART,
+ 'operationWithHonor': RewardsViewType.OPERATION_WITH_HONORS,
+ 'campaignWithHonor': RewardsViewType.CAMPAIGN_WITH_HONORS,
+ 'operation': RewardsViewType.OPERATION}
+REWARD_CLASSES = {RewardsType.MAIN: 'operation',
+ RewardsType.CAMPAIGN: 'campaign',
+ RewardsType.OPERATION: 'honor'}
 
 class IntroKeys(Enum):
     MAIN_INTRO_VIEW = 'INTRO'
@@ -39,6 +40,7 @@ class CameraNameTemplates(str, Enum):
     STAGE = 'operation_{}_stage_{}'
     TOP = 'operation_{}_camera_top_{}'
     FREE = 'operation_{}_camera_free'
+    FREE_FAR = 'operation_{}_camera_free_far'
 
 
 class TopCameras(int, Enum):
@@ -89,13 +91,12 @@ class SoundsKeys(CONST_CONTAINER):
     VEHICLE_CLICK = 'tank_selection'
 
 
-PERSONAL_MISSIONS_CAMPAIGN_SELECTOR_SPACE = CommonSoundSpaceSettings(name=SoundsSpaceKeys.CAMPAIGN_SELECTOR_SPACE, entranceStates={SoundsStateKeys.HANGAR_PLACE_STATE: SoundsStateKeys.HANGAR_PLACE_PERSONAL_MISSIONS_STATE, 
-   SoundsStateKeys.PERSONAL_MISSIONS_STATE: SoundsStateKeys.CAMPAIGN_SELECTOR_STATE}, exitStates={}, persistentSounds=(), stoppableSounds=(), priorities=(), autoStart=True, enterEvent=SoundsKeys.CAMPAIGN_SELECTOR_ENTER, exitEvent=SoundsKeys.CAMPAIGN_SELECTOR_EXIT, parentSpace='')
-PERSONAL_MISSIONS_CAMPAIGNS_1_2_SPACE = CommonSoundSpaceSettings(name=SoundsSpaceKeys.CAMPAIGNS_1_2_SPACE, entranceStates={SoundsStateKeys.HANGAR_PLACE_STATE: SoundsStateKeys.HANGAR_PLACE_PERSONAL_MISSIONS_STATE, 
-   SoundsStateKeys.PERSONAL_MISSIONS_STATE: SoundsStateKeys.CAMPAIGNS_1_2_STATE}, exitStates={SoundsStateKeys.PERSONAL_MISSIONS_STATE: SoundsStateKeys.CAMPAIGN_SELECTOR_STATE}, persistentSounds=(
- SoundsKeys.CAMPAIGNS_1_2_AMBIENT, SoundsKeys.CAMPAIGNS_1_2_MUSIC), stoppableSounds=(), priorities=(), autoStart=True, enterEvent='', exitEvent=SoundsKeys.CAMPAIGNS_1_2_EXIT, parentSpace='')
-PERSONAL_MISSIONS_CAMPAIGN_3_SPACE = CommonSoundSpaceSettings(name=SoundsSpaceKeys.CAMPAIGN_3_SPACE, entranceStates={SoundsStateKeys.HANGAR_PLACE_STATE: SoundsStateKeys.HANGAR_PLACE_PERSONAL_MISSIONS_STATE, 
-   SoundsStateKeys.PERSONAL_MISSIONS_STATE: SoundsStateKeys.CAMPAIGN_3_STATE}, exitStates={SoundsStateKeys.PERSONAL_MISSIONS_STATE: SoundsStateKeys.CAMPAIGN_SELECTOR_STATE}, persistentSounds=(), stoppableSounds=(), priorities=(), autoStart=True, enterEvent=SoundsKeys.CAMPAIGN_3_ENTER, exitEvent=SoundsKeys.CAMPAIGN_3_EXIT, parentSpace='')
+PERSONAL_MISSIONS_CAMPAIGN_SELECTOR_SPACE = CommonSoundSpaceSettings(name=SoundsSpaceKeys.CAMPAIGN_SELECTOR_SPACE, entranceStates={SoundsStateKeys.HANGAR_PLACE_STATE: SoundsStateKeys.HANGAR_PLACE_PERSONAL_MISSIONS_STATE,
+ SoundsStateKeys.PERSONAL_MISSIONS_STATE: SoundsStateKeys.CAMPAIGN_SELECTOR_STATE}, exitStates={}, persistentSounds=(), stoppableSounds=(), priorities=(), autoStart=True, enterEvent=SoundsKeys.CAMPAIGN_SELECTOR_ENTER, exitEvent=SoundsKeys.CAMPAIGN_SELECTOR_EXIT, parentSpace='')
+PERSONAL_MISSIONS_CAMPAIGNS_1_2_SPACE = CommonSoundSpaceSettings(name=SoundsSpaceKeys.CAMPAIGNS_1_2_SPACE, entranceStates={SoundsStateKeys.HANGAR_PLACE_STATE: SoundsStateKeys.HANGAR_PLACE_PERSONAL_MISSIONS_STATE,
+ SoundsStateKeys.PERSONAL_MISSIONS_STATE: SoundsStateKeys.CAMPAIGNS_1_2_STATE}, exitStates={SoundsStateKeys.PERSONAL_MISSIONS_STATE: SoundsStateKeys.CAMPAIGN_SELECTOR_STATE}, persistentSounds=(SoundsKeys.CAMPAIGNS_1_2_AMBIENT, SoundsKeys.CAMPAIGNS_1_2_MUSIC), stoppableSounds=(), priorities=(), autoStart=True, enterEvent='', exitEvent=SoundsKeys.CAMPAIGNS_1_2_EXIT, parentSpace='')
+PERSONAL_MISSIONS_CAMPAIGN_3_SPACE = CommonSoundSpaceSettings(name=SoundsSpaceKeys.CAMPAIGN_3_SPACE, entranceStates={SoundsStateKeys.HANGAR_PLACE_STATE: SoundsStateKeys.HANGAR_PLACE_PERSONAL_MISSIONS_STATE,
+ SoundsStateKeys.PERSONAL_MISSIONS_STATE: SoundsStateKeys.CAMPAIGN_3_STATE}, exitStates={SoundsStateKeys.PERSONAL_MISSIONS_STATE: SoundsStateKeys.CAMPAIGN_SELECTOR_STATE}, persistentSounds=(), stoppableSounds=(), priorities=(), autoStart=True, enterEvent=SoundsKeys.CAMPAIGN_3_ENTER, exitEvent=SoundsKeys.CAMPAIGN_3_EXIT, parentSpace='')
 
 class StageInfo(object):
     __slots__ = ('operationId', 'stageId', 'stages', 'additions', '__assemblingType')
@@ -118,111 +119,59 @@ class StageInfo(object):
         if self.stageId == 0:
             return None
         else:
-            if self.__getVideoPath().exists():
-                return AssemblingType.VIDEO
-            return AssemblingType.FADE
+            return AssemblingType.VIDEO if self.__getVideoPath().exists() else AssemblingType.FADE
 
     def __getVideoPath(self):
         rootPath = R.videos.personal_missions_30
-        if self.stageId == MAX_DETAIL_ID:
-            return rootPath.rewards_screen.dyn(('operation_{}_intro').format(self.operationId))
-        return rootPath.assembling_screen.dyn(('operation_{}_stage_{}').format(self.operationId, self.stageId))
+        return rootPath.rewards_screen.dyn('operation_{}_intro'.format(self.operationId)) if self.stageId == MAX_DETAIL_ID else rootPath.assembling_screen.dyn('operation_{}_stage_{}'.format(self.operationId, self.stageId))
 
 
-_STAGES_CONFIG_DATA = {OperationIDs.OPERATION_FIRST: {0: (
-                                    set(range(0, 1)), {StageAdditions.SUPPORT}), 
-                                  1: (
-                                    set(range(0, 2)), {StageAdditions.SUPPORT}), 
-                                  2: (
-                                    set(range(0, 3)), {StageAdditions.SUPPORT}), 
-                                  3: (
-                                    set(range(0, 4)), {StageAdditions.SUPPORT}), 
-                                  4: (
-                                    set(range(0, 5)), {StageAdditions.SUPPORT}), 
-                                  5: (
-                                    set(range(0, 6)), {StageAdditions.SUPPORT}), 
-                                  6: (
-                                    set(range(0, 7)), {StageAdditions.SUPPORT}), 
-                                  7: (
-                                    set(range(7, 8)), {StageAdditions.SUPPORT}), 
-                                  8: (
-                                    set(range(7, 9)), {StageAdditions.SUPPORT}), 
-                                  9: (
-                                    set(range(7, 10)), {StageAdditions.SUPPORT}), 
-                                  10: (
-                                     set(range(7, 11)), {StageAdditions.SUPPORT}), 
-                                  11: (
-                                     set(range(7, 12)), {StageAdditions.SUPPORT}), 
-                                  12: (
-                                     set(range(7, 13)), {StageAdditions.SUPPORT}), 
-                                  13: (
-                                     set(range(7, 14)), {StageAdditions.SUPPORT}), 
-                                  14: (
-                                     set(range(7, 15)), {StageAdditions.SUPPORT}), 
-                                  15: (
-                                     set(range(7, 16)), set())}, 
-   OperationIDs.OPERATION_SECOND: {0: (
-                                     set(range(0, 1)), {StageAdditions.CAPE, StageAdditions.SUPPORT}), 
-                                   1: (
-                                     set(range(0, 2)), {StageAdditions.SUPPORT}), 
-                                   2: (
-                                     set(range(0, 3)), {StageAdditions.SUPPORT}), 
-                                   3: (
-                                     set(range(0, 4)), {StageAdditions.SUPPORT}), 
-                                   4: (
-                                     set(range(0, 5)), {StageAdditions.SUPPORT}), 
-                                   5: (
-                                     set(range(0, 6)), {StageAdditions.SUPPORT}), 
-                                   6: (
-                                     set(range(0, 7)), {StageAdditions.SUPPORT}), 
-                                   7: (
-                                     set(range(0, 8)), {StageAdditions.SUPPORT}), 
-                                   8: (
-                                     set(range(0, 9)), {StageAdditions.SUPPORT}), 
-                                   9: (
-                                     set(range(0, 10)), {StageAdditions.SUPPORT}), 
-                                   10: (
-                                      set(range(10, 11)), {StageAdditions.SUPPORT}), 
-                                   11: (
-                                      set(range(10, 12)), {StageAdditions.SUPPORT}), 
-                                   12: (
-                                      set(range(10, 13)), {StageAdditions.SUPPORT}), 
-                                   13: (
-                                      set(range(10, 14)), {StageAdditions.SUPPORT}), 
-                                   14: (
-                                      set(range(10, 15)), {StageAdditions.SUPPORT}), 
-                                   15: (
-                                      set(range(10, 16)), set())}, 
-   OperationIDs.OPERATION_THIRD: {0: (
-                                    set(range(0, 1)), {StageAdditions.CAPE, StageAdditions.SUPPORT}), 
-                                  1: (
-                                    set(range(0, 2)), {StageAdditions.SUPPORT}), 
-                                  2: (
-                                    set(range(0, 3)), {StageAdditions.SUPPORT}), 
-                                  3: (
-                                    set(range(0, 4)), {StageAdditions.SUPPORT}), 
-                                  4: (
-                                    set(range(0, 5)), {StageAdditions.SUPPORT}), 
-                                  5: (
-                                    set(range(0, 6)), {StageAdditions.SUPPORT}), 
-                                  6: (
-                                    set(range(0, 7)), {StageAdditions.SUPPORT}), 
-                                  7: (
-                                    set(range(0, 8)), {StageAdditions.SUPPORT}), 
-                                  8: (
-                                    set(range(0, 9)), {StageAdditions.SUPPORT}), 
-                                  9: (
-                                    set(range(0, 10)), {StageAdditions.SUPPORT}), 
-                                  10: (
-                                     set(range(0, 11)), {StageAdditions.SUPPORT}), 
-                                  11: (
-                                     set(range(11, 12)), {StageAdditions.SUPPORT}), 
-                                  12: (
-                                     set(range(11, 13)), {StageAdditions.SUPPORT}), 
-                                  13: (
-                                     set(range(11, 14)), {StageAdditions.SUPPORT}), 
-                                  14: (
-                                     set(range(11, 15)), {StageAdditions.SUPPORT}), 
-                                  15: (
-                                     set(range(11, 16)), set())}}
+_STAGES_CONFIG_DATA = {OperationIDs.OPERATION_FIRST: {0: (set(range(0, 1)), {StageAdditions.SUPPORT}),
+                                1: (set(range(0, 2)), {StageAdditions.SUPPORT}),
+                                2: (set(range(0, 3)), {StageAdditions.SUPPORT}),
+                                3: (set(range(0, 4)), {StageAdditions.SUPPORT}),
+                                4: (set(range(0, 5)), {StageAdditions.SUPPORT}),
+                                5: (set(range(0, 6)), {StageAdditions.SUPPORT}),
+                                6: (set(range(0, 7)), {StageAdditions.SUPPORT}),
+                                7: (set(range(7, 8)), {StageAdditions.SUPPORT}),
+                                8: (set(range(7, 9)), {StageAdditions.SUPPORT}),
+                                9: (set(range(7, 10)), {StageAdditions.SUPPORT}),
+                                10: (set(range(7, 11)), {StageAdditions.SUPPORT}),
+                                11: (set(range(7, 12)), {StageAdditions.SUPPORT}),
+                                12: (set(range(7, 13)), {StageAdditions.SUPPORT}),
+                                13: (set(range(7, 14)), {StageAdditions.SUPPORT}),
+                                14: (set(range(7, 15)), {StageAdditions.SUPPORT}),
+                                15: (set(range(7, 16)), set())},
+ OperationIDs.OPERATION_SECOND: {0: (set(range(0, 1)), {StageAdditions.CAPE, StageAdditions.SUPPORT}),
+                                 1: (set(range(0, 2)), {StageAdditions.SUPPORT}),
+                                 2: (set(range(0, 3)), {StageAdditions.SUPPORT}),
+                                 3: (set(range(0, 4)), {StageAdditions.SUPPORT}),
+                                 4: (set(range(0, 5)), {StageAdditions.SUPPORT}),
+                                 5: (set(range(0, 6)), {StageAdditions.SUPPORT}),
+                                 6: (set(range(0, 7)), {StageAdditions.SUPPORT}),
+                                 7: (set(range(0, 8)), {StageAdditions.SUPPORT}),
+                                 8: (set(range(0, 9)), {StageAdditions.SUPPORT}),
+                                 9: (set(range(0, 10)), {StageAdditions.SUPPORT}),
+                                 10: (set(range(10, 11)), {StageAdditions.SUPPORT}),
+                                 11: (set(range(10, 12)), {StageAdditions.SUPPORT}),
+                                 12: (set(range(10, 13)), {StageAdditions.SUPPORT}),
+                                 13: (set(range(10, 14)), {StageAdditions.SUPPORT}),
+                                 14: (set(range(10, 15)), {StageAdditions.SUPPORT}),
+                                 15: (set(range(10, 16)), set())},
+ OperationIDs.OPERATION_THIRD: {0: (set(range(0, 1)), {StageAdditions.CAPE, StageAdditions.SUPPORT}),
+                                1: (set(range(0, 2)), {StageAdditions.SUPPORT}),
+                                2: (set(range(0, 3)), {StageAdditions.SUPPORT}),
+                                3: (set(range(0, 4)), {StageAdditions.SUPPORT}),
+                                4: (set(range(0, 5)), {StageAdditions.SUPPORT}),
+                                5: (set(range(0, 6)), {StageAdditions.SUPPORT}),
+                                6: (set(range(0, 7)), {StageAdditions.SUPPORT}),
+                                7: (set(range(0, 8)), {StageAdditions.SUPPORT}),
+                                8: (set(range(0, 9)), {StageAdditions.SUPPORT}),
+                                9: (set(range(0, 10)), {StageAdditions.SUPPORT}),
+                                10: (set(range(0, 11)), {StageAdditions.SUPPORT}),
+                                11: (set(range(11, 12)), {StageAdditions.SUPPORT}),
+                                12: (set(range(11, 13)), {StageAdditions.SUPPORT}),
+                                13: (set(range(11, 14)), {StageAdditions.SUPPORT}),
+                                14: (set(range(11, 15)), {StageAdditions.SUPPORT}),
+                                15: (set(range(11, 16)), set())}}
 STAGES_CONFIG = {operationId:{stageNumber:StageInfo(operationId, stageNumber, stages=stageData[0], additions=stageData[1]) for stageNumber, stageData in operationStages.items()} for operationId, operationStages in _STAGES_CONFIG_DATA.items()}

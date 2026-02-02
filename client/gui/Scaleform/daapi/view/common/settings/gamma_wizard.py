@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/common/settings/gamma_wizard.py
 import BigWorld
 from gui.Scaleform.daapi.view.common.settings.mixins import LayerVisibilityMixin
 from gui.Scaleform.daapi.view.meta.GammaWizardViewMeta import GammaWizardViewMeta
@@ -25,8 +27,10 @@ class GammaWizardView(LayerVisibilityMixin, GammaWizardViewMeta):
         self.fireEvent(GameEvent(GameEvent.HIDE_EXTERNAL_COMPONENTS), scope=EVENT_BUS_SCOPE.GLOBAL)
 
     def updateTexture(self, x, y, size):
-        self._gammaWizard.offsetSize = (
-         x, y, size, size)
+        self._gammaWizard.offsetSize = (x,
+         y,
+         size,
+         size)
 
     def onApply(self):
         self._currentGammaValue = self._changeGammaValue
@@ -50,17 +54,17 @@ class GammaWizardView(LayerVisibilityMixin, GammaWizardViewMeta):
             self.app.setBackgroundAlpha(0)
             self.addListener(GameEvent.ON_BACKGROUND_ALPHA_CHANGE, self.__onExternalBackgroundAlphaChange, EVENT_BUS_SCOPE.GLOBAL)
         self._currentGammaValue = self._changeGammaValue = self._gammaWizard.gamma
-        self.as_initDataS({'title': text_styles.superPromoTitle(SETTINGS.GAMMAWIZARD_TITLE), 
-           'header': text_styles.highlightText(SETTINGS.GAMMAWIZARD_HEADER), 
-           'description': text_styles.main(SETTINGS.GAMMAWIZARD_DESCRIPTION), 
-           'applyLabel': SETTINGS.GAMMAWIZARD_APPLY, 
-           'cancelLabel': SETTINGS.GAMMAWIZARD_CANCEL, 
-           'defaultLabel': SETTINGS.GAMMAWIZARD_DEFAULT, 
-           'currentValue': self._currentGammaValue, 
-           'gammaTooltip': makeTooltip(SETTINGS.GAMMAWIZARD_TOOLTIP_HEADER, SETTINGS.GAMMAWIZARD_TOOLTIP_BODY), 
-           'minValue': self.MIN_VALUE, 
-           'maxValue': self.MAX_VALUE, 
-           'defaultValue': self.DEFAULT_VALUE})
+        self.as_initDataS({'title': text_styles.superPromoTitle(SETTINGS.GAMMAWIZARD_TITLE),
+         'header': text_styles.highlightText(SETTINGS.GAMMAWIZARD_HEADER),
+         'description': text_styles.main(SETTINGS.GAMMAWIZARD_DESCRIPTION),
+         'applyLabel': SETTINGS.GAMMAWIZARD_APPLY,
+         'cancelLabel': SETTINGS.GAMMAWIZARD_CANCEL,
+         'defaultLabel': SETTINGS.GAMMAWIZARD_DEFAULT,
+         'currentValue': self._currentGammaValue,
+         'gammaTooltip': makeTooltip(SETTINGS.GAMMAWIZARD_TOOLTIP_HEADER, SETTINGS.GAMMAWIZARD_TOOLTIP_BODY),
+         'minValue': self.MIN_VALUE,
+         'maxValue': self.MAX_VALUE,
+         'defaultValue': self.DEFAULT_VALUE})
         return
 
     def _dispose(self):

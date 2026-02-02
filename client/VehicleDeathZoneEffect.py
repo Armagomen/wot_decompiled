@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/VehicleDeathZoneEffect.py
 import BigWorld
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
@@ -32,7 +34,6 @@ class VehicleDeathZoneEffect(DynamicScriptComponent):
             if self.timeToDamage > 0:
                 return self.timeToDamage
             return max(self.damageTime - BigWorld.serverTime(), 0.0)
-        return 0.0
 
     def onDamaged(self):
         value = DeathZoneTimerViewState(DEATH_ZONES.STATIC, True, -1.0, None, -1.0)

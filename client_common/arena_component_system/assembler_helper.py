@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client_common/arena_component_system/assembler_helper.py
 from battleground.airdrops import AirdropsComponent
 from battleground.berserker_effect import BerserkerEffectComponent
 from constants import ARENA_BONUS_TYPE
@@ -10,23 +12,15 @@ from arena_component_system.epic_battle_component_assembler import EpicBattleCom
 from arena_component_system.protection_zone_component import ProtectionZoneComponent
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from arena_components.battle_royale_component import BattleRoyaleComponent
-COMPONENT_ASSEMBLER = {ARENA_BONUS_TYPE.EPIC_RANDOM: EpicRandomBattleComponentAssembler, 
-   ARENA_BONUS_TYPE.EPIC_RANDOM_TRAINING: EpicRandomBattleComponentAssembler, 
-   ARENA_BONUS_TYPE.EPIC_BATTLE: EpicBattleComponentAssembler, 
-   ARENA_BONUS_TYPE.EPIC_BATTLE_TRAINING: EpicBattleComponentAssembler}
-ARENA_BONUS_TYPE_CAP_COMPONENTS = {'sectorBaseComponent': (
-                         ARENA_BONUS_TYPE_CAPS.SECTOR_MECHANICS, SectorBaseArenaComponent), 
-   'sectorComponent': (
-                     ARENA_BONUS_TYPE_CAPS.SECTOR_MECHANICS, SectorsArenaComponent), 
-   'destructibleEntityComponent': (
-                                 ARENA_BONUS_TYPE_CAPS.DESTRUCTIBLE_ENTITIES, DestructibleEntitiesComponent), 
-   'stepRepairPointComponent': (
-                              ARENA_BONUS_TYPE_CAPS.STEP_REPAIR_MECHANIC, StepRepairPointComponent), 
-   'protectionZoneComponent': (
-                             ARENA_BONUS_TYPE_CAPS.PROTECTION_ZONE, ProtectionZoneComponent), 
-   'airDropComponent': (
-                      ARENA_BONUS_TYPE_CAPS.LOOT_DROP, AirdropsComponent), 
-   'battleRoyaleComponent': (
-                           ARENA_BONUS_TYPE_CAPS.BATTLEROYALE, BattleRoyaleComponent), 
-   'berserkerEffectComponent': (
-                              ARENA_BONUS_TYPE_CAPS.BATTLEROYALE, BerserkerEffectComponent)}
+COMPONENT_ASSEMBLER = {ARENA_BONUS_TYPE.EPIC_RANDOM: EpicRandomBattleComponentAssembler,
+ ARENA_BONUS_TYPE.EPIC_RANDOM_TRAINING: EpicRandomBattleComponentAssembler,
+ ARENA_BONUS_TYPE.EPIC_BATTLE: EpicBattleComponentAssembler,
+ ARENA_BONUS_TYPE.EPIC_BATTLE_TRAINING: EpicBattleComponentAssembler}
+ARENA_BONUS_TYPE_CAP_COMPONENTS = {'sectorBaseComponent': (ARENA_BONUS_TYPE_CAPS.SECTOR_MECHANICS, SectorBaseArenaComponent),
+ 'sectorComponent': (ARENA_BONUS_TYPE_CAPS.SECTOR_MECHANICS, SectorsArenaComponent),
+ 'destructibleEntityComponent': (ARENA_BONUS_TYPE_CAPS.DESTRUCTIBLE_ENTITIES, DestructibleEntitiesComponent),
+ 'stepRepairPointComponent': (ARENA_BONUS_TYPE_CAPS.STEP_REPAIR_MECHANIC, StepRepairPointComponent),
+ 'protectionZoneComponent': (ARENA_BONUS_TYPE_CAPS.PROTECTION_ZONE, ProtectionZoneComponent),
+ 'airDropComponent': (ARENA_BONUS_TYPE_CAPS.LOOT_DROP, AirdropsComponent),
+ 'battleRoyaleComponent': (ARENA_BONUS_TYPE_CAPS.BATTLEROYALE, BattleRoyaleComponent),
+ 'berserkerEffectComponent': (ARENA_BONUS_TYPE_CAPS.BATTLEROYALE, BerserkerEffectComponent)}

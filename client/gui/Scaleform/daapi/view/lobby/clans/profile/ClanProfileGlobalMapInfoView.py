@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/clans/profile/ClanProfileGlobalMapInfoView.py
 import weakref
 from adisp import adisp_process
 from gui.Scaleform.daapi.view.lobby.clans.profile.clan_statistics_vos import FortGlobalMapStatistics
@@ -30,7 +32,9 @@ class ClanProfileGlobalMapInfoView(ClanProfileGlobalMapInfoViewMeta):
             return
         primeTime = formatField(getter=favouriteAttrs.getFavoritePrimetime, formatter=lambda x: backport.getShortTimeFormat(x.hour * time_utils.ONE_HOUR + x.minute * time_utils.ONE_MINUTE))
         primeTime = text_styles.standard(_ms(CLANS.GLOBALMAPVIEW_POPULARPRIMETIME, time=text_styles.main(primeTime)))
-        data = FortGlobalMapStatistics({'stats': globalMapStats, 'ratings': ratings, 'favouriteAttrs': favouriteAttrs})
+        data = FortGlobalMapStatistics({'stats': globalMapStats,
+         'ratings': ratings,
+         'favouriteAttrs': favouriteAttrs})
         data['primeTimeText'] = primeTime
         self.as_setDataS(data)
         proxy.hideWaiting()

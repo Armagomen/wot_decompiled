@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/fo_precache.py
 import BigWorld
 from debug_utils import LOG_ERROR, LOG_DEBUG
 _IS_ENABLED = True

@@ -1,4 +1,7 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/server_events/finders.py
 import re
+from gui.server_events.pm_constants import IS_PM3_QUEST_ENABLED, IS_PM2_QUEST_ENABLED, IS_REGULAR_QUEST_ENABLED
 from helpers import dependency
 from personal_missions import PM_BRANCH
 from shared_utils import findFirst, first
@@ -26,21 +29,20 @@ PM_POINTS_PREFIX = 'pm'
 PM_POINTS_POSTFIX = ':points'
 PM_POINTS = PM_POINTS_PREFIX + '%s:%s' + PM_POINTS_POSTFIX
 isPMQuestRegExp = re.compile('pt_(s\\d_t\\d+_c\\d|final(_s\\d_t\\d+)?)(_[A-Za-z_]+)?')
-CHAMPION_BADGES_BY_BRANCH = {PM_BRANCH.REGULAR: FINAL_PT_TOKEN_PREFIX + 'badge', 
-   PM_BRANCH.PERSONAL_MISSION_2: FINAL_PT_TOKEN_PREFIX + 'badge_s2'}
-OPERATIONS_TOKENS_PATTERNS = (
- PERSONAL_MISSION_TOKEN, MAIN_PERSONAL_MISSION_TOKEN, ADD_PERSONAL_MISSION_TOKEN)
-BRANCH_TO_OPERATION_IDS = {PM_BRANCH.REGULAR: (1, 2, 3, 4), 
-   PM_BRANCH.PERSONAL_MISSION_2: (5, 6, 7), 
-   PM_BRANCH.PERSONAL_MISSION_3: (8, 9, 10)}
-PM_CAMPAIGNS_IDS = {PM_BRANCH.REGULAR: 1, 
-   PM_BRANCH.PERSONAL_MISSION_2: 2, 
-   PM_BRANCH.PERSONAL_MISSION_3: 3}
-PM_SWITCHER_CAMPAIGN = {'isRegularQuestEnabled': PM_BRANCH.REGULAR, 
-   'isPM2QuestEnabled': PM_BRANCH.PERSONAL_MISSION_2, 
-   'isPM3QuestEnabled': PM_BRANCH.PERSONAL_MISSION_3}
+CHAMPION_BADGES_BY_BRANCH = {PM_BRANCH.REGULAR: FINAL_PT_TOKEN_PREFIX + 'badge',
+ PM_BRANCH.PERSONAL_MISSION_2: FINAL_PT_TOKEN_PREFIX + 'badge_s2'}
+OPERATIONS_TOKENS_PATTERNS = (PERSONAL_MISSION_TOKEN, MAIN_PERSONAL_MISSION_TOKEN, ADD_PERSONAL_MISSION_TOKEN)
+BRANCH_TO_OPERATION_IDS = {PM_BRANCH.REGULAR: (1, 2, 3, 4),
+ PM_BRANCH.PERSONAL_MISSION_2: (5, 6, 7),
+ PM_BRANCH.PERSONAL_MISSION_3: (8, 9, 10)}
+PM_CAMPAIGNS_IDS = {PM_BRANCH.REGULAR: 1,
+ PM_BRANCH.PERSONAL_MISSION_2: 2,
+ PM_BRANCH.PERSONAL_MISSION_3: 3}
+PM_SWITCHER_CAMPAIGN = {IS_REGULAR_QUEST_ENABLED: PM_BRANCH.REGULAR,
+ IS_PM2_QUEST_ENABLED: PM_BRANCH.PERSONAL_MISSION_2,
+ IS_PM3_QUEST_ENABLED: PM_BRANCH.PERSONAL_MISSION_3}
 OPERATION_ID_TO_BRANCH = {operationsId:branch for branch in BRANCH_TO_OPERATION_IDS.iterkeys() for operationsId in BRANCH_TO_OPERATION_IDS[branch]}
-CHAMPION_BADGE_AT_OPERATION_ID = {operationIds[(-1)]:CHAMPION_BADGES_BY_BRANCH[branch] for branch, operationIds in BRANCH_TO_OPERATION_IDS.iteritems() if CHAMPION_BADGES_BY_BRANCH.get(branch) if CHAMPION_BADGES_BY_BRANCH.get(branch)}
+CHAMPION_BADGE_AT_OPERATION_ID = {operationIds[-1]:CHAMPION_BADGES_BY_BRANCH[branch] for branch, operationIds in BRANCH_TO_OPERATION_IDS.iteritems() if CHAMPION_BADGES_BY_BRANCH.get(branch)}
 
 def getBranchByOperationId(operationId):
     return OPERATION_ID_TO_BRANCH.get(operationId, None)
@@ -68,13 +70,13 @@ def getAdditionalTokenQuestIdByOperationId(operationId, addCamouflage=False, add
     result = []
     finalId = getFinalTokenQuestIdByOperationId(operationId)
     if addCamouflage:
-        result.append(('').join((finalId, '_camouflage')))
+        result.append(''.join((finalId, '_camouflage')))
     if addBadge:
         branch = getBranchByOperationId(operationId)
         if branch == PM_BRANCH.REGULAR:
-            result.append(('').join((finalId, '_badge2')))
+            result.append(''.join((finalId, '_badge2')))
         elif branch == PM_BRANCH.PERSONAL_MISSION_2:
-            result.append(('').join((finalId, '_badge')))
+            result.append(''.join((finalId, '_badge')))
     return result
 
 
@@ -89,8 +91,7 @@ def getPersonalMissionDataFromToken(token):
             if token == ADD_PERSONAL_MISSION_TOKEN % opID:
                 return (True, opID, False)
 
-    return (
-     False, None, None)
+    return (False, None, None)
 
 
 def getQuestsByTokenAndBonus(quests, tokenFinder=None, bonusFinder=None):
@@ -160,8 +161,7 @@ def tokenBonusFinder(tokenID):
 
 
 def getOperationCompleteToken(operation):
-    return (PM3_PERSONAL_MISSION_BASE_TOKEN if operation.getBranch() == PM_BRANCH.PERSONAL_MISSION_3 else PERSONAL_MISSION_COMPLETE_TOKEN) % (
-     operation.getCampaignID(), operation.getID())
+    return (PM3_PERSONAL_MISSION_BASE_TOKEN if operation.getBranch() == PM_BRANCH.PERSONAL_MISSION_3 else PERSONAL_MISSION_COMPLETE_TOKEN) % (operation.getCampaignID(), operation.getID())
 
 
 def operationCompletionBonusFinder(operation):

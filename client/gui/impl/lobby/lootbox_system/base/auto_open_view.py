@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/lootbox_system/base/auto_open_view.py
 from constants import LOOTBOX_TOKEN_PREFIX
 from frameworks.wulf import ViewSettings, WindowFlags
 from gui.impl.gen import R
@@ -31,47 +33,29 @@ class AutoOpenView(ViewImpl):
 
     def getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        if tooltipId is None:
-            return
-        else:
-            return self.__tooltips.get(tooltipId)
+        return None if tooltipId is None else self.__tooltips.get(tooltipId)
 
     def _onLoading(self, *args, **kwargs):
         super(AutoOpenView, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setEventName(self.__eventName)
             tx.setBoxesQuantity(sum(self.__boxes.values()))
         self.__updateRewards()
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onClose, self.__onClose),
-         (
-          self.viewModel.onPreview, self.__showPreview))
+        return ((self.viewModel.onClose, self.__onClose), (self.viewModel.onPreview, self.__showPreview))
 
     def __updateRewards(self):
-        with self.getViewModel().transaction() as (tx):
+        with self.getViewModel().transaction() as tx:
             packBonusGroups(bonuses=self.__rewards, groupModels=tx.getRewardRows(), groupsLayout=self.__getGroupsLayout(), tooltipsData=self.__tooltips, packer=None, eventName=self.__eventName)
         return
 
     @classmethod
     def __getGroupsLayout(cls):
-        layout = (
-         RewardsGroup(name=REWARDS_GROUP_NAME_RES.vehicles(), bonusTypes=('vehicles', ), bonuses={}, filterFuncs=(
-          getVehiclesFilter((noCompensation,)),)),
-         RewardsGroup(name=REWARDS_GROUP_NAME_RES.customizations(), bonusTypes=('customizations', ), bonuses={}, filterFuncs=None),
-         RewardsGroup(name=REWARDS_GROUP_NAME_RES.crewBooksAndCrew(), bonusTypes=('items', 'goodies',
-                                                                         'tokens',
-                                                                         'crewSkins'), bonuses={}, filterFuncs=(
-          getItemsFilter((isCrewBook,)),
-          getGoodiesFilter((
-           cls.__goodiesCache.getRecertificationForm, cls.__goodiesCache.getMentoringLicense)),
-          getTankmenFilter)),
-         RewardsGroup(name=REWARDS_GROUP_NAME_RES.optionalDevicesAndBattleBoosters(), bonusTypes=('items',
-                                                                                         'goodies'), bonuses={}, filterFuncs=(
-          getItemsFilter((isOptionalDevice, isBattleBooster)),
-          getGoodiesFilter((cls.__goodiesCache.getDemountKit,)))),
+        layout = (RewardsGroup(name=REWARDS_GROUP_NAME_RES.vehicles(), bonusTypes=('vehicles',), bonuses={}, filterFuncs=(getVehiclesFilter((noCompensation,)),)),
+         RewardsGroup(name=REWARDS_GROUP_NAME_RES.customizations(), bonusTypes=('customizations',), bonuses={}, filterFuncs=None),
+         RewardsGroup(name=REWARDS_GROUP_NAME_RES.crewBooksAndCrew(), bonusTypes=('items', 'goodies', 'tokens', 'crewSkins'), bonuses={}, filterFuncs=(getItemsFilter((isCrewBook,)), getGoodiesFilter((cls.__goodiesCache.getRecertificationForm, cls.__goodiesCache.getMentoringLicense)), getTankmenFilter)),
+         RewardsGroup(name=REWARDS_GROUP_NAME_RES.optionalDevicesAndBattleBoosters(), bonusTypes=('items', 'goodies'), bonuses={}, filterFuncs=(getItemsFilter((isOptionalDevice, isBattleBooster)), getGoodiesFilter((cls.__goodiesCache.getDemountKit,)))),
          RewardsGroup(name=REWARDS_GROUP_NAME_RES.other(), bonusTypes=(), bonuses={}, filterFuncs=None))
         return layout
 

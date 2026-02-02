@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/vehicle_hub/sub_presenters/armor/armor_sub_presenter.py
 from __future__ import absolute_import
-import typing, GUI
+import typing
+import GUI
 from PlayerEvents import g_playerEvents
 from account_helpers.settings_core import settings_constants
 from armor_inspector_common.schemas import armorInspectorConfigSchema
@@ -23,9 +26,7 @@ if typing.TYPE_CHECKING:
     from gui.Scaleform.framework.application import AppEntry
 
 class ArmorSubPresenter(SubPresenterBase):
-    __slots__ = ('_prevAppBackgroundAlpha', '_prevOptimizationEnabled', '_level', '_normalArmorMax',
-                 '_spacedArmorMax', '_vehicleEntity', '_tooltip', '_isMouseOver',
-                 '_isInspectorStarted')
+    __slots__ = ('_prevAppBackgroundAlpha', '_prevOptimizationEnabled', '_level', '_normalArmorMax', '_spacedArmorMax', '_vehicleEntity', '_tooltip', '_isMouseOver', '_isInspectorStarted')
     _appLoader = dependency.descriptor(IAppLoader)
     _settingsCore = dependency.descriptor(ISettingsCore)
     _hangarSpace = dependency.descriptor(IHangarSpace)
@@ -79,27 +80,16 @@ class ArmorSubPresenter(SubPresenterBase):
         super(ArmorSubPresenter, self).clear()
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onLinkButtonPressed, self._onLinkButtonClicked),
-         (
-          self.viewModel.onLegendClicked, self._onLegendClicked),
-         (
-          self.viewModel.onLegendTooltipOpened, self._onLegendTooltipOpened),
-         (
-          self.viewModel.onLegendTooltipClosed, self._onLegendTooltipClosed),
-         (
-          self._hangarSpace.onMouseEnter, self._onMouseEnter),
-         (
-          self._hangarSpace.onMouseExit, self._onMouseExit),
-         (
-          self._hangarSpace.onVehicleChangeStarted, self._onVehicleChangeStarted),
-         (
-          self._hangarSpace.onVehicleChanged, self._onVehicleChanged),
-         (
-          self._settingsCore.onSettingsChanged, self._onSettingsChanged),
-         (
-          g_playerEvents.onConfigModelUpdated, self._onConfigModelUpdateHandler))
+        return ((self.viewModel.onLinkButtonPressed, self._onLinkButtonClicked),
+         (self.viewModel.onLegendClicked, self._onLegendClicked),
+         (self.viewModel.onLegendTooltipOpened, self._onLegendTooltipOpened),
+         (self.viewModel.onLegendTooltipClosed, self._onLegendTooltipClosed),
+         (self._hangarSpace.onMouseEnter, self._onMouseEnter),
+         (self._hangarSpace.onMouseExit, self._onMouseExit),
+         (self._hangarSpace.onVehicleChangeStarted, self._onVehicleChangeStarted),
+         (self._hangarSpace.onVehicleChanged, self._onVehicleChanged),
+         (self._settingsCore.onSettingsChanged, self._onSettingsChanged),
+         (g_playerEvents.onConfigModelUpdated, self._onConfigModelUpdateHandler))
 
     def _startArmorInspector(self):
         if not self._isInspectorStarted and self._hangarSpace.isModelLoaded:
@@ -184,9 +174,7 @@ class ArmorSubPresenter(SubPresenterBase):
 
     def _applyScaleToPosition(self, position):
         scale = self._settingsCore.interfaceScale.get()
-        if scale != 1:
-            return (int(coord // scale) for coord in position)
-        return position
+        return (int(coord // scale) for coord in position) if scale != 1 else position
 
     def __onTooltipStatusChanged(self, status):
         if status == ViewStatus.DESTROYED:

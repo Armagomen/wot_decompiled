@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/base/unit/permissions.py
 import account_helpers
 from UnitBase import UNIT_FLAGS, UNIT_ROLE
 from gui.prb_control.entities.base.permissions import IPrbPermissions
@@ -76,10 +78,7 @@ class UnitIntroPermissions(IUnitPermissions):
         return not self._hasLockedState
 
 
-@ReprInjector.simple(('_roles', 'roles'), ('_flags', 'flags'), ('_isCurrentPlayer',
-                                                                'isCurrentPlayer'), ('_isPlayerReady',
-                                                                                     'isPlayerReady'), ('_hasLockedState',
-                                                                                                        'hasLockedState'))
+@ReprInjector.simple(('_roles', 'roles'), ('_flags', 'flags'), ('_isCurrentPlayer', 'isCurrentPlayer'), ('_isPlayerReady', 'isPlayerReady'), ('_hasLockedState', 'hasLockedState'))
 class UnitPermissions(IUnitPermissions):
 
     def __init__(self, roles=0, flags=UNIT_FLAGS.DEFAULT, isCurrentPlayer=False, isPlayerReady=False, hasLockedState=False):

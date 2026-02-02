@@ -1,4 +1,7 @@
-import logging, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_core/scripts/client/comp7_core/gui/Scaleform/daapi/view/battle/damage_panel.py
+import logging
+import BigWorld
 from gui.Scaleform.daapi.view.battle.shared.damage_panel import DamagePanel, STATUS_ID, ConcurrentStatusManager
 from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE
 _logger = logging.getLogger(__name__)
@@ -24,10 +27,7 @@ class Comp7DamagePanel(DamagePanel):
             self._crewBuffManager.deleteStatus(buffName)
 
 
-_STATUS_EFFECTS_PRIORITY = (
- VEHICLE_VIEW_STATE.AOE_INSPIRE,
- VEHICLE_VIEW_STATE.AOE_HEAL,
- VEHICLE_VIEW_STATE.STUN)
+_STATUS_EFFECTS_PRIORITY = (VEHICLE_VIEW_STATE.AOE_INSPIRE, VEHICLE_VIEW_STATE.AOE_HEAL, VEHICLE_VIEW_STATE.STUN)
 
 class _Comp7ConcurrentStatusManager(ConcurrentStatusManager):
 
@@ -64,4 +64,4 @@ class _Comp7ConcurrentStatusManager(ConcurrentStatusManager):
             self._animationPlayer.showStatus(timeLeft, not self._animationPlayer.hasStatus())
         else:
             self._animationPlayer.hideStatus(True)
-        return
+        return None

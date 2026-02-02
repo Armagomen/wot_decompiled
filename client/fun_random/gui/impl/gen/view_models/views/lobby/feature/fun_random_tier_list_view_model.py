@@ -1,8 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/gen/view_models/views/lobby/feature/fun_random_tier_list_view_model.py
 from frameworks.wulf import Array, ViewModel
 from fun_random.gui.impl.gen.view_models.views.lobby.common.fun_random_lootbox import FunRandomLootbox
 
 class FunRandomTierListViewModel(ViewModel):
-    __slots__ = ('onClose', )
+    __slots__ = ('onClose',)
 
     def __init__(self, properties=2, commands=1):
         super(FunRandomTierListViewModel, self).__init__(properties=properties, commands=commands)

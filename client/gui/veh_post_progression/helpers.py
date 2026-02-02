@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/veh_post_progression/helpers.py
 import typing
 from itertools import chain
 from account_helpers import AccountSettings
@@ -5,11 +7,7 @@ from account_helpers.AccountSettings import VPP_ENTRY_POINT_LAST_SEEN_STEP
 from account_shared import LayoutIterator
 from gui.veh_post_progression.models.ext_money import ExtendedMoney
 from post_progression_common import VehicleState, parseActionCompDescr, ACTION_TYPES, TankSetupLayouts, GROUP_ID_BY_LAYOUT
-_LAYOUT_TO_INSTALLED = (
- (
-  TankSetupLayouts.EQUIPMENT, 'eqs'),
- (
-  TankSetupLayouts.BATTLE_BOOSTERS, 'boosters'))
+_LAYOUT_TO_INSTALLED = ((TankSetupLayouts.EQUIPMENT, 'eqs'), (TankSetupLayouts.BATTLE_BOOSTERS, 'boosters'))
 
 def getVehicleState(actionCDs):
     result = VehicleState()

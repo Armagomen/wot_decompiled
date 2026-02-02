@@ -1,4 +1,8 @@
-import BigWorld, ResMgr, SoundGroups
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/SectorBase.py
+import BigWorld
+import ResMgr
+import SoundGroups
 from helpers import dependency
 from FlagModel import FlagSettings, FlagModel
 from Math import Vector4, Vector3, Vector2, Matrix
@@ -45,11 +49,7 @@ class SectorBase(BigWorld.Entity):
         if _g_sectorBaseSettings is None:
             settingsData = ResMgr.openSection(ENVIRONMENT_EFFECTS_CONFIG_FILE + '/sectorBase')
             _g_sectorBaseSettings = _SectorBaseSettingsCache(settingsData)
-            SectorBase._PLAYER_TEAM_PARAMS = (
-             (
-              4294901760, 4286806526, False),
-             (
-              4278255360, 4278255360, True))
+            SectorBase._PLAYER_TEAM_PARAMS = ((4294901760L, 4286806526L, False), (4278255360L, 4278255360L, True))
         return
 
     def prerequisites(self):
@@ -63,8 +63,7 @@ class SectorBase(BigWorld.Entity):
         scaleMatrix = Matrix()
         scaleMatrix.setScale(_g_sectorBaseSettings.flagScale)
         assembler.addPart(_g_sectorBaseSettings.flagModelName, _g_sectorBaseSettings.flagStaffFlagHP, _g_sectorBaseSettings.flagNodeAliasName, scaleMatrix)
-        rv = [
-         assembler, _g_sectorBaseSettings.radiusModel]
+        rv = [assembler, _g_sectorBaseSettings.radiusModel]
         if _g_sectorBaseSettings.flagAnim is not None:
             loader = AnimationSequence.Loader(_g_sectorBaseSettings.flagAnim, self.spaceID)
             rv.append(loader)

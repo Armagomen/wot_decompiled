@@ -1,23 +1,21 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/AvatarInputHandler/DynamicCameras/arcade_camera_helper.py
 from enum import Enum
 from collections import namedtuple
-import math, time, math_utils
+import math
+import time
+import math_utils
 from AvatarInputHandler.cameras import readFloat, readVec2, readInt, readString
 from helpers import dependency
 from skeletons.account_helpers.settings_core import ISettingsCore
 LINEAR_EASING = math_utils.Easing.linearEasing
 SQUARE_EASING = math_utils.Easing.squareEasing
 EXPONENTIAL_EASING = math_utils.Easing.exponentialEasing
-EASING_FUNCTION_MAP = {1: LINEAR_EASING, 
-   2: SQUARE_EASING, 
-   3: EXPONENTIAL_EASING}
+EASING_FUNCTION_MAP = {1: LINEAR_EASING,
+ 2: SQUARE_EASING,
+ 3: EXPONENTIAL_EASING}
 MinMax = namedtuple('MinMax', ('min', 'max'))
-ZoomState = namedtuple('ZoomState', ('distRange', 'scrollSensitivity', 'sensitivity',
-                                     'angleRangeOnMinDist', 'angleRangeOnMaxDist',
-                                     'transitionDurationIn', 'transitionDurationOut',
-                                     'transitionEasingIn', 'transitionEasingOut',
-                                     'focusRadiusOnMinMaxDist', 'heightAboveBaseOnMinMaxDist',
-                                     'overScrollProtectOnMax', 'overScrollProtectOnMin',
-                                     'minLODBiasForTanks', 'settingsKey'))
+ZoomState = namedtuple('ZoomState', ('distRange', 'scrollSensitivity', 'sensitivity', 'angleRangeOnMinDist', 'angleRangeOnMaxDist', 'transitionDurationIn', 'transitionDurationOut', 'transitionEasingIn', 'transitionEasingOut', 'focusRadiusOnMinMaxDist', 'heightAboveBaseOnMinMaxDist', 'overScrollProtectOnMax', 'overScrollProtectOnMin', 'minLODBiasForTanks', 'settingsKey'))
 
 def readAngle(dataSec, name, minVal, maxVal, defaultVal):
     angle = readVec2(dataSec, name, minVal, maxVal, defaultVal)
@@ -41,25 +39,15 @@ def readZoomState(dataSec):
         sensitivity = readFloat(dataSec, 'sensitivity', 0, 5, 0.002)
         overScrollProtectOnMax = readFloat(dataSec, 'overScrollProtectOnMax', 0, 10, 0)
         overScrollProtectOnMin = readFloat(dataSec, 'overScrollProtectOnMin', 0, 10, 0)
-        angleRangeOnMinDist = readAngle(dataSec, 'angleRangeOnMinDist', (1, 1), (180,
-                                                                                 180), (10,
-                                                                                        110))
-        angleRangeOnMaxDist = readAngle(dataSec, 'angleRangeOnMaxDist', (1, 1), (180,
-                                                                                 180), (10,
-                                                                                        110))
+        angleRangeOnMinDist = readAngle(dataSec, 'angleRangeOnMinDist', (1, 1), (180, 180), (10, 110))
+        angleRangeOnMaxDist = readAngle(dataSec, 'angleRangeOnMaxDist', (1, 1), (180, 180), (10, 110))
         transitionDurationIn = readFloat(dataSec, 'transitionDurationIn', 0, 5, 0.5)
         transitionDurationOut = readFloat(dataSec, 'transitionDurationOut', 0, 5, 0.5)
         transitionEasingIn = readEasing(dataSec, 'transitionEasingIn', 1, 3, 3)
         transitionEasingOut = readEasing(dataSec, 'transitionEasingOut', 1, 3, 3)
-        focusRadiusOnMinMaxDistVec = readVec2(dataSec, 'focusRadiusOnMinMaxDist', (-100,
-                                                                                   -100), (100,
-                                                                                           100), (3,
-                                                                                                  3))
+        focusRadiusOnMinMaxDistVec = readVec2(dataSec, 'focusRadiusOnMinMaxDist', (-100, -100), (100, 100), (3, 3))
         focusRadiusOnMinMaxDist = MinMax(focusRadiusOnMinMaxDistVec.x, focusRadiusOnMinMaxDistVec.y)
-        heightAboveBaseOnMinMaxDistVec = readVec2(dataSec, 'heightAboveBaseOnMinMaxDist', (1,
-                                                                                           1), (180,
-                                                                                                180), (3,
-                                                                                                       3))
+        heightAboveBaseOnMinMaxDistVec = readVec2(dataSec, 'heightAboveBaseOnMinMaxDist', (1, 1), (180, 180), (3, 3))
         heightAboveBaseOnMinMaxDist = MinMax(heightAboveBaseOnMinMaxDistVec.x, heightAboveBaseOnMinMaxDistVec.y)
         minLODBiasForTanks = readFloat(dataSec, 'minLODBiasForTanks', 0, 5, 0.0)
         settingsKey = readString(dataSec, 'settingsKey', '')
@@ -75,9 +63,7 @@ class EScrollDir(Enum):
         if dz == 0:
             return None
         else:
-            if dz > 0:
-                return EScrollDir.IN
-            return EScrollDir.OUT
+            return EScrollDir.IN if dz > 0 else EScrollDir.OUT
 
 
 class OverScrollProtector(object):
@@ -183,7 +169,7 @@ class ZoomStateSwitcher(object):
             self.__index = index
             return self.__zoomStates[index]
         else:
-            return
+            return None
 
     def __isIndexValid(self, index):
         return self.__zoomStates and 0 <= index < len(self.__zoomStates)
@@ -217,7 +203,6 @@ class CollideAnimatorEasing(object):
             if self.__easing.stopped:
                 self.stop()
             return result
-        return 0.0
 
     def stop(self):
         self.__easing = None

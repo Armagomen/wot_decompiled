@@ -1,8 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/server_events/events_helpers.py
 import operator
 from collections import defaultdict, namedtuple
-from copy import deepcopy
-from typing import TYPE_CHECKING, NamedTuple
+from typing import TYPE_CHECKING
 from gui.Scaleform.daapi.view.lobby.customization.progression_helpers import getC11n2dProgressionLinkBtnParams
+from gui.Scaleform.daapi.view.lobby.server_events.token_converter_helper import getBonusDataFromOneOfBonuses, convertTokensInBonusData
 from gui.shared.gui_items import GUI_ITEM_TYPE
 import constants
 from battle_pass_common import BattlePassConsts, BATTLE_PASS_RANDOM_QUEST_ID_PREFIX, NON_CHAPTER_ID, isPostProgressionChapter, getPostProgressionLevel
@@ -27,7 +29,6 @@ from gui.shared.formatters import icons, text_styles
 from helpers import dependency, i18n, int2roman, time_utils
 from helpers.i18n import makeString as _ms
 from nations import ALLIANCE_TO_NATIONS
-from optional_bonuses import TrackVisitor
 from personal_missions import PM_BRANCH
 from quest_xml_source import MAX_BONUS_LIMIT
 from shared_utils import first
@@ -42,22 +43,7 @@ if TYPE_CHECKING:
 FINISH_TIME_LEFT_TO_SHOW = time_utils.ONE_DAY
 START_TIME_LIMIT = 5 * time_utils.ONE_DAY
 _AWARDS_PER_PAGE = 3
-_ChapterProgress = namedtuple('_ChapterProgress', (
- 'previousPoints', 'currentPoints', 'previousLevel', 'currentLevel', 'currentLevelPoints', 'maxLevelPoints'))
-
-class TokenConvertionData(NamedTuple('TokenConvertionData', [
- (
-  'tokenTo', str),
- (
-  'limit', int),
- (
-  'rate', float)])):
-
-    def __new__(cls, **kwargs):
-        defaults = dict(tokenTo='', limit=0, rate=1.0)
-        defaults.update({k:kwargs[k] for k in defaults.viewkeys() & kwargs.viewkeys()})
-        return super(TokenConvertionData, cls).__new__(cls, **defaults)
-
+_ChapterProgress = namedtuple('_ChapterProgress', ('previousPoints', 'currentPoints', 'previousLevel', 'currentLevel', 'currentLevelPoints', 'maxLevelPoints'))
 
 class BattlePassProgress(object):
     __battlePassController = dependency.descriptor(IBattlePassController)
@@ -122,43 +108,32 @@ class BattlePassProgress(object):
 
     def getCurrentLevelPoints(self, chapterID):
         progress = self.__chaptersProgress.get(chapterID)
-        if progress is not None:
-            return progress.currentLevelPoints
-        else:
-            return 0
+        return progress.currentLevelPoints if progress is not None else 0
 
     def getMaxLevelPoints(self, chapterID):
         progress = self.__chaptersProgress.get(chapterID)
-        if progress is not None:
-            return progress.maxLevelPoints
-        else:
-            return 0
+        return progress.maxLevelPoints if progress is not None else 0
 
     def getCurrentLevel(self, chapterID):
         progress = self.__chaptersProgress.get(chapterID)
-        if progress is not None:
-            return progress.currentLevel
-        else:
-            return 0
+        return progress.currentLevel if progress is not None else 0
 
     def getPreviousLevel(self, chapterID):
         progress = self.__chaptersProgress.get(chapterID)
-        if progress is not None:
-            return progress.previousLevel
-        else:
-            return 0
+        return progress.previousLevel if progress is not None else 0
 
     def getPointsDiff(self, chapterID):
         progress = self.__chaptersProgress.get(chapterID)
         if progress is None:
             return 0
         else:
-            if progress.currentLevel == progress.previousLevel:
-                return progress.currentPoints - progress.previousPoints
-            return progress.currentLevelPoints
+            return progress.currentPoints - progress.previousPoints if progress.currentLevel == progress.previousLevel else progress.currentLevelPoints
 
     def getLevelAwards(self, chapterID, level):
         return self.__battlePassController.getSingleAward(chapterID, level, self.__getRewardType(chapterID))
+
+    def getLevelAwardsByType(self, chapterID, level, rewardType):
+        return self.__battlePassController.getSingleAward(chapterID, level, rewardType)
 
     def hasProgress(self, chapterID):
         return self.isLevelReached(chapterID) or self.getPointsDiff(chapterID) > 0
@@ -189,16 +164,13 @@ class BattlePassProgress(object):
             self.__chaptersProgress.update({chapterID: progress})
             if self.__battlePassController.getMaxLevelInChapter(chapterID) <= currentLevel:
                 self.__previousChapterID = chapterID
-            else:
-                self.__currentChapterID = chapterID
+            self.__currentChapterID = chapterID
 
         if not self.__previousChapterID:
             self.__previousChapterID = self.__currentChapterID
 
     def __getRewardType(self, chapterID):
-        if self.__hasBattlePass and not isPostProgressionChapter(chapterID):
-            return BattlePassConsts.REWARD_BOTH
-        return BattlePassConsts.REWARD_FREE
+        return BattlePassConsts.REWARD_BOTH if self.__hasBattlePass and not isPostProgressionChapter(chapterID) else BattlePassConsts.REWARD_FREE
 
     @staticmethod
     def __isQuestCompleted(_, previousProgress, currentProgress):
@@ -211,30 +183,33 @@ class EventPostBattleInfo(EventInfoModel):
         if noProgressInfo:
             status = MISSIONS_STATES.NONE
             bonusCount = self.NO_BONUS_COUNT
-            qProgCur, qProgTot, qProgbarType, tooltip = (0, 0, formatters.PROGRESS_BAR_TYPE.NONE, None)
+            qProgCur, qProgTot, qProgbarType, tooltip = (0,
+             0,
+             formatters.PROGRESS_BAR_TYPE.NONE,
+             None)
         else:
             bonusCount = self._getBonusCount(pCur)
             status, _ = self._getStatus(pCur)
             qProgCur, qProgTot, qProgbarType, tooltip = self._getProgressValues(svrEvents, pCur, pPrev)
         isAvailable, _ = self.event.isAvailable()
-        return {'questID': str(self.event.getID()), 
-           'eventType': self.event.getType(), 
-           'IGR': self.event.isIGR(), 
-           'taskType': self.event.getUserType(), 
-           'tasksCount': bonusCount, 
-           'progrBarType': qProgbarType, 
-           'progrTooltip': tooltip, 
-           'maxProgrVal': qProgTot, 
-           'currentProgrVal': qProgCur, 
-           'rendererType': QUESTS_ALIASES.RENDERER_TYPE_QUEST, 
-           'timerDescription': self.getTimerMsg(), 
-           'status': status, 
-           'description': self.event.getUserName(), 
-           'tooltip': TOOLTIPS.QUESTS_RENDERER_LABEL, 
-           'isSelectable': True, 
-           'isNew': quest_settings.isNewCommonEvent(self.event), 
-           'isAvailable': isAvailable, 
-           'linkTooltip': TOOLTIPS.QUESTS_LINKBTN_TASK}
+        return {'questID': str(self.event.getID()),
+         'eventType': self.event.getType(),
+         'IGR': self.event.isIGR(),
+         'taskType': self.event.getUserType(),
+         'tasksCount': bonusCount,
+         'progrBarType': qProgbarType,
+         'progrTooltip': tooltip,
+         'maxProgrVal': qProgTot,
+         'currentProgrVal': qProgCur,
+         'rendererType': QUESTS_ALIASES.RENDERER_TYPE_QUEST,
+         'timerDescription': self.getTimerMsg(),
+         'status': status,
+         'description': self.event.getUserName(),
+         'tooltip': TOOLTIPS.QUESTS_RENDERER_LABEL,
+         'isSelectable': True,
+         'isNew': quest_settings.isNewCommonEvent(self.event),
+         'isAvailable': isAvailable,
+         'linkTooltip': TOOLTIPS.QUESTS_LINKBTN_TASK}
 
     def getPostBattleInfo(self, svrEvents, pCur, pPrev, isProgressReset, isCompleted, **kwargs):
         progresses = []
@@ -250,13 +225,13 @@ class EventPostBattleInfo(EventInfoModel):
             questTokensConvertion = kwargs.get('questTokensConvertion', {})
             questTokensCount = kwargs.get('questTokensCount', {})
             awards = self._getBonuses(svrEvents, pCur=pCur, questTokensConvertion=questTokensConvertion, questTokensCount=questTokensCount)
-        return {'title': self.event.getUserName(), 
-           'descr': self.event.getDescription(), 
-           'awards': awards, 
-           'progressList': progresses, 
-           'alertMsg': alertMsg, 
-           'questInfo': self.getInfo(svrEvents, pCur, pPrev), 
-           'questType': self.event.getType()}
+        return {'title': self.event.getUserName(),
+         'descr': self.event.getDescription(),
+         'awards': awards,
+         'progressList': progresses,
+         'alertMsg': alertMsg,
+         'questInfo': self.getInfo(svrEvents, pCur, pPrev),
+         'questType': self.event.getType()}
 
     @classmethod
     def _getEventsByIDs(cls, ids, svrEvents):
@@ -271,7 +246,10 @@ class EventPostBattleInfo(EventInfoModel):
         return self.NO_BONUS_COUNT
 
     def _getProgressValues(self, svrEvents=None, pCur=None, pPrev=None):
-        return (0, 0, formatters.PROGRESS_BAR_TYPE.NONE, None)
+        return (0,
+         0,
+         formatters.PROGRESS_BAR_TYPE.NONE,
+         None)
 
     def _getBonuses(self, svrEvents, pCur=None, bonuses=None, **kwargs):
         return []
@@ -293,13 +271,13 @@ class EventPostBattleInfo(EventInfoModel):
                     if not diff or not label:
                         continue
                     index += 1
-                    progresses.append({'progrTooltip': None, 
-                       'progrBarType': formatters.PROGRESS_BAR_TYPE.SIMPLE, 
-                       'maxProgrVal': totalProg, 
-                       'currentProgrVal': curProg, 
-                       'description': '%d. %s' % (index, label), 
-                       'progressDiff': '+ %s' % backport.getIntegralFormat(diff), 
-                       'progressDiffTooltip': TOOLTIPS.QUESTS_PROGRESS_EARNEDINBATTLE})
+                    progresses.append({'progrTooltip': None,
+                     'progrBarType': formatters.PROGRESS_BAR_TYPE.SIMPLE,
+                     'maxProgrVal': totalProg,
+                     'currentProgrVal': curProg,
+                     'description': '%d. %s' % (index, label),
+                     'progressDiff': '+ %s' % backport.getIntegralFormat(diff),
+                     'progressDiffTooltip': TOOLTIPS.QUESTS_PROGRESS_EARNEDINBATTLE})
 
         return progresses
 
@@ -316,8 +294,7 @@ class QuestPostBattleInfo(EventPostBattleInfo, QuestInfoModel):
                 msg = self._getCompleteWeeklyStatus(self._getCompleteWeeklyKey())
             else:
                 msg = backport.text(R.strings.quests.details.status.completed())
-            return (
-             MISSIONS_STATES.COMPLETED, msg)
+            return (MISSIONS_STATES.COMPLETED, msg)
         else:
             isAvailable, errorMsg = self.event.isAvailable()
             if not isAvailable:
@@ -331,8 +308,7 @@ class QuestPostBattleInfo(EventPostBattleInfo, QuestInfoModel):
                     msg = i18n.makeString('#quests:details/status/notAvailable/%s' % errorMsg, time=fmt)
                 else:
                     msg = i18n.makeString('#quests:details/status/notAvailable/%s' % errorMsg)
-                return (
-                 MISSIONS_STATES.NOT_AVAILABLE, msg)
+                return (MISSIONS_STATES.NOT_AVAILABLE, msg)
             bonus = self.event.bonusCond
             bonusLimit = bonus.getBonusLimit()
             if bonusLimit is None or bonusLimit >= MAX_BONUS_LIMIT:
@@ -350,77 +326,16 @@ class QuestPostBattleInfo(EventPostBattleInfo, QuestInfoModel):
                 msg = i18n.makeString(key, count=bonusLimit)
             return (MISSIONS_STATES.NONE, msg)
 
-    def _getBonusDataFromOneOfBonuses(self, pCur=None):
-        bonusData = self.event.getRawBonuses()
-        trackResult = {}
-        if pCur is not None:
-            pCurInnerDict = pCur.itervalues().next()
-            bonusTracks = pCurInnerDict.get('bonusTracks', [])
-            if bonusTracks:
-                trackReplay = TrackVisitor(bonusTracks[(-1)], 1, None)
-                trackReplay.walkBonuses(bonusData, trackResult)
-        return trackResult
-
-    def _convertTokensInBonusData(self, bonusData, questTokensConvertion, questTokensCount):
-        bonusData = deepcopy(bonusData or self.event.getRawBonuses())
-        tokens = bonusData.get('tokens', {})
-        if not tokens:
-            return bonusData
-        tokensForConvertion = set(tokens).intersection(questTokensConvertion.keys())
-        for token in tokensForConvertion:
-            usedConverters = []
-            tokenConvertionData = questTokensConvertion[token]
-            for index, convertionData in enumerate(tokenConvertionData):
-                wasUsed = self._convertTokens(token, tokens, convertionData)
-                if wasUsed:
-                    usedConverters.append(index)
-                else:
-                    break
-
-            questTokensConvertion[token] = [ convertionData for index, convertionData in enumerate(tokenConvertionData) if index not in usedConverters
-                                           ]
-            if not questTokensConvertion[token]:
-                questTokensConvertion.pop(token)
-
-        for token in set(tokens).difference(questTokensCount.keys()):
-            tokens.pop(token)
-
-        return bonusData
-
-    def _convertTokens(self, token, bonusTokens, convertionData):
-        convertion = TokenConvertionData(**convertionData)
-        wasUsed = False
-        if not convertion.tokenTo or token not in bonusTokens:
-            return wasUsed
-        tokenBonusData = bonusTokens[token]
-        count = tokenBonusData['count']
-        if convertion.limit:
-            convertCount = min(convertion.limit, count)
-            if convertion.limit <= count:
-                wasUsed = True
-            else:
-                convertionData['limit'] -= count
-        else:
-            convertCount = count
-        if convertCount == count:
-            bonusTokens.pop(token)
-        else:
-            tokenBonusData['count'] -= convertCount
-        newCount = bonusTokens.get(convertion.tokenTo, {}).get('count', 0) + int(round(convertCount * convertion.rate))
-        bonusTokens.setdefault(convertion.tokenTo, deepcopy(tokenBonusData))['count'] = newCount
-        return wasUsed
-
     def _getBonuses(self, svrEvents, pCur=None, bonuses=None, **kwargs):
         questTokensConvertion = kwargs.get('questTokensConvertion', {})
         questTokensCount = kwargs.get('questTokensCount', {})
-        bonusData = self._getBonusDataFromOneOfBonuses(pCur)
-        bonusData = self._convertTokensInBonusData(bonusData=bonusData, questTokensConvertion=questTokensConvertion, questTokensCount=questTokensCount)
+        bonusData = getBonusDataFromOneOfBonuses(self.event, pCur)
+        bonusData = convertTokensInBonusData(event=self.event, bonusData=bonusData, questTokensConvertion=questTokensConvertion, questTokensCount=questTokensCount)
         bonuses = self._filterBonuses(bonuses or self.event.getBonuses(bonusData=bonusData))
         result = OldStyleBonusesFormatter(self.event).getFormattedBonuses(bonuses)
         if result:
             return [ award.getDict() for award in result ]
-        return [
-         formatters.packTextBlock(text_styles.alert(backport.text(R.strings.quests.bonuses.notAvailable()))).getDict()]
+        return [formatters.packTextBlock(text_styles.alert(backport.text(R.strings.quests.bonuses.notAvailable()))).getDict()]
 
     def _getBonusCount(self, pCur=None):
         if not self.event.isCompleted(progress=pCur):
@@ -430,12 +345,17 @@ class QuestPostBattleInfo(EventPostBattleInfo, QuestInfoModel):
         return self.NO_BONUS_COUNT
 
     def _getProgressValues(self, svrEvents=None, pCur=None, pPrev=None):
-        current, total, progressType, tooltip = (
-         0, 0, formatters.PROGRESS_BAR_TYPE.NONE, None)
+        current, total, progressType, tooltip = (0,
+         0,
+         formatters.PROGRESS_BAR_TYPE.NONE,
+         None)
         groupBy = self.event.bonusCond.getGroupByValue()
         condsRoot = self.event.bonusCond.getConditions()
         if self.event.isCompleted(pCur) or condsRoot.isEmpty():
-            return (current, total, progressType, tooltip)
+            return (current,
+             total,
+             progressType,
+             tooltip)
         else:
             countOfCumulatives = 0
             cumulatives = defaultdict(list)
@@ -452,42 +372,40 @@ class QuestPostBattleInfo(EventPostBattleInfo, QuestInfoModel):
                 avgProgressesPerGroup = []
                 for groupByKey, values in cumulatives.iteritems():
                     progressesSum = sum([ c / float(t) for c, t in values ])
-                    avgProgressesPerGroup.append((
-                     groupByKey, int(round(100.0 * progressesSum / len(values))), 100))
+                    avgProgressesPerGroup.append((groupByKey, int(round(100.0 * progressesSum / len(values))), 100))
 
-            avgProgresses = sorted(avgProgressesPerGroup, key=operator.itemgetter(1), reverse=True)
-            if avgProgresses:
-                (groupByKey, current, total), nearestProgs = avgProgresses[0], avgProgresses[1:]
-                progressType = formatters.PROGRESS_BAR_TYPE.COMMON
-                if groupBy is not None and groupByKey is not None:
-                    name, names = ('', '')
-                    if groupBy == 'vehicle':
-                        name = self.itemsCache.items.getItemByCD(groupByKey).shortUserName
-                        names = [ self.itemsCache.items.getItemByCD(intCD).shortUserName for intCD, _, __ in nearestProgs
-                                ]
-                    elif groupBy == 'nation':
-                        name = i18n.makeString('#menu:nations/%s' % groupByKey)
-                        names = [ i18n.makeString('#menu:nations/%s' % n) for n, _, __ in nearestProgs
-                                ]
-                    elif groupBy == 'class':
-                        name = i18n.makeString('#menu:classes/%s' % groupByKey)
-                        names = [ i18n.makeString('#menu:classes/%s' % n) for n, _, __ in nearestProgs
-                                ]
-                    elif groupBy == 'level':
+                avgProgresses = sorted(avgProgressesPerGroup, key=operator.itemgetter(1), reverse=True)
+                if avgProgresses:
+                    (groupByKey, current, total), nearestProgs = avgProgresses[0], avgProgresses[1:]
+                    progressType = formatters.PROGRESS_BAR_TYPE.COMMON
+                    if groupBy is not None and groupByKey is not None:
+                        name, names = ('', '')
+                        if groupBy == 'vehicle':
+                            name = self.itemsCache.items.getItemByCD(groupByKey).shortUserName
+                            names = [ self.itemsCache.items.getItemByCD(intCD).shortUserName for intCD, _, __ in nearestProgs ]
+                        elif groupBy == 'nation':
+                            name = i18n.makeString('#menu:nations/%s' % groupByKey)
+                            names = [ i18n.makeString('#menu:nations/%s' % n) for n, _, __ in nearestProgs ]
+                        elif groupBy == 'class':
+                            name = i18n.makeString('#menu:classes/%s' % groupByKey)
+                            names = [ i18n.makeString('#menu:classes/%s' % n) for n, _, __ in nearestProgs ]
+                        elif groupBy == 'level':
 
-                        def makeLvlStr(lvl):
-                            return i18n.makeString(QUESTS.TOOLTIP_PROGRESS_GROUPBY_NOTE_LEVEL, int2roman(lvl))
+                            def makeLvlStr(lvl):
+                                return i18n.makeString(QUESTS.TOOLTIP_PROGRESS_GROUPBY_NOTE_LEVEL, int2roman(lvl))
 
-                        name = makeLvlStr(int(groupByKey.replace('level ', '')))
-                        names = [ makeLvlStr(int(l.replace('level ', ''))) for l, _, __ in nearestProgs
-                                ]
-                    note = None
-                    if names:
-                        note = makeHtmlString('html_templates:lobby/quests/tooltips/progress', 'note', {'names': (', ').join(names[:self.PROGRESS_TOOLTIP_MAX_ITEMS])})
-                    tooltip = {'header': i18n.makeString(QUESTS.TOOLTIP_PROGRESS_GROUPBY_HEADER), 
-                       'body': makeHtmlString('html_templates:lobby/quests/tooltips/progress', 'body', {'name': name}), 
-                       'note': note}
-            return (current, total, progressType, tooltip)
+                            name = makeLvlStr(int(groupByKey.replace('level ', '')))
+                            names = [ makeLvlStr(int(l.replace('level ', ''))) for l, _, __ in nearestProgs ]
+                        note = None
+                        if names:
+                            note = makeHtmlString('html_templates:lobby/quests/tooltips/progress', 'note', {'names': ', '.join(names[:self.PROGRESS_TOOLTIP_MAX_ITEMS])})
+                        tooltip = {'header': i18n.makeString(QUESTS.TOOLTIP_PROGRESS_GROUPBY_HEADER),
+                         'body': makeHtmlString('html_templates:lobby/quests/tooltips/progress', 'body', {'name': name}),
+                         'note': note}
+            return (current,
+             total,
+             progressType,
+             tooltip)
 
 
 class PersonalMissionPostBattleInfo(EventPostBattleInfo):
@@ -502,31 +420,28 @@ class PersonalMissionPostBattleInfo(EventPostBattleInfo):
             failedDescr = condFormatter.getFailedDescription()
         statusState, statusText = self._getStatus(pmComplete=isCompleted, failed=failedDescr)
         descr = failedDescr or condFormatter.getMultiplierDescription()
-        info.update({'title': text_styles.highTitle(info.get('title')), 
-           'linkBtnVisible': statusState == PERSONAL_MISSIONS_ALIASES.POST_BATTLE_STATE_IN_PROGRESS, 
-           'collapsedToggleBtnVisible': statusState == PERSONAL_MISSIONS_ALIASES.POST_BATTLE_STATE_IN_PROGRESS, 
-           'descr': descr, 
-           'personalInfo': {'mainConditions': condFormatter.getConditionsData(isMain=True), 
-                            'addConditions': condFormatter.getConditionsData(isMain=False)}, 
-           'questState': {'statusState': statusState, 
-                          'statusText': statusText}, 
-           'awards': []})
+        info.update({'title': text_styles.highTitle(info.get('title')),
+         'linkBtnVisible': statusState == PERSONAL_MISSIONS_ALIASES.POST_BATTLE_STATE_IN_PROGRESS,
+         'collapsedToggleBtnVisible': statusState == PERSONAL_MISSIONS_ALIASES.POST_BATTLE_STATE_IN_PROGRESS,
+         'descr': descr,
+         'personalInfo': {'mainConditions': condFormatter.getConditionsData(isMain=True),
+                          'addConditions': condFormatter.getConditionsData(isMain=False)},
+         'questState': {'statusState': statusState,
+                        'statusText': statusText},
+         'awards': []})
         return info
 
     def _getStatus(self, pCur=None, pmComplete=None, failed=None):
         if pmComplete:
             if pmComplete.isAddComplete:
                 msg = text_styles.bonusAppliedText(QUESTS.PERSONALMISSION_STATUS_FULLDONE)
-                return (
-                 PERSONAL_MISSIONS_ALIASES.POST_BATTLE_STATE_FULL_DONE, msg)
+                return (PERSONAL_MISSIONS_ALIASES.POST_BATTLE_STATE_FULL_DONE, msg)
             if pmComplete.isMainComplete:
                 msg = text_styles.bonusAppliedText(QUESTS.PERSONALMISSION_STATUS_MAINDONE)
-                return (
-                 PERSONAL_MISSIONS_ALIASES.POST_BATTLE_STATE_DONE, msg)
+                return (PERSONAL_MISSIONS_ALIASES.POST_BATTLE_STATE_DONE, msg)
         if failed:
             msg = text_styles.error(QUESTS.PERSONALMISSION_STATUS_FAILED)
-            return (
-             PERSONAL_MISSIONS_ALIASES.POST_BATTLE_STATE_FAILED, msg)
+            return (PERSONAL_MISSIONS_ALIASES.POST_BATTLE_STATE_FAILED, msg)
         msg = text_styles.neutral(QUESTS.PERSONALMISSION_STATUS_INPROGRESS)
         return (PERSONAL_MISSIONS_ALIASES.POST_BATTLE_STATE_IN_PROGRESS, msg)
 
@@ -540,8 +455,7 @@ class _BattlePassRandomQuestPostBattleInfo(QuestPostBattleInfo):
 class MotiveQuestPostBattleInfo(QuestPostBattleInfo):
 
     def getPostBattleInfo(self, svrEvents, pCur, pPrev, isProgressReset, isCompleted, **kwargs):
-        motiveQuests = [ q for q in svrEvents.values() if q.getType() == EVENT_TYPE.MOTIVE_QUEST and not q.isCompleted()
-                       ]
+        motiveQuests = [ q for q in svrEvents.values() if q.getType() == EVENT_TYPE.MOTIVE_QUEST and not q.isCompleted() ]
         info = super(MotiveQuestPostBattleInfo, self).getPostBattleInfo(svrEvents, pCur, pPrev, isProgressReset, isCompleted, **kwargs)
         info.update({'isLinkBtnVisible': len(motiveQuests) > 0})
         return info
@@ -565,13 +479,13 @@ class _BattleMattersQuestInfo(QuestPostBattleInfo):
                     if not diff:
                         continue
                     index += 1
-                    progresses.append({'progrTooltip': None, 
-                       'progrBarType': formatters.PROGRESS_BAR_TYPE.SIMPLE, 
-                       'maxProgrVal': totalProg, 
-                       'currentProgrVal': curProg, 
-                       'description': '%d. %s' % (index, self.event.getConditionLbl()), 
-                       'progressDiff': '+ %s' % backport.getIntegralFormat(diff), 
-                       'progressDiffTooltip': backport.text(R.strings.battle_matters.battleResults.progress.tooltip())})
+                    progresses.append({'progrTooltip': None,
+                     'progrBarType': formatters.PROGRESS_BAR_TYPE.SIMPLE,
+                     'maxProgrVal': totalProg,
+                     'currentProgrVal': curProg,
+                     'description': '%d. %s' % (index, self.event.getConditionLbl()),
+                     'progressDiff': '+ %s' % backport.getIntegralFormat(diff),
+                     'progressDiffTooltip': backport.text(R.strings.battle_matters.battleResults.progress.tooltip())})
 
         return progresses
 
@@ -616,14 +530,14 @@ class Progression2dStyleFormater(object):
                     if not diff or not label:
                         continue
                     state = cls.getStatus(isCompleted) if isCompleted else None
-                    progresses.append({'progrTooltip': None, 
-                       'progrBarType': formatters.PROGRESS_BAR_TYPE.SIMPLE, 
-                       'maxProgrVal': totalProg, 
-                       'currentProgrVal': curProg, 
-                       'description': label, 
-                       'progressDiff': '+ %s' % backport.getIntegralFormat(diff), 
-                       'progressDiffTooltip': TOOLTIPS.QUESTS_PROGRESS_EARNEDINBATTLE, 
-                       'questState': state})
+                    progresses.append({'progrTooltip': None,
+                     'progrBarType': formatters.PROGRESS_BAR_TYPE.SIMPLE,
+                     'maxProgrVal': totalProg,
+                     'currentProgrVal': curProg,
+                     'description': label,
+                     'progressDiff': '+ %s' % backport.getIntegralFormat(diff),
+                     'progressDiffTooltip': TOOLTIPS.QUESTS_PROGRESS_EARNEDINBATTLE,
+                     'questState': state})
 
         firstPostCond = first(event.postBattleCond.getConditions().items)
         if firstPostCond and not progresses:
@@ -633,24 +547,24 @@ class Progression2dStyleFormater(object):
                 label = customDescription
             if label:
                 state = cls.getStatus(True)
-                progresses.append({'progrTooltip': None, 
-                   'progrBarType': formatters.PROGRESS_BAR_TYPE.SIMPLE, 
-                   'maxProgrVal': 1, 
-                   'currentProgrVal': 1, 
-                   'description': label, 
-                   'progressDiff': '+ %s' % backport.getIntegralFormat(0), 
-                   'progressDiffTooltip': TOOLTIPS.QUESTS_PROGRESS_EARNEDINBATTLE, 
-                   'questState': state})
+                progresses.append({'progrTooltip': None,
+                 'progrBarType': formatters.PROGRESS_BAR_TYPE.SIMPLE,
+                 'maxProgrVal': 1,
+                 'currentProgrVal': 1,
+                 'description': label,
+                 'progressDiff': '+ %s' % backport.getIntegralFormat(0),
+                 'progressDiffTooltip': TOOLTIPS.QUESTS_PROGRESS_EARNEDINBATTLE,
+                 'questState': state})
         if event.accountReqs.getTokens():
             state = cls.getStatus(isCompleted)
-            progresses.append({'progrTooltip': None, 
-               'progrBarType': formatters.PROGRESS_BAR_TYPE.SIMPLE, 
-               'maxProgrVal': 1, 
-               'currentProgrVal': 1, 
-               'description': event.getDescription(), 
-               'progressDiff': '+ %s' % backport.getIntegralFormat(0), 
-               'progressDiffTooltip': TOOLTIPS.QUESTS_PROGRESS_EARNEDINBATTLE, 
-               'questState': state})
+            progresses.append({'progrTooltip': None,
+             'progrBarType': formatters.PROGRESS_BAR_TYPE.SIMPLE,
+             'maxProgrVal': 1,
+             'currentProgrVal': 1,
+             'description': event.getDescription(),
+             'progressDiff': '+ %s' % backport.getIntegralFormat(0),
+             'progressDiffTooltip': TOOLTIPS.QUESTS_PROGRESS_EARNEDINBATTLE,
+             'questState': state})
         title = ''
         itemCD = cls.c11nService.getItemCDByQuestID(event.getID())
         if itemCD:
@@ -674,9 +588,7 @@ class Progression2dStyleFormater(object):
                     progress += curProg / float(totalProg)
                     count += 1
 
-        if count:
-            return progress / float(count)
-        return progress
+        return progress / float(count) if count else progress
 
     @classmethod
     def getTitle(cls, style):
@@ -686,11 +598,11 @@ class Progression2dStyleFormater(object):
     def getStatus(cls, isComplete=None):
         if isComplete:
             msg = text_styles.bonusAppliedText(QUESTS.QUESTS_STATUS_DONE)
-            return {'statusState': PERSONAL_MISSIONS_ALIASES.POST_BATTLE_STATE_DONE, 
-               'statusText': msg}
+            return {'statusState': PERSONAL_MISSIONS_ALIASES.POST_BATTLE_STATE_DONE,
+             'statusText': msg}
         msg = text_styles.neutral(QUESTS.PERSONALMISSION_STATUS_INPROGRESS)
-        return {'statusState': PERSONAL_MISSIONS_ALIASES.POST_BATTLE_STATE_IN_PROGRESS, 
-           'statusText': msg}
+        return {'statusState': PERSONAL_MISSIONS_ALIASES.POST_BATTLE_STATE_IN_PROGRESS,
+         'statusText': msg}
 
 
 @dependency.replace_none_kwargs(c11nService=ICustomizationService)
@@ -702,10 +614,11 @@ def get2dProgressionStylePostBattleInfo(styleID, quests, c11nService=None):
     else:
         event = eventData[0]
         fromatter = Progression2dStyleFormater
-        info = {'awards': [], 'alertMsg': '', 
-           'questInfo': _getEventInfoData(event).getInfo([]), 
-           'questState': fromatter.getStatus(isComplete=False), 
-           'questType': event.getType()}
+        info = {'awards': [],
+         'alertMsg': '',
+         'questInfo': _getEventInfoData(event).getInfo([]),
+         'questState': fromatter.getStatus(isComplete=False),
+         'questType': event.getType()}
         filteredQuests = {}
         for eventData in quests:
             questRate = fromatter.getProgressRate(*eventData)
@@ -715,30 +628,26 @@ def get2dProgressionStylePostBattleInfo(styleID, quests, c11nService=None):
             level = progressData.level
             if branch <= 0 or level <= 0:
                 continue
-            if (
-             branch, level) not in filteredQuests:
-                filteredQuests[(branch, level)] = (
-                 questRate, eventData)
+            if (branch, level) not in filteredQuests:
+                filteredQuests[branch, level] = (questRate, eventData)
                 continue
-            rate, __ = filteredQuests[(branch, level)]
+            rate, __ = filteredQuests[branch, level]
             if questRate > rate:
-                filteredQuests[(branch, level)] = (
-                 questRate, eventData)
+                filteredQuests[branch, level] = (questRate, eventData)
 
-        sortedQuests = [ eventData for _, (rate, eventData) in sorted(filteredQuests.items(), key=lambda t: t[0])
-                       ]
+        sortedQuests = [ eventData for _, (rate, eventData) in sorted(filteredQuests.items(), key=lambda t: t[0]) ]
         progressList = []
         for eventData in sortedQuests:
             progressInfo = fromatter.getProgress(*eventData)
             if progressInfo:
                 progressList.extend(progressInfo)
 
-        info['questInfo'].update({'description': fromatter.getTitle(style), 
-           'tasksCount': -1})
+        info['questInfo'].update({'description': fromatter.getTitle(style),
+         'tasksCount': -1})
         linkBtnEnabled, linkBtnTooltip = getC11n2dProgressionLinkBtnParams()
-        info.update({'linkBtnVisible': linkBtnEnabled, 
-           'linkBtnTooltip': backport.text(linkBtnTooltip), 
-           'progressList': progressList})
+        info.update({'linkBtnVisible': linkBtnEnabled,
+         'linkBtnTooltip': backport.text(linkBtnTooltip),
+         'progressList': progressList})
         return info
 
 
@@ -755,7 +664,7 @@ def getChainVehRequirements(operation, chainID, useIcons=False):
             if nation in nations:
                 vehsData.append(icons.makeImageTag(getNationsFilterAssetPath(nation), 26, 16, -4))
 
-        vehs = (' ').join(vehsData)
+        vehs = ' '.join(vehsData)
     return _ms(PERSONAL_MISSIONS.OPERATIONINFO_CHAINVEHREQ, vehs=vehs, minLevel=minLevel, maxLevel=maxLevel)
 
 
@@ -771,7 +680,7 @@ def getChainVehTypeAndLevelRestrictions(operation, chainID):
             if nation in nations:
                 nationsText.append(getNationText(nation))
 
-        vehType = _ms(vehType, nations=(', ').join(nationsText))
+        vehType = _ms(vehType, nations=', '.join(nationsText))
     return (vehType, int2roman(minLevel), int2roman(maxLevel))
 
 

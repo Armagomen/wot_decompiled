@@ -1,9 +1,16 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/FlagModel.py
 from collections import namedtuple
 from Math import Matrix
-import BigWorld, AnimationSequence
-FlagSettings = namedtuple('FlagSettings', ['flagCompounModel', 'flagAlias',
- 'flagAnim', 'flagBackgroundTex', 'flagEmblemTex',
- 'flagEmblemTexCoords', 'spaceID'])
+import BigWorld
+import AnimationSequence
+FlagSettings = namedtuple('FlagSettings', ['flagCompounModel',
+ 'flagAlias',
+ 'flagAnim',
+ 'flagBackgroundTex',
+ 'flagEmblemTex',
+ 'flagEmblemTexCoords',
+ 'spaceID'])
 
 class FlagModel(object):
     model = property(lambda self: self.__flagCompoundModel)

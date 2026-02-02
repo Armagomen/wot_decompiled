@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/clans/data_wrapper/clan_supply.py
 import logging
 from typing import NamedTuple, Dict, Union, TYPE_CHECKING, List
 from shared_utils import makeTupleByDict, CONST_CONTAINER
@@ -37,54 +39,20 @@ class QuestStatus(CONST_CONTAINER):
     COMPLETE = 'COMPLETE'
 
 
-PointSettings = NamedTuple('PointSettings', [
- (
-  'is_elite', bool),
- (
-  'price', int),
- (
-  'rewards', Dict[(str, Union[(int, str, Dict, List[Dict])])])])
-ProgressionSettings = NamedTuple('ProgressionSettings', [
- (
-  'enabled', bool),
- (
-  'points', Dict[(str, PointSettings)])])
-PointProgress = NamedTuple('PointSettings', [
- (
-  'status', str)])
-ProgressionProgress = NamedTuple('ProgressionProgress', [
- (
-  'last_purchased', str),
- (
-  'points', Dict[(str, PointProgress)])])
-FragsCondition = NamedTuple('FragsCondition', [
- (
-  'type', str),
- (
-  'frags_count', str)])
-FullDamageCondition = NamedTuple('FullDamageCondition', [
- (
-  'type', str),
- (
-  'full_damage', str)])
-ExpCondition = NamedTuple('ExpCondition', [
- (
-  'type', str),
- (
-  'exp_earned', str)])
-WinCondition = NamedTuple('WinCondition', [
- (
-  'type', str)])
-CONDITIONS_TYPE = Union[(FragsCondition, FullDamageCondition, ExpCondition, WinCondition)]
-SimpleCondition = NamedTuple('SimpleCondition', [
- (
-  'rule', CONDITIONS_TYPE),
- (
-  'squad_states', List[str])])
-_RULE_TYPE_TO_CLAZZ = {ConditionRuleType.FRAGS: FragsCondition, 
-   ConditionRuleType.WIN: WinCondition, 
-   ConditionRuleType.EXP: ExpCondition, 
-   ConditionRuleType.FULL_DAMAGE: FullDamageCondition}
+PointSettings = NamedTuple('PointSettings', [('is_elite', bool), ('price', int), ('rewards', Dict[str, Union[int, str, Dict, List[Dict]]])])
+ProgressionSettings = NamedTuple('ProgressionSettings', [('enabled', bool), ('points', Dict[str, PointSettings])])
+PointProgress = NamedTuple('PointSettings', [('status', str)])
+ProgressionProgress = NamedTuple('ProgressionProgress', [('last_purchased', str), ('points', Dict[str, PointProgress])])
+FragsCondition = NamedTuple('FragsCondition', [('type', str), ('frags_count', str)])
+FullDamageCondition = NamedTuple('FullDamageCondition', [('type', str), ('full_damage', str)])
+ExpCondition = NamedTuple('ExpCondition', [('type', str), ('exp_earned', str)])
+WinCondition = NamedTuple('WinCondition', [('type', str)])
+CONDITIONS_TYPE = Union[FragsCondition, FullDamageCondition, ExpCondition, WinCondition]
+SimpleCondition = NamedTuple('SimpleCondition', [('rule', CONDITIONS_TYPE), ('squad_states', List[str])])
+_RULE_TYPE_TO_CLAZZ = {ConditionRuleType.FRAGS: FragsCondition,
+ ConditionRuleType.WIN: WinCondition,
+ ConditionRuleType.EXP: ExpCondition,
+ ConditionRuleType.FULL_DAMAGE: FullDamageCondition}
 
 def _makeSimpleCondition(conditionData):
     ruleData = conditionData.get('rule', {})
@@ -97,44 +65,20 @@ def _makeSimpleCondition(conditionData):
         return makeTupleByDict(SimpleCondition, conditionData)
 
 
-CommonCondition = NamedTuple('CommonCondition', [
- (
-  'level_from', int),
- (
-  'level_to', int)])
-ConditionsInfo = NamedTuple('ConditionsInfo', [
- (
-  'main', SimpleCondition),
- (
-  'alternative', SimpleCondition),
- (
-  'common', CommonCondition)])
-Quest = NamedTuple('Quest', [
- (
-  'name', str),
- (
-  'level', int),
- (
-  'current_progress', int),
- (
-  'required_progress', int),
- (
-  'status', str),
- (
-  'conditions', ConditionsInfo),
- (
-  'rewards', Dict[(str, Union[(int, str)])])])
-QuestsInfo = NamedTuple('QuestsInfo', [
- (
-  'enabled', bool),
- (
-  'cycle_end', int),
- (
-  'cycle_duration', int),
- (
-  'previous_rewards', Dict[(str, Union[(int, str)])]),
- (
-  'quests', List[Quest])])
+CommonCondition = NamedTuple('CommonCondition', [('level_from', int), ('level_to', int)])
+ConditionsInfo = NamedTuple('ConditionsInfo', [('main', SimpleCondition), ('alternative', SimpleCondition), ('common', CommonCondition)])
+Quest = NamedTuple('Quest', [('name', str),
+ ('level', int),
+ ('current_progress', int),
+ ('required_progress', int),
+ ('status', str),
+ ('conditions', ConditionsInfo),
+ ('rewards', Dict[str, Union[int, str]])])
+QuestsInfo = NamedTuple('QuestsInfo', [('enabled', bool),
+ ('cycle_end', int),
+ ('cycle_duration', int),
+ ('previous_rewards', Dict[str, Union[int, str]]),
+ ('quests', List[Quest])])
 
 def makeQuestInfo(incomeData):
     incomeData = incomeData or {}
@@ -142,9 +86,9 @@ def makeQuestInfo(incomeData):
     incomeQuestInfoData = incomeData.get('quest_info', [])
     for rawQuest in sorted(incomeQuestInfoData, key=lambda q: q.get('level')):
         rawConditionsInfo = rawQuest.get('conditions', {})
-        conditionsInfo = {'main': _makeSimpleCondition(rawConditionsInfo.get('main', {})), 
-           'alternative': _makeSimpleCondition(rawConditionsInfo.get('alternative', {})), 
-           'common': makeTupleByDict(CommonCondition, rawConditionsInfo.get('common', {}))}
+        conditionsInfo = {'main': _makeSimpleCondition(rawConditionsInfo.get('main', {})),
+         'alternative': _makeSimpleCondition(rawConditionsInfo.get('alternative', {})),
+         'common': makeTupleByDict(CommonCondition, rawConditionsInfo.get('common', {}))}
         rawQuest.update({'conditions': makeTupleByDict(ConditionsInfo, conditionsInfo)})
         questInfo.append(makeTupleByDict(Quest, rawQuest))
 

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/common/exchange_panel_model.py
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.common.exchange_rate_model import ExchangeRateModel
 from gui.impl.gen.view_models.common.price_item_model import PriceItemModel

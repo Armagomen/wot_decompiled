@@ -1,7 +1,11 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/SimulatedVehicle.py
 import logging
 from copy import copy
 from functools import partial
-import BigWorld, Math, GenericComponents
+import BigWorld
+import Math
+import GenericComponents
 from cgf_network import C_INVALID_NETWORK_OBJECT_ID
 from Event import Event
 from VehicleEffects import DamageFromShotDecoder
@@ -15,13 +19,13 @@ from items import vehicles
 from shared_utils.vehicle_utils import createWheelFilters
 from skeletons.vehicle_appearance_cache import IAppearanceCache
 from vehicle_systems.tankStructure import TankPartIndexes
-from helpers_common import setEncodedSegmentContextData
+from helpers_common import setDamageSticker
 _logger = logging.getLogger(__name__)
 _UNSPOTTED_CONE_WIDTH_SCALE = 1
 _UNSPOTTED_CONE_LENGTH_SCALE = 1
 
 class _SimulatedVehicleSpeedProvider(object):
-    __slots__ = ('__value', )
+    __slots__ = ('__value',)
 
     @property
     def value(self):
@@ -105,9 +109,7 @@ class VehicleBase(object):
         pass
 
     def getOptionalDevices(self):
-        if self.isPlayerVehicle:
-            return vehicle_getter.getOptionalDevices()
-        return []
+        return vehicle_getter.getOptionalDevices() if self.isPlayerVehicle else []
 
 
 class SimulatedVehicle(BigWorld.Entity, VehicleBase, ScriptGameObject):
@@ -239,17 +241,16 @@ class SimulatedVehicle(BigWorld.Entity, VehicleBase, ScriptGameObject):
 
     def showKillingSticker(self, shellCompactDescr, isArmorPierced, hitPoints):
         shellDescr = vehicles.getItemByCompactDescr(shellCompactDescr)
+        effectsIndex = shellDescr.effectsIndex
+        prefabEffIndex = shellDescr.prefabEffectsIndex
         targetSticker = 'armorPierced' if isArmorPierced else 'armorResisted'
-        stickerID = vehicles.g_cache.shotEffects[shellDescr.effectsIndex]['targetStickers'][targetSticker]
-        if stickerID is None:
-            return
-        else:
-            for hitPoint in hitPoints:
-                sticker = copy(hitPoint)
-                sticker['segment'] = setEncodedSegmentContextData(sticker['segment'], stickerID)
-                self.__decodeAndAddSticker(sticker)
+        for hitPoint in hitPoints:
+            sticker = copy(hitPoint)
+            if setDamageSticker(sticker, effectsIndex, prefabEffIndex, targetSticker) is None:
+                continue
+            self.__decodeAndAddSticker(sticker)
 
-            return
+        return
 
     def _createAppearance(self, entityID, forceReloading):
         if forceReloading:
@@ -309,7 +310,7 @@ class SimulatedVehicle(BigWorld.Entity, VehicleBase, ScriptGameObject):
             _logger.warning('this code point should have never been reached')
 
     def getMaxComponentIndex(self, skipWheels=False):
-        maxComponentIdx = TankPartIndexes.ALL[(-1)]
+        maxComponentIdx = TankPartIndexes.ALL[-1]
         wheelsConfig = self.appearance.typeDescriptor.chassis.generalWheelsAnimatorConfig
         if wheelsConfig and not skipWheels:
             maxComponentIdx = maxComponentIdx + wheelsConfig.getNonTrackWheelsCount()
@@ -321,8 +322,7 @@ class SimulatedVehicle(BigWorld.Entity, VehicleBase, ScriptGameObject):
             if shotPoint.hitEffectCode > maxHitEffectCode:
                 maxHitEffectCode = shotPoint.hitEffectCode
 
-        return (
-         maxHitEffectCode, DamageFromShotDecoder.hasDamaged(maxHitEffectCode))
+        return (maxHitEffectCode, DamageFromShotDecoder.hasDamaged(maxHitEffectCode))
 
     def __showDamageStickers(self, stickers):
         for sticker in stickers:
@@ -333,20 +333,19 @@ class SimulatedVehicle(BigWorld.Entity, VehicleBase, ScriptGameObject):
         if networkID != C_INVALID_NETWORK_OBJECT_ID:
             return
         else:
-            parsedHitPoint = DamageFromShotDecoder.parseHitPoint(hitPoint, self.appearance.collisions)
+            parsedHitPoint = DamageFromShotDecoder.parseDamageStickerHitPoint(hitPoint, self.appearance.collisions)
             if parsedHitPoint is None:
                 return
-            componentIndex, stickerID, start, end = parsedHitPoint
-            if componentIndex <= TankPartIndexes.CHASSIS or None in (start, end, stickerID):
+            stickerID, data = parsedHitPoint
+            if data.componentIdx <= TankPartIndexes.CHASSIS or None in (data.segStart, data.segEnd, stickerID):
                 return
             code = DamageFromShotDecoder.encodeHitPoint(hitPoint)
-            self.appearance.addDamageSticker(code, componentIndex, stickerID, start, end)
+            self.appearance.addDamageSticker(code, stickerID, data)
             return
 
     def updateBrokenTracks(self, trackStates):
         if not self.__brokenTrackVisible:
-            self.__brokenTrackVisible = [
-             False] * len(trackStates)
+            self.__brokenTrackVisible = [False] * len(trackStates)
         for index, trackState in enumerate(trackStates):
             if trackState['isBroken'] and not self.__brokenTrackVisible[index]:
                 self.__brokenTrackVisible[index] = True

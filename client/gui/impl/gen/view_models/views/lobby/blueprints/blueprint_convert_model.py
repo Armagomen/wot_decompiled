@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/blueprints/blueprint_convert_model.py
 from frameworks.wulf import Array
 from gui.impl.gen.view_models.views.lobby.blueprints.blueprint_balance_content_model import BlueprintBalanceContentModel
 from gui.impl.gen.view_models.views.lobby.blueprints.blueprint_price import BlueprintPrice

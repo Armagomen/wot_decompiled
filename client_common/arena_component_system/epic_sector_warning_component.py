@@ -1,8 +1,12 @@
-import math, weakref
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client_common/arena_component_system/epic_sector_warning_component.py
+import math
+import weakref
 from collections import defaultdict
 from functools import partial
 from math import copysign
-import BigWorld, Event
+import BigWorld
+import Event
 from arena_component_system.client_arena_component_system import ClientArenaComponent
 from epic_constants import EPIC_BATTLE_TEAM_ID
 from constants import SECTOR_STATE
@@ -27,34 +31,31 @@ class WARNING_TYPE(object):
     PROTECTED = 3
 
 
-SECTOR_STATE_TO_MAPPED_STATE = {EPIC_BATTLE_TEAM_ID.TEAM_ATTACKER: {SECTOR_STATE.CLOSED: MAPPED_SECTOR_STATE.BAD, 
-                                       SECTOR_STATE.OPEN: MAPPED_SECTOR_STATE.GOOD, 
-                                       SECTOR_STATE.TRANSITION: MAPPED_SECTOR_STATE.GOOD, 
-                                       SECTOR_STATE.CAPTURED: MAPPED_SECTOR_STATE.GOOD, 
-                                       SECTOR_STATE.BOMBING: MAPPED_SECTOR_STATE.GOOD}, 
-   EPIC_BATTLE_TEAM_ID.TEAM_DEFENDER: {SECTOR_STATE.CLOSED: MAPPED_SECTOR_STATE.GOOD, 
-                                       SECTOR_STATE.OPEN: MAPPED_SECTOR_STATE.GOOD, 
-                                       SECTOR_STATE.TRANSITION: MAPPED_SECTOR_STATE.BAD, 
-                                       SECTOR_STATE.CAPTURED: MAPPED_SECTOR_STATE.GOOD, 
-                                       SECTOR_STATE.BOMBING: MAPPED_SECTOR_STATE.BAD}}
-ADJACENT_MAPPED_STATES_TO_EDGE_STATE = {(MAPPED_SECTOR_STATE.GOOD, MAPPED_SECTOR_STATE.GOOD): SECTOR_EDGE_STATE.NONE, 
-   (MAPPED_SECTOR_STATE.GOOD, MAPPED_SECTOR_STATE.BAD): SECTOR_EDGE_STATE.DANGER, 
-   (MAPPED_SECTOR_STATE.BAD, MAPPED_SECTOR_STATE.GOOD): SECTOR_EDGE_STATE.SAFE, 
-   (MAPPED_SECTOR_STATE.BAD, MAPPED_SECTOR_STATE.BAD): SECTOR_EDGE_STATE.DANGER}
+SECTOR_STATE_TO_MAPPED_STATE = {EPIC_BATTLE_TEAM_ID.TEAM_ATTACKER: {SECTOR_STATE.CLOSED: MAPPED_SECTOR_STATE.BAD,
+                                     SECTOR_STATE.OPEN: MAPPED_SECTOR_STATE.GOOD,
+                                     SECTOR_STATE.TRANSITION: MAPPED_SECTOR_STATE.GOOD,
+                                     SECTOR_STATE.CAPTURED: MAPPED_SECTOR_STATE.GOOD,
+                                     SECTOR_STATE.BOMBING: MAPPED_SECTOR_STATE.GOOD},
+ EPIC_BATTLE_TEAM_ID.TEAM_DEFENDER: {SECTOR_STATE.CLOSED: MAPPED_SECTOR_STATE.GOOD,
+                                     SECTOR_STATE.OPEN: MAPPED_SECTOR_STATE.GOOD,
+                                     SECTOR_STATE.TRANSITION: MAPPED_SECTOR_STATE.BAD,
+                                     SECTOR_STATE.CAPTURED: MAPPED_SECTOR_STATE.GOOD,
+                                     SECTOR_STATE.BOMBING: MAPPED_SECTOR_STATE.BAD}}
+ADJACENT_MAPPED_STATES_TO_EDGE_STATE = {(MAPPED_SECTOR_STATE.GOOD, MAPPED_SECTOR_STATE.GOOD): SECTOR_EDGE_STATE.NONE,
+ (MAPPED_SECTOR_STATE.GOOD, MAPPED_SECTOR_STATE.BAD): SECTOR_EDGE_STATE.DANGER,
+ (MAPPED_SECTOR_STATE.BAD, MAPPED_SECTOR_STATE.GOOD): SECTOR_EDGE_STATE.SAFE,
+ (MAPPED_SECTOR_STATE.BAD, MAPPED_SECTOR_STATE.BAD): SECTOR_EDGE_STATE.DANGER}
 MAX_NUM_NODES = 10
 
 def makeEdgeId(a, b):
     if a is None or b is None:
         return
-    if a < b:
-        return MAX_NUM_NODES * a + b
     else:
-        return MAX_NUM_NODES * b + a
+        return MAX_NUM_NODES * a + b if a < b else MAX_NUM_NODES * b + a
 
 
 def decomposeEdgeId(edgeId):
-    return (
-     int(edgeId / MAX_NUM_NODES), edgeId % MAX_NUM_NODES)
+    return (int(edgeId / MAX_NUM_NODES), edgeId % MAX_NUM_NODES)
 
 
 class _SectorGroupNode(object):
@@ -190,8 +191,7 @@ class EpicSectorWarningComponent(ClientArenaComponent, CallbackDelayer):
             if groupId is not None:
                 self.__onPlayerSectorGroupChanged(groupId, None, None, None)
             self.__protectionZoneComponent.onPlayerInProtectedZoneAction += self.__onPlayerInProtectionZone
-            for _, zone in [ x for _, x in self.__protectionZoneComponent.protectionZones.items() if self.__protectionZoneComponent.isPlayerInProtectedZone(x.zoneID)
-                           ]:
+            for _, zone in [ x for _, x in self.__protectionZoneComponent.protectionZones.items() if self.__protectionZoneComponent.isPlayerInProtectedZone(x.zoneID) ]:
                 self.__onPlayerInProtectionZone(zone.zoneID, True)
 
             return
@@ -200,8 +200,7 @@ class EpicSectorWarningComponent(ClientArenaComponent, CallbackDelayer):
         groupId = sectorGroup.id
         node = self.__nodes[groupId]
         node.mappedState = SECTOR_STATE_TO_MAPPED_STATE[self.__teamId][sectorGroup.state]
-        neighbours = [ neighbour for neighbour in (self.__sectorComponent.getSectorById(sectorId) for sectorId in self.__sectorComponent.getNeighbouringSectorIdsByOwnSectorId(sector.sectorID)) if neighbour.groupID != groupId
-                     ]
+        neighbours = [ neighbour for neighbour in (self.__sectorComponent.getSectorById(sectorId) for sectorId in self.__sectorComponent.getNeighbouringSectorIdsByOwnSectorId(sector.sectorID)) if neighbour.groupID != groupId ]
         for neighbour in neighbours:
             neighbourGrpId = neighbour.groupID
             if neighbourGrpId not in node.neighbours:
@@ -214,10 +213,9 @@ class EpicSectorWarningComponent(ClientArenaComponent, CallbackDelayer):
             edge.start, edge.end = self.__calcEdgeLine(groupId, neighbourGrpId)
             if edge.state is None:
                 edge.state = SECTOR_EDGE_STATE.NONE
-            elif self.__sectorComponent.currentPlayerSectorId is not None:
+            if self.__sectorComponent.currentPlayerSectorId is not None:
                 continue
-            else:
-                self.__showEdgeState(newEdgeId, edge, edge.state, forceUpdate=True)
+            self.__showEdgeState(newEdgeId, edge, edge.state, forceUpdate=True)
 
         return
 
@@ -225,8 +223,7 @@ class EpicSectorWarningComponent(ClientArenaComponent, CallbackDelayer):
         zone = self.__protectionZones[zoneId]
         protectionZone = self.__protectionZoneComponent.getProtectionZoneById(zoneId)
         zone.team = protectionZone.team
-        zone.geometry = (
-         Vector2(position.x, position.z),
+        zone.geometry = (Vector2(position.x, position.z),
          bound[0],
          bound[1],
          bound[1] - bound[0])
@@ -247,9 +244,9 @@ class EpicSectorWarningComponent(ClientArenaComponent, CallbackDelayer):
             if not isZoneActive:
                 state = SECTOR_EDGE_STATE.NONE
             elif isInZone:
-                state = ADJACENT_MAPPED_STATES_TO_EDGE_STATE[(zone.mappedState, MAPPED_SECTOR_STATE.GOOD)]
+                state = ADJACENT_MAPPED_STATES_TO_EDGE_STATE[zone.mappedState, MAPPED_SECTOR_STATE.GOOD]
             else:
-                state = ADJACENT_MAPPED_STATES_TO_EDGE_STATE[(MAPPED_SECTOR_STATE.GOOD, zone.mappedState)]
+                state = ADJACENT_MAPPED_STATES_TO_EDGE_STATE[MAPPED_SECTOR_STATE.GOOD, zone.mappedState]
             zone.edgeState = state
             zone.isActive = isZoneActive
             self.__visual.showProtectionZone(zoneId, state, zone.team, self.protectionZones)
@@ -272,13 +269,10 @@ class EpicSectorWarningComponent(ClientArenaComponent, CallbackDelayer):
                 adjacentStates = [ self.__nodes[nodeId].mappedState for nodeId in adjacentNodes ]
                 if newNodeID in adjacentNodes:
                     toState = adjacentStates[1] if adjacentNodes[0] == newNodeID else adjacentStates[0]
-                    self.__showEdgeState(edgeId, edge, ADJACENT_MAPPED_STATES_TO_EDGE_STATE[(localState, toState)])
-                elif MAPPED_SECTOR_STATE.BAD in adjacentStates:
-                    self.__showEdgeState(edgeId, edge, ADJACENT_MAPPED_STATES_TO_EDGE_STATE[(
-                     MAPPED_SECTOR_STATE.GOOD, MAPPED_SECTOR_STATE.BAD)])
-                else:
-                    self.__showEdgeState(edgeId, edge, ADJACENT_MAPPED_STATES_TO_EDGE_STATE[(
-                     MAPPED_SECTOR_STATE.GOOD, MAPPED_SECTOR_STATE.GOOD)])
+                    self.__showEdgeState(edgeId, edge, ADJACENT_MAPPED_STATES_TO_EDGE_STATE[localState, toState])
+                if MAPPED_SECTOR_STATE.BAD in adjacentStates:
+                    self.__showEdgeState(edgeId, edge, ADJACENT_MAPPED_STATES_TO_EDGE_STATE[MAPPED_SECTOR_STATE.GOOD, MAPPED_SECTOR_STATE.BAD])
+                self.__showEdgeState(edgeId, edge, ADJACENT_MAPPED_STATES_TO_EDGE_STATE[MAPPED_SECTOR_STATE.GOOD, MAPPED_SECTOR_STATE.GOOD])
 
             for neighbourId in self.__nodes[newNodeID].neighbours:
                 edgeId = makeEdgeId(newNodeID, neighbourId)
@@ -292,7 +286,7 @@ class EpicSectorWarningComponent(ClientArenaComponent, CallbackDelayer):
                         self.__showWarning(newNodeID, neighbourId, WARNING_TYPE.BOMBING)
                     else:
                         self.__showWarning(newNodeID, neighbourId, WARNING_TYPE.PROTECTED)
-                elif edgeId in self.__activeWarnings:
+                if edgeId in self.__activeWarnings:
                     self.__showWarning(newNodeID, neighbourId, WARNING_TYPE.NONE)
 
             return
@@ -351,12 +345,20 @@ class EpicSectorWarningComponent(ClientArenaComponent, CallbackDelayer):
             else:
                 isHorizontal = sectorA.IDInPlayerGroup == sectorB.IDInPlayerGroup
             comparisonFunc = (lambda a, b: a.x <= b.x) if isHorizontal else (lambda a, b: a.z <= b.z)
-            shortWidth, shortHeight, longWidth, longHeight, shortCenter, longCenter = (dimensionsA.x, dimensionsA.z, dimensionsB.x, dimensionsB.z, centerA, centerB) if comparisonFunc(dimensionsA, dimensionsB) else (
-             dimensionsB.x, dimensionsB.z, dimensionsA.x, dimensionsA.z, centerB, centerA)
+            shortWidth, shortHeight, longWidth, longHeight, shortCenter, longCenter = (dimensionsA.x,
+             dimensionsA.z,
+             dimensionsB.x,
+             dimensionsB.z,
+             centerA,
+             centerB) if comparisonFunc(dimensionsA, dimensionsB) else (dimensionsB.x,
+             dimensionsB.z,
+             dimensionsA.x,
+             dimensionsA.z,
+             centerB,
+             centerA)
             if isHorizontal:
                 z = longCenter.z + copysign(longHeight * 0.5, shortCenter.z - longCenter.z)
-                return (
-                 Vector3(shortCenter.x - shortWidth * 0.5, 0, z), Vector3(shortCenter.x + shortWidth * 0.5, 0, z))
+                return (Vector3(shortCenter.x - shortWidth * 0.5, 0, z), Vector3(shortCenter.x + shortWidth * 0.5, 0, z))
             x = longCenter.x + copysign(longWidth * 0.5, shortCenter.x - longCenter.x)
             return (Vector3(x, 0, shortCenter.z - shortHeight * 0.5), Vector3(x, 0, shortCenter.z + shortHeight * 0.5))
 
@@ -364,7 +366,10 @@ class EpicSectorWarningComponent(ClientArenaComponent, CallbackDelayer):
         sectorGroup = self.__sectorComponent.getSectorGroupById(nodeId)
         center = sectorGroup.center
         minBound, maxBound = sectorGroup.getBound()
-        return (center, minBound, maxBound, maxBound - minBound)
+        return (center,
+         minBound,
+         maxBound,
+         maxBound - minBound)
 
     def __onSectorGroupTransitionTimeChanged(self, sectorGroupId, oldTime, newTime):
         self.__transitionEndTimes[sectorGroupId] = newTime
@@ -382,22 +387,18 @@ class EpicSectorWarningComponent(ClientArenaComponent, CallbackDelayer):
             diffTime = math.ceil(endTime - BigWorld.serverTime())
             if diffTime >= 0:
                 self.onTransitionTimerUpdated(sectorGroupId, diffTime)
-            else:
-                self.onTransitionTimerUpdated(sectorGroupId, -1)
-                transitionTimesToDel.append(sectorGroupId)
+            self.onTransitionTimerUpdated(sectorGroupId, -1)
+            transitionTimesToDel.append(sectorGroupId)
 
         for groupId in transitionTimesToDel:
             del self.__transitionEndTimes[groupId]
 
-        if self.__transitionEndTimes:
-            return 1.0
-        else:
-            return
+        return 1.0 if self.__transitionEndTimes else None
 
 
 class SectorBorderVisualisation(object):
-    _TEAM_BORDER_DIRS = {EPIC_BATTLE_TEAM_ID.TEAM_ATTACKER: (AAD.PLUS_Z,), EPIC_BATTLE_TEAM_ID.TEAM_DEFENDER: (
-                                         AAD.MINUS_Z,)}
+    _TEAM_BORDER_DIRS = {EPIC_BATTLE_TEAM_ID.TEAM_ATTACKER: (AAD.PLUS_Z,),
+     EPIC_BATTLE_TEAM_ID.TEAM_DEFENDER: (AAD.MINUS_Z,)}
 
     def __init__(self, sectorWarningComponent):
         self.__sectorVisuals = {}

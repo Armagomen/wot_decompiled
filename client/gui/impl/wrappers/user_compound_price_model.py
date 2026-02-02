@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/wrappers/user_compound_price_model.py
+import logging
+import typing
 from frameworks.wulf import Array
 from gui.impl.gen.view_models.common.compound_price_model import CompoundPriceModel
 from gui.impl.gen.view_models.common.price_model import PriceModel
@@ -10,7 +13,7 @@ from skeletons.gui.shared import IItemsCache
 _logger = logging.getLogger(__name__)
 if typing.TYPE_CHECKING:
     from typing import Dict, Tuple, Optional, Union, Iterable
-    Price = Union[(Money, Dict)]
+    Price = Union[Money, Dict]
 
 class UserCompoundPriceModel(CompoundPriceModel):
     __slots__ = ()

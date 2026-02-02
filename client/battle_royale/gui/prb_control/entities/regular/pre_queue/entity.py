@@ -1,4 +1,8 @@
-import logging, BigWorld, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/prb_control/entities/regular/pre_queue/entity.py
+import logging
+import BigWorld
+import typing
 from CurrentVehicle import g_currentVehicle
 from constants import QUEUE_TYPE
 from gui.prb_control.entities.base.pre_queue.ctx import JoinPreQueueModeCtx
@@ -21,7 +25,7 @@ from helpers import dependency
 _logger = logging.getLogger(__name__)
 
 class JoinBRPreQueueModeCtx(JoinPreQueueModeCtx):
-    __slots__ = ('__selectedSubModeID', )
+    __slots__ = ('__selectedSubModeID',)
 
     def __init__(self, queueType, selectedSubModeID, flags=FUNCTIONAL_FLAG.UNDEFINED, waitingID=''):
         super(JoinBRPreQueueModeCtx, self).__init__(queueType=queueType, flags=flags, waitingID=waitingID)
@@ -59,13 +63,13 @@ class BattleRoyaleEntryPoint(PreQueueEntryPoint):
                 callback(False)
             g_prbCtrlEvents.onPreQueueJoinFailure(PRE_QUEUE_JOIN_ERRORS.DISABLED)
             return
+        elif neededSubModeID is None or neededSubModeID not in BattleRoyaleSubMode.ALL_RANGE:
+            _logger.error('Trying select sub mode not in BattleRoyaleSubMode.ALL_RANGE %s.', neededSubModeID)
+            if callback is not None:
+                callback(False)
+            g_prbCtrlEvents.onPreQueueJoinFailure(PRE_QUEUE_JOIN_ERRORS.DISABLED)
+            return
         else:
-            if neededSubModeID is None or neededSubModeID not in BattleRoyaleSubMode.ALL_RANGE:
-                _logger.error('Trying select sub mode not in BattleRoyaleSubMode.ALL_RANGE %s.', neededSubModeID)
-                if callback is not None:
-                    callback(False)
-                g_prbCtrlEvents.onPreQueueJoinFailure(PRE_QUEUE_JOIN_ERRORS.DISABLED)
-                return
             self.__battleRoyaleController.setCurrentSubModeID(neededSubModeID)
             super(BattleRoyaleEntryPoint, self).select(ctx, callback)
             return
@@ -74,8 +78,7 @@ class BattleRoyaleEntryPoint(PreQueueEntryPoint):
         return JoinBRPreQueueModeCtx(self._queueType, self.__selectedSubModeID, flags=self.getFunctionalFlags())
 
     def _getFilterStates(self):
-        return (
-         PrimeTimeStatus.NOT_SET,)
+        return (PrimeTimeStatus.NOT_SET,)
 
 
 class BattleRoyaleEntity(PreQueueEntity):

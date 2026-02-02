@@ -1,4 +1,7 @@
-import typing, quest_progress
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/server_events/personal_progress/collectors.py
+import typing
+import quest_progress
 from constants import QUEST_PROGRESS_STATE
 from personal_missions_constants import VISIBLE_SCOPE, CONTAINER
 
@@ -31,9 +34,7 @@ class UniqueProgressCollector(ClientProgressCollector):
 
     @classmethod
     def validate(cls, progress):
-        if progress.getUniqueVehicles():
-            return True
-        return False
+        return True if progress.getUniqueVehicles() else False
 
 
 class LobbyProgressCollector(ClientProgressCollector):
@@ -51,7 +52,7 @@ class BattleProgressCollector(ClientProgressCollector):
 
 
 class SubQuestProgressCollector(ClientProgressCollector):
-    __slots__ = ('_isMain', )
+    __slots__ = ('_isMain',)
 
     def __init__(self, isMain=None):
         self._isMain = isMain
@@ -61,7 +62,8 @@ class SubQuestProgressCollector(ClientProgressCollector):
             if progress.isMain() == self._isMain:
                 return super(SubQuestProgressCollector, self).validate(progress)
             return False
-        return True
+        else:
+            return True
 
 
 class LobbyHeaderProgressCollector(SubQuestProgressCollector):
@@ -102,16 +104,11 @@ class BattleUniqueProgressCollector(SubQuestProgressCollector):
 class ChangedProgressCollector(BattleBodyProgressCollector):
 
     def validate(self, condProgress):
-        if condProgress.isChanged():
-            return super(ChangedProgressCollector, self).validate(condProgress)
-        return False
+        return super(ChangedProgressCollector, self).validate(condProgress) if condProgress.isChanged() else False
 
 
 class ProgressWithTimerCollector(BattleBodyProgressCollector):
 
     def validate(self, condProgress):
         result = super(ProgressWithTimerCollector, self).validate(condProgress)
-        if result:
-            return condProgress.getCountDown() is not None and condProgress.getState() not in (QUEST_PROGRESS_STATE.COMPLETED, QUEST_PROGRESS_STATE.FAILED)
-        else:
-            return False
+        return condProgress.getCountDown() is not None and condProgress.getState() not in (QUEST_PROGRESS_STATE.COMPLETED, QUEST_PROGRESS_STATE.FAILED) if result else False

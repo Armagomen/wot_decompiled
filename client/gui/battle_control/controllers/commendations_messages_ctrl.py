@@ -1,4 +1,9 @@
-import logging, typing, BigWorld, BattleReplay
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/commendations_messages_ctrl.py
+import logging
+import typing
+import BigWorld
+import BattleReplay
 from chat_commands_consts import BATTLE_CHAT_COMMAND_NAMES
 from commendations_common import CommendationHelpers
 from constants import CommendationsState
@@ -21,14 +26,14 @@ if typing.TYPE_CHECKING:
 _logger = logging.getLogger(__name__)
 _RECIPIENT_DURATION_MS = 5000
 _SENDER_DURATION_MS = 2000
-MESSAGE_STATE_RESOURCE_MAP = {CommendationsState.UNSENT: '', 
-   CommendationsState.SENT: 'comms_sent', 
-   CommendationsState.RECEIVED: 'comms_received', 
-   CommendationsState.MUTUAL: 'comms_mutual'}
-MESSAGE_STATE_MARKER_MAP = {CommendationsState.UNSENT: '', 
-   CommendationsState.SENT: 'sendCommendation', 
-   CommendationsState.RECEIVED: 'gotCommendation', 
-   CommendationsState.MUTUAL: 'mutualCommendation'}
+MESSAGE_STATE_RESOURCE_MAP = {CommendationsState.UNSENT: '',
+ CommendationsState.SENT: 'comms_sent',
+ CommendationsState.RECEIVED: 'comms_received',
+ CommendationsState.MUTUAL: 'comms_mutual'}
+MESSAGE_STATE_MARKER_MAP = {CommendationsState.UNSENT: '',
+ CommendationsState.SENT: 'sendCommendation',
+ CommendationsState.RECEIVED: 'gotCommendation',
+ CommendationsState.MUTUAL: 'mutualCommendation'}
 
 class _CommendationsActionMessage(ClientActionMessage):
 
@@ -103,12 +108,11 @@ class CommendationsMessagesController(IBattleController):
         if cmd.isReceiver():
             vehicleID = cmd.getSenderVehID()
             durationMS = _RECIPIENT_DURATION_MS
-        else:
-            if cmd.isSender():
-                vehicleID = cmd.getFirstTargetID()
-            if not (resourceName and vehicleID):
-                _logger.warning('Missing chat args for command: resourceName=%s, vehicleID=%s', resourceName, vehicleID)
-                return
+        elif cmd.isSender():
+            vehicleID = cmd.getFirstTargetID()
+        if not (resourceName and vehicleID):
+            _logger.warning('Missing chat args for command: resourceName=%s, vehicleID=%s', resourceName, vehicleID)
+            return
         self._addToChat(vehicleID, resourceName)
         self._arena.onUpdatePriorityChatCommand(vehicleID, actionMarker, durationMS)
 

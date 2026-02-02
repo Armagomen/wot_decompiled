@@ -1,4 +1,8 @@
-import logging, typing, constants
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/event_boards/event_boards_controller.py
+import logging
+import typing
+import constants
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import ELEN_NOTIFICATIONS
 from adisp import adisp_process, adisp_async
@@ -7,13 +11,13 @@ from gui import SystemMessages
 from gui.Scaleform.genConsts.MISSIONS_CONSTANTS import MISSIONS_CONSTANTS
 from gui.Scaleform.locale.EVENT_BOARDS import EVENT_BOARDS
 from gui.SystemMessages import SM_TYPE
-from gui.event_boards.event_boards_items import EventBoardsSettings, HangarFlagData, LeaderBoard, MyInfoInLeaderBoard, SET_DATA_STATUS_CODE, EVENT_STATE, PLAYER_STATE_REASON as _psr
+from gui.event_boards.event_boards_items import EventBoardsSettings, HangarFlagData, LeaderBoard, IPlayerProgression, MyInfoInLeaderBoard, SET_DATA_STATUS_CODE, EVENT_STATE, PLAYER_STATE_REASON as _psr
 from gui.event_boards.listener import IEventBoardsListener
 from gui.prb_control import prb_getters
 from gui.prb_control.entities.listener import IGlobalListener
 from gui.shared.utils.requesters.abstract import Response
 from gui.wgcg import IWebController
-from gui.wgcg.elen.contexts import EventBoardsGetEventDataCtx, EventBoardsGetPlayerDataCtx, EventBoardsJoinEventCtx, EventBoardsLeaveEventCtx, EventBoardsGetMyEventTopCtx, EventBoardsGetMyLeaderboardPositionCtx, EventBoardsGetLeaderboardCtx, EventBoardsGetHangarFlagCtx
+from gui.wgcg.elen.contexts import EventBoardsGetEventDataCtx, EventBoardsGetPlayerDataCtx, EventBoardsJoinEventCtx, EventBoardsLeaveEventCtx, EventBoardsGetMyEventTopCtx, EventBoardsGetMyLeaderboardPositionCtx, EventBoardsGetLeaderboardCtx, EventBoardsGetHangarFlagCtx, EventBoardsGetPlayerProgressionCtx
 from gui.wgcg.settings import WebRequestDataType as _crdt
 from helpers import dependency
 from helpers.i18n import makeString as _ms
@@ -23,6 +27,7 @@ from skeletons.gui.shared import IItemsCache
 _logger = logging.getLogger(__name__)
 SUCCESS_STATUSES = (200, 201, 304)
 if typing.TYPE_CHECKING:
+    from typing import Any, Callable, Type
     from gui.event_boards.event_boards_items import EventSettings
 
 class EventBoardsController(IEventBoardController, IEventBoardsListener, IGlobalListener):
@@ -52,28 +57,16 @@ class EventBoardsController(IEventBoardController, IEventBoardsListener, IGlobal
         return (wrongBattleType, wrongSquadState)
 
     def getPlayerEventsData(self):
-        if self.__eventBoardsSettings is not None:
-            return self.__eventBoardsSettings.getPlayerEventsData()
-        else:
-            return
+        return self.__eventBoardsSettings.getPlayerEventsData() if self.__eventBoardsSettings is not None else None
 
     def getEventsSettingsData(self):
-        if self.__eventBoardsSettings is not None:
-            return self.__eventBoardsSettings.getEventsSettings()
-        else:
-            return
+        return self.__eventBoardsSettings.getEventsSettings() if self.__eventBoardsSettings is not None else None
 
     def hasEvents(self):
-        if self.__eventBoardsSettings is not None:
-            return self.__eventBoardsSettings.hasEvents()
-        else:
-            return False
+        return self.__eventBoardsSettings.hasEvents() if self.__eventBoardsSettings is not None else False
 
     def getMyEventsTopData(self):
-        if self.__eventBoardsSettings is not None:
-            return self.__eventBoardsSettings.getMyEventsTop()
-        else:
-            return
+        return self.__eventBoardsSettings.getMyEventsTop() if self.__eventBoardsSettings is not None else None
 
     def getHangarFlagData(self):
         return self.__hangarFlagData
@@ -205,6 +198,18 @@ class EventBoardsController(IEventBoardController, IEventBoardsListener, IGlobal
             callback(None)
             return
 
+    @adisp_async
+    @adisp_process
+    def getPlayerProgression(self, eventID, leaderboardID, progressionClass, callback=None, showNotification=True):
+        playerProgressionResponse = yield self.sendRequest(EventBoardsGetPlayerProgressionCtx(eventID, leaderboardID, showNotification))
+        if playerProgressionResponse is None:
+            callback(None)
+            return
+        else:
+            playerProgressionData = progressionClass.fromRawData(playerProgressionResponse.getData(), eventID, leaderboardID)
+            callback(playerProgressionData)
+            return
+
     def __checkStartedFinishedEvents(self, isTabVisited):
         eventsSettings = self.__eventBoardsSettings
         events = eventsSettings.getEventsSettings().getEvents()
@@ -228,7 +233,7 @@ class EventBoardsController(IEventBoardController, IEventBoardsListener, IGlobal
                     if eventID not in started and not event.hasCustomUI():
                         SystemMessages.pushMessage(_ms(EVENT_BOARDS.NOTIFICATION_EVENTSTARTED_BODY, eventName=event.getName()), messageData={'header': _ms(EVENT_BOARDS.NOTIFICATION_EVENTSTARTED_HEADER)}, type=SM_TYPE.OpenEventBoards)
                         started.add(eventID)
-                elif event.isAfterEnd() and eventID in visited:
+                if event.isAfterEnd() and eventID in visited:
                     if eventID not in finished and not event.hasCustomUI():
                         self.__complexWarningNotification(_ms(EVENT_BOARDS.NOTIFICATION_EVENTFINISHED_HEADER), _ms(EVENT_BOARDS.NOTIFICATION_EVENTFINISHED_BODY, eventName=event.getName()))
                         finished.add(eventID)

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/page/contacts_list_presenter.py
 from __future__ import absolute_import
 import typing
 from gui.impl.gen.view_models.views.lobby.page.footer.contacts_list_model import ContactsListModel
@@ -16,13 +18,7 @@ class ContactsListPresenter(ViewComponent[ContactsListModel]):
         super(ContactsListPresenter, self).__init__(model=ContactsListModel)
 
     def _getEvents(self):
-        return (
-         (
-          g_messengerEvents.users.onUsersListReceived, self.__onUsersListReceived),
-         (
-          g_messengerEvents.users.onUserActionReceived, self.__onUserActionReceived),
-         (
-          g_messengerEvents.users.onUserStatusUpdated, self.__onUserStatusUpdated))
+        return ((g_messengerEvents.users.onUsersListReceived, self.__onUsersListReceived), (g_messengerEvents.users.onUserActionReceived, self.__onUserActionReceived), (g_messengerEvents.users.onUserStatusUpdated, self.__onUserStatusUpdated))
 
     def _onLoading(self, *args, **kwargs):
         super(ContactsListPresenter, self)._onLoading(*args, **kwargs)
@@ -30,7 +26,7 @@ class ContactsListPresenter(ViewComponent[ContactsListModel]):
 
     @storage_getter('users')
     def __usersStorage(self):
-        return
+        return None
 
     def __onUsersListReceived(self, tags):
         if USER_TAG.FRIEND in tags:
@@ -41,8 +37,7 @@ class ContactsListPresenter(ViewComponent[ContactsListModel]):
             self.__updateContactsCount()
 
     def __onUserActionReceived(self, actionID, *args):
-        if actionID in (
-         USER_ACTION_ID.FRIEND_REMOVED,
+        if actionID in (USER_ACTION_ID.FRIEND_REMOVED,
          USER_ACTION_ID.IGNORED_ADDED,
          USER_ACTION_ID.TMP_IGNORED_ADDED,
          USER_ACTION_ID.FRIEND_ADDED):
@@ -50,6 +45,6 @@ class ContactsListPresenter(ViewComponent[ContactsListModel]):
 
     def __updateContactsCount(self):
         friends = self.__usersStorage.getList(FriendsFindCriteria())
-        onlineFriendsCount = sum(1 for friend in friends if friend.isOnline())
+        onlineFriendsCount = sum((1 for friend in friends if friend.isOnline()))
         if onlineFriendsCount != self.getViewModel().getContactsCount():
             self.getViewModel().setContactsCount(onlineFriendsCount)

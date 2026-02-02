@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/tooltips/vehicle_collector.py
 import logging
 from itertools import chain
 from constants import MIN_VEHICLE_LEVEL
@@ -32,17 +34,13 @@ class VehicleCollectorTooltipData(BlocksTooltipData):
             _logger.error('Incorrect nation %s', self.__nationName)
             return []
         else:
-            items = [
-             formatters.packBuildUpBlockData(blocks=list(chain(self.__getHeader(), self.__getDescription())))]
+            items = [formatters.packBuildUpBlockData(blocks=list(chain(self.__getHeader(), self.__getDescription())))]
             items.append(self.__getDisabledStatusBlock())
             return items
 
     def __getHeader(self):
         nationID = nations.INDICES.get(self.__nationName)
-        return [
-         formatters.packImageBlockData(img=RES_ICONS.getTooltipFlag(self.__nationName), align=BLOCKS_TOOLTIP_TYPES.ALIGN_LEFT, padding=formatters.packPadding(bottom=-80, left=-20)),
-         formatters.packTextBlockData(text=text_styles.highTitle(backport.text(R.strings.tooltips.collectibleVehicleTooltip.header(), nation=backport.text(R.strings.nations.dyn(self.__nationName).genetiveCase())))),
-         formatters.packImageTextBlockData(img=backport.image(R.images.gui.maps.icons.buttons.icon_table_comparison_inhangar()), imgPadding=formatters.packPadding(top=-2, left=-5), desc=text_styles.main(backport.text(R.strings.tooltips.collectibleVehicleTooltip.statistics(), inventory=text_styles.stats(len(helper.getCollectibleVehiclesInInventory(nationID))), common=len(helper.getCollectibleVehicles(nationID)))))]
+        return [formatters.packImageBlockData(img=RES_ICONS.getTooltipFlag(self.__nationName), align=BLOCKS_TOOLTIP_TYPES.ALIGN_LEFT, padding=formatters.packPadding(bottom=-80, left=-20)), formatters.packTextBlockData(text=text_styles.highTitle(backport.text(R.strings.tooltips.collectibleVehicleTooltip.header(), nation=backport.text(R.strings.nations.dyn(self.__nationName).genetiveCase())))), formatters.packImageTextBlockData(img=backport.image(R.images.gui.maps.icons.buttons.icon_table_comparison_inhangar()), imgPadding=formatters.packPadding(top=-2, left=-5), desc=text_styles.main(backport.text(R.strings.tooltips.collectibleVehicleTooltip.statistics(), inventory=text_styles.stats(len(helper.getCollectibleVehiclesInInventory(nationID))), common=len(helper.getCollectibleVehicles(nationID)))))]
 
     def __getDisabledStatusBlock(self):
         nationID = nations.INDICES.get(self.__nationName)
@@ -53,7 +51,7 @@ class VehicleCollectorTooltipData(BlocksTooltipData):
             maxUnlockedLevel = self.__itemsCache.items.stats.getMaxResearchedLevelByNations().get(nationID, MIN_VEHICLE_LEVEL)
             vehicleLevels = getCache()['collectorVehiclesLevelsByNations'].get(nationID, set())
             if not vehicleLevels:
-                raise SoftException(('There are not collectible vehicles in the nation tree of {}').format(self.__nationName))
+                raise SoftException('There are not collectible vehicles in the nation tree of {}'.format(self.__nationName))
             if min(vehicleLevels) <= maxUnlockedLevel:
                 header = R.strings.tooltips.collectibleVehicleTooltip.status.purchaseAvailable()
                 text = R.strings.tooltips.collectibleVehicleTooltip.status.condition()
@@ -63,15 +61,11 @@ class VehicleCollectorTooltipData(BlocksTooltipData):
                 text = R.strings.tooltips.collectibleVehicleTooltip.status.condition()
                 styleGetter = text_styles.statusAttention
             block = formatters.packAlignedTextBlockData(text=text_styles.concatStylesToMultiLine(styleGetter(backport.text(header)), text_styles.main(backport.text(text))), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER)
-        return formatters.packBuildUpBlockData(blocks=[
-         block], padding=formatters.packPadding(top=5))
+        return formatters.packBuildUpBlockData(blocks=[block], padding=formatters.packPadding(top=5))
 
     @staticmethod
     def __getDescription():
-        return [
-         formatters.packImageBlockData(img=backport.image(R.images.gui.maps.icons.vehicleCollector.collectibles_pic()), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=formatters.packPadding(bottom=10)),
-         formatters.packTextBlockData(text=text_styles.main(backport.text(R.strings.tooltips.collectibleVehicleTooltip.description())), padding=formatters.packPadding(bottom=10)),
-         formatters.packTextBlockData(text=text_styles.main(backport.text(R.strings.tooltips.collectibleVehicleTooltip.elite())))]
+        return [formatters.packImageBlockData(img=backport.image(R.images.gui.maps.icons.vehicleCollector.collectibles_pic()), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=formatters.packPadding(bottom=10)), formatters.packTextBlockData(text=text_styles.main(backport.text(R.strings.tooltips.collectibleVehicleTooltip.description())), padding=formatters.packPadding(bottom=10)), formatters.packTextBlockData(text=text_styles.main(backport.text(R.strings.tooltips.collectibleVehicleTooltip.elite())))]
 
 
 class VehicleCollectorDisabledTooltipData(BlocksTooltipData):
@@ -84,5 +78,5 @@ class VehicleCollectorDisabledTooltipData(BlocksTooltipData):
         if self.__lobbyContext.getServerSettings().isCollectorVehicleEnabled():
             _logger.error('Vehicle collector is enabled')
             return {}
-        return {'header': text_styles.critical(backport.text(R.strings.tooltips.collectibleVehicleTooltip.switchOff.header())), 
-           'body': text_styles.main(backport.text(R.strings.tooltips.collectibleVehicleTooltip.switchOff.text()))}
+        return {'header': text_styles.critical(backport.text(R.strings.tooltips.collectibleVehicleTooltip.switchOff.header())),
+         'body': text_styles.main(backport.text(R.strings.tooltips.collectibleVehicleTooltip.switchOff.text()))}

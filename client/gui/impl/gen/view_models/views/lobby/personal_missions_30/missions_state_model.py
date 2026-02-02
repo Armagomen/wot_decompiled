@@ -1,9 +1,11 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/personal_missions_30/missions_state_model.py
 from gui.impl.gen.view_models.views.lobby.personal_missions_30.common.enums import MissionCategory
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.personal_missions_30.missions_model import MissionsModel
 
 class MissionsStateModel(ViewModel):
-    __slots__ = ('changeCategory', )
+    __slots__ = ('changeCategory',)
 
     def __init__(self, properties=2, commands=1):
         super(MissionsStateModel, self).__init__(properties=properties, commands=commands)

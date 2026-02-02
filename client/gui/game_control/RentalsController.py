@@ -1,6 +1,11 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/RentalsController.py
 from operator import itemgetter
 from sys import maxint
-import copy, typing, BigWorld, Event
+import copy
+import typing
+import BigWorld
+import Event
 from constants import RentType, SEASON_NAME_BY_TYPE, IS_RENTALS_ENABLED
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.utils.requesters.ItemsRequester import REQ_CRITERIA
@@ -11,9 +16,9 @@ from skeletons.gui.game_control import IRentalsController, ISeasonsController, I
 from skeletons.gui.shared import IItemsCache
 from rent_common import SeasonRentDuration, calculateSeasonRentPrice
 from season_common import GameSeason
-RENT_TYPE_WEIGHTS = {RentType.TIME_RENT: 0, 
-   RentType.SEASON_CYCLE_RENT: 1, 
-   RentType.SEASON_RENT: 2}
+RENT_TYPE_WEIGHTS = {RentType.TIME_RENT: 0,
+ RentType.SEASON_CYCLE_RENT: 1,
+ RentType.SEASON_RENT: 2}
 
 class RentalsController(IRentalsController):
     itemsCache = dependency.descriptor(IItemsCache)
@@ -72,10 +77,9 @@ class RentalsController(IRentalsController):
             for rentType, packagesToFilter in rentPrices.iteritems():
                 if rentType == RentType.SEASON_RENT:
                     filteredRentPrices[rentType] = self.__filterSeasonCyclePackages(packagesToFilter, self.__seasonFilter)
-                elif rentType == RentType.SEASON_CYCLE_RENT:
+                if rentType == RentType.SEASON_CYCLE_RENT:
                     filteredRentPrices[rentType] = self.__filterSeasonCyclePackages(packagesToFilter, self.__cycleFilter)
-                else:
-                    filteredRentPrices[rentType] = copy.deepcopy(packagesToFilter)
+                filteredRentPrices[rentType] = copy.deepcopy(packagesToFilter)
 
         return filteredRentPrices
 
@@ -108,8 +112,7 @@ class RentalsController(IRentalsController):
                             mainRentTypeWeight = rentTypeWeight
                             seasonType = packages.itervalues().next().get('seasonType', None)
 
-        return (
-         hasAvailableRentPackages, mainRentType, seasonType)
+        return (hasAvailableRentPackages, mainRentType, seasonType)
 
     def getRentPriceOfPackage(self, vehicle, rentType, packageID, package):
         rentPrice = package.get('cost', (0, 0))
@@ -200,10 +203,10 @@ class RentalsController(IRentalsController):
         currentSeason = self.seasonsController.getCurrentSeason(seasonType)
         if currentSeason is None or currentSeason.getSeasonID() != seasonID:
             return False
-        numCycles = len(currentSeason.getAllCycles())
-        if not currentSeason.getCycleInfo():
-            return False
         else:
+            numCycles = len(currentSeason.getAllCycles())
+            if not currentSeason.getCycleInfo():
+                return False
             currentCycleNumber = currentSeason.getCycleOrdinalNumber()
             if currentCycleNumber >= numCycles:
                 return False

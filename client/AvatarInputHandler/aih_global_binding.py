@@ -1,4 +1,7 @@
-import logging, Math
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/AvatarInputHandler/aih_global_binding.py
+import logging
+import Math
 from aih_constants import CTRL_MODE_NAME, GUN_MARKER_FLAG, STRATEGIC_CAMERA, DEFAULT_GUN_MARKER_STATE
 from soft_exception import SoftException
 _logger = logging.getLogger(__name__)
@@ -20,12 +23,20 @@ class BINDING_ID(object):
     STRATEGIC_CAMERA = 13
     MULTI_GUN_COLLISIONS = 14
     SPG_SHOTS_INDICATOR_STATE = 15
-    RANGE = (
-     CTRL_MODE_NAME, AIM_OFFSET, ZOOM_FACTOR, GUN_MARKERS_FLAGS,
-     CLIENT_GUN_MARKER_STATE, SERVER_GUN_MARKER_STATE, DUAL_ACC_GUN_MARKER_STATE,
-     CLIENT_GUN_MARKER_DATA_PROVIDER, CLIENT_SPG_GUN_MARKER_DATA_PROVIDER,
-     SERVER_GUN_MARKER_DATA_PROVIDER, SERVER_SPG_GUN_MARKER_DATA_PROVIDER,
-     STRATEGIC_CAMERA, MULTI_GUN_COLLISIONS, SPG_SHOTS_INDICATOR_STATE,
+    RANGE = (CTRL_MODE_NAME,
+     AIM_OFFSET,
+     ZOOM_FACTOR,
+     GUN_MARKERS_FLAGS,
+     CLIENT_GUN_MARKER_STATE,
+     SERVER_GUN_MARKER_STATE,
+     DUAL_ACC_GUN_MARKER_STATE,
+     CLIENT_GUN_MARKER_DATA_PROVIDER,
+     CLIENT_SPG_GUN_MARKER_DATA_PROVIDER,
+     SERVER_GUN_MARKER_DATA_PROVIDER,
+     SERVER_SPG_GUN_MARKER_DATA_PROVIDER,
+     STRATEGIC_CAMERA,
+     MULTI_GUN_COLLISIONS,
+     SPG_SHOTS_INDICATOR_STATE,
      DUAL_ACC_GUN_MARKER_DATA_PROVIDER)
 
 
@@ -71,21 +82,21 @@ class _ObservableVector2(_Observable):
         return abs(other.x - self.value.x) > _FLOAT_EPSILON or abs(other.y - self.value.y) > _FLOAT_EPSILON
 
 
-_DEFAULT_VALUES = {BINDING_ID.CTRL_MODE_NAME: lambda : _Observable(CTRL_MODE_NAME.DEFAULT), 
-   BINDING_ID.AIM_OFFSET: lambda : _ObservableVector2(), 
-   BINDING_ID.ZOOM_FACTOR: lambda : _Observable(0.0), 
-   BINDING_ID.GUN_MARKERS_FLAGS: lambda : _Observable(GUN_MARKER_FLAG.UNDEFINED), 
-   BINDING_ID.CLIENT_GUN_MARKER_STATE: lambda : _Observable((DEFAULT_GUN_MARKER_STATE, ())), 
-   BINDING_ID.SERVER_GUN_MARKER_STATE: lambda : _Observable((DEFAULT_GUN_MARKER_STATE, ())), 
-   BINDING_ID.DUAL_ACC_GUN_MARKER_STATE: lambda : _Observable((DEFAULT_GUN_MARKER_STATE, ())), 
-   BINDING_ID.CLIENT_GUN_MARKER_DATA_PROVIDER: lambda : _Observable(None), 
-   BINDING_ID.CLIENT_SPG_GUN_MARKER_DATA_PROVIDER: lambda : _Observable(None), 
-   BINDING_ID.SERVER_GUN_MARKER_DATA_PROVIDER: lambda : _Observable(None), 
-   BINDING_ID.SERVER_SPG_GUN_MARKER_DATA_PROVIDER: lambda : _Observable(None), 
-   BINDING_ID.DUAL_ACC_GUN_MARKER_DATA_PROVIDER: lambda : _Observable(None), 
-   BINDING_ID.STRATEGIC_CAMERA: lambda : _Observable(STRATEGIC_CAMERA.DEFAULT), 
-   BINDING_ID.MULTI_GUN_COLLISIONS: lambda : _Observable(()), 
-   BINDING_ID.SPG_SHOTS_INDICATOR_STATE: lambda : _Observable({})}
+_DEFAULT_VALUES = {BINDING_ID.CTRL_MODE_NAME: lambda : _Observable(CTRL_MODE_NAME.DEFAULT),
+ BINDING_ID.AIM_OFFSET: lambda : _ObservableVector2(),
+ BINDING_ID.ZOOM_FACTOR: lambda : _Observable(0.0),
+ BINDING_ID.GUN_MARKERS_FLAGS: lambda : _Observable(GUN_MARKER_FLAG.UNDEFINED),
+ BINDING_ID.CLIENT_GUN_MARKER_STATE: lambda : _Observable((DEFAULT_GUN_MARKER_STATE, ())),
+ BINDING_ID.SERVER_GUN_MARKER_STATE: lambda : _Observable((DEFAULT_GUN_MARKER_STATE, ())),
+ BINDING_ID.DUAL_ACC_GUN_MARKER_STATE: lambda : _Observable((DEFAULT_GUN_MARKER_STATE, ())),
+ BINDING_ID.CLIENT_GUN_MARKER_DATA_PROVIDER: lambda : _Observable(None),
+ BINDING_ID.CLIENT_SPG_GUN_MARKER_DATA_PROVIDER: lambda : _Observable(None),
+ BINDING_ID.SERVER_GUN_MARKER_DATA_PROVIDER: lambda : _Observable(None),
+ BINDING_ID.SERVER_SPG_GUN_MARKER_DATA_PROVIDER: lambda : _Observable(None),
+ BINDING_ID.DUAL_ACC_GUN_MARKER_DATA_PROVIDER: lambda : _Observable(None),
+ BINDING_ID.STRATEGIC_CAMERA: lambda : _Observable(STRATEGIC_CAMERA.DEFAULT),
+ BINDING_ID.MULTI_GUN_COLLISIONS: lambda : _Observable(()),
+ BINDING_ID.SPG_SHOTS_INDICATOR_STATE: lambda : _Observable({})}
 
 class _GlobalDataDescriptor(object):
     __slots__ = ('__bindingID', '__reader', '__writer')
@@ -101,16 +112,13 @@ class _GlobalDataDescriptor(object):
 
     def __set__(self, instance, value):
         if not self.__writer:
-            raise AttributeError(('{} can not set value of descriptor').format(instance))
+            raise AttributeError('{} can not set value of descriptor'.format(instance))
         self.__storage[self.__bindingID].change(value)
 
     def __get__(self, instance, _=None):
         if not self.__reader:
-            raise AttributeError(('{} can not get value of descriptor').format(instance))
-        if instance is None:
-            return self.__storage[self.__bindingID]
-        else:
-            return self.__storage[self.__bindingID].value
+            raise AttributeError('{} can not get value of descriptor'.format(instance))
+        return self.__storage[self.__bindingID] if instance is None else self.__storage[self.__bindingID].value
 
     @classmethod
     def clear(cls):
@@ -135,13 +143,13 @@ class _GlobalDataDescriptor(object):
 
 def bindRO(bindingID):
     if bindingID not in BINDING_ID.RANGE:
-        raise SoftException(('bindingID is invalid: {}').format(bindingID))
+        raise SoftException('bindingID is invalid: {}'.format(bindingID))
     return _GlobalDataDescriptor(bindingID, reader=True, writer=False)
 
 
 def bindRW(bindingID):
     if bindingID not in BINDING_ID.RANGE:
-        raise SoftException(('bindingID is invalid: {}').format(bindingID))
+        raise SoftException('bindingID is invalid: {}'.format(bindingID))
     return _GlobalDataDescriptor(bindingID, reader=True, writer=True)
 
 

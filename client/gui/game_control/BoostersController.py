@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/BoostersController.py
 import logging
 from typing import TYPE_CHECKING
 import Event
@@ -55,10 +57,7 @@ class BoostersController(IBoostersController, IGlobalListener):
         return
 
     def isGameModeSupported(self, category=None):
-        if category is None:
-            return bool(self.__enabledCategories)
-        else:
-            return category in self.__enabledCategories
+        return bool(self.__enabledCategories) if category is None else category in self.__enabledCategories
 
     def fini(self):
         self._stop()
@@ -91,7 +90,7 @@ class BoostersController(IBoostersController, IGlobalListener):
         return boosterID not in settings.getPersonalReservesSettings().boosterCardHintsSeen
 
     def setCardHintSeenFor(self, boosterID):
-        with settings.personalReservesSettings() as (prSettings):
+        with settings.personalReservesSettings() as prSettings:
             prSettings.addBoosterToCardHintsSeen(boosterID)
 
     @adisp_process
@@ -111,8 +110,8 @@ class BoostersController(IBoostersController, IGlobalListener):
 
     def onLobbyInited(self, event):
         g_eventBus.addListener(events.BoostersControllerEvent.UPDATE_GAMEMODE_STATUS, self.updateGameModeStatus, EVENT_BUS_SCOPE.LOBBY)
-        g_clientUpdateManager.addCallbacks({'cache.activeOrders': self._update, 
-           'goodies': self._update})
+        g_clientUpdateManager.addCallbacks({'cache.activeOrders': self._update,
+         'goodies': self._update})
         self.startGlobalListening()
         self.itemsCache.onSyncCompleted += self._update
         self.__notificatorManager.addNotificators(PeriodicNotifier(self.__timeTillNextClanReserveTick, self.onClanReserveTick, (time_utils.ONE_MINUTE,)), PeriodicNotifier(self.__timeTillNextPersonalReserveTick, self.__notifyBoosterTime, (time_utils.ONE_MINUTE,)))
@@ -165,21 +164,17 @@ class BoostersController(IBoostersController, IGlobalListener):
 
     def __timeTillNextPersonalReserveTick(self):
         activeBoosters = self.goodiesCache.getBoosters(REQ_CRITERIA.BOOSTER.ACTIVE).values()
-        if activeBoosters:
-            return min(booster.getUsageLeftTime() for booster in activeBoosters)
-        return 0
+        return min((booster.getUsageLeftTime() for booster in activeBoosters)) if activeBoosters else 0
 
     def __notifyBoosterTime(self):
         self.onPersonalReserveTick()
 
     def __timeTillNextClanReserveTick(self):
         clanReserves = self.goodiesCache.getClanReserves().values()
-        if clanReserves:
-            return min(reserve.getUsageLeftTime() for reserve in clanReserves) + 1
-        return 0
+        return min((reserve.getUsageLeftTime() for reserve in clanReserves)) + 1 if clanReserves else 0
 
     def __processNotifications(self):
-        with settings.personalReservesSettings() as (prSettings):
+        with settings.personalReservesSettings() as prSettings:
             self.__processFirstExpirationsNotification(prSettings)
         self.__processSoonExpirationsNotification()
 

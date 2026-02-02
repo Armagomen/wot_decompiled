@@ -1,7 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/dict2model/validate.py
 from __future__ import absolute_import
-import typing, re
+import typing
+import re
 from soft_exception import SoftException
-from dict2model.exceptions import ValidationError, ValidationErrorMessage
+from dict2model.exceptions import ValidationError, ValidationErrorMessage, CumulativeIterableValidationError
 if typing.TYPE_CHECKING:
     from dict2model.types import ValidatorType, ValidatorsType
 
@@ -9,14 +12,13 @@ def prepareValidators(validators):
     prepared = []
     if isinstance(validators, (list, tuple)):
         prepared += list(validators)
-    else:
-        if validators is not None:
-            prepared.append(validators)
-        errors = None
-        for validator in prepared:
-            if not callable(validator):
-                error = ValidationErrorMessage(('Unsupported validator type: {}.').format(type(validator)))
-                errors = errors + error if errors else error
+    elif validators is not None:
+        prepared.append(validators)
+    errors = None
+    for validator in prepared:
+        if not callable(validator):
+            error = ValidationErrorMessage('Unsupported validator type: {}.'.format(type(validator)))
+            errors = errors + error if errors else error
 
     if errors:
         raise SoftException(str(errors))
@@ -39,14 +41,14 @@ def runValidators(validations, toValidate):
 class Validator(object):
     __slots__ = ()
 
-    def __call__(self, incoming):
+    def __call__(self, incoming, *args, **kwargs):
         pass
 
     def __repr__(self):
-        return ('<{}({})>').format(self.__class__.__name__, self._reprArgs() or '')
+        return '<{}({})>'.format(self.__class__.__name__, self._reprArgs() or '')
 
     def _reprArgs(self):
-        return ''
+        pass
 
 
 class Range(Validator):
@@ -59,7 +61,7 @@ class Range(Validator):
         self._min = minValue
         self._max = maxValue
 
-    def __call__(self, incoming):
+    def __call__(self, incoming, *args, **kwargs):
         if self._min is not None and incoming < self._min:
             message = self._messageMin if self._max is None else self._messageAll
             raise ValidationError(self._formatError(message))
@@ -69,7 +71,7 @@ class Range(Validator):
         return
 
     def _reprArgs(self):
-        return ('min={}, max={}').format(self._min, self._max)
+        return 'min={}, max={}'.format(self._min, self._max)
 
     def _formatError(self, message):
         return message.format(min=self._min, max=self._max)
@@ -80,7 +82,7 @@ class Length(Range):
     _messageMax = 'Longer than maximum length {max}.'
     _messageAll = 'Length must be between {min} and {max}.'
     _messageEqual = 'Length must be {equal}.'
-    __slots__ = ('_equal', )
+    __slots__ = ('_equal',)
 
     def __init__(self, minValue=None, maxValue=None, equalValue=None):
         if equalValue is not None and any([minValue, maxValue]):
@@ -89,17 +91,18 @@ class Length(Range):
         self._equal = equalValue
         return
 
-    def __call__(self, incoming):
+    def __call__(self, incoming, *args, **kwargs):
         length = len(incoming)
         if self._equal is not None:
             if length != self._equal:
                 raise ValidationError(self._formatError(self._messageEqual))
             return
-        super(Length, self).__call__(length)
-        return
+        else:
+            super(Length, self).__call__(length)
+            return
 
     def _reprArgs(self):
-        return ('min={}, max={}, equal={}').format(self._min, self._max, self._equal)
+        return 'min={}, max={}, equal={}'.format(self._min, self._max, self._equal)
 
     def _formatError(self, message):
         return message.format(min=self._min, max=self._max, equal=self._equal)
@@ -108,22 +111,20 @@ class Length(Range):
 class URL(Validator):
 
     class RegexMemoizer(object):
-        __slots__ = ('_memoized', )
+        __slots__ = ('_memoized',)
 
         def __init__(self):
             self._memoized = {}
 
         def __call__(self, relative, requireTld):
-            key = (
-             relative, requireTld)
+            key = (relative, requireTld)
             if key not in self._memoized:
                 self._memoized[key] = self._regexGenerator(relative, requireTld)
             return self._memoized[key]
 
         @staticmethod
         def _regexGenerator(relative, requireTld):
-            return re.compile(('').join((
-             '^',
+            return re.compile(''.join(('^',
              '(' if relative else '',
              '(?:[a-z0-9\\.\\-\\+]*)://',
              '(?:[^:@]+?(:[^:@]*?)?@|)',
@@ -139,14 +140,17 @@ class URL(Validator):
 
     _regex = RegexMemoizer()
     _message = 'Not a valid URL.'
-    _schemes = {'http', 'https', 'ftp', 'ftps'}
+    _schemes = {'http',
+     'https',
+     'ftp',
+     'ftps'}
     __slots__ = ('relative', 'requireTld')
 
     def __init__(self, relative=False, requireTld=True):
         self.relative = relative
         self.requireTld = requireTld
 
-    def __call__(self, incoming):
+    def __call__(self, incoming, *args, **kwargs):
         if not incoming:
             raise ValidationError(self._message)
         if '://' in incoming:
@@ -158,7 +162,7 @@ class URL(Validator):
             raise ValidationError(self._message)
 
     def _reprArgs(self):
-        return ('relative={}').format(self.relative)
+        return 'relative={}'.format(self.relative)
 
 
 class NoneOf(Validator):
@@ -167,9 +171,9 @@ class NoneOf(Validator):
 
     def __init__(self, choices):
         self._choices = choices
-        self._choicesText = (', ').join(str(each) for each in self._choices)
+        self._choicesText = ', '.join((str(each) for each in self._choices))
 
-    def __call__(self, incoming):
+    def __call__(self, incoming, *args, **kwargs):
         try:
             if incoming in self._choices:
                 raise ValidationError(self._message.format(value=incoming, values=self._choicesText))
@@ -177,14 +181,14 @@ class NoneOf(Validator):
             pass
 
     def _reprArgs(self):
-        return ('choices={}').format(self._choices)
+        return 'choices={}'.format(self._choices)
 
 
 class OneOf(NoneOf):
     _message = 'Value: {value} must be one of: {values}.'
     __slots__ = ()
 
-    def __call__(self, incoming):
+    def __call__(self, incoming, *args, **kwargs):
         try:
             if incoming not in self._choices:
                 raise ValidationError(self._message.format(value=incoming, values=self._choicesText))
@@ -194,15 +198,118 @@ class OneOf(NoneOf):
 
 class Regexp(Validator):
     _message = 'String: {value} does not match pattern: {pattern}.'
-    __slots__ = ('_regex', )
+    __slots__ = ('_regex',)
 
     def __init__(self, regex, flags=0):
         self._regex = re.compile(regex, flags) if isinstance(regex, str) else regex
 
-    def __call__(self, incoming):
+    def __call__(self, incoming, *args, **kwargs):
         if self._regex.match(incoming) is None:
             raise ValidationError(self._message.format(value=incoming, pattern=self._regex.pattern))
         return
 
     def _reprArgs(self):
-        return ('regex={}').format(self._regex.pattern)
+        return 'regex={}'.format(self._regex.pattern)
+
+
+class IterableValidator(Validator):
+    __slots__ = ()
+
+    def __call__(self, incoming, storage, isLastIteration, *args, **kwargs):
+        pass
+
+    def createStorage(self):
+        return {}
+
+
+class _IterableAttrValidator(IterableValidator):
+    __slots__ = ('_attrName',)
+
+    def __init__(self, attrName=None):
+        self._attrName = attrName
+
+    def getValue(self, incoming):
+        if self._attrName is not None and not hasattr(incoming, self._attrName):
+            raise ValidationError('Incoming {} does not have attribute {}'.format(incoming, self._attrName))
+        return incoming if self._attrName is None else getattr(incoming, self._attrName)
+
+
+class IterableOfUnique(_IterableAttrValidator):
+    __slots__ = ()
+
+    def __call__(self, incoming, storage, *args, **kwargs):
+        value = self.getValue(incoming)
+        if value not in storage:
+            storage.add(value)
+        else:
+            raise ValidationError('Value {} of {} is duplicate.'.format(value, self._attrName))
+
+    def createStorage(self):
+        return set()
+
+
+class IterableOfSequential(_IterableAttrValidator):
+    __slots__ = ('_firstValue',)
+
+    def __init__(self, attrName=None, firstValue=1):
+        super(IterableOfSequential, self).__init__(attrName)
+        self._firstValue = firstValue
+
+    def __call__(self, incoming, storage, *args, **kwargs):
+        value = self.getValue(incoming)
+        isMismatch = value != storage[0]
+        storage[0] += 1
+        if isMismatch:
+            raise ValidationError('Value {}  of {} is out of order'.format(value, self._attrName))
+
+    def createStorage(self):
+        return [self._firstValue]
+
+
+class IterableAnyTrue(_IterableAttrValidator):
+    __slots__ = ()
+
+    def __call__(self, incoming, storage, lastIteration, *args, **kwargs):
+        value = self.getValue(incoming)
+        storage[0] |= value
+        if lastIteration and not storage[0]:
+            raise CumulativeIterableValidationError('At least one of {} must be True.'.format(self._attrName))
+
+    def createStorage(self):
+        return [False]
+
+
+class ValidateIterable(Validator):
+    __slots__ = ('_validators', '_storageCreator')
+
+    def __init__(self, validators, storageCreator=dict):
+        self._validators = validators
+        self._storageCreator = storageCreator
+
+    def __call__(self, incoming, *args, **kwargs):
+        storages = {}
+        errors = None
+        lastIndex = len(incoming) - 1
+        for index, elem in enumerate(incoming):
+            lastIteration = index == lastIndex
+            for validator in self._validators:
+                try:
+                    validatorId = id(validator)
+                    if validatorId in storages:
+                        storage = storages[validatorId]
+                    else:
+                        if isinstance(validator, IterableValidator):
+                            storage = validator.createStorage()
+                        else:
+                            storage = self._storageCreator()
+                        storages[validatorId] = storage
+                    validator(elem, storage, lastIteration)
+                except CumulativeIterableValidationError as ve:
+                    errors = errors + ve.error if errors else ve.error
+                except ValidationError as ve:
+                    error = ValidationErrorMessage(ve.error.data, title='Elem[{}]'.format(index))
+                    errors = errors + error if errors else error
+
+        if errors is not None:
+            raise ValidationError(errors)
+        return

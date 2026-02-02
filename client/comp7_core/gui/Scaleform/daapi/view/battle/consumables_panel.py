@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_core/scripts/client/comp7_core/gui/Scaleform/daapi/view/battle/consumables_panel.py
 import logging
 from functools import partial
 import typing
@@ -27,8 +29,8 @@ _logger = logging.getLogger(__name__)
 class Comp7CoreConsumablesPanel(ConsumablesPanel):
     __sessionProvider = dependency.descriptor(IBattleSessionProvider)
     _ROLE_EQUIPMENT_IDX = 6
-    _POI_EQUIPMENT_IDX = {PoiType.ARTILLERY: 7, 
-       PoiType.RECON: 8}
+    _POI_EQUIPMENT_IDX = {PoiType.ARTILLERY: 7,
+     PoiType.RECON: 8}
     _R_COMP7_EQUIPMENT_ICON = R.images.gui.maps.icons.roleSkills.c_43x43
     _R_POI_EQUIPMENT_ICON = R.images.gui.maps.icons.pointsOfInterest.equipments.c_43x43
 
@@ -66,9 +68,7 @@ class Comp7CoreConsumablesPanel(ConsumablesPanel):
     def _getEquipmentIconPath(self, item):
         if self.__isRoleEquipment(item):
             return self._R_COMP7_EQUIPMENT_ICON
-        if self.__isPoiEquipment(item):
-            return self._R_POI_EQUIPMENT_ICON
-        return super(Comp7CoreConsumablesPanel, self)._getEquipmentIconPath(item)
+        return self._R_POI_EQUIPMENT_ICON if self.__isPoiEquipment(item) else super(Comp7CoreConsumablesPanel, self)._getEquipmentIconPath(item)
 
     def _setEquipmentKeyHandler(self, item, bwKey, idx):
         if bwKey not in self._keys:
@@ -93,9 +93,7 @@ class Comp7CoreConsumablesPanel(ConsumablesPanel):
     def _buildEquipmentSlotTooltipText(self, item):
         if self.__isRoleEquipment(item):
             return self.__buildRoleEquipmentTooltipText()
-        if self.__isPoiEquipment(item):
-            return self.__buildPoIEquipmentTooltipText(item, self._modeController)
-        return super(Comp7CoreConsumablesPanel, self)._buildEquipmentSlotTooltipText(item)
+        return self.__buildPoIEquipmentTooltipText(item, self._modeController) if self.__isPoiEquipment(item) else super(Comp7CoreConsumablesPanel, self)._buildEquipmentSlotTooltipText(item)
 
     def __addRoleEquipmentSlot(self, intCD, item):
         idx = self._ROLE_EQUIPMENT_IDX

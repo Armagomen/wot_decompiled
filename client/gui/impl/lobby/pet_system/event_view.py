@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/pet_system/event_view.py
 import BigWorld
 from frameworks.wulf import WindowFlags, WindowStatus
 from gui.impl import backport
@@ -31,9 +33,7 @@ class PetEvent(ViewComponent):
         self._updateData()
 
     def _getEvents(self):
-        return (
-         (
-          self.__lobbyContext.getServerSettings().onServerSettingsChange, self._onServerSettingsChanged),)
+        return ((self.__lobbyContext.getServerSettings().onServerSettingsChange, self._onServerSettingsChanged),)
 
     def createToolTip(self, event):
         if event.contentID == R.aliases.hangar.shared.PetEvent():
@@ -48,13 +48,10 @@ class PetEvent(ViewComponent):
 
     def getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        if tooltipId is None:
-            return
-        else:
-            return self.__tooltipData.get(tooltipId)
+        return None if tooltipId is None else self.__tooltipData.get(tooltipId)
 
     def _updateData(self):
-        with self.getViewModel().transaction() as (tx):
+        with self.getViewModel().transaction() as tx:
             eventID = self._ctx.get('eventID')
             eventType = self.__petController.getPetEventConfig().getEventType(eventID)
             tx.setEventId(eventID)
@@ -67,7 +64,7 @@ class PetEvent(ViewComponent):
             rewards = self.__getRewards(rewardsData[0])
             if not rewards:
                 return
-            with self.getViewModel().transaction() as (tx):
+            with self.getViewModel().transaction() as tx:
                 self.__tooltipData.clear()
                 rewardsModel = tx.getRewards()
                 rewardsModel.clear()
@@ -105,9 +102,7 @@ class EventView(PetEvent):
 
     def _getEvents(self):
         events = super(EventView, self)._getEvents()
-        return events + (
-         (
-          self.viewModel.onClose, self._onClose),)
+        return events + ((self.viewModel.onClose, self._onClose),)
 
 
 class EventViewWindow(WindowImpl):

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/tooltips/fortifications.py
 from gui.Scaleform.daapi.view.lobby.rally import vo_converters
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.Scaleform.locale.FORTIFICATIONS import FORTIFICATIONS
@@ -9,9 +11,10 @@ from helpers import dependency
 from helpers.i18n import makeString as _ms
 from skeletons.gui.shared import IItemsCache
 from gui import makeHtmlString
-__buildsDirectionMap = {'A': FORTIFICATIONS.STRONGHOLDBUILDS_DIRECTION_A, 'B': FORTIFICATIONS.STRONGHOLDBUILDS_DIRECTION_B, 
-   'C': FORTIFICATIONS.STRONGHOLDBUILDS_DIRECTION_C, 
-   'D': FORTIFICATIONS.STRONGHOLDBUILDS_DIRECTION_D}
+__buildsDirectionMap = {'A': FORTIFICATIONS.STRONGHOLDBUILDS_DIRECTION_A,
+ 'B': FORTIFICATIONS.STRONGHOLDBUILDS_DIRECTION_B,
+ 'C': FORTIFICATIONS.STRONGHOLDBUILDS_DIRECTION_C,
+ 'D': FORTIFICATIONS.STRONGHOLDBUILDS_DIRECTION_D}
 _MAX_VEHICLES_COUNT = 23
 
 def getBuildsDirection(direction):
@@ -58,11 +61,11 @@ class ToolTipRefSysDirects(ToolTipBaseData):
                 else:
                     pointType = 'control'
                     color = 'empty'
-                pointsData.append({'x': pos[0] / mapWidth - viewpoint.x * 0.5, 
-                   'y': pos[2] / mapHeight - viewpoint.y * 0.5, 
-                   'pointType': pointType, 
-                   'color': color, 
-                   'id': baseNumber if len(points) > 1 else 1})
+                pointsData.append({'x': pos[0] / mapWidth - viewpoint.x * 0.5,
+                 'y': pos[2] / mapHeight - viewpoint.y * 0.5,
+                 'pointType': pointType,
+                 'color': color,
+                 'id': baseNumber if len(points) > 1 else 1})
 
         return pointsData
 
@@ -151,10 +154,10 @@ class FortificationsSlotToolTipData(FortToolTipData):
             for vehicleCD in vehicleCDs[:_MAX_VEHICLES_COUNT]:
                 conditions.append({'vehicle': vo_converters.makeVehicleVO(vehicleGetter(vehicleCD))})
 
-            return {'conditions': conditions, 
-               'isCreator': True, 
-               'toolTipType': TOOLTIPS_CONSTANTS.FORT_SORTIE_SLOT, 
-               'leftCount': leftCount if leftCount > 0 else 0}
+            return {'conditions': conditions,
+             'isCreator': True,
+             'toolTipType': TOOLTIPS_CONSTANTS.FORT_SORTIE_SLOT,
+             'leftCount': leftCount if leftCount > 0 else 0}
         else:
             super(FortificationsSlotToolTipData, self).getDisplayableData(index, unitMgrID)
             return

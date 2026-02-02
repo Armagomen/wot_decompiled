@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale_progression/scripts/client/battle_royale_progression/gui/impl/lobby/views/progression_view.py
 from battle_royale_progression.gui.impl.gen.view_models.views.lobby.views.progression.progress_level_model import ProgressLevelModel
 from battle_royale_progression.gui.impl.gen.view_models.views.lobby.views.progression.progression_view_model import ProgressionViewModel, ProgressionState
 from battle_royale_progression.gui.impl.lobby.views.bonus_packer import getBonusPacker
@@ -46,9 +48,7 @@ class ProgressionView(SubModelPresenter):
         if tooltipId is None:
             return
         else:
-            if tooltipId == TOOLTIPS_CONSTANTS.BATTLE_ROYALE_SELECTOR_CALENDAR_INFO:
-                return createTooltipData(specialAlias=tooltipId, isSpecial=True, specialArgs=(None, ))
-            return self.__tooltipData.get(tooltipId)
+            return createTooltipData(specialAlias=tooltipId, isSpecial=True, specialArgs=(None,)) if tooltipId == TOOLTIPS_CONSTANTS.BATTLE_ROYALE_SELECTOR_CALENDAR_INFO else self.__tooltipData.get(tooltipId)
 
     def initialize(self, *args, **kwargs):
         super(ProgressionView, self).initialize(args, kwargs)
@@ -59,15 +59,10 @@ class ProgressionView(SubModelPresenter):
         super(ProgressionView, self).finalize()
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onClose, self.__onClose),
-         (
-          self.brProgression.onProgressPointsUpdated, self.__updateProgressionPoints),
-         (
-          self.brProgression.onSettingsChanged, self.__updateModel),
-         (
-          self.eventsCache.onSyncCompleted, self.__onSyncCompleted))
+        return ((self.viewModel.onClose, self.__onClose),
+         (self.brProgression.onProgressPointsUpdated, self.__updateProgressionPoints),
+         (self.brProgression.onSettingsChanged, self.__updateModel),
+         (self.eventsCache.onSyncCompleted, self.__onSyncCompleted))
 
     def __restartNotifier(self, updateTime):
         self.__stopNotification()
@@ -85,7 +80,7 @@ class ProgressionView(SubModelPresenter):
         event_dispatcher.showHangar()
 
     def __updateQuestTimer(self):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             self.__setBattleQuestTimeLeft(model.battleQuests)
 
     def __updateMissionVisitedArray(self, missionVisitedArray, questsIDs):
@@ -106,7 +101,7 @@ class ProgressionView(SubModelPresenter):
         isNeedToUpdate = needToUpdateQuestsInModel(battleQuests.values(), self.viewModel.battleQuests.getTasksBattle())
         if not isNeedToUpdate:
             return
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             self.__updateBattleQuestsCards(model.battleQuests, data)
             self.__updateMissionVisitedArray(model.battleQuests.getMissionsCompletedVisited(), battleQuests.keys())
             self.__markAsVisited(data)
@@ -115,7 +110,7 @@ class ProgressionView(SubModelPresenter):
         if not self.brProgression.isEnabled:
             return
         curPoints = self.brProgression.getCurPoints()
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             state = ProgressionState.COMPLETED if self.brProgression.isFinished else ProgressionState.INPROGRESS
             model.setState(state)
             model.setCurProgressPoints(curPoints)
@@ -125,7 +120,7 @@ class ProgressionView(SubModelPresenter):
             return
         data = self.brProgression.getProgressionData()
         pointsData = self.brProgression.getProgessionPointsData()
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             state = ProgressionState.COMPLETED if self.brProgression.isFinished else ProgressionState.INPROGRESS
             model.setState(state)
             model.setStartTimestamp(self.battleRoyale.getStartTime())

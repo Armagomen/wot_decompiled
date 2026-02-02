@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_loading/resources/base.py
 import typing
 from gui.game_loading import loggers
 if typing.TYPE_CHECKING:
@@ -24,4 +26,4 @@ class BaseResources(object):
         raise NotImplementedError
 
     def __repr__(self):
-        return ('<Resources:{}>').format(self.__class__.__name__)
+        return '<Resources:{}>'.format(self.__class__.__name__)

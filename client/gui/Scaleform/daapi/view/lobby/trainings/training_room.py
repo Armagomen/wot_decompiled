@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/trainings/training_room.py
 from constants import PREBATTLE_TYPE
 from gui.Scaleform.daapi.view.lobby.trainings.TrainingRoomBase import TrainingRoomBase
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
@@ -40,7 +42,8 @@ class TrainingRoom(TrainingRoomBase):
 
     def showTrainingSettings(self):
         settings = TrainingSettingsCtx.fetch(self.prbEntity.getSettings())
-        self.fireEvent(events.LoadViewEvent(SFViewLoadParams(PREBATTLE_ALIASES.TRAINING_SETTINGS_WINDOW_PY), ctx={'isCreateRequest': False, 'settings': settings}), scope=EVENT_BUS_SCOPE.LOBBY)
+        self.fireEvent(events.LoadViewEvent(SFViewLoadParams(PREBATTLE_ALIASES.TRAINING_SETTINGS_WINDOW_PY), ctx={'isCreateRequest': False,
+         'settings': settings}), scope=EVENT_BUS_SCOPE.LOBBY)
 
     def onRostersChanged(self, entity, rosters, full):
         if PREBATTLE_ROSTER.ASSIGNED_IN_TEAM1 in rosters:

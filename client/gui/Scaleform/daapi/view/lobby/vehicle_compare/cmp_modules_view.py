@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_compare/cmp_modules_view.py
 from __future__ import absolute_import
 import logging
 from future.utils import iteritems
@@ -56,7 +58,10 @@ class _PreviewItemsData(ResearchItemsData):
         for unlockIdx, xpCost, nodeCD, required in unlockedDescrs:
             itemTypeID = getTypeOfCompactDescr(nodeCD)
             if itemTypeID != GUI_ITEM_TYPE.VEHICLE:
-                yield (unlockIdx, xpCost, nodeCD, required)
+                yield (unlockIdx,
+                 xpCost,
+                 nodeCD,
+                 required)
 
     def _getNodeData(self, nodeCD, previewItem, guiItem, unlockStats, unlockProps, path, level=-1, topLevel=False):
         itemTypeID = guiItem.itemTypeID
@@ -74,9 +79,9 @@ class _PreviewItemsData(ResearchItemsData):
                 state = NODE_STATE_FLAGS.UNLOCKED
                 if inventoryVehicle.isInInventory:
                     state |= NODE_STATE_FLAGS.IN_INVENTORY
-        displayInfo = {'path': path, 
-           'renderer': renderer, 
-           'level': level}
+        displayInfo = {'path': path,
+         'renderer': renderer,
+         'level': level}
         return nodes.RealNode(nodeCD, guiItem, 0, state, displayInfo, unlockProps=unlockProps)
 
     def _loadTopLevel(self, rootItem, unlockStats):
@@ -104,13 +109,13 @@ class VehicleModulesView(VehicleModulesViewMeta, VehicleCompareConfiguratorBaseV
         self.__initialize(configuratedVehicle.descriptor.makeCompactDescr(), self.__detectModulesType(configuratedVehicle))
         stockVehicle = Vehicle(basketVehCmpData.getStockVehStrCD())
         self.__modulesInstaller = ModulesInstaller(getInstalledModulesCDs(stockVehicle))
-        self.as_setInitDataS({'title': _ms(VEH_COMPARE.MODULESVIEW_TITLE, vehName=stockVehicle.userName), 
-           'resetBtnLabel': VEH_COMPARE.MODULESVIEW_RESETBTNLABEL, 
-           'cancelBtnLabel': VEH_COMPARE.MODULESVIEW_CLOSEBTNLABEL, 
-           'applyBtnLabel': VEH_COMPARE.MODULESVIEW_COMPAREBTNLABEL, 
-           'resetBtnTooltip': VEH_COMPARE.MODULESVIEW_RESETBTNLABEL_TOOLTIP, 
-           'cancelBtnTooltip': VEH_COMPARE.MODULESVIEW_CLOSEBTNLABEL_TOOLTIP, 
-           'applyBtnTooltip': VEH_COMPARE.MODULESVIEW_COMPAREBTNLABEL_TOOLTIP})
+        self.as_setInitDataS({'title': _ms(VEH_COMPARE.MODULESVIEW_TITLE, vehName=stockVehicle.userName),
+         'resetBtnLabel': VEH_COMPARE.MODULESVIEW_RESETBTNLABEL,
+         'cancelBtnLabel': VEH_COMPARE.MODULESVIEW_CLOSEBTNLABEL,
+         'applyBtnLabel': VEH_COMPARE.MODULESVIEW_COMPAREBTNLABEL,
+         'resetBtnTooltip': VEH_COMPARE.MODULESVIEW_RESETBTNLABEL_TOOLTIP,
+         'cancelBtnTooltip': VEH_COMPARE.MODULESVIEW_CLOSEBTNLABEL_TOOLTIP,
+         'applyBtnTooltip': VEH_COMPARE.MODULESVIEW_COMPAREBTNLABEL_TOOLTIP})
         self.__isInited = True
 
     def _dispose(self):
@@ -224,7 +229,7 @@ class VehicleModulesView(VehicleModulesViewMeta, VehicleCompareConfiguratorBaseV
     def __updateChangedSlots(self):
 
         def __extractData(targetList):
-            return dict((moduleData['id'], moduleData['state']) for moduleData in targetList)
+            return dict(((moduleData['id'], moduleData['state']) for moduleData in targetList))
 
         oldModulesData = __extractData(self.__nodes)
         self.__updateModulesData()

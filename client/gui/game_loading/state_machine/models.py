@@ -1,10 +1,11 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_loading/state_machine/models.py
 from gui.game_loading.resources.consts import Milestones
 from gui.game_loading.resources.models import StatusTextModel
 from gui.game_loading.state_machine.const import ContentState
 
 class ImageViewSettingsModel(object):
-    __slots__ = ('showVfx', 'contentState', 'ageRatingPath', 'info', 'showSmallLogo',
-                 'minimalDuration')
+    __slots__ = ('showVfx', 'contentState', 'ageRatingPath', 'info', 'showSmallLogo', 'minimalDuration')
 
     def __init__(self, showVfx=True, contentState=ContentState.INVISIBLE, ageRatingPath='', info='', showSmallLogo=True, minimalDuration=0.0):
         self.showVfx = showVfx
@@ -15,7 +16,7 @@ class ImageViewSettingsModel(object):
         self.minimalDuration = minimalDuration
 
     def __repr__(self):
-        return ('<ImageViewSettingsModel(vfx={}, contentState={}, ageRatingPath={}, info={}, showSmallLogo={}, minimalDuration={})>').format(self.showVfx, self.contentState, self.ageRatingPath, self.info, self.showSmallLogo, self.minimalDuration)
+        return '<ImageViewSettingsModel(vfx={}, contentState={}, ageRatingPath={}, info={}, showSmallLogo={}, minimalDuration={})>'.format(self.showVfx, self.contentState, self.ageRatingPath, self.info, self.showSmallLogo, self.minimalDuration)
 
 
 class ProgressSettingsModel(object):
@@ -28,7 +29,7 @@ class ProgressSettingsModel(object):
         self.minTickTimeSec = minTickTimeSec
 
     def __repr__(self):
-        return ('<ProgressBarSettingsModel(start={}, limit={}, ticks={}, minTickTimeSec={})>').format(self.startPercent, self.limitPercent, self.ticksInProgress, self.minTickTimeSec)
+        return '<ProgressBarSettingsModel(start={}, limit={}, ticks={}, minTickTimeSec={})>'.format(self.startPercent, self.limitPercent, self.ticksInProgress, self.minTickTimeSec)
 
 
 class LoadingMilestoneModel(object):
@@ -41,4 +42,4 @@ class LoadingMilestoneModel(object):
         self.status = status
 
     def __repr__(self):
-        return ('<LoadingMilestoneModel(name={}, percent={}, forceApply={}, status={}>').format(self.name, self.percent, self.forceApply, self.status)
+        return '<LoadingMilestoneModel(name={}, percent={}, forceApply={}, status={}>'.format(self.name, self.percent, self.forceApply, self.status)

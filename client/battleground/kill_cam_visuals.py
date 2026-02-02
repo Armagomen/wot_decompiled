@@ -1,4 +1,12 @@
-import math, logging, BigWorld, CGF, GenericComponents, Math, math_utils
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/battleground/kill_cam_visuals.py
+import math
+import logging
+import BigWorld
+import CGF
+import GenericComponents
+import Math
+import math_utils
 from cgf_components.highlight_component import HighlightComponent
 from cgf_components.visual_effect_component_manager import ImpactZoneComponent
 from dyn_objects_cache import _KillCamEffectDynObjects
@@ -35,15 +43,15 @@ class EffectsController(CallbackDelayer):
     def displayKillCamEffects(self, vehicleAppearance, maxComponentIndex, hasProjectilePierced, hasNonPiercedDamage, isSPG, isSpotted, isShellHE, explosionRadius, trajectoryPoints, segments, impactPoint, isRicochet):
         _logger.info('displayKillCamEffects (params): %s %s %s %s %s %s %s %s %s %s %s', vehicleAppearance, maxComponentIndex, hasProjectilePierced, hasNonPiercedDamage, isSPG, isSpotted, isShellHE, explosionRadius, trajectoryPoints, segments, impactPoint)
         self.__isActive = True
-        if trajectoryPoints[(-1)] != impactPoint:
-            self.__spawnSpacedArmorLine(trajectoryPoints[(-1)], impactPoint)
-            self.__spawnSpacedArmorImpactPoint(trajectoryPoints[(-1)])
+        if trajectoryPoints[-1] != impactPoint:
+            self.__spawnSpacedArmorLine(trajectoryPoints[-1], impactPoint)
+            self.__spawnSpacedArmorImpactPoint(trajectoryPoints[-1])
         if not hasProjectilePierced and not hasNonPiercedDamage and not isShellHE:
             _logger.error('Unexpected shell data.')
             return False
         if not hasProjectilePierced:
             if isSPG:
-                self.__spawnExplosionSphere(trajectoryPoints[(-1)], explosionRadius)
+                self.__spawnExplosionSphere(trajectoryPoints[-1], explosionRadius)
             else:
                 self.__spawnImpactZone(segments, vehicleAppearance, maxComponentIndex)
         if isSpotted and (isSPG or hasProjectilePierced):
@@ -52,7 +60,7 @@ class EffectsController(CallbackDelayer):
         elif isSpotted:
             self.__spawnShellTrajectory(trajectoryPoints, isSPG, isRicochet)
         else:
-            self.__spawnHitCone(trajectoryPoints[0], trajectoryPoints[(-1)])
+            self.__spawnHitCone(trajectoryPoints[0], trajectoryPoints[-1])
 
     def __removeEdgeDrawer(self):
         for go in self.gameObjects:
@@ -70,7 +78,7 @@ class EffectsController(CallbackDelayer):
     def __tryAddGameObject(self, go):
         if go is None or not go.isValid():
             return False
-        if not self.__isActive:
+        elif not self.__isActive:
             CGF.removeGameObject(go)
             return False
         else:
@@ -106,13 +114,13 @@ class EffectsController(CallbackDelayer):
                 self.__setTransformToGameObject(go, scale, rotation, position)
 
             if not isSpgShot and not isRicochet:
-                lastPoint = points[(-1)]
-                prevPoint = points[(-2)]
+                lastPoint = points[-1]
+                prevPoint = points[-2]
                 gradientPoint = (prevPoint - lastPoint) * 0.1 + lastPoint
                 points.insert(-1, gradientPoint)
             ptsLen = len(points)
             for i in range(ptsLen - 1):
-                direction = Math.Vector3(points[(i + 1)] - points[i])
+                direction = Math.Vector3(points[i + 1] - points[i])
                 translation = points[i]
                 scale = (LINE_WIDTH, LINE_WIDTH, direction.length / _LENGTH_FACTOR)
                 rotation = Math.Vector3(direction.yaw, direction.pitch, 0)

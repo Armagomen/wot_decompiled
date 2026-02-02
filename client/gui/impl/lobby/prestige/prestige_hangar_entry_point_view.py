@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/prestige/prestige_hangar_entry_point_view.py
 import logging
 from CurrentVehicle import g_currentVehicle
 from constants import Configs
@@ -25,15 +27,10 @@ class PrestigeHangarEntryPointView(ViewImpl):
         return super(PrestigeHangarEntryPointView, self).getViewModel()
 
     def _getEvents(self):
-        return super(PrestigeHangarEntryPointView, self)._getEvents() + (
-         (
-          self.viewModel.onShowInfo, self.__onShowInfoClick),
-         (
-          self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChange),
-         (
-          g_currentVehicle.onChanged, self.__onCurrentVehicleChanged),
-         (
-          self.__itemsCache.onSyncCompleted, self.__onSyncCompleted))
+        return super(PrestigeHangarEntryPointView, self)._getEvents() + ((self.viewModel.onShowInfo, self.__onShowInfoClick),
+         (self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChange),
+         (g_currentVehicle.onChanged, self.__onCurrentVehicleChanged),
+         (self.__itemsCache.onSyncCompleted, self.__onSyncCompleted))
 
     def _onLoading(self, *args, **kwargs):
         super(PrestigeHangarEntryPointView, self)._onLoading()
@@ -41,11 +38,10 @@ class PrestigeHangarEntryPointView(ViewImpl):
 
     def __updateModel(self):
         currentLevel, remainingPts = getVehiclePrestige(g_currentVehicle.intCD, itemsCache=self.__itemsCache)
-        if (
-         currentLevel, remainingPts) == DEFAULT_PRESTIGE:
+        if (currentLevel, remainingPts) == DEFAULT_PRESTIGE:
             return
         currentXP, nextLvlXP = getCurrentProgress(g_currentVehicle.intCD, currentLevel, remainingPts, lobbyContext=self.__lobbyContext)
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setCurrentProgress(currentXP)
             tx.setMaxProgress(nextLvlXP)
             fillPrestigeEmblemModel(tx.emblem, currentLevel, g_currentVehicle.intCD)

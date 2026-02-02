@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/trainings/TrainingSettingsWindow.py
 import ArenaType
 from account_helpers import gameplay_ctx
 from constants import PREBATTLE_TYPE, Configs
@@ -13,8 +15,7 @@ from gui.impl.gen import R
 from gui.training_room_external_handlers import getAllTrainingRoomHandlers, getTrainingRoomHandler
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-CONFIG_KEYS_FOR_UPDATE = {
- Configs.PRE_MODERATION_CONFIG.value}
+CONFIG_KEYS_FOR_UPDATE = {Configs.PRE_MODERATION_CONFIG.value}
 
 class ArenasCache(object):
     __lobbyCtx = dependency.descriptor(ILobbyContext)
@@ -39,16 +40,16 @@ class ArenasCache(object):
                 continue
             try:
                 arenaTypeName = self.__getArenaTypeName(arenaType)
-                dataItem = {'label': '%s - %s' % (arenaType.name, arenaTypeName) if arenaTypeName else arenaType.name, 
-                   'name': arenaType.name, 
-                   'arenaType': arenaTypeName, 
-                   'key': arenaTypeID, 
-                   'size': arenaType.maxPlayersInTeam, 
-                   'time': arenaType.roundLength / 60, 
-                   'description': '', 
-                   'icon': getArenaImage(arenaType.geometryName), 
-                   'canChangeArenaTime': not self.__isEpic, 
-                   'alertText': ''}
+                dataItem = {'label': '%s - %s' % (arenaType.name, arenaTypeName) if arenaTypeName else arenaType.name,
+                 'name': arenaType.name,
+                 'arenaType': arenaTypeName,
+                 'key': arenaTypeID,
+                 'size': arenaType.maxPlayersInTeam,
+                 'time': arenaType.roundLength / 60,
+                 'description': '',
+                 'icon': getArenaImage(arenaType.geometryName),
+                 'canChangeArenaTime': not self.__isEpic,
+                 'alertText': ''}
                 arenaData = self.__getHandlerForArenaTypeName(arenaType.gameplayName).getArenaData()
                 if arenaData is not None:
                     dataItem.update(arenaData)
@@ -65,18 +66,14 @@ class ArenasCache(object):
         if arena.gameplayName == 'ctf':
             return ''
         arenaGameplayName = R.strings.arenas.type.dyn(arena.gameplayName).dyn(arena.geometryName)
-        if arenaGameplayName.exists():
-            return backport.text(arenaGameplayName)
-        return backport.text(R.strings.arenas.type.dyn(arena.gameplayName).name())
+        return backport.text(arenaGameplayName) if arenaGameplayName.exists() else backport.text(R.strings.arenas.type.dyn(arena.gameplayName).name())
 
     def __isArenaSuitableForTraining(self, arena):
         if arena.explicitRequestOnly:
             return False
         else:
             arenaTypeFilter = self.__getHandlerForArenaTypeName(arena.gameplayName).getArenaFilter()
-            if arenaTypeFilter is not None and not self.__isEpic:
-                return arenaTypeFilter(arena, self.__settings)
-            return gameplay_ctx.isCreationEnabled(arena.gameplayName, self.__isEpic)
+            return arenaTypeFilter(arena, self.__settings) if arenaTypeFilter is not None and not self.__isEpic else gameplay_ctx.isCreationEnabled(arena.gameplayName, self.__isEpic)
 
     def __getHandlerForArenaTypeName(self, arenaTypeName):
         handlers = getAllTrainingRoomHandlers()
@@ -101,7 +98,7 @@ class TrainingSettingsWindow(TrainingWindowMeta):
 
     @prbEntityProperty
     def prbEntity(self):
-        return
+        return None
 
     def onWindowClose(self):
         self.destroy()
@@ -129,18 +126,18 @@ class TrainingSettingsWindow(TrainingWindowMeta):
         else:
             rTitle = R.strings.menu.training.create.title() if self.__isCreateRequest else R.strings.menu.training.info.settings.title()
         canChangeComment = isShowComment = self.__isDescriptionEnabled()
-        info = {'description': self.__settings.getComment(), 
-           'timeout': self.__settings.getRoundLen() / 60, 
-           'arena': self.__settings.getArenaTypeID(), 
-           'privacy': not self.__settings.isOpened(), 
-           'create': self.__isCreateRequest, 
-           'wndTitle': backport.text(rTitle), 
-           'canMakeOpenedClosed': True, 
-           'canChangeComment': canChangeComment, 
-           'isShowComment': isShowComment, 
-           'canChangeArena': True, 
-           'minBattleTime': minBound / 60, 
-           'maxBattleTime': maxBound / 60}
+        info = {'description': self.__settings.getComment(),
+         'timeout': self.__settings.getRoundLen() / 60,
+         'arena': self.__settings.getArenaTypeID(),
+         'privacy': not self.__settings.isOpened(),
+         'create': self.__isCreateRequest,
+         'wndTitle': backport.text(rTitle),
+         'canMakeOpenedClosed': True,
+         'canChangeComment': canChangeComment,
+         'isShowComment': isShowComment,
+         'canChangeArena': True,
+         'minBattleTime': minBound / 60,
+         'maxBattleTime': maxBound / 60}
         if not self.__isCreateRequest:
             permissions = self.prbEntity.getPermissions()
             info['canMakeOpenedClosed'] = permissions.canMakeOpenedClosed()

@@ -1,3 +1,6 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/doc_loaders/blur_loader.py
+from __future__ import absolute_import
 import ResMgr
 from items import _xml
 XML_PATH = 'gui/blur_settings.xml'
@@ -37,8 +40,7 @@ def _readVerticalParams(section):
 
 
 def _readHorizontalAlphas(section):
-    return {p:section.readFloat(p) for p in ('leftStart', 'leftEnd', 'rightStart',
-                                             'rightEnd')}
+    return {p:section.readFloat(p) for p in ('leftStart', 'leftEnd', 'rightStart', 'rightEnd')}
 
 
 def _readVerticalAlphas(section):
@@ -46,22 +48,22 @@ def _readVerticalAlphas(section):
 
 
 def _readType(section):
-    return {'regular': 0, 
-       'radial': 1, 
-       'spinning': 2}[section.asWideString]
+    return {'regular': 0,
+     'radial': 1,
+     'spinning': 2}[section.asWideString]
 
 
-_PARAMS = {'type': _readType, 
-   'dispatches': lambda section: section.asInt, 
-   'applienceType': lambda section: section.asInt, 
-   'applienceRadius': lambda section: section.asInt, 
-   'intensity': lambda section: section.asInt, 
-   'center': lambda section: section.asVector2, 
-   'mipsCount': lambda section: section.asInt, 
-   'alphaParams': _readAlphaParams, 
-   'direction': _readDirection, 
-   'params': _readParams, 
-   'horizontalParams': _readHorizontalParams, 
-   'verticalParams': _readVerticalParams, 
-   'horizontalAlphas': _readHorizontalAlphas, 
-   'verticalAlphas': _readVerticalAlphas}
+_PARAMS = {'type': _readType,
+ 'dispatches': lambda section: section.asInt,
+ 'applienceType': lambda section: section.asInt,
+ 'applienceRadius': lambda section: section.asInt,
+ 'intensity': lambda section: section.asInt,
+ 'center': lambda section: section.asVector2,
+ 'mipsCount': lambda section: section.asInt,
+ 'alphaParams': _readAlphaParams,
+ 'direction': _readDirection,
+ 'params': _readParams,
+ 'horizontalParams': _readHorizontalParams,
+ 'verticalParams': _readVerticalParams,
+ 'horizontalAlphas': _readHorizontalAlphas,
+ 'verticalAlphas': _readVerticalAlphas}

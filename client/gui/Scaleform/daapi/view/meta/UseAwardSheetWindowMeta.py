@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/UseAwardSheetWindowMeta.py
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 
 class UseAwardSheetWindowMeta(AbstractWindowView):
@@ -9,9 +11,7 @@ class UseAwardSheetWindowMeta(AbstractWindowView):
         self._printOverrideError('cancel')
 
     def as_setSettingsS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setSettings(value)
+        return self.flashObject.as_setSettings(value) if self._isDAAPIInited() else None
 
     def as_setDataS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setData(value)
+        return self.flashObject.as_setData(value) if self._isDAAPIInited() else None

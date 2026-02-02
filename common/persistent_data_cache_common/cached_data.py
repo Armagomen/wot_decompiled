@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/persistent_data_cache_common/cached_data.py
 import typing
 from collections import OrderedDict
 import wg_pickle
@@ -64,7 +66,8 @@ class CreatedData(object):
         self._logger.debug('Data <%s|%s> added.', name, serializerClass)
 
     def toDict(self):
-        return {'version': self._version, 'data': self._data.items()}
+        return {'version': self._version,
+         'data': self._data.items()}
 
 
 def dumps(cachedData):

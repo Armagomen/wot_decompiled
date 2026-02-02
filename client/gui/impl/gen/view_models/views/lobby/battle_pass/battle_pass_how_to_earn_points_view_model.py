@@ -1,8 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_pass/battle_pass_how_to_earn_points_view_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.battle_pass.game_mode_model import GameModeModel
 
 class BattlePassHowToEarnPointsViewModel(ViewModel):
-    __slots__ = ('onLinkClick', )
+    __slots__ = ('onLinkClick',)
 
     def __init__(self, properties=3, commands=1):
         super(BattlePassHowToEarnPointsViewModel, self).__init__(properties=properties, commands=commands)

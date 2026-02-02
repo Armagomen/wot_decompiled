@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/visual_script/arena_blocks.py
 import Math
 from soft_exception import SoftException
 from visual_script.block import Meta, Block, InitParam, buildStrKeysValue
@@ -8,15 +10,15 @@ class ArenaMeta(Meta):
 
     @classmethod
     def blockColor(cls):
-        return 10512127
+        pass
 
     @classmethod
     def blockCategory(cls):
-        return 'Arena'
+        pass
 
     @classmethod
     def blockIcon(cls):
-        return ':vse/blocks/arena'
+        pass
 
 
 class GetUDOByNameBase(Block, ArenaMeta):
@@ -38,21 +40,18 @@ class GetUDOByNameBase(Block, ArenaMeta):
 
     @classmethod
     def initParams(cls):
-        return [
-         InitParam('UDO names', SLOT_TYPE.STR, buildStrKeysValue('single name', 'multiple names', 'any names'), EDITOR_TYPE.STR_KEY_SELECTOR),
-         InitParam('UDO type', SLOT_TYPE.STR, buildStrKeysValue(*cls._UDOTypes), EDITOR_TYPE.STR_KEY_SELECTOR),
-         InitParam('Exclude Names', SLOT_TYPE.BOOL, False)]
+        return [InitParam('UDO names', SLOT_TYPE.STR, buildStrKeysValue('single name', 'multiple names', 'any names'), EDITOR_TYPE.STR_KEY_SELECTOR), InitParam('UDO type', SLOT_TYPE.STR, buildStrKeysValue(*cls._UDOTypes), EDITOR_TYPE.STR_KEY_SELECTOR), InitParam('Exclude Names', SLOT_TYPE.BOOL, False)]
 
     @classmethod
     def blockIcon(cls):
-        return ':vse/blocks/rubic'
+        pass
 
     def captionText(self):
         if self._nameType == 'any names':
             return 'Get UDO'
+        elif self._exclude:
+            return 'Get UDO Excluding Name'
         else:
-            if self._exclude:
-                return 'Get UDO Excluding Name'
             return 'Get UDO By Name'
 
     def _getAll(self):
@@ -71,19 +70,15 @@ class GetUDOByNameBase(Block, ArenaMeta):
     def _allValidUDOs(self):
         allUDOs = self._getUDOsOfType(self._type)
         if self._nameType == 'single name':
-            names = [
-             self._name.getValue()]
+            names = [self._name.getValue()]
+        elif self._nameType == 'multiple names':
+            names = self._names.getValue()
         else:
-            if self._nameType == 'multiple names':
-                names = self._names.getValue()
-            else:
-                if self._nameType == 'any names':
-                    return allUDOs
-                else:
-                    return []
-
-            if self._exclude:
-                return [ udo for udo in allUDOs if udo.name not in names ]
+            if self._nameType == 'any names':
+                return allUDOs
+            return []
+        if self._exclude:
+            return [ udo for udo in allUDOs if udo.name not in names ]
         return [ udo for udo in allUDOs if udo.name in names ]
 
 
@@ -105,9 +100,7 @@ class GetDataFromStorageBase(Block, ArenaMeta):
 
     @classmethod
     def initParams(cls):
-        return [
-         InitParam('Component property name', SLOT_TYPE.STR, buildStrKeysValue('globalGoal'), EDITOR_TYPE.STR_KEY_SELECTOR),
-         InitParam('Value Types', SLOT_TYPE.STR, buildStrKeysValue(SLOT_TYPE.STR, SLOT_TYPE.FLOAT, SLOT_TYPE.INT), EDITOR_TYPE.STR_KEY_SELECTOR)]
+        return [InitParam('Component property name', SLOT_TYPE.STR, buildStrKeysValue('globalGoal'), EDITOR_TYPE.STR_KEY_SELECTOR), InitParam('Value Types', SLOT_TYPE.STR, buildStrKeysValue(SLOT_TYPE.STR, SLOT_TYPE.FLOAT, SLOT_TYPE.INT), EDITOR_TYPE.STR_KEY_SELECTOR)]
 
     def _exec(self):
         storage = self.arena.arenaInfo.mapsTrainingStorageComponent
@@ -136,7 +129,7 @@ class GetFlyDirection(Block, ArenaMeta):
         if reconSettings is not None:
             direction = reconSettings.flyDirections.get(teamID)
         if direction is None:
-            errorVScript(self, ('Missing flyDirection for arena [geometryName={}, gameplayName={}]; teamID={}').format(arenaType.geometryName, arenaType.gameplayName, teamID))
+            errorVScript(self, 'Missing flyDirection for arena [geometryName={}, gameplayName={}]; teamID={}'.format(arenaType.geometryName, arenaType.gameplayName, teamID))
             direction = Math.Vector3(1.0, 0.0, 0.0)
         self._res.setValue(direction)
         return

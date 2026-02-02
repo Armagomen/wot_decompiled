@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/clans/search/ClanSearchInfo.py
 import weakref
 from adisp import adisp_process
 from gui import SystemMessages
@@ -17,12 +19,12 @@ from gui.wgcg.base.contexts import CreateApplicationCtx
 from helpers.i18n import makeString as _ms
 
 def _packItemData(text, description, tooltip, icon):
-    return {'type': HeaderItemsTypes.COMMON, 
-       'text': text, 
-       'description': _ms(description), 
-       'iconPath': ProfileUtils.getIconPath(icon), 
-       'tooltip': tooltip, 
-       'enabled': True}
+    return {'type': HeaderItemsTypes.COMMON,
+     'text': text,
+     'description': _ms(description),
+     'iconPath': ProfileUtils.getIconPath(icon),
+     'tooltip': tooltip,
+     'enabled': True}
 
 
 class ClanSearchInfo(ClanSearchInfoMeta, ClanListener, ClanEmblemsHelper):
@@ -76,15 +78,12 @@ class ClanSearchInfo(ClanSearchInfoMeta, ClanListener, ClanEmblemsHelper):
         battlesCount = formatField(getter=self.__selectedClan.getBattlesCount, formatter=backport.getIntegralFormat)
         wins = formatField(getter=self.__selectedClan.getBattleXpAvg, formatter=lambda value: backport.getNiceNumberFormat(value) + '%')
         avgExp = formatField(getter=self.__selectedClan.getBattlesPerformanceAvg, formatter=backport.getIntegralFormat)
-        stats = [
-         _packItemData(battlesCount, CLANS.SEARCH_INFO_STATS_BATTLES, CLANS.SEARCH_INFO_STATS_BATTLES_TOOLTIP, 'avgBattlesCount40x32.png'),
-         _packItemData(wins, CLANS.SEARCH_INFO_STATS_WINS, CLANS.SEARCH_INFO_STATS_WINS_TOOLTIP, 'avgWins40x32.png'),
-         _packItemData(avgExp, CLANS.SEARCH_INFO_STATS_AVGEXP, CLANS.SEARCH_INFO_STATS_AVGEXP_TOOLTIP, 'avgExp40x32.png')]
-        self.as_setDataS({'clanId': clanID, 
-           'clanName': clanName, 
-           'ratingTitle': text_styles.main(CLANS.SEARCH_INFO_RATINGTITLE), 
-           'rating': text_styles.promoTitle(rating), 
-           'stats': stats})
+        stats = [_packItemData(battlesCount, CLANS.SEARCH_INFO_STATS_BATTLES, CLANS.SEARCH_INFO_STATS_BATTLES_TOOLTIP, 'avgBattlesCount40x32.png'), _packItemData(wins, CLANS.SEARCH_INFO_STATS_WINS, CLANS.SEARCH_INFO_STATS_WINS_TOOLTIP, 'avgWins40x32.png'), _packItemData(avgExp, CLANS.SEARCH_INFO_STATS_AVGEXP, CLANS.SEARCH_INFO_STATS_AVGEXP_TOOLTIP, 'avgExp40x32.png')]
+        self.as_setDataS({'clanId': clanID,
+         'clanName': clanName,
+         'ratingTitle': text_styles.main(CLANS.SEARCH_INFO_RATINGTITLE),
+         'rating': text_styles.promoTitle(rating),
+         'stats': stats})
 
     def _updateSetaledState(self):
         requestSentVisible = False
@@ -118,19 +117,19 @@ class ClanSearchInfo(ClanSearchInfoMeta, ClanListener, ClanEmblemsHelper):
             sendRequestTooltip = makeTooltip(CLANS.SEARCH_INFO_FORBIDDENACCOUNTTYPE_TOOLTIP_HEADER, text_styles.error(_ms(CLANS.SEARCH_INFO_FORBIDDENACCOUNTTYPE_TOOLTIP_BODY)))
         else:
             sendRequestBtnVisible = False
-        self.as_setStateDataS({'requestSentVisible': requestSentVisible, 
-           'sendRequestBtnVisible': sendRequestBtnVisible, 
-           'sendRequestBtnEnabled': sendRequestBtnEnabled, 
-           'sendRequestTooltip': sendRequestTooltip, 
-           'alertIconVisible': sendRequestBtnVisible and not sendRequestBtnEnabled})
+        self.as_setStateDataS({'requestSentVisible': requestSentVisible,
+         'sendRequestBtnVisible': sendRequestBtnVisible,
+         'sendRequestBtnEnabled': sendRequestBtnEnabled,
+         'sendRequestTooltip': sendRequestTooltip,
+         'alertIconVisible': sendRequestBtnVisible and not sendRequestBtnEnabled})
         return
 
     def __initControls(self):
-        self.as_setInitDataS({'ratingDescription': text_styles.stats(_ms(CLANS.SEARCH_INFO_RATINGDESCRIPTION)), 
-           'ratingTooltip': CLANS.SEARCH_INFO_RATINGDESCRIPTION_TOOLTIP, 
-           'requestSent': text_styles.success(_ms(CLANS.SEARCH_INFO_REQUESTSENT)), 
-           'clanProfileBtnLabel': _ms(CLANS.SEARCH_INFO_CLANPROFILEBTN), 
-           'sendRequestBtnLabel': _ms(CLANS.SEARCH_INFO_SENDREQUESTBTN)})
+        self.as_setInitDataS({'ratingDescription': text_styles.stats(_ms(CLANS.SEARCH_INFO_RATINGDESCRIPTION)),
+         'ratingTooltip': CLANS.SEARCH_INFO_RATINGDESCRIPTION_TOOLTIP,
+         'requestSent': text_styles.success(_ms(CLANS.SEARCH_INFO_REQUESTSENT)),
+         'clanProfileBtnLabel': _ms(CLANS.SEARCH_INFO_CLANPROFILEBTN),
+         'sendRequestBtnLabel': _ms(CLANS.SEARCH_INFO_SENDREQUESTBTN)})
         self.as_setWaitingVisibleS(False)
 
 

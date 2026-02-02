@@ -1,4 +1,8 @@
-import uuid, typing, logging
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/uilogging/base/logger.py
+import uuid
+import typing
+import logging
 from functools import wraps
 import BigWorld
 from helpers import dependency
@@ -41,7 +45,7 @@ class _BaseLogger(object):
         self._suspendedActions = {}
 
     def __str__(self):
-        return ('<{}: {}, {}>').format(self.__class__.__name__, self._feature, self._group)
+        return '<{}: {}, {}>'.format(self.__class__.__name__, self._feature, self._group)
 
     @noexcept
     def ensureSession(self):
@@ -150,4 +154,4 @@ class FlowLogger(_BaseLogger):
         self._stopAction(action, loglevel=loglevel, timeLimit=timeLimit, source_item=sourceItem, destination_item=destinationItem, transition_method=transitionMethod, partnerID=partnerID)
 
 
-LOGGERS_TYPING = typing.Union[(FlowLogger, MetricsLogger)]
+LOGGERS_TYPING = typing.Union[FlowLogger, MetricsLogger]

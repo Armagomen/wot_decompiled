@@ -1,6 +1,10 @@
-import logging, random
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/hero_tank_controller.py
+import logging
+import random
 from collections import namedtuple
-import ResMgr, Event
+import ResMgr
+import Event
 from constants import IS_DEVELOPMENT
 from gui.shared import EVENT_BUS_SCOPE, events, g_eventBus
 from gui.shared.gui_items import GUI_ITEM_TYPE
@@ -94,30 +98,19 @@ class HeroTankController(IHeroTankController):
         if adventTankStyleId:
             return adventTankStyleId
         else:
-            if self.isEnabled() and self.__currentTankCD in self.__data:
-                return self.__data[self.__currentTankCD].styleID
-            return
+            return self.__data[self.__currentTankCD].styleID if self.isEnabled() and self.__currentTankCD in self.__data else None
 
     def getCurrentRelatedURL(self):
-        if self.isEnabled() and self.__currentTankCD in self.__data:
-            return self.__data[self.__currentTankCD].url
-        return ''
+        return self.__data[self.__currentTankCD].url if self.isEnabled() and self.__currentTankCD in self.__data else ''
 
     def getCurrentShopUrl(self):
-        if self.isEnabled() and self.__currentTankCD in self.__data:
-            return self.__data[self.__currentTankCD].shopUrl
-        return ''
+        return self.__data[self.__currentTankCD].shopUrl if self.isEnabled() and self.__currentTankCD in self.__data else ''
 
     def getCurrentTankCrew(self):
-        if self.isEnabled() and self.__currentTankCD in self.__data:
-            return self.__data[self.__currentTankCD].crew
-        else:
-            return
+        return self.__data[self.__currentTankCD].crew if self.isEnabled() and self.__currentTankCD in self.__data else None
 
     def getCurrentVehicleName(self):
-        if self.isEnabled() and self.__currentTankCD in self.__data:
-            return self.__data[self.__currentTankCD].name
-        return ''
+        return self.__data[self.__currentTankCD].name if self.isEnabled() and self.__currentTankCD in self.__data else ''
 
     def setInteractive(self, interactive):
         self.onInteractive(interactive)
@@ -138,9 +131,7 @@ class HeroTankController(IHeroTankController):
             styleAvailable = styleId and not self.__containsStyle(styleId)
             vehicleAvailable = not self.__containsVehicle(vehicleCD)
             offerType = self.__actionInfo.offerType
-            if offerType == CalendarOfferType.VEHICLE and vehicleAvailable or offerType == CalendarOfferType.STYLE and styleAvailable or offerType == CalendarOfferType.STYLE_BUNDLE and (styleAvailable or vehicleAvailable):
-                return (vehicleCD, styleId)
-            return (None, None)
+            return (vehicleCD, styleId) if offerType == CalendarOfferType.VEHICLE and vehicleAvailable or offerType == CalendarOfferType.STYLE and styleAvailable or offerType == CalendarOfferType.STYLE_BUNDLE and (styleAvailable or vehicleAvailable) else (None, None)
 
     def __fullUpdate(self):
         items = self.itemsCache.items
@@ -201,9 +192,9 @@ class HeroTankController(IHeroTankController):
         if not vCompDescr:
             _logger.error('Could not apply action, vehicle name = %s', vName)
             return
+        elif vCompDescr in self.__invVehiclesIntCD:
+            return
         else:
-            if vCompDescr in self.__invVehiclesIntCD:
-                return
             styleStr = params.get('styleID')
             styleId = int(styleStr) if styleStr else None
             self.__data[vCompDescr] = _HeroTankInfo(name=vName, url=params.get('url'), shopUrl=params.get('shopUrl'), styleID=styleId, crew=self.__createCrew(params.get('crew'), vCompDescr))
@@ -214,7 +205,7 @@ class HeroTankController(IHeroTankController):
         if not crewXml:
             return crew
         else:
-            crewStr = ('<root>{}</root>').format(crewXml.encode('ascii'))
+            crewStr = '<root>{}</root>'.format(crewXml.encode('ascii'))
             crewSection = ResMgr.DataSection().createSectionFromString(crewStr)
             if crewSection is not None:
                 crew['tankmen'] = []

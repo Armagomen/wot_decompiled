@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/battle_modifiers_common/battle_modifiers.py
 from ResMgr import DataSection
 from constants import AOI, PIERCING_POWER_INTERPOLATION_DIST_FIRST, PIERCING_POWER_INTERPOLATION_DIST_LAST, DAMAGE_INTERPOLATION_DIST_FIRST, DAMAGE_INTERPOLATION_DIST_LAST
 from typing import TYPE_CHECKING, Optional, Any, Tuple, Union, Dict, List
@@ -95,7 +97,7 @@ class BattleParams(object):
     DAMAGE_RANDOMIZATION_TYPE = 'damageRandomizationType'
     PIERCING_POWER_RANDOMIZATION_TYPE = 'piercingPowerRandomizationType'
     FORCED_RELOAD_TIME = 'forcedReloadTime'
-    AUTO_SHOOT_DISPERSION_PER_SEC = 'autoShootDispersionPerSec'
+    AUTO_SHOOT_DISPERSION_PER_SHOT = 'autoShootDispersionPerShot'
     AUTO_SHOOT_MAX_SHOT_DISPERSION_FACTOR = 'autoShootMaxShotDispersionFactor'
     GUN_MAIN_PREFAB = 'gunMainPrefab'
     AMMO_BAY_HEALTH = 'ammoBayHealth'
@@ -107,18 +109,14 @@ class BattleParams(object):
     GUN_HEALTH = 'gunHealth'
     FAKE_MODIFIER = 'fakeModifier'
     VSE_MODIFIER = 'vseModifier'
-    DYNAMIC = {
-     FAKE_MODIFIER, VSE_MODIFIER}
+    DYNAMIC = {FAKE_MODIFIER, VSE_MODIFIER}
     ALL = None
 
 
-BattleParams.ALL = set(v for k, v in BattleParams.__dict__.iteritems() if not k.startswith('_') and k not in ('DYNAMIC',
-                                                                                                              'ALL'))
+BattleParams.ALL = set((v for k, v in BattleParams.__dict__.iteritems() if not k.startswith('_') and k not in ('DYNAMIC', 'ALL')))
 
 class ConstantsSet(object):
-    __slots__ = ('VEHICLE_CIRCULAR_AOI_RADIUS', 'VEHICLE_CIRCULAR_AOI_RADIUS_HYSTERESIS_MARGIN',
-                 'PIERCING_POWER_INTERPOLATION_DIST_FIRST', 'PIERCING_POWER_INTERPOLATION_DIST_LAST',
-                 'DAMAGE_INTERPOLATION_DIST_FIRST', 'DAMAGE_INTERPOLATION_DIST_LAST')
+    __slots__ = ('VEHICLE_CIRCULAR_AOI_RADIUS', 'VEHICLE_CIRCULAR_AOI_RADIUS_HYSTERESIS_MARGIN', 'PIERCING_POWER_INTERPOLATION_DIST_FIRST', 'PIERCING_POWER_INTERPOLATION_DIST_LAST', 'DAMAGE_INTERPOLATION_DIST_FIRST', 'DAMAGE_INTERPOLATION_DIST_LAST')
 
     def __init__(self):
         self.VEHICLE_CIRCULAR_AOI_RADIUS = AOI.VEHICLE_CIRCULAR_AOI_RADIUS
@@ -139,12 +137,12 @@ class ModifierScope(object):
     HANGAR = 16
     BATTLE = BASE | CELL | CLIENT | POST_BATTLE
     FULL = BATTLE | HANGAR
-    ID_TO_NAME = {BASE: 'base', 
-       CELL: 'cell', 
-       CLIENT: 'client', 
-       POST_BATTLE: 'postBattle', 
-       HANGAR: 'hangar'}
-    NAME_TO_ID = dict((v, k) for k, v in ID_TO_NAME.items())
+    ID_TO_NAME = {BASE: 'base',
+     CELL: 'cell',
+     CLIENT: 'client',
+     POST_BATTLE: 'postBattle',
+     HANGAR: 'hangar'}
+    NAME_TO_ID = dict(((v, k) for k, v in ID_TO_NAME.items()))
     ALL = set(NAME_TO_ID.itervalues())
     NAMES = set(ID_TO_NAME.itervalues())
 
@@ -161,10 +159,10 @@ class BattleModifiers(object):
         return iter([])
 
     def __getitem__(self, paramId):
-        return
+        return None
 
     def __len__(self):
-        return 0
+        pass
 
     def __contains__(self, paramId):
         return False
@@ -173,17 +171,17 @@ class BattleModifiers(object):
         return False
 
     def __hash__(self):
-        return 0
+        pass
 
     def __eq__(self, other):
         return False
 
     def __repr__(self):
-        return 'BattleModifiers()'
+        pass
 
     @staticmethod
     def retrieveDescr(descr, scope=ModifierScope.FULL):
-        return ()
+        pass
 
     @staticmethod
     def getConstantsOriginal():
@@ -198,25 +196,25 @@ class BattleModifiers(object):
         pass
 
     def get(self, paramId):
-        return
+        return None
 
     def descr(self, scope=ModifierScope.FULL):
-        return ()
+        pass
 
     def domain(self):
-        return 0
+        pass
 
     def haveDomain(self, domain):
         return False
 
     def scope(self):
-        return 0
+        pass
 
     def haveScope(self, scope):
         return False
 
     def id(self):
-        return 0
+        pass
 
     def getVehicleModification(self, vehType):
         return vehType
@@ -269,7 +267,7 @@ class ModifiersContext(object):
         return self.modifiers == other.modifiers
 
     def __repr__(self):
-        return ('ModifiersContext(modifiers {}, modificationCtx {})').format(self.__modifiers, self.__modificationCtx)
+        return 'ModifiersContext(modifiers {}, modificationCtx {})'.format(self.__modifiers, self.__modificationCtx)
 
     @property
     def modifiers(self):
@@ -280,7 +278,7 @@ class ModifiersContext(object):
         return self.__modificationCtx
 
 
-BATTLE_MODIFIERS_TYPE = Union[(BattleModifiers, ModifiersContext)]
+BATTLE_MODIFIERS_TYPE = Union[BattleModifiers, ModifiersContext]
 
 def getGlobalModifiers():
     return BattleModifiers()

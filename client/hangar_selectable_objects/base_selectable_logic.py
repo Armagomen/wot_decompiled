@@ -1,11 +1,14 @@
-import logging, weakref
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/hangar_selectable_objects/base_selectable_logic.py
+import logging
+import weakref
 from helpers import dependency
 from skeletons.gui.shared.utils import IHangarSpace
 from .interfaces import ISelectableLogic, ISelectableLogicCallback
 _logger = logging.getLogger(__name__)
 
 class BaseSelectableLogic(ISelectableLogic):
-    __slots__ = ('__callbackRef', )
+    __slots__ = ('__callbackRef',)
     _hangarSpace = dependency.descriptor(IHangarSpace)
 
     def __init__(self):

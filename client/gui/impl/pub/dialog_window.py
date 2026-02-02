@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/pub/dialog_window.py
 import logging
 from collections import namedtuple
 from wg_async import wg_async, wg_await, AsyncEvent, AsyncReturn, AsyncScope, BrokenPromiseError
@@ -20,9 +22,11 @@ class DialogButtons(CONST_CONTAINER):
     CANCEL = DialogButtonModel.BTN_CANCEL
     PURCHASE = DialogButtonModel.BTN_PURCHASE
     RESEARCH = DialogButtonModel.BTN_RESEARCH
-    ALL = (SUBMIT, CANCEL, PURCHASE, RESEARCH)
-    ACCEPT_BUTTONS = (
-     SUBMIT, PURCHASE, RESEARCH)
+    ALL = (SUBMIT,
+     CANCEL,
+     PURCHASE,
+     RESEARCH)
+    ACCEPT_BUTTONS = (SUBMIT, PURCHASE, RESEARCH)
 
 
 class DialogFlags(CONST_CONTAINER):
@@ -62,7 +66,7 @@ class DialogDecorator(ViewImpl):
         if bottomContent is not None:
             hasBottomContent = True
             self.setChildView(R.dynamic_ids.dialog_window.bottom_content(), bottomContent)
-        with self.getViewModel().transaction() as (tx):
+        with self.getViewModel().transaction() as tx:
             tx.setHasBalance(hasBalance)
             tx.setHasBottomContent(hasBottomContent)
         return
@@ -105,10 +109,7 @@ class DialogWindow(Window):
     @property
     def contentViewModel(self):
         content = self.content
-        if content is not None:
-            return content.getViewModel()
-        else:
-            return
+        return content.getViewModel() if content is not None else None
 
     @property
     def bottomContentViewModel(self):
@@ -160,7 +161,7 @@ class DialogWindow(Window):
             if name == item.getName():
                 return item
 
-        return
+        return None
 
     def _onButtonClick(self, item):
         if item.getIsEnabled():
@@ -189,7 +190,7 @@ class DialogWindow(Window):
         return
 
     def _getResultData(self):
-        return
+        return None
 
     def _onFocus(self, focused):
         super(DialogWindow, self)._onFocus(focused)
@@ -222,7 +223,7 @@ class DialogViewMixin(object):
         self.__event.set()
 
     def _getAdditionalData(self):
-        return
+        return None
 
     def _dispose(self):
         super(DialogViewMixin, self)._dispose()

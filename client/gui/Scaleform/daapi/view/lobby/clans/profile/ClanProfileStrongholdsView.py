@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/clans/profile/ClanProfileStrongholdsView.py
 import BigWorld
 from adisp import adisp_process
 from helpers import dependency
@@ -34,8 +36,7 @@ class ClanProfileStrongholdsView(ClanProfileBaseView):
         self._hideWaiting()
 
     def viewSize(self, width, height):
-        self.__size = (
-         width, height)
+        self.__size = (width, height)
 
     def _onRegisterFlashComponent(self, viewPy, alias):
         if alias == VIEW_ALIAS.BROWSER:

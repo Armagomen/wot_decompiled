@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/feature/sub_systems/fun_notifications.py
 from __future__ import absolute_import
 import typing
 from account_helpers import AccountSettings
@@ -20,25 +22,24 @@ def _modeSelectorPredicate(view):
     return view.layoutID == R.views.lobby.mode_selector.ModeSelectorView()
 
 
-_NOTIFICATIONS_AGGREGATORS = (
- FunStopSubModesNotification, FunNewSubModesNotification)
-_NOTIFICATIONS_BUILDERS = (
- FunStopSubModesNotification, FunNewSubModesNotification, FunNewProgressionNotification,
- FunSwitchOnSubModesNotification, FunSwitchOffSubModesNotification)
+_NOTIFICATIONS_AGGREGATORS = (FunStopSubModesNotification, FunNewSubModesNotification)
+_NOTIFICATIONS_BUILDERS = (FunStopSubModesNotification,
+ FunNewSubModesNotification,
+ FunNewProgressionNotification,
+ FunSwitchOnSubModesNotification,
+ FunSwitchOffSubModesNotification)
 
 def _defineSubModeState(subMode, now):
     if not subMode.hasAnySeason():
         return FunNotificationSubModeState.UNDEFINED
+    elif subMode.getCurrentSeason(now) is None:
+        if subMode.getNextSeason(now) is None:
+            return FunNotificationSubModeState.AFTER_SEASON
+        if subMode.getPreviousSeason(now) is None:
+            return FunNotificationSubModeState.BEFORE_SEASON
+        return FunNotificationSubModeState.BETWEEN_SEASONS
     else:
-        if subMode.getCurrentSeason(now) is None:
-            if subMode.getNextSeason(now) is None:
-                return FunNotificationSubModeState.AFTER_SEASON
-            if subMode.getPreviousSeason(now) is None:
-                return FunNotificationSubModeState.BEFORE_SEASON
-            return FunNotificationSubModeState.BETWEEN_SEASONS
-        if subMode.isFrozen():
-            return FunNotificationSubModeState.FROZEN
-        return FunNotificationSubModeState.AVAILABLE
+        return FunNotificationSubModeState.FROZEN if subMode.isFrozen() else FunNotificationSubModeState.AVAILABLE
 
 
 class FunNotifications(IFunRandomController.IFunNotifications, Notifiable):
@@ -104,11 +105,9 @@ class FunNotifications(IFunRandomController.IFunNotifications, Notifiable):
 
     def __getNotificationsTimer(self):
         subModesTimestamps = (subMode.getClosestStateChangeTime() for subMode in self.__subModes.getSubModes())
-        subModesTimers = tuple(time_utils.getTimeDeltaFromNowInLocal(timestamp) for timestamp in subModesTimestamps)
-        timers = tuple(timer for timer in subModesTimers + (self.__progressions.getProgressionTimer(),) if timer > 0)
-        if timers:
-            return min(timers) + FunTimersShifts.NOTIFICATIONS
-        return 0
+        subModesTimers = tuple((time_utils.getTimeDeltaFromNowInLocal(timestamp) for timestamp in subModesTimestamps))
+        timers = tuple((timer for timer in subModesTimers + (self.__progressions.getProgressionTimer(),) if timer > 0))
+        return min(timers) + FunTimersShifts.NOTIFICATIONS if timers else 0
 
     def __clearNotificationsQueue(self):
         del self.__notificationsQueue[:]
@@ -121,7 +120,7 @@ class FunNotifications(IFunRandomController.IFunNotifications, Notifiable):
         prevStates, newStates = self.__subModesStates, self.__defineSubModesStates()
         allSubModesIDs = set.union(set(prevStates.keys()), set(newStates.keys()))
         transactions = ((sID, prevStates.get(sID), newStates.get(sID)) for sID in allSubModesIDs)
-        transactions = tuple((sID, pState or FunNotificationSubModeState.UNDEFINED, nState or FunNotificationSubModeState.UNDEFINED) for sID, pState, nState in transactions if pState != nState)
+        transactions = tuple(((sID, pState or FunNotificationSubModeState.UNDEFINED, nState or FunNotificationSubModeState.UNDEFINED) for sID, pState, nState in transactions if pState != nState))
         ctx = FunNotificationCtx(self.__isModeSelectorOpen() or self.__subModes.getDesiredSubMode(), self.__subModes, self.__progressions.getActiveProgression(), transactions, newStates, AccountSettings.getNotifications(FUN_RANDOM_NOTIFICATIONS))
         notifications = []
         for builder in _NOTIFICATIONS_BUILDERS:

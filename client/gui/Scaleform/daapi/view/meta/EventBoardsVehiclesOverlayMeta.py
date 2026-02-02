@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/EventBoardsVehiclesOverlayMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class EventBoardsVehiclesOverlayMeta(BaseDAAPIComponent):
@@ -9,13 +11,10 @@ class EventBoardsVehiclesOverlayMeta(BaseDAAPIComponent):
         self._printOverrideError('applyFilters')
 
     def as_setHeaderS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setHeader(data)
+        return self.flashObject.as_setHeader(data) if self._isDAAPIInited() else None
 
     def as_setFiltersS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setFilters(data)
+        return self.flashObject.as_setFilters(data) if self._isDAAPIInited() else None
 
     def as_setVehiclesS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setVehicles(data)
+        return self.flashObject.as_setVehicles(data) if self._isDAAPIInited() else None

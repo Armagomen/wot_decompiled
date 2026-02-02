@@ -1,10 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/events.py
 import Event
 
 class _ChannelsSharedEvents(object):
-    __slots__ = ('__eventManager', 'onChannelInited', 'onPlayerEnterChannelByAction',
-                 'onChannelDestroyed', 'onConnectingToSecureChannel', 'onChannelInfoUpdated',
-                 'onConnectStateChanged', 'onMessageReceived', 'onHistoryReceived',
-                 'onCommandReceived')
+    __slots__ = ('__eventManager', 'onChannelInited', 'onPlayerEnterChannelByAction', 'onChannelDestroyed', 'onConnectingToSecureChannel', 'onChannelInfoUpdated', 'onConnectStateChanged', 'onMessageReceived', 'onHistoryReceived', 'onCommandReceived')
 
     def __init__(self):
         super(_ChannelsSharedEvents, self).__init__()
@@ -24,8 +23,7 @@ class _ChannelsSharedEvents(object):
 
 
 class ChannelEvents(object):
-    __slots__ = ('onConnectStateChanged', 'onChannelInfoUpdated', 'onMembersListChanged',
-                 'onMemberStatusChanged', '__eventManager')
+    __slots__ = ('onConnectStateChanged', 'onChannelInfoUpdated', 'onMembersListChanged', 'onMemberStatusChanged', '__eventManager')
 
     def __init__(self):
         super(ChannelEvents, self).__init__()
@@ -52,9 +50,7 @@ class MemberEvents(object):
 
 
 class _VOIPSharedEvents(object):
-    __slots__ = ('__eventManager', 'onCredentialReceived', 'onChannelAvailable', 'onChannelLost',
-                 'onChannelEntered', 'onChannelLeft', 'onVoiceChatInitSucceeded',
-                 'onVoiceChatInitFailed', 'onPlayerSpeaking')
+    __slots__ = ('__eventManager', 'onCredentialReceived', 'onChannelAvailable', 'onChannelLost', 'onChannelEntered', 'onChannelLeft', 'onVoiceChatInitSucceeded', 'onVoiceChatInitFailed', 'onPlayerSpeaking')
 
     def __init__(self):
         super(_VOIPSharedEvents, self).__init__()
@@ -73,11 +69,7 @@ class _VOIPSharedEvents(object):
 
 
 class _UsersSharedEvents(object):
-    __slots__ = ('__eventManager', 'onUsersListReceived', 'onFriendsReceived', 'onIgnoredReceived',
-                 'onMutedReceived', 'onUserActionReceived', 'onBattleUserActionReceived',
-                 'onUserStatusUpdated', 'onEmptyGroupsChanged', 'onClanMembersListChanged',
-                 'onFindUsersComplete', 'onFindUsersFailed', 'onNotesListReceived',
-                 'onFriendshipRequestsAdded', 'onFriendshipRequestsUpdated')
+    __slots__ = ('__eventManager', 'onUsersListReceived', 'onFriendsReceived', 'onIgnoredReceived', 'onMutedReceived', 'onUserActionReceived', 'onBattleUserActionReceived', 'onUserStatusUpdated', 'onEmptyGroupsChanged', 'onClanMembersListChanged', 'onFindUsersComplete', 'onFindUsersFailed', 'onNotesListReceived', 'onFriendshipRequestsAdded', 'onFriendshipRequestsUpdated')
 
     def __init__(self):
         super(_UsersSharedEvents, self).__init__()
@@ -102,8 +94,7 @@ class _UsersSharedEvents(object):
 
 
 class _ServiceChannelEvents(object):
-    __slots__ = ('__eventManager', 'onServerMessageReceived', 'onCustomMessageDataReceived',
-                 'onClientMessageReceived', 'onChatMessageReceived')
+    __slots__ = ('__eventManager', 'onServerMessageReceived', 'onCustomMessageDataReceived', 'onClientMessageReceived', 'onChatMessageReceived')
 
     def __init__(self):
         super(_ServiceChannelEvents, self).__init__()
@@ -131,9 +122,7 @@ class _ShadowEvents(object):
 
 
 class _MessengerEvents(object):
-    __slots__ = ('__channels', '__users', '__serviceChannel', '__voip', '__shadow',
-                 'onErrorReceived', 'onCustomMessage', 'onPluginConnected', 'onPluginDisconnected',
-                 'onPluginConnectFailed', 'onLockPopUpMessages', 'onUnlockPopUpMessages')
+    __slots__ = ('__channels', '__users', '__serviceChannel', '__voip', '__shadow', 'onErrorReceived', 'onCustomMessage', 'onPluginConnected', 'onPluginDisconnected', 'onPluginConnectFailed', 'onLockPopUpMessages', 'onUnlockPopUpMessages')
 
     def __init__(self):
         super(_MessengerEvents, self).__init__()

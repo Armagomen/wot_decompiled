@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/profile/seasons_manager.py
 import typing
 from gui.Scaleform.daapi.view.lobby.profile.ProfileSection import BattleTypesDropDownItems
 from gui.Scaleform.genConsts.PROFILE_DROPDOWN_KEYS import PROFILE_DROPDOWN_KEYS
@@ -59,23 +61,23 @@ class BaseSeasonManager(ISeasonsManager):
         return False
 
     def getStats(self, dossierStats):
-        return
+        return None
 
     def _showSeasonsDropDown(self):
         return False
 
     def _getLastActiveSeason(self):
         if not self._getSeasonsProvider():
-            return
+            return None
+        currentSeason = self._getSeasonsProvider().getCurrentSeason()
+        if currentSeason:
+            return currentSeason
+        seasons = self._getSeasonsProvider().getSeasonsPassed()
+        if seasons:
+            seasons.sort()
+            return self._getSeasonsProvider().getSeason(seasons[-1][0])
         else:
-            currentSeason = self._getSeasonsProvider().getCurrentSeason()
-            if currentSeason:
-                return currentSeason
-            seasons = self._getSeasonsProvider().getSeasonsPassed()
-            if seasons:
-                seasons.sort()
-                return self._getSeasonsProvider().getSeason(seasons[(-1)][0])
-            return
+            return None
 
     def _makeSeasonsDropDown(self):
         if self._getSeasonsProvider() is None:
@@ -95,7 +97,7 @@ class BaseSeasonManager(ISeasonsManager):
             return result
 
     def _getSeasonsProvider(self):
-        return
+        return None
 
     @staticmethod
     def _addSeasonToDropDown(itemsList, seasonID, season):
@@ -195,8 +197,8 @@ class _ManagersCollection(ISeasonsManager):
 
 
 def makeStatisticsSeasonManagers():
-    return _ManagersCollection({_ManagersCollection.DEFAULT_MANAGER_KEY: BaseSeasonManager(), 
-       PROFILE_DROPDOWN_KEYS.RANKED_10X10: _RankedSeasonsManager()})
+    return _ManagersCollection({_ManagersCollection.DEFAULT_MANAGER_KEY: BaseSeasonManager(),
+     PROFILE_DROPDOWN_KEYS.RANKED_10X10: _RankedSeasonsManager()})
 
 
 def makeTechniqueSeasonManagers():

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/prb_helpers.py
 import logging
 from gui.shared.badges import buildBadge
 from gui.shared.gui_items.badge import BadgeLayouts
@@ -17,8 +19,6 @@ def _findFirstPrefixBadge(selectedBadges, itemsCache=None):
         badgeDescr = badgeDescrs.get(sbID)
         if badgeDescr and badgeDescr['layout'] == BadgeLayouts.PREFIX:
             return sbID
-
-    return 0
 
 
 class BadgesHelper(object):

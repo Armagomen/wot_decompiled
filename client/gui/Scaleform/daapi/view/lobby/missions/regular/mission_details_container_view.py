@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/missions/regular/mission_details_container_view.py
 from wg_async import wg_async, wg_await
 from gui.Scaleform.daapi import LobbySubView
 from gui.Scaleform.daapi.view.lobby.missions import missions_helper
@@ -98,8 +100,12 @@ class MissionDetailsContainerView(LobbySubView, MissionDetailsContainerViewMeta)
         if not self.__datailedList or self.__isQuestInvalid(eventID):
             self.closeView()
         else:
-            pages = [ {'buttonsGroup': 'MissionDetailsPageGroup', 'pageIndex': i, 'label': '%i' % (i + 1), 'tooltip': mission.get('statusTooltipData'), 'status': mission.get('status'), 'selected': eventID == mission.get('eventID')} for i, mission in enumerate(self.__datailedList)
-                    ]
+            pages = [ {'buttonsGroup': 'MissionDetailsPageGroup',
+             'pageIndex': i,
+             'label': '%i' % (i + 1),
+             'tooltip': mission.get('statusTooltipData'),
+             'status': mission.get('status'),
+             'selected': eventID == mission.get('eventID')} for i, mission in enumerate(self.__datailedList) ]
             self.as_setInitDataS({'pages': pages})
         return
 
@@ -113,9 +119,7 @@ class MissionDetailsContainerView(LobbySubView, MissionDetailsContainerViewMeta)
             checkDaily = True if self.__showDQInMissionsTab else not isDailyQuest(q.getID()) and not isPremium(q.getID())
             return checkDaily and q.getFinishTimeLeft()
 
-        if groupID == BATTLE_ROYALE_GROUPS_ID:
-            return self.__battleRoyaleController.getQuests()
-        return self.eventsCache.getQuests(missionsFilter)
+        return self.__battleRoyaleController.getQuests() if groupID == BATTLE_ROYALE_GROUPS_ID else self.eventsCache.getQuests(missionsFilter)
 
     def __isQuestInvalid(self, eventID):
         return eventID not in self.__quests

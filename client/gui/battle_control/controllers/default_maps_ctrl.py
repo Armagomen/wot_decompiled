@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/default_maps_ctrl.py
 import Event
 from gui.battle_control import minimap_utils
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
@@ -25,22 +27,13 @@ class DefaultMapsController(IViewComponentsController):
     def getMinimapCellIdByPosition(self, position):
         sessionProvider = dependency.instance(IBattleSessionProvider)
         bb = sessionProvider.arenaVisitor.type.getBoundingBox()
-        if self._miniMapUi is not None and bb[0][0] <= position.x <= bb[1][0] and bb[0][1] <= position.z <= bb[1][1]:
-            return minimap_utils.getCellIdFromPosition(position, bb, self._miniMapUi.getMinimapDimensions())
-        else:
-            return
+        return self._miniMapUi is not None and bb[0][0] <= position.x <= bb[1][0] and (minimap_utils.getCellIdFromPosition(position, bb, self._miniMapUi.getMinimapDimensions()) if bb[0][1] <= position.z <= bb[1][1] else None)
 
     def getMinimapCellNameById(self, cellId):
-        if self._miniMapUi is not None:
-            return minimap_utils.getCellName(cellId, self._miniMapUi.getMinimapDimensions())
-        else:
-            return ''
+        return minimap_utils.getCellName(cellId, self._miniMapUi.getMinimapDimensions()) if self._miniMapUi is not None else ''
 
     def hasMinimapGrid(self):
-        if self._miniMapUi is not None:
-            return self._miniMapUi.hasMinimapGrid()
-        else:
-            return False
+        return self._miniMapUi.hasMinimapGrid() if self._miniMapUi is not None else False
 
     def setViewComponents(self, *components):
         self._miniMapUi = components[0]

@@ -1,7 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/tooltips/wot_plus_builders.py
 from gui.shared.tooltips.builders import DataBuilder
 from gui.shared.tooltips import common, contexts
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
-__all__ = ('getTooltipBuilders', )
+__all__ = ('getTooltipBuilders',)
 
 class WotPlusBuilder(DataBuilder):
     __slots__ = ()
@@ -15,5 +17,4 @@ class WotPlusBuilder(DataBuilder):
 
 
 def getTooltipBuilders():
-    return (
-     WotPlusBuilder(TOOLTIPS_CONSTANTS.WOT_PLUS, None),)
+    return (WotPlusBuilder(TOOLTIPS_CONSTANTS.WOT_PLUS, None),)

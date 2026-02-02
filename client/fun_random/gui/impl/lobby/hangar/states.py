@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/lobby/hangar/states.py
 from __future__ import absolute_import
 import typing
 from frameworks.state_machine.transitions import TransitionType
@@ -41,5 +43,5 @@ class _LoadoutConfirmStateProto(_LoadoutConfirmStatePrototype):
     STATE_ID = 'funRandomLoadoutConfirmLeave'
 
 
-FunRandomHangarState, _, _ = generateBasicHangarStateClasses(SubScopeSubLayerState, R.invalid, hangarPrototypeCls=_HangarStateProto)
+FunRandomHangarState, _, _, _ = generateBasicHangarStateClasses(SubScopeSubLayerState, R.invalid, hangarPrototypeCls=_HangarStateProto)
 FunRandomLoadoutState, _, _, FunRandomShellsLoadoutState, _, _, _ = generateBasicLoadoutStateClasses(FunRandomHangarState, R.invalid, confirmStatePrototypeCls=_LoadoutConfirmStateProto)

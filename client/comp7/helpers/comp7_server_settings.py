@@ -1,4 +1,8 @@
-import copy, logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/helpers/comp7_server_settings.py
+import copy
+import logging
+import typing
 from shared_utils import makeTupleByDict
 import BattleReplay
 from Event import Event
@@ -12,7 +16,7 @@ if typing.TYPE_CHECKING:
     from typing import Dict, List, Tuple
 _logger = logging.getLogger(__name__)
 
-class _Comp7QualificationConfig(settingsBlock('_Comp7QualificationConfig', ('battlesNumber', ))):
+class _Comp7QualificationConfig(settingsBlock('_Comp7QualificationConfig', ('battlesNumber',))):
     __slots__ = ()
 
     @classmethod
@@ -20,19 +24,12 @@ class _Comp7QualificationConfig(settingsBlock('_Comp7QualificationConfig', ('bat
         return {'battlesNumber': 0}
 
 
-class Comp7Config(settingsBlock('Comp7Config', ('isEnabled', 'isShopEnabled', 'isTrainingEnabled', 'peripheryIDs',
-                              'primeTimes', 'seasons', 'battleModifiersDescr', 'cycleTimes',
-                              'roleEquipments', 'poiEquipments', 'numPlayers', 'levels',
-                              'forbiddenClassTags', 'forbiddenVehTypes', 'squadRankRestriction',
-                              'squadSizes', 'createVivoxTeamChannels', 'qualification',
-                              'maps', 'remainingOfferTokensNotifications', 'clientEntitlementsCache',
-                              'participantTokens'))):
+class Comp7Config(settingsBlock('Comp7Config', ('isEnabled', 'isShopEnabled', 'isTrainingEnabled', 'peripheryIDs', 'primeTimes', 'seasons', 'battleModifiersDescr', 'cycleTimes', 'roleEquipments', 'poiEquipments', 'numPlayers', 'levels', 'forbiddenClassTags', 'forbiddenVehTypes', 'squadRankRestriction', 'squadSizes', 'createVivoxTeamChannels', 'qualification', 'maps', 'remainingOfferTokensNotifications', 'clientEntitlementsCache', 'participantTokens'))):
     __slots__ = ()
 
     @classmethod
     def defaults(cls):
-        return dict(isEnabled=False, isShopEnabled=False, isTrainingEnabled=False, peripheryIDs={}, primeTimes={}, seasons={}, battleModifiersDescr=(), cycleTimes={}, roleEquipments={}, poiEquipments={}, numPlayers=7, levels=[], forbiddenClassTags=set(), forbiddenVehTypes=set(), squadRankRestriction={}, squadSizes=[
-         0, 0], createVivoxTeamChannels=False, qualification={}, maps=set(), remainingOfferTokensNotifications=[], clientEntitlementsCache={}, participantTokens=())
+        return dict(isEnabled=False, isShopEnabled=False, isTrainingEnabled=False, peripheryIDs={}, primeTimes={}, seasons={}, battleModifiersDescr=(), cycleTimes={}, roleEquipments={}, poiEquipments={}, numPlayers=7, levels=[], forbiddenClassTags=set(), forbiddenVehTypes=set(), squadRankRestriction={}, squadSizes=[0, 0], createVivoxTeamChannels=False, qualification={}, maps=set(), remainingOfferTokensNotifications=[], clientEntitlementsCache={}, participantTokens=())
 
     @classmethod
     def _preprocessData(cls, data):
@@ -42,13 +39,12 @@ class Comp7Config(settingsBlock('Comp7Config', ('isEnabled', 'isShopEnabled', 'i
         return data
 
 
-class Comp7RanksConfig(settingsBlock('Comp7RanksConfig', ('ranks', 'ranksOrder', 'eliteRankPercent', 'divisionsByRank',
-                                   'divisions', 'rankInactivityNotificationThreshold'))):
+class Comp7RanksConfig(settingsBlock('Comp7RanksConfig', ('ranks', 'ranksOrder', 'eliteRankPercent', 'divisionsByRank', 'divisions', 'rankInactivityNotificationThreshold', 'businessDayStartHour'))):
     __slots__ = ()
 
     @classmethod
     def defaults(cls):
-        return dict(ranks={}, ranksOrder=(), eliteRankPercent=0, divisionsByRank={}, divisions=(), rankInactivityNotificationThreshold=0)
+        return dict(ranks={}, ranksOrder=(), eliteRankPercent=0, divisionsByRank={}, divisions=(), rankInactivityNotificationThreshold=0, businessDayStartHour=0)
 
     @classmethod
     def _preprocessData(cls, data):
@@ -64,7 +60,7 @@ class Comp7RanksConfig(settingsBlock('Comp7RanksConfig', ('ranks', 'ranksOrder',
 
     @classmethod
     def __dictDivisionsToComp7Divisions(cls, divisions):
-        return tuple(Comp7Division(serialIdx, divisionInfo) for serialIdx, divisionInfo in enumerate(divisions))
+        return tuple((Comp7Division(serialIdx, divisionInfo) for serialIdx, divisionInfo in enumerate(divisions)))
 
 
 class Comp7RewardsConfig(settingsBlock('Comp7RewardsConfig', ('main', 'extra'))):
@@ -72,7 +68,8 @@ class Comp7RewardsConfig(settingsBlock('Comp7RewardsConfig', ('main', 'extra')))
 
     @classmethod
     def defaults(cls):
-        return {'main': [], 'extra': []}
+        return {'main': [],
+         'extra': []}
 
     def getCosts(self):
         return sorted([ bonusInfo['cost'] for bonusInfo in self[0] ])

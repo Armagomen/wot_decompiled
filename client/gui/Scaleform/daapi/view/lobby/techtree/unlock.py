@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/techtree/unlock.py
 from collections import namedtuple
 import BigWorld
 from debug_utils import LOG_ERROR, LOG_DEBUG
@@ -18,7 +20,10 @@ def makeCostCtx(vehXP, xpCost, xpDiscount):
         freeXP = 0
     if xpCost < vehXP:
         vehXP = xpCost
-    return {'xpCost': xpCost, 'vehXP': vehXP, 'freeXP': freeXP, 'xpDiscount': xpDiscount}
+    return {'xpCost': xpCost,
+     'vehXP': vehXP,
+     'freeXP': freeXP,
+     'xpDiscount': xpDiscount}
 
 
 class UnlockItemConfirmator(proc_plugs.DialogAbstractConfirmator):
@@ -28,8 +33,8 @@ class UnlockItemConfirmator(proc_plugs.DialogAbstractConfirmator):
         self._unlockCtx = unlockCtx
         self._costCtx = costCtx
         self.__itemType = None
-        g_clientUpdateManager.addCallbacks({'serverSettings.blueprints_config.isEnabled': self.__onBlueprintsModeChanged, 
-           'serverSettings.blueprints_config.useBlueprintsForUnlock': self.__onBlueprintsModeChanged})
+        g_clientUpdateManager.addCallbacks({'serverSettings.blueprints_config.isEnabled': self.__onBlueprintsModeChanged,
+         'serverSettings.blueprints_config.useBlueprintsForUnlock': self.__onBlueprintsModeChanged})
         return
 
     def __del__(self):
@@ -40,10 +45,10 @@ class UnlockItemConfirmator(proc_plugs.DialogAbstractConfirmator):
         item = self.itemsCache.items.getItemByCD(self._unlockCtx.itemCD)
         xpCost = backport.getIntegralFormat(self._costCtx['xpCost'])
         freeXp = backport.getIntegralFormat(self._costCtx['freeXP'])
-        ctx = {'xpCost': text_styles.expText(xpCost), 
-           'freeXP': text_styles.expText(freeXp), 
-           'typeString': item.userType, 
-           'userString': item.userName}
+        ctx = {'xpCost': text_styles.expText(xpCost),
+         'freeXP': text_styles.expText(freeXp),
+         'typeString': item.userType,
+         'userString': item.userName}
         self.__itemType = item.itemTypeID
         if self.__itemType == GUI_ITEM_TYPE.VEHICLE:
             key = 'confirmUnlockVehicle'
@@ -111,9 +116,7 @@ class UnlockItemValidator(proc_plugs.SyncValidator):
         if unlockStats.getVehTotalXP(parentCD) < xpCost:
             LOG_ERROR('XP not enough for unlock', self.__unlockCtx)
             return proc_plugs.makeError()
-        if RequestState.inProcess('unlock'):
-            return proc_plugs.makeError('in_processing')
-        return proc_plugs.makeSuccess()
+        return proc_plugs.makeError('in_processing') if RequestState.inProcess('unlock') else proc_plugs.makeSuccess()
 
 
 class UnlockItemProcessor(Processor):
@@ -133,6 +136,4 @@ class UnlockItemProcessor(Processor):
     def _response(self, code, callback, errStr='', ctx=None):
         LOG_DEBUG('Server response', code, errStr, ctx)
         RequestState.received('unlock')
-        if code < 0:
-            return callback(self._errorHandler(code, errStr='server_error', ctx=ctx))
-        return callback(self._successHandler(code, ctx=ctx))
+        return callback(self._errorHandler(code, errStr='server_error', ctx=ctx)) if code < 0 else callback(self._successHandler(code, ctx=ctx))

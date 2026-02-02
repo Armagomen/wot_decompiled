@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/battle/status_notifications/panel.py
 import logging
 from constants import IS_CHINA
 from gui.Scaleform.daapi.view.battle.shared.status_notifications import sn_items
@@ -12,8 +14,7 @@ _logger = logging.getLogger(__name__)
 class _BattleRoyaleHighPriorityGroup(components.StatusNotificationsGroup):
 
     def __init__(self, updateCallback):
-        super(_BattleRoyaleHighPriorityGroup, self).__init__((
-         sn_items.OverturnedSN,
+        super(_BattleRoyaleHighPriorityGroup, self).__init__((sn_items.OverturnedSN,
          br_sn_items.BRHalfOverturnedSN,
          sn_items.DrownSN,
          br_sn_items.BRDeathZoneDamagingSN,
@@ -24,8 +25,7 @@ class _BattleRoyaleHighPriorityGroup(components.StatusNotificationsGroup):
 class BRStatusNotificationTimerPanel(StatusNotificationTimerPanel):
 
     def _generateItems(self):
-        items = [
-         _BattleRoyaleHighPriorityGroup,
+        items = [_BattleRoyaleHighPriorityGroup,
          sn_items.StunSN,
          br_sn_items.BRDeathZoneWarningSN,
          br_sn_items.BerserkerSN,

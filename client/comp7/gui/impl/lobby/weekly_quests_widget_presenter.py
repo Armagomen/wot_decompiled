@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/weekly_quests_widget_presenter.py
 import typing
 from comp7.gui.impl.gen.view_models.views.lobby.enums import MetaRootViews
 from comp7.gui.impl.gen.view_models.views.lobby.weekly_quests_widget_model import WeeklyQuestsWidgetModel, State
@@ -43,17 +45,11 @@ class WeeklyQuestsWidgetPresenter(TooltipPositionerMixin, Comp7OverlapCtrlMixin,
         self.queueUpdate()
 
     def _getEvents(self):
-        return super(WeeklyQuestsWidgetPresenter, self)._getEvents() + (
-         (
-          self.viewModel.onMarkAsViewed, self.__onMarkAsViewed),
-         (
-          self.__comp7WeeklyQuestsCtrl.onWeeklyQuestsUpdated, self.__onWeeklyQuestsUpdated),
-         (
-          self.viewModel.onGoToWeeklyQuests, self.__onGoToWeeklyQuests),
-         (
-          self.viewModel.onGoToRewardsSelection, self.__onGoToRewardsSelection),
-         (
-          self.viewModel.onPollServerTime, self.__onPollServerTime))
+        return super(WeeklyQuestsWidgetPresenter, self)._getEvents() + ((self.viewModel.onMarkAsViewed, self.__onMarkAsViewed),
+         (self.__comp7WeeklyQuestsCtrl.onWeeklyQuestsUpdated, self.__onWeeklyQuestsUpdated),
+         (self.viewModel.onGoToWeeklyQuests, self.__onGoToWeeklyQuests),
+         (self.viewModel.onGoToRewardsSelection, self.__onGoToRewardsSelection),
+         (self.viewModel.onPollServerTime, self.__onPollServerTime))
 
     def createToolTipContent(self, event, contentID):
         if contentID == R.views.comp7.mono.lobby.tooltips.weekly_quest_widget_tooltip():
@@ -73,7 +69,7 @@ class WeeklyQuestsWidgetPresenter(TooltipPositionerMixin, Comp7OverlapCtrlMixin,
 
     def _rawUpdate(self):
         super(WeeklyQuestsWidgetPresenter, self)._rawUpdate()
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             quests = self.__comp7WeeklyQuestsCtrl.getQuests()
             tx.setQuestsCompleted(quests.numCompletedBattleQuests)
             tx.setTotalQuestsCount(quests.numBattleQuests)
@@ -107,9 +103,7 @@ class WeeklyQuestsWidgetPresenter(TooltipPositionerMixin, Comp7OverlapCtrlMixin,
             if isWeeklyRewardClaimed():
                 return State.HIDE
             return State.REWARD
-        if weeklyQuests.newQuest.isStarted():
-            return State.ACTIVE
-        return State.WAITING
+        return State.ACTIVE if weeklyQuests.newQuest.isStarted() else State.WAITING
 
     def __onMarkAsViewed(self):
         weeklyQuest = self.__comp7WeeklyQuestsCtrl.getQuests()
@@ -136,5 +130,5 @@ class WeeklyQuestsWidgetPresenter(TooltipPositionerMixin, Comp7OverlapCtrlMixin,
         showComp7WeeklyQuestsRewardsSelectionWindow()
 
     def __onPollServerTime(self):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setServerTimestamp(int(getServerUTCTime()))

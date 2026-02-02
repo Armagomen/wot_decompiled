@@ -1,4 +1,7 @@
-import enum, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_loading/state_machine/const.py
+import enum
+import typing
 MINIMUM_PLAYER_LOADING_PROGRESS_BAR_MAX_VALUE = 800
 DEFAULT_LOGIN_STATUS_MIN_SHOW_TIME_SEC = 1
 LOADING_VIEW_FADE_OUT_DURATION = 0.2

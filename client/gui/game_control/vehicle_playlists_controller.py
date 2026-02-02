@@ -1,5 +1,12 @@
-import logging, os, BigWorld, typing, Event
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/vehicle_playlists_controller.py
+import json
+import logging
+import os
+import typing
+import Event
 from PlayerEvents import g_playerEvents
+from gui.shared.utils import getPlayerDatabaseID
 from helpers.local_cache import FileLocalCache
 from params_schemas.veh_playlists_schema import vehPlaylistsConfigSchema
 from skeletons.gui.game_control import IVehiclePlaylistsController
@@ -28,9 +35,8 @@ class _VehiclePlaylistsCache(FileLocalCache):
     __SPACE = 'playlists_cache'
 
     def __init__(self, userDatabaseID):
-        fileTags = (
-         'playlists', userDatabaseID)
-        super(_VehiclePlaylistsCache, self).__init__(self.__SPACE, fileTags, async=True)
+        fileTags = ('playlists', userDatabaseID)
+        super(_VehiclePlaylistsCache, self).__init__(self.__SPACE, fileTags, isAsync=True)
         self.__filePath = self._buildLocalCachePath(self.__SPACE, fileTags)
         self.data = {}
         self.selectedID = ''
@@ -67,6 +73,26 @@ class _VehiclePlaylistsCache(FileLocalCache):
         self.selectedID = ''
 
 
+PLAY_LIST_SCHEMA = ('title', 'createdAt', 'modifiedAt', 'list')
+
+class VehiclePlaylist(object):
+
+    def __init__(self, pStrData):
+        try:
+            data = json.loads(pStrData)
+        except ValueError as e:
+            raise ValueError('Invalid JSON: %s' % e)
+
+        missing = [ field for field in PLAY_LIST_SCHEMA if field not in data ]
+        if missing:
+            raise ValueError('Missed field: %s' % ', '.join(missing))
+        for field in PLAY_LIST_SCHEMA:
+            setattr(self, field, data[field])
+
+    def __repr__(self):
+        return "<Playlist title='%s' items=%d>" % (self.title, len(self.list))
+
+
 class VehiclePlaylistsController(IVehiclePlaylistsController):
 
     def __init__(self):
@@ -81,9 +107,9 @@ class VehiclePlaylistsController(IVehiclePlaylistsController):
         self.__modifiedPlaylist = _CurrentlyBeingModifiedData()
         return
 
-    def onLobbyStarted(self, ctx):
+    def initPlayLists(self):
         if self.__cache is None:
-            databaseID = BigWorld.player().databaseID if BigWorld.player() else 0
+            databaseID = getPlayerDatabaseID()
             if not databaseID:
                 _logger.error("Couldn't obtain valid player.databaseID: %s", str(databaseID))
             self.__cache = _VehiclePlaylistsCache(databaseID)
@@ -94,6 +120,9 @@ class VehiclePlaylistsController(IVehiclePlaylistsController):
                 return
             self.__isEnabled = config.isVehPlaylistsEnabled
         return
+
+    def onLobbyStarted(self, ctx):
+        self.initPlayLists()
 
     def onDisconnected(self):
         self.clearModifiedPlaylist()
@@ -109,9 +138,7 @@ class VehiclePlaylistsController(IVehiclePlaylistsController):
         return self.__isEnabled
 
     def getSelectedID(self):
-        if not self.isEnabled:
-            return ''
-        return self.__cache.selectedID
+        return '' if not self.isEnabled else self.__cache.selectedID
 
     def setSelectedID(self, val):
         if not self.isEnabled:
@@ -123,8 +150,17 @@ class VehiclePlaylistsController(IVehiclePlaylistsController):
     def iterPlaylists(self):
         if self.isEnabled and self.__cache:
             for plID, pStrData in self.__cache.data.iteritems():
-                yield (
-                 plID, pStrData)
+                yield (plID, pStrData)
+
+    def simplePlayListParser(self, pStrData):
+        try:
+            playlist = VehiclePlaylist(pStrData)
+            return playlist
+        except ValueError as e:
+            _logger.error("Couldn't parse playlist '%s'!", e)
+            return None
+
+        return None
 
     def updateModifiedPlaylist(self, plStrID, playlistData):
         if not self.isEnabled:
@@ -171,8 +207,7 @@ class VehiclePlaylistsController(IVehiclePlaylistsController):
         self.setSelectedID(playlisID)
         self.__cache.write()
         self.onPlaylistSaved(playlisID, playlist)
-        return (
-         playlisID, playlist)
+        return (playlisID, playlist)
 
     def setModifiedPlaylistChanged(self, isChanged):
         if not self.isEnabled:
@@ -188,9 +223,7 @@ class VehiclePlaylistsController(IVehiclePlaylistsController):
     def isModifiedPlaylistChanged(self):
         if not self.isEnabled:
             return False
-        if not self.__modifiedPlaylist.id:
-            return False
-        return self.__modifiedPlaylist.isReallyChanged
+        return False if not self.__modifiedPlaylist.id else self.__modifiedPlaylist.isReallyChanged
 
     def createPlaylist(self, plStrID, playlistData):
         if not self.isEnabled:

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/feature/util/fun_helpers.py
 from __future__ import absolute_import
 import typing
 from future.utils import viewitems
@@ -33,16 +35,15 @@ def getProgressionInfoByExecutor(executorQuestID):
 
 
 def getProgressionNameByTrigger(triggerQuestID):
-    return triggerQuestID.split('_')[(-2)]
+    return triggerQuestID.split('_')[-2]
 
 
 def getIdByTrigger(triggerQuestID):
-    return triggerQuestID.split('_')[(-1)]
+    return triggerQuestID.split('_')[-1]
 
 
 def getVehicleComparisonKey(vehicle):
-    return (
-     not vehicle.isInInventory,
+    return (not vehicle.isInInventory,
      not vehicle.isEvent,
      not vehicle.isOnlyForBattleRoyaleBattles,
      not vehicle.isFavorite,
@@ -74,11 +75,11 @@ def _normalizeIntervals(intervals):
     intervals = sorted(intervals)
     mergedIntervals = [intervals[0]]
     for interval in intervals[1:]:
-        _, endFirst = mergedIntervals[(-1)]
+        _, endFirst = mergedIntervals[-1]
         startSecond, endSecond = interval
         if startSecond <= endFirst < endSecond:
-            mergedIntervals[(-1)][1] = endSecond
-        elif startSecond > endFirst:
+            mergedIntervals[-1][1] = endSecond
+        if startSecond > endFirst:
             mergedIntervals.append(interval)
 
     return mergedIntervals

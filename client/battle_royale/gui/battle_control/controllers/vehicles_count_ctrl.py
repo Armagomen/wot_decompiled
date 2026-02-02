@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/battle_control/controllers/vehicles_count_ctrl.py
 from constants import ARENA_BONUS_TYPE
 from debug_utils import LOG_ERROR, LOG_WARNING
 from Event import Event
@@ -64,7 +66,7 @@ class VehicleCountController(IVehicleCountController):
 
     def addRuntimeView(self, view):
         if view in self._viewComponents:
-            LOG_ERROR(('View is already added! {}').format(view))
+            LOG_ERROR('View is already added! {}'.format(view))
         else:
             self.__setViewData(view)
             self._viewComponents.append(view)
@@ -73,7 +75,7 @@ class VehicleCountController(IVehicleCountController):
         if view in self._viewComponents:
             self._viewComponents.remove(view)
         else:
-            LOG_WARNING(('View has not been found! {}').format(view))
+            LOG_WARNING('View has not been found! {}'.format(view))
 
     def invalidateVehiclesInfo(self, arenaDP):
         self.__vehicles.clear()
@@ -165,9 +167,11 @@ class VehicleCountController(IVehicleCountController):
         classType, _, _ = vInfoVO.getTypeInfo()
         team = arenaDP.getVehicleInfo().team
         defeatedTeams = set(self.__sessionProvider.arenaVisitor.getComponentSystem().battleRoyaleComponent.defeatedTeams)
-        vehicleInfo = [
-         not vInfoVO.isAlive(), classType, team != vInfoVO.team,
-         vInfoVO.team, vInfoVO.isPlayer() and not self.__isSquadMode and vInfoVO.team not in defeatedTeams]
+        vehicleInfo = [not vInfoVO.isAlive(),
+         classType,
+         team != vInfoVO.team,
+         vInfoVO.team,
+         vInfoVO.isPlayer() and not self.__isSquadMode and vInfoVO.team not in defeatedTeams]
         if classType not in self.__vehicles:
             self.__vehicles[classType] = {}
         if self.__vehicles[classType].get(vInfoVO.vehicleID) != vehicleInfo:

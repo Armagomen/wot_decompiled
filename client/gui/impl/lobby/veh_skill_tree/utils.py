@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/veh_skill_tree/utils.py
 from collections import namedtuple
 from typing import Dict, Optional
 from helpers import dependency
@@ -12,10 +14,7 @@ from gui.veh_post_progression.models.progression_step import PostProgressionStep
 from post_progression_common import VehicleState
 from prestige_system.prestige_milestones_common import PrestigeLevelType, MilestonesType
 from skeletons.gui.shared import IItemsCache
-PrestigeBonusContext = namedtuple('PrestigeBonusContext', [
- 'vehCD',
- 'level',
- 'state'])
+PrestigeBonusContext = namedtuple('PrestigeBonusContext', ['vehCD', 'level', 'state'])
 
 class PrestigeCustomizationBonusUIPacker(CustomizationBonusUIPacker):
     __itemsCache = dependency.descriptor(IItemsCache)
@@ -56,7 +55,7 @@ def getVehSkillTreeRewardViewBonusPacker():
 def getPrestigeBonus(milestones, ctx):
     reward = milestones.get(ctx.level)
     if not reward:
-        return
+        return None
     else:
         bonusesConfig = reward.get('bonus', {})
         bonusesPrestige = []
@@ -65,9 +64,7 @@ def getPrestigeBonus(milestones, ctx):
             if bonuses:
                 bonusesPrestige.extend(bonuses)
 
-        if bonusesPrestige:
-            return bonusesPrestige[0]
-        return
+        return bonusesPrestige[0] if bonusesPrestige else None
 
 
 def fillNodeModel(nodeVM, step, nodeStatus):
@@ -89,8 +86,7 @@ def getCheapestAvailablePerk(vehicle):
     rootStepID = postProgression.getRawTree().rootStep
     visitedSteps = set()
     availableSteps = set()
-    candidateSteps = [
-     rootStepID]
+    candidateSteps = [rootStepID]
     while candidateSteps:
         nextCandidateSteps = []
         for stepID in candidateSteps:

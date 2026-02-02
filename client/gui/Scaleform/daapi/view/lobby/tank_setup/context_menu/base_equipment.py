@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/tank_setup/context_menu/base_equipment.py
 from CurrentVehicle import g_currentVehicle
 from adisp import adisp_async, adisp_process
 from gui.Scaleform.daapi.view.lobby.shared.cm_handlers import CMLabel, option
@@ -48,9 +50,7 @@ class BaseEquipmentItemContextMenu(BaseItemContextMenu):
         return optionData
 
     def _isVisible(self, label):
-        if label == CMLabel.UPGRADE:
-            return self._getItem().isUpgradable and (self._getItem().isInInventory or self._getItem().isInSetup(self._getVehicle())) and self.__lobbyContext.getServerSettings().isTrophyDevicesEnabled()
-        return super(BaseEquipmentItemContextMenu, self)._isVisible(label)
+        return self._getItem().isUpgradable and (self._getItem().isInInventory or self._getItem().isInSetup(self._getVehicle())) and self.__lobbyContext.getServerSettings().isTrophyDevicesEnabled() if label == CMLabel.UPGRADE else super(BaseEquipmentItemContextMenu, self)._isVisible(label)
 
     def _upgradeEquipment(self):
         pass
@@ -81,9 +81,7 @@ class BaseEquipmentSlotContextMenu(BaseSlotContextMenu):
         self._sendPutOnSlotAction(onId=THIRD_SLOT)
 
     def _isVisible(self, label):
-        if label == CMLabel.UPGRADE:
-            return self._getItem().isUpgradable and self.__lobbyContext.getServerSettings().isTrophyDevicesEnabled()
-        return super(BaseEquipmentSlotContextMenu, self)._isVisible(label)
+        return self._getItem().isUpgradable and self.__lobbyContext.getServerSettings().isTrophyDevicesEnabled() if label == CMLabel.UPGRADE else super(BaseEquipmentSlotContextMenu, self)._isVisible(label)
 
     def _upgradeEquipment(self):
         pass
@@ -129,18 +127,17 @@ class BaseHangarEquipmentSlotContextMenu(BaseSlotContextMenu):
         layout[leftID], layout[rightID] = layout[rightID], layout[leftID]
         result = yield self._doPutOnAction(copyVehicle)
         if result:
-            self._sendLastSlotAction(setupName, BaseSetupModel.SWAP_SLOTS_ACTION, {'leftID': leftID, 
-               'rightID': rightID, 'leftIntCD': leftItem.intCD if leftItem else NONE_ID, 
-               'rightIntCD': rightItem.intCD if rightItem else NONE_ID})
+            self._sendLastSlotAction(setupName, BaseSetupModel.SWAP_SLOTS_ACTION, {'leftID': leftID,
+             'rightID': rightID,
+             'leftIntCD': leftItem.intCD if leftItem else NONE_ID,
+             'rightIntCD': rightItem.intCD if rightItem else NONE_ID})
 
     @adisp_async
     def _doPutOnAction(self, vehicle, callback):
         callback(False)
 
     def _isVisible(self, label):
-        if label == CMLabel.UPGRADE:
-            return self._getItem().isUpgradable and self.__lobbyContext.getServerSettings().isTrophyDevicesEnabled()
-        return super(BaseHangarEquipmentSlotContextMenu, self)._isVisible(label)
+        return self._getItem().isUpgradable and self.__lobbyContext.getServerSettings().isTrophyDevicesEnabled() if label == CMLabel.UPGRADE else super(BaseHangarEquipmentSlotContextMenu, self)._isVisible(label)
 
     def _upgradeEquipment(self):
         pass

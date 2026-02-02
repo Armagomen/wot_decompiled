@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/store/browser/shop_view.py
 import logging
 from PlayerEvents import g_playerEvents
 from gui.Scaleform.daapi import LobbySubView

@@ -1,4 +1,7 @@
-import BigWorld, AnimationSequence
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/ClientSelectableEasterEgg.py
+import BigWorld
+import AnimationSequence
 from ClientSelectableObject import ClientSelectableObject
 from gui import GUI_SETTINGS
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -29,9 +32,7 @@ class ClientSelectableEasterEgg(ClientSelectableObject):
 
     def _getCollisionModelsPrereqs(self):
         if self.outlineModelName:
-            collisionModels = (
-             (
-              0, self.outlineModelName),)
+            collisionModels = ((0, self.outlineModelName),)
             return collisionModels
         return super(ClientSelectableEasterEgg, self)._getCollisionModelsPrereqs()
 
@@ -56,18 +57,16 @@ class ClientSelectableEasterEgg(ClientSelectableObject):
         g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.IMAGE_VIEW), ctx={'img': self.__getImageName()}), EVENT_BUS_SCOPE.LOBBY)
 
     def __getImageName(self):
-        nameParts = [
-         self.imageName]
+        nameParts = [self.imageName]
         if self.multiLanguageSupport:
             nameLocalizationSuffix = '_ru' if getClientLanguage() in GUI_SETTINGS.easterEgg.ruLangGroup else '_en'
             nameParts.append(nameLocalizationSuffix)
         nameParts.append('.png')
-        return ('').join(nameParts)
+        return ''.join(nameParts)
 
     def __createAnimationSequence(self, resourceName):
         loader = AnimationSequence.Loader(resourceName, self.spaceID)
-        BigWorld.loadResourceListBG((
-         loader,), makeCallbackWeak(self.__onAnimatorLoaded, resourceName))
+        BigWorld.loadResourceListBG((loader,), makeCallbackWeak(self.__onAnimatorLoaded, resourceName))
 
     def __onAnimatorLoaded(self, resourceName, resourceList):
         self.__animator = resourceList[resourceName]

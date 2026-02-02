@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/player_subscriptions/player_subscriptions_view.py
+import logging
+import typing
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui import GUI_SETTINGS
 from gui.Scaleform.Waiting import Waiting
@@ -59,8 +62,8 @@ def __makeExternalSubscriptionModel(subscriptionDescr):
     return subscriptionModel
 
 
-_SUBSCRIPTION_TYPE_FACTORIES = {SubscriptionTypeEnum.EXTERNALSUBSCRIPTION: __makeExternalSubscriptionModel, 
-   SubscriptionTypeEnum.WOTSUBSCRIPTION: __makeWotPlusSubscriptionModel}
+_SUBSCRIPTION_TYPE_FACTORIES = {SubscriptionTypeEnum.EXTERNALSUBSCRIPTION: __makeExternalSubscriptionModel,
+ SubscriptionTypeEnum.WOTSUBSCRIPTION: __makeWotPlusSubscriptionModel}
 
 class PlayerSubscriptionsView(ViewImpl):
     _subscriptionProductsFetchController = dependency.descriptor(ISubscriptionProductsFetchController)
@@ -69,8 +72,7 @@ class PlayerSubscriptionsView(ViewImpl):
     _wgnpSteamAccCtrl = dependency.descriptor(IWGNPSteamAccRequestController)
     _steamCompletionCtrl = dependency.descriptor(ISteamCompletionController)
     _wotPlusCtrl = dependency.descriptor(IWotPlusController)
-    __slots__ = ('__subscriptionsFetchResult', '__incompleteSteamAccount', '__subscriptions',
-                 '_wotPlusUILogger')
+    __slots__ = ('__subscriptionsFetchResult', '__incompleteSteamAccount', '__subscriptions', '_wotPlusUILogger')
 
     def __init__(self, layoutID=R.views.lobby.player_subscriptions.PlayerSubscriptions()):
         settings = ViewSettings(layoutID)
@@ -121,15 +123,10 @@ class PlayerSubscriptionsView(ViewImpl):
         self.__fetchExternalSubs()
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onBack, self.__onBackClick),
-         (
-          self.viewModel.onCardClick, self.__onCardClick),
-         (
-          self.viewModel.onButtonClick, self.__onButtonClick),
-         (
-          self._lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChange))
+        return ((self.viewModel.onBack, self.__onBackClick),
+         (self.viewModel.onCardClick, self.__onCardClick),
+         (self.viewModel.onButtonClick, self.__onButtonClick),
+         (self._lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChange))
 
     def __onWotPlusStatusChanged(self, args):
         if 'isEnabled' in args:
@@ -138,7 +135,7 @@ class PlayerSubscriptionsView(ViewImpl):
     def __updateViewModel(self):
         if not self.viewModel or not self.viewModel.proxy:
             return
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setWarningTitle(R.invalid())
             if self.__incompleteSteamAccount:
                 model.setWarningTitle(R.strings.player_subscriptions.confirmationNeeded())

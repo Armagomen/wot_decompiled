@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/easy_tank_equip/dialogs/contents/easy_tank_equip_exchange_content.py
 from typing import TYPE_CHECKING
 from gui.impl.gen.view_models.views.lobby.exchange.currency_model import CurrencyType
 from gui.impl.lobby.dialogs.contents.exchange_content import ExchangeContent

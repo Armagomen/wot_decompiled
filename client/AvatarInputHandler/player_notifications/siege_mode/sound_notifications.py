@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/AvatarInputHandler/player_notifications/siege_mode/sound_notifications.py
 import BigWorld
 from cgf_obsolete_script.py_component import Component
 import SoundGroups
@@ -63,10 +65,10 @@ class TurboshaftModeSoundNotifications(SiegeModeNotificationsBase):
 
     def __init__(self, vehicleID):
         super(TurboshaftModeSoundNotifications, self).__init__(vehicleID)
-        self.__sounds = {VEHICLE_SIEGE_STATE.SWITCHING_ON: SoundGroups.g_instance.getSound2D(SoundNotifications.UI_TURBINE_MODE_ON), 
-           VEHICLE_SIEGE_STATE.SWITCHING_OFF: SoundGroups.g_instance.getSound2D(SoundNotifications.UI_TURBINE_MODE_OFF), 
-           VEHICLE_SIEGE_STATE.ENABLED: SoundGroups.g_instance.getSound2D(SoundNotifications.UI_TURBINE_MODE_ON_STOP), 
-           VEHICLE_SIEGE_STATE.DISABLED: SoundGroups.g_instance.getSound2D(SoundNotifications.UI_TURBINE_MODE_OFF_STOP)}
+        self.__sounds = {VEHICLE_SIEGE_STATE.SWITCHING_ON: SoundGroups.g_instance.getSound2D(SoundNotifications.UI_TURBINE_MODE_ON),
+         VEHICLE_SIEGE_STATE.SWITCHING_OFF: SoundGroups.g_instance.getSound2D(SoundNotifications.UI_TURBINE_MODE_OFF),
+         VEHICLE_SIEGE_STATE.ENABLED: SoundGroups.g_instance.getSound2D(SoundNotifications.UI_TURBINE_MODE_ON_STOP),
+         VEHICLE_SIEGE_STATE.DISABLED: SoundGroups.g_instance.getSound2D(SoundNotifications.UI_TURBINE_MODE_OFF_STOP)}
         self.__lastState = None
         self.__engineWasDestroyed = False
         return
@@ -74,19 +76,19 @@ class TurboshaftModeSoundNotifications(SiegeModeNotificationsBase):
     def onSiegeStateChanged(self, vehicleID, newState, _):
         if newState not in self.__sounds or vehicleID != self.vehicleID:
             return
-        vehicle = avatar_getter.getPlayerVehicle()
-        if vehicle is None or not vehicle.isAlive():
-            return
-        isEngineDestroyed = BigWorld.player().deviceStates.get('engine') == 'destroyed'
-        if isEngineDestroyed != self.__engineWasDestroyed:
-            if isEngineDestroyed:
-                SoundGroups.g_instance.playSound2D(SoundNotifications.MOVEMENT_LIMITED_ON)
-            else:
-                SoundGroups.g_instance.playSound2D(SoundNotifications.MOVEMENT_LIMITED_OFF)
-            self.__engineWasDestroyed = isEngineDestroyed
-        if self.__lastState == newState:
-            return
         else:
+            vehicle = avatar_getter.getPlayerVehicle()
+            if vehicle is None or not vehicle.isAlive():
+                return
+            isEngineDestroyed = BigWorld.player().deviceStates.get('engine') == 'destroyed'
+            if isEngineDestroyed != self.__engineWasDestroyed:
+                if isEngineDestroyed:
+                    SoundGroups.g_instance.playSound2D(SoundNotifications.MOVEMENT_LIMITED_ON)
+                else:
+                    SoundGroups.g_instance.playSound2D(SoundNotifications.MOVEMENT_LIMITED_OFF)
+                self.__engineWasDestroyed = isEngineDestroyed
+            if self.__lastState == newState:
+                return
             isValidTransition = self.__lastState is not None and (self.__lastState + 1) % (VEHICLE_SIEGE_STATE.SWITCHING_OFF + 1) == newState
             if self.__lastState:
                 self.__sounds[self.__lastState].stop()
@@ -109,8 +111,8 @@ class TwinGunModeSoundNotifications(SiegeModeNotificationsBase):
 
     def __init__(self, vehicleID):
         super(TwinGunModeSoundNotifications, self).__init__(vehicleID)
-        self.__vehicleStateUpdatedHandlers = {VEHICLE_VIEW_STATE.DEVICES: self.__updateDeviceState, 
-           VEHICLE_VIEW_STATE.REPAIRING: self.__updateRepairingDevice}
+        self.__vehicleStateUpdatedHandlers = {VEHICLE_VIEW_STATE.DEVICES: self.__updateDeviceState,
+         VEHICLE_VIEW_STATE.REPAIRING: self.__updateRepairingDevice}
         self.__siegeTransitionState = SiegeStates.STOPPED
         self.__startSound = SoundGroups.g_instance.getSound2D(SoundNotifications.TWIN_GUN_SWITCH_START)
 
@@ -198,8 +200,8 @@ class SiegeModeSoundNotifications(SiegeModeNotificationsBase):
 
     def __init__(self, vehicleID):
         super(SiegeModeSoundNotifications, self).__init__(vehicleID)
-        self.__sounds = {SoundNotifications.START_TO_SIEGE_MODE: SoundGroups.g_instance.getSound2D(SoundNotifications.START_TO_SIEGE_MODE), 
-           SoundNotifications.START_TO_BASE_MODE: SoundGroups.g_instance.getSound2D(SoundNotifications.START_TO_BASE_MODE)}
+        self.__sounds = {SoundNotifications.START_TO_SIEGE_MODE: SoundGroups.g_instance.getSound2D(SoundNotifications.START_TO_SIEGE_MODE),
+         SoundNotifications.START_TO_BASE_MODE: SoundGroups.g_instance.getSound2D(SoundNotifications.START_TO_BASE_MODE)}
         self.__engineWasDestroyed = False
         self.__siegeCallback = None
         return
@@ -215,14 +217,14 @@ class SiegeModeSoundNotifications(SiegeModeNotificationsBase):
     def onSiegeStateChanged(self, vehicleID, newState, timeToNextMode):
         if self.__sounds is None or self.vehicleID != vehicleID:
             return
-        goToSiegeMode = newState == VEHICLE_SIEGE_STATE.SWITCHING_ON
-        goToBaseMode = newState == VEHICLE_SIEGE_STATE.SWITCHING_OFF
-        siegeModeEnabled = newState == VEHICLE_SIEGE_STATE.ENABLED
-        siegeModeDisabled = newState == VEHICLE_SIEGE_STATE.DISABLED
-        isValidState = goToSiegeMode or goToBaseMode or siegeModeEnabled or siegeModeDisabled
-        if not isValidState:
-            return
         else:
+            goToSiegeMode = newState == VEHICLE_SIEGE_STATE.SWITCHING_ON
+            goToBaseMode = newState == VEHICLE_SIEGE_STATE.SWITCHING_OFF
+            siegeModeEnabled = newState == VEHICLE_SIEGE_STATE.ENABLED
+            siegeModeDisabled = newState == VEHICLE_SIEGE_STATE.DISABLED
+            isValidState = goToSiegeMode or goToBaseMode or siegeModeEnabled or siegeModeDisabled
+            if not isValidState:
+                return
             eventId = SoundNotifications.START_TO_SIEGE_MODE
             if goToBaseMode or siegeModeDisabled:
                 eventId = SoundNotifications.START_TO_BASE_MODE

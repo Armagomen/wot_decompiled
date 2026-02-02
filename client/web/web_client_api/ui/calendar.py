@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/web/web_client_api/ui/calendar.py
 from gui.game_control import CalendarInvokeOrigin
 from helpers import dependency
 from skeletons.gui.game_control import ICalendarController

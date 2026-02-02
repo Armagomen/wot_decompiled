@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/base/pre_queue/vehicles_watcher.py
 from itertools import chain
-import logging, typing
+import logging
+import typing
 from constants import MAX_VEHICLE_LEVEL, MIN_VEHICLE_LEVEL, BATTLE_MODE_VEHICLE_TAGS
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.prb_control.ctrl_events import g_prbCtrlEvents
@@ -19,8 +22,8 @@ class BaseVehiclesWatcher(object):
 
     def start(self):
         self.__setCustomStates()
-        g_clientUpdateManager.addCallbacks({'inventory': self._update, 
-           'eventsData': self._update})
+        g_clientUpdateManager.addCallbacks({'inventory': self._update,
+         'eventsData': self._update})
         self._isWatching = True
         _logger.info("BaseVehiclesWatcher:start() self = '%r'", self)
 
@@ -132,10 +135,10 @@ class RestrictedVehiclesWatcher(BaseVehiclesWatcher):
         return chain(forbiddenClassVehs, notAllowedTypeVehs, forbiddenTypeVehs)
 
     def _getAllowedVehicleTypes(self):
-        return
+        return None
 
     def _getForbiddenVehicleTypes(self):
-        return
+        return None
 
     def _getForbiddenVehicleClasses(self):
-        return
+        return None

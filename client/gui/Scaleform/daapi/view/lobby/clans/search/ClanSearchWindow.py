@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/clans/search/ClanSearchWindow.py
 from debug_utils import LOG_ERROR, LOG_DEBUG
 from gui.Scaleform.daapi.settings import BUTTON_LINKAGES
 from gui.clans.clan_helpers import ClanListener, ClanFinder
@@ -22,22 +24,19 @@ _SEARCH_LIMIT = 18
 _SEARCH_MAX_CHARS = 70
 
 def _packHeaderColumnData(columnID, label, buttonWidth, tooltip, showSeparator=True, textAlign='center'):
-    return {'id': columnID, 
-       'label': _ms(label), 
-       'buttonWidth': buttonWidth, 
-       'toolTip': tooltip, 
-       'defaultSortDirection': 'ascending', 
-       'buttonHeight': 34, 
-       'showSeparator': showSeparator, 
-       'enabled': False, 
-       'textAlign': textAlign}
+    return {'id': columnID,
+     'label': _ms(label),
+     'buttonWidth': buttonWidth,
+     'toolTip': tooltip,
+     'defaultSortDirection': 'ascending',
+     'buttonHeight': 34,
+     'showSeparator': showSeparator,
+     'enabled': False,
+     'textAlign': textAlign}
 
 
 class ClanSearchWindow(ClanSearchWindowMeta, ClanListener):
-    __coolDownRequests = [
-     WebRequestDataType.CLAN_RATINGS,
-     WebRequestDataType.SEARCH_CLANS,
-     WebRequestDataType.GET_RECOMMENDED_CLANS]
+    __coolDownRequests = [WebRequestDataType.CLAN_RATINGS, WebRequestDataType.SEARCH_CLANS, WebRequestDataType.GET_RECOMMENDED_CLANS]
     MIN_CHARS_FOR_SEARCH = 2
 
     def __init__(self, ctx):
@@ -144,11 +143,11 @@ class ClanSearchWindow(ClanSearchWindowMeta, ClanListener):
     def _updateControlsState(self):
         isNotInCooldown = not self._cooldown.isInCooldown()
         foundClans = clans_fmts.formatDataToString(self.__clanFinder.getTotalCount())
-        self.as_setStateDataS({'foundClans': text_styles.highTitle(_ms(CLANS.SEARCH_CLANSLIST if self.__clanFinder.isRecommended() else CLANS.SEARCH_FOUNDCLANS, value=foundClans)), 
-           'nextBtnEnabled': self.__clanFinder.canMoveRight() and isNotInCooldown, 
-           'previousBtnEnabled': self.__clanFinder.canMoveLeft() and isNotInCooldown, 
-           'searchBtnEnabled': isNotInCooldown, 
-           'searchInputEnabled': isNotInCooldown})
+        self.as_setStateDataS({'foundClans': text_styles.highTitle(_ms(CLANS.SEARCH_CLANSLIST if self.__clanFinder.isRecommended() else CLANS.SEARCH_FOUNDCLANS, value=foundClans)),
+         'nextBtnEnabled': self.__clanFinder.canMoveRight() and isNotInCooldown,
+         'previousBtnEnabled': self.__clanFinder.canMoveLeft() and isNotInCooldown,
+         'searchBtnEnabled': isNotInCooldown,
+         'searchInputEnabled': isNotInCooldown})
 
     def _showErrorDummy(self):
         self._searchDP.rebuildList(None)
@@ -160,33 +159,31 @@ class ClanSearchWindow(ClanSearchWindowMeta, ClanListener):
         self.as_setDummyVisibleS(isVisible)
 
     def _setDummyData(self, header, body, icon=None, btnVisible=False, btnLabel='', btnTooltip=''):
-        self.as_setDummyS({'iconSource': icon, 
-           'htmlText': str().join((
-                      text_styles.middleTitle(header), clans_fmts.getHtmlLineDivider(3), text_styles.main(body))), 
-           'alignCenter': False, 
-           'btnVisible': btnVisible, 
-           'btnLabel': btnLabel, 
-           'btnTooltip': btnTooltip, 
-           'btnLinkage': BUTTON_LINKAGES.BUTTON_BLACK})
+        self.as_setDummyS({'iconSource': icon,
+         'htmlText': str().join((text_styles.middleTitle(header), clans_fmts.getHtmlLineDivider(3), text_styles.main(body))),
+         'alignCenter': False,
+         'btnVisible': btnVisible,
+         'btnLabel': btnLabel,
+         'btnTooltip': btnTooltip,
+         'btnLinkage': BUTTON_LINKAGES.BUTTON_BLACK})
 
     def __initControls(self):
-        headers = [
-         _packHeaderColumnData('clan', CLANS.SEARCH_TABLE_CLAN, 244, CLANS.SEARCH_TABLE_CLAN_TOOLTIP, textAlign='left'),
+        headers = [_packHeaderColumnData('clan', CLANS.SEARCH_TABLE_CLAN, 244, CLANS.SEARCH_TABLE_CLAN_TOOLTIP, textAlign='left'),
          _packHeaderColumnData('players', CLANS.SEARCH_TABLE_PLAYERS, 107, CLANS.SEARCH_TABLE_PLAYERS_TOOLTIP),
          _packHeaderColumnData('creationDate', CLANS.SEARCH_TABLE_CREATIONDATE, 125, CLANS.SEARCH_TABLE_CREATIONDATE_TOOLTIP),
          _packHeaderColumnData('rating', CLANS.SEARCH_TABLE_RATING, 90, CLANS.SEARCH_TABLE_RATING_TOOLTIP, False, 'right')]
-        self.as_setInitDataS({'windowTitle': CLANS.SEARCH_WINDOWTITLE, 
-           'title': text_styles.promoTitle(_ms(CLANS.SEARCH_TITLE)), 
-           'titleDescription': text_styles.main(_ms(CLANS.SEARCH_TITLEDESCRIPTION)), 
-           'searchBtnLabel': CLANS.SEARCH_SEARCHBTN, 
-           'searchBtnTooltip': CLANS.SEARCH_SEARCHBTN_TOOLTIP, 
-           'searchInputPrompt': CLANS.SEARCH_SEARCHINPUTPROMPT, 
-           'searchInputMaxChars': _SEARCH_MAX_CHARS, 
-           'nextBtnLabel': CLANS.SEARCH_NEXTBTN, 
-           'nextBtnTooltip': CLANS.SEARCH_NEXTBTN_TOOLTIP, 
-           'previousBtnLabel': CLANS.SEARCH_PREVIOUSBTN, 
-           'previousBtnTooltip': CLANS.SEARCH_PREVIOUSBTN_TOOLTIP, 
-           'tableHeaders': headers})
+        self.as_setInitDataS({'windowTitle': CLANS.SEARCH_WINDOWTITLE,
+         'title': text_styles.promoTitle(_ms(CLANS.SEARCH_TITLE)),
+         'titleDescription': text_styles.main(_ms(CLANS.SEARCH_TITLEDESCRIPTION)),
+         'searchBtnLabel': CLANS.SEARCH_SEARCHBTN,
+         'searchBtnTooltip': CLANS.SEARCH_SEARCHBTN_TOOLTIP,
+         'searchInputPrompt': CLANS.SEARCH_SEARCHINPUTPROMPT,
+         'searchInputMaxChars': _SEARCH_MAX_CHARS,
+         'nextBtnLabel': CLANS.SEARCH_NEXTBTN,
+         'nextBtnTooltip': CLANS.SEARCH_NEXTBTN_TOOLTIP,
+         'previousBtnLabel': CLANS.SEARCH_PREVIOUSBTN,
+         'previousBtnTooltip': CLANS.SEARCH_PREVIOUSBTN_TOOLTIP,
+         'tableHeaders': headers})
         self._showDummy(True)
         self._setDummyData(CLANS.SEARCH_PROMOTEXT_HEADER, CLANS.SEARCH_PROMOTEXT_BODY, None)
         return
@@ -230,7 +227,7 @@ class _ClanSearchDataProvider(ListDAAPIDataProvider, ClanEmblemsHelper):
         return self._list
 
     def emptyItem(self):
-        return
+        return None
 
     def clear(self):
         self._list = []
@@ -244,9 +241,7 @@ class _ClanSearchDataProvider(ListDAAPIDataProvider, ClanEmblemsHelper):
         self.destroy()
 
     def getSelectedIdx(self):
-        if self.__selectedID in self.__mapping:
-            return self.__mapping[self.__selectedID]
-        return -1
+        return self.__mapping[self.__selectedID] if self.__selectedID in self.__mapping else -1
 
     def setSelectedID(self, clanID):
         self.__selectedID = clanID
@@ -278,9 +273,7 @@ class _ClanSearchDataProvider(ListDAAPIDataProvider, ClanEmblemsHelper):
     def refreshItem(self, cache, clanDBID):
         isSelected = self.__selectedID == clanDBID
         self.buildList(cache)
-        if isSelected and clanDBID not in self.__mapping:
-            return True
-        return False
+        return True if isSelected and clanDBID not in self.__mapping else False
 
     def pyGetSelectedIdx(self):
         return self.getSelectedIdx()
@@ -297,17 +290,17 @@ class _ClanSearchDataProvider(ListDAAPIDataProvider, ClanEmblemsHelper):
         pass
 
     def _makeVO(self, item):
-        vo = {'players': text_styles.main(str(item.getMembersCount())), 
-           'creationDate': text_styles.main(formatField(getter=item.getCreationDate, formatter=backport.getShortDateFormat)), 
-           'rating': text_styles.stats(formatField(getter=item.getPersonalRating, formatter=backport.getIntegralFormat)), 
-           'arrowIcon': RES_ICONS.MAPS_ICONS_LIBRARY_ARROWORANGERIGHTICON8X8, 
-           'clanInfo': {'dbID': item.getClanDbID(), 
-                        'clanAbbrev': formatField(getter=item.getClanAbbrev), 
-                        'clanName': formatField(getter=item.getClanName), 
-                        'fullName': formatField(getter=item.getClanFullName), 
-                        'isActive': item.isClanActive(), 
-                        'showIcon': True, 
-                        'iconSource': None}}
+        vo = {'players': text_styles.main(str(item.getMembersCount())),
+         'creationDate': text_styles.main(formatField(getter=item.getCreationDate, formatter=backport.getShortDateFormat)),
+         'rating': text_styles.stats(formatField(getter=item.getPersonalRating, formatter=backport.getIntegralFormat)),
+         'arrowIcon': RES_ICONS.MAPS_ICONS_LIBRARY_ARROWORANGERIGHTICON8X8,
+         'clanInfo': {'dbID': item.getClanDbID(),
+                      'clanAbbrev': formatField(getter=item.getClanAbbrev),
+                      'clanName': formatField(getter=item.getClanName),
+                      'fullName': formatField(getter=item.getClanFullName),
+                      'isActive': item.isClanActive(),
+                      'showIcon': True,
+                      'iconSource': None}}
         return vo
 
     def requestItemAtHandler(self, idx):

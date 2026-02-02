@@ -1,4 +1,7 @@
-import typing, BattleReplay
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/account_helpers/settings_core/battle_communications_settings.py
+import typing
+import BattleReplay
 from Event import Event
 from PlayerEvents import g_playerEvents
 from account_helpers.settings_core.settings_constants import BattleCommStorageKeys
@@ -10,9 +13,7 @@ if typing.TYPE_CHECKING:
     from gui.battle_control.controllers.vse_hud_settings_ctrl.settings.battle_communication import BattleCommunicationModel
 
 class BattleCommunicationSettings(IBattleCommunicationsSettings):
-    __slots__ = ('onChanged', '_isEnabled', '_showStickyMarkers', '_showInPlayerList',
-                 '_showCalloutMessages', '_showLocationMarkers', '_showBaseMarkers',
-                 '_enableCommendationsFeedback')
+    __slots__ = ('onChanged', '_isEnabled', '_showStickyMarkers', '_showInPlayerList', '_showCalloutMessages', '_showLocationMarkers', '_showBaseMarkers', '_enableCommendationsFeedback')
     _settingsCore = dependency.descriptor(ISettingsCore)
     _settingsCache = dependency.descriptor(ISettingsCache)
     _sessionProvider = dependency.descriptor(IBattleSessionProvider)

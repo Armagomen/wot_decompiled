@@ -1,4 +1,7 @@
-import copy, weakref
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/Listener.py
+import copy
+import weakref
 
 class Listenable:
 
@@ -63,9 +66,9 @@ class _ListenerFunc(object):
     def matches(self, func):
         if not self.alive():
             return False
+        elif self.isBoundMethod:
+            return func == getattr(self.ref(), self.func.func_name)
         else:
-            if self.isBoundMethod:
-                return func == getattr(self.ref(), self.func.func_name)
             return func == self.ref()
 
     def alive(self):
@@ -78,15 +81,11 @@ class _ListenerFunc(object):
                 return getattr(obj, self.func.func_name)
             else:
                 return obj
-
         return
 
     def __call__(self, *args, **kwargs):
         fn = self.get()
-        if fn is not None:
-            return fn(*args, **kwargs)
-        else:
-            return
+        return fn(*args, **kwargs) if fn is not None else None
 
 
 class FunctionListeners(object):

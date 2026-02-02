@@ -1,4 +1,7 @@
-import logging, re
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/exchange/personal_discounts_parser.py
+import logging
+import re
 from backports.functools_lru_cache import lru_cache
 import typing
 from exchange.personal_discounts_constants import EXCHANGE_RATE_GOLD_NAME, ExchangeRateCoefficientType, ExchangeDiscountInfo, ExchangeDiscountType, ExchangeRateShowFormat, ExchangeRateDiscountToken, EXCHANGE_RATE_FREE_XP_NAME, DIGITAL_TEMPLATE
@@ -28,9 +31,9 @@ def _getDiscountFromTokensInfo(tokenName, tokenInfo, defaultGoldRateValue, defau
         if parsedToken is None:
             _logger.warning('Token is invalid - %s', tokenName)
             return
-        parsedToken.update({'leftAmount': tokenAmount, 
-           'expiryTime': tokenExpirationTime, 
-           'tokenName': tokenName})
+        parsedToken.update({'leftAmount': tokenAmount,
+         'expiryTime': tokenExpirationTime,
+         'tokenName': tokenName})
         _calculateDiscountRate(parsedToken, defaultGoldRateValue, defaultResourceRateValue)
         updateDiscountLimitResult = _updateDiscountLimit(parsedToken)
         if not updateDiscountLimitResult:
@@ -40,31 +43,28 @@ def _getDiscountFromTokensInfo(tokenName, tokenInfo, defaultGoldRateValue, defau
         isValuesCorrect = isDiscountValuesCorrect(discount, defaultGoldRateValue, defaultResourceRateValue)
         if not isValuesCorrect:
             _logger.warning('Discount token values are incorrect, tokenName=%s, expiration=%d, leftAmount=%d', tokenName, tokenExpirationTime, tokenAmount)
-        if isValuesCorrect and isExchangeRateDiscountAvailable(discount, currentTime):
-            return discount
-        return
+        return discount if isValuesCorrect and isExchangeRateDiscountAvailable(discount, currentTime) else None
 
 
 @lru_cache()
 def __getTokenPattern(isLimited=False):
 
     def getSettingOptions(setting):
-        return ('|').join(('{}').format(formatName.value) for formatName in setting)
+        return '|'.join(('{}'.format(formatName.value) for formatName in setting))
 
     tokenKeyParamsTemplate = '{name}:(?P<{name}>{value})'
     tokenKeyValueTemplate = '{name}:(?P<{name}>{value})'
-    exchangeType = ('(?P<exchangeType>{}|{})').format(EXCHANGE_RATE_GOLD_NAME, EXCHANGE_RATE_FREE_XP_NAME)
+    exchangeType = '(?P<exchangeType>{}|{})'.format(EXCHANGE_RATE_GOLD_NAME, EXCHANGE_RATE_FREE_XP_NAME)
     limitTypePattern = tokenKeyParamsTemplate.format(name=ExchangeRateDiscountToken.LIMIT_TYPE.value, value=getSettingOptions(ExchangeDiscountType))
     showFormatPattern = tokenKeyParamsTemplate.format(name=ExchangeRateDiscountToken.SHOW_FORMAT.value, value=getSettingOptions(ExchangeRateShowFormat))
     rateTypePattern = tokenKeyParamsTemplate.format(name=ExchangeRateDiscountToken.RATE_TYPE.value, value=getSettingOptions(ExchangeRateCoefficientType))
     rateChangerPattern = tokenKeyValueTemplate.format(name=ExchangeRateDiscountToken.RATE_VALUE.value, value=DIGITAL_TEMPLATE)
-    formatSequence = [
-     exchangeType,
+    formatSequence = [exchangeType,
      limitTypePattern,
      showFormatPattern,
      rateTypePattern,
      rateChangerPattern]
-    full_pattern = (':').join(['{}'] * len(formatSequence)) + ':id:[0-9]+$'
+    full_pattern = ':'.join(['{}'] * len(formatSequence)) + ':id:[0-9]+$'
     full_pattern = full_pattern.format(*formatSequence)
     return re.compile(full_pattern)
 

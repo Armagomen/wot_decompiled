@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/dialogs/price_cards_content/retrain_single_price_list.py
 import typing
 from frameworks.wulf import ViewSettings, Array
 from gui.impl.auxiliary.tankman_operations import packSingleRetrain
@@ -47,10 +49,7 @@ class RetrainSinglePriceList(BasePriceList):
     @property
     def selectedOperationData(self):
         operationData = super(RetrainSinglePriceList, self).selectedOperationData
-        if operationData is None:
-            return (None, None, None, None)
-        else:
-            return operationData
+        return (None, None, None, None) if operationData is None else operationData
 
     @property
     def isAllRetrainOperationFree(self):
@@ -69,22 +68,21 @@ class RetrainSinglePriceList(BasePriceList):
             return (_TOOLTIP_LOC.discount.header(), _TOOLTIP_LOC.discount.body())
         if isUseless:
             return (_TOOLTIP_LOC.useless.header(), _TOOLTIP_LOC.useless.body())
-        if isDisableByRoleChange:
-            return (_TOOLTIP_LOC.roleChange.header(), _TOOLTIP_LOC.roleChange.body())
-        return (R.invalid(), R.invalid())
+        return (_TOOLTIP_LOC.roleChange.header(), _TOOLTIP_LOC.roleChange.body()) if isDisableByRoleChange else (R.invalid(), R.invalid())
 
     def _getOperationCustomData(self, tankman, cost):
         isOperationUseless, isOperationDisable, isAllOperationFree, newSE = self.getOperationUselessInfo(tankman, self._targetRole, self._vehicle, cost, self._retrainCost)
         header, body = self._getDisableTooltipData(isAllOperationFree and isOperationDisable, isOperationUseless, isOperationDisable)
-        tooltipData = {'header': header, 
-           'body': body}
-        return (
-         newSE, isOperationUseless or isOperationDisable, tooltipData)
+        tooltipData = {'header': header,
+         'body': body}
+        return (newSE, isOperationUseless or isOperationDisable, tooltipData)
 
     def _getOperationData(self, cost):
         skillEfficiency, isDisabled, tooltipData = self._getOperationCustomData(self._tankman, cost)
-        return (
-         isDisabled, skillEfficiency, cost, tooltipData)
+        return (isDisabled,
+         skillEfficiency,
+         cost,
+         tooltipData)
 
     def _fillPrices(self):
         shopRequester = self._itemsCache.items.shop

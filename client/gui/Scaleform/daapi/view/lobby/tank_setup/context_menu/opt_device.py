@@ -1,4 +1,7 @@
-import typing, SoundGroups
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/tank_setup/context_menu/opt_device.py
+import typing
+import SoundGroups
 from adisp import adisp_process, adisp_async
 from gui.Scaleform.daapi.view.lobby.shared.cm_handlers import option, CMLabel
 from gui.Scaleform.daapi.view.lobby.tank_setup.context_menu.base import TankSetupCMLabel
@@ -85,9 +88,7 @@ class OptDeviceSlotContextMenu(BaseEquipmentSlotContextMenu):
             return self._isMountedMoreThanOne
         if label == TankSetupCMLabel.UNLOAD:
             return not self._isMounted and self._isItemInInventory() and not self._isItemInOtherLayout()
-        if label == TankSetupCMLabel.TAKE_OFF:
-            return not self._isMounted and self._isInstalledInCurrentLayout() and (not self._isItemInInventory() or self._isItemInOtherLayout())
-        return super(OptDeviceSlotContextMenu, self)._isVisible(label)
+        return not self._isMounted and self._isInstalledInCurrentLayout() and (not self._isItemInInventory() or self._isItemInOtherLayout()) if label == TankSetupCMLabel.TAKE_OFF else super(OptDeviceSlotContextMenu, self)._isVisible(label)
 
     def _upgradeEquipment(self):
         self._sendSlotAction(BaseSetupModel.UPGRADE_SLOT_ACTION)
@@ -127,7 +128,8 @@ class HangarOptDeviceSlotContextMenu(BaseHangarEquipmentSlotContextMenu):
         result = yield ActionsFactory.asyncDoAction(action)
         if result:
             actionType = BaseSetupModel.DESTROY_SLOT_ACTION
-            self._sendLastSlotAction(TankSetupConstants.OPT_DEVICES, actionType, {'intCD': item.intCD, 'slotID': self._installedSlotId})
+            self._sendLastSlotAction(TankSetupConstants.OPT_DEVICES, actionType, {'intCD': item.intCD,
+             'slotID': self._installedSlotId})
 
     def _initFlashValues(self, ctx):
         super(HangarOptDeviceSlotContextMenu, self)._initFlashValues(ctx)
@@ -148,7 +150,8 @@ class HangarOptDeviceSlotContextMenu(BaseHangarEquipmentSlotContextMenu):
             else:
                 actionType = BaseSetupModel.DEMOUNT_SLOT_ACTION
                 SoundGroups.g_instance.playSound2D(TankSetupSoundEvents.EQUIPMENT_DEMOUNT_KIT)
-            self._sendLastSlotAction(TankSetupConstants.OPT_DEVICES, actionType, {'intCD': item.intCD, 'slotID': self._installedSlotId})
+            self._sendLastSlotAction(TankSetupConstants.OPT_DEVICES, actionType, {'intCD': item.intCD,
+             'slotID': self._installedSlotId})
 
     def _putOnAction(self, onId):
         copyVehicle = self._getCopyVehicle()
@@ -176,6 +179,4 @@ class HangarOptDeviceSlotContextMenu(BaseHangarEquipmentSlotContextMenu):
             return self._isMountedMoreThanOne
         if label == TankSetupCMLabel.DESTROY:
             return self._isMounted and not self._getItem().isModernized and not self._wotPlusController.isFreeToDemount(self._getItem())
-        if label == CMLabel.DECONSTRUCT:
-            return self._isMounted and self._getItem().isModernized
-        return super(HangarOptDeviceSlotContextMenu, self)._isVisible(label)
+        return self._isMounted and self._getItem().isModernized if label == CMLabel.DECONSTRUCT else super(HangarOptDeviceSlotContextMenu, self)._isVisible(label)

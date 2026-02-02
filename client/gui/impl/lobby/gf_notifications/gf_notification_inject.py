@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/gf_notifications/gf_notification_inject.py
 import logging
 from gui.shared.system_factory import collectGamefaceNotifications
 from gui.Scaleform.framework.entities.inject_component_adaptor import InjectComponentAdaptor

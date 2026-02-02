@@ -1,4 +1,7 @@
-import BattleReplay, CommandMapping
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/battle/radar.py
+import BattleReplay
+import CommandMapping
 from constants import ARENA_PERIOD
 from gui.Scaleform.daapi.view.meta.RadarButtonMeta import RadarButtonMeta
 from gui.Scaleform.genConsts.ANIMATION_TYPES import ANIMATION_TYPES
@@ -84,8 +87,7 @@ class RadarButton(RadarButtonMeta, IReplayRadarListener, IAbstractPeriodView):
         command = CommandMapping.CMD_CM_VEHICLE_ACTIVATE_RADAR
         bwKey, _ = CommandMapping.g_instance.getCommandKeys(command)
         sfKey = getScaleformKey(bwKey)
-        return (
-         bwKey, sfKey)
+        return (bwKey, sfKey)
 
     def __getVehicleStateCtrl(self):
         return self.__sessionProvider.shared.vehicleState

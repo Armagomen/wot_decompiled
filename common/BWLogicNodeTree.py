@@ -1,4 +1,7 @@
-import Math, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/BWLogicNodeTree.py
+import Math
+import BigWorld
 
 class BWLogicalNode(object):
 

@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/techtree/techtree_page.py
 from logging import getLogger
-import Keys, nations
+import Keys
+import nations
 from blueprints.BlueprintTypes import BlueprintTypes
 from constants import IS_DEVELOPMENT
 from gui.Scaleform.daapi.view.lobby.techtree.states import BlueprintTechtreeState, DefaultTechtreeState
@@ -85,8 +88,8 @@ class TechTree(TechTreeMeta):
 
     def getPremiumPanelLabels(self):
         vehicleLabel = backport.text(R.strings.menu.techtree.premiumPanel.btnLabel(), count=text_styles.gold(backport.text(R.strings.menu.techtree.premiumPanel.btnLabel.count())))
-        labels = {'panelTitle': backport.text(R.strings.menu.techtree.premiumPanel.title()), 
-           'vehicleLabel': vehicleLabel.split(backport.text(R.strings.menu.techtree.premiumPanel.btnLabel.count()))}
+        labels = {'panelTitle': backport.text(R.strings.menu.techtree.premiumPanel.title()),
+         'vehicleLabel': vehicleLabel.split(backport.text(R.strings.menu.techtree.premiumPanel.btnLabel.count()))}
         return labels
 
     def request4Unlock(self, itemCD):
@@ -137,7 +140,9 @@ class TechTree(TechTreeMeta):
 
     def onGoToPremiumShop(self, nationName, level):
         self.__stopTopOfTheTreeSounds()
-        params = {'nation': nationName, 'level': level, 'vehicleFilterByUrl': _VEHICLE_URL_FILTER_PARAM}
+        params = {'nation': nationName,
+         'level': level,
+         'vehicleFilterByUrl': _VEHICLE_URL_FILTER_PARAM}
         shared_events.showShop(url=getPremiumVehiclesUrl(), params=params)
 
     def onPlayHintAnimation(self, isEnabled=True):
@@ -292,15 +297,15 @@ class TechTree(TechTreeMeta):
         selectedNation = SelectedNation.getIndex()
         nationalAmount = self.__nationalFragmentsData.get(selectedNation, 0)
         balanceStr = text_styles.main(backport.text(R.strings.blueprints.blueprintScreen.resourcesOnStorage()))
-        intFragmentVO = {'iconPath': backport.image(R.images.gui.maps.icons.blueprints.fragment.special.intelligence()), 
-           'title': backport.getIntegralFormat(self.__intelligenceAmount), 
-           'fragmentCD': BlueprintTypes.INTELLIGENCE_DATA}
-        natFragmentVO = {'iconPath': backport.image(R.images.gui.maps.icons.blueprints.fragment.special.dyn(SelectedNation.getName())()), 
-           'title': backport.getIntegralFormat(nationalAmount), 
-           'fragmentCD': getNationalFragmentCD(selectedNation)}
-        balanceVO = {'balanceStr': balanceStr, 
-           'internationalItemVO': intFragmentVO, 
-           'nationalItemVO': natFragmentVO}
+        intFragmentVO = {'iconPath': backport.image(R.images.gui.maps.icons.blueprints.fragment.special.intelligence()),
+         'title': backport.getIntegralFormat(self.__intelligenceAmount),
+         'fragmentCD': BlueprintTypes.INTELLIGENCE_DATA}
+        natFragmentVO = {'iconPath': backport.image(R.images.gui.maps.icons.blueprints.fragment.special.dyn(SelectedNation.getName())()),
+         'title': backport.getIntegralFormat(nationalAmount),
+         'fragmentCD': getNationalFragmentCD(selectedNation)}
+        balanceVO = {'balanceStr': balanceStr,
+         'internationalItemVO': intFragmentVO,
+         'nationalItemVO': natFragmentVO}
         return balanceVO
 
     def __updateBlueprintBalance(self):
@@ -318,4 +323,4 @@ class TechTree(TechTreeMeta):
 
     @staticmethod
     def __isBlueprintsDeleted(blueprints):
-        return all(value is None for value in blueprints.values())
+        return all((value is None for value in blueprints.values()))

@@ -1,4 +1,7 @@
-import BigWorld, Event
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/bw/ChannelsManager.py
+import BigWorld
+import Event
 from chat_shared import CHAT_ACTIONS, CHAT_RESPONSES
 from constants import USER_ACTIVE_CHANNELS_LIMIT, IS_CHINA
 from debug_utils import LOG_DEBUG
@@ -18,8 +21,8 @@ from messenger.storage import storage_getter
 class ChannelsManager(ChatActionsListener):
 
     def __init__(self):
-        ChatActionsListener.__init__(self, {CHAT_RESPONSES.channelNotExists: '_ChannelsManager__onChannelNotExists', 
-           CHAT_RESPONSES.commandInCooldown: '_ChannelsManager__onCommandInCooldown'})
+        ChatActionsListener.__init__(self, {CHAT_RESPONSES.channelNotExists: '_ChannelsManager__onChannelNotExists',
+         CHAT_RESPONSES.commandInCooldown: '_ChannelsManager__onCommandInCooldown'})
         self.__eventManager = Event.EventManager()
         self.onRequestChannelsComplete = Event.Event(self.__eventManager)
         self.onChannelExcludeFromSearch = Event.Event(self.__eventManager)
@@ -34,11 +37,11 @@ class ChannelsManager(ChatActionsListener):
 
     @storage_getter('channels')
     def channelsStorage(self):
-        return
+        return None
 
     @storage_getter('users')
     def usersStorage(self):
-        return
+        return None
 
     def addListeners(self):
         self.addListener(self.__onRequestChannels, CHAT_ACTIONS.requestChannels)
@@ -121,7 +124,7 @@ class ChannelsManager(ChatActionsListener):
             if not IS_CHINA:
                 self.__creationInfo[passCensor(name)] = password
             BigWorld.player().createChatChannel(name, password)
-            return
+            return None
 
     def findChannels(self, token, requestID=None):
         BigWorld.player().findChatChannels(token, requestID=requestID)
@@ -220,8 +223,7 @@ class ChannelsManager(ChatActionsListener):
         wrapper = ChatActionWrapper(**dict(chatAction))
         channel = self.channelsStorage.getChannel(entities.BWChannelLightEntity(wrapper.channel))
         if channel:
-            channel.addMembers([
-             entities.BWMemberEntity(wrapper.originator, nickName=wrapper.originatorNickName)])
+            channel.addMembers([entities.BWMemberEntity(wrapper.originator, nickName=wrapper.originatorNickName)])
 
     def __onSelfLeaveChat(self, chatAction):
         LOG_DEBUG('onSelfLeaveChat:%s' % (dict(chatAction),))
@@ -266,7 +268,7 @@ class ChannelsManager(ChatActionsListener):
             for dbID, data in wrapper.data:
                 if data[0] == 1:
                     added.append(entities.BWMemberEntity(dbID, nickName=data[1], status=data[2]))
-                elif data[0] == 0:
+                if data[0] == 0:
                     removed.append(dbID)
 
             if added:
@@ -311,7 +313,8 @@ class ChannelsManager(ChatActionsListener):
         return True
 
     def __onCommandInCooldown(self, actionResponse, chatAction):
-        data = chatAction.get('data', {'command': None, 'cooldownPeriod': -1})
+        data = chatAction.get('data', {'command': None,
+         'cooldownPeriod': -1})
         result = False
         if data['command'] == 'findChatChannels':
             result = True

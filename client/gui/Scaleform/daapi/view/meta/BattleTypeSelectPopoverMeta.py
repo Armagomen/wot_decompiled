@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/BattleTypeSelectPopoverMeta.py
 from gui.Scaleform.daapi.view.lobby.popover.SmartPopOverView import SmartPopOverView
 
 class BattleTypeSelectPopoverMeta(SmartPopOverView):
@@ -12,9 +14,7 @@ class BattleTypeSelectPopoverMeta(SmartPopOverView):
         self._printOverrideError('getTooltipData')
 
     def as_updateS(self, items, extraItems, isShowDemonstrator, demonstratorEnabled):
-        if self._isDAAPIInited():
-            return self.flashObject.as_update(items, extraItems, isShowDemonstrator, demonstratorEnabled)
+        return self.flashObject.as_update(items, extraItems, isShowDemonstrator, demonstratorEnabled) if self._isDAAPIInited() else None
 
     def as_showMiniClientInfoS(self, description, hyperlink):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showMiniClientInfo(description, hyperlink)
+        return self.flashObject.as_showMiniClientInfo(description, hyperlink) if self._isDAAPIInited() else None

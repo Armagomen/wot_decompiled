@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hub/tabs/basic/daily_section/presenters/premium_daily_missions_block_presenter.py
 from constants import PremiumConfigs
 from gui.Scaleform.daapi.view.lobby.store.browser.shop_helpers import getBuyPremiumUrl
 from gui.impl.gen.view_models.views.lobby.user_missions.hub.tabs.basic_missions.premium_daily.premium_daily_mission_model import PremiumDailyMissionModel
@@ -27,7 +29,7 @@ class PremiumDailyMissionsBlockPresenter(BaseMissionsBlockPresenter[PremiumDaily
 
     def _onLoading(self, *args, **kwargs):
         super(PremiumDailyMissionsBlockPresenter, self)._onLoading()
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             self._updateModel(tx)
 
     def _markQuestsAsVisited(self):
@@ -37,20 +39,14 @@ class PremiumDailyMissionsBlockPresenter(BaseMissionsBlockPresenter[PremiumDaily
             visitEventsGUI(seenQuests)
 
     def _onSyncCompleted(self, *_):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             self._updateModel(tx)
         super(PremiumDailyMissionsBlockPresenter, self)._onSyncCompleted(*_)
 
     def _getEvents(self):
         vm = self.viewModel
         eventsTuple = super(PremiumDailyMissionsBlockPresenter, self)._getEvents()
-        return eventsTuple + (
-         (
-          vm.onPurchasePremium, self.__onBuyPremiumBtn),
-         (
-          self.gameSession.onPremiumTypeChanged, self._onPremiumTypeChanged),
-         (
-          self.lobbyContext.getServerSettings().onServerSettingsChange, self._onServerSettingsChanged))
+        return eventsTuple + ((vm.onPurchasePremium, self.__onBuyPremiumBtn), (self.gameSession.onPremiumTypeChanged, self._onPremiumTypeChanged), (self.lobbyContext.getServerSettings().onServerSettingsChange, self._onServerSettingsChanged))
 
     def _updateModel(self, model):
         isPremAcc = isPremiumPlusAccount()
@@ -58,12 +54,12 @@ class PremiumDailyMissionsBlockPresenter(BaseMissionsBlockPresenter[PremiumDaily
         model.setIsAvailable(isPremAcc)
         if not isPremAcc or not self._isBlockEnabled:
             return
-        quests = sorted(self.eventsCache.getPremiumQuests().values(), cmp=premMissionsSortFunc)
-        missionsList = model.getMissionsList()
-        questIdsInModel = [ m.getId() for m in missionsList ]
-        if not needToUpdateQuestsInModelByIds(quests, questIdsInModel):
-            return
         else:
+            quests = sorted(self.eventsCache.getPremiumQuests().values(), cmp=premMissionsSortFunc)
+            missionsList = model.getMissionsList()
+            questIdsInModel = [ m.getId() for m in missionsList ]
+            if not needToUpdateQuestsInModelByIds(quests, questIdsInModel):
+                return
             for i in questIdsInModel:
                 self._tooltipData.pop(i, None)
 
@@ -83,13 +79,13 @@ class PremiumDailyMissionsBlockPresenter(BaseMissionsBlockPresenter[PremiumDaily
             premDiff = diff[PremiumConfigs.PREM_QUESTS]
             stateChanged = 'enabled' in premDiff and premDiff['enabled'] is not self._isBlockEnabled
             if stateChanged:
-                with self.viewModel.transaction() as (tx):
+                with self.viewModel.transaction() as tx:
                     self._updateModel(tx)
 
     def _onPremiumTypeChanged(self, *_):
         if self.isInRequiredTab:
             self._markQuestsAsVisited()
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             self._updateModel(tx)
 
     def __onBuyPremiumBtn(self, *args):

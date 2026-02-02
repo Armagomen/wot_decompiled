@@ -1,10 +1,16 @@
-import functools, sys, warnings
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/bwdeprecations.py
+import functools
+import sys
+import warnings
 
 def deprecatedAlias(method, oldname):
 
     def warnAndCallWrapper(*args, **kwargs):
-        warnings.warn('%s.%s is deprecated, use %s.%s instead' % (
-         method.__module__, oldname, method.__module__, method.__name__), DeprecationWarning, 2)
+        warnings.warn('%s.%s is deprecated, use %s.%s instead' % (method.__module__,
+         oldname,
+         method.__module__,
+         method.__name__), DeprecationWarning, 2)
         return method(*args, **kwargs)
 
     return functools.wraps(method)(warnAndCallWrapper)

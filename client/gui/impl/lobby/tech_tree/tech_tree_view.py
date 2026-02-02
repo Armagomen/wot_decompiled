@@ -1,7 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tech_tree/tech_tree_view.py
 import json
-from collections import namedtuple
 from logging import getLogger
-import typing, Event, nations
+import typing
+import Event
+import nations
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import NATIONS_VISITED
 from frameworks.state_machine import BaseStateObserver, visitor
@@ -25,6 +28,7 @@ from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.tech_tree.tech_tree_view_model import TechTreeViewModel, NationEnum
 from gui.impl.gui_decorators import args2params
 from gui.impl.pub import ViewImpl, WindowImpl
+from gui.impl.lobby.hangar.presenters.utils import GUINode
 from gui.lobby_state_machine.routable_view import IRoutableView
 from gui.lobby_state_machine.router import SubstateRouter
 from gui.shared import event_dispatcher as shared_events
@@ -44,13 +48,13 @@ if typing.TYPE_CHECKING:
     from gui.shared.events import NavigationEvent
 _logger = getLogger(__name__)
 _VEHICLE_URL_FILTER_PARAM = 1
-_GUINode = namedtuple('_GUINode', ('id', 'state', 'unlockProps'))
 
 class _NationTreeViewDumper(dumpers._BaseDumper):
 
     def __init__(self, cache=None):
         if cache is None:
-            cache = {'techTreeNodes': {}, 'nodeOverrides': {}}
+            cache = {'techTreeNodes': {},
+             'nodeOverrides': {}}
         super(_NationTreeViewDumper, self).__init__(cache)
         return
 
@@ -80,16 +84,16 @@ class _NationTreeViewDumper(dumpers._BaseDumper):
         childBranchOrders = [ nodeRows[childId] - currentNodeRow for childId in childIds ]
         nodeTags = node.getTags()
         nodeState = node.getState()
-        return {'id': node.getNodeCD(), 
-           'name': node.getShortUserName(), 
-           'techName': node.getItem().name, 
-           'nation': nations.NAMES[node.getNationID()], 
-           'type': self._vClassInfo.getInfoByTags(nodeTags)['name'], 
-           'level': node.getLevel(), 
-           'orderPriority': currentNodeRow, 
-           'childIds': childIds, 
-           'childBranchOrders': childBranchOrders, 
-           'isPremium': NODE_STATE.isPremium(nodeState)}
+        return {'id': node.getNodeCD(),
+         'name': node.getShortUserName(),
+         'techName': node.getItem().name,
+         'nation': nations.NAMES[node.getNationID()],
+         'type': self._vClassInfo.getInfoByTags(nodeTags)['name'],
+         'level': node.getLevel(),
+         'orderPriority': currentNodeRow,
+         'childIds': childIds,
+         'childBranchOrders': childBranchOrders,
+         'isPremium': NODE_STATE.isPremium(nodeState)}
 
     def _getNodeOverrides(self, node):
         nodeState = node.getState()
@@ -97,24 +101,24 @@ class _NationTreeViewDumper(dumpers._BaseDumper):
         nodePrice = node.getItem().getBuyPrice()
         nodePriceCurrency = nodePrice.getCurrency()
         nodeCompareData = node.getCompareData()
-        return {'id': node.getNodeCD(), 
-           'isResearched': NODE_STATE.isUnlocked(nodeState), 
-           'readyForResearch': NODE_STATE.isNext2Unlock(nodeState), 
-           'hasEnoughXp': bool(nodeState & NODE_STATE_FLAGS.ENOUGH_XP), 
-           'requiredXp': nodeUnlockProps.xpCost, 
-           'isDiscountedXp': nodeUnlockProps.xpCost < nodeUnlockProps.xpFullCost, 
-           'earnedXp': node.getEarnedXP(), 
-           'isElite': bool(nodeState & NODE_STATE_FLAGS.ELITE), 
-           'isInInventory': NODE_STATE.inInventory(nodeState), 
-           'hasEnoughCurrency': bool(nodeState & NODE_STATE_FLAGS.ENOUGH_MONEY), 
-           'highlightedForPurchase': bool(nodeState & NODE_STATE_FLAGS.LAST_2_BUY), 
-           'priceAmount': nodePrice.price.get(nodePriceCurrency), 
-           'priceCurrency': nodePriceCurrency, 
-           'isDiscountedPrice': nodePrice.isActionPrice(), 
-           'readyForRecovery': bool(nodeState & NODE_STATE_FLAGS.RESTORE_AVAILABLE), 
-           'isRented': bool(nodeState & NODE_STATE_FLAGS.VEHICLE_IN_RENT), 
-           'readyForTradeIn': bool(nodeState & NODE_STATE_FLAGS.CAN_TRADE_IN), 
-           'readyForComparison': nodeCompareData.get('modeAvailable', False) and not nodeCompareData.get('cmpBasketFull', False)}
+        return {'id': node.getNodeCD(),
+         'isResearched': NODE_STATE.isUnlocked(nodeState),
+         'readyForResearch': NODE_STATE.isNext2Unlock(nodeState),
+         'hasEnoughXp': bool(nodeState & NODE_STATE_FLAGS.ENOUGH_XP),
+         'requiredXp': nodeUnlockProps.xpCost,
+         'isDiscountedXp': nodeUnlockProps.xpCost < nodeUnlockProps.xpFullCost,
+         'earnedXp': node.getEarnedXP(),
+         'isElite': bool(nodeState & NODE_STATE_FLAGS.ELITE),
+         'isInInventory': NODE_STATE.inInventory(nodeState),
+         'hasEnoughCurrency': bool(nodeState & NODE_STATE_FLAGS.ENOUGH_MONEY),
+         'highlightedForPurchase': bool(nodeState & NODE_STATE_FLAGS.LAST_2_BUY),
+         'priceAmount': nodePrice.price.get(nodePriceCurrency),
+         'priceCurrency': nodePriceCurrency,
+         'isDiscountedPrice': nodePrice.isActionPrice(),
+         'readyForRecovery': bool(nodeState & NODE_STATE_FLAGS.RESTORE_AVAILABLE),
+         'isRented': bool(nodeState & NODE_STATE_FLAGS.VEHICLE_IN_RENT),
+         'readyForTradeIn': bool(nodeState & NODE_STATE_FLAGS.CAN_TRADE_IN),
+         'readyForComparison': nodeCompareData.get('modeAvailable', False) and not nodeCompareData.get('cmpBasketFull', False)}
 
 
 class _TechTreeStatesObserver(BaseStateObserver):
@@ -202,7 +206,7 @@ class TechTreeView(ViewImpl, IRoutableView):
                 if not vehCD:
                     return
                 thisNode = self.__nationTreeData.getNodeByItemCD(vehCD)
-                guiNode = _GUINode(vehCD, thisNode.getState(), thisNode.getUnlockProps())
+                guiNode = GUINode(vehCD, thisNode.getState(), thisNode.getUnlockProps())
                 parentNodeCD = first(g_techTreeDP.getTopLevel(vehCD))
                 if not parentNodeCD:
                     rootItem = self.__nationTreeData.getRootItem()
@@ -210,19 +214,15 @@ class TechTreeView(ViewImpl, IRoutableView):
                         parentNodeCD = rootItem.getNodeCD()
                     else:
                         parentNodeCD = 0
-                tooltipData = createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=(
-                 guiNode,
-                 parentNodeCD))
+                tooltipData = createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=(guiNode, parentNodeCD))
             elif tooltipId == TOOLTIPS_CONSTANTS.VEHICLE_COLLECTOR_INFO:
-                tooltipData = createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=(
-                 SelectedNation.getName(),))
+                tooltipData = createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=(SelectedNation.getName(),))
             elif tooltipId == TOOLTIPS_CONSTANTS.TRADE_IN:
                 vehCD = event.getArgument('vehCD', 0)
                 vehCD = int(vehCD)
                 if not vehCD:
                     return
-                tooltipData = createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=(
-                 vehCD,))
+                tooltipData = createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=(vehCD,))
         if tooltipData is not None:
             window = BackportTooltipWindow(tooltipData, self.getWindow())
             window.load()
@@ -241,26 +241,20 @@ class TechTreeView(ViewImpl, IRoutableView):
             if not node:
                 _logger.warning("Couldn't find node by vehCD=%d", vehCD)
                 return
-            contextMenuArgs = {'vehCD': vehCD, 
-               'nodeState': node.getState(), 
-               'newCM': True}
+            contextMenuArgs = {'vehCD': vehCD,
+             'nodeState': node.getState(),
+             'newCM': True}
             contextMenuData = createContextMenuData(event.getArgument('menuId'), contextMenuArgs)
             window = BackportContextMenuWindow(contextMenuData, self.getWindow())
             window.load()
             return window
 
     def _getEvents(self):
-        events = (
-         (
-          self.__techTreeStatesObserver.onSwitchNation, self.__onSwitchNation),
-         (
-          self.viewModel.onOpenAboutVehicle, self.__onOpenAboutVehicle),
-         (
-          self.viewModel.onAddToCompare, self.__onAddToCompare),
-         (
-          self.viewModel.onOpenCollectableVehicles, self.__onOpenCollectableVehicles),
-         (
-          self.viewModel.onOpenPremiumShop, self.__onOpenPremiumShop))
+        events = ((self.__techTreeStatesObserver.onSwitchNation, self.__onSwitchNation),
+         (self.viewModel.onOpenAboutVehicle, self.__onOpenAboutVehicle),
+         (self.viewModel.onAddToCompare, self.__onAddToCompare),
+         (self.viewModel.onOpenCollectableVehicles, self.__onOpenCollectableVehicles),
+         (self.viewModel.onOpenPremiumShop, self.__onOpenPremiumShop))
         return events
 
     def __onInitNation(self, args):
@@ -296,7 +290,9 @@ class TechTreeView(ViewImpl, IRoutableView):
 
     @args2params(str, int)
     def __onOpenPremiumShop(self, nation, level):
-        params = {'nation': nation, 'level': level, 'vehicleFilterByUrl': _VEHICLE_URL_FILTER_PARAM}
+        params = {'nation': nation,
+         'level': level,
+         'vehicleFilterByUrl': _VEHICLE_URL_FILTER_PARAM}
         shared_events.showShop(url=getPremiumVehiclesUrl(), params=params)
 
     def __getCollectableVehiclesSate(self):
@@ -309,7 +305,7 @@ class TechTreeView(ViewImpl, IRoutableView):
         nationTreeDump = self.__nationTreeData.dump()
         nation = SelectedNation.getName()
         nationIdx = SelectedNation.getIndex()
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             vm.setSelectedNation(NationEnum(nation))
             vm.setCollectableVehiclesAvailable(self.__getCollectableVehiclesSate())
             vm.setFirstHighlightedLevel(g_techTreeDP.getDisplaySettings(nationIdx)['firstLevelToHighlight'])
@@ -334,18 +330,18 @@ class TechTreeView(ViewImpl, IRoutableView):
 
     def __updateAllNodeOverrides(self):
         nationTreeDump = self.__nationTreeData.dump()
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             self.__fillNodeOverrides(vm, nationTreeDump['nodeOverrides'])
 
     def __updateCollectableVehiclesState(self):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             vm.setCollectableVehiclesAvailable(self.__getCollectableVehiclesSate())
 
     def __updateNodeOverrides(self, nodesToUpdate):
         if not nodesToUpdate:
             return
         nodeOverridesDump = self.__nationTreeData.dump()['nodeOverrides']
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             nodeOverrides = vm.getNodeOverrides()
             for vehId in nodesToUpdate:
                 if vehId not in nodeOverrides:

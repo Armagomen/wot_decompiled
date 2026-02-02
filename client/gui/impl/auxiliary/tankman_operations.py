@@ -1,4 +1,7 @@
-import json, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/auxiliary/tankman_operations.py
+import json
+import typing
 from typing import TYPE_CHECKING
 from frameworks.wulf import Array
 from gui.customization.shared import getPurchaseMoneyState, isTransactionValid, MoneyForPurchase
@@ -41,29 +44,26 @@ def getPriceData(itemPrice, rIconPath, rTitlePath, isFreeReset):
         return (backport.image(rIconPath.gold()), backport.text(rTitlePath.gold.title()), Currency.GOLD)
     if itemPrice.defPrice > MONEY_ZERO_CREDITS:
         return (backport.image(rIconPath.credit()), backport.text(rTitlePath.credits.title()), Currency.CREDITS)
-    if itemPrice == ITEM_PRICE_FREE or isFreeReset:
-        return (backport.image(rIconPath.free()), backport.text(rTitlePath.free.title()), FREE)
-    return ('', '', '')
+    return (backport.image(rIconPath.free()), backport.text(rTitlePath.free.title()), FREE) if itemPrice == ITEM_PRICE_FREE or isFreeReset else ('', '', '')
 
 
 def getOperationCardState(itemPrice):
     purchaseMoneyState = getPurchaseMoneyState(itemPrice.price)
-    cardState = (isTransactionValid(purchaseMoneyState, itemPrice.price) or CardState).DISABLED if 1 else CardState.DEFAULT
+    cardState = CardState.DISABLED if not isTransactionValid(purchaseMoneyState, itemPrice.price) else CardState.DEFAULT
     return (cardState, purchaseMoneyState)
 
 
 def getPriceDescriptionData(itemPrice, value, descLoc, isHighlight=False, **kwargs):
     isFreeReset = kwargs.get('isFreeReset')
-    defaultKwargs = {'value': value, 'isHighlight': isHighlight}
+    defaultKwargs = {'value': value,
+     'isHighlight': isHighlight}
     defaultKwargs.update(kwargs)
     args = json.dumps(defaultKwargs, True)
     if itemPrice.defPrice > MONEY_ZERO_GOLD:
         return (str(backport.text(descLoc.gold.description())), args)
     if itemPrice.defPrice > MONEY_ZERO_CREDITS:
         return (str(backport.text(descLoc.credits.description())), args)
-    if itemPrice == ITEM_PRICE_FREE or isFreeReset:
-        return (str(backport.text(descLoc.free.description())), args)
-    return ('', '')
+    return (str(backport.text(descLoc.free.description())), args) if itemPrice == ITEM_PRICE_FREE or isFreeReset else ('', '')
 
 
 @dependency.replace_none_kwargs(goodiesCache=IGoodiesCache)
@@ -81,7 +81,10 @@ def packRecertificationForm(wulfList, goodiesCache=None, isFreeReset=False):
     else:
         cardModel.cardTooltip.setContentId(R.views.common.tooltip_window.backport_tooltip_content.BackportTooltipContent())
         cardModel.cardTooltip.setTargetId(R.views.lobby.crew.widgets.PriceList())
-    cardModel.setKwargs(json.dumps({'value': 100, 'storageCount': formsCount, 'isHighlight': True, 'isRecertificationCard': True}, True))
+    cardModel.setKwargs(json.dumps({'value': 100,
+     'storageCount': formsCount,
+     'isHighlight': True,
+     'isRecertificationCard': True}, True))
     cardModel.setCardType(CardType.RESET)
     cardModel.setDescription(str(backport.text(_RESET_LOC.gold.description())))
     wulfList.addViewModel(cardModel)
@@ -188,8 +191,7 @@ def packMajorSkills(skillsData, tankman, customGetters=None):
         skillModel = getSkillModel(tankman, skill, tankman.role, customGetters)
         if skill.isMaxLevel:
             majorSkills.addViewModel(skillModel)
-        else:
-            notFullEarnedSkillMdl = skillModel
+        notFullEarnedSkillMdl = skillModel
 
     for _ in xrange(tankman.newFreeSkillsCount):
         majorSkills.addViewModel(getNewSkillModel())
@@ -219,8 +221,7 @@ def packBonusSkills(skillsData, tankman):
                 continue
             if skill is None:
                 skillModels.append(getNewSkillModel(level))
-            else:
-                skillModels.append(getSkillModel(tankman, skill, role))
+            skillModels.append(getSkillModel(tankman, skill, role))
 
     skillModels.sort(key=lambda sm: MAX_SKILL_LEVEL - sm.getLevel() + int(sm.getName() == CrewConstants.NEW_SKILL))
     for model in skillModels:

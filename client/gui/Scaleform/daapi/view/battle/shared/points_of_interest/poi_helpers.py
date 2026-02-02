@@ -1,4 +1,7 @@
-import typing, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/points_of_interest/poi_helpers.py
+import typing
+import BigWorld
 from items import vehicles
 from points_of_interest_shared import PoiEquipmentNamesByPoiType, PoiTypesByPoiEquipmentName
 if typing.TYPE_CHECKING:
@@ -16,10 +19,7 @@ def getPoiEquipmentByType(poiType):
     cache = vehicles.g_cache
     name = PoiEquipmentNamesByPoiType[poiType]
     equipmentID = cache.equipmentIDs().get(name)
-    if equipmentID is not None:
-        return cache.equipments()[equipmentID]
-    else:
-        return
+    return cache.equipments()[equipmentID] if equipmentID is not None else None
 
 
 def getPoiTypeByEquipment(equipment):

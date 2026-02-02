@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/filter/__init__.py
 import typing
 from constants import MIN_VEHICLE_LEVEL, MAX_VEHICLE_LEVEL
 from gui import GUI_NATIONS, TANKMEN_ROLES_ORDER_DICT
@@ -66,8 +68,7 @@ class FilterGroupSettings(object):
 
 def getNationSettings(customTooltipBody=None):
     tooltipBody = customTooltipBody or R.strings.crew.filter.tooltip.nation.vehicles.body()
-    return FilterGroupSettings(toggleID=ToggleGroupType.NATION.value, labelResId=R.strings.crew.filter.group.nation.title(), toggleType=ToggleGroupType.NATION, toggles=[ ToggleButtonSettings(toggleID=nation, icon=R.images.gui.maps.icons.filters.nations.dyn(nation)(), tooltipHeader=R.strings.nations.dyn(nation)(), tooltipBody=tooltipBody) for nation in GUI_NATIONS
-                                                                                                                                                                        ])
+    return FilterGroupSettings(toggleID=ToggleGroupType.NATION.value, labelResId=R.strings.crew.filter.group.nation.title(), toggleType=ToggleGroupType.NATION, toggles=[ ToggleButtonSettings(toggleID=nation, icon=R.images.gui.maps.icons.filters.nations.dyn(nation)(), tooltipHeader=R.strings.nations.dyn(nation)(), tooltipBody=tooltipBody) for nation in GUI_NATIONS ])
 
 
 def getTankmanKindSettings(labelResId=R.invalid(), options=None, dismissedTooltipTargetId=R.invalid()):
@@ -76,8 +77,7 @@ def getTankmanKindSettings(labelResId=R.invalid(), options=None, dismissedToolti
     for kind in kindList:
         if kind == TankmanKind.DISMISSED:
             toggles.append(ToggleButtonSettings(toggleID=kind.value, icon=R.images.gui.maps.icons.tankmen.card.location.dismissed(), tooltipContentId=R.views.lobby.crew.tooltips.DismissedToggleTooltip(), tooltipTargetId=dismissedTooltipTargetId))
-        else:
-            toggles.append(_createTankmanKindToggle(kind.value))
+        toggles.append(_createTankmanKindToggle(kind.value))
 
     return FilterGroupSettings(toggleID=ToggleGroupType.TANKMANKIND.value, toggleType=ToggleGroupType.TANKMANKIND, labelResId=labelResId, toggles=toggles)
 
@@ -85,57 +85,45 @@ def getTankmanKindSettings(labelResId=R.invalid(), options=None, dismissedToolti
 def getTankmanLocationSettings(withTankmanKind=True, labelResId=R.invalid()):
     toggles = _getTankmanLocationToggles()
     if withTankmanKind:
-        toggles += [ _createTankmanKindToggle(kind.value) for kind in (
-         TankmanKind.RECRUIT,
-         TankmanKind.TANKMAN)
-                   ]
+        toggles += [ _createTankmanKindToggle(kind.value) for kind in (TankmanKind.RECRUIT, TankmanKind.TANKMAN) ]
     return FilterGroupSettings(toggleID=ToggleGroupType.LOCATION.value, labelResId=labelResId, toggleType=ToggleGroupType.LOCATION, toggles=toggles)
 
 
 def getVehicleLocationSettings():
-    return FilterGroupSettings(toggleID=ToggleGroupType.LOCATION.value, labelResId=R.strings.crew.common.filter.location(), toggleType=ToggleGroupType.LOCATION, toggles=[
-     ToggleButtonSettings(toggleID=VEHICLE_LOCATION_IN_HANGAR, icon=R.images.gui.maps.icons.tankmen.card.location.in_barracks(), tooltipHeader=R.strings.crew.tankChange.tooltip.location.header(), tooltipBody=R.strings.crew.tankChange.tooltip.location.body())])
+    return FilterGroupSettings(toggleID=ToggleGroupType.LOCATION.value, labelResId=R.strings.crew.common.filter.location(), toggleType=ToggleGroupType.LOCATION, toggles=[ToggleButtonSettings(toggleID=VEHICLE_LOCATION_IN_HANGAR, icon=R.images.gui.maps.icons.tankmen.card.location.in_barracks(), tooltipHeader=R.strings.crew.tankChange.tooltip.location.header(), tooltipBody=R.strings.crew.tankChange.tooltip.location.body())])
 
 
 def getTankmanRoleSettings(hasDiscount=False):
-    return FilterGroupSettings(toggleID=ToggleGroupType.TANKMANROLE.value, labelResId=R.strings.crew.filter.group.tankmanRole.title(), toggleType=ToggleGroupType.TANKMANROLE, hasDiscount=hasDiscount, toggles=[ ToggleButtonSettings(toggleID=role, icon=R.images.gui.maps.icons.tankmen.roles.c_14x14.dyn(role)(), tooltipHeader=R.strings.item_types.tankman.roles.dyn(role)(), tooltipBody=R.strings.crew.filter.tooltip.tankmanRole.body()) for role in TANKMEN_ROLES_ORDER_DICT['plain']
-                                                                                                                                                                                                                ])
+    return FilterGroupSettings(toggleID=ToggleGroupType.TANKMANROLE.value, labelResId=R.strings.crew.filter.group.tankmanRole.title(), toggleType=ToggleGroupType.TANKMANROLE, hasDiscount=hasDiscount, toggles=[ ToggleButtonSettings(toggleID=role, icon=R.images.gui.maps.icons.tankmen.roles.c_14x14.dyn(role)(), tooltipHeader=R.strings.item_types.tankman.roles.dyn(role)(), tooltipBody=R.strings.crew.filter.tooltip.tankmanRole.body()) for role in TANKMEN_ROLES_ORDER_DICT['plain'] ])
 
 
 def getVehicleTypeSettings(labelResId=R.strings.crew.filter.group.vehicleType.barracks.title(), customTooltipBody=R.strings.crew.filter.tooltip.vehicleType.body()):
-    return FilterGroupSettings(toggleID=ToggleGroupType.VEHICLETYPE.value, labelResId=labelResId, toggleType=ToggleGroupType.VEHICLETYPE, toggles=[ ToggleButtonSettings(toggleID=vehicleType, icon=R.images.gui.maps.icons.vehicleTypes.extraSmall.dyn(vehicleType.replace('-', '_'))(), tooltipHeader=R.strings.crew.filter.tooltip.vehicleType.header.dyn(vehicleType.replace('-', '_'))(), tooltipBody=customTooltipBody) for vehicleType in VEHICLE_TYPES_ORDER
-                                                                                                                                                  ])
+    return FilterGroupSettings(toggleID=ToggleGroupType.VEHICLETYPE.value, labelResId=labelResId, toggleType=ToggleGroupType.VEHICLETYPE, toggles=[ ToggleButtonSettings(toggleID=vehicleType, icon=R.images.gui.maps.icons.vehicleTypes.extraSmall.dyn(vehicleType.replace('-', '_'))(), tooltipHeader=R.strings.crew.filter.tooltip.vehicleType.header.dyn(vehicleType.replace('-', '_'))(), tooltipBody=customTooltipBody) for vehicleType in VEHICLE_TYPES_ORDER ])
 
 
 def getVehicleTierSettings(labelResId=R.strings.crew.filter.group.vehicleTier.longTitle()):
-    return FilterGroupSettings(toggleID=ToggleGroupType.VEHICLETIER.value, labelResId=labelResId, toggleType=ToggleGroupType.VEHICLETIER, toggles=[ ToggleButtonSettings(toggleID=str(level)) for level in xrange(MIN_VEHICLE_LEVEL, MAX_VEHICLE_LEVEL + 1)
-                                                                                                                                                  ])
+    return FilterGroupSettings(toggleID=ToggleGroupType.VEHICLETIER.value, labelResId=labelResId, toggleType=ToggleGroupType.VEHICLETIER, toggles=[ ToggleButtonSettings(toggleID=str(level)) for level in xrange(MIN_VEHICLE_LEVEL, MAX_VEHICLE_LEVEL + 1) ])
 
 
 def getVehicleGradeSettings(options=None, withLocation=False, labelResId=R.strings.crew.filter.group.special.title(), tooltipDynAccessor=R.strings.crew.filter.tooltip.vehicleGrade):
-    vehicleGradeIcons = {GRADE_PREMIUM: R.images.gui.maps.icons.library.prem_small_icon(), 
-       GRADE_ELITE: R.images.gui.maps.icons.library.elite_small_icon(), 
-       GRADE_PRIMARY: R.images.gui.maps.icons.library.favorite_medium()}
+    vehicleGradeIcons = {GRADE_PREMIUM: R.images.gui.maps.icons.library.prem_small_icon(),
+     GRADE_ELITE: R.images.gui.maps.icons.library.elite_small_icon(),
+     GRADE_PRIMARY: R.images.gui.maps.icons.library.favorite_medium()}
     grades = options or VEHICLE_GRADES
     locationToggles = _getTankmanLocationToggles() if withLocation else []
-    return FilterGroupSettings(toggleID=ToggleGroupType.VEHICLEGRADE.value, toggleType=ToggleGroupType.VEHICLEGRADE, labelResId=labelResId, toggles=locationToggles + [ ToggleButtonSettings(toggleID=grade, icon=vehicleGradeIcons.get(grade), tooltipBody=tooltipDynAccessor.dyn(grade).body(), tooltipHeader=tooltipDynAccessor.dyn(grade).title()) for grade in grades
-                                                                                                                                                                      ])
+    return FilterGroupSettings(toggleID=ToggleGroupType.VEHICLEGRADE.value, toggleType=ToggleGroupType.VEHICLEGRADE, labelResId=labelResId, toggles=locationToggles + [ ToggleButtonSettings(toggleID=grade, icon=vehicleGradeIcons.get(grade), tooltipBody=tooltipDynAccessor.dyn(grade).body(), tooltipHeader=tooltipDynAccessor.dyn(grade).title()) for grade in grades ])
 
 
 def getPersonalDataCardTypeSettings():
-    return FilterGroupSettings(toggleID=ToggleGroupType.PERSONALDATATYPE.value, toggleType=ToggleGroupType.PERSONALDATATYPE, labelResId=R.strings.crew.personalData.filter.type.title(), toggles=[ ToggleButtonSettings(toggleID=filterType.value, icon=R.images.gui.maps.icons.crew.personalData.c_34x24.dyn(filterType.value)(), tooltipBody=R.strings.crew.personalData.filter.tooltip.type.dyn(filterType.value).body(), tooltipHeader=R.strings.crew.personalData.filter.tooltip.type.dyn(filterType.value).title()) for filterType in (
-     DataCardFilter.SUITABLESKIN, DataCardFilter.DOCUMENT)
-                                                                                                                                                                                                 ])
+    return FilterGroupSettings(toggleID=ToggleGroupType.PERSONALDATATYPE.value, toggleType=ToggleGroupType.PERSONALDATATYPE, labelResId=R.strings.crew.personalData.filter.type.title(), toggles=[ ToggleButtonSettings(toggleID=filterType.value, icon=R.images.gui.maps.icons.crew.personalData.c_34x24.dyn(filterType.value)(), tooltipBody=R.strings.crew.personalData.filter.tooltip.type.dyn(filterType.value).body(), tooltipHeader=R.strings.crew.personalData.filter.tooltip.type.dyn(filterType.value).title()) for filterType in (DataCardFilter.SUITABLESKIN, DataCardFilter.DOCUMENT) ])
 
 
 def _createTankmanKindToggle(tankmanKind):
-    tankmanKindIcons = {TankmanKind.TANKMAN.value: R.images.gui.maps.icons.library.tankman(), 
-       TankmanKind.RECRUIT.value: R.images.gui.maps.icons.library.friendshipIcon_1(), 
-       TankmanKind.DISMISSED.value: R.images.gui.maps.icons.tankmen.card.location.dismissed()}
+    tankmanKindIcons = {TankmanKind.TANKMAN.value: R.images.gui.maps.icons.library.tankman(),
+     TankmanKind.RECRUIT.value: R.images.gui.maps.icons.library.friendshipIcon_1(),
+     TankmanKind.DISMISSED.value: R.images.gui.maps.icons.tankmen.card.location.dismissed()}
     return ToggleButtonSettings(toggleID=tankmanKind, icon=tankmanKindIcons.get(tankmanKind), tooltipBody=R.strings.crew.filter.tooltip.tankmanKind.dyn(tankmanKind).body(), tooltipHeader=R.strings.crew.filter.tooltip.tankmanKind.dyn(tankmanKind).title())
 
 
 def _getTankmanLocationToggles():
-    return [ ToggleButtonSettings(toggleID=location.value, icon=R.images.gui.maps.icons.tankmen.card.location.dyn(location.value)(), tooltipHeader=R.strings.crew.tankmanList.tooltip.location.dyn(location.value).title(), tooltipBody=R.strings.crew.tankmanList.tooltip.location.dyn(location.value).body()) for location in [
-     TankmanLocation.INBARRACKS, TankmanLocation.INTANK]
-           ]
+    return [ ToggleButtonSettings(toggleID=location.value, icon=R.images.gui.maps.icons.tankmen.card.location.dyn(location.value)(), tooltipHeader=R.strings.crew.tankmanList.tooltip.location.dyn(location.value).title(), tooltipBody=R.strings.crew.tankmanList.tooltip.location.dyn(location.value).body()) for location in [TankmanLocation.INBARRACKS, TankmanLocation.INTANK] ]

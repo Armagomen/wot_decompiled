@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/popovers/progressive_style_popover.py
 from CurrentVehicle import g_currentVehicle
 from gui import makeHtmlString
 from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import DisjunctionCarouselFilter, FilterAliases
@@ -14,8 +16,7 @@ from helpers import dependency
 from items.components.c11n_components import getItemSlotType
 from items.components.c11n_constants import SeasonType
 from skeletons.gui.customization import ICustomizationService
-POPOVER_SEASONS_ORDER = (
- SeasonType.ALL,) + SEASONS_ORDER
+POPOVER_SEASONS_ORDER = (SeasonType.ALL,) + SEASONS_ORDER
 
 class FilterTypes(object):
     HISTORIC = 1
@@ -163,8 +164,7 @@ class ProgressiveStylePopover(CustomizationProgressiveKitPopoverMeta):
             if item.isHiddenInUI():
                 continue
             sType = getItemSlotType(item.descriptor)
-            key = (
-             pItem.item.intCD, pItem.isFromInventory)
+            key = (pItem.item.intCD, pItem.isFromInventory)
             if key not in itemData:
                 isBase = not pItem.isEdited
                 if item.itemTypeID == GUI_ITEM_TYPE.STYLE:
@@ -207,7 +207,7 @@ class ProgressiveStylePopover(CustomizationProgressiveKitPopoverMeta):
             key = (intCD, True)
             if key not in itemData:
                 itemData[key] = C11nPopoverItemData(item=item, season=season, isBase=True, isRemoved=True, isFromInventory=True)
-            elif itemData[key].isRemoved:
+            if itemData[key].isRemoved:
                 areaId = container.getAreaID()
                 slotType = ITEM_TYPE_TO_SLOT_TYPE[item.itemTypeID]
                 slotId = C11nId(areaId, slotType, regionIdx)
@@ -218,8 +218,7 @@ class ProgressiveStylePopover(CustomizationProgressiveKitPopoverMeta):
             key = (nationalEmblemItem.intCD, True)
             itemData.pop(key)
         if showStyle:
-            key = (
-             self.__style.intCD, True)
+            key = (self.__style.intCD, True)
             itemData[key] = C11nPopoverItemData(item=self.__style, season=season, isBase=True, isRemoved=False, isFromInventory=True)
         data = [ self.__makeItemDataVO(itemData) for itemData in sorted(itemData.values(), key=orderKey) ]
         return data
@@ -233,10 +232,10 @@ class ProgressiveStylePopover(CustomizationProgressiveKitPopoverMeta):
             countLabel = ''
             price = None
         elif itemData.isFromInventory:
-            countLabel = text_styles.main(('{} ').format(len(itemData.slotsIds)))
+            countLabel = text_styles.main('{} '.format(len(itemData.slotsIds)))
             price = None
         else:
-            countLabel = text_styles.main(('{} x ').format(len(itemData.slotsIds)))
+            countLabel = text_styles.main('{} x '.format(len(itemData.slotsIds)))
             price = getItemPricesVO(item.buyPrices.itemPrice)[0]
         disabledLabel = backport.text(R.strings.vehicle_customization.popover.style.removed())
         disabledLabel = text_styles.bonusPreviewText(disabledLabel)
@@ -253,44 +252,42 @@ class ProgressiveStylePopover(CustomizationProgressiveKitPopoverMeta):
         if isRare:
             rarityIconSource = backport.image(R.images.gui.maps.icons.customization.rarity.sign.s20x20.dyn(rarity)())
             rarityBackgroundIconSource = backport.image(R.images.gui.maps.icons.customization.rarity.glow.s104x104.dyn(rarity)())
-        itemDataVO = {'id': item.intCD, 
-           'icon': icon, 
-           'userName': name, 
-           'numItems': countLabel, 
-           'customizationDisplayType': item.customizationDisplayType(), 
-           'price': price, 
-           'isApplied': isApplied, 
-           'isWide': item.isWide(), 
-           'itemsList': itemData.slotsIds, 
-           'isDim': item.isDim(), 
-           'isDisabled': itemData.isRemoved, 
-           'disabledLabel': disabledLabel, 
-           'isRemovable': itemData.isRemovable, 
-           'seasonType': itemData.season, 
-           'progressionLevel': progressionLevel, 
-           'isProgressiveLocked': isLocked, 
-           'rarityIcon': rarityIconSource, 
-           'rarityBackground': rarityBackgroundIconSource}
+        itemDataVO = {'id': item.intCD,
+         'icon': icon,
+         'userName': name,
+         'numItems': countLabel,
+         'customizationDisplayType': item.customizationDisplayType(),
+         'price': price,
+         'isApplied': isApplied,
+         'isWide': item.isWide(),
+         'itemsList': itemData.slotsIds,
+         'isDim': item.isDim(),
+         'isDisabled': itemData.isRemoved,
+         'disabledLabel': disabledLabel,
+         'isRemovable': itemData.isRemovable,
+         'seasonType': itemData.season,
+         'progressionLevel': progressionLevel,
+         'isProgressiveLocked': isLocked,
+         'rarityIcon': rarityIconSource,
+         'rarityBackground': rarityBackgroundIconSource}
         return itemDataVO
 
     @staticmethod
     def __getSeasonGroupVO(season):
         seasonName = SEASON_TYPE_TO_NAME[season]
         seasonTitle = makeHtmlString('html_templates:lobby/customization/StylePopoverSeasonName', seasonName, ctx={'align': 'CENTER'})
-        seasonGroupVO = {'isTitle': True, 
-           'titleLabel': seasonTitle}
+        seasonGroupVO = {'isTitle': True,
+         'titleLabel': seasonTitle}
         return seasonGroupVO
 
     def __initFilters(self):
-        self.__filters = DisjunctionCarouselFilter(criteria={FilterAliases.HISTORIC: REQ_CRITERIA.CUSTOMIZATION.HISTORICAL, 
-           FilterAliases.NON_HISTORIC: REQ_CRITERIA.CUSTOMIZATION.NON_HISTORICAL, 
-           FilterAliases.FANTASTICAL: REQ_CRITERIA.CUSTOMIZATION.FANTASTICAL, 
-           FilterAliases.LOCKED: REQ_CRITERIA.CUSTOM(lambda item: not item.isUnlockedByToken())})
+        self.__filters = DisjunctionCarouselFilter(criteria={FilterAliases.HISTORIC: REQ_CRITERIA.CUSTOMIZATION.HISTORICAL,
+         FilterAliases.NON_HISTORIC: REQ_CRITERIA.CUSTOMIZATION.NON_HISTORICAL,
+         FilterAliases.FANTASTICAL: REQ_CRITERIA.CUSTOMIZATION.FANTASTICAL,
+         FilterAliases.LOCKED: REQ_CRITERIA.CUSTOM(lambda item: not item.isUnlockedByToken())})
 
     def __getFilterReq(self):
-        if self.__filters.isApplied():
-            return self.__filters.criteria
-        return REQ_CRITERIA.EMPTY
+        return self.__filters.criteria if self.__filters.isApplied() else REQ_CRITERIA.EMPTY
 
     def __hasIsRemovable(self):
         for item in self.__itemsList:
@@ -300,6 +297,4 @@ class ProgressiveStylePopover(CustomizationProgressiveKitPopoverMeta):
         return False
 
     def __getBaseOutfit(self, season, vehicleCD=''):
-        if season == SeasonType.ALL:
-            return self.__ctx.commonOriginalOutfit
-        return removePartsFromOutfit(season, self.__style.getOutfit(season, vehicleCD))
+        return self.__ctx.commonOriginalOutfit if season == SeasonType.ALL else removePartsFromOutfit(season, self.__style.getOutfit(season, vehicleCD))

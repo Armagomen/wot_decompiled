@@ -1,4 +1,8 @@
-import math, BigWorld, Math
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/AttackBomber.py
+import math
+import BigWorld
+import Math
 from AreaOfEffect import AreaOfEffect
 from constants import SERVER_TICK_LENGTH
 from items import vehicles

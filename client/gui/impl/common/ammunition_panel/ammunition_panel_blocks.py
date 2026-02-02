@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/common/ammunition_panel/ammunition_panel_blocks.py
 import typing
 from account_helpers.settings_core.options import KeyboardSetting
 from constants import PLAYER_RANK
@@ -65,12 +67,10 @@ class BaseBlock(object):
         raise NotImplementedError
 
     def _getKeySettings(self):
-        return ()
+        pass
 
     def _getSectionLayout(self):
-        if self._currentSection == self._getSectionName():
-            return self._getLayout()
-        return self._getInstalled()
+        return self._getLayout() if self._currentSection == self._getSectionName() else self._getInstalled()
 
     def _getLayout(self):
         raise NotImplementedError
@@ -217,15 +217,16 @@ class ShellsBlock(BaseBlock):
     def createBlock(self, viewModel):
         super(ShellsBlock, self).createBlock(viewModel)
         viewModel.setType(self._getSectionName())
-        layoutIndex = self._vehicle.shells.setupLayouts.layoutIndex
-        isWarning = not self._vehicle.shells.setupLayouts.isAmmoFull(layoutIndex, self._vehicle.ammoMinSize)
-        viewModel.setIsWarning(isWarning)
+
+    def updateBlock(self, viewModel):
+        super(ShellsBlock, self).updateBlock(viewModel)
+        viewModel.setIsWarning(self.__isAmmoNotFull())
 
     def _getSectionName(self):
         return TankSetupConstants.SHELLS
 
     def _getKeySettings(self):
-        return ('CMD_AMMO_CHOICE_1', 'CMD_AMMO_CHOICE_2', 'CMD_AMMO_CHOICE_3')
+        pass
 
     def _getAmmunitionSlotModel(self):
         return ShellAmmunitionSlot()
@@ -245,6 +246,10 @@ class ShellsBlock(BaseBlock):
         model.setCount(slotItem.count)
         model.setIntCD(slotItem.intCD)
 
+    def __isAmmoNotFull(self):
+        layoutIndex = self._vehicle.shells.setupLayouts.layoutIndex
+        return not self._vehicle.shells.setupLayouts.isAmmoFull(layoutIndex, self._vehicle.ammoMinSize)
+
 
 class ConsumablesBlock(BaseBlock):
 
@@ -256,7 +261,7 @@ class ConsumablesBlock(BaseBlock):
         return TankSetupConstants.CONSUMABLES
 
     def _getKeySettings(self):
-        return ('CMD_AMMO_CHOICE_4', 'CMD_AMMO_CHOICE_5', 'CMD_AMMO_CHOICE_6')
+        pass
 
     def _getInstalled(self):
         return self._vehicle.consumables.installed
@@ -333,7 +338,7 @@ class BattleAbilitiesBlock(BaseBlock):
         return TankSetupConstants.BATTLE_ABILITIES
 
     def _getKeySettings(self):
-        return ('CMD_AMMO_CHOICE_7', 'CMD_AMMO_CHOICE_8', 'CMD_AMMO_CHOICE_9')
+        pass
 
     def _getAmmunitionSlotModel(self):
         return BattleAbilityAmmunitionSlot()
@@ -380,7 +385,7 @@ class BattleAbilitiesBlock(BaseBlock):
         slots = self._vehicle.battleAbilities.slots
         slotsOrder = self.__epicMetaGameCtrl.getAbilitySlotsOrder(self._vehicle.descriptor.type)
         if idx >= len(slots):
-            return
+            return None
         else:
             sID = slotsOrder[idx]
             for slot in slots:
@@ -390,6 +395,6 @@ class BattleAbilitiesBlock(BaseBlock):
                 slotCategory = tuple(categories.intersection(slot.tags))
                 if slotCategory:
                     return slotCategory[0]
-                return
+                return None
 
-            return
+            return None

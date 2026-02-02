@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/shared/tooltips/battle_royale_modules.py
 from gui.Scaleform.daapi.view.common.battle_royale.params import getModuleParameters, getVehicleParameters
 from gui.Scaleform.genConsts.ATLAS_CONSTANTS import ATLAS_CONSTANTS
 from gui.doc_loaders.battle_royale_settings_loader import getTreeModuleIcon, getTreeModuleHeader
@@ -42,9 +44,7 @@ class HeaderBlockConstructor(object):
 
     @classmethod
     def construct(cls, module):
-        if module.itemTypeID == GUI_ITEM_TYPE.VEHICLE:
-            return cls.__constructVehicle(module)
-        return cls.__constructModule(module)
+        return cls.__constructVehicle(module) if module.itemTypeID == GUI_ITEM_TYPE.VEHICLE else cls.__constructModule(module)
 
     @classmethod
     def __constructModule(cls, module):

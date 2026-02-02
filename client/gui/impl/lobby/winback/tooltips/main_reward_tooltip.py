@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/winback/tooltips/main_reward_tooltip.py
 import typing
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
@@ -26,7 +28,7 @@ class MainRewardTooltip(ViewImpl):
 
     def _onLoading(self, rewards):
         super(MainRewardTooltip, self)._onLoading()
-        with self.viewModel.getRewards().transaction() as (tx):
+        with self.viewModel.getRewards().transaction() as tx:
             self.__updateRewards(tx, rewards)
 
     def __updateRewards(self, model, rewards):

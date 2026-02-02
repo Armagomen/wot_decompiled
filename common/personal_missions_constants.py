@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/personal_missions_constants.py
 
 
 class CONDITION_ICON:
@@ -127,7 +129,7 @@ class RegularDescription(IClientDescription):
 
 
 class AverageDescription(RegularDescription):
-    __slots__ = RegularDescription.__slots__ + ('counterID', )
+    __slots__ = RegularDescription.__slots__ + ('counterID',)
 
     def __init__(self, iconID, counterID, limiterID=None, isInOrGroup=False, priority=0):
         super(AverageDescription, self).__init__(iconID, limiterID, isInOrGroup, priority)

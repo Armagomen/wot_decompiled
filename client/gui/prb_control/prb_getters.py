@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/prb_getters.py
 from typing import TYPE_CHECKING
 import BigWorld
 from constants import QUEUE_TYPE, PREBATTLE_TYPE_NAMES, ARENA_GUI_TYPE, PREBATTLE_TYPE, DEFAULT_LANGUAGE, ACCOUNT_ATTR, PREBATTLE_ROLE, IS_DEVELOPMENT, MAX_VEHICLE_LEVEL
@@ -31,17 +33,12 @@ def getPrebattleID():
 
 def isPrebattleSettingsReceived(prebattle=None):
     prb = prebattle or getClientPrebattle()
-    if prb is not None:
-        return prb.settings is not None
-    else:
-        return False
+    return prb.settings is not None if prb is not None else False
 
 
 def getPrebattleSettings(prebattle=None):
     prb = prebattle or getClientPrebattle()
-    if prb and prb.settings:
-        return makePrebattleSettings(prb.settings)
-    return makePrebattleSettings()
+    return makePrebattleSettings(prb.settings) if prb and prb.settings else makePrebattleSettings()
 
 
 def getPrebattleProps(prebattle=None):
@@ -98,18 +95,18 @@ def getPrebattleTypeName(prbType=None):
     return prbTypeName
 
 
-_ARENA_GUI_TYPE_BY_PRB_TYPE = {PREBATTLE_TYPE.SQUAD: ARENA_GUI_TYPE.RANDOM, 
-   PREBATTLE_TYPE.TRAINING: ARENA_GUI_TYPE.TRAINING, 
-   PREBATTLE_TYPE.EVENT: ARENA_GUI_TYPE.EVENT_BATTLES}
-_ARENA_GUI_TYPE_BY_QUEUE_TYPE = {QUEUE_TYPE.RANDOMS: ARENA_GUI_TYPE.RANDOM, 
-   QUEUE_TYPE.EVENT_BATTLES: ARENA_GUI_TYPE.EVENT_BATTLES, 
-   QUEUE_TYPE.RANKED: ARENA_GUI_TYPE.RANKED, 
-   QUEUE_TYPE.EPIC: ARENA_GUI_TYPE.EPIC_BATTLE, 
-   QUEUE_TYPE.BATTLE_ROYALE: ARENA_GUI_TYPE.BATTLE_ROYALE, 
-   QUEUE_TYPE.BATTLE_ROYALE_TOURNAMENT: ARENA_GUI_TYPE.BATTLE_ROYALE, 
-   QUEUE_TYPE.MAPBOX: ARENA_GUI_TYPE.MAPBOX, 
-   QUEUE_TYPE.MAPS_TRAINING: ARENA_GUI_TYPE.MAPS_TRAINING, 
-   QUEUE_TYPE.WINBACK: ARENA_GUI_TYPE.WINBACK}
+_ARENA_GUI_TYPE_BY_PRB_TYPE = {PREBATTLE_TYPE.SQUAD: ARENA_GUI_TYPE.RANDOM,
+ PREBATTLE_TYPE.TRAINING: ARENA_GUI_TYPE.TRAINING,
+ PREBATTLE_TYPE.EVENT: ARENA_GUI_TYPE.EVENT_BATTLES}
+_ARENA_GUI_TYPE_BY_QUEUE_TYPE = {QUEUE_TYPE.RANDOMS: ARENA_GUI_TYPE.RANDOM,
+ QUEUE_TYPE.EVENT_BATTLES: ARENA_GUI_TYPE.EVENT_BATTLES,
+ QUEUE_TYPE.RANKED: ARENA_GUI_TYPE.RANKED,
+ QUEUE_TYPE.EPIC: ARENA_GUI_TYPE.EPIC_BATTLE,
+ QUEUE_TYPE.BATTLE_ROYALE: ARENA_GUI_TYPE.BATTLE_ROYALE,
+ QUEUE_TYPE.BATTLE_ROYALE_TOURNAMENT: ARENA_GUI_TYPE.BATTLE_ROYALE,
+ QUEUE_TYPE.MAPBOX: ARENA_GUI_TYPE.MAPBOX,
+ QUEUE_TYPE.MAPS_TRAINING: ARENA_GUI_TYPE.MAPS_TRAINING,
+ QUEUE_TYPE.WINBACK: ARENA_GUI_TYPE.WINBACK}
 
 def getArenaGUIType(prbType=None, queueType=None):
     if prbType is None:
@@ -179,18 +176,18 @@ def getPrebattleLocalizedData(extraData=None):
     return led
 
 
-_PRB_TO_QUEUE = {PREBATTLE_TYPE.SQUAD: QUEUE_TYPE.RANDOMS, 
-   PREBATTLE_TYPE.UNIT: QUEUE_TYPE.UNITS, 
-   PREBATTLE_TYPE.EVENT: QUEUE_TYPE.EVENT_BATTLES, 
-   PREBATTLE_TYPE.STRONGHOLD: QUEUE_TYPE.STRONGHOLD_UNITS, 
-   PREBATTLE_TYPE.EPIC: QUEUE_TYPE.EPIC, 
-   PREBATTLE_TYPE.MAPBOX: QUEUE_TYPE.MAPBOX, 
-   PREBATTLE_TYPE.FUN_RANDOM: QUEUE_TYPE.FUN_RANDOM, 
-   PREBATTLE_TYPE.TOURNAMENT: QUEUE_TYPE.TOURNAMENT_UNITS, 
-   PREBATTLE_TYPE.CLAN: QUEUE_TYPE.SPEC_BATTLE, 
-   PREBATTLE_TYPE.MAPS_TRAINING: QUEUE_TYPE.MAPS_TRAINING, 
-   PREBATTLE_TYPE.BATTLE_ROYALE: QUEUE_TYPE.BATTLE_ROYALE, 
-   PREBATTLE_TYPE.BATTLE_ROYALE_TOURNAMENT: QUEUE_TYPE.BATTLE_ROYALE_TOURNAMENT}
+_PRB_TO_QUEUE = {PREBATTLE_TYPE.SQUAD: QUEUE_TYPE.RANDOMS,
+ PREBATTLE_TYPE.UNIT: QUEUE_TYPE.UNITS,
+ PREBATTLE_TYPE.EVENT: QUEUE_TYPE.EVENT_BATTLES,
+ PREBATTLE_TYPE.STRONGHOLD: QUEUE_TYPE.STRONGHOLD_UNITS,
+ PREBATTLE_TYPE.EPIC: QUEUE_TYPE.EPIC,
+ PREBATTLE_TYPE.MAPBOX: QUEUE_TYPE.MAPBOX,
+ PREBATTLE_TYPE.FUN_RANDOM: QUEUE_TYPE.FUN_RANDOM,
+ PREBATTLE_TYPE.TOURNAMENT: QUEUE_TYPE.TOURNAMENT_UNITS,
+ PREBATTLE_TYPE.CLAN: QUEUE_TYPE.SPEC_BATTLE,
+ PREBATTLE_TYPE.MAPS_TRAINING: QUEUE_TYPE.MAPS_TRAINING,
+ PREBATTLE_TYPE.BATTLE_ROYALE: QUEUE_TYPE.BATTLE_ROYALE,
+ PREBATTLE_TYPE.BATTLE_ROYALE_TOURNAMENT: QUEUE_TYPE.BATTLE_ROYALE_TOURNAMENT}
 
 def getQueueTypeFromEntityType(prebattleType=None):
     return _PRB_TO_QUEUE.get(prebattleType or getPrebattleType(), QUEUE_TYPE.UNKNOWN)
@@ -199,9 +196,7 @@ def getQueueTypeFromEntityType(prebattleType=None):
 def getQueueTypeFromPrbEntity(prbEntity):
     if not prbEntity:
         return QUEUE_TYPE.UNKNOWN
-    if prbEntity.getQueueType() > QUEUE_TYPE.UNKNOWN:
-        return prbEntity.getQueueType()
-    return getQueueTypeFromEntityType(prbEntity.getEntityType())
+    return prbEntity.getQueueType() if prbEntity.getQueueType() > QUEUE_TYPE.UNKNOWN else getQueueTypeFromEntityType(prbEntity.getEntityType())
 
 
 @dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
@@ -214,11 +209,11 @@ def getCreatorFullName(lobbyContext=None):
     else:
         creatorRegion = None
     if clanAbbrev:
-        fullName = ('{0:>s}[{1:>s}]').format(creatorName, clanAbbrev)
+        fullName = '{0:>s}[{1:>s}]'.format(creatorName, clanAbbrev)
     else:
         fullName = creatorName
     if creatorRegion:
-        fullName = ('{0:>s} {1:>s}').format(fullName, creatorRegion)
+        fullName = '{0:>s} {1:>s}'.format(fullName, creatorRegion)
     return fullName
 
 
@@ -236,7 +231,7 @@ def isEpicTraining(settings=None):
 
 def hasOpenTeamRoles(settings):
     teamRoles = settings['teamRoles']
-    return all(role == PREBATTLE_ROLE.TRAINING_CREATOR for role in teamRoles.itervalues())
+    return all((role == PREBATTLE_ROLE.TRAINING_CREATOR for role in teamRoles.itervalues()))
 
 
 def isDevTraining():
@@ -245,8 +240,7 @@ def isDevTraining():
 
 
 def isBattleSession(settings=None):
-    return getPrebattleType(settings=settings) in (
-     PREBATTLE_TYPE.TOURNAMENT, PREBATTLE_TYPE.CLAN)
+    return getPrebattleType(settings=settings) in (PREBATTLE_TYPE.TOURNAMENT, PREBATTLE_TYPE.CLAN)
 
 
 @dependency.replace_none_kwargs(gameSession=IGameSessionController)
@@ -276,14 +270,15 @@ def getUnit(safe=False):
         if not safe:
             raise SoftException('Unit manager not found')
         return
-    unit = None
-    try:
-        unit = unitMgr.unit
-    except AttributeError:
-        if not safe:
-            raise SoftException('Unit not found')
+    else:
+        unit = None
+        try:
+            unit = unitMgr.unit
+        except AttributeError:
+            if not safe:
+                raise SoftException('Unit not found')
 
-    return unit
+        return unit
 
 
 def hasModalEntity():
@@ -291,7 +286,4 @@ def hasModalEntity():
 
 
 def getTrainingBattleRoundLimits(accountAttrs):
-    if IS_DEVELOPMENT or accountAttrs & ACCOUNT_ATTR.DAILY_BONUS_1:
-        return (60, 14400)
-    return (
-     300, 1800)
+    return (60, 14400) if IS_DEVELOPMENT or accountAttrs & ACCOUNT_ATTR.DAILY_BONUS_1 else (300, 1800)

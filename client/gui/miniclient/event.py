@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/miniclient/event.py
 from helpers import aop
 
 class _ParametrizeInitAspect(aop.Aspect):
@@ -17,12 +19,10 @@ class _DisableEventBoards(aop.Aspect):
 class InitEventPointcut(aop.Pointcut):
 
     def __init__(self):
-        aop.Pointcut.__init__(self, 'gui.game_control.event_battles_controller', 'EventBattlesController', 'isEnabled', aspects=(
-         _ParametrizeInitAspect,))
+        aop.Pointcut.__init__(self, 'gui.game_control.event_battles_controller', 'EventBattlesController', 'isEnabled', aspects=(_ParametrizeInitAspect,))
 
 
 class DisableEventBoards(aop.Pointcut):
 
     def __init__(self):
-        aop.Pointcut.__init__(self, 'helpers.server_settings', 'ServerSettings', 'isElenEnabled', aspects=(
-         _DisableEventBoards,))
+        aop.Pointcut.__init__(self, 'helpers.server_settings', 'ServerSettings', 'isElenEnabled', aspects=(_DisableEventBoards,))

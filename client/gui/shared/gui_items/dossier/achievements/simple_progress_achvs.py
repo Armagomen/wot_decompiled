@@ -1,7 +1,14 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/gui_items/dossier/achievements/simple_progress_achvs.py
+from helpers import dependency
+from skeletons.gui.shared import IItemsCache
+from gui.shared.utils.requesters import REQ_CRITERIA
 from dossiers2.ui.achievements import ACHIEVEMENT_BLOCK as _AB
 from dossiers2.custom.cache import getCache as getDossiersCache
+from dossiers2.custom.collector20 import getCollector20Config
+from dossiers2.custom.helpers import getCollector20Requirements
 from abstract import SimpleProgressAchievement
-from abstract.mixins import Deprecated
+from abstract.mixins import Deprecated, HasVehiclesList
 
 class BeasthunterAchievement(SimpleProgressAchievement):
     __slots__ = ()
@@ -10,8 +17,7 @@ class BeasthunterAchievement(SimpleProgressAchievement):
         super(BeasthunterAchievement, self).__init__('beasthunter', _AB.TOTAL, dossier, value)
 
     def getNextLevelInfo(self):
-        return (
-         'vehiclesLeft', self._lvlUpValue)
+        return ('vehiclesLeft', self._lvlUpValue)
 
     def _readProgressValue(self, dossier):
         return dossier.getRecordValue(_AB.TOTAL, 'fragsBeast')
@@ -104,8 +110,7 @@ class MousebaneAchievement(SimpleProgressAchievement):
         super(MousebaneAchievement, self).__init__('mousebane', _AB.TOTAL, dossier, value)
 
     def getNextLevelInfo(self):
-        return (
-         'vehiclesLeft', self._lvlUpValue)
+        return ('vehiclesLeft', self._lvlUpValue)
 
     def _readProgressValue(self, dossier):
         return dossier.getBlock('vehTypeFrags').get(getDossiersCache()['mausTypeCompDescr'], 0)
@@ -209,3 +214,30 @@ class WolfAmongSheepAchievement(SimpleProgressAchievement):
 
     def _readProgressValue(self, dossier):
         return dossier.getRecordValue(_AB.TEAM_7X7, 'wolfAmongSheep')
+
+
+class Collector20Achievement(HasVehiclesList, SimpleProgressAchievement):
+    __itemsCache = dependency.descriptor(IItemsCache)
+    _LIST_NAME = 'vehiclesToHaveInGarage'
+
+    def __init__(self, name, block, dossier, value=None):
+        if not self.checkIsInDossier(block, name, dossier):
+            inventoryVehsCDs = set(self.__itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY | ~REQ_CRITERIA.SECRET | ~REQ_CRITERIA.HIDDEN))
+            self._vehTypeCompDescrs = getCollector20Requirements(inventoryVehsCDs)
+        else:
+            self._vehTypeCompDescrs = set()
+        SimpleProgressAchievement.__init__(self, name, block, dossier, value)
+        HasVehiclesList.__init__(self)
+
+    def _getVehiclesDescrsList(self):
+        return self._vehTypeCompDescrs
+
+    def _readLevelUpTotalValue(self, dossier):
+        return len(getCollector20Config())
+
+    def _readLevelUpValue(self, dossier):
+        return len(self._vehTypeCompDescrs)
+
+    @classmethod
+    def _sortFunc(cls, i1, i2):
+        return i1.level - i2.level or i1.innationID - i2.innationID or i1.nation - i2.nation

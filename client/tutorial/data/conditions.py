@@ -1,9 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/tutorial/data/conditions.py
 import functools
 from tutorial.data.has_id import HasID
-__all__ = ('CONDITION_TYPE', 'CONDITION_STATE', 'FlagCondition', 'GlobalFlagCondition',
-           'WindowOnSceneCondition', 'VarDefinedCondition', 'VarCompareCondition',
-           'EffectTriggeredCondition', 'GameItemSimpleStateCondition', 'GameItemRelateStateCondition',
-           'Conditions')
+__all__ = ('CONDITION_TYPE', 'CONDITION_STATE', 'FlagCondition', 'GlobalFlagCondition', 'WindowOnSceneCondition', 'VarDefinedCondition', 'VarCompareCondition', 'EffectTriggeredCondition', 'GameItemSimpleStateCondition', 'GameItemRelateStateCondition', 'Conditions')
 
 class CONDITION_TYPE(object):
     FLAG = 0
@@ -23,25 +22,35 @@ class CONDITION_TYPE(object):
     CONDITION_OR = 16
     CLASS_CONDITION = 17
     FIRST_CUSTOM = 100
-    BASE_RANGE = (
-     FLAG, GLOBAL_FLAG, WINDOW_ON_SCENE, GAME_ITEM_SIMPLE_STATE,
-     GAME_ITEM_RELATE_STATE, VAR_DEFINED, VAR_COMPARE, EFFECT_TRIGGERED,
-     SERVICE, COMPONENT_ON_SCENE, CURRENT_SCENE, VIEW_PRESENT,
-     CONNECTED_ITEM, CONDITION_AND, CONDITION_OR, CLASS_CONDITION)
-    COMPLEX = (
-     CONDITION_AND, CONDITION_OR)
+    BASE_RANGE = (FLAG,
+     GLOBAL_FLAG,
+     WINDOW_ON_SCENE,
+     GAME_ITEM_SIMPLE_STATE,
+     GAME_ITEM_RELATE_STATE,
+     VAR_DEFINED,
+     VAR_COMPARE,
+     EFFECT_TRIGGERED,
+     SERVICE,
+     COMPONENT_ON_SCENE,
+     CURRENT_SCENE,
+     VIEW_PRESENT,
+     CONNECTED_ITEM,
+     CONDITION_AND,
+     CONDITION_OR,
+     CLASS_CONDITION)
+    COMPLEX = (CONDITION_AND, CONDITION_OR)
 
 
 @functools.total_ordering
 class _StateValue(object):
-    __slots__ = ('value', )
+    __slots__ = ('value',)
 
     def __init__(self, value):
         super(_StateValue, self).__init__()
         self.value = value
 
     def __repr__(self):
-        return ('_StateValue({})').format(self.value)
+        return '_StateValue({})'.format(self.value)
 
     def __invert__(self):
         return _StateValue(-self.value)
@@ -87,13 +96,33 @@ class CONDITION_STATE(object):
     CREW_HAS_ANY_SKILL = _StateValue(12)
     HAS_REGULAR_CONSUMABLES = _StateValue(13)
     HAS_OPTIONAL_DEVICES = _StateValue(14)
-    RANGE = (
-     UNDEFINED, ACTIVE, EQUALS, SELECTED, PREMIUM, UNLOCKED, IN_INVENTORY, XP_ENOUGH,
-     MONEY_ENOUGH, LEVEL, MAY_INSTALL, INSTALLED, CREW_HAS_ANY_SKILL, HAS_REGULAR_CONSUMABLES, HAS_OPTIONAL_DEVICES)
-    GAME_ITEM_SIMPLE_STATE = (
-     SELECTED, PREMIUM, UNLOCKED, IN_INVENTORY, MONEY_ENOUGH, HAS_REGULAR_CONSUMABLES, HAS_OPTIONAL_DEVICES)
-    GAME_ITEM_RELATE_STATE = (
-     XP_ENOUGH, LEVEL, MAY_INSTALL, INSTALLED, CREW_HAS_ANY_SKILL)
+    RANGE = (UNDEFINED,
+     ACTIVE,
+     EQUALS,
+     SELECTED,
+     PREMIUM,
+     UNLOCKED,
+     IN_INVENTORY,
+     XP_ENOUGH,
+     MONEY_ENOUGH,
+     LEVEL,
+     MAY_INSTALL,
+     INSTALLED,
+     CREW_HAS_ANY_SKILL,
+     HAS_REGULAR_CONSUMABLES,
+     HAS_OPTIONAL_DEVICES)
+    GAME_ITEM_SIMPLE_STATE = (SELECTED,
+     PREMIUM,
+     UNLOCKED,
+     IN_INVENTORY,
+     MONEY_ENOUGH,
+     HAS_REGULAR_CONSUMABLES,
+     HAS_OPTIONAL_DEVICES)
+    GAME_ITEM_RELATE_STATE = (XP_ENOUGH,
+     LEVEL,
+     MAY_INSTALL,
+     INSTALLED,
+     CREW_HAS_ANY_SKILL)
 
 
 class Condition(HasID):
@@ -271,7 +300,7 @@ class Conditions(list):
         self._eitherBlocks = []
 
     def __repr__(self):
-        return ('Conditions({0:s}): {1!r:s}, {2!r:s}').format(hex(id(self)), self[:], self._eitherBlocks)
+        return 'Conditions({0:s}): {1!r:s}, {2!r:s}'.format(hex(id(self)), self[:], self._eitherBlocks)
 
     def appendEitherBlock(self, block):
         self._eitherBlocks.append(block)
@@ -295,7 +324,6 @@ class Conditions(list):
         for condition in conditions:
             if condition.getType() in CONDITION_TYPE.COMPLEX:
                 result.extend(Conditions.__unwrapComplexConditions(condition.getConditionList()))
-            else:
-                result.append(condition)
+            result.append(condition)
 
         return result

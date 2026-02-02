@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/info/style_buying.py
 import typing
 from adisp import adisp_process
 from gui import DialogsInterface
@@ -67,11 +69,11 @@ class StyleBuyingProcessor(object):
     def __obtainByDynamicCurrency(self, money):
         method = dyn_utils.getBuyProductMethod(money)
         if not method:
-            raise SoftException(("Can't find buy method for dyn currency: {}").format(money.getCurrency()))
+            raise SoftException("Can't find buy method for dyn currency: {}".format(money.getCurrency()))
         if dyn_utils.mayObtainForMoney(money):
             method(self.__buyParams)
 
 
 def _buyRequestConfirmation(productName, priceStr, key):
-    return DialogsInterface.showDialog(meta=I18nConfirmDialogMeta(key=key, messageCtx={'product': productName, 
-       'price': priceStr}, focusedID=DIALOG_BUTTON_ID.SUBMIT))
+    return DialogsInterface.showDialog(meta=I18nConfirmDialogMeta(key=key, messageCtx={'product': productName,
+     'price': priceStr}, focusedID=DIALOG_BUTTON_ID.SUBMIT))

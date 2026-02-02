@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/prb_control/entities/regular/squad/actions_validator.py
 from gui.prb_control.entities.base.actions_validator import ActionsValidatorComposite
 from gui.prb_control.entities.base.squad.actions_validator import SquadActionsValidator, SquadVehiclesValidator
 from gui.prb_control.entities.base.unit.actions_validator import UnitSlotsValidator, CommanderValidator
@@ -14,19 +16,14 @@ class _BattleRoyaleVehiclesValidator(SquadVehiclesValidator):
         return vehicle.isOnlyForBattleRoyaleBattles
 
     def _isVehicleSuitableForMode(self, vehicle):
-        if not self._isValidMode(vehicle):
-            return ValidationResult(False, UNIT_RESTRICTION.UNSUITABLE_VEHICLE)
-        else:
-            return
+        return ValidationResult(False, UNIT_RESTRICTION.UNSUITABLE_VEHICLE) if not self._isValidMode(vehicle) else None
 
 
 class _UnitSlotsValidator(UnitSlotsValidator):
 
     def _validate(self):
         stats = self._entity.getStats()
-        if stats.freeSlotsCount > 0:
-            return ValidationResult(False, UNIT_RESTRICTION.UNIT_NOT_FULL)
-        return super(_UnitSlotsValidator, self)._validate()
+        return ValidationResult(False, UNIT_RESTRICTION.UNIT_NOT_FULL) if stats.freeSlotsCount > 0 else super(_UnitSlotsValidator, self)._validate()
 
 
 class _BattleRoyaleValidator(CommanderValidator):
@@ -34,27 +31,20 @@ class _BattleRoyaleValidator(CommanderValidator):
     def _validate(self):
         brController = dependency.instance(IBattleRoyaleController)
         status, _, _ = brController.getPrimeTimeStatus()
-        if status != PrimeTimeStatus.AVAILABLE:
-            return ValidationResult(False, UNIT_RESTRICTION.CURFEW)
-        return super(_BattleRoyaleValidator, self)._validate()
+        return ValidationResult(False, UNIT_RESTRICTION.CURFEW) if status != PrimeTimeStatus.AVAILABLE else super(_BattleRoyaleValidator, self)._validate()
 
 
 class BattleRoyaleSquadActionsValidator(SquadActionsValidator):
 
     def _createVehiclesValidator(self, entity):
-        validators = [
-         _BattleRoyaleVehiclesValidator(entity),
-         _UnitSlotsValidator(entity),
-         _BattleRoyaleValidator(entity)]
+        validators = [_BattleRoyaleVehiclesValidator(entity), _UnitSlotsValidator(entity), _BattleRoyaleValidator(entity)]
         if not IS_DEVELOPMENT:
             validators.append(_UnitSlotsValidator(entity))
         return ActionsValidatorComposite(entity, validators=validators)
 
     def _createSlotsValidator(self, entity):
         baseValidator = super(BattleRoyaleSquadActionsValidator, self)._createSlotsValidator(entity)
-        return ActionsValidatorComposite(entity, validators=[
-         baseValidator,
-         BattleRoyalSquadSlotsValidator(entity)])
+        return ActionsValidatorComposite(entity, validators=[baseValidator, BattleRoyalSquadSlotsValidator(entity)])
 
 
 class BattleRoyalSquadSlotsValidator(CommanderValidator):
@@ -62,5 +52,4 @@ class BattleRoyalSquadSlotsValidator(CommanderValidator):
     def _validate(self):
         stats = self._entity.getStats()
         pInfo = self._entity.getPlayerInfo()
-        if stats.occupiedSlotsCount > 1 and not pInfo.isReady:
-            return ValidationResult(False, UNIT_RESTRICTION.COMMANDER_VEHICLE_NOT_SELECTED)
+        return ValidationResult(False, UNIT_RESTRICTION.COMMANDER_VEHICLE_NOT_SELECTED) if stats.occupiedSlotsCount > 1 and not pInfo.isReady else None

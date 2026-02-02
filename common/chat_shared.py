@@ -1,4 +1,8 @@
-import cPickle, time, zlib
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/chat_shared.py
+import cPickle
+import time
+import zlib
 from functools import wraps
 import constants
 from Event import Event
@@ -9,10 +13,8 @@ from enumerations import Enumeration, AttributeEnumItem
 from messenger_common_chat2 import BATTLE_CHAT_COMMANDS_BY_NAMES
 from soft_exception import SoftException
 from wotdecorators import noexcept
-__all__ = [
- 'CHAT_ACTIONS', 'SYS_MESSAGE_TYPE']
-NOTIFICATION_GROUP = Enumeration('Group of members for notification', [
- 'All',
+__all__ = ['CHAT_ACTIONS', 'SYS_MESSAGE_TYPE']
+NOTIFICATION_GROUP = Enumeration('Group of members for notification', ['All',
  'NONE',
  'Originator',
  'ExceptOriginator'])
@@ -40,631 +42,338 @@ def __notifyFilterExceptOriginator(originatorId, entityId):
 
 
 if constants.IS_BASEAPP:
-    CHAT_ACTIONS = Enumeration('chatChannelActions', [
-     (
-      'enter',
-      {'notifyFilter': __notifyFilterExceptOriginator, 
-         'notificationGroup': NOTIFICATION_GROUP.ExceptOriginator, 
-         'logLevel': CHAT_LOG.ACTIONS}),
-     (
-      'broadcast',
-      {'notifyFilter': __notifyFilterAll, 
-         'notificationGroup': NOTIFICATION_GROUP.All, 
-         'logLevel': CHAT_LOG.MESSAGES}),
-     (
-      'leave',
-      {'notifyFilter': __notifyFilterExceptOriginator, 
-         'notificationGroup': NOTIFICATION_GROUP.ExceptOriginator, 
-         'logLevel': CHAT_LOG.ACTIONS}),
-     (
-      'requestMembers',
-      {'notifyFilter': __notifyFilterOnlyOriginator, 
-         'notificationGroup': NOTIFICATION_GROUP.Originator, 
-         'logLevel': CHAT_LOG.NONE}),
-     (
-      'channelDestroyed',
-      {'notifyFilter': __notifyFilterAll, 
-         'notificationGroup': NOTIFICATION_GROUP.All, 
-         'logLevel': CHAT_LOG.ACTIONS}),
-     (
-      'createChannel',
-      {'notifyFilter': __notifyFilterOnlyOriginator, 
-         'notificationGroup': NOTIFICATION_GROUP.Originator, 
-         'logLevel': CHAT_LOG.ACTIONS}),
-     (
-      'requestChannels',
-      {'notifyFilter': __notifyFilterOnlyOriginator, 
-         'notificationGroup': NOTIFICATION_GROUP.Originator, 
-         'logLevel': CHAT_LOG.NONE}),
-     (
-      'selfEnter',
-      {'notifyFilter': __notifyFilterOnlyOriginator, 
-         'notificationGroup': NOTIFICATION_GROUP.Originator, 
-         'logLevel': CHAT_LOG.NONE}),
-     (
-      'selfLeave',
-      {'notifyFilter': __notifyFilterOnlyOriginator, 
-         'notificationGroup': NOTIFICATION_GROUP.Originator, 
-         'logLevel': CHAT_LOG.NONE}),
-     (
-      'requestMessageHistory',
-      {'notifyFilter': __notifyFilterOnlyOriginator, 
-         'notificationGroup': NOTIFICATION_GROUP.Originator, 
-         'logLevel': CHAT_LOG.NONE}),
-     (
-      'channelInfoUpdated',
-      {'notifyFilter': __notifyFilterAll, 
-         'notificationGroup': NOTIFICATION_GROUP.All, 
-         'logLevel': CHAT_LOG.NONE}),
-     (
-      'memberStatusUpdate',
-      {'notifyFilter': __notifyFilterAll, 
-         'notificationGroup': NOTIFICATION_GROUP.All, 
-         'logLevel': CHAT_LOG.NONE}),
-     (
-      'findUsers',
-      {'notifyFilter': __notifyFilterOnlyOriginator, 
-         'notificationGroup': NOTIFICATION_GROUP.Originator, 
-         'logLevel': CHAT_LOG.NONE}),
-     (
-      'requestUsersRoster',
-      {'notifyFilter': __notifyFilterOnlyOriginator, 
-         'notificationGroup': NOTIFICATION_GROUP.Originator, 
-         'logLevel': CHAT_LOG.NONE}),
-     (
-      'addIgnored',
-      {'notifyFilter': __notifyFilterOnlyOriginator, 
-         'notificationGroup': NOTIFICATION_GROUP.Originator, 
-         'logLevel': CHAT_LOG.NONE}),
-     (
-      'addFriend',
-      {'notifyFilter': __notifyFilterOnlyOriginator, 
-         'notificationGroup': NOTIFICATION_GROUP.Originator, 
-         'logLevel': CHAT_LOG.NONE}),
-     (
-      'removeIgnored',
-      {'notifyFilter': __notifyFilterOnlyOriginator, 
-         'notificationGroup': NOTIFICATION_GROUP.Originator, 
-         'logLevel': CHAT_LOG.NONE}),
-     (
-      'removeFriend',
-      {'notifyFilter': __notifyFilterOnlyOriginator, 
-         'notificationGroup': NOTIFICATION_GROUP.Originator, 
-         'logLevel': CHAT_LOG.NONE}),
-     (
-      'createPrivate',
-      {'notifyFilter': __notifyFilterOnlyOriginator, 
-         'notificationGroup': NOTIFICATION_GROUP.Originator, 
-         'logLevel': CHAT_LOG.NONE}),
-     (
-      'friendStatusUpdate',
-      {'notifyFilter': __notifyFilterOnlyOriginator, 
-         'notificationGroup': NOTIFICATION_GROUP.Originator, 
-         'logLevel': CHAT_LOG.NONE}),
-     (
-      'userChatCommand',
-      {'notifyFilter': __notifyFilterAll, 
-         'notificationGroup': NOTIFICATION_GROUP.All, 
-         'logLevel': CHAT_LOG.ACTIONS}),
-     (
-      'sysMessage',
-      {'notifyFilter': __notifyFilterAll, 
-         'notificationGroup': NOTIFICATION_GROUP.All, 
-         'logLevel': CHAT_LOG.NONE}),
-     (
-      'personalSysMessage',
-      {'notifyFilter': __notifyFilterAll, 
-         'notificationGroup': NOTIFICATION_GROUP.All, 
-         'logLevel': CHAT_LOG.NONE}),
-     (
-      'chatInitialization',
-      {'notifyFilter': __notifyFilterAll, 
-         'notificationGroup': NOTIFICATION_GROUP.All, 
-         'logLevel': CHAT_LOG.ACTIONS}),
-     (
-      'userInviteCommand',
-      {'notifyFilter': __notifyFilterAll, 
-         'notificationGroup': NOTIFICATION_GROUP.All, 
-         'logLevel': CHAT_LOG.ACTIONS}),
-     (
-      'createInvite',
-      {'notifyFilter': __notifyFilterOnlyOriginator, 
-         'notificationGroup': NOTIFICATION_GROUP.Originator, 
-         'logLevel': CHAT_LOG.ACTIONS}),
-     (
-      'receiveInvite',
-      {'notifyFilter': __notifyFilterOnlyOriginator, 
-         'notificationGroup': NOTIFICATION_GROUP.Originator, 
-         'logLevel': CHAT_LOG.ACTIONS}),
-     (
-      'receiveArchiveInvite',
-      {'notifyFilter': __notifyFilterOnlyOriginator, 
-         'notificationGroup': NOTIFICATION_GROUP.Originator, 
-         'logLevel': CHAT_LOG.ACTIONS}),
-     (
-      'receiveMembersCount',
-      {'notifyFilter': __notifyFilterOnlyOriginator, 
-         'notificationGroup': NOTIFICATION_GROUP.Originator, 
-         'logLevel': CHAT_LOG.ACTIONS}),
-     (
-      'receiveMembersDelta',
-      {'notifyFilter': __notifyFilterOnlyOriginator, 
-         'notificationGroup': NOTIFICATION_GROUP.All, 
-         'logLevel': CHAT_LOG.ACTIONS}),
-     (
-      'VOIPSettings',
-      {'notifyFilter': __notifyFilterAll, 
-         'notificationGroup': NOTIFICATION_GROUP.All, 
-         'logLevel': CHAT_LOG.ACTIONS}),
-     (
-      'VOIPCredentials',
-      {'notifyFilter': __notifyFilterAll, 
-         'notificationGroup': NOTIFICATION_GROUP.All, 
-         'logLevel': CHAT_LOG.ACTIONS}),
-     (
-      'setMuted',
-      {'notifyFilter': __notifyFilterOnlyOriginator, 
-         'notificationGroup': NOTIFICATION_GROUP.Originator, 
-         'logLevel': CHAT_LOG.NONE}),
-     (
-      'unsetMuted',
-      {'notifyFilter': __notifyFilterOnlyOriginator, 
-         'notificationGroup': NOTIFICATION_GROUP.Originator, 
-         'logLevel': CHAT_LOG.NONE}),
-     (
-      'logVivoxLogin',
-      {'notifyFilter': __notifyFilterNone, 
-         'notificationGroup': NOTIFICATION_GROUP.NONE, 
-         'logLevel': CHAT_LOG.NONE})], instance=AttributeEnumItem)
+    CHAT_ACTIONS = Enumeration('chatChannelActions', [('enter', {'notifyFilter': __notifyFilterExceptOriginator,
+       'notificationGroup': NOTIFICATION_GROUP.ExceptOriginator,
+       'logLevel': CHAT_LOG.ACTIONS}),
+     ('broadcast', {'notifyFilter': __notifyFilterAll,
+       'notificationGroup': NOTIFICATION_GROUP.All,
+       'logLevel': CHAT_LOG.MESSAGES}),
+     ('leave', {'notifyFilter': __notifyFilterExceptOriginator,
+       'notificationGroup': NOTIFICATION_GROUP.ExceptOriginator,
+       'logLevel': CHAT_LOG.ACTIONS}),
+     ('requestMembers', {'notifyFilter': __notifyFilterOnlyOriginator,
+       'notificationGroup': NOTIFICATION_GROUP.Originator,
+       'logLevel': CHAT_LOG.NONE}),
+     ('channelDestroyed', {'notifyFilter': __notifyFilterAll,
+       'notificationGroup': NOTIFICATION_GROUP.All,
+       'logLevel': CHAT_LOG.ACTIONS}),
+     ('createChannel', {'notifyFilter': __notifyFilterOnlyOriginator,
+       'notificationGroup': NOTIFICATION_GROUP.Originator,
+       'logLevel': CHAT_LOG.ACTIONS}),
+     ('requestChannels', {'notifyFilter': __notifyFilterOnlyOriginator,
+       'notificationGroup': NOTIFICATION_GROUP.Originator,
+       'logLevel': CHAT_LOG.NONE}),
+     ('selfEnter', {'notifyFilter': __notifyFilterOnlyOriginator,
+       'notificationGroup': NOTIFICATION_GROUP.Originator,
+       'logLevel': CHAT_LOG.NONE}),
+     ('selfLeave', {'notifyFilter': __notifyFilterOnlyOriginator,
+       'notificationGroup': NOTIFICATION_GROUP.Originator,
+       'logLevel': CHAT_LOG.NONE}),
+     ('requestMessageHistory', {'notifyFilter': __notifyFilterOnlyOriginator,
+       'notificationGroup': NOTIFICATION_GROUP.Originator,
+       'logLevel': CHAT_LOG.NONE}),
+     ('channelInfoUpdated', {'notifyFilter': __notifyFilterAll,
+       'notificationGroup': NOTIFICATION_GROUP.All,
+       'logLevel': CHAT_LOG.NONE}),
+     ('memberStatusUpdate', {'notifyFilter': __notifyFilterAll,
+       'notificationGroup': NOTIFICATION_GROUP.All,
+       'logLevel': CHAT_LOG.NONE}),
+     ('findUsers', {'notifyFilter': __notifyFilterOnlyOriginator,
+       'notificationGroup': NOTIFICATION_GROUP.Originator,
+       'logLevel': CHAT_LOG.NONE}),
+     ('requestUsersRoster', {'notifyFilter': __notifyFilterOnlyOriginator,
+       'notificationGroup': NOTIFICATION_GROUP.Originator,
+       'logLevel': CHAT_LOG.NONE}),
+     ('addIgnored', {'notifyFilter': __notifyFilterOnlyOriginator,
+       'notificationGroup': NOTIFICATION_GROUP.Originator,
+       'logLevel': CHAT_LOG.NONE}),
+     ('addFriend', {'notifyFilter': __notifyFilterOnlyOriginator,
+       'notificationGroup': NOTIFICATION_GROUP.Originator,
+       'logLevel': CHAT_LOG.NONE}),
+     ('removeIgnored', {'notifyFilter': __notifyFilterOnlyOriginator,
+       'notificationGroup': NOTIFICATION_GROUP.Originator,
+       'logLevel': CHAT_LOG.NONE}),
+     ('removeFriend', {'notifyFilter': __notifyFilterOnlyOriginator,
+       'notificationGroup': NOTIFICATION_GROUP.Originator,
+       'logLevel': CHAT_LOG.NONE}),
+     ('createPrivate', {'notifyFilter': __notifyFilterOnlyOriginator,
+       'notificationGroup': NOTIFICATION_GROUP.Originator,
+       'logLevel': CHAT_LOG.NONE}),
+     ('friendStatusUpdate', {'notifyFilter': __notifyFilterOnlyOriginator,
+       'notificationGroup': NOTIFICATION_GROUP.Originator,
+       'logLevel': CHAT_LOG.NONE}),
+     ('userChatCommand', {'notifyFilter': __notifyFilterAll,
+       'notificationGroup': NOTIFICATION_GROUP.All,
+       'logLevel': CHAT_LOG.ACTIONS}),
+     ('sysMessage', {'notifyFilter': __notifyFilterAll,
+       'notificationGroup': NOTIFICATION_GROUP.All,
+       'logLevel': CHAT_LOG.NONE}),
+     ('personalSysMessage', {'notifyFilter': __notifyFilterAll,
+       'notificationGroup': NOTIFICATION_GROUP.All,
+       'logLevel': CHAT_LOG.NONE}),
+     ('chatInitialization', {'notifyFilter': __notifyFilterAll,
+       'notificationGroup': NOTIFICATION_GROUP.All,
+       'logLevel': CHAT_LOG.ACTIONS}),
+     ('userInviteCommand', {'notifyFilter': __notifyFilterAll,
+       'notificationGroup': NOTIFICATION_GROUP.All,
+       'logLevel': CHAT_LOG.ACTIONS}),
+     ('createInvite', {'notifyFilter': __notifyFilterOnlyOriginator,
+       'notificationGroup': NOTIFICATION_GROUP.Originator,
+       'logLevel': CHAT_LOG.ACTIONS}),
+     ('receiveInvite', {'notifyFilter': __notifyFilterOnlyOriginator,
+       'notificationGroup': NOTIFICATION_GROUP.Originator,
+       'logLevel': CHAT_LOG.ACTIONS}),
+     ('receiveArchiveInvite', {'notifyFilter': __notifyFilterOnlyOriginator,
+       'notificationGroup': NOTIFICATION_GROUP.Originator,
+       'logLevel': CHAT_LOG.ACTIONS}),
+     ('receiveMembersCount', {'notifyFilter': __notifyFilterOnlyOriginator,
+       'notificationGroup': NOTIFICATION_GROUP.Originator,
+       'logLevel': CHAT_LOG.ACTIONS}),
+     ('receiveMembersDelta', {'notifyFilter': __notifyFilterOnlyOriginator,
+       'notificationGroup': NOTIFICATION_GROUP.All,
+       'logLevel': CHAT_LOG.ACTIONS}),
+     ('VOIPSettings', {'notifyFilter': __notifyFilterAll,
+       'notificationGroup': NOTIFICATION_GROUP.All,
+       'logLevel': CHAT_LOG.ACTIONS}),
+     ('VOIPCredentials', {'notifyFilter': __notifyFilterAll,
+       'notificationGroup': NOTIFICATION_GROUP.All,
+       'logLevel': CHAT_LOG.ACTIONS}),
+     ('setMuted', {'notifyFilter': __notifyFilterOnlyOriginator,
+       'notificationGroup': NOTIFICATION_GROUP.Originator,
+       'logLevel': CHAT_LOG.NONE}),
+     ('unsetMuted', {'notifyFilter': __notifyFilterOnlyOriginator,
+       'notificationGroup': NOTIFICATION_GROUP.Originator,
+       'logLevel': CHAT_LOG.NONE}),
+     ('logVivoxLogin', {'notifyFilter': __notifyFilterNone,
+       'notificationGroup': NOTIFICATION_GROUP.NONE,
+       'logLevel': CHAT_LOG.NONE})], instance=AttributeEnumItem)
 else:
-    CHAT_ACTIONS = Enumeration('chatActions', [
-     (
-      'enter', {}),
-     (
-      'broadcast', {}),
-     (
-      'leave', {}),
-     (
-      'requestMembers', {}),
-     (
-      'channelDestroyed', {}),
-     (
-      'createChannel', {}),
-     (
-      'requestChannels', {}),
-     (
-      'selfEnter', {}),
-     (
-      'selfLeave', {}),
-     (
-      'requestMessageHistory', {}),
-     (
-      'channelInfoUpdated', {}),
-     (
-      'memberStatusUpdate', {}),
-     (
-      'findUsers', {}),
-     (
-      'requestUsersRoster', {}),
-     (
-      'addIgnored', {}),
-     (
-      'addFriend', {}),
-     (
-      'removeIgnored', {}),
-     (
-      'removeFriend', {}),
-     (
-      'createPrivate', {}),
-     (
-      'friendStatusUpdate', {}),
-     (
-      'userChatCommand', {}),
-     (
-      'sysMessage', {}),
-     (
-      'personalSysMessage', {}),
-     (
-      'chatInitialization', {}),
-     (
-      'userInviteCommand', {}),
-     (
-      'createInvite', {}),
-     (
-      'receiveInvite', {}),
-     (
-      'receiveArchiveInvite', {}),
-     (
-      'receiveMembersCount', {}),
-     (
-      'receiveMembersDelta', {}),
-     (
-      'VOIPSettings', {}),
-     (
-      'VOIPCredentials', {}),
-     (
-      'setMuted', {}),
-     (
-      'unsetMuted', {}),
-     (
-      'logVivoxLogin', {})], instance=AttributeEnumItem)
-CHAT_RESPONSES = Enumeration('chatActionResponses', ('success', 'internalError', 'channelAlreadyExists',
-                                                     'channelDestroyed', 'passwordRequired',
-                                                     'incorrectPassword', 'channelNotExists',
-                                                     'memberBanned', 'memberDisconnecting',
-                                                     'notAllowed', 'connectTimeout',
-                                                     'initializationFailure', 'userNotExists',
-                                                     'usersRosterLimitReached', 'activeChannelsLimitReached',
-                                                     'sqlError', 'incorrectCharacter',
-                                                     'addFriendError', 'addIgnoredError',
-                                                     'userIgnoredError', 'chatCommandError',
-                                                     'memberAlreadyBanned', 'memberAlreadyModerator',
-                                                     'memberNotModerator', 'commandInCooldown',
-                                                     'createPrivateError', 'actionInCooldown',
-                                                     'chatBanned', 'inviteCommandError',
-                                                     'unknownCommand', 'inviteCreateError',
-                                                     'membersLimitReached', 'notSupported',
-                                                     'inviteCreationNotAllowed',
-                                                     'incorrectCommandArgument',
-                                                     'invalidChannelName', 'setMutedError',
-                                                     'unsetMutedError', 'channelEntityUnreachable'))
+    CHAT_ACTIONS = Enumeration('chatActions', [('enter', {}),
+     ('broadcast', {}),
+     ('leave', {}),
+     ('requestMembers', {}),
+     ('channelDestroyed', {}),
+     ('createChannel', {}),
+     ('requestChannels', {}),
+     ('selfEnter', {}),
+     ('selfLeave', {}),
+     ('requestMessageHistory', {}),
+     ('channelInfoUpdated', {}),
+     ('memberStatusUpdate', {}),
+     ('findUsers', {}),
+     ('requestUsersRoster', {}),
+     ('addIgnored', {}),
+     ('addFriend', {}),
+     ('removeIgnored', {}),
+     ('removeFriend', {}),
+     ('createPrivate', {}),
+     ('friendStatusUpdate', {}),
+     ('userChatCommand', {}),
+     ('sysMessage', {}),
+     ('personalSysMessage', {}),
+     ('chatInitialization', {}),
+     ('userInviteCommand', {}),
+     ('createInvite', {}),
+     ('receiveInvite', {}),
+     ('receiveArchiveInvite', {}),
+     ('receiveMembersCount', {}),
+     ('receiveMembersDelta', {}),
+     ('VOIPSettings', {}),
+     ('VOIPCredentials', {}),
+     ('setMuted', {}),
+     ('unsetMuted', {}),
+     ('logVivoxLogin', {})], instance=AttributeEnumItem)
+CHAT_RESPONSES = Enumeration('chatActionResponses', ('success', 'internalError', 'channelAlreadyExists', 'channelDestroyed', 'passwordRequired', 'incorrectPassword', 'channelNotExists', 'memberBanned', 'memberDisconnecting', 'notAllowed', 'connectTimeout', 'initializationFailure', 'userNotExists', 'usersRosterLimitReached', 'activeChannelsLimitReached', 'sqlError', 'incorrectCharacter', 'addFriendError', 'addIgnoredError', 'userIgnoredError', 'chatCommandError', 'memberAlreadyBanned', 'memberAlreadyModerator', 'memberNotModerator', 'commandInCooldown', 'createPrivateError', 'actionInCooldown', 'chatBanned', 'inviteCommandError', 'unknownCommand', 'inviteCreateError', 'membersLimitReached', 'notSupported', 'inviteCreationNotAllowed', 'incorrectCommandArgument', 'invalidChannelName', 'setMutedError', 'unsetMutedError', 'channelEntityUnreachable'))
 __DEFAULT_COOLDOWN = 0.5
 __BATTLE_COMMANDS_DEFAULT_COOLDOWN = __DEFAULT_COOLDOWN
 __CHINA_USER_MESSAGE_COOLDOWN = 3.0
 __COOLDOWN_CHECK_CLIENT = 1
 __COOLDOWN_CHECK_BASE = 2
 __COOLDOWN_CHECK_ALL = __COOLDOWN_CHECK_CLIENT | __COOLDOWN_CHECK_BASE
-CHAT_COMMANDS = Enumeration('chatCommands', [
- (
-  'initAck', {'chnlCmd': 0}),
- (
-  'updateMemeberStatus', {'chnlCmd': 0}),
- (
-  'findUser',
-  {'chnlCmd': 0, 
-     'cooldown': {'period': 5.0, 'side': __COOLDOWN_CHECK_ALL}}),
- (
-  'addFriend',
-  {'chnlCmd': 0, 
-     'cooldown': {'period': 5.0, 'side': __COOLDOWN_CHECK_ALL}}),
- (
-  'addIgnored',
-  {'chnlCmd': 0, 
-     'cooldown': {'period': 5.0, 'side': __COOLDOWN_CHECK_ALL}}),
- (
-  'removeFriend',
-  {'chnlCmd': 0, 
-     'cooldown': {'period': 5.0, 'side': __COOLDOWN_CHECK_ALL}}),
- (
-  'removeIgnored',
-  {'chnlCmd': 0, 
-     'cooldown': {'period': 5.0, 'side': __COOLDOWN_CHECK_ALL}}),
- (
-  'createPrivate',
-  {'chnlCmd': 0, 
-     'cooldown': {'period': 5.0, 'side': __COOLDOWN_CHECK_ALL}}),
- (
-  'joinPrivate', {'chnlCmd': 0}),
- (
-  'requestUsersRoster', {'chnlCmd': 0}),
- (
-  'requestFriendStatus', {'chnlCmd': 0}),
- (
-  'friendStatusChange', {'chnlCmd': 0}),
- (
-  'addAdmirer', {'chnlCmd': 0}),
- (
-  'addAdmirerAck', {'chnlCmd': 0}),
- (
-  'removeAdmirer', {'chnlCmd': 0}),
- (
-  'onAddToIgnored', {'chnlCmd': 0}),
- (
-  'CHGCHNLNAME',
-  {'chnlCmd': 1, 
-     'argsCnt': 1, 'cooldown': {'period': 30.0, 'side': __COOLDOWN_CHECK_ALL}}),
- (
-  'GREETING',
-  {'chnlCmd': 1, 
-     'argsCnt': 1, 'cooldown': {'period': 30.0, 'side': __COOLDOWN_CHECK_ALL}}),
- (
-  'BAN',
-  {'chnlCmd': 1, 
-     'argsCnt': 3, 'cooldown': {'period': 10.0, 'side': __COOLDOWN_CHECK_ALL}}),
- (
-  'UNBAN',
-  {'chnlCmd': 1, 
-     'argsCnt': 1, 'cooldown': {'period': 10.0, 'side': __COOLDOWN_CHECK_ALL}}),
- (
-  'ADDMODERATOR',
-  {'chnlCmd': 1, 
-     'argsCnt': 1, 'cooldown': {'period': 10.0, 'side': __COOLDOWN_CHECK_ALL}}),
- (
-  'DELMODERATOR',
-  {'chnlCmd': 1, 
-     'argsCnt': 1, 'cooldown': {'period': 10.0, 'side': __COOLDOWN_CHECK_ALL}}),
- (
-  'requestLastSysMessages', {'chnlCmd': 0}),
- (
-  'chatAckInitialization', {'chnlCmd': 0}),
- (
-  'createInvite',
-  {'inviteCmd': 1, 
-     'cooldown': {'period': 0, 'side': __COOLDOWN_CHECK_ALL}}),
- (
-  'inviteReceived', {'inviteCmd': 1}),
- (
-  'acceptInvite',
-  {'inviteCmd': 1, 
-     'cooldown': {'period': 5.0, 'side': __COOLDOWN_CHECK_ALL}}),
- (
-  'rejectInvite',
-  {'inviteCmd': 1, 
-     'cooldown': {'period': 5.0, 'side': __COOLDOWN_CHECK_ALL}}),
- (
-  'getActiveInvites',
-  {'inviteCmd': 1, 
-     'cooldown': {'period': 5.0, 'side': __COOLDOWN_CHECK_ALL}}),
- (
-  'getArchiveInvites',
-  {'inviteCmd': 1, 
-     'cooldown': {'period': 5.0, 'side': __COOLDOWN_CHECK_ALL}}),
- (
-  'getMembersCount',
-  {'chnlCmd': 1, 
-     'cooldown': {'period': __DEFAULT_COOLDOWN, 'side': __COOLDOWN_CHECK_ALL}}),
- (
-  'requestSystemChatChannels',
-  {'chnlCmd': 0, 
-     'cooldown': {'period': __DEFAULT_COOLDOWN, 'side': __COOLDOWN_CHECK_ALL}}),
- (
-  'findChatChannels',
-  {'chnlCmd': 0, 
-     'cooldown': {'period': 5.0, 'side': __COOLDOWN_CHECK_ALL}}),
- (
-  'getChannelInfoById', {'chnlCmd': 0}),
- (
-  'createChatChannel',
-  {'chnlCmd': 0, 
-     'cooldown': {'period': 10.0, 'side': __COOLDOWN_CHECK_ALL}}),
- (
-  'destroyChatChannel', {'chnlCmd': 0}),
- (
-  'requestChatChannelMembers',
-  {'chnlCmd': 1, 
-     'skipBanCheck': 1, 'cooldown': {'period': 2.0, 'side': 0}}),
- (
-  'enterChatChannel',
-  {'chnlCmd': 0, 
-     'cooldown': {'period': __DEFAULT_COOLDOWN, 'side': 0}}),
- (
-  'leaveChatChannel',
-  {'chnlCmd': 0, 
-     'cooldown': {'period': __DEFAULT_COOLDOWN, 
-                  'side': 0}}),
- (
-  'broadcast',
-  {'chnlCmd': 0, 
-     'cooldown': {'period': __DEFAULT_COOLDOWN if not constants.IS_CHINA else __CHINA_USER_MESSAGE_COOLDOWN, 
-                  'side': __COOLDOWN_CHECK_ALL}}),
- (
-  'USERBAN',
-  {'userCmd': 1, 
-     'argsCnt': 4, 'cooldown': {'period': 5.0, 'side': __COOLDOWN_CHECK_ALL}}),
- (
-  'USERUNBAN',
-  {'userCmd': 1, 
-     'argsCnt': 2, 'cooldown': {'period': 5.0, 'side': __COOLDOWN_CHECK_ALL}}),
- (
-  'requestVOIPSettings',
-  {'chnlCmd': 1, 
-     'skipBanCheck': 1, 'cooldown': {'period': __DEFAULT_COOLDOWN, 'side': __COOLDOWN_CHECK_ALL}}),
- (
-  'requestVOIPCredentials',
-  {'chnlCmd': 0, 
-     'skipBanCheck': 1}),
- (
-  'setMuted',
-  {'chnlCmd': 0, 
-     'cooldown': {'period': 5.0, 'side': __COOLDOWN_CHECK_ALL}}),
- (
-  'unsetMuted',
-  {'chnlCmd': 0, 
-     'cooldown': {'period': 5.0, 'side': __COOLDOWN_CHECK_ALL}}),
- (
-  'logVivoxLogin',
-  {'chnlCmd': 0, 
-     'cooldown': {'period': __DEFAULT_COOLDOWN, 'side': __COOLDOWN_CHECK_ALL}}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.SOS,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.POSITIVE,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.ATTENTION_TO_POSITION,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.REPLY,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.CANCEL_REPLY,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.ATTACK_OBJECTIVE,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.DEFEND_OBJECTIVE,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.ATTACK_BASE,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.DEFEND_BASE,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.SPG_AIM_AREA,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.ATTACKING_ENEMY_WITH_SPG,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.TURNBACK,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.HELPME,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.ATTACK_ENEMY,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.RELOADINGGUN,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.THANKS,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.RELOADING_CASSETE,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.RELOADING_READY,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.RELOADING_READY_CASSETE,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.RELOADING_UNAVAILABLE,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.EPIC_GLOBAL_SAVE_TANKS_ATK,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.GOING_THERE,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.EPIC_GLOBAL_SAVE_TANKS_DEF,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.EPIC_GLOBAL_TIME_ATK,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.EPIC_GLOBAL_TIME_DEF,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.EPIC_GLOBAL_HQ_ATK,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.EPIC_GLOBAL_HQ_DEF,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.EPIC_GLOBAL_WEST,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.EPIC_GLOBAL_CENTER,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.EPIC_GLOBAL_EAST,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_1,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_2,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_3,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_4,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_5,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_6,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_7,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_1_EX,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_2_EX,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_3_EX,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_4_EX,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_5_EX,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_6_EX,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_7_EX,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.CLEAR_CHAT_COMMANDS,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.ATTACKING_ENEMY,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.SUPPORTING_ALLY,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.DEFENDING_BASE,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.ATTACKING_BASE,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.PREBATTLE_WAYPOINT,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.CONFIRM,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.ATTACKING_OBJECTIVE,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.DEFENDING_OBJECTIVE,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.VEHICLE_SPOTPOINT,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.SHOOTING_POINT,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.NAVIGATION_POINT,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.FLAG_POINT,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.MOVE_TO_TARGET_POINT,
-  {'battleCmd': 1}),
- (
-  BATTLE_CHAT_COMMAND_NAMES.MOVING_TO_TARGET_POINT,
-  {'battleCmd': 1})], instance=AttributeEnumItem)
-CHAT_MEMBER_STATUSES = Enumeration('chatMemberStatuses', [
- 'available',
- 'inBattle'])
-CHAT_MEMBER_BAN_TYPE = Enumeration('chatMemberBanType', [
- 'none',
- 'readonly',
- 'full'])
-CHAT_MEMBER_ROLE = Enumeration('chatMemberRole', [
- 'member',
- 'visitor',
- 'moderator'])
-CHAT_MEMBER_GROUP = Enumeration('chatMemberRole', [
- 'member',
+CHAT_COMMANDS = Enumeration('chatCommands', [('initAck', {'chnlCmd': 0}),
+ ('updateMemeberStatus', {'chnlCmd': 0}),
+ ('findUser', {'chnlCmd': 0,
+   'cooldown': {'period': 5.0,
+                'side': __COOLDOWN_CHECK_ALL}}),
+ ('addFriend', {'chnlCmd': 0,
+   'cooldown': {'period': 5.0,
+                'side': __COOLDOWN_CHECK_ALL}}),
+ ('addIgnored', {'chnlCmd': 0,
+   'cooldown': {'period': 5.0,
+                'side': __COOLDOWN_CHECK_ALL}}),
+ ('removeFriend', {'chnlCmd': 0,
+   'cooldown': {'period': 5.0,
+                'side': __COOLDOWN_CHECK_ALL}}),
+ ('removeIgnored', {'chnlCmd': 0,
+   'cooldown': {'period': 5.0,
+                'side': __COOLDOWN_CHECK_ALL}}),
+ ('createPrivate', {'chnlCmd': 0,
+   'cooldown': {'period': 5.0,
+                'side': __COOLDOWN_CHECK_ALL}}),
+ ('joinPrivate', {'chnlCmd': 0}),
+ ('requestUsersRoster', {'chnlCmd': 0}),
+ ('requestFriendStatus', {'chnlCmd': 0}),
+ ('friendStatusChange', {'chnlCmd': 0}),
+ ('addAdmirer', {'chnlCmd': 0}),
+ ('addAdmirerAck', {'chnlCmd': 0}),
+ ('removeAdmirer', {'chnlCmd': 0}),
+ ('onAddToIgnored', {'chnlCmd': 0}),
+ ('CHGCHNLNAME', {'chnlCmd': 1,
+   'argsCnt': 1,
+   'cooldown': {'period': 30.0,
+                'side': __COOLDOWN_CHECK_ALL}}),
+ ('GREETING', {'chnlCmd': 1,
+   'argsCnt': 1,
+   'cooldown': {'period': 30.0,
+                'side': __COOLDOWN_CHECK_ALL}}),
+ ('BAN', {'chnlCmd': 1,
+   'argsCnt': 3,
+   'cooldown': {'period': 10.0,
+                'side': __COOLDOWN_CHECK_ALL}}),
+ ('UNBAN', {'chnlCmd': 1,
+   'argsCnt': 1,
+   'cooldown': {'period': 10.0,
+                'side': __COOLDOWN_CHECK_ALL}}),
+ ('ADDMODERATOR', {'chnlCmd': 1,
+   'argsCnt': 1,
+   'cooldown': {'period': 10.0,
+                'side': __COOLDOWN_CHECK_ALL}}),
+ ('DELMODERATOR', {'chnlCmd': 1,
+   'argsCnt': 1,
+   'cooldown': {'period': 10.0,
+                'side': __COOLDOWN_CHECK_ALL}}),
+ ('requestLastSysMessages', {'chnlCmd': 0}),
+ ('chatAckInitialization', {'chnlCmd': 0}),
+ ('createInvite', {'inviteCmd': 1,
+   'cooldown': {'period': 0,
+                'side': __COOLDOWN_CHECK_ALL}}),
+ ('inviteReceived', {'inviteCmd': 1}),
+ ('acceptInvite', {'inviteCmd': 1,
+   'cooldown': {'period': 5.0,
+                'side': __COOLDOWN_CHECK_ALL}}),
+ ('rejectInvite', {'inviteCmd': 1,
+   'cooldown': {'period': 5.0,
+                'side': __COOLDOWN_CHECK_ALL}}),
+ ('getActiveInvites', {'inviteCmd': 1,
+   'cooldown': {'period': 5.0,
+                'side': __COOLDOWN_CHECK_ALL}}),
+ ('getArchiveInvites', {'inviteCmd': 1,
+   'cooldown': {'period': 5.0,
+                'side': __COOLDOWN_CHECK_ALL}}),
+ ('getMembersCount', {'chnlCmd': 1,
+   'cooldown': {'period': __DEFAULT_COOLDOWN,
+                'side': __COOLDOWN_CHECK_ALL}}),
+ ('requestSystemChatChannels', {'chnlCmd': 0,
+   'cooldown': {'period': __DEFAULT_COOLDOWN,
+                'side': __COOLDOWN_CHECK_ALL}}),
+ ('findChatChannels', {'chnlCmd': 0,
+   'cooldown': {'period': 5.0,
+                'side': __COOLDOWN_CHECK_ALL}}),
+ ('getChannelInfoById', {'chnlCmd': 0}),
+ ('createChatChannel', {'chnlCmd': 0,
+   'cooldown': {'period': 10.0,
+                'side': __COOLDOWN_CHECK_ALL}}),
+ ('destroyChatChannel', {'chnlCmd': 0}),
+ ('requestChatChannelMembers', {'chnlCmd': 1,
+   'skipBanCheck': 1,
+   'cooldown': {'period': 2.0,
+                'side': 0}}),
+ ('enterChatChannel', {'chnlCmd': 0,
+   'cooldown': {'period': __DEFAULT_COOLDOWN,
+                'side': 0}}),
+ ('leaveChatChannel', {'chnlCmd': 0,
+   'cooldown': {'period': __DEFAULT_COOLDOWN,
+                'side': 0}}),
+ ('broadcast', {'chnlCmd': 0,
+   'cooldown': {'period': __DEFAULT_COOLDOWN if not constants.IS_CHINA else __CHINA_USER_MESSAGE_COOLDOWN,
+                'side': __COOLDOWN_CHECK_ALL}}),
+ ('USERBAN', {'userCmd': 1,
+   'argsCnt': 4,
+   'cooldown': {'period': 5.0,
+                'side': __COOLDOWN_CHECK_ALL}}),
+ ('USERUNBAN', {'userCmd': 1,
+   'argsCnt': 2,
+   'cooldown': {'period': 5.0,
+                'side': __COOLDOWN_CHECK_ALL}}),
+ ('requestVOIPSettings', {'chnlCmd': 1,
+   'skipBanCheck': 1,
+   'cooldown': {'period': __DEFAULT_COOLDOWN,
+                'side': __COOLDOWN_CHECK_ALL}}),
+ ('requestVOIPCredentials', {'chnlCmd': 0,
+   'skipBanCheck': 1}),
+ ('setMuted', {'chnlCmd': 0,
+   'cooldown': {'period': 5.0,
+                'side': __COOLDOWN_CHECK_ALL}}),
+ ('unsetMuted', {'chnlCmd': 0,
+   'cooldown': {'period': 5.0,
+                'side': __COOLDOWN_CHECK_ALL}}),
+ ('logVivoxLogin', {'chnlCmd': 0,
+   'cooldown': {'period': __DEFAULT_COOLDOWN,
+                'side': __COOLDOWN_CHECK_ALL}}),
+ (BATTLE_CHAT_COMMAND_NAMES.SOS, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.POSITIVE, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.ATTENTION_TO_POSITION, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.REPLY, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.CANCEL_REPLY, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.ATTACK_OBJECTIVE, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.DEFEND_OBJECTIVE, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.ATTACK_BASE, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.DEFEND_BASE, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.SPG_AIM_AREA, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.ATTACKING_ENEMY_WITH_SPG, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.TURNBACK, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.HELPME, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.ATTACK_ENEMY, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.RELOADINGGUN, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.THANKS, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.RELOADING_CASSETE, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.RELOADING_READY, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.RELOADING_READY_CASSETE, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.RELOADING_UNAVAILABLE, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.EPIC_GLOBAL_SAVE_TANKS_ATK, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.GOING_THERE, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.EPIC_GLOBAL_SAVE_TANKS_DEF, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.EPIC_GLOBAL_TIME_ATK, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.EPIC_GLOBAL_TIME_DEF, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.EPIC_GLOBAL_HQ_ATK, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.EPIC_GLOBAL_HQ_DEF, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.EPIC_GLOBAL_WEST, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.EPIC_GLOBAL_CENTER, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.EPIC_GLOBAL_EAST, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_1, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_2, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_3, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_4, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_5, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_6, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_7, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_1_EX, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_2_EX, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_3_EX, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_4_EX, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_5_EX, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_6_EX, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_7_EX, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.CLEAR_CHAT_COMMANDS, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.ATTACKING_ENEMY, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.SUPPORTING_ALLY, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.DEFENDING_BASE, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.ATTACKING_BASE, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.PREBATTLE_WAYPOINT, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.CONFIRM, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.ATTACKING_OBJECTIVE, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.DEFENDING_OBJECTIVE, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.VEHICLE_SPOTPOINT, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.SHOOTING_POINT, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.NAVIGATION_POINT, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.FLAG_POINT, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.MOVE_TO_TARGET_POINT, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.MOVING_TO_TARGET_POINT, {'battleCmd': 1}),
+ (BATTLE_CHAT_COMMAND_NAMES.OVERHEATEDGUN, {'battleCmd': 1})], instance=AttributeEnumItem)
+CHAT_MEMBER_STATUSES = Enumeration('chatMemberStatuses', ['available', 'inBattle'])
+CHAT_MEMBER_BAN_TYPE = Enumeration('chatMemberBanType', ['none', 'readonly', 'full'])
+CHAT_MEMBER_ROLE = Enumeration('chatMemberRole', ['member', 'visitor', 'moderator'])
+CHAT_MEMBER_GROUP = Enumeration('chatMemberRole', ['member',
  'channelOwner',
  'channelModerator',
  'chatAdmin'])
@@ -728,7 +437,6 @@ def getChannelsIDFromKey(key):
     if key.startswith(ChatChannelKeyPrefix):
         strID = key.replace(ChatChannelKeyPrefix, '')
         return int(strID)
-    return 0
 
 
 def isChannelSecured(channelInfo):
@@ -812,10 +520,7 @@ def isPrebattleClanChannelFlags(flags):
 
 
 def isRegularChannel(channelInfo):
-    if channelInfo is None:
-        return False
-    else:
-        return isRegularChannelFlags(channelInfo.get('flags', 0))
+    return False if channelInfo is None else isRegularChannelFlags(channelInfo.get('flags', 0))
 
 
 def isRegularChannelFlags(flags):
@@ -848,12 +553,18 @@ class BaseChatCommandProcessor(object):
         return True
 
     def _makeTuple(self, rawData):
-        return (
-         self._command, 0, 0, '', '')
+        return (self._command,
+         0,
+         0,
+         '',
+         '')
 
     def _adjustTupleDataTypes(self, rawTuple):
-        return (
-         self._command, long(rawTuple[1]), int(rawTuple[2]), rawTuple[3], rawTuple[4])
+        return (self._command,
+         long(rawTuple[1]),
+         int(rawTuple[2]),
+         rawTuple[3],
+         rawTuple[4])
 
     def set_command(self, newValue):
         self.__command = newValue
@@ -867,8 +578,11 @@ class OneStringArgCommandProcessor(BaseChatCommandProcessor):
         BaseChatCommandProcessor.__init__(self, command)
 
     def _makeTuple(self, rawData):
-        return (
-         self._command, 0, 0, rawData[0], '')
+        return (self._command,
+         0,
+         0,
+         rawData[0],
+         '')
 
 
 class NoArgsCommandProcessor(BaseChatCommandProcessor):
@@ -883,8 +597,11 @@ class BanCommandProcessor(BaseChatCommandProcessor):
         BaseChatCommandProcessor.__init__(self, CHAT_COMMANDS.BAN)
 
     def _makeTuple(self, rawData):
-        return (
-         self._command, 0, -1 if isPermanentBan(rawData[1]) else rawData[1], rawData[0], rawData[2])
+        return (self._command,
+         0,
+         -1 if isPermanentBan(rawData[1]) else rawData[1],
+         rawData[0],
+         rawData[2])
 
     def verifyParsedData(self, int64Arg=0, int16arg=0, stringArg1='', stringArg2=''):
         errorMessage = '#chat:errors/timeincorrect'
@@ -901,8 +618,8 @@ class BanCommandProcessor(BaseChatCommandProcessor):
 
 
 class UserCommandProcessor(BaseChatCommandProcessor):
-    _USER_BAN_TYPES = Enumeration('UserCommandBanTypes', {RESTRICTION_TYPE.BAN: 'game', 
-       RESTRICTION_TYPE.CHAT_BAN: 'chat'})
+    _USER_BAN_TYPES = Enumeration('UserCommandBanTypes', {RESTRICTION_TYPE.BAN: 'game',
+     RESTRICTION_TYPE.CHAT_BAN: 'chat'})
 
     def __init__(self, command):
         BaseChatCommandProcessor.__init__(self, command)
@@ -951,8 +668,12 @@ class UserBanCommandProcessor(UserCommandProcessor):
         words = rawData[3].split()
         if words and 'kick' == words[0].lower():
             banTypeIdx *= -1
-            rawData[3] = (' ').join(words[1:])
-        return (self._command, banPeriod, banTypeIdx, rawData[1], rawData[3])
+            rawData[3] = ' '.join(words[1:])
+        return (self._command,
+         banPeriod,
+         banTypeIdx,
+         rawData[1],
+         rawData[3])
 
     def verifyParsedData(self, banPeriod=0, banTypeIdx=0, username='', reason=''):
         if not (isinstance(banPeriod, basestring) and banPeriod.isdigit() or isinstance(banPeriod, (int, long))):
@@ -978,8 +699,11 @@ class UserUnbanCommandProcessor(UserCommandProcessor):
         else:
             raise IncorrectCommandArgumentError(rawData[0])
         banTypeIdx = getattr(UserCommandProcessor._USER_BAN_TYPES, banType).index()
-        return (
-         self._command, 0, banTypeIdx, rawData[1], '')
+        return (self._command,
+         0,
+         banTypeIdx,
+         rawData[1],
+         '')
 
     def verifyParsedData(self, banPeriod=0, banTypeIdx=0, username='', reason=''):
         try:
@@ -990,14 +714,14 @@ class UserUnbanCommandProcessor(UserCommandProcessor):
         return True
 
 
-_g_chatCommandProcessors = {CHAT_COMMANDS.BAN: BanCommandProcessor(), 
-   CHAT_COMMANDS.CHGCHNLNAME: OneStringArgCommandProcessor(CHAT_COMMANDS.CHGCHNLNAME), 
-   CHAT_COMMANDS.GREETING: OneStringArgCommandProcessor(CHAT_COMMANDS.GREETING), 
-   CHAT_COMMANDS.UNBAN: OneStringArgCommandProcessor(CHAT_COMMANDS.UNBAN), 
-   CHAT_COMMANDS.ADDMODERATOR: OneStringArgCommandProcessor(CHAT_COMMANDS.ADDMODERATOR), 
-   CHAT_COMMANDS.DELMODERATOR: OneStringArgCommandProcessor(CHAT_COMMANDS.DELMODERATOR), 
-   CHAT_COMMANDS.USERBAN: UserBanCommandProcessor(), 
-   CHAT_COMMANDS.USERUNBAN: UserUnbanCommandProcessor()}
+_g_chatCommandProcessors = {CHAT_COMMANDS.BAN: BanCommandProcessor(),
+ CHAT_COMMANDS.CHGCHNLNAME: OneStringArgCommandProcessor(CHAT_COMMANDS.CHGCHNLNAME),
+ CHAT_COMMANDS.GREETING: OneStringArgCommandProcessor(CHAT_COMMANDS.GREETING),
+ CHAT_COMMANDS.UNBAN: OneStringArgCommandProcessor(CHAT_COMMANDS.UNBAN),
+ CHAT_COMMANDS.ADDMODERATOR: OneStringArgCommandProcessor(CHAT_COMMANDS.ADDMODERATOR),
+ CHAT_COMMANDS.DELMODERATOR: OneStringArgCommandProcessor(CHAT_COMMANDS.DELMODERATOR),
+ CHAT_COMMANDS.USERBAN: UserBanCommandProcessor(),
+ CHAT_COMMANDS.USERUNBAN: UserUnbanCommandProcessor()}
 
 def initChatCooldownData():
     cooldDownData = {}
@@ -1005,8 +729,9 @@ def initChatCooldownData():
         coolDownConfig = getattr(command, 'cooldown') if hasattr(command, 'cooldown') else {}
         coolDownPeriod = coolDownConfig.get('period', -1)
         if coolDownPeriod > 0:
-            cooldDownData[command.index()] = {'cooldown': coolDownPeriod, 'side': coolDownConfig.get('side', 0), 
-               'last': time.time() - coolDownPeriod}
+            cooldDownData[command.index()] = {'cooldown': coolDownPeriod,
+             'side': coolDownConfig.get('side', 0),
+             'last': time.time() - coolDownPeriod}
 
     return cooldDownData
 
@@ -1040,10 +765,7 @@ def getOperationCooldownPeriod(operation):
     return coolDownConfig.get('period', -1)
 
 
-_g_chatadmins = [
- 'redfox',
- 'ars',
- 'snake']
+_g_chatadmins = ['redfox', 'ars', 'snake']
 
 def isChatAdmin(username):
     return username in _g_chatadmins
@@ -1120,7 +842,8 @@ def parseCommandMessage(message, verifyArgs=True):
         if cmdProcessor is None:
             LOG_ERROR('Can`t process arguments: command %s hasn`t argument processor. command ignored' % (cmd,))
             return (0, 0, '', '')
-        return cmdProcessor.parseRawData(rawData, verifyArgs)
+        else:
+            return cmdProcessor.parseRawData(rawData, verifyArgs)
     return
 
 
@@ -1208,17 +931,15 @@ class UserBannedError(ChatError):
         self.__banOwnerNick = banOwnerNick
         self.__banReason = banReason
         self.__banEndTime = banEndTime
-        self._messageArgs = {'banOwnerNick': self.__banOwnerNick, 
-           'banReason': self.__banReason, 
-           'banEndTime': self.__banEndTime}
+        self._messageArgs = {'banOwnerNick': self.__banOwnerNick,
+         'banReason': self.__banReason,
+         'banEndTime': self.__banEndTime}
 
     def _getMessage(self):
         if self.__banEndTime is not None:
-            return 'You are banned by user %s till %s. Reason: %s.' % (
-             self.__banOwnerNick, self.__banEndTime, self.__banReason)
+            return 'You are banned by user %s till %s. Reason: %s.' % (self.__banOwnerNick, self.__banEndTime, self.__banReason)
         else:
-            return 'You are banned by user %s till %s. Reason: %s.' % (
-             self.__banOwnerNick, self.__banEndTime, self.__banReason)
+            return 'You are banned by user %s till %s. Reason: %s.' % (self.__banOwnerNick, self.__banEndTime, self.__banReason)
             return
 
 
@@ -1228,8 +949,8 @@ class ChatBannedError(ChatError):
         ChatError.__init__(self, CHAT_RESPONSES.chatBanned)
         self.__banReason = banReason
         self.__banEndTime = banEndTime
-        self._messageArgs = {'banReason': self.__banReason, 
-           'banEndTime': self.__banEndTime}
+        self._messageArgs = {'banReason': self.__banReason,
+         'banEndTime': self.__banEndTime}
 
     def _getMessage(self):
         if self.__banEndTime is not None:
@@ -1256,7 +977,7 @@ class IncorrectCharacter(ChatError):
         ChatError.__init__(self, CHAT_RESPONSES.incorrectCharacter)
 
     def _getMessage(self):
-        return 'String contains incorrect character(s)'
+        pass
 
 
 class AddFriendError(ChatError):
@@ -1372,8 +1093,7 @@ class InviteCommandError(ChatError):
         return
 
     def _getMessage(self):
-        return 'Invite command error occurred: %s during processing invite wit ID: %s' % (
-         self.__error, self.__inviteID)
+        return 'Invite command error occurred: %s during processing invite wit ID: %s' % (self.__error, self.__inviteID)
 
 
 class InviteCreateError(InviteCommandError):
@@ -1396,8 +1116,8 @@ class ChatCommandInCooldown(ChatCommandError):
         ChatCommandError.__init__(self, CHAT_RESPONSES.commandInCooldown)
         coolDownConfig = getattr(command, 'cooldown') if hasattr(command, 'cooldown') else {}
         coolDownPeriod = coolDownConfig.get('period', None)
-        self._messageArgs = {'command': command.name(), 
-           'cooldownPeriod': coolDownPeriod}
+        self._messageArgs = {'command': command.name(),
+         'cooldownPeriod': coolDownPeriod}
         return
 
 
@@ -1472,8 +1192,7 @@ class UserNotExists(ChatException):
         return 'User with nickname: %s not exists' % self.__nickname
 
 
-SYS_MESSAGE_TYPE = Enumeration('systemMessageType', [
- 'serverReboot',
+SYS_MESSAGE_TYPE = Enumeration('systemMessageType', ['serverReboot',
  'serverRebootCancelled',
  'battleResults',
  'achievements',
@@ -1618,9 +1337,7 @@ SYS_MESSAGE_TYPE = Enumeration('systemMessageType', [
  'petAdded',
  'petSynergyUp',
  'petSynergyMax'])
-SYS_MESSAGE_IMPORTANCE = Enumeration('systemMessageImportance', [
- 'normal',
- 'high'])
+SYS_MESSAGE_IMPORTANCE = Enumeration('systemMessageImportance', ['normal', 'high'])
 SM_REQUEST_PERSONAL_MESSAGES_FLAG = 1
 SM_REQUEST_SYSTEM_MESSAGES_FLAG = 2
 SM_REQUEST_INTERNAL_SYS_MESSAGES_FLAG = 4
@@ -1639,8 +1356,7 @@ def isMembersListSupported(channelInfo):
 
 
 def isMembersListSupportedByFlags(channelNotifyFlags):
-    return getMembersListMode(channelNotifyFlags) in (
-     CHAT_CHANNEL_NOTIFY_MEMBERS_DELTA, CHAT_CHANNEL_NOTIFY_MEMBERS_IN_OUT)
+    return getMembersListMode(channelNotifyFlags) in (CHAT_CHANNEL_NOTIFY_MEMBERS_DELTA, CHAT_CHANNEL_NOTIFY_MEMBERS_IN_OUT)
 
 
 def getMembersListMode(channelNotifyFlags):

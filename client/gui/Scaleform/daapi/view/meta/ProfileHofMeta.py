@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/ProfileHofMeta.py
 from gui.Scaleform.daapi.view.lobby.profile.ProfileSection import ProfileSection
 
 class ProfileHofMeta(ProfileSection):
@@ -12,29 +14,22 @@ class ProfileHofMeta(ProfileSection):
         self._printOverrideError('changeStatus')
 
     def as_setStatusS(self, state):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setStatus(state)
+        return self.flashObject.as_setStatus(state) if self._isDAAPIInited() else None
 
     def as_setBackgroundS(self, source):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setBackground(source)
+        return self.flashObject.as_setBackground(source) if self._isDAAPIInited() else None
 
     def as_setBtnCountersS(self, counters):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setBtnCounters(counters)
+        return self.flashObject.as_setBtnCounters(counters) if self._isDAAPIInited() else None
 
     def as_showServiceViewS(self, header, description):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showServiceView(header, description)
+        return self.flashObject.as_showServiceView(header, description) if self._isDAAPIInited() else None
 
     def as_hideServiceViewS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_hideServiceView()
+        return self.flashObject.as_hideServiceView() if self._isDAAPIInited() else None
 
     def as_showWaitingS(self, description):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showWaiting(description)
+        return self.flashObject.as_showWaiting(description) if self._isDAAPIInited() else None
 
     def as_hideWaitingS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_hideWaiting()
+        return self.flashObject.as_hideWaiting() if self._isDAAPIInited() else None

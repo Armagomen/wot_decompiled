@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/ExtensionsManager.py
 from __future__ import absolute_import
-import BigWorld, ResMgr
+import BigWorld
+import ResMgr
 from collections import namedtuple
 _EXTENSIONS_RELATIVE_DIR = '../wot_ext'
 _EXTENSIONS_ABS_DIR = 'res/wot_ext'
@@ -7,8 +10,7 @@ _EXTENSION_PATH_TEMPLATE = '{root}/{extension}/{path}'
 _SETTINGS_FORMATTER = '@({})'
 _EXT_FORMATTER_ARGUMENT = 'EXTENSION'
 _EXT_FORMATTER = _SETTINGS_FORMATTER.format(_EXT_FORMATTER_ARGUMENT)
-_EXTENSION_IMPORT_PATHS = [
- '',
+_EXTENSION_IMPORT_PATHS = ['',
  'scripts',
  'scripts/base',
  'scripts/server_common',
@@ -19,11 +21,10 @@ def makeExtensionPath(extension, path):
     return _EXTENSION_PATH_TEMPLATE.format(root=_EXTENSIONS_RELATIVE_DIR, extension=extension, path=path)
 
 
-Extension = namedtuple('Extension', ('path', 'name', 'isEnabled', 'dirName', 'personality',
-                                     'editorPersonality'))
+Extension = namedtuple('Extension', ('path', 'name', 'isEnabled', 'dirName', 'personality', 'editorPersonality'))
 
 class ExtensionsManager(object):
-    __slots__ = ('_extensions', )
+    __slots__ = ('_extensions',)
 
     def __init__(self):
         super(ExtensionsManager, self).__init__()
@@ -39,8 +40,7 @@ class ExtensionsManager(object):
 
     @property
     def activePaths(self):
-        return [ ('/').join((_EXTENSIONS_ABS_DIR, extension.dirName, relativePath)) for extension in self.activeExtensions for relativePath in _EXTENSION_IMPORT_PATHS
-               ]
+        return [ '/'.join((_EXTENSIONS_ABS_DIR, extension.dirName, relativePath)) for extension in self.activeExtensions for relativePath in _EXTENSION_IMPORT_PATHS ]
 
     def hasExtensions(self):
         return bool(self._extensions)
@@ -68,10 +68,7 @@ class ExtensionsManager(object):
     @staticmethod
     def _readExtension(root):
         section = ResMgr.openSection(root + '/extension.xml')
-        if not section:
-            return None
-        else:
-            return Extension(root + '/', section.readString('FeatureName'), section.readBool('IsEnabled'), root.split('/')[(-1)], section.readString('Personality'), section.readString('EditorPersonality'))
+        return None if not section else Extension(root + '/', section.readString('FeatureName'), section.readBool('IsEnabled'), root.split('/')[-1], section.readString('Personality'), section.readString('EditorPersonality'))
 
     @staticmethod
     def _getExtensionsDirList():
@@ -79,7 +76,7 @@ class ExtensionsManager(object):
             return BigWorld.getExtensionsDirList()
         else:
             import os
-            return [ ('{}/{}').format(_EXTENSIONS_RELATIVE_DIR, item) for item in os.listdir(ResMgr.resolveToAbsolutePath(_EXTENSIONS_RELATIVE_DIR)) if os.path.isdir(ResMgr.resolveToAbsolutePath(os.path.join(_EXTENSIONS_RELATIVE_DIR, item))) ]
+            return [ '{}/{}'.format(_EXTENSIONS_RELATIVE_DIR, item) for item in os.listdir(ResMgr.resolveToAbsolutePath(_EXTENSIONS_RELATIVE_DIR)) if os.path.isdir(ResMgr.resolveToAbsolutePath(os.path.join(_EXTENSIONS_RELATIVE_DIR, item))) ]
 
 
 g_extensionsManager = ExtensionsManager()

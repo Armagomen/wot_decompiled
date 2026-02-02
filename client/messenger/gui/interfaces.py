@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/gui/interfaces.py
 from messenger.gui.Scaleform import FILL_COLORS
 
 class IGUIEntry(object):
@@ -16,7 +18,7 @@ class IGUIEntry(object):
 
     @property
     def channelsCtrl(self):
-        return
+        return None
 
     def invoke(self, method, *args, **kwargs):
         pass
@@ -58,16 +60,16 @@ class IControllerFactory(object):
 class IControllersCollection(IControllerFactory):
 
     def getController(self, clientID):
-        return
+        return None
 
     def hasController(self, controller):
         return False
 
     def getControllerByCriteria(self, criteria):
-        return
+        return None
 
     def getControllersIterator(self):
-        return
+        return None
 
     def removeControllers(self):
         pass
@@ -88,7 +90,7 @@ class IEntityController(object):
 class IChannelController(IEntityController):
 
     def getChannel(self):
-        return
+        return None
 
     def join(self):
         pass
@@ -121,8 +123,7 @@ class IChannelController(IEntityController):
         pass
 
     def canSendMessage(self):
-        return (
-         False, 'N/A')
+        return (False, 'N/A')
 
     def sendMessage(self, message):
         pass
@@ -134,7 +135,7 @@ class IChannelController(IEntityController):
         return False
 
     def addCommand(self, command):
-        return ''
+        pass
 
     def isEnabled(self):
         return True

@@ -1,4 +1,7 @@
-import BigWorld, ResMgr
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/GraphicsPresets.py
+import BigWorld
+import ResMgr
 graphicsPresetsResource = 'system/data/graphics_settings_presets.xml'
 
 class GraphicsPresets:

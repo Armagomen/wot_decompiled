@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/uilogging/dog_tags/logger.py
 from typing import TYPE_CHECKING
 from uilogging.base.logger import MetricsLogger
 from uilogging.dog_tags.logging_constants import FEATURE, MIN_VIEW_TIME, DogTagActions, DogTagAchievementStates, DogTagsViewKeys
@@ -23,7 +25,7 @@ class DogTagsMetricsLoger(MetricsLogger):
 
 
 class DogTagsViewLogger(DogTagsMetricsLoger):
-    __slots__ = ('_parentScreen', )
+    __slots__ = ('_parentScreen',)
 
     def __init__(self, parentScreen):
         super(DogTagsViewLogger, self).__init__()
@@ -37,7 +39,7 @@ class DogTagsViewLogger(DogTagsMetricsLoger):
 
 
 class AnimatedDogTagsViewLogger(DogTagsMetricsLoger):
-    __slots__ = ('_parentScreen', )
+    __slots__ = ('_parentScreen',)
 
     def __init__(self, parentScreen):
         super(AnimatedDogTagsViewLogger, self).__init__()
@@ -58,9 +60,7 @@ class AnimatedDogTagsViewLogger(DogTagsMetricsLoger):
     def __getStateInfo(self, progress):
         if progress == 0:
             return DogTagAchievementStates.NO_PROGRESS
-        if progress == 100:
-            return DogTagAchievementStates.COMPLETED
-        return DogTagAchievementStates.IN_PROGRESS
+        return DogTagAchievementStates.COMPLETED if progress == 100 else DogTagAchievementStates.IN_PROGRESS
 
 
 class DogTagsTooltipLogger(DogTagsMetricsLoger):

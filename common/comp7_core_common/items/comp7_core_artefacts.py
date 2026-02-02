@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_core/scripts/common/comp7_core_common/items/comp7_core_artefacts.py
 from items.artefacts import BaseMarkerConfigReader, EffectsConfigReader, LevelBasedVisualScriptEquipment, VisualScriptEquipment
 
 class Comp7CoreAoeHealEquipment(VisualScriptEquipment):
@@ -76,12 +78,7 @@ class Comp7CoreAoeInspireEquipment(VisualScriptEquipment):
 
 
 class Comp7CoreRedlineEquipment(LevelBasedVisualScriptEquipment, BaseMarkerConfigReader, EffectsConfigReader):
-    _CONFIG_SLOTS = LevelBasedVisualScriptEquipment._LEVEL_BASED_SLOTS + BaseMarkerConfigReader._MARKER_SLOTS_ + EffectsConfigReader._EFFECTS_SLOTS_ + ('delay',
-                                                                                                                                                        'damage',
-                                                                                                                                                        'stunDuration',
-                                                                                                                                                        'areaShow',
-                                                                                                                                                        'fraction',
-                                                                                                                                                        'requireAssists')
+    _CONFIG_SLOTS = LevelBasedVisualScriptEquipment._LEVEL_BASED_SLOTS + BaseMarkerConfigReader._MARKER_SLOTS_ + EffectsConfigReader._EFFECTS_SLOTS_ + ('delay', 'damage', 'stunDuration', 'areaShow', 'fraction', 'requireAssists')
 
     def __init__(self):
         super(Comp7CoreRedlineEquipment, self).__init__()
@@ -105,7 +102,7 @@ class Comp7CoreRedlineEquipment(LevelBasedVisualScriptEquipment, BaseMarkerConfi
 
 
 class Comp7CoreFastRechargeEquipment(VisualScriptEquipment):
-    _CONFIG_SLOTS = ('gunReloadTimeBuff', )
+    _CONFIG_SLOTS = ('gunReloadTimeBuff',)
 
     def _readConfig(self, xmlCtx, section):
         super(Comp7CoreFastRechargeEquipment, self)._readConfig(xmlCtx, section)
@@ -115,8 +112,7 @@ class Comp7CoreFastRechargeEquipment(VisualScriptEquipment):
 
 
 class Comp7CoreJuggernautEquipment(VisualScriptEquipment):
-    _CONFIG_SLOTS = ('duration', 'enginePowerFactor', 'dmgAbsorb', 'fwMaxSpeedBonus',
-                     'bkMaxSpeedBonus', 'rammingDamageBonus', 'vehicleRotationSpeedFactor')
+    _CONFIG_SLOTS = ('duration', 'enginePowerFactor', 'dmgAbsorb', 'fwMaxSpeedBonus', 'bkMaxSpeedBonus', 'rammingDamageBonus', 'vehicleRotationSpeedFactor')
 
     def _readConfig(self, xmlCtx, section):
         super(Comp7CoreJuggernautEquipment, self)._readConfig(xmlCtx, section)
@@ -158,8 +154,7 @@ class Comp7CoreSniperEquipment(VisualScriptEquipment):
 
 
 class Comp7CoreRiskyAttackEquipment(VisualScriptEquipment):
-    _CONFIG_SLOTS = ('duration', 'healDuration', 'baseHeal', 'extraHealFactor', 'fwdSpeedBoost',
-                     'bkwSpeedBoost', 'enginePowerBuff')
+    _CONFIG_SLOTS = ('duration', 'healDuration', 'baseHeal', 'extraHealFactor', 'fwdSpeedBoost', 'bkwSpeedBoost', 'enginePowerBuff')
 
     def _readConfig(self, xmlCtx, section):
         super(Comp7CoreRiskyAttackEquipment, self)._readConfig(xmlCtx, section)
@@ -175,9 +170,7 @@ class Comp7CoreRiskyAttackEquipment(VisualScriptEquipment):
 
 
 class Comp7CoreReconEquipment(LevelBasedVisualScriptEquipment, BaseMarkerConfigReader):
-    _CONFIG_SLOTS = LevelBasedVisualScriptEquipment._LEVEL_BASED_SLOTS + BaseMarkerConfigReader._MARKER_SLOTS_ + ('duration',
-                                                                                                                  'delay',
-                                                                                                                  'startupDelay')
+    _CONFIG_SLOTS = LevelBasedVisualScriptEquipment._LEVEL_BASED_SLOTS + BaseMarkerConfigReader._MARKER_SLOTS_ + ('duration', 'delay', 'startupDelay')
 
     def __init__(self):
         super(Comp7CoreReconEquipment, self).__init__()

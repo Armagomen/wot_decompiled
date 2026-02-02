@@ -1,16 +1,18 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/account_helpers/counter_settings.py
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import NEW_SETTINGS_COUNTER
 from account_helpers.settings_core import settings_constants
 from helpers import dependency
 from skeletons.gui.game_control import IAnonymizerController, IVehiclePostProgressionController, ILimitedUIController, ICommendationsController
 from skeletons.gui.lobby_context import ILobbyContext
-_NEW_SETTING_COUNTER_VISIBILITY_VALIDATORS = {settings_constants.GAME.ANONYMIZER: lambda : dependency.instance(IAnonymizerController).isEnabled, 
-   'showQuestProgress': lambda : dependency.instance(ILobbyContext).getServerSettings().isPersonalMissionsEnabled(), 
-   settings_constants.GAME.GAMEPLAY_DEV_MAPS: lambda : dependency.instance(ILobbyContext).getServerSettings().isMapsInDevelopmentEnabled(), 
-   settings_constants.GAME.SWITCH_SETUPS_IN_LOADING: lambda : dependency.instance(IVehiclePostProgressionController).isSwitchSetupFeatureEnabled(), 
-   settings_constants.GAME.LIMITED_UI_ACTIVE: lambda : dependency.instance(ILimitedUIController).isUserSettingsMayShow, 
-   settings_constants.BattleCommStorageKeys.ENABLE_COMMENDATIONS_FEEDBACK: lambda : dependency.instance(ICommendationsController).isCommendationsEnabled, 
-   settings_constants.SOUND.PHYSICS_QUALITY: lambda : dependency.instance(ILobbyContext).getServerSettings().isPhysicsSoundEnabled()}
+_NEW_SETTING_COUNTER_VISIBILITY_VALIDATORS = {settings_constants.GAME.ANONYMIZER: lambda : dependency.instance(IAnonymizerController).isEnabled,
+ 'showQuestProgress': lambda : dependency.instance(ILobbyContext).getServerSettings().isPersonalMissionsEnabled(),
+ settings_constants.GAME.GAMEPLAY_DEV_MAPS: lambda : dependency.instance(ILobbyContext).getServerSettings().isMapsInDevelopmentEnabled(),
+ settings_constants.GAME.SWITCH_SETUPS_IN_LOADING: lambda : dependency.instance(IVehiclePostProgressionController).isSwitchSetupFeatureEnabled(),
+ settings_constants.GAME.LIMITED_UI_ACTIVE: lambda : dependency.instance(ILimitedUIController).isUserSettingsMayShow,
+ settings_constants.BattleCommStorageKeys.ENABLE_COMMENDATIONS_FEEDBACK: lambda : dependency.instance(ICommendationsController).isCommendationsEnabled,
+ settings_constants.SOUND.PHYSICS_QUALITY: lambda : dependency.instance(ILobbyContext).getServerSettings().isPhysicsSoundEnabled()}
 
 def isNewSettingCounterVisible(settingKey):
     return _NEW_SETTING_COUNTER_VISIBILITY_VALIDATORS.get(settingKey, lambda : True)()
@@ -32,9 +34,8 @@ def getNewSettings():
                 controlID = subTabID
                 subTabID = None
                 _packCounter(tabData, controlSettings, subTabID, controlID)
-            else:
-                for controlID, state in controlSettings.iteritems():
-                    _packCounter(tabData, state, subTabID, controlID)
+            for controlID, state in controlSettings.iteritems():
+                _packCounter(tabData, state, subTabID, controlID)
 
     return result
 
@@ -64,15 +65,14 @@ def dropCounters():
     for setting in newsettings:
         for subtab in setting['subTabsData']:
             for counter in subtab['counters']:
-                invalidateSettings(setting['tabId'], subtab['subTabId'], [
-                 counter['componentId']])
+                invalidateSettings(setting['tabId'], subtab['subTabId'], [counter['componentId']])
 
 
 def _countNewSettingsItems(dictItem, count):
     for _, v in dictItem.iteritems():
         if isinstance(v, dict):
             count = _countNewSettingsItems(v, count)
-        elif isinstance(v, bool) and v:
+        if isinstance(v, bool) and v:
             count = count + 1
 
     return count
@@ -85,7 +85,8 @@ def _getTabData(formatedData, searchTabID):
                 tabData['subTabsData'] = []
             return tabData
 
-    tabData = {'tabId': searchTabID, 'subTabsData': []}
+    tabData = {'tabId': searchTabID,
+     'subTabsData': []}
     formatedData.append(tabData)
     return tabData
 
@@ -101,10 +102,12 @@ def _packCounter(tabData, state, subTabID, controlID):
             break
 
     if counters is None:
-        emptySubTabData = {'subTabId': subTabID, 'counters': []}
+        emptySubTabData = {'subTabId': subTabID,
+         'counters': []}
         tabData['subTabsData'].append(emptySubTabData)
         counters = emptySubTabData['counters']
-    counters.append({'componentId': controlID, 'count': count})
+    counters.append({'componentId': controlID,
+     'count': count})
     return
 
 
@@ -117,4 +120,4 @@ def _setSettingsToStorage(value):
 
 
 def _filterSettings(value):
-    return {category:{settingKey:settingValue for settingKey, settingValue in settings.iteritems() if isNewSettingCounterVisible(settingKey) if isNewSettingCounterVisible(settingKey)} for category, settings in value.iteritems()}
+    return {category:{settingKey:settingValue for settingKey, settingValue in settings.iteritems() if isNewSettingCounterVisible(settingKey)} for category, settings in value.iteritems()}

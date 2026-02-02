@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_core/scripts/client/comp7_core/gui/impl/lobby/event_banner.py
 from account_helpers.AccountSettings import AccountSettings
 from comp7_core.gui.impl.lobby.comp7_core_helpers import comp7_core_shared
 from gui.impl.gen.view_models.views.lobby.user_missions.constants.event_banner_state import EventBannerState
@@ -89,7 +91,7 @@ class Comp7CoreEventBanner(BaseEventBanner):
             if seasonState == seasonState.ENDSOON:
                 self._timerValue = int(season.getEndDate() - getCurrentLocalServerTimestamp())
             if self._state == EventBannerState.INACTIVE:
-                self._timerValue = int(self._modeController.getPeriodInfo().primeDelta)
+                self._timerValue = int(self._modeController.getMinNonZeroPrimeDelta())
             savedAppearTime = AccountSettings.getSettings(self._accountSettingsTimestampFlag)
             if savedAppearTime != seasonStartDate:
                 self._playAppearAnim = True

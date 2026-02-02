@@ -1,4 +1,10 @@
-import cPickle, os, base64, BigWorld, AccountCommands
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/account_helpers/DossierCache.py
+import cPickle
+import os
+import base64
+import BigWorld
+import AccountCommands
 from SyncController import SyncController
 from PlayerEvents import g_playerEvents as events
 from constants import DOSSIER_TYPE
@@ -13,8 +19,7 @@ class DossierCache(object):
         p = os.path
         prefsFilePath = unicode_from_utf8(BigWorld.wg_getPreferencesFilePath())[1]
         self.__cacheDir = p.join(p.dirname(prefsFilePath), 'dossier_cache')
-        self.__cacheFileName = p.join(self.__cacheDir, '%s.dat' % base64.b32encode('%s;%s;%s' % (str(BigWorld.server()),
-         accountName, accountClassName)))
+        self.__cacheFileName = p.join(self.__cacheDir, '%s.dat' % base64.b32encode('%s;%s;%s' % (str(BigWorld.server()), accountName, accountClassName)))
         self.__cache = {}
         self.__maxChangeTime = 0
         self.__version = 0
@@ -46,9 +51,9 @@ class DossierCache(object):
     def synchronize(self):
         if self.__ignore:
             return
+        elif self.__isSynchronizing:
+            return
         else:
-            if self.__isSynchronizing:
-                return
             self.__isSynchronizing = True
             self.__syncController.request(self.__getNextSyncID(), None)
             return
@@ -72,7 +77,7 @@ class DossierCache(object):
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, None)
             return
-        if not self.__isSynchronizing:
+        elif not self.__isSynchronizing:
             callback(AccountCommands.RES_CACHE)
             return
         else:
@@ -94,7 +99,7 @@ class DossierCache(object):
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, default)
             return
-        if not self.__isSynchronizing:
+        elif not self.__isSynchronizing:
             self.__onGetResponse(AccountCommands.RES_CACHE, getterFromCache, default, callback)
             return
         else:
@@ -125,8 +130,7 @@ class DossierCache(object):
             if syncID == self.__syncID:
                 self.__isSynchronizing = False
             for ownerID, changeTime, dossierCompDescr in dossiersList:
-                self.__cache[(DOSSIER_TYPE.VEHICLE, ownerID)] = (
-                 changeTime, dossierCompDescr)
+                self.__cache[DOSSIER_TYPE.VEHICLE, ownerID] = (changeTime, dossierCompDescr)
                 self.__maxChangeTime = max(self.__maxChangeTime, changeTime)
 
             if self.__isFirstSync:
@@ -141,7 +145,7 @@ class DossierCache(object):
             if callback is not None:
                 callback(resultID, default)
             return
-        if self.__isSynchronizing:
+        elif self.__isSynchronizing:
             self.__get(getterFromCache, default, callback)
             return
         else:

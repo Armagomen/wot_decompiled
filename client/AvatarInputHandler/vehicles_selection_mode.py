@@ -1,4 +1,11 @@
-import math, logging, weakref, BigWorld, Math, math_utils
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/AvatarInputHandler/vehicles_selection_mode.py
+import math
+import logging
+import weakref
+import BigWorld
+import Math
+import math_utils
 from AvatarInputHandler import cameras, keys_handlers
 from AvatarInputHandler.control_modes import IControlMode
 from AvatarInputHandler.rotating_cursor_camera import RotatingCoursorCamera
@@ -68,8 +75,7 @@ class _CameraManager(object):
         rotationVector = Math.Vector3()
 
         def _makeAdditionalPoints(basePoint, extraPoint):
-            yield (
-             extraPoint[0], basePoint[1], basePoint[2])
+            yield (extraPoint[0], basePoint[1], basePoint[2])
             yield (basePoint[0], extraPoint[1], basePoint[2])
             yield (basePoint[0], basePoint[1], extraPoint[2])
 
@@ -89,9 +95,7 @@ class _CameraManager(object):
                 vehiclesBBPoints.extend([vehMatrix.applyPoint(hullBB[0]), vehMatrix.applyPoint(hullBB[1])])
                 vehiclesBBPoints.extend(_makeAdditionalPoints(vehMatrix.applyPoint(hullBB[0]), vehMatrix.applyPoint(hullBB[1])))
                 vehiclesBBPoints.extend(_makeAdditionalPoints(vehMatrix.applyPoint(hullBB[1]), vehMatrix.applyPoint(hullBB[0])))
-                rotationVector += Math.createRotationMatrix((vehMatrix.yaw, 0, 0)).applyVector((0,
-                                                                                                0,
-                                                                                                1))
+                rotationVector += Math.createRotationMatrix((vehMatrix.yaw, 0, 0)).applyVector((0, 0, 1))
                 numVehs += 1
 
         if self.__pendingVehicles:
@@ -104,11 +108,11 @@ class _CameraManager(object):
             yawMatrix = math_utils.createRTMatrix((rotationVector.yaw, self.__CAMERA_PITCH, 0), targetPosition)
             yawMatrix.invert()
             rotatedPoints = [ yawMatrix.applyPoint(p) for p in vehiclesBBPoints ]
-            maxX = max(p.x for p in rotatedPoints)
-            minX = min(p.x for p in rotatedPoints)
-            maxZ = max(p.z for p in rotatedPoints)
-            minZ = min(p.z for p in rotatedPoints)
-            maxY = max(rp.y for rp in rotatedPoints if rp.x in (minX, maxX) or rp.z in (minZ, maxZ))
+            maxX = max((p.x for p in rotatedPoints))
+            minX = min((p.x for p in rotatedPoints))
+            maxZ = max((p.z for p in rotatedPoints))
+            minZ = min((p.z for p in rotatedPoints))
+            maxY = max((rp.y for rp in rotatedPoints if rp.x in (minX, maxX) or rp.z in (minZ, maxZ)))
             width = maxX - minX
             height = maxZ - minZ
             hFov = BigWorld.projection().fov
@@ -116,8 +120,7 @@ class _CameraManager(object):
             halfFOVTan = math.tan(hFov / 2)
             distanceToTarget = max(width / (2 * halfFOVTan * ratio), height / (2 * halfFOVTan)) + maxY
             initialRotations = math_utils.createRotationMatrix((rotationVector.yaw, -self.__CAMERA_PITCH, 0))
-            self.__initialCamSetup = (
-             targetPosition, initialRotations, distanceToTarget)
+            self.__initialCamSetup = (targetPosition, initialRotations, distanceToTarget)
             self.__setCamera()
             return
 
@@ -141,7 +144,7 @@ class _CameraMover(CallbackDelayer):
         self.__camera = camera
         self.__startParams, self.__finalParams, self.__totalChanges = {}, {}, {}
         self.__startTime, self.__endTime = (None, None)
-        return
+        return None
 
     def startMovementTo(self, finalYaw, finalPitch, pivotDistance, transtitionTime):
         self.stopCallback(self.__tick)
@@ -177,15 +180,11 @@ class _CameraMover(CallbackDelayer):
         adjustedStartYaw = startYaw if startYaw > 0 else math.pi + (math.pi - abs(startYaw))
         adjustedFinalYaw = finalYaw if finalYaw > 0 else math.pi + (math.pi - abs(finalYaw))
         adjustedDiff = adjustedFinalYaw - adjustedStartYaw
-        if adjustedDiff == 0:
-            return 0
-        return min(adjustedDiff, math.copysign(1, -1 * adjustedDiff) * (2 * math.pi - abs(adjustedDiff)), key=abs)
+        return 0 if adjustedDiff == 0 else min(adjustedDiff, math.copysign(1, -1 * adjustedDiff) * (2 * math.pi - abs(adjustedDiff)), key=abs)
 
     def __getNewValueForParameter(self, paramName, timePassed, totalTime):
         totalChange = self.__totalChanges[paramName]
-        if timePassed > totalTime or totalChange == 0:
-            return self.__finalParams[paramName]
-        return self.__startParams[paramName] + math_utils.easeInOutCubic(timePassed, totalChange, totalTime)
+        return self.__finalParams[paramName] if timePassed > totalTime or totalChange == 0 else self.__startParams[paramName] + math_utils.easeInOutCubic(timePassed, totalChange, totalTime)
 
 
 class VehiclesSelectionControlMode(IControlMode):
@@ -230,10 +229,7 @@ class VehiclesSelectionControlMode(IControlMode):
 
     def handleKeyEvent(self, isDown, key, mods, event=None):
         prbCtrl = self.__guiSessionProvider.dynamic.prebattleSetup
-        if (prbCtrl is None or prbCtrl.isSelectionConfirmed()) and keys_handlers.processAmmoSelection(key):
-            return True
-        else:
-            return
+        return True if (prbCtrl is None or prbCtrl.isSelectionConfirmed()) and keys_handlers.processAmmoSelection(key) else None
 
     def handleMouseEvent(self, dx, dy, dz):
         if self.__lockedState:

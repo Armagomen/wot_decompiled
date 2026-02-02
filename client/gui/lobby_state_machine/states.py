@@ -1,5 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/lobby_state_machine/states.py
 from __future__ import absolute_import
-import itertools, logging, typing, weakref
+import itertools
+import logging
+import typing
+import weakref
 from enum import IntEnum
 from WeakMethod import WeakMethodProxy
 from frameworks.state_machine import State, StateFlags
@@ -32,6 +37,23 @@ class LobbyStateFlags(StateFlags):
     MAX = POST_BATTLE_RESULTS
 
 
+def isInHangarState():
+    from gui.Scaleform.lobby_entry import getLobbyStateMachine
+    lsm = getLobbyStateMachine()
+    if not lsm:
+        return False
+    inHangarState = any((s.getFlags() & LobbyStateFlags.HANGAR for s in lsm.getNonEmptyEnteredStates()))
+    return inHangarState
+
+
+def isHangarState(state):
+    from gui.Scaleform.lobby_entry import getLobbyStateMachine
+    lsm = getLobbyStateMachine()
+    if not lsm:
+        return False
+    return state.getFlags() & LobbyStateFlags.HANGAR if state else None
+
+
 class LobbyStateDescription(object):
 
     class Info(object):
@@ -41,14 +63,14 @@ class LobbyStateDescription(object):
             QUESTION = 1
             VIDEO = 2
 
-        def __init__(self, label='', tooltipHeader='', tooltipBody='', type=Type.INFO, onMoreInfoRequested=lambda : None):
+        def __init__(self, label=u'', tooltipHeader=u'', tooltipBody=u'', type=Type.INFO, onMoreInfoRequested=lambda : None):
             self.label = label
             self.tooltipHeader = tooltipHeader
             self.tooltipBody = tooltipBody
             self.type = type
             self.onMoreInfoRequested = onMoreInfoRequested
 
-    def __init__(self, title='', infos=()):
+    def __init__(self, title=u'', infos=()):
         self.title = title
         self.infos = infos
 
@@ -224,9 +246,7 @@ class UntrackedState(LobbyState):
         if params:
             return params[self.LOAD_PARAMS_KEY].loadParams.viewKey
         else:
-            if self._paramsEnteredWith and self.LOAD_PARAMS_KEY in self._paramsEnteredWith:
-                return self._paramsEnteredWith[self.LOAD_PARAMS_KEY].loadParams.viewKey
-            return
+            return self._paramsEnteredWith[self.LOAD_PARAMS_KEY].loadParams.viewKey if self._paramsEnteredWith and self.LOAD_PARAMS_KEY in self._paramsEnteredWith else None
 
     def serializeParams(self):
         return self._paramsEnteredWith
@@ -280,9 +300,7 @@ class _SubScopeSubLayerUntrackedState(UntrackedState):
 
     def getNavigationDescription(self):
         from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-        if self.getViewKey().alias == VIEW_ALIAS.LOBBY_HANGAR:
-            return LobbyStateDescription(title=backport.text(R.strings.pages.titles.hangar()))
-        return super(_SubScopeSubLayerUntrackedState, self).getNavigationDescription()
+        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.hangar())) if self.getViewKey().alias == VIEW_ALIAS.LOBBY_HANGAR else super(_SubScopeSubLayerUntrackedState, self).getNavigationDescription()
 
 
 @SubScopeSubLayerState.parentOf
@@ -384,5 +402,4 @@ class _TopScopeTopLayerEmptyState(EmptyState):
 def compareViewKeys(view, stateViewKey):
     if hasattr(view, 'key'):
         return stateViewKey == view.key
-    if hasattr(view, 'layoutID'):
-        return stateViewKey.alias == view.layoutID
+    return stateViewKey.alias == view.layoutID if hasattr(view, 'layoutID') else None

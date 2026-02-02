@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/tutorial/control/summary.py
 from tutorial.control.functional import FunctionalVarSet
 from tutorial.logger import LOG_ERROR, LOG_DEBUG
 
@@ -10,7 +12,7 @@ class _Flag(object):
         self.store = store
 
     def __repr__(self):
-        return ('{0:>s}: {1!r:s}').format(self.name, self.active)
+        return '{0:>s}: {1!r:s}'.format(self.name, self.active)
 
     def isActive(self):
         return self.active
@@ -39,7 +41,7 @@ class FlagSummary(object):
         return
 
     def __repr__(self):
-        return ('FlagSummary({0:s}): {1!r:s}').format(hex(id(self)), self.__flags.values())
+        return 'FlagSummary({0:s}): {1!r:s}'.format(hex(id(self)), self.__flags.values())
 
     def deactivateFlag(self, flagName):
         LOG_DEBUG('Deactivate flag', flagName)
@@ -67,7 +69,7 @@ class FlagSummary(object):
 
     def getDict(self):
         filtered = [ flag for flag in self.__flags.itervalues() if flag.store ]
-        return dict((flag.name, flag.active) for flag in filtered)
+        return dict(((flag.name, flag.active) for flag in filtered))
 
 
 class VarSummary(object):
@@ -75,7 +77,7 @@ class VarSummary(object):
     def __init__(self, varSets, runtime=None):
         super(VarSummary, self).__init__()
         if varSets:
-            self.__varSets = dict((varSet.getID(), FunctionalVarSet(varSet)) for varSet in varSets)
+            self.__varSets = dict(((varSet.getID(), FunctionalVarSet(varSet)) for varSet in varSets))
         else:
             self.__varSets = {}
         self.__runtime = runtime or {}
@@ -89,7 +91,7 @@ class VarSummary(object):
 
     def set(self, varID, value):
         if varID in self.__varSets:
-            LOG_ERROR(('Var {0:>s} in not mutable.').format(varID))
+            LOG_ERROR('Var {0:>s} in not mutable.'.format(varID))
         else:
-            LOG_DEBUG(('Set var {0:>s}').format(varID), value)
+            LOG_DEBUG('Set var {0:>s}'.format(varID), value)
             self.__runtime[varID] = value

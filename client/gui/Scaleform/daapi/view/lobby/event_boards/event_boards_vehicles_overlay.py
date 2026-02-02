@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/event_boards/event_boards_vehicles_overlay.py
 from gui.Scaleform.daapi.view.lobby.event_boards.event_boards_vos import makeFiltersVO, makeVehicleVO
 from gui.Scaleform.daapi.view.lobby.event_boards.event_helpers import LEVELS_RANGE
 from gui.Scaleform.daapi.view.meta.EventBoardsVehiclesOverlayMeta import EventBoardsVehiclesOverlayMeta
@@ -13,11 +15,11 @@ class EventBoardsVehiclesOverlay(EventBoardsVehiclesOverlayMeta):
     itemsCache = dependency.descriptor(IItemsCache)
     __lid = None
     __opener = None
-    __filters = {'nation': -1, 
-       'vehicleType': 'none', 
-       'isMain': False, 
-       'level': -1, 
-       'compatibleOnly': False}
+    __filters = {'nation': -1,
+     'vehicleType': 'none',
+     'isMain': False,
+     'level': -1,
+     'compatibleOnly': False}
 
     def setOpener(self, view):
         self.__opener = view
@@ -41,11 +43,11 @@ class EventBoardsVehiclesOverlay(EventBoardsVehiclesOverlayMeta):
         self._setData()
 
     def applyFilters(self, nation, vehicleType, level, isMain, compatibleOnly):
-        self.__filters = {'nation': nation, 
-           'vehicleType': vehicleType, 
-           'isMain': isMain, 
-           'level': level, 
-           'compatibleOnly': compatibleOnly}
+        self.__filters = {'nation': nation,
+         'vehicleType': vehicleType,
+         'isMain': isMain,
+         'level': level,
+         'compatibleOnly': compatibleOnly}
         self._setData()
 
     def _setData(self):
@@ -68,13 +70,13 @@ class EventBoardsVehiclesOverlay(EventBoardsVehiclesOverlayMeta):
             vehicleIds = eventData.getLimits().getVehicles(self.__lid)
             leaderboard = eventData.getLeaderboard(self.__lid)
             if eventType == EVENT_TYPE.NATION:
-                title = _ms(('#menu:nation_tree/title/{}').format(leaderboard))
-                bgPath = ('../maps/icons/eventBoards/flagsOverlay/{}.png').format(leaderboard)
+                title = _ms('#menu:nation_tree/title/{}'.format(leaderboard))
+                bgPath = '../maps/icons/eventBoards/flagsOverlay/{}.png'.format(leaderboard)
             elif eventType == EVENT_TYPE.LEVEL:
                 title = _ms(EVENT_BOARDS.VEHICLES_LEVEL, level=int2roman(leaderboard))
                 bgPath = None
             elif eventType == EVENT_TYPE.CLASS:
-                title = _ms(('#quests:classes/{}').format(leaderboard))
+                title = _ms('#quests:classes/{}'.format(leaderboard))
                 bgPath = None
             else:
                 title = None
@@ -83,8 +85,8 @@ class EventBoardsVehiclesOverlay(EventBoardsVehiclesOverlayMeta):
         vehicles = allVehicles.filter(criteria).values()
         vehicles.sort(key=lambda v: v.isInInventory, reverse=True)
         vehiclesVO = [ makeVehicleVO(vehicle) for vehicle in vehicles ]
-        data = {'title': title, 
-           'bgPath': bgPath, 
-           'vehicles': vehiclesVO}
+        data = {'title': title,
+         'bgPath': bgPath,
+         'vehicles': vehiclesVO}
         self.as_setVehiclesS(data)
         return

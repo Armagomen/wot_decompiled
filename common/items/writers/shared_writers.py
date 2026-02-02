@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/items/writers/shared_writers.py
 import ResMgr
 from debug_utils import LOG_ERROR
 from items.components import shared_components, component_constants, c11n_constants
@@ -10,11 +12,11 @@ if IS_UE_EDITOR:
 
 def writeProjectionSlots(slotDS, slot):
     if slot.type == 'projectionDecal':
-        slotDS.write('tags', (' ').join(slot.tags))
+        slotDS.write('tags', ' '.join(slot.tags))
     if len(slot.compatibleModels) == 1 and slot.compatibleModels[0] == 'default':
         slotDS.deleteSection('compatibleModels')
     else:
-        slotDS.write('compatibleModels', (' ').join(slot.compatibleModels))
+        slotDS.write('compatibleModels', ' '.join(slot.compatibleModels))
     slotDS.writeVector3('position', slot.position)
     slotDS.writeVector3('rotation', slot.rotation)
     slotDS.writeVector3('scale', slot.scale)
@@ -35,6 +37,7 @@ def writeAttachmentSlots(slotDS, slot):
     slotDS.writeVector3('rotation', slot.rotation)
     slotDS.writeVector3('scale', slot.scale)
     _xml.rewriteBool(slotDS, 'hiddenForUser', slot.hiddenForUser, False)
+    _xml.rewriteBool(slotDS, 'enableVisTunnel', slot.enableVisTunnel, False)
     _xml.rewriteString(slotDS, 'applyType', slot.applyType, '')
     _xml.rewriteString(slotDS, 'size', slot.size, '')
     _xml.rewriteInt(slotDS, 'hangerId', slot.hangerId, 0)
@@ -42,7 +45,7 @@ def writeAttachmentSlots(slotDS, slot):
     if len(slot.compatibleModels) == 1 and slot.compatibleModels[0] == 'default':
         slotDS.deleteSection('compatibleModels')
     else:
-        slotDS.write('compatibleModels', (' ').join(slot.compatibleModels))
+        slotDS.write('compatibleModels', ' '.join(slot.compatibleModels))
 
 
 def writeAnchorSlots(slotDS, slot):
@@ -57,10 +60,8 @@ def writeAnchorSlots(slotDS, slot):
 
 
 def writeEmblemSlots(slotDS, slot):
-    if slot.type not in ('attachment', 'sequence', 'paint', 'camouflage', 'style',
-                         'effect', 'projectionDecal', 'fixedProjectionDecal'):
-        _xml.rewriteBool(slotDS, 'isMirrored', slot.isMirrored, slot.type in ('insignia',
-                                                                              'insigniaOnGun'))
+    if slot.type not in ('attachment', 'sequence', 'paint', 'camouflage', 'style', 'effect', 'projectionDecal', 'fixedProjectionDecal'):
+        _xml.rewriteBool(slotDS, 'isMirrored', slot.isMirrored, slot.type in ('insignia', 'insigniaOnGun'))
         slotDS.writeVector3('rayStart', slot.rayStart)
         slotDS.writeVector3('rayEnd', slot.rayEnd)
         slotDS.writeVector3('rayUp', slot.rayUp)
@@ -69,7 +70,7 @@ def writeEmblemSlots(slotDS, slot):
     if slot.type == 'insigniaOnGun':
         _xml.rewriteBool(slotDS, 'applyToFabric', slot.applyToFabric, True)
     if slot.type in ('insigniaOnGun', 'clan'):
-        _xml.rewriteString(slotDS, 'compatibleModels', (' ').join(slot.compatibleModels), '')
+        _xml.rewriteString(slotDS, 'compatibleModels', ' '.join(slot.compatibleModels), '')
     slotDS.write('size', slot.size)
     _xml.rewriteBool(slotDS, 'hideIfDamaged', slot.hideIfDamaged, False)
     _xml.rewriteBool(slotDS, 'isUVProportional', slot.isUVProportional, True)
@@ -93,16 +94,15 @@ def writeCustomizationSlots(slots, section, subsectionName):
         slotDS.write('slotId', slot.slotId)
         if slot.type in ALLOWED_PROJECTION_DECALS_ANCHORS:
             writeProjectionSlots(slotDS, slot)
-        elif slot.type in ALLOWED_SLOTS_ANCHORS:
+        if slot.type in ALLOWED_SLOTS_ANCHORS:
             writeAnchorSlots(slotDS, slot)
-        elif slot.type in ALLOWED_EMBLEM_SLOTS:
+        if slot.type in ALLOWED_EMBLEM_SLOTS:
             writeEmblemSlots(slotDS, slot)
-        elif slot.type in component_constants.ALLOWED_MISC_SLOTS:
+        if slot.type in component_constants.ALLOWED_MISC_SLOTS:
             writeMiscSlots(slotDS, slot)
-        elif slot.type in component_constants.ALLOWED_ATTACHMENT_SLOTS:
+        if slot.type in component_constants.ALLOWED_ATTACHMENT_SLOTS:
             writeAttachmentSlots(slotDS, slot)
-        else:
-            LOG_ERROR(('unexpected slot type: {}').format(slot.type))
+        LOG_ERROR('unexpected slot type: {}'.format(slot.type))
 
 
 def writeModelsSets(item, section):

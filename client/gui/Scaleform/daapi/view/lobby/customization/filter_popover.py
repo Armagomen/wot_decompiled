@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/filter_popover.py
 import logging
 from collections import OrderedDict
 from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationTabs
@@ -15,10 +17,7 @@ from uilogging.customization_3d_objects.logging_constants import CustomizationFi
 _logger = logging.getLogger(__name__)
 
 class FiltersPopoverVO(object):
-    __slots__ = ('lblTitle', 'lblGroups', 'lblShowOnlyFilters', 'lblAdditional', 'additionalCheckBoxData',
-                 'btnDefault', 'basicFilterType', 'groupType', 'btnDefaultTooltip',
-                 'groupTypeSelectedIndex', 'filterBtns', 'additionalEnabled', 'formsBtns',
-                 'formsBtnsLbl', 'raritiesBtns', 'raritiesBtnsLbl')
+    __slots__ = ('lblTitle', 'lblGroups', 'lblShowOnlyFilters', 'lblAdditional', 'additionalCheckBoxData', 'btnDefault', 'basicFilterType', 'groupType', 'btnDefaultTooltip', 'groupTypeSelectedIndex', 'filterBtns', 'additionalEnabled', 'formsBtns', 'formsBtnsLbl', 'raritiesBtns', 'raritiesBtnsLbl')
 
     def __init__(self, lblTitle, lblGroups, lblShowOnlyFilters, lblAdditional, additionalCheckBoxData, btnDefault, groupType, btnDefaultTooltip, groupTypeSelectedIndex, filterBtns, additionalEnabled, formsBtns=None, formsBtnsLbl='', raritiesBtns=None, raritiesBtnsLbl=''):
         self.lblTitle = lblTitle
@@ -38,29 +37,29 @@ class FiltersPopoverVO(object):
         self.raritiesBtnsLbl = raritiesBtnsLbl
 
     def asDict(self):
-        return {'lblTitle': self.lblTitle, 
-           'lblGroups': self.lblGroups, 
-           'lblShowOnlyFilters': self.lblShowOnlyFilters, 
-           'lblAdditional': self.lblAdditional, 
-           'additionalCheckBoxData': self.additionalCheckBoxData, 
-           'btnDefault': self.btnDefault, 
-           'groupType': self.groupType, 
-           'btnDefaultTooltip': self.btnDefaultTooltip, 
-           'groupTypeSelectedIndex': self.groupTypeSelectedIndex, 
-           'filterBtns': self.filterBtns, 
-           'additionalEnabled': self.additionalEnabled, 
-           'formsBtns': self.formsBtns, 
-           'formsBtnsLbl': self.formsBtnsLbl, 
-           'raritiesBtns': self.raritiesBtns, 
-           'raritiesBtnsLbl': self.raritiesBtnsLbl}
+        return {'lblTitle': self.lblTitle,
+         'lblGroups': self.lblGroups,
+         'lblShowOnlyFilters': self.lblShowOnlyFilters,
+         'lblAdditional': self.lblAdditional,
+         'additionalCheckBoxData': self.additionalCheckBoxData,
+         'btnDefault': self.btnDefault,
+         'groupType': self.groupType,
+         'btnDefaultTooltip': self.btnDefaultTooltip,
+         'groupTypeSelectedIndex': self.groupTypeSelectedIndex,
+         'filterBtns': self.filterBtns,
+         'additionalEnabled': self.additionalEnabled,
+         'formsBtns': self.formsBtns,
+         'formsBtnsLbl': self.formsBtnsLbl,
+         'raritiesBtns': self.raritiesBtns,
+         'raritiesBtnsLbl': self.raritiesBtnsLbl}
 
 
 class FilterPopover(CustomizationFiltersPopoverMeta):
-    PROJECTION_DECAL_IMAGE_FORM_TAG = {ProjectionDecalFormTags.SQUARE: backport.image(R.images.gui.maps.icons.customization.icon_form_1_c()), 
-       ProjectionDecalFormTags.RECT1X2: backport.image(R.images.gui.maps.icons.customization.icon_form_2_c()), 
-       ProjectionDecalFormTags.RECT1X3: backport.image(R.images.gui.maps.icons.customization.icon_form_3_c()), 
-       ProjectionDecalFormTags.RECT1X4: backport.image(R.images.gui.maps.icons.customization.icon_form_4_c()), 
-       ProjectionDecalFormTags.RECT1X6: backport.image(R.images.gui.maps.icons.customization.icon_form_6())}
+    PROJECTION_DECAL_IMAGE_FORM_TAG = {ProjectionDecalFormTags.SQUARE: backport.image(R.images.gui.maps.icons.customization.icon_form_1_c()),
+     ProjectionDecalFormTags.RECT1X2: backport.image(R.images.gui.maps.icons.customization.icon_form_2_c()),
+     ProjectionDecalFormTags.RECT1X3: backport.image(R.images.gui.maps.icons.customization.icon_form_3_c()),
+     ProjectionDecalFormTags.RECT1X4: backport.image(R.images.gui.maps.icons.customization.icon_form_4_c()),
+     ProjectionDecalFormTags.RECT1X6: backport.image(R.images.gui.maps.icons.customization.icon_form_6())}
     service = dependency.descriptor(ICustomizationService)
 
     def __init__(self, ctx=None):
@@ -107,7 +106,8 @@ class FilterPopover(CustomizationFiltersPopoverMeta):
             return
         formFactor = ProjectionDecalFormTags.ALL[index]
         if formFactor not in self._formfactorTypes:
-            _logger.warning('"index" = %(index)s is not valid  (self._formfactorTypes = %(formfactorTypes)s)', {'index': index, 'formfactorTypes': self._formfactorTypes})
+            _logger.warning('"index" = %(index)s is not valid  (self._formfactorTypes = %(formfactorTypes)s)', {'index': index,
+             'formfactorTypes': self._formfactorTypes})
             return
         self._formfactorTypes[formFactor] = value
         self.__ctx.events.onCarouselFiltered(formfactorGroups=self._formfactorTypes)
@@ -121,7 +121,8 @@ class FilterPopover(CustomizationFiltersPopoverMeta):
             return
         rarity = Rarity.FILTERABLE[index]
         if rarity not in self._raritiesGroup:
-            _logger.warning('"index" = %(index)s is not valid  (self._raritiesGroup = %(raritiesGroup)s)', {'index': index, 'raritiesGroup': self._raritiesGroup})
+            _logger.warning('"index" = %(index)s is not valid  (self._raritiesGroup = %(raritiesGroup)s)', {'index': index,
+             'raritiesGroup': self._raritiesGroup})
             return
         self.__uiLogger.onRarityFilterClick(rarity)
         self._raritiesGroup[rarity] = value
@@ -236,54 +237,57 @@ class FilterPopover(CustomizationFiltersPopoverMeta):
         return
 
     def __createUpdateVO(self):
-        _filterBtns = [
-         {'value': backport.image(R.images.gui.maps.icons.buttons.fantastical()), 
-            'tooltip': makeTooltip(backport.text(R.strings.vehicle_customization.carousel.filter.fantasticalBtn.header()), backport.text(R.strings.vehicle_customization.carousel.filter.fantasticalBtn.body())), 
-            'selected': self._fantasticalToggleEnabled},
-         {'value': backport.image(R.images.gui.maps.icons.buttons.non_historical()), 
-            'tooltip': makeTooltip(backport.text(R.strings.vehicle_customization.carousel.filter.nonHistoricalBtn.header()), backport.text(R.strings.vehicle_customization.carousel.filter.nonHistoricalBtn.body())), 
-            'selected': self._nonHistoricToggleEnabled},
-         {'value': backport.image(R.images.gui.maps.icons.buttons.hist_small()), 
-            'tooltip': makeTooltip(backport.text(R.strings.vehicle_customization.carousel.filter.historicalBtn.header()), backport.text(R.strings.vehicle_customization.carousel.filter.historicalBtn.body())), 
-            'selected': self._historicToggleEnabled},
-         {'value': backport.image(R.images.gui.maps.icons.customization.storage_icon()), 
-            'tooltip': makeTooltip(backport.text(R.strings.vehicle_customization.carousel.filter.storageBtn.header()), backport.text(R.strings.vehicle_customization.carousel.filter.storageBtn.body())), 
-            'selected': self._purchasedToggleEnabled},
-         {'value': backport.image(R.images.gui.maps.icons.buttons.equipped_icon()), 
-            'tooltip': makeTooltip(backport.text(R.strings.vehicle_customization.carousel.filter.equippedBtn.header()), backport.text(R.strings.vehicle_customization.carousel.filter.equippedBtn.body())), 
-            'selected': self._appliedToggleEnabled}]
-        self.__filterChangeHandlers = [
-         self.setShowOnlyFantastical, self.setShowOnlyNonHistoric,
-         self.setShowOnlyHistoric, self.setShowOnlyAcquired, self.setShowOnlyApplied]
+        _filterBtns = [{'value': backport.image(R.images.gui.maps.icons.buttons.fantastical()),
+          'tooltip': makeTooltip(backport.text(R.strings.vehicle_customization.carousel.filter.fantasticalBtn.header()), backport.text(R.strings.vehicle_customization.carousel.filter.fantasticalBtn.body())),
+          'selected': self._fantasticalToggleEnabled},
+         {'value': backport.image(R.images.gui.maps.icons.buttons.non_historical()),
+          'tooltip': makeTooltip(backport.text(R.strings.vehicle_customization.carousel.filter.nonHistoricalBtn.header()), backport.text(R.strings.vehicle_customization.carousel.filter.nonHistoricalBtn.body())),
+          'selected': self._nonHistoricToggleEnabled},
+         {'value': backport.image(R.images.gui.maps.icons.buttons.hist_small()),
+          'tooltip': makeTooltip(backport.text(R.strings.vehicle_customization.carousel.filter.historicalBtn.header()), backport.text(R.strings.vehicle_customization.carousel.filter.historicalBtn.body())),
+          'selected': self._historicToggleEnabled},
+         {'value': backport.image(R.images.gui.maps.icons.customization.storage_icon()),
+          'tooltip': makeTooltip(backport.text(R.strings.vehicle_customization.carousel.filter.storageBtn.header()), backport.text(R.strings.vehicle_customization.carousel.filter.storageBtn.body())),
+          'selected': self._purchasedToggleEnabled},
+         {'value': backport.image(R.images.gui.maps.icons.buttons.equipped_icon()),
+          'tooltip': makeTooltip(backport.text(R.strings.vehicle_customization.carousel.filter.equippedBtn.header()), backport.text(R.strings.vehicle_customization.carousel.filter.equippedBtn.body())),
+          'selected': self._appliedToggleEnabled}]
+        self.__filterChangeHandlers = [self.setShowOnlyFantastical,
+         self.setShowOnlyNonHistoric,
+         self.setShowOnlyHistoric,
+         self.setShowOnlyAcquired,
+         self.setShowOnlyApplied]
         if self.__ctx.isProgressiveItemsExist:
             progressionDecalsBtnTooltip = makeTooltip(backport.text(R.strings.vehicle_customization.customization.filterPopover.progressionDecalsBtn.header()), backport.text(R.strings.vehicle_customization.customization.filterPopover.progressionDecalsBtn.body()))
-            _filterBtns.append({'value': backport.image(R.images.gui.maps.icons.buttons.progression()), 
-               'tooltip': progressionDecalsBtnTooltip, 
-               'selected': self._showOnlyProgressionDecalsEnabled})
+            _filterBtns.append({'value': backport.image(R.images.gui.maps.icons.buttons.progression()),
+             'tooltip': progressionDecalsBtnTooltip,
+             'selected': self._showOnlyProgressionDecalsEnabled})
             self.__filterChangeHandlers.append(self.setShowOnlyProgressionDecals)
         if self.__ctx.mode.tabId in (CustomizationTabs.STYLES_3D, CustomizationTabs.STYLES_2D):
             editableStylesBtnTooltip = makeTooltip(backport.text(R.strings.vehicle_customization.customization.filterPopover.editableStylesBtn.header()), backport.text(R.strings.vehicle_customization.customization.filterPopover.editableStylesBtn.body()))
-            _filterBtns.append({'value': backport.image(R.images.gui.maps.icons.buttons.editable_small()), 
-               'tooltip': editableStylesBtnTooltip, 
-               'selected': self._showOnlyEditableStylesEnabled})
+            _filterBtns.append({'value': backport.image(R.images.gui.maps.icons.buttons.editable_small()),
+             'tooltip': editableStylesBtnTooltip,
+             'selected': self._showOnlyEditableStylesEnabled})
             self.__filterChangeHandlers.append(self.setShowOnlyEditableStyles)
             nonEditableStylesBtnTooltip = makeTooltip(backport.text(R.strings.vehicle_customization.customization.filterPopover.nonEditableStylesBtn.header()), backport.text(R.strings.vehicle_customization.customization.filterPopover.nonEditableStylesBtn.body()))
-            _filterBtns.append({'value': backport.image(R.images.gui.maps.icons.buttons.non_editable()), 
-               'tooltip': nonEditableStylesBtnTooltip, 
-               'selected': self._showOnlyNonEditableStylesEnabled})
+            _filterBtns.append({'value': backport.image(R.images.gui.maps.icons.buttons.non_editable()),
+             'tooltip': nonEditableStylesBtnTooltip,
+             'selected': self._showOnlyNonEditableStylesEnabled})
             self.__filterChangeHandlers.append(self.setShowOnlyNonEditableStyles)
-        _formsBtns = [ {'value': self.PROJECTION_DECAL_IMAGE_FORM_TAG[formType], 'selected': value, 'tooltip': makeTooltip(('{} {}').format(backport.text(R.strings.vehicle_customization.popover.tooltip.form()), backport.text(PROJECTION_DECAL_TEXT_FORM_TAG[formType])), backport.text(R.strings.vehicle_customization.popover.tooltip.form.body(), value=backport.text(R.strings.vehicle_customization.form.dyn(formType)())))} for formType, value in self._formfactorTypes.iteritems()
-                     ]
+        _formsBtns = [ {'value': self.PROJECTION_DECAL_IMAGE_FORM_TAG[formType],
+         'selected': value,
+         'tooltip': makeTooltip('{} {}'.format(backport.text(R.strings.vehicle_customization.popover.tooltip.form()), backport.text(PROJECTION_DECAL_TEXT_FORM_TAG[formType])), backport.text(R.strings.vehicle_customization.popover.tooltip.form.body(), value=backport.text(R.strings.vehicle_customization.form.dyn(formType)())))} for formType, value in self._formfactorTypes.iteritems() ]
         formsBtnsLbl = ''
         if self._formfactorTypes:
             formsBtnsLbl = text_styles.standard(backport.text(R.strings.vehicle_customization.filter.popover.formfilters.title()))
-        _raritiesBtns = [ {'value': backport.image(R.images.gui.maps.icons.customization.rarity.sign.s20x20.dyn(rarity)()), 'selected': selected, 'tooltip': makeTooltip(backport.text(R.strings.vehicle_customization.customization.filterPopover.rarity.header(), rarity=backport.text(R.strings.vehicle_customization.customization.rarity.dyn(rarity)())), backport.text(R.strings.vehicle_customization.customization.filterPopover.rarity.body(), rarity=backport.text(R.strings.vehicle_customization.customization.rarity.dyn(rarity)()).lower()))} for rarity, selected in self._raritiesGroup.iteritems()
-                        ]
+        _raritiesBtns = [ {'value': backport.image(R.images.gui.maps.icons.customization.rarity.sign.s20x20.dyn(rarity)()),
+         'selected': selected,
+         'tooltip': makeTooltip(backport.text(R.strings.vehicle_customization.customization.filterPopover.rarity.header(), rarity=backport.text(R.strings.vehicle_customization.customization.rarity.dyn(rarity)())), backport.text(R.strings.vehicle_customization.customization.filterPopover.rarity.body(), rarity=backport.text(R.strings.vehicle_customization.customization.rarity.dyn(rarity)()).lower()))} for rarity, selected in self._raritiesGroup.iteritems() ]
         raritiesBtnsLbl = ''
         if self._raritiesGroup:
             raritiesBtnsLbl = text_styles.standard(backport.text(R.strings.vehicle_customization.filter.popover.rarity.title()))
         additionalCheckBoxLabel = backport.text(R.strings.vehicle_customization.filter.popover.showonlyfilters.onAnotherVeh())
         additionalCheckBoxTooltip = makeTooltip(backport.text(R.strings.vehicle_customization.customization.filterPopover.additionalCheckBox.header()), backport.text(R.strings.vehicle_customization.customization.filterPopover.additionalCheckBox.body()))
-        return FiltersPopoverVO(lblTitle=text_styles.highTitle(backport.text(R.strings.vehicle_customization.filter.popover.title())), lblGroups=text_styles.standard(backport.text(R.strings.vehicle_customization.filter.popover.groups.title())), lblShowOnlyFilters=text_styles.standard(backport.text(R.strings.vehicle_customization.filter.popover.showonlyfilters.title())), lblAdditional=text_styles.standard(backport.text(R.strings.vehicle_customization.filter.popover.showonlyfilters.additional())), additionalCheckBoxData={'label': additionalCheckBoxLabel, 
-           'tooltip': additionalCheckBoxTooltip, 
-           'selected': self._hideOnAnotherVehEnabled}, btnDefault=backport.text(R.strings.vehicle_customization.filter.popover.getDefaultSettings()), groupType=self._groups if self._groupCount > 1 else None, btnDefaultTooltip=makeTooltip(backport.text(R.strings.vehicle_customization.customization.filterPopover.refresh.header()), backport.text(R.strings.vehicle_customization.customization.filterPopover.refresh.body())), groupTypeSelectedIndex=self._selectedGroup, filterBtns=_filterBtns, additionalEnabled=self.__ctx.isItemsOnAnotherVeh, formsBtnsLbl=formsBtnsLbl, formsBtns=_formsBtns, raritiesBtnsLbl=raritiesBtnsLbl, raritiesBtns=_raritiesBtns)
+        return FiltersPopoverVO(lblTitle=text_styles.highTitle(backport.text(R.strings.vehicle_customization.filter.popover.title())), lblGroups=text_styles.standard(backport.text(R.strings.vehicle_customization.filter.popover.groups.title())), lblShowOnlyFilters=text_styles.standard(backport.text(R.strings.vehicle_customization.filter.popover.showonlyfilters.title())), lblAdditional=text_styles.standard(backport.text(R.strings.vehicle_customization.filter.popover.showonlyfilters.additional())), additionalCheckBoxData={'label': additionalCheckBoxLabel,
+         'tooltip': additionalCheckBoxTooltip,
+         'selected': self._hideOnAnotherVehEnabled}, btnDefault=backport.text(R.strings.vehicle_customization.filter.popover.getDefaultSettings()), groupType=self._groups if self._groupCount > 1 else None, btnDefaultTooltip=makeTooltip(backport.text(R.strings.vehicle_customization.customization.filterPopover.refresh.header()), backport.text(R.strings.vehicle_customization.customization.filterPopover.refresh.body())), groupTypeSelectedIndex=self._selectedGroup, filterBtns=_filterBtns, additionalEnabled=self.__ctx.isItemsOnAnotherVeh, formsBtnsLbl=formsBtnsLbl, formsBtns=_formsBtns, raritiesBtnsLbl=raritiesBtnsLbl, raritiesBtns=_raritiesBtns)

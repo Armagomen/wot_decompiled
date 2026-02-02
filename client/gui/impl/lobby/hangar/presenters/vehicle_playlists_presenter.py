@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/hangar/presenters/vehicle_playlists_presenter.py
 from __future__ import absolute_import
 import logging
 from BWUtil import AsyncReturn
@@ -30,35 +32,20 @@ class VehiclePlaylistsPresenter(ViewComponent[VehiclePlaylistsModel]):
 
     def _getEvents(self):
         vm = self.getViewModel()
-        return (
-         (
-          vm.onSelect, self.__onSelectPlaylist),
-         (
-          vm.onCreate, self.__onCreatePlaylist),
-         (
-          vm.onModify, self.__onModifyPlaylist),
-         (
-          vm.onDelete, self.__onDeletePlaylist),
-         (
-          vm.onSave, self.__onSavePlaylist),
-         (
-          vm.onDiscard, self.__onDiscardAndExit),
-         (
-          vm.onSetDirtyEdit, self.__onDirtyEditFlagChanged),
-         (
-          vm.openImportConfirm, self.__onOpenImportConfirm),
-         (
-          vm.openDeleteConfirm, self.__onOpenDeleteConfirm),
-         (
-          vm.onGoToAboutVehicle, self.__onGoToAboutVehicle),
-         (
-          self.__vehiclePlaylistsCtrl.onEnabledStatusChanged, self.__onEnabledStatusChanged),
-         (
-          self.__vehiclePlaylistsCtrl.onModifiedPlaylistDiscarded, self.__onModifiedPlaylistDiscarded),
-         (
-          self.__vehiclePlaylistsCtrl.onDirtyClean, self.__onDirtyClean),
-         (
-          self.__vehiclePlaylistsCtrl.onPlaylistSaved, self.__onPlaylistSaved))
+        return ((vm.onSelect, self.__onSelectPlaylist),
+         (vm.onCreate, self.__onCreatePlaylist),
+         (vm.onModify, self.__onModifyPlaylist),
+         (vm.onDelete, self.__onDeletePlaylist),
+         (vm.onSave, self.__onSavePlaylist),
+         (vm.onDiscard, self.__onDiscardAndExit),
+         (vm.onSetDirtyEdit, self.__onDirtyEditFlagChanged),
+         (vm.openImportConfirm, self.__onOpenImportConfirm),
+         (vm.openDeleteConfirm, self.__onOpenDeleteConfirm),
+         (vm.onGoToAboutVehicle, self.__onGoToAboutVehicle),
+         (self.__vehiclePlaylistsCtrl.onEnabledStatusChanged, self.__onEnabledStatusChanged),
+         (self.__vehiclePlaylistsCtrl.onModifiedPlaylistDiscarded, self.__onModifiedPlaylistDiscarded),
+         (self.__vehiclePlaylistsCtrl.onDirtyClean, self.__onDirtyClean),
+         (self.__vehiclePlaylistsCtrl.onPlaylistSaved, self.__onPlaylistSaved))
 
     def __onEnabledStatusChanged(self, _):
         self.__refillModel()
@@ -66,7 +53,7 @@ class VehiclePlaylistsPresenter(ViewComponent[VehiclePlaylistsModel]):
             self.__closeDialog()
 
     def __refillModel(self):
-        with self.getViewModel().transaction() as (vm):
+        with self.getViewModel().transaction() as vm:
             vm.setSelectedID(self.__vehiclePlaylistsCtrl.getSelectedID())
             vm.setEnabled(self.__vehiclePlaylistsCtrl.isEnabled)
             vm.setDirtyEdit(self.__vehiclePlaylistsCtrl.isModifiedPlaylistChanged)
@@ -82,7 +69,7 @@ class VehiclePlaylistsPresenter(ViewComponent[VehiclePlaylistsModel]):
         plStrID = ctx.get('id', '')
         plData = ctx.get('data', '')
         if self.__vehiclePlaylistsCtrl.updateModifiedPlaylist(plStrID, playlistData=plData):
-            with self.getViewModel().transaction() as (vm):
+            with self.getViewModel().transaction() as vm:
                 storage = vm.getStorage()
                 storage.set(plStrID, plData)
 
@@ -103,7 +90,7 @@ class VehiclePlaylistsPresenter(ViewComponent[VehiclePlaylistsModel]):
             vm.setSelectedID(plID)
 
     def __onPlaylistSaved(self, playlistID, playlist):
-        with self.getViewModel().transaction() as (vm):
+        with self.getViewModel().transaction() as vm:
             vm.setSelectedID(playlistID)
             vm.setDirtyEdit(self.__vehiclePlaylistsCtrl.isModifiedPlaylistChanged)
             storage = vm.getStorage()
@@ -180,7 +167,7 @@ class VehiclePlaylistsPresenter(ViewComponent[VehiclePlaylistsModel]):
 
     def __performPlaylistDeletion(self, playlistID):
         if self.__vehiclePlaylistsCtrl.deletePlaylist(playlistID):
-            with self.getViewModel().transaction() as (vm):
+            with self.getViewModel().transaction() as vm:
                 if playlistID == vm.getSelectedID():
                     vm.setSelectedID(self.__vehiclePlaylistsCtrl.getSelectedID())
                     isModifyingListChanged = False
@@ -192,7 +179,7 @@ class VehiclePlaylistsPresenter(ViewComponent[VehiclePlaylistsModel]):
     def __performPlaylistCreation(self, playlistID, playlistData):
         if self.__vehiclePlaylistsCtrl.createPlaylist(plStrID=playlistID, playlistData=playlistData):
             if self.__vehiclePlaylistsCtrl.updateModifiedPlaylist(plStrID=playlistID, playlistData=playlistData):
-                with self.getViewModel().transaction() as (vm):
+                with self.getViewModel().transaction() as vm:
                     vm.setSelectedID(playlistID)
                     isModifyingListChanged = False
                     self.__vehiclePlaylistsCtrl.setModifiedPlaylistChanged(isModifyingListChanged)
@@ -202,7 +189,7 @@ class VehiclePlaylistsPresenter(ViewComponent[VehiclePlaylistsModel]):
                 EditVehiclePlaylistsState.goTo(id=playlistID, new=True)
 
     def __onModifiedPlaylistDiscarded(self, playlistStrID, playlistData):
-        with self.getViewModel().transaction() as (vm):
+        with self.getViewModel().transaction() as vm:
             vm.setDirtyEdit(False)
             storage = vm.getStorage()
             storage.set(playlistStrID, playlistData)
@@ -211,5 +198,5 @@ class VehiclePlaylistsPresenter(ViewComponent[VehiclePlaylistsModel]):
         showVehicleHubOverview(int(args.get('intCD')))
 
     def __onDirtyClean(self):
-        with self.getViewModel().transaction() as (vm):
+        with self.getViewModel().transaction() as vm:
             vm.setDirtyEdit(False)

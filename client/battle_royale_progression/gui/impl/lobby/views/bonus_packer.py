@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale_progression/scripts/client/battle_royale_progression/gui/impl/lobby/views/bonus_packer.py
 import typing
 from battle_royale_progression.skeletons.game_controller import IBRProgressionOnTokensController
 from gui.battle_pass.battle_pass_bonuses_packers import getBattlePassBonusPacker
@@ -27,8 +29,7 @@ class ExtendedCurrencyBonusUIPacker(SimpleBonusUIPacker):
 
     @classmethod
     def _pack(cls, bonus):
-        return [
-         cls._packSingleBonus(bonus, '')]
+        return [cls._packSingleBonus(bonus, '')]
 
     @classmethod
     def _packSingleBonus(cls, bonus, label):
@@ -120,13 +121,13 @@ def getBonusPacker():
     packer = getBattlePassBonusPacker()
     currencyBonusUIPacker = ExtendedCurrencyBonusUIPacker()
     tokenBonusPacker = BRTokenBonusUIPacker()
-    packer.getPackers().update({'currencies': CurrenciesBonusUIPacker(), 
-       Currency.CREDITS: currencyBonusUIPacker, 
-       Currency.CRYSTAL: currencyBonusUIPacker, 
-       Currency.EQUIP_COIN: currencyBonusUIPacker, 
-       'token': tokenBonusPacker, 
-       'battleToken': tokenBonusPacker, 
-       'battlePassPoints': BRBattlePassPointsBonusPacker()})
+    packer.getPackers().update({'currencies': CurrenciesBonusUIPacker(),
+     Currency.CREDITS: currencyBonusUIPacker,
+     Currency.CRYSTAL: currencyBonusUIPacker,
+     Currency.EQUIP_COIN: currencyBonusUIPacker,
+     'token': tokenBonusPacker,
+     'battleToken': tokenBonusPacker,
+     'battlePassPoints': BRBattlePassPointsBonusPacker()})
     return packer
 
 
@@ -142,8 +143,7 @@ def packQuestBonuses(bonuses, bonusPacker, order=None):
             packedBonuses.extend(bonusPacker.pack(bonus))
             packedToolTips.extend(bonusPacker.getToolTip(bonus))
 
-    return (
-     packedBonuses, packedToolTips)
+    return (packedBonuses, packedToolTips)
 
 
 def _getSortKey(order):
@@ -174,14 +174,13 @@ def _buildDescription(conditionalModel):
     for item in items:
         if isinstance(item, ConditionGroupModel):
             descriptions.append(_buildDescription(item))
-        else:
-            descriptions.append(item.getDescrData())
+        descriptions.append(item.getDescrData())
 
     if conditionalModel.getConditionType() == CONDITION_GROUP_AND:
-        separator = (' {} ').format(backport.text(R.strings.quests.dailyQuests.postBattle.conditionTypeAnd()))
+        separator = ' {} '.format(backport.text(R.strings.quests.dailyQuests.postBattle.conditionTypeAnd()))
         result = separator.join(descriptions)
     elif conditionalModel.getConditionType() == CONDITION_GROUP_OR:
-        separator = (' {} ').format(backport.text(R.strings.quests.dailyQuests.postBattle.conditionTypeOr()))
+        separator = ' {} '.format(backport.text(R.strings.quests.dailyQuests.postBattle.conditionTypeOr()))
         result = separator.join(descriptions)
     else:
         result = descriptions[0] if descriptions else ''

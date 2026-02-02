@@ -1,12 +1,12 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/collections_common.py
 from collections import namedtuple
 from copy import deepcopy
 import typing
 if typing.TYPE_CHECKING:
     from typing import Optional
-USABLE_COLLECTION_ENTITIES = {
- 'customizationItem', 'dossier', 'tankman'}
-UNUSABLE_COLLECTION_ENTITIES = {
- 'photo', 'video', 'note'}
+USABLE_COLLECTION_ENTITIES = {'customizationItem', 'dossier', 'tankman'}
+UNUSABLE_COLLECTION_ENTITIES = {'photo', 'video', 'note'}
 COLLECTION_ITEM_TYPE_NAMES = USABLE_COLLECTION_ENTITIES.union(UNUSABLE_COLLECTION_ENTITIES)
 COLLECTIONS_PREFIX = 'cllc'
 
@@ -22,8 +22,7 @@ class CollectionItem(namedtuple('CollectionItem', ('itemId', 'type', 'isSpecial'
         return cls()
 
 
-class Collection(namedtuple('Collection', ('collectionId', 'name', 'items', 'tags', 'rewards', 'isRelatedEventActive',
-                          'isActive', 'year'))):
+class Collection(namedtuple('Collection', ('collectionId', 'name', 'items', 'tags', 'rewards', 'isRelatedEventActive', 'isActive', 'year'))):
 
     def __new__(cls, **kwargs):
         defaults = dict(collectionId=0, items={}, tags=set(), rewards={}, name='', isRelatedEventActive=False, isActive=False, year=0)
@@ -37,7 +36,7 @@ class Collection(namedtuple('Collection', ('collectionId', 'name', 'items', 'tag
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
+        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
         self.__packItemConfigs(dataToUpdate)
         return self._replace(**dataToUpdate)
 
@@ -50,8 +49,7 @@ class Collection(namedtuple('Collection', ('collectionId', 'name', 'items', 'tag
         dataToUpdate['items'] = items
 
 
-class CollectionsConfig(namedtuple('CollectionsConfig', ('isEnabled', 'useCdnResourceCache', 'collections',
-                                 'linkedCollections'))):
+class CollectionsConfig(namedtuple('CollectionsConfig', ('isEnabled', 'useCdnResourceCache', 'collections', 'linkedCollections'))):
 
     def __new__(cls, **kwargs):
         cls.__rawData = kwargs
@@ -65,7 +63,7 @@ class CollectionsConfig(namedtuple('CollectionsConfig', ('isEnabled', 'useCdnRes
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict((k, v) for k, v in data.iteritems() if k in allowedFields)
+        dataToUpdate = dict(((k, v) for k, v in data.iteritems() if k in allowedFields))
         self.__packCollectionConfigs(dataToUpdate)
         return self._replace(**dataToUpdate)
 
@@ -82,11 +80,17 @@ def isCollectionsPrefix(itemName):
 
 
 def makeCollectionItemEntitlementName(collectionId, itemId):
-    return ('_').join((COLLECTIONS_PREFIX, 'item', str(collectionId), str(itemId)))
+    return '_'.join((COLLECTIONS_PREFIX,
+     'item',
+     str(collectionId),
+     str(itemId)))
 
 
 def makeCollectionRewardEntitlementName(collectionId, requiredCount):
-    return ('_').join((COLLECTIONS_PREFIX, 'reward', str(collectionId), str(requiredCount)))
+    return '_'.join((COLLECTIONS_PREFIX,
+     'reward',
+     str(collectionId),
+     str(requiredCount)))
 
 
 class CollectionRelatedItems:
@@ -99,8 +103,7 @@ class CollectionRelatedItems:
         for collectionId, collectionCfg in data['collections'].iteritems():
             for itemId, itemCfg in collectionCfg['items'].iteritems():
                 if 'relatedId' in itemCfg:
-                    relatedItemsCfg[itemCfg['relatedId']] = (
-                     collectionId, itemId)
+                    relatedItemsCfg[itemCfg['relatedId']] = (collectionId, itemId)
 
         self.__items = relatedItemsCfg
 

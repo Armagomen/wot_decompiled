@@ -1,6 +1,7 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/vehicle_hub/sub_presenters/modules_sub_presenter.py
 from __future__ import absolute_import
 import typing
-from collections import namedtuple
 from CurrentVehicle import g_currentPreviewVehicle
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import BECOME_ELITE_VEHICLES_WATCHED
@@ -11,6 +12,7 @@ from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.items_actions import factory as ItemsActionsFactory
 from gui.impl.backport import createTooltipData
 from gui.impl.gui_decorators import args2params
+from gui.impl.lobby.hangar.presenters.utils import GUINode
 from gui.impl.lobby.common.view_wrappers import createBackportTooltipDecorator
 from gui.impl.lobby.tooltips.veh_post_progression_entry_point_tooltip import VehPostProgressionEntryPointTooltip
 from gui.impl.lobby.vehicle_hub.sub_presenters.sub_presenter_base import SubPresenterBase
@@ -33,7 +35,7 @@ from helpers import dependency
 if typing.TYPE_CHECKING:
     from typing import Optional
 
-class _ModulesTreeViewDumper(dumpers.ResearchItemsObjDumper):
+class ModulesTreeViewDumper(dumpers.ResearchItemsObjDumper):
     _itemsCache = dependency.descriptor(IItemsCache)
 
     def _getItemData(self, node, rootItem):
@@ -44,38 +46,36 @@ class _ModulesTreeViewDumper(dumpers.ResearchItemsObjDumper):
         nodeUnlockProps = node.getUnlockProps()
         nodeState = node.getState()
         if node.isVehicle():
-            vClass = self._vClassInfo.getInfoByTags(node.getTags())
             mechanics = set()
+            vClass = self._vClassInfo.getInfoByTags(node.getTags())
             imageName = item.name
         else:
             vClass = {'name': node.getTypeName()}
-            mechanics = item.getVehicleMechanicsGuiNames(rootItem.descriptor)
+            mechanics = {m.guiName for m in item.getModuleMechanicItems(rootItem.descriptor) if not m.isHidden}
             imageName = item.iconName
-        return {'id': itemId, 
-           'image': imageName, 
-           'userName': node.getShortUserName(), 
-           'primaryClass': vClass, 
-           'level': node.getLevel(), 
-           'state': node.getState(), 
-           'requiredXp': nodeUnlockProps.xpCost, 
-           'isDiscountedXp': nodeUnlockProps.xpCost < nodeUnlockProps.xpFullCost, 
-           'earnedXp': node.getEarnedXP(), 
-           'priceAmount': nodePrice.price.get(nodePriceCurrency), 
-           'priceCurrency': nodePriceCurrency, 
-           'isDiscountedPrice': nodePrice.isActionPrice(), 
-           'isResearched': NODE_STATE.isUnlocked(nodeState), 
-           'hasEnoughCurrency': bool(nodeState & NODE_STATE_FLAGS.ENOUGH_MONEY), 
-           'hasEnoughXP': bool(nodeState & NODE_STATE_FLAGS.ENOUGH_XP), 
-           'isElite': bool(nodeState & NODE_STATE_FLAGS.ELITE), 
-           'isDisabled': bool(nodeState & NODE_STATE_FLAGS.LOCKED), 
-           'autoUnlocked': bool(nodeState & NODE_STATE_FLAGS.AUTO_UNLOCKED), 
-           'isInstalled': NODE_STATE.isInstalled(nodeState), 
-           'isInInventory': NODE_STATE.inInventory(nodeState), 
-           'mechanics': mechanics, 
-           'displayInfo': node.getDisplayInfo()}
+        return {'id': itemId,
+         'image': imageName,
+         'userName': node.getShortUserName(),
+         'primaryClass': vClass,
+         'level': node.getLevel(),
+         'state': node.getState(),
+         'requiredXp': nodeUnlockProps.xpCost,
+         'isDiscountedXp': nodeUnlockProps.xpCost < nodeUnlockProps.xpFullCost,
+         'earnedXp': node.getEarnedXP(),
+         'priceAmount': nodePrice.price.get(nodePriceCurrency),
+         'priceCurrency': nodePriceCurrency,
+         'isDiscountedPrice': nodePrice.isActionPrice(),
+         'isResearched': NODE_STATE.isUnlocked(nodeState),
+         'hasEnoughCurrency': bool(nodeState & NODE_STATE_FLAGS.ENOUGH_MONEY),
+         'hasEnoughXP': bool(nodeState & NODE_STATE_FLAGS.ENOUGH_XP),
+         'isElite': bool(nodeState & NODE_STATE_FLAGS.ELITE),
+         'isDisabled': bool(nodeState & NODE_STATE_FLAGS.LOCKED),
+         'autoUnlocked': bool(nodeState & NODE_STATE_FLAGS.AUTO_UNLOCKED),
+         'isInstalled': NODE_STATE.isInstalled(nodeState),
+         'isInInventory': NODE_STATE.inInventory(nodeState),
+         'mechanics': mechanics,
+         'displayInfo': node.getDisplayInfo()}
 
-
-_GUINode = namedtuple('_GUINode', ('id', 'state', 'unlockProps'))
 
 class ModulesSubPresenter(SubPresenterBase):
     _c11nService = dependency.descriptor(ICustomizationService)
@@ -97,7 +97,7 @@ class ModulesSubPresenter(SubPresenterBase):
         self.__updateFieldModification()
 
     def updateResearchItems(self):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             researchItems = model.getResearchItems()
             researchItems.clear()
             self.__fillResearchModels(self._data.dump()['top'], model.getPrevResearchItems(), researchItems)
@@ -106,7 +106,7 @@ class ModulesSubPresenter(SubPresenterBase):
     def setVehicleHubCtx(self, vhCtx):
         super(ModulesSubPresenter, self).setVehicleHubCtx(vhCtx)
         if not self._data:
-            self._data = ResearchItemsData(_ModulesTreeViewDumper())
+            self._data = ResearchItemsData(ModulesTreeViewDumper())
         self._data.setRootCD(self.vehicleHubCtx.intCD)
         self._data.load()
         self.redraw()
@@ -129,29 +129,23 @@ class ModulesSubPresenter(SubPresenterBase):
             nodeCD = event.getArgument('nodeCD', 0)
             nodeCD = int(nodeCD)
             if not nodeCD:
-                return
+                return None
             thisNode = self._data.getNodeByItemCD(nodeCD)
-            guiNode = _GUINode(nodeCD, thisNode.getState(), thisNode.getUnlockProps())
-            return createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=(
-             guiNode,
-             self.vehicleHubCtx.intCD))
+            guiNode = GUINode(nodeCD, thisNode.getState(), thisNode.getUnlockProps())
+            return createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=(guiNode, self.vehicleHubCtx.intCD))
+        elif tooltipId == TOOLTIPS_CONSTANTS.TECHTREE_VEHICLE:
+            vehCD = int(event.getArgument('vehCD', 0))
+            if not vehCD:
+                return None
+            topLevel = event.getArgument('topLevel', False)
+            thisNode = self._data.getTopLevelByItemCD(vehCD) if topLevel else self._data.getNodeByItemCD(vehCD)
+            guiNode = GUINode(vehCD, thisNode.getState(), thisNode.getUnlockProps())
+            return createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=(guiNode, self.vehicleHubCtx.intCD))
         else:
-            if tooltipId == TOOLTIPS_CONSTANTS.TECHTREE_VEHICLE:
-                vehCD = int(event.getArgument('vehCD', 0))
-                if not vehCD:
-                    return
-                topLevel = event.getArgument('topLevel', False)
-                thisNode = self._data.getTopLevelByItemCD(vehCD) if topLevel else self._data.getNodeByItemCD(vehCD)
-                guiNode = _GUINode(vehCD, thisNode.getState(), thisNode.getUnlockProps())
-                return createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=(
-                 guiNode,
-                 self.vehicleHubCtx.intCD))
-            return
+            return None
 
     def createToolTipContent(self, event, contentID):
-        if contentID == R.views.lobby.tooltips.VehPostProgressionEntryPointTooltip():
-            return VehPostProgressionEntryPointTooltip(self.vehicle.intCD)
-        return super(ModulesSubPresenter, self).createToolTipContent(event=event, contentID=contentID)
+        return VehPostProgressionEntryPointTooltip(self.vehicle.intCD) if contentID == R.views.lobby.tooltips.VehPostProgressionEntryPointTooltip() else super(ModulesSubPresenter, self).createToolTipContent(event=event, contentID=contentID)
 
     def initialize(self, vhCtx, *args, **kwargs):
         super(ModulesSubPresenter, self).initialize(vhCtx, *args, **kwargs)
@@ -253,38 +247,20 @@ class ModulesSubPresenter(SubPresenterBase):
         return
 
     def _getEvents(self):
-        return super(ModulesSubPresenter, self)._getEvents() + (
-         (
-          self.viewModel.fieldModificationModel.onVehiclePostProgression, self.__onPostProgression),
-         (
-          self.viewModel.onVehicleChange, self.__changeVehicle),
-         (
-          self.viewModel.onInstallItem, self.__installItem),
-         (
-          self.viewModel.onUnlockItem, self.__unlockItem),
-         (
-          self.viewModel.onBuyAndInstallItem, self.__buyAndInstallItem),
-         (
-          self.viewModel.onSellItem, self.__sellItem),
-         (
-          self._itemsCache.onSyncCompleted, self._onSyncCompleted))
+        return super(ModulesSubPresenter, self)._getEvents() + ((self.viewModel.fieldModificationModel.onVehiclePostProgression, self.__onPostProgression),
+         (self.viewModel.onVehicleChange, self.__changeVehicle),
+         (self.viewModel.onInstallItem, self.__installItem),
+         (self.viewModel.onUnlockItem, self.__unlockItem),
+         (self.viewModel.onBuyAndInstallItem, self.__buyAndInstallItem),
+         (self.viewModel.onSellItem, self.__sellItem),
+         (self._itemsCache.onSyncCompleted, self._onSyncCompleted))
 
     def _getCallbacks(self):
         callbacksTuple = super(ModulesSubPresenter, self)._getCallbacks()
-        return callbacksTuple + (
-         (
-          'stats.eliteVehicles', self.__onVehicleBecomeElite),
-         (
-          'stats.vehTypeXP', self.__updateVehTypeXP),
-         (
-          'stats.unlocks', self.__onVehicleBecomeUnlock))
+        return callbacksTuple + (('stats.eliteVehicles', self.__onVehicleBecomeElite), ('stats.vehTypeXP', self.__updateVehTypeXP), ('stats.unlocks', self.__onVehicleBecomeUnlock))
 
     def _getListeners(self):
-        return super(ModulesSubPresenter, self)._getListeners() + (
-         (
-          events.CloseWindowEvent.BUY_VEHICLE_VIEW_CLOSED, self.__onBuyVehicleWindowClosed),
-         (
-          events.CloseWindowEvent.ELITE_WINDOW_CLOSED, self.__onEliteWindowClosed))
+        return super(ModulesSubPresenter, self)._getListeners() + ((events.CloseWindowEvent.BUY_VEHICLE_VIEW_CLOSED, self.__onBuyVehicleWindowClosed), (events.CloseWindowEvent.ELITE_WINDOW_CLOSED, self.__onEliteWindowClosed))
 
     def __onEliteWindowClosed(self, _):
         self.__updateFieldModification()
@@ -312,7 +288,7 @@ class ModulesSubPresenter(SubPresenterBase):
 
     def __updateVehTypeXP(self, diff):
         vehicleCDs = self._data.getVehicleCDs()
-        if any(key in vehicleCDs for key in diff.keys()):
+        if any((key in vehicleCDs for key in diff.keys())):
             self.redraw()
 
     def __fillResearchModels(self, data, researchItemsModel, researchItemsMap):
@@ -380,7 +356,7 @@ class ModulesSubPresenter(SubPresenterBase):
         if not nodesToUpdate:
             return
         else:
-            with self.viewModel.transaction() as (model):
+            with self.viewModel.transaction() as model:
                 researchItems = model.getResearchItems()
                 for intCD in nodesToUpdate:
                     item = self._data.invalidateItem(intCD)

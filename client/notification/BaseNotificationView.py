@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/notification/BaseNotificationView.py
 from debug_utils import LOG_ERROR
 _NOT_ID_TUPLE_INDEX = 2
 

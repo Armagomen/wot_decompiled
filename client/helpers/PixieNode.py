@@ -1,4 +1,8 @@
-import weakref, BigWorld, Math
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/helpers/PixieNode.py
+import weakref
+import BigWorld
+import Math
 from helpers.PixieBG import PixieBG
 from helpers.EffectsList import EffectsListPlayer
 
@@ -147,8 +151,7 @@ class NodeEffectList(BaseNodeEffect):
 
 
 class EffectNode(object):
-    __slots__ = ('__node', '__nodeName', '__remappedNode', '__nodeDefaultLocalTranslation',
-                 '__drawOrder', '__waterY', '__effects')
+    __slots__ = ('__node', '__nodeName', '__remappedNode', '__nodeDefaultLocalTranslation', '__drawOrder', '__waterY', '__effects')
     _PIXIE_NAME = 0
     _PIXIE_ENABLED = 1
     _PIXIE_REF = 2
@@ -159,10 +162,7 @@ class EffectNode(object):
 
     @property
     def node(self):
-        if self.__remappedNode is None:
-            return self.__node
-        else:
-            return self.__remappedNode
+        return self.__node if self.__remappedNode is None else self.__remappedNode
 
     @property
     def nodeName(self):
@@ -181,8 +181,7 @@ class EffectNode(object):
         for effectName, effectDesc in effects.iteritems():
             if effectDesc[self.EFFECT_LIST]:
                 self.__effects[effectDesc[self.EFFECT_ID]] = NodeEffectList(effectName, model, self)
-            else:
-                self.__effects[effectDesc[self.EFFECT_ID]] = PixieEffect(effectName, self, effectDesc[self.EFFECT_TTL])
+            self.__effects[effectDesc[self.EFFECT_ID]] = PixieEffect(effectName, self, effectDesc[self.EFFECT_TTL])
 
         return
 

@@ -1,9 +1,16 @@
-import BigWorld, sys, os
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/visual_script/balance.py
+import BigWorld
+import sys
+import os
 from block import Meta, Block, InitParam, buildStrKeysValue
 from slot_types import SLOT_TYPE, arrayOf
 from type import VScriptStruct, VScriptStructField
 from visual_script.misc import errorVScript, ASPECT, EDITOR_TYPE
-import ResMgr, constants, nations, items.vehicles as iv
+import ResMgr
+import constants
+import nations
+import items.vehicles as iv
 _dataSection = None
 _gList = None
 
@@ -53,15 +60,15 @@ class EquipmentMeta(Meta):
 
     @classmethod
     def blockColor(cls):
-        return 10512127
+        pass
 
     @classmethod
     def blockCategory(cls):
-        return 'Balance'
+        pass
 
     @classmethod
     def blockIcon(cls):
-        return ':vse/blocks/arena'
+        pass
 
     @classmethod
     def blockAspects(cls):
@@ -73,7 +80,7 @@ class ConfigParamStruct(VScriptStruct):
     value = VScriptStructField('value', SLOT_TYPE.STR)
 
     def __repr__(self):
-        return ('ConfigParam(name = {}, value = {})').format(self.name, self.value)
+        return 'ConfigParam(name = {}, value = {})'.format(self.name, self.value)
 
 
 class ReloadClientPlan(Block, EquipmentMeta):
@@ -89,7 +96,7 @@ class ReloadClientPlan(Block, EquipmentMeta):
             def reloader(*args):
                 for avatar in BigWorld.entities.valuesOfType('Avatar', 0):
                     if avatar.isClientConnected:
-                        self._writeLog(('send reload to client {}').format(avatar.id))
+                        self._writeLog('send reload to client {}'.format(avatar.id))
                         avatar.ownClient.showDevelopmentInfo(100, '')
 
             BigWorld.addTimer(reloader, 1.0)
@@ -132,9 +139,7 @@ class ResMgrSpy(object):
         if section.name == 'script':
             return ''
         parent = section.parentSection()
-        if not parent:
-            return ''
-        return self.__path(parent) + section.name + '/'
+        return '' if not parent else self.__path(parent) + section.name + '/'
 
 
 class IntCompDescrDecoder(Block, EquipmentMeta):
@@ -144,7 +149,7 @@ class IntCompDescrDecoder(Block, EquipmentMeta):
         self._intCDs = self._makeDataInputSlot('incCD', arrayOf(SLOT_TYPE.INT))
 
     def captionText(self):
-        return 'IntCD Decoder'
+        pass
 
     def __parseCDs(self):
         cache()
@@ -156,11 +161,11 @@ class IntCompDescrDecoder(Block, EquipmentMeta):
                 itemTypeID, nationID, vehID = vehicles.parseIntCompactDescr(intCD)
                 item = vehicles.getItemByCompactDescr(intCD)
             except Exception as e:
-                err += ('{}: {}\n').format(intCD, e)
+                err += '{}: {}\n'.format(intCD, e)
                 results.append(err)
                 continue
 
-            results.append(('{} {} {}\n').format(intCD, (nations.NAMES[nationID], ITEM_TYPE_NAMES[itemTypeID], vehID), item.name))
+            results.append('{} {} {}\n'.format(intCD, (nations.NAMES[nationID], ITEM_TYPE_NAMES[itemTypeID], vehID), item.name))
 
         return (results, err)
 
@@ -179,7 +184,7 @@ class EquipmentParams(Block, EquipmentMeta):
 
     def __init__(self, *args, **kwargs):
         super(EquipmentParams, self).__init__(*args, **kwargs)
-        self.eqName, = self._getInitParams()
+        self.eqName = self._getInitParams()
         self._inSlot = self._makeEventInputSlot('in', self._execute)
         self._params = self._makeDataInputSlot('Parameters', arrayOf('ConfigParamStruct'))
         self._out = self._makeEventOutputSlot('out')
@@ -189,11 +194,10 @@ class EquipmentParams(Block, EquipmentMeta):
 
     @classmethod
     def initParams(cls):
-        return [
-         InitParam('EquipmentName', SLOT_TYPE.STR, buildStrKeysValue('large_repairkit_battle_royale', 'regenerationKit', 'arcade_minefield_battle_royale', 'healPoint', 'selfBuff', 'trappoint', 'afterburning_battle_royale', 'repairpoint', 'arcade_bomber_battle_royale', 'spawn_kamikaze', 'arcade_smoke_battle_royale_with_damage', 'berserker', 'fireCircle', 'adaptationHealthRestore', 'corrodingShot', 'clingBrander', 'thunderStrike', 'shotPassion', 'arcade_bomber_with_own_damage'), EDITOR_TYPE.STR_KEY_SELECTOR)]
+        return [InitParam('EquipmentName', SLOT_TYPE.STR, buildStrKeysValue('large_repairkit_battle_royale', 'regenerationKit', 'arcade_minefield_battle_royale', 'healPoint', 'selfBuff', 'trappoint', 'afterburning_battle_royale', 'repairpoint', 'arcade_bomber_battle_royale', 'spawn_kamikaze', 'arcade_smoke_battle_royale_with_damage', 'berserker', 'fireCircle', 'adaptationHealthRestore', 'corrodingShot', 'clingBrander', 'thunderStrike', 'shotPassion', 'arcade_bomber_with_own_damage'), EDITOR_TYPE.STR_KEY_SELECTOR)]
 
     def _execute(self):
-        self._writeLog(('_execute {}').format(self._params.getValue()))
+        self._writeLog('_execute {}'.format(self._params.getValue()))
         errString = self._processParams()
         if errString:
             return errorVScript(self, errString)
@@ -215,7 +219,7 @@ class EquipmentParams(Block, EquipmentMeta):
             return ''
         else:
             import sys
-            self._writeLog(('_processParams {}').format((self._params.getValue(), sys.executable)))
+            self._writeLog('_processParams {}'.format((self._params.getValue(), sys.executable)))
             spy = None
             try:
                 try:
@@ -231,12 +235,10 @@ class EquipmentParams(Block, EquipmentMeta):
                         spy = ResMgrSpy(self, {param.name for param in self._params.getValue()})
                     equipment.init(None, equipmentSection)
                 except Exception as e:
-                    return ('error {}').format(e)
+                    return 'error {}'.format(e)
 
             finally:
                 if spy:
                     spy.stop()
 
-            if spy and spy.spyParams:
-                return ('Were not read {}').format(spy.spyParams)
-            return ''
+            return 'Were not read {}'.format(spy.spyParams) if spy and spy.spyParams else ''

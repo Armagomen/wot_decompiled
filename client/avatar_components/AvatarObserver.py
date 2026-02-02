@@ -1,23 +1,26 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/avatar_components/AvatarObserver.py
 from collections import defaultdict
-import logging, BigWorld, Math, BattleReplay
+import logging
+import BigWorld
+import Math
+import BattleReplay
 from PlayerEvents import g_playerEvents
 from aih_constants import CTRL_MODE_NAME, CTRL_MODES
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as BONUS_CAPS
 from helpers.CallbackDelayer import CallbackDelayer
 _logger = logging.getLogger(__name__)
-_OBSERVABLE_VIEWS = (
- CTRL_MODE_NAME.ARCADE,
+_OBSERVABLE_VIEWS = (CTRL_MODE_NAME.ARCADE,
  CTRL_MODE_NAME.SNIPER,
  CTRL_MODE_NAME.DUAL_GUN,
  CTRL_MODE_NAME.STRATEGIC,
  CTRL_MODE_NAME.ARTY,
  CTRL_MODE_NAME.MAP_CASE,
  CTRL_MODE_NAME.TWIN_GUN)
-_STRATEGIC_VIEW = (
- CTRL_MODE_NAME.STRATEGIC, CTRL_MODE_NAME.ARTY)
+_STRATEGIC_VIEW = (CTRL_MODE_NAME.STRATEGIC, CTRL_MODE_NAME.ARTY)
 
 class ObservedVehicleData(object):
-    __slots__ = ('dispAngle', )
+    __slots__ = ('dispAngle',)
 
     def __init__(self):
         super(ObservedVehicleData, self).__init__()
@@ -65,9 +68,7 @@ class AvatarObserver(CallbackDelayer):
             self.filter.resetVector3(BigWorld.AvatarSubfilters.CAMERA_SHOT_POINT)
 
     def getObservedVehicleID(self):
-        if self.isObserver():
-            return self.__observedVehicleID
-        return self.playerVehicleID
+        return self.__observedVehicleID if self.isObserver() else self.playerVehicleID
 
     def onVehicleChanged(self):
         _logger.debug('Avatar vehicle has changed to %r', self.vehicle)
@@ -157,9 +158,7 @@ class AvatarObserver(CallbackDelayer):
         if vehicle is not None and vehicle.isHidden:
             return vehicle
         else:
-            if vehicle is None or not vehicle.inWorld or not vehicle.isStarted or vehicle.isDestroyed:
-                return
-            return vehicle
+            return None if vehicle is None or not vehicle.inWorld or not vehicle.isStarted or vehicle.isDestroyed else vehicle
 
     def clearObservedVehicleID(self):
         self.__observedVehicleID = None

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/OfflineEntity.py
 import BigWorld
 
 class OfflineEntity(BigWorld.Entity):

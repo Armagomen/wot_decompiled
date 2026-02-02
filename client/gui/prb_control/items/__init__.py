@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/items/__init__.py
 from collections import namedtuple
 from constants import PREBATTLE_TYPE, QUEUE_TYPE
 from gui.prb_control.items.prb_items import PlayerPrbInfo
@@ -7,8 +9,7 @@ from gui.shared.utils.decorators import ReprInjector
 
 @ReprInjector.simple('ctrlTypeID', 'entityTypeID', 'hasModalEntity', 'hasLockedState', 'isIntroMode')
 class FunctionalState(object):
-    __slots__ = ('ctrlTypeID', 'entityTypeID', 'hasModalEntity', 'hasLockedState',
-                 'isIntroMode', 'funcState', 'funcFlags', 'rosterType')
+    __slots__ = ('ctrlTypeID', 'entityTypeID', 'hasModalEntity', 'hasLockedState', 'isIntroMode', 'funcState', 'funcFlags', 'rosterType')
 
     def __init__(self, ctrlTypeID=0, entityTypeID=0, hasModalEntity=False, hasLockedState=False, isIntroMode=False, funcState=None, funcFlags=FUNCTIONAL_FLAG.UNDEFINED, rosterType=0):
         super(FunctionalState, self).__init__()
@@ -92,11 +93,8 @@ class PlayerDecorator(object):
 
 
 SelectResult = namedtuple('SelectResult', ('isProcessed', 'newEntry'))
-SelectResult.__new__.__defaults__ = (
- False, None)
+SelectResult.__new__.__defaults__ = (False, None)
 CreationResult = namedtuple('SelectResult', ('creationFlags', 'initFlags'))
-CreationResult.__new__.__defaults__ = (
- FUNCTIONAL_FLAG.UNDEFINED, FUNCTIONAL_FLAG.UNDEFINED)
+CreationResult.__new__.__defaults__ = (FUNCTIONAL_FLAG.UNDEFINED, FUNCTIONAL_FLAG.UNDEFINED)
 ValidationResult = namedtuple('ValidationResult', ('isValid', 'restriction', 'ctx'))
-ValidationResult.__new__.__defaults__ = (
- True, PREBATTLE_RESTRICTION.UNDEFINED, None)
+ValidationResult.__new__.__defaults__ = (True, PREBATTLE_RESTRICTION.UNDEFINED, None)

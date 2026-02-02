@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/impl/gen/view_models/views/lobby/enums.py
 from enum import Enum, IntEnum
 
 class MetaRootViews(IntEnum):
@@ -33,7 +35,17 @@ class Division(IntEnum):
     E = 5
 
 
+class StatisticsMode(IntEnum):
+    SEASON = 0
+    DAY = 1
+
+
 class SeasonPointState(Enum):
     ACHIEVED = 'achieved'
     POSSIBLE = 'possible'
     NOTACHIEVED = 'notAchieved'
+
+
+class TournamentName(Enum):
+    WCI = 'wci'
+    OLS = 'ols'

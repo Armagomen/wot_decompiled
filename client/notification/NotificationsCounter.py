@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/notification/NotificationsCounter.py
 from gui.prb_control import prbInvitesProperty
 from messenger.m_constants import PROTO_TYPE
 from messenger.proto import proto_getter
@@ -21,7 +23,7 @@ class _GroupCounter(object):
         return len(self.__notifications - self.__seenNotifications)
 
     def reset(self):
-        self.__seenNotifications |= {entry for entry in self.__notifications if entry[_COUNT_ONLY_ONCE_INDEX] if entry[_COUNT_ONLY_ONCE_INDEX]}
+        self.__seenNotifications |= {entry for entry in self.__notifications if entry[_COUNT_ONLY_ONCE_INDEX]}
         self.resetUnreadCount()
 
     def resetUnreadCount(self):
@@ -29,14 +31,14 @@ class _GroupCounter(object):
 
     @classmethod
     def getGroupID(cls):
-        return ''
+        pass
 
 
 class _InfoGroupCounter(_GroupCounter):
 
     @proto_getter(PROTO_TYPE.BW)
     def proto(self):
-        return
+        return None
 
     def resetUnreadCount(self):
         super(_InfoGroupCounter, self).resetUnreadCount()
@@ -51,7 +53,7 @@ class _InviteGroupCounter(_GroupCounter):
 
     @prbInvitesProperty
     def prbInvites(self):
-        return
+        return None
 
     def resetUnreadCount(self):
         super(_InviteGroupCounter, self).resetUnreadCount()
@@ -75,7 +77,7 @@ class _CounterCollection(object):
 
     def __init__(self, seq):
         super(_CounterCollection, self).__init__()
-        self.__counters = dict((counter.getGroupID(), counter) for counter in seq)
+        self.__counters = dict(((counter.getGroupID(), counter) for counter in seq))
 
     def clear(self):
         self.__counters.clear()
@@ -94,10 +96,7 @@ class _CounterCollection(object):
         return self.count()
 
     def count(self, group=None):
-        if group is None:
-            return sum(counter.count() for counter in self.__counters.values())
-        else:
-            return self.__counters[group].count()
+        return sum((counter.count() for counter in self.__counters.values())) if group is None else self.__counters[group].count()
 
     def reset(self, group=None):
         if group is None:
@@ -121,7 +120,4 @@ class _CounterCollection(object):
 class NotificationsCounter(_CounterCollection):
 
     def __init__(self):
-        super(NotificationsCounter, self).__init__((
-         _InfoGroupCounter(),
-         _InviteGroupCounter(),
-         _OfferGroupCounter()))
+        super(NotificationsCounter, self).__init__((_InfoGroupCounter(), _InviteGroupCounter(), _OfferGroupCounter()))

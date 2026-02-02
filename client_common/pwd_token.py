@@ -1,6 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client_common/pwd_token.py
 import hashlib
 from constants import DEFAULT_LANGUAGE
-__all__ = ('generate', )
+__all__ = ('generate',)
 
 def _generateMd5Hash(pwd):
     md = hashlib.md5()
@@ -8,8 +10,8 @@ def _generateMd5Hash(pwd):
     return md.hexdigest()
 
 
-_BY_LANG = {'cn': _generateMd5Hash, 
-   'vn': _generateMd5Hash}
+_BY_LANG = {'cn': _generateMd5Hash,
+ 'vn': _generateMd5Hash}
 
 def generate(pwd):
     return pwd

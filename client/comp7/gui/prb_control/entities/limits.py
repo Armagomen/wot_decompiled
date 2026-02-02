@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/prb_control/entities/limits.py
 from constants import PREBATTLE_MAX_OBSERVERS_IN_TEAM, ROLE_TYPE, PREBATTLE_TYPE
 from gui.prb_control import prb_getters
 from gui.prb_control.entities.base.limits import ITeamLimit, TeamNoPlayersInBattle, TeamIsValid, TeamAllPlayersReady, LimitsCollection
@@ -19,9 +21,7 @@ class MaxPlayersNumber(ITeamLimit):
         if observersNumber > PREBATTLE_MAX_OBSERVERS_IN_TEAM:
             return (False, PREBATTLE_RESTRICTION.LIMIT_MAX_OBSERVERS)
         maxPlayersNumber = totalPlayerNumber - PREBATTLE_MAX_OBSERVERS_IN_TEAM
-        if playersNumber > maxPlayersNumber:
-            return (False, PREBATTLE_RESTRICTION.LIMIT_MAX_COUNT)
-        return (True, '')
+        return (False, PREBATTLE_RESTRICTION.LIMIT_MAX_COUNT) if playersNumber > maxPlayersNumber else (True, '')
 
     def __getPlayerRolesNumber(self, teamInfo):
         observersNumber = 0
@@ -31,19 +31,15 @@ class MaxPlayersNumber(ITeamLimit):
             isObserver = vehicleType.role == ROLE_TYPE.NOT_DEFINED
             if isObserver:
                 observersNumber += 1
-            else:
-                playersNumber += 1
+            playersNumber += 1
 
-        return (
-         observersNumber, playersNumber)
+        return (observersNumber, playersNumber)
 
 
 class Comp7TrainingLimits(LimitsCollection):
 
     def __init__(self, entity):
-        super(Comp7TrainingLimits, self).__init__(entity, (
-         TrainingVehicleIsValid(),), (
-         TeamNoPlayersInBattle(PREBATTLE_TYPE.TRAINING),
+        super(Comp7TrainingLimits, self).__init__(entity, (TrainingVehicleIsValid(),), (TeamNoPlayersInBattle(PREBATTLE_TYPE.TRAINING),
          TeamIsValid(),
          ObserverInTeamIsValid(),
          TeamAllPlayersReady(),

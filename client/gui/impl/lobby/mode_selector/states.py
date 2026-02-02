@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/mode_selector/states.py
 import typing
 from frameworks.state_machine import StateFlags
 from gui.Scaleform.framework import ScopeTemplates
@@ -48,7 +50,7 @@ class EntryState(GuiImplViewLobbyState):
         self.__isNavigationVisible = True
 
     def getNavigationDescription(self):
-        title = backport.text(R.strings.pages.titles.mode_selector()) if self.__isNavigationVisible else ''
+        title = backport.text(R.strings.pages.titles.mode_selector()) if self.__isNavigationVisible else u''
         return LobbyStateDescription(title=title)
 
     def getBackNavigationDescription(self, params):

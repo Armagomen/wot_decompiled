@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/wgcg/subscriptions.py
 from gui.clans.interfaces import IClanListener
 from gui.shared.utils.listeners_collection import ListenersCollection
 

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/shared/tooltips/helper.py
 from functools import partial
 from battle_royale.gui.impl.gen.view_models.views.lobby.tooltips.reward_points_place_model import RewardPointsPlaceModel
 from frameworks.wulf import Array
@@ -34,14 +36,12 @@ def _getGameModeName(headerResource, gameMode):
 
 
 def _setRangeLabel(points, prevLevel, headerResource):
-    numRange = (
-     prevLevel, points.lastInRange)
+    numRange = (prevLevel, points.lastInRange)
     rangeTemplate = headerResource.text.places()
     if prevLevel == points.lastInRange:
-        numRange = (
-         points.lastInRange,)
+        numRange = (points.lastInRange,)
         rangeTemplate = headerResource.text.place()
-    return backport.text(rangeTemplate, place=('-').join(map(str, numRange)))
+    return backport.text(rangeTemplate, place='-'.join(map(str, numRange)))
 
 
 def _getRowPointsCell(points, prevLevel, headerResource):

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/clans/invites/ClanRequestsView.py
 from adisp import adisp_process
 from debug_utils import LOG_DEBUG
 from gui.Scaleform.daapi.view.lobby.clans.invites.ClanInvitesViewWithTable import ClanInvitesAbstractDataProvider
@@ -21,8 +23,7 @@ class ClanRequestsView(ClanRequestsViewMeta):
 
     def __init__(self):
         super(ClanRequestsView, self).__init__()
-        self._cooldown = CooldownHelper([
-         WebRequestDataType.CREATE_APPLICATIONS,
+        self._cooldown = CooldownHelper([WebRequestDataType.CREATE_APPLICATIONS,
          WebRequestDataType.CREATE_INVITES,
          WebRequestDataType.ACCEPT_APPLICATION,
          WebRequestDataType.ACCEPT_INVITE,
@@ -100,14 +101,10 @@ class ClanRequestsView(ClanRequestsViewMeta):
         return CLANS_ALIASES.INVITE_WINDOW_FILTER_ACTUAL
 
     def _getDefaultSortFields(self):
-        return (
-         (
-          'status', False),)
+        return (('status', False),)
 
     def _getSecondSortFields(self):
-        if self.currentFilterName == CLANS_ALIASES.INVITE_WINDOW_FILTER_PROCESSED or self.currentFilterName == CLANS_ALIASES.INVITE_WINDOW_FILTER_EXPIRED:
-            return ('updatedAt', )
-        return ('createdAt', )
+        return ('updatedAt',) if self.currentFilterName == CLANS_ALIASES.INVITE_WINDOW_FILTER_PROCESSED or self.currentFilterName == CLANS_ALIASES.INVITE_WINDOW_FILTER_EXPIRED else ('createdAt',)
 
     def _createSearchDP(self):
         return RequestDataProvider(self)
@@ -118,7 +115,7 @@ class ClanRequestsView(ClanRequestsViewMeta):
         status, data = result
         accountsInfo = tuple()
         if status is True and data:
-            ctx = AccountsInfoCtx(tuple(item.getAccountDbID() for item in data))
+            ctx = AccountsInfoCtx(tuple((item.getAccountDbID() for item in data)))
             accountsResponse = yield self.webCtrl.sendRequest(ctx)
             if accountsResponse.isSuccess():
                 accountsInfo = ctx.getDataObj(accountsResponse.data)
@@ -126,17 +123,13 @@ class ClanRequestsView(ClanRequestsViewMeta):
         super(ClanRequestsView, self)._onListUpdated(selectedID, isFullUpdate, isReqInCoolDown, result)
 
     def _makeFilters(self):
-        return [
-         {'alias': CLANS_ALIASES.INVITE_WINDOW_FILTER_ACTUAL, 
-            'text': _ms(CLANS.CLANINVITESWINDOW_FILTERS_ACTUAL, value=self.formatInvitesCount(self.actualRequestsPaginator))},
-         {'alias': CLANS_ALIASES.INVITE_WINDOW_FILTER_EXPIRED, 
-            'text': _ms(CLANS.CLANINVITESWINDOW_FILTERS_EXPIRED, value=self.formatInvitesCount(self.expiredRequestsPaginator))},
-         {'alias': CLANS_ALIASES.INVITE_WINDOW_FILTER_PROCESSED, 
-            'text': _ms(CLANS.CLANINVITESWINDOW_FILTERS_PROCESSED, value=self.formatInvitesCount(self.processedRequestsPaginator))}]
+        return [{'alias': CLANS_ALIASES.INVITE_WINDOW_FILTER_ACTUAL,
+          'text': _ms(CLANS.CLANINVITESWINDOW_FILTERS_ACTUAL, value=self.formatInvitesCount(self.actualRequestsPaginator))}, {'alias': CLANS_ALIASES.INVITE_WINDOW_FILTER_EXPIRED,
+          'text': _ms(CLANS.CLANINVITESWINDOW_FILTERS_EXPIRED, value=self.formatInvitesCount(self.expiredRequestsPaginator))}, {'alias': CLANS_ALIASES.INVITE_WINDOW_FILTER_PROCESSED,
+          'text': _ms(CLANS.CLANINVITESWINDOW_FILTERS_PROCESSED, value=self.formatInvitesCount(self.processedRequestsPaginator))}]
 
     def _makeHeaders(self):
-        return [
-         self._packHeaderColumnData('userName', CLANS.CLANINVITESWINDOW_TABLE_USERNAME, 225, CLANS.CLANINVITESWINDOW_TOOLTIPS_TABLE_REQUESTS_USERNAME, textAlign='left', defaultSortDirection='ascending'),
+        return [self._packHeaderColumnData('userName', CLANS.CLANINVITESWINDOW_TABLE_USERNAME, 225, CLANS.CLANINVITESWINDOW_TOOLTIPS_TABLE_REQUESTS_USERNAME, textAlign='left', defaultSortDirection='ascending'),
          self._packHeaderColumnData('message', '', 73, CLANS.CLANINVITESWINDOW_TOOLTIPS_TABLE_REQUESTS_MESSAGE, RES_ICONS.MAPS_ICONS_CLANS_INVITESWINDOW_ICON_STATISTICS_CLAN_INVITE_098),
          self._packHeaderColumnData('personalRating', '', 98, CLANS.CLANINVITESWINDOW_TOOLTIPS_TABLE_REQUESTS_PERSONALRATING, RES_ICONS.MAPS_ICONS_STATISTIC_RATING24),
          self._packHeaderColumnData('battlesCount', '', 98, CLANS.CLANINVITESWINDOW_TOOLTIPS_TABLE_REQUESTS_BATTLESCOUNT, RES_ICONS.MAPS_ICONS_STATISTIC_BATTLES24),
@@ -153,7 +146,7 @@ class RequestDataProvider(ClanInvitesAbstractDataProvider):
         self.__accountsInfo = {}
 
     def setAccountsInfo(self, acc_info):
-        self.__accountsInfo = dict((info.getDbID(), info) for info in acc_info)
+        self.__accountsInfo = dict(((info.getDbID(), info) for info in acc_info))
 
     def getStatusByDbID(self, dbID):
         return self.getExtraData(dbID)
@@ -168,18 +161,18 @@ class RequestDataProvider(ClanInvitesAbstractDataProvider):
 
     def _makeVO(self, item, extraData):
         accountDbId = item.getAccountDbID()
-        return {'dbID': item.getDbID(), 
-           'userInfo': {'userName': item.getAccountName(), 
-                        'dbID': accountDbId}, 
-           'personalRating': formatField(getter=item.getPersonalRating, formatter=backport.getIntegralFormat), 
-           'battlesCount': formatField(getter=item.getBattlesCount, formatter=backport.getIntegralFormat), 
-           'wins': formatField(getter=item.getBattlesPerformanceAvg, formatter=lambda value: backport.getNiceNumberFormat(value) + '%'), 
-           'awgExp': formatField(getter=item.getBattleXpAvg, formatter=backport.getIntegralFormat), 
-           'status': {'text': self._makeInviteStateString(item), 
-                      'tooltip': self._makeTooltip(body=self._makeRequestTooltip(status=item.getStatus(), user=formatField(getter=item.getChangerName), date=formatField(getter=item.getUpdatedAt, formatter=formatters.formatShortDateShortTimeString)))}, 
-           'canShowContextMenu': True, 
-           'messageTooltip': self._makeTooltip(body=item.getComment() if isValueAvailable(getter=item.getComment) else str()), 
-           'actions': self.__buildActionsSection(accountDbId, item.getStatus())}
+        return {'dbID': item.getDbID(),
+         'userInfo': {'userName': item.getAccountName(),
+                      'dbID': accountDbId},
+         'personalRating': formatField(getter=item.getPersonalRating, formatter=backport.getIntegralFormat),
+         'battlesCount': formatField(getter=item.getBattlesCount, formatter=backport.getIntegralFormat),
+         'wins': formatField(getter=item.getBattlesPerformanceAvg, formatter=lambda value: backport.getNiceNumberFormat(value) + '%'),
+         'awgExp': formatField(getter=item.getBattleXpAvg, formatter=backport.getIntegralFormat),
+         'status': {'text': self._makeInviteStateString(item),
+                    'tooltip': self._makeTooltip(body=self._makeRequestTooltip(status=item.getStatus(), user=formatField(getter=item.getChangerName), date=formatField(getter=item.getUpdatedAt, formatter=formatters.formatShortDateShortTimeString)))},
+         'canShowContextMenu': True,
+         'messageTooltip': self._makeTooltip(body=item.getComment() if isValueAvailable(getter=item.getComment) else str()),
+         'actions': self.__buildActionsSection(accountDbId, item.getStatus())}
 
     def _makeRequestTooltip(self, status, date, user=None):
         if status == CLAN_INVITE_STATES.ACCEPTED:
@@ -188,8 +181,7 @@ class RequestDataProvider(ClanInvitesAbstractDataProvider):
             return text_styles.concatStylesToMultiLine(text_styles.standard(_ms(CLANS.CLANINVITESWINDOW_TOOLTIPS_REQUEST_REQUESTDECLINED)), text_styles.main(date), text_styles.main(''), text_styles.standard(_ms(CLANS.CLANINVITESWINDOW_TOOLTIPS_REQUEST_BYUSER)), text_styles.stats(user))
         if status == CLAN_INVITE_STATES.EXPIRED or status == CLAN_INVITE_STATES.EXPIRED_RESENT:
             return text_styles.concatStylesToMultiLine(text_styles.standard(_ms(CLANS.CLANINVITESWINDOW_TOOLTIPS_REQUEST_REQUESTEXPIRED)), text_styles.main(date))
-        if status == CLAN_INVITE_STATES.ACTIVE:
-            return text_styles.concatStylesToMultiLine(text_styles.standard(_ms(CLANS.CLANINVITESWINDOW_TOOLTIPS_REQUEST_REQUESTSENT)), text_styles.main(date))
+        return text_styles.concatStylesToMultiLine(text_styles.standard(_ms(CLANS.CLANINVITESWINDOW_TOOLTIPS_REQUEST_REQUESTSENT)), text_styles.main(date)) if status == CLAN_INVITE_STATES.ACTIVE else None
 
     def __buildActionsSection(self, accountDbId, inviteStatus):
         acceptButtonEnabled = False
@@ -230,12 +222,12 @@ class RequestDataProvider(ClanInvitesAbstractDataProvider):
                 else:
                     invBtnTooltip = CLANS.CLANINVITESWINDOW_TOOLTIPS_TABLE_INVITES_INVITEBUTTON
                     inviteButtonEnabled = self.isActionsAllowed()
-        return {'acceptButtonEnabled': acceptButtonEnabled, 
-           'declineButtonEnabled': declineButtonEnabled, 
-           'inviteButtonEnabled': inviteButtonEnabled, 
-           'acceptButtonVisible': acceptButtonVisible, 
-           'declineButtonVisible': declineButtonVisible, 
-           'inviteButtonVisible': inviteButtonVisible, 
-           'inviteButtonText': _ms(CLANS.CLANINVITESWINDOW_TABLE_INVITEBUTTON), 
-           'inviteButtonTooltip': self._makeTooltip(body=_ms(invBtnTooltip)), 
-           'acceptButtonTooltip': acceptButtonTooltip}
+        return {'acceptButtonEnabled': acceptButtonEnabled,
+         'declineButtonEnabled': declineButtonEnabled,
+         'inviteButtonEnabled': inviteButtonEnabled,
+         'acceptButtonVisible': acceptButtonVisible,
+         'declineButtonVisible': declineButtonVisible,
+         'inviteButtonVisible': inviteButtonVisible,
+         'inviteButtonText': _ms(CLANS.CLANINVITESWINDOW_TABLE_INVITEBUTTON),
+         'inviteButtonTooltip': self._makeTooltip(body=_ms(invBtnTooltip)),
+         'acceptButtonTooltip': acceptButtonTooltip}

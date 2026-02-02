@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/wgcg/utils/contexts.py
 from typing import TYPE_CHECKING
 from gui.wgcg.base.contexts import CommonWebRequestCtx
 from gui.wgcg.settings import WebRequestDataType
@@ -29,14 +31,14 @@ class SPAAccountAttributeCtx(CommonWebRequestCtx):
 class PlatformFetchProductListCtx(CommonWebRequestCtx):
 
     def __init__(self, ctx, waitingID=''):
-        self.__params = {'storefront': ctx.storefront, 
-           'wgid': ctx.wgid, 
-           'language': ctx.language, 
-           'additional_data': ctx.additional_data, 
-           'country': ctx.country, 
-           'response_fields': ctx.response_fields, 
-           'response_fields_profile': ctx.response_fields_profile, 
-           'category': ctx.category}
+        self.__params = {'storefront': ctx.storefront,
+         'wgid': ctx.wgid,
+         'language': ctx.language,
+         'additional_data': ctx.additional_data,
+         'country': ctx.country,
+         'response_fields': ctx.response_fields,
+         'response_fields_profile': ctx.response_fields_profile,
+         'category': ctx.category}
         if ctx.product_codes:
             self.__params.update(product_codes=ctx.product_codes)
         super(PlatformFetchProductListCtx, self).__init__(waitingID=waitingID)

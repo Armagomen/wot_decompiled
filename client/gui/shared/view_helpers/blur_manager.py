@@ -1,6 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/view_helpers/blur_manager.py
 import typing
 from math import isnan
-import GUI, logging, weakref
+import GUI
+import logging
+import weakref
 from collections import deque
 from gui.app_loader.settings import APP_NAME_SPACE as _SPACE
 from helpers import dependency
@@ -125,9 +129,7 @@ class BlurManager(object):
         return bool(toDelete)
 
     def _isBlurInCache(self, blur):
-        if weakref.ref(blur) in self._cache:
-            return True
-        return False
+        return True if weakref.ref(blur) in self._cache else False
 
 
 class Blur(object):
@@ -274,9 +276,9 @@ class UILayerBlur(Blur):
         config = UILayerBlur.getSpecificConfig(blur.config)
         if config is None:
             return
+        elif not config.enabled or config.ownLayer is None:
+            return
         else:
-            if not config.enabled or config.ownLayer is None:
-                return
             appLoader = dependency.instance(IAppLoader)
             lobby = appLoader.getApp(_SPACE.SF_LOBBY)
             battle = appLoader.getApp(_SPACE.SF_BATTLE)
@@ -335,9 +337,7 @@ class CachedBlur(object):
     def __init__(self, enabled=False, fadeTime=0, ownLayer=None, blurAnimRepeatCount=_DEFAULT_BLUR_ANIM_REPEAT_COUNT, blurRadius=None, uiBlurRadius=_DEFAULT_UI_BLUR_RADIUS):
         blurCtrl = dependency.instance(IBlurController)
         self.__sceneBlurConfig = SceneBlurConfig(enabled, fadeTime, blurRadius, [])
-        self.__blurConfig = (
-         UILayerBlurConfig(enabled, ownLayer, blurAnimRepeatCount, uiBlurRadius),
-         self.__sceneBlurConfig)
+        self.__blurConfig = (UILayerBlurConfig(enabled, ownLayer, blurAnimRepeatCount, uiBlurRadius), self.__sceneBlurConfig)
         self.__rects = {}
         self.__blur = blurCtrl.createBlur(self.__blurConfig)
 

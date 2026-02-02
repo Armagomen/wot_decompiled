@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/genConsts/QUESTSPROGRESS.py
 from debug_utils import LOG_WARNING
 
 class QUESTSPROGRESS(object):
@@ -32,20 +34,17 @@ class QUESTSPROGRESS(object):
     SILVER_LIGHT_TANK = 'silver_lightTank'
     SILVER_MEDIUM_TANK = 'silver_mediumTank'
     SILVER_SPG = 'silver_SPG'
-    SILVER_ENUM = (
-     SILVER_AT_SPG,
+    SILVER_ENUM = (SILVER_AT_SPG,
      SILVER_HEAVY_TANK,
      SILVER_LIGHT_TANK,
      SILVER_MEDIUM_TANK,
      SILVER_SPG)
-    ORANGE_ENUM = (
-     ORANGE_AT_SPG,
+    ORANGE_ENUM = (ORANGE_AT_SPG,
      ORANGE_HEAVY_TANK,
      ORANGE_LIGHT_TANK,
      ORANGE_MEDIUM_TANK,
      ORANGE_SPG)
-    C_183X63_OPERATION_ENUM = (
-     C_183X63_OPERATION_1,
+    C_183X63_OPERATION_ENUM = (C_183X63_OPERATION_1,
      C_183X63_OPERATION_10,
      C_183X63_OPERATION_2,
      C_183X63_OPERATION_3,
@@ -58,27 +57,27 @@ class QUESTSPROGRESS(object):
 
     @classmethod
     def getQPSilverVehicleType(cls, vType):
-        outcome = ('silver_{}').format(vType)
+        outcome = 'silver_{}'.format(vType)
         if outcome not in cls.SILVER_ENUM:
-            LOG_WARNING(('Class constant "{}" not found').format(outcome))
+            LOG_WARNING('Class constant "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getQPOrangeVehicleType(cls, vType):
-        outcome = ('orange_{}').format(vType)
+        outcome = 'orange_{}'.format(vType)
         if outcome not in cls.ORANGE_ENUM:
-            LOG_WARNING(('Class constant "{}" not found').format(outcome))
+            LOG_WARNING('Class constant "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getOperationTrackingIcon(cls, operationID):
-        outcome = ('183x63_operation_{}').format(operationID)
+        outcome = '183x63_operation_{}'.format(operationID)
         if outcome not in cls.C_183X63_OPERATION_ENUM:
-            LOG_WARNING(('Class constant "{}" not found').format(outcome))
+            LOG_WARNING('Class constant "{}" not found'.format(outcome))
             return None
         else:
             return outcome

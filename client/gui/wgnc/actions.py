@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/wgnc/actions.py
 import BigWorld
 from adisp import adisp_process
 from debug_utils import LOG_CURRENT_EXCEPTION, LOG_ERROR, LOG_WARNING, LOG_DEBUG
@@ -17,7 +19,7 @@ from web.web_client_api import webApiCollection
 
 @ReprInjector.simple(('_name', 'name'))
 class _Action(object):
-    __slots__ = ('_name', )
+    __slots__ = ('_name',)
 
     def __init__(self, name):
         super(_Action, self).__init__()
@@ -58,7 +60,7 @@ class Callback(_Action):
 
 @ReprInjector.withParent(('_url', 'url'))
 class _OpenBrowser(_Action):
-    __slots__ = ('_url', )
+    __slots__ = ('_url',)
 
     def __init__(self, name, url):
         super(_OpenBrowser, self).__init__(name)
@@ -169,7 +171,7 @@ class CustomAction(_Action):
 
 @ReprInjector.withParent(('_target', 'target'))
 class OpenWindow(_Action):
-    __slots__ = ('_target', )
+    __slots__ = ('_target',)
 
     def __init__(self, name, target):
         super(OpenWindow, self).__init__(name)
@@ -187,7 +189,7 @@ class OpenWindow(_Action):
 
 @ReprInjector.withParent(('_text', 'text'))
 class ReplaceButtons(_Action):
-    __slots__ = ('_text', )
+    __slots__ = ('_text',)
 
     def __init__(self, name, text):
         super(ReplaceButtons, self).__init__(name)
@@ -216,7 +218,7 @@ def _getActions4String(value):
 
 @ReprInjector.simple(('__actions', 'actions'))
 class ActionsHolder(object):
-    __slots__ = ('__actions', )
+    __slots__ = ('__actions',)
 
     def __init__(self, items):
         super(ActionsHolder, self).__init__()
@@ -263,7 +265,6 @@ class ActionsHolder(object):
                 action = self.__actions[name]
                 action.invoke(notID, actor)
                 result = True
-            else:
-                LOG_ERROR('Action is not found', name)
+            LOG_ERROR('Action is not found', name)
 
         return result

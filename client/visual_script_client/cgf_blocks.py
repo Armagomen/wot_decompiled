@@ -1,5 +1,10 @@
-import logging, typing, weakref, BigWorld
-from constants import IS_VS_EDITOR, ROCKET_ACCELERATION_STATE
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/visual_script_client/cgf_blocks.py
+import logging
+import typing
+import weakref
+import BigWorld
+from constants import IS_VS_EDITOR, ROCKET_ACCELERATION_STATE, UNKNOWN_VEHICLE_ID
 from debug_utils import LOG_WARNING
 from visual_script.block import Block
 from visual_script.slot_types import SLOT_TYPE
@@ -7,7 +12,7 @@ from visual_script.misc import ASPECT, errorVScript
 from visual_script.dependency import dependencyImporter
 from visual_script.contexts.cgf_context import GameObjectWrapper
 from visual_script.cgf_blocks import CGFMeta
-Vehicle, CGF, tankStructure, RAC, SimulatedVehicle, cgf_helpers, battle_constants = dependencyImporter('Vehicle', 'CGF', 'vehicle_systems.tankStructure', 'cgf_components.rocket_acceleration_component', 'SimulatedVehicle', 'cgf_common.cgf_helpers', 'gui.battle_control.battle_constants')
+Vehicle, CGF, tankStructure, RAC, SimulatedVehicle, cgf_helpers = dependencyImporter('Vehicle', 'CGF', 'vehicle_systems.tankStructure', 'cgf_components.rocket_acceleration_component', 'SimulatedVehicle', 'cgf_common.cgf_helpers')
 if not IS_VS_EDITOR:
     from gui.battle_control.controllers.vehicle_passenger import hasVehiclePassengerCtrl, VehiclePassengerInfoWatcher
 else:
@@ -39,9 +44,7 @@ class GetVehicleAppearanceGameObject(Block, CGFClientMeta):
         self._appObject = self._makeDataOutputSlot('appearanceObject', SLOT_TYPE.GAME_OBJECT, self._exec)
 
     def validate(self):
-        if not self._object.hasValue():
-            return 'GameObject is required'
-        return super(GetVehicleAppearanceGameObject, self).validate()
+        return 'GameObject is required' if not self._object.hasValue() else super(GetVehicleAppearanceGameObject, self).validate()
 
     def _exec(self):
         currentGO = self._object.getValue()
@@ -64,9 +67,7 @@ class GetVehicleGameObject(Block, CGFClientMeta):
         self._vehicleObject = self._makeDataOutputSlot('vehicleObject', SLOT_TYPE.GAME_OBJECT, self._exec)
 
     def validate(self):
-        if not self._object.hasValue():
-            return 'GameObject is required'
-        return super(GetVehicleGameObject, self).validate()
+        return 'GameObject is required' if not self._object.hasValue() else super(GetVehicleGameObject, self).validate()
 
     def _exec(self):
         currentGO = self._object.getValue()
@@ -112,13 +113,13 @@ class RocketAcceleratorEvents(Block, CGFClientMeta):
             self._writeLog(errorMsg)
             self._failure.call()
             return
-        self.__switcher = {ROCKET_ACCELERATION_STATE.NOT_RUNNING: lambda *args: None, 
-           ROCKET_ACCELERATION_STATE.DEPLOYING: lambda status: self._deploying.call(), 
-           ROCKET_ACCELERATION_STATE.PREPARING: lambda status: self._preparing.call(), 
-           ROCKET_ACCELERATION_STATE.READY: lambda status: self._ready.call(), 
-           ROCKET_ACCELERATION_STATE.ACTIVE: lambda status: self._active.call(), 
-           ROCKET_ACCELERATION_STATE.DISABLED: lambda status: self._disabled.call(), 
-           ROCKET_ACCELERATION_STATE.EMPTY: lambda status: self._empty.call()}
+        self.__switcher = {ROCKET_ACCELERATION_STATE.NOT_RUNNING: lambda *args: None,
+         ROCKET_ACCELERATION_STATE.DEPLOYING: lambda status: self._deploying.call(),
+         ROCKET_ACCELERATION_STATE.PREPARING: lambda status: self._preparing.call(),
+         ROCKET_ACCELERATION_STATE.READY: lambda status: self._ready.call(),
+         ROCKET_ACCELERATION_STATE.ACTIVE: lambda status: self._active.call(),
+         ROCKET_ACCELERATION_STATE.DISABLED: lambda status: self._disabled.call(),
+         ROCKET_ACCELERATION_STATE.EMPTY: lambda status: self._empty.call()}
         provider.subscribe(self.__onStateChange, self.__onTryActivate)
         self.__controllerLink = CGF.ComponentLink(go, RAC.RocketAccelerationController)
         self._activateOut.call()
@@ -176,20 +177,18 @@ class RocketAcceleratorSettings(Block, CGFClientMeta):
 
 def _extractRACComponent(gameObjectLink):
     go = gameObjectLink.getValue()
-    if not go.isValid:
+    if not go.isValid():
         return (None, None, 'Input game object is not valid')
     else:
         provider = go.findComponentByType(RAC.RocketAccelerationController)
-        if provider is None:
-            return (None, None, 'No RocketAccelerationController can be found')
-        return (go, provider, None)
+        return (None, None, 'No RocketAccelerationController can be found') if provider is None else (go, provider, None)
 
 
 class OnVehiclePassengerInfo(Block, CGFClientMeta, VehiclePassengerInfoWatcher):
 
     def __init__(self, *args, **kwargs):
         super(OnVehiclePassengerInfo, self).__init__(*args, **kwargs)
-        self._vehicleID = battle_constants.UNKNOWN_VEHICLE_ID
+        self._vehicleID = UNKNOWN_VEHICLE_ID
         self._subscribe = self._makeEventInputSlot('subscribe', self.__subscribe)
         self._unsubscribe = self._makeEventInputSlot('unsubscribe', self.__unsubscribe)
         self._object = self._makeDataInputSlot('vehicleObject', SLOT_TYPE.GAME_OBJECT)
@@ -218,7 +217,7 @@ class OnVehiclePassengerInfo(Block, CGFClientMeta, VehiclePassengerInfoWatcher):
         self._subscribeOut.call()
 
     def __unsubscribe(self):
-        self._vehicleID = battle_constants.UNKNOWN_VEHICLE_ID
+        self._vehicleID = UNKNOWN_VEHICLE_ID
         self.stopVehiclePassengerListening(self.__onVehiclePassengerUpdate, self.__onVehiclePassengerUpdating)
         self._unsubscribeOut.call()
 

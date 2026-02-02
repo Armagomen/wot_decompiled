@@ -1,4 +1,8 @@
-import BigWorld, Event, constants
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/ServerStats.py
+import BigWorld
+import Event
+import constants
 from PlayerEvents import g_playerEvents
 from gui.Scaleform.locale.MENU import MENU
 from gui.impl import backport
@@ -39,8 +43,7 @@ class ServerStats(IServerStatsController):
             statsStr = text_styles.main(MENU.ONLINECOUNTER_UNAVAILABLE)
         else:
             statsStr = text_styles.concatStylesToSingleLine(text_styles.stats(clusterUsers), text_styles.main(MENU.ONLINECOUNTER_DELIMITER), text_styles.main(regionUsers))
-        return (
-         statsStr, tooltipType)
+        return (statsStr, tooltipType)
 
     def getStats(self):
         clusterCCU = self.__stats.get('clusterCCU', 0)

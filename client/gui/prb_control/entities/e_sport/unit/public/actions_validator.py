@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/e_sport/unit/public/actions_validator.py
 from gui.prb_control.entities.base.actions_validator import ActionsValidatorComposite
 from gui.prb_control.entities.base.unit.actions_validator import UnitActionsValidator, UnitLevelsValidator, CommanderValidator
 from gui.prb_control.items import ValidationResult
@@ -8,9 +10,7 @@ class ESportLevelsValidator(CommanderValidator):
     def _validate(self):
         stats = self._entity.getStats()
         levels = self._getInvalidLevels(stats)
-        if stats.occupiedSlotsCount > 1 and stats.freeSlotsCount > 0 and levels:
-            return ValidationResult(False, UNIT_RESTRICTION.INVALID_TOTAL_LEVEL, {'vehLevels': levels})
-        return super(ESportLevelsValidator, self)._validate()
+        return ValidationResult(False, UNIT_RESTRICTION.INVALID_TOTAL_LEVEL, {'vehLevels': levels}) if stats.occupiedSlotsCount > 1 and stats.freeSlotsCount > 0 and levels else super(ESportLevelsValidator, self)._validate()
 
     def _getInvalidLevels(self, stats):
         rosterSettings = self._entity.getRosterSettings()
@@ -54,6 +54,4 @@ class ESportActionsValidator(UnitActionsValidator):
 
     def _createLevelsValidator(self, entity):
         baseValidator = super(ESportActionsValidator, self)._createLevelsValidator(entity)
-        return ActionsValidatorComposite(entity, validators=[
-         ESportLevelsValidator(entity),
-         baseValidator])
+        return ActionsValidatorComposite(entity, validators=[ESportLevelsValidator(entity), baseValidator])

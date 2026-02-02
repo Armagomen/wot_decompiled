@@ -1,6 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/account_helpers/dog_tags.py
 import logging
 from functools import partial
-import typing, BigWorld, AccountCommands
+import typing
+import BigWorld
+import AccountCommands
 from Event import Event
 from account_helpers.AccountSyncData import AccountSyncData
 from dog_tags_common.components_config import componentConfigAdapter
@@ -57,8 +61,9 @@ class DogTags(object):
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, None)
             return
-        self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
-        return
+        else:
+            self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
+            return
 
     def getDisplayableDT(self, clanProfile=None):
         return self._makeDisplayableDT(clanProfile, PlayerDogTagStorage(self.__cache).get())
@@ -88,7 +93,7 @@ class DogTags(object):
 
     def getUnseenCoupledComps(self):
         allComponents = componentConfigAdapter.getAllComponents()
-        coupledComps = {compId for compId, comp in allComponents.iteritems() if comp.coupledComponentId is not None if comp.coupledComponentId is not None}
+        coupledComps = {compId for compId, comp in allComponents.iteritems() if comp.coupledComponentId is not None}
         allUnlockedComps = self.getUnlockedComps()
         unlockedCoupledComps = coupledComps.intersection(allUnlockedComps)
         seenComps = userSettings.getDogTagsSettings().seenComps
@@ -129,7 +134,7 @@ class DogTags(object):
 
     @staticmethod
     def equipDT(background, engraving):
-        with userSettings.dogTagsSettings() as (dt):
+        with userSettings.dogTagsSettings() as dt:
             dt.setSelectedCustomizable([background, engraving])
         BigWorld.player().dogTags.updatePlayerDT(background, engraving)
 
@@ -143,13 +148,14 @@ class DogTags(object):
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, None)
             return
-        if resultID < 0:
+        elif resultID < 0:
             if callback is not None:
                 callback(resultID, None)
             return
-        if callback is not None:
-            callback(resultID, self.__cache)
-        return
+        else:
+            if callback is not None:
+                callback(resultID, self.__cache)
+            return
 
     def __onUpdatePlayerDTCmdResponseReceived(self, resultID, requestID, errorStr, errorMsg=None):
         if not AccountCommands.isCodeValid(requestID):

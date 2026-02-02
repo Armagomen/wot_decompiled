@@ -1,4 +1,7 @@
-import heapq, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/helpers/algorithms.py
+import heapq
+import typing
 if typing.TYPE_CHECKING:
     from typing import Dict, List, Tuple
 T = typing.TypeVar('T')

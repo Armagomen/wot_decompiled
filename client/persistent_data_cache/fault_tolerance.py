@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/persistent_data_cache/fault_tolerance.py
 import typing
 from persistent_data_cache_common.common import getLogger
 from helpers import base64_utils
@@ -26,8 +28,7 @@ def _loadData(version, userPrefs):
         else:
             _logger.warning('Failed to load data from preferences.')
             modified = True
-    return (
-     data, modified)
+    return (data, modified)
 
 
 class FaultTolerance(object):

@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/messenger/formatters/service_channel.py
 from __future__ import absolute_import
-import logging, typing
+import logging
+import typing
 from fun_random.gui.feature.fun_constants import FunNotificationType
 from fun_random.gui.feature.util.fun_mixins import FunAssetPacksMixin, FunProgressionWatcher, FunSubModesWatcher
 from fun_random.gui.feature.util.fun_wrappers import hasActiveProgression, hasSpecifiedSubModes
@@ -23,13 +26,13 @@ _WARNING_HEADER_TEMPLATE = 'WarningHeaderSysMessage'
 class FunRandomNotificationsFormatter(ServiceChannelFormatter, FunAssetPacksMixin, FunProgressionWatcher, FunSubModesWatcher):
     __limitedUIController = dependency.descriptor(ILimitedUIController)
     __DECORATOR = {FunNotificationType.NEW_SUB_MODES: FunRandomNewSubModesMessageDecorator}
-    __LIMITED_UI = {FunNotificationType.NEW_SUB_MODES: LUI_RULES.FunRandomNotifications, 
-       FunNotificationType.NEW_PROGRESSION: LUI_RULES.FunRandomNotifications}
-    __PRIORITY = {FunNotificationType.NEW_SUB_MODES: NotificationPriorityLevel.HIGH, 
-       FunNotificationType.SWITCH_OFF_SUB_MODES: NotificationPriorityLevel.HIGH, 
-       FunNotificationType.SWITCH_ON_SUB_MODES: NotificationPriorityLevel.HIGH}
-    __TEMPLATE = {FunNotificationType.NEW_SUB_MODES: _NEW_SUB_MODES_TEMPLATE, 
-       FunNotificationType.SWITCH_OFF_SUB_MODES: _WARNING_HEADER_TEMPLATE}
+    __LIMITED_UI = {FunNotificationType.NEW_SUB_MODES: LUI_RULES.FunRandomNotifications,
+     FunNotificationType.NEW_PROGRESSION: LUI_RULES.FunRandomNotifications}
+    __PRIORITY = {FunNotificationType.NEW_SUB_MODES: NotificationPriorityLevel.HIGH,
+     FunNotificationType.SWITCH_OFF_SUB_MODES: NotificationPriorityLevel.HIGH,
+     FunNotificationType.SWITCH_ON_SUB_MODES: NotificationPriorityLevel.HIGH}
+    __TEMPLATE = {FunNotificationType.NEW_SUB_MODES: _NEW_SUB_MODES_TEMPLATE,
+     FunNotificationType.SWITCH_OFF_SUB_MODES: _WARNING_HEADER_TEMPLATE}
 
     def canBeEmpty(self):
         return True
@@ -43,11 +46,9 @@ class FunRandomNotificationsFormatter(ServiceChannelFormatter, FunAssetPacksMixi
         messageHeader = self.getModeUserName()
         messageText = self._getMessageText(notificationType, message)
         isEnabledByLUI = luiRule is None or self.__limitedUIController.isRuleCompleted(luiRule)
-        ctx = {'header': messageHeader, 'text': messageText}
-        if messageText and isEnabledByLUI:
-            return [MessageData(g_settings.msgTemplates.format(template, ctx=ctx, data={'savedData': {'message': message}}), self._getGuiSettings(None, key=template, priorityLevel=priority, decorator=decorator))]
-        else:
-            return []
+        ctx = {'header': messageHeader,
+         'text': messageText}
+        return [MessageData(g_settings.msgTemplates.format(template, ctx=ctx, data={'savedData': {'message': message}}), self._getGuiSettings(None, key=template, priorityLevel=priority, decorator=decorator))] if messageText and isEnabledByLUI else []
 
     @classmethod
     def _getSubModesText(cls, subModesIDs, multipleTextRes, singleTextRes):
@@ -55,10 +56,10 @@ class FunRandomNotificationsFormatter(ServiceChannelFormatter, FunAssetPacksMixi
         if not subModes:
             _logger.error('Empty sub modes. Check hasAnySubMode defence.')
             return None
+        elif len(subModes) > 1:
+            separator = backport.text(R.strings.fun_random.notification.subModesSeparator())
+            return backport.text(multipleTextRes(), subModesNames=separator.join([ backport.text(subMode.getLocalsResRoot().userName.quoted()) for subMode in subModes ]))
         else:
-            if len(subModes) > 1:
-                separator = backport.text(R.strings.fun_random.notification.subModesSeparator())
-                return backport.text(multipleTextRes(), subModesNames=separator.join([ backport.text(subMode.getLocalsResRoot().userName.quoted()) for subMode in subModes ]))
             singleSubModeName = backport.text(subModes[0].getLocalsResRoot().userName.quoted())
             return backport.text(singleTextRes(), subModeName=singleSubModeName)
 
@@ -102,6 +103,4 @@ class FunRandomNotificationsFormatter(ServiceChannelFormatter, FunAssetPacksMixi
         return backport.text(R.strings.fun_random.notification.finishSubModes(), modeName=self.getModeUserName())
 
     def __addProgressionPath(self, textRes, isNewProgression):
-        if isNewProgression:
-            return textRes.withProgression
-        return textRes.withoutProgression
+        return textRes.withProgression if isNewProgression else textRes.withoutProgression

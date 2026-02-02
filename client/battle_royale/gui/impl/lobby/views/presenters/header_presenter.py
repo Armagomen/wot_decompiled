@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/lobby/views/presenters/header_presenter.py
 from gui.impl.pub.view_component import ViewComponent
 from gui.prb_control.entities.listener import IGlobalListener
 from helpers import dependency
@@ -21,9 +23,7 @@ class HeaderPresenter(ViewComponent[HeaderModel], IGlobalListener):
         self.__update()
 
     def _getEvents(self):
-        return super(HeaderPresenter, self)._getEvents() + (
-         (
-          self.__battleRoyaleController.onPrimeTimeStatusUpdated, self.__update),)
+        return super(HeaderPresenter, self)._getEvents() + ((self.__battleRoyaleController.onPrimeTimeStatusUpdated, self.__update),)
 
     def _onLoading(self, *args, **kwargs):
         super(HeaderPresenter, self)._onLoading(*args, **kwargs)

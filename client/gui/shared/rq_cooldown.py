@@ -1,4 +1,7 @@
-import math, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/rq_cooldown.py
+import math
+import BigWorld
 from debug_utils import LOG_WARNING
 from gui import SystemMessages
 from gui.Scaleform.locale.SYSTEM_MESSAGES import SYSTEM_MESSAGES as I18N_SYSTEM_MESSAGES
@@ -20,15 +23,15 @@ class REQUEST_SCOPE(object):
     WGNP = 8
 
 
-_REQUEST_SCOPE_TO_EVENT = {REQUEST_SCOPE.GLOBAL: events.CoolDownEvent.GLOBAL, 
-   REQUEST_SCOPE.PRB_CONTROL: events.CoolDownEvent.PREBATTLE, 
-   REQUEST_SCOPE.BW_CHAT2: events.CoolDownEvent.BW_CHAT2, 
-   REQUEST_SCOPE.XMPP: events.CoolDownEvent.XMPP, 
-   REQUEST_SCOPE.BATTLE_CONTROL: events.CoolDownEvent.BATTLE, 
-   REQUEST_SCOPE.WGCG: events.CoolDownEvent.WGCG, 
-   REQUEST_SCOPE.STRONGHOLD: events.CoolDownEvent.STRONGHOLD, 
-   REQUEST_SCOPE.BATTLE_ACTION: events.CoolDownEvent.BATTLE_ACTION, 
-   REQUEST_SCOPE.WGNP: events.CoolDownEvent.WGNP}
+_REQUEST_SCOPE_TO_EVENT = {REQUEST_SCOPE.GLOBAL: events.CoolDownEvent.GLOBAL,
+ REQUEST_SCOPE.PRB_CONTROL: events.CoolDownEvent.PREBATTLE,
+ REQUEST_SCOPE.BW_CHAT2: events.CoolDownEvent.BW_CHAT2,
+ REQUEST_SCOPE.XMPP: events.CoolDownEvent.XMPP,
+ REQUEST_SCOPE.BATTLE_CONTROL: events.CoolDownEvent.BATTLE,
+ REQUEST_SCOPE.WGCG: events.CoolDownEvent.WGCG,
+ REQUEST_SCOPE.STRONGHOLD: events.CoolDownEvent.STRONGHOLD,
+ REQUEST_SCOPE.BATTLE_ACTION: events.CoolDownEvent.BATTLE_ACTION,
+ REQUEST_SCOPE.WGNP: events.CoolDownEvent.WGNP}
 _g_coolDowns = {}
 
 def isRequestInCoolDown(scopeID, rqTypeID):
@@ -53,12 +56,12 @@ def getRequestInCoolDownMessage(requestName, coolDown=DEFAULT_COOLDOWN_TO_REQUES
 
 
 def setRequestCoolDown(scopeID, rqTypeID, coolDown=DEFAULT_COOLDOWN_TO_REQUEST):
-    _g_coolDowns[(scopeID, rqTypeID)] = BigWorld.time() + coolDown
+    _g_coolDowns[scopeID, rqTypeID] = BigWorld.time() + coolDown
     fireCoolDownEvent(scopeID, rqTypeID, coolDown=coolDown)
 
 
 def adjustRequestCoolDown(scopeID, rqTypeID, coolDown=DEFAULT_COOLDOWN_TO_REQUEST):
-    _g_coolDowns[(scopeID, rqTypeID)] = BigWorld.time() + coolDown
+    _g_coolDowns[scopeID, rqTypeID] = BigWorld.time() + coolDown
 
 
 def fireCoolDownEvent(scopeID, rqTypeID, coolDown=DEFAULT_COOLDOWN_TO_REQUEST):
@@ -87,9 +90,7 @@ class RequestCooldownManager(object):
 
     def isInProcess(self, rqTypeID):
         commonCooldownLeft = self.__getCommonCooldownTimeLeft()
-        if commonCooldownLeft:
-            return True
-        return isRequestInCoolDown(self._scopeID, rqTypeID)
+        return True if commonCooldownLeft else isRequestInCoolDown(self._scopeID, rqTypeID)
 
     def getTime(self, rqTypeID):
         return max(getRequestCoolDown(self._scopeID, rqTypeID), self.__getCommonCooldownTimeLeft())

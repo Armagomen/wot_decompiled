@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/vehicle_hub/sub_presenters/veh_skill_tree/utils.py
 from __future__ import absolute_import
 from collections import namedtuple
 from typing import Dict, Optional, Tuple
@@ -19,10 +21,7 @@ from gui.veh_post_progression.models.progression_step import PostProgressionStep
 from post_progression_common import VehicleState
 from prestige_system.prestige_milestones_common import PrestigeLevelType, MilestonesType
 from skeletons.gui.shared import IItemsCache
-PrestigeBonusContext = namedtuple('PrestigeBonusContext', [
- 'vehCD',
- 'level',
- 'state'])
+PrestigeBonusContext = namedtuple('PrestigeBonusContext', ['vehCD', 'level', 'state'])
 
 class PrestigeCustomizationBonusUIPacker(CustomizationBonusUIPacker):
     __itemsCache = dependency.descriptor(IItemsCache)
@@ -55,7 +54,7 @@ class PrestigeCustomizationBonusUIPacker(CustomizationBonusUIPacker):
                     model.setName(str(bonus.getC11nItem(item).itemTypeName))
                     model.setIcon(str(bonus.getC11nItem(item).name))
                 elif itemTypeID == GUI_ITEM_TYPE.STYLE:
-                    model.setIcon(('style_{}').format(bonus.getC11nItem(item).id))
+                    model.setIcon('style_{}'.format(bonus.getC11nItem(item).id))
             return model
 
     @staticmethod
@@ -64,12 +63,10 @@ class PrestigeCustomizationBonusUIPacker(CustomizationBonusUIPacker):
         rewardTypeDescription = R.strings.veh_skill_tree.vanity.rewardType.description
         if itemTypeID == GUI_ITEM_TYPE.STYLE:
             return (backport.text(rewardTypeTitle.style()), backport.text(rewardTypeDescription.style()))
+        elif itemTypeID == GUI_ITEM_TYPE.STAT_TRACKER:
+            return (backport.text(rewardTypeTitle.stattracker()), backport.text(rewardTypeDescription.stattracker()))
         else:
-            if itemTypeID == GUI_ITEM_TYPE.STAT_TRACKER:
-                return (backport.text(rewardTypeTitle.stattracker()), backport.text(rewardTypeDescription.stattracker()))
-            if itemTypeID == GUI_ITEM_TYPE.ATTACHMENT:
-                return (backport.text(rewardTypeTitle.attachment()), backport.text(rewardTypeDescription.attachment()))
-            return (None, None)
+            return (backport.text(rewardTypeTitle.attachment()), backport.text(rewardTypeDescription.attachment())) if itemTypeID == GUI_ITEM_TYPE.ATTACHMENT else (None, None)
 
 
 def getVehSkillTreeRewardViewBonusPacker():
@@ -113,7 +110,7 @@ def getVehSkillTreeRewardTooltipViewBonusPacker():
 def getPrestigeBonus(milestones, ctx):
     reward = milestones.get(ctx.level)
     if not reward:
-        return
+        return None
     else:
         bonusesConfig = reward.get('bonus', {})
         bonusesPrestige = []
@@ -122,9 +119,7 @@ def getPrestigeBonus(milestones, ctx):
             if bonuses:
                 bonusesPrestige.extend(bonuses)
 
-        if bonusesPrestige:
-            return bonusesPrestige[0]
-        return
+        return bonusesPrestige[0] if bonusesPrestige else None
 
 
 def fillNodeModel(nodeVM, step, nodeStatus, vehicle):
@@ -156,8 +151,7 @@ def getCheapestAvailablePerk(vehicle):
     rootStepID = postProgression.getRawTree().rootStep
     visitedSteps = set()
     availableSteps = set()
-    candidateSteps = [
-     rootStepID]
+    candidateSteps = [rootStepID]
     while candidateSteps:
         nextCandidateSteps = []
         for stepID in candidateSteps:
@@ -181,8 +175,7 @@ def getCheapestAvailablePerk(vehicle):
 def getEliteExpirience(exclude=(), itemsCache=None):
     eliteVcls = itemsCache.items.stats.eliteVehicles
     vXPs = itemsCache.items.stats.vehiclesXPs
-    return sum([ vXPs.get(eliteVCD, 0) for eliteVCD in eliteVcls if eliteVCD not in exclude and vehicles.g_list.isVehicleExistingByCD(eliteVCD)
-               ])
+    return sum([ vXPs.get(eliteVCD, 0) for eliteVCD in eliteVcls if eliteVCD not in exclude and vehicles.g_list.isVehicleExistingByCD(eliteVCD) ])
 
 
 def constructNodeUiId(uniqueId, nodeId):

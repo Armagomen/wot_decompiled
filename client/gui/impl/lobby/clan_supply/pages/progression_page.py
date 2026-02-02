@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/clan_supply/pages/progression_page.py
+import logging
+import typing
 from adisp import adisp_process
 from frameworks.wulf.view.submodel_presenter import SubModelPresenter
 from gui.clans.clan_cache import g_clanCache
@@ -31,8 +34,7 @@ _logger = logging.getLogger(__name__)
 DEFAULT_STAGE_ID = 1
 
 class ProgressionPage(SubModelPresenter):
-    __slots__ = ('__tooltips', '__rewardVehicleIntCD', '__selectedStageID', '__cachedProgressData',
-                 '__cachedSettingsData', '__rewardStyleID', '__isFindSelectedStageNeeded')
+    __slots__ = ('__tooltips', '__rewardVehicleIntCD', '__selectedStageID', '__cachedProgressData', '__cachedSettingsData', '__rewardStyleID', '__isFindSelectedStageNeeded')
     __itemsCache = dependency.descriptor(IItemsCache)
     __webController = dependency.descriptor(IWebController)
     __c11nService = dependency.descriptor(ICustomizationService)
@@ -62,32 +64,19 @@ class ProgressionPage(SubModelPresenter):
 
     def getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        if tooltipId is None:
-            return
-        else:
-            return self.__tooltips.get(tooltipId)
+        return None if tooltipId is None else self.__tooltips.get(tooltipId)
 
     def _getEvents(self):
-        return super(ProgressionPage, self)._getEvents() + (
-         (
-          g_clanCache.clanSupplyProvider.onDataReceived, self.__onDataReceived),
-         (
-          g_clanCache.clanSupplyProvider.onDataFailed, self.__onDataFailed),
-         (
-          self.viewModel.onSelectStage, self.__onSelectStage),
-         (
-          self.viewModel.onPreviewClick, self.__onPreviewClick),
-         (
-          self.viewModel.onRefresh, self.__onRefresh),
-         (
-          self.viewModel.onBuyStage, self.__onBuyStage),
-         (
-          self.viewModel.stageInfo.onRefresh, self.__onStageInfoRefresh))
+        return super(ProgressionPage, self)._getEvents() + ((g_clanCache.clanSupplyProvider.onDataReceived, self.__onDataReceived),
+         (g_clanCache.clanSupplyProvider.onDataFailed, self.__onDataFailed),
+         (self.viewModel.onSelectStage, self.__onSelectStage),
+         (self.viewModel.onPreviewClick, self.__onPreviewClick),
+         (self.viewModel.onRefresh, self.__onRefresh),
+         (self.viewModel.onBuyStage, self.__onBuyStage),
+         (self.viewModel.stageInfo.onRefresh, self.__onStageInfoRefresh))
 
     def _getCallbacks(self):
-        return (
-         (
-          'cache.dynamicCurrencies.tourcoin', self.__updateBalance),)
+        return (('cache.dynamicCurrencies.tourcoin', self.__updateBalance),)
 
     def __updateState(self):
         progressionSettingsObj = g_clanCache.clanSupplyProvider.getProgressionSettings()
@@ -118,7 +107,7 @@ class ProgressionPage(SubModelPresenter):
             self.__selectedStageID = self.__findInitialSelectedStage(progressData)
             if progressData is not None:
                 self.__isFindSelectedStageNeeded = False
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             if not settingsData.enabled:
                 tx.setStatus(ProgressionScreenStatus.ERROR)
                 return
@@ -189,7 +178,7 @@ class ProgressionPage(SubModelPresenter):
 
     def __onSelectStage(self, kwargs):
         self.__selectedStageID = int(kwargs.get('id'))
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setSelectedStageID(self.__selectedStageID)
             self.__updateStageInfo(self.__selectedStageID, self.__cachedSettingsData, self.__cachedProgressData, model=tx)
 
@@ -254,17 +243,14 @@ class ProgressionPage(SubModelPresenter):
 
     @staticmethod
     def __findInitialSelectedStage(progressData):
-        if progressData is not None and progressData.last_purchased is not None:
-            return int(progressData.last_purchased)
-        else:
-            return DEFAULT_STAGE_ID
+        return int(progressData.last_purchased) if progressData is not None and progressData.last_purchased is not None else DEFAULT_STAGE_ID
 
     @staticmethod
     def __checkProgressionIsCompleted(progressData):
         if progressData is None:
             return False
         else:
-            _, stageProgress = sorted(progressData.points.items(), key=lambda i: int(i[0]))[(-1)]
+            _, stageProgress = sorted(progressData.points.items(), key=lambda i: int(i[0]))[-1]
             return stageProgress.status == PointStatus.PURCHASED
 
     @staticmethod
@@ -272,7 +258,7 @@ class ProgressionPage(SubModelPresenter):
         if progressData is None:
             return False
         else:
-            lastStageID, _ = sorted(settingsData.points.items(), key=lambda i: int(i[0]))[(-1)]
+            lastStageID, _ = sorted(settingsData.points.items(), key=lambda i: int(i[0]))[-1]
             stageProgress = progressData.points.get(lastStageID)
             return stageProgress is not None and stageProgress.status == PointStatus.AVAILABLE
 
@@ -289,7 +275,7 @@ class ProgressionPage(SubModelPresenter):
     @staticmethod
     def __findStyleRewardID(pointSettings):
         styleID = None
-        _, stageSettings = sorted(pointSettings.points.items(), key=lambda i: int(i[0]))[(-1)]
+        _, stageSettings = sorted(pointSettings.points.items(), key=lambda i: int(i[0]))[-1]
         customizationReward = findFirst(lambda r: r[0] == 'customizations', stageSettings.rewards.items())
         if customizationReward is None:
             return styleID
@@ -306,7 +292,6 @@ class ProgressionPage(SubModelPresenter):
                 value = self.__validateRewards(value)
             if isinstance(key, (str, unicode)) and key.isdigit():
                 result[int(key)] = value
-            else:
-                result[key] = value
+            result[key] = value
 
         return result

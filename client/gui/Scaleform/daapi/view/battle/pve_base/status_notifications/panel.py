@@ -1,4 +1,7 @@
-import logging, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/pve_base/status_notifications/panel.py
+import logging
+import BigWorld
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from gui.Scaleform.daapi.view.battle.shared.status_notifications import components
 from gui.Scaleform.daapi.view.battle.shared.status_notifications import sn_items
@@ -11,8 +14,7 @@ _logger = logging.getLogger(__name__)
 class _PveHighPriorityGroup(components.StatusNotificationsGroup):
 
     def __init__(self, updateCallback):
-        super(_PveHighPriorityGroup, self).__init__((
-         sn_items.DrownSN,
+        super(_PveHighPriorityGroup, self).__init__((sn_items.DrownSN,
          sn_items.FireSN,
          sn_items.StaticDeathZoneSN,
          sn_items.OverturnedSN,
@@ -22,9 +24,7 @@ class _PveHighPriorityGroup(components.StatusNotificationsGroup):
 class PveStatusNotificationTimerPanel(StatusNotificationTimerPanel):
 
     def _generateItems(self):
-        items = [
-         _PveHighPriorityGroup,
-         sn_items.StunSN]
+        items = [_PveHighPriorityGroup, sn_items.StunSN]
         return items
 
     def _generateNotificationTimerSettings(self):

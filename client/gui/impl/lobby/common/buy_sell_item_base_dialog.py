@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/common/buy_sell_item_base_dialog.py
 from abc import abstractproperty
 from typing import TYPE_CHECKING
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
@@ -28,8 +30,7 @@ class DialogBuySellItemBaseView(FullScreenDialogView):
             tooltipId = event.getArgument('tooltipId')
             if tooltipId == TOOLTIPS_CONSTANTS.ACTION_PRICE:
                 itemPrice = self._getItemPrice()
-                args = (
-                 ACTION_TOOLTIPS_TYPE.ITEM,
+                args = (ACTION_TOOLTIPS_TYPE.ITEM,
                  self._item.intCD,
                  list(itemPrice.price),
                  list(itemPrice.defPrice),

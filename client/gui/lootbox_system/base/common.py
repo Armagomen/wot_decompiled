@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/lootbox_system/base/common.py
 import logging
 from enum import Enum
 from typing import TYPE_CHECKING
@@ -12,7 +14,7 @@ LOOTBOX_RANDOM_NATIONAL_BROCHURE = 'randomNationalBrochure'
 LOOTBOX_RANDOM_NATIONAL_GUIDE = 'randomNationalGuide'
 LOOTBOX_RANDOM_NATIONAL_CREW_BOOK = 'randomNationalCrewBook'
 TEXT_RESOURCE_PREFIX = 'lootbox_'
-COUNTRY_CODES_FOR_EXTERNAL_LOOT_LIST = ('KR', )
+COUNTRY_CODES_FOR_EXTERNAL_LOOT_LIST = ('KR',)
 DEFAULT_EVENT_NAME = 'lootbox_system'
 LOOTBOX_COMPENSATION_TOKEN_PREFIX = 'lbs_compensation'
 LOOTBOX_COMPENSATION_BONUS = 'lootboxCompensation'
@@ -84,6 +86,4 @@ def getTextResource(path, eventName, lootBoxes=None):
         return resource
 
     customResource = getResourceFromPath(R.strings.dyn(TEXT_RESOURCE_PREFIX + eventName))
-    if customResource.isValid():
-        return customResource
-    return getResourceFromPath(R.strings.lootbox_system)
+    return customResource if customResource.isValid() else getResourceFromPath(R.strings.lootbox_system)

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/battle/frontline_overviewmap_screen.py
 from collections import namedtuple
 from arena_component_system.sector_base_arena_component import ID_TO_BASENAME, _MISSION_SECTOR_ID_MAPPING
 from debug_utils import LOG_ERROR
@@ -7,9 +9,7 @@ from gui.Scaleform.locale.READABLE_KEY_NAMES import READABLE_KEY_NAMES
 from helpers import dependency
 from helpers import i18n
 from skeletons.gui.battle_session import IBattleSessionProvider
-EpicOverviewMapScreenVO = namedtuple('EpicOverviewMapScreenVO', ('key1Text', 'key2Text',
-                                                                 'key3Text', 'key4Text',
-                                                                 'key5Text', 'key6Text'))
+EpicOverviewMapScreenVO = namedtuple('EpicOverviewMapScreenVO', ('key1Text', 'key2Text', 'key3Text', 'key4Text', 'key5Text', 'key6Text'))
 
 class OverviewMapScreen(FrontlineOverviewMapScreenMeta):
     sessionProvider = dependency.descriptor(IBattleSessionProvider)

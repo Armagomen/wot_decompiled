@@ -1,15 +1,17 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/dossiers2/ui/achievements.py
 import resource_helper
 from debug_utils import LOG_CURRENT_EXCEPTION
 from constants import IS_WEB
 from soft_exception import SoftException
-BATTLE_HERO_TEXTS = {'warrior': '#achievements:warrior', 
-   'invader': '#achievements:invader', 
-   'sniper': '#achievements:sniper', 
-   'defender': '#achievements:defender', 
-   'steelwall': '#achievements:steelwall', 
-   'supporter': '#achievements:supporter', 
-   'scout': '#achievements:scout', 
-   'evileye': '#achievements:evileye'}
+BATTLE_HERO_TEXTS = {'warrior': '#achievements:warrior',
+ 'invader': '#achievements:invader',
+ 'sniper': '#achievements:sniper',
+ 'defender': '#achievements:defender',
+ 'steelwall': '#achievements:steelwall',
+ 'supporter': '#achievements:supporter',
+ 'scout': '#achievements:scout',
+ 'evileye': '#achievements:evileye'}
 BADGES_BLOCK = 'playerBadges'
 
 class ACHIEVEMENT_BLOCK:
@@ -27,9 +29,20 @@ class ACHIEVEMENT_BLOCK:
     FALLOUT = 'falloutAchievements'
     EPIC_BATTLE = 'epicBattleAchievements'
     STEAM = 'steamAchievements'
-    ALL = (
-     CLIENT, TOTAL, TEAM_7X7, HISTORICAL, UNIQUE, RARE,
-     FORT, SINGLE, CLAN, RATED_7X7, SINGLE_7X7, FALLOUT, EPIC_BATTLE, STEAM)
+    ALL = (CLIENT,
+     TOTAL,
+     TEAM_7X7,
+     HISTORICAL,
+     UNIQUE,
+     RARE,
+     FORT,
+     SINGLE,
+     CLAN,
+     RATED_7X7,
+     SINGLE_7X7,
+     FALLOUT,
+     EPIC_BATTLE,
+     STEAM)
 
 
 class ACHIEVEMENT_MODE:
@@ -48,8 +61,11 @@ class ACHIEVEMENT_TYPE:
     CUSTOM = 'custom'
     SERIES = 'series'
     SINGLE = 'single'
-    ALL = (
-     REPEATABLE, CLASS, CUSTOM, SERIES, SINGLE)
+    ALL = (REPEATABLE,
+     CLASS,
+     CUSTOM,
+     SERIES,
+     SINGLE)
 
 
 class ACHIEVEMENT_SECTION:
@@ -60,18 +76,23 @@ class ACHIEVEMENT_SECTION:
     ACTION = 'action'
     MEMORIAL = 'memorial'
     GROUP = 'group'
-    ALL = (
-     EPIC, BATTLE, SPECIAL, CLASS, ACTION, MEMORIAL, GROUP)
+    ALL = (EPIC,
+     BATTLE,
+     SPECIAL,
+     CLASS,
+     ACTION,
+     MEMORIAL,
+     GROUP)
 
 
-_AT, _AS, _AB, _AM = (
- ACHIEVEMENT_TYPE, ACHIEVEMENT_SECTION, ACHIEVEMENT_BLOCK,
+_AT, _AS, _AB, _AM = (ACHIEVEMENT_TYPE,
+ ACHIEVEMENT_SECTION,
+ ACHIEVEMENT_BLOCK,
  ACHIEVEMENT_MODE)
 DEFAULT_WEIGHT = -1
 
 def makeAchievesStorageName(block):
-    return (
-     block, '')
+    return (block, '')
 
 
 MARK_OF_MASTERY = 'markOfMastery'
@@ -80,18 +101,22 @@ RARE_STORAGE_RECORD = makeAchievesStorageName(_AB.RARE)
 MARK_OF_MASTERY_RECORD = (_AB.TOTAL, MARK_OF_MASTERY)
 MARK_ON_GUN_RECORD = (_AB.TOTAL, MARK_ON_GUN)
 HONORED_RANK_RECORD = (_AB.CLIENT, 'honoredRank')
-_MODE_CONVERTER = {'random': ACHIEVEMENT_MODE.RANDOM, 
-   'ranked': ACHIEVEMENT_MODE.RANKED, 
-   '7x7': ACHIEVEMENT_MODE.TEAM_7X7, 
-   'historical': ACHIEVEMENT_MODE.HISTORICAL, 
-   'rated7x7': ACHIEVEMENT_MODE.RATED_7X7, 
-   'epic_battle': ACHIEVEMENT_MODE.EPIC_BATTLE, 
-   'all': ACHIEVEMENT_MODE.ALL}
+_MODE_CONVERTER = {'random': ACHIEVEMENT_MODE.RANDOM,
+ 'ranked': ACHIEVEMENT_MODE.RANKED,
+ '7x7': ACHIEVEMENT_MODE.TEAM_7X7,
+ 'historical': ACHIEVEMENT_MODE.HISTORICAL,
+ 'rated7x7': ACHIEVEMENT_MODE.RATED_7X7,
+ 'epic_battle': ACHIEVEMENT_MODE.EPIC_BATTLE,
+ 'all': ACHIEVEMENT_MODE.ALL}
 ACHIEVEMENTS = {}
-ACHIEVEMENT_SECTIONS_ORDER = (
- _AS.BATTLE, _AS.SPECIAL, _AS.EPIC, _AS.GROUP, _AS.MEMORIAL,
- _AS.CLASS, _AS.ACTION)
-ACHIEVEMENT_SECTIONS_INDICES = dict((n, i) for i, n in enumerate(ACHIEVEMENT_SECTIONS_ORDER))
+ACHIEVEMENT_SECTIONS_ORDER = (_AS.BATTLE,
+ _AS.SPECIAL,
+ _AS.EPIC,
+ _AS.GROUP,
+ _AS.MEMORIAL,
+ _AS.CLASS,
+ _AS.ACTION)
+ACHIEVEMENT_SECTIONS_INDICES = dict(((n, i) for i, n in enumerate(ACHIEVEMENT_SECTIONS_ORDER)))
 BATTLE_ACHIEVES_WITH_RIBBON = ()
 BATTLE_ACHIEVES_RIGHT = ()
 FORT_BATTLE_ACHIEVES_RIGHT = ()
@@ -99,37 +124,25 @@ BATTLE_APPROACHABLE_ACHIEVES = ()
 
 def getType(record):
     global ACHIEVEMENTS
-    if record in ACHIEVEMENTS:
-        return ACHIEVEMENTS[record]['type']
-    else:
-        return
+    return ACHIEVEMENTS[record]['type'] if record in ACHIEVEMENTS else None
 
 
 def getSection(record):
-    if record in ACHIEVEMENTS:
-        return ACHIEVEMENTS[record]['section']
-    else:
-        return
+    return ACHIEVEMENTS[record]['section'] if record in ACHIEVEMENTS else None
 
 
 def getMode(record):
-    if record in ACHIEVEMENTS:
-        return ACHIEVEMENTS[record]['mode']
-    else:
-        return
+    return ACHIEVEMENTS[record]['mode'] if record in ACHIEVEMENTS else None
 
 
 def getWeight(record):
-    if record in ACHIEVEMENTS:
-        return ACHIEVEMENTS[record]['weight']
-    else:
-        return
+    return ACHIEVEMENTS[record]['weight'] if record in ACHIEVEMENTS else None
 
 
 def init(achievesMappingXmlPath):
-    global BATTLE_ACHIEVES_RIGHT
-    global BATTLE_ACHIEVES_WITH_RIBBON
     global BATTLE_APPROACHABLE_ACHIEVES
+    global BATTLE_ACHIEVES_WITH_RIBBON
+    global BATTLE_ACHIEVES_RIGHT
     global FORT_BATTLE_ACHIEVES_RIGHT
     if IS_WEB:
         return
@@ -152,7 +165,7 @@ def init(achievesMappingXmlPath):
             value['mode'] = _MODE_CONVERTER[item.value['mode']]
             if 'weight' not in value:
                 value['weight'] = -1.0
-            ACHIEVEMENTS[(block, name)] = value
+            ACHIEVEMENTS[block, name] = value
         except:
             LOG_CURRENT_EXCEPTION()
 

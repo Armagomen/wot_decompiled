@@ -1,7 +1,7 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/tutorial/data/hints.py
 from collections import namedtuple, defaultdict
-HintProps = namedtuple('HintProps', ('uniqueID', 'hintID', 'itemID', 'text', 'hasBox',
-                                     'arrow', 'padding', 'updateRuntime', 'hideImmediately',
-                                     'checkViewArea'))
+HintProps = namedtuple('HintProps', ('uniqueID', 'hintID', 'itemID', 'text', 'hasBox', 'arrow', 'padding', 'updateRuntime', 'hideImmediately', 'checkViewArea'))
 
 class HintsData(object):
 
@@ -15,7 +15,7 @@ class HintsData(object):
         return self.__hints
 
     def getHintsCount(self):
-        return sum(len(hintsList) for hintsList in self.__hints.itervalues())
+        return sum((len(hintsList) for hintsList in self.__hints.itervalues()))
 
     def setGuiFilePath(self, filePath):
         self.__guiFilePath = filePath
@@ -27,9 +27,7 @@ class HintsData(object):
         self.__hints[hint['itemID']].append(hint)
 
     def hintsForItem(self, itemID):
-        if itemID in self.__hints:
-            return self.__hints[itemID]
-        return ()
+        return self.__hints[itemID] if itemID in self.__hints else ()
 
     def markAsShown(self, itemID, hintID):
         if itemID in self.__hints:

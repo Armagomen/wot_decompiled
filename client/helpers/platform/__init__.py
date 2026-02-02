@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/helpers/platform/__init__.py
 import typing
 from constants import WGC_PUBLICATION
 from helpers import dependency
@@ -11,6 +13,4 @@ _MAPPING = {WGC_PUBLICATION.WGC_STEAM: SteamPublishPlatform}
 @dependency.replace_none_kwargs(loginManager=ILoginManager)
 def getPublishPlatform(loginManager=None):
     pub = loginManager.getWgcPublication()
-    if pub in _MAPPING:
-        return _MAPPING[pub]()
-    return BasePublishPlatform()
+    return _MAPPING[pub]() if pub in _MAPPING else BasePublishPlatform()

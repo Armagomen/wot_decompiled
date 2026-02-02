@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/web/client_web_api/shop/stats.py
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.shared.money import Currency
 from helpers import dependency
@@ -13,7 +15,7 @@ class BalanceEventHandler(C2WHandler):
     def init(self):
         super(BalanceEventHandler, self).init()
         self.__walletController.onWalletStatusChanged += self.__onWalletUpdate
-        g_clientUpdateManager.addCallbacks({('stats.{}').format(c):self.__onBalanceUpdate for c in Currency.ALL})
+        g_clientUpdateManager.addCallbacks({'stats.{}'.format(c):self.__onBalanceUpdate for c in Currency.ALL})
         g_clientUpdateManager.addCallback('stats.freeXP', self.__onBalanceUpdate)
         g_clientUpdateManager.addCallbacks({'cache.dynamicCurrencies': self.__onBalanceUpdate})
 

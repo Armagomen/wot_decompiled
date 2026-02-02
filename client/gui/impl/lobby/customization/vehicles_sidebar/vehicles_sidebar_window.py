@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/customization/vehicles_sidebar/vehicles_sidebar_window.py
 import logging
 from gui import GUI_NATIONS_ORDER_INDEX
 from gui.impl.wrappers.function_helpers import replaceNoneKwargsModel
@@ -49,9 +51,7 @@ class VehiclesSidebarView(ComponentsPresenterView, FullScreenDialogBaseView):
 
     def _getEvents(self):
         eventsTuple = super(VehiclesSidebarView, self)._getEvents()
-        return eventsTuple + (
-         (
-          self.viewModel.onClose, self.__onClose),)
+        return eventsTuple + ((self.viewModel.onClose, self.__onClose),)
 
     def __onClose(self):
         self.destroyWindow()

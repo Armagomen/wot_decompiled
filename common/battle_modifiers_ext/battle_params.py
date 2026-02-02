@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_modifiers/scripts/common/battle_modifiers_ext/battle_params.py
 from typing import Any, Optional, Set, Tuple, Union, TYPE_CHECKING
 from battle_modifiers_common.battle_modifiers import BattleParams, ModifierScope
 from battle_modifiers_ext.battle_modifier.modifier_appliers import registerParamAppliers
@@ -28,7 +30,7 @@ class ClientParamData(BaseClientParamData):
     __slots__ = ()
 
     def __repr__(self):
-        return ('ClientParamData(resName={}, domain = {}, physicalTypeName={}, useTypesName={})').format(self.resName, self.domain, PhysicalType.ID_TO_NAME[self.physicalType], (UseType.ID_TO_NAME[useType] for useType in self.useTypes))
+        return 'ClientParamData(resName={}, domain = {}, physicalTypeName={}, useTypesName={})'.format(self.resName, self.domain, PhysicalType.ID_TO_NAME[self.physicalType], (UseType.ID_TO_NAME[useType] for useType in self.useTypes))
 
     def _initFromConfig(self, clientConfig, techName=''):
         self.resName = self._readResName(techName, clientConfig)
@@ -47,11 +49,11 @@ class ClientParamData(BaseClientParamData):
             return useTypes
         for useTypeName in dataSection['useTypes'].asString.split():
             if useTypeName not in UseType.NAMES:
-                raise SoftException(_ERR_TEMPLATE.format(("Unknown client use type '{}'").format(useTypeName), tName))
+                raise SoftException(_ERR_TEMPLATE.format("Unknown client use type '{}'".format(useTypeName), tName))
             useTypes.add(UseType.NAME_TO_ID[useTypeName])
 
         if physicalType == PhysicalType.UNDEFINED and useTypes & UseType.DIMENSIONAL_TYPES:
-            raise SoftException(_ERR_TEMPLATE.format(("Client physical type should be defined in order to show dimensional use types '{}'").format((', ').join(UseType.ID_TO_NAME[useType] for useType in UseType.DIMENSIONAL_TYPES)), tName))
+            raise SoftException(_ERR_TEMPLATE.format("Client physical type should be defined in order to show dimensional use types '{}'".format(', '.join((UseType.ID_TO_NAME[useType] for useType in UseType.DIMENSIONAL_TYPES))), tName))
         return useTypes
 
     @staticmethod
@@ -63,7 +65,7 @@ class ClientParamData(BaseClientParamData):
             raise SoftException(_ERR_TEMPLATE.format('Missing client domain', tName))
         clientDomain = dataSection['domain'].asString
         if clientDomain not in ClientDomain.ALL:
-            raise SoftException(_ERR_TEMPLATE.format(("Unknown client domain '{}'").format(clientDomain), tName))
+            raise SoftException(_ERR_TEMPLATE.format("Unknown client domain '{}'".format(clientDomain), tName))
         return clientDomain
 
     @staticmethod
@@ -72,7 +74,7 @@ class ClientParamData(BaseClientParamData):
             return PhysicalType.UNDEFINED
         physTypeName = dataSection['physicalType'].asString
         if physTypeName not in PhysicalType.NAMES:
-            raise SoftException(_ERR_TEMPLATE.format(("Unknown client phys. type '{}'").format(physTypeName), tName))
+            raise SoftException(_ERR_TEMPLATE.format("Unknown client phys. type '{}'".format(physTypeName), tName))
         return PhysicalType.NAME_TO_ID[physTypeName]
 
 
@@ -87,7 +89,7 @@ class DefaultClientParamData(BaseClientParamData):
 
 
 class FakeClientParamData(ClientParamData):
-    __slots__ = ('__descr', )
+    __slots__ = ('__descr',)
 
     def __init__(self, source, techName):
         super(FakeClientParamData, self).__init__(source, techName)
@@ -95,7 +97,7 @@ class FakeClientParamData(ClientParamData):
         return
 
     def __repr__(self):
-        return ('FakeClientParamData(descr = {})').format(self.descr())
+        return 'FakeClientParamData(descr = {})'.format(self.descr())
 
     def descr(self):
         if self.__descr is None:
@@ -119,13 +121,10 @@ class FakeClientParamData(ClientParamData):
 
     @classmethod
     def __getUseTypes(cls, physicalType):
-        if physicalType == PhysicalType.UNDEFINED:
-            return UseType.NON_DIMENSIONAL_TYPES
-        return UseType.ALL_WITH_UNDEFINED
+        return UseType.NON_DIMENSIONAL_TYPES if physicalType == PhysicalType.UNDEFINED else UseType.ALL_WITH_UNDEFINED
 
     def __makeDescr(self):
-        return (
-         self.resName, self.domain, self.physicalType)
+        return (self.resName, self.domain, self.physicalType)
 
 
 class BaseBattleParam(Serializable):
@@ -146,7 +145,7 @@ class BattleParam(BaseBattleParam):
     __slots__ = ('dataType', 'validators', 'minValue', 'maxValue')
 
     def __repr__(self):
-        return ('BattleParam(id = {}, dataTypeName = {}, clientData={})').format(self.id, DataType.ID_TO_NAME[self.dataType], self.clientData)
+        return 'BattleParam(id = {}, dataTypeName = {}, clientData={})'.format(self.id, DataType.ID_TO_NAME[self.dataType], self.clientData)
 
     @staticmethod
     def readId(config):
@@ -158,7 +157,7 @@ class BattleParam(BaseBattleParam):
             raise SoftException(_ERR_TEMPLATE.format('Missing data type', config.name))
         dataTypeName = config['dataType'].asString
         if dataTypeName not in DataType.NAMES:
-            raise SoftException(_ERR_TEMPLATE.format(("Unknown data type '{}'").format(dataTypeName), config.name))
+            raise SoftException(_ERR_TEMPLATE.format("Unknown data type '{}'".format(dataTypeName), config.name))
         return DataType.NAME_TO_ID[dataTypeName]
 
     @staticmethod
@@ -168,7 +167,7 @@ class BattleParam(BaseBattleParam):
         scope = 0
         for scopeName in config['scope'].asString.split():
             if scopeName not in ModifierScope.NAMES:
-                raise SoftException(_ERR_TEMPLATE.format(("Unknown scope '{}'").format(scopeName), config.name))
+                raise SoftException(_ERR_TEMPLATE.format("Unknown scope '{}'".format(scopeName), config.name))
             scope |= ModifierScope.NAME_TO_ID[scopeName]
 
         return scope
@@ -180,7 +179,7 @@ class BattleParam(BaseBattleParam):
         domain = 0
         for domainName in config['domain'].asString.split():
             if domainName not in ModifierDomain.NAMES:
-                raise SoftException(_ERR_TEMPLATE.format(("Unknown domain '{}'").format(domainName), config.name))
+                raise SoftException(_ERR_TEMPLATE.format("Unknown domain '{}'".format(domainName), config.name))
             domain |= ModifierDomain.NAME_TO_ID[domainName]
 
         return domain
@@ -213,7 +212,7 @@ class BattleParamStub(BaseBattleParam):
     __slots__ = ()
 
     def __repr__(self):
-        return ('BattleParamStub(id = {})').format(self.id)
+        return 'BattleParamStub(id = {})'.format(self.id)
 
     def _initFromConfig(self, config, *args):
         self.id = BattleParam.readId(config)
@@ -222,7 +221,7 @@ class BattleParamStub(BaseBattleParam):
 
 
 class FakeBattleParam(BaseBattleParam):
-    __slots__ = ('__descr', )
+    __slots__ = ('__descr',)
 
     def __init__(self, source):
         super(FakeBattleParam, self).__init__(source)
@@ -230,7 +229,7 @@ class FakeBattleParam(BaseBattleParam):
         return
 
     def __repr__(self):
-        return ('FakeBattleParam(descr = {})').format(self.descr())
+        return 'FakeBattleParam(descr = {})'.format(self.descr())
 
     def descr(self):
         if self.__descr is None:
@@ -257,7 +256,7 @@ class FakeBattleParam(BaseBattleParam):
 
 
 class BattleParamsCache(object):
-    __slots__ = ('__params', )
+    __slots__ = ('__params',)
 
     def __init__(self):
         self.__initFromConfig()
@@ -275,7 +274,7 @@ class BattleParamsCache(object):
         return id in self.__params
 
     def __repr__(self):
-        return ('BattleParams({})').format(self.__params.values())
+        return 'BattleParams({})'.format(self.__params.values())
 
     def get(self, id):
         return self.__params.get(id)
@@ -283,14 +282,14 @@ class BattleParamsCache(object):
     def __initFromConfig(self):
         config = ResMgr.openSection(BATTLE_PARAMS_XML_PATH)
         if config is None:
-            raise SoftException(("[BattleParams] Cannot open or read '{}'").format(BATTLE_PARAMS_XML_PATH))
+            raise SoftException("[BattleParams] Cannot open or read '{}'".format(BATTLE_PARAMS_XML_PATH))
         self.__params = params = {}
         for paramId, paramSection in config.items():
             if paramId == 'xmlns:xmlref':
                 continue
             param = BattleParamStub(paramSection) if paramId in BattleParams.DYNAMIC else BattleParam(paramSection)
             if param.id in params:
-                raise SoftException(('[BattleParams] Not unique id {}').format(param.id))
+                raise SoftException('[BattleParams] Not unique id {}'.format(param.id))
             params[param.id] = param
 
         return

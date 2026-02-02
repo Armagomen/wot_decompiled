@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/battle_royale/battle_results/player_battle_type_status_model.py
 from enum import Enum
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.common.user_name_model import UserNameModel
@@ -9,7 +11,7 @@ class BattleType(Enum):
 
 
 class PlayerBattleTypeStatusModel(ViewModel):
-    __slots__ = ('onInviteToPlatoon', )
+    __slots__ = ('onInviteToPlatoon',)
 
     def __init__(self, properties=3, commands=1):
         super(PlayerBattleTypeStatusModel, self).__init__(properties=properties, commands=commands)

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/ammunition_setup/base_hangar.py
 from BWUtil import AsyncReturn
 import adisp
 from CurrentVehicle import g_currentVehicle
@@ -37,8 +39,7 @@ class TankSetupCloseConfirmatorsHelper(CloseConfirmatorsHelper):
 
     def getRestrictedSfViews(self):
         result = super(TankSetupCloseConfirmatorsHelper, self).getRestrictedSfViews()
-        result.extend([
-         VIEW_ALIAS.LOBBY_CUSTOMIZATION])
+        result.extend([VIEW_ALIAS.LOBBY_CUSTOMIZATION])
         return result
 
     def getRestrictedEvents(self):
@@ -51,8 +52,7 @@ class BaseHangarAmmunitionSetupView(BaseAmmunitionSetupView):
     _lobbyContext = dependency.descriptor(ILobbyContext)
     _VIEW_FLAG = ViewFlags.VIEW
     _VIEW_MODEL = AmmunitionSetupViewModel
-    __slots__ = ('__blur', '_isClosed', '__closeConfirmatorHelper', 'onClose', 'onAnimationEnd',
-                 '__moneyCache', '_previousSectionName')
+    __slots__ = ('__blur', '_isClosed', '__closeConfirmatorHelper', 'onClose', 'onAnimationEnd', '__moneyCache', '_previousSectionName')
 
     def __init__(self, layoutID=R.views.lobby.tanksetup.HangarAmmunitionSetup(), **kwargs):
         settings = ViewSettings(layoutID)
@@ -73,27 +73,27 @@ class BaseHangarAmmunitionSetupView(BaseAmmunitionSetupView):
 
     @prbDispatcherProperty
     def prbDispatcher(self):
-        return
+        return None
 
     def createToolTipContent(self, event, contentID):
         if contentID == R.views.dialogs.common.DialogTemplateGenericTooltip():
             tooltipID = event.getArgument('tooltipID')
             return createBackportTooltipContent(tooltipID)
+        elif contentID == R.views.lobby.tanksetup.tooltips.SetupTabTooltipView():
+            name = event.getArgument('name', '')
+            return SetupTabTooltipView(name)
+        elif contentID == R.views.lobby.tanksetup.tooltips.PopularLoadoutsTooltip():
+            return PopularLoadoutsTooltip(vehCompDescr=int(event.getArgument('sourceVehicleCompDescr', 0)), optionalDevicesResultType=int(event.getArgument('optionalDevicesResultType', 0)))
+        if contentID == R.views.common.tooltip_window.backport_tooltip_content.BackportTooltipContent():
+            tooltipId = event.getArgument('tooltipId')
+            if tooltipId == TankSetupConstants.EQUIP_COIN_INFO_TOOLTIP:
+                return createBackportTooltipContent(specialAlias=tooltipId, specialArgs=[])
+        if contentID == R.views.lobby.tanksetup.tooltips.WarningTooltipView():
+            reason = WarningDescription(event.getArgument('reason'))
+            isCritical = event.getArgument('isCritical')
+            return WarningTooltipView(reason, isCritical)
         else:
-            if contentID == R.views.lobby.tanksetup.tooltips.SetupTabTooltipView():
-                name = event.getArgument('name', '')
-                return SetupTabTooltipView(name)
-            if contentID == R.views.lobby.tanksetup.tooltips.PopularLoadoutsTooltip():
-                return PopularLoadoutsTooltip(vehCompDescr=int(event.getArgument('sourceVehicleCompDescr', 0)), optionalDevicesResultType=int(event.getArgument('optionalDevicesResultType', 0)))
-            if contentID == R.views.common.tooltip_window.backport_tooltip_content.BackportTooltipContent():
-                tooltipId = event.getArgument('tooltipId')
-                if tooltipId == TankSetupConstants.EQUIP_COIN_INFO_TOOLTIP:
-                    return createBackportTooltipContent(specialAlias=tooltipId, specialArgs=[])
-            if contentID == R.views.lobby.tanksetup.tooltips.WarningTooltipView():
-                reason = WarningDescription(event.getArgument('reason'))
-                isCritical = event.getArgument('isCritical')
-                return WarningTooltipView(reason, isCritical)
-            return
+            return None
 
     def sendSlotAction(self, args):
         if self._tankSetup is not None and self._tankSetup.getCurrentSubView() is not None:
@@ -107,18 +107,13 @@ class BaseHangarAmmunitionSetupView(BaseAmmunitionSetupView):
         return self._vehItem
 
     def getSelectedSetup(self):
-        if self._tankSetup is not None:
-            return self._tankSetup.getSelectedSetup()
-        else:
-            return
+        return self._tankSetup.getSelectedSetup() if self._tankSetup is not None else None
 
     def _getBackportTooltipData(self, event):
         tooltipId = event.getArgument('tooltip')
         if tooltipId == TOOLTIPS_CONSTANTS.PRICE_DISCOUNT:
             return getShellsPriceDiscountTooltipData(event, tooltipId)
-        if tooltipId == TOOLTIPS_CONSTANTS.HANGAR_SLOT_SPEC:
-            return getSlotSpecTooltipData(event, tooltipId)
-        return getSlotTooltipData(event, self._vehItem.getItem(), self.viewModel.ammunitionPanel.getSelectedSlot(), self.viewModel.ammunitionPanel.getSelectedSection())
+        return getSlotSpecTooltipData(event, tooltipId) if tooltipId == TOOLTIPS_CONSTANTS.HANGAR_SLOT_SPEC else getSlotTooltipData(event, self._vehItem.getItem(), self.viewModel.ammunitionPanel.getSelectedSlot(), self.viewModel.ammunitionPanel.getSelectedSection())
 
     def _getBackportContextMenuData(self, event):
         return getContextMenuData(event, self.uniqueID, self.getSelectedSetup())
@@ -156,7 +151,7 @@ class BaseHangarAmmunitionSetupView(BaseAmmunitionSetupView):
             eqPairs.add((vehicle.optDevices, currentVehicle.optDevices))
             eqPairs.add((vehicle.battleBoosters, currentVehicle.battleBoosters))
         else:
-            raise SoftException(('Vehicle setup group id must match for any type of equipments. groupID {}').format(groupID))
+            raise SoftException('Vehicle setup group id must match for any type of equipments. groupID {}'.format(groupID))
         return eqPairs
 
     def _createMainTankSetup(self):
@@ -180,7 +175,9 @@ class BaseHangarAmmunitionSetupView(BaseAmmunitionSetupView):
         self.onAnimationEnd.clear()
         if self.__blur is not None:
             self.__blur.fini()
-        g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.FORCE_DISABLE_IDLE_PARALAX_MOVEMENT, ctx={'isDisable': False, 'setIdle': True, 'setParallax': True}), EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.FORCE_DISABLE_IDLE_PARALAX_MOVEMENT, ctx={'isDisable': False,
+         'setIdle': True,
+         'setParallax': True}), EVENT_BUS_SCOPE.LOBBY)
         return
 
     def _addListeners(self):
@@ -222,8 +219,7 @@ class BaseHangarAmmunitionSetupView(BaseAmmunitionSetupView):
 
     def _updateAmmunitionPanel(self, sectionName=None):
         super(BaseHangarAmmunitionSetupView, self)._updateAmmunitionPanel(sectionName)
-        if self._previousSectionName != sectionName or sectionName not in (
-         TankSetupConstants.SHELLS, TankSetupConstants.BATTLE_ABILITIES):
+        if self._previousSectionName != sectionName or sectionName not in (TankSetupConstants.SHELLS, TankSetupConstants.BATTLE_ABILITIES):
             self.__updateTTC(sectionName)
         self._previousSectionName = sectionName
 
@@ -231,8 +227,8 @@ class BaseHangarAmmunitionSetupView(BaseAmmunitionSetupView):
         currentSubView = self._tankSetup.getCurrentSubView()
         if currentSubView is not None:
             vehicleAfterInstall = currentSubView.getInteractor().getVehicleAfterInstall()
-            g_eventBus.handleEvent(AmmunitionSetupViewEvent(AmmunitionSetupViewEvent.UPDATE_TTC, {'vehicleItem': vehicleAfterInstall, 
-               'sectionName': sectionName}), EVENT_BUS_SCOPE.LOBBY)
+            g_eventBus.handleEvent(AmmunitionSetupViewEvent(AmmunitionSetupViewEvent.UPDATE_TTC, {'vehicleItem': vehicleAfterInstall,
+             'sectionName': sectionName}), EVENT_BUS_SCOPE.LOBBY)
             if vehicleAfterInstall.intCD != g_currentVehicle.item.intCD:
                 self._tankSetup.currentVehicleUpdated(vehicleAfterInstall)
         return
@@ -259,7 +255,9 @@ class BaseHangarAmmunitionSetupView(BaseAmmunitionSetupView):
         if self.__blur is not None:
             self.__blur.enable()
         if not self.viewModel.getIsReady():
-            g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.FORCE_DISABLE_IDLE_PARALAX_MOVEMENT, ctx={'isDisable': True, 'setIdle': True, 'setParallax': True}), EVENT_BUS_SCOPE.LOBBY)
+            g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.FORCE_DISABLE_IDLE_PARALAX_MOVEMENT, ctx={'isDisable': True,
+             'setIdle': True,
+             'setParallax': True}), EVENT_BUS_SCOPE.LOBBY)
             self.viewModel.setIsReady(True)
         self.onAnimationEnd()
         return

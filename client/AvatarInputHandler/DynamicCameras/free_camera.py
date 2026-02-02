@@ -1,4 +1,18 @@
-import GUI, BigWorld, Settings, logging, ResMgr, BattleReplay, constants, Math, math_utils, Keys, random, math, CommandMapping
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/AvatarInputHandler/DynamicCameras/free_camera.py
+import GUI
+import BigWorld
+import Settings
+import logging
+import ResMgr
+import BattleReplay
+import constants
+import Math
+import math_utils
+import Keys
+import random
+import math
+import CommandMapping
 from gui.shared.utils.key_mapping import getVirtualKey
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
@@ -229,7 +243,6 @@ class FreeVideoCamera(VideoCamera, CameraWithSettings):
             self._setupCameraViewProvider(self._ypr, avatarPosition)
         else:
             self._setupCameraViewProvider(self._ypr, self._position)
-        return 0.0
 
     def _isKeyPressed(self, mapping, defaultKey):
         key = CommandMapping.g_instance.getCommandKeys(mapping)
@@ -335,13 +348,13 @@ class FreeVideoCamera(VideoCamera, CameraWithSettings):
             if rightKeyPressed:
                 return moveDir * self.__speedIfCollision
             return Vector3(0, 0, 0)
+        elif leftKeyPressed and rightCol and not leftCol:
+            moveDir = Vector3(rightCol[5] * upVector)
+            return moveDir * self.__speedIfCollision
+        elif rightKeyPressed and leftCol and not rightCol:
+            moveDir = Vector3(leftCol[5] * upVector)
+            return moveDir * -self.__speedIfCollision
         else:
-            if leftKeyPressed and rightCol and not leftCol:
-                moveDir = Vector3(rightCol[5] * upVector)
-                return moveDir * self.__speedIfCollision
-            if rightKeyPressed and leftCol and not rightCol:
-                moveDir = Vector3(leftCol[5] * upVector)
-                return moveDir * -self.__speedIfCollision
             self.__randomDir = None
             return vel
 
@@ -428,9 +441,7 @@ class _VariableHeightAlignerToLand(_AlignerToLand):
         else:
             if self._avgLandHeight is None:
                 self.updateLandHeight(position, 0.0)
-            if self._avgLandHeight is None:
-                return position
-            return Math.Vector3(position.x, self._avgLandHeight.y, position.z) + self.desiredHeightShift
+            return position if self._avgLandHeight is None else Math.Vector3(position.x, self._avgLandHeight.y, position.z) + self.desiredHeightShift
 
     def updateLandHeight(self, pos, deltaTime):
         landHeight = self._getLandAt(pos)
@@ -487,25 +498,23 @@ class _VariableHeightAlignerToLand(_AlignerToLand):
     def _getLandAt(self, position):
         if self.ignoreTerrain:
             return Vector3(position.x, 0, position.z)
+        spaceID = BigWorld.player().spaceID
+        if spaceID is None:
+            return
+        downPoint = Math.Vector3(position)
+        downPoint.y -= 1000
+        waterDist = BigWorld.wg_collideWater(position, downPoint, False)
+        terrainCollision = BigWorld.wg_collideSegment(spaceID, position, downPoint, self.__skipFlags)
+        if self.__isWaterCloser(position, waterDist, terrainCollision):
+            return Vector3(position.x, position.y - waterDist, position.z)
         else:
-            spaceID = BigWorld.player().spaceID
-            if spaceID is None:
-                return
-            downPoint = Math.Vector3(position)
-            downPoint.y -= 1000
-            waterDist = BigWorld.wg_collideWater(position, downPoint, False)
-            terrainCollision = BigWorld.wg_collideSegment(spaceID, position, downPoint, self.__skipFlags)
-            if self.__isWaterCloser(position, waterDist, terrainCollision):
-                return Vector3(position.x, position.y - waterDist, position.z)
-            if terrainCollision is None:
-                return
-            return terrainCollision.closestPoint
+            return None if terrainCollision is None else terrainCollision.closestPoint
 
     def __isWaterCloser(self, position, waterDist, terrainCollision):
         if waterDist <= -1:
             return False
+        elif terrainCollision is None:
+            return True
         else:
-            if terrainCollision is None:
-                return True
             terrainDist = position.distTo(terrainCollision.closestPoint)
             return waterDist < terrainDist

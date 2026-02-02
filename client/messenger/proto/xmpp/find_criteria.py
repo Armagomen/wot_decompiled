@@ -1,10 +1,12 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/xmpp/find_criteria.py
 from messenger.m_constants import PROTO_TYPE, USER_TAG
 from messenger.proto.interfaces import IEntityFindCriteria
 from messenger.proto.xmpp.gloox_constants import MESSAGE_TYPE
 from messenger.proto.xmpp.xmpp_constants import XMPP_ITEM_TYPE
 
 class ItemsFindCriteria(IEntityFindCriteria):
-    __slots__ = ('__itemTypes', )
+    __slots__ = ('__itemTypes',)
 
     def __init__(self, itemTypes):
         super(ItemsFindCriteria, self).__init__()
@@ -15,7 +17,7 @@ class ItemsFindCriteria(IEntityFindCriteria):
 
 
 class GroupFindCriteria(ItemsFindCriteria):
-    __slots__ = ('__groups', )
+    __slots__ = ('__groups',)
 
     def __init__(self, group):
         super(GroupFindCriteria, self).__init__(XMPP_ITEM_TYPE.ROSTER_ITEMS)

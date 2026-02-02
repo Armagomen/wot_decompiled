@@ -1,4 +1,7 @@
-import typing, BattleReplay
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/uilogging/core/logger.py
+import typing
+import BattleReplay
 from gui.shared.utils import getPlayerDatabaseID
 from helpers import dependency
 from helpers.log.adapters import getWithContext
@@ -43,9 +46,7 @@ class UILoggingCore(IUILoggingCore):
         self._startSessionKeeper()
 
     def isFeatureEnabled(self, feature):
-        if not self._isEnabled:
-            return False
-        return self._handler.isFeatureEnabled(convertEnum(feature))
+        return False if not self._isEnabled else self._handler.isFeatureEnabled(convertEnum(feature))
 
     @noexcept
     def log(self, feature, group, action, loglevel=LogLevels.INFO, **params):

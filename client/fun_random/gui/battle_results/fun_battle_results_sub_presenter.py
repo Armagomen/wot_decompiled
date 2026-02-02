@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/battle_results/fun_battle_results_sub_presenter.py
 from __future__ import absolute_import
 import typing
 from fun_random.gui.battle_results.sub_presenters.fun_battle_info import FunBattleInfoSubPresenter

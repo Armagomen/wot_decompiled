@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/locale/DIALOGS.py
 from debug_utils import LOG_WARNING
 
 class DIALOGS(object):
@@ -1067,14 +1069,12 @@ class DIALOGS(object):
     FILLALLPERKS_BUTTON_FILL = '#dialogs:fillAllPerks/button/fill'
     FILLALLPERKS_BUTTON_CANCEL = '#dialogs:fillAllPerks/button/cancel'
     FILLALLPERKS_DESCRIPTION = '#dialogs:fillAllPerks/description'
-    VEHICLESELLDIALOG_VEHICLETYPE_ENUM = (
-     VEHICLESELLDIALOG_VEHICLETYPE_LIGHTTANK,
+    VEHICLESELLDIALOG_VEHICLETYPE_ENUM = (VEHICLESELLDIALOG_VEHICLETYPE_LIGHTTANK,
      VEHICLESELLDIALOG_VEHICLETYPE_MEDIUMTANK,
      VEHICLESELLDIALOG_VEHICLETYPE_HEAVYTANK,
      VEHICLESELLDIALOG_VEHICLETYPE_SPG,
      VEHICLESELLDIALOG_VEHICLETYPE_AT_SPG)
-    ALL_ENUM = (
-     INTERVIEWQUIT_TITLE,
+    ALL_ENUM = (INTERVIEWQUIT_TITLE,
      INTERVIEWQUIT_MESSAGE,
      INTERVIEWQUIT_SUBMIT,
      INTERVIEWQUIT_CANCEL,
@@ -2130,18 +2130,18 @@ class DIALOGS(object):
 
     @classmethod
     def vehicleselldialog_vehicletype(cls, key0):
-        outcome = ('#dialogs:vehicleSellDialog/vehicleType/{}').format(key0)
+        outcome = '#dialogs:vehicleSellDialog/vehicleType/{}'.format(key0)
         if outcome not in cls.VEHICLESELLDIALOG_VEHICLETYPE_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def all(cls, key0):
-        outcome = ('#dialogs:{}').format(key0)
+        outcome = '#dialogs:{}'.format(key0)
         if outcome not in cls.ALL_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome

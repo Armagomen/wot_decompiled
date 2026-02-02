@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/web/client_web_api/common.py
 import logging
 from Event import Event
 from web.client_web_api.battle_pass import BattlePassEventHandler
@@ -34,8 +36,7 @@ class WebEventSender(object):
         _logger.debug('Client2Web event sent: %s', webEvent)
 
     def _createHandlers(self):
-        return (
-         BalanceEventHandler(self),
+        return (BalanceEventHandler(self),
          UnifiedTradeInEventHandler(self),
          VehicleCompareEventHandler(self),
          VehicleStateEventHandler(self),

@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/renewable_subscription_common/optional_devices_usage_config.py
+import logging
+import typing
 from collections import namedtuple
 from enum import Enum
 from items import vehicles
@@ -9,8 +12,7 @@ if typing.TYPE_CHECKING:
     from typing import Dict, List
 _logger = logging.getLogger(__name__)
 VehicleLoadout = namedtuple('VehicleLoadout', ('devices', 'percentage'))
-VehicleLevelClassRoleGroup = namedtuple('VehicleLevelClassRoleGroup', ('level', 'vehClass',
-                                                                       'role'))
+VehicleLevelClassRoleGroup = namedtuple('VehicleLevelClassRoleGroup', ('level', 'vehClass', 'role'))
 
 class GenericOptionalDevice(Enum):
     STEREOSCOPE = 1
@@ -36,27 +38,27 @@ class GenericOptionalDevice(Enum):
     MODERNIZED_IMPROVED_SIGHTS_ENHANCED_AIM_DRIVES = 21
 
 
-EQUIPMENT_NAME_TO_GENERIC_OPTIONAL_DEVICE_MAP = {'stereoscope': GenericOptionalDevice.STEREOSCOPE, 
-   'turbocharger': GenericOptionalDevice.TURBOCHARGER, 
-   'enhancedAimDrives': GenericOptionalDevice.ENHANCED_AIM_DRIVES, 
-   'grousers': GenericOptionalDevice.GROUSERS, 
-   'aimingStabilizer': GenericOptionalDevice.AIMING_STABILIZER, 
-   'antifragmentationLining': GenericOptionalDevice.ANTIFRAGMENTATION_LINING, 
-   'camouflageNet': GenericOptionalDevice.CAMOUFLAGE_NET, 
-   'improvedSights': GenericOptionalDevice.IMPROVED_SIGHTS, 
-   'ventilation': GenericOptionalDevice.VENTILATION, 
-   'healthReserve': GenericOptionalDevice.HEALTH_RESERVE, 
-   'rotationMechanism': GenericOptionalDevice.ROTATION_MECHANISM, 
-   'rammer': GenericOptionalDevice.RAMMER, 
-   'coatedOptics': GenericOptionalDevice.COATED_OPTICS, 
-   'additInvisibilityDevice': GenericOptionalDevice.ADDIT_INVISIBILITY_DEVICE, 
-   'improvedConfiguration': GenericOptionalDevice.IMPROVED_CONFIGURATION, 
-   'radioCommunication': GenericOptionalDevice.RADIO_COMMUNICATION, 
-   'commandersView': GenericOptionalDevice.COMMANDERS_VIEW, 
-   'modernizedExtraHealthReserveAntifragmentationLining': GenericOptionalDevice.MODERNIZED_EXTRA_HEALTH_RESERVE_ANTIFRAGMENTATION_LINING, 
-   'modernizedAimDrivesAimingStabilizer': GenericOptionalDevice.MODERNIZED_AIM_DRIVES_AIMING_STABILIZER, 
-   'modernizedTurbochargerRotationMechanism': GenericOptionalDevice.MODERNIZED_TURBOCHARGER_ROTATION_MECHANISM, 
-   'modernizedImprovedSightsEnhancedAimDrives': GenericOptionalDevice.MODERNIZED_IMPROVED_SIGHTS_ENHANCED_AIM_DRIVES}
+EQUIPMENT_NAME_TO_GENERIC_OPTIONAL_DEVICE_MAP = {'stereoscope': GenericOptionalDevice.STEREOSCOPE,
+ 'turbocharger': GenericOptionalDevice.TURBOCHARGER,
+ 'enhancedAimDrives': GenericOptionalDevice.ENHANCED_AIM_DRIVES,
+ 'grousers': GenericOptionalDevice.GROUSERS,
+ 'aimingStabilizer': GenericOptionalDevice.AIMING_STABILIZER,
+ 'antifragmentationLining': GenericOptionalDevice.ANTIFRAGMENTATION_LINING,
+ 'camouflageNet': GenericOptionalDevice.CAMOUFLAGE_NET,
+ 'improvedSights': GenericOptionalDevice.IMPROVED_SIGHTS,
+ 'ventilation': GenericOptionalDevice.VENTILATION,
+ 'healthReserve': GenericOptionalDevice.HEALTH_RESERVE,
+ 'rotationMechanism': GenericOptionalDevice.ROTATION_MECHANISM,
+ 'rammer': GenericOptionalDevice.RAMMER,
+ 'coatedOptics': GenericOptionalDevice.COATED_OPTICS,
+ 'additInvisibilityDevice': GenericOptionalDevice.ADDIT_INVISIBILITY_DEVICE,
+ 'improvedConfiguration': GenericOptionalDevice.IMPROVED_CONFIGURATION,
+ 'radioCommunication': GenericOptionalDevice.RADIO_COMMUNICATION,
+ 'commandersView': GenericOptionalDevice.COMMANDERS_VIEW,
+ 'modernizedExtraHealthReserveAntifragmentationLining': GenericOptionalDevice.MODERNIZED_EXTRA_HEALTH_RESERVE_ANTIFRAGMENTATION_LINING,
+ 'modernizedAimDrivesAimingStabilizer': GenericOptionalDevice.MODERNIZED_AIM_DRIVES_AIMING_STABILIZER,
+ 'modernizedTurbochargerRotationMechanism': GenericOptionalDevice.MODERNIZED_TURBOCHARGER_ROTATION_MECHANISM,
+ 'modernizedImprovedSightsEnhancedAimDrives': GenericOptionalDevice.MODERNIZED_IMPROVED_SIGHTS_ENHANCED_AIM_DRIVES}
 GENERIC_OPTIONAL_DEVICE_MAP_TO_EQUIPMENT_NAME = {v:k for k, v in EQUIPMENT_NAME_TO_GENERIC_OPTIONAL_DEVICE_MAP.iteritems()}
 
 def _readOptionalDevicesUsage(section):
@@ -90,8 +92,6 @@ def _getVehicleTypeCompDescr(vehicleName):
         return vehicles.makeVehicleTypeCompDescrByName(vehicleName)
     except SoftException:
         _logger.warning('Vehicle %s does not exist! Check optional devices assistant configs to fix it.' % vehicleName)
-
-    return -1
 
 
 def convertServerDiffToRichTypes(configDict):

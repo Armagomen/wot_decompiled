@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/impl/gen/view_models/views/lobby/components/loadout/battle_abilities_setup_model.py
 from frameworks.wulf import Array
 from frontline.gui.impl.gen.view_models.views.lobby.components.loadout.battle_ability_details import BattleAbilityDetails
 from frontline.gui.impl.gen.view_models.views.lobby.components.loadout.battle_ability_slot_model import BattleAbilitySlotModel
@@ -23,11 +25,11 @@ class BattleAbilitiesSetupModel(BaseLoadoutModel):
     def setIsTypeSelected(self, value):
         self._setBool(2, value)
 
-    def getIsCycleFinished(self):
-        return self._getBool(3)
+    def getModeState(self):
+        return self._getString(3)
 
-    def setIsCycleFinished(self, value):
-        self._setBool(3, value)
+    def setModeState(self, value):
+        self._setString(3, value)
 
     def getVehicleType(self):
         return self._getString(4)
@@ -81,7 +83,7 @@ class BattleAbilitiesSetupModel(BaseLoadoutModel):
         super(BattleAbilitiesSetupModel, self)._initialize()
         self._addViewModelProperty('details', BattleAbilityDetails())
         self._addBoolProperty('isTypeSelected', False)
-        self._addBoolProperty('isCycleFinished', False)
+        self._addStringProperty('modeState', '')
         self._addStringProperty('vehicleType', '')
         self._addNumberProperty('pointsAmount', 0)
         self._addNumberProperty('totalPurchasePrice', 0)

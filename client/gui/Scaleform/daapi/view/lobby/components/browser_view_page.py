@@ -1,4 +1,7 @@
-import logging, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/components/browser_view_page.py
+import logging
+import BigWorld
 from gui.impl import backport
 from gui.impl.gen import R
 from adisp import adisp_process
@@ -71,10 +74,10 @@ class BrowserPageComponent(BrowserViewStackExPaddingMeta):
         return False
 
     def _getWebHandlers(self):
-        return
+        return None
 
     def _getUrl(self):
-        return
+        return None
 
     def __initializeBrowser(self):
         self.__url = self._getUrl()
@@ -85,8 +88,7 @@ class BrowserPageComponent(BrowserViewStackExPaddingMeta):
     @adisp_process
     def __createBrowser(self):
         width, height = self.__size
-        self.__browserId = yield self.browserCtrl.load(url=self.__url, useBrowserWindow=False, showBrowserCallback=self.__showBrowser, browserSize=(
-         width, height))
+        self.__browserId = yield self.browserCtrl.load(url=self.__url, useBrowserWindow=False, showBrowserCallback=self.__showBrowser, browserSize=(width, height))
         browser = self.browserCtrl.getBrowser(self.__browserId)
         if browser:
             browser.useSpecialKeys = False

@@ -1,4 +1,9 @@
-import logging, math, typing, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/vehicle_systems/components/terrain_circle_component.py
+import logging
+import math
+import typing
+import BigWorld
 from Math import Vector2
 from helpers.CallbackDelayer import CallbackDelayer
 from gui.battle_control.matrix_factory import makeVehicleEntityMP
@@ -89,10 +94,10 @@ class TerrainCircleComponent(CallbackDelayer):
         if self.__areaVisual is None:
             g_logger.error('attach: TerrainCircleComponent is not yet created. Call configure first.')
             return
+        elif self.__vehicleID is not None:
+            g_logger.error('attach: TerrainCircleComponent is already attached. Needs to be detached first.')
+            return
         else:
-            if self.__vehicleID is not None:
-                g_logger.error('attach: TerrainCircleComponent is already attached. Needs to be detached first.')
-                return
             self.__vehicleID = vehicleID
             if self.__isVisible:
                 self.__attachAreaVisualToModel()

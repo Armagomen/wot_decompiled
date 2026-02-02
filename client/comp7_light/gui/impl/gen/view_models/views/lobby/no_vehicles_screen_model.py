@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_light/scripts/client/comp7_light/gui/impl/gen/view_models/views/lobby/no_vehicles_screen_model.py
 from enum import Enum
 from frameworks.wulf import Array, ViewModel
 from comp7_light.gui.impl.gen.view_models.views.lobby.schedule_info_model import ScheduleInfoModel
@@ -9,7 +11,7 @@ class ErrorReason(Enum):
 
 
 class NoVehiclesScreenModel(ViewModel):
-    __slots__ = ('onClose', )
+    __slots__ = ('onClose',)
 
     def __init__(self, properties=3, commands=1):
         super(NoVehiclesScreenModel, self).__init__(properties=properties, commands=commands)

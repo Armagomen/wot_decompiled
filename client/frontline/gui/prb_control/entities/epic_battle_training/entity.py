@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/prb_control/entities/epic_battle_training/entity.py
 from functools import partial
 import BigWorld
 from frontline.gui.prb_control.entities.epic_battle_training.actions_validator import TrainingActionsValidator, TrainingIntroActionsValidator
@@ -77,8 +79,7 @@ class EpicBattleTrainingIntroEntity(LegacyIntroEntity):
     def fini(self, clientPrb=None, ctx=None, woEvents=False):
         result = super(EpicBattleTrainingIntroEntity, self).fini()
         if not woEvents:
-            aliasToLoad = [
-             PREBATTLE_ALIASES.EPICBATTLE_LIST_VIEW_PY, PREBATTLE_ALIASES.EPIC_TRAINING_ROOM_VIEW_PY]
+            aliasToLoad = [PREBATTLE_ALIASES.EPICBATTLE_LIST_VIEW_PY, PREBATTLE_ALIASES.EPIC_TRAINING_ROOM_VIEW_PY]
             if not self.canSwitch(ctx) and g_eventDispatcher.needToLoadHangar(ctx, self.getModeFlags(), aliasToLoad):
                 g_eventDispatcher.loadHangar()
             g_eventDispatcher.removeEpicTrainingFromCarousel()
@@ -107,8 +108,7 @@ class EpicBattleTrainingIntroEntity(LegacyIntroEntity):
 
 
 class EpicBattleTrainingEntity(LegacyEntity):
-    __loadEvents = (
-     VIEW_ALIAS.LOBBY_HANGAR,
+    __loadEvents = (VIEW_ALIAS.LOBBY_HANGAR,
      VIEW_ALIAS.LEGACY_LOBBY_HANGAR,
      VIEW_ALIAS.LOBBY_STORE,
      VIEW_ALIAS.LOBBY_STORAGE,
@@ -117,16 +117,16 @@ class EpicBattleTrainingEntity(LegacyEntity):
      VIEW_ALIAS.VEHICLE_COMPARE)
 
     def __init__(self, settings):
-        requests = {REQUEST_TYPE.ASSIGN: self.assign, 
-           REQUEST_TYPE.SET_TEAM_STATE: self.setTeamState, 
-           REQUEST_TYPE.SET_PLAYER_STATE: self.setPlayerState, 
-           REQUEST_TYPE.CHANGE_SETTINGS: self.changeSettings, 
-           REQUEST_TYPE.CHANGE_ARENA_VOIP: self.changeArenaVoip, 
-           REQUEST_TYPE.CHANGE_USER_STATUS: self.changeUserObserverStatus, 
-           REQUEST_TYPE.KICK: self.kickPlayer, 
-           REQUEST_TYPE.SEND_INVITE: self.sendInvites, 
-           REQUEST_TYPE.EPIC_SWAP_IN_TEAM: self.swapInTeam, 
-           REQUEST_TYPE.EPIC_SWAP_BETWEEN_TEAM: self.swapBetweenTeam}
+        requests = {REQUEST_TYPE.ASSIGN: self.assign,
+         REQUEST_TYPE.SET_TEAM_STATE: self.setTeamState,
+         REQUEST_TYPE.SET_PLAYER_STATE: self.setPlayerState,
+         REQUEST_TYPE.CHANGE_SETTINGS: self.changeSettings,
+         REQUEST_TYPE.CHANGE_ARENA_VOIP: self.changeArenaVoip,
+         REQUEST_TYPE.CHANGE_USER_STATUS: self.changeUserObserverStatus,
+         REQUEST_TYPE.KICK: self.kickPlayer,
+         REQUEST_TYPE.SEND_INVITE: self.sendInvites,
+         REQUEST_TYPE.EPIC_SWAP_IN_TEAM: self.swapInTeam,
+         REQUEST_TYPE.EPIC_SWAP_BETWEEN_TEAM: self.swapBetweenTeam}
         super(EpicBattleTrainingEntity, self).__init__(FUNCTIONAL_FLAG.EPIC_TRAINING, settings, permClass=EpicBattleTrainingPermissions, limits=EpicBattleTrainingLimits(self), requestHandlers=requests)
         self.__settingRecords = []
         self.storage = legacy_storage_getter(PREBATTLE_TYPE.EPIC_TRAINING)()
@@ -153,8 +153,7 @@ class EpicBattleTrainingEntity(LegacyEntity):
         g_eventBus.removeListener(ViewEventType.LOAD_VIEW, self.__handleViewLoad, scope=EVENT_BUS_SCOPE.LOBBY)
         g_eventBus.removeListener(ViewEventType.LOAD_GUI_IMPL_VIEW, self.__handleViewLoad, scope=EVENT_BUS_SCOPE.LOBBY)
         if not woEvents:
-            aliasToLoad = [
-             PREBATTLE_ALIASES.EPICBATTLE_LIST_VIEW_PY, PREBATTLE_ALIASES.EPIC_TRAINING_ROOM_VIEW_PY]
+            aliasToLoad = [PREBATTLE_ALIASES.EPICBATTLE_LIST_VIEW_PY, PREBATTLE_ALIASES.EPIC_TRAINING_ROOM_VIEW_PY]
             if not self.canSwitch(ctx) and g_eventDispatcher.needToLoadHangar(ctx, self.getModeFlags(), aliasToLoad):
                 g_eventDispatcher.loadHangar()
             g_eventDispatcher.removeEpicTrainingFromCarousel(False)
@@ -170,28 +169,29 @@ class EpicBattleTrainingEntity(LegacyEntity):
     def getRosters(self, keys=None):
         rosters = prb_getters.getPrebattleRosters()
         if keys is None:
-            result = {PREBATTLE_ROSTER.ASSIGNED_IN_TEAM1: [], PREBATTLE_ROSTER.ASSIGNED_IN_TEAM2: [], PREBATTLE_ROSTER.UNASSIGNED: []}
+            result = {PREBATTLE_ROSTER.ASSIGNED_IN_TEAM1: [],
+             PREBATTLE_ROSTER.ASSIGNED_IN_TEAM2: [],
+             PREBATTLE_ROSTER.UNASSIGNED: []}
         else:
             result = {}
             for key in keys:
                 if PREBATTLE_ROSTER.UNASSIGNED & key != 0:
                     result[PREBATTLE_ROSTER.UNASSIGNED] = []
-                else:
-                    result[key] = []
+                result[key] = []
 
-            hasTeam1 = PREBATTLE_ROSTER.ASSIGNED_IN_TEAM1 in result
-            hasTeam2 = PREBATTLE_ROSTER.ASSIGNED_IN_TEAM2 in result
-            hasUnassigned = PREBATTLE_ROSTER.UNASSIGNED in result
-            for key, roster in rosters.iteritems():
-                accounts = map(lambda accInfo: prb_items.PlayerPrbInfo(accInfo[0], entity=self, roster=key, **accInfo[1]), roster.iteritems())
-                team, assigned = decodeRoster(key)
-                if assigned:
-                    if hasTeam1 and team == 1:
-                        result[PREBATTLE_ROSTER.ASSIGNED_IN_TEAM1] = accounts
-                    elif hasTeam2 and team == 2:
-                        result[PREBATTLE_ROSTER.ASSIGNED_IN_TEAM2] = accounts
-                elif hasUnassigned:
-                    result[PREBATTLE_ROSTER.UNASSIGNED].extend(accounts)
+        hasTeam1 = PREBATTLE_ROSTER.ASSIGNED_IN_TEAM1 in result
+        hasTeam2 = PREBATTLE_ROSTER.ASSIGNED_IN_TEAM2 in result
+        hasUnassigned = PREBATTLE_ROSTER.UNASSIGNED in result
+        for key, roster in rosters.iteritems():
+            accounts = map(lambda accInfo: prb_items.PlayerPrbInfo(accInfo[0], entity=self, roster=key, **accInfo[1]), roster.iteritems())
+            team, assigned = decodeRoster(key)
+            if assigned:
+                if hasTeam1 and team == 1:
+                    result[PREBATTLE_ROSTER.ASSIGNED_IN_TEAM1] = accounts
+                elif hasTeam2 and team == 2:
+                    result[PREBATTLE_ROSTER.ASSIGNED_IN_TEAM2] = accounts
+            if hasUnassigned:
+                result[PREBATTLE_ROSTER.UNASSIGNED].extend(accounts)
 
         return result
 
@@ -226,78 +226,80 @@ class EpicBattleTrainingEntity(LegacyEntity):
             if callback is not None:
                 callback(False)
             return
-        if self._cooldown.validate(REQUEST_TYPE.CHANGE_SETTINGS):
+        elif self._cooldown.validate(REQUEST_TYPE.CHANGE_SETTINGS):
             if callback is not None:
                 callback(False)
             return
-        player = BigWorld.player()
-        pPermissions = self.getPermissions()
-        self.__settingRecords = []
-        rejected = False
-        isOpenedChanged = ctx.isOpenedChanged(self._settings)
-        isCommentChanged = ctx.isCommentChanged(self._settings)
-        isArenaTypeIDChanged = ctx.isArenaTypeIDChanged(self._settings)
-        isRoundLenChanged = ctx.isRoundLenChanged(self._settings)
-        if isOpenedChanged:
-            if pPermissions.canMakeOpenedClosed():
-                self.__settingRecords.append('isOpened')
-            else:
-                LOG_ERROR('Player can not make training opened/closed', pPermissions)
-                rejected = True
-        if isCommentChanged:
-            if pPermissions.canChangeComment():
-                self.__settingRecords.append('comment')
-            else:
-                LOG_ERROR('Player can not change comment', pPermissions)
-                rejected = True
-        if isArenaTypeIDChanged:
-            if pPermissions.canChangeArena():
-                self.__settingRecords.append('arenaTypeID')
-            else:
-                LOG_ERROR('Player can not change comment', pPermissions)
-                rejected = True
-        if isRoundLenChanged:
-            if pPermissions.canChangeArena():
-                self.__settingRecords.append('roundLength')
-            else:
-                LOG_ERROR('Player can not change comment', pPermissions)
-                rejected = True
-        if rejected:
-            self.__settingRecords = []
-            if callback is not None:
-                callback(False)
-            return
-        if not self.__settingRecords:
-            if callback is not None:
-                callback(False)
-            return
-        ctx.startProcessing(callback=callback)
-        if isOpenedChanged:
-            player.prb_changeOpenStatus(ctx.isOpened(), partial(self.__onSettingChanged, record='isOpened', callback=ctx.stopProcessing))
-        if isCommentChanged:
-            player.prb_changeComment(ctx.getComment(), partial(self.__onSettingChanged, record='comment', callback=ctx.stopProcessing))
-        if isArenaTypeIDChanged:
-            player.prb_changeArena(ctx.getArenaTypeID(), partial(self.__onSettingChanged, record='arenaTypeID', callback=ctx.stopProcessing))
-        if isRoundLenChanged:
-            player.prb_changeRoundLength(ctx.getRoundLen(), partial(self.__onSettingChanged, record='roundLength', callback=ctx.stopProcessing))
-        if not self.__settingRecords:
-            if callback is not None:
-                callback(False)
         else:
-            self._cooldown.process(REQUEST_TYPE.CHANGE_SETTINGS)
-        return
+            player = BigWorld.player()
+            pPermissions = self.getPermissions()
+            self.__settingRecords = []
+            rejected = False
+            isOpenedChanged = ctx.isOpenedChanged(self._settings)
+            isCommentChanged = ctx.isCommentChanged(self._settings)
+            isArenaTypeIDChanged = ctx.isArenaTypeIDChanged(self._settings)
+            isRoundLenChanged = ctx.isRoundLenChanged(self._settings)
+            if isOpenedChanged:
+                if pPermissions.canMakeOpenedClosed():
+                    self.__settingRecords.append('isOpened')
+                else:
+                    LOG_ERROR('Player can not make training opened/closed', pPermissions)
+                    rejected = True
+            if isCommentChanged:
+                if pPermissions.canChangeComment():
+                    self.__settingRecords.append('comment')
+                else:
+                    LOG_ERROR('Player can not change comment', pPermissions)
+                    rejected = True
+            if isArenaTypeIDChanged:
+                if pPermissions.canChangeArena():
+                    self.__settingRecords.append('arenaTypeID')
+                else:
+                    LOG_ERROR('Player can not change comment', pPermissions)
+                    rejected = True
+            if isRoundLenChanged:
+                if pPermissions.canChangeArena():
+                    self.__settingRecords.append('roundLength')
+                else:
+                    LOG_ERROR('Player can not change comment', pPermissions)
+                    rejected = True
+            if rejected:
+                self.__settingRecords = []
+                if callback is not None:
+                    callback(False)
+                return
+            elif not self.__settingRecords:
+                if callback is not None:
+                    callback(False)
+                return
+            ctx.startProcessing(callback=callback)
+            if isOpenedChanged:
+                player.prb_changeOpenStatus(ctx.isOpened(), partial(self.__onSettingChanged, record='isOpened', callback=ctx.stopProcessing))
+            if isCommentChanged:
+                player.prb_changeComment(ctx.getComment(), partial(self.__onSettingChanged, record='comment', callback=ctx.stopProcessing))
+            if isArenaTypeIDChanged:
+                player.prb_changeArena(ctx.getArenaTypeID(), partial(self.__onSettingChanged, record='arenaTypeID', callback=ctx.stopProcessing))
+            if isRoundLenChanged:
+                player.prb_changeRoundLength(ctx.getRoundLen(), partial(self.__onSettingChanged, record='roundLength', callback=ctx.stopProcessing))
+            if not self.__settingRecords:
+                if callback is not None:
+                    callback(False)
+            else:
+                self._cooldown.process(REQUEST_TYPE.CHANGE_SETTINGS)
+            return
 
     def changeUserObserverStatus(self, ctx, callback=None):
         if self._cooldown.validate(REQUEST_TYPE.CHANGE_USER_STATUS):
             if callback is not None:
                 callback(False)
             return
-        if ctx.isObserver():
-            self._setPlayerReady(ctx, callback=callback)
         else:
-            self._setPlayerReady(SetPlayerStateCtx(ctx.isReadyState(), ctx.isInitial(), waitingID='prebattle/player_ready'), self.__onPlayerReady)
-        self._cooldown.process(REQUEST_TYPE.CHANGE_USER_STATUS)
-        return
+            if ctx.isObserver():
+                self._setPlayerReady(ctx, callback=callback)
+            else:
+                self._setPlayerReady(SetPlayerStateCtx(ctx.isReadyState(), ctx.isInitial(), waitingID='prebattle/player_ready'), self.__onPlayerReady)
+            self._cooldown.process(REQUEST_TYPE.CHANGE_USER_STATUS)
+            return
 
     def changeArenaVoip(self, ctx, callback=None):
         setting = self._settings[PREBATTLE_SETTING_NAME.ARENA_VOIP_CHANNELS]
@@ -305,20 +307,21 @@ class EpicBattleTrainingEntity(LegacyEntity):
             if callback is not None:
                 callback(True)
             return
-        if self._cooldown.validate(REQUEST_TYPE.CHANGE_ARENA_VOIP):
+        elif self._cooldown.validate(REQUEST_TYPE.CHANGE_ARENA_VOIP):
             if callback is not None:
                 callback(False)
             return
-        pPermissions = self.getPermissions()
-        if pPermissions.canChangeArenaVOIP():
-            ctx.startProcessing(callback=callback)
-            BigWorld.player().prb_changeArenaVoip(ctx.getChannels(), ctx.onResponseReceived)
-            self._cooldown.process(REQUEST_TYPE.CHANGE_ARENA_VOIP)
         else:
-            LOG_ERROR('Player can not change arena VOIP', pPermissions)
-            if callback is not None:
-                callback(False)
-        return
+            pPermissions = self.getPermissions()
+            if pPermissions.canChangeArenaVOIP():
+                ctx.startProcessing(callback=callback)
+                BigWorld.player().prb_changeArenaVoip(ctx.getChannels(), ctx.onResponseReceived)
+                self._cooldown.process(REQUEST_TYPE.CHANGE_ARENA_VOIP)
+            else:
+                LOG_ERROR('Player can not change arena VOIP', pPermissions)
+                if callback is not None:
+                    callback(False)
+            return
 
     def swapInTeam(self, ctx, callback=None):
         if self._cooldown.validate(REQUEST_TYPE.EPIC_SWAP_IN_TEAM):
@@ -408,11 +411,12 @@ class EpicBattleTrainingEntity(LegacyEntity):
             if callback is not None:
                 callback(False)
             return
-        if record in self.__settingRecords:
-            self.__settingRecords.remove(record)
-        if not self.__settingRecords and callback is not None:
-            callback(True)
-        return
+        else:
+            if record in self.__settingRecords:
+                self.__settingRecords.remove(record)
+            if not self.__settingRecords and callback is not None:
+                callback(True)
+            return
 
     def __handleViewLoad(self, event):
         if isinstance(event, LoadGuiImplViewEvent) or event.alias in self.__loadEvents:

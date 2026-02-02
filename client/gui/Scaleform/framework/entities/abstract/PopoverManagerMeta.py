@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/framework/entities/abstract/PopoverManagerMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class PopoverManagerMeta(BaseDAAPIComponent):
@@ -9,5 +11,4 @@ class PopoverManagerMeta(BaseDAAPIComponent):
         self._printOverrideError('requestHidePopover')
 
     def as_onPopoverDestroyS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_onPopoverDestroy()
+        return self.flashObject.as_onPopoverDestroy() if self._isDAAPIInited() else None

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/AvatarInputHandler/keys_handlers.py
 import CommandMapping
 from helpers.dependency import replace_none_kwargs
 from skeletons.gui.battle_session import IBattleSessionProvider

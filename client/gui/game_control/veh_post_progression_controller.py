@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/veh_post_progression_controller.py
 import typing
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import GUI_START_BEHAVIOR
@@ -121,9 +123,7 @@ class VehiclePostProgressionController(IVehiclePostProgressionController):
         currentSettings = self.__postProgressionSettings = makeTupleByDict(VehiclePostProgressionConfig, settingsDiff)
         enabledChange = currentSettings.isEnabled != prevSettings.isEnabled
         enabledFeaturesChange = currentSettings.enabledFeatures != prevSettings.enabledFeatures
-        if enabledChange or enabledFeaturesChange:
-            return set(existingIDs)
-        return set(currentSettings.forbiddenVehicles - prevSettings.forbiddenVehicles | currentSettings.enabledRentedVehicles - prevSettings.enabledRentedVehicles | prevSettings.forbiddenVehicles - currentSettings.forbiddenVehicles | prevSettings.enabledRentedVehicles - currentSettings.enabledRentedVehicles)
+        return set(existingIDs) if enabledChange or enabledFeaturesChange else set(currentSettings.forbiddenVehicles - prevSettings.forbiddenVehicles | currentSettings.enabledRentedVehicles - prevSettings.enabledRentedVehicles | prevSettings.forbiddenVehicles - currentSettings.forbiddenVehicles | prevSettings.enabledRentedVehicles - currentSettings.enabledRentedVehicles)
 
     def __tryShowWelcomeUnlockMsg(self):
         if not self.isEnabled():

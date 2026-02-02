@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/lobby/mode_selector/fun_sub_selector_view.py
 from __future__ import absolute_import
 import typing
 from adisp import adisp_process
@@ -34,15 +36,15 @@ if typing.TYPE_CHECKING:
     from frameworks.wulf import View, Array
     from frameworks.wulf.view.view_event import ViewEvent
     from fun_random.gui.feature.sub_modes.base_sub_mode import IFunSubMode
-_SUB_MODE_CARD_STATE_MAP = {FunSubModesState.AFTER_SEASON: CardState.FINISHED, 
-   FunSubModesState.BEFORE_SEASON: CardState.NOT_STARTED, 
-   FunSubModesState.BETWEEN_SEASONS: CardState.NOT_STARTED, 
-   FunSubModesState.NOT_AVAILABLE_END: CardState.ACTIVE, 
-   FunSubModesState.NOT_AVAILABLE: CardState.ACTIVE, 
-   FunSubModesState.AVAILABLE: CardState.ACTIVE}
+_SUB_MODE_CARD_STATE_MAP = {FunSubModesState.AFTER_SEASON: CardState.FINISHED,
+ FunSubModesState.BEFORE_SEASON: CardState.NOT_STARTED,
+ FunSubModesState.BETWEEN_SEASONS: CardState.NOT_STARTED,
+ FunSubModesState.NOT_AVAILABLE_END: CardState.ACTIVE,
+ FunSubModesState.NOT_AVAILABLE: CardState.ACTIVE,
+ FunSubModesState.AVAILABLE: CardState.ACTIVE}
 
 class FunModeSubSelectorView(ViewImpl, FunAssetPacksMixin, FunSubModesWatcher, FunProgressionWatcher):
-    __slots__ = ('__tooltips', )
+    __slots__ = ('__tooltips',)
     __lobbyContext = dependency.descriptor(ILobbyContext)
 
     def __init__(self, layoutID):
@@ -66,41 +68,37 @@ class FunModeSubSelectorView(ViewImpl, FunAssetPacksMixin, FunSubModesWatcher, F
             if subMode is not None:
                 return backport.createTooltipData(isSpecial=True, specialAlias=tooltipID, specialArgs=(subMode.getSubModeID(),))
             return
-        if tooltipID == ModeSelectorTooltipsConstants.DISABLED_TOOLTIP:
+        elif tooltipID == ModeSelectorTooltipsConstants.DISABLED_TOOLTIP:
             subMode = self.__getSubModeByEvent(event)
             if subMode is not None and subMode.isFrozen():
                 return backport.createTooltipData(tooltip=makeTooltip(body=backport.text(R.strings.fun_random.modeSubSelector.disabledCard.tooltip.body())))
             return
-        if tooltipID is None:
-            return
         else:
-            return self.__tooltips.get(tooltipID)
+            return None if tooltipID is None else self.__tooltips.get(tooltipID)
 
     def createToolTipContent(self, event, contentID):
         if contentID == R.views.fun_random.mono.lobby.tooltips.progression_tooltip():
             return FunRandomProgressionTooltipView()
+        elif contentID == R.views.lobby.tooltips.AdditionalRewardsTooltip():
+            progression, showCount = self.getActiveProgression(), int(event.getArgument('showCount'))
+            stageIdx = progression.activeStage.stageIndex if progression else -1
+            packedRewards = packAdditionalRewards(progression, stageIdx, showCount, True) if progression else []
+            if packedRewards:
+                return NearestAdditionalRewardsTooltip(packedRewards)
+            return
+        elif contentID == R.views.battle_modifiers.lobby.tooltips.ModifiersDomainTooltipView():
+            subModeID = int(event.getArgument('subModeId', UNKNOWN_EVENT_ID))
+            modifiersDomain = event.getArgument('modifiersDomain', ClientDomain.UNDEFINED)
+            return FunRandomDomainTooltipView(modifiersDomain, subModeID)
+        elif contentID == R.views.fun_random.mono.lobby.tooltips.loot_box_tooltip():
+            tooltipId = event.getArgument('tooltipId')
+            tooltipData = None if tooltipId is None else self.__tooltips.get(tooltipId)
+            lootboxID = tooltipData.specialArgs[0] if tooltipData and tooltipData.specialArgs else None
+            if lootboxID:
+                return FunRandomLootBoxTooltipView(lootboxID)
+            return
         else:
-            if contentID == R.views.lobby.tooltips.AdditionalRewardsTooltip():
-                progression, showCount = self.getActiveProgression(), int(event.getArgument('showCount'))
-                stageIdx = progression.activeStage.stageIndex if progression else -1
-                packedRewards = packAdditionalRewards(progression, stageIdx, showCount, True) if progression else []
-                if packedRewards:
-                    return NearestAdditionalRewardsTooltip(packedRewards)
-                return
-            if contentID == R.views.battle_modifiers.lobby.tooltips.ModifiersDomainTooltipView():
-                subModeID = int(event.getArgument('subModeId', UNKNOWN_EVENT_ID))
-                modifiersDomain = event.getArgument('modifiersDomain', ClientDomain.UNDEFINED)
-                return FunRandomDomainTooltipView(modifiersDomain, subModeID)
-            if contentID == R.views.fun_random.mono.lobby.tooltips.loot_box_tooltip():
-                tooltipId = event.getArgument('tooltipId')
-                tooltipData = None if tooltipId is None else self.__tooltips.get(tooltipId)
-                lootboxID = tooltipData.specialArgs[0] if tooltipData and tooltipData.specialArgs else None
-                if lootboxID:
-                    return FunRandomLootBoxTooltipView(lootboxID)
-                return
-            if contentID == R.views.lobby.common.tooltips.SimpleIconTooltip():
-                return createSimpleIconTooltip(event)
-            return super(FunModeSubSelectorView, self).createToolTipContent(event, contentID)
+            return createSimpleIconTooltip(event) if contentID == R.views.lobby.common.tooltips.SimpleIconTooltip() else super(FunModeSubSelectorView, self).createToolTipContent(event, contentID)
 
     def abortSelection(self):
         g_eventBus.handleEvent(ModeSubSelectorEvent(ModeSubSelectorEvent.CHANGE_VISIBILITY, ctx={'visible': False}))
@@ -123,13 +121,7 @@ class FunModeSubSelectorView(ViewImpl, FunAssetPacksMixin, FunSubModesWatcher, F
         super(FunModeSubSelectorView, self)._finalize()
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onClosed, self.abortSelection),
-         (
-          self.viewModel.onInfoClicked, self.__onShowSubInfoPage),
-         (
-          self.viewModel.onItemClicked, self.__onSelectSubMode))
+        return ((self.viewModel.onClosed, self.abortSelection), (self.viewModel.onInfoClicked, self.__onShowSubInfoPage), (self.viewModel.onItemClicked, self.__onSelectSubMode))
 
     def __addListeners(self):
         self.startSubSettingsListening(self.__invalidateAll)
@@ -146,14 +138,10 @@ class FunModeSubSelectorView(ViewImpl, FunAssetPacksMixin, FunSubModesWatcher, F
         return findFirst(lambda sm: sm.getAssetsPointer() == assetsPointer, self.getSubModes())
 
     def __getSubModeStartDelta(self, status):
-        if status.state in FunSubModesState.BEFORE_STATES:
-            return time_utils.getTimeDeltaFromNowInLocal(status.rightBorder)
-        return 0
+        return time_utils.getTimeDeltaFromNowInLocal(status.rightBorder) if status.state in FunSubModesState.BEFORE_STATES else 0
 
     def __getSubModeEndDelta(self, status):
-        if status.state in FunSubModesState.INNER_STATES:
-            return getFormattedTimeLeft(time_utils.getTimeDeltaFromNowInLocal(status.endTime))
-        return ''
+        return getFormattedTimeLeft(time_utils.getTimeDeltaFromNowInLocal(status.endTime)) if status.state in FunSubModesState.INNER_STATES else ''
 
     def __createCardModel(self, subMode, selectedSubModeID):
         subModeID = subMode.getSubModeID()
@@ -193,7 +181,7 @@ class FunModeSubSelectorView(ViewImpl, FunAssetPacksMixin, FunSubModesWatcher, F
         self.showSubModeInfoPage(int(args.get('subModeId', UNKNOWN_EVENT_ID)))
 
     def __invalidate(self, status):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setAssetsPointer(self.getModeAssetsPointer())
             self.__invalidateSubModesCards(model.getCardList())
             if status.state in FunSubModesState.INNER_STATES:
@@ -208,7 +196,7 @@ class FunModeSubSelectorView(ViewImpl, FunAssetPacksMixin, FunSubModesWatcher, F
 
     @hasActiveProgression(abortAction='setDisabledProgression')
     def __invalidateProgression(self, *_):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             self.__fillProgression(model)
 
     @hasActiveProgression()
@@ -226,7 +214,7 @@ class FunModeSubSelectorView(ViewImpl, FunAssetPacksMixin, FunSubModesWatcher, F
         cards.invalidate()
 
     def __invalidateSubModesTimer(self, *_):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             self.__invalidateSubModesCards(model.getCardList())
 
     @hasActiveProgression(abortAction='setDisabledProgression')

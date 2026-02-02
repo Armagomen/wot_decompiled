@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/optimization_manager.py
 import logging
 from frameworks.wulf import WindowStatus
 from frameworks.wulf.gui_constants import ShowingStatus
@@ -54,11 +56,9 @@ class GraphicsOptimizationManager(object):
             self.__scale = scale
             for uniqueID, optimizationID in self.__gfWindowsOptimizationIDs.iteritems():
                 window = self.__windowsManager.getWindow(uniqueID)
-                if window and window.content and window.windowStatus not in (
-                 WindowStatus.DESTROYING, WindowStatus.DESTROYED):
+                if window and window.content and window.windowStatus not in (WindowStatus.DESTROYING, WindowStatus.DESTROYED):
                     self.__optimizationController.updateOptimizationArea(optimizationID, *rescaleRectBounds(self.__scale, *(window.globalPosition + window.size)))
-                else:
-                    _logger.warning('Window %d is loaded, but its content is None', uniqueID)
+                _logger.warning('Window %d is loaded, but its content is None', uniqueID)
 
         else:
             _logger.warning('Parameter scale is missing in event ctx')

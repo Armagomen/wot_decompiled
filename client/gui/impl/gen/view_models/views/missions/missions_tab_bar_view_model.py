@@ -1,7 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/missions/missions_tab_bar_view_model.py
 from frameworks.wulf import Array, ViewModel
 
 class MissionsTabBarViewModel(ViewModel):
-    __slots__ = ('onTabSelectionChanged', )
+    __slots__ = ('onTabSelectionChanged',)
 
     def __init__(self, properties=3, commands=1):
         super(MissionsTabBarViewModel, self).__init__(properties=properties, commands=commands)

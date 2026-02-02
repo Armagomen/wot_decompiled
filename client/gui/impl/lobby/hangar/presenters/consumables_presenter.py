@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/hangar/presenters/consumables_presenter.py
 from __future__ import absolute_import
-import typing, SoundGroups
+import typing
+import SoundGroups
 from gui.impl.gen.view_models.views.lobby.loadout.consumables.consumables_model import ConsumablesModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_setup_model import BaseSetupModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.tank_setup_constants import TankSetupConstants
@@ -30,25 +33,19 @@ class ConsumablesPresenter(LoadoutPresenterBase[ConsumablesModel]):
         return actions
 
     def _getEvents(self):
-        return super(ConsumablesPresenter, self)._getEvents() + (
-         (
-          self.__wallet.onWalletStatusChanged, self._onCurrencyUpdate),)
+        return super(ConsumablesPresenter, self)._getEvents() + ((self.__wallet.onWalletStatusChanged, self._onCurrencyUpdate),)
 
     def _createProvider(self, vehInteractingItem):
         self._provider = LoadoutEntityProvider(vehInteractingItem, ConsumableInteractor, {ConsumableTabs.DEFAULT: ConsumableDeviceProvider})
 
     def _getCallbacks(self):
-        return (
-         (
-          ('stats.{}').format(Currency.GOLD), self._onCurrencyUpdate),
-         (
-          ('stats.{}').format(Currency.CREDITS), self._onCurrencyUpdate))
+        return (('stats.{}'.format(Currency.GOLD), self._onCurrencyUpdate), ('stats.{}'.format(Currency.CREDITS), self._onCurrencyUpdate))
 
     def _updateModel(self, recreate=True):
         if not self._vehInteractingItem.getItem().consumables.installed or not self._provider:
             return
         interactor = self._provider.interactor
-        with self.getViewModel().transaction() as (consumableModel):
+        with self.getViewModel().transaction() as consumableModel:
             consumableModel.setAutoloadEnabled(interactor.getAutoRenewal().getLocalValue())
             dataProvider = self._provider.dataProviders[ConsumableTabs.DEFAULT]
             if recreate:

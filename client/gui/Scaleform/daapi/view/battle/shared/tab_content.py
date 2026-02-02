@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/tab_content.py
 from gui.Scaleform.daapi.view.meta.TabContentMeta import TabContentMeta
 from gui.impl.battle.battle_page.tab_view import TabView
 from gui.impl.gen import R

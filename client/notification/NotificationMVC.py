@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/notification/NotificationMVC.py
 from notification.AlertController import AlertController
 from notification.NotificationsCounter import NotificationsCounter
 from notification.NotificationsModel import NotificationsModel

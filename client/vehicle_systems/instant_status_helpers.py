@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/vehicle_systems/instant_status_helpers.py
 import InstantStatuses
 
 def invokeInstantStatusForVehicle(vehicle, instantStatusType):

@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/personal_missions_30/rewards_view.py
 from itertools import ifilter
 from typing import TYPE_CHECKING
+import SoundGroups
 from frameworks.wulf import ViewSettings, WindowFlags
 from gui.impl.auxiliary.vehicle_helper import fillVehicleInfo
 from gui.impl.gen import R
@@ -50,22 +53,17 @@ class RewardsView(ViewImpl):
         return self.__tooltipData.get(event.getArgument('tooltipId'))
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.close, self.__onClose),
-         (
-          self.viewModel.goToOperation, self.__onShowOperation),
-         (
-          self.viewModel.goToVehicle, self.__onShowVehicle),
-         (
-          self.viewModel.disableVideoOverlaySound, self.__onDisableVideoOverlaySound))
+        return ((self.viewModel.close, self.__onClose),
+         (self.viewModel.goToOperation, self.__onShowOperation),
+         (self.viewModel.goToVehicle, self.__onShowVehicle),
+         (self.viewModel.disableVideoOverlaySound, self.__onDisableVideoOverlaySound))
 
     def _onLoading(self, *args, **kwargs):
         super(RewardsView, self)._onLoading(*args, **kwargs)
         self.currentOperation = self.__defineCurrentOperation()
         if self.rewardType == RewardsViewType.OPERATION:
             setVideoOverlayOn()
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setType(self.rewardType)
             tx.setOperationId(self.currentOperation.getID())
             tx.setOperationName(self.__getOperationName(self.currentOperation.getID()))
@@ -83,6 +81,7 @@ class RewardsView(ViewImpl):
 
     def _finalize(self):
         self.__onViewClosed()
+        SoundGroups.g_instance.playSound2D('vid_pm_stop')
         super(RewardsView, self)._finalize()
 
     def __onClose(self):
@@ -119,25 +118,20 @@ class RewardsView(ViewImpl):
         return detailName
 
     def __isCampaignFinished(self):
-        return all([ operation.isFullCompleted() for operation in self.__eventsCache.getPersonalMissions().getAllOperations(PM_BRANCH.V2_BRANCHES).values()
-                   ])
+        return all([ operation.isFullCompleted() for operation in self.__eventsCache.getPersonalMissions().getAllOperations(PM_BRANCH.V2_BRANCHES).values() ])
 
     def __defineCurrentOperation(self):
-        currentOperationByType = {RewardsViewType.VEHICLE_PART: lambda q: int(q.split('_')[2]), 
-           RewardsViewType.OPERATION_WITH_HONORS: lambda q: int(q.split('_')[3].rsplit('t')[(-1)]), 
-           RewardsViewType.CAMPAIGN_WITH_HONORS: lambda q: int(q.split('_')[3].rsplit('t')[(-1)]), 
-           RewardsViewType.OPERATION: lambda q: int(q.split('_')[2])}
+        currentOperationByType = {RewardsViewType.VEHICLE_PART: lambda q: int(q.split('_')[2]),
+         RewardsViewType.OPERATION_WITH_HONORS: lambda q: int(q.split('_')[3].rsplit('t')[-1]),
+         RewardsViewType.CAMPAIGN_WITH_HONORS: lambda q: int(q.split('_')[3].rsplit('t')[-1]),
+         RewardsViewType.OPERATION: lambda q: int(q.split('_')[2])}
         operationID = currentOperationByType[self.rewardType](self.questID)
         return self.__eventsCache.getPersonalMissions().getAllOperations(PM_BRANCH.V2_BRANCHES).get(operationID)
 
     def __defineNextOperationID(self):
         allOperations = list(sorted(self.__eventsCache.getPersonalMissions().getAllOperations(PM_BRANCH.V2_BRANCHES).values(), key=lambda o: o.getID()))
-        notFullCompletedOperations = [ operation for operation in allOperations if not operation.isFullCompleted()
-                                     ]
-        if notFullCompletedOperations:
-            return notFullCompletedOperations[0].getID()
-        else:
-            return
+        notFullCompletedOperations = [ operation for operation in allOperations if not operation.isFullCompleted() ]
+        return notFullCompletedOperations[0].getID() if notFullCompletedOperations else None
 
     def __getOperationName(self, operationID):
         return self.__eventsCache.getPersonalMissions().getAllOperations(PM_BRANCH.V2_BRANCHES).get(operationID).getShortUserName()

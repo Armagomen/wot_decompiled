@@ -1,10 +1,18 @@
-import logging, math, weakref, BigWorld, CommandMapping, DestructibleEntity, Math, Vehicle
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/chat_cmd_ctrl.py
+import logging
+import math
+import weakref
+import BigWorld
+import CommandMapping
+import DestructibleEntity
+import Math
+import Vehicle
 from AvatarInputHandler import aih_global_binding
 from AvatarInputHandler.cameras import getWorldRayAndPoint
 from aih_constants import CTRL_MODE_NAME
 from arena_component_system.sector_base_arena_component import ID_TO_BASENAME
 from chat_commands_consts import MarkerType, DefaultMarkerSubType, ReplyState, BATTLE_CHAT_COMMAND_NAMES, INVALID_MARKER_SUBTYPE, _COMMAND_NAME_TRANSFORM_MARKER_TYPE, ONE_SHOT_COMMANDS_TO_REPLIES, COMMAND_RESPONDING_MAPPING
-from constants import STATIONARY_RELOAD_STATE
 from epic_constants import EPIC_BATTLE_TEAM_ID
 from gui.battle_control import avatar_getter
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
@@ -23,58 +31,72 @@ from uilogging.player_satisfaction_rating.loggers import KeyboardShortcutLogger
 _logger = logging.getLogger(__name__)
 CONTEXTCOMMAND = 'CONTEXTCOMMAND'
 CONTEXTCOMMAND2 = 'CONTEXTCOMMAND2'
-KB_MAPPING = {BATTLE_CHAT_COMMAND_NAMES.TURNBACK: CommandMapping.CMD_CHAT_SHORTCUT_BACKTOBASE, 
-   BATTLE_CHAT_COMMAND_NAMES.SOS: CommandMapping.CMD_CHAT_SHORTCUT_HELPME, 
-   BATTLE_CHAT_COMMAND_NAMES.RELOADINGGUN: CommandMapping.CMD_CHAT_SHORTCUT_RELOAD, 
-   BATTLE_CHAT_COMMAND_NAMES.AFFIRMATIVE: CommandMapping.CMD_CHAT_SHORTCUT_AFFIRMATIVE, 
-   BATTLE_CHAT_COMMAND_NAMES.NEGATIVE: CommandMapping.CMD_CHAT_SHORTCUT_NEGATIVE, 
-   BATTLE_CHAT_COMMAND_NAMES.THANKS: CommandMapping.CMD_CHAT_SHORTCUT_THANKYOU, 
-   BATTLE_CHAT_COMMAND_NAMES.REPLY: CommandMapping.CMD_RADIAL_MENU_SHOW, 
-   CONTEXTCOMMAND: CommandMapping.CMD_CHAT_SHORTCUT_CONTEXT_COMMAND, 
-   CONTEXTCOMMAND2: CommandMapping.CMD_CHAT_SHORTCUT_CONTEXT_COMMIT}
-TARGET_TYPE_TRANSLATION_MAPPING = {CONTEXTCOMMAND: {MarkerType.VEHICLE_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.HELPME, 
-                                                     DefaultMarkerSubType.ENEMY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.ATTACK_ENEMY}, 
-                    MarkerType.BASE_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.DEFEND_BASE, 
-                                                  DefaultMarkerSubType.ENEMY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.ATTACK_BASE}, 
-                    MarkerType.TARGET_POINT_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.MOVE_TO_TARGET_POINT, 
-                                                          DefaultMarkerSubType.ENEMY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.MOVE_TO_TARGET_POINT}, 
-                    MarkerType.HEADQUARTER_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.DEFEND_OBJECTIVE, 
-                                                         DefaultMarkerSubType.ENEMY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.ATTACK_OBJECTIVE}, 
-                    MarkerType.LOCATION_MARKER_TYPE: {INVALID_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.ATTENTION_TO_POSITION}}, 
-   CONTEXTCOMMAND2: {MarkerType.VEHICLE_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.SUPPORTING_ALLY, 
-                                                      DefaultMarkerSubType.ENEMY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.ATTACKING_ENEMY}, 
-                     MarkerType.BASE_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.DEFENDING_BASE, 
-                                                   DefaultMarkerSubType.ENEMY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.ATTACKING_BASE}, 
-                     MarkerType.TARGET_POINT_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.MOVING_TO_TARGET_POINT, 
-                                                           DefaultMarkerSubType.ENEMY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.MOVING_TO_TARGET_POINT}, 
-                     MarkerType.HEADQUARTER_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.DEFENDING_OBJECTIVE, 
-                                                          DefaultMarkerSubType.ENEMY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.ATTACKING_OBJECTIVE}, 
-                     MarkerType.LOCATION_MARKER_TYPE: {INVALID_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.GOING_THERE}}, 
-   BATTLE_CHAT_COMMAND_NAMES.TURNBACK: {MarkerType.VEHICLE_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.TURNBACK}}, 
-   BATTLE_CHAT_COMMAND_NAMES.THANKS: {MarkerType.VEHICLE_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.THANKS}}, 
-   BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_1_EX: {MarkerType.VEHICLE_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_1}}, 
-   BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_2_EX: {MarkerType.VEHICLE_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_2}}, 
-   BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_3_EX: {MarkerType.VEHICLE_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_3}}, 
-   BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_4_EX: {MarkerType.VEHICLE_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_4}}, 
-   BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_5_EX: {MarkerType.VEHICLE_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_5}}, 
-   BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_6_EX: {MarkerType.VEHICLE_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_6}}, 
-   BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_7_EX: {MarkerType.VEHICLE_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_7}}}
-DIRECT_ACTION_BATTLE_CHAT_COMMANDS = [
- BATTLE_CHAT_COMMAND_NAMES.SOS, BATTLE_CHAT_COMMAND_NAMES.RELOADINGGUN,
- BATTLE_CHAT_COMMAND_NAMES.AFFIRMATIVE, BATTLE_CHAT_COMMAND_NAMES.NEGATIVE]
-PROHIBITED_IF_DEAD = [BATTLE_CHAT_COMMAND_NAMES.GOING_THERE, BATTLE_CHAT_COMMAND_NAMES.SOS,
- BATTLE_CHAT_COMMAND_NAMES.HELPME, BATTLE_CHAT_COMMAND_NAMES.PREBATTLE_WAYPOINT,
- BATTLE_CHAT_COMMAND_NAMES.ATTACKING_ENEMY, BATTLE_CHAT_COMMAND_NAMES.ATTACKING_BASE,
- BATTLE_CHAT_COMMAND_NAMES.DEFENDING_BASE, BATTLE_CHAT_COMMAND_NAMES.SUPPORTING_ALLY,
- BATTLE_CHAT_COMMAND_NAMES.VEHICLE_SPOTPOINT, BATTLE_CHAT_COMMAND_NAMES.SHOOTING_POINT,
- BATTLE_CHAT_COMMAND_NAMES.NAVIGATION_POINT, BATTLE_CHAT_COMMAND_NAMES.FLAG_POINT]
-PROHIBITED_IF_SPECTATOR = [BATTLE_CHAT_COMMAND_NAMES.GOING_THERE, BATTLE_CHAT_COMMAND_NAMES.SOS,
- BATTLE_CHAT_COMMAND_NAMES.HELPME, BATTLE_CHAT_COMMAND_NAMES.ATTACK_ENEMY,
- BATTLE_CHAT_COMMAND_NAMES.ATTACK_BASE, BATTLE_CHAT_COMMAND_NAMES.DEFEND_BASE,
- BATTLE_CHAT_COMMAND_NAMES.PREBATTLE_WAYPOINT, BATTLE_CHAT_COMMAND_NAMES.ATTACKING_BASE,
- BATTLE_CHAT_COMMAND_NAMES.DEFENDING_BASE, BATTLE_CHAT_COMMAND_NAMES.SUPPORTING_ALLY,
- BATTLE_CHAT_COMMAND_NAMES.VEHICLE_SPOTPOINT, BATTLE_CHAT_COMMAND_NAMES.SHOOTING_POINT,
- BATTLE_CHAT_COMMAND_NAMES.NAVIGATION_POINT, BATTLE_CHAT_COMMAND_NAMES.ATTENTION_TO_POSITION,
+KB_MAPPING = {BATTLE_CHAT_COMMAND_NAMES.TURNBACK: CommandMapping.CMD_CHAT_SHORTCUT_BACKTOBASE,
+ BATTLE_CHAT_COMMAND_NAMES.SOS: CommandMapping.CMD_CHAT_SHORTCUT_HELPME,
+ BATTLE_CHAT_COMMAND_NAMES.RELOADINGGUN: CommandMapping.CMD_CHAT_SHORTCUT_RELOAD,
+ BATTLE_CHAT_COMMAND_NAMES.AFFIRMATIVE: CommandMapping.CMD_CHAT_SHORTCUT_AFFIRMATIVE,
+ BATTLE_CHAT_COMMAND_NAMES.NEGATIVE: CommandMapping.CMD_CHAT_SHORTCUT_NEGATIVE,
+ BATTLE_CHAT_COMMAND_NAMES.THANKS: CommandMapping.CMD_CHAT_SHORTCUT_THANKYOU,
+ BATTLE_CHAT_COMMAND_NAMES.REPLY: CommandMapping.CMD_RADIAL_MENU_SHOW,
+ CONTEXTCOMMAND: CommandMapping.CMD_CHAT_SHORTCUT_CONTEXT_COMMAND,
+ CONTEXTCOMMAND2: CommandMapping.CMD_CHAT_SHORTCUT_CONTEXT_COMMIT}
+TARGET_TYPE_TRANSLATION_MAPPING = {CONTEXTCOMMAND: {MarkerType.VEHICLE_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.HELPME,
+                                                   DefaultMarkerSubType.ENEMY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.ATTACK_ENEMY},
+                  MarkerType.BASE_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.DEFEND_BASE,
+                                                DefaultMarkerSubType.ENEMY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.ATTACK_BASE},
+                  MarkerType.TARGET_POINT_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.MOVE_TO_TARGET_POINT,
+                                                        DefaultMarkerSubType.ENEMY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.MOVE_TO_TARGET_POINT},
+                  MarkerType.HEADQUARTER_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.DEFEND_OBJECTIVE,
+                                                       DefaultMarkerSubType.ENEMY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.ATTACK_OBJECTIVE},
+                  MarkerType.LOCATION_MARKER_TYPE: {INVALID_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.ATTENTION_TO_POSITION}},
+ CONTEXTCOMMAND2: {MarkerType.VEHICLE_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.SUPPORTING_ALLY,
+                                                    DefaultMarkerSubType.ENEMY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.ATTACKING_ENEMY},
+                   MarkerType.BASE_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.DEFENDING_BASE,
+                                                 DefaultMarkerSubType.ENEMY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.ATTACKING_BASE},
+                   MarkerType.TARGET_POINT_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.MOVING_TO_TARGET_POINT,
+                                                         DefaultMarkerSubType.ENEMY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.MOVING_TO_TARGET_POINT},
+                   MarkerType.HEADQUARTER_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.DEFENDING_OBJECTIVE,
+                                                        DefaultMarkerSubType.ENEMY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.ATTACKING_OBJECTIVE},
+                   MarkerType.LOCATION_MARKER_TYPE: {INVALID_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.GOING_THERE}},
+ BATTLE_CHAT_COMMAND_NAMES.TURNBACK: {MarkerType.VEHICLE_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.TURNBACK}},
+ BATTLE_CHAT_COMMAND_NAMES.THANKS: {MarkerType.VEHICLE_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.THANKS}},
+ BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_1_EX: {MarkerType.VEHICLE_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_1}},
+ BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_2_EX: {MarkerType.VEHICLE_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_2}},
+ BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_3_EX: {MarkerType.VEHICLE_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_3}},
+ BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_4_EX: {MarkerType.VEHICLE_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_4}},
+ BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_5_EX: {MarkerType.VEHICLE_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_5}},
+ BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_6_EX: {MarkerType.VEHICLE_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_6}},
+ BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_7_EX: {MarkerType.VEHICLE_MARKER_TYPE: {DefaultMarkerSubType.ALLY_MARKER_SUBTYPE: BATTLE_CHAT_COMMAND_NAMES.EVENT_CHAT_7}}}
+DIRECT_ACTION_BATTLE_CHAT_COMMANDS = [BATTLE_CHAT_COMMAND_NAMES.SOS,
+ BATTLE_CHAT_COMMAND_NAMES.RELOADINGGUN,
+ BATTLE_CHAT_COMMAND_NAMES.AFFIRMATIVE,
+ BATTLE_CHAT_COMMAND_NAMES.NEGATIVE]
+PROHIBITED_IF_DEAD = [BATTLE_CHAT_COMMAND_NAMES.GOING_THERE,
+ BATTLE_CHAT_COMMAND_NAMES.SOS,
+ BATTLE_CHAT_COMMAND_NAMES.HELPME,
+ BATTLE_CHAT_COMMAND_NAMES.PREBATTLE_WAYPOINT,
+ BATTLE_CHAT_COMMAND_NAMES.ATTACKING_ENEMY,
+ BATTLE_CHAT_COMMAND_NAMES.ATTACKING_BASE,
+ BATTLE_CHAT_COMMAND_NAMES.DEFENDING_BASE,
+ BATTLE_CHAT_COMMAND_NAMES.SUPPORTING_ALLY,
+ BATTLE_CHAT_COMMAND_NAMES.VEHICLE_SPOTPOINT,
+ BATTLE_CHAT_COMMAND_NAMES.SHOOTING_POINT,
+ BATTLE_CHAT_COMMAND_NAMES.NAVIGATION_POINT,
+ BATTLE_CHAT_COMMAND_NAMES.FLAG_POINT]
+PROHIBITED_IF_SPECTATOR = [BATTLE_CHAT_COMMAND_NAMES.GOING_THERE,
+ BATTLE_CHAT_COMMAND_NAMES.SOS,
+ BATTLE_CHAT_COMMAND_NAMES.HELPME,
+ BATTLE_CHAT_COMMAND_NAMES.ATTACK_ENEMY,
+ BATTLE_CHAT_COMMAND_NAMES.ATTACK_BASE,
+ BATTLE_CHAT_COMMAND_NAMES.DEFEND_BASE,
+ BATTLE_CHAT_COMMAND_NAMES.PREBATTLE_WAYPOINT,
+ BATTLE_CHAT_COMMAND_NAMES.ATTACKING_BASE,
+ BATTLE_CHAT_COMMAND_NAMES.DEFENDING_BASE,
+ BATTLE_CHAT_COMMAND_NAMES.SUPPORTING_ALLY,
+ BATTLE_CHAT_COMMAND_NAMES.VEHICLE_SPOTPOINT,
+ BATTLE_CHAT_COMMAND_NAMES.SHOOTING_POINT,
+ BATTLE_CHAT_COMMAND_NAMES.NAVIGATION_POINT,
+ BATTLE_CHAT_COMMAND_NAMES.ATTENTION_TO_POSITION,
  BATTLE_CHAT_COMMAND_NAMES.FLAG_POINT]
 
 def getAimedAtPositionWithinBorders(aimOffsetX, aimOffsetY):
@@ -87,13 +109,13 @@ def getAimedAtPositionWithinBorders(aimOffsetX, aimOffsetY):
         if not boundingBox[0][0] <= staticHitPoint.x <= boundingBox[1][0] or not boundingBox[0][1] <= staticHitPoint.z <= boundingBox[1][1]:
             return
         return staticHitPoint
-    return
-    return
+    else:
+        return
+        return
 
 
 class ChatCommandsController(IBattleController):
-    __slots__ = ('__isEnabled', '__arenaDP', '__feedback', '__ammo', '__markersManager',
-                 '_uiPlayerSatisfactionRatingLogger')
+    __slots__ = ('__isEnabled', '__arenaDP', '__feedback', '__ammo', '__markersManager', '_uiPlayerSatisfactionRatingLogger')
     sessionProvider = dependency.descriptor(IBattleSessionProvider)
     battleCommunications = dependency.descriptor(IBattleCommunicationsSettings)
     commendationsCtrl = dependency.descriptor(ICommendationsController)
@@ -111,7 +133,7 @@ class ChatCommandsController(IBattleController):
 
     @proto_getter(PROTO_TYPE.BW_CHAT2)
     def proto(self):
-        return
+        return None
 
     def getControllerID(self):
         return BATTLE_CTRL_ID.CHAT_COMMANDS
@@ -144,21 +166,19 @@ class ChatCommandsController(IBattleController):
                 targetMarkerType = MarkerType.LOCATION_MARKER_TYPE
                 markerSubType = INVALID_MARKER_SUBTYPE
             replyState, replyToAction = self.getReplyStateForTargetIDAndMarkerType(targetID, targetMarkerType)
-            return (targetID, targetMarkerType, markerSubType, replyState, replyToAction)
+            return (targetID,
+             targetMarkerType,
+             markerSubType,
+             replyState,
+             replyToAction)
 
     def getReplyStateForTargetIDAndMarkerType(self, targetID, targetMarkerType):
         advChatCmp = getattr(self.sessionProvider.arenaVisitor.getComponentSystem(), 'advancedChatComponent', None)
-        if advChatCmp is None:
-            return
-        else:
-            return advChatCmp.getReplyStateForTargetIDAndMarkerType(targetID, targetMarkerType)
+        return None if advChatCmp is None else advChatCmp.getReplyStateForTargetIDAndMarkerType(targetID, targetMarkerType)
 
     def isTargetAllyCommittedToMe(self, targetID):
         advChatCmp = getattr(self.sessionProvider.arenaVisitor.getComponentSystem(), 'advancedChatComponent', None)
-        if advChatCmp is None:
-            return False
-        else:
-            return advChatCmp.isTargetAllyCommittedToMe(targetID)
+        return False if advChatCmp is None else advChatCmp.isTargetAllyCommittedToMe(targetID)
 
     def handleContexChatCommand(self, key):
         cmdMap = CommandMapping.g_instance
@@ -335,20 +355,22 @@ class ChatCommandsController(IBattleController):
     def sendReloadingCommand(self):
         if not avatar_getter.isPlayerOnArena() or self.__isEnabled is False:
             return
-        gunSettings = self.__ammo.getGunSettings()
-        reloadingState = self.__ammo.getGunReloadingState()
-        timeLeft = reloadingState.getTimeLeft()
-        quantity = self.__ammo.getShellsQuantityLeft()
-        stationaryState = self.__ammo.getStationaryState()
-        if stationaryState is not None and stationaryState.state in STATIONARY_RELOAD_STATE.TO_RELOADING_STATES:
-            timeLeft = reloadingState.getActualValue()
-            quantity = 0 if quantity == gunSettings.clip.size else quantity
-        command = self.proto.battleCmd.create4Reload(gunSettings.isCassetteClip(), math.ceil(timeLeft), quantity)
-        if command:
-            self.__sendChatCommand(command)
         else:
-            _logger.error('Can not create reloading command')
-        return
+            specialReload = self.__ammo.getSpecialReloadMessage()
+            if specialReload is not None:
+                specialMsg, specialArgs = specialReload
+                command = self.proto.battleCmd.createByName(specialMsg, specialArgs)
+            else:
+                gunSettings = self.__ammo.getGunSettings()
+                reloadingState = self.__ammo.getGunReloadingState()
+                timeLeft = reloadingState.getTimeLeft()
+                quantity = self.__ammo.getShellsQuantityLeft()
+                command = self.proto.battleCmd.create4Reload(gunSettings.isCassetteClip, math.ceil(timeLeft), quantity)
+            if command:
+                self.__sendChatCommand(command)
+            else:
+                _logger.error('Can not create reloading command')
+            return
 
     def __isProhibitedToSendIfDeadOrObserver(self, name):
         return not avatar_getter.isVehicleAlive() and name in PROHIBITED_IF_DEAD or self.sessionProvider.getCtx().isPlayerObserver() and name in PROHIBITED_IF_SPECTATOR
@@ -357,9 +379,7 @@ class ChatCommandsController(IBattleController):
         return self.sessionProvider.getArenaDP().getVehicleInfo().isSPG()
 
     def __isSPGAndInStrategicOrArtyMode(self):
-        return self.__isSPG() and avatar_getter.getInputHandler().ctrlModeName in (CTRL_MODE_NAME.STRATEGIC,
-         CTRL_MODE_NAME.ARTY,
-         CTRL_MODE_NAME.MAP_CASE)
+        return self.__isSPG() and avatar_getter.getInputHandler().ctrlModeName in (CTRL_MODE_NAME.STRATEGIC, CTRL_MODE_NAME.ARTY, CTRL_MODE_NAME.MAP_CASE)
 
     def __getReloadTime(self):
         reloadState = self.__ammo.getGunReloadingState()
@@ -398,8 +418,7 @@ class ChatCommandsController(IBattleController):
                 targetID = target.id
                 targetMarkerType = MarkerType.VEHICLE_MARKER_TYPE
                 markerSubType = DefaultMarkerSubType.ENEMY_MARKER_SUBTYPE
-        return (
-         targetID, targetMarkerType, markerSubType)
+        return (targetID, targetMarkerType, markerSubType)
 
     def __isTargetCorrect(self, player, target):
         if target is not None and isinstance(target, DestructibleEntity.DestructibleEntity):

@@ -1,24 +1,35 @@
-import BigWorld, typing, math_utils
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/StanceDanceController.py
+import typing
+import BigWorld
+import math_utils
 from constants import STANCE_DANCE_STATE
+from gui.shared.utils.decorators import ReprInjector
 from items.components.shared_components import StanceDanceParams
-from vehicles.mechanics.mechanic_commands import createMechanicCommandsEvents
-from vehicles.components.vehicle_component import VehicleMechanicPrefabDynamicComponent
-from vehicles.mechanics.mechanic_constants import VehicleMechanicCommand
+from vehicles.components.vehicle_component import VehicleDynamicComponent
+from vehicles.components.vehicle_prefabs import createMechanicPrefabSpawner
+from vehicles.mechanics.common import IMechanicComponent
+from vehicles.mechanics.mechanic_commands import createMechanicCommandsEvents, IMechanicCommandsComponent
+from vehicles.mechanics.mechanic_constants import VehicleMechanic, VehicleMechanicCommand
+from vehicles.mechanics.mechanic_helpers import getVehicleDescrMechanicParams
 from vehicles.mechanics.mechanic_states import createMechanicStatesEvents, IMechanicStatesComponent, IMechanicState
 if typing.TYPE_CHECKING:
-    from typing import Any
+    from typing import Any, Optional, Dict
     from vehicles.mechanics.mechanic_commands import IMechanicCommandsEvents
     from vehicles.mechanics.mechanic_states import IMechanicStatesEvents
+_LOG_STANCE_DANCE_DEBUG = False
 
-class StanceDanceState(typing.NamedTuple('StanceDanceState', (
- (
-  'state', int), ('params', StanceDanceParams),
- (
-  'energyTurbo', int), ('startTimeTurbo', float), ('durationTurbo', float),
- (
-  'energyFight', int), ('startTimeFight', float), ('durationFight', float),
- (
-  'startSwitch', float), ('durationSwitch', float))), IMechanicState):
+@ReprInjector.simple('state', 'energyTurbo', 'energyFight', 'transitionTimeLeft', 'timeLeftActiveTurbo', 'timeLeftActiveFight')
+class StanceDanceState(typing.NamedTuple('StanceDanceState', (('state', int),
+ ('params', StanceDanceParams),
+ ('energyTurbo', int),
+ ('startTimeTurbo', float),
+ ('durationTurbo', float),
+ ('energyFight', int),
+ ('startTimeFight', float),
+ ('durationFight', float),
+ ('startSwitch', float),
+ ('durationSwitch', float))), IMechanicState):
 
     @classmethod
     def fromComponentStatus(cls, status, params):
@@ -27,15 +38,11 @@ class StanceDanceState(typing.NamedTuple('StanceDanceState', (
 
     @property
     def getFightEnergyRatio(self):
-        if self.isActiveFightState:
-            return 1 - self.progressFight
-        return math_utils.clamp(0.0, 1.0, self.energyFight / self.params.maxEnergy)
+        return 1 - self.progressFight if self.isActiveFightState else math_utils.clamp(0.0, 1.0, self.energyFight / self.params.maxEnergy)
 
     @property
     def getTurboEnergyRatio(self):
-        if self.isActiveTurboState:
-            return 1 - self.progressTurbo
-        return math_utils.clamp(0.0, 1.0, self.energyTurbo / self.params.maxEnergy)
+        return 1 - self.progressTurbo if self.isActiveTurboState else math_utils.clamp(0.0, 1.0, self.energyTurbo / self.params.maxEnergy)
 
     @property
     def timeLeftActiveFight(self):
@@ -43,7 +50,6 @@ class StanceDanceState(typing.NamedTuple('StanceDanceState', (
         if self.isActiveFightState:
             endTime = self.startTimeFight + self.durationFight
             return max(0.0, endTime - now)
-        return 0.0
 
     @property
     def timeLeftActiveTurbo(self):
@@ -51,7 +57,6 @@ class StanceDanceState(typing.NamedTuple('StanceDanceState', (
         if self.isActiveTurboState:
             endTime = self.startTimeTurbo + self.durationTurbo
             return max(0.0, endTime - now)
-        return 0.0
 
     @property
     def transitionTimeLeft(self):
@@ -96,40 +101,37 @@ class StanceDanceState(typing.NamedTuple('StanceDanceState', (
 
     @property
     def progressFight(self):
-        if self.durationFight == 0:
-            return 0.0
-        return math_utils.clamp(0.0, 1.0, (BigWorld.serverTime() - self.startTimeFight) / self.durationFight)
+        return 0.0 if self.durationFight == 0 else math_utils.clamp(0.0, 1.0, (BigWorld.serverTime() - self.startTimeFight) / self.durationFight)
 
     @property
     def progressTurbo(self):
-        if self.durationTurbo == 0:
-            return 0.0
-        return math_utils.clamp(0.0, 1.0, (BigWorld.serverTime() - self.startTimeTurbo) / self.durationTurbo)
+        return 0.0 if self.durationTurbo == 0 else math_utils.clamp(0.0, 1.0, (BigWorld.serverTime() - self.startTimeTurbo) / self.durationTurbo)
 
     @property
     def isEnoughEnergyToActivate(self):
         if self.isTurboState:
             return self.energyTurbo >= self.params.activeTurboCost
-        if self.isFightState:
-            return self.energyFight >= self.params.activeFightCost
-        return False
+        return self.energyFight >= self.params.activeFightCost if self.isFightState else False
 
     def isTransition(self, other):
         return self.state != other.state
 
-    def __repr__(self):
-        return ('StanceDanceState<isTurboState={}, isActiveTurboState={}, energyTurbo={}, durationTurbo={}, progressTurbo={}, \nisFightState={}, isActiveFightState={}, energyFight={}, durationFight={}, progressFight={}, \nisSwitchingState={}, durationSwitch={}, isGainingEnergy={}, isGainingEnergyBoosted={}, \nparams={}>').format(self.isTurboState, self.isActiveTurboState, self.energyTurbo, self.durationTurbo, self.progressTurbo, self.isFightState, self.isActiveFightState, self.energyFight, self.durationFight, self.progressFight, self.isSwitchingState, self.durationSwitch, self.isGainingEnergy, self.isGainingEnergyBoosted, self.params)
 
-
-class StanceDanceController(VehicleMechanicPrefabDynamicComponent, IMechanicStatesComponent):
+@ReprInjector.withParent()
+class StanceDanceController(VehicleDynamicComponent, IMechanicComponent, IMechanicCommandsComponent, IMechanicStatesComponent):
 
     def __init__(self):
         super(StanceDanceController, self).__init__()
         self.__params = None
-        self.__commandsEvents = createMechanicCommandsEvents()
-        self.__statesEvents = createMechanicStatesEvents(self)
+        self.__mechanicPrefabSpawner = createMechanicPrefabSpawner(self.entity, self)
+        self.__commandsEvents = createMechanicCommandsEvents(self, withDebug=_LOG_STANCE_DANCE_DEBUG)
+        self.__statesEvents = createMechanicStatesEvents(self, withDebug=_LOG_STANCE_DANCE_DEBUG)
         self._initComponent()
         return
+
+    @property
+    def vehicleMechanic(self):
+        return VehicleMechanic.STANCE_DANCE
 
     @property
     def commandsEvents(self):
@@ -171,9 +173,14 @@ class StanceDanceController(VehicleMechanicPrefabDynamicComponent, IMechanicStat
         return canDoCommand
 
     def _onAppearanceReady(self):
-        self.__params = self.entity.typeDescriptor.mechanicsParams[StanceDanceParams.MECHANICS_NAME]
-        self.__statesEvents.processStatePrepared()
         super(StanceDanceController, self)._onAppearanceReady()
+        self.__mechanicPrefabSpawner.loadAppearancePrefab()
+        self.__statesEvents.processStatePrepared()
 
-    def _onComponentAppearanceUpdate(self):
+    def _onComponentAppearanceUpdate(self, **kwargs):
+        super(StanceDanceController, self)._onComponentAppearanceUpdate(**kwargs)
         self.__statesEvents.updateMechanicState(self.getMechanicState())
+
+    def _collectComponentParams(self, typeDescriptor):
+        super(StanceDanceController, self)._collectComponentParams(typeDescriptor)
+        self.__params = getVehicleDescrMechanicParams(typeDescriptor, self.vehicleMechanic)

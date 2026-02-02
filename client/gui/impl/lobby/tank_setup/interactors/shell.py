@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/interactors/shell.py
 from itertools import izip
 import adisp
 from wg_async import wg_await, wg_async, await_callback
@@ -35,7 +37,7 @@ class ShellAutoRenewal(BaseAutoRenewal):
 
 
 class ShellInteractor(BaseInteractor):
-    __slots__ = ('_playerLayout', )
+    __slots__ = ('_playerLayout',)
 
     def getVehicleAfterInstall(self):
         vehicle = super(ShellInteractor, self).getVehicleAfterInstall()

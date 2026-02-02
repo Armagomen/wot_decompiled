@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/lobby/tooltips/vehicle_tooltip_view.py
 import typing
 from battle_royale.gui.impl.gen.view_models.views.lobby.tooltips.vehicle_tooltip_view_model import VehicleTooltipViewModel
 from frameworks.wulf import ViewSettings
@@ -25,7 +27,7 @@ class VehicleTooltipView(ViewImpl):
 
     def _onLoading(self, *args, **kwargs):
         super(VehicleTooltipView, self)._onLoading(args, kwargs)
-        with self.getViewModel().transaction() as (model):
+        with self.getViewModel().transaction() as model:
             self.__fillStats(model.tech)
             self.__fillModel(model)
 

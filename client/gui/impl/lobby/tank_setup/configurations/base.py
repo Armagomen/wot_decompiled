@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/configurations/base.py
 from gui.impl.gen.view_models.views.lobby.tank_setup.common.deal_panel_model import DealPanelModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.common.setup_tab_model import SetupTabModel
 from gui.impl.common.tabs_controller import TabsController
@@ -8,7 +10,7 @@ from helpers import dependency
 from skeletons.gui.shared import IItemsCache
 
 class BaseTankSetupTabsController(TabsController):
-    __slots__ = ('_providers', )
+    __slots__ = ('_providers',)
 
     def __init__(self, autoCreating=True):
         super(BaseTankSetupTabsController, self).__init__(autoCreating)
@@ -32,9 +34,9 @@ class BaseDealPanel(object):
 
     @classmethod
     def updateDealPanelPrice(cls, vehicle, items, dealPanelModel):
-        prices = {cls._IN_STORAGE: 0, 
-           cls._ON_VEHICLE_IN_SETUP: False, 
-           cls._MONEY: MONEY_UNDEFINED}
+        prices = {cls._IN_STORAGE: 0,
+         cls._ON_VEHICLE_IN_SETUP: False,
+         cls._MONEY: MONEY_UNDEFINED}
         for item in items:
             cls.addItem(vehicle, item, prices)
 
@@ -56,13 +58,13 @@ class BaseDealPanel(object):
     def addItem(cls, vehicle, item, prices):
         if item is None:
             return
+        elif not item.isInstalled(vehicle) and item.isInSetup(vehicle):
+            prices[cls._ON_VEHICLE_IN_SETUP] = True
+            return
+        elif item.isInInventory:
+            prices[cls._IN_STORAGE] += 1
+            return
         else:
-            if not item.isInstalled(vehicle) and item.isInSetup(vehicle):
-                prices[cls._ON_VEHICLE_IN_SETUP] = True
-                return
-            if item.isInInventory:
-                prices[cls._IN_STORAGE] += 1
-                return
             prices[cls._MONEY] += item.getBuyPrice().price
             return
 

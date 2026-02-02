@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/battle_results/composer.py
 from gui.battle_results.composer import IBattleResultStatsCtrl
 from gui.battle_results.components import base
 from battle_royale.gui.battle_results import templates
@@ -22,8 +24,8 @@ class BattleRoyaleStatsComposer(IBattleResultStatsCtrl):
         return self._block.getVO()
 
     def onResultsPosted(self, arenaUniqueID):
-        event_dispatcher.showBattleRoyaleResultsView({'arenaUniqueID': arenaUniqueID})
+        event_dispatcher.showBattleRoyaleResults({'arenaUniqueID': arenaUniqueID})
 
     @staticmethod
     def onShowResults(arenaUniqueID):
-        return
+        return None

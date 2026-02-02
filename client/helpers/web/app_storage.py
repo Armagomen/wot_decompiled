@@ -1,4 +1,8 @@
-import os, shutil, logging
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/helpers/web/app_storage.py
+import os
+import shutil
+import logging
 from functools import partial
 import BigWorld
 from helpers import threads
@@ -14,7 +18,7 @@ def _expectDir(path):
         if not os.path.exists(path):
             os.makedirs(path)
         elif not os.path.isdir(path):
-            raise SoftException(('path "{}" exists, but it is not a directory').format(path))
+            raise SoftException('path "{}" exists, but it is not a directory'.format(path))
     except (IOError, OSError, SoftException):
         LOG_CURRENT_EXCEPTION()
         raise
@@ -34,7 +38,7 @@ class _WriteFileJob(threads.Job):
             try:
                 dirPath = os.path.dirname(self.__filename)
                 _expectDir(dirPath)
-                with open(self.__filename, 'wb') as (f):
+                with open(self.__filename, 'wb') as f:
                     f.write(self.__data)
                     stored = True
             except (IOError, OSError):
@@ -140,8 +144,7 @@ class ApplicationStorage(object):
 
                 if not os.listdir(curdir):
                     os.rmdir(curdir)
-                else:
-                    self.addApp(entry)
+                self.addApp(entry)
                 continue
             if os.path.isfile(curdir):
                 os.remove(curdir)
@@ -186,9 +189,7 @@ class ApplicationStorage(object):
         return set(files)
 
     def isAppFileExist(self, appName, filename):
-        if appName in self.__db:
-            return self.__db[appName].isStored(filename)
-        return False
+        return self.__db[appName].isStored(filename) if appName in self.__db else False
 
     def isFileExist(self, filename):
         return os.path.isfile(filename)

@@ -1,6 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/battleground/BorderVisual.py
 import math
 from collections import namedtuple
-import BigWorld, ResMgr
+import BigWorld
+import ResMgr
 from epic_constants import SECTOR_EDGE_STATE
 from items import _xml
 from Math import Matrix, Vector3
@@ -16,17 +19,16 @@ def _readModelSetting(ctx, section):
 
 
 def _readVisualSettings():
-    ctx = (
-     None, CONFIG_FILE + '/' + BORDER_VISUAL_TAG)
+    ctx = (None, CONFIG_FILE + '/' + BORDER_VISUAL_TAG)
     settings = ResMgr.openSection(CONFIG_FILE)[BORDER_VISUAL_TAG]
-    return VisualSetting(modelPath=_xml.readString(ctx, settings, 'modelPath'), overTerrainHeight=_xml.readFloat(ctx, settings, 'overTerrainHeight'), modelSettings={getattr(SECTOR_EDGE_STATE, item[1][1]['edgeState'].asString.upper()):_readModelSetting(*item[1]) for item in _xml.getItemsWithContext(ctx, settings, 'modelSetting') if SECTOR_EDGE_STATE.hasKey(item[1][1]['edgeState'].asString.upper()) if SECTOR_EDGE_STATE.hasKey(item[1][1]['edgeState'].asString.upper())})
+    return VisualSetting(modelPath=_xml.readString(ctx, settings, 'modelPath'), overTerrainHeight=_xml.readFloat(ctx, settings, 'overTerrainHeight'), modelSettings={getattr(SECTOR_EDGE_STATE, item[1][1]['edgeState'].asString.upper()):_readModelSetting(*item[1]) for item in _xml.getItemsWithContext(ctx, settings, 'modelSetting') if SECTOR_EDGE_STATE.hasKey(item[1][1]['edgeState'].asString.upper())})
 
 
 g_borderVisualSettings = _readVisualSettings()
 
 class BorderVisual(object):
     __DEFAULT_DASH_SIZE = (1, 1)
-    __DEFAULT_DASH_COLOR = 4294967295
+    __DEFAULT_DASH_COLOR = 4294967295L
 
     def __init__(self):
         self.__direction = None
@@ -59,15 +61,13 @@ class BorderVisual(object):
                 self.__numModelsPerEdgeState[edgeState] = max(1, int((self.__length - 2 * dashLength) / (dashLength + gap)) + 1)
 
             maxNumModels = max(self.__numModelsPerEdgeState.values())
-            rotation = (
-             self.__direction.yaw + math.pi * 0.5, self.__direction.pitch, 0.0)
+            rotation = (self.__direction.yaw + math.pi * 0.5, self.__direction.pitch, 0.0)
             translation = fromPos + self.__direction * self.__length * 0.5
             self.__rootMatrix = rootMatrix = math_utils.createRTMatrix(rotation=rotation, translation=translation)
             self.__rootModel = rootModel = BigWorld.Model('')
             rootModel.addMotor(BigWorld.Servo(rootMatrix))
             BigWorld.player().addModel(rootModel)
-            self.__terrainModels = [
-             None] * maxNumModels
+            self.__terrainModels = [None] * maxNumModels
             self.__attachNodes = [None] * maxNumModels
             self.__modelOffsets = [None] * maxNumModels
             dashesParams = self.__getDashesParams(currentEdgeState)
@@ -131,8 +131,7 @@ class BorderVisual(object):
             if self.__terrainModels[idx].attached:
                 self.__attachNodes[idx].detach(self.__terrainModels[idx])
                 self.__terrainModels[idx].setVisible(False)
-            else:
-                break
+            break
 
     def __getDashesParams(self, edgeState):
         if edgeState != SECTOR_EDGE_STATE.NONE:

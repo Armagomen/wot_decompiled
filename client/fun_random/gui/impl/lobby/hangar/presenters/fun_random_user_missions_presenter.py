@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/lobby/hangar/presenters/fun_random_user_missions_presenter.py
 from __future__ import absolute_import
 from fun_random.gui.feature.util.fun_mixins import FunProgressionWatcher
 from fun_random.gui.impl.lobby.hangar.presenters.fun_random_progression_presenter import FunRandomProgressionPresenter
@@ -16,8 +18,8 @@ class _QuestsPresenter(QuestsPresenter):
 
 
 class FunRandomUserMissionsPresenter(UserMissionsPresenter, FunProgressionWatcher):
-    _CHILDREN = {R.aliases.user_missions.hangarWidget.BattlePass(): _BattlePassPresenter, 
-       R.aliases.user_missions.hangarWidget.Quests(): _QuestsPresenter}
+    _CHILDREN = {R.aliases.user_missions.hangarWidget.BattlePass(): _BattlePassPresenter,
+     R.aliases.user_missions.hangarWidget.Quests(): _QuestsPresenter}
 
     def _getChildComponents(self):
         return {R.aliases.fun_random.shared.ProgressionEntryPoint(): FunRandomProgressionPresenter}

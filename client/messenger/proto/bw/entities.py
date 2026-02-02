@@ -1,4 +1,8 @@
-import cgi, types, chat_shared
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/bw/entities.py
+import cgi
+import types
+import chat_shared
 from constants import PREBATTLE_TYPE
 from debug_utils import LOG_ERROR
 from gui.shared.utils import getPlayerDatabaseID
@@ -8,15 +12,15 @@ from messenger.proto.entities import ChannelEntity, MemberEntity, ChatEntity
 from messenger.proto.entities import LobbyUserEntity
 from messenger.m_constants import PROTO_TYPE, LAZY_CHANNEL, PRIMARY_CHANNEL_ORDER
 from messenger.proto.bw.wrappers import ChannelDataWrapper
-PREBATTLE_TYPE_CHAT_FLAG = {PREBATTLE_TYPE.SQUAD: chat_shared.CHAT_CHANNEL_SQUAD, 
-   PREBATTLE_TYPE.TRAINING: chat_shared.CHAT_CHANNEL_TRAINING, 
-   PREBATTLE_TYPE.CLAN: chat_shared.CHAT_CHANNEL_PREBATTLE_CLAN, 
-   PREBATTLE_TYPE.TOURNAMENT: chat_shared.CHAT_CHANNEL_TOURNAMENT, 
-   PREBATTLE_TYPE.UNIT: chat_shared.CHAT_CHANNEL_UNIT}
-PREBATTLE_CHAT_FLAG_TYPE = dict((v, k) for k, v in PREBATTLE_TYPE_CHAT_FLAG.iteritems())
+PREBATTLE_TYPE_CHAT_FLAG = {PREBATTLE_TYPE.SQUAD: chat_shared.CHAT_CHANNEL_SQUAD,
+ PREBATTLE_TYPE.TRAINING: chat_shared.CHAT_CHANNEL_TRAINING,
+ PREBATTLE_TYPE.CLAN: chat_shared.CHAT_CHANNEL_PREBATTLE_CLAN,
+ PREBATTLE_TYPE.TOURNAMENT: chat_shared.CHAT_CHANNEL_TOURNAMENT,
+ PREBATTLE_TYPE.UNIT: chat_shared.CHAT_CHANNEL_UNIT}
+PREBATTLE_CHAT_FLAG_TYPE = dict(((v, k) for k, v in PREBATTLE_TYPE_CHAT_FLAG.iteritems()))
 
 class BWChannelEntity(ChannelEntity):
-    __slots__ = ('_nameToInvalidate', )
+    __slots__ = ('_nameToInvalidate',)
 
     def __init__(self, data):
         if not isinstance(data, types.DictType):
@@ -40,7 +44,7 @@ class BWChannelEntity(ChannelEntity):
     def getFullName(self):
         name = self.getName()
         if not self._data.isSystem:
-            name = ('{0:>s}({1:>s})').format(name, self._data.ownerName)
+            name = u'{0:>s}({1:>s})'.format(name, self._data.ownerName)
         return name
 
     def isSystem(self):
@@ -51,9 +55,7 @@ class BWChannelEntity(ChannelEntity):
 
     def isAlwaysShow(self):
         name = self.getName()
-        if name == LAZY_CHANNEL.COMMON:
-            return True
-        return False
+        return True if name == LAZY_CHANNEL.COMMON else False
 
     def isPrivate(self):
         return self._data.flags & chat_shared.CHAT_CHANNEL_PRIVATE != 0
@@ -98,9 +100,7 @@ class BWChannelEntity(ChannelEntity):
 
     def haveMembers(self):
         listMode = chat_shared.getMembersListMode(self._data.notifyFlags)
-        return listMode in (
-         chat_shared.CHAT_CHANNEL_NOTIFY_MEMBERS_IN_OUT,
-         chat_shared.CHAT_CHANNEL_NOTIFY_MEMBERS_DELTA)
+        return listMode in (chat_shared.CHAT_CHANNEL_NOTIFY_MEMBERS_IN_OUT, chat_shared.CHAT_CHANNEL_NOTIFY_MEMBERS_DELTA)
 
     def update(self, **kwargs):
         if 'other' in kwargs:
@@ -118,7 +118,7 @@ class BWChannelEntity(ChannelEntity):
 
 
 class BWChannelLightEntity(ChatEntity):
-    __slots__ = ('__channelID', )
+    __slots__ = ('__channelID',)
 
     def __init__(self, channelID):
         super(BWChannelLightEntity, self).__init__()
@@ -150,7 +150,7 @@ class BWMemberEntity(MemberEntity):
 
 @ReprInjector.withParent(('isOnline', 'isOnline'))
 class BWUserEntity(LobbyUserEntity):
-    __slots__ = ('_isOnline', )
+    __slots__ = ('_isOnline',)
 
     def __init__(self, userID, name=None, tags=None, isOnline=False, clanInfo=None, scope=None):
         super(BWUserEntity, self).__init__(userID, name, tags, clanInfo, scope=scope)
@@ -160,9 +160,7 @@ class BWUserEntity(LobbyUserEntity):
         return PROTO_TYPE.BW
 
     def isOnline(self):
-        if self.isIgnored():
-            return False
-        return self._isOnline
+        return False if self.isIgnored() else self._isOnline
 
     def update(self, **kwargs):
         if 'isOnline' in kwargs:

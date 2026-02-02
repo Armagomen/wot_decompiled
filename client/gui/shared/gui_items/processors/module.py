@@ -1,4 +1,9 @@
-import typing, logging, AccountCommands, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/gui_items/processors/module.py
+import typing
+import logging
+import AccountCommands
+import BigWorld
 from constants import EquipSideEffect
 from gui import makeHtmlString
 from gui.SystemMessages import SM_TYPE, CURRENCY_TO_SM_TYPE
@@ -29,7 +34,6 @@ def _getIconHtmlTagForCurrency(currency):
     if getter:
         return getter()
     _logger.error('Could not fetch an icon getter for the following currency %s', currency)
-    return ''
 
 
 def _formatCurrencyValue(currency, value):
@@ -42,11 +46,11 @@ def _wrapHtmlMessage(key, message):
 
 
 class ModuleProcessor(ItemProcessor):
-    ITEMS_MSG_PREFIXES = {GUI_ITEM_TYPE.SHELL: 'shell', 
-       GUI_ITEM_TYPE.EQUIPMENT: 'artefact', 
-       GUI_ITEM_TYPE.OPTIONALDEVICE: 'artefact', 
-       GUI_ITEM_TYPE.BATTLE_BOOSTER: 'battleBooster', 
-       GUI_ITEM_TYPE.CREW_BOOKS: 'crewBooks'}
+    ITEMS_MSG_PREFIXES = {GUI_ITEM_TYPE.SHELL: 'shell',
+     GUI_ITEM_TYPE.EQUIPMENT: 'artefact',
+     GUI_ITEM_TYPE.OPTIONALDEVICE: 'artefact',
+     GUI_ITEM_TYPE.BATTLE_BOOSTER: 'battleBooster',
+     GUI_ITEM_TYPE.CREW_BOOKS: 'crewBooks'}
     DEFAULT_PREFIX = 'module'
 
     def __init__(self, item, opType, plugs=tuple()):
@@ -58,7 +62,7 @@ class ModuleProcessor(ItemProcessor):
 
     def _formMessage(self, msg):
         _logger.debug('Generating response for ModuleProcessor: %s, %s', self.opType, msg)
-        return ('{itemType}_{opType}/{msg}').format(itemType=self.ITEMS_MSG_PREFIXES.get(self.item.itemTypeID, self.DEFAULT_PREFIX), opType=self.opType, msg=msg)
+        return '{itemType}_{opType}/{msg}'.format(itemType=self.ITEMS_MSG_PREFIXES.get(self.item.itemTypeID, self.DEFAULT_PREFIX), opType=self.opType, msg=msg)
 
     def _errorHandler(self, code, errStr='', ctx=None):
         if not errStr:
@@ -73,10 +77,10 @@ class ModuleTradeProcessor(ModuleProcessor):
         self.count = count
 
     def _getMsgCtx(self):
-        return {'name': self.item.userName, 
-           'kind': self.item.userType, 
-           'count': backport.getIntegralFormat(int(self.count)), 
-           'money': formatPrice(self._getOpPrice().price)}
+        return {'name': self.item.userName,
+         'kind': self.item.userType,
+         'count': backport.getIntegralFormat(int(self.count)),
+         'money': formatPrice(self._getOpPrice().price)}
 
     def _getOpPrice(self):
         raise NotImplementedError
@@ -87,9 +91,7 @@ class ModuleBuyer(ModuleTradeProcessor):
     def __init__(self, item, count, currency):
         super(ModuleBuyer, self).__init__(item, count, 'buy')
         self._currency, self._itemPrice = self._getItemCurrencyAndPrice(currency)
-        self.addPlugins((
-         plugins.MoneyValidator(self._getOpPrice().price),
-         plugins.ModuleConfigValidator(item)))
+        self.addPlugins((plugins.MoneyValidator(self._getOpPrice().price), plugins.ModuleConfigValidator(item)))
 
     def _getItemCurrencyAndPrice(self, currency):
         itemPrice = getItemBuyPrice(self.item, currency, self.itemsCache.items.shop)
@@ -118,10 +120,10 @@ class ModuleBuyer(ModuleTradeProcessor):
 class BookBuyer(ModuleBuyer):
 
     def _getMsgCtx(self):
-        return {'name': self.item.userName, 
-           'kind': self.item.userType, 
-           'count': backport.getIntegralFormat(int(self.count)), 
-           'money': formatPrice(self._getOpPrice().price, justValue=True)}
+        return {'name': self.item.userName,
+         'kind': self.item.userType,
+         'count': backport.getIntegralFormat(int(self.count)),
+         'money': formatPrice(self._getOpPrice().price, justValue=True)}
 
 
 class ModuleSeller(ModuleTradeProcessor):
@@ -182,20 +184,17 @@ class ModuleInstallProcessor(ModuleProcessor, VehicleItemProcessor):
         VehicleItemProcessor.__init__(self, vehicle=vehicle, module=item, allowableTypes=itemType)
         addPlugins = []
         if install:
-            addPlugins += (
-             plugins.CompatibilityInstallValidator(vehicle, item, slotIdx),
-             plugins.MessageConfirmator('removeIncompatibleEqs', ctx={'name': ("', '").join([ eq.userName for eq in conflictedEqs ]), 
-                'reason': _wrapHtmlMessage('incompatibleReason', backport.text(R.strings.dialogs.removeIncompatibleEqs.message.reason()))}, isEnabled=bool(conflictedEqs) and not skipConfirm))
+            addPlugins += (plugins.CompatibilityInstallValidator(vehicle, item, slotIdx), plugins.MessageConfirmator('removeIncompatibleEqs', ctx={'name': "', '".join([ eq.userName for eq in conflictedEqs ]),
+              'reason': _wrapHtmlMessage('incompatibleReason', backport.text(R.strings.dialogs.removeIncompatibleEqs.message.reason()))}, isEnabled=bool(conflictedEqs) and not skipConfirm))
         else:
-            addPlugins += (
-             plugins.CompatibilityRemoveValidator(vehicle, item),)
+            addPlugins += (plugins.CompatibilityRemoveValidator(vehicle, item),)
         self.install = install
         self.slotIdx = slotIdx
         self.addPlugins(addPlugins)
 
     def _getMsgCtx(self):
-        return {'name': self.item.userName, 
-           'kind': self.item.userType}
+        return {'name': self.item.userName,
+         'kind': self.item.userType}
 
     def _successHandler(self, code, ctx=None):
         return makeI18nSuccess(sysMsgKey=self._formMessage('success'), type=SM_TYPE.Information, **self._getMsgCtx())
@@ -210,14 +209,11 @@ class OptDeviceInstaller(ModuleInstallProcessor):
         self.showWaiting = showWaiting
         addPlugins = []
         if install:
-            addPlugins += (
-             plugins.MessageConfirmator(('installConfirmationNotRemovable_{}').format(self.removalPrice.price.getCurrency()), ctx={'name': item.userName, 
-                'complex': _wrapHtmlMessage('confirmationNotRemovable', backport.text(R.strings.dialogs.confirmationNotRemovable.message.complex())), 
-                'destroy': _wrapHtmlMessage('confirmationNotRemovable', backport.text(R.strings.dialogs.confirmationNotRemovable.message.destroy()))}, isEnabled=not item.isRemovable and not skipConfirm),)
+            addPlugins += (plugins.MessageConfirmator('installConfirmationNotRemovable_{}'.format(self.removalPrice.price.getCurrency()), ctx={'name': item.userName,
+              'complex': _wrapHtmlMessage('confirmationNotRemovable', backport.text(R.strings.dialogs.confirmationNotRemovable.message.complex())),
+              'destroy': _wrapHtmlMessage('confirmationNotRemovable', backport.text(R.strings.dialogs.confirmationNotRemovable.message.destroy()))}, isEnabled=not item.isRemovable and not skipConfirm),)
         else:
-            addPlugins += (
-             plugins.DemountDeviceConfirmator(isEnabled=not item.isRemovable and financeOperation and not skipConfirm, item=self.item, vehicle=vehicle),
-             plugins.DestroyDeviceConfirmator(isEnabled=not item.isRemovable and not financeOperation and not skipConfirm, item=item))
+            addPlugins += (plugins.DemountDeviceConfirmator(isEnabled=not item.isRemovable and financeOperation and not skipConfirm, item=self.item, vehicle=vehicle), plugins.DestroyDeviceConfirmator(isEnabled=not item.isRemovable and not financeOperation and not skipConfirm, item=item))
         self.addPlugins(addPlugins)
         self.financeOperation = financeOperation
         self.allSetups = allSetups
@@ -229,9 +225,7 @@ class OptDeviceInstaller(ModuleInstallProcessor):
         if not self.install and not self.item.isRemovable and self.financeOperation:
             return OptDeviceRemoveProcessorMessage(self.item, removalPrice=self.removalPrice.price, useDemountKit=useDemountKit).makeSuccessMsg()
         else:
-            if not self.install and not self.financeOperation and self.allSetups:
-                return ItemDestroyProcessorMessage(self.item).makeSuccessMsg()
-            return super(OptDeviceInstaller, self)._successHandler(code, ctx)
+            return ItemDestroyProcessorMessage(self.item).makeSuccessMsg() if not self.install and not self.financeOperation and self.allSetups else super(OptDeviceInstaller, self)._successHandler(code, ctx)
 
     def _request(self, callback):
         if self.showWaiting:
@@ -281,13 +275,13 @@ class CommonModuleInstallProcessor(ModuleProcessor, VehicleItemProcessor):
         ModuleProcessor.__init__(self, item=item, opType=opType, plugs=plugs)
         VehicleItemProcessor.__init__(self, vehicle=vehicle, module=item, allowableTypes=itemType)
         if install:
-            self.addPlugin(plugins.MessageConfirmator('removeIncompatibleEqs', ctx={'name': ("', '").join([ eq.userName for eq in conflictedEqs ]), 
-               'reason': _wrapHtmlMessage('incompatibleReason', backport.text(R.strings.dialogs.removeIncompatibleEqs.message.reason()))}, isEnabled=bool(conflictedEqs) and not skipConfirm))
+            self.addPlugin(plugins.MessageConfirmator('removeIncompatibleEqs', ctx={'name': "', '".join([ eq.userName for eq in conflictedEqs ]),
+             'reason': _wrapHtmlMessage('incompatibleReason', backport.text(R.strings.dialogs.removeIncompatibleEqs.message.reason()))}, isEnabled=bool(conflictedEqs) and not skipConfirm))
         self.install = install
 
     def _getMsgCtx(self):
-        return {'name': self.item.userName, 
-           'kind': self.item.userType}
+        return {'name': self.item.userName,
+         'kind': self.item.userType}
 
     def _successHandler(self, code, ctx=None):
         additionalMessages = []
@@ -297,7 +291,7 @@ class CommonModuleInstallProcessor(ModuleProcessor, VehicleItemProcessor):
             removedItems.append(item.userName)
 
         if removedItems:
-            additionalMessages.append(makeI18nSuccess(self._formMessage('incompatibleEqs'), items=("', '").join(removedItems), type=SM_TYPE.Information))
+            additionalMessages.append(makeI18nSuccess(self._formMessage('incompatibleEqs'), items="', '".join(removedItems), type=SM_TYPE.Information))
         additionalMessages.append(makeI18nSuccess(sysMsgKey=self._formMessage('success'), type=SM_TYPE.Information, auxData=additionalMessages, **self._getMsgCtx()))
         equipSideEffects = ctx.get('equipSideEffects', [])
         if EquipSideEffect.AMMO_AUTO_LOADED in equipSideEffects:
@@ -371,8 +365,12 @@ class PreviewVehicleTurretInstaller(TurretInstaller):
 class OtherModuleInstaller(CommonModuleInstallProcessor):
 
     def __init__(self, vehicle, item, conflictedEqs=None, skipConfirm=False):
-        super(OtherModuleInstaller, self).__init__(vehicle, item, (GUI_ITEM_TYPE.CHASSIS, GUI_ITEM_TYPE.GUN, GUI_ITEM_TYPE.ENGINE,
-         GUI_ITEM_TYPE.FUEL_TANK, GUI_ITEM_TYPE.RADIO, GUI_ITEM_TYPE.SHELL), True, conflictedEqs, skipConfirm=skipConfirm)
+        super(OtherModuleInstaller, self).__init__(vehicle, item, (GUI_ITEM_TYPE.CHASSIS,
+         GUI_ITEM_TYPE.GUN,
+         GUI_ITEM_TYPE.ENGINE,
+         GUI_ITEM_TYPE.FUEL_TANK,
+         GUI_ITEM_TYPE.RADIO,
+         GUI_ITEM_TYPE.SHELL), True, conflictedEqs, skipConfirm=skipConfirm)
         self.addPlugin(plugins.CompatibilityInstallValidator(vehicle, item, 0))
 
     def _request(self, callback):
@@ -381,10 +379,10 @@ class OtherModuleInstaller(CommonModuleInstallProcessor):
 
 
 class PreviewVehicleModuleInstaller(OtherModuleInstaller):
-    OTHER_PREVIEW_MODULES = {GUI_ITEM_TYPE.GUN: 'gun', 
-       GUI_ITEM_TYPE.CHASSIS: 'chassis', 
-       GUI_ITEM_TYPE.ENGINE: 'engine', 
-       GUI_ITEM_TYPE.RADIO: 'radio'}
+    OTHER_PREVIEW_MODULES = {GUI_ITEM_TYPE.GUN: 'gun',
+     GUI_ITEM_TYPE.CHASSIS: 'chassis',
+     GUI_ITEM_TYPE.ENGINE: 'engine',
+     GUI_ITEM_TYPE.RADIO: 'radio'}
     itemsFactory = dependency.descriptor(IGuiItemsFactory)
 
     def _request(self, callback):
@@ -410,28 +408,24 @@ class BuyAndInstallItemProcessor(ModuleBuyer):
         conflictedEqs = conflictedEqs or tuple()
         conflictMsg = ''
         if conflictedEqs:
-            self.__makeConflictMsg(("', '").join([ eq.userName for eq in conflictedEqs ]))
+            self.__makeConflictMsg("', '".join([ eq.userName for eq in conflictedEqs ]))
         self.__mayInstall, self._installReason = item.mayInstall(vehicle, slotIdx)
         super(BuyAndInstallItemProcessor, self).__init__(item, 1, Currency.CREDITS)
-        self.addPlugins([
-         plugins.ModuleValidator(item)])
+        self.addPlugins([plugins.ModuleValidator(item)])
         if self.__mayInstall:
-            self.addPlugins([
-             plugins.VehicleValidator(vehicle, True, prop={'isBroken': True, 'isLocked': True}),
-             plugins.CompatibilityInstallValidator(vehicle, item, slotIdx),
-             self._installConfirmatorPluginCls('confirmBuyAndInstall', ctx=self._getItemConfirmationData(conflictMsg), isEnabled=not skipConfirm, item=self.item)])
+            self.addPlugins([plugins.VehicleValidator(vehicle, True, prop={'isBroken': True,
+              'isLocked': True}), plugins.CompatibilityInstallValidator(vehicle, item, slotIdx), self._installConfirmatorPluginCls('confirmBuyAndInstall', ctx=self._getItemConfirmationData(conflictMsg), isEnabled=not skipConfirm, item=self.item)])
             if item.itemTypeID == GUI_ITEM_TYPE.TURRET:
                 self.addPlugin(plugins.TurretCompatibilityInstallValidator(vehicle, item, self.__gunCompDescr))
-            self.addPlugin(plugins.MessageConfirmator('removeIncompatibleEqs', ctx={'name': ("', '").join([ eq.userName for eq in conflictedEqs ]), 
-               'reason': _wrapHtmlMessage('incompatibleReason', backport.text(R.strings.dialogs.removeIncompatibleEqs.message.reason()))}, isEnabled=bool(conflictedEqs) and not skipConfirm))
+            self.addPlugin(plugins.MessageConfirmator('removeIncompatibleEqs', ctx={'name': "', '".join([ eq.userName for eq in conflictedEqs ]),
+             'reason': _wrapHtmlMessage('incompatibleReason', backport.text(R.strings.dialogs.removeIncompatibleEqs.message.reason()))}, isEnabled=bool(conflictedEqs) and not skipConfirm))
         else:
-            self.addPlugins([
-             self._storeConfirmatorPluginCls('confirmBuyNotInstall', ctx=self._getItemConfirmationData(conflictMsg), isEnabled=not skipConfirm, item=item)])
+            self.addPlugins([self._storeConfirmatorPluginCls('confirmBuyNotInstall', ctx=self._getItemConfirmationData(conflictMsg), isEnabled=not skipConfirm, item=item)])
 
     def _getItemConfirmationData(self, conflictMsg):
-        return {'installedModuleCD': self._installedModuleCD, 
-           'currency': self._currency, 
-           'installReason': self._installReason}
+        return {'installedModuleCD': self._installedModuleCD,
+         'currency': self._currency,
+         'installReason': self._installReason}
 
     def __makeConflictMsg(self, conflictedText):
         attrs = {'conflicted': conflictedText}
@@ -441,16 +435,13 @@ class BuyAndInstallItemProcessor(ModuleBuyer):
         if self.__mayInstall:
             _logger.debug('code: %s, ctx: %s', code, ctx)
             if self.item.itemTypeID == GUI_ITEM_TYPE.EQUIPMENT:
-                auxData = [
-                 makeI18nSuccess(sysMsgKey=self._formApplyMessage('success'), type=SM_TYPE.Information, **self._getMsgCtx())]
+                auxData = [makeI18nSuccess(sysMsgKey=self._formApplyMessage('success'), type=SM_TYPE.Information, **self._getMsgCtx())]
             elif self.item.itemTypeID == GUI_ITEM_TYPE.OPTIONALDEVICE:
-                auxData = [
-                 makeI18nSuccess(sysMsgKey=self._formApplyMessage('success'), type=SM_TYPE.Information, **self._getMsgCtx())]
+                auxData = [makeI18nSuccess(sysMsgKey=self._formApplyMessage('success'), type=SM_TYPE.Information, **self._getMsgCtx())]
             elif self.item.itemTypeID == GUI_ITEM_TYPE.TURRET:
                 if self.__gunCompDescr:
                     gun = self.itemsCache.items.getItemByCD(self.__gunCompDescr)
-                    auxData = [
-                     makeI18nSuccess(sysMsgKey=self._formApplyMessage('success_gun_change'), type=SM_TYPE.Information, gun=gun.userName, **self._getMsgCtx())]
+                    auxData = [makeI18nSuccess(sysMsgKey=self._formApplyMessage('success_gun_change'), type=SM_TYPE.Information, gun=gun.userName, **self._getMsgCtx())]
                 else:
                     auxData = self.__getAdditionalMessages(ctx)
             else:
@@ -468,12 +459,12 @@ class BuyAndInstallItemProcessor(ModuleBuyer):
                 removedItems.append(item.name)
 
         if removedItems:
-            additionalMessages.append(makeI18nSuccess(sysMsgKey=self._formApplyMessage('incompatibleEqs'), items=("', '").join(removedItems), type=SM_TYPE.Information))
+            additionalMessages.append(makeI18nSuccess(sysMsgKey=self._formApplyMessage('incompatibleEqs'), items="', '".join(removedItems), type=SM_TYPE.Information))
         additionalMessages.append(makeI18nSuccess(sysMsgKey=self._formApplyMessage('success'), type=SM_TYPE.Information, auxData=additionalMessages[:], **self._getMsgCtx()))
         return additionalMessages
 
     def _formApplyMessage(self, msg):
-        return ('{itemType}_{opType}/{msg}').format(itemType=self.ITEMS_MSG_PREFIXES.get(self.item.itemTypeID, self.DEFAULT_PREFIX), opType='apply', msg=msg)
+        return '{itemType}_{opType}/{msg}'.format(itemType=self.ITEMS_MSG_PREFIXES.get(self.item.itemTypeID, self.DEFAULT_PREFIX), opType='apply', msg=msg)
 
     def _request(self, callback):
         from gui.Scaleform.Waiting import Waiting
@@ -497,11 +488,10 @@ class ModuleUpgradeProcessor(ModuleProcessor):
         addPlugins = []
         self.__upgradePrice = item.getUpgradePrice(self.itemsCache.items)
         if validateMoney:
-            addPlugins += (
-             plugins.MoneyValidator(self.__upgradePrice.price),)
+            addPlugins += (plugins.MoneyValidator(self.__upgradePrice.price),)
         if vehicle is not None:
-            addPlugins += (
-             plugins.VehicleValidator(vehicle, True, prop={'isBroken': True, 'isLocked': True}),)
+            addPlugins += (plugins.VehicleValidator(vehicle, True, prop={'isBroken': True,
+              'isLocked': True}),)
         self.vehicle = vehicle
         self.slotIdx = slotIdx
         self.setupIdx = setupIdx
@@ -509,9 +499,9 @@ class ModuleUpgradeProcessor(ModuleProcessor):
         return
 
     def _getMsgCtx(self):
-        return {'name': self.item.userName, 
-           'kind': self.item.userType, 
-           'money': formatPrice(self.__upgradePrice.price)}
+        return {'name': self.item.userName,
+         'kind': self.item.userType,
+         'money': formatPrice(self.__upgradePrice.price)}
 
     def _successHandler(self, code, ctx=None):
         msg = 'success/analogWasDemounted' if ctx and ctx.get('isAnalogWasDemounted', False) else 'success'
@@ -545,7 +535,7 @@ class BattleAbilityInstaller(ModuleInstallProcessor):
                     currentSkills[idx] = selectedSkill
                 else:
                     currentSkills[idx] = -1
-            elif skillID == selectedSkill and skillID != -1:
+            if skillID == selectedSkill and skillID != -1:
                 currentSkills[idx] = previousSkill
 
         self.__epicMetaGameCtrl.changeEquippedSkills(currentSkills, self.vehicle.intCD, lambda code, _: self._response(code, callback))
@@ -561,12 +551,8 @@ def getInstallerProcessor(vehicle, newComponentItem, slotIdx=0, install=True, is
         return OptDeviceInstaller(vehicle, newComponentItem, slotIdx, install, isUseMoney, conflictedEqs, skipConfirm)
     if newComponentItem.itemTypeID == GUI_ITEM_TYPE.TURRET:
         return TurretInstaller(vehicle, newComponentItem, conflictedEqs, skipConfirm)
-    if newComponentItem.itemTypeID == GUI_ITEM_TYPE.BATTLE_ABILITY:
-        return BattleAbilityInstaller(vehicle, newComponentItem, slotIdx, install, conflictedEqs, skipConfirm)
-    return OtherModuleInstaller(vehicle, newComponentItem, conflictedEqs, skipConfirm)
+    return BattleAbilityInstaller(vehicle, newComponentItem, slotIdx, install, conflictedEqs, skipConfirm) if newComponentItem.itemTypeID == GUI_ITEM_TYPE.BATTLE_ABILITY else OtherModuleInstaller(vehicle, newComponentItem, conflictedEqs, skipConfirm)
 
 
 def getPreviewInstallerProcessor(vehicle, newComponentItem, conflictedEqs=None):
-    if newComponentItem.itemTypeID == GUI_ITEM_TYPE.TURRET:
-        return PreviewVehicleTurretInstaller(vehicle, newComponentItem, conflictedEqs)
-    return PreviewVehicleModuleInstaller(vehicle, newComponentItem, conflictedEqs)
+    return PreviewVehicleTurretInstaller(vehicle, newComponentItem, conflictedEqs) if newComponentItem.itemTypeID == GUI_ITEM_TYPE.TURRET else PreviewVehicleModuleInstaller(vehicle, newComponentItem, conflictedEqs)

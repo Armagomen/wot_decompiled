@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client_common/vehicle_outfit/containers.py
+import logging
+import typing
 from items.components.c11n_constants import ProjectionDecalMatchingTags
 from shared_utils import first
 from gui.shared.gui_items import GUI_ITEM_TYPE
@@ -20,7 +23,7 @@ class SlotData(object):
         self.component = component
 
     def __str__(self):
-        result = ('\n SlotData (intCD={}, component={}): ').format(self.intCD, self.component)
+        result = '\n SlotData (intCD={}, component={}): '.format(self.intCD, self.component)
         return result
 
     def isEqual(self, other):
@@ -69,9 +72,7 @@ def emptyComponent(itemTypeID):
         return SequenceComponent()
     if itemTypeID == GUI_ITEM_TYPE.ATTACHMENT:
         return AttachmentComponent()
-    if itemTypeID == GUI_ITEM_TYPE.STAT_TRACKER:
-        return StatTrackerComponent()
-    return EmptyComponent()
+    return StatTrackerComponent() if itemTypeID == GUI_ITEM_TYPE.STAT_TRACKER else EmptyComponent()
 
 
 def getItemType(itemDescriptor):
@@ -95,9 +96,7 @@ def getItemType(itemDescriptor):
         return GUI_ITEM_TYPE.SEQUENCE
     if itemDescriptor.itemType == CustomizationType.ATTACHMENT:
         return GUI_ITEM_TYPE.ATTACHMENT
-    if itemDescriptor.itemType == CustomizationType.STAT_TRACKER:
-        return GUI_ITEM_TYPE.STAT_TRACKER
-    return GUI_ITEM_TYPE.CUSTOMIZATION
+    return GUI_ITEM_TYPE.STAT_TRACKER if itemDescriptor.itemType == CustomizationType.STAT_TRACKER else GUI_ITEM_TYPE.CUSTOMIZATION
 
 
 class OutfitContainer(object):
@@ -112,8 +111,8 @@ class OutfitContainer(object):
                 self._slots[slotType] = slot
 
     def __str__(self):
-        result = ('OutfitContainer (areaID={}):').format(self._areaID)
-        slots = ('\n').join(map(str, self.slots()))
+        result = 'OutfitContainer (areaID={}):'.format(self._areaID)
+        slots = '\n'.join(map(str, self.slots()))
         if slots:
             result += '\n' + slots
         return result
@@ -202,8 +201,8 @@ class MultiSlot(object):
         self._locks = {}
 
     def __str__(self):
-        result = ('MultiSlot (slotType={}):').format(self._slotTypes)
-        items = ('\n').join(map(str, self.items()))
+        result = 'MultiSlot (slotType={}):'.format(self._slotTypes)
+        items = '\n'.join(map(str, self.items()))
         if items:
             result += '\n' + items
         return result
@@ -259,13 +258,11 @@ class MultiSlot(object):
             for idx, pair in self._items.iteritems():
                 item = getItemByCompactDescr(pair.intCD)
                 if item.itemType in customizationTypes:
-                    yield (
-                     self._regions[idx], pair.intCD, pair.component)
+                    yield (self._regions[idx], pair.intCD, pair.component)
 
         else:
             for idx, pair in self._items.iteritems():
-                yield (
-                 self._regions[idx], pair.intCD, pair.component)
+                yield (self._regions[idx], pair.intCD, pair.component)
 
     def values(self):
         for idx in sorted(self._items):
@@ -300,7 +297,7 @@ class MultiSlot(object):
             bdata = other.getSlotData(idx)
             if not bdata.isEmpty():
                 result.set(bdata.intCD, idx=idx, component=bdata.component)
-            elif not adata.isEmpty():
+            if not adata.isEmpty():
                 result.set(adata.intCD, idx=idx, component=adata.component)
 
         return result

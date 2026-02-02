@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/utils/requesters/__init__.py
 from ShopRequester import ShopRequester
 from InventoryRequester import InventoryRequester
 from StatsRequester import StatsRequester
@@ -20,9 +22,4 @@ def fini():
     _rq_fini()
 
 
-__all__ = ('ShopRequester', 'InventoryRequester', 'StatsRequester', 'DossierRequester',
-           'ItemsRequester', 'GoodiesRequester', 'RecycleBinRequester', 'VehicleRotationRequester',
-           'BlueprintsRequester', 'TokensRequester', 'TokenRequester', 'TokenResponse',
-           'getTokenRequester', 'REQ_CRITERIA', 'RequestCriteria', 'RequestCtx',
-           'DataRequestCtx', 'RequestsByIDProcessor', 'DataRequestsByIDProcessor',
-           'getDiffID')
+__all__ = ('ShopRequester', 'InventoryRequester', 'StatsRequester', 'DossierRequester', 'ItemsRequester', 'GoodiesRequester', 'RecycleBinRequester', 'VehicleRotationRequester', 'BlueprintsRequester', 'TokensRequester', 'TokenRequester', 'TokenResponse', 'getTokenRequester', 'REQ_CRITERIA', 'RequestCriteria', 'RequestCtx', 'DataRequestCtx', 'RequestsByIDProcessor', 'DataRequestsByIDProcessor', 'getDiffID')

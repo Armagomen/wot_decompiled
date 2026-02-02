@@ -1,6 +1,14 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_loading/view/splash_screen.py
 import logging
 from collections import namedtuple
-import typing, BigWorld, ScaleformFileLoader, Settings, account_shared, game_loading_bindings, gui
+import typing
+import BigWorld
+import ScaleformFileLoader
+import Settings
+import account_shared
+import game_loading_bindings
+import gui
 from SoundGroups import MASTER_VOLUME_DEFAULT
 from gui.Scaleform import SCALEFORM_SWF_PATH_V3
 from gui.Scaleform.daapi.view.external_components import ExternalFlashComponent
@@ -22,7 +30,7 @@ def getCompulsoryVideoSettings(path):
         if settings['path'] == path:
             return _VideoSettings(settings.get('canBeSkipped', False))
 
-    return
+    return None
 
 
 def versionChanged(userPrefs):
@@ -44,8 +52,7 @@ def mustShowSplashScreen(userPrefs):
 
 
 class SplashScreen(ExternalFlashComponent, SplashScreenMeta):
-    __slots__ = ('_movieFiles', '_writeSetting', '_bufferTime', '_soundValue', '_canSkip',
-                 '_width', '_height', '_currentMovie')
+    __slots__ = ('_movieFiles', '_writeSetting', '_bufferTime', '_soundValue', '_canSkip', '_width', '_height', '_currentMovie')
 
     def __init__(self, preferences):
         super(SplashScreen, self).__init__(ExternalFlashSettings('splashScreen', 'splashScreenApp.swf', 'root.main', SPLASHSCREENCONSTANTS.ON_SPLASH_SCREEN_LOADED_CALLBACK))
@@ -101,7 +108,7 @@ class SplashScreen(ExternalFlashComponent, SplashScreenMeta):
     def _populate(self):
         super(SplashScreen, self)._populate()
         if self._movieFiles:
-            files = [ ('/').join((SCALEFORM_SWF_PATH_V3, v)) for v in self._movieFiles ]
+            files = [ '/'.join((SCALEFORM_SWF_PATH_V3, v)) for v in self._movieFiles ]
             ScaleformFileLoader.enableStreaming(files)
             self._nextMovie()
         else:
@@ -135,9 +142,9 @@ class SplashScreen(ExternalFlashComponent, SplashScreenMeta):
         if not self._currentMovie:
             return
         _logger.debug('Startup Video: path = %s, sound volume = %d%%', self._currentMovie, self._soundValue * 100)
-        self.as_playVideoS({'source': self._currentMovie, 
-           'bufferTime': self._bufferTime, 
-           'volume': self._soundValue})
+        self.as_playVideoS({'source': self._currentMovie,
+         'bufferTime': self._bufferTime,
+         'volume': self._soundValue})
 
     def _allVideosComplete(self):
         if self._writeSetting:
@@ -146,13 +153,8 @@ class SplashScreen(ExternalFlashComponent, SplashScreenMeta):
 
     def _getVideoVolume(self):
         ds = self._userPrefs[Settings.KEY_SOUND_PREFERENCES]
-        if not ds:
-            return MASTER_VOLUME_DEFAULT / 2
-        return ds.readFloat('masterVolume', MASTER_VOLUME_DEFAULT) / 2
+        return MASTER_VOLUME_DEFAULT / 2 if not ds else ds.readFloat('masterVolume', MASTER_VOLUME_DEFAULT) / 2
 
 
 def createSplashScreen(preferences):
-    if mustShowSplashScreen(preferences):
-        return SplashScreen(preferences)
-    else:
-        return
+    return SplashScreen(preferences) if mustShowSplashScreen(preferences) else None

@@ -1,4 +1,8 @@
-import BigWorld, Math, math_utils
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/AvatarInputHandler/StrategicCamerasInterpolator.py
+import BigWorld
+import Math
+import math_utils
 from Event import EventManager, Event
 from helpers.CallbackDelayer import CallbackDelayer
 _EASING_METHOD = math_utils.easeInOutQuad
@@ -84,4 +88,3 @@ class StrategicCamerasInterpolator(CallbackDelayer):
         if self.__elapsedTime > self.__totalInterpolationTime:
             self.delayCallback(0.0, self.disable)
             return 10.0
-        return 0.0

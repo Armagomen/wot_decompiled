@@ -1,8 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/m_constants.py
 from collections import namedtuple
 from shared_utils import CONST_CONTAINER
 MESSENGER_XML_FILE = 'messenger'
 MESSENGER_I18N_FILE = 'messenger'
-MESSENGER_XML_FILE_PATH = ('gui/{0:>s}.xml').format(MESSENGER_XML_FILE)
+MESSENGER_XML_FILE_PATH = 'gui/{0:>s}.xml'.format(MESSENGER_XML_FILE)
 MESSAGE_FLOOD_COOLDOWN = 20
 BREAKERS_MAX_LENGTH = 1
 MESSAGES_HISTORY_MAX_LEN = 50
@@ -16,9 +18,7 @@ class MESSENGER_SCOPE(object):
     BATTLE = 3
 
 
-GUI_FORCED_CLOSE_ON_LOGIN = (
- MESSENGER_SCOPE.LOBBY,
- MESSENGER_SCOPE.BATTLE)
+GUI_FORCED_CLOSE_ON_LOGIN = (MESSENGER_SCOPE.LOBBY, MESSENGER_SCOPE.BATTLE)
 
 class PROTO_TYPE(object):
     BW = 1
@@ -32,7 +32,7 @@ class UserEntityScope(CONST_CONTAINER):
     BATTLE = 2
 
 
-PROTO_TYPE_NAMES = {v:k for k, v in PROTO_TYPE.__dict__.iteritems() if not k.startswith('_') if not k.startswith('_')}
+PROTO_TYPE_NAMES = {v:k for k, v in PROTO_TYPE.__dict__.iteritems() if not k.startswith('_')}
 
 class MESSENGER_COMMAND_TYPE(object):
     UNDEFINED = 0
@@ -44,8 +44,7 @@ class LAZY_CHANNEL(object):
     COMMON = '#chat:channels/common'
     SPECIAL_BATTLES = '#chat:channels/special_battles'
     XMPP_COMMON = '#chat:channels/xmpp_common'
-    ALL = (
-     COMMON, SPECIAL_BATTLES, XMPP_COMMON)
+    ALL = (COMMON, SPECIAL_BATTLES, XMPP_COMMON)
 
 
 class BATTLE_CHANNEL(object):
@@ -53,11 +52,9 @@ class BATTLE_CHANNEL(object):
     TEAM = _ITEM(1, 'team', 'TEAM : ')
     COMMON = _ITEM(2, 'common', 'COMMON : ')
     SQUAD = _ITEM(0, 'squad', 'SQUAD : ')
-    REQUIRED = (
-     TEAM, COMMON)
-    ALL = (
-     TEAM, COMMON, SQUAD)
-    NAMES = tuple(x.name for x in ALL)
+    REQUIRED = (TEAM, COMMON)
+    ALL = (TEAM, COMMON, SQUAD)
+    NAMES = tuple((x.name for x in ALL))
 
     @classmethod
     def isInitialized(cls, mask):
@@ -96,10 +93,14 @@ class USER_TAG(object):
     SUB_FROM = 'sub/from'
     PRESENCE_DND = 'presence/dnd'
     BAN_CHAT = 'ban/chat'
-    _SHARED_TAGS = {
-     CLAN_MEMBER, SEARCH, TEMP}
+    _SHARED_TAGS = {CLAN_MEMBER, SEARCH, TEMP}
     _CLOSED_CONTACTS = {FRIEND, CLAN_MEMBER}
-    _ALL_CONTACTS = {CLAN_MEMBER, FRIEND, IGNORED, IGNORED_TMP, SUB_PENDING_IN, MUTED}
+    _ALL_CONTACTS = {CLAN_MEMBER,
+     FRIEND,
+     IGNORED,
+     IGNORED_TMP,
+     SUB_PENDING_IN,
+     MUTED}
 
     @classmethod
     def filterAllContactsTags(cls, tags):
@@ -122,7 +123,7 @@ class USER_ACTION_ID(object):
     UNDEFINED, FRIEND_ADDED, FRIEND_REMOVED, IGNORED_ADDED, IGNORED_REMOVED, TMP_IGNORED_ADDED, TMP_IGNORED_REMOVED, MUTE_SET, MUTE_UNSET, GROUPS_CHANGED, SUBSCRIPTION_CHANGED, NOTE_CHANGED = range(12)
 
 
-USER_ACTION_ID_NAMES = {v:k for k, v in USER_ACTION_ID.__dict__.iteritems() if not k.startswith('_') if not k.startswith('_')}
+USER_ACTION_ID_NAMES = {v:k for k, v in USER_ACTION_ID.__dict__.iteritems() if not k.startswith('_')}
 
 class USER_GUI_TYPE(object):
     CURRENT_PLAYER = 'himself'
@@ -130,21 +131,24 @@ class USER_GUI_TYPE(object):
     IGNORED = 'ignored'
     OTHER = 'other'
     BREAKER = 'breaker'
-    RANGE = (
-     CURRENT_PLAYER, FRIEND, IGNORED, OTHER, BREAKER)
+    RANGE = (CURRENT_PLAYER,
+     FRIEND,
+     IGNORED,
+     OTHER,
+     BREAKER)
 
 
 class CLIENT_ERROR_ID(object):
     GENERIC, LOCKED, WRONG_ARGS, NOT_CONNECTED, NOT_SUPPORTED, DBID_INVALID, NAME_EMPTY, NAME_INVALID, COOLDOWN, WAITING_BEFORE_START = range(1, 11)
 
 
-CLIENT_ERROR_NAMES = {v:k for k, v in CLIENT_ERROR_ID.__dict__.iteritems() if not k.startswith('_') if not k.startswith('_')}
+CLIENT_ERROR_NAMES = {v:k for k, v in CLIENT_ERROR_ID.__dict__.iteritems() if not k.startswith('_')}
 
 class CLIENT_ACTION_ID(object):
     ADD_FRIEND, REMOVE_FRIEND, ADD_IGNORED, REMOVE_IGNORED, SET_MUTE, UNSET_MUTE, ADD_GROUP, CHANGE_GROUP, RQ_FRIENDSHIP, APPROVE_FRIENDSHIP, CANCEL_FRIENDSHIP, SET_NOTE, REMOVE_NOTE, SEND_MESSAGE, RQ_HISTORY, CREATE_USER_ROOM, JOIN_USER_ROOM, LEAVE_USER_ROOM, SEARCH_USER_ROOM, FIND_USERS_BY_PREFIX, JOIN_CLAN_ROOM = range(1, 22)
 
 
-CLIENT_ACTION_NAMES = {v:k for k, v in CLIENT_ACTION_ID.__dict__.iteritems() if not k.startswith('_') if not k.startswith('_')}
+CLIENT_ACTION_NAMES = {v:k for k, v in CLIENT_ACTION_ID.__dict__.iteritems() if not k.startswith('_')}
 
 class GAME_ONLINE_STATUS(object):
     UNDEFINED = 0
@@ -206,3 +210,4 @@ class SCH_CLIENT_MSG_TYPE(object):
     ACHIEVEMENTS20_EARNING_SM_TYPE = 37
     MENTORING_LICENSE = 38
     GF_SM_TYPE = 39
+    COLLECTOR20_REWARD_RECEIVED = 40

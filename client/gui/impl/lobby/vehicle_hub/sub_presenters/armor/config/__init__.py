@@ -1,5 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/vehicle_hub/sub_presenters/armor/config/__init__.py
 from __future__ import absolute_import
-import typing, ResMgr, section2dict
+import typing
+import ResMgr
+import section2dict
 from gui.impl.lobby.vehicle_hub.sub_presenters.armor.config.schemas import configSchema
 if typing.TYPE_CHECKING:
     from gui.impl.lobby.vehicle_hub.sub_presenters.armor.config.models import ConfigModel

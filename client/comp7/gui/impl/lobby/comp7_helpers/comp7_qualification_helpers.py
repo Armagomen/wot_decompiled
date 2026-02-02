@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/comp7_helpers/comp7_qualification_helpers.py
 import typing
 from helpers import dependency
 from comp7_common_const import BattleStatuses
@@ -7,8 +9,9 @@ from comp7.gui.impl.gen.view_models.views.lobby.qualification_battle import Batt
 if typing.TYPE_CHECKING:
     from frameworks.wulf import Array
     from comp7.gui.impl.gen.view_models.views.lobby.qualification_model import QualificationModel
-BATTLE_STATES = {BattleStatuses.WIN: BattleState.VICTORY, BattleStatuses.LOSE: BattleState.DEFEAT, 
-   BattleStatuses.DESERTER: BattleState.DEFEAT}
+BATTLE_STATES = {BattleStatuses.WIN: BattleState.VICTORY,
+ BattleStatuses.LOSE: BattleState.DEFEAT,
+ BattleStatuses.DESERTER: BattleState.DEFEAT}
 
 @dependency.replace_none_kwargs(comp7Controller=IComp7Controller)
 def setQualificationInfo(model, comp7Controller=None):

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/feature/sub_systems/fun_subscription.py
 from __future__ import absolute_import
 import typing
 from Event import SuspendedEventManager, SuspendedEvent
@@ -15,16 +17,19 @@ class FunSubscription(IFunRandomController.IFunSubscription):
         self.__em = SuspendedEventManager()
         self.__handleEvent = SuspendedEvent(self.__em)
         self.__handleEvent += g_funEventBus.handleEvent
-        self.__eventsBridges = (
-         (
-          events.BoostersControllerEvent(events.BoostersControllerEvent.UPDATE_GAMEMODE_STATUS),
-          EVENT_BUS_SCOPE.LOBBY, self.__addSubModesListener, (True,), {}),
-         (
-          events.GameSessionEvent(events.GameSessionEvent.UPDATE_KICK_NOTIFICATION),
-          EVENT_BUS_SCOPE.LOBBY, self.__addSubModesListener, (True,), {}),
-         (
-          events.LobbyHeaderMenuEvent(events.LobbyHeaderMenuEvent.UPDATE_PREBATTLE_CONTROLS),
-          EVENT_BUS_SCOPE.LOBBY, self.__addSubModesListener, (True,), {}))
+        self.__eventsBridges = ((events.BoostersControllerEvent(events.BoostersControllerEvent.UPDATE_GAMEMODE_STATUS),
+          EVENT_BUS_SCOPE.LOBBY,
+          self.__addSubModesListener,
+          (True,),
+          {}), (events.GameSessionEvent(events.GameSessionEvent.UPDATE_KICK_NOTIFICATION),
+          EVENT_BUS_SCOPE.LOBBY,
+          self.__addSubModesListener,
+          (True,),
+          {}), (events.LobbyHeaderMenuEvent(events.LobbyHeaderMenuEvent.UPDATE_PREBATTLE_CONTROLS),
+          EVENT_BUS_SCOPE.LOBBY,
+          self.__addSubModesListener,
+          (True,),
+          {}))
 
     def fini(self):
         self.__eventsBridges = ()

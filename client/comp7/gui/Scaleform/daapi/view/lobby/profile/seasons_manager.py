@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/Scaleform/daapi/view/lobby/profile/seasons_manager.py
 from comp7.gui.Scaleform.daapi.view.lobby.profile.comp7_profile_helper import getDropdownKeyBySeason, getSeasonName, COMP7_ARCHIVE_NAMES, COMP7_SEASON_NUMBERS, getDropdownKeyByArchiveName, isComp7Archive, getArchiveName
 from comp7.gui.shared.gui_items.dossier.stats import getComp7DossierStats
 from gui.Scaleform.daapi.view.lobby.profile.ProfileSection import BattleTypesDropDownItems
@@ -19,9 +21,7 @@ class Comp7SeasonsManager(BaseSeasonManager):
         return
 
     def getStats(self, dossierStats):
-        if isComp7Archive(self._seasonKey):
-            return getComp7DossierStats(dossierStats, archive=getArchiveName(self._seasonKey))
-        return getComp7DossierStats(dossierStats, season=getSeasonName(self._seasonKey))
+        return getComp7DossierStats(dossierStats, archive=getArchiveName(self._seasonKey)) if isComp7Archive(self._seasonKey) else getComp7DossierStats(dossierStats, season=getSeasonName(self._seasonKey))
 
     def addSeasonsDropdown(self, targetVO):
         super(Comp7SeasonsManager, self).addSeasonsDropdown(targetVO)

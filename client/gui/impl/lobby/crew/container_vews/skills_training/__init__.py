@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/container_vews/skills_training/__init__.py
+import logging
+import typing
 from gui.impl.lobby.crew.container_vews.personal_file import getPersonalFileView
 _logger = logging.getLogger(__name__)
 if typing.TYPE_CHECKING:
@@ -10,7 +13,6 @@ def loadSortingOrderType():
         ctrl = personalFileView.interactionCtrl
         return ctrl.getCrewAssistSortSelection()
     _logger.warning("Couldn't load setting because PersonalFileView is not found!")
-    return 0
 
 
 def saveSortingOrderType(sortingType):

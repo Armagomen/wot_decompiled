@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/tutorial/doc_loader/sub_parsers/sales.py
 from gui.shared.event_bus import EVENT_BUS_SCOPE
 from items import _xml
 from tutorial.control.sales import triggers
@@ -44,8 +46,8 @@ def _reaLoadViewSection(xmlCtx, section, _, conditions):
 
 
 def init():
-    sub_parsers.setEntitiesParsers({'hint': readHintSection, 
-       'view-data': readLoadViewDataSection})
+    sub_parsers.setEntitiesParsers({'hint': readHintSection,
+     'view-data': readLoadViewDataSection})
     sub_parsers.setEffectsParsers({'load-view': _reaLoadViewSection})
-    sub_parsers.setTriggersParsers({'timer': readTimerTriggerSection, 
-       'isCollectibleVehicle': readIsCollectibleVehicleTrigger})
+    sub_parsers.setTriggersParsers({'timer': readTimerTriggerSection,
+     'isCollectibleVehicle': readIsCollectibleVehicleTrigger})

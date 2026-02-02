@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/premacc/squad_bonus_tooltip_content.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.premacc.squad_bonus_tooltip_content_model import SquadBonusTooltipContentModel, SquadBonusTooltipType
@@ -38,7 +40,7 @@ class SquadBonusTooltipContent(ViewImpl):
     def _onLoading(self, battleType='', bonusState=BonusState.NO_BONUS, *args, **kwargs):
         tooltipType = _getHeaderInfoTooltipType(bonusState)
         isCommon = tooltipType == SquadBonusTooltipType.COMMON
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             if battleType:
                 model.setBattleType(battleType)
             model.setType(tooltipType)

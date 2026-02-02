@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/wgcg/strongholds/contexts.py
 import typing
 from account_helpers import getAccountDatabaseID
 from gui.clans import items
@@ -44,7 +46,7 @@ class StrongholdStatisticsCtx(ClanRequestBaseCtx):
 
 
 class StrongholdRequestCtx(CommonWebRequestCtx):
-    __slots__ = ('__unitMgrId', )
+    __slots__ = ('__unitMgrId',)
 
     def __init__(self, unitMgrId=None, **kwargs):
         super(StrongholdRequestCtx, self).__init__(**kwargs)
@@ -75,7 +77,7 @@ class StrongholdLeaveCtx(StrongholdRequestCtx):
 
 
 class StrongholdSetVehicleCtx(StrongholdRequestCtx):
-    __slots__ = ('__vehTypeCD', )
+    __slots__ = ('__vehTypeCD',)
 
     def __init__(self, vehTypeCD, **kwargs):
         super(StrongholdSetVehicleCtx, self).__init__(**kwargs)
@@ -112,9 +114,7 @@ class StrongholdAssignCtx(StrongholdRequestCtx):
         return cls(pID, isRemove, slotIdx, unitMgrId=unitMgrId, waitingID=waitingID)
 
     def getRequestType(self):
-        if not self.__isRemove:
-            return WebRequestDataType.STRONGHOLD_ASSIGN
-        return WebRequestDataType.STRONGHOLD_UNASSIGN
+        return WebRequestDataType.STRONGHOLD_ASSIGN if not self.__isRemove else WebRequestDataType.STRONGHOLD_UNASSIGN
 
     def getPlayerID(self):
         return self.__pID
@@ -146,7 +146,7 @@ class StrongholdUnassignCtx(StrongholdRequestCtx):
 
 
 class StrongholdChangeOpenedCtx(StrongholdRequestCtx):
-    __slots__ = ('__isOpened', )
+    __slots__ = ('__isOpened',)
 
     def __init__(self, isOpened, **kwargs):
         super(StrongholdChangeOpenedCtx, self).__init__(**kwargs)
@@ -166,7 +166,7 @@ class StrongholdChangeOpenedCtx(StrongholdRequestCtx):
 
 
 class StrongholdSetReadyCtx(StrongholdRequestCtx):
-    __slots__ = ('__isReady', )
+    __slots__ = ('__isReady',)
 
     def __init__(self, isReady, **kwargs):
         super(StrongholdSetReadyCtx, self).__init__(**kwargs)
@@ -236,7 +236,7 @@ class StrongholdUnsetReserveCtx(StrongholdRequestCtx):
 
 
 class StrongholdBattleQueueCtx(StrongholdRequestCtx):
-    __slots__ = ('__action', )
+    __slots__ = ('__action',)
 
     def __init__(self, action, **kwargs):
         super(StrongholdBattleQueueCtx, self).__init__(**kwargs)
@@ -256,7 +256,7 @@ class StrongholdBattleQueueCtx(StrongholdRequestCtx):
 
 
 class StrongholdKickPlayerCtx(StrongholdRequestCtx):
-    __slots__ = ('__pID', )
+    __slots__ = ('__pID',)
 
     def __init__(self, pID, **kwargs):
         super(StrongholdKickPlayerCtx, self).__init__(**kwargs)
@@ -289,9 +289,7 @@ class StrongholdGiveLeadershipCtx(StrongholdRequestCtx):
         return cls(pID, unitMgrId=unitMgrId, waitingID=waitingID)
 
     def getRequestType(self):
-        if self.__pID != getAccountDatabaseID():
-            return WebRequestDataType.STRONGHOLD_GIVE_LEADERSHIP
-        return WebRequestDataType.STRONGHOLD_TAKE_LEADERSHIP
+        return WebRequestDataType.STRONGHOLD_GIVE_LEADERSHIP if self.__pID != getAccountDatabaseID() else WebRequestDataType.STRONGHOLD_TAKE_LEADERSHIP
 
     def getPlayerID(self):
         return self.__pID
@@ -323,7 +321,7 @@ class StrongholdSetEquipmentCommanderCtx(StrongholdRequestCtx):
 
 
 class StrongholdUpdateCtx(StrongholdRequestCtx):
-    __slots__ = ('__rev', )
+    __slots__ = ('__rev',)
 
     def __init__(self, rev, **kwargs):
         super(StrongholdUpdateCtx, self).__init__(**kwargs)
@@ -492,8 +490,7 @@ class StrongholdEventUnfreezeVehicleCtx(CommonWebRequestCtx):
         return WebRequestDataType.STRONGHOLD_EVENT_UNFREEZE_VEHICLE
 
     def getRequestArgs(self):
-        return (
-         self.__playerSpaID, self.__vehicleCD, self.__price)
+        return (self.__playerSpaID, self.__vehicleCD, self.__price)
 
     def isAuthorizationRequired(self):
         return True

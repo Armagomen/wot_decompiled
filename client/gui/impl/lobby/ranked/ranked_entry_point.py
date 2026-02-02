@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/ranked/ranked_entry_point.py
+import logging
+import typing
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.ranked.ranked_entry_point_model import RankedEntryPointModel
@@ -49,7 +52,7 @@ class RankedEntryPoint(ViewImpl):
 
     def __updateViewModel(self):
         if isRankedEntryPointAvailable():
-            with self.viewModel.transaction() as (tx):
+            with self.viewModel.transaction() as tx:
                 state = self.__getState()
                 tx.setState(state)
                 currentSeason = self.__rankedController.getCurrentSeason()

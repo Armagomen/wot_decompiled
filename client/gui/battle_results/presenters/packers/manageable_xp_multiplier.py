@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_results/presenters/packers/manageable_xp_multiplier.py
 from constants import PREMIUM_TYPE
 from gui.battle_results.pbs_helpers.additional_bonuses import getAdditionalXpBonusStatus, getAdditionalXPFactor10FromResult, getLeftAdditionalBonus, isAdditionalXpBonusAvailable, isAddXpBonusStatusAcceptable, getAdditionalXpBonusDiff
 from gui.battle_results.presenters.packers.interfaces import IBattleResultsPacker

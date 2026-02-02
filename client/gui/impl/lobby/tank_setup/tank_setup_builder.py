@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/tank_setup_builder.py
 from collections import namedtuple
 from gui.impl.gen.view_models.views.lobby.tank_setup.main_tank_setup_model import MainTankSetupModel
 from gui.impl.lobby.tank_setup.interactors.consumable import ConsumableInteractor

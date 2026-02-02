@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/member_change_view.py
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.game_control import restore_contoller
 from gui.impl.auxiliary.vehicle_helper import fillVehicleInfo
@@ -45,8 +47,7 @@ class MemberChangeView(BaseCrewView, BaseTankmanListView):
         self.__tankman = None
         self.__filterPanelWidget = None
         self.__updateTankmanData(slotIdx)
-        self.__filterState = FilterState(initialState=self._getDefaultFilters(), isWotPlus=self.__currentVehicle.isWotPlus, persistor=Persistor(storageKey='memberChange', persistentGroups=[
-         FilterState.GROUPS.LOCATION.value]))
+        self.__filterState = FilterState(initialState=self._getDefaultFilters(), isWotPlus=self.__currentVehicle.isWotPlus, persistor=Persistor(storageKey='memberChange', persistentGroups=[FilterState.GROUPS.LOCATION.value]))
         self.__dataProviders = self._createDataProvider()
         self.__requiredNation = self.__currentVehicle.nationName
         self.__paramsView = None
@@ -73,7 +74,7 @@ class MemberChangeView(BaseCrewView, BaseTankmanListView):
     def selectSlot(self, slotIdx):
         self._onChangeSlotIdx(slotIdx)
         self._crewWidget.updateSlotIdx(self.__slotIdx)
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setRequiredRole(self.__requiredRole)
             self._fillTankmenList(tx)
 
@@ -85,47 +86,28 @@ class MemberChangeView(BaseCrewView, BaseTankmanListView):
     def _getDefaultFilters(self):
         if self.__currentVehicle.isWotPlus:
             return {FilterState.GROUPS.TANKMANROLE.value: self.__requiredRole}
-        if self.__currentVehicle.isPremium:
-            return {FilterState.GROUPS.TANKMANROLE.value: self.__requiredRole, 
-               FilterState.GROUPS.VEHICLETYPE.value: self.__currentVehicle.type}
-        return {}
+        return {FilterState.GROUPS.TANKMANROLE.value: self.__requiredRole,
+         FilterState.GROUPS.VEHICLETYPE.value: self.__currentVehicle.type} if self.__currentVehicle.isPremium else {}
 
     def _getEvents(self):
         eventsTuple = super(MemberChangeView, self)._getEvents()
-        return eventsTuple + (
-         (
-          self.viewModel.onResetFilters, self._onResetFilters),
-         (
-          self.viewModel.onTankmanSelected, self._onTankmanSelected),
-         (
-          self.viewModel.onRecruitSelected, self._onRecruitSelected),
-         (
-          self.viewModel.onRecruitNewTankman, self._onRecruitNewTankman),
-         (
-          self.viewModel.onTankmanRestore, self._onTankmanRestore),
-         (
-          self.viewModel.onPlayRecruitVoiceover, self._onPlayRecruitVoiceover),
-         (
-          self.viewModel.onLoadCards, self._onLoadCards),
-         (
-          self.__filterState.onStateChanged, self._onFilterStateUpdated),
-         (
-          self.__dataProviders.onDataChanged, self._onDataChanged),
-         (
-          self.itemsCache.onSyncCompleted, self._onItemsCacheSyncCompleted),
-         (
-          g_playerEvents.onVehicleLockChanged, self._onVehicleLockChanged))
+        return eventsTuple + ((self.viewModel.onResetFilters, self._onResetFilters),
+         (self.viewModel.onTankmanSelected, self._onTankmanSelected),
+         (self.viewModel.onRecruitSelected, self._onRecruitSelected),
+         (self.viewModel.onRecruitNewTankman, self._onRecruitNewTankman),
+         (self.viewModel.onTankmanRestore, self._onTankmanRestore),
+         (self.viewModel.onPlayRecruitVoiceover, self._onPlayRecruitVoiceover),
+         (self.viewModel.onLoadCards, self._onLoadCards),
+         (self.__filterState.onStateChanged, self._onFilterStateUpdated),
+         (self.__dataProviders.onDataChanged, self._onDataChanged),
+         (self.itemsCache.onSyncCompleted, self._onItemsCacheSyncCompleted),
+         (g_playerEvents.onVehicleLockChanged, self._onVehicleLockChanged))
 
     def _getCallbacks(self):
-        return (
-         (
-          'inventory.1.crew', self._onCrewChanged),
-         (
-          'inventory.8.compDescr', self._onCrewChanged),
-         (
-          'tokens', self._onCrewChanged),
-         (
-          'potapovQuests', self._onCrewChanged))
+        return (('inventory.1.crew', self._onCrewChanged),
+         ('inventory.8.compDescr', self._onCrewChanged),
+         ('tokens', self._onCrewChanged),
+         ('potapovQuests', self._onCrewChanged))
 
     def _setWidgets(self, **kwargs):
         super(MemberChangeView, self)._setWidgets(**kwargs)
@@ -275,27 +257,23 @@ class MemberChangeView(BaseCrewView, BaseTankmanListView):
     @property
     def __roleChangeDiscountPercent(self):
         shopRequester = self.itemsCache.items.shop
-        if shopRequester.defaults.changeRoleCost:
-            return discountPercent(shopRequester.changeRoleCost, shopRequester.defaults.changeRoleCost)
-        return 0
+        return discountPercent(shopRequester.changeRoleCost, shopRequester.defaults.changeRoleCost) if shopRequester.defaults.changeRoleCost else 0
 
     @property
     def __isChangeRoleDiscountAvailable(self):
         return self.__roleChangeDiscountPercent > 0
 
     def __getPopoverGroupSettings(self):
-        return (
-         getTankmanRoleSettings(self.__isChangeRoleDiscountAvailable),
+        return (getTankmanRoleSettings(self.__isChangeRoleDiscountAvailable),
          getVehicleTypeSettings(customTooltipBody=R.strings.crew.filter.tooltip.crewMemberVehicleType.body()),
          getVehicleTierSettings(),
-         getTankmanKindSettings(labelResId=R.strings.crew.filter.group.other.title(), options=(
-          TankmanKind.DISMISSED,)))
+         getTankmanKindSettings(labelResId=R.strings.crew.filter.group.other.title(), options=(TankmanKind.DISMISSED,)))
 
     def __updatedRoleChangeCost(self):
         self.__filterPanelWidget.updateHasDiscountAlert(self.__isChangeRoleDiscountAvailable)
         self.__filterPanelWidget.updatePopoverGroupSettings(self.__getPopoverGroupSettings())
         self.__filterPanelWidget.applyStateToModel()
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setRoleChangeDiscountPercent(self.__roleChangeDiscountPercent)
 
     def __equipTankman(self, newTankman):

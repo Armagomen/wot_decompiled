@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/player_subscriptions/external_subscription_model.py
 from gui.impl.gen.view_models.views.lobby.player_subscriptions.subscription_model import SubscriptionModel
 
 class ExternalSubscriptionModel(SubscriptionModel):

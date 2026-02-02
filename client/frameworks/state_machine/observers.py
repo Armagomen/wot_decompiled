@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/frameworks/state_machine/observers.py
 import typing
 from .states import State
 from .exceptions import StateError
@@ -27,13 +29,12 @@ class BaseStateObserver(object):
 
 
 class StateIdsObserver(BaseStateObserver):
-    __slots__ = ('_stateIDs', )
+    __slots__ = ('_stateIDs',)
 
     def __init__(self, stateIDs):
         super(StateIdsObserver, self).__init__()
         if isinstance(stateIDs, str):
-            self._stateIDs = [
-             stateIDs]
+            self._stateIDs = [stateIDs]
         else:
             self._stateIDs = list(stateIDs)
 
@@ -45,7 +46,7 @@ class StateIdsObserver(BaseStateObserver):
 
 
 class StateObserversContainer(BaseStateObserver):
-    __slots__ = ('_observers', )
+    __slots__ = ('_observers',)
 
     def __init__(self, *observers):
         super(StateObserversContainer, self).__init__()

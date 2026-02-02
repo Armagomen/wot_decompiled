@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/lootbox_system/base/tooltips/box_tooltip.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.lootbox_system.tooltips.box_compensation_tooltip_model import BoxCompensationTooltipModel
@@ -23,7 +25,7 @@ class BoxTooltipBase(ViewImpl):
 
     def _onLoading(self, *args, **kwargs):
         super(BoxTooltipBase, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as (vmTx):
+        with self.viewModel.transaction() as vmTx:
             vmTx.setEventName(self.__eventName)
             vmTx.setBoxesCountToGuaranteed(self.__lootBoxes.getBoxesCountToGuaranteed(self.__boxCategory))
             vmTx.setBoxCategory(self.__boxCategory)

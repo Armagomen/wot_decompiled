@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/blueprints_convert_sale_controller.py
 from enum import Enum
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import BLUEPRINTS_CONVERT_SALE_STARTED_SEEN
@@ -17,7 +19,7 @@ class BCSActionState(Enum):
 
 
 class BlueprintsConvertSaleController(IBlueprintsConvertSaleController):
-    __slots__ = ('_isEnabled', )
+    __slots__ = ('_isEnabled',)
     _lobbyContext = dependency.descriptor(ILobbyContext)
     _systemMessages = dependency.descriptor(ISystemMessages)
     _eventsCache = dependency.descriptor(IEventsCache)
@@ -76,4 +78,6 @@ class BlueprintsConvertSaleController(IBlueprintsConvertSaleController):
             self.__showNotification(BCSActionState.END)
 
     def __showNotification(self, state):
-        self._systemMessages.proto.serviceChannel.pushClientMessage({'data': '', 'type': '', 'state': state}, SCH_CLIENT_MSG_TYPE.BLUEPRINTS_CONVERT_SALE)
+        self._systemMessages.proto.serviceChannel.pushClientMessage({'data': '',
+         'type': '',
+         'state': state}, SCH_CLIENT_MSG_TYPE.BLUEPRINTS_CONVERT_SALE)

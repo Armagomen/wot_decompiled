@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/missions/daily_quests_view.py
 import logging
 from collections import defaultdict, OrderedDict
 from copy import deepcopy
@@ -103,9 +105,7 @@ class DailyQuestsView(ViewImpl):
             tooltipData = self.__tooltipData.get(tooltipId)
             if tooltipData:
                 return SelectableRewardTooltip(**tooltipData)
-        if contentID == R.views.lobby.winback.tooltips.MainRewardTooltip():
-            return MainRewardTooltip(self.__winbackData.get('lastQuest', {}).get('bonuses', []))
-        return super(DailyQuestsView, self).createToolTipContent(event=event, contentID=contentID)
+        return MainRewardTooltip(self.__winbackData.get('lastQuest', {}).get('bonuses', [])) if contentID == R.views.lobby.winback.tooltips.MainRewardTooltip() else super(DailyQuestsView, self).createToolTipContent(event=event, contentID=contentID)
 
     def createToolTip(self, event):
         if event.contentID != R.views.common.tooltip_window.backport_tooltip_content.BackportTooltipContent():
@@ -135,7 +135,7 @@ class DailyQuestsView(ViewImpl):
         return
 
     def changeTab(self, tabIdx):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             if tabIdx == DailyTabs.QUESTS:
                 self._updateDailyQuestModel(tx, True)
             elif tabIdx == DailyTabs.PREMIUM_MISSIONS:
@@ -157,7 +157,7 @@ class DailyQuestsView(ViewImpl):
         _logger.info('DailyQuestsView::_onLoading')
         super(DailyQuestsView, self)._onLoading()
         self.__updateWinbackData()
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             self._updateQuestsTitles(tx)
             self._updateModel(tx)
             self._updateCountDowns(tx)
@@ -181,7 +181,7 @@ class DailyQuestsView(ViewImpl):
         quests = sorted(self.eventsCache.getDailyQuests().values(), key=dailyQuestsSortFunc)
         newBonusQuests = settings.getNewCommonEvents([ q for q in quests if q.isBonus() ])
         self._updateRerollEnabledFlag(model)
-        with model.dailyQuests.transaction() as (tx):
+        with model.dailyQuests.transaction() as tx:
             tx.setIsEnabled(isEnabled)
             if not isEnabled:
                 return
@@ -195,7 +195,7 @@ class DailyQuestsView(ViewImpl):
         _logger.debug('DailyQuestsView::_updateEpicQuestModel')
         epicQuest = self.eventsCache.getDailyEpicQuest()
         isEnabled = isEpicQuestEnabled() and epicQuest is not None
-        with model.epicQuest.transaction() as (tx):
+        with model.epicQuest.transaction() as tx:
             tx.setIsEnabled(isEnabled)
             if not isEnabled:
                 _logger.info('Daily Quest Screen: Epic quest is not enabled.')
@@ -230,7 +230,7 @@ class DailyQuestsView(ViewImpl):
         quests = sorted(self.eventsCache.getPremiumQuests().values(), cmp=premMissionsSortFunc)
         isPremAcc = _isPremiumPlusAccount()
         isEnabled = isPremiumQuestsEnable()
-        with model.premiumMissions.transaction() as (tx):
+        with model.premiumMissions.transaction() as tx:
             tx.setIsPremiumAccount(isPremAcc)
             tx.setIsEnabled(isEnabled)
             if not isPremAcc or not isEnabled:
@@ -248,14 +248,14 @@ class DailyQuestsView(ViewImpl):
             self.__updateWinbackQuests(model.winbackProgression)
 
     def _onPremiumTypeChanged(self, _):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             self._updatePremiumMissionsModel(tx)
             self._updateCountDowns(tx)
             self._markVisited(tx.getCurrentTabIdx(), tx)
 
     def _onSyncCompleted(self, *_):
         self.__updateWinbackData()
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             self._updateModel(tx)
             self._markVisited(tx.getCurrentTabIdx(), tx)
         self._updateCommonData()
@@ -268,7 +268,7 @@ class DailyQuestsView(ViewImpl):
             stateChanged = 'enabled' in dqDiff and dqDiff['enabled'] is not self.viewModel.dailyQuests.getIsEnabled()
             rerollTimeoutChanged = 'rerollTimeout' in dqDiff and dqDiff['rerollTimeout'] != self.viewModel.dailyQuests.getRerollTimeout()
             epicRewardEnabledChanged = 'epicRewardEnabled' in dqDiff and dqDiff['epicRewardEnabled'] != self.viewModel.epicQuest.getIsEnabled()
-            with self.viewModel.transaction() as (tx):
+            with self.viewModel.transaction() as tx:
                 if epicRewardEnabledChanged:
                     self._updateEpicQuestModel(tx)
                 if rerollStateChanged:
@@ -284,7 +284,7 @@ class DailyQuestsView(ViewImpl):
             premDiff = diff[PremiumConfigs.PREM_QUESTS]
             stateChanged = 'enabled' in premDiff and premDiff['enabled'] is not self.viewModel.premiumMissions.getIsEnabled()
             if stateChanged:
-                with self.viewModel.transaction() as (tx):
+                with self.viewModel.transaction() as tx:
                     self._updatePremiumMissionsModel(tx)
                     if not premDiff['enabled']:
                         self.__setCurrentTab(DailyTabs.QUESTS, tx)
@@ -315,7 +315,7 @@ class DailyQuestsView(ViewImpl):
     def _updateCountdownUntilNextReroll(self, model):
         countdown = self.__getCountdown()
         timeout = getRerollTimeout()
-        with model.dailyQuests.transaction() as (tx):
+        with model.dailyQuests.transaction() as tx:
             tx.setRerollCountDown(countdown)
             tx.setRerollTimeout(timeout)
 
@@ -326,17 +326,16 @@ class DailyQuestsView(ViewImpl):
         if tabIdx == DailyTabs.QUESTS:
             dailyQuests = self.eventsCache.getDailyQuests().values()
             seenQuests = dailyQuests
-        else:
-            if tabIdx == DailyTabs.PREMIUM_MISSIONS:
-                if _isPremiumPlusAccount():
-                    premiumQuests = self.eventsCache.getPremiumQuests().values()
-                    seenQuests = premiumQuests
-                with settings.dailyQuestSettings() as (dq):
-                    if isPremiumQuestsEnable() and not dq.premMissionsTabDiscovered:
-                        dq.onPremMissionsTabDiscovered()
-                        model.setPremMissionsTabDiscovered(dq.premMissionsTabDiscovered)
-            for seenQuest in seenQuests:
-                self.eventsCache.questsProgress.markQuestProgressAsViewed(seenQuest.getID())
+        elif tabIdx == DailyTabs.PREMIUM_MISSIONS:
+            if _isPremiumPlusAccount():
+                premiumQuests = self.eventsCache.getPremiumQuests().values()
+                seenQuests = premiumQuests
+            with settings.dailyQuestSettings() as dq:
+                if isPremiumQuestsEnable() and not dq.premMissionsTabDiscovered:
+                    dq.onPremMissionsTabDiscovered()
+                    model.setPremMissionsTabDiscovered(dq.premMissionsTabDiscovered)
+        for seenQuest in seenQuests:
+            self.eventsCache.questsProgress.markQuestProgressAsViewed(seenQuest.getID())
 
         if isEpicQuestEnabled():
             epicQuest = self.eventsCache.getDailyEpicQuest()
@@ -349,38 +348,22 @@ class DailyQuestsView(ViewImpl):
         self.__updateMissionsNotification()
 
     def _getCallbacks(self):
-        return (
-         (
-          'tokens', self._onSyncCompleted),)
+        return (('tokens', self._onSyncCompleted),)
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onBuyPremiumBtnClick, self.__onBuyPremiumBtn),
-         (
-          self.viewModel.onTabClick, self.__onTabClick),
-         (
-          self.viewModel.onInfoToggle, self.__onInfoToggle),
-         (
-          self.viewModel.onClose, self.__onCloseView),
-         (
-          self.viewModel.onReroll, self.__onReRoll),
-         (
-          self.viewModel.onRerollEnabled, self.__onRerollEnabled),
-         (
-          self.viewModel.onClaimRewards, self.__onClaimRewards),
-         (
-          self.viewModel.winbackProgression.onTakeReward, self.__onTakeReward),
-         (
-          self.eventsCache.onSyncCompleted, self._onSyncCompleted),
-         (
-          self.gameSession.onPremiumTypeChanged, self._onPremiumTypeChanged),
-         (
-          self.lobbyContext.getServerSettings().onServerSettingsChange, self._onServerSettingsChanged),
-         (
-          self.battlePassController.onBattlePassSettingsChange, self.__updateBattlePassData),
-         (
-          self.__winbackController.onConfigUpdated, self.__onWinbackConfigUpdated))
+        return ((self.viewModel.onBuyPremiumBtnClick, self.__onBuyPremiumBtn),
+         (self.viewModel.onTabClick, self.__onTabClick),
+         (self.viewModel.onInfoToggle, self.__onInfoToggle),
+         (self.viewModel.onClose, self.__onCloseView),
+         (self.viewModel.onReroll, self.__onReRoll),
+         (self.viewModel.onRerollEnabled, self.__onRerollEnabled),
+         (self.viewModel.onClaimRewards, self.__onClaimRewards),
+         (self.viewModel.winbackProgression.onTakeReward, self.__onTakeReward),
+         (self.eventsCache.onSyncCompleted, self._onSyncCompleted),
+         (self.gameSession.onPremiumTypeChanged, self._onPremiumTypeChanged),
+         (self.lobbyContext.getServerSettings().onServerSettingsChange, self._onServerSettingsChanged),
+         (self.battlePassController.onBattlePassSettingsChange, self.__updateBattlePassData),
+         (self.__winbackController.onConfigUpdated, self.__onWinbackConfigUpdated))
 
     def _updateCommonData(self, *_):
         self.__updateDailyType()
@@ -395,7 +378,7 @@ class DailyQuestsView(ViewImpl):
         self.changeTab(tabIdx)
 
     def __onInfoToggle(self):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             isVisible = tx.getInfoVisible()
             if not isVisible:
                 tabIdx = self.viewModel.getCurrentTabIdx()
@@ -414,7 +397,7 @@ class DailyQuestsView(ViewImpl):
     def __setCurrentTab(self, tabIdx, model):
         model.setCurrentTabIdx(tabIdx)
         self._markVisited(tabIdx, model)
-        with settings.dailyQuestSettings() as (dq):
+        with settings.dailyQuestSettings() as dq:
             dq.setLastVisitedDQTab(tabIdx)
 
     def __updateMissionsNotification(self):
@@ -432,7 +415,7 @@ class DailyQuestsView(ViewImpl):
         quest = quests[questId]
         result = yield daily_quests.DailyQuestReroll(quest).request()
         if result.success:
-            with self.viewModel.transaction() as (tx):
+            with self.viewModel.transaction() as tx:
                 self._markVisited(tx.getCurrentTabIdx(), tx)
                 self._updateCountdownUntilNextReroll(tx)
         if result.userMsg:
@@ -490,7 +473,7 @@ class DailyQuestsView(ViewImpl):
 
     def __onWinbackConfigUpdated(self, *_):
         self.__updateWinbackData()
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             self._updateWinbackProgressionModel(tx)
         self._updateCommonData()
 
@@ -511,7 +494,8 @@ class DailyQuestsView(ViewImpl):
         self.__winbackData['lastQuest'] = lastQuestData
 
     def __getSortedWinbackQuests(self, winbackQuests, dailyQuestTokensCount):
-        questsPairs = defaultdict(lambda : {WinbackQuestTypes.NORMAL: [], WinbackQuestTypes.COMPENSATION: []})
+        questsPairs = defaultdict(lambda : {WinbackQuestTypes.NORMAL: [],
+         WinbackQuestTypes.COMPENSATION: []})
         for quest in winbackQuests.values():
             questNumber = self.__winbackController.getQuestIdx(quest)
             if questNumber > 0:
@@ -555,7 +539,7 @@ class DailyQuestsView(ViewImpl):
             self.__extendLastQuestBonuses(bonuses)
         lastQuestData['bonuses'] = bonuses
         self.__winbackData['quests'][lastQuestNumber]['bonuses'] = []
-        lastQuestDailyToken = first(t for t in lastQuest.accountReqs.getTokens() if t.isDailyQuest())
+        lastQuestDailyToken = first((t for t in lastQuest.accountReqs.getTokens() if t.isDailyQuest()))
         lastQuestData['token'] = lastQuestDailyToken
         return lastQuestData
 
@@ -593,7 +577,7 @@ class DailyQuestsView(ViewImpl):
             compensation = first(questPair.get(WinbackQuestTypes.COMPENSATION))
             if compensation is not None and compensation.getProgressData():
                 result.append((questNumber, compensation))
-            elif normal is not None:
+            if normal is not None:
                 if questNumber > countCompletedQuests:
                     for cond in normal.accountReqs.getConditions().items:
                         if isinstance(cond, conditions.VehiclesUnlocked):
@@ -640,6 +624,4 @@ class DailyQuestsView(ViewImpl):
             return 0
         else:
             winbackOffer = WinbackSelectableRewardManager.getBonusOffer(selectableBonus)
-            if winbackOffer and self.__winbackController.isEnabled() and not self.__winbackController.isProgressionAvailable():
-                return max(0, min(winbackOffer.expiration - time_utils.getServerUTCTime(), ONE_MONTH))
-            return 0
+            return max(0, min(winbackOffer.expiration - time_utils.getServerUTCTime(), ONE_MONTH)) if winbackOffer and self.__winbackController.isEnabled() and not self.__winbackController.isProgressionAvailable() else 0

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/battle_results/flag_view.py
 from gui.Scaleform.lobby_entry import getLobbyStateMachine
 from gui.lobby_state_machine.routable_view import IRoutableView
 from gui.impl.gen.view_models.views.lobby.battle_results.flag.flag_view_model import FlagViewModel

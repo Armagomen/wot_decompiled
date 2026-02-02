@@ -1,4 +1,7 @@
-import importlib, logging
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/tooltips/builders.py
+import importlib
+import logging
 from typing import Any
 from gui.Scaleform.daapi.settings.config import ADVANCED_COMPLEX_TOOLTIPS
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
@@ -44,17 +47,14 @@ class SimpleBuilder(TooltipBuilder):
     __slots__ = ()
 
     def build(self, stateType, advanced_, *args, **kwargs):
-        return (
-         self._provider, args, self._linkage)
+        return (self._provider, args, self._linkage)
 
 
 class AdvancedBuilder(TooltipBuilder):
     __settingsCore = dependency.descriptor(ISettingsCore)
 
     def _getDisableAnimFlag(self):
-        if self.__settingsCore.serverSettings.settingsCache.settings.isSynced():
-            return self.__settingsCore.serverSettings.getDisableAnimTooltipFlag()
-        return True
+        return self.__settingsCore.serverSettings.getDisableAnimTooltipFlag() if self.__settingsCore.serverSettings.settingsCache.settings.isSynced() else True
 
     def _setDisableAnimFlag(self):
         if self.__settingsCore.serverSettings.settingsCache.settings.isSynced():
@@ -71,8 +71,7 @@ class DataBuilder(SimpleBuilder):
 
     def build(self, formatType, advanced_, *args, **kwargs):
         data = self._buildData(advanced_, *args, **kwargs)
-        return (
-         self._provider, data, self._linkage)
+        return (self._provider, data, self._linkage)
 
     def _buildData(self, advanced_, *args, **kwargs):
         return self._provider.buildToolTip(*args, **kwargs)
@@ -96,15 +95,10 @@ class AdvancedTooltipWindowBuilder(AdvancedBuilder):
 
     def build(self, formatType, advanced_, *args, **kwargs):
         supportAdvanced = self.supportAdvanced(self._tooltipType, *args)
-        if advanced_ and supportAdvanced:
-            return self._adProvider
-        return self._provider
+        return self._adProvider if advanced_ and supportAdvanced else self._provider
 
     def supportAdvanced(self, tooltipType, *args):
-        if self._condition is not None:
-            return self._condition(*args)
-        else:
-            return True
+        return self._condition(*args) if self._condition is not None else True
 
 
 class AdvancedDataBuilder(AdvancedBuilder):
@@ -118,14 +112,10 @@ class AdvancedDataBuilder(AdvancedBuilder):
 
     def build(self, formatType, advanced_, *args, **kwargs):
         data = self._buildData(advanced_, *args, **kwargs)
-        return (
-         self._provider, data, self._linkage)
+        return (self._provider, data, self._linkage)
 
     def supportAdvanced(self, tooltipType, *args):
-        if self._condition is not None:
-            return self._condition(*args)
-        else:
-            return True
+        return self._condition(*args) if self._condition is not None else True
 
     def _buildData(self, advanced_, *args, **kwargs):
         disableAnim = self._getDisableAnimFlag()
@@ -147,7 +137,7 @@ class AdvancedDataBuilder(AdvancedBuilder):
 
 
 class ConditionBuilder(DataBuilder):
-    __slots__ = ('_defaultLinkage', )
+    __slots__ = ('_defaultLinkage',)
 
     def __init__(self, tooltipType, linkage, defaultLinkage, provider):
         super(ConditionBuilder, self).__init__(tooltipType, linkage, provider)
@@ -180,7 +170,7 @@ class DefaultFormatBuilder(ConditionBuilder):
 
 
 class ComplexBuilder(AdvancedBuilder):
-    __slots__ = ('advanced_ComplexTooltip', )
+    __slots__ = ('advanced_ComplexTooltip',)
 
     def __init__(self, tooltipType, linkage, advancedComplexTooltips):
         super(ComplexBuilder, self).__init__(tooltipType, linkage)
@@ -197,8 +187,7 @@ class ComplexBuilder(AdvancedBuilder):
             linkage = args[0]
             item = self.advancedComplexTooltips[linkage]
             if advanced_:
-                buildTooltipData = [
-                 item, linkage]
+                buildTooltipData = [item, linkage]
                 data = advanced.ComplexAdvanced(contexts.ToolTipContext(None)).buildToolTip(buildTooltipData)
                 if not disableAnim:
                     self._setDisableAnimFlag()
@@ -235,12 +224,11 @@ class AdvancedComplexBuilder(AdvancedBuilder):
             data = self._provider.buildToolTip(*args)
             if supportAdvanced:
                 self._provider.addAdvancedBlock(data, disableAnim)
-        return (
-         self._provider, data, self._linkage)
+        return (self._provider, data, self._linkage)
 
 
 class BuildersCollection(object):
-    __slots__ = ('_builders', )
+    __slots__ = ('_builders',)
 
     def __init__(self, *builders):
         super(BuildersCollection, self).__init__()
@@ -262,13 +250,10 @@ class BuildersCollection(object):
         if type_ not in self._builders:
             self._builders[type_] = builder
         else:
-            raise SoftException(('Builder with type {} is already added').format(type_))
+            raise SoftException('Builder with type {} is already added'.format(type_))
 
     def getBuilder(self, tooltipType):
-        if tooltipType in self._builders:
-            return self._builders[tooltipType]
-        else:
-            return
+        return self._builders[tooltipType] if tooltipType in self._builders else None
 
 
 class LazyBuildersCollection(BuildersCollection):
@@ -296,13 +281,13 @@ class LazyBuildersCollection(BuildersCollection):
             try:
                 builders = imported.getTooltipBuilders()
             except AttributeError:
-                raise SoftException(('Package {0} does not have method "getTooltipBuilders", or when calling "getTooltipBuilders", it failed to instantiate one of the builders.').format(path))
+                raise SoftException('Package {0} does not have method "getTooltipBuilders", or when calling "getTooltipBuilders", it failed to instantiate one of the builders.'.format(path))
 
             for builder in builders:
                 if builder.tooltipType not in tooltipTypes:
-                    raise SoftException(('Type "{}" is not found in tooltips settings {} in {}').format(builder.tooltipType, tooltipTypes, path))
+                    raise SoftException('Type "{}" is not found in tooltips settings {} in {}'.format(builder.tooltipType, tooltipTypes, path))
                 self.addBuilder(builder)
 
             return self._builders[tooltipType]
 
-        return
+        return None

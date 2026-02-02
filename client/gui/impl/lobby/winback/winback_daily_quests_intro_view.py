@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/winback/winback_daily_quests_intro_view.py
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.impl.gen.view_models.views.lobby.winback.winback_daily_quests_intro_view_model import WinbackDailyQuestsIntroViewModel
 from gui.impl.pub import ViewImpl
@@ -23,11 +25,7 @@ class WinbackDailyQuestsIntroView(ViewImpl):
         self.__update()
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onClose, self.__onClose),
-         (
-          self.__battlePass.onBattlePassSettingsChange, self.__update))
+        return ((self.viewModel.onClose, self.__onClose), (self.__battlePass.onBattlePassSettingsChange, self.__update))
 
     def __update(self, *_):
         self.viewModel.setHasBattlePass(self.__battlePass.isActive())

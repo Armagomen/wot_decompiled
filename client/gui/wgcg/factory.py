@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/wgcg/factory.py
 import BigWorld
 from client_request_lib.requester import Requester as WebRequester
 from constants import TOKEN_TYPE

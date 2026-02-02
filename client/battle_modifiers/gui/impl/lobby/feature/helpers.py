@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_modifiers/scripts/client/battle_modifiers/gui/impl/lobby/feature/helpers.py
 from __future__ import absolute_import
 from typing import TYPE_CHECKING, Optional
 from battle_modifiers.gui.impl.lobby.feature.constants import MOD_TYPE_MAP, PHYS_TYPE_MAP, USE_TYPE_MAP, GAMEPLAY_IMPACT_MAP
@@ -21,9 +23,7 @@ def packModifierModel(modifier):
 
 def _invalidateLimits(modifier, limitsModel):
     limitsModel.clear()
-    models = [
-     _packLimitModel(modifier.minValue, LimitType.MIN),
-     _packLimitModel(modifier.maxValue, LimitType.MAX)]
+    models = [_packLimitModel(modifier.minValue, LimitType.MIN), _packLimitModel(modifier.maxValue, LimitType.MAX)]
     models = [ model for model in models if model is not None ]
     for model in models:
         limitsModel.addViewModel(model)

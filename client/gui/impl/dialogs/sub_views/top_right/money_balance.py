@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/dialogs/sub_views/top_right/money_balance.py
 from functools import partial
 import typing
 from frameworks.wulf import ViewSettings
@@ -16,23 +18,26 @@ from helpers import dependency
 from skeletons.gui.shared import IItemsCache
 if typing.TYPE_CHECKING:
     from frameworks.wulf import View
-NO_WGM_TOOLTIP_DATA = {CurrencyType.GOLD: {'header': R.strings.tooltips.header.buttons.gold.header(), 
-                       'body': R.strings.tooltips.wallet.not_available_gold.body()}, 
-   CurrencyType.CREDITS: {'header': R.strings.tooltips.header.buttons.credits.header(), 
-                          'body': R.strings.tooltips.wallet.not_available_credits.body()}, 
-   CurrencyType.CRYSTAL: {'header': R.strings.tooltips.header.buttons.crystal.header(), 
-                          'body': R.strings.tooltips.wallet.not_available_crystal.body()}, 
-   CurrencyType.FREEXP: {'header': R.strings.tooltips.header.buttons.freeXP.header(), 
-                         'body': R.strings.tooltips.wallet.not_available_freexp.body()}, 
-   CurrencyType.EQUIPCOIN: {'header': R.strings.tooltips.header.buttons.equipCoin.title(), 
-                            'body': R.strings.tooltips.wallet.not_available_equipCoin.body()}}
+NO_WGM_TOOLTIP_DATA = {CurrencyType.GOLD: {'header': R.strings.tooltips.header.buttons.gold.header(),
+                     'body': R.strings.tooltips.wallet.not_available_gold.body()},
+ CurrencyType.CREDITS: {'header': R.strings.tooltips.header.buttons.credits.header(),
+                        'body': R.strings.tooltips.wallet.not_available_credits.body()},
+ CurrencyType.CRYSTAL: {'header': R.strings.tooltips.header.buttons.crystal.header(),
+                        'body': R.strings.tooltips.wallet.not_available_crystal.body()},
+ CurrencyType.FREEXP: {'header': R.strings.tooltips.header.buttons.freeXP.header(),
+                       'body': R.strings.tooltips.wallet.not_available_freexp.body()},
+ CurrencyType.EQUIPCOIN: {'header': R.strings.tooltips.header.buttons.equipCoin.title(),
+                          'body': R.strings.tooltips.wallet.not_available_equipCoin.body()}}
 
 class MoneyBalance(ViewImpl):
     __slots__ = ('_stats', '_tooltips', '_currenciesList')
     _itemsCache = dependency.descriptor(IItemsCache)
 
     def __init__(self, layoutID=None, viewModel=None, currenciesList=None):
-        self._currenciesList = [CurrencyType.GOLD, CurrencyType.CREDITS, CurrencyType.CRYSTAL, CurrencyType.FREEXP] if currenciesList is None else currenciesList
+        self._currenciesList = [CurrencyType.GOLD,
+         CurrencyType.CREDITS,
+         CurrencyType.CRYSTAL,
+         CurrencyType.FREEXP] if currenciesList is None else currenciesList
         settings = ViewSettings(layoutID or R.views.dialogs.sub_views.topRight.MoneyBalance())
         settings.model = viewModel or MoneyBalanceViewModel()
         super(MoneyBalance, self).__init__(settings)
@@ -54,11 +59,11 @@ class MoneyBalance(ViewImpl):
 
     def _initTooltips(self):
         model = self.viewModel
-        return {CurrencyType.GOLD: DialogTemplateTooltip(viewModel=model.goldTooltip), 
-           CurrencyType.CREDITS: DialogTemplateTooltip(viewModel=model.creditsTooltip), 
-           CurrencyType.CRYSTAL: DialogTemplateTooltip(viewModel=model.crystalsTooltip), 
-           CurrencyType.FREEXP: DialogTemplateTooltip(viewModel=model.freeExpTooltip), 
-           CurrencyType.EQUIPCOIN: DialogTemplateTooltip(viewModel=model.equipCoinTooltip)}
+        return {CurrencyType.GOLD: DialogTemplateTooltip(viewModel=model.goldTooltip),
+         CurrencyType.CREDITS: DialogTemplateTooltip(viewModel=model.creditsTooltip),
+         CurrencyType.CRYSTAL: DialogTemplateTooltip(viewModel=model.crystalsTooltip),
+         CurrencyType.FREEXP: DialogTemplateTooltip(viewModel=model.freeExpTooltip),
+         CurrencyType.EQUIPCOIN: DialogTemplateTooltip(viewModel=model.equipCoinTooltip)}
 
     def _onLoading(self, *args, **kwargs):
         super(MoneyBalance, self)._onLoading(*args, **kwargs)
@@ -74,7 +79,7 @@ class MoneyBalance(ViewImpl):
         super(MoneyBalance, self)._finalize()
 
     def _moneyChangeHandler(self, *_):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             self.__setStats(model)
 
     def _updateModel(self, model):
@@ -104,5 +109,6 @@ class MoneyBalance(ViewImpl):
 
     @staticmethod
     def __WGMNotAvailableTooltipFactory(currency):
-        params = NO_WGM_TOOLTIP_DATA.get(currency, {'header': '', 'body': ''})
+        params = NO_WGM_TOOLTIP_DATA.get(currency, {'header': '',
+         'body': ''})
         return SimpleTooltipContent(R.views.common.tooltip_window.simple_tooltip_content.SimpleTooltipContent(), header=backport.text(params['header']), body=backport.text(params['body']))

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/pet_system/tooltips/pet_tooltip.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.pet_system.tooltips.pet_tooltip_model import PetTooltipModel
@@ -19,7 +21,7 @@ class PetTooltip(ViewImpl):
 
     def _onLoading(self, *args, **kwargs):
         super(PetTooltip, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setPetNameID(self.context['petNameID'])
             model.setPetType(self.context['petType'])
             model.setBreedName(self.context['breedName'])

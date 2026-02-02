@@ -1,4 +1,7 @@
-import logging, nations
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: server_side_replay/scripts/client/server_side_replay/gui/impl/lobby/utils.py
+import logging
+import nations
 from WebBrowser import getWebCache
 from adisp import adisp_async
 from ..gen.view_models.views.lobby.enums import TankmanLocation
@@ -38,18 +41,18 @@ def buildPopoverTankFilterCriteria(filters):
         if not value:
             continue
         if field == ToggleGroupType.NATION.value:
-            criteria |= REQ_CRITERIA.NATIONS(tuple(nations.INDICES[item] for item in value))
-        elif field == ToggleGroupType.VEHICLETYPE.value and value:
+            criteria |= REQ_CRITERIA.NATIONS(tuple((nations.INDICES[item] for item in value)))
+        if field == ToggleGroupType.VEHICLETYPE.value and value:
             criteria |= REQ_CRITERIA.VEHICLE.CLASSES(tuple(value))
-        elif field == ToggleGroupType.TANKMANROLE.value and value:
+        if field == ToggleGroupType.TANKMANROLE.value and value:
             roleCriteria = REQ_CRITERIA.NONE
             for role in value:
                 roleCriteria ^= REQ_CRITERIA.VEHICLE.HAS_ROLE(role)
 
             criteria |= roleCriteria
-        elif field == ToggleGroupType.VEHICLETIER.value and value:
-            criteria |= REQ_CRITERIA.VEHICLE.LEVELS(tuple(int(item) for item in value))
-        elif field == ToggleGroupType.VEHICLEGRADE.value and value:
+        if field == ToggleGroupType.VEHICLETIER.value and value:
+            criteria |= REQ_CRITERIA.VEHICLE.LEVELS(tuple((int(item) for item in value)))
+        if field == ToggleGroupType.VEHICLEGRADE.value and value:
             value = value - {TankmanLocation.INTANK.value, TankmanLocation.INBARRACKS.value}
             if not value:
                 continue
@@ -66,8 +69,7 @@ def buildPopoverTankFilterCriteria(filters):
 
 
 class WebReplaysHelper(object):
-    __slots__ = ('__callbackMethod', '__imageUrl', '__callbackDelayer', '__webCache',
-                 '__defLocalDirPath')
+    __slots__ = ('__callbackMethod', '__imageUrl', '__callbackDelayer', '__webCache', '__defLocalDirPath')
     __DEFAULT_TIMEOUT = 10.0
 
     def __init__(self, defLocalDirPath='server_replays'):

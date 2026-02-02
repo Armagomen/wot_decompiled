@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/maps_training/maps_training_base_view.py
 from gui.impl.pub import ViewImpl
 from gui.impl.lobby.common.view_mixins import LobbyHeaderVisibility
 from gui.hangar_cameras.hangar_camera_common import CameraRelatedEvents
@@ -39,15 +41,22 @@ class MapsTrainingBaseView(ViewImpl, LobbyHeaderVisibility):
 
     def _addListeners(self):
         self.viewModel.onMoveSpace += self._onMoveSpace
+        self.viewModel.onMouseOver3dScene += self._onMouseOver3dScene
 
     def _removeListeners(self):
         self.viewModel.onMoveSpace -= self._onMoveSpace
+        self.viewModel.onMouseOver3dScene -= self._onMouseOver3dScene
 
     def _onMoveSpace(self, args=None):
         if args is None:
             return
         else:
-            ctx = {'dx': args.get('dx'), 'dy': args.get('dy'), 'dz': args.get('dz')}
+            ctx = {'dx': args.get('dx'),
+             'dy': args.get('dy'),
+             'dz': args.get('dz')}
             g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.LOBBY_VIEW_MOUSE_MOVE, ctx=ctx), EVENT_BUS_SCOPE.GLOBAL)
             g_eventBus.handleEvent(events.LobbySimpleEvent(events.LobbySimpleEvent.NOTIFY_SPACE_MOVED, ctx=ctx), EVENT_BUS_SCOPE.GLOBAL)
             return
+
+    def _onMouseOver3dScene(self, args):
+        g_eventBus.handleEvent(events.LobbySimpleEvent(events.LobbySimpleEvent.NOTIFY_CURSOR_OVER_3DSCENE, ctx={'isOver3dScene': bool(args.get('isOver3dScene'))}))

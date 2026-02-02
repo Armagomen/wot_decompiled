@@ -1,4 +1,7 @@
-import struct, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/battle_cache/__init__.py
+import struct
+import BigWorld
 from debug_utils import LOG_DEBUG, LOG_WARNING, LOG_ERROR
 from skeletons.gui.battle_session import IBattleClientCache
 _CACHE_MAX_LENGTH = 4096
@@ -34,12 +37,11 @@ class BattleClientCache(IBattleClientCache):
             chunk = self._packRecord(r)
             if chunk:
                 self.__chunks[r.getRecordID()] = chunk
-            else:
-                self.__chunks.pop(r.getRecordID(), None)
+            self.__chunks.pop(r.getRecordID(), None)
 
-        blob = ('').join(self.__chunks.itervalues())
+        blob = ''.join(self.__chunks.itervalues())
         if len(blob) > _CACHE_MAX_LENGTH:
-            LOG_ERROR(('Could not store client cache on the server. Exceeded max size: {} > {}').format(len(blob), _CACHE_MAX_LENGTH))
+            LOG_ERROR('Could not store client cache on the server. Exceeded max size: {} > {}'.format(len(blob), _CACHE_MAX_LENGTH))
             return False
         else:
             player = BigWorld.player()

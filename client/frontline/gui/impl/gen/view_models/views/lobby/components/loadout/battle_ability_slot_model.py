@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/impl/gen/view_models/views/lobby/components/loadout/battle_ability_slot_model.py
 from frameworks.wulf import Array
 from frontline.gui.impl.gen.view_models.views.lobby.components.loadout.battle_ability_by_rank_model import BattleAbilityByRankModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_slot_model import BaseSlotModel
@@ -33,10 +35,10 @@ class BattleAbilitySlotModel(BaseSlotModel):
         self._setNumber(24, value)
 
     def getRank(self):
-        return self._getString(25)
+        return self._getNumber(25)
 
     def setRank(self, value):
-        self._setString(25, value)
+        self._setNumber(25, value)
 
     def getDescription(self):
         return self._getString(26)
@@ -76,7 +78,7 @@ class BattleAbilitySlotModel(BaseSlotModel):
         self._addNumberProperty('cost', 0)
         self._addNumberProperty('targetSlotId', 0)
         self._addNumberProperty('skillId', 0)
-        self._addStringProperty('rank', '')
+        self._addNumberProperty('rank', 0)
         self._addStringProperty('description', '')
         self._addStringProperty('category', '')
         self._addArrayProperty('ranks', Array())

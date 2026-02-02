@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/dialogs/recruit_new_tankman_dialog.py
 import typing
 from base_crew_dialog_template_view import BaseCrewDialogTemplateView
 from gui import SystemMessages
@@ -33,9 +35,7 @@ class RecruitNewTankmanDialog(BaseCrewDialogTemplateView):
         return self.getViewModel()
 
     def _getCallbacks(self):
-        return (
-         (
-          'inventory.1.compDescr', self._onVehiclesInventoryUpdate),)
+        return (('inventory.1.compDescr', self._onVehiclesInventoryUpdate),)
 
     def _onLoading(self, *args, **kwargs):
         self.setBackgroundImagePath(R.images.gui.maps.icons.windows.background())
@@ -50,7 +50,7 @@ class RecruitNewTankmanDialog(BaseCrewDialogTemplateView):
         return
 
     def _updateViewModel(self):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             self._fillViewModel(vm)
 
     def _fillViewModel(self, vm):

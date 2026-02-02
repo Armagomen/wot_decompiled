@@ -1,4 +1,8 @@
-import time, typing, wg_async
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_loading/state_machine/states/base.py
+import time
+import typing
+import wg_async
 from gui.game_loading import loggers
 from helpers.CallbackDelayer import CallbackDelayer
 from frameworks.state_machine import State, StateFlags, StateEvent
@@ -10,8 +14,7 @@ if typing.TYPE_CHECKING:
 _logger = loggers.getStatesLogger()
 
 class _StateWaiting(object):
-    __slots__ = ('_states', '_event', '_resetOnStateEnter', '_releaseOnStateExit',
-                 '_destroyOnStateClear')
+    __slots__ = ('_states', '_event', '_resetOnStateEnter', '_releaseOnStateExit', '_destroyOnStateClear')
 
     def __init__(self, stateName, waiting=None, resetOnStateEnter=True, releaseOnStateExit=True):
         if waiting is None:
@@ -28,7 +31,7 @@ class _StateWaiting(object):
         return
 
     def getStateName(self):
-        return self._states[(-1)]
+        return self._states[-1]
 
     def getEvent(self):
         return self._event
@@ -63,7 +66,7 @@ class _StateWaiting(object):
 
 
 class BaseState(State):
-    __slots__ = ('_waiting', )
+    __slots__ = ('_waiting',)
 
     def __init__(self, stateID, flags=StateFlags.UNDEFINED):
         super(BaseState, self).__init__(stateID=stateID, flags=flags)
@@ -117,8 +120,7 @@ class BaseState(State):
 
 
 class BaseTickingState(BaseState):
-    __slots__ = ('_tickingMode', '_stopped', '_ticker', '_nextTickTime', '_onCompleteEvent',
-                 '_stepNumber', '_isSelfTicking')
+    __slots__ = ('_tickingMode', '_stopped', '_ticker', '_nextTickTime', '_onCompleteEvent', '_stepNumber', '_isSelfTicking')
 
     def __init__(self, stateID, flags=StateFlags.UNDEFINED, tickingMode=TickingMode.MANUAL, onCompleteEvent=None):
         super(BaseTickingState, self).__init__(stateID, flags=flags)
@@ -152,10 +154,10 @@ class BaseTickingState(BaseState):
         if not self.isEntered():
             _logger.debug('[%s] can not start not entered state.', self)
             return
+        elif not self._stopped:
+            _logger.debug('[%s] already started.', self)
+            return
         else:
-            if not self._stopped:
-                _logger.debug('[%s] already started.', self)
-                return
             self._stopped = False
             nextTickDelay = self._runTick()
             _logger.debug('[%s] First tick delay <%s>.', self, nextTickDelay)
@@ -188,8 +190,9 @@ class BaseTickingState(BaseState):
             else:
                 _logger.debug('[%s] not registered in state machine.', self)
             return
-        self._nextTickTime = time.time() + nextTickDelay
-        return nextTickDelay
+        else:
+            self._nextTickTime = time.time() + nextTickDelay
+            return nextTickDelay
 
     def _onEntered(self, event):
         super(BaseTickingState, self)._onEntered(event)

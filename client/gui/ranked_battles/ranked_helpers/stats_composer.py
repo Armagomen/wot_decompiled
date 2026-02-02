@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/ranked_battles/ranked_helpers/stats_composer.py
 from collections import namedtuple
-import time, typing
+import time
+import typing
 from gui.ranked_battles.constants import RankedDossierKeys, ARCHIVE_SEASON_ID, ZERO_DIVISION_ID
 from helpers import dependency
 from skeletons.gui.shared import IItemsCache
@@ -64,7 +67,7 @@ class RankedBattlesStatsComposer(object):
         steps = self.divisionsStats.get(ZERO_DIVISION_ID, {}).get('stepsCount', 0)
         settings = self.__settings.leaguesBonusBattles
         bonusBattles = {item['battlesCount']:item['steps'] for item in settings if item['steps'] <= steps}
-        return max(bonusBattles or (0, ))
+        return max(bonusBattles or (0,))
 
     @property
     def cachedSeasonEfficiency(self):

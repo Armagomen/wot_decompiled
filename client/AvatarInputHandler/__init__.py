@@ -1,12 +1,37 @@
-import functools, logging, math, BigWorld, CGF, Keys, Math, ResMgr
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/AvatarInputHandler/__init__.py
+import functools
+import logging
+import math
+import BigWorld
+import CGF
+import Keys
+import Math
+import ResMgr
 from AvatarInputHandler.AimingSystems import disableShotPointCache
 from AvatarInputHandler.commands.armor_flashlight_control import ArmorFlashlightControl
 from AvatarInputHandler.vehicles_selection_mode import VehiclesSelectionControlMode
 from AvatarInputHandler.commands.fl_random_reserves import FLRandomReserves
-from PlayerEvents import g_playerEvents
 from aih_constants import MAP_CASE_MODES
 from helpers.CallbackDelayer import CallbackDelayer
-import BattleReplay, CommandMapping, DynamicCameras.ArcadeCamera, DynamicCameras.ArtyCamera, DynamicCameras.DualGunCamera, DynamicCameras.SniperCamera, DynamicCameras.StrategicCamera, DynamicCameras.kill_cam_camera, GenericComponents, MapCaseMode, RespawnDeathMode, TriggersManager, aih_constants, cameras, constants, control_modes, kill_cam_modes, DynamicCameras.twin_gun_camera
+import BattleReplay
+import CommandMapping
+import DynamicCameras.ArcadeCamera
+import DynamicCameras.ArtyCamera
+import DynamicCameras.DualGunCamera
+import DynamicCameras.SniperCamera
+import DynamicCameras.StrategicCamera
+import DynamicCameras.kill_cam_camera
+import GenericComponents
+import MapCaseMode
+import RespawnDeathMode
+import TriggersManager
+import aih_constants
+import cameras
+import constants
+import control_modes
+import kill_cam_modes
+import DynamicCameras.twin_gun_camera
 from AvatarInputHandler import AimingSystems, keys_handlers
 from AvatarInputHandler import aih_global_binding, gun_marker_ctrl
 from AvatarInputHandler import steel_hunter_control_modes
@@ -35,7 +60,7 @@ from player_notifications.siege_mode.notifier import SiegeModeNotifier
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.app_loader import IAppLoader
 from cgf_obsolete_script.script_game_object import ScriptGameObject, ComponentDescriptor
-from vehicles.mechanics.mechanic_info import hasVehicleMechanic
+from vehicles.mechanics.mechanic_helpers import hasVehicleDescrMechanic
 from vehicles.mechanics.mechanic_constants import VehicleMechanic
 INPUT_HANDLER_CFG = 'gui/avatar_input_handler.xml'
 _logger = logging.getLogger(__name__)
@@ -49,71 +74,50 @@ _BINDING_ID = aih_global_binding.BINDING_ID
 _CTRL_MODES = aih_constants.CTRL_MODES
 _CTRLS_FIRST = _CTRL_MODE.DEFAULT
 _CONTROL_MODE_SWITCH_COOLDOWN = 1.0
-_CTRLS_DESC_MAP = {_CTRL_MODE.ARCADE: (
-                     control_modes.ArcadeControlMode, 'arcadeMode', _CTRL_TYPE.USUAL), 
-   _CTRL_MODE.STRATEGIC: (
-                        control_modes.StrategicControlMode, 'strategicMode', _CTRL_TYPE.USUAL), 
-   _CTRL_MODE.ARTY: (
-                   control_modes.ArtyControlMode, 'artyMode', _ARTY_CTRL_TYPE), 
-   _CTRL_MODE.SNIPER: (
-                     control_modes.SniperControlMode, 'sniperMode', _CTRL_TYPE.USUAL), 
-   _CTRL_MODE.DUAL_GUN: (
-                       control_modes.DualGunControlMode, 'sniperMode', _CTRL_TYPE.USUAL), 
-   _CTRL_MODE.TWIN_GUN: (
-                       control_modes.TwinGunControlMode, 'sniperMode', _CTRL_TYPE.USUAL), 
-   _CTRL_MODE.POSTMORTEM: (
-                         control_modes.PostMortemControlMode, 'postMortemMode', _CTRL_TYPE.USUAL), 
-   _CTRL_MODE.DEBUG: (
-                    control_modes.DebugControlMode, None, _CTRL_TYPE.DEVELOPMENT), 
-   _CTRL_MODE.VIDEO: (
-                    control_modes.VideoCameraControlMode, 'videoMode', _CTRL_TYPE.OPTIONAL), 
-   _CTRL_MODE.MAP_CASE: (
-                       MapCaseMode.MapCaseControlMode, 'strategicMode', _CTRL_TYPE.USUAL), 
-   _CTRL_MODE.MAP_CASE_ARCADE: (
-                              MapCaseMode.ArcadeMapCaseControlMode, 'arcadeMode', _CTRL_TYPE.USUAL), 
-   _CTRL_MODE.MAP_CASE_EPIC: (
-                            MapCaseMode.EpicMapCaseControlMode, 'strategicMode', _CTRL_TYPE.USUAL), 
-   _CTRL_MODE.MAP_CASE_ARCADE_EPIC_MINEFIELD: (
-                                             MapCaseMode.AracdeMinefieldControleMode, 'arcadeEpicMinefieldMode', _CTRL_TYPE.USUAL), 
-   _CTRL_MODE.RESPAWN_DEATH: (
-                            RespawnDeathMode.RespawnDeathMode, 'postMortemMode', _CTRL_TYPE.USUAL), 
-   _CTRL_MODE.DEATH_FREE_CAM: (
-                             control_modes.DeathFreeCamMode, 'freeVideoMode', _CTRL_TYPE.USUAL), 
-   _CTRL_MODE.KILL_CAM: (
-                       kill_cam_modes.KillCamMode, 'killCamMode', _CTRL_TYPE.USUAL), 
-   _CTRL_MODE.LOOK_AT_KILLER: (
-                             kill_cam_modes.LookAtKillerMode, 'killCamMode', _CTRL_TYPE.USUAL), 
-   _CTRL_MODE.VEHICLES_SELECTION: (
-                                 VehiclesSelectionControlMode, 'vehiclesSelection', _CTRL_TYPE.USUAL)}
+_CTRLS_DESC_MAP = {_CTRL_MODE.ARCADE: (control_modes.ArcadeControlMode, 'arcadeMode', _CTRL_TYPE.USUAL),
+ _CTRL_MODE.STRATEGIC: (control_modes.StrategicControlMode, 'strategicMode', _CTRL_TYPE.USUAL),
+ _CTRL_MODE.ARTY: (control_modes.ArtyControlMode, 'artyMode', _ARTY_CTRL_TYPE),
+ _CTRL_MODE.SNIPER: (control_modes.SniperControlMode, 'sniperMode', _CTRL_TYPE.USUAL),
+ _CTRL_MODE.DUAL_GUN: (control_modes.DualGunControlMode, 'sniperMode', _CTRL_TYPE.USUAL),
+ _CTRL_MODE.TWIN_GUN: (control_modes.TwinGunControlMode, 'sniperMode', _CTRL_TYPE.USUAL),
+ _CTRL_MODE.POSTMORTEM: (control_modes.PostMortemControlMode, 'postMortemMode', _CTRL_TYPE.USUAL),
+ _CTRL_MODE.DEBUG: (control_modes.DebugControlMode, None, _CTRL_TYPE.DEVELOPMENT),
+ _CTRL_MODE.VIDEO: (control_modes.VideoCameraControlMode, 'videoMode', _CTRL_TYPE.OPTIONAL),
+ _CTRL_MODE.MAP_CASE: (MapCaseMode.MapCaseControlMode, 'strategicMode', _CTRL_TYPE.USUAL),
+ _CTRL_MODE.MAP_CASE_ARCADE: (MapCaseMode.ArcadeMapCaseControlMode, 'arcadeMode', _CTRL_TYPE.USUAL),
+ _CTRL_MODE.MAP_CASE_EPIC: (MapCaseMode.EpicMapCaseControlMode, 'strategicMode', _CTRL_TYPE.USUAL),
+ _CTRL_MODE.MAP_CASE_ARCADE_EPIC_MINEFIELD: (MapCaseMode.AracdeMinefieldControleMode, 'arcadeEpicMinefieldMode', _CTRL_TYPE.USUAL),
+ _CTRL_MODE.RESPAWN_DEATH: (RespawnDeathMode.RespawnDeathMode, 'postMortemMode', _CTRL_TYPE.USUAL),
+ _CTRL_MODE.DEATH_FREE_CAM: (control_modes.DeathFreeCamMode, 'freeVideoMode', _CTRL_TYPE.USUAL),
+ _CTRL_MODE.KILL_CAM: (kill_cam_modes.KillCamMode, 'killCamMode', _CTRL_TYPE.USUAL),
+ _CTRL_MODE.LOOK_AT_KILLER: (kill_cam_modes.LookAtKillerMode, 'killCamMode', _CTRL_TYPE.USUAL),
+ _CTRL_MODE.VEHICLES_SELECTION: (VehiclesSelectionControlMode, 'vehiclesSelection', _CTRL_TYPE.USUAL)}
 
 def addEmptyIfNotExits(name):
     if name not in _CTRLS_DESC_MAP:
-        _CTRLS_DESC_MAP[name] = (
-         control_modes.EmptyControlMode, None, _CTRL_TYPE.OPTIONAL)
+        _CTRLS_DESC_MAP[name] = (control_modes.EmptyControlMode, None, _CTRL_TYPE.OPTIONAL)
     return
 
 
 OVERWRITE_CTRLS_DESC_MAP = {}
 for royaleBonusCap in constants.ARENA_BONUS_TYPE.BATTLE_ROYALE_RANGE:
-    OVERWRITE_CTRLS_DESC_MAP[royaleBonusCap] = {_CTRL_MODE.POSTMORTEM: (
-                             steel_hunter_control_modes.SHPostMortemControlMode, 'postMortemMode', _CTRL_TYPE.USUAL)}
+    OVERWRITE_CTRLS_DESC_MAP[royaleBonusCap] = {_CTRL_MODE.POSTMORTEM: (steel_hunter_control_modes.SHPostMortemControlMode, 'postMortemMode', _CTRL_TYPE.USUAL)}
 
-_DYNAMIC_CAMERAS = (
- DynamicCameras.ArcadeCamera.ArcadeCamera,
+_DYNAMIC_CAMERAS = (DynamicCameras.ArcadeCamera.ArcadeCamera,
  DynamicCameras.SniperCamera.SniperCamera,
  DynamicCameras.StrategicCamera.StrategicCamera,
  DynamicCameras.ArtyCamera.ArtyCamera,
  DynamicCameras.DualGunCamera.DualGunCamera,
  DynamicCameras.twin_gun_camera.TwinGunCamera,
  DynamicCameras.kill_cam_camera.KillCamera)
-_FREE_AND_CHAT_SHORTCUT_CMD = (
- CommandMapping.CMD_CM_FREE_CAMERA, CommandMapping.CMD_CHAT_SHORTCUT_CONTEXT_COMMAND)
+_FREE_AND_CHAT_SHORTCUT_CMD = (CommandMapping.CMD_CM_FREE_CAMERA, CommandMapping.CMD_CHAT_SHORTCUT_CONTEXT_COMMAND)
 
 class DynamicCameraSettings(object):
     settings = property(lambda self: self.__dynamic)
 
     def __init__(self, dataSec):
-        self.__dynamic = {'caliberImpulses': [], 'massSensitivity': []}
+        self.__dynamic = {'caliberImpulses': [],
+         'massSensitivity': []}
         caliberSettings = dataSec['caliberImpulses']
         if caliberSettings is not None:
             self.__dynamic['caliberImpulses'] = self.__readRange(caliberSettings)
@@ -253,9 +257,7 @@ class AvatarInputHandler(CallbackDelayer, ScriptGameObject):
         self.__observerVehicle = None
         self.__commands = []
         self.__detachedCommands = []
-        self.__persistentCommands = [
-         createDevCommandsControl(),
-         PrebattleSetupsControl()]
+        self.__persistentCommands = [createDevCommandsControl(), PrebattleSetupsControl()]
         self.__remoteCameraSender = None
         self.__isGUIVisible = False
         self.__lastSwitchTime = 0
@@ -281,7 +283,7 @@ class AvatarInputHandler(CallbackDelayer, ScriptGameObject):
             if typeDescr.hasSiegeMode:
                 self.siegeModeNotifier = SiegeModeNotifier()
                 self.siegeModeNotifier.construct(vehicle)
-                if not hasVehicleMechanic(typeDescr, VehicleMechanic.PILLBOX_SIEGE_MODE):
+                if not hasVehicleDescrMechanic(typeDescr, VehicleMechanic.PILLBOX_SIEGE_MODE):
                     self.siegeModeControl = SiegeModeControl(self.siegeModeNotifier)
                     self.__commands.append(self.siegeModeControl)
             if typeDescr.isDualgunVehicle and not self.dualGunControl:
@@ -364,14 +366,10 @@ class AvatarInputHandler(CallbackDelayer, ScriptGameObject):
                 if self.isControlModeChangeAllowed():
                     player.switchObserverFPV()
                     return True
-            if not self.isObserverFPV and self.__curCtrl.handleKeyEvent(isDown, key, mods, event):
-                return True
-            return player.handleKey(isDown, key, mods)
+            return True if not self.isObserverFPV and self.__curCtrl.handleKeyEvent(isDown, key, mods, event) else player.handleKey(isDown, key, mods)
 
     def handleMouseEvent(self, dx, dy, dz):
-        if not self.__isStarted or self.__isDetached:
-            return False
-        return self.__curCtrl.handleMouseEvent(dx, dy, dz)
+        return False if not self.__isStarted or self.__isDetached else self.__curCtrl.handleMouseEvent(dx, dy, dz)
 
     def setForcedGuiControlMode(self, flags):
         result = False
@@ -395,15 +393,10 @@ class AvatarInputHandler(CallbackDelayer, ScriptGameObject):
         return result
 
     def updateShootingStatus(self, canShoot):
-        if self.__isDetached:
-            return
-        return self.__curCtrl.updateShootingStatus(canShoot)
+        return None if self.__isDetached else self.__curCtrl.updateShootingStatus(canShoot)
 
     def getDesiredShotPoint(self, ignoreAimingMode=False):
-        if self.__isDetached:
-            return None
-        else:
-            return self.__curCtrl.getDesiredShotPoint(ignoreAimingMode)
+        return None if self.__isDetached else self.__curCtrl.getDesiredShotPoint(ignoreAimingMode)
 
     def getMarkerPoint(self):
         point = None
@@ -442,9 +435,9 @@ class AvatarInputHandler(CallbackDelayer, ScriptGameObject):
     def setAutorotation(self, bValue, triggeredByKey=False):
         if not self.__curCtrl.enableSwitchAutorotationMode(triggeredByKey):
             return
+        elif not BigWorld.player().isOnArena:
+            return
         else:
-            if not BigWorld.player().isOnArena:
-                return
             if self.__isAutorotation != bValue:
                 self.__isAutorotation = bValue
                 BigWorld.player().enableOwnVehicleAutorotation(self.__isAutorotation, triggeredByKey)
@@ -607,8 +600,7 @@ class AvatarInputHandler(CallbackDelayer, ScriptGameObject):
                         player.positionControl.followCamera(False)
                         player.positionControl.bindToVehicle(True, self.__observerVehicle)
                         if player.playerVehicleID == player.getVehicleAttached().id:
-                            self.__pendingModeSwitch = (
-                             eMode, kwargs)
+                            self.__pendingModeSwitch = (eMode, kwargs)
                             return
             if isObserverMode and self.__ctrlModeName == _CTRL_MODE.POSTMORTEM:
                 if player.observedVehicleID and player.observedVehicleID != player.playerVehicleID:
@@ -683,7 +675,6 @@ class AvatarInputHandler(CallbackDelayer, ScriptGameObject):
                 player.entityGameObject.removeComponentByType(GenericComponents.ControlModeStatus)
                 player.entityGameObject.createComponent(GenericComponents.ControlModeStatus, _CTRL_MODES.index(self.__ctrlModeName))
             BigWorld.setEdgeDrawerRenderMode(1 if eMode in aih_constants.MAP_CASE_MODES else 0)
-            g_playerEvents.onAihControlModeChanged(oldEmode=prevCtrlModeName, newEmode=eMode, validPlayer=player, attachedVeh=vehicle)
             return
 
     def onObserverControlModeChanged(self, eMode):
@@ -691,9 +682,9 @@ class AvatarInputHandler(CallbackDelayer, ScriptGameObject):
         if not self.isObserverFPV:
             self.onControlModeChanged(_CTRL_MODE.POSTMORTEM)
             return
+        elif eMode in MAP_CASE_MODES:
+            return
         else:
-            if eMode in MAP_CASE_MODES:
-                return
             targetPos = self.getDesiredShotPoint() or Math.Vector3(0, 0, 0)
             _logger.debug('onObserverControlModeChanged: %s %s', eMode, targetPos)
             vehicle = BigWorld.player().getVehicleAttached()
@@ -861,8 +852,7 @@ class AvatarInputHandler(CallbackDelayer, ScriptGameObject):
             impulseDir = dirToCamera
         else:
             impulseValue *= vehicleSensitivity
-        return (
-         impulseDir, impulseValue)
+        return (impulseDir, impulseValue)
 
     def __identifyVehicleType(self):
         avatar = BigWorld.player()
@@ -982,9 +972,7 @@ class AvatarInputHandler(CallbackDelayer, ScriptGameObject):
     def __isModeSwitchInPrebattlePossible(self, eMode):
         if eMode in (_CTRL_MODE.POSTMORTEM, _CTRL_MODE.KILL_CAM, _CTRL_MODE.LOOK_AT_KILLER):
             return True
-        if self.__ctrlModeName == _CTRL_MODE.VEHICLES_SELECTION and eMode == _CTRL_MODE.ARCADE:
-            return True
-        return False
+        return True if self.__ctrlModeName == _CTRL_MODE.VEHICLES_SELECTION and eMode == _CTRL_MODE.ARCADE else False
 
 
 class _Targeting(object):
@@ -1034,12 +1022,7 @@ class _VertScreenshotCamera(object):
         self.__savedWatchers = {}
         self.__nearPlane = 0.0
         self.__farPlane = 0.0
-        self.__watcherNames = ('Render/Fov', 'Render/Near Plane', 'Render/Far Plane',
-                               'Render/Objects Far Plane/Enabled', 'Render/Shadows/qualityPreset',
-                               'Visibility/Draw tanks', 'Visibility/Control Points',
-                               'Visibility/GUI', 'Visibility/particles', 'Visibility/Sky',
-                               'Client Settings/Script tick', 'Render/Terrain/AdaptiveMesh/cascades enabled',
-                               'Render/Water/out land water')
+        self.__watcherNames = ('Render/Fov', 'Render/Near Plane', 'Render/Far Plane', 'Render/Objects Far Plane/Enabled', 'Render/Shadows/qualityPreset', 'Visibility/Draw tanks', 'Visibility/Control Points', 'Visibility/GUI', 'Visibility/particles', 'Visibility/Sky', 'Client Settings/Script tick', 'Render/Terrain/AdaptiveMesh/cascades enabled', 'Render/Water/out land water')
         return
 
     def destroy(self):

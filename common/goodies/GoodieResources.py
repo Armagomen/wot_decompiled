@@ -1,10 +1,12 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/goodies/GoodieResources.py
 from typing import TYPE_CHECKING, TypeVar
 from GoodieValue import GoodieValue
 if TYPE_CHECKING:
     from typing import Generator
 
 class GoodieResource(object):
-    __slots__ = ('_value', )
+    __slots__ = ('_value',)
 
     def __init__(self, value):
         self._value = value
@@ -16,7 +18,7 @@ class GoodieResource(object):
         return hash(self._value)
 
     def __repr__(self):
-        return ('<{} value={}>').format(self.__class__.__name__, self._value)
+        return '<{} value={}>'.format(self.__class__.__name__, self._value)
 
     @property
     def value(self):
@@ -24,9 +26,7 @@ class GoodieResource(object):
 
     @classmethod
     def provideCompatibleValueDescr(cls, actualVal, isPercent):
-        if isPercent:
-            return GoodieValue.percent(actualVal)
-        return GoodieValue.absolute(actualVal)
+        return GoodieValue.percent(actualVal) if isPercent else GoodieValue.absolute(actualVal)
 
     def iterate(self):
         yield self

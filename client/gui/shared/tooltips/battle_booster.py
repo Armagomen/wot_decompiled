@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/tooltips/battle_booster.py
 import logging
 from gui.impl import backport
 from gui.impl.gen import R
@@ -26,7 +28,7 @@ class BattleBoosterTooltipBlockConstructor(object):
         self.configuration = configuration
 
     def construct(self):
-        return
+        return None
 
 
 class HeaderBlockConstructor(BattleBoosterTooltipBlockConstructor):
@@ -38,12 +40,11 @@ class HeaderBlockConstructor(BattleBoosterTooltipBlockConstructor):
         overlayPadding = formatters.packPadding(top=SLOT_HIGHLIGHT_TYPES.TOOLTIP_BIG_OVERLAY_PADDING_TOP, left=SLOT_HIGHLIGHT_TYPES.TOOLTIP_BIG_OVERLAY_PADDING_LEFT)
         headerText = formatters.packTitleDescBlock(title=text_styles.highTitle(title), desc=text_styles.standard(backport.text(desc)), gap=-3, padding=formatters.packPadding(top=-6))
         headerImage = formatters.packItemTitleDescBlockData(img=backport.image(self._getIcon()), imgPadding=formatters.packPadding(top=7), overlayPath=backport.image(self._getOverlay()), overlayPadding=overlayPadding, padding=formatters.packPadding(left=120))
-        return [
-         headerText, headerImage]
+        return [headerText, headerImage]
 
     def _getOverlay(self):
         overlayType = self.module.getOverlayType(vehicle=self.configuration.vehicle)
-        overlayPath = R.images.gui.maps.shop.artefacts.c_180x135.dyn(('{}_overlay').format(overlayType))()
+        overlayPath = R.images.gui.maps.shop.artefacts.c_180x135.dyn('{}_overlay'.format(overlayType))()
         return overlayPath
 
     def _getIcon(self):
@@ -156,8 +157,7 @@ class EffectsBlockConstructor(BattleBoosterTooltipBlockConstructor):
             if kpi:
                 ending = R.strings.tank_setup.kpi.bonus.valueTypes.dyn(kpi.name, R.strings.tank_setup.kpi.bonus.valueTypes.default)()
                 endingText = backport.text(R.strings.tank_setup.kpi.bonus.valueTypes.brackets(), value=backport.text(ending))
-                descriptor = (' ').join((text_styles.main(module.shortDescription.replace('%s ', '', 1)),
-                 text_styles.standard(endingText)))
+                descriptor = ' '.join((text_styles.main(module.shortDescription.replace('%s ', '', 1)), text_styles.standard(endingText)))
                 value = text_styles.bonusAppliedText(getKpiValueString(kpi, kpi.value, False))
                 block.append(formatters.packTextParameterBlockData(descriptor, value, valueWidth=110, gap=15))
             else:
@@ -168,13 +168,9 @@ class EffectsBlockConstructor(BattleBoosterTooltipBlockConstructor):
     def __getSkillTexts(skillLearnt, replaceText, boostText, applyStyles):
         if applyStyles:
             if skillLearnt:
-                return (text_styles.main(replaceText),
-                 text_styles.bonusAppliedText(boostText))
-            return (text_styles.bonusAppliedText(replaceText),
-             text_styles.main(boostText))
-        return (
-         text_styles.main(replaceText),
-         text_styles.main(boostText))
+                return (text_styles.main(replaceText), text_styles.bonusAppliedText(boostText))
+            return (text_styles.bonusAppliedText(replaceText), text_styles.main(boostText))
+        return (text_styles.main(replaceText), text_styles.main(boostText))
 
 
 class BoosterHasNoEffectBlockConstructor(BattleBoosterTooltipBlockConstructor):

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/hangar_cameras/hangar_camera_settings_listener.py
 from helpers import dependency
 from skeletons.account_helpers.settings_core import ISettingsCore
 from shared_utils import BoundMethodWeakref

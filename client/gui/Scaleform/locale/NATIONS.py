@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/locale/NATIONS.py
 from debug_utils import LOG_WARNING
 
 class NATIONS(object):
@@ -23,8 +25,7 @@ class NATIONS(object):
     SWEDEN_GENETIVECASE = '#nations:sweden/genetiveCase'
     POLAND_GENETIVECASE = '#nations:poland/genetiveCase'
     ITALY_GENETIVECASE = '#nations:italy/genetiveCase'
-    ALL_GENETIVECASE_ENUM = (
-     USSR_GENETIVECASE,
+    ALL_GENETIVECASE_ENUM = (USSR_GENETIVECASE,
      GERMANY_GENETIVECASE,
      USA_GENETIVECASE,
      CHINA_GENETIVECASE,
@@ -35,8 +36,7 @@ class NATIONS(object):
      SWEDEN_GENETIVECASE,
      POLAND_GENETIVECASE,
      ITALY_GENETIVECASE)
-    ALL_ENUM = (
-     USSR,
+    ALL_ENUM = (USSR,
      GERMANY,
      USA,
      FRANCE,
@@ -61,18 +61,18 @@ class NATIONS(object):
 
     @classmethod
     def genetiveCase(cls, key0):
-        outcome = ('#nations:{}/genetiveCase').format(key0)
+        outcome = '#nations:{}/genetiveCase'.format(key0)
         if outcome not in cls.ALL_GENETIVECASE_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def all(cls, key0):
-        outcome = ('#nations:{}').format(key0)
+        outcome = '#nations:{}'.format(key0)
         if outcome not in cls.ALL_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome

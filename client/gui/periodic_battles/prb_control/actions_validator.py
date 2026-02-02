@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/periodic_battles/prb_control/actions_validator.py
 from gui.prb_control.entities.base.actions_validator import BaseActionsValidator
 from gui.prb_control.entities.base.unit.actions_validator import UnitStateValidator
 from gui.prb_control.items import ValidationResult
@@ -7,15 +9,13 @@ from gui.periodic_battles.models import PrimeTimeStatus
 def _validateModeState(controller, restrictions):
     if controller is None:
         return ValidationResult(False, restrictions.UNDEFINED, None)
+    elif not controller.isBattlesPossible():
+        return ValidationResult(False, restrictions.MODE_NO_BATTLES, None)
+    status, _, _ = controller.getPrimeTimeStatus()
+    if status == PrimeTimeStatus.NOT_SET:
+        return ValidationResult(False, restrictions.MODE_NOT_SET, None)
     else:
-        if not controller.isBattlesPossible():
-            return ValidationResult(False, restrictions.MODE_NO_BATTLES, None)
-        status, _, _ = controller.getPrimeTimeStatus()
-        if status == PrimeTimeStatus.NOT_SET:
-            return ValidationResult(False, restrictions.MODE_NOT_SET, None)
-        if status != PrimeTimeStatus.AVAILABLE:
-            return ValidationResult(False, restrictions.MODE_NOT_AVAILABLE, None)
-        return
+        return ValidationResult(False, restrictions.MODE_NOT_AVAILABLE, None) if status != PrimeTimeStatus.AVAILABLE else None
 
 
 class PrimeTimeValidator(BaseActionsValidator):
@@ -25,10 +25,7 @@ class PrimeTimeValidator(BaseActionsValidator):
 
     def _validate(self):
         validationRes = _validateModeState(self._getController(), PRE_QUEUE_RESTRICTION)
-        if validationRes is not None:
-            return validationRes
-        else:
-            return super(PrimeTimeValidator, self)._validate()
+        return validationRes if validationRes is not None else super(PrimeTimeValidator, self)._validate()
 
 
 class SquadPrimeTimeValidator(UnitStateValidator):
@@ -38,7 +35,4 @@ class SquadPrimeTimeValidator(UnitStateValidator):
 
     def _validate(self):
         validationRes = _validateModeState(self._getController(), UNIT_RESTRICTION)
-        if validationRes is not None:
-            return validationRes
-        else:
-            return super(SquadPrimeTimeValidator, self)._validate()
+        return validationRes if validationRes is not None else super(SquadPrimeTimeValidator, self)._validate()

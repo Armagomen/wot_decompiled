@@ -1,4 +1,8 @@
-import weakref, typing, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/visual_script_client/player_blocks.py
+import weakref
+import typing
+import BigWorld
 from aih_constants import CTRL_MODES
 from constants import DEFAULT_GUN_INSTALLATION_INDEX
 from visual_script import ASPECT
@@ -23,15 +27,15 @@ class PlayerMeta(Meta):
 
     @classmethod
     def blockColor(cls):
-        return 16777215
+        pass
 
     @classmethod
     def blockCategory(cls):
-        return 'Player'
+        pass
 
     @classmethod
     def blockIcon(cls):
-        return ':vse/blocks/player'
+        pass
 
     @classmethod
     def blockAspects(cls):
@@ -48,7 +52,7 @@ class PlayerEventMeta(PlayerMeta):
 
     @classmethod
     def blockIcon(cls):
-        return ':vse/blocks/arena_event'
+        pass
 
 
 class GetPlayerVehicleGun(Block, PlayerMeta):
@@ -83,8 +87,7 @@ class GetPlayerGunMarkerInfo(Block, PlayerMeta):
     @property
     def _markerInfo(self):
         avatar = self._avatar
-        if avatar:
-            return avatar.gunRotator.markerInfo
+        return avatar.gunRotator.markerInfo if avatar else None
 
     def _getPosition(self):
         markerInfo = self._markerInfo
@@ -103,8 +106,7 @@ class GetPlayerGunMarkerInfo(Block, PlayerMeta):
 
 
 class OnPlayerSnipeMode(TunableEventBlock, PlayerEventMeta, TriggerListener):
-    _EVENT_SLOT_NAMES = [
-     'onEnter', 'onExit']
+    _EVENT_SLOT_NAMES = ['onEnter', 'onExit']
 
     def onStartScript(self):
         manager = TriggersManager.g_manager
@@ -142,8 +144,7 @@ class OnPlayerSnipeMode(TunableEventBlock, PlayerEventMeta, TriggerListener):
 
 
 class OnPlayerSPGMode(TunableEventBlock, PlayerEventMeta, TriggerListener):
-    _EVENT_SLOT_NAMES = [
-     'onEnterTopDown', 'onEnterTrajectory', 'onExit']
+    _EVENT_SLOT_NAMES = ['onEnterTopDown', 'onEnterTrajectory', 'onExit']
 
     def onStartScript(self):
         manager = TriggersManager.g_manager
@@ -185,13 +186,12 @@ class OnPlayerSPGMode(TunableEventBlock, PlayerEventMeta, TriggerListener):
 
 
 class OnPlayerControlModeChange(TunableEventBlock, PlayerEventMeta, TriggerListener):
-    _EVENT_SLOT_NAMES = [
-     'OnEnter', 'OnExit']
+    _EVENT_SLOT_NAMES = ['OnEnter', 'OnExit']
     __CTRL_MODE_ANY = 'Any mode'
 
     def __init__(self, *args, **kwargs):
         super(OnPlayerControlModeChange, self).__init__(*args, **kwargs)
-        self._controlMode, = self._getInitParams()
+        self._controlMode = self._getInitParams()
         self._previousMode = self._makeDataOutputSlot('previous mode', PlayerControlMode.slotType(), None)
         self._currentMode = self._makeDataOutputSlot('current mode', PlayerControlMode.slotType(), None)
         return
@@ -199,8 +199,7 @@ class OnPlayerControlModeChange(TunableEventBlock, PlayerEventMeta, TriggerListe
     @classmethod
     def initParams(cls):
         allModes = [OnPlayerControlModeChange.__CTRL_MODE_ANY] + list(CTRL_MODES)
-        return [
-         InitParam('ControlMode', SLOT_TYPE.STR, buildStrKeysValue(*allModes), EDITOR_TYPE.STR_KEY_SELECTOR)]
+        return [InitParam('ControlMode', SLOT_TYPE.STR, buildStrKeysValue(*allModes), EDITOR_TYPE.STR_KEY_SELECTOR)]
 
     def captionText(self):
         return 'On Change Control Mode (' + self._controlMode.upper() + ')'
@@ -275,7 +274,7 @@ class PlayerControlMode(VScriptEnum):
 
     @classmethod
     def slotType(cls):
-        return 'EControlModes'
+        pass
 
     @classmethod
     def vs_enum(cls):
@@ -295,13 +294,11 @@ class PlayerControlMode(VScriptEnum):
 
     @classmethod
     def vs_aspects(cls):
-        return [
-         ASPECT.CLIENT]
+        return [ASPECT.CLIENT]
 
 
 class OnGunMarkerPenetrationStateChanged(TunableEventBlock, PlayerEventMeta):
-    _EVENT_SLOT_NAMES = [
-     'onChanged']
+    _EVENT_SLOT_NAMES = ['onChanged']
 
     def __init__(self, *args, **kwargs):
         super(OnGunMarkerPenetrationStateChanged, self).__init__(*args, **kwargs)
@@ -361,7 +358,7 @@ class GetPlayerVehicleDeviceState(Block, PlayerMeta):
                 errorVScript(self, 'unknown device identifier.')
                 return
             deviceNames = [ pn + 'Health' for pn in getPartNames(vehicles.VEHICLE_DEVICE_TYPE_NAMES[deviceIdx]) ]
-            isHas = any(te.name in deviceNames for te in BigWorld.player().vehicleTypeDescriptor.type.devices)
+            isHas = any((te.name in deviceNames for te in BigWorld.player().vehicleTypeDescriptor.type.devices))
             self._hasDevice.setValue(isHas)
         else:
             errorVScript(self, 'BigWorld.player is not player avatar.')
@@ -397,7 +394,7 @@ class GetPlayerVehicleTankmanState(Block, PlayerMeta):
                 errorVScript(self, 'unknown tankman identifier.')
                 return
             tankmanName = [ pn + 'Health' for pn in getPartNames(vehicles.VEHICLE_TANKMAN_TYPE_NAMES[tankmanIdx]) ]
-            isHas = any(te.name in tankmanName for te in BigWorld.player().vehicleTypeDescriptor.type.tankmen)
+            isHas = any((te.name in tankmanName for te in BigWorld.player().vehicleTypeDescriptor.type.tankmen))
             self._hasTankman.setValue(isHas)
         else:
             errorVScript(self, 'BigWorld.player is not player avatar.')
@@ -408,8 +405,7 @@ class GetPlayerVehicleTankmanState(Block, PlayerMeta):
 
 
 class OnPlayerVehicleDiscreteShoot(TunablePlayerVehicleEventBlock, PlayerEventMeta):
-    _EVENT_SLOT_NAMES = [
-     'onDiscreteShoot']
+    _EVENT_SLOT_NAMES = ['onDiscreteShoot']
 
     def onPlayerDiscreteShoot(self, gunInstallationIndex):
         if isMainGunInstallation(gunInstallationIndex):
@@ -421,8 +417,7 @@ class OnPlayerVehicleDiscreteShoot(TunablePlayerVehicleEventBlock, PlayerEventMe
 
 
 class OnPlayerShotMissed(TunablePlayerVehicleEventBlock, PlayerEventMeta):
-    _EVENT_SLOT_NAMES = [
-     'onMissed']
+    _EVENT_SLOT_NAMES = ['onMissed']
 
     def onPlayerShotMissed(self, gunInstallationIndex):
         if isMainGunInstallation(gunInstallationIndex):
@@ -434,8 +429,7 @@ class OnPlayerShotMissed(TunablePlayerVehicleEventBlock, PlayerEventMeta):
 
 
 class OnPlayerShotHit(TunablePlayerVehicleEventBlock, PlayerEventMeta):
-    _EVENT_SLOT_NAMES = [
-     'onHit']
+    _EVENT_SLOT_NAMES = ['onHit']
 
     def __init__(self, *args, **kwargs):
         super(OnPlayerShotHit, self).__init__(*args, **kwargs)
@@ -458,8 +452,7 @@ class OnPlayerShotHit(TunablePlayerVehicleEventBlock, PlayerEventMeta):
 
 
 class OnPlayerAutoAim(TunablePlayerVehicleEventBlock, PlayerEventMeta, TriggerListener):
-    _EVENT_SLOT_NAMES = [
-     'onEnabled', 'onDisabled']
+    _EVENT_SLOT_NAMES = ['onEnabled', 'onDisabled']
 
     def onStartScript(self):
         manager = TriggersManager.g_manager
@@ -497,8 +490,7 @@ class OnPlayerAutoAim(TunablePlayerVehicleEventBlock, PlayerEventMeta, TriggerLi
 
 
 class OnPlayerMoveVehicle(TunablePlayerVehicleEventBlock, PlayerEventMeta):
-    _EVENT_SLOT_NAMES = [
-     'onMove']
+    _EVENT_SLOT_NAMES = ['onMove']
 
     def __init__(self, *args, **kwargs):
         super(OnPlayerMoveVehicle, self).__init__(*args, **kwargs)
@@ -530,8 +522,7 @@ class OnPlayerMoveVehicle(TunablePlayerVehicleEventBlock, PlayerEventMeta):
 
 
 class OnPlayerVehicleDetectEnemy(TunablePlayerVehicleEventBlock, PlayerEventMeta):
-    _EVENT_SLOT_NAMES = [
-     'onDetect', 'onLost']
+    _EVENT_SLOT_NAMES = ['onDetect', 'onLost']
 
     def __init__(self, *args, **kwargs):
         super(OnPlayerVehicleDetectEnemy, self).__init__(*args, **kwargs)
@@ -552,8 +543,7 @@ class OnPlayerVehicleDetectEnemy(TunablePlayerVehicleEventBlock, PlayerEventMeta
 
 
 class OnPlayerVehicleFireEvent(TunablePlayerVehicleEventBlock, PlayerEventMeta):
-    _EVENT_SLOT_NAMES = [
-     'onFire', 'onFireEnds']
+    _EVENT_SLOT_NAMES = ['onFire', 'onFireEnds']
 
     def onPlayerVehicleFireEvent(self, isStart):
         if isStart:
@@ -569,8 +559,7 @@ class OnPlayerVehicleFireEvent(TunablePlayerVehicleEventBlock, PlayerEventMeta):
 
 
 class OnPlayerVehicleContinuousBurstStart(TunablePlayerVehicleEventBlock, PlayerEventMeta):
-    _EVENT_SLOT_NAMES = [
-     'onContinuousBurstStart']
+    _EVENT_SLOT_NAMES = ['onContinuousBurstStart']
 
     def onPlayerContinuousBurstStart(self, gunInstallationIndex):
         if isMainGunInstallation(gunInstallationIndex):
@@ -582,8 +571,7 @@ class OnPlayerVehicleContinuousBurstStart(TunablePlayerVehicleEventBlock, Player
 
 
 class OnPlayerVehicleContinuousBurstStop(TunablePlayerVehicleEventBlock, PlayerEventMeta):
-    _EVENT_SLOT_NAMES = [
-     'onContinuousBurstStop']
+    _EVENT_SLOT_NAMES = ['onContinuousBurstStop']
 
     def onPlayerContinuousBurstStop(self, gunInstallationIndex):
         if isMainGunInstallation(gunInstallationIndex):
@@ -595,8 +583,7 @@ class OnPlayerVehicleContinuousBurstStop(TunablePlayerVehicleEventBlock, PlayerE
 
 
 class OnPlayerVehicleTankmanEvent(TunablePlayerVehicleEventBlock, PlayerEventMeta):
-    _EVENT_SLOT_NAMES = [
-     'onShocked', 'onHealed']
+    _EVENT_SLOT_NAMES = ['onShocked', 'onHealed']
 
     def __init__(self, *args, **kwargs):
         super(OnPlayerVehicleTankmanEvent, self).__init__(*args, **kwargs)
@@ -622,8 +609,10 @@ class OnPlayerVehicleTankmanEvent(TunablePlayerVehicleEventBlock, PlayerEventMet
 
 
 class OnPlayerVehicleDeviceCrit(TunablePlayerVehicleEventBlock, PlayerEventMeta):
-    _EVENT_SLOT_NAMES = [
-     'onDamaged', 'onDestroyed', 'onHealed', 'onAutoHealToDamaged']
+    _EVENT_SLOT_NAMES = ['onDamaged',
+     'onDestroyed',
+     'onHealed',
+     'onAutoHealToDamaged']
 
     def __init__(self, *args, **kwargs):
         super(OnPlayerVehicleDeviceCrit, self).__init__(*args, **kwargs)
@@ -649,8 +638,7 @@ class OnPlayerVehicleDeviceCrit(TunablePlayerVehicleEventBlock, PlayerEventMeta)
 
 
 class OnPlayerVehicleAreaTrigger(TunablePlayerVehicleEventBlock, PlayerEventMeta):
-    _EVENT_SLOT_NAMES = [
-     'onEnter', 'onExit']
+    _EVENT_SLOT_NAMES = ['onEnter', 'onExit']
 
     def __init__(self, *args, **kwargs):
         super(OnPlayerVehicleAreaTrigger, self).__init__(*args, **kwargs)
@@ -669,14 +657,11 @@ class OnPlayerVehicleAreaTrigger(TunablePlayerVehicleEventBlock, PlayerEventMeta
         pass
 
     def validate(self):
-        if not self._trigger.hasValue():
-            return 'Trigger value is required'
-        return super(OnPlayerVehicleAreaTrigger, self).validate()
+        return 'Trigger value is required' if not self._trigger.hasValue() else super(OnPlayerVehicleAreaTrigger, self).validate()
 
 
 class OnShowTracer(TunablePlayerVehicleEventBlock, PlayerEventMeta):
-    _EVENT_SLOT_NAMES = [
-     'onShow']
+    _EVENT_SLOT_NAMES = ['onShow']
 
     def __init__(self, *args, **kwargs):
         super(OnShowTracer, self).__init__(*args, **kwargs)
@@ -768,7 +753,7 @@ class GetPlayerEquipmentState(Block, PlayerMeta):
                 if item.getDescriptor().name == equipName:
                     return item
 
-        return
+        return None
 
     def _isEquipped(self):
         self._equipped.setValue(self._equipment is not None)
@@ -797,8 +782,7 @@ class GetPlayerEquipmentState(Block, PlayerMeta):
 
 
 class OnPlayerVehicleStun(TunablePlayerVehicleEventBlock, PlayerEventMeta):
-    _EVENT_SLOT_NAMES = [
-     'onStun', 'onStunHealed', 'onStunAutoHeal']
+    _EVENT_SLOT_NAMES = ['onStun', 'onStunHealed', 'onStunAutoHeal']
 
     def __init__(self, *args, **kwargs):
         super(OnPlayerVehicleStun, self).__init__(*args, **kwargs)
@@ -833,8 +817,7 @@ class OnPlayerVehicleStun(TunablePlayerVehicleEventBlock, PlayerEventMeta):
 
 
 class OnVehicleSixthSenseActivated(TunablePlayerVehicleEventBlock, PlayerEventMeta):
-    _EVENT_SLOT_NAMES = [
-     'onDetected']
+    _EVENT_SLOT_NAMES = ['onDetected']
 
     @TunableEventBlock.eventProcessor
     def onSixthSenceActivated(self):
@@ -842,8 +825,7 @@ class OnVehicleSixthSenseActivated(TunablePlayerVehicleEventBlock, PlayerEventMe
 
 
 class OnPlayerUsedAOEEquipment(TunablePlayerVehicleEventBlock, PlayerEventMeta):
-    _EVENT_SLOT_NAMES = [
-     'onEquipmentUsed']
+    _EVENT_SLOT_NAMES = ['onEquipmentUsed']
 
     def __init__(self, *args, **kwargs):
         super(OnPlayerUsedAOEEquipment, self).__init__(*args, **kwargs)

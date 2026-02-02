@@ -1,4 +1,7 @@
-import BigWorld, Event
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/VehicleRespawnComponent.py
+import BigWorld
+import Event
 from constants import RespawnState, VEHICLE_SETTING, IS_VS_EDITOR
 from helpers import dependency
 from script_component.DynamicScriptComponent import DynamicScriptComponent
@@ -16,8 +19,8 @@ class VehicleRespawnComponent(DynamicScriptComponent):
 
     def onDestroy(self):
         super(VehicleRespawnComponent, self).onDestroy()
-        if hasattr(self.entity, 'onAppearanceReady'):
-            self.entity.onAppearanceReady -= self._onVehicleAppeared
+        if hasattr(self.entity, 'events'):
+            self.entity.events.onAppearanceReady -= self._onVehicleAppeared
 
     def chooseSpawnGroup(self, groupName):
         self.cell.chooseSpawnGroup(groupName)
@@ -47,7 +50,7 @@ class VehicleRespawnComponent(DynamicScriptComponent):
             return
 
     def _respawnVehicle(self):
-        self.entity.onAppearanceReady += self._onVehicleAppeared
+        self.entity.events.onAppearanceReady += self._onVehicleAppeared
         avatar = BigWorld.player()
         avatar.startResurrecting(self.entity.id)
         avatar.redrawVehicleOnRespawn(self.entity.id, self.entity.publicInfo.compDescr, self.entity.publicInfo.outfit)
@@ -67,12 +70,13 @@ class VehicleRespawnComponent(DynamicScriptComponent):
             ownVehicle.initialUpdate(force=True)
             avatar.updateVehicleSetting(self.entity.id, VEHICLE_SETTING.CURRENT_SHELLS, self.entity.ownVehicle.currentShell)
             avatar.updateVehicleSetting(self.entity.id, VEHICLE_SETTING.NEXT_SHELLS, self.entity.ownVehicle.nextShell)
-            self.entity.onAppearanceReady -= self._onVehicleAppeared
+            self.entity.events.onAppearanceReady -= self._onVehicleAppeared
             return
 
     def _explodeVehicleBeforeRespawn(self):
         avatar = BigWorld.player()
         if avatar is None or avatar.playerVehicleID != self.entity.id:
             return
-        RespawnDestroyEffect.play(self.entity.id)
-        return
+        else:
+            RespawnDestroyEffect.play(self.entity.id)
+            return

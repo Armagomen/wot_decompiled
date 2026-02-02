@@ -1,4 +1,7 @@
-import operator, nations
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/techtree/techtree_events.py
+import operator
+import nations
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import TOP_OF_TREE_CONFIG
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -21,7 +24,7 @@ class _SettingsCache(object):
     _NOTIFIED = 'notified'
 
     def update(self, actionIDs):
-        AccountSettings.setSettings(TOP_OF_TREE_CONFIG, dict((actionID, _SettingsCache._getSettings(actionID)) for actionID in actionIDs))
+        AccountSettings.setSettings(TOP_OF_TREE_CONFIG, dict(((actionID, _SettingsCache._getSettings(actionID)) for actionID in actionIDs)))
 
     def viewedNations(self):
         settings = _SettingsCache._getSettings()
@@ -46,9 +49,8 @@ class _SettingsCache(object):
 
     @staticmethod
     def _defaultValue():
-        return {_SettingsCache._NATIONS: [
-                                   False] * len(nations.NAMES), 
-           _SettingsCache._NOTIFIED: False}
+        return {_SettingsCache._NATIONS: [False] * len(nations.NAMES),
+         _SettingsCache._NOTIFIED: False}
 
     @staticmethod
     def _setSettings(actionID, value):
@@ -59,10 +61,7 @@ class _SettingsCache(object):
     @staticmethod
     def _getSettings(actionID=None):
         settings = AccountSettings.getSettings(TOP_OF_TREE_CONFIG)
-        if actionID is None:
-            return settings
-        else:
-            return settings.get(actionID, _SettingsCache._defaultValue())
+        return settings if actionID is None else settings.get(actionID, _SettingsCache._defaultValue())
 
 
 class TechTreeEventsListener(ITechTreeEventsListener):
@@ -93,10 +92,7 @@ class TechTreeEventsListener(ITechTreeEventsListener):
 
     def getUserName(self, actionID):
         action = self.__actions.get(actionID, None)
-        if action is None:
-            return str()
-        else:
-            return action.getUserName()
+        return str() if action is None else action.getUserName()
 
     def getVehicles(self, nationID=None):
         vehicles = set()
@@ -119,23 +115,15 @@ class TechTreeEventsListener(ITechTreeEventsListener):
                 nationIDs = self.__getNations(actionID)
             else:
                 nationIDs = set.union(*[ self.__getNations(actionID) for actionID in self.__actions ])
-            if unviewed:
-                return nationIDs.difference(self.__settings.viewedNations())
-            return nationIDs
+            return nationIDs.difference(self.__settings.viewedNations()) if unviewed else nationIDs
 
     def getTimeTillEnd(self, actionID):
         action = self.__actions.get(actionID, None)
-        if action is None:
-            return 0
-        else:
-            return action.getFinishTimeLeft()
+        return 0 if action is None else action.getFinishTimeLeft()
 
     def getFinishTime(self, actionID):
         action = self.__actions.get(actionID, None)
-        if action is None:
-            return 0
-        else:
-            return action.getFinishTime()
+        return 0 if action is None else action.getFinishTime()
 
     def hasActiveAction(self, vehicleCD, nationID=None):
         return bool(self.__getActions(vehicleCD, nationID))
@@ -168,17 +156,11 @@ class TechTreeEventsListener(ITechTreeEventsListener):
 
     def __getUserName(self, actionID):
         action = self.__actions.get(actionID, None)
-        if action is None:
-            return str()
-        else:
-            return action.getUserName()
+        return str() if action is None else action.getUserName()
 
     def __getActualEventID(self, actionIDs):
         actionItems = [ pair for pair in self.__actions.items() if pair[0] in actionIDs ]
-        if not actionItems:
-            return None
-        else:
-            return min(((k, v.getFinishTime()) for k, v in actionItems), key=operator.itemgetter(1))[0]
+        return None if not actionItems else min(((k, v.getFinishTime()) for k, v in actionItems), key=operator.itemgetter(1))[0]
 
     def __onAccountShowGUI(self, ctx):
         self.__notifyAboutExpiration()
@@ -189,10 +171,10 @@ class TechTreeEventsListener(ITechTreeEventsListener):
         expireTime = min([ action.getFinishTimeLeft() for action in self.__actions.values() ])
         if ONE_DAY <= expireTime <= _NOTIFY_THRESHOLD:
             actionIDs = [ aID for aID, action in self.__actions.items() if action.getFinishTimeLeft() == expireTime ]
-            if actionIDs and any(self.__actionNotifierCondition(aID) for aID in actionIDs):
-                self.__systemMessages.proto.serviceChannel.pushClientMessage({'actionName': self.getUserName(actionIDs[0]), 
-                   'timeLeft': expireTime, 
-                   'single': len(self.actions) == 1}, SCH_CLIENT_MSG_TYPE.TECH_TREE_ACTION_DISCOUNT)
+            if actionIDs and any((self.__actionNotifierCondition(aID) for aID in actionIDs)):
+                self.__systemMessages.proto.serviceChannel.pushClientMessage({'actionName': self.getUserName(actionIDs[0]),
+                 'timeLeft': expireTime,
+                 'single': len(self.actions) == 1}, SCH_CLIENT_MSG_TYPE.TECH_TREE_ACTION_DISCOUNT)
                 map(self.__settings.setNotified, actionIDs)
 
     def __actionNotifierCondition(self, actionID):
@@ -203,25 +185,20 @@ class TechTreeEventsListener(ITechTreeEventsListener):
 
         vehicles = self.__items[actionID].keys()
         isNotified = self.__settings.isNotified(actionID)
-        return any(invalidateVehicle(vehicle, vehicleDossier) for vehicle in vehicles) and not isNotified
+        return any((invalidateVehicle(vehicle, vehicleDossier) for vehicle in vehicles)) and not isNotified
 
     def __getVehicleCDsWereInBattle(self):
         accDossier = self.__itemsCache.items.getAccountDossier(None)
-        if accDossier:
-            return set(accDossier.getTotalStats().getVehicles().keys())
-        else:
-            return set()
+        return set(accDossier.getTotalStats().getVehicles().keys()) if accDossier else set()
 
     def __getActions(self, vehicleCD=None, nationID=None):
 
         def _filterFunc(actionID):
             vehicles = self.__getVehicles(actionID, nationID)
             if vehicleCD is not None:
-                return any(vehicleCD == v.intCD for v in vehicles)
+                return any((vehicleCD == v.intCD for v in vehicles))
             else:
-                if nationID is not None:
-                    return bool(vehicles)
-                return False
+                return bool(vehicles) if nationID is not None else False
 
         return filter(_filterFunc, self.actions)
 

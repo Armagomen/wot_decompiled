@@ -1,4 +1,8 @@
-import logging, urlparse, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/account_helpers/offers/cache.py
+import logging
+import urlparse
+import typing
 from helpers import dependency
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.offers import IOffersDataProvider
@@ -34,12 +38,16 @@ class ExternalCache(BaseExternalCache):
                 url += '/'
             self._cdnRootUrl = url
             root = urlparse.urlparse(self._cdnRootUrl)
-            host = urlparse.urlunsplit((root.scheme, root.netloc, '', '', ''))
-            resMap = {'localizations': set(), 'images': set()}
+            host = urlparse.urlunsplit((root.scheme,
+             root.netloc,
+             '',
+             '',
+             ''))
+            resMap = {'localizations': set(),
+             'images': set()}
             for offer in self._offersProvider.iUnlockedOffers():
                 resMap['localizations'].update({offer.cdnLocFilePath})
-                resMap['images'].update({
-                 offer.cdnBannerLogoPath,
+                resMap['images'].update({offer.cdnBannerLogoPath,
                  offer.cdnLogoPath,
                  offer.cdnGiftsBackgroundPath,
                  offer.cdnGiftsTokenImgPath,
@@ -47,9 +55,7 @@ class ExternalCache(BaseExternalCache):
                  offer.cdnSignBigImgPath})
                 for gift in offer.availableGifts:
                     resMap['localizations'].update({gift.cdnLocFilePath})
-                    resMap['images'].update({
-                     gift.cdnImagePath,
-                     gift.cdnIconPath})
+                    resMap['images'].update({gift.cdnImagePath, gift.cdnIconPath})
 
             manifest = []
             for resName, filePaths in resMap.iteritems():

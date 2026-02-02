@@ -1,4 +1,7 @@
-import Event, constants
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/IGR.py
+import Event
+import constants
 from PlayerEvents import g_playerEvents
 from skeletons.gui.game_control import IIGRController
 

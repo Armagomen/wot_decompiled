@@ -1,6 +1,14 @@
-import math, sys
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/server_events/EventsCache.py
+import math
+import sys
 from collections import defaultdict, namedtuple
-import typing, BigWorld, motivation_quests, customization_quests, nations, static_quests
+import typing
+import BigWorld
+import motivation_quests
+import customization_quests
+import nations
+import static_quests
 from BWUtil import AsyncReturn
 from Event import Event, EventManager
 from PlayerEvents import g_playerEvents
@@ -31,11 +39,10 @@ from wg_async import wg_async, wg_await, await_callback
 if typing.TYPE_CHECKING:
     from typing import Optional, Dict, Callable, Union
     from gui.server_events.event_items import DailyEpicTokenQuest, DailyQuest
-_ProgressiveReward = namedtuple('_ProgressiveReward', ('currentStep', 'probability',
-                                                       'maxSteps'))
+_ProgressiveReward = namedtuple('_ProgressiveReward', ('currentStep', 'probability', 'maxSteps'))
 
 class _DailyQuestsData(object):
-    __slots__ = ('_lastReroll', )
+    __slots__ = ('_lastReroll',)
 
     def __init__(self, last_reroll=sys.maxint, **kwargs):
         self._lastReroll = last_reroll
@@ -60,9 +67,7 @@ class _WeeklyQuestsData(object):
         return self._rerolls
 
     def getNextAvailableRerollTimestamp(self, id):
-        if id not in self._rerolls or not self._rerolls[id]:
-            return 0
-        return self._rerolls[id] + getWeeklyRerollTimeout()
+        return 0 if id not in self._rerolls or not self._rerolls[id] else self._rerolls[id] + getWeeklyRerollTimeout()
 
 
 def _motiveQuestMaker(qID, qData, progress):
@@ -81,8 +86,7 @@ class DefaultQuestMaker(object):
 
 
 class EventsCache(IEventsCache):
-    USER_QUESTS = (
-     EVENT_TYPE.BATTLE_QUEST,
+    USER_QUESTS = (EVENT_TYPE.BATTLE_QUEST,
      EVENT_TYPE.TOKEN_QUEST,
      EVENT_TYPE.PERSONAL_QUEST,
      EVENT_TYPE.PERSONAL_MISSION)
@@ -233,8 +237,7 @@ class EventsCache(IEventsCache):
             isNeedToInvalidate = self.__needCommonSync and isQuestDataUpdated or isEventsDataUpdated
             hasVehicleUnlocks = False
             diffStats = diff.get('stats', {})
-            for intCD in diffStats.get('unlocks', set()) | diffStats.get(('unlocks',
-                                                                          '_r'), set()):
+            for intCD in diffStats.get('unlocks', set()) | diffStats.get(('unlocks', '_r'), set()):
                 if getTypeOfCompactDescr(intCD) == GUI_ITEM_TYPE.VEHICLE:
                     hasVehicleUnlocks = True
                     break
@@ -258,6 +261,10 @@ class EventsCache(IEventsCache):
 
         return self._getQuests(userFilterFunc)
 
+    def getUngroupedBasicQuestByID(self, qID):
+        data = self.__getQuestsData()
+        return None if qID not in data else self._makeQuest(qID, data[qID])
+
     def getActiveQuests(self, filterFunc=None):
         filterFunc = filterFunc or (lambda a: True)
         isPremiumQuestsEnable = self.lobbyContext.getServerSettings().getPremQuestsConfig().get('enabled', False)
@@ -266,9 +273,7 @@ class EventsCache(IEventsCache):
         def userFilterFunc(q):
             if not isBattleMattersEnabled and isBattleMattersQuestID(q.getID()):
                 return False
-            if not isPremiumQuestsEnable and isPremium(q.getGroupID()):
-                return False
-            return q.getFinishTimeLeft() and filterFunc(q)
+            return False if not isPremiumQuestsEnable and isPremium(q.getGroupID()) else q.getFinishTimeLeft() and filterFunc(q)
 
         return self.getQuests(userFilterFunc)
 
@@ -295,9 +300,7 @@ class EventsCache(IEventsCache):
                     return False
             if isMapsTraining(qGroup):
                 return q.shouldBeShown()
-            if isRankedSeasonOff and (isRankedDaily(qGroup) or isRankedPlatform(qGroup)):
-                return False
-            return filterFunc(q)
+            return False if isRankedSeasonOff and (isRankedDaily(qGroup) or isRankedPlatform(qGroup)) else filterFunc(q)
 
         return self.getActiveQuests(userFilterFunc)
 
@@ -321,9 +324,7 @@ class EventsCache(IEventsCache):
         filterFunc = filterFunc or (lambda a: True)
 
         def userFilterFunc(q):
-            if not includeEpic and q.getType() == EVENT_TYPE.TOKEN_QUEST:
-                return False
-            return filterFunc(q)
+            return False if not includeEpic and q.getType() == EVENT_TYPE.TOKEN_QUEST else filterFunc(q)
 
         return self._getDailyQuests(userFilterFunc)
 
@@ -416,10 +417,7 @@ class EventsCache(IEventsCache):
                 stepNameIdx = entity[aei.ACTION_STEP_IDX]
                 actionStep = steps[stepNameIdx]
                 intersectedActions = entity[aei.AFFECTED_ACTIONS_IDX]
-                return [
-                 actionName,
-                 actionStep,
-                 intersectedActions]
+                return [actionName, actionStep, intersectedActions]
         return []
 
     def getItemAction(self, item, isBuying=True, forCredits=False):
@@ -446,7 +444,7 @@ class EventsCache(IEventsCache):
         for (key, value), actionID in values:
             if forCredits and key == 'creditsPriceMultiplier':
                 result.append((value, actionID))
-            elif not forCredits and key == 'goldPriceMultiplier':
+            if not forCredits and key == 'goldPriceMultiplier':
                 result.append((value, actionID))
 
         result.extend(self.__actionsCache[ACTION_SECTION_TYPE.BOOSTER][actionType].get(boosterID, tuple()))
@@ -476,16 +474,16 @@ class EventsCache(IEventsCache):
         start, finish = (0, 0)
 
         def containsHeroToAdvent(a):
-            return any(step.get('name') == 'HeroTankAdventCalendarRedirect' for step in a.getData().get('steps', []))
+            return any((step.get('name') == 'HeroTankAdventCalendarRedirect' for step in a.getData().get('steps', [])))
 
         action = first(self.getActions(containsHeroToAdvent).values())
         if action is not None:
             start = action.getStartTimeRaw()
             finish = action.getFinishTimeRaw()
-            isEnabled = any(m.getIsEnabled() for m in action.getModifiers())
-        return {'isEnabled': isEnabled, 
-           'start': start, 
-           'finish': finish}
+            isEnabled = any((m.getIsEnabled() for m in action.getModifiers()))
+        return {'isEnabled': isEnabled,
+         'start': start,
+         'finish': finish}
 
     def isBalancedSquadEnabled(self):
         return bool(self.__getUnitRestrictions().get('enabled', False))
@@ -561,12 +559,12 @@ class EventsCache(IEventsCache):
         alias = None
 
         def containsLobbyHeaderTabCounter(a):
-            return any(step.get('name') == 'LobbyHeaderTabCounterModification' for step in a.getData().get('steps', []))
+            return any((step.get('name') == 'LobbyHeaderTabCounterModification' for step in a.getData().get('steps', [])))
 
         action = first(self.getActions(containsLobbyHeaderTabCounter).values())
         if action is not None:
-            counterValue = first(m.getCounterValue() for m in action.getModifiers())
-            alias = first(m.getAlias() for m in action.getModifiers())
+            counterValue = first((m.getCounterValue() for m in action.getModifiers()))
+            alias = first((m.getAlias() for m in action.getModifiers()))
         return (alias, counterValue)
 
     def _getQuests(self, filterFunc=None, includePersonalMissions=False, makeRelations=True):
@@ -701,8 +699,7 @@ class EventsCache(IEventsCache):
                     parents[childID][tokenID].append(parentID)
                     parentsName[childID][tokenID].append(quests[parentID].getUserName())
 
-        return (
-         children, parents, parentsName)
+        return (children, parents, parentsName)
 
     def __invalidateData(self, callback=None):
         self.__clearCache()
@@ -722,8 +719,7 @@ class EventsCache(IEventsCache):
                 for k in values:
                     if k in currentSection:
                         currentSection[k] += values[k]
-                    else:
-                        currentSection[k] = values[k]
+                    currentSection[k] = values[k]
 
         rareAchieves = set()
         invalidateTimeLeft = sys.maxint
@@ -734,7 +730,7 @@ class EventsCache(IEventsCache):
                 for bonus in dossierBonuses:
                     records = bonus.getRecords()
                     storage.update(set(bonus.getRecords().keys()))
-                    rareAchieves |= set(rId for r, rId in records.iteritems() if r[0] == ACHIEVEMENT_BLOCK.RARE)
+                    rareAchieves |= set((rId for r, rId in records.iteritems() if r[0] == ACHIEVEMENT_BLOCK.RARE))
 
             timeLeftInfo = q.getNearestActivityTimeLeft()
             if timeLeftInfo is not None:
@@ -745,8 +741,7 @@ class EventsCache(IEventsCache):
                 else:
                     intervalBeginTimeLeft, (intervalStart, intervalEnd) = timeLeftInfo
                     invalidateTimeLeft = min(invalidateTimeLeft, intervalBeginTimeLeft + intervalEnd - intervalStart)
-            else:
-                invalidateTimeLeft = min(invalidateTimeLeft, q.getFinishTimeLeft())
+            invalidateTimeLeft = min(invalidateTimeLeft, q.getFinishTimeLeft())
 
         self.rareAchievesCache.request(rareAchieves)
         for q in self.getFutureEvents().itervalues():
@@ -799,9 +794,7 @@ class EventsCache(IEventsCache):
             for quest in quests:
                 if quest in self.__quests2actions:
                     self.__quests2actions[quest].append(action)
-                else:
-                    self.__quests2actions[quest] = [
-                     action]
+                self.__quests2actions[quest] = [action]
 
     @classmethod
     def __getEventsData(cls, eventsTypeName):
@@ -843,8 +836,7 @@ class EventsCache(IEventsCache):
 
     def __getWeeklyQuestsIterator(self):
         for qID, qData in self.__getWeeklyQuestsData().iteritems():
-            yield (
-             qID, self._makeQuest(qID, qData))
+            yield (qID, self._makeQuest(qID, qData))
 
     def __getCommonQuestsIterator(self):
         questsData = self.__getQuestsData()
@@ -857,21 +849,15 @@ class EventsCache(IEventsCache):
 
         motiveQuests = motivation_quests.g_cache.getAllQuests() or []
         for questDescr in motiveQuests:
-            yield (
-             questDescr.questID,
-             self._makeQuest(questDescr.questID, questDescr.questData, maker=_motiveQuestMaker))
+            yield (questDescr.questID, self._makeQuest(questDescr.questID, questDescr.questData, maker=_motiveQuestMaker))
 
         c11nQuests = customization_quests.g_cust_cache.values()
         for questDescr in c11nQuests:
-            yield (
-             questDescr.questID,
-             self._makeQuest(questDescr.questID, questDescr.questClientData))
+            yield (questDescr.questID, self._makeQuest(questDescr.questID, questDescr.questClientData))
 
         staticQuests = static_quests.g_staticCache.getAllQuests() or []
         for questDescr in staticQuests:
-            yield (
-             questDescr.questID,
-             self._makeQuest(questDescr.questID, questDescr.questData))
+            yield (questDescr.questID, self._makeQuest(questDescr.questID, questDescr.questData))
 
     def __loadInvalidateCallback(self, duration):
         LOG_DEBUG('load quest window invalidation callback (secs)', duration)

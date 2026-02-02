@@ -1,51 +1,41 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/BattleDamageLogPanelMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class BattleDamageLogPanelMeta(BaseDAAPIComponent):
 
     def as_setSettingsDamageLogComponentS(self, isVisible, isColorBlind):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setSettingsDamageLogComponent(isVisible, isColorBlind)
+        return self.flashObject.as_setSettingsDamageLogComponent(isVisible, isColorBlind) if self._isDAAPIInited() else None
 
     def as_summaryStatsS(self, damage, blocked, assist, stun):
-        if self._isDAAPIInited():
-            return self.flashObject.as_summaryStats(damage, blocked, assist, stun)
+        return self.flashObject.as_summaryStats(damage, blocked, assist, stun) if self._isDAAPIInited() else None
 
     def as_updateSummaryDamageValueS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateSummaryDamageValue(value)
+        return self.flashObject.as_updateSummaryDamageValue(value) if self._isDAAPIInited() else None
 
     def as_updateSummaryBlockedValueS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateSummaryBlockedValue(value)
+        return self.flashObject.as_updateSummaryBlockedValue(value) if self._isDAAPIInited() else None
 
     def as_updateSummaryAssistValueS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateSummaryAssistValue(value)
+        return self.flashObject.as_updateSummaryAssistValue(value) if self._isDAAPIInited() else None
 
     def as_updateSummaryStunValueS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateSummaryStunValue(value)
+        return self.flashObject.as_updateSummaryStunValue(value) if self._isDAAPIInited() else None
 
     def as_detailStatsTopS(self, isVisible, isShortMode, messages):
-        if self._isDAAPIInited():
-            return self.flashObject.as_detailStatsTop(isVisible, isShortMode, messages)
+        return self.flashObject.as_detailStatsTop(isVisible, isShortMode, messages) if self._isDAAPIInited() else None
 
     def as_addDetailMessageTopS(self, value, actionTypeImg, vehicleTypeImg, vehicleName, shellTypeStr, shellTypeBG):
-        if self._isDAAPIInited():
-            return self.flashObject.as_addDetailMessageTop(value, actionTypeImg, vehicleTypeImg, vehicleName, shellTypeStr, shellTypeBG)
+        return self.flashObject.as_addDetailMessageTop(value, actionTypeImg, vehicleTypeImg, vehicleName, shellTypeStr, shellTypeBG) if self._isDAAPIInited() else None
 
     def as_detailStatsBottomS(self, isVisible, isShortMode, messages):
-        if self._isDAAPIInited():
-            return self.flashObject.as_detailStatsBottom(isVisible, isShortMode, messages)
+        return self.flashObject.as_detailStatsBottom(isVisible, isShortMode, messages) if self._isDAAPIInited() else None
 
     def as_addDetailMessageBottomS(self, value, actionTypeImg, vehicleTypeImg, vehicleName, shellTypeStr, shellTypeBG):
-        if self._isDAAPIInited():
-            return self.flashObject.as_addDetailMessageBottom(value, actionTypeImg, vehicleTypeImg, vehicleName, shellTypeStr, shellTypeBG)
+        return self.flashObject.as_addDetailMessageBottom(value, actionTypeImg, vehicleTypeImg, vehicleName, shellTypeStr, shellTypeBG) if self._isDAAPIInited() else None
 
     def as_isDownCtrlButtonS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_isDownCtrlButton(value)
+        return self.flashObject.as_isDownCtrlButton(value) if self._isDAAPIInited() else None
 
     def as_isDownAltButtonS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_isDownAltButton(value)
+        return self.flashObject.as_isDownAltButton(value) if self._isDAAPIInited() else None

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/clans/profile/ClanProfileMainWindow.py
 import weakref
 from gui.Scaleform.daapi.view.lobby.clans.clan_profile_event import ClanProfileEvent
 from gui.clans.clan_helpers import ClanListener
@@ -38,24 +40,23 @@ class ClanProfileMainWindow(ClanProfileMainWindowMeta, ClanListener):
         self.webCtrl.getAccountProfile().resync()
         self.__clanDossier = weakref.proxy(self.webCtrl.getClanDossier(self.__clanDBID))
         self._updateData()
-        self.as_setWindowTitleS(('').join((i18n.makeString(CLANS.CLANPROFILE_MAINWINDOW_TITLE),
-         ' [', self.__clanAbbrev, ']')))
+        self.as_setWindowTitleS(''.join((i18n.makeString(CLANS.CLANPROFILE_MAINWINDOW_TITLE),
+         ' [',
+         self.__clanAbbrev,
+         ']')))
         self._lobbyContext.getServerSettings().onServerSettingsChange += self.__onServerSettingChanged
 
     def _updateData(self):
         isGlobalMapEnabled = self._lobbyContext.getServerSettings().isGlobalMapEnabled()
-        tabsData = [
-         {'label': CLANS.CLANPROFILE_MAINWINDOWTAB_SUMMARY, 
-            'linkage': CLANS_ALIASES.CLAN_PROFILE_SUMMARY_VIEW_LINKAGE},
-         {'label': CLANS.CLANPROFILE_MAINWINDOWTAB_PERSONNEL, 
-            'linkage': CLANS_ALIASES.CLAN_PROFILE_PERSONNEL_VIEW_LINKAGE},
-         {'label': CLANS.CLANPROFILE_MAINWINDOWTAB_STRONGHOLDS, 
-            'linkage': CLANS_ALIASES.CLAN_PROFILE_STRONGHOLDS_VIEW_LINKAGE}]
+        tabsData = [{'label': CLANS.CLANPROFILE_MAINWINDOWTAB_SUMMARY,
+          'linkage': CLANS_ALIASES.CLAN_PROFILE_SUMMARY_VIEW_LINKAGE}, {'label': CLANS.CLANPROFILE_MAINWINDOWTAB_PERSONNEL,
+          'linkage': CLANS_ALIASES.CLAN_PROFILE_PERSONNEL_VIEW_LINKAGE}, {'label': CLANS.CLANPROFILE_MAINWINDOWTAB_STRONGHOLDS,
+          'linkage': CLANS_ALIASES.CLAN_PROFILE_STRONGHOLDS_VIEW_LINKAGE}]
         if isGlobalMapEnabled:
-            tabsData.append({'label': CLANS.CLANPROFILE_MAINWINDOWTAB_GLOBALMAP, 
-               'linkage': CLANS_ALIASES.CLAN_PROFILE_GLOBALMAP_VIEW_LINKAGE})
-        self.as_setDataS({'waitingMsg': backport.msgid(R.strings.waiting.loadingData()), 
-           'tabDataProvider': tabsData})
+            tabsData.append({'label': CLANS.CLANPROFILE_MAINWINDOWTAB_GLOBALMAP,
+             'linkage': CLANS_ALIASES.CLAN_PROFILE_GLOBALMAP_VIEW_LINKAGE})
+        self.as_setDataS({'waitingMsg': backport.msgid(R.strings.waiting.loadingData()),
+         'tabDataProvider': tabsData})
 
     def __onServerSettingChanged(self, diff):
         if 'isGlobalMapEnabled' in diff or ('isGlobalMapEnabled', '_r') in diff:

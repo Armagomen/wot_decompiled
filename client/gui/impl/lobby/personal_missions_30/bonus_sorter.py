@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/personal_missions_30/bonus_sorter.py
+import logging
+import typing
 from constants import PREMIUM_ENTITLEMENTS
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.customization.shared import getSingleVehicleForCustomization
@@ -28,8 +31,7 @@ if typing.TYPE_CHECKING:
     from gui.impl.gen.view_models.common.missions.bonuses.item_bonus_model import ItemBonusModel
     from gui.shared.gui_items.customization.c11n_items import Customization
 _logger = logging.getLogger(__name__)
-REWARDS_ORDER = (
- PM_POINTS_TOKEN,
+REWARDS_ORDER = (PM_POINTS_TOKEN,
  'vehicles',
  'premiumYear',
  Rarity.LEGENDARY,
@@ -86,7 +88,7 @@ def getNotificationBonusOrder(bonus):
         bonusList = packer.pack(bonus)
         for packedBonus in bonusList:
             if isinstance(packedBonus, list):
-                return packedBonus[(-1)]
+                return packedBonus[-1]
             return getRewardOrder(packedBonus.getName())
 
     return LAST_ORDER
@@ -97,16 +99,16 @@ def getBonusPacker(isRewardScreen=False):
     premiumPacker = PM3PremiumPacker()
     blueprintBonusPacker = PM3BlueprintBonusUIPacker()
     customizationPacker = PM3CustomizationBonusUIPacker() if isRewardScreen else PM3DashboardCustomizationBonusUIPacker()
-    mapping.update({PREMIUM_ENTITLEMENTS.BASIC: premiumPacker, 
-       PREMIUM_ENTITLEMENTS.PLUS: premiumPacker, 
-       'blueprints': blueprintBonusPacker, 
-       'goodies': PM3GoodiesBonusUIPacker(), 
-       'tokens': PM3TokenBonusUIPacker(), 
-       'customizations': customizationPacker, 
-       'items': PM3ItemBonusUIPacker(), 
-       'dossier': PM3DossierBonusUIPacker(), 
-       'crewBooks': PM3CrewBookBonusUIPacker(), 
-       'tmanToken': PM3TmanTemplateBonusPacker()})
+    mapping.update({PREMIUM_ENTITLEMENTS.BASIC: premiumPacker,
+     PREMIUM_ENTITLEMENTS.PLUS: premiumPacker,
+     'blueprints': blueprintBonusPacker,
+     'goodies': PM3GoodiesBonusUIPacker(),
+     'tokens': PM3TokenBonusUIPacker(),
+     'customizations': customizationPacker,
+     'items': PM3ItemBonusUIPacker(),
+     'dossier': PM3DossierBonusUIPacker(),
+     'crewBooks': PM3CrewBookBonusUIPacker(),
+     'tmanToken': PM3TmanTemplateBonusPacker()})
     return BonusUIPacker(mapping)
 
 
@@ -123,11 +125,7 @@ def packMissionsBonusModelAndTooltipData(bonuses, packer, model, tooltipData=Non
                 if isinstance(packedBonus, list):
                     packedBonus.append(bonusTooltip)
                     totalBonusesList.append(packedBonus)
-                else:
-                    totalBonusesList.append((
-                     packedBonus,
-                     getRewardOrder(packedBonus.getName()),
-                     bonusTooltip))
+                totalBonusesList.append((packedBonus, getRewardOrder(packedBonus.getName()), bonusTooltip))
 
     totalBonusesList.sort(key=lambda b: b[1])
     for bonusIndex, bonusData in enumerate(totalBonusesList):
@@ -199,9 +197,7 @@ class PM3BlueprintBonusUIPacker(BlueprintBonusUIPacker):
         blueprintName = bonus.getBlueprintName()
         if blueprintName == BlueprintsBonusSubtypes.UNIVERSAL_FRAGMENT:
             return getRewardOrder('blueprintsUniversal')
-        if blueprintName == BlueprintsBonusSubtypes.NATION_FRAGMENT:
-            return getRewardOrder('blueprintsNational')
-        return LAST_ORDER
+        return getRewardOrder('blueprintsNational') if blueprintName == BlueprintsBonusSubtypes.NATION_FRAGMENT else LAST_ORDER
 
 
 class PM3PremiumPacker(SimpleBonusUIPacker):
@@ -210,9 +206,7 @@ class PM3PremiumPacker(SimpleBonusUIPacker):
     @classmethod
     def _pack(cls, bonus):
         label = getLocalizedBonusName(bonus.getName())
-        return [
-         [cls._packSingleBonus(bonus, label if label else ''),
-          getRewardOrder('premiumYear') if bonus.getValue() >= cls.__PREMIUM_YEAR else getRewardOrder('premium')]]
+        return [[cls._packSingleBonus(bonus, label if label else ''), getRewardOrder('premiumYear') if bonus.getValue() >= cls.__PREMIUM_YEAR else getRewardOrder('premium')]]
 
 
 class PM3DashboardCustomizationBonusUIPacker(CustomizationBonusUIPacker):
@@ -225,8 +219,7 @@ class PM3DashboardCustomizationBonusUIPacker(CustomizationBonusUIPacker):
             if item is None:
                 continue
             label = getLocalizedBonusName(bonus.getC11nItem(item).itemTypeName)
-            result.append([cls._packSingleBonus(bonus, item, label if label else ''),
-             cls._customizationsChecker(item)])
+            result.append([cls._packSingleBonus(bonus, item, label if label else ''), cls._customizationsChecker(item)])
 
         return result
 
@@ -238,9 +231,7 @@ class PM3DashboardCustomizationBonusUIPacker(CustomizationBonusUIPacker):
         customizationBonus = cls.__c11n.getItemByID(itemTypeID, itemID)
         if customizationBonus.itemTypeName == 'style' and not customizationBonus.is3D:
             return getRewardOrder('2DStyle')
-        if customizationBonus.itemTypeName == 'attachment':
-            return getRewardOrder(customizationBonus.rarity)
-        return getRewardOrder(itemTypeName)
+        return getRewardOrder(customizationBonus.rarity) if customizationBonus.itemTypeName == 'attachment' else getRewardOrder(itemTypeName)
 
     @classmethod
     def _getToolTipData(cls, itemCustomization):
@@ -279,8 +270,7 @@ class PM3DossierBonusUIPacker(DossierBonusUIPacker):
 
     @classmethod
     def _packAchievements(cls, bonus):
-        return [ [cls._packSingleAchievement(achievement, bonus), LAST_ORDER] for achievement in bonus.getAchievements()
-               ]
+        return [ [cls._packSingleAchievement(achievement, bonus), LAST_ORDER] for achievement in bonus.getAchievements() ]
 
     @classmethod
     def _packBadges(cls, bonus):
@@ -289,9 +279,7 @@ class PM3DossierBonusUIPacker(DossierBonusUIPacker):
             dossierIconName = DOSSIER_BADGE_ICON_PREFIX + str(badge.badgeID)
             dossierValue = 0
             dossierLabel = badge.getUserName()
-            result.append([
-             cls._packSingleBonus(bonus, dossierIconName, DOSSIER_BADGE_POSTFIX, dossierValue, dossierLabel),
-             cls._dossierChecker(badge)])
+            result.append([cls._packSingleBonus(bonus, dossierIconName, DOSSIER_BADGE_POSTFIX, dossierValue, dossierLabel), cls._dossierChecker(badge)])
 
         return result
 
@@ -360,9 +348,7 @@ class PM3TokenBonusUIPacker(TokenBonusUIPacker):
     def _tokensChecker(token):
         if isPM3Points(token.id):
             return getRewardOrder(PM_POINTS_TOKEN)
-        if token.id.startswith(BATTLE_BONUS_X5_TOKEN):
-            return getRewardOrder(BATTLE_BONUS_X5_TOKEN)
-        return LAST_ORDER
+        return getRewardOrder(BATTLE_BONUS_X5_TOKEN) if token.id.startswith(BATTLE_BONUS_X5_TOKEN) else LAST_ORDER
 
 
 class PM3CrewBookBonusUIPacker(CrewBookBonusUIPacker):
@@ -382,18 +368,14 @@ class PM3CrewBookBonusUIPacker(CrewBookBonusUIPacker):
     def _getToolTip(cls, bonus):
         tooltipData = []
         for item, count in sorted(bonus.getItems(), key=lambda b: b[0].nationID):
-            tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.CREW_BOOK, specialArgs=[
-             item.intCD, count]))
+            tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.CREW_BOOK, specialArgs=[item.intCD, count]))
 
         return tooltipData
 
     @classmethod
     def _crewBooksChecker(cls, book):
         crewBook = cls.__itemsCache.items.getItemByCD(book.intCD)
-        if crewBook is not None:
-            return getRewardOrder(crewBook.getBookType())
-        else:
-            return LAST_ORDER
+        return getRewardOrder(crewBook.getBookType()) if crewBook is not None else LAST_ORDER
 
 
 class PM3TmanTemplateBonusPacker(BaseBonusUIPacker):
@@ -434,12 +416,10 @@ class PM3TmanTemplateBonusPacker(BaseBonusUIPacker):
         tooltipData = []
         for tokenID in bonus.getTokens():
             if tokenID.startswith(RECRUIT_TMAN_TOKEN_PREFIX):
-                tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.TANKMAN_NOT_RECRUITED, specialArgs=[
-                 tokenID]))
+                tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.TANKMAN_NOT_RECRUITED, specialArgs=[tokenID]))
 
         return tooltipData
 
     @classmethod
     def _getContentId(cls, bonus):
-        return [ BACKPORT_TOOLTIP_CONTENT_ID for tokenID in bonus.getTokens() if tokenID.startswith(RECRUIT_TMAN_TOKEN_PREFIX)
-               ]
+        return [ BACKPORT_TOOLTIP_CONTENT_ID for tokenID in bonus.getTokens() if tokenID.startswith(RECRUIT_TMAN_TOKEN_PREFIX) ]

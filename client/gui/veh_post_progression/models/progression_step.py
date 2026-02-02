@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/veh_post_progression/models/progression_step.py
 import typing
 from enum import Enum, unique
 from gui.veh_post_progression.models.ext_money import ExtendedMoney, ExtendedGuiItemEconomyCode
@@ -19,10 +21,10 @@ class PostProgressionStepState(Enum):
     RECEIVED = 'received'
 
 
-_STATE_TO_RESTRICTION = {PostProgressionStepState.RESTRICTED: ExtendedGuiItemEconomyCode.STEP_RESTRICTED, 
-   PostProgressionStepState.LOCKED: ExtendedGuiItemEconomyCode.STEP_LOCKED, 
-   PostProgressionStepState.UNLOCKED: ExtendedGuiItemEconomyCode.UNDEFINED, 
-   PostProgressionStepState.RECEIVED: ExtendedGuiItemEconomyCode.STEP_RECIEVED}
+_STATE_TO_RESTRICTION = {PostProgressionStepState.RESTRICTED: ExtendedGuiItemEconomyCode.STEP_RESTRICTED,
+ PostProgressionStepState.LOCKED: ExtendedGuiItemEconomyCode.STEP_LOCKED,
+ PostProgressionStepState.UNLOCKED: ExtendedGuiItemEconomyCode.UNDEFINED,
+ PostProgressionStepState.RECEIVED: ExtendedGuiItemEconomyCode.STEP_RECIEVED}
 
 class PostProgressionStepItem(PurchaseProvider):
     __slots__ = ('__action', '__descriptor', '__isRestricted', '__price', '__state')
@@ -37,7 +39,7 @@ class PostProgressionStepItem(PurchaseProvider):
         return
 
     def __repr__(self):
-        return ('PostProgressionStepItem <stepID: {}, state: {}>').format(self.stepID, self.getState().value)
+        return 'PostProgressionStepItem <stepID: {}, state: {}>'.format(self.stepID, self.getState().value)
 
     @property
     def action(self):
@@ -66,10 +68,7 @@ class PostProgressionStepItem(PurchaseProvider):
         return self.__descriptor.unlocks
 
     def getParentStepID(self):
-        if self.__descriptor.requiredUnlocks:
-            return self.__descriptor.requiredUnlocks[0]
-        else:
-            return
+        return self.__descriptor.requiredUnlocks[0] if self.__descriptor.requiredUnlocks else None
 
     def getParentStepIDs(self):
         return self.__descriptor.requiredUnlocks
@@ -108,10 +107,7 @@ class PostProgressionStepItem(PurchaseProvider):
             return PostProgressionStepState.RESTRICTED
         if progressionState.isUnlocked(self.stepID):
             return PostProgressionStepState.RECEIVED
-        if not self.__descriptor.unlockStrategy([ progressionState.isUnlocked(stepID) for stepID in self.__descriptor.requiredUnlocks
-                                                ]):
-            return PostProgressionStepState.LOCKED
-        return PostProgressionStepState.UNLOCKED
+        return PostProgressionStepState.LOCKED if not self.__descriptor.unlockStrategy([ progressionState.isUnlocked(stepID) for stepID in self.__descriptor.requiredUnlocks ]) else PostProgressionStepState.UNLOCKED
 
     def __getStateCheckResult(self):
         restriction = _STATE_TO_RESTRICTION[self.getState()]

@@ -1,4 +1,9 @@
-import logging, typing, BigWorld, AccountCommands
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/anonymizer/contacts_uploader.py
+import logging
+import typing
+import BigWorld
+import AccountCommands
 from constants import BattleUserActions, REQUEST_COOLDOWN
 from messenger.proto.events import g_messengerEvents
 from messenger.proto import proto_getter
@@ -17,7 +22,7 @@ class ContactsUploader(object):
 
     @proto_getter(PROTO_TYPE.MIGRATION)
     def proto(self):
-        return
+        return None
 
     @property
     def isProcessing(self):
@@ -102,10 +107,10 @@ class ContactsUploader(object):
         if not self.isProcessing:
             _logger.warning('Contacts Uploader: abort uploading because of stop processing')
             return
+        elif not self.__idToActions:
+            self._flushArenaRelations()
+            return
         else:
-            if not self.__idToActions:
-                self._flushArenaRelations()
-                return
             dbID = self.__idToActions.keys()[0] if dbID is None else dbID
             action = self.__idToActions[dbID][0] if leftActions is None else leftActions[0]
             name = self.__idToNames[dbID]

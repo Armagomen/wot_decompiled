@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/impl/gen/view_models/views/lobby/platoon/comp7_slot_model.py
 from comp7.gui.impl.gen.view_models.views.lobby.platoon.platoon_rank_data import PlatoonRankData
 from gui.impl.gen.view_models.views.lobby.platoon.slot_model import SlotModel
 

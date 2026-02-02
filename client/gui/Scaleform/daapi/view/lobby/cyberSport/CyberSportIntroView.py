@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/cyberSport/CyberSportIntroView.py
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.items_cache import CACHE_SYNC_REASON
@@ -18,23 +20,22 @@ from gui.Scaleform.genConsts.CYBER_SPORT_ALIASES import CYBER_SPORT_ALIASES
 from nation_change.nation_change_helpers import iterVehTypeCDsInNationGroup
 from nation_change_helpers.client_nation_change_helper import getValidVehicleCDForNationChange
 from skeletons.gui.shared import IItemsCache
-_ACCEPTED_VEH_TYPES = (
- _VCN.LIGHT_TANK, _VCN.MEDIUM_TANK, _VCN.HEAVY_TANK)
+_ACCEPTED_VEH_TYPES = (_VCN.LIGHT_TANK, _VCN.MEDIUM_TANK, _VCN.HEAVY_TANK)
 
 class _IntroViewVO(object):
 
     def __init__(self):
-        self.__data = {'teamDescriptionText': '', 
-           'isTeamDescriptionTooltip': False, 
-           'teamDescriptionTooltip': '', 
-           'createBtnLabel': '', 
-           'createBtnTooltip': '', 
-           'isCreateBtnEnabled': False, 
-           'isCreateBtnVisible': False, 
-           'isCanCreateBattle': False, 
-           'isCanJoinBattle': False, 
-           'isNeedAddPlayers': False, 
-           'isHaveTeamToShow': False}
+        self.__data = {'teamDescriptionText': '',
+         'isTeamDescriptionTooltip': False,
+         'teamDescriptionTooltip': '',
+         'createBtnLabel': '',
+         'createBtnTooltip': '',
+         'isCreateBtnEnabled': False,
+         'isCreateBtnVisible': False,
+         'isCanCreateBattle': False,
+         'isCanJoinBattle': False,
+         'isNeedAddPlayers': False,
+         'isHaveTeamToShow': False}
 
     def getData(self):
         return self.__data
@@ -61,33 +62,33 @@ class CyberSportIntroView(CyberSportIntroMeta):
     def showSelectorPopup(self):
         rosterSettings = self.prbEntity.getRosterSettings()
         self._currentVehCD = -1
-        self.fireEvent(events.LoadViewEvent(SFViewLoadParams(CYBER_SPORT_ALIASES.VEHICLE_SELECTOR_POPUP_PY), ctx={'isMultiSelect': False, 
-           'infoText': CYBERSPORT.WINDOW_VEHICLESELECTOR_INFO_INTRO, 
-           'titleText': CYBERSPORT.WINDOW_VEHICLESELECTOR_TITLE, 
-           'selectButton': CYBERSPORT.WINDOW_VEHICLESELECTOR_BUTTONS_SELECT, 
-           'cancelButton': CYBERSPORT.WINDOW_VEHICLESELECTOR_BUTTONS_CANCEL, 
-           'compatibleOnlyLabel': CYBERSPORT.WINDOW_VEHICLESELECTOR_FILTERS_MATCHES, 
-           'componentsOffset': 45, 
-           'selectedVehicles': self.__getSelectedVehicles(), 
-           'section': 'cs_intro_view_vehicle', 
-           'levelsRange': rosterSettings.getLevelsRange(), 
-           'vehicleTypes': _ACCEPTED_VEH_TYPES}), scope=EVENT_BUS_SCOPE.LOBBY)
+        self.fireEvent(events.LoadViewEvent(SFViewLoadParams(CYBER_SPORT_ALIASES.VEHICLE_SELECTOR_POPUP_PY), ctx={'isMultiSelect': False,
+         'infoText': CYBERSPORT.WINDOW_VEHICLESELECTOR_INFO_INTRO,
+         'titleText': CYBERSPORT.WINDOW_VEHICLESELECTOR_TITLE,
+         'selectButton': CYBERSPORT.WINDOW_VEHICLESELECTOR_BUTTONS_SELECT,
+         'cancelButton': CYBERSPORT.WINDOW_VEHICLESELECTOR_BUTTONS_CANCEL,
+         'compatibleOnlyLabel': CYBERSPORT.WINDOW_VEHICLESELECTOR_FILTERS_MATCHES,
+         'componentsOffset': 45,
+         'selectedVehicles': self.__getSelectedVehicles(),
+         'section': 'cs_intro_view_vehicle',
+         'levelsRange': rosterSettings.getLevelsRange(),
+         'vehicleTypes': _ACCEPTED_VEH_TYPES}), scope=EVENT_BUS_SCOPE.LOBBY)
 
     def _populate(self):
         super(CyberSportIntroView, self)._populate()
         self.addListener(CSVehicleSelectEvent.VEHICLE_SELECTED, self.__updateSelectedVehicles)
         self.itemsCache.onSyncCompleted += self.__onCacheResync
-        data = {'titleLblText': text_styles.promoTitle(CYBERSPORT.WINDOW_INTRO_TITLE), 
-           'descrLblText': text_styles.main(CYBERSPORT.WINDOW_INTRO_DESCRIPTION), 
-           'listRoomTitleLblText': text_styles.promoSubTitle(CYBERSPORT.WINDOW_INTRO_SEARCH_TITLE), 
-           'listRoomDescrLblText': text_styles.main(CYBERSPORT.WINDOW_INTRO_SEARCH_DESCRIPTION), 
-           'listRoomBtnLabel': _ms(CYBERSPORT.WINDOW_INTRO_SEARCH_BTN), 
-           'autoTitleLblText': text_styles.middleTitle(CYBERSPORT.WINDOW_INTRO_AUTO_TITLE), 
-           'autoDescrLblText': text_styles.main(CYBERSPORT.WINDOW_INTRO_AUTO_DESCRIPTION), 
-           'vehicleBtnTitleTfText': text_styles.standard(CYBERSPORT.BUTTON_CHOOSEVEHICLES_SELECTED), 
-           'rightBlockHeader': text_styles.promoSubTitle(CYBERSPORT.INTROVIEW_RIGHTBLOCK_HEADER), 
-           'rightBlockDescr': text_styles.main(CYBERSPORT.INTROVIEW_RIGHTBLOCK_DESCR), 
-           'rightBlockBtnLbl': _ms(CYBERSPORT.INTROVIEW_RIGHTBLOCK_BTNLABEL)}
+        data = {'titleLblText': text_styles.promoTitle(CYBERSPORT.WINDOW_INTRO_TITLE),
+         'descrLblText': text_styles.main(CYBERSPORT.WINDOW_INTRO_DESCRIPTION),
+         'listRoomTitleLblText': text_styles.promoSubTitle(CYBERSPORT.WINDOW_INTRO_SEARCH_TITLE),
+         'listRoomDescrLblText': text_styles.main(CYBERSPORT.WINDOW_INTRO_SEARCH_DESCRIPTION),
+         'listRoomBtnLabel': _ms(CYBERSPORT.WINDOW_INTRO_SEARCH_BTN),
+         'autoTitleLblText': text_styles.middleTitle(CYBERSPORT.WINDOW_INTRO_AUTO_TITLE),
+         'autoDescrLblText': text_styles.main(CYBERSPORT.WINDOW_INTRO_AUTO_DESCRIPTION),
+         'vehicleBtnTitleTfText': text_styles.standard(CYBERSPORT.BUTTON_CHOOSEVEHICLES_SELECTED),
+         'rightBlockHeader': text_styles.promoSubTitle(CYBERSPORT.INTROVIEW_RIGHTBLOCK_HEADER),
+         'rightBlockDescr': text_styles.main(CYBERSPORT.INTROVIEW_RIGHTBLOCK_DESCR),
+         'rightBlockBtnLbl': _ms(CYBERSPORT.INTROVIEW_RIGHTBLOCK_BTNLABEL)}
         self.as_setTextsS(data)
         self.__checkSelectedVehicles()
         self.__updateAutoSearchVehicle(self.__getSelectedVehicles())

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/bw_chat2/errors.py
 from gui.Scaleform.locale.MESSENGER import MESSENGER as I18N_MESSENGER
 from gui.Scaleform.locale.INGAME_GUI import INGAME_GUI as I18N_INGAME_GUI
 from helpers import i18n, html
@@ -24,7 +26,7 @@ def getChatErrorMessage(errorID, kwargs):
     if i18nKey is not None:
         msg = i18n.makeString(i18nKey, **kwargs)
     else:
-        msg = ('{0}\\{1}').format(errorName, kwargs)
+        msg = '{0}\\{1}'.format(errorName, kwargs)
     return msg
 
 
@@ -53,7 +55,7 @@ class _ActionCoolDownError(ChatCoolDownError):
 
 
 class _BattleCommandError(IChatError):
-    __slots__ = ('_coolDown', )
+    __slots__ = ('_coolDown',)
 
     def __init__(self, command):
         super(_BattleCommandError, self).__init__()
@@ -71,7 +73,7 @@ class _BattleCommandCoolDownError(_BattleCommandError):
 
 
 class _BattleCommandGenericError(_BattleCommandError):
-    __slots__ = ('_commandMessageKey', )
+    __slots__ = ('_commandMessageKey',)
 
     def __init__(self, command):
         super(_BattleCommandGenericError, self).__init__(command)
@@ -109,7 +111,7 @@ class _SimpleActionError(ClientActionError):
 
 
 class _AdminCommandError(IChatError):
-    __slots__ = ('_error', )
+    __slots__ = ('_error',)
 
     def __init__(self, error):
         super(_AdminCommandError, self).__init__()
@@ -198,8 +200,7 @@ def createVOIPError(args, actionID):
         elif errorID == _ERRORS.GENERIC_ERROR:
             logOnly = True
             error = 'The player has received the error to the request for getting of voip credential. Perhaps voip connection to the server is lost, the server is reconnecting to voip.'
-    return (
-     error, logOnly)
+    return (error, logOnly)
 
 
 def createSearchUserError(args):

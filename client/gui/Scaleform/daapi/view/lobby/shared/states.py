@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/shared/states.py
 from frameworks.state_machine import StateFlags
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.framework.entities.View import ViewKey
@@ -34,11 +36,11 @@ class BrowserLobbyTopState(SFViewLobbyState):
 
     def _getViewLoadCtx(self, event):
         ctx = event.params.get('ctx')
-        return {'ctx': {'url': ctx.get('url'), 
-                   'allowRightClick': ctx.get('allowRightClick', False), 
-                   'callbackOnLoad': ctx.get('callbackOnLoad'), 
-                   'callbackOnClose': ctx.get('callbackOnClose'), 
-                   'webHandlers': ctx.get('webHandlers'), 
-                   'forcedSkipEscape': ctx.get('forcedSkipEscape'), 
-                   'browserParams': ctx.get('forcedSkipEscape'), 
-                   'hiddenLayers': ctx.get('hiddenLayers', ())}}
+        return {'ctx': {'url': ctx.get('url'),
+                 'allowRightClick': ctx.get('allowRightClick', False),
+                 'callbackOnLoad': ctx.get('callbackOnLoad'),
+                 'callbackOnClose': ctx.get('callbackOnClose'),
+                 'webHandlers': ctx.get('webHandlers'),
+                 'forcedSkipEscape': ctx.get('forcedSkipEscape'),
+                 'browserParams': ctx.get('forcedSkipEscape'),
+                 'hiddenLayers': ctx.get('hiddenLayers', ())}}

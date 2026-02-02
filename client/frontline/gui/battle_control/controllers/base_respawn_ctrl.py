@@ -1,6 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/battle_control/controllers/base_respawn_ctrl.py
 from collections import namedtuple, defaultdict
 from itertools import izip
-import BigWorld, Event
+import BigWorld
+import Event
 from constants import REQUEST_COOLDOWN
 from gui.battle_control.avatar_getter import getSoundNotifications
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
@@ -13,11 +16,8 @@ from PlayerEvents import g_playerEvents
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.game_control import IVehiclePostProgressionController
 from debug_utils import LOG_ERROR
-_Vehicle = namedtuple('_Vehicle', ('intCD', 'strCD', 'battleAbilities', 'crewDescrs',
-                                   'customRoleSlotTypeId', 'settings', 'vehPostProgression',
-                                   'vehSetups', 'vehSetupsIndexes', 'disabledSwitchGroupIDs'))
-_RespawnInfo = namedtuple('_RespawnInfo', ('vehicleID', 'respawnTime', 'autoRespawnTime',
-                                           'respawnZones', 'chosenRespawnZone', 'vehSetupsIndexes'))
+_Vehicle = namedtuple('_Vehicle', ('intCD', 'strCD', 'battleAbilities', 'crewDescrs', 'customRoleSlotTypeId', 'settings', 'vehPostProgression', 'vehSetups', 'vehSetupsIndexes', 'disabledSwitchGroupIDs'))
+_RespawnInfo = namedtuple('_RespawnInfo', ('vehicleID', 'respawnTime', 'autoRespawnTime', 'respawnZones', 'chosenRespawnZone', 'vehSetupsIndexes'))
 
 class IRespawnView(object):
 
@@ -47,13 +47,7 @@ _RESPAWN_SOUND_ID = 'start_battle'
 _SWITCH_SETUPS_ACTION = 0
 
 class BaseRespawnsController(ViewComponentsController):
-    __slots__ = ('__weakref__', '__isUIInited', '__vehicles', '__cooldowns', '__respawnInfo',
-                 '__timerCallback', '__eManager', 'onRespawnVisibilityChanged', 'onVehicleDeployed',
-                 'onRespawnInfoUpdated', 'onPlayerRespawnLivesUpdated', 'onTeamRespawnLivesRestored',
-                 'onRespawnVehiclesUpdated', '__isUiShown', '__isShowUiAllowed',
-                 '__limits', '__playerRespawnLives', '__respawnSoundNotificationRequest',
-                 '__respawnSoundNotificationCallbackID', '__battleCtx', '__setupsIndexes',
-                 '__cooldownsManager')
+    __slots__ = ('__weakref__', '__isUIInited', '__vehicles', '__cooldowns', '__respawnInfo', '__timerCallback', '__eManager', 'onRespawnVisibilityChanged', 'onVehicleDeployed', 'onRespawnInfoUpdated', 'onPlayerRespawnLivesUpdated', 'onTeamRespawnLivesRestored', 'onRespawnVehiclesUpdated', '__isUiShown', '__isShowUiAllowed', '__limits', '__playerRespawnLives', '__respawnSoundNotificationRequest', '__respawnSoundNotificationCallbackID', '__battleCtx', '__setupsIndexes', '__cooldownsManager')
     __postProgressionCtrl = dependency.descriptor(IVehiclePostProgressionController)
     __battleSession = dependency.descriptor(IBattleSessionProvider)
     showUiAllowed = property(lambda self: self.__isShowUiAllowed, lambda self, value: self.__setShowUiAllowed(value))
@@ -239,14 +233,15 @@ class BaseRespawnsController(ViewComponentsController):
     def __refresh(self):
         if self.__respawnInfo is None or self._viewComponents is None:
             return
-        if self.__respawnInfo is not None and not self.__isUiShown and self.__isShowUiAllowed:
-            self._show()
-        elif self.__isUiShown and not self.__isShowUiAllowed:
-            self.__hide()
-        elif self.__isUiShown:
-            self.__stopTimer()
-            self.__startTimer()
-        return
+        else:
+            if self.__respawnInfo is not None and not self.__isUiShown and self.__isShowUiAllowed:
+                self._show()
+            elif self.__isUiShown and not self.__isShowUiAllowed:
+                self.__hide()
+            elif self.__isUiShown:
+                self.__stopTimer()
+                self.__startTimer()
+            return
 
     def __hide(self):
         if not self.__isUiShown:

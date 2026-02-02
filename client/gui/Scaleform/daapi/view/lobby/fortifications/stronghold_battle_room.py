@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/fortifications/stronghold_battle_room.py
 import weakref
 from UnitBase import UNIT_OP
 from adisp import adisp_process
@@ -154,9 +156,9 @@ class StrongholdBattleRoom(FortClanBattleRoomMeta, IUnitListener, IStrongholdLis
         self._candidatesDP.init(self.app, self.as_getCandidatesDPS(), self.prbEntity.getCandidates())
 
     def inviteFriendRequest(self):
-        self.fireEvent(events.LoadViewEvent(SFViewLoadParams(FORTIFICATION_ALIASES.STRONGHOLD_SEND_INVITES_WINDOW_PY), ctx={'prbName': PREBATTLE_TYPE_NAMES[PREBATTLE_TYPE.STRONGHOLD], 
-           'ctrlType': CTRL_ENTITY_TYPE.UNIT, 
-           'showClanOnly': False}), scope=EVENT_BUS_SCOPE.LOBBY)
+        self.fireEvent(events.LoadViewEvent(SFViewLoadParams(FORTIFICATION_ALIASES.STRONGHOLD_SEND_INVITES_WINDOW_PY), ctx={'prbName': PREBATTLE_TYPE_NAMES[PREBATTLE_TYPE.STRONGHOLD],
+         'ctrlType': CTRL_ENTITY_TYPE.UNIT,
+         'showClanOnly': False}), scope=EVENT_BUS_SCOPE.LOBBY)
 
     def toggleRoomStatus(self):
         self.requestToOpen(not self.__isOpened)
@@ -456,13 +458,13 @@ class StrongholdBattleRoom(FortClanBattleRoomMeta, IUnitListener, IStrongholdLis
                 if enemyVisible:
                     clColor = enemyclanData.getColor()
                     clColor = '#%06x' % clColor if clColor else '#ffffff'
-                    enemyClanName = ("<b><font face='$FieldFont' color='{0}'>[{1}]</font></b>").format(clColor, enemyclanData.getTag())
+                    enemyClanName = "<b><font face='$FieldFont' color='{0}'>[{1}]</font></b>".format(clColor, enemyclanData.getTag())
                 clan = data['clan']
                 if clan:
                     clColor = clan.getColor()
                     clColor = '#%06x' % clColor if clColor else '#ffffff'
-                    playerClanName = ("<b><font face='$FieldFont' color='{0}'>[{1}]</font></b>").format(clColor, clan.getTag())
-                self.as_setTimerDeltaS(vo_converters.makeClanBattleTimerVO((isInBattle or data)['dtime'] if 1 else 0, ("<font face='$FieldFont' size='18' color='{0}'>###</font>").format(colorRegular), ("<font face='$FieldFont' size='18' color='{0}'>###</font>").format(colorAlarm), self.TIMER_GLOW_COLORS.NORMAL, self.TIMER_GLOW_COLORS.ALERT, '00', 0 if data['isFirstBattle'] else 1))
+                    playerClanName = "<b><font face='$FieldFont' color='{0}'>[{1}]</font></b>".format(clColor, clan.getTag())
+                self.as_setTimerDeltaS(vo_converters.makeClanBattleTimerVO(data['dtime'] if not isInBattle else 0, "<font face='$FieldFont' size='18' color='{0}'>###</font>".format(colorRegular), "<font face='$FieldFont' size='18' color='{0}'>###</font>".format(colorAlarm), self.TIMER_GLOW_COLORS.NORMAL, self.TIMER_GLOW_COLORS.ALERT, '00', 0 if data['isFirstBattle'] else 1))
                 self.as_updateReadyStatusS(self.prbEntity.getFlags().isInQueue(), self.__enemyReadyIndicator)
         self.as_setBattleRoomDataS(self._makeFortClanBattleRoomVO(mapId, headerDescr, playerClanName, enemyClanName, wfbDescr, enemyVisible, isBattleTimerVisible, data['isSortie']))
         if data['forceUpdateBuildings']:
@@ -551,8 +553,7 @@ class StrongholdBattleRoom(FortClanBattleRoomMeta, IUnitListener, IStrongholdLis
         enabled = havePermissions and not empty and not isInBattle and not disabledByRequisition
         tooltip, tooltipType = vo_converters.makeReserveSlotTooltipVO(current, groupType, empty, havePermissions, isInBattle, disabledByRequisition)
         vo = vo_converters.makeReserveSlotVO(slotType, groupType, reserveId, level, slotIndex, tooltip, tooltipType)
-        return (
-         vo, enabled)
+        return (vo, enabled)
 
     def __setReadyStatus(self):
         self.__enemyReadyIndicator = False
@@ -608,15 +609,15 @@ class StrongholdBattleRoom(FortClanBattleRoomMeta, IUnitListener, IStrongholdLis
 
     @staticmethod
     def __packFiltersData(items):
-        return {'items': items, 
-           'minSelectedItems': 0}
+        return {'items': items,
+         'minSelectedItems': 0}
 
     @staticmethod
     def __packFilterItem(vType, value):
-        return {'icon': ('').join(('../maps/icons/filters/tanks/', vType, '.png')), 
-           'filterValue': value, 
-           'selected': False, 
-           'tooltip': makeTooltip(('#menu:carousel_tank_filter/{}').format(vType), '#fortifications:tooltip/vehicleTypes/body')}
+        return {'icon': ''.join(('../maps/icons/filters/tanks/', vType, '.png')),
+         'filterValue': value,
+         'selected': False,
+         'tooltip': makeTooltip('#menu:carousel_tank_filter/{}'.format(vType), '#fortifications:tooltip/vehicleTypes/body')}
 
     def __setFilters(self, slotIndex, filterState):
         self.__vehTypesInSlotFilters[slotIndex] = filterState

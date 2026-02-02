@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/server_events/cond_formatters/tooltips.py
 from battle_pass_common import BATTLE_PASS_RANDOM_QUEST_TOKEN_PREFIX
 from constants import EVENT_TYPE
 from gui.impl import backport
@@ -18,26 +20,23 @@ def reqStyle(_):
 
 def getSeparatorBlock(groupType=GROUP_TYPE.AND):
     label = getSeparator(groupType)
-    if label:
-        return packText(text=label, styler=text_styles.standard)
-    else:
-        return
+    return packText(text=label, styler=text_styles.standard) if label else None
 
 
 class MissionsAccountRequirementsFormatter(ConditionsFormatter):
 
     def __init__(self):
-        super(MissionsAccountRequirementsFormatter, self).__init__({'token': _TokenRequirementFormatter(), 
-           'premiumAccount': requirements.PremiumAccountFormatter(), 
-           'premiumPlusAccount': requirements.PremiumPlusAccountFormatter(), 
-           'wotPlus': requirements.WotPlusFormatter(), 
-           'inClan': requirements.InClanRequirementFormatter(), 
-           'igrType': requirements.IgrTypeRequirementFormatter(), 
-           'GR': requirements.GlobalRatingRequirementFormatter(), 
-           'accountDossier': requirements.AccountDossierRequirementFormatter(), 
-           'vehiclesUnlocked': requirements.VehiclesRequirementFormatter(), 
-           'vehiclesOwned': requirements.VehiclesRequirementFormatter(), 
-           'hasReceivedMultipliedXP': requirements.HasReceivedMultipliedXPFormatter()})
+        super(MissionsAccountRequirementsFormatter, self).__init__({'token': _TokenRequirementFormatter(),
+         'premiumAccount': requirements.PremiumAccountFormatter(),
+         'premiumPlusAccount': requirements.PremiumPlusAccountFormatter(),
+         'wotPlus': requirements.WotPlusFormatter(),
+         'inClan': requirements.InClanRequirementFormatter(),
+         'igrType': requirements.IgrTypeRequirementFormatter(),
+         'GR': requirements.GlobalRatingRequirementFormatter(),
+         'accountDossier': requirements.AccountDossierRequirementFormatter(),
+         'vehiclesUnlocked': requirements.VehiclesRequirementFormatter(),
+         'vehiclesOwned': requirements.VehiclesRequirementFormatter(),
+         'hasReceivedMultipliedXP': requirements.HasReceivedMultipliedXPFormatter()})
 
     def format(self, conditions, event):
         if event.isGuiDisabled():
@@ -110,10 +109,7 @@ class _TokenRequirementFormatter(ConditionFormatter):
 
     @classmethod
     def _getSpecialTokenText(cls, condition):
-        if condition.getID().startswith(BATTLE_PASS_RANDOM_QUEST_TOKEN_PREFIX):
-            return backport.text(R.strings.tooltips.quests.condition.battlepass.token())
-        else:
-            return
+        return backport.text(R.strings.tooltips.quests.condition.battlepass.token()) if condition.getID().startswith(BATTLE_PASS_RANDOM_QUEST_TOKEN_PREFIX) else None
 
     @classmethod
     def format(cls, condition, event, styler=reqStyle):
@@ -125,5 +121,4 @@ class _TokenRequirementFormatter(ConditionFormatter):
             msg = cls._getSpecialTokenText(condition)
             if msg is None:
                 msg = backport.text(R.strings.tooltips.quests.unavailable.token(), tokenName=text_styles.neutral(condition.getUserName()), count=condition.getNeededCount())
-            return [
-             packText(text=msg, styler=style)]
+            return [packText(text=msg, styler=style)]

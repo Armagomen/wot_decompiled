@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_results/presenters/packers/economics/currency_packers.py
+import logging
+import typing
 from collections import namedtuple
 from soft_exception import SoftException
 from shared_utils import first
@@ -14,10 +17,7 @@ if typing.TYPE_CHECKING:
     from gui.battle_results.pbs_helpers.economics import FinancialRecordValues
     from gui.impl.gen.view_models.views.lobby.battle_results.currency_records_model import CurrencyRecordsModel
 _logger = logging.getLogger(__name__)
-CurrencyRecord = namedtuple('CurrencyRecord', ('recordNames', 'subtractRecords', 'baseAccountValueExtractor',
-                                               'premiumAccountValueExtractor', 'detailsValuesExtractors',
-                                               'capsToBeChecked', 'paramName', 'label',
-                                               'modifiers', 'showZeroValue', 'currencyType'))
+CurrencyRecord = namedtuple('CurrencyRecord', ('recordNames', 'subtractRecords', 'baseAccountValueExtractor', 'premiumAccountValueExtractor', 'detailsValuesExtractors', 'capsToBeChecked', 'paramName', 'label', 'modifiers', 'showZeroValue', 'currencyType'))
 CurrencyGroup = namedtuple('CurrencyGroup', ('label', 'records'))
 
 class CurrencyPacker(ICurrencyPacker):
@@ -65,7 +65,7 @@ class CurrencyPacker(ICurrencyPacker):
     @classmethod
     def _createRecordModel(cls, battleResults, records, configs):
         values = cls._getValues(battleResults, records, configs)
-        if not any(v is not None for v in values):
+        if not any((v is not None for v in values)):
             return
         else:
             recordModel = CurrencyRecordModel()
@@ -124,8 +124,7 @@ class CurrencyPacker(ICurrencyPacker):
                     value = valueExtractor(currencyRecords, currencyConfig, battleResults)
             if value or value == 0 and currencyConfig.showZeroValue:
                 values.append(value)
-            else:
-                values.append(None)
+            values.append(None)
 
         return values
 
@@ -210,8 +209,7 @@ class DetailedCurrencyPacker(ICurrencyPacker):
                 value = valueExtractor(record, config, battleResults)
                 if value:
                     premiumAccountValue = value
-            return (
-             baseAccountValue, premiumAccountValue)
+            return (baseAccountValue, premiumAccountValue)
 
     @staticmethod
     def _packAdditionalValues(model, battleResults, config):

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/server_events/battle_royale_formatters.py
 import logging
 from constants import ARENA_BONUS_TYPE
 from gui.Scaleform.locale.BATTLE_ROYALE import BATTLE_ROYALE
@@ -16,12 +18,15 @@ class StatsItemType(object):
     DAMAGE_BLOCK = 'damageBlockedByArmor'
 
 
-SOLO_ITEMS_ORDER = [
- StatsItemType.PLACE, StatsItemType.KILLS_SOLO,
- StatsItemType.DAMAGE_DEAL, StatsItemType.DAMAGE_BLOCK]
-SQUAD_ITEMS_ORDER = [
- StatsItemType.PLACE, StatsItemType.KILLS_SOLO, StatsItemType.KILLS_SQUAD,
- StatsItemType.DAMAGE_DEAL, StatsItemType.DAMAGE_BLOCK]
+SOLO_ITEMS_ORDER = [StatsItemType.PLACE,
+ StatsItemType.KILLS_SOLO,
+ StatsItemType.DAMAGE_DEAL,
+ StatsItemType.DAMAGE_BLOCK]
+SQUAD_ITEMS_ORDER = [StatsItemType.PLACE,
+ StatsItemType.KILLS_SOLO,
+ StatsItemType.KILLS_SQUAD,
+ StatsItemType.DAMAGE_DEAL,
+ StatsItemType.DAMAGE_BLOCK]
 
 class BRSections(object):
     FINISH_REASON = 'finishReason'
@@ -59,17 +64,19 @@ class IngameBattleRoyaleResultsViewDataFormatter(object):
         return vos_collections.ActiveVehiclesItemsCollection().count(self.__arenaDP)
 
     def getSummaryStats(self):
-        return [
-         self.__getPlace(), self.__getDamageDealt(), self.__getKilled(), self.__getBlockedDamage()]
+        return [self.__getPlace(),
+         self.__getDamageDealt(),
+         self.__getKilled(),
+         self.__getBlockedDamage()]
 
     def __getPlace(self):
         place = self.__sessionProvider.arenaVisitor.getComponentSystem().battleRoyaleComponent.place
-        return self.__createStatItem(('{}/{}').format(place, self.__maxPlaceValue()), BATTLE_ROYALE.PLAYERSTATS_PLACESTAT_NAME, StatsItemType.PLACE)
+        return self.__createStatItem('{}/{}'.format(place, self.__maxPlaceValue()), BATTLE_ROYALE.PLAYERSTATS_PLACESTAT_NAME, StatsItemType.PLACE)
 
     def __maxPlaceValue(self):
         if self.isInSquad:
             vehicles = self.__arenaDP.getVehiclesItemsGenerator()
-            return len({vinfo.team for vinfo, _ in vehicles if vinfo.isPlayer() if vinfo.isPlayer()})
+            return len({vinfo.team for vinfo, _ in vehicles if vinfo.isPlayer()})
         return self.playersCount
 
     def __getKilled(self):
@@ -83,6 +90,6 @@ class IngameBattleRoyaleResultsViewDataFormatter(object):
 
     @staticmethod
     def __createStatItem(value, descr, imgID):
-        return {'value': str(value), 
-           'description': descr, 
-           'imageID': imgID}
+        return {'value': str(value),
+         'description': descr,
+         'imageID': imgID}

@@ -1,4 +1,8 @@
-import weakref, BattleReplay, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/period_ctrl.py
+import weakref
+import BattleReplay
+import BigWorld
 from constants import ARENA_PERIOD as _PERIOD
 from gui.battle_control import event_dispatcher
 from gui.battle_control.arena_info.interfaces import IArenaPeriodController
@@ -67,9 +71,7 @@ class ITimersBar(object):
 
 
 class ArenaPeriodController(IArenaPeriodController, ViewComponentsController):
-    __slots__ = ('_callbackID', '_period', '_endTime', '_length', '_cdState', '_ttState',
-                 '_isNotified', '_totalTime', '_countdown', '_playingTime', '_switcherState',
-                 '_battleCtx', '_arenaVisitor', '_timeNotifications')
+    __slots__ = ('_callbackID', '_period', '_endTime', '_length', '_cdState', '_ttState', '_isNotified', '_totalTime', '_countdown', '_playingTime', '_switcherState', '_battleCtx', '_arenaVisitor', '_timeNotifications')
 
     def __init__(self):
         super(ArenaPeriodController, self).__init__()
@@ -130,7 +132,10 @@ class ArenaPeriodController(IArenaPeriodController, ViewComponentsController):
 
     def addRemainingTimeNotification(self, minutes, seconds, callback):
         conValid = self._totalTime <= minutes * 60 + seconds
-        self._timeNotifications.append((minutes, seconds, callback, conValid))
+        self._timeNotifications.append((minutes,
+         seconds,
+         callback,
+         conValid))
 
     def getEndTime(self):
         return self._endTime
@@ -160,9 +165,7 @@ class ArenaPeriodController(IArenaPeriodController, ViewComponentsController):
         self._setArenaWinStatus(additionalInfo)
 
     def _getTickInterval(self, floatLength):
-        if floatLength > 1:
-            return 1
-        return 0
+        return 1 if floatLength > 1 else 0
 
     def _getHideSpeed(self):
         return _COUNTDOWN_HIDE_SPEED
@@ -187,10 +190,15 @@ class ArenaPeriodController(IArenaPeriodController, ViewComponentsController):
             condValid = totalTime <= m * 60 + s
             if condValid and not state:
                 f(minutes, seconds)
-                self._timeNotifications[idx] = (m, s, f, True)
-            elif state and not condValid:
-                self._timeNotifications[idx] = (
-                 m, s, f, False)
+                self._timeNotifications[idx] = (m,
+                 s,
+                 f,
+                 True)
+            if state and not condValid:
+                self._timeNotifications[idx] = (m,
+                 s,
+                 f,
+                 False)
 
     def _hideTotalTime(self):
         for viewCmp in self._viewComponents:
@@ -297,7 +305,7 @@ class ArenaPeriodController(IArenaPeriodController, ViewComponentsController):
 
 
 class ArenaPeriodRecorder(ArenaPeriodController):
-    __slots__ = ('__recorder', )
+    __slots__ = ('__recorder',)
     connectionMgr = dependency.descriptor(IConnectionManager)
 
     def __init__(self):
@@ -335,7 +343,7 @@ class ArenaPeriodRecorder(ArenaPeriodController):
 
 
 class ArenaPeriodPlayer(ArenaPeriodController):
-    __slots__ = ('__replay', )
+    __slots__ = ('__replay',)
 
     def __init__(self):
         super(ArenaPeriodPlayer, self).__init__()
@@ -352,14 +360,10 @@ class ArenaPeriodPlayer(ArenaPeriodController):
         return
 
     def _getTickInterval(self, floatLength):
-        if self._period == _PERIOD.IDLE:
-            return 1
-        return 0
+        return 1 if self._period == _PERIOD.IDLE else 0
 
     def _getHideSpeed(self):
-        if self._playingTime > _COUNTDOWN_HIDE_SPEED:
-            return 0
-        return super(ArenaPeriodPlayer, self)._getHideSpeed()
+        return 0 if self._playingTime > _COUNTDOWN_HIDE_SPEED else super(ArenaPeriodPlayer, self)._getHideSpeed()
 
     def _calculate(self):
         if self.__replay is None:
@@ -368,9 +372,7 @@ class ArenaPeriodPlayer(ArenaPeriodController):
             self._period = self.__replay.getArenaPeriod()
             if self._period == _PERIOD.IDLE:
                 return
-            if self.__replay.isServerSideReplay:
-                return super(ArenaPeriodPlayer, self)._calculate()
-            return self.__replay.getArenaLength()
+            return super(ArenaPeriodPlayer, self)._calculate() if self.__replay.isServerSideReplay else self.__replay.getArenaLength()
 
     def _setPlayingTimeOnArena(self):
         pass

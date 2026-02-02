@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/e_sport/unit/actions_handler.py
 from PlayerEvents import g_playerEvents
 from constants import PREBATTLE_TYPE
 from debug_utils import LOG_DEBUG

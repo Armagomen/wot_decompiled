@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/requests/controller.py
 from collections import namedtuple
-import BigWorld, AccountCommands
+import BigWorld
+import AccountCommands
 from debug_utils import LOG_WARNING
 from ids_generators import Int32IDGenerator
 from helpers import i18n
@@ -27,8 +30,7 @@ class _AvatarCooldownManager(RequestCooldownManager):
 
 class _AvatarRequester(RequestsByIDProcessor):
 
-    class _Response(namedtuple('_Response', [
-     'code', 'errStr', 'data'])):
+    class _Response(namedtuple('_Response', ['code', 'errStr', 'data'])):
 
         def isSuccess(self):
             return AccountCommands.isCodeValid(self.code)
@@ -73,4 +75,4 @@ class AvatarRequestsController(RequestsController):
         return self.__handlers.get(requestTypeID)
 
     def _getRequestTimeOut(self):
-        return 30.0
+        pass

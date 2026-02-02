@@ -1,4 +1,9 @@
-import logging, typing, BigWorld, BattleReplay
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/OwnVehicle.py
+import logging
+import typing
+import BigWorld
+import BattleReplay
 from OwnVehicleBase import OwnVehicleBase
 if typing.TYPE_CHECKING:
     from Avatar import PlayerAvatar

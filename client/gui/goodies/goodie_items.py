@@ -1,6 +1,11 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/goodies/goodie_items.py
 import time
 from functools import partial
-import weakref, typing, BigWorld, nations
+import weakref
+import typing
+import BigWorld
+import nations
 from constants import FORT_ORDER_TYPE
 from goodies.goodie_constants import GOODIE_RESOURCE_TYPE, GOODIE_STATE, GOODIE_VARIETY, GOODIE_TARGET_TYPE, BoosterCategory
 from goodies.goodie_helpers import GOODIE_TEXT_TO_RESOURCE, GoodieExpirationData
@@ -37,51 +42,51 @@ class BOOSTER_QUALITY_NAMES(CONST_CONTAINER):
     SMALL = 'small'
 
 
-_BOOSTER_QUALITY_VALUES = {BOOSTER_QUALITY_NAMES.BIG: 12.5, 
-   BOOSTER_QUALITY_NAMES.MEDIUM: 7.5}
-_BOOSTER_TYPE_NAMES = {GOODIE_RESOURCE_TYPE.GOLD: 'booster_gold', 
-   GOODIE_RESOURCE_TYPE.CREDITS: 'booster_credits', 
-   GOODIE_RESOURCE_TYPE.XP: 'booster_xp', 
-   GOODIE_RESOURCE_TYPE.CREW_XP: 'booster_crew_xp', 
-   GOODIE_RESOURCE_TYPE.FREE_XP: 'booster_free_xp', 
-   GOODIE_RESOURCE_TYPE.FL_XP: 'booster_fl_xp', 
-   GOODIE_RESOURCE_TYPE.FREE_XP_CREW_XP: 'booster_free_xp_and_crew_xp', 
-   GOODIE_RESOURCE_TYPE.FREE_XP_MAIN_XP: 'booster_free_xp_and_crew_xp'}
+_BOOSTER_QUALITY_VALUES = {BOOSTER_QUALITY_NAMES.BIG: 12.5,
+ BOOSTER_QUALITY_NAMES.MEDIUM: 7.5}
+_BOOSTER_TYPE_NAMES = {GOODIE_RESOURCE_TYPE.GOLD: 'booster_gold',
+ GOODIE_RESOURCE_TYPE.CREDITS: 'booster_credits',
+ GOODIE_RESOURCE_TYPE.XP: 'booster_xp',
+ GOODIE_RESOURCE_TYPE.CREW_XP: 'booster_crew_xp',
+ GOODIE_RESOURCE_TYPE.FREE_XP: 'booster_free_xp',
+ GOODIE_RESOURCE_TYPE.FL_XP: 'booster_fl_xp',
+ GOODIE_RESOURCE_TYPE.FREE_XP_CREW_XP: 'booster_free_xp_and_crew_xp',
+ GOODIE_RESOURCE_TYPE.FREE_XP_MAIN_XP: 'booster_free_xp_and_crew_xp'}
 _BOOSTER_TYPE_TEXT = {v:k for k, v in GOODIE_TEXT_TO_RESOURCE.iteritems()}
-BOOSTERS_ORDERS = {GOODIE_RESOURCE_TYPE.FL_XP: 0, 
-   GOODIE_RESOURCE_TYPE.XP: 1, 
-   GOODIE_RESOURCE_TYPE.CREDITS: 2, 
-   GOODIE_RESOURCE_TYPE.CREW_XP: 3, 
-   GOODIE_RESOURCE_TYPE.FREE_XP: 4, 
-   GOODIE_RESOURCE_TYPE.FREE_XP_CREW_XP: 5, 
-   GOODIE_RESOURCE_TYPE.FREE_XP_MAIN_XP: 6, 
-   GOODIE_RESOURCE_TYPE.GOLD: 7}
-GOODIE_TYPE_TO_KPI_NAME_MAP = {GOODIE_RESOURCE_TYPE.XP: KPI.Name.GAME_XP, 
-   GOODIE_RESOURCE_TYPE.FREE_XP: KPI.Name.GAME_FREE_XP, 
-   GOODIE_RESOURCE_TYPE.CREW_XP: KPI.Name.GAME_CREW_XP, 
-   GOODIE_RESOURCE_TYPE.CREDITS: KPI.Name.GAME_CREDITS, 
-   GOODIE_RESOURCE_TYPE.FL_XP: KPI.Name.GAME_FL_XP, 
-   GOODIE_RESOURCE_TYPE.FREE_XP_CREW_XP: KPI.Name.GAME_FREE_XP_AND_CREW_XP}
+BOOSTERS_ORDERS = {GOODIE_RESOURCE_TYPE.FL_XP: 0,
+ GOODIE_RESOURCE_TYPE.XP: 1,
+ GOODIE_RESOURCE_TYPE.CREDITS: 2,
+ GOODIE_RESOURCE_TYPE.CREW_XP: 3,
+ GOODIE_RESOURCE_TYPE.FREE_XP: 4,
+ GOODIE_RESOURCE_TYPE.FREE_XP_CREW_XP: 5,
+ GOODIE_RESOURCE_TYPE.FREE_XP_MAIN_XP: 6,
+ GOODIE_RESOURCE_TYPE.GOLD: 7}
+GOODIE_TYPE_TO_KPI_NAME_MAP = {GOODIE_RESOURCE_TYPE.XP: KPI.Name.GAME_XP,
+ GOODIE_RESOURCE_TYPE.FREE_XP: KPI.Name.GAME_FREE_XP,
+ GOODIE_RESOURCE_TYPE.CREW_XP: KPI.Name.GAME_CREW_XP,
+ GOODIE_RESOURCE_TYPE.CREDITS: KPI.Name.GAME_CREDITS,
+ GOODIE_RESOURCE_TYPE.FL_XP: KPI.Name.GAME_FL_XP,
+ GOODIE_RESOURCE_TYPE.FREE_XP_CREW_XP: KPI.Name.GAME_FREE_XP_AND_CREW_XP}
 DEMOUNT_KIT_NAMES = {GOODIE_RESOURCE_TYPE.GOLD: 'common'}
-_CLAN_RESERVE_TO_GUI_TYPE = {FORT_ORDER_TYPE.COMBAT_PAYMENTS: GOODIE_RESOURCE_TYPE.CREDITS, 
-   FORT_ORDER_TYPE.COMBAT_PAYMENTS_2_0: GOODIE_RESOURCE_TYPE.CREDITS, 
-   FORT_ORDER_TYPE.TACTICAL_TRAINING: GOODIE_RESOURCE_TYPE.XP, 
-   FORT_ORDER_TYPE.TACTICAL_TRAINING_2_0: GOODIE_RESOURCE_TYPE.XP, 
-   FORT_ORDER_TYPE.MILITARY_EXERCISES: GOODIE_RESOURCE_TYPE.FREE_XP, 
-   FORT_ORDER_TYPE.MILITARY_EXERCISES_2_0: GOODIE_RESOURCE_TYPE.FREE_XP, 
-   FORT_ORDER_TYPE.ADDITIONAL_BRIEFING: GOODIE_RESOURCE_TYPE.CREW_XP, 
-   FORT_ORDER_TYPE.ADDITIONAL_BRIEFING_2_0: GOODIE_RESOURCE_TYPE.CREW_XP}
-_GUI_TYPE_TO_CLAN_RESERVE = {GOODIE_RESOURCE_TYPE.CREDITS: 'COMBAT_PAYMENTS_2_0', 
-   GOODIE_RESOURCE_TYPE.XP: 'TACTICAL_TRAINING_2_0', 
-   GOODIE_RESOURCE_TYPE.FREE_XP: 'MILITARY_EXERCISES_2_0', 
-   GOODIE_RESOURCE_TYPE.CREW_XP: 'ADDITIONAL_BRIEFING_2_0'}
+_CLAN_RESERVE_TO_GUI_TYPE = {FORT_ORDER_TYPE.COMBAT_PAYMENTS: GOODIE_RESOURCE_TYPE.CREDITS,
+ FORT_ORDER_TYPE.COMBAT_PAYMENTS_2_0: GOODIE_RESOURCE_TYPE.CREDITS,
+ FORT_ORDER_TYPE.TACTICAL_TRAINING: GOODIE_RESOURCE_TYPE.XP,
+ FORT_ORDER_TYPE.TACTICAL_TRAINING_2_0: GOODIE_RESOURCE_TYPE.XP,
+ FORT_ORDER_TYPE.MILITARY_EXERCISES: GOODIE_RESOURCE_TYPE.FREE_XP,
+ FORT_ORDER_TYPE.MILITARY_EXERCISES_2_0: GOODIE_RESOURCE_TYPE.FREE_XP,
+ FORT_ORDER_TYPE.ADDITIONAL_BRIEFING: GOODIE_RESOURCE_TYPE.CREW_XP,
+ FORT_ORDER_TYPE.ADDITIONAL_BRIEFING_2_0: GOODIE_RESOURCE_TYPE.CREW_XP}
+_GUI_TYPE_TO_CLAN_RESERVE = {GOODIE_RESOURCE_TYPE.CREDITS: 'COMBAT_PAYMENTS_2_0',
+ GOODIE_RESOURCE_TYPE.XP: 'TACTICAL_TRAINING_2_0',
+ GOODIE_RESOURCE_TYPE.FREE_XP: 'MILITARY_EXERCISES_2_0',
+ GOODIE_RESOURCE_TYPE.CREW_XP: 'ADDITIONAL_BRIEFING_2_0'}
 
 def getBoosterGuiType(boosterType):
     return _BOOSTER_TYPE_NAMES[boosterType]
 
 
 def getFullNameForBoosterIcon(boosterType, isPremium=False, isExpirable=False):
-    return ('{}{}{}').format(getBoosterGuiType(boosterType), '_premium' if isPremium else '', '_expirable' if isExpirable else '')
+    return '{}{}{}'.format(getBoosterGuiType(boosterType), '_premium' if isPremium else '', '_expirable' if isExpirable else '')
 
 
 class _Goodie(object):
@@ -122,9 +127,7 @@ class _Goodie(object):
     @property
     def nextExpiryTime(self):
         expirationTimes = self.expirations.keys()
-        if expirationTimes:
-            return min(expirationTimes)
-        return 0
+        return min(expirationTimes) if expirationTimes else 0
 
     @property
     def isExpirable(self):
@@ -168,9 +171,7 @@ class _Goodie(object):
 
     @property
     def effectValue(self):
-        if self._goodieDescription:
-            return self._goodieDescription.resource.value
-        return 0
+        return self._goodieDescription.resource.value if self._goodieDescription else 0
 
     def getFormattedValue(self, formatter=None):
         raise NotImplementedError
@@ -196,9 +197,7 @@ class _Goodie(object):
 
     def getTimeLeftToNextExpiry(self):
         nextExpiry = self.nextExpiryTime
-        if nextExpiry:
-            return time_utils.getTimeDeltaFromNow(time_utils.makeLocalServerTime(nextExpiry))
-        return 0
+        return time_utils.getTimeDeltaFromNow(time_utils.makeLocalServerTime(nextExpiry)) if nextExpiry else 0
 
     def getExpiringAmount(self):
         expireAmount = 0
@@ -223,9 +222,7 @@ class _Goodie(object):
         return default
 
     def __getDescrAttribute(self, attributeName, default=None):
-        if self._goodieDescription:
-            return getattr(self._goodieDescription, attributeName, default)
-        return default
+        return getattr(self._goodieDescription, attributeName, default) if self._goodieDescription else default
 
 
 class _PersonalDiscount(_Goodie):
@@ -250,11 +247,8 @@ class _PersonalDiscount(_Goodie):
         return self._goodieDescription.target.limit
 
     def getFormattedValue(self, formatter=None):
-        value = ('{}%').format(self.effectValue)
-        if formatter is not None:
-            return formatter(value)
-        else:
-            return value
+        value = '{}%'.format(self.effectValue)
+        return formatter(value) if formatter is not None else value
 
     @property
     def targetName(self):
@@ -360,28 +354,20 @@ class BoosterUICommon(_Goodie):
         return percent
 
     def getUsageLeftTime(self):
-        if self.finishTime is not None:
-            return time_utils.getTimeDeltaFromNow(time_utils.makeLocalServerTime(self.finishTime))
-        else:
-            return 0
+        return time_utils.getTimeDeltaFromNow(time_utils.makeLocalServerTime(self.finishTime)) if self.finishTime is not None else 0
 
     def getUsageLeftTimeStr(self):
         return time_utils.getTillTimeString(self.getUsageLeftTime(), MENU.BOOSTERS_TIMELEFT, removeLeadingZeros=True)
 
     def getEffectTimeStr(self, hoursOnly=False):
-        if hoursOnly:
-            return _ms(MENU.VEHICLEPREVIEW_TIMELEFTSHORT_HOURS, hour=str(time.gmtime(self.effectTime).tm_hour))
-        return time_utils.getTillTimeString(self.effectTime, MENU.TIME_TIMEVALUE)
+        return _ms(MENU.VEHICLEPREVIEW_TIMELEFTSHORT_HOURS, hour=str(time.gmtime(self.effectTime).tm_hour)) if hoursOnly else time_utils.getTillTimeString(self.effectTime, MENU.TIME_TIMEVALUE)
 
     def getFormattedValue(self, formatter=None):
         if self.effectValue > 0:
-            value = ('+{}%').format(self.effectValue)
+            value = '+{}%'.format(self.effectValue)
         else:
-            value = ('{}%').format(self.effectValue)
-        if formatter is not None:
-            return formatter(value)
-        else:
-            return value
+            value = '{}%'.format(self.effectValue)
+        return formatter(value) if formatter is not None else value
 
     def getFullNameForResource(self):
         return getFullNameForBoosterIcon(self.boosterType, self.getIsPremium(), self.isExpirable)
@@ -419,9 +405,7 @@ class Booster(BoosterUICommon):
         boosterQualityValues = GUI_SETTINGS.lookup(self.boosterGuiType) or _BOOSTER_QUALITY_VALUES
         if self.effectValue >= boosterQualityValues[BOOSTER_QUALITY_NAMES.BIG]:
             return BOOSTER_QUALITY_NAMES.BIG
-        if self.effectValue >= boosterQualityValues[BOOSTER_QUALITY_NAMES.MEDIUM]:
-            return BOOSTER_QUALITY_NAMES.MEDIUM
-        return BOOSTER_QUALITY_NAMES.SMALL
+        return BOOSTER_QUALITY_NAMES.MEDIUM if self.effectValue >= boosterQualityValues[BOOSTER_QUALITY_NAMES.MEDIUM] else BOOSTER_QUALITY_NAMES.SMALL
 
     @property
     def inCooldown(self):
@@ -438,9 +422,7 @@ class Booster(BoosterUICommon):
     @property
     def isReadyToUse(self):
         activeBoosterTypes = self.__getActiveBoosterTypes()
-        if self.enabled:
-            return self.count > 0 and self.state == GOODIE_STATE.INACTIVE and len(self.__getActiveBoostersByCategory()) < MAX_ACTIVATED_BY_CATEGORY[self.category] and self.boosterType not in activeBoosterTypes and self.__readyForEvent()
-        return False
+        return self.count > 0 and self.state == GOODIE_STATE.INACTIVE and len(self.__getActiveBoostersByCategory()) < MAX_ACTIVATED_BY_CATEGORY[self.category] and self.boosterType not in activeBoosterTypes and self.__readyForEvent() if self.enabled else False
 
     @property
     def isReadyToUpdate(self):
@@ -457,15 +439,11 @@ class Booster(BoosterUICommon):
 
     @property
     def longDescriptionSpecial(self):
-        if self.isExpirable:
-            return backport.text(R.strings.tooltips.boostersWindow.booster.longDescriptionSpecialExpirable())
-        return backport.text(R.strings.tooltips.boostersWindow.booster.longDescriptionSpecial())
+        return backport.text(R.strings.tooltips.boostersWindow.booster.longDescriptionSpecialExpirable()) if self.isExpirable else backport.text(R.strings.tooltips.boostersWindow.booster.longDescriptionSpecial())
 
     @property
     def isHidden(self):
-        if self._stateProvider:
-            return self._stateProvider.isBoosterHiddenInShop(self.boosterID)
-        return False
+        return self._stateProvider.isBoosterHiddenInShop(self.boosterID) if self._stateProvider else False
 
     @property
     def kpi(self):
@@ -477,9 +455,7 @@ class Booster(BoosterUICommon):
 
     @property
     def category(self):
-        if self.isEventBooster:
-            return BoosterCategory.EVENT
-        return BoosterCategory.PERSONAL
+        return BoosterCategory.EVENT if self.isEventBooster else BoosterCategory.PERSONAL
 
     def getTypeAsString(self):
         return _BOOSTER_TYPE_TEXT[self.boosterType]
@@ -498,15 +474,10 @@ class Booster(BoosterUICommon):
 
     def getShopIcon(self, size=STORE_CONSTANTS.ICON_SIZE_MEDIUM):
         resID = R.images.gui.maps.shop.boosters.num(size).dyn(replaceHyphenToUnderscore(self.getFullNameForResource()))()
-        if resID != -1:
-            return backport.image(resID)
-        return ''
+        return backport.image(resID) if resID != -1 else ''
 
     def getExpiryDate(self):
-        if self.useby is not None:
-            return backport.getLongDateFormat(self.useby)
-        else:
-            return ''
+        return backport.getLongDateFormat(self.useby) if self.useby is not None else ''
 
     def getExpiryDateStr(self):
         if self.useby:
@@ -527,9 +498,7 @@ class Booster(BoosterUICommon):
     def mayPurchase(self, money):
         if getattr(BigWorld.player(), 'isLongDisconnectedFromCenter', False):
             return (False, GUI_ITEM_ECONOMY_CODE.CENTER_UNAVAILABLE)
-        if self.isHidden:
-            return (False, GUI_ITEM_ECONOMY_CODE.ITEM_IS_HIDDEN)
-        return self._isEnoughMoney(self.buyPrices, money)
+        return (False, GUI_ITEM_ECONOMY_CODE.ITEM_IS_HIDDEN) if self.isHidden else self._isEnoughMoney(self.buyPrices, money)
 
     @classmethod
     def _isEnoughMoney(cls, prices, money):
@@ -538,26 +507,18 @@ class Booster(BoosterUICommon):
             need = money.getShortage(itemPrice.price)
             if need:
                 shortage += need
-            else:
-                return (
-                 True, GUI_ITEM_ECONOMY_CODE.UNDEFINED)
+            return (True, GUI_ITEM_ECONOMY_CODE.UNDEFINED)
 
         if shortage:
             currency = shortage.getCurrency(byWeight=True)
-            return (
-             False, GUI_ITEM_ECONOMY_CODE.getCurrencyError(currency))
-        return (
-         False, GUI_ITEM_ECONOMY_CODE.ITEM_NO_PRICE)
+            return (False, GUI_ITEM_ECONOMY_CODE.getCurrencyError(currency))
+        return (False, GUI_ITEM_ECONOMY_CODE.ITEM_NO_PRICE)
 
     def __getActiveResources(self):
-        if not self._stateProvider:
-            return []
-        return self._stateProvider.getActiveResources()
+        return [] if not self._stateProvider else self._stateProvider.getActiveResources()
 
     def __getActiveBoosterTypes(self):
-        if not self._stateProvider:
-            return []
-        return self._stateProvider.getActiveBoosterTypes()
+        return [] if not self._stateProvider else self._stateProvider.getActiveBoosterTypes()
 
     def __getActiveBoostersByCategory(self):
         criteria = REQ_CRITERIA.BOOSTER.ACTIVE | REQ_CRITERIA.BOOSTER.BOOSTER_CATEGORIES([self.category])
@@ -578,9 +539,7 @@ class Booster(BoosterUICommon):
             return
 
     def __readyForEvent(self):
-        if self.isEventBooster:
-            return self.__epicController.isEnabled() and self.__epicController.isInPrimeTime()
-        return True
+        return self.__epicController.isEnabled() and self.__epicController.isInPrimeTime() if self.isEventBooster else True
 
     def __repr__(self):
         stateStr = 'Inactive'
@@ -589,7 +548,7 @@ class Booster(BoosterUICommon):
         elif self.state == GOODIE_STATE.USED:
             stateStr = 'Used'
         expirations = {expiration.timestamp:expiration.amount for expiration in self.expirations.itervalues()}
-        return ('Booster(id={} ({}), state={}, count={}, expirations={})').format(self.boosterID, self.getTypeAsString(), stateStr, self.count, expirations)
+        return 'Booster(id={} ({}), state={}, count={}, expirations={})'.format(self.boosterID, self.getTypeAsString(), stateStr, self.count, expirations)
 
 
 class ClanReservePresenter(BoosterUICommon):
@@ -623,9 +582,7 @@ class ClanReservePresenter(BoosterUICommon):
 
     @property
     def state(self):
-        if self.__finishTime > BigWorld.serverTime():
-            return GOODIE_STATE.ACTIVE
-        return GOODIE_STATE.INACTIVE
+        return GOODIE_STATE.ACTIVE if self.__finishTime > BigWorld.serverTime() else GOODIE_STATE.INACTIVE
 
     @property
     def inCooldown(self):
@@ -638,13 +595,10 @@ class ClanReservePresenter(BoosterUICommon):
     def getFormattedValue(self, formatter=None):
         valuesSet = set(self.effectValue)
         if len(valuesSet) == 1:
-            strValue = ('{}%').format(first(valuesSet))
+            strValue = '{}%'.format(first(valuesSet))
         else:
-            strValue = ('{}%-{}%').format(min(valuesSet), max(valuesSet))
-        if formatter is not None:
-            return formatter(strValue)
-        else:
-            return strValue
+            strValue = '{}%-{}%'.format(min(valuesSet), max(valuesSet))
+        return formatter(strValue) if formatter is not None else strValue
 
 
 class DemountKit(_Goodie):
@@ -662,7 +616,7 @@ class DemountKit(_Goodie):
         pass
 
     def getIcon(self, size):
-        return backport.image(R.images.gui.maps.icons.demountKit.dyn(('{}_{}').format(self.demountKitGuiType, size))())
+        return backport.image(R.images.gui.maps.icons.demountKit.dyn('{}_{}'.format(self.demountKitGuiType, size))())
 
     def getFormattedValue(self, formatter=None):
         pass
@@ -688,7 +642,7 @@ class DemountKit(_Goodie):
         return GUI_ITEM_TYPE_NAMES[self.itemTypeID]
 
     def getOverlayType(self, vehicle=None):
-        return ''
+        pass
 
     @property
     def nationID(self):
@@ -771,7 +725,7 @@ class RecertificationForm(_Goodie):
         return GUI_ITEM_TYPE_NAMES[self.itemTypeID]
 
     def getOverlayType(self, vehicle=None):
-        return ''
+        pass
 
     @property
     def nationID(self):
@@ -846,7 +800,7 @@ class MentoringLicense(_Goodie):
         return GUI_ITEM_TYPE_NAMES[self.itemTypeID]
 
     def getOverlayType(self, vehicle=None):
-        return ''
+        pass
 
     @property
     def nationID(self):

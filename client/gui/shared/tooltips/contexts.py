@@ -1,4 +1,9 @@
-import typing, constants, gui, nations
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/tooltips/contexts.py
+import typing
+import constants
+import gui
+import nations
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as _CAPS
 from blueprints.BlueprintTypes import BlueprintTypes
 from blueprints.FragmentTypes import getFragmentType
@@ -46,11 +51,7 @@ def _getCmpInitialVehicle():
 
 
 class StatsConfiguration(object):
-    __slots__ = ('vehicle', 'sellPrice', 'buyPrice', 'unlockPrice', 'inventoryCount',
-                 'vehiclesCount', 'node', 'xp', 'dailyXP', 'minRentPrice', 'restorePrice',
-                 'rentals', 'slotIdx', 'futureRentals', 'isAwardWindow', 'showBonus',
-                 'showRankedBonusBattle', 'showCompatibles', 'withSlots', 'isStaticInfoOnly',
-                 'showEarnCrystals')
+    __slots__ = ('vehicle', 'sellPrice', 'buyPrice', 'unlockPrice', 'inventoryCount', 'vehiclesCount', 'node', 'xp', 'dailyXP', 'minRentPrice', 'restorePrice', 'rentals', 'slotIdx', 'futureRentals', 'isAwardWindow', 'showBonus', 'showRankedBonusBattle', 'showCompatibles', 'withSlots', 'isStaticInfoOnly', 'showEarnCrystals')
 
     def __init__(self):
         self.vehicle = None
@@ -78,9 +79,7 @@ class StatsConfiguration(object):
 
 
 class StatusConfiguration(object):
-    __slots__ = ('vehicle', 'slotIdx', 'eqs', 'checkBuying', 'node', 'isAwardWindow',
-                 'isResearchPage', 'checkNotSuitable', 'showCustomStates', 'useWhiteBg',
-                 'withSlots', 'isCompare', 'eqSetupIDx', 'battleRoyale')
+    __slots__ = ('vehicle', 'slotIdx', 'eqs', 'checkBuying', 'node', 'isAwardWindow', 'isResearchPage', 'checkNotSuitable', 'showCustomStates', 'useWhiteBg', 'withSlots', 'isCompare', 'eqSetupIDx', 'battleRoyale')
 
     def __init__(self):
         self.vehicle = None
@@ -101,10 +100,7 @@ class StatusConfiguration(object):
 
 
 class ParamsConfiguration(object):
-    __slots__ = ('vehicle', 'params', 'crew', 'eqs', 'devices', 'dossier', 'dossierType',
-                 'isCurrentUserDossier', 'historicalBattleID', 'checkAchievementExistence',
-                 'simplifiedOnly', 'externalCrewParam', 'vehicleLevel', 'arenaType',
-                 'colorless')
+    __slots__ = ('vehicle', 'params', 'crew', 'eqs', 'devices', 'dossier', 'dossierType', 'isCurrentUserDossier', 'historicalBattleID', 'checkAchievementExistence', 'simplifiedOnly', 'externalCrewParam', 'vehicleLevel', 'arenaType', 'colorless')
 
     def __init__(self):
         self.vehicle = None
@@ -136,7 +132,7 @@ class ToolTipContext(object):
         return self._fieldsToExclude
 
     def buildItem(self, *args, **kwargs):
-        return
+        return None
 
     def getStatusConfiguration(self, item):
         return StatusConfiguration()
@@ -248,7 +244,8 @@ class AwardContext(DefaultContext):
         self._rentExpiryTime = rentExpiryTime
         self._rentBattlesLeft = rentBattles
         self._rentWinsLeft = rentWins
-        self._seasonRent = {'season': rentSeason or [], 'cycle': rentCycle or []}
+        self._seasonRent = {'season': rentSeason or [],
+         'cycle': rentCycle or []}
         self._isSeniority = isSeniority
         return self.itemsCache.items.getItemByCD(int(intCD))
 
@@ -280,10 +277,12 @@ class AwardContext(DefaultContext):
             for seasonType, seasonID in self._seasonRent[key]:
                 seasonRent.setdefault(seasonType, []).append((int(seasonID), RENT_TYPE_TO_DURATION[key]))
 
-        return {'tmanRoleLevel': self._tmanRoleLevel, 'rentExpiryTime': self._rentExpiryTime, 'rentBattlesLeft': self._rentBattlesLeft, 
-           'rentWinsLeft': self._rentWinsLeft, 
-           'rentSeason': seasonRent, 
-           'isSeniority': self._isSeniority}
+        return {'tmanRoleLevel': self._tmanRoleLevel,
+         'rentExpiryTime': self._rentExpiryTime,
+         'rentBattlesLeft': self._rentBattlesLeft,
+         'rentWinsLeft': self._rentWinsLeft,
+         'rentSeason': seasonRent,
+         'isSeniority': self._isSeniority}
 
 
 class ExtendedAwardContext(AwardContext):
@@ -492,8 +491,7 @@ class PotapovQuestsChainContext(ToolTipContext):
         super(PotapovQuestsChainContext, self).__init__(TOOLTIP_COMPONENT.HANGAR, fieldsToExclude)
 
     def buildItem(self, tileID, chainID):
-        return (
-         tileID, chainID)
+        return (tileID, chainID)
 
 
 class PersonalMissionOperationContext(ToolTipContext):
@@ -530,10 +528,7 @@ class PersonalMissionContext(QuestContext):
 
     def buildItem(self, eventID, *args, **kwargs):
         quests = self.eventsCache.getPersonalMissions().getAllQuests()
-        if eventID in quests:
-            return quests[eventID]
-        else:
-            return
+        return quests[eventID] if eventID in quests else None
 
 
 class BaseHangarParamContext(ToolTipContext):
@@ -547,7 +542,7 @@ class BaseHangarParamContext(ToolTipContext):
         return params_helper.similarCrewComparator(g_currentVehicle.item)
 
     def buildItem(self, *args, **kwargs):
-        return
+        return None
 
     def getBonusExtractor(self, vehicle, bonuses, paramName):
         return bonus_helper.BonusExtractor(vehicle, bonuses, paramName)
@@ -610,10 +605,7 @@ class TankSetupParamContext(HangarParamContext):
         return bonus_helper.TankSetupBonusExtractor(vehicle, bonuses, paramName)
 
     def __getItem(self):
-        if self.__loadoutController.interactor is not None:
-            return self.__loadoutController.interactor.getVehicleAfterInstall()
-        else:
-            return g_currentVehicle.item
+        return self.__loadoutController.interactor.getVehicleAfterInstall() if self.__loadoutController.interactor is not None else g_currentVehicle.item
 
 
 class PostProgressionParamContext(TankSetupParamContext):
@@ -731,7 +723,7 @@ class HangarSlotContext(HangarContext):
 
 
 class NationChangeHangarContext(HangarContext):
-    __slots__ = ('__layoutIDx', )
+    __slots__ = ('__layoutIDx',)
 
     def __init__(self, fieldsToExclude=None):
         super(NationChangeHangarContext, self).__init__(fieldsToExclude)
@@ -866,8 +858,7 @@ class BlueprintContext(ToolTipContext):
                 return
             blueprintData = self.__itemsCache.items.blueprints.getBlueprintData(vehicleCD, vehicle.level)
             convertibleCount = self.__itemsCache.items.blueprints.getConvertibleFragmentCount(vehicleCD, vehicle.level)
-            return (
-             vehicle, blueprintData, convertibleCount)
+            return (vehicle, blueprintData, convertibleCount)
 
     def getDiscountValues(self, vehicle=None):
         if vehicle is None and self.__blueprintCD is None:
@@ -895,8 +886,7 @@ class BlueprintContext(ToolTipContext):
             if vLevel is None:
                 vLevel = self.__itemsCache.items.getItemByCD(int(self.__blueprintCD)).level
             reqNational, reqIntel = self.__itemsCache.items.blueprints.getRequiredIntelligenceAndNational(vLevel)
-            return (
-             reqIntel, reqNational)
+            return (reqIntel, reqNational)
 
     def getFragmentData(self, fragmentCD=None):
         if fragmentCD is None and self.__blueprintCD is None:
@@ -912,10 +902,7 @@ class BlueprintContext(ToolTipContext):
             return (fragmentType, nation, alliance)
 
     def getUniversalCount(self, vehicleCD=None):
-        if vehicleCD is None:
-            return self.__itemsCache.items.blueprints.getIntelligenceCount()
-        else:
-            return self.__itemsCache.items.blueprints.getNationalFragments(vehicleCD)
+        return self.__itemsCache.items.blueprints.getIntelligenceCount() if vehicleCD is None else self.__itemsCache.items.blueprints.getNationalFragments(vehicleCD)
 
     def getBlueprintLayout(self, vehicle=None):
         if vehicle is None and self.__blueprintCD is None:
@@ -929,8 +916,7 @@ class BlueprintContext(ToolTipContext):
         bpRequester = self.__itemsCache.items.blueprints
         nationalRequiredOptions = bpRequester.getNationalRequiredOptions(vehicle.intCD, vehicle.level)
         nationalAllianceFragments = bpRequester.getNationalAllianceFragments(vehicle.intCD, vehicle.level)
-        return (
-         nationalRequiredOptions, nationalAllianceFragments)
+        return (nationalRequiredOptions, nationalAllianceFragments)
 
 
 class VehicleAnnouncementContext(ToolTipContext):
@@ -1057,10 +1043,7 @@ class BattleResultContext(ProfileContext):
             if item is not None:
                 return item
         factory = factories.getAchievementFactory((block, name))
-        if factory is not None:
-            return factory.create(value=value)
-        else:
-            return
+        return factory.create(value=value) if factory is not None else None
 
     def getParamsConfiguration(self, item):
         value = super(BattleResultContext, self).getParamsConfiguration(item)
@@ -1284,8 +1267,7 @@ class ClanReserveContext(BoosterInfoContext):
 
 
 class BoosterStatsConfiguration(object):
-    __slots__ = ('buyPrice', 'inventoryCount', 'quests', 'activeState', 'effectTime',
-                 'activateInfo', 'dueDate')
+    __slots__ = ('buyPrice', 'inventoryCount', 'quests', 'activeState', 'effectTime', 'activateInfo', 'dueDate')
 
     def __init__(self):
         self.buyPrice = False
@@ -1298,7 +1280,7 @@ class BoosterStatsConfiguration(object):
 
 
 class BadgeParamsConfiguration(object):
-    __slots__ = ('showVehicle', )
+    __slots__ = ('showVehicle',)
 
     def __init__(self):
         self.showVehicle = True
@@ -1367,7 +1349,7 @@ class DogTagInfoContext(ToolTipContext):
 
 
 class BattlePassGiftTokenContext(ToolTipContext):
-    __slots__ = ('__hasOffer', )
+    __slots__ = ('__hasOffer',)
     __offersProvider = dependency.descriptor(IOffersDataProvider)
     __battlePassController = dependency.descriptor(IBattlePassController)
 
@@ -1391,8 +1373,7 @@ class BattlePassGiftTokenContext(ToolTipContext):
                     result.append(gift.bonus.displayedItem.getXP())
             else:
                 shortOfferName = offerToken.split(':')[2]
-                gifts = sorted(offer.getAllGifts(), cmp=getRewardsComparator(shortOfferName), key=lambda item: (
-                 item.bonus.getLightViewModelData()[0],))
+                gifts = sorted(offer.getAllGifts(), cmp=getRewardsComparator(shortOfferName), key=lambda item: (item.bonus.getLightViewModelData()[0],))
                 for gift in gifts:
                     result.append(gift.title)
 
@@ -1406,8 +1387,9 @@ class PersonalMissionsPointsTooltipContext(ToolTipContext):
 
     def getParams(self):
         params = super(PersonalMissionsPointsTooltipContext, self).getParams()
-        params.update({'tooltipType': ParamTooltipType.PM3_POINTS.value, 
-           'params': [], 'resId': R.views.mono.personal_missions_30.tooltips.param_tooltip()})
+        params.update({'tooltipType': ParamTooltipType.PM3_POINTS.value,
+         'params': [],
+         'resId': R.views.mono.personal_missions_30.tooltips.param_tooltip()})
         return params
 
 
@@ -1415,7 +1397,7 @@ class PersonalMissionOperationDisabledTooltipContext(ToolTipContext):
 
     def getParams(self):
         params = super(PersonalMissionOperationDisabledTooltipContext, self).getParams()
-        params.update({'tooltipType': ParamTooltipType.CUSTOM_SIMPLE.value, 
-           'params': {'body': backport.text(R.strings.personal_missions_30.campaignSelector.operation.tooltip.locked())}, 
-           'resId': R.views.mono.personal_missions_30.tooltips.param_tooltip()})
+        params.update({'tooltipType': ParamTooltipType.CUSTOM_SIMPLE.value,
+         'params': {'body': backport.text(R.strings.personal_missions_30.campaignSelector.operation.tooltip.locked())},
+         'resId': R.views.mono.personal_missions_30.tooltips.param_tooltip()})
         return params

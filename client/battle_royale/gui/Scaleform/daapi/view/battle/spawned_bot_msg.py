@@ -1,4 +1,7 @@
-import logging, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/battle/spawned_bot_msg.py
+import logging
+import BigWorld
 from gui.Scaleform.daapi.view.common.battle_royale.br_helpers import canVehicleSpawnBot
 from battle_royale.gui.battle_control.controllers.progression_ctrl import IProgressionListener
 from gui.battle_control.view_components import IViewComponentsCtrlListener
@@ -44,6 +47,6 @@ class SpawnedBotMsgPlayerMsgs(IProgressionListener, IViewComponentsCtrlListener)
             playerVehicleId = self.__sessionProvider.getArenaDP().getPlayerVehicleID(True)
             if killedVehicle.getMasterVehID() == playerVehicleId:
                 vehicleName = killedVehicle.typeDescriptor.name.split(':')[1]
-                msgStr = ('').join((vehicleName, '_DESTROYED'))
+                msgStr = ''.join((vehicleName, '_DESTROYED'))
                 self.__sessionProvider.shared.messages.onShowPlayerMessageByKey(msgStr)
             return

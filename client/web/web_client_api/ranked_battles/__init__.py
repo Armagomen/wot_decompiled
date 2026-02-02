@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/web/web_client_api/ranked_battles/__init__.py
 from functools import partial
 from gui.ranked_battles.constants import RankedDossierKeys, SeasonResultTokenPatterns
 from gui.shared import EVENT_BUS_SCOPE
@@ -23,11 +25,11 @@ from web.web_client_api.ui.ranked import OpenRankedPagesMixin
 BROWSER_BRIDGE_EVENT = 'browser_bridge_event'
 
 def _packQuest(quest, rankModel):
-    return {'isCompleted': quest.isCompleted(), 
-       'condition': {'rank': rankModel.getUserName() if rankModel is not None else '', 
-                     'division': rankModel.getDivision().getID() if rankModel is not None else 0, 
-                     'isLastInDivision': rankModel.isLastInDivision() if rankModel is not None else False}, 
-       'entitlements': {bonus.getValue().id:bonus.getValue().amount for bonus in quest.getBonuses() if bonus.getName() == 'entitlements' if bonus.getName() == 'entitlements'}}
+    return {'isCompleted': quest.isCompleted(),
+     'condition': {'rank': rankModel.getUserName() if rankModel is not None else '',
+                   'division': rankModel.getDivision().getID() if rankModel is not None else 0,
+                   'isLastInDivision': rankModel.isLastInDivision() if rankModel is not None else False},
+     'entitlements': {bonus.getValue().id:bonus.getValue().amount for bonus in quest.getBonuses() if bonus.getName() == 'entitlements'}}
 
 
 @w2capi(name='ranked_battles', key='action')
@@ -43,22 +45,22 @@ class RankedBattlesWebApi(OpenRankedPagesMixin):
 
     @w2c(W2CSchema, name='get_gamemode_state')
     def getGamemodeState(self, _):
-        return {'isEnabled': self.__rankedController.isEnabled(), 
-           'isShopEnabled': self.__rankedController.isRankedShopEnabled(), 
-           'isActiveSeason': self.__rankedController.getCurrentSeason() is not None, 
-           'isSeasonGap': self.__rankedController.getPreviousSeason() is not None, 
-           'isSeasonRewarding': self.__rankedController.isSeasonRewarding(), 
-           'isYearGap': self.__rankedController.isYearGap(), 
-           'expectedSeasons': self.__rankedController.getExpectedSeasons()}
+        return {'isEnabled': self.__rankedController.isEnabled(),
+         'isShopEnabled': self.__rankedController.isRankedShopEnabled(),
+         'isActiveSeason': self.__rankedController.getCurrentSeason() is not None,
+         'isSeasonGap': self.__rankedController.getPreviousSeason() is not None,
+         'isSeasonRewarding': self.__rankedController.isSeasonRewarding(),
+         'isYearGap': self.__rankedController.isYearGap(),
+         'expectedSeasons': self.__rankedController.getExpectedSeasons()}
 
     @w2c(W2CSchema, name='get_platform_quests_info')
     def getPlatformQuestsInfo(self, _):
         rankedQuests = self.__eventsCache.getRankedQuests(lambda q: isRankedPlatform(q.getID())).values()
         leaguesQuests = self.__eventsCache.getActiveQuests(lambda q: isRankedPlatform(q.getID())).values()
-        progressQuests = [ _packQuest(qst, self.__rankedController.getRank(qst.getRank())) for qst in sorted(rankedQuests, key=lambda q: q.getRank())
-                         ]
+        progressQuests = [ _packQuest(qst, self.__rankedController.getRank(qst.getRank())) for qst in sorted(rankedQuests, key=lambda q: q.getRank()) ]
         postProgressQuests = [ _packQuest(quest, None) for quest in leaguesQuests ]
-        return {'progressQuests': progressQuests, 'postProgressQuests': postProgressQuests}
+        return {'progressQuests': progressQuests,
+         'postProgressQuests': postProgressQuests}
 
     @w2c(W2CSchema, name='get_seasons_stats')
     def getSeasonsStats(self, _):
@@ -71,10 +73,10 @@ class RankedBattlesWebApi(OpenRankedPagesMixin):
                 banToken = tokens.get(SeasonResultTokenPatterns.RANKED_OFF_BANNED.format(seasonID))
                 rollToken = tokens.get(SeasonResultTokenPatterns.RANKED_OFF_ROLLED.format(seasonID))
                 stepsEfficiency = dossier.getStepsEfficiency()
-                result[seasonID] = {'maxRank': dossier.getAchievedRank(), 
-                   'efficiency': stepsEfficiency * 100.0 if stepsEfficiency is not None else None, 
-                   'isBanned': banToken is not None and banToken[1] > 0, 
-                   'isRolled': rollToken is not None and rollToken[1] > 0}
+                result[seasonID] = {'maxRank': dossier.getAchievedRank(),
+                 'efficiency': stepsEfficiency * 100.0 if stepsEfficiency is not None else None,
+                 'isBanned': banToken is not None and banToken[1] > 0,
+                 'isRolled': rollToken is not None and rollToken[1] > 0}
 
         return result
 
@@ -107,8 +109,8 @@ class _OpenTabWebApi(OpenTabWebApi):
         return self.__getRankedShopCallback(cmd)
 
     def __getRankedShopCallback(self, cmd):
-        ctx = {'webParams': cmd.back_url if cmd.back_url is not None else '', 
-           'selectedItemID': RANKEDBATTLES_CONSTS.RANKED_BATTLES_SHOP_ID}
+        ctx = {'webParams': cmd.back_url if cmd.back_url is not None else '',
+         'selectedItemID': RANKEDBATTLES_CONSTS.RANKED_BATTLES_SHOP_ID}
         return partial(self.__rankedController.showRankedBattlePage, ctx)
 
 
@@ -116,8 +118,7 @@ class _SoundStateWebApi(SoundStateWebApi):
     _ON_EXIT_STATES = {}
 
 
-DEFAULT_WEB_HANDLERS = {
- RequestWebApi,
+DEFAULT_WEB_HANDLERS = {RequestWebApi,
  ContextMenuWebApi,
  _OpenTabWebApi,
  OpenWindowWebApi,

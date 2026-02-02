@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/ranked/year_leaderboard_view.py
 from constants import CURRENT_REALM
 from dossiers2.ui.achievements import BADGES_BLOCK
 from frameworks.wulf import WindowFlags, ViewSettings
@@ -20,7 +22,7 @@ def _extractReward(rewardsData):
             if block == BADGES_BLOCK:
                 return name
 
-    return
+    return None
 
 
 class YearLeaderboardView(ViewImpl):
@@ -53,7 +55,7 @@ class YearLeaderboardView(ViewImpl):
         super(YearLeaderboardView, self)._onLoading(*args, **kwargs)
         defaultBG = R.images.gui.maps.icons.rankedBattles.yearLeaderboardReward.bg_default
         overrideBG = R.images.gui.maps.icons.rankedBattles.yearLeaderboardReward.dyn('bg_' + CURRENT_REALM, defaultBG)
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setPlayerName(getPlayerName())
             model.setPlayerClan(self.__getClanAbbrev())
             model.setPositionsTotal(self.__rankedController.getYearLBSize())
@@ -63,10 +65,7 @@ class YearLeaderboardView(ViewImpl):
 
     def __getClanAbbrev(self):
         clanAbbrev = self.__lobbyContext.getClanAbbrev(self.__itemsCache.items.stats.clanInfo)
-        if clanAbbrev is not None:
-            return backport.text(R.strings.ranked_battles.yearLeaderboard.rewardView.clanDescr(), clan=clanAbbrev)
-        else:
-            return ''
+        return backport.text(R.strings.ranked_battles.yearLeaderboard.rewardView.clanDescr(), clan=clanAbbrev) if clanAbbrev is not None else ''
 
     def __onLeaderboardBtnClick(self):
         self.__rankedController.showRankedBattlePage(ctx={'selectedItemID': RANKEDBATTLES_CONSTS.RANKED_BATTLES_YEAR_RATING_ID})
@@ -74,7 +73,7 @@ class YearLeaderboardView(ViewImpl):
 
 
 class YearLeaderboardAwardWindow(LobbyNotificationWindow):
-    __slots__ = ('__args', )
+    __slots__ = ('__args',)
 
     def __init__(self, *args):
         super(YearLeaderboardAwardWindow, self).__init__(content=YearLeaderboardView(R.views.lobby.ranked.YearLeaderboardView(), *args), wndFlags=WindowFlags.WINDOW | WindowFlags.WINDOW_FULLSCREEN)

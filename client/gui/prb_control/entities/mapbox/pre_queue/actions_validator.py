@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/mapbox/pre_queue/actions_validator.py
 from CurrentVehicle import g_currentVehicle
 from gui.prb_control.entities.base.actions_validator import BaseActionsValidator, ActionsValidatorComposite, CurrentVehicleActionsValidator
 from gui.prb_control.entities.base.pre_queue.actions_validator import PreQueueActionsValidator
@@ -12,46 +14,35 @@ class MapboxVehicleValidator(CurrentVehicleActionsValidator):
     def _validate(self):
         vehicle = g_currentVehicle.item
         result = self.validateForMapbox(vehicle)
-        if result is not None:
-            return result
-        else:
-            return super(MapboxVehicleValidator, self)._validate()
+        return result if result is not None else super(MapboxVehicleValidator, self)._validate()
 
     @staticmethod
     def validateForMapbox(vehicle):
         if vehicle is None:
             return ValidationResult(False, PREBATTLE_RESTRICTION.VEHICLE_NOT_PRESENT)
+        lobbyContext = dependency.instance(ILobbyContext)
+        config = lobbyContext.getServerSettings().mapbox
+        if vehicle.level not in config.levels:
+            return ValidationResult(False, PRE_QUEUE_RESTRICTION.LIMIT_LEVEL, {'levels': config.levels})
+        elif vehicle.intCD in config.forbiddenVehTypes:
+            return ValidationResult(False, PRE_QUEUE_RESTRICTION.LIMIT_VEHICLE_TYPE, {'forbiddenType': vehicle.shortUserName})
         else:
-            lobbyContext = dependency.instance(ILobbyContext)
-            config = lobbyContext.getServerSettings().mapbox
-            if vehicle.level not in config.levels:
-                return ValidationResult(False, PRE_QUEUE_RESTRICTION.LIMIT_LEVEL, {'levels': config.levels})
-            if vehicle.intCD in config.forbiddenVehTypes:
-                return ValidationResult(False, PRE_QUEUE_RESTRICTION.LIMIT_VEHICLE_TYPE, {'forbiddenType': vehicle.shortUserName})
-            if vehicle.type in config.forbiddenClassTags:
-                return ValidationResult(False, PRE_QUEUE_RESTRICTION.LIMIT_VEHICLE_CLASS, {'forbiddenClass': vehicle.type})
-            return
+            return ValidationResult(False, PRE_QUEUE_RESTRICTION.LIMIT_VEHICLE_CLASS, {'forbiddenClass': vehicle.type}) if vehicle.type in config.forbiddenClassTags else None
 
 
 class MapboxStateValidator(BaseActionsValidator):
 
     def _validate(self):
         mapboxController = dependency.instance(IMapboxController)
-        if not mapboxController.isActive() or not mapboxController.isInPrimeTime():
-            return ValidationResult(False, PRE_QUEUE_RESTRICTION.MODE_NOT_AVAILABLE)
-        return super(MapboxStateValidator, self)._validate()
+        return ValidationResult(False, PRE_QUEUE_RESTRICTION.MODE_NOT_AVAILABLE) if not mapboxController.isActive() or not mapboxController.isInPrimeTime() else super(MapboxStateValidator, self)._validate()
 
 
 class MapboxActionsValidator(PreQueueActionsValidator):
 
     def _createVehiclesValidator(self, entity):
         baseValidator = super(MapboxActionsValidator, self)._createVehiclesValidator(entity)
-        return ActionsValidatorComposite(entity, [
-         MapboxVehicleValidator(entity),
-         baseValidator])
+        return ActionsValidatorComposite(entity, [MapboxVehicleValidator(entity), baseValidator])
 
     def _createStateValidator(self, entity):
         baseValidator = super(MapboxActionsValidator, self)._createStateValidator(entity)
-        return ActionsValidatorComposite(entity, [
-         baseValidator,
-         MapboxStateValidator(entity)])
+        return ActionsValidatorComposite(entity, [baseValidator, MapboxStateValidator(entity)])

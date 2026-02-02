@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/tooltips/ranked_builders.py
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.shared.tooltips import advanced
 from gui.shared.tooltips import contexts
@@ -15,11 +17,10 @@ from gui.shared.tooltips.ranked.league_tooltip import PositionTooltipData
 from gui.shared.tooltips.ranked.ranked_year_reward_tooltip import RankedYearReward
 from gui.shared.tooltips.ranked.ranked_quests_preview_tooltip import RankedQuestsPreviewTooltip
 from gui.shared.tooltips.ranked.ranked_selectable_reward_tooltip import RankedSelectableRewardTooltip
-__all__ = ('getTooltipBuilders', )
+__all__ = ('getTooltipBuilders',)
 
 def getTooltipBuilders():
-    return (
-     DataBuilder(TOOLTIPS_CONSTANTS.RANKED_BATTLES_RANK, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI, RankedTooltipData(contexts.RankedRankContext())),
+    return (DataBuilder(TOOLTIPS_CONSTANTS.RANKED_BATTLES_RANK, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI, RankedTooltipData(contexts.RankedRankContext())),
      DataBuilder(TOOLTIPS_CONSTANTS.RANKED_BATTLES_BONUS, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI, BonusTooltipData(contexts.ToolTipContext(None))),
      DataBuilder(TOOLTIPS_CONSTANTS.RANKED_BATTLES_LEAGUE, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI, LeagueTooltipData(contexts.ToolTipContext(None))),
      DataBuilder(TOOLTIPS_CONSTANTS.RANKED_BATTLES_EFFICIENCY, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI, EfficiencyTooltipData(contexts.ToolTipContext(None))),

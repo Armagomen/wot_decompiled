@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/mentor_assigment_view.py
 import json
 from typing import TYPE_CHECKING, Optional
 import SoundGroups
@@ -39,18 +41,14 @@ from skeletons.gui.shared import IItemsCache
 from wg_async import wg_async, wg_await
 if TYPE_CHECKING:
     from gui.impl.lobby.crew.widget.crew_widget import QuickTrainingCrewWidget as CrewWidgetType
-_POPOVER_GROUP_SETTINGS = (getTankmanRoleSettings(),
- getVehicleTypeSettings(customTooltipBody=R.strings.crew.filter.tooltip.crewMemberVehicleType.body()),
- getVehicleTierSettings())
+_POPOVER_GROUP_SETTINGS = (getTankmanRoleSettings(), getVehicleTypeSettings(customTooltipBody=R.strings.crew.filter.tooltip.crewMemberVehicleType.body()), getVehicleTierSettings())
 _DEFAULT_TIP_ID = 0
 _LOST_XP_TIP_ID = 1
 
 class MentorAssigmentView(BaseCrewView, BaseTankmanListView):
     restore = dependency.descriptor(IRestoreController)
     itemsCache = dependency.descriptor(IItemsCache)
-    __slots__ = ('__dataProvider', '__filterState', '__filterPanelWidget', '__nation',
-                 '__vehicleInvID', '__tankmanInvID', '__tankman', '__hasActiveCard',
-                 '__parent', '__isDefaultTipVisible', '__isDefaultTipShown')
+    __slots__ = ('__dataProvider', '__filterState', '__filterPanelWidget', '__nation', '__vehicleInvID', '__tankmanInvID', '__tankman', '__hasActiveCard', '__parent', '__isDefaultTipVisible', '__isDefaultTipShown')
 
     def __init__(self, layoutID=R.views.lobby.crew.MentorAssigmentView(), *args, **kwargs):
         settings = ViewSettings(layoutID, flags=ViewFlags.VIEW, model=MentorAssigmentViewModel(), args=args, kwargs=kwargs)
@@ -91,10 +89,7 @@ class MentorAssigmentView(BaseCrewView, BaseTankmanListView):
             if tooltipId == TooltipConstants.MENTOR_FULLY_TRAINED:
                 text = backport.text(R.strings.mentoring_license.mentorAssigment.tooltip.fullyTrainedMentor())
                 return ExtendedTextTooltip(text, json.dumps({'name': self._tankman.getFullUserNameWithSkin()}))
-        if contentID == R.views.lobby.crew.tooltips.MentoringLicenseTooltip():
-            return MentoringLicenseTooltip(getMetoringLicensesAmount())
-        else:
-            return super(MentorAssigmentView, self).createToolTipContent(event, contentID)
+        return MentoringLicenseTooltip(getMetoringLicensesAmount()) if contentID == R.views.lobby.crew.tooltips.MentoringLicenseTooltip() else super(MentorAssigmentView, self).createToolTipContent(event, contentID)
 
     def _onLoading(self, *args, **kwargs):
         super(MentorAssigmentView, self)._onLoading(*args, **kwargs)
@@ -114,9 +109,7 @@ class MentorAssigmentView(BaseCrewView, BaseTankmanListView):
     @property
     def _crew(self):
         vehicle = self._vehicle
-        if vehicle:
-            return vehicle.crew
-        return [(0, self._tankman)]
+        return vehicle.crew if vehicle else [(0, self._tankman)]
 
     def _getCrewWidgetBaseData(self):
         from gui.impl.lobby.crew.widget.crew_widget import QuickTrainingCrewWidget
@@ -134,34 +127,19 @@ class MentorAssigmentView(BaseCrewView, BaseTankmanListView):
 
     def _getEvents(self):
         eventsTuple = super(MentorAssigmentView, self)._getEvents()
-        return eventsTuple + (
-         (
-          self.viewModel.onResetFilters, self.__onResetFilters),
-         (
-          self.viewModel.onLoadCards, self._onLoadCards),
-         (
-          self.viewModel.onTankmanSelected, self._onTankmanSelected),
-         (
-          self.viewModel.onCardMouseEnter, self._onCardMouseEnter),
-         (
-          self.viewModel.onCardMouseLeave, self._onCardMouseLeave),
-         (
-          self.viewModel.onTipClose, self._onTipClose),
-         (
-          self.viewModel.onTipsReadyToShow, self._onTipsReadyToShow),
-         (
-          self.__dataProvider.onDataChanged, self._updateViewModel),
-         (
-          self.__filterState.onStateChanged, self._onFilterStateUpdated),
-         (
-          g_playerEvents.onDisconnected, self.__onDisconnected))
+        return eventsTuple + ((self.viewModel.onResetFilters, self.__onResetFilters),
+         (self.viewModel.onLoadCards, self._onLoadCards),
+         (self.viewModel.onTankmanSelected, self._onTankmanSelected),
+         (self.viewModel.onCardMouseEnter, self._onCardMouseEnter),
+         (self.viewModel.onCardMouseLeave, self._onCardMouseLeave),
+         (self.viewModel.onTipClose, self._onTipClose),
+         (self.viewModel.onTipsReadyToShow, self._onTipsReadyToShow),
+         (self.__dataProvider.onDataChanged, self._updateViewModel),
+         (self.__filterState.onStateChanged, self._onFilterStateUpdated),
+         (g_playerEvents.onDisconnected, self.__onDisconnected))
 
     def _getCallbacks(self):
-        return (
-         (
-          'inventory', self.__onInventoryUpdate),
-         (
-          'goodies', self.__onGoodiesUpdate))
+        return (('inventory', self.__onInventoryUpdate), ('goodies', self.__onGoodiesUpdate))
 
     def _updateTankmanData(self):
         self.__dataProvider.reinit(self.__tankmanInvID)
@@ -200,7 +178,7 @@ class MentorAssigmentView(BaseCrewView, BaseTankmanListView):
 
     @property
     def _recruitsProvider(self):
-        return
+        return None
 
     @property
     def _filterState(self):
@@ -220,7 +198,7 @@ class MentorAssigmentView(BaseCrewView, BaseTankmanListView):
         cardsList.addViewModel(tm)
 
     def _fillRecruits(self, cardsList, limit, offset):
-        return (0, 0)
+        pass
 
     def _destroyParentView(self):
         if self.__parent:
@@ -299,7 +277,7 @@ class MentorAssigmentView(BaseCrewView, BaseTankmanListView):
         self._fillVisibleCards(tx.getTankmanList())
 
     def _setBackButtonLabel(self, vm):
-        vm.setBackButtonLabel((self._isHangar or R.strings.crew.common.navigation.toBarracks)() if 1 else R.invalid())
+        vm.setBackButtonLabel(R.strings.crew.common.navigation.toBarracks() if not self._isHangar else R.invalid())
 
     def __fillTips(self):
         tips = self.viewModel.getTips()
@@ -329,7 +307,7 @@ class MentorAssigmentView(BaseCrewView, BaseTankmanListView):
 
     def __onGoodiesUpdate(self, diff):
         if goodie_constants.MENTORING_LICENSE_GOODIE_ID in diff:
-            with self.viewModel.transaction() as (vm):
+            with self.viewModel.transaction() as vm:
                 vm.setLicensesAmount(getMetoringLicensesAmount())
 
     def __onInventoryUpdate(self, invDiff):

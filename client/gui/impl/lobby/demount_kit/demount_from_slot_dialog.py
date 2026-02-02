@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/demount_kit/demount_from_slot_dialog.py
 from gui.impl.dialogs.dialog_template import DialogTemplateView
 from gui.impl.dialogs.dialog_template_button import CancelButton, ConfirmButton
 from gui.impl.dialogs.sub_views.content.simple_text_content import SimpleTextContent

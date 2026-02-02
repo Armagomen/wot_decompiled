@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/lobby/hangar/hangar_quest_flags.py
 from frontline.gui.gui_constants import QuestFlagTypes
 from gui.impl import backport
 from gui.impl.gen import R
@@ -13,8 +15,7 @@ from helpers.time_utils import ONE_DAY
 from skeletons.gui.game_control import IEpicBattleMetaGameController
 
 class EpicQuestFlagsGetter(BaseQuestFlagsGetter):
-    _SUPPORTED_FLAGS = (
-     QuestFlagTypes.EPIC,)
+    _SUPPORTED_FLAGS = (QuestFlagTypes.EPIC,)
 
 
 class _EpicQuestsFlag(BattleQuestsFlag):
@@ -45,8 +46,7 @@ class _EpicQuestsFlag(BattleQuestsFlag):
                     label = icons.makeImageTag(backport.image(libraryIcons.ConfirmIcon_1()))
                 else:
                     label = icons.makeImageTag(backport.image(libraryIcons.time_icon()))
-            quests = [
-             headerQuestFormatterVo(enable=totalCount > 0, icon=backport.image(commonQuestsIcon), label=label, questType=cls._QUEST_TYPE, flag=backport.image(R.images.gui.maps.icons.library.hangarFlag.flag_epic()), tooltip=TOOLTIPS_CONSTANTS.EPIC_QUESTS_PREVIEW, isTooltipSpecial=True)]
+            quests = [headerQuestFormatterVo(enable=totalCount > 0, icon=backport.image(commonQuestsIcon), label=label, questType=cls._QUEST_TYPE, flag=backport.image(R.images.gui.maps.icons.library.hangarFlag.flag_epic()), tooltip=TOOLTIPS_CONSTANTS.EPIC_QUESTS_PREVIEW, isTooltipSpecial=True)]
             return wrapQuestGroup(HANGAR_HEADER_QUESTS.QUEST_GROUP_COMMON, '', quests)
 
 

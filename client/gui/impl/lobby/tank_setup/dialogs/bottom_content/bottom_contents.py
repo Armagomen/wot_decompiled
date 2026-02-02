@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/dialogs/bottom_content/bottom_contents.py
 from gui.impl.common.base_sub_model_view import BaseSubModelView
 from gui.impl.lobby.tank_setup.configurations.base import BaseDealPanel
 from gui.impl.wrappers.user_compound_price_model import BuyPriceModelBuilder
@@ -40,7 +42,7 @@ class PriceBottomContent(BaseSubModelView):
         super(PriceBottomContent, self).update()
         self.__price = price if price is not None else self.__price
         self.__defPrice = defPrice if price is not None else self.__defPrice
-        with self._viewModel.transaction() as (model):
+        with self._viewModel.transaction() as model:
             price = model.getPrice()
             defPrice = model.getDefPrice()
             price.clear()

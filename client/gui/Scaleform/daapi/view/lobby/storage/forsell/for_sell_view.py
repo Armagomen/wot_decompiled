@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/forsell/for_sell_view.py
 import nations
 from account_helpers import getAccountDatabaseID
 from gui.Scaleform.daapi.view.lobby.storage.category_view import StorageDataProvider
@@ -24,8 +26,12 @@ from helpers.local_cache import FileLocalCache
 from items import parseIntCompactDescr
 from gui.shared.event_dispatcher import showSellDialog
 VERSION = 1
-_FOR_SELL_SORT_ORDER = (GUI_ITEM_TYPE.TURRET, GUI_ITEM_TYPE.ENGINE, GUI_ITEM_TYPE.GUN,
- GUI_ITEM_TYPE.RADIO, GUI_ITEM_TYPE.CHASSIS, GUI_ITEM_TYPE.SHELL)
+_FOR_SELL_SORT_ORDER = (GUI_ITEM_TYPE.TURRET,
+ GUI_ITEM_TYPE.ENGINE,
+ GUI_ITEM_TYPE.GUN,
+ GUI_ITEM_TYPE.RADIO,
+ GUI_ITEM_TYPE.CHASSIS,
+ GUI_ITEM_TYPE.SHELL)
 
 def _sortKey(item):
     itemPrice = item.getSellPrice().price
@@ -46,7 +52,7 @@ class _StorageForSellCache(FileLocalCache):
         self.__cache = set()
 
     def __repr__(self):
-        return ('_StorageForSellCache({0:s}): {1!r:s}').format(hex(id(self)), self.__cache)
+        return '_StorageForSellCache({0:s}): {1!r:s}'.format(hex(id(self)), self.__cache)
 
     def get(self):
         return self.__cache
@@ -186,7 +192,7 @@ class _SelectableDataProvider(StorageDataProvider):
             self._cache.read()
             return self._cache
         else:
-            return
+            return None
 
     def __updateSelectedSet(self, itemVO):
         itemID = itemVO['id']
@@ -278,10 +284,9 @@ class StorageCategoryForSellView(StorageCategoryForSellViewMeta):
     def __updateUI(self):
         provider = self._dataProvider
         price = provider.getTotalPrice().credits
-        self.as_initS({'allItemsSelected': provider.isAllSelected(), 
-           'sellButtonEnabled': provider.getSelectedItemsCount() > 0, 
-           'price': [
-                   'credits', price]})
+        self.as_initS({'allItemsSelected': provider.isAllSelected(),
+         'sellButtonEnabled': provider.getSelectedItemsCount() > 0,
+         'price': ['credits', price]})
 
     def __onCacheResync(self, *args):
         self._buildItems()

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/trade_in/trade_in_popup.py
 from gui.Scaleform.daapi.view.lobby.rally.vo_converters import makeVehicleBasicVO
 from gui.Scaleform.daapi.view.lobby.vehicle_compare.formatters import packHeaderColumnData
 from gui.Scaleform.daapi.view.meta.TradeInPopupMeta import TradeInPopupMeta
@@ -13,8 +15,7 @@ from helpers import dependency
 from skeletons.gui.game_control import ITradeInController
 from gui.shared.tooltips.formatters import packItemActionTooltipData
 from skeletons.gui.shared import IItemsCache
-_INACCESSIBLE_FOR_TRADE_STATES = (
- Vehicle.VEHICLE_STATE.DAMAGED,
+_INACCESSIBLE_FOR_TRADE_STATES = (Vehicle.VEHICLE_STATE.DAMAGED,
  Vehicle.VEHICLE_STATE.EXPLODED,
  Vehicle.VEHICLE_STATE.DESTROYED,
  Vehicle.VEHICLE_STATE.BATTLE,
@@ -50,17 +51,16 @@ class TradeInPopup(TradeInPopupMeta):
         return
 
     def __initControls(self):
-        headers = [
-         packHeaderColumnData('nationID', 49, 40, tooltip=DIALOGS.TRADEINPOPOVER_SORTING_NATION, icon=RES_ICONS.MAPS_ICONS_FILTERS_NATIONS_ALL, enabled=True),
+        headers = [packHeaderColumnData('nationID', 49, 40, tooltip=DIALOGS.TRADEINPOPOVER_SORTING_NATION, icon=RES_ICONS.MAPS_ICONS_FILTERS_NATIONS_ALL, enabled=True),
          packHeaderColumnData('typeIndex', 45, 40, tooltip=DIALOGS.TRADEINPOPOVER_SORTING_VEHTYPE, icon=RES_ICONS.MAPS_ICONS_FILTERS_TANKS_ALL, enabled=True),
          packHeaderColumnData('level', 45, 40, tooltip=DIALOGS.TRADEINPOPOVER_SORTING_VEHLVL, icon=RES_ICONS.MAPS_ICONS_BUTTONS_TAB_SORT_BUTTON_LEVEL_6_8, enabled=True),
          packHeaderColumnData('shortUserName', 148, 40, label=DIALOGS.TRADEINPOPOVER_SORTING_VEHNAME_HEADER, tooltip=DIALOGS.TRADEINPOPOVER_SORTING_VEHNAME, enabled=True, verticalTextAlign='center'),
          packHeaderColumnData('price', 95, 40, label=DIALOGS.TRADEINPOPOVER_SORTING_SAVING_FORMATTED, tooltip=DIALOGS.TRADEINPOPOVER_SORTING_SAVING, enabled=True, verticalTextAlign='center')]
-        self.as_setInitDataS({'title': DIALOGS.TRADEINPOPOVER_TITLE, 
-           'description': DIALOGS.TRADEINPOPOVER_DESCR, 
-           'defaultSortField': 'price', 
-           'defaultSortDirection': 'descending', 
-           'tableHeaders': headers})
+        self.as_setInitDataS({'title': DIALOGS.TRADEINPOPOVER_TITLE,
+         'description': DIALOGS.TRADEINPOPOVER_DESCR,
+         'defaultSortField': 'price',
+         'defaultSortDirection': 'descending',
+         'tableHeaders': headers})
 
     def onWindowClose(self):
         self.destroy()
@@ -94,7 +94,7 @@ class _TradeInDataProvider(SortableDAAPIDataProvider):
         return self.__list
 
     def emptyItem(self):
-        return
+        return None
 
     def clear(self):
         self.__list = []
@@ -107,9 +107,7 @@ class _TradeInDataProvider(SortableDAAPIDataProvider):
         self.destroy()
 
     def getSelectedIdx(self):
-        if self.__selectedID in self.__mapping:
-            return self.__mapping[self.__selectedID]
-        return -1
+        return self.__mapping[self.__selectedID] if self.__selectedID in self.__mapping else -1
 
     def setSelectedID(self, selId):
         self.__selectedID = selId
@@ -145,7 +143,4 @@ class _TradeInDataProvider(SortableDAAPIDataProvider):
             return vehicleVO
 
     def _getItemPriceActionData(self, vehicle):
-        if vehicle.buyPrices.itemPrice.isActionPrice():
-            return packItemActionTooltipData(vehicle)
-        else:
-            return
+        return packItemActionTooltipData(vehicle) if vehicle.buyPrices.itemPrice.isActionPrice() else None

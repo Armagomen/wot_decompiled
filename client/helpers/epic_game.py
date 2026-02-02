@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/helpers/epic_game.py
 
 
 def searchRankForSlot(slotIdx, slotEventsConfig):
@@ -5,4 +7,4 @@ def searchRankForSlot(slotIdx, slotEventsConfig):
         if slotIdx in updateSet:
             return rank
 
-    return
+    return None

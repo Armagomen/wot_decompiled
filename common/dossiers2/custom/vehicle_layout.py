@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/dossiers2/custom/vehicle_layout.py
 from dossiers2.common.DossierBlockBuilders import *
 from battle_statistics_layouts import *
 from dossiers2.custom.dependencies import ACHIEVEMENT15X15_DEPENDENCIES
@@ -8,8 +10,11 @@ from dossiers2.custom.dependencies import GLOBAL_MAP_STATS_DEPENDENCIES
 from dossiers2.custom.dependencies import RANKED_STATS_DEPENDENCIES
 from dossiers2.custom.dependencies import A30X30_STATS_DEPENDENCIES
 from dossiers2.custom.dependencies import EPIC_BATTLE_STATS_DEPENDENCIES
-TOTAL_BLOCK_LAYOUT = [
- 'creationTime', 'lastBattleTime', 'battleLifeTime', 'treesCut', 'mileage']
+TOTAL_BLOCK_LAYOUT = ['creationTime',
+ 'lastBattleTime',
+ 'battleLifeTime',
+ 'treesCut',
+ 'mileage']
 _totalBlockBuilder = StaticSizeBlockBuilder('total', TOTAL_BLOCK_LAYOUT, {}, [])
 _a15x15BlockBuilder = StaticSizeBlockBuilder('a15x15', A15X15_BLOCK_LAYOUT, A15X15_STATS_DEPENDENCIES, [])
 _a15x15_2BlockBuilder = StaticSizeBlockBuilder('a15x15_2', A15X15_2_BLOCK_LAYOUT, {}, [])
@@ -34,8 +39,7 @@ _comp7Season3BlockBuilder = StaticSizeBlockBuilder('comp7Season3', COMP7_BLOCK_L
 _comp7ArchiveGriffinBlockBuilder = StaticSizeBlockBuilder('comp7ArchiveGriffin', COMP7_BLOCK_LAYOUT, {}, [])
 _comp7ArchivePegasusBlockBuilder = StaticSizeBlockBuilder('comp7ArchivePegasus', COMP7_BLOCK_LAYOUT, {}, [])
 _comp7ArchiveManticoreBlockBuilder = StaticSizeBlockBuilder('comp7ArchiveManticore', COMP7_BLOCK_LAYOUT, {}, [])
-_maxPopUps = [
- 'maxXP', 'maxFrags', 'maxDamage']
+_maxPopUps = ['maxXP', 'maxFrags', 'maxDamage']
 _maxFalloutPopUps = _maxPopUps + ['maxWinPoints', 'maxCoins']
 _max15x15BlockBuilder = StaticSizeBlockBuilder('max15x15', MAX_15x15_BLOCK_LAYOUT, {}, _maxPopUps)
 _max7x7BlockBuilder = StaticSizeBlockBuilder('max7x7', MAX_BLOCK_LAYOUT, {}, _maxPopUps)
@@ -60,8 +64,7 @@ _rankedSeasonsBlockBuilder = DictBlockBuilder('rankedSeasons', 'II', 'BB', {})
 _maxRankedSeason1BlockBuilder = StaticSizeBlockBuilder('maxRankedSeason1', MAX_BLOCK_LAYOUT, {}, _maxPopUps)
 _maxRankedSeason2BlockBuilder = StaticSizeBlockBuilder('maxRankedSeason2', MAX_BLOCK_LAYOUT, {}, _maxPopUps)
 _maxRankedSeason3BlockBuilder = StaticSizeBlockBuilder('maxRankedSeason3', MAX_BLOCK_LAYOUT, {}, _maxPopUps)
-_ACHIEVEMENTS15X15_BLOCK_LAYOUT = [
- 'fragsBeast',
+_ACHIEVEMENTS15X15_BLOCK_LAYOUT = ['fragsBeast',
  'sniperSeries',
  'maxSniperSeries',
  'invincibleSeries',
@@ -151,8 +154,7 @@ _ACHIEVEMENTS15X15_BLOCK_LAYOUT = [
  'marksOfMasteryCount2',
  'marksOfMasteryCount3',
  'marksOfMasteryCount4']
-_achievements15x15PopUps = [
- 'tankExpert',
+_achievements15x15PopUps = ['tankExpert',
  'tankExpert0',
  'tankExpert1',
  'tankExpert2',
@@ -179,78 +181,160 @@ _achievements15x15PopUps = [
  'charmed',
  'even']
 _achievements15x15BlockBuilder = StaticSizeBlockBuilder('achievements', _ACHIEVEMENTS15X15_BLOCK_LAYOUT, ACHIEVEMENT15X15_DEPENDENCIES, _achievements15x15PopUps)
-ACHIEVEMENTS7X7_BLOCK_LAYOUT = [
- 'wolfAmongSheep', 'wolfAmongSheepMedal', 'geniusForWar',
- 'geniusForWarMedal', 'kingOfTheHill', 'tacticalBreakthroughSeries',
+ACHIEVEMENTS7X7_BLOCK_LAYOUT = ['wolfAmongSheep',
+ 'wolfAmongSheepMedal',
+ 'geniusForWar',
+ 'geniusForWarMedal',
+ 'kingOfTheHill',
+ 'tacticalBreakthroughSeries',
  'maxTacticalBreakthroughSeries',
- 'armoredFist', 'godOfWar', 'fightingReconnaissance', 'fightingReconnaissanceMedal',
- 'willToWinSpirit', 'crucialShot', 'crucialShotMedal', 'forTacticalOperations',
- 'promisingFighter', 'promisingFighterMedal', 'heavyFire', 'heavyFireMedal',
- 'ranger', 'rangerMedal', 'fireAndSteel', 'fireAndSteelMedal', 'pyromaniac',
- 'pyromaniacMedal', 'noMansLand',
- 'guerrilla', 'guerrillaMedal', 'infiltrator', 'infiltratorMedal', 'sentinel',
+ 'armoredFist',
+ 'godOfWar',
+ 'fightingReconnaissance',
+ 'fightingReconnaissanceMedal',
+ 'willToWinSpirit',
+ 'crucialShot',
+ 'crucialShotMedal',
+ 'forTacticalOperations',
+ 'promisingFighter',
+ 'promisingFighterMedal',
+ 'heavyFire',
+ 'heavyFireMedal',
+ 'ranger',
+ 'rangerMedal',
+ 'fireAndSteel',
+ 'fireAndSteelMedal',
+ 'pyromaniac',
+ 'pyromaniacMedal',
+ 'noMansLand',
+ 'guerrilla',
+ 'guerrillaMedal',
+ 'infiltrator',
+ 'infiltratorMedal',
+ 'sentinel',
  'sentinelMedal',
- 'prematureDetonation', 'prematureDetonationMedal', 'bruteForce', 'bruteForceMedal',
- 'awardCount', 'battleTested']
+ 'prematureDetonation',
+ 'prematureDetonationMedal',
+ 'bruteForce',
+ 'bruteForceMedal',
+ 'awardCount',
+ 'battleTested']
 _achievements7x7BlockBuilder = StaticSizeBlockBuilder('achievements7x7', ACHIEVEMENTS7X7_BLOCK_LAYOUT, ACHIEVEMENT7X7_DEPENDENCIES, [])
 UNIQUE_VEH_ACHIEVEMENT_VALUES = []
 _uniqueVehAchievementPopUps = []
 _uniqueVehAchievementBlockBuilder = BinarySetDossierBlockBuilder('uniqueAchievements', UNIQUE_VEH_ACHIEVEMENT_VALUES, {}, _uniqueVehAchievementPopUps)
-_SINGLE_ACHIEVEMENTS_VALUES = [
- 'titleSniper', 'invincible', 'diehard', 'handOfDeath',
- 'armorPiercer', 'tacticalBreakthrough', 'aimer']
-_singleAchievementsPopUps = ['titleSniper', 'invincible', 'diehard', 'handOfDeath',
- 'armorPiercer', 'tacticalBreakthrough', 'aimer']
+_SINGLE_ACHIEVEMENTS_VALUES = ['titleSniper',
+ 'invincible',
+ 'diehard',
+ 'handOfDeath',
+ 'armorPiercer',
+ 'tacticalBreakthrough',
+ 'aimer']
+_singleAchievementsPopUps = ['titleSniper',
+ 'invincible',
+ 'diehard',
+ 'handOfDeath',
+ 'armorPiercer',
+ 'tacticalBreakthrough',
+ 'aimer']
 _singleAchievementsBlockBuilder = BinarySetDossierBlockBuilder('singleAchievements', _SINGLE_ACHIEVEMENTS_VALUES, {}, _singleAchievementsPopUps)
-FORT_ACHIEVEMENTS_BLOCK_LAYOUT = [
- 'conqueror', 'fireAndSword', 'crusher', 'counterblow', 'kampfer', 'soldierOfFortune']
-_fortPersonalAchievementsPopUps = [
+FORT_ACHIEVEMENTS_BLOCK_LAYOUT = ['conqueror',
+ 'fireAndSword',
+ 'crusher',
+ 'counterblow',
+ 'kampfer',
  'soldierOfFortune']
+_fortPersonalAchievementsPopUps = ['soldierOfFortune']
 _fortPersonalAchievementsBlockBuilder = StaticSizeBlockBuilder('fortAchievements', FORT_ACHIEVEMENTS_BLOCK_LAYOUT, FORT_ACHIEVEMENTS_DEPENDENCIES, _fortPersonalAchievementsPopUps)
-CLAN_ACHIEVEMENTS_BLOCK_LAYOUT = [
- 'medalRotmistrov']
+CLAN_ACHIEVEMENTS_BLOCK_LAYOUT = ['medalRotmistrov']
 _clanAchievementsBlockBuilder = StaticSizeBlockBuilder('clanAchievements', CLAN_ACHIEVEMENTS_BLOCK_LAYOUT, {}, [])
-FALLOUT_ACHIEVEMENTS_BLOCK_LAYOUT = [
- 'shoulderToShoulder', 'aloneInTheField', 'fallenFlags', 'effectiveSupport',
- 'stormLord', 'winnerLaurels', 'predator', 'unreachable', 'champion', 'bannerman',
- 'falloutDieHard', 'deleted']
+FALLOUT_ACHIEVEMENTS_BLOCK_LAYOUT = ['shoulderToShoulder',
+ 'aloneInTheField',
+ 'fallenFlags',
+ 'effectiveSupport',
+ 'stormLord',
+ 'winnerLaurels',
+ 'predator',
+ 'unreachable',
+ 'champion',
+ 'bannerman',
+ 'falloutDieHard',
+ 'deleted']
 _falloutAchievementsPopUps = ['falloutDieHard']
 _falloutAchievementsBlockBuilder = StaticSizeBlockBuilder('falloutAchievements', FALLOUT_ACHIEVEMENTS_BLOCK_LAYOUT, {}, _falloutAchievementsPopUps)
-EPIC_BATTLE_ACHIEVEMENTS_BLOCK_LAYOUT = [
- 'occupyingForce', 'ironShield', 'generalOfTheArmy', 'supremeGun',
+EPIC_BATTLE_ACHIEVEMENTS_BLOCK_LAYOUT = ['occupyingForce',
+ 'ironShield',
+ 'generalOfTheArmy',
+ 'supremeGun',
  'smallArmy']
-_epicBattleAchievementsPopUps = ['occupyingForce', 'ironShield', 'generalOfTheArmy', 'supremeGun',
+_epicBattleAchievementsPopUps = ['occupyingForce',
+ 'ironShield',
+ 'generalOfTheArmy',
+ 'supremeGun',
  'smallArmy']
 _epicBattleAchievementsBlockBuilder = StaticSizeBlockBuilder('epicBattleAchievements', EPIC_BATTLE_ACHIEVEMENTS_BLOCK_LAYOUT, {}, _epicBattleAchievementsPopUps)
 _playerInscriptionsBlockBuilder = ListBlockBuilder('inscriptions', 'H', {})
 _playerEmblemsBlockBuilder = ListBlockBuilder('emblems', 'H', {})
 _camouflagesBlockBuilder = ListBlockBuilder('camouflages', 'H', {})
-COMPENSATION_BLOCK_LAYOUT = [
- 'gold']
+COMPENSATION_BLOCK_LAYOUT = ['gold']
 _compensationBlockBuilder = StaticSizeBlockBuilder('compensation', COMPENSATION_BLOCK_LAYOUT, {}, [])
-vehicleDossierLayout = (
- _a15x15BlockBuilder, _a15x15_2BlockBuilder, _clanBlockBuilder,
- _clan2BlockBuilder, _companyBlockBuilder, _company2BlockBuilder, _a7x7BlockBuilder,
- _achievements15x15BlockBuilder, _vehTypeFragsBlockBuilder, _totalBlockBuilder,
- _max15x15BlockBuilder, _max7x7BlockBuilder,
- _playerInscriptionsBlockBuilder, _playerEmblemsBlockBuilder, _camouflagesBlockBuilder,
- _compensationBlockBuilder, _achievements7x7BlockBuilder, _historicalBlockBuilder,
- _maxHistoricalBlockBuilder, _uniqueVehAchievementBlockBuilder, _fortBattlesBlockBuilder,
- _maxFortBattlesBlockBuilder, _fortSortiesBlockBuilder,
- _maxFortSortiesBlockBuilder, _fortPersonalAchievementsBlockBuilder,
- _singleAchievementsBlockBuilder, _clanAchievementsBlockBuilder,
- _rated7x7BlockBuilder, _maxRated7x7BlockBuilder,
- _globalMapCommonBlockBuilder, _maxGlobalMapCommonBlockBuilder,
- _falloutBlockBuilder, _maxFalloutBlockBuilder, _falloutAchievementsBlockBuilder,
- _rankedBlockBuilder, _maxRankedBlockBuilder, _rankedSeasonsBlockBuilder,
- _a30x30BlockBuilder, _max30x30BlockBuilder,
- _epicBattleBlockBuilder, _maxEpicBattleBlockBuilder, _epicBattleAchievementsBlockBuilder,
- _maxRankedSeason1BlockBuilder, _maxRankedSeason2BlockBuilder, _maxRankedSeason3BlockBuilder,
- _rankedBlockBuilder_10x10, _maxRankedBlockBuilder_10x10,
- _comp7Season1BlockBuilder, _maxComp7Season1BlockBuilder,
- _comp7Season2BlockBuilder, _maxComp7Season2BlockBuilder,
- _comp7Season3BlockBuilder, _maxComp7Season3BlockBuilder,
- _comp7ArchiveGriffinBlockBuilder, _maxComp7ArchiveGriffinBlockBuilder,
- _comp7ArchivePegasusBlockBuilder, _maxComp7ArchivePegasusBlockBuilder,
- _comp7ArchiveManticoreBlockBuilder, _maxComp7ArchiveManticoreBlockBuilder)
+vehicleDossierLayout = (_a15x15BlockBuilder,
+ _a15x15_2BlockBuilder,
+ _clanBlockBuilder,
+ _clan2BlockBuilder,
+ _companyBlockBuilder,
+ _company2BlockBuilder,
+ _a7x7BlockBuilder,
+ _achievements15x15BlockBuilder,
+ _vehTypeFragsBlockBuilder,
+ _totalBlockBuilder,
+ _max15x15BlockBuilder,
+ _max7x7BlockBuilder,
+ _playerInscriptionsBlockBuilder,
+ _playerEmblemsBlockBuilder,
+ _camouflagesBlockBuilder,
+ _compensationBlockBuilder,
+ _achievements7x7BlockBuilder,
+ _historicalBlockBuilder,
+ _maxHistoricalBlockBuilder,
+ _uniqueVehAchievementBlockBuilder,
+ _fortBattlesBlockBuilder,
+ _maxFortBattlesBlockBuilder,
+ _fortSortiesBlockBuilder,
+ _maxFortSortiesBlockBuilder,
+ _fortPersonalAchievementsBlockBuilder,
+ _singleAchievementsBlockBuilder,
+ _clanAchievementsBlockBuilder,
+ _rated7x7BlockBuilder,
+ _maxRated7x7BlockBuilder,
+ _globalMapCommonBlockBuilder,
+ _maxGlobalMapCommonBlockBuilder,
+ _falloutBlockBuilder,
+ _maxFalloutBlockBuilder,
+ _falloutAchievementsBlockBuilder,
+ _rankedBlockBuilder,
+ _maxRankedBlockBuilder,
+ _rankedSeasonsBlockBuilder,
+ _a30x30BlockBuilder,
+ _max30x30BlockBuilder,
+ _epicBattleBlockBuilder,
+ _maxEpicBattleBlockBuilder,
+ _epicBattleAchievementsBlockBuilder,
+ _maxRankedSeason1BlockBuilder,
+ _maxRankedSeason2BlockBuilder,
+ _maxRankedSeason3BlockBuilder,
+ _rankedBlockBuilder_10x10,
+ _maxRankedBlockBuilder_10x10,
+ _comp7Season1BlockBuilder,
+ _maxComp7Season1BlockBuilder,
+ _comp7Season2BlockBuilder,
+ _maxComp7Season2BlockBuilder,
+ _comp7Season3BlockBuilder,
+ _maxComp7Season3BlockBuilder,
+ _comp7ArchiveGriffinBlockBuilder,
+ _maxComp7ArchiveGriffinBlockBuilder,
+ _comp7ArchivePegasusBlockBuilder,
+ _maxComp7ArchivePegasusBlockBuilder,
+ _comp7ArchiveManticoreBlockBuilder,
+ _maxComp7ArchiveManticoreBlockBuilder)
 VEHICLE_DOSSIER_BLOCKS = {b.name:b for b in vehicleDossierLayout}

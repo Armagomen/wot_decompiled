@@ -1,8 +1,12 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/avatar_components/avatar_chat_key_handling.py
 import logging
 from collections import namedtuple
 import BigWorld
 from Math import Matrix, Vector3
-import BattleReplay, CommandMapping, Flock
+import BattleReplay
+import CommandMapping
+import Flock
 from battleground.location_point_manager import g_locationPointManager
 from chat_commands_consts import getBaseTeamAndIDFromUniqueID, BATTLE_CHAT_COMMAND_NAMES, _COMMAND_NAME_TRANSFORM_MARKER_TYPE, _PERSONAL_MESSAGE_MUTE_DURATION, MarkerType, ONE_SHOT_COMMANDS_TO_REPLIES
 from constants import ARENA_BONUS_TYPE
@@ -17,14 +21,10 @@ from messenger_common_chat2 import BATTLE_CHAT_COMMANDS_BY_NAMES
 from messenger_common_chat2 import MESSENGER_ACTION_IDS as _ACTIONS
 from skeletons.account_helpers.settings_core import IBattleCommunicationsSettings
 _DELAY_FOR_OPENING_RADIAL_MENU = 0.2
-_TARGET_ID_IS_ENEMY_VEHICLE = {
- BATTLE_CHAT_COMMAND_NAMES.ATTACK_ENEMY,
- BATTLE_CHAT_COMMAND_NAMES.ATTACKING_ENEMY}
-_CHAT_COMMAND_DEFINING_SOS_REPLY = {
- BATTLE_CHAT_COMMAND_NAMES.HELPME}
+_TARGET_ID_IS_ENEMY_VEHICLE = {BATTLE_CHAT_COMMAND_NAMES.ATTACK_ENEMY, BATTLE_CHAT_COMMAND_NAMES.ATTACKING_ENEMY}
+_CHAT_COMMAND_DEFINING_SOS_REPLY = {BATTLE_CHAT_COMMAND_NAMES.HELPME}
 _IS_NON_PLAYER_NOTIFICATION = '_npc'
-_SKIP_ON_COMMAND_RECEIVED = {
- BATTLE_CHAT_COMMAND_NAMES.GOING_THERE,
+_SKIP_ON_COMMAND_RECEIVED = {BATTLE_CHAT_COMMAND_NAMES.GOING_THERE,
  BATTLE_CHAT_COMMAND_NAMES.ATTENTION_TO_POSITION,
  BATTLE_CHAT_COMMAND_NAMES.SPG_AIM_AREA,
  BATTLE_CHAT_COMMAND_NAMES.SHOOTING_POINT,
@@ -43,16 +43,16 @@ class AvatarChatKeyHandling(object):
         self.__isEnabled = None
         self.__callbackDelayer = CallbackDelayer()
         self.__arePrivateVoiceOverBlocked = False
-        self.__customSoundHandler = {BATTLE_CHAT_COMMAND_NAMES.CANCEL_REPLY: self.__onCommandReceivedCancelReply, 
-           BATTLE_CHAT_COMMAND_NAMES.REPLY: self.__onCommandReceivedReply, 
-           BATTLE_CHAT_COMMAND_NAMES.SUPPORTING_ALLY: self.__onCommandReceivedSupportingAlly, 
-           BATTLE_CHAT_COMMAND_NAMES.COMMENDATION: self.__onCommandReceivedCommendation}
+        self.__customSoundHandler = {BATTLE_CHAT_COMMAND_NAMES.CANCEL_REPLY: self.__onCommandReceivedCancelReply,
+         BATTLE_CHAT_COMMAND_NAMES.REPLY: self.__onCommandReceivedReply,
+         BATTLE_CHAT_COMMAND_NAMES.SUPPORTING_ALLY: self.__onCommandReceivedSupportingAlly,
+         BATTLE_CHAT_COMMAND_NAMES.COMMENDATION: self.__onCommandReceivedCommendation}
         self.__customSoundHandlerReply = {BATTLE_CHAT_COMMAND_NAMES.ATTENTION_TO_POSITION: self.__onCommandReceivedAttentionToPositionReply}
-        self.__customMatrixProviderGetter = {MarkerType.VEHICLE_MARKER_TYPE: self.__getVehicleMatrixProvider, 
-           MarkerType.BASE_MARKER_TYPE: self.__getBaseMatrixProvider, 
-           MarkerType.HEADQUARTER_MARKER_TYPE: self.__getHQMatrixProvider, 
-           MarkerType.LOCATION_MARKER_TYPE: self.__getLocationMarkerMatrixProvider, 
-           MarkerType.TARGET_POINT_MARKER_TYPE: self.__getTargetMatrixProvider}
+        self.__customMatrixProviderGetter = {MarkerType.VEHICLE_MARKER_TYPE: self.__getVehicleMatrixProvider,
+         MarkerType.BASE_MARKER_TYPE: self.__getBaseMatrixProvider,
+         MarkerType.HEADQUARTER_MARKER_TYPE: self.__getHQMatrixProvider,
+         MarkerType.LOCATION_MARKER_TYPE: self.__getLocationMarkerMatrixProvider,
+         MarkerType.TARGET_POINT_MARKER_TYPE: self.__getTargetMatrixProvider}
         self.__isKeyHandlingOn = True
         return
 
@@ -79,25 +79,25 @@ class AvatarChatKeyHandling(object):
     def handleKey(self, isDown, key, mods):
         if not self.__isKeyHandlingOn:
             return False
+        calloutCtrl = self.guiSessionProvider.shared.calloutCtrl
+        if not self.__isEnabled or calloutCtrl is None or BattleReplay.g_replayCtrl.isPlaying:
+            return False
+        elif self.__isEpicBattleOverviewMapScreenVisible():
+            return False
+        cmdMap = CommandMapping.g_instance
+        if cmdMap.isFiredList((CommandMapping.CMD_CHAT_SHORTCUT_THANKYOU,
+         CommandMapping.CMD_CHAT_SHORTCUT_BACKTOBASE,
+         CommandMapping.CMD_CHAT_SHORTCUT_AFFIRMATIVE,
+         CommandMapping.CMD_CHAT_SHORTCUT_NEGATIVE,
+         CommandMapping.CMD_CHAT_SHORTCUT_HELPME,
+         CommandMapping.CMD_CHAT_SHORTCUT_RELOAD), key) and self.isVehicleAlive and isDown and not calloutCtrl.isRadialMenuOpened():
+            self.guiSessionProvider.handleContexChatCommand(key)
+            return True
+        isGuiControlOn = not self.getForcedGuiControlModeFlags() & GUI_CTRL_MODE_FLAG.CURSOR_VISIBLE
+        if cmdMap.isFired(CommandMapping.CMD_CHAT_SHORTCUT_CONTEXT_COMMIT, key) and self.isVehicleAlive and isDown and isGuiControlOn and not calloutCtrl.isRadialMenuOpened():
+            self.guiSessionProvider.handleContexChatCommand(key)
+            return True
         else:
-            calloutCtrl = self.guiSessionProvider.shared.calloutCtrl
-            if not self.__isEnabled or calloutCtrl is None or BattleReplay.g_replayCtrl.isPlaying:
-                return False
-            if self.__isEpicBattleOverviewMapScreenVisible():
-                return False
-            cmdMap = CommandMapping.g_instance
-            if cmdMap.isFiredList((CommandMapping.CMD_CHAT_SHORTCUT_THANKYOU,
-             CommandMapping.CMD_CHAT_SHORTCUT_BACKTOBASE,
-             CommandMapping.CMD_CHAT_SHORTCUT_AFFIRMATIVE,
-             CommandMapping.CMD_CHAT_SHORTCUT_NEGATIVE,
-             CommandMapping.CMD_CHAT_SHORTCUT_HELPME,
-             CommandMapping.CMD_CHAT_SHORTCUT_RELOAD), key) and self.isVehicleAlive and isDown and not calloutCtrl.isRadialMenuOpened():
-                self.guiSessionProvider.handleContexChatCommand(key)
-                return True
-            isGuiControlOn = not self.getForcedGuiControlModeFlags() & GUI_CTRL_MODE_FLAG.CURSOR_VISIBLE
-            if cmdMap.isFired(CommandMapping.CMD_CHAT_SHORTCUT_CONTEXT_COMMIT, key) and self.isVehicleAlive and isDown and isGuiControlOn and not calloutCtrl.isRadialMenuOpened():
-                self.guiSessionProvider.handleContexChatCommand(key)
-                return True
             return calloutCtrl.handleCalloutAndRadialMenuKeyPress(key, isDown)
 
     def __isBattleRoyaleSolo(self):
@@ -123,12 +123,13 @@ class AvatarChatKeyHandling(object):
         isEnabled = self.battleCommunications.isEnabled
         if isEnabled is None or isEnabled == self.__isEnabled:
             return
-        if isEnabled is True:
-            self.__activateHandling()
         else:
-            self.__deactivateHandling()
-        self.__isEnabled = isEnabled
-        return
+            if isEnabled is True:
+                self.__activateHandling()
+            else:
+                self.__deactivateHandling()
+            self.__isEnabled = isEnabled
+            return
 
     def __onPrivateVoiceOverBlockedReset(self):
         self.__arePrivateVoiceOverBlocked = False
@@ -169,7 +170,8 @@ class AvatarChatKeyHandling(object):
                     return createTranslationMatrix(playerVehiclePosition + direction * maxDistance)
                 return createTranslationMatrix(position)
             return
-        return Matrix(vehicle.matrix)
+        else:
+            return Matrix(vehicle.matrix)
 
     def __getObjectivePosition(self, objectID):
         teamId, baseId = getBaseTeamAndIDFromUniqueID(objectID)
@@ -185,7 +187,7 @@ class AvatarChatKeyHandling(object):
             if team == teamId and number == baseId:
                 return position
 
-        return
+        return None
 
     def __getSectorBasePosition(self, baseID):
         sectorBaseComp = getattr(self.sessionProvider.arenaVisitor.getComponentSystem(), 'sectorBaseComponent', None)
@@ -200,7 +202,7 @@ class AvatarChatKeyHandling(object):
             if number == objectID:
                 return position
 
-        return
+        return None
 
     def __getBaseMatrixProvider(self, cmd, targetID=None):
         if targetID is None:
@@ -229,13 +231,13 @@ class AvatarChatKeyHandling(object):
         if cmd is not None:
             matrixProvider = self.__createMatrix(cmd.getMarkedPosition())
             return matrixProvider
+        if targetID is None and cmd is not None:
+            targetID = cmd.getFirstTargetID()
+        locationPointData = g_locationPointManager.getLocationPointData(targetID)
+        if locationPointData is not None:
+            matrixProvider = self.__createMatrix(locationPointData.position)
+            return matrixProvider
         else:
-            if targetID is None and cmd is not None:
-                targetID = cmd.getFirstTargetID()
-            locationPointData = g_locationPointManager.getLocationPointData(targetID)
-            if locationPointData is not None:
-                matrixProvider = self.__createMatrix(locationPointData.position)
-                return matrixProvider
             return
 
     def __getTargetMatrixProvider(self, cmd, targetID=None):
@@ -247,9 +249,7 @@ class AvatarChatKeyHandling(object):
             if not targetID:
                 return
             entity = BigWorld.entities.get(targetID)
-            if not entity:
-                return
-            return self.__createMatrix(entity.position)
+            return None if not entity else self.__createMatrix(entity.position)
 
     def __onCommandReceivedCancelReply(self, commandName, cmd):
         if not cmd.isCancelReply():
@@ -266,10 +266,10 @@ class AvatarChatKeyHandling(object):
         replyToActionName = cmd.getCommandData()['strArg1']
         if replyToActionName not in ONE_SHOT_COMMANDS_TO_REPLIES.keys():
             return
+        elif replyToActionName in self.__customSoundHandlerReply:
+            self.__customSoundHandlerReply[replyToActionName](replyToActionName, cmd)
+            return
         else:
-            if replyToActionName in self.__customSoundHandlerReply:
-                self.__customSoundHandlerReply[replyToActionName](replyToActionName, cmd)
-                return
             if cmd.hasTarget():
                 if not cmd.isSender() and not cmd.isReceiver():
                     return
@@ -329,10 +329,7 @@ class AvatarChatKeyHandling(object):
 
     def __getOriginalCommandID(self, targetID, markerType):
         advancedChatCommandData = self.__getAdvancedChatCommandData(targetID, markerType)
-        if advancedChatCommandData is None:
-            return
-        else:
-            return advancedChatCommandData.command.getID()
+        return None if advancedChatCommandData is None else advancedChatCommandData.command.getID()
 
     def __onReplyFeedbackReceived(self, targetID, replierID, markerType, oldReplyCount, newReplyCount):
         if oldReplyCount > newReplyCount:
@@ -461,24 +458,23 @@ class AvatarChatKeyHandling(object):
     def __playSoundNotification(self, notification, sndPos=None, enableVoice=True, isSentByPlayer=True):
         if not self.soundNotifications or notification is None:
             return
-        categoryVoiceIsEnabled = self.soundNotifications.isCategoryEnabled('voice')
-        if categoryVoiceIsEnabled and enableVoice is False:
-            self.__enableVoices(enableVoice)
-        playEffect = sndPos is not None or isSentByPlayer
-        prevFxState = self.__switchSoundFXTo(playEffect)
-        if not isSentByPlayer:
-            notification += _IS_NON_PLAYER_NOTIFICATION
-        self.soundNotifications.play(notification, position=sndPos)
-        if categoryVoiceIsEnabled and enableVoice is False:
-            self.__enableVoices(True)
-        if prevFxState != playEffect:
-            self.__switchSoundFXTo(prevFxState)
-        return
+        else:
+            categoryVoiceIsEnabled = self.soundNotifications.isCategoryEnabled('voice')
+            if categoryVoiceIsEnabled and enableVoice is False:
+                self.__enableVoices(enableVoice)
+            playEffect = sndPos is not None or isSentByPlayer
+            prevFxState = self.__switchSoundFXTo(playEffect)
+            if not isSentByPlayer:
+                notification += _IS_NON_PLAYER_NOTIFICATION
+            self.soundNotifications.play(notification, position=sndPos)
+            if categoryVoiceIsEnabled and enableVoice is False:
+                self.__enableVoices(True)
+            if prevFxState != playEffect:
+                self.__switchSoundFXTo(prevFxState)
+            return
 
     def __isEpicBattleOverviewMapScreenVisible(self):
         arenaVisitor = self.sessionProvider.arenaVisitor
         isEpicBattle = arenaVisitor.gui.isInEpicRange()
         ctrl = self.guiSessionProvider.dynamic.maps
-        if not ctrl:
-            return False
-        return isEpicBattle and ctrl.overviewMapScreenVisible
+        return False if not ctrl else isEpicBattle and ctrl.overviewMapScreenVisible

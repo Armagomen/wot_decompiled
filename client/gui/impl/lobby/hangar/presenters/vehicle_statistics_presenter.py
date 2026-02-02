@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/hangar/presenters/vehicle_statistics_presenter.py
 from __future__ import absolute_import
-import typing, logging
+import typing
+import logging
 from future.utils import itervalues, iteritems
 from gui.impl.gen import R
 from gui.impl.lobby.battle_pass.tooltips.vehicle_points_tooltip_view import VehiclePointsTooltipView
@@ -36,31 +39,22 @@ class VehiclesStatisticsPresenter(ViewComponent[VehicleStatisticsModel]):
     def createToolTipContent(self, event, contentID):
         if contentID == R.views.lobby.battle_pass.tooltips.VehiclePointsTooltipView():
             return VehiclePointsTooltipView(int(event.getArgument('intCD')))
-        if contentID == R.views.lobby.battle_pass.tooltips.BattlePassOnPauseTooltipView():
-            return SimpleTooltipContent(R.views.lobby.battle_pass.tooltips.BattlePassOnPauseTooltipView())
-        return super(VehiclesStatisticsPresenter, self).createToolTipContent(event=event, contentID=contentID)
+        return SimpleTooltipContent(R.views.lobby.battle_pass.tooltips.BattlePassOnPauseTooltipView()) if contentID == R.views.lobby.battle_pass.tooltips.BattlePassOnPauseTooltipView() else super(VehiclesStatisticsPresenter, self).createToolTipContent(event=event, contentID=contentID)
 
     def _getEvents(self):
-        return (
-         (
-          self.__accountStyles.onChanged, self.__fillVehicles),
-         (
-          self._vehiclesComponent.onDiff, self.__onUpdateVehicles),
-         (
-          self.__platoonCtrl.onMembersUpdate, self.__onPlatoonMembersUpdate),
-         (
-          g_prbCtrlEvents.onVehicleClientStateChanged, self.__onVehicleClientStateChanged),
-         (
-          self.__rentalsCtrl.onRentChangeNotify, self.__onUpdateVehicles),
-         (
-          self.__battlePass.onVehiclesPointsUpdated, self.__onBPVehiclesPointsUpdated))
+        return ((self.__accountStyles.onChanged, self.__fillVehicles),
+         (self._vehiclesComponent.onDiff, self.__onUpdateVehicles),
+         (self.__platoonCtrl.onMembersUpdate, self.__onPlatoonMembersUpdate),
+         (g_prbCtrlEvents.onVehicleClientStateChanged, self.__onVehicleClientStateChanged),
+         (self.__rentalsCtrl.onRentChangeNotify, self.__onUpdateVehicles),
+         (self.__battlePass.onVehiclesPointsUpdated, self.__onBPVehiclesPointsUpdated))
 
     def _onLoading(self, *args, **kwargs):
         super(VehiclesStatisticsPresenter, self)._onLoading(*args, **kwargs)
         self.__fillVehicles()
 
     def __onBPVehiclesPointsUpdated(self, updates):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             statistics = model.getStatistics()
             for intCD, points in iteritems(updates):
                 vehID = str(intCD)
@@ -90,7 +84,7 @@ class VehiclesStatisticsPresenter(ViewComponent[VehicleStatisticsModel]):
         return vehicle.dailyXPFactor
 
     def __onUpdateVehicles(self, diff):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             statistics = model.getStatistics()
             accountRandomStats = self.__itemsCache.items.getAccountDossier().getRandomStats()
             vehiclePrestige = getVehiclePrestigeMap()
@@ -100,8 +94,7 @@ class VehiclesStatisticsPresenter(ViewComponent[VehicleStatisticsModel]):
                     prestigeLevel, _ = vehiclePrestige.get(vehicle.intCD, DEFAULT_PRESTIGE)
                     item = self.__convertToStatisticsModel(vehicle, accountRandomStats, prestigeLevel)
                     statistics.set(item.getId(), item)
-                else:
-                    statistics.remove(str(intCD))
+                statistics.remove(str(intCD))
 
     def __convertToStatisticsModel(self, vehicle, accountRandomStats, prestigeLevel):
         vState, vStateLvl = self.__getVehicleStatus(vehicle)
@@ -143,15 +136,14 @@ class VehiclesStatisticsPresenter(ViewComponent[VehicleStatisticsModel]):
     def __getVehicleStatus(vehicle):
         vState, vStateLvl = vehicle.getState()
         if vehicle.isRotationApplied():
-            if vState in (Vehicle.VEHICLE_STATE.AMMO_NOT_FULL,
-             Vehicle.VEHICLE_STATE.LOCKED):
+            if vState in (Vehicle.VEHICLE_STATE.AMMO_NOT_FULL, Vehicle.VEHICLE_STATE.LOCKED):
                 vState = Vehicle.VEHICLE_STATE.ROTATION_GROUP_UNLOCKED
         if not vehicle.activeInNationGroup:
             vState = Vehicle.VEHICLE_STATE.NOT_PRESENT
         return (vState, vStateLvl)
 
     def __updateVehicles(self, vehicles):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             accountRandomStats = self.__itemsCache.items.getAccountDossier().getRandomStats()
             vehiclePrestige = getVehiclePrestigeMap()
             statistics = model.getStatistics()

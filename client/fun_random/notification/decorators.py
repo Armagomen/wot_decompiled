@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/notification/decorators.py
 from __future__ import absolute_import
 from fun_random.gui.feature.fun_constants import FunSubModesState
 from fun_random.gui.feature.util.fun_mixins import FunProgressionWatcher, FunSubModesWatcher
@@ -5,8 +7,7 @@ from notification.decorators import MessageDecorator
 from notification.settings import NOTIFICATION_BUTTON_STATE as _BUTTON_STATE
 
 class FunRandomNewSubModesMessageDecorator(MessageDecorator, FunSubModesWatcher):
-    _HIDDEN_STATES = (
-     FunSubModesState.UNDEFINED, FunSubModesState.SINGLE_FROZEN, FunSubModesState.AFTER_SEASON)
+    _HIDDEN_STATES = (FunSubModesState.UNDEFINED, FunSubModesState.SINGLE_FROZEN, FunSubModesState.AFTER_SEASON)
 
     def __init__(self, entityID, entity=None, settings=None, model=None):
         super(FunRandomNewSubModesMessageDecorator, self).__init__(entityID, entity, settings, model)

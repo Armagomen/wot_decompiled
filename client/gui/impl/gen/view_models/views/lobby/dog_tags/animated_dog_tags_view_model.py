@@ -1,9 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/dog_tags/animated_dog_tags_view_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.dog_tags.animated_dog_tag_component import AnimatedDogTagComponent
 
 class AnimatedDogTagsViewModel(ViewModel):
-    __slots__ = ('onEquip', 'onGoToAchievement', 'onInfoButtonClick', 'onPlayVideo',
-                 'onOnboardingCloseClick', 'onHideNewBubble', 'onClose')
+    __slots__ = ('onEquip', 'onGoToAchievement', 'onInfoButtonClick', 'onPlayVideo', 'onOnboardingCloseClick', 'onHideNewBubble', 'onClose')
 
     def __init__(self, properties=3, commands=7):
         super(AnimatedDogTagsViewModel, self).__init__(properties=properties, commands=commands)

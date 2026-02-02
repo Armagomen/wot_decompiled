@@ -1,4 +1,7 @@
-import typing, sys
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/advanced_achievements_client/items.py
+import typing
+import sys
 from achievements20.cache import UIConfigFields, getCache, IconPositions, IconSizeMap
 from advanced_achievements_client.constants import AchievementType
 from helpers.dependency import replace_none_kwargs
@@ -20,9 +23,7 @@ class _Progress(object):
         return self.current >= self.total > 0
 
     def getAsPercent(self):
-        if self.total == 0:
-            return 0.0
-        return float(self.current) / self.total * 100
+        return 0.0 if self.total == 0 else float(self.current) / self.total * 100
 
     def __iter__(self):
         yield self.current
@@ -50,7 +51,7 @@ class _Progress(object):
         return int(self.current) == int(other.current) and int(self.total) == int(other.total)
 
     def __repr__(self):
-        return ('{}: {} of {}').format(self.__class__.__name__, self.current, self.total)
+        return '{}: {} of {}'.format(self.__class__.__name__, self.current, self.total)
 
 
 class _Rewards(object):
@@ -107,9 +108,7 @@ class _BaseGuiAchievement(object):
         return self._TYPE
 
     def getDisplayType(self):
-        if self._FieldNames.TYPE in self._staticData.UI:
-            return AchievementType(self._staticData.UI[self._FieldNames.TYPE])
-        return self.getType()
+        return AchievementType(self._staticData.UI[self._FieldNames.TYPE]) if self._FieldNames.TYPE in self._staticData.UI else self.getType()
 
     def getStringKey(self):
         return self._staticData.UI.get(self._FieldNames.KEY, '')
@@ -165,26 +164,19 @@ class _BaseGuiAchievement(object):
         return self.getOwnScore()
 
     def getTimeStamp(self):
-        timeStamp = self._staticData.getCurrentDataFromDossier(self._getDossier())[(-1)]
-        if not timeStamp:
-            return 0
-        return timeStamp
+        timeStamp = self._staticData.getCurrentDataFromDossier(self._getDossier())[-1]
+        return 0 if not timeStamp else timeStamp
 
     def getRewards(self):
         stageID = self.getNextOrLastStageID()
-        if stageID is None:
-            return _Rewards(0, {})
-        else:
-            return _Rewards(self._staticData.getStagePointsByValue(stageID), self._staticData.getStageBonusByValue(stageID))
+        return _Rewards(0, {}) if stageID is None else _Rewards(self._staticData.getStagePointsByValue(stageID), self._staticData.getStageBonusByValue(stageID))
 
     @staticmethod
     def makeAchievement(achievementID, achievementCategory, dossierDescr=None):
         staticData = getCache().getAchievementByID(achievementCategory, achievementID)
         if staticData.conditions.get('requiredAchievementIDs'):
             return CumulativeAchievement(staticData, dossierDescr)
-        if len(staticData.stages) > 1:
-            return SteppedAchievement(staticData, dossierDescr)
-        return RegularAchievement(staticData, dossierDescr)
+        return SteppedAchievement(staticData, dossierDescr) if len(staticData.stages) > 1 else RegularAchievement(staticData, dossierDescr)
 
     @replace_none_kwargs(itemsCache=IItemsCache)
     def _getDossier(self, itemsCache=None):
@@ -202,9 +194,7 @@ class _BaseGuiAchievement(object):
         if nextStage is not None:
             return nextStage['id']
         else:
-            if self._staticData.isAnyStageCompleted(achievedStage):
-                return achievedStage
-            return
+            return achievedStage if self._staticData.isAnyStageCompleted(achievedStage) else None
 
     def getFakeAchievementForStage(self, stageID):
         return self
@@ -262,7 +252,7 @@ class VirtualStepAchievement(RegularAchievement):
         return self.__stepData['id']
 
     def getFakeAchievementForStage(self, _):
-        raise SoftException(('Cannot be called from {}').format(self.__class__.__name__))
+        raise SoftException('Cannot be called from {}'.format(self.__class__.__name__))
 
 
 class SteppedAchievement(RegularAchievement):
@@ -276,7 +266,7 @@ class SteppedAchievement(RegularAchievement):
 
     def getFakeAchievementForStage(self, stageID):
         realProgress = super(SteppedAchievement, self).getProgress()
-        return VirtualStepAchievement(self._staticData, realProgress, self._staticData.stages[(stageID - 1)])
+        return VirtualStepAchievement(self._staticData, realProgress, self._staticData.stages[stageID - 1])
 
 
 class CumulativeAchievement(_BaseGuiAchievement):

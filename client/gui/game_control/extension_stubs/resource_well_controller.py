@@ -1,12 +1,12 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/extension_stubs/resource_well_controller.py
 from collections import namedtuple
 from typing import Dict, Optional, Set, TYPE_CHECKING, List
 from Event import EventManager, Event
 from skeletons.gui.resource_well import IResourceWellController
 if TYPE_CHECKING:
     from gui.shared.gui_items.Vehicle import Vehicle
-_ResourceWellConfig = namedtuple('_ResourceWellConfig', ('isEnabled', 'season', 'finishTime',
-                                                         'remindTime', 'rewards',
-                                                         'startTime', 'infoPageUrl'))
+_ResourceWellConfig = namedtuple('_ResourceWellConfig', ('isEnabled', 'season', 'finishTime', 'remindTime', 'rewards', 'startTime', 'infoPageUrl'))
 _RESOURCE_WELL_CONFIG_STUB = _ResourceWellConfig(isEnabled=False, season=0, finishTime=0, remindTime=0, rewards={}, startTime=0, infoPageUrl='')
 
 class ResourceWellController(IResourceWellController):
@@ -46,10 +46,10 @@ class ResourceWellController(IResourceWellController):
         return False
 
     def getRewardLimit(self, rewardID):
-        return 0
+        pass
 
     def getCurrentPoints(self):
-        return 0
+        pass
 
     def getReceivedRewardIDs(self):
         return set()
@@ -61,19 +61,19 @@ class ResourceWellController(IResourceWellController):
         return {}
 
     def getPurchaseMode(self):
-        return
+        return None
 
     def getRewardVehicle(self, rewardID):
-        return
+        return None
 
     def getRewardStyleID(self, rewardID):
-        return
+        return None
 
     def getRewardSequence(self, rewardID):
-        return ''
+        pass
 
     def getRewardLeftCount(self, rewardID):
-        return 0
+        pass
 
     def isParentRewardAvailable(self, rewardID):
         return False
@@ -82,7 +82,7 @@ class ResourceWellController(IResourceWellController):
         return False
 
     def getCurrentRewardID(self):
-        return ''
+        pass
 
     def isRewardCountAvailable(self, rewardID):
         return False

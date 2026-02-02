@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/skeletons/gui/app_loader.py
 import typing
 from Event import Event
 from constants import ARENA_GUI_TYPE
@@ -116,16 +118,16 @@ class IAppFactory(object):
         return False
 
     def getApp(self, appNS=None):
-        return
+        return None
 
     def getDefLobbyApp(self):
-        return
+        return None
 
     def getDefBattleApp(self):
-        return
+        return None
 
     def getWaitingWorker(self):
-        return
+        return None
 
     def createLobby(self):
         pass

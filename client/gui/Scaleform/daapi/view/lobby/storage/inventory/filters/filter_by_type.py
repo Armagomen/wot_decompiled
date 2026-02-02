@@ -1,4 +1,7 @@
-import copy, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/inventory/filters/filter_by_type.py
+import copy
+import typing
 from helpers import dependency
 from constants import SwitchState
 from account_helpers import AccountSettings
@@ -80,8 +83,8 @@ class FiltrableInventoryCategoryByTypeTabView(ItemsWithTypeFilterTabViewMeta):
         self.as_initTypeFilterS(typeFilters)
 
     def _getTypeFilters(self, items):
-        return {'items': items, 
-           'minSelectedItems': 0}
+        return {'items': items,
+         'minSelectedItems': 0}
 
     def _populate(self):
         super(FiltrableInventoryCategoryByTypeTabView, self)._populate()
@@ -125,10 +128,7 @@ class FiltrableInventoryCategoryByTypeTabView(ItemsWithTypeFilterTabViewMeta):
         return _comparator
 
     def _getInitFilterItems(self):
-        if self.filterItems is not None:
-            return copy.deepcopy(self.filterItems)
-        else:
-            return []
+        return copy.deepcopy(self.filterItems) if self.filterItems is not None else []
 
     def _shouldShowCounter(self):
         return self._filterMask != 0
@@ -177,13 +177,12 @@ class FiltrableRegularCategoryByTypeTabView(FiltrableInventoryCategoryByTypeTabV
         for itemType in self._getItemTypeIDs():
             if itemType == GUI_ITEM_TYPE.DEMOUNT_KIT:
                 items.update(self._goodiesCache.getDemountKits(REQ_CRITERIA.DEMOUNT_KIT.IN_ACCOUNT | REQ_CRITERIA.DEMOUNT_KIT.IS_ENABLED))
-            elif itemType == GUI_ITEM_TYPE.MENTORING_LICENSE:
+            if itemType == GUI_ITEM_TYPE.MENTORING_LICENSE:
                 items.update(self._goodiesCache.getMentoringLicenses(REQ_CRITERIA.MENTORING_LICENSE.IN_ACCOUNT | REQ_CRITERIA.MENTORING_LICENSE.IS_ENABLED))
-            elif itemType == GUI_ITEM_TYPE.RECERTIFICATION_FORM:
+            if itemType == GUI_ITEM_TYPE.RECERTIFICATION_FORM:
                 if SwitchState.DISABLED.value == self._lobbyContext.getServerSettings().recertificationFormState():
                     continue
                 items.update(self._goodiesCache.getRecertificationForms(REQ_CRITERIA.RECERTIFICATION_FORM.IN_ACCOUNT | REQ_CRITERIA.RECERTIFICATION_FORM.IS_ENABLED))
-            else:
-                items.update(self._itemsCache.items.getItems(itemType, criteria, nationID=None))
+            items.update(self._itemsCache.items.getItems(itemType, criteria, nationID=None))
 
         return items

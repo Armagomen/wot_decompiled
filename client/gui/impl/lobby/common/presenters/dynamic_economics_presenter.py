@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/common/presenters/dynamic_economics_presenter.py
 from __future__ import absolute_import
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as _CAPS
 from BonusCaps import BonusCapsConst
@@ -25,14 +27,10 @@ class DynamicEconomicsPresenter(ViewComponent[DynamicEconomicsModel], IGlobalLis
         self.__updateModel()
 
     def _getEvents(self):
-        return (
-         (
-          self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged),)
+        return ((self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged),)
 
     def _getListeners(self):
-        return (
-         (
-          events.LobbyHeaderMenuEvent.UPDATE_PREBATTLE_CONTROLS, self.__updateModel, EVENT_BUS_SCOPE.LOBBY),)
+        return ((events.LobbyHeaderMenuEvent.UPDATE_PREBATTLE_CONTROLS, self.__updateModel, EVENT_BUS_SCOPE.LOBBY),)
 
     def _onLoading(self, *args, **kwargs):
         super(DynamicEconomicsPresenter, self)._onLoading(*args, **kwargs)
@@ -44,7 +42,7 @@ class DynamicEconomicsPresenter(ViewComponent[DynamicEconomicsModel], IGlobalLis
         super(DynamicEconomicsPresenter, self)._finalize()
 
     def __updateModel(self, *_):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             dynamicEconomics = self.__hangarGuiCtrl.dynamicEconomics
             model.setIsCrystalEarnEnabled(dynamicEconomics.checkCurrentCrystalRewards(default=True))
             model.setIsDailyMultipliedXpEnabled(dynamicEconomics.checkCurrentBonusCaps(_CAPS.DAILY_MULTIPLIED_XP, default=True))

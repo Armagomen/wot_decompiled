@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/maps_training/minimap.py
 import BigWorld
 from helpers import isPlayerAvatar
 from account_helpers.settings_core.settings_constants import GAME
@@ -129,9 +131,10 @@ class BotAppearNotificationPlugin(common.EntriesPlugin):
         model = self._getModel(targetID)
         if model is None or replierVehicleID != self._arenaVisitor.getArenaUniqueID() or markerType != MarkerType.LOCATION_MARKER_TYPE:
             return
-        model.setPlayerAtAim(oldReplyCount < newReplycount)
-        self.__updateVehInfo(targetID, True)
-        return
+        else:
+            model.setPlayerAtAim(oldReplyCount < newReplycount)
+            self.__updateVehInfo(targetID, True)
+            return
 
     def __updateVehInfo(self, targetID, wasSpotted=True):
         model = self._getModel(targetID)
@@ -154,7 +157,7 @@ class BotAppearNotificationPlugin(common.EntriesPlugin):
         return
 
     def __onLocalKillGoalsUpdated(self, localGoals):
-        self.__localGoals = set(vID for vID in localGoals)
+        self.__localGoals = set((vID for vID in localGoals))
         for targetID, model in self._entries.iteritems():
             model.setGoalForPlayer(model.getOwnVehicleID() in self.__localGoals)
             self.__updateVehInfo(targetID, True)
@@ -221,9 +224,7 @@ class MapsTrainingAreaStaticMarkerPlugin(plugins.AreaStaticMarkerPlugin):
 
     def _onReplyFeedbackReceived(self, ucmdID, replierID, markerType, oldReplyCount, newReplyCount):
         locationPoints = g_locationPointManager.markedAreas
-        if not locationPoints or ucmdID not in locationPoints or locationPoints[ucmdID].creatorID == self._arenaVisitor.getArenaUniqueID():
-            return False
-        return super(MapsTrainingAreaStaticMarkerPlugin, self)._onReplyFeedbackReceived(ucmdID, replierID, markerType, oldReplyCount, newReplyCount)
+        return False if not locationPoints or ucmdID not in locationPoints or locationPoints[ucmdID].creatorID == self._arenaVisitor.getArenaUniqueID() else super(MapsTrainingAreaStaticMarkerPlugin, self)._onReplyFeedbackReceived(ucmdID, replierID, markerType, oldReplyCount, newReplyCount)
 
 
 class MapsTrainingMinimapComponent(ClassicMinimapComponent):

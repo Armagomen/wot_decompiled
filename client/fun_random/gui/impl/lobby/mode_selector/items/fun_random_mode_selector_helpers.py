@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/lobby/mode_selector/items/fun_random_mode_selector_helpers.py
 from __future__ import absolute_import
 import typing
 from fun_random.gui.feature.util.fun_mixins import FunAssetPacksMixin, FunSubModesWatcher
@@ -20,7 +22,7 @@ class IModeSelectorHelper(object):
 
 
 class _SingleModeSelectorHelper(IModeSelectorHelper, FunAssetPacksMixin, FunSubModesWatcher):
-    __slots__ = ('__subMode', )
+    __slots__ = ('__subMode',)
 
     def __init__(self, subMode):
         self.__subMode = subMode
@@ -45,10 +47,8 @@ class _MultiModesSelectorHelper(IModeSelectorHelper):
         return False
 
     def getConditionText(self):
-        return ''
+        pass
 
 
 def createSelectorHelper(subModes):
-    if len(subModes) == 1:
-        return _SingleModeSelectorHelper(first(subModes))
-    return _MultiModesSelectorHelper()
+    return _SingleModeSelectorHelper(first(subModes)) if len(subModes) == 1 else _MultiModesSelectorHelper()

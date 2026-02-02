@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/battle/__init__.py
 from battle_royale.gui.Scaleform.daapi.view.battle.page import BattleRoyalePage
 from battle_royale.gui.Scaleform.daapi.view.battle.player_stats_in_battle import BattleRoyalePlayerStats
 from battle_royale.gui.Scaleform.daapi.view.battle.radar import RadarButton
@@ -14,9 +16,7 @@ from gui.shared.event_bus import EVENT_BUS_SCOPE
 
 def getContextMenuHandlers():
     from gui.Scaleform.daapi.view.battle.classic import player_menu_handler
-    return (
-     (
-      BATTLE_CONTEXT_MENU_HANDLER_TYPE.PLAYERS_PANEL, player_menu_handler.PlayerMenuHandler),)
+    return ((BATTLE_CONTEXT_MENU_HANDLER_TYPE.PLAYERS_PANEL, player_menu_handler.PlayerMenuHandler),)
 
 
 def getViewSettings():
@@ -46,8 +46,7 @@ def getViewSettings():
     from battle_royale.gui.Scaleform.daapi.view.battle.timers_panel import TimersPanelPanel
     from battle_royale.gui.Scaleform.daapi.view.battle.winner_congrats import BattleRoyaleWinnerCongrats
     from battle_royale.gui.Scaleform.daapi.view.battle.shared.messages.player_messages import SHPlayerMessages
-    return (
-     ViewSettings(VIEW_ALIAS.BATTLE_ROYALE_PAGE, BattleRoyalePage, 'battleRoyalePage.swf', WindowLayer.VIEW, None, ScopeTemplates.DEFAULT_SCOPE),
+    return (ViewSettings(VIEW_ALIAS.BATTLE_ROYALE_PAGE, BattleRoyalePage, 'battleRoyalePage.swf', WindowLayer.VIEW, None, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(BATTLE_VIEW_ALIASES.BATTLE_LOADING, battle_loading.BattleLoading, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(BATTLE_VIEW_ALIASES.BATTLE_STATISTIC_DATA_CONTROLLER, stats_exchange.ClassicStatisticsDataController, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(BATTLE_VIEW_ALIASES.FULL_STATS, FullStatsComponent, ScopeTemplates.DEFAULT_SCOPE),
@@ -82,17 +81,14 @@ def getViewSettings():
 
 
 def getBusinessHandlers():
-    return (
-     BattlePageBusinessHandler(VIEW_ALIAS.BATTLE_ROYALE_PAGE), _BattleRoyaleBusinessHandler())
+    return (BattlePageBusinessHandler(VIEW_ALIAS.BATTLE_ROYALE_PAGE), _BattleRoyaleBusinessHandler())
 
 
 class _BattleRoyaleBusinessHandler(PackageBusinessHandler):
     __slots__ = ()
 
     def __init__(self):
-        super(_BattleRoyaleBusinessHandler, self).__init__((
-         (
-          BATTLE_VIEW_ALIASES.BATTLE_VEHICLE_CONFIGURATOR, self.__handleVehConfiguratorEvent),), app_settings.APP_NAME_SPACE.SF_BATTLE, EVENT_BUS_SCOPE.BATTLE)
+        super(_BattleRoyaleBusinessHandler, self).__init__(((BATTLE_VIEW_ALIASES.BATTLE_VEHICLE_CONFIGURATOR, self.__handleVehConfiguratorEvent),), app_settings.APP_NAME_SPACE.SF_BATTLE, EVENT_BUS_SCOPE.BATTLE)
 
     def __handleVehConfiguratorEvent(self, event):
         window = self.findViewByAlias(WindowLayer.TOP_WINDOW, BATTLE_VIEW_ALIASES.BATTLE_VEHICLE_CONFIGURATOR)

@@ -1,8 +1,16 @@
-import math, logging, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/cgf_demo_client/test_hierarchy_modificator.py
+import math
+import logging
+import BigWorld
 from cgf_script.component_meta_class import ComponentProperty, CGFMetaTypes, registerComponent
 from cgf_script.managers_registrator import autoregister, tickGroup, onAddedQuery
 from cgf_demo.demo_category import DEMO_CATEGORY
-import GenericComponents, Triggers, CGF, math_utils, Math
+import GenericComponents
+import Triggers
+import CGF
+import math_utils
+import Math
 from helpers import isPlayerAccount
 _logger = logging.getLogger(__name__)
 
@@ -154,18 +162,18 @@ class TestHierarchyModifierManager(CGF.ComponentManager):
         player = BigWorld.player()
         if player is None or isPlayerAccount():
             return
-        if hasattr(player, 'getVehicleAttached'):
-            vehicle = player.getVehicleAttached()
-            if vehicle is None:
-                return
-            for hmodifier in self.queryCamera:
-                transfComp = hmodifier.cameraTransform()
-                direction = vehicle.position - transfComp.worldTransform.translation
-                matrix = transfComp.transform
-                transfComp.transform = math_utils.createRTMatrix((
-                 direction.yaw, direction.pitch, 0.0), matrix.translation)
+        else:
+            if hasattr(player, 'getVehicleAttached'):
+                vehicle = player.getVehicleAttached()
+                if vehicle is None:
+                    return
+                for hmodifier in self.queryCamera:
+                    transfComp = hmodifier.cameraTransform()
+                    direction = vehicle.position - transfComp.worldTransform.translation
+                    matrix = transfComp.transform
+                    transfComp.transform = math_utils.createRTMatrix((direction.yaw, direction.pitch, 0.0), matrix.translation)
 
-        return
+            return
 
 
 @registerComponent

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/vehicle_hub/sub_presenters/veh_skill_tree/prestige_presenter.py
 from __future__ import absolute_import
 from collections import OrderedDict
 import logging
@@ -84,16 +86,10 @@ class PrestigePresenter(SubModelPresenter, IPresenterLocationController):
         return super(PrestigePresenter, self).createToolTipContent(event, contentID)
 
     def _getCallbacks(self):
-        return (
-         (
-          'stats.dossier', self.__dossierUpdate),
-         (
-          'stats.prestigeMilestonesAchieved', self.__prestigeMilestonesAchievedUpdate))
+        return (('stats.dossier', self.__dossierUpdate), ('stats.prestigeMilestonesAchieved', self.__prestigeMilestonesAchievedUpdate))
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onPreview, self.__onRewardPreview),)
+        return ((self.viewModel.onPreview, self.__onRewardPreview),)
 
     @args2params(int)
     def __onRewardPreview(self, level):
@@ -101,10 +97,10 @@ class PrestigePresenter(SubModelPresenter, IPresenterLocationController):
         state = self.__rewardStates.get(level)
         if not state or not milestones:
             return
-        bonus = getPrestigeBonus(milestones, PrestigeBonusContext(self.__vehCD, level, state))
-        if not bonus:
-            return
         else:
+            bonus = getPrestigeBonus(milestones, PrestigeBonusContext(self.__vehCD, level, state))
+            if not bonus:
+                return
             customizations = bonus.getCustomizations()
             if not customizations:
                 return
@@ -135,7 +131,7 @@ class PrestigePresenter(SubModelPresenter, IPresenterLocationController):
             self.__updateModel()
 
     def __updateModel(self):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             self.__fillRewards(vm)
             fillPrestigeEmblemModel(vm.prestigeEmblem, self.__vehiclePrestige.currentLevel, self.__vehCD)
             vm.setPrestigeState(self.__getPrestigeState())
@@ -170,6 +166,4 @@ class PrestigePresenter(SubModelPresenter, IPresenterLocationController):
         prestigeConfig = self.__lobbyContext.getServerSettings().prestigeConfig
         if self.__vehiclePrestige.currentLevel == prestigeConfig.defaultMaxLevel:
             return PrestigeState.COMPLETED
-        if self.__vehiclePrestige == DEFAULT_PRESTIGE:
-            return PrestigeState.DISABLED
-        return PrestigeState.AVAILABLE
+        return PrestigeState.DISABLED if self.__vehiclePrestige == DEFAULT_PRESTIGE else PrestigeState.AVAILABLE

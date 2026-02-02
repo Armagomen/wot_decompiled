@@ -1,4 +1,9 @@
-import CGF, GenericComponents, GpuDecals, Math
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/vehicle_systems/components/insignia_stickers_receiver_component.py
+import CGF
+import GenericComponents
+import GpuDecals
+import Math
 from VehicleStickers import Insignia
 from cgf_script.component_meta_class import ComponentProperty, CGFMetaTypes, registerComponent
 from cgf_script.managers_registrator import autoregister, onAddedQuery
@@ -11,9 +16,9 @@ from vehicle_systems.vehicle_composition import findParentVehicleAppearance, Veh
 class InsigniaStickersReceiverComponent(object):
     category = 'Render'
     domain = CGF.DomainOption.DomainClient | CGF.DomainOption.DomainEditor
-    vehiclePart = ComponentProperty(type=CGFMetaTypes.STRING, editorName='Vehicle Part', value=Insignia.Types.SINGLE, annotations={'comboBox': {Insignia.Types.SINGLE: Insignia.Types.SINGLE, 
-                    Insignia.Types.DUAL_LEFT: Insignia.Types.DUAL_LEFT, 
-                    Insignia.Types.DUAL_RIGHT: Insignia.Types.DUAL_RIGHT}})
+    vehiclePart = ComponentProperty(type=CGFMetaTypes.STRING, editorName='Vehicle Part', value=Insignia.Types.SINGLE, annotations={'comboBox': {Insignia.Types.SINGLE: Insignia.Types.SINGLE,
+                  Insignia.Types.DUAL_LEFT: Insignia.Types.DUAL_LEFT,
+                  Insignia.Types.DUAL_RIGHT: Insignia.Types.DUAL_RIGHT}})
 
 
 @autoregister(presentInAllWorlds=True, domain=CGF.DomainOption.DomainClient | CGF.DomainOption.DomainEditor)

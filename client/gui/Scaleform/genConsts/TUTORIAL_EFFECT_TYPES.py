@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/genConsts/TUTORIAL_EFFECT_TYPES.py
 
 
 class TUTORIAL_EFFECT_TYPES(object):
@@ -5,4 +7,7 @@ class TUTORIAL_EFFECT_TYPES(object):
     DISPLAY = 'display'
     ENABLED = 'enabled'
     OVERLAY = 'overlay'
-    ALL = [HINT, DISPLAY, ENABLED, OVERLAY]
+    ALL = [HINT,
+     DISPLAY,
+     ENABLED,
+     OVERLAY]

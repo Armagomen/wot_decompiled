@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/gen/view_models/views/lobby/views/pre_battle_view_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen import R
 from battle_royale.gui.impl.gen.view_models.views.lobby.views.team_model import TeamModel

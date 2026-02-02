@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/pve_base/primary_objective/state_machine/states.py
 import enum
 from frameworks.state_machine import StateFlags
 from gui.Scaleform.daapi.view.battle.pve_base.base.state_machine.states import BaseTimerState, BaseState

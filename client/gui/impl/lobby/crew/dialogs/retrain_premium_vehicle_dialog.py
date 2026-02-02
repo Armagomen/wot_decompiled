@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/dialogs/retrain_premium_vehicle_dialog.py
 from typing import TYPE_CHECKING
 from base_crew_dialog_template_view import BaseCrewDialogTemplateView
 from gui.impl.auxiliary.vehicle_helper import fillVehicleInfo
@@ -40,6 +42,6 @@ class RetrainPremiumVehicleDialog(BaseCrewDialogTemplateView):
         super(RetrainPremiumVehicleDialog, self)._onLoading(*args, **kwargs)
 
     def _initModel(self):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             vm.setIsMassRetrain(self._isMassive)
             fillVehicleInfo(vm.vehicle, self._vehicle, tags=[VEHICLE_TAGS.PREMIUM])

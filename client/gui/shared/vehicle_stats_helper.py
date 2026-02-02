@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/vehicle_stats_helper.py
 import typing
 from helpers import dependency
 from skeletons.gui.shared import IItemsCache
@@ -13,6 +15,4 @@ def getStatTrackersVehicleStats(vehCD, vehicle=None, databaseID=None, itemsCache
             return vehicle.getStFrags()
     accDossier = itemsCache.items.getAccountDossier(databaseID=databaseID)
     vehStats = accDossier.getStatTrackersVehicleStatsBlock().getVehicles().get(vehCD)
-    if vehStats:
-        return vehStats.frags
-    return DEFAULT_VEHICLE_STATS
+    return vehStats.frags if vehStats else DEFAULT_VEHICLE_STATS

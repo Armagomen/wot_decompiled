@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/requests/context.py
 from constants import REQUEST_COOLDOWN
 from external_strings_utils import truncate_utf8
 from gui.prb_control import settings as prb_settings
@@ -17,7 +19,7 @@ class SendInvitesCtx(RequestCtx):
             self.__comment = ''
 
     def __repr__(self):
-        return ('SendInvitesCtx(playerIDs = {0!r:s}, comment = {1:>s})').format(self.__playerIDs, self.__comment)
+        return 'SendInvitesCtx(playerIDs = {0!r:s}, comment = {1:>s})'.format(self.__playerIDs, self.__comment)
 
     def getPlayerIDs(self):
         return self.__playerIDs[:]

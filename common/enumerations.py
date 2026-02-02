@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/enumerations.py
 import types
 from soft_exception import SoftException
 
@@ -27,7 +29,7 @@ class EnumItem(object):
 
 
 class CallabbleEnumItem(EnumItem):
-    __slots__ = ('__function', )
+    __slots__ = ('__function',)
 
     def __init__(self, name, index, func, *args, **kwargs):
         super(CallabbleEnumItem, self).__init__(name, index, func, *args, **kwargs)
@@ -38,7 +40,7 @@ class CallabbleEnumItem(EnumItem):
 
 
 class AttributeEnumItem(EnumItem):
-    __slots__ = ('__data', )
+    __slots__ = ('__data',)
 
     def __init__(self, name, index, data, *args, **kwargs):
         super(AttributeEnumItem, self).__init__(name, index, data, *args, **kwargs)
@@ -49,7 +51,7 @@ class AttributeEnumItem(EnumItem):
 
     def __getattr__(self, attr):
         if attr not in self.__data:
-            raise AttributeError('Must be %s' % (', ').join(self.__data))
+            raise AttributeError('Must be %s' % ', '.join(self.__data))
         return self.__data[attr]
 
 
@@ -65,7 +67,7 @@ class Enumeration(object):
 
     def __getattr__(self, attr):
         if attr not in self.__lookup:
-            raise AttributeError("Attr '%s' must be in (%s)" % (attr, (', ').join(self.__lookup)))
+            raise AttributeError("Attr '%s' must be in (%s)" % (attr, ', '.join(self.__lookup)))
         return self.__lookup[attr]
 
     def __getitem__(self, idx):
@@ -105,18 +107,17 @@ class Enumeration(object):
 
     def __appendEnumItem(self, idx, enumItem, instance, uniqueNames):
         if isinstance(enumItem, types.TupleType):
-            x, = enumItem[0:1]
+            x = enumItem[0:1]
         else:
             x = enumItem
         if not isinstance(x, types.StringType):
-            raise EnumException(('enum name is not a string: {}').format(x))
+            raise EnumException('enum name is not a string: {}'.format(x))
         if x in uniqueNames:
             raise EnumException('enum name is not unique: ' + x)
         if idx in self.__idxLookup:
             raise EnumException('index %s is not unique: ' % (idx,))
         uniqueNames.add(x)
-        args = (
-         x, idx) + tuple(enumItem[1:])
+        args = (x, idx) + tuple(enumItem[1:])
         item = instance(*args)
         self.__lookup[x] = item
         self.__idxLookup[item.index()] = item

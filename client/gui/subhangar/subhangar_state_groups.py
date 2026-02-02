@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/subhangar/subhangar_state_groups.py
 from enum import Enum
 
 class CameraMover(object):
@@ -5,8 +7,11 @@ class CameraMover(object):
     def moveCamera(self, cameraManager, cameraName):
         cameraManager.switchByCameraName(cameraName)
 
+    def moveCameraFailed(self):
+        pass
 
-class SmoothCameraMover(object):
+
+class SmoothCameraMover(CameraMover):
 
     def moveCamera(self, cameraManager, cameraName):
         cameraManager.switchByCameraName(cameraName, False)

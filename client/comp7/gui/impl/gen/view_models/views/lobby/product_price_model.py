@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/impl/gen/view_models/views/lobby/product_price_model.py
 from gui.impl.gen.view_models.common.price_item_model import PriceItemModel
 
 class ProductPriceModel(PriceItemModel):

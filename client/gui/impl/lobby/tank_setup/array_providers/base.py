@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/array_providers/base.py
 from frameworks.wulf import Array
 from functools import partial
 from gui.impl.lobby.tank_setup.tank_setup_helper import NONE_ID
@@ -7,7 +9,7 @@ from helpers import dependency
 from skeletons.gui.shared import IItemsCache
 
 class BaseVehSectionContext(object):
-    __slots__ = ('__slotID', )
+    __slots__ = ('__slotID',)
 
     def __init__(self, slotID):
         self.__slotID = slotID
@@ -18,7 +20,7 @@ class BaseVehSectionContext(object):
 
 
 class BaseArrayProvider(object):
-    __slots__ = ('__items', )
+    __slots__ = ('__items',)
     _itemsCache = dependency.descriptor(IItemsCache)
 
     def __init__(self):
@@ -82,7 +84,7 @@ class BaseArrayProvider(object):
         raise NotImplementedError
 
     def _getItemSortKey(self, item, ctx):
-        return
+        return None
 
 
 class VehicleBaseArrayProvider(BaseArrayProvider):

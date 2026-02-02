@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/stats_exchange/stats_ctrl.py
 import BigWorld
 from account_helpers.settings_core.settings_constants import GAME
 from account_helpers.settings_core.settings_constants import GRAPHICS
@@ -19,13 +21,7 @@ from messenger.proto.events import g_messengerEvents
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.lobby_context import ILobbyContext
-_BOOL_SETTING_TO_BIT = (
- (
-  GAME.PLAYERS_PANELS_SHOW_LEVELS, PERSONAL_STATUS.IS_VEHICLE_LEVEL_SHOWN),
- (
-  GAME.SHOW_VEHICLES_COUNTER, PERSONAL_STATUS.IS_VEHICLE_COUNTER_SHOWN),
- (
-  GRAPHICS.COLOR_BLIND, PERSONAL_STATUS.IS_COLOR_BLIND))
+_BOOL_SETTING_TO_BIT = ((GAME.PLAYERS_PANELS_SHOW_LEVELS, PERSONAL_STATUS.IS_VEHICLE_LEVEL_SHOWN), (GAME.SHOW_VEHICLES_COUNTER, PERSONAL_STATUS.IS_VEHICLE_COUNTER_SHOWN), (GRAPHICS.COLOR_BLIND, PERSONAL_STATUS.IS_COLOR_BLIND))
 
 def _makePersonalStatusFromSettingsStorage(settingsCore):
     getter = settingsCore.getSetting
@@ -47,8 +43,7 @@ def _makePersonalStatusFromSettingsDiff(diff):
             else:
                 removed |= bit
 
-    return (
-     added, removed)
+    return (added, removed)
 
 
 def _createExchangeCtx(battleCtx):
@@ -101,10 +96,7 @@ class BattleStatisticsDataController(BattleStatisticDataControllerMeta, IVehicle
         return
 
     def __isEnemyTeam(self, arenaDP, team):
-        if self.__avatarTeam is not None:
-            return team != self.__avatarTeam
-        else:
-            return arenaDP.isEnemyTeam(team)
+        return team != self.__avatarTeam if self.__avatarTeam is not None else arenaDP.isEnemyTeam(team)
 
     def invalidateArenaInfo(self):
         self.__setArenaDescription()
@@ -122,7 +114,7 @@ class BattleStatisticsDataController(BattleStatisticDataControllerMeta, IVehicle
             if vInfoVO.isObserver():
                 continue
             isEnemy, overrides = self.__getTeamOverrides(vInfoVO, arenaDP)
-            with exchange.getCollectedComponent(isEnemy) as (item):
+            with exchange.getCollectedComponent(isEnemy) as item:
                 item.addVehicleInfo(vInfoVO, overrides)
 
         exchange.addSortIDs(arenaDP, False, True)
@@ -140,7 +132,7 @@ class BattleStatisticsDataController(BattleStatisticDataControllerMeta, IVehicle
                 continue
             self._statsCollector.addVehicleStatsUpdate(vInfoVO, vStatsVO)
             isEnemy = self.__isEnemyTeam(arenaDP, vInfoVO.team)
-            with exchange.getCollectedComponent(isEnemy) as (item):
+            with exchange.getCollectedComponent(isEnemy) as item:
                 item.addStats(vStatsVO)
 
         exchange.addTotalStats(self._statsCollector.getTotalStats(self._arenaVisitor, self.sessionProvider))
@@ -154,7 +146,7 @@ class BattleStatisticsDataController(BattleStatisticDataControllerMeta, IVehicle
     def addVehicleInfo(self, vo, arenaDP):
         isEnemy, overrides = self.__getTeamOverrides(vo, arenaDP)
         exchange = self._exchangeBroker.getVehiclesInfoExchange()
-        with exchange.getCollectedComponent(isEnemy) as (item):
+        with exchange.getCollectedComponent(isEnemy) as item:
             item.addVehicleInfo(vo, overrides)
         exchange.addSortIDs(arenaDP, isEnemy)
         data = exchange.get()
@@ -177,7 +169,7 @@ class BattleStatisticsDataController(BattleStatisticDataControllerMeta, IVehicle
             isEnemy, overrides = self.__getTeamOverrides(vInfoVO, arenaDP)
             if flags & INVALIDATE_OP.SORTING > 0:
                 reusable.add(isEnemy)
-            with exchange.getCollectedComponent(isEnemy) as (item):
+            with exchange.getCollectedComponent(isEnemy) as item:
                 item.addVehicleInfo(vInfoVO, overrides)
 
         if reusable:
@@ -224,7 +216,7 @@ class BattleStatisticsDataController(BattleStatisticDataControllerMeta, IVehicle
             isEnemy = self.__isEnemyTeam(arenaDP, vInfoVO.team)
             if flags & INVALIDATE_OP.SORTING > 0:
                 reusable.add(isEnemy)
-            with exchange.getCollectedComponent(isEnemy, forced=True) as (item):
+            with exchange.getCollectedComponent(isEnemy, forced=True) as item:
                 item.addStats(vStatsVO)
 
         if reusable:
@@ -238,17 +230,17 @@ class BattleStatisticsDataController(BattleStatisticDataControllerMeta, IVehicle
         data = list()
         for vehicleID, state in chatCommands.iteritems():
             chatCommandName, _ = state
-            entry = {'chatCommandName': str(chatCommandName), 
-               'vehicleID': int(vehicleID)}
+            entry = {'chatCommandName': str(chatCommandName),
+             'vehicleID': int(vehicleID)}
             data.append(entry)
 
         updateList = {'chatCommands': data}
         self.as_updateTriggeredChatCommandsS(updateList)
 
     def updatePriorityChatCommand(self, vehicleID, chatCommand, durationMS):
-        data = {'vehicleID': vehicleID, 
-           'chatCommand': chatCommand, 
-           'chatCommandDurationMS': durationMS}
+        data = {'vehicleID': vehicleID,
+         'chatCommand': chatCommand,
+         'chatCommandDurationMS': durationMS}
         self.as_updatePriorityChatCommandS(data)
 
     def invalidatePlayerStatus(self, flags, vo, arenaDP):
@@ -265,7 +257,7 @@ class BattleStatisticsDataController(BattleStatisticDataControllerMeta, IVehicle
         exchange = self._exchangeBroker.getUsersTagsExchange()
         collection = vos_collections.VehiclesInfoCollection()
         for vInfoVO in collection.iterator(arenaDP):
-            with exchange.getCollectedComponent(self.__isEnemyTeam(arenaDP, vInfoVO.team)) as (item):
+            with exchange.getCollectedComponent(self.__isEnemyTeam(arenaDP, vInfoVO.team)) as item:
                 item.addVehicleInfo(vInfoVO)
 
         data = exchange.get()
@@ -290,7 +282,7 @@ class BattleStatisticsDataController(BattleStatisticDataControllerMeta, IVehicle
         exchange = self._exchangeBroker.getInvitationsExchange()
         for vo in vos:
             isEnemy, overrides = self.__getTeamOverrides(vo, arenaDP)
-            with exchange.getCollectedComponent(isEnemy) as (item):
+            with exchange.getCollectedComponent(isEnemy) as item:
                 item.setVehicleID(vo.vehicleID)
                 item.setStatus(overrides.getInvitationDeliveryStatus(vo))
 
@@ -384,14 +376,14 @@ class BattleStatisticsDataController(BattleStatisticDataControllerMeta, IVehicle
     def __setArenaDescription(self):
         battleCtx = self._battleCtx
         questProgress = self.sessionProvider.shared.questProgress
-        arenaInfoData = {'mapName': battleCtx.getArenaTypeName(), 
-           'winText': battleCtx.getArenaWinString(), 
-           'winTextShort': self._getArenaWinTextShort(), 
-           'battleTypeLocaleStr': battleCtx.getArenaDescriptionString(isInBattle=False), 
-           'battleTypeIconPathBig': battleCtx.getBattleTypeIconPathBig(), 
-           'battleTypeIconPathSmall': battleCtx.getBattleTypeIconPathSmall(), 
-           'allyTeamName': battleCtx.getTeamName(enemy=False), 
-           'enemyTeamName': battleCtx.getTeamName(enemy=True)}
+        arenaInfoData = {'mapName': battleCtx.getArenaTypeName(),
+         'winText': battleCtx.getArenaWinString(),
+         'winTextShort': self._getArenaWinTextShort(),
+         'battleTypeLocaleStr': battleCtx.getArenaDescriptionString(isInBattle=False),
+         'battleTypeIconPathBig': battleCtx.getBattleTypeIconPathBig(),
+         'battleTypeIconPathSmall': battleCtx.getBattleTypeIconPathSmall(),
+         'allyTeamName': battleCtx.getTeamName(enemy=False),
+         'enemyTeamName': battleCtx.getTeamName(enemy=True)}
         self.as_setArenaInfoS(arenaInfoData)
         selectedQuest = questProgress.getSelectedQuest()
         if selectedQuest:
@@ -428,8 +420,8 @@ class BattleStatisticsDataController(BattleStatisticDataControllerMeta, IVehicle
                 else:
                     text = text_styles.neutral(INGAME_GUI.STATISTICS_TAB_QUESTS_STATUS_INPROGRESS)
             statusLabel = text_styles.concatStylesToSingleLine(icon, text)
-            return {'statusLabel': statusLabel, 
-               'status': status}
+            return {'statusLabel': statusLabel,
+             'status': status}
 
     def __getTeamOverrides(self, vo, arenaDP):
         team = vo.team
@@ -438,8 +430,7 @@ class BattleStatisticsDataController(BattleStatisticDataControllerMeta, IVehicle
         else:
             isEnemy = self.__isEnemyTeam(arenaDP, team)
             overrides = team_overrides.makeOverrides(isEnemy, team, self._personalInfo, self._arenaVisitor, isReplayPlaying=self.sessionProvider.isReplayPlaying)
-            self.__reusable[team] = (
-             isEnemy, overrides)
+            self.__reusable[team] = (isEnemy, overrides)
         return (isEnemy, overrides)
 
     def __clearTeamOverrides(self):
@@ -449,8 +440,7 @@ class BattleStatisticsDataController(BattleStatisticDataControllerMeta, IVehicle
 
     def __onSettingsChanged(self, diff):
         added, removed = _makePersonalStatusFromSettingsDiff(diff)
-        if (
-         added, removed) != (PERSONAL_STATUS.DEFAULT,) * 2:
+        if (added, removed) != (PERSONAL_STATUS.DEFAULT,) * 2:
             self.__personalStatus |= added
             self.__personalStatus ^= removed
             self.as_updatePersonalStatusS(added, removed)
@@ -517,12 +507,7 @@ class BattleStatisticsDataController(BattleStatisticDataControllerMeta, IVehicle
             self.__onHeaderProgressesUpdate()
 
     def __getCurrentPlayerVehicleCmpDescr(self, arenaDP):
-        if arenaDP:
-            return arenaDP.getVehicleInfo().vehicleType.compactDescr
-        else:
-            return
+        return arenaDP.getVehicleInfo().vehicleType.compactDescr if arenaDP else None
 
     def __canDisplayPMMission(self, arenaDP):
-        if arenaDP:
-            return arenaDP.getPersonalDescription().isQuestEnabled()
-        return False
+        return arenaDP.getPersonalDescription().isQuestEnabled() if arenaDP else False

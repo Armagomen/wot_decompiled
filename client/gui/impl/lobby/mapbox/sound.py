@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/mapbox/sound.py
 from enum import Enum
 from sound_gui_manager import CommonSoundSpaceSettings
 import WWISE

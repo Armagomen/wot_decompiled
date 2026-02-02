@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/platform/product_purchase/wot_shop_purchase_controller.py
 import logging
 from functools import partial
 from BWUtil import AsyncReturn

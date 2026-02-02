@@ -1,4 +1,7 @@
-import random, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/maps_training/maps_training_queue_view.py
+import random
+import BigWorld
 from PlayerEvents import g_playerEvents
 from constants import QUEUE_TYPE
 from gui.impl.gen import R
@@ -14,8 +17,7 @@ from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.impl.lobby.maps_training.maps_training_base_view import MapsTrainingBaseView
 
 class MapsTrainingQueueView(MapsTrainingBaseView):
-    __slots__ = ('__timerCallback', '__queueCallback', '__createTime', '__tipNum',
-                 '__status')
+    __slots__ = ('__timerCallback', '__queueCallback', '__createTime', '__tipNum', '__status')
     mapsTrainingController = dependency.descriptor(IMapsTrainingController)
     itemsCache = dependency.descriptor(IItemsCache)
     _REQUEST_QUEUE_INFO_TIMEOUT = 5
@@ -25,7 +27,7 @@ class MapsTrainingQueueView(MapsTrainingBaseView):
     _WAIT_TIME_LONG = 180
 
     def __init__(self, *args, **kwargs):
-        super(MapsTrainingQueueView, self).__init__(viewResource=R.views.lobby.maps_training.MapsTrainingQueue(), viewModel=MapsTrainingQueueModel())
+        super(MapsTrainingQueueView, self).__init__(viewResource=R.views.mono.maps_training.maps_training_queue(), viewModel=MapsTrainingQueueModel())
         self.__timerCallback = None
         self.__queueCallback = None
         self.__createTime = kwargs['ctx'].get('createTime', getCurrentTimestamp())
@@ -35,11 +37,11 @@ class MapsTrainingQueueView(MapsTrainingBaseView):
 
     @prbEntityProperty
     def prbEntity(self):
-        return
+        return None
 
     def _onLoading(self, *args, **kwargs):
         super(MapsTrainingQueueView, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setTime('0:00')
             model.setDescrTip(R.strings.maps_training.queue.tip.num(self.__tipNum)())
         self.__requestQueueInfo()

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_core/scripts/client/comp7_core/gui/impl/lobby/comp7_core_helpers/comp7_core_shared.py
 from gui.impl.gen.view_models.views.lobby.user_missions.constants.event_banner_state import EventBannerState
 from gui.periodic_battles.models import PeriodType, PrimeTimeStatus
 from gui.shared.utils.SelectorBattleTypesUtils import isKnownBattleType
@@ -10,8 +12,10 @@ def getCurrentSeasonState(modeController, seasonStateClazz):
     periodInfo = modeController.getPeriodInfo()
     if periodInfo.periodType in (PeriodType.BEFORE_SEASON, PeriodType.BEFORE_CYCLE):
         return seasonStateClazz.NOTSTARTED
-    if periodInfo.periodType in (PeriodType.AFTER_SEASON, PeriodType.AFTER_CYCLE,
-     PeriodType.ALL_NOT_AVAILABLE_END, PeriodType.NOT_AVAILABLE_END,
+    if periodInfo.periodType in (PeriodType.AFTER_SEASON,
+     PeriodType.AFTER_CYCLE,
+     PeriodType.ALL_NOT_AVAILABLE_END,
+     PeriodType.NOT_AVAILABLE_END,
      PeriodType.STANDALONE_NOT_AVAILABLE_END):
         return seasonStateClazz.END
     if periodInfo.periodType == PeriodType.UNDEFINED:
@@ -20,9 +24,7 @@ def getCurrentSeasonState(modeController, seasonStateClazz):
         return seasonStateClazz.END
     if periodInfo.cycleBorderLeft.delta(currentTime) < time_utils.ONE_DAY * _SEASON_START_DURATION_DAYS:
         return seasonStateClazz.JUSTSTARTED
-    if periodInfo.cycleBorderRight.delta(currentTime) < time_utils.ONE_DAY * _SEASON_END_DURATION_DAYS:
-        return seasonStateClazz.ENDSOON
-    return seasonStateClazz.ACTIVE
+    return seasonStateClazz.ENDSOON if periodInfo.cycleBorderRight.delta(currentTime) < time_utils.ONE_DAY * _SEASON_END_DURATION_DAYS else seasonStateClazz.ACTIVE
 
 
 def getModeSeasonState(modeController, seasonStateClazz):
@@ -33,8 +35,10 @@ def getModeSeasonState(modeController, seasonStateClazz):
     primeTimeStatus, _, _ = modeController.getPrimeTimeStatus()
     if periodInfo.periodType in (PeriodType.BEFORE_SEASON, PeriodType.BEFORE_CYCLE, PeriodType.BETWEEN_SEASONS):
         return seasonStateClazz.NOTSTARTED
-    if periodInfo.periodType in (PeriodType.AFTER_SEASON, PeriodType.AFTER_CYCLE,
-     PeriodType.ALL_NOT_AVAILABLE_END, PeriodType.NOT_AVAILABLE_END,
+    if periodInfo.periodType in (PeriodType.AFTER_SEASON,
+     PeriodType.AFTER_CYCLE,
+     PeriodType.ALL_NOT_AVAILABLE_END,
+     PeriodType.NOT_AVAILABLE_END,
      PeriodType.STANDALONE_NOT_AVAILABLE_END):
         return seasonStateClazz.END
     if periodInfo.periodType in (PeriodType.ALL_NOT_AVAILABLE, PeriodType.STANDALONE_NOT_AVAILABLE) or primeTimeStatus == PrimeTimeStatus.NOT_AVAILABLE:
@@ -54,31 +58,29 @@ def getProgressionYearState(modeController, yearStateClazz):
     hasPrevSeason = modeController.getPreviousSeason() is not None
     if periodInfo.periodType == PeriodType.BEFORE_SEASON:
         return yearStateClazz.NOTSTARTED
+    elif periodInfo.periodType in (PeriodType.AFTER_SEASON,
+     PeriodType.STANDALONE_NOT_AVAILABLE_END,
+     PeriodType.ALL_NOT_AVAILABLE_END,
+     PeriodType.NOT_AVAILABLE_END):
+        return yearStateClazz.FINISHED
     else:
-        if periodInfo.periodType in (PeriodType.AFTER_SEASON, PeriodType.STANDALONE_NOT_AVAILABLE_END,
-         PeriodType.ALL_NOT_AVAILABLE_END, PeriodType.NOT_AVAILABLE_END):
-            return yearStateClazz.FINISHED
-        if periodInfo.periodType == PeriodType.BETWEEN_SEASONS or periodInfo.periodType == PeriodType.AFTER_CYCLE and hasNextSeason or periodInfo.periodType == PeriodType.BEFORE_CYCLE and hasPrevSeason:
-            return yearStateClazz.OFFSEASON
-        return yearStateClazz.ACTIVE
+        return yearStateClazz.OFFSEASON if periodInfo.periodType == PeriodType.BETWEEN_SEASONS or periodInfo.periodType == PeriodType.AFTER_CYCLE and hasNextSeason or periodInfo.periodType == PeriodType.BEFORE_CYCLE and hasPrevSeason else yearStateClazz.ACTIVE
 
 
 def getEventBannerState(modeController, seasonStateClazz, selectorBattleType):
     if not modeController.isAvailable():
         return EventBannerState.INACTIVE
-    else:
-        seasonState = getCurrentSeasonState(modeController, seasonStateClazz)
-        if seasonState == seasonStateClazz.NOTSTARTED:
+    seasonState = getCurrentSeasonState(modeController, seasonStateClazz)
+    if seasonState == seasonStateClazz.NOTSTARTED:
+        return EventBannerState.ANNOUNCE
+    elif seasonState == seasonStateClazz.DISABLED:
+        return EventBannerState.INACTIVE
+    elif seasonState == seasonStateClazz.END:
+        if modeController.getCurrentSeason(includePreannounced=True) is not None:
             return EventBannerState.ANNOUNCE
-        primeTimeStatus, _, _ = modeController.getPrimeTimeStatus()
-        if primeTimeStatus == PrimeTimeStatus.NOT_AVAILABLE:
-            return EventBannerState.INACTIVE
-        if seasonState == seasonStateClazz.DISABLED:
-            return EventBannerState.INACTIVE
-        if seasonState == seasonStateClazz.END:
-            if modeController.getCurrentSeason(includePreannounced=True) is not None:
-                return EventBannerState.ANNOUNCE
-            return EventBannerState.INACTIVE
-        if isKnownBattleType(selectorBattleType):
-            return EventBannerState.IN_PROGRESS
-        return EventBannerState.INTRO
+        return EventBannerState.INACTIVE
+    primeTimeStatus, _, _ = modeController.getPrimeTimeStatus()
+    if primeTimeStatus in (PrimeTimeStatus.NOT_AVAILABLE, PrimeTimeStatus.NOT_SET):
+        return EventBannerState.INACTIVE
+    else:
+        return EventBannerState.IN_PROGRESS if isKnownBattleType(selectorBattleType) else EventBannerState.INTRO

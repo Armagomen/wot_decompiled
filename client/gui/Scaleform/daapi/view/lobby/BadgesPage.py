@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/BadgesPage.py
 import BigWorld
 from gui.impl import backport
 from gui.impl.gen.resources import R
@@ -59,10 +61,10 @@ class BadgesPage(BadgesPageMeta):
     def _populate(self):
         super(BadgesPage, self)._populate()
         userName = BigWorld.player().name
-        self.as_setStaticDataS({'header': {'backBtnLabel': backport.text(R.strings.badge.badgesPage.header.backBtn.label()), 
-                      'backBtnDescrLabel': self.__backViewName, 
-                      'descrTf': text_styles.main(BADGE.BADGESPAGE_HEADER_DESCR), 
-                      'playerText': self.lobbyContext.getPlayerFullName(userName)}})
+        self.as_setStaticDataS({'header': {'backBtnLabel': backport.text(R.strings.badge.badgesPage.header.backBtn.label()),
+                    'backBtnDescrLabel': self.__backViewName,
+                    'descrTf': text_styles.main(BADGE.BADGESPAGE_HEADER_DESCR),
+                    'playerText': self.lobbyContext.getPlayerFullName(userName)}})
         self.__updateBadges()
         if self.__tutorStorage is not None:
             hasNewBadges = self.__checkNewSuffixBadges()
@@ -73,10 +75,7 @@ class BadgesPage(BadgesPageMeta):
 
     def _dispose(self):
         if self.__tutorStorage is not None:
-            for flag in (
-             GLOBAL_FLAG.BADGE_PAGE_HAS_NEW_SUFFIX_BADGE,
-             GLOBAL_FLAG.HAVE_NEW_SUFFIX_BADGE,
-             GLOBAL_FLAG.HAVE_NEW_BADGE):
+            for flag in (GLOBAL_FLAG.BADGE_PAGE_HAS_NEW_SUFFIX_BADGE, GLOBAL_FLAG.HAVE_NEW_SUFFIX_BADGE, GLOBAL_FLAG.HAVE_NEW_BADGE):
                 self.__tutorStorage.setValue(flag, False)
 
         self.badgesController.onUpdated -= self.__updateBadges
@@ -89,11 +88,11 @@ class BadgesPage(BadgesPageMeta):
         lastSelectedSuffixBadgeID = AccountSettings.getSettings(LAST_SELECTED_SUFFIX_BADGE_ID)
         selectedItemIdx = None
         lastSelectedItemIdx = None
-        suffixesVO = {'checkboxLabel': backport.text(R.strings.badge.badgesPage.header.suffixSetting.label()), 
-           'checkboxTooltip': makeTooltip(TOOLTIPS.BADGEINFO_TITLE, TOOLTIPS.BADGEINFO_TEXT), 
-           'checkboxSelected': self.badgesController.getSuffix() is not None, 
-           'selectedItemIdx': 0, 
-           'items': []}
+        suffixesVO = {'checkboxLabel': backport.text(R.strings.badge.badgesPage.header.suffixSetting.label()),
+         'checkboxTooltip': makeTooltip(TOOLTIPS.BADGEINFO_TITLE, TOOLTIPS.BADGEINFO_TEXT),
+         'checkboxSelected': self.badgesController.getSuffix() is not None,
+         'selectedItemIdx': 0,
+         'items': []}
         if self.__badgesCollector.getSuffixAchievedBadges():
             for i, badge in enumerate(self.__badgesCollector.getSuffixAchievedBadges()):
                 self.__deselectNotSelectedBadge(badge)
@@ -147,14 +146,14 @@ class BadgesPage(BadgesPageMeta):
             self.__prefixBadgeID = self.badgesController.getPrefix().badgeID
             self.as_setSelectedBadgeS(self.badgesController.getPrefix().getBadgeVO(ICONS_SIZES.X48), selected=True)
         else:
-            self.as_setSelectedBadgeS({'icon': backport.image(R.images.gui.maps.icons.library.badges.c_48x48.badge_empty()), 
-               'isDynamic': False}, selected=False)
+            self.as_setSelectedBadgeS({'icon': backport.image(R.images.gui.maps.icons.library.badges.c_48x48.badge_empty()),
+             'isDynamic': False}, selected=False)
         if self.badgesController.getSuffix() is not None:
             self.__suffixBadgeID = self.badgesController.getSuffix().badgeID
         self.__sentSuffixBadgesVO()
         self.as_setReceivedBadgesS({'badgesData': receivedBadgesVO})
-        self.as_setNotReceivedBadgesS({'title': text_styles.highTitle(BADGE.BADGESPAGE_BODY_UNCOLLECTED_TITLE), 
-           'badgesData': notReceivedBadgesVO})
+        self.as_setNotReceivedBadgesS({'title': text_styles.highTitle(BADGE.BADGESPAGE_BODY_UNCOLLECTED_TITLE),
+         'badgesData': notReceivedBadgesVO})
         return
 
     def __onWotPlusUpdate(self, *_):
@@ -169,4 +168,4 @@ class BadgesPage(BadgesPageMeta):
         self.badgesController.select(badges)
 
     def __checkNewSuffixBadges(self):
-        return any(suffix.isNew() for suffix in self.__badgesCollector.getSuffixAchievedBadges())
+        return any((suffix.isNew() for suffix in self.__badgesCollector.getSuffixAchievedBadges()))

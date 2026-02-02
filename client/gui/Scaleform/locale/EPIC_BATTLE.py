@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/locale/EPIC_BATTLE.py
 from debug_utils import LOG_WARNING
 
 class EPIC_BATTLE(object):
@@ -282,14 +284,6 @@ class EPIC_BATTLE(object):
     EPICBATTLEITEM_SUPPLYPOINTS_HEADER = '#epic_battle:epicBattleItem/supplyPoints/header'
     EPICBATTLEITEM_SUPPLYPOINTS_DESCRIPTION = '#epic_battle:epicBattleItem/supplyPoints/description'
     EPICBATTLEITEM_SUPPLYPOINTS_BODY = '#epic_battle:epicBattleItem/supplyPoints/body'
-    INTRO_TITLE = '#epic_battle:intro/title'
-    INTRO_CONFIRM = '#epic_battle:intro/confirm'
-    INTRO_CARD_CATEGORIES_TITLE = '#epic_battle:intro/card/categories/title'
-    INTRO_CARD_CATEGORIES_DESC = '#epic_battle:intro/card/categories/desc'
-    INTRO_CARD_SLOTS_TITLE = '#epic_battle:intro/card/slots/title'
-    INTRO_CARD_SLOTS_DESC = '#epic_battle:intro/card/slots/desc'
-    INTRO_CARD_TYPES_TITLE = '#epic_battle:intro/card/types/title'
-    INTRO_CARD_TYPES_DESC = '#epic_battle:intro/card/types/desc'
     AWARDS_TITLE = '#epic_battle:awards/title'
     AWARDS_SUBTITLE2 = '#epic_battle:awards/subTitle2'
     AWARDS_SUBTITLE1 = '#epic_battle:awards/subTitle1'
@@ -343,32 +337,28 @@ class EPIC_BATTLE(object):
     RESERVE_LEVEL_2 = '#epic_battle:reserve/level/2'
     RESERVE_LEVEL_3 = '#epic_battle:reserve/level/3'
     RESERVE_LEVEL_4 = '#epic_battle:reserve/level/4'
-    RANK_RANK_ENUM = (
-     RANK_RANK1,
+    RANK_RANK_ENUM = (RANK_RANK1,
      RANK_RANK2,
      RANK_RANK3,
      RANK_RANK4,
      RANK_RANK5,
      RANK_RANK6)
-    SEASON_ALL_NAME_ENUM = (
-     SEASON_201902_NAME,
-     SEASON_202002_NAME,
-     SEASON_202108_NAME)
+    SEASON_ALL_NAME_ENUM = (SEASON_201902_NAME, SEASON_202002_NAME, SEASON_202108_NAME)
 
     @classmethod
     def getRankLabel(cls, key0):
-        outcome = ('#epic_battle:rank/rank{}').format(key0)
+        outcome = '#epic_battle:rank/rank{}'.format(key0)
         if outcome not in cls.RANK_RANK_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getSeasonName(cls, key0):
-        outcome = ('#epic_battle:season/{}/name').format(key0)
+        outcome = '#epic_battle:season/{}/name'.format(key0)
         if outcome not in cls.SEASON_ALL_NAME_ENUM:
-            LOG_WARNING(('Localization key "{}" not found').format(outcome))
+            LOG_WARNING('Localization key "{}" not found'.format(outcome))
             return None
         else:
             return outcome

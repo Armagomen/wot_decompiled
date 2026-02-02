@@ -1,4 +1,7 @@
-import BigWorld, CGF
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/abilities/self_buff.py
+import BigWorld
+import CGF
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from cgf_script.bonus_caps_rules import bonusCapsManager
 from cgf_script.component_meta_class import ComponentProperty, CGFMetaTypes, registerComponent
@@ -23,11 +26,10 @@ else:
         pass
 
 
-_GUN_LENGTH_RANGES = {'short': (0.0, 2.0), 
-   'med': (2.0, 4.0), 
-   'med_02': (4.0, 5.0), 
-   'long': (
-          5.0, float('inf'))}
+_GUN_LENGTH_RANGES = {'short': (0.0, 2.0),
+ 'med': (2.0, 4.0),
+ 'med_02': (4.0, 5.0),
+ 'long': (5.0, float('inf'))}
 
 @registerComponent
 class SelfBuffComponent(object):

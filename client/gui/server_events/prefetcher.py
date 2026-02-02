@@ -1,6 +1,12 @@
-import json, itertools, weakref, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/server_events/prefetcher.py
+import json
+import itertools
+import weakref
+import typing
 from collections import namedtuple
-import BigWorld, ResMgr
+import BigWorld
+import ResMgr
 from wg_async import wg_async, wg_await, await_callback, AsyncScope, AsyncSemaphore
 from constants import DailyQuestDecorationMap, EVENT_TYPE
 from debug_utils import LOG_WARNING
@@ -17,17 +23,15 @@ from skeletons.gui.lobby_context import ILobbyContext
 from soft_exception import SoftException
 if typing.TYPE_CHECKING:
     from gui.server_events.event_items import Quest
-_DEFAULT_TOKENS_STYLES = [ title.split('/')[(-1)] for title in QUESTS.TOKEN_DEFAULT_ENUM
-                         ]
-_DEFAULT_DECORATIONS = [ title.split('_')[(-1)].replace('.png', '') for title in RES_ICONS.MAPS_ICONS_MISSIONS_DECORATIONS_DECORATION_ENUM
-                       ]
+_DEFAULT_TOKENS_STYLES = [ title.split('/')[-1] for title in QUESTS.TOKEN_DEFAULT_ENUM ]
+_DEFAULT_DECORATIONS = [ title.split('_')[-1].replace('.png', '') for title in RES_ICONS.MAPS_ICONS_MISSIONS_DECORATIONS_DECORATION_ENUM ]
 
 def _getTokensFromAccountReqs(quest):
     return (parseComplexToken(t.getID()) for t in quest.accountReqs.getTokens())
 
 
 def _getTokensFromBonuses(quest):
-    return (parseComplexToken(t) for t in itertools.chain.from_iterable(b.getValue().keys() for b in quest.getBonuses('tokens')))
+    return (parseComplexToken(t) for t in itertools.chain.from_iterable((b.getValue().keys() for b in quest.getBonuses('tokens'))))
 
 
 class SubRequester(object):
@@ -94,18 +98,15 @@ class SubRequester(object):
 class TokenImagesSubRequester(SubRequester):
 
     def pickup(self, styleID, size):
-        ticket = (
-         styleID, size)
+        ticket = (styleID, size)
         content = self._storage.get(ticket)
         if content:
-            return ('img://{}').format(mapTextureToTheMemory(content))
-        if styleID in _DEFAULT_TOKENS_STYLES:
-            return RES_ICONS.getTokenImage(size, styleID)
-        return RES_ICONS.getTokenUndefinedImage(size)
+            return 'img://{}'.format(mapTextureToTheMemory(content))
+        return RES_ICONS.getTokenImage(size, styleID) if styleID in _DEFAULT_TOKENS_STYLES else RES_ICONS.getTokenUndefinedImage(size)
 
     def _handler(self, ticket, content):
         _, expectedSize = ticket
-        actualSize = ('{}x{}').format(*getImageSize(content))
+        actualSize = '{}x{}'.format(*getImageSize(content))
         if expectedSize != actualSize:
             raise SoftException('Downloaded image has invalid size')
         self._storage[ticket] = content
@@ -113,9 +114,7 @@ class TokenImagesSubRequester(SubRequester):
     def _tickets(self):
         tickets = []
         for quest in self._eventsCache.getQuests().itervalues():
-            if quest.getType() not in (EVENT_TYPE.TOKEN_QUEST,
-             EVENT_TYPE.BATTLE_QUEST,
-             EVENT_TYPE.PERSONAL_QUEST):
+            if quest.getType() not in (EVENT_TYPE.TOKEN_QUEST, EVENT_TYPE.BATTLE_QUEST, EVENT_TYPE.PERSONAL_QUEST):
                 continue
             for token in itertools.chain(_getTokensFromAccountReqs(quest), _getTokensFromBonuses(quest)):
                 styleID = token.styleID
@@ -134,15 +133,12 @@ _TokenInfoData = namedtuple('_TokenInfoData', ['title', 'description'])
 class TokenInfoSubRequester(SubRequester):
 
     def pickup(self, styleID):
-        ticket = (
-         styleID,)
+        ticket = (styleID,)
         storageData = self._storage.get(ticket, None)
         if storageData is not None:
             return storageData
         else:
-            if styleID in _DEFAULT_TOKENS_STYLES:
-                return _TokenInfoData(title=backport.text(R.strings.quests.token.default.dyn(styleID)()), description=None)
-            return _TokenInfoData(title=backport.text(R.strings.quests.token.undefined()), description=None)
+            return _TokenInfoData(title=backport.text(R.strings.quests.token.default.dyn(styleID)()), description=None) if styleID in _DEFAULT_TOKENS_STYLES else _TokenInfoData(title=backport.text(R.strings.quests.token.undefined()), description=None)
 
     def _handler(self, ticket, content):
         section = ResMgr.DataSection()
@@ -152,23 +148,18 @@ class TokenInfoSubRequester(SubRequester):
             tokenID = item['id'].asString
             string = item['title'].asString
             description = item.readString('description') if item.has_key('description') else None
-            ticket = (
-             tokenID,)
+            ticket = (tokenID,)
             self._storage[ticket] = _TokenInfoData(title=string, description=description)
 
         return
 
     def _tickets(self):
         for quest in self._eventsCache.getQuests().itervalues():
-            if quest.getType() not in (EVENT_TYPE.TOKEN_QUEST,
-             EVENT_TYPE.BATTLE_QUEST,
-             EVENT_TYPE.PERSONAL_QUEST):
+            if quest.getType() not in (EVENT_TYPE.TOKEN_QUEST, EVENT_TYPE.BATTLE_QUEST, EVENT_TYPE.PERSONAL_QUEST):
                 continue
             for token in itertools.chain(_getTokensFromAccountReqs(quest), _getTokensFromBonuses(quest)):
                 if token.isDisplayable:
-                    return [
-                     (
-                      getClientLanguage(),)]
+                    return [(getClientLanguage(),)]
 
         return []
 
@@ -183,8 +174,7 @@ class TokenInfoSubRequester(SubRequester):
 class DecorationRequester(SubRequester):
 
     def pickup(self, decorationID, size):
-        ticket = (
-         decorationID, size)
+        ticket = (decorationID, size)
         if size == DECORATION_SIZES.BONUS:
             if str(decorationID) in _DEFAULT_DECORATIONS:
                 return RES_ICONS.getQuestDecoration(decorationID)
@@ -194,13 +184,11 @@ class DecorationRequester(SubRequester):
                 return DailyQuestDecorationMap.get(decorationID, '')
             default = ''
         content = self._storage.get(ticket)
-        if content:
-            return ('img://{}').format(mapTextureToTheMemory(content))
-        return default
+        return 'img://{}'.format(mapTextureToTheMemory(content)) if content else default
 
     def _handler(self, ticket, content):
         _, expectedSize = ticket
-        actualSize = ('{}x{}').format(*getImageSize(content))
+        actualSize = '{}x{}'.format(*getImageSize(content))
         if actualSize != expectedSize:
             raise SoftException('Downloaded image has invalid size')
         self._storage[ticket] = content
@@ -221,7 +209,7 @@ class DecorationRequester(SubRequester):
             if isMarathon(quest.getID()):
                 if str(decorationID) not in _DEFAULT_DECORATIONS:
                     decorations.append((decorationID, DECORATION_SIZES.BONUS))
-            elif quest.getType() not in EVENT_TYPE.SHARED_QUESTS:
+            if quest.getType() not in EVENT_TYPE.SHARED_QUESTS:
                 for size in (DECORATION_SIZES.CARDS, DECORATION_SIZES.DETAILS):
                     decorations.append((decorationID, size))
 
@@ -243,8 +231,7 @@ class DecorationRequester(SubRequester):
 class TokenSaleSubRequester(SubRequester):
 
     def pickup(self, tokenWebID):
-        ticket = (
-         tokenWebID,)
+        ticket = (tokenWebID,)
         return self._storage.get(ticket, False)
 
     def _tickets(self):
@@ -270,21 +257,20 @@ class TokenSaleSubRequester(SubRequester):
             properties = attributes.get('custom_properties', {})
             for tokenWebID, isOnSale in properties.iteritems():
                 if tokenWebID in tokenWebIDs:
-                    ticket = (
-                     tokenWebID,)
+                    ticket = (tokenWebID,)
                     self._storage[ticket] = bool(isOnSale)
 
     @staticmethod
     def _urlGetter(_):
-        return lambda *tokenWebIDs: GUI_SETTINGS.lookup('tokenShopAvailabilityURL') % (',').join(tokenWebIDs)
+        return lambda *tokenWebIDs: GUI_SETTINGS.lookup('tokenShopAvailabilityURL') % ','.join(tokenWebIDs)
 
     @staticmethod
     def _headers():
         apiKey = GUI_SETTINGS.lookup('tokenShopAPIKey')
-        return {'Authorization': ('Bearer {}').format(apiKey)}
+        return {'Authorization': 'Bearer {}'.format(apiKey)}
 
     def __contains__(self, ticket):
-        return all((webID,) in self._storage for webID in ticket)
+        return all(((webID,) in self._storage for webID in ticket))
 
 
 class Prefetcher(object):
@@ -315,10 +301,10 @@ class Prefetcher(object):
     def init(self):
         self._asyncScope = AsyncScope()
         self._semaphore = AsyncSemaphore(0, self._asyncScope)
-        self._requesters = {'tokenImage': TokenImagesSubRequester(self._eventsCache, self._semaphore), 
-           'tokenInfo': TokenInfoSubRequester(self._eventsCache, self._semaphore), 
-           'tokenSale': TokenSaleSubRequester(self._eventsCache, self._semaphore), 
-           'decoration': DecorationRequester(self._eventsCache, self._semaphore)}
+        self._requesters = {'tokenImage': TokenImagesSubRequester(self._eventsCache, self._semaphore),
+         'tokenInfo': TokenInfoSubRequester(self._eventsCache, self._semaphore),
+         'tokenSale': TokenSaleSubRequester(self._eventsCache, self._semaphore),
+         'decoration': DecorationRequester(self._eventsCache, self._semaphore)}
 
     def fini(self):
         self._asyncScope.destroy()

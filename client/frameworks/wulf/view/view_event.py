@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/frameworks/wulf/view/view_event.py
 import typing
 
 class Position2D(object):
@@ -35,14 +37,14 @@ class BoundingBox(Position2D):
 
 
 class ViewEvent(object):
-    __slots__ = ('__core', )
+    __slots__ = ('__core',)
 
     def __init__(self, core):
         super(ViewEvent, self).__init__()
         self.__core = core
 
     def __repr__(self):
-        return ('{}(proxy={})').format(self.__class__.__name__, self.__core)
+        return '{}(proxy={})'.format(self.__class__.__name__, self.__core)
 
     @property
     def eventType(self):
@@ -76,9 +78,7 @@ class ViewEvent(object):
         return self.__core.hasArgument(name)
 
     def getArgument(self, name, default=None):
-        if self.hasArgument(name):
-            return self.__core.getArgument(name)
-        return default
+        return self.__core.getArgument(name) if self.hasArgument(name) else default
 
     @property
     def targetViewID(self):

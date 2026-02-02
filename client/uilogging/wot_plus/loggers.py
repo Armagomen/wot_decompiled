@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/uilogging/wot_plus/loggers.py
 from enum import Enum
 import logging
 from typing import TYPE_CHECKING
@@ -14,15 +16,15 @@ if TYPE_CHECKING:
     from uilogging.types import ParentScreenType, ItemType
     from uilogging.wot_plus.logging_constants import WotPlusInfoPageSource, InfoPageInfo, SubscriptionPageKeys, ReservesKeys
 _logger = logging.getLogger(__name__)
-BONUS_NAME_TO_ITEM_MAP = {WoTPlusBonusType.EXCLUDED_MAP: RewardScreenTooltips.EXCLUDED_MAP, 
-   WoTPlusBonusType.EXCLUSIVE_VEHICLE: RewardScreenTooltips.EXCLUSIVE_VEHICLE, 
-   WoTPlusBonusType.FREE_EQUIPMENT_DEMOUNTING: RewardScreenTooltips.FREE_EQUIPMENT_MOVEMENT, 
-   WoTPlusBonusType.GOLD_BANK: RewardScreenTooltips.GOLD_RESERVE, 
-   WoTPlusBonusType.IDLE_CREW_XP: RewardScreenTooltips.PASSIVE_CREW_XP, 
-   WoTPlusBonusType.ATTENDANCE_REWARD: RewardScreenTooltips.ATTENDANCE_REWARD}
-WOT_PLUS_STATE_TO_LOG_STATE_MAP = {WotPlusState.ACTIVE: WotPlusStateStr.ACTIVE, 
-   WotPlusState.INACTIVE: WotPlusStateStr.INACTIVE, 
-   WotPlusState.CANCELLED: WotPlusStateStr.SUSPENDED}
+BONUS_NAME_TO_ITEM_MAP = {WoTPlusBonusType.EXCLUDED_MAP: RewardScreenTooltips.EXCLUDED_MAP,
+ WoTPlusBonusType.EXCLUSIVE_VEHICLE: RewardScreenTooltips.EXCLUSIVE_VEHICLE,
+ WoTPlusBonusType.FREE_EQUIPMENT_DEMOUNTING: RewardScreenTooltips.FREE_EQUIPMENT_MOVEMENT,
+ WoTPlusBonusType.GOLD_BANK: RewardScreenTooltips.GOLD_RESERVE,
+ WoTPlusBonusType.IDLE_CREW_XP: RewardScreenTooltips.PASSIVE_CREW_XP,
+ WoTPlusBonusType.ATTENDANCE_REWARD: RewardScreenTooltips.ATTENDANCE_REWARD}
+WOT_PLUS_STATE_TO_LOG_STATE_MAP = {WotPlusState.ACTIVE: WotPlusStateStr.ACTIVE,
+ WotPlusState.INACTIVE: WotPlusStateStr.INACTIVE,
+ WotPlusState.CANCELLED: WotPlusStateStr.SUSPENDED}
 
 class SubscriptionsStateMixin(object):
     __slots__ = ()
@@ -31,7 +33,7 @@ class SubscriptionsStateMixin(object):
 
     @staticmethod
     def _formatState(key, value):
-        return ('{}:{}').format(key, value)
+        return '{}:{}'.format(key, value)
 
     def _getWotPlusStateSerialized(self):
         state = self._wotPlusCtrl.getState()
@@ -45,7 +47,7 @@ class SubscriptionsStateMixin(object):
     def getSubscriptionsStatesSerialized(self):
         wotPlusStr = self._getWotPlusStateSerialized()
         paStr = self._getPremiumAccountStateSerialized()
-        return (';').join([wotPlusStr, paStr])
+        return ';'.join([wotPlusStr, paStr])
 
 
 class WotPlusViewLogger(MetricsLogger):
@@ -65,7 +67,7 @@ class WotPlusViewLogger(MetricsLogger):
 
 
 class WotPlusEventLogger(MetricsLogger):
-    __slots__ = ('_eventParent', )
+    __slots__ = ('_eventParent',)
 
     def __init__(self, parent):
         super(WotPlusEventLogger, self).__init__(FEATURE)

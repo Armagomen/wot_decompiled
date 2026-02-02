@@ -1,11 +1,13 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/ext/channel_num_gen.py
 import BigWorld
 from constants import PREBATTLE_TYPE, QUEUE_TYPE
 from shared_utils import CONST_CONTAINER
 from ids_generators import SequenceIDGenerator
 from messenger.m_constants import LAZY_CHANNEL, BATTLE_CHANNEL, PRIMARY_CHANNEL_ORDER
-_CHANNEL_LAZY_ORDER = {LAZY_CHANNEL.COMMON: 1, 
-   LAZY_CHANNEL.XMPP_COMMON: 2, 
-   LAZY_CHANNEL.SPECIAL_BATTLES: 3}
+_CHANNEL_LAZY_ORDER = {LAZY_CHANNEL.COMMON: 1,
+ LAZY_CHANNEL.XMPP_COMMON: 2,
+ LAZY_CHANNEL.SPECIAL_BATTLES: 3}
 
 class SPECIAL_CLIENT_WINDOWS(CONST_CONTAINER):
     TRAINING_LIST = 1
@@ -16,12 +18,12 @@ class SPECIAL_CLIENT_WINDOWS(CONST_CONTAINER):
 
 _idGen = SequenceIDGenerator()
 _PRB_CLIENT_IDS = {}
-PRB_CLIENT_COMBINED_IDS = {PREBATTLE_TYPE.SQUAD: PREBATTLE_TYPE.UNIT, 
-   PREBATTLE_TYPE.EVENT: PREBATTLE_TYPE.UNIT, 
-   PREBATTLE_TYPE.EPIC: PREBATTLE_TYPE.UNIT, 
-   PREBATTLE_TYPE.BATTLE_ROYALE: PREBATTLE_TYPE.UNIT, 
-   PREBATTLE_TYPE.E_SPORT_COMMON: PREBATTLE_TYPE.UNIT, 
-   PREBATTLE_TYPE.MAPBOX: PREBATTLE_TYPE.UNIT}
+PRB_CLIENT_COMBINED_IDS = {PREBATTLE_TYPE.SQUAD: PREBATTLE_TYPE.UNIT,
+ PREBATTLE_TYPE.EVENT: PREBATTLE_TYPE.UNIT,
+ PREBATTLE_TYPE.EPIC: PREBATTLE_TYPE.UNIT,
+ PREBATTLE_TYPE.BATTLE_ROYALE: PREBATTLE_TYPE.UNIT,
+ PREBATTLE_TYPE.E_SPORT_COMMON: PREBATTLE_TYPE.UNIT,
+ PREBATTLE_TYPE.MAPBOX: PREBATTLE_TYPE.UNIT}
 
 def initPrbTypeToClientID():
     for _idx, _prbType in enumerate(PREBATTLE_TYPE.RANGE):
@@ -32,28 +34,24 @@ def initPrbTypeToClientID():
 
 
 initPrbTypeToClientID()
-_LAZY_CLIENT_IDS = dict((name, -(idx + 1 + 32)) for idx, name in enumerate(LAZY_CHANNEL.ALL))
-_QUEUE_CLIENT_IDS = dict((name, -(idx + 1 + 64)) for idx, name in enumerate(QUEUE_TYPE.ALL))
-_BATTLE_CLIENT_IDS = dict((item.name, -(idx + 1 + 128)) for idx, item in enumerate(BATTLE_CHANNEL.REQUIRED))
-_SPECIAL_CLIENT_IDS = dict((name, -(idx + 1 + 256)) for idx, name in enumerate(SPECIAL_CLIENT_WINDOWS.ALL()))
+_LAZY_CLIENT_IDS = dict(((name, -(idx + 1 + 32)) for idx, name in enumerate(LAZY_CHANNEL.ALL)))
+_QUEUE_CLIENT_IDS = dict(((name, -(idx + 1 + 64)) for idx, name in enumerate(QUEUE_TYPE.ALL)))
+_BATTLE_CLIENT_IDS = dict(((item.name, -(idx + 1 + 128)) for idx, item in enumerate(BATTLE_CHANNEL.REQUIRED)))
+_SPECIAL_CLIENT_IDS = dict(((name, -(idx + 1 + 256)) for idx, name in enumerate(SPECIAL_CLIENT_WINDOWS.ALL())))
 
 def genOrder4Channel(channel):
-    return (
-     channel.getPrimaryOrder(), BigWorld.time())
+    return (channel.getPrimaryOrder(), BigWorld.time())
 
 
 def getOrder4Prebattle():
-    return (
-     PRIMARY_CHANNEL_ORDER.SYSTEM, BigWorld.time())
+    return (PRIMARY_CHANNEL_ORDER.SYSTEM, BigWorld.time())
 
 
 def getOrder4LazyChannel(name):
     if name in _CHANNEL_LAZY_ORDER:
-        result = (
-         PRIMARY_CHANNEL_ORDER.LAZY, _CHANNEL_LAZY_ORDER[name])
+        result = (PRIMARY_CHANNEL_ORDER.LAZY, _CHANNEL_LAZY_ORDER[name])
     else:
-        result = (
-         PRIMARY_CHANNEL_ORDER.LAZY, BigWorld.time())
+        result = (PRIMARY_CHANNEL_ORDER.LAZY, BigWorld.time())
     return result
 
 

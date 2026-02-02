@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/visual_script_client/game_settings_blocks.py
 from constants import IS_VS_EDITOR
 from visual_script import ASPECT
 from visual_script.block import Block, Meta, InitParam, buildStrKeysValue
@@ -14,15 +16,15 @@ class GameSettingsMeta(Meta):
 
     @classmethod
     def blockColor(cls):
-        return 32767
+        pass
 
     @classmethod
     def blockCategory(cls):
-        return 'Game Settings'
+        pass
 
     @classmethod
     def blockIcon(cls):
-        return ':vse/blocks/automation'
+        pass
 
     @classmethod
     def blockAspects(cls):
@@ -30,26 +32,21 @@ class GameSettingsMeta(Meta):
 
 
 class GetGameSetting(Block, GameSettingsMeta):
-    _settingTypes = {'bool': (
-              SLOT_TYPE.BOOL, bool, None), 
-       'int': (
-             SLOT_TYPE.INT, int, None), 
-       'str': (
-             SLOT_TYPE.STR, str, None), 
-       'dict': (
-              SLOT_TYPE.DICTIONARY, dict, Dictionary)}
+    _settingTypes = {'bool': (SLOT_TYPE.BOOL, bool, None),
+     'int': (SLOT_TYPE.INT, int, None),
+     'str': (SLOT_TYPE.STR, str, None),
+     'dict': (SLOT_TYPE.DICTIONARY, dict, Dictionary)}
 
     def __init__(self, *args, **kwargs):
         super(GetGameSetting, self).__init__(*args, **kwargs)
         self._name = self._makeDataInputSlot('settingName', SLOT_TYPE.STR)
-        _settingType, = self._getInitParams()
+        _settingType = self._getInitParams()
         self._slotType, self._class, self._convertor = self._settingTypes[_settingType]
         self._value = self._makeDataOutputSlot('value', self._slotType, self._getValue)
 
     @classmethod
     def initParams(cls):
-        return [
-         InitParam('Game Setting Type', SLOT_TYPE.STR, buildStrKeysValue(*cls._settingTypes.keys()), EDITOR_TYPE.STR_KEY_SELECTOR)]
+        return [InitParam('Game Setting Type', SLOT_TYPE.STR, buildStrKeysValue(*cls._settingTypes.keys()), EDITOR_TYPE.STR_KEY_SELECTOR)]
 
     def _getValue(self):
         settings = dependency.instance(ISettingsCore)
@@ -57,13 +54,12 @@ class GetGameSetting(Block, GameSettingsMeta):
         if isinstance(value, self._class):
             self._value.setValue(self._convertor(value) if self._convertor else value)
         else:
-            errorVScript(self, ('Incorrect type of the game setting value, {} expected ').format(self._class))
+            errorVScript(self, 'Incorrect type of the game setting value, {} expected '.format(self._class))
 
 
 class OnGameSettingsChanged(TunableEventBlock, GameSettingsMeta):
-    _EVENT_SLOT_NAMES = [
-     'onChanged']
-    settingsCore = (IS_VS_EDITOR or dependency.descriptor)(ISettingsCore) if 1 else None
+    _EVENT_SLOT_NAMES = ['onChanged']
+    settingsCore = dependency.descriptor(ISettingsCore) if not IS_VS_EDITOR else None
 
     def __init__(self, *args, **kwargs):
         super(OnGameSettingsChanged, self).__init__(*args, **kwargs)
@@ -78,8 +74,7 @@ class OnGameSettingsChanged(TunableEventBlock, GameSettingsMeta):
         self.settingsCore.onSettingsChanged -= self._onSettingsChanged
 
     def _onSettingsChanged(self, diff):
-        res = [ name for name, value in diff.iteritems() if name not in self._lastSettings or value != self._lastSettings[name]
-              ]
+        res = [ name for name, value in diff.iteritems() if name not in self._lastSettings or value != self._lastSettings[name] ]
         self._lastSettings.update(diff)
         if res:
             self._callOutput(res)

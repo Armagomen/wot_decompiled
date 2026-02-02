@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/items/attributes_helpers.py
 from items import _xml
 from typing import Dict, Tuple, Iterable, List, TYPE_CHECKING
 if TYPE_CHECKING:
@@ -6,8 +8,7 @@ STATIC_ATTR_PREFIX = 'miscAttrs/'
 DYNAMIC_ATTR_PREFIX = 'dynAttrs/'
 DESCR_MODIFY_ATTR_PREFIX = 'descrAttrs/'
 AUTOSHOOT_ATTR_PREFIX = 'autoShootAttrs/'
-ALLOWED_STATIC_ATTRS = {
- 'additiveShotDispersionFactor',
+ALLOWED_STATIC_ATTRS = {'additiveShotDispersionFactor',
  'ammoBayHealthFactor',
  'ammoBayReduceFineFactor',
  'antifragmentationLiningFactor',
@@ -62,8 +63,7 @@ ALLOWED_STATIC_ATTRS = {
  'vehicleByChassisDamageFactor',
  'hullMaxHealth',
  'turretMaxHealth'}
-ALLOWED_DYNAMIC_ATTRS = {
- 'additiveShotDispersionFactor',
+ALLOWED_DYNAMIC_ATTRS = {'additiveShotDispersionFactor',
  'chassis/shotDispersionFactors/movement',
  'chassis/shotDispersionFactors/rotation',
  'circularVisionRadius',
@@ -100,17 +100,8 @@ ALLOWED_DYNAMIC_ATTRS = {
  'vehicle/fwMaxSpeedBonus',
  'multShotDispersionFactor',
  'gun/shotDispersionFactors/afterShot',
- 'hull_aiming/pitch/wheelsCorrectionSpeedFactor',
- 'improvedRammingDamageBonus/basicFactor',
- 'improvedRammingDamageBonus/changeFactor',
- 'improvedRammingTrackDamageBonus/basicFactor',
- 'improvedRammingTrackDamageBonus/changeFactor',
- 'improvedRammingDamageReductionBonus/basicFactor',
- 'improvedRammingDamageReductionBonus/changeFactor'}
-AUTOSHOOT_DYNAMIC_ATTRS = {
- 'rate/multiplier',
- 'shotDispersionPerSecFactor',
- 'maxShotDispersionFactor'}
+ 'hull_aiming/pitch/wheelsCorrectionSpeedFactor'}
+AUTOSHOOT_DYNAMIC_ATTRS = {'shotIntervalMultFactor', 'shotDispersionPerShotFactor', 'maxShotDispersionFactor'}
 
 class DescrModifyAttrsCheker(object):
 
@@ -119,10 +110,10 @@ class DescrModifyAttrsCheker(object):
         return checkAttrName(item)
 
 
-ALLOWED_ATTRS = {STATIC_ATTR_PREFIX: ALLOWED_STATIC_ATTRS, 
-   DYNAMIC_ATTR_PREFIX: ALLOWED_DYNAMIC_ATTRS, 
-   AUTOSHOOT_ATTR_PREFIX: AUTOSHOOT_DYNAMIC_ATTRS, 
-   DESCR_MODIFY_ATTR_PREFIX: DescrModifyAttrsCheker()}
+ALLOWED_ATTRS = {STATIC_ATTR_PREFIX: ALLOWED_STATIC_ATTRS,
+ DYNAMIC_ATTR_PREFIX: ALLOWED_DYNAMIC_ATTRS,
+ AUTOSHOOT_ATTR_PREFIX: AUTOSHOOT_DYNAMIC_ATTRS,
+ DESCR_MODIFY_ATTR_PREFIX: DescrModifyAttrsCheker()}
 ALLOWED_ATTR_PREFIXES = set(ALLOWED_ATTRS.keys())
 
 class MODIFIER_TYPE:
@@ -146,8 +137,7 @@ def _parseAttrName(complexName):
 
 
 def readModifiers(xmlCtx, section):
-    xmlCtx = (
-     xmlCtx, section.name)
+    xmlCtx = (xmlCtx, section.name)
     modifiers = []
     for opType, data in section.items():
         if opType not in (MODIFIER_TYPE.MUL, MODIFIER_TYPE.ADD, MODIFIER_TYPE.SET):
@@ -157,13 +147,17 @@ def readModifiers(xmlCtx, section):
         attrType, attrName = _parseAttrName(name)
         names = ALLOWED_ATTRS.get(attrType)
         if opType == MODIFIER_TYPE.SET and attrType != DESCR_MODIFY_ATTR_PREFIX:
-            _xml.raiseWrongXml(xmlCtx, opType, ('Set not supported just for {}').format(attrType))
+            _xml.raiseWrongXml(xmlCtx, opType, 'Set not supported just for {}'.format(attrType))
         if names is None:
             _xml.raiseWrongXml(xmlCtx, name, 'Unknown attribute type')
         if attrName not in names:
             _xml.raiseWrongXml(xmlCtx, name, 'Unknown attribute name')
         value = data.readFloat('value')
-        modifiers.append((opType, attrType, attrName, value, filterName))
+        modifiers.append((opType,
+         attrType,
+         attrName,
+         value,
+         filterName))
 
     return modifiers
 
@@ -173,10 +167,10 @@ def isclose(a, b, rel_tol=1e-09, abs_tol=0.0):
 
 
 class SingleCollectorHelper(object):
-    _EMPTY_CHECKER = {MODIFIER_TYPE.ADD: lambda value: isclose(value, 0.0), 
-       MODIFIER_TYPE.MUL: lambda value: isclose(value, 1.0)}
-    _APPLIERS = {MODIFIER_TYPE.ADD: lambda currentValue, addValue: currentValue + addValue, 
-       MODIFIER_TYPE.MUL: lambda currentValue, addValue: currentValue * addValue}
+    _EMPTY_CHECKER = {MODIFIER_TYPE.ADD: lambda value: isclose(value, 0.0),
+     MODIFIER_TYPE.MUL: lambda value: isclose(value, 1.0)}
+    _APPLIERS = {MODIFIER_TYPE.ADD: lambda currentValue, addValue: currentValue + addValue,
+     MODIFIER_TYPE.MUL: lambda currentValue, addValue: currentValue * addValue}
 
     @staticmethod
     def isEmpty(opType, value):
@@ -198,12 +192,12 @@ class SingleCollectorHelper(object):
 
 
 class AggregatedCollectorHelper(object):
-    _EMPTY_CHECKER = {MODIFIER_TYPE.ADD: lambda value: isclose(value, 0.0), 
-       MODIFIER_TYPE.MUL: lambda value: isclose(value, 0.0)}
-    _MERGERS = {MODIFIER_TYPE.ADD: lambda currentValue, addValue: currentValue + addValue, 
-       MODIFIER_TYPE.MUL: lambda currentValue, addValue: currentValue + (addValue - 1)}
-    _APPLIERS = {MODIFIER_TYPE.ADD: lambda currentValue, addValue: currentValue + addValue, 
-       MODIFIER_TYPE.MUL: lambda currentValue, addValue: currentValue * (addValue + 1)}
+    _EMPTY_CHECKER = {MODIFIER_TYPE.ADD: lambda value: isclose(value, 0.0),
+     MODIFIER_TYPE.MUL: lambda value: isclose(value, 0.0)}
+    _MERGERS = {MODIFIER_TYPE.ADD: lambda currentValue, addValue: currentValue + addValue,
+     MODIFIER_TYPE.MUL: lambda currentValue, addValue: currentValue + (addValue - 1)}
+    _APPLIERS = {MODIFIER_TYPE.ADD: lambda currentValue, addValue: currentValue + addValue,
+     MODIFIER_TYPE.MUL: lambda currentValue, addValue: currentValue * (addValue + 1)}
 
     @staticmethod
     def isEmpty(opType, value):
@@ -219,8 +213,7 @@ class AggregatedCollectorHelper(object):
                     continue
                 if attrType != attrPrefix:
                     continue
-                key = (
-                 attrName, opType)
+                key = (attrName, opType)
                 uniqueAttrs[key] = mergers[opType](uniqueAttrs.get(key, 0.0), value)
 
         isEmpty = AggregatedCollectorHelper.isEmpty

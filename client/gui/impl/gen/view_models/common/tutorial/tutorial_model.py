@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/common/tutorial/tutorial_model.py
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.common.tutorial.component_model import ComponentModel
 from gui.impl.gen.view_models.common.tutorial.criterion_model import CriterionModel
@@ -8,8 +10,7 @@ from gui.impl.gen.view_models.common.tutorial.view_criterion_model import ViewCr
 from gui.impl.gen.view_models.ui_kit.list_model import ListModel
 
 class TutorialModel(ViewModel):
-    __slots__ = ('onComponentFound', 'onComponentDisposed', 'onEffectCompleted', 'onComponentUpdate',
-                 'onTriggerActivated')
+    __slots__ = ('onComponentFound', 'onComponentDisposed', 'onEffectCompleted', 'onComponentUpdate', 'onTriggerActivated')
 
     def __init__(self, properties=7, commands=5):
         super(TutorialModel, self).__init__(properties=properties, commands=commands)

@@ -1,6 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/tooltips/vehicle.py
 import logging
 from itertools import chain
-import typing, constants
+import typing
+import constants
 from gui.impl.backport.backport_tooltip import DecoratedTooltipWindow
 from gui.Scaleform.daapi.view.lobby.techtree.settings import UnlockProps
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
@@ -58,16 +61,19 @@ _EXTRA_BONUS_TYPE = 'extra'
 _TOOLTIP_MIN_WIDTH = 420
 _TOOLTIP_MAX_WIDTH = 460
 _TOOLTIP_ANNOUNCEMENT_MAX_WIDTH = 310
-_CREW_TOOLTIP_PARAMS = {Tankman.ROLES.COMMANDER: {'paramName': TOOLTIPS.VEHICLEPREVIEW_CREW_INFLUENCE_RECONNAISSANCE, 'commanderPercents': '10%', 
-                             'crewPercents': '1%'}, 
-   Tankman.ROLES.GUNNER: {'paramName': TOOLTIPS.VEHICLEPREVIEW_CREW_INFLUENCE_FIREPOWER}, Tankman.ROLES.DRIVER: {'paramName': TOOLTIPS.VEHICLEPREVIEW_CREW_INFLUENCE_MOBILITY}, Tankman.ROLES.RADIOMAN: {'paramName': TOOLTIPS.VEHICLEPREVIEW_CREW_INFLUENCE_RECONNAISSANCE}, Tankman.ROLES.LOADER: {'paramName': TOOLTIPS.VEHICLEPREVIEW_CREW_INFLUENCE_FIREPOWER}}
+_CREW_TOOLTIP_PARAMS = {Tankman.ROLES.COMMANDER: {'paramName': TOOLTIPS.VEHICLEPREVIEW_CREW_INFLUENCE_RECONNAISSANCE,
+                           'commanderPercents': '10%',
+                           'crewPercents': '1%'},
+ Tankman.ROLES.GUNNER: {'paramName': TOOLTIPS.VEHICLEPREVIEW_CREW_INFLUENCE_FIREPOWER},
+ Tankman.ROLES.DRIVER: {'paramName': TOOLTIPS.VEHICLEPREVIEW_CREW_INFLUENCE_MOBILITY},
+ Tankman.ROLES.RADIOMAN: {'paramName': TOOLTIPS.VEHICLEPREVIEW_CREW_INFLUENCE_RECONNAISSANCE},
+ Tankman.ROLES.LOADER: {'paramName': TOOLTIPS.VEHICLEPREVIEW_CREW_INFLUENCE_FIREPOWER}}
 
 def _makeModuleFitTooltipError(reason):
-    return ('#tooltips:moduleFits/{}').format(reason)
+    return '#tooltips:moduleFits/{}'.format(reason)
 
 
-_SHORTEN_TOOLTIP_CASES = (
- 'shopVehicle',)
+_SHORTEN_TOOLTIP_CASES = ('shopVehicle',)
 
 class VehicleInfoTooltipData(BlocksTooltipData):
     __itemsCache = dependency.descriptor(IItemsCache)
@@ -98,11 +104,8 @@ class VehicleInfoTooltipData(BlocksTooltipData):
         blockPadding = formatters.packPadding(left=leftPadding, right=rightPadding, top=blockTopPadding)
         valueWidth = 77
         textGap = -2
-        headerItems = [
-         formatters.packBuildUpBlockData(HeaderBlockConstructor(vehicle, statsConfig, leftPadding, rightPadding).construct(), padding=leftRightPadding, blockWidth=410),
-         formatters.packBuildUpBlockData(self._getCrewIconBlock(), gap=2, layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_HORIZONTAL, align=BLOCKS_TOOLTIP_TYPES.ALIGN_RIGHT, padding=formatters.packPadding(top=14, right=0), blockWidth=20)]
-        headerBlockItems = [
-         formatters.packBuildUpBlockData(headerItems, layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_HORIZONTAL, padding=formatters.packPadding(bottom=-16))]
+        headerItems = [formatters.packBuildUpBlockData(HeaderBlockConstructor(vehicle, statsConfig, leftPadding, rightPadding).construct(), padding=leftRightPadding, blockWidth=410), formatters.packBuildUpBlockData(self._getCrewIconBlock(), gap=2, layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_HORIZONTAL, align=BLOCKS_TOOLTIP_TYPES.ALIGN_RIGHT, padding=formatters.packPadding(top=14, right=0), blockWidth=20)]
+        headerBlockItems = [formatters.packBuildUpBlockData(headerItems, layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_HORIZONTAL, padding=formatters.packPadding(bottom=-16))]
         telecomBlock = TelecomBlockConstructor(vehicle, valueWidth, leftPadding, rightPadding).construct()
         if telecomBlock:
             headerBlockItems.append(formatters.packBuildUpBlockData(telecomBlock, padding=leftRightPadding))
@@ -200,12 +203,12 @@ class VehicleInfoTooltipData(BlocksTooltipData):
         if statsConfig.dailyXP and not vehicle.isWotPlus:
             attrs = self.__itemsCache.items.stats.attributes
             if attrs & constants.ACCOUNT_ATTR.DAILY_MULTIPLIED_XP and vehicle.dailyXPFactor > 0:
-                dailyXPText = text_styles.main(text_styles.expText(('').join(('x', backport.getIntegralFormat(vehicle.dailyXPFactor)))))
+                dailyXPText = text_styles.main(text_styles.expText(''.join(('x', backport.getIntegralFormat(vehicle.dailyXPFactor)))))
                 items.append(formatters.packTextParameterWithIconBlockData(name=text_styles.main(TOOLTIPS.VEHICLE_DAILYXPFACTOR), value=dailyXPText, icon=ICON_TEXT_FRAMES.DOUBLE_XP_FACTOR, iconYOffset=2, valueWidth=valueWidth + 1, gap=0, padding=formatters.packPadding(left=2, top=-2, bottom=5)))
         if statsConfig.restorePrice:
             if vehicle.isRestorePossible() and vehicle.hasLimitedRestore():
                 timeKey, formattedTime = getTimeLeftInfo(vehicle.restoreInfo.getRestoreTimeLeft(), None)
-                items.append(formatters.packTextParameterWithIconBlockData(name=text_styles.main(('').join(('#tooltips:vehicle/restoreLeft/', timeKey))), value=text_styles.stats(formattedTime), icon=ICON_TEXT_FRAMES.RENTALS, iconYOffset=2, gap=0, valueWidth=valueWidth, padding=formatters.packPadding(left=0, bottom=-10)))
+                items.append(formatters.packTextParameterWithIconBlockData(name=text_styles.main(''.join(('#tooltips:vehicle/restoreLeft/', timeKey))), value=text_styles.stats(formattedTime), icon=ICON_TEXT_FRAMES.RENTALS, iconYOffset=2, gap=0, valueWidth=valueWidth, padding=formatters.packPadding(left=0, bottom=-10)))
         return
 
 
@@ -298,13 +301,13 @@ class DefaultCrewMemberTooltipData(BlocksTooltipData):
             tman = self.__itemsCache.items.getTankman(tankmanID)
             roles = list(tman.roles() if tman.isInTank else tman.vehicleNativeDescr.type.crewRoles[slotIdx])
         mainRole = roles[0]
-        bodyStr = ('{}/{}').format(TOOLTIPS.VEHICLEPREVIEW_CREW, mainRole)
+        bodyStr = '{}/{}'.format(TOOLTIPS.VEHICLEPREVIEW_CREW, mainRole)
         crewParams = {k:text_styles.neutral(v) for k, v in _CREW_TOOLTIP_PARAMS[mainRole].iteritems()}
         blocks.append(formatters.packTitleDescBlock(text_styles.highTitle(ITEM_TYPES.tankman_roles(mainRole)), text_styles.main(_ms(bodyStr, **crewParams))))
         roles.remove(mainRole)
         roles.sort(key=ORDERED_ROLES.index)
         if roles:
-            rolesStr = (', ').join([ text_styles.stats(_ms(ITEM_TYPES.tankman_roles(r))) for r in roles ])
+            rolesStr = ', '.join([ text_styles.stats(_ms(ITEM_TYPES.tankman_roles(r))) for r in roles ])
             blocks.append(formatters.packTextBlockData(text_styles.main(_ms(TOOLTIPS.VEHICLEPREVIEW_CREW_ADDITIONALROLES, roles=rolesStr))))
         return blocks
 
@@ -320,7 +323,7 @@ class VehiclePreviewCrewMemberTooltipData(DefaultCrewMemberTooltipData):
         defaultBlocks = super(VehiclePreviewCrewMemberTooltipData, self)._packBlocks(tankmanID, slotIdx)
         roleStr = getRoleUserName(role)
         if name and icon:
-            bodyStr = ('{}, {}').format(roleStr, vehicleName)
+            bodyStr = '{}, {}'.format(roleStr, vehicleName)
             blocks.append(formatters.packImageTextBlockData(title=text_styles.highTitle(name), desc=text_styles.main(bodyStr)))
             blocks.append(formatters.packImageBlockData(img=icon, padding=formatters.packPadding(left=63)))
             blocks.append(formatters.packSeparatorBlockData())
@@ -334,12 +337,12 @@ class VehiclePreviewCrewMemberTooltipData(DefaultCrewMemberTooltipData):
             for img, title, level in skillsItems:
                 if title != TOOLTIPS.VEHICLEPREVIEW_TANKMAN_NEWPERK_HEADER:
                     blocks.append(formatters.packImageTextBlockData(img=img, title=text_styles.main(title), txtPadding=formatters.packPadding(left=10), titleAtMiddle=True))
-                elif level > 0:
+                if level > 0:
                     emptySkills += 1
 
             if emptySkills:
                 titleText = makeHtmlString('html_templates:lobby/textStyle', 'mainText', {'message': i18n.makeString(TOOLTIPS.VEHICLEPREVIEW_TANKMAN_NEWPERK_HEADER, quantity=emptySkills)})
-                blocks.append(formatters.packImageTextBlockData(img=skillsItems[(-1)][0], title=titleText, txtPadding=formatters.packPadding(left=10), titleAtMiddle=True))
+                blocks.append(formatters.packImageTextBlockData(img=skillsItems[-1][0], title=titleText, txtPadding=formatters.packPadding(left=10), titleAtMiddle=True))
         return [formatters.packBuildUpBlockData(blocks, padding=formatters.packPadding(bottom=10))]
 
 
@@ -359,8 +362,8 @@ class VehicleTradeInTooltipData(ToolTipBaseData):
             if tradeInDiscounts.hasMultipleTradeOffs:
                 discountValue = i18n.makeString(TOOLTIPS.TRADE_SEVERALDISCOUNTS, discountValue=discountValue)
             discount = i18n.makeString(TOOLTIPS.TRADE_DISCOUNT, discountValue=discountValue)
-        return {'header': i18n.makeString(TOOLTIPS.TRADE_HEADER), 
-           'body': i18n.makeString(TOOLTIPS.TRADE_BODY, discount=discount)}
+        return {'header': i18n.makeString(TOOLTIPS.TRADE_HEADER),
+         'body': i18n.makeString(TOOLTIPS.TRADE_BODY, discount=discount)}
 
 
 class VehicleTradeInPriceTooltipData(ToolTipBaseData):
@@ -389,9 +392,9 @@ class VehicleTradeInPriceTooltipData(ToolTipBaseData):
             tradeOffVehicleName = tradeOffVehicle.userName
             resultPrice = itemPrice.price - tradeOffVehicle.tradeOffPrice
         bodyParts.append(i18n.makeString(TOOLTIPS.TRADE_VEHICLE_TOCHANGE, vehicleName=text_styles.playerOnline(tradeOffVehicleName)))
-        return {'header': i18n.makeString(TOOLTIPS.TRADE_VEHICLE_HEADER, vehicleName=tradeInVehicle.userName), 
-           'body': ('\n').join(bodyParts), 
-           'result': i18n.makeString(TOOLTIPS.TRADE_VEHICLE_RESULT, gold=moneyWithIcon(resultPrice, currType=Currency.GOLD))}
+        return {'header': i18n.makeString(TOOLTIPS.TRADE_VEHICLE_HEADER, vehicleName=tradeInVehicle.userName),
+         'body': '\n'.join(bodyParts),
+         'result': i18n.makeString(TOOLTIPS.TRADE_VEHICLE_RESULT, gold=moneyWithIcon(resultPrice, currType=Currency.GOLD))}
 
 
 class VehicleStatusTooltipData(BlocksTooltipData):
@@ -421,7 +424,7 @@ class VehicleTooltipBlockConstructor(object):
         self.rightPadding = rightPadding
 
     def construct(self):
-        return
+        return None
 
 
 class HeaderBlockConstructor(VehicleTooltipBlockConstructor):
@@ -472,8 +475,7 @@ class CrystalBlockConstructor(VehicleTooltipBlockConstructor):
         else:
             limitStatus = backport.text(R.strings.tooltips.vehicleCrystal.limitStatus.progress.description(), current=text_styles.stats(current), max=limit)
         block.append(formatters.packImageTextBlockData(img=icon, desc=text_styles.main(limitStatus), imgPadding=formatters.packPadding(left=imgPaddingLeft, top=imgPaddingTop, right=6), padding=formatters.packPadding(left=54, top=2, bottom=2), titleAtMiddle=True))
-        return (
-         block, linkage)
+        return (block, linkage)
 
 
 class WotPlusBlockConstructor(VehicleTooltipBlockConstructor):
@@ -489,18 +491,17 @@ class WotPlusBlockConstructor(VehicleTooltipBlockConstructor):
             localExpiryTime = time_utils.makeLocalServerTime(expiryTime)
             formattedDate = backport.getShortDateFormat(localExpiryTime)
             formattedHour = backport.getShortTimeFormat(localExpiryTime)
-            formattedTime = ('{}, {}').format(formattedDate, formattedHour)
+            formattedTime = '{}, {}'.format(formattedDate, formattedHour)
             blocks.append(formatters.packTextParameterWithIconBlockData(name=text_styles.main(backport.text(R.strings.tooltips.vehicle.wotPlusRenting.remainingTime()) % {'time': formattedTime}), value='', icon=ICON_TEXT_FRAMES.RENTALS, iconYOffset=2, gap=0, valueWidth=60, padding=formatters.packPadding(top=5, bottom=-15)))
         if state in [WotPlusState.CANCELLED, WotPlusState.ACTIVE]:
             attrs = self.__itemsCache.items.stats.attributes
             if attrs & constants.ACCOUNT_ATTR.DAILY_MULTIPLIED_XP and self.vehicle.dailyXPFactor > 0:
-                dailyXPText = text_styles.main(text_styles.expText(('x{}').format(backport.getIntegralFormat(self.vehicle.dailyXPFactor))))
+                dailyXPText = text_styles.main(text_styles.expText('x{}'.format(backport.getIntegralFormat(self.vehicle.dailyXPFactor))))
                 blocks.append(formatters.packTextParameterWithIconBlockData(name=text_styles.main(TOOLTIPS.VEHICLE_DAILYXPFACTOR), value=dailyXPText, icon=ICON_TEXT_FRAMES.DOUBLE_XP_FACTOR, iconYOffset=2, valueWidth=60, gap=0, padding=formatters.packPadding(left=0, top=0, bottom=10)))
         else:
             blocks.append(formatters.packTextParameterWithIconBlockData(name=text_styles.main(TOOLTIPS.VEHICLE_WOTPLUSRENTING_INACTIVE), value='', icon=ICON_TEXT_FRAMES.RENTALS, iconYOffset=2, gap=0, valueWidth=60, padding=formatters.packPadding(left=0, top=0, bottom=-7)))
         blocks.append(formatters.packTextParameterBlockData(name=text_styles.stats(backport.text(R.strings.tooltips.vehicle.wotPlusRenting())), value='', valueWidth=0, padding=formatters.packPadding(left=0, top=0, bottom=10)))
-        return (
-         blocks, linkage)
+        return (blocks, linkage)
 
 
 class TelecomBlockConstructor(VehicleTooltipBlockConstructor):
@@ -518,8 +519,7 @@ class TelecomBlockConstructor(VehicleTooltipBlockConstructor):
             provider = telecomConfig.getInternetProvider(telecomBundleId)
             providerLocRes = R.strings.menu.internet_provider.dyn(provider)
             telecomTextRes = R.strings.tooltips.vehicle.deal.telecom.main.dyn(provider, R.strings.tooltips.vehicle.deal.telecom.main.default)
-            return [
-             formatters.packTextBlockData(text=text_styles.main(backport.text(telecomTextRes(), tariff=backport.text(providerLocRes.tariff()) if providerLocRes else '', provider=backport.text(providerLocRes.name()) if providerLocRes else '')))]
+            return [formatters.packTextBlockData(text=text_styles.main(backport.text(telecomTextRes(), tariff=backport.text(providerLocRes.tariff()) if providerLocRes else '', provider=backport.text(providerLocRes.name()) if providerLocRes else '')))]
         return []
 
 
@@ -558,9 +558,7 @@ class PriceBlockConstructor(VehicleTooltipBlockConstructor):
             if isUnlocked and not vehicle.getRentPackage() or vehicle.isRestorePossible() or vehicle.isInInventory:
                 xPText = text_styles.expTextBig(backport.getIntegralFormat(xpValue))
                 icon = RES_ICONS.MAPS_ICONS_LIBRARY_ELITEXPICONBIG if vehicle.isElite or vehicle.isPremium else RES_ICONS.MAPS_ICONS_LIBRARY_XPICONBIG_2
-                xpBlock = [
-                 formatters.packTextBlockData(text_styles.main(TOOLTIPS.VEHICLE_XP)),
-                 formatters.packImageTextBlockData(title=xPText, img=icon, imgPadding=formatters.packPadding(left=0, top=4), imgAtLeft=False, snapImage=True, txtGap=-2, txtOffset=0, padding=formatters.packPadding(top=-4, bottom=0))]
+                xpBlock = [formatters.packTextBlockData(text_styles.main(TOOLTIPS.VEHICLE_XP)), formatters.packImageTextBlockData(title=xPText, img=icon, imgPadding=formatters.packPadding(left=0, top=4), imgAtLeft=False, snapImage=True, txtGap=-2, txtOffset=0, padding=formatters.packPadding(top=-4, bottom=0))]
                 block.append(formatters.packBuildUpBlockData(xpBlock, blockWidth=150, padding=formatters.packPadding(bottom=-8)))
         if unlockPrice:
             isAvailable, cost, need, defCost, discount = getUnlockPrice(vehicle.intCD, parentCD, vehicle.level, self._blueprintFragmentsCount)
@@ -603,13 +601,12 @@ class PriceBlockConstructor(VehicleTooltipBlockConstructor):
                 actionPrc = itemPrice.getActionPrc()
                 for itemPriceVO in itemPricesVO:
                     if 'action' in itemPriceVO:
-                        itemPriceVO['action'] = tuple((c, -v) for c, v in itemPriceVO['action'])
+                        itemPriceVO['action'] = tuple(((c, -v) for c, v in itemPriceVO['action']))
 
                 block.append(makeCompoundPriceBlock(CURRENCY_SETTINGS.getBuySetting(currency), itemPricesVO))
         notEnoughMoney = neededValue > 0
         hasAction = actionPrc > 0
-        return (
-         block, notEnoughMoney or hasAction)
+        return (block, notEnoughMoney or hasAction)
 
 
 class FrontlineRentBlockConstructor(VehicleTooltipBlockConstructor):
@@ -646,27 +643,29 @@ class FrontlineRentBlockConstructor(VehicleTooltipBlockConstructor):
 
 
 class CommonStatsBlockConstructor(VehicleTooltipBlockConstructor):
-    PARAMS = {VEHICLE_CLASS_NAME.LIGHT_TANK: (
-                                     'enginePowerPerTon', 'speedLimits', TURBOSHAFT_SPEED_MODE_SPEED, WHEELED_SPEED_MODE_SPEED,
-                                     'chassisRotationSpeed', MAX_STEERING_LOCK_ANGLE, WHEELED_SWITCH_TIME, 'circularVisionRadius'), 
-       VEHICLE_CLASS_NAME.MEDIUM_TANK: (
-                                      'avgDamagePerMinute', 'enginePowerPerTon', 'speedLimits',
-                                      TURBOSHAFT_SPEED_MODE_SPEED, 'chassisRotationSpeed'), 
-       VEHICLE_CLASS_NAME.HEAVY_TANK: (
-                                     'avgDamage', 'avgPiercingPower', 'hullArmor', 'turretArmor', DUAL_GUN_CHARGE_TIME,
-                                     TWIN_GUN_SWITCH_FIRE_MODE_TIME), 
-       VEHICLE_CLASS_NAME.SPG: ('avgDamage', 'stunMinDuration', 'stunMaxDuration', 'reloadTimeSecs', 'aimingTime',
- 'explosionRadius'), 
-       VEHICLE_CLASS_NAME.AT_SPG: ('avgPiercingPower', 'shotDispersionAngle', 'avgDamagePerMinute', 'speedLimits', 'chassisRotationSpeed',
- 'switchTime')}
-    __CONDITIONAL_PARAMS = (
-     (
-      ROCKET_ACCELERATION_SPEED_LIMITS, ('speedLimits', ROCKET_ACCELERATION_SPEED_LIMITS)),
-     (
-      TWIN_GUN_SWITCH_FIRE_MODE_TIME, (RELOAD_TIME_SECS_PROP_NAME,)))
-    __OVERRIDED_PARAM_NAMES = (
-     (
-      'isTwinGunVehicle', {RELOAD_TIME_SECS_PROP_NAME: TWIN_GUN_RELOAD_TIME}),)
+    PARAMS = {VEHICLE_CLASS_NAME.LIGHT_TANK: ('enginePowerPerTon',
+                                     'speedLimits',
+                                     TURBOSHAFT_SPEED_MODE_SPEED,
+                                     WHEELED_SPEED_MODE_SPEED,
+                                     'chassisRotationSpeed',
+                                     MAX_STEERING_LOCK_ANGLE,
+                                     WHEELED_SWITCH_TIME,
+                                     'circularVisionRadius'),
+     VEHICLE_CLASS_NAME.MEDIUM_TANK: ('avgDamagePerMinute',
+                                      'enginePowerPerTon',
+                                      'speedLimits',
+                                      TURBOSHAFT_SPEED_MODE_SPEED,
+                                      'chassisRotationSpeed'),
+     VEHICLE_CLASS_NAME.HEAVY_TANK: ('avgDamage',
+                                     'avgPiercingPower',
+                                     'hullArmor',
+                                     'turretArmor',
+                                     DUAL_GUN_CHARGE_TIME,
+                                     TWIN_GUN_SWITCH_FIRE_MODE_TIME),
+     VEHICLE_CLASS_NAME.SPG: ('avgDamage', 'stunMinDuration', 'stunMaxDuration', 'reloadTimeSecs', 'aimingTime', 'explosionRadius'),
+     VEHICLE_CLASS_NAME.AT_SPG: ('avgPiercingPower', 'shotDispersionAngle', 'avgDamagePerMinute', 'speedLimits', 'chassisRotationSpeed', 'switchTime')}
+    __CONDITIONAL_PARAMS = ((ROCKET_ACCELERATION_SPEED_LIMITS, ('speedLimits', ROCKET_ACCELERATION_SPEED_LIMITS)), (TWIN_GUN_SWITCH_FIRE_MODE_TIME, (RELOAD_TIME_SECS_PROP_NAME,)))
+    __OVERRIDED_PARAM_NAMES = (('isTwinGunVehicle', {RELOAD_TIME_SECS_PROP_NAME: TWIN_GUN_RELOAD_TIME}),)
 
     def __init__(self, vehicle, configuration, valueWidth, leftPadding, rightPadding):
         super(CommonStatsBlockConstructor, self).__init__(vehicle, configuration, leftPadding, rightPadding)
@@ -808,7 +807,7 @@ class LockAdditionalStatsBlockConstructor(AdditionalStatsBlockConstructor):
         return text_styles.warning(_ms(TOOLTIPS.TANKCARUSEL_LOCK_HEADER))
 
     def _makeLockText(self):
-        return ''
+        pass
 
 
 class RotationLockAdditionalStatsBlockConstructor(LockAdditionalStatsBlockConstructor):
@@ -817,7 +816,7 @@ class RotationLockAdditionalStatsBlockConstructor(LockAdditionalStatsBlockConstr
         return text_styles.warning(_ms(TOOLTIPS.TANKCARUSEL_LOCK_ROTATION_HEADER, groupNum=self.vehicle.rotationGroupNum))
 
     def _makeLockText(self):
-        return text_styles.main(_ms(TOOLTIPS.TANKCARUSEL_LOCK_ROTATION, battlesToUnlock=text_styles.stats(self.vehicle.rotationBattlesLeft), unlockedBy=text_styles.stats((', ').join(str(groupNum) for groupNum in self.vehicle.unlockedBy))))
+        return text_styles.main(_ms(TOOLTIPS.TANKCARUSEL_LOCK_ROTATION, battlesToUnlock=text_styles.stats(self.vehicle.rotationBattlesLeft), unlockedBy=text_styles.stats(', '.join((str(groupNum) for groupNum in self.vehicle.unlockedBy)))))
 
 
 class RoamingLockAdditionalStatsBlockConstructor(LockAdditionalStatsBlockConstructor):
@@ -860,8 +859,7 @@ class StatusBlockConstructor(VehicleTooltipBlockConstructor):
                     block.append(formatters.packTextBlockData(text=text_styles.standard(text)))
                 else:
                     block.append(formatters.packAlignedTextBlockData(header, BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER))
-            return (
-             block, result and result.get('operationError') is not None, result)
+            return (block, result and result.get('operationError') is not None, result)
 
     @classmethod
     def _getHeaderFormatter(cls, statusLevel):
@@ -894,22 +892,20 @@ class StatusBlockConstructor(VehicleTooltipBlockConstructor):
                 tooltip = TOOLTIPS.RESEARCHPAGE_MODULE_STATUS_NOTENOUGHXP
             if tooltip is not None:
                 level = Vehicle.VEHICLE_STATE_LEVEL.CRITICAL
-        elif nodeState & NODE_STATE_FLAGS.IN_INVENTORY:
-            return self.__getVehicleStatus(False, vehicle)
-        mayObtain, reason = vehicle.mayObtainForMoney(self.itemsCache.items.stats.money)
-        if not mayObtain:
-            level = Vehicle.VEHICLE_STATE_LEVEL.CRITICAL
-            if GUI_ITEM_ECONOMY_CODE.isCurrencyError(reason):
-                tooltip = _makeModuleFitTooltipError(reason)
-            else:
-                tooltip = TOOLTIPS.MODULEFITS_OPERATION_ERROR
-        header, text = getComplexStatus(tooltip)
-        if header is None and text is None:
-            return
         else:
-            return {'header': header, 
-               'text': text, 
-               'level': level}
+            if nodeState & NODE_STATE_FLAGS.IN_INVENTORY:
+                return self.__getVehicleStatus(False, vehicle)
+            mayObtain, reason = vehicle.mayObtainForMoney(self.itemsCache.items.stats.money)
+            if not mayObtain:
+                level = Vehicle.VEHICLE_STATE_LEVEL.CRITICAL
+                if GUI_ITEM_ECONOMY_CODE.isCurrencyError(reason):
+                    tooltip = _makeModuleFitTooltipError(reason)
+                else:
+                    tooltip = TOOLTIPS.MODULEFITS_OPERATION_ERROR
+        header, text = getComplexStatus(tooltip)
+        return None if header is None and text is None else {'header': header,
+         'text': text,
+         'level': level}
 
     def __getVehicleStatus(self, showCustomStates, vehicle):
         if showCustomStates:
@@ -917,33 +913,32 @@ class StatusBlockConstructor(VehicleTooltipBlockConstructor):
             level = Vehicle.VEHICLE_STATE_LEVEL.WARNING
             if not isInInventory and vehicle.hasRestoreCooldown() and vehicle.isHidden:
                 timeKey, formattedTime = getTimeLeftInfo(self.vehicle.restoreInfo.getRestoreCooldownTimeLeft())
-                return {'header': _ms('#tooltips:vehicleStatus/restoreCooldown/%s' % timeKey, time=formattedTime), 
-                   'text': '', 
-                   'level': level}
+                return {'header': _ms('#tooltips:vehicleStatus/restoreCooldown/%s' % timeKey, time=formattedTime),
+                 'text': '',
+                 'level': level}
             isUnlocked = vehicle.isUnlocked
             mayObtain, reason = vehicle.mayObtainForMoney(self.itemsCache.items.stats.money)
             msg = None
             operationError = False
             if not isUnlocked:
                 msg = 'notUnlocked'
-            else:
-                if isInInventory:
-                    msg = 'inHangar'
-                elif not mayObtain:
-                    level = Vehicle.VEHICLE_STATE_LEVEL.CRITICAL
-                    if reason == GUI_ITEM_ECONOMY_CODE.NOT_ENOUGH_GOLD:
-                        msg = 'notEnoughGold'
-                    elif reason == GUI_ITEM_ECONOMY_CODE.NOT_ENOUGH_CREDITS:
-                        msg = 'notEnoughCredits'
-                    else:
-                        msg = 'operationError'
-                        operationError = True
-                if msg:
-                    header, text = getComplexStatus('#tooltips:vehicleStatus/%s' % msg)
-                    return {'header': header, 
-                       'text': text, 
-                       'level': level, 
-                       'operationError': operationError}
+            elif isInInventory:
+                msg = 'inHangar'
+            elif not mayObtain:
+                level = Vehicle.VEHICLE_STATE_LEVEL.CRITICAL
+                if reason == GUI_ITEM_ECONOMY_CODE.NOT_ENOUGH_GOLD:
+                    msg = 'notEnoughGold'
+                elif reason == GUI_ITEM_ECONOMY_CODE.NOT_ENOUGH_CREDITS:
+                    msg = 'notEnoughCredits'
+                else:
+                    msg = 'operationError'
+                    operationError = True
+            if msg:
+                header, text = getComplexStatus('#tooltips:vehicleStatus/%s' % msg)
+                return {'header': header,
+                 'text': text,
+                 'level': level,
+                 'operationError': operationError}
             return
         else:
             state, level = vehicle.getState()
@@ -956,16 +951,17 @@ class StatusBlockConstructor(VehicleTooltipBlockConstructor):
                 telecomBundleId = self.itemsCache.items.stats.getTelecomBundleId()
                 provider = telecomConfig.getInternetProvider(telecomBundleId)
                 providerLocRes = R.strings.menu.internet_provider.dyn(provider)
-                keyString = ('#tooltips:vehicleStatus/{}').format(state)
+                keyString = '#tooltips:vehicleStatus/{}'.format(state)
                 if provider != '':
-                    keyString = keyString + ('/{}').format(provider)
+                    keyString = keyString + '/{}'.format(provider)
                 header, text = getComplexStatus(keyString, provider=backport.text(providerLocRes.name()) if providerLocRes else '')
             else:
                 header, text = getComplexStatus('#tooltips:vehicleStatus/%s' % state)
                 if header is None and text is None:
                     return
-            return {'header': header, 'text': text, 
-               'level': level}
+            return {'header': header,
+             'text': text,
+             'level': level}
 
 
 class SimpleFormattedStatusBlockConstructor(StatusBlockConstructor):
@@ -979,7 +975,4 @@ def _getNeedValue(price, currency):
     itemsCache = dependency.instance(IItemsCache)
     money = itemsCache.items.stats.money
     neededValue = price.getSignValue(currency) - money.getSignValue(currency)
-    if neededValue > 0:
-        return neededValue
-    else:
-        return
+    return neededValue if neededValue > 0 else None

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/account_completion/common/base_confirm_credentials_overlay_view.py
 import time
 from abc import abstractmethod
 import typing
@@ -29,7 +31,7 @@ class BaseConfirmCredentialsOverlayView(BaseWGNPOverlayView):
     def activate(self, email='', *args, **kwargs):
         super(BaseConfirmCredentialsOverlayView, self).activate(*args, **kwargs)
         self._email = email
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setEmail(email)
             model.setTimer(max(0, DISABLE_BUTTON_TIME - int(time.time()) + self._getEmailAddedTime()))
             model.setIsConfirmVisible(True)
@@ -69,7 +71,7 @@ class BaseConfirmCredentialsOverlayView(BaseWGNPOverlayView):
         return self._code.validate()
 
     def _updateErrorModel(self, errorMessage, buttonTimer=None, isButtonVisible=True, isButtonEnabled=True, resendButtonLabelResID=res.activate.button()):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             if buttonTimer is not None:
                 model.setTimer(buttonTimer)
             model.setResendButtonLabel(resendButtonLabelResID)

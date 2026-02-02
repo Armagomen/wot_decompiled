@@ -1,3 +1,6 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/AvatarInputHandler/commands/mechanic_controls/auto_shoot_gun_control.py
+from __future__ import absolute_import
 import Keys
 from AvatarInputHandler.commands.input_handler_command import InputHandlerCommand
 from gui.battle_control.controllers.auto_shoot_guns.auto_shoot_helpers import AUTO_SHOOT_DEV_KEYS, AutoShootDevCommand
@@ -6,17 +9,15 @@ from skeletons.gui.battle_session import IBattleSessionProvider
 
 class DevAutoShootGunControl(InputHandlerCommand):
     __sessionProvider = dependency.descriptor(IBattleSessionProvider)
-    _KEY_TO_COMMAND_MAP = {Keys.KEY_RIGHTARROW: AutoShootDevCommand.RATE_UP, 
-       Keys.KEY_LEFTARROW: AutoShootDevCommand.RATE_DOWN, 
-       Keys.KEY_UPARROW: AutoShootDevCommand.RATE_SPEED_UP, 
-       Keys.KEY_DOWNARROW: AutoShootDevCommand.RATE_SPEED_DOWN, 
-       Keys.KEY_RSHIFT: AutoShootDevCommand.CLAMP_BURST, 
-       Keys.KEY_RCONTROL: AutoShootDevCommand.RESET}
+    _KEY_TO_COMMAND_MAP = {Keys.KEY_RIGHTARROW: AutoShootDevCommand.RATE_UP,
+     Keys.KEY_LEFTARROW: AutoShootDevCommand.RATE_DOWN,
+     Keys.KEY_UPARROW: AutoShootDevCommand.RATE_SPEED_UP,
+     Keys.KEY_DOWNARROW: AutoShootDevCommand.RATE_SPEED_DOWN,
+     Keys.KEY_RSHIFT: AutoShootDevCommand.CLAMP_BURST,
+     Keys.KEY_RCONTROL: AutoShootDevCommand.RESET}
 
     def handleKeyEvent(self, isDown, key, mods, event=None):
-        if not self.__handleDevKeyEvent(isDown, key):
-            return super(DevAutoShootGunControl, self).handleKeyEvent(isDown, key, mods, event=event)
-        return True
+        return super(DevAutoShootGunControl, self).handleKeyEvent(isDown, key, mods, event=event) if not self.__handleDevKeyEvent(isDown, key) else True
 
     def __handleDevKeyEvent(self, isDown, key):
         if not (key in self._KEY_TO_COMMAND_MAP and isDown):
@@ -30,6 +31,4 @@ class DevAutoShootGunControl(InputHandlerCommand):
 
 
 def createAutoShootGunControl(*_, **__):
-    if AUTO_SHOOT_DEV_KEYS:
-        return DevAutoShootGunControl()
-    return InputHandlerCommand()
+    return DevAutoShootGunControl() if AUTO_SHOOT_DEV_KEYS else InputHandlerCommand()

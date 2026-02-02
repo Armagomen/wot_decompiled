@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/techtree/data.py
 import logging
 from itertools import chain
 from random import choice
@@ -26,9 +28,7 @@ from soft_exception import SoftException
 if typing.TYPE_CHECKING:
     from typing import Optional, Dict
 _logger = logging.getLogger(__name__)
-__all__ = (
- 'ResearchItemsData',
- 'NationTreeData')
+__all__ = ('ResearchItemsData', 'NationTreeData')
 
 @dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
 def _checkCollectibleEnabled(state, lobbyContext=None):
@@ -63,7 +63,7 @@ class _ItemsData(object):
 
     @prbDispatcherProperty
     def prbDispatcher(self):
-        return
+        return None
 
     def clear(self, full=False):
         while self._nodes:
@@ -91,10 +91,7 @@ class _ItemsData(object):
 
     def getNodeByItemCD(self, itemCD):
         nodeIdx = self._nodesIdx[itemCD] if self._nodesIdx is not None else None
-        if self._nodes is not None and nodeIdx is not None:
-            return self._nodes[nodeIdx]
-        else:
-            return
+        return self._nodes[nodeIdx] if self._nodes is not None and nodeIdx is not None else None
 
     def getInventoryVehicles(self):
         nodeCDs = [ node.getNodeCD() for node in self._getNodesToInvalidate() ]
@@ -289,15 +286,15 @@ class _ItemsData(object):
         return state
 
     def _checkTechTreeEvents(self, state, guiItem, unlockProps):
-        if g_techTreeDP.techTreeEventsListener.hasActiveAction(guiItem.intCD) and guiItem.itemTypeID == GUI_ITEM_TYPE.VEHICLE:
-            if self._hideTechTreeEvent:
-                state |= NODE_STATE_FLAGS.TECH_TREE_EVENT_DISCOUNT_ONLY
-            else:
-                state |= NODE_STATE_FLAGS.HAS_TECH_TREE_EVENT
-            NODE_STATE.removeIfHas(state, NODE_STATE_FLAGS.ACTION)
-            noUnlockDiscount = not unlockProps or not unlockProps.discount
-            if noUnlockDiscount and guiItem.buyPrices.itemPrice.isActionPrice() and not guiItem.isRestorePossible():
-                NODE_STATE.add(state, NODE_STATE_FLAGS.ACTION)
+        if g_techTreeDP.techTreeEventsListener.hasActiveAction(guiItem.intCD):
+            if guiItem.itemTypeID == GUI_ITEM_TYPE.VEHICLE:
+                if self._hideTechTreeEvent:
+                    state |= NODE_STATE_FLAGS.TECH_TREE_EVENT_DISCOUNT_ONLY
+                else:
+                    state |= NODE_STATE_FLAGS.HAS_TECH_TREE_EVENT
+                NODE_STATE.removeIfHas(state, NODE_STATE_FLAGS.ACTION)
+                noUnlockDiscount = not unlockProps or not unlockProps.discount
+                noUnlockDiscount and guiItem.buyPrices.itemPrice.isActionPrice() and not guiItem.isRestorePossible() and NODE_STATE.add(state, NODE_STATE_FLAGS.ACTION)
         return state
 
     def _addNode(self, nodeCD, node):
@@ -308,10 +305,7 @@ class _ItemsData(object):
 
     def _getNodesWereInBattle(self):
         accDossier = self._items.getAccountDossier(None)
-        if accDossier:
-            return set(accDossier.getTotalStats().getVehicles().keys())
-        else:
-            return set()
+        return set(accDossier.getTotalStats().getVehicles().keys()) if accDossier else set()
 
     def _getNodesToInvalidate(self):
         return [ node for node in self._nodes if not NODE_STATE.isAnnouncement(node.getState()) ]
@@ -378,7 +372,7 @@ class _ItemsData(object):
         xps = self._stats.vehiclesXPs
         freeXP = self._stats.actualFreeXP
         isAvailable = lambda self, nextCD: self.getItem(nextCD).isUnlocked or g_techTreeDP.isNext2Unlock(nextCD, unlocks, xps, freeXP)[0]
-        isNextUnavailable = any(not isAvailable(self, nextCD) for nextCD in nextLevels)
+        isNextUnavailable = any((not isAvailable(self, nextCD) for nextCD in nextLevels))
         return isNextUnavailable
 
     def _invalidateMoney(self, nodes_):
@@ -445,12 +439,12 @@ class ResearchItemsData(_ItemsData):
     def invalidateItem(self, itemCD):
         if self._topLevelCDs is not None and self._topLevel is not None:
             idx = self._topLevelCDs.get(itemCD)
-            if idx is not None and 0 <= idx < len(self._topLevel):
-                return self._dumper.invalidateCachedItemData('top', idx, self._topLevel[idx], self.getRootItem())
-        if self._nodesIdx is not None and self._nodes is not None:
-            idx = self._nodesIdx.get(itemCD)
-            if idx is not None and 0 <= idx < len(self._nodes):
-                return self._dumper.invalidateCachedItemData('nodes', idx, self._nodes[idx], self.getRootItem())
+            if idx is not None:
+                if 0 <= idx < len(self._topLevel):
+                    return self._dumper.invalidateCachedItemData('top', idx, self._topLevel[idx], self.getRootItem())
+            if self._nodesIdx is not None and self._nodes is not None:
+                idx = self._nodesIdx.get(itemCD)
+                return idx is not None and 0 <= idx < len(self._nodes) and self._dumper.invalidateCachedItemData('nodes', idx, self._nodes[idx], self.getRootItem())
         return
 
     @classmethod
@@ -479,17 +473,11 @@ class ResearchItemsData(_ItemsData):
         return self.getItem(rootCD)
 
     def getRootNode(self):
-        if self._nodes:
-            return self._nodes[0]
-        else:
-            return
+        return self._nodes[0] if self._nodes else None
 
     def getTopLevelByItemCD(self, itemCD):
         itemIdx = self._topLevelCDs[itemCD] if self._topLevelCDs is not None else None
-        if self._topLevel is not None and itemIdx is not None:
-            return self._topLevel[itemIdx]
-        else:
-            return
+        return self._topLevel[itemIdx] if self._topLevel is not None and itemIdx is not None else None
 
     def isRedrawNodes(self, unlocks):
         return self._rootCD in unlocks
@@ -531,8 +519,7 @@ class ResearchItemsData(_ItemsData):
             if NODE_STATE.isAvailable2Buy(state) and unlocks & node.getUnlockProps().required:
                 prevUnlocks.append((nodeCD, state))
 
-        return (
-         next2Unlock, unlocked, prevUnlocks)
+        return (next2Unlock, unlocked, prevUnlocks)
 
     def getUrgentIds(self, nodeCD):
         result = []
@@ -602,9 +589,7 @@ class ResearchItemsData(_ItemsData):
     def invalidateVehicleCollectorState(self):
         node = self.getRootNode()
         state = _checkCollectibleEnabled(node.getState())
-        return [
-         (
-          self.getRootCD(), state)]
+        return [(self.getRootCD(), state)]
 
     def _addTopNode(self, nodeCD, node):
         index = len(self._topLevel)
@@ -643,8 +628,7 @@ class ResearchItemsData(_ItemsData):
                     state = NODE_STATE.removeIfHas(state, NODE_STATE_FLAGS.ENOUGH_XP)
                 state = NODE_STATE.addIfNot(state, NODE_STATE_FLAGS.BLUEPRINT)
                 node.setState(state)
-                result.append((
-                 node.getNodeCD(), state, unlockProps.makeTuple()))
+                result.append((node.getNodeCD(), state, unlockProps.makeTuple()))
 
         return result
 
@@ -732,9 +716,9 @@ class ResearchItemsData(_ItemsData):
             renderer = 'root' if self._rootCD == nodeCD else 'vehicle'
         else:
             renderer = 'item'
-        displayInfo = {'path': path, 
-           'renderer': renderer, 
-           'level': level}
+        displayInfo = {'path': path,
+         'renderer': renderer,
+         'level': level}
         return nodes.RealNode(nodeCD, guiItem, unlockStats.getVehXP(nodeCD), state, displayInfo, unlockProps=unlockProps, bpfProps=bpfProps)
 
     def _getAnnouncementData(self, nodeCD, path, level):
@@ -743,9 +727,9 @@ class ResearchItemsData(_ItemsData):
         state |= NODE_STATE_FLAGS.ANNOUNCEMENT
         if info.isElite:
             state |= NODE_STATE_FLAGS.ELITE
-        displayInfo = {'path': path, 
-           'renderer': 'vehicle', 
-           'level': level}
+        displayInfo = {'path': path,
+         'renderer': 'vehicle',
+         'level': level}
         return nodes.AnnouncementNode(nodeCD, info, state, displayInfo)
 
     def _getNewCost(self, vehicleCD, level, oldCost):
@@ -795,8 +779,10 @@ class ResearchItemsData(_ItemsData):
             if itemTypeID == GUI_ITEM_TYPE.VEHICLE:
                 item = self.getItem(nodeCD)
                 xpCost, discount = self._getNewCost(nodeCD, item.level, oldCost)
-            nodes_.append((nodeCD, itemTypeID,
-             UnlockProps(rootCD, unlockIdx, xpCost, required, discount, oldCost), path))
+            nodes_.append((nodeCD,
+             itemTypeID,
+             UnlockProps(rootCD, unlockIdx, xpCost, required, discount, oldCost),
+             path))
 
         for nodeCD, itemTypeID, unlockProps, path in nodes_:
             node = self._getNodeData(nodeCD, rootItem, itemGetter(nodeCD), unlockStats, unlockProps, path, level=self.__fixLevel(itemTypeID, path, maxPath))
@@ -854,13 +840,12 @@ class NationTreeData(_ItemsData):
             nodeCD = node.nodeCD
             if node.isAnnouncement:
                 self._addNode(nodeCD, self._makeAnnouncementNode(node, displayInfo))
-            else:
-                item = getItem(nodeCD)
-                if item.isHidden:
-                    continue
-                index = self._addNode(nodeCD, self._makeRealExposedNode(node, item, unlockStats, displayInfo))
-                if nodeCD == selectedID:
-                    self._scrollIndex = index
+            item = getItem(nodeCD)
+            if item.isHidden:
+                continue
+            index = self._addNode(nodeCD, self._makeRealExposedNode(node, item, unlockStats, displayInfo))
+            if nodeCD == selectedID:
+                self._scrollIndex = index
 
         ResearchItemsData.clearRootCD()
         self._findSelectedNode(nationID)
@@ -868,10 +853,7 @@ class NationTreeData(_ItemsData):
             self._findActionNode(nationID)
 
     def getRootItem(self):
-        if self._nodes:
-            return self._nodes[0]
-        else:
-            return
+        return self._nodes[0] if self._nodes else None
 
     def invalidateUnlocks(self, unlocks):
         next2Unlock = []
@@ -880,16 +862,13 @@ class NationTreeData(_ItemsData):
         unlockStats = self.getUnlockStats()
         items = g_techTreeDP.getNext2UnlockByItems(unlocks, **unlockStats._asdict())
         if items:
-            next2Unlock = [ (item[0], self._changeNext2Unlock(item[0], item[1], unlockStats), item[1].makeTuple()) for item in items.iteritems()
-                          ]
+            next2Unlock = [ (item[0], self._changeNext2Unlock(item[0], item[1], unlockStats), item[1].makeTuple()) for item in items.iteritems() ]
         filtered = [ unlock for unlock in unlocks if getTypeOfCD(unlock) == GUI_ITEM_TYPE.VEHICLE ]
         if filtered:
             unlocked = [ (item, self._change2UnlockedByCD(item)) for item in filtered ]
             parents = map(g_techTreeDP.getTopLevel, filtered)
-            prevUnlocked = [ (item, self._changePreviouslyUnlockedByCD(item)) for item in chain(*parents) if not self.__isInInventory(item)
-                           ]
-        return (
-         next2Unlock, unlocked, prevUnlocked)
+            prevUnlocked = [ (item, self._changePreviouslyUnlockedByCD(item)) for item in chain(*parents) if not self.__isInInventory(item) ]
+        return (next2Unlock, unlocked, prevUnlocked)
 
     def invalidateXpCosts(self):
         result = []

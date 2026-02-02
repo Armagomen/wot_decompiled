@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/platoon/view/platoon_selection_view.py
 import logging
 from helpers import dependency
 from frameworks.wulf import WindowFlags, WindowLayer, ViewFlags
@@ -31,7 +33,7 @@ class SelectionWindow(PreloadableWindow):
         areaID = R.areas.pop_over()
         super(SelectionWindow, self).__init__(wndFlags=WindowFlags.POP_OVER, content=self.preBattleView, decorator=decorator, layer=WindowLayer.WINDOW, areaID=areaID)
         if popoverParams is not None:
-            with self.popOverModel.transaction() as (tx):
+            with self.popOverModel.transaction() as tx:
                 tx.setBoundX(popoverParams.bbox.positionX)
                 tx.setBoundY(popoverParams.bbox.positionY)
                 tx.setBoundWidth(popoverParams.bbox.width)

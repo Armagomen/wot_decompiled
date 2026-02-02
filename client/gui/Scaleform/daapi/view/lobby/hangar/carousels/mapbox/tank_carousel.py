@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/carousels/mapbox/tank_carousel.py
 from constants import Configs
 from gui.filters.mapbox_carousel_filter import MapboxCarouselFilter
 from gui.Scaleform.daapi.view.lobby.hangar.carousels import BattlePassTankCarousel

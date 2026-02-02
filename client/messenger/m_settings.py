@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/m_settings.py
 from collections import namedtuple, defaultdict
 import Event
 from debug_utils import LOG_ERROR
@@ -21,7 +23,7 @@ class _ColorScheme(defaultdict):
         super(_ColorScheme, self).__init__(default_factory, **kwargs)
 
     def __missing__(self, key):
-        self[key] = value = dict((k, 0) for k in self.__colorsNames)
+        self[key] = value = dict(((k, 0) for k in self.__colorsNames))
         return value
 
     def getColorsNames(self):
@@ -44,7 +46,7 @@ class _ColorScheme(defaultdict):
         return result
 
     def getHexStr(self, key):
-        return ('{0:06X}').format(self[key][self.__current])
+        return '{0:06X}'.format(self[key][self.__current])
 
     def iterColors(self):
         for key, colors in self.iteritems():
@@ -52,15 +54,10 @@ class _ColorScheme(defaultdict):
 
     def iterHexs(self):
         for key, colors in self.iteritems():
-            yield (
-             key, ('{0:06X}').format(colors[self.__current]))
+            yield (key, '{0:06X}'.format(colors[self.__current]))
 
 
-_ServiceChannelSettings = namedtuple('_ServiceChannelSettings', ('highPriorityMsgLifeTime',
-                                                                 'highPriorityMsgAlphaSpeed',
-                                                                 'mediumPriorityMsgLifeTime',
-                                                                 'mediumPriorityMsgAlphaSpeed',
-                                                                 'stackLength', 'padding'))
+_ServiceChannelSettings = namedtuple('_ServiceChannelSettings', ('highPriorityMsgLifeTime', 'highPriorityMsgAlphaSpeed', 'mediumPriorityMsgLifeTime', 'mediumPriorityMsgAlphaSpeed', 'stackLength', 'padding'))
 
 class _LobbySettings(object):
     __slots__ = ('serviceChannel', 'messageRawFormat', 'badWordFormat', '__messageFormats')
@@ -68,8 +65,8 @@ class _LobbySettings(object):
     def __init__(self):
         super(_LobbySettings, self).__init__()
         self.serviceChannel = _ServiceChannelSettings(5.0, 0, 5, 0, 5, 0)
-        self.messageRawFormat = '{0:>s} {1:>s} {2:>s}'
-        self.badWordFormat = '{0:>s}'
+        self.messageRawFormat = u'{0:>s} {1:>s} {2:>s}'
+        self.badWordFormat = u'{0:>s}'
         self.__messageFormats = {}
 
     def getMessageFormat(self, key):
@@ -87,24 +84,19 @@ class _LobbySettings(object):
                     timeColor = colorScheme.getHexStr('other')
                 else:
                     timeColor = userColor
-                self.__messageFormats[name] = self.messageRawFormat % {'user': userColor, 
-                   'time': timeColor}
+                self.__messageFormats[name] = self.messageRawFormat % {'user': userColor,
+                 'time': timeColor}
 
 
 _BattleMessageLifeCycle = namedtuple('_MessageInBattle', ('lifeTime', 'alphaSpeed'))
 
 class _BattleSettings(object):
-    __slots__ = ('messageLifeCycle', 'messageFormat', 'targetFormat', 'inactiveStateAlpha',
-                 'hintText', 'toolTipText', 'numberOfMessagesInHistory', 'receivers',
-                 'alphaForLastMessages', 'chatIsLockedToolTipText', 'chatIsLockedParentalControlToolTipText',
-                 'chatIsLockedCountryControlToolTipText', 'chatIsLockedOtherControlToolTipText',
-                 'recoveredLatestMessages', 'lifeTimeRecoveredMessages', 'lastReceiver',
-                 'toolTipTextWithMuteInfo', 'battleRoyaleTooltip')
+    __slots__ = ('messageLifeCycle', 'messageFormat', 'targetFormat', 'inactiveStateAlpha', 'hintText', 'toolTipText', 'numberOfMessagesInHistory', 'receivers', 'alphaForLastMessages', 'chatIsLockedToolTipText', 'chatIsLockedParentalControlToolTipText', 'chatIsLockedCountryControlToolTipText', 'chatIsLockedOtherControlToolTipText', 'recoveredLatestMessages', 'lifeTimeRecoveredMessages', 'lastReceiver', 'toolTipTextWithMuteInfo', 'battleRoyaleTooltip')
 
     def __init__(self):
         super(_BattleSettings, self).__init__()
         self.messageLifeCycle = _BattleMessageLifeCycle(5, 0)
-        self.messageFormat = '%(playerName)s : %(messageText)s'
+        self.messageFormat = u'%(playerName)s : %(messageText)s'
         self.targetFormat = '%(target)s'
         self.inactiveStateAlpha = 100
         self.toolTipText = ''
@@ -122,20 +114,14 @@ class _BattleSettings(object):
         self.lastReceiver = BATTLE_CHANNEL.TEAM.name
 
 
-_UserPrefs = namedtuple('_UserPrefs', ('version', 'datetimeIdx', 'enableOlFilter',
-                                       'enableSpamFilter', 'invitesFromFriendsOnly',
-                                       'storeReceiverInBattle', 'disableBattleChat',
-                                       'chatContactsListOnly', 'receiveFriendshipRequest',
-                                       'receiveInvitesInBattle'))
+_UserPrefs = namedtuple('_UserPrefs', ('version', 'datetimeIdx', 'enableOlFilter', 'enableSpamFilter', 'invitesFromFriendsOnly', 'storeReceiverInBattle', 'disableBattleChat', 'chatContactsListOnly', 'receiveFriendshipRequest', 'receiveInvitesInBattle'))
 
 def _makeDefUserPrefs():
     return _UserPrefs(version=1, datetimeIdx=2, enableOlFilter=True, enableSpamFilter=False, invitesFromFriendsOnly=False, storeReceiverInBattle=False, disableBattleChat=False, chatContactsListOnly=False, receiveFriendshipRequest=True, receiveInvitesInBattle=True)
 
 
 class MessengerSettings(object):
-    __slots__ = ('__colorsSchemes', '__messageFormatters', '__eManager', '__isUserPrefsInited',
-                 '__defaultUserPrefsSnapshot', 'lobby', 'battle', 'userPrefs', 'htmlTemplates',
-                 'msgTemplates', 'server', 'onUserPreferencesUpdated', 'onColorsSchemesUpdated')
+    __slots__ = ('__colorsSchemes', '__messageFormatters', '__eManager', '__isUserPrefsInited', '__defaultUserPrefsSnapshot', 'lobby', 'battle', 'userPrefs', 'htmlTemplates', 'msgTemplates', 'server', 'onUserPreferencesUpdated', 'onColorsSchemesUpdated')
     settingsCore = dependency.descriptor(ISettingsCore)
 
     def __init__(self):
@@ -155,12 +141,12 @@ class MessengerSettings(object):
         return
 
     def init(self):
-        self.__colorsSchemes.update({'groups': _ColorScheme(['default']), 
-           'rosters': _ColorScheme(['online', 'offline']), 
-           'contacts': _ColorScheme(['online', 'offline']), 
-           'battle/player': _ColorScheme(['default', 'colorBlind']), 
-           'battle/message': _ColorScheme(['default', 'colorBlind']), 
-           'battle/receiver': _ColorScheme(['default', 'colorBlind'])})
+        self.__colorsSchemes.update({'groups': _ColorScheme(['default']),
+         'rosters': _ColorScheme(['online', 'offline']),
+         'contacts': _ColorScheme(['online', 'offline']),
+         'battle/player': _ColorScheme(['default', 'colorBlind']),
+         'battle/message': _ColorScheme(['default', 'colorBlind']),
+         'battle/receiver': _ColorScheme(['default', 'colorBlind'])})
         from messenger.proto import ServerSettings
         self.server = ServerSettings()
         doc_loaders.load(self)
@@ -193,9 +179,9 @@ class MessengerSettings(object):
             return self.__colorsSchemes[key]
         except KeyError:
             LOG_ERROR('Color scheme not found', key)
-            return
+            return None
 
-        return
+        return None
 
     def resetUserPreferences(self):
         if self.__defaultUserPrefsSnapshot:

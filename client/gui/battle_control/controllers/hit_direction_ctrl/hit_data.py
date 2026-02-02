@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/hit_direction_ctrl/hit_data.py
 import math
 from gui.battle_control.battle_constants import HIT_FLAGS
 from constants import ATTACK_REASON_INDICES, ATTACK_REASON
@@ -6,12 +8,9 @@ from helpers import i18n
 from gui.Scaleform.locale.INGAME_GUI import INGAME_GUI
 _HIT_YAW_MIN_SMOOTHING = math.radians(1.0)
 _HIT_YAW_MAX_SMOOTHING = 2 * math.pi - _HIT_YAW_MIN_SMOOTHING
-_NONE_PLAYER_ATTACK_REASON_TAG = {ATTACK_REASON_INDICES['artillery_protection']: (
-                                                 INGAME_GUI.ATTACKREASON_ARTILLERYPROTECTION, 'artillery'), 
-   ATTACK_REASON_INDICES['artillery_sector']: (
-                                             INGAME_GUI.ATTACKREASON_ARTILLERY_SECTOR, 'artillery'), 
-   ATTACK_REASON_INDICES['bombers']: (
-                                    INGAME_GUI.ATTACKREASON_BOMBERS, 'bomber')}
+_NONE_PLAYER_ATTACK_REASON_TAG = {ATTACK_REASON_INDICES['artillery_protection']: (INGAME_GUI.ATTACKREASON_ARTILLERYPROTECTION, 'artillery'),
+ ATTACK_REASON_INDICES['artillery_sector']: (INGAME_GUI.ATTACKREASON_ARTILLERY_SECTOR, 'artillery'),
+ ATTACK_REASON_INDICES['bombers']: (INGAME_GUI.ATTACKREASON_BOMBERS, 'bomber')}
 
 class SimpleHitData(object):
     __slots__ = ('__yaw', '__attackerID', '__soundName')
@@ -28,10 +27,7 @@ class SimpleHitData(object):
         return self.__attackerID
 
     def getSoundName(self):
-        if self.__soundName is not None:
-            return self.__soundName
-        else:
-            return ''
+        return self.__soundName if self.__soundName is not None else ''
 
     def extend(self, hitData):
         newYaw = hitData.getYaw()
@@ -40,9 +36,7 @@ class SimpleHitData(object):
 
 
 class HitData(SimpleHitData):
-    __slots__ = ('__damage', '__attackerVehName', '__friendlyFireMode', '__attackerVehClassTag',
-                 '__playerVehMaxHP', '__hitFlags', '__critFlags', '__critsCount',
-                 '__attackReasonID')
+    __slots__ = ('__damage', '__attackerVehName', '__friendlyFireMode', '__attackerVehClassTag', '__playerVehMaxHP', '__hitFlags', '__critFlags', '__critsCount', '__attackReasonID')
 
     def __init__(self, yaw=0, attackerID=0, attackerVehName='', attackerVehClassTag=None, playerVehMaxHP=0, damage=0, critFlags=0, isAlly=False, isBlocked=False, isHighExplosive=False, attackReasonID=0, friendlyFireMode=False):
         super(HitData, self).__init__(yaw, attackerID)
@@ -61,7 +55,7 @@ class HitData(SimpleHitData):
             self.__attackerVehClassTag = attackReasonSettings[1]
 
     def __repr__(self):
-        return ('HitData: attackerID={}, yaw={}, damage={}, attacker vehicle=[name={}, class={}], player vehicle=[hp={}], hitFlags={}, critFlags={}[count={}]').format(self.getAttackerID(), self.getYaw(), self.__damage, self.__attackerVehName, self.__attackerVehClassTag, self.__playerVehMaxHP, self.__hitFlags, self.__critFlags, self.__critsCount)
+        return 'HitData: attackerID={}, yaw={}, damage={}, attacker vehicle=[name={}, class={}], player vehicle=[hp={}], hitFlags={}, critFlags={}[count={}]'.format(self.getAttackerID(), self.getYaw(), self.__damage, self.__attackerVehName, self.__attackerVehClassTag, self.__playerVehMaxHP, self.__hitFlags, self.__critFlags, self.__critsCount)
 
     def getAttackerVehicleClassTag(self):
         return self.__attackerVehClassTag
@@ -103,8 +97,7 @@ class HitData(SimpleHitData):
         return BitmaskHelper.hasAnyBitSet(self.__hitFlags, HIT_FLAGS.IS_NON_PLAYER_ATTACK_REASON)
 
     def isBattleAbilityConsumable(self):
-        return self.__attackReasonID in (ATTACK_REASON.getIndex(ATTACK_REASON.ARTILLERY_EQ),
-         ATTACK_REASON.getIndex(ATTACK_REASON.BOMBER_EQ))
+        return self.__attackReasonID in (ATTACK_REASON.getIndex(ATTACK_REASON.ARTILLERY_EQ), ATTACK_REASON.getIndex(ATTACK_REASON.BOMBER_EQ))
 
     def isDamage(self):
         return self.isCritical() or not self.isBlocked() and self.__damage > 0

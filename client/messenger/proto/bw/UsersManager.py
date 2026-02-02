@@ -1,4 +1,7 @@
-import BigWorld, chat_shared
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/bw/UsersManager.py
+import BigWorld
+import chat_shared
 from gui.shared.utils import getPlayerDatabaseID
 from messenger.m_constants import USER_ACTION_ID as _ACTION_ID, USER_TAG as _TAG, MESSENGER_SCOPE, PROTO_TYPE, CLIENT_ACTION_ID
 from messenger.proto import notations
@@ -22,14 +25,14 @@ class UsersManager(ChatActionsListener):
 
     def __init__(self):
         CHAT_RESPONSES = chat_shared.CHAT_RESPONSES
-        ChatActionsListener.__init__(self, {CHAT_RESPONSES.commandInCooldown: '_UsersManager__onCommandInCooldown', 
-           CHAT_RESPONSES.incorrectCharacter: '_UsersManager__onIncorrectCharacter'})
+        ChatActionsListener.__init__(self, {CHAT_RESPONSES.commandInCooldown: '_UsersManager__onCommandInCooldown',
+         CHAT_RESPONSES.incorrectCharacter: '_UsersManager__onIncorrectCharacter'})
         self.__isPrivateOpen = False
         self.__isRosterReceivedOnce = False
 
     @storage_getter('users')
     def usersStorage(self):
-        return
+        return None
 
     def addListeners(self):
         self.__addContactsListeners()
@@ -51,8 +54,7 @@ class UsersManager(ChatActionsListener):
     @notations.contacts(PROTO_TYPE.BW, log=False)
     def view(self, scope):
         if scope is MESSENGER_SCOPE.BATTLE and not self.__isRosterReceivedOnce:
-            g_messengerEvents.users.onUsersListReceived({
-             _TAG.FRIEND, _TAG.IGNORED})
+            g_messengerEvents.users.onUsersListReceived({_TAG.FRIEND, _TAG.IGNORED})
 
     @notations.contacts(PROTO_TYPE.BW)
     def addFriend(self, friendID, friendName, shadowMode):
@@ -146,8 +148,7 @@ class UsersManager(ChatActionsListener):
         tags = user.getTags()
         if exclude & tags:
             tags = tags.difference(exclude)
-            if {
-             _TAG.CLAN_MEMBER} & tags:
+            if {_TAG.CLAN_MEMBER} & tags:
                 user.update(tags=tags)
             else:
                 user.update(tags=tags, isOnline=False)
@@ -194,13 +195,13 @@ class UsersManager(ChatActionsListener):
             tags = _getTagsByRoster(roster)
             if user:
                 user.addTags(tags)
-            else:
-                setter(entities.BWUserEntity(dbID, name=name, tags=tags))
+            setter(entities.BWUserEntity(dbID, name=name, tags=tags))
 
         g_messengerEvents.users.onUsersListReceived({_TAG.FRIEND, _TAG.IGNORED})
 
     def __onCommandInCooldown(self, actionResponse, chatAction):
-        data = chatAction.get('data', {'command': None, 'cooldownPeriod': -1})
+        data = chatAction.get('data', {'command': None,
+         'cooldownPeriod': -1})
         result = False
         if data['command'] == 'findUser':
             result = True

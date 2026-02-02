@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/BattleUpgradePanelMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class BattleUpgradePanelMeta(BaseDAAPIComponent):
@@ -6,25 +8,19 @@ class BattleUpgradePanelMeta(BaseDAAPIComponent):
         self._printOverrideError('onSelectItem')
 
     def as_setDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setData(data)
+        return self.flashObject.as_setData(data) if self._isDAAPIInited() else None
 
     def as_toggleAlertStateS(self, isVisible, alertText=None):
-        if self._isDAAPIInited():
-            return self.flashObject.as_toggleAlertState(isVisible, alertText)
+        return self.flashObject.as_toggleAlertState(isVisible, alertText) if self._isDAAPIInited() else None
 
     def as_setVisibleS(self, isVisible):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setVisible(isVisible)
+        return self.flashObject.as_setVisible(isVisible) if self._isDAAPIInited() else None
 
     def as_showSelectAnimS(self, idx):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showSelectAnim(idx)
+        return self.flashObject.as_showSelectAnim(idx) if self._isDAAPIInited() else None
 
     def as_showNotificationAnimS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showNotificationAnim()
+        return self.flashObject.as_showNotificationAnim() if self._isDAAPIInited() else None
 
     def as_hideNotificationAnimS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_hideNotificationAnim()
+        return self.flashObject.as_hideNotificationAnim() if self._isDAAPIInited() else None

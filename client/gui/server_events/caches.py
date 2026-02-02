@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/server_events/caches.py
 from collections import namedtuple
 from debug_utils import LOG_ERROR
 from helpers import dependency
@@ -7,9 +9,7 @@ from gui.shared.utils.decorators import ReprInjector
 from gui.Scaleform.genConsts.QUESTS_ALIASES import QUESTS_ALIASES as _QA
 from skeletons.gui.lobby_context import ILobbyContext
 _g_sortedVehs = {}
-VehiclesListProps = namedtuple('VehiclesListProps', ('disableChecker', 'nationIdx',
-                                                     'vehTypeIdx', 'levelIdx', 'selectedBtn',
-                                                     'sortDirect', 'checkbox'))
+VehiclesListProps = namedtuple('VehiclesListProps', ('disableChecker', 'nationIdx', 'vehTypeIdx', 'levelIdx', 'selectedBtn', 'sortDirect', 'checkbox'))
 
 def getVehiclesData(listID):
     return _g_sortedVehs.get(listID)
@@ -31,8 +31,7 @@ def updateVehiclesDataProps(listID, **kwargs):
         _g_sortedVehs[listID] = (vehs, props._replace(**kwargs))
 
 
-PQ_TABS = (
- _QA.SEASON_VIEW_TAB_RANDOM,)
+PQ_TABS = (_QA.SEASON_VIEW_TAB_RANDOM,)
 
 @dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
 def getEnabledPQTabs(lobbyContext=None):
@@ -46,7 +45,7 @@ def getEnabledPQTabs(lobbyContext=None):
 
 
 class QuestInfo(object):
-    __slots__ = ('questID', )
+    __slots__ = ('questID',)
 
     def __init__(self, *args):
         super(QuestInfo, self).__init__()
@@ -60,8 +59,7 @@ class QuestInfo(object):
         for key, value in kwargs.iteritems():
             if key in self.__slots__:
                 object.__setattr__(self, key, value)
-            else:
-                LOG_ERROR('Unsupported argument for object:', self, key, value)
+            LOG_ERROR('Unsupported argument for object:', self, key, value)
 
         return self
 

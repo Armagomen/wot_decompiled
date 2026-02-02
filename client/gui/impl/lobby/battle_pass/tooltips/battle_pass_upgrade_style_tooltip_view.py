@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/battle_pass/tooltips/battle_pass_upgrade_style_tooltip_view.py
 from frameworks.wulf import ViewSettings
 from gui.Scaleform.daapi.view.lobby.customization.shared import getSuitableText
 from gui.battle_pass.battle_pass_helpers import getStyleForChapter
@@ -21,7 +23,7 @@ class BattlePassUpgradeStyleTooltipView(ViewImpl):
 
     def _onLoading(self, chapter, level, *args, **kwargs):
         customizationItem = getStyleForChapter(chapter)
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             if customizationItem is not None:
                 model.setStyleId(customizationItem.id)
                 model.setStyleName(customizationItem.userName)

@@ -1,4 +1,7 @@
-import time, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/xmpp/logger.py
+import time
+import BigWorld
 from debug_utils import LOG_CURRENT_EXCEPTION
 from messenger.proto.xmpp.gloox_constants import LOG_LEVEL, LOG_SOURCE, GLOOX_EVENT
 from messenger.proto.xmpp.gloox_wrapper import ClientEventsHandler
@@ -35,7 +38,7 @@ class _GlooxLogger(_IEventLogger):
 
 
 class LogHandler(ClientEventsHandler):
-    __slots__ = ('__loggers', )
+    __slots__ = ('__loggers',)
 
     def __init__(self):
         super(LogHandler, self).__init__()
@@ -46,7 +49,7 @@ class LogHandler(ClientEventsHandler):
             return self.__loggers[key]
         else:
             g_logOutput.error(CLIENT_LOG_AREA.GENERIC, 'Events logger is not found. Available loggers are', self.__loggers.keys())
-            return
+            return None
 
     def getNames(self):
         return self.__loggers.keys()
@@ -66,7 +69,7 @@ class LogHandler(ClientEventsHandler):
             logger.log(level, source, message)
 
     def __repr__(self):
-        return ('LogHandler(id=0x{0:08X}, loggers({1!r:s}))').format(id(self), self.__loggers.keys())
+        return 'LogHandler(id=0x{0:08X}, loggers({1!r:s}))'.format(id(self), self.__loggers.keys())
 
 
 class XMPP_EVENT_LOG(object):
@@ -78,13 +81,19 @@ def sendEventToServer(eventType, host, port, errorCode=0, errorDescr='', tries=1
     sender = getattr(player, 'logXMPPEvents', None)
     if sender is None or not callable(sender) or not player.isPlayer or player.isDestroyed:
         return
-    address = ('{0}:{1}').format(host, port)
-    currentTime = time.time()
-    g_logOutput.debug(CLIENT_LOG_AREA.GENERIC, 'Sends log to server', [
-     eventType, currentTime, errorCode, tries], [address, errorDescr])
-    try:
-        sender([eventType, currentTime, errorCode, tries], [address, errorDescr])
-    except Exception:
-        LOG_CURRENT_EXCEPTION()
+    else:
+        address = '{0}:{1}'.format(host, port)
+        currentTime = time.time()
+        g_logOutput.debug(CLIENT_LOG_AREA.GENERIC, 'Sends log to server', [eventType,
+         currentTime,
+         errorCode,
+         tries], [address, errorDescr])
+        try:
+            sender([eventType,
+             currentTime,
+             errorCode,
+             tries], [address, errorDescr])
+        except Exception:
+            LOG_CURRENT_EXCEPTION()
 
-    return
+        return

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/clan_supply/bonus_packers.py
 import logging
 from collections import defaultdict
 from copy import deepcopy
@@ -23,12 +25,10 @@ _logger = logging.getLogger(__name__)
 class QuestReward(CONST_CONTAINER):
     INDUSTRIAL_RESOURCE = 'industrial_resource'
     TOUR_COIN = 'tourcoin'
-    CURRENCY_REWARDS = (
-     INDUSTRIAL_RESOURCE, TOUR_COIN)
+    CURRENCY_REWARDS = (INDUSTRIAL_RESOURCE, TOUR_COIN)
 
 
-BONUSES_ORDER = [
- 'vehicles',
+BONUSES_ORDER = ['vehicles',
  'items',
  'premium_plus',
  'customizations',
@@ -48,9 +48,7 @@ def composeBonuses(rewards, bonusesOrder=None):
 
         def sortBonusesByKey(bonus):
             bonusName = bonus.getName()
-            if bonusName in bonusesOrder:
-                return bonusesOrder.index(bonusName)
-            return len(bonusesOrder) + 1
+            return bonusesOrder.index(bonusName) if bonusName in bonusesOrder else len(bonusesOrder) + 1
 
         bonuses.sort(key=sortBonusesByKey)
     return bonuses
@@ -74,10 +72,7 @@ def findVehicle(rewards):
             vehIntCD = first(first(vehicleReward[1]).keys())
         elif isinstance(vehicleReward[1], dict):
             vehIntCD = first(vehicleReward[1].keys())
-    if isinstance(vehIntCD, (str, unicode)) and vehIntCD.isdigit():
-        return int(vehIntCD)
-    else:
-        return vehIntCD
+    return int(vehIntCD) if isinstance(vehIntCD, (str, unicode)) and vehIntCD.isdigit() else vehIntCD
 
 
 class CustomizationsBonusPacker(Customization3Dand2DbonusUIPacker):
@@ -121,8 +116,7 @@ class TmanTemplateBonusPacker(BaseBonusUIPacker):
         tooltipData = []
         for tokenID in bonus.getTokens().iterkeys():
             if tokenID.startswith(RECRUIT_TMAN_TOKEN_PREFIX):
-                tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.TANKMAN_NOT_RECRUITED, specialArgs=[
-                 tokenID]))
+                tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.TANKMAN_NOT_RECRUITED, specialArgs=[tokenID]))
 
         return tooltipData
 
@@ -137,14 +131,14 @@ class TmanTemplateBonusPacker(BaseBonusUIPacker):
 
     @classmethod
     def __getBonusImageName(cls, recruitInfo):
-        baseName = ('tank{}man').format('wo' if recruitInfo.isFemale() else '')
+        baseName = 'tank{}man'.format('wo' if recruitInfo.isFemale() else '')
         return baseName
 
 
 def getClanSupplyBonusPacker(isProgression=False):
     mapping = getDefaultBonusPackersMap()
-    mapping.update({'vehicles': MultiAwardVehiclesBonusUIPacker(), 
-       'tmanToken': TmanTemplateBonusPacker()})
+    mapping.update({'vehicles': MultiAwardVehiclesBonusUIPacker(),
+     'tmanToken': TmanTemplateBonusPacker()})
     if not isProgression:
         mapping['customizations'] = CustomizationsBonusPacker()
     else:
@@ -153,9 +147,7 @@ def getClanSupplyBonusPacker(isProgression=False):
 
 
 def _normalizeCurrencyName(name):
-    if name == QuestReward.INDUSTRIAL_RESOURCE:
-        return 'industrialResource'
-    return name
+    return 'industrialResource' if name == QuestReward.INDUSTRIAL_RESOURCE else name
 
 
 @adisp_process

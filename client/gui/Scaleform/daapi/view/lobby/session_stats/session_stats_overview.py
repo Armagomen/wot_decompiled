@@ -1,6 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/session_stats/session_stats_overview.py
 import time
 from collections import namedtuple
-import Event, SoundGroups
+import Event
+import SoundGroups
 from account_helpers.AccountSettings import AccountSettings, SESSION_STATS_SECTION, SESSION_STATS_PREV_BATTLE_COUNT, BATTLE_EFFICIENCY_SECTION_EXPANDED_FIELD
 from account_helpers.settings_core.settings_constants import SESSION_STATS
 from adisp import adisp_process
@@ -35,11 +38,11 @@ from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
 _TabData = namedtuple('_TabData', ('alias', 'linkage', 'tooltip', 'label'))
-_TABS_DATA_ORDERED = [
- _TabData(SESSION_STATS_CONSTANTS.SESSION_BATTLE_STATS_VIEW_PY_ALIAS, SESSION_STATS_CONSTANTS.SESSION_BATTLE_STATS_VIEW_LINKAGE, backport.text(R.strings.session_stats.tooltip.tabBattle()), backport.text(R.strings.session_stats.label.tabBattle())),
- _TabData(SESSION_STATS_CONSTANTS.SESSION_VEHICLE_STATS_VIEW_PY_ALIAS, SESSION_STATS_CONSTANTS.SESSION_VEHICLE_STATS_VIEW_LINKAGE, backport.text(R.strings.session_stats.tooltip.tabVehicle()), backport.text(R.strings.session_stats.label.tabVehicle()))]
-_TABS_ID = {SESSION_STATS_CONSTANTS.SESSION_BATTLE_STATS_VIEW_PY_ALIAS: SESSION_STATS.BATTLES_TAB, SESSION_STATS_CONSTANTS.SESSION_VEHICLE_STATS_VIEW_PY_ALIAS: SESSION_STATS.VEHICLES_TAB}
-_HOF_URL_BY_TAB_ALIAS = {SESSION_STATS_CONSTANTS.SESSION_BATTLE_STATS_VIEW_PY_ALIAS: getHofAchievementsStatisticUrl, SESSION_STATS_CONSTANTS.SESSION_VEHICLE_STATS_VIEW_PY_ALIAS: getHofVehiclesStatisticUrl}
+_TABS_DATA_ORDERED = [_TabData(SESSION_STATS_CONSTANTS.SESSION_BATTLE_STATS_VIEW_PY_ALIAS, SESSION_STATS_CONSTANTS.SESSION_BATTLE_STATS_VIEW_LINKAGE, backport.text(R.strings.session_stats.tooltip.tabBattle()), backport.text(R.strings.session_stats.label.tabBattle())), _TabData(SESSION_STATS_CONSTANTS.SESSION_VEHICLE_STATS_VIEW_PY_ALIAS, SESSION_STATS_CONSTANTS.SESSION_VEHICLE_STATS_VIEW_LINKAGE, backport.text(R.strings.session_stats.tooltip.tabVehicle()), backport.text(R.strings.session_stats.label.tabVehicle()))]
+_TABS_ID = {SESSION_STATS_CONSTANTS.SESSION_BATTLE_STATS_VIEW_PY_ALIAS: SESSION_STATS.BATTLES_TAB,
+ SESSION_STATS_CONSTANTS.SESSION_VEHICLE_STATS_VIEW_PY_ALIAS: SESSION_STATS.VEHICLES_TAB}
+_HOF_URL_BY_TAB_ALIAS = {SESSION_STATS_CONSTANTS.SESSION_BATTLE_STATS_VIEW_PY_ALIAS: getHofAchievementsStatisticUrl,
+ SESSION_STATS_CONSTANTS.SESSION_VEHICLE_STATS_VIEW_PY_ALIAS: getHofVehiclesStatisticUrl}
 
 class SessionStatsOverview(SessionStatsOverviewMeta):
     _itemsCache = dependency.descriptor(IItemsCache)
@@ -57,7 +60,7 @@ class SessionStatsOverview(SessionStatsOverviewMeta):
 
     @prbDispatcherProperty
     def prbDispatcher(self):
-        return
+        return None
 
     def onClickMoreBtn(self):
         self._showHof()
@@ -154,11 +157,11 @@ class SessionStatsOverview(SessionStatsOverviewMeta):
         battleCnt = self._itemsCache.items.sessionStats.getAccountStats(ARENA_BONUS_TYPE.REGULAR).battleCnt
         tabsData = []
         for tabData in _TABS_DATA_ORDERED:
-            tabsData.append({'alias': tabData.alias, 
-               'linkage': tabData.linkage, 
-               'selected': tabData.alias == self._currentTabAlias, 
-               'tooltip': tabData.tooltip, 
-               'label': tabData.label})
+            tabsData.append({'alias': tabData.alias,
+             'linkage': tabData.linkage,
+             'selected': tabData.alias == self._currentTabAlias,
+             'tooltip': tabData.tooltip,
+             'label': tabData.label})
 
         sessStatSett = AccountSettings.getSettings(SESSION_STATS_SECTION)
         isExpanded = sessStatSett.get(BATTLE_EFFICIENCY_SECTION_EXPANDED_FIELD, False)
@@ -166,12 +169,12 @@ class SessionStatsOverview(SessionStatsOverviewMeta):
         hasBattleCountDifference = battleCnt and battleCnt > prevBattleCnt
         if hasBattleCountDifference:
             SoundGroups.g_instance.playSound2D(backport.sound(R.sounds.session_stats_numbers()))
-        returnVal = {'battleCount': battleCnt, 
-           'lastBattleCount': prevBattleCnt, 
-           'title': self.__getTitle(battleCnt), 
-           'headerImg': self.__getHeaderImg(), 
-           'tabs': tabsData, 
-           'isExpanded': isExpanded}
+        returnVal = {'battleCount': battleCnt,
+         'lastBattleCount': prevBattleCnt,
+         'title': self.__getTitle(battleCnt),
+         'headerImg': self.__getHeaderImg(),
+         'tabs': tabsData,
+         'isExpanded': isExpanded}
         AccountSettings.setSessionSettings(SESSION_STATS_PREV_BATTLE_COUNT, battleCnt)
         return returnVal
 
@@ -192,9 +195,7 @@ class SessionStatsOverview(SessionStatsOverviewMeta):
         self.as_setHeaderTooltipS(makeTooltip(header, body))
 
     def __getTitle(self, battleCnt):
-        if not battleCnt:
-            return text_styles.promoSubTitle(backport.text(R.strings.session_stats.label.playBattle()))
-        return text_styles.promoSubTitle(backport.text(R.strings.profile.profile.dropdown.labels.random()))
+        return text_styles.promoSubTitle(backport.text(R.strings.session_stats.label.playBattle())) if not battleCnt else text_styles.promoSubTitle(backport.text(R.strings.profile.profile.dropdown.labels.random()))
 
     def __getHeaderImg(self):
         return RES_ICONS.MAPS_ICONS_BATTLETYPES_BACKGROUNDS_RANDOM
@@ -234,16 +235,13 @@ class SessionStatsOverview(SessionStatsOverviewMeta):
         else:
             clearBtnTooltipBody = backport.text(R.strings.session_stats.tooltip.clearButton.unavailable.daily.body())
         clearBtnTooltip = makeTooltip(header=clearBtnTooltipHeader, body=clearBtnTooltipBody)
-        return [
-         {'btnLabel': label, 
-            'btnTooltip': moreBtnTooltip, 
-            'btnEnabled': isHofBtnUnlocked},
-         {'btnLabel': backport.text(R.strings.session_stats.resetBtn.label()), 
-            'btnTooltip': clearBtnTooltip, 
-            'btnEnabled': clearBtnEnabled},
-         {'btnIcon': RES_ICONS.MAPS_ICONS_MESSENGER_ICONSETTINGS, 
-            'btnTooltip': makeTooltip(header=backport.text(R.strings.session_stats.tooltip.settingsBtn.header()), body=backport.text(R.strings.session_stats.tooltip.settingsBtn.body())), 
-            'btnEnabled': True}]
+        return [{'btnLabel': label,
+          'btnTooltip': moreBtnTooltip,
+          'btnEnabled': isHofBtnUnlocked}, {'btnLabel': backport.text(R.strings.session_stats.resetBtn.label()),
+          'btnTooltip': clearBtnTooltip,
+          'btnEnabled': clearBtnEnabled}, {'btnIcon': RES_ICONS.MAPS_ICONS_MESSENGER_ICONSETTINGS,
+          'btnTooltip': makeTooltip(header=backport.text(R.strings.session_stats.tooltip.settingsBtn.header()), body=backport.text(R.strings.session_stats.tooltip.settingsBtn.body())),
+          'btnEnabled': True}]
 
     def __timeToClearText(self, timeToClear):
         if timeToClear.tm_hour == 0 and timeToClear.tm_min == 0:

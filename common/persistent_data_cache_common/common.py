@@ -1,10 +1,14 @@
-import typing, time, logging
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/persistent_data_cache_common/common.py
+import typing
+import time
+import logging
 from contextlib import contextmanager
 LOGGER_NAME = 'PersistentDataCache'
 DEFAULT_SAVING_TIMEOUT = 120.0
 
 def getLogger(*names):
-    return logging.getLogger(('{}').format(('.').join((LOGGER_NAME,) + names)))
+    return logging.getLogger('{}'.format('.'.join((LOGGER_NAME,) + names)))
 
 
 _logger = getLogger('Metrics')
@@ -33,9 +37,7 @@ class MeasureExecutionTime(object):
             self._logger.debug('%s executed in %s seconds.', self._createMetricName(section), endTime)
 
     def _createMetricName(self, section=''):
-        if section:
-            return (self._metricName, section)
-        return (self._metricName,)
+        return (self._metricName, section) if section else (self._metricName,)
 
     def __call__(self, func, section=''):
 

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/xmpp/wrappers.py
 from collections import namedtuple
 from constants import IGR_TYPE, ARENA_GUI_TYPE_LABEL
 from gui.shared.utils.decorators import ReprInjector
@@ -6,11 +8,10 @@ from messenger.proto.entities import ClanInfo
 from messenger.proto.xmpp.gloox_constants import CHAT_STATE
 from messenger.proto.xmpp.xmpp_constants import XMPP_BAN_COMPONENT
 from messenger.proto.xmpp.xmpp_constants import ANY_ITEM_LITERAL
-XMPPChannelData = namedtuple('XMPPChannelData', ('name', ))
+XMPPChannelData = namedtuple('XMPPChannelData', ('name',))
 
 class ChatMessage(object):
-    __slots__ = ('uuid', 'accountDBID', 'accountName', 'body', 'state', 'sentAt', 'requestID',
-                 'isFinalInHistory', 'accountAffiliation', 'accountRole')
+    __slots__ = ('uuid', 'accountDBID', 'accountName', 'body', 'state', 'sentAt', 'requestID', 'isFinalInHistory', 'accountAffiliation', 'accountRole')
 
     def __init__(self, dbID=0, name='', body='', sentAt=0, affiliation='none', role='none'):
         super(ChatMessage, self).__init__()
@@ -30,12 +31,11 @@ class ChatMessage(object):
 
 
 ClientInfo = namedtuple('ClientInfo', ('igrID', 'igrRoomID', 'gameHost', 'arenaLabel'))
-_BanInfoItem = namedtuple('_BanInfoItem', ('source', 'setter', 'expiresAt', 'reason',
-                                           'components', 'game'))
+_BanInfoItem = namedtuple('_BanInfoItem', ('source', 'setter', 'expiresAt', 'reason', 'components', 'game'))
 
 @ReprInjector.simple(('_items', 'items'))
 class BanInfo(object):
-    __slots__ = ('_items', )
+    __slots__ = ('_items',)
 
     def __init__(self, items):
         super(BanInfo, self).__init__()
@@ -131,9 +131,7 @@ def makeMucInfo(info):
         if 'status_codes' in info:
 
             def __convert(code):
-                if code.isdigit():
-                    return int(code)
-                return 0
+                return int(code) if code.isdigit() else 0
 
             statuses = map(__convert, info['status_codes'])
         else:

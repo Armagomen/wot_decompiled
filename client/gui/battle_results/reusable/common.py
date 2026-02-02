@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_results/reusable/common.py
 from collections import defaultdict
-import logging, typing
+import logging
+import typing
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as _CAPS
 import ArenaType
 from battle_modifiers_common import BattleModifiers
@@ -11,9 +14,7 @@ from helpers.bots import preprocessBotName
 _logger = logging.getLogger(__name__)
 
 class CommonInfo(shared.UnpackedInfo):
-    __slots__ = ('__arenaTypeID', '__winnerTeam', '__finishReason', '__finishAllPlayersLeft',
-                 '__arenaVisitor', '__bots', '__numDefended', '__bonusCapsOverrides',
-                 '__battleModifiers')
+    __slots__ = ('__arenaTypeID', '__winnerTeam', '__finishReason', '__finishAllPlayersLeft', '__arenaVisitor', '__bots', '__numDefended', '__bonusCapsOverrides', '__battleModifiers')
 
     def __init__(self, arenaTypeID=0, guiType=ARENA_GUI_TYPE.UNKNOWN, bonusType=ARENA_BONUS_TYPE.UNKNOWN, winnerTeam=0, finishReason=FINISH_REASON.UNKNOWN, bots=None, finishAllPlayersLeft=False, bonusCapsOverrides=None, battleModifiersDescr=None, **kwargs):
         super(CommonInfo, self).__init__()
@@ -98,10 +99,7 @@ class CommonInfo(shared.UnpackedInfo):
         return self.__arenaVisitor.getArenaIcon(subdir)
 
     def getBotInfo(self, vehicleID):
-        if vehicleID in self.__bots:
-            return self.__bots[vehicleID]
-        else:
-            return
+        return self.__bots[vehicleID] if vehicleID in self.__bots else None
 
     def getBots(self):
         return self.__bots

@@ -1,10 +1,15 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/impl/lobby/tooltips/battle_ability_tooltip.py
 from frameworks.wulf import ViewSettings
 from frontline.gui.frontline_helpers import AbilitiesTemplates
 from frontline.gui.impl.gen.view_models.views.lobby.tooltips.battle_ability_tooltip_levels_model import BattleAbilityTooltipLevelsModel
 from frontline.gui.impl.gen.view_models.views.lobby.tooltips.battle_ability_tooltip_param_model import BattleAbilityTooltipParamModel
+from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.game_control.epic_meta_game_ctrl import EpicMetaGameSkill
+from gui.impl.backport.backport_tooltip import DecoratedTooltipWindow
 from gui.impl.gen import R
 from gui.impl.pub import ViewImpl
+from gui.shared.tooltips import ToolTipBaseData
 from helpers import dependency
 from frontline.gui.impl.gen.view_models.views.lobby.tooltips.battle_ability_tooltip_model import BattleAbilityTooltipModel
 from frontline.gui.frontline_helpers import getSkillParams
@@ -13,7 +18,7 @@ from skeletons.gui.shared import IItemsCache
 TEMPLATES = AbilitiesTemplates(R.strings.fl_battle_abilities_setup.infoPanel.param.valueTemplate)
 
 class BattleAbilityTooltipView(ViewImpl):
-    _slots__ = ('intCD', )
+    _slots__ = ('intCD',)
     __epicController = dependency.descriptor(IEpicBattleMetaGameController)
     __itemsCache = dependency.descriptor(IItemsCache)
 
@@ -33,7 +38,7 @@ class BattleAbilityTooltipView(ViewImpl):
         item = self.__itemsCache.items.getItemByCD(self.intCD)
         if not item:
             return
-        with self.getViewModel().transaction() as (model):
+        with self.getViewModel().transaction() as model:
             skill = self.__epicSkills[item.innationID]
             realLevel = self.__epicController.getSkillLevels().get(skill.skillID)
             info = skill.getSkillInfo()
@@ -65,5 +70,16 @@ class BattleAbilityTooltipView(ViewImpl):
                     skillParam.setValueTemplate(param.get('valueTemplate'))
                     if param['isDynamic']:
                         paramslevel.addViewModel(skillParam)
-                    elif lvl == 1:
+                    if lvl == 1:
                         characteristics.addViewModel(skillParam)
+
+
+class BattleAbilityTooltipData(ToolTipBaseData):
+
+    def __init__(self, context):
+        super(BattleAbilityTooltipData, self).__init__(context, TOOLTIPS_CONSTANTS.FRONTLINE_BATTLE_ABILITY)
+
+    @staticmethod
+    def getDisplayableData(intCD, *args, **kwargs):
+        parent = kwargs.get('parent', None)
+        return DecoratedTooltipWindow(BattleAbilityTooltipView(intCD, *args, **kwargs), parent, useDecorator=False)

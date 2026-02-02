@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client_common/vehicle_outfit/outfit.py
 import typing
 from collections import Counter, namedtuple
 from constants import IS_EDITOR
@@ -19,80 +21,48 @@ class Area(TankPartIndexes):
     ALL = TankPartIndexes.ALL + (MISC,)
 
 
-ANCHOR_TYPE_TO_SLOT_TYPE_MAP = {'inscription': GUI_ITEM_TYPE.INSCRIPTION, 
-   'player': GUI_ITEM_TYPE.EMBLEM, 
-   'paint': GUI_ITEM_TYPE.PAINT, 
-   'camouflage': GUI_ITEM_TYPE.CAMOUFLAGE, 
-   'projectionDecal': GUI_ITEM_TYPE.PROJECTION_DECAL, 
-   'style': GUI_ITEM_TYPE.STYLE, 
-   'effect': GUI_ITEM_TYPE.MODIFICATION, 
-   'sequence': GUI_ITEM_TYPE.SEQUENCE, 
-   'attachment': GUI_ITEM_TYPE.ATTACHMENT, 
-   'statTracker': GUI_ITEM_TYPE.STAT_TRACKER}
+ANCHOR_TYPE_TO_SLOT_TYPE_MAP = {'inscription': GUI_ITEM_TYPE.INSCRIPTION,
+ 'player': GUI_ITEM_TYPE.EMBLEM,
+ 'paint': GUI_ITEM_TYPE.PAINT,
+ 'camouflage': GUI_ITEM_TYPE.CAMOUFLAGE,
+ 'projectionDecal': GUI_ITEM_TYPE.PROJECTION_DECAL,
+ 'style': GUI_ITEM_TYPE.STYLE,
+ 'effect': GUI_ITEM_TYPE.MODIFICATION,
+ 'sequence': GUI_ITEM_TYPE.SEQUENCE,
+ 'attachment': GUI_ITEM_TYPE.ATTACHMENT,
+ 'statTracker': GUI_ITEM_TYPE.STAT_TRACKER}
 SLOT_TYPE_TO_ANCHOR_TYPE_MAP = {v:k for k, v in ANCHOR_TYPE_TO_SLOT_TYPE_MAP.iteritems()}
-SLOT_TYPES = tuple(slotType for slotType in SLOT_TYPE_TO_ANCHOR_TYPE_MAP)
+SLOT_TYPES = tuple((slotType for slotType in SLOT_TYPE_TO_ANCHOR_TYPE_MAP))
 EditableStyleDiff = namedtuple('EditableStyleDiff', ('applied', 'removed'))
 
 def scaffold():
-    return (
-     OutfitContainer(areaID=Area.CHASSIS, slots=(
-      MultiSlot(slotTypes=(
-       GUI_ITEM_TYPE.PAINT,), regions=ApplyArea.CHASSIS_PAINT_REGIONS),)),
-     OutfitContainer(areaID=Area.HULL, slots=(
-      MultiSlot(slotTypes=(
-       GUI_ITEM_TYPE.PAINT,), regions=ApplyArea.HULL_PAINT_REGIONS),
-      MultiSlot(slotTypes=(
-       GUI_ITEM_TYPE.CAMOUFLAGE,), regions=ApplyArea.HULL_CAMOUFLAGE_REGIONS),
-      MultiSlot(slotTypes=(
-       GUI_ITEM_TYPE.EMBLEM,), regions=ApplyArea.HULL_EMBLEM_REGIONS),
-      MultiSlot(slotTypes=(
-       GUI_ITEM_TYPE.INSCRIPTION, GUI_ITEM_TYPE.PERSONAL_NUMBER), regions=ApplyArea.HULL_INSCRIPTION_REGIONS),
-      MultiSlot(slotTypes=(
-       GUI_ITEM_TYPE.INSIGNIA,), regions=ApplyArea.HULL_INSIGNIA_REGIONS),
-      MultiSlot(slotTypes=(
-       GUI_ITEM_TYPE.ATTACHMENT,), regions=[]),
-      MultiSlot(slotTypes=(
-       GUI_ITEM_TYPE.STAT_TRACKER,), regions=[]))),
-     OutfitContainer(areaID=Area.TURRET, slots=(
-      MultiSlot(slotTypes=(
-       GUI_ITEM_TYPE.PAINT,), regions=ApplyArea.TURRET_PAINT_REGIONS),
-      MultiSlot(slotTypes=(
-       GUI_ITEM_TYPE.CAMOUFLAGE,), regions=ApplyArea.TURRET_CAMOUFLAGE_REGIONS),
-      MultiSlot(slotTypes=(
-       GUI_ITEM_TYPE.EMBLEM,), regions=ApplyArea.TURRET_EMBLEM_REGIONS),
-      MultiSlot(slotTypes=(
-       GUI_ITEM_TYPE.INSCRIPTION, GUI_ITEM_TYPE.PERSONAL_NUMBER), regions=ApplyArea.TURRET_INSCRIPTION_REGIONS),
-      MultiSlot(slotTypes=(
-       GUI_ITEM_TYPE.INSIGNIA,), regions=ApplyArea.TURRET_INSIGNIA_REGIONS),
-      MultiSlot(slotTypes=(
-       GUI_ITEM_TYPE.ATTACHMENT,), regions=[]))),
-     OutfitContainer(areaID=Area.GUN, slots=(
-      MultiSlot(slotTypes=(
-       GUI_ITEM_TYPE.PAINT,), regions=ApplyArea.GUN_PAINT_REGIONS),
-      MultiSlot(slotTypes=(
-       GUI_ITEM_TYPE.CAMOUFLAGE,), regions=ApplyArea.GUN_CAMOUFLAGE_REGIONS),
-      MultiSlot(slotTypes=(
-       GUI_ITEM_TYPE.EMBLEM,), regions=ApplyArea.GUN_EMBLEM_REGIONS),
-      MultiSlot(slotTypes=(
-       GUI_ITEM_TYPE.INSCRIPTION, GUI_ITEM_TYPE.PERSONAL_NUMBER), regions=ApplyArea.GUN_INSCRIPTION_REGIONS),
-      MultiSlot(slotTypes=(
-       GUI_ITEM_TYPE.INSIGNIA,), regions=ApplyArea.GUN_INSIGNIA_REGIONS),
-      MultiSlot(slotTypes=(
-       GUI_ITEM_TYPE.ATTACHMENT,), regions=[]))),
-     OutfitContainer(areaID=Area.MISC, slots=(
-      MultiSlot(slotTypes=(
-       GUI_ITEM_TYPE.MODIFICATION,), regions=ApplyArea.MODIFICATION_REGIONS),
-      ProjectionDecalsMultiSlot(slotTypes=(
-       GUI_ITEM_TYPE.PROJECTION_DECAL,), regions=[], limit=MAX_PROJECTION_DECALS),
-      MultiSlot(slotTypes=(
-       GUI_ITEM_TYPE.SEQUENCE,), regions=[]))))
+    return (OutfitContainer(areaID=Area.CHASSIS, slots=(MultiSlot(slotTypes=(GUI_ITEM_TYPE.PAINT,), regions=ApplyArea.CHASSIS_PAINT_REGIONS),)),
+     OutfitContainer(areaID=Area.HULL, slots=(MultiSlot(slotTypes=(GUI_ITEM_TYPE.PAINT,), regions=ApplyArea.HULL_PAINT_REGIONS),
+      MultiSlot(slotTypes=(GUI_ITEM_TYPE.CAMOUFLAGE,), regions=ApplyArea.HULL_CAMOUFLAGE_REGIONS),
+      MultiSlot(slotTypes=(GUI_ITEM_TYPE.EMBLEM,), regions=ApplyArea.HULL_EMBLEM_REGIONS),
+      MultiSlot(slotTypes=(GUI_ITEM_TYPE.INSCRIPTION, GUI_ITEM_TYPE.PERSONAL_NUMBER), regions=ApplyArea.HULL_INSCRIPTION_REGIONS),
+      MultiSlot(slotTypes=(GUI_ITEM_TYPE.INSIGNIA,), regions=ApplyArea.HULL_INSIGNIA_REGIONS),
+      MultiSlot(slotTypes=(GUI_ITEM_TYPE.ATTACHMENT,), regions=[]),
+      MultiSlot(slotTypes=(GUI_ITEM_TYPE.STAT_TRACKER,), regions=[]))),
+     OutfitContainer(areaID=Area.TURRET, slots=(MultiSlot(slotTypes=(GUI_ITEM_TYPE.PAINT,), regions=ApplyArea.TURRET_PAINT_REGIONS),
+      MultiSlot(slotTypes=(GUI_ITEM_TYPE.CAMOUFLAGE,), regions=ApplyArea.TURRET_CAMOUFLAGE_REGIONS),
+      MultiSlot(slotTypes=(GUI_ITEM_TYPE.EMBLEM,), regions=ApplyArea.TURRET_EMBLEM_REGIONS),
+      MultiSlot(slotTypes=(GUI_ITEM_TYPE.INSCRIPTION, GUI_ITEM_TYPE.PERSONAL_NUMBER), regions=ApplyArea.TURRET_INSCRIPTION_REGIONS),
+      MultiSlot(slotTypes=(GUI_ITEM_TYPE.INSIGNIA,), regions=ApplyArea.TURRET_INSIGNIA_REGIONS),
+      MultiSlot(slotTypes=(GUI_ITEM_TYPE.ATTACHMENT,), regions=[]))),
+     OutfitContainer(areaID=Area.GUN, slots=(MultiSlot(slotTypes=(GUI_ITEM_TYPE.PAINT,), regions=ApplyArea.GUN_PAINT_REGIONS),
+      MultiSlot(slotTypes=(GUI_ITEM_TYPE.CAMOUFLAGE,), regions=ApplyArea.GUN_CAMOUFLAGE_REGIONS),
+      MultiSlot(slotTypes=(GUI_ITEM_TYPE.EMBLEM,), regions=ApplyArea.GUN_EMBLEM_REGIONS),
+      MultiSlot(slotTypes=(GUI_ITEM_TYPE.INSCRIPTION, GUI_ITEM_TYPE.PERSONAL_NUMBER), regions=ApplyArea.GUN_INSCRIPTION_REGIONS),
+      MultiSlot(slotTypes=(GUI_ITEM_TYPE.INSIGNIA,), regions=ApplyArea.GUN_INSIGNIA_REGIONS),
+      MultiSlot(slotTypes=(GUI_ITEM_TYPE.ATTACHMENT,), regions=[]))),
+     OutfitContainer(areaID=Area.MISC, slots=(MultiSlot(slotTypes=(GUI_ITEM_TYPE.MODIFICATION,), regions=ApplyArea.MODIFICATION_REGIONS), ProjectionDecalsMultiSlot(slotTypes=(GUI_ITEM_TYPE.PROJECTION_DECAL,), regions=[], limit=MAX_PROJECTION_DECALS), MultiSlot(slotTypes=(GUI_ITEM_TYPE.SEQUENCE,), regions=[]))))
 
 
 REGIONS_BY_SLOT_TYPE = {container.getAreaID():{slotType:slot.getRegions() for slot in container.slots() for slotType in slot.getTypes()} for container in scaffold()}
 
 class Outfit(HasStrCD):
-    __slots__ = ('_id', '_styleDescr', '_containers', '_vehicleCD', '__itemsCounter',
-                 '__styleProgressionLevel', '__styleSerialNumber')
+    __slots__ = ('_id', '_styleDescr', '_containers', '_vehicleCD', '__itemsCounter', '__styleProgressionLevel', '__styleSerialNumber')
 
     def __init__(self, strCompactDescr=None, component=None, vehicleCD='', vehicleType=None):
         super(Outfit, self).__init__(strCompactDescr)
@@ -102,32 +72,31 @@ class Outfit(HasStrCD):
             raise SoftException("'strCompactDescr' and 'component' arguments are mutually exclusive!")
         if strCompactDescr:
             component = parseOutfitDescr(strCompactDescr)
-        else:
-            if component is None:
-                component = CustomizationOutfit()
-            self._id = component.styleId
-            self.__styleProgressionLevel = component.styleProgressionLevel
-            self.__styleSerialNumber = component.serial_number
-            self._styleDescr = None
-            if self._id:
-                intCD = makeIntCompactDescrByID('customizationItem', CustomizationType.STYLE, self._id)
-                if not IS_EDITOR:
+        elif component is None:
+            component = CustomizationOutfit()
+        self._id = component.styleId
+        self.__styleProgressionLevel = component.styleProgressionLevel
+        self.__styleSerialNumber = component.serial_number
+        self._styleDescr = None
+        if self._id:
+            intCD = makeIntCompactDescrByID('customizationItem', CustomizationType.STYLE, self._id)
+            if not IS_EDITOR:
+                self._styleDescr = getItemByCompactDescr(intCD)
+            else:
+                from items.vehicles import g_cache
+                if g_cache.customization20(createNew=False):
                     self._styleDescr = getItemByCompactDescr(intCD)
-                else:
-                    from items.vehicles import g_cache
-                    if g_cache.customization20(createNew=False):
-                        self._styleDescr = getItemByCompactDescr(intCD)
-            self._construct(vehicleType=vehicleType)
-            for container in self._containers.itervalues():
-                container.unpack(component)
+        self._construct(vehicleType=vehicleType)
+        for container in self._containers.itervalues():
+            container.unpack(component)
 
         self.__itemsCounter = None
         self.invalidate()
         return
 
     def __str__(self):
-        result = ('Outfit (vehicleCD={}, strCD={}):').format(self._vehicleCD, self.pack().makeCompDescr())
-        containers = ('\n').join(map(str, self.containers()))
+        result = 'Outfit (vehicleCD={}, strCD={}):'.format(self._vehicleCD, self.pack().makeCompDescr())
+        containers = '\n'.join(map(str, self.containers()))
         if containers:
             result += '\n' + containers
         return result
@@ -143,16 +112,13 @@ class Outfit(HasStrCD):
                 vehicleDescriptor = vehicleType
             else:
                 vehicleDescriptor = VehicleDescr(compactDescr=self.vehicleCD)
-            projectionDeclasMultiSlot = ProjectionDecalsMultiSlot(slotTypes=(
-             GUI_ITEM_TYPE.PROJECTION_DECAL,), regions=self.__getTypeRegions(vehicleDescriptor, GUI_ITEM_TYPE.PROJECTION_DECAL), limit=MAX_PROJECTION_DECALS)
+            projectionDeclasMultiSlot = ProjectionDecalsMultiSlot(slotTypes=(GUI_ITEM_TYPE.PROJECTION_DECAL,), regions=self.__getTypeRegions(vehicleDescriptor, GUI_ITEM_TYPE.PROJECTION_DECAL), limit=MAX_PROJECTION_DECALS)
             self.misc.setSlotFor(GUI_ITEM_TYPE.PROJECTION_DECAL, projectionDeclasMultiSlot)
-            sequenceMultiSlot = MultiSlot(slotTypes=(
-             GUI_ITEM_TYPE.SEQUENCE,), regions=self.__getTypeRegions(vehicleDescriptor, GUI_ITEM_TYPE.SEQUENCE))
+            sequenceMultiSlot = MultiSlot(slotTypes=(GUI_ITEM_TYPE.SEQUENCE,), regions=self.__getTypeRegions(vehicleDescriptor, GUI_ITEM_TYPE.SEQUENCE))
             self.misc.setSlotFor(GUI_ITEM_TYPE.SEQUENCE, sequenceMultiSlot)
             for itemType in GUI_ITEM_TYPE.ATTACHMENT_TYPES:
                 for partIdx in TankPartIndexes.ALL:
-                    attachmentMultiSlot = MultiSlot(slotTypes=(
-                     itemType,), regions=self.__getTypeRegions(vehicleDescriptor, itemType, (partIdx,)))
+                    attachmentMultiSlot = MultiSlot(slotTypes=(itemType,), regions=self.__getTypeRegions(vehicleDescriptor, itemType, (partIdx,)))
                     self.getContainer(partIdx).setSlotFor(itemType, attachmentMultiSlot)
 
             return
@@ -215,9 +181,7 @@ class Outfit(HasStrCD):
     def isEqual(self, other):
         if self.id != other.id:
             return False
-        if self.progressionLevel != other.progressionLevel:
-            return False
-        return self.diff(other).isEmpty() and other.diff(self).isEmpty()
+        return False if self.progressionLevel != other.progressionLevel else self.diff(other).isEmpty() and other.diff(self).isEmpty()
 
     def getContainer(self, areaID):
         return self._containers.get(areaID)
@@ -226,7 +190,7 @@ class Outfit(HasStrCD):
         self._containers[areaID] = container
 
     def has(self, item):
-        return any(item.intCD == intCD for intCD in self.items())
+        return any((item.intCD == intCD for intCD in self.items()))
 
     @property
     def vehicleCD(self):
@@ -262,9 +226,7 @@ class Outfit(HasStrCD):
 
     @property
     def modelsSet(self):
-        if self._styleDescr:
-            return self._styleDescr.modelsSet
-        return ''
+        return self._styleDescr.modelsSet if self._styleDescr else ''
 
     @property
     def itemsCounter(self):
@@ -302,8 +264,11 @@ class Outfit(HasStrCD):
                 for regionIdx in range(slot.capacity()):
                     slotData = slot.getSlotData(regionIdx)
                     if slotData and slotData.intCD:
-                        yield (
-                         slotData.intCD, slotData.component, regionIdx, container, slot)
+                        yield (slotData.intCD,
+                         slotData.component,
+                         regionIdx,
+                         container,
+                         slot)
 
     def slotsData(self):
         for container in self._containers.itervalues():
@@ -327,9 +292,7 @@ class Outfit(HasStrCD):
 
         if self._styleDescr:
             itemsCustomizationDisplayType.append(self._styleDescr.customizationDisplayType)
-        if itemsCustomizationDisplayType:
-            return max(itemsCustomizationDisplayType)
-        return CustomizationDisplayType.HISTORICAL
+        return max(itemsCustomizationDisplayType) if itemsCustomizationDisplayType else CustomizationDisplayType.HISTORICAL
 
     def isEmpty(self):
         return isEmpty(self.items())
@@ -351,7 +314,7 @@ class Outfit(HasStrCD):
         self.invalidateItemsCounter()
 
     def invalidateItemsCounter(self):
-        self.__itemsCounter = Counter(slotData.intCD for slotData in self.slotsData() if not slotData.component.preview)
+        self.__itemsCounter = Counter((slotData.intCD for slotData in self.slotsData() if not slotData.component.preview))
 
     def removeStyle(self):
         self._id = 0

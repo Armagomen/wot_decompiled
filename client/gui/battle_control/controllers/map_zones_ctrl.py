@@ -1,4 +1,7 @@
-import Event, SoundGroups
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/map_zones_ctrl.py
+import Event
+import SoundGroups
 from cgf_components.zone_components import RandomEventZoneUINotificationType, WeatherZoneUINotificationType
 from gui.battle_control.arena_info.interfaces import IMapZonesController
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID, VEHICLE_VIEW_STATE, DestroyTimerViewState, TIMER_VIEW_STATE
@@ -12,26 +15,16 @@ class SoundNotifications(object):
     DANGER_ZONE_EXIT = 'dstrct_death_zone_exit'
 
 
-_randomEventsNotificationMapping = {RandomEventZoneUINotificationType.WARNING_ZONE: (
-                                                  VEHICLE_VIEW_STATE.WARNING_ZONE, TIMER_VIEW_STATE.WARNING), 
-   RandomEventZoneUINotificationType.DANGER_ZONE: (
-                                                 VEHICLE_VIEW_STATE.DANGER_ZONE, TIMER_VIEW_STATE.CRITICAL), 
-   RandomEventZoneUINotificationType.MAP_DEATH_ZONE: (
-                                                    VEHICLE_VIEW_STATE.MAP_DEATH_ZONE, TIMER_VIEW_STATE.WARNING)}
-_weatherNotificationMapping = {WeatherZoneUINotificationType.BLIZZARD_ZONE: (
-                                               VEHICLE_VIEW_STATE.BLIZZARD_ZONE, TIMER_VIEW_STATE.WARNING), 
-   WeatherZoneUINotificationType.FIRE_ZONE: (
-                                           VEHICLE_VIEW_STATE.FIRE_ZONE, TIMER_VIEW_STATE.WARNING), 
-   WeatherZoneUINotificationType.FOG_ZONE: (
-                                          VEHICLE_VIEW_STATE.FOG_ZONE, TIMER_VIEW_STATE.WARNING), 
-   WeatherZoneUINotificationType.RAIN_ZONE: (
-                                           VEHICLE_VIEW_STATE.RAIN_ZONE, TIMER_VIEW_STATE.WARNING), 
-   WeatherZoneUINotificationType.SANDSTORM_ZONE: (
-                                                VEHICLE_VIEW_STATE.SANDSTORM_ZONE, TIMER_VIEW_STATE.WARNING), 
-   WeatherZoneUINotificationType.SMOKE_ZONE: (
-                                            VEHICLE_VIEW_STATE.SMOKE_ZONE, TIMER_VIEW_STATE.WARNING), 
-   WeatherZoneUINotificationType.TORNADO_ZONE: (
-                                              VEHICLE_VIEW_STATE.TORNADO_ZONE, TIMER_VIEW_STATE.WARNING)}
+_randomEventsNotificationMapping = {RandomEventZoneUINotificationType.WARNING_ZONE: (VEHICLE_VIEW_STATE.WARNING_ZONE, TIMER_VIEW_STATE.WARNING),
+ RandomEventZoneUINotificationType.DANGER_ZONE: (VEHICLE_VIEW_STATE.DANGER_ZONE, TIMER_VIEW_STATE.CRITICAL),
+ RandomEventZoneUINotificationType.MAP_DEATH_ZONE: (VEHICLE_VIEW_STATE.MAP_DEATH_ZONE, TIMER_VIEW_STATE.WARNING)}
+_weatherNotificationMapping = {WeatherZoneUINotificationType.BLIZZARD_ZONE: (VEHICLE_VIEW_STATE.BLIZZARD_ZONE, TIMER_VIEW_STATE.WARNING),
+ WeatherZoneUINotificationType.FIRE_ZONE: (VEHICLE_VIEW_STATE.FIRE_ZONE, TIMER_VIEW_STATE.WARNING),
+ WeatherZoneUINotificationType.FOG_ZONE: (VEHICLE_VIEW_STATE.FOG_ZONE, TIMER_VIEW_STATE.WARNING),
+ WeatherZoneUINotificationType.RAIN_ZONE: (VEHICLE_VIEW_STATE.RAIN_ZONE, TIMER_VIEW_STATE.WARNING),
+ WeatherZoneUINotificationType.SANDSTORM_ZONE: (VEHICLE_VIEW_STATE.SANDSTORM_ZONE, TIMER_VIEW_STATE.WARNING),
+ WeatherZoneUINotificationType.SMOKE_ZONE: (VEHICLE_VIEW_STATE.SMOKE_ZONE, TIMER_VIEW_STATE.WARNING),
+ WeatherZoneUINotificationType.TORNADO_ZONE: (VEHICLE_VIEW_STATE.TORNADO_ZONE, TIMER_VIEW_STATE.WARNING)}
 
 class MapZonesController(IMapZonesController):
     sessionProvider = dependency.descriptor(IBattleSessionProvider)
@@ -61,8 +54,7 @@ class MapZonesController(IMapZonesController):
         return BATTLE_CTRL_ID.MAP_ZONES_CONTROLLER
 
     def addMarkerToZone(self, zoneMarker, matrix):
-        self.__zoneMarkers[zoneMarker.id] = (
-         zoneMarker, matrix)
+        self.__zoneMarkers[zoneMarker.id] = (zoneMarker, matrix)
         self.onMarkerToZoneAdded(zoneMarker, matrix)
         SoundGroups.g_instance.playSoundPos(SoundNotifications.DANGER_ZONE_MARKER_START, matrix.translation)
 

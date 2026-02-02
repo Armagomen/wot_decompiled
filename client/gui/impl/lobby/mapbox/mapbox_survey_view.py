@@ -1,4 +1,7 @@
-import json, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/mapbox/mapbox_survey_view.py
+import json
+import typing
 from constants import Configs
 from frameworks.wulf import ViewSettings, WindowFlags, WindowLayer
 from frameworks.wulf.view.array import fillStringsArray
@@ -74,7 +77,7 @@ class MapBoxSurvey(ViewImpl):
         if question is None:
             raise SoftException('There is an invalid question for the mapbox survey')
         surveyManager = self.__mapboxCtrl.surveyManager
-        with self.getViewModel().transaction() as (model):
+        with self.getViewModel().transaction() as model:
             self.__fillQuestionModel(model.question, question)
             model.setMapId(surveyManager.getMapId())
             model.setSurveyGroup(surveyManager.getSurveyGroup())
@@ -151,7 +154,7 @@ class MapBoxSurvey(ViewImpl):
         surveyManager = self.__mapboxCtrl.surveyManager
         if answers:
             surveyManager.saveAnswers(qId, answers)
-        with self.getViewModel().transaction() as (model):
+        with self.getViewModel().transaction() as model:
             model.setCanContinue(surveyManager.canContinue(qId))
             question = surveyManager.getQuestion(qId)
             if question.getQuestionType() == QuestionType.TABLE:
@@ -165,7 +168,7 @@ class MapBoxSurvey(ViewImpl):
 
     def __setFinalScreen(self):
         surveyManager = self.__mapboxCtrl.surveyManager
-        with self.getViewModel().transaction() as (model):
+        with self.getViewModel().transaction() as model:
             model.setMapId(surveyManager.getMapId())
             model.setSurveyGroup(surveyManager.getSurveyGroup())
             totalQuestions = surveyManager.getTotalQuestionsCount()

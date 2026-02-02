@@ -1,4 +1,7 @@
-import string, ResMgr as rmgr
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/realm_utils.py
+import string
+import ResMgr as rmgr
 from constants import CURRENT_REALM, IS_CLIENT, IS_EDITOR, REALMS
 
 def getRealmFilePath(filepath):
@@ -8,12 +11,12 @@ def getRealmFilePath(filepath):
 
 def isFileWithRealm(fileName):
     parts = fileName.split('.')
-    return len(parts) > 2 and parts[(-2)] in REALMS
+    return len(parts) > 2 and parts[-2] in REALMS
 
 
 def isFileWithCurrentRealm(fileName):
     parts = fileName.split('.')
-    return len(parts) > 2 and parts[(-2)] == CURRENT_REALM
+    return len(parts) > 2 and parts[-2] == CURRENT_REALM
 
 
 class ResMgr(object):
@@ -21,17 +24,12 @@ class ResMgr(object):
     class __metaclass__(type):
 
         def __getattr__(self, item):
-            if IS_CLIENT:
-                return getattr(rmgr, item)
-            return getattr(self if item in ('openSection', 'purge') else rmgr, item)
+            return getattr(rmgr, item) if IS_CLIENT else getattr(self if item in ('openSection', 'purge') else rmgr, item)
 
     @staticmethod
     def openSection(filepath, createIfMissing=False):
-        section = (IS_EDITOR or rmgr.openSection)(getRealmFilePath(filepath)) if 1 else None
-        if section is not None:
-            return section
-        else:
-            return rmgr.openSection(filepath, createIfMissing)
+        section = rmgr.openSection(getRealmFilePath(filepath)) if not IS_EDITOR else None
+        return section if section is not None else rmgr.openSection(filepath, createIfMissing)
 
     @staticmethod
     def purge(filepath, recursive=False):

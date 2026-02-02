@@ -1,4 +1,9 @@
-import functools, weakref, BigWorld, BattleReplay
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/account_helpers/settings_core/settings_storages.py
+import functools
+import weakref
+import BigWorld
+import BattleReplay
 from AvatarInputHandler.cameras import FovExtended
 from adisp import adisp_async
 from debug_utils import LOG_DEBUG, LOG_ERROR
@@ -23,8 +28,7 @@ class ISettingsStorage(object):
         return self._settings.get(settingOption, default)
 
     def apply(self, restartApproved):
-        return (
-         None, lambda : None)
+        return (None, lambda : None)
 
     def clear(self):
         self._settings.clear()
@@ -55,20 +59,21 @@ class VideoSettingsStorage(ISettingsStorage):
 
     @windowMode.setter
     def windowMode(self, value):
-        self.store({'option': 'windowMode', 'value': value})
+        self.store({'option': 'windowMode',
+         'value': value})
 
     @property
     def resolution(self):
         resolution = (None, None)
         current = g_monitorSettings.currentVideoMode
         if current is not None:
-            resolution = (
-             current.width, current.height)
+            resolution = (current.width, current.height)
         return self._settings.get('resolution', resolution)
 
     @resolution.setter
     def resolution(self, value):
-        self.store({'option': 'resolution', 'value': value})
+        self.store({'option': 'resolution',
+         'value': value})
 
     @property
     def refreshRate(self):
@@ -80,7 +85,8 @@ class VideoSettingsStorage(ISettingsStorage):
 
     @refreshRate.setter
     def refreshRate(self, value):
-        self.store({'option': 'refreshRate', 'value': value})
+        self.store({'option': 'refreshRate',
+         'value': value})
 
     @property
     def videoMode(self):
@@ -105,26 +111,26 @@ class VideoSettingsStorage(ISettingsStorage):
         size = (None, None)
         current = g_monitorSettings.currentWindowSize
         if current is not None:
-            size = (
-             current.width, current.height)
+            size = (current.width, current.height)
         return self._settings.get('windowSize', size)
 
     @windowSize.setter
     def windowSize(self, value):
-        self.store({'option': 'windowSize', 'value': value})
+        self.store({'option': 'windowSize',
+         'value': value})
 
     @property
     def borderlessSize(self):
         size = (None, None)
         current = g_monitorSettings.currentBorderlessSize
         if current is not None:
-            size = (
-             current.width, current.height)
+            size = (current.width, current.height)
         return self._settings.get('borderlessSize', size)
 
     @borderlessSize.setter
     def borderlessSize(self, value):
-        self.store({'option': 'borderlessSize', 'value': value})
+        self.store({'option': 'borderlessSize',
+         'value': value})
 
     @property
     def monitor(self):
@@ -132,7 +138,8 @@ class VideoSettingsStorage(ISettingsStorage):
 
     @monitor.setter
     def monitor(self, value):
-        self.store({'option': 'monitor', 'value': value})
+        self.store({'option': 'monitor',
+         'value': value})
 
     def apply(self, restartApproved):
         if self._settings:
@@ -163,43 +170,40 @@ class VideoSettingsStorage(ISettingsStorage):
             if restartNeeded:
                 deviseRecreated = False
                 LOG_DEBUG("VideoSettingsStorage apply is expecting a restart so it didn't invoke changeVideoMode.")
-            else:
-                if windowSizeChanged and windowMode == BigWorld.WindowModeWindowed:
-                    deviseRecreated = True
-                    g_monitorSettings.changeWindowSize(windowSizeWidth, windowSizeHeight)
-                elif borderlessSizeChanged and windowMode == BigWorld.WindowModeBorderless:
-                    deviseRecreated = True
-                    g_monitorSettings.changeBorderlessSize(borderlessSizeWidth, borderlessSizeHeight)
-                elif (not monitorChanged or restartApproved) and (videModeChanged or windowModeChanged):
-                    deviseRecreated = True
-                    BigWorld.changeVideoMode(videoMode.index, int(windowMode))
-                BigWorld.changeFullScreenAspectRatio(aspectRatio)
-                self.clear()
-                self._core.isDeviseRecreated = deviseRecreated
-                if deviseRecreated:
+            elif windowSizeChanged and windowMode == BigWorld.WindowModeWindowed:
+                deviseRecreated = True
+                g_monitorSettings.changeWindowSize(windowSizeWidth, windowSizeHeight)
+            elif borderlessSizeChanged and windowMode == BigWorld.WindowModeBorderless:
+                deviseRecreated = True
+                g_monitorSettings.changeBorderlessSize(borderlessSizeWidth, borderlessSizeHeight)
+            elif (not monitorChanged or restartApproved) and (videModeChanged or windowModeChanged):
+                deviseRecreated = True
+                BigWorld.changeVideoMode(videoMode.index, int(windowMode))
+            BigWorld.changeFullScreenAspectRatio(aspectRatio)
+            self.clear()
+            self._core.isDeviseRecreated = deviseRecreated
+            if deviseRecreated:
 
-                    def wrapper(monitorChanged, windowSizeChanged, borderlessSizeChanged, cMonitor, cWindowSize, cVideoMode, cWindowMode, cAspectRatio):
+                def wrapper(monitorChanged, windowSizeChanged, borderlessSizeChanged, cMonitor, cWindowSize, cVideoMode, cWindowMode, cAspectRatio):
 
-                        def revert():
-                            if monitorChanged:
-                                g_monitorSettings.changeMonitor(cMonitor)
-                            if borderlessSizeChanged and cWindowMode == BigWorld.WindowModeBorderless:
-                                g_monitorSettings.changeBorderlessSize(cBorderlessSize.width, cBorderlessSize.height)
-                            elif windowSizeChanged and cWindowMode == BigWorld.WindowModeWindowed:
-                                g_monitorSettings.changeWindowSize(cWindowSize.width, cWindowSize.height)
-                            elif not monitorChanged and (videModeChanged or windowModeChanged):
-                                BigWorld.changeVideoMode(cVideoMode.index, cWindowMode)
-                            BigWorld.changeFullScreenAspectRatio(cAspectRatio)
+                    def revert():
+                        if monitorChanged:
+                            g_monitorSettings.changeMonitor(cMonitor)
+                        if borderlessSizeChanged and cWindowMode == BigWorld.WindowModeBorderless:
+                            g_monitorSettings.changeBorderlessSize(cBorderlessSize.width, cBorderlessSize.height)
+                        elif windowSizeChanged and cWindowMode == BigWorld.WindowModeWindowed:
+                            g_monitorSettings.changeWindowSize(cWindowSize.width, cWindowSize.height)
+                        elif not monitorChanged and (videModeChanged or windowModeChanged):
+                            BigWorld.changeVideoMode(cVideoMode.index, cWindowMode)
+                        BigWorld.changeFullScreenAspectRatio(cAspectRatio)
 
-                        return revert
+                    return revert
 
-                    @adisp_async
-                    def confirmator(callback=None):
-                        BigWorld.callback(0.0, lambda : DialogsInterface.showI18nConfirmDialog('graphicsChangeConfirmation', callback, meta=TimerConfirmDialogMeta('graphicsChangeConfirmation', timer=15)))
+                @adisp_async
+                def confirmator(callback=None):
+                    BigWorld.callback(0.0, lambda : DialogsInterface.showI18nConfirmDialog('graphicsChangeConfirmation', callback, meta=TimerConfirmDialogMeta('graphicsChangeConfirmation', timer=15)))
 
-                    return (
-                     confirmator,
-                     wrapper(monitorChanged, windowSizeChanged, borderlessSizeChanged, cMonitor, cWindowSize, cVideoMode, cWindowMode, cAspectRatio))
+                return (confirmator, wrapper(monitorChanged, windowSizeChanged, borderlessSizeChanged, cMonitor, cWindowSize, cVideoMode, cWindowMode, cAspectRatio))
         return super(VideoSettingsStorage, self).apply(restartApproved)
 
 
@@ -220,8 +224,7 @@ class MessengerSettingsStorage(object):
 
     def apply(self, restartApproved):
         messenger_settings.saveUserPreferences(self._settings)
-        return (
-         None, lambda : None)
+        return (None, lambda : None)
 
     def clear(self):
         self._settings.clear()
@@ -271,7 +274,8 @@ class FOVSettingsStorage(ISettingsStorage):
 
     @dynamicFOVEnabled.setter
     def dynamicFOVEnabled(self, value):
-        self.store({'option': 'dynamicFOVEnabled', 'value': value})
+        self.store({'option': 'dynamicFOVEnabled',
+         'value': value})
 
     def proxyFOV(self, option):
         self.__FOV = weakref.proxy(option)
@@ -283,7 +287,8 @@ class FOVSettingsStorage(ISettingsStorage):
 
     @FOV.setter
     def FOV(self, value):
-        self.store({'option': 'FOV', 'value': value})
+        self.store({'option': 'FOV',
+         'value': value})
 
     def apply(self, restartApproved, forceApply=False):
         if self._settings or forceApply:

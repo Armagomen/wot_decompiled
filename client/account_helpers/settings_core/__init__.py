@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/account_helpers/settings_core/__init__.py
 from skeletons.account_helpers.settings_core import ISettingsCache, ISettingsCore, IBattleCommunicationsSettings
 
 def getSettingsCoreConfig(manager):
@@ -16,7 +18,7 @@ def getSettingsCoreConfig(manager):
 
 
 def longToInt32(value):
-    if 2147483648 <= value <= 4294967295:
+    if 2147483648L <= value <= 4294967295L:
         value &= 2147483647
         value = int(value)
         value = ~value

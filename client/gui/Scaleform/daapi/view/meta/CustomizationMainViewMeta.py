@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/CustomizationMainViewMeta.py
 from gui.Scaleform.framework.entities.View import View
 
 class CustomizationMainViewMeta(View):
@@ -63,69 +65,52 @@ class CustomizationMainViewMeta(View):
         self._printOverrideError('onEntryPointClick')
 
     def as_hideS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_hide(value)
+        return self.flashObject.as_hide(value) if self._isDAAPIInited() else None
 
     def as_setHeaderDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setHeaderData(data)
+        return self.flashObject.as_setHeaderData(data) if self._isDAAPIInited() else None
 
     def as_setAnchorInitS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setAnchorInit(data)
+        return self.flashObject.as_setAnchorInit(data) if self._isDAAPIInited() else None
 
     def as_updateAnchorDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateAnchorData(data)
+        return self.flashObject.as_updateAnchorData(data) if self._isDAAPIInited() else None
 
     def as_onRegionHighlightedS(self, slotId, highlightingType, highlightingResult, areaMouseBehavior):
-        if self._isDAAPIInited():
-            return self.flashObject.as_onRegionHighlighted(slotId, highlightingType, highlightingResult, areaMouseBehavior)
+        return self.flashObject.as_onRegionHighlighted(slotId, highlightingType, highlightingResult, areaMouseBehavior) if self._isDAAPIInited() else None
 
     def as_updateSelectedRegionsS(self, slotId):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateSelectedRegions(slotId)
+        return self.flashObject.as_updateSelectedRegions(slotId) if self._isDAAPIInited() else None
 
     def as_setAnchorsDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setAnchorsData(data)
+        return self.flashObject.as_setAnchorsData(data) if self._isDAAPIInited() else None
 
     def as_setSeasonsBarDataS(self, dataProvider):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setSeasonsBarData(dataProvider)
+        return self.flashObject.as_setSeasonsBarData(dataProvider) if self._isDAAPIInited() else None
 
     def as_enableDNDS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_enableDND(value)
+        return self.flashObject.as_enableDND(value) if self._isDAAPIInited() else None
 
     def as_selectSeasonS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_selectSeason(value)
+        return self.flashObject.as_selectSeason(value) if self._isDAAPIInited() else None
 
     def as_releaseItemS(self, deselectAnchor=True):
-        if self._isDAAPIInited():
-            return self.flashObject.as_releaseItem(deselectAnchor)
+        return self.flashObject.as_releaseItem(deselectAnchor) if self._isDAAPIInited() else None
 
     def as_showCarouselsArrowsNotificationS(self, text):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showCarouselsArrowsNotification(text)
+        return self.flashObject.as_showCarouselsArrowsNotification(text) if self._isDAAPIInited() else None
 
     def as_reselectS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_reselect(data)
+        return self.flashObject.as_reselect(data) if self._isDAAPIInited() else None
 
     def as_setNotificationCountersS(self, counters):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setNotificationCounters(counters)
+        return self.flashObject.as_setNotificationCounters(counters) if self._isDAAPIInited() else None
 
     def as_setAnchorsStateS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setAnchorsState(data)
+        return self.flashObject.as_setAnchorsState(data) if self._isDAAPIInited() else None
 
     def as_attachToCursorS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_attachToCursor(data)
+        return self.flashObject.as_attachToCursor(data) if self._isDAAPIInited() else None
 
     def as_updateInnerEntriesS(self, items):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateInnerEntries(items)
+        return self.flashObject.as_updateInnerEntries(items) if self._isDAAPIInited() else None

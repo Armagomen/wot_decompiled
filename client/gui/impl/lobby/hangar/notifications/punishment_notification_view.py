@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/hangar/notifications/punishment_notification_view.py
 from __future__ import absolute_import
 from enum import Enum
 from past.types import basestring
@@ -44,8 +46,7 @@ class PunishmentDialogLocaleKeys(Enum):
 
 
 class PunishmentView(ViewImpl):
-    __slots__ = ('__iconResID', '__title', '__text', '__dimmerAlpha', '__infoText',
-                 '__reason')
+    __slots__ = ('__iconResID', '__title', '__text', '__dimmerAlpha', '__infoText', '__reason')
     LAYOUT_ID = R.views.lobby.hangar.notifications.PunishmentView()
     VIEW_MODEL = PunishmentDialogModel
     _guiLoader = dependency.instance(IGuiLoader)
@@ -81,7 +82,7 @@ class PunishmentView(ViewImpl):
         super(PunishmentView, self)._finalize()
 
     def _updateViewModel(self):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             self._fillViewModel(vm)
 
     def _fillViewModel(self, vm):
@@ -134,7 +135,7 @@ class BanView(PunishmentView):
 
 
 class AfkLeaverNotification(LobbyNotificationWindow):
-    __slots__ = ('_blur', )
+    __slots__ = ('_blur',)
     __appLoader = dependency.descriptor(IAppLoader)
 
     def __init__(self, content, parent=None):
@@ -172,9 +173,7 @@ class WarningNotificationWindow(AfkLeaverNotification):
         self.isAFKViolation = isAFKViolation
 
     def __eq__(self, other):
-        if not isinstance(other, WarningNotificationWindow):
-            return False
-        return self.arenaTypeID == other.arenaTypeID and self.time == other.time and self.reason == other.reason and self.isAFKViolation == other.isAFKViolation
+        return False if not isinstance(other, WarningNotificationWindow) else self.arenaTypeID == other.arenaTypeID and self.time == other.time and self.reason == other.reason and self.isAFKViolation == other.isAFKViolation
 
 
 class PenaltyNotificationWindow(AfkLeaverNotification):
@@ -188,9 +187,7 @@ class PenaltyNotificationWindow(AfkLeaverNotification):
         self.isAFKViolation = isAFKViolation
 
     def __eq__(self, other):
-        if not isinstance(other, PenaltyNotificationWindow):
-            return False
-        return self.arenaTypeID == other.arenaTypeID and self.time == other.time and self.reason == other.reason and self.isAFKViolation == other.isAFKViolation
+        return False if not isinstance(other, PenaltyNotificationWindow) else self.arenaTypeID == other.arenaTypeID and self.time == other.time and self.reason == other.reason and self.isAFKViolation == other.isAFKViolation
 
 
 class BanNotificationWindow(AfkLeaverNotification):
@@ -203,6 +200,4 @@ class BanNotificationWindow(AfkLeaverNotification):
         self.duration = duration
 
     def __eq__(self, other):
-        if not isinstance(other, BanNotificationWindow):
-            return False
-        return self.arenaTypeID == other.arenaTypeID and self.time == other.time and self.duration == other.duration
+        return False if not isinstance(other, BanNotificationWindow) else self.arenaTypeID == other.arenaTypeID and self.time == other.time and self.duration == other.duration

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/customization_item_vo.py
 from account_helpers.AccountSettings import AccountSettings, CUSTOMIZATION_STYLE_ITEMS_VISITED
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.customization.shared import PROJECTION_DECAL_FORM_TO_UI_ID, PROJECTION_DECAL_IMAGE_FORM_TAG
@@ -9,22 +11,22 @@ from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
 from gui.shared.utils.graphics import isRendererPipelineDeferred
 from items.components.c11n_components import EditingStyleReason
 from items.components.c11n_constants import ProjectionDecalFormTags, EDITING_STYLE_REASONS
-_ICON_ALPHA_BY_GUI_ITEM_TYPE = {GUI_ITEM_TYPE.PAINT: 1, 
-   GUI_ITEM_TYPE.CAMOUFLAGE: 1, 
-   GUI_ITEM_TYPE.MODIFICATION: 0.8, 
-   GUI_ITEM_TYPE.DECAL: 1, 
-   GUI_ITEM_TYPE.EMBLEM: 1, 
-   GUI_ITEM_TYPE.INSCRIPTION: 1, 
-   GUI_ITEM_TYPE.OUTFIT: 1, 
-   GUI_ITEM_TYPE.STYLE: 0.5, 
-   GUI_ITEM_TYPE.PROJECTION_DECAL: 1, 
-   GUI_ITEM_TYPE.INSIGNIA: 1, 
-   GUI_ITEM_TYPE.PERSONAL_NUMBER: 0.8}
-_PROJECTION_DECAL_FORM_TO_IMAGE_SCALE = {ProjectionDecalFormTags.SQUARE: 0.725, 
-   ProjectionDecalFormTags.RECT1X2: 0.85, 
-   ProjectionDecalFormTags.RECT1X3: 0.85, 
-   ProjectionDecalFormTags.RECT1X4: 1, 
-   ProjectionDecalFormTags.RECT1X6: 1}
+_ICON_ALPHA_BY_GUI_ITEM_TYPE = {GUI_ITEM_TYPE.PAINT: 1,
+ GUI_ITEM_TYPE.CAMOUFLAGE: 1,
+ GUI_ITEM_TYPE.MODIFICATION: 0.8,
+ GUI_ITEM_TYPE.DECAL: 1,
+ GUI_ITEM_TYPE.EMBLEM: 1,
+ GUI_ITEM_TYPE.INSCRIPTION: 1,
+ GUI_ITEM_TYPE.OUTFIT: 1,
+ GUI_ITEM_TYPE.STYLE: 0.5,
+ GUI_ITEM_TYPE.PROJECTION_DECAL: 1,
+ GUI_ITEM_TYPE.INSIGNIA: 1,
+ GUI_ITEM_TYPE.PERSONAL_NUMBER: 0.8}
+_PROJECTION_DECAL_FORM_TO_IMAGE_SCALE = {ProjectionDecalFormTags.SQUARE: 0.725,
+ ProjectionDecalFormTags.RECT1X2: 0.85,
+ ProjectionDecalFormTags.RECT1X3: 0.85,
+ ProjectionDecalFormTags.RECT1X4: 1,
+ ProjectionDecalFormTags.RECT1X6: 1}
 _DEFAULT_IMAGE_SCALE = 1
 
 def buildCustomizationItemDataVO(item, count=None, isApplied=False, isDarked=False, isUsedUp=False, autoRentEnabled=False, vehicle=None, progressionLevel=None, icon=None, showDetailItems=True, plainView=False, showEditableHint=False, showEditBtnHint=False, isChained=False, isUnsuitable=False, isInProgress=False, rarity=''):
@@ -114,16 +116,7 @@ def buildCustomizationItemDataVO(item, count=None, isApplied=False, isDarked=Fal
 
 
 class CustomizationCarouselRendererVO(object):
-    __slots__ = ('intCD', 'typeId', 'isWide', 'icon', 'hasBonus', 'locked', 'buyPrice',
-                 'quantity', 'isRental', 'autoRentEnabled', 'showDetailItems', 'customizationDisplayType',
-                 'isSpecial', 'isDarked', 'isAlreadyUsed', 'showAlert', 'buyOperationAllowed',
-                 'extraNames', 'showRareIcon', 'isEquipped', 'rentalInfoText', 'imageCached',
-                 'isAllSeasons', 'noveltyCounter', 'editNoveltyCounter', 'formIconSource',
-                 'defaultIconAlpha', 'lockText', 'isDim', 'formFactor', 'progressionLevel',
-                 'editableIcon', 'editBtnEnabled', 'showEditableHint', 'showEditBtnHint',
-                 'imageScale', 'tooltip', 'isChained', 'isUnsuitable', 'isProgressionRewindEnabled',
-                 'isWithSerialNumber', 'isInProgress', 'isLinked', 'isNew', 'isRare',
-                 'rarityIconSource', 'rarityBackgroundIconSource', 'showDisabled')
+    __slots__ = ('intCD', 'typeId', 'isWide', 'icon', 'hasBonus', 'locked', 'buyPrice', 'quantity', 'isRental', 'autoRentEnabled', 'showDetailItems', 'customizationDisplayType', 'isSpecial', 'isDarked', 'isAlreadyUsed', 'showAlert', 'buyOperationAllowed', 'extraNames', 'showRareIcon', 'isEquipped', 'rentalInfoText', 'imageCached', 'isAllSeasons', 'noveltyCounter', 'editNoveltyCounter', 'formIconSource', 'defaultIconAlpha', 'lockText', 'isDim', 'formFactor', 'progressionLevel', 'editableIcon', 'editBtnEnabled', 'showEditableHint', 'showEditBtnHint', 'imageScale', 'tooltip', 'isChained', 'isUnsuitable', 'isProgressionRewindEnabled', 'isWithSerialNumber', 'isInProgress', 'isLinked', 'isNew', 'isRare', 'rarityIconSource', 'rarityBackgroundIconSource', 'showDisabled')
 
     def __init__(self, item, icon, hasBonus, locked, buyPrice, quantity=None, showDetailItems=True, isSpecial=False, isDarked=False, isAlreadyUsed=False, showAlert=False, buyOperationAllowed=True, extraNames=None, isEquipped=False, rentalInfoText='', imageCached=True, noveltyCounter=0, editNoveltyCounter=0, autoRentEnabled=False, formIconSource='', defaultIconAlpha=1, lockText='', formFactor=-1, progressionLevel=-1, imageScale=1, editableIcon='', editBtnEnabled=False, showEditableHint=False, showEditBtnHint=False, tooltip='', isChained=False, isUnsuitable=False, isProgressionRewindEnabled=False, isWithSerialNumber=False, isInProgress=False, isLinked=False, isNew=False, isRare=False, rarityIconSource='', rarityBackgroundIconSource='', showDisabled=False):
         self.intCD = item.intCD
@@ -176,51 +169,51 @@ class CustomizationCarouselRendererVO(object):
         self.showDisabled = showDisabled
 
     def asDict(self):
-        ret = {'intCD': self.intCD, 
-           'typeId': self.typeId, 
-           'isWide': self.isWide, 
-           'icon': self.icon, 
-           'locked': self.locked, 
-           'buyPrice': self.buyPrice, 
-           'isRental': self.isRental, 
-           'autoRentEnabled': self.autoRentEnabled, 
-           'showDetailItems': self.showDetailItems, 
-           'customizationDisplayType': self.customizationDisplayType, 
-           'isSpecial': self.isSpecial, 
-           'isDarked': self.isDarked, 
-           'isAlreadyUsed': self.isAlreadyUsed, 
-           'showAlert': self.showAlert, 
-           'buyOperationAllowed': self.buyOperationAllowed, 
-           'showRareIcon': self.showRareIcon, 
-           'isEquipped': self.isEquipped, 
-           'rentalInfoText': self.rentalInfoText, 
-           'imageCached': self.imageCached, 
-           'noveltyCounter': self.noveltyCounter, 
-           'editNoveltyCounter': self.editNoveltyCounter, 
-           'isAllSeasons': self.isAllSeasons, 
-           'formIconSource': self.formIconSource, 
-           'defaultIconAlpha': self.defaultIconAlpha, 
-           'lockText': self.lockText, 
-           'isDim': self.isDim, 
-           'formFactor': self.formFactor, 
-           'progressionLevel': self.progressionLevel, 
-           'editableIcon': self.editableIcon, 
-           'editBtnEnabled': self.editBtnEnabled, 
-           'showEditableHint': self.showEditableHint, 
-           'showEditBtnHint': self.showEditBtnHint, 
-           'scale': self.imageScale, 
-           'tooltip': self.tooltip, 
-           'isChained': self.isChained, 
-           'isUnsuitable': self.isUnsuitable, 
-           'isProgressionRewindEnabled': self.isProgressionRewindEnabled, 
-           'isWithSerialNumber': self.isWithSerialNumber, 
-           'isInProgress': self.isInProgress, 
-           'isLinked': self.isLinked, 
-           'isNew': self.isNew, 
-           'isRare': self.isRare, 
-           'rarityIconSource': self.rarityIconSource, 
-           'rarityBackgroundIconSource': self.rarityBackgroundIconSource, 
-           'showDisabled': self.showDisabled}
+        ret = {'intCD': self.intCD,
+         'typeId': self.typeId,
+         'isWide': self.isWide,
+         'icon': self.icon,
+         'locked': self.locked,
+         'buyPrice': self.buyPrice,
+         'isRental': self.isRental,
+         'autoRentEnabled': self.autoRentEnabled,
+         'showDetailItems': self.showDetailItems,
+         'customizationDisplayType': self.customizationDisplayType,
+         'isSpecial': self.isSpecial,
+         'isDarked': self.isDarked,
+         'isAlreadyUsed': self.isAlreadyUsed,
+         'showAlert': self.showAlert,
+         'buyOperationAllowed': self.buyOperationAllowed,
+         'showRareIcon': self.showRareIcon,
+         'isEquipped': self.isEquipped,
+         'rentalInfoText': self.rentalInfoText,
+         'imageCached': self.imageCached,
+         'noveltyCounter': self.noveltyCounter,
+         'editNoveltyCounter': self.editNoveltyCounter,
+         'isAllSeasons': self.isAllSeasons,
+         'formIconSource': self.formIconSource,
+         'defaultIconAlpha': self.defaultIconAlpha,
+         'lockText': self.lockText,
+         'isDim': self.isDim,
+         'formFactor': self.formFactor,
+         'progressionLevel': self.progressionLevel,
+         'editableIcon': self.editableIcon,
+         'editBtnEnabled': self.editBtnEnabled,
+         'showEditableHint': self.showEditableHint,
+         'showEditBtnHint': self.showEditBtnHint,
+         'scale': self.imageScale,
+         'tooltip': self.tooltip,
+         'isChained': self.isChained,
+         'isUnsuitable': self.isUnsuitable,
+         'isProgressionRewindEnabled': self.isProgressionRewindEnabled,
+         'isWithSerialNumber': self.isWithSerialNumber,
+         'isInProgress': self.isInProgress,
+         'isLinked': self.isLinked,
+         'isNew': self.isNew,
+         'isRare': self.isRare,
+         'rarityIconSource': self.rarityIconSource,
+         'rarityBackgroundIconSource': self.rarityBackgroundIconSource,
+         'showDisabled': self.showDisabled}
         if self.extraNames is not None:
             ret.update(styleName=self.extraNames[0], styleNameSmall=self.extraNames[1])
         if self.quantity:
@@ -242,12 +235,9 @@ def __getIcon(item, progressionLevel):
 
 
 def __isItemSpecial(item):
-    if item.isVehicleBound and not item.isProgressionAutoBound:
-        if item.buyCount > 0 or item.inventoryCount > 0:
-            return True
-    if item.isLimited and item.buyCount > 0:
+    if item.isVehicleBound and not item.isProgressionAutoBound and (item.buyCount > 0 or item.inventoryCount > 0):
         return True
-    return False
+    return True if item.isLimited and item.buyCount > 0 else False
 
 
 def __isNeedToShowAlert(item):
@@ -255,9 +245,7 @@ def __isNeedToShowAlert(item):
         return False
     if item.itemTypeID == GUI_ITEM_TYPE.MODIFICATION:
         return True
-    if item.itemTypeID == GUI_ITEM_TYPE.PROJECTION_DECAL:
-        return bool(item.descriptor.glossTexture)
-    return False
+    return bool(item.descriptor.glossTexture) if item.itemTypeID == GUI_ITEM_TYPE.PROJECTION_DECAL else False
 
 
 def __getEditableBlockData(item, vehicle=None):

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/tooltips/ranked/ranked_calendar_steps_tooltip.py
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared.formatters import text_styles
@@ -35,11 +37,10 @@ class RankedCalendarStepsTooltip(BlocksTooltipData):
                 formatter = text_styles.standard
             startDate = time_utils.getTimeStructInLocal(cycle.startDate)
             endDate = time_utils.getTimeStructInLocal(cycle.endDate)
-            item = formatter(backport.text(key, cycleNumber=seasonName, day0=('{:02d}').format(startDate.tm_mday), month0=('{:02d}').format(startDate.tm_mon), day1=('{:02d}').format(endDate.tm_mday), month1=('{:02d}').format(endDate.tm_mon)))
+            item = formatter(backport.text(key, cycleNumber=seasonName, day0='{:02d}'.format(startDate.tm_mday), month0='{:02d}'.format(startDate.tm_mon), day1='{:02d}'.format(endDate.tm_mday), month1='{:02d}'.format(endDate.tm_mon)))
             if currentCycle:
                 blocks.append(formatters.packImageTextBlockData(title=item, img=backport.image(R.images.gui.maps.icons.library.inProgressIcon()), imgPadding=formatters.packPadding(top=5), txtPadding=formatters.packPadding(left=5)))
-            else:
-                blocks.append(formatters.packTextBlockData(text=item, padding=formatters.packPadding(left=20)))
+            blocks.append(formatters.packTextBlockData(text=item, padding=formatters.packPadding(left=20)))
 
         items.append(formatters.packBuildUpBlockData(blocks, 13))
         return items

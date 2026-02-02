@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/BWAutoImport.py
 import collections
 from weakref import proxy as _proxy
 from WeakMethod import WeakMethodProxy
@@ -27,7 +29,8 @@ def _fix_proxy_handler_in_urllib2():
 
 
 def _fix_http_response_in_urllib2():
-    import functools, socket
+    import functools
+    import socket
     from urllib import addinfourl
     from urllib2 import AbstractHTTPHandler, URLError
 
@@ -38,9 +41,9 @@ def _fix_http_response_in_urllib2():
         h = http_class(host, timeout=req.timeout, **http_conn_args)
         h.set_debuglevel(self._debuglevel)
         headers = dict(req.unredirected_hdrs)
-        headers.update(dict((k, v) for k, v in req.headers.items() if k not in headers))
+        headers.update(dict(((k, v) for k, v in req.headers.items() if k not in headers)))
         headers['Connection'] = 'close'
-        headers = dict((name.title(), val) for name, val in headers.items())
+        headers = dict(((name.title(), val) for name, val in headers.items()))
         if req._tunnel_host:
             tunnel_headers = {}
             proxy_auth_hdr = 'Proxy-Authorization'
@@ -118,8 +121,7 @@ def _fix_ordered_dict():
 
         def iteritems(self):
             for key in self:
-                yield (
-                 key, self[key])
+                yield (key, self[key])
 
         def itervalues(self):
             for key in self:
@@ -134,16 +136,12 @@ def _fix_ordered_dict():
 
         def __reduce__(self):
             items = [ [k, self[k]] for k in self ]
-            tmp = (
-             self.__map, self.__root)
+            tmp = (self.__map, self.__root)
             del self.__map
             del self.__root
             inst_dict = vars(self).copy()
             self.__map, self.__root = tmp
-            if inst_dict:
-                return (self.__class__, (items,), inst_dict)
-            return (
-             self.__class__, (items,))
+            return (self.__class__, (items,), inst_dict) if inst_dict else (self.__class__, (items,))
 
         def clear(self):
             root = self.__root
@@ -198,9 +196,7 @@ def _fix_ordered_dict():
         __ne__ = MutableMapping.__ne__
 
         def __repr__(self):
-            if not self:
-                return '%s()' % (self.__class__.__name__,)
-            return '%s(%r)' % (self.__class__.__name__, list(self.items()))
+            return '%s()' % (self.__class__.__name__,) if not self else '%s(%r)' % (self.__class__.__name__, list(self.items()))
 
         def copy(self):
             return self.__class__(self)
@@ -214,9 +210,7 @@ def _fix_ordered_dict():
             return d
 
         def __eq__(self, other):
-            if isinstance(other, OrderedDict):
-                return len(self) == len(other) and all(p == q for p, q in zip(self.items(), other.items()))
-            return dict.__eq__(self, other)
+            return len(self) == len(other) and all((p == q for p, q in zip(self.items(), other.items()))) if isinstance(other, OrderedDict) else dict.__eq__(self, other)
 
     collections.OrderedDict = OrderedDict
 

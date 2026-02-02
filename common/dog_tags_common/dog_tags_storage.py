@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/dog_tags_common/dog_tags_storage.py
 import typing
 from collections import namedtuple
 from dog_tags_common.components_config import componentConfigAdapter
@@ -54,14 +56,11 @@ class ProgressStorage(Storage):
 
     def getAllItems(self):
         for compId, progress in self._section.iteritems():
-            yield (
-             compId, ProgressRecord(*progress))
+            yield (compId, ProgressRecord(*progress))
 
     def get(self, compId):
         progress = self._section.get(compId)
-        if progress:
-            return ProgressRecord(*progress)
-        return EMPTY_PROGRESS_RECORD
+        return ProgressRecord(*progress) if progress else EMPTY_PROGRESS_RECORD
 
 
 SkillDataRecord = namedtuple('SkillDataRecord', 'date, value')
@@ -105,7 +104,7 @@ class PlayerDogTagStorage(Storage):
         return self._section
 
     def buildPlayerDogTag(self, compIds):
-        return PlayerDogTag(self.buildComponentForAccount(compId) for compId in compIds)
+        return PlayerDogTag((self.buildComponentForAccount(compId) for compId in compIds))
 
     def buildComponentForAccount(self, compId):
         value, grade = self._progressStorage.get(compId) or EMPTY_PROGRESS_RECORD

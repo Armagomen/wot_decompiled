@@ -1,7 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/hangar/vehicle_menu_model.py
 from frameworks.wulf import Array, Map, ViewModel
 
 class VehicleMenuModel(ViewModel):
-    __slots__ = ('onNavigate', )
+    __slots__ = ('onNavigate',)
     DISABLED = 'disabled'
     ENABLED = 'enabled'
     WARNING = 'warning'

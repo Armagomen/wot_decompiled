@@ -1,4 +1,7 @@
-import logging, GUI
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/battle/veh_configurator.py
+import logging
+import GUI
 from adisp import adisp_process
 from gui.Scaleform.daapi.view.common.battle_royale import br_helpers
 from gui.shared.gui_items import GUI_ITEM_TYPE
@@ -76,7 +79,7 @@ class BattleVehicleConfiguratorCmp(VehicleModulesConfiguratorCmp, IProgressionLi
             if not moduleVO['selected']:
                 moduleVO['selected'] = True
                 column['selected'] = True
-                for prevModule in self._columnsVOs[(columnIdx - 1)]['modules']:
+                for prevModule in self._columnsVOs[columnIdx - 1]['modules']:
                     if prevModule['selected']:
                         moduleVO['activeLink'] = prevModule['intCD']
                         break
@@ -132,9 +135,7 @@ class BattleVehicleConfigurator(BattleVehicleConfiguratorMeta, IProgressionListe
 
     def __init__(self, *args, **kwargs):
         super(BattleVehicleConfigurator, self).__init__(*args, **kwargs)
-        self.__cmpAliases = {
-         BATTLE_VIEW_ALIASES.BATTLE_VEH_MODULES_CONFIGURATOR_CMP,
-         BATTLE_VIEW_ALIASES.BATTLE_LEVEL_PANEL}
+        self.__cmpAliases = {BATTLE_VIEW_ALIASES.BATTLE_VEH_MODULES_CONFIGURATOR_CMP, BATTLE_VIEW_ALIASES.BATTLE_LEVEL_PANEL}
         self.__configuratorCmp = None
         self.__blur = GUI.WGUIBackgroundBlur()
         self.__isActive = False
@@ -167,8 +168,8 @@ class BattleVehicleConfigurator(BattleVehicleConfiguratorMeta, IProgressionListe
         self.addListener(GameEvent.HIDE_VEHICLE_UPGRADE, self.__handleHide, EVENT_BUS_SCOPE.BATTLE)
         self.__blur.enable = True
         vehicle = self.__getProgressionVehicle()
-        self.as_setDataS({'vehTypeIcon': getTypeBigIconPath(vehicle.type), 
-           'vehName': vehicle.userName})
+        self.as_setDataS({'vehTypeIcon': getTypeBigIconPath(vehicle.type),
+         'vehName': vehicle.userName})
         vehicleStateCtrl = self.__getVehicleStateCtrl()
         if vehicleStateCtrl is not None:
             vehicleStateCtrl.onVehicleStateUpdated += self.__onVehicleStateUpdated
@@ -231,29 +232,29 @@ class BattleVehicleConfigurator(BattleVehicleConfiguratorMeta, IProgressionListe
     def __onComponentModulesChanged(self, modules):
         modulesCount = len(modules)
         if modulesCount == self._MAX_SELECTED_HIGHLIGHTED_MODULES:
-            self.as_updateChoiceInfoPanelS({'firstItem': self.__getModuleInfo(*modules[0]), 
-               'secondItem': self.__getModuleInfo(*modules[1])})
+            self.as_updateChoiceInfoPanelS({'firstItem': self.__getModuleInfo(*modules[0]),
+             'secondItem': self.__getModuleInfo(*modules[1])})
         elif modulesCount != 0:
             _logger.warning('%s or None modules can be highlighted. Received list instead: %s', str(self._MAX_SELECTED_HIGHLIGHTED_MODULES), str(modules))
 
     def __getModuleInfo(self, intCD, icon, index):
         module = self.__getModuleItem(intCD)
-        return {'header': getTreeModuleHeader(module), 
-           'parameters': getShortListParameters(module, self.__getProgressionVehicle(), self.__getInstalledOnVehicleAnalogByIntCD(intCD)), 
-           'hotKeys': getHotKeyInfoListByIndex(index), 
-           'module': {'icon': icon, 
-                      'intCD': intCD, 
-                      'available': True}}
+        return {'header': getTreeModuleHeader(module),
+         'parameters': getShortListParameters(module, self.__getProgressionVehicle(), self.__getInstalledOnVehicleAnalogByIntCD(intCD)),
+         'hotKeys': getHotKeyInfoListByIndex(index),
+         'module': {'icon': icon,
+                    'intCD': intCD,
+                    'available': True}}
 
     def __getModuleInfoPanel(self, intCD):
         itemTypeID, _, _ = parseIntCompactDescr(intCD)
         if itemTypeID != GUI_ITEM_TYPE.VEHICLE:
             module = self.__getModuleItem(intCD)
             if module is not None:
-                return {'header': getTreeModuleHeader(module), 
-                   'parameters': getShortListParameters(module, self.__getProgressionVehicle(), self.__getInstalledOnVehicleAnalogByIntCD(intCD)), 
-                   'module': {'icon': getTreeModuleIcon(module), 
-                              'available': True}}
+                return {'header': getTreeModuleHeader(module),
+                 'parameters': getShortListParameters(module, self.__getProgressionVehicle(), self.__getInstalledOnVehicleAnalogByIntCD(intCD)),
+                 'module': {'icon': getTreeModuleIcon(module),
+                            'available': True}}
         return
 
     def __getModuleItem(self, intCD):

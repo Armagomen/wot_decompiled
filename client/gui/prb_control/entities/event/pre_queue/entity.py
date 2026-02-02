@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/prb_control/entities/event/pre_queue/entity.py
 import BigWorld
 from constants import QUEUE_TYPE
 from debug_utils import LOG_DEBUG
@@ -39,9 +41,7 @@ class EventBattleEntity(PreQueueEntity):
         return super(EventBattleEntity, self).fini(ctx=ctx, woEvents=woEvents)
 
     def doSelectAction(self, action):
-        if action.actionName == PREBATTLE_ACTION_NAME.EVENT_BATTLE:
-            return SelectResult(True)
-        return super(EventBattleEntity, self).doSelectAction(action)
+        return SelectResult(True) if action.actionName == PREBATTLE_ACTION_NAME.EVENT_BATTLE else super(EventBattleEntity, self).doSelectAction(action)
 
     def leave(self, ctx, callback=None):
         self.storage.suspend()

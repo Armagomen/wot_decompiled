@@ -1,9 +1,11 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/personal_reserves/reserves_entry_point_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.common.personal_reserves.booster_model import BoosterModel
 from gui.impl.gen.view_models.views.lobby.personal_reserves.disabled_category import DisabledCategory
 
 class ReservesEntryPointModel(ViewModel):
-    __slots__ = ('openBoosterNavigation', )
+    __slots__ = ('openBoosterNavigation',)
 
     def __init__(self, properties=6, commands=1):
         super(ReservesEntryPointModel, self).__init__(properties=properties, commands=commands)

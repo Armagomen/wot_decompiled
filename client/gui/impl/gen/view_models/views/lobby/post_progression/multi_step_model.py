@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/post_progression/multi_step_model.py
 from frameworks.wulf import Array
 from gui.impl.gen.view_models.views.lobby.post_progression.modification_model import ModificationModel
 from gui.impl.gen.view_models.views.lobby.post_progression.step_model import StepModel

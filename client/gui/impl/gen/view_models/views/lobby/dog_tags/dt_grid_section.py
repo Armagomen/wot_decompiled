@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/dog_tags/dt_grid_section.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.dog_tags.dt_component import DtComponent

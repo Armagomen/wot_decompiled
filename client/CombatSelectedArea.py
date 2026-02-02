@@ -1,10 +1,14 @@
-import BigWorld, Math, math_utils
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/CombatSelectedArea.py
+import BigWorld
+import Math
+import math_utils
 from constants import SERVER_TICK_LENGTH
 OVER_TERRAIN_HEIGHT = 0.5
 MARKER_HEIGHT = 5.0
 DEFAULT_RADIUS_MODEL = 'content/Interface/CheckPoint/CheckPoint.visual'
 DEFAULT_ROTATE_MODEL = 'content/Interface/TargetPoint/rectangle2_1.visual'
-COLOR_WHITE = 4294967295
+COLOR_WHITE = 4294967295L
 
 class CombatSelectedArea(object):
     position = property(lambda self: self.__matrix.translation)
@@ -91,9 +95,10 @@ class CombatSelectedArea(object):
             if self.__enableConstrainToArenaBounds:
                 halfX = self.__size.x * 0.5
                 halfY = self.__size.y * 0.5
-                corners = {
-                 (
-                  halfX, 0, halfY), (-halfX, 0, halfY), (-halfX, 0, -halfY), (halfX, 0, -halfY)}
+                corners = {(halfX, 0, halfY),
+                 (-halfX, 0, halfY),
+                 (-halfX, 0, -halfY),
+                 (halfX, 0, -halfY)}
                 transformedCorners = map(lambda corner: self.__matrix.applyPoint(corner), corners)
                 arena = BigWorld.player().arena
                 correction = Math.Vector3(0)

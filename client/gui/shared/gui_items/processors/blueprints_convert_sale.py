@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/gui_items/processors/blueprints_convert_sale.py
 import BigWorld
 from gui.shared.gui_items.processors import Processor
 

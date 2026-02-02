@@ -1,4 +1,8 @@
-import functools, BigWorld, CGF
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/ArenaInfoBRComponent.py
+import functools
+import BigWorld
+import CGF
 from helpers import dependency
 from helpers.CallbackDelayer import CallbackDelayer
 from items import vehicles

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_light/scripts/client/comp7_light/gui/impl/lobby/tooltips/entry_point_tooltip.py
 from comp7_core.gui.impl.lobby.tooltips.entry_point_tooltip import Comp7CoreEntryPointTooltip
 from comp7_light.gui.impl.gen.view_models.views.lobby.enums import SeasonName as Comp7LightSeasonName
 from comp7_light.gui.impl.gen.view_models.views.lobby.season_model import SeasonState as Comp7LightSeasonState
@@ -10,10 +12,10 @@ from skeletons.gui.game_control import IComp7LightController
 class Comp7LightEntryPointTooltip(Comp7CoreEntryPointTooltip):
     __comp7LightController = dependency.descriptor(IComp7LightController)
 
-    def __init__(self):
+    def __init__(self, eventBanner):
         settings = ViewSettings(R.views.comp7_light.mono.lobby.entry_point_tooltip())
         settings.model = EntryPointTooltipModel()
-        super(Comp7LightEntryPointTooltip, self).__init__(settings)
+        super(Comp7LightEntryPointTooltip, self).__init__(settings, eventBanner=eventBanner)
 
     @property
     def _modeController(self):

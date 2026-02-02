@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/prb_windows/BasePrebattleRoomView.py
 from CurrentVehicle import g_currentVehicle
 from adisp import adisp_process
 from frameworks.wulf import WindowLayer
@@ -42,11 +44,11 @@ class BasePrebattleRoomView(BasePrebattleRoomViewMeta, ILegacyListener):
 
     @storage_getter('users')
     def usersStorage(self):
-        return
+        return None
 
     @proto_getter(PROTO_TYPE.BW_CHAT2)
     def bwProto(self):
-        return
+        return None
 
     @adisp_process
     def requestToReady(self, value):
@@ -63,8 +65,8 @@ class BasePrebattleRoomView(BasePrebattleRoomViewMeta, ILegacyListener):
 
     def showPrebattleSendInvitesWindow(self):
         if self.canSendInvite():
-            self.fireEvent(events.LoadViewEvent(SFViewLoadParams(PREBATTLE_ALIASES.SEND_INVITES_WINDOW_PY), ctx={'prbName': self.__prbName, 
-               'ctrlType': CTRL_ENTITY_TYPE.LEGACY}), scope=EVENT_BUS_SCOPE.LOBBY)
+            self.fireEvent(events.LoadViewEvent(SFViewLoadParams(PREBATTLE_ALIASES.SEND_INVITES_WINDOW_PY), ctx={'prbName': self.__prbName,
+             'ctrlType': CTRL_ENTITY_TYPE.LEGACY}), scope=EVENT_BUS_SCOPE.LOBBY)
 
     def getClientID(self):
         return self.__clientID
@@ -125,19 +127,19 @@ class BasePrebattleRoomView(BasePrebattleRoomViewMeta, ILegacyListener):
 
     def onPlayerStateChanged(self, entity, roster, playerInfo):
         team, assigned = decodeRoster(roster)
-        data = {'dbID': playerInfo.dbID, 
-           'state': playerInfo.state, 
-           'igrType': playerInfo.igrType, 
-           'icon': '', 
-           'vShortName': '', 
-           'vLevel': '', 
-           'vType': ''}
+        data = {'dbID': playerInfo.dbID,
+         'state': playerInfo.state,
+         'igrType': playerInfo.igrType,
+         'icon': '',
+         'vShortName': '',
+         'vLevel': '',
+         'vType': ''}
         if playerInfo.isVehicleSpecified():
             vehicle = playerInfo.getVehicle()
-            data.update({'icon': vehicle.iconContour, 
-               'vShortName': vehicle.shortUserName, 
-               'vLevel': int2roman(vehicle.level), 
-               'vType': vehicle.type})
+            data.update({'icon': vehicle.iconContour,
+             'vShortName': vehicle.shortUserName,
+             'vLevel': int2roman(vehicle.level),
+             'vType': vehicle.type})
         self.as_setPlayerStateS(team, assigned, data)
         if playerInfo.isCurrentPlayer():
             self.as_toggleReadyBtnS(not playerInfo.isReady())
@@ -189,23 +191,23 @@ class BasePrebattleRoomView(BasePrebattleRoomViewMeta, ILegacyListener):
                 vShortName = vehicle.shortUserName
                 vLevel = int2roman(vehicle.level)
                 vType = vehicle.type
-            result.append({'accID': account.accID, 
-               'dbID': account.dbID, 
-               'userName': account.name, 
-               'clanAbbrev': account.clanAbbrev, 
-               'region': self.lobbyContext.getRegionCode(account.dbID), 
-               'fullName': account.getFullName(), 
-               'igrType': account.igrType, 
-               'time': account.time, 
-               'isCreator': account.isCreator, 
-               'state': account.state, 
-               'icon': vContourIcon, 
-               'vShortName': vShortName, 
-               'vLevel': vLevel, 
-               'vType': vType, 
-               'tags': list(user.getTags()) if user else [], 
-               'isPlayerSpeaking': isPlayerSpeaking(account.dbID), 
-               'colors': getColors(key)})
+            result.append({'accID': account.accID,
+             'dbID': account.dbID,
+             'userName': account.name,
+             'clanAbbrev': account.clanAbbrev,
+             'region': self.lobbyContext.getRegionCode(account.dbID),
+             'fullName': account.getFullName(),
+             'igrType': account.igrType,
+             'time': account.time,
+             'isCreator': account.isCreator,
+             'state': account.state,
+             'icon': vContourIcon,
+             'vShortName': vShortName,
+             'vLevel': vLevel,
+             'vType': vType,
+             'tags': list(user.getTags()) if user else [],
+             'isPlayerSpeaking': isPlayerSpeaking(account.dbID),
+             'colors': getColors(key)})
 
         return result
 

@@ -1,6 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: resource_well/scripts/client/resource_well/gui/feature/processors.py
+from __future__ import absolute_import
 from functools import partial
 import BigWorld
-from adisp import adisp_async, adisp_process
+from adisp import adisp_async
 from gui import SystemMessages
 from gui.Scaleform.Waiting import Waiting
 from gui.SystemMessages import SM_TYPE
@@ -13,6 +16,7 @@ from resource_well.gui.feature.constants import UNAVAILABLE_REWARD_ERROR, Purcha
 from resource_well.gui.feature.resource import processLoadingResources, splitResourcesByType, mergeResources
 from resource_well.gui.shared.event_dispatcher import showResourcesLoadingConfirm, showNextSerialVehiclesConfirm
 from skeletons.gui.resource_well import IResourceWellController
+from wg_async import wg_async, wg_await
 _RESOURCE_WELL_MESSAGES = R.strings.system_messages.resourceWell
 
 class _ResourceLoadingConfirmator(MessageConfirmator):
@@ -28,16 +32,13 @@ class _ResourceLoadingConfirmator(MessageConfirmator):
         return partial(showResourcesLoadingConfirm, self.__rewardID, self.__resources, self.__isReturnOperation)
 
     @adisp_async
-    @adisp_process
+    @wg_async
     def _confirm(self, callback):
-        yield lambda callback: callback(None)
-        if self._activeHandler():
-            gfMetaData = self._gfMakeMeta()
-            if gfMetaData:
-                isOk, data = yield gfMetaData
-                result = plugins.makeSuccess(**data) if isOk else plugins.makeError(**data)
-                callback(result)
-                return
+        gfMetaData = self._gfMakeMeta()
+        if gfMetaData:
+            isOk, data = yield wg_await(gfMetaData())
+            result = plugins.makeSuccess(**data) if isOk else plugins.makeError(**data)
+            callback(result)
 
 
 class ResourceWellTakeBackProcessor(Processor):
@@ -81,9 +82,7 @@ class _PutRewardValidator(SyncValidator):
         mode = self.__resourceWell.getPurchaseMode()
         currentRewardID = self.__resourceWell.getCurrentRewardID()
         isCurrentRewardID = not currentRewardID or currentRewardID == self.__rewardID
-        if mode is PurchaseMode.TWO_PARALLEL_PRODUCTS and not isCurrentRewardID:
-            return plugins.makeError()
-        return plugins.makeSuccess()
+        return plugins.makeError() if mode is PurchaseMode.TWO_PARALLEL_PRODUCTS and not isCurrentRewardID else plugins.makeSuccess()
 
 
 class _BasePutResourcesProcessor(Processor):
@@ -120,8 +119,7 @@ class PutResourcesProcessor(_BasePutResourcesProcessor):
 
     def __init__(self, rewardID, resources):
         resources = processLoadingResources(rewardID, resources)
-        super(PutResourcesProcessor, self).__init__(rewardID, resources, [
-         _ResourceLoadingConfirmator(rewardID, resources, False)])
+        super(PutResourcesProcessor, self).__init__(rewardID, resources, [_ResourceLoadingConfirmator(rewardID, resources, False)])
 
 
 class _NextSerialVehicleConfirmator(MessageConfirmator):
@@ -135,21 +133,17 @@ class _NextSerialVehicleConfirmator(MessageConfirmator):
         return partial(showNextSerialVehiclesConfirm, self.__rewardID)
 
     @adisp_async
-    @adisp_process
+    @wg_async
     def _confirm(self, callback):
-        yield lambda callback: callback(None)
-        if self._activeHandler():
-            gfMetaData = self._gfMakeMeta()
-            if gfMetaData:
-                isOk, data = yield gfMetaData
-                result = plugins.makeSuccess(**data) if isOk else plugins.makeError(**data)
-                callback(result)
-                return
+        gfMetaData = self._gfMakeMeta()
+        if gfMetaData:
+            isOk, data = yield wg_await(gfMetaData())
+            result = plugins.makeSuccess(**data) if isOk else plugins.makeError(**data)
+            callback(result)
 
 
 class NextSerialVehicleProcessor(_BasePutResourcesProcessor):
     __resourceWell = dependency.descriptor(IResourceWellController)
 
     def __init__(self, rewardID, resources):
-        super(NextSerialVehicleProcessor, self).__init__(rewardID, processLoadingResources(rewardID, resources), [
-         _NextSerialVehicleConfirmator(rewardID)])
+        super(NextSerialVehicleProcessor, self).__init__(rewardID, processLoadingResources(rewardID, resources), [_NextSerialVehicleConfirmator(rewardID)])

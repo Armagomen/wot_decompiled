@@ -1,4 +1,7 @@
-import logging, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_core/scripts/client/comp7_core/gui/Scaleform/daapi/view/battle/shared/status_notifications/panel.py
+import logging
+import BigWorld
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from comp7_core.gui.Scaleform.daapi.view.battle.shared.status_notifications import sn_items as comp7_sn_items
 from comp7_core.gui.Scaleform.daapi.view.battle.shared.status_notifications import components
@@ -16,8 +19,7 @@ _logger = logging.getLogger(__name__)
 class Comp7BattleHighPriorityGroup(components.StatusNotificationsGroup):
 
     def __init__(self, updateCallback):
-        super(Comp7BattleHighPriorityGroup, self).__init__((
-         sn_items.FireSN,
+        super(Comp7BattleHighPriorityGroup, self).__init__((sn_items.FireSN,
          sn_items.DrownSN,
          sn_items.OverturnedSN,
          sn_items.HalfOverturnedSN,
@@ -31,8 +33,7 @@ class Comp7StatusNotificationTimerPanel(StatusNotificationTimerPanel):
         return components.Comp7StatusNotificationContainer
 
     def _generateItems(self):
-        items = [
-         Comp7BattleHighPriorityGroup,
+        items = [Comp7BattleHighPriorityGroup,
          PoiNotificationsGroup,
          sn_items.StunSN,
          comp7_sn_items.AoeHealSN,

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/economics.py
 import typing
 from collections import namedtuple
 from ItemRestore import getVehicleRestorePrice
@@ -17,9 +19,7 @@ def getActionPrc(price, defaultPrice):
     def calculate(price, defaultPrice):
         price = price or 0
         defaultPrice = defaultPrice or 0
-        if defaultPrice == 0 or price == defaultPrice:
-            return 0
-        return int(round((1 - float(price) / defaultPrice) * 100))
+        return 0 if defaultPrice == 0 or price == defaultPrice else int(round((1 - float(price) / defaultPrice) * 100))
 
     if isinstance(price, Money):
         for currency in Currency.BY_WEIGHT:
@@ -49,10 +49,10 @@ def calcRentPackages(vehicle, proxy, rentalsController):
                     defaultRentPrice = rentalsController.getRentPriceOfPackage(vehicle, rentType, packageID, defaultPackage)
                 else:
                     defaultRentPrice = rentPrice
-                result.append({'rentID': makeRentID(rentType, packageID), 
-                   'rentPrice': rentPrice, 
-                   'defaultRentPrice': defaultRentPrice, 
-                   'seasonType': currentPackage.get('seasonType', None)})
+                result.append({'rentID': makeRentID(rentType, packageID),
+                 'rentPrice': rentPrice,
+                 'defaultRentPrice': defaultRentPrice,
+                 'seasonType': currentPackage.get('seasonType', None)})
 
     return result
 

@@ -1,8 +1,12 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/items_parameters/bonus_helper.py
+import typing
+from future.utils import itervalues
 from constants import BonusTypes
 from gui.shared.gui_items import GUI_ITEM_TYPE, KPI, VEHICLE_ATTR_TO_KPI_NAME_MAP
 from gui.shared.items_parameters.comparator import CONDITIONAL_BONUSES, getParamExtendedData
 from gui.shared.items_parameters.params import VehicleParams
-from gui.shared.items_parameters.params import EXTRAS_CAMOUFLAGE
+from gui.shared.items_parameters.params_constants import EXTRAS_CAMOUFLAGE
 from helpers import dependency
 from items import vehicles
 from items.components.c11n_components import SeasonType
@@ -23,16 +27,20 @@ def isSituationalBonus(bonusName, bonusType='', paramName=''):
     param = skill.params.get(paramName)
     if param:
         return param.situational
-    if bonusName in _PARTIALLY_SITUATIONAL_BONUSES:
-        return paramName in _PARTIALLY_SITUATIONAL_BONUSES[bonusName]
-    return bonusName in _SITUATIONAL_BONUSES
+    return paramName in _PARTIALLY_SITUATIONAL_BONUSES[bonusName] if bonusName in _PARTIALLY_SITUATIONAL_BONUSES else bonusName in _SITUATIONAL_BONUSES
 
 
-_SITUATIONAL_BONUSES = ('camouflageNet', 'stereoscope', 'removedRpmLimiter', 'radioman_expert',
-                        'radioman_sideBySide', 'commander_emergency')
+_SITUATIONAL_BONUSES = {'camouflageNet',
+ 'stereoscope',
+ 'removedRpmLimiter',
+ 'radioman_expert',
+ 'radioman_sideBySide',
+ 'commander_emergency',
+ 'deluxeStereoscope',
+ 'deluxeCamouflageNet'}
 CREW_MASTERY_BONUSES = ('radioman_expert', 'radioman_sideBySide', 'commander_emergency')
-_PARTIALLY_SITUATIONAL_BONUSES = {'enemyShotPredictorBattleBooster': KPI.Name.ART_NOTIFICATION_DELAY_FACTOR, 
-   'rancorousBattleBooster': KPI.Name.DAMAGED_MODULES_DETECTION_TIME}
+_PARTIALLY_SITUATIONAL_BONUSES = {'enemyShotPredictorBattleBooster': KPI.Name.ART_NOTIFICATION_DELAY_FACTOR,
+ 'rancorousBattleBooster': KPI.Name.DAMAGED_MODULES_DETECTION_TIME}
 
 def _removeCamouflageModifier(vehicle, bonusID):
     if bonusID == EXTRAS_CAMOUFLAGE:
@@ -99,49 +107,29 @@ def _removePostProgressionBaseModifications(vehicle, modificationsName):
     return vehicle
 
 
-_VEHICLE_MODIFIERS = {BonusTypes.SKILL: _removeSkillModifier, 
-   BonusTypes.EXTRA: _removeCamouflageModifier, 
-   BonusTypes.EQUIPMENT: _removeEquipmentModifier, 
-   BonusTypes.OPTIONAL_DEVICE: _removeOptionalDeviceModifier, 
-   BonusTypes.BATTLE_BOOSTER: _removeBattleBoosterModifier, 
-   BonusTypes.PAIR_MODIFICATION: _removePostProgressionModification, 
-   BonusTypes.BASE_MODIFICATION: _removePostProgressionBaseModifications}
-_NOT_STACK_BONUSES = {'circularVisionRadius': (
-                          (
-                           'stereoscope_tier1', BonusTypes.OPTIONAL_DEVICE), ('stereoscope_tier2', BonusTypes.OPTIONAL_DEVICE),
-                          (
-                           'stereoscope_tier3', BonusTypes.OPTIONAL_DEVICE)), 
-   'invisibilityStillFactor': (
-                             (
-                              'camouflageNet_tier2', BonusTypes.OPTIONAL_DEVICE),
-                             (
-                              'camouflageNet_tier3', BonusTypes.OPTIONAL_DEVICE),
-                             (
-                              'camouflageBattleBooster', BonusTypes.BATTLE_BOOSTER)), 
-   'chassisRotationSpeed': (
-                          (
-                           'virtuosoBattleBooster', BonusTypes.BATTLE_BOOSTER),), 
-   'invisibilityMovingFactor': (
-                              (
-                               'camouflageBattleBooster', BonusTypes.BATTLE_BOOSTER),), 
-   'turboshaftInvisibilityMovingFactor': (
-                                        (
-                                         'camouflageBattleBooster', BonusTypes.BATTLE_BOOSTER),), 
-   'turboshaftInvisibilityStillFactor': (
-                                       (
-                                        'camouflageBattleBooster', BonusTypes.BATTLE_BOOSTER),), 
-   'vehicleGunShotDispersionTurretRotation': (
-                                            (
-                                             'smoothTurretBattleBooster', BonusTypes.BATTLE_BOOSTER),), 
-   'vehicleGunShotDispersionChassisMovement': (
-                                             (
-                                              'smoothDrivingBattleBooster', BonusTypes.BATTLE_BOOSTER),), 
-   'vehicleEnemySpottingTime': (
-                              (
-                               'rancorousBattleBooster', BonusTypes.BATTLE_BOOSTER),), 
-   'vehicleAmmoBayStrength': (
-                            (
-                             'pedantBattleBooster', BonusTypes.BATTLE_BOOSTER),)}
+_VEHICLE_MODIFIERS = {BonusTypes.SKILL: _removeSkillModifier,
+ BonusTypes.EXTRA: _removeCamouflageModifier,
+ BonusTypes.EQUIPMENT: _removeEquipmentModifier,
+ BonusTypes.OPTIONAL_DEVICE: _removeOptionalDeviceModifier,
+ BonusTypes.BATTLE_BOOSTER: _removeBattleBoosterModifier,
+ BonusTypes.PAIR_MODIFICATION: _removePostProgressionModification,
+ BonusTypes.BASE_MODIFICATION: _removePostProgressionBaseModifications}
+_NOT_STACK_BONUSES = {'circularVisionRadius': (('stereoscope_tier1', BonusTypes.OPTIONAL_DEVICE),
+                          ('stereoscope_tier2', BonusTypes.OPTIONAL_DEVICE),
+                          ('stereoscope_tier3', BonusTypes.OPTIONAL_DEVICE),
+                          ('deluxeStereoscope', BonusTypes.OPTIONAL_DEVICE)),
+ 'invisibilityStillFactor': (('camouflageNet_tier2', BonusTypes.OPTIONAL_DEVICE),
+                             ('camouflageNet_tier3', BonusTypes.OPTIONAL_DEVICE),
+                             ('deluxeCamouflageNet', BonusTypes.OPTIONAL_DEVICE),
+                             ('camouflageBattleBooster', BonusTypes.BATTLE_BOOSTER)),
+ 'chassisRotationSpeed': (('virtuosoBattleBooster', BonusTypes.BATTLE_BOOSTER),),
+ 'invisibilityMovingFactor': (('camouflageBattleBooster', BonusTypes.BATTLE_BOOSTER),),
+ 'turboshaftInvisibilityMovingFactor': (('camouflageBattleBooster', BonusTypes.BATTLE_BOOSTER),),
+ 'turboshaftInvisibilityStillFactor': (('camouflageBattleBooster', BonusTypes.BATTLE_BOOSTER),),
+ 'vehicleGunShotDispersionTurretRotation': (('smoothTurretBattleBooster', BonusTypes.BATTLE_BOOSTER),),
+ 'vehicleGunShotDispersionChassisMovement': (('smoothDrivingBattleBooster', BonusTypes.BATTLE_BOOSTER),),
+ 'vehicleEnemySpottingTime': (('rancorousBattleBooster', BonusTypes.BATTLE_BOOSTER),),
+ 'vehicleAmmoBayStrength': (('pedantBattleBooster', BonusTypes.BATTLE_BOOSTER),)}
 
 class _BonusSorter(object):
 
@@ -166,9 +154,7 @@ class _BonusSorter(object):
         return bonuses
 
     def __getNumDependencies(self, bonus, dependenciesNum=0):
-        if bonus in CONDITIONAL_BONUSES[self.__paramName]:
-            return self.__getNumDependencies(CONDITIONAL_BONUSES[self.__paramName][bonus], dependenciesNum + 1)
-        return dependenciesNum
+        return self.__getNumDependencies(CONDITIONAL_BONUSES[self.__paramName][bonus], dependenciesNum + 1) if bonus in CONDITIONAL_BONUSES[self.__paramName] else dependenciesNum
 
     def __notStackSorter(self, bonuses):
         if self.__paramName in _NOT_STACK_BONUSES:
@@ -194,8 +180,7 @@ class BonusExtractor(object):
         self.__reorderDevices(self.__bonuses)
         self.__bonuses = self.__reorderSkills(self.__bonuses, self.__vehicle)
         for bnsId, bnsGroup in self.__bonuses:
-            yield (
-             bnsGroup, bnsId, self.extractBonus(bnsGroup, bnsId))
+            yield (bnsGroup, bnsId, self.extractBonus(bnsGroup, bnsId))
 
     def extractBonus(self, bonusGroup, bonusID):
         paramName = self.__paramName
@@ -233,7 +218,7 @@ class BonusExtractor(object):
         for _, tankman in vehicle.crew:
             if tankman is None:
                 continue
-            for bonusSkills in tankman.bonusSkills.itervalues():
+            for bonusSkills in itervalues(tankman.bonusSkills):
                 for bonusSkill in reversed(bonusSkills):
                     if bonusSkill and bonusSkill.isSkillActive:
                         orderedSkillList.append(bonusSkill.name)
@@ -251,8 +236,7 @@ class BonusExtractor(object):
             if item[0] in orderedSkillMap:
                 sortedBonuses.append(sortableSkills[skillIndex])
                 skillIndex += 1
-            else:
-                sortedBonuses.append(item)
+            sortedBonuses.append(item)
 
         return sortedBonuses
 
@@ -282,6 +266,4 @@ class _CustomizedVehicleParams(VehicleParams):
         super(_CustomizedVehicleParams, self).__init__(vehicle, situationalBonuses)
 
     def _getVehicleDescriptor(self, vehicle):
-        if self.__removeCamouflage:
-            return vehicle.descriptor
-        return super(_CustomizedVehicleParams, self)._getVehicleDescriptor(vehicle)
+        return vehicle.descriptor if self.__removeCamouflage else super(_CustomizedVehicleParams, self)._getVehicleDescriptor(vehicle)

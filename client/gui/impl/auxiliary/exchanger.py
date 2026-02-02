@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/auxiliary/exchanger.py
+import logging
+import typing
 from adisp import adisp_async, adisp_process
 from gui.shared.gui_items.processors.common import GoldToCreditsExchanger
 from gui.shared.money import Currency
@@ -14,16 +17,16 @@ class ExchangeSubmitterBase(object):
         pass
 
     def getCurrentRate(self):
-        return 0
+        pass
 
     def getDefaultRate(self):
-        return 0
+        pass
 
     def calculateToItemCount(self, fromExchangeAmount):
-        return 0
+        pass
 
     def calculateFromItemCount(self, toExchangeAmount):
-        return 0
+        pass
 
 
 class ExchangeCreditsSubmitter(ExchangeSubmitterBase):

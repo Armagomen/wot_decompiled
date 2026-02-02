@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hangar_widget/services/missions_service.py
 from PlayerEvents import g_playerEvents
 from config_schemas.umg_config import umgConfigSchema
 from gui.impl.lobby.user_missions.hangar_widget.services import IMissionsService
@@ -16,7 +18,8 @@ class MissionsService(IMissionsService, ServiceEvents):
         self._onMissionsChangedEvent()
 
     def isVisible(self):
-        return umgConfigSchema.getModel().enableAllDaily and self.__hangarGuiCtrl.currentGuiProvider.getMissionsHelper().isDailyMissionsSupported()
+        helper = self.__hangarGuiCtrl.currentGuiProvider.getMissionsHelper()
+        return umgConfigSchema.getModel().enableAllDaily and helper is not None and helper.isDailyMissionsSupported()
 
     def startListening(self):
         self.startGlobalListening()

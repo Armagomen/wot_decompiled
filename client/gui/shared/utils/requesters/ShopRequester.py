@@ -1,7 +1,12 @@
-import logging, weakref
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/utils/requesters/ShopRequester.py
+import logging
+import weakref
 from abc import ABCMeta, abstractmethod
 from collections import namedtuple
-import typing, BigWorld
+from future.utils import viewvalues
+import typing
+import BigWorld
 from constants import WIN_XP_FACTOR_MODE, ARENA_BONUS_TYPE
 from goodies.goodie_constants import GOODIE_VARIETY, GOODIE_TARGET_TYPE, GOODIE_RESOURCE_TYPE
 from goodies.goodie_helpers import getPremiumCost, getPriceWithDiscount, GoodieData
@@ -26,8 +31,7 @@ _TankmenRestoreConfig = namedtuple('_TankmenRestoreConfig', 'freeDuration billab
 _TargetData = namedtuple('_TargetData', 'targetType, targetValue, limit')
 _ResourceData = namedtuple('_ResourceData', 'resourceType, value, isPercentage')
 _ConditionData = namedtuple('_ConditionData', 'conditionType, value')
-_DEFAULT_SLOT_PRICE = (
- 0, ([Currency.CREDITS, 300],))
+_DEFAULT_SLOT_PRICE = (0, ([Currency.CREDITS, 300],))
 
 class _NamedGoodieData(GoodieData):
 
@@ -36,9 +40,7 @@ class _NamedGoodieData(GoodieData):
         return GoodieData.__new__(cls, variety, _TargetData(*target) if target else None, enabled, lifetime, useby, counter, autostart, _ConditionData(*condition) if condition else None, _ResourceData(*resource) if resource else None, expireAfter if expireAfter else None, roundToEndOfGameDay if roundToEndOfGameDay else True)
 
     def getTargetValue(self):
-        if self.target.targetType == GOODIE_TARGET_TYPE.ON_BUY_PREMIUM:
-            return int(self.target.targetValue.split('_')[1])
-        return self.target.targetValue
+        return int(self.target.targetValue.split('_')[1]) if self.target.targetType == GOODIE_TARGET_TYPE.ON_BUY_PREMIUM else self.target.targetValue
 
 
 class ShopCommonStats(IShopCommonStats):
@@ -98,9 +100,7 @@ class ShopCommonStats(IShopCommonStats):
 
     def getItemPrice(self, intCD):
         prices = self.getPrices()
-        if intCD in prices:
-            return Money(**prices.getPrices(intCD))
-        return MONEY_UNDEFINED
+        return Money(**prices.getPrices(intCD)) if intCD in prices else MONEY_UNDEFINED
 
     def getBoosterPricesTuple(self, boosterID):
         return self.getBoosterPrices().get(boosterID, tuple())
@@ -112,11 +112,10 @@ class ShopCommonStats(IShopCommonStats):
             return {}
 
     def getItem(self, intCD):
-        return (
-         self.getItemPrice(intCD), intCD in self.getHiddens())
+        return (self.getItemPrice(intCD), intCD in self.getHiddens())
 
     def getAchievementReward(self, achievement, arenaType=ARENA_BONUS_TYPE.REGULAR):
-        return
+        return None
 
     @property
     def revision(self):
@@ -184,8 +183,7 @@ class ShopCommonStats(IShopCommonStats):
         else:
             modifiers = sellPriceModif
         rate = self.defaults.exchangeRate if hasattr(self, 'defaults') else self.exchangeRate
-        return (
-         self.revision,
+        return (self.revision,
          rate,
          self.exchangeRateForShellsAndEqs,
          sellPriceModif,
@@ -297,7 +295,7 @@ class ShopCommonStats(IShopCommonStats):
         return self.goodies.get(discountID, None)
 
     def getGoodiesByVariety(self, variety):
-        return dict((goodieID, item) for goodieID, item in self.goodies.iteritems() if item.variety == variety)
+        return dict(((goodieID, item) for goodieID, item in self.goodies.iteritems() if item.variety == variety))
 
     @property
     def boosters(self):
@@ -344,7 +342,7 @@ class ShopCommonStats(IShopCommonStats):
         return self.playerEmblemCost.get(days)
 
     def _getModernizedKey(self, level):
-        return ('').join(('paidModernized', str(level), 'RemovalCost'))
+        return ''.join(('paidModernized', str(level), 'RemovalCost'))
 
     def __getRestoreConfig(self):
         return self.getValue('restore_config', {})
@@ -491,20 +489,14 @@ class ShopRequester(AbstractSyncDataRequester, ShopCommonStats, IShopRequester):
         return personalVehicleDiscountPrice
 
     def bestGoody(self, goodies):
-        if goodies:
-            _, goody = sorted(goodies.iteritems(), key=lambda (_, goody): goody.resource[1])[(-1)]
-            return goody
-        else:
-            return
+        return sorted(viewvalues(goodies), key=lambda goody: goody.resource[1])[-1] if goodies else None
 
     def customRoleSlotChangeCost(self, vehType, isRaw=False):
         cost = getPostProgressionPrice(CUSTOM_ROLE_SLOT_CHANGE_PRICE, vehType, self._data)
-        if isRaw:
-            return cost
-        return Money(**cost)
+        return cost if isRaw else Money(**cost)
 
     def __getDiscountsDescriptionsByTarget(self, targetType):
-        return dict((discountID, item) for discountID, item in self.discounts.iteritems() if item.target.targetType == targetType and item.enabled)
+        return dict(((discountID, item) for discountID, item in self.discounts.iteritems() if item.target.targetType == targetType and item.enabled))
 
     def __applyGoodyToStudyCost(self, prices, goody):
 
@@ -518,16 +510,14 @@ class ShopRequester(AbstractSyncDataRequester, ShopCommonStats, IShopRequester):
 
     def __personalDiscountsByTarget(self, targetType):
         discounts = self.__getDiscountsDescriptionsByTarget(targetType)
-        return dict((discountID, item) for discountID, item in discounts.iteritems() if discountID in self._goodies.goodies)
+        return dict(((discountID, item) for discountID, item in discounts.iteritems() if discountID in self._goodies.goodies))
 
     @staticmethod
     def __getPriceWithDiscount(price, resourceData):
         resourceType, _, _ = resourceData
         if resourceType == GOODIE_RESOURCE_TYPE.CREDITS:
             return Money(credits=getPriceWithDiscount(price.credits, resourceData))
-        if resourceType == GOODIE_RESOURCE_TYPE.GOLD:
-            return Money(gold=getPriceWithDiscount(price.gold, resourceData))
-        return MONEY_UNDEFINED
+        return Money(gold=getPriceWithDiscount(price.gold, resourceData)) if resourceType == GOODIE_RESOURCE_TYPE.GOLD else MONEY_UNDEFINED
 
 
 class DefaultShopRequester(ShopCommonStats):
@@ -548,9 +538,7 @@ class DefaultShopRequester(ShopCommonStats):
         return
 
     def getValue(self, key, defaultValue=None):
-        if key in self.__cache:
-            return self.__cache[key]
-        return defaultValue
+        return self.__cache[key] if key in self.__cache else defaultValue
 
     @property
     def revision(self):
@@ -582,9 +570,7 @@ class DefaultShopRequester(ShopCommonStats):
 
     def getItemPrice(self, intCD):
         prices = self.getPrices()
-        if intCD in prices:
-            return Money(**prices.getPrices(intCD))
-        return self.__proxy.getItemPrice(intCD)
+        return Money(**prices.getPrices(intCD)) if intCD in prices else self.__proxy.getItemPrice(intCD)
 
     def getBoosterPricesTuple(self, boosterID):
         return self.getBoosterPrices().get(boosterID, self.__proxy.getBoosterPricesTuple(boosterID))
@@ -595,18 +581,12 @@ class DefaultShopRequester(ShopCommonStats):
     @property
     def paidRemovalCost(self):
         cost = self.getValue('paidRemovalCost')
-        if cost is None:
-            return self.__proxy.paidRemovalCost
-        else:
-            return cost.get(Currency.GOLD, 10)
+        return self.__proxy.paidRemovalCost if cost is None else cost.get(Currency.GOLD, 10)
 
     @property
     def paidDeluxeRemovalCost(self):
         cost = self.getValue('paidDeluxeRemovalCost')
-        if cost is None:
-            return self.__proxy.paidDeluxeRemovalCost
-        else:
-            return Money(**cost)
+        return self.__proxy.paidDeluxeRemovalCost if cost is None else Money(**cost)
 
     def getPaidModernizedRemovalCost(self, level):
         return self.__proxy.getPaidModernizedRemovalCost(level)
@@ -614,18 +594,12 @@ class DefaultShopRequester(ShopCommonStats):
     @property
     def paidTrophyBasicRemovalCost(self):
         cost = self.getValue('paidTrophyBasicRemovalCost')
-        if cost is None:
-            return self.__proxy.paidTrophyBasicRemovalCost
-        else:
-            return Money(**cost)
+        return self.__proxy.paidTrophyBasicRemovalCost if cost is None else Money(**cost)
 
     @property
     def paidTrophyUpgradedRemovalCost(self):
         cost = self.getValue('paidTrophyUpgradedRemovalCost')
-        if cost is None:
-            return self.__proxy.paidTrophyUpgradedRemovalCost
-        else:
-            return Money(**cost)
+        return self.__proxy.paidTrophyUpgradedRemovalCost if cost is None else Money(**cost)
 
     @property
     def exchangeRate(self):
@@ -677,17 +651,11 @@ class DefaultShopRequester(ShopCommonStats):
 
     def getBattlePassCost(self):
         cost = self.getValue('battlePassCost')
-        if cost is None:
-            return self.__proxy.getBattlePassCost()
-        else:
-            return Money(**cost)
+        return self.__proxy.getBattlePassCost() if cost is None else Money(**cost)
 
     def getBattlePassLevelCost(self):
         cost = self.getValue('battlePassLevelCost')
-        if cost is None:
-            return self.__proxy.getBattlePassLevelCost()
-        else:
-            return Money(**cost)
+        return self.__proxy.getBattlePassLevelCost() if cost is None else Money(**cost)
 
     @property
     def isEnabledBuyingGoldShellsForCredits(self):
@@ -737,10 +705,7 @@ class DefaultShopRequester(ShopCommonStats):
 
     def getVehCamouflagePriceFactor(self, typeCompDescr):
         value = self.getItemsData().get('vehicleCamouflagePriceFactors', {}).get(typeCompDescr)
-        if value is None:
-            return self.__proxy.getVehCamouflagePriceFactor(typeCompDescr)
-        else:
-            return value
+        return self.__proxy.getVehCamouflagePriceFactor(typeCompDescr) if value is None else value
 
     def getEmblemsGroupPriceFactors(self):
         return self.getItemsData().get('playerEmblemGroupPriceFactors', self.__proxy.getEmblemsGroupPriceFactors())
@@ -750,27 +715,19 @@ class DefaultShopRequester(ShopCommonStats):
 
     def getInscriptionsGroupPriceFactors(self, nationID):
         value = self.getItemsData().get('inscriptionGroupPriceFactors', [])
-        if len(value) <= nationID:
-            return self.__proxy.getInscriptionsGroupPriceFactors(nationID)
-        return value[nationID]
+        return self.__proxy.getInscriptionsGroupPriceFactors(nationID) if len(value) <= nationID else value[nationID]
 
     def getInscriptionsGroupHiddens(self, nationID):
         value = self.getItemsData().get('notInShopInscriptionGroups', [])
-        if len(value) <= nationID:
-            return self.__proxy.getInscriptionsGroupHiddens(nationID)
-        return value[nationID]
+        return self.__proxy.getInscriptionsGroupHiddens(nationID) if len(value) <= nationID else value[nationID]
 
     def getCamouflagesPriceFactors(self, nationID):
         value = self.getItemsData().get('camouflagePriceFactors', [])
-        if len(value) <= nationID:
-            return self.__proxy.getCamouflagesPriceFactors(nationID)
-        return value[nationID]
+        return self.__proxy.getCamouflagesPriceFactors(nationID) if len(value) <= nationID else value[nationID]
 
     def getCamouflagesHiddens(self, nationID):
         value = self.getItemsData().get('notInShopCamouflages', [])
-        if len(value) <= nationID:
-            return self.__proxy.getCamouflagesHiddens(nationID)
-        return value[nationID]
+        return self.__proxy.getCamouflagesHiddens(nationID) if len(value) <= nationID else value[nationID]
 
     @property
     def premiumCost(self):

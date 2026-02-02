@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/lootbox_system/base/tooltips/guaranteed_reward_info_tooltip.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.lootbox_system.tooltips.guaranteed_reward_info_tooltip_view_model import GuaranteedRewardInfoTooltipViewModel
@@ -21,6 +23,6 @@ class GuaranteedRewardInfoTooltip(ViewImpl):
 
     def _onLoading(self, *args, **kwargs):
         super(GuaranteedRewardInfoTooltip, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as (vmTx):
+        with self.viewModel.transaction() as vmTx:
             vmTx.setGuaranteedFrequency(self.__lootBoxes.getBoxInfoByCategory(self.__category).get('limit', 0))
             vmTx.setEventName(self.__eventName)

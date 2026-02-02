@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/gui_items/dossier/achievements/abstract/regular.py
 from dossiers2.custom.records import RECORD_MAX_VALUES
 from dossiers2.ui import achievements
 from gui.impl import backport
@@ -6,14 +8,11 @@ from gui.shared.gui_items.gui_item import GUIItem
 from helpers import i18n
 
 def dyn_or_num(accessor, name, default=None):
-    if name and name[0].isdigit():
-        return accessor.num(name, default=default)
-    return accessor.dyn(name, default=default)
+    return accessor.num(name, default=default) if name and name[0].isdigit() else accessor.dyn(name, default=default)
 
 
 class RegularAchievement(GUIItem):
-    __slots__ = ('_name', '_block', '_value', '_lvlUpValue', '_lvlUpTotalValue', '_isDone',
-                 '_isInDossier', '_isValid')
+    __slots__ = ('_name', '_block', '_value', '_lvlUpValue', '_lvlUpTotalValue', '_isDone', '_isInDossier', '_isValid')
 
     class ICON_TYPE:
         IT_180X180 = '180x180'
@@ -64,10 +63,7 @@ class RegularAchievement(GUIItem):
 
     def getI18nValue(self):
         maxValue = RECORD_MAX_VALUES.get(self.getRecordName())
-        if maxValue is not None and self._value >= maxValue:
-            return i18n.makeString('#achievements:achievement/maxMedalValue') % backport.getIntegralFormat(maxValue - 1)
-        else:
-            return backport.getIntegralFormat(self._value)
+        return i18n.makeString('#achievements:achievement/maxMedalValue') % backport.getIntegralFormat(maxValue - 1) if maxValue is not None and self._value >= maxValue else backport.getIntegralFormat(self._value)
 
     def getLevelUpValue(self):
         return self._lvlUpValue
@@ -76,8 +72,7 @@ class RegularAchievement(GUIItem):
         return self._lvlUpTotalValue
 
     def getRecordName(self):
-        return (
-         self._block, self._name)
+        return (self._block, self._name)
 
     def isInDossier(self):
         return self._isInDossier
@@ -86,8 +81,7 @@ class RegularAchievement(GUIItem):
         return self._isValid
 
     def getNextLevelInfo(self):
-        return (
-         '', self._lvlUpValue)
+        return ('', self._lvlUpValue)
 
     def getType(self):
         return self.__getPredefinedValue(achievements.getType)
@@ -105,7 +99,7 @@ class RegularAchievement(GUIItem):
         return self._isDone
 
     def getProgressValue(self):
-        return 0.0
+        pass
 
     def hasProgress(self):
         return False
@@ -116,23 +110,17 @@ class RegularAchievement(GUIItem):
     def tryGetSmallIcon(self, iconName):
         resource = R.images.gui.maps.icons.achievement.num('32x32')
         accessor = dyn_or_num(resource, iconName)
-        if accessor.isValid():
-            return backport.image(accessor())
-        return self.ICON_DEFAULT
+        return backport.image(accessor()) if accessor.isValid() else self.ICON_DEFAULT
 
     def tryGetBigIcon(self, iconName):
         resource = R.images.gui.maps.icons.achievement.big
         accessor = dyn_or_num(resource, iconName)
-        if accessor.isValid():
-            return backport.image(accessor())
-        return self.ICON_DEFAULT
+        return backport.image(accessor()) if accessor.isValid() else self.ICON_DEFAULT
 
     def tryGetMediumIcon(self, iconName):
         resource = R.images.gui.maps.icons.achievement
         accessor = dyn_or_num(resource, iconName)
-        if accessor.isValid():
-            return backport.image(accessor())
-        return self.ICON_DEFAULT
+        return backport.image(accessor()) if accessor.isValid() else self.ICON_DEFAULT
 
     def getIcons(self):
         iconName = self.getIconName()
@@ -141,9 +129,9 @@ class RegularAchievement(GUIItem):
             iconBig = self.tryGetBigIcon(iconName)
             iconMedium = self.tryGetMediumIcon(iconName)
             iconSmall = self.tryGetSmallIcon(iconName)
-        return {self.ICON_TYPE.IT_180X180: iconBig, 
-           self.ICON_TYPE.IT_67X71: iconMedium, 
-           self.ICON_TYPE.IT_32X32: iconSmall}
+        return {self.ICON_TYPE.IT_180X180: iconBig,
+         self.ICON_TYPE.IT_67X71: iconMedium,
+         self.ICON_TYPE.IT_32X32: iconSmall}
 
     def canDisplayAchievement(self):
         iconName = self.getIconName()
@@ -173,33 +161,25 @@ class RegularAchievement(GUIItem):
 
     def getUserDescription(self):
         textRes = dyn_or_num(R.strings.achievements, '%s_descr' % self._getActualName())
-        if textRes.exists():
-            return backport.text(textRes())
-        return ''
+        return backport.text(textRes()) if textRes.exists() else ''
 
     def getUserWebDescription(self):
         return self.getUserDescription()
 
     def getUserHeroInfo(self):
         heroInfoKey = '#achievements:%s_heroInfo' % self._getActualName()
-        if i18n.doesTextExist(heroInfoKey):
-            return i18n.makeString(heroInfoKey)
-        return ''
+        return i18n.makeString(heroInfoKey) if i18n.doesTextExist(heroInfoKey) else ''
 
     def getNotificationInfo(self):
         notificationKey = '#achievements:%s_notification' % self._getActualName()
-        if i18n.doesTextExist(notificationKey):
-            return i18n.makeString(notificationKey)
-        return ''
+        return i18n.makeString(notificationKey) if i18n.doesTextExist(notificationKey) else ''
 
     def getShowCondSeparator(self):
         return True
 
     def getUserCondition(self):
         condKey = '#achievements:%s_condition' % self._getActualName()
-        if i18n.doesTextExist(condKey):
-            return i18n.makeString(condKey)
-        return ''
+        return i18n.makeString(condKey) if i18n.doesTextExist(condKey) else ''
 
     def isAvailableInQuest(self):
         return True
@@ -226,10 +206,10 @@ class RegularAchievement(GUIItem):
         return dossier.getRecordValue(*self.getRecordName())
 
     def _readLevelUpValue(self, dossier):
-        return
+        return None
 
     def _readLevelUpTotalValue(self, dossier):
-        return
+        return None
 
     def _getActualName(self):
         return self._name
@@ -244,9 +224,12 @@ class RegularAchievement(GUIItem):
         return value
 
     def __repr__(self):
-        return '%s<name=%s; value=%s; levelUpValue=%s levelUpTotalValue=%s isDone=%s>' % (
-         self.__class__.__name__, self._name, str(self._value), str(self._lvlUpValue),
-         str(self._lvlUpTotalValue), str(self._isDone))
+        return '%s<name=%s; value=%s; levelUpValue=%s levelUpTotalValue=%s isDone=%s>' % (self.__class__.__name__,
+         self._name,
+         str(self._value),
+         str(self._lvlUpValue),
+         str(self._lvlUpTotalValue),
+         str(self._isDone))
 
     def __cmp__(self, other):
         if isinstance(other, RegularAchievement):

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/battle_matters/battle_matters_rewards_view.py
 import logging
 from collections import OrderedDict
 import typing
@@ -27,9 +29,7 @@ _logger = logging.getLogger(__name__)
 _CLIENT_REWARD_IDX = -1
 
 class BattleMattersRewardsView(ViewImpl):
-    __slots__ = ('__cds', '__questOrder', '__isPairQuest', '__isWithDelayed', '__delayedReward',
-                 '__intermediateQuestID', '__intermediateRewards', '__regularQuestID',
-                 '__regularRewards', '__tooltipData', '__sequenceNumber')
+    __slots__ = ('__cds', '__questOrder', '__isPairQuest', '__isWithDelayed', '__delayedReward', '__intermediateQuestID', '__intermediateRewards', '__regularQuestID', '__regularRewards', '__tooltipData', '__sequenceNumber')
     _COMMON_SOUND_SPACE = CommonSoundSpaceSettings(name='battle_matters', entranceStates={}, exitStates={}, persistentSounds=(), stoppableSounds=(), priorities=(), autoStart=True, enterEvent='bm_reward', exitEvent='', parentSpace='')
     __battleMattersController = dependency.descriptor(IBattleMattersController)
 
@@ -40,7 +40,9 @@ class BattleMattersRewardsView(ViewImpl):
         self.__intermediateRewards = OrderedDict()
         self.__regularQuestID = ''
         self.__regularRewards = OrderedDict()
-        self.__tooltipData = {RewardType.REGULAR: {}, RewardType.VEHICLE: {}, RewardType.INTERMEDIATE: {}}
+        self.__tooltipData = {RewardType.REGULAR: {},
+         RewardType.VEHICLE: {},
+         RewardType.INTERMEDIATE: {}}
         self.__questOrder = ctx.keys()[0]
         questData = ctx[self.__questOrder]
         self.__isPairQuest = questData.get('isInPair', False)
@@ -53,7 +55,7 @@ class BattleMattersRewardsView(ViewImpl):
             if self.__battleMattersController.isIntermediateBattleMattersQuestID(qID):
                 self.__intermediateQuestID = qID
                 self.__intermediateRewards = questData[qID]
-            elif self.__battleMattersController.isRegularBattleMattersQuestID(qID) or self.__battleMattersController.isCompensationBattleMattersQuestID(qID):
+            if self.__battleMattersController.isRegularBattleMattersQuestID(qID) or self.__battleMattersController.isCompensationBattleMattersQuestID(qID):
                 self.__regularQuestID = qID
                 self.__regularRewards = questData[qID]
 
@@ -64,9 +66,7 @@ class BattleMattersRewardsView(ViewImpl):
         return super(BattleMattersRewardsView, self).getViewModel()
 
     def createToolTipContent(self, event, contentID):
-        if contentID == R.views.lobby.battle_matters.tooltips.BattleMattersTokenTooltipView():
-            return BattleMattersTokenTooltipView()
-        return super(BattleMattersRewardsView, self).createToolTipContent(event, contentID)
+        return BattleMattersTokenTooltipView() if contentID == R.views.lobby.battle_matters.tooltips.BattleMattersTokenTooltipView() else super(BattleMattersRewardsView, self).createToolTipContent(event, contentID)
 
     def createToolTip(self, event):
         if event.contentID == R.views.common.tooltip_window.backport_tooltip_content.BackportTooltipContent():
@@ -75,7 +75,8 @@ class BattleMattersRewardsView(ViewImpl):
             if window is not None:
                 window.load()
             return window
-        return super(BattleMattersRewardsView, self).createToolTip(event)
+        else:
+            return super(BattleMattersRewardsView, self).createToolTip(event)
 
     def onChooseVehicle(self):
         showDelayedReward()
@@ -103,7 +104,7 @@ class BattleMattersRewardsView(ViewImpl):
         self.__processBlueprints(intermediateBonuses)
         self.__processDelayedBonuses(regularBonuses)
         packer = getBattleMattersBonusPacker()
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setState(self.__getState())
             tx.setQuestNumber(self.__questOrder)
             tx.setRewardViewsSequenceNumber(self.__sequenceNumber)
@@ -112,15 +113,10 @@ class BattleMattersRewardsView(ViewImpl):
             self.__fillRegular(tx, regularBonuses, packer)
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onClose, self.onClose),
-         (
-          self.viewModel.onChooseVehicle, self.onChooseVehicle),
-         (
-          self.viewModel.onNextTask, self.onNextTask),
-         (
-          self.viewModel.onShowVehicle, self.onShowVehicle))
+        return ((self.viewModel.onClose, self.onClose),
+         (self.viewModel.onChooseVehicle, self.onChooseVehicle),
+         (self.viewModel.onNextTask, self.onNextTask),
+         (self.viewModel.onShowVehicle, self.onShowVehicle))
 
     @staticmethod
     def __getBonuses(rewards):
@@ -163,17 +159,14 @@ class BattleMattersRewardsView(ViewImpl):
         for v in vehicles.get(VehiclesBonus.VEHICLES_BONUS, []):
             self.__cds.extend(v.keys())
 
-        if vehicles:
-            return self.__getBonuses(vehicles)
-        return []
+        return self.__getBonuses(vehicles) if vehicles else []
 
     def __processDelayedBonuses(self, bonuses):
         if self.__delayedReward:
             vehInfo = first(self.__delayedReward.get(VehiclesBonus.VEHICLES_BONUS))
             for vehCD, vehicle in vehInfo.iteritems():
                 if vehicle:
-                    bonuses.append(TankmenBonus('tankmen', [
-                     TankmenBonus.getTankmenDataForCrew(vehCD, vehicle.get('crewLvl', 0))]))
+                    bonuses.append(TankmenBonus('tankmen', [TankmenBonus.getTankmenDataForCrew(vehCD, vehicle.get('crewLvl', 0))]))
 
             if 'slots' in self.__delayedReward:
                 bonuses.extend(getNonQuestBonuses('slots', self.__delayedReward['slots']))
@@ -185,9 +178,7 @@ class BattleMattersRewardsView(ViewImpl):
             return State.TOKEN
         if self.__delayedReward:
             return State.TOKENVEHICLE
-        if self.__intermediateQuestID:
-            return State.INTERMEDIATE
-        return State.REGULAR
+        return State.INTERMEDIATE if self.__intermediateQuestID else State.REGULAR
 
     def __getBackportTooltipData(self, event):
         rewardType = RewardType(event.getArgument(BattleMattersRewardsViewModel.ARG_REWARD_TYPE))

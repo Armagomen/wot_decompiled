@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/tooltips/periodic/prime_helpers.py
 from gui.impl import backport
 from gui.impl.gen import R
 from helpers import time_utils
@@ -6,8 +8,7 @@ from gui.shared.formatters.time_formatters import formatDate
 from gui.shared.tooltips import formatters
 
 def getPrimeTableBlocks(primeTime, currentCycleEnd, resRoot):
-    primeTableBlocks = [
-     _packTimeTableHeaderBlock(resRoot)]
+    primeTableBlocks = [_packTimeTableHeaderBlock(resRoot)]
     todayStart, todayEnd = time_utils.getDayTimeBoundsForLocal()
     todayEnd += 1
     tomorrowStart, tomorrowEnd = todayStart + time_utils.ONE_DAY, todayEnd + time_utils.ONE_DAY
@@ -56,7 +57,7 @@ def _packPeriods(periods, resRoot):
             endTime = formatDate('%H:%M', periodEnd)
             periodsStr.append(backport.text(resRoot.timeTable.time(), start=startTime, end=endTime))
 
-        return ('\n').join(periodsStr)
+        return '\n'.join(periodsStr)
     return backport.text(resRoot.timeTable.empty())
 
 

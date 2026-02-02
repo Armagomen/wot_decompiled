@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/array_providers/battle_booster.py
 from CurrentVehicle import g_currentVehicle
 from gui.impl.gen.view_models.constants.item_highlight_types import ItemHighlightTypes
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_slot_model import BaseSlotModel
@@ -52,12 +54,11 @@ class BaseBattleBoosterProvider(VehicleBaseArrayProvider):
         return self._getVehicle().battleBoosters
 
     def _getItemSortKey(self, item, ctx):
-        return (
-         item.getBuyPrice().price, item.userName)
+        return (item.getBuyPrice().price, item.userName)
 
     def _getInstaledBoosterSet(self):
         invVehicles = self._itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY)
-        installedSet = set(booster for veh in invVehicles.itervalues() for booster in veh.battleBoosters.installed.getIntCDs())
+        installedSet = set((booster for veh in invVehicles.itervalues() for booster in veh.battleBoosters.installed.getIntCDs()))
         return installedSet
 
 

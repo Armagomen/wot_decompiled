@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/vehicle_hub/sub_presenters/veh_skill_tree_sub_presenter.py
 from __future__ import absolute_import
 import logging
 from Event import Event
@@ -15,10 +17,7 @@ _logger = logging.getLogger(__name__)
 class _VehicleSkillTreeStatesObserver(StateIdsObserver):
 
     def __init__(self):
-        super(_VehicleSkillTreeStatesObserver, self).__init__([
-         VehSkillTreeInitialState.STATE_ID,
-         VehSkillTreeProgressionState.STATE_ID,
-         VehSkillTreePrestigeState.STATE_ID])
+        super(_VehicleSkillTreeStatesObserver, self).__init__([VehSkillTreeInitialState.STATE_ID, VehSkillTreeProgressionState.STATE_ID, VehSkillTreePrestigeState.STATE_ID])
         self.onNavigationChanged = Event()
 
     def onEnterState(self, state, event):
@@ -41,10 +40,7 @@ class VehSkillTreeSubPresenter(SubPresenterBase):
 
     @property
     def currentPresenter(self):
-        if self.__activeTab:
-            return self.__presenters[self.__activeTab]
-        else:
-            return
+        return self.__presenters[self.__activeTab] if self.__activeTab else None
 
     def createToolTipContent(self, event, contentID):
         if self.currentPresenter is not None:
@@ -54,8 +50,8 @@ class VehSkillTreeSubPresenter(SubPresenterBase):
         return super(VehSkillTreeSubPresenter, self).createToolTipContent(event, contentID)
 
     def initialize(self, vhCtx, *args, **kwargs):
-        self.__presenters = {VehSkillTreeModel.TREE: TreePresenter(self.viewModel.tree, self.parentView), 
-           VehSkillTreeModel.PRESTIGE: PrestigePresenter(self.viewModel.prestige, self.parentView)}
+        self.__presenters = {VehSkillTreeModel.TREE: TreePresenter(self.viewModel.tree, self.parentView),
+         VehSkillTreeModel.PRESTIGE: PrestigePresenter(self.viewModel.prestige, self.parentView)}
         lsm = getLobbyStateMachine()
         lsm.connect(self.__lsmObserver)
         self.__markIntroShowed()
@@ -80,9 +76,7 @@ class VehSkillTreeSubPresenter(SubPresenterBase):
         return
 
     def _getEvents(self):
-        return (
-         (
-          self.__lsmObserver.onNavigationChanged, self.__onNavigationChanged),)
+        return ((self.__lsmObserver.onNavigationChanged, self.__onNavigationChanged),)
 
     def __onNavigationChanged(self, tabName):
         if tabName in self.__presenters:

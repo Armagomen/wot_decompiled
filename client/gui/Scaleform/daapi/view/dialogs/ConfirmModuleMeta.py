@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/dialogs/ConfirmModuleMeta.py
 import math
 from gui.Scaleform.daapi.view.dialogs import IDialogMeta
 import Event
@@ -48,7 +50,7 @@ class ConfirmModuleMeta(IDialogMeta):
         return CurrencyCollection(*(1 for _ in Currency.ALL))
 
     def getDefaultValue(self, module):
-        return -1
+        pass
 
     def getActualPrices(self, module):
         return MONEY_UNDEFINED
@@ -60,7 +62,7 @@ class ConfirmModuleMeta(IDialogMeta):
         return self.getActualPrices(module).getCurrency(byWeight=True)
 
     def getActionVO(self, module):
-        return
+        return None
 
     def getViewScopeType(self):
         return ScopeTemplates.DEFAULT_SCOPE
@@ -129,7 +131,7 @@ class BuyModuleMeta(ConfirmModuleMeta):
         return CurrencyCollection(*(self.__getMaxCount(module, currency) for currency in Currency.ALL))
 
     def getDefaultValue(self, module):
-        return 1
+        pass
 
     def getActualPrices(self, module):
         return module.buyPrices.getSum().price

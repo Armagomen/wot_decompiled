@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/winback/winback_bonus_packer.py
 import logging
 from collections import defaultdict, OrderedDict
 from copy import deepcopy
@@ -69,14 +71,14 @@ def cutWinbackBonuses(bonusesData, winbackData=None, received=False):
     cutVehDiscountsFromBonuses(bonusesData, winbackData, received)
     cutWinbackTokens(bonusesData, winbackData)
     cutVehicles(bonusesData, winbackData)
-    return (
-     bonusesData, winbackData)
+    return (bonusesData, winbackData)
 
 
 @dependency.replace_none_kwargs(goodiesCache=IGoodiesCache, itemsCache=IItemsCache)
 def cutVehDiscountsFromBonuses(bonusesData, winbackData=None, received=False, goodiesCache=None, itemsCache=None):
     winbackData = {} if winbackData is None else winbackData
-    winbackDiscounts = defaultdict(lambda : {BlueprintBonusTypes.BLUEPRINTS: {}, GoodiesBonus.GOODIES: {}})
+    winbackDiscounts = defaultdict(lambda : {BlueprintBonusTypes.BLUEPRINTS: {},
+     GoodiesBonus.GOODIES: {}})
     winbackData[WINBACK_DISCOUNTS] = winbackDiscounts
     blueprints = bonusesData.get(BlueprintBonusTypes.BLUEPRINTS, {})
     goodies = bonusesData.get(GoodiesBonus.GOODIES, {})
@@ -115,8 +117,7 @@ def cutVehicles(bonusesData, winbackData=None):
         winbackData[VehiclesBonus.VEHICLES_BONUS] = vehicles
         vehiclesBonusesData = bonusesData[VehiclesBonus.VEHICLES_BONUS]
         if not isinstance(vehiclesBonusesData, list):
-            bonusesData[VehiclesBonus.VEHICLES_BONUS] = [
-             vehiclesBonusesData]
+            bonusesData[VehiclesBonus.VEHICLES_BONUS] = [vehiclesBonusesData]
         slots = bonusesData.get('slots', 0)
         for vehiclesData in bonusesData[VehiclesBonus.VEHICLES_BONUS]:
             for vehCD, vehData in vehiclesData.items():
@@ -128,8 +129,7 @@ def cutVehicles(bonusesData, winbackData=None):
         if 'slots' in bonusesData and slots == 0:
             bonusesData.pop('slots')
         bonusesData.pop(VehiclesBonus.VEHICLES_BONUS)
-    return (
-     bonusesData, winbackData)
+    return (bonusesData, winbackData)
 
 
 def _getCount(bonusData):
@@ -148,8 +148,7 @@ def handleWinbackOfferTokens(bonuses, winbackController=None):
         bonusData = winbackController.parseOfferToken(tokenName.replace('_gift', ''))
         if _getCount(tokenData) > 0 and bonusData is not None:
             bonuseName = bonusData.get('name')
-            if bonuseName in (
-             RewardName.SELECTABLE_VEHICLE_DISCOUNT.value, RewardName.SELECTABLE_VEHICLE_FOR_GIFT.value):
+            if bonuseName in (RewardName.SELECTABLE_VEHICLE_DISCOUNT.value, RewardName.SELECTABLE_VEHICLE_FOR_GIFT.value):
                 result.append(WinbackSelectableBonus(bonuseName, bonusData))
 
     return result
@@ -157,9 +156,7 @@ def handleWinbackOfferTokens(bonuses, winbackController=None):
 
 def handleWinbackDiscounts(bonuses):
     winbackBonuses = bonuses.get(WINBACK_DISCOUNTS)
-    if winbackBonuses:
-        return [WinbackVehicleDiscountBonus(RewardName.VEHICLE_DISCOUNT.value, winbackBonuses)]
-    return []
+    return [WinbackVehicleDiscountBonus(RewardName.VEHICLE_DISCOUNT.value, winbackBonuses)] if winbackBonuses else []
 
 
 def handleVehicleBonuses(bonuses):
@@ -171,8 +168,7 @@ def handleVehicleBonuses(bonuses):
         for vehCD, vehData in vehicles.items():
             if vehData.get('rent'):
                 rentVehicles[vehCD] = vehData
-            else:
-                vehiclesForGift[vehCD] = vehData
+            vehiclesForGift[vehCD] = vehData
 
         if rentVehicles:
             result.append(WinbackVehicleBonus(RewardName.VEHICLE_FOR_RENT.value, rentVehicles))
@@ -181,9 +177,9 @@ def handleVehicleBonuses(bonuses):
     return result
 
 
-_RENT_MAP = {RentType.TIME.value: RentType.TIME, 
-   RentType.BATTLES.value: RentType.BATTLES, 
-   RentType.WINS.value: RentType.WINS}
+_RENT_MAP = {RentType.TIME.value: RentType.TIME,
+ RentType.BATTLES.value: RentType.BATTLES,
+ RentType.WINS.value: RentType.WINS}
 
 class WinbackVehiclesBonusUIPacker(BaseBonusUIPacker):
     _itemsCache = dependency.descriptor(IItemsCache)
@@ -226,9 +222,7 @@ class WinbackVehiclesBonusUIPacker(BaseBonusUIPacker):
 
     @classmethod
     def _getVehicleModel(cls, isRent):
-        if isRent:
-            return RentVehicleBonusModel()
-        return VehicleBonusModel()
+        return RentVehicleBonusModel() if isRent else VehicleBonusModel()
 
     @staticmethod
     def _packVehicleModel(vehicle, bonus, model):
@@ -265,11 +259,11 @@ class WinbackVehiclesBonusUIPacker(BaseBonusUIPacker):
 
     @classmethod
     def _getPackMethod(cls, name):
-        packMethodByBonusName = {RewardName.SELECTABLE_VEHICLE_FOR_GIFT.value: cls.packSelectableVehicleReward, 
-           RewardName.SELECTABLE_VEHICLE_DISCOUNT.value: cls.packSelectableVehicleReward, 
-           RewardName.VEHICLE_DISCOUNT.value: cls.packVehicleRewards, 
-           RewardName.VEHICLE_FOR_GIFT.value: cls.packVehicleRewards, 
-           RewardName.VEHICLE_FOR_RENT.value: cls.packVehicleRewards}
+        packMethodByBonusName = {RewardName.SELECTABLE_VEHICLE_FOR_GIFT.value: cls.packSelectableVehicleReward,
+         RewardName.SELECTABLE_VEHICLE_DISCOUNT.value: cls.packSelectableVehicleReward,
+         RewardName.VEHICLE_DISCOUNT.value: cls.packVehicleRewards,
+         RewardName.VEHICLE_FOR_GIFT.value: cls.packVehicleRewards,
+         RewardName.VEHICLE_FOR_RENT.value: cls.packVehicleRewards}
         return packMethodByBonusName.get(name)
 
 

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/gift_system/constants.py
 from enum import unique, Enum, IntEnum
 DEV_STAMP_CODE = 'giftSystem_1_devStamp'
 

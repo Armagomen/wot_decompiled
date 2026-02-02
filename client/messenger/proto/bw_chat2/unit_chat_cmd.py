@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/proto/bw_chat2/unit_chat_cmd.py
 from messenger.m_constants import PROTO_TYPE
 from messenger.proto.entities import OutChatCommand, ReceivedUnitChatCommand
 from messenger.proto.interfaces import IUnitCommandFactory
@@ -11,7 +13,7 @@ for cmd in UNIT_CHAT_COMMANDS:
         _MINIMAP_CMD_ID = cmdID
 
 class _OutCmdDecorator(OutChatCommand):
-    __slots__ = ('_name', )
+    __slots__ = ('_name',)
 
     def __init__(self, name, args=None):
         super(_OutCmdDecorator, self).__init__(args or messageArgs(), 0)
@@ -28,7 +30,7 @@ class _OutCmdDecorator(OutChatCommand):
 
 
 class _ReceivedCmdDecorator(ReceivedUnitChatCommand):
-    __slots__ = ('_commandID', )
+    __slots__ = ('_commandID',)
 
     def __init__(self, commandID, args):
         super(_ReceivedCmdDecorator, self).__init__(args, 0)
@@ -41,7 +43,7 @@ class _ReceivedCmdDecorator(ReceivedUnitChatCommand):
         return PROTO_TYPE.BW_CHAT2
 
     def getCommandText(self):
-        return ''
+        pass
 
     def getMapPosX(self):
         return self._protoData['int32Arg1']

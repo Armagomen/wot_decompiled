@@ -1,4 +1,7 @@
-import CGF, SoundGroups
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/cgf_components/hover_group_components.py
+import CGF
+import SoundGroups
 from cgf_script.component_meta_class import registerComponent, ComponentProperty, CGFMetaTypes
 from cgf_script.managers_registrator import onAddedQuery, onRemovedQuery
 from hover_component import IsHoveredComponent, HoverGroupTrackerComponent

@@ -1,4 +1,9 @@
-import os, json, typing, logging
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_loading/common.py
+import os
+import json
+import typing
+import logging
 _logger = logging.getLogger(__name__)
 
 def loadDictFromJsonFile(filePath):
@@ -6,7 +11,7 @@ def loadDictFromJsonFile(filePath):
     try:
         _logger.debug('Loading data from json file: [%s].', filePath)
         if os.path.isfile(filePath):
-            with open(filePath, 'rb') as (jsonFile):
+            with open(filePath, 'rb') as jsonFile:
                 _loaded = json.load(jsonFile)
             if not isinstance(_loaded, dict):
                 _logger.error('Json: [%s] data type mismatch. %s != %s.', filePath, type(_loaded), dict)
@@ -23,7 +28,7 @@ def loadDictFromJsonFile(filePath):
 def saveDictToJsonFile(filePath, data):
     try:
         _logger.debug('Saving data to json file: [%s].', filePath)
-        with open(filePath, 'wb') as (jsonFile):
+        with open(filePath, 'wb') as jsonFile:
             json.dump(data, jsonFile)
     except Exception:
         _logger.exception('Save json file: [%s] error.', filePath)
@@ -34,10 +39,8 @@ def deleteFile(filePath):
         if not os.path.isfile(filePath):
             _logger.debug('File: [%s] already deleted.', filePath)
             return True
-        else:
-            os.remove(filePath)
-            return True
-
+        os.remove(filePath)
+        return True
     except Exception:
         _logger.exception('Deleting file: [%s] error.', filePath)
         return False

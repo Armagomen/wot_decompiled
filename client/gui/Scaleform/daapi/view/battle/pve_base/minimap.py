@@ -1,4 +1,8 @@
-import typing, CommandMapping, GUI
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/pve_base/minimap.py
+import typing
+import CommandMapping
+import GUI
 from aih_constants import CTRL_MODE_NAME
 from constants import PVE_MINIMAP_DEFAULT_ZOOM, PVE_MINIMAP_DEFAULT_BORDERS
 from gui.Scaleform.daapi.view.battle.classic.minimap import GlobalSettingsPlugin
@@ -31,7 +35,7 @@ class PveMinimapGlobalSettingsPlugin(GlobalSettingsPlugin):
 
 
 class PveScaleCenteredPersonalEntriesPlugin(PersonalEntriesPlugin):
-    __slots__ = ('_isInBordersMode', )
+    __slots__ = ('_isInBordersMode',)
 
     def __init__(self, parentObj):
         super(PveScaleCenteredPersonalEntriesPlugin, self).__init__(parentObj)

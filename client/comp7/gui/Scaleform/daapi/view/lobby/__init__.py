@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/Scaleform/daapi/view/lobby/__init__.py
 from comp7.gui.Scaleform.genConsts.COMP7_HANGAR_ALIASES import COMP7_HANGAR_ALIASES
 from comp7_core.gui.Scaleform.genConsts.COMP7_CORE_HANGAR_ALIASES import COMP7_CORE_HANGAR_ALIASES
 from gui.Scaleform.framework import WindowLayer, ScopeTemplates, ViewSettings, ComponentSettings
@@ -9,9 +11,7 @@ from gui.shared.event_bus import EVENT_BUS_SCOPE
 
 def getContextMenuHandlers():
     from comp7.gui.Scaleform.daapi.view.lobby import user_cm_handlers
-    return (
-     (
-      CONTEXT_MENU_HANDLER_TYPE.COMP_LEADERBOARD_USER, user_cm_handlers.Comp7LeaderboardCMHandler),)
+    return ((CONTEXT_MENU_HANDLER_TYPE.COMP_LEADERBOARD_USER, user_cm_handlers.Comp7LeaderboardCMHandler),)
 
 
 def getViewSettings():
@@ -21,8 +21,7 @@ def getViewSettings():
     from gui.Scaleform.framework import getSwfExtensionUrl
     from gui.Scaleform.daapi.view.lobby.vehicle_preview.style_preview import VehicleStylePreview
     from gui.Scaleform.daapi.view.lobby.vehicle_preview.configurable_vehicle_preview import ConfigurableVehiclePreview
-    return (
-     ViewSettings(COMP7_HANGAR_ALIASES.COMP7_PRIME_TIME_ALIAS, Comp7PrimeTimeView, getSwfExtensionUrl('comp7_core', COMP7_CORE_HANGAR_ALIASES.COMP7_CORE_PRIME_TIME_SWF), WindowLayer.SUB_VIEW, COMP7_HANGAR_ALIASES.COMP7_PRIME_TIME_ALIAS, ScopeTemplates.LOBBY_SUB_SCOPE, True),
+    return (ViewSettings(COMP7_HANGAR_ALIASES.COMP7_PRIME_TIME_ALIAS, Comp7PrimeTimeView, getSwfExtensionUrl('comp7_core', COMP7_CORE_HANGAR_ALIASES.COMP7_CORE_PRIME_TIME_SWF), WindowLayer.SUB_VIEW, COMP7_HANGAR_ALIASES.COMP7_PRIME_TIME_ALIAS, ScopeTemplates.LOBBY_SUB_SCOPE, True),
      ViewSettings(COMP7_HANGAR_ALIASES.COMP7_STYLE_PREVIEW, VehicleStylePreview, 'vehicleBasePreview.swf', WindowLayer.SUB_VIEW, COMP7_HANGAR_ALIASES.COMP7_STYLE_PREVIEW, ScopeTemplates.LOBBY_SUB_SCOPE),
      ViewSettings(COMP7_HANGAR_ALIASES.COMP7_CONFIGURABLE_VEHICLE_PREVIEW, ConfigurableVehiclePreview, 'vehiclePreview.swf', WindowLayer.SUB_VIEW, COMP7_HANGAR_ALIASES.COMP7_CONFIGURABLE_VEHICLE_PREVIEW, ScopeTemplates.LOBBY_SUB_SCOPE),
      ViewSettings(COMP7_HANGAR_ALIASES.COMP7_LOBBY_HANGAR, Comp7HangarWindow, '', WindowLayer.SUB_VIEW, COMP7_HANGAR_ALIASES.COMP7_LOBBY_HANGAR, ScopeTemplates.LOBBY_SUB_SCOPE),
@@ -30,20 +29,14 @@ def getViewSettings():
 
 
 def getBusinessHandlers():
-    return (
-     Comp7PackageBusinessHandler(),)
+    return (Comp7PackageBusinessHandler(),)
 
 
 class Comp7PackageBusinessHandler(PackageBusinessHandler):
 
     def __init__(self):
-        listeners = (
-         (
-          COMP7_HANGAR_ALIASES.COMP7_PRIME_TIME_ALIAS, self.loadViewByCtxEvent),
-         (
-          COMP7_HANGAR_ALIASES.COMP7_LOBBY_HANGAR, self.loadViewByCtxEvent),
-         (
-          COMP7_HANGAR_ALIASES.COMP7_STYLE_PREVIEW, self.loadViewByCtxEvent),
-         (
-          COMP7_HANGAR_ALIASES.COMP7_CONFIGURABLE_VEHICLE_PREVIEW, self.loadViewByCtxEvent))
+        listeners = ((COMP7_HANGAR_ALIASES.COMP7_PRIME_TIME_ALIAS, self.loadViewByCtxEvent),
+         (COMP7_HANGAR_ALIASES.COMP7_LOBBY_HANGAR, self.loadViewByCtxEvent),
+         (COMP7_HANGAR_ALIASES.COMP7_STYLE_PREVIEW, self.loadViewByCtxEvent),
+         (COMP7_HANGAR_ALIASES.COMP7_CONFIGURABLE_VEHICLE_PREVIEW, self.loadViewByCtxEvent))
         super(Comp7PackageBusinessHandler, self).__init__(listeners, APP_NAME_SPACE.SF_LOBBY, EVENT_BUS_SCOPE.LOBBY)

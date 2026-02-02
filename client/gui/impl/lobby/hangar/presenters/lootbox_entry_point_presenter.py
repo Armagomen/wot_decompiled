@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/hangar/presenters/lootbox_entry_point_presenter.py
 from __future__ import absolute_import
 import logging
 from account_helpers.AccountSettings import LOOT_BOXES_HAS_NEW
@@ -33,9 +35,7 @@ class LootboxEntryPointPresenter(ViewComponent[EntryPointViewModel]):
         return super(LootboxEntryPointPresenter, self).getViewModel()
 
     def createToolTipContent(self, event, contentID):
-        if contentID == R.views.mono.lootbox.tooltips.entry_point():
-            return EntryPointTooltip(self.__lootBoxes.mainEntryPoint)
-        return super(LootboxEntryPointPresenter, self).createToolTipContent(event, contentID)
+        return EntryPointTooltip(self.__lootBoxes.mainEntryPoint) if contentID == R.views.mono.lootbox.tooltips.entry_point() else super(LootboxEntryPointPresenter, self).createToolTipContent(event, contentID)
 
     def _onLoading(self, *args, **kwargs):
         super(LootboxEntryPointPresenter, self)._onLoading(*args, **kwargs)
@@ -48,19 +48,12 @@ class LootboxEntryPointPresenter(ViewComponent[EntryPointViewModel]):
         super(LootboxEntryPointPresenter, self)._finalize()
 
     def _getEvents(self):
-        return (
-         (
-          self.__lootBoxes.onBoxesCountChanged, self.__onBoxesCountChanged),
-         (
-          self.__lootBoxes.onBoxesInfoUpdated, self.__fillEventInfo),
-         (
-          self.viewModel.onEntryClick, self.__showMain))
+        return ((self.__lootBoxes.onBoxesCountChanged, self.__onBoxesCountChanged), (self.__lootBoxes.onBoxesInfoUpdated, self.__fillEventInfo), (self.viewModel.onEntryClick, self.__showMain))
 
     def __onServerSettingsChanged(self, diff):
         isEnabled = diff.get(IS_LOOT_BOXES_ENABLED, False)
         wasEnabled = self.isEnabled()
-        if isEnabled != wasEnabled or any(name in diff for name in (
-         LOOTBOX_SYSTEM_CONFIG, 'lootBoxes_config', 'lootboxes_tooltip_config')):
+        if isEnabled != wasEnabled or any((name in diff for name in (LOOTBOX_SYSTEM_CONFIG, 'lootBoxes_config', 'lootboxes_tooltip_config'))):
             self.setEnabled(self.__getEnabled())
 
     def __getEnabled(self):
@@ -71,7 +64,7 @@ class LootboxEntryPointPresenter(ViewComponent[EntryPointViewModel]):
         return lootboxesActive
 
     def __fillEventInfo(self):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setEventName(self.__lootBoxes.mainEntryPoint)
             model.setIsEnabled(self.__lootBoxes.isLootBoxesAvailable)
             self.__updateTime(model=model)

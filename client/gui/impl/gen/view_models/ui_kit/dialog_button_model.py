@@ -1,8 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/ui_kit/dialog_button_model.py
 from frameworks.wulf import ViewModel
 from gui.impl.gen import R
 
 class DialogButtonModel(ViewModel):
-    __slots__ = ('onClicked', )
+    __slots__ = ('onClicked',)
     BTN_SUBMIT = 'submit'
     BTN_CANCEL = 'cancel'
     BTN_RESEARCH = 'research'

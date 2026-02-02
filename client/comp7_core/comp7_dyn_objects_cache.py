@@ -1,4 +1,7 @@
-import logging, CGF
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_core/scripts/client/comp7_core/comp7_dyn_objects_cache.py
+import logging
+import CGF
 from dyn_objects_cache import DynObjectsBase, _SpawnPointsConfig, _PointsOfInterestConfig
 _CONFIG_PATH = 'scripts/dynamic_objects.xml'
 _logger = logging.getLogger(__name__)

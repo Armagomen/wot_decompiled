@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/ops_pack.py
 import struct
 from external_strings_utils import truncate_utf8
 from soft_exception import SoftException
@@ -43,30 +45,44 @@ def initOpsFormatDef(opsFormatDefs):
                 if formatSymbol in ('T', 'L'):
                     lenFormat, elementFormat = adds
                     lenFormat = '<' + lenFormat
-                    additionals[ofs] = (lenFormat, elementFormat,
-                     struct.calcsize(lenFormat), struct.calcsize('<' + elementFormat))
+                    additionals[ofs] = (lenFormat,
+                     elementFormat,
+                     struct.calcsize(lenFormat),
+                     struct.calcsize('<' + elementFormat))
                 elif formatSymbol == 'N':
                     lenFormat, elementFormat = adds
                     lenFormat = '<' + lenFormat
                     elementFormat = '<' + elementFormat
-                    additionals[ofs] = (lenFormat, elementFormat,
-                     struct.calcsize(lenFormat), struct.calcsize(elementFormat))
+                    additionals[ofs] = (lenFormat,
+                     elementFormat,
+                     struct.calcsize(lenFormat),
+                     struct.calcsize(elementFormat))
                 elif formatSymbol == 'D':
                     lenFormat, keyFormat, valFormat = adds
                     lenFormat = '<' + lenFormat
-                    additionals[ofs] = (lenFormat, keyFormat, valFormat,
-                     struct.calcsize(lenFormat), struct.calcsize('<' + keyFormat),
+                    additionals[ofs] = (lenFormat,
+                     keyFormat,
+                     valFormat,
+                     struct.calcsize(lenFormat),
+                     struct.calcsize('<' + keyFormat),
                      struct.calcsize('<' + valFormat))
-                elif formatSymbol in ('M', ):
+                elif formatSymbol in ('M',):
                     lenFormat, elementFormat, fieldNames = adds
                     lenFormat = '<' + lenFormat
                     elementFormat = '<' + elementFormat
-                    additionals[ofs] = (lenFormat, elementFormat, fieldNames,
-                     struct.calcsize(lenFormat), struct.calcsize(elementFormat))
+                    additionals[ofs] = (lenFormat,
+                     elementFormat,
+                     fieldNames,
+                     struct.calcsize(lenFormat),
+                     struct.calcsize(elementFormat))
                 ofs += 1
 
-        opsFormatDefs[opCode] = (
-         unpackFormat, methodName, specialFormat, additionals, calcSize, packFormat)
+        opsFormatDefs[opCode] = (unpackFormat,
+         methodName,
+         specialFormat,
+         additionals,
+         calcSize,
+         packFormat)
 
     return opsFormatDefs
 
@@ -93,19 +109,19 @@ class OpsPacker:
                 ofs += 1
                 if formatSym == 'S':
                     pack += packPascalString(arg)
-                elif formatSym in ('T', 'L'):
+                if formatSym in ('T', 'L'):
                     lenFormat, elemFormat = adds[:2]
                     lenElements = len(arg)
                     format = lenFormat + str(lenElements) + elemFormat
                     pack += struct.pack(format, lenElements, *arg)
-                elif formatSym == 'N':
+                if formatSym == 'N':
                     lenFormat, elemFormat = adds[:2]
                     lenElements = len(arg)
                     pack += struct.pack(lenFormat, lenElements)
                     for elements in arg:
                         pack += struct.pack(elemFormat, *elements)
 
-                elif formatSym == 'D':
+                if formatSym == 'D':
                     lenFormat, keyFormat, valFormat = adds[:3]
                     keys = arg.keys()
                     lenElements = len(keys)
@@ -113,7 +129,7 @@ class OpsPacker:
                     pack += struct.pack(format, lenElements, *keys)
                     format = '<' + str(lenElements) + valFormat
                     pack += struct.pack(format, *arg.values())
-                elif formatSym == 'M':
+                if formatSym == 'M':
                     lenFormat, elemFormat, subkeyNames = adds[:3]
                     lenElements = len(arg)
                     pack += struct.pack(lenFormat, lenElements)

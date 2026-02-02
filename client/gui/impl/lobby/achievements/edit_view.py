@@ -1,4 +1,8 @@
-import typing, SoundGroups, wg_async as future_async
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/achievements/edit_view.py
+import typing
+import SoundGroups
+import wg_async as future_async
 from account_helpers.settings_core.ServerSettingsManager import UI_STORAGE_KEYS
 from adisp import adisp_process
 from constants import AchievementsLayoutStates, Configs
@@ -30,8 +34,7 @@ if typing.TYPE_CHECKING:
     from typing import Dict
 
 class EditView(ViewImpl):
-    __slots__ = ('__dossier', '__isAutoSelect', '__selectedAchievements', '__achievementBitmask',
-                 '__dialogType', '__initialState')
+    __slots__ = ('__dossier', '__isAutoSelect', '__selectedAchievements', '__achievementBitmask', '__dialogType', '__initialState')
     __itemsCache = dependency.descriptor(IItemsCache)
     __lobbyContext = dependency.descriptor(ILobbyContext)
     __settingsCore = dependency.descriptor(ISettingsCore)
@@ -61,33 +64,21 @@ class EditView(ViewImpl):
     def getTooltipData(self, event):
         name = event.getArgument('name')
         block = event.getArgument('block')
-        if name is not None and block is not None:
-            return self.__getBackportTooltipData(name, block)
-        else:
-            return
+        return self.__getBackportTooltipData(name, block) if name is not None and block is not None else None
 
     def createToolTipContent(self, event, contentID):
         if contentID == R.views.lobby.achievements.tooltips.EditingTooltip():
             return EditingTooltip(str(event.getArgument('tooltipType')))
-        if contentID == R.views.lobby.achievements.tooltips.AutoSettingTooltip():
-            return AutoSettingTooltip(event.getArgument('isSwitchedOn'))
+        return AutoSettingTooltip(event.getArgument('isSwitchedOn')) if contentID == R.views.lobby.achievements.tooltips.AutoSettingTooltip() else None
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onChangeAutoSelect, self.__onChangeAutoSelect),
-         (
-          self.viewModel.onReplaceAchievement, self.__onReplaceAchievement),
-         (
-          self.viewModel.onSave, self.__onSave),
-         (
-          self.viewModel.onCancel, self.__onCancel),
-         (
-          self.viewModel.onExitConfirm, self.__onShowExitConfirm),
-         (
-          self.viewModel.onHideFirstEntryState, self.__onHideFirstEntryState),
-         (
-          self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged))
+        return ((self.viewModel.onChangeAutoSelect, self.__onChangeAutoSelect),
+         (self.viewModel.onReplaceAchievement, self.__onReplaceAchievement),
+         (self.viewModel.onSave, self.__onSave),
+         (self.viewModel.onCancel, self.__onCancel),
+         (self.viewModel.onExitConfirm, self.__onShowExitConfirm),
+         (self.viewModel.onHideFirstEntryState, self.__onHideFirstEntryState),
+         (self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged))
 
     def _onLoading(self, *args, **kwargs):
         achievements20 = self.__itemsCache.items.achievements20
@@ -95,7 +86,7 @@ class EditView(ViewImpl):
         self.__initialState = self.__isAutoSelect = achievements20.getLayoutState() == AchievementsLayoutStates.AUTO
         self.__achievementBitmask = achievements20.getAchievementBitmask()
         self.__selectedAchievements = self.__significantAchievements()
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             self.__fillAchievementsModel(model=model)
             self.__fillFirstEntryState(model=model)
         super(EditView, self)._onLoading(*args, **kwargs)
@@ -149,8 +140,7 @@ class EditView(ViewImpl):
 
     def __getBackportTooltipData(self, name, block):
         achievement = self.__dossier.getTotalStats().getAchievement((block, name))
-        return TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.ACHIEVEMENT, specialArgs=(
-         self.__dossier.getDossierType(),
+        return TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.ACHIEVEMENT, specialArgs=(self.__dossier.getDossierType(),
          dumpDossier(self.__dossier),
          block,
          name,
@@ -185,21 +175,22 @@ class EditView(ViewImpl):
         name = args.get('name')
         if index is None or name is None:
             return
-        index = int(index)
-        self.__isAutoSelect = False
-        selectedAchievements = [ achieve.getName() for achieve in self.__selectedAchievements ]
-        try:
-            idx = selectedAchievements.index(name)
-            self.__selectedAchievements[idx], self.__selectedAchievements[index] = self.__selectedAchievements[index], self.__selectedAchievements[idx]
-        except ValueError:
-            self.__selectedAchievements[index] = self.__getAchievementByName(name)
-            self.__fillSelectedAchievement()
-            self.__fillOtherAchievements(model)
+        else:
+            index = int(index)
+            self.__isAutoSelect = False
+            selectedAchievements = [ achieve.getName() for achieve in self.__selectedAchievements ]
+            try:
+                idx = selectedAchievements.index(name)
+                self.__selectedAchievements[idx], self.__selectedAchievements[index] = self.__selectedAchievements[index], self.__selectedAchievements[idx]
+            except ValueError:
+                self.__selectedAchievements[index] = self.__getAchievementByName(name)
+                self.__fillSelectedAchievement()
+                self.__fillOtherAchievements(model)
 
-        model.setIsAutoSelect(self.__isAutoSelect)
-        model.setHasChanges(self.__hasChanges())
-        self.__fillSelectedAchievement()
-        return
+            model.setIsAutoSelect(self.__isAutoSelect)
+            model.setHasChanges(self.__hasChanges())
+            self.__fillSelectedAchievement()
+            return
 
     def __hasChanges(self):
         hasChanges = True
@@ -217,7 +208,7 @@ class EditView(ViewImpl):
                     return achievement
 
     def __fillSelectedAchievement(self):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             selectedAchievements = model.getSelectedAchievements()
             selectedAchievements.clear()
             for achievement in self.__selectedAchievements:
@@ -234,9 +225,9 @@ class EditView(ViewImpl):
             defaultAchievementsList = convertDbIdsToAchievements(self.__itemsCache.items.achievements20.getLayout(), self.__dossier)
             if not defaultAchievementsList:
                 defaultAchievementsList = self.__getSignificantAchievementsList()
-            for idx, achievement in enumerate(self.__selectedAchievements):
-                if achievement.getName() != defaultAchievementsList[idx].getName():
-                    self.__achievementBitmask |= 1 << idx
+        for idx, achievement in enumerate(self.__selectedAchievements):
+            if achievement.getName() != defaultAchievementsList[idx].getName():
+                self.__achievementBitmask |= 1 << idx
 
         return self.__achievementBitmask
 
@@ -280,9 +271,7 @@ class EditView(ViewImpl):
     def __getConfirmDialogType(self):
         if not isLayoutEnabled() or not isSummaryEnabled():
             return DialogType.ERROR
-        if self.__isAutoSelect:
-            return DialogType.AUTO_SELECT_ENABLED
-        return DialogType.AUTO_SELECT_DISABLED
+        return DialogType.AUTO_SELECT_ENABLED if self.__isAutoSelect else DialogType.AUTO_SELECT_DISABLED
 
     @server_settings.serverSettingsChangeListener(Configs.ACHIEVEMENTS20_CONFIG.value)
     def __onServerSettingsChanged(self, diff):

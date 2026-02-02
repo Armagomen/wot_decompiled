@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/app_loader/decorators.py
 from gui.app_loader.settings import APP_NAME_SPACE as _SPACE
 from helpers import dependency
 from skeletons.gui.app_loader import IAppLoader

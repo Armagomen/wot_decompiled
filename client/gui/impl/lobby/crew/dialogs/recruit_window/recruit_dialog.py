@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/dialogs/recruit_window/recruit_dialog.py
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.impl.lobby.crew.dialogs.base_crew_dialog_template_view import BaseCrewDialogTemplateView
 from gui.impl.lobby.crew.dialogs.recruit_window.recruit_content import NO_DATA_VALUE, RecruitContent
@@ -25,8 +27,7 @@ from wg_async import wg_await, wg_async
 from gui.shared.gui_items.Tankman import NO_TANKMAN
 
 class BaseRecruitDialog(BaseCrewDialogTemplateView):
-    __slots__ = ('_selectedNation', '_selectedVehType', '_selectedVehicle', '_selectedSpecialization',
-                 '_recruitContent', '_isSlotChanged')
+    __slots__ = ('_selectedNation', '_selectedVehType', '_selectedVehicle', '_selectedSpecialization', '_recruitContent', '_isSlotChanged')
     _eventsCache = dependency.descriptor(IEventsCache)
     LAYOUT_ID = R.views.lobby.crew.dialogs.RecruitDialog()
     VIEW_MODEL = RecruitDialogTemplateViewModel
@@ -57,7 +58,10 @@ class BaseRecruitDialog(BaseCrewDialogTemplateView):
         self._isSlotChanged = isSlotChanged
         submitBtn = self.getButton(DialogButtons.SUBMIT)
         if submitBtn is not None:
-            submitBtn.isDisabled = any(v == NO_DATA_VALUE for v in (nation, vehType, vehicle, specialization))
+            submitBtn.isDisabled = any((v == NO_DATA_VALUE for v in (nation,
+             vehType,
+             vehicle,
+             specialization)))
         return
 
 
@@ -65,7 +69,8 @@ class TokenRecruitDialog(BaseRecruitDialog):
     __slots__ = ('__tokenName', '__tokenData', '__vehicleSlotToUnpack', '__vehicle')
     _itemsCache = dependency.descriptor(IItemsCache)
     _specialSounds = dependency.descriptor(ISpecialSoundCtrl)
-    __SOUND_SETTINGS = CommonSoundSpaceSettings(name='hangar', entranceStates={SOUNDS.STATE_PLACE: CREW_SOUNDS.STATE_PLACE_BARRAKS, StatesGroup.HANGAR_FILTERED: States.HANGAR_FILTERED_OFF}, exitStates={}, persistentSounds=(), stoppableSounds=(), priorities=(), autoStart=True, enterEvent=SOUNDS.WOMAN_AWARD_WINDOW, exitEvent='')
+    __SOUND_SETTINGS = CommonSoundSpaceSettings(name='hangar', entranceStates={SOUNDS.STATE_PLACE: CREW_SOUNDS.STATE_PLACE_BARRAKS,
+     StatesGroup.HANGAR_FILTERED: States.HANGAR_FILTERED_OFF}, exitStates={}, persistentSounds=(), stoppableSounds=(), priorities=(), autoStart=True, enterEvent=SOUNDS.WOMAN_AWARD_WINDOW, exitEvent='')
     _COMMON_SOUND_SPACE = __SOUND_SETTINGS
 
     def __init__(self, ctx=None, **kwargs):
@@ -81,11 +86,11 @@ class TokenRecruitDialog(BaseRecruitDialog):
         self.viewModel.setText(getTitleFromTokenData(self.__tokenData))
         self.viewModel.setHasVoiceover(bool(self.__tokenData.getSpecialVoiceTag(self._specialSounds)))
         self._addButtons()
-        predefinedData = {'predefinedNations': self.__tokenData.getNations(), 
-           'predefinedRoles': self.__tokenData.getRoles(), 
-           'isFemale': self.__tokenData.isFemale(), 
-           'slotToUnpack': self.__vehicleSlotToUnpack, 
-           'predefinedVehicle': self.__vehicle}
+        predefinedData = {'predefinedNations': self.__tokenData.getNations(),
+         'predefinedRoles': self.__tokenData.getRoles(),
+         'isFemale': self.__tokenData.isFemale(),
+         'slotToUnpack': self.__vehicleSlotToUnpack,
+         'predefinedVehicle': self.__vehicle}
         self._recruitContent = RecruitContent(model=self.viewModel.recruitContent, predefinedData=predefinedData)
         self._recruitContent.onRecruitContentChanged += self._onRecruitContentChanged
         self._recruitContent.onLoading()
@@ -104,16 +109,16 @@ class TokenRecruitDialog(BaseRecruitDialog):
 
     def _hasIrrelevantSkils(self, vehicle):
         tman = self.__tokenData.getFakeTankmanInVehicle(vehicle, self._selectedSpecialization)
-        return any(skill for skill in tman.descriptor.irrelevantSkills)
+        return any((skill for skill in tman.descriptor.irrelevantSkills))
 
     @wg_async
     def _setResult(self, result):
         if result == DialogButtons.SUBMIT:
             vehicle = self._itemsCache.items.getItemByCD(int(self._selectedVehicle))
             if vehicle and self._hasIrrelevantSkils(vehicle):
-                confirmResult = yield wg_await(showRecruitConfirmIrrelevantConversionDialog({'tokenData': self.__tokenData, 
-                   'selectedRole': self._selectedSpecialization, 
-                   'selectedVehicle': vehicle}))
+                confirmResult = yield wg_await(showRecruitConfirmIrrelevantConversionDialog({'tokenData': self.__tokenData,
+                 'selectedRole': self._selectedSpecialization,
+                 'selectedVehicle': vehicle}))
                 if not confirmResult.result or not confirmResult.result[0]:
                     return
             self._submit()
@@ -172,9 +177,9 @@ class QuestRecruitDialog(BaseRecruitDialog):
         self.setBackgroundImagePath(R.images.gui.maps.icons.windows.background())
         self.viewModel.setText(getTitle())
         self._addButtons()
-        predefinedData = {'isFemale': self.__isFemale, 
-           'slotToUnpack': self.__vehicleSlotToUnpack, 
-           'predefinedVehicle': self.__vehicle}
+        predefinedData = {'isFemale': self.__isFemale,
+         'slotToUnpack': self.__vehicleSlotToUnpack,
+         'predefinedVehicle': self.__vehicle}
         self._recruitContent = RecruitContent(model=self.viewModel.recruitContent, predefinedData=predefinedData)
         self._recruitContent.onRecruitContentChanged += self._onRecruitContentChanged
         self._recruitContent.onLoading()

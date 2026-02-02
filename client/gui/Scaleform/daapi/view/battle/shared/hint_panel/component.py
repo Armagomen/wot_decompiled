@@ -1,5 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/hint_panel/component.py
 from functools import partial
-import BigWorld, CommandMapping, SoundGroups
+import BigWorld
+import CommandMapping
+import SoundGroups
 from cgf_components.zone_components import IBattleSessionProvider
 from gui.Scaleform.daapi.view.battle.shared.hint_panel import plugins
 from gui.Scaleform.daapi.view.meta.BattleHintPanelMeta import BattleHintPanelMeta
@@ -104,7 +108,8 @@ class BattleHintPanel(BattleHintPanelMeta, IAbstractPeriodView):
             if hintCanBeDisplayed:
                 btnID, hint = hintData
                 self.as_setDataS(self.__makeHotKey(hint), hint.messageLeft, hint.messageRight, hint.offsetX, hint.offsetY, hint.reducedPanning, hint.centeredMessage)
-                self.fireEvent(GameEvent(GameEvent.SHOW_BTN_HINT, ctx={'btnID': btnID, 'hintCtx': hint.hintCtx}), scope=EVENT_BUS_SCOPE.GLOBAL)
+                self.fireEvent(GameEvent(GameEvent.SHOW_BTN_HINT, ctx={'btnID': btnID,
+                 'hintCtx': hint.hintCtx}), scope=EVENT_BUS_SCOPE.GLOBAL)
             self.as_toggleS(hintCanBeDisplayed)
             return
 
@@ -113,9 +118,9 @@ class BattleHintPanel(BattleHintPanelMeta, IAbstractPeriodView):
         self.__invalidateBtnHint()
 
     def __makeHotKey(self, hint):
-        return {'vKey': hint.vKey, 
-           'keyName': hint.key, 
-           'isLong': hint.isKeyLong}
+        return {'vKey': hint.vKey,
+         'keyName': hint.key,
+         'isLong': hint.isKeyLong}
 
 
 class HintPluginsCollection(PluginsCollection):

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_results/composer.py
 import typing
 from constants import ARENA_BONUS_TYPE
 from gui.battle_results import templates
@@ -14,7 +16,7 @@ if typing.TYPE_CHECKING:
     TooltipModelType = typing.TypeVar('TooltipModelType', bound=ViewModel)
 
 class StatsComposer(IBattleResultStatsCtrl):
-    __slots__ = ('_block', )
+    __slots__ = ('_block',)
 
     def __init__(self, reusable, common, personal, teams, text):
         super(StatsComposer, self).__init__()
@@ -140,15 +142,17 @@ class MapsTrainingStatsComposer(IBattleResultStatsCtrl):
         MapsTrainingStatsComposer._fromNotifications.add(arenaUniqueID)
 
 
-registerBattleResultStatsCtrl(ARENA_BONUS_TYPE.EPIC_BATTLE, EpicStatsComposer)
 registerBattleResultStatsCtrl(ARENA_BONUS_TYPE.CYBERSPORT, CyberSportStatsComposer)
-registerBattleResultStatsCtrl(ARENA_BONUS_TYPE.FORT_BATTLE_2, StrongholdBattleStatsComposer)
-registerBattleResultStatsCtrl(ARENA_BONUS_TYPE.SORTIE_2, StrongholdSortieBattleStatsComposer)
 registerBattleResultStatsCtrl(ARENA_BONUS_TYPE.RANKED, RankedBattlesStatsComposer)
 registerBattleResultStatsCtrl(ARENA_BONUS_TYPE.MAPS_TRAINING, MapsTrainingStatsComposer)
 registerBattleResultStatsCtrl(ARENA_BONUS_TYPE.REGULAR, RandomBattleResultStatsCtrl)
 registerBattleResultStatsCtrl(ARENA_BONUS_TYPE.TRAINING, RandomBattleResultStatsCtrl)
+registerBattleResultStatsCtrl(ARENA_BONUS_TYPE.MAPBOX, RandomBattleResultStatsCtrl)
+registerBattleResultStatsCtrl(ARENA_BONUS_TYPE.GLOBAL_MAP, RandomBattleResultStatsCtrl)
 registerBattleResultStatsCtrl(ARENA_BONUS_TYPE.TOURNAMENT_REGULAR, RandomBattleResultStatsCtrl)
+registerBattleResultStatsCtrl(ARENA_BONUS_TYPE.CLAN, RandomBattleResultStatsCtrl)
 registerBattleResultStatsCtrl(ARENA_BONUS_TYPE.RANDOM_NP2, RandomBattleResultStatsCtrl)
 registerBattleResultStatsCtrl(ARENA_BONUS_TYPE.EPIC_RANDOM, RandomBattleResultStatsCtrl)
 registerBattleResultStatsCtrl(ARENA_BONUS_TYPE.WINBACK, RandomBattleResultStatsCtrl)
+registerBattleResultStatsCtrl(ARENA_BONUS_TYPE.SORTIE_2, RandomBattleResultStatsCtrl)
+registerBattleResultStatsCtrl(ARENA_BONUS_TYPE.FORT_BATTLE_2, RandomBattleResultStatsCtrl)

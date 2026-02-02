@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/hangar/sub_views/vehicle_params_view.py
 from __future__ import absolute_import, division
 import json
 from future.utils import iteritems
@@ -17,16 +19,16 @@ from gui.shared.items_cache import CACHE_SYNC_REASON
 from gui.shared.items_parameters import RELATIVE_PARAMS, params_helper
 from gui.shared.items_parameters.comparator import PARAM_STATE
 from gui.shared.items_parameters.param_name_helper import getVehicleParameterText
-from gui.shared.items_parameters.params import HIDDEN_PARAM_DEFAULTS
+from gui.shared.items_parameters.params_constants import HIDDEN_PARAM_DEFAULTS
 from gui.shared.items_parameters.params_helper import hasSituationalEffect
 from gui.shared.tooltips.contexts import HangarParamContext
 from helpers import dependency
 from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.game_control import IIGRController
 from skeletons.gui.shared import IItemsCache
-_HIGHLIGHT_TYPE_STATE_MAP = {PARAM_STATE.BETTER: HighlightType.INCREASE, 
-   PARAM_STATE.WORSE: HighlightType.DECREASE, 
-   PARAM_STATE.SITUATIONAL: HighlightType.SITUATIONAL}
+_HIGHLIGHT_TYPE_STATE_MAP = {PARAM_STATE.BETTER: HighlightType.INCREASE,
+ PARAM_STATE.WORSE: HighlightType.DECREASE,
+ PARAM_STATE.SITUATIONAL: HighlightType.SITUATIONAL}
 
 class _VehicleParamsPresenterBase(ViewComponent[VehicleParamsViewModel]):
     _DEFAULT_MIN_VALUE = 0
@@ -53,8 +55,7 @@ class _VehicleParamsPresenterBase(ViewComponent[VehicleParamsViewModel]):
                 paramId = event.getArgument('paramId', None)
                 toolTipMgr = self.__appLoader.getApp().getToolTipMgr()
                 if toolTipMgr is not None:
-                    toolTipMgr.onCreateWulfTooltip(tooltipId, (
-                     paramId, self.__context, True), event.mouse.positionX, event.mouse.positionY, self.getParentWindow())
+                    toolTipMgr.onCreateWulfTooltip(tooltipId, (paramId, self.__context, True), event.mouse.positionX, event.mouse.positionY, self.getParentWindow())
                     return tooltipId
         return super(_VehicleParamsPresenterBase, self).createToolTip(event)
 
@@ -82,14 +83,11 @@ class _VehicleParamsPresenterBase(ViewComponent[VehicleParamsViewModel]):
 
     @property
     def expandedGroups(self):
-        if self.__expandedGroups is not None:
-            return self.__expandedGroups
-        else:
-            return {'relativePower': AccountSettings.getSettings('relativePower'), 
-               'relativeArmor': AccountSettings.getSettings('relativeArmor'), 
-               'relativeMobility': AccountSettings.getSettings('relativeMobility'), 
-               'relativeVisibility': AccountSettings.getSettings('relativeVisibility'), 
-               'relativeCamouflage': AccountSettings.getSettings('relativeCamouflage')}
+        return self.__expandedGroups if self.__expandedGroups is not None else {'relativePower': AccountSettings.getSettings('relativePower'),
+         'relativeArmor': AccountSettings.getSettings('relativeArmor'),
+         'relativeMobility': AccountSettings.getSettings('relativeMobility'),
+         'relativeVisibility': AccountSettings.getSettings('relativeVisibility'),
+         'relativeCamouflage': AccountSettings.getSettings('relativeCamouflage')}
 
     def setExpandedGroups(self, value):
         self.__expandedGroups = value
@@ -121,13 +119,7 @@ class _VehicleParamsPresenterBase(ViewComponent[VehicleParamsViewModel]):
         self.updateModel()
 
     def _getEvents(self):
-        return (
-         (
-          self.__igrController.onIgrTypeChanged, self._onIgrTypeChanged),
-         (
-          self.__itemsCache.onSyncCompleted, self._onCacheResync),
-         (
-          self.viewModel.onGroupClick, self.__onGroupClick))
+        return ((self.__igrController.onIgrTypeChanged, self._onIgrTypeChanged), (self.__itemsCache.onSyncCompleted, self._onCacheResync), (self.viewModel.onGroupClick, self.__onGroupClick))
 
     def _finalize(self):
         super(_VehicleParamsPresenterBase, self)._finalize()
@@ -145,7 +137,7 @@ class _VehicleParamsPresenterBase(ViewComponent[VehicleParamsViewModel]):
     def _onCacheResync(self, reason, diff):
         if reason in (CACHE_SYNC_REASON.SHOP_RESYNC, CACHE_SYNC_REASON.CLIENT_UPDATE):
             vehicle = self._getVehicle()
-            if vehicle is not None and any(vehicle.intCD in diff.get(itemType, {}) for itemType in (GUI_ITEM_TYPE.VEH_POST_PROGRESSION, GUI_ITEM_TYPE.VEHICLE)):
+            if vehicle is not None and any((vehicle.intCD in diff.get(itemType, {}) for itemType in (GUI_ITEM_TYPE.VEH_POST_PROGRESSION, GUI_ITEM_TYPE.VEHICLE))):
                 self.updateModel()
         return
 
@@ -187,8 +179,7 @@ class _VehicleParamsPresenterBase(ViewComponent[VehicleParamsViewModel]):
         return TOOLTIPS_CONSTANTS.VEHICLE_ADVANCED_PARAMETERS
 
     def _getParamTooltips(self):
-        return {
-         self._getTooltipID(), self._getAdvancedParamTooltip()}
+        return {self._getTooltipID(), self._getAdvancedParamTooltip()}
 
     def _isExtraParamEnabled(self):
         return False
@@ -211,47 +202,45 @@ class _VehicleParamsPresenterBase(ViewComponent[VehicleParamsViewModel]):
         if KPI.Name.hasValue(param.name):
             key = 'positive' if param.value >= 0 else 'negative'
             name = VEHICLE_ATTR_TO_KPI_NAME_MAP.get(param.name, param.name)
-            return json.dumps({'key': key, 'name': name})
+            return json.dumps({'key': key,
+             'name': name})
 
     def _createGroupViewModel(self, groupName, comparator):
         param = comparator.getExtendedData(groupName)
         additionalValue = formatAdditionalParameter(param, isApproximately=self._isAdditionalValueApproximately())
-        return {'Id': groupName, 
-           'IsEnabled': self._getGroupEnabled(groupName), 
-           'Value': formatParameterValue(param.name, param.value, param.state, allowSmartRound=False, isColorize=False, nDigits=self._getRoundNDigits()), 
-           'HighlightType': self._getGroupHighlight(groupName), 
-           'IsSituational': hasSituationalEffect(param.name, self.comparator), 
-           'TooltipID': self._getTooltipID(), 
-           'BuffIconType': getGroupIcon(param, self.comparator), 
-           'IsOpen': self._getIsOpened(groupName=groupName), 
-           'AdditionalValue': additionalValue if self._isAdditionalValueEnabled() else '', 
-           'Indicator': self._createIndicator(param)}
+        return {'Id': groupName,
+         'IsEnabled': self._getGroupEnabled(groupName),
+         'Value': formatParameterValue(param.name, param.value, param.state, allowSmartRound=False, isColorize=False, nDigits=self._getRoundNDigits()),
+         'HighlightType': self._getGroupHighlight(groupName),
+         'IsSituational': hasSituationalEffect(param.name, self.comparator),
+         'TooltipID': self._getTooltipID(),
+         'BuffIconType': getGroupIcon(param, self.comparator),
+         'IsOpen': self._getIsOpened(groupName=groupName),
+         'AdditionalValue': additionalValue if self._isAdditionalValueEnabled() else '',
+         'Indicator': self._createIndicator(param)}
 
     def _createIndicator(self, param):
         state, delta = param.state
         if state == PARAM_STATE.WORSE:
             delta = -abs(delta)
         maxValue = getMaxValue(param.value, delta)
-        return {'Value': param.value, 
-           'Delta': delta, 
-           'MarkerValue': self._stockParams[param.name], 
-           'MaxValue': maxValue, 
-           'MinValue': self._DEFAULT_MIN_VALUE, 
-           'IsUseAnim': self._getUseAnim(), 
-           'ModifiedPercent': int(param.value * 100 / (maxValue - self._DEFAULT_MIN_VALUE)), 
-           'CurrentPercent': int(self._stockParams[param.name] * 100 / (maxValue - self._DEFAULT_MIN_VALUE))}
+        return {'Value': param.value,
+         'Delta': delta,
+         'MarkerValue': self._stockParams[param.name],
+         'MaxValue': maxValue,
+         'MinValue': self._DEFAULT_MIN_VALUE,
+         'IsUseAnim': self._getUseAnim(),
+         'ModifiedPercent': int(param.value * 100 / (maxValue - self._DEFAULT_MIN_VALUE)),
+         'CurrentPercent': int(self._stockParams[param.name] * 100 / (maxValue - self._DEFAULT_MIN_VALUE))}
 
     def _createParam(self, param, groupName, highlight=HighlightType.NONE):
-        if param.value is None:
-            return
-        else:
-            return {'Id': param.name, 
-               'ParentID': groupName, 
-               'HighlightType': highlight, 
-               'IsEnabled': self._getParamEnabled(param, groupName), 
-               'Value': formatParameterValue(param.name, param.value, self._applyFormatting, param.state, allowSmartRound=False, nDigits=self._getRoundNDigits()), 
-               'TooltipID': self._getAdvancedParamTooltip(), 
-               'Name': self._getLocalizedName(param, self._applyFormatting)}
+        return None if param.value is None else {'Id': param.name,
+         'ParentID': groupName,
+         'HighlightType': highlight,
+         'IsEnabled': self._getParamEnabled(param, groupName),
+         'Value': formatParameterValue(param.name, param.value, self._applyFormatting, param.state, allowSmartRound=False, nDigits=self._getRoundNDigits()),
+         'TooltipID': self._getAdvancedParamTooltip(),
+         'Name': self._getLocalizedName(param, self._applyFormatting)}
 
     def _prepareData(self, diffParams=None, concreteGroup=None):
         if self._getVehicle() is None:
@@ -289,9 +278,9 @@ class _VehicleParamsPresenterBase(ViewComponent[VehicleParamsViewModel]):
     def __getHighlightType(self, paramName, diffParams, paramState):
         if diffParams:
             return diffParams.get(paramName, HighlightType.NONE)
+        elif paramState is None:
+            return HighlightType.NONE
         else:
-            if paramState is None:
-                return HighlightType.NONE
             if isinstance(paramState[0], (tuple, list)):
                 stateType, _ = paramState[0]
             else:
@@ -305,7 +294,7 @@ class _VehicleParamsPresenterBase(ViewComponent[VehicleParamsViewModel]):
         if self._getVehicle() is None:
             return
         else:
-            with self.viewModel.transaction() as (model):
+            with self.viewModel.transaction() as model:
                 groups = model.getGroups()
                 groups.clear()
                 for group in self.__groups:
@@ -366,9 +355,7 @@ class CurrentVehicleParamsPresenter(_VehicleParamsPresenterBase):
 
     def _getEvents(self):
         from CurrentVehicle import g_currentVehicle
-        return super(CurrentVehicleParamsPresenter, self)._getEvents() + (
-         (
-          g_currentVehicle.onChanged, self.__onCurrentVehicleChanged),)
+        return super(CurrentVehicleParamsPresenter, self)._getEvents() + ((g_currentVehicle.onChanged, self.__onCurrentVehicleChanged),)
 
     def _getVehicle(self):
         from CurrentVehicle import g_currentVehicle
@@ -385,8 +372,7 @@ class PreviewVehicleParamsPresenter(_VehicleParamsPresenterBase):
 
     def _getEvents(self):
         from CurrentVehicle import g_currentPreviewVehicle
-        return super(PreviewVehicleParamsPresenter, self)._getEvents() + (
-         g_currentPreviewVehicle.onChanged, self.__onPreviewVehicleChanged)
+        return super(PreviewVehicleParamsPresenter, self)._getEvents() + (g_currentPreviewVehicle.onChanged, self.__onPreviewVehicleChanged)
 
     def _getComparator(self):
         return params_helper.previewVehiclesComparator(self._getVehicle(), self._getVehicle())
@@ -434,8 +420,7 @@ class VehicleCompareParamsPresenter(_VehicleParamsPresenterBase):
             tooltipId = self._getGroupTooltipID() if paramId in self.expandedGroups else self._getTooltipID()
             toolTipMgr = self.__appLoader.getApp().getToolTipMgr()
             if toolTipMgr is not None:
-                toolTipMgr.onCreateWulfTooltip(tooltipId, (
-                 paramId, self._getContext(), True), event.mouse.positionX, event.mouse.positionY)
+                toolTipMgr.onCreateWulfTooltip(tooltipId, (paramId, self._getContext(), True), event.mouse.positionX, event.mouse.positionY)
                 return tooltipId
         return super(VehicleCompareParamsPresenter, self).createToolTip(event)
 
@@ -504,7 +489,7 @@ class VehicleSkillPreviewParamsPresenter(CurrentVehicleParamsPresenter):
 class EasyTankEquipParamsPresenter(_VehicleParamsPresenterBase):
 
     def __init__(self, vehicle, changedVehicle):
-        super(EasyTankEquipParamsPresenter, self).__init__()
+        super(EasyTankEquipParamsPresenter, self).__init__(layoutID=R.aliases.common.none(), applyFormatting=False)
         self._vehicle = vehicle
         self._changedVehicle = changedVehicle
 

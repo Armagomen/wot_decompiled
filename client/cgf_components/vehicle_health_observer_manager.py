@@ -1,4 +1,8 @@
-import BigWorld, CGF, logging
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/cgf_components/vehicle_health_observer_manager.py
+import BigWorld
+import CGF
+import logging
 from collections import defaultdict
 from constants import SPECIAL_VEHICLE_HEALTH
 from GenericComponents import StateSwitcherComponent
@@ -25,7 +29,7 @@ class VehicleHealthObserverManager(CGF.ComponentManager):
         stateSwitcher.requestState(currentState)
         self.__switchersGroupedByVehicle[vehicle.id].append(go)
         self.__switchersToVehiclesMap[go.id] = vehicle.id
-        vehicle.onVehicleHealthChanged += self.__onHealthChanged
+        vehicle.events.onVehicleHealthChanged += self.__onHealthChanged
 
     @onRemovedQuery(CGF.GameObject, StateSwitcherComponent, VehicleHealthObserverComponent)
     def onRemoved(self, go, stateSwitcher, vehicleHealthObserverComponent):
@@ -41,16 +45,14 @@ class VehicleHealthObserverManager(CGF.ComponentManager):
             vehicle = BigWorld.entities.get(vehicleID)
             if vehicle and not vehicle.isDestroyed:
                 _logger.debug('No switchers left. Unsubscribing from vehicle %s', vehicle.id)
-                vehicle.onVehicleHealthChanged -= self.__onHealthChanged
+                vehicle.events.onVehicleHealthChanged -= self.__onHealthChanged
             return
 
     @staticmethod
     def __determineState(health):
         if health > 0:
             return StateSwitcherComponent.NORMAL_STATE
-        if SPECIAL_VEHICLE_HEALTH.IS_AMMO_BAY_EXPLODED(health):
-            return StateSwitcherComponent.CRITICAL_STATE
-        return StateSwitcherComponent.DAMAGED_STATE
+        return StateSwitcherComponent.CRITICAL_STATE if SPECIAL_VEHICLE_HEALTH.IS_AMMO_BAY_EXPLODED(health) else StateSwitcherComponent.DAMAGED_STATE
 
     def __onHealthChanged(self, vehicleID, newHealth, prevHealth):
         newState = self.__determineState(newHealth)

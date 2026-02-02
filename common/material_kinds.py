@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/material_kinds.py
 import ResMgr
 from constants import IS_EDITOR
 from soft_exception import SoftException
@@ -14,15 +16,15 @@ NOT_GROUND_MATERIALS = None
 EFFECT_MATERIAL_PROPERTIES = None
 
 def _init():
-    global EFFECT_MATERIALS
-    global EFFECT_MATERIAL_IDS_BY_NAMES
-    global EFFECT_MATERIAL_INDEXES_BY_IDS
-    global EFFECT_MATERIAL_INDEXES_BY_NAMES
-    global EFFECT_MATERIAL_NAMES_BY_INDEXES
-    global EFFECT_MATERIAL_PROPERTIES
     global IDS_BY_NAMES
+    global EFFECT_MATERIAL_INDEXES_BY_IDS
+    global EFFECT_MATERIALS
+    global EFFECT_MATERIAL_NAMES_BY_INDEXES
     global NAMES_BY_IDS
     global NOT_GROUND_MATERIALS
+    global EFFECT_MATERIAL_INDEXES_BY_NAMES
+    global EFFECT_MATERIAL_PROPERTIES
+    global EFFECT_MATERIAL_IDS_BY_NAMES
     IDS_BY_NAMES = {}
     NAMES_BY_IDS = {}
     EFFECT_MATERIALS = []
@@ -74,8 +76,7 @@ def _init():
         EFFECT_MATERIAL_PROPERTIES[name] = {}
         hardnessMap = s.readVector2('hardness_map')
         if hardnessMap:
-            EFFECT_MATERIAL_PROPERTIES[name]['hardness_map'] = [
-             hardnessMap[0], hardnessMap[1]]
+            EFFECT_MATERIAL_PROPERTIES[name]['hardness_map'] = [hardnessMap[0], hardnessMap[1]]
         if s.readBool('not_ground_material'):
             NOT_GROUND_MATERIALS.append(name)
 

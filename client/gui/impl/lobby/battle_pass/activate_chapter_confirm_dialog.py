@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/battle_pass/activate_chapter_confirm_dialog.py
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.battle_pass.sounds import ACTIVATE_CHAPTER_SOUND_SPACE
 from gui.impl.dialogs.dialog_template import DialogTemplateView
@@ -30,7 +32,7 @@ class ChapterConfirm(ViewImpl):
 
     def _onLoading(self, *args, **kwargs):
         super(ChapterConfirm, self)._onLoading()
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setPrevChapter(self.__prevChapterID)
             model.setNextChapter(self.__nextChapterID)
             model.setIsSwitchFromPostProgressionToExtraChapter(self.__battlePass.isPostProgressionActive() and self.__battlePass.isExtraChapter(self.__nextChapterID))
@@ -54,9 +56,7 @@ class ActivateChapterConfirmDialog(DialogTemplateView):
         return {}
 
     def _getEvents(self):
-        return (
-         (
-          self.__battlePassController.onSeasonStateChanged, self.__onSeasonStateChanged),)
+        return ((self.__battlePassController.onSeasonStateChanged, self.__onSeasonStateChanged),)
 
     def __onSeasonStateChanged(self):
         if not self.__battlePassController.isActive():

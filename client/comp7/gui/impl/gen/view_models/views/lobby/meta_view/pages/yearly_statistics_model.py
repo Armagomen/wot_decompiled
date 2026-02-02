@@ -1,8 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/impl/gen/view_models/views/lobby/meta_view/pages/yearly_statistics_model.py
 from frameworks.wulf import Array, ViewModel
 from comp7.gui.impl.gen.view_models.views.lobby.meta_view.pages.yearly_statistics_season_model import YearlyStatisticsSeasonModel
 
 class YearlyStatisticsModel(ViewModel):
-    __slots__ = ('onGoToSeasonStatistics', )
+    __slots__ = ('onGoToSeasonStatistics',)
 
     def __init__(self, properties=1, commands=1):
         super(YearlyStatisticsModel, self).__init__(properties=properties, commands=commands)

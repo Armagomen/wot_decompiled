@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/tooltips/quests.py
 import constants
 from battle_pass_common import BATTLE_PASS_RANDOM_QUEST_ID_PREFIX
 from CurrentVehicle import g_currentVehicle
@@ -108,26 +110,23 @@ class QuestsPreviewTooltipData(BlocksTooltipData):
         for bonus in quest.getBonuses():
             if bonus.getName() == 'battleToken':
                 bonusNames.extend(_StringTokenBonusFormatter().format(bonus))
-            else:
-                bonusFormat = bonus.format()
-                if bonusFormat:
-                    if isinstance(bonus, CustomizationsBonus):
-                        for item in bonus.getCustomizations():
-                            itemTypeName = item.get('custType')
-                            if itemTypeName == 'projection_decal':
-                                itemTypeName = GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.PROJECTION_DECAL]
-                            elif itemTypeName == 'personal_number':
-                                itemTypeName = GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.PERSONAL_NUMBER]
-                            bonusFmt = _ms(ITEM_TYPES.customization(itemTypeName))
-                            bonusNames.append(bonusFmt)
+            bonusFormat = bonus.format()
+            if bonusFormat:
+                if isinstance(bonus, CustomizationsBonus):
+                    for item in bonus.getCustomizations():
+                        itemTypeName = item.get('custType')
+                        if itemTypeName == 'projection_decal':
+                            itemTypeName = GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.PROJECTION_DECAL]
+                        elif itemTypeName == 'personal_number':
+                            itemTypeName = GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.PERSONAL_NUMBER]
+                        bonusFmt = _ms(ITEM_TYPES.customization(itemTypeName))
+                        bonusNames.append(bonusFmt)
 
-                    else:
-                        bonusNames.extend(bonusFormat.split(', '))
+                else:
+                    bonusNames.extend(bonusFormat.split(', '))
 
         isAvailable, _ = quest.isAvailable()
-        if str(quest.getID()).startswith(BATTLE_PASS_RANDOM_QUEST_ID_PREFIX):
-            return self._packBattlePassRandomQuest(quest.getUserName(), isAvailable)
-        return self._packQuest(quest.getUserName(), bonusNames, isAvailable)
+        return self._packBattlePassRandomQuest(quest.getUserName(), isAvailable) if str(quest.getID()).startswith(BATTLE_PASS_RANDOM_QUEST_ID_PREFIX) else self._packQuest(quest.getUserName(), bonusNames, isAvailable)
 
     def _getHeader(self, count, vehicleName, description):
         questHeader = backport.text(R.strings.tooltips.hangar.header.quests.header(), count=count)
@@ -144,12 +143,12 @@ class QuestsPreviewTooltipData(BlocksTooltipData):
             formater = text_styles.success
             icon = icons.checkmark()
             tooltipText = R.strings.tooltips.hangar.header.quests.bottom.empty()
-        return formatters.packTextBlockData(text=makeHtmlString('html_templates:lobby/textStyle', 'alignText', {'align': 'center', 
-           'message': formater(('{0}{1}').format(icon, backport.text(tooltipText, count=value)))}), padding=formatters.packPadding(top=-10, bottom=10))
+        return formatters.packTextBlockData(text=makeHtmlString('html_templates:lobby/textStyle', 'alignText', {'align': 'center',
+         'message': formater('{0}{1}'.format(icon, backport.text(tooltipText, count=value)))}), padding=formatters.packPadding(top=-10, bottom=10))
 
     def _packBattlePassRandomQuest(self, questName, isAvailable):
         blocks = []
-        title = questName if isAvailable else ('{} {}').format(icons.notAvailableRed(), questName)
+        title = questName if isAvailable else '{} {}'.format(icons.notAvailableRed(), questName)
         blocks.append(formatters.packImageTextBlockData(title=text_styles.middleTitle(title), desc='', imgPadding=formatters.packPadding(top=-13, left=-2), txtPadding=formatters.packPadding(top=-2), txtGap=6, padding=formatters.packPadding(bottom=15), txtOffset=20))
         return formatters.packBuildUpBlockData(blocks, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE)
 
@@ -158,17 +157,16 @@ class QuestsPreviewTooltipData(BlocksTooltipData):
         bonusesLength = len(bonuses)
         if bonusesLength > _MAX_BONUSES_PER_QUEST:
             bonuses = bonuses[:_MAX_BONUSES_PER_QUEST]
-            formater = ('{{}} {}').format(text_styles.stats(backport.text(R.strings.tooltips.hangar.header.quests.reward.rest(), count=bonusesLength - _MAX_BONUSES_PER_QUEST)))
+            formater = '{{}} {}'.format(text_styles.stats(backport.text(R.strings.tooltips.hangar.header.quests.reward.rest(), count=bonusesLength - _MAX_BONUSES_PER_QUEST)))
         else:
             formater = '{}'
-        strBonus = (', ').join(bonuses)
-        title = questName if isAvailable else ('{} {}').format(icons.notAvailableRed(), questName)
+        strBonus = ', '.join(bonuses)
+        title = questName if isAvailable else '{} {}'.format(icons.notAvailableRed(), questName)
         blocks.append(formatters.packImageTextBlockData(title=text_styles.middleTitle(title), desc=text_styles.neutral(backport.text(R.strings.tooltips.hangar.header.quests.reward(), rewards=text_styles.main(formater.format(strBonus)))), imgPadding=formatters.packPadding(top=-13, left=-2), txtPadding=formatters.packPadding(top=-2), txtGap=6, padding=formatters.packPadding(bottom=15), txtOffset=20))
         return formatters.packBuildUpBlockData(blocks, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE)
 
     def _getBody(self, text):
-        return formatters.packBuildUpBlockData([
-         formatters.packTextBlockData(text=text_styles.main(text), padding=formatters.packPadding(left=20, top=-10, bottom=10))], linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE)
+        return formatters.packBuildUpBlockData([formatters.packTextBlockData(text=text_styles.main(text), padding=formatters.packPadding(left=20, top=-10, bottom=10))], linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE)
 
     def _isShowBottom(self, vehicle=None):
         return True
@@ -206,13 +204,13 @@ class ScheduleQuestTooltipData(BlocksTooltipData):
         if intervals:
             times = []
             for low, high in intervals:
-                times.append(('{} - {}').format(backport.getShortTimeFormat(low), backport.getShortTimeFormat(high)))
+                times.append('{} - {}'.format(backport.getShortTimeFormat(low), backport.getShortTimeFormat(high)))
 
             items.append(self._getSubBlock(TOOLTIPS.QUESTS_SCHEDULE_INTERVALS, times, formatters.packPadding(top=18)))
         return formatters.packBuildUpBlockData(blocks=items, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE, padding=formatters.packPadding(top=-3))
 
     def _getSubBlock(self, header, items, padding=None):
-        return formatters.packTitleDescBlock(title=text_styles.middleTitle(header), desc=text_styles.main((', ').join(items)), padding=padding, descPadding=formatters.packPadding(left=20))
+        return formatters.packTitleDescBlock(title=text_styles.middleTitle(header), desc=text_styles.main(', '.join(items)), padding=padding, descPadding=formatters.packPadding(left=20))
 
 
 class UnavailableQuestTooltipData(BlocksTooltipData):
@@ -244,8 +242,8 @@ class UnavailableQuestTooltipData(BlocksTooltipData):
         return items
 
     def __getBootom(self, text):
-        return formatters.packTextBlockData(text=makeHtmlString('html_templates:lobby/textStyle', 'alignText', {'align': 'center', 
-           'message': text_styles.error(('{0} {1}').format(icons.notAvailable(), text))}))
+        return formatters.packTextBlockData(text=makeHtmlString('html_templates:lobby/textStyle', 'alignText', {'align': 'center',
+         'message': text_styles.error('{0} {1}'.format(icons.notAvailable(), text))}))
 
     def __getList(self, items):
         blocks = []
@@ -255,14 +253,11 @@ class UnavailableQuestTooltipData(BlocksTooltipData):
         return blocks
 
     def __getListBlock(self, header, items, padding=None):
-        return [
-         formatters.packTextBlockData(text=text_styles.highTitle(header)),
-         formatters.packBuildUpBlockData(items, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE, padding=padding)]
+        return [formatters.packTextBlockData(text=text_styles.highTitle(header)), formatters.packBuildUpBlockData(items, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE, padding=padding)]
 
     def __getNotVehicle(self):
-        items = self.__getList([
-         {'text': TOOLTIPS.QUESTS_UNAVAILABLE_VEHICLE_BODY, 
-            'bullet': TOOLTIPS.QUESTS_UNAVAILABLE_BULLET}])
+        items = self.__getList([{'text': TOOLTIPS.QUESTS_UNAVAILABLE_VEHICLE_BODY,
+          'bullet': TOOLTIPS.QUESTS_UNAVAILABLE_BULLET}])
         return self.__getListBlock(TOOLTIPS.QUESTS_UNAVAILABLE_VEHICLE_HEADER, items)
 
     def __getRankedOverrides(self, quest):
@@ -288,10 +283,8 @@ class UnavailableQuestTooltipData(BlocksTooltipData):
         if body and header:
             body = text_styles.main(body)
             bullet = backport.text(R.strings.tooltips.quests.unavailable.bullet())
-            return [
-             formatters.packTextBlockData(text=text_styles.highTitle(header)),
-             formatters.packBuildUpBlockData(self.__getList([{'text': body, 'bullet': bullet}]), linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE),
-             self.__getBootom(backport.text(R.strings.ranked_battles.quests.tooltip.unavailable.bottom()))]
+            return [formatters.packTextBlockData(text=text_styles.highTitle(header)), formatters.packBuildUpBlockData(self.__getList([{'text': body,
+               'bullet': bullet}]), linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE), self.__getBootom(backport.text(R.strings.ranked_battles.quests.tooltip.unavailable.bottom()))]
         else:
             return []
 
@@ -312,10 +305,10 @@ class AdditionalAwardTooltipData(BlocksTooltipData):
             label = bonusDict.get('label', '')
             highlight = bonusDict.get('highlightIcon', '')
             overlay = bonusDict.get('overlayIcon', '')
-            rendererData = {'imgSource': imgSource, 
-               'label': label, 
-               'highlight': highlight, 
-               'overlay': overlay}
+            rendererData = {'imgSource': imgSource,
+             'label': label,
+             'highlight': highlight,
+             'overlay': overlay}
             if overlay:
                 rendererType = 'EquipmentAwardItemExUI'
                 padding = formatters.packPadding(top=-35, bottom=-30)
@@ -391,9 +384,7 @@ class MissionVehiclesConditionTooltipData(BlocksTooltipData):
 
     def _packBlocks(self, *args, **kwargs):
         items = super(MissionVehiclesConditionTooltipData, self)._packBlocks()
-        blocks = [
-         formatters.packTextBlockData(text_styles.highTitle(TOOLTIPS.QUESTS_VEHICLES_HEADER)),
-         formatters.packTextBlockData(text_styles.main(TOOLTIPS.QUESTS_VEHICLES_DESCRIPTION))]
+        blocks = [formatters.packTextBlockData(text_styles.highTitle(TOOLTIPS.QUESTS_VEHICLES_HEADER)), formatters.packTextBlockData(text_styles.main(TOOLTIPS.QUESTS_VEHICLES_DESCRIPTION))]
         lst = args[0].list
         if len(lst) > 6:
             blocks.append(formatters.packMissionVehiclesBlockData(lst[:6], padding=formatters.packPadding(top=20)))
@@ -412,9 +403,7 @@ class MissionVehiclesTypeTooltipData(BlocksTooltipData):
 
     def _packBlocks(self, *args, **kwargs):
         items = super(MissionVehiclesTypeTooltipData, self)._packBlocks()
-        blocks = [
-         formatters.packTextBlockData(text_styles.highTitle(TOOLTIPS.QUESTS_VEHICLES_HEADER)),
-         formatters.packTextBlockData(text_styles.main(TOOLTIPS.QUESTS_VEHICLES_DESCRIPTION))]
+        blocks = [formatters.packTextBlockData(text_styles.highTitle(TOOLTIPS.QUESTS_VEHICLES_HEADER)), formatters.packTextBlockData(text_styles.main(TOOLTIPS.QUESTS_VEHICLES_DESCRIPTION))]
         blocks.append(formatters.packMissionVehiclesTypeBlockData(args[0].list, padding=formatters.packPadding(top=20, bottom=-20)))
         items.append(formatters.packBuildUpBlockData(blocks))
         return items

@@ -1,8 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen_utils.py
 from typing import Optional, Generator, Iterator
 INVALID_RES_ID = -1
 
 class DynAccessor(object):
-    __slots__ = ('__resId', )
+    __slots__ = ('__resId',)
 
     def __init__(self, value=0):
         self.__resId = value
@@ -17,7 +19,7 @@ class DynAccessor(object):
         return getattr(self, attr, default or _g_invalid)
 
     def num(self, attr, default=None):
-        return getattr(self, ('c_{}').format(attr), default or _g_invalid)
+        return getattr(self, 'c_{}'.format(attr), default or _g_invalid)
 
     def keys(self):
         return (attr for attr in dir(self) if attr not in dir(DynAccessor) and not attr.startswith('_'))

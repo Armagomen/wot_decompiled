@@ -1,4 +1,8 @@
-import abc, typing, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/utils/requesters/common.py
+import abc
+import typing
+import BigWorld
 from helpers import dependency
 from skeletons.gui.server_events import IEventsCache
 if typing.TYPE_CHECKING:
@@ -49,9 +53,7 @@ class BaseDelta(object):
             self._prevValues[entryId] = self._currValues[entryId]
 
     def getPrevValue(self, entryId):
-        if entryId in self._prevValues:
-            return self._prevValues[entryId]
-        return self._getDefaultValue()
+        return self._prevValues[entryId] if entryId in self._prevValues else self._getDefaultValue()
 
     def clear(self):
         self._prevValues.clear()
@@ -59,9 +61,7 @@ class BaseDelta(object):
         self._prevIsInitialized = False
 
     def hasDiff(self, entryId):
-        if entryId in self._currValues:
-            return self._hasEntryChanged(entryId)
-        return False
+        return self._hasEntryChanged(entryId) if entryId in self._currValues else False
 
     def _hasEntryChanged(self, entryId):
         prevValues = self.getPrevValue(entryId)

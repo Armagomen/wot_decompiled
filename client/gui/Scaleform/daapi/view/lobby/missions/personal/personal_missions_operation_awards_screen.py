@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/missions/personal/personal_missions_operation_awards_screen.py
 from gui.Scaleform.daapi.view.meta.PersonalMissionsOperationAwardsScreenMeta import PersonalMissionsOperationAwardsScreenMeta
 from gui.Scaleform.daapi.view.lobby.missions.awards_formatters import AWARDS_SIZES, LABEL_ALIGN
 from gui.Scaleform.locale.PERSONAL_MISSIONS import PERSONAL_MISSIONS
@@ -37,21 +39,21 @@ class PersonalMissionsOperationAwardsScreen(PersonalMissionsOperationAwardsScree
     def _populate(self):
         super(PersonalMissionsOperationAwardsScreen, self)._populate()
         badges, camouflageAward = self.__getBonuses(self.__questsIds)
-        self.as_setInitDataS({'closeBtnLabel': PERSONAL_MISSIONS.AWARDSSCREEN_CLOSEBTN_LABEL, 
-           'header': self.__getHeader(), 
-           'headerExtra': PERSONAL_MISSIONS.AWARDSSCREEN_HEADEREXTRA, 
-           'campaignId': self.__branch, 
-           'vehicleData': self.__getVehicleData()})
+        self.as_setInitDataS({'closeBtnLabel': PERSONAL_MISSIONS.AWARDSSCREEN_CLOSEBTN_LABEL,
+         'header': self.__getHeader(),
+         'headerExtra': PERSONAL_MISSIONS.AWARDSSCREEN_HEADEREXTRA,
+         'campaignId': self.__branch,
+         'vehicleData': self.__getVehicleData()})
         awards = self.__packBadges(badges)
         if camouflageAward:
             awards.append(camouflageAward)
         renderSize = 80 if self.__vehicleAward else 110
-        self.as_setAwardDataS({'ribbonType': 'ribbon1', 
-           'rendererLinkage': 'RibbonAwardAnimUI', 
-           'gap': 20, 
-           'rendererWidth': renderSize, 
-           'rendererHeight': renderSize, 
-           'awards': awards})
+        self.as_setAwardDataS({'ribbonType': 'ribbon1',
+         'rendererLinkage': 'RibbonAwardAnimUI',
+         'gap': 20,
+         'rendererWidth': renderSize,
+         'rendererHeight': renderSize,
+         'awards': awards})
         self.as_playAwardsAnimationS()
         self.soundManager.playSound(SOUNDS.TANK_AWARD_WINDOW)
         self.soundManager.setRTPC(SOUNDS.RTCP_OVERLAY, SOUNDS.MAX_MISSIONS_ZOOM)
@@ -70,31 +72,27 @@ class PersonalMissionsOperationAwardsScreen(PersonalMissionsOperationAwardsScree
         else:
             vehicle, _ = first(self.__vehicleAward.getVehicles())
             vehName = vehicle.name
-            vehIcon = RES_ICONS.getPersonalMissionVehicleAwardImage(ICONS_SIZES.X550, vehName.split(':')[(-1)])
+            vehIcon = RES_ICONS.getPersonalMissionVehicleAwardImage(ICONS_SIZES.X550, vehName.split(':')[-1])
             vehicleLevel = _ms(TOOLTIPS.level(vehicle.level))
             vehicleTypeIcon = getTypeBigIconPath(vehicle.type, vehicle.isElite)
-            if vehIcon is not None:
-                return {'vehicleSrc': vehIcon, 
-                   'vehicleTypeIcon': vehicleTypeIcon, 
-                   'vehicleName': vehicle.userName, 
-                   'vehicleLevel': vehicleLevel, 
-                   'tooltip': {'isSpecial': True, 
-                               'specialAlias': TOOLTIPS_CONSTANTS.AWARD_VEHICLE, 
-                               'specialArgs': [
-                                             vehicle.intCD]}}
-            return
+            return {'vehicleSrc': vehIcon,
+             'vehicleTypeIcon': vehicleTypeIcon,
+             'vehicleName': vehicle.userName,
+             'vehicleLevel': vehicleLevel,
+             'tooltip': {'isSpecial': True,
+                         'specialAlias': TOOLTIPS_CONSTANTS.AWARD_VEHICLE,
+                         'specialArgs': [vehicle.intCD]}} if vehIcon is not None else None
 
     def __packBadges(self, badges):
         result = []
         for badge in badges:
-            result.append({'label': None, 
-               'imgSource': badge.getBigIcon() if self.__vehicleAward else badge.getIconX110(), 
-               'tooltip': None, 
-               'isSpecial': True, 
-               'specialAlias': TOOLTIPS_CONSTANTS.BADGE, 
-               'specialArgs': [
-                             badge.badgeID], 
-               'align': LABEL_ALIGN.RIGHT})
+            result.append({'label': None,
+             'imgSource': badge.getBigIcon() if self.__vehicleAward else badge.getIconX110(),
+             'tooltip': None,
+             'isSpecial': True,
+             'specialAlias': TOOLTIPS_CONSTANTS.BADGE,
+             'specialArgs': [badge.badgeID],
+             'align': LABEL_ALIGN.RIGHT})
 
         return result
 
@@ -125,17 +123,14 @@ class PersonalMissionsOperationAwardsScreen(PersonalMissionsOperationAwardsScree
             else:
                 camouflageIcon = RES_ICONS.MAPS_ICONS_PERSONALMISSIONS_AWARDS_110X110_CAMOUFLAGE
             if hasTankCamo and hasNationCamo:
-                tooltipKeys = (TOOLTIPS.PERSONALMISSIONS_AWARDS_CAMOUFLAGEALL_HEADER,
-                 TOOLTIPS.PERSONALMISSIONS_AWARDS_CAMOUFLAGEALL_BODY)
+                tooltipKeys = (TOOLTIPS.PERSONALMISSIONS_AWARDS_CAMOUFLAGEALL_HEADER, TOOLTIPS.PERSONALMISSIONS_AWARDS_CAMOUFLAGEALL_BODY)
             elif hasTankCamo:
-                tooltipKeys = (TOOLTIPS.PERSONALMISSIONS_AWARDS_CAMOUFLAGEONLY_HEADER,
-                 TOOLTIPS.PERSONALMISSIONS_AWARDS_CAMOUFLAGEONLY_BODY)
+                tooltipKeys = (TOOLTIPS.PERSONALMISSIONS_AWARDS_CAMOUFLAGEONLY_HEADER, TOOLTIPS.PERSONALMISSIONS_AWARDS_CAMOUFLAGEONLY_BODY)
             else:
-                tooltipKeys = (TOOLTIPS.PERSONALMISSIONS_AWARDS_CAMOUFLAGENATION_HEADER,
-                 TOOLTIPS.PERSONALMISSIONS_AWARDS_CAMOUFLAGENATION_BODY)
-            camouflageAward = {'imgSource': camouflageIcon, 
-               'itemName': 'camouflage', 
-               'tooltip': makeTooltip(*tooltipKeys)}
+                tooltipKeys = (TOOLTIPS.PERSONALMISSIONS_AWARDS_CAMOUFLAGENATION_HEADER, TOOLTIPS.PERSONALMISSIONS_AWARDS_CAMOUFLAGENATION_BODY)
+            camouflageAward = {'imgSource': camouflageIcon,
+             'itemName': 'camouflage',
+             'tooltip': makeTooltip(*tooltipKeys)}
         else:
             camouflageAward = None
         return (sorted(achievements, reverse=True), camouflageAward)

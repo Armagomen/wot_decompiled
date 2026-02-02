@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/genConsts/CONFIRM_EXCHANGE_DIALOG_TYPES.py
 
 
 class CONFIRM_EXCHANGE_DIALOG_TYPES(object):

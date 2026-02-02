@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/Keys.py
 MODIFIER_SHIFT = 1
 MODIFIER_CTRL = 2
 MODIFIER_ALT = 4

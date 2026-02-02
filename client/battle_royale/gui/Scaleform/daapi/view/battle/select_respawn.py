@@ -1,4 +1,8 @@
-import logging, time, weakref
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/battle/select_respawn.py
+import logging
+import time
+import weakref
 from battle_royale.gui.battle_control.controllers.spawn_ctrl import ISpawnListener
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.Scaleform.framework.entities.inject_component_adaptor import InjectComponentAdaptor
@@ -73,7 +77,7 @@ class BRPrebattleTimer(IAbstractPeriodView):
             self.__updateTimer()
 
     def __updateTimer(self):
-        with self._parentView.viewModel.transaction() as (vm):
+        with self._parentView.viewModel.transaction() as vm:
             vm.setLeftTime(time.strftime('%M:%S', time.gmtime(round(self.__timeLeft))))
             vm.setIsWaitingPlayers(False)
             if round(self.__timeLeft) <= self.__endingTime:
@@ -91,7 +95,7 @@ class SelectRespawnView(ViewImpl):
         settings = ViewSettings(R.views.battle.battleRoyale.select_respawn.SelectRespawn(), ViewFlags.VIEW, SelectRespawnViewModel(), *args, **kwargs)
         super(SelectRespawnView, self).__init__(settings)
         arenaVisitor = self.__sessionProvider.arenaVisitor
-        self.__mapTexture = ('url:../../{}').format(arenaVisitor.type.getMinimapTexture())
+        self.__mapTexture = 'url:../../{}'.format(arenaVisitor.type.getMinimapTexture())
         self.__background = self.__getBgByGeometryName(arenaVisitor.type.getGeometryName())
         bottomLeft, topRight = arenaVisitor.type.getBoundingBox()
         self.__mapSize, _ = topRight - bottomLeft
@@ -113,7 +117,7 @@ class SelectRespawnView(ViewImpl):
         pass
 
     def setPoints(self, points):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             vmPoints = vm.getPoints()
             vmPoints.clear()
             for point in points:
@@ -128,13 +132,13 @@ class SelectRespawnView(ViewImpl):
             vmPoints.invalidate()
 
     def updateSelectedPoint(self, pointId):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             vm.setSelectedPointID(pointId)
 
     def updatePoint(self, vehicleId, pointId, prevPointId):
         arenaDP = self.__sessionProvider.getArenaDP()
         playerName = arenaDP.getVehicleInfo(vehicleId).player.name
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             vmPoints = vm.getPoints()
             for vmPoint in vmPoints:
                 if vmPoint.getPointID() == pointId:
@@ -154,7 +158,7 @@ class SelectRespawnView(ViewImpl):
     def _initialize(self, *args, **kwargs):
         super(SelectRespawnView, self)._initialize()
         self.setKeyHandlerState(isActive=True)
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             vm.setMapSize(abs(self.__mapSize))
             vm.setMinimapBG(self.__mapTexture)
             vm.setHeader(R.strings.battle_royale.selectRespawn.header())
@@ -187,9 +191,7 @@ class SelectRespawnView(ViewImpl):
     def __getBgByGeometryName(self, geometry):
         if geometry == '250_br_battle_city2-1':
             return R.images.gui.maps.icons.battleRoyale.spawnBg.c_250_br_battle_city2_1()
-        if geometry == '251_br_battle_city3':
-            return R.images.gui.maps.icons.battleRoyale.spawnBg.c_251_br_battle_city3()
-        return R.images.gui.maps.icons.battleRoyale.spawnBg.c_252_br_battle_city4()
+        return R.images.gui.maps.icons.battleRoyale.spawnBg.c_251_br_battle_city3() if geometry == '251_br_battle_city3' else R.images.gui.maps.icons.battleRoyale.spawnBg.c_252_br_battle_city4()
 
     def __onSelectPoint(self):
         spawnCtrl = self.__sessionProvider.dynamic.spawn

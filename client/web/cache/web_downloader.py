@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/web/cache/web_downloader.py
 import time
 from functools import partial
 from helpers import threads

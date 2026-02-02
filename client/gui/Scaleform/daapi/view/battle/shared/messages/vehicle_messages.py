@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/messages/vehicle_messages.py
 from MemoryCriticalController import g_critMemHandler
 from debug_utils import LOG_DEBUG
 from gui.Scaleform.daapi.view.battle.shared.messages import fading_messages
@@ -70,7 +72,9 @@ class VehicleMessages(fading_messages.FadingMessages):
         if ignoreMessages:
             return
         else:
-            names = {'device': '', 'entity': '', 'target': ''}
+            names = {'device': '',
+             'entity': '',
+             'target': ''}
             if extra is not None:
                 names['device'] = extra.deviceUserString
             if entityID:
@@ -78,7 +82,7 @@ class VehicleMessages(fading_messages.FadingMessages):
             if equipmentID:
                 equipment = vehicles.g_cache.equipments().get(equipmentID)
                 if equipment is not None:
-                    postfix = ('_').join((postfix, equipment.messagePostfix))
+                    postfix = '_'.join((postfix, equipment.messagePostfix))
             self.showMessage(code, names, postfix=postfix)
             return
 

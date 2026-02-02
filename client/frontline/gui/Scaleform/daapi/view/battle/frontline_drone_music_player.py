@@ -1,16 +1,20 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/battle/frontline_drone_music_player.py
 from functools import partial
-import time, WWISE, BigWorld
+import time
+import WWISE
+import BigWorld
 from gui.Scaleform.daapi.view.battle.shared.drone_music_player import DroneMusicPlayer, _Condition, _TimeRemainedCondition, _BaseCaptureCondition, _RtpcEvents, _Severity, _delegate, _initCondition, _MusicID
 from constants import ARENA_PERIOD
 from debug_utils import LOG_DEBUG
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
 _FRONTLINE_MUSIC_STATE_GROUP = 'STATE_epicnormandy_battle_music'
-_SEVERITY_TO_MUSIC_ID = {_Severity.NONE: 'STATE_epicnormandy_battle_silence', 
-   _Severity.LOW: 'STATE_epicnormandy_battle_music_01', 
-   _Severity.MEDIUM: 'STATE_epicnormandy_battle_music_02', 
-   _Severity.HIGH: 'STATE_epicnormandy_battle_music_03', 
-   _Severity.VERY_HIGH: 'STATE_epicnormandy_battle_music_00'}
+_SEVERITY_TO_MUSIC_ID = {_Severity.NONE: 'STATE_epicnormandy_battle_silence',
+ _Severity.LOW: 'STATE_epicnormandy_battle_music_01',
+ _Severity.MEDIUM: 'STATE_epicnormandy_battle_music_02',
+ _Severity.HIGH: 'STATE_epicnormandy_battle_music_03',
+ _Severity.VERY_HIGH: 'STATE_epicnormandy_battle_music_00'}
 
 class _FrontlineCondition(_Condition):
 
@@ -32,10 +36,7 @@ class _FrontlineZoneTransitionCondition(_FrontlineCondition):
 
     @_initCondition
     def onWaypointsForPlayerActivated(self, waypointSectorTimeTuple):
-        if waypointSectorTimeTuple[0] is not None:
-            return self._updateValidValue(True)
-        else:
-            return self._updateValidValue(False)
+        return self._updateValidValue(True) if waypointSectorTimeTuple[0] is not None else self._updateValidValue(False)
 
 
 class _FrontlineMainObjectivesTotalHealthCondition(_FrontlineCondition):
@@ -54,9 +55,7 @@ class _FrontlineMainObjectivesTotalHealthCondition(_FrontlineCondition):
             if destructibleComponent is None:
                 return
             totalRemainingHealthPercentage = destructibleComponent.getTotalRemainingHealthPercentage()
-            if totalRemainingHealthPercentage <= self.criticalValue:
-                return self._updateValidValue(True)
-            return
+            return self._updateValidValue(True) if totalRemainingHealthPercentage <= self.criticalValue else None
 
 
 class _FrontlineMainObjectivesNumDestroyedCondition(_FrontlineCondition):
@@ -75,9 +74,7 @@ class _FrontlineMainObjectivesNumDestroyedCondition(_FrontlineCondition):
             if destructibleComponent is None:
                 return
             numDestroyedMainObjectives = destructibleComponent.getNumDestroyedEntities()
-            if numDestroyedMainObjectives >= self.criticalValue:
-                return self._updateValidValue(True)
-            return
+            return self._updateValidValue(True) if numDestroyedMainObjectives >= self.criticalValue else None
 
 
 class _FrontlineRespawnViewCondition(_FrontlineCondition):
@@ -124,7 +121,7 @@ class _FrontlineTimeRemainedCondition(_TimeRemainedCondition):
             return False
 
     def __onEpicTimeRemainedCooldownOver(self, startTime):
-        LOG_DEBUG(('[EPIC Drone] Time Remained. Cooldown ended. {} seconds passed. Music will be stopped.').format(time.time() - startTime))
+        LOG_DEBUG('[EPIC Drone] Time Remained. Cooldown ended. {} seconds passed. Music will be stopped.'.format(time.time() - startTime))
         self.__stopEpicTimeRemainedCooldown = None
         if self._updateValidValue(False):
             self.onValidChangedInternally()
@@ -184,7 +181,7 @@ class _FrontlineAlliedBaseCaptureCondition(_FrontlineBaseCaptureCondition):
         super(_FrontlineAlliedBaseCaptureCondition, self).__init__(criticalValue, _Severity.LOW)
 
     def _getValidBaseMask(self):
-        return 0
+        pass
 
     def _getRtpcPointsID(self):
         return _RtpcEvents.ALLIES_BASE_POINTS_CAPTURING
@@ -208,7 +205,7 @@ class _FrontlineEnemyBaseCaptureCondition(_FrontlineBaseCaptureCondition):
         super(_FrontlineEnemyBaseCaptureCondition, self).__init__(criticalValue, _Severity.LOW)
 
     def _getValidBaseMask(self):
-        return 3
+        pass
 
     def _getRtpcPointsID(self):
         return _RtpcEvents.ENEMIES_BASE_POINTS_CAPTURING
@@ -227,38 +224,12 @@ class _FrontlineEnemyBaseCaptureCondition(_FrontlineBaseCaptureCondition):
 
 
 class FrontlineDroneMusicPlayer(DroneMusicPlayer):
-    _SETTING_TO_CONDITION_MAPPING = {'timeRemained': (
-                      lambda player: True,
-                      (
-                       _FrontlineTimeRemainedCondition,),
-                      lambda name, key, data: (
-                       data[name].getValue(key), data['musicStopPredelay'].getValue(key))), 
-       'capturedPoints': (
-                        lambda player: True,
-                        (
-                         _FrontlineAlliedBaseCaptureCondition, _FrontlineEnemyBaseCaptureCondition),
-                        lambda name, key, data: (
-                         data[name].getValue(key), data['musicStopPredelay'].getValue(key))), 
-       'epicRespawnView': (
-                         lambda player: True,
-                         (
-                          _FrontlineRespawnViewCondition,),
-                         lambda name, key, data: data[name].getValue(key)), 
-       'epicMainObjectivesTotalHealth': (
-                                       lambda player: True,
-                                       (
-                                        _FrontlineMainObjectivesTotalHealthCondition,),
-                                       lambda name, key, data: data[name].getValue(key)), 
-       'epicMainObjectivesNumDestroyed': (
-                                        lambda player: True,
-                                        (
-                                         _FrontlineMainObjectivesNumDestroyedCondition,),
-                                        lambda name, key, data: data[name].getValue(key)), 
-       'epicZoneTransition': (
-                            lambda player: True,
-                            (
-                             _FrontlineZoneTransitionCondition,),
-                            lambda name, key, data: data[name].getValue(key))}
+    _SETTING_TO_CONDITION_MAPPING = {'timeRemained': (lambda player: True, (_FrontlineTimeRemainedCondition,), lambda name, key, data: (data[name].getValue(key), data['musicStopPredelay'].getValue(key))),
+     'capturedPoints': (lambda player: True, (_FrontlineAlliedBaseCaptureCondition, _FrontlineEnemyBaseCaptureCondition), lambda name, key, data: (data[name].getValue(key), data['musicStopPredelay'].getValue(key))),
+     'epicRespawnView': (lambda player: True, (_FrontlineRespawnViewCondition,), lambda name, key, data: data[name].getValue(key)),
+     'epicMainObjectivesTotalHealth': (lambda player: True, (_FrontlineMainObjectivesTotalHealthCondition,), lambda name, key, data: data[name].getValue(key)),
+     'epicMainObjectivesNumDestroyed': (lambda player: True, (_FrontlineMainObjectivesNumDestroyedCondition,), lambda name, key, data: data[name].getValue(key)),
+     'epicZoneTransition': (lambda player: True, (_FrontlineZoneTransitionCondition,), lambda name, key, data: data[name].getValue(key))}
 
     def __init__(self):
         super(FrontlineDroneMusicPlayer, self).__init__()
@@ -314,7 +285,7 @@ class FrontlineDroneMusicPlayer(DroneMusicPlayer):
                 if not isPlaying:
                     self._setPlayingMusicID(_MusicID.INTENSIVE)
                     self._playMusic()
-                LOG_DEBUG(('[EPIC Drone] Satisfied conditions: {}').format(satisfied))
+                LOG_DEBUG('[EPIC Drone] Satisfied conditions: {}'.format(satisfied))
                 if highestSeverity <= condition.getSeverity():
                     highestSeverity = condition.getSeverity()
 

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/tankman_container_view.py
 import typing
 from collections import OrderedDict
 import Event
@@ -30,22 +32,14 @@ class TabsId(object):
     PERSONAL_FILE = R.views.lobby.crew.personal_case.PersonalFileView()
     PERSONAL_DATA = R.views.lobby.crew.personal_case.PersonalDataView()
     SERVICE_RECORD = R.views.lobby.crew.personal_case.ServiceRecordView()
-    ALL = [
-     PERSONAL_FILE, PERSONAL_DATA, SERVICE_RECORD]
+    ALL = [PERSONAL_FILE, PERSONAL_DATA, SERVICE_RECORD]
     DEFAULT = PERSONAL_FILE
 
 
-TABS = OrderedDict([
- (
-  TabsId.PERSONAL_FILE, PersonalFileView),
- (
-  TabsId.PERSONAL_DATA, PersonalDataView),
- (
-  TabsId.SERVICE_RECORD, ServiceRecordView)])
+TABS = OrderedDict([(TabsId.PERSONAL_FILE, PersonalFileView), (TabsId.PERSONAL_DATA, PersonalDataView), (TabsId.SERVICE_RECORD, ServiceRecordView)])
 
 class TankmanContainerView(BaseCrewView):
-    __slots__ = ('_tankmanInvID', 'vehicleID', '_activeTab', '_createdTabs', '_isAnimationEnabled',
-                 'paramsView', 'onTabChanged', '_isContentHidden')
+    __slots__ = ('_tankmanInvID', 'vehicleID', '_activeTab', '_createdTabs', '_isAnimationEnabled', 'paramsView', 'onTabChanged', '_isContentHidden')
     itemsCache = dependency.descriptor(IItemsCache)
     gui = dependency.descriptor(IGuiLoader)
 
@@ -121,20 +115,14 @@ class TankmanContainerView(BaseCrewView):
             fillVehicleInfo(vm.vehicleInfo, currentVehicle, separateIGRTag=True)
 
     def _setBackButtonLabel(self, vm):
-        vm.setBackButtonLabel((self._isHangar or R.strings.crew.common.navigation.toBarracks)() if 1 else R.invalid())
+        vm.setBackButtonLabel(R.strings.crew.common.navigation.toBarracks() if not self._isHangar else R.invalid())
 
     def _getEvents(self):
         eventsTuple = super(TankmanContainerView, self)._getEvents()
-        return eventsTuple + (
-         (
-          self.viewModel.onTabChange, self._onTabChange),
-         (
-          AccountSettings.onSettingsChanging, self.__onAccountSettingsChanging))
+        return eventsTuple + ((self.viewModel.onTabChange, self._onTabChange), (AccountSettings.onSettingsChanging, self.__onAccountSettingsChanging))
 
     def _getCallbacks(self):
-        return (
-         (
-          'inventory.13', self._onSkinsUpdate),)
+        return (('inventory.13', self._onSkinsUpdate),)
 
     def _finalize(self):
         super(TankmanContainerView, self)._finalize()
@@ -151,7 +139,7 @@ class TankmanContainerView(BaseCrewView):
 
     def widgetAutoSelectSlot(self, **kwargs):
         _, vehicle, __ = self.crewWidget.getWidgetData()
-        if not any(True for tankman in vehicle.crew if tankman[1]):
+        if not any((True for tankman in vehicle.crew if tankman[1])):
             slotIDX = kwargs.get('slotIDX', NO_SLOT)
             self._onEmptySlotClick(NO_TANKMAN, slotIDX)
         else:
@@ -181,7 +169,7 @@ class TankmanContainerView(BaseCrewView):
             self.__updateNewSkinsCounter()
 
     def __updateNewSkinsCounter(self):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             tabs = vm.getTabs()
             for tab in tabs:
                 if tab.getId() == TabsId.PERSONAL_DATA:
@@ -211,7 +199,7 @@ class TankmanContainerView(BaseCrewView):
             return
         self.__stopAnimations()
         self.__createTab(tabID)
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             vm.setCurrentTabId(tabID)
         self.onTabChanged(tabID)
         self._activeTab = tabID

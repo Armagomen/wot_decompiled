@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/dialog_prices_content_model.py
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.views.value_price import ValuePrice
 

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/VisualScriptEquipmentPublic.py
 from constants import EQUIPMENT_STAGES as STAGES
 from VisualScriptEquipment import VisualScriptEquipment
 from helpers.fixed_dict import getVisualScriptEquipmentPublicState

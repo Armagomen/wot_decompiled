@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/framework/factories.py
 from constants import IS_DEVELOPMENT
 from debug_utils import LOG_ERROR, LOG_CURRENT_EXCEPTION
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
@@ -20,9 +22,9 @@ class EntityFactory(object):
         clazz = settings.clazz
         alias = settings.alias
         if not alias:
-            raise SoftException(('Invalid alias in settings {0}').format(settings))
+            raise SoftException('Invalid alias in settings {0}'.format(settings))
         if clazz is None:
-            raise SoftException(('Invalid class in settings {0}').format(settings))
+            raise SoftException('Invalid class in settings {0}'.format(settings))
         return
 
     def create(self, settings, *args, **kwargs):
@@ -54,7 +56,7 @@ class DAAPIModuleFactory(EntityFactory):
     def validate(self, settings):
         super(DAAPIModuleFactory, self).validate(settings)
         if not issubclass(settings.clazz, BaseDAAPIModule):
-            raise SoftException(('Class does not extend BaseDAAPIModule in settings {0}').format(settings))
+            raise SoftException('Class does not extend BaseDAAPIModule in settings {0}'.format(settings))
 
     def castType(self, clazz):
         return isinstance(clazz, DAAPIModuleType)
@@ -76,20 +78,20 @@ class ViewFactory(DAAPIModuleFactory):
         if hasattr(settings.clazz, 'isValid'):
             isValid, errorMessage = getattr(settings.clazz, 'isValid')()
             if not isValid:
-                raise SoftException(('Class is not valid. {}').format(errorMessage))
+                raise SoftException('Class is not valid. {}'.format(errorMessage))
         if WulfPackageLayoutAdapter.shoudBeWrapped(settings.clazz):
             if IS_DEVELOPMENT:
                 import inspect
                 argsData = inspect.getargspec(settings.clazz.__init__)
                 if 'layer' not in argsData.args:
-                    raise SoftException(('Constructor of {} must contain "layer" argument').format(settings.clazz))
+                    raise SoftException('Constructor of {} must contain "layer" argument'.format(settings.clazz))
             return
         url = settings.url
         if not url:
-            raise SoftException(('Invalid url in settings {0}').format(settings))
+            raise SoftException('Invalid url in settings {0}'.format(settings))
         super(ViewFactory, self).validate(settings)
         if not issubclass(settings.clazz, View):
-            raise SoftException(('Class does not extend View in settings {0}').format(settings))
+            raise SoftException('Class does not extend View in settings {0}'.format(settings))
 
     def create(self, settings, *args, **kwargs):
         pyEntity = super(ViewFactory, self).create(settings, *args, **kwargs)
@@ -136,13 +138,13 @@ class EntitiesFactories(object):
     def addSettings(self, settings):
         layer = settings.layer
         if layer not in self.__layers:
-            raise SoftException(('Invalid layer in settings {0}').format(settings))
+            raise SoftException('Invalid layer in settings {0}'.format(settings))
         factory = self.__factories[self.__layers[layer]]
         factory.validate(settings)
         alias = settings.alias
         eventType = settings.event
         if alias in self.__settings:
-            raise SoftException(('Alias {0} is already added to settings').format(alias))
+            raise SoftException('Alias {0} is already added to settings'.format(alias))
         self.__settings[alias] = settings
         if eventType:
             self.__eventToAlias[eventType] = alias
@@ -161,10 +163,7 @@ class EntitiesFactories(object):
         return
 
     def getSettings(self, alias):
-        if alias in self.__settings:
-            return self.__settings[alias]
-        else:
-            return
+        return self.__settings[alias] if alias in self.__settings else None
 
     def getAliasByEvent(self, eventType):
         alias = None

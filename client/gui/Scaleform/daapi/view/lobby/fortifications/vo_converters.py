@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/fortifications/vo_converters.py
 from gui.Scaleform.daapi.view.lobby.cyberSport import PLAYER_GUI_STATUS
 from gui.Scaleform.daapi.view.lobby.rally.vo_converters import makeSlotsVOs, MAX_PLAYER_COUNT_ALL, makeTotalLevelLabel, makeUnitStateLabel, makeVehicleVO
 from gui.Scaleform.locale.FORTIFICATIONS import FORTIFICATIONS
@@ -15,17 +17,11 @@ class FILTER_STATE(BitmaskHelper):
     HEAVY_TANK = 4
     SPG = 8
     AT_SPG = 16
-    VEHICLE_TYPES = (
-     (
-      LIGHT_TANK, VEHICLE_CLASS_NAME.LIGHT_TANK),
-     (
-      MEDIUM_TANK, VEHICLE_CLASS_NAME.MEDIUM_TANK),
-     (
-      HEAVY_TANK, VEHICLE_CLASS_NAME.HEAVY_TANK),
-     (
-      AT_SPG, VEHICLE_CLASS_NAME.AT_SPG),
-     (
-      SPG, VEHICLE_CLASS_NAME.SPG))
+    VEHICLE_TYPES = ((LIGHT_TANK, VEHICLE_CLASS_NAME.LIGHT_TANK),
+     (MEDIUM_TANK, VEHICLE_CLASS_NAME.MEDIUM_TANK),
+     (HEAVY_TANK, VEHICLE_CLASS_NAME.HEAVY_TANK),
+     (AT_SPG, VEHICLE_CLASS_NAME.AT_SPG),
+     (SPG, VEHICLE_CLASS_NAME.SPG))
 
 
 def _convertVehClassNamesToState(vehClassNames):
@@ -78,16 +74,15 @@ def makeStrongholdsSlotsVOs(unitEntity, unitMgrID=None, maxPlayerCount=MAX_PLAYE
                 slotLabel = i18n.makeString(FORTIFICATIONS.SORTIE_MEMBER_SLOT_FOR_LEGIONARY)
             else:
                 slotLabel = i18n.makeString(FORTIFICATIONS.SORTIE_MEMBER_SLOT_FOR_LEGIONARY_SEARCH)
-            slot.update({'canBeTaken': False, 
-               'isLegionaries': True, 
-               'slotLabel': slotLabel, 
-               'playerStatus': PLAYER_GUI_STATUS.READY, 
-               'isFiltersEnabled': True})
+            slot.update({'canBeTaken': False,
+             'isLegionaries': True,
+             'slotLabel': slotLabel,
+             'playerStatus': PLAYER_GUI_STATUS.READY,
+             'isFiltersEnabled': True})
         if slot['isLegionaries'] and slot['selectedVehicle'] and not slot['isFreezed'] and not slot['isCommanderState']:
             slot['selectedVehicle']['isReadyToFight'] = True
 
-    return (
-     isRosterSet, slots)
+    return (isRosterSet, slots)
 
 
 def makeSortieVO(unitEntity, isCommander, unitMgrID=None, canInvite=True, maxPlayerCount=MAX_PLAYER_COUNT_ALL):
@@ -103,18 +98,18 @@ def makeSortieVO(unitEntity, isCommander, unitMgrID=None, canInvite=True, maxPla
         canAssignToSlot = False
     else:
         canAssignToSlot = canInvite
-    return {'canInvite': canInvite, 
-       'isCommander': isCommander, 
-       'isFreezed': fullData.flags.isLocked(), 
-       'canAssignToSlot': canAssignToSlot, 
-       'hasRestrictions': fullData.unit.isRosterSet(ignored=settings.CREATOR_ROSTER_SLOT_INDEXES), 
-       'statusLbl': makeUnitStateLabel(fullData.flags), 
-       'statusValue': fullData.flags.isOpened(), 
-       'sumLevelsInt': fullData.stats.curTotalLevel, 
-       'sumLevels': sumLevelsStr, 
-       'sumLevelsError': canDoAction, 
-       'slots': slots, 
-       'description': unitEntity.getCensoredComment(unitMgrID=unitMgrID)}
+    return {'canInvite': canInvite,
+     'isCommander': isCommander,
+     'isFreezed': fullData.flags.isLocked(),
+     'canAssignToSlot': canAssignToSlot,
+     'hasRestrictions': fullData.unit.isRosterSet(ignored=settings.CREATOR_ROSTER_SLOT_INDEXES),
+     'statusLbl': makeUnitStateLabel(fullData.flags),
+     'statusValue': fullData.flags.isOpened(),
+     'sumLevelsInt': fullData.stats.curTotalLevel,
+     'sumLevels': sumLevelsStr,
+     'sumLevelsError': canDoAction,
+     'slots': slots,
+     'description': unitEntity.getCensoredComment(unitMgrID=unitMgrID)}
 
 
 def disableCanBeTakenButtonInSlots(slots):

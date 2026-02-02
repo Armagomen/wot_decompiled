@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/impl/lobby/views/info_view.py
 from constants import PLAYER_RANK
 from frameworks.wulf import ViewFlags, ViewSettings, WindowFlags, WindowLayer
 from frontline.gui.frontline_skill_packer import packBaseSkills
@@ -23,18 +25,14 @@ class InfoView(ViewImpl):
         return super(InfoView, self).getViewModel()
 
     def _getEvents(self):
-        return (
-         (
-          self.__epicController.onUpdated, self._fillModel),
-         (
-          self.viewModel.onClose, self.__onViewClose))
+        return ((self.__epicController.onUpdated, self._fillModel), (self.viewModel.onClose, self.__onViewClose))
 
     def _onLoading(self, *args, **kwargs):
         super(InfoView, self)._onLoading(*args, **kwargs)
         self._fillModel()
 
     def _fillModel(self, _=None):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             vm.setAutoscrollSection(self._autoscrollSection)
             vm.setIsBattlePassAvailable(self.__epicController.isBattlePassDataEnabled())
             vm.setIsNinthLevelEnabled(self.__epicController.isUnlockVehiclesInBattleEnabled())

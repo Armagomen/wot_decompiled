@@ -1,9 +1,15 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/vehicle_hub/sub_presenters/armor/utils.py
 from __future__ import absolute_import, division
 import math
 from collections import OrderedDict
 from future.builtins import round
 from future.utils import listvalues
-import typing, BigWorld, GUI, armor_inspector, math_utils
+import typing
+import BigWorld
+import GUI
+import armor_inspector
+import math_utils
 from AvatarInputHandler import cameras
 from Vehicle import SegmentCollisionResultExt
 from constants import VehicleArmorTags, VehicleTurretTags
@@ -19,7 +25,7 @@ if typing.TYPE_CHECKING:
     from gui.impl.lobby.vehicle_hub.sub_presenters.armor.config.models import ArmorScaleModel
     from frameworks.wulf import Array
     from items.vehicles import VehicleDescriptor
-    MatInfo = typing.Tuple[(int, float, float)]
+    MatInfo = typing.Tuple[int, float, float]
 MIN_HIT_ANGLE_COS = 1e-05
 COLLISION_RAY_LENGTH = 1500
 RAD_TO_DEG = 180.0 / math.pi
@@ -28,8 +34,7 @@ AP_SHELLS_NORMALIZATION = 5 / RAD_TO_DEG
 LEFT_TRACK = 'leftTrack'
 RIGHT_TRACK = 'rightTrack'
 SURVEYING_DEVICE = 'surveyingDevice'
-ARMOR_INSPECTOR_NAMES = (
- VehicleArmorTags.CHASSIS,
+ARMOR_INSPECTOR_NAMES = (VehicleArmorTags.CHASSIS,
  VehicleArmorTags.GUN,
  VehicleArmorTags.GUN_MASK,
  VehicleArmorTags.HULL,
@@ -37,12 +42,10 @@ ARMOR_INSPECTOR_NAMES = (
  VehicleArmorTags.SCREEN,
  VehicleArmorTags.SURVEYING,
  VehicleArmorTags.WHEELS)
-NOMINAL_ARMOR_PARTS_LIST = (
- VehicleArmorTags.HULL, VehicleArmorTags.TURRET)
+NOMINAL_ARMOR_PARTS_LIST = (VehicleArmorTags.HULL, VehicleArmorTags.TURRET)
 
 class MaterialUIData(object):
-    __slots__ = ('partName', 'nominalArmor', 'viewAngle', 'resArmor', 'color', 'count',
-                 'isSpacedArmor')
+    __slots__ = ('partName', 'nominalArmor', 'viewAngle', 'resArmor', 'color', 'count', 'isSpacedArmor')
 
     def __init__(self, partName, viewAngle, isSpacedArmor, nominalArmor, resArmor=None, color='', count=1):
         self.partName = partName
@@ -109,8 +112,7 @@ def getMaterialsAtCursor(vehicleEntity, spaceID):
     for _, hitAngleCos, matInfo, partID in parts:
         if matInfo is not None:
             isSpacedArmor = matInfo.vehicleDamageFactor == SPACED_ARMOR_DAMAGE_FACTOR
-            if (
-             partID, matInfo.kind) not in ignoredMaterials:
+            if (partID, matInfo.kind) not in ignoredMaterials:
                 if partID > vehicleEntity.appearance.collisions.maxStaticPartIndex:
                     partName = VehicleArmorTags.HULL
                 elif partID >= len(TankPartIndexes.ALL):
@@ -185,25 +187,17 @@ def _normalizedToPixels(xNorm, yNorm, screenWidth, screenHeight):
 def getAllMatInfos(typeDescriptor):
 
     def convertMatInfo(matInfo):
-        return (
-         matInfo.kind,
-         matInfo.armor if matInfo.armor is not None else 0.0,
-         matInfo.vehicleDamageFactor)
+        return (matInfo.kind, matInfo.armor if matInfo.armor is not None else 0.0, matInfo.vehicleDamageFactor)
 
-    partDescriptors = (
-     (
-      TankPartIndexes.CHASSIS, typeDescriptor.chassis),
-     (
-      TankPartIndexes.HULL, typeDescriptor.hull),
-     (
-      TankPartIndexes.TURRET, typeDescriptor.turret),
-     (
-      TankPartIndexes.GUN, typeDescriptor.gun))
+    partDescriptors = ((TankPartIndexes.CHASSIS, typeDescriptor.chassis),
+     (TankPartIndexes.HULL, typeDescriptor.hull),
+     (TankPartIndexes.TURRET, typeDescriptor.turret),
+     (TankPartIndexes.GUN, typeDescriptor.gun))
     commonMaterialsInfo = vehicles.g_cache.commonConfig['materials'].values()
     materialsAll = [tuple()] * (len(partDescriptors) + 1)
-    materialsAll[0] = tuple(convertMatInfo(matInfo) for matInfo in commonMaterialsInfo)
+    materialsAll[0] = tuple((convertMatInfo(matInfo) for matInfo in commonMaterialsInfo))
     for partIndex, descriptor in partDescriptors:
-        materialsAll[partIndex + 1] = tuple((matInfo.kind, matInfo.armor if matInfo.armor is not None else 0.0, matInfo.vehicleDamageFactor) for _, matInfo in descriptor.materials.items())
+        materialsAll[partIndex + 1] = tuple(((matInfo.kind, matInfo.armor if matInfo.armor is not None else 0.0, matInfo.vehicleDamageFactor) for _, matInfo in descriptor.materials.items()))
 
     return materialsAll
 
@@ -215,7 +209,7 @@ def getCursorPositionInPixels():
 
 
 def _colorInt2Str(value):
-    return ('#{0:06X}').format(value)
+    return '#{0:06X}'.format(value)
 
 
 def stackMaterials(materials, tier):
@@ -225,19 +219,17 @@ def stackMaterials(materials, tier):
         nominalArmor = material.nominalArmor
         partName = material.partName
         isSpacedArmor = material.isSpacedArmor
-        key = (
-         partName, isSpacedArmor)
+        key = (partName, isSpacedArmor)
         if key in consolidatedMap:
             consolidated = consolidatedMap[key]
             consolidated.nominalArmor += nominalArmor
             consolidated.resArmor += material.resArmor
             if partName != VehicleArmorTags.GUN_MASK:
                 consolidated.count += 1
-        else:
-            scaleModel = tierModel.spacedArmor if isSpacedArmor else tierModel.normalArmor
-            minimum, maximum = scaleModel.min, scaleModel.max
-            fraction = (math_utils.clamp(minimum, maximum, nominalArmor) - minimum) / (maximum - minimum)
-            consolidatedMap[key] = MaterialUIData(partName=partName, nominalArmor=nominalArmor, viewAngle=material.viewAngle, resArmor=material.resArmor, isSpacedArmor=isSpacedArmor, color=_colorInt2Str(armor_inspector.getColor(fraction, isSpacedArmor)))
+        scaleModel = tierModel.spacedArmor if isSpacedArmor else tierModel.normalArmor
+        minimum, maximum = scaleModel.min, scaleModel.max
+        fraction = (math_utils.clamp(minimum, maximum, nominalArmor) - minimum) / (maximum - minimum)
+        consolidatedMap[key] = MaterialUIData(partName=partName, nominalArmor=nominalArmor, viewAngle=material.viewAngle, resArmor=material.resArmor, isSpacedArmor=isSpacedArmor, color=_colorInt2Str(armor_inspector.getColor(fraction, isSpacedArmor)))
 
     return listvalues(consolidatedMap)
 
@@ -252,8 +244,6 @@ def getMaxArmor(typeDescriptor):
             vehicleDamageFactor = mat[2]
             if vehicleDamageFactor != 0:
                 mainArmor = max(mainArmor, armorValue)
-            else:
-                spacedArmor = max(spacedArmor, armorValue)
+            spacedArmor = max(spacedArmor, armorValue)
 
-    return (
-     int(mainArmor), int(spacedArmor))
+    return (int(mainArmor), int(spacedArmor))

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/utils/requesters/battle_pass_requester.py
 import BigWorld
 from battle_pass_common import BATTLE_PASS_PDATA_KEY
 from gui.shared.utils.requesters.abstract import AbstractSyncDataRequester

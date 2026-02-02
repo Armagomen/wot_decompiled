@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/wgcg/promo_screens/contexts.py
 from typing import TYPE_CHECKING
 from gui.wgcg.base.contexts import CommonWebRequestCtx
 from gui.wgcg.promo_screens.parsers import PromoDataParser

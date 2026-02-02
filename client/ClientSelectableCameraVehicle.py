@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/ClientSelectableCameraVehicle.py
 from collections import namedtuple
-import Math, BigWorld
+import Math
+import BigWorld
 from ClientSelectableCameraObject import ClientSelectableCameraObject
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from items.vehicles import stripOptionalDeviceFromVehicleCompactDescr
@@ -7,8 +10,7 @@ from vehicle_systems.tankStructure import ModelStates
 from vehicle_systems.tankStructure import TankPartIndexes
 from gui.ClientHangarSpace import hangarCFG
 from EdgeDrawer import EdgeHighlightComponent
-_VehicleTransformParams = namedtuple('_VehicleTransformParams', ('targetPos', 'rotateYPR',
-                                                                 'shadowModelYOffset'))
+_VehicleTransformParams = namedtuple('_VehicleTransformParams', ('targetPos', 'rotateYPR', 'shadowModelYOffset'))
 
 class ClientSelectableCameraVehicle(ClientSelectableCameraObject):
     appearance = property(lambda self: self.__vAppearance)
@@ -30,10 +32,8 @@ class ClientSelectableCameraVehicle(ClientSelectableCameraObject):
     def prerequisites(self):
         cfg = hangarCFG()
         if 'shadow_model_name' in cfg:
-            modelNames = (
-             cfg['shadow_model_name'],)
+            modelNames = (cfg['shadow_model_name'],)
             return modelNames
-        return ()
 
     def onEnterWorld(self, prereqs):
         super(ClientSelectableCameraVehicle, self).onEnterWorld(prereqs)
@@ -123,9 +123,7 @@ class ClientSelectableCameraVehicle(ClientSelectableCameraObject):
         return maxY - minY
 
     def getModelLength(self):
-        if self.__vAppearance:
-            return self.__vAppearance.computeVehicleLength()
-        return 0
+        return self.__vAppearance.computeVehicleLength() if self.__vAppearance else 0
 
     @property
     def isVehicleLoaded(self):
@@ -135,8 +133,7 @@ class ClientSelectableCameraVehicle(ClientSelectableCameraObject):
         if flag:
             self.targetCaps = []
         else:
-            self.targetCaps = [
-             0]
+            self.targetCaps = [0]
 
     def _setVehicleModelTransform(self, targetPos, rotateYPR, shadowModelYOffset=None):
         self.__vehicleTransform = _VehicleTransformParams(targetPos, rotateYPR, shadowModelYOffset)
@@ -174,16 +171,17 @@ class ClientSelectableCameraVehicle(ClientSelectableCameraObject):
     def __updateFakeShadowAccordingToAppearance(self):
         if self.__shadowModelFashion is None or self.__fakeShadowModel is None:
             return
-        cfg = hangarCFG()
-        if self.__vAppearance is not None and self.__vAppearance.isLoaded():
-            appearanceTexture = self.__vAppearance.fakeShadowDefinedInHullTexture
-            shadowMapTexFileName = appearanceTexture if appearanceTexture else cfg['shadow_default_texture_name']
         else:
-            shadowMapTexFileName = cfg['shadow_empty_texture_name']
-        if shadowMapTexFileName:
-            self.__shadowModelFashion.setTexture(shadowMapTexFileName, 'diffuseMap')
-        self.__setFakeShadowModelTransform(self.position, self.yaw)
-        return
+            cfg = hangarCFG()
+            if self.__vAppearance is not None and self.__vAppearance.isLoaded():
+                appearanceTexture = self.__vAppearance.fakeShadowDefinedInHullTexture
+                shadowMapTexFileName = appearanceTexture if appearanceTexture else cfg['shadow_default_texture_name']
+            else:
+                shadowMapTexFileName = cfg['shadow_empty_texture_name']
+            if shadowMapTexFileName:
+                self.__shadowModelFashion.setTexture(shadowMapTexFileName, 'diffuseMap')
+            self.__setFakeShadowModelTransform(self.position, self.yaw)
+            return
 
     def __setFakeShadowModelTransform(self, position, yaw, shadowModelYOffset=None):
         if self.__fakeShadowModel is None:
@@ -216,6 +214,4 @@ class ClientSelectableCameraVehicle(ClientSelectableCameraObject):
         else:
             oldDescriptor = stripOptionalDeviceFromVehicleCompactDescr(self.typeDescriptor.makeCompactDescr())
             newDescriptor = stripOptionalDeviceFromVehicleCompactDescr(desc.makeCompactDescr())
-            if oldDescriptor != newDescriptor:
-                return True
-            return False
+            return True if oldDescriptor != newDescriptor else False

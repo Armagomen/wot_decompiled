@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/tank_setup/sub_views/base_setup_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.common.deal_panel_model import DealPanelModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.common.filters_model import FiltersModel
@@ -5,8 +7,7 @@ from gui.impl.gen.view_models.views.lobby.tank_setup.common.setup_tabs_model imp
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_slot_model import BaseSlotModel
 
 class BaseSetupModel(ViewModel):
-    __slots__ = ('onSlotAction', 'onDealConfirmed', 'onDealCancelled', 'onAutoRenewalChanged',
-                 'onTabChanged', 'onFilterChanged', 'onFilterReset')
+    __slots__ = ('onSlotAction', 'onDealConfirmed', 'onDealCancelled', 'onAutoRenewalChanged', 'onTabChanged', 'onFilterChanged', 'onFilterReset')
     SELECT_SLOT_ACTION = 'select'
     REVERT_SLOT_ACTION = 'undo'
     RETURN_TO_STORAGE_ACTION = 'cancel'

@@ -1,4 +1,7 @@
-import logging, adisp
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/web/web_client_api/ui/hangar.py
+import logging
+import adisp
 from gui import DialogsInterface
 from gui.Scaleform.daapi.view.dialogs.ExchangeDialogMeta import ExchangeCreditsWebProductMeta
 from gui.impl.dialogs.dialogs import showExchangeToBuyItemsDialog

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/common/vehicle_carousel/carousel_environment.py
 from constants import Configs, IS_KOREA, RENEWABLE_SUBSCRIPTION_CONFIG
 from CurrentVehicle import g_currentVehicle
 from PlayerEvents import g_playerEvents
@@ -23,14 +25,14 @@ from skeletons.gui.shared import IItemsCache
 
 def formatCountString(currentVehiclesCount, totalVehiclesCount):
     style = text_styles.error if currentVehiclesCount == 0 else text_styles.stats
-    return ('{} / {}').format(style(currentVehiclesCount), text_styles.main(totalVehiclesCount))
+    return '{} / {}'.format(style(currentVehiclesCount), text_styles.main(totalVehiclesCount))
 
 
 class ICarouselEnvironment(object):
 
     @property
     def filter(self):
-        return
+        return None
 
     def applyFilter(self):
         pass
@@ -77,13 +79,13 @@ class CarouselEnvironment(CarouselEnvironmentMeta, IGlobalListener, ICarouselEnv
     lobbyContext = dependency.descriptor(ILobbyContext)
     __battleSession = dependency.descriptor(IBattleSessionProvider)
     _DISABLED_FILTERS = []
-    _CAROUSEL_FILTERS = ('bonus', 'favorite', 'elite', 'premium') + (('igr', ) if IS_KOREA else ())
+    _CAROUSEL_FILTERS = ('bonus', 'favorite', 'elite', 'premium') + (('igr',) if IS_KOREA else ())
 
     def __init__(self):
         super(CarouselEnvironment, self).__init__()
         self._usedFilters = ()
-        self._carouselDPConfig = {'carouselFilter': None, 
-           'itemsCache': None}
+        self._carouselDPConfig = {'carouselFilter': None,
+         'itemsCache': None}
         self._carouselDPCls = CarouselDataProvider
         self._carouselFilterCls = CarouselFilter
         self._carouselDP = None
@@ -119,10 +121,7 @@ class CarouselEnvironment(CarouselEnvironmentMeta, IGlobalListener, ICarouselEnv
 
     @property
     def filter(self):
-        if self._carouselDP is not None:
-            return self._carouselDP.filter
-        else:
-            return
+        return self._carouselDP.filter if self._carouselDP is not None else None
 
     def getTotalVehiclesCount(self):
         return self._carouselDP.getTotalVehiclesCount()
@@ -142,7 +141,7 @@ class CarouselEnvironment(CarouselEnvironmentMeta, IGlobalListener, ICarouselEnv
         self.updateHotFilters()
 
     def updateHotFilters(self):
-        hotFilters = [ False if key in self._DISABLED_FILTERS else self.filter.get(key) for key in self._usedFilters ]
+        hotFilters = [ (False if key in self._DISABLED_FILTERS else self.filter.get(key)) for key in self._usedFilters ]
         self.as_setCarouselFilterS({'hotFilters': hotFilters})
 
     def applyFilter(self):
@@ -225,8 +224,8 @@ class CarouselEnvironment(CarouselEnvironmentMeta, IGlobalListener, ICarouselEnv
         return
 
     def _initDataProvider(self):
-        self._carouselDPConfig.update({'carouselFilter': self._carouselFilterCls(), 
-           'itemsCache': self.itemsCache})
+        self._carouselDPConfig.update({'carouselFilter': self._carouselFilterCls(),
+         'itemsCache': self.itemsCache})
         self._carouselDP = self._carouselDPCls(**self._carouselDPConfig)
 
     def _getFilters(self):
@@ -254,11 +253,11 @@ class CarouselEnvironment(CarouselEnvironmentMeta, IGlobalListener, ICarouselEnv
     @classmethod
     def _makeFilterVO(cls, filterID, contexts, filters):
         filterCtx = contexts.get(filterID, FilterSetupContext())
-        return {'id': filterID, 
-           'value': getButtonsAssetPath(filterCtx.asset or filterID), 
-           'selected': filters[filterID], 
-           'enabled': True, 
-           'tooltip': makeTooltip(('#tank_carousel_filter:tooltip/{}/header').format(filterID), i18n.makeString(('#tank_carousel_filter:tooltip/{}/body').format(filterID), **filterCtx.ctx))}
+        return {'id': filterID,
+         'value': getButtonsAssetPath(filterCtx.asset or filterID),
+         'selected': filters[filterID],
+         'enabled': True,
+         'tooltip': makeTooltip('#tank_carousel_filter:tooltip/{}/header'.format(filterID), i18n.makeString('#tank_carousel_filter:tooltip/{}/body'.format(filterID), **filterCtx.ctx))}
 
     def __updateRent(self, vehicles):
         self.updateVehicles(vehicles)
@@ -283,9 +282,7 @@ class CarouselEnvironment(CarouselEnvironmentMeta, IGlobalListener, ICarouselEnv
             self.updateVehicles()
             self.updateAvailability()
             return
-        if reason in (CACHE_SYNC_REASON.STATS_RESYNC,
-         CACHE_SYNC_REASON.INVENTORY_RESYNC,
-         CACHE_SYNC_REASON.CLIENT_UPDATE):
+        if reason in (CACHE_SYNC_REASON.STATS_RESYNC, CACHE_SYNC_REASON.INVENTORY_RESYNC, CACHE_SYNC_REASON.CLIENT_UPDATE):
             self.updateAvailability()
         if GUI_ITEM_TYPE.VEHICLE in diff:
             self.updateVehicles(diff.get(GUI_ITEM_TYPE.VEHICLE))

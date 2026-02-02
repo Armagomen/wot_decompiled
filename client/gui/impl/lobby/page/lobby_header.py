@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/page/lobby_header.py
 from __future__ import absolute_import
 from frameworks.wulf import WindowLayer
 from gui.impl.gen import R
@@ -39,19 +41,18 @@ class LobbyHeader(ViewComponent[DefaultModel]):
 
     def _getChildComponents(self):
         header = R.aliases.lobby_header.default
-        return {header.FightStart(): FightStartPresenter, 
-           header.NavigationBar(): NavigationPresenter, 
-           header.Prebattle(): PrebattlePresenter, 
-           header.Wallet(): lambda : WalletPresenter((
-                           CrystalProvider(),
+        return {header.FightStart(): FightStartPresenter,
+         header.NavigationBar(): NavigationPresenter,
+         header.Prebattle(): PrebattlePresenter,
+         header.Wallet(): lambda : WalletPresenter((CrystalProvider(),
                            GoldProvider(),
                            CreditsProvider(),
-                           FreeXpProvider())), 
-           header.UserAccount(): UserAccountPresenter, 
-           header.HeaderState(): HeaderStatePresenter, 
-           header.ReservesEntryPoint(): ReservesEntryPointPresenter, 
-           header.PremShop(): PremShopPresenter, 
-           header.CurrentVehicle(): lambda : VehiclesInfoPresenter(self._currentVehicleFilter)}
+                           FreeXpProvider())),
+         header.UserAccount(): UserAccountPresenter,
+         header.HeaderState(): HeaderStatePresenter,
+         header.ReservesEntryPoint(): ReservesEntryPointPresenter,
+         header.PremShop(): PremShopPresenter,
+         header.CurrentVehicle(): lambda : VehiclesInfoPresenter(self._currentVehicleFilter)}
 
     def _getPopOverLayer(self):
         return WindowLayer.VIEW

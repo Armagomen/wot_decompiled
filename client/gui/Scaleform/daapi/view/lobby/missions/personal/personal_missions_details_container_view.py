@@ -1,10 +1,12 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/missions/personal/personal_missions_details_container_view.py
 import logging
 from operator import methodcaller
 from gui import SystemMessages
 from gui.Scaleform.daapi import LobbySubView
 from gui.Scaleform.daapi.view.lobby.missions.missions_helper import getDetailedMissionData, getMapRegionTooltipData
 from gui.Scaleform.daapi.view.meta.PersonalMissionDetailsContainerViewMeta import PersonalMissionDetailsContainerViewMeta
-from gui.server_events.pm_constants import PM_SUIT_OP_PLUGIN_ERR_RESPONSE
+from gui.server_events.pm_constants import PM_SUIT_OP_PLUGIN_ERR_RESPONSE, DISABLED_PM_OPERATIONS, DISABLED_PM_MISSIONS, IS_PM2_QUEST_ENABLED, IS_REGULAR_QUEST_ENABLED
 from gui.shared import events, event_bus_handlers, EVENT_BUS_SCOPE
 from gui.shared.events import PersonalMissionsEvent
 from gui.shared.gui_items.processors import quests as quests_proc
@@ -142,12 +144,12 @@ class PersonalMissionDetailsContainerView(LobbySubView, PersonalMissionDetailsCo
             self.__datailedList.append(qData)
             eventID = q.getID()
             status = qData.get('status')
-            pages.append({'buttonsGroup': 'MissionDetailsPageGroup', 
-               'pageIndex': idx, 
-               'label': str(idx + 1), 
-               'tooltip': getMapRegionTooltipData(status, q), 
-               'status': status, 
-               'selected': self.__selectedQuestID == eventID})
+            pages.append({'buttonsGroup': 'MissionDetailsPageGroup',
+             'pageIndex': idx,
+             'label': str(idx + 1),
+             'tooltip': getMapRegionTooltipData(status, q),
+             'status': status,
+             'selected': self.__selectedQuestID == eventID})
 
         self.as_setInitDataS({'pages': pages})
 
@@ -158,16 +160,16 @@ class PersonalMissionDetailsContainerView(LobbySubView, PersonalMissionDetailsCo
 
     def _onSettingsChanged(self, diff):
         disabledBranch = False
-        if self.__branch == PM_BRANCH.REGULAR and 'isRegularQuestEnabled' in diff:
-            disabledBranch = not diff['isRegularQuestEnabled']
-        if self.__branch == PM_BRANCH.PERSONAL_MISSION_2 and 'isPM2QuestEnabled' in diff:
-            disabledBranch = not diff['isPM2QuestEnabled']
+        if self.__branch == PM_BRANCH.REGULAR and IS_REGULAR_QUEST_ENABLED in diff:
+            disabledBranch = not diff[IS_REGULAR_QUEST_ENABLED]
+        if self.__branch == PM_BRANCH.PERSONAL_MISSION_2 and IS_PM2_QUEST_ENABLED in diff:
+            disabledBranch = not diff[IS_PM2_QUEST_ENABLED]
         disabledOp = False
-        if 'disabledPMOperations' in diff and diff['disabledPMOperations']:
-            disabledOp = self.__operationID in diff['disabledPMOperations'].keys()
+        if DISABLED_PM_OPERATIONS in diff and diff[DISABLED_PM_OPERATIONS]:
+            disabledOp = self.__operationID in diff[DISABLED_PM_OPERATIONS].keys()
         disabledQuest = False
-        if 'disabledPersonalMissions' in diff and diff['disabledPersonalMissions']:
-            disabledQuest = self.__selectedQuestID in diff['disabledPersonalMissions']
+        if DISABLED_PM_MISSIONS in diff and diff[DISABLED_PM_MISSIONS]:
+            disabledQuest = self.__selectedQuestID in diff[DISABLED_PM_MISSIONS]
         if disabledBranch or disabledOp or disabledQuest:
             self.closeView()
         else:

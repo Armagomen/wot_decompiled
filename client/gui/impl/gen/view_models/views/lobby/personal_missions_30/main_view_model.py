@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/personal_missions_30/main_view_model.py
 from enum import Enum
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.common.vehicle_info_model import VehicleInfoModel
@@ -22,10 +24,7 @@ class AnimationState(Enum):
 
 
 class MainViewModel(ViewModel):
-    __slots__ = ('onBack', 'onSwitchOperation', 'showOperationVehicleVideo', 'onOperationStatusButtonClick',
-                 'onDetailInfo', 'onClaimDetail', 'onMission', 'onAdditionalMission',
-                 'onVehiclePreview', 'showVehicleInHangar', 'showDetailVideo', 'onMoveSpace',
-                 'onMouseOver3dScene', 'setFreeCamera', 'updateAnimationState')
+    __slots__ = ('onBack', 'onSwitchOperation', 'showOperationVehicleVideo', 'onOperationStatusButtonClick', 'onDetailInfo', 'onClaimDetail', 'onMission', 'onAdditionalMission', 'onVehiclePreview', 'showVehicleInHangar', 'showDetailVideo', 'onMoveSpace', 'onMouseOver3dScene', 'setFreeCamera', 'updateAnimationState')
     OPERATION_ID = 'operationId'
     DETAIL_ID = 'detailId'
     ANIMATION_STATE = 'animationState'

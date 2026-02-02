@@ -1,5 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/special_sound_ctrl.py
 from collections import namedtuple
-import logging, ResMgr, SoundGroups, nations
+import logging
+import ResMgr
+import SoundGroups
+import nations
 from account_helpers.settings_core import settings_constants
 from account_helpers.settings_core.options import AltVoicesSetting
 from helpers import dependency
@@ -21,21 +26,21 @@ _logger = logging.getLogger(__name__)
 _XML_PATH = ITEM_DEFS_PATH + 'special_voices.xml'
 _FULL_CREW_CONDITION = 'isFullCrew'
 _VoiceoverParams = namedtuple('_VoiceoverParams', ['languageMode', 'genderSwitch', 'onlyInNational'])
-_genderStrToSwitch = {'male': CREW_GENDER_SWITCHES.MALE, 
-   'female': CREW_GENDER_SWITCHES.FEMALE}
-_isFullCrewCheckers = {SPECIAL_VOICE_TAG.MIHO: isMihoCrewCompleted, 
-   SPECIAL_VOICE_TAG.YHA: isYhaCrewCompleted, 
-   SPECIAL_VOICE_TAG.WITCHES_CREW: isWitchesCrewCompleted, 
-   SPECIAL_VOICE_TAG.MIKA: isMikaCrewCompleted, 
-   SPECIAL_VOICE_TAG.DARJEELING: isDarjeelingCrewCompleted, 
-   SPECIAL_VOICE_TAG.HW25_QUICKYBABY: isHW25CrewCompleted, 
-   SPECIAL_VOICE_TAG.HW25_MAILAND: isHW25CrewCompleted, 
-   SPECIAL_VOICE_TAG.HW25_MOUZ_AKROBAT: isHW25CrewCompleted, 
-   SPECIAL_VOICE_TAG.HW25_SKILL4LTU: isHW25CrewCompleted, 
-   SPECIAL_VOICE_TAG.HW25_LU_JUN_CN: isHW25CrewCNCompleted, 
-   SPECIAL_VOICE_TAG.HW25_TITI_CN: isHW25CrewCNCompleted, 
-   SPECIAL_VOICE_TAG.HW25_DA_KUN_CN: isHW25CrewCNCompleted, 
-   SPECIAL_VOICE_TAG.HW25_PANCHEZHANG_CN: isHW25CrewCNCompleted}
+_genderStrToSwitch = {'male': CREW_GENDER_SWITCHES.MALE,
+ 'female': CREW_GENDER_SWITCHES.FEMALE}
+_isFullCrewCheckers = {SPECIAL_VOICE_TAG.MIHO: isMihoCrewCompleted,
+ SPECIAL_VOICE_TAG.YHA: isYhaCrewCompleted,
+ SPECIAL_VOICE_TAG.WITCHES_CREW: isWitchesCrewCompleted,
+ SPECIAL_VOICE_TAG.MIKA: isMikaCrewCompleted,
+ SPECIAL_VOICE_TAG.DARJEELING: isDarjeelingCrewCompleted,
+ SPECIAL_VOICE_TAG.HW25_QUICKYBABY: isHW25CrewCompleted,
+ SPECIAL_VOICE_TAG.HW25_MAILAND: isHW25CrewCompleted,
+ SPECIAL_VOICE_TAG.HW25_MOUZ_AKROBAT: isHW25CrewCompleted,
+ SPECIAL_VOICE_TAG.HW25_SKILL4LTU: isHW25CrewCompleted,
+ SPECIAL_VOICE_TAG.HW25_LU_JUN_CN: isHW25CrewCNCompleted,
+ SPECIAL_VOICE_TAG.HW25_TITI_CN: isHW25CrewCNCompleted,
+ SPECIAL_VOICE_TAG.HW25_DA_KUN_CN: isHW25CrewCNCompleted,
+ SPECIAL_VOICE_TAG.HW25_PANCHEZHANG_CN: isHW25CrewCNCompleted}
 
 class SpecialSoundCtrl(ISpecialSoundCtrl):
     __lobbyContext = dependency.descriptor(ILobbyContext)
@@ -58,9 +63,7 @@ class SpecialSoundCtrl(ISpecialSoundCtrl):
             return self.__arenaMusicSetup
         else:
             arena = avatar_getter.getArena()
-            if arena is not None:
-                return arena.arenaType.wwmusicSetup
-            return
+            return arena.arenaType.wwmusicSetup if arena is not None else None
 
     @property
     def specialVoice(self):
@@ -238,9 +241,7 @@ class SpecialSoundCtrl(ISpecialSoundCtrl):
 
     def __getSpecialModeForCrew(self, tag, vehicleType, crewGroups):
         if tag not in self.__voiceoverSpecialModes:
-            return
+            return None
         else:
             crewChecker = _isFullCrewCheckers.get(tag)
-            if crewChecker is not None and crewChecker(vehicleType, crewGroups):
-                return self.__voiceoverSpecialModes[tag].get(_FULL_CREW_CONDITION)
-            return
+            return self.__voiceoverSpecialModes[tag].get(_FULL_CREW_CONDITION) if crewChecker is not None and crewChecker(vehicleType, crewGroups) else None

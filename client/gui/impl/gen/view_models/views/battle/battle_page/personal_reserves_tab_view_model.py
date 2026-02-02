@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/battle/battle_page/personal_reserves_tab_view_model.py
 from enum import IntEnum
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.common.personal_reserves.reserves_group_model import ReservesGroupModel
@@ -8,7 +10,7 @@ class TabAlias(IntEnum):
 
 
 class PersonalReservesTabViewModel(ViewModel):
-    __slots__ = ('onBoosterActivate', )
+    __slots__ = ('onBoosterActivate',)
 
     def __init__(self, properties=2, commands=1):
         super(PersonalReservesTabViewModel, self).__init__(properties=properties, commands=commands)

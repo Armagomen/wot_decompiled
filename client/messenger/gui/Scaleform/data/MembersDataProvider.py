@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/gui/Scaleform/data/MembersDataProvider.py
 from gui.Scaleform.framework.entities.DAAPIDataProvider import DAAPIDataProvider
 from messenger import g_settings
 from messenger.m_constants import USER_GUI_TYPE
@@ -15,7 +17,7 @@ class MembersDataProvider(DAAPIDataProvider):
 
     @storage_getter('users')
     def usersStorage(self):
-        return
+        return None
 
     def buildList(self, members):
         self.__list = []
@@ -32,16 +34,17 @@ class MembersDataProvider(DAAPIDataProvider):
             else:
                 tags = []
                 colors = getColors(USER_GUI_TYPE.OTHER)
-            self.__list.append({'dbID': dbID, 
-               'userName': member.getFullName(), 
-               'isOnline': isOnline, 
-               'color': colors[(0 if isOnline else 1)], 
-               'tags': tags, 
-               'isPlayerSpeaking': False})
+            self.__list.append({'dbID': dbID,
+             'userName': member.getFullName(),
+             'isOnline': isOnline,
+             'color': colors[0 if isOnline else 1],
+             'tags': tags,
+             'isPlayerSpeaking': False})
 
     def emptyItem(self):
-        return {'dbID': 0, 
-           'userName': '', 
-           'isOnline': False, 
-           'color': 0, 
-           'tags': [], 'isPlayerSpeaking': False}
+        return {'dbID': 0,
+         'userName': '',
+         'isOnline': False,
+         'color': 0,
+         'tags': [],
+         'isPlayerSpeaking': False}

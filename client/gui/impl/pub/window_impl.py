@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/pub/window_impl.py
+import logging
+import typing
 from frameworks.wulf import PositionAnchor, WindowLayer
 from frameworks.wulf import Window, WindowSettings
 from frameworks.wulf import WindowsArea
@@ -32,10 +35,7 @@ class WindowImpl(Window):
     @property
     def area(self):
         proxy = self.proxy
-        if proxy is not None and proxy.areaID:
-            return self.gui.windowsManager.getWindowsArea(proxy.areaID)
-        else:
-            return
+        return self.gui.windowsManager.getWindowsArea(proxy.areaID) if proxy is not None and proxy.areaID else None
 
     def move(self, x, y, xAnchor=PositionAnchor.LEFT, yAnchor=PositionAnchor.TOP):
         area = self.area

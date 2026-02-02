@@ -1,15 +1,17 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/visual_script/pve_battle_hud_blocks.py
 from visual_script.block import Meta
 
 class PVEBattleHUDMeta(Meta):
 
     @classmethod
     def blockColor(cls):
-        return 16742912
+        pass
 
     @classmethod
     def blockCategory(cls):
-        return 'Event HUD'
+        pass
 
     @classmethod
     def blockIcon(cls):
-        return ':vse/blocks/hint'
+        pass

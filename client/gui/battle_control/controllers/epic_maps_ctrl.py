@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/epic_maps_ctrl.py
 import Event
 from chat_commands_consts import INVALID_VEHICLE_POSITION
 import CommandMapping
@@ -33,22 +35,13 @@ class EpicMapsController(DefaultMapsController):
         return
 
     def getMinimapZoomMode(self):
-        if self._miniMapUi is not None:
-            return self._miniMapUi.getZoomMode()
-        else:
-            return 1
+        return self._miniMapUi.getZoomMode() if self._miniMapUi is not None else 1
 
     def getMinimapCenterPosition(self):
-        if self._miniMapUi is not None:
-            return self._miniMapUi.getCenterPosition()
-        else:
-            return Math.Vector3(0, 0, 0)
+        return self._miniMapUi.getCenterPosition() if self._miniMapUi is not None else Math.Vector3(0, 0, 0)
 
     def getVehiclePosition(self, vID):
-        if self._miniMapUi is not None:
-            return self._miniMapUi.getPositionOfEntry(vID)
-        else:
-            return INVALID_VEHICLE_POSITION
+        return self._miniMapUi.getPositionOfEntry(vID) if self._miniMapUi is not None else INVALID_VEHICLE_POSITION
 
     def overlayTriggered(self, isActive):
         self.__isOverlayActive = isActive

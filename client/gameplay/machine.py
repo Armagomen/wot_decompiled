@@ -1,4 +1,7 @@
-import logging, BattleReplay
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gameplay/machine.py
+import logging
+import BattleReplay
 from constants import HAS_DEV_RESOURCES
 from frameworks.state_machine import StateMachine
 from gameplay import states

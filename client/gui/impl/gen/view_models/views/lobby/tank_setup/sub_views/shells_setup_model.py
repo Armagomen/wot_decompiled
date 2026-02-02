@@ -1,9 +1,11 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/tank_setup/sub_views/shells_setup_model.py
 from frameworks.wulf import Array
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_setup_model import BaseSetupModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.shell_slot_model import ShellSlotModel
 
 class ShellsSetupModel(BaseSetupModel):
-    __slots__ = ('onShellUpdate', )
+    __slots__ = ('onShellUpdate',)
 
     def __init__(self, properties=10, commands=8):
         super(ShellsSetupModel, self).__init__(properties=properties, commands=commands)

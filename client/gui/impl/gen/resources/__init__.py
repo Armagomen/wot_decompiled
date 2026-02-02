@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/resources/__init__.py
 from gui.impl.gen_utils import DynAccessor
 from .aliases import Aliases
 from .animations import Animations

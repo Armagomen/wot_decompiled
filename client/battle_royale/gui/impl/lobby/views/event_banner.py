@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/lobby/views/event_banner.py
 from account_helpers.AccountSettings import AccountSettings, BATTLE_ROYALE_BANNER_FIRST_APPEARANCE_TIMESTAMP
 from helpers import dependency
 from helpers.time_utils import getCurrentLocalServerTimestamp
@@ -40,7 +42,7 @@ class BattleRoyaleEventBanner(BaseEventBanner):
 
     @property
     def borderColor(self):
-        return '#FFAF2F'
+        pass
 
     @property
     def introDescription(self):

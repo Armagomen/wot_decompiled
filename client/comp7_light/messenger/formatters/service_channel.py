@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7_light/scripts/client/comp7_light/messenger/formatters/service_channel.py
 from comp7_light.notification.decorators import Comp7LightProgressionLockButtonDecorator
 from constants import SCENARIO_RESULT
 from gui.impl import backport
@@ -12,21 +14,18 @@ from skeletons.gui.server_events import IEventsCache
 class Comp7LightBattleResultsFormatter(BattleResultsFormatter):
     __comp7LightController = dependency.descriptor(IComp7LightController)
     __eventsCache = dependency.descriptor(IEventsCache)
-    _battleResultKeys = {SCENARIO_RESULT.WIN: 'comp7LightBattleVictoryResult', 
-       SCENARIO_RESULT.PARTIAL: 'comp7LightBattleDrawResult', 
-       SCENARIO_RESULT.LOSE: 'comp7LightBattleDefeatResult'}
+    _battleResultKeys = {SCENARIO_RESULT.WIN: 'comp7LightBattleVictoryResult',
+     SCENARIO_RESULT.PARTIAL: 'comp7LightBattleDrawResult',
+     SCENARIO_RESULT.LOSE: 'comp7LightBattleDefeatResult'}
 
     def _prepareFormatData(self, message):
         templateName, ctx = super(Comp7LightBattleResultsFormatter, self)._prepareFormatData(message)
         ctx['progressionPointsStr'] = self.__makeProgressionPointsString(message)
-        return (
-         templateName, ctx)
+        return (templateName, ctx)
 
     def __makeProgressionPointsString(self, message):
         progressionPoints = self.__getProgressionTokenBonus(message.data)
-        if self.__comp7LightController.isProgressionActive() or progressionPoints > 0:
-            return g_settings.htmlTemplates.format('battleResultComp7LightProgressionPoints', {'progressionPoints': str(progressionPoints)})
-        return ''
+        return g_settings.htmlTemplates.format('battleResultComp7LightProgressionPoints', {'progressionPoints': str(progressionPoints)}) if self.__comp7LightController.isProgressionActive() or progressionPoints > 0 else ''
 
     def __getProgressionTokenBonus(self, battleResults):
         progressionSettings = self.__comp7LightController.getModeSettings().progression
@@ -44,15 +43,13 @@ class Comp7LightBattleResultsFormatter(BattleResultsFormatter):
 
 
 class Comp7LightProgressionAchievesFormatter(QuestAchievesFormatter):
-    _BULLET = '• '
+    _BULLET = u'\u2022 '
     _SEPARATOR = '<br/>' + _BULLET
 
     @classmethod
     def formatQuestAchieves(cls, data, asBattleFormatter, processCustomizations=True, processTokens=True):
         result = super(Comp7LightProgressionAchievesFormatter, cls).formatQuestAchieves(data, asBattleFormatter, processCustomizations, processTokens)
-        if result:
-            return cls._BULLET + result
-        return result
+        return cls._BULLET + result if result else result
 
 
 class Comp7LightProgressionSystemMessageFormatter(ServiceChannelFormatter):
@@ -85,5 +82,6 @@ class Comp7LightProgressionSystemMessageFormatter(ServiceChannelFormatter):
             return None
         else:
             formattedRewards = self._achievesFormatter.formatQuestAchieves(rewardsData, asBattleFormatter=False)
-            return MessageData(g_settings.msgTemplates.format(self.__TEMPLATE, ctx={'header': messageHeader, 'body': messageBody, 
-               'awards': formattedRewards}, data={}), self._getGuiSettings(message, self.__TEMPLATE, decorator=decorator))
+            return MessageData(g_settings.msgTemplates.format(self.__TEMPLATE, ctx={'header': messageHeader,
+             'body': messageBody,
+             'awards': formattedRewards}, data={}), self._getGuiSettings(message, self.__TEMPLATE, decorator=decorator))

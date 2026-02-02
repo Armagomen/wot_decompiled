@@ -1,9 +1,12 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/lobby/views/user_missions/hangar_widget/presenters/quests_presenter.py
 import typing
 from battle_royale.gui.impl.lobby.tooltips.progression_quest_tooltip import BattleRoyaleProgressionQuestTooltip
 from constants import ARENA_BONUS_TYPE
 from gui.impl.gen import R
 from battle_royale.gui.impl.lobby.br_helpers.account_settings import setLastSeenQuestData, getLastSeenQuestData
 from battle_royale.gui.impl.lobby.views.user_missions.hangar_widget.overlap_ctrl import BattleRoyaleOverlapCtrlMixin
+from battle_royale_progression.gui.impl.lobby.views.quests_packer import BRDailyQuestUIDataPacker
 from battle_royale_progression.gui.impl.lobby.views.bonus_packer import getBonusPacker, packQuestBonuses, packMissionItem
 from battle_royale_progression.gui.shared.event_dispatcher import showProgressionView
 from battle_royale_progression.skeletons.game_controller import IBRProgressionOnTokensController
@@ -14,7 +17,6 @@ from gui.impl.lobby.user_missions.tooltips.all_quests_done_tooltip import AllQue
 from gui.impl.lobby.missions.missions_helpers import needToUpdateQuestsInModel
 from gui.impl.lobby.user_missions.hangar_widget.tooltip_positioner import TooltipPositionerMixin
 from gui.impl.pub.view_component import ViewComponent
-from gui.shared.missions.packers.events import DailyQuestUIDataPacker
 from helpers import dependency, time_utils
 from skeletons.gui.battle_results import IBattleResultsService
 from skeletons.gui.game_control import IBattleRoyaleController
@@ -58,9 +60,7 @@ class BattleRoayaleQuestsPresenter(TooltipPositionerMixin, BattleRoyaleOverlapCt
         if contentID == R.views.mono.user_missions.tooltips.daily_quest_tooltip():
             quest = self._getQuestFromEvent(event)
             return BattleRoyaleProgressionQuestTooltip(quest)
-        if contentID == R.views.mono.user_missions.tooltips.all_quests_done_tooltip():
-            return AllQuestsDoneTooltip(layoutID=R.views.battle_royale.mono.lobby.tooltips.all_quests_done_tooltip(), questTimerLeft=self.__getTimeLeft())
-        return super(BattleRoayaleQuestsPresenter, self).createToolTipContent(event=event, contentID=contentID)
+        return AllQuestsDoneTooltip(layoutID=R.views.battle_royale.mono.lobby.tooltips.all_quests_done_tooltip(), questTimerLeft=self.__getTimeLeft()) if contentID == R.views.mono.user_missions.tooltips.all_quests_done_tooltip() else super(BattleRoayaleQuestsPresenter, self).createToolTipContent(event=event, contentID=contentID)
 
     def prepare(self):
         super(BattleRoayaleQuestsPresenter, self).prepare()
@@ -84,11 +84,7 @@ class BattleRoayaleQuestsPresenter(TooltipPositionerMixin, BattleRoyaleOverlapCt
         return
 
     def _getEvents(self):
-        return super(BattleRoayaleQuestsPresenter, self)._getEvents() + (
-         (
-          self.viewModel.onMissionClick, self.__onMissionClick),
-         (
-          self.viewModel.onMarkAsViewed, self.__onMarkAsViewed))
+        return super(BattleRoayaleQuestsPresenter, self)._getEvents() + ((self.viewModel.onMissionClick, self.__onMissionClick), (self.viewModel.onMarkAsViewed, self.__onMarkAsViewed))
 
     def __getAvailability(self):
         isSpaceInited = self.__hangarSpace.spaceInited
@@ -98,7 +94,7 @@ class BattleRoayaleQuestsPresenter(TooltipPositionerMixin, BattleRoyaleOverlapCt
 
     def _rawUpdate(self):
         super(BattleRoayaleQuestsPresenter, self)._rawUpdate()
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             modelQuests = vm.getQuests()
             modelQuests.clear()
             modelQuests.reserve(len(self.__quests))
@@ -117,7 +113,7 @@ class BattleRoayaleQuestsPresenter(TooltipPositionerMixin, BattleRoyaleOverlapCt
         bonusPacker = getBonusPacker()
         packedBonuses, _ = packQuestBonuses(quest.getBonuses(), bonusPacker)
         fillViewModelsArray(packedBonuses, model.getBonuses())
-        packMissionItem(model, quest, DailyQuestUIDataPacker)
+        packMissionItem(model, quest, BRDailyQuestUIDataPacker)
         lastSeenProgress, isQuestAnimationSeen = getLastSeenQuestData(quest.getID())
         model.setAnimateCompletion(not isQuestAnimationSeen and model.getIsCompleted())
         if not isQuestAnimationSeen:
@@ -177,7 +173,7 @@ class BattleRoayaleQuestsPresenter(TooltipPositionerMixin, BattleRoyaleOverlapCt
         for quest in self.__quests:
             model = WidgetQuestModel()
             questID = quest.getID()
-            isCompleted, lastSeenProgress = packMissionItem(model, quest, DailyQuestUIDataPacker)
+            isCompleted, lastSeenProgress = packMissionItem(model, quest, BRDailyQuestUIDataPacker)
             setLastSeenQuestData(questID, (lastSeenProgress, True))
             _, showCompletedAnimation = getLastSeenQuestData(questID)
             if showCompletedAnimation and not isCompleted:
@@ -188,6 +184,4 @@ class BattleRoayaleQuestsPresenter(TooltipPositionerMixin, BattleRoyaleOverlapCt
         currentCycleEndTime = self.__battleRoyale.getEndTime()
         currServerTime = time_utils.getCurrentLocalServerTimestamp()
         cycleTimeLeft = currentCycleEndTime - currServerTime
-        if cycleTimeLeft < ONE_DAY and cycleTimeLeft < dailyQuestProgressDelta:
-            return 0
-        return dailyQuestProgressDelta
+        return 0 if cycleTimeLeft < ONE_DAY and cycleTimeLeft < dailyQuestProgressDelta else dailyQuestProgressDelta

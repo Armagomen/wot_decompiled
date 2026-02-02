@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/personal_missions_30/missions_categorizations_model.py
 from gui.impl.gen.view_models.views.lobby.personal_missions_30.common.enums import MissionCategory
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.personal_missions_30.mission_model import MissionModel

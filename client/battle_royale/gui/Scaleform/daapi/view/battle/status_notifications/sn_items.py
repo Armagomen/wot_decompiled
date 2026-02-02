@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/battle/status_notifications/sn_items.py
 import BigWorld
 from constants import LootAction, LOOT_TYPE
 from gui.Scaleform.daapi.view.battle.shared.status_notifications import sn_items
@@ -81,7 +83,7 @@ class LootPickUpSN(_BRLocalizationProvider, sn_items.TimerSN):
         if not self.__loots:
             self._isVisible = True
         self.__loots[lootID] = (lootTypeID, time + pickupTime)
-        timeLeft = max(loot_time for _, loot_time in self.__loots.values())
+        timeLeft = max((loot_time for _, loot_time in self.__loots.values()))
         timeLeft -= time
         self.__updateText()
         self._updateTimeParams(timeLeft, 0)
@@ -112,7 +114,6 @@ class LootPickUpSN(_BRLocalizationProvider, sn_items.TimerSN):
                 return backport.text(self._stringResource.loot.airdrop())
             if lootType == LOOT_TYPE.CORPSE:
                 return backport.text(self._stringResource.loot.corpse())
-        return ''
 
 
 class BRBuffSN(_BRLocalizationProvider, sn_items.BuffSN):
@@ -157,9 +158,7 @@ class ShotPassionSN(BRBuffSN):
     def __getCounterState(self, stage):
         if stage == 0:
             return BATTLE_ROYAL_CONSTS.COUNTER_STATE_INITIAL
-        if stage < self.__maxStage:
-            return BATTLE_ROYAL_CONSTS.COUNTER_STATE_EXTRA
-        return BATTLE_ROYAL_CONSTS.COUNTER_STATE_MAX
+        return BATTLE_ROYAL_CONSTS.COUNTER_STATE_EXTRA if stage < self.__maxStage else BATTLE_ROYAL_CONSTS.COUNTER_STATE_MAX
 
     def __constructCounter(self, stage):
         return backport.text(R.strings.common.multiplier()) + str(stage)
@@ -221,10 +220,7 @@ class BRSmokeSN(_BRLocalizationProvider, sn_items.SmokeSN):
     @staticmethod
     def _isFitByEquipmentId(equipmentId):
         equipment = getEquipmentById(equipmentId)
-        if equipment:
-            return equipment.dotParams is None
-        else:
-            return False
+        return equipment.dotParams is None if equipment else False
 
 
 class BRDamagingSmokeSN(_BRLocalizationProvider, sn_items.SmokeSN):
@@ -241,10 +237,7 @@ class BRDamagingSmokeSN(_BRLocalizationProvider, sn_items.SmokeSN):
     @staticmethod
     def _isFitByEquipmentId(equipmentId):
         equipment = getEquipmentById(equipmentId)
-        if equipment:
-            return equipment.dotParams is not None
-        else:
-            return False
+        return equipment.dotParams is not None if equipment else False
 
 
 class DamagingCorrodingShotSN(_BRLocalizationProvider, sn_items.SmokeSN):
@@ -341,7 +334,7 @@ class AdaptationHealthRestoreSN(_BRLocalizationProvider, sn_items.TimerSN):
                 self._setVisible(False)
                 self._vo['additionalState'] = BATTLE_ROYAL_CONSTS.COUNTER_STATE_INITIAL
         if restoreHealth is not None:
-            self._vo['additionalInfo'] = ('').join(('+', str(restoreHealth)))
+            self._vo['additionalInfo'] = ''.join(('+', str(restoreHealth)))
             if restoreHealth > 0:
                 self._vo['additionalState'] = BATTLE_ROYAL_CONSTS.COUNTER_STATE_EXTRA
         if duration is not None or restoreHealth is not None:

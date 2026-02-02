@@ -1,4 +1,10 @@
-import os, sys, typing, BigWorld, constants
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/persistent_data_cache/__init__.py
+import os
+import sys
+import typing
+import BigWorld
+import constants
 from helpers import ExitCode
 from persistent_data_cache import configs
 from persistent_data_cache import fault_tolerance
@@ -42,7 +48,7 @@ def init(scriptsConfig, engineConfig, userPreferences, gameLoadingStep):
         if forceCreating:
             BigWorld.quitWithExitCode(ExitCode.FAILED)
         return
-    settings = configs.createPDCSettings(scriptsConfig, engineConfig)
+    settings = configs.createPDCSettings(scriptsConfig, engineConfig, userPreferences)
     if not forceCreating:
         if not settings.enabled or constants.IS_DEVELOPMENT and not settings.devEnabled:
             _logger.info('Disabled in config.')
@@ -89,4 +95,9 @@ def fini():
     return
 
 
-__all__ = ['init', 'load', 'start', 'save', 'fini', 'getEventsDispatcher']
+__all__ = ['init',
+ 'load',
+ 'start',
+ 'save',
+ 'fini',
+ 'getEventsDispatcher']

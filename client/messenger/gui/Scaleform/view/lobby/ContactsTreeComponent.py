@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/gui/Scaleform/view/lobby/ContactsTreeComponent.py
 from helpers.i18n import makeString
 from gui.Scaleform.daapi.view.meta.ContactsTreeComponentMeta import ContactsTreeComponentMeta
 from gui.Scaleform.locale.MESSENGER import MESSENGER
@@ -48,8 +50,8 @@ class ContactsTreeComponent(ContactsTreeComponentMeta):
         self._mainDP.setFlashObject(self.as_getMainDPS())
         self._mainDP.addContactsListeners()
         self._mainDP.onTotalStatusChanged += self.__onTotalStatusChanged
-        self.as_setInitDataS({'accMinChars': ACCOUNT_NAME_MIN_CHARS_LENGTH, 
-           'accMaxChars': ACCOUNT_NAME_MAX_CHARS_LENGTH})
+        self.as_setInitDataS({'accMinChars': ACCOUNT_NAME_MIN_CHARS_LENGTH,
+         'accMaxChars': ACCOUNT_NAME_MAX_CHARS_LENGTH})
 
     def _dispose(self):
         if self._mainDP:

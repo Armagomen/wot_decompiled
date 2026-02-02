@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/container_vews/personal_file/controller.py
 import typing
 from Event import Event
 from gui.impl.dialogs.dialogs import showPerksDropDialog
@@ -32,19 +34,12 @@ class PersonalFileInteractionController(BasePersonalCaseController):
         return PersonalFileComponentViewEvents()
 
     def _getEvents(self):
-        return super(PersonalFileInteractionController, self)._getEvents() + [
-         (
-          self.itemsCache.onSyncCompleted, self._onCacheResync),
-         (
-          self.eventsProvider.onSkillClick, self._onSkillClick),
-         (
-          self.eventsProvider.onSetAnimationInProgress, self._onSetAnimationInProgress),
-         (
-          self.eventsProvider.onIncreaseClick, self._onIncreaseClick),
-         (
-          self.eventsProvider.onResetClick, self._onResetClick),
-         (
-          self.eventsProvider.onWidgetClick, self._onWidgetClick)]
+        return super(PersonalFileInteractionController, self)._getEvents() + [(self.itemsCache.onSyncCompleted, self._onCacheResync),
+         (self.eventsProvider.onSkillClick, self._onSkillClick),
+         (self.eventsProvider.onSetAnimationInProgress, self._onSetAnimationInProgress),
+         (self.eventsProvider.onIncreaseClick, self._onIncreaseClick),
+         (self.eventsProvider.onResetClick, self._onResetClick),
+         (self.eventsProvider.onWidgetClick, self._onWidgetClick)]
 
     def _onSkillClick(self, tankmanInvID, role):
         self.view.hideContent()

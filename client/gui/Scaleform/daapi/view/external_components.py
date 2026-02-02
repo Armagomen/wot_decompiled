@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/external_components.py
 import weakref
 from collections import namedtuple
 from gui.Scaleform.flash_wrapper import FlashComponentWrapper
@@ -23,8 +25,7 @@ class IExternalFlashComponent(object):
         raise NotImplementedError
 
 
-ExternalFlashSettings = namedtuple('ExternalFlashSettings', ('alias', 'url', 'rootPath',
-                                                             'initCallback'))
+ExternalFlashSettings = namedtuple('ExternalFlashSettings', ('alias', 'url', 'rootPath', 'initCallback'))
 
 class ExternalFlashComponent(FlashComponentWrapper, IExternalFlashComponent):
 
@@ -67,8 +68,7 @@ class ExternalFlashComponent(FlashComponentWrapper, IExternalFlashComponent):
         return self.component.size
 
     def setSize(self, width, height):
-        self.component.size = (
-         width, height)
+        self.component.size = (width, height)
 
     def getScale(self):
         return self.movie.stage.scaleX

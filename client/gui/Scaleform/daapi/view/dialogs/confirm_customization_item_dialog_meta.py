@@ -1,4 +1,7 @@
-import math, SoundGroups
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/dialogs/confirm_customization_item_dialog_meta.py
+import math
+import SoundGroups
 from CurrentVehicle import g_currentVehicle
 from gui.Scaleform.daapi.view.dialogs import IDialogMeta
 from gui.Scaleform.daapi.view.lobby.customization.sound_constants import SOUNDS
@@ -86,7 +89,7 @@ class ConfirmC11nBuyMeta(IDialogMeta):
         return packActionTooltipData(ACTION_TOOLTIPS_TYPE.ITEM, str(item.intCD), True, prices, defaultPrices)
 
     def getDefaultValue(self, _):
-        return 1
+        pass
 
     def getMaxAvailableItemsCount(self, item):
         balance = self.itemsCache.items.stats.money

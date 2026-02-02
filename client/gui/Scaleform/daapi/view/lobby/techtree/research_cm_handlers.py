@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/techtree/research_cm_handlers.py
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.hangar.hangar_cm_handlers import MODULE, SimpleVehicleCMHandler, VEHICLE
 from gui.Scaleform.daapi.view.lobby.techtree.settings import NODE_STATE, UnlockProps
@@ -19,11 +21,11 @@ class ResearchItemContextMenuHandler(AbstractContextMenuHandler, EventSystemEnti
     _itemsCache = dependency.descriptor(IItemsCache)
 
     def __init__(self, cmProxy, ctx=None):
-        super(ResearchItemContextMenuHandler, self).__init__(cmProxy, ctx, {MODULE.INFO: 'showModuleInfo', 
-           MODULE.UNLOCK: 'unlockModule', 
-           MODULE.BUY_AND_EQUIP: 'buyModule', 
-           MODULE.EQUIP: 'equipModule', 
-           MODULE.SELL: 'sellModule'})
+        super(ResearchItemContextMenuHandler, self).__init__(cmProxy, ctx, {MODULE.INFO: 'showModuleInfo',
+         MODULE.UNLOCK: 'unlockModule',
+         MODULE.BUY_AND_EQUIP: 'buyModule',
+         MODULE.EQUIP: 'equipModule',
+         MODULE.SELL: 'sellModule'})
 
     def showModuleInfo(self):
         vehicle = self._itemsCache.items.getItemByCD(self._rootCD)
@@ -58,26 +60,14 @@ class ResearchItemContextMenuHandler(AbstractContextMenuHandler, EventSystemEnti
         return
 
     def _generateOptions(self, ctx=None):
-        options = [
-         self._makeItem(MODULE.INFO, MENU.contextmenu(MODULE.INFO)),
-         self._makeSeparator(),
-         self._makeItem(MODULE.UNLOCK, MENU.contextmenu(MODULE.UNLOCK), {'enabled': NODE_STATE.isAvailable2Unlock(self._nodeState)})]
+        options = [self._makeItem(MODULE.INFO, MENU.contextmenu(MODULE.INFO)), self._makeSeparator(), self._makeItem(MODULE.UNLOCK, MENU.contextmenu(MODULE.UNLOCK), {'enabled': NODE_STATE.isAvailable2Unlock(self._nodeState)})]
         if NODE_STATE.isUnlocked(self._nodeState):
             if NODE_STATE.inInventory(self._nodeState) or NODE_STATE.isInstalled(self._nodeState):
-                options.extend([
-                 self._makeItem(MODULE.EQUIP, MENU.contextmenu(MODULE.EQUIP), {'enabled': self._isAvailable2Install()}),
-                 self._makeSeparator(),
-                 self._makeItem(MODULE.SELL, MENU.CONTEXTMENU_SELLFROMINVENTORY, {'enabled': not NODE_STATE.isInstalled(self._nodeState)})])
+                options.extend([self._makeItem(MODULE.EQUIP, MENU.contextmenu(MODULE.EQUIP), {'enabled': self._isAvailable2Install()}), self._makeSeparator(), self._makeItem(MODULE.SELL, MENU.CONTEXTMENU_SELLFROMINVENTORY, {'enabled': not NODE_STATE.isInstalled(self._nodeState)})])
             else:
-                options.extend([
-                 self._makeItem(MODULE.BUY_AND_EQUIP, MENU.CONTEXTMENU_BUYANDEQUIP, {'enabled': self._isAvailable2Buy()}),
-                 self._makeSeparator(),
-                 self._makeItem(MODULE.SELL, MENU.CONTEXTMENU_SELLFROMINVENTORY, {'enabled': NODE_STATE.isAvailable2Sell(self._nodeState)})])
+                options.extend([self._makeItem(MODULE.BUY_AND_EQUIP, MENU.CONTEXTMENU_BUYANDEQUIP, {'enabled': self._isAvailable2Buy()}), self._makeSeparator(), self._makeItem(MODULE.SELL, MENU.CONTEXTMENU_SELLFROMINVENTORY, {'enabled': NODE_STATE.isAvailable2Sell(self._nodeState)})])
         else:
-            options.extend([
-             self._makeItem(MODULE.BUY_AND_EQUIP, MENU.CONTEXTMENU_BUYANDEQUIP, {'enabled': False}),
-             self._makeSeparator(),
-             self._makeItem(MODULE.SELL, MENU.CONTEXTMENU_SELLFROMINVENTORY, {'enabled': False})])
+            options.extend([self._makeItem(MODULE.BUY_AND_EQUIP, MENU.CONTEXTMENU_BUYANDEQUIP, {'enabled': False}), self._makeSeparator(), self._makeItem(MODULE.SELL, MENU.CONTEXTMENU_SELLFROMINVENTORY, {'enabled': False})])
         return options
 
     def _isAvailable2Install(self):
@@ -96,14 +86,14 @@ class ResearchVehicleContextMenuHandler(SimpleVehicleCMHandler):
     _hangarSpace = dependency.descriptor(IHangarSpace)
 
     def __init__(self, cmProxy, ctx=None):
-        super(ResearchVehicleContextMenuHandler, self).__init__(cmProxy, ctx, {VEHICLE.INFO: 'showVehicleInfo', 
-           VEHICLE.UNLOCK: 'unlockVehicle', 
-           VEHICLE.BUY: 'buyVehicle', 
-           VEHICLE.SELL: 'sellVehicle', 
-           VEHICLE.SELECT: 'selectVehicle', 
-           VEHICLE.STATS: 'showVehicleStats', 
-           VEHICLE.COMPARE: 'compareVehicle', 
-           VEHICLE.NATION_CHANGE: 'changeVehicleNation'})
+        super(ResearchVehicleContextMenuHandler, self).__init__(cmProxy, ctx, {VEHICLE.INFO: 'showVehicleInfo',
+         VEHICLE.UNLOCK: 'unlockVehicle',
+         VEHICLE.BUY: 'buyVehicle',
+         VEHICLE.SELL: 'sellVehicle',
+         VEHICLE.SELECT: 'selectVehicle',
+         VEHICLE.STATS: 'showVehicleStats',
+         VEHICLE.COMPARE: 'compareVehicle',
+         VEHICLE.NATION_CHANGE: 'changeVehicleNation'})
 
     def getVehCD(self):
         return self._nodeCD
@@ -151,14 +141,11 @@ class ResearchVehicleContextMenuHandler(SimpleVehicleCMHandler):
         return
 
     def _generateOptions(self, ctx=None):
-        if self._newCM:
-            return self.__generateOptionsForNewCM(ctx)
-        return self.__generateOptionsOldCM(ctx)
+        return self.__generateOptionsForNewCM(ctx) if self._newCM else self.__generateOptionsOldCM(ctx)
 
     def __generateOptionsForNewCM(self, ctx=None):
         vehicle = self.itemsCache.items.getItemByCD(self._nodeCD)
-        options = [
-         self._makeItem(VEHICLE.INFO, MENU.CONTEXTMENU_VEHICLEINFOEX)]
+        options = [self._makeItem(VEHICLE.INFO, MENU.CONTEXTMENU_VEHICLEINFOEX)]
         if NODE_STATE.isWasInBattle(self._nodeState):
             options.append(self._makeItem(VEHICLE.STATS, MENU.CONTEXTMENU_SHOWVEHICLESTATISTICS))
         self._manageVehCompareItem(options, vehicle)
@@ -167,8 +154,7 @@ class ResearchVehicleContextMenuHandler(SimpleVehicleCMHandler):
 
     def __generateOptionsOldCM(self, ctx=None):
         vehicle = self.itemsCache.items.getItemByCD(self._nodeCD)
-        options = [
-         self._makeItem(VEHICLE.INFO, MENU.CONTEXTMENU_VEHICLEINFOEX)]
+        options = [self._makeItem(VEHICLE.INFO, MENU.CONTEXTMENU_VEHICLEINFOEX)]
         if NODE_STATE.isWasInBattle(self._nodeState):
             options.append(self._makeItem(VEHICLE.STATS, MENU.CONTEXTMENU_SHOWVEHICLESTATISTICS))
         self._manageVehCompareItem(options, vehicle)
@@ -191,14 +177,13 @@ class ResearchVehicleContextMenuHandler(SimpleVehicleCMHandler):
             else:
                 isNationChangeAvailable = False
                 nationChangeIsNew = False
-            options.append(self._makeItem(VEHICLE.NATION_CHANGE, MENU.CONTEXTMENU_NATIONCHANGE, {'enabled': isNationChangeAvailable, 'isNew': nationChangeIsNew}))
+            options.append(self._makeItem(VEHICLE.NATION_CHANGE, MENU.CONTEXTMENU_NATIONCHANGE, {'enabled': isNationChangeAvailable,
+             'isNew': nationChangeIsNew}))
         if not vehicle.isPremiumIGR and not vehicle.isTelecomRent:
             isAvailable2SellOrRemove = NODE_STATE.isAvailable2Sell(self._nodeState)
             if isAvailable2SellOrRemove:
                 options.append(self._makeItem(VEHICLE.SELL, MENU.CONTEXTMENU_VEHICLEREMOVE if vehicle.isRented else MENU.CONTEXTMENU_SELL, {'enabled': isAvailable2SellOrRemove}))
-        options.extend([
-         self._makeSeparator(),
-         self._makeItem(VEHICLE.SELECT, MENU.CONTEXTMENU_SELECTVEHICLEINHANGAR, {'enabled': NODE_STATE.inInventory(self._nodeState) or NODE_STATE.isRentalOver(self._nodeState)})])
+        options.extend([self._makeSeparator(), self._makeItem(VEHICLE.SELECT, MENU.CONTEXTMENU_SELECTVEHICLEINHANGAR, {'enabled': NODE_STATE.inInventory(self._nodeState) or NODE_STATE.isRentalOver(self._nodeState)})])
         return options
 
     def _manageVehCompareItem(self, optionsRef, vehicle):
@@ -211,14 +196,14 @@ class BlueprintVehicleContextMenuHandler(SimpleVehicleCMHandler):
     __hangarSpace = dependency.descriptor(IHangarSpace)
 
     def __init__(self, cmProxy, ctx=None):
-        super(BlueprintVehicleContextMenuHandler, self).__init__(cmProxy, ctx, {VEHICLE.UNLOCK: 'unlockVehicle', 
-           VEHICLE.BLUEPRINT: 'showVehicleBlueprint'})
+        super(BlueprintVehicleContextMenuHandler, self).__init__(cmProxy, ctx, {VEHICLE.UNLOCK: 'unlockVehicle',
+         VEHICLE.BLUEPRINT: 'showVehicleBlueprint'})
 
     def getVehCD(self):
         return self._nodeCD
 
     def getVehInvID(self):
-        return
+        return None
 
     def unlockVehicle(self):
         level = self.itemsCache.items.getItemByCD(self._nodeCD).level
@@ -240,6 +225,5 @@ class BlueprintVehicleContextMenuHandler(SimpleVehicleCMHandler):
         return
 
     def _generateOptions(self, ctx=None):
-        options = [self._makeItem(VEHICLE.BLUEPRINT, MENU.CONTEXTMENU_GOTOBLUEPRINT),
-         self._makeItem(VEHICLE.UNLOCK, MENU.CONTEXTMENU_UNLOCK, {'enabled': NODE_STATE.isAvailable2Unlock(self._nodeState)})]
+        options = [self._makeItem(VEHICLE.BLUEPRINT, MENU.CONTEXTMENU_GOTOBLUEPRINT), self._makeItem(VEHICLE.UNLOCK, MENU.CONTEXTMENU_UNLOCK, {'enabled': NODE_STATE.isAvailable2Unlock(self._nodeState)})]
         return options

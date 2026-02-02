@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/VehicleInfoMeta.py
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 
 class VehicleInfoMeta(AbstractWindowView):
@@ -15,13 +17,10 @@ class VehicleInfoMeta(AbstractWindowView):
         self._printOverrideError('changeNation')
 
     def as_setVehicleInfoS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setVehicleInfo(data)
+        return self.flashObject.as_setVehicleInfo(data) if self._isDAAPIInited() else None
 
     def as_setCompareButtonDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setCompareButtonData(data)
+        return self.flashObject.as_setCompareButtonData(data) if self._isDAAPIInited() else None
 
     def as_setChangeNationButtonDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setChangeNationButtonData(data)
+        return self.flashObject.as_setChangeNationButtonData(data) if self._isDAAPIInited() else None

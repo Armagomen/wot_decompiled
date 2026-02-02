@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/common/BattleRoyaleTournament.py
 import datetime
 from debug_utils import LOG_CURRENT_EXCEPTION
 CMD_BATTLE_ROYALE_TRN_JOIN = 20000
@@ -62,15 +64,14 @@ class BattleRoyaleTourmanentToken(object):
             elif tp == 'any':
                 self.type = TYPE.ANY
             else:
-                self.whatWrong = ('Wrong type {}').format(tp)
+                self.whatWrong = 'Wrong type {}'.format(tp)
                 return
             self.fullTournamentID = tokenParts[1] + tp
             role = tokenParts[4]
             self.teamID = int(tokenParts[5])
-            if self.teamID != 0:
-                if self.type == TYPE.SOLO and (self.teamID < 1 or self.teamID > 20) or self.type == TYPE.SQUAD and (self.teamID < 1 or self.teamID > 10):
-                    self.whatWrong = ('Wrong teamID {} for type {}').format(self.teamID, self.type)
-                    return
+            if self.teamID != 0 and (self.type == TYPE.SOLO and (self.teamID < 1 or self.teamID > 20) or self.type == TYPE.SQUAD and (self.teamID < 1 or self.teamID > 10)):
+                self.whatWrong = 'Wrong teamID {} for type {}'.format(self.teamID, self.type)
+                return
             if role == 'observer':
                 self.role = ROLE.OBSERVER
             elif role == 'player':
@@ -78,7 +79,7 @@ class BattleRoyaleTourmanentToken(object):
             elif role == 'playerc':
                 self.role = ROLE.PLAYER_COMMANDER
             else:
-                self.whatWrong = ('Wrong role {}').format(role)
+                self.whatWrong = 'Wrong role {}'.format(role)
                 return
             self.isValid = True
         except:
@@ -101,12 +102,10 @@ class BattleRoyaleTourmanentToken(object):
 
     @property
     def participantShortDescr(self):
-        if self.role == ROLE.OBSERVER:
-            return 'O'
-        return ('P' if self.role == ROLE.PLAYER else 'C') + str(self.teamID)
+        return 'O' if self.role == ROLE.OBSERVER else ('P' if self.role == ROLE.PLAYER else 'C') + str(self.teamID)
 
     def __repr__(self):
-        return ('{} {}').format(self.data, self.isValid)
+        return '{} {}'.format(self.data, self.isValid)
 
 
 def participantsHash(dbIds):

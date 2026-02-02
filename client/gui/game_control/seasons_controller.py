@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/seasons_controller.py
 from constants import GameSeasonType
 from soft_exception import SoftException
 from helpers import dependency
@@ -35,5 +37,5 @@ class SeasonsController(ISeasonsController):
     def __getSeasonProviderChecked(self, seasonType):
         handler = collectSeasonProviderHandler(seasonType)
         if handler is None:
-            raise SoftException(('Invalid seasonType [{}]! No suitable season provider found.').format(seasonType))
+            raise SoftException('Invalid seasonType [{}]! No suitable season provider found.'.format(seasonType))
         return handler()

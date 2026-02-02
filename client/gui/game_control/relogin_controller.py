@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/relogin_controller.py
 from debug_utils import LOG_DEBUG
 from helpers import dependency
 from skeletons.gui.game_control import IReloginController
@@ -23,10 +25,7 @@ class ReloginController(IReloginController):
     def doRelogin(self, peripheryID, onStoppedHandler=None, extraChainSteps=None):
         from gui.shared import actions
         LOG_DEBUG('Attempt to relogin to the another periphery', peripheryID)
-        chain = [
-         actions.LeavePrbModalEntity(),
-         actions.DisconnectFromPeriphery(loginViewPreselectedPeriphery=peripheryID),
-         actions.ConnectToPeriphery(peripheryID)]
+        chain = [actions.LeavePrbModalEntity(), actions.DisconnectFromPeriphery(loginViewPreselectedPeriphery=peripheryID), actions.ConnectToPeriphery(peripheryID)]
         if extraChainSteps is not None:
             chain += extraChainSteps
         self.__reloginStoppedHandler = onStoppedHandler

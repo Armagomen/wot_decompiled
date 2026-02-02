@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/feature/sub_modes/base_sub_mode.py
 from __future__ import absolute_import
 import typing
 from battle_modifiers.gui.feature.modifiers_data_provider import ModifiersDataProvider
@@ -164,7 +166,7 @@ class FunBaseSubMode(IFunSubMode, SeasonProvider):
             restriction = restrictions.LIMIT_VEHICLE_TYPE
             ctx = {'forbiddenType': vehicle.shortUserName}
         else:
-            return
+            return None
         return ValidationResult(False, restriction, ctx)
 
     def isSuitableVehicleAvailable(self):
@@ -180,14 +182,11 @@ class FunBaseSubMode(IFunSubMode, SeasonProvider):
         return self._settings.client.assetsPointer
 
     def getCarouselBaseCriteria(self):
-        return
+        return None
 
     def getEventEndTimestamp(self):
         actualSeason = self.getCurrentSeason()
-        if actualSeason is not None:
-            return actualSeason.getEndDate()
-        else:
-            return 0
+        return actualSeason.getEndDate() if actualSeason is not None else 0
 
     def getIconsResRoot(self):
         assetsPointer = self._settings.client.assetsPointer
@@ -228,17 +227,13 @@ class FunBaseSubMode(IFunSubMode, SeasonProvider):
 
     def getTimer(self, now=None, peripheryID=None):
         timer = super(FunBaseSubMode, self).getTimer(now, peripheryID)
-        if timer > 0:
-            return timer + FunTimersShifts.SUB_MODE
-        return timer
+        return timer + FunTimersShifts.SUB_MODE if timer > 0 else timer
 
     def resolveVehicleViewState(self, viewState, vehicle):
         pass
 
     def updateSettings(self, subModeSettings):
-        if self._settings == subModeSettings:
-            return False
-        return self._updateSettings(subModeSettings)
+        return False if self._settings == subModeSettings else self._updateSettings(subModeSettings)
 
     def _createSeason(self, cycleInfo, seasonData):
         return FunRandomSeason(cycleInfo, seasonData, self._settings.client.assetsPointer)

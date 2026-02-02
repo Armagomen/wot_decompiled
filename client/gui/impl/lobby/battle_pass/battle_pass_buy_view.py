@@ -1,4 +1,7 @@
-import logging, SoundGroups
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/battle_pass/battle_pass_buy_view.py
+import logging
+import SoundGroups
 from PlayerEvents import g_playerEvents
 from frameworks.wulf import Array
 from gui.battle_pass.battle_pass_bonuses_packers import packBonusModelAndTooltipData
@@ -19,10 +22,10 @@ from helpers import dependency
 from skeletons.gui.game_control import IBattlePassController, IWalletController
 _logger = logging.getLogger(__name__)
 WINDOW_IS_NOT_OPENED = -1
-_CHAPTER_STATES = {ChapterState.ACTIVE: ChapterStates.ACTIVE, 
-   ChapterState.COMPLETED: ChapterStates.COMPLETED, 
-   ChapterState.PAUSED: ChapterStates.PAUSED, 
-   ChapterState.NOT_STARTED: ChapterStates.NOTSTARTED}
+_CHAPTER_STATES = {ChapterState.ACTIVE: ChapterStates.ACTIVE,
+ ChapterState.COMPLETED: ChapterStates.COMPLETED,
+ ChapterState.PAUSED: ChapterStates.PAUSED,
+ ChapterState.NOT_STARTED: ChapterStates.NOTSTARTED}
 
 class BattlePassBuyViewStates(object):
 
@@ -60,10 +63,7 @@ class BuyPassPresenter(ViewComponent[BattlePassBuyViewModel]):
 
     def getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        if tooltipId is None:
-            return
-        else:
-            return self.__tooltipItems.get(tooltipId)
+        return None if tooltipId is None else self.__tooltipItems.get(tooltipId)
 
     def updateInitialData(self, **kwargs):
         if 'packageID' in kwargs:
@@ -91,7 +91,8 @@ class BuyPassPresenter(ViewComponent[BattlePassBuyViewModel]):
 
     def _onLoading(self, *args, **kwargs):
         super(BuyPassPresenter, self)._onLoading(*args, **kwargs)
-        self.__packages = generatePackages(battlePass=self.__battlePass)
+        if not self.__battlePass.isHoliday():
+            self.__packages = generatePackages(battlePass=self.__battlePass)
         self.__setGeneralFields()
         self.__setPackages()
         if g_BPBuyViewStates.chapterID != WINDOW_IS_NOT_OPENED:
@@ -108,35 +109,21 @@ class BuyPassPresenter(ViewComponent[BattlePassBuyViewModel]):
         return
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onShopOfferClick, self.__onShopOfferClick),
-         (
-          self.viewModel.confirm.onShowRewardsClick, self.__showRewards),
-         (
-          self.viewModel.confirm.onBuyClick, self.__onBuyBattlePassClick),
-         (
-          self.viewModel.confirm.onChangePurchaseWithLevels, self.__changeWithLevels),
-         (
-          self.__battlePass.onLevelUp, self.__onLevelUp),
-         (
-          self.__wallet.onWalletStatusChanged, self.__onWalletChanged),
-         (
-          self.__battlePass.onBattlePassSettingsChange, self.__onBattlePassSettingsChanged),
-         (
-          self.__battlePass.onSeasonStateChanged, self.__onBattlePassSettingsChanged),
-         (
-          self.__battlePass.onChapterChanged, self.__onChapterChanged))
+        return ((self.viewModel.onShopOfferClick, self.__onShopOfferClick),
+         (self.viewModel.confirm.onShowRewardsClick, self.__showRewards),
+         (self.viewModel.confirm.onBuyClick, self.__onBuyBattlePassClick),
+         (self.viewModel.confirm.onChangePurchaseWithLevels, self.__changeWithLevels),
+         (self.__battlePass.onLevelUp, self.__onLevelUp),
+         (self.__wallet.onWalletStatusChanged, self.__onWalletChanged),
+         (self.__battlePass.onBattlePassSettingsChange, self.__onBattlePassSettingsChanged),
+         (self.__battlePass.onSeasonStateChanged, self.__onBattlePassSettingsChanged),
+         (self.__battlePass.onChapterChanged, self.__onChapterChanged))
 
     def _getListeners(self):
-        return (
-         (
-          BattlePassEvent.BUYING_THINGS, self.__onBuying, EVENT_BUS_SCOPE.LOBBY),
-         (
-          BattlePassEvent.ON_FINISH_BATTLE_PASS_PURCHASE, self.__onFinishPurchase, EVENT_BUS_SCOPE.LOBBY))
+        return ((BattlePassEvent.BUYING_THINGS, self.__onBuying, EVENT_BUS_SCOPE.LOBBY), (BattlePassEvent.ON_FINISH_BATTLE_PASS_PURCHASE, self.__onFinishPurchase, EVENT_BUS_SCOPE.LOBBY))
 
     def __setGeneralFields(self):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setIsWalletAvailable(self.__wallet.isAvailable)
             tx.setIsSeasonWithAdditionalBackground(isSeasonWithAdditionalBackground())
             tx.setIsShopOfferAvailable(self.__isShopOfferAvailable())
@@ -215,7 +202,7 @@ class BuyPassPresenter(ViewComponent[BattlePassBuyViewModel]):
     def __updateDetailRewards(self, model=None):
         chapterID = self.__selectedPackage.getChapterID()
         fromLevel, toLevel = self.__selectedPackage.getLevelsRange()
-        with model.rewards.transaction() as (tx):
+        with model.rewards.transaction() as tx:
             tx.nowRewards.clearItems()
             tx.futureRewards.clearItems()
             tx.topPriorityRewards.clearItems()
@@ -231,7 +218,7 @@ class BuyPassPresenter(ViewComponent[BattlePassBuyViewModel]):
     def __onBuyBattlePassClick(self, ctx):
         if self.__selectedPackage is not None:
             self.__battlePass.onLevelUp -= self.__onLevelUp
-            buyMethod = (self.__selectedPackage.isWithLevels() or BattlePassBuyer).buyBP if 1 else BattlePassBuyer.buyBPWithLevels
+            buyMethod = BattlePassBuyer.buyBP if not self.__selectedPackage.isWithLevels() else BattlePassBuyer.buyBPWithLevels
             buyMethod(self.__selectedPackage.getSeasonID(), self.__selectedPackage.getChapterID(), ctx.get('priceID'), self.__onBuyBPCallback)
         return
 
@@ -243,7 +230,7 @@ class BuyPassPresenter(ViewComponent[BattlePassBuyViewModel]):
             self.__setGeneralFields()
 
     def __isShopOfferAvailable(self):
-        return not any(package.isBought() and not package.isExtra() and not package.isHoliday() for package in self.__packages.itervalues())
+        return not any((package.isBought() and not package.isExtra() and not package.isHoliday() for package in self.__packages.itervalues()))
 
     def __onShopOfferClick(self):
         showBuyBattlePassOverlay()

@@ -1,9 +1,14 @@
-import logging, weakref, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/battle/battle_upgrade_panel.py
+import logging
+import weakref
+import BigWorld
 from ReplayEvents import g_replayEvents
 from battle_royale.gui.battle_control.controllers.notification_manager import INotificationManagerListener
 from gui.battle_control import avatar_getter
 from helpers import dependency
-import BattleReplay, CommandMapping
+import BattleReplay
+import CommandMapping
 from gui.Scaleform.daapi.view.common.battle_royale import br_helpers
 from gui.Scaleform.daapi.view.common.battle_royale.params import getShortListParameters
 from gui.Scaleform.daapi.view.meta.BattleUpgradePanelMeta import BattleUpgradePanelMeta
@@ -71,8 +76,7 @@ class _AttentionEffectPlayer(object):
 
 
 class BattleUpgradePanel(BattleUpgradePanelMeta, IArenaVehiclesController, IProgressionListener, INotificationManagerListener):
-    __slots__ = ('__level', '__upgrades', '__localVisible', '__isEnabled', '__attentionEffect',
-                 'notificationManager')
+    __slots__ = ('__level', '__upgrades', '__localVisible', '__isEnabled', '__attentionEffect', 'notificationManager')
     __sessionProvider = dependency.descriptor(IBattleSessionProvider)
 
     def __init__(self):
@@ -116,8 +120,8 @@ class BattleUpgradePanel(BattleUpgradePanelMeta, IArenaVehiclesController, IProg
                 moduleKey = R.strings.battle_royale.player_messages.moduleType.hull
             else:
                 moduleKey = R.strings.battle_royale.player_messages.moduleType.dyn(item.itemTypeName, None)
-            self.__sessionProvider.shared.messages.onShowPlayerMessageByKey('VEHICLE_UPGRADE', {'module': getTreeModuleHeader(item), 
-               'moduleType': backport.text(moduleKey()) if moduleKey else ''})
+            self.__sessionProvider.shared.messages.onShowPlayerMessageByKey('VEHICLE_UPGRADE', {'module': getTreeModuleHeader(item),
+             'moduleType': backport.text(moduleKey()) if moduleKey else ''})
             self.__playEffect(True)
         return
 
@@ -238,8 +242,9 @@ class BattleUpgradePanel(BattleUpgradePanelMeta, IArenaVehiclesController, IProg
                     titleKey = R.strings.battle_royale.upgradePanel.title.dyn(first.itemTypeName, None)
                     if titleKey is None:
                         titleKey = R.strings.battle_royale.upgradePanel.title.default
-                data = {'firstItem': self.__getModuleInfo(first, 0), 'secondItem': self.__getModuleInfo(second, 1), 
-                   'title': backport.text(titleKey())}
+                data = {'firstItem': self.__getModuleInfo(first, 0),
+                 'secondItem': self.__getModuleInfo(second, 1),
+                 'title': backport.text(titleKey())}
                 if not self.__textInited:
                     key = br_helpers.getHotKeyString(CommandMapping.CMD_UPGRADE_PANEL_SHOW)
                     data['description'] = backport.text(R.strings.battle_royale.upgradePanel.description(), key=key)
@@ -254,10 +259,11 @@ class BattleUpgradePanel(BattleUpgradePanelMeta, IArenaVehiclesController, IProg
         return
 
     def __getModuleInfo(self, moduleItem, index):
-        moduleInfo = {'header': getTreeModuleHeader(moduleItem), 'parameters': getShortListParameters(moduleItem, self._getVehicle()), 
-           'module': {'icon': getTreeModuleIcon(moduleItem), 
-                      'intCD': moduleItem.intCD, 
-                      'available': True}}
+        moduleInfo = {'header': getTreeModuleHeader(moduleItem),
+         'parameters': getShortListParameters(moduleItem, self._getVehicle()),
+         'module': {'icon': getTreeModuleIcon(moduleItem),
+                    'intCD': moduleItem.intCD,
+                    'available': True}}
         if not self.__textInited:
             moduleInfo['hotKeys'] = br_helpers.getHotKeyInfoListByIndex(index)
         return moduleInfo

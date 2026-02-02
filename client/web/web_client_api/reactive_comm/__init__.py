@@ -1,4 +1,7 @@
-import adisp, wg_async
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/web/web_client_api/reactive_comm/__init__.py
+import adisp
+import wg_async
 from gui.game_control.reactive_comm import Subscription, SubscriptionClientStatus, SubscriptionServerStatus
 from helpers import dependency
 from skeletons.gui.game_control import IReactiveCommunicationService
@@ -29,14 +32,14 @@ class ReactiveCommunicationWebApi(object):
             status = yield self.__doSubscribe(subscription)
             if not status:
                 self.__subscriptions.pop(name, None)
-            yield {'channel_name': name, 
-               'subscription_id': id(subscription), 
-               'status': {'client': status.client.value, 
-                          'server': status.server.value}}
+            yield {'channel_name': name,
+             'subscription_id': id(subscription),
+             'status': {'client': status.client.value,
+                        'server': status.server.value}}
         else:
-            yield {'channel_name': name, 
-               'status': {'client': SubscriptionClientStatus.AlreadySubscribed.value, 
-                          'server': SubscriptionServerStatus.Subscribed.value}}
+            yield {'channel_name': name,
+             'status': {'client': SubscriptionClientStatus.AlreadySubscribed.value,
+                        'server': SubscriptionServerStatus.Subscribed.value}}
         return
 
     @w2c(_SubscriptionSchema, 'unsubscribe_from_channel')
@@ -48,9 +51,9 @@ class ReactiveCommunicationWebApi(object):
             subscription = self.__subscriptions.pop(name)
             subscriptionID = id(subscription)
             success = self.__service.unsubscribeFromChannel(subscription)
-        return {'channel_name': name, 
-           'subscription_id': subscriptionID, 
-           'success': success}
+        return {'channel_name': name,
+         'subscription_id': subscriptionID,
+         'success': success}
 
     def _finiSubscriptionsHandler(self):
         self.__service.onSubscriptionClosed -= self.__onSubscriptionClosed

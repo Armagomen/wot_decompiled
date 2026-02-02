@@ -1,7 +1,10 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/collection/entitlements_cache.py
 import logging
 from collections import namedtuple
 from functools import partial
-import typing, BigWorld
+import typing
+import BigWorld
 from adisp import adisp_process
 from gui.wgcg.agate.contexts import AgateGetInventoryEntitlementsCtx
 from helpers import dependency
@@ -17,8 +20,7 @@ _INITIAL_ATTEMPTS_COUNT = 0
 _RETRY_DELAY = 1
 
 class EntitlementsCache(object):
-    __slots__ = ('__balanceCache', '__isSyncing', '__pendingEntitlementAttempts', '__isInited',
-                 '__retryCallback')
+    __slots__ = ('__balanceCache', '__isSyncing', '__pendingEntitlementAttempts', '__isInited', '__retryCallback')
     __web = dependency.descriptor(IWebController)
 
     def __init__(self):
@@ -106,8 +108,7 @@ class EntitlementsCache(object):
         return
 
     def __clearPendingEntitlements(self):
-        entitlementsToRemove = [ entitlement for entitlement, attempts in self.__pendingEntitlementAttempts.iteritems() if attempts >= _MAX_RETRY_ATTEMPTS
-                               ]
+        entitlementsToRemove = [ entitlement for entitlement, attempts in self.__pendingEntitlementAttempts.iteritems() if attempts >= _MAX_RETRY_ATTEMPTS ]
         for entitlement in entitlementsToRemove:
             self.__pendingEntitlementAttempts.pop(entitlement)
 

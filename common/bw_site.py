@@ -1,5 +1,18 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/bw_site.py
 from __future__ import print_function
-import __builtin__, os, traceback, sys, pydoc, fnmatch, logging, BigWorld, BWLogging, BWUtil, ResMgr, bwdeprecations
+import __builtin__
+import os
+import traceback
+import sys
+import pydoc
+import fnmatch
+import logging
+import BigWorld
+import BWLogging
+import BWUtil
+import ResMgr
+import bwdeprecations
 from bwdebug import NOTICE_MSG
 DEFAULT_ENCODING = 'utf-8'
 PLATFORM_SUFFIX = BWUtil.getPlatformSuffix()
@@ -7,7 +20,7 @@ PLATFORM_SUFFIX = BWUtil.getPlatformSuffix()
 class _Helper(object):
 
     def __repr__(self):
-        return 'Type help() for interactive help, or help(object) for help about object.'
+        pass
 
     def __call__(self, *args, **kwds):
         return pydoc.help(*args, **kwds)
@@ -29,9 +42,9 @@ def resMgrListDir(path, fnpat=None):
     dir = ResMgr.openSection(path)
     if dir is None:
         return
+    elif not fnpat:
+        return dir.keys()
     else:
-        if not fnpat:
-            return dir.keys()
         return [ n for n in dir.keys() if fnmatch.fnmatch(n, fnpat) ]
 
 
@@ -52,8 +65,7 @@ def getsitepackages():
         if prefix.endswith('scripts/server_common'):
             fullPath = os.path.join(prefix, 'site-packages') + '/' + PLATFORM_SUFFIX
             sitepackages.append(fullPath)
-        else:
-            sitepackages.append(os.path.join(prefix, 'site-packages'))
+        sitepackages.append(os.path.join(prefix, 'site-packages'))
 
     return sitepackages
 
@@ -97,7 +109,7 @@ def addpackage(sitedir, name, known_paths):
                     sys.path.append(dir)
                     known_paths.add(dir)
             except Exception as err:
-                print(('Error processing line {:d} of {}:\n').format(n + 1, fullname), file=sys.stderr)
+                print('Error processing line {:d} of {}:\n'.format(n + 1, fullname), file=sys.stderr)
                 for record in traceback.format_exception(*sys.exc_info()):
                     for line in record.splitlines():
                         print('  ' + line, file=sys.stderr)
@@ -121,12 +133,13 @@ def addsitedir(sitedir, known_paths=None):
     names = resMgrListDir(sitedir, '*.pth')
     if names is None or len(names) == 0:
         return
-    for name in sorted(names):
-        addpackage(sitedir, name, known_paths)
+    else:
+        for name in sorted(names):
+            addpackage(sitedir, name, known_paths)
 
-    if reset:
-        known_paths = None
-    return known_paths
+        if reset:
+            known_paths = None
+        return known_paths
 
 
 def addsitepackages(known_paths):
@@ -145,7 +158,8 @@ def setup_paths():
 
 @BWUtil.if_only_component('base', 'service', 'cell', 'database')
 def set_twisted_reactor():
-    import BWTwistedReactor, twisted.internet.default
+    import BWTwistedReactor
+    import twisted.internet.default
     twisted.internet.default = BWTwistedReactor
 
 

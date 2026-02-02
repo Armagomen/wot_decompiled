@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/VisualScriptOverrides.py
 from copy import copy
 import BigWorld
 

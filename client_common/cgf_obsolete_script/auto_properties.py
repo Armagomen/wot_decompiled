@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client_common/cgf_obsolete_script/auto_properties.py
 
 
 class AutoProperty(object):
@@ -6,10 +8,7 @@ class AutoProperty(object):
         self.fieldName = fieldName
 
     def __get__(self, instance, owner=None):
-        if instance is not None:
-            return getattr(instance, self.fieldName, None)
-        else:
-            return self
+        return getattr(instance, self.fieldName, None) if instance is not None else self
 
     def __set__(self, instance, value):
         setattr(instance, self.fieldName, value)
@@ -34,7 +33,7 @@ class LinkDescriptor(AutoProperty):
         setattr(instance, self.fieldName, value)
 
     def __call__(self, *args, **kwargs):
-        return
+        return None
 
 
 class AutoPropertyInitMetaclass(type):

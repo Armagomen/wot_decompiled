@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/vehicle_anchor_states.py
 import logging
 from Math import Vector3
 from gui.Scaleform.daapi.view.lobby.customization.shared import isSlotFilled, isItemsQuantityLimitReached, REGIONS_SLOTS
@@ -8,12 +10,12 @@ from helpers import dependency
 from skeletons.gui.customization import ICustomizationService
 from vehicle_outfit.outfit import Area
 _logger = logging.getLogger(__name__)
-_ANCHOR_SHIFT = {GUI_ITEM_TYPE.EMBLEM: 0.5, 
-   GUI_ITEM_TYPE.INSCRIPTION: 0.3}
+_ANCHOR_SHIFT = {GUI_ITEM_TYPE.EMBLEM: 0.5,
+ GUI_ITEM_TYPE.INSCRIPTION: 0.3}
 _REGION_ANCHOR_SHIFT = 0.2
 
 class StateContext(object):
-    __slots__ = ('_state', )
+    __slots__ = ('_state',)
 
     def __init__(self):
         super(StateContext, self).__init__()
@@ -33,8 +35,7 @@ class StateContext(object):
 
 
 class Anchor(StateContext):
-    __slots__ = ('__service', '__slotId', '__uid', '__anchorShift', '__position', '__direction',
-                 '__ctx')
+    __slots__ = ('__service', '__slotId', '__uid', '__anchorShift', '__position', '__direction', '__ctx')
     __service = dependency.descriptor(ICustomizationService)
 
     def __init__(self, slotId, uid, position, direction):
@@ -112,7 +113,7 @@ class Anchor(StateContext):
 
 
 class BaseState(object):
-    __slots__ = ('_context', )
+    __slots__ = ('_context',)
 
     def __init__(self, context):
         self._context = context
@@ -310,4 +311,4 @@ def getAnchorShift(slotId, direction, service=None):
         slotHeight = slotWidth * SLOT_ASPECT_RATIO.get(slotId.slotType, 0)
         shift = slotHeight * _ANCHOR_SHIFT.get(slotId.slotType, 0)
         return anchorParams.location.up * shift
-    return
+    return None

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/framework/__init__.py
 from collections import namedtuple
 from frameworks.wulf import WindowLayer
 import gui.Scaleform.framework.ScopeTemplates
@@ -19,17 +21,17 @@ class COMMON_VIEW_ALIAS(object):
 class GroupedViewSettings(namedtuple('GroupedViewSettings', 'alias clazz url layer group event scope cacheable containers canDrag canClose isModal isCentered flags')):
 
     def getDAAPIObject(self):
-        return {'alias': self.alias, 
-           'url': self.url, 
-           'layer': self.layer, 
-           'event': self.event, 
-           'group': self.group, 
-           'isGrouped': self.group is not None, 
-           'canDrag': self.canDrag, 
-           'canClose': self.canClose, 
-           'isModal': self.isModal, 
-           'isCentered': self.isCentered, 
-           'flags': self.flags}
+        return {'alias': self.alias,
+         'url': self.url,
+         'layer': self.layer,
+         'event': self.event,
+         'group': self.group,
+         'isGrouped': self.group is not None,
+         'canDrag': self.canDrag,
+         'canClose': self.canClose,
+         'isModal': self.isModal,
+         'isCentered': self.isCentered,
+         'flags': self.flags}
 
     def replaceSettings(self, settings):
         return self._replace(**settings)
@@ -38,8 +40,20 @@ class GroupedViewSettings(namedtuple('GroupedViewSettings', 'alias clazz url lay
         return self
 
 
-GroupedViewSettings.__new__.__defaults__ = (
- None, None, None, 0, None, None, None, False, None, True, True, False, True, 0)
+GroupedViewSettings.__new__.__defaults__ = (None,
+ None,
+ None,
+ 0,
+ None,
+ None,
+ None,
+ False,
+ None,
+ True,
+ True,
+ False,
+ True,
+ 0)
 
 class ViewSettings(GroupedViewSettings):
 
@@ -48,8 +62,19 @@ class ViewSettings(GroupedViewSettings):
         return GroupedViewSettings.__new__(cls, alias, clazz, url, layer, None, event, scope, cacheable, containers, canDrag, canClose, isModal, isCentered, flags)
 
 
-ViewSettings.__new__.__defaults__ = (
- None, None, None, 0, None, None, False, None, True, True, False, True, 0)
+ViewSettings.__new__.__defaults__ = (None,
+ None,
+ None,
+ 0,
+ None,
+ None,
+ False,
+ None,
+ True,
+ True,
+ False,
+ True,
+ 0)
 
 class ComponentSettings(GroupedViewSettings):
 
@@ -65,10 +90,7 @@ class ContainerSettings(namedtuple('ContainerSettings', 'type clazz')):
 
 
 ContainerSettings.__new__.__defaults__ = (None, None)
-g_entitiesFactories = EntitiesFactories((
- DAAPIModuleFactory((WindowLayer.UNDEFINED,)),
- ViewFactory((
-  WindowLayer.HIDDEN_SERVICE_LAYOUT,
+g_entitiesFactories = EntitiesFactories((DAAPIModuleFactory((WindowLayer.UNDEFINED,)), ViewFactory((WindowLayer.HIDDEN_SERVICE_LAYOUT,
   WindowLayer.MARKER,
   WindowLayer.VIEW,
   WindowLayer.SUB_VIEW,

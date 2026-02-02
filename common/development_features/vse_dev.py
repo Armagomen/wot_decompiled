@@ -1,4 +1,8 @@
-import fnmatch, logging, os
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/development_features/vse_dev.py
+import fnmatch
+import logging
+import os
 from functools import wraps
 import VSE
 from visual_script.qa_blocks import Assert
@@ -38,8 +42,8 @@ def collectPlans(vseDir, testDir, include, exclude=None):
     for root, dirs, files in os.walk(os.path.join(vseDir, testDir)):
         for fn in files:
             relPath = os.path.relpath(os.path.join(root, fn), vseDir)
-            included = any(fnmatch.fnmatch(relPath, '*' + p) for p in include)
-            excluded = exclude and any(fnmatch.fnmatch(relPath, '*' + p) for p in exclude)
+            included = any((fnmatch.fnmatch(relPath, '*' + p) for p in include))
+            excluded = exclude and any((fnmatch.fnmatch(relPath, '*' + p) for p in exclude))
             if included and not excluded:
                 collected.append(relPath)
 

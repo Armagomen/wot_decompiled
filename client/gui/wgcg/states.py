@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/wgcg/states.py
 from collections import namedtuple
 from functools import partial
 import BigWorld
@@ -33,7 +35,7 @@ class WebControllerStates(CONST_CONTAINER):
 
 
 AccessTokenData = namedtuple('AccessTokenData', ('accessToken', 'expiresAt'))
-_RELOGIN_CODES = (401, )
+_RELOGIN_CODES = (401,)
 
 @ReprInjector.simple(('getStateID', 'state'))
 class _State(object):
@@ -67,13 +69,10 @@ class _State(object):
         return False
 
     def getWebRequester(self):
-        return
+        return None
 
     def compare(self, state):
-        if state is not None:
-            return self.getStateID() == state.getStateID()
-        else:
-            return False
+        return self.getStateID() == state.getStateID() if state is not None else False
 
     def update(self):
         self._changeState(self._getNextState())
@@ -192,10 +191,7 @@ class _WebState(_State):
         return self.__gateUrl
 
     def compare(self, state):
-        if state is not None and isinstance(state, _WebState):
-            return super(_WebState, self).compare(state) and state.__gateUrl == self.__gateUrl
-        else:
-            return super(_WebState, self).compare(state)
+        return super(_WebState, self).compare(state) and state.__gateUrl == self.__gateUrl if state is not None and isinstance(state, _WebState) else super(_WebState, self).compare(state)
 
     @adisp_async
     @adisp_process
@@ -309,8 +305,7 @@ class AvailableState(_WebState):
     @adisp_process
     def _sendRequest(self, ctx, callback, allowDelay=True):
         if ctx.isAuthorizationRequired() and not self.isLoggedOn():
-            self.__waitingRequests.append((
-             ctx,
+            self.__waitingRequests.append((ctx,
              callback,
              WgcgRequestResponse(ResponseCodes.AUTHENTIFICATION_ERROR, 'The user is not authorized.', None),
              allowDelay))
@@ -328,11 +323,17 @@ class AvailableState(_WebState):
                 callback(result)
             elif ctx.getRequestType() != WebRequestDataType.LOGIN and resultCode == ResponseCodes.AUTHENTIFICATION_ERROR:
                 LOG_WARNING('Request requires user to be authenticated. Will try to login and resend the request.', ctx)
-                self.__waitingRequests.append((ctx, callback, result, allowDelay))
+                self.__waitingRequests.append((ctx,
+                 callback,
+                 result,
+                 allowDelay))
                 self.login()
             elif ctx.getRequestType() != WebRequestDataType.LOGIN and resultCode in _RELOGIN_CODES:
                 LOG_WARNING('Failed to do WGCG request. Need to relogin.', ctx)
-                self.__waitingRequests.append((ctx, callback, result, allowDelay))
+                self.__waitingRequests.append((ctx,
+                 callback,
+                 result,
+                 allowDelay))
                 self.__loginState = LOGIN_STATE.LOGGED_OFF
                 self.login()
             else:

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/gui/Scaleform/meta/ChannelComponentMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class ChannelComponentMeta(BaseDAAPIComponent):
@@ -18,21 +20,16 @@ class ChannelComponentMeta(BaseDAAPIComponent):
         self._printOverrideError('onLinkClick')
 
     def as_notifyInfoChangedS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_notifyInfoChanged()
+        return self.flashObject.as_notifyInfoChanged() if self._isDAAPIInited() else None
 
     def as_setJoinedS(self, flag):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setJoined(flag)
+        return self.flashObject.as_setJoined(flag) if self._isDAAPIInited() else None
 
     def as_addMessageS(self, message):
-        if self._isDAAPIInited():
-            return self.flashObject.as_addMessage(message)
+        return self.flashObject.as_addMessage(message) if self._isDAAPIInited() else None
 
     def as_getLastUnsentMessageS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_getLastUnsentMessage()
+        return self.flashObject.as_getLastUnsentMessage() if self._isDAAPIInited() else None
 
     def as_setLastUnsentMessageS(self, message):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setLastUnsentMessage(message)
+        return self.flashObject.as_setLastUnsentMessage(message) if self._isDAAPIInited() else None

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/clans/invites/ClanInvitesView.py
 from gui.Scaleform.genConsts.CLANS_ALIASES import CLANS_ALIASES
 from gui.Scaleform.locale.CLANS import CLANS
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
@@ -66,29 +68,23 @@ class ClanInvitesView(ClanInvitesViewMeta):
             return (('personalRating', False),)
         if self.currentFilterName == CLANS_ALIASES.INVITE_WINDOW_FILTER_ACTUAL or self.currentFilterName == CLANS_ALIASES.INVITE_WINDOW_FILTER_EXPIRED:
             return (('sent', False),)
-        if self.currentFilterName == CLANS_ALIASES.INVITE_WINDOW_FILTER_PROCESSED:
-            return (('status', False),)
-        return (('status', False),)
+        return (('status', False),) if self.currentFilterName == CLANS_ALIASES.INVITE_WINDOW_FILTER_PROCESSED else (('status', False),)
 
     def _getSecondSortFields(self):
-        if self.currentFilterName == CLANS_ALIASES.INVITE_WINDOW_FILTER_PROCESSED:
-            return ('updatedAt', )
-        return ('createdAt', )
+        return ('updatedAt',) if self.currentFilterName == CLANS_ALIASES.INVITE_WINDOW_FILTER_PROCESSED else ('createdAt',)
 
     def _makeFilters(self):
-        return [
-         {'alias': CLANS_ALIASES.INVITE_WINDOW_FILTER_ALL, 
-            'text': _ms(CLANS.CLANINVITESWINDOW_FILTERS_ALL, value=self.formatInvitesCount(self.allInvitesPaginator))},
-         {'alias': CLANS_ALIASES.INVITE_WINDOW_FILTER_ACTUAL, 
-            'text': _ms(CLANS.CLANINVITESWINDOW_FILTERS_ACTUAL, value=self.formatInvitesCount(self.actualInvitesPaginator))},
-         {'alias': CLANS_ALIASES.INVITE_WINDOW_FILTER_EXPIRED, 
-            'text': _ms(CLANS.CLANINVITESWINDOW_FILTERS_EXPIRED, value=self.formatInvitesCount(self.expiredInvitesPaginator))},
-         {'alias': CLANS_ALIASES.INVITE_WINDOW_FILTER_PROCESSED, 
-            'text': _ms(CLANS.CLANINVITESWINDOW_FILTERS_HASANSWER, value=self.formatInvitesCount(self.processedInvitesPaginator))}]
+        return [{'alias': CLANS_ALIASES.INVITE_WINDOW_FILTER_ALL,
+          'text': _ms(CLANS.CLANINVITESWINDOW_FILTERS_ALL, value=self.formatInvitesCount(self.allInvitesPaginator))},
+         {'alias': CLANS_ALIASES.INVITE_WINDOW_FILTER_ACTUAL,
+          'text': _ms(CLANS.CLANINVITESWINDOW_FILTERS_ACTUAL, value=self.formatInvitesCount(self.actualInvitesPaginator))},
+         {'alias': CLANS_ALIASES.INVITE_WINDOW_FILTER_EXPIRED,
+          'text': _ms(CLANS.CLANINVITESWINDOW_FILTERS_EXPIRED, value=self.formatInvitesCount(self.expiredInvitesPaginator))},
+         {'alias': CLANS_ALIASES.INVITE_WINDOW_FILTER_PROCESSED,
+          'text': _ms(CLANS.CLANINVITESWINDOW_FILTERS_HASANSWER, value=self.formatInvitesCount(self.processedInvitesPaginator))}]
 
     def _makeHeaders(self):
-        return [
-         self._packHeaderColumnData('userName', CLANS.CLANINVITESWINDOW_TABLE_USERNAME, 225, CLANS.CLANINVITESWINDOW_TOOLTIPS_TABLE_INVITES_USERNAME, textAlign='left', defaultSortDirection='ascending'),
+        return [self._packHeaderColumnData('userName', CLANS.CLANINVITESWINDOW_TABLE_USERNAME, 225, CLANS.CLANINVITESWINDOW_TOOLTIPS_TABLE_INVITES_USERNAME, textAlign='left', defaultSortDirection='ascending'),
          self._packHeaderColumnData('message', '', 73, CLANS.CLANINVITESWINDOW_TOOLTIPS_TABLE_INVITES_MESSAGE, RES_ICONS.MAPS_ICONS_CLANS_INVITESWINDOW_ICON_STATISTICS_CLAN_INVITE_098),
          self._packHeaderColumnData('personalRating', '', 98, CLANS.CLANINVITESWINDOW_TOOLTIPS_TABLE_INVITES_PERSONALRATING, RES_ICONS.MAPS_ICONS_STATISTIC_RATING24),
          self._packHeaderColumnData('battlesCount', '', 98, CLANS.CLANINVITESWINDOW_TOOLTIPS_TABLE_INVITES_BATTLESCOUNT, RES_ICONS.MAPS_ICONS_STATISTIC_BATTLES24),
@@ -101,23 +97,22 @@ class ClanInvitesView(ClanInvitesViewMeta):
 class InviteDataProvider(ClanInvitesAbstractDataProvider):
 
     def _makeVO(self, item, extra):
-        return {'dbID': item.getDbID(), 
-           'userInfo': {'userName': formatField(getter=item.getAccountName), 
-                        'dbID': item.getAccountDbID()}, 
-           'personalRating': formatField(getter=item.getPersonalRating, formatter=backport.getIntegralFormat), 
-           'battlesCount': formatField(getter=item.getBattlesCount, formatter=backport.getIntegralFormat), 
-           'wins': formatField(getter=item.getBattlesPerformanceAvg, formatter=lambda value: backport.getNiceNumberFormat(value) + '%'), 
-           'awgExp': formatField(getter=item.getBattleXpAvg, formatter=backport.getIntegralFormat), 
-           'status': {'text': self._makeInviteStateString(item), 
-                      'tooltip': self._makeTooltip(body=self._makeRequestTooltip(status=item.getStatus(), user=formatField(getter=item.getSenderName), date=formatField(getter=item.getUpdatedAt, formatter=formatters.formatShortDateShortTimeString)))}, 
-           'canShowContextMenu': True, 
-           'messageTooltip': self._makeTooltip(body=item.getComment() if isValueAvailable(getter=item.getComment) else str()), 
-           'sent': formatField(getter=item.getCreatedAt, formatter=formatters.formatShortDateShortTimeString)}
+        return {'dbID': item.getDbID(),
+         'userInfo': {'userName': formatField(getter=item.getAccountName),
+                      'dbID': item.getAccountDbID()},
+         'personalRating': formatField(getter=item.getPersonalRating, formatter=backport.getIntegralFormat),
+         'battlesCount': formatField(getter=item.getBattlesCount, formatter=backport.getIntegralFormat),
+         'wins': formatField(getter=item.getBattlesPerformanceAvg, formatter=lambda value: backport.getNiceNumberFormat(value) + '%'),
+         'awgExp': formatField(getter=item.getBattleXpAvg, formatter=backport.getIntegralFormat),
+         'status': {'text': self._makeInviteStateString(item),
+                    'tooltip': self._makeTooltip(body=self._makeRequestTooltip(status=item.getStatus(), user=formatField(getter=item.getSenderName), date=formatField(getter=item.getUpdatedAt, formatter=formatters.formatShortDateShortTimeString)))},
+         'canShowContextMenu': True,
+         'messageTooltip': self._makeTooltip(body=item.getComment() if isValueAvailable(getter=item.getComment) else str()),
+         'sent': formatField(getter=item.getCreatedAt, formatter=formatters.formatShortDateShortTimeString)}
 
     def _makeRequestTooltip(self, status, date, user=None):
         if status == CLAN_INVITE_STATES.ACCEPTED:
             return text_styles.concatStylesToMultiLine(text_styles.standard(_ms(CLANS.CLANINVITESWINDOW_TOOLTIPS_INVITE_INVITEACCEPTED)), text_styles.main(date), text_styles.main(''), text_styles.standard(_ms(CLANS.CLANINVITESWINDOW_TOOLTIPS_INVITE_BYUSER)), text_styles.stats(user))
         if status == CLAN_INVITE_STATES.DECLINED or status == CLAN_INVITE_STATES.DECLINED_RESENT:
             return text_styles.concatStylesToMultiLine(text_styles.standard(_ms(CLANS.CLANINVITESWINDOW_TOOLTIPS_INVITE_INVITEDECLINED)), text_styles.main(date), text_styles.main(''), text_styles.standard(_ms(CLANS.CLANINVITESWINDOW_TOOLTIPS_INVITE_BYUSER)), text_styles.stats(user))
-        if status == CLAN_INVITE_STATES.ACTIVE or status == CLAN_INVITE_STATES.EXPIRED or status == CLAN_INVITE_STATES.EXPIRED_RESENT:
-            return text_styles.concatStylesToMultiLine(text_styles.standard(_ms(CLANS.CLANINVITESWINDOW_TOOLTIPS_INVITE_INVITESENT)), text_styles.main(date), text_styles.main(''), text_styles.standard(_ms(CLANS.CLANINVITESWINDOW_TOOLTIPS_INVITE_SENDER)), text_styles.stats(user))
+        return text_styles.concatStylesToMultiLine(text_styles.standard(_ms(CLANS.CLANINVITESWINDOW_TOOLTIPS_INVITE_INVITESENT)), text_styles.main(date), text_styles.main(''), text_styles.standard(_ms(CLANS.CLANINVITESWINDOW_TOOLTIPS_INVITE_SENDER)), text_styles.stats(user)) if status == CLAN_INVITE_STATES.ACTIVE or status == CLAN_INVITE_STATES.EXPIRED or status == CLAN_INVITE_STATES.EXPIRED_RESENT else None

@@ -1,4 +1,7 @@
-import logging, time
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: server_side_replay/scripts/client/server_side_replay/gui/impl/lobby/pages/best_replays_page.py
+import logging
+import time
 from typing import TYPE_CHECKING, Optional, List
 import BigWorld
 from BattleReplay import BattleReplay
@@ -32,17 +35,17 @@ if TYPE_CHECKING:
     from server_side_replay.gui.wgcg.data_wrappers import server_replays
 _logger = logging.getLogger(__name__)
 TOP_REPLAYS_COUNT = 3
-_DataToModelStatParam = {DataStatParams.DAMAGE_ASSISTED: StatParams.DAMAGEASSISTED, 
-   DataStatParams.DAMAGE_DEALT: StatParams.DAMAGEDEALT, 
-   DataStatParams.DAMAGE_BLOCKED: StatParams.DAMAGEBLOCKEDBYARMOR, 
-   DataStatParams.EXP: StatParams.EARNEDXP, 
-   DataStatParams.KILLS: StatParams.KILLS, 
-   DataStatParams.MARK_OF_MASTERY: StatParams.MARKSOFMASTERY}
+_DataToModelStatParam = {DataStatParams.DAMAGE_ASSISTED: StatParams.DAMAGEASSISTED,
+ DataStatParams.DAMAGE_DEALT: StatParams.DAMAGEDEALT,
+ DataStatParams.DAMAGE_BLOCKED: StatParams.DAMAGEBLOCKEDBYARMOR,
+ DataStatParams.EXP: StatParams.EARNEDXP,
+ DataStatParams.KILLS: StatParams.KILLS,
+ DataStatParams.MARK_OF_MASTERY: StatParams.MARKSOFMASTERY}
 _ModelToDataStatParam = {v:k for k, v in _DataToModelStatParam.items()}
-_DataToModelMarkOfMastery = {MarkOfMasteryAchievement.MARK_OF_MASTERY.MASTER: MarksOfMastery.MASTER, 
-   MarkOfMasteryAchievement.MARK_OF_MASTERY.STEP_3: MarksOfMastery.THIRD, 
-   MarkOfMasteryAchievement.MARK_OF_MASTERY.STEP_2: MarksOfMastery.SECOND, 
-   MarkOfMasteryAchievement.MARK_OF_MASTERY.STEP_1: MarksOfMastery.FIRST}
+_DataToModelMarkOfMastery = {MarkOfMasteryAchievement.MARK_OF_MASTERY.MASTER: MarksOfMastery.MASTER,
+ MarkOfMasteryAchievement.MARK_OF_MASTERY.STEP_3: MarksOfMastery.THIRD,
+ MarkOfMasteryAchievement.MARK_OF_MASTERY.STEP_2: MarksOfMastery.SECOND,
+ MarkOfMasteryAchievement.MARK_OF_MASTERY.STEP_1: MarksOfMastery.FIRST}
 
 class BestReplaysPage(PageSubModelPresenter):
     __itemsCache = dependency.descriptor(IItemsCache)
@@ -86,39 +89,27 @@ class BestReplaysPage(PageSubModelPresenter):
 
     def createPopOver(self, event):
         if event.contentID == R.views.server_side_replay.lobby.popovers.ReplaysFilterPopover():
-            content = ReplaysFilterPopoverView((
-             getVehicleTypeSettings(),
-             getNationSettings(),
-             getVehicleTierSettings()), self.__onPopoverStateUpdated, self.__filterState, True, self.hasAppliedFilters)
+            content = ReplaysFilterPopoverView((getVehicleTypeSettings(), getNationSettings(), getVehicleTierSettings()), self.__onPopoverStateUpdated, self.__filterState, True, self.hasAppliedFilters)
             window = PopOverWindow(event, content, self.getParentWindow(), WindowLayer.TOP_WINDOW)
             window.load()
             return window
         super(BestReplaysPage, self).createPopOver(event)
 
     def _getEvents(self):
-        return super(BestReplaysPage, self)._getEvents() + (
-         (
-          self.__serverReplayProvider.onDataReceived, self.__onDataReceived),
-         (
-          self.__serverReplayProvider.onDataFailed, self.__onDataFailed),
-         (
-          self.viewModel.onResetFilter, self.__onResetFilter),
-         (
-          self.viewModel.onLike, self.__onLike),
-         (
-          self.viewModel.onSort, self.__onSort),
-         (
-          self.viewModel.onRefresh, self.__onRefresh),
-         (
-          self.viewModel.onWatch, self.__onWatch),
-         (
-          self.viewModel.onTopReplaysWatch, self.__onTopReplaysWatch))
+        return super(BestReplaysPage, self)._getEvents() + ((self.__serverReplayProvider.onDataReceived, self.__onDataReceived),
+         (self.__serverReplayProvider.onDataFailed, self.__onDataFailed),
+         (self.viewModel.onResetFilter, self.__onResetFilter),
+         (self.viewModel.onLike, self.__onLike),
+         (self.viewModel.onSort, self.__onSort),
+         (self.viewModel.onRefresh, self.__onRefresh),
+         (self.viewModel.onWatch, self.__onWatch),
+         (self.viewModel.onTopReplaysWatch, self.__onTopReplaysWatch))
 
     def __onPopoverStateUpdated(self, clearCallback=False):
         _logger.warning('Popover updated')
         if clearCallback:
             self.__callback = None
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             self.__updateFilter(tx)
             if self.__loadingData:
                 if self.__callback is None:
@@ -135,20 +126,20 @@ class BestReplaysPage(PageSubModelPresenter):
                 model.setState(State.SUCCESS)
                 model.setIsLoading(False)
             return
-        bestReplaysObj = self.__serverReplayProvider.getBestReplays(useFake=False, vehicleType=list(self.__filterState[ToggleGroupType.VEHICLETYPE.value]), vehicleLevel=list(self.__filterState[ToggleGroupType.VEHICLETIER.value]), nation=list(self.__filterState[ToggleGroupType.NATION.value]), vehicleCDs=list(self.__filterState[ToggleGroupType.VEHICLECD.value]), fromDate=time.time() - self.__filterState.lastDays * 24 * 60 * 60, isPrimeTime=self.__filterState.isPrimeTime, sortBy=_ModelToDataStatParam.get(self.__selectedSortBy, StatParams.EARNEDXP.value))
-        if bestReplaysObj.isWaitingResponse and DataNames.BEST_REPLAYS not in self.__loadingData:
-            self.__loadingData.append(DataNames.BEST_REPLAYS)
-        topReplaysObj = self.__serverReplayProvider.getTopReplays(useFake=False)
-        if topReplaysObj.isWaitingResponse and DataNames.TOP_REPLAYS not in self.__loadingData:
-            self.__loadingData.append(DataNames.TOP_REPLAYS)
-        if topReplaysObj.data:
-            self.__cachedTopReplaysData = topReplaysObj.data
-        if bestReplaysObj.isWaitingResponse and bestReplaysObj.data is None or topReplaysObj.isWaitingResponse:
-            model.setState(State.INITIAL)
-        if self.__loadingData:
-            model.setIsLoading(True)
-            return
         else:
+            bestReplaysObj = self.__serverReplayProvider.getBestReplays(useFake=False, vehicleType=list(self.__filterState[ToggleGroupType.VEHICLETYPE.value]), vehicleLevel=list(self.__filterState[ToggleGroupType.VEHICLETIER.value]), nation=list(self.__filterState[ToggleGroupType.NATION.value]), vehicleCDs=list(self.__filterState[ToggleGroupType.VEHICLECD.value]), fromDate=time.time() - self.__filterState.lastDays * 24 * 60 * 60, isPrimeTime=self.__filterState.isPrimeTime, sortBy=_ModelToDataStatParam.get(self.__selectedSortBy, StatParams.EARNEDXP.value))
+            if bestReplaysObj.isWaitingResponse and DataNames.BEST_REPLAYS not in self.__loadingData:
+                self.__loadingData.append(DataNames.BEST_REPLAYS)
+            topReplaysObj = self.__serverReplayProvider.getTopReplays(useFake=False)
+            if topReplaysObj.isWaitingResponse and DataNames.TOP_REPLAYS not in self.__loadingData:
+                self.__loadingData.append(DataNames.TOP_REPLAYS)
+            if topReplaysObj.data:
+                self.__cachedTopReplaysData = topReplaysObj.data
+            if bestReplaysObj.isWaitingResponse and bestReplaysObj.data is None or topReplaysObj.isWaitingResponse:
+                model.setState(State.INITIAL)
+            if self.__loadingData:
+                model.setIsLoading(True)
+                return
             self.__cachedBestReplaysData = bestReplaysObj.data
             if self.__cachedBestReplaysData is None or self.__cachedTopReplaysData is None:
                 model.setState(State.ERROR)
@@ -207,7 +198,7 @@ class BestReplaysPage(PageSubModelPresenter):
         except:
             vehicle = self.__itemsCache.items.getItemByCD(13377)
             fillVehicleModel(replayModel.vehicleInfo, vehicle)
-            replayModel.vehicleInfo.setName(('UnknownVeihlce{}').format(replayInfo.vehicle_cd))
+            replayModel.vehicleInfo.setName('UnknownVeihlce{}'.format(replayInfo.vehicle_cd))
 
         playerModel = replayModel.playerInfo
         playerModel.setSpaID(replayInfo.spa_id or 0)
@@ -277,7 +268,7 @@ class BestReplaysPage(PageSubModelPresenter):
     def __onSort(self, param):
         _logger.info('__onSort: %s', param)
         self.__selectedSortBy = StatParams(param)
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setSelectedSorting(self.__selectedSortBy)
             self.__updateState(model=tx)
 
@@ -295,13 +286,13 @@ class BestReplaysPage(PageSubModelPresenter):
         elif dataName == DataNames.REPLAY_LINK:
             self.__playReplay(data)
             return
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             self.__updateState(loadedData=dataName, model=tx)
             if all((self.__cachedBestReplaysData, self.__cachedTopReplaysData)):
                 self.__updateReplays(self.__cachedBestReplaysData, self.__cachedTopReplaysData, model=tx)
 
     def __onDataFailed(self, dataName):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             if dataName in self.__loadingData:
                 self.__loadingData.remove(dataName)
                 if not self.__loadingData:

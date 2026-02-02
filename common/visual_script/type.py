@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/visual_script/type.py
 from inspect import getmembers
 from enumerations import Enumeration
 from enum import IntEnum
@@ -33,23 +35,23 @@ class VScriptType(object):
 
     @classmethod
     def vs_toString(cls, value):
-        return ''
+        pass
 
     @classmethod
     def vs_fromString(cls, str_):
-        return
+        return None
 
     @classmethod
     def vs_connectionColor(cls):
-        return 7189746
+        pass
 
     @classmethod
     def vs_iconConnected(cls):
-        return ':vse/slots/default_connected'
+        pass
 
     @classmethod
     def vs_iconDisconnected(cls):
-        return ':vse/slots/default_disconnected'
+        pass
 
 
 class VScriptEnum(object):

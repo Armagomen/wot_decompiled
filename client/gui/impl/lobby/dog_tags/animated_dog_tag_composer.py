@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/dog_tags/animated_dog_tag_composer.py
 import logging
 from collections import defaultdict
 import typing
@@ -60,8 +62,7 @@ class AnimatedDogTagComposer(DogTagComposerLobby):
             equippedBackground = equippedDogTag.getComponentByType(ComponentViewType.BACKGROUND)
             equippedEngraving = equippedDogTag.getComponentByType(ComponentViewType.ENGRAVING)
             if equippedBackground.componentDefinition.purpose == ComponentPurpose.COUPLED:
-                components = [
-                 equippedBackground.compId, equippedEngraving.compId]
+                components = [equippedBackground.compId, equippedEngraving.compId]
             else:
                 components = componentConfig.getDefaultAnimatedDogTag()
         return self._dtHelper.getDisplayableDTForComponents(components, clanProfile)
@@ -70,8 +71,6 @@ class AnimatedDogTagComposer(DogTagComposerLobby):
         for index, value in enumerate(itemsArray):
             if value.background.getId() == backgroundId and value.engraving.getId() == engravingId:
                 return index
-
-        return 0
 
     def fillRequiredAchievement(self, model, unlockKey):
         achievementCategory, achievementId, achievementStage = unlockKey
@@ -87,8 +86,7 @@ class AnimatedDogTagComposer(DogTagComposerLobby):
                 continue
             if comp.viewType == ComponentViewType.BACKGROUND:
                 componentsCouples[comp.componentId][ComponentViewType.BACKGROUND] = comp
-            else:
-                componentsCouples[comp.coupledComponentId][ComponentViewType.ENGRAVING] = comp
+            componentsCouples[comp.coupledComponentId][ComponentViewType.ENGRAVING] = comp
 
         for couple in [ componentsCouples[key] for key in sorted(componentsCouples.iterkeys()) ]:
             backgroundId = couple[ComponentViewType.BACKGROUND].componentId

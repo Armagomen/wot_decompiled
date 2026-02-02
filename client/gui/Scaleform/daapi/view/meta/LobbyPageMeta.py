@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/LobbyPageMeta.py
 from gui.Scaleform.framework.entities.View import View
 
 class LobbyPageMeta(View):
@@ -18,25 +20,19 @@ class LobbyPageMeta(View):
         self._printOverrideError('setRequiresOldStyle')
 
     def as_showHelpLayoutS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showHelpLayout()
+        return self.flashObject.as_showHelpLayout() if self._isDAAPIInited() else None
 
     def as_closeHelpLayoutS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_closeHelpLayout()
+        return self.flashObject.as_closeHelpLayout() if self._isDAAPIInited() else None
 
     def as_showWaitingS(self, message):
-        if self._isDAAPIInited():
-            return self.flashObject.as_showWaiting(message)
+        return self.flashObject.as_showWaiting(message) if self._isDAAPIInited() else None
 
     def as_hideWaitingS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_hideWaiting()
+        return self.flashObject.as_hideWaiting() if self._isDAAPIInited() else None
 
     def as_setSubContainerItemsVisibilityS(self, isVisible):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setSubContainerItemsVisibility(isVisible)
+        return self.flashObject.as_setSubContainerItemsVisibility(isVisible) if self._isDAAPIInited() else None
 
     def as_setWalletStatusS(self, walletStatus):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setWalletStatus(walletStatus)
+        return self.flashObject.as_setWalletStatus(walletStatus) if self._isDAAPIInited() else None

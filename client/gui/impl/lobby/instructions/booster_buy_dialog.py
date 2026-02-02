@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/instructions/booster_buy_dialog.py
 from CurrentVehicle import g_currentVehicle
 from gui import SystemMessages
 from gui.impl.gen import R
@@ -28,7 +30,7 @@ class BoosterBuyWindowView(DialogBuySellItemBaseView):
         super(BoosterBuyWindowView, self)._onInventoryResync(*args, **kwargs)
         shortage = self._stats.money.getShortage(self._getItemPrice().price)
         maxCount = self.__calculateMaxCount()
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setItemMaxCount(maxCount)
             model.setIsAcceptDisabled(bool(shortage))
             model.setItemCount(min(model.getItemCount(), maxCount))

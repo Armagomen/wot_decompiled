@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/BattleStatisticDataControllerMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class BattleStatisticDataControllerMeta(BaseDAAPIComponent):
@@ -6,85 +8,64 @@ class BattleStatisticDataControllerMeta(BaseDAAPIComponent):
         self._printOverrideError('onRefreshComplete')
 
     def as_refreshS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_refresh()
+        return self.flashObject.as_refresh() if self._isDAAPIInited() else None
 
     def as_resetFragsS(self):
-        if self._isDAAPIInited():
-            return self.flashObject.as_resetFrags()
+        return self.flashObject.as_resetFrags() if self._isDAAPIInited() else None
 
     def as_setVehiclesDataS(self, vehData):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setVehiclesData(vehData)
+        return self.flashObject.as_setVehiclesData(vehData) if self._isDAAPIInited() else None
 
     def as_addVehiclesInfoS(self, vehInfo):
-        if self._isDAAPIInited():
-            return self.flashObject.as_addVehiclesInfo(vehInfo)
+        return self.flashObject.as_addVehiclesInfo(vehInfo) if self._isDAAPIInited() else None
 
     def as_updateVehiclesInfoS(self, upVehInfo):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateVehiclesInfo(upVehInfo)
+        return self.flashObject.as_updateVehiclesInfo(upVehInfo) if self._isDAAPIInited() else None
 
     def as_updateVehicleStatusS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateVehicleStatus(data)
+        return self.flashObject.as_updateVehicleStatus(data) if self._isDAAPIInited() else None
 
     def as_setFragsS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setFrags(data)
+        return self.flashObject.as_setFrags(data) if self._isDAAPIInited() else None
 
     def as_updateVehiclesStatsS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateVehiclesStats(data)
+        return self.flashObject.as_updateVehiclesStats(data) if self._isDAAPIInited() else None
 
     def as_updatePlayerStatusS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updatePlayerStatus(data)
+        return self.flashObject.as_updatePlayerStatus(data) if self._isDAAPIInited() else None
 
     def as_setArenaInfoS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setArenaInfo(data)
+        return self.flashObject.as_setArenaInfo(data) if self._isDAAPIInited() else None
 
     def as_setQuestStatusS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setQuestStatus(data)
+        return self.flashObject.as_setQuestStatus(data) if self._isDAAPIInited() else None
 
     def as_setUserTagsS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setUserTags(data)
+        return self.flashObject.as_setUserTags(data) if self._isDAAPIInited() else None
 
     def as_updateUserTagsS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateUserTags(data)
+        return self.flashObject.as_updateUserTags(data) if self._isDAAPIInited() else None
 
     def as_updateInvitationsStatusesS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateInvitationsStatuses(data)
+        return self.flashObject.as_updateInvitationsStatuses(data) if self._isDAAPIInited() else None
 
     def as_setPersonalStatusS(self, bitmask):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setPersonalStatus(bitmask)
+        return self.flashObject.as_setPersonalStatus(bitmask) if self._isDAAPIInited() else None
 
     def as_updatePersonalStatusS(self, added=0, removed=0):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updatePersonalStatus(added, removed)
+        return self.flashObject.as_updatePersonalStatus(added, removed) if self._isDAAPIInited() else None
 
     def as_setQuestsInfoS(self, data, setForce):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setQuestsInfo(data, setForce)
+        return self.flashObject.as_setQuestsInfo(data, setForce) if self._isDAAPIInited() else None
 
     def as_updateQuestProgressS(self, condID, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateQuestProgress(condID, data)
+        return self.flashObject.as_updateQuestProgress(condID, data) if self._isDAAPIInited() else None
 
     def as_updateQuestHeaderProgressS(self, headerProgress):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateQuestHeaderProgress(headerProgress)
+        return self.flashObject.as_updateQuestHeaderProgress(headerProgress) if self._isDAAPIInited() else None
 
     def as_updateTriggeredChatCommandsS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateTriggeredChatCommands(data)
+        return self.flashObject.as_updateTriggeredChatCommands(data) if self._isDAAPIInited() else None
 
     def as_updatePriorityChatCommandS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updatePriorityChatCommand(data)
+        return self.flashObject.as_updatePriorityChatCommand(data) if self._isDAAPIInited() else None

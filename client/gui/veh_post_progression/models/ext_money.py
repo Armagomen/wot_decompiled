@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/veh_post_progression/models/ext_money.py
 from gui.shared.gui_items import formatMoneyError, GUI_ITEM_ECONOMY_CODE
 from gui.shared.money import Currency, Money
 from gui.Scaleform.genConsts.CURRENCIES_CONSTANTS import CURRENCIES_CONSTANTS
@@ -19,8 +21,7 @@ class ExtendedGuiItemEconomyCode(GUI_ITEM_ECONOMY_CODE):
     NOT_ENOUGH_XP = formatMoneyError(ExtendedCurrency.XP)
     NOT_ENOUGH_VEH_XP = formatMoneyError(ExtendedCurrency.VEH_XP)
     NOT_ENOUGH_FREE_XP = formatMoneyError(ExtendedCurrency.FREE_XP)
-    NOT_ENOUGH_CURRENCIES = GUI_ITEM_ECONOMY_CODE.NOT_ENOUGH_CURRENCIES + (
-     NOT_ENOUGH_XP, NOT_ENOUGH_VEH_XP, NOT_ENOUGH_FREE_XP)
+    NOT_ENOUGH_CURRENCIES = GUI_ITEM_ECONOMY_CODE.NOT_ENOUGH_CURRENCIES + (NOT_ENOUGH_XP, NOT_ENOUGH_VEH_XP, NOT_ENOUGH_FREE_XP)
     COMPOUND_PRICE = 'price_is_compound'
     XP_COMPOUND_PRICE = 'price_is_xp_compound'
     STEP_LOCKED = 'step_locked'
@@ -73,7 +74,8 @@ def getFullXPFromXPPrice(balance, price):
     vehicleXPPrice = ExtendedMoney(vehXP=price.xp)
     shortage = balance.getShortage(vehicleXPPrice)
     if shortage.vehXP is not None and shortage.vehXP > 0:
-        price = price.replaceAll({ExtendedCurrency.VEH_XP: balance.vehXP, ExtendedCurrency.FREE_XP: shortage.vehXP})
+        price = price.replaceAll({ExtendedCurrency.VEH_XP: balance.vehXP,
+         ExtendedCurrency.FREE_XP: shortage.vehXP})
     else:
         price = price.replace(ExtendedCurrency.VEH_XP, price.xp)
     return price

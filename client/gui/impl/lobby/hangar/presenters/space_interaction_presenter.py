@@ -1,5 +1,8 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/hangar/presenters/space_interaction_presenter.py
 from __future__ import absolute_import
-import logging, typing
+import logging
+import typing
 from gui.hangar_cameras.hangar_camera_common import CameraRelatedEvents
 from gui.impl.gen.view_models.views.lobby.hangar.sub_views.space_interaction_model import SpaceInteractionModel
 from gui.impl.pub.view_component import ViewComponent
@@ -19,11 +22,7 @@ class SpaceInteractionPresenter(ViewComponent[SpaceInteractionModel]):
         return super(SpaceInteractionPresenter, self).getViewModel()
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onMoveSpace, self._onMoveSpace),
-         (
-          self.viewModel.onMouseOver3dScene, self._onCursorOver3DScene))
+        return ((self.viewModel.onMoveSpace, self._onMoveSpace), (self.viewModel.onMouseOver3dScene, self._onCursorOver3DScene))
 
     def onHighlight3DEntity(self, entity):
         self._highlight3DEntityAndShowTT(entity)

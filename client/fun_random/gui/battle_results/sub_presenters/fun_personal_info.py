@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: fun_random/scripts/client/fun_random/gui/battle_results/sub_presenters/fun_personal_info.py
 from __future__ import absolute_import
 import typing
 from gui.battle_results.presenters.packers.user_info import PersonalInfo
@@ -14,5 +16,5 @@ class FunPersonalInfoSubPresenter(BattleResultsSubPresenter):
         return FunBattleResultsViewModel
 
     def packBattleResults(self, battleResults):
-        with self.getViewModel().transaction() as (model):
+        with self.getViewModel().transaction() as model:
             PersonalInfo.packModel(model, battleResults)

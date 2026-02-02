@@ -1,6 +1,12 @@
-import cPickle, logging
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/account_helpers/Stats.py
+import cPickle
+import logging
 from functools import partial, wraps
-import AccountCommands, constants, items, personal_missions
+import AccountCommands
+import constants
+import items
+import personal_missions
 from account_helpers.premium_info import PremiumInfo
 from debug_utils import LOG_DEBUG_DEV, LOG_WARNING, LOG_ERROR
 from helpers import time_utils, dependency
@@ -21,18 +27,11 @@ _TANKMAN = items.ITEM_TYPE_INDICES['tankman']
 _OPTIONALDEVICE = items.ITEM_TYPE_INDICES['optionalDevice']
 _SHELL = items.ITEM_TYPE_INDICES['shell']
 _EQUIPMENT = items.ITEM_TYPE_INDICES['equipment']
-_SIMPLE_VALUE_STATS = ('fortResource', 'slots', 'berths', 'freeXP', 'dossier', 'clanInfo',
-                       'accOnline', 'accOffline', 'freeTMenLeft', 'freeVehiclesLeft',
-                       'vehicleSellsLeft', 'captchaTriesLeft', 'hasFinPassword',
-                       'finPswdAttemptsLeft', 'tkillIsSuspected', 'denunciationsLeft',
-                       'battlesTillCaptcha', 'dailyPlayHours', 'playLimits', 'applyAdditionalXPCount',
-                       'applyAdditionalWoTPlusXPCount', 'XPpp') + Currency.ALL
-_DICT_STATS = ('vehTypeXP', 'vehTypeLocks', 'restrictions', 'globalVehicleLocks', 'dummySessionStats',
-               'maxResearchedLevelByNation', 'weeklyVehicleCrystals', 'prestigeMilestonesAchieved')
+_SIMPLE_VALUE_STATS = ('fortResource', 'slots', 'berths', 'freeXP', 'dossier', 'clanInfo', 'accOnline', 'accOffline', 'freeTMenLeft', 'freeVehiclesLeft', 'vehicleSellsLeft', 'captchaTriesLeft', 'hasFinPassword', 'finPswdAttemptsLeft', 'tkillIsSuspected', 'denunciationsLeft', 'battlesTillCaptcha', 'dailyPlayHours', 'playLimits', 'applyAdditionalXPCount', 'applyAdditionalWoTPlusXPCount', 'XPpp') + Currency.ALL
+_DICT_STATS = ('vehTypeXP', 'vehTypeLocks', 'restrictions', 'globalVehicleLocks', 'dummySessionStats', 'maxResearchedLevelByNation', 'weeklyVehicleCrystals', 'prestigeMilestonesAchieved')
 _GROWING_SET_STATS = ('unlocks', 'eliteVehicles', 'multipliedXPVehs', 'multipliedRankedBattlesVehs')
 _ACCOUNT_STATS = ('clanDBID', 'attrs', 'premiumExpiryTime', 'autoBanTime', 'globalRating')
-_CACHE_STATS = ('isFinPswdVerified', 'mayConsumeWalletResources', 'oldVehInvIDs', 'isSsrPlayEnabled',
-                'isEmergencyModeEnabled')
+_CACHE_STATS = ('isFinPswdVerified', 'mayConsumeWalletResources', 'oldVehInvIDs', 'isSsrPlayEnabled', 'isEmergencyModeEnabled')
 _CACHE_DICT_STATS = ('SPA', 'entitlements', 'dynamicCurrencies', 'comp7')
 _PREFERRED_MAPS_KEY = 'preferredMaps'
 _ADDITIONAL_XP_CACHE_KEY = '_additionalXPCache'
@@ -50,7 +49,8 @@ def _checkIfNonPlayer(*args):
                 if callback is not None:
                     callback(AccountCommands.RES_NON_PLAYER, *args)
                 return
-            return func(self, *func_args, **func_kwargs)
+            else:
+                return func(self, *func_args, **func_kwargs)
 
         return _wrapper
 
@@ -58,10 +58,7 @@ def _checkIfNonPlayer(*args):
 
 
 def _get_callback_proxy(callback=None):
-    if callback is None:
-        return
-    else:
-        return lambda requestID, resultID, errorStr, ext=None: callback(resultID)
+    return None if callback is None else (lambda requestID, resultID, errorStr, ext=None: callback(resultID))
 
 
 class Stats(object):
@@ -99,16 +96,14 @@ class Stats(object):
                     cache[stat] = statsDiff[stat]
 
             for stat in _DICT_STATS:
-                stat_r = (
-                 stat, '_r')
+                stat_r = (stat, '_r')
                 if stat_r in statsDiff:
                     cache[stat] = statsDiff[stat_r]
                 if stat in statsDiff:
                     synchronizeDicts(statsDiff[stat], cache.setdefault(stat, dict()))
 
             for stat in _GROWING_SET_STATS:
-                stat_r = (
-                 stat, '_r')
+                stat_r = (stat, '_r')
                 if stat_r in statsDiff:
                     cache[stat] = statsDiff[stat_r]
                 if stat in statsDiff:
@@ -162,28 +157,31 @@ class Stats(object):
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, None)
             return
-        self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
-        return
+        else:
+            self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
+            return
 
     def get(self, statName, callback=None):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, None)
             return
-        self.__syncData.waitForSync(partial(self.__onGetResponse, statName, callback))
-        return
+        else:
+            self.__syncData.waitForSync(partial(self.__onGetResponse, statName, callback))
+            return
 
     def unlock(self, vehTypeCompDescr, unlockIdx, callback=None):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER)
             return
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
         else:
-            proxy = None
-        self.__account._doCmdInt3(AccountCommands.CMD_UNLOCK, vehTypeCompDescr, unlockIdx, 0, proxy)
-        return
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
+            else:
+                proxy = None
+            self.__account._doCmdInt3(AccountCommands.CMD_UNLOCK, vehTypeCompDescr, unlockIdx, 0, proxy)
+            return
 
     def setCurrentVehicle(self, vehInvID, callback=None):
         LOG_WARNING('Deprecated. setCurrentVehicle')
@@ -193,86 +191,100 @@ class Stats(object):
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER)
             return
-        self.__account.shop.getExchangeRate(partial(self.__exchange_onGetRate, gold, credits, callback))
-        return
+        else:
+            self.__account.shop.getExchangeRate(partial(self.__exchange_onGetRate, gold, credits, callback))
+            return
 
     def convertToFreeXP(self, vehTypeCompDescrs, xp, gold, callback=None):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER)
             return
-        self.__account.shop.getFreeXPConversion(partial(self.__convertToFreeXP_onGetParameters, vehTypeCompDescrs, xp, gold, callback))
-        return
+        else:
+            self.__account.shop.getFreeXPConversion(partial(self.__convertToFreeXP_onGetParameters, vehTypeCompDescrs, xp, gold, callback))
+            return
 
     def upgradeToPremium(self, days, arenaUniqueID, callback=None):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, 0)
             return
-        self.__account.shop.getPremiumCost(partial(self.__premium_onGetPremCost, days, arenaUniqueID, callback))
-        return
+        else:
+            self.__account.shop.getPremiumCost(partial(self.__premium_onGetPremCost, days, arenaUniqueID, callback))
+            return
 
     def buySlot(self, callback=None):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, 0)
             return
-        self.__account.shop.waitForSync(partial(self.__slot_onShopSynced, callback))
-        return
+        else:
+            self.__account.shop.waitForSync(partial(self.__slot_onShopSynced, callback))
+            return
 
     def buyBerths(self, countPacksBerths, callback=None):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, 0)
             return
-        self.__account.shop.waitForSync(partial(self.__berths_onShopSynced, countPacksBerths, callback))
-        return
+        else:
+            self.__account.shop.waitForSync(partial(self.__berths_onShopSynced, countPacksBerths, callback))
+            return
 
     def setMapsBlackList(self, selectedMaps, callback=None):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, 0)
             return
-        self.__account._doCmdIntArr(AccountCommands.CMD_SET_MAPS_BLACK_LIST, selectedMaps, None if callback is None else (lambda reqID, resID, errorStr, ext={}: callback(resID, errorStr, ext)))
-        return
+        else:
+            self.__account._doCmdIntArr(AccountCommands.CMD_SET_MAPS_BLACK_LIST, selectedMaps, None if callback is None else (lambda reqID, resID, errorStr, ext={}: callback(resID, errorStr, ext)))
+            return
 
     def setMoney(self, credit, gold=0, freeXP=0, crystal=0, eventCoin=0, bpcoin=0, equipCoin=0, callback=None):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER)
             return
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
         else:
-            proxy = None
-        self.__account._doCmdIntArr(AccountCommands.CMD_SET_MONEY, [
-         credit, gold, freeXP, crystal, eventCoin, bpcoin, equipCoin], proxy)
-        return
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
+            else:
+                proxy = None
+            self.__account._doCmdIntArr(AccountCommands.CMD_SET_MONEY, [credit,
+             gold,
+             freeXP,
+             crystal,
+             eventCoin,
+             bpcoin,
+             equipCoin], proxy)
+            return
 
     def setPremium(self, premType=constants.PREMIUM_TYPE.PLUS, seconds=time_utils.ONE_DAY, callback=None):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER)
             return
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
         else:
-            proxy = None
-        self.__account._doCmdIntArr(AccountCommands.CMD_SET_PREMIUM, [premType, seconds], proxy)
-        return
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
+            else:
+                proxy = None
+            self.__account._doCmdIntArr(AccountCommands.CMD_SET_PREMIUM, [premType, seconds], proxy)
+            return
 
     def addExperience(self, vehTypeName, xp, callback=None):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER)
             return
-        vehTypeCompDescr = vehicles.makeIntCompactDescrByID('vehicle', *vehicles.g_list.getIDsByName(vehTypeName))
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
         else:
-            proxy = None
-        self.__account._doCmdInt3(AccountCommands.CMD_ADD_XP, vehTypeCompDescr, xp, 0, proxy)
-        return
+            vehTypeCompDescr = vehicles.makeIntCompactDescrByID('vehicle', *vehicles.g_list.getIDsByName(vehTypeName))
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
+            else:
+                proxy = None
+            self.__account._doCmdInt3(AccountCommands.CMD_ADD_XP, vehTypeCompDescr, xp, 0, proxy)
+            return
 
     def setDossierField(self, path, value, callback=None):
         if callback is not None:
@@ -288,6 +300,14 @@ class Stats(object):
         else:
             proxy = None
         self.__account._doCmdInt2Str(AccountCommands.CMD_ADD_TOKENS, tokenCount, limit, token, proxy)
+        return
+
+    def addLootboxes(self, lootboxID, count=1, limit=0, callback=None):
+        if callback is not None:
+            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
+        else:
+            proxy = None
+        self.__account._doCmdInt2Str(AccountCommands.CMD_ADD_TOKENS, count, limit, 'lootBox:' + str(lootboxID), proxy)
         return
 
     def drawTokens(self, token, callback=None):
@@ -319,84 +339,90 @@ class Stats(object):
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER)
             return
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
         else:
-            proxy = None
-        self.__account._doCmdInt3(AccountCommands.CMD_UNLOCK_ALL, 0, 0, 0, proxy)
-        return
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
+            else:
+                proxy = None
+            self.__account._doCmdInt3(AccountCommands.CMD_UNLOCK_ALL, 0, 0, 0, proxy)
+            return
 
     def unlockVPPTree(self, vehTypeCDs, callback=None):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER)
             return
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
         else:
-            proxy = None
-        self.__account._doCmdIntArr(AccountCommands.CMD_VPP_UNLOCK_TREE, vehTypeCDs, proxy)
-        return
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
+            else:
+                proxy = None
+            self.__account._doCmdIntArr(AccountCommands.CMD_VPP_UNLOCK_TREE, vehTypeCDs, proxy)
+            return
 
     def setRankedInfo(self, data, callback=None):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER)
             return
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
         else:
-            proxy = None
-        data = cPickle.dumps(data)
-        self.__account._doCmdStr(AccountCommands.CMD_SET_RANKED_INFO, data, proxy)
-        return
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
+            else:
+                proxy = None
+            data = cPickle.dumps(data)
+            self.__account._doCmdStr(AccountCommands.CMD_SET_RANKED_INFO, data, proxy)
+            return
 
     def addFreeAwardLists(self, count, season=1, callback=None):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER)
             return
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
         else:
-            proxy = None
-        self.__account._doCmdIntArr(AccountCommands.CMD_ADD_FREE_AWARD_LISTS, [count, season], proxy)
-        return
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
+            else:
+                proxy = None
+            self.__account._doCmdIntArr(AccountCommands.CMD_ADD_FREE_AWARD_LISTS, [count, season], proxy)
+            return
 
     def drawFreeAwardLists(self, count, season=1, callback=None):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER)
             return
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
         else:
-            proxy = None
-        self.__account._doCmdIntArr(AccountCommands.CMD_DRAW_FREE_AWARD_LISTS, [count, season], proxy)
-        return
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
+            else:
+                proxy = None
+            self.__account._doCmdIntArr(AccountCommands.CMD_DRAW_FREE_AWARD_LISTS, [count, season], proxy)
+            return
 
-    def addBattlePassPoints(self, vehTypeCD, points, callback=None):
+    def addBattlePassPoints(self, points, vehTypeCD=0, callback=None):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER)
             return
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
         else:
-            proxy = None
-        self.__account._doCmdInt2(AccountCommands.CMD_ADD_BATTLE_PASS_POINTS, vehTypeCD, points, proxy)
-        return
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
+            else:
+                proxy = None
+            self.__account._doCmdInt2(AccountCommands.CMD_ADD_BATTLE_PASS_POINTS, vehTypeCD, points, proxy)
+            return
 
     def completePersonalMission(self, questID, withAdditional=False, callback=None):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER)
             return
-        pmCache = personal_missions.g_cache
-        if not self._eventsCache.getPersonalMissions().isCampaignActive(pmCache.branchByMissionID(questID)):
-            _logger.error('No active campaign for personal mission with id: %s', questID)
-            return
         else:
+            pmCache = personal_missions.g_cache
+            if not self._eventsCache.getPersonalMissions().isCampaignActive(pmCache.branchByMissionID(questID)):
+                _logger.error('No active campaign for personal mission with id: %s', questID)
+                return
             if callback is not None:
                 proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
             else:
@@ -422,8 +448,7 @@ class Stats(object):
                 if not self._eventsCache.getPersonalMissions().isCampaignActive(pmCache.branchByMissionID(missionID)):
                     _logger.error('No active campaign for personal mission with id: %s', missionID)
                     continue
-                self.__account._doCmdIntArr(AccountCommands.CMD_COMPLETE_PERSONAL_MISSION, [
-                 missionID, int(withAdditional)], proxy)
+                self.__account._doCmdIntArr(AccountCommands.CMD_COMPLETE_PERSONAL_MISSION, [missionID, int(withAdditional)], proxy)
 
         return
 
@@ -432,12 +457,13 @@ class Stats(object):
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER)
             return
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
         else:
-            proxy = None
-        self.__account._doCmdStrArr(AccountCommands.CMD_COMPLETE_QUESTS_DEV, questIDs, proxy)
-        return
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
+            else:
+                proxy = None
+            self.__account._doCmdStrArr(AccountCommands.CMD_COMPLETE_QUESTS_DEV, questIDs, proxy)
+            return
 
     def completePremiumDaily(self):
         from gui import SystemMessages
@@ -448,7 +474,7 @@ class Stats(object):
             if not q.isCompleted():
                 questID = q.getID()
                 self.completeQuests([questID])
-                SystemMessages.pushI18nMessage(('Premium daily quest completed: "{}".').format(questID), priority=NotificationPriorityLevel.HIGH)
+                SystemMessages.pushI18nMessage('Premium daily quest completed: "{}".'.format(questID), priority=NotificationPriorityLevel.HIGH)
                 return
 
         SystemMessages.pushI18nMessage('All premium daily quests are already completed.', priority=NotificationPriorityLevel.HIGH)
@@ -458,144 +484,156 @@ class Stats(object):
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, 0)
             return
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
         else:
-            proxy = None
-        self.__account._doCmdStr(AccountCommands.CMD_REROLL_DAILY_QUEST, token, proxy)
-        return
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
+            else:
+                proxy = None
+            self.__account._doCmdStr(AccountCommands.CMD_REROLL_DAILY_QUEST, token, proxy)
+            return
 
     def rerollDailyQuestDev(self, level, callback=None):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, 0)
             return
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
         else:
-            proxy = None
-        self.__account._doCmdStr(AccountCommands.CMD_REROLL_DAILY_QUEST_DEV, level, proxy)
-        return
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
+            else:
+                proxy = None
+            self.__account._doCmdStr(AccountCommands.CMD_REROLL_DAILY_QUEST_DEV, level, proxy)
+            return
 
     def resetRerollTimeout(self, callback=None):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, 0)
             return
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
         else:
-            proxy = None
-        self.__account._doCmdInt3(AccountCommands.CMD_RESET_REROLL_TIMEOUT, 0, 0, 0, proxy)
-        return
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
+            else:
+                proxy = None
+            self.__account._doCmdInt3(AccountCommands.CMD_RESET_REROLL_TIMEOUT, 0, 0, 0, proxy)
+            return
 
     def completeDailyQuest(self, token, callback=None):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, 0)
             return
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
         else:
-            proxy = None
-        self.__account._doCmdStr(AccountCommands.CMD_COMPLETE_DAILY_QUEST, token, proxy)
-        return
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
+            else:
+                proxy = None
+            self.__account._doCmdStr(AccountCommands.CMD_COMPLETE_DAILY_QUEST, token, proxy)
+            return
 
     def setEpicRewardTokens(self, count, callback=None):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, 0)
             return
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
         else:
-            proxy = None
-        self.__account._doCmdInt3(AccountCommands.CMD_SET_EPIC_REWARD_TOKENS, count, 0, 0, proxy)
-        return
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
+            else:
+                proxy = None
+            self.__account._doCmdInt3(AccountCommands.CMD_SET_EPIC_REWARD_TOKENS, count, 0, 0, proxy)
+            return
 
     def resetBonusQuest(self, callback=None):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, 0)
             return
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
         else:
-            proxy = None
-        self.__account._doCmdInt3(AccountCommands.CMD_RESET_BONUS_QUEST, 0, 0, 0, proxy)
-        return
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
+            else:
+                proxy = None
+            self.__account._doCmdInt3(AccountCommands.CMD_RESET_BONUS_QUEST, 0, 0, 0, proxy)
+            return
 
     def weeklyQuestsNewWeek(self, callback=None):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, 0)
             return
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
         else:
-            proxy = None
-        self.__account._doCmdNoArgs(AccountCommands.CMD_WEEKLY_QUEST_NEW_WEEK, proxy)
-        return
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
+            else:
+                proxy = None
+            self.__account._doCmdNoArgs(AccountCommands.CMD_WEEKLY_QUEST_NEW_WEEK, proxy)
+            return
 
     def weeklyQuestsRerollAll(self, callback=None):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, 0)
             return
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
         else:
-            proxy = None
-        self.__account._doCmdNoArgs(AccountCommands.CMD_WEEKLY_QUEST_REROLL_ALL, proxy)
-        return
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
+            else:
+                proxy = None
+            self.__account._doCmdNoArgs(AccountCommands.CMD_WEEKLY_QUEST_REROLL_ALL, proxy)
+            return
 
     def rerollWeeklyQuest(self, token, callback=None):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, 0)
             return
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID, errorStr)
         else:
-            proxy = None
-        self.__account._doCmdStr(AccountCommands.CMD_REROLL_WEEKLY_QUEST, token, proxy)
-        return
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID, errorStr)
+            else:
+                proxy = None
+            self.__account._doCmdStr(AccountCommands.CMD_REROLL_WEEKLY_QUEST, token, proxy)
+            return
 
     def rerollWeeklyQuestDev(self, id, callback=None):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, 0)
             return
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
         else:
-            proxy = None
-        self.__account._doCmdInt(AccountCommands.CMD_REROLL_WEEKLY_QUEST_DEV, id, proxy)
-        return
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
+            else:
+                proxy = None
+            self.__account._doCmdInt(AccountCommands.CMD_REROLL_WEEKLY_QUEST_DEV, id, proxy)
+            return
 
     def resetWeeklyQuestsRerollTimeout(self, callback=None):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, 0)
             return
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
         else:
-            proxy = None
-        self.__account._doCmdNoArgs(AccountCommands.CMD_RESET_WEEKLY_REROLL_TIMEOUT, proxy)
-        return
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
+            else:
+                proxy = None
+            self.__account._doCmdNoArgs(AccountCommands.CMD_RESET_WEEKLY_REROLL_TIMEOUT, proxy)
+            return
 
     def completeWeeklyQuestDev(self, id, callback=None):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, 0)
             return
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
         else:
-            proxy = None
-        self.__account._doCmdInt(AccountCommands.CMD_COMPLETE_WEEKLY_QUEST_DEV, id, proxy)
-        return
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
+            else:
+                proxy = None
+            self.__account._doCmdInt(AccountCommands.CMD_COMPLETE_WEEKLY_QUEST_DEV, id, proxy)
+            return
 
     @_checkIfNonPlayer()
     def changeBRPoints(self, points, ignoreUnburnableTitles=False, callback=None):
@@ -606,11 +644,11 @@ class Stats(object):
         if not isinstance(points, int):
             LOG_ERROR('Wrong type of points.')
             return
+        elif self.__ignore:
+            if callback is not None:
+                callback(AccountCommands.RES_NON_PLAYER, 0)
+            return
         else:
-            if self.__ignore:
-                if callback is not None:
-                    callback(AccountCommands.RES_NON_PLAYER, 0)
-                return
 
             def response(code, errStr='', ctx=None):
                 if code >= 0:
@@ -630,98 +668,104 @@ class Stats(object):
             if callback is not None:
                 callback(resultID, None)
             return
-        if callback is not None:
-            callback(resultID, self.__cache.get(statName, None))
-        return
+        else:
+            if callback is not None:
+                callback(resultID, self.__cache.get(statName, None))
+            return
 
     def __onGetCacheResponse(self, callback, resultID):
         if resultID < 0:
             if callback is not None:
                 callback(resultID, None)
             return
-        if callback is not None:
-            callback(resultID, self.__cache)
-        return
+        else:
+            if callback is not None:
+                callback(resultID, self.__cache)
+            return
 
     def __exchange_onGetRate(self, gold, credits, callback, resultID, exchRate, shopRev):
         if resultID < 0:
             if callback is not None:
                 callback(resultID, None)
             return
-        if exchRate is None:
+        elif exchRate is None:
             LOG_ERROR('Result of the getExchangeRate request is None')
             if callback is not None:
                 callback(AccountCommands.RES_FAILURE)
             return
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
         else:
-            proxy = None
-        self.__account._doCmdInt4(AccountCommands.CMD_EXCHANGE, shopRev, gold, credits, 0, proxy)
-        return
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
+            else:
+                proxy = None
+            self.__account._doCmdInt4(AccountCommands.CMD_EXCHANGE, shopRev, gold, credits, 0, proxy)
+            return
 
     def __convertToFreeXP_onGetParameters(self, vehTypeCompDescrs, xp, gold, callback, resultID, freeXPConversion, shopRev):
         if resultID < 0:
             if callback is not None:
                 callback(resultID, None)
             return
-        if freeXPConversion is None:
+        elif freeXPConversion is None:
             LOG_ERROR('Result of the getFreeXPConversion request is None')
             if callback is not None:
                 callback(AccountCommands.RES_FAILURE)
             return
-        arr = [
-         shopRev, xp, gold] + list(vehTypeCompDescrs)
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
         else:
-            proxy = None
-        self.__account._doCmdIntArr(AccountCommands.CMD_FREE_XP_CONV, arr, proxy)
-        return
+            arr = [shopRev, xp, gold] + list(vehTypeCompDescrs)
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
+            else:
+                proxy = None
+            self.__account._doCmdIntArr(AccountCommands.CMD_FREE_XP_CONV, arr, proxy)
+            return
 
     def __premium_onGetPremCost(self, days, arenaUniqueID, callback, resultID, premCost, shopRev):
         if resultID < 0:
             if callback is not None:
                 callback(resultID, None)
             return
-        if premCost is None:
+        elif premCost is None:
             LOG_ERROR('Result of the getPremiumCost request is None')
             if callback is not None:
                 callback(AccountCommands.RES_FAILURE, None)
             return
-        gold = premCost.get(days, None)
-        if gold is None:
-            LOG_ERROR('Wrong days number')
-            if callback is not None:
-                callback(AccountCommands.RES_WRONG_ARGS, None)
-            return
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID, errorStr)
         else:
-            proxy = None
-        self.__account._doCmdInt3(AccountCommands.CMD_PREMIUM, shopRev, days, arenaUniqueID, proxy)
-        return
+            gold = premCost.get(days, None)
+            if gold is None:
+                LOG_ERROR('Wrong days number')
+                if callback is not None:
+                    callback(AccountCommands.RES_WRONG_ARGS, None)
+                return
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID, errorStr)
+            else:
+                proxy = None
+            self.__account._doCmdInt3(AccountCommands.CMD_PREMIUM, shopRev, days, arenaUniqueID, proxy)
+            return
 
     def __slot_onShopSynced(self, callback, resultID, shopRev):
         if resultID < 0:
             if callback is not None:
                 callback(resultID)
             return
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
         else:
-            proxy = None
-        self.__account._doCmdInt3(AccountCommands.CMD_BUY_SLOT, shopRev, 0, 0, proxy)
-        return
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
+            else:
+                proxy = None
+            self.__account._doCmdInt3(AccountCommands.CMD_BUY_SLOT, shopRev, 0, 0, proxy)
+            return
 
     def __berths_onShopSynced(self, countPacksBerths, callback, resultID, shopRev):
         if resultID < 0:
             if callback is not None:
                 callback(resultID)
             return
-        if callback is not None:
-            proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
         else:
-            proxy = None
-        self.__account._doCmdInt3(AccountCommands.CMD_BUY_BERTHS, shopRev, countPacksBerths, 0, proxy)
-        return
+            if callback is not None:
+                proxy = lambda requestID, resultID, errorStr, ext={}: callback(resultID)
+            else:
+                proxy = None
+            self.__account._doCmdInt3(AccountCommands.CMD_BUY_BERTHS, shopRev, countPacksBerths, 0, proxy)
+            return

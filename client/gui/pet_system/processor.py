@@ -1,4 +1,7 @@
-import logging, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/pet_system/processor.py
+import logging
+import BigWorld
 from gui.impl import backport
 from gui import SystemMessages
 from gui.impl.gen import R

@@ -1,4 +1,7 @@
-import BigWorld, Math
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/FlockManager.py
+import BigWorld
+import Math
 g_FlockManager = None
 
 def getManager():

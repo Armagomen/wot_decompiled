@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/login/login_modes/__init__.py
 import typing
 from gui import GUI_SETTINGS
 from skeletons.gui.login_manager import ILoginManager

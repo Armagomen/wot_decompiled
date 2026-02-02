@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/pet_system/pet_item_helper.py
 import typing
 from gui.impl import backport
 from gui.impl.gen import R

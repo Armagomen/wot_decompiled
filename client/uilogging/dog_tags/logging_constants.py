@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/uilogging/dog_tags/logging_constants.py
 from enum import Enum
 FEATURE = 'dog_tags'
 MIN_VIEW_TIME = 2

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/veh_post_progression/veh_post_progression_cfg_view.py
 from __future__ import absolute_import
 from adisp import adisp_process
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -48,8 +50,8 @@ class VehiclePostProgressionCfgView(VehiclePostProgressionViewMeta):
 
     def _addListeners(self):
         super(VehiclePostProgressionCfgView, self)._addListeners()
-        g_clientUpdateManager.addCallbacks({'stats.freeXP': self._updateData, 
-           'cache.mayConsumeWalletResources': self._updateData})
+        g_clientUpdateManager.addCallbacks({'stats.freeXP': self._updateData,
+         'cache.mayConsumeWalletResources': self._updateData})
         self.__cmpBasket.onChange += self.__onCmpBasketChange
         self.__cmpBasket.onSwitchChange += self._updateData
         progressionInjectView = self._progressionInject.getInjectView()

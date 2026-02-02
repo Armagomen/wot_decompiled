@@ -1,4 +1,7 @@
-import logging, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/appearance_cache_ctrls/event_appearance_cache_ctrl.py
+import logging
+import BigWorld
 from gui.battle_control.controllers.appearance_cache_ctrls.default_appearance_cache_ctrl import DefaultAppearanceCacheController
 from helpers import uniprof
 from items.vehicles import VehicleDescriptor
@@ -73,6 +76,6 @@ class EventAppearanceCacheController(DefaultAppearanceCacheController):
         physicalTracksBuilders = typeDescriptor.chassis.physicalTracks
         for name, builders in physicalTracksBuilders.iteritems():
             for index, builder in enumerate(builders):
-                prereqs.append(builder.createLoader(spaceID, ('{0}{1}PhysicalTrack').format(name, index), modelsSetParams.skin))
+                prereqs.append(builder.createLoader(spaceID, '{0}{1}PhysicalTrack'.format(name, index), modelsSetParams.skin))
 
         return prereqs

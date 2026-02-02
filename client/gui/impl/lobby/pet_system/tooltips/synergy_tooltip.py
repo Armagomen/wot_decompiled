@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/pet_system/tooltips/synergy_tooltip.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.pet_system.tooltips.synergy_tooltip_model import SynergyTooltipModel
@@ -22,7 +24,7 @@ class SynergyTooltip(ViewImpl):
     def _onLoading(self, *args, **kwargs):
         super(SynergyTooltip, self)._onLoading(*args, **kwargs)
         progress = SynergyItem.getSynergyProgression(self.__petID)
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setProgress(int(float(progress.cPoints) / progress.maxPoints * 100))
 
     def _finalize(self):

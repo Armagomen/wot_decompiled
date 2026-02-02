@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/gui/Scaleform/channels/__init__.py
 import chat_shared
 from debug_utils import LOG_ERROR, LOG_WARNING, LOG_DEBUG
 from messenger import g_settings
@@ -16,7 +18,7 @@ class ControllersCollection(IControllersCollection):
 
     @storage_getter('channels')
     def channelsStorage(self):
-        return
+        return None
 
     def init(self):
         self._addListeners()
@@ -124,21 +126,19 @@ class ControllersCollection(IControllersCollection):
 class LobbyControllers(ControllersCollection):
 
     def __init__(self):
-        super(LobbyControllers, self).__init__({PROTO_TYPE.BW: bw.LobbyControllersFactory(), 
-           PROTO_TYPE.BW_CHAT2: bw_chat2.LobbyControllersFactory(), 
-           PROTO_TYPE.XMPP: xmpp.LobbyControllersFactory()})
+        super(LobbyControllers, self).__init__({PROTO_TYPE.BW: bw.LobbyControllersFactory(),
+         PROTO_TYPE.BW_CHAT2: bw_chat2.LobbyControllersFactory(),
+         PROTO_TYPE.XMPP: xmpp.LobbyControllersFactory()})
 
     def factory(self, channel):
         if channel.getProtoType() == PROTO_TYPE.BW_CHAT2 and not g_settings.server.BW_CHAT2.isEnabled():
             return None
+        elif channel.getProtoType() == PROTO_TYPE.XMPP and not g_settings.server.XMPP.isEnabled():
+            return None
+        elif channel.getProtoType() == PROTO_TYPE.BW and channel.getName() == LAZY_CHANNEL.COMMON and g_settings.server.XMPP.isMucServiceAllowed(service=XMPP_MUC_CHANNEL_TYPE.STANDARD):
+            return None
         else:
-            if channel.getProtoType() == PROTO_TYPE.XMPP and not g_settings.server.XMPP.isEnabled():
-                return None
-            if channel.getProtoType() == PROTO_TYPE.BW and channel.getName() == LAZY_CHANNEL.COMMON and g_settings.server.XMPP.isMucServiceAllowed(service=XMPP_MUC_CHANNEL_TYPE.STANDARD):
-                return None
-            if channel.getProtoType() == PROTO_TYPE.BW and channel._data.flags == chat_shared.CHAT_CHANNEL_CLAN and g_settings.server.XMPP.isMucServiceAllowed(service=XMPP_MUC_CHANNEL_TYPE.CLANS):
-                return None
-            return super(LobbyControllers, self).factory(channel)
+            return None if channel.getProtoType() == PROTO_TYPE.BW and channel._data.flags == chat_shared.CHAT_CHANNEL_CLAN and g_settings.server.XMPP.isMucServiceAllowed(service=XMPP_MUC_CHANNEL_TYPE.CLANS) else super(LobbyControllers, self).factory(channel)
 
 
 class BattleControllers(ControllersCollection):

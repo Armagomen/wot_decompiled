@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/genConsts/DAMAGE_INFO_PANEL_CONSTS.py
 
 
 class DAMAGE_INFO_PANEL_CONSTS(object):

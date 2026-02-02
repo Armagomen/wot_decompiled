@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/serializable_types/customizations/customization_outfit.py
 from collections import OrderedDict, defaultdict
 from data_structures import OrderedSet
 from string import lower, upper
@@ -32,7 +34,7 @@ def _setComponentsRegion(component, region):
     elif hasattr(component, 'slotId'):
         setattr(component, 'slotId', region)
     else:
-        LOG_ERROR(('Unable to set region {0} for component {1}').format(region, component))
+        LOG_ERROR('Unable to set region {0} for component {1}'.format(region, component))
 
 
 def __ignoreItem(itemId, cache, ignoreEmpty, ignoreStyleOnly):
@@ -112,36 +114,20 @@ def getAllItemsFromOutfit(cc, outfit, ignoreHiddenCamouflage=True, ignoreEmpty=T
 class CustomizationOutfit(SerializableComponent):
     __metaclass__ = ReflectionMetaclass
     customType = C11nSerializationTypes.OUTFIT
-    fields = OrderedDict((
-     (
-      'modifications', intArrayField()),
-     (
-      'paints', customArrayField(PaintComponent.customType)),
-     (
-      'camouflages', customArrayField(CamouflageComponent.customType)),
-     (
-      'decals', customArrayField(DecalComponent.customType)),
-     (
-      'styleId', intField(nonXml=True)),
-     (
-      'projection_decals', customArrayField(ProjectionDecalComponent.customType)),
-     (
-      'insignias', customArrayField(InsigniaComponent.customType)),
-     (
-      'personal_numbers', customArrayField(PersonalNumberComponent.customType)),
-     (
-      'sequences', customArrayField(SequenceComponent.customType)),
-     (
-      'attachments', customArrayField(AttachmentComponent.customType)),
-     (
-      'styleProgressionLevel', intField()),
-     (
-      'serial_number', strField()),
-     (
-      'stat_trackers', customArrayField(StatTrackerComponent.customType))))
-    __slots__ = ('modifications', 'paints', 'camouflages', 'decals', 'styleId', 'projection_decals',
-                 'insignias', 'personal_numbers', 'sequences', 'attachments', 'styleProgressionLevel',
-                 'serial_number', 'stat_trackers')
+    fields = OrderedDict((('modifications', intArrayField()),
+     ('paints', customArrayField(PaintComponent.customType)),
+     ('camouflages', customArrayField(CamouflageComponent.customType)),
+     ('decals', customArrayField(DecalComponent.customType)),
+     ('styleId', intField(nonXml=True)),
+     ('projection_decals', customArrayField(ProjectionDecalComponent.customType)),
+     ('insignias', customArrayField(InsigniaComponent.customType)),
+     ('personal_numbers', customArrayField(PersonalNumberComponent.customType)),
+     ('sequences', customArrayField(SequenceComponent.customType)),
+     ('attachments', customArrayField(AttachmentComponent.customType)),
+     ('styleProgressionLevel', intField()),
+     ('serial_number', strField()),
+     ('stat_trackers', customArrayField(StatTrackerComponent.customType))))
+    __slots__ = ('modifications', 'paints', 'camouflages', 'decals', 'styleId', 'projection_decals', 'insignias', 'personal_numbers', 'sequences', 'attachments', 'styleProgressionLevel', 'serial_number', 'stat_trackers')
 
     def __init__(self, modifications=None, paints=None, camouflages=None, decals=None, projection_decals=None, personal_numbers=None, styleId=0, insignias=None, sequences=None, attachments=None, styleProgressionLevel=0, serial_number=None, stat_trackers=None):
         self.modifications = modifications or []
@@ -171,13 +157,13 @@ class CustomizationOutfit(SerializableComponent):
             if ce.appliedTo & ApplyArea.HULL:
                 return ce.id
 
-        return
+        return None
 
     def makeCompDescr(self):
         if not self:
             return ''
         for typeId in CustomizationType.APPLIED_TO_TYPES:
-            componentsAttrName = ('{}s').format(lower(CustomizationTypeNames[typeId]))
+            componentsAttrName = '{}s'.format(lower(CustomizationTypeNames[typeId]))
             components = CustomizationOutfit.applyAreaBitmaskToDict(getattr(self, componentsAttrName))
             setattr(self, componentsAttrName, CustomizationOutfit.shrinkAreaBitmask(components))
 
@@ -235,7 +221,7 @@ class CustomizationOutfit(SerializableComponent):
             resultOutfit.styleId = outfit.styleId
         for itemType in CustomizationType.RANGE:
             typeName = lower(CustomizationTypeNames[itemType])
-            componentsAttrName = ('{}s').format(typeName)
+            componentsAttrName = '{}s'.format(typeName)
             if componentsAttrName not in self.__slots__:
                 continue
             modifiedComponents = getattr(outfit, componentsAttrName, None)
@@ -270,9 +256,9 @@ class CustomizationOutfit(SerializableComponent):
                             _setComponentsRegion(component, region)
                             components.append(component)
 
-            if isAppliedTo:
-                components = self.applyAreaBitmaskToDict(components)
-                components = self.shrinkAreaBitmask(components)
+                if isAppliedTo:
+                    components = self.applyAreaBitmaskToDict(components)
+                    components = self.shrinkAreaBitmask(components)
             setattr(resultOutfit, componentsAttrName, components)
 
         return resultOutfit
@@ -286,7 +272,7 @@ class CustomizationOutfit(SerializableComponent):
         resultOutfit.stat_trackers = self.stat_trackers
         for itemType in CustomizationType.FULL_RANGE:
             typeName = lower(CustomizationTypeNames[itemType])
-            componentsAttrName = ('{}s').format(typeName)
+            componentsAttrName = '{}s'.format(typeName)
             if componentsAttrName not in self.__slots__:
                 continue
             modifiedComponents = getattr(self, componentsAttrName, None)
@@ -310,20 +296,20 @@ class CustomizationOutfit(SerializableComponent):
                     _setComponentsRegion(component, region)
                     components.append(component)
 
-                for region in modifiedRegions - baseRegions:
-                    component = modifiedComponents[region][0].copy()
-                    if itemType == CustomizationType.PROJECTION_DECAL and component.matchingTag:
-                        continue
+            for region in modifiedRegions - baseRegions:
+                component = modifiedComponents[region][0].copy()
+                if itemType == CustomizationType.PROJECTION_DECAL and component.matchingTag:
+                    continue
+                _setComponentsRegion(component, region)
+                components.append(component)
+
+            for region in modifiedRegions & baseRegions:
+                component = modifiedComponents[region][0].copy()
+                if itemType == CustomizationType.PROJECTION_DECAL and component.matchingTag:
+                    continue
+                if component != baseComponents[region][0]:
                     _setComponentsRegion(component, region)
                     components.append(component)
-
-                for region in modifiedRegions & baseRegions:
-                    component = modifiedComponents[region][0].copy()
-                    if itemType == CustomizationType.PROJECTION_DECAL and component.matchingTag:
-                        continue
-                    if component != baseComponents[region][0]:
-                        _setComponentsRegion(component, region)
-                        components.append(component)
 
             setattr(resultOutfit, componentsAttrName, components)
 
@@ -335,7 +321,7 @@ class CustomizationOutfit(SerializableComponent):
         for c11nType in dismountTypes:
             if c11nType is CustomizationType.STYLE:
                 continue
-            components = getattr(self, ('{}s').format(lower(CustomizationTypeNames[c11nType])))
+            components = getattr(self, '{}s'.format(lower(CustomizationTypeNames[c11nType])))
             if c11nType in CustomizationType.APPLIED_TO_TYPES:
                 for component in components:
                     for area in areas:
@@ -383,13 +369,12 @@ class CustomizationOutfit(SerializableComponent):
 
             if toMove:
                 self.projection_decals = newProjectionDecals
-        for regionValue, vehiclePart in ((ApplyArea.HULL_REGIONS_VALUE, vehDescr.hull), (ApplyArea.CHASSIS_REGIONS_VALUE, vehDescr.chassis),
-         (
-          ApplyArea.TURRET_REGIONS_VALUE, vehDescr.turret),
-         (
-          ApplyArea.GUN_REGIONS_VALUE, vehDescr.gun)):
+        for regionValue, vehiclePart in ((ApplyArea.HULL_REGIONS_VALUE, vehDescr.hull),
+         (ApplyArea.CHASSIS_REGIONS_VALUE, vehDescr.chassis),
+         (ApplyArea.TURRET_REGIONS_VALUE, vehDescr.turret),
+         (ApplyArea.GUN_REGIONS_VALUE, vehDescr.gun)):
             for componentName, (area, _) in vehiclePart.customizableVehicleAreas.iteritems():
-                components = getattr(self, ('{}s').format(lower(componentName)))
+                components = getattr(self, '{}s'.format(lower(componentName)))
                 componentType = getattr(CustomizationType, upper(componentName))
                 for component in components:
                     if componentType == CustomizationType.CAMOUFLAGE and component.id == HIDDEN_CAMOUFLAGE_ID:
@@ -407,7 +392,7 @@ class CustomizationOutfit(SerializableComponent):
     def countComponents(self, componentId, typeId):
         result = 0
         if typeId in CustomizationType.APPLIED_TO_TYPES:
-            outfitComponents = getattr(self, ('{}s').format(lower(CustomizationTypeNames[typeId])))
+            outfitComponents = getattr(self, '{}s'.format(lower(CustomizationTypeNames[typeId])))
             for component in outfitComponents:
                 if componentId == component.id:
                     result += ApplyArea.getAppliedCount(component.appliedTo)
@@ -431,7 +416,7 @@ class CustomizationOutfit(SerializableComponent):
         countBefore = count
         if count > 0:
             if typeId in CustomizationType.APPLIED_TO_TYPES:
-                attr = ('{}s').format(lower(CustomizationTypeNames[typeId]))
+                attr = '{}s'.format(lower(CustomizationTypeNames[typeId]))
                 outfitComponents = getattr(self, attr)
                 for component in outfitComponents:
                     if componentId == component.id:
@@ -476,7 +461,7 @@ class CustomizationOutfit(SerializableComponent):
     def removeComponents(self, typeIds):
         for typeId in typeIds:
             if typeId in CustomizationType.DISMOUNT_TYPE:
-                attr = ('{}s').format(lower(CustomizationTypeNames[typeId]))
+                attr = '{}s'.format(lower(CustomizationTypeNames[typeId]))
                 setattr(self, attr, [])
 
     def wipe(self, gameParams, cache, getGroupedComponentPrice, vehType=None):
@@ -496,8 +481,7 @@ class CustomizationOutfit(SerializableComponent):
 
             if isNeedRemove:
                 self.removeComponent(itemId, cid, count)
-            else:
-                outfitItems.pop(itemDescr)
+            outfitItems.pop(itemDescr)
 
         return outfitItems
 

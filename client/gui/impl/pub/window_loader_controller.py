@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/pub/window_loader_controller.py
 import logging
 from frameworks.wulf import WindowStatus, WindowFlags
 from gui.Scaleform.Waiting import Waiting
@@ -25,21 +27,22 @@ class WindowLoaderController(IWindowLoaderController):
         window = self.__gui.windowsManager.getWindow(uniqueID)
         if window is None or WindowFlags.WINDOW_MODAL != window.modalityFlag:
             return
-        isSFWindow = isinstance(window, SFWindow)
-        if newStatus == WindowStatus.LOADING:
-            if isSFWindow:
-                window.onContentLoaded += self.__onDAAPIContentLoaded
-            self.__loadingWindows.append(uniqueID)
-            self.__triggerWaiting()
-        elif newStatus == WindowStatus.LOADED and not isSFWindow:
-            self.__loadingWindows.remove(uniqueID)
-            self.__triggerWaiting()
-        elif newStatus == WindowStatus.DESTROYING and uniqueID in self.__loadingWindows:
-            if isSFWindow:
-                window.onContentLoaded -= self.__onDAAPIContentLoaded
-            self.__loadingWindows.remove(uniqueID)
-            self.__triggerWaiting()
-        return
+        else:
+            isSFWindow = isinstance(window, SFWindow)
+            if newStatus == WindowStatus.LOADING:
+                if isSFWindow:
+                    window.onContentLoaded += self.__onDAAPIContentLoaded
+                self.__loadingWindows.append(uniqueID)
+                self.__triggerWaiting()
+            elif newStatus == WindowStatus.LOADED and not isSFWindow:
+                self.__loadingWindows.remove(uniqueID)
+                self.__triggerWaiting()
+            elif newStatus == WindowStatus.DESTROYING and uniqueID in self.__loadingWindows:
+                if isSFWindow:
+                    window.onContentLoaded -= self.__onDAAPIContentLoaded
+                self.__loadingWindows.remove(uniqueID)
+                self.__triggerWaiting()
+            return
 
     def __triggerWaiting(self):
         self.__callbackID = None

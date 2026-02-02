@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/messenger/formatters/collections_by_type.py
 from chat_shared import SYS_MESSAGE_TYPE as _SM_TYPE
 from gui.gift_system.proxy import GiftSystemMessagesProxy
 from gui.shared.system_factory import registerMessengerClientFormatter, registerTokenQuestsSubFormatters, registerMessengerServerFormatter, registerLootBoxAutoOpenSubFormatters
@@ -6,14 +8,12 @@ from messenger.formatters import wot_plus as _wotPlusFormatters
 from messenger.formatters import personal_reserves as _prFormatters
 from messenger.formatters import auto_boxes_subformatters, token_quest_subformatters
 from messenger.m_constants import SCH_CLIENT_MSG_TYPE
-registerLootBoxAutoOpenSubFormatters((
- auto_boxes_subformatters.EventBoxesFormatter(),
+registerLootBoxAutoOpenSubFormatters((auto_boxes_subformatters.EventBoxesFormatter(),
  auto_boxes_subformatters.NYPostEventBoxesFormatter(),
  auto_boxes_subformatters.NYGiftSystemSurpriseFormatter(),
  auto_boxes_subformatters.LunarNYEnvelopeAutoOpenFormatter(),
  auto_boxes_subformatters.LootBoxSystemAutoOpenFormatter()))
-registerTokenQuestsSubFormatters((
- token_quest_subformatters.LootBoxTokenQuestFormatter(),
+registerTokenQuestsSubFormatters((token_quest_subformatters.LootBoxTokenQuestFormatter(),
  token_quest_subformatters.RecruitQuestsFormatter(),
  token_quest_subformatters.RankedSeasonTokenQuestFormatter(),
  token_quest_subformatters.RankedFinalTokenQuestFormatter(),
@@ -31,11 +31,8 @@ registerTokenQuestsSubFormatters((
  token_quest_subformatters.CrewPerksFormatter(),
  token_quest_subformatters.SteamCompletionFormatter(),
  token_quest_subformatters.SkipNotificationFormatter()))
-_HANGAR_QUESTS_SUB_FORMATTERS = (
- token_quest_subformatters.BattleMattersAwardsFormatter(),)
-_PERSONAL_MISSIONS_SUB_FORMATTERS = (
- token_quest_subformatters.PersonalMission3CompletionFormatter(),
- token_quest_subformatters.PersonalMissionsFormatter())
+_HANGAR_QUESTS_SUB_FORMATTERS = (token_quest_subformatters.BattleMattersAwardsFormatter(),)
+_PERSONAL_MISSIONS_SUB_FORMATTERS = (token_quest_subformatters.PersonalMission3CompletionFormatter(), token_quest_subformatters.PersonalMissionsFormatter())
 
 def initRegistrationFormatters():
     registerMessengerServerFormatter(_SM_TYPE.serverReboot.index(), _sc.ServerRebootFormatter())
@@ -174,3 +171,4 @@ def initRegistrationFormatters():
     registerMessengerServerFormatter(_SM_TYPE.petAdded.index(), _sc.PetSystemPetAddedFormatter())
     registerMessengerServerFormatter(_SM_TYPE.petSynergyUp.index(), _sc.PetSystemSynergyLevelUpFormatter())
     registerMessengerServerFormatter(_SM_TYPE.petSynergyMax.index(), _sc.PetSystemSynergyMaxLevelFormatter())
+    registerMessengerClientFormatter(SCH_CLIENT_MSG_TYPE.COLLECTOR20_REWARD_RECEIVED, _sc.Collector20RewardReceivedFormatter())

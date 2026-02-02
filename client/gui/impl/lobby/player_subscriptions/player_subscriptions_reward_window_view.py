@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/player_subscriptions/player_subscriptions_reward_window_view.py
+import logging
+import typing
 from constants import OFFER_TOKEN_PREFIX
 from gui.Scaleform.daapi.view.lobby.missions.missions_helper import getMissionInfoData
 from gui.battle_pass.battle_pass_bonuses_packers import TmanTemplateBonusPacker
@@ -25,8 +28,13 @@ MAIN_REWARD_PREFIX = 'mainReward_'
 
 class PlayerSubscriptionRewardWindowView(ViewImpl):
     _offersProvider = dependency.descriptor(IOffersDataProvider)
-    _BONUSES_ORDER = (
-     'dossier', 'customizations', 'premium_plus', Currency.GOLD, 'vehicles', 'items', 'crewBooks')
+    _BONUSES_ORDER = ('dossier',
+     'customizations',
+     'premium_plus',
+     Currency.GOLD,
+     'vehicles',
+     'items',
+     'crewBooks')
 
     def __init__(self, settings, ctx=None):
         super(PlayerSubscriptionRewardWindowView, self).__init__(settings, ctx)
@@ -51,7 +59,7 @@ class PlayerSubscriptionRewardWindowView(ViewImpl):
             if window is not None:
                 window.load()
             return window
-        if event.contentID == R.views.lobby.tooltips.AdditionalRewardsTooltip():
+        elif event.contentID == R.views.lobby.tooltips.AdditionalRewardsTooltip():
             showCount = event.getArgument('showCount')
             if showCount is None:
                 return
@@ -83,10 +91,13 @@ class PlayerSubscriptionRewardWindowView(ViewImpl):
     def _setMainRewards(self):
         stringResources = R.strings.ingame_gui.rewardWindow.dyn(self._eventName, None)
         index = 1
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             mainRewardsModel = tx.getMainRewards()
             while True:
-                imgName = ('').join((self._eventName, '_', MAIN_REWARD_PREFIX, str(index)))
+                imgName = ''.join((self._eventName,
+                 '_',
+                 MAIN_REWARD_PREFIX,
+                 str(index)))
                 descr = stringResources.dyn(MAIN_REWARD_PREFIX + str(index))
                 if descr:
                     model = MainRewardModel()
@@ -94,20 +105,15 @@ class PlayerSubscriptionRewardWindowView(ViewImpl):
                     model.setDescription(backport.text(descr()))
                     mainRewardsModel.addViewModel(model)
                     index += 1
-                else:
-                    break
+                break
 
         return
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onCloseButtonClick, self.__onCloseButtonClick),
-         (
-          self.viewModel.onChooseButtonClick, self.__onChoseButtonClick))
+        return ((self.viewModel.onCloseButtonClick, self.__onCloseButtonClick), (self.viewModel.onChooseButtonClick, self.__onChoseButtonClick))
 
     def _initRewardsList(self):
-        with self.getViewModel().transaction() as (tx):
+        with self.getViewModel().transaction() as tx:
             rewardsList = tx.getRewards()
             bonuses = self._getBonuses()
             packerMap = self.__getPackerMap()
@@ -152,12 +158,10 @@ class PlayerSubscriptionRewardWindowView(ViewImpl):
                         if offer.token == tID:
                             return offer
 
-        return
+        return None
 
     def __keySortOrder(self, bonus):
-        if bonus.getName() in self._BONUSES_ORDER:
-            return self._BONUSES_ORDER.index(bonus.getName())
-        return len(self._BONUSES_ORDER)
+        return self._BONUSES_ORDER.index(bonus.getName()) if bonus.getName() in self._BONUSES_ORDER else len(self._BONUSES_ORDER)
 
     def __getPackerMap(self):
         packer = getDefaultBonusPackersMap()

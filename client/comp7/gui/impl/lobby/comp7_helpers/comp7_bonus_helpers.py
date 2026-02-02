@@ -1,4 +1,8 @@
-import copy, enum, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/comp7_helpers/comp7_bonus_helpers.py
+import copy
+import enum
+import typing
 from constants import PREMIUM_ENTITLEMENTS
 from dog_tags_common.components_config import componentConfigAdapter
 from dog_tags_common.config.common import ComponentViewType
@@ -48,8 +52,7 @@ def splitDossierBonuses(bonuses):
     for bonus in bonuses:
         if isinstance(bonus, DossierBonus):
             result.extend(_splitDossierBonus(bonus))
-        else:
-            result.append(bonus)
+        result.append(bonus)
 
     return result
 
@@ -83,18 +86,13 @@ class CustomizationsBonusHelper(_BaseBonusHelper):
     @staticmethod
     def getBonusType(bonus):
         c11nItem = CustomizationsBonusHelper.getBonusC11Item(bonus)
-        if c11nItem and c11nItem.itemTypeName == 'style' and c11nItem.is3D:
-            return BonusTypes.STYLE_3D
-        return BonusTypes.STYLE
+        return BonusTypes.STYLE_3D if c11nItem and c11nItem.itemTypeName == 'style' and c11nItem.is3D else BonusTypes.STYLE
 
     @staticmethod
     def getBonusC11Item(bonus):
         customizations = bonus.getCustomizations()
         itemData = first(customizations)
-        if not itemData:
-            return None
-        else:
-            return bonus.getC11nItem(itemData)
+        return None if not itemData else bonus.getC11nItem(itemData)
 
 
 class _GoodiesBonusHelper(_BaseBonusHelper):
@@ -102,10 +100,7 @@ class _GoodiesBonusHelper(_BaseBonusHelper):
     @staticmethod
     def getBonusType(bonus):
         booster = first(bonus.getBoosters().keys())
-        if booster is not None:
-            return BonusTypes.BOOSTER
-        else:
-            return BonusTypes.NONE
+        return BonusTypes.BOOSTER if booster is not None else BonusTypes.NONE
 
 
 class _CrewBooksBonusHelper(_BaseBonusHelper):
@@ -222,23 +217,23 @@ class _TokenBonusHelper(_BaseBonusHelper):
         return BonusTypes.TOKEN
 
 
-_BONUS_HELPERS_MAP = {'items': _ItemsBonusHelper, 
-   'customizations': CustomizationsBonusHelper, 
-   'goodies': _GoodiesBonusHelper, 
-   'crewBooks': _CrewBooksBonusHelper, 
-   'vehicles': _VehiclesBonusHelper, 
-   'dogTagComponents': _DogTagBonusHelper, 
-   'dossier': _DossierBonusHelper, 
-   PREMIUM_ENTITLEMENTS.PLUS: _PremiumBonusHelper, 
-   Currency.CREDITS: _CreditsBonusHelper, 
-   Currency.CRYSTAL: _CrystalBonusHelper, 
-   C11nProgressTokenBonus.BONUS_NAME: _StyleProgressBonusHelper, 
-   SELECTABLE_BONUS_NAME: _OfferBonusHelper, 
-   'style3DProgression': _Style3DProgressBonusHelper, 
-   'tankmen': _TankmenBonusHelper, 
-   'tokens': _TokensBonusHelper, 
-   'equipCoin': _EquipCoinBonusHelper, 
-   'battleToken': _TokenBonusHelper}
+_BONUS_HELPERS_MAP = {'items': _ItemsBonusHelper,
+ 'customizations': CustomizationsBonusHelper,
+ 'goodies': _GoodiesBonusHelper,
+ 'crewBooks': _CrewBooksBonusHelper,
+ 'vehicles': _VehiclesBonusHelper,
+ 'dogTagComponents': _DogTagBonusHelper,
+ 'dossier': _DossierBonusHelper,
+ PREMIUM_ENTITLEMENTS.PLUS: _PremiumBonusHelper,
+ Currency.CREDITS: _CreditsBonusHelper,
+ Currency.CRYSTAL: _CrystalBonusHelper,
+ C11nProgressTokenBonus.BONUS_NAME: _StyleProgressBonusHelper,
+ SELECTABLE_BONUS_NAME: _OfferBonusHelper,
+ 'style3DProgression': _Style3DProgressBonusHelper,
+ 'tankmen': _TankmenBonusHelper,
+ 'tokens': _TokensBonusHelper,
+ 'equipCoin': _EquipCoinBonusHelper,
+ 'battleToken': _TokenBonusHelper}
 
 def _splitDossierBonus(dossier):
     dossierValue = dossier.getValue()
@@ -252,10 +247,13 @@ def _splitDossierBonus(dossier):
                 component = achievements
             elif block == BADGES_BLOCK:
                 component = badgeSuffixes if record in badgeSuffixIds else badges
-            component.setdefault(dossierType, {})[(block, record)] = value
+            component.setdefault(dossierType, {})[block, record] = value
 
     bonuses = []
-    for componentData in (achievements, badges, badgeSuffixes, extra):
+    for componentData in (achievements,
+     badges,
+     badgeSuffixes,
+     extra):
         if not componentData:
             continue
         subDossier = copy.deepcopy(dossier)

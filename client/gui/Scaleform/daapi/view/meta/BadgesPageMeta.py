@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/BadgesPageMeta.py
 from gui.Scaleform.daapi.view.meta.WrapperViewMeta import WrapperViewMeta
 
 class BadgesPageMeta(WrapperViewMeta):
@@ -21,21 +23,16 @@ class BadgesPageMeta(WrapperViewMeta):
         self._printOverrideError('onDummyButtonPress')
 
     def as_setStaticDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setStaticData(data)
+        return self.flashObject.as_setStaticData(data) if self._isDAAPIInited() else None
 
     def as_setReceivedBadgesS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setReceivedBadges(data)
+        return self.flashObject.as_setReceivedBadges(data) if self._isDAAPIInited() else None
 
     def as_setNotReceivedBadgesS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setNotReceivedBadges(data)
+        return self.flashObject.as_setNotReceivedBadges(data) if self._isDAAPIInited() else None
 
     def as_setSelectedBadgeS(self, data, selected):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setSelectedBadge(data, selected)
+        return self.flashObject.as_setSelectedBadge(data, selected) if self._isDAAPIInited() else None
 
     def as_setBadgeSuffixS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_setBadgeSuffix(data)
+        return self.flashObject.as_setBadgeSuffix(data) if self._isDAAPIInited() else None

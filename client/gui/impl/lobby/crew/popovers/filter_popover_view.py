@@ -1,4 +1,7 @@
-import typing, Event
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/crew/popovers/filter_popover_view.py
+import typing
+import Event
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.crew.common.filter_toggle_group_model import FilterToggleGroupModel
@@ -15,8 +18,7 @@ if typing.TYPE_CHECKING:
     FilterGroups = Iterable[GroupSettings]
 
 class FilterPopoverView(PopOverViewImpl):
-    __slots__ = ('__title', '__groupSettings', '__onStateUpdated', '__state', '__canResetCallback',
-                 '__showResetBtn', 'onTooltipCreated')
+    __slots__ = ('__title', '__groupSettings', '__onStateUpdated', '__state', '__canResetCallback', '__showResetBtn', 'onTooltipCreated')
     itemsCache = dependency.descriptor(IItemsCache)
 
     def __init__(self, title, groupSettings, onStateUpdated, state=None, showResetBtn=True, canResetCallback=None):
@@ -44,16 +46,10 @@ class FilterPopoverView(PopOverViewImpl):
         return result
 
     def createToolTipContent(self, event, contentID):
-        if contentID == R.views.lobby.crew.tooltips.DismissedToggleTooltip():
-            return DismissedToggleTooltip()
-        return super(FilterPopoverView, self).createToolTipContent(event, contentID)
+        return DismissedToggleTooltip() if contentID == R.views.lobby.crew.tooltips.DismissedToggleTooltip() else super(FilterPopoverView, self).createToolTipContent(event, contentID)
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onUpdateFilter, self.__onUpdateFilter),
-         (
-          self.viewModel.onResetFilter, self.__onResetFilter))
+        return ((self.viewModel.onUpdateFilter, self.__onUpdateFilter), (self.viewModel.onResetFilter, self.__onResetFilter))
 
     def _onLoading(self, *args, **kwargs):
         super(FilterPopoverView, self)._onLoading(*args, **kwargs)
@@ -71,7 +67,7 @@ class FilterPopoverView(PopOverViewImpl):
         self.__onStateUpdated()
 
     def __fillModel(self):
-        with self.viewModel.transaction() as (tx):
+        with self.viewModel.transaction() as tx:
             tx.setTitle(self.__title)
             if self.__canResetCallback is not None:
                 tx.setCanResetFilter(self.__canResetCallback())

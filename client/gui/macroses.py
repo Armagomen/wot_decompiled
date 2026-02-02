@@ -1,6 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/macroses.py
 import base64
 from urllib import quote_plus
-import BigWorld, constants
+import BigWorld
+import constants
 from adisp import adisp_async, adisp_process
 from helpers import getClientLanguage, dependency
 from helpers.http.url_formatters import addParamsToUrlQuery
@@ -68,10 +71,7 @@ def getDatabaseID(args=None, connectionMgr=None):
 
 @dependency.replace_none_kwargs(connectionMgr=IConnectionManager)
 def getPeripheryID(args=None, connectionMgr=None):
-    if connectionMgr is not None:
-        return str(connectionMgr.peripheryID)
-    else:
-        return '0'
+    return str(connectionMgr.peripheryID) if connectionMgr is not None else '0'
 
 
 def getUnitServerID(args=None):
@@ -133,19 +133,19 @@ def getClanDBID(args=None):
 
 
 def getSyncMacroses():
-    return {'LANGUAGE_CODE': getLanguageCode, 
-       'AREA_ID': getAreaID, 
-       'ENCODED_LOGIN': getEncodedLogin, 
-       'QUOTED_LOGIN': getQuotedLogin, 
-       'DB_ID': getDatabaseID, 
-       'PERIPHERY_ID': getPeripheryID, 
-       'AUTH_REALM': getAuthRealm, 
-       'UNIT_SERVER_ID': getUnitServerID, 
-       'CLAN_DBID': getClanDBID, 
-       'CURRENT_REALM': getCurrentRealm, 
-       'PACKAGE_ID': getMarathonPackage, 
-       'STYLE_PACKAGE_ID': getMarathonStylePackage, 
-       'IS_STEAM': isSteamClient}
+    return {'LANGUAGE_CODE': getLanguageCode,
+     'AREA_ID': getAreaID,
+     'ENCODED_LOGIN': getEncodedLogin,
+     'QUOTED_LOGIN': getQuotedLogin,
+     'DB_ID': getDatabaseID,
+     'PERIPHERY_ID': getPeripheryID,
+     'AUTH_REALM': getAuthRealm,
+     'UNIT_SERVER_ID': getUnitServerID,
+     'CLAN_DBID': getClanDBID,
+     'CURRENT_REALM': getCurrentRealm,
+     'PACKAGE_ID': getMarathonPackage,
+     'STYLE_PACKAGE_ID': getMarathonStylePackage,
+     'IS_STEAM': isSteamClient}
 
 
 @adisp_async
@@ -188,6 +188,6 @@ def getUrlParams(proxy, args, params, callback):
 
 
 def getAsyncMacroses():
-    return {'WGNI_TOKEN': getWgniToken, 
-       'TARGET_URL': getTargetURL, 
-       'PARAMS': getUrlParams}
+    return {'WGNI_TOKEN': getWgniToken,
+     'TARGET_URL': getTargetURL,
+     'PARAMS': getUrlParams}

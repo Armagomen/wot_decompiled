@@ -1,8 +1,9 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/hangar/sub_views/vehicle_playlists_model.py
 from frameworks.wulf import Map, ViewModel
 
 class VehiclePlaylistsModel(ViewModel):
-    __slots__ = ('onSelect', 'onCreate', 'onModify', 'onSetDirtyEdit', 'onSave', 'onDiscard',
-                 'onDelete', 'openImportConfirm', 'openDeleteConfirm', 'onGoToAboutVehicle')
+    __slots__ = ('onSelect', 'onCreate', 'onModify', 'onSetDirtyEdit', 'onSave', 'onDiscard', 'onDelete', 'openImportConfirm', 'openDeleteConfirm', 'onGoToAboutVehicle')
 
     def __init__(self, properties=4, commands=10):
         super(VehiclePlaylistsModel, self).__init__(properties=properties, commands=commands)

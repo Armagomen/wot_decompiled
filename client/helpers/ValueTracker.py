@@ -1,4 +1,9 @@
-import math, functools, GUI, constants
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/helpers/ValueTracker.py
+import math
+import functools
+import GUI
+import constants
 from helpers.CallbackDelayer import CallbackDelayer
 
 class ValueTracker(CallbackDelayer):

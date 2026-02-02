@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/marathon/marathon_entry_point.py
 import time
 from functools import partial
 from adisp import adisp_process
@@ -30,9 +32,7 @@ def isMarathonEntryPointAvailable(marathonsCtrl=None):
     if state in (MarathonState.NOT_STARTED, MarathonState.IN_PROGRESS):
         return True
     else:
-        if state == MarathonState.FINISHED and not (marathonEvent.isRewardObtained() and marathonEvent.isPostRewardObtained()):
-            return True
-        return False
+        return True if state == MarathonState.FINISHED and not (marathonEvent.isRewardObtained() and marathonEvent.isPostRewardObtained()) else False
 
 
 class MarathonEntryPoint(ViewImpl):
@@ -70,7 +70,7 @@ class MarathonEntryPoint(ViewImpl):
     def __updateViewModel(self, *_):
         if isMarathonEntryPointAvailable():
             marathonEvent = self._marathonsCtrl.getMarathon(_MARATHON_PREFIX)
-            with self.viewModel.transaction() as (tx):
+            with self.viewModel.transaction() as tx:
                 state = marathonEvent.getState()
                 currentPhase, _ = marathonEvent.getMarathonProgress()
                 timeTillNextState = marathonEvent.getClosestStatusUpdateTime()
@@ -114,7 +114,7 @@ class MarathonEntryPoint(ViewImpl):
                 tx.setFormattedTimeTillNextState(self.__getFormattedTillTimeString(timeTillNextState, marathonEvent))
                 tx.setCurrentPhase(currentPhase)
                 tx.setRewardObtained(marathonEvent.isRewardObtained())
-                discount = (marathonEvent.isRewardObtained() or marathonEvent.getMarathonDiscount)() if 1 else marathonEvent.getMarathonPostProgressionDiscount()
+                discount = marathonEvent.getMarathonDiscount() if not marathonEvent.isRewardObtained() else marathonEvent.getMarathonPostProgressionDiscount()
                 tx.setDiscount(discount)
                 tx.setIsPremShopURL(not marathonEvent.hasIgbLink())
                 tx.setIsPostProgression(marathonEvent.isRewardObtained())
@@ -156,8 +156,8 @@ class MarathonEntryPoint(ViewImpl):
     def __marathonFilterFunc(self, q, postfix=''):
         marathonEvent = self._marathonsCtrl.getMarathon(_MARATHON_PREFIX)
         currentPhase, _ = marathonEvent.getMarathonProgress()
-        return q.getID().startswith(('{0}s{1}{2}').format(marathonEvent.tokenPrefix, currentPhase + 1, postfix))
+        return q.getID().startswith('{0}s{1}{2}'.format(marathonEvent.tokenPrefix, currentPhase + 1, postfix))
 
     def __marathonPostFilterFunc(self, q, postfix=''):
         marathonEvent = self._marathonsCtrl.getMarathon(_MARATHON_PREFIX)
-        return q.getID().startswith(('{0}{1}s').format(marathonEvent.tokenPrefix, postfix)) and q.isAvailable()[0]
+        return q.getID().startswith('{0}{1}s'.format(marathonEvent.tokenPrefix, postfix)) and q.isAvailable()[0]

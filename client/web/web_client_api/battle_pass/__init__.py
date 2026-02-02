@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/web/web_client_api/battle_pass/__init__.py
 import logging
 from itertools import chain
 from gui.impl.gen import R
@@ -9,16 +11,16 @@ from web.common import formatBattlePassInfo
 from web.web_client_api import Field, W2CSchema, WebCommandException, w2c, w2capi
 _logger = logging.getLogger(__name__)
 _R_VIEWS = R.aliases.battle_pass
-_VIEWS_IDS = {'intro': _R_VIEWS.Intro(), 
-   'chapter_choice': _R_VIEWS.ChapterChoice(), 
-   'progression': _R_VIEWS.Progression()}
+_VIEWS_IDS = {'intro': _R_VIEWS.Intro(),
+ 'chapter_choice': _R_VIEWS.ChapterChoice(),
+ 'progression': _R_VIEWS.Progression()}
 _VIEWS_COMMANDS = {'voiceover': showBattlePassTankmenVoiceover}
 
 def _isValidViewID(_, data):
     viewID = data.get('id')
     if viewID in chain(_VIEWS_IDS, _VIEWS_COMMANDS):
         return True
-    raise WebCommandException(('id: "{}" is not supported').format(viewID))
+    raise WebCommandException('id: "{}" is not supported'.format(viewID))
 
 
 @dependency.replace_none_kwargs(battlePass=IBattlePassController)
@@ -26,7 +28,7 @@ def _isValidChapterID(_, data, battlePass):
     chapterID = data.get('chapter_id')
     if chapterID in battlePass.getChapterIDs():
         return True
-    raise WebCommandException(('chapter_id: "{}" is not valid').format(chapterID))
+    raise WebCommandException('chapter_id: "{}" is not valid'.format(chapterID))
 
 
 @dependency.replace_none_kwargs(battlePass=IBattlePassController)
@@ -34,7 +36,7 @@ def _isValidTankman(_, data, battlePass):
     tankmanToken = data.get('tankman')
     if tankmanToken in battlePass.getSpecialTankmen():
         return True
-    raise WebCommandException(('Tankman token: "{}" is not valid').format(tankmanToken))
+    raise WebCommandException('Tankman token: "{}" is not valid'.format(tankmanToken))
 
 
 class _ShowViewSchema(W2CSchema):

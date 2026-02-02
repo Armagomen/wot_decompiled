@@ -1,4 +1,8 @@
-import logging, BigWorld, personal_missions
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/quest_progress/quest_progress_ctrl.py
+import logging
+import BigWorld
+import personal_missions
 from Event import EventManager, Event
 from gui.impl import backport
 from gui.impl.gen import R
@@ -125,12 +129,12 @@ class QuestProgressController(IArenaPeriodController, IArenaVehiclesController):
             hasAdditionalCondition = selectedQuest.hasAdditionalConditions()
             isMainQuest = True if not hasAdditionalCondition else None
             isPM3Quest = selectedQuest.getPMType().isPM3
-            return {'questName': selectedQuest.getUserName(), 
-               'questID': selectedQuest.getID(), 
-               'questIndexStr': str(selectedQuest.getInternalID()), 
-               'questIcon': RES_ICONS.getAllianceGoldIcon(selectedQuest.getMajorTag()), 
-               'headerProgress': formatter.headerFormat(isMain=isMainQuest, isCompleted=False, isPM3Quest=isPM3Quest), 
-               'bodyProgress': formatter.bodyFormat(isMain=isMainQuest)}
+            return {'questName': selectedQuest.getUserName(),
+             'questID': selectedQuest.getID(),
+             'questIndexStr': str(selectedQuest.getInternalID()),
+             'questIcon': RES_ICONS.getAllianceGoldIcon(selectedQuest.getMajorTag()),
+             'headerProgress': formatter.headerFormat(isMain=isMainQuest, isCompleted=False, isPM3Quest=isPM3Quest),
+             'bodyProgress': formatter.bodyFormat(isMain=isMainQuest)}
         else:
             return {}
 
@@ -140,12 +144,12 @@ class QuestProgressController(IArenaPeriodController, IArenaVehiclesController):
             vehCmpDescr = self.sessionProvider.getArenaDP().getVehicleInfo().vehicleType.compactDescr
             isUniqueVehicle = not self.__selectedQuest.isAmongUsedQuestVehicle(vehCmpDescr)
             questStatus = '' if isUniqueVehicle else backport.text(R.strings.personal_missions.questStatus.tankCondition())
-            return {'questName': selectedQuest.getUserName(), 
-               'questIndexStr': str(selectedQuest.getInternalID()), 
-               'questIcon': RES_ICONS.getAllianceGoldIcon(selectedQuest.getMajorTag()), 
-               'isProgressAvailable': isUniqueVehicle, 
-               'canBeDisabled': selectedQuest.getPMType().isPM3, 
-               'questStatus': questStatus}
+            return {'questName': selectedQuest.getUserName(),
+             'questIndexStr': str(selectedQuest.getInternalID()),
+             'questIcon': RES_ICONS.getAllianceGoldIcon(selectedQuest.getMajorTag()),
+             'isProgressAvailable': isUniqueVehicle,
+             'canBeDisabled': selectedQuest.getPMType().isPM3,
+             'questStatus': questStatus}
         return {}
 
     def getQuestHeaderProgresses(self, vehCmpDescr):

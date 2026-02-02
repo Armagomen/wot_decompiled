@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/gui_items/dossier/achievements/class_progress_achvs.py
 from abstract import ClassProgressAchievement
 from abstract.mixins import Deprecated, Fortification, NoProgressBar
 from dossiers2.ui.achievements import ACHIEVEMENT_BLOCK as _AB
@@ -10,8 +12,7 @@ class BattleTestedAchievement(ClassProgressAchievement):
         super(BattleTestedAchievement, self).__init__('battleTested', _AB.TEAM_7X7, dossier, value)
 
     def getNextLevelInfo(self):
-        return (
-         'achievesLeft', self._lvlUpValue)
+        return ('achievesLeft', self._lvlUpValue)
 
     def _readProgressValue(self, dossier):
         return dossier.getRecordValue(_AB.TEAM_7X7, 'battleTested')
@@ -26,8 +27,7 @@ class GuardsmanAchievement(Deprecated, NoProgressBar, ClassProgressAchievement):
         ClassProgressAchievement.__init__(self, 'guardsman', _AB.HISTORICAL, dossier, value)
 
     def getNextLevelInfo(self):
-        return (
-         'winsLeft', self._lvlUpValue)
+        return ('winsLeft', self._lvlUpValue)
 
     def _readProgressValue(self, dossier):
         return dossier.getRecordValue(_AB.HISTORICAL, 'guardsman')
@@ -43,8 +43,7 @@ class ForTacticalOperationsAchievement(ClassProgressAchievement):
         super(ForTacticalOperationsAchievement, self).__init__('forTacticalOperations', _AB.TEAM_7X7, dossier, value)
 
     def getNextLevelInfo(self):
-        return (
-         'winsLeft', self._lvlUpValue)
+        return ('winsLeft', self._lvlUpValue)
 
     def _readProgressValue(self, dossier):
         return dossier.getRecordValue(_AB.TEAM_7X7, 'forTacticalOperations')
@@ -70,8 +69,7 @@ class MakerOfHistoryAchievement(Deprecated, NoProgressBar, ClassProgressAchievem
         ClassProgressAchievement.__init__(self, 'makerOfHistory', _AB.HISTORICAL, dossier, value)
 
     def getNextLevelInfo(self):
-        return (
-         'pairWinsLeft', self._lvlUpValue)
+        return ('pairWinsLeft', self._lvlUpValue)
 
     def _readProgressValue(self, dossier):
         return dossier.getRecordValue(_AB.HISTORICAL, 'makerOfHistory')
@@ -87,8 +85,7 @@ class MedalAbramsAchievement(ClassProgressAchievement):
         super(MedalAbramsAchievement, self).__init__('medalAbrams', _AB.TOTAL, dossier, value)
 
     def getNextLevelInfo(self):
-        return (
-         'battlesLeft', self._lvlUpValue)
+        return ('battlesLeft', self._lvlUpValue)
 
     def _readProgressValue(self, dossier):
         return dossier.getRecordValue(_AB.TOTAL, 'medalAbrams')
@@ -104,8 +101,7 @@ class MedalCariusAchievement(ClassProgressAchievement):
         super(MedalCariusAchievement, self).__init__('medalCarius', _AB.TOTAL, dossier, value)
 
     def getNextLevelInfo(self):
-        return (
-         'vehiclesLeft', self._lvlUpValue)
+        return ('vehiclesLeft', self._lvlUpValue)
 
     def _readProgressValue(self, dossier):
         return dossier.getRecordValue(_AB.TOTAL, 'medalCarius')
@@ -121,8 +117,7 @@ class MedalEkinsAchievement(ClassProgressAchievement):
         super(MedalEkinsAchievement, self).__init__('medalEkins', _AB.TOTAL, dossier, value)
 
     def getNextLevelInfo(self):
-        return (
-         'vehiclesLeft', self._lvlUpValue)
+        return ('vehiclesLeft', self._lvlUpValue)
 
     def _readProgressValue(self, dossier):
         return dossier.getRecordValue(_AB.TOTAL, 'medalEkins')
@@ -138,8 +133,7 @@ class MedalKayAchievement(ClassProgressAchievement):
         super(MedalKayAchievement, self).__init__('medalKay', _AB.TOTAL, dossier, value)
 
     def getNextLevelInfo(self):
-        return (
-         'heroesLeft', self._lvlUpValue)
+        return ('heroesLeft', self._lvlUpValue)
 
     def _readProgressValue(self, dossier):
         return dossier.getRecordValue(_AB.TOTAL, 'medalKay')
@@ -155,8 +149,7 @@ class MedalKnispelAchievement(ClassProgressAchievement):
         super(MedalKnispelAchievement, self).__init__('medalKnispel', _AB.TOTAL, dossier, value)
 
     def getNextLevelInfo(self):
-        return (
-         'damageLeft', self._lvlUpValue)
+        return ('damageLeft', self._lvlUpValue)
 
     def _readProgressValue(self, dossier):
         return dossier.getRecordValue(_AB.TOTAL, 'medalKnispel')
@@ -177,8 +170,7 @@ class MedalLavrinenkoAchievement(ClassProgressAchievement):
         super(MedalLavrinenkoAchievement, self).__init__('medalLavrinenko', _AB.TOTAL, dossier, value)
 
     def getNextLevelInfo(self):
-        return (
-         'dropPointsLeft', self._lvlUpValue)
+        return ('dropPointsLeft', self._lvlUpValue)
 
     def _readProgressValue(self, dossier):
         return dossier.getRecordValue(_AB.TOTAL, 'medalLavrinenko')
@@ -194,8 +186,7 @@ class MedalLeClercAchievement(ClassProgressAchievement):
         super(MedalLeClercAchievement, self).__init__('medalLeClerc', _AB.TOTAL, dossier, value)
 
     def getNextLevelInfo(self):
-        return (
-         'capturePointsLeft', self._lvlUpValue)
+        return ('capturePointsLeft', self._lvlUpValue)
 
     def _readProgressValue(self, dossier):
         return dossier.getRecordValue(_AB.TOTAL, 'medalLeClerc')
@@ -211,8 +202,7 @@ class MedalPoppelAchievement(ClassProgressAchievement):
         super(MedalPoppelAchievement, self).__init__('medalPoppel', _AB.TOTAL, dossier, value)
 
     def getNextLevelInfo(self):
-        return (
-         'vehiclesLeft', self._lvlUpValue)
+        return ('vehiclesLeft', self._lvlUpValue)
 
     def _readProgressValue(self, dossier):
         return dossier.getRecordValue(_AB.TOTAL, 'medalPoppel')
@@ -228,8 +218,7 @@ class MedalRotmistrovAchievement(ClassProgressAchievement):
         super(MedalRotmistrovAchievement, self).__init__('medalRotmistrov', _AB.CLAN, dossier, value)
 
     def getNextLevelInfo(self):
-        return (
-         'battlesLeft', self._lvlUpValue)
+        return ('battlesLeft', self._lvlUpValue)
 
     def _readProgressValue(self, dossier):
         return dossier.getRecordValue(_AB.CLAN, 'medalRotmistrov')
@@ -248,8 +237,7 @@ class RankedStayingPowerAchievement(ClassProgressAchievement):
         ClassProgressAchievement.__init__(self, self.__ACHIEVEMENT_NAME, _AB.TOTAL, dossier, value)
 
     def getNextLevelInfo(self):
-        return (
-         'stepsLeft', self._lvlUpValue)
+        return ('stepsLeft', self._lvlUpValue)
 
     def _readValue(self, dossier):
         return self.__getLvlValue(dossier)
@@ -259,10 +247,7 @@ class RankedStayingPowerAchievement(ClassProgressAchievement):
 
     @classmethod
     def checkIsInDossier(cls, block, name, dossier):
-        if dossier is not None:
-            return cls.__getLvlValue(dossier) > cls.__DEFAULT_LEVEL
-        else:
-            return False
+        return cls.__getLvlValue(dossier) > cls.__DEFAULT_LEVEL if dossier is not None else False
 
     def _readProgressValue(self, dossier):
         return self.__getLvlValue(dossier)
@@ -282,8 +267,7 @@ class RankedDivisionFighterAchievement(ClassProgressAchievement):
         ClassProgressAchievement.__init__(self, self.__ACHIEVEMENT_NAME, _AB.TOTAL, dossier, value)
 
     def getNextLevelInfo(self):
-        return (
-         'battlesLeft', self._lvlUpValue)
+        return ('battlesLeft', self._lvlUpValue)
 
     def _readValue(self, dossier):
         return self.__getLvlValue(dossier)
@@ -293,10 +277,7 @@ class RankedDivisionFighterAchievement(ClassProgressAchievement):
 
     @classmethod
     def checkIsInDossier(cls, block, name, dossier):
-        if dossier is not None:
-            return cls.__getLvlValue(dossier) > cls.__DEFAULT_LEVEL
-        else:
-            return False
+        return cls.__getLvlValue(dossier) > cls.__DEFAULT_LEVEL if dossier is not None else False
 
     def _readProgressValue(self, dossier):
         return self.__getLvlValue(dossier)
@@ -317,8 +298,7 @@ class ReferralProgramClassAchievement(ClassProgressAchievement):
         return validators.requiresReferralProgram() or validators.alreadyAchieved(cls, name, block, dossier)
 
     def getNextLevelInfo(self):
-        return (
-         'recruitsLeft', self._lvlUpValue)
+        return ('recruitsLeft', self._lvlUpValue)
 
     def _readProgressValue(self, dossier):
         return dossier.getRecordValue(_AB.TOTAL, 'RP2018sergeant')
@@ -333,8 +313,7 @@ class SoldierOfFortuneAchievement(Fortification, ClassProgressAchievement):
         ClassProgressAchievement.__init__(self, 'soldierOfFortune', _AB.FORT, dossier, value)
 
     def getNextLevelInfo(self):
-        return (
-         'winsLeft', self._lvlUpValue)
+        return ('winsLeft', self._lvlUpValue)
 
     def _readProgressValue(self, dossier):
         return dossier.getRecordValue(_AB.FORT, 'soldierOfFortune')
@@ -349,8 +328,7 @@ class StormLordAchievement(Deprecated, NoProgressBar, ClassProgressAchievement):
         super(StormLordAchievement, self).__init__('stormLord', _AB.FALLOUT, dossier, value)
 
     def getNextLevelInfo(self):
-        return (
-         'vehiclesLeft', self._lvlUpValue)
+        return ('vehiclesLeft', self._lvlUpValue)
 
     def _readProgressValue(self, dossier):
         return dossier.getRecordValue(_AB.FALLOUT, 'stormLord')
@@ -365,8 +343,7 @@ class StrategicOperationsAchievement(Deprecated, NoProgressBar, ClassProgressAch
         super(StrategicOperationsAchievement, self).__init__('strategicOperations', _AB.RATED_7X7, dossier, value)
 
     def getNextLevelInfo(self):
-        return (
-         'winsLeft', self._lvlUpValue)
+        return ('winsLeft', self._lvlUpValue)
 
     def _readProgressValue(self, dossier):
         return dossier.getRecordValue(_AB.RATED_7X7, 'strategicOperations')
@@ -381,8 +358,7 @@ class WinnerLaurelsAchievement(Deprecated, NoProgressBar, ClassProgressAchieveme
         super(WinnerLaurelsAchievement, self).__init__('winnerLaurels', _AB.FALLOUT, dossier, value)
 
     def getNextLevelInfo(self):
-        return (
-         'winPointsLeft', self._lvlUpValue)
+        return ('winPointsLeft', self._lvlUpValue)
 
     def _readProgressValue(self, dossier):
         return dossier.getRecordValue(_AB.FALLOUT, 'winnerLaurels')

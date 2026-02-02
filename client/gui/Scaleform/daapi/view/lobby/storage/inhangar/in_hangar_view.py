@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/inhangar/in_hangar_view.py
 from collections import namedtuple
 from gui.Scaleform.daapi.view.common.filter_popover import VehiclesFilterPopover
 from gui.Scaleform.daapi.view.meta.StorageCategoryInHangarViewMeta import StorageCategoryInHangarViewMeta
@@ -7,27 +9,19 @@ from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers import dependency
 from skeletons.gui.shared import IItemsCache
-StorageCategoryInHangarDataVO = namedtuple('StorageCategoryInHangarDataVO', ('displayString',
-                                                                             'isZeroCount',
-                                                                             'shouldShow',
-                                                                             'searchInputLabel',
-                                                                             'searchInputName',
-                                                                             'searchInputTooltip',
-                                                                             'searchInputMaxChars'))
+StorageCategoryInHangarDataVO = namedtuple('StorageCategoryInHangarDataVO', ('displayString', 'isZeroCount', 'shouldShow', 'searchInputLabel', 'searchInputName', 'searchInputTooltip', 'searchInputMaxChars'))
 _SEARCH_INPUT_MAX_CHARS = 50
-_TABS_DATA = (
- {'id': STORAGE_CONSTANTS.VEHICLES_TAB_ALL, 
-    'label': STORAGE.INHANGAR_TABS_ALL, 
-    'linkage': STORAGE_CONSTANTS.IN_HANGAR_ALL_VEHICLES_TAB, 
-    'selected': False},
- {'id': STORAGE_CONSTANTS.VEHICLES_TAB_RESTORE, 
-    'label': STORAGE.INHANGAR_TABS_RESTORE, 
-    'linkage': STORAGE_CONSTANTS.IN_HANGAR_RESTORE_VEHICLES_TAB, 
-    'selected': False})
-_RENT_TAB_DATA = {'id': STORAGE_CONSTANTS.VEHICLES_TAB_RENT, 
-   'label': STORAGE.INHANGAR_TABS_RENT, 
-   'linkage': STORAGE_CONSTANTS.IN_HANGAR_RENT_VEHICLES_TAB, 
-   'selected': False}
+_TABS_DATA = ({'id': STORAGE_CONSTANTS.VEHICLES_TAB_ALL,
+  'label': STORAGE.INHANGAR_TABS_ALL,
+  'linkage': STORAGE_CONSTANTS.IN_HANGAR_ALL_VEHICLES_TAB,
+  'selected': False}, {'id': STORAGE_CONSTANTS.VEHICLES_TAB_RESTORE,
+  'label': STORAGE.INHANGAR_TABS_RESTORE,
+  'linkage': STORAGE_CONSTANTS.IN_HANGAR_RESTORE_VEHICLES_TAB,
+  'selected': False})
+_RENT_TAB_DATA = {'id': STORAGE_CONSTANTS.VEHICLES_TAB_RENT,
+ 'label': STORAGE.INHANGAR_TABS_RENT,
+ 'linkage': STORAGE_CONSTANTS.IN_HANGAR_RENT_VEHICLES_TAB,
+ 'selected': False}
 
 class StorageVehicleFilterPopover(VehiclesFilterPopover):
 
@@ -58,9 +52,7 @@ class StorageCategoryInHangarView(StorageCategoryInHangarViewMeta):
         self.setActiveTab(STORAGE_CONSTANTS.VEHICLES_TAB_ALL)
 
     def getTabsData(self):
-        if self.__canShowRentTab():
-            return _TABS_DATA + (_RENT_TAB_DATA,)
-        return _TABS_DATA
+        return _TABS_DATA + (_RENT_TAB_DATA,) if self.__canShowRentTab() else _TABS_DATA
 
     def __canShowRentTab(self):
         criteria = REQ_CRITERIA.VEHICLE.RENT

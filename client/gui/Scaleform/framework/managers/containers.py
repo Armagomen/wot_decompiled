@@ -1,4 +1,7 @@
-import logging, weakref
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/framework/managers/containers.py
+import logging
+import weakref
 from collections import OrderedDict
 from functools import partial
 import typing
@@ -16,10 +19,7 @@ if typing.TYPE_CHECKING:
     from typing import List
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
-_POPUPS_CONTAINERS = (
- WindowLayer.TOP_WINDOW,
- WindowLayer.FULLSCREEN_WINDOW,
- WindowLayer.WINDOW)
+_POPUPS_CONTAINERS = (WindowLayer.TOP_WINDOW, WindowLayer.FULLSCREEN_WINDOW, WindowLayer.WINDOW)
 
 class POP_UP_CRITERIA(object):
     VIEW_ALIAS = 1
@@ -45,12 +45,11 @@ class ExternalCriteria(object):
         raise NotImplementedError('ExternalCriteria.find must be implemented')
 
 
-_VIEW_SEARCH_CRITERIA_HANDLERS = {VIEW_SEARCH_CRITERIA.VIEW_ALIAS: lambda view, value: view.alias == value, 
-   VIEW_SEARCH_CRITERIA.VIEW_UNIQUE_NAME: lambda view, value: view.uniqueName == value}
+_VIEW_SEARCH_CRITERIA_HANDLERS = {VIEW_SEARCH_CRITERIA.VIEW_ALIAS: lambda view, value: view.alias == value,
+ VIEW_SEARCH_CRITERIA.VIEW_UNIQUE_NAME: lambda view, value: view.uniqueName == value}
 
 class ViewContainer(object):
-    __slots__ = ('__layer', '__child', '_views', '_loadingViews', '__containerManager',
-                 '__parentContainer')
+    __slots__ = ('__layer', '__child', '_views', '_loadingViews', '__containerManager', '__parentContainer')
 
     def __init__(self, layer, containerManager=None):
         super(ViewContainer, self).__init__()
@@ -63,7 +62,7 @@ class ViewContainer(object):
         return
 
     def __repr__(self):
-        return ('{}[{}]=[layer=[{}], views=[{}], loadingViews=[{}], child=[{}]]').format(self.__class__.__name__, hex(id(self)), self.__layer, self._views, self._loadingViews, self.__child)
+        return '{}[{}]=[layer=[{}], views=[{}], loadingViews=[{}], child=[{}]]'.format(self.__class__.__name__, hex(id(self)), self.__layer, self._views, self._loadingViews, self.__child)
 
     def destroy(self):
         while self.__child:
@@ -149,9 +148,7 @@ class ViewContainer(object):
             _logger.warning('There is no container "%d" to remove view "%r"!', layer, pyView)
             return False
         else:
-            if pyView.key in container._views:
-                return container._removeView(pyView)
-            return False
+            return container._removeView(pyView) if pyView.key in container._views else False
 
     def addLoadingView(self, pyView):
         if not self.isViewCompatible(pyView):
@@ -166,9 +163,7 @@ class ViewContainer(object):
             _logger.warning('There is no container %d to remove loading view %r!', layer, pyView)
             return False
         else:
-            if pyView.key in container._loadingViews:
-                return container._removeLoadingView(pyView)
-            return False
+            return container._removeLoadingView(pyView) if pyView.key in container._loadingViews else False
 
     def getAllLoadingViews(self):
         views = self._loadingViews.values()
@@ -310,7 +305,7 @@ class ViewContainer(object):
                     if handler(v, value):
                         return v
 
-        return
+        return None
 
     def __findByExCriteria(self, criteria):
 
@@ -454,7 +449,7 @@ class ChainItem(object):
         self.kwargs = kwargs
 
     def __repr__(self):
-        return ('{}[{}]=[loadParams={}, args={}, kwargs={}').format(self.__class__.__name__, hex(id(self)), self.loadParams, self.args, self.kwargs)
+        return '{}[{}]=[loadParams={}, args={}, kwargs={}'.format(self.__class__.__name__, hex(id(self)), self.loadParams, self.args, self.kwargs)
 
 
 class _LoadingChain(object):
@@ -472,7 +467,7 @@ class _LoadingChain(object):
         return
 
     def __repr__(self):
-        return ('{}[{}]=[currentView={}, queue={}, ').format(self.__class__.__name__, hex(id(self)), self.__currentView, self.__queue)
+        return '{}[{}]=[currentView={}, queue={}, '.format(self.__class__.__name__, hex(id(self)), self.__currentView, self.__queue)
 
     def destroy(self):
         if self.__chainManager is not None:
@@ -525,20 +520,18 @@ class _LoadingChain(object):
                 stop = True
                 if self.__chainManager is not None:
                     self.__chainManager.removeChain(self)
-            else:
-                viewKey, item = self.__queue.popitem(last=False)
-                if self.__chainManager is not None:
-                    view = self.__chainManager.load(item)
-                    self.__currentItem = item
-                    self.__currentView = view
-                    if view is not None:
-                        if view.isDisposed() or view.isCreated():
-                            pass
-                        else:
-                            stop = True
-                            self.__addViewEventListeners(self.__currentView)
-                else:
-                    _logger.warning('Could not load view with key %s. Chain manager is not specified.', viewKey)
+            viewKey, item = self.__queue.popitem(last=False)
+            if self.__chainManager is not None:
+                view = self.__chainManager.load(item)
+                self.__currentItem = item
+                self.__currentView = view
+                if view is not None:
+                    if view.isDisposed() or view.isCreated():
+                        pass
+                    else:
+                        stop = True
+                        self.__addViewEventListeners(self.__currentView)
+            _logger.warning('Could not load view with key %s. Chain manager is not specified.', viewKey)
 
         return
 
@@ -601,7 +594,7 @@ class _ChainManager(object):
             if chain.isViewInChain(viewKey):
                 return chain
 
-        return
+        return None
 
     def load(self, chainItem):
         return self.__containerManager.load(chainItem.loadParams, *chainItem.args, **chainItem.kwargs)
@@ -749,8 +742,7 @@ class ContainerManager(ContainerManagerMeta, IContainerManager):
             loadingItem = self.__loader.getViewLoadingItem(viewKey)
             if loadingItem is not None:
                 return loadingItem.pyEntity
-        sources = (
-         self.__globalContainer.findView, self.__viewCache.getView)
+        sources = (self.__globalContainer.findView, self.__viewCache.getView)
         for source in sources:
             view = source(viewKey)
             if view is not None:
@@ -782,10 +774,7 @@ class ContainerManager(ContainerManagerMeta, IContainerManager):
 
     def isViewAvailable(self, layer, criteria=None):
         container = self.__globalContainer.findContainer(layer)
-        if container is not None:
-            return container.getView(criteria=criteria) is not None
-        else:
-            return False
+        return container.getView(criteria=criteria) is not None if container is not None else False
 
     def showContainers(self, layers, time=0):
         self.as_showContainersS(layers, time)

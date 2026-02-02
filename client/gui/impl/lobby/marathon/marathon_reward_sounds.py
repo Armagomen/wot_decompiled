@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/marathon/marathon_reward_sounds.py
 import WWISE
 from shared_utils import CONST_CONTAINER
 

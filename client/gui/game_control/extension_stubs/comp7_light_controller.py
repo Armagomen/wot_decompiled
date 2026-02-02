@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/game_control/extension_stubs/comp7_light_controller.py
 import Event
 from skeletons.gui.game_control import IComp7LightController
 from gui.periodic_battles.models import PrimeTimeStatus
@@ -21,7 +23,7 @@ class Comp7LightController(IComp7LightController):
 
     @property
     def battleModifiers(self):
-        return ()
+        pass
 
     def fini(self):
         self.__eventsManager.clear()
@@ -52,32 +54,31 @@ class Comp7LightController(IComp7LightController):
         return False
 
     def getClosestStateChangeTime(self, now=None):
-        return 0
+        pass
 
     def getCurrentCycleID(self):
-        return
+        return None
 
     def getCurrentCycleInfo(self):
-        return (
-         None, False)
+        return (None, False)
 
     def getCurrentSeason(self, now=None, includePreannounced=False):
-        return
+        return None
 
     def getCurrentOrNextActiveCycleNumber(self, season):
-        return 0
+        pass
 
     def getEventEndTimestamp(self):
-        return
+        return None
 
     def getModeSettings(self):
-        return
+        return None
 
     def getNextSeason(self, now=None):
-        return
+        return None
 
     def getPeriodInfo(self, now=None, peripheryID=None):
-        return
+        return None
 
     def getPrimeTimes(self):
         return {}
@@ -89,10 +90,10 @@ class Comp7LightController(IComp7LightController):
         return (PrimeTimeStatus.NOT_SET, 0, False)
 
     def getPreviousSeason(self, now=None):
-        return
+        return None
 
     def getSeason(self, seasonID):
-        return
+        return None
 
     def getSeasonsPassed(self, now=None):
         return []
@@ -101,13 +102,13 @@ class Comp7LightController(IComp7LightController):
         return []
 
     def getTimer(self, now=None, peripheryID=None):
-        return 0
+        pass
 
     def getLeftTimeToPrimeTimesEnd(self, now=None):
-        return 0
+        pass
 
     def getQuestsTimerLeft(self):
-        return 0
+        pass
 
     def isEnabled(self):
         return False
@@ -137,19 +138,19 @@ class Comp7LightController(IComp7LightController):
         return False
 
     def getPreannouncedSeason(self):
-        return
+        return None
 
     def getRoleEquipment(self, roleName):
-        return
+        return None
 
     def getEquipmentStartLevel(self, roleName):
-        return
+        return None
 
     def getRoleEquipmentOverrides(self, roleName):
-        return
+        return None
 
     def getPoiEquipmentOverrides(self, poiName):
-        return
+        return None
 
     def isBattleModifiersAvailable(self):
         return False

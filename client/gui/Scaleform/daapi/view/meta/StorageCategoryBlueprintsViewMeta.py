@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/StorageCategoryBlueprintsViewMeta.py
 from gui.Scaleform.daapi.view.lobby.storage.vehicle_view import VehicleView
 
 class StorageCategoryBlueprintsViewMeta(VehicleView):
@@ -9,13 +11,10 @@ class StorageCategoryBlueprintsViewMeta(VehicleView):
         self._printOverrideError('selectConvertible')
 
     def as_updateIntelligenceDataS(self, data):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateIntelligenceData(data)
+        return self.flashObject.as_updateIntelligenceData(data) if self._isDAAPIInited() else None
 
     def as_updateNationalFragmentsS(self, fragments):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateNationalFragments(fragments)
+        return self.flashObject.as_updateNationalFragments(fragments) if self._isDAAPIInited() else None
 
     def as_updateCanConvertS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_updateCanConvert(value)
+        return self.flashObject.as_updateCanConvert(value) if self._isDAAPIInited() else None

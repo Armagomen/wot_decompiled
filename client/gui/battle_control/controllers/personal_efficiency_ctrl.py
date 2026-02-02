@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/battle_control/controllers/personal_efficiency_ctrl.py
 import weakref
 from collections import defaultdict, deque
 import Event
@@ -9,7 +11,7 @@ from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID as _FET
 _LOG_MAX_LEN = 100
 
 class _EfficiencyInfo(object):
-    __slots__ = ('__type', )
+    __slots__ = ('__type',)
 
     def __init__(self, etype):
         super(_EfficiencyInfo, self).__init__()
@@ -35,7 +37,7 @@ class _FeedbackEventEfficiencyInfo(_EfficiencyInfo):
 
 
 class _DamageEfficiencyInfo(_FeedbackEventEfficiencyInfo):
-    __slots__ = ('__damage', )
+    __slots__ = ('__damage',)
 
     def __init__(self, etype, event):
         super(_DamageEfficiencyInfo, self).__init__(etype, event)
@@ -139,7 +141,7 @@ class _DamageEfficiencyInfo(_FeedbackEventEfficiencyInfo):
 
 
 class _CriticalHitsEfficiencyInfo(_FeedbackEventEfficiencyInfo):
-    __slots__ = ('__critsExtra', )
+    __slots__ = ('__critsExtra',)
 
     def __init__(self, etype, event):
         super(_CriticalHitsEfficiencyInfo, self).__init__(etype, event)
@@ -225,7 +227,7 @@ class _CriticalHitsEfficiencyInfo(_FeedbackEventEfficiencyInfo):
 
 
 class _DestructibleDamagedEfficiencyInfo(_FeedbackEventEfficiencyInfo):
-    __slots__ = ('__damage', )
+    __slots__ = ('__damage',)
 
     def __init__(self, etype, event):
         super(_DestructibleDamagedEfficiencyInfo, self).__init__(etype, event)
@@ -271,29 +273,24 @@ class _DestructibleDamagedEfficiencyInfo(_FeedbackEventEfficiencyInfo):
         return self.__damage.isDestroyerStrike(primary=primary)
 
 
-_AGGREGATED_DAMAGE_EFFICIENCY_TYPES = (
- _ETYPE.DAMAGE, _ETYPE.ASSIST_DAMAGE, _ETYPE.BLOCKED_DAMAGE, _ETYPE.STUN)
-_FEEDBACK_EVENT_TYPE_TO_PERSONAL_EFFICIENCY_TYPE = {_FET.PLAYER_DAMAGED_HP_ENEMY: (
-                                _ETYPE.DAMAGE, _DamageEfficiencyInfo), 
-   _FET.PLAYER_ASSIST_TO_KILL_ENEMY: (
-                                    _ETYPE.ASSIST_DAMAGE, _DamageEfficiencyInfo), 
-   _FET.PLAYER_USED_ARMOR: (
-                          _ETYPE.BLOCKED_DAMAGE, _DamageEfficiencyInfo), 
-   _FET.ENEMY_DAMAGED_HP_PLAYER: (
-                                _ETYPE.RECEIVED_DAMAGE, _DamageEfficiencyInfo), 
-   _FET.ENEMY_DAMAGED_DEVICE_PLAYER: (
-                                    _ETYPE.RECEIVED_CRITICAL_HITS, _CriticalHitsEfficiencyInfo), 
-   _FET.DESTRUCTIBLE_DAMAGED: (
-                             _ETYPE.DAMAGE, _DestructibleDamagedEfficiencyInfo), 
-   _FET.PLAYER_ASSIST_TO_STUN_ENEMY: (
-                                    _ETYPE.STUN, _DamageEfficiencyInfo)}
+_AGGREGATED_DAMAGE_EFFICIENCY_TYPES = (_ETYPE.DAMAGE,
+ _ETYPE.ASSIST_DAMAGE,
+ _ETYPE.BLOCKED_DAMAGE,
+ _ETYPE.STUN)
+_FEEDBACK_EVENT_TYPE_TO_PERSONAL_EFFICIENCY_TYPE = {_FET.PLAYER_DAMAGED_HP_ENEMY: (_ETYPE.DAMAGE, _DamageEfficiencyInfo),
+ _FET.PLAYER_ASSIST_TO_KILL_ENEMY: (_ETYPE.ASSIST_DAMAGE, _DamageEfficiencyInfo),
+ _FET.PLAYER_USED_ARMOR: (_ETYPE.BLOCKED_DAMAGE, _DamageEfficiencyInfo),
+ _FET.ENEMY_DAMAGED_HP_PLAYER: (_ETYPE.RECEIVED_DAMAGE, _DamageEfficiencyInfo),
+ _FET.ENEMY_DAMAGED_DEVICE_PLAYER: (_ETYPE.RECEIVED_CRITICAL_HITS, _CriticalHitsEfficiencyInfo),
+ _FET.DESTRUCTIBLE_DAMAGED: (_ETYPE.DAMAGE, _DestructibleDamagedEfficiencyInfo),
+ _FET.PLAYER_ASSIST_TO_STUN_ENEMY: (_ETYPE.STUN, _DamageEfficiencyInfo)}
 
 def _createEfficiencyInfoFromFeedbackEvent(event):
     if event.getType() in _FEEDBACK_EVENT_TYPE_TO_PERSONAL_EFFICIENCY_TYPE:
         etype, cls = _FEEDBACK_EVENT_TYPE_TO_PERSONAL_EFFICIENCY_TYPE[event.getType()]
         return cls(etype, event)
     else:
-        return
+        return None
 
 
 class PersonalEfficiencyController(IBattleController):
@@ -330,8 +327,7 @@ class PersonalEfficiencyController(IBattleController):
         return self.__totalEfficiency[eType]
 
     def getLoogedEfficiency(self, types):
-        return [ d for d in reversed(self.__efficiencyLog) if BitmaskHelper.hasAnyBitSet(types, d.getType())
-               ]
+        return [ d for d in reversed(self.__efficiencyLog) if BitmaskHelper.hasAnyBitSet(types, d.getType()) ]
 
     def _onPlayerFeedbackReceived(self, events):
         eventsCount = 0

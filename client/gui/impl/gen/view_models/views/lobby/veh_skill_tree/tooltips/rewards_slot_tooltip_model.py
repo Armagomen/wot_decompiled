@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/veh_skill_tree/tooltips/rewards_slot_tooltip_model.py
 from gui.impl.gen.view_models.common.missions.bonuses.icon_bonus_model import IconBonusModel
 
 class RewardsSlotTooltipModel(IconBonusModel):

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/destructible_entities.py
 import ResMgr
 from items import _xml
 from constants import IS_CLIENT, IS_BASEAPP, IS_BOT, IS_CELLAPP, IS_WEB
@@ -11,8 +13,7 @@ g_destructibleEntitiesCache = None
 class DESTRUCTIBLE_ENTITY_TYPES:
     EPIC_HEADQUARTER = 2
     EPIC_HEADQUARTER89 = 3
-    EPIC_HEADQUARTERS = (
-     EPIC_HEADQUARTER, EPIC_HEADQUARTER89)
+    EPIC_HEADQUARTERS = (EPIC_HEADQUARTER, EPIC_HEADQUARTER89)
 
 
 class DestructibleEntitiesCache(object):
@@ -37,7 +38,7 @@ class DestructibleEntitiesCache(object):
 
 
 class DestructibleEntityType(object):
-    maxNumStateComponents = property(lambda self: max(len(state.components) for state in self.states.values()))
+    maxNumStateComponents = property(lambda self: max((len(state.components) for state in self.states.values())))
 
     def __init__(self, id, displayName, health, destroyedNotificationRadius, materials, observationPoints=(), observedPoints=(), directVisionRadius=None, normalRadioDistance=None):
         self.id = id
@@ -109,8 +110,7 @@ def init():
 
 
 def determineDestructibleEntityTypeID(validVehicleLevels, defaultTypeID):
-    validVehicleLevelsType3 = {
-     8, 9}
+    validVehicleLevelsType3 = {8, 9}
     if set(validVehicleLevels) == validVehicleLevelsType3:
         return 3
     else:
@@ -189,29 +189,23 @@ def _readDestructibleEntitiesEffects(filename):
     return
 
 
-DestructibleMaterialInfo = namedtuple('DestructibleMaterialInfo', ('kind', 'armor',
-                                                                   'effectMaterialIdx',
-                                                                   'extra', 'vehicleDamageFactor',
-                                                                   'useHitAngle',
-                                                                   'mayRicochet',
-                                                                   'collideOnceOnly',
-                                                                   'checkCaliberForRicochet',
-                                                                   'checkCaliberForHitAngleNorm'))
+DestructibleMaterialInfo = namedtuple('DestructibleMaterialInfo', ('kind', 'armor', 'effectMaterialIdx', 'extra', 'vehicleDamageFactor', 'useHitAngle', 'mayRicochet', 'collideOnceOnly', 'checkCaliberForRicochet', 'checkCaliberForHitAngleNorm'))
 
 def _readMaterials(parentXmlCtx, section):
     materials = {}
     if IS_BASEAPP or IS_BOT:
         return materials
-    for matName, (xmlCtx, matSection) in _xml.getItemsWithContext(parentXmlCtx, section):
-        matKind = material_kinds.IDS_BY_NAMES.get(matName)
-        if matKind is None:
-            _xml.raiseWrongXml(xmlCtx, matName, 'material kind name is unknown')
-        if matKind in materials:
-            _xml.raiseWrongXml(xmlCtx, matName, 'duplicate material kind')
-        effectMaterialName = _xml.readString(xmlCtx, matSection, 'effectMaterial')
-        effectMaterialIdx = EFFECT_MATERIAL_INDEXES_BY_NAMES.get(effectMaterialName)
-        if effectMaterialIdx is None:
-            _xml.raiseWrongXml(xmlCtx, matName, 'Unknown effect material %s' % effectMaterialName)
-        materials[matKind] = DestructibleMaterialInfo(kind=matKind, armor=_xml.readInt(xmlCtx, matSection, 'armor'), extra=None, vehicleDamageFactor=_xml.readFraction(xmlCtx, matSection, 'vehicleDamageFactor'), useHitAngle=_xml.readBool(xmlCtx, matSection, 'useHitAngle'), mayRicochet=_xml.readBool(xmlCtx, matSection, 'mayRicochet'), collideOnceOnly=True, checkCaliberForRicochet=_xml.readBool(xmlCtx, matSection, 'checkCaliberForRicochet'), checkCaliberForHitAngleNorm=_xml.readBool(xmlCtx, matSection, 'checkCaliberForHitAngleNorm'), effectMaterialIdx=effectMaterialIdx)
+    else:
+        for matName, (xmlCtx, matSection) in _xml.getItemsWithContext(parentXmlCtx, section):
+            matKind = material_kinds.IDS_BY_NAMES.get(matName)
+            if matKind is None:
+                _xml.raiseWrongXml(xmlCtx, matName, 'material kind name is unknown')
+            if matKind in materials:
+                _xml.raiseWrongXml(xmlCtx, matName, 'duplicate material kind')
+            effectMaterialName = _xml.readString(xmlCtx, matSection, 'effectMaterial')
+            effectMaterialIdx = EFFECT_MATERIAL_INDEXES_BY_NAMES.get(effectMaterialName)
+            if effectMaterialIdx is None:
+                _xml.raiseWrongXml(xmlCtx, matName, 'Unknown effect material %s' % effectMaterialName)
+            materials[matKind] = DestructibleMaterialInfo(kind=matKind, armor=_xml.readInt(xmlCtx, matSection, 'armor'), extra=None, vehicleDamageFactor=_xml.readFraction(xmlCtx, matSection, 'vehicleDamageFactor'), useHitAngle=_xml.readBool(xmlCtx, matSection, 'useHitAngle'), mayRicochet=_xml.readBool(xmlCtx, matSection, 'mayRicochet'), collideOnceOnly=True, checkCaliberForRicochet=_xml.readBool(xmlCtx, matSection, 'checkCaliberForRicochet'), checkCaliberForHitAngleNorm=_xml.readBool(xmlCtx, matSection, 'checkCaliberForHitAngleNorm'), effectMaterialIdx=effectMaterialIdx)
 
-    return materials
+        return materials

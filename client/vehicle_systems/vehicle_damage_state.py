@@ -1,13 +1,15 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/vehicle_systems/vehicle_damage_state.py
 import constants
 
 class VehicleDamageState(object):
     MODEL_STATE_NAMES = ('undamaged', 'destroyed', 'exploded')
-    __healthToStateMap = {0: 'destruction', 
-       constants.SPECIAL_VEHICLE_HEALTH.AMMO_BAY_DESTROYED: 'ammoBayBurnOff', 
-       constants.SPECIAL_VEHICLE_HEALTH.AMMO_BAY_EXPLODED: 'ammoBayBurnOff', 
-       constants.SPECIAL_VEHICLE_HEALTH.TURRET_DETACHED: 'ammoBayExplosion', 
-       constants.SPECIAL_VEHICLE_HEALTH.FUEL_EXPLODED: 'fuelExplosion', 
-       constants.SPECIAL_VEHICLE_HEALTH.DESTR_BY_FALL_RAMMING: 'rammingDestruction'}
+    __healthToStateMap = {0: 'destruction',
+     constants.SPECIAL_VEHICLE_HEALTH.AMMO_BAY_DESTROYED: 'ammoBayBurnOff',
+     constants.SPECIAL_VEHICLE_HEALTH.AMMO_BAY_EXPLODED: 'ammoBayBurnOff',
+     constants.SPECIAL_VEHICLE_HEALTH.TURRET_DETACHED: 'ammoBayExplosion',
+     constants.SPECIAL_VEHICLE_HEALTH.FUEL_EXPLODED: 'fuelExplosion',
+     constants.SPECIAL_VEHICLE_HEALTH.DESTR_BY_FALL_RAMMING: 'rammingDestruction'}
 
     @staticmethod
     def getState(health, isCrewActive, isUnderWater):
@@ -19,14 +21,14 @@ class VehicleDamageState(object):
             return 'alive'
         return VehicleDamageState.__healthToStateMap[health]
 
-    __stateToModelEffectsMap = {'ammoBayExplosion': ('exploded', None), 
-       'ammoBayBurnOff': ('destroyed', None), 
-       'fuelExplosion': ('destroyed', 'fuelExplosion'), 
-       'destruction': ('destroyed', 'destruction'), 
-       'crewDeath': ('undamaged', 'crewDeath'), 
-       'rammingDestruction': ('destroyed', 'rammingDestruction'), 
-       'submersionDeath': ('undamaged', 'submersionDeath'), 
-       'alive': ('undamaged', 'empty')}
+    __stateToModelEffectsMap = {'ammoBayExplosion': ('exploded', None),
+     'ammoBayBurnOff': ('destroyed', None),
+     'fuelExplosion': ('destroyed', 'fuelExplosion'),
+     'destruction': ('destroyed', 'destruction'),
+     'crewDeath': ('undamaged', 'crewDeath'),
+     'rammingDestruction': ('destroyed', 'rammingDestruction'),
+     'submersionDeath': ('undamaged', 'submersionDeath'),
+     'alive': ('undamaged', 'empty')}
 
     @staticmethod
     def getStateParams(state):

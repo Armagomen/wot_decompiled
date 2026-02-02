@@ -1,4 +1,11 @@
-import logging, weakref, typing, CGF, GenericComponents, Math
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/PoiComponent.py
+import logging
+import weakref
+import typing
+import CGF
+import GenericComponents
+import Math
 from helpers import dependency, fixed_dict
 from points_of_interest.components import PoiStateComponent
 from points_of_interest_shared import PoiType, PoiStatus

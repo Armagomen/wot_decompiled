@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/dog_tags/animated_dog_tag_grade_tooltip.py
 from frameworks.wulf import ViewSettings
 from advanced_achievements_client.items import SteppedAchievement
 from dog_tags_common.components_config import componentConfigAdapter as componentConfig
@@ -23,7 +25,7 @@ class AnimatedDogTagGradeTooltip(ViewImpl):
 
     def _onLoading(self, backgroundId, engravingId):
         super(AnimatedDogTagGradeTooltip, self)._onLoading()
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setBackgroundId(backgroundId)
             model.setEngravingId(engravingId)
             achievement = self.__getRequiredAchievement(backgroundId)

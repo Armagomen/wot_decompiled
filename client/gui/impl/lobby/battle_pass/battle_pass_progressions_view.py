@@ -1,4 +1,7 @@
-import logging, typing
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/battle_pass/battle_pass_progressions_view.py
+import logging
+import typing
 from functools import partial
 from operator import itemgetter
 from PlayerEvents import g_playerEvents
@@ -44,10 +47,10 @@ if typing.TYPE_CHECKING:
     from gui.shared.gui_items.customization.c11n_items import Style
 _logger = logging.getLogger(__name__)
 _bpRes = R.strings.battle_pass
-_CHAPTER_STATES = {ChapterState.ACTIVE: ChapterStates.ACTIVE, 
-   ChapterState.COMPLETED: ChapterStates.COMPLETED, 
-   ChapterState.PAUSED: ChapterStates.PAUSED, 
-   ChapterState.NOT_STARTED: ChapterStates.NOTSTARTED}
+_CHAPTER_STATES = {ChapterState.ACTIVE: ChapterStates.ACTIVE,
+ ChapterState.COMPLETED: ChapterStates.COMPLETED,
+ ChapterState.PAUSED: ChapterStates.PAUSED,
+ ChapterState.NOT_STARTED: ChapterStates.NOTSTARTED}
 _FREE_POINTS_INDEX = 0
 
 class ProgressionPresenter(ViewComponent[BattlePassProgressionsViewModel]):
@@ -69,7 +72,7 @@ class ProgressionPresenter(ViewComponent[BattlePassProgressionsViewModel]):
         self.__showReplaceRewardAnimations = False
         self.__notifier = None
         self.__exitSoundsIsPlayed = False
-        self.__chapterID = (self.__battlePass.isHoliday() or kwargs)['chapterID'] if 1 else self.__battlePass.getHolidayChapterID()
+        self.__chapterID = kwargs['chapterID'] if not self.__battlePass.isHoliday() else self.__battlePass.getHolidayChapterID()
         return
 
     @property
@@ -82,9 +85,7 @@ class ProgressionPresenter(ViewComponent[BattlePassProgressionsViewModel]):
             return
         else:
             tooltipData = self.__tooltipItems.get(tooltipId)
-            if tooltipData is not None:
-                return tooltipData
-            return self.__specialTooltipItems.get(tooltipId)
+            return tooltipData if tooltipData is not None else self.__specialTooltipItems.get(tooltipId)
 
     def updateInitialData(self, **kwargs):
         chapterID = kwargs.get('chapterID')
@@ -108,87 +109,47 @@ class ProgressionPresenter(ViewComponent[BattlePassProgressionsViewModel]):
         BattlePassState.goTo()
 
     def _getEvents(self):
-        return (
-         (
-          self.viewModel.onChapterActivate, self.__onChapterActivate),
-         (
-          self.viewModel.onAboutClick, self.__onAboutClick),
-         (
-          self.viewModel.widget3dStyle.onPreviewClick, self.__onProgressiveStylePreview),
-         (
-          self.viewModel.widgetFinalRewards.onRewardPreviewClick, self.__onFinalRewardPreview),
-         (
-          self.viewModel.onTakeClick, self.__onTakeClick),
-         (
-          self.viewModel.onTakeAllClick, self.__onTakeAllClick),
-         (
-          self.viewModel.onOpenShopClick, self.__onOpenShopClick),
-         (
-          self.viewModel.onPointsInfoClick, self.__onPointsInfoClick),
-         (
-          self.viewModel.onFinishedAnimation, self.__resetReplaceRewardAnimations),
-         (
-          self.viewModel.onLevelsAnimationFinished, self.__resetLevelAnimations),
-         (
-          self.viewModel.onStyleBonusPreview, self.__onStyleBonusPreview),
-         (
-          self.viewModel.widgetFinalRewards.showTankmen, self.__showTankmen),
-         (
-          self.viewModel.awardsWidget.onBpcoinClick, self.__showCoinsShop),
-         (
-          self.viewModel.awardsWidget.showTalers, self.__showPointsShop),
-         (
-          self.viewModel.awardsWidget.onTakeRewardsClick, self.__takeAllRewards),
-         (
-          self.viewModel.awardsWidget.showTankmen, self.__showTankmen),
-         (
-          self.viewModel.awardsWidget.collectionEntryPoint.openCollection, self.__openCollection),
-         (
-          self.viewModel.awardsWidget.showTickets, self.__showTickets),
-         (
-          self.__battlePass.onPointsUpdated, self.__onPointsUpdated),
-         (
-          self.__battlePass.onBattlePassIsBought, self.__onBattlePassBought),
-         (
-          self.__battlePass.onBattlePassSettingsChange, self.__onBattlePassSettingsChange),
-         (
-          self.__battlePass.onRewardSelectChange, self.__onRewardSelectChange),
-         (
-          self.__battlePass.onOffersUpdated, self.__onOffersUpdated),
-         (
-          self.__battlePass.onSelectTokenUpdated, self.__onSelectTokenUpdated),
-         (
-          self.__battlePass.onChapterChanged, self.__onChapterChanged),
-         (
-          self.__collectionsSystem.onBalanceUpdated, self.__onCollectionsUpdated),
-         (
-          self.__collectionsSystem.onServerSettingsChanged, self.__onCollectionsUpdated),
-         (
-          self.__lootBoxes.onStatusChanged, self.__onTicketsUpdated),
-         (
-          self.__lootBoxes.onBoxesAvailabilityChanged, self.__onTicketsUpdated),
-         (
-          self.__lootBoxes.onBoxesCountChanged, self.__onTicketsCountUpdated),
-         (
-          self.__wallet.onWalletStatusChanged, self.__updateWalletAvailability),
-         (
-          g_playerEvents.onClientUpdated, self.__onBPTalerUpdated))
+        return ((self.viewModel.onChapterActivate, self.__onChapterActivate),
+         (self.viewModel.onAboutClick, self.__onAboutClick),
+         (self.viewModel.widget3dStyle.onPreviewClick, self.__onProgressiveStylePreview),
+         (self.viewModel.widgetFinalRewards.onRewardPreviewClick, self.__onFinalRewardPreview),
+         (self.viewModel.onTakeClick, self.__onTakeClick),
+         (self.viewModel.onTakeAllClick, self.__onTakeAllClick),
+         (self.viewModel.onOpenShopClick, self.__onOpenShopClick),
+         (self.viewModel.onPointsInfoClick, self.__onPointsInfoClick),
+         (self.viewModel.onFinishedAnimation, self.__resetReplaceRewardAnimations),
+         (self.viewModel.onLevelsAnimationFinished, self.__resetLevelAnimations),
+         (self.viewModel.onStyleBonusPreview, self.__onStyleBonusPreview),
+         (self.viewModel.widgetFinalRewards.showTankmen, self.__showTankmen),
+         (self.viewModel.awardsWidget.onBpcoinClick, self.__showCoinsShop),
+         (self.viewModel.awardsWidget.showTalers, self.__showPointsShop),
+         (self.viewModel.awardsWidget.onTakeRewardsClick, self.__takeAllRewards),
+         (self.viewModel.awardsWidget.showTankmen, self.__showTankmen),
+         (self.viewModel.awardsWidget.collectionEntryPoint.openCollection, self.__openCollection),
+         (self.viewModel.awardsWidget.showTickets, self.__showTickets),
+         (self.__battlePass.onPointsUpdated, self.__onPointsUpdated),
+         (self.__battlePass.onBattlePassIsBought, self.__onBattlePassBought),
+         (self.__battlePass.onBattlePassSettingsChange, self.__onBattlePassSettingsChange),
+         (self.__battlePass.onRewardSelectChange, self.__onRewardSelectChange),
+         (self.__battlePass.onOffersUpdated, self.__onOffersUpdated),
+         (self.__battlePass.onSelectTokenUpdated, self.__onSelectTokenUpdated),
+         (self.__battlePass.onChapterChanged, self.__onChapterChanged),
+         (self.__collectionsSystem.onBalanceUpdated, self.__onCollectionsUpdated),
+         (self.__collectionsSystem.onServerSettingsChanged, self.__onCollectionsUpdated),
+         (self.__lootBoxes.onStatusChanged, self.__onTicketsUpdated),
+         (self.__lootBoxes.onBoxesAvailabilityChanged, self.__onTicketsUpdated),
+         (self.__lootBoxes.onBoxesCountChanged, self.__onTicketsCountUpdated),
+         (self.__wallet.onWalletStatusChanged, self.__updateWalletAvailability),
+         (g_playerEvents.onClientUpdated, self.__onBPTalerUpdated))
 
     def _getListeners(self):
-        return (
-         (
-          events.BattlePassEvent.AWARD_VIEW_CLOSE, self.__onAwardViewClose, EVENT_BUS_SCOPE.LOBBY),
-         (
-          events.BattlePassEvent.ON_PURCHASE_LEVELS, self.__onPurchaseLevels, EVENT_BUS_SCOPE.LOBBY),
-         (
-          events.BattlePassEvent.BUYING_THINGS, self.__updateActionType, EVENT_BUS_SCOPE.LOBBY),
-         (
-          events.CollectionsEvent.NEW_ITEM_SHOWN, self.__onCollectionsUpdated, EVENT_BUS_SCOPE.LOBBY))
+        return ((events.BattlePassEvent.AWARD_VIEW_CLOSE, self.__onAwardViewClose, EVENT_BUS_SCOPE.LOBBY),
+         (events.BattlePassEvent.ON_PURCHASE_LEVELS, self.__onPurchaseLevels, EVENT_BUS_SCOPE.LOBBY),
+         (events.BattlePassEvent.BUYING_THINGS, self.__updateActionType, EVENT_BUS_SCOPE.LOBBY),
+         (events.CollectionsEvent.NEW_ITEM_SHOWN, self.__onCollectionsUpdated, EVENT_BUS_SCOPE.LOBBY))
 
     def _getCallbacks(self):
-        return (
-         (
-          'stats.bpcoin', self.__updateBalance),)
+        return (('stats.bpcoin', self.__updateBalance),)
 
     def _onLoading(self, *args, **kwargs):
         super(ProgressionPresenter, self)._onLoading(*args, **kwargs)
@@ -322,10 +283,10 @@ class ProgressionPresenter(ViewComponent[BattlePassProgressionsViewModel]):
         if not self.__battlePass.getRewardTypes(self.__chapterID):
             _logger.error('Cannot find rewards for widget in progression for chapter=%s', self.__chapterID)
             return
+        elif getRewardSourceByType(FinalReward.PROGRESSIVE_STYLE, self.__chapterID) == BattlePassConsts.REWARD_FREE:
+            self.__setProgressiveStyleWidget(model)
+            return
         else:
-            if getRewardSourceByType(FinalReward.PROGRESSIVE_STYLE, self.__chapterID) == BattlePassConsts.REWARD_FREE:
-                self.__setProgressiveStyleWidget(model)
-                return
             maxLevel = self.__battlePass.getMaxLevelInChapter(self.__chapterID)
             style = getStyleForChapter(self.__chapterID)
             if style is not None:
@@ -380,8 +341,7 @@ class ProgressionPresenter(ViewComponent[BattlePassProgressionsViewModel]):
         bpController = self.__battlePass
         isNeedToTake = bpController.isNeedToTakeReward(self.__chapterID, awardType, level)
         isChooseRewardEnabled = isNeedToTake and bpController.isChooseRewardEnabled(awardType, self.__chapterID, level)
-        return (
-         isNeedToTake, isChooseRewardEnabled)
+        return (isNeedToTake, isChooseRewardEnabled)
 
     @replaceNoneKwargsModel
     def __updateData(self, model=None):
@@ -482,7 +442,7 @@ class ProgressionPresenter(ViewComponent[BattlePassProgressionsViewModel]):
             state = ActionTypes.ACTIVATECHAPTER
         elif not isBattlePassBought:
             state = ActionTypes.BUY
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             model.setActionType(state)
 
     @replaceNoneKwargsModel
@@ -539,7 +499,7 @@ class ProgressionPresenter(ViewComponent[BattlePassProgressionsViewModel]):
         showFinalRewardPreviewBattlePassState(chapterID=self.__chapterID)
 
     def __onPointsUpdated(self):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             newChapter = self.__battlePass.getCurrentChapterID()
             newPoints = self.__battlePass.getPointsInChapter(self.__chapterID)
             newFreePoints = self.__battlePass.getFreePoints() + newPoints
@@ -562,7 +522,7 @@ class ProgressionPresenter(ViewComponent[BattlePassProgressionsViewModel]):
         changeBonusTooltipData(zip(rewards, tooltipIds), self.__tooltipItems)
 
     def __onBattlePassBought(self):
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             finalLevel = self.__battlePass.getMaxLevelInChapter(self.__chapterID)
             self.__resetRewardsInterval(model, MIN_LEVEL, finalLevel)
             self.__updateData(model=model)
@@ -570,7 +530,7 @@ class ProgressionPresenter(ViewComponent[BattlePassProgressionsViewModel]):
 
     def __onRewardSelectChange(self):
         self.__updateRewardSelectButton()
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             self.__setFinalRewardsWidget(model)
             finalLevel = self.__battlePass.getMaxLevelInChapter(self.__chapterID)
             self.__resetRewardsInterval(model, MIN_LEVEL, finalLevel, replaceRewards=True)
@@ -578,13 +538,12 @@ class ProgressionPresenter(ViewComponent[BattlePassProgressionsViewModel]):
     def __onSelectTokenUpdated(self):
 
         def __viewsPredicate(view):
-            return view.layoutID in (
-             R.views.lobby.battle_pass.BattlePassAwardsView(), R.views.lobby.battle_pass.RewardsSelectionView())
+            return view.layoutID in (R.views.lobby.battle_pass.BattlePassAwardsView(), R.views.lobby.battle_pass.RewardsSelectionView())
 
         if self.__gui.windowsManager.findViews(__viewsPredicate):
             return
         self.__updateRewardSelectButton()
-        with self.viewModel.transaction() as (model):
+        with self.viewModel.transaction() as model:
             self.__setFinalRewardsWidget(model)
             model.awardsWidget.setNotChosenRewardCount(self.__battlePass.getNotChosenRewardCount())
             model.awardsWidget.setIsChooseRewardsEnabled(self.__battlePass.canChooseAnyReward())
@@ -665,7 +624,7 @@ class ProgressionPresenter(ViewComponent[BattlePassProgressionsViewModel]):
 
     def __onBPTalerUpdated(self, *data):
         if data[0].get('cache', {}).get('dynamicCurrencies', {}).get(CurrencyBP.TALER.value, ''):
-            with self.viewModel.awardsWidget.transaction() as (model):
+            with self.viewModel.awardsWidget.transaction() as model:
                 model.setTalerCount(self.__itemsCache.items.stats.dynamicCurrencies.get(CurrencyBP.TALER.value, 0))
 
     def __takeAllRewards(self):
@@ -686,7 +645,7 @@ class ProgressionPresenter(ViewComponent[BattlePassProgressionsViewModel]):
         showShop(getBattlePassTalerProductsUrl())
 
     def __onCollectionsUpdated(self, *_):
-        with self.viewModel.awardsWidget.transaction() as (model):
+        with self.viewModel.awardsWidget.transaction() as model:
             fillCollectionModel(model.collectionEntryPoint, self.__battlePass.getCurrentCollectionId())
 
     def __showTankmen(self):

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/profile/ProfileUtils.py
 from debug_utils import LOG_ERROR
 from gui.Scaleform.locale.PROFILE import PROFILE
 from gui.battle_results.components import style
@@ -11,7 +13,7 @@ from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 
 def _emptyField(targetData, isCurrentUser):
-    return
+    return None
 
 
 class _AbstractField(object):
@@ -29,10 +31,10 @@ class _AbstractField(object):
         return True
 
     def _buildData(self, targetData, isCurrentUser):
-        return
+        return None
 
     def _buildTooltipData(self, targetData, isCurrentUser):
-        return
+        return None
 
 
 class _OnlyAccountField(_AbstractField):
@@ -57,10 +59,7 @@ class _BattlesCountField(_AbstractField):
         winsCount = targetData.getWinsCount()
         drawsCount = targetData.getDrawsCount()
         drawsStr = backport.getIntegralFormat(drawsCount) if drawsCount >= 0 else ProfileUtils.UNAVAILABLE_SYMBOL
-        return ProfileUtils.createToolTipData((
-         backport.getIntegralFormat(winsCount),
-         backport.getIntegralFormat(lossesCount),
-         drawsStr))
+        return ProfileUtils.createToolTipData((backport.getIntegralFormat(winsCount), backport.getIntegralFormat(lossesCount), drawsStr))
 
 
 class _WinsEfficiencyField(_AbstractField):
@@ -100,9 +99,7 @@ class _DamageCoefficientField(_AbstractField):
         return ProfileUtils.formatEfficiency(targetData.getDamageReceived(), targetData.getDamageEfficiency)
 
     def _buildTooltipData(self, targetData, isCurrentUser):
-        damageToolTipData = [
-         backport.getIntegralFormat(targetData.getDamageDealt()),
-         backport.getIntegralFormat(targetData.getDamageReceived())]
+        damageToolTipData = [backport.getIntegralFormat(targetData.getDamageDealt()), backport.getIntegralFormat(targetData.getDamageReceived())]
         if isinstance(targetData, _FalloutStatsBlock):
             if isinstance(targetData, _VehiclesStatsBlock):
                 damageToolTipData.append(backport.getIntegralFormat(targetData.getConsumablesDamageDealt()))
@@ -122,9 +119,7 @@ class _DestructionCoefficientField(_AbstractField):
         return ProfileUtils.formatEfficiency(targetData.getDeathsCount(), targetData.getFragsEfficiency)
 
     def _buildTooltipData(self, targetData, isCurrentUser):
-        destructionToolTipData = [
-         backport.getIntegralFormat(targetData.getFragsCount()),
-         backport.getIntegralFormat(targetData.getDeathsCount())]
+        destructionToolTipData = [backport.getIntegralFormat(targetData.getFragsCount()), backport.getIntegralFormat(targetData.getDeathsCount())]
         if isinstance(targetData, _FalloutStatsBlock):
             if isinstance(targetData, _VehiclesStatsBlock):
                 destructionToolTipData.append(backport.getIntegralFormat(targetData.getConsumablesFragsCount()))
@@ -140,8 +135,7 @@ class _ArmorusingField(_AbstractField):
         return ProfileUtils.formatEfficiency(pResDmg, targetData.getArmorUsingEfficiency)
 
     def _buildTooltipData(self, targetData, isCurrentUser):
-        return ProfileUtils.createToolTipData((
-         ProfileUtils.getAvgDamageBlockedValue(targetData),))
+        return ProfileUtils.createToolTipData((ProfileUtils.getAvgDamageBlockedValue(targetData),))
 
 
 def _avgExpField(targetData, isCurrentUser):
@@ -310,9 +304,7 @@ class _MaxDamageField(_AbstractField):
         return DetailedStatisticsUtils.getDetailedDataObject(self._label, self._buildData(targetData, isCurrentUser), tooltip, tooltipData)
 
     def _buildData(self, targetData, isCurrentUser):
-        if targetData.getBattlesCountVer3() > 0:
-            return backport.getIntegralFormat(targetData.getMaxDamage())
-        return ProfileUtils.UNAVAILABLE_VALUE
+        return backport.getIntegralFormat(targetData.getMaxDamage()) if targetData.getBattlesCountVer3() > 0 else ProfileUtils.UNAVAILABLE_VALUE
 
     def _buildTooltipData(self, targetData, isCurrentUser):
         maxDamageVehicle = self.itemsCache.items.getItemByCD(targetData.getMaxDamageVehicle())
@@ -448,8 +440,7 @@ def _maxWinPointsField(targetData, isCurrentUser):
     return DetailedStatisticsUtils.getDetailedDataObject(PROFILE.SECTION_STATISTICS_SCORES_MAXVICTORYPOINTS, formatedMaxWP, PROFILE.PROFILE_PARAMS_TOOLTIP_MAXVICTORYPOINTS)
 
 
-COMMON_SECTION_FIELDS = (
- _BattlesCountField(PROFILE.SECTION_STATISTICS_SCORES_TOTALBATTLES, PROFILE.PROFILE_PARAMS_TOOLTIP_BATTLESCOUNT),
+COMMON_SECTION_FIELDS = (_BattlesCountField(PROFILE.SECTION_STATISTICS_SCORES_TOTALBATTLES, PROFILE.PROFILE_PARAMS_TOOLTIP_BATTLESCOUNT),
  _WinsEfficiencyField(PROFILE.SECTION_STATISTICS_SCORES_TOTALWINS, PROFILE.PROFILE_PARAMS_TOOLTIP_WINS),
  _SurvivalField(PROFILE.SECTION_STATISTICS_SCORES_SURVIVAL, PROFILE.PROFILE_PARAMS_TOOLTIP_SURVIVAL),
  _HitsField(PROFILE.SECTION_STATISTICS_SCORES_HITS, PROFILE.PROFILE_PARAMS_TOOLTIP_HITS),
@@ -461,8 +452,7 @@ COMMON_SECTION_FIELDS = (
  _DroppedPointsField(PROFILE.SECTION_STATISTICS_SCORES_DROPPEDCAPTUREPOINTS, PROFILE.PROFILE_PARAMS_TOOLTIP_DROPPEDCAPTUREPOINTS),
  _StunNumberField(PROFILE.SECTION_TECHNIQUE_STATISTICS_STUNNUMBER, PROFILE.PROFILE_PARAMS_TOOLTIP_STUNNUMBER),
  _AssistedStunDmgField())
-COMMON_SECTION_FALLOUT_FIELDS = (
- _BattlesCountField(PROFILE.SECTION_STATISTICS_SCORES_TOTALBATTLES, PROFILE.PROFILE_PARAMS_TOOLTIP_DIF_FALLOUT_BATTLESCOUNT),
+COMMON_SECTION_FALLOUT_FIELDS = (_BattlesCountField(PROFILE.SECTION_STATISTICS_SCORES_TOTALBATTLES, PROFILE.PROFILE_PARAMS_TOOLTIP_DIF_FALLOUT_BATTLESCOUNT),
  _WinsField(PROFILE.SECTION_STATISTICS_SCORES_TOTALWINS, PROFILE.PROFILE_PARAMS_TOOLTIP_DIF_FALLOUT_WINS),
  _HitsField(PROFILE.SECTION_STATISTICS_SCORES_HITS, PROFILE.PROFILE_PARAMS_TOOLTIP_DIF_FALLOUT_HITS),
  _DamageCoefficientField(PROFILE.SECTION_STATISTICS_DETAILED_DAMAGECOEFFICIENT, PROFILE.PROFILE_PARAMS_TOOLTIP_DIF_FALLOUT_DAMAGECOEFF),
@@ -472,8 +462,7 @@ COMMON_SECTION_FALLOUT_FIELDS = (
  _emptyField,
  _flagsDeliveredField,
  _flagsAbsorbedField)
-AVERAGE_SECTION_FIELDS = (
- _avgExpField,
+AVERAGE_SECTION_FIELDS = (_avgExpField,
  _emptyField,
  _AvgDmgField(PROFILE.SECTION_STATISTICS_DETAILED_AVGDAMAGE, PROFILE.PROFILE_PARAMS_TOOLTIP_AVGDMG_SHORT),
  _AvgReceivedDmgField(PROFILE.SECTION_STATISTICS_DETAILED_AVGRECEIVEDDAMAGE, PROFILE.PROFILE_PARAMS_TOOLTIP_AVGRECEIVEDDAMAGE),
@@ -483,44 +472,20 @@ AVERAGE_SECTION_FIELDS = (
  _emptyField,
  _avgDetectedField,
  _AvgDestroyedField(PROFILE.SECTION_STATISTICS_DETAILED_AVGDESTROYEDVEHICLES, PROFILE.PROFILE_PARAMS_TOOLTIP_AVGDESTROYEDVEHICLES))
-AVERAGE_SECTION_FALLOUT_FIELDS = (
- _avgExpField,
+AVERAGE_SECTION_FALLOUT_FIELDS = (_avgExpField,
  _emptyField,
  _AvgDmgField(PROFILE.SECTION_STATISTICS_DETAILED_AVGDAMAGE, PROFILE.PROFILE_PARAMS_TOOLTIP_DIF_FALLOUT_AVGDMG_SHORT),
  _AvgReceivedDmgField(PROFILE.SECTION_STATISTICS_DETAILED_AVGRECEIVEDDAMAGE, PROFILE.PROFILE_PARAMS_TOOLTIP_DIF_FALLOUT_AVGRECEIVEDDAMAGE),
  _emptyField,
  _AvgDestroyedField(PROFILE.SECTION_STATISTICS_DETAILED_AVGDESTROYEDVEHICLES, PROFILE.PROFILE_PARAMS_TOOLTIP_DIF_FALLOUT_AVGDESTROYEDVEHICLES))
-RECORD_SECTION_FIELDS = (
- _MaxXPField(PROFILE.SECTION_STATISTICS_SCORES_MAXEXPERIENCE, PROFILE.PROFILE_PARAMS_TOOLTIP_MAXEXP),
- _MaxDamageField(PROFILE.SECTION_STATISTICS_SCORES_MAXDAMAGE, PROFILE.PROFILE_PARAMS_TOOLTIP_MAXDAMAGE, PROFILE.PROFILE_PARAMS_TOOLTIP_UNAVAILABLEMAXDAMAGE),
- _MaxDestroyedField(PROFILE.SECTION_STATISTICS_DETAILED_MAXDESTROYEDVEHICLES, PROFILE.PROFILE_PARAMS_TOOLTIP_MAXDESTROYED))
-RECORD_SECTION_FALLOUT_FIELDS = (
- _MaxXPField(PROFILE.SECTION_STATISTICS_SCORES_MAXEXPERIENCE, PROFILE.PROFILE_PARAMS_TOOLTIP_MAXEXP),
+RECORD_SECTION_FIELDS = (_MaxXPField(PROFILE.SECTION_STATISTICS_SCORES_MAXEXPERIENCE, PROFILE.PROFILE_PARAMS_TOOLTIP_MAXEXP), _MaxDamageField(PROFILE.SECTION_STATISTICS_SCORES_MAXDAMAGE, PROFILE.PROFILE_PARAMS_TOOLTIP_MAXDAMAGE, PROFILE.PROFILE_PARAMS_TOOLTIP_UNAVAILABLEMAXDAMAGE), _MaxDestroyedField(PROFILE.SECTION_STATISTICS_DETAILED_MAXDESTROYEDVEHICLES, PROFILE.PROFILE_PARAMS_TOOLTIP_MAXDESTROYED))
+RECORD_SECTION_FALLOUT_FIELDS = (_MaxXPField(PROFILE.SECTION_STATISTICS_SCORES_MAXEXPERIENCE, PROFILE.PROFILE_PARAMS_TOOLTIP_MAXEXP),
  _MaxDamageField(PROFILE.SECTION_STATISTICS_SCORES_MAXDAMAGE, PROFILE.PROFILE_PARAMS_TOOLTIP_DIF_FALLOUT_MAXDAMAGE, PROFILE.PROFILE_PARAMS_TOOLTIP_UNAVAILABLEMAXDAMAGE),
  _MaxDestroyedField(PROFILE.SECTION_STATISTICS_DETAILED_MAXDESTROYEDVEHICLES, PROFILE.PROFILE_PARAMS_TOOLTIP_DIF_FALLOUT_MAXDESTROYED),
  _maxWinPointsField)
-STATISTICS_LAYOUT = (
- (
-  PROFILE.SECTION_STATISTICS_BODYPARAMS_LABEL_COMMON,
-  COMMON_SECTION_FIELDS),
- (
-  PROFILE.SECTION_STATISTICS_BODYPARAMS_LABEL_AVERAGE,
-  AVERAGE_SECTION_FIELDS),
- (
-  PROFILE.SECTION_STATISTICS_BODYPARAMS_LABEL_RECORD,
-  RECORD_SECTION_FIELDS))
-FALLOUT_STATISTICS_LAYOUT = (
- (
-  PROFILE.SECTION_STATISTICS_BODYPARAMS_LABEL_COMMON,
-  COMMON_SECTION_FALLOUT_FIELDS),
- (
-  PROFILE.SECTION_STATISTICS_BODYPARAMS_LABEL_AVERAGE,
-  AVERAGE_SECTION_FALLOUT_FIELDS),
- (
-  PROFILE.SECTION_STATISTICS_BODYPARAMS_LABEL_RECORD,
-  RECORD_SECTION_FALLOUT_FIELDS))
-BATTLE_ROYALE_SECTION_FIELDS = (
- _BattleRoyaleBattlesCountField(PROFILE.SECTION_STATISTICS_SCORES_TOTALBATTLES, PROFILE.PROFILE_PARAMS_TOOLTIP_BRBATTLESCOUNT),
+STATISTICS_LAYOUT = ((PROFILE.SECTION_STATISTICS_BODYPARAMS_LABEL_COMMON, COMMON_SECTION_FIELDS), (PROFILE.SECTION_STATISTICS_BODYPARAMS_LABEL_AVERAGE, AVERAGE_SECTION_FIELDS), (PROFILE.SECTION_STATISTICS_BODYPARAMS_LABEL_RECORD, RECORD_SECTION_FIELDS))
+FALLOUT_STATISTICS_LAYOUT = ((PROFILE.SECTION_STATISTICS_BODYPARAMS_LABEL_COMMON, COMMON_SECTION_FALLOUT_FIELDS), (PROFILE.SECTION_STATISTICS_BODYPARAMS_LABEL_AVERAGE, AVERAGE_SECTION_FALLOUT_FIELDS), (PROFILE.SECTION_STATISTICS_BODYPARAMS_LABEL_RECORD, RECORD_SECTION_FALLOUT_FIELDS))
+BATTLE_ROYALE_SECTION_FIELDS = (_BattleRoyaleBattlesCountField(PROFILE.SECTION_STATISTICS_SCORES_TOTALBATTLES, PROFILE.PROFILE_PARAMS_TOOLTIP_BRBATTLESCOUNT),
  _BattleRoyaleWinsEfficiencyField(PROFILE.SECTION_STATISTICS_SCORES_TOTALWINS, PROFILE.PROFILE_PARAMS_TOOLTIP_BRWINS),
  _AveragePositionBR(PROFILE.SECTION_SUMMARY_SCORES_AVERAGERANK, PROFILE.PROFILE_PARAMS_TOOLTIP_BRAVERAGERANK),
  _AverageVehicleLevelBR(PROFILE.SECTION_SUMMARY_SCORES_AVERAGELEVEL, PROFILE.PROFILE_PARAMS_TOOLTIP_BRAVERAGELEVEL),
@@ -528,41 +493,16 @@ BATTLE_ROYALE_SECTION_FIELDS = (
  _emptyField,
  _DamageCoefficientField(PROFILE.SECTION_STATISTICS_DETAILED_DAMAGECOEFFICIENT, PROFILE.PROFILE_PARAMS_TOOLTIP_DAMAGECOEFF),
  _DestructionCoefficientField(PROFILE.SECTION_STATISTICS_DETAILED_DESTRUCTIONCOEFFICIENT, PROFILE.PROFILE_PARAMS_TOOLTIP_DESTROYCOEFF))
-BR_AVERAGE_SECTION_FIELDS = (
- _avgExpField,
+BR_AVERAGE_SECTION_FIELDS = (_avgExpField,
  _emptyField,
  _AvgDmgField(PROFILE.SECTION_STATISTICS_DETAILED_AVGDAMAGE, PROFILE.PROFILE_PARAMS_TOOLTIP_AVGDMG_SHORT),
  _AvgReceivedDmgField(PROFILE.SECTION_STATISTICS_DETAILED_AVGRECEIVEDDAMAGE, PROFILE.PROFILE_PARAMS_TOOLTIP_AVGRECEIVEDDAMAGE),
  _emptyField,
  _AvgDestroyedField(PROFILE.SECTION_STATISTICS_DETAILED_AVGDESTROYEDVEHICLES, PROFILE.PROFILE_PARAMS_TOOLTIP_AVGDESTROYEDVEHICLES))
-BR_RECORD_SECTION_FIELDS = (
- _MaxBattleXPBR(PROFILE.SECTION_STATISTICS_SCORES_MAXEXPERIENCE, PROFILE.PROFILE_PARAMS_TOOLTIP_BRMAXEXP),
- _MaxBattleDamageBR(PROFILE.SECTION_STATISTICS_SCORES_MAXDAMAGE, PROFILE.PROFILE_PARAMS_TOOLTIP_BRMAXDAMAGE),
- _MaxBattleFragsBR(PROFILE.SECTION_STATISTICS_DETAILED_MAXDESTROYEDVEHICLES, PROFILE.PROFILE_PARAMS_TOOLTIP_BRMAXFRAGS))
-BR_VEHICLE_RECORD_SECTION_FIELDS = (
- _MaxBattleXPVehicleBR(PROFILE.SECTION_STATISTICS_SCORES_MAXEXPERIENCE, PROFILE.PROFILE_PARAMS_TOOLTIP_MAXEXP_VEHICLE),
- _MaxBattleDamageVehicleBR(PROFILE.SECTION_STATISTICS_SCORES_MAXDAMAGE, PROFILE.PROFILE_PARAMS_TOOLTIP_MAXDAMAGE_VEHICLE),
- _MaxBattleFragsVehicleBR(PROFILE.SECTION_STATISTICS_DETAILED_MAXDESTROYEDVEHICLES, PROFILE.PROFILE_PARAMS_TOOLTIP_MAXDESTROYED_VEHICLE))
-BATTLE_ROYALE_STATISTICS_LAYOUT = (
- (
-  PROFILE.SECTION_STATISTICS_BODYPARAMS_LABEL_COMMON,
-  BATTLE_ROYALE_SECTION_FIELDS),
- (
-  PROFILE.SECTION_STATISTICS_BODYPARAMS_LABEL_AVERAGE,
-  BR_AVERAGE_SECTION_FIELDS),
- (
-  PROFILE.SECTION_STATISTICS_BODYPARAMS_LABEL_RECORD,
-  BR_RECORD_SECTION_FIELDS))
-BATTLE_ROYALE_VEHICLE_STATISTICS_LAYOUT = (
- (
-  PROFILE.SECTION_STATISTICS_BODYPARAMS_LABEL_COMMON,
-  BATTLE_ROYALE_SECTION_FIELDS),
- (
-  PROFILE.SECTION_STATISTICS_BODYPARAMS_LABEL_AVERAGE,
-  BR_AVERAGE_SECTION_FIELDS),
- (
-  PROFILE.SECTION_STATISTICS_BODYPARAMS_LABEL_RECORD,
-  BR_VEHICLE_RECORD_SECTION_FIELDS))
+BR_RECORD_SECTION_FIELDS = (_MaxBattleXPBR(PROFILE.SECTION_STATISTICS_SCORES_MAXEXPERIENCE, PROFILE.PROFILE_PARAMS_TOOLTIP_BRMAXEXP), _MaxBattleDamageBR(PROFILE.SECTION_STATISTICS_SCORES_MAXDAMAGE, PROFILE.PROFILE_PARAMS_TOOLTIP_BRMAXDAMAGE), _MaxBattleFragsBR(PROFILE.SECTION_STATISTICS_DETAILED_MAXDESTROYEDVEHICLES, PROFILE.PROFILE_PARAMS_TOOLTIP_BRMAXFRAGS))
+BR_VEHICLE_RECORD_SECTION_FIELDS = (_MaxBattleXPVehicleBR(PROFILE.SECTION_STATISTICS_SCORES_MAXEXPERIENCE, PROFILE.PROFILE_PARAMS_TOOLTIP_MAXEXP_VEHICLE), _MaxBattleDamageVehicleBR(PROFILE.SECTION_STATISTICS_SCORES_MAXDAMAGE, PROFILE.PROFILE_PARAMS_TOOLTIP_MAXDAMAGE_VEHICLE), _MaxBattleFragsVehicleBR(PROFILE.SECTION_STATISTICS_DETAILED_MAXDESTROYEDVEHICLES, PROFILE.PROFILE_PARAMS_TOOLTIP_MAXDESTROYED_VEHICLE))
+BATTLE_ROYALE_STATISTICS_LAYOUT = ((PROFILE.SECTION_STATISTICS_BODYPARAMS_LABEL_COMMON, BATTLE_ROYALE_SECTION_FIELDS), (PROFILE.SECTION_STATISTICS_BODYPARAMS_LABEL_AVERAGE, BR_AVERAGE_SECTION_FIELDS), (PROFILE.SECTION_STATISTICS_BODYPARAMS_LABEL_RECORD, BR_RECORD_SECTION_FIELDS))
+BATTLE_ROYALE_VEHICLE_STATISTICS_LAYOUT = ((PROFILE.SECTION_STATISTICS_BODYPARAMS_LABEL_COMMON, BATTLE_ROYALE_SECTION_FIELDS), (PROFILE.SECTION_STATISTICS_BODYPARAMS_LABEL_AVERAGE, BR_AVERAGE_SECTION_FIELDS), (PROFILE.SECTION_STATISTICS_BODYPARAMS_LABEL_RECORD, BR_VEHICLE_RECORD_SECTION_FIELDS))
 
 class HeaderItemsTypes(object):
     VALUE_PREFIX = 'value_'
@@ -620,15 +560,11 @@ class ProfileUtils(object):
 
     @staticmethod
     def formatEfficiency(coeff2, valueReceiveFunction):
-        if coeff2 > 0:
-            return backport.getNiceNumberFormat(valueReceiveFunction())
-        return ProfileUtils.UNAVAILABLE_VALUE
+        return backport.getNiceNumberFormat(valueReceiveFunction()) if coeff2 > 0 else ProfileUtils.UNAVAILABLE_VALUE
 
     @staticmethod
     def getEfficiencyPercent(dividend, delimiter, unavailableValue=UNAVAILABLE_VALUE):
-        if delimiter != 0:
-            return backport.getNiceNumberFormat(float(dividend) / delimiter * 100) + ProfileUtils.PERCENT_SYMBOL
-        return unavailableValue
+        return backport.getNiceNumberFormat(float(dividend) / delimiter * 100) + ProfileUtils.PERCENT_SYMBOL if delimiter != 0 else unavailableValue
 
     @staticmethod
     def packLditItemData(text, description, tooltip, icon, tooltipData=None):
@@ -637,24 +573,21 @@ class ProfileUtils(object):
         if text == -1 or text == '-1':
             enabled = False
             finalText = ProfileUtils.UNAVAILABLE_SYMBOL
-        return {'text': finalText, 
-           'description': i18n.makeString(description), 
-           'iconPath': ProfileUtils.getIconPath(icon), 
-           'tooltip': tooltip, 
-           'tooltipData': tooltipData, 
-           'enabled': enabled}
+        return {'text': finalText,
+         'description': i18n.makeString(description),
+         'iconPath': ProfileUtils.getIconPath(icon),
+         'tooltip': tooltip,
+         'tooltipData': tooltipData,
+         'enabled': enabled}
 
     @staticmethod
     def getValueOrUnavailable(targetValue):
-        if targetValue is not None:
-            return targetValue
-        else:
-            return ProfileUtils.UNAVAILABLE_VALUE
+        return targetValue if targetValue is not None else ProfileUtils.UNAVAILABLE_VALUE
 
     @staticmethod
     def getLabelDataObject(label, data):
-        return {'label': i18n.makeString(label), 
-           'data': data}
+        return {'label': i18n.makeString(label),
+         'data': data}
 
     @staticmethod
     def getLabelViewTypeDataObject(label, data, viewType):
@@ -693,10 +626,7 @@ class ProfileUtils(object):
         winsCount = targetData.getWinsCount()
         drawsCount = targetData.getDrawsCount()
         drawsStr = backport.getIntegralFormat(drawsCount) if drawsCount >= 0 else ProfileUtils.UNAVAILABLE_SYMBOL
-        battlesToolTipData = (
-         backport.getIntegralFormat(winsCount),
-         backport.getIntegralFormat(lossesCount),
-         drawsStr)
+        battlesToolTipData = (backport.getIntegralFormat(winsCount), backport.getIntegralFormat(lossesCount), drawsStr)
         return ProfileUtils.packLditItemData(backport.getIntegralFormat(battlesCount), description, tooltip, 'battles40x32.png', ProfileUtils.createToolTipData(battlesToolTipData))
 
     @classmethod
@@ -705,16 +635,11 @@ class ProfileUtils(object):
 
     @staticmethod
     def getRecordTooltipDataByVehicle(vehicle):
-        if vehicle is not None:
-            return ProfileUtils.createToolTipData([vehicle.shortUserName])
-        else:
-            return ProfileUtils.createToolTipData(None)
+        return ProfileUtils.createToolTipData([vehicle.shortUserName]) if vehicle is not None else ProfileUtils.createToolTipData(None)
 
     @staticmethod
     def getAvailableValueStr(value):
-        if value != -1:
-            return value
-        return ProfileUtils.UNAVAILABLE_SYMBOL
+        return value if value != -1 else ProfileUtils.UNAVAILABLE_SYMBOL
 
     @staticmethod
     def getAvgDamageBlockedValue(targetData):
@@ -749,9 +674,7 @@ def getProfileCommonInfo(userName, dossier):
     lastBattleTimeUserString = None
     if dossier['total']['lastBattleTime']:
         lbt = dossier['total']['lastBattleTime']
-        lastBattleTimeUserString = '%s %s' % (
-         backport.getLongDateFormat(lbt),
-         backport.getShortTimeFormat(lbt))
-    return {'name': userName, 
-       'registrationDate': '%s' % backport.getLongDateFormat(dossier['total']['creationTime']), 
-       'lastBattleDate': lastBattleTimeUserString}
+        lastBattleTimeUserString = '%s %s' % (backport.getLongDateFormat(lbt), backport.getShortTimeFormat(lbt))
+    return {'name': userName,
+     'registrationDate': '%s' % backport.getLongDateFormat(dossier['total']['creationTime']),
+     'lastBattleDate': lastBattleTimeUserString}

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/helpers/http/__init__.py
 import urllib2
 from debug_utils import LOG_WARNING, LOG_ERROR
 from helpers import feedparser, time_utils, getFullClientVersion
@@ -5,8 +7,7 @@ _CLIENT_VERSION = None
 _DEFAULT_TIMEOUT = 10.0
 _VALID_RESPONSE = 200
 _IS_NOT_MODIFIED = 304
-_VALID_RESPONSE_CODES = (
- _VALID_RESPONSE, _IS_NOT_MODIFIED)
+_VALID_RESPONSE_CODES = (_VALID_RESPONSE, _IS_NOT_MODIFIED)
 _HAS_DATA_RESPONSE_CODES = (_VALID_RESPONSE,)
 
 def _getClientVersion():
@@ -22,11 +23,32 @@ def parsedate(httpDate):
 
 def formatdate(timestamp):
     ts = time_utils.getTimeStructInUTC(timestamp)
-    short_weekdays = [
-     'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-    months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-    return '%s, %02d %s %04d %02d:%02d:%02d GMT' % (
-     short_weekdays[ts[6]], ts[2], months[(ts[1] - 1)], ts[0], ts[3], ts[4], ts[5])
+    short_weekdays = ['Mon',
+     'Tue',
+     'Wed',
+     'Thu',
+     'Fri',
+     'Sat',
+     'Sun']
+    months = ['Jan',
+     'Feb',
+     'Mar',
+     'Apr',
+     'May',
+     'Jun',
+     'Jul',
+     'Aug',
+     'Sep',
+     'Oct',
+     'Nov',
+     'Dec']
+    return '%s, %02d %s %04d %02d:%02d:%02d GMT' % (short_weekdays[ts[6]],
+     ts[2],
+     months[ts[1] - 1],
+     ts[0],
+     ts[3],
+     ts[4],
+     ts[5])
 
 
 class _HttpResponse(object):
@@ -43,17 +65,11 @@ class _HttpResponse(object):
 
     def getLastModified(self):
         modified = self._getHeader('Last-Modified')
-        if modified:
-            return parsedate(modified)
-        else:
-            return
+        return parsedate(modified) if modified else None
 
     def getExpires(self):
         expires = self._getHeader('Expires')
-        if expires:
-            return parsedate(expires)
-        else:
-            return
+        return parsedate(expires) if expires else None
 
     def isNotModified(self):
         return self._getCode() == _IS_NOT_MODIFIED
@@ -78,30 +94,22 @@ class _HttpResponse(object):
             return
 
     def __repr__(self):
-        return 'HttpResponse(code = %s, datalen = %s, modified = %s, expires = %s)' % (
-         self._getCode(), len(self._data) if self._data else None,
-         self.getLastModified(), self.getExpires())
+        return 'HttpResponse(code = %s, datalen = %s, modified = %s, expires = %s)' % (self._getCode(),
+         len(self._data) if self._data else None,
+         self.getLastModified(),
+         self.getExpires())
 
 
 class _HttpConnResponse(_HttpResponse):
 
     def _getHeader(self, header):
-        if self._response:
-            return self._response.getheader(header)
-        else:
-            return
+        return self._response.getheader(header) if self._response else None
 
     def _getCode(self):
-        if self._response:
-            return self._response.status
-        else:
-            return
+        return self._response.status if self._response else None
 
     def _readData(self, response):
-        if response:
-            return response.read()
-        else:
-            return
+        return response.read() if response else None
 
 
 def openUrl(url, timeout=_DEFAULT_TIMEOUT, modified=None, agent=''):
@@ -139,8 +147,8 @@ def openPage(connection, page, modified=None, agent=''):
     if not agent:
         agent = _getClientVersion()
     try:
-        headers = {'User-Agent': agent, 
-           'Connection': 'Keep-Alive'}
+        headers = {'User-Agent': agent,
+         'Connection': 'Keep-Alive'}
         if modified:
             headers['If-Modified-Since'] = formatdate(modified)
         connection.request('GET', page, headers=headers)

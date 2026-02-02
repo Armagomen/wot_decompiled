@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_pass/battle_pass_entry_point_view_model.py
 from enum import Enum
 from frameworks.wulf import ViewModel
 
@@ -20,7 +22,7 @@ class BPState(Enum):
 
 
 class BattlePassEntryPointViewModel(ViewModel):
-    __slots__ = ('onClick', )
+    __slots__ = ('onClick',)
 
     def __init__(self, properties=23, commands=1):
         super(BattlePassEntryPointViewModel, self).__init__(properties=properties, commands=commands)

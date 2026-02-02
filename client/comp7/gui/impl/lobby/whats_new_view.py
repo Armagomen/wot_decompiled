@@ -1,4 +1,7 @@
-import typing, SoundGroups
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/whats_new_view.py
+import typing
+import SoundGroups
 from comp7.gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS as COMP7_TOOLTIPS
 from comp7.gui.impl.gen.view_models.views.lobby.enums import SeasonName
 from comp7.gui.impl.gen.view_models.views.lobby.season_model import SeasonState
@@ -29,8 +32,8 @@ from skeletons.gui.shared import IItemsCache
 if typing.TYPE_CHECKING:
     from gui.shared.gui_items.Vehicle import Vehicle
 SOUND_NAME = 'comp_7_whatsnew_appear'
-RENT_VEHICLES_CDS = [67841, 38161, 24145]
-NEW_VEHICLES_CDS = [65569, 9297]
+RENT_VEHICLES_CDS = [25425, 68097, 56417]
+NEW_VEHICLES_CDS = [60977]
 
 class WhatsNewView(ViewImpl, IGlobalListener):
     __slots__ = ()
@@ -56,17 +59,16 @@ class WhatsNewView(ViewImpl, IGlobalListener):
         if event.contentID == R.views.common.tooltip_window.backport_tooltip_content.BackportTooltipContent():
             tooltipId = event.getArgument('tooltipId')
             if tooltipId == self._calendarDayTooltipID:
-                tooltipData = createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=(None, ))
+                tooltipData = createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=(None,))
+            elif tooltipId == TOOLTIPS_CONSTANTS.SHOP_VEHICLE:
+                vehicleCD = int(event.getArgument('vehicleCD'))
+                tooltipData = createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=(vehicleCD,))
             else:
-                if tooltipId == TOOLTIPS_CONSTANTS.SHOP_VEHICLE:
-                    vehicleCD = int(event.getArgument('vehicleCD'))
-                    tooltipData = createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=(vehicleCD,))
-                else:
-                    tooltipData = None
-                if tooltipData:
-                    window = BackportTooltipWindow(tooltipData, self.getParentWindow())
-                    window.load()
-                    return window
+                tooltipData = None
+            if tooltipData:
+                window = BackportTooltipWindow(tooltipData, self.getParentWindow())
+                window.load()
+                return window
         return super(WhatsNewView, self).createToolTip(event)
 
     def createToolTipContent(self, event, contentID):
@@ -74,7 +76,7 @@ class WhatsNewView(ViewImpl, IGlobalListener):
             vehicleCD = int(event.getArgument('vehicleCD'))
             return VehicleRolesTooltipView(vehicleCD)
         else:
-            return
+            return None
 
     def onPrbEntitySwitched(self):
         if not self.__comp7Controller.isModePrbActive():
@@ -121,7 +123,7 @@ class WhatsNewView(ViewImpl, IGlobalListener):
         return
 
     def __onEventsSyncCompleted(self):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             self.__setVehicles(vm)
             self.__setNewAvailableVehicles(vm)
 
@@ -129,7 +131,7 @@ class WhatsNewView(ViewImpl, IGlobalListener):
         self.__updateData()
 
     def __updateData(self):
-        with self.viewModel.transaction() as (vm):
+        with self.viewModel.transaction() as vm:
             comp7_model_helpers.setElitePercentage(vm)
             comp7_core_model_helpers.setScheduleInfo(vm.scheduleInfo, self.__comp7Controller, self._calendarDayTooltipID, SeasonState, YearState, SeasonName)
             self.__setVehicles(vm)
@@ -162,8 +164,7 @@ class WhatsNewView(ViewImpl, IGlobalListener):
 
     def __onVideoOpen(self):
         url = GUI_SETTINGS.lookup(self.__getWhatsNewPageKey())
-        showBrowserOverlayView(url, VIEW_ALIAS.WEB_VIEW_TRANSPARENT, hiddenLayers=(
-         WindowLayer.MARKER, WindowLayer.VIEW, WindowLayer.WINDOW), parent=self.getParentWindow())
+        showBrowserOverlayView(url, VIEW_ALIAS.WEB_VIEW_TRANSPARENT, hiddenLayers=(WindowLayer.MARKER, WindowLayer.VIEW, WindowLayer.WINDOW), parent=self.getParentWindow())
 
     @staticmethod
     def __playSound():
@@ -171,7 +172,7 @@ class WhatsNewView(ViewImpl, IGlobalListener):
 
     @staticmethod
     def __getWhatsNewPageKey():
-        return 'whatsNewPageComp7'
+        pass
 
 
 class WhatsNewViewWindow(LobbyNotificationWindow):

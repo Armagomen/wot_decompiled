@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/vehicle_hub/vehicle_hub_main_view.py
 from __future__ import absolute_import
 import typing
 from collections import namedtuple, OrderedDict
@@ -41,12 +43,14 @@ from skeletons.gui.game_control import IVehicleComparisonBasket, IRentalsControl
 from skeletons.gui.shared import IItemsCache
 if typing.TYPE_CHECKING:
     from typing import Dict
-_REQUIRED_TAGS = [
- VEHICLE_TAGS.SPECIAL,
+_REQUIRED_TAGS = [VEHICLE_TAGS.SPECIAL,
  VEHICLE_TAGS.PREMIUM,
  VEHICLE_TAGS.EARN_CRYSTALS,
  CollectorVehicleConsts.COLLECTOR_VEHICLES_TAG]
-VehicleHubCtx = namedtuple('VehicleHubCtx', ('intCD', 'vehicleStrCD', 'style', 'outfit'))
+VehicleHubCtx = namedtuple('VehicleHubCtx', ('intCD',
+ 'vehicleStrCD',
+ 'style',
+ 'outfit'))
 
 class _VehicleHubStatesObserver(StateIdsObserver):
     __itemsCache = dependency.descriptor(IItemsCache)
@@ -61,8 +65,7 @@ class _VehicleHubStatesObserver(StateIdsObserver):
         from gui.impl.lobby.vehicle_hub.states import VehSkillTreeInitialState
         from gui.impl.lobby.vehicle_hub.states import VehSkillTreeProgressionState
         from gui.impl.lobby.vehicle_hub.states import VehSkillTreePrestigeState
-        super(_VehicleHubStatesObserver, self).__init__([
-         OverviewState.STATE_ID,
+        super(_VehicleHubStatesObserver, self).__init__([OverviewState.STATE_ID,
          ArmorState.STATE_ID,
          StatsState.STATE_ID,
          ModulesState.STATE_ID,
@@ -112,10 +115,7 @@ class VehicleHubMainView(ViewComponent, IRoutableView):
 
     @property
     def currentPresenter(self):
-        if self.__activeTab:
-            return self.__contentPresentersMap[self.__activeTab].presenter
-        else:
-            return
+        return self.__contentPresentersMap[self.__activeTab].presenter if self.__activeTab else None
 
     @property
     def vehicleCtx(self):
@@ -161,40 +161,22 @@ class VehicleHubMainView(ViewComponent, IRoutableView):
 
     def _getEvents(self):
         eventsTuple = super(VehicleHubMainView, self)._getEvents()
-        return eventsTuple + (
-         (
-          self.__lsmObserver.onNavigationChanged, self.__onNavigationChanged),
-         (
-          self.__rentals.onRentChangeNotify, self.__onRentChange),
-         (
-          self.viewModel.onMoveSpace, self.__onMoveSpace),
-         (
-          self.viewModel.onMouseOver3dScene, self.__onMouseOver3dScene),
-         (
-          self.viewModel.comparisonModel.onAddToComparison, self.__onAddToComparison),
-         (
-          self.__comparisonBasket.onChange, self.__onVehCompareBasketChanged),
-         (
-          self.__comparisonBasket.onSwitchChange, self.__updateComparisonInfo),
-         (
-          g_playerEvents.onClientUpdated, self.__onClientUpdate),
-         (
-          AccountSettings.onSettingsChanging, self.__onAccountSettingsChanging))
+        return eventsTuple + ((self.__lsmObserver.onNavigationChanged, self.__onNavigationChanged),
+         (self.__rentals.onRentChangeNotify, self.__onRentChange),
+         (self.viewModel.onMoveSpace, self.__onMoveSpace),
+         (self.viewModel.onMouseOver3dScene, self.__onMouseOver3dScene),
+         (self.viewModel.comparisonModel.onAddToComparison, self.__onAddToComparison),
+         (self.__comparisonBasket.onChange, self.__onVehCompareBasketChanged),
+         (self.__comparisonBasket.onSwitchChange, self.__updateComparisonInfo),
+         (g_playerEvents.onClientUpdated, self.__onClientUpdate),
+         (AccountSettings.onSettingsChanging, self.__onAccountSettingsChanging))
 
     def _getCallbacks(self):
         callbacksTuple = super(VehicleHubMainView, self)._getCallbacks()
-        return callbacksTuple + (
-         (
-          'inventory', self.__onInventoryUpdate),
-         (
-          'cache.vehsLock', self.__onVehsLockUpdate),
-         (
-          'stats.eliteVehicles', self.__onVehicleBecomeElite))
+        return callbacksTuple + (('inventory', self.__onInventoryUpdate), ('cache.vehsLock', self.__onVehsLockUpdate), ('stats.eliteVehicles', self.__onVehicleBecomeElite))
 
     def _getListeners(self):
-        return (
-         (
-          VehicleBuyEvent.VEHICLE_SELECTED, self.__onTradeOffSelectedChanged, EVENT_BUS_SCOPE.DEFAULT),)
+        return ((VehicleBuyEvent.VEHICLE_SELECTED, self.__onTradeOffSelectedChanged, EVENT_BUS_SCOPE.DEFAULT),)
 
     def _finalize(self):
         super(VehicleHubMainView, self)._finalize()
@@ -230,17 +212,11 @@ class VehicleHubMainView(ViewComponent, IRoutableView):
         return self.__vehicle.postProgression.isVehSkillTree()
 
     def __getMenuItems(self):
-        return OrderedDict([
-         (
-          VehicleHubViewModel.OVERVIEW, (None, None)),
-         (
-          VehicleHubViewModel.STATS, (None, None)),
-         (
-          VehicleHubViewModel.MODULES, (self.__getUnviewedResearchedModulesCount, None)),
-         (
-          VehicleHubViewModel.VEH_SKILL_TREE, (None, self.__getVehSkillTreeVisibility)),
-         (
-          VehicleHubViewModel.ARMOR, (None, None))])
+        return OrderedDict([(VehicleHubViewModel.OVERVIEW, (None, None)),
+         (VehicleHubViewModel.STATS, (None, None)),
+         (VehicleHubViewModel.MODULES, (self.__getUnviewedResearchedModulesCount, None)),
+         (VehicleHubViewModel.VEH_SKILL_TREE, (None, self.__getVehSkillTreeVisibility)),
+         (VehicleHubViewModel.ARMOR, (None, None))])
 
     @replaceNoneKwargsModel
     def __setCommonInfo(self, model=None):
@@ -362,7 +338,9 @@ class VehicleHubMainView(ViewComponent, IRoutableView):
             dx = args.get('dx')
             dy = args.get('dy')
             dz = args.get('dz')
-            g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.LOBBY_VIEW_MOUSE_MOVE, ctx={'dx': dx, 'dy': dy, 'dz': dz}), EVENT_BUS_SCOPE.GLOBAL)
+            g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.LOBBY_VIEW_MOUSE_MOVE, ctx={'dx': dx,
+             'dy': dy,
+             'dz': dz}), EVENT_BUS_SCOPE.GLOBAL)
             return
 
     @staticmethod

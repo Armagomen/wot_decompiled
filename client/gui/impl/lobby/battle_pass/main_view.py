@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/impl/lobby/battle_pass/main_view.py
 import logging
 from typing import TYPE_CHECKING
 import Event
@@ -30,20 +32,17 @@ if TYPE_CHECKING:
     from gui.lobby_state_machine.states import LobbyState
 _logger = logging.getLogger(__name__)
 _BP = R.aliases.battle_pass
-_PRESENTERS = {_BP.Intro(): IntroPresenter, 
-   _BP.ChapterChoice(): ChapterChoicePresenter, 
-   _BP.Progression(): ProgressionPresenter, 
-   _BP.PostProgression(): PostProgressionPresenter, 
-   _BP.BuyPass(): BuyPassPresenter, 
-   _BP.BuyLevels(): BuyLevelsPresenter, 
-   _BP.HolidayFinal(): HolidayFinalPresenter}
-_PARENTS = {_BP.BuyPassConfirm(): _BP.BuyPass(), 
-   _BP.BuyPassRewards(): _BP.BuyPass(), 
-   _BP.BuyLevelsRewards(): _BP.BuyLevels()}
-_UNTRACKED = frozenset((
- _BP.IntroVideo(),
- _BP.ExtraVideo(),
- _BP.FinalRewardPreview()))
+_PRESENTERS = {_BP.Intro(): IntroPresenter,
+ _BP.ChapterChoice(): ChapterChoicePresenter,
+ _BP.Progression(): ProgressionPresenter,
+ _BP.PostProgression(): PostProgressionPresenter,
+ _BP.BuyPass(): BuyPassPresenter,
+ _BP.BuyLevels(): BuyLevelsPresenter,
+ _BP.HolidayFinal(): HolidayFinalPresenter}
+_PARENTS = {_BP.BuyPassConfirm(): _BP.BuyPass(),
+ _BP.BuyPassRewards(): _BP.BuyPass(),
+ _BP.BuyLevelsRewards(): _BP.BuyLevels()}
+_UNTRACKED = frozenset((_BP.IntroVideo(), _BP.ExtraVideo(), _BP.FinalRewardPreview()))
 
 class _BattlePassStatesObserver(BaseStateObserver):
 
@@ -115,15 +114,10 @@ class MainView(ViewComponent[MainViewModel], IRoutableView):
         return
 
     def _getEvents(self):
-        return (
-         (
-          self.__battlePass.onBattlePassSettingsChange, self.__onSettingsChanged),
-         (
-          self.__battlePass.onSeasonStateChanged, self.__onSettingsChanged),
-         (
-          self.__battlePass.onExtraChapterExpired, self.__onExtraChapterExpired),
-         (
-          self.__statesObserver.onSubViewSelect, self.__switchSubView))
+        return ((self.__battlePass.onBattlePassSettingsChange, self.__onSettingsChanged),
+         (self.__battlePass.onSeasonStateChanged, self.__onSettingsChanged),
+         (self.__battlePass.onExtraChapterExpired, self.__onExtraChapterExpired),
+         (self.__statesObserver.onSubViewSelect, self.__switchSubView))
 
     def __onSettingsChanged(self, *_):
         if not (self.__battlePass.isEnabled() and self.__battlePass.isActive()) or self.__battlePass.isPaused():
@@ -146,6 +140,7 @@ class MainView(ViewComponent[MainViewModel], IRoutableView):
             self.__safeCallOnActivePresenter('updateInitialData', **kwargs)
             if self.__activePresenterID != kwargs['originStateID']:
                 self.__safeCallOnActivePresenter('activate')
+        switchDialogBPSoundFilter(self.__activePresenterID in (_BP.BuyPass(), _BP.BuyLevels()))
         if not self.__battlePass.isHoliday():
             self.__playSwitchSounds(kwargs.get('originStateID'), kwargs.get('chapterID'))
 
@@ -164,7 +159,6 @@ class MainView(ViewComponent[MainViewModel], IRoutableView):
             self.soundManager.playSound(BattlePassSounds.TASKS_ENTER)
 
     def __playSwitchSounds(self, originalPresenterID, previousChapter):
-        switchDialogBPSoundFilter(self.__activePresenterID in (_BP.BuyPass(), _BP.BuyLevels()))
         shallSkipPlaying = self.__activePresenterID not in (_BP.ChapterChoice(), _BP.Progression(), _BP.PostProgression()) or originalPresenterID in (_BP.BuyPass(), _BP.BuyLevels()) and self.__activePresenterID == _BP.Progression()
         if shallSkipPlaying:
             return

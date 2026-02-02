@@ -1,4 +1,7 @@
-import logging, BigWorld
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: battle_royale/scripts/client/battle_royale/gui/battle_control/controllers/radar_ctrl.py
+import logging
+import BigWorld
 from constants import ARENA_PERIOD
 from gui.battle_control.view_components import ViewComponentsController
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
@@ -101,8 +104,8 @@ class RadarController(ViewComponentsController, IRadarController, EventsSubscrib
             for listener in self._iterAllListeners():
                 listener.reset()
 
-        if BigWorld.player().isObserver():
-            self.__clearRadarData()
+            if BigWorld.player().isObserver():
+                self.__clearRadarData()
 
     def updateRadarReadiness(self, isReady):
         allListeners = self._iterAllListeners()
@@ -129,9 +132,7 @@ class RadarController(ViewComponentsController, IRadarController, EventsSubscrib
     @staticmethod
     def _getRadarCooldownTotalTime():
         avatar = BigWorld.player()
-        if avatar.vehicle:
-            return avatar.vehicle.typeDescriptor.radio.radarCooldown
-        return 0
+        return avatar.vehicle.typeDescriptor.radio.radarCooldown if avatar.vehicle else 0
 
     def _iterAllListeners(self):
         for view in self._viewComponents:
@@ -184,9 +185,7 @@ class RadarController(ViewComponentsController, IRadarController, EventsSubscrib
     @staticmethod
     def __getRadarRadius():
         avatar = BigWorld.player()
-        if avatar.vehicle:
-            return avatar.vehicle.typeDescriptor.radio.radarRadius
-        return 0
+        return avatar.vehicle.typeDescriptor.radio.radarRadius if avatar.vehicle else 0
 
     def __onRadarInfoReceived(self, radarInfo):
         if len(radarInfo) != 3:

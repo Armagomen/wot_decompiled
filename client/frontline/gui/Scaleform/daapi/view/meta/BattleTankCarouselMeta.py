@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/meta/BattleTankCarouselMeta.py
 from gui.Scaleform.daapi.view.common.vehicle_carousel.carousel_environment import CarouselEnvironment
 
 class BattleTankCarouselMeta(CarouselEnvironment):
@@ -5,10 +7,11 @@ class BattleTankCarouselMeta(CarouselEnvironment):
     def setFilter(self, id):
         self._printOverrideError('setFilter')
 
+    def resetPlaylistAndFilters(self):
+        self._printOverrideError('resetPlaylistAndFilters')
+
     def as_useExtendedCarouselS(self, value):
-        if self._isDAAPIInited():
-            return self.flashObject.as_useExtendedCarousel(value)
+        return self.flashObject.as_useExtendedCarousel(value) if self._isDAAPIInited() else None
 
     def as_scrollToSlotS(self, slotIdx):
-        if self._isDAAPIInited():
-            return self.flashObject.as_scrollToSlot(slotIdx)
+        return self.flashObject.as_scrollToSlot(slotIdx) if self._isDAAPIInited() else None

@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/frameworks/wulf/gui_application.py
 import typing
 from .py_object_wrappers import PyGuiApplication
 from .system_locale import SystemLocale
@@ -10,8 +12,7 @@ if typing.TYPE_CHECKING:
     from frameworks.wulf import ViewModel
 
 class GuiApplication(object):
-    __slots__ = ('__impl', '__windowsManager', '__resourceManager', '__systemLocale',
-                 '__tutorial', '__uiLogger')
+    __slots__ = ('__impl', '__windowsManager', '__resourceManager', '__systemLocale', '__tutorial', '__uiLogger')
 
     def __init__(self):
         super(GuiApplication, self).__init__()

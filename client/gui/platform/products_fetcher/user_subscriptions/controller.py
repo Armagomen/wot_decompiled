@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/platform/products_fetcher/user_subscriptions/controller.py
 import logging
 from functools import partial
 import typing
@@ -21,11 +23,10 @@ __doc__ = '\nModule takes care of player subscriptions from platform.\n\nUsers c
 class PlatformGetUserSubscriptionsParams(object):
 
     def __init__(self):
-        self.status = [
-         SubscriptionStatus.ACTIVE.value, SubscriptionStatus.INACTIVE.value]
+        self.status = [SubscriptionStatus.ACTIVE.value, SubscriptionStatus.INACTIVE.value]
 
     def __str__(self):
-        return ('status: {status}').format(status=self.status)
+        return 'status: {status}'.format(status=self.status)
 
 
 class UserSubscriptionsFetchController(IUserSubscriptionsFetchController):
@@ -61,8 +62,7 @@ class UserSubscriptionsFetchController(IUserSubscriptionsFetchController):
                 if subscriptionData.get('product_code') not in subscriptionProductCodes:
                     continue
                 userSubscription = UserSubscription(subscriptionData)
-                hasSubscription = any([ subscription.subscriptionId == userSubscription.subscriptionId for subscription in self._fetchResult.products
-                                      ])
+                hasSubscription = any([ subscription.subscriptionId == userSubscription.subscriptionId for subscription in self._fetchResult.products ])
                 if not hasSubscription:
                     self._fetchResult.products.append(userSubscription)
 

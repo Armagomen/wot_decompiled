@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/common/items/descr_modify_attrs.py
 import inspect
 from copy import copy
 from functools import partial
@@ -68,9 +70,9 @@ class cached_property(object):
     def __get__(self, instance, type=None):
         if instance is None:
             return self
+        elif self.name in instance.__dict__:
+            return instance.__dict__[self.name]
         else:
-            if self.name in instance.__dict__:
-                return instance.__dict__[self.name]
             res = instance.__dict__[self.name] = self.func(instance)
             return res
 
@@ -85,9 +87,9 @@ class cached_property_namedtuple(object):
     def __get__(self, instance, type=None):
         if instance is None:
             return self
+        elif self.name in instance.__dict__:
+            return instance.__dict__[self.name]
         else:
-            if self.name in instance.__dict__:
-                return instance.__dict__[self.name]
             namedTuple = self.func(instance)
             res = instance.__dict__[self.name] = AttrDict(instance, namedTuple._asdict())
 
@@ -450,10 +452,7 @@ class VehDescrWrapper(object):
             return self.shot2.shell.type
 
     def __hasArmorSpalls(self, ind):
-        if self.gunShotsLen < ind + 1:
-            return None
-        else:
-            return hasattr(self.vehDescr.gun.shots[ind].shell.type, 'armorSpalls')
+        return None if self.gunShotsLen < ind + 1 else hasattr(self.vehDescr.gun.shots[ind].shell.type, 'armorSpalls')
 
     @cached_property
     def shellTypeArmorSpalls0(self):
@@ -501,20 +500,20 @@ class VehDescrWrapper(object):
         return cls.__projectileSpeedFactor
 
 
-APPLIERS = {MODIFIER_TYPE.ADD: lambda obj, value: obj + value, 
-   MODIFIER_TYPE.MUL: lambda obj, value: obj * value, 
-   MODIFIER_TYPE.SET: lambda obj, value: value}
-MERGERS = {MODIFIER_TYPE.ADD: lambda obj, value: obj + value, 
-   MODIFIER_TYPE.MUL: lambda obj, value: obj + value - 1, 
-   MODIFIER_TYPE.SET: lambda obj, value: value}
+APPLIERS = {MODIFIER_TYPE.ADD: lambda obj, value: obj + value,
+ MODIFIER_TYPE.MUL: lambda obj, value: obj * value,
+ MODIFIER_TYPE.SET: lambda obj, value: value}
+MERGERS = {MODIFIER_TYPE.ADD: lambda obj, value: obj + value,
+ MODIFIER_TYPE.MUL: lambda obj, value: obj + value - 1,
+ MODIFIER_TYPE.SET: lambda obj, value: value}
 
 def arrayItemApplyerDegrees(arr, index, value, applier):
     degreesVal = degrees(arr[index])
     arr[index] = radians(applier(degreesVal, value))
 
 
-gunPitchLimitsNameMap = {'maxPitchDegrees': 'maxPitch', 
-   'minPitchDegrees': 'minPitch'}
+gunPitchLimitsNameMap = {'maxPitchDegrees': 'maxPitch',
+ 'minPitchDegrees': 'minPitch'}
 
 def processValue(obj, valueName, index, operation, attrName, value):
     valueObj = getattr(obj, valueName, None)
@@ -532,8 +531,7 @@ def processValue(obj, valueName, index, operation, attrName, value):
             if index is None:
                 indexes = range(len(nextObj))
             else:
-                indexes = [
-                 index]
+                indexes = [index]
             for ind in indexes:
                 if ind >= len(nextObj):
                     LOG_WARNING('[DESCR_MODIFY] Index out of range', attrName, operation, nextObj, index)
@@ -559,16 +557,14 @@ def gunPitchLimitsProcessor(obj, valueName, index, operation, attrName, value, v
             for ind in xrange(len(valueObj)):
                 valueObj[ind] = tuple(valueObj[ind])
 
-            obj['absolute'] = (
-             min([ key for _, key in obj['minPitch'] ]), max([ key for _, key in obj['maxPitch'] ]))
+            obj['absolute'] = (min([ key for _, key in obj['minPitch'] ]), max([ key for _, key in obj['maxPitch'] ]))
             obj[valueName] = tuple(valueObj)
 
         vehDescrWrapper.finalizers.append(finalize)
     if index is None:
         indexes = range(len(valueObj))
     else:
-        indexes = [
-         index]
+        indexes = [index]
     applier = APPLIERS[operation]
     for ind in indexes:
         if ind >= len(valueObj):
@@ -606,7 +602,7 @@ def armorSpallProcessor(spallValueName, obj, valueName, index, operation, attrNa
     if not obj:
         return False
     else:
-        attrName = ('{}/{}').format(spallValueName, valueName)
+        attrName = '{}/{}'.format(spallValueName, valueName)
         if operation == 'add' or operation == 'set':
             value *= 0.5
         processValue(obj, valueName, index, operation, attrName, value)
@@ -619,18 +615,18 @@ def shotSpeedProcessor(obj, valueName, index, operation, attrName, value, vehDes
     return True
 
 
-customValueProcessors = {'gunPitchLimits/maxPitchDegrees': gunPitchLimitsProcessor, 
-   'gunPitchLimits/minPitchDegrees': gunPitchLimitsProcessor, 
-   'gun/turretYawLimitsDegrees': gunTurretYawLimitsDegrees, 
-   'shell0/armorDamage': partial(armorSpallProcessor, 'shellTypeArmorSpalls0'), 
-   'shell1/armorDamage': partial(armorSpallProcessor, 'shellTypeArmorSpalls1'), 
-   'shell2/armorDamage': partial(armorSpallProcessor, 'shellTypeArmorSpalls2'), 
-   'shell0/deviceDamage': partial(armorSpallProcessor, 'shellTypeArmorSpalls0'), 
-   'shell1/deviceDamage': partial(armorSpallProcessor, 'shellTypeArmorSpalls1'), 
-   'shell2/deviceDamage': partial(armorSpallProcessor, 'shellTypeArmorSpalls2'), 
-   'shot0/speed': shotSpeedProcessor, 
-   'shot1/speed': shotSpeedProcessor, 
-   'shot2/speed': shotSpeedProcessor}
+customValueProcessors = {'gunPitchLimits/maxPitchDegrees': gunPitchLimitsProcessor,
+ 'gunPitchLimits/minPitchDegrees': gunPitchLimitsProcessor,
+ 'gun/turretYawLimitsDegrees': gunTurretYawLimitsDegrees,
+ 'shell0/armorDamage': partial(armorSpallProcessor, 'shellTypeArmorSpalls0'),
+ 'shell1/armorDamage': partial(armorSpallProcessor, 'shellTypeArmorSpalls1'),
+ 'shell2/armorDamage': partial(armorSpallProcessor, 'shellTypeArmorSpalls2'),
+ 'shell0/deviceDamage': partial(armorSpallProcessor, 'shellTypeArmorSpalls0'),
+ 'shell1/deviceDamage': partial(armorSpallProcessor, 'shellTypeArmorSpalls1'),
+ 'shell2/deviceDamage': partial(armorSpallProcessor, 'shellTypeArmorSpalls2'),
+ 'shot0/speed': shotSpeedProcessor,
+ 'shot1/speed': shotSpeedProcessor,
+ 'shot2/speed': shotSpeedProcessor}
 
 def parseValue(attrName):
     attrs = attrName.split('/')
@@ -650,17 +646,16 @@ def checkAttrName(attrName):
     if objName is None:
         return False
     else:
-        attrNameOnly = ('{}/{}').format(objName, valueName)
+        attrNameOnly = '{}/{}'.format(objName, valueName)
         if attrNameOnly not in DESCR_MODIFY_ATTRS_ALLOWED:
             return False
         modType = DESCR_MODIFY_ATTRS_TYPE[attrNameOnly]
-        if modType != IS_ARRAY:
-            return index is None
-        return True
+        return index is None if modType != IS_ARRAY else True
 
 
-opOrder = {'mul': 1, 
-   'add': 2, 'set': 3}
+opOrder = {'mul': 1,
+ 'add': 2,
+ 'set': 3}
 
 def mergeDescrModifyAttrs(modifiersList, filter):
     attrs = {}
@@ -670,8 +665,7 @@ def mergeDescrModifyAttrs(modifiersList, filter):
                 continue
             if filter and modifierFilter not in filter:
                 continue
-            key = (
-             attrName, opType)
+            key = (attrName, opType)
             currentValue = attrs.get(key)
             if currentValue is None:
                 currentValue = attrs[key] = 1.0 if opType == MODIFIER_TYPE.MUL else 0
@@ -694,7 +688,10 @@ def applyDescrModifyAttrs(vehDescr, modifiersList, filter):
 
 def applyMergedDescrModifyAttrs(vehDescr, attrs):
     vehDescrWrapper = VehDescrWrapper(vehDescr)
-    items = [ (parseValue(attrName), opType, attrName, value) for (attrName, opType), value in attrs.iteritems() ]
+    items = [ (parseValue(attrName),
+     opType,
+     attrName,
+     value) for (attrName, opType), value in attrs.iteritems() ]
     items.sort(key=lambda value: opOrder[value[1]])
     for (objName, valueName, index), operation, attrName, value in items:
         if objName is None:
@@ -703,7 +700,7 @@ def applyMergedDescrModifyAttrs(vehDescr, attrs):
         obj = getattr(vehDescrWrapper, objName)
         if obj is None:
             continue
-        processor = customValueProcessors.get(('/').join([objName, valueName]))
+        processor = customValueProcessors.get('/'.join([objName, valueName]))
         if processor:
             if processor(obj, valueName, index, operation, attrName, value, vehDescrWrapper):
                 continue
@@ -717,7 +714,4 @@ def getAttrValue(vehDescr, attrName):
     vehDescrWrapper = VehDescrWrapper(vehDescr)
     objName, valueName, index = parseValue(attrName)
     obj = getattr(vehDescrWrapper, objName, None)
-    if obj is None:
-        return
-    else:
-        return getattr(obj, valueName, None)
+    return None if obj is None else getattr(obj, valueName, None)

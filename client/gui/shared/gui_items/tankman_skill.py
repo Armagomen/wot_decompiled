@@ -1,3 +1,5 @@
+# Python bytecode 2.7 (decompiled from Python 2.7)
+# Embedded file name: scripts/client/gui/shared/gui_items/tankman_skill.py
 import typing
 from gui.impl import backport
 from gui.impl.gen import R
@@ -52,9 +54,7 @@ class _SkillPresenter(_Skill, ISkillPresenter):
 
     @property
     def userName(self):
-        if self._customName:
-            return backport.text(R.strings.crew_perks.dyn(self._customName).name())
-        return skill_presenter_helper.getSkillUserName(self.name)
+        return backport.text(R.strings.crew_perks.dyn(self._customName).name()) if self._customName else skill_presenter_helper.getSkillUserName(self.name)
 
     @property
     def description(self):
@@ -82,9 +82,7 @@ class _SkillPresenter(_Skill, ISkillPresenter):
 
     @property
     def icon(self):
-        if self._customName:
-            return ('{}.png').format(self.customName)
-        return ('{}.png').format(self.name)
+        return '{}.png'.format(self.customName) if self._customName else '{}.png'.format(self.name)
 
     @property
     def extensionLessIconName(self):
@@ -96,8 +94,7 @@ class _SkillPresenter(_Skill, ISkillPresenter):
 
 
 class _SkillData(_Skill, ISkillData):
-    __slots__ = ('_skillRole', '_tankmanRole', '_level', '_isSkillActive', '_isZero',
-                 '_roleType', '_isRelevant', '_typeName', '_isEnable', '_learnState')
+    __slots__ = ('_skillRole', '_tankmanRole', '_level', '_isSkillActive', '_isZero', '_roleType', '_isRelevant', '_typeName', '_isEnable', '_learnState')
 
     def __init__(self, skillName, skillRole, tankmanRole=None, level=0, isSkillActive=False, isZero=False, isEnable=False, learnState=SkillLearnState.UNLEARNED, customName=EMPTY_STRING, crewCustomName=EMPTY_STRING, proxy=None, **kwargs):
         super(_SkillData, self).__init__(skillName=skillName, customName=customName, crewCustomName=crewCustomName, proxy=proxy, **kwargs)
@@ -184,15 +181,13 @@ class TankmanSkill(_SkillData, _SkillPresenter):
         super(TankmanSkill, self).__init__(skillName=skillName, skillRole=skillRole, tankmanRole=tankmanRole, level=level, isSkillActive=isSkillActive, isZero=isZero, isEnable=isEnable, learnState=learnState, customName=customName, crewCustomName=crewCustomName, proxy=proxy)
 
     def __repr__(self):
-        return ('TankmanSkill<name:{}, level:{}, skillRole:{}, tankmanRole:{}, isRelevant:{}>').format(self.name, self.level, self.skillRole, self.tankmanRole, self.isRelevant)
+        return 'TankmanSkill<name:{}, level:{}, skillRole:{}, tankmanRole:{}, isRelevant:{}>'.format(self.name, self.level, self.skillRole, self.tankmanRole, self.isRelevant)
 
     def __ne__(self, other):
         return not self.__eq__(other)
 
     def __eq__(self, other):
-        if not isinstance(other, TankmanSkill):
-            return False
-        return self.name == other.name
+        return False if not isinstance(other, TankmanSkill) else self.name == other.name
 
 
 def getIsSkillEnable(skillName, roles):
@@ -234,9 +229,7 @@ def getSkillLearnedState(skillName, skillRole, tankmanRole, skills, bonusSkills)
 
 
 def getIsRelevantForRole(skillName, role):
-    if not role:
-        return True
-    return skillName in SKILLS_BY_ROLES[role]
+    return True if not role else skillName in SKILLS_BY_ROLES[role]
 
 
 def getSkillStates(skillName, skillRole, tankman, tdescr):
@@ -250,7 +243,11 @@ def getSkillStates(skillName, skillRole, tankman, tdescr):
     else:
         isSkillActive = False
     isZero = learnState & SkillLearnState.MAJOR and skills.index(skillName) < tdescr.freeSkillsNumber
-    return (isEnabled, learnState, isRelevant, isSkillActive, isZero)
+    return (isEnabled,
+     learnState,
+     isRelevant,
+     isSkillActive,
+     isZero)
 
 
 def getTankmanSkill(skillName, skillRole, tankman=None, proxy=None, customCrewName=EMPTY_STRING, level=None, tankmanRole=None, **kwargs):
