@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/battle/__init__.py
 from frameworks.wulf import WindowLayer
 from frontline.gui.Scaleform.genConsts.FRONTLINE_BATTLE_VIEW_ALIASES import FRONTLINE_BATTLE_VIEW_ALIASES
 from frontline.gui.gui_constants import ViewAlias
@@ -22,7 +20,13 @@ def getFLSwfExtensionUrl(swfName):
 def getContextMenuHandlers():
     from gui.Scaleform.daapi.view.battle.shared import shop_cm_handlers
     from gui.Scaleform.daapi.view.battle.classic import player_menu_handler
-    return ((CONTEXT_MENU_HANDLER_TYPE.SHOP, shop_cm_handlers.ShopCMHandler), (BATTLE_CONTEXT_MENU_HANDLER_TYPE.EPIC_FULL_STATS, player_menu_handler.PlayerMenuHandler), (BATTLE_CONTEXT_MENU_HANDLER_TYPE.PLAYERS_PANEL, player_menu_handler.PlayerMenuHandler))
+    return (
+     (
+      CONTEXT_MENU_HANDLER_TYPE.SHOP, shop_cm_handlers.ShopCMHandler),
+     (
+      BATTLE_CONTEXT_MENU_HANDLER_TYPE.EPIC_FULL_STATS, player_menu_handler.PlayerMenuHandler),
+     (
+      BATTLE_CONTEXT_MENU_HANDLER_TYPE.PLAYERS_PANEL, player_menu_handler.PlayerMenuHandler))
 
 
 def getViewSettings():
@@ -58,7 +62,8 @@ def getViewSettings():
     from gui.Scaleform.daapi.view.battle.shared.messages import PlayerMessages
     from gui.impl.battle.battle_page.ammunition_panel.prebattle_ammunition_panel_inject import PrebattleAmmunitionPanelInject
     from gui.Scaleform.daapi.view.battle.shared.postmortem_panel import PostmortemPanel
-    return (ViewSettings(ViewAlias.EPIC_BATTLE_PAGE, FrontlineBattlePage, getFLSwfExtensionUrl('frontlineBattlePage.swf'), WindowLayer.VIEW, None, ScopeTemplates.DEFAULT_SCOPE),
+    return (
+     ViewSettings(ViewAlias.EPIC_BATTLE_PAGE, FrontlineBattlePage, getFLSwfExtensionUrl('frontlineBattlePage.swf'), WindowLayer.VIEW, None, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(BATTLE_VIEW_ALIASES.TEAM_BASES_PANEL, TeamBasesPanel, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(BATTLE_VIEW_ALIASES.BATTLE_LOADING, FrontlineEpicBattleLoading, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(FRONTLINE_BATTLE_VIEW_ALIASES.FRONTLINE_BATTLE_TANK_CAROUSEL, BattleTankCarousel, ScopeTemplates.DEFAULT_SCOPE),
@@ -96,8 +101,11 @@ class FrontlineBattlePageBusinessHandler(PackageBusinessHandler):
     __slots__ = ()
 
     def __init__(self):
-        super(FrontlineBattlePageBusinessHandler, self).__init__(((FRONTLINE_BATTLE_VIEW_ALIASES.FRONTLINE_CAROUSEL_FILTER_POPOVER, self.loadViewByCtxEvent),), APP_NAME_SPACE.SF_BATTLE, EVENT_BUS_SCOPE.BATTLE)
+        super(FrontlineBattlePageBusinessHandler, self).__init__((
+         (
+          FRONTLINE_BATTLE_VIEW_ALIASES.FRONTLINE_CAROUSEL_FILTER_POPOVER, self.loadViewByCtxEvent),), APP_NAME_SPACE.SF_BATTLE, EVENT_BUS_SCOPE.BATTLE)
 
 
 def getBusinessHandlers():
-    return (BattlePageBusinessHandler(ViewAlias.EPIC_BATTLE_PAGE), FrontlineBattlePageBusinessHandler())
+    return (
+     BattlePageBusinessHandler(ViewAlias.EPIC_BATTLE_PAGE), FrontlineBattlePageBusinessHandler())

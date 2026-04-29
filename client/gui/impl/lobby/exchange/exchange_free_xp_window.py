@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/exchange/exchange_free_xp_window.py
 import logging
 from gui import GUI_NATIONS_ORDER_INDEX
 from gui.impl.lobby.exchange.exchange_rates_helper import calculateMaxPossibleFreeXp, handleUserValuesInput, handleAndRoundStepperInput
@@ -45,7 +43,11 @@ class ExchangeFreeXPView(BaseExchangeWindow):
 
     def _getCallbacks(self):
         callbacks = super(ExchangeFreeXPView, self)._getCallbacks()
-        return callbacks + (('stats.vehTypeXP', self.__updateData), ('stats.freeXP', self.__updateData))
+        return callbacks + (
+         (
+          'stats.vehTypeXP', self.__updateData),
+         (
+          'stats.freeXP', self.__updateData))
 
     def _getEvents(self):
         eventsTuple = super(ExchangeFreeXPView, self)._getEvents()
@@ -76,7 +78,7 @@ class ExchangeFreeXPView(BaseExchangeWindow):
     def _onSelectedValueChanged(self, params=None, model=None):
         if not params:
             currentValue = model.getResourceAmountForExchange()
-            params = self._initValues if not currentValue else {'currency': currentValue}
+            params = (currentValue or self)._initValues if 1 else {'currency': currentValue}
         selectedGold, selectedCurrency = handleAndRoundStepperInput(params, exchangeRate=self.exchangeRate, validateGold=False)
         self._setStepperValues(selectedGold, selectedCurrency, model=model)
 
@@ -136,7 +138,7 @@ class ExchangeFreeXPView(BaseExchangeWindow):
     def __addVehicleAdditionalInfo(model, vehicle):
         postProgressionStatus = vehicle.postProgression.isAvailable(vehicle)
         model.setIsFieldModernizationAvailable(postProgressionStatus.result)
-        model.setIsFieldModernizationComplited(PostProgressionCompletion.FULL == vehicle.postProgression.getCompletion())
+        model.setIsFieldModernizationComplited(vehicle.postProgression.getCompletion() == PostProgressionCompletion.FULL)
         model.setLevelOfFieldModernization(getLevelOfFieldModification(vehicle))
 
     @replaceNoneKwargsModel
@@ -166,7 +168,7 @@ class ExchangeXPWindowDialog(ExchangeFreeXPView):
     def __init__(self, *args, **kwargs):
         self._result, self._exchangeAmount = (None, 0)
         super(ExchangeXPWindowDialog, self).__init__(*args, **kwargs)
-        return None
+        return
 
     def _processResult(self, result, exchangeAmount):
         self._result, self._exchangeAmount = result, exchangeAmount
@@ -180,9 +182,10 @@ class ExchangeXPWindowDialog(ExchangeFreeXPView):
         self.destroy()
 
     def _getAdditionalData(self):
-        return (self._result, self._exchangeAmount)
+        return (
+         self._result, self._exchangeAmount)
 
     def _setNotExchangedResult(self):
         self._setResult(DialogButtons.CANCEL)
         self._result, self._exchangeAmount = (None, 0)
-        return None
+        return

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_core/scripts/client/comp7_core/gui/Scaleform/daapi/view/lobby/comp7_core_prime_time_view.py
 from comp7_core.gui.impl.lobby.comp7_core_helpers import comp7_core_model_helpers
 from gui.Scaleform.daapi.view.lobby.prime_time_view_base import ServerListItemPresenter, PrimeTimeViewBase
 from gui.impl import backport
@@ -23,10 +21,8 @@ class Comp7CoreServerPresenter(ServerListItemPresenter):
                 tooltipStr = text_styles.expText(backport.text(R.strings.comp7_core.primeTimeView.serverTooltip(), server=self.getName(), time=timeStr))
             else:
                 tooltipStr = text_styles.expText(backport.text(R.strings.comp7_core.primeTimeView.serverUnavailableTooltip(), time=timeStr, server=self.getName()))
-        return {'tooltip': tooltipStr,
-         'specialArgs': [],
-         'specialAlias': None,
-         'isSpecial': None}
+        return {'tooltip': tooltipStr, 'specialArgs': [], 'specialAlias': None, 
+           'isSpecial': None}
 
 
 class Comp7CorePrimeTimeView(PrimeTimeViewBase):
@@ -63,12 +59,12 @@ class Comp7CorePrimeTimeView(PrimeTimeViewBase):
 
     def _prepareData(self, serverList, serverInfo):
         isSingleServer = len(serverList) == 1
-        return {'warningIconSrc': self._getWarningIcon(),
-         'status': self.__getStatusTitle(),
-         'serversText': text_styles.expText(self._getServerText(serverList, serverInfo, True)),
-         'serversDDEnabled': not isSingleServer,
-         'serverDDVisible': not isSingleServer,
-         'timeText': text_styles.expText(self.__getTimeText(serverInfo))}
+        return {'warningIconSrc': self._getWarningIcon(), 
+           'status': self.__getStatusTitle(), 
+           'serversText': text_styles.expText(self._getServerText(serverList, serverInfo, True)), 
+           'serversDDEnabled': not isSingleServer, 
+           'serverDDVisible': not isSingleServer, 
+           'timeText': text_styles.expText(self.__getTimeText(serverInfo))}
 
     def _getActualServers(self):
         actualServers = super(Comp7CorePrimeTimeView, self)._getActualServers()
@@ -90,7 +86,9 @@ class Comp7CorePrimeTimeView(PrimeTimeViewBase):
             else:
                 startTime = time_formatters.formatDate('%d.%m.%Y', time_utils.getCurrentLocalServerTimestamp() + timeLeft)
             return text_styles.grandTitle(backport.text(R.strings.comp7_core.primeTimeView.status.untill(), startTime=startTime, server=currServerName))
-        return text_styles.grandTitle(backport.text(R.strings.comp7_core.primeTimeView.status.disableFirst(), server=currServerName)) if status in (PrimeTimeStatus.FROZEN, PrimeTimeStatus.NOT_SET) else ''
+        if status in (PrimeTimeStatus.FROZEN, PrimeTimeStatus.NOT_SET):
+            return text_styles.grandTitle(backport.text(R.strings.comp7_core.primeTimeView.status.disableFirst(), server=currServerName))
+        return ''
 
     def __getTimeText(self, serverInfo):
         if serverInfo is None:

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_light/scripts/client/comp7_light/gui/impl/gen/view_models/views/lobby/platoon/comp7_light_header_model.py
 from gui.impl.gen.view_models.views.lobby.platoon.member_count_dropdown import MemberCountDropdown
 from gui.impl.gen.view_models.views.lobby.platoon.window_header_model import WindowHeaderModel
 

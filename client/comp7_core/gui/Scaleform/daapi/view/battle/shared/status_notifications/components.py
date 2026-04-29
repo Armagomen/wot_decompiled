@@ -1,12 +1,13 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_core/scripts/client/comp7_core/gui/Scaleform/daapi/view/battle/shared/status_notifications/components.py
 import logging
 from gui.Scaleform.genConsts.BATTLE_NOTIFICATIONS_TIMER_TYPES import BATTLE_NOTIFICATIONS_TIMER_TYPES
 from gui.Scaleform.daapi.view.battle.shared.status_notifications.components import StatusNotificationContainer
 _logger = logging.getLogger(__name__)
 
 class Comp7StatusNotificationContainer(StatusNotificationContainer):
-    _COMP7_TIMER_ROLE_EFFECTS_PRIORITY = (BATTLE_NOTIFICATIONS_TIMER_TYPES.STUN, BATTLE_NOTIFICATIONS_TIMER_TYPES.COMP7_AOE_HEAL, BATTLE_NOTIFICATIONS_TIMER_TYPES.COMP7_AOE_INSPIRE)
+    _COMP7_TIMER_ROLE_EFFECTS_PRIORITY = (
+     BATTLE_NOTIFICATIONS_TIMER_TYPES.STUN,
+     BATTLE_NOTIFICATIONS_TIMER_TYPES.COMP7_AOE_HEAL,
+     BATTLE_NOTIFICATIONS_TIMER_TYPES.COMP7_AOE_INSPIRE)
 
     def getItemsData(self):
         items = [ item for item in self._items if item.isVisible() ]
@@ -17,7 +18,8 @@ class Comp7StatusNotificationContainer(StatusNotificationContainer):
         typeID = item.getViewTypeID()
         if typeID == StatusNotificationsGroup.GROUP_VIEW_ITEM_ID:
             return -3
-        aoeTimer = typeID in (BATTLE_NOTIFICATIONS_TIMER_TYPES.COMP7_AOE_HEAL, BATTLE_NOTIFICATIONS_TIMER_TYPES.COMP7_AOE_INSPIRE)
+        aoeTimer = typeID in (
+         BATTLE_NOTIFICATIONS_TIMER_TYPES.COMP7_AOE_HEAL, BATTLE_NOTIFICATIONS_TIMER_TYPES.COMP7_AOE_INSPIRE)
         if aoeTimer and item.isSourceVehicle():
             return -2
         try:
@@ -33,14 +35,14 @@ class StatusNotificationItem(object):
         super(StatusNotificationItem, self).__init__()
         self.__updateCallback = updateCallback
         self._isPulseVisible = False
-        self._vo = {'typeID': self.getViewTypeID(),
-         'title': '',
-         'description': '',
-         'totalTime': 0.0,
-         'currentTime': 0.0,
-         'iconName': self.NOT_CHANGE_DEFAULT_ICON,
-         'iconSmallName': self.NOT_CHANGE_DEFAULT_ICON,
-         'pulseVisible': self._getIsPulseVisible()}
+        self._vo = {'typeID': self.getViewTypeID(), 
+           'title': '', 
+           'description': '', 
+           'totalTime': 0.0, 
+           'currentTime': 0.0, 
+           'iconName': self.NOT_CHANGE_DEFAULT_ICON, 
+           'iconSmallName': self.NOT_CHANGE_DEFAULT_ICON, 
+           'pulseVisible': self._getIsPulseVisible()}
         self._isVisible = False
 
     def start(self):

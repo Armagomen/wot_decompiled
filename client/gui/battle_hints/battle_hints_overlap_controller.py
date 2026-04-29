@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_hints/battle_hints_overlap_controller.py
 from enum import Enum
 from logging import getLogger
 import typing
@@ -22,17 +20,18 @@ class HintScope(str, Enum):
     LOCAL_STORY = 'local_story'
 
 
-NEWBIE_SETTINGS = {BATTLE_VIEW_ALIASES.FRAG_CORRELATION_BAR,
+NEWBIE_SETTINGS = {
+ BATTLE_VIEW_ALIASES.FRAG_CORRELATION_BAR,
  BATTLE_VIEW_ALIASES.PLAYERS_PANEL,
  BATTLE_VIEW_ALIASES.BATTLE_END_WARNING_PANEL,
  BATTLE_VIEW_ALIASES.QUEST_PROGRESS_TOP_VIEW,
  BATTLE_VIEW_ALIASES.BATTLE_TIMER,
  BATTLE_VIEW_ALIASES.DEBUG_PANEL}
-OVERLAP_SETTINGS = {ARENA_BONUS_TYPE.REGULAR: {HintScope.NEWBIE.value: NEWBIE_SETTINGS,
-                            HintScope.LOCAL_STORY.value: NEWBIE_SETTINGS},
- ARENA_BONUS_TYPE.WINBACK: {HintScope.NEWBIE.value: NEWBIE_SETTINGS},
- ARENA_BONUS_TYPE.RANDOM_NP2: {HintScope.NEWBIE.value: NEWBIE_SETTINGS},
- ARENA_BONUS_TYPE.MAPBOX: {HintScope.LOCAL_STORY.value: NEWBIE_SETTINGS}}
+OVERLAP_SETTINGS = {ARENA_BONUS_TYPE.REGULAR: {HintScope.NEWBIE.value: NEWBIE_SETTINGS, 
+                              HintScope.LOCAL_STORY.value: NEWBIE_SETTINGS}, 
+   ARENA_BONUS_TYPE.WINBACK: {HintScope.NEWBIE.value: NEWBIE_SETTINGS}, 
+   ARENA_BONUS_TYPE.RANDOM_NP2: {HintScope.NEWBIE.value: NEWBIE_SETTINGS}, 
+   ARENA_BONUS_TYPE.MAPBOX: {HintScope.LOCAL_STORY.value: NEWBIE_SETTINGS}}
 
 def addSettings(arenaBonusType, hintScope, views):
     if arenaBonusType not in OVERLAP_SETTINGS:
@@ -99,4 +98,4 @@ class BattleHintsOverlapController(IBattleHintsOverlapController):
             return app.containerManager.getContainer(WindowLayer.VIEW).getView()
         else:
             _logger.warning('Battle page not found.')
-            return None
+            return

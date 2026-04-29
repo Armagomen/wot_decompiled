@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/PromoController.py
-import logging
-import typing
+import logging, typing
 from collections import namedtuple
 import BigWorld
 from Event import Event, EventManager
@@ -178,7 +175,9 @@ class PromoController(IPromoController):
         callback(urlWithAuth)
 
     def __needToGetTeasersInfo(self):
-        return True if self.__battlesFromLastTeaser == 0 else self.__checkIntervalInBattles > 0 and self.__battlesFromLastTeaser % self.__checkIntervalInBattles == 0
+        if self.__battlesFromLastTeaser == 0:
+            return True
+        return self.__checkIntervalInBattles > 0 and self.__battlesFromLastTeaser % self.__checkIntervalInBattles == 0
 
     def __onTeaserClosed(self, byUser=False):
         self.__isTeaserOpen = False
@@ -283,20 +282,17 @@ class PromoController(IPromoController):
 
     def __processPromo(self, promos):
         if not self.__isPromoOpen and not self.__waitingForWebBridgeData:
-            logData = {'action': PromoLogActions.OPEN_IN_OLD,
-             'type': PromoLogSubjectType.PROMO_SCREEN}
+            logData = {'action': PromoLogActions.OPEN_IN_OLD, 'type': PromoLogSubjectType.PROMO_SCREEN}
             if self.__pendingPromo is not None:
                 promoData = self.__pendingPromo
-                logData.update({'source': promoData.source,
-                 'url': promoData.url})
+                logData.update({'source': promoData.source, 'url': promoData.url})
                 loadingCallback = self.__logger.getLoggingFuture(**logData)
                 self.__registerAndShowPromoBrowser(promoData.url, promoData.closeCallback, loadingCallback)
                 self.__pendingPromo = None
                 return
             promo = findFirst(lambda item: item.eventType.startswith(gc_constants.PROMO.TEMPLATE.ACTION), promos)
             if promo:
-                logData.update({'source': PromoLogSourceType.SSE,
-                 'url': promo.data})
+                logData.update({'source': PromoLogSourceType.SSE, 'url': promo.data})
                 self.__showBrowserView(promo.data, self.__logger.getLoggingFuture(**logData))
         return
 
@@ -355,8 +351,7 @@ class PromoController(IPromoController):
         if not accessTokenData:
             callback(url)
             return
-        params = {'access_token': str(accessTokenData.accessToken),
-         'spa_id': BigWorld.player().databaseID}
+        params = {'access_token': str(accessTokenData.accessToken), 'spa_id': BigWorld.player().databaseID}
         callback(url_formatters.addParamsToUrlQuery(url, params))
 
     def __onVisibleRouteChanged(self, routeInfo):

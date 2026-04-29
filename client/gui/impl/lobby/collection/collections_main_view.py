@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/collection/collections_main_view.py
 from frameworks.wulf import ViewFlags, ViewSettings, ViewStatus
 from gui.Scaleform.daapi.view.lobby.profile.sound_constants import ACHIEVEMENTS_SOUND_SPACE
 from gui.collection.account_settings import isCompletedCollectionShown, isIntroShown, isNewCollection, getLastShownCollectionBalance, resetCollectionsTabCounter, setCollectionsUpdatedEntrySeen, setLastShownCollectionBalance, setLastShownNewCollection, setShownCompletedCollection
@@ -15,7 +13,7 @@ from skeletons.gui.game_control import ICollectionsSystemController
 from skeletons.gui.impl import IGuiLoader
 
 class CollectionsMainView(ViewImpl):
-    __slots__ = ('__wasFirstActivation',)
+    __slots__ = ('__wasFirstActivation', )
     __collectionsSystem = dependency.descriptor(ICollectionsSystemController)
     __guiLoader = dependency.descriptor(IGuiLoader)
     _COMMON_SOUND_SPACE = ACHIEVEMENTS_SOUND_SPACE
@@ -35,7 +33,7 @@ class CollectionsMainView(ViewImpl):
         if not self.__wasFirstActivation:
             self.__wasFirstActivation = True
         else:
-            with self.viewModel.transaction() as model:
+            with self.viewModel.transaction() as (model):
                 self.__updateData(model=model)
                 self.__setIsViewActive(True, model=model)
             self._subscribe()
@@ -51,19 +49,28 @@ class CollectionsMainView(ViewImpl):
         super(CollectionsMainView, self)._finalize()
 
     def _getEvents(self):
-        return ((self.__collectionsSystem.onServerSettingsChanged, self.__onSettingsChanged),
-         (self.__collectionsSystem.onBalanceUpdated, self.__onBalanceUpdated),
-         (self.viewModel.onOpenCollection, self.__openCollection),
-         (self.viewModel.onClose, self.__close),
-         (self.viewModel.setCompletionWasShown, self.__setCompletionShown),
-         (self.viewModel.onSetNewCollectionShown, self.__setShownNewCollection))
+        return (
+         (
+          self.__collectionsSystem.onServerSettingsChanged, self.__onSettingsChanged),
+         (
+          self.__collectionsSystem.onBalanceUpdated, self.__onBalanceUpdated),
+         (
+          self.viewModel.onOpenCollection, self.__openCollection),
+         (
+          self.viewModel.onClose, self.__close),
+         (
+          self.viewModel.setCompletionWasShown, self.__setCompletionShown),
+         (
+          self.viewModel.onSetNewCollectionShown, self.__setShownNewCollection))
 
     def _getListeners(self):
-        return ((events.CollectionsEvent.COLLECTION_INTRO_CLOSED, self.__onIntroViewClosed, EVENT_BUS_SCOPE.LOBBY),)
+        return (
+         (
+          events.CollectionsEvent.COLLECTION_INTRO_CLOSED, self.__onIntroViewClosed, EVENT_BUS_SCOPE.LOBBY),)
 
     def _onLoading(self, *args, **kwargs):
         super(CollectionsMainView, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self.__updateData(model=model)
             self.__setIsViewActive(True, model=model)
 

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/compat_vehicles_cache.py
 from collections import defaultdict
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.utils.requesters import REQ_CRITERIA
@@ -78,7 +76,8 @@ class CompatVehiclesCache(object):
     def __invalidateCompatCache(self, proxy, addedVehicle, removedVehicle):
         if not addedVehicle and not removedVehicle:
             return
-        collectItems = [ (itemType, item) for itemType in self._COMPAT_TYPES for item in getItemsByType(itemType, proxy) ]
+        collectItems = [ (itemType, item) for itemType in self._COMPAT_TYPES for item in getItemsByType(itemType, proxy)
+                       ]
         for vehicle in addedVehicle:
             self.__addCacheForVehicle(vehicle, collectItems)
 

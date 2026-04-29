@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/items/unit_seqs.py
 from messenger.ext import passCensor
 from gui.prb_control.items.unit_items import PlayerUnitInfo, UnitFlags
 from gui.prb_control.settings import CREATOR_ROSTER_SLOT_INDEXES
@@ -26,7 +24,9 @@ def UnitsUpdateIterator(requester, data):
 
 
 class UnitsListItem(object):
-    __slots__ = ('cfdUnitID', 'unitMgrID', 'creator', 'rating', 'playersCount', 'commandSize', 'vehicles', 'flags', 'isRosterSet', 'peripheryID', 'description', 'extra')
+    __slots__ = ('cfdUnitID', 'unitMgrID', 'creator', 'rating', 'playersCount', 'commandSize',
+                 'vehicles', 'flags', 'isRosterSet', 'peripheryID', 'description',
+                 'extra')
 
     def __init__(self, cfdUnitID, unitMgrID=0, cmdrRating=0, peripheryID=0, unit=None, **kwargs):
         super(UnitsListItem, self).__init__()
@@ -63,7 +63,7 @@ class UnitsListItem(object):
         return
 
     def __repr__(self):
-        return 'UnitsListItem(cfdUnitID={0:n}, unitMgrID = {1:n}, creator = {2!r:s}, rating = {3:n}, peripheryID = {4:n}, size = {5:n}/{6:n}, flags = {7!r:s}), description = {8:s}'.format(self.cfdUnitID, self.unitMgrID, self.creator, self.rating, self.peripheryID, self.playersCount, self.commandSize, self.flags, self.description)
+        return ('UnitsListItem(cfdUnitID={0:n}, unitMgrID = {1:n}, creator = {2!r:s}, rating = {3:n}, peripheryID = {4:n}, size = {5:n}/{6:n}, flags = {7!r:s}), description = {8:s}').format(self.cfdUnitID, self.unitMgrID, self.creator, self.rating, self.peripheryID, self.playersCount, self.commandSize, self.flags, self.description)
 
     def update(self, cmdrRating=0, unit=None, **kwargs):
         self.rating = cmdrRating

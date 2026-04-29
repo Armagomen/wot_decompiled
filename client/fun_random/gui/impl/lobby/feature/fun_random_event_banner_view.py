@@ -1,9 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/lobby/feature/fun_random_event_banner_view.py
 from __future__ import absolute_import
 import typing
 from account_helpers.AccountSettings import AccountSettings, FUN_RANDOM_BANNER_INTRO_CLICK_TIMESTAMP
 from adisp import adisp_process
+from fun_random.gui.feature.fun_constants import FunSubModesState
 from fun_random.gui.feature.util.fun_mixins import FunAssetPacksMixin, FunSubModesWatcher
 from skeletons.gui.game_control import IFunRandomController
 from fun_random.gui.impl.lobby.tooltips.fun_random_entry_point_tooltip_view import FunRandomEntryPointTooltipView
@@ -14,7 +13,7 @@ from gui.impl.gen.view_models.views.lobby.user_missions.constants.event_banner_s
 from gui.impl.lobby.user_missions.hangar_widget.event_banners.base_event_banner import BaseEventBanner
 from gui.impl.lobby.user_missions.hangar_widget.event_banners.event_banners_container import EventBannersContainer
 from gui.impl.lobby.user_missions.hangar_widget.services import IEventsService
-from helpers import dependency
+from helpers import dependency, time_utils
 if typing.TYPE_CHECKING:
     from typing import Optional
     from frameworks.wulf import View, ViewEvent
@@ -24,7 +23,7 @@ def isFunRandomEntryPointAvailable(funRandomCtrl=None):
     return funRandomCtrl.subModesInfo.isEntryPointAvailable()
 
 
-class FunRandomEventBannerView(BaseEventBanner, FunSubModesWatcher):
+class FunRandomEventBannerView(BaseEventBanner, FunAssetPacksMixin, FunSubModesWatcher):
     NAME = FUNRANDOM_ALIASES.FUN_RANDOM_ENTRY_POINT
     __eventsService = dependency.descriptor(IEventsService)
 
@@ -42,29 +41,27 @@ class FunRandomEventBannerView(BaseEventBanner, FunSubModesWatcher):
 
     @property
     def title(self):
-        return backport.text(FunAssetPacksMixin.getModeLocalsResRoot().capsUserName())
+        return backport.text(self.getModeLocalsResRoot().capsUserName())
 
     @property
     def introDescription(self):
-        return backport.text(FunAssetPacksMixin.getModeLocalsResRoot().entryPoint.intro.description())
+        return backport.text(self.getModeLocalsResRoot().entryPoint.intro.description())
 
     @property
     def inProgressDescription(self):
-        return backport.text(FunAssetPacksMixin.getModeLocalsResRoot().entryPoint.inProgress.description())
+        return backport.text(self.getModeLocalsResRoot().entryPoint.inProgress.description())
 
     @property
     def iconsPath(self):
-        assetsPointer = FunAssetPacksMixin.getModeAssetsPointer()
-        return 'fun_random.gui.maps.icons.feature.asset_packs.modes.{}'.format(assetsPointer)
+        return ('fun_random.gui.maps.icons.feature.asset_packs.modes.{}').format(self.getModeAssetsPointer())
 
     @property
     def videosPath(self):
-        assetsPointer = FunAssetPacksMixin.getModeAssetsPointer()
-        return 'fun_random.asset_packs.modes.{}'.format(assetsPointer)
+        return ('asset_packs.modes.{}').format(self.getModeAssetsPointer())
 
     @property
     def borderColor(self):
-        pass
+        return self.getModeAssetsConfiguration().hangarEventBanner.borderColor
 
     @property
     def bannerState(self):
@@ -85,7 +82,7 @@ class FunRandomEventBannerView(BaseEventBanner, FunSubModesWatcher):
     def prepare(self):
         status = self.getSubModesStatus()
         self.__state = getFunRandomEventState(status)
-        self.__timerValue = status.primeDelta
+        self.__timerValue = status.primeDelta if status.state == FunSubModesState.NOT_AVAILABLE else time_utils.getTimeDeltaFromNowInLocal(status.endTime)
         self.__eventStartDate = status.rightBorder
         self.__eventEndDate = status.endTime
         if self.__state == EventBannerState.IN_PROGRESS:

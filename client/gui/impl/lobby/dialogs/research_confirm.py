@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/dialogs/research_confirm.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.dialogs.research_confirm_dialog_view_model import ResearchConfirmDialogViewModel
@@ -23,14 +21,18 @@ class ResearchConfirmDialogWindow(FullScreenDialogBaseView):
 
     def _onLoading(self, researchedItemsText, xp, freeXP, *args, **kwargs):
         super(ResearchConfirmDialogWindow, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setResearchedItemsText(researchedItemsText)
             vm.setXp(xp)
             vm.setFreeXP(freeXP)
 
     def _getEvents(self):
         events = super(ResearchConfirmDialogWindow, self)._getEvents()
-        return events + ((self.viewModel.onAcceptClick, self._onAcceptClick), (self.viewModel.onCancelClick, self._onCancelClick))
+        return events + (
+         (
+          self.viewModel.onAcceptClick, self._onAcceptClick),
+         (
+          self.viewModel.onCancelClick, self._onCancelClick))
 
     def _onAcceptClick(self):
         self._setResult(DialogButtons.SUBMIT)

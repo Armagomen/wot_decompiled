@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/epic_team_bases_ctrl.py
-import BigWorld
-import BattleReplay
+import BigWorld, BattleReplay
 from debug_utils import LOG_ERROR
 from epic_constants import EPIC_BATTLE_TEAM_ID
 from helpers import dependency
@@ -119,7 +116,9 @@ class EpicBattleTeamsBasesController(BattleTeamsBasesController):
                 LOG_ERROR('Expected PlayerDataComponent not present!')
                 return
             baseLane = sectorBaseComp.getSectorForSectorBase(baseID).playerGroup
-            return False if baseLane != playerData.physicalLane else True
+            if baseLane != playerData.physicalLane:
+                return False
+            return True
 
     def __onSectorBaseCaptured(self, baseId, isPlayerTeam):
         self.__capturedBasesDict[baseId] = True

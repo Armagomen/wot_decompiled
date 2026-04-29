@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_light/scripts/client/comp7_light/gui/impl/lobby/hangar/comp7_light_hangar.py
 from __future__ import absolute_import
-import logging
-import typing
+import logging, typing
 from comp7_light.gui.Scaleform.genConsts.COMP7_LIGHT_HANGAR_ALIASES import COMP7_LIGHT_HANGAR_ALIASES
 from account_helpers.AccountSettings import HANGAR_VIEW_SETTINGS, HANGAR_KEY_BINDINGS
 from gui.Scaleform.framework.entities.View import ViewKey
@@ -104,26 +101,26 @@ class Comp7LightHangar(ViewComponent[RouterModel], IRoutableView):
     def _getChildComponents(self):
         hangar = R.aliases.hangar.shared
         comp7LightHangar = R.aliases.comp7_light.shared
-        return {hangar.VehiclesInfo(): lambda : Comp7LightVehiclesInfoPresenter(self.__vehicleFilter),
-         hangar.VehiclesStatistics(): lambda : VehiclesStatisticsPresenter(self.__vehicleFilter, self.__accountStyles),
-         hangar.Loadout(): Comp7LightLoadoutPresenter,
-         hangar.Crew(): CrewPresenter,
-         hangar.VehicleParams(): HangarVehicleParamsPresenter,
-         hangar.VehiclesInventory(): lambda : VehicleInventoryPresenter(self.__vehicleFilter),
-         hangar.VehicleFilters(): lambda : Comp7CoreVehicleFiltersDataProvider(self.__carouselFilter),
-         hangar.MainMenu(): lambda : MainMenuPresenter(getMenuItems()),
-         hangar.VehicleMenu(): VehicleMenuPresenter,
-         hangar.SpaceInteraction(): lambda : SpaceInteractionPresenter(self.__createSelectableLogic()),
-         hangar.Teaser(): TeaserPresenter,
-         hangar.HeroTank(): HeroTankPresenter,
-         hangar.OptionalDevicesAssistant(): Comp7LightOptionalDevicesAssistantPresenter,
-         hangar.Settings(): lambda : SettingsPresenter(HangarSettingsModel, HANGAR_VIEW_SETTINGS),
-         hangar.KeyBindings(): lambda : SettingsPresenter(KeyBindingsModel, HANGAR_KEY_BINDINGS, readOnly=True),
-         hangar.EasyTankEquip(): EasyTankEquipPresenter,
-         comp7LightHangar.AlertMessage(): AlertMessagePresenter,
-         comp7LightHangar.SeasonModifier(): SeasonModifierPresenter,
-         comp7LightHangar.RoleSkillSlot(): Comp7LightRoleSkillSlotPresenter,
-         comp7LightHangar.UserMissions(): Comp7LightUserMissionsPresenter}
+        return {hangar.VehiclesInfo(): lambda : Comp7LightVehiclesInfoPresenter(self.__vehicleFilter), 
+           hangar.VehiclesStatistics(): lambda : VehiclesStatisticsPresenter(self.__vehicleFilter, self.__accountStyles), 
+           hangar.Loadout(): Comp7LightLoadoutPresenter, 
+           hangar.Crew(): CrewPresenter, 
+           hangar.VehicleParams(): HangarVehicleParamsPresenter, 
+           hangar.VehiclesInventory(): lambda : VehicleInventoryPresenter(self.__vehicleFilter), 
+           hangar.VehicleFilters(): lambda : Comp7CoreVehicleFiltersDataProvider(self.__carouselFilter), 
+           hangar.MainMenu(): lambda : MainMenuPresenter(getMenuItems()), 
+           hangar.VehicleMenu(): VehicleMenuPresenter, 
+           hangar.SpaceInteraction(): lambda : SpaceInteractionPresenter(self.__createSelectableLogic()), 
+           hangar.Teaser(): TeaserPresenter, 
+           hangar.HeroTank(): HeroTankPresenter, 
+           hangar.OptionalDevicesAssistant(): Comp7LightOptionalDevicesAssistantPresenter, 
+           hangar.Settings(): lambda : SettingsPresenter(HangarSettingsModel, HANGAR_VIEW_SETTINGS), 
+           hangar.KeyBindings(): lambda : SettingsPresenter(KeyBindingsModel, HANGAR_KEY_BINDINGS, readOnly=True), 
+           hangar.EasyTankEquip(): EasyTankEquipPresenter, 
+           comp7LightHangar.AlertMessage(): AlertMessagePresenter, 
+           comp7LightHangar.SeasonModifier(): SeasonModifierPresenter, 
+           comp7LightHangar.RoleSkillSlot(): Comp7LightRoleSkillSlotPresenter, 
+           comp7LightHangar.UserMissions(): Comp7LightUserMissionsPresenter}
 
     def _subscribe(self):
         super(Comp7LightHangar, self)._subscribe()
@@ -172,7 +169,7 @@ class Comp7LightHangar(ViewComponent[RouterModel], IRoutableView):
 
     @app_getter
     def __app(self):
-        return None
+        return
 
     def __createSelectableLogic(self):
         return HangarSelectableLogic()

@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/cgf_components/color_blind_component.py
-import typing
-import CGF
-import GenericComponents
+import typing, CGF, GenericComponents
 from account_helpers.settings_core.settings_constants import GRAPHICS
 from cgf_script.component_meta_class import CGFMetaTypes, ComponentProperty, registerComponent
 from cgf_script.managers_registrator import autoregister, onAddedQuery, onRemovedQuery

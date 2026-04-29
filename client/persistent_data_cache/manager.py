@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/persistent_data_cache/manager.py
-import BigWorld
-import wg_async
+import BigWorld, wg_async
 from helpers import ExitCode
 from persistent_data_cache_common.manager import ForceCreatingPDCManager
 

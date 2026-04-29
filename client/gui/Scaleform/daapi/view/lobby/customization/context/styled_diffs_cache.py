@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/context/styled_diffs_cache.py
 import typing
 from helpers import dependency
 from items.components.c11n_constants import SeasonType
@@ -38,8 +36,7 @@ class StyleDiffsCache(object):
             if currentOutfit.id == style.id:
                 return currentOutfit.pack().makeCompDescr()
             return None
-        else:
-            return self.__diffs[style.intCD][season]
+        return self.__diffs[style.intCD][season]
 
     def clearDiffs(self):
         self.__diffs.clear()

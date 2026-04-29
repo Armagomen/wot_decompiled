@@ -1,7 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/common/battle_royale/params.py
+from __future__ import absolute_import
 import logging
 from collections import namedtuple
+from future.utils import viewitems
 from gui import makeHtmlString, GUI_SETTINGS
 from gui.impl import backport
 from gui.impl.gen import R
@@ -19,14 +19,17 @@ from gui.shared.gui_items import GUI_ITEM_TYPE
 from helpers import i18n, dependency
 from items import ITEM_TYPES
 from items import getTypeOfCompactDescr
+from math_common import decimal_round
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
 _logger = logging.getLogger(__name__)
-_ModuleDescr = namedtuple('_ModuleDescr', ('vDescr', 'currentModuleDescr', 'intCD', 'typeCD', 'moduleParams'))
+_ModuleDescr = namedtuple('_ModuleDescr', ('vDescr', 'currentModuleDescr', 'intCD',
+                                           'typeCD', 'moduleParams'))
 ROYALE_VISIBILITY_PARAMS = ('radarRadius', 'radarCooldown')
 _ROYALE_MOBILITY_PARAMS = ('forwardMaxSpeed', 'chassisModuleRotationSpeed', 'turretModuleRotationSpeed')
-_ROYALE_GUN_PARAMS = ('gunModuleAvgDamageList',)
+_ROYALE_GUN_PARAMS = ('gunModuleAvgDamageList', )
 _BACKWARD_QUALITY_PARAMS = ('radarCooldown', 'hullWeight', 'hullAndChassisWeight')
-_PARAMS_GROUPS = (_ROYALE_GUN_PARAMS + params_helper.RELATIVE_POWER_PARAMS,
+_PARAMS_GROUPS = (
+ _ROYALE_GUN_PARAMS + params_helper.RELATIVE_POWER_PARAMS,
  params_helper.RELATIVE_ARMOR_PARAMS,
  params_helper.RELATIVE_MOBILITY_PARAMS + _ROYALE_MOBILITY_PARAMS,
  params_helper.RELATIVE_CAMOUFLAGE_PARAMS,
@@ -55,12 +58,16 @@ class _ChassisParams(module_params.ChassisParams):
     @property
     def maxHullHealth(self):
         hull = self.__getVariantHull()
-        return hull.maxHealth if hull else self._itemDescr.maxHealth
+        if hull:
+            return hull.maxHealth
+        return self._itemDescr.maxHealth
 
     @property
     def hullWeight(self):
         hull = self.__getVariantHull()
-        return hull.weight if hull else self._vehicleDescr.hull.weight
+        if hull:
+            return hull.weight
+        return self._vehicleDescr.hull.weight
 
     @property
     def hullAndChassisWeight(self):
@@ -69,7 +76,9 @@ class _ChassisParams(module_params.ChassisParams):
     @property
     def hullArmor(self):
         hull = self.__getVariantHull()
-        return hull.primaryArmor if hull else self._vehicleDescr.hull.primaryArmor
+        if hull:
+            return hull.primaryArmor
+        return self._vehicleDescr.hull.primaryArmor
 
     def __getVariantHull(self):
         _, innationItemID = self._itemDescr.id
@@ -80,7 +89,7 @@ class _ChassisParams(module_params.ChassisParams):
                 if innationItemID == variantMatch[0]:
                     return hull
 
-        return None
+        return
 
 
 class _BattleRoyaleVehicleParams(VehicleParams):
@@ -88,7 +97,10 @@ class _BattleRoyaleVehicleParams(VehicleParams):
     @property
     def chassisModuleRotationSpeed(self):
         params = self.__getModuleByType(ITEM_TYPES.vehicleChassis, self._itemDescr.chassis)
-        return params.rotationSpeed if not params.isWheeled else None
+        if not params.isWheeled:
+            return params.rotationSpeed
+        else:
+            return
 
     @property
     def hullAndChassisWeight(self):
@@ -128,28 +140,29 @@ class _BRItemsComparator(ItemsComparator):
         return getParamExtendedData(paramName, self._currentParams.get(paramName), self._otherParams.get(paramName), self._getPenaltiesAndBonuses(paramName), customQualityParams=isInvertedValue)
 
 
-_ITEM_TYPE_HANDLERS = {ITEM_TYPES.vehicleRadio: _RadioParams,
- ITEM_TYPES.vehicleEngine: module_params.EngineParams,
- ITEM_TYPES.vehicleChassis: _ChassisParams,
- ITEM_TYPES.vehicleTurret: _TurretParams,
- ITEM_TYPES.vehicleGun: module_params.GunParams}
+_ITEM_TYPE_HANDLERS = {ITEM_TYPES.vehicleRadio: _RadioParams, 
+   ITEM_TYPES.vehicleEngine: module_params.EngineParams, 
+   ITEM_TYPES.vehicleChassis: _ChassisParams, 
+   ITEM_TYPES.vehicleTurret: _TurretParams, 
+   ITEM_TYPES.vehicleGun: module_params.GunParams}
 
 def _updateSeparator(separator):
     space = ' '
-    return ''.join((space, text_styles.mainBig(separator), space))
+    return ('').join((space, text_styles.mainBig(separator), space))
 
 
 def _reloadTimeSecsPreprocessor(value, states):
     statesOverride = states
     if states:
-        statesOverride = list()
+        statesOverride = []
         stateOverride = states[0][0]
         for state in states:
             stateCopy = list(state)
             stateCopy[0] = stateOverride
             statesOverride.append(stateCopy)
 
-    return (value, None, statesOverride)
+    return (
+     value, None, statesOverride)
 
 
 def _autoReloadPreprocessor(reloadTimes, rowStates):
@@ -158,22 +171,24 @@ def _autoReloadPreprocessor(reloadTimes, rowStates):
     result[1] = _updateSeparator(result[1])
     states = result[2]
     if states:
-        result[2] = ((PARAM_STATE.NORMAL, 0),) * len(states)
+        result[2] = (
+         (
+          PARAM_STATE.NORMAL, 0),) * len(states)
     return result
 
 
 def _generateSettings():
-    s = {'radarRadius': params_formatters._niceFormat,
-     'radarCooldown': params_formatters._niceFormat,
-     'maxHullHealth': params_formatters._integralFormat,
-     'hullWeight': params_formatters._niceRangeFormat,
-     'hullAndChassisWeight': params_formatters._niceRangeFormat,
-     'forwardMaxSpeed': params_formatters._niceFormat}
+    s = {'radarRadius': params_formatters._niceFormat, 
+       'radarCooldown': params_formatters._niceFormat, 
+       'maxHullHealth': params_formatters._integralFormat, 
+       'hullWeight': params_formatters._niceRangeFormat, 
+       'hullAndChassisWeight': params_formatters._niceRangeFormat, 
+       'forwardMaxSpeed': params_formatters._niceFormat}
     s.update(FORMAT_SETTINGS)
     s['reloadTimeSecs'] = s.get('reloadTimeSecs', {}).copy()
     s['reloadTimeSecs']['preprocessor'] = _reloadTimeSecsPreprocessor
-    s[params_formatters.AUTO_RELOAD_PROP_NAME] = {'preprocessor': _autoReloadPreprocessor,
-     'rounder': lambda v: getNiceNumberFormat(round(v, 1))}
+    s[params_formatters.AUTO_RELOAD_PROP_NAME] = {'preprocessor': _autoReloadPreprocessor, 
+       'rounder': lambda v: getNiceNumberFormat(decimal_round(v, 1))}
     return s
 
 
@@ -181,7 +196,9 @@ _FORMAT_SETTINGS = _generateSettings()
 
 def _getParameters(typeCD, module, vDescr=None):
     itemParams = _ITEM_TYPE_HANDLERS[typeCD](module.descriptor, vDescr)
-    return itemParams.getParamsDict() if GUI_SETTINGS.technicalInfo else {}
+    if GUI_SETTINGS.technicalInfo:
+        return itemParams.getParamsDict()
+    return {}
 
 
 def _getModuleDescr(module, vehicle):
@@ -234,14 +251,16 @@ def _deltaWrapper(fn):
 
     def wrapped(paramValue):
         formattedValue = fn(paramValue)
-        return '+%s' % formattedValue if isinstance(paramValue, (int, float)) and paramValue > 0 else formattedValue
+        if isinstance(paramValue, (int, float)) and paramValue > 0:
+            return '+%s' % formattedValue
+        return formattedValue
 
     return wrapped
 
 
 def _generateFormatSettings(rounder=None):
     copy = {}
-    for originalName, originalSetting in _FORMAT_SETTINGS.iteritems():
+    for originalName, originalSetting in viewitems(_FORMAT_SETTINGS):
         settingCopy = originalSetting.copy()
         if 'separator' in settingCopy:
             settingCopy['separator'] = _updateSeparator(settingCopy['separator'])
@@ -255,7 +274,8 @@ def _generateFormatSettings(rounder=None):
 
 _CMP_FORMAT_SETTINGS = _generateFormatSettings()
 _CMP_FORMAT_DELTA_SETTINGS = _generateFormatSettings(_deltaWrapper)
-_DELTA_SCHEME = (_makeTxtForWorse, _makeTxtForNormal, _makeTxtForBetter)
+_DELTA_SCHEME = (
+ _makeTxtForWorse, _makeTxtForNormal, _makeTxtForBetter)
 
 def getModuleParameters(module, vehicle, currentModule=None):
     moduleDescr = _getModuleDescr(module, vehicle)
@@ -270,8 +290,8 @@ def getModuleParameters(module, vehicle, currentModule=None):
             paramInfo = comparator.getExtendedData(paramName)
             fmtValue = params_formatters.formatParameterDelta(paramInfo, _DELTA_SCHEME, _CMP_FORMAT_DELTA_SETTINGS)
             if fmtValue is not None:
-                params.append({'value': str(fmtValue),
-                 'description': _formatModuleParamName(paramName)})
+                params.append({'value': str(fmtValue), 
+                   'description': _formatModuleParamName(paramName)})
 
     paramsList = moduleData.params if moduleData is not None else []
     for paramName in paramsList:
@@ -279,14 +299,14 @@ def getModuleParameters(module, vehicle, currentModule=None):
             paramInfo = comparator.getExtendedData(paramName)
             fmtValue = params_formatters.formatParameter(paramName, paramInfo.value, paramInfo.state, _DELTA_SCHEME, _CMP_FORMAT_SETTINGS)
             if fmtValue is not None:
-                params.append({'value': str(fmtValue),
-                 'description': _formatModuleParamName(paramName)})
+                params.append({'value': str(fmtValue), 
+                   'description': _formatModuleParamName(paramName)})
 
     paramsDict = moduleData.constParams if moduleData else {}
-    for paramName, paramVal in paramsDict.iteritems():
+    for paramName, paramVal in viewitems(paramsDict):
         fmtValue = _makeTxtForBetter(paramVal)
-        params.append({'value': str(fmtValue),
-         'description': _formatModuleParamName(paramName)})
+        params.append({'value': str(fmtValue), 
+           'description': _formatModuleParamName(paramName)})
 
     return params
 
@@ -301,14 +321,14 @@ def getVehicleParameters(vehicle):
             if paramName in paramsList:
                 fmtValue = params_formatters.formatParameter(paramName, vehicleParams.get(paramName))
                 if fmtValue is not None:
-                    group.append({'value': str(fmtValue),
-                     'description': params_formatters.formatVehicleParamName(paramName),
-                     'isLastInGroup': False})
+                    group.append({'value': str(fmtValue), 
+                       'description': params_formatters.formatVehicleParamName(paramName), 
+                       'isLastInGroup': False})
                 else:
                     _logger.warning("Couldn't format value for %s", paramName)
 
         if group:
-            group[-1]['isLastInGroup'] = True
+            group[(-1)]['isLastInGroup'] = True
             params.extend(group)
 
     return params
@@ -353,8 +373,8 @@ def getExtendedParameters(currModule, module, vehicle):
         difference = module.descriptor.maxHealth - currModule.descriptor.maxHealth
     if difference:
         fmtValue = params_formatters.formatParameter('maxHealth', difference, 'better', _DELTA_SCHEME, _CMP_FORMAT_SETTINGS)
-        params.append({'value': str(fmtValue),
-         'description': params_formatters.formatVehicleParamName('increaseHealth')})
+        params.append({'value': str(fmtValue), 
+           'description': params_formatters.formatVehicleParamName('increaseHealth')})
     return params
 
 
@@ -369,5 +389,8 @@ def _formatParameters(paramType, paramName, moduleData, comparator):
             fmtValue = params_formatters.formatParameter(paramName, paramInfo.value, paramInfo.state, _DELTA_SCHEME, _CMP_FORMAT_SETTINGS)
         elif paramType == ParamTypes.DELTA:
             fmtValue = params_formatters.formatParameterDelta(paramInfo, _DELTA_SCHEME, _CMP_FORMAT_DELTA_SETTINGS)
-    return {'value': str(fmtValue),
-     'description': _formatModuleParamName(paramName)} if fmtValue is not None else None
+    if fmtValue is not None:
+        return {'value': str(fmtValue), 
+           'description': _formatModuleParamName(paramName)}
+    else:
+        return

@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/session_stats/session_stats_settings_controller.py
-import copy
-import logging
-import Event
+import copy, logging, Event
 from account_helpers.settings_core.settings_constants import SESSION_STATS
 from gui.shared.items_cache import CACHE_SYNC_REASON
 from helpers import dependency
@@ -10,23 +6,23 @@ from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.shared import IItemsCache
 _logger = logging.getLogger(__name__)
 MAX_STATS = 8
-DEFAULT_CORE_SETTINGS = {SESSION_STATS.IS_NEEDED_SAVE_CURRENT_TAB: False,
- SESSION_STATS.IS_NOT_NEEDED_RESET_STATS_EVERY_DAY: False,
- SESSION_STATS.CURRENT_TAB: SESSION_STATS.BATTLES_TAB,
- SESSION_STATS.ECONOMIC_BLOCK_VIEW: 0,
- SESSION_STATS.SHOW_WTR: True,
- SESSION_STATS.SHOW_RATIO_DAMAGE: True,
- SESSION_STATS.SHOW_RATIO_KILL: True,
- SESSION_STATS.SHOW_WINS: True,
- SESSION_STATS.SHOW_AVERAGE_DAMAGE: True,
- SESSION_STATS.SHOW_HELP_DAMAGE: True,
- SESSION_STATS.SHOW_BLOCKED_DAMAGE: True,
- SESSION_STATS.SHOW_AVERAGE_XP: True,
- SESSION_STATS.SHOW_WIN_RATE: False,
- SESSION_STATS.SHOW_AVERAGE_VEHICLE_LEVEL: False,
- SESSION_STATS.SHOW_AVERAGE_FRAGS: False,
- SESSION_STATS.SHOW_SURVIVED_RATE: False,
- SESSION_STATS.SHOW_SPOTTED: False}
+DEFAULT_CORE_SETTINGS = {SESSION_STATS.IS_NEEDED_SAVE_CURRENT_TAB: False, 
+   SESSION_STATS.IS_NOT_NEEDED_RESET_STATS_EVERY_DAY: False, 
+   SESSION_STATS.CURRENT_TAB: SESSION_STATS.BATTLES_TAB, 
+   SESSION_STATS.ECONOMIC_BLOCK_VIEW: 0, 
+   SESSION_STATS.SHOW_WTR: True, 
+   SESSION_STATS.SHOW_RATIO_DAMAGE: True, 
+   SESSION_STATS.SHOW_RATIO_KILL: True, 
+   SESSION_STATS.SHOW_WINS: True, 
+   SESSION_STATS.SHOW_AVERAGE_DAMAGE: True, 
+   SESSION_STATS.SHOW_HELP_DAMAGE: True, 
+   SESSION_STATS.SHOW_BLOCKED_DAMAGE: True, 
+   SESSION_STATS.SHOW_AVERAGE_XP: True, 
+   SESSION_STATS.SHOW_WIN_RATE: False, 
+   SESSION_STATS.SHOW_AVERAGE_VEHICLE_LEVEL: False, 
+   SESSION_STATS.SHOW_AVERAGE_FRAGS: False, 
+   SESSION_STATS.SHOW_SURVIVED_RATE: False, 
+   SESSION_STATS.SHOW_SPOTTED: False}
 
 class SessionStatsSettingsController(object):
     settingsCore = dependency.descriptor(ISettingsCore)
@@ -66,7 +62,9 @@ class SessionStatsSettingsController(object):
     @staticmethod
     def validateSettings(settings):
         efficiencyBlockParametersList = [ settings[key] for key in SESSION_STATS.getEfficiencyBlock() ]
-        return False if sum(efficiencyBlockParametersList) > MAX_STATS else True
+        if sum(efficiencyBlockParametersList) > MAX_STATS:
+            return False
+        return True
 
     def __updateSettingsCache(self, reason, diff):
         if reason == CACHE_SYNC_REASON.CLIENT_UPDATE:

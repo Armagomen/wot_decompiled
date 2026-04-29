@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/event/__init__.py
+from __future__ import absolute_import
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.daapi.view.battle.event.page import EventBattlePage
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -8,10 +7,10 @@ from gui.Scaleform.genConsts.BATTLE_VIEW_ALIASES import BATTLE_VIEW_ALIASES
 from gui.Scaleform.framework.package_layout import PackageBusinessHandler
 from gui.app_loader import settings as app_settings
 from gui.shared import EVENT_BUS_SCOPE
-__all__ = ('EventBattlePage',)
+__all__ = ('EventBattlePage', )
 
 def getContextMenuHandlers():
-    pass
+    return ()
 
 
 def getViewSettings():
@@ -38,7 +37,8 @@ def getViewSettings():
     from gui.Scaleform.daapi.view.battle.shared import postmortem_panel
     from gui.Scaleform.daapi.view.battle.shared import messages
     from gui.Scaleform.daapi.view.battle.event.status_notifications import panel as sn_panel
-    return (ViewSettings(VIEW_ALIAS.EVENT_BATTLE_PAGE, EventBattlePage, 'eventBattlePage.swf', WindowLayer.VIEW, None, ScopeTemplates.DEFAULT_SCOPE),
+    return (
+     ViewSettings(VIEW_ALIAS.EVENT_BATTLE_PAGE, EventBattlePage, 'eventBattlePage.swf', WindowLayer.VIEW, None, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(BATTLE_VIEW_ALIASES.TEAM_BASES_PANEL, team_bases_panel.TeamBasesPanel, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(BATTLE_VIEW_ALIASES.TIMERS_PANEL, event_destroy_timers_panel.EventDestroyTimersPanel, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(BATTLE_VIEW_ALIASES.BATTLE_TIMER, battle_timers.BattleTimer, ScopeTemplates.DEFAULT_SCOPE),
@@ -66,14 +66,19 @@ def getViewSettings():
 
 
 def getBusinessHandlers():
-    return (_EventBattlePackageBusinessHandler(),)
+    return (
+     _EventBattlePackageBusinessHandler(),)
 
 
 class _EventBattlePackageBusinessHandler(PackageBusinessHandler):
     __slots__ = ()
 
     def __init__(self):
-        listeners = ((VIEW_ALIAS.EVENT_LOADING, self.loadViewByCtxEvent), (VIEW_ALIAS.EVENT_BATTLE_PAGE, self._loadPage))
+        listeners = (
+         (
+          VIEW_ALIAS.EVENT_LOADING, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.EVENT_BATTLE_PAGE, self._loadPage))
         super(_EventBattlePackageBusinessHandler, self).__init__(listeners, app_settings.APP_NAME_SPACE.SF_BATTLE, EVENT_BUS_SCOPE.BATTLE)
 
     def _loadPage(self, event):

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/frameworks/state_machine/validator.py
 import typing
 from . import states as _states
 from . import visitor
@@ -11,28 +9,28 @@ if typing.TYPE_CHECKING:
 def _validateTransition(transition, upper=None):
     source = transition.getSource()
     if source is None:
-        raise StateMachineError('{} has no source'.format(transition))
+        raise StateMachineError(('{} has no source').format(transition))
     targets = transition.getTargets()
     if not targets:
-        raise StateMachineError('{} has no targets'.format(transition))
+        raise StateMachineError(('{} has no targets').format(transition))
     if None in targets:
-        raise StateMachineError('{} cannot have a None target'.format(transition))
+        raise StateMachineError(('{} cannot have a None target').format(transition))
     if visitor.getLCA([source] + targets, upper=upper) is None:
-        raise StateMachineError('States have no LCA in {}'.format(transition))
+        raise StateMachineError(('States have no LCA in {}').format(transition))
     return
 
 
 def _validateInitialState(state):
     initial = state.getInitial()
     if not initial:
-        raise StateMachineError('{} has no initial state'.format(state))
+        raise StateMachineError(('{} has no initial state').format(state))
 
 
 def _validateState(state, machine):
     if state.isCompound():
         _validateInitialState(state)
     if state.isHistory() and len(state.getTransitions()) > 1:
-        raise StateMachineError('History state {} should have only one transition'.format(state))
+        raise StateMachineError(('History state {} should have only one transition').format(state))
     if not state.isFinal():
         for transition in state.getTransitions():
             _validateTransition(transition, upper=machine.getParent())
@@ -45,10 +43,11 @@ def validate(machine):
         if state.isMachine():
             if state != machine:
                 validate(state)
-        stateID = state.getStateID()
-        if stateID:
-            if stateID not in ids:
-                ids.append(stateID)
-            else:
-                raise StateMachineError('{} is not unique, each state must have unique ID'.format(state))
-        _validateState(state, machine)
+        else:
+            stateID = state.getStateID()
+            if stateID:
+                if stateID not in ids:
+                    ids.append(stateID)
+                else:
+                    raise StateMachineError(('{} is not unique, each state must have unique ID').format(state))
+            _validateState(state, machine)

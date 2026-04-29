@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/view_helpers/emblems.py
 from functools import partial
 from enum import IntEnum
 from gui.clans import settings as clan_settings
@@ -10,7 +8,10 @@ from skeletons.gui.lobby_context import ILobbyContext
 def getClanEmblemURL(clanDbID, size):
     lobbyContext = dependency.instance(ILobbyContext)
     svrSettings = lobbyContext.getServerSettings()
-    return svrSettings.fileServer.getClanEmblemBySize(clanDbID, size) if svrSettings is not None else None
+    if svrSettings is not None:
+        return svrSettings.fileServer.getClanEmblemBySize(clanDbID, size)
+    else:
+        return
 
 
 class EmblemSize(IntEnum):
@@ -22,11 +23,11 @@ class EmblemSize(IntEnum):
 
 
 class ClanEmblemsHelper(ImageHelper):
-    __default = {EmblemSize.SIZE_16: clan_settings.getDefaultEmblem16x16(),
-     EmblemSize.SIZE_32: clan_settings.getDefaultEmblem32x32(),
-     EmblemSize.SIZE_64: None,
-     EmblemSize.SIZE_128: clan_settings.getDefaultEmblem128x128(),
-     EmblemSize.SIZE_256: clan_settings.getDefaultEmblem256x256()}
+    __default = {EmblemSize.SIZE_16: clan_settings.getDefaultEmblem16x16(), 
+       EmblemSize.SIZE_32: clan_settings.getDefaultEmblem32x32(), 
+       EmblemSize.SIZE_64: None, 
+       EmblemSize.SIZE_128: clan_settings.getDefaultEmblem128x128(), 
+       EmblemSize.SIZE_256: clan_settings.getDefaultEmblem256x256()}
 
     def requestClanEmblem16x16(self, clanDbID):
         self.__makeRequest(clanDbID, EmblemSize.SIZE_16, self.onClanEmblem16x16Received)

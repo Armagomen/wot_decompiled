@@ -1,9 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/tutorial/core.py
 import weakref
 from functools import partial
-import BigWorld
-import Event
+import BigWorld, Event
 from tutorial import doc_loader
 from tutorial.control import g_tutorialWeaver
 from tutorial.control import setTutorialProxy, clearTutorialProxy
@@ -275,7 +272,8 @@ class Tutorial(object):
         self._nextChapter = True
 
     def getNextScene(self, sceneID):
-        return (self._nextScene, self._data.isInScene(self._nextScene, sceneID))
+        return (
+         self._nextScene, self._data.isInScene(self._nextScene, sceneID))
 
     def getFunctionalScene(self):
         return self._funcScene
@@ -333,22 +331,22 @@ class Tutorial(object):
         if ctx.initialChapter is not None:
             self._currentChapter = ctx.initialChapter
             return True
-        completed = self._bonuses.getCompleted()
-        fromCache = self._cache.currentChapter()
-        if fromCache is not None and self._settings.findChapterInCache:
-            chapter_ = self._descriptor.getChapter(fromCache)
-            if self._descriptor.isChapterInitial(chapter_, completed):
-                self._currentChapter = fromCache
-            else:
-                self._cache.clearChapterData()
-                LOG_WARNING('Initial chapter not found in cache or bonuses is invalid', fromCache, chapter_.getBonusID() if chapter_ is not None else None, completed)
-        if self._currentChapter is None:
-            self._currentChapter = self._descriptor.getInitialChapterID(completed=completed)
-        if self._currentChapter is None:
-            LOG_ERROR('Initial chapter not found. Tutorial is stopping')
-            self.stop()
-            return False
         else:
+            completed = self._bonuses.getCompleted()
+            fromCache = self._cache.currentChapter()
+            if fromCache is not None and self._settings.findChapterInCache:
+                chapter_ = self._descriptor.getChapter(fromCache)
+                if self._descriptor.isChapterInitial(chapter_, completed):
+                    self._currentChapter = fromCache
+                else:
+                    self._cache.clearChapterData()
+                    LOG_WARNING('Initial chapter not found in cache or bonuses is invalid', fromCache, chapter_.getBonusID() if chapter_ is not None else None, completed)
+            if self._currentChapter is None:
+                self._currentChapter = self._descriptor.getInitialChapterID(completed=completed)
+            if self._currentChapter is None:
+                LOG_ERROR('Initial chapter not found. Tutorial is stopping')
+                self.stop()
+                return False
             return True
 
     def __tryRunFirstState(self, nextFlag):
@@ -370,7 +368,7 @@ class Tutorial(object):
         else:
             scene = self._data.getScene(sceneID)
             if scene is None:
-                LOG_WARNING('Scene {0:>s} not found in chapter {1:>s}'.format(sceneID, self._currentChapter))
+                LOG_WARNING(('Scene {0:>s} not found in chapter {1:>s}').format(sceneID, self._currentChapter))
                 return
             self._nextScene = scene
             if self._currentState.allowedToSwitch():

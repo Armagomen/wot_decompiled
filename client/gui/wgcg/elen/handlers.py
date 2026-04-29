@@ -1,20 +1,18 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/wgcg/elen/handlers.py
 from gui.wgcg.base.handlers import RequestHandlers
 from gui.wgcg.settings import WebRequestDataType
 
 class ElenRequestHandlers(RequestHandlers):
 
     def get(self):
-        handlers = {WebRequestDataType.EVENT_BOARDS_GET_EVENTS_DATA: self.__getEventsData,
-         WebRequestDataType.EVENT_BOARDS_GET_PLAYER_DATA: self.__getPlayerData,
-         WebRequestDataType.EVENT_BOARDS_JOIN_EVENT: self.__joinEvent,
-         WebRequestDataType.EVENT_BOARDS_LEAVE_EVENT: self.__leaveEvent,
-         WebRequestDataType.EVENT_BOARDS_GET_MY_EVENT_TOP: self.__getMyEventTop,
-         WebRequestDataType.EVENT_BOARDS_GET_MY_LEADERBOARD_POSITION: self.__getMyLeaderboardPosition,
-         WebRequestDataType.EVENT_BOARDS_GET_LEADERBOARD: self.__getLeaderboard,
-         WebRequestDataType.EVENT_BOARDS_GET_HANGAR_FLAG: self.__getHangarFlag,
-         WebRequestDataType.EVENT_BOARDS_GET_PLAYER_PROGRESSION: self.__getPlayerProgression}
+        handlers = {WebRequestDataType.EVENT_BOARDS_GET_EVENTS_DATA: self.__getEventsData, 
+           WebRequestDataType.EVENT_BOARDS_GET_PLAYER_DATA: self.__getPlayerData, 
+           WebRequestDataType.EVENT_BOARDS_JOIN_EVENT: self.__joinEvent, 
+           WebRequestDataType.EVENT_BOARDS_LEAVE_EVENT: self.__leaveEvent, 
+           WebRequestDataType.EVENT_BOARDS_GET_MY_EVENT_TOP: self.__getMyEventTop, 
+           WebRequestDataType.EVENT_BOARDS_GET_MY_LEADERBOARD_POSITION: self.__getMyLeaderboardPosition, 
+           WebRequestDataType.EVENT_BOARDS_GET_LEADERBOARD: self.__getLeaderboard, 
+           WebRequestDataType.EVENT_BOARDS_GET_HANGAR_FLAG: self.__getHangarFlag, 
+           WebRequestDataType.EVENT_BOARDS_GET_PLAYER_PROGRESSION: self.__getPlayerProgression}
         return handlers
 
     def __getEventsData(self, ctx, callback):

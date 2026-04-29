@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/RemoteDataDownloader.py
-import time
-import httplib
-import base64
-import threading
+import time, httplib, base64, threading
 from functools import partial
 from collections import namedtuple
 from debug_utils import LOG_DEBUG
@@ -89,19 +84,15 @@ class _HttpHostDownloader(threads.ThreadPool):
 
 class _LocalCache(local_cache.ShelfLocalCache):
 
-    class _Record(namedtuple('_Record', ['data',
-     'lastModified',
-     'expires',
-     'requestTime'])):
+    class _Record(namedtuple('_Record', [
+     'data', 'lastModified', 'expires', 'requestTime'])):
 
         def __repr__(self):
-            return '_Record(data=%s, lastModified=%s, expires=%s, requestTime=%s)' % (type(self.data),
-             self.lastModified,
-             self.expires,
-             self.requestTime)
+            return '_Record(data=%s, lastModified=%s, expires=%s, requestTime=%s)' % (
+             type(self.data), self.lastModified, self.expires, self.requestTime)
 
     def __init__(self):
-        super(_LocalCache, self).__init__('external_cache', ('data',), autoflush=60)
+        super(_LocalCache, self).__init__('external_cache', ('data', ), autoflush=60)
 
     def get(self, tags):
         return self._get(self._makeKey(tags))
@@ -120,17 +111,18 @@ class _LocalCache(local_cache.ShelfLocalCache):
         return
 
     def _get(self, key):
-        return self._Record(*self._cache[key]) if key in self._cache else None
+        if key in self._cache:
+            return self._Record(*self._cache[key])
+        else:
+            return
 
     def _put(self, key, data, lastModified, expires):
-        self._cache[key] = (data,
-         lastModified,
-         expires,
-         time_utils.getCurrentTimestamp())
+        self._cache[key] = (
+         data, lastModified, expires, time_utils.getCurrentTimestamp())
 
     @classmethod
     def _makeKey(cls, tags):
-        return base64.b32encode(':'.join(map(str, tags)))
+        return base64.b32encode((':').join(map(str, tags)))
 
 
 class _RemoteDataDownloader(object):
@@ -138,8 +130,8 @@ class _RemoteDataDownloader(object):
     def __init__(self):
         self.__storageCache = None
         self.__lock = threading.RLock()
-        self._pools = {'clans': _HttpHostDownloader('ce-ct.worldoftanks.net', 3),
-         'custom': threads.ThreadPool(workersLimit=2)}
+        self._pools = {'clans': _HttpHostDownloader('ce-ct.worldoftanks.net', 3), 
+           'custom': threads.ThreadPool(workersLimit=2)}
         return
 
     def start(self):
@@ -173,7 +165,8 @@ class _RemoteDataDownloader(object):
             record = self.__storageCache.get((poolName, page))
             if record is not None:
                 return (record, LIFE_TIME.isExpired(record.expires))
-        return (None, True)
+        return (
+         None, True)
 
     def __getRemoteFileByConnection(self, poolName, page, callback):
         return self.__getRemoteFile(poolName, page, callback, _HttpOpenPageJob)
@@ -197,7 +190,8 @@ class _RemoteDataDownloader(object):
             expires = time.time() + LIFE_TIME.MAX
         if lastModified is not None:
             with self.__lock:
-                self.__storageCache.update((poolName, page), data, lastModified, expires)
+                self.__storageCache.update((
+                 poolName, page), data, lastModified, expires)
         callback(data)
         return
 

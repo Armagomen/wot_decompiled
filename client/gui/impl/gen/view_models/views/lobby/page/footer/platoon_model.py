@@ -1,11 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/page/footer/platoon_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.page.footer.platoon_member_model import PlatoonMemberModel
 
 class PlatoonModel(ViewModel):
-    __slots__ = ('onInPlatoonAction',)
+    __slots__ = ('onInPlatoonAction', )
     SEARCHING = 'SEARCHING'
     IN_PLATOON = 'IN_PLATOON'
     CREATE = 'CREATE'

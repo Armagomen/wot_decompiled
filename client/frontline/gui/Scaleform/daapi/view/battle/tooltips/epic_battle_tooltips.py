@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/battle/tooltips/epic_battle_tooltips.py
 import logging
 from gui.Scaleform.daapi.view.battle.shared.consumables_panel import ConsumablesPanel
 from gui.app_loader import sf_battle
@@ -39,11 +37,11 @@ class _FLRandomReserveContext(ConsumablesPanel):
 
     @sf_battle
     def app(self):
-        return None
+        return
 
     def buildItem(self, *args, **kwargs):
         equipment = self.__sessionProvider.shared.equipments.getEquipmentByIDx(args[self._EQUIPMENT_ARG] - self._ORDERS_START_IDX)
         return equipment
 
     def getComponent(self):
-        return None
+        return

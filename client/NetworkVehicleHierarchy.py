@@ -1,7 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/NetworkVehicleHierarchy.py
+from __future__ import absolute_import
 from BigWorld import DynamicScriptComponent
-from vehicle_hierarchy import createClientVehicleHierarchy, removeClientVehicleHierarchy, updateClientVehicleHierarchy, onClientVehicleRespawn
+from vehicle_hierarchy import createClientVehicleHierarchy, removeClientVehicleHierarchy, updateClientVehicleHierarchy
 
 class NetworkVehicleHierarchy(DynamicScriptComponent):
 
@@ -29,14 +28,6 @@ class NetworkVehicleHierarchy(DynamicScriptComponent):
             if begin == end:
                 p = prev[0]
                 updateClientVehicleHierarchy(gameObject, p['slotName'], p['networkID'])
-            return
-
-    def onRespawn(self):
-        gameObject = self.entity.entityGameObject
-        if gameObject is None:
-            return
-        else:
-            onClientVehicleRespawn(gameObject)
             return
 
     def __create(self):

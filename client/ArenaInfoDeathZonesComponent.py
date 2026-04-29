@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/ArenaInfoDeathZonesComponent.py
-import CGF
-import Math
+import CGF, Math
 from death_zones_helpers import ZONE_STATE, DEATH_ZONE_IDS
 from script_component.DynamicScriptComponent import DynamicScriptComponent
 
@@ -21,5 +18,5 @@ class ArenaInfoDeathZonesComponent(DynamicScriptComponent):
         self.updatedZones.extend(range(changePath[0], changePath[0] + 1))
 
     def setSlice_activeZones(self, path, oldValue):
-        startIdx, stopIdx = path[-1]
+        startIdx, stopIdx = path[(-1)]
         self.updatedZones.extend(range(startIdx, stopIdx))

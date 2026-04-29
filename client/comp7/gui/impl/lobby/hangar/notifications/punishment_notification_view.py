@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/hangar/notifications/punishment_notification_view.py
 from gui.impl import backport
 from gui.impl.gen.resources import R
 from gui.impl.lobby.hangar.notifications.punishment_notification_view import PunishmentView, AfkLeaverNotification
@@ -29,4 +27,6 @@ class Comp7BanNotificationWindow(AfkLeaverNotification):
         self.isQualification = isQualification
 
     def __eq__(self, other):
-        return False if not isinstance(other, Comp7BanNotificationWindow) else self.arenaTypeID == other.arenaTypeID and self.time == other.time and self.duration == other.duration and self.penalty == other.penalty and self.isQualification == other.isQualification
+        if not isinstance(other, Comp7BanNotificationWindow):
+            return False
+        return self.arenaTypeID == other.arenaTypeID and self.time == other.time and self.duration == other.duration and self.penalty == other.penalty and self.isQualification == other.isQualification

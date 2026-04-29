@@ -1,15 +1,11 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/excepthook.py
-import BigWorld
-import sys
-import re
-import linecache
+import BigWorld, sys, re, linecache
 from functools import wraps
 from traceback import format_exception_only
 from constants import IS_BASEAPP
 _MAX_OBJECT_SIZE = 16384
 _MAX_DEPTH = 10
-_SEQUENCE_TYPES = (list, set, tuple)
+_SEQUENCE_TYPES = (
+ list, set, tuple)
 _LINE_LIMIT = 25
 _ENABLE_EXTENDED_TRACEBACK = False
 
@@ -31,7 +27,7 @@ def formatLocation(filename, lineno, name):
 
 
 def extendedTracebackAsString(fileNameToTrim, wrapperName, orgName, etype, value, tb):
-    return '\n'.join(extendedTracebackAsList(fileNameToTrim, wrapperName, orgName, etype, value, tb))
+    return ('\n').join(extendedTracebackAsList(fileNameToTrim, wrapperName, orgName, etype, value, tb))
 
 
 def extendedTracebackAsList(fileNameToTrim, wrapperName, orgName, exctype, value, traceback):
@@ -40,7 +36,8 @@ def extendedTracebackAsList(fileNameToTrim, wrapperName, orgName, exctype, value
         return []
     else:
         try:
-            lines = ['[TRACEBACK EXT]']
+            lines = [
+             '[TRACEBACK EXT]']
             localsProcessorCache = {}
             parent = traceback
             n = 0
@@ -58,7 +55,7 @@ def extendedTracebackAsList(fileNameToTrim, wrapperName, orgName, exctype, value
                 line = line.strip()
                 if line:
                     lines.append('    ' + line)
-                lines.append('    locals: {0}'.format(__processLocals(fm.f_locals, localsProcessorCache)))
+                lines.append(('    locals: {0}').format(__processLocals(fm.f_locals, localsProcessorCache)))
 
             for line in format_exception_only(exctype, value):
                 line = line.strip()
@@ -84,9 +81,9 @@ def __processVar(k, v, localsProcessorCache):
                 res[alias] = getattr(v, field)
 
     else:
-        meta = {'depth': 0,
-         'size': 0,
-         'cycleReferences': set()}
+        meta = {'depth': 0, 
+           'size': 0, 
+           'cycleReferences': set()}
         isSizeOK = __checkObjectSize(v, meta)
         if not isSizeOK:
             res = '...skipped...'

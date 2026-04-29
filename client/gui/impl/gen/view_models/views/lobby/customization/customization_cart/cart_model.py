@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/customization/customization_cart/cart_model.py
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.views.lobby.customization.customization_cart.cart_purchase_model import CartPurchaseModel
 from gui.impl.gen.view_models.views.lobby.customization.customization_cart.cart_rent_model import CartRentModel
@@ -8,7 +6,7 @@ from gui.impl.gen.view_models.views.lobby.customization.customization_cart.cart_
 from gui.impl.gen.view_models.views.lobby.customization.customization_cart.cart_tutorial_model import CartTutorialModel
 
 class CartModel(ViewModel):
-    __slots__ = ('onCloseAction',)
+    __slots__ = ('onCloseAction', )
 
     def __init__(self, properties=7, commands=1):
         super(CartModel, self).__init__(properties=properties, commands=commands)

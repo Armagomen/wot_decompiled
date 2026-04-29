@@ -1,17 +1,19 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicles/entities/vehicle_events/interfaces.py
 from __future__ import absolute_import
 import typing
 from events_containers.common.containers import IClientEventsContainer, IClientEventsContainerListener
 if typing.TYPE_CHECKING:
     from gui.battle_control.components_states.ammo import IComponentAmmoState
     from items.components.gun_installation_components import GunInstallationSlot
+    from vehicles.entities import ShotParams
 
 class IVehicleEventsLogic(object):
     onAppearanceReady = None
     onSiegeStateUpdated = None
     onVehicleDestroyed = None
+    onObserverVehicleDataUpdated = None
     onCollectAmmoStates = None
+    onCollectShotParams = None
+    onCurrentShellChanged = None
     onDynamicComponentCreated = None
     onDynamicComponentDestroyed = None
     onDiscreteShotDone = None
@@ -37,7 +39,16 @@ class IVehicleEventsListenerLogic(object):
     def onVehicleDestroyed(self):
         pass
 
+    def onObserverVehicleDataUpdated(self):
+        pass
+
     def onCollectAmmoStates(self, ammoStates):
+        pass
+
+    def onCollectShotParams(self, shotParamsList):
+        pass
+
+    def onCurrentShellChanged(self, intCD):
         pass
 
     def onDynamicComponentCreated(self, component):

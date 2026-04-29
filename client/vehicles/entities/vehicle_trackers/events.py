@@ -1,9 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicles/entities/vehicle_trackers/events.py
 from __future__ import absolute_import
-import typing
-import weakref
-import BigWorld
+import typing, weakref, BigWorld
 from constants import UNKNOWN_VEHICLE_ID
 from events_handler import eventHandler
 from events_containers.common.containers import ClientEventsContainer, ContainersListener
@@ -26,11 +22,14 @@ class VehicleEntityTracker(ClientEventsContainer, ContainersListener, IVehicleEn
         return
 
     def __repr__(self):
-        return 'VehicleEntityTracker({}, {})'.format(self.__vehicleID, self.trackedVehicle)
+        return ('VehicleEntityTracker({}, {})').format(self.__vehicleID, self.trackedVehicle)
 
     @property
     def trackedVehicle(self):
-        return self.__vehicleRef() if self.__vehicleRef is not None else None
+        if self.__vehicleRef is not None:
+            return self.__vehicleRef()
+        else:
+            return
 
     def destroy(self):
         self.stopTracking()

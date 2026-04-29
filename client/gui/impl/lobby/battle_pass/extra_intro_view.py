@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_pass/extra_intro_view.py
 from account_helpers.settings_core.settings_constants import BattlePassStorageKeys
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.Scaleform.daapi.view.lobby.storage.storage_helpers import getVehicleCDForStyle
@@ -44,7 +42,13 @@ class ExtraIntroView(ViewImpl):
         self.__fillModel()
 
     def _getEvents(self):
-        return ((self.viewModel.onClose, self.__onSubmit), (self.__battlePassController.onBattlePassSettingsChange, self.__onBattlePassSettingsChanged), (self.__battlePassController.onSeasonStateChanged, self.__onBattlePassSettingsChanged))
+        return (
+         (
+          self.viewModel.onClose, self.__onSubmit),
+         (
+          self.__battlePassController.onBattlePassSettingsChange, self.__onBattlePassSettingsChanged),
+         (
+          self.__battlePassController.onSeasonStateChanged, self.__onBattlePassSettingsChanged))
 
     def __onSubmit(self):
         self.__settingsCore.serverSettings.saveInBPStorage({BattlePassStorageKeys.EXTRA_CHAPTER_INTRO_SHOWN: True})
@@ -63,6 +67,6 @@ class ExtraIntroView(ViewImpl):
         style = getStyleForChapter(self.__chapterID)
         vehicleCD = getVehicleCDForStyle(style)
         vehicle = getVehicleByIntCD(vehicleCD)
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             tx.setStyleName(style.userName)
             fillVehicleInfo(tx.vehicleInfo, vehicle)

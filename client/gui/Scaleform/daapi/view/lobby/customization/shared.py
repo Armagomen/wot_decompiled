@@ -1,15 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/shared.py
-import logging
-import struct
+import logging, struct
 from collections import namedtuple, Counter
-import typing
-import BigWorld
-import Math
-import nations
+import typing, BigWorld, Math, nations
 from AccountCommands import isCodeValid
 from CurrentVehicle import g_currentVehicle
-from constants import REQUEST_COOLDOWN
 from gui import GUI_NATIONS_ORDER_INDICES
 from gui.Scaleform import getNationsFilterAssetPath
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
@@ -26,7 +19,6 @@ from gui.shared.gui_items.gui_item_economics import ItemPrice
 from gui.shared.money import Money
 from gui.shared.utils import code2str
 from helpers import dependency, int2roman
-from helpers.func_utils import CallParams, cooldownCallerDecorator
 from helpers.i18n import makeString as _ms
 from items import parseIntCompactDescr
 from items.components.c11n_components import getItemSlotType
@@ -63,95 +55,100 @@ class CustomizationTabs(object):
     STYLES_3D = 8
     ATTACHMENTS = 9
     STAT_TRACKERS = 10
-    ALL = (STYLES_3D,
-     STYLES_2D,
-     ATTACHMENTS,
-     PAINTS,
-     CAMOUFLAGES,
-     PROJECTION_DECALS,
-     EMBLEMS,
-     INSCRIPTIONS,
+    ALL = (
+     STYLES_3D, STYLES_2D, ATTACHMENTS, PAINTS, CAMOUFLAGES, PROJECTION_DECALS, EMBLEMS, INSCRIPTIONS,
      MODIFICATIONS)
-    REGIONS = (PAINTS,
-     CAMOUFLAGES,
-     MODIFICATIONS,
-     STYLES_2D,
-     STYLES_3D)
-    ALWAYS_ENABLED = (PROJECTION_DECALS, ATTACHMENTS)
-    STYLES = (STYLES_2D, STYLES_3D)
-    MODES = {CustomizationModes.CUSTOM: (PAINTS,
-                                 CAMOUFLAGES,
-                                 PROJECTION_DECALS,
-                                 EMBLEMS,
-                                 INSCRIPTIONS,
-                                 MODIFICATIONS,
-                                 ATTACHMENTS,
-                                 STAT_TRACKERS),
-     CustomizationModes.STYLE_2D: (STYLES_2D, ATTACHMENTS, STAT_TRACKERS),
-     CustomizationModes.STYLE_3D: (STYLES_3D, STAT_TRACKERS),
-     CustomizationModes.STYLE_2D_EDITABLE: (PAINTS,
-                                            CAMOUFLAGES,
-                                            PROJECTION_DECALS,
-                                            EMBLEMS,
-                                            INSCRIPTIONS,
-                                            MODIFICATIONS,
-                                            STAT_TRACKERS)}
-    TAB_TO_MODE = {PAINTS: (CustomizationModes.CUSTOM, CustomizationModes.STYLE_2D_EDITABLE),
-     CAMOUFLAGES: (CustomizationModes.CUSTOM, CustomizationModes.STYLE_2D_EDITABLE),
-     PROJECTION_DECALS: (CustomizationModes.CUSTOM, CustomizationModes.STYLE_2D_EDITABLE),
-     EMBLEMS: (CustomizationModes.CUSTOM, CustomizationModes.STYLE_2D_EDITABLE),
-     INSCRIPTIONS: (CustomizationModes.CUSTOM, CustomizationModes.STYLE_2D_EDITABLE),
-     MODIFICATIONS: (CustomizationModes.CUSTOM, CustomizationModes.STYLE_2D_EDITABLE),
-     STYLES_2D: (CustomizationModes.STYLE_2D,),
-     STYLES_3D: (CustomizationModes.STYLE_3D,),
-     ATTACHMENTS: (CustomizationModes.STYLE_2D, CustomizationModes.CUSTOM),
-     STAT_TRACKERS: (CustomizationModes.STYLE_2D,
-                     CustomizationModes.STYLE_3D,
-                     CustomizationModes.CUSTOM,
+    REGIONS = (
+     PAINTS, CAMOUFLAGES, MODIFICATIONS, STYLES_2D, STYLES_3D)
+    ALWAYS_ENABLED = (
+     PROJECTION_DECALS, ATTACHMENTS)
+    STYLES = (
+     STYLES_2D, STYLES_3D)
+    MODES = {CustomizationModes.CUSTOM: (
+                                 PAINTS, CAMOUFLAGES, PROJECTION_DECALS, EMBLEMS, INSCRIPTIONS, MODIFICATIONS, ATTACHMENTS, STAT_TRACKERS), 
+       CustomizationModes.STYLE_2D: (
+                                   STYLES_2D, ATTACHMENTS, STAT_TRACKERS), 
+       CustomizationModes.STYLE_3D: (
+                                   STYLES_3D, STAT_TRACKERS), 
+       CustomizationModes.STYLE_2D_EDITABLE: (
+                                            PAINTS, CAMOUFLAGES, PROJECTION_DECALS, EMBLEMS, INSCRIPTIONS, MODIFICATIONS, STAT_TRACKERS)}
+    TAB_TO_MODE = {PAINTS: (
+              CustomizationModes.CUSTOM, CustomizationModes.STYLE_2D_EDITABLE), 
+       CAMOUFLAGES: (
+                   CustomizationModes.CUSTOM, CustomizationModes.STYLE_2D_EDITABLE), 
+       PROJECTION_DECALS: (
+                         CustomizationModes.CUSTOM, CustomizationModes.STYLE_2D_EDITABLE), 
+       EMBLEMS: (
+               CustomizationModes.CUSTOM, CustomizationModes.STYLE_2D_EDITABLE), 
+       INSCRIPTIONS: (
+                    CustomizationModes.CUSTOM, CustomizationModes.STYLE_2D_EDITABLE), 
+       MODIFICATIONS: (
+                     CustomizationModes.CUSTOM, CustomizationModes.STYLE_2D_EDITABLE), 
+       STYLES_2D: (
+                 CustomizationModes.STYLE_2D,), 
+       STYLES_3D: (
+                 CustomizationModes.STYLE_3D,), 
+       ATTACHMENTS: (
+                   CustomizationModes.STYLE_2D, CustomizationModes.CUSTOM), 
+       STAT_TRACKERS: (
+                     CustomizationModes.STYLE_2D, CustomizationModes.STYLE_3D, CustomizationModes.CUSTOM,
                      CustomizationModes.STYLE_2D_EDITABLE)}
-    TAB_NAMES = {PAINTS: 'paint',
-     CAMOUFLAGES: 'camouflage',
-     PROJECTION_DECALS: 'projectionDecal',
-     EMBLEMS: 'emblem',
-     INSCRIPTIONS: 'inscription',
-     MODIFICATIONS: 'modification',
-     STYLES_2D: 'customStyle',
-     STYLES_3D: 'uncustomStyle',
-     ATTACHMENTS: 'attachment',
-     STAT_TRACKERS: 'statTracker'}
-    SLOT_TYPES = {PAINTS: GUI_ITEM_TYPE.PAINT,
-     CAMOUFLAGES: GUI_ITEM_TYPE.CAMOUFLAGE,
-     PROJECTION_DECALS: GUI_ITEM_TYPE.PROJECTION_DECAL,
-     EMBLEMS: GUI_ITEM_TYPE.EMBLEM,
-     INSCRIPTIONS: GUI_ITEM_TYPE.INSCRIPTION,
-     MODIFICATIONS: GUI_ITEM_TYPE.MODIFICATION,
-     STYLES_2D: GUI_ITEM_TYPE.STYLE,
-     STYLES_3D: GUI_ITEM_TYPE.STYLE,
-     ATTACHMENTS: GUI_ITEM_TYPE.ATTACHMENT,
-     STAT_TRACKERS: GUI_ITEM_TYPE.STAT_TRACKER}
-    ITEM_TYPES = {PAINTS: (GUI_ITEM_TYPE.PAINT,),
-     CAMOUFLAGES: (GUI_ITEM_TYPE.CAMOUFLAGE,),
-     PROJECTION_DECALS: (GUI_ITEM_TYPE.PROJECTION_DECAL,),
-     EMBLEMS: (GUI_ITEM_TYPE.EMBLEM,),
-     INSCRIPTIONS: (GUI_ITEM_TYPE.INSCRIPTION, GUI_ITEM_TYPE.PERSONAL_NUMBER),
-     MODIFICATIONS: (GUI_ITEM_TYPE.MODIFICATION,),
-     STYLES_2D: (GUI_ITEM_TYPE.STYLE,),
-     STYLES_3D: (GUI_ITEM_TYPE.STYLE,),
-     ATTACHMENTS: (GUI_ITEM_TYPE.ATTACHMENT,),
-     STAT_TRACKERS: (GUI_ITEM_TYPE.STAT_TRACKER,)}
-    TABS_WITH_RARITY = (ATTACHMENTS,)
+    TAB_NAMES = {PAINTS: 'paint', 
+       CAMOUFLAGES: 'camouflage', 
+       PROJECTION_DECALS: 'projectionDecal', 
+       EMBLEMS: 'emblem', 
+       INSCRIPTIONS: 'inscription', 
+       MODIFICATIONS: 'modification', 
+       STYLES_2D: 'customStyle', 
+       STYLES_3D: 'uncustomStyle', 
+       ATTACHMENTS: 'attachment', 
+       STAT_TRACKERS: 'statTracker'}
+    SLOT_TYPES = {PAINTS: GUI_ITEM_TYPE.PAINT, 
+       CAMOUFLAGES: GUI_ITEM_TYPE.CAMOUFLAGE, 
+       PROJECTION_DECALS: GUI_ITEM_TYPE.PROJECTION_DECAL, 
+       EMBLEMS: GUI_ITEM_TYPE.EMBLEM, 
+       INSCRIPTIONS: GUI_ITEM_TYPE.INSCRIPTION, 
+       MODIFICATIONS: GUI_ITEM_TYPE.MODIFICATION, 
+       STYLES_2D: GUI_ITEM_TYPE.STYLE, 
+       STYLES_3D: GUI_ITEM_TYPE.STYLE, 
+       ATTACHMENTS: GUI_ITEM_TYPE.ATTACHMENT, 
+       STAT_TRACKERS: GUI_ITEM_TYPE.STAT_TRACKER}
+    ITEM_TYPES = {PAINTS: (
+              GUI_ITEM_TYPE.PAINT,), 
+       CAMOUFLAGES: (
+                   GUI_ITEM_TYPE.CAMOUFLAGE,), 
+       PROJECTION_DECALS: (
+                         GUI_ITEM_TYPE.PROJECTION_DECAL,), 
+       EMBLEMS: (
+               GUI_ITEM_TYPE.EMBLEM,), 
+       INSCRIPTIONS: (
+                    GUI_ITEM_TYPE.INSCRIPTION, GUI_ITEM_TYPE.PERSONAL_NUMBER), 
+       MODIFICATIONS: (
+                     GUI_ITEM_TYPE.MODIFICATION,), 
+       STYLES_2D: (
+                 GUI_ITEM_TYPE.STYLE,), 
+       STYLES_3D: (
+                 GUI_ITEM_TYPE.STYLE,), 
+       ATTACHMENTS: (
+                   GUI_ITEM_TYPE.ATTACHMENT,), 
+       STAT_TRACKERS: (
+                     GUI_ITEM_TYPE.STAT_TRACKER,)}
+    TABS_WITH_RARITY = (
+     ATTACHMENTS,)
 
 
 ITEM_TYPE_TO_TAB = {value:key for key, values in CustomizationTabs.ITEM_TYPES.iteritems() for value in values}
 ITEM_TYPE_TO_SLOT_TYPE = {itemType:CustomizationTabs.SLOT_TYPES[tabId] for itemType, tabId in ITEM_TYPE_TO_TAB.iteritems()}
-REGIONS_SLOTS = tuple((CustomizationTabs.SLOT_TYPES[tabId] for tabId in CustomizationTabs.REGIONS))
-APPLIED_TO_TYPES = (GUI_ITEM_TYPE.EMBLEM,
- GUI_ITEM_TYPE.INSCRIPTION,
- GUI_ITEM_TYPE.PERSONAL_NUMBER,
- GUI_ITEM_TYPE.PAINT,
- GUI_ITEM_TYPE.CAMOUFLAGE)
-SCALE_SIZE = (VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_SCALE_SMALL, VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_SCALE_NORMAL, VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_SCALE_LARGE)
-TYPES_ORDER = (GUI_ITEM_TYPE.STYLE,
+REGIONS_SLOTS = tuple(CustomizationTabs.SLOT_TYPES[tabId] for tabId in CustomizationTabs.REGIONS)
+APPLIED_TO_TYPES = (
+ GUI_ITEM_TYPE.EMBLEM, GUI_ITEM_TYPE.INSCRIPTION, GUI_ITEM_TYPE.PERSONAL_NUMBER,
+ GUI_ITEM_TYPE.PAINT, GUI_ITEM_TYPE.CAMOUFLAGE)
+SCALE_SIZE = (
+ VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_SCALE_SMALL,
+ VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_SCALE_NORMAL,
+ VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_SCALE_LARGE)
+TYPES_ORDER = (
+ GUI_ITEM_TYPE.STYLE,
  GUI_ITEM_TYPE.ATTACHMENT,
  GUI_ITEM_TYPE.STAT_TRACKER,
  GUI_ITEM_TYPE.PAINT,
@@ -161,19 +158,22 @@ TYPES_ORDER = (GUI_ITEM_TYPE.STYLE,
  GUI_ITEM_TYPE.PERSONAL_NUMBER,
  GUI_ITEM_TYPE.INSCRIPTION,
  GUI_ITEM_TYPE.MODIFICATION)
-SEASON_TYPE_TO_INFOTYPE_MAP = {SeasonType.SUMMER: VEHICLE_CUSTOMIZATION.CUSTOMIZATION_INFOTYPE_MAPTYPE_SUMMER,
- SeasonType.DESERT: VEHICLE_CUSTOMIZATION.CUSTOMIZATION_INFOTYPE_MAPTYPE_DESERT,
- SeasonType.WINTER: VEHICLE_CUSTOMIZATION.CUSTOMIZATION_INFOTYPE_MAPTYPE_WINTER}
-COMMON_C11N_AUTO_INSTALL_TYPES = (GUI_ITEM_TYPE.STAT_TRACKER,)
+SEASON_TYPE_TO_INFOTYPE_MAP = {SeasonType.SUMMER: VEHICLE_CUSTOMIZATION.CUSTOMIZATION_INFOTYPE_MAPTYPE_SUMMER, 
+   SeasonType.DESERT: VEHICLE_CUSTOMIZATION.CUSTOMIZATION_INFOTYPE_MAPTYPE_DESERT, 
+   SeasonType.WINTER: VEHICLE_CUSTOMIZATION.CUSTOMIZATION_INFOTYPE_MAPTYPE_WINTER}
+COMMON_C11N_AUTO_INSTALL_TYPES = (
+ GUI_ITEM_TYPE.STAT_TRACKER,)
 
 class BillPopoverButtons(object):
     CUSTOMIZATION_CLEAR = 'customizationClear'
     CUSTOMIZATION_CLEAR_LOCKED = 'customizationClearLocked'
-    ALL = (CUSTOMIZATION_CLEAR, CUSTOMIZATION_CLEAR_LOCKED)
+    ALL = (
+     CUSTOMIZATION_CLEAR, CUSTOMIZATION_CLEAR_LOCKED)
 
 
 OutfitInfo = namedtuple('OutfitInfo', ('original', 'modified'))
-CustomizationSlotUpdateVO = namedtuple('CustomizationSlotUpdateVO', ('slotId', 'itemIntCD', 'uid'))
+CustomizationSlotUpdateVO = namedtuple('CustomizationSlotUpdateVO', ('slotId', 'itemIntCD',
+                                                                     'uid'))
 
 @dependency.replace_none_kwargs(c11nService=ICustomizationService)
 def getCommonPurchaseItems(commonOutfit, c11nService=None):
@@ -282,7 +282,8 @@ def fitOutfit(outfit, availableRegionsMap):
             availableRegions = set()
             isProjectionDecal = False
             slotItemTypes = slot.getTypes()
-            if {GUI_ITEM_TYPE.SEQUENCE, GUI_ITEM_TYPE.ATTACHMENT, GUI_ITEM_TYPE.INSIGNIA} & set(slotItemTypes):
+            if {
+             GUI_ITEM_TYPE.SEQUENCE, GUI_ITEM_TYPE.ATTACHMENT, GUI_ITEM_TYPE.INSIGNIA} & set(slotItemTypes):
                 continue
             for itemType in slotItemTypes:
                 availableRegions.update(areaRegions.get(itemType, ()))
@@ -317,7 +318,8 @@ def getOutfitWithoutItems(outfitsInfo, intCD, count):
                         slot.remove(idx)
                         count -= 1
 
-        yield (season, outfitCompare.original)
+        yield (
+         season, outfitCompare.original)
 
 
 def getOutfitWithoutItemsNoDiff(outfits, intCD, count):
@@ -331,7 +333,8 @@ def getOutfitWithoutItemsNoDiff(outfits, intCD, count):
                         slot.remove(idx)
                         count -= 1
 
-        yield (season, outfit)
+        yield (
+         season, outfit)
 
 
 def fromWorldCoordsToHangarVehicle(worldCoords):
@@ -350,7 +353,10 @@ def fromHangarVehicleToWorldCoords(hangarVehicleCoords):
 def getSuitableText(item, currentVehicle=None, formatVehicle=True):
     conditions = []
     for node in item.descriptor.filter.include:
-        separator = ' '.join(['&nbsp;&nbsp;', icons.makeImageTag(RES_ICONS.MAPS_ICONS_CUSTOMIZATION_TOOLTIP_SEPARATOR, 3, 21, -6), '  '])
+        separator = (' ').join([
+         '&nbsp;&nbsp;',
+         icons.makeImageTag(RES_ICONS.MAPS_ICONS_CUSTOMIZATION_TOOLTIP_SEPARATOR, 3, 21, -6),
+         '  '])
         if node.nations:
             sortedNations = sorted(node.nations, key=GUI_NATIONS_ORDER_INDICES.get)
             for nation in sortedNations:
@@ -398,7 +404,7 @@ def makeVehiclesShortNamesString(vehiclesCDs, currentVehicle, flat=False, itemsC
         vehiclesCDs.remove(currentVehicle.intCD)
         vehiclesShortNames.append(currentVehicle.shortUserName + _ms(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_LIMITED_CURRENT_VEHICLE))
     vehiclesShortNames.extend(map(getVehicleShortName, vehiclesCDs))
-    return ', '.join(vehiclesShortNames)
+    return (', ').join(vehiclesShortNames)
 
 
 @dependency.replace_none_kwargs(lobbyContext=ILobbyContext, hangarSpace=IHangarSpace)
@@ -430,12 +436,18 @@ def getProjectionSlotFormfactor(slotId):
 
 def getMultiSlot(outfit, slotId):
     container = outfit.getContainer(slotId.areaId)
-    return None if container is None else container.slotFor(slotId.slotType)
+    if container is None:
+        return
+    else:
+        return container.slotFor(slotId.slotType)
 
 
 def getSlotDataFromSlot(outfit, slotId):
     multiSlot = getMultiSlot(outfit, slotId)
-    return None if multiSlot is None else multiSlot.getSlotData(slotId.regionIdx)
+    if multiSlot is None:
+        return
+    else:
+        return multiSlot.getSlotData(slotId.regionIdx)
 
 
 @dependency.replace_none_kwargs(service=ICustomizationService)
@@ -444,16 +456,21 @@ def getItemFromSlot(outfit, slotId, service=None):
         if outfit.id:
             return service.getItemByID(GUI_ITEM_TYPE.STYLE, outfit.id)
         return
+    slotData = getSlotDataFromSlot(outfit, slotId)
+    if slotData is None:
+        return
     else:
-        slotData = getSlotDataFromSlot(outfit, slotId)
-        if slotData is None:
+        if not slotData.intCD:
             return
-        return None if not slotData.intCD else service.getItemByCD(slotData.intCD)
+        return service.getItemByCD(slotData.intCD)
 
 
 def getComponentFromSlot(outfit, slotId):
     slotData = getSlotDataFromSlot(outfit, slotId)
-    return None if slotData is None else slotData.component
+    if slotData is None:
+        return
+    else:
+        return slotData.component
 
 
 def isSlotFilled(outfit, slotId):
@@ -567,16 +584,19 @@ def isItemUsedUp(item, service=None):
     if ctx is None:
         _logger.warning('Customization helper function "isItemUsedUp" is used out of customization context')
         return False
-    if item.itemTypeID == GUI_ITEM_TYPE.STYLE:
-        isApplied = ctx.modeId in (CustomizationModes.STYLE_2D, CustomizationModes.STYLE_3D) and ctx.mode.modifiedStyle == item
     else:
-        isApplied = any((ctx.mode.outfits[s].has(item) for s in SeasonType.REGULAR))
-    if isApplied:
-        return False
-    elif ctx.mode.getItemInventoryCount(item) > 0:
-        return False
-    else:
-        return False if ctx.mode.getPurchaseLimit(item) > 0 else True
+        if item.itemTypeID == GUI_ITEM_TYPE.STYLE:
+            isApplied = ctx.modeId in (
+             CustomizationModes.STYLE_2D, CustomizationModes.STYLE_3D) and ctx.mode.modifiedStyle == item
+        else:
+            isApplied = any(ctx.mode.outfits[s].has(item) for s in SeasonType.REGULAR)
+        if isApplied:
+            return False
+        if ctx.mode.getItemInventoryCount(item) > 0:
+            return False
+        if ctx.mode.getPurchaseLimit(item) > 0:
+            return False
+        return True
 
 
 def getItemInventoryCount(item, outfits=None):
@@ -604,7 +624,9 @@ def getItemInstalledCount(item):
 
 
 def getProgressionItemStatusText(level):
-    return backport.text(R.strings.vehicle_customization.progression.item.doneFirst()) if level == 1 else backport.text(R.strings.vehicle_customization.customization.infotype.progression.achievedState(), level=int2roman(level))
+    if level == 1:
+        return backport.text(R.strings.vehicle_customization.progression.item.doneFirst())
+    return backport.text(R.strings.vehicle_customization.customization.infotype.progression.achievedState(), level=int2roman(level))
 
 
 def vehicleHasSlot(slotType, vehicle=None, modelsSet=None):
@@ -664,7 +686,7 @@ def isStyleEditedForCurrentVehicle(outfits, style):
 def getUnsuitableDependentData(outfit, selCamoItemID, styleDependencies, service=None):
     result = []
     styleDependencies = styleDependencies
-    outfitItemsList = tuple(((cIntCD, regionIdx, container) for cIntCD, _, regionIdx, container, _ in outfit.itemsFull()))
+    outfitItemsList = tuple((cIntCD, regionIdx, container) for cIntCD, _, regionIdx, container, _ in outfit.itemsFull())
     getItemByCD = service.getItemByCD
     camoDependencies = styleDependencies.get(selCamoItemID)
     if camoDependencies:
@@ -686,13 +708,6 @@ def getUnsuitableDependentData(outfit, selCamoItemID, styleDependencies, service
     return result
 
 
-def __resetC11nItemsNoveltyParamsMerger(merged, callParams):
-    items = callParams.kwargs.get('items', [])
-    items.extend(merged.kwargs.get('items', []))
-    return CallParams(kwargs={'items': items})
-
-
-@cooldownCallerDecorator(cooldown=REQUEST_COOLDOWN.CUSTOMIZATION_NOVELTY + 0.1, paramsMerger=__resetC11nItemsNoveltyParamsMerger)
 def resetC11nItemsNovelty(items):
 
     def _callback(resultID):
@@ -790,7 +805,7 @@ def __getStyleInventoryCount(item, outfits=None):
 
 
 def __getItemAppliedCount(item, outfits):
-    appliedCount = sum((outfit.itemsCounter[item.intCD] for outfit in outfits.itervalues()))
+    appliedCount = sum(outfit.itemsCounter[item.intCD] for outfit in outfits.itervalues())
     appliedCount -= getItemInstalledCount(item)
     return appliedCount
 
@@ -807,7 +822,9 @@ def __isStyleInstalled(style):
         return False
     else:
         currentOutfit = vehicleItem.getOutfit(SeasonType.SUMMER)
-        return False if currentOutfit is None else currentOutfit.id == style.id
+        if currentOutfit is None:
+            return False
+        return currentOutfit.id == style.id
 
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache, c11nService=ICustomizationService)
@@ -855,11 +872,17 @@ def changePartsOutfit(season, outfit, intCD, removeIntCD):
 
 
 def addPartsToOutfit(season, outfit, intCDs=None):
-    return outfit if outfit.style is None else Outfit(component=outfit.style.addPartsToOutfit(season, outfit.pack(), outfit.vehicleCD, intCDs=intCDs), vehicleCD=outfit.vehicleCD)
+    if outfit.style is None:
+        return outfit
+    else:
+        return Outfit(component=outfit.style.addPartsToOutfit(season, outfit.pack(), outfit.vehicleCD, intCDs=intCDs), vehicleCD=outfit.vehicleCD)
 
 
 def removePartsFromOutfit(season, outfit, intCDs=None):
-    return outfit if outfit.style is None else Outfit(component=outfit.style.removePartrsFromOutfit(season, outfit.pack(), outfit.vehicleCD, intCDs=intCDs), vehicleCD=outfit.vehicleCD)
+    if outfit.style is None:
+        return outfit
+    else:
+        return Outfit(component=outfit.style.removePartrsFromOutfit(season, outfit.pack(), outfit.vehicleCD, intCDs=intCDs), vehicleCD=outfit.vehicleCD)
 
 
 @dependency.replace_none_kwargs(customizationService=ICustomizationService)
@@ -932,13 +955,15 @@ def isStatTrackerTabEnabled(c11nService=None):
         modelsSet = SLOT_DEFAULT_ALLOWED_MODEL
         if outfit.style is not None:
             modelsSet = outfit.style.modelsSet or modelsSet
-        return True if vehicleHasSlot(CustomizationTabs.SLOT_TYPES[CustomizationTabs.STAT_TRACKERS], modelsSet=modelsSet) else False
+        if vehicleHasSlot(CustomizationTabs.SLOT_TYPES[CustomizationTabs.STAT_TRACKERS], modelsSet=modelsSet):
+            return True
+        return False
 
 
 def getAvailableSlots(slotType, vehicleDescr=None):
     availableSlots = []
     for areaId in Area.ALL:
-        availableSlots.extend((C11nId(areaId, slotType, region) for region in getAvailableRegions(areaId, slotType, vehicleDescr)))
+        availableSlots.extend(C11nId(areaId, slotType, region) for region in getAvailableRegions(areaId, slotType, vehicleDescr))
 
     return availableSlots
 

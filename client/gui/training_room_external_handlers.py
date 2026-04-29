@@ -1,41 +1,44 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/training_room_external_handlers.py
+from __future__ import absolute_import
+from gui.prb_control.events_dispatcher import g_eventDispatcher
 from gui.shared.system_factory import collectTrainingRoomExternalHandlers
 
 class TrainingRoomBaseHandler(object):
 
     def getArenaFilter(self):
-        return None
+        return
 
     def getArenaData(self):
-        return None
+        return
 
     def getAdditionalInfo(self):
-        return None
+        return
 
     def getIcon(self):
-        return None
+        return
 
     def getMaxPlayersInTeam(self):
-        return None
+        return
 
     def getObserverValidator(self):
-        return None
+        return
 
-    def getPlayerReadyHandler(self):
-        return None
+    def playerReadyHandler(self, result):
+        if result:
+            g_eventDispatcher.loadTrainingRoom()
+        else:
+            g_eventDispatcher.loadHangar()
 
     def getPrebattleLimits(self):
-        return None
+        return
 
     def getPrebattlePropertyChecker(self):
-        return None
+        return
 
     def getVehicleWatcherType(self):
-        return None
+        return
 
     def getClientMessageData(self, errorType=None):
-        return None
+        return
 
     def isEnabledForGuiTypeName(self, guiTypeName=None):
         return False
@@ -43,7 +46,10 @@ class TrainingRoomBaseHandler(object):
 
 def getTrainingRoomHandler(guiType=None):
     handler = collectTrainingRoomExternalHandlers().get(guiType)
-    return handler() if handler is not None else TrainingRoomBaseHandler()
+    if handler is not None:
+        return handler()
+    else:
+        return TrainingRoomBaseHandler()
 
 
 def getAllTrainingRoomHandlers():

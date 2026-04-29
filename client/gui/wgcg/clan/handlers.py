@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/wgcg/clan/handlers.py
 from functools import partial
 from gui.clans import items
 from gui.wgcg.base.handlers import RequestHandlers
@@ -13,33 +11,33 @@ class ClanRequestHandlers(RequestHandlers):
         self.__wgcgController = wgcgController
 
     def get(self):
-        handlers = {WebRequestDataType.CLAN_INFO: self.__getClanInfo,
-         WebRequestDataType.CLAN_RATINGS: self.__getClanRatings,
-         WebRequestDataType.CLAN_GLOBAL_MAP_STATS: self.__getClanGlobalMapStats,
-         WebRequestDataType.CLAN_ACCOUNTS: self.__getClanAccounts,
-         WebRequestDataType.STRONGHOLD_INFO: self.__getStrongholdInfo,
-         WebRequestDataType.ACCOUNT_APPLICATIONS_COUNT: self.__accountApplications,
-         WebRequestDataType.CLAN_INVITATIONS_COUNT: self.__getClanInvitations,
-         WebRequestDataType.CLAN_MEMBERS: self.__getClanMembers,
-         WebRequestDataType.CLAN_MEMBERS_RATING: self.__getClanMembersRating,
-         WebRequestDataType.CLAN_PROVINCES: self.__getProvinces,
-         WebRequestDataType.SEARCH_CLANS: self.__searchClans,
-         WebRequestDataType.GET_RECOMMENDED_CLANS: self.__getRecommendedClans,
-         WebRequestDataType.CLAN_APPLICATIONS: self.__getClanApplications,
-         WebRequestDataType.CLAN_INVITES: self.__getClanInvites,
-         WebRequestDataType.ACCOUNT_INVITES: self.__getAccountInvites,
-         WebRequestDataType.ACCEPT_APPLICATION: self.__acceptApplication,
-         WebRequestDataType.ACCEPT_INVITE: self.__acceptInvite,
-         WebRequestDataType.CREATE_APPLICATIONS: self.__createApplications,
-         WebRequestDataType.CREATE_INVITES: self.__createInvites,
-         WebRequestDataType.DECLINE_APPLICATION: self.__declineApplication,
-         WebRequestDataType.DECLINE_INVITE: self.__declineInvite,
-         WebRequestDataType.DECLINE_INVITES: self.__declineInvites,
-         WebRequestDataType.GET_ACCOUNT_APPLICATIONS: self.__getAccountApplications,
-         WebRequestDataType.CLANS_INFO: self.__getClansInfo,
-         WebRequestDataType.CLAN_FAVOURITE_ATTRS: self.__getClanFavoriteAttributes,
-         WebRequestDataType.STRONGHOLD_EVENT_SETTINGS: self.__getStrongholdEventSettings,
-         WebRequestDataType.STRONGHOLD_EVENT_CLAN_INFO: self.__getStrongholdEventClanInfo}
+        handlers = {WebRequestDataType.CLAN_INFO: self.__getClanInfo, 
+           WebRequestDataType.CLAN_RATINGS: self.__getClanRatings, 
+           WebRequestDataType.CLAN_GLOBAL_MAP_STATS: self.__getClanGlobalMapStats, 
+           WebRequestDataType.CLAN_ACCOUNTS: self.__getClanAccounts, 
+           WebRequestDataType.STRONGHOLD_INFO: self.__getStrongholdInfo, 
+           WebRequestDataType.ACCOUNT_APPLICATIONS_COUNT: self.__accountApplications, 
+           WebRequestDataType.CLAN_INVITATIONS_COUNT: self.__getClanInvitations, 
+           WebRequestDataType.CLAN_MEMBERS: self.__getClanMembers, 
+           WebRequestDataType.CLAN_MEMBERS_RATING: self.__getClanMembersRating, 
+           WebRequestDataType.CLAN_PROVINCES: self.__getProvinces, 
+           WebRequestDataType.SEARCH_CLANS: self.__searchClans, 
+           WebRequestDataType.GET_RECOMMENDED_CLANS: self.__getRecommendedClans, 
+           WebRequestDataType.CLAN_APPLICATIONS: self.__getClanApplications, 
+           WebRequestDataType.CLAN_INVITES: self.__getClanInvites, 
+           WebRequestDataType.ACCOUNT_INVITES: self.__getAccountInvites, 
+           WebRequestDataType.ACCEPT_APPLICATION: self.__acceptApplication, 
+           WebRequestDataType.ACCEPT_INVITE: self.__acceptInvite, 
+           WebRequestDataType.CREATE_APPLICATIONS: self.__createApplications, 
+           WebRequestDataType.CREATE_INVITES: self.__createInvites, 
+           WebRequestDataType.DECLINE_APPLICATION: self.__declineApplication, 
+           WebRequestDataType.DECLINE_INVITE: self.__declineInvite, 
+           WebRequestDataType.DECLINE_INVITES: self.__declineInvites, 
+           WebRequestDataType.GET_ACCOUNT_APPLICATIONS: self.__getAccountApplications, 
+           WebRequestDataType.CLANS_INFO: self.__getClansInfo, 
+           WebRequestDataType.CLAN_FAVOURITE_ATTRS: self.__getClanFavoriteAttributes, 
+           WebRequestDataType.STRONGHOLD_EVENT_SETTINGS: self.__getStrongholdEventSettings, 
+           WebRequestDataType.STRONGHOLD_EVENT_CLAN_INFO: self.__getStrongholdEventClanInfo}
         return handlers
 
     def __getClanInfo(self, ctx, callback=None):
@@ -125,10 +123,14 @@ class ClanRequestHandlers(RequestHandlers):
     def __searchClans(self, ctx, callback):
         limits = self.__wgcgController.getLimits()
         isValid, reason = limits.canSearchClans(ctx.getSearchCriteria())
-        return self.__doFail(ctx, reason, callback) if not isValid else self._requester.doRequestEx(ctx, partial(self._onClansReceived, callback=callback), ('clans', 'search_clans'), search=ctx.getSearchCriteria(), get_total_count=ctx.isGetTotalCount(), fields=ctx.getFields(), offset=ctx.getOffset(), limit=ctx.getLimit())
+        if not isValid:
+            return self.__doFail(ctx, reason, callback)
+        return self._requester.doRequestEx(ctx, partial(self._onClansReceived, callback=callback), ('clans',
+                                                                                                    'search_clans'), search=ctx.getSearchCriteria(), get_total_count=ctx.isGetTotalCount(), fields=ctx.getFields(), offset=ctx.getOffset(), limit=ctx.getLimit())
 
     def __getRecommendedClans(self, ctx, callback):
-        return self._requester.doRequestEx(ctx, partial(self._onClansReceived, callback=callback), ('clans', 'get_recommended_clans'), get_total_count=ctx.isGetTotalCount(), fields=ctx.getFields(), offset=ctx.getOffset(), limit=ctx.getLimit())
+        return self._requester.doRequestEx(ctx, partial(self._onClansReceived, callback=callback), ('clans',
+                                                                                                    'get_recommended_clans'), get_total_count=ctx.isGetTotalCount(), fields=ctx.getFields(), offset=ctx.getOffset(), limit=ctx.getLimit())
 
     def __getClanApplications(self, ctx, callback):
         return self._requester.doRequestEx(ctx, callback, ('clans', 'get_clan_applications'), clan_id=ctx.getClanDbID(), fields=ctx.getFields(), statuses=ctx.getStatuses(), offset=ctx.getOffset(), limit=ctx.getLimit(), get_total_count=ctx.isGetTotalCount())
@@ -160,7 +162,9 @@ class ClanRequestHandlers(RequestHandlers):
     def __createInvites(self, ctx, callback):
         limits = self.__wgcgController.getLimits()
         isValid, reason = limits.canSendInvite(self.__wgcgController.getClanDossier(ctx.getClanDbID()))
-        return self.__doFail(ctx, reason, callback) if not isValid else self._requester.doRequestEx(ctx, callback, ('clans', 'create_invites'), clan_id=ctx.getClanDbID(), account_ids=ctx.getAccountDbIDs(), comment=ctx.getComment())
+        if not isValid:
+            return self.__doFail(ctx, reason, callback)
+        return self._requester.doRequestEx(ctx, callback, ('clans', 'create_invites'), clan_id=ctx.getClanDbID(), account_ids=ctx.getAccountDbIDs(), comment=ctx.getComment())
 
     def __declineApplication(self, ctx, callback):
         return self._requester.doRequestEx(ctx, callback, ('clans', 'decline_application'), application_id=ctx.getApplicationDbID())
@@ -183,7 +187,7 @@ class ClanRequestHandlers(RequestHandlers):
             def _onRatingsReceived(ratingsResponse):
                 if ratingsResponse.isSuccess():
                     ratings = clanRatingsCtx.getDataObj(ratingsResponse.data)
-                    ratings = dict(((item.getClanDbID(), item) for item in ratings))
+                    ratings = dict((item.getClanDbID(), item) for item in ratings)
                     for clan in dataRef:
                         clan['clan_ratings_data'] = ratings.get(clan['clan_id'], items.ClanRatingsData())
 

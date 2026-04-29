@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/visual_script_client/__init__.py
 from constants import IS_UE_EDITOR, IS_VS_EDITOR
 from visual_script.misc import ASPECT
 from visual_script.registrar import VSBlockRegistrar
@@ -16,23 +14,7 @@ def registerContext():
 
 def registerForGeneral():
     registerContext()
-    import arena_blocks
-    import vehicle_blocks
-    import scene_blocks
-    import event_platform_blocks
-    import triggers_blocks
-    import player_blocks
-    import sound_blocks
-    import game_settings_blocks
-    import camera_blocks
-    import battle_hud_block
-    import bitmask_blocks
-    import cgf_blocks
-    import pve_battle_hud_blocks
-    import battle_hints_blocks
-    import vehicle_mechanics_blocks
-    import platoon_blocks
-    import pet_system_blocks
+    import arena_blocks, vehicle_blocks, scene_blocks, event_platform_blocks, triggers_blocks, player_blocks, sound_blocks, game_settings_blocks, camera_blocks, battle_hud_block, bitmask_blocks, cgf_blocks, pve_battle_hud_blocks, battle_hints_blocks, vehicle_mechanics_blocks, platoon_blocks, pet_system_blocks
     g_blockRegistrar.regBlocksFromModule(event_platform_blocks)
     g_blockRegistrar.regBlocksFromModule(arena_blocks)
     g_blockRegistrar.regBlocksFromModule(vehicle_blocks)

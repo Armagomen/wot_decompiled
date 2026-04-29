@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/popovers/editable_style_popover.py
 import typing
 from CurrentVehicle import g_currentVehicle
 from gui import makeHtmlString
@@ -16,7 +14,8 @@ from helpers import dependency
 from items.components.c11n_components import getItemSlotType
 from items.components.c11n_constants import SeasonType, CustomizationType
 from skeletons.gui.customization import ICustomizationService
-POPOVER_SEASONS_ORDER = (SeasonType.ALL,) + SEASONS_ORDER
+POPOVER_SEASONS_ORDER = (
+ SeasonType.ALL,) + SEASONS_ORDER
 
 class EditableStylePopover(CustomizationEditedKitPopoverMeta):
     __service = dependency.descriptor(ICustomizationService)
@@ -107,10 +106,10 @@ class EditableStylePopover(CustomizationEditedKitPopoverMeta):
         if self.__style is not None and not self.__style.isEditable:
             self.destroy()
             return
-        elif not self.__ctx.hasCommonItems() and self.__ctx.isInStyleMode(CustomizationModes.STYLE_3D):
-            self.destroy()
-            return
         else:
+            if not self.__ctx.hasCommonItems() and self.__ctx.isInStyleMode(CustomizationModes.STYLE_3D):
+                self.destroy()
+                return
             itemsList = self.__buildList()
             self.as_setItemsS({'items': itemsList})
             self.__setHeader()
@@ -159,7 +158,8 @@ class EditableStylePopover(CustomizationEditedKitPopoverMeta):
             if item.isHiddenInUI():
                 continue
             sType = getItemSlotType(item.descriptor)
-            key = (pItem.item.intCD, pItem.isFromInventory)
+            key = (
+             pItem.item.intCD, pItem.isFromInventory)
             if key not in itemData:
                 isBase = not pItem.isEdited
                 if item.itemTypeID == GUI_ITEM_TYPE.STYLE:
@@ -204,7 +204,7 @@ class EditableStylePopover(CustomizationEditedKitPopoverMeta):
                 key = (intCD, True)
                 if key not in itemData:
                     itemData[key] = C11nPopoverItemData(item=item, season=season, isBase=True, isRemoved=True, isFromInventory=True)
-                if itemData[key].isRemoved:
+                elif itemData[key].isRemoved:
                     areaId = container.getAreaID()
                     slotType = ITEM_TYPE_TO_SLOT_TYPE[item.itemTypeID]
                     slotId = C11nId(areaId, slotType, regionIdx)
@@ -215,7 +215,8 @@ class EditableStylePopover(CustomizationEditedKitPopoverMeta):
                 key = (nationalEmblemItem.intCD, True)
                 itemData.pop(key)
             if self.__style and not self.__style.is3D and showStyle and season != SeasonType.ALL:
-                key = (self.__style.intCD, True)
+                key = (
+                 self.__style.intCD, True)
                 itemData[key] = C11nPopoverItemData(item=self.__style, season=season, isBase=True, isRemoved=False, isFromInventory=True)
             data = [ self.__makeItemDataVO(itemData) for itemData in sorted(itemData.values(), key=orderKey) ]
             return data
@@ -229,10 +230,10 @@ class EditableStylePopover(CustomizationEditedKitPopoverMeta):
             countLabel = ''
             price = None
         elif itemData.isFromInventory:
-            countLabel = text_styles.main('{} '.format(len(itemData.slotsIds)))
+            countLabel = text_styles.main(('{} ').format(len(itemData.slotsIds)))
             price = None
         else:
-            countLabel = text_styles.main('{} x '.format(len(itemData.slotsIds)))
+            countLabel = text_styles.main(('{} x ').format(len(itemData.slotsIds)))
             price = getItemPricesVO(item.buyPrices.itemPrice)[0]
         disabledLabel = backport.text(R.strings.vehicle_customization.popover.style.removed())
         disabledLabel = text_styles.bonusPreviewText(disabledLabel)
@@ -247,35 +248,37 @@ class EditableStylePopover(CustomizationEditedKitPopoverMeta):
         progressionLevel = 0
         if item.itemTypeID == GUI_ITEM_TYPE.STYLE:
             progressionLevel = self.__ctx.mode.currentOutfit.progressionLevel
-        itemDataVO = {'id': item.intCD,
-         'icon': icon,
-         'userName': name,
-         'numItems': countLabel,
-         'customizationDisplayType': item.customizationDisplayType(),
-         'price': price,
-         'isApplied': isApplied,
-         'isWide': item.isWide(),
-         'itemsList': itemData.slotsIds,
-         'isDim': item.isDim(),
-         'isDisabled': itemData.isRemoved,
-         'disabledLabel': disabledLabel,
-         'isRemovable': itemData.isRemovable,
-         'seasonType': itemData.season,
-         'progressionLevel': progressionLevel,
-         'rarityIcon': rarityIconSource,
-         'rarityBackground': rarityBackgroundIconSource}
+        itemDataVO = {'id': item.intCD, 
+           'icon': icon, 
+           'userName': name, 
+           'numItems': countLabel, 
+           'customizationDisplayType': item.customizationDisplayType(), 
+           'price': price, 
+           'isApplied': isApplied, 
+           'isWide': item.isWide(), 
+           'itemsList': itemData.slotsIds, 
+           'isDim': item.isDim(), 
+           'isDisabled': itemData.isRemoved, 
+           'disabledLabel': disabledLabel, 
+           'isRemovable': itemData.isRemovable, 
+           'seasonType': itemData.season, 
+           'progressionLevel': progressionLevel, 
+           'rarityIcon': rarityIconSource, 
+           'rarityBackground': rarityBackgroundIconSource}
         return itemDataVO
 
     @staticmethod
     def __getSeasonGroupVO(season):
         seasonName = SEASON_TYPE_TO_NAME[season]
         seasonTitle = makeHtmlString('html_templates:lobby/customization/StylePopoverSeasonName', seasonName, ctx={'align': 'CENTER'})
-        seasonGroupVO = {'isTitle': True,
-         'titleLabel': seasonTitle}
+        seasonGroupVO = {'isTitle': True, 
+           'titleLabel': seasonTitle}
         return seasonGroupVO
 
     def __getBaseOutfit(self, season, vehicleCD=''):
         if season == SeasonType.ALL:
             return self.__ctx.commonOriginalOutfit
         else:
-            return self.__style.getOutfit(season, vehicleCD=vehicleCD) if self.__style else None
+            if self.__style:
+                return self.__style.getOutfit(season, vehicleCD=vehicleCD)
+            return

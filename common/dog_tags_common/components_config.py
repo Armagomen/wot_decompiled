@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/dog_tags_common/components_config.py
 import itertools
 from collections import defaultdict
 import typing
@@ -68,12 +66,12 @@ class _ComponentConfigAdapter(object):
         self._createDefaultAnimatedDogTag(components)
 
     def _createAllCache(self, components):
-        self._components = dict(((c.componentId, c) for c in components if not c.isDeprecated and not c.isHidden))
-        self._components_d = dict(((c.componentId, c) for c in components if c.isDeprecated and not c.isHidden))
+        self._components = dict((c.componentId, c) for c in components if not c.isDeprecated and not c.isHidden)
+        self._components_d = dict((c.componentId, c) for c in components if c.isDeprecated and not c.isHidden)
 
     def _createIsDefaultCache(self, components):
-        self._defaults = dict(((c.componentId, c) for c in components if c.isDefault and not c.isDeprecated and not c.isHidden))
-        self._defaults_d = dict(((c.componentId, c) for c in components if c.isDefault and c.isDeprecated and not c.isHidden))
+        self._defaults = dict((c.componentId, c) for c in components if c.isDefault and not c.isDeprecated and not c.isHidden)
+        self._defaults_d = dict((c.componentId, c) for c in components if c.isDefault and c.isDeprecated and not c.isHidden)
 
     def _createGroupByTypeCache(self, components):
         self._types = defaultdict(dict)
@@ -83,10 +81,11 @@ class _ComponentConfigAdapter(object):
                 continue
             if component.isDeprecated:
                 self._types_d[component.purpose][component.componentId] = component
-            self._types[component.purpose][component.componentId] = component
+            else:
+                self._types[component.purpose][component.componentId] = component
 
     def _createDefaultAnimatedDogTag(self, components):
-        firstAnimatedDogTag = next((c for c in components if not c.isHidden and c.purpose == ComponentPurpose.COUPLED))
+        firstAnimatedDogTag = next(c for c in components if not c.isHidden and c.purpose == ComponentPurpose.COUPLED)
         self._defaultAnimatedDogTag = [firstAnimatedDogTag.componentId, firstAnimatedDogTag.coupledComponentId]
 
     def getDefaultDogTag(self):
@@ -101,7 +100,10 @@ class _ComponentConfigAdapter(object):
             depr = self._components_d.get(id_val, None)
             if sourceData == SourceData.DEPRECATED_ONLY:
                 return depr
-        return self._components.get(id_val, None) if depr is None else depr
+        if depr is None:
+            return self._components.get(id_val, None)
+        else:
+            return depr
 
     def getAllComponents(self, sourceData=SourceData.ALL):
         if sourceData == SourceData.NON_DEPRECATED_ONLY:

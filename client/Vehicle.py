@@ -1,26 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/Vehicle.py
-import functools
-import logging
-import math
-import random
-import typing
-import weakref
+from __future__ import absolute_import, division
+import functools, logging, math, random, typing, weakref
 from collections import namedtuple
-import BigWorld
-import CGF
-import GenericComponents
-import InstantStatuses
-import Math
-import Statuses
-import WoT
+import BigWorld, CGF, GenericComponents, InstantStatuses, Math, Statuses, WoT
 from GenericComponents import TransformComponent
-import AreaDestructibles
-import BattleReplay
-import DestructiblesCache
-import TriggersManager
-import constants
-import physics_shared
+import AreaDestructibles, BattleReplay, DestructiblesCache, TriggersManager, constants, physics_shared
 from account_helpers.settings_core.settings_constants import GAME
 from aih_constants import ShakeReason
 from cgf_components.arena_camera_manager import ArenaCameraManager
@@ -69,10 +52,10 @@ if typing.TYPE_CHECKING:
 _logger = logging.getLogger(__name__)
 LOW_ENERGY_COLLISION_D = 0.3
 HIGH_ENERGY_COLLISION_D = 0.6
-_g_respawnQueue = dict()
+_g_respawnQueue = {}
 
 class _Vector4Provider(object):
-    __slots__ = ('_v',)
+    __slots__ = ('_v', )
 
     @property
     def value(self):
@@ -83,7 +66,7 @@ class _Vector4Provider(object):
 
 
 class _VehicleSpeedProvider(object):
-    __slots__ = ('__value',)
+    __slots__ = ('__value', )
 
     @property
     def value(self):
@@ -99,28 +82,38 @@ class _VehicleSpeedProvider(object):
         self.__value = Math.Vector4Basic()
 
 
-SegmentCollisionResultExt = namedtuple('SegmentCollisionResultExt', ('dist',
- 'hitAngleCos',
- 'matInfo',
- 'compName'))
-StunInfo = namedtuple('StunInfo', ('startTime',
- 'endTime',
- 'duration',
- 'totalTime'))
+SegmentCollisionResultExt = namedtuple('SegmentCollisionResultExt', ('dist', 'hitAngleCos', 'matInfo', 'compName'))
+StunInfo = namedtuple('StunInfo', ('startTime', 'endTime', 'duration', 'totalTime'))
 DebuffInfo = namedtuple('DebuffInfo', ('duration', 'animated'))
-VEHICLE_COMPONENTS = {BattleAbilitiesComponent}
+VEHICLE_COMPONENTS = {
+ BattleAbilitiesComponent}
 
 class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesComponent):
-    isEnteringWorld = property(lambda self: self.__isEnteringWorld)
-    isTurretDetached = property(lambda self: constants.SPECIAL_VEHICLE_HEALTH.IS_TURRET_DETACHED(self.health) and self.__turretDetachmentConfirmed)
-    isTurretMarkedForDetachment = property(lambda self: constants.SPECIAL_VEHICLE_HEALTH.IS_TURRET_DETACHED(self.health))
-    isTurretDetachmentConfirmationNeeded = property(lambda self: not self.__turretDetachmentConfirmed)
-    hasMovingFlags = property(lambda self: self.engineMode is not None and self.engineMode[1] & 3)
     guiSessionProvider = dependency.descriptor(IBattleSessionProvider)
     lobbyContext = dependency.descriptor(ILobbyContext)
     __specialSounds = dependency.descriptor(ISpecialSoundCtrl)
     __appearanceCache = dependency.descriptor(IAppearanceCache)
     __settingsCore = dependency.descriptor(ISettingsCore)
+
+    @property
+    def isEnteringWorld(self):
+        return self.__isEnteringWorld
+
+    @property
+    def isTurretDetached(self):
+        return constants.SPECIAL_VEHICLE_HEALTH.IS_TURRET_DETACHED(self.health) and self.__turretDetachmentConfirmed
+
+    @property
+    def isTurretMarkedForDetachment(self):
+        return constants.SPECIAL_VEHICLE_HEALTH.IS_TURRET_DETACHED(self.health)
+
+    @property
+    def isTurretDetachmentConfirmationNeeded(self):
+        return not self.__turretDetachmentConfirmed
+
+    @property
+    def hasMovingFlags(self):
+        return self.engineMode is not None and self.engineMode[1] & 3
 
     @property
     def activeGunIndexes(self):
@@ -133,7 +126,10 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
     @property
     def twinGunIndexes(self):
         ctrl = self.getVehicleMechanicComponent(VehicleMechanic.TWIN_GUN)
-        return ctrl.getActiveGunIndexes() if ctrl is not None else ()
+        if ctrl is not None:
+            return ctrl.getActiveGunIndexes()
+        else:
+            return ()
 
     @property
     def speedInfo(self):
@@ -207,7 +203,11 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
         return self.__events
 
     def getBounds(self, partIdx):
-        return self.appearance.collisions.getExtendedBoundingBox(partIdx) if self.appearance is not None else (Math.Vector3(0.0, 0.0, 0.0), Math.Vector3(0.0, 0.0, 0.0), 0)
+        if self.appearance is not None:
+            return self.appearance.collisions.getExtendedBoundingBox(partIdx)
+        else:
+            return (
+             Math.Vector3(0.0, 0.0, 0.0), Math.Vector3(0.0, 0.0, 0.0), 0)
 
     def getSpeed(self):
         return self.__speedInfo.value[0]
@@ -222,7 +222,7 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
 
         self.proxy = weakref.proxy(self)
         self.extras = {}
-        self.extrasHitPoint = dict()
+        self.extrasHitPoint = {}
         self.typeDescriptor = None
         self.appearance = None
         self.isPlayerVehicle = False
@@ -318,8 +318,7 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
                 self.health = self.publicInfo.maxHealth
                 self.__prevHealth = self.publicInfo.maxHealth
             return descr
-        else:
-            return vehicles.VehicleDescr(compactDescr=_stripVehCompDescrIfRoaming(self.publicInfo.compDescr), extData=self)
+        return vehicles.VehicleDescr(compactDescr=_stripVehCompDescrIfRoaming(self.publicInfo.compDescr), extData=self)
 
     @staticmethod
     def deferredRespawnVehicle(vehicleObj):
@@ -351,8 +350,6 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
             try:
                 vehicle.onLeaveWorld()
                 vehicle.onEnterWorld()
-                if 'networkVehicleHierarchy' in vehicle.dynamicComponents:
-                    vehicle.networkVehicleHierarchy.onRespawn()
             finally:
                 vehicle.isLeavingWorldForRespawn = False
 
@@ -411,20 +408,19 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
         blockShooting = self.siegeState is not None and self.siegeState in VEHICLE_SIEGE_STATE.SWITCHING and not self.typeDescriptor.hasAutoSiegeMode
         if not self.isStarted or blockShooting:
             return
-        else:
-            if not isPredictedShot and self.isPlayerVehicle and not BigWorld.player().isWaitingForShot:
-                if not BattleReplay.g_replayCtrl.isPlaying:
-                    return
-            extra = self.typeDescriptor.extrasDict[self.typeDescriptor.shootExtraName]
-            extra.stopFor(self)
-            extra.startFor(self, (burstCount, currentGuns, shellType))
-            if self.isPlayerVehicle:
-                if not isPredictedShot:
-                    BigWorld.player().cancelWaitingForShot()
-            return
+        if not isPredictedShot and self.isPlayerVehicle and not BigWorld.player().isWaitingForShot:
+            if not BattleReplay.g_replayCtrl.isPlaying:
+                return
+        extra = self.typeDescriptor.extrasDict[self.typeDescriptor.shootExtraName]
+        extra.stopFor(self)
+        extra.startFor(self, (burstCount, currentGuns, shellType))
+        if self.isPlayerVehicle:
+            if not isPredictedShot:
+                BigWorld.player().cancelWaitingForShot()
+        return
 
     def calcMaxComponentIdx(self):
-        maxComponentIdx = TankPartIndexes.ALL[-1]
+        maxComponentIdx = TankPartIndexes.ALL[(-1)]
         if self.appearance.typeDescriptor.chassis.tracks is not None:
             tracks = self.appearance.typeDescriptor.chassis.tracks.trackPairs
             maxComponentIdx += len(tracks) - 1
@@ -444,7 +440,7 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
             if not decodedPoints:
                 return
             firstHitPoint = decodedPoints[0]
-            maxPriorityHitPoint = decodedPoints[-1]
+            maxPriorityHitPoint = decodedPoints[(-1)]
             maxHitEffectCode = maxPriorityHitPoint.hitEffectCode
             hasDamageHit = DamageFromShotDecoder.hasDamaged(maxHitEffectCode)
             hasPiercedHit = maxHitEffectCode in VEHICLE_HIT_EFFECT.PIERCED_HITS
@@ -562,7 +558,8 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
         mat.preMultiply(rot)
         mat.postMultiply(invWorldMatrix)
         if pcEnergy is not None:
-            collisionEnergy = [SoundStartParam('RTPC_ext_collision_impulse_tank', pcEnergy)]
+            collisionEnergy = [
+             SoundStartParam('RTPC_ext_collision_impulse_tank', pcEnergy)]
         else:
             collisionEnergy = []
         effectsList = self.typeDescriptor.type.effects.get(collisionEffectName, [])
@@ -618,7 +615,7 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
             return
         else:
             __WHEEL_DESTROYED = 3
-            for i in xrange(0, 8):
+            for i in range(0, 8):
                 prevState = prev >> i * 2 & 3
                 newState = self.wheelsState >> i * 2 & 3
                 if prevState != newState:
@@ -635,23 +632,23 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
     def __setDamageStickers(self, isActive):
         if not hasattr(self, 'isStarted') or not self.isStarted:
             return
-        else:
-            prev = self.__prevDamageStickerCodes
-            stickerMap = {DamageFromShotDecoder.encodeHitPoint(hitPoint):hitPoint for hitPoint in self.damageStickers}
-            curr = set(stickerMap.keys())
-            for code in prev.difference(curr):
-                self.appearance.removeDamageSticker(code)
+        prev = self.__prevDamageStickerCodes
+        stickerMap = {DamageFromShotDecoder.encodeHitPoint(hitPoint):hitPoint for hitPoint in self.damageStickers}
+        curr = set(stickerMap.keys())
+        for code in prev.difference(curr):
+            self.appearance.removeDamageSticker(code)
 
-            for code in curr.difference(prev):
-                hitPoint = stickerMap[code]
-                parsedHitPoint = DamageFromShotDecoder.parseDamageStickerHitPoint(hitPoint, self.appearance.collisions)
-                if parsedHitPoint is None:
-                    curr.discard(code)
+        for code in curr.difference(prev):
+            hitPoint = stickerMap[code]
+            parsedHitPoint = DamageFromShotDecoder.parseDamageStickerHitPoint(hitPoint, self.appearance.collisions)
+            if parsedHitPoint is None:
+                curr.discard(code)
+            else:
                 stickerID, data = parsedHitPoint
                 self.appearance.addDamageSticker(code, stickerID, data, isActive)
 
-            self.__prevDamageStickerCodes = frozenset(curr)
-            return
+        self.__prevDamageStickerCodes = frozenset(curr)
+        return
 
     def set_publicStateModifiers(self, _=None):
         if self.isStarted:
@@ -807,17 +804,18 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
         attachedVehicle = BigWorld.player().getVehicleAttached()
         if attachedVehicle is None or self.id != attachedVehicle.id:
             return
-        else:
-            soundObject = self.appearance.engineAudition.getSoundObject(TankSoundObjectsIndexes.CHASSIS)
-            if soundObject is not None:
-                soundObject.play('lift_overs')
-            return
+        soundObject = self.appearance.engineAudition.getSoundObject(TankSoundObjectsIndexes.CHASSIS)
+        if soundObject is not None:
+            soundObject.play('lift_overs')
+        return
 
     def onExtraHitted(self, extraIndex, hitPoint):
         self.extrasHitPoint[extraIndex] = hitPoint
 
     def getExtraHitPoint(self, extraIndex):
-        return DEFAULT_TRACK_HIT_VECTOR if extraIndex is None or extraIndex not in self.extrasHitPoint else self.extrasHitPoint[extraIndex]
+        if extraIndex is None or extraIndex not in self.extrasHitPoint:
+            return DEFAULT_TRACK_HIT_VECTOR
+        return self.extrasHitPoint[extraIndex]
 
     def set_perks(self, _=None):
         ctrl = self.guiSessionProvider.dynamic.perks
@@ -832,7 +830,7 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
         return
 
     def onHealthChanged(self, newHealth, oldHealth, attackerID, attackReasonID, attackReasonExtID):
-        if newHealth > 0 and self.health <= 0:
+        if newHealth > 0 >= self.health:
             self.health = newHealth
             self.__prevHealth = newHealth
             return
@@ -964,7 +962,8 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
         if self.appearance is not None:
             turretYaw = Math.Matrix(self.appearance.turretMatrix).yaw
             gunPitch = Math.Matrix(self.appearance.gunMatrix).pitch
-            return (turretYaw, gunPitch)
+            return (
+             turretYaw, gunPitch)
         else:
             return (0.0, 0.0)
 
@@ -989,7 +988,10 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
 
     def getSiegeSwitchTimeLeft(self):
         ownVehicle = self.dynamicComponents.get('ownVehicle')
-        return 0.0 if ownVehicle is None else ownVehicle.getSiegeStateTimeLeft()
+        if ownVehicle is None:
+            return 0.0
+        else:
+            return ownVehicle.getSiegeStateTimeLeft()
 
     def onActiveDualGunChanged(self, dualGunIndex, switchTimes):
         if not self.isStarted:
@@ -1038,13 +1040,13 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
         if self.isHidden:
             _logger.info('Vehicle is marked as hidden: %d', self.id)
             return
-        elif self.__waitingForAppearanceReload:
-            _logger.info('Waiting for appearance reload: %d', self.id)
-            return
-        elif not self.appearance.isConstructed:
-            _logger.warning('Vehicle appearance is not constructed: %d', self.id)
-            return
         else:
+            if self.__waitingForAppearanceReload:
+                _logger.info('Waiting for appearance reload: %d', self.id)
+                return
+            if not self.appearance.isConstructed:
+                _logger.warning('Vehicle appearance is not constructed: %d', self.id)
+                return
             if self.isStarted:
                 raise SoftException('Vehicle is already started')
             avatar = BigWorld.player()
@@ -1157,7 +1159,9 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
             extra.updateFor(self, newValue)
 
     def getOptionalDevices(self):
-        return vehicle_getter.getOptionalDevices() if self.isPlayerVehicle else []
+        if self.isPlayerVehicle:
+            return vehicle_getter.getOptionalDevices()
+        return []
 
     def _isDestructibleMayBeBroken(self, chunkID, itemIndex, matKind, itemFilename, itemScale, vehSpeed):
         desc = AreaDestructibles.g_cache.getDescByFilename(itemFilename)
@@ -1274,8 +1278,7 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
         if self.id == vehicleID and not self.isPlayerVehicle:
             extra = self.typeDescriptor.extrasDict['laserSight']
             if extra.isRunningFor(self):
-                args = {'isTakesAim': isTakesAim,
-                 'beamMode': beamMode}
+                args = {'isTakesAim': isTakesAim, 'beamMode': beamMode}
                 extra.updateFor(self, args)
 
     def drawEdge(self, forceSimpleEdge=False):
@@ -1340,7 +1343,10 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
 
     @property
     def label(self):
-        return self.labelComponent.label if hasattr(self, 'labelComponent') else None
+        if hasattr(self, 'labelComponent'):
+            return self.labelComponent.label
+        else:
+            return
 
     def set_quickShellChangerFactor(self, _=None):
         ammoCtrl = self.guiSessionProvider.shared.ammo
@@ -1395,7 +1401,10 @@ class Vehicle(BigWorld.Entity, BWEntitiyComponentTracker, BattleAbilitiesCompone
 
     def getGunBurstParams(self, gunDescr):
         chargeableBurst = self.getVehicleMechanicComponent(VehicleMechanic.CHARGEABLE_BURST)
-        return DEFAULT_GUN_BURST if chargeableBurst is not None and not chargeableBurst.isBurstActive else gunDescr.burst
+        if chargeableBurst is not None and not chargeableBurst.isBurstActive:
+            return DEFAULT_GUN_BURST
+        else:
+            return gunDescr.burst
 
     def updateTimeBetweenShots(self, newValue):
         if self.appearance is not None and self.appearance.isCompositionReady:

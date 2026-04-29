@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/meta_view/meta_root_view.py
-import logging
-import typing
+import logging, typing
 from shared_utils import findFirst
 from comp7.gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS as COMP7_TOOLTIPS
 from comp7.gui.game_control.comp7_shop_controller import ShopControllerStatus
@@ -83,7 +80,7 @@ class MetaRootView(ViewImpl, BaseStateObserver):
         if event.contentID == R.views.common.tooltip_window.backport_tooltip_content.BackportTooltipContent():
             tooltipId = event.getArgument('tooltipId')
             if tooltipId == COMP7_TOOLTIPS.COMP7_CALENDAR_DAY_INFO:
-                tooltipData = createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=(None,))
+                tooltipData = createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=(None, ))
                 window = BackportTooltipWindow(tooltipData, self.getParentWindow())
                 window.load()
                 return window
@@ -128,7 +125,10 @@ class MetaRootView(ViewImpl, BaseStateObserver):
     def isObservingState(self, state):
         from comp7.gui.impl.lobby.hangar.states import Comp7MetaState
         lsm = getLobbyStateMachine()
-        return visitor.isDescendantOf(state, lsm.getStateByCls(Comp7MetaState)) if lsm is not None else False
+        if lsm is not None:
+            return visitor.isDescendantOf(state, lsm.getStateByCls(Comp7MetaState))
+        else:
+            return False
 
     def onEnterState(self, state, event):
         params = self.__onLoadingParams or {}
@@ -165,7 +165,10 @@ class MetaRootView(ViewImpl, BaseStateObserver):
 
     @property
     def __currentPage(self):
-        return self.__pages[self.__tabId] if self.__pages and self.__tabId is not None else None
+        if self.__pages and self.__tabId is not None:
+            return self.__pages[self.__tabId]
+        else:
+            return
 
     def __addListeners(self):
         self.viewModel.onClose += self.__onClose
@@ -225,7 +228,8 @@ class MetaRootView(ViewImpl, BaseStateObserver):
 
     def __initPages(self):
         model = self.getViewModel()
-        pages = (ProgressionPage(model.progressionModel, self),
+        pages = (
+         ProgressionPage(model.progressionModel, self),
          RankRewardsPage(model.rankRewardsModel, self),
          YearlyRewardsPage(model.yearlyRewardsModel, self),
          WeeklyQuestsPage(model.weeklyQuestsModel, self),
@@ -242,7 +246,7 @@ class MetaRootView(ViewImpl, BaseStateObserver):
         self.__pages.clear()
 
     def __updateTabs(self):
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             tabs = tx.sidebar.getItems()
             tabs.clear()
             for tab in tuple(MetaRootViews):

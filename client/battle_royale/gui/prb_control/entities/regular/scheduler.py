@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/prb_control/entities/regular/scheduler.py
 from gui.impl import backport
 from gui.impl.gen import R
 from gui import SystemMessages
@@ -27,9 +25,11 @@ class RoyaleScheduler(BaseScheduler):
     def __update(self, status):
         if not self.__battleRoyaleController.isEnabled():
             return
-        isPrimeTime = status == PrimeTimeStatus.AVAILABLE
-        if isPrimeTime != self.__isPrimeTime:
-            self.__isPrimeTime = isPrimeTime
-            if not isPrimeTime:
-                SystemMessages.pushMessage(backport.text(R.strings.system_messages.royale.notification.primeTime()), type=SystemMessages.SM_TYPE.PrimeTime, messageData={'title': backport.text(R.strings.system_messages.royale.notification.primeTime.title())})
-            g_eventDispatcher.updateUI()
+        else:
+            isPrimeTime = status == PrimeTimeStatus.AVAILABLE
+            if isPrimeTime != self.__isPrimeTime:
+                self.__isPrimeTime = isPrimeTime
+                if not isPrimeTime and self.__battleRoyaleController.getCurrentCycleID() is not None:
+                    SystemMessages.pushMessage(backport.text(R.strings.system_messages.royale.notification.primeTime()), type=SystemMessages.SM_TYPE.PrimeTime, messageData={'title': backport.text(R.strings.system_messages.royale.notification.primeTime.title())})
+                g_eventDispatcher.updateUI()
+            return

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/StrongholdViewMeta.py
 from gui.Scaleform.framework.entities.View import View
 
 class StrongholdViewMeta(View):
@@ -14,4 +12,5 @@ class StrongholdViewMeta(View):
         self._printOverrideError('viewSize')
 
     def as_loadBrowserS(self):
-        return self.flashObject.as_loadBrowser() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_loadBrowser()

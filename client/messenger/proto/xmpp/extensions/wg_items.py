@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/proto/xmpp/extensions/wg_items.py
 from debug_utils import LOG_CURRENT_EXCEPTION
 from shared_utils import findFirst
 from messenger.proto.xmpp.extensions import PyExtension, SimpleExtension, PyHandler
@@ -68,7 +66,7 @@ class WgClientExtension(PyExtension):
 
     @classmethod
     def getDefaultData(cls):
-        return None
+        return
 
     def getTag(self):
         tag = ''

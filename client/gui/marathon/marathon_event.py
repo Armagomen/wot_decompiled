@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/marathon/marathon_event.py
-import logging
-import typing
+import logging, typing
 from functools import partial
 import constants
 from constants import MarathonConfig
@@ -90,7 +87,7 @@ class MarathonEvent(object):
 
     @prbEntityProperty
     def prbEntity(self):
-        return None
+        return
 
     @property
     def styleID(self):
@@ -149,8 +146,9 @@ class MarathonEvent(object):
             name = str(tokenNames[tokenPrefixLen:])
             res.append(int(filter(str.isdigit, name)))
 
-        currentStep = sorted(res)[-1] if res else 0
-        return (currentStep, self._data.questsInChain)
+        currentStep = sorted(res)[(-1)] if res else 0
+        return (
+         currentStep, self._data.questsInChain)
 
     def getMarathonPostProgress(self):
         tokens = self.getTokensData(prefix=self._data.tokenPrefix, postfix=self._data.styleTokenPostfix)
@@ -164,17 +162,19 @@ class MarathonEvent(object):
         return self._resource.getHangarFlagTooltip()
 
     def getMarathonFlagState(self, vehicle):
-        return {'flagHeaderIcon': self.__getHangarFlagHeaderIcon(),
-         'flagStateIcon': self.__getHangarFlagStateIcon(vehicle),
-         'flagMain': self.getHangarFlag(),
-         'tooltip': self.__getTooltip(),
-         'enable': self.isAvailable(),
-         'visible': self.isEnabled()}
+        return {'flagHeaderIcon': self.__getHangarFlagHeaderIcon(), 
+           'flagStateIcon': self.__getHangarFlagStateIcon(vehicle), 
+           'flagMain': self.getHangarFlag(), 
+           'tooltip': self.__getTooltip(), 
+           'enable': self.isAvailable(), 
+           'visible': self.isEnabled()}
 
     def checkForWarnings(self, vehicle):
         if self.prbEntity.getEntityType() != constants.ARENA_GUI_TYPE.RANDOM:
             return MarathonWarning.WRONG_BATTLE_TYPE
-        return MarathonWarning.WRONG_VEH_TYPE if vehicle.level < self._data.minVehicleLevel else ''
+        if vehicle.level < self._data.minVehicleLevel:
+            return MarathonWarning.WRONG_VEH_TYPE
+        return ''
 
     def isRewardObtained(self):
         return self._data.rewardObtained
@@ -186,11 +186,15 @@ class MarathonEvent(object):
         return self._eventsCache.getHiddenQuests(self.__marathonFilterFunc)
 
     def getExtraTimeToBuy(self):
-        return '' if self._data.state != MarathonState.FINISHED else self._resource.getExtraTimeToBuy()
+        if self._data.state != MarathonState.FINISHED:
+            return ''
+        return self._resource.getExtraTimeToBuy()
 
     def getMarathonDiscount(self):
         passQuests, allQuests = self.getMarathonProgress()
-        return int(passQuests * 100) / allQuests if passQuests and self._data.questsInChain else 0
+        if passQuests and self._data.questsInChain:
+            return int(passQuests * 100) / allQuests
+        return 0
 
     def getMarathonPostProgressionDiscount(self):
         progress = self.getMarathonPostProgress()
@@ -249,7 +253,9 @@ class MarathonEvent(object):
     def getVehiclePreviewTitleTooltip(self):
         if self._data.state not in MarathonState.ENABLED_STATE:
             return self._resource.getEmptyTooltip()
-        return self._resource.getTitleNotStartedTooltip() if self._data.state == MarathonState.NOT_STARTED else self._resource.getTitleTooltip(self.getFinishSaleTime(), self.getMarathonDiscount())
+        if self._data.state == MarathonState.NOT_STARTED:
+            return self._resource.getTitleNotStartedTooltip()
+        return self._resource.getTitleTooltip(self.getFinishSaleTime(), self.getMarathonDiscount())
 
     def getPreviewBuyBtnData(self):
         hasIgbLink = self.hasIgbLink()
@@ -316,7 +322,7 @@ class MarathonEvent(object):
         return baseUrl
 
     def __getRewardShownMarkKey(self, key):
-        return '_'.join([key, self._data.tokenPrefix])
+        return ('_').join([key, self._data.tokenPrefix])
 
     def __setScreenWasShown(self, key):
         AccountSettings.setUIFlag(self.__getRewardShownMarkKey(key), True)
@@ -342,6 +348,8 @@ class MarathonEvent(object):
             if self._data.state in key:
                 return imgPath
 
+        return ''
+
     def __getHangarFlagStateIcon(self, vehicle):
         if self._data.state not in MarathonState.ENABLED_STATE:
             return ''
@@ -354,7 +362,11 @@ class MarathonEvent(object):
         if self.checkForWarnings(vehicle):
             return self._data.icons.alertIcon
         _, firstQuestFinishTimeLeft = self._data.getQuestTimeInterval()
-        return self._data.icons.iconFlag if firstQuestFinishTimeLeft > ONE_DAY else self._data.icons.timeIcon
+        if firstQuestFinishTimeLeft > ONE_DAY:
+            return self._data.icons.iconFlag
+        return self._data.icons.timeIcon
 
     def __getTooltip(self):
-        return self._data.flagTooltip if self.isAvailable() else self._data.disabledFlagTooltip
+        if self.isAvailable():
+            return self._data.flagTooltip
+        return self._data.disabledFlagTooltip

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_compare/cmp_parameters.py
 from __future__ import absolute_import
 from copy import copy
 import typing
@@ -22,22 +20,25 @@ from helpers import dependency
 from post_progression_common import VehicleState
 from skeletons.gui.game_control import IVehicleComparisonBasket
 from items import tankmen
-CMP_HIDDEN_PARAMETERS = frozenset([AUTO_SHOOT_CLIP_FIRE_RATE, TEMPERATURE_RELOAD_TIME, TEMPERATURE_AVG_DAMAGE_PER_MINUTE])
-_HEADER_PARAM_COLOR_SCHEME = (text_styles.middleTitle, text_styles.middleBonusTitle, text_styles.middleTitle)
+CMP_HIDDEN_PARAMETERS = frozenset([
+ AUTO_SHOOT_CLIP_FIRE_RATE, TEMPERATURE_RELOAD_TIME, TEMPERATURE_AVG_DAMAGE_PER_MINUTE])
+_HEADER_PARAM_COLOR_SCHEME = (
+ text_styles.middleTitle, text_styles.middleBonusTitle, text_styles.middleTitle)
 _HEADER_PARAM_NO_COLOR_SCHEME = (text_styles.middleTitle, text_styles.middleTitle, text_styles.middleTitle)
 _PARAM_COLOR_SCHEME = (text_styles.main, text_styles.bonusAppliedText, text_styles.main)
 _PARAM_NO_COLOR_SCHEME = (text_styles.main, text_styles.main, text_styles.main)
 _DELTA_PARAM_COLOR_SCHEME = (text_styles.error, text_styles.main, text_styles.bonusAppliedText)
-_NO_COLOR_SCHEMES = (_HEADER_PARAM_NO_COLOR_SCHEME, _PARAM_NO_COLOR_SCHEME)
+_NO_COLOR_SCHEMES = (
+ _HEADER_PARAM_NO_COLOR_SCHEME, _PARAM_NO_COLOR_SCHEME)
 _COLOR_SCHEMES = (_HEADER_PARAM_COLOR_SCHEME, _PARAM_COLOR_SCHEME)
 
 def _generateFormatSettings():
     settings = copy(FORMAT_SETTINGS)
-    settings.update({'clipFireRate': {'preprocessor': clipFireRatePreprocessor,
-                      'rounder': backport.getNiceNumberFormat},
-     SHOT_DISPERSION_ANGLE: {'preprocessor': shotDispersionAnglePreprocessor,
-                             'rounder': backport.getNiceNumberFormat,
-                             'skipNone': True}})
+    settings.update({'clipFireRate': {'preprocessor': clipFireRatePreprocessor, 
+                        'rounder': backport.getNiceNumberFormat}, 
+       SHOT_DISPERSION_ANGLE: {'preprocessor': shotDispersionAnglePreprocessor, 
+                               'rounder': backport.getNiceNumberFormat, 
+                               'skipNone': True}})
     return settings
 
 
@@ -109,11 +110,12 @@ def _reCalcBestParameters(targetCache):
 
                 else:
                     bestParamsDict[pKey] = list(pVal)
-            if pKey in bestParamsDict:
+            elif pKey in bestParamsDict:
                 state, _ = rateParameterState(pKey, bestParamsDict[pKey], pVal)
                 if state == PARAM_STATE.WORSE:
                     bestParamsDict[pKey] = pVal
-            bestParamsDict[pKey] = pVal
+            else:
+                bestParamsDict[pKey] = pVal
 
     return bestParamsDict.toDict()
 
@@ -133,8 +135,8 @@ class _VehParamsValuesGenerator(VehParamsBaseGenerator):
         data['text'] = formatters.formatParameter(param.name, param.value, param.state, self.__headerScheme, FORMAT_SETTINGS, False)
         return data
 
-    def _makeAdvancedParamVO(self, param, parent, highlight):
-        data = super(_VehParamsValuesGenerator, self)._makeAdvancedParamVO(param, parent, highlight)
+    def _makeAdvancedParamVO(self, param, parentID, highlight):
+        data = super(_VehParamsValuesGenerator, self)._makeAdvancedParamVO(param, parentID, highlight)
         if param.value or isValidEmptyValue(param.name, param.value):
             data['text'] = formatters.formatParameter(param.name, param.value, param.state, self.__bodyScheme, _CMP_FORMAT_SETTINGS, False)
         else:
@@ -200,8 +202,9 @@ class _VehCompareParametersData(object):
                     if skillRole != role:
                         bonusRoleSkills = bonusSkillsDict.setdefault(idx, {}).setdefault(skillRole, [])
                         bonusRoleSkills.append(skill)
-                    majorSkills = majorSkillsDict.setdefault(idx, [])
-                    majorSkills.append(skill)
+                    else:
+                        majorSkills = majorSkillsDict.setdefault(idx, [])
+                        majorSkills.append(skill)
 
             if crewLvl == CrewTypes.CURRENT:
                 levelsByIndexes, nativeVehiclesByIndexes = cmp_helpers.getVehCrewInfo(self.__vehicle.intCD)
@@ -338,24 +341,23 @@ class _VehCompareParametersData(object):
     @classmethod
     def _getConfigurationType(cls, mType):
         format_style = text_styles.neutral if mType == CONFIGURATION_TYPES.CUSTOM else text_styles.main
-        return format_style('#veh_compare:vehicleCompareView/configurationType/{}'.format(mType))
+        return format_style(('#veh_compare:vehicleCompareView/configurationType/{}').format(mType))
 
     @classmethod
     def __initParameters(cls, vehCD, vehicle):
-        return {'id': vehCD,
-         'nation': vehicle.nationID,
-         'image': vehicle.icon,
-         'label': text_styles.main(vehicle.shortUserName),
-         'level': vehicle.level,
-         'premium': vehicle.isPremium,
-         'tankType': vehicle.type,
-         'isAttention': False,
-         'index': -1,
-         'isInHangar': False,
-         'moduleType': cls._getConfigurationType(VEH_COMPARE.VEHICLECOMPAREVIEW_CONFIGURATIONTYPE_BASIC),
-         'elite': vehicle.isElite,
-         'params': [],
-         'showRevertBtn': False}
+        return {'id': vehCD, 
+           'nation': vehicle.nationID, 
+           'image': vehicle.icon, 
+           'label': text_styles.main(vehicle.shortUserName), 
+           'level': vehicle.level, 
+           'premium': vehicle.isPremium, 
+           'tankType': vehicle.type, 
+           'isAttention': False, 
+           'index': -1, 
+           'isInHangar': False, 
+           'moduleType': cls._getConfigurationType(VEH_COMPARE.VEHICLECOMPAREVIEW_CONFIGURATIONTYPE_BASIC), 
+           'elite': vehicle.isElite, 
+           'params': [], 'showRevertBtn': False}
 
     def __showRevertButton(self):
         return self.__configurationType == CONFIGURATION_TYPES.CUSTOM
@@ -405,8 +407,9 @@ class VehCompareBasketParamsCache(object):
             for i, value in enumerate(self.__cache):
                 if i == index:
                     outcome.append(None)
-                hasNormalization = _hasNormalizeParameters(self.__cache)
-                outcome.append(value.getDeltaParams(paramName=paramName, paramValue=targetVal, hasNormalization=hasNormalization))
+                else:
+                    hasNormalization = _hasNormalizeParameters(self.__cache)
+                    outcome.append(value.getDeltaParams(paramName=paramName, paramValue=targetVal, hasNormalization=hasNormalization))
 
         return outcome
 

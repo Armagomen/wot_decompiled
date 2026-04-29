@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/tournaments/tournament_view.py
-import logging
-import random
-import typing
+import logging, random, typing
 from comp7.gui.impl.gen.view_models.views.lobby.tournaments.match_model import MatchModel, MatchState, MatchStage
 from comp7.gui.impl.gen.view_models.views.lobby.tournaments.team_model import TeamModel
 from comp7.gui.impl.gen.view_models.views.lobby.tournaments.tournament_view_model import TournamentViewModel, OverviewState, Streaming, PageState
@@ -27,12 +23,11 @@ class TournamentView(ViewImpl):
     _TOURNAMENT_VIEW = None
     _MATCH_ROUND_TO_MATCH_STAGE = {}
     __BRACKET_TYPE_TO_MATCH_STAGE = {IngameTournamentBracketType.RR: MatchStage.ROUNDROBIN}
-    __tournamentCtrl = dependency.descriptor(IIngameTournamentController)
-    __externalLinksCtrl = dependency.descriptor(IExternalLinksController)
     __tournamentController = dependency.descriptor(IIngameTournamentController)
-    _INGAME_TOURNAMENT_MATCH_STATE_TO_UI_STATE = {IngameTournamentMatchState.UPCOMING: MatchState.NOTSTARTED,
-     IngameTournamentMatchState.IN_LIVE: MatchState.LIVE,
-     IngameTournamentMatchState.COMPLETED: MatchState.COMPLETED}
+    __externalLinksCtrl = dependency.descriptor(IExternalLinksController)
+    _INGAME_TOURNAMENT_MATCH_STATE_TO_UI_STATE = {IngameTournamentMatchState.UPCOMING: MatchState.NOTSTARTED, 
+       IngameTournamentMatchState.IN_LIVE: MatchState.LIVE, 
+       IngameTournamentMatchState.COMPLETED: MatchState.COMPLETED}
     _TIMER_UPDATE_RANDOM_DELTA = ONE_MINUTE
 
     def __init__(self, *args, **kwargs):
@@ -49,25 +44,36 @@ class TournamentView(ViewImpl):
         return super(TournamentView, self).getViewModel()
 
     def _getEvents(self):
-        return ((self.viewModel.onWatchStreamingOne, self.__onWatchStreamOne),
-         (self.viewModel.onWatchStreamingTwo, self.__onWatchStreamTwo),
-         (self.viewModel.onGoToShop, self.__onGoToShop),
-         (self.viewModel.onGoToTokenStore, self._onGoToTokenStore),
-         (self.viewModel.onClose, self.__onClose),
-         (self.viewModel.onRefresh, self.__onRefresh))
+        return (
+         (
+          self.viewModel.onWatchStreamingOne, self.__onWatchStreamOne),
+         (
+          self.viewModel.onWatchStreamingTwo, self.__onWatchStreamTwo),
+         (
+          self.viewModel.onGoToShop, self.__onGoToShop),
+         (
+          self.viewModel.onGoToTokenStore, self._onGoToTokenStore),
+         (
+          self.viewModel.onClose, self.__onClose),
+         (
+          self.viewModel.onRefresh, self.__onRefresh),
+         (
+          self.viewModel.pollServerTime, self.__pollServerTime))
 
     def _onLoading(self, *args, **kwargs):
         super(TournamentView, self)._onLoading(*args, **kwargs)
         self.viewModel.setPageState(PageState.LOADING)
-        self.__tournamentCtrl.onTournamentWGCGDataUpdated += self.__onTournamentWGCGDataUpdated
+        self.viewModel.setTokenStoreAvailabilityTimestamp(self.__tournamentController.getTokenStoreOpeningTime(self._TOURNAMENT_TYPE))
+        self.__tournamentController.onTournamentWGCGDataUpdated += self.__onTournamentWGCGDataUpdated
         self.__updateTournamentData()
+        self.__pollServerTime()
         self.__tournamentController.setIsIntroSeen(self._TOURNAMENT_TYPE)
 
     def _finalize(self):
         super(TournamentView, self)._finalize()
         self._callbackDelayer.destroy()
         self._callbackDelayer = None
-        self.__tournamentCtrl.onTournamentWGCGDataUpdated -= self.__onTournamentWGCGDataUpdated
+        self.__tournamentController.onTournamentWGCGDataUpdated -= self.__onTournamentWGCGDataUpdated
         self._data = None
         return
 
@@ -79,19 +85,21 @@ class TournamentView(ViewImpl):
 
     def __updateTournamentData(self):
         self.viewModel.setIsRefreshing(True)
-        self.__tournamentCtrl.requestTournamentWGCGData()
+        self.__tournamentController.requestTournamentWGCGData()
 
     def __onTournamentWGCGDataUpdated(self, data):
         self._data = data
         self.__fillModelData()
 
     def __fillModelData(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setPageState(PageState.CONTENT)
             vm.setOverviewState(self.__getOverviewState())
             vm.setIsRefreshing(False)
             if self._data is not None:
                 vm.setPrizeFund(self._data.getTotalRewardAmount())
+                vm.setLastPrizePoolUpdate(self._data.getLastPrizePoolUpdate())
+                vm.setIsDynamicPrizePool(self._data.isDynamicPrizePool())
                 matches = []
                 for matchData in self._data.getAllMatches():
                     matchModel = MatchModel()
@@ -114,13 +122,15 @@ class TournamentView(ViewImpl):
     def __getOverviewState(self):
         if self._data is None:
             return OverviewState.ERROR
-        elif self._data.getLiveMatch() is not None:
-            return OverviewState.LIVE
         else:
-            return OverviewState.SCHEDULE if self._data.getUpcomingMatches() else OverviewState.FINALRESULT
+            if self._data.getLiveMatch() is not None:
+                return OverviewState.LIVE
+            if self._data.getUpcomingMatches():
+                return OverviewState.SCHEDULE
+            return OverviewState.FINALRESULT
 
     def __fillStreamingTypes(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             if IngameTournamentUrlType.TWITCH in self._data.streamURLs:
                 vm.setStreamingWithDrops(Streaming.TWITCH)
             elif IngameTournamentUrlType.HUYA in self._data.streamURLs:
@@ -203,10 +213,14 @@ class TournamentView(ViewImpl):
             _logger.warning('Could not open translation link two, data is not set')
 
     def __onGoToShop(self):
-        self.__tournamentCtrl.openShop(self._TOURNAMENT_TYPE)
+        self.__tournamentController.openShop(self._TOURNAMENT_TYPE)
 
     def __onClose(self):
         showHangar()
 
     def __onRefresh(self):
         self.__updateTournamentData()
+
+    def __pollServerTime(self):
+        with self.viewModel.transaction() as (tx):
+            tx.setServerTimestamp(int(getServerUTCTime()))

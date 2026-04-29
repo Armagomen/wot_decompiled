@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/vehicle_mechanics/decorative_crosshairs/accuracy_crosshair.py
 from __future__ import absolute_import
 import typing
 from events_containers.common.containers import ContainersListener
@@ -39,7 +37,10 @@ class AccuracyDecorativeCrosshair(AccuracyStackDecorativeCrosshairMeta, Containe
         self.__update(state)
 
     def _getViewUpdaters(self):
-        return [VehicleMechanicPassengerUpdater(VehicleMechanic.ACCURACY_STACKS, self), VehicleMechanicStatesUpdater(VehicleMechanic.ACCURACY_STACKS, self), VehicleStateUpdater(self)]
+        return [
+         VehicleMechanicPassengerUpdater(VehicleMechanic.ACCURACY_STACKS, self),
+         VehicleMechanicStatesUpdater(VehicleMechanic.ACCURACY_STACKS, self),
+         VehicleStateUpdater(self)]
 
     def updateSpeedLimit(self, value, forced=False):
         if self.__isSpeedLimitActive != value or forced:

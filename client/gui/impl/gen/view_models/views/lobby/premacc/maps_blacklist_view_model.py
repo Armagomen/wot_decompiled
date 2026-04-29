@@ -1,10 +1,10 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/premacc/maps_blacklist_view_model.py
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.ui_kit.list_model import ListModel
 
 class MapsBlacklistViewModel(ViewModel):
-    __slots__ = ('onBackAction', 'onCloseEvent', 'onMapAddToBlacklistEvent', 'onMapRemoveFromBlacklistEvent', 'onFilterReset', 'onInitialized', 'onFilterClick', 'onShopOpenWotPlus', 'onShopOpenPremium')
+    __slots__ = ('onBackAction', 'onCloseEvent', 'onMapAddToBlacklistEvent', 'onMapRemoveFromBlacklistEvent',
+                 'onFilterReset', 'onInitialized', 'onFilterClick', 'onShopOpenWotPlus',
+                 'onShopOpenPremium')
 
     def __init__(self, properties=7, commands=9):
         super(MapsBlacklistViewModel, self).__init__(properties=properties, commands=commands)

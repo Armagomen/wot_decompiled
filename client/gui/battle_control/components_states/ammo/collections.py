@@ -1,16 +1,14 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/components_states/ammo/collections.py
 from __future__ import absolute_import
 import typing
 from future.utils import viewvalues
 from gui.battle_control.components_states.ammo.constants import AmmoShootPossibility
-from gui.battle_control.components_states.ammo.interfaces import IComponentAmmoState
 from vehicles.mechanics.mechanic_constants import VehicleMechanic
 from shared_utils import findFirst
 if typing.TYPE_CHECKING:
     from ChargeableBurstComponent import ChargeableBurstAmmoState
     from StationaryReloadController import StationaryReloadAmmoState
     from TemperatureGunController import TemperatureGunAmmoState
+    from gui.battle_control.components_states.ammo.interfaces import IComponentAmmoState
 
 class AmmoStatesROCollection(object):
 
@@ -32,7 +30,10 @@ class AmmoStatesROCollection(object):
     @property
     def extraShotReloadState(self):
         extraShotState = self._ammoStates.get(VehicleMechanic.EXTRA_SHOT_CLIP.value)
-        return extraShotState.extraReloadState if extraShotState is not None else 0
+        if extraShotState is not None:
+            return extraShotState.extraReloadState
+        else:
+            return 0
 
     @property
     def temperatureGunAmmoState(self):
@@ -42,16 +43,19 @@ class AmmoStatesROCollection(object):
         return findFirst(None, (state.getSpecialReloadMessage() for state in viewvalues(self._ammoStates)))
 
     def isReloadingBlocked(self):
-        return any((state.isReloadingBlocked() for state in viewvalues(self._ammoStates)))
+        return any(state.isReloadingBlocked() for state in viewvalues(self._ammoStates))
 
     def canChangeVehicleSetting(self, code):
-        return not self._ammoStates or all((s.canChangeVehicleSetting(code) for s in viewvalues(self._ammoStates)))
+        return not self._ammoStates or all(s.canChangeVehicleSetting(code) for s in viewvalues(self._ammoStates))
 
     def canShootValidation(self, defaultError):
-        return findFirst(lambda validationResult: not validationResult[0], (state.canShootValidation() for state in viewvalues(self._ammoStates)), default=(True, defaultError))
+        return findFirst(lambda validationResult: not validationResult[0], (state.canShootValidation() for state in viewvalues(self._ammoStates)), default=(
+         True, defaultError))
 
     def getShotsAmount(self):
-        return max((state.getShotsAmount() for state in viewvalues(self._ammoStates))) if self._ammoStates else -1
+        if self._ammoStates:
+            return max(state.getShotsAmount() for state in viewvalues(self._ammoStates))
+        return -1
 
     def getShootPossibility(self, currentShells):
         return findFirst(lambda shootPossibility: shootPossibility != AmmoShootPossibility.NOT_DEFINED, (state.getShootPossibility(currentShells) for state in viewvalues(self._ammoStates)), default=AmmoShootPossibility.NOT_DEFINED)

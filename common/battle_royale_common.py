@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/battle_royale_common.py
 
 
 class BattleRoyaleVehicleStats(object):
@@ -77,7 +75,9 @@ class BattleRoyaleVehicleStats(object):
         return self.__rawData['brstats'][self.__MAX_DAMAGE_DEALT]
 
     def _getAvgValue(self, allOccurs, effectiveOccurs):
-        return float(effectiveOccurs) / allOccurs if allOccurs else 0.0
+        if allOccurs:
+            return float(effectiveOccurs) / allOccurs
+        return 0.0
 
     def getAvgDamageReceived(self):
         return self._getAvgValue(self.getBattlesCount(), self.getDamageReceived())

@@ -1,10 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/dict2model/fields.py
 from __future__ import absolute_import
+import enum, Math, typing
 from datetime import datetime
-import Math
-import enum
-import typing
+from future.utils import viewitems
 from dict2model import utils
 from dict2model import validate
 from dict2model.exceptions import ValidationError, ValidationErrorMessage, AccessToFieldDeniedError
@@ -49,7 +46,7 @@ class AccessDeniedField(object):
     __nonzero__ = __bool__
 
     def __repr__(self):
-        pass
+        return 'Denied'
 
 
 class Field(object):
@@ -82,24 +79,9 @@ class Field(object):
 
 
 class Boolean(Field):
-    _trueValues = {'t',
-     'T',
-     'true',
-     'True',
-     'TRUE',
-     '1',
-     1,
-     True}
-    _falseValues = {'f',
-     'F',
-     'false',
-     'False',
-     'FALSE',
-     '0',
-     0,
-     0.0,
-     False,
-     None}
+    _trueValues = {
+     't', 'T', 'true', 'True', 'TRUE', '1', 1, True}
+    _falseValues = {'f', 'F', 'false', 'False', 'FALSE', '0', 0, 0.0, False, None}
     __slots__ = ()
 
     def _serialize(self, incoming, **kwargs):
@@ -143,7 +125,7 @@ class String(Field):
 
 class Number(Field):
     numberType = float
-    __slots__ = ('_serializeAsString',)
+    __slots__ = ('_serializeAsString', )
 
     def __init__(self, required=True, default=None, filterParams=None, serializedValidators=None, deserializedValidators=None, serializeAsString=False):
         super(Number, self).__init__(required=required, default=default, filterParams=filterParams, serializedValidators=serializedValidators, deserializedValidators=deserializedValidators)
@@ -151,7 +133,9 @@ class Number(Field):
 
     def serialize(self, incoming, **kwargs):
         result = super(Number, self).serialize(incoming, **kwargs)
-        return self._toString(result) if self._serializeAsString else result
+        if self._serializeAsString:
+            return self._toString(result)
+        return result
 
     def _serialize(self, incoming, **kwargs):
         return self._convert(incoming)
@@ -178,7 +162,7 @@ class Float(Number):
 
 
 class DateTime(Field):
-    __slots__ = ('_localtime',)
+    __slots__ = ('_localtime', )
 
     def __init__(self, required=True, default=None, filterParams=None, serializedValidators=None, deserializedValidators=None, localtime=False):
         super(DateTime, self).__init__(required=required, default=default, filterParams=filterParams, serializedValidators=serializedValidators, deserializedValidators=deserializedValidators)
@@ -187,24 +171,18 @@ class DateTime(Field):
     def _serialize(self, incoming, **kwargs):
         try:
             return utils.isoFormat(incoming, localtime=self._localtime)
-        except (TypeError,
-         AttributeError,
-         ValueError,
-         SoftException):
+        except (TypeError, AttributeError, ValueError, SoftException):
             raise ValidationError('Not a valid datetime.')
 
     def _deserialize(self, incoming, **kwargs):
         try:
             return utils.fromIso(incoming)
-        except (TypeError,
-         AttributeError,
-         ValueError,
-         SoftException):
+        except (TypeError, AttributeError, ValueError, SoftException):
             raise ValidationError('Cannot be formatted as a datetime.')
 
 
 class Url(String):
-    __slots__ = ('_relative',)
+    __slots__ = ('_relative', )
 
     def __init__(self, required=True, default=None, filterParams=None, serializedValidators=None, deserializedValidators=None, relative=False):
         super(Url, self).__init__(required=required, default=default, filterParams=filterParams, serializedValidators=serializedValidators, deserializedValidators=deserializedValidators)
@@ -218,13 +196,14 @@ class NonEmptyString(String):
 
     def __init__(self, required=True, default=None, filterParams=None, serializedValidators=None, deserializedValidators=None):
         super(NonEmptyString, self).__init__(required=required, default=default, filterParams=filterParams, serializedValidators=serializedValidators, deserializedValidators=deserializedValidators)
-        validator = [validate.Length(minValue=1)]
+        validator = [
+         validate.Length(minValue=1)]
         self._serializedValidators = validator + self._serializedValidators
         self._deserializedValidators = validator + self._deserializedValidators
 
 
 class StrictEnum(Field):
-    __slots__ = ('_enumClass',)
+    __slots__ = ('_enumClass', )
 
     def __init__(self, enumClass, required=True, default=None, filterParams=None, serializedValidators=None, deserializedValidators=None):
         super(StrictEnum, self).__init__(required=required, default=default, filterParams=filterParams, serializedValidators=serializedValidators, deserializedValidators=deserializedValidators)
@@ -232,7 +211,7 @@ class StrictEnum(Field):
 
     def _serialize(self, incoming, **kwargs):
         if not isinstance(incoming, self._enumClass):
-            raise ValidationError('Not a enum: {} class.'.format(self._enumClass))
+            raise ValidationError(('Not a enum: {} class.').format(self._enumClass))
         return incoming.value
 
     def _deserialize(self, incoming, **kwargs):
@@ -240,7 +219,7 @@ class StrictEnum(Field):
             return self._enumClass(self._convert(incoming))
         except ValueError:
             enumValues = [ obj.value for obj in self._enumClass.__members__.values() ]
-            raise ValidationError('Value: {} must be one of: {}.'.format(incoming, enumValues))
+            raise ValidationError(('Value: {} must be one of: {}.').format(incoming, enumValues))
 
     def _convert(self, incoming):
         return incoming
@@ -261,7 +240,7 @@ class StrEnum(StrictEnum):
 
 
 class Nested(Field):
-    __slots__ = ('_schema',)
+    __slots__ = ('_schema', )
 
     def __init__(self, schema, required=True, default=None, filterParams=None, serializedValidators=None, deserializedValidators=None):
         super(Nested, self).__init__(required=required, default=default, filterParams=filterParams, serializedValidators=serializedValidators, deserializedValidators=deserializedValidators)
@@ -277,7 +256,7 @@ class Nested(Field):
 
 
 class List(Field):
-    __slots__ = ('_fieldOrSchema',)
+    __slots__ = ('_fieldOrSchema', )
 
     def __init__(self, fieldOrSchema, required=True, default=None, filterParams=None, serializedValidators=None, deserializedValidators=None):
         super(List, self).__init__(required=required, default=default, filterParams=filterParams, serializedValidators=serializedValidators, deserializedValidators=deserializedValidators)
@@ -298,7 +277,7 @@ class List(Field):
             try:
                 converted.append(converter(value, skipValidation=skipValidation, **kwargs))
             except ValidationError as ve:
-                error = ValidationErrorMessage(ve.error.data, title='List[{}]'.format(index))
+                error = ValidationErrorMessage(ve.error.data, title=('List[{}]').format(index))
                 errors = errors + error if errors else error
 
         if errors:
@@ -311,8 +290,40 @@ class UniCapList(List):
 
     def _convert(self, incoming, skipValidation, converter, **kwargs):
         if not isinstance(incoming, (list, tuple)):
-            incoming = [incoming]
+            incoming = [
+             incoming]
         return super(UniCapList, self)._convert(incoming, skipValidation, converter, **kwargs)
+
+
+class Dict(Field):
+    __slots__ = ('_keyFieldOrSchema', '_valueFieldOrSchema')
+
+    def __init__(self, keyFieldOrSchema, valueFieldOrSchema, required=True, default=dict, filterParams=None, serializedValidators=None, deserializedValidators=None):
+        super(Dict, self).__init__(required=required, default=default, filterParams=filterParams, serializedValidators=serializedValidators, deserializedValidators=deserializedValidators)
+        self._keyFieldOrSchema = keyFieldOrSchema
+        self._valueFieldOrSchema = valueFieldOrSchema
+
+    def _serialize(self, incoming, skipValidation=False, **kwargs):
+        return self._convert(incoming, skipValidation, keyConverter=self._keyFieldOrSchema.serialize, valueConverter=self._valueFieldOrSchema.serialize, **kwargs)
+
+    def _deserialize(self, incoming, skipValidation=False, **kwargs):
+        return self._convert(incoming, skipValidation, keyConverter=self._keyFieldOrSchema.deserialize, valueConverter=self._valueFieldOrSchema.deserialize, **kwargs)
+
+    def _convert(self, incoming, skipValidation, keyConverter, valueConverter, **kwargs):
+        if not skipValidation and not isinstance(incoming, dict):
+            raise ValidationError('Not a dict type.')
+        converted, errors = {}, None
+        kwargs['silent'] = False
+        for key, value in viewitems(incoming):
+            try:
+                converted[keyConverter(key, skipValidation=skipValidation, **kwargs)] = valueConverter(value, skipValidation=skipValidation, **kwargs)
+            except ValidationError as ve:
+                error = ValidationErrorMessage(ve.error.data, title=('Dict[{}:{}]').format(key, value))
+                errors = errors + error if errors else error
+
+        if errors:
+            raise ValidationError(errors)
+        return converted
 
 
 class HexColorCode(String):
@@ -321,7 +332,8 @@ class HexColorCode(String):
 
     def __init__(self, required=True, default=None, filterParams=None, serializedValidators=None, deserializedValidators=None):
         super(HexColorCode, self).__init__(required=required, default=default, filterParams=filterParams, serializedValidators=serializedValidators, deserializedValidators=deserializedValidators)
-        validator = [validate.Regexp(self.COLOR_CODE_RE)]
+        validator = [
+         validate.Regexp(self.COLOR_CODE_RE)]
         self._serializedValidators = validator + self._serializedValidators
         self._deserializedValidators = validator + self._deserializedValidators
 
@@ -336,7 +348,7 @@ class ListFromString(Field):
         self._stringField = String()
 
     def _serialize(self, incoming, skipValidation=False, **kwargs):
-        return (self._delimiter or ' ').join((str(v) for v in self._listOfFields.serialize(incoming, skipValidation=skipValidation, **kwargs)))
+        return (self._delimiter or ' ').join(str(v) for v in self._listOfFields.serialize(incoming, skipValidation=skipValidation, **kwargs))
 
     def _deserialize(self, incoming, skipValidation=False, **kwargs):
         string = self._stringField.deserialize(incoming)
@@ -357,9 +369,10 @@ class Vector2(ListFromString):
         empty = self._zeroVector
         default = default or empty
         if len(default) != len(empty):
-            raise SoftException('Vector length should be {}, not {}.'.format(len(empty), len(default)))
+            raise SoftException(('Vector length should be {}, not {}.').format(len(empty), len(default)))
         super(Vector2, self).__init__(field=Float(), required=required, default=lambda : self._vectorClass(default), filterParams=filterParams, serializedValidators=serializedValidators, deserializedValidators=deserializedValidators)
-        self._deserializedValidators = [validate.Length(equalValue=len(empty))] + self._deserializedValidators
+        self._deserializedValidators = [
+         validate.Length(equalValue=len(empty))] + self._deserializedValidators
 
     def deserialize(self, incoming, skipValidation=False, **kwargs):
         vector = super(Vector2, self).deserialize(incoming, skipValidation=False, **kwargs)
@@ -367,7 +380,7 @@ class Vector2(ListFromString):
 
     def _serialize(self, incoming, skipValidation=False, **kwargs):
         if not isinstance(incoming, self._vectorClass):
-            raise ValidationError('Only {} is supported.'.format(self._vectorClass))
+            raise ValidationError(('Only {} is supported.').format(self._vectorClass))
         return super(Vector2, self)._serialize(list(incoming), skipValidation=False, **kwargs)
 
 

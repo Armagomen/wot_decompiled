@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/game_control/comp7_shop_controller.py
 import logging
 from collections import namedtuple
 import typing
@@ -26,7 +24,12 @@ if typing.TYPE_CHECKING:
     from gui.platform.products_fetcher.wot_shop.descriptors.categories_descriptor import CategoriesDescriptor
     from comp7.helpers.comp7_server_settings import Comp7RanksConfig
 _logger = logging.getLogger(__name__)
-ShopPageProductInfo = namedtuple('_ShopPageProductInfo', ('code', 'description', 'rank', 'category', 'purchasable', 'entitlements', 'currencyName', 'originalPrice', 'discountPrice', 'limitedQuantity', 'limitsPurchaseAllowed', 'discounts'))
+ShopPageProductInfo = namedtuple('_ShopPageProductInfo', ('code', 'description', 'rank',
+                                                          'category', 'purchasable',
+                                                          'entitlements', 'currencyName',
+                                                          'originalPrice', 'discountPrice',
+                                                          'limitedQuantity', 'limitsPurchaseAllowed',
+                                                          'discounts'))
 
 class ShopControllerStatus(Enum):
     IDLE = 'idle'
@@ -161,11 +164,12 @@ class Comp7ShopController(IComp7ShopController):
             discounts = self.__ranksDiscounts.get(rank, {})
             if rank != newRank:
                 prevRankDiscounts = discounts
-            currentRankDiscounts = discounts
-            break
+            else:
+                currentRankDiscounts = discounts
+                break
 
-        prevRankDiscounts = {k:v for k, v in prevRankDiscounts.iteritems() if v > 0}
-        currentRankDiscounts = {k:v for k, v in currentRankDiscounts.iteritems() if v > 0}
+        prevRankDiscounts = {k:v for k, v in prevRankDiscounts.iteritems() if v > 0 if v > 0}
+        currentRankDiscounts = {k:v for k, v in currentRankDiscounts.iteritems() if v > 0 if v > 0}
         return prevRankDiscounts != currentRankDiscounts
 
     def validateCachedProducts(self):
@@ -268,7 +272,9 @@ class Comp7ShopController(IComp7ShopController):
             self.__products[productCode] = ShopPageProductInfo(code=productCode, description=product.description, rank=productRank, category=product.category, purchasable=product.purchasable, entitlements=entitlements, currencyName=product.currencyName, originalPrice=product.originalPrice, discountPrice=product.discountPrice, limitedQuantity=limitsData.personalLimit - limitsData.personalCount, limitsPurchaseAllowed=limitsData.purchaseAllowed, discounts=self.__categoriesDiscounts[productRank])
 
     def __isResponseReadyToProcess(self, response):
-        return False if response.status != ResponseStatus.PROCESSED else response.products and response.categories and response.accountLimits
+        if response.status != ResponseStatus.PROCESSED:
+            return False
+        return response.products and response.categories and response.accountLimits
 
     def __sendPurchaseErrorSystemMessage(self):
         pushMessage(type=SM_TYPE.ErrorSimple, text=backport.text(R.strings.comp7_ext.system_messages.shop.purchase.error()))

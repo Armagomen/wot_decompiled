@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/gui/impl/lobby/feature/event_banner.py
 from __future__ import absolute_import
 from account_helpers.AccountSettings import ResourceWell
 from gui.Scaleform.genConsts.HANGAR_ALIASES import HANGAR_ALIASES
@@ -52,7 +50,7 @@ class ResourceWellEventBanner(BaseEventBanner):
 
     @property
     def borderColor(self):
-        pass
+        return '#51C5FF'
 
     @property
     def bannerState(self):
@@ -132,7 +130,9 @@ class ResourceWellEventBanner(BaseEventBanner):
             if timeBeforeStart > time_utils.ONE_DAY:
                 return EventBannerState.ANNOUNCE
             return EventBannerState.INACTIVE
-        return EventBannerState.INTRO if not isBannerSettingSet(ResourceWell.FIRST_BANNER_ENTERING_MADE) else EventBannerState.IN_PROGRESS
+        if not isBannerSettingSet(ResourceWell.FIRST_BANNER_ENTERING_MADE):
+            return EventBannerState.INTRO
+        return EventBannerState.IN_PROGRESS
 
     def __onUpdate(self, *_):
         if self.__resourceWell.isEnabled():
@@ -143,7 +143,7 @@ class ResourceWellEventBanner(BaseEventBanner):
     def __getDescriptionText(self):
         res = R.strings.hangar_event_banners.event.resourceWellEventBanner
         if self.__resourceWell.getPurchaseMode() != PurchaseMode.TWO_PARALLEL_PRODUCTS:
-            rewardID, _ = first(self.__resourceWell.config.getSortedRewardsByOrder(), (None,))
+            rewardID, _ = first(self.__resourceWell.config.getSortedRewardsByOrder(), (None, ))
             if rewardID is not None:
                 vehicleReward = self.__resourceWell.getRewardVehicle(rewardID)
                 if vehicleReward is not None:

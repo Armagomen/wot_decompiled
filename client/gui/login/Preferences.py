@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/login/Preferences.py
-import json
-import BigWorld
-import Settings
-import constants
+import json, BigWorld, Settings, constants
 from predefined_hosts import AUTO_LOGIN_QUERY_URL
 from debug_utils import LOG_DEBUG, LOG_WARNING
 from gui import GUI_SETTINGS
@@ -43,19 +38,19 @@ class Preferences(dict):
         elif preferences[Settings.KEY_LOGIN_INFO].readString('login', ''):
             self.__oldFormat = True
             self.__readOldPreferencesFormat(preferences[Settings.KEY_LOGIN_INFO])
-            _LOG_PERSONAL_DATA('Read old format preferences: {0}'.format(self))
+            _LOG_PERSONAL_DATA(('Read old format preferences: {0}').format(self))
         else:
             try:
                 loginInfo = json.loads(_decrypt(preferences[Settings.KEY_LOGIN_INFO].readString('data', '')), encoding='utf-8')
                 self.update(loginInfo)
-                _LOG_PERSONAL_DATA('Read login info from preferences.xml: {0}'.format(self))
+                _LOG_PERSONAL_DATA(('Read login info from preferences.xml: {0}').format(self))
             except ValueError:
                 LOG_WARNING('Ignoring login info from preferences.xml')
 
         self.__invalidateSettingsSanity()
 
     def writeLoginInfo(self):
-        _LOG_PERSONAL_DATA('Wrote login info into preferences.xml: {0}'.format(self))
+        _LOG_PERSONAL_DATA(('Wrote login info into preferences.xml: {0}').format(self))
         if self.__oldFormat:
             Settings.g_instance.userPrefs.deleteSection(Settings.KEY_LOGIN_INFO)
             Settings.g_instance.userPrefs.write(Settings.KEY_LOGIN_INFO, '')
@@ -102,5 +97,5 @@ class Preferences(dict):
     def __repr__(self):
         noNeedToKnow = ('login', 'password_length')
         magic = lambda k, v: (k, v if k not in noNeedToKnow else '*' * len(str(v)))
-        filtered = dict((magic(k, v) for k, v in self.iteritems()))
-        return '<{} {}>'.format(type(self).__name__, dict.__repr__(filtered))
+        filtered = dict(magic(k, v) for k, v in self.iteritems())
+        return ('<{} {}>').format(type(self).__name__, dict.__repr__(filtered))

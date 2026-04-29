@@ -1,10 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/lobby/views/battle_royale_hangar_view.py
 from __future__ import absolute_import
-import typing
-import logging
+import typing, logging
 from ClientSelectableCameraObject import ClientSelectableCameraObject
 from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
+from battle_royale.gui.impl.lobby.views.presenters.battle_royale_event_presenter import BattleRoyaleEventPresenter
 from battle_royale.gui.Scaleform.daapi.view.lobby.hangar.carousel.filter import RoyaleCarouselFilter
 from battle_royale.gui.impl.lobby.views.user_missions.hangar_widget.presenters.user_missions_presenter import BattleRoyaleUserMissionsPresenter
 from battle_royale.gui.impl.lobby.views.presenters.vehicle_filters_presenter import BattleRoyaleVehicleFiltersPresenter
@@ -74,17 +72,18 @@ class BattleRoyaleHangarView(ViewComponent[RouterModel], IRoutableView):
     def _getChildComponents(self):
         hangar = R.aliases.hangar.shared
         battleRoyale = R.aliases.battle_royale
-        return {hangar.MainMenu(): lambda : MainMenuPresenter(getMenuItems()),
-         hangar.HeroTank(): HeroTankPresenter,
-         hangar.SpaceInteraction(): lambda : SpaceInteractionPresenter(self.__createSelectableLogic()),
-         hangar.LootboxEntryPoint(): LootboxEntryPointPresenter,
-         battleRoyale.LoadoutPanelContainer(): LoadoutContainerPresenter,
-         battleRoyale.VehiclesInventory(): lambda : BattleRoyaleVehiclesInventoryPresenter(self.__vehicleFilter, self.__battleRoyalVehicleCriteria()),
-         battleRoyale.VehiclesFilter(): BattleRoyaleVehicleFiltersPresenter,
-         battleRoyale.BattleSelector(): BattleTypeSelectorPresenter,
-         battleRoyale.AlertMessage(): AlertMessagePresenter,
-         battleRoyale.Header(): HeaderPresenter,
-         battleRoyale.UserMissions(): BattleRoyaleUserMissionsPresenter}
+        return {hangar.MainMenu(): lambda : MainMenuPresenter(getMenuItems()), 
+           hangar.HeroTank(): HeroTankPresenter, 
+           hangar.SpaceInteraction(): lambda : SpaceInteractionPresenter(self.__createSelectableLogic()), 
+           hangar.LootboxEntryPoint(): LootboxEntryPointPresenter, 
+           battleRoyale.Events(): BattleRoyaleEventPresenter, 
+           battleRoyale.LoadoutPanelContainer(): LoadoutContainerPresenter, 
+           battleRoyale.VehiclesInventory(): lambda : BattleRoyaleVehiclesInventoryPresenter(self.__vehicleFilter, self.__battleRoyalVehicleCriteria()), 
+           battleRoyale.VehiclesFilter(): BattleRoyaleVehicleFiltersPresenter, 
+           battleRoyale.BattleSelector(): BattleTypeSelectorPresenter, 
+           battleRoyale.AlertMessage(): AlertMessagePresenter, 
+           battleRoyale.Header(): HeaderPresenter, 
+           battleRoyale.UserMissions(): BattleRoyaleUserMissionsPresenter}
 
     def _subscribe(self):
         super(BattleRoyaleHangarView, self)._subscribe()
@@ -130,7 +129,7 @@ class BattleRoyaleHangarView(ViewComponent[RouterModel], IRoutableView):
 
     @app_getter
     def __app(self):
-        return None
+        return
 
     def __createSelectableLogic(self):
         return HangarSelectableLogic()

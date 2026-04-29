@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hangar_widget/event_banners/base_event_banner.py
 from abc import ABCMeta
 from helpers import time_utils
 from gui.impl.gen.view_models.views.lobby.user_missions.constants.event_banner_state import EventBannerState
@@ -9,6 +7,7 @@ class BaseEventBanner(object):
     NAME = ''
 
     def __init__(self):
+        super(BaseEventBanner, self).__init__()
         self._isVisible = False
 
     @property
@@ -25,43 +24,43 @@ class BaseEventBanner(object):
 
     @property
     def borderColor(self):
-        pass
+        return ''
 
     @property
     def title(self):
-        pass
+        return ''
 
     @property
     def iconsPath(self):
-        pass
+        return ''
 
     @property
     def videosPath(self):
-        pass
+        return ''
 
     @property
     def introDescription(self):
-        pass
+        return ''
 
     @property
     def inProgressDescription(self):
-        pass
+        return ''
 
     @property
     def timerText(self):
-        pass
+        return ''
 
     @property
     def timerValue(self):
-        pass
+        return 0
 
     @property
     def eventStartDate(self):
-        pass
+        return 0
 
     @property
     def eventEndDate(self):
-        pass
+        return 0
 
     @property
     def playAppearAnim(self):
@@ -77,7 +76,7 @@ class BaseEventBanner(object):
         return self._isVisible
 
     def createToolTipContent(self, event):
-        return None
+        return
 
     def onClick(self):
         pass

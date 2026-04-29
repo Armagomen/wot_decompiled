@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_light/scripts/client/comp7_light/gui/Scaleform/daapi/view/lobby/tooltips/comp7_light_selector_tooltip.py
 from comp7_light.gui.shared.tooltips import TOOLTIP_TYPE
 from gui.impl import backport
 from gui.impl.gen import R

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/dossiers2/custom/collector20.py
-import ResMgr
-import typing
+import ResMgr, typing
 from items.vehicles import makeVehicleTypeCompDescrByName
 from soft_exception import SoftException
 if typing.TYPE_CHECKING:

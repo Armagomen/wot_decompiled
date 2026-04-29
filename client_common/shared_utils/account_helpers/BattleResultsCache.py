@@ -1,19 +1,13 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client_common/shared_utils/account_helpers/BattleResultsCache.py
-import os
-import cPickle
-import zlib
-import base64
+import os, cPickle, zlib, base64
 from functools import partial
-import BigWorld
-import AccountCommands
+import BigWorld, AccountCommands
 from battle_results_shared import VehicleInteractionDetails
 from battle_results import unpackClientBattleResults
 from debug_utils import LOG_CURRENT_EXCEPTION
 import constants
 from external_strings_utils import unicode_from_utf8
 BATTLE_RESULTS_VERSION = 1
-CACHE_DIR = os.path.join(os.path.dirname(unicode_from_utf8(BigWorld.wg_getPreferencesFilePath() if not constants.IS_BOT else '.')[1]), 'battle_results')
+CACHE_DIR = os.path.join(os.path.dirname(unicode_from_utf8((constants.IS_BOT or BigWorld.wg_getPreferencesFilePath)() if 1 else '.')[1]), 'battle_results')
 
 class BattleResultsCache(object):
 
@@ -40,11 +34,10 @@ class BattleResultsCache(object):
             if callback is not None:
                 callback(errorCode, results)
             return
-        else:
-            self.__waiting = True
-            proxy = partial(self.__onGetResponse, callback, None)
-            self.__account._doCmdInt3(AccountCommands.CMD_REQ_BATTLE_RESULTS, arenaUniqueID, 0, 0, proxy)
-            return
+        self.__waiting = True
+        proxy = partial(self.__onGetResponse, callback, None)
+        self.__account._doCmdInt3(AccountCommands.CMD_REQ_BATTLE_RESULTS, arenaUniqueID, 0, 0, proxy)
+        return
 
     def getOther(self, arenaUniqueID, resultsSubUrl, callback):
         errorCode, results = self.__checkErrorsAndGetFromCache(arenaUniqueID, resultsSubUrl)
@@ -52,18 +45,19 @@ class BattleResultsCache(object):
             if callback is not None:
                 callback(errorCode, results)
             return
-        else:
-            raise NotImplementedError
-            return
+        raise NotImplementedError
+        return
 
     def __checkErrorsAndGetFromCache(self, arenaUniqueID, uniqueFolderName):
         if self.__ignore:
             return (AccountCommands.RES_NON_PLAYER, None)
-        elif self.__waiting:
-            return (AccountCommands.RES_COOLDOWN, None)
         else:
+            if self.__waiting:
+                return (AccountCommands.RES_COOLDOWN, None)
             battleResults = load(uniqueFolderName, arenaUniqueID)
-            return (AccountCommands.RES_CACHE, convertToFullForm(battleResults)) if battleResults is not None else (None, None)
+            if battleResults is not None:
+                return (AccountCommands.RES_CACHE, convertToFullForm(battleResults))
+            return (None, None)
 
     def __onGetResponse(self, callback, resultsSubUrl, requestID, resultID, errorStr, ext=None):
         if resultID != AccountCommands.RES_STREAM:
@@ -71,9 +65,8 @@ class BattleResultsCache(object):
             if callback is not None:
                 callback(resultID, None)
             return
-        else:
-            self.__account._subscribeForStream(requestID, partial(self.__onStreamComplete, callback, resultsSubUrl))
-            return
+        self.__account._subscribeForStream(requestID, partial(self.__onStreamComplete, callback, resultsSubUrl))
+        return
 
     def __onStreamComplete(self, callback, resultsSubUrl, isSuccess, data):
         self.__waiting = False
@@ -125,11 +118,14 @@ def load(uniqueFolderName, arenaUniqueID):
 
     if fileHandler is not None:
         fileHandler.close()
-    return battleResults if version == BATTLE_RESULTS_VERSION else None
+    if version == BATTLE_RESULTS_VERSION:
+        return battleResults
+    else:
+        return
 
 
 def getFolderName(uniqueFolderName, arenaUniqueID):
-    battleStartTime = arenaUniqueID & 4294967295L
+    battleStartTime = arenaUniqueID & 4294967295
     battleStartDay = battleStartTime / 86400
     return os.path.join(CACHE_DIR, base64.b32encode('%s;%s' % (uniqueFolderName, battleStartDay)))
 
@@ -152,12 +148,9 @@ def convertToFullForm(compactForm):
     vehicleResults = cPickle.loads(zlib.decompress(vehicleResults))
     avatarResults = cPickle.loads(zlib.decompress(avatarResults))
     personal = {}
-    fullForm = {'arenaUniqueID': arenaUniqueID,
-     'personal': personal,
-     'common': {},
-     'players': {},
-     'vehicles': {},
-     'avatars': {}}
+    fullForm = {'arenaUniqueID': arenaUniqueID, 
+       'personal': personal, 
+       'common': {}, 'players': {}, 'vehicles': {}, 'avatars': {}}
     personal['avatar'] = unpackClientBattleResults(avatarResults)
     for vehTypeCompDescr, ownResults in vehicleResults.iteritems():
         vehPersonal = personal[vehTypeCompDescr] = unpackClientBattleResults(ownResults)

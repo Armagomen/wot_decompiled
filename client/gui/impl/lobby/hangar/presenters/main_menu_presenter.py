@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/hangar/presenters/main_menu_presenter.py
 from __future__ import absolute_import
-import logging
-import typing
+import logging, typing
 from constants import GF_RES_PROTOCOL, PremiumConfigs, DAILY_QUESTS_CONFIG
 from PlayerEvents import g_playerEvents
 from frameworks.wulf import ViewStatus
@@ -49,10 +46,20 @@ class MainMenuPresenter(ViewComponent[MainMenuModel], ClanEmblemsHelper, IGlobal
         self.__updateModel()
 
     def _getEvents(self):
-        return super(MainMenuPresenter, self)._getEvents() + ((self.viewModel.onNavigate, self._navigateTo), (g_playerEvents.onPrebattleJoined, self.__updateModel), (self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged))
+        return super(MainMenuPresenter, self)._getEvents() + (
+         (
+          self.viewModel.onNavigate, self._navigateTo),
+         (
+          g_playerEvents.onPrebattleJoined, self.__updateModel),
+         (
+          self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged))
 
     def _getCallbacks(self):
-        return (('stats.clanInfo', self.__requestClanEmblem),) if self.__clansMenuItemExists() else tuple()
+        if self.__clansMenuItemExists():
+            return (
+             (
+              'stats.clanInfo', self.__requestClanEmblem),)
+        return tuple()
 
     def _navigateTo(self, args):
         name = args.get('name')
@@ -73,7 +80,7 @@ class MainMenuPresenter(ViewComponent[MainMenuModel], ClanEmblemsHelper, IGlobal
         super(MainMenuPresenter, self)._finalize()
 
     def __updateModel(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             fillMenuItems(model, self.__menuItems)
             if self.__techTreeEventsListener.getNations():
                 model.setHasTechTreeEvents(True)
@@ -96,11 +103,8 @@ class MainMenuPresenter(ViewComponent[MainMenuModel], ClanEmblemsHelper, IGlobal
 
     def __onServerSettingsChanged(self, diff=None):
         diff = diff or {}
-        settingsKeys = [DAILY_QUESTS_CONFIG,
-         PremiumConfigs.PREM_QUESTS,
-         'strongholdSettings',
-         IS_REGULAR_QUEST_ENABLED,
-         IS_PM2_QUEST_ENABLED,
-         IS_PM3_QUEST_ENABLED]
-        if any((key in diff for key in settingsKeys)):
+        settingsKeys = [
+         DAILY_QUESTS_CONFIG, PremiumConfigs.PREM_QUESTS, 'strongholdSettings',
+         IS_REGULAR_QUEST_ENABLED, IS_PM2_QUEST_ENABLED, IS_PM3_QUEST_ENABLED]
+        if any(key in diff for key in settingsKeys):
             self.__updateModel()

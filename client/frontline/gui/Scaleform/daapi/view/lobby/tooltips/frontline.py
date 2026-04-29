@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/lobby/tooltips/frontline.py
 from gui import makeHtmlString
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
 from gui.Scaleform.locale.EPIC_BATTLE import EPIC_BATTLE
@@ -27,7 +25,8 @@ class FrontlinePackPreviewTooltipData(BlocksTooltipData):
 
     def _packBlocks(self, discount, bonuses):
         items = super(FrontlinePackPreviewTooltipData, self)._packBlocks()
-        blocks = [self._getHeader()]
+        blocks = [
+         self._getHeader()]
         if self.__tradeIn.isEnabled():
             blocks.append(formatters.packTextBlockData(padding=formatters.packPadding(left=50, bottom=15), text=_ms(text_styles.main(TOOLTIPS.FRONTLINEPACKPREVIEW_TRADEINBODY))))
         blocks.append(self._getDiscountSection(discount, bonuses))
@@ -40,13 +39,15 @@ class FrontlinePackPreviewTooltipData(BlocksTooltipData):
     def _getGiftBlock(self):
         lineBlock = formatters.packImageBlockData(align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, img=backport.image(R.images.gui.maps.icons.tooltip.line()))
         textBlock = formatters.packTextWithBgBlockData(text=text_styles.concatStylesToSingleLine(icons.makeImageTag(source=backport.image(R.images.gui.maps.icons.library.icon_gift()), width=17, height=15, vSpace=0), text_styles.vehicleStatusCriticalTextSmall(TOOLTIPS.FRONTLINEPACKPREVIEW_GIFT)), bgColor=0, align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER)
-        return formatters.packBuildUpBlockData(blocks=[lineBlock, textBlock], gap=-13, blockWidth=_PREVIEW_TOOLTIP_WIDTH, layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_VERTICAL, align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER)
+        return formatters.packBuildUpBlockData(blocks=[
+         lineBlock, textBlock], gap=-13, blockWidth=_PREVIEW_TOOLTIP_WIDTH, layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_VERTICAL, align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER)
 
     def _getDiscountSection(self, discount, bonuses):
         discount = discount or 0
         formattedDiscount = makeHtmlString('html_templates:lobby/quests/actions', Currency.GOLD, {'value': backport.getGoldFormat(long(discount))})
         discountBlock = formatters.packTextBlockData(padding=formatters.packPadding(left=50), text=_ms(text_styles.main(TOOLTIPS.FRONTLINEPACKPREVIEW_DISCOUNT), value=formattedDiscount))
-        return formatters.packBuildUpBlockData(blocks=[discountBlock, self._getGiftBlock(), self._getBonusSection(bonuses)], gap=25, layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_VERTICAL, align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER)
+        return formatters.packBuildUpBlockData(blocks=[
+         discountBlock, self._getGiftBlock(), self._getBonusSection(bonuses)], gap=25, layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_VERTICAL, align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER)
 
     def _getBonusSection(self, bonuses):
         hBlocks = []
@@ -82,7 +83,8 @@ class FrontlineRankTooltipData(BlocksTooltipData):
     def _packBlocks(self, rank):
         items = super(FrontlineRankTooltipData, self)._packBlocks()
         self.__rank = rank
-        items.append(formatters.packBuildUpBlockData(blocks=[self._getHeader(), self._getIcon(), self._getBottom()], layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_VERTICAL))
+        items.append(formatters.packBuildUpBlockData(blocks=[
+         self._getHeader(), self._getIcon(), self._getBottom()], layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_VERTICAL))
         return items
 
     def _getIcon(self):
@@ -95,7 +97,9 @@ class FrontlineRankTooltipData(BlocksTooltipData):
         if self.__rank > 1:
             rankSettings = self.__frontLine.getPlayerRanksInfo()
             exp, bonus = rankSettings.get(self.__rank, (0, 0))
-            blocks = [formatters.packTextBlockData(text=_ms(text_styles.main(TOOLTIPS.FRONTLINERANK_EXP), exp=text_styles.gold(exp))), formatters.packTextBlockData(text=_ms(text_styles.main(TOOLTIPS.FRONTLINERANK_EXPBONUS), bonus=text_styles.gold('+%d%%' % bonus)))]
+            blocks = [
+             formatters.packTextBlockData(text=_ms(text_styles.main(TOOLTIPS.FRONTLINERANK_EXP), exp=text_styles.gold(exp))),
+             formatters.packTextBlockData(text=_ms(text_styles.main(TOOLTIPS.FRONTLINERANK_EXPBONUS), bonus=text_styles.gold('+%d%%' % bonus)))]
             bottomBlocks = formatters.packBuildUpBlockData(blocks=blocks, layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_VERTICAL)
         else:
             bottomBlocks = formatters.packTextBlockData(text=_ms(text_styles.main(TOOLTIPS.FRONTLINERANK_FIRSTRANKDESCR)))

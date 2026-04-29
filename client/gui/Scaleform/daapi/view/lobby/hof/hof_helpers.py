@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hof/hof_helpers.py
-import logging
-import Keys
+import logging, Keys
 from helpers import dependency
 from gui import GUI_SETTINGS, DialogsInterface
 from gui.Scaleform.genConsts.PROFILE_CONSTANTS import PROFILE_CONSTANTS
@@ -9,8 +6,13 @@ from skeletons.gui.lobby_context import ILobbyContext
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import NEW_HOF_COUNTER
 _logger = logging.getLogger(__name__)
-NEW_HOF_BUTTONS_IDS = (PROFILE_CONSTANTS.HOF_ACHIEVEMENTS_BUTTON, PROFILE_CONSTANTS.HOF_VEHICLES_BUTTON)
-NEW_ACHIEVEMENTS_BUTTONS_IDS = (PROFILE_CONSTANTS.HOF_ACHIEVEMENTS_BUTTON, PROFILE_CONSTANTS.HOF_VEHICLES_BUTTON, PROFILE_CONSTANTS.HOF_VIEW_RATING_BUTTON)
+NEW_HOF_BUTTONS_IDS = (
+ PROFILE_CONSTANTS.HOF_ACHIEVEMENTS_BUTTON,
+ PROFILE_CONSTANTS.HOF_VEHICLES_BUTTON)
+NEW_ACHIEVEMENTS_BUTTONS_IDS = (
+ PROFILE_CONSTANTS.HOF_ACHIEVEMENTS_BUTTON,
+ PROFILE_CONSTANTS.HOF_VEHICLES_BUTTON,
+ PROFILE_CONSTANTS.HOF_VIEW_RATING_BUTTON)
 
 @dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
 def _getHofUrl(urlName, lobbyContext=None):
@@ -111,256 +113,107 @@ def _setSettingsToStorage(value):
 
 
 def getHofDisabledKeys():
-    return ((Keys.KEY_F5,
-      True,
-      False,
-      False,
-      False),
-     (Keys.KEY_LEFTARROW,
-      True,
-      True,
-      False,
-      False),
-     (Keys.KEY_NUMPAD4,
-      True,
-      True,
-      False,
-      False),
-     (Keys.KEY_RIGHTARROW,
-      True,
-      True,
-      False,
-      False),
-     (Keys.KEY_NUMPAD6,
-      True,
-      True,
-      False,
-      False),
-     (Keys.KEY_BACKSPACE,
-      True,
-      False,
-      True,
-      False),
-     (Keys.KEY_F5,
-      True,
-      False,
-      False,
-      True),
-     (Keys.KEY_HOME,
-      True,
-      True,
-      False,
-      False),
-     (Keys.KEY_NUMPAD7,
-      True,
-      True,
-      False,
-      False),
-     (Keys.KEY_0,
-      True,
-      None,
-      None,
-      True),
-     (Keys.KEY_1,
-      True,
-      None,
-      None,
-      True),
-     (Keys.KEY_2,
-      True,
-      None,
-      None,
-      True),
-     (Keys.KEY_3,
-      True,
-      None,
-      None,
-      True),
-     (Keys.KEY_4,
-      True,
-      None,
-      None,
-      True),
-     (Keys.KEY_5,
-      True,
-      None,
-      None,
-      True),
-     (Keys.KEY_6,
-      True,
-      None,
-      None,
-      True),
-     (Keys.KEY_7,
-      True,
-      None,
-      None,
-      True),
-     (Keys.KEY_8,
-      True,
-      None,
-      None,
-      True),
-     (Keys.KEY_9,
-      True,
-      None,
-      None,
-      True),
-     (Keys.KEY_NUMPAD0,
-      True,
-      None,
-      None,
-      True),
-     (Keys.KEY_NUMPAD1,
-      True,
-      None,
-      None,
-      True),
-     (Keys.KEY_NUMPAD2,
-      True,
-      None,
-      None,
-      True),
-     (Keys.KEY_NUMPAD3,
-      True,
-      None,
-      None,
-      True),
-     (Keys.KEY_NUMPAD4,
-      True,
-      None,
-      None,
-      True),
-     (Keys.KEY_NUMPAD5,
-      True,
-      None,
-      None,
-      True),
-     (Keys.KEY_NUMPAD6,
-      True,
-      None,
-      None,
-      True),
-     (Keys.KEY_NUMPAD7,
-      True,
-      None,
-      None,
-      True),
-     (Keys.KEY_NUMPAD8,
-      True,
-      None,
-      None,
-      True),
-     (Keys.KEY_NUMPAD9,
-      True,
-      None,
-      None,
-      True),
-     (Keys.KEY_TAB,
-      True,
-      False,
-      False,
-      True),
-     (Keys.KEY_TAB,
-      True,
-      False,
-      True,
-      True),
-     (Keys.KEY_PGDN,
-      True,
-      False,
-      False,
-      True),
-     (Keys.KEY_PGUP,
-      True,
-      False,
-      False,
-      True),
-     (Keys.KEY_W,
-      True,
-      False,
-      False,
-      True),
-     (Keys.KEY_F4,
-      True,
-      False,
-      False,
-      True),
-     (Keys.KEY_T,
-      True,
-      False,
-      True,
-      True),
-     (Keys.KEY_T,
-      True,
-      False,
-      False,
-      True),
-     (Keys.KEY_N,
-      True,
-      False,
-      False,
-      True),
-     (Keys.KEY_H,
-      True,
-      False,
-      False,
-      True),
-     (Keys.KEY_J,
-      True,
-      False,
-      False,
-      True),
-     (Keys.KEY_D,
-      True,
-      False,
-      False,
-      True),
-     (Keys.KEY_DELETE,
-      True,
-      False,
-      True,
-      True),
-     (Keys.KEY_O,
-      True,
-      False,
-      False,
-      True),
-     (Keys.KEY_U,
-      True,
-      False,
-      False,
-      True),
-     (Keys.KEY_EQUALS,
-      True,
-      False,
-      False,
-      True),
-     (Keys.KEY_ADD,
-      True,
-      False,
-      False,
-      True),
-     (Keys.KEY_MINUS,
-      True,
-      False,
-      False,
-      True),
-     (Keys.KEY_NUMPADMINUS,
-      True,
-      False,
-      False,
-      True),
-     (Keys.KEY_F11,
-      True,
-      False,
-      False,
-      False),
-     (Keys.KEY_A,
-      True,
-      False,
-      False,
-      True))
+    return (
+     (
+      Keys.KEY_F5, True, False, False, False),
+     (
+      Keys.KEY_LEFTARROW, True, True, False, False),
+     (
+      Keys.KEY_NUMPAD4, True, True, False, False),
+     (
+      Keys.KEY_RIGHTARROW, True, True, False, False),
+     (
+      Keys.KEY_NUMPAD6, True, True, False, False),
+     (
+      Keys.KEY_BACKSPACE, True, False, True, False),
+     (
+      Keys.KEY_F5, True, False, False, True),
+     (
+      Keys.KEY_HOME, True, True, False, False),
+     (
+      Keys.KEY_NUMPAD7, True, True, False, False),
+     (
+      Keys.KEY_0, True, None, None, True),
+     (
+      Keys.KEY_1, True, None, None, True),
+     (
+      Keys.KEY_2, True, None, None, True),
+     (
+      Keys.KEY_3, True, None, None, True),
+     (
+      Keys.KEY_4, True, None, None, True),
+     (
+      Keys.KEY_5, True, None, None, True),
+     (
+      Keys.KEY_6, True, None, None, True),
+     (
+      Keys.KEY_7, True, None, None, True),
+     (
+      Keys.KEY_8, True, None, None, True),
+     (
+      Keys.KEY_9, True, None, None, True),
+     (
+      Keys.KEY_NUMPAD0, True, None, None, True),
+     (
+      Keys.KEY_NUMPAD1, True, None, None, True),
+     (
+      Keys.KEY_NUMPAD2, True, None, None, True),
+     (
+      Keys.KEY_NUMPAD3, True, None, None, True),
+     (
+      Keys.KEY_NUMPAD4, True, None, None, True),
+     (
+      Keys.KEY_NUMPAD5, True, None, None, True),
+     (
+      Keys.KEY_NUMPAD6, True, None, None, True),
+     (
+      Keys.KEY_NUMPAD7, True, None, None, True),
+     (
+      Keys.KEY_NUMPAD8, True, None, None, True),
+     (
+      Keys.KEY_NUMPAD9, True, None, None, True),
+     (
+      Keys.KEY_TAB, True, False, False, True),
+     (
+      Keys.KEY_TAB, True, False, True, True),
+     (
+      Keys.KEY_PGDN, True, False, False, True),
+     (
+      Keys.KEY_PGUP, True, False, False, True),
+     (
+      Keys.KEY_W, True, False, False, True),
+     (
+      Keys.KEY_F4, True, False, False, True),
+     (
+      Keys.KEY_T, True, False, True, True),
+     (
+      Keys.KEY_T, True, False, False, True),
+     (
+      Keys.KEY_N, True, False, False, True),
+     (
+      Keys.KEY_H, True, False, False, True),
+     (
+      Keys.KEY_J, True, False, False, True),
+     (
+      Keys.KEY_D, True, False, False, True),
+     (
+      Keys.KEY_DELETE, True, False, True, True),
+     (
+      Keys.KEY_O, True, False, False, True),
+     (
+      Keys.KEY_U, True, False, False, True),
+     (
+      Keys.KEY_EQUALS, True, False, False, True),
+     (
+      Keys.KEY_ADD, True, False, False, True),
+     (
+      Keys.KEY_MINUS, True, False, False, True),
+     (
+      Keys.KEY_NUMPADMINUS, True, False, False, True),
+     (
+      Keys.KEY_F11, True, False, False, False),
+     (
+      Keys.KEY_A, True, False, False, True))
 
 
 def showDisabledDialog():

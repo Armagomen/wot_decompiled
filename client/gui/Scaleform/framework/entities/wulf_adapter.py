@@ -1,17 +1,16 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/framework/entities/wulf_adapter.py
-import logging
-import typing
-import BigWorld
+from __future__ import absolute_import
+import logging, typing, BigWorld
 from Event import Event, EventManager
 from frameworks.wulf import WindowStatus, WindowLayer
 from frameworks.wulf.gui_constants import ShowingStatus
 from gui.impl.pub import WindowImpl
-from .View import ViewKey
+from gui.Scaleform.framework.entities.View import ViewKey
 _logger = logging.getLogger(__name__)
 
 class WulfPackageLayoutAdapter(object):
-    __slots__ = ('__window', '__loadID', '__sfWindow', '__key', '__scope', '__settings', '__eManager', '__app', '__isDestroyed', 'onCreated', 'onDispose', 'onDisposed', 'onWulfViewLoaded', 'onWulfViewLoadError', '__background_alpha__')
+    __slots__ = ('__window', '__loadID', '__sfWindow', '__key', '__scope', '__settings',
+                 '__eManager', '__app', '__isDestroyed', 'onCreated', 'onDispose',
+                 'onDisposed', 'onWulfViewLoaded', 'onWulfViewLoadError', '__background_alpha__')
 
     def __init__(self):
         super(WulfPackageLayoutAdapter, self).__init__()
@@ -86,7 +85,7 @@ class WulfPackageLayoutAdapter(object):
         return self.__key
 
     def getSubContainersSettings(self):
-        pass
+        return ()
 
     @property
     def alias(self):
@@ -155,10 +154,13 @@ class WulfPackageLayoutAdapter(object):
 
     @property
     def content(self):
-        return self.__window.content if self.__window else None
+        if self.__window:
+            return self.__window.content
+        else:
+            return
 
     def __repr__(self):
-        return '{} (key = {}, settings = {}, window = {}, isDestroyed = {})'.format(self.__class__.__name__, self.__key, self.__settings, self.__window, self.__isDestroyed)
+        return ('{} (key = {}, settings = {}, window = {}, isDestroyed = {})').format(self.__class__.__name__, self.__key, self.__settings, self.__window, self.__isDestroyed)
 
     def __windowLoad(self):
         self.__loadID = None

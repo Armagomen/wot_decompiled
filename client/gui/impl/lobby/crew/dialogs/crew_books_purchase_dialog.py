@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/dialogs/crew_books_purchase_dialog.py
 from base_crew_dialog_template_view import BaseCrewDialogTemplateView
 from gui import SystemMessages
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -55,7 +53,7 @@ class CrewBooksPurchaseDialog(BaseCrewDialogTemplateView):
         return
 
     def _onLoading(self, *args, **kwargs):
-        self.setBackgroundImagePath(R.images.gui.maps.icons.crewBooks.screen_bg())
+        self.setBackgroundImagePath(R.images.gui.maps.icons.windows.background())
         self.setSubView(Placeholder.TOP_RIGHT, MoneyBalance())
         self.setSubView(Placeholder.ICON, IconSet(R.images.gui.maps.icons.crewBooks.books.large.dyn(self._bookGuiItem.icon)()))
         self.addButton(ConfirmButton(R.strings.dialogs.crewBookPurchase.purchase(), isDisabled=False, tooltipFactory=self._getToolTipBuilder()))
@@ -93,11 +91,11 @@ class CrewBooksPurchaseDialog(BaseCrewDialogTemplateView):
         self._updatePrice()
 
     def _updateViewModel(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             self._fillViewModel(vm)
 
     def _updatePrice(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             self._setBookPrice(vm)
 
     def _fillViewModel(self, vm):
@@ -133,7 +131,7 @@ class CrewBooksPurchaseDialog(BaseCrewDialogTemplateView):
         purchaseMoneyState = getPurchaseMoneyState(self.purchasePrice.price)
         if purchaseMoneyState is MoneyForPurchase.ENOUGH_WITH_EXCHANGE:
             purchaseGold = getPurchaseGoldForCredits(self.purchasePrice.price)
-            event_dispatcher.showExchangeCurrencyWindowModal(gold=purchaseGold, backgroundImage=R.images.gui.maps.icons.crewBooks.screen_bg())
+            event_dispatcher.showExchangeCurrencyWindowModal(gold=purchaseGold, backgroundImage=R.images.gui.maps.icons.windows.background())
             return False
         self._executeBuy()
         return True

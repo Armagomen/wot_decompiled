@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/messengerBar/ChannelListContextMenuHandler.py
 from gui.Scaleform.framework.entities.EventSystemEntity import EventSystemEntity
 from gui.Scaleform.framework.managers.context_menu import AbstractContextMenuHandler
 from gui.Scaleform.locale.MENU import MENU
@@ -15,9 +13,9 @@ class CHANNEL(object):
 class ChannelListContextMenuHandler(AbstractContextMenuHandler, EventSystemEntity):
 
     def __init__(self, cmProxy, ctx=None):
-        super(ChannelListContextMenuHandler, self).__init__(cmProxy, ctx, {CHANNEL.MINIMIZE_ALL: 'minimizeAll',
-         CHANNEL.CLOSE_CURRENT: 'closeCurrent',
-         CHANNEL.CLOSE_ALL_EXCEPT_CURRENT: 'closeAllExceptCurrent'})
+        super(ChannelListContextMenuHandler, self).__init__(cmProxy, ctx, {CHANNEL.MINIMIZE_ALL: 'minimizeAll', 
+           CHANNEL.CLOSE_CURRENT: 'closeCurrent', 
+           CHANNEL.CLOSE_ALL_EXCEPT_CURRENT: 'closeAllExceptCurrent'})
 
     def closeCurrent(self):
         self.fireEvent(ChannelCarouselEvent(self, ChannelCarouselEvent.CLOSE_BUTTON_CLICK, self._clientID), scope=EVENT_BUS_SCOPE.LOBBY)
@@ -39,7 +37,8 @@ class ChannelListContextMenuHandler(AbstractContextMenuHandler, EventSystemEntit
         return
 
     def _generateOptions(self, ctx=None):
-        return [self._makeItem(CHANNEL.MINIMIZE_ALL, MENU.contextmenu('messenger/minimizeAll')),
+        return [
+         self._makeItem(CHANNEL.MINIMIZE_ALL, MENU.contextmenu('messenger/minimizeAll')),
          self._makeSeparator(),
          self._makeItem(CHANNEL.CLOSE_CURRENT, MENU.contextmenu('messenger/closeCurrent'), {'enabled': self._canClose}),
          self._makeSeparator(),

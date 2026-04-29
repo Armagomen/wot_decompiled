@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/genConsts/BATTLE_MESSAGES_CONSTS.py
 
 
 class BATTLE_MESSAGES_CONSTS(object):

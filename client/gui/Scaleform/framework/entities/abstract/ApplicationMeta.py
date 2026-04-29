@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/framework/entities/abstract/ApplicationMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class ApplicationMeta(BaseDAAPIComponent):
@@ -71,28 +69,37 @@ class ApplicationMeta(BaseDAAPIComponent):
         self._printOverrideError('onAsInitializationCompleted')
 
     def as_isDAAPIInitedS(self):
-        return self.flashObject.as_isDAAPIInited() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_isDAAPIInited()
 
     def as_populateS(self):
-        return self.flashObject.as_populate() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_populate()
 
     def as_disposeS(self):
-        return self.flashObject.as_dispose() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_dispose()
 
     def as_registerManagersS(self):
-        return self.flashObject.as_registerManagers() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_registerManagers()
 
     def as_loadLibrariesS(self, list):
-        return self.flashObject.as_loadLibraries(list) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_loadLibraries(list)
 
     def as_updateStageS(self, w, h, scale):
-        return self.flashObject.as_updateStage(w, h, scale) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateStage(w, h, scale)
 
     def as_blurBackgroundViewsS(self, ownLayer, blurAnimRepeatCount, blurRadius):
-        return self.flashObject.as_blurBackgroundViews(ownLayer, blurAnimRepeatCount, blurRadius) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_blurBackgroundViews(ownLayer, blurAnimRepeatCount, blurRadius)
 
     def as_unblurBackgroundViewsS(self):
-        return self.flashObject.as_unblurBackgroundViews() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_unblurBackgroundViews()
 
     def as_setMouseEventsEnabledS(self, enabled):
-        return self.flashObject.as_setMouseEventsEnabled(enabled) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setMouseEventsEnabled(enabled)

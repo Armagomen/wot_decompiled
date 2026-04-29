@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/visual_script_client/scene_blocks.py
 import BigWorld
 from visual_script import ASPECT
 from visual_script.block import Block
@@ -36,7 +34,7 @@ class GetSpaceName(Block, ArenaMeta):
         if isinstance(player, PlayerAvatar):
             spaceName = player.arena.arenaType.geometryName
         else:
-            spaceName = player.hangarSpace.spacePath.split('/')[-1]
+            spaceName = player.hangarSpace.spacePath.split('/')[(-1)]
         self._spaceName.setValue(spaceName)
 
     @classmethod
@@ -66,6 +64,10 @@ class GetTerrainMaterialUnderPoint(Block, ArenaMeta):
         self._out.call()
         return
 
+    @classmethod
+    def blockAspects(cls):
+        return [ASPECT.CLIENT]
+
 
 class TerrainIndexToName(Block, ArenaMeta):
 
@@ -85,3 +87,7 @@ class TerrainIndexToName(Block, ArenaMeta):
         self._material.setValue(name)
         self._out.call()
         return
+
+    @classmethod
+    def blockAspects(cls):
+        return [ASPECT.CLIENT]

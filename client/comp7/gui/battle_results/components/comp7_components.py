@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/battle_results/components/comp7_components.py
 from comp7.gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS as COMP7_TOOLTIPS
 from comp7.gui.impl.gen.view_models.views.lobby.enums import SeasonName
 from comp7.gui.impl.gen.view_models.views.lobby.qualification_battle import BattleState
@@ -22,7 +20,9 @@ def isQualificationBattle(avatarResults):
 
 
 def getFormattedRating(rating):
-    return '{:+}'.format(rating) if rating != 0 else str(rating)
+    if rating != 0:
+        return ('{:+}').format(rating)
+    return str(rating)
 
 
 class PrestigePointsBlock(base.StatsBlock):
@@ -70,7 +70,8 @@ class IsDeserterFlag(base.StatsItem):
 
 
 class Comp7RankBlock(base.StatsBlock):
-    __slots__ = ('linkage', 'title', 'descr', 'icon', 'ratingDiff', 'hasProgressBar', 'progressBegin', 'progressCurrent', 'progressTotal', 'ratingTotal')
+    __slots__ = ('linkage', 'title', 'descr', 'icon', 'ratingDiff', 'hasProgressBar',
+                 'progressBegin', 'progressCurrent', 'progressTotal', 'ratingTotal')
     __comp7Controller = dependency.descriptor(IComp7Controller)
 
     def __init__(self, meta=None, field='', *path):
@@ -131,7 +132,7 @@ class Comp7RankBlock(base.StatsBlock):
         extraPropertyName = ''
         if isExtraRank:
             extraPropertyName = 'Elite' if isElite else 'Master'
-        propertyName = '{}{}Rating'.format('get' if achievedRating >= 0 else 'lose', extraPropertyName if extraPropertyName else '')
+        propertyName = ('{}{}Rating').format('get' if achievedRating >= 0 else 'lose', extraPropertyName if extraPropertyName else '')
         ranksConfig = cls.__comp7Controller.getRanksConfig()
         ratingText = R.strings.comp7_ext.battleResult.subTask.descr.dyn(propertyName)()
         return text_styles.main(backport.text(ratingText, topPercentage=ranksConfig.eliteRankPercent))
@@ -152,7 +153,9 @@ class Comp7RankBlock(base.StatsBlock):
 
     @staticmethod
     def __getRatingDiff(achievedRating):
-        return text_styles.error(getFormattedRating(achievedRating)) if achievedRating < 0 else text_styles.bonusAppliedText(getFormattedRating(achievedRating))
+        if achievedRating < 0:
+            return text_styles.error(getFormattedRating(achievedRating))
+        return text_styles.bonusAppliedText(getFormattedRating(achievedRating))
 
     @staticmethod
     def __getQualificationTitle():
@@ -174,4 +177,4 @@ class Comp7RankBlock(base.StatsBlock):
             battleState = BattleState.VICTORY
         else:
             battleState = BattleState.DEFEAT
-        return backport.image(R.images.comp7.gui.maps.icons.icons.dyn('battle_{}'.format(battleState.value))())
+        return backport.image(R.images.comp7.gui.maps.icons.icons.dyn(('battle_{}').format(battleState.value))())

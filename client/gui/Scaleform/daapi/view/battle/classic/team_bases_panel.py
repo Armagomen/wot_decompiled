@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/classic/team_bases_panel.py
+from __future__ import absolute_import
 from constants import ARENA_GUI_TYPE
 from gui.Scaleform.daapi.view.meta.TeamBasesPanelMeta import TeamBasesPanelMeta
 from gui.Scaleform.locale.INGAME_GUI import INGAME_GUI as I18N_INGAME_GUI
@@ -12,7 +11,8 @@ from skeletons.gui.battle_session import IBattleSessionProvider
 _MAX_INVADERS_COUNT = 3
 
 class _TeamBaseSettingItem(object):
-    __slots__ = ('_weight', '_color', '_capturing', '_captured', 'captured', '_blocked', '_arenaTypeID', '_team', '_baseID', '_subTypeBaseID')
+    __slots__ = ('_weight', '_color', '_capturing', '_captured', 'captured', '_blocked',
+                 '_arenaTypeID', '_team', '_baseID', '_subTypeBaseID')
 
     def __init__(self, weight, color, capturing, captured, blocked):
         super(_TeamBaseSettingItem, self).__init__()
@@ -51,23 +51,23 @@ class _TeamBaseSettingItem(object):
         return getBattleSubTypeBaseNumber(self._arenaTypeID, self._team, self._baseID)
 
 
-_SETTINGS_TO_TEAM = {0: (2,
-     'red',
+_SETTINGS_TO_TEAM = {0: (
+     2, 'red',
      i18n.makeString(I18N_INGAME_GUI.PLAYER_MESSAGES_ALLY_BASE_CAPTURED_BY_NOTIFICATION),
      i18n.makeString(I18N_INGAME_GUI.PLAYER_MESSAGES_ALLY_BASE_CAPTURED_NOTIFICATION),
-     i18n.makeString(I18N_INGAME_GUI.PLAYER_MESSAGES_BASE_CAPTURE_BLOCKED)),
- 3: (1,
-     'green',
+     i18n.makeString(I18N_INGAME_GUI.PLAYER_MESSAGES_BASE_CAPTURE_BLOCKED)), 
+   3: (
+     1, 'green',
      i18n.makeString(I18N_INGAME_GUI.PLAYER_MESSAGES_ENEMY_BASE_CAPTURED_BY_NOTIFICATION),
      i18n.makeString(I18N_INGAME_GUI.PLAYER_MESSAGES_ENEMY_BASE_CAPTURED_NOTIFICATION),
      i18n.makeString(I18N_INGAME_GUI.PLAYER_MESSAGES_BASE_CAPTURE_BLOCKED))}
-_SETTINGS_TO_CONTROL_POINT = {0: (4,
-     'red',
+_SETTINGS_TO_CONTROL_POINT = {0: (
+     4, 'red',
      i18n.makeString(I18N_INGAME_GUI.PLAYER_MESSAGES_BASE_CAPTURED_BY_NOTIFICATION),
      i18n.makeString(I18N_INGAME_GUI.PLAYER_MESSAGES_BASE_CAPTURED_NOTIFICATION),
-     i18n.makeString(I18N_INGAME_GUI.PLAYER_MESSAGES_BASE_CAPTURE_BLOCKED)),
- 3: (3,
-     'green',
+     i18n.makeString(I18N_INGAME_GUI.PLAYER_MESSAGES_BASE_CAPTURE_BLOCKED)), 
+   3: (
+     3, 'green',
      i18n.makeString(I18N_INGAME_GUI.PLAYER_MESSAGES_BASE_CAPTURED_BY_NOTIFICATION),
      i18n.makeString(I18N_INGAME_GUI.PLAYER_MESSAGES_BASE_CAPTURED_NOTIFICATION),
      i18n.makeString(I18N_INGAME_GUI.PLAYER_MESSAGES_BASE_CAPTURE_BLOCKED))}
@@ -77,10 +77,9 @@ def _getSettingItem(clientID, ownTeam, arenaTypeID):
     itemSettings = (0, 'green', '%s %s', '%s %s', '%s %s')
     key = baseTeam ^ ownTeam
     if isControlPointExists(arenaTypeID):
-        if key in _SETTINGS_TO_CONTROL_POINT:
-            itemSettings = _SETTINGS_TO_CONTROL_POINT[key]
-    elif key in _SETTINGS_TO_TEAM:
-        itemSettings = _SETTINGS_TO_TEAM[key]
+        itemSettings = _SETTINGS_TO_CONTROL_POINT.get(key, itemSettings)
+    else:
+        itemSettings = _SETTINGS_TO_TEAM.get(key, itemSettings)
     item = _TeamBaseSettingItem(*itemSettings)
     item.setup(arenaTypeID, baseID, baseTeam)
     return item
@@ -152,4 +151,6 @@ class TeamBasesPanel(TeamBasesPanelMeta, team_bases_ctrl.ITeamBasesListener):
 
     @staticmethod
     def __getInvadersCountStr(count):
-        return str(count) if count < _MAX_INVADERS_COUNT else str(_MAX_INVADERS_COUNT)
+        if count < _MAX_INVADERS_COUNT:
+            return str(count)
+        return str(_MAX_INVADERS_COUNT)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/LootArenaInfo.py
 import BigWorld
 from gui.shared import EVENT_BUS_SCOPE, g_eventBus
 from battle_royale.gui.shared.events import AirDropEvent
@@ -28,5 +26,5 @@ class LootArenaInfo(BigWorld.DynamicScriptComponent):
 
 
 def _getNewValue(sequence, path):
-    startIndex, endIndex = path[-1]
+    startIndex, endIndex = path[(-1)]
     return sequence[startIndex:endIndex]

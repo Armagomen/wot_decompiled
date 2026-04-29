@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/tutorial/hints_manager.py
 import logging
 from account_helpers.settings_core.settings_constants import OnceOnlyHints
 from helpers import dependency
@@ -15,7 +13,7 @@ from tutorial.gui.Scaleform.hints.proxy import HintsProxy
 _logger = logging.getLogger(__name__)
 HINT_SHOWN_STATUS = 1
 _MAX_ACTIVE_HINTS = 1
-_DESCRIPTOR_PATH = '{0:>s}/once-only-hints.xml'.format(settings.DOC_DIRECTORY)
+_DESCRIPTOR_PATH = ('{0:>s}/once-only-hints.xml').format(settings.DOC_DIRECTORY)
 
 class HintsManager(object):
     __settingsCore = dependency.descriptor(ISettingsCore)
@@ -85,15 +83,14 @@ class HintsManager(object):
             if hintID and hintID not in self.__postponedHints and hintID not in self.__activeHints:
                 self.__postponedHints.append(hintID)
             return
-        else:
-            text = hint['text']
-            uniqueID = hintID = hint['hintID']
-            props = HintProps(uniqueID, hintID, hint['itemID'], text, hasBox=hint['hasBox'], arrow=hint['arrow'], padding=None, updateRuntime=hint['updateRuntime'], hideImmediately=hint['hideImmediately'], checkViewArea=hint['checkViewArea'])
-            actionType = hint.get('ignoreOutsideClick')
-            isActive = self._gui.showHint(props, actionType, silent)
-            if isActive:
-                self.__activeHints[hint['itemID']] = hint
-            return
+        text = hint['text']
+        uniqueID = hintID = hint['hintID']
+        props = HintProps(uniqueID, hintID, hint['itemID'], text, hasBox=hint['hasBox'], arrow=hint['arrow'], padding=None, updateRuntime=hint['updateRuntime'], hideImmediately=hint['hideImmediately'], checkViewArea=hint['checkViewArea'])
+        actionType = hint.get('ignoreOutsideClick')
+        isActive = self._gui.showHint(props, actionType, silent)
+        if isActive:
+            self.__activeHints[hint['itemID']] = hint
+        return
 
     def __hideHint(self, itemID, hintID=''):
         if itemID in self.__activeHints:
@@ -180,7 +177,10 @@ class HintsManager(object):
     @staticmethod
     def __checkConditions(hint):
         conditions = hint['conditions']
-        return True if conditions is None else FunctionalConditions(conditions).allConditionsOk()
+        if conditions is None:
+            return True
+        else:
+            return FunctionalConditions(conditions).allConditionsOk()
 
     def __startSettingsListening(self):
         self.__settingsCore.onOnceOnlyHintsChanged += self.__onSettingsChanged
@@ -215,9 +215,10 @@ class HintsManager(object):
                     self.__onItemFound(itemID, silent=True)
                 else:
                     self.__onItemLost(itemID)
-            if isPositiveState:
+            elif isPositiveState:
                 self.__onItemLost(itemID)
-            self.__onItemFound(itemID, silent=True)
+            else:
+                self.__onItemFound(itemID, silent=True)
 
         return
 
@@ -232,7 +233,7 @@ class HintsManager(object):
         for itemID, hint in filteredHints:
             if state:
                 self.__onItemFound(itemID, silent=True)
-            if not self.__checkConditions(hint):
+            elif not self.__checkConditions(hint):
                 self.__onItemLost(itemID)
 
         return

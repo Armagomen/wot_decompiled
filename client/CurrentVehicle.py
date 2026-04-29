@@ -1,6 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/CurrentVehicle.py
+from __future__ import absolute_import
 from typing import Optional
+from future.utils import viewvalues
 import BigWorld
 from constants import CustomizationInvData
 from gui.SystemMessages import pushMessagesFromResult
@@ -31,11 +31,8 @@ from skeletons.gui.game_control import IIGRController, IRentalsController, IBatt
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
 from skeletons.gui.shared.utils import IHangarSpace
-_MODULES_NAMES = ('turret',
- 'chassis',
- 'engine',
- 'gun',
- 'radio')
+_MODULES_NAMES = (
+ 'turret', 'chassis', 'engine', 'gun', 'radio')
 RESTORE_WITH_STYLE = 'restoreWithStyle'
 LOCKED_OUTFIT = 'lockedOutfit'
 
@@ -206,11 +203,17 @@ class _CurrentVehicle(_CachedVehicle):
 
     @property
     def item(self):
-        return self.itemsCache.items.getVehicle(self.__vehInvID) if self.__vehInvID > 0 else None
+        if self.__vehInvID > 0:
+            return self.itemsCache.items.getVehicle(self.__vehInvID)
+        else:
+            return
 
     @property
     def intCD(self):
-        return self.item.intCD if self.isPresent() else None
+        if self.isPresent():
+            return self.item.intCD
+        else:
+            return
 
     def isBroken(self):
         return self.isPresent() and self.item.isBroken
@@ -328,7 +331,7 @@ class _CurrentVehicle(_CachedVehicle):
             vehiclesCriteria = REQ_CRITERIA.INVENTORY | ~REQ_CRITERIA.VEHICLE.MODE_HIDDEN | ~REQ_CRITERIA.VEHICLE.EVENT_BATTLE | REQ_CRITERIA.VEHICLE.ACTIVE_IN_NATION_GROUP | ~REQ_CRITERIA.VEHICLE.BATTLE_ROYALE
             invVehs = self.itemsCache.items.getVehicles(criteria=vehiclesCriteria)
             if invVehs:
-                vehInvID = min(invVehs.itervalues()).invID
+                vehInvID = min(viewvalues(invVehs)).invID
             else:
                 vehInvID = 0
         self._selectVehicle(vehInvID, callback, waitingOverlapsUI)
@@ -349,7 +352,9 @@ class _CurrentVehicle(_CachedVehicle):
 
     def getHangarMessage(self):
         if not self.isPresent():
-            return (Vehicle.VEHICLE_STATE.NOT_PRESENT, MENU.CURRENTVEHICLESTATUS_NOTPRESENT, Vehicle.VEHICLE_STATE_LEVEL.CRITICAL)
+            return (Vehicle.VEHICLE_STATE.NOT_PRESENT,
+             MENU.CURRENTVEHICLESTATUS_NOTPRESENT,
+             Vehicle.VEHICLE_STATE_LEVEL.CRITICAL)
         state, stateLvl = self.item.getState()
         if state == Vehicle.VEHICLE_STATE.IN_PREMIUM_IGR_ONLY:
             icon = icons.premiumIgrBig()
@@ -358,7 +363,8 @@ class _CurrentVehicle(_CachedVehicle):
                 message = i18n.makeString('#menu:currentVehicleStatus/' + state, icon=icon, time=rentLeftStr)
             else:
                 message = i18n.makeString('#menu:tankCarousel/vehicleStates/inPremiumIgrOnly', icon=icon)
-            return (state, message, stateLvl)
+            return (
+             state, message, stateLvl)
         message = '#menu:currentVehicleStatus/' + state
         return (state, message, stateLvl)
 
@@ -367,8 +373,8 @@ class _CurrentVehicle(_CachedVehicle):
 
     def _addListeners(self):
         super(_CurrentVehicle, self)._addListeners()
-        g_clientUpdateManager.addCallbacks({'cache.vehsLock': self.onLocksUpdate,
-         'groupLocks': self.onRotationUpdate})
+        g_clientUpdateManager.addCallbacks({'cache.vehsLock': self.onLocksUpdate, 
+           'groupLocks': self.onRotationUpdate})
         self.igrCtrl.onIgrTypeChanged += self.onIgrTypeChanged
         self.rentals.onRentChangeNotify += self.onRentChange
         self.battleRoyaleController.onUpdated += self.__updateBattleRoyaleData
@@ -410,7 +416,7 @@ class _CurrentVehicle(_CachedVehicle):
                 if vehicleOutfitDiff is not None:
                     isCustomizationChanged = season in vehicleOutfitDiff or SeasonType.ALL in vehicleOutfitDiff
             isComponentsChanged = GUI_ITEM_TYPE.TURRET in invDiff or GUI_ITEM_TYPE.GUN in invDiff
-            isVehicleChanged = any((self.__vehInvID in hive or (self.__vehInvID, '_r') in hive for hive in vehsDiff.itervalues()))
+            isVehicleChanged = any(self.__vehInvID in hive or (self.__vehInvID, '_r') in hive for hive in viewvalues(vehsDiff))
             if isComponentsChanged or isRepaired or isCustomizationChanged:
                 self.refreshModel()
             elif isVehicleDescrChanged:
@@ -426,14 +432,17 @@ class _CurrentVehicle(_CachedVehicle):
         if vehicle is None:
             return False
         else:
-            return False if vehicle.isModeHidden and vehicle.isOnlyForFunRandomBattles and not self.funRandomController.isEnabled() else not REQ_CRITERIA.VEHICLE.BATTLE_ROYALE(vehicle) or self.battleRoyaleController.isBattleRoyaleMode()
+            if vehicle.isModeHidden:
+                if self.funRandomController.isOnlyFunRandomVehicle(vehicle) and not self.funRandomController.isEnabled():
+                    return False
+            return not REQ_CRITERIA.VEHICLE.BATTLE_ROYALE(vehicle) or self.battleRoyaleController.isBattleRoyaleMode()
 
     def __checkPrebattleLockedVehicle(self):
         from gui.prb_control import prb_getters
         clientPrb = prb_getters.getClientPrebattle()
         if clientPrb is not None:
             rosters = prb_getters.getPrebattleRosters(prebattle=clientPrb)
-            for _, roster in rosters.iteritems():
+            for roster in viewvalues(rosters):
                 if BigWorld.player().id in roster:
                     vehCompDescr = roster[BigWorld.player().id].get('vehCompDescr', '')
                     if vehCompDescr:
@@ -482,7 +491,10 @@ class _RegularPreviewAppearance(PreviewAppearance):
     @property
     def vehicleEntityID(self):
         vEntity = self.hangarSpace.getVehicleEntity()
-        return None if vEntity is None else vEntity.id
+        if vEntity is None:
+            return
+        else:
+            return vEntity.id
 
 
 class HeroTankPreviewAppearance(PreviewAppearance):
@@ -500,7 +512,7 @@ class HeroTankPreviewAppearance(PreviewAppearance):
             if isinstance(e, HeroTank):
                 return e.id
 
-        return None
+        return
 
 
 class _CurrentPreviewVehicle(_CachedVehicle):
@@ -573,14 +585,19 @@ class _CurrentPreviewVehicle(_CachedVehicle):
         if self.isPresent():
             vehicle = self.itemsCache.items.getItemByCD(self.item.intCD)
             return vehicle.invID
+        return 0
 
     @property
     def intCD(self):
-        return self.item.intCD if self.isPresent() else None
+        if self.isPresent():
+            return self.item.intCD
+        else:
+            return
 
     @property
     def vehicleEntityID(self):
-        return self.__vehAppearance.vehicleEntityID if self.__vehAppearance else None
+        if self.__vehAppearance:
+            return self.__vehAppearance.vehicleEntityID
 
     def getVehiclePreviewType(self):
         if self.isPresent() and self.item.isCollectible:
@@ -643,7 +660,7 @@ class _CurrentPreviewVehicle(_CachedVehicle):
 
     def _applyCamouflageTTC(self):
         if self.isPresent():
-            camo = first(self._c11nService.getCamouflages(vehicle=self.item).itervalues())
+            camo = first(viewvalues(self._c11nService.getCamouflages(vehicle=self.item)))
             if camo:
                 outfit = self._itemsFactory.createOutfit(vehicleCD=self.item.descriptor.makeCompactDescr())
                 outfit.hull.slotFor(GUI_ITEM_TYPE.CAMOUFLAGE).set(camo.intCD)
@@ -693,9 +710,9 @@ class _CurrentPreviewVehicle(_CachedVehicle):
     def __isNeedToRefreshVehicle(self, vehicleCD, style, outfit):
         if not self.isPresent():
             return bool(vehicleCD)
-        elif self.item.intCD != vehicleCD:
-            return True
         else:
+            if self.item.intCD != vehicleCD:
+                return True
             if style is not None and outfit is None:
                 outfit = self.__getPreviewOutfitByStyle(style)
             return outfit is not None
@@ -716,7 +733,7 @@ class _CurrentPreviewVehicle(_CachedVehicle):
                 return style.getOutfit(season, vehicleCD=self.item.descriptor.makeCompactDescr())
             return style.getOutfit(first(style.seasons), vehicleCD=self.item.descriptor.makeCompactDescr())
         else:
-            return None
+            return
 
     def __makePreviewVehicleFromStrCD(self, vehicleCD, vehicleStrCD):
         items = self.itemsCache.items

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/tooltips/battle_ability_tooltip_params.py
 import logging
 from functools import partial
 from collections import namedtuple
@@ -16,12 +14,13 @@ from items import vehicles
 from soft_exception import SoftException
 from constants import IS_DEVELOPMENT
 from items import _xml
-COLOR_SCHEME = (text_styles.stats, text_styles.bonusAppliedText)
+COLOR_SCHEME = (
+ text_styles.stats, text_styles.bonusAppliedText)
 NEUTRAL_STYLE = COLOR_SCHEME[0]
 TOOLTIPS_PATH = 'gui/ability_tooltips.xml'
 
 def _getTextStyle(idx):
-    return COLOR_SCHEME[idx > 0]
+    return COLOR_SCHEME[(idx > 0)]
 
 
 def _getAttrName(param):
@@ -46,7 +45,8 @@ class DirectValuesMixin(DisplayValuesMixin):
         param = _getAttrName(param)
         values = [ _getFormattedNum(getattr(eq, param)) for eq in eqsRange ]
         if _allElementsEq(values):
-            values = [values[0]]
+            values = [
+             values[0]]
         return values
 
 
@@ -57,7 +57,8 @@ class ReciprocalValuesMixin(DisplayValuesMixin):
         param = _getAttrName(param)
         values = [ _getFormattedNum(1 / val if val != 0 else float('inf')) for val in (getattr(eq, param) for eq in eqsRange) ]
         if _allElementsEq(values):
-            values = [values[0]]
+            values = [
+             values[0]]
         return values
 
 
@@ -67,9 +68,10 @@ class ShellStunValuesMixin(DisplayValuesMixin):
     def _getDisplayParams(cls, curEq, eqsRange, param):
         param = _getAttrName(param)
         shellsRange = (vehicles.getItemByCompactDescr(getattr(eq, param)) for eq in eqsRange)
-        values = [ (_getFormattedNum(shell.stun.stunDuration) if shell.hasStun else 0) for shell in shellsRange ]
+        values = [ _getFormattedNum(shell.stun.stunDuration) if shell.hasStun else 0 for shell in shellsRange ]
         if _allElementsEq(values):
-            values = [values[0]]
+            values = [
+             values[0]]
         return values
 
 
@@ -85,7 +87,8 @@ class MultiValuesMixin(DisplayValuesMixin):
         for idx, singleParam in enumerate(params):
             values = [ _getFormattedNum(getattr(eq, singleParam)) for eq in eqsRange ]
             if _allElementsEq(values):
-                values = [values[0]]
+                values = [
+                 values[0]]
             allValues[idx] = values
 
         return allValues
@@ -99,7 +102,8 @@ class NestedValuesMixin(DisplayValuesMixin):
         params = param.split('/')
         values = [ _getFormattedNum(cls._getEqParam(eq, params)) for eq in eqsRange ]
         if _allElementsEq(values):
-            values = [values[0]]
+            values = [
+             values[0]]
         return values
 
     @classmethod
@@ -110,7 +114,7 @@ class NestedValuesMixin(DisplayValuesMixin):
         for key in params[1:]:
             if isinstance(data, dict):
                 data = data.get(key, {})
-            if hasattr(data, key):
+            elif hasattr(data, key):
                 data = getattr(data, key)
 
         return data
@@ -130,9 +134,10 @@ class NestedShellStunValuesMixin(NestedValuesMixin):
     def _getDisplayParams(cls, curEq, eqsRange, param):
         shells = super(NestedShellStunValuesMixin, cls)._getDisplayParams(curEq, eqsRange, param)
         shellsRange = (vehicles.getItemByCompactDescr(shell) for shell in shells)
-        values = [ (_getFormattedNum(shell.stun.stunDuration) if shell.hasStun else 0) for shell in shellsRange ]
+        values = [ _getFormattedNum(shell.stun.stunDuration) if shell.hasStun else 0 for shell in shellsRange ]
         if _allElementsEq(values):
-            values = [values[0]]
+            values = [
+             values[0]]
         return values
 
 
@@ -142,19 +147,22 @@ class DisplayLabelMixin(object):
     def _formatParamStringInternal(cls, values, unitLocalization=None, returnArray=False):
         isPercentValue = unitLocalization == COMMON.COMMON_PERCENT
         formatTemplate = i18n.makeString(COMMON.PERCENTVALUE) if isPercentValue else '{} {}'
-        unitLocalization = None if not unitLocalization else i18n.makeString(unitLocalization)
-        formattedValues = []
-        if values:
-            for idx, dv in enumerate(values):
-                dvStr = '{}'.format(abs(dv))
-                if isPercentValue:
-                    dvStr = formatTemplate.format(value=dvStr)
-                elif unitLocalization:
-                    dvStr = formatTemplate.format(dvStr, unitLocalization)
-                dvStr = _getTextStyle(idx)(dvStr)
-                formattedValues.append(dvStr)
+        if not unitLocalization:
+            unitLocalization = None if 1 else i18n.makeString(unitLocalization)
+            formattedValues = []
+            if values:
+                for idx, dv in enumerate(values):
+                    dvStr = ('{}').format(abs(dv))
+                    if isPercentValue:
+                        dvStr = formatTemplate.format(value=dvStr)
+                    elif unitLocalization:
+                        dvStr = formatTemplate.format(dvStr, unitLocalization)
+                    dvStr = _getTextStyle(idx)(dvStr)
+                    formattedValues.append(dvStr)
 
-        return ' '.join(formattedValues) if not returnArray else formattedValues
+            return returnArray or (' ').join(formattedValues)
+        else:
+            return formattedValues
 
     @classmethod
     def _formatParamString(cls, values, isMultiplier=True, returnArray=False):
@@ -215,11 +223,13 @@ class MultiMeterLabelMixin(DisplayLabelMixin):
         width, length = values
         for area in zip(width, length):
             values = [ int(_cutDigits(value)) for value in area ]
-            areaStr = '{} x {}'.format(*values)
+            areaStr = ('{} x {}').format(*values)
             unitLocalization = backport.text(R.strings.epic_battle.abilityInfo.units.meter())
-            labelParts.append(NEUTRAL_STYLE('{} {}'.format(areaStr, unitLocalization)))
+            labelParts.append(NEUTRAL_STYLE(('{} {}').format(areaStr, unitLocalization)))
 
-        return ' '.join(labelParts) if not returnArray else labelParts
+        if not returnArray:
+            return (' ').join(labelParts)
+        return labelParts
 
 
 class AbilityParam(object):
@@ -233,7 +243,7 @@ class FixedTextParam(AbilityParam):
 
     @classmethod
     def extendBlocks(cls, staticBlock, dynamicBlock, curEq, eqsRange, param, title, isMultiplier=True):
-        curStr = '{}: {}'.format(text_styles.main(title), NEUTRAL_STYLE(i18n.makeString(param)))
+        curStr = ('{}: {}').format(text_styles.main(title), NEUTRAL_STYLE(i18n.makeString(param)))
         staticBlock.append(formatters.packTextBlockData(text=curStr, padding=formatters.packPadding(left=0, top=0)))
 
 
@@ -243,7 +253,7 @@ class TextParam(AbilityParam, DisplayValuesMixin, DisplayLabelMixin):
     def extendBlocks(cls, staticBlock, dynamicBlock, curEq, eqsRange, param, title, isMultiplier=True):
         values = cls._getDisplayParams(curEq, eqsRange, param)
         if len(values) == 1:
-            curStr = '{}: {}'.format(text_styles.main(title), cls._formatParamString(values, isMultiplier))
+            curStr = ('{}: {}').format(text_styles.main(title), cls._formatParamString(values, isMultiplier))
             staticBlock.append(formatters.packTextBlockData(text=curStr, padding=formatters.packPadding(left=0, top=0)))
         else:
             dynamicBlock.append(formatters.packAbilityBattleRankedItemBlockData(title=title, items=cls._formatParamString(values, isMultiplier, True)))
@@ -255,7 +265,7 @@ class MultiTextParam(AbilityParam, DisplayValuesMixin, DisplayLabelMixin):
     def extendBlocks(cls, staticBlock, dynamicBlock, curEq, eqsRange, param, title, isMultiplier=True):
         values = cls._getDisplayParams(curEq, eqsRange, param)
         if len(values) > 1 and len(values[0]) == 1:
-            curStr = '{}: {}'.format(text_styles.main(title), cls._formatParamString(values, isMultiplier))
+            curStr = ('{}: {}').format(text_styles.main(title), cls._formatParamString(values, isMultiplier))
             staticBlock.append(formatters.packTextBlockData(text=curStr, padding=formatters.packPadding(left=0, top=0)))
         else:
             dynamicBlock.append(formatters.packAbilityBattleRankedItemBlockData(title=title, items=cls._formatParamString(values, isMultiplier, True)))
@@ -267,7 +277,7 @@ class NestedTextParam(AbilityParam, DisplayValuesMixin, DisplayLabelMixin):
     def extendBlocks(cls, staticBlock, dynamicBlock, curEq, eqsRange, param, title, isMultiplier=True):
         values = cls._getDisplayParams(curEq, eqsRange, param)
         if len(values) == 1:
-            curStr = '{}: {}'.format(text_styles.main(title), cls._formatParamString(values, isMultiplier))
+            curStr = ('{}: {}').format(text_styles.main(title), cls._formatParamString(values, isMultiplier))
             staticBlock.append(formatters.packTextBlockData(text=curStr, padding=formatters.packPadding(left=0, top=0)))
         else:
             dynamicBlock.append(formatters.packAbilityBattleRankedItemBlockData(title=title, items=cls._formatParamString(values, isMultiplier, True)))
@@ -325,22 +335,22 @@ def makeRenderer(func, isMultiplier=True):
     return partial(func, isMultiplier=isMultiplier)
 
 
-g_battleAbilityParamsRenderers = {'FixedTextParam': makeRenderer(FixedTextParam.extendBlocks),
- 'DirectNumericTextParam': makeRenderer(DirectNumericTextParam.extendBlocks),
- 'DirectSecondsTextParam': makeRenderer(DirectSecondsTextParam.extendBlocks),
- 'DirectMetersTextParam': makeRenderer(DirectMetersTextParam.extendBlocks),
- 'MulDirectPercentageTextParam': makeRenderer(DirectPercentageTextParam.extendBlocks),
- 'AddDirectPercentageTextParam': makeRenderer(DirectPercentageTextParam.extendBlocks, isMultiplier=False),
- 'MulReciprocalPercentageTextParam': makeRenderer(ReciprocalPercentageTextParam.extendBlocks),
- 'AddReciprocalPercentageTextParam': makeRenderer(ReciprocalPercentageTextParam.extendBlocks, isMultiplier=False),
- 'ShellStunSecondsTextParam': makeRenderer(ShellStunSecondsTextParam.extendBlocks),
- 'MultiMetersTextParam': makeRenderer(MultipleMetersTextParam.extendBlocks),
- 'NestedMetersTextParam': makeRenderer(NestedMetersTextParam.extendBlocks),
- 'NestedSecondsTextParam': makeRenderer(NestedSecondsTextParam.extendBlocks),
- 'MulNestedPercentageTextParam': makeRenderer(NestedPercentageTextParam.extendBlocks),
- 'AddNestedPercentageTextParam': makeRenderer(NestedPercentageTextParam.extendBlocks, isMultiplier=False),
- 'NestedShellStunSecondsTextParam': makeRenderer(NestedShellStunSecondsTextParam.extendBlocks),
- 'MulNestedPercentageTextTupleValueParam': makeRenderer(NestedPercentageTextTupleValueParam.extendBlocks)}
+g_battleAbilityParamsRenderers = {'FixedTextParam': makeRenderer(FixedTextParam.extendBlocks), 
+   'DirectNumericTextParam': makeRenderer(DirectNumericTextParam.extendBlocks), 
+   'DirectSecondsTextParam': makeRenderer(DirectSecondsTextParam.extendBlocks), 
+   'DirectMetersTextParam': makeRenderer(DirectMetersTextParam.extendBlocks), 
+   'MulDirectPercentageTextParam': makeRenderer(DirectPercentageTextParam.extendBlocks), 
+   'AddDirectPercentageTextParam': makeRenderer(DirectPercentageTextParam.extendBlocks, isMultiplier=False), 
+   'MulReciprocalPercentageTextParam': makeRenderer(ReciprocalPercentageTextParam.extendBlocks), 
+   'AddReciprocalPercentageTextParam': makeRenderer(ReciprocalPercentageTextParam.extendBlocks, isMultiplier=False), 
+   'ShellStunSecondsTextParam': makeRenderer(ShellStunSecondsTextParam.extendBlocks), 
+   'MultiMetersTextParam': makeRenderer(MultipleMetersTextParam.extendBlocks), 
+   'NestedMetersTextParam': makeRenderer(NestedMetersTextParam.extendBlocks), 
+   'NestedSecondsTextParam': makeRenderer(NestedSecondsTextParam.extendBlocks), 
+   'MulNestedPercentageTextParam': makeRenderer(NestedPercentageTextParam.extendBlocks), 
+   'AddNestedPercentageTextParam': makeRenderer(NestedPercentageTextParam.extendBlocks, isMultiplier=False), 
+   'NestedShellStunSecondsTextParam': makeRenderer(NestedShellStunSecondsTextParam.extendBlocks), 
+   'MulNestedPercentageTextTupleValueParam': makeRenderer(NestedPercentageTextTupleValueParam.extendBlocks)}
 ConsumableTooltipEntry = namedtuple('ConsumableTooltipEntry', ('name', 'renderer'))
 
 class BattleAbilityTooltipManager(object):
@@ -360,7 +370,7 @@ class BattleAbilityTooltipManager(object):
                 logger = logging.getLogger(__name__)
                 logger.error("[ERROR] BattleAbilityTooltipManager: %s: Localization for '%s' not found.", itemName, data.name)
             if g_battleAbilityParamsRenderers.get(data.renderer, None) is None:
-                raise SoftException("{}: '{}' No renderer with the name '{}' exists. Allowed are {}.".format(TOOLTIPS_PATH, itemName, data.renderer, g_battleAbilityParamsRenderers.keys()))
+                raise SoftException(("{}: '{}' No renderer with the name '{}' exists. Allowed are {}.").format(TOOLTIPS_PATH, itemName, data.renderer, g_battleAbilityParamsRenderers.keys()))
 
         return
 
@@ -371,12 +381,13 @@ class BattleAbilityTooltipManager(object):
         xmlCtx = (None, xmlPath)
         readIdentifiers = set()
         for name, subsection in section.items():
-            ctx = (xmlCtx, name)
+            ctx = (
+             xmlCtx, name)
             if name != 'item':
-                _xml.raiseWrongXml(ctx, '', "Wrong section: '{}', only 'item' sections expected.".format(name))
+                _xml.raiseWrongXml(ctx, '', ("Wrong section: '{}', only 'item' sections expected.").format(name))
             identifier = _xml.readString(ctx, subsection, 'identifier')
             if identifier in readIdentifiers:
-                _xml.raiseWrongXml(ctx, identifier, "Identifier '{}' defined multiple times.".format(identifier))
+                _xml.raiseWrongXml(ctx, identifier, ("Identifier '{}' defined multiple times.").format(identifier))
             readIdentifiers.add(identifier)
             self.__tooltipsSettings[identifier] = ConsumableTooltipEntry(_xml.readString(ctx, subsection, 'name'), _xml.readString(ctx, subsection, 'renderer'))
 
@@ -392,9 +403,8 @@ class BattleAbilityTooltipManager(object):
             tooltipInfo = self.__tooltipsSettings.get(tooltipIdentifier, None)
             if tooltipInfo is None:
                 logger = logging.getLogger(__name__)
-                logger.error('[ERROR] createBattleAbilityTooltipRenderers: Failed to find tooltipInfo %(ttid)s for %(us)s (%(name)s).', {'ttid': tooltipIdentifier,
-                 'us': curLvlEq.userString,
-                 'name': curLvlEq.name})
+                logger.error('[ERROR] createBattleAbilityTooltipRenderers: Failed to find tooltipInfo %(ttid)s for %(us)s (%(name)s).', {'ttid': tooltipIdentifier, 'us': curLvlEq.userString, 
+                   'name': curLvlEq.name})
                 continue
             renderer = g_battleAbilityParamsRenderers.get(tooltipInfo.renderer, None)
             if renderer:
@@ -404,7 +414,10 @@ class BattleAbilityTooltipManager(object):
 
     def getTooltipInfo(self, tooltipIdentifier):
         tooltipInfo = self.__tooltipsSettings.get(tooltipIdentifier, None)
-        return (tooltipInfo.name, tooltipInfo.renderer) if tooltipInfo else (None, None)
+        if tooltipInfo:
+            return (tooltipInfo.name, tooltipInfo.renderer)
+        else:
+            return (None, None)
 
 
 g_battleAbilityTooltipMgr = BattleAbilityTooltipManager()

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/matrix_factory.py
-import BigWorld
-import Math
+import BigWorld, Math
 from debug_utils import LOG_WARNING, LOG_CURRENT_EXCEPTION
 from gui.battle_control.avatar_getter import getInputHandler
 from gui.battle_control.battle_constants import VEHICLE_LOCATION
@@ -31,12 +28,12 @@ def getEntityMatrix(entityID):
         entity = BigWorld.entities.get(entityID)
         if entity:
             return entity.matrix
-        return None
+        return
     except AttributeError:
         LOG_CURRENT_EXCEPTION()
-        return None
+        return
 
-    return None
+    return
 
 
 def getVehicleMPAndLocation(vehicleID, positions):

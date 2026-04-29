@@ -1,12 +1,11 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/tooltips/vehicle_items_builders.py
+from __future__ import absolute_import
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.tooltips import contexts, TOOLTIP_COMPONENT
 from gui.shared.tooltips import module
 from gui.shared.tooltips import shell, advanced
 from gui.shared.tooltips.builders import DataBuilder, AdvancedDataBuilder, AdvancedComplexBuilder
-__all__ = ('getTooltipBuilders',)
+__all__ = ('getTooltipBuilders', )
 
 def _advancedBlockCondition(context):
 
@@ -29,6 +28,14 @@ def _nationChangeShellAdvancedBlockCondition(context):
 
     def advancedTooltipExist(vehCD, intCD, *_):
         return context.buildItem(vehCD, intCD).getAdvancedTooltipKey() in advanced.SHELL_MOVIES
+
+    return advancedTooltipExist
+
+
+def _armorInspectorShellAdvancedBlockCondition(context):
+
+    def advancedTooltipExist(intCD, vehicle):
+        return context.buildItem(intCD, vehicle).getAdvancedTooltipKey() in advanced.SHELL_MOVIES
 
     return advancedTooltipExist
 
@@ -88,7 +95,8 @@ class AdvancedShellBuilder(AdvancedDataBuilder):
 
 
 def getTooltipBuilders():
-    return (InventoryModuleBuilder(TOOLTIPS_CONSTANTS.INVENTORY_MODULE, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI),
+    return (
+     InventoryModuleBuilder(TOOLTIPS_CONSTANTS.INVENTORY_MODULE, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI),
      ShopModuleBuilder(TOOLTIPS_CONSTANTS.DEFAULT_MODULE, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI),
      TechTreeModuleBuilder(TOOLTIPS_CONSTANTS.TECHTREE_MODULE, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI),
      ModuleDataBuilder(TOOLTIPS_CONSTANTS.TECH_MAIN_MODULE, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI),
@@ -105,7 +113,9 @@ def getTooltipBuilders():
      AdvancedDataBuilder(TOOLTIPS_CONSTANTS.PREVIEW_MODULE, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI, module.ModuleBlockTooltipData(contexts.PreviewContext()), advanced.HangarModuleAdvanced(contexts.PreviewContext()), condition=_advancedBlockCondition(contexts.PreviewContext())),
      AdvancedDataBuilder(TOOLTIPS_CONSTANTS.AWARD_MODULE, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI, module.ModuleBlockTooltipData(contexts.AwardContext()), advanced.HangarModuleAdvanced(contexts.AwardContext()), condition=_advancedBlockCondition(contexts.AwardContext())),
      AdvancedDataBuilder(TOOLTIPS_CONSTANTS.SHOP_MODULE, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI, module.ModuleBlockTooltipData(contexts.ShopContext()), advanced.HangarModuleAdvanced(contexts.ShopContext()), condition=_advancedBlockCondition(contexts.ShopContext())),
+     AdvancedDataBuilder(TOOLTIPS_CONSTANTS.CONTEXT_VEHICLE_MODULE, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI, module.ModuleBlockTooltipData(contexts.CmpModulesWithVehicleContext()), advanced.HangarModuleAdvanced(contexts.CmpModulesWithVehicleContext()), condition=_advancedBlockCondition(contexts.CmpModulesWithVehicleContext())),
      ShellBuilder(TOOLTIPS_CONSTANTS.SHOP_SHELL, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI, shell.ShellBlockToolTipData(contexts.ShopContext())),
+     AdvancedDataBuilder(TOOLTIPS_CONSTANTS.ARMOR_INSPECTOR_SHELL, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI, shell.ShellBlockToolTipData(contexts.ArmorInspectorContext()), advanced.HangarShellAdvanced(contexts.ArmorInspectorContext()), condition=_armorInspectorShellAdvancedBlockCondition(contexts.ArmorInspectorContext())),
      AdvancedShellBuilder(TOOLTIPS_CONSTANTS.DEFAULT_SHELL, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI, shell.ShellBlockToolTipData(contexts.DefaultContext()), advanced.HangarShellAdvanced(contexts.DefaultContext()), condition=_shellAdvancedBlockCondition(contexts.DefaultContext())),
      ShellBuilder(TOOLTIPS_CONSTANTS.AWARD_SHELL, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI, shell.ShellBlockToolTipData(contexts.AwardContext())),
      AdvancedDataBuilder(TOOLTIPS_CONSTANTS.HANGAR_SHELL, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI, shell.ShellBlockToolTipData(contexts.HangarContext()), advanced.HangarShellAdvanced(contexts.HangarContext()), condition=_shellAdvancedBlockCondition(contexts.HangarContext())),

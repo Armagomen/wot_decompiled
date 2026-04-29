@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/anonymizer_controller.py
-import logging
-import BigWorld
+import logging, BigWorld
 from Event import Event
 from gui import SystemMessages
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -18,7 +15,8 @@ _RSettingsError = R.strings.messenger.server.errors.settingError
 class AnonymizerController(IAnonymizerController):
     __lobbyContext = dependency.descriptor(ILobbyContext)
     __itemsCache = dependency.descriptor(IItemsCache)
-    __slots__ = ('__isEnabled', '__isRestricted', '__isAnonymized', '__isInBattle', '__uploader')
+    __slots__ = ('__isEnabled', '__isRestricted', '__isAnonymized', '__isInBattle',
+                 '__uploader')
 
     def __init__(self):
         self.onStateChanged = Event()
@@ -74,9 +72,9 @@ class AnonymizerController(IAnonymizerController):
             self.__pushChangeUnavailableMessage()
 
     def __addListeners(self):
-        g_clientUpdateManager.addCallbacks({'cache.SPA': self.__onCacheSPAChanged,
-         'anonymizer.enabled': self.__onAnonymizedStateChanged,
-         'anonymizer.contactsFeedback': self.__onContactsFeedback})
+        g_clientUpdateManager.addCallbacks({'cache.SPA': self.__onCacheSPAChanged, 
+           'anonymizer.enabled': self.__onAnonymizedStateChanged, 
+           'anonymizer.contactsFeedback': self.__onContactsFeedback})
         self.__lobbyContext.getServerSettings().onServerSettingsChange += self.__onServerSettingsChanged
 
     def __removeListeners(self):

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_pass/tooltips/battle_pass_upgrade_style_tooltip_view.py
 from frameworks.wulf import ViewSettings
 from gui.Scaleform.daapi.view.lobby.customization.shared import getSuitableText
 from gui.battle_pass.battle_pass_helpers import getStyleForChapter
@@ -11,7 +9,7 @@ class BattlePassUpgradeStyleTooltipView(ViewImpl):
     __slots__ = ()
 
     def __init__(self, *args, **kwargs):
-        settings = ViewSettings(R.views.lobby.battle_pass.tooltips.BattlePassUpgradeStyleTooltipView())
+        settings = ViewSettings(R.views.mono.battle_pass.tooltips.upgrade_style())
         settings.model = BattlePassUpgradeStyleTooltipViewModel()
         settings.args = args
         settings.kwargs = kwargs
@@ -23,7 +21,7 @@ class BattlePassUpgradeStyleTooltipView(ViewImpl):
 
     def _onLoading(self, chapter, level, *args, **kwargs):
         customizationItem = getStyleForChapter(chapter)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             if customizationItem is not None:
                 model.setStyleId(customizationItem.id)
                 model.setStyleName(customizationItem.userName)

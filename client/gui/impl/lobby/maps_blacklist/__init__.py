@@ -1,19 +1,18 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/maps_blacklist/__init__.py
 
 
 def getStateMachineRegistrators():
     from gui.impl.lobby.maps_blacklist.states import registerStates, registerTransitions
-    return (registerStates, registerTransitions)
+    return (
+     registerStates, registerTransitions)
 
 
 def getViewSettings():
-    pass
+    return ()
 
 
 def getBusinessHandlers():
-    pass
+    return ()
 
 
 def getContextMenuHandlers():
-    pass
+    return ()

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/battle_results/components.py
 import logging
 from collections import defaultdict
 from constants import ARENA_BONUS_TYPE, DEATH_REASON_ALIVE
@@ -21,12 +19,14 @@ from ValueReplay import ValueReplay, ValueReplayConnector
 from battle_results import g_config as battleResultsConfig
 from gui.battle_results.reusable import records
 from skeletons.gui.shared import IItemsCache
+from gui.shared.money import Currency
 _logger = logging.getLogger(__name__)
 _logger.addHandler(logging.NullHandler())
 _THE_BEST_RANK = 1
 
 def _isSquadMode(reusable):
-    return reusable.common.arenaBonusType in (ARENA_BONUS_TYPE.BATTLE_ROYALE_SQUAD, ARENA_BONUS_TYPE.BATTLE_ROYALE_TRN_SQUAD)
+    return reusable.common.arenaBonusType in (ARENA_BONUS_TYPE.BATTLE_ROYALE_SQUAD,
+     ARENA_BONUS_TYPE.BATTLE_ROYALE_TRN_SQUAD)
 
 
 class BattleRoyaleArenaNameBlock(base.StatsItem):
@@ -112,6 +112,20 @@ class BattleRoyaleIsPremiumBlock(base.StatsItem):
         return reusable.isPostBattlePremium or reusable.isPostBattlePremiumPlus
 
 
+class BattleRoyaleDailyBonusFactorBlock(base.StatsBlock):
+    __slots__ = ('dailyBonusFactor', )
+
+    def __init__(self, meta=None, field='', *path):
+        super(BattleRoyaleDailyBonusFactorBlock, self).__init__(meta, field, *path)
+        self.dailyBonusFactor = 0
+
+    def setRecord(self, result, reusable):
+        vehicleCD = [ key for key in result['personal'].keys() if isinstance(key, (int, long, float)) ][0]
+        info = result['personal'][vehicleCD]
+        stpCoinInfo = info['currencies'].get(Currency.STPCOIN, {})
+        self.dailyBonusFactor = stpCoinInfo.get('dailyBonusFactor', 0)
+
+
 class BattleRoyaleVehicleStatusBlock(base.StatsBlock):
     __itemsCache = dependency.descriptor(IItemsCache)
     __slots__ = ('killer', 'vehicleState', 'isSelfDestroyer')
@@ -140,13 +154,11 @@ class BattleRoyaleVehicleStatusBlock(base.StatsBlock):
                 if isBot:
                     vehicle = getter(reusable.vehicles.getVehicleInfo(killerVehicleID).intCD)
                     userName = vehicle.shortUserName
-                self.killer = {'userName': userName,
-                 'clanAbbrev': killerInfo.clanAbbrev,
-                 'isBot': isBot}
+                self.killer = {'userName': userName, 'clanAbbrev': killerInfo.clanAbbrev, 
+                   'isBot': isBot}
             else:
-                self.killer = {'userName': killerInfo.fakeName,
-                 'clanAbbrev': '',
-                 'isBot': isBot}
+                self.killer = {'userName': killerInfo.fakeName, 'clanAbbrev': '', 
+                   'isBot': isBot}
             self.isSelfDestroyer = killerInfo.realName == playerInfo.realName
 
 
@@ -161,8 +173,16 @@ class _BRCoinReplayRecords(records.ReplayRecords):
         self._addRecord(ValueReplay.FACTOR, 'appliedPremiumFactor100', results['appliedPremiumFactor100'], 0)
 
 
+class _STPCoinReplayRecords(records.ReplayRecords):
+    __slots__ = ()
+
+    def __init__(self, replay, results):
+        super(_STPCoinReplayRecords, self).__init__(replay, 'count')
+        self._addRecord(ValueReplay.FACTOR, 'dailyBonusFactor', results['dailyBonusFactor'], 0)
+
+
 class BattleRoyaleFinancialBlock(base.StatsBlock):
-    __slots__ = ('credits', 'xp', 'crystal', 'brcoin')
+    __slots__ = ('credits', 'xp', 'crystal', 'brcoin', 'stpcoin')
     __eventsCache = dependency.descriptor(IEventsCache)
 
     def __init__(self, meta=None, field='', *path):
@@ -171,6 +191,7 @@ class BattleRoyaleFinancialBlock(base.StatsBlock):
         self.xp = 0
         self.crystal = 0
         self.brcoin = 0
+        self.stpcoin = 0
 
     def setRecord(self, result, reusable):
         avatarInfo = result['personal']['avatar']
@@ -178,13 +199,14 @@ class BattleRoyaleFinancialBlock(base.StatsBlock):
         self.xp = avatarInfo['xp']
         self.crystal = avatarInfo['crystal']
         self.brcoin = self._getBrCoins(result, reusable, isPremium=False)
+        self.stpcoin = self._getStpCoins(result, reusable)
 
     def _getBrCoins(self, result, reusable, isPremium):
-        questBonus = self.__getBrCoinsQuestBonus(reusable.personal.getQuestsProgress())
+        questBonus = self.__getCoinsQuestBonus(reusable.personal.getQuestsProgress(), Currency.BRCOIN)
         vehicleCD = [ key for key in result['personal'].keys() if isinstance(key, (int, long, float)) ][0]
         info = result['personal'][vehicleCD]
         for code, data in info['currencies'].iteritems():
-            if code == 'brcoin':
+            if code == Currency.BRCOIN and data:
                 meta = battleResultsConfig['allResults'].meta('currencies').meta('brcoin')
                 replayConnector = ValueReplayConnector(data, meta)
                 replay = ValueReplay(replayConnector, recordName='count', replay=data['replay'])
@@ -196,7 +218,20 @@ class BattleRoyaleFinancialBlock(base.StatsBlock):
 
         return questBonus
 
-    def __getBrCoinsQuestBonus(self, questProgress):
+    def _getStpCoins(self, result, reusable):
+        questBonus = self.__getCoinsQuestBonus(reusable.personal.getQuestsProgress(), Currency.STPCOIN)
+        vehicleCD = [ key for key in result['personal'].keys() if isinstance(key, (int, long, float)) ][0]
+        info = result['personal'][vehicleCD]
+        for code, data in info['currencies'].iteritems():
+            if code == Currency.STPCOIN and data:
+                meta = battleResultsConfig['allResults'].meta('currencies').meta(code)
+                replayConnector = ValueReplayConnector(data, meta)
+                replay = ValueReplay(replayConnector, recordName='count', replay=data['replay'])
+                return _STPCoinReplayRecords(replay, data).getRecord('count') + questBonus
+
+        return questBonus
+
+    def __getCoinsQuestBonus(self, questProgress, currencyCode):
         questBonus = 0
         allQuests = self.__eventsCache.getAllQuests()
         for qID, qProgress in questProgress.iteritems():
@@ -205,7 +240,7 @@ class BattleRoyaleFinancialBlock(base.StatsBlock):
                 if quest is None:
                     continue
                 for bonus in quest.getBonuses('currencies'):
-                    if bonus.getCode() == 'brcoin':
+                    if bonus.getCode() == currencyCode:
                         questBonus += bonus.getCount()
 
         return questBonus
@@ -227,11 +262,12 @@ class BattleRoyaleFinancialPremBlock(BattleRoyaleFinancialBlock):
             self.xp = premiumXP.getRecord('xpToShow')
 
         self.brcoin = self._getBrCoins(result, reusable, isPremium=True)
+        self.stpcoin = self._getStpCoins(result, reusable)
 
 
 class BattleRoyaleStatsItemBlock(base.StatsBlock):
     __slots__ = ('type', 'value', 'maxValue', 'wreathImage')
-    _ICON_PATH = R.images.gui.maps.icons.battleRoyale.battleResult.stat_list
+    _ICON_PATH = R.images.battle_royale.gui.maps.icons.battleResults.stat_list
     _DEFAULT_ICON = _ICON_PATH.wreath_transparent
 
     def __init__(self, itemType, meta=None, field='', *path):
@@ -247,13 +283,15 @@ class BattleRoyaleStatsItemBlock(base.StatsBlock):
         self.wreathImage = self._getWreathImage(result, reusable)
 
     def _getValue(self, result, reusable):
-        pass
+        return 0
 
     def _getMaxValue(self, result, reusable):
-        pass
+        return -1
 
     def _getWreathImage(self, result, reusable):
-        return self._ICON_PATH.wreath_silver() if self._isTop(result, reusable) else self._DEFAULT_ICON()
+        if self._isTop(result, reusable):
+            return self._ICON_PATH.wreath_silver()
+        return self._DEFAULT_ICON()
 
     def _isTop(self, result, reusable):
         return False
@@ -291,10 +329,14 @@ class PlaceParameter(BattleRoyaleStatsItemBlock):
             return not player.vehicle.isObserver and player.player.dbID != 0
 
         allPlayers = filter(playerFilter, list(reusable.getAllPlayersIterator(result['vehicles'])))
-        return len(set((item.player.team for item in allPlayers))) if _isSquadMode(reusable) else len(allPlayers)
+        if _isSquadMode(reusable):
+            return len(set(item.player.team for item in allPlayers))
+        return len(allPlayers)
 
     def _getWreathImage(self, result, reusable):
-        return self._ICON_PATH.wreath_gold() if self.value == _THE_BEST_RANK else self._DEFAULT_ICON()
+        if self.value == _THE_BEST_RANK:
+            return self._ICON_PATH.wreath_gold()
+        return self._DEFAULT_ICON()
 
 
 class KilledBySquadParameter(BattleRoyaleStatsItemBlock):
@@ -303,7 +345,7 @@ class KilledBySquadParameter(BattleRoyaleStatsItemBlock):
     def _getValue(self, result, reusable):
         allPlayers = reusable.getAllPlayersIterator(result['vehicles'])
         team = reusable.getPlayerInfo().team
-        return sum(list((item.kills for item in allPlayers if team != 0 and team == item.player.team)))
+        return sum(list(item.kills for item in allPlayers if team != 0 and team == item.player.team))
 
     def _isTop(self, result, reusable):
         if self.value == 0:
@@ -319,11 +361,11 @@ class KilledBySquadParameter(BattleRoyaleStatsItemBlock):
 
 class BattleRoyaleStatsBlock(base.StatsBlock):
     __slots__ = ()
-    _itemsFactory = {StatsItemType.PLACE: PlaceParameter,
-     StatsItemType.KILLS_SOLO: SimpleEfficiencyParameter,
-     StatsItemType.KILLS_SQUAD: KilledBySquadParameter,
-     StatsItemType.DAMAGE_DEAL: SimpleEfficiencyParameter,
-     StatsItemType.DAMAGE_BLOCK: SimpleEfficiencyParameter}
+    _itemsFactory = {StatsItemType.PLACE: PlaceParameter, 
+       StatsItemType.KILLS_SOLO: SimpleEfficiencyParameter, 
+       StatsItemType.KILLS_SQUAD: KilledBySquadParameter, 
+       StatsItemType.DAMAGE_DEAL: SimpleEfficiencyParameter, 
+       StatsItemType.DAMAGE_BLOCK: SimpleEfficiencyParameter}
 
     def setRecord(self, result, reusable):
         items = SQUAD_ITEMS_ORDER if _isSquadMode(reusable) else SOLO_ITEMS_ORDER
@@ -339,7 +381,8 @@ class BattleRoyaleStatsBlock(base.StatsBlock):
 
 
 class BattleRoyaleRewardsBlock(base.StatsBlock):
-    __slots__ = ('achievements', 'bonuses', 'completedQuestsCount', 'completedQuests', 'brAwardTokens')
+    __slots__ = ('achievements', 'bonuses', 'completedQuestsCount', 'completedQuests',
+                 'brAwardTokens')
     __eventsCache = dependency.descriptor(IEventsCache)
     __battleRoyaleController = dependency.descriptor(IBattleRoyaleController)
     __QUESTS_WITH_MEDALS = frozenset(['br_battle_result_solo_1', 'br_battle_result_squad_1'])
@@ -389,7 +432,7 @@ class BattleRoyaleRewardsBlock(base.StatsBlock):
 
 
 class BattlePassBlock(base.StatsBlock):
-    __slots__ = ('bpTopPoints',)
+    __slots__ = ('bpTopPoints', )
 
     def __init__(self, meta=None, field='', *path):
         super(BattlePassBlock, self).__init__(meta, field, *path)
@@ -401,7 +444,9 @@ class BattlePassBlock(base.StatsBlock):
 
 
 class BattleRoyalePlayerBlock(base.StatsBlock):
-    __slots__ = ('isPersonal', 'userName', 'clanAbbrev', 'place', 'isPersonalSquad', 'squadIdx', 'hiddenName', 'achievedLevel', 'kills', 'damage', 'vehicleName', 'vehicleType', 'databaseID', 'prebattleID')
+    __slots__ = ('isPersonal', 'userName', 'clanAbbrev', 'place', 'isPersonalSquad',
+                 'squadIdx', 'hiddenName', 'achievedLevel', 'kills', 'damage', 'vehicleName',
+                 'vehicleType', 'databaseID', 'prebattleID')
 
     def __init__(self, meta=None, field='', *path):
         super(BattleRoyalePlayerBlock, self).__init__(meta, field, *path)

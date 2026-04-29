@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/wgnc/provider.py
-import time
-import BigWorld
+import time, BigWorld
 from debug_utils import LOG_ERROR, LOG_DEBUG, LOG_WARNING
 from gui.shared.utils.decorators import ReprInjector
 from gui.wgnc.errors import ParseError, ValidationError
@@ -10,7 +7,8 @@ from gui.wgnc.xml import fromString, fromSection
 
 @ReprInjector.simple('notID', 'ttl', 'actions', 'items', 'order', 'marked', 'client')
 class _NotificationVO(object):
-    __slots__ = ('notID', 'ttl', 'actions', 'items', 'proxyDataItems', 'order', 'marked', 'client')
+    __slots__ = ('notID', 'ttl', 'actions', 'items', 'proxyDataItems', 'order', 'marked',
+                 'client')
 
     def __init__(self, notID, ttl, actions, items, proxyDataItems):
         super(_NotificationVO, self).__init__()
@@ -41,7 +39,7 @@ class _NotificationVO(object):
             if self.actions:
                 self.actions.validate(self.items)
         except ValidationError as e:
-            LOG_ERROR('Notification is invalid', e.message, self)
+            LOG_ERROR('Notification is invalid', str(e), self)
             result = False
 
         if self.items:
@@ -57,13 +55,22 @@ class _NotificationVO(object):
         return result
 
     def getItemByName(self, name):
-        return self.items.getItemByName(name) if self.items else None
+        if self.items:
+            return self.items.getItemByName(name)
+        else:
+            return
 
     def getItemByType(self, itemType):
-        return self.items.getItemByType(itemType) if self.items else None
+        if self.items:
+            return self.items.getItemByType(itemType)
+        else:
+            return
 
     def getProxyItemByType(self, itemType):
-        return self.proxyDataItems.getItemByType(itemType) if self.proxyDataItems else None
+        if self.proxyDataItems:
+            return self.proxyDataItems.getItemByType(itemType)
+        else:
+            return
 
     def showItem(self, notID, target):
         if self.items:
@@ -129,7 +136,7 @@ class _WGNCProvider(object):
         try:
             notID, ttl, actionsHolder, guiItemsHolder, proxyDataHolder = fromString(xmlString)
         except ParseError as e:
-            LOG_ERROR('Can not parse notification', e.message, xmlString)
+            LOG_ERROR('Can not parse notification', str(e), xmlString)
             return
 
         return self.__makeAndShow(notID, ttl, actionsHolder, guiItemsHolder, proxyDataHolder)
@@ -138,7 +145,7 @@ class _WGNCProvider(object):
         try:
             notID, ttl, actionsHolder, guiItemsHolder, proxyDataHolder = fromSection(section)
         except ParseError as e:
-            LOG_ERROR('Can not parse notification', e.message, section.asBinary)
+            LOG_ERROR('Can not parse notification', str(e), section.asBinary)
             return
 
         return self.__makeAndShow(notID, ttl, actionsHolder, guiItemsHolder, proxyDataHolder)

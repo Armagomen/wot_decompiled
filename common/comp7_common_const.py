@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/common/comp7_common_const.py
-import re
-import enum
-import typing
+import re, enum, typing
 if typing.TYPE_CHECKING:
     from typing import Tuple, Optional
 COMP7_MASKOT_ID = '5'
@@ -22,14 +18,14 @@ __COMP7_ELITE_ENTITLEMENT_TEMPLATE = 'comp7_elite_rank:{maskot}:{season}'
 __COMP7_ACTIVITY_ENTITLEMENT_TEMPLATE = 'comp7_activity_points:{maskot}:{season}'
 __COMP7_MAX_RANK_ENTITLEMENT_TEMPLATE = 'comp7_max_achieved_rank:{maskot}:{season}'
 COMP7_OFFER_GIFT_TEMPLATE = '{token}_gift'
-COMP7_OFFER_PREFIX = 'offer:comp7_{}'.format(COMP7_MASKOT_ID)
-COMP7_OFFER_WEEKLY_QUESTS_REWARD_TOKEN_TEMPLATE = 'offer:{}_weekly'.format(__COMP7_TOKEN_PREFIX_TEMPLATE)
+COMP7_OFFER_PREFIX = ('offer:comp7_{}').format(COMP7_MASKOT_ID)
+COMP7_OFFER_WEEKLY_QUESTS_REWARD_TOKEN_TEMPLATE = ('offer:{}_weekly').format(__COMP7_TOKEN_PREFIX_TEMPLATE)
 COMP7_OFFER_WEEKLY_QUESTS_REWARD_GIFT_TOKEN_TEMPLATE = COMP7_OFFER_GIFT_TEMPLATE.format(token=COMP7_OFFER_WEEKLY_QUESTS_REWARD_TOKEN_TEMPLATE)
-COMP7_OFFER_YEARLY_REWARD_TOKEN_PREFIX = '{}_yearly'.format(COMP7_OFFER_PREFIX)
+COMP7_OFFER_YEARLY_REWARD_TOKEN_PREFIX = ('{}_yearly').format(COMP7_OFFER_PREFIX)
 COMP7_OFFER_REWARD_CATEGORY_TOKEN_TEMPLATE = '{token}:{category}'
 COMP7_ENTITLEMENT_EXPIRES = None
-COMP7_YEARLY_ACHIEVEMENT_PREFIX = 'comp7_{}_yearly'.format(COMP7_MASKOT_ID)
-COMP7_YEARLY_REWARD_TOKEN = 'comp7_{}_yearly_reward'.format(COMP7_MASKOT_ID)
+COMP7_YEARLY_ACHIEVEMENT_PREFIX = ('comp7_{}_yearly').format(COMP7_MASKOT_ID)
+COMP7_YEARLY_REWARD_TOKEN = ('comp7_{}_yearly_reward').format(COMP7_MASKOT_ID)
 
 def isComp7YearlyAchievement(achievementName):
     return achievementName.startswith(COMP7_YEARLY_ACHIEVEMENT_PREFIX)
@@ -111,10 +107,8 @@ class Comp7EntitlementCodes(object):
     RATING_POINTS = 'ratingPoints'
     ACTIVITY_POINTS = 'activityPoints'
     SEASON_POINTS = 'seasonPoints'
-    ALL = (LEGEND_RANK,
-     RATING_POINTS,
-     ACTIVITY_POINTS,
-     SEASON_POINTS)
+    ALL = (
+     LEGEND_RANK, RATING_POINTS, ACTIVITY_POINTS, SEASON_POINTS)
 
 
 @enum.unique
@@ -135,10 +129,8 @@ class BattleStatuses(object):
     LOSE = 2
     DESERTER = 3
     FINISHED_WITH_ERROR = 4
-    STARTED_RANGE = (STARTED,
-     WIN,
-     LOSE,
-     DESERTER)
+    STARTED_RANGE = (
+     STARTED, WIN, LOSE, DESERTER)
     FINISHED_RANGE = (WIN, LOSE, DESERTER)
 
 
@@ -148,11 +140,8 @@ class Comp7QualificationState(object):
     WAITING_BATTLE_RESULTS = 'wait_battle_results'
     FINALIZING = 'finalizing'
     COMPLETED = 'completed'
-    states = (NOT_STARTED,
-     IN_PROGRESS,
-     WAITING_BATTLE_RESULTS,
-     FINALIZING,
-     COMPLETED)
+    states = (
+     NOT_STARTED, IN_PROGRESS, WAITING_BATTLE_RESULTS, FINALIZING, COMPLETED)
 
     @classmethod
     def isBattleAllowed(cls, state):
@@ -172,4 +161,4 @@ class Comp7QualificationState(object):
 
     @classmethod
     def isCalculationQualificationRating(cls, state):
-        return state in (Comp7QualificationState.NOT_STARTED,)
+        return state == cls.NOT_STARTED

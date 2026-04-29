@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client_common/AvatarVehiclesInfoBase.py
 import BigWorld
 from collections import namedtuple
 VehInfoDiffBufferEntry = namedtuple('VehInfoDiffBufferEntry', ('new', 'prev'))
@@ -22,10 +20,10 @@ class AvatarVehiclesInfoBase(BigWorld.DynamicScriptComponent):
     def setNested_vehiclesInfo(self, changePath, prev):
         if not self._isOwnedByPlayer:
             return
-        elif changePath[1] != '__generation':
-            self.__diffBuffer[changePath[1]] = VehInfoDiffBufferEntry(self.vehiclesInfo[changePath[0]][changePath[1]], prev)
-            return
         else:
+            if changePath[1] != '__generation':
+                self.__diffBuffer[changePath[1]] = VehInfoDiffBufferEntry(self.vehiclesInfo[changePath[0]][changePath[1]], prev)
+                return
             vehInfoIndex = changePath[0]
             vehInfo = self.vehiclesInfo[vehInfoIndex]
             self._updateVehicleInfo(vehInfo, self.__diffBuffer)
@@ -57,6 +55,18 @@ class AvatarVehiclesInfoBase(BigWorld.DynamicScriptComponent):
 
     def setVehInfo_isAvatarReady(self, vehInfo, diff):
         self.__arena.updateVehicleIsAvatarReady(vehInfo['vehicleID'])
+
+    def setVehInfo_frags(self, vehInfo, diff):
+        self.__arena.updateVehiclesFrags(vehInfo['vehicleID'], diff.new)
+
+    def setVehInfo_tkills(self, vehInfo, diff):
+        self.__arena.updateVehiclesTkills(vehInfo['vehicleID'], diff.new)
+
+    def setVehInfo_fogOfWar(self, vehInfo, diff):
+        self.__arena.updateFogOfWar(diff.new)
+
+    def setVehInfo_position(self, vehInfo, diff):
+        self.__arena.updateVehiclesPosition(vehInfo['vehicleID'], diff.new)
 
     def _updateVehicleInfo(self, vehInfo, diffBuffer):
         self.__arena.updateVehicleInfo(vehInfo['vehicleID'], {name:vehInfo[name] for name in diffBuffer})

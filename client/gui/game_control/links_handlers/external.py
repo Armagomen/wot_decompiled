@@ -1,10 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/links_handlers/external.py
 from collections import defaultdict
-import typing
-import logging
-import urlparse
-import BigWorld
+import typing, logging, urlparse, BigWorld
 from constants import DISTRIBUTION_PLATFORM
 from debug_utils import LOG_CURRENT_EXCEPTION
 from gui.Scaleform.daapi.view.lobby.store.browser import shop_helpers
@@ -16,7 +11,7 @@ _PLATFORM_PARAM = 'platform'
 _WOT_PLATFORM_PARAM = 'wot_platform'
 _INGAME_SHOP_PARAM = 'ingame_shop'
 _PATH_TO_CHECK_ARGS = '/id/signin/token'
-_URL_ARGS_TO_CHECK = ('next',)
+_URL_ARGS_TO_CHECK = ('next', )
 _logger = logging.getLogger(__name__)
 CheckHandleResult = typing.NamedTuple('CheckHandleResult', (('handled', bool), ('externalAllowed', bool)))
 
@@ -59,7 +54,9 @@ class AddPlatformTagLinksHandler(OpenBrowserHandler):
         return False
 
     def _getPlatform(self):
-        return DISTRIBUTION_PLATFORM.STEAM.value if self.__loginManager.isWgcSteam else ''
+        if self.__loginManager.isWgcSteam:
+            return DISTRIBUTION_PLATFORM.STEAM.value
+        return ''
 
     def _hasWotPlatformTags(self, url):
         query = urlparse.urlparse(url).query

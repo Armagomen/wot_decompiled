@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/tooltips/battle_pass.py
 from battle_pass_common import BattlePassState
 from gui.impl import backport
 from gui.impl.gen import R
@@ -24,14 +22,17 @@ class BattlePassGiftTokenTooltipData(BlocksTooltipData):
         giftsNames = self.context.buildItem(tokenID, **kwargs)
         isOfferEnabled = self.context.getParams().get('isOfferEnabled', True)
         shortName = tokenID.split(':')[2]
-        items = [self.__packImageBlock(shortName), self.__packGiftNameBlocks(shortName, giftsNames, isOfferEnabled)]
+        items = [
+         self.__packImageBlock(shortName),
+         self.__packGiftNameBlocks(shortName, giftsNames, isOfferEnabled)]
         if not isReceived:
             items.append(self.__packFooterBlock(shortName))
         return items
 
     @staticmethod
     def __packFooterBlock(shortName):
-        return formatters.packBuildUpBlockData([formatters.packTextBlockData(text=text_styles.standard(backport.text(R.strings.tooltips.battlePassOffer.footer.dyn(shortName)())), padding=formatters.packPadding(top=8))], padding=formatters.packPadding(left=-1))
+        return formatters.packBuildUpBlockData([
+         formatters.packTextBlockData(text=text_styles.standard(backport.text(R.strings.tooltips.battlePassOffer.footer.dyn(shortName)())), padding=formatters.packPadding(top=8))], padding=formatters.packPadding(left=-1))
 
     @staticmethod
     def __packImageBlock(shortName):
@@ -43,7 +44,8 @@ class BattlePassGiftTokenTooltipData(BlocksTooltipData):
     @classmethod
     def __packGiftNameBlocks(cls, shortName, giftsNames, isOfferEnabled):
         rOffer = R.strings.tooltips.battlePassOffer
-        blocks = [formatters.packTextBlockData(text=text_styles.highTitle(backport.text(rOffer.title.dyn(shortName)())))]
+        blocks = [
+         formatters.packTextBlockData(text=text_styles.highTitle(backport.text(rOffer.title.dyn(shortName)())))]
         if isOfferEnabled:
             if shortName in ('brochure_gift', 'guide_gift', 'blueprint_gift', 'crewbook_gift'):
                 blocks.append(formatters.packTextBlockData(text=text_styles.gold(backport.text(rOffer.allNations()))))
@@ -87,5 +89,6 @@ class BattlePassPointsTooltipData(BlocksTooltipData):
         self._items.append(formatters.packTextBlockData(descriptionBlock))
         state = self.__battlePassController.getState()
         if state == BattlePassState.COMPLETED:
-            self._items.append(formatters.packBuildUpBlockData([formatters.packImageTextBlockData(title=text_styles.success(backport.text(R.strings.battle_pass.tooltips.battlePassPoints.completed())), img=backport.image(R.images.gui.maps.icons.library.check()), imgPadding=formatters.packPadding(top=-2))], linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE, padding=formatters.packPadding(bottom=-10)))
+            self._items.append(formatters.packBuildUpBlockData([
+             formatters.packImageTextBlockData(title=text_styles.success(backport.text(R.strings.battle_pass.tooltips.battlePassPoints.completed())), img=backport.image(R.images.gui.maps.icons.library.check()), imgPadding=formatters.packPadding(top=-2))], linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE, padding=formatters.packPadding(bottom=-10)))
         return self._items

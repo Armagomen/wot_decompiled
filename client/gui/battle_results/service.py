@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_results/service.py
-import logging
-import typing
-import BigWorld
-import Event
+import logging, typing, BigWorld, Event
 from Account import PlayerAccount
 from adisp import adisp_async, adisp_process
 from constants import ARENA_BONUS_TYPE, PREMIUM_TYPE, PlayerSatisfactionRating
@@ -22,6 +17,7 @@ from gui.shared.gui_items.processors.player_satisfaction_rating import PlayerSat
 from gui.shared.system_factory import collectBattleResultStatsCtrl
 from gui.shared.utils import decorators
 from helpers import dependency
+from renewable_subscription_common.schema import renewableSubscriptionsConfigSchema
 from skeletons.gui.app_loader import IAppLoader
 from helpers.func_utils import isDeveloperFunc
 from skeletons.gui.battle_matters import IBattleMattersController
@@ -86,7 +82,8 @@ class BattleResultsService(IBattleResultsService):
     sessionProvider = dependency.descriptor(IBattleSessionProvider)
     wotPlusController = dependency.descriptor(IWotPlusController)
     appLoader = dependency.descriptor(IAppLoader)
-    __slots__ = ('__battleResults', '__statsCtrls', '__buy', '__eventsManager', 'onResultPosted', '__appliedAddXPBonus', '__playerSatisfactionRatings')
+    __slots__ = ('__battleResults', '__statsCtrls', '__buy', '__eventsManager', 'onResultPosted',
+                 '__appliedAddXPBonus', '__playerSatisfactionRatings')
 
     def __init__(self):
         super(BattleResultsService, self).__init__()
@@ -119,8 +116,6 @@ class BattleResultsService(IBattleResultsService):
     @adisp_process
     def requestResults(self, ctx, callback=None):
         arenaUniqueID = ctx.getArenaUniqueID()
-        if ctx.needToShowImmediately():
-            event_dispatcher.showBattleResultsWindow(arenaUniqueID)
         if not ctx.resetCache() and arenaUniqueID in self.__statsCtrls:
             isSuccess = True
 
@@ -133,7 +128,8 @@ class BattleResultsService(IBattleResultsService):
             self.__notifyBattleResultsPosted(arenaUniqueID, needToShowUI=ctx.needToShowIfPosted())
         else:
             results = yield BattleResultsGetter(arenaUniqueID).request()
-            if not results.success and ctx.getArenaBonusType() in (ARENA_BONUS_TYPE.MAPS_TRAINING, ARENA_BONUS_TYPE.EPIC_BATTLE):
+            if not results.success and ctx.getArenaBonusType() in (ARENA_BONUS_TYPE.MAPS_TRAINING,
+             ARENA_BONUS_TYPE.EPIC_BATTLE):
                 results = yield self.waitForBattleResults(arenaUniqueID)
             isSuccess = results.success
             if not isSuccess or not self.postResult(results.auxData, ctx.needToShowIfPosted()):
@@ -219,12 +215,14 @@ class BattleResultsService(IBattleResultsService):
 
     def isAddXPBonusEnabled(self, arenaUniqueID):
         arenaInfo = self.__getAdditionalXPBattles().get(arenaUniqueID)
-        isWotPlusEnabled = self.lobbyContext.getServerSettings().isRenewableSubEnabled()
-        return arenaInfo is not None and (bool(PREMIUM_TYPE.activePremium(arenaInfo.premMask) & PREMIUM_TYPE.PLUS) or self.itemsCache.items.stats.isPremium or self.wotPlusController.isEnabled() and isWotPlusEnabled)
+        return arenaInfo is not None and (bool(PREMIUM_TYPE.activePremium(arenaInfo.premMask) & PREMIUM_TYPE.PLUS) or self.itemsCache.items.stats.isPremium or self.wotPlusController.hasSubscription() and renewableSubscriptionsConfigSchema.getModel().enabled)
 
     def getAdditionalXPValue(self, arenaUniqueID):
         arenaInfo = self.__getAdditionalXPBattles().get(arenaUniqueID)
-        return 0 if arenaInfo is None else arenaInfo.extraXP
+        if arenaInfo is None:
+            return 0
+        else:
+            return arenaInfo.extraXP
 
     @adisp_process
     def submitPlayerSatisfactionRating(self, arenaUniqueID, rating):
@@ -251,8 +249,8 @@ class BattleResultsService(IBattleResultsService):
         arenaInfo = self.__getAdditionalXPBattles().get(arenaUniqueID)
         vehicle = self.getVehicleForArena(arenaUniqueID)
         if arenaInfo is not None and vehicle is not None:
-            currentCrew = set((tankman.invID for _, tankman in vehicle.crew if tankman is not None))
-            lastCrew = set((tankmanID for tankmanID, _ in arenaInfo.extraTmenXP))
+            currentCrew = set(tankman.invID for _, tankman in vehicle.crew if tankman is not None)
+            lastCrew = set(tankmanID for tankmanID, _ in arenaInfo.extraTmenXP)
             return currentCrew == lastCrew
         else:
             return False
@@ -260,11 +258,17 @@ class BattleResultsService(IBattleResultsService):
     def isXPToTManSameForArena(self, arenaUniqueID):
         arenaInfo = self.__getAdditionalXPBattles().get(arenaUniqueID)
         vehicle = self.getVehicleForArena(arenaUniqueID)
-        return vehicle.isXPToTman == arenaInfo.isXPToTMan if arenaInfo is not None and vehicle is not None else False
+        if arenaInfo is not None and vehicle is not None:
+            return vehicle.isXPToTman == arenaInfo.isXPToTMan
+        else:
+            return False
 
     def getVehicleForArena(self, arenaUniqueID):
         arenaInfo = self.__getAdditionalXPBattles().get(arenaUniqueID)
-        return self.itemsCache.items.getItemByCD(arenaInfo.vehicleID) if arenaInfo is not None else None
+        if arenaInfo is not None:
+            return self.itemsCache.items.getItemByCD(arenaInfo.vehicleID)
+        else:
+            return
 
     def notifyBattleResultsPosted(self, arenaUniqueID, needToShowUI=False):
         self.__notifyBattleResultsPosted(arenaUniqueID, needToShowUI)

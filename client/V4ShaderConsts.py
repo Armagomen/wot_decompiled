@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/V4ShaderConsts.py
 import Math
 _mov = 0
 _rcp = 1

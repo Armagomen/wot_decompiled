@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/event/event_loading_page.py
+from __future__ import absolute_import
 from PlayerEvents import g_playerEvents
 from gui.Scaleform.daapi.view.meta.EventLoadingMeta import EventLoadingMeta
 from gui.battle_control.arena_info.interfaces import IArenaLoadController
@@ -25,9 +24,9 @@ class EventLoadingPage(EventLoadingMeta, IArenaLoadController):
             listSmall.append(self._getTutorialPageVO(pageId, False))
             listBig.append(self._getTutorialPageVO(pageId, True))
 
-        self.as_setDataS({'lessonPagesSmallData': listSmall,
-         'lessonPagesBigData': listBig,
-         'navigationButtonsVisible': len(listSmall) > 1})
+        self.as_setDataS({'lessonPagesSmallData': listSmall, 
+           'lessonPagesBigData': listBig, 
+           'navigationButtonsVisible': len(listSmall) > 1})
 
     def _dispose(self):
         self.sessionProvider.removeArenaCtrl(self)
@@ -44,6 +43,6 @@ class EventLoadingPage(EventLoadingMeta, IArenaLoadController):
     def _getTutorialPageVO(pageId, bigSize):
         pathBackgroundSize = 'big' if bigSize else 'small'
         linkageBackgroundSize = 'Big' if bigSize else 'Small'
-        voSettings = {'background': PATH_BACKGROUNDS.format(pageId, pathBackgroundSize),
-         'rendererLinkage': LINKAGE_BACKGROUNDS.format(pageId, linkageBackgroundSize)}
+        voSettings = {'background': PATH_BACKGROUNDS.format(pageId, pathBackgroundSize), 
+           'rendererLinkage': LINKAGE_BACKGROUNDS.format(pageId, linkageBackgroundSize)}
         return voSettings

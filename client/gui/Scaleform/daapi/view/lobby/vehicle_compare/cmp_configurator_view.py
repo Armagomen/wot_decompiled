@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_compare/cmp_configurator_view.py
 from __future__ import absolute_import
 from copy import deepcopy
 import typing
@@ -56,11 +54,16 @@ def getFittingSlotsData(vehicle, slotsRange, voClass=None, itemsCache=None):
 
 
 def _getVehicleModulesBySlotType(vehicle):
-    modules = {GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CHASSIS]: (vehicle.chassis,),
-     GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.TURRET]: (vehicle.turret,),
-     GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.GUN]: (vehicle.gun,),
-     GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.ENGINE]: (vehicle.engine,),
-     GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.RADIO]: (vehicle.radio,)}
+    modules = {GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CHASSIS]: (
+                                                  vehicle.chassis,), 
+       GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.TURRET]: (
+                                                 vehicle.turret,), 
+       GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.GUN]: (
+                                              vehicle.gun,), 
+       GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.ENGINE]: (
+                                                 vehicle.engine,), 
+       GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.RADIO]: (
+                                                vehicle.radio,)}
     return modules
 
 
@@ -91,9 +94,9 @@ class _CmpOptDeviceRemover(ModuleProcessor):
             callback(self._errorHandler(0, reason))
 
     def _getMsgCtx(self):
-        return {'name': self.item.userName,
-         'kind': self.item.userType,
-         'money': 0}
+        return {'name': self.item.userName, 
+           'kind': self.item.userType, 
+           'money': 0}
 
 
 class _ConfigFittingSlotVO(FittingSlotVO):
@@ -122,7 +125,8 @@ class CrewSkillsManager(object):
         for idx, (role, skills) in iteritems(self.__selectedSkills):
             _, newSkills = skillsByTankman.get(idx, (None, []))
             if skills != newSkills:
-                tankmenToUpdate[idx] = (role, list(newSkills))
+                tankmenToUpdate[idx] = (
+                 role, list(newSkills))
 
         if not tankmenToUpdate:
             return False
@@ -180,9 +184,12 @@ class CrewSkillsManager(object):
         for slotIdx, (role, _) in iteritems(tankmenToUpdate):
             listIdx, tman = vehicle.getTankmanBySlotIdx(slotIdx)
             if tman:
-                vehCrew[listIdx] = (slotIdx, cmp_helpers.createTankman(nationID, vehicleTypeID, role, tman.roleLevel, skillsByIdx.get(slotIdx, []), vehicle, slotIdx, bonusSkillsByIdx.get(slotIdx, {}), bonusSkillNamesMaxLvl))
+                vehCrew[listIdx] = (
+                 slotIdx,
+                 cmp_helpers.createTankman(nationID, vehicleTypeID, role, tman.roleLevel, skillsByIdx.get(slotIdx, []), vehicle, slotIdx, bonusSkillsByIdx.get(slotIdx, {}), bonusSkillNamesMaxLvl))
                 isSuccess = True
-            LOG_WARNING('Tankmen with role index {} has not been found'.format(slotIdx))
+            else:
+                LOG_WARNING(('Tankmen with role index {} has not been found').format(slotIdx))
 
         return isSuccess
 
@@ -196,7 +203,8 @@ class VehicleCompareConfiguratorView(VehicleCompareConfiguratorViewMeta):
         self.__skillsInject = None
         self.__ammoInject = None
         super(VehicleCompareConfiguratorView, self).__init__()
-        self.__slotsVoData = [None] * (_SLOT_DATA_INDEXES[-1][-1] + 1)
+        self.__slotsVoData = [
+         None] * (_SLOT_DATA_INDEXES[(-1)][(-1)] + 1)
         return
 
     def onCloseView(self):
@@ -251,21 +259,20 @@ class VehicleCompareConfiguratorView(VehicleCompareConfiguratorViewMeta):
     def onBasketParametersChanged(self, basketVehData):
         if self.__parametersView is None or self.__progressionInject is None:
             return
-        else:
-            currentVehicle = self._container.getCurrentVehicle()
-            isPostProgressionExists = currentVehicle.isPostProgressionExists
-            if not isPostProgressionExists:
-                currentVehicle.installPostProgression(basketVehData.getPostProgressionState(), True)
-            if not currentVehicle.isRoleSlotExists():
-                currentVehicle.optDevices.dynSlotType = basketVehData.getDynSlotType()
-            initialVehicle, _ = self._container.getInitialVehicleData()
-            self.as_setIsPostProgressionEnabledS(isPostProgressionExists)
-            self.__ammoInject.update()
-            self.__progressionInject.update()
-            self.__parametersView.init(currentVehicle, initialVehicle)
-            self.__parametersView.update()
-            self.__updateControlBtns()
-            return
+        currentVehicle = self._container.getCurrentVehicle()
+        isPostProgressionExists = currentVehicle.isPostProgressionExists
+        if not isPostProgressionExists:
+            currentVehicle.installPostProgression(basketVehData.getPostProgressionState(), True)
+        if not currentVehicle.isRoleSlotExists():
+            currentVehicle.optDevices.dynSlotType = basketVehData.getDynSlotType()
+        initialVehicle, _ = self._container.getInitialVehicleData()
+        self.as_setIsPostProgressionEnabledS(isPostProgressionExists)
+        self.__ammoInject.update()
+        self.__progressionInject.update()
+        self.__parametersView.init(currentVehicle, initialVehicle)
+        self.__parametersView.update()
+        self.__updateControlBtns()
+        return
 
     def onShellsUpdated(self, updateShells=False, selectedIndex=-1):
         if selectedIndex != -1:
@@ -286,7 +293,7 @@ class VehicleCompareConfiguratorView(VehicleCompareConfiguratorViewMeta):
         elif slotType == cmp_helpers.EQUIPMENT_TYPE_NAME:
             self._container.installEquipment(newId, slotIndex)
         else:
-            LOG_ERROR('{} installDevice. Unsupported slotType: {}'.format(self, slotType))
+            LOG_ERROR(('{} installDevice. Unsupported slotType: {}').format(self, slotType))
 
     def removeDevice(self, slotType, slotIndex):
         if slotType == cmp_helpers.OPTIONAL_DEVICE_TYPE_NAME:
@@ -296,7 +303,7 @@ class VehicleCompareConfiguratorView(VehicleCompareConfiguratorViewMeta):
         elif slotType == cmp_helpers.BATTLE_BOOSTER_TYPE_NAME:
             self._container.removeBattleBooster()
         else:
-            LOG_ERROR('{} removeDevice. Unsupported slotType: {}'.format(self, slotType))
+            LOG_ERROR(('{} removeDevice. Unsupported slotType: {}').format(self, slotType))
 
     def toggleTopModules(self, value):
         self._container.selectTopModules(value)
@@ -319,14 +326,14 @@ class VehicleCompareConfiguratorView(VehicleCompareConfiguratorViewMeta):
         super(VehicleCompareConfiguratorView, self)._init()
         currentVehicle = self._container.getCurrentVehicle()
         hasOptions = self.__isChoiceOfModulesAvailable()
-        self.as_setInitDataS({'title': _ms(VEH_COMPARE.VEHCONF_HEADER, vehName=currentVehicle.userName),
-         'resetBtnLabel': VEH_COMPARE.VEHCONF_RESETBTNLABEL,
-         'cancelBtnLabel': VEH_COMPARE.VEHCONF_CANCELBTNLABEL,
-         'applyBtnLabel': VEH_COMPARE.VEHCONF_APPLYBTNLABEL,
-         'resetBtnTooltip': VEH_COMPARE.VEHCONF_RESETBTNLABEL_TOOLTIP,
-         'cancelBtnTooltip': VEH_COMPARE.VEHCONF_CANCELBTNLABEL_TOOLTIP,
-         'applyBtnTooltip': VEH_COMPARE.VEHCONF_COMPAREBTNLABEL_TOOLTIP,
-         'enableTopModules': hasOptions})
+        self.as_setInitDataS({'title': _ms(VEH_COMPARE.VEHCONF_HEADER, vehName=currentVehicle.userName), 
+           'resetBtnLabel': VEH_COMPARE.VEHCONF_RESETBTNLABEL, 
+           'cancelBtnLabel': VEH_COMPARE.VEHCONF_CANCELBTNLABEL, 
+           'applyBtnLabel': VEH_COMPARE.VEHCONF_APPLYBTNLABEL, 
+           'resetBtnTooltip': VEH_COMPARE.VEHCONF_RESETBTNLABEL_TOOLTIP, 
+           'cancelBtnTooltip': VEH_COMPARE.VEHCONF_CANCELBTNLABEL_TOOLTIP, 
+           'applyBtnTooltip': VEH_COMPARE.VEHCONF_COMPAREBTNLABEL_TOOLTIP, 
+           'enableTopModules': hasOptions})
         self.as_setIsPostProgressionEnabledS(currentVehicle.isPostProgressionExists)
         if currentVehicle.descriptor.type.hasCustomDefaultCamouflage:
             self.as_disableCamoS()
@@ -378,7 +385,7 @@ class VehicleCompareConfiguratorView(VehicleCompareConfiguratorViewMeta):
         if currentVehicle.isPremium:
             return False
         criteria = ~REQ_CRITERIA.HIDDEN | REQ_CRITERIA.VEHICLE.SUITABLE([currentVehicle])
-        return any((len(self.itemsCache.items.getItems(module, criteria, limit=2)) > 1 for module in GUI_ITEM_TYPE.VEHICLE_MODULES))
+        return any(len(self.itemsCache.items.getItems(module, criteria, limit=2)) > 1 for module in GUI_ITEM_TYPE.VEHICLE_MODULES)
 
 
 class VehicleCompareConfiguratorMain(LobbySubView, VehicleCompareConfiguratorMainMeta):
@@ -391,9 +398,9 @@ class VehicleCompareConfiguratorMain(LobbySubView, VehicleCompareConfiguratorMai
         super(VehicleCompareConfiguratorMain, self).__init__(ctx)
         self.__vehIndex = ctx.get('index')
         if not isinstance(self.__vehIndex, int):
-            raise UserWarning('Index of vehicle should be integer: {}'.format(self.__vehIndex))
+            raise UserWarning(('Index of vehicle should be integer: {}').format(self.__vehIndex))
         if self.__vehIndex < 0 or self.__vehIndex >= self.comparisonBasket.getVehiclesCount():
-            raise UserWarning('Index of vehicle out of range: {} not in (0, {})'.format(self.__vehIndex, self.comparisonBasket.getVehiclesCount()))
+            raise UserWarning(('Index of vehicle out of range: {} not in (0, {})').format(self.__vehIndex, self.comparisonBasket.getVehiclesCount()))
         self.__backAlias = ctx.get('previewAlias', VIEW_ALIAS.VEHICLE_COMPARE)
         self.__vehicle = None
         self.__vehItem = None
@@ -457,7 +464,8 @@ class VehicleCompareConfiguratorMain(LobbySubView, VehicleCompareConfiguratorMai
         vehicle.installPostProgression(postProgressionState, rebuildAttrs=False)
         dynSlotType = basketVehicle.getInvDynSlotType()
         vehicle.optDevices.dynSlotType = dynSlotType
-        return (vehicle, CrewSkillsManager(vehicle, crewLvl, crewSkills))
+        return (
+         vehicle, CrewSkillsManager(vehicle, crewLvl, crewSkills))
 
     def getCurrentCrewSkills(self):
         return self.__crewSkillsManager.getSelectedSkills()
@@ -474,7 +482,7 @@ class VehicleCompareConfiguratorMain(LobbySubView, VehicleCompareConfiguratorMai
     def isTopModulesSelected(self):
         topModules = self.__getTopModules()
         selectedModules = cmp_helpers.getVehicleModules(self.__vehicle)
-        return all((bool(item in selectedModules) for item in topModules))
+        return all(bool(item in selectedModules) for item in topModules)
 
     def isCamouflageSet(self):
         return cmp_helpers.isCamouflageSet(self.__vehicle)
@@ -508,7 +516,7 @@ class VehicleCompareConfiguratorMain(LobbySubView, VehicleCompareConfiguratorMai
             self.__checkAndRemoveIncompatibleEquipments()
             if notFittedReasons:
                 for notFitReason in notFittedReasons:
-                    LOG_DEBUG('Module has not been installed properly, reason: {}'.format(notFitReason))
+                    LOG_DEBUG(('Module has not been installed properly, reason: {}').format(notFitReason))
 
             if oldGunIntCD != self.__vehicle.gun.intCD:
                 firstShellIndex = 0
@@ -624,7 +632,7 @@ class VehicleCompareConfiguratorMain(LobbySubView, VehicleCompareConfiguratorMai
             self.__recalculateCrewBonuses()
             self.__notifyViews('onCrewSkillUpdated')
         else:
-            LOG_WARNING('Attempt to apply the same value for {}'.format(skills))
+            LOG_WARNING(('Attempt to apply the same value for {}').format(skills))
 
     def closeView(self, forcedBackAlias=None):
         if self.__canClose():
@@ -698,29 +706,31 @@ class VehicleCompareConfiguratorMain(LobbySubView, VehicleCompareConfiguratorMai
     def __isHasDifferences(self, strCD, equipment, basketVehCrewLvl, basketVehCrewSkills, selShellIndex, hasCamouflage, battleBooster, dynSlotType, postProgressionState):
         if basketVehCrewLvl != self.getCurrentCrewSkillLevel():
             return True
-        elif basketVehCrewSkills != self.getCurrentCrewSkills():
-            return True
-        elif not cmp_helpers.isEquipmentSame(equipment, self.__vehicle.consumables.installed.getIntCDs(default=None)):
-            return True
-        elif selShellIndex != self.__selectedShellIndex:
-            return True
-        currVehHasCamouflage = cmp_helpers.isCamouflageSet(self.__vehicle)
-        if hasCamouflage != currVehHasCamouflage:
-            return True
-        currVehBattleBoosters = self.__vehicle.battleBoosters.installed
-        if currVehBattleBoosters.getCapacity() > 0 and not battleBooster == currVehBattleBoosters[0]:
-            return True
-        if currVehHasCamouflage:
-            targetVehicle = Vehicle(self.__vehicle.descriptor.makeCompactDescr())
-            cmp_helpers.removeVehicleCamouflages(targetVehicle)
         else:
-            targetVehicle = self.__vehicle
-        if strCD != targetVehicle.descriptor.makeCompactDescr():
-            return True
-        elif dynSlotType != self.__vehicle.optDevices.dynSlotType:
-            return True
-        else:
-            return True if postProgressionState != self.__vehicle.postProgression.getState(implicitCopy=False) else False
+            if basketVehCrewSkills != self.getCurrentCrewSkills():
+                return True
+            if not cmp_helpers.isEquipmentSame(equipment, self.__vehicle.consumables.installed.getIntCDs(default=None)):
+                return True
+            if selShellIndex != self.__selectedShellIndex:
+                return True
+            currVehHasCamouflage = cmp_helpers.isCamouflageSet(self.__vehicle)
+            if hasCamouflage != currVehHasCamouflage:
+                return True
+            currVehBattleBoosters = self.__vehicle.battleBoosters.installed
+            if currVehBattleBoosters.getCapacity() > 0 and battleBooster != currVehBattleBoosters[0]:
+                return True
+            if currVehHasCamouflage:
+                targetVehicle = Vehicle(self.__vehicle.descriptor.makeCompactDescr())
+                cmp_helpers.removeVehicleCamouflages(targetVehicle)
+            else:
+                targetVehicle = self.__vehicle
+            if strCD != targetVehicle.descriptor.makeCompactDescr():
+                return True
+            if dynSlotType != self.__vehicle.optDevices.dynSlotType:
+                return True
+            if postProgressionState != self.__vehicle.postProgression.getState(implicitCopy=False):
+                return True
+            return False
 
     def __getTopModules(self):
         if self.__topModules is None:

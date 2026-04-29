@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/clans/clan_helpers.py
 from collections import namedtuple
 from datetime import datetime
 import Event
@@ -29,11 +27,8 @@ from shared_utils import CONST_CONTAINER
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.web import IWebController
-_RequestData = namedtuple('_RequestData', ['pattern',
- 'offset',
- 'count',
- 'isReset',
- 'isRecommended'])
+_RequestData = namedtuple('_RequestData', [
+ 'pattern', 'offset', 'count', 'isReset', 'isRecommended'])
 ACCOUNT_ALREADY_IN_CLAN = 'Account already invited'
 RATINGS_NOT_FOUND_ERROR = 404
 ACCOUNT_ALREADY_IN_CLAN_ERROR = 409
@@ -62,9 +57,9 @@ def showClanInviteSystemMsg(userName, isSuccess, code, data=None):
 @adisp_async
 def showAcceptClanInviteDialog(clanName, clanAbbrev, callback):
     from gui import DialogsInterface
-    DialogsInterface.showDialog(I18nConfirmDialogMeta('clanConfirmJoining', messageCtx={'icon': icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_ATTENTIONICON, 16, 16, -4, 0),
-     'clanName': text_styles.stats(i18n.makeString(DIALOGS.CLANCONFIRMJOINING_MESSAGE_CLANNAME, clanAbbr=clanAbbrev, clanName=clanName)),
-     'clanExit': text_styles.standard(i18n.makeString(DIALOGS.CLANCONFIRMJOINING_MESSAGE_CLANEXIT))}), callback)
+    DialogsInterface.showDialog(I18nConfirmDialogMeta('clanConfirmJoining', messageCtx={'icon': icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_ATTENTIONICON, 16, 16, -4, 0), 
+       'clanName': text_styles.stats(i18n.makeString(DIALOGS.CLANCONFIRMJOINING_MESSAGE_CLANNAME, clanAbbr=clanAbbrev, clanName=clanName)), 
+       'clanExit': text_styles.standard(i18n.makeString(DIALOGS.CLANCONFIRMJOINING_MESSAGE_CLANEXIT))}), callback)
 
 
 def isInClanEnterCooldown(clanCooldownTill):
@@ -122,7 +117,10 @@ class ClanFinder(ListPaginator, UsersInfoHelper):
         self.__isRecommended = isRecommended
 
     def getItemByID(self, clanDbID):
-        return self.__lastResult[self.__listMapping[clanDbID]] if clanDbID in self.__listMapping else None
+        if clanDbID in self.__listMapping:
+            return self.__lastResult[self.__listMapping[clanDbID]]
+        else:
+            return
 
     def canMoveLeft(self):
         return self.__lastStatus and self._offset > 0
@@ -283,7 +281,10 @@ class ClanInvitesPaginator(ListPaginator, UsersInfoHelper):
 
     def getInviteByDbID(self, inviteDbID):
         index = self.__cacheMapping.get(inviteDbID, -1)
-        return self.__invitesCache[index] if 0 <= index < len(self.__invitesCache) else None
+        if 0 <= index < len(self.__invitesCache):
+            return self.__invitesCache[index]
+        else:
+            return
 
     def onUserNamesReceived(self, names):
         updatedInvites = set()
@@ -343,7 +344,8 @@ class ClanInvitesPaginator(ListPaginator, UsersInfoHelper):
         return result
 
     def getUserName(self, userDbID):
-        return super(ClanInvitesPaginator, self).getUserName(userDbID) if userDbID else None
+        if userDbID:
+            return super(ClanInvitesPaginator, self).getUserName(userDbID)
 
     @adisp_async
     @adisp_process
@@ -374,7 +376,8 @@ class ClanInvitesPaginator(ListPaginator, UsersInfoHelper):
 
             self.__lastStatus, users = yield self._requester.requestUsers(usrIDs)
             if self.__lastStatus:
-                self.__invitesCache = [ ClanInviteWrapper(invite, users.get(invite.getAccountDbID(), items.AccountClanRatingsData(invite.getAccountDbID())), self.getUserName(invite.getAccountDbID()), users.get(invite.getChangedBy(), items.AccountClanRatingsData(invite.getChangedBy())), senderName=self.getUserName(invite.getSenderDbID()), changerName=self.getUserName(invite.getChangedBy())) for invite in invites ]
+                self.__invitesCache = [ ClanInviteWrapper(invite, users.get(invite.getAccountDbID(), items.AccountClanRatingsData(invite.getAccountDbID())), self.getUserName(invite.getAccountDbID()), users.get(invite.getChangedBy(), items.AccountClanRatingsData(invite.getChangedBy())), senderName=self.getUserName(invite.getSenderDbID()), changerName=self.getUserName(invite.getChangedBy())) for invite in invites
+                                      ]
             else:
                 self.__invitesCache = []
                 self.revertOffset()
@@ -387,7 +390,7 @@ class ClanInvitesPaginator(ListPaginator, UsersInfoHelper):
         callback((self.__lastStatus, self.__invitesCache))
 
     def __rebuildMapping(self):
-        self.__cacheMapping = dict(((invite.getDbID(), index) for index, invite in enumerate(self.__invitesCache)))
+        self.__cacheMapping = dict((invite.getDbID(), index) for index, invite in enumerate(self.__invitesCache))
 
     @adisp_process
     def __sendRequest(self, invite, context, successStatus):
@@ -398,9 +401,11 @@ class ClanInvitesPaginator(ListPaginator, UsersInfoHelper):
         self.__accountNameMapping[userDbID] = temp
         result = yield self._requester.sendRequest(context, allowDelay=True)
         if result.isSuccess():
-            status = (successStatus, None)
+            status = (
+             successStatus, None)
         else:
-            status = (CLAN_INVITE_STATES.ERROR, result.getCode())
+            status = (
+             CLAN_INVITE_STATES.ERROR, result.getCode())
         result, users = yield self._requester.requestUsers([userDbID])
         sender = users.get(userDbID, items.AccountClanRatingsData(userDbID))
         senderName = self.getUserName(userDbID)
@@ -423,7 +428,9 @@ class ClanInvitesPaginator(ListPaginator, UsersInfoHelper):
         return inviteWrapper
 
     def __checkUserName(self, name):
-        return DATA_UNAVAILABLE_PLACEHOLDER if not name else name
+        if not name:
+            return DATA_UNAVAILABLE_PLACEHOLDER
+        return name
 
 
 class ClanPersonalInvitesPaginator(ListPaginator, UsersInfoHelper):
@@ -518,7 +525,10 @@ class ClanPersonalInvitesPaginator(ListPaginator, UsersInfoHelper):
 
     def getInviteByDbID(self, inviteDbID):
         index = self.__cacheMapping.get(inviteDbID, -1)
-        return self.__invitesCache[index] if 0 <= index < len(self.__invitesCache) else None
+        if 0 <= index < len(self.__invitesCache):
+            return self.__invitesCache[index]
+        else:
+            return
 
     def onUserNamesReceived(self, names):
         updatedInvites = set()
@@ -582,18 +592,20 @@ class ClanPersonalInvitesPaginator(ListPaginator, UsersInfoHelper):
                 ctx = ClanRatingsCtx(clansIDs)
                 result = yield self._requester.sendRequest(ctx, allowDelay=True)
                 if result.isSuccess() and result.getCode() != RATINGS_NOT_FOUND_ERROR:
-                    clanRatings = dict(((item.getClanDbID(), item) for item in ctx.getDataObj(result.data)))
+                    clanRatings = dict((item.getClanDbID(), item) for item in ctx.getDataObj(result.data))
                 else:
                     clanRatings = {}
                 ctx = ClansInfoCtx(clansIDs)
                 result = yield self._requester.sendRequest(ctx, allowDelay=True)
-                clanInfo = dict(((item.getDbID(), item) for item in ctx.getDataObj(result.data)))
+                clanInfo = dict((item.getDbID(), item) for item in ctx.getDataObj(result.data))
                 for item in clanInfo.itervalues():
                     self.getUserName(item.getLeaderDbID())
 
                 def getSenderID(inviteItem):
                     changerDbID = inviteItem.getChangerDbID()
-                    return inviteItem.getSenderDbID() if changerDbID == 0 else changerDbID
+                    if changerDbID == 0:
+                        return inviteItem.getSenderDbID()
+                    return changerDbID
 
                 for item in invites:
                     senderID = getSenderID(item)
@@ -601,7 +613,8 @@ class ClanPersonalInvitesPaginator(ListPaginator, UsersInfoHelper):
                     temp.add(item.getDbID())
                     self.__senderNameMapping[senderID] = temp
 
-                self.__invitesCache = [ ClanPersonalInviteWrapper(invite, clanInfo.get(invite.getClanDbID(), items.ClanExtInfoData()), clanRatings.get(invite.getClanDbID(), items.ClanRatingsData()), self.getUserName(getSenderID(invite))) for invite in invites ]
+                self.__invitesCache = [ ClanPersonalInviteWrapper(invite, clanInfo.get(invite.getClanDbID(), items.ClanExtInfoData()), clanRatings.get(invite.getClanDbID(), items.ClanRatingsData()), self.getUserName(getSenderID(invite))) for invite in invites
+                                      ]
             else:
                 self.__invitesCache = []
         else:
@@ -613,7 +626,7 @@ class ClanPersonalInvitesPaginator(ListPaginator, UsersInfoHelper):
         callback((self.__lastStatus, self.__invitesCache))
 
     def __rebuildMapping(self):
-        self.__cacheMapping = dict(((invite.getDbID(), index) for index, invite in enumerate(self.__invitesCache)))
+        self.__cacheMapping = dict((invite.getDbID(), index) for index, invite in enumerate(self.__invitesCache))
 
     @adisp_process
     def __sendADRequest(self, context, sucessStatus, callback=None):
@@ -647,7 +660,8 @@ class ClanPersonalInvitesPaginator(ListPaginator, UsersInfoHelper):
                 invite = inviteWrapper.invite.update(status=status)
                 inviteWrapper.setInvite(invite)
                 updatedInvites.append(inviteWrapper)
-            LOG_WARNING('Could not find invite with DB ID {} in the internal cache."'.format(invID))
+            else:
+                LOG_WARNING(('Could not find invite with DB ID {} in the internal cache."').format(invID))
 
         if updatedInvites:
             self.onListItemsUpdated(self, updatedInvites)
@@ -656,11 +670,11 @@ class ClanPersonalInvitesPaginator(ListPaginator, UsersInfoHelper):
 class ClanCache(FileLocalCache):
 
     class KEYS(CONST_CONTAINER):
-        VERSION = ('VERSION',)
-        CLAN_APPS = ('CLAN_APPS_COUNT',)
-        CLAN_INVITES = ('CLAN_INVITES_COUNT',)
-        PERSONAL_APPS = ('PERSONAL_APPS_COUNT',)
-        PERSONAL_INVITES = ('PERSONAL_INVITES_COUNT',)
+        VERSION = ('VERSION', )
+        CLAN_APPS = ('CLAN_APPS_COUNT', )
+        CLAN_INVITES = ('CLAN_INVITES_COUNT', )
+        PERSONAL_APPS = ('PERSONAL_APPS_COUNT', )
+        PERSONAL_INVITES = ('PERSONAL_INVITES_COUNT', )
 
     def __init__(self, accountName):
         super(ClanCache, self).__init__('clan_cache', ('invites', accountName))
@@ -668,7 +682,7 @@ class ClanCache(FileLocalCache):
         self.__cache = {}
 
     def __repr__(self):
-        return 'ClanCache({0:s}): {1!r:s}'.format(hex(id(self)), self.__cache)
+        return ('ClanCache({0:s}): {1!r:s}').format(hex(id(self)), self.__cache)
 
     def get(self, key):
         return self.__cache.get(key, None)
@@ -769,9 +783,9 @@ def getStrongholdUrl(urlName=None):
         return _getWgshHost() + GUI_SETTINGS.stronghold.get(urlName or 'tabUrl')
     except (AttributeError, TypeError):
         LOG_CURRENT_EXCEPTION()
-        return None
+        return
 
-    return None
+    return
 
 
 def getStrongholdClanCardUrl(clanDBID=''):

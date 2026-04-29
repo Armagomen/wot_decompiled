@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/tooltips/progression_table_tooltip.py
 from comp7.gui.impl.gen.view_models.views.lobby.progression_item_model import ProgressionItemModel
 from comp7.gui.impl.gen.view_models.views.lobby.tooltips.progression_table_tooltip_model import ProgressionTableTooltipModel
 from comp7.gui.impl.lobby.comp7_helpers import comp7_model_helpers, comp7_shared
@@ -30,14 +28,20 @@ class ProgressionTableTooltip(ViewImpl):
         return super(ProgressionTableTooltip, self).getViewModel()
 
     def _getEvents(self):
-        return ((self.__comp7Controller.onRankUpdated, self.__updateTooltipProgressionData), (self.__comp7Controller.onModeConfigChanged, self.__updateTooltipProgressionData), (self.__comp7Controller.onComp7RanksConfigChanged, self.__updateTooltipProgressionData))
+        return (
+         (
+          self.__comp7Controller.onRankUpdated, self.__updateTooltipProgressionData),
+         (
+          self.__comp7Controller.onModeConfigChanged, self.__updateTooltipProgressionData),
+         (
+          self.__comp7Controller.onComp7RanksConfigChanged, self.__updateTooltipProgressionData))
 
     def __updateTooltipProgressionData(self, *_):
         playerDivision = comp7_shared.getPlayerDivision()
         rank = comp7_shared.getRankEnumValue(playerDivision)
         divisionByRank = comp7_shared.getPlayerDivisionByRankAndIndex(rank, playerDivision.index)
         ranksConfig = self.__comp7Controller.getRanksConfig()
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setSeasonName(getSeasonNameEnum(self.__comp7Controller, SeasonName))
             vm.setCurrentScore(self.__comp7Controller.rating)
             vm.setCurrentItemIndex(ranksConfig.ranksOrder.index(rank))

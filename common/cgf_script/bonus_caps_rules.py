@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/cgf_script/bonus_caps_rules.py
-import BigWorld
-import CGF
+import BigWorld, CGF
 from cgf_script.managers_registrator import autoregister
 from constants import IS_CLIENT, IS_UE_EDITOR
 if IS_CLIENT:
@@ -14,6 +11,8 @@ def bonusCapsManager(bonusCap, domain=CGF.DomainOption.DomainAll):
         if IS_UE_EDITOR and not hasattr(BigWorld, 'player'):
             return False
         player = BigWorld.player()
-        return player.hasBonusCap(bonusCap) if spaceID != ClientArena.DEFAULT_ARENA_WORLD_ID and isinstance(player, PlayerAvatar) else False
+        if spaceID != ClientArena.DEFAULT_ARENA_WORLD_ID and isinstance(player, PlayerAvatar):
+            return player.hasBonusCap(bonusCap)
+        return False
 
     return autoregister(presentInAllWorlds=True, creationPredicate=predicate, domain=domain)

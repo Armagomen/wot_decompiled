@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/AmmunitionPanelMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class AmmunitionPanelMeta(BaseDAAPIComponent):
@@ -20,13 +18,17 @@ class AmmunitionPanelMeta(BaseDAAPIComponent):
         self._printOverrideError('showEasyTankEquip')
 
     def as_setMaintenanceWarningStateS(self, stateWarning):
-        return self.flashObject.as_setMaintenanceWarningState(stateWarning) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setMaintenanceWarningState(stateWarning)
 
     def as_highlightEasyTankEquipS(self, isHighlight):
-        return self.flashObject.as_highlightEasyTankEquip(isHighlight) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_highlightEasyTankEquip(isHighlight)
 
     def as_updateVehicleStatusS(self, data):
-        return self.flashObject.as_updateVehicleStatus(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateVehicleStatus(data)
 
     def as_setCustomizationBtnCounterS(self, value):
-        return self.flashObject.as_setCustomizationBtnCounter(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setCustomizationBtnCounter(value)

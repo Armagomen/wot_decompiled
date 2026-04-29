@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/VOIP/VOIPCommon.py
 CODE_SUCCESS = 0
 CODE_ERROR = 1
 STATUS_OK = 0
@@ -19,6 +17,7 @@ KEY_STATE = 'state'
 KEY_COUNT = 'count'
 KEY_CURRENT_CAPTURE_DEVICE = 'current_capture_device'
 KEY_CAPTURE_DEVICES = 'capture_devices'
+KEY_CAPTURE_DEVICES_NAMES = 'capture_devices_names'
 KEY_URI = 'uri'
 KEY_IS_SPEAKING = 'is_speaking'
 KEY_PARTICIPANT_URI = 'participant_uri'

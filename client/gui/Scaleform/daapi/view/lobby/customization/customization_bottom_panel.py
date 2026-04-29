@@ -1,9 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/customization_bottom_panel.py
 from collections import namedtuple
 from functools import partial
-import typing
-import BigWorld
+import typing, BigWorld
 from CurrentVehicle import g_currentVehicle
 from account_helpers.AccountSettings import AccountSettings, CUSTOMIZATION_SECTION, PROJECTION_DECAL_HINT_SHOWN_FIELD, CUSTOMIZATION_STYLE_ITEMS_VISITED, CUSTOMIZATION_TABS_VISITED
 from account_helpers.settings_core.settings_constants import OnceOnlyHints
@@ -39,7 +36,17 @@ from skeletons.gui.shared import IItemsCache
 from vehicle_outfit.outfit import Area
 from uilogging.customization_3d_objects.logger import CustomizationBottomPanelLogger
 from uilogging.customization_3d_objects.logging_constants import CustomizationButtons, CustomizationViewKeys
-CustomizationCarouselDataVO = namedtuple('CustomizationCarouselDataVO', ('displayString', 'isZeroCount', 'shouldShow', 'itemLayoutSize', 'bookmarks', 'arrows', 'showSeparators'))
+if typing.TYPE_CHECKING:
+    from typing import List, Callable
+    from gui.shared.gui_items.customization.c11n_items import Customization
+    from gui.shared.gui_items.gui_item import GUIItem
+CustomizationCarouselDataVO = namedtuple('CustomizationCarouselDataVO', ('displayString',
+                                                                         'isZeroCount',
+                                                                         'shouldShow',
+                                                                         'itemLayoutSize',
+                                                                         'bookmarks',
+                                                                         'arrows',
+                                                                         'showSeparators'))
 
 class CustomizationBottomPanel(CustomizationBottomPanelMeta):
     itemsCache = dependency.descriptor(IItemsCache)
@@ -258,39 +265,42 @@ class CustomizationBottomPanel(CustomizationBottomPanelMeta):
             tabsCounters.append(vehicle.getC11nItemsNoveltyCounter(proxy, itemTypes=tabItemTypes, season=season, itemFilter=itemFilter))
 
         unseenTabs = list(set(visibleTabs) - seenTabs)
-        self.as_setNotificationCountersS({'tabsCounters': tabsCounters,
-         'unseenTabs': unseenTabs})
+        self.as_setNotificationCountersS({'tabsCounters': tabsCounters, 
+           'unseenTabs': unseenTabs})
 
     def __getItemFilter(self, tabId):
         if tabId == CustomizationTabs.STAT_TRACKERS:
             return None
-        elif self.__ctx.modeId == CustomizationModes.STYLE_2D_EDITABLE:
-            return self.__ctx.mode.style.isItemInstallable
-        elif tabId == CustomizationTabs.STYLES_2D:
-            return lambda item: not item.is3D
         else:
-            return (lambda item: item.is3D) if tabId == CustomizationTabs.STYLES_3D else (lambda item: not item.isStyleOnly)
+            if self.__ctx.modeId == CustomizationModes.STYLE_2D_EDITABLE:
+                return self.__ctx.mode.style.isItemInstallable
+            if tabId == CustomizationTabs.STYLES_2D:
+                return lambda item: not item.is3D
+            if tabId == CustomizationTabs.STYLES_3D:
+                return lambda item: item.is3D
+            return lambda item: not item.isStyleOnly
 
     def __resetTabs(self):
-        self.as_setBottomPanelTabsDataS({'tabsDP': [],
-         'selectedTab': -1})
+        self.as_setBottomPanelTabsDataS({'tabsDP': [], 'selectedTab': -1})
 
     def __updateTabs(self):
-        tabData = {'tabsDP': self.__getItemTabsData(),
-         'selectedTab': self.__ctx.mode.tabId}
+        tabData = {'tabsDP': self.__getItemTabsData(), 
+           'selectedTab': self.__ctx.mode.tabId}
         if self.__cachedTabData != tabData:
             self.as_setBottomPanelTabsDataS(tabData)
             self.__cachedTabData = tabData
 
     def __setFooterInitData(self):
-        self.as_setBottomPanelInitDataS({'filtersVO': {'popoverAlias': VIEW_ALIAS.CUSTOMIZATION_FILTER_POPOVER,
-                       'mainBtn': {'value': RES_ICONS.MAPS_ICONS_BUTTONS_FILTER,
-                                   'tooltip': VEHICLE_CUSTOMIZATION.CAROUSEL_FILTER_MAINBTN},
-                       'hotFilters': [{'value': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_STORAGE_ICON,
-                                       'tooltip': VEHICLE_CUSTOMIZATION.CAROUSEL_FILTER_STORAGEBTN,
-                                       'selected': self._carouselDP.isFilterApplied(FilterTypes.INVENTORY)}, {'value': RES_ICONS.MAPS_ICONS_BUTTONS_EQUIPPED_ICON,
-                                       'tooltip': VEHICLE_CUSTOMIZATION.CAROUSEL_FILTER_EQUIPPEDBTN,
-                                       'selected': self._carouselDP.isFilterApplied(FilterTypes.APPLIED)}]}})
+        self.as_setBottomPanelInitDataS({'filtersVO': {'popoverAlias': VIEW_ALIAS.CUSTOMIZATION_FILTER_POPOVER, 
+                         'mainBtn': {'value': RES_ICONS.MAPS_ICONS_BUTTONS_FILTER, 
+                                     'tooltip': VEHICLE_CUSTOMIZATION.CAROUSEL_FILTER_MAINBTN}, 
+                         'hotFilters': [
+                                      {'value': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_STORAGE_ICON, 
+                                         'tooltip': VEHICLE_CUSTOMIZATION.CAROUSEL_FILTER_STORAGEBTN, 
+                                         'selected': self._carouselDP.isFilterApplied(FilterTypes.INVENTORY)},
+                                      {'value': RES_ICONS.MAPS_ICONS_BUTTONS_EQUIPPED_ICON, 
+                                         'tooltip': VEHICLE_CUSTOMIZATION.CAROUSEL_FILTER_EQUIPPEDBTN, 
+                                         'selected': self._carouselDP.isFilterApplied(FilterTypes.APPLIED)}]}})
         self.__setNotificationCounters()
         self.__updatefilterFallbackData()
 
@@ -298,25 +308,25 @@ class CustomizationBottomPanel(CustomizationBottomPanelMeta):
         self.as_setFilterFallbackDataS(self.__getFallbackMessage())
 
     def __getFilterMessage(self):
-        return {'message': '{}{}\n{}'.format(icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_ATTENTIONICONFILLED, vSpace=-3), text_styles.neutral(backport.text(R.strings.vehicle_customization.carousel.message.default.header())), text_styles.main(backport.text(R.strings.vehicle_customization.carousel.message.default.description())))}
+        return {'message': ('{}{}\n{}').format(icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_ATTENTIONICONFILLED, vSpace=-3), text_styles.neutral(backport.text(R.strings.vehicle_customization.carousel.message.default.header())), text_styles.main(backport.text(R.strings.vehicle_customization.carousel.message.default.description())))}
 
     def __getUnsupportAttachementMessage(self):
-        return {'message': '{}{}'.format(icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_ATTENTIONICONFILLED, vSpace=-3), text_styles.highlightText(backport.text(R.strings.vehicle_customization.carousel.message.attachment.unsapport.header(), name=g_currentVehicle.item.shortUserName))),
-         'hasVideo': True,
-         'popoverBtnVisible': True}
+        return {'message': ('{}{}').format(icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_ATTENTIONICONFILLED, vSpace=-3), text_styles.highlightText(backport.text(R.strings.vehicle_customization.carousel.message.attachment.unsapport.header(), name=g_currentVehicle.item.shortUserName))), 
+           'hasVideo': True, 
+           'popoverBtnVisible': True}
 
     def __getNoAttachementMessage(self):
-        return {'message': '{}\n{}'.format(text_styles.middleTitle(backport.text(R.strings.vehicle_customization.carousel.message.attachment.default.header())), text_styles.main(backport.text(R.strings.vehicle_customization.carousel.message.attachment.default.description()))),
-         'hasVideo': True}
+        return {'message': ('{}\n{}').format(text_styles.middleTitle(backport.text(R.strings.vehicle_customization.carousel.message.attachment.default.header())), text_styles.main(backport.text(R.strings.vehicle_customization.carousel.message.attachment.default.description()))), 
+           'hasVideo': True}
 
     def __getNoDecalMessage(self):
-        return {'message': '{}{}\n{}'.format(icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_ATTENTIONICONFILLED, vSpace=-3), text_styles.neutral(backport.text(R.strings.vehicle_customization.carousel.message.default.header())), text_styles.main(backport.text(R.strings.vehicle_customization.carousel.message.noProgressionDecals())))}
+        return {'message': ('{}{}\n{}').format(icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_ATTENTIONICONFILLED, vSpace=-3), text_styles.neutral(backport.text(R.strings.vehicle_customization.carousel.message.default.header())), text_styles.main(backport.text(R.strings.vehicle_customization.carousel.message.noProgressionDecals())))}
 
     def __getDecalSlotMessage(self):
-        return {'message': '{}{}\n{}'.format(icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_ATTENTIONICONFILLED, vSpace=-3), text_styles.neutral(backport.text(R.strings.vehicle_customization.carousel.message.default.header())), text_styles.main(backport.text(R.strings.vehicle_customization.carousel.message.propertysheet())))}
+        return {'message': ('{}{}\n{}').format(icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_ATTENTIONICONFILLED, vSpace=-3), text_styles.neutral(backport.text(R.strings.vehicle_customization.carousel.message.default.header())), text_styles.main(backport.text(R.strings.vehicle_customization.carousel.message.propertysheet())))}
 
     def __getNoStatTrackersMessage(self):
-        return {'message': '{}\n{}'.format(text_styles.middleTitle(backport.text(R.strings.vehicle_customization.carousel.message.statTracker.default.header())), text_styles.main(backport.text(R.strings.vehicle_customization.carousel.message.statTracker.default.description())))}
+        return {'message': ('{}\n{}').format(text_styles.middleTitle(backport.text(R.strings.vehicle_customization.carousel.message.statTracker.default.header())), text_styles.main(backport.text(R.strings.vehicle_customization.carousel.message.statTracker.default.description())))}
 
     def __getFallbackMessage(self):
         selectedSlot = self.__ctx.mode.selectedSlot
@@ -337,12 +347,14 @@ class CustomizationBottomPanel(CustomizationBottomPanelMeta):
         if tabId == CustomizationTabs.PROJECTION_DECALS and isEmptyTab:
             return self.__getNoDecalMessage()
         else:
-            return self.__getNoStatTrackersMessage() if tabId == CustomizationTabs.STAT_TRACKERS and hasNoItemsForTab else self.__getFilterMessage()
+            if tabId == CustomizationTabs.STAT_TRACKERS and hasNoItemsForTab:
+                return self.__getNoStatTrackersMessage()
+            return self.__getFilterMessage()
 
     def __buildCustomizationCarouselDataVO(self):
         isZeroCount = self._carouselDP.itemCount == 0
         countStyle = text_styles.error if isZeroCount else text_styles.main
-        displayString = text_styles.main('{} / {}'.format(countStyle(str(self._carouselDP.itemCount)), str(self._carouselDP.totalItemCount)))
+        displayString = text_styles.main(('{} / {}').format(countStyle(str(self._carouselDP.itemCount)), str(self._carouselDP.totalItemCount)))
         shouldShow = self._carouselDP.hasAppliedFilter()
         return CustomizationCarouselDataVO(displayString, isZeroCount, shouldShow, itemLayoutSize=self._carouselDP.getItemSizeData(), bookmarks=self._carouselDP.getBookmarskData(), arrows=self._carouselDP.getArrowsData(), showSeparators=self._carouselDP.getShowSeparatorsData())._asdict()
 
@@ -367,7 +379,8 @@ class CustomizationBottomPanel(CustomizationBottomPanelMeta):
                 curItem = pItem.item
                 if curItem.isQuestsProgression and curItem.itemTypeID == GUI_ITEM_TYPE.STYLE:
                     totalItems = curItem.descriptor.questsProgression.getTotalCount()
-                    itemsOpened = sum([ curItem.descriptor.questsProgression.getUnlockedCount(token, self.eventsCache.questsProgress.getTokenCount(token)) for token in curItem.descriptor.questsProgression.getGroupTokens() ])
+                    itemsOpened = sum([ curItem.descriptor.questsProgression.getUnlockedCount(token, self.eventsCache.questsProgress.getTokenCount(token)) for token in curItem.descriptor.questsProgression.getGroupTokens()
+                                      ])
                     hasLockedItemsInStyle = totalItems != itemsOpened
 
         for pItem in purchaseItems:
@@ -401,33 +414,36 @@ class CustomizationBottomPanel(CustomizationBottomPanelMeta):
         compoundPrice = totalPriceVO[0]
         if not compoundPrice['price']:
             compoundPrice['price'] = getMoneyVO(Money(gold=0))
-        fromStorageCount = text_styles.stats('({})'.format(fromStorageCount))
-        toBuyCount = text_styles.stats('({})'.format(toBuyCount))
-        billLines = [self.__makeBillLine(text_styles.main('{} {}'.format(_ms(VEHICLE_CUSTOMIZATION.BUYPOPOVER_PRICE), toBuyCount)), compoundPrice=compoundPrice, isEnoughStatuses=getMoneyVO(Money(True, True, True))), self.__makeBillLine(text_styles.main('{} {}'.format(_ms(VEHICLE_CUSTOMIZATION.BUYPOPOVER_FROMSTORAGE), fromStorageCount)), icon=RES_ICONS.MAPS_ICONS_CUSTOMIZATION_STORAGE_ICON)]
-        buttons = [self.__makeButton(_ms(VEHICLE_CUSTOMIZATION.BUYPOPOVER_BTNCLEARALL), BillPopoverButtons.CUSTOMIZATION_CLEAR, RES_ICONS.MAPS_ICONS_CUSTOMIZATION_ICON_CROSS)]
+        fromStorageCount = text_styles.stats(('({})').format(fromStorageCount))
+        toBuyCount = text_styles.stats(('({})').format(toBuyCount))
+        billLines = [
+         self.__makeBillLine(text_styles.main(('{} {}').format(_ms(VEHICLE_CUSTOMIZATION.BUYPOPOVER_PRICE), toBuyCount)), compoundPrice=compoundPrice, isEnoughStatuses=getMoneyVO(Money(True, True, True))),
+         self.__makeBillLine(text_styles.main(('{} {}').format(_ms(VEHICLE_CUSTOMIZATION.BUYPOPOVER_FROMSTORAGE), fromStorageCount)), icon=RES_ICONS.MAPS_ICONS_CUSTOMIZATION_STORAGE_ICON)]
+        buttons = [
+         self.__makeButton(_ms(VEHICLE_CUSTOMIZATION.BUYPOPOVER_BTNCLEARALL), BillPopoverButtons.CUSTOMIZATION_CLEAR, RES_ICONS.MAPS_ICONS_CUSTOMIZATION_ICON_CROSS)]
         if hasLockedItems or hasLockedItemsInStyle:
-            lockedCountText = text_styles.stats('({})'.format(lockedCount))
-            billLines.append(self.__makeBillLine(text_styles.main('{} {}'.format(_ms(VEHICLE_CUSTOMIZATION.BUYPOPOVER_LOCKED), lockedCountText)), icon=RES_ICONS.MAPS_ICONS_CUSTOMIZATION_LOCK_ICON))
+            lockedCountText = text_styles.stats(('({})').format(lockedCount))
+            billLines.append(self.__makeBillLine(text_styles.main(('{} {}').format(_ms(VEHICLE_CUSTOMIZATION.BUYPOPOVER_LOCKED), lockedCountText)), icon=RES_ICONS.MAPS_ICONS_CUSTOMIZATION_LOCK_ICON))
             buttons.append(self.__makeButton(_ms(VEHICLE_CUSTOMIZATION.BUYPOPOVER_BTNCLEARLOCKED), BillPopoverButtons.CUSTOMIZATION_CLEAR_LOCKED, enabled=lockedCount > 0))
-        self.as_setBottomPanelPriceStateS({'buyBtnEnabled': buyBtnEnabled and not hasLockedItems,
-         'buyBtnLabel': label,
-         'buyBtnTooltip': tooltip,
-         'customizationDisplayType': self.__ctx.mode.currentOutfit.customizationDisplayType(),
-         'billVO': {'title': text_styles.highlightText(_ms(VEHICLE_CUSTOMIZATION.BUYPOPOVER_RESULT)),
-                    'lines': billLines,
-                    'buttons': buttons}})
+        self.as_setBottomPanelPriceStateS({'buyBtnEnabled': buyBtnEnabled and not hasLockedItems, 
+           'buyBtnLabel': label, 
+           'buyBtnTooltip': tooltip, 
+           'customizationDisplayType': self.__ctx.mode.currentOutfit.customizationDisplayType(), 
+           'billVO': {'title': text_styles.highlightText(_ms(VEHICLE_CUSTOMIZATION.BUYPOPOVER_RESULT)), 
+                      'lines': billLines, 
+                      'buttons': buttons}})
 
     def __makeBillLine(self, label, icon=None, compoundPrice=None, isEnoughStatuses=None):
-        return {'label': label,
-         'icon': icon,
-         'compoundPrice': compoundPrice,
-         'isEnoughStatuses': isEnoughStatuses}
+        return {'label': label, 
+           'icon': icon, 
+           'compoundPrice': compoundPrice, 
+           'isEnoughStatuses': isEnoughStatuses}
 
     def __makeButton(self, label, event, icon=None, enabled=True):
-        return {'label': label,
-         'icon': icon,
-         'event': event,
-         'enabled': enabled}
+        return {'label': label, 
+           'icon': icon, 
+           'event': event, 
+           'enabled': enabled}
 
     def __showBill(self):
         self.as_showBillS()
@@ -436,7 +452,9 @@ class CustomizationBottomPanel(CustomizationBottomPanelMeta):
         self.as_hideBillS()
 
     def __refreshHotFilters(self):
-        self.as_setCarouselFiltersDataS({'hotFilters': [self._carouselDP.isFilterApplied(FilterTypes.INVENTORY), self._carouselDP.isFilterApplied(FilterTypes.APPLIED)]})
+        self.as_setCarouselFiltersDataS({'hotFilters': [
+                        self._carouselDP.isFilterApplied(FilterTypes.INVENTORY),
+                        self._carouselDP.isFilterApplied(FilterTypes.APPLIED)]})
 
     def __clearFilter(self):
         self._carouselDP.clearFilter()
@@ -494,13 +512,13 @@ class CustomizationBottomPanel(CustomizationBottomPanelMeta):
                 showPlus = outfit.style is None
             else:
                 showPlus = filledSlotsCount < slotsCount
-            tabsData.append({'label': _ms(ITEM_TYPES.customizationPlural(itemTypeName)),
-             'icon': RES_ICONS.getCustomizationIcon(itemTypeName),
-             'tooltip': makeTooltip(ITEM_TYPES.customizationPlural(itemTypeName), body),
-             'id': tabId,
-             'isInActiveGroup': isActive,
-             'isEnabled': isEnabled,
-             'showPlus': showPlus and isActive})
+            tabsData.append({'label': _ms(ITEM_TYPES.customizationPlural(itemTypeName)), 
+               'icon': RES_ICONS.getCustomizationIcon(itemTypeName), 
+               'tooltip': makeTooltip(ITEM_TYPES.customizationPlural(itemTypeName), body), 
+               'id': tabId, 
+               'isInActiveGroup': isActive, 
+               'isEnabled': isEnabled, 
+               'showPlus': showPlus and isActive})
 
         return tabsData
 
@@ -647,8 +665,12 @@ class CustomizationBottomPanel(CustomizationBottomPanelMeta):
     def __onItemsRemoved(self, *_, **__):
         self.__updateTabs()
         self.__setBottomPanelBillData()
+        selectedItem = self._selectedItem
         self.__updatePopoverBtn()
         self.__rebuildCarousel()
+        if selectedItem is not None:
+            self.__scrollToItem(selectedItem.intCD, immediately=True)
+        return
 
     def __onModeChanged(self, modeId, prevModeId):
         self._carouselDP.onModeChanged(modeId, prevModeId)
@@ -671,10 +693,18 @@ class CustomizationBottomPanel(CustomizationBottomPanelMeta):
             self.__rebuildCarousel()
 
     def __scrollToNewItem(self):
+        itemsRequester = self.itemsCache.items
+        inventoryRequester = itemsRequester.inventory
+        carrouselItemCDs = self._carouselDP.getCarouselData()
+        currentVehItemType = g_currentVehicle.item.typeDescr
+        getItemByCD = itemsRequester.getItemByCD
+        noveltyCounters = inventoryRequester.getC11nItemsNoveltyCounters(currentVehItemType)
+        carrouselNoveltyItems = [ getItemByCD(intCD) for intCD in carrouselItemCDs if intCD in noveltyCounters ]
+        carrouselNoveltyItems.sort(key=comparisonKey)
+        season = self.__ctx.season
         itemTypes = CustomizationTabs.ITEM_TYPES[self.__ctx.mode.tabId]
-        newItems = sorted(g_currentVehicle.item.getNewC11nItems(g_currentVehicle.itemsCache.items), key=comparisonKey)
-        for item in newItems:
-            if item.itemTypeID in itemTypes and item.season & self.__ctx.season:
+        for item in carrouselNoveltyItems:
+            if item.itemTypeID in itemTypes and item.season & season:
                 self.__scrollToItem(item.intCD)
                 break
 
@@ -706,6 +736,8 @@ class CustomizationBottomPanel(CustomizationBottomPanelMeta):
         else:
             self._selectedItem = None
         self._carouselDP.selectItem(self._selectedItem)
+        if self._selectedItem is not None and scroll:
+            self.__scrollToItem(self._selectedItem.intCD, True)
         self.__updateStageSwitcherVisibility()
         self.__updatePopoverBtn()
         return

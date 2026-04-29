@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/account_helpers/settings_core/InterfaceScaleManager.py
-import weakref
-import Event
-import BigWorld
+import weakref, Event, BigWorld
 from gui.shared.utils import graphics
 from gui import g_guiResetters
 from account_helpers.settings_core import settings_constants
@@ -67,4 +63,6 @@ class InterfaceScaleManager(object):
             if ind == 0:
                 return 2.0 ** (scaleLength - 2)
             return 2.0 ** (ind - 1)
-        return scaleLength - 1 if ind == 0 else ind
+        if ind == 0:
+            return scaleLength - 1
+        return ind

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/crew/tankman_container_view_model.py
 from frameworks.wulf import Array
 from gui.impl.gen import R
 from gui.impl.gen.view_models.common.vehicle_info_model import VehicleInfoModel
@@ -7,7 +5,7 @@ from gui.impl.gen.view_models.views.lobby.crew.common.base_crew_view_model impor
 from gui.impl.gen.view_models.views.lobby.crew.tankman_container_tab_model import TankmanContainerTabModel
 
 class TankmanContainerViewModel(BaseCrewViewModel):
-    __slots__ = ('onTabChange',)
+    __slots__ = ('onTabChange', )
 
     def __init__(self, properties=8, commands=5):
         super(TankmanContainerViewModel, self).__init__(properties=properties, commands=commands)

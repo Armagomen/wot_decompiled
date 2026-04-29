@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/LobbyMenuMeta.py
 from gui.Scaleform.framework.entities.View import View
 
 class LobbyMenuMeta(View):
@@ -38,31 +36,41 @@ class LobbyMenuMeta(View):
         self._printOverrideError('toReportContent')
 
     def as_setVersionMessageS(self, message):
-        return self.flashObject.as_setVersionMessage(message) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setVersionMessage(message)
 
     def as_setCounterS(self, counters):
-        return self.flashObject.as_setCounter(counters) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setCounter(counters)
 
     def as_removeCounterS(self, counters):
-        return self.flashObject.as_removeCounter(counters) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_removeCounter(counters)
 
     def as_setPostButtonIconsS(self, iconClose, iconOpen):
-        return self.flashObject.as_setPostButtonIcons(iconClose, iconOpen) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setPostButtonIcons(iconClose, iconOpen)
 
     def as_setPostButtonVisibleS(self, isVisible):
-        return self.flashObject.as_setPostButtonVisible(isVisible) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setPostButtonVisible(isVisible)
 
     def as_showManualButtonS(self, value):
-        return self.flashObject.as_showManualButton(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_showManualButton(value)
 
     def as_setManualButtonIconS(self, icon):
-        return self.flashObject.as_setManualButtonIcon(icon) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setManualButtonIcon(icon)
 
     def as_setMenuStateS(self, state):
-        return self.flashObject.as_setMenuState(state) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setMenuState(state)
 
     def as_setCopyrightS(self, copyrightVal, reportContent, legalInfo):
-        return self.flashObject.as_setCopyright(copyrightVal, reportContent, legalInfo) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setCopyright(copyrightVal, reportContent, legalInfo)
 
     def as_showVersionS(self, value):
-        return self.flashObject.as_showVersion(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_showVersion(value)

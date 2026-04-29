@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/tooltips/conversion_tooltip.py
 from frameworks.wulf import ViewSettings
 from gui.impl import backport
 from gui.impl.gen import R
@@ -27,7 +25,7 @@ class ConversionTooltip(ViewImpl):
 
     def _onLoading(self, *args, **kwargs):
         super(ConversionTooltip, self)._onLoading()
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setTitle(self.__title)
             vm.setDescription(self.__description)
             booksList = vm.getBooksList()

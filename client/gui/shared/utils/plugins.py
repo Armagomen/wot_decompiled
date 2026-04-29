@@ -1,12 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/utils/plugins.py
-import operator
-import weakref
+import operator, weakref
 from debug_utils import LOG_ERROR
 from shared_utils import forEach
 
 class IPlugin(object):
-    __slots__ = ('_parentObj',)
+    __slots__ = ('_parentObj', )
 
     def __init__(self, parentObj):
         super(IPlugin, self).__init__()
@@ -71,7 +68,10 @@ class PluginsCollection(IPlugin):
         return
 
     def getPlugin(self, name):
-        return self.__plugins[name] if name in self.__plugins else None
+        if name in self.__plugins:
+            return self.__plugins[name]
+        else:
+            return
 
     def init(self, *args):
         self._invoke('init', *args)

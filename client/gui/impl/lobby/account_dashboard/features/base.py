@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/account_dashboard/features/base.py
 import typing
 if typing.TYPE_CHECKING:
     from typing import Union
@@ -28,7 +26,7 @@ class FeatureItem(object):
 
     def fill(self, ctx=None):
         if ctx is None:
-            with self._viewModel.transaction() as tx:
+            with self._viewModel.transaction() as (tx):
                 self._fillModel(tx)
         else:
             self._fillModel(ctx)

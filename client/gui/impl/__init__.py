@@ -1,12 +1,11 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/__init__.py
+from __future__ import absolute_import
 import typing
 from helpers import time_utils
 from skeletons.gui.game_control import IGameStateTracker
 from skeletons.gui.impl import IGuiLoader, IFullscreenManager, INotificationWindowController
 if typing.TYPE_CHECKING:
     from helpers.dependency import DependencyManager
-__all__ = ('getGuiImplConfig',)
+__all__ = ('getGuiImplConfig', )
 
 def getGuiImplConfig(manager):
     from gui.impl.gui_loader import GuiLoader

@@ -1,47 +1,35 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/entities/base/ctx.py
 import typing
 from external_strings_utils import truncate_utf8
 from gui.prb_control.settings import FUNCTIONAL_FLAG, CTRL_ENTITY_TYPE, convertFlagsToNames, CTRL_ENTITY_TYPE_NAMES, INVITE_COMMENT_MAX_LENGTH, REQUEST_TYPE
 from gui.shared.utils.decorators import ReprInjector
 from gui.shared.utils.requesters import RequestCtx
 
-@ReprInjector.withParent(('getCtrlTypeName', 'ctrlType'), ('getEntityType', 'entityType'), ('getWaitingID', 'waitingID'), ('getFlagsToStrings', 'flags'), ('isForced', 'forced'))
+@ReprInjector.withParent(('getCtrlTypeName', 'ctrlType'), ('getEntityType', 'entityType'), ('getWaitingID',
+                                                                                            'waitingID'), ('getFlagsToStrings',
+                                                                                                           'flags'), ('isForced',
+                                                                                                                      'forced'))
 class PrbCtrlRequestCtx(RequestCtx):
     __slots__ = ('__ctrlType', '__entityType', '__entityID', '__isForced', '__flags')
 
     def __init__(self, **kwargs):
-        if 'waitingID' in kwargs:
-            waitingID = kwargs['waitingID']
-        else:
-            waitingID = ''
+        waitingID = kwargs.get('waitingID', '')
         super(PrbCtrlRequestCtx, self).__init__(waitingID)
         if 'ctrlType' in kwargs:
             self.__ctrlType = kwargs['ctrlType']
         else:
             self.__ctrlType = CTRL_ENTITY_TYPE.UNKNOWN
-        if 'entityType' in kwargs:
-            self.__entityType = kwargs['entityType']
-        else:
-            self.__entityType = 0
-        if 'entityID' in kwargs:
-            self.__entityID = kwargs['entityID']
-        else:
-            self.__entityID = 0
-        if 'isForced' in kwargs:
-            self.__isForced = kwargs['isForced']
-        else:
-            self.__isForced = False
-        if 'flags' in kwargs:
-            self.__flags = kwargs['flags']
-        else:
-            self.__flags = FUNCTIONAL_FLAG.UNDEFINED
+        self.__entityType = kwargs.get('entityType', 0)
+        self.__entityID = kwargs.get('entityID', 0)
+        self.__isForced = kwargs.get('isForced', False)
+        self.__flags = kwargs.get('flags', FUNCTIONAL_FLAG.UNDEFINED)
 
     def getCtrlType(self):
         return self.__ctrlType
 
     def getCtrlTypeName(self):
-        return CTRL_ENTITY_TYPE_NAMES[self.__ctrlType] if self.__ctrlType in CTRL_ENTITY_TYPE_NAMES else 'CTRL_ENTITY_TYPE_{}'.format(self.__ctrlType)
+        if self.__ctrlType in CTRL_ENTITY_TYPE_NAMES:
+            return CTRL_ENTITY_TYPE_NAMES[self.__ctrlType]
+        return ('CTRL_ENTITY_TYPE_{}').format(self.__ctrlType)
 
     def getEntityType(self):
         return self.__entityType
@@ -73,7 +61,7 @@ class PrbCtrlRequestCtx(RequestCtx):
         self.__flags = FUNCTIONAL_FLAG.UNDEFINED
 
     def getFlagsToStrings(self):
-        return ', '.join(convertFlagsToNames(self.__flags))
+        return (', ').join(convertFlagsToNames(self.__flags))
 
 
 @ReprInjector.simple('actionName', 'mmData', 'accountsToInvite', 'extData')
@@ -120,7 +108,7 @@ class SendInvitesCtx(PrbCtrlRequestCtx):
 
 
 class CreatePrbEntityCtx(PrbCtrlRequestCtx):
-    __slots__ = ('__initCtx',)
+    __slots__ = ('__initCtx', )
 
     def __init__(self, ctrlType=CTRL_ENTITY_TYPE.UNKNOWN, entityType=0, flags=FUNCTIONAL_FLAG.UNDEFINED, initCtx=None):
         super(CreatePrbEntityCtx, self).__init__(ctrlType=ctrlType, entityType=entityType, flags=flags)

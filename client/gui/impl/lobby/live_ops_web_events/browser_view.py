@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/live_ops_web_events/browser_view.py
 from frameworks.wulf import ViewFlags
 from gui.Scaleform.framework.entities.inject_component_adaptor import InjectComponentAdaptor
 from gui.impl.gen import R

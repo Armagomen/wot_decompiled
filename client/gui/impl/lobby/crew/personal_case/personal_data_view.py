@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/personal_case/personal_data_view.py
 import typing
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import CREW_SKINS_VIEWED
@@ -75,7 +73,8 @@ class PersonalDataView(IPersonalTab, ViewImpl):
 
     @staticmethod
     def getTooltipData(event):
-        return createTooltipData(specialAlias=event.getArgument('tooltipId'), isSpecial=True, specialArgs=(int(event.getArgument('skinId')),))
+        return createTooltipData(specialAlias=event.getArgument('tooltipId'), isSpecial=True, specialArgs=(
+         int(event.getArgument('skinId')),))
 
     def _onLoading(self, *args, **kwargs):
         super(PersonalDataView, self)._onLoading(*args, **kwargs)
@@ -84,15 +83,24 @@ class PersonalDataView(IPersonalTab, ViewImpl):
         self.__dataProviders.update()
 
     def _getEvents(self):
-        return ((self.viewModel.onResetFilters, self.__onResetFilters),
-         (self.viewModel.onNewCardViewed, self.__onNewCardViewed),
-         (self.viewModel.onCardSelected, self.__onCardSelected),
-         (self.__filterState.onStateChanged, self.__onFilterStateUpdated),
-         (self.__dataProviders.onDataChanged, self.__fillModel),
-         (self.platoonCtrl.onMembersUpdate, self.__onMembersUpdate))
+        return (
+         (
+          self.viewModel.onResetFilters, self.__onResetFilters),
+         (
+          self.viewModel.onNewCardViewed, self.__onNewCardViewed),
+         (
+          self.viewModel.onCardSelected, self.__onCardSelected),
+         (
+          self.__filterState.onStateChanged, self.__onFilterStateUpdated),
+         (
+          self.__dataProviders.onDataChanged, self.__fillModel),
+         (
+          self.platoonCtrl.onMembersUpdate, self.__onMembersUpdate))
 
     def _getCallbacks(self):
-        return (('inventory', self.__onInventoryUpdate),)
+        return (
+         (
+          'inventory', self.__onInventoryUpdate),)
 
     def _clear(self):
         self.__tankman = None
@@ -119,7 +127,7 @@ class PersonalDataView(IPersonalTab, ViewImpl):
     @args2params(int)
     def __onNewCardViewed(self, cardID):
         newCount = 0
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             cards = tx.getCardList()
             for card in cards:
                 if card.getId() == cardID:
@@ -150,9 +158,9 @@ class PersonalDataView(IPersonalTab, ViewImpl):
                     cardData = item
                     break
 
-            result = yield wg_await(showDocumentChangeDialog(self.tankmanID, cardData))
-            if result.result and tankman.isInSkin:
-                self.__unEquipCrewSkin()
+        result = yield wg_await(showDocumentChangeDialog(self.tankmanID, cardData))
+        if result.result and tankman.isInSkin:
+            self.__unEquipCrewSkin()
         return
 
     @decorators.adisp_process('updating')
@@ -168,7 +176,7 @@ class PersonalDataView(IPersonalTab, ViewImpl):
         self.filterPanelWidget.applyStateToModel()
 
     def __fillModel(self):
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             tx.setIsCardsLocked(self.__isTankmanLocked())
             cards = tx.getCardList()
             cards.clear()

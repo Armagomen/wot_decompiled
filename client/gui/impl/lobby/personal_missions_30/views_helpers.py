@@ -1,9 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/personal_missions_30/views_helpers.py
 import itertools
 from collections import OrderedDict, namedtuple
-from typing import TYPE_CHECKING
-import SoundGroups
+import typing, SoundGroups
 from account_helpers.AccountSettings import AccountSettings, PERSONAL_MISSION_3
 from adisp import adisp_process
 from gui import GUI_SETTINGS
@@ -28,8 +25,10 @@ from shared_utils import findFirst
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
+    from typing import List, Tuple
     from gui.impl.lobby.personal_missions_30.personal_mission_constants import StageInfo
+    from gui.server_events.event_items import PMOperation
 ConditionsConfig = namedtuple('ConditionsConfig', 'maxProgressValue, allQuestsRequired, questsDetails')
 
 def isIntroShown(intro):
@@ -61,11 +60,15 @@ def markBannerAnimationShown(animationKey, reset=False, settingsCore=None):
 
 
 def isVehDetailInstalled(lastInstalledDetail, detail):
-    return int(detail.rsplit(':')[-1]) <= lastInstalledDetail
+    return int(detail.rsplit(':')[(-1)]) <= lastInstalledDetail
+
+
+def _vehDetailsSortKey(vehDetail):
+    return int(vehDetail[0].rsplit(':')[(-1)])
 
 
 def getVehicleDetails(operation):
-    return sorted(tuple(operation.getVehDetails().items()), key=lambda vehDetail: int(vehDetail[0].rsplit(':')[-1]))
+    return sorted(operation.getVehDetails().items(), key=_vehDetailsSortKey)
 
 
 def firstUnclaimedOperation(operations):
@@ -83,16 +86,21 @@ def getMissionConfigData(mission):
         initData = conditionsCfg.get('initData')
         if not allQuestsRequired:
             allQuestsRequired = not initData.get('isInOrGroup')
-        questID = '{}_{}'.format(mission.getGeneralQuestID(), conditionsCfg.get('progressID'))
-        missionQuests[questID] = {'title': initData.get('title'),
-         'description': initData.get('description'),
-         'icon': initData.get('iconID')}
+        questID = ('{}_{}').format(mission.getGeneralQuestID(), conditionsCfg.get('progressID'))
+        missionQuests[questID] = {'title': initData.get('title'), 
+           'description': initData.get('description'), 
+           'icon': initData.get('iconID')}
 
     return ConditionsConfig(maxProgressValue, allQuestsRequired, missionQuests)
 
 
 def getDetailNameByToken(token):
-    return '_'.join(token.split(':')[2:])
+    return ('_').join(token.split(':')[2:])
+
+
+@dependency.replace_none_kwargs(eventsCache=IEventsCache)
+def getBranchSortedPmOperations(branchID, eventsCache=None):
+    return OrderedDict(sorted(eventsCache.getPersonalMissions().getOperationsForBranch(branchID).items()))
 
 
 @dependency.replace_none_kwargs(eventsCache=IEventsCache)
@@ -133,7 +141,7 @@ def getQuestsByOperationsChains(eventsCache=None):
 def getDetailedOperationStatus(operation, eventsCache=None, settingsCore=None):
     operations = OrderedDict(sorted(eventsCache.getPersonalMissions().getAllOperations(PM_BRANCH.V2_BRANCHES).items())).values()
     notCurrentOperations = [ pm3Operation for pm3Operation in operations if pm3Operation.getID() != operation.getID() ]
-    isAnotherOperationInProgress = any((operation.isInProgress() for operation in notCurrentOperations))
+    isAnotherOperationInProgress = any(operation.isInProgress() for operation in notCurrentOperations)
     nextNotStartedOperation = getNextNotStartedOperation(operation, notCurrentOperations)
     unclaimedOperation = firstUnclaimedOperation(operations)
     state = OperationStatus.AVAILABLE
@@ -144,9 +152,9 @@ def getDetailedOperationStatus(operation, eventsCache=None, settingsCore=None):
     operationWasStarted = wasOperationActivatedBefore(operation, unclaimedOperation)
     operationIsPaused = operation.isPaused()
     operationIsInProgress = operation.isInProgress()
-    isAnotherOperationActive = any((operation.isActive() for operation in notCurrentOperations))
+    isAnotherOperationActive = any(operation.isActive() for operation in notCurrentOperations)
     selectedQuests = eventsCache.getPersonalMissions().getSelectedQuestsForBranch(operation.getBranch()).values()
-    if all((operation.isFullCompleted() for operation in operations)):
+    if all(operation.isFullCompleted() for operation in operations):
         state = OperationStatus.CAMPAIGN_FINISHED
     elif unclaimedOperation is not None and unclaimedOperation.getID() < operation.getID():
         state = OperationStatus.PRECEDING_OPERATION_NOT_COMPLETED
@@ -196,7 +204,8 @@ def getMainRewardInfo(operation, allOperations, rewardType):
     elif rewardType == RewardsType.OPERATION:
         completedTasks = len(operation.getCompletedQuests())
         tasksNumber = len(list(itertools.chain.from_iterable(operation.getQuests().values())))
-    return (completedTasks, tasksNumber)
+    return (
+     completedTasks, tasksNumber)
 
 
 def getNextNotStartedOperation(currentOperation, operations):
@@ -233,7 +242,7 @@ def showRewardVehicleInHangar(operation, itemsCache=None):
 
 @dependency.replace_none_kwargs(eventsCache=IEventsCache)
 def isPMCampaignsStarted(branches=PM_BRANCH.V1_BRANCHES, eventsCache=None):
-    return any((operation for operation in eventsCache.getPersonalMissions().getAllOperations(branches=branches).values() if operation.isStarted()))
+    return any(operation for operation in eventsCache.getPersonalMissions().getAllOperations(branches=branches).values() if operation.isStarted())
 
 
 def setVideoOverlayOn():
@@ -244,12 +253,39 @@ def setVideoOverlayOff():
     SoundGroups.g_instance.setState(StatesGroup.VIDEO_OVERLAY, States.VIDEO_OVERLAY_OFF)
 
 
-def isOperationAvailableByVehicles(operation):
-    return isPMCampaignsStarted(branches=PM_BRANCH.ALL) or operation.hasRequiredVehicles() if operation.getBranch() == PM_BRANCH.PERSONAL_MISSION_3 else operation.hasRequiredVehicles()
+def isOperationAvailableByVehicles--- This code section failed: ---
+
+ L. 320         0  LOAD_FAST             0  'operation'
+                3  LOAD_ATTR             0  'getBranch'
+                6  CALL_FUNCTION_0       0  None
+                9  LOAD_GLOBAL           1  'PM_BRANCH'
+               12  LOAD_ATTR             2  'PERSONAL_MISSION_3'
+               15  COMPARE_OP            2  ==
+               18  POP_JUMP_IF_FALSE    49  'to 49'
+               21  LOAD_GLOBAL           3  'isPMCampaignsStarted'
+               24  LOAD_CONST               'branches'
+               27  LOAD_GLOBAL           1  'PM_BRANCH'
+               30  LOAD_ATTR             4  'ALL'
+               33  CALL_FUNCTION_256   256  None
+               36  JUMP_IF_TRUE_OR_POP    58  'to 58'
+               39  LOAD_FAST             0  'operation'
+               42  LOAD_ATTR             5  'hasRequiredVehicles'
+               45  CALL_FUNCTION_0       0  None
+               48  RETURN_END_IF    
+             49_0  COME_FROM            36  '36'
+             49_1  COME_FROM            18  '18'
+
+ L. 321        49  LOAD_FAST             0  'operation'
+               52  LOAD_ATTR             5  'hasRequiredVehicles'
+               55  CALL_FUNCTION_0       0  None
+               58  RETURN_VALUE     
+               -1  RETURN_LAST      
+
+Parse error at or near `None' instruction at offset -1
 
 
 def getStageNumberByDetailId(detailId):
-    return int(detailId.split('_')[-1])
+    return int(detailId.split('_')[(-1)])
 
 
 def hasAssemblingVideo(operationID, stageNumber):
@@ -299,4 +335,5 @@ def getRegularQuestsPMPoints(missionType, eventsCache=None):
                 if quest.isCompleted():
                     earnedPoints += points
 
-    return (earnedPoints, totalPoints)
+    return (
+     earnedPoints, totalPoints)# Decompile failed :(

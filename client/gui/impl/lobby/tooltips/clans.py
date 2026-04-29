@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/tooltips/clans.py
 from frameworks.wulf import View, ViewFlags, ViewSettings
 from gui.impl.gen.view_models.views.lobby.tooltips.clan_short_info_content_model import ClanShortInfoContentModel
 from gui.shared.view_helpers.emblems import ClanEmblemsHelper
@@ -22,5 +20,5 @@ class ClanShortInfoTooltipContent(View, ClanEmblemsHelper):
         return super(ClanShortInfoTooltipContent, self).getViewModel()
 
     def onClanEmblem32x32Received(self, clanDbID, emblem):
-        if emblem and self.viewModel and self.viewModel.isBound():
+        if emblem and self.viewModel:
             self.viewModel.setEmblem(self.getMemoryTexturePath(emblem))

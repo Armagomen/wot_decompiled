@@ -1,10 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/collection/awards_view_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.collection.reward_model import RewardModel
 
 class AwardsViewModel(ViewModel):
-    __slots__ = ('onOpenCollection',)
+    __slots__ = ('onOpenCollection', )
 
     def __init__(self, properties=4, commands=1):
         super(AwardsViewModel, self).__init__(properties=properties, commands=commands)

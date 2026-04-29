@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/comp7_helpers/comp7_purchase_helpers.py
 import typing
 from comp7.gui.impl.gen.view_models.views.lobby.base_product_model import ProductState, ProductTypes
 from comp7.gui.impl.gen.view_models.views.lobby.reward_product_model import RewardProductModel
@@ -20,11 +18,11 @@ if typing.TYPE_CHECKING:
     from gui.shared.gui_items.fitting_item import FittingItem
     from gui.shared.gui_items.Vehicle import Vehicle
     from gui.shared.gui_items.customization.c11n_items import Style
-    T_PRODUCT_MODEL = Union[VehicleProductModel, Style3dProductModel, RewardProductModel]
-    T_PRODUCT_MODEL_TYPE = Union[Type[VehicleProductModel], Type[Style3dProductModel], Type[RewardProductModel]]
+    T_PRODUCT_MODEL = Union[(VehicleProductModel, Style3dProductModel, RewardProductModel)]
+    T_PRODUCT_MODEL_TYPE = Union[(Type[VehicleProductModel], Type[Style3dProductModel], Type[RewardProductModel])]
 
 class _BaseProductPacker(object):
-    __slots__ = ('__itemCD',)
+    __slots__ = ('__itemCD', )
     _itemsCache = dependency.descriptor(IItemsCache)
     __tradeInController = dependency.descriptor(ITradeInController)
 
@@ -56,7 +54,9 @@ class _BaseProductPacker(object):
     def __getState(self, item):
         if item.isInInventory:
             return ProductState.PURCHASED
-        return ProductState.READYTORESTORE if item.isRestoreAvailable() else ProductState.READYTOPURCHASE
+        if item.isRestoreAvailable():
+            return ProductState.READYTORESTORE
+        return ProductState.READYTOPURCHASE
 
     def __setPriceModelData(self, item, price, priceModel):
         if item.isRestorePossible():
@@ -135,7 +135,7 @@ def getComp7ProductModel(itemCD, price):
     elif itemTypeID == ITEM_TYPES.optionalDevice:
         packer = _OptionalDevicePacker(itemCD)
     if packer is None:
-        raise SoftException('Could not find packer for {}'.format(itemCD))
+        raise SoftException(('Could not find packer for {}').format(itemCD))
     return packer.pack(price)
 
 

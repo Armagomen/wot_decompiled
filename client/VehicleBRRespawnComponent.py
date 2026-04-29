@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/VehicleBRRespawnComponent.py
-import logging
-import BigWorld
+import logging, BigWorld
 from helpers import dependency
 from script_component.DynamicScriptComponent import DynamicScriptComponent
 from skeletons.gui.battle_session import IBattleSessionProvider

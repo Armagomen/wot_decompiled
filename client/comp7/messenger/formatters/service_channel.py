@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/messenger/formatters/service_channel.py
 import logging
 from itertools import chain
 import BigWorld
@@ -40,7 +38,7 @@ class Comp7BattleQuestsFormatter(object):
 
     def __getComp7Quests(self, questIDs):
         actualSeasonNumber = self.__comp7Ctrl.getActualSeasonNumber()
-        return set((qId for qId in questIDs if isComp7Quest(qId, actualSeasonNumber)))
+        return set(qId for qId in questIDs if isComp7Quest(qId, actualSeasonNumber))
 
     def __formatTokensReward(self, message, questID):
         rewardsData = message.data.get('detailedRewards', {}).get(questID, {})
@@ -50,20 +48,20 @@ class Comp7BattleQuestsFormatter(object):
             rewardsData.update({'popUpRecords': popUps})
         if rewardsData:
             achievesFormatter = QuestAchievesFormatter()
-            return g_settings.msgTemplates.format('comp7RegularRewardMessage', ctx={'title': backport.text(R.strings.comp7_ext.system_messages.tokenWeeklyReward.title()),
-             'body': backport.text(R.strings.comp7_ext.system_messages.tokenWeeklyReward.body(), at=TimeFormatter.getLongDatetimeFormat(time_utils.makeLocalServerTime(message.sentTime)), rewards=achievesFormatter.formatQuestAchieves(rewardsData, asBattleFormatter=False))})
+            return g_settings.msgTemplates.format('comp7RegularRewardMessage', ctx={'title': backport.text(R.strings.comp7_ext.system_messages.tokenWeeklyReward.title()), 
+               'body': backport.text(R.strings.comp7_ext.system_messages.tokenWeeklyReward.body(), at=TimeFormatter.getLongDatetimeFormat(time_utils.makeLocalServerTime(message.sentTime)), rewards=achievesFormatter.formatQuestAchieves(rewardsData, asBattleFormatter=False))})
         else:
-            return None
+            return
 
     @staticmethod
     def __formatWeeklyReward(message, questID):
         rewardsData = message.data.get('detailedRewards', {}).get(questID, {})
         if rewardsData:
             achievesFormatter = QuestAchievesFormatter()
-            return g_settings.msgTemplates.format('comp7RegularRewardMessage', ctx={'title': backport.text(R.strings.comp7_ext.system_messages.weeklyReward.title()),
-             'body': backport.text(R.strings.comp7_ext.system_messages.weeklyReward.body(), at=TimeFormatter.getLongDatetimeFormat(time_utils.makeLocalServerTime(message.sentTime)), rewards=achievesFormatter.formatQuestAchieves(rewardsData, asBattleFormatter=False))})
+            return g_settings.msgTemplates.format('comp7RegularRewardMessage', ctx={'title': backport.text(R.strings.comp7_ext.system_messages.weeklyReward.title()), 
+               'body': backport.text(R.strings.comp7_ext.system_messages.weeklyReward.body(), at=TimeFormatter.getLongDatetimeFormat(time_utils.makeLocalServerTime(message.sentTime)), rewards=achievesFormatter.formatQuestAchieves(rewardsData, asBattleFormatter=False))})
         else:
-            return None
+            return
 
     @staticmethod
     def __getDossierPopUps(dossierData, popUpRecords):
@@ -71,19 +69,19 @@ class Comp7BattleQuestsFormatter(object):
         for dossierRecord in chain.from_iterable(dossierData.values()):
             if dossierRecord[0] in ACHIEVEMENT_BLOCK.ALL:
                 achievementID = RECORD_DB_IDS.get(dossierRecord, None)
-                popUps.update((popUp for popUp in popUpRecords if popUp[0] == achievementID))
+                popUps.update(popUp for popUp in popUpRecords if popUp[0] == achievementID)
 
         return popUps
 
 
 class Comp7BattleResultsFormatter(BattleResultsFormatter):
     __comp7Controller = dependency.descriptor(IComp7Controller)
-    __COMP7SeasonResultsKeys = {SCENARIO_RESULT.LOSE: 'comp7SeasonBattleDefeatResult',
-     SCENARIO_RESULT.PARTIAL: 'comp7SeasonBattleDrawGameResult',
-     SCENARIO_RESULT.WIN: 'comp7SeasonBattleVictoryResult'}
-    __COMP7QualificationResultsKeys = {SCENARIO_RESULT.LOSE: 'comp7QualificationBattleDefeatResult',
-     SCENARIO_RESULT.PARTIAL: 'comp7QualificationBattleDrawGameResult',
-     SCENARIO_RESULT.WIN: 'comp7QualificationBattleVictoryResult'}
+    __COMP7SeasonResultsKeys = {SCENARIO_RESULT.LOSE: 'comp7SeasonBattleDefeatResult', 
+       SCENARIO_RESULT.PARTIAL: 'comp7SeasonBattleDrawGameResult', 
+       SCENARIO_RESULT.WIN: 'comp7SeasonBattleVictoryResult'}
+    __COMP7QualificationResultsKeys = {SCENARIO_RESULT.LOSE: 'comp7QualificationBattleDefeatResult', 
+       SCENARIO_RESULT.PARTIAL: 'comp7QualificationBattleDrawGameResult', 
+       SCENARIO_RESULT.WIN: 'comp7QualificationBattleVictoryResult'}
 
     def _formatMessages(self, message, arenaType, arenaCreateTime):
         result = super(Comp7BattleResultsFormatter, self)._formatMessages(message, arenaType, arenaCreateTime)
@@ -103,9 +101,10 @@ class Comp7BattleResultsFormatter(BattleResultsFormatter):
             _, __, ___, savedData = params
             restriction = message.data.get('restriction', None)
             extraData = restriction[2] if restriction else {}
-            savedData.update({FAIRPLAY_VIOLATION_SYS_MSG_SAVED_DATA.COMP7_PENALTY: extraData.get('penalty', 0),
-             FAIRPLAY_VIOLATION_SYS_MSG_SAVED_DATA.COMP7_IS_QUALIFICATION: extraData.get('qualActive', False)})
-        return (text, params)
+            savedData.update({FAIRPLAY_VIOLATION_SYS_MSG_SAVED_DATA.COMP7_PENALTY: extraData.get('penalty', 0), 
+               FAIRPLAY_VIOLATION_SYS_MSG_SAVED_DATA.COMP7_IS_QUALIFICATION: extraData.get('qualActive', False)})
+        return (
+         text, params)
 
     def _prepareFormatData(self, message):
         result = super(Comp7BattleResultsFormatter, self)._prepareFormatData(message)
@@ -128,7 +127,7 @@ class Comp7BattleResultsFormatter(BattleResultsFormatter):
         return (templateName, ctx)
 
     def __makeComp7SeasonMsgCtx(self, battleResults, ctx):
-        ctx['ratingPointsStr'] = g_settings.htmlTemplates.format('battleResultRatingPoints', {'ratingPoints': '{:+}'.format(battleResults['comp7RatingDelta'])})
+        ctx['ratingPointsStr'] = g_settings.htmlTemplates.format('battleResultRatingPoints', {'ratingPoints': ('{:+}').format(battleResults['comp7RatingDelta'])})
         return ctx
 
     def __makeTournamentComp7SeasonMsgCtx(self, battleResults, ctx):
@@ -137,10 +136,12 @@ class Comp7BattleResultsFormatter(BattleResultsFormatter):
 
 
 class Comp7QualificationRewardsFormatter(QuestAchievesFormatter):
-    _BULLET = u'\u2022 '
+    _BULLET = '• '
     _SEPARATOR = '<br/>' + _BULLET
 
     @classmethod
     def formatQuestAchieves(cls, data, asBattleFormatter, processCustomizations=True, processTokens=True):
         result = super(Comp7QualificationRewardsFormatter, cls).formatQuestAchieves(data, asBattleFormatter, processCustomizations, processTokens)
-        return cls._BULLET + result if result else result
+        if result:
+            return cls._BULLET + result
+        return result

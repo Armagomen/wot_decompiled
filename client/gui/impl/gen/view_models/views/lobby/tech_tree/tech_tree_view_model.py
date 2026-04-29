@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/tech_tree/tech_tree_view_model.py
 from enum import Enum
 from frameworks.wulf import Array, Map, ViewModel
 from gui.impl.gen.view_models.views.lobby.common.router_model import RouterModel
@@ -19,7 +17,8 @@ class NationEnum(Enum):
 
 
 class TechTreeViewModel(ViewModel):
-    __slots__ = ('onOpenAboutVehicle', 'onAddToCompare', 'onOpenCollectableVehicles', 'onOpenPremiumShop')
+    __slots__ = ('onOpenAboutVehicle', 'onAddToCompare', 'onOpenCollectableVehicles',
+                 'onOpenPremiumShop')
 
     def __init__(self, properties=8, commands=4):
         super(TechTreeViewModel, self).__init__(properties=properties, commands=commands)

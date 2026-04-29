@@ -1,13 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/account_helpers/CustomFilesCache.py
-import os
-import time
-import base64
-import urllib2
-import binascii
-import threading
-import random
-import shelve as provider
+import os, time, base64, urllib2, binascii, threading, random, shelve as provider
 from functools import partial
 from Queue import Queue
 from pickle import HIGHEST_PROTOCOL as HIGHEST_PICKLE_PROTOCOL, UnpicklingError
@@ -42,31 +33,14 @@ def _LOG_EXECUTING_TIME(startTime, methodName, deltaTime=0.1):
 def parseHttpTime(t):
     if t is None:
         return
-    elif isinstance(t, int):
-        return t
     else:
+        if isinstance(t, int):
+            return t
         if isinstance(t, str):
             try:
                 parts = t.split()
-                weekdays = ['mon',
-                 'tue',
-                 'wed',
-                 'thu',
-                 'fri',
-                 'sat',
-                 'sun']
-                months = ['jan',
-                 'feb',
-                 'mar',
-                 'apr',
-                 'may',
-                 'jun',
-                 'jul',
-                 'aug',
-                 'sep',
-                 'oct',
-                 'nov',
-                 'dec']
+                weekdays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
+                months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
                 tm_wday = weekdays.index(parts[0][:3].lower())
                 tm_day = int(parts[1])
                 tm_month = months.index(parts[2].lower()) + 1
@@ -75,15 +49,7 @@ def parseHttpTime(t):
                 tm_hour = int(tm[0])
                 tm_min = int(tm[1])
                 tm_sec = int(tm[2])
-                t = int(time.mktime((tm_year,
-                 tm_month,
-                 tm_day,
-                 tm_hour,
-                 tm_min,
-                 tm_sec,
-                 tm_wday,
-                 0,
-                 -1)))
+                t = int(time.mktime((tm_year, tm_month, tm_day, tm_hour, tm_min, tm_sec, tm_wday, 0, -1)))
             except Exception as e:
                 LOG_ERROR(e, t)
                 t = None
@@ -93,32 +59,11 @@ def parseHttpTime(t):
 
 def makeHttpTime(dt):
     try:
-        weekday = ['Mon',
-         'Tue',
-         'Wed',
-         'Thu',
-         'Fri',
-         'Sat',
-         'Sun'][dt.tm_wday]
-        month = ['Jan',
-         'Feb',
-         'Mar',
-         'Apr',
-         'May',
-         'Jun',
-         'Jul',
-         'Aug',
-         'Sep',
-         'Oct',
-         'Nov',
-         'Dec'][dt.tm_mon - 1]
-        t = '%s, %02d %s %04d %02d:%02d:%02d GMT' % (weekday,
-         dt.tm_mday,
-         month,
-         dt.tm_year,
-         dt.tm_hour,
-         dt.tm_min,
-         dt.tm_sec)
+        weekday = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][dt.tm_wday]
+        month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
+         'Oct', 'Nov', 'Dec'][(dt.tm_mon - 1)]
+        t = '%s, %02d %s %04d %02d:%02d:%02d GMT' % (weekday, dt.tm_mday, month,
+         dt.tm_year, dt.tm_hour, dt.tm_min, dt.tm_sec)
     except Exception as e:
         LOG_ERROR(e, dt)
         t = None
@@ -128,15 +73,8 @@ def makeHttpTime(dt):
 
 def getSafeDstUTCTime():
     t = time.gmtime()
-    return int(time.mktime((t.tm_year,
-     t.tm_mon,
-     t.tm_mday,
-     t.tm_hour,
-     t.tm_min,
-     t.tm_sec,
-     t.tm_wday,
-     0,
-     -1)))
+    return int(time.mktime((t.tm_year, t.tm_mon, t.tm_mday,
+     t.tm_hour, t.tm_min, t.tm_sec, t.tm_wday, 0, -1)))
 
 
 class NotModifiedHandler(urllib2.BaseHandler):
@@ -346,8 +284,8 @@ class CustomFilesCache(object):
         return
 
     def __readLocalFile(self, url, showImmediately):
-        task = {'opType': CFC_OP_TYPE.READ,
-         'callback': partial(self.__onReadLocalFile, url, showImmediately)}
+        task = {'opType': CFC_OP_TYPE.READ, 
+           'callback': partial(self.__onReadLocalFile, url, showImmediately)}
         self.__worker.add_task(task)
 
     def __onReadLocalFile(self, url, showImmediately):
@@ -357,7 +295,7 @@ class CustomFilesCache(object):
             remoteFile = self.__db[key] if self.__db is not None and key in self.__db else None
             _LOG_EXECUTING_TIME(startTime, '__onReadLocalFile')
             crc, f, ver = remoteFile[2:5]
-            if crc != binascii.crc32(f) or _CACHE_VERSION != ver:
+            if crc != binascii.crc32(f) or ver != _CACHE_VERSION:
                 LOG_DEBUG('Old file was found.', url)
                 raise SoftException('Invalid data.')
         except Exception:
@@ -378,8 +316,8 @@ class CustomFilesCache(object):
         return
 
     def __checkFile(self, url, showImmediately, headers=None):
-        task = {'opType': CFC_OP_TYPE.CHECK,
-         'callback': partial(self.__onCheckFile, url, showImmediately, headers)}
+        task = {'opType': CFC_OP_TYPE.CHECK, 
+           'callback': partial(self.__onCheckFile, url, showImmediately, headers)}
         self.__worker.add_task(task)
 
     def __onCheckFile(self, url, showImmediately, headers):
@@ -398,8 +336,8 @@ class CustomFilesCache(object):
         return
 
     def __readRemoteFile(self, url, modified_time, showImmediately, headers):
-        task = {'opType': CFC_OP_TYPE.DOWNLOAD,
-         'callback': partial(self.__onReadRemoteFile, url, showImmediately, modified_time, headers)}
+        task = {'opType': CFC_OP_TYPE.DOWNLOAD, 
+           'callback': partial(self.__onReadRemoteFile, url, showImmediately, modified_time, headers)}
         self.__worker.add_task(task)
 
     def __onReadRemoteFile(self, url, showImmediately, modified_time, headers):
@@ -462,41 +400,35 @@ class CustomFilesCache(object):
             else:
                 self.__postTask(url, None, True)
             return
-        else:
-            file_hash = base64.b32encode(url)
-            ctime = getSafeDstUTCTime()
-            fileChanged = False
-            try:
-                self.__mutex.acquire()
-                cache = self.__cache
-                if remote_file is None and last_modified is not None:
-                    value = cache.get(file_hash, None)
-                    if value is None:
-                        LOG_WARNING('File is expected in cache, but there is no file')
-                        self.__postTask(url, None, True)
-                        return
-                    crc, remote_file = value[2:4]
-                else:
-                    crc = binascii.crc32(remote_file)
-                    fileChanged = True
-                packet = (expires,
-                 ctime,
-                 crc,
-                 remote_file,
-                 _CACHE_VERSION,
-                 last_modified)
-                cache[file_hash] = packet
-            finally:
-                self.__mutex.release()
-
-            LOG_DEBUG('writeCache', url, last_modified, expires)
-            self.__writeCache(file_hash, packet)
-            if showImmediately and not fileChanged:
-                LOG_DEBUG('__onReadRemoteFile, showImmediately = True. Release callbacks.', url)
-                self.__processedCache.pop(url, None)
+        file_hash = base64.b32encode(url)
+        ctime = getSafeDstUTCTime()
+        fileChanged = False
+        try:
+            self.__mutex.acquire()
+            cache = self.__cache
+            if remote_file is None and last_modified is not None:
+                value = cache.get(file_hash, None)
+                if value is None:
+                    LOG_WARNING('File is expected in cache, but there is no file')
+                    self.__postTask(url, None, True)
+                    return
+                crc, remote_file = value[2:4]
             else:
-                self.__get(url, False, True)
-            return
+                crc = binascii.crc32(remote_file)
+                fileChanged = True
+            packet = (expires, ctime, crc, remote_file, _CACHE_VERSION, last_modified)
+            cache[file_hash] = packet
+        finally:
+            self.__mutex.release()
+
+        LOG_DEBUG('writeCache', url, last_modified, expires)
+        self.__writeCache(file_hash, packet)
+        if showImmediately and not fileChanged:
+            LOG_DEBUG('__onReadRemoteFile, showImmediately = True. Release callbacks.', url)
+            self.__processedCache.pop(url, None)
+        else:
+            self.__get(url, False, True)
+        return
 
     def __prepareCache(self, recreate=False):
         try:
@@ -528,8 +460,8 @@ class CustomFilesCache(object):
         if name in self.__written_cache:
             return
         self.__written_cache.add(name)
-        task = {'opType': CFC_OP_TYPE.WRITE,
-         'callback': partial(self.__onWriteCache, name, packet)}
+        task = {'opType': CFC_OP_TYPE.WRITE, 
+           'callback': partial(self.__onWriteCache, name, packet)}
         self.__worker.add_task(task)
 
     def __onWriteCache(self, name, packet):

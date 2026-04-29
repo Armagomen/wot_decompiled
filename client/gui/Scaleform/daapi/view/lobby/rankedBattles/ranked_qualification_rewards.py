@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/rankedBattles/ranked_qualification_rewards.py
 from collections import OrderedDict
 from frameworks.wulf import ViewFlags, ViewSettings
 from helpers import dependency
@@ -49,7 +47,10 @@ class RankedQualificationRewardsView(ViewImpl):
 
     def getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        return None if tooltipId is None else self.__tooltipItems.get(tooltipId)
+        if tooltipId is None:
+            return
+        else:
+            return self.__tooltipItems.get(tooltipId)
 
     def __update(self):
         self.__updateData()
@@ -65,12 +66,12 @@ class RankedQualificationRewardsView(ViewImpl):
         self.__quests[self.__totalBattles] = first(self.__rankedController.getQuestsForRank(ZERO_RANK_ID + 1).values())
 
     def __updateViewModel(self):
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             tx.setCurrentProgress(self.__currentBattles)
             tx.setTotalProgress(self.__totalBattles)
             battleBonuses = tx.getBattleBonuses()
             battleBonuses.clear()
-            with battleBonuses.transaction() as bbtx:
+            with battleBonuses.transaction() as (bbtx):
                 for battle in self.__quests:
                     battleBonus = RankedQualificationRewardsBattleBonusModel()
                     battleBonus.setBattlesCount(battle)

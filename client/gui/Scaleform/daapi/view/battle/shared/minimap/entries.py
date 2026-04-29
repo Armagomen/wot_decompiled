@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/minimap/entries.py
+from __future__ import absolute_import
 import BigWorld
 from gui.Scaleform.daapi.view.battle.shared.minimap import settings
 from gui.battle_control.battle_constants import VEHICLE_LOCATION
@@ -40,9 +39,12 @@ class MinimapEntry(object):
         return
 
 
-@ReprInjector.simple(('_entryID', 'id'), ('_isActive', 'active'), ('_isInAoI', 'AoI'), ('_isEnemy', 'enemy'), ('_classTag', 'class'))
+@ReprInjector.simple(('_entryID', 'id'), ('_isActive', 'active'), ('_isInAoI', 'AoI'), ('_isEnemy',
+                                                                                        'enemy'), ('_classTag',
+                                                                                                   'class'))
 class VehicleEntry(MinimapEntry):
-    __slots__ = ('_classTag', '_location', '_guiLabel', '_spottedCount', '_spottedTime', '_isInAoI', '_isEnemy', '_isAlive')
+    __slots__ = ('_classTag', '_location', '_guiLabel', '_spottedCount', '_spottedTime',
+                 '_isInAoI', '_isEnemy', '_isAlive')
 
     def __init__(self, entryID, active, matrix=None, location=VEHICLE_LOCATION.UNDEFINED):
         super(VehicleEntry, self).__init__(entryID, active, matrix=matrix)
@@ -111,8 +113,7 @@ class VehicleEntry(MinimapEntry):
             elif self._classTag != 'SPG':
                 self._spottedTime = BigWorld.serverTime()
             return True
-        else:
-            return False
+        return False
 
     def updatePosition(self, position):
         self._matrix.source.setTranslate(position)

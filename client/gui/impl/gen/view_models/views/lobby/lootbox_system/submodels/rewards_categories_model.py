@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/lootbox_system/submodels/rewards_categories_model.py
 from enum import Enum
 from frameworks.wulf import ViewModel
 
@@ -22,7 +20,11 @@ class Type(Enum):
     BOUNTYEQUIPMENT = 'trophy_equipment'
     STANDARDEQUIPMENT = 'standard_equipment'
     DIRECTIVES = 'battleBooster_gift'
-    TRAININGMATERIALS = 'training_materials'
+    MENTORINGLICENSE = 'mentoringLicense'
+    CREWBOOK = 'crewBook'
+    GUIDE = 'guide'
+    BROCHURE = 'brochure'
+    RECERTIFICATIONFORM = 'recertificationForm'
     BLUEPRINTS = 'blueprints'
     BATTLEBONUSX5 = 'battle_bonus_x5'
     CREWBONUSX3 = 'crew_bonus_x3'

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/customization/progressive_items_view/progression_cases_tutorial_model.py
 from frameworks.wulf import ViewModel
 
 class ProgressionCasesTutorialModel(ViewModel):

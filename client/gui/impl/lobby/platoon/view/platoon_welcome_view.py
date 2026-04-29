@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/platoon/view/platoon_welcome_view.py
 import logging
 from gui.impl.lobby.platoon.platoon_helpers import getPlatoonBonusState, BonusState
 from helpers import dependency
@@ -66,7 +64,7 @@ class WelcomeView(ViewImpl):
         self.__tiersLimitSubview.hideSettings()
 
     def _initButtons(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.findPlatoon.setCaption(backport.text(strButtons.findPlayers.caption()))
             model.findPlatoon.setDescription(backport.text(strButtons.findPlayers.descriptionDropdown()))
             model.findPlatoon.setIsEnabled(self.__platoonCtrl.canStartSearch())
@@ -77,7 +75,7 @@ class WelcomeView(ViewImpl):
             model.setHasCreditsBonus(BonusState.hasAnyBitSet(BonusState.SQUAD_CREDITS_BONUS | BonusState.PREM_CREDITS_BONUS, bonusState))
 
     def _addListeners(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.findPlatoon.onClick += self.__onFind
             model.createPlatoon.onClick += self.__onCreate
             model.onOutsideClick += self._onOutsideClick
@@ -86,7 +84,7 @@ class WelcomeView(ViewImpl):
         self.__platoonCtrl.onAutoSearchCooldownChanged += self.__updateFindButton
 
     def _removeListeners(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.findPlatoon.onClick -= self.__onFind
             model.createPlatoon.onClick -= self.__onCreate
             model.onOutsideClick -= self._onOutsideClick
@@ -100,7 +98,7 @@ class WelcomeView(ViewImpl):
             self.hideSettings()
 
     def __updateFindButton(self, *args):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.findPlatoon.setIsEnabled(self.__platoonCtrl.canStartSearch() and not self.__platoonCtrl.isInCoolDown(REQUEST_TYPE.AUTO_SEARCH))
 
     def __onServerSettingsChange(self, diff):
@@ -108,7 +106,7 @@ class WelcomeView(ViewImpl):
             self.update(updateTiersLimitSubview=False)
 
     def __showSettingsCallback(self, state):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setIsSettingsVisible(state)
 
     def __onCreate(self):
@@ -129,7 +127,9 @@ class WelcomeView(ViewImpl):
                 body = R.strings.platoon.buttons.findPlayers.tooltip.noSuitableTank.body()
             return AlertTooltip(header, body)
         else:
-            return SquadBonusTooltipContent(bonusState=getPlatoonBonusState(False)) if contentID == R.views.lobby.premacc.tooltips.SquadBonusTooltip() else super(WelcomeView, self).createToolTipContent(event=event, contentID=contentID)
+            if contentID == R.views.lobby.premacc.tooltips.SquadBonusTooltip():
+                return SquadBonusTooltipContent(bonusState=getPlatoonBonusState(False))
+            return super(WelcomeView, self).createToolTipContent(event=event, contentID=contentID)
 
     def _setBattleTypeRelatedProps(self):
         queueType = self.__platoonCtrl.getQueueType()
@@ -137,7 +137,7 @@ class WelcomeView(ViewImpl):
         battleType = R.strings.menu.headerButtons.battle.types
         battleTypeStr = battleType.standart()
         bgImage = backgrounds.squad()
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             if queueType == QUEUE_TYPE.EVENT_BATTLES:
                 battleTypeStr = battleType.eventSquad()
                 bgImage = backgrounds.event()

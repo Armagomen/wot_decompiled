@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/items/components/gun_installation_components.py
-import typing
-import shared_components
-import component_constants
+import typing, shared_components, component_constants
 from constants import DEFAULT_GUN_INSTALLATION_INDEX
 if typing.TYPE_CHECKING:
     from items.vehicle_items import Gun
@@ -20,7 +16,7 @@ class GunInstallationSlot(object):
         return self
 
     def __repr__(self):
-        return 'GunInstallationSlot(installationIndex={}, gun={})'.format(self.installationIndex, self.gun)
+        return ('GunInstallationSlot(installationIndex={}, gun={})').format(self.installationIndex, self.gun)
 
     @classmethod
     def isMainInstallationIndex(cls, installationIndex):
@@ -28,7 +24,9 @@ class GunInstallationSlot(object):
 
     @classmethod
     def getPartSlotNameByIndex(cls, installationIndex):
-        return 'gun' if cls.isMainInstallationIndex(installationIndex) else 'gun{}'.format(installationIndex)
+        if cls.isMainInstallationIndex(installationIndex):
+            return 'gun'
+        return ('gun{}').format(installationIndex)
 
     @property
     def partSlotName(self):

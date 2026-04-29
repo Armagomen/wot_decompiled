@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/gui/Scaleform/view/lobby/SimpleChannelWindow.py
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.Scaleform.managers.windows_stored_data import g_windowsStoredData, TARGET_ID
 from gui.impl import backport
@@ -21,19 +19,19 @@ class SimpleChannelWindow(ChannelWindowMeta):
         self._clientID = ctx.get('clientID')
         self._controller = self.channelsCtrl.getController(self._clientID)
         if self._controller is None:
-            raise ValueError('Controller for lobby channel by clientID={0:1} is not found'.format(self._clientID))
+            raise ValueError(('Controller for lobby channel by clientID={0:1} is not found').format(self._clientID))
         return
 
     @proto_getter(PROTO_TYPE.MIGRATION)
     def proto(self):
-        return None
+        return
 
     def onFocusIn(self, alias):
         self.fireEvent(FocusEvent(FocusEvent.COMPONENT_FOCUSED, {'clientID': self._clientID}))
 
     @channelsCtrlProperty
     def channelsCtrl(self):
-        return None
+        return
 
     def onWindowClose(self):
         chat = self.chat

@@ -1,11 +1,10 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/goodies/GoodieValue.py
 from soft_exception import SoftException
 from math import floor
 from typing import TypeVar
 
 class GoodieValue(object):
-    __slots__ = ['value', 'isAbsolute']
+    __slots__ = [
+     'value', 'isAbsolute']
 
     def __init__(self, value, isAbsolute=True):
         self.isAbsolute = isAbsolute
@@ -51,8 +50,7 @@ class GoodieValue(object):
             if result < 0:
                 raise SoftException('Goodie is negative %d > %d' % (self.value, x))
             return result
-        else:
-            return int(floor(x - float(x) * self.value))
+        return int(floor(x - float(x) * self.value))
 
     def delta(self, x):
         if self.isAbsolute:

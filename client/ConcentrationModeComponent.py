@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/ConcentrationModeComponent.py
+from __future__ import absolute_import, division
 import typing
 from collections import namedtuple
 import BigWorld
@@ -23,7 +22,9 @@ class ConcentrationModeState(namedtuple('ConcentrationModeState', ('state', 'bas
 
     @property
     def progress(self):
-        return 1.0 - self.timeLeft / self.baseTime if self.baseTime > 0 else 1.0
+        if self.baseTime > 0:
+            return 1.0 - self.timeLeft / self.baseTime
+        return 1.0
 
     @property
     def timeLeft(self):
@@ -57,7 +58,9 @@ class ConcentrationModeComponent(VehicleDynamicComponent, IMechanicComponent, IM
         return self.__statesEvents
 
     def getMechanicState(self):
-        return ConcentrationModeState.fromComponentStatus(self.status) if self.status else self.DEFAULT_MODE_STATE
+        if self.status:
+            return ConcentrationModeState.fromComponentStatus(self.status)
+        return self.DEFAULT_MODE_STATE
 
     def set_status(self, _):
         self._updateComponentAppearance()

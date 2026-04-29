@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/hangar/presenters/shells_presenter.py
 from __future__ import absolute_import
 import typing
 from CurrentVehicle import g_currentVehicle
@@ -18,14 +16,18 @@ from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.items_parameters import params_helper, getShellsLoadSize
 from gui.shared.items_parameters.formatters import formatParameter, MEASURE_UNITS
 from helpers import i18n, dependency
+from items.utils import getVehicleDescriptorWithoutMechanics
 from post_progression_common import TankSetupGroupsId
 from shared_utils import first
 from skeletons.gui.game_control import IWalletController, IExchangeRatesWithDiscountsProvider
 from skeletons.gui.shared import IItemsCache
+from vehicles.mechanics.mechanic_constants import VehicleMechanic
+from vehicles.mechanics.mechanic_helpers import hasVehicleDescrMechanic
 if typing.TYPE_CHECKING:
     from gui.shared.gui_items.vehicle_modules import Shell
     from gui.impl.lobby.tank_setup.interactors.base import InteractingItem
-_SHELLS_INFO_PARAMS = ('avgDamage', 'avgDamagePerSecond', 'avgPiercingPower', 'shotSpeed', 'explosionRadius', 'stunDurationList')
+_SHELLS_INFO_PARAMS = ('avgDamage', 'avgDamagePerSecond', 'avgPiercingPower', 'shotSpeed',
+                       'explosionRadius', 'stunDurationList')
 
 class ShellsPresenter(LoadoutPresenterBase[ShellsModel]):
     __itemsCache = dependency.descriptor(IItemsCache)
@@ -38,7 +40,13 @@ class ShellsPresenter(LoadoutPresenterBase[ShellsModel]):
         self._guiItemType = GUI_ITEM_TYPE.SHELL
 
     def _getEvents(self):
-        return super(ShellsPresenter, self)._getEvents() + ((self.getViewModel().onShellUpdate, self.__onShellUpdate), (self.__wallet.onWalletStatusChanged, self._onCurrencyUpdate), (self.__exchangeRates.goldToCredits.onUpdated, self._onCurrencyUpdate))
+        return super(ShellsPresenter, self)._getEvents() + (
+         (
+          self.getViewModel().onShellUpdate, self.__onShellUpdate),
+         (
+          self.__wallet.onWalletStatusChanged, self._onCurrencyUpdate),
+         (
+          self.__exchangeRates.goldToCredits.onUpdated, self._onCurrencyUpdate))
 
     @property
     def isShellState(self):
@@ -73,32 +81,31 @@ class ShellsPresenter(LoadoutPresenterBase[ShellsModel]):
     def _updateModel(self, recreate=True):
         if not g_currentVehicle.isPresent() or not self._provider:
             return
-        else:
-            currentVehicle = self._vehInteractingItem.getItem()
-            currentSetup = currentVehicle.shells.installed
-            ammoMaxSize = currentVehicle.ammoMaxSize
-            interactorShells = self._interactor.getCurrentLayout()
-            if not self.isShellState:
-                interactorShells = self._interactor.getInstalledLayout()
-            installedCount = sum((shell.count for shell in interactorShells))
-            gun = currentVehicle.gun.descriptor
-            clip = getShellsLoadSize(gun)
-            with self.getViewModel().transaction() as model:
-                model.setAmmoMaxSize(ammoMaxSize)
-                model.setInstalledCount(installedCount)
-                model.setClip(clip)
-                model.setAutoloadEnabled(self._interactor.getAutoRenewal().getLocalValue())
-                shells = model.getShells()
-                shells.clear()
-                for shell in interactorShells:
-                    if shell is not None:
-                        installedShell = first((s for s in currentSetup if s.intCD == shell.intCD))
-                        shellItem = self.__createShellItem(shell, installedShell)
-                        self.__updateShellItem(shells, shellItem)
+        currentVehicle = self._vehInteractingItem.getItem()
+        currentSetup = currentVehicle.shells.installed
+        ammoMaxSize = currentVehicle.ammoMaxSize
+        interactorShells = self._interactor.getCurrentLayout()
+        if not self.isShellState:
+            interactorShells = self._interactor.getInstalledLayout()
+        installedCount = sum(shell.count for shell in interactorShells)
+        gun = currentVehicle.gun.descriptor
+        clip = getShellsLoadSize(gun)
+        with self.getViewModel().transaction() as (model):
+            model.setAmmoMaxSize(ammoMaxSize)
+            model.setInstalledCount(installedCount)
+            model.setClip(clip)
+            model.setAutoloadEnabled(self._interactor.getAutoRenewal().getLocalValue())
+            shells = model.getShells()
+            shells.clear()
+            for shell in interactorShells:
+                if shell is not None:
+                    installedShell = first(s for s in currentSetup if s.intCD == shell.intCD)
+                    shellItem = self.__createShellItem(shell, installedShell)
+                    self.__updateShellItem(shells, shellItem)
 
-                shells.invalidate()
-            self._updateDealPanel()
-            return
+            shells.invalidate()
+        self._updateDealPanel()
+        return
 
     def __updateShellItem(self, shellModels, shellModel):
         for index, item in enumerate(shellModels):
@@ -170,12 +177,15 @@ class ShellsPresenter(LoadoutPresenterBase[ShellsModel]):
         specificationModel = ShellSpecificationModel()
         specificationModel.setParamName(paramName)
         specificationModel.setMetricValue(i18n.makeString(MEASURE_UNITS.get(paramName, '')))
-        shellParam = params_helper.getParameters(shell, g_currentVehicle.item.descriptor)
+        vehDescr = g_currentVehicle.item.descriptor
+        if hasVehicleDescrMechanic(vehDescr, VehicleMechanic.LOW_CHARGE_SHOT):
+            vehDescr = getVehicleDescriptorWithoutMechanics(vehDescr, VehicleMechanic.LOW_CHARGE_SHOT.value)
+        shellParam = params_helper.getParameters(shell, vehDescr)
         specificationModel.setValue(formatParameter(paramName, shellParam.get(paramName)) or '')
         return specificationModel
 
     def __fillShellItemPriceModel(self, shellItemPrice, itemPriceModel):
-        with itemPriceModel.transaction() as model:
+        with itemPriceModel.transaction() as (model):
             currency = shellItemPrice.getCurrency()
             value = shellItemPrice.get(currency)
             model.setName(currency)

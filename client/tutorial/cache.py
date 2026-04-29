@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/tutorial/cache.py
 from helpers.local_cache import FileLocalCache
 from tutorial.settings import TUTORIAL_VERSION
 import constants
@@ -14,7 +12,7 @@ class TutorialCache(FileLocalCache):
         return
 
     def __repr__(self):
-        return 'TutorialCache({0:s}): {1!r:s}'.format(hex(id(self)), self.__cache.get(self.__space, {}))
+        return ('TutorialCache({0:s}): {1!r:s}').format(hex(id(self)), self.__cache.get(self.__space, {}))
 
     def getSpace(self):
         return self.__space
@@ -24,11 +22,10 @@ class TutorialCache(FileLocalCache):
             del self.__cache[self.__space]
         self.__space = space
         self._ioEnabled = ioEnabled
-        defaultValues = {'finished': False,
-         'refused': False,
-         'flags': {},
-         'currentChapter': None,
-         'localCtx': None}
+        defaultValues = {'finished': False, 
+           'refused': False, 
+           'flags': {}, 'currentChapter': None, 
+           'localCtx': None}
         if self._ioEnabled:
             self.__cache.setdefault(space, defaultValues)
         else:
@@ -99,7 +96,8 @@ class TutorialCache(FileLocalCache):
         return cache['currentChapter'] is None or not cache['flags']
 
     def _getCache(self):
-        return (TUTORIAL_VERSION, self.__cache.copy())
+        return (
+         TUTORIAL_VERSION, self.__cache.copy())
 
     def _setCache(self, data):
         version, cache = data

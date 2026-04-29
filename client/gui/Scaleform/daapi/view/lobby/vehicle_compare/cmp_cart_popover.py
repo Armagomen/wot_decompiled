@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_compare/cmp_cart_popover.py
 from __future__ import absolute_import
 from debug_utils import LOG_ERROR
 from gui.Scaleform import getNationsFilterAssetPath
@@ -62,13 +60,14 @@ class VehicleCompareCartPopover(VehicleCompareCartPopoverMeta):
             self.__updateButtonsState()
 
     def __initControls(self):
-        headers = [packHeaderColumnData('nationId', 49, 30, tooltip=VEH_COMPARE.CARTPOPOVER_SORTING_NATION, icon=RES_ICONS.MAPS_ICONS_FILTERS_NATIONS_ALL),
+        headers = [
+         packHeaderColumnData('nationId', 49, 30, tooltip=VEH_COMPARE.CARTPOPOVER_SORTING_NATION, icon=RES_ICONS.MAPS_ICONS_FILTERS_NATIONS_ALL),
          packHeaderColumnData('typeIndex', 45, 30, tooltip=VEH_COMPARE.CARTPOPOVER_SORTING_VEHTYPE, icon=RES_ICONS.MAPS_ICONS_FILTERS_TANKS_ALL),
          packHeaderColumnData('level', 45, 30, tooltip=VEH_COMPARE.CARTPOPOVER_SORTING_VEHLVL, icon=RES_ICONS.MAPS_ICONS_BUTTONS_TAB_SORT_BUTTON_LEVEL),
          packHeaderColumnData('shortUserName', 140, 30, label=VEH_COMPARE.CARTPOPOVER_SORTING_VEHNAME, tooltip=VEH_COMPARE.CARTPOPOVER_SORTING_VEHNAME_TOOLTIP),
          packHeaderColumnData('actions', 1, 30)]
-        self.as_setInitDataS({'title': text_styles.highTitle(_ms(VEH_COMPARE.CARTPOPOVER_TITLE)),
-         'tableHeaders': headers})
+        self.as_setInitDataS({'title': text_styles.highTitle(_ms(VEH_COMPARE.CARTPOPOVER_TITLE)), 
+           'tableHeaders': headers})
         self.__updateButtonsState()
 
     def __onBasketChange(self, _):
@@ -84,14 +83,14 @@ class VehicleCompareCartPopover(VehicleCompareCartPopoverMeta):
             addBtnTT = VEH_COMPARE.CARTPOPOVER_OPENCMPBTN_TOOLTIP
             addBtnIcon = None
         isNavigationEnabled = not g_prbLoader.getDispatcher().getFunctionalState().isNavigationDisabled()
-        self.as_updateToCmpBtnPropsS({'btnLabel': _ms(VEH_COMPARE.CARTPOPOVER_GOTOCOMPAREBTN_LABEL, value=count),
-         'btnTooltip': addBtnTT,
-         'btnEnabled': buttonsEnabled and isNavigationEnabled,
-         'btnIcon': addBtnIcon})
+        self.as_updateToCmpBtnPropsS({'btnLabel': _ms(VEH_COMPARE.CARTPOPOVER_GOTOCOMPAREBTN_LABEL, value=count), 
+           'btnTooltip': addBtnTT, 
+           'btnEnabled': buttonsEnabled and isNavigationEnabled, 
+           'btnIcon': addBtnIcon})
         isBasketLocked = self.comparisonBasket.isLocked
-        self.as_updateClearBtnPropsS({'btnLabel': VEH_COMPARE.CARTPOPOVER_REMOVEALLBTN_LABEL,
-         'btnTooltip': VEH_COMPARE.CARTPOPOVER_REMOVEBTNLOCKED_TOOLTIP if isBasketLocked else VEH_COMPARE.CARTPOPOVER_REMOVEALLBTN_TOOLTIP,
-         'btnEnabled': buttonsEnabled and not isBasketLocked})
+        self.as_updateClearBtnPropsS({'btnLabel': VEH_COMPARE.CARTPOPOVER_REMOVEALLBTN_LABEL, 
+           'btnTooltip': VEH_COMPARE.CARTPOPOVER_REMOVEBTNLOCKED_TOOLTIP if isBasketLocked else VEH_COMPARE.CARTPOPOVER_REMOVEALLBTN_TOOLTIP, 
+           'btnEnabled': buttonsEnabled and not isBasketLocked})
         return
 
     def __onServerSettingChanged(self, diff):
@@ -119,7 +118,7 @@ class _VehicleCompareCartDataProvider(SortableDAAPIDataProvider):
         return self._list
 
     def emptyItem(self):
-        return None
+        return
 
     def clear(self):
         self._list = []
@@ -135,7 +134,9 @@ class _VehicleCompareCartDataProvider(SortableDAAPIDataProvider):
         self.destroy()
 
     def getSelectedIdx(self):
-        return self.__mapping[self.__selectedID] if self.__selectedID in self.__mapping else -1
+        if self.__selectedID in self.__mapping:
+            return self.__mapping[self.__selectedID]
+        return -1
 
     def setSelectedID(self, selId):
         self.__selectedID = selId
@@ -177,16 +178,16 @@ class _VehicleCompareCartDataProvider(SortableDAAPIDataProvider):
         vehicle = self.itemsCache.items.getItemByCD(vehicleCD)
         complectation = _ms(VEH_COMPARE.cartpopover_configurationtype(self.comparisonBasket.getVehicleAt(index).getConfigurationType()))
         basketLocked = self.comparisonBasket.isLocked
-        return {'id': vehicleCD,
-         'index': index,
-         'vehicleName': text_styles.main(vehicle.shortUserName),
-         'complectation': complectation,
-         'nation': getNationsFilterAssetPath(AVAILABLE_NAMES[vehicle.nationID]),
-         'level': vehicle.level,
-         'typeStr': getTypeSmallIconPath(vehicle.type, vehicle.isPremium),
-         'smallIconPath': vehicle.iconSmall,
-         'removeBtnTooltip': VEH_COMPARE.CARTPOPOVER_REMOVELOCKEDBTN_TOOLTIP if basketLocked else VEH_COMPARE.CARTPOPOVER_REMOVEBTN_TOOLTIP,
-         'removeBtnEnabled': not basketLocked}
+        return {'id': vehicleCD, 
+           'index': index, 
+           'vehicleName': text_styles.main(vehicle.shortUserName), 
+           'complectation': complectation, 
+           'nation': getNationsFilterAssetPath(AVAILABLE_NAMES[vehicle.nationID]), 
+           'level': vehicle.level, 
+           'typeStr': getTypeSmallIconPath(vehicle.type, vehicle.isPremium), 
+           'smallIconPath': vehicle.iconSmall, 
+           'removeBtnTooltip': VEH_COMPARE.CARTPOPOVER_REMOVELOCKEDBTN_TOOLTIP if basketLocked else VEH_COMPARE.CARTPOPOVER_REMOVEBTN_TOOLTIP, 
+           'removeBtnEnabled': not basketLocked}
 
     def __basketChanged(self, *args):
         self.rebuildList(self.comparisonBasket.getVehiclesCDs())

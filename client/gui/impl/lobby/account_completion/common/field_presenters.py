@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/account_completion/common/field_presenters.py
 import re
 from abc import ABCMeta, abstractmethod
 import typing
@@ -89,7 +87,7 @@ class EmailPresenter(BaseFieldPresenter):
         return self._viewModel
 
     def _validateChangedValue(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setErrorTime(0)
             if len(self._value) > FieldEmailModel.EMAIL_LEN_MAX:
                 vm.setErrorMessage(errors.emailIsTooLong())

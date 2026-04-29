@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/common/player_satisfaction_rating/player_satisfaction_sound.py
+from __future__ import absolute_import
 import logging
 from enum import Enum
 import SoundGroups
@@ -12,9 +11,9 @@ class SoundEvents(Enum):
     WORSE = 'post_battle_voting_worse'
 
 
-_RATING_TO_SOUND_MAP = {PlayerSatisfactionRating.USUAL: SoundEvents.USUAL,
- PlayerSatisfactionRating.BETTER: SoundEvents.BETTER,
- PlayerSatisfactionRating.WORSE: SoundEvents.WORSE}
+_RATING_TO_SOUND_MAP = {PlayerSatisfactionRating.USUAL: SoundEvents.USUAL, 
+   PlayerSatisfactionRating.BETTER: SoundEvents.BETTER, 
+   PlayerSatisfactionRating.WORSE: SoundEvents.WORSE}
 
 def playSoundForRating(rating):
     SoundGroups.g_instance.playSound2D(_RATING_TO_SOUND_MAP[rating].value)

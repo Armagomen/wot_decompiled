@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/vehicle_compare/consumable.py
 from gui.Scaleform.daapi.view.lobby.vehicle_compare import cmp_helpers
 from gui.impl.lobby.tank_setup.array_providers.consumable import ConsumableDeviceProvider
 from gui.impl.lobby.tank_setup.configurations.consumable import ConsumableTabsController, ConsumableTabs

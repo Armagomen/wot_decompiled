@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/customization_cm_handlers.py
 import logging
 from adisp import adisp_process
 from Event import Event
@@ -41,14 +39,14 @@ class CustomizationItemCMHandler(AbstractContextMenuHandler):
 
     def __init__(self, cmProxy, ctx=None):
         self._intCD = 0
-        super(CustomizationItemCMHandler, self).__init__(cmProxy, ctx, {CustomizationOptions.BUY: 'buyItem',
-         CustomizationOptions.SELL: 'sellItem',
-         CustomizationOptions.REMOVE_FROM_TANK: 'removeItemFromTank',
-         CustomizationOptions.PROLONGATION_ON: 'changeAutoRent',
-         CustomizationOptions.PROLONGATION_OFF: 'changeAutoRent',
-         CustomizationOptions.STYLE_INFO: 'showStyleInfo',
-         CustomizationOptions.EDIT_STYLE: 'enterEditMode',
-         CustomizationOptions.BASE_STYLE: 'clearStyle'})
+        super(CustomizationItemCMHandler, self).__init__(cmProxy, ctx, {CustomizationOptions.BUY: 'buyItem', 
+           CustomizationOptions.SELL: 'sellItem', 
+           CustomizationOptions.REMOVE_FROM_TANK: 'removeItemFromTank', 
+           CustomizationOptions.PROLONGATION_ON: 'changeAutoRent', 
+           CustomizationOptions.PROLONGATION_OFF: 'changeAutoRent', 
+           CustomizationOptions.STYLE_INFO: 'showStyleInfo', 
+           CustomizationOptions.EDIT_STYLE: 'enterEditMode', 
+           CustomizationOptions.BASE_STYLE: 'clearStyle'})
         self.onSelected = Event(self._eManager)
         self._item = self.itemsCache.items.getItemByCD(self._intCD)
         self.__ctx = self.service.getCtx()
@@ -121,7 +119,8 @@ class CustomizationItemCMHandler(AbstractContextMenuHandler):
         self._intCD = ctx.itemID
 
     def __separateItem(self, item):
-        return [item, self._makeSeparator()]
+        return [
+         item, self._makeSeparator()]
 
     def __getStyleInfoBtn(self, item):
         enabled = bool(item.longDescriptionSpecial)
@@ -152,13 +151,13 @@ class CustomizationItemCMHandler(AbstractContextMenuHandler):
         buyPrice = item.getBuyPrice()
         buyPriceVO = getItemPricesVO(buyPrice)
         availableForPurchase = item.buyCount > 0
-        if availableForPurchase and not buyPrice == ITEM_PRICE_EMPTY:
+        if availableForPurchase and buyPrice != ITEM_PRICE_EMPTY:
             accountMoney = self.itemsCache.items.stats.money
             availableForPurchase &= buyPrice.price <= accountMoney
         if availableForPurchase and item.isProgressionAutoBound:
             availableForPurchase &= item.availableForPurchaseProgressive(g_currentVehicle.item) > 0
-        btn = self._makeItem(optId=CustomizationOptions.BUY, optLabel=MENU.cst_item_ctx_menu(textKey), optInitData={'data': {'price': first(buyPriceVO)} if availableForPurchase else None,
-         'enabled': availableForPurchase}, optSubMenu=None, linkage='CurrencyContextMenuItem')
+        btn = self._makeItem(optId=CustomizationOptions.BUY, optLabel=MENU.cst_item_ctx_menu(textKey), optInitData={'data': {'price': first(buyPriceVO)} if availableForPurchase else None, 
+           'enabled': availableForPurchase}, optSubMenu=None, linkage='CurrencyContextMenuItem')
         return btn
 
     def __getRentBtn(self, item):
@@ -166,8 +165,8 @@ class CustomizationItemCMHandler(AbstractContextMenuHandler):
         enabled = style is not None and style.intCD == item.intCD
         isAutoRentEnabled = self.__ctx.mode.isAutoRentEnabled()
         optId = CustomizationOptions.PROLONGATION_OFF if isAutoRentEnabled else CustomizationOptions.PROLONGATION_ON
-        btn = self._makeItem(optId=optId, optLabel=MENU.cst_item_ctx_menu(optId), optInitData={'enabled': enabled,
-         'iconType': optId})
+        btn = self._makeItem(optId=optId, optLabel=MENU.cst_item_ctx_menu(optId), optInitData={'enabled': enabled, 
+           'iconType': optId})
         return btn
 
     def __getSellBtn(self, item):
@@ -189,10 +188,10 @@ class CustomizationItemCMHandler(AbstractContextMenuHandler):
         else:
             availableToSellCount = inventoryCount
         availableForSale = availableToSellCount > 0 and sellPrice != ITEM_PRICE_EMPTY and not item.isRentable and not item.isHidden
-        btn = self._makeItem(optId=CustomizationOptions.SELL, optLabel=MENU.cst_item_ctx_menu(CustomizationOptions.SELL), optInitData={'data': {'price': first(sellPriceVO)} if availableForSale else None,
-         'enabled': availableForSale,
-         'showAlert': showAlert,
-         'tooltipVO': tooltipVO}, optSubMenu=None, linkage='CurrencyContextMenuItem')
+        btn = self._makeItem(optId=CustomizationOptions.SELL, optLabel=MENU.cst_item_ctx_menu(CustomizationOptions.SELL), optInitData={'data': {'price': first(sellPriceVO)} if availableForSale else None, 
+           'enabled': availableForSale, 
+           'showAlert': showAlert, 
+           'tooltipVO': tooltipVO}, optSubMenu=None, linkage='CurrencyContextMenuItem')
         return btn
 
     def __getRemoveBtn(self, item):
@@ -209,7 +208,7 @@ class CustomizationItemCMHandler(AbstractContextMenuHandler):
             outfit = self.__ctx.mode.getModifiedOutfit()
             isInstalled = outfit.has(item)
             seasonName = SEASON_TYPE_TO_NAME.get(self.__ctx.season)
-            textKey = '/'.join((CustomizationOptions.REMOVE_FROM_TANK, seasonName))
+            textKey = ('/').join((CustomizationOptions.REMOVE_FROM_TANK, seasonName))
         if self.__ctx.modeId == CustomizationModes.STYLE_2D_EDITABLE and itemType in EDITABLE_STYLE_IRREMOVABLE_TYPES:
             if self.__ctx.mode.getDependenciesData() and itemType != GUI_ITEM_TYPE.CAMOUFLAGE:
                 enabled = False

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/gui/impl/lobby/feature/award_view.py
 from __future__ import absolute_import
 from frameworks.wulf import ViewSettings, WindowFlags
 from gui.impl import backport
@@ -30,11 +28,13 @@ class AwardView(ViewImpl):
         return super(AwardView, self).getViewModel()
 
     def createToolTipContent(self, event, contentID):
-        return SerialNumberTooltip() if contentID == R.views.resource_well.mono.lobby.tooltips.serial_number_tooltip() else super(AwardView, self).createToolTipContent(event, contentID)
+        if contentID == R.views.resource_well.mono.lobby.tooltips.serial_number_tooltip():
+            return SerialNumberTooltip()
+        return super(AwardView, self).createToolTipContent(event, contentID)
 
     def _onLoading(self, serialNumber, *args, **kwargs):
         super(AwardView, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             fillVehicleInfo(tx.vehicleInfo, self.__vehicle)
             tx.setRewardIndex(self.__rewardConfig.order)
             tx.setPersonalNumber(serialNumber if serialNumber is not None else '')
@@ -48,7 +48,11 @@ class AwardView(ViewImpl):
         return
 
     def _getEvents(self):
-        return ((self.viewModel.showInHangar, self.__showVehicle), (self.viewModel.close, self.__close))
+        return (
+         (
+          self.viewModel.showInHangar, self.__showVehicle),
+         (
+          self.viewModel.close, self.__close))
 
     def __close(self):
         self.destroyWindow()

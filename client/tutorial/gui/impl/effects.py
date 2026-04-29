@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/tutorial/gui/impl/effects.py
-import typing
-import logging
+import typing, logging
 from gui.Scaleform.genConsts.TUTORIAL_EFFECT_TYPES import TUTORIAL_EFFECT_TYPES
 from gui.impl.gen.view_models.common.tutorial.visible_effect_model import VisibleEffectModel
 from gui.impl.gen.view_models.common.tutorial.enabled_effect_model import EnabledEffectModel
@@ -23,10 +20,10 @@ class Factory(IEffectsFactory):
 
     def __init__(self):
         super(Factory, self).__init__()
-        self.__effectsMap = {TUTORIAL_EFFECT_TYPES.DISPLAY: VisibleEffectModel,
-         TUTORIAL_EFFECT_TYPES.ENABLED: EnabledEffectModel}
-        self.__updatersMap = {TUTORIAL_EFFECT_TYPES.DISPLAY: self.__updateVisibleEffect,
-         TUTORIAL_EFFECT_TYPES.ENABLED: self.__updateEnabledEffect}
+        self.__effectsMap = {TUTORIAL_EFFECT_TYPES.DISPLAY: VisibleEffectModel, 
+           TUTORIAL_EFFECT_TYPES.ENABLED: EnabledEffectModel}
+        self.__updatersMap = {TUTORIAL_EFFECT_TYPES.DISPLAY: self.__updateVisibleEffect, 
+           TUTORIAL_EFFECT_TYPES.ENABLED: self.__updateEnabledEffect}
 
     def createEffect(self, effectType):
         effect = None

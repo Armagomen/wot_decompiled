@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/tooltips/entry_point_tooltip_tournament.py
 import typing
 from comp7.gui.impl.gen.view_models.views.lobby.enums import TournamentName
 from comp7.gui.impl.gen.view_models.views.lobby.tooltips.tournament_entry_point_tooltip_model import TournamentEntryPointTooltipModel, TournamentState
@@ -15,10 +13,10 @@ if typing.TYPE_CHECKING:
 
 class Comp7TournamentEntryPointTooltip(ViewImpl):
     __ingameTournamentController = dependency.descriptor(IIngameTournamentController)
-    __tournamentStateTooltipStateMap = {IngameTournamentState.INTRO: TournamentState.STARTINGSOON,
-     IngameTournamentState.IN_PROGRESS: TournamentState.LIVE,
-     IngameTournamentState.BETWEEN_SHOWMATCHES: TournamentState.BETWEENSHOWMATCHES,
-     IngameTournamentState.FINISHED: TournamentState.FINISHED}
+    __tournamentStateTooltipStateMap = {IngameTournamentState.INTRO: TournamentState.STARTINGSOON, 
+       IngameTournamentState.IN_PROGRESS: TournamentState.LIVE, 
+       IngameTournamentState.BETWEEN_SHOWMATCHES: TournamentState.BETWEENSHOWMATCHES, 
+       IngameTournamentState.FINISHED: TournamentState.FINISHED}
 
     def __init__(self, tounamentType):
         self.__tournamentType = tounamentType
@@ -31,7 +29,9 @@ class Comp7TournamentEntryPointTooltip(ViewImpl):
         return super(Comp7TournamentEntryPointTooltip, self).getViewModel()
 
     def _getEvents(self):
-        return ((self.__ingameTournamentController.onTournamentEntryPointUpdated, self._updateState),)
+        return (
+         (
+          self.__ingameTournamentController.onTournamentEntryPointUpdated, self._updateState),)
 
     def _onLoading(self, *args, **kwargs):
         super(Comp7TournamentEntryPointTooltip, self)._onLoading(*args, **kwargs)
@@ -47,7 +47,7 @@ class Comp7TournamentEntryPointTooltip(ViewImpl):
         tournamentState = self.__ingameTournamentController.getTournamentState(self.__tournamentType)
         startDate, endDate = self.__ingameTournamentController.getTournamentShowmatchPeriod(self.__tournamentType)
         formattedServerTimestamp = int(round(getServerUTCTime()))
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             tx.setTournamentName(TournamentName(self.__tournamentType.value))
             tx.setStartTimestamp(startDate)
             tx.setEndTimestamp(endDate)

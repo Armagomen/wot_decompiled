@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/platoon/dropdown_item.py
 from gui.impl.gen.view_models.ui_kit.gf_drop_down_item import GfDropDownItem
 from gui.impl.gen.view_models.views.lobby.platoon.dropdown_item_meta import DropdownItemMeta
 

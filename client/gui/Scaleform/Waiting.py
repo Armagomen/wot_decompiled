@@ -1,7 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/Waiting.py
-import logging
-import typing
+from __future__ import absolute_import
+import logging, typing
 from gui.impl.gen import R
 from helpers import dependency
 from skeletons.gui.app_loader import IAppLoader, IWaitingWidget

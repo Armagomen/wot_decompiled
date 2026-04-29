@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/collector20_reward/collector20_reward_view.py
+from __future__ import absolute_import
 from constants import DOSSIER_TYPE
 from frameworks.wulf import ViewSettings, WindowFlags
 from gui.impl.gen import R
@@ -40,8 +39,9 @@ class Collector20RewardView(ViewImpl):
         if not dossierRewards:
             return
         dossierBonus = DossierBonus('dossier', {DOSSIER_TYPE.ACCOUNT: dossierRewards})
-        with self.viewModel.transaction() as vm:
-            packBonusModelAndTooltipData([dossierBonus], vm.mainRewards, self.__tooltipItems, packer=getCollector20RewardsBonusPacker())
+        with self.viewModel.transaction() as (vm):
+            packBonusModelAndTooltipData([
+             dossierBonus], vm.mainRewards, self.__tooltipItems, packer=getCollector20RewardsBonusPacker())
 
     def _finalize(self):
         SoundGroups.g_instance.playSound2D(EXIT_EVENT)
@@ -49,7 +49,9 @@ class Collector20RewardView(ViewImpl):
         super(Collector20RewardView, self)._finalize()
 
     def _getEvents(self):
-        return super(Collector20RewardView, self)._getEvents() + ((self.viewModel.onClose, self.__onClose),)
+        return super(Collector20RewardView, self)._getEvents() + (
+         (
+          self.viewModel.onClose, self.__onClose),)
 
     def __onClose(self, *_):
         self.destroyWindow()

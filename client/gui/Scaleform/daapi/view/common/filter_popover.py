@@ -1,8 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/common/filter_popover.py
-import itertools
-import logging
-import typing
+from __future__ import absolute_import
+import itertools, logging, typing
+from future.utils import viewvalues
 import constants
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import VEHICLE_CAROUSEL_COUNTERS_SEEN
@@ -38,7 +36,7 @@ from uilogging.customization_3d_objects.logging_constants import CustomizationBu
 if typing.TYPE_CHECKING:
     from gui.Scaleform.daapi.view.common.vehicle_carousel.carousel_environment import ICarouselEnvironment
 _logger = logging.getLogger(__name__)
-_VEHICLE_LEVEL_FILTERS = [ 'level_{}'.format(level) for level in VEHICLE_LEVELS ]
+_VEHICLE_LEVEL_FILTERS = [ ('level_{}').format(level) for level in VEHICLE_LEVELS ]
 
 class VehiclesFilterPopover(TankCarouselFilterPopoverMeta):
     itemsCache = dependency.descriptor(IItemsCache)
@@ -64,14 +62,14 @@ class VehiclesFilterPopover(TankCarouselFilterPopoverMeta):
         customParams['isRanked'] = self._isRanked
         customParams['isComp7'] = self._isComp7
         self._mapping = self._generateMapping((carousel.hasRentedVehicles() or not carousel.filter.isDefault((FILTER_KEYS.RENTED,))), (carousel.hasEventVehicles() or not carousel.filter.isDefault((FILTER_KEYS.EVENT,))), carousel.hasRoles(), carousel.hasCustomization(), **customParams)
-        self.__usedFilters = list(itertools.chain.from_iterable(self._mapping.itervalues()))
+        self.__usedFilters = list(itertools.chain.from_iterable(viewvalues(self._mapping)))
         self._carousel = carousel
         self._carousel.setPopoverCallback(self.__onCarouselSwitched)
         self._update(isInitial=True)
 
     def changeFilter(self, sectionId, itemId):
         if self._carousel is not None and self._carousel.filter is not None:
-            if sectionId == FILTER_POPOVER_SECTION.ROLES or sectionId == FILTER_POPOVER_SECTION.ROLES_WITH_EXTRA:
+            if sectionId in (FILTER_POPOVER_SECTION.ROLES, FILTER_POPOVER_SECTION.ROLES_WITH_EXTRA):
                 filters = self._carousel.filter.getFilters(self.__usedFilters)
                 target = self._mapping[FILTER_POPOVER_SECTION.ROLES][self.__getSelectedVehType(filters)][itemId]
             else:
@@ -88,90 +86,75 @@ class VehiclesFilterPopover(TankCarouselFilterPopoverMeta):
     def _getUpdateVO(self, filters):
         mapping = self._mapping
         vehType = self.__getSelectedVehType(filters)
-        return {'nations': [ filters[key] for key in mapping[FILTER_POPOVER_SECTION.NATIONS] ],
-         'vehicleTypes': [ filters[key] for key in mapping[FILTER_POPOVER_SECTION.VEHICLE_TYPES] ],
-         'levels': [ filters[key] for key in mapping[FILTER_POPOVER_SECTION.LEVELS] ],
-         'customization': [ filters[key] for key in mapping[FILTER_POPOVER_SECTION.CUSTOMIZATION] ],
-         'specials': [ filters[key] for key in mapping[FILTER_POPOVER_SECTION.SPECIALS] ],
-         'hidden': [ filters[key] for key in mapping[FILTER_POPOVER_SECTION.HIDDEN] ],
-         'progressions': [ filters[key] for key in mapping[FILTER_POPOVER_SECTION.PROGRESSIONS] ],
-         'roles': {vType:[ filters[role] for role in mapping[FILTER_POPOVER_SECTION.ROLES].get(vType, []) ] for vType in mapping[FILTER_POPOVER_SECTION.VEHICLE_TYPES] if vType != VEHICLE_CLASS_NAME.SPG},
-         'rolesLabel': self.__getRolesLabel(vehType),
-         'rolesSectionVisible': self._withRoles and vehType is not None and vehType is not VEHICLE_CLASS_NAME.SPG,
-         'asSeen': self.__getSeenEnties()}
+        return {'nations': [ filters[key] for key in mapping[FILTER_POPOVER_SECTION.NATIONS] ], 'vehicleTypes': [ filters[key] for key in mapping[FILTER_POPOVER_SECTION.VEHICLE_TYPES] ], 'levels': [ filters[key] for key in mapping[FILTER_POPOVER_SECTION.LEVELS] ], 'customization': [ filters[key] for key in mapping[FILTER_POPOVER_SECTION.CUSTOMIZATION] ], 'specials': [ filters[key] for key in mapping[FILTER_POPOVER_SECTION.SPECIALS] ], 'hidden': [ filters[key] for key in mapping[FILTER_POPOVER_SECTION.HIDDEN] ], 'progressions': [ filters[key] for key in mapping[FILTER_POPOVER_SECTION.PROGRESSIONS] ], 'roles': {vType:[ filters[role] for role in mapping[FILTER_POPOVER_SECTION.ROLES].get(vType, []) ] for vType in mapping[FILTER_POPOVER_SECTION.VEHICLE_TYPES] if vType != VEHICLE_CLASS_NAME.SPG}, 
+           'rolesLabel': self.__getRolesLabel(vehType), 
+           'rolesSectionVisible': self._withRoles and vehType is not None and vehType is not VEHICLE_CLASS_NAME.SPG, 
+           'asSeen': self.__getSeenEnties()}
 
     def _getInitialVO(self, filters, xpRateMultiplier):
         mapping = self._mapping
         vehType = self.__getSelectedVehType(filters)
-        dataVO = {'nationsSectionId': FILTER_POPOVER_SECTION.NATIONS,
-         'vehicleTypesSectionId': FILTER_POPOVER_SECTION.VEHICLE_TYPES,
-         'levelsSectionId': FILTER_POPOVER_SECTION.LEVELS,
-         'specialSectionId': FILTER_POPOVER_SECTION.SPECIALS,
-         'hiddenSectionId': FILTER_POPOVER_SECTION.HIDDEN,
-         'progressionsSectionId': FILTER_POPOVER_SECTION.PROGRESSIONS,
-         'rolesSectionId': FILTER_POPOVER_SECTION.ROLES_WITH_EXTRA,
-         'customizationId': FILTER_POPOVER_SECTION.CUSTOMIZATION,
-         'titleLabel': text_styles.highTitle('#tank_carousel_filter:popover/title'),
-         'nationsLabel': text_styles.standard('#tank_carousel_filter:popover/label/nations'),
-         'vehicleTypesLabel': text_styles.standard('#tank_carousel_filter:popover/label/vehicleTypes'),
-         'levelsLabel': text_styles.standard('#tank_carousel_filter:popover/label/levels'),
-         'specialsLabel': text_styles.standard('#tank_carousel_filter:popover/label/specials'),
-         'hiddenLabel': text_styles.standard('#tank_carousel_filter:popover/label/hidden'),
-         'progressionsLabel': text_styles.standard('#tank_carousel_filter:popover/label/progressions'),
-         'customizationLabel': text_styles.standard('#tank_carousel_filter:popover/label/customization'),
-         'rolesLabel': self.__getRolesLabel(vehType),
-         'searchInputLabel': backport.text(R.strings.tank_carousel_filter.popover.label.searchNameVehicle()),
-         'searchInputName': filters.get('searchNameVehicle') or '',
-         'searchInputTooltip': makeTooltip('#tank_carousel_filter:tooltip/searchInput/header', backport.text(R.strings.tank_carousel_filter.tooltip.searchInput.body(), count=50)),
-         'searchInputMaxChars': 50,
-         'nations': [],
-         'vehicleTypes': [],
-         'levels': [],
-         'customization': [],
-         'specials': [],
-         'hidden': [],
-         'progressions': [],
-         'roles': {},
-         'hiddenSectionVisible': True,
-         'specialSectionVisible': True,
-         'tankTierSectionVisible': True,
-         'searchSectionVisible': True,
-         'customizationVisible': False,
-         'progressionsSectionVisible': False,
-         'rolesSectionVisible': False,
-         'changeableArrowDirection': False}
+        dataVO = {'nationsSectionId': FILTER_POPOVER_SECTION.NATIONS, 
+           'vehicleTypesSectionId': FILTER_POPOVER_SECTION.VEHICLE_TYPES, 
+           'levelsSectionId': FILTER_POPOVER_SECTION.LEVELS, 
+           'specialSectionId': FILTER_POPOVER_SECTION.SPECIALS, 
+           'hiddenSectionId': FILTER_POPOVER_SECTION.HIDDEN, 
+           'progressionsSectionId': FILTER_POPOVER_SECTION.PROGRESSIONS, 
+           'rolesSectionId': FILTER_POPOVER_SECTION.ROLES_WITH_EXTRA, 
+           'customizationId': FILTER_POPOVER_SECTION.CUSTOMIZATION, 
+           'titleLabel': text_styles.highTitle('#tank_carousel_filter:popover/title'), 
+           'nationsLabel': text_styles.standard('#tank_carousel_filter:popover/label/nations'), 
+           'vehicleTypesLabel': text_styles.standard('#tank_carousel_filter:popover/label/vehicleTypes'), 
+           'levelsLabel': text_styles.standard('#tank_carousel_filter:popover/label/levels'), 
+           'specialsLabel': text_styles.standard('#tank_carousel_filter:popover/label/specials'), 
+           'hiddenLabel': text_styles.standard('#tank_carousel_filter:popover/label/hidden'), 
+           'progressionsLabel': text_styles.standard('#tank_carousel_filter:popover/label/progressions'), 
+           'customizationLabel': text_styles.standard('#tank_carousel_filter:popover/label/customization'), 
+           'rolesLabel': self.__getRolesLabel(vehType), 
+           'searchInputLabel': backport.text(R.strings.tank_carousel_filter.popover.label.searchNameVehicle()), 
+           'searchInputName': filters.get('searchNameVehicle') or '', 
+           'searchInputTooltip': makeTooltip('#tank_carousel_filter:tooltip/searchInput/header', backport.text(R.strings.tank_carousel_filter.tooltip.searchInput.body(), count=50)), 
+           'searchInputMaxChars': 50, 
+           'nations': [], 'vehicleTypes': [], 'levels': [], 'customization': [], 'specials': [], 'hidden': [], 'progressions': [], 'roles': {}, 'hiddenSectionVisible': True, 
+           'specialSectionVisible': True, 
+           'tankTierSectionVisible': True, 
+           'searchSectionVisible': True, 
+           'customizationVisible': False, 
+           'progressionsSectionVisible': False, 
+           'rolesSectionVisible': False, 
+           'changeableArrowDirection': False}
 
         def isSelected(entry):
             return filters.get(entry, False)
 
         for entry in mapping[FILTER_POPOVER_SECTION.NATIONS]:
-            dataVO['nations'].append({'id': entry,
-             'value': getNationsFilterAssetPath(entry),
-             'tooltip': makeTooltip('#nations:{}'.format(entry), '#tank_carousel_filter:tooltip/nations/body'),
-             'selected': isSelected(entry)})
+            dataVO['nations'].append({'id': entry, 
+               'value': getNationsFilterAssetPath(entry), 
+               'tooltip': makeTooltip(('#nations:{}').format(entry), '#tank_carousel_filter:tooltip/nations/body'), 
+               'selected': isSelected(entry)})
 
         for entry in mapping[FILTER_POPOVER_SECTION.LEVELS]:
-            dataVO['levels'].append({'id': entry,
-             'value': getLevelsAssetPath(entry),
-             'selected': isSelected(entry)})
+            dataVO['levels'].append({'id': entry, 
+               'value': getLevelsAssetPath(entry), 
+               'selected': isSelected(entry)})
 
         for entry in mapping[FILTER_POPOVER_SECTION.CUSTOMIZATION]:
-            dataVO['customization'].append({'id': entry,
-             'value': getCustomizationTypeAssetPath(entry),
-             'tooltip': makeTooltip('#menu:carousel_tank_filter/{}'.format(entry), '#tank_carousel_filter:tooltip/customization/{}/body'.format(entry)),
-             'selected': isSelected(entry),
-             'isNew': isVehicleFilterNew(entry)})
+            dataVO['customization'].append({'id': entry, 
+               'value': getCustomizationTypeAssetPath(entry), 
+               'tooltip': makeTooltip(('#menu:carousel_tank_filter/{}').format(entry), ('#tank_carousel_filter:tooltip/customization/{}/body').format(entry)), 
+               'selected': isSelected(entry), 
+               'isNew': isVehicleFilterNew(entry)})
 
         for entry in mapping[FILTER_POPOVER_SECTION.VEHICLE_TYPES]:
-            dataVO['vehicleTypes'].append({'id': entry,
-             'value': getVehicleTypeAssetPath(entry),
-             'tooltip': makeTooltip('#menu:carousel_tank_filter/{}'.format(entry), '#tank_carousel_filter:tooltip/vehicleTypes/body'),
-             'selected': isSelected(entry)})
+            dataVO['vehicleTypes'].append({'id': entry, 
+               'value': getVehicleTypeAssetPath(entry), 
+               'tooltip': makeTooltip(('#menu:carousel_tank_filter/{}').format(entry), '#tank_carousel_filter:tooltip/vehicleTypes/body'), 
+               'selected': isSelected(entry)})
 
         for entry in mapping[FILTER_POPOVER_SECTION.HIDDEN]:
-            dataVO['hidden'].append({'label': text_styles.standard('#tank_carousel_filter:popover/checkbox/{}'.format(entry)),
-             'tooltip': makeTooltip('#tank_carousel_filter:tooltip/{}/header'.format(entry), '#tank_carousel_filter:tooltip/{}/body'.format(entry)),
-             'selected': isSelected(entry)})
+            dataVO['hidden'].append({'label': text_styles.standard(('#tank_carousel_filter:popover/checkbox/{}').format(entry)), 
+               'tooltip': makeTooltip(('#tank_carousel_filter:tooltip/{}/header').format(entry), ('#tank_carousel_filter:tooltip/{}/body').format(entry)), 
+               'selected': isSelected(entry)})
 
         for entry in mapping[FILTER_POPOVER_SECTION.SPECIALS]:
             contexts = getFilterPopoverSetupContexts(xpRateMultiplier)
@@ -184,14 +167,15 @@ class VehiclesFilterPopover(TankCarouselFilterPopoverMeta):
             contexts = getFilterPopoverSetupContexts(xpRateMultiplier)
             filterCtx = contexts.get(entry, FilterSetupContext())
             tooltipRes = R.strings.tank_carousel_filter.tooltip.dyn(entry)
-            dataVO['progressions'].append({'id': entry,
-             'value': getButtonsAssetPath(filterCtx.asset or entry),
-             'tooltip': makeTooltip(backport.text(tooltipRes.header()) if tooltipRes else '', backport.text(tooltipRes.body(), **filterCtx.ctx)) if tooltipRes else '',
-             'selected': isSelected(entry)})
+            dataVO['progressions'].append({'id': entry, 
+               'value': getButtonsAssetPath(filterCtx.asset or entry), 
+               'tooltip': makeTooltip(backport.text(tooltipRes.header()) if tooltipRes else '', backport.text(tooltipRes.body(), **filterCtx.ctx)) if tooltipRes else '', 
+               'selected': isSelected(entry)})
 
         for vType in mapping[FILTER_POPOVER_SECTION.VEHICLE_TYPES]:
             if vType != VEHICLE_CLASS_NAME.SPG:
-                dataVO['roles'][vType] = [ self.__getRoleVO(entry, filters) for entry in mapping[FILTER_POPOVER_SECTION.ROLES].get(vType, []) if entry is not None ]
+                dataVO['roles'][vType] = [ self.__getRoleVO(entry, filters) for entry in mapping[FILTER_POPOVER_SECTION.ROLES].get(vType, []) if entry is not None
+                                         ]
 
         if not dataVO['hidden']:
             dataVO['hiddenSectionVisible'] = False
@@ -202,11 +186,11 @@ class VehiclesFilterPopover(TankCarouselFilterPopoverMeta):
         return dataVO
 
     def _packSpecial(self, entry, filterCtx, isSelected, tooltipRes, enabled):
-        return {'id': entry,
-         'value': getButtonsAssetPath(filterCtx.asset or entry),
-         'tooltip': makeTooltip(backport.text(tooltipRes.header()) if tooltipRes else '', backport.text(tooltipRes.body(), **filterCtx.ctx)) if tooltipRes else '',
-         'selected': isSelected,
-         'enabled': enabled}
+        return {'id': entry, 
+           'value': getButtonsAssetPath(filterCtx.asset or entry), 
+           'tooltip': makeTooltip(backport.text(tooltipRes.header()) if tooltipRes else '', backport.text(tooltipRes.body(), **filterCtx.ctx)) if tooltipRes else '', 
+           'selected': isSelected, 
+           'enabled': enabled}
 
     def _dispose(self):
         if self._carousel is not None and self._carousel.filter is not None:
@@ -233,16 +217,13 @@ class VehiclesFilterPopover(TankCarouselFilterPopoverMeta):
 
     @classmethod
     def _generateMapping(cls, hasRented, hasEvent, hasRoles, hasCustomization, **kwargs):
-        mapping = {FILTER_POPOVER_SECTION.NATIONS: GUI_NATIONS,
-         FILTER_POPOVER_SECTION.VEHICLE_TYPES: VEHICLE_TYPES_ORDER,
-         FILTER_POPOVER_SECTION.LEVELS: _VEHICLE_LEVEL_FILTERS,
-         FILTER_POPOVER_SECTION.CUSTOMIZATION: [],
-         FILTER_POPOVER_SECTION.SPECIALS: [],
-         FILTER_POPOVER_SECTION.HIDDEN: [],
-         FILTER_POPOVER_SECTION.PROGRESSIONS: [],
-         FILTER_POPOVER_SECTION.ROLES: VEHICLE_ROLES_LABELS_BY_CLASS if hasRoles else {},
-         FILTER_POPOVER_SECTION.ROLES_WITH_EXTRA: VEHICLE_ROLES_LABELS + [constants.ROLES_COLLAPSE] if hasRoles else [],
-         FILTER_POPOVER_SECTION.TEXT_SEARCH: [FILTER_KEYS.SEARCH_NAME_VEHICLE]}
+        mapping = {FILTER_POPOVER_SECTION.NATIONS: GUI_NATIONS, 
+           FILTER_POPOVER_SECTION.VEHICLE_TYPES: VEHICLE_TYPES_ORDER, 
+           FILTER_POPOVER_SECTION.LEVELS: _VEHICLE_LEVEL_FILTERS, 
+           FILTER_POPOVER_SECTION.CUSTOMIZATION: [], FILTER_POPOVER_SECTION.SPECIALS: [], FILTER_POPOVER_SECTION.HIDDEN: [], FILTER_POPOVER_SECTION.PROGRESSIONS: [], FILTER_POPOVER_SECTION.ROLES: VEHICLE_ROLES_LABELS_BY_CLASS if hasRoles else {}, 
+           FILTER_POPOVER_SECTION.ROLES_WITH_EXTRA: VEHICLE_ROLES_LABELS + [constants.ROLES_COLLAPSE] if hasRoles else [], 
+           FILTER_POPOVER_SECTION.TEXT_SEARCH: [
+                                              FILTER_KEYS.SEARCH_NAME_VEHICLE]}
         isBattleRoyaleEnabled = kwargs.get('hasBattleRoyleVehicles', False)
         if isBattleRoyaleEnabled:
             mapping[FILTER_POPOVER_SECTION.HIDDEN].append(FILTER_KEYS.BATTLE_ROYALE)
@@ -271,14 +252,17 @@ class VehiclesFilterPopover(TankCarouselFilterPopoverMeta):
     @staticmethod
     def __getRolesLabel(vehType):
         levels = toRomanRangeString(constants.ROLE_LEVELS)
-        return text_styles.standard(_ms(TANK_CAROUSEL_FILTER.getRolesLabel(vehType), levels=levels)) if vehType is not None and vehType != VEHICLE_CLASS_NAME.SPG else ''
+        if vehType is not None and vehType != VEHICLE_CLASS_NAME.SPG:
+            return text_styles.standard(_ms(TANK_CAROUSEL_FILTER.getRolesLabel(vehType), levels=levels))
+        else:
+            return ''
 
     @staticmethod
     def __getRoleVO(role, filters):
-        return {'id': role,
-         'value': backport.image(R.images.gui.maps.icons.roleExp.roles.c_16x16.dyn(role)()),
-         'tooltip': makeTooltip(backport.text(R.strings.menu.roleExp.roleName.dyn(role)(), groupName=backport.text(R.strings.menu.roleExp.roleGroupName.dyn(role)())), backport.text(R.strings.tank_carousel_filter.tooltip.role.body())),
-         'selected': filters[role]}
+        return {'id': role, 
+           'value': backport.image(R.images.gui.maps.icons.roleExp.roles.c_16x16.dyn(role)()), 
+           'tooltip': makeTooltip(backport.text(R.strings.menu.roleExp.roleName.dyn(role)(), groupName=backport.text(R.strings.menu.roleExp.roleGroupName.dyn(role)())), backport.text(R.strings.tank_carousel_filter.tooltip.role.body())), 
+           'selected': filters[role]}
 
     def __markAsSeen(self, entry):
         if isVehicleFilterNew(entry):
@@ -287,7 +271,8 @@ class VehiclesFilterPopover(TankCarouselFilterPopoverMeta):
             AccountSettings.setCounters(VEHICLE_CAROUSEL_COUNTERS_SEEN, counters)
 
     def __getSeenEnties(self):
-        return [ entry for entry, isSeen in AccountSettings.getCounters(VEHICLE_CAROUSEL_COUNTERS_SEEN).items() if isSeen ]
+        return [ entry for entry, isSeen in AccountSettings.getCounters(VEHICLE_CAROUSEL_COUNTERS_SEEN).items() if isSeen
+               ]
 
 
 class StorageBlueprintsFilterPopover(VehiclesFilterPopover):
@@ -310,11 +295,8 @@ class StorageBlueprintsFilterPopover(VehiclesFilterPopover):
 
 
 class TankCarouselFilterPopover(VehiclesFilterPopover):
-    _BASE_SPECIALS_LIST = [FILTER_KEYS.BONUS,
-     FILTER_KEYS.FAVORITE,
-     FILTER_KEYS.PREMIUM,
-     FILTER_KEYS.ELITE,
-     FILTER_KEYS.CRYSTALS]
+    _BASE_SPECIALS_LIST = [
+     FILTER_KEYS.BONUS, FILTER_KEYS.FAVORITE, FILTER_KEYS.PREMIUM, FILTER_KEYS.ELITE, FILTER_KEYS.CRYSTALS]
     __settingsCore = dependency.descriptor(ISettingsCore)
 
     def __init__(self, ctx):
@@ -362,9 +344,9 @@ class TankCarouselFilterPopover(VehiclesFilterPopover):
 
     def _getInitialVO(self, filters, xpRateMultiplier):
         dataVO = super(TankCarouselFilterPopover, self)._getInitialVO(filters, xpRateMultiplier)
-        dataVO.update({'toggleSwitchCarouselTooltip': makeTooltip('#tank_carousel_filter:tooltip/toggleSwitchCarousel/header', '#tank_carousel_filter:tooltip/toggleSwitchCarousel/body'),
-         'toggleSwitchCarouselIcon': RES_ICONS.MAPS_ICONS_FILTERS_DOUBLE_CAROUSEL,
-         'toggleSwitchCarouselSelected': bool(self._carouselRowCount)})
+        dataVO.update({'toggleSwitchCarouselTooltip': makeTooltip('#tank_carousel_filter:tooltip/toggleSwitchCarousel/header', '#tank_carousel_filter:tooltip/toggleSwitchCarousel/body'), 
+           'toggleSwitchCarouselIcon': RES_ICONS.MAPS_ICONS_FILTERS_DOUBLE_CAROUSEL, 
+           'toggleSwitchCarouselSelected': bool(self._carouselRowCount)})
         return dataVO
 
     def _readRowCount(self, _):

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/blueprints/blueprints_alliance_tooltip_view.py
 import nations
 from frameworks.wulf import ViewSettings, Array
 from gui.impl.gen import R
@@ -26,7 +24,7 @@ class BlueprintsAllianceTooltipView(ViewImpl):
     def _onLoading(self, *args, **kwargs):
         nationId = nations.INDICES[self.__nation]
         allianceId = nations.NATION_TO_ALLIANCE_IDS_MAP[nationId]
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setAllianceName(nations.ALLIANCES_TAGS_ORDER[allianceId])
             model.setVehicleNationName(self.__nation)
             self.__setPriceOptions(model.getPriceOptions())

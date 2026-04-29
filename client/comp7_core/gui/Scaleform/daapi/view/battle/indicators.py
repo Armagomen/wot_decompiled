@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_core/scripts/client/comp7_core/gui/Scaleform/daapi/view/battle/indicators.py
 import typing
 from comp7_core.gui.Scaleform.daapi.view.meta.Comp7ReconFlightMeta import Comp7ReconFlightMeta
 from constants import DIRECT_DETECTION_TYPE
@@ -11,10 +9,7 @@ class ReconFlightIndicator(Comp7ReconFlightMeta, SixthSenseIndicator):
 
     def getIndicatorTogglesByType(self):
         flightDuration = GUI_SETTINGS.reconFlightDuration / float(MS_IN_SECOND)
-        return [(DIRECT_DETECTION_TYPE.SPECIAL_RECON,
-          self.__toggleFlight,
-          flightDuration,
-          self.__isFlightEnabled)]
+        return [(DIRECT_DETECTION_TYPE.SPECIAL_RECON, self.__toggleFlight, flightDuration, self.__isFlightEnabled)]
 
     def __toggleFlight(self, isVisible, _):
         if isVisible:

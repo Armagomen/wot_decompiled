@@ -1,9 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/gui/feature/number_requester.py
 from __future__ import absolute_import
-import json
-import logging
-import typing
+import json, logging, typing
 from future.builtins import str
 from Event import Event
 from gui.game_control.reactive_comm import Subscription
@@ -61,10 +57,16 @@ class ResourceWellNumberRequester(object):
         return
 
     def getValuesLeft(self):
-        return self.__remainingValues if self.__remainingValues is not None and self.__reactiveCommunication.isChannelSubscriptionAvailable else None
+        if self.__remainingValues is not None and self.__reactiveCommunication.isChannelSubscriptionAvailable:
+            return self.__remainingValues
+        else:
+            return
 
     def getRemainingValues(self):
-        return self.__remainingValues if self.__remainingValues is not None and self.__reactiveCommunication.isChannelSubscriptionAvailable and self.__initialValues != _NO_VEHICLES_VALUE else self.__initialValues
+        if self.__remainingValues is not None and self.__reactiveCommunication.isChannelSubscriptionAvailable and self.__initialValues != _NO_VEHICLES_VALUE:
+            return self.__remainingValues
+        else:
+            return self.__initialValues
 
     def getGivenValues(self):
         return self.__givenValues
@@ -75,7 +77,6 @@ class ResourceWellNumberRequester(object):
     @wg_async
     def __subscribe(self):
         try:
-            yield wg_await(self.__semaphore.acquire())
             if self.__rewardID is None:
                 _logger.info('Requester can not subscribe to channel after the clearing.')
                 return
@@ -87,6 +88,7 @@ class ResourceWellNumberRequester(object):
             if not self.__reactiveCommunication.isChannelSubscriptionAvailable:
                 _logger.error('Channel subscription is unavailable! Please check reactive communication settings')
                 return
+            yield wg_await(self.__semaphore.acquire())
             self.__subscription = Subscription(channelName)
             status = yield wg_await(self.__reactiveCommunication.subscribeToChannel(self.__subscription))
             _logger.debug('Subscription status for channel <%s>: %s', channelName, status)

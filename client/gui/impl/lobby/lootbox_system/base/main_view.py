@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/lootbox_system/base/main_view.py
 from collections import deque
 from typing import TYPE_CHECKING
 from account_helpers.AccountSettings import LOOT_BOXES_INTRO_VIDEO_SHOWN
@@ -19,10 +17,10 @@ if TYPE_CHECKING:
 class _Presenters(PresentersMap):
 
     def _makeLoadersMap(self):
-        return {SubViewID.NO_BOXES: self.__loadNoBoxes,
-         SubViewID.HAS_BOXES: self.__loadHasBoxes,
-         SubViewID.SINGLE_BOX_REWARDS: self.__loadSingleBoxRewards,
-         SubViewID.MULTIPLE_BOXES_REWARDS: self.__loadMultipleBoxesRewards}
+        return {SubViewID.NO_BOXES: self.__loadNoBoxes, 
+           SubViewID.HAS_BOXES: self.__loadHasBoxes, 
+           SubViewID.SINGLE_BOX_REWARDS: self.__loadSingleBoxRewards, 
+           SubViewID.MULTIPLE_BOXES_REWARDS: self.__loadMultipleBoxesRewards}
 
     def __loadNoBoxes(self):
         from gui.impl.lobby.lootbox_system.base.submodels.no_boxes import NoBoxes
@@ -92,13 +90,17 @@ class MainView(MainViewImpl):
         super(MainView, self)._finalize()
 
     def _getEvents(self):
-        return ((self.viewModel.onResourcesLoadCompleted, self.__onResourcesLoadCompleted),)
+        return (
+         (
+          self.viewModel.onResourcesLoadCompleted, self.__onResourcesLoadCompleted),)
 
     def _getPresentersMap(self):
         return _Presenters(self)
 
     def _getDefaultSubViewID(self):
-        return SubViewID.HAS_BOXES if self.__lootBoxes.getBoxesCount(self.__eventName) else SubViewID.NO_BOXES
+        if self.__lootBoxes.getBoxesCount(self.__eventName):
+            return SubViewID.HAS_BOXES
+        return SubViewID.NO_BOXES
 
     def __onResourcesLoadCompleted(self):
         Waiting.hide('loading')
@@ -109,7 +111,7 @@ class MainView(MainViewImpl):
         return
 
     def __loadPendingSubviews(self):
-        with self.viewModel.transaction() as vmTx:
+        with self.viewModel.transaction() as (vmTx):
             subviewIDsModel = vmTx.getSubViewIDs()
             subviewIDsModel.clear()
             while self.__pendingSubviews:

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/battle/frontline_stats_exchange.py
 import logging
 from frontline.gui.Scaleform.daapi.view.meta.FrontlineBattleStatisticDataControllerMeta import FrontlineBattleStatisticDataControllerMeta
 from gui.Scaleform.daapi.view.battle.classic.stats_exchange import DynamicVehicleStatsComponent
@@ -28,9 +26,9 @@ class EpicStatsComponent(DynamicVehicleStatsComponent):
         super(EpicStatsComponent, self).clear()
 
     def get(self, forced=False):
-        stats = {'rank': self._rank,
-         'lane': self._lane,
-         'hasRespawns': self._hasRespawns}
+        stats = {'rank': self._rank, 
+           'lane': self._lane, 
+           'hasRespawns': self._hasRespawns}
         data = super(EpicStatsComponent, self).get(forced=True)
         data.update(stats)
         return data
@@ -102,9 +100,13 @@ class FrontlineStatisticsDataController(FrontlineBattleStatisticDataControllerMe
 
     def _createExchangeBroker(self, exchangeCtx):
         exchangeBroker = createExchangeBroker(exchangeCtx)
-        exchangeBroker.setVehiclesInfoExchange(vehicle.VehiclesExchangeBlock(vehicle.VehicleInfoComponent(), positionComposer=broker.BiDirectionComposer(), idsComposers=(vehicle.TeamsSortedIDsComposer(sortKey=vos_collections.EpicRankSortKey),), statsComposers=None))
-        exchangeBroker.setVehiclesStatsExchange(vehicle.VehiclesExchangeBlock(self.__getStatsComponentClass()(), positionComposer=broker.BiDirectionComposer(), idsComposers=(vehicle.TeamsSortedIDsComposer(sortKey=vos_collections.EpicRankSortKey),), statsComposers=(vehicle.TotalStatsComposer(),)))
-        exchangeBroker.setVehicleStatusExchange(vehicle.VehicleStatusComponent(idsComposers=(vehicle.TeamsSortedIDsComposer(sortKey=vos_collections.EpicRankSortKey),), statsComposers=None))
+        exchangeBroker.setVehiclesInfoExchange(vehicle.VehiclesExchangeBlock(vehicle.VehicleInfoComponent(), positionComposer=broker.BiDirectionComposer(), idsComposers=(
+         vehicle.TeamsSortedIDsComposer(sortKey=vos_collections.EpicRankSortKey),), statsComposers=None))
+        exchangeBroker.setVehiclesStatsExchange(vehicle.VehiclesExchangeBlock(self.__getStatsComponentClass()(), positionComposer=broker.BiDirectionComposer(), idsComposers=(
+         vehicle.TeamsSortedIDsComposer(sortKey=vos_collections.EpicRankSortKey),), statsComposers=(
+         vehicle.TotalStatsComposer(),)))
+        exchangeBroker.setVehicleStatusExchange(vehicle.VehicleStatusComponent(idsComposers=(
+         vehicle.TeamsSortedIDsComposer(sortKey=vos_collections.EpicRankSortKey),), statsComposers=None))
         return exchangeBroker
 
     def _createExchangeCollector(self):
@@ -124,9 +126,9 @@ class FrontlineStatisticsDataController(FrontlineBattleStatisticDataControllerMe
             rank = 0
             if self._arenaVisitor.hasPlayerRanks():
                 rank = playerDataComp.playerRank
-            playerData = {'isAttacker': isAttacker,
-             'lane': playerDataComp.physicalLane,
-             'rank': rank}
+            playerData = {'isAttacker': isAttacker, 
+               'lane': playerDataComp.physicalLane, 
+               'rank': rank}
             self.as_updateEpicPlayerStatsS(playerData)
             return
 

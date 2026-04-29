@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/mapbox/mapbox_survey_manager.py
-import logging
-import operator
-import typing
+import logging, operator, typing
 from account_helpers.AccountSettings import MAPBOX_SURVEYS
 from account_helpers import AccountSettings
 from constants import ARENA_BONUS_TYPE
@@ -16,7 +12,8 @@ if typing.TYPE_CHECKING:
 _logger = logging.getLogger(__name__)
 
 class MapboxSurveyManager(object):
-    __slots__ = ('__questions', '__currentQuestionIdx', '__mapId', '__surveyGroup', '__surveyData')
+    __slots__ = ('__questions', '__currentQuestionIdx', '__mapId', '__surveyGroup',
+                 '__surveyData')
 
     def __init__(self):
         self.__mapId = None
@@ -114,13 +111,17 @@ class MapboxSurveyManager(object):
             if not question.isRequired():
                 return True
             questionId = question.getQuestionId() if questionId is None else questionId
-            return all((self.getSelectedAnswers(questionId, optionId) for optionId in question.getOptions())) if question.getQuestionType() == QuestionType.TABLE else bool(self.getSelectedAnswers(questionId))
+            if question.getQuestionType() == QuestionType.TABLE:
+                return all(self.getSelectedAnswers(questionId, optionId) for optionId in question.getOptions())
+            return bool(self.getSelectedAnswers(questionId))
 
     def getQuestion(self, qId=None):
         if qId is not None:
             return findQuestionById(qId, self.__questions)
         else:
-            return self.__questions[self.__currentQuestionIdx] if not self.__isShownAllQuestions() else None
+            if not self.__isShownAllQuestions():
+                return self.__questions[self.__currentQuestionIdx]
+            return
 
     def getPreviousQuestion(self):
         question, idx = self.__findQuestionToShow(self.__questions[self.__currentQuestionIdx - 1::-1])
@@ -157,13 +158,13 @@ class MapboxSurveyManager(object):
                 for choice in answer['choices']:
                     if question.getQuestionType() == QuestionType.INTERACTIVE_MAP:
                         choice = '[%s, %s] %s' % (choice['x'], choice['y'], choice['comment'])
-                    result.append({'question_id': qId.split('_')[0],
-                     'answer_choice': choice,
-                     'answer_option': answer['optionId']})
+                    result.append({'question_id': qId.split('_')[0], 
+                       'answer_choice': choice, 
+                       'answer_option': answer['optionId']})
 
         result.sort(key=operator.itemgetter('question_id', 'answer_choice', 'answer_option'))
-        return {'name': self.__mapId,
-         'answers': result}
+        return {'name': self.__mapId, 
+           'answers': result}
 
     def __findQuestionToShow(self, questions):
         question = findFirst(lambda q: q.isReadyToShow(), questions)
@@ -177,7 +178,8 @@ class MapboxSurveyManager(object):
         return self.__currentQuestionIdx >= len(self.__questions)
 
     def __processLinkedAnswers(self, surveyData, question, newAnswers):
-        linkedQuestions = [ q for q in self.__questions if q != question and q.getLinkedQuestionId() == question.getQuestionId() ]
+        linkedQuestions = [ q for q in self.__questions if q != question and q.getLinkedQuestionId() == question.getQuestionId()
+                          ]
         for q in linkedQuestions:
             if q.getQuestionType() == QuestionType.ALTERNATIVE:
                 if q.isSyncronizedAnswers():
@@ -186,7 +188,8 @@ class MapboxSurveyManager(object):
                     for altQuestion in q.getAlternatives():
                         surveyData.pop(altQuestion.getQuestionId(), None)
 
-            surveyData.pop(q.getQuestionId(), None)
+            else:
+                surveyData.pop(q.getQuestionId(), None)
 
         return
 
@@ -198,6 +201,7 @@ class MapboxSurveyManager(object):
                 for alternative in skippedQuestion.getAlternatives():
                     surveyData.pop(alternative.getQuestionId(), None)
 
-            surveyData.pop(skippedQuestion.getQuestionId(), None)
+            else:
+                surveyData.pop(skippedQuestion.getQuestionId(), None)
 
         return

@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/feature/util/fun_mixins.py
 from __future__ import absolute_import
-import logging
-import typing
+import logging, typing
 from adisp import adisp_async, adisp_process
 from fun_random_common.fun_constants import UNKNOWN_EVENT_ID
 from fun_random.gui.fun_gui_constants import SELECTOR_BATTLE_TYPES
@@ -16,6 +13,7 @@ from helpers import dependency
 from shared_utils import first
 from skeletons.gui.game_control import IFunRandomController
 if typing.TYPE_CHECKING:
+    from fun_random.gui.feature.configs.modes.assets_pack import FunModeAssetsPackConfigurationModel
     from fun_random.gui.feature.models.common import FunSubModesStatus
     from fun_random.gui.feature.models.progressions import FunProgression
     from fun_random.gui.feature.sub_modes.base_sub_mode import IFunSubMode
@@ -26,16 +24,20 @@ class FunAssetPacksMixin(object):
     _funRandomCtrl = dependency.descriptor(IFunRandomController)
 
     @classmethod
+    def getModeAssetsConfiguration(cls):
+        return cls._funRandomCtrl.getConfigurationModel().mode.assetsPack
+
+    @classmethod
     def getModeAssetsPointer(cls):
-        return cls._funRandomCtrl.getAssetsPointer()
+        return cls.getModeAssetsConfiguration().assetsPointer
 
     @classmethod
     def getModeIconsResRoot(cls):
-        return cls._funRandomCtrl.getIconsResRoot()
+        return cls.getModeAssetsConfiguration().getIconsResRoot()
 
     @classmethod
     def getModeLocalsResRoot(cls):
-        return cls._funRandomCtrl.getLocalsResRoot()
+        return cls.getModeAssetsConfiguration().getLocalsResRoot()
 
     @classmethod
     def getModeNameKwargs(cls):

@@ -1,12 +1,11 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/login/login_modes/wgc_mode.py
+from __future__ import absolute_import
 import WGC
 from constants import IS_CHINA
+from gui.Scaleform.daapi.view.login.login_modes.base_wgc_mode import BaseWgcMode
 from gui.Scaleform.locale.MENU import MENU
 from gui.impl import backport
 from gui.impl.gen import R
 from helpers.i18n import makeString as _ms
-from base_wgc_mode import BaseWgcMode
 from predefined_hosts import g_preDefinedHosts
 
 class WgcMode(BaseWgcMode):
@@ -19,7 +18,9 @@ class WgcMode(BaseWgcMode):
 
     @property
     def login(self):
-        return super(WgcMode, self).login if self.__wgcStoredUserSelected else ''
+        if self.__wgcStoredUserSelected:
+            return super(WgcMode, self).login
+        return ''
 
     def onPopulate(self):
         if self.__wgcStoredUserSelected:
@@ -35,10 +36,9 @@ class WgcMode(BaseWgcMode):
         if self.__wgcStoredUserSelected:
             if IS_CHINA:
                 self._view.as_showHealthNoticeS(backport.text(R.strings.menu.login.healthNotice()))
-            self._view.as_showFilledLoginFormS({'haveToken': True,
-             'userName': WGC.getUserName(),
-             'icoPath': '',
-             'socialId': ''})
+            self._view.as_showFilledLoginFormS({'haveToken': True, 'userName': WGC.getUserName(), 
+               'icoPath': '', 
+               'socialId': ''})
         else:
             self._fallbackMode.updateForm()
 
@@ -60,7 +60,9 @@ class WgcMode(BaseWgcMode):
         self._fallbackMode.doSocialLogin(*args)
 
     def skipRejectionError(self, loginStatus):
-        return super(WgcMode, self).skipRejectionError(loginStatus) if self.__wgcStoredUserSelected else self._fallbackMode.skipRejectionError(loginStatus)
+        if self.__wgcStoredUserSelected:
+            return super(WgcMode, self).skipRejectionError(loginStatus)
+        return self._fallbackMode.skipRejectionError(loginStatus)
 
     def _onWgcError(self):
         self.__stop()

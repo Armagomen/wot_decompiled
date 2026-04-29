@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/web/web_client_api/request/__init__.py
 from web.web_client_api import w2capi
 from web.web_client_api.request.access_token import AccessTokenWebApiMixin
 from web.web_client_api.request.graphics_settings import GraphicsSettingsWebApiMixin

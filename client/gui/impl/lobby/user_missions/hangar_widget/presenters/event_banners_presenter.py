@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hangar_widget/presenters/event_banners_presenter.py
-import json
-import BigWorld
+import json, BigWorld
 from typing import TYPE_CHECKING
 from debug_utils import LOG_ERROR
 from gui.impl.gen.view_models.views.lobby.user_missions.widget.event_banner_model import EventBannerModel
@@ -42,12 +39,19 @@ class EventBannersPresenter(TooltipPositionerMixin, OverlapCtrlMixin, ViewCompon
         return super(EventBannersPresenter, self).createToolTipContent(event=event, contentID=contentID)
 
     def _getEvents(self):
-        return super(EventBannersPresenter, self)._getEvents() + ((self.viewModel.onEventClick, self._onEventClicked),
-         (self.viewModel.onAppearAnimationPlayed, self._onAppearAnimationPlayed),
-         (self.__bannersContainer.onBannerUpdate, self._onBannerUpdate),
-         (self.__eventsService.onEventsListChanged, self._onEventsUpdated),
-         (self.__campaignService.onEventsListChanged, self._onEventsUpdated),
-         (self.__hangarSpace.onSpaceCreate, self._onSpaceCreate))
+        return super(EventBannersPresenter, self)._getEvents() + (
+         (
+          self.viewModel.onEventClick, self._onEventClicked),
+         (
+          self.viewModel.onAppearAnimationPlayed, self._onAppearAnimationPlayed),
+         (
+          self.__bannersContainer.onBannerUpdate, self._onBannerUpdate),
+         (
+          self.__eventsService.onEventsListChanged, self._onEventsUpdated),
+         (
+          self.__campaignService.onEventsListChanged, self._onEventsUpdated),
+         (
+          self.__hangarSpace.onSpaceCreate, self._onSpaceCreate))
 
     def _onLoading(self, *args, **kwargs):
         self.initOverlapCtrl()
@@ -90,7 +94,7 @@ class EventBannersPresenter(TooltipPositionerMixin, OverlapCtrlMixin, ViewCompon
     def _rawUpdate(self):
         super(EventBannersPresenter, self)._rawUpdate()
         eventEntries = self._getEventEntries()
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             eps = vm.getBanners()
             epNames0 = {ep.getName() for ep in eps}
             eps.clear()
@@ -98,7 +102,7 @@ class EventBannersPresenter(TooltipPositionerMixin, OverlapCtrlMixin, ViewCompon
             for entry in eventEntries:
                 banner = self.__bannersContainer.getEventBanner(entry.id)
                 if banner is None:
-                    LOG_ERROR('Did not find banner by ID "{}"'.format(entry.id))
+                    LOG_ERROR(('Did not find banner by ID "{}"').format(entry.id))
                     continue
                 eps.addViewModel(self._fillBannerModel(banner))
                 banner.onAppear()
@@ -165,7 +169,7 @@ class EventBannersPresenter(TooltipPositionerMixin, OverlapCtrlMixin, ViewCompon
             self._updateBanner(banner)
 
     def _updateBanner(self, banner):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             banners = vm.getBanners()
             for i, ep in enumerate(banners):
                 if ep.getName() == banner.NAME:

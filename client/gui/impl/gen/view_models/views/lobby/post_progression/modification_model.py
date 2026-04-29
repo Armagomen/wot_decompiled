@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/post_progression/modification_model.py
 from enum import Enum
 from gui.impl.gen.view_models.common.price_model import PriceModel
 from gui.impl.gen.view_models.views.lobby.post_progression.base_modification_model import BaseModificationModel

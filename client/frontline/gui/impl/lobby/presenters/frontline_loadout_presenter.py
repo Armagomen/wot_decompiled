@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/impl/lobby/presenters/frontline_loadout_presenter.py
 import typing
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.Scaleform.lobby_entry import getLobbyStateMachine
@@ -14,12 +12,10 @@ from frontline.gui.impl.gen.view_models.views.lobby.views.frontline_const import
 from frontline.gui.impl.lobby.presenters.fl_hangar_ammunition_groups_controller import FLHangarAmmunitionGroupsController
 from helpers import dependency
 from skeletons.gui.app_loader import IAppLoader
-from gui.impl.gen.view_models.views.lobby.tank_setup.tank_setup_constants import TankSetupConstants
 if typing.TYPE_CHECKING:
     from gui.impl.pub.view_component import ViewComponent
 
 class _FrontlineLoadoutStatesObserver(_LoadoutStatesObserver):
-    _GROUP_SECTIONS_NAMES = [[TankSetupConstants.OPT_DEVICES, TankSetupConstants.BATTLE_BOOSTERS, FrontlineConst.BATTLE_ABILITIES], [TankSetupConstants.SHELLS, TankSetupConstants.CONSUMABLES]]
 
     @property
     def _stateID(self):
@@ -47,15 +43,14 @@ class FrontlineLoadoutPresenter(LoadoutPresenter):
     def _getChildComponents(self):
         hangar = R.aliases.hangar.shared
         frontline = R.aliases.frontline
-        return {hangar.Equipments(): lambda : EquipmentsPresenter(self._vehInteractingItem),
-         hangar.Instructions(): lambda : InstructionsPresenter(self._vehInteractingItem),
-         hangar.Shells(): lambda : FrontlineShellsPresenter(self._vehInteractingItem),
-         hangar.Consumables(): lambda : ConsumablesPresenter(self._vehInteractingItem),
-         frontline.loadout.BattleAbilities(): lambda : FrontlineAbilityPresenter(self._vehInteractingItem, self.getSlotSelectionObserver())}
+        return {hangar.Equipments(): lambda : EquipmentsPresenter(self._vehInteractingItem), 
+           hangar.Instructions(): lambda : InstructionsPresenter(self._vehInteractingItem), 
+           hangar.Shells(): lambda : FrontlineShellsPresenter(self._vehInteractingItem), 
+           hangar.Consumables(): lambda : ConsumablesPresenter(self._vehInteractingItem), 
+           frontline.loadout.BattleAbilities(): lambda : FrontlineAbilityPresenter(self._vehInteractingItem, self.getSlotSelectionObserver())}
 
-    @property
-    def _getGroupControllerCls(self):
-        return FLHangarAmmunitionGroupsController
+    def _createAmmunitionGroupsController(self, vehicle):
+        return FLHangarAmmunitionGroupsController(vehicle)
 
 
 class FrontlineShellsPresenter(ShellsPresenter):

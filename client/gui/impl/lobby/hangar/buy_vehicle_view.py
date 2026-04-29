@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/hangar/buy_vehicle_view.py
 from __future__ import absolute_import
 import logging
 from collections import namedtuple
@@ -8,10 +6,7 @@ from typing import TYPE_CHECKING, List, NamedTuple
 import BigWorld
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import EasyTankEquip
-import Settings
-import adisp
-import constants
-from CurrentVehicle import g_currentPreviewVehicle
+import Settings, adisp, constants
 from PlayerEvents import g_playerEvents
 from constants import QUEUE_TYPE
 from frameworks.wulf import ViewFlags, ViewSettings, WindowFlags, ViewEvent
@@ -89,11 +84,9 @@ class VehicleOptions(CONST_CONTAINER):
     SLOT = 'slot'
     CREW = 'crew'
     CONSUMABLES = 'consumables'
-    ORDER = (AMMO,
-     CONSUMABLES,
-     SLOT,
-     CREW)
-    __FOR_SAVE = (CREW, CONSUMABLES)
+    ORDER = (AMMO, CONSUMABLES, SLOT, CREW)
+    __FOR_SAVE = (
+     CREW, CONSUMABLES)
     __SECTION_KEY = Settings.KEY_BUY_VEHICLE_VIEW_PREFERENCES
 
     def __init__(self, defaultKeys=()):
@@ -133,7 +126,7 @@ class VehicleOptions(CONST_CONTAINER):
 
     def _validateValue(self, value):
         if value not in self.ALL():
-            raise SoftException('Value must be in {}'.format(self.ALL()))
+            raise SoftException(('Value must be in {}').format(self.ALL()))
         return value
 
     def __ensureDataSectionExists(self):
@@ -144,9 +137,17 @@ class VehicleOptions(CONST_CONTAINER):
 
 _TooltipExtraData = namedtuple('_TooltipExtraData', 'key, itemType')
 _RentPopoverData = namedtuple('_RentPopoverData', ('vehicleIntCD', 'selectedRentTerm'))
-_TradeInPopoverData = namedtuple('_TradeInPopoverData', ('confirmGoldPrice', 'tradeOffVehicleIntCD'))
-_ConsumableTagsInfo = NamedTuple('_ConsumableTagsInfo', [('includedTags', List[str]), ('excludedTags', List[str])])
-_VP_SHOW_PREVIOUS_SCREEN_ON_SUCCESS_ALIASES = (VIEW_ALIAS.VEHICLE_PREVIEW, VIEW_ALIAS.TRADE_IN_VEHICLE_PREVIEW, VIEW_ALIAS.LOBBY_STORE)
+_TradeInPopoverData = namedtuple('_TradeInPopoverData', (
+ 'confirmGoldPrice', 'tradeOffVehicleIntCD'))
+_ConsumableTagsInfo = NamedTuple('_ConsumableTagsInfo', [
+ (
+  'includedTags', List[str]),
+ (
+  'excludedTags', List[str])])
+_VP_SHOW_PREVIOUS_SCREEN_ON_SUCCESS_ALIASES = (
+ VIEW_ALIAS.VEHICLE_PREVIEW,
+ VIEW_ALIAS.TRADE_IN_VEHICLE_PREVIEW,
+ VIEW_ALIAS.LOBBY_STORE)
 _COLLECTIBLE_VEHICLE_TUTORIAL = 'collectibleVehicle'
 
 class BuyVehicleView(ViewImpl, EventSystemEntity, IPrbListener):
@@ -158,8 +159,17 @@ class BuyVehicleView(ViewImpl, EventSystemEntity, IPrbListener):
     __soundEventChecker = dependency.descriptor(ISoundEventChecker)
     __CREW_NOT_SELECTED_IDX = -1
     __REPAIR_KIT_CONFIG_INDEX = 1
-    __consumablesConfig = [_ConsumableTagsInfo(includedTags=['medkit'], excludedTags=['premium_equipment']), _ConsumableTagsInfo(includedTags=['repairkit'], excludedTags=['premium_equipment']), _ConsumableTagsInfo(includedTags=['extinguisher'], excludedTags=['premium_equipment'])]
-    __slots__ = ('__moneyBalanceWidget', '__shop', '__stats', '__nationID', '__inNationID', '__previousAlias', '__actionType', '__returnAlias', '__returnCallback', '__selectedCardIdx', '__vehicle', '__uiMetricsLogger', '__tradeInVehicleToSell', '__selectedRentID', '__selectedRentIdx', '__isGoldAutoPurchaseEnabled', '__tradeInInProgress', '__purchaseInProgress', '__usePreviousAlias', '__tradeInProgress', '__selectedOptions', '__crewPrice', '__hasFreePremiumCrew', '__tooltipPriceData', '__confirmGoldPrice')
+    __consumablesConfig = [
+     _ConsumableTagsInfo(includedTags=['medkit'], excludedTags=['premium_equipment']),
+     _ConsumableTagsInfo(includedTags=['repairkit'], excludedTags=['premium_equipment']),
+     _ConsumableTagsInfo(includedTags=['extinguisher'], excludedTags=['premium_equipment'])]
+    __slots__ = ('__moneyBalanceWidget', '__shop', '__stats', '__nationID', '__inNationID',
+                 '__previousAlias', '__actionType', '__returnAlias', '__returnCallback',
+                 '__selectedCardIdx', '__vehicle', '__uiMetricsLogger', '__tradeInVehicleToSell',
+                 '__selectedRentID', '__selectedRentIdx', '__isGoldAutoPurchaseEnabled',
+                 '__tradeInInProgress', '__purchaseInProgress', '__usePreviousAlias',
+                 '__tradeInProgress', '__selectedOptions', '__crewPrice', '__hasFreePremiumCrew',
+                 '__tooltipPriceData', '__confirmGoldPrice')
 
     def __init__(self, *args, **kwargs):
         settings = ViewSettings(R.views.lobby.hangar.BuyVehicleView(), flags=ViewFlags.VIEW, model=BuyVehicleViewModel(), args=args, kwargs=kwargs)
@@ -226,7 +236,10 @@ class BuyVehicleView(ViewImpl, EventSystemEntity, IPrbListener):
 
     @property
     def consumablesToBuy(self):
-        return self.__consumables if self.isWithConsumables else None
+        if self.isWithConsumables:
+            return self.__consumables
+        else:
+            return
 
     def createToolTip(self, event):
         if event.contentID == R.views.common.tooltip_window.backport_tooltip_content.BackportTooltipContent():
@@ -258,7 +271,7 @@ class BuyVehicleView(ViewImpl, EventSystemEntity, IPrbListener):
         super(BuyVehicleView, self)._onLoading(*args, **kwargs)
         self.setChildView(self.__moneyBalanceWidget.layoutID, self.__moneyBalanceWidget)
         self.__updateFreePremiumCrew()
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             fillVehicleModel(vm.vehicle, self.__vehicle, (VEHICLE_TAGS.PREMIUM,))
             if self.__tradeInVehicleToSell:
                 fillVehicleModel(vm.tradeInVehicleToSell, self.__tradeInVehicleToSell)
@@ -274,40 +287,57 @@ class BuyVehicleView(ViewImpl, EventSystemEntity, IPrbListener):
             self.__uiMetricsLogger.onViewOpen()
 
     def _getEvents(self):
-        return ((self.viewModel.onOptionClick, self.__onOptionClick),
-         (self.__wallet.onWalletStatusChanged, self.__onWalletStatusChanged),
-         (self.viewModel.onCloseBtnClick, self.__onWindowClose),
-         (self.viewModel.onBuyBtnClick, self.__onBuyBtnClick),
-         (self.viewModel.onBackClick, self.__onWindowClose),
-         (self.viewModel.onDisclaimerClick, self.__onDisclaimerClick),
-         (self.viewModel.onSelectTradeInVehicleToSell, self.__onSelectTradeInVehicleToSell),
-         (self.viewModel.onClearTradeInVehicleToSell, self.__onClearTradeInVehicleToSell),
-         (self.__restore.onRestoreChangeNotify, self.__onRestoreChange),
-         (self.__itemsCache.onSyncCompleted, self.__onItemCacheSyncCompleted),
-         (g_playerEvents.onClientUpdated, self.__onClientUpdated))
+        return (
+         (
+          self.viewModel.onOptionClick, self.__onOptionClick),
+         (
+          self.__wallet.onWalletStatusChanged, self.__onWalletStatusChanged),
+         (
+          self.viewModel.onCloseBtnClick, self.__onWindowClose),
+         (
+          self.viewModel.onBuyBtnClick, self.__onBuyBtnClick),
+         (
+          self.viewModel.onBackClick, self.__onWindowClose),
+         (
+          self.viewModel.onDisclaimerClick, self.__onDisclaimerClick),
+         (
+          self.viewModel.onSelectTradeInVehicleToSell, self.__onSelectTradeInVehicleToSell),
+         (
+          self.viewModel.onClearTradeInVehicleToSell, self.__onClearTradeInVehicleToSell),
+         (
+          self.__restore.onRestoreChangeNotify, self.__onRestoreChange),
+         (
+          self.__itemsCache.onSyncCompleted, self.__onItemCacheSyncCompleted),
+         (
+          g_playerEvents.onClientUpdated, self.__onClientUpdated))
 
     def _getListeners(self):
-        return ((ShopEvent.CONFIRM_TRADE_IN, self.__onTradeInConfirmed, EVENT_BUS_SCOPE.LOBBY), (ShopEvent.SELECT_RENT_TERM, self.__onRentTermSelected, EVENT_BUS_SCOPE.LOBBY), (VehicleBuyEvent.VEHICLE_SELECTED, self.__onTradeInVehicleToSellSelected, EVENT_BUS_SCOPE.DEFAULT))
+        return (
+         (
+          ShopEvent.CONFIRM_TRADE_IN, self.__onTradeInConfirmed, EVENT_BUS_SCOPE.LOBBY),
+         (
+          ShopEvent.SELECT_RENT_TERM, self.__onRentTermSelected, EVENT_BUS_SCOPE.LOBBY),
+         (
+          VehicleBuyEvent.VEHICLE_SELECTED, self.__onTradeInVehicleToSellSelected, EVENT_BUS_SCOPE.DEFAULT))
 
     def __onItemCacheSyncCompleted(self, *_):
         if self.__purchaseInProgress or self.viewModel is None or self.viewModel.proxy is None:
             return
+        self.__vehicle = self.__itemsCache.items.getItem(GUI_ITEM_TYPE.VEHICLE, self.__nationID, self.__inNationID)
+        self.__shop = self.__itemsCache.items.shop
+        self.__stats = self.__itemsCache.items.stats
+        if self.__isRestore:
+            self.__selectedRentIdx = BuyVehicleViewModel.RENT_NOT_SELECTED_IDX
+            self.__selectedRentID = BuyVehicleViewModel.RENT_NOT_SELECTED_IDX
+        elif self.__vehicle.hasRentPackages and self.__vehicle.rentPackages:
+            self.__selectedRentIdx = 0
+            self.__selectedRentID = self.__vehicle.rentPackages[self.__selectedRentIdx]['rentID']
         else:
-            self.__vehicle = self.__itemsCache.items.getItem(GUI_ITEM_TYPE.VEHICLE, self.__nationID, self.__inNationID)
-            self.__shop = self.__itemsCache.items.shop
-            self.__stats = self.__itemsCache.items.stats
-            if self.__isRestore:
-                self.__selectedRentIdx = BuyVehicleViewModel.RENT_NOT_SELECTED_IDX
-                self.__selectedRentID = BuyVehicleViewModel.RENT_NOT_SELECTED_IDX
-            elif self.__vehicle.hasRentPackages and self.__vehicle.rentPackages:
-                self.__selectedRentIdx = 0
-                self.__selectedRentID = self.__vehicle.rentPackages[self.__selectedRentIdx]['rentID']
-            else:
-                self.__selectedRentIdx = BuyVehicleViewModel.BUYING_RENT_IDX
-                self.__selectedRentID = BuyVehicleViewModel.RENT_NOT_SELECTED_IDX
-            with self.viewModel.transaction():
-                self.__fillInfo()
-            return
+            self.__selectedRentIdx = BuyVehicleViewModel.BUYING_RENT_IDX
+            self.__selectedRentID = BuyVehicleViewModel.RENT_NOT_SELECTED_IDX
+        with self.viewModel.transaction():
+            self.__fillInfo()
+        return
 
     @adisp.adisp_process
     def __showVehicleInHangar(self, *_):
@@ -418,8 +448,6 @@ class BuyVehicleView(ViewImpl, EventSystemEntity, IPrbListener):
         if self.__previousAlias in _VP_SHOW_PREVIOUS_SCREEN_ON_SUCCESS_ALIASES:
             if self.__returnCallback:
                 returnCallback = self.__returnCallback
-            elif self.__returnAlias == VIEW_ALIAS.LOBBY_RESEARCH and g_currentPreviewVehicle.isPresent():
-                returnCallback = partial(event_dispatcher.showResearchView, g_currentPreviewVehicle.item.intCD)
             elif self.__returnAlias == VIEW_ALIAS.LOBBY_STORE:
                 returnCallback = partial(event_dispatcher.showShop)
             else:
@@ -509,9 +537,8 @@ class BuyVehicleView(ViewImpl, EventSystemEntity, IPrbListener):
             operations.append('pairModifications')
         if operations:
             operationsStr = [ backport.text(R.strings.dialogs.tradeInConfirmation.message.dyn(o)()) for o in operations ]
-            addition = backport.text(R.strings.dialogs.tradeInConfirmation.message.addition(), operations=', '.join(operationsStr))
-        ctx = {'vehName': neutral(vehicle.userName),
-         'addition': addition}
+            addition = backport.text(R.strings.dialogs.tradeInConfirmation.message.addition(), operations=(', ').join(operationsStr))
+        ctx = {'vehName': neutral(vehicle.userName), 'addition': addition}
         return (confirmationType, ctx)
 
     def __fillTradeInInfo(self):
@@ -530,7 +557,7 @@ class BuyVehicleView(ViewImpl, EventSystemEntity, IPrbListener):
             rentType, packageID = parseRentID(self.__selectedRentID)
             rentPackage = self.__vehicle.rentPackages[self.__selectedRentIdx]
             if rentType == constants.RentType.TIME_RENT:
-                label = textDir.dyn('rentBtnLabel{}Days'.format(packageID))()
+                label = textDir.dyn(('rentBtnLabel{}Days').format(packageID))()
                 if label == INVALID_RES_ID:
                     label = textDir.rentBtnLabelAny()
                     labelKwargs['days'] = packageID
@@ -667,7 +694,8 @@ class BuyVehicleView(ViewImpl, EventSystemEntity, IPrbListener):
         else:
             price += self.__vehicle.buyPrices.itemPrice.price
             defPrice += self.__vehicle.buyPrices.itemPrice.defPrice
-        return (price, defPrice)
+        return (
+         price, defPrice)
 
     def __getObtainVehicleProcessor(self, crewType):
         return VehicleBuyer(self.__vehicle, self.isWithSlot, self.isWithAmmo, crewType, consumables=self.consumablesToBuy)
@@ -684,7 +712,8 @@ class BuyVehicleView(ViewImpl, EventSystemEntity, IPrbListener):
                 veh = self.__tradeInVehicleToSell
                 args = (veh,)
             elif tooltipId == BuyVehicleViewModel.SELECTED_VEHICLE_TRADEOFF_TOOLTIP:
-                args = (self.__tradeInVehicleToSell.intCD,)
+                args = (
+                 self.__tradeInVehicleToSell.intCD,)
             elif tooltipId == BuyVehicleViewModel.ACTION_PRICE_TOOLTIP:
                 tooltipKey = event.getArgument('tooltipKey')
                 currency = event.getArgument('currency')
@@ -692,14 +721,11 @@ class BuyVehicleView(ViewImpl, EventSystemEntity, IPrbListener):
                     itemPrice = self.__tooltipPriceData[tooltipKey]
                     price = Money.makeFrom(currency, itemPrice.price.get(currency))
                     defPrice = Money.makeFrom(currency, itemPrice.defPrice.get(currency))
-                    args = (None,
-                     None,
+                    args = (
+                     None, None,
                      price.toMoneyTuple(),
                      defPrice.toMoneyTuple(),
-                     True,
-                     False,
-                     None,
-                     True)
+                     True, False, None, True)
                 else:
                     return
             else:
@@ -736,7 +762,9 @@ class BuyVehicleView(ViewImpl, EventSystemEntity, IPrbListener):
         return self.__vehicle.isRestoreAvailable()
 
     def __isToggleRentAndTradeInState(self):
-        return False if not self.__vehicle else self.__isTradeIn and self.__vehicle.hasRentPackages
+        if not self.__vehicle:
+            return False
+        return self.__isTradeIn and self.__vehicle.hasRentPackages
 
     def __isValidTradeOffSelected(self):
         return self.__tradeIn.validatePossibleVehicleToBuy(self.__vehicle)
@@ -745,7 +773,8 @@ class BuyVehicleView(ViewImpl, EventSystemEntity, IPrbListener):
         return not self.__isBuying()
 
     def __isBuying(self):
-        buyingIndexes = (BuyVehicleViewModel.BUYING_RENT_IDX, BuyVehicleViewModel.RENT_NOT_SELECTED_IDX)
+        buyingIndexes = (
+         BuyVehicleViewModel.BUYING_RENT_IDX, BuyVehicleViewModel.RENT_NOT_SELECTED_IDX)
         return self.__selectedRentIdx in buyingIndexes or not self.__isRentVisible
 
     def __startTutorial(self):
@@ -790,7 +819,7 @@ class BuyVehicleView(ViewImpl, EventSystemEntity, IPrbListener):
             if layoutLength == 1:
                 self.__consumables.append(self.__getConsumable(self.__consumablesConfig[self.__REPAIR_KIT_CONFIG_INDEX]))
             else:
-                self.__consumables.extend((self.__getConsumable(self.__consumablesConfig[configIndex]) for configIndex in order if configIndex < layoutLength))
+                self.__consumables.extend(self.__getConsumable(self.__consumablesConfig[configIndex]) for configIndex in order if configIndex < layoutLength)
 
     def __getConsumable(self, tags):
         return first(self.__itemsCache.items.getItems(GUI_ITEM_TYPE.EQUIPMENT, REQ_CRITERIA.EQUIPMENT.TAGS(tags.includedTags, tags.excludedTags), nationID=self.__vehicle.nationID).values())

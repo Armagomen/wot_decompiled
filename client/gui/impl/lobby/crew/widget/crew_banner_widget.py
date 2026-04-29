@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/widget/crew_banner_widget.py
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.crew.crew_banner_widget_model import CrewBannerWidgetModel
@@ -26,10 +24,14 @@ class CrewBannerWidget(ViewImpl):
         return super(CrewBannerWidget, self).getViewModel()
 
     def _getEvents(self):
-        return ((self.viewModel.onFill, self.__onFill), (self.viewModel.onReset, self.__onReset))
+        return (
+         (
+          self.viewModel.onFill, self.__onFill),
+         (
+          self.viewModel.onReset, self.__onReset))
 
     def fillModel(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             timeLeft = getPerksResetGracePeriod()
             model.setSecondsLeft(timeLeft)
             tsc = self.itemsCache.items.tankmenStatsCache

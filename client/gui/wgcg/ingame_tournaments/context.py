@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/wgcg/ingame_tournaments/context.py
 from gui.wgcg.settings import WebRequestDataType
 from gui.shared.utils.requesters import RequestCtx
 

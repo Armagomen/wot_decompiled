@@ -1,9 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/gui/Scaleform/data/ChannelsCarouselHandler.py
 import typing
 from debug_utils import LOG_ERROR
 from frameworks.wulf import WindowLayer
-from gui.Scaleform.daapi.view.meta.ChannelCarouselMeta import ChannelCarouselMeta
 from gui.Scaleform.framework.managers.containers import ExternalCriteria
 from gui.Scaleform.genConsts.MESSENGER_CHANNEL_CAROUSEL_ITEM_TYPES import MESSENGER_CHANNEL_CAROUSEL_ITEM_TYPES
 from gui.app_loader import sf_lobby
@@ -42,7 +39,7 @@ class ChannelsCarouselHandler(object):
 
     @sf_lobby
     def app(self):
-        return None
+        return
 
     @property
     def handlers(self):
@@ -91,11 +88,9 @@ class ChannelsCarouselHandler(object):
         self.__windowsPositions.clear()
         if self.__channelsDP is not None:
             self.__channelsDP.clear()
-            self.__channelsDP.finiGUI()
             self.__channelsDP = None
         if self.__preBattleChannelsDP is not None:
             self.__preBattleChannelsDP.clear()
-            self.__preBattleChannelsDP.finiGUI()
             self.__preBattleChannelsDP = None
         remove = g_eventBus.removeListener
         remove(ChannelManagementEvent.REQUEST_TO_ADD, self.__handleRequestToAdd, scope=EVENT_BUS_SCOPE.LOBBY)
@@ -104,12 +99,10 @@ class ChannelsCarouselHandler(object):
         remove(ChannelManagementEvent.REQUEST_TO_REMOVE, self.__handleRequestToRemove, scope=EVENT_BUS_SCOPE.LOBBY)
         remove(ChannelManagementEvent.REQUEST_TO_CHANGE, self.__handleRequestToChange, scope=EVENT_BUS_SCOPE.LOBBY)
         remove(ChannelManagementEvent.REQUEST_TO_SHOW, self.__handleRequestToShow, scope=EVENT_BUS_SCOPE.LOBBY)
-        remove(ChannelCarouselEvent.CAROUSEL_DESTROYED, self.__handleCarouselDestroyed, scope=EVENT_BUS_SCOPE.LOBBY)
         return
 
     def start(self):
         add = g_eventBus.addListener
-        add(ChannelCarouselEvent.CAROUSEL_INITED, self.__handleCarouselInited, scope=EVENT_BUS_SCOPE.LOBBY)
         add(ChannelCarouselEvent.OPEN_BUTTON_CLICK, self.__handleOpenButtonClick, scope=EVENT_BUS_SCOPE.LOBBY)
         add(ChannelCarouselEvent.MINIMIZE_ALL_CHANNELS, self.__handlerMinimizeAll, scope=EVENT_BUS_SCOPE.LOBBY)
         add(ChannelCarouselEvent.CLOSE_ALL_EXCEPT_CURRENT, self.__handlerCloseAllExceptCurrent, scope=EVENT_BUS_SCOPE.LOBBY)
@@ -119,7 +112,6 @@ class ChannelsCarouselHandler(object):
 
     def stop(self):
         remove = g_eventBus.removeListener
-        remove(ChannelCarouselEvent.CAROUSEL_INITED, self.__handleCarouselInited, scope=EVENT_BUS_SCOPE.LOBBY)
         remove(ChannelCarouselEvent.OPEN_BUTTON_CLICK, self.__handleOpenButtonClick, scope=EVENT_BUS_SCOPE.LOBBY)
         remove(ChannelCarouselEvent.MINIMIZE_ALL_CHANNELS, self.__handlerMinimizeAll, scope=EVENT_BUS_SCOPE.LOBBY)
         remove(ChannelCarouselEvent.CLOSE_ALL_EXCEPT_CURRENT, self.__handlerCloseAllExceptCurrent, scope=EVENT_BUS_SCOPE.LOBBY)
@@ -138,12 +130,12 @@ class ChannelsCarouselHandler(object):
             order = channel_num_gen.genOrder4Channel(channel)
             openHandler = lambda : events_dispatcher.showLobbyChannelWindow(clientID)
         self.__handlers[clientID] = (ChannelFindCriteria(clientID), openHandler, WindowLayer.WINDOW)
-        self.__channelsDP.addItem(clientID, {'label': channel.getFullName(),
-         'canClose': not isSystem,
-         'isNotified': isNotified,
-         'icon': None,
-         'order': order,
-         'isInProgress': False})
+        self.__channelsDP.addItem(clientID, {'label': channel.getFullName(), 
+           'canClose': not isSystem, 
+           'isNotified': isNotified, 
+           'icon': None, 
+           'order': order, 
+           'isInProgress': False})
         return
 
     def removeChannel(self, channel):
@@ -187,20 +179,6 @@ class ChannelsCarouselHandler(object):
         self.__notifiedMessages.clear()
         return
 
-    def __handleCarouselInited(self, event):
-        carousel = event.target
-        if isinstance(carousel, ChannelCarouselMeta):
-            self.__channelsDP.initGUI(carousel.as_getDataProviderS())
-            self.__preBattleChannelsDP.initGUI(carousel.as_getBattlesDataProviderS())
-            g_eventBus.addListener(ChannelCarouselEvent.CAROUSEL_DESTROYED, self.__handleCarouselDestroyed, scope=EVENT_BUS_SCOPE.LOBBY)
-        else:
-            LOG_ERROR('Channel carousel must be extends ChannelCarouselMeta', carousel)
-
-    def __handleCarouselDestroyed(self, _):
-        self.__channelsDP.finiGUI()
-        self.__preBattleChannelsDP.finiGUI()
-        g_eventBus.removeListener(ChannelCarouselEvent.CAROUSEL_DESTROYED, self.__handleCarouselDestroyed, scope=EVENT_BUS_SCOPE.LOBBY)
-
     def __handleRequestToAddPrebattle(self, event):
         self.__adjustAndAddChannel(event, self.__preBattleChannelsDP)
 
@@ -228,7 +206,8 @@ class ChannelsCarouselHandler(object):
                 return
             clientID = event.clientID
             if clientID not in self.__handlers:
-                self.__handlers[clientID] = (criteria, openHandler, layer)
+                self.__handlers[clientID] = (
+                 criteria, openHandler, layer)
                 targetList.addItem(clientID, ctx)
             return
 
@@ -263,7 +242,8 @@ class ChannelsCarouselHandler(object):
                 return
             clientID = event.clientID
             if 'isShowByReq' in ctx and ctx['isShowByReq'] is True:
-                self.__showByReqs[clientID] = (key, value)
+                self.__showByReqs[clientID] = (
+                 key, value)
                 isShow = ctx.get('showIfClosed', False)
                 if isShow:
                     if clientID not in self.__handlers:
@@ -305,11 +285,11 @@ class ChannelsCarouselHandler(object):
             controller.notifyMinorChatRestriction()
             self.__closeNonSystemChannel(clientID)
             return
-        elif not clientID:
-            return
-        elif clientID not in self.__handlers:
-            return
         else:
+            if not clientID:
+                return
+            if clientID not in self.__handlers:
+                return
             criteria, openHandler, layer = self.__handlers[clientID]
             viewContainer = self.app.containerManager
             if layer == WindowLayer.WINDOW:
@@ -327,8 +307,7 @@ class ChannelsCarouselHandler(object):
                 if hasattr(view, 'onWindowMinimize') and callable(getattr(view, 'onWindowMinimize')):
                     view.onWindowMinimize()
                     return
-            fields = {'isNotified': False,
-             'isInProgress': False}
+            fields = {'isNotified': False, 'isInProgress': False}
             if not self.__channelsDP.setItemFields(clientID, fields):
                 self.__preBattleChannelsDP.setItemFields(clientID, fields)
             if clientID in self.__notifiedMessages:
@@ -391,9 +370,9 @@ class ChannelsCarouselHandler(object):
     def __closeChannel(self, clientID):
         if not clientID:
             return
-        elif clientID not in self.__handlers:
-            return
         else:
+            if clientID not in self.__handlers:
+                return
             self.__showByReqs.pop(clientID, None)
             viewContainer = self.app.containerManager
             criteria, _, layer = self.__handlers[clientID]

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/veh_skill_tree/dialogs/intro_page_view.py
 from frameworks.wulf import ViewFlags, ViewSettings, WindowFlags, WindowLayer
 from gui import GUI_SETTINGS
 from gui.impl import backport
@@ -30,11 +28,13 @@ class IntroPageView(ViewImpl):
         return super(IntroPageView, self).getViewModel()
 
     def _getEvents(self):
-        return ((self.viewModel.onClose, self.destroyWindow),)
+        return (
+         (
+          self.viewModel.onClose, self.destroyWindow),)
 
     def _onLoading(self):
         super(IntroPageView, self)._onLoading()
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             slides = tx.getSlides()
             for slideName in GUI_SETTINGS.vehSkillTreeIntroSlides:
                 slides.addViewModel(self.__createSlideModel(slideName))

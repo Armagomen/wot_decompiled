@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/battle_control/controllers/br_battle_sounds.py
-import logging
-import BigWorld
-import SoundGroups
-import WWISE
+import logging, BigWorld, SoundGroups, WWISE
 from constants import ATTACK_REASON, DIRECT_DETECTION_TYPE
 from gui.Scaleform.daapi.view.common.battle_royale.br_helpers import getEquipmentById, getSmokeDataByPredicate
 from gui.battle_control.battle_constants import PLAYER_GUI_PROPS
@@ -52,10 +47,8 @@ class BREvents(object):
     SPAWN_TIMER = 'BR_timer'
     SPAWN_TIMER_WARNING = 'BR_timer_warning'
     AIRDROP_SPAWNED = 'BR_airdrop'
-    DEATHZONE_ENTER = {TIMER_VIEW_STATE.CRITICAL: 'BR_death_zone_red_enter',
-     TIMER_VIEW_STATE.WARNING: 'BR_death_zone_yellow_enter'}
-    DEATHZONE_EXIT = {TIMER_VIEW_STATE.CRITICAL: 'BR_death_zone_red_exit',
-     TIMER_VIEW_STATE.WARNING: 'BR_death_zone_yellow_exit'}
+    DEATHZONE_ENTER = {TIMER_VIEW_STATE.CRITICAL: 'BR_death_zone_red_enter', TIMER_VIEW_STATE.WARNING: 'BR_death_zone_yellow_enter'}
+    DEATHZONE_EXIT = {TIMER_VIEW_STATE.CRITICAL: 'BR_death_zone_red_exit', TIMER_VIEW_STATE.WARNING: 'BR_death_zone_yellow_exit'}
     LEVEL_UP = 'BR_levelup'
     LEVEL_UP_MAX = 'BR_levelup_max'
     UPGRADE_PANEL_SHOW = 'BR_widget_on'
@@ -64,20 +57,17 @@ class BREvents(object):
     VEH_CONFIGURATOR_HIDE = 'BR_upgrade_view_off'
     BATTLE_SUMMARY_SHOW = 'BR_result_screen'
     BR_RESULT_PROGRESS_BAR_STOP = 'BR_result_progress_bar_stop'
-    INSTALL_MODULE = {GUI_ITEM_TYPE.RADIO: 'BR_upgrade_radio',
-     GUI_ITEM_TYPE.GUN: 'BR_upgrade_weapons',
-     GUI_ITEM_TYPE.ENGINE: 'BR_upgrade_engine',
-     GUI_ITEM_TYPE.TURRET: 'BR_upgrade_turret'}
+    INSTALL_MODULE = {GUI_ITEM_TYPE.RADIO: 'BR_upgrade_radio', GUI_ITEM_TYPE.GUN: 'BR_upgrade_weapons', 
+       GUI_ITEM_TYPE.ENGINE: 'BR_upgrade_engine', 
+       GUI_ITEM_TYPE.TURRET: 'BR_upgrade_turret'}
     INSTALL_MODULE_CHASSIS = 'BR_upgrade_treads'
     INSTALL_MODULE_HULL = 'BR_upgrade_hull'
     PHASE_MIDDLE = 'BR_combat_phase_activated'
     PLAYER_LEVEL_MIDDLE = 'BR_combat_phase_our'
-    SOLO_ENEMIES_AMOUNT = {5: 'BR_enemy_remained_05',
-     2: 'BR_enemy_remained_02',
-     1: 'BR_enemy_remained_01'}
-    SQUAD_ENEMIES_AMOUNT = {5: 'BR_enemy_remained_platoon_05',
-     2: 'BR_enemy_remained_platoon_02',
-     1: 'BR_enemy_remained_platoon_01'}
+    SOLO_ENEMIES_AMOUNT = {5: 'BR_enemy_remained_05', 2: 'BR_enemy_remained_02', 
+       1: 'BR_enemy_remained_01'}
+    SQUAD_ENEMIES_AMOUNT = {5: 'BR_enemy_remained_platoon_05', 2: 'BR_enemy_remained_platoon_02', 
+       1: 'BR_enemy_remained_platoon_01'}
     ENEMY_KILLED = 'BR_enemy_killed'
     REBORN = 'BR_reborn'
     CHARGE_REVIVAL = 'BR_charge_revival'
@@ -91,26 +81,26 @@ class BREvents(object):
     BERSERKER_ACTIVATION = 'BR_perk_berserker_activation'
     BERSERKER_DEACTIVATION = 'BR_perk_berserker_deactivation'
     BERSERKER_PULSE_RED = 'BR_perk_berserker_pulse_red'
-    EQUIPMENT_ACTIVATED = {BattleRoyaleEquipments.LARGE_REPAIRKIT: 'BR_perk_repair_activation',
-     BattleRoyaleEquipments.REGENERATION_KIT: 'BR_perk_hp_restore_activation',
-     BattleRoyaleEquipments.SELF_BUFF: 'BR_perk_selfbuff_activation',
-     BattleRoyaleEquipments.TRAP_POINT: 'BR_perk_trap_slowdown_activation',
-     BattleRoyaleEquipments.REPAIR_POINT: 'BR_perk_repairpoint_activation',
-     BattleRoyaleEquipments.HEAL_POINT: 'BR_perk_healzone_activation',
-     BattleRoyaleEquipments.SMOKE_WITH_DAMAGE: 'BR_perk_smoke_zone_applied',
-     BattleRoyaleEquipments.KAMIKAZE: 'BR_perk_kamikaze_zone_applied',
-     BattleRoyaleEquipments.MINE_FIELD: 'BR_perk_minefield_zone',
-     BattleRoyaleEquipments.ADAPTATION_HEALTH_RESTORE: 'BR_perk_hp_restore2_activation',
-     BattleRoyaleEquipments.FIRE_CIRCLE: 'BR_perk_fire_circle_activation',
-     BattleRoyaleEquipments.CLING_BRANDER: 'BR_perk_clingbrander_zone_applied',
-     BattleRoyaleEquipments.SHOT_PASSION: 'BR_perk_shotpassion_activation',
-     BattleRoyaleEquipments.BOMBER: 'BR_perk_airstrike_zone_applied',
-     BattleRoyaleEquipments.THUNDER_STRIKE: 'BR_perk_thundersrtike_zone_applied',
-     BattleRoyaleEquipments.BERSERKER: BERSERKER_ACTIVATION}
-    EQUIPMENT_DEACTIVATED = {BattleRoyaleEquipments.REGENERATION_KIT: 'BR_perk_hp_restore_deactivation',
-     BattleRoyaleEquipments.SELF_BUFF: 'BR_perk_selfbuff_deactivation',
-     BattleRoyaleEquipments.ADAPTATION_HEALTH_RESTORE: 'BR_perk_hp_restore2_deactivation',
-     BattleRoyaleEquipments.BERSERKER: BERSERKER_DEACTIVATION}
+    EQUIPMENT_ACTIVATED = {BattleRoyaleEquipments.LARGE_REPAIRKIT: 'BR_perk_repair_activation', 
+       BattleRoyaleEquipments.REGENERATION_KIT: 'BR_perk_hp_restore_activation', 
+       BattleRoyaleEquipments.SELF_BUFF: 'BR_perk_selfbuff_activation', 
+       BattleRoyaleEquipments.TRAP_POINT: 'BR_perk_trap_slowdown_activation', 
+       BattleRoyaleEquipments.REPAIR_POINT: 'BR_perk_repairpoint_activation', 
+       BattleRoyaleEquipments.HEAL_POINT: 'BR_perk_healzone_activation', 
+       BattleRoyaleEquipments.SMOKE_WITH_DAMAGE: 'BR_perk_smoke_zone_applied', 
+       BattleRoyaleEquipments.KAMIKAZE: 'BR_perk_kamikaze_zone_applied', 
+       BattleRoyaleEquipments.MINE_FIELD: 'BR_perk_minefield_zone', 
+       BattleRoyaleEquipments.ADAPTATION_HEALTH_RESTORE: 'BR_perk_hp_restore2_activation', 
+       BattleRoyaleEquipments.FIRE_CIRCLE: 'BR_perk_fire_circle_activation', 
+       BattleRoyaleEquipments.CLING_BRANDER: 'BR_perk_clingbrander_zone_applied', 
+       BattleRoyaleEquipments.SHOT_PASSION: 'BR_perk_shotpassion_activation', 
+       BattleRoyaleEquipments.BOMBER: 'BR_perk_airstrike_zone_applied', 
+       BattleRoyaleEquipments.THUNDER_STRIKE: 'BR_perk_thundersrtike_zone_applied', 
+       BattleRoyaleEquipments.BERSERKER: BERSERKER_ACTIVATION}
+    EQUIPMENT_DEACTIVATED = {BattleRoyaleEquipments.REGENERATION_KIT: 'BR_perk_hp_restore_deactivation', 
+       BattleRoyaleEquipments.SELF_BUFF: 'BR_perk_selfbuff_deactivation', 
+       BattleRoyaleEquipments.ADAPTATION_HEALTH_RESTORE: 'BR_perk_hp_restore2_deactivation', 
+       BattleRoyaleEquipments.BERSERKER: BERSERKER_DEACTIVATION}
     TRAP_POINT_ENTER = 'BR_perk_trap_slowdown_affects'
     TRAP_POINT_EXIT = 'BR_perk_trap_slowdown_affects_off'
     REPAIR_POINT_ENTER = 'BR_perk_repairpoint_affects'
@@ -133,13 +123,13 @@ class BREvents(object):
     BR_CLING_BRANDER_DESTROYED = 'BR_perk_clingbrander_destroyed'
     BR_SHOT_PASSION_AFFECT = 'BR_perk_shotpassion_affect'
     BR_SHOT_PASSION_AFFECT_OFF = 'BR_perk_shotpassion_affect_off'
-    EQUIPMENT_PREPARING = {BattleRoyaleEquipments.MINE_FIELD: MINEFIELD_ACTIVATION,
-     BattleRoyaleEquipments.CLING_BRANDER: 'BR_perk_clingbrander_activation',
-     BattleRoyaleEquipments.BOMBER: 'BR_perk_airstrike_activation',
-     BattleRoyaleEquipments.THUNDER_STRIKE: 'BR_perk_thundersrtike_activation',
-     BattleRoyaleEquipments.KAMIKAZE: 'BR_perk_kamikaze_activation',
-     BattleRoyaleEquipments.SMOKE_WITH_DAMAGE: 'BR_perk_smoke_activation',
-     BattleRoyaleEquipments.CORRODING_SHOT: 'BR_perk_corroding_shot_activation'}
+    EQUIPMENT_PREPARING = {BattleRoyaleEquipments.MINE_FIELD: MINEFIELD_ACTIVATION, 
+       BattleRoyaleEquipments.CLING_BRANDER: 'BR_perk_clingbrander_activation', 
+       BattleRoyaleEquipments.BOMBER: 'BR_perk_airstrike_activation', 
+       BattleRoyaleEquipments.THUNDER_STRIKE: 'BR_perk_thundersrtike_activation', 
+       BattleRoyaleEquipments.KAMIKAZE: 'BR_perk_kamikaze_activation', 
+       BattleRoyaleEquipments.SMOKE_WITH_DAMAGE: 'BR_perk_smoke_activation', 
+       BattleRoyaleEquipments.CORRODING_SHOT: 'BR_perk_corroding_shot_activation'}
 
     @staticmethod
     def playSound(eventName):
@@ -174,12 +164,9 @@ class BRStates(object):
     STATE_BR = 'STATE_BR_gameplay'
     STATE_BR_ON = 'STATE_BR_gameplay_on'
     STATE_BR_OFF = 'STATE_BR_gameplay_off'
-    STATE_DEATHZONE = {TIMER_VIEW_STATE.CRITICAL: 'STATE_BR_death_zone_red',
-     TIMER_VIEW_STATE.WARNING: 'STATE_BR_death_zone_yellow'}
-    STATE_DEATHZONE_IN = {TIMER_VIEW_STATE.CRITICAL: 'STATE_BR_death_zone_red_in',
-     TIMER_VIEW_STATE.WARNING: 'STATE_BR_death_zone_yellow_in'}
-    STATE_DEATHZONE_OUT = {TIMER_VIEW_STATE.CRITICAL: 'STATE_BR_death_zone_red_out',
-     TIMER_VIEW_STATE.WARNING: 'STATE_BR_death_zone_yellow_out'}
+    STATE_DEATHZONE = {TIMER_VIEW_STATE.CRITICAL: 'STATE_BR_death_zone_red', TIMER_VIEW_STATE.WARNING: 'STATE_BR_death_zone_yellow'}
+    STATE_DEATHZONE_IN = {TIMER_VIEW_STATE.CRITICAL: 'STATE_BR_death_zone_red_in', TIMER_VIEW_STATE.WARNING: 'STATE_BR_death_zone_yellow_in'}
+    STATE_DEATHZONE_OUT = {TIMER_VIEW_STATE.CRITICAL: 'STATE_BR_death_zone_red_out', TIMER_VIEW_STATE.WARNING: 'STATE_BR_death_zone_yellow_out'}
 
     @staticmethod
     def setState(stateName, stateValue):
@@ -198,7 +185,8 @@ class BRBattleSoundController(SoundPlayersController):
 
     def __init__(self):
         super(BRBattleSoundController, self).__init__()
-        self._soundPlayers = (LootSoundPlayer(),
+        self._soundPlayers = (
+         LootSoundPlayer(),
          DeathzoneSoundPlayer(),
          AirDropSoundPlayer(),
          StatusSoundPlayer(),
@@ -528,7 +516,8 @@ class EnemiesAmountSoundPlayer(IVehicleCountListener):
 
 
 class PhaseSoundPlayer(IProgressionListener, IVehicleCountListener):
-    __slots__ = ('__averageLevel', '__enemyTeamsCount', '__currentState', '__finalPhaseEnemiesCount', '__middlePhaseAverageLevel')
+    __slots__ = ('__averageLevel', '__enemyTeamsCount', '__currentState', '__finalPhaseEnemiesCount',
+                 '__middlePhaseAverageLevel')
 
     def __init__(self):
         super(PhaseSoundPlayer, self).__init__()
@@ -693,7 +682,7 @@ class ArenaTypeSoundPlayer(object):
 
 
 class SelectRespawnSoundPlayer(ISpawnListener, IAbstractPeriodView):
-    __slots__ = ('__selectEndingSoonTime',)
+    __slots__ = ('__selectEndingSoonTime', )
 
     def __init__(self):
         super(SelectRespawnSoundPlayer, self).__init__()
@@ -731,7 +720,8 @@ class EquipmentSoundPlayer(IVehicleCountListener, IViewComponentsCtrlListener):
             return
         else:
             prevStageIsReady = item.getPrevStage() in (EQUIPMENT_STAGES.READY, EQUIPMENT_STAGES.PREPARING)
-            currentStageIsActive = item.getStage() in (EQUIPMENT_STAGES.ACTIVE, EQUIPMENT_STAGES.COOLDOWN, EQUIPMENT_STAGES.EXHAUSTED)
+            currentStageIsActive = item.getStage() in (EQUIPMENT_STAGES.ACTIVE, EQUIPMENT_STAGES.COOLDOWN,
+             EQUIPMENT_STAGES.EXHAUSTED)
             if prevStageIsReady and currentStageIsActive:
                 itemName = item.getDescriptor().name
                 eventName = BREvents.EQUIPMENT_ACTIVATED.get(itemName)
@@ -744,7 +734,8 @@ class EquipmentSoundPlayer(IVehicleCountListener, IViewComponentsCtrlListener):
                     BREvents.playSound(eventName)
             else:
                 prevStageIsActive = item.getPrevStage() == EQUIPMENT_STAGES.ACTIVE
-                currentStageIsCooldown = item.getStage() in (EQUIPMENT_STAGES.COOLDOWN, EQUIPMENT_STAGES.READY, EQUIPMENT_STAGES.UNAVAILABLE)
+                currentStageIsCooldown = item.getStage() in (EQUIPMENT_STAGES.COOLDOWN, EQUIPMENT_STAGES.READY,
+                 EQUIPMENT_STAGES.UNAVAILABLE)
                 if prevStageIsActive and currentStageIsCooldown:
                     itemName = item.getDescriptor().name
                     eventName = BREvents.EQUIPMENT_DEACTIVATED.get(itemName)
@@ -799,7 +790,10 @@ class BerserkerSoundPlayer(VehicleStateSoundPlayer, CallbackDelayer):
 
 
 class BomberHitSoundPlayer(BaseEfficiencySoundPlayer):
-    __DAMAGE_TYPE = (PERSONAL_EFFICIENCY_TYPE.RECEIVED_DAMAGE, PERSONAL_EFFICIENCY_TYPE.RECEIVED_CRITICAL_HITS, PERSONAL_EFFICIENCY_TYPE.STUN)
+    __DAMAGE_TYPE = (
+     PERSONAL_EFFICIENCY_TYPE.RECEIVED_DAMAGE,
+     PERSONAL_EFFICIENCY_TYPE.RECEIVED_CRITICAL_HITS,
+     PERSONAL_EFFICIENCY_TYPE.STUN)
 
     def _onEfficiencyReceived(self, events):
         for e in events:
@@ -919,11 +913,14 @@ class _DamagingSmokeAreaSoundPlayer(VehicleStateSoundPlayer):
 
     def __isEquipmentWithDamage(self, equipmentId):
         equipment = getEquipmentById(equipmentId)
-        return equipment.dotParams is not None if equipment else False
+        if equipment:
+            return equipment.dotParams is not None
+        else:
+            return False
 
 
 class ShotPassionSoundPlayer(EquipmentComponentSoundPlayer):
-    __slots__ = ('__isActive',)
+    __slots__ = ('__isActive', )
     __sessionProvider = dependency.descriptor(IBattleSessionProvider)
 
     def __init__(self):

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/container_vews/quick_training/components/freexp_book_component.py
 import typing
 from gui.impl.gen import R
 from gui.impl.lobby.container_views.base.components import ComponentBase
@@ -15,22 +13,28 @@ class FreeXpBookComponent(ComponentBase):
     def createToolTipContent(self, event, contentID):
         if contentID == R.views.lobby.crew.tooltips.QuickTrainingDiscountTooltip():
             return QuickTrainingDiscountTooltip(oldXpExchange=self.context.xpDefaultConversionRate, newXpExchange=self.context.xpDiscountConversionRate)
-        return ExperienceStepperTooltip() if contentID == R.views.lobby.crew.tooltips.ExperienceStepperTooltip() else None
+        if contentID == R.views.lobby.crew.tooltips.ExperienceStepperTooltip():
+            return ExperienceStepperTooltip()
 
     def _getViewModel(self, vm):
         return vm.freeXp
 
     def _getEvents(self):
-        return super(FreeXpBookComponent, self)._getEvents() + ((self.viewModel.mouseEnter, self.events.onFreeXpMouseEnter),
-         (self.viewModel.select, self._onSelected),
-         (self.viewModel.update, self.events.onFreeXpUpdated),
-         (self.viewModel.manualInput, self._onManualInput))
+        return super(FreeXpBookComponent, self)._getEvents() + (
+         (
+          self.viewModel.mouseEnter, self.events.onFreeXpMouseEnter),
+         (
+          self.viewModel.select, self._onSelected),
+         (
+          self.viewModel.update, self.events.onFreeXpUpdated),
+         (
+          self.viewModel.manualInput, self._onManualInput))
 
-    @jsonArgsConverter(('isSelected',))
+    @jsonArgsConverter(('isSelected', ))
     def _onSelected(self, isSelected):
         self.events.onFreeXpSelected(isSelected)
 
-    @jsonArgsConverter(('value',))
+    @jsonArgsConverter(('value', ))
     def _onManualInput(self, value):
         self.events.onFreeXpManualInput(value)
 

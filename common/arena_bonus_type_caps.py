@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/arena_bonus_type_caps.py
 import typing
 from constants import ARENA_BONUS_TYPE, ARENA_BONUS_TYPE_NAMES, PREM_BONUS_TYPES
 from debug_utils import LOG_ERROR
@@ -61,6 +59,7 @@ class ARENA_BONUS_TYPE_CAPS():
     NO_ALLY_DAMAGE = 'NO_ALLY_DAMAGE'
     DAILY_MULTIPLIED_XP = 'DAILY_MULTIPLIED_XP'
     MULTITEAMS = 'MULTITEAMS'
+    SQUAD_MULTITEAMS = 'SQUAD_MULTITEAMS'
     DOSSIER_GLOBAL_MAP = 'DOSSIER_GLOBAL_MAP'
     RAGE_MECHANICS = 'RAGE_MECHANICS'
     RESOURCE_POINTS = 'RESOURCE_POINTS'
@@ -159,6 +158,8 @@ class ARENA_BONUS_TYPE_CAPS():
     FAIRPLAY = 'FAIRPLAY'
     VEHICLE_IN_BATTLE_SELECTION = 'VEHICLE_IN_BATTLE_SELECTION'
     DISABLE_AUTO_AIM = 'DISABLE_AUTO_AIM'
+    DISABLE_ARTY_AIMING_MODE = 'DISABLE_ARTY_AIMING_MODE'
+    DISABLE_SNIPER_AIMING_MODE = 'DISABLE_SNIPER_AIMING_MODE'
     RTS_COMPONENT = 'RTS_COMPONENT'
     DISABLE_DEFAULT_SIXTH_SENSE = 'DISABLE_DEFAULT_SIXTH_SENSE'
     ANONYMIZER_ENEMY_TEAM = 'ANONYMIZER_ENEMY_TEAM'
@@ -168,12 +169,9 @@ class ARENA_BONUS_TYPE_CAPS():
     PRESTIGE_SYSTEM = 'PRESTIGE_SYSTEM'
     PRESTIGE_SYSTEM_HUD = 'PRESTIGE_SYSTEM_HUD'
     OBSERVER_INFO = 'OBSERVER_INFO'
-    DOSSIER_ACHIEVEMENTS = frozenset((DOSSIER_ACHIEVEMENTS_15X15,
-     DOSSIER_ACHIEVEMENTS_RANKED15X15,
-     DOSSIER_ACHIEVEMENTS_7X7,
-     DOSSIER_ACHIEVEMENTS_RATED7X7,
-     DOSSIER_ACHIEVEMENTS_SORTIE,
-     DOSSIER_ACHIEVEMENTS_EPIC_BATTLE))
+    DOSSIER_ACHIEVEMENTS = frozenset((DOSSIER_ACHIEVEMENTS_15X15, DOSSIER_ACHIEVEMENTS_RANKED15X15,
+     DOSSIER_ACHIEVEMENTS_7X7, DOSSIER_ACHIEVEMENTS_RATED7X7,
+     DOSSIER_ACHIEVEMENTS_SORTIE, DOSSIER_ACHIEVEMENTS_EPIC_BATTLE))
     LIFT_OVER = 'LIFT_OVER'
     NOVICE_STATS = 'NOVICE_STATS'
     NO_EMPTY_VITAL_HISTORY = 'NO_EMPTY_VITAL_HISTORY'
@@ -186,7 +184,10 @@ class ARENA_BONUS_TYPE_CAPS():
     COMP7_LIGHT = 'COMP7_LIGHT'
     AFL_ENABLED = 'AFL_ENABLED'
     PET_SYSTEM_BONUSES = 'PET_SYSTEM_BONUSES'
-    __RULES = (lambda caps: not set(ARENA_BONUS_TYPE_CAPS.DOSSIER_ACHIEVEMENTS) & set(caps) or ARENA_BONUS_TYPE_CAPS.MULTITEAMS not in caps,
+    WOT_PLUS_PRO_BOOST = 'WOT_PLUS_PRO_BOOST'
+    W2GT = 'W2GT'
+    __RULES = (
+     lambda caps: not set(ARENA_BONUS_TYPE_CAPS.DOSSIER_ACHIEVEMENTS) & set(caps) or ARENA_BONUS_TYPE_CAPS.MULTITEAMS not in caps,
      lambda caps: not set(ARENA_BONUS_TYPE_CAPS.DOSSIER_ACHIEVEMENTS) & set(caps) or ARENA_BONUS_TYPE_CAPS.EPIC not in caps or ARENA_BONUS_TYPE_CAPS.DOSSIER_ACHIEVEMENTS_EPIC_BATTLE in caps,
      lambda caps: ARENA_BONUS_TYPE_CAPS.CYBERSPORT_RATING not in caps or ARENA_BONUS_TYPE_CAPS.MULTITEAMS not in caps,
      lambda caps: ARENA_BONUS_TYPE_CAPS.WIN_POINTS_MECHANICS not in caps or ARENA_BONUS_TYPE_CAPS.INTERACTIVE_STATS in caps,
@@ -207,7 +208,7 @@ class ARENA_BONUS_TYPE_CAPS():
         for capsID in ARENA_BONUS_TYPE_CAPS._typeToCaps.iterkeys():
             for rule in ARENA_BONUS_TYPE_CAPS.__RULES:
                 if not rule(ARENA_BONUS_TYPE_CAPS.get(capsID)):
-                    raise SoftException('Caps is invalid for ARENA_BONUS_TYPE={}'.format(capsID))
+                    raise SoftException(('Caps is invalid for ARENA_BONUS_TYPE={}').format(capsID))
 
     @staticmethod
     def get(arenaBonusType, **kwargs):
@@ -225,7 +226,7 @@ class ARENA_BONUS_TYPE_CAPS():
             if isinstance(cap, str):
                 if cap in caps:
                     return True
-            if isinstance(cap, (set, frozenset)):
+            elif isinstance(cap, (set, frozenset)):
                 if len(cap & caps) > 0:
                     return True
 
@@ -238,10 +239,11 @@ class ARENA_BONUS_TYPE_CAPS():
             if isinstance(cap, str):
                 if cap not in caps:
                     return False
-            if isinstance(cap, (set, frozenset)):
+            elif isinstance(cap, (set, frozenset)):
                 if len(cap & caps) != len(cap):
                     return False
-            return False
+            else:
+                return False
 
         return True
 
@@ -251,14 +253,16 @@ def parseArenaBonusType(parsedBonusTypes, bonusTypes, arenaBonusTypeCap):
         arenaBonusType = ARENA_BONUS_TYPE_NAMES[k]
         if not ARENA_BONUS_TYPE_CAPS.checkAny(arenaBonusType, arenaBonusTypeCap):
             raise SoftException('Wrong arena bonus type: %s is not enabled for %s' % (arenaBonusTypeCap, k))
-        parsedBonusTypes.add(arenaBonusType)
+        else:
+            parsedBonusTypes.add(arenaBonusType)
 
 
 def init():
     ARENA_BONUS_TYPE_CAPS.init()
 
 
-ALLOWED_ARENA_BONUS_TYPE_CAPS = frozenset([ v for k, v in ARENA_BONUS_TYPE_CAPS.__dict__.iteritems() if not k.startswith('__') and isinstance(v, str) ])
-PREM_BONUS_TO_CAP = {PREM_BONUS_TYPES.CREDITS: ARENA_BONUS_TYPE_CAPS.PREM_CREDITS,
- PREM_BONUS_TYPES.XP: ARENA_BONUS_TYPE_CAPS.PREM_XP,
- PREM_BONUS_TYPES.TMEN_XP: ARENA_BONUS_TYPE_CAPS.PREM_TMEN_XP}
+ALLOWED_ARENA_BONUS_TYPE_CAPS = frozenset([ v for k, v in ARENA_BONUS_TYPE_CAPS.__dict__.iteritems() if not k.startswith('__') and isinstance(v, str)
+                                          ])
+PREM_BONUS_TO_CAP = {PREM_BONUS_TYPES.CREDITS: ARENA_BONUS_TYPE_CAPS.PREM_CREDITS, 
+   PREM_BONUS_TYPES.XP: ARENA_BONUS_TYPE_CAPS.PREM_XP, 
+   PREM_BONUS_TYPES.TMEN_XP: ARENA_BONUS_TYPE_CAPS.PREM_TMEN_XP}

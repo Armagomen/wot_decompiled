@@ -1,11 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/page.py
-import logging
-import typing
+from __future__ import absolute_import
+import logging, typing
 from account_helpers.settings_core.settings_constants import SPGAim
-import BigWorld
-import BattleReplay
-import aih_constants
+import BigWorld, BattleReplay, aih_constants
 from AvatarInputHandler import aih_global_binding
 from Event import EventsSubscriber
 from frameworks.wulf import WindowLayer
@@ -36,7 +32,7 @@ class IComponentsConfig(object):
         raise NotImplementedError
 
     def getViewsConfig(self):
-        return None
+        return
 
 
 class ComponentsConfig(IComponentsConfig):
@@ -72,16 +68,29 @@ class ComponentsConfig(IComponentsConfig):
 class _SharedComponentsConfig(ComponentsConfig):
 
     def __init__(self):
-        super(_SharedComponentsConfig, self).__init__(((BATTLE_CTRL_ID.BATTLE_NOTIFIER, (_ALIASES.BATTLE_NOTIFIER,)),
-         (BATTLE_CTRL_ID.ARENA_LOAD_PROGRESS, (_ALIASES.BATTLE_NOTIFIER,)),
-         (BATTLE_CTRL_ID.PREBATTLE_SETUPS_CTRL, (_ALIASES.DUAL_GUN_PANEL,)),
-         (BATTLE_CTRL_ID.KILL_CAM_CTRL, (_ALIASES.KILL_CAM_SOUND_PLAYER,))), ((_ALIASES.KILL_CAM_SOUND_PLAYER, kill_cam_sound_player.KillCamSoundPlayer),))
+        super(_SharedComponentsConfig, self).__init__((
+         (
+          BATTLE_CTRL_ID.BATTLE_NOTIFIER, (_ALIASES.BATTLE_NOTIFIER,)),
+         (
+          BATTLE_CTRL_ID.ARENA_LOAD_PROGRESS, (_ALIASES.BATTLE_NOTIFIER,)),
+         (
+          BATTLE_CTRL_ID.PREBATTLE_SETUPS_CTRL, (_ALIASES.DUAL_GUN_PANEL,)),
+         (
+          BATTLE_CTRL_ID.KILL_CAM_CTRL, (_ALIASES.KILL_CAM_SOUND_PLAYER,))), (
+         (
+          _ALIASES.KILL_CAM_SOUND_PLAYER, kill_cam_sound_player.KillCamSoundPlayer),))
 
 
 class _HitDirectionComponentsConfig(ComponentsConfig):
 
     def __init__(self):
-        super(_HitDirectionComponentsConfig, self).__init__(((BATTLE_CTRL_ID.HIT_DIRECTION, (_ALIASES.PREDICTION_INDICATOR, _ALIASES.HIT_DIRECTION)),), ((_ALIASES.PREDICTION_INDICATOR, indicators.createPredictionIndicator), (_ALIASES.HIT_DIRECTION, indicators.createDamageIndicator)))
+        super(_HitDirectionComponentsConfig, self).__init__((
+         (
+          BATTLE_CTRL_ID.HIT_DIRECTION, (_ALIASES.PREDICTION_INDICATOR, _ALIASES.HIT_DIRECTION)),), (
+         (
+          _ALIASES.PREDICTION_INDICATOR, indicators.createPredictionIndicator),
+         (
+          _ALIASES.HIT_DIRECTION, indicators.createDamageIndicator)))
 
 
 _SHARED_COMPONENTS_CONFIG = _SharedComponentsConfig()
@@ -105,7 +114,8 @@ class SharedPage(BattlePageMeta):
         self._destroyTimerToggling = set()
         self._isDestroyTimerShown = False
         if external is None:
-            external = (crosshair.CrosshairPanelContainer, markers2d.MarkersManager, markers2d.KillCamMarkersManager)
+            external = (
+             crosshair.CrosshairPanelContainer, markers2d.MarkersManager, markers2d.KillCamMarkersManager)
         self._external = [ item() for item in external ]
         if components is None:
             components = _SHARED_COMPONENTS_CONFIG
@@ -347,7 +357,7 @@ class SharedPage(BattlePageMeta):
         self._isDestroyTimerShown = False
 
     def _changeCtrlMode(self, ctrlMode):
-        if ctrlMode == ctrlMode == aih_constants.CTRL_MODE_NAME.VIDEO:
+        if ctrlMode == aih_constants.CTRL_MODE_NAME.VIDEO:
             self._setComponentsVisibility(hidden={_ALIASES.DAMAGE_PANEL})
         else:
             self._setComponentsVisibility(visible={_ALIASES.DAMAGE_PANEL})
@@ -513,7 +523,8 @@ class SharedPage(BattlePageMeta):
                 return
             if mode == SPECTATOR_MODE.FREECAM:
                 self._spectatorModeToggling = set(self.as_getComponentsVisibilityS())
-                self._setComponentsVisibility(hidden={_ALIASES.DAMAGE_PANEL, _ALIASES.POSTMORTEM_PANEL, _ALIASES.BATTLE_DAMAGE_LOG_PANEL})
+                self._setComponentsVisibility(hidden={_ALIASES.DAMAGE_PANEL, _ALIASES.POSTMORTEM_PANEL,
+                 _ALIASES.BATTLE_DAMAGE_LOG_PANEL})
             else:
                 self._onPostMortemSwitched(False, False)
 

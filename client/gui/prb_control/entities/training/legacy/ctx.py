@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/entities/training/legacy/ctx.py
 from constants import PREBATTLE_TYPE, OBSERVER_VEH_INVENTORY_ID
 from gui.prb_control import settings as prb_settings
 from gui.prb_control import prb_getters
@@ -57,7 +55,7 @@ class JoinTrainingCtx(JoinLegacyCtx):
 
 @ReprInjector.withParent(('__channels', 'channels'))
 class ChangeArenaVoipCtx(LegacyRequestCtx):
-    __slots__ = ('__channels',)
+    __slots__ = ('__channels', )
 
     def __init__(self, channels, waitingID=''):
         super(ChangeArenaVoipCtx, self).__init__(entityType=prb_getters.getPrebattleType(), waitingID=waitingID)
@@ -72,7 +70,7 @@ class ChangeArenaVoipCtx(LegacyRequestCtx):
 
 @ReprInjector.withParent(('__isObserver', 'isObserver'))
 class SetPlayerObserverStateCtx(SetPlayerStateCtx):
-    __slots__ = ('__isObserver',)
+    __slots__ = ('__isObserver', )
 
     def __init__(self, isObserver, isReadyState, isInitial=False, waitingID=''):
         super(SetPlayerObserverStateCtx, self).__init__(isReadyState, isInitial=isInitial, waitingID=waitingID)

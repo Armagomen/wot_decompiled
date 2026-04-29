@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/abilities/thunder_strike.py
-import CGF
-import Math
+import CGF, Math
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from cgf_script.bonus_caps_rules import bonusCapsManager
 from cgf_script.component_meta_class import ComponentProperty, CGFMetaTypes, registerComponent
@@ -77,7 +74,8 @@ class ThunderStrikeLoader(CallbackDelayer):
     def __showGuiMarker(self, delay):
         ctrl = self.__guiSessionProvider.shared.equipments
         if ctrl is not None:
-            ctrl.showMarker(self.equipment, self.__transform.worldPosition, (0, 0, 0), delay)
+            ctrl.showMarker(self.equipment, self.__transform.worldPosition, (0, 0,
+                                                                             0), delay)
         return
 
     def __isAttackerAlly(self):

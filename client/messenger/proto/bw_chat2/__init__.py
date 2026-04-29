@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/proto/bw_chat2/__init__.py
 from messenger import g_settings
 from messenger.m_constants import MESSENGER_SCOPE, PROTO_TYPE
 from messenger.proto.bw_chat2 import chat_handlers
@@ -11,7 +9,8 @@ from messenger.proto.bw_chat2.provider import BWChatProvider
 from messenger.proto.bw_chat2.UsersHandler import UsersHandler
 
 class BWProtoPlugin(IProtoPlugin):
-    __slots__ = ('__provider', '__adminChat', '__users', '__arenaChat', '__battleCmd', '__unitChat', '__voipProvider', '__voipCtrl', '__isConnected')
+    __slots__ = ('__provider', '__adminChat', '__users', '__arenaChat', '__battleCmd',
+                 '__unitChat', '__voipProvider', '__voipCtrl', '__isConnected')
 
     def __init__(self):
         super(BWProtoPlugin, self).__init__()

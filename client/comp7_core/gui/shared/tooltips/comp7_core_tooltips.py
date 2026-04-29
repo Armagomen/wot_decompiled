@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_core/scripts/client/comp7_core/gui/shared/tooltips/comp7_core_tooltips.py
 import logging
 from copy import copy
 import typing
@@ -40,7 +38,8 @@ class RoleSkillBattleTooltipData(BlocksTooltipData):
             return []
         else:
             startLevel = self.context.getStartLevel(roleName)
-            items = [self.__packTooltipBlock(roleName, equipment, startLevel, self._modeController)]
+            items = [
+             self.__packTooltipBlock(roleName, equipment, startLevel, self._modeController)]
             return items
 
     @staticmethod
@@ -77,12 +76,17 @@ class RoleSkillLobbyTooltipData(BlocksTooltipData):
             _logger.error('Missing Role Skill = %s', equipmentName)
             return []
         else:
-            items = filter(None, [self.__packHeaderBlock(equipment, roleName, self._modeController), self.__packDescriptionBlock(equipment, roleName, startLevel, self._modeController), self.__packInfoBlock()])
+            items = filter(None, [
+             self.__packHeaderBlock(equipment, roleName, self._modeController),
+             self.__packDescriptionBlock(equipment, roleName, startLevel, self._modeController),
+             self.__packInfoBlock()])
             return items
 
     @classmethod
     def __packHeaderBlock(cls, equipment, roleName, modeController):
-        blocks = [formatters.packTitleDescBlock(title=text_styles.highTitle(equipment.userString), desc=cls.__getCooldown(equipment, roleName, modeController), gap=-3), formatters.packItemTitleDescBlockData(img=backport.image(cls.__getRoleSkillIcon(equipment)), padding=formatters.packPadding(left=90))]
+        blocks = [
+         formatters.packTitleDescBlock(title=text_styles.highTitle(equipment.userString), desc=cls.__getCooldown(equipment, roleName, modeController), gap=-3),
+         formatters.packItemTitleDescBlockData(img=backport.image(cls.__getRoleSkillIcon(equipment)), padding=formatters.packPadding(left=90))]
         return formatters.packBuildUpBlockData(blocks=blocks)
 
     @classmethod
@@ -94,8 +98,11 @@ class RoleSkillLobbyTooltipData(BlocksTooltipData):
         if passive:
             blocks.append(formatters.packTitleDescBlock(title=text_styles.middleTitle(backport.text(R.strings.tooltips.roleSkill.description.passive())), desc=text_styles.main(cls.__formatEquipmentParams(passive))))
         if startLevel > 0:
-            blocks.append(formatters.packImageTextBlockData(desc=text_styles.main(backport.text(R.strings.tooltips.roleSkill.startLevel.lobby(), startLevel=startLevel)).format(**cls._PARAMS_TEMPLATE.source), descPadding=formatters.packPadding(0, -15, -50), img=backport.image(R.images.comp7.gui.maps.icons.icons.dyn('abilityChargeLvl{}_130x124'.format(startLevel))()), imgPadding=formatters.packPadding(4, -35), padding=formatters.packPadding(-40, 0, -19)))
-        return None if not blocks else formatters.packBuildUpBlockData(blocks=blocks, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE)
+            blocks.append(formatters.packImageTextBlockData(desc=text_styles.main(backport.text(R.strings.tooltips.roleSkill.startLevel.lobby(), startLevel=startLevel)).format(**cls._PARAMS_TEMPLATE.source), descPadding=formatters.packPadding(0, -15, -50), img=backport.image(R.images.comp7.gui.maps.icons.icons.dyn(('abilityChargeLvl{}_130x124').format(startLevel))()), imgPadding=formatters.packPadding(4, -35), padding=formatters.packPadding(-40, 0, -19)))
+        if not blocks:
+            return None
+        else:
+            return formatters.packBuildUpBlockData(blocks=blocks, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE)
 
     @classmethod
     def __formatEquipmentParams(cls, description):
@@ -143,10 +150,11 @@ def getRoleSkillDescription(equipment, roleName, startLevel, modeController):
     for k, v in tooltipParams.iteritems():
         if isinstance(v, tuple):
             for level, levelValue in enumerate(v):
-                levelKey = '_'.join((k, str(level + 1)))
+                levelKey = ('_').join((k, str(level + 1)))
                 params[levelKey] = castNumberToPrettyStr(levelValue)
 
-        params[k] = castNumberToPrettyStr(v)
+        else:
+            params[k] = castNumberToPrettyStr(v)
 
     if startLevel is not None:
         params['startLevel'] = startLevel
@@ -155,7 +163,8 @@ def getRoleSkillDescription(equipment, roleName, startLevel, modeController):
     active = backport.text(active(), **params) if active.exists() else ''
     passive = description.dyn('passive')
     passive = backport.text(passive(), **params) if passive.exists() else ''
-    return (active, passive)
+    return (
+     active, passive)
 
 
 def getPoIEquipmentDescription(equipment, modeController):
@@ -173,17 +182,14 @@ def getRoleEquipmentTooltipParts(vehicle, modeController):
         if not avatar_getter.isObserver():
             _logger.error('No equipment found for vehicle %s', vehicle.descriptor.name)
         return (None, None)
-    else:
-        startLevel = modeController.getEquipmentStartLevel(roleName) or 0
-        startLevelText = getStartLevelBattleTooltipText(startLevel) if startLevel > 0 else None
-        active, passive = getRoleSkillDescription(roleSkill, roleName, startLevel, modeController)
-        overrides = modeController.getRoleEquipmentOverrides(roleName)
-        cooldown = getCooldown(roleSkill, overrides.get('cooldownSeconds'))
-        body = stripColorTagDescrTags('\n\n'.join(filter(None, (active,
-         passive,
-         startLevelText,
-         cooldown))))
-        return (roleSkill, body)
+    startLevel = modeController.getEquipmentStartLevel(roleName) or 0
+    startLevelText = getStartLevelBattleTooltipText(startLevel) if startLevel > 0 else None
+    active, passive = getRoleSkillDescription(roleSkill, roleName, startLevel, modeController)
+    overrides = modeController.getRoleEquipmentOverrides(roleName)
+    cooldown = getCooldown(roleSkill, overrides.get('cooldownSeconds'))
+    body = stripColorTagDescrTags(('\n\n').join(filter(None, (active, passive, startLevelText, cooldown))))
+    return (
+     roleSkill, body)
 
 
 class TooltipPreprocessor(object):
@@ -197,7 +203,7 @@ class Comp7AoeHealTooltipPreprocessor(TooltipPreprocessor):
 
     @staticmethod
     def processParams(params):
-        params['heal'] = tuple((h * params['tickInterval'] * params['duration'] for h in params['heal']))
+        params['heal'] = tuple(h * params['tickInterval'] * params['duration'] for h in params['heal'])
         return params
 
 
@@ -205,7 +211,7 @@ class Comp7AllyHunterTooltipPreprocessor(TooltipPreprocessor):
 
     @staticmethod
     def processParams(params):
-        params['heal'] = tuple((h * params['tickInterval'] * params['duration'] for h in params['heal']))
+        params['heal'] = tuple(h * params['tickInterval'] * params['duration'] for h in params['heal'])
         return params
 
 
@@ -213,7 +219,7 @@ class Comp7ConcentrationTooltipPreprocessor(TooltipPreprocessor):
 
     @staticmethod
     def processParams(params):
-        params['shotDispersionFactorsBuff'] = tuple((getPercentFromFloat(1.0 - b, 1) for b in params['shotDispersionFactors']))
+        params['shotDispersionFactorsBuff'] = tuple(getPercentFromFloat(1.0 - b, 1) for b in params['shotDispersionFactors'])
         return params
 
 
@@ -221,8 +227,8 @@ class Comp7BerserkTooltipPreprocessor(TooltipPreprocessor):
 
     @staticmethod
     def processParams(params):
-        params['gunReloadTimeBuff'] = tuple((getPercentFromFloat(1.0 - b, 1) for b in params['gunReloadTimeBuff']))
-        params['shotDispersionFactorsBuff'] = tuple((getPercentFromFloat(1.0 - b, 1) for b in params['shotDispersionFactors']))
+        params['gunReloadTimeBuff'] = tuple(getPercentFromFloat(1.0 - b, 1) for b in params['gunReloadTimeBuff'])
+        params['shotDispersionFactorsBuff'] = tuple(getPercentFromFloat(1.0 - b, 1) for b in params['shotDispersionFactors'])
         return params
 
 
@@ -230,7 +236,8 @@ class Comp7FastRechargeTooltipPreprocessor(TooltipPreprocessor):
 
     @staticmethod
     def processParams(params):
-        params['gunReloadTimeBuff'] = tuple((getPercentFromFloat(1.0 - b, 1) for b in params['gunReloadTimeBuff']))
+        params['gunReloadTimeBuff'] = tuple(getPercentFromFloat(1.0 - b, 1) for b in params['gunReloadTimeBuff'])
+        params['gunTemperatureBuff'] = tuple(abs(b) for b in params['gunTemperatureBuff'])
         return params
 
 
@@ -239,7 +246,7 @@ class Comp7JuggernautTooltipPreprocessor(TooltipPreprocessor):
     @staticmethod
     def processParams(params):
         params['enginePowerBuff'] = getPercentFromFloat(params['enginePowerFactor'] - 1.0, 1)
-        params['dmgAbsorbBuff'] = tuple((getPercentFromFloat(1.0 - b, 1) for b in params['dmgAbsorb']))
+        params['dmgAbsorbBuff'] = tuple(getPercentFromFloat(1.0 - b, 1) for b in params['dmgAbsorb'])
         params['rammingDamageBuff'] = getPercentFromFloat(params['rammingDamageBonus'] - 1.0, 1)
         return params
 
@@ -248,9 +255,9 @@ class Comp7SureShotTooltipPreprocessor(TooltipPreprocessor):
 
     @staticmethod
     def processParams(params):
-        params['shotDispersionFactorsBuff'] = tuple((getPercentFromFloat(1.0 - b, 1) for b in params['shotDispersionFactors']))
-        params['gunReloadBuffDamage'] = tuple((b * 100 for b in params['slvl']))
-        params['gunReloadBuffDestroy'] = tuple((b * 100 for b in params['sdlvl']))
+        params['shotDispersionFactorsBuff'] = tuple(getPercentFromFloat(1.0 - b, 1) for b in params['shotDispersionFactors'])
+        params['gunReloadBuffDamage'] = tuple(b * 100 for b in params['slvl'])
+        params['gunReloadBuffDestroy'] = tuple(b * 100 for b in params['sdlvl'])
         return params
 
 
@@ -258,7 +265,7 @@ class Comp7SniperTooltipPreprocessor(TooltipPreprocessor):
 
     @staticmethod
     def processParams(params):
-        params['damageFactors'] = tuple((getPercentFromFloat(b - 1.0, 1) for b in params['damageFactors']))
+        params['damageFactors'] = tuple(getPercentFromFloat(b - 1.0, 1) for b in params['damageFactors'])
         return params
 
 
@@ -266,7 +273,7 @@ class Comp7RiskyAttackTooltipPreprocessor(TooltipPreprocessor):
 
     @staticmethod
     def processParams(params):
-        params['extraHealFactor'] = tuple((b * 100 for b in params['extraHealFactor']))
+        params['extraHealFactor'] = tuple(b * 100 for b in params['extraHealFactor'])
         return params
 
 
@@ -282,7 +289,7 @@ class Comp7AggressiveDetectionTooltipPreprocessor(TooltipPreprocessor):
 
     @staticmethod
     def processParams(params):
-        params['visionBuff'] = tuple((getPercentFromFloat(b - 1.0, 1) for b in params['visionFactor']))
+        params['visionBuff'] = tuple(getPercentFromFloat(b - 1.0, 1) for b in params['visionFactor'])
         return params
 
 
@@ -295,15 +302,15 @@ class Comp7MarchTooltipPreprocessor(TooltipPreprocessor):
         return params
 
 
-ROLE_TOOLTIP_PREPROCESSORS = {'role_HT_assault': Comp7AoeHealTooltipPreprocessor,
- 'role_HT_universal': Comp7AllyHunterTooltipPreprocessor,
- 'role_HT_support': Comp7ConcentrationTooltipPreprocessor,
- 'role_MT_assault': Comp7BerserkTooltipPreprocessor,
- 'role_MT_support': Comp7FastRechargeTooltipPreprocessor,
- 'role_ATSPG_assault': Comp7JuggernautTooltipPreprocessor,
- 'role_ATSPG_universal': Comp7SureShotTooltipPreprocessor,
- 'role_ATSPG_sniper': Comp7SniperTooltipPreprocessor,
- 'role_ATSPG_support': Comp7RiskyAttackTooltipPreprocessor,
- 'role_LT_universal': Comp7ReconTooltipPreprocessor,
- 'role_LT_wheeled': Comp7AggressiveDetectionTooltipPreprocessor,
- 'role_SPG': Comp7MarchTooltipPreprocessor}
+ROLE_TOOLTIP_PREPROCESSORS = {'role_HT_assault': Comp7AoeHealTooltipPreprocessor, 
+   'role_HT_universal': Comp7AllyHunterTooltipPreprocessor, 
+   'role_HT_support': Comp7ConcentrationTooltipPreprocessor, 
+   'role_MT_assault': Comp7BerserkTooltipPreprocessor, 
+   'role_MT_support': Comp7FastRechargeTooltipPreprocessor, 
+   'role_ATSPG_assault': Comp7JuggernautTooltipPreprocessor, 
+   'role_ATSPG_universal': Comp7SureShotTooltipPreprocessor, 
+   'role_ATSPG_sniper': Comp7SniperTooltipPreprocessor, 
+   'role_ATSPG_support': Comp7RiskyAttackTooltipPreprocessor, 
+   'role_LT_universal': Comp7ReconTooltipPreprocessor, 
+   'role_LT_wheeled': Comp7AggressiveDetectionTooltipPreprocessor, 
+   'role_SPG': Comp7MarchTooltipPreprocessor}

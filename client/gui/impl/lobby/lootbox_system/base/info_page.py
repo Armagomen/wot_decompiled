@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/lootbox_system/base/info_page.py
 from enum import Enum
 from frameworks.wulf import WindowFlags
 from gui.Scaleform.Waiting import Waiting
@@ -52,7 +50,7 @@ class InfoPage(ViewComponent):
     def _onLoading(self, *args, **kwargs):
         super(InfoPage, self)._onLoading(*args, **kwargs)
         playInfopageEnterSound(self.__eventName)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setHasLootListLink(isCountryForShowingExternalLootList())
             model.setHasVideoButton(getInfoPageSettings(self.__eventName, _InfoPageSetting.VIDEO))
             model.setHasShopButton(isShopVisible(self.__eventName))
@@ -67,14 +65,23 @@ class InfoPage(ViewComponent):
         super(InfoPage, self)._finalize()
 
     def _getEvents(self):
-        return ((self.viewModel.onClose, self.__onClose),
-         (self.viewModel.onShowVideo, self.__showIntroPage),
-         (self.viewModel.onShowShop, self.__showShop),
-         (self.viewModel.onShowLootList, self.__showExternalLootList),
-         (self.viewModel.onPreview, self.__showPreview),
-         (self.viewModel.onChosenCategory, self.__updateCategory),
-         (self.__lootBoxes.onStatusChanged, self.__onStatusChange),
-         (self.__lootBoxes.onBoxesAvailabilityChanged, self.__onStatusChange))
+        return (
+         (
+          self.viewModel.onClose, self.__onClose),
+         (
+          self.viewModel.onShowVideo, self.__showIntroPage),
+         (
+          self.viewModel.onShowShop, self.__showShop),
+         (
+          self.viewModel.onShowLootList, self.__showExternalLootList),
+         (
+          self.viewModel.onPreview, self.__showPreview),
+         (
+          self.viewModel.onChosenCategory, self.__updateCategory),
+         (
+          self.__lootBoxes.onStatusChanged, self.__onStatusChange),
+         (
+          self.__lootBoxes.onBoxesAvailabilityChanged, self.__onStatusChange))
 
     def __sortedSlotsIDs(self, slotsInfo):
         return sorted(slotsInfo.keys()) or []

@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/event/page.py
+from __future__ import absolute_import
 import BigWorld
 from constants import ARENA_PERIOD
 from debug_utils import LOG_DEBUG
@@ -17,14 +16,26 @@ from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.battle.event.manager import EventMarkersManager
 from gui.shared.events import LoadViewEvent
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
-EVENT_CONFIG = ComponentsConfig(config=((BATTLE_CTRL_ID.BATTLE_HINTS, (BATTLE_VIEW_ALIASES.BATTLE_HINT,)),
- (BATTLE_CTRL_ID.ARENA_PERIOD, (BATTLE_VIEW_ALIASES.BATTLE_TIMER, BATTLE_VIEW_ALIASES.PREBATTLE_TIMER, BATTLE_VIEW_ALIASES.BATTLE_END_WARNING_PANEL)),
- (BATTLE_CTRL_ID.CALLOUT, (BATTLE_VIEW_ALIASES.CALLOUT_PANEL,)),
- (BATTLE_CTRL_ID.DEBUG, (BATTLE_VIEW_ALIASES.DEBUG_PANEL,)),
- (BATTLE_CTRL_ID.MAPS, (BATTLE_VIEW_ALIASES.MINIMAP,)),
- (BATTLE_CTRL_ID.PERKS, (BATTLE_VIEW_ALIASES.SITUATION_INDICATORS,))), viewsConfig=())
+EVENT_CONFIG = ComponentsConfig(config=(
+ (
+  BATTLE_CTRL_ID.BATTLE_HINTS, (BATTLE_VIEW_ALIASES.BATTLE_HINT,)),
+ (
+  BATTLE_CTRL_ID.ARENA_PERIOD,
+  (
+   BATTLE_VIEW_ALIASES.BATTLE_TIMER,
+   BATTLE_VIEW_ALIASES.PREBATTLE_TIMER,
+   BATTLE_VIEW_ALIASES.BATTLE_END_WARNING_PANEL)),
+ (
+  BATTLE_CTRL_ID.CALLOUT, (BATTLE_VIEW_ALIASES.CALLOUT_PANEL,)),
+ (
+  BATTLE_CTRL_ID.DEBUG, (BATTLE_VIEW_ALIASES.DEBUG_PANEL,)),
+ (
+  BATTLE_CTRL_ID.MAPS, (BATTLE_VIEW_ALIASES.MINIMAP,)),
+ (
+  BATTLE_CTRL_ID.PERKS, (BATTLE_VIEW_ALIASES.SITUATION_INDICATORS,))), viewsConfig=())
 _TUTORIAL_PAGES = ('eventHint1', 'eventHint2')
-_EVENT_EXTERNAL_COMPONENTS = (CrosshairPanelContainer, EventMarkersManager, KillCamMarkersManager)
+_EVENT_EXTERNAL_COMPONENTS = (
+ CrosshairPanelContainer, EventMarkersManager, KillCamMarkersManager)
 
 class EventBattlePage(ClassicPage):
 
@@ -72,13 +83,13 @@ class EventBattlePage(ClassicPage):
         manager = self.app.containerManager
         if not manager.isContainerShown(WindowLayer.VIEW):
             return
-        elif manager.isModalViewsIsExists():
-            return
         else:
+            if manager.isModalViewsIsExists():
+                return
             radialMenu = self.getComponent(BATTLE_VIEW_ALIASES.RADIAL_MENU)
             if radialMenu is None:
                 return
-            elif self.as_isComponentVisibleS(BATTLE_VIEW_ALIASES.EVENT_STATS):
+            if self.as_isComponentVisibleS(BATTLE_VIEW_ALIASES.EVENT_STATS):
                 return
             self.__isRadialMenuShown = isShown
             if isShown:
@@ -105,7 +116,8 @@ class EventBattlePage(ClassicPage):
             if self.as_isComponentVisibleS(BATTLE_VIEW_ALIASES.EVENT_STATS) != isShown:
                 if isShown:
                     self._fsToggling.update(self.as_getComponentsVisibilityS())
-                    self._setComponentsVisibility(visible={BATTLE_VIEW_ALIASES.EVENT_STATS}, hidden=self._fsToggling)
+                    self._setComponentsVisibility(visible={
+                     BATTLE_VIEW_ALIASES.EVENT_STATS}, hidden=self._fsToggling)
                 else:
                     self._setComponentsVisibility(visible=self._fsToggling, hidden={BATTLE_VIEW_ALIASES.EVENT_STATS})
                     self._fsToggling.clear()
@@ -119,7 +131,8 @@ class EventBattlePage(ClassicPage):
     def _onBattleLoadingFinish(self):
         self.fireEvent(events.DestroyViewEvent(VIEW_ALIAS.EVENT_LOADING), EVENT_BUS_SCOPE.BATTLE)
         super(EventBattlePage, self)._onBattleLoadingFinish()
-        self._setComponentsVisibility(hidden={BATTLE_VIEW_ALIASES.EVENT_STATS, BATTLE_VIEW_ALIASES.POSTMORTEM_PANEL})
+        self._setComponentsVisibility(hidden={
+         BATTLE_VIEW_ALIASES.EVENT_STATS, BATTLE_VIEW_ALIASES.POSTMORTEM_PANEL})
         if BigWorld.player().arena.period != ARENA_PERIOD.BATTLE:
             self._setComponentsVisibility(hidden={BATTLE_VIEW_ALIASES.PLAYERS_PANEL_EVENT})
 

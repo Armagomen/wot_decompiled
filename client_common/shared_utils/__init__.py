@@ -1,12 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client_common/shared_utils/__init__.py
-import collections
-import time
-import itertools
-import logging
-import types
-import typing
-import weakref
+import collections, time, itertools, logging, types, typing, weakref
 from functools import partial, wraps
 import BigWorld
 from adisp import adisp_async
@@ -16,9 +8,8 @@ if typing.TYPE_CHECKING:
     T = TypeVar('T')
     R = TypeVar('R')
 _logger = logging.getLogger(__name__)
-ScalarTypes = (types.IntType,
- types.LongType,
- types.FloatType,
+ScalarTypes = (
+ types.IntType, types.LongType, types.FloatType,
  types.BooleanType) + types.StringTypes
 IntegralTypes = (types.IntType, types.LongType)
 
@@ -40,7 +31,10 @@ class BoundMethodWeakref(object):
 
     def __call__(self, *args, **kwargs):
         ref = self.wrefCls()
-        return getattr(ref, self.methodName)(*args, **kwargs) if ref is not None else None
+        if ref is not None:
+            return getattr(ref, self.methodName)(*args, **kwargs)
+        else:
+            return
 
 
 def forEach(function, sequence):
@@ -78,11 +72,14 @@ def first(sequence, default=None):
 
 
 def safeIndexOf(item, collection, default=None):
-    return collection.index(item) if item in collection else default
+    if item in collection:
+        return collection.index(item)
+    return default
 
 
 def safeCall(function, *args, **kwargs):
-    return function(*args, **kwargs) if callable(function) else None
+    if callable(function):
+        return function(*args, **kwargs)
 
 
 def notImplementedCall(taskID, onNotImplementedCall=None):
@@ -107,14 +104,18 @@ def collapseIntervals(sequence):
     for periodStart, periodEnd in sorted(sequence):
         if prevElement and periodStart <= prevElement[1]:
             prevElement[1] = periodEnd
-        prevElement = [periodStart, periodEnd]
-        result.append(prevElement)
+        else:
+            prevElement = [
+             periodStart, periodEnd]
+            result.append(prevElement)
 
     return result
 
 
 def getSafeFromCollection(lst, ndx, default=None):
-    return lst[ndx] if 0 <= ndx < len(lst) else default
+    if 0 <= ndx < len(lst):
+        return lst[ndx]
+    return default
 
 
 def allEqual(sequence, accessor=None):
@@ -124,7 +125,9 @@ def allEqual(sequence, accessor=None):
     except StopIteration:
         return True
 
-    return all((accessor(first_) == accessor(rest) for rest in iterable)) if accessor else all((first_ == rest for rest in iterable))
+    if accessor:
+        return all(accessor(first_) == accessor(rest) for rest in iterable)
+    return all(first_ == rest for rest in iterable)
 
 
 class CONST_CONTAINER(object):
@@ -135,7 +138,8 @@ class CONST_CONTAINER(object):
         attrs = itertools.chain.from_iterable([ c.__dict__.iteritems() for c in itertools.chain([cls], cls.__bases__) ])
         for k, v in attrs:
             if not k.startswith('_') and type(v) in ScalarTypes:
-                yield (k, v)
+                yield (
+                 k, v)
 
     @classmethod
     def getKeyByValue(cls, value):
@@ -158,7 +162,7 @@ class CONST_CONTAINER(object):
     @classmethod
     def __doInit(cls):
         if cls.__keyByValue is None:
-            cls.__keyByValue = dict(((v, k) for k, v in cls.getIterator()))
+            cls.__keyByValue = dict((v, k) for k, v in cls.getIterator())
         return
 
 
@@ -180,6 +184,7 @@ class BitmaskHelper(object):
         if not mask & flag:
             mask |= flag
             return mask
+        return -1
 
     @classmethod
     def addIfNot(cls, mask, flag):
@@ -192,6 +197,7 @@ class BitmaskHelper(object):
         if mask & flag > 0:
             mask ^= flag
             return mask
+        return -1
 
     @classmethod
     def removeIfHas(cls, mask, flag):
@@ -237,7 +243,7 @@ class BitmaskHelper(object):
     def iterateInt64SetBitsIndexes(cls, number):
         while number:
             submask = number - 1
-            yield _INT64_SET_BITS_INDEXES_MAP[number ^ submask]
+            yield _INT64_SET_BITS_INDEXES_MAP[(number ^ submask)]
             number &= submask
 
 
@@ -247,7 +253,12 @@ class AlwaysValidObject(object):
         self.__name = name
 
     def __getattr__(self, item):
-        return self.__dict__[item] if item in self.__dict__ else AlwaysValidObject(self._makeName(self.__name, item))
+        if item in self.__dict__:
+            return self.__dict__[item]
+        return AlwaysValidObject(self._makeName(self.__name, item))
+
+    def __getitem__(self, item):
+        return 0
 
     def __call__(self, *args, **kwargs):
         return AlwaysValidObject()
@@ -269,7 +280,8 @@ def updateDict(sourceDict, diffDict):
             if isinstance(value, dict):
                 sourceDict.setdefault(key, {})
                 sourceDict[key].update(value)
-            sourceDict[key] = value
+            else:
+                sourceDict[key] = value
 
     return sourceDict
 

@@ -1,11 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/dog_tags/dog_tags_view.py
 import logging
 from collections import defaultdict
 from operator import attrgetter
-import typing
-import BigWorld
-import WWISE
+import typing, BigWorld, WWISE
 from constants import DOG_TAGS_CONFIG
 from dog_tags_common.components_config import componentConfigAdapter
 from dog_tags_common.config.common import ComponentViewType, ComponentPurpose
@@ -59,10 +55,10 @@ class DogTagsView(ViewImpl):
         self._animatedComposer = AnimatedDogTagComposer(self._dogTagsHelper)
         self.__selectedEngraving = None
         self.__selectedBackground = None
-        self._tooltipModelFactories = {R.views.lobby.dog_tags.DedicationTooltip(): DedicationTooltip,
-         R.views.lobby.dog_tags.TriumphTooltip(): TriumphTooltip,
-         R.views.lobby.dog_tags.ThreeMonthsTooltip(): ThreeMonthsTooltip,
-         R.views.lobby.dog_tags.RankedEfficiencyTooltip(): RankedEfficiencyTooltip}
+        self._tooltipModelFactories = {R.views.lobby.dog_tags.DedicationTooltip(): DedicationTooltip, 
+           R.views.lobby.dog_tags.TriumphTooltip(): TriumphTooltip, 
+           R.views.lobby.dog_tags.ThreeMonthsTooltip(): ThreeMonthsTooltip, 
+           R.views.lobby.dog_tags.RankedEfficiencyTooltip(): RankedEfficiencyTooltip}
         self.__uiLogging = DogTagsViewLogger(DogTagsViewKeys.ACCOUNT_DASHBOARD)
         super(DogTagsView, self).__init__(settings)
         return
@@ -78,10 +74,10 @@ class DogTagsView(ViewImpl):
         if not event.hasArgument(compIdArgName):
             _logger.error('DogTags view tried to create tooltip without specifying component ID')
             return None
-        elif contentID not in self._tooltipModelFactories:
-            _logger.error('DogTags view tried creating invalid tooltip with contentID %d', contentID)
-            return None
         else:
+            if contentID not in self._tooltipModelFactories:
+                _logger.error('DogTags view tried creating invalid tooltip with contentID %d', contentID)
+                return None
             return self._tooltipModelFactories[contentID](event.getArgument(compIdArgName))
 
     @property
@@ -93,7 +89,8 @@ class DogTagsView(ViewImpl):
         dogTag = self._composer.getSelectedDogTag(clanProfile)
         engraving = dogTag.getComponentByType(ComponentViewType.ENGRAVING).compId
         background = dogTag.getComponentByType(ComponentViewType.BACKGROUND).compId
-        return (engraving, background)
+        return (
+         engraving, background)
 
     @property
     def selectedEngraving(self):
@@ -134,7 +131,7 @@ class DogTagsView(ViewImpl):
         self.__update(highlightedComponentId)
         self.viewModel.setIsTopView(makeTopView)
         if not userSettings.getDogTagsSettings().customizableDogTagsVisited:
-            with userSettings.dogTagsSettings() as dt:
+            with userSettings.dogTagsSettings() as (dt):
                 dt.setCustomizableDogTagsVisited(True)
 
     @staticmethod
@@ -143,8 +140,8 @@ class DogTagsView(ViewImpl):
         WWISE.WW_eventGlobal(backport.sound(R.sounds.dt_flame_stop()))
 
     def _markComponentAsViewed(self, compId):
-        with self.viewModel.transaction() as tx:
-            with userSettings.dogTagsSettings() as dt:
+        with self.viewModel.transaction() as (tx):
+            with userSettings.dogTagsSettings() as (dt):
                 dt.markComponentAsSeen(compId)
             self._composer.updateComponentModel(tx, compId)
             self.__updateNotificationCounters(tx)
@@ -158,7 +155,7 @@ class DogTagsView(ViewImpl):
         clanProfile = self._webCtrl.getAccountProfile()
         dogTag = self._composer.getSelectedDogTag(clanProfile)
         engraving, background = self.getCurrentDogTag()
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             self.__selectedBackground = background
             self.__selectedEngraving = engraving
             self._composer.fillModel(tx.equippedDogTag, dogTag)
@@ -184,10 +181,12 @@ class DogTagsView(ViewImpl):
     @staticmethod
     def __getComponentTabIdx(compId):
         if compId == -1:
-            return None
+            return
         else:
             highComp = componentConfigAdapter.getComponentById(compId)
-            return None if highComp is None else highComp.viewType.getTabIdx()
+            if highComp is None:
+                return
+            return highComp.viewType.getTabIdx()
 
     def __onBack(self):
         state = getLobbyStateMachine().getStateFromView(self)
@@ -200,7 +199,7 @@ class DogTagsView(ViewImpl):
 
     def __switchTab(self, newTab):
         self.viewModel.setTab(newTab)
-        with userSettings.dogTagsSettings() as dt:
+        with userSettings.dogTagsSettings() as (dt):
             dt.setLastVisitedDogTagsTab(newTab)
         _logger.debug('DogTags::storing selectedTabIdx=%d', newTab)
 
@@ -236,9 +235,9 @@ class DogTagsView(ViewImpl):
         showBrowserOverlayView(url, VIEW_ALIAS.WEB_VIEW_TRANSPARENT)
 
     def __onOnboardingCloseClick(self):
-        with userSettings.dogTagsSettings() as dt:
+        with userSettings.dogTagsSettings() as (dt):
             dt.setOnboardingEnabled(False)
-            with self.viewModel.transaction() as tx:
+            with self.viewModel.transaction() as (tx):
                 tx.setOnboardingEnabled(dt.onboardingEnabled)
 
     @args2params(int)
@@ -271,7 +270,7 @@ class GradesTooltip(ViewImpl):
     def _onLoading(self, engravingId):
         engraving = BigWorld.player().dogTags.getDogTagComponentForAccount(engravingId)
         viewModel = self.getViewModel()
-        with viewModel.transaction() as model:
+        with viewModel.transaction() as (model):
             model.setCurrentGrade(engraving.grade)
             gradesArray = model.getGradeValues()
             for grade in engraving.componentDefinition.grades:
@@ -304,7 +303,7 @@ class ThreeMonthsTooltip(ViewImpl):
     def _onLoading(self, engravingId):
         viewModel = self.getViewModel()
         dtHelper = BigWorld.player().dogTags
-        with viewModel.transaction() as model:
+        with viewModel.transaction() as (model):
             engravingComponent = dtHelper.getDogTagComponentForAccount(engravingId)
             engravingId = engravingComponent.compId
             skillRecords = sorted(dtHelper.getSkillData(engravingId), key=lambda e: e.date)

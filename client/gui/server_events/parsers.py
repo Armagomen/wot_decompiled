@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/server_events/parsers.py
 import weakref
 from typing import Union, TYPE_CHECKING
 from gui.server_events import formatters, conditions
@@ -12,8 +10,8 @@ if TYPE_CHECKING:
     from gui.server_events.conditions import _ConditionsGroup, _Cumulativable
 
 class ConditionsParser(object):
-    LOGICAL_OPS = {'and': conditions.AndGroup,
-     'or': conditions.OrGroup}
+    LOGICAL_OPS = {'and': conditions.AndGroup, 
+       'or': conditions.OrGroup}
     NEGATIVE_OP = 'not'
 
     def __init__(self, section, rootName=''):
@@ -38,7 +36,7 @@ class ConditionsParser(object):
         self.__forEachNode(self.getConditions(), handler)
 
     def _handleCondition(self, name, data, uniqueName, group):
-        return None
+        return
 
     def _parse(self):
         if len(self._section) <= 0:
@@ -80,7 +78,8 @@ class ConditionsParser(object):
             for node in group.items:
                 if node.classType == CLASS_TYPE.CONDITION_GROUP:
                     self.__forEachNode(node, handler)
-                handler(node)
+                else:
+                    handler(node)
 
             return
 
@@ -114,11 +113,14 @@ class AccountRequirements(ConditionsParser):
             return conditions.AccountDossierValue(uniqueName, data)
         if name == 'vehiclesUnlocked':
             return conditions.VehiclesUnlocked(uniqueName, data)
-        return conditions.VehiclesOwned(uniqueName, data) if name == 'vehiclesOwned' else None
+        if name == 'vehiclesOwned':
+            return conditions.VehiclesOwned(uniqueName, data)
 
     def isAvailable(self):
         conds = self.getConditions()
-        return conds.isAvailable() if not conds.isEmpty() else True
+        if not conds.isEmpty():
+            return conds.isAvailable()
+        return True
 
     def hasIGRCondition(self):
         self.getConditions()
@@ -138,7 +140,9 @@ class AccountRequirements(ConditionsParser):
 class TokenQuestAccountRequirements(AccountRequirements):
 
     def _handleCondition(self, name, data, uniqueName, group):
-        return conditions.TokenQuestToken(uniqueName, data) if name == 'token' else super(TokenQuestAccountRequirements, self)._handleCondition(name, data, uniqueName, group)
+        if name == 'token':
+            return conditions.TokenQuestToken(uniqueName, data)
+        return super(TokenQuestAccountRequirements, self)._handleCondition(name, data, uniqueName, group)
 
 
 class VehicleRequirements(ConditionsParser):
@@ -187,7 +191,8 @@ class VehicleRequirements(ConditionsParser):
             return conditions.InstalledModulesOnVehicle(uniqueName, data)
         if name == 'correspondedCamouflage':
             return conditions.CorrespondedCamouflage(uniqueName, data)
-        return conditions.Customization(uniqueName, data) if name == 'customization' else None
+        if name == 'customization':
+            return conditions.Customization(uniqueName, data)
 
 
 class PreBattleConditions(ConditionsParser):
@@ -246,7 +251,8 @@ class PostBattleConditions(ConditionsParser):
             return conditions.MultiStunEvent(uniqueName, data)
         if name == 'isFirstBlood':
             return conditions.FirstBlood(uniqueName, data)
-        return conditions.VehicleBlockedByArmor(uniqueName, data) if name == 'vehicleBlockedByArmor' else None
+        if name == 'vehicleBlockedByArmor':
+            return conditions.VehicleBlockedByArmor(uniqueName, data)
 
 
 class BonusConditions(ConditionsParser):
@@ -309,26 +315,35 @@ class BonusConditions(ConditionsParser):
                 description = tuple()
                 for elementName, value in elements:
                     if elementName == 'description':
-                        description = ((elementName, value),)
-                    if elementName == 'key':
+                        description = (
+                         (
+                          elementName, value),)
+                    elif elementName == 'key':
                         key = value[0][1]
-                    if elementName in ('equal', 'greater', 'greaterOrEqual'):
+                    elif elementName in ('equal', 'greater', 'greaterOrEqual'):
                         elementValue = value[0][1]
-                    raise SoftException('Incorrect tag in cumulative or cummulativeExt (%s)' % elementName)
+                    else:
+                        raise SoftException('Incorrect tag in cumulative or cummulativeExt (%s)' % elementName)
 
-                element = ('value', (key, elementValue))
+                element = (
+                 'value', (key, elementValue))
                 if unitFlag:
                     result.append(conditions.CumulativeResult('%s%d' % (uniqueName, idx), (element,) + description, self, isUnit=True, preBattleCond=self.__preBattleCond))
-                result.append(conditions.CumulativeResult('%s%d' % (uniqueName, idx), (element,) + description, self))
+                else:
+                    result.append(conditions.CumulativeResult('%s%d' % (uniqueName, idx), (element,) + description, self))
 
             return result
-        return conditions.CumulativeSum(uniqueName, data, self) if name == 'cumulativeSum' else None
+        if name == 'cumulativeSum':
+            return conditions.CumulativeSum(uniqueName, data, self)
 
     def isGroupProgressCompleted(self, groupByKey):
         progress = {}
         if self._progress is not None:
             progress = self._progress.get(groupByKey, {})
-        return progress.get('bonusCount', 0) >= self._bonusLimit if self._bonusLimit is not None else False
+        if self._bonusLimit is not None:
+            return progress.get('bonusCount', 0) >= self._bonusLimit
+        else:
+            return False
 
 
 class MapsTrainingPostBattleConditions(PostBattleConditions):

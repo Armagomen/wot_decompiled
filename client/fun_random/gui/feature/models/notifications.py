@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/feature/models/notifications.py
 from __future__ import absolute_import
 from future.utils import viewvalues
 import typing
@@ -11,7 +9,8 @@ if typing.TYPE_CHECKING:
     from skeletons.gui.game_control import IFunRandomController
 
 class FunNotificationCtx(object):
-    __slots__ = ('isInFunRandom', 'subModes', 'progression', 'transactions', 'newStates', 'settings')
+    __slots__ = ('isInFunRandom', 'subModes', 'progression', 'transactions', 'newStates',
+                 'settings')
 
     def __init__(self, isInFunRandom, subModes, progression, transactions, newStates, settings):
         self.isInFunRandom = isInFunRandom
@@ -22,7 +21,7 @@ class FunNotificationCtx(object):
 
 @ReprInjector.simple(('notificationType', 'notificationType'))
 class FunNotification(object):
-    __slots__ = ('notificationType',)
+    __slots__ = ('notificationType', )
 
     def __init__(self, notificationType):
         self.notificationType = notificationType
@@ -59,7 +58,8 @@ class FunNotification(object):
 @ReprInjector.withParent(('subModesIDs', 'subModesIDs'), ('isNewProgression', 'isNewProgression'))
 class FunStopSubModesNotification(FunNotification):
     __slots__ = ('subModesIDs', 'isNewProgression')
-    _FINISH_STATES = (FunNotificationSubModeState.BETWEEN_SEASONS, FunNotificationSubModeState.AFTER_SEASON)
+    _FINISH_STATES = (
+     FunNotificationSubModeState.BETWEEN_SEASONS, FunNotificationSubModeState.AFTER_SEASON)
     _STOP_NOTIFICATIONS = (FunNotificationType.STOP_SUB_MODES, FunNotificationType.STOP_ALL_SUB_MODES)
     _PROGRESSION_NOTIFICATION = FunNotificationType.NEW_PROGRESSION
 
@@ -70,10 +70,10 @@ class FunStopSubModesNotification(FunNotification):
 
     @classmethod
     def aggregateNotifications(cls, notifications):
-        stopNotifications = tuple((n for n in notifications if n.notificationType in cls._STOP_NOTIFICATIONS))
+        stopNotifications = tuple(n for n in notifications if n.notificationType in cls._STOP_NOTIFICATIONS)
         if not stopNotifications:
             return notifications
-        excludeProgression = tuple((n for n in notifications if n.notificationType != cls._PROGRESSION_NOTIFICATION))
+        excludeProgression = tuple(n for n in notifications if n.notificationType != cls._PROGRESSION_NOTIFICATION)
         if len(excludeProgression) != len(notifications):
             stopNotifications[0].isNewProgression = True
             notifications = excludeProgression
@@ -84,10 +84,10 @@ class FunStopSubModesNotification(FunNotification):
         notifications = []
         if not ctx.isInFunRandom:
             return notifications
-        finishSubModesIDs = tuple((sID for sID, pState, nState in ctx.transactions if pState == FunNotificationSubModeState.AVAILABLE and nState in cls._FINISH_STATES))
+        finishSubModesIDs = tuple(sID for sID, pState, nState in ctx.transactions if pState == FunNotificationSubModeState.AVAILABLE and nState in cls._FINISH_STATES)
         if finishSubModesIDs:
             notificationType = FunNotificationType.STOP_SUB_MODES
-            if all((state == FunNotificationSubModeState.AFTER_SEASON for state in viewvalues(ctx.newStates))):
+            if all(state == FunNotificationSubModeState.AFTER_SEASON for state in viewvalues(ctx.newStates)):
                 notificationType = FunNotificationType.STOP_ALL_SUB_MODES
             notifications.append(cls(notificationType, finishSubModesIDs, cls._isNewProgression(ctx)))
             cls._markProgressionAsSeen(ctx.progression, ctx.settings)
@@ -108,10 +108,10 @@ class FunNewSubModesNotification(FunNotification):
 
     @classmethod
     def aggregateNotifications(cls, notifications):
-        newNotifications = tuple((n for n in notifications if n.notificationType == cls._NEW_NOTIFICATION))
+        newNotifications = tuple(n for n in notifications if n.notificationType == cls._NEW_NOTIFICATION)
         if not newNotifications:
             return notifications
-        excludeProgression = tuple((n for n in notifications if n.notificationType != cls._PROGRESSION_NOTIFICATION))
+        excludeProgression = tuple(n for n in notifications if n.notificationType != cls._PROGRESSION_NOTIFICATION)
         if len(excludeProgression) != len(notifications):
             newNotifications[0].isNewProgression = True
             notifications = excludeProgression
@@ -119,8 +119,8 @@ class FunNewSubModesNotification(FunNotification):
 
     @classmethod
     def buildNotifications(cls, ctx):
-        availableIDs = tuple((sID for sID, _, nState in ctx.transactions if nState in cls._NEW_STATES))
-        newSubModesIDs = tuple((sID for sID, sKey in zip(availableIDs, cls._getSettingsKeys(ctx.subModes, availableIDs)) if sKey not in ctx.settings[FUN_RANDOM_NOTIFICATIONS_SUB_MODES]))
+        availableIDs = tuple(sID for sID, _, nState in ctx.transactions if nState in cls._NEW_STATES)
+        newSubModesIDs = tuple(sID for sID, sKey in zip(availableIDs, cls._getSettingsKeys(ctx.subModes, availableIDs)) if sKey not in ctx.settings[FUN_RANDOM_NOTIFICATIONS_SUB_MODES])
         notifications = []
         if newSubModesIDs:
             notifications.append(cls(FunNotificationType.NEW_SUB_MODES, newSubModesIDs, cls._isNewProgression(ctx)))
@@ -136,15 +136,14 @@ class FunNewProgressionNotification(FunNotification):
         notifications = []
         if ctx.progression is None or not cls._isNewProgression(ctx):
             return notifications
-        else:
-            notifications.append(cls(FunNotificationType.NEW_PROGRESSION))
-            cls._markProgressionAsSeen(ctx.progression, ctx.settings)
-            return notifications
+        notifications.append(cls(FunNotificationType.NEW_PROGRESSION))
+        cls._markProgressionAsSeen(ctx.progression, ctx.settings)
+        return notifications
 
 
 @ReprInjector.withParent(('subModesIDs', 'subModesIDs'))
 class FunSwitchOnSubModesNotification(FunNotification):
-    __slots__ = ('subModesIDs',)
+    __slots__ = ('subModesIDs', )
     _AVAILABLE_STATE = FunNotificationSubModeState.AVAILABLE
 
     def __init__(self, notificationType, subModesIDs=()):
@@ -153,8 +152,8 @@ class FunSwitchOnSubModesNotification(FunNotification):
 
     @classmethod
     def buildNotifications(cls, ctx):
-        availableIDs = tuple((sID for sID, _, nState in ctx.transactions if nState == cls._AVAILABLE_STATE))
-        unfrozenSubModesIDs = tuple((sID for sID, sKey in zip(availableIDs, cls._getSettingsKeys(ctx.subModes, availableIDs)) if sKey in ctx.settings[FUN_RANDOM_NOTIFICATIONS_FROZEN]))
+        availableIDs = tuple(sID for sID, _, nState in ctx.transactions if nState == cls._AVAILABLE_STATE)
+        unfrozenSubModesIDs = tuple(sID for sID, sKey in zip(availableIDs, cls._getSettingsKeys(ctx.subModes, availableIDs)) if sKey in ctx.settings[FUN_RANDOM_NOTIFICATIONS_FROZEN])
         notifications = []
         if unfrozenSubModesIDs:
             notifications.append(cls(FunNotificationType.SWITCH_ON_SUB_MODES, unfrozenSubModesIDs))
@@ -164,7 +163,7 @@ class FunSwitchOnSubModesNotification(FunNotification):
 
 @ReprInjector.withParent(('subModesIDs', 'subModesIDs'))
 class FunSwitchOffSubModesNotification(FunNotification):
-    __slots__ = ('subModesIDs',)
+    __slots__ = ('subModesIDs', )
     _AVAILABLE_STATE = FunNotificationSubModeState.AVAILABLE
     _FROZEN_STATE = FunNotificationSubModeState.FROZEN
 
@@ -177,7 +176,7 @@ class FunSwitchOffSubModesNotification(FunNotification):
         notifications = []
         if not ctx.isInFunRandom:
             return notifications
-        frozenSubModesIDs = tuple((sID for sID, pState, nState in ctx.transactions if pState == cls._AVAILABLE_STATE and nState == cls._FROZEN_STATE))
+        frozenSubModesIDs = tuple(sID for sID, pState, nState in ctx.transactions if pState == cls._AVAILABLE_STATE and nState == cls._FROZEN_STATE)
         if frozenSubModesIDs:
             notifications.append(cls(FunNotificationType.SWITCH_OFF_SUB_MODES, frozenSubModesIDs))
             cls.updateStoredSubModes(ctx.subModes, frozenSubModesIDs, ctx.settings, isFrozen=True)

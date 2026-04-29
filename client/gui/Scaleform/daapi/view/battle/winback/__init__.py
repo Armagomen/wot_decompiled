@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/winback/__init__.py
+from __future__ import absolute_import
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.battle.classic.page import ClassicPage
@@ -11,7 +10,9 @@ from gui.Scaleform.daapi.view.battle.shared.battle_hint import DefaultBattleHint
 
 def getContextMenuHandlers():
     from gui.Scaleform.daapi.view.battle.classic import player_menu_handler
-    return ((BATTLE_CONTEXT_MENU_HANDLER_TYPE.PLAYERS_PANEL, player_menu_handler.PlayerMenuHandler),)
+    return (
+     (
+      BATTLE_CONTEXT_MENU_HANDLER_TYPE.PLAYERS_PANEL, player_menu_handler.PlayerMenuHandler),)
 
 
 def getViewSettings():
@@ -20,6 +21,7 @@ def getViewSettings():
     from gui.Scaleform.daapi.view.battle.classic import players_panel
     from gui.Scaleform.daapi.view.battle.classic import stats_exchange
     from gui.Scaleform.daapi.view.battle.classic import team_bases_panel
+    from gui.Scaleform.daapi.view.battle.classic import map_info_tip
     from gui.Scaleform.daapi.view.battle.classic import minimap
     from gui.Scaleform.daapi.view.battle.classic import battle_end_warning_panel
     from gui.Scaleform.daapi.view.battle.shared import quest_progress_top_view
@@ -35,7 +37,8 @@ def getViewSettings():
     from gui.impl.battle.battle_page.ammunition_panel import prebattle_ammunition_panel_inject
     from gui.Scaleform.daapi.view.battle.shared import postmortem_panel
     from gui.Scaleform.daapi.view.battle.shared import situation_indicators
-    return (ViewSettings(VIEW_ALIAS.WINBACK_BATTLE_PAGE, ClassicPage, 'battlePage.swf', WindowLayer.VIEW, None, ScopeTemplates.DEFAULT_SCOPE),
+    return (
+     ViewSettings(VIEW_ALIAS.WINBACK_BATTLE_PAGE, ClassicPage, 'battlePage.swf', WindowLayer.VIEW, None, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(BATTLE_VIEW_ALIASES.BATTLE_LOADING, battle_loading.BattleLoading, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(BATTLE_VIEW_ALIASES.BATTLE_STATISTIC_DATA_CONTROLLER, stats_exchange.ClassicStatisticsDataController, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(BATTLE_VIEW_ALIASES.TEAM_BASES_PANEL, team_bases_panel.TeamBasesPanel, ScopeTemplates.DEFAULT_SCOPE),
@@ -56,10 +59,12 @@ def getViewSettings():
      ComponentSettings(BATTLE_VIEW_ALIASES.PLAYER_MESSAGES, messages.PlayerMessages, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(BATTLE_VIEW_ALIASES.PREBATTLE_AMMUNITION_PANEL, prebattle_ammunition_panel_inject.PrebattleAmmunitionPanelInject, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(BATTLE_VIEW_ALIASES.POSTMORTEM_PANEL, postmortem_panel.PostmortemPanel, ScopeTemplates.DEFAULT_SCOPE),
+     ComponentSettings(BATTLE_VIEW_ALIASES.MAP_INFO_TIP, map_info_tip.MapInfoTip, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(BATTLE_VIEW_ALIASES.PREBATTLE_TIMER, battle_timers.PreBattleTimer, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(BATTLE_VIEW_ALIASES.BATTLE_HINT, DefaultBattleHint, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(BATTLE_VIEW_ALIASES.NEWBIE_HINT, DefaultBattleHint, ScopeTemplates.DEFAULT_SCOPE))
 
 
 def getBusinessHandlers():
-    return (BattlePageBusinessHandler(VIEW_ALIAS.WINBACK_BATTLE_PAGE),)
+    return (
+     BattlePageBusinessHandler(VIEW_ALIAS.WINBACK_BATTLE_PAGE),)

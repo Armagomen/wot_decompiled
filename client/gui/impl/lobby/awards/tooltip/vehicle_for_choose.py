@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/awards/tooltip/vehicle_for_choose.py
 import typing
 from gui.impl.gen.view_models.common.vehicle_info_model import VehicleInfoModel
 from gui.impl.pub import ViewImpl
@@ -16,7 +14,7 @@ class VehicleForChooseTooltipContent(ViewImpl):
 
     def _initialize(self, *args, **kwargs):
         super(VehicleForChooseTooltipContent, self)._initialize(*args, **kwargs)
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             vList = Array()
             for vehData in kwargs.get('vehicles', []):
                 vR = VehicleInfoModel()

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_pass/battle_pass_secondary_entry_point.py
 from gui.Scaleform.daapi.view.meta.SecondaryEntryPointMeta import SecondaryEntryPointMeta
 from gui.impl.gen import R
 from gui.impl import backport
@@ -8,15 +6,15 @@ from skeletons.gui.game_control import IBattlePassController
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.Scaleform.locale.BATTLE_PASS import BATTLE_PASS
 from gui.impl.lobby.battle_pass.battle_pass_entry_point_view import BaseBattlePassEntryPointView
-_R_TOOLTIPS = R.views.lobby.battle_pass.tooltips
+_R_TOOLTIPS = R.views.mono.battle_pass.tooltips
 _R_IMAGES = R.images.gui.maps.icons.library.hangarEntryPoints.battlePass
-_TOOLTIPS = {_R_TOOLTIPS.BattlePassCompletedTooltipView(): TOOLTIPS_CONSTANTS.BATTLE_PASS_COMPLETED,
- _R_TOOLTIPS.BattlePassInProgressTooltipView(): TOOLTIPS_CONSTANTS.BATTLE_PASS_IN_PROGRESS,
- _R_TOOLTIPS.BattlePassNoChapterTooltipView(): TOOLTIPS_CONSTANTS.BATTLE_PASS_NO_CHAPTER}
+_TOOLTIPS = {_R_TOOLTIPS.completed(): TOOLTIPS_CONSTANTS.BATTLE_PASS_COMPLETED, 
+   _R_TOOLTIPS.in_progress(): TOOLTIPS_CONSTANTS.BATTLE_PASS_IN_PROGRESS, 
+   _R_TOOLTIPS.no_chapter(): TOOLTIPS_CONSTANTS.BATTLE_PASS_NO_CHAPTER}
 
 class BattlePassSecondaryEntryPointWidget(SecondaryEntryPointMeta, BaseBattlePassEntryPointView):
     __battlePass = dependency.descriptor(IBattlePassController)
-    __slots__ = ('__arenaBonusType',)
+    __slots__ = ('__arenaBonusType', )
 
     def __init__(self):
         super(BattlePassSecondaryEntryPointWidget, self).__init__()
@@ -45,19 +43,19 @@ class BattlePassSecondaryEntryPointWidget(SecondaryEntryPointMeta, BaseBattlePas
         if self.__arenaBonusType is None:
             return
         else:
-            flagIcon = backport.image(_R_IMAGES.dyn('flag_chapter_{}'.format(self.chapterID), default=_R_IMAGES.flag_default)()) if self.chapterID > 0 else None
+            flagIcon = backport.image(_R_IMAGES.dyn(('flag_chapter_{}').format(self.chapterID), default=_R_IMAGES.flag_default)()) if self.chapterID > 0 else None
             gameModeIsEnabled = self.__battlePass.isGameModeEnabled(self.__arenaBonusType)
             isEnabled = gameModeIsEnabled and self.__battlePass.isActive() and self.__battlePass.isEnabled()
-            data = {'flagIcon': flagIcon,
-             'icon': self.__getIcon(),
-             'altIcon': self.__getAltIcon(isEnabled),
-             'extraIcon': self.__getExtraIcon(),
-             'text': str(self.level + 1),
-             'isEnabled': isEnabled,
-             'isBought': self.isBought,
-             'isPaused': self.isPaused,
-             'chapterID': self.chapterID,
-             'points': self.freePoints if self.isCompleted else 0}
+            data = {'flagIcon': flagIcon, 
+               'icon': self.__getIcon(), 
+               'altIcon': self.__getAltIcon(isEnabled), 
+               'extraIcon': self.__getExtraIcon(), 
+               'text': str(self.level + 1), 
+               'isEnabled': isEnabled, 
+               'isBought': self.isBought, 
+               'isPaused': self.isPaused, 
+               'chapterID': self.chapterID, 
+               'points': self.freePoints if self.isCompleted else 0}
             self.__updateTooltipData(data, self.__arenaBonusType, gameModeIsEnabled)
             self.as_setDataS(data)
             if not self.__battlePass.isDisabled():
@@ -77,7 +75,7 @@ class BattlePassSecondaryEntryPointWidget(SecondaryEntryPointMeta, BaseBattlePas
             iconName = shieldTemplate.format(color, postfix)
         else:
             iconName = 'shield_silver' if self.chapterID != 0 else 'shield_silver_empty'
-        iconRes = _R_IMAGES.emblem.dyn('chapter_{}'.format(self.chapterID)).dyn(iconName)
+        iconRes = _R_IMAGES.emblem.dyn(('chapter_{}').format(self.chapterID)).dyn(iconName)
         if not iconRes.exists():
             iconRes = _R_IMAGES.emblem.default.dyn(iconName)
         return backport.image(iconRes())
@@ -94,7 +92,10 @@ class BattlePassSecondaryEntryPointWidget(SecondaryEntryPointMeta, BaseBattlePas
         return backport.image(icon)
 
     def __getExtraIcon(self):
-        return backport.image(_R_IMAGES.extra_flags_mini()) if self.hasExtra or self.isHoliday else None
+        if self.hasExtra or self.isHoliday:
+            return backport.image(_R_IMAGES.extra_flags_mini())
+        else:
+            return
 
     def __updateTooltipData(self, data, currentArenaBonusType, gameModeIsEnabled):
         if gameModeIsEnabled and self.__battlePass.isEnabled():

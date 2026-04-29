@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/shop/rental_term_selection_popover.py
 import constants
 from constants import RentType, GameSeasonType
 from rent_common import parseRentID, isWithinMaxRentTime, SeasonRentDuration
@@ -16,10 +14,10 @@ from gui.shared.gui_items.gui_item_economics import ItemPrice
 from helpers import dependency, i18n
 from skeletons.gui.shared import IItemsCache
 _NOT_RENT_IDX = -1
-_SEASON_RENT_TERMS = {GameSeasonType.EPIC: {RentType.SEASON_RENT: STORE.RENTALTERMSELECTIONPOPOVER_TERMSLOTSEASON_EPICSEASON,
-                       RentType.SEASON_CYCLE_RENT: STORE.RENTALTERMSELECTIONPOPOVER_TERMSLOTSEASON_EPICCYCLE},
- GameSeasonType.RANKED: {RentType.SEASON_RENT: STORE.RENTALTERMSELECTIONPOPOVER_TERMSLOTSEASON_RANKEDSEASON,
-                         RentType.SEASON_CYCLE_RENT: STORE.RENTALTERMSELECTIONPOPOVER_TERMSLOTSEASON_RANKEDCYCLE}}
+_SEASON_RENT_TERMS = {GameSeasonType.EPIC: {RentType.SEASON_RENT: STORE.RENTALTERMSELECTIONPOPOVER_TERMSLOTSEASON_EPICSEASON, 
+                         RentType.SEASON_CYCLE_RENT: STORE.RENTALTERMSELECTIONPOPOVER_TERMSLOTSEASON_EPICCYCLE}, 
+   GameSeasonType.RANKED: {RentType.SEASON_RENT: STORE.RENTALTERMSELECTIONPOPOVER_TERMSLOTSEASON_RANKEDSEASON, 
+                           RentType.SEASON_CYCLE_RENT: STORE.RENTALTERMSELECTIONPOPOVER_TERMSLOTSEASON_RANKEDCYCLE}}
 
 class RentalTermSelectionPopover(RentalTermSelectionPopoverMeta):
     itemsCache = dependency.descriptor(IItemsCache)
@@ -50,12 +48,12 @@ class RentalTermSelectionPopover(RentalTermSelectionPopoverMeta):
         isRestoreAvailable = vehicle.isRestoreAvailable()
         if isRestoreAvailable:
             enabled = isRestoreAvailable or not (constants.IS_CHINA and vehicle.rentalIsActive)
-            rentalTermSlots.append({'itemId': -1,
-             'label': backport.text(R.strings.hangar.buyVehicleWindow.restore()),
-             'price': getItemPricesVO(ItemPrice(vehicle.restorePrice, vehicle.restorePrice)),
-             'enabled': enabled,
-             'selected': self.__selectedRentID <= _NOT_RENT_IDX,
-             'isEnoughStatuses': isEnoughStatuses})
+            rentalTermSlots.append({'itemId': -1, 
+               'label': backport.text(R.strings.hangar.buyVehicleWindow.restore()), 
+               'price': getItemPricesVO(ItemPrice(vehicle.restorePrice, vehicle.restorePrice)), 
+               'enabled': enabled, 
+               'selected': self.__selectedRentID <= _NOT_RENT_IDX, 
+               'isEnoughStatuses': isEnoughStatuses})
         rentPackages = vehicle.rentPackages
         currentSeasonRent = vehicle.currentSeasonRent
         isSeasonRented = currentSeasonRent is not None
@@ -79,22 +77,22 @@ class RentalTermSelectionPopover(RentalTermSelectionPopoverMeta):
                 else:
                     enabled = not isSeasonRented
             else:
-                raise SoftException('Unsupported rental type [{}]!'.format(rentType))
+                raise SoftException(('Unsupported rental type [{}]!').format(rentType))
             price = ItemPrice(rentPackage['rentPrice'], rentPackage['defaultRentPrice'])
-            rentalTermSlots.append({'itemId': rentPackageIdx,
-             'label': label,
-             'price': getItemPricesVO(price),
-             'enabled': enabled,
-             'selected': self.__selectedRentID == rentID,
-             'isEnoughStatuses': isEnoughStatuses})
+            rentalTermSlots.append({'itemId': rentPackageIdx, 
+               'label': label, 
+               'price': getItemPricesVO(price), 
+               'enabled': enabled, 
+               'selected': self.__selectedRentID == rentID, 
+               'isEnoughStatuses': isEnoughStatuses})
 
         if not isRestoreAvailable:
             enabled = not vehicle.isDisabledForBuy and not vehicle.isHidden
-            rentalTermSlots.append({'itemId': _NOT_RENT_IDX,
-             'label': i18n.makeString(STORE.RENTALTERMSELECTIONPOPOVER_TERMSLOTUNLIM),
-             'price': getItemPricesVO(vehicle.buyPrices.itemPrice),
-             'enabled': enabled,
-             'selected': self.__selectedRentID <= _NOT_RENT_IDX,
-             'isEnoughStatuses': isEnoughStatuses})
-        return {'titleLabel': text_styles.highTitle(STORE.RENTALTERMSELECTIONPOPOVER_TITLELABEL),
-         'rentalTermSlots': rentalTermSlots}
+            rentalTermSlots.append({'itemId': _NOT_RENT_IDX, 
+               'label': i18n.makeString(STORE.RENTALTERMSELECTIONPOPOVER_TERMSLOTUNLIM), 
+               'price': getItemPricesVO(vehicle.buyPrices.itemPrice), 
+               'enabled': enabled, 
+               'selected': self.__selectedRentID <= _NOT_RENT_IDX, 
+               'isEnoughStatuses': isEnoughStatuses})
+        return {'titleLabel': text_styles.highTitle(STORE.RENTALTERMSELECTIONPOPOVER_TITLELABEL), 
+           'rentalTermSlots': rentalTermSlots}

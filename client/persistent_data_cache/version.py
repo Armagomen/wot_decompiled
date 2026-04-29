@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/persistent_data_cache/version.py
-import typing
-import constants
+import typing, constants
 from helpers import version
 from persistent_data_cache_common.common import getLogger
 _logger = getLogger('Version')
@@ -9,7 +6,8 @@ _logger = getLogger('Version')
 def getClientPDCVersion():
     clientVersion = version.getClientVersion()
     locVersion = version.getLocalizationVersion()
-    result = (clientVersion.version,
+    result = (
+     clientVersion.version,
      clientVersion.meta.overrides,
      clientVersion.meta.client,
      clientVersion.meta.realm,

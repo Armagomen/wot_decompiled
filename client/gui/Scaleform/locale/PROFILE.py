@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/locale/PROFILE.py
 from debug_utils import LOG_WARNING
 
 class PROFILE(object):
@@ -691,7 +689,8 @@ class PROFILE(object):
     SEASONS_DROPDOWN_LABEL = '#profile:seasons/dropdown_label'
     SEASONS_COMP7_DROPDOWN_LABEL = '#profile:seasons/comp7_dropdown_label'
     SECTION_ADVANCEDACHIEVEMENTS_TITLE = '#profile:section/advancedAchievements/title'
-    PROFILE_DROPDOWN_LABELS_ENUM = (PROFILE_DROPDOWN_LABELS_ALL,
+    PROFILE_DROPDOWN_LABELS_ENUM = (
+     PROFILE_DROPDOWN_LABELS_ALL,
      PROFILE_DROPDOWN_LABELS_RANDOM,
      PROFILE_DROPDOWN_LABELS_EPICRANDOM,
      PROFILE_DROPDOWN_LABELS_CLAN,
@@ -714,25 +713,26 @@ class PROFILE(object):
      PROFILE_DROPDOWN_LABELS_COMP7_SEASON_1,
      PROFILE_DROPDOWN_LABELS_COMP7_SEASON_2,
      PROFILE_DROPDOWN_LABELS_COMP7_SEASON_3)
-    PROFILE_RANKED_SEASONSDROPDOWN_ENUM = (PROFILE_RANKED_SEASONSDROPDOWN_ARCHIVE,
+    PROFILE_RANKED_SEASONSDROPDOWN_ENUM = (
+     PROFILE_RANKED_SEASONSDROPDOWN_ARCHIVE,
      PROFILE_RANKED_SEASONSDROPDOWN_1,
      PROFILE_RANKED_SEASONSDROPDOWN_2,
      PROFILE_RANKED_SEASONSDROPDOWN_3)
 
     @classmethod
     def profile_dropdown_labels(cls, key0):
-        outcome = '#profile:profile/dropdown/labels/{}'.format(key0)
+        outcome = ('#profile:profile/dropdown/labels/{}').format(key0)
         if outcome not in cls.PROFILE_DROPDOWN_LABELS_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def get_ranked_season_lbl(cls, season):
-        outcome = '#profile:profile/ranked/seasonsdropdown/{}'.format(season)
+        outcome = ('#profile:profile/ranked/seasonsdropdown/{}').format(season)
         if outcome not in cls.PROFILE_RANKED_SEASONSDROPDOWN_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome

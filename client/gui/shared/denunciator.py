@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/denunciator.py
-import BigWorld
-import constants
+import BigWorld, constants
 from debug_utils import LOG_ERROR
 from helpers import dependency
 from helpers import i18n
@@ -19,23 +16,22 @@ class DENUNCIATIONS(object):
     NOT_FAIR_PLAY = 'notFairPlay'
     FORBIDDEN_NICK = 'forbiddenNick'
     BOT = 'bot'
-    ORDER = (INCORRECT_BEHAVIOR,
-     NOT_FAIR_PLAY,
-     FORBIDDEN_NICK,
-     BOT)
-    ENEMY_ORDER = (NOT_FAIR_PLAY, FORBIDDEN_NICK, BOT)
+    ORDER = (
+     INCORRECT_BEHAVIOR, NOT_FAIR_PLAY, FORBIDDEN_NICK, BOT)
+    ENEMY_ORDER = (
+     NOT_FAIR_PLAY, FORBIDDEN_NICK, BOT)
 
 
-DENUNCIATIONS_MAP = {DENUNCIATIONS.INCORRECT_BEHAVIOR: constants.DENUNCIATION.INCORRECT_BEHAVIOR,
- DENUNCIATIONS.NOT_FAIR_PLAY: constants.DENUNCIATION.NOT_FAIR_PLAY,
- DENUNCIATIONS.FORBIDDEN_NICK: constants.DENUNCIATION.FORBIDDEN_NICK,
- DENUNCIATIONS.BOT: constants.DENUNCIATION.BOT}
+DENUNCIATIONS_MAP = {DENUNCIATIONS.INCORRECT_BEHAVIOR: constants.DENUNCIATION.INCORRECT_BEHAVIOR, 
+   DENUNCIATIONS.NOT_FAIR_PLAY: constants.DENUNCIATION.NOT_FAIR_PLAY, 
+   DENUNCIATIONS.FORBIDDEN_NICK: constants.DENUNCIATION.FORBIDDEN_NICK, 
+   DENUNCIATIONS.BOT: constants.DENUNCIATION.BOT}
 
 class Denunciator(object):
 
     @storage_getter('playerCtx')
     def playerCtx(self):
-        return None
+        return
 
     def makeAppeal(self, violatorID, userName, topic, arenaUniqueID):
         topicID = DENUNCIATIONS_MAP.get(topic)
@@ -50,8 +46,7 @@ class Denunciator(object):
 
         topicStr = i18n.makeString(MENU.denunciation(topicID))
         message = i18n.makeString(SYSTEM_MESSAGES.DENUNCIATION_SUCCESS)
-        message = message % {'name': userName,
-         'topic': topicStr}
+        message = message % {'name': userName, 'topic': topicStr}
         self._makeNotification(message)
 
     def isAppealsEnabled(self):
@@ -61,13 +56,13 @@ class Denunciator(object):
         return self.isAppealsEnabled() and not self.playerCtx.hasDenunciationFor(violatorID, topicID, arenaUniqueID)
 
     def getDenunciationsLeft(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def _getViolatorKind(self, player, violatorID):
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def _makeNotification(self, message):
-        raise NotImplementedError()
+        raise NotImplementedError
 
 
 class LobbyDenunciator(Denunciator):
@@ -97,7 +92,9 @@ class BattleDenunciator(Denunciator):
         arenaDP = self.sessionProvider.getArenaDP()
         vehicleID = arenaDP.getVehIDBySessionID(violatorID)
         violator = arenaDP.getVehicleInfo(vehicleID)
-        return constants.VIOLATOR_KIND.ALLY if player.team == violator.team else constants.VIOLATOR_KIND.ENEMY
+        if player.team == violator.team:
+            return constants.VIOLATOR_KIND.ALLY
+        return constants.VIOLATOR_KIND.ENEMY
 
     def _makeNotification(self, message):
         MessengerEntry.g_instance.gui.addClientMessage(g_settings.htmlTemplates.format('battleErrorMessage', ctx={'error': message}))

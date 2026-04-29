@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/impl/lobby/tank_setup/array_provider.py
 import typing
 from WeakMixin import WeakMixin, Tapped
 from epic_constants import CATEGORIES_ORDER
@@ -20,7 +18,8 @@ class BattleAbilityMixin(WeakMixin, Tapped):
 
     @classmethod
     def fromBattleAbility(cls, item, **kwargs):
-        return BattleAbilityMixin(item).tap(**kwargs) if isinstance(item, BattleAbility) else None
+        if isinstance(item, BattleAbility):
+            return BattleAbilityMixin(item).tap(**kwargs)
 
 
 class BattleAbilityProvider(VehicleBaseArrayProvider):

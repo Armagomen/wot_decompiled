@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicles/mechanics/mechanic_helpers.py
 from __future__ import absolute_import
 import typing
 from future.utils import viewvalues
@@ -25,7 +23,10 @@ def hasVehicleMechanicComponent(vehicle, mechanic):
 
 
 def getVehicleMechanicComponent(vehicle, mechanic):
-    return findVehicleMechanicDynamicComponent(vehicle.dynamicComponents, mechanic) if vehicle is not None else None
+    if vehicle is not None:
+        return findVehicleMechanicDynamicComponent(vehicle.dynamicComponents, mechanic)
+    else:
+        return
 
 
 def getVehicleMechanicsComponents(vehicle, criteria=isValidMechanicComponent):
@@ -34,22 +35,30 @@ def getVehicleMechanicsComponents(vehicle, criteria=isValidMechanicComponent):
 
 def getPlayerVehicleMechanicComponent(mechanic):
     vehicle = BigWorld.player().getVehicleAttached()
-    return findVehicleMechanicDynamicComponent(vehicle.dynamicComponents, mechanic) if vehicle is not None and vehicle.isPlayerVehicle and vehicle.isAlive() else None
+    if vehicle is not None and vehicle.isPlayerVehicle and vehicle.isAlive():
+        return findVehicleMechanicDynamicComponent(vehicle.dynamicComponents, mechanic)
+    else:
+        return
 
 
 def findVehicleMechanicDynamicComponent(dynamicComponents, mechanic):
     component = dynamicComponents.get(_DYN_COMPONENTS_NAMES[mechanic])
-    return component if isVehicleMechanicComponent(component, mechanic) else None
+    if isVehicleMechanicComponent(component, mechanic):
+        return component
+    else:
+        return
 
 
 def hasVehicleDescrMechanic(vehicleDescriptor, mechanic):
     if mechanic in VEHICLE_MECHANIC_TO_PARAMS:
         return VEHICLE_MECHANIC_TO_PARAMS[mechanic] in vehicleDescriptor.mechanicsParams
-    return vehicleDescriptor.hasTag(VEHICLE_MECHANIC_TAGS[mechanic]) if mechanic in VEHICLE_MECHANIC_TAGS else False
+    if mechanic in VEHICLE_MECHANIC_TAGS:
+        return vehicleDescriptor.hasTag(VEHICLE_MECHANIC_TAGS[mechanic])
+    return False
 
 
 def getVehicleDescrMechanics(vehicleDescriptor):
-    return tuple((mechanic for mechanic in TRACKABLE_VEHICLE_DESCR_MECHANICS if hasVehicleDescrMechanic(vehicleDescriptor, mechanic)))
+    return tuple(mechanic for mechanic in TRACKABLE_VEHICLE_DESCR_MECHANICS if hasVehicleDescrMechanic(vehicleDescriptor, mechanic))
 
 
 def getVehicleDescrMechanicParams(vehicleDescriptor, mechanic):

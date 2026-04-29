@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/tutorial/doc_loader/parsers/__init__.py
 import ResMgr
 from items import _xml
 from tutorial.data.chapter import Chapter, Scene
@@ -15,7 +13,8 @@ class DescriptorParser(object):
         section = ResMgr.openSection(filePath)
         if section is None:
             _xml.raiseWrongXml(None, filePath, 'can not open or read')
-        xmlCtx = (None, filePath)
+        xmlCtx = (
+         None, filePath)
         descriptor.setGuiFilePath(_xml.readString(xmlCtx, section, 'gui'))
         descriptor.setInitialChapterID(_xml.readString(xmlCtx, section, 'initial-chapter'))
         self.__parseChapterSummaries(xmlCtx, section, descriptor)
@@ -42,14 +41,11 @@ class DescriptorParser(object):
         for name, varSection in varsSection.items():
             if name == 'var-set':
                 predefinedVars.append(sub_parsers.parseVarSet(xmlCtx, varSection, ()))
-            _xml.raiseWrongXml(xmlCtx, name, 'Unknown tag')
+            else:
+                _xml.raiseWrongXml(xmlCtx, name, 'Unknown tag')
 
-        return (chapterID,
-         bonus,
-         forcedLoading,
-         filePath,
-         sharedScene,
-         predefinedVars)
+        return (
+         chapterID, bonus, forcedLoading, filePath, sharedScene, predefinedVars)
 
     def _parseBonus(self, xmlCtx, section, bonuses):
         tags = section.keys()
@@ -60,7 +56,7 @@ class DescriptorParser(object):
             bonusID = sub_parsers.parseID(xmlCtx, section['bonus-ref'], 'Specify a bonus ID')
             if bonusID in bonuses:
                 return bonuses[bonusID]
-            _xml.raiseWrongXml(xmlCtx, section.name, 'Bonus reference {0} is not found'.format(bonusID))
+            _xml.raiseWrongXml(xmlCtx, section.name, ('Bonus reference {0} is not found').format(bonusID))
         else:
             _xml.raiseWrongXml(xmlCtx, section.name, 'Bonuses is not found')
 
@@ -99,7 +95,8 @@ class ChapterParser(object):
             section = ResMgr.openSection(filePath)
             if section is None:
                 _xml.raiseWrongXml(None, filePath, 'can not open or read')
-            xmlCtx = (None, filePath)
+            xmlCtx = (
+             None, filePath)
             self._parseScene(xmlCtx, section, scene, flags, itemFlags, frontEffects=True)
             return
 
@@ -108,7 +105,8 @@ class ChapterParser(object):
         section = ResMgr.openSection(filePath)
         if section is None:
             _xml.raiseWrongXml(None, filePath, 'can not open or read')
-        xmlCtx = (None, filePath)
+        xmlCtx = (
+         None, filePath)
         chapter.clear()
         flags = []
         itemFlags = []
@@ -132,9 +130,10 @@ class ChapterParser(object):
         for name, subSec in _xml.getChildren(xmlCtx, section, 'vars'):
             if name == 'var-set':
                 chapter.addVarSet(sub_parsers.parseVarSet(xmlCtx, subSec, flags))
-            if name == 'var-set-ref':
+            elif name == 'var-set-ref':
                 gVarIDs.append(sub_parsers.parseID(xmlCtx, subSec, 'Specify a var ID'))
-            _xml.raiseWrongXml(xmlCtx, name, 'Unknown tag')
+            else:
+                _xml.raiseWrongXml(xmlCtx, name, 'Unknown tag')
 
     def _parseScenes(self, xmlCtx, section, chapter, flags, itemFlags, initial):
         for _, sceneSec in _xml.getChildren(xmlCtx, section, 'scenes'):
@@ -166,7 +165,9 @@ class ChapterParser(object):
     def _parseGlobalRuntimeEffects(self, xmlCtx, section, flags, chapter):
         subSec = _xml.getSubsection(xmlCtx, section, 'global-runtime-effects', False)
         if subSec is not None:
-            priorities = (('pre-scene', False), ('post-scene', True))
+            priorities = (('pre-scene', False),
+             (
+              'post-scene', True))
             for tagName, isPostScene in priorities:
                 for _, effectSec in _xml.getChildren(xmlCtx, subSec, tagName, False):
                     effect = sub_parsers._parseEffect(xmlCtx, effectSec, flags)
@@ -182,7 +183,8 @@ class BonusRefParser(object):
         section = ResMgr.openSection(BONUSES_REFS_FILE_PATH)
         if section is None:
             _xml.raiseWrongXml(None, BONUSES_REFS_FILE_PATH, 'can not open or read')
-        xmlCtx = (None, BONUSES_REFS_FILE_PATH)
+        xmlCtx = (
+         None, BONUSES_REFS_FILE_PATH)
         result = {}
         for _, subSec in _xml.getChildren(xmlCtx, section, 'bonuses'):
             bonusID = sub_parsers.parseID(xmlCtx, subSec, 'Specify a bonus ID')

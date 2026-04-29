@@ -1,9 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/vehicle_mechanics/mechanic_widgets/charge_shot_widget.py
 from __future__ import absolute_import
-import typing
-from builtins import round
-import CommandMapping
+import typing, CommandMapping
 from events_containers.common.containers import ContainersListener
 from events_containers.components.life_cycle import IComponentLifeCycleListenerLogic
 from events_handler import eventHandler
@@ -17,6 +13,7 @@ from gui.veh_mechanics.battle.updaters.mechanics.mechanic_passenger_updater impo
 from gui.veh_mechanics.battle.updaters.mechanics.mechanic_states_updater import VehicleMechanicStatesUpdater
 from gui.veh_mechanics.battle.updaters.current_shell_damage_updater import CurrentShellDamageUpdater
 from gui.veh_mechanics.battle.updaters.shot_blocked_upater import ShotBlockedUpdater
+from math_common import round_py2_style_int
 from vehicles.mechanics.mechanic_constants import VehicleMechanic, VehicleMechanicCommand
 from vehicles.mechanics.mechanic_states import IMechanicStatesListenerLogic
 if typing.TYPE_CHECKING:
@@ -26,7 +23,8 @@ if typing.TYPE_CHECKING:
     from gui.veh_mechanics.battle.updaters.updaters_common import IViewUpdater
 
 class ChargeShotMechanicWidget(ChargeShotWidgetMeta, ContainersListener, IMechanicStatesListenerLogic, IComponentLifeCycleListenerLogic):
-    _HOT_KEY_MAP = {CommandMapping.CMD_CM_VEHICLE_SWITCH_AUTOROTATION: [HotKeyData(VehicleMechanicCommand.ACTIVATE.value, False)]}
+    _HOT_KEY_MAP = {CommandMapping.CMD_CM_VEHICLE_SWITCH_AUTOROTATION: [
+                                                         HotKeyData(VehicleMechanicCommand.ACTIVATE.value, False)]}
 
     def __init__(self):
         super(ChargeShotMechanicWidget, self).__init__()
@@ -41,9 +39,7 @@ class ChargeShotMechanicWidget(ChargeShotWidgetMeta, ContainersListener, IMechan
         self.__invalidateAll(state, isInstantly=True)
 
     @eventHandler
-    def onStateTransition(self, oldState, newState):
-        if oldState.hasShotBlock != newState.hasShotBlock:
-            self.as_setShootBlockS(newState.hasShotBlock)
+    def onStateTransition(self, _, newState):
         self.__invalidateAll(newState)
 
     @eventHandler
@@ -63,7 +59,8 @@ class ChargeShotMechanicWidget(ChargeShotWidgetMeta, ContainersListener, IMechan
             self.as_showShootBlockAnimationS()
 
     def _getViewUpdaters(self):
-        return [VehicleMechanicLifeCycleUpdater(VehicleMechanic.CHARGE_SHOT, self),
+        return [
+         VehicleMechanicLifeCycleUpdater(VehicleMechanic.CHARGE_SHOT, self),
          VehicleMechanicPassengerUpdater(VehicleMechanic.CHARGE_SHOT, self),
          VehicleMechanicStatesUpdater(VehicleMechanic.CHARGE_SHOT, self),
          HotKeysViewUpdater(list(self._HOT_KEY_MAP.keys()), self),
@@ -79,6 +76,7 @@ class ChargeShotMechanicWidget(ChargeShotWidgetMeta, ContainersListener, IMechan
             uiState = MECHANICS_WIDGET_CONST.READY
         else:
             uiState = MECHANICS_WIDGET_CONST.IDLE
+        self.as_setShootBlockS(state.hasShotBlock)
         self.__invalidateProgress(state)
         self.as_setStateS(uiState, isInstantly)
         self.__invalidateExpectedDamage(self.__baseDamage)
@@ -90,10 +88,10 @@ class ChargeShotMechanicWidget(ChargeShotWidgetMeta, ContainersListener, IMechan
             self.as_setUpdateProgressS(state.level, state.progress(timeLeft))
             self.as_setTimeS(timeLeft)
             return
-        elif state.hasShotBlock:
-            self.as_setTimeS(state.timeLeft())
-            return
         else:
+            if state.hasShotBlock:
+                self.as_setTimeS(state.timeLeft())
+                return
             self.as_setTimeS(None)
             return
 
@@ -101,8 +99,9 @@ class ChargeShotMechanicWidget(ChargeShotWidgetMeta, ContainersListener, IMechan
         if newBaseDamage is None:
             newBaseDamage = self.__baseDamage
         self.__baseDamage = newBaseDamage
-        factors = self.__damageFactorsPerLevel
-        newExpectedDamage = newBaseDamage if factors is None else round(factors[self.__level] * newBaseDamage)
+        newExpectedDamage = newBaseDamage
+        if self.__damageFactorsPerLevel is not None:
+            newExpectedDamage = round_py2_style_int(self.__damageFactorsPerLevel[self.__level] * newBaseDamage)
         if self.__expectedDamage != newExpectedDamage:
             self.__expectedDamage = newExpectedDamage
             return True

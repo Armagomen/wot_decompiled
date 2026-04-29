@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/award_window_base.py
+from __future__ import absolute_import
 from gui.Scaleform.daapi.view.meta.AwardWindowsBaseMeta import AwardWindowsBaseMeta
 from gui.server_events.awards import AwardAbstract
 
@@ -18,10 +17,10 @@ class AwardWindowBase(AwardWindowsBaseMeta):
 
     def _populate(self):
         super(AwardWindowBase, self)._populate()
-        data = {'windowTitle': self._award.getWindowTitle(),
-         'backImage': self._award.getBackgroundImage(),
-         'header': self._award.getHeader(),
-         'description': self._award.getDescription()}
+        data = {'windowTitle': self._award.getWindowTitle(), 
+           'backImage': self._award.getBackgroundImage(), 
+           'header': self._award.getHeader(), 
+           'description': self._award.getDescription()}
         data.update(self._getTypeSpecificFields())
         self.as_setDataS(data)
         self.__playSound()

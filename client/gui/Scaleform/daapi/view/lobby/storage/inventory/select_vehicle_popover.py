@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/inventory/select_vehicle_popover.py
 import nations
 from gui import GUI_NATIONS_ORDER_INDEX_REVERSED
 from gui.Scaleform.daapi.view.lobby.vehicle_compare.formatters import packHeaderColumnData
@@ -22,14 +20,14 @@ from skeletons.gui.shared import IItemsCache
 _SEARCH_INPUT_MAX_CHARS = 50
 
 def _makeVehicleCmpVO(vehicle):
-    return {'intCD': vehicle.intCD,
-     'level': vehicle.level,
-     'shortUserName': vehicle.shortUserName,
-     'smallIconPath': getSmallIconPath(vehicle.name),
-     'nationIcon': RES_ICONS.getFilterNation(vehicle.nationName),
-     'typeIcon': getTypeSmallIconPath(vehicle.type, vehicle.isPremium),
-     'nationID': vehicle.nationID,
-     'type': vehicle.type}
+    return {'intCD': vehicle.intCD, 
+       'level': vehicle.level, 
+       'shortUserName': vehicle.shortUserName, 
+       'smallIconPath': getSmallIconPath(vehicle.name), 
+       'nationIcon': RES_ICONS.getFilterNation(vehicle.nationName), 
+       'typeIcon': getTypeSmallIconPath(vehicle.type, vehicle.isPremium), 
+       'nationID': vehicle.nationID, 
+       'type': vehicle.type}
 
 
 class VehicleSelectPopoverStorage(StorageVehicleSelectPopoverMeta):
@@ -114,15 +112,15 @@ class VehicleSelectPopover(VehicleSelectPopoverStorage, VehicleSelectorBase):
         return _makeVehicleCmpVO(vehicle)
 
     def __initControls(self):
-        common = {'btnHeight': 34,
-         'enabled': True}
-        headers = [packHeaderColumnData('nations', 45, icon=RES_ICONS.MAPS_ICONS_FILTERS_NATIONS_ALL, tooltip=STORAGE.VEHICLESELECTPOPOVER_TOOLTIPS_NATION, **common),
+        common = {'btnHeight': 34, 'enabled': True}
+        headers = [
+         packHeaderColumnData('nations', 45, icon=RES_ICONS.MAPS_ICONS_FILTERS_NATIONS_ALL, tooltip=STORAGE.VEHICLESELECTPOPOVER_TOOLTIPS_NATION, **common),
          packHeaderColumnData('type', 45, icon=RES_ICONS.MAPS_ICONS_FILTERS_TANKS_ALL, tooltip=STORAGE.VEHICLESELECTPOPOVER_TOOLTIPS_TYPE, **common),
          packHeaderColumnData('level', 45, icon=RES_ICONS.MAPS_ICONS_BUTTONS_TAB_SORT_BUTTON_LEVEL, tooltip=STORAGE.VEHICLESELECTPOPOVER_TOOLTIPS_LEVEL, **common),
          packHeaderColumnData('name', 210, label=STORAGE.VEHICLESELECTPOPOVER_VEHICLENAME, tooltip=STORAGE.VEHICLESELECTPOPOVER_TOOLTIPS_TITLE, direction='ascending', **common)]
-        self.as_setInitDataS({'tableHeaders': headers,
-         'filters': self.initFilters(),
-         'header': text_styles.highTitle(_ms(STORAGE.STORAGE_VEHICLESELECTPOPOVER_LABEL))})
+        self.as_setInitDataS({'tableHeaders': headers, 
+           'filters': self.initFilters(), 
+           'header': text_styles.highTitle(_ms(STORAGE.STORAGE_VEHICLESELECTPOPOVER_LABEL))})
 
 
 class VehiclesDataProvider(SortableDAAPIDataProvider):
@@ -131,11 +129,11 @@ class VehiclesDataProvider(SortableDAAPIDataProvider):
         super(VehiclesDataProvider, self).__init__()
         self.__list = None
         self._sort = (('level', False),)
-        self.__sortMapping = {'check': lambda v: v['selected'],
-         'nations': lambda v: GUI_NATIONS_ORDER_INDEX_REVERSED[nations.NAMES[v['nationID']]],
-         'type': lambda v: VEHICLE_TABLE_TYPES_ORDER_INDICES_REVERSED[v['type']],
-         'level': lambda v: v['level'] << 16 | GUI_NATIONS_ORDER_INDEX_REVERSED[nations.NAMES[v['nationID']]] << 8 | VEHICLE_TABLE_TYPES_ORDER_INDICES_REVERSED[v['type']],
-         'name': lambda v: v['shortUserName']}
+        self.__sortMapping = {'check': lambda v: v['selected'], 
+           'nations': lambda v: GUI_NATIONS_ORDER_INDEX_REVERSED[nations.NAMES[v['nationID']]], 
+           'type': lambda v: VEHICLE_TABLE_TYPES_ORDER_INDICES_REVERSED[v['type']], 
+           'level': lambda v: v['level'] << 16 | GUI_NATIONS_ORDER_INDEX_REVERSED[nations.NAMES[v['nationID']]] << 8 | VEHICLE_TABLE_TYPES_ORDER_INDICES_REVERSED[v['type']], 
+           'name': lambda v: v['shortUserName']}
         return
 
     @property
@@ -147,7 +145,7 @@ class VehiclesDataProvider(SortableDAAPIDataProvider):
         return self.__list
 
     def emptyItem(self):
-        return None
+        return
 
     def pySortOn(self, fields, order):
         super(VehiclesDataProvider, self).pySortOn(fields, order)

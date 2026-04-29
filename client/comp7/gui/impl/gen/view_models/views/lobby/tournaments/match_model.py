@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/gen/view_models/views/lobby/tournaments/match_model.py
 from enum import Enum
 from frameworks.wulf import ViewModel
 from comp7.gui.impl.gen.view_models.views.lobby.tournaments.team_model import TeamModel

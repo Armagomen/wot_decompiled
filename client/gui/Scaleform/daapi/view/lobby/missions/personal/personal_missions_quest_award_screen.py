@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/missions/personal/personal_missions_quest_award_screen.py
 import personal_missions
 from adisp import adisp_async
 from debug_utils import LOG_ERROR, LOG_CURRENT_EXCEPTION
@@ -23,13 +21,13 @@ from helpers import dependency
 from helpers.i18n import makeString as _ms
 from shared_utils import first
 from skeletons.gui.server_events import IEventsCache
-_OPERATION_ID_TO_UI_BACKGROUND = {1: RES_ICONS.MAPS_ICONS_PERSONALMISSIONS_QUESTAWARD_BG_STUG4,
- 2: RES_ICONS.MAPS_ICONS_PERSONALMISSIONS_QUESTAWARD_BG_HTC,
- 3: RES_ICONS.MAPS_ICONS_PERSONALMISSIONS_QUESTAWARD_BG_T55A,
- 4: RES_ICONS.MAPS_ICONS_PERSONALMISSIONS_QUESTAWARD_BG_OBJECT260,
- 5: RES_ICONS.MAPS_ICONS_PERSONALMISSIONS_QUESTAWARD_BG_EXCALIBUR,
- 6: RES_ICONS.MAPS_ICONS_PERSONALMISSIONS_QUESTAWARD_BG_CHIMERA,
- 7: RES_ICONS.MAPS_ICONS_PERSONALMISSIONS_QUESTAWARD_BG_OBJECT279}
+_OPERATION_ID_TO_UI_BACKGROUND = {1: RES_ICONS.MAPS_ICONS_PERSONALMISSIONS_QUESTAWARD_BG_STUG4, 
+   2: RES_ICONS.MAPS_ICONS_PERSONALMISSIONS_QUESTAWARD_BG_HTC, 
+   3: RES_ICONS.MAPS_ICONS_PERSONALMISSIONS_QUESTAWARD_BG_T55A, 
+   4: RES_ICONS.MAPS_ICONS_PERSONALMISSIONS_QUESTAWARD_BG_OBJECT260, 
+   5: RES_ICONS.MAPS_ICONS_PERSONALMISSIONS_QUESTAWARD_BG_EXCALIBUR, 
+   6: RES_ICONS.MAPS_ICONS_PERSONALMISSIONS_QUESTAWARD_BG_CHIMERA, 
+   7: RES_ICONS.MAPS_ICONS_PERSONALMISSIONS_QUESTAWARD_BG_OBJECT279}
 
 def _getNextMissionInOperationByID(questID):
     eventsCache = dependency.instance(IEventsCache)
@@ -48,10 +46,10 @@ def _getNextMissionInOperationByID(questID):
                         return nextID
 
             except ValueError:
-                LOG_ERROR('Cannot find quest ID {questID} in quests from tile {quests}'.format(questID=questID, quests=questsInOperation))
+                LOG_ERROR(('Cannot find quest ID {questID} in quests from tile {quests}').format(questID=questID, quests=questsInOperation))
                 LOG_CURRENT_EXCEPTION()
 
-    return None
+    return
 
 
 class PersonalMissionsQuestAwardScreen(PersonalMissionsQuestAwardScreenMeta):
@@ -129,8 +127,8 @@ class PersonalMissionsQuestAwardScreen(PersonalMissionsQuestAwardScreenMeta):
 
     def __fireOnClose(self):
         if self._quest.isFinal():
-            self.fireEvent(PersonalMissionsEvent(PersonalMissionsEvent.ON_AWARD_SCEEN_CLOSE, ctx={'operationID': self._quest.getOperationID(),
-             'eventID': self._quest.getID()}), EVENT_BUS_SCOPE.LOBBY)
+            self.fireEvent(PersonalMissionsEvent(PersonalMissionsEvent.ON_AWARD_SCEEN_CLOSE, ctx={'operationID': self._quest.getOperationID(), 
+               'eventID': self._quest.getID()}), EVENT_BUS_SCOPE.LOBBY)
 
     @adisp_process('updating')
     def _processMission(self, quest):
@@ -154,17 +152,17 @@ class PersonalMissionsQuestAwardScreen(PersonalMissionsQuestAwardScreenMeta):
         else:
             statusLabel = text_styles.bonusAppliedText(QUESTS.PERSONALMISSION_STATUS_ONLYMAINDONE)
         questText = _ms(_PM.QUESTAWARDSCREEN_QUEST, quest=self._quest.getShortUserName())
-        dataVO = {'bgImage': _OPERATION_ID_TO_UI_BACKGROUND.get(self._quest.getOperationID(), ''),
-         'operationText': text_styles.promoTitle(_ms(_PM.QUESTAWARDSCREEN_OPERATION, operation=self._operation.getUserName())),
-         'questText': toUpper(questText),
-         'statusLabel': statusLabel,
-         'status': status,
-         'ribbonData': {'ribbonType': 'ribbon1',
-                        'rendererLinkage': 'RibbonAwardAnimUI',
-                        'gap': 20,
-                        'rendererWidth': 80,
-                        'rendererHeight': 80,
-                        'awards': self.__packAwards(detailedData)}}
+        dataVO = {'bgImage': _OPERATION_ID_TO_UI_BACKGROUND.get(self._quest.getOperationID(), ''), 
+           'operationText': text_styles.promoTitle(_ms(_PM.QUESTAWARDSCREEN_OPERATION, operation=self._operation.getUserName())), 
+           'questText': toUpper(questText), 
+           'statusLabel': statusLabel, 
+           'status': status, 
+           'ribbonData': {'ribbonType': 'ribbon1', 
+                          'rendererLinkage': 'RibbonAwardAnimUI', 
+                          'gap': 20, 
+                          'rendererWidth': 80, 
+                          'rendererHeight': 80, 
+                          'awards': self.__packAwards(detailedData)}}
         dataVO.update(self.__packQuestConditions(detailedData))
         dataVO.update(self.__packNextQuestTitleSection(isFinal))
         dataVO.update(self.__packButtonsSection(isFinal))
@@ -176,8 +174,7 @@ class PersonalMissionsQuestAwardScreen(PersonalMissionsQuestAwardScreenMeta):
             if self._nextQuest:
                 nextQuestTitle = _PM.QUESTAWARDSCREEN_NEXTQUEST_TITLE_QUESTACCEPT
                 nextQuestText = self._nextQuest.getUserName()
-                dataVO.update({'nextQuestText': text_styles.promoTitle(nextQuestText),
-                 'nextQuestTitle': text_styles.highlightText(nextQuestTitle)})
+                dataVO.update({'nextQuestText': text_styles.promoTitle(nextQuestText), 'nextQuestTitle': text_styles.highlightText(nextQuestTitle)})
             else:
                 chainName = getTypeShortUserName(self._quest.getQuestClassifier().classificationAttr)
                 nextQuestTitle = _ms(_PM.STATUSPANEL_STATUS_ALLDONE, vehicleClass=chainName)
@@ -186,11 +183,11 @@ class PersonalMissionsQuestAwardScreen(PersonalMissionsQuestAwardScreenMeta):
             if isFinal:
                 dataVO.update({'nextQuestTitle': text_styles.highlightText(QUESTS.PERSONALMISSION_STATUS_LASTDONEWITHPAWN)})
             elif self._quest.isInProgress():
-                dataVO.update({'nextQuestText': text_styles.promoTitle(self._quest.getUserName()),
-                 'nextQuestTitle': text_styles.highlightText(_PM.QUESTAWARDSCREEN_NEXTQUEST_TITLE_QUESTIMPROVE)})
+                dataVO.update({'nextQuestText': text_styles.promoTitle(self._quest.getUserName()), 
+                   'nextQuestTitle': text_styles.highlightText(_PM.QUESTAWARDSCREEN_NEXTQUEST_TITLE_QUESTIMPROVE)})
         else:
-            dataVO.update({'nextQuestText': text_styles.promoTitle(self._quest.getUserName()),
-             'nextQuestTitle': text_styles.highlightText(_PM.QUESTAWARDSCREEN_NEXTQUEST_TITLE_QUESTIMPROVE)})
+            dataVO.update({'nextQuestText': text_styles.promoTitle(self._quest.getUserName()), 
+               'nextQuestTitle': text_styles.highlightText(_PM.QUESTAWARDSCREEN_NEXTQUEST_TITLE_QUESTIMPROVE)})
         return dataVO
 
     def __packButtonsSection(self, isFinal):
@@ -203,8 +200,7 @@ class PersonalMissionsQuestAwardScreen(PersonalMissionsQuestAwardScreenMeta):
             dataVO.update({'mainBtnLabel': mainLbl})
         else:
             extraLbl = _PM.QUESTAWARDSCREEN_RECRUITBTN_LABEL if isFinal else _PM.QUESTAWARDSCREEN_NEXTQUESTBTN_LABEL
-            dataVO.update({'mainBtnLabel': _PM.QUESTAWARDSCREEN_CONTINUEBTN_LABEL,
-             'extraBtnLabel': extraLbl})
+            dataVO.update({'mainBtnLabel': _PM.QUESTAWARDSCREEN_CONTINUEBTN_LABEL, 'extraBtnLabel': extraLbl})
         return dataVO
 
     def __packQuestConditions(self, detailedData):
@@ -222,15 +218,15 @@ class PersonalMissionsQuestAwardScreen(PersonalMissionsQuestAwardScreenMeta):
         for key in keys:
             for item in awards.get(key, []):
                 label = item['label'] if item['label'] is not None else ''
-                result.append({'imgSource': item['imgSource'],
-                 'label': text_styles.hightlight(label),
-                 'align': item['align'],
-                 'tooltip': item['tooltip'],
-                 'overlayType': item['overlayType'],
-                 'isSpecial': item['isSpecial'],
-                 'specialAlias': item['specialAlias'],
-                 'specialArgs': item['specialArgs'],
-                 'isWulfTooltip': item['isWulfTooltip']})
+                result.append({'imgSource': item['imgSource'], 
+                   'label': text_styles.hightlight(label), 
+                   'align': item['align'], 
+                   'tooltip': item['tooltip'], 
+                   'overlayType': item['overlayType'], 
+                   'isSpecial': item['isSpecial'], 
+                   'specialAlias': item['specialAlias'], 
+                   'specialArgs': item['specialArgs'], 
+                   'isWulfTooltip': item['isWulfTooltip']})
 
         return result
 

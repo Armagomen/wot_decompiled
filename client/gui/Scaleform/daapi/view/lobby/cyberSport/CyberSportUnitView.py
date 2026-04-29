@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/cyberSport/CyberSportUnitView.py
 from UnitBase import UNIT_OP
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.daapi.view.lobby.rally.vo_converters import makeVehicleVO
@@ -119,9 +117,9 @@ class CyberSportUnitView(CyberSportUnitMeta):
             window.updateSlots(slots)
         else:
             levelsRange = self.prbEntity.getRosterSettings().getLevelsRange()
-            self.fireEvent(events.LoadViewEvent(SFViewLoadParams(CYBER_SPORT_ALIASES.ROSTER_SLOT_SETTINGS_WINDOW_PY), ctx={'settings': slots,
-             'section': 'cs_unit_view_settings',
-             'levelsRange': levelsRange}), scope=EVENT_BUS_SCOPE.LOBBY)
+            self.fireEvent(events.LoadViewEvent(SFViewLoadParams(CYBER_SPORT_ALIASES.ROSTER_SLOT_SETTINGS_WINDOW_PY), ctx={'settings': slots, 
+               'section': 'cs_unit_view_settings', 
+               'levelsRange': levelsRange}), scope=EVENT_BUS_SCOPE.LOBBY)
         return
 
     def cancelRosterSlotsSettings(self):

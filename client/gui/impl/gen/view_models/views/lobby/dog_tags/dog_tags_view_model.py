@@ -1,11 +1,11 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/dog_tags/dog_tags_view_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.dog_tags.dt_dog_tag import DtDogTag
 from gui.impl.gen.view_models.views.lobby.dog_tags.dt_grid_section import DtGridSection
 
 class DogTagsViewModel(ViewModel):
-    __slots__ = ('onEquip', 'onReset', 'onTabSelect', 'onInfoButtonClick', 'onPlayVideo', 'onUpdateSelectedDT', 'onOnboardingCloseClick', 'onNewComponentHover', 'onBack')
+    __slots__ = ('onEquip', 'onReset', 'onTabSelect', 'onInfoButtonClick', 'onPlayVideo',
+                 'onUpdateSelectedDT', 'onOnboardingCloseClick', 'onNewComponentHover',
+                 'onBack')
 
     def __init__(self, properties=12, commands=9):
         super(DogTagsViewModel, self).__init__(properties=properties, commands=commands)

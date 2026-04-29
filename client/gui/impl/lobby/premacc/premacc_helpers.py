@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/premacc/premacc_helpers.py
 import logging
 from helpers import time_utils
 _logger = logging.getLogger(__name__)
@@ -22,7 +20,9 @@ class PiggyBankConstants(object):
 
 
 def validateAdditionalBonusMultiplier(multiplier):
-    return BattleResultsBonusConstants.MIN_MULTIPLIER if multiplier < BattleResultsBonusConstants.MIN_MULTIPLIER or multiplier > BattleResultsBonusConstants.MAX_MULTIPLIER else int(multiplier)
+    if multiplier < BattleResultsBonusConstants.MIN_MULTIPLIER or multiplier > BattleResultsBonusConstants.MAX_MULTIPLIER:
+        return BattleResultsBonusConstants.MIN_MULTIPLIER
+    return int(multiplier)
 
 
 def getOpenTimeHelper(config, data):

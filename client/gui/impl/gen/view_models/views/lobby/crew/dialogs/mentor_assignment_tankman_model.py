@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/crew/dialogs/mentor_assignment_tankman_model.py
 from frameworks.wulf import Array
 from gui.impl.gen.view_models.views.lobby.crew.common.crew_skill_model import CrewSkillModel
 from gui.impl.gen.view_models.views.lobby.crew.dialogs.dialog_tankman_base_model import DialogTankmanBaseModel

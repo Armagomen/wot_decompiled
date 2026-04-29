@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/server_events/personal_progress/visitors.py
 import typing
 from collections import namedtuple
 from personal_missions_constants import PROGRESS_TEMPLATE
@@ -25,7 +23,8 @@ class BinaryProgressVisitor(WrappersVisitor):
 
     @classmethod
     def getWrappers(cls):
-        return [WrapperInfo(metrics_wrappers.wrapSimple, True)]
+        return [
+         WrapperInfo(metrics_wrappers.wrapSimple, True)]
 
 
 class ValueLikeBinaryProgressVisitor(WrappersVisitor):
@@ -36,7 +35,8 @@ class ValueLikeBinaryProgressVisitor(WrappersVisitor):
 
     @classmethod
     def getWrappers(cls):
-        return [WrapperInfo(metrics_wrappers.wrapSimple, True)]
+        return [
+         WrapperInfo(metrics_wrappers.wrapSimple, True)]
 
 
 class ValueProgressVisitor(WrappersVisitor):
@@ -47,7 +47,9 @@ class ValueProgressVisitor(WrappersVisitor):
 
     @classmethod
     def getWrappers(cls):
-        return [WrapperInfo(metrics_wrappers.wrapRangeValue, False), WrapperInfo(metrics_wrappers.wrapCurrentValue, True)]
+        return [
+         WrapperInfo(metrics_wrappers.wrapRangeValue, False),
+         WrapperInfo(metrics_wrappers.wrapCurrentValue, True)]
 
 
 class LobbyValueProgressVisitor(ValueProgressVisitor):
@@ -65,7 +67,10 @@ class CounterProgressVisitor(WrappersVisitor):
 
     @classmethod
     def getWrappers(cls):
-        return [WrapperInfo(metrics_wrappers.wrapRangeValue, False), WrapperInfo(metrics_wrappers.wrapCurrentValue, False), WrapperInfo(metrics_wrappers.wrapVehiclesValue, True)]
+        return [
+         WrapperInfo(metrics_wrappers.wrapRangeValue, False),
+         WrapperInfo(metrics_wrappers.wrapCurrentValue, False),
+         WrapperInfo(metrics_wrappers.wrapVehiclesValue, True)]
 
 
 class LimiterProgressVisitor(WrappersVisitor):
@@ -76,7 +81,8 @@ class LimiterProgressVisitor(WrappersVisitor):
 
     @classmethod
     def getWrappers(cls):
-        return [WrapperInfo(metrics_wrappers.wrapLimiterValue, False)]
+        return [
+         WrapperInfo(metrics_wrappers.wrapLimiterValue, False)]
 
 
 class TimerProgressVisitor(WrappersVisitor):
@@ -87,4 +93,5 @@ class TimerProgressVisitor(WrappersVisitor):
 
     @classmethod
     def getWrappers(cls):
-        return [WrapperInfo(metrics_wrappers.wrapTimerValue, False)]
+        return [
+         WrapperInfo(metrics_wrappers.wrapTimerValue, False)]

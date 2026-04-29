@@ -1,11 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/personal_missions_30/hangar_helpers.py
 import logging
 from functools import partial
 from typing import TYPE_CHECKING
-import CGF
-import Event
-import SoundGroups
+import CGF, Event, SoundGroups
 from GenericComponents import Sequence
 from cgf_components.hangar_camera_manager import HangarCameraManager
 from cgf_components.pm30_hangar_components import HangarOperationsManager
@@ -144,7 +140,11 @@ class AssemblingManager(object):
             self.__setAndActivateVehicleGO(vehicleGOForOperation, vehicleStagesComponent, operationID, currentStage)
 
     def getCameraEvents(self, viewModel):
-        return [(viewModel.onMoveSpace, self.__onMoveSpace), (viewModel.onMouseOver3dScene, self.__onMouseOver3dScene)]
+        return [
+         (
+          viewModel.onMoveSpace, self.__onMoveSpace),
+         (
+          viewModel.onMouseOver3dScene, self.__onMouseOver3dScene)]
 
     def activateSelectableLogic(self):
         self.hangarSpace.lockVehicleSelectable(self)
@@ -186,7 +186,9 @@ class AssemblingManager(object):
         if not cameraManager:
             _logger.warning('[PM3.0] CameraManager is not found')
             return
-        topCameras = [CameraNameTemplates.TOP.format(self.__operationID, TopCameras.FIRST), CameraNameTemplates.TOP.format(self.__operationID, TopCameras.SECOND)]
+        topCameras = [
+         CameraNameTemplates.TOP.format(self.__operationID, TopCameras.FIRST),
+         CameraNameTemplates.TOP.format(self.__operationID, TopCameras.SECOND)]
         return cameraManager.getCurrentCameraName() not in topCameras
 
     def isSwitchingToFreeFarCameraNeeded(self):
@@ -194,7 +196,7 @@ class AssemblingManager(object):
         if not cameraManager:
             _logger.warning('[PM3.0] CameraManager is not found')
             return
-        return not cameraManager.getCurrentCameraName() == CameraNameTemplates.FREE_FAR.format(self.__operationID)
+        return cameraManager.getCurrentCameraName() != CameraNameTemplates.FREE_FAR.format(self.__operationID)
 
     def __activateVehicleGO(self):
         if self.__vehicleGO:
@@ -231,7 +233,8 @@ class AssemblingManager(object):
         vehicleStagesComponent = None
         if not manager:
             _logger.warning('[PM3.0] HangarOperationsManager is not found')
-            return (vehicleGO, vehicleStagesComponent)
+            return (
+             vehicleGO, vehicleStagesComponent)
         else:
             if operationID == OperationIDs.OPERATION_FIRST:
                 vehicleGO, vehicleStagesComponent = manager.vehicleForOperation8, manager.stagesComponentForOperation8
@@ -312,7 +315,7 @@ class AssemblingManager(object):
     def __activateStageFade(self, stageFade):
         sequence = stageFade.findComponentByType(Sequence)
         if sequence:
-            self.__hangarOperationsManager.addTimer('assemblingAnimation_{}'.format(self.__stageNumberForAssembling), sequence.duration, self.__onAnimationFinished)
+            self.__hangarOperationsManager.addTimer(('assemblingAnimation_{}').format(self.__stageNumberForAssembling), sequence.duration, self.__onAnimationFinished)
             soundEvent = SoundsKeys.PLAY_ANIMATION_EVENT % (self.__operationID, self.__stageNumberForAssembling)
             SoundGroups.g_instance.playSound2D(soundEvent)
             stageFade.activate()
@@ -323,7 +326,7 @@ class AssemblingManager(object):
             self.__stageFade.deactivate()
             self.__stageFade = None
         else:
-            _logger.warning('[PM3.0] GO for %s is not found or invalid', 'stage_{}_fade'.format(self.__stageNumberForAssembling))
+            _logger.warning('[PM3.0] GO for %s is not found or invalid', ('stage_{}_fade').format(self.__stageNumberForAssembling))
         return
 
     def __onAnimationFinished(self):
@@ -347,9 +350,7 @@ class AssemblingManager(object):
         if args is None:
             return
         else:
-            ctx = {'dx': args.get('dx'),
-             'dy': args.get('dy'),
-             'dz': args.get('dz')}
+            ctx = {'dx': args.get('dx'), 'dy': args.get('dy'), 'dz': args.get('dz')}
             g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.LOBBY_VIEW_MOUSE_MOVE, ctx=ctx), EVENT_BUS_SCOPE.GLOBAL)
             return
 

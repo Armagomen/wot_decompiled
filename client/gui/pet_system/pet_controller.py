@@ -1,9 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/pet_system/pet_controller.py
 from __future__ import absolute_import
-import random
-import BigWorld
-import SoundGroups
+import random, BigWorld, SoundGroups
 from adisp import adisp_process
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from chat_shared import SYS_MESSAGE_TYPE
@@ -79,7 +75,9 @@ class PetSystemController(IGlobalListener, IPetSystemController):
 
     @property
     def isInStorage(self):
-        return False if not self.lsmObserver else self.lsmObserver.currentState
+        if not self.lsmObserver:
+            return False
+        return self.lsmObserver.currentState
 
     @property
     def isInEventFulscreen(self):
@@ -178,19 +176,29 @@ class PetSystemController(IGlobalListener, IPetSystemController):
         return petID
 
     def getActiveEvent(self):
-        return INVALID_EVENT_ID if not self.isEnabled else self.requester.getActiveEventID()
+        if not self.isEnabled:
+            return INVALID_EVENT_ID
+        return self.requester.getActiveEventID()
 
     def isFirstClickEnable(self):
-        return False if not self.isEnabled else not self.isPetInHangarPromoting() and SynergyItem.isFirstClickSynergyAvailable()
+        if not self.isEnabled:
+            return False
+        return not self.isPetInHangarPromoting() and SynergyItem.isFirstClickSynergyAvailable()
 
     def getUnlockedPets(self):
-        return list() if not self.isEnabled else self.requester.getUnlockedPetIDs()
+        if not self.isEnabled:
+            return list()
+        return self.requester.getUnlockedPetIDs()
 
     def getStateBehavior(self):
-        return pet_constants.PetStateBehavior.BASIC if not self.isEnabled else self.requester.getStateBehavior()
+        if not self.isEnabled:
+            return pet_constants.PetStateBehavior.BASIC
+        return self.requester.getStateBehavior()
 
     def getCurrentName(self, petID):
-        return 0 if not self.isEnabled else self.requester.getSelectedName(petID)
+        if not self.isEnabled:
+            return 0
+        return self.requester.getSelectedName(petID)
 
     def addSynergyDev(self, synergyPoints, petID=None):
         if not self.isEnabled:
@@ -214,11 +222,11 @@ class PetSystemController(IGlobalListener, IPetSystemController):
         if not self.isEnabled:
             self.__petInHangar = None
             return
-        elif self.getActivePet() == INVALID_PET_ID:
-            if not self.__petInHangar or reset:
-                return self.__getRandomPromoPetID()
-            return self.__petInHangar
         else:
+            if self.getActivePet() == INVALID_PET_ID:
+                if not self.__petInHangar or reset:
+                    return self.__getRandomPromoPetID()
+                return self.__petInHangar
             self.__petInHangar = self.getActivePet()
             return self.__petInHangar
 
@@ -232,7 +240,9 @@ class PetSystemController(IGlobalListener, IPetSystemController):
         if not self.isEnabled:
             return list()
         petIDs = self.getUnlockedPets()
-        return petIDs if not self.getPetsPromoConfig().isEnabled() else petIDs + self.getPetsPromoConfig().getAvailablePets(petIDs)
+        if not self.getPetsPromoConfig().isEnabled():
+            return petIDs
+        return petIDs + self.getPetsPromoConfig().getAvailablePets(petIDs)
 
     def showEventView(self, isFullScreen=False):
         if not self.isEnabled:
@@ -246,8 +256,7 @@ class PetSystemController(IGlobalListener, IPetSystemController):
         result = yield PetEventOpenProcessor().request()
         if result:
             if result.success:
-                ctx = {'eventID': result.auxData.get('eventID'),
-                 'rewards': result.auxData.get('bonus')}
+                ctx = {'eventID': result.auxData.get('eventID'), 'rewards': result.auxData.get('bonus')}
                 if isFullScreen:
                     openPetEventFullscreenWindow(ctx)
                 else:
@@ -371,7 +380,8 @@ class PetSystemController(IGlobalListener, IPetSystemController):
             return
         if PETS_SYSTEM_PDATA_KEY in diff:
             petSystemDiff = diff[PETS_SYSTEM_PDATA_KEY]
-            if not {PS_PDATA_KEYS.UNLOCKED_PETS_IDS,
+            if not {
+             PS_PDATA_KEYS.UNLOCKED_PETS_IDS,
              PS_PDATA_KEYS.EVENTS_DATA,
              PS_PDATA_KEYS.ACTIVE_STATE_BEHAVIOR,
              PS_PDATA_KEYS.STORAGE}.isdisjoint(petSystemDiff.keys()):
@@ -390,7 +400,7 @@ class PetSystemController(IGlobalListener, IPetSystemController):
                 self.onUpdateAppliedBonus()
             if PS_PDATA_KEYS.STORAGE in petSystemDiff:
                 petStorages = petSystemDiff[PS_PDATA_KEYS.STORAGE].values()
-                if any((PS_PDATA_KEYS.SYNERGY_STORAGE in petStorage for petStorage in petStorages if petStorage is not None)):
+                if any(PS_PDATA_KEYS.SYNERGY_STORAGE in petStorage for petStorage in petStorages if petStorage is not None):
                     self.onUpdateSynergy()
 
     def __getRandomPromoPetID(self):

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/genConsts/NODE_STATE_FLAGS.py
 
 
 class NODE_STATE_FLAGS(object):

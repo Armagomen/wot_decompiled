@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/entities/random/squad/actions_handler.py
 from BWUtil import AsyncReturn
 from CurrentVehicle import g_currentVehicle
 from constants import MIN_VEHICLE_LEVEL, MAX_VEHICLE_LEVEL

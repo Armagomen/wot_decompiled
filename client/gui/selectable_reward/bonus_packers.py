@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/selectable_reward/bonus_packers.py
 import typing
 from gui.battle_pass.battle_pass_helpers import getOfferTokenByGift
 from gui.impl.backport import TooltipData
@@ -24,11 +22,14 @@ class SelectableBonusPacker(BaseBonusUIPacker):
             return bonus.getCount()
         else:
             gift = first(offer.getAllGifts())
-            return bonus.getCount() if gift is None else gift.giftCount * bonus.getCount()
+            if gift is None:
+                return bonus.getCount()
+            return gift.giftCount * bonus.getCount()
 
     @classmethod
     def _pack(cls, bonus):
-        return [cls._packSingleBonus(bonus)]
+        return [
+         cls._packSingleBonus(bonus)]
 
     @classmethod
     def _packSingleBonus(cls, bonus):
@@ -47,7 +48,8 @@ class SelectableBonusPacker(BaseBonusUIPacker):
     def _getToolTip(cls, bonus):
         tooltipData = []
         for tokenID in bonus.getValue().iterkeys():
-            tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=cls._getTooltipSpecialAlias(), specialArgs=[tokenID]))
+            tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=cls._getTooltipSpecialAlias(), specialArgs=[
+             tokenID]))
 
         return tooltipData
 
@@ -57,7 +59,8 @@ class SelectableBonusPacker(BaseBonusUIPacker):
 
     @classmethod
     def _getContentId(cls, bonus):
-        return [BACKPORT_TOOLTIP_CONTENT_ID] * len(bonus.getValue().keys())
+        return [
+         BACKPORT_TOOLTIP_CONTENT_ID] * len(bonus.getValue().keys())
 
     @classmethod
     def __getBonusOffer(cls, bonus):

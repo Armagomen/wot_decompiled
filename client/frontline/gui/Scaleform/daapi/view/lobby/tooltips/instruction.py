@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/lobby/tooltips/instruction.py
 from shared_utils import first
 from gui.Scaleform.daapi.view.lobby.epicBattle.epic_helpers import getOfferTokenByGift
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
@@ -13,7 +11,7 @@ from helpers import dependency
 from skeletons.gui.offers import IOffersDataProvider
 
 class EpicBattleTokenInstructionContext(ToolTipContext):
-    __slots__ = ('__hasOffer',)
+    __slots__ = ('__hasOffer', )
     __offersProvider = dependency.descriptor(IOffersDataProvider)
 
     def __init__(self):
@@ -54,7 +52,9 @@ class EpicBattleInstructionTooltipData(BlocksTooltipData):
     def _packBlocks(self, tokenID, **kwargs):
         giftsNames = self.context.buildItem(tokenID, **kwargs)
         shortName = tokenID.split(':')[2]
-        items = [self.__packImageBlock(shortName), self.__packGiftNameBlocks(shortName, giftsNames)]
+        items = [
+         self.__packImageBlock(shortName),
+         self.__packGiftNameBlocks(shortName, giftsNames)]
         return items
 
     @staticmethod
@@ -65,7 +65,8 @@ class EpicBattleInstructionTooltipData(BlocksTooltipData):
     @classmethod
     def __packGiftNameBlocks(cls, shortName, giftsNames):
         rOffer = R.strings.tooltips.epicBattlesOffer
-        blocks = [formatters.packTextBlockData(text=text_styles.highTitle(backport.text(rOffer.title.dyn(shortName)())))]
+        blocks = [
+         formatters.packTextBlockData(text=text_styles.highTitle(backport.text(rOffer.title.dyn(shortName)())))]
         if shortName == 'brochure_gift':
             blocks.append(formatters.packTextBlockData(text=text_styles.gold(backport.text(rOffer.allNations()))))
             experience = first(giftsNames)
@@ -81,6 +82,6 @@ class EpicBattleInstructionTooltipData(BlocksTooltipData):
                 giftName = backport.text(rOffer.point(), item=gift)
                 blocks.append(formatters.packTextBlockData(text=text_styles.main(giftName)))
 
-            if insertEtc:
-                blocks.append(formatters.packTextBlockData(text=text_styles.stats(backport.text(rOffer.etc()))))
+        if insertEtc:
+            blocks.append(formatters.packTextBlockData(text=text_styles.stats(backport.text(rOffer.etc()))))
         return formatters.packBuildUpBlockData(blocks, padding=formatters.packPadding(left=-1), linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE)

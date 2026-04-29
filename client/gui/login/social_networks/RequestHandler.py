@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/login/social_networks/RequestHandler.py
-import httplib
-import base64
+import httplib, base64
 from urlparse import urlparse, parse_qsl
 from BaseHTTPServer import BaseHTTPRequestHandler
 from gui import GUI_SETTINGS
@@ -44,7 +41,8 @@ class RequestHandler(BaseHTTPRequestHandler):
         else:
             token = params['token']
         socialNetwork = params.get('authentication_method', '').partition(':')[2]
-        return (token, params['account_id'], socialNetwork)
+        return (
+         token, params['account_id'], socialNetwork)
 
     def log_request(self, code='-', size='-'):
         pass

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/Scaleform/genConsts/COMP7_HANGAR_ALIASES.py
 
 
 class COMP7_HANGAR_ALIASES(object):
@@ -10,3 +8,4 @@ class COMP7_HANGAR_ALIASES(object):
     COMP7_CONFIGURABLE_VEHICLE_PREVIEW = 'comp7ConfigurableVehiclePreview'
     COMP7_WCI_ENTRY_POINT = 'Comp7WCIEntryPoint'
     COMP7_OLS_ENTRY_POINT = 'Comp7OLSEntryPoint'
+    COMP7_BATTLE_RESULTS = 'comp7BattleResults'

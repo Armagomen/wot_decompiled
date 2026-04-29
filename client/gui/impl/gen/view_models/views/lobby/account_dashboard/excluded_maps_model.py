@@ -1,10 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/account_dashboard/excluded_maps_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.account_dashboard.map_model import MapModel
 
 class ExcludedMapsModel(ViewModel):
-    __slots__ = ('onClick',)
+    __slots__ = ('onClick', )
 
     def __init__(self, properties=2, commands=1):
         super(ExcludedMapsModel, self).__init__(properties=properties, commands=commands)

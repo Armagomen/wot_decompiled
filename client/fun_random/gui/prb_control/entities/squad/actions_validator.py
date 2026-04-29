@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/prb_control/entities/squad/actions_validator.py
 from __future__ import absolute_import
 from fun_random_common.fun_constants import BATTLE_MODE_VEH_TAGS_EXCEPT_FUN
 from fun_random.gui.feature.util.fun_mixins import FunSubModesWatcher
@@ -34,4 +32,7 @@ class FunRandomActionsValidator(SquadActionsValidator):
         return ActionsValidatorComposite(entity, validators=[baseValidator, BalancedSquadSlotsValidator(entity)])
 
     def _createVehiclesValidator(self, entity):
-        return ActionsValidatorComposite(entity, validators=[_FunRandomSquadVehicleValidator(entity), BalancedSquadVehiclesValidator(entity), RoleForbiddenSquadVehiclesValidator(entity)])
+        return ActionsValidatorComposite(entity, validators=[
+         _FunRandomSquadVehicleValidator(entity),
+         BalancedSquadVehiclesValidator(entity),
+         RoleForbiddenSquadVehiclesValidator(entity)])

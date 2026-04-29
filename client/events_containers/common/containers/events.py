@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/events_containers/common/containers/events.py
 from __future__ import absolute_import
 from Event import LateEvent
 from events_containers.common.containers.interfaces import IClientEventsContainer
@@ -25,8 +23,8 @@ class ClientEventsContainer(EventsContainer, IClientEventsContainer):
         super(ClientEventsContainer, self).destroy()
         return
 
-    def attachCFGEvents(self):
-        self._cgfIntegration = self._cgfIntegration or self._createCGFIntegration()
+    def attachCoreEvents(self):
+        self._cgfIntegration = self._cgfIntegration or self._createCoreIntegration()
 
     def _createLateEvent(self, lateCallback):
         return LateEvent(lateCallback, self._eventManager)
@@ -35,14 +33,14 @@ class ClientEventsContainer(EventsContainer, IClientEventsContainer):
         from gui.shared.utils.TimeInterval import TimeIntervalEvent
         return TimeIntervalEvent(interval, timeCallback, self._eventManager)
 
-    def _createCGFIntegration(self):
-        return ClientEventsContainerCGFIntegration(self)
+    def _createCoreIntegration(self):
+        return ClientEventsContainerCoreIntegration(self)
 
     def _createEventsDebugger(self):
         return ClientEventsContainerDebugger(self)
 
 
-class ClientEventsContainerCGFIntegration(ContainersListener):
+class ClientEventsContainerCoreIntegration(ContainersListener):
 
     def __init__(self, events):
         self._attachToEventsContainer(events)
@@ -52,10 +50,10 @@ class ClientEventsContainerCGFIntegration(ContainersListener):
 
 
 class ClientEventsContainerDebugger(EventsDebugger):
-    IGNORED_EVENTS = ('onEventsContainerDestroy',)
+    IGNORED_EVENTS = ('onEventsContainerDestroy', )
 
     def _getDebugPrefix(self):
-        pass
+        return '[CLIENT_EVENT]'
 
     def _shouldHandle(self, eventName):
         return eventName not in self.IGNORED_EVENTS

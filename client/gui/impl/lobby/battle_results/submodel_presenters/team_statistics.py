@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_results/submodel_presenters/team_statistics.py
 import typing
 from helpers import dependency
 from skeletons.connection_mgr import IConnectionManager
@@ -37,7 +35,9 @@ class TeamStatisticsSubPresenter(BattleResultsSubPresenter):
         return
 
     def _getEvents(self):
-        return ((self.getViewModel().onStatsSorted, self.__onTeamStatsSorted),)
+        return (
+         (
+          self.getViewModel().onStatsSorted, self.__onTeamStatsSorted),)
 
     def __getContextMenuArgs(self, databaseID, vehicleCD):
         reusable = self.getBattleResults().reusable

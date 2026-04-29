@@ -1,11 +1,11 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/maps_training/markers2d.py
+from __future__ import absolute_import
+from future.utils import viewvalues
 from account_helpers.settings_core.settings_constants import BattleCommStorageKeys
 from gui.battle_control import avatar_getter
 from gui.Scaleform.daapi.view.battle.shared.markers2d import plugins, vehicle_plugins, MarkersManager
 
 class _MapsTrainingVehicleMarkerPlugin(vehicle_plugins.VehicleMarkerPlugin):
-    __slots__ = ('__localGoals',)
+    __slots__ = ('__localGoals', )
 
     def __init__(self, parentObj):
         super(_MapsTrainingVehicleMarkerPlugin, self).__init__(parentObj)
@@ -31,8 +31,8 @@ class _MapsTrainingVehicleMarkerPlugin(vehicle_plugins.VehicleMarkerPlugin):
         self.__updateGoal(marker)
 
     def __onLocalKillGoalsUpdated(self, localGoals):
-        self.__localGoals = set((vehID for vehID in localGoals))
-        for marker in self._markers.itervalues():
+        self.__localGoals = set(vehID for vehID in localGoals)
+        for marker in viewvalues(self._markers):
             self.__updateGoal(marker)
 
     def __updateGoal(self, marker):
@@ -59,9 +59,8 @@ class MapsTrainingAreaStaticMarkerPlugin(plugins.AreaStaticMarkerPlugin):
         marker = self._getMarkerFromTargetID(targetID, markerType)
         if replierID == self.sessionProvider.arenaVisitor.getArenaUniqueID() or marker is None:
             return
-        else:
-            self._setMarkerRepliesAndCheckState(marker, newReplyCount, replierID == avatar_getter.getPlayerVehicleID())
-            return
+        self._setMarkerRepliesAndCheckState(marker, newReplyCount, replierID == avatar_getter.getPlayerVehicleID())
+        return
 
     def __onSettingsChange(self, diff):
         if BattleCommStorageKeys.SHOW_STICKY_MARKERS in diff.keys():

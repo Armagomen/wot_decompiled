@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/achievements_controller.py
 from Event import Event, EventManager
 from achievements20.cache import ALLOWED_ACHIEVEMENT_TYPES, ROOT_ACHIEVEMENT_IDS
 from chat_shared import SYS_MESSAGE_TYPE
@@ -49,7 +47,9 @@ class AchievementsController(IAchievementsController, EventsHandler):
         super(AchievementsController, self).fini()
 
     def _getEvents(self):
-        return ((g_messengerEvents.serviceChannel.onChatMessageReceived, self.__onChatMessageReceived),)
+        return (
+         (
+          g_messengerEvents.serviceChannel.onChatMessageReceived, self.__onChatMessageReceived),)
 
     def getCurrentScore(self, userId=None):
         trophiesAchievementScore = self.getTrophiesAchievementsScore(userId)
@@ -237,10 +237,7 @@ class AchievementsController(IAchievementsController, EventsHandler):
                 if stage > 0:
                     currentAchievement = self.getAchievementByID(id, category)
                     if achievedValue == 1 or achievedValue == currentAchievement.getFakeAchievementForStage(stage).getProgress().total:
-                        achievementIDs.append((id,
-                         category,
-                         stage,
-                         timestapm))
+                        achievementIDs.append((id, category, stage, timestapm))
 
         return achievementIDs
 
@@ -274,7 +271,7 @@ class AchievementsController(IAchievementsController, EventsHandler):
 
 
 class AdvancedAchievementsSettingsManager(object):
-    __slots__ = ('__settings',)
+    __slots__ = ('__settings', )
 
     def __init__(self):
         self.__settings = dict()

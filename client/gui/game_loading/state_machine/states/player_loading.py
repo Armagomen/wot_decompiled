@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_loading/state_machine/states/player_loading.py
-import typing
-import game_loading_bindings
+import typing, game_loading_bindings
 from frameworks.state_machine import StateFlags
 from gui.game_loading.preferences import GameLoadingPreferences
 from gui.game_loading.state_machine.const import GameLoadingStates, MINIMUM_PLAYER_LOADING_PROGRESS_BAR_MAX_VALUE

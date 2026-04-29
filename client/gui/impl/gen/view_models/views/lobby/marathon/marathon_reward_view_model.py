@@ -1,9 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/marathon/marathon_reward_view_model.py
 from frameworks.wulf import ViewModel
 
 class MarathonRewardViewModel(ViewModel):
-    __slots__ = ('onGoToVehicleBtnClick', 'onViewRewardsBtnClick', 'onCloseBtnClick', 'onVideoStarted', 'onVideoStopped')
+    __slots__ = ('onGoToVehicleBtnClick', 'onViewRewardsBtnClick', 'onCloseBtnClick',
+                 'onVideoStarted', 'onVideoStopped')
 
     def __init__(self, properties=6, commands=5):
         super(MarathonRewardViewModel, self).__init__(properties=properties, commands=commands)

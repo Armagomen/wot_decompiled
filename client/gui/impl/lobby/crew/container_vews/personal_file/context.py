@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/container_vews/personal_file/context.py
 import typing
 from gui.impl.lobby.crew.container_vews.common.base_personal_case_context import BasePersonalCaseContext
 from gui.impl.lobby.crew.crew_helpers.skill_helpers import getTmanNewSkillCount
@@ -58,16 +56,21 @@ class PersonalFileViewContext(BasePersonalCaseContext):
         else:
             installedBoosters = self.tankmanCurrentVehicle.battleBoosters.installed.getItems()
             installedBoostersCount = len(installedBoosters)
-            return None if installedBoostersCount == 0 else installedBoosters[0]
+            if installedBoostersCount == 0:
+                return None
+            return installedBoosters[0]
 
     def _calcSkillsCountAndLevel(self):
         newSkillCnt, lastSkillLevel = getTmanNewSkillCount(self.tankman)
         freeNewSkillCnt = self.tankman.newFreeSkillsCount
         if self.tankman.currentVehicleSkillsEfficiency == SKILL_EFFICIENCY_UNTRAINED:
             skillsCount = freeNewSkillCnt + newSkillCnt
-            return (skillsCount, lastSkillLevel)
+            return (
+             skillsCount, lastSkillLevel)
         if not self.tankman.isMaxSkillEfficiency:
             return (freeNewSkillCnt + newSkillCnt, lastSkillLevel)
         if freeNewSkillCnt > 0:
             return (freeNewSkillCnt, lastSkillLevel)
-        return (newSkillCnt, lastSkillLevel) if newSkillCnt > 0 else (0, lastSkillLevel)
+        if newSkillCnt > 0:
+            return (newSkillCnt, lastSkillLevel)
+        return (0, lastSkillLevel)

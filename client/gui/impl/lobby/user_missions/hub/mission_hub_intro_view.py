@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hub/mission_hub_intro_view.py
 from frameworks.wulf import ViewFlags, ViewSettings, WindowFlags, WindowLayer
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.user_missions.hub.mission_hub_intro_view_model import MissionHubIntroViewModel
@@ -31,21 +29,23 @@ class MissionHubIntroView(ViewImpl):
         self._fillViewModel()
 
     def _fillViewModel(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setHeader(self.__header)
             vm.setDescription(self.__description)
             vm.setIcon(self.__icon)
             vm.setButtonText(self.__buttonText)
 
     def _getEvents(self):
-        return ((self.viewModel.onClose, self._onClose),)
+        return (
+         (
+          self.viewModel.onClose, self._onClose),)
 
     def _onClose(self):
         self.destroyWindow()
 
 
 class MissionHubIntroWindow(WindowImpl):
-    __slots__ = ('__blur',)
+    __slots__ = ('__blur', )
 
     def __init__(self, header, icon, description, buttonText=None):
         super(MissionHubIntroWindow, self).__init__(WindowFlags.WINDOW | WindowFlags.WINDOW_FULLSCREEN, content=MissionHubIntroView(header, icon, description, buttonText), layer=WindowLayer.FULLSCREEN_WINDOW)

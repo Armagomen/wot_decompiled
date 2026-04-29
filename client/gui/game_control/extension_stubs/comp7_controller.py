@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/extension_stubs/comp7_controller.py
 import Event
 from skeletons.gui.game_control import IComp7Controller
 from gui.periodic_battles.models import PrimeTimeStatus
@@ -26,7 +24,7 @@ class Comp7Controller(IComp7Controller):
 
     @property
     def rating(self):
-        pass
+        return 0
 
     @property
     def isElite(self):
@@ -38,7 +36,7 @@ class Comp7Controller(IComp7Controller):
 
     @property
     def banDuration(self):
-        pass
+        return 0
 
     @property
     def isOffline(self):
@@ -46,23 +44,23 @@ class Comp7Controller(IComp7Controller):
 
     @property
     def leaderboard(self):
-        return None
+        return
 
     @property
     def progression(self):
-        return None
+        return
 
     @property
     def activityPoints(self):
-        pass
+        return 0
 
     @property
     def battleModifiers(self):
-        pass
+        return ()
 
     @property
     def qualificationBattlesNumber(self):
-        pass
+        return 0
 
     @property
     def qualificationBattlesStatuses(self):
@@ -70,11 +68,19 @@ class Comp7Controller(IComp7Controller):
 
     @property
     def qualificationState(self):
-        return None
+        return
 
     @property
     def remainingOfferTokensNotifications(self):
         return []
+
+    @property
+    def bans(self):
+        return {}
+
+    @property
+    def vehicleCopiesInfo(self):
+        return
 
     def fini(self):
         self.__eventsManager.clear()
@@ -109,35 +115,39 @@ class Comp7Controller(IComp7Controller):
     def hasPrimeTimesLeftForCurrentCycle(self):
         return False
 
+    def hasPrimeTimesPassedForCurrentCycle(self):
+        return False
+
     def getClosestStateChangeTime(self, now=None):
-        pass
+        return 0
 
     def getCurrentCycleID(self):
-        return None
+        return
 
     def getCurrentCycleInfo(self):
-        return (None, False)
+        return (
+         None, False)
 
     def getCurrentOrNextActiveCycleNumber(self, season):
-        pass
+        return 0
 
     def getEventEndTimestamp(self):
-        return None
+        return
 
     def getModeSettings(self):
-        return None
+        return
 
     def getRanksConfig(self):
-        return None
+        return
 
     def getYearlyRewards(self):
-        return None
+        return
 
     def getNextSeason(self, now=None):
-        return None
+        return
 
     def getPeriodInfo(self, now=None, peripheryID=None):
-        return None
+        return
 
     def getPrimeTimes(self):
         return {}
@@ -149,10 +159,10 @@ class Comp7Controller(IComp7Controller):
         return (PrimeTimeStatus.NOT_SET, 0, False)
 
     def getPreviousSeason(self, now=None):
-        return None
+        return
 
     def getSeason(self, seasonID):
-        return None
+        return
 
     def getSeasonsPassed(self, now=None):
         return []
@@ -161,13 +171,13 @@ class Comp7Controller(IComp7Controller):
         return []
 
     def getTimer(self, now=None, peripheryID=None):
-        pass
+        return 0
 
     def getLeftTimeToPrimeTimesEnd(self, now=None):
-        pass
+        return 0
 
     def getQuestsTimerLeft(self):
-        pass
+        return 0
 
     def isEnabled(self):
         return False
@@ -175,14 +185,17 @@ class Comp7Controller(IComp7Controller):
     def isTrainingEnabled(self):
         return False
 
+    def isVehicleBanEnabled(self):
+        return False
+
     def hasActiveSeason(self, includePreannounced=False):
         return False
 
     def getActualSeasonNumber(self):
-        return None
+        return
 
     def getCurrentSeason(self, now=None, includePreannounced=False):
-        return None
+        return
 
     def isQualificationActive(self):
         return False
@@ -194,28 +207,28 @@ class Comp7Controller(IComp7Controller):
         return False
 
     def isQualificationSquadAllowed(self):
-        return None
+        return
 
     def preannounceSeasonId(self):
-        return None
+        return
 
     def isInPreannounceState(self):
         return False
 
     def getPreannouncedSeason(self):
-        return None
+        return
 
     def getRoleEquipment(self, roleName):
-        return None
+        return
 
     def getEquipmentStartLevel(self, roleName):
-        return None
+        return
 
     def getRoleEquipmentOverrides(self, roleName):
-        return None
+        return
 
     def getPoiEquipmentOverrides(self, poiName):
-        return None
+        return
 
     def getViewData(self, viewAlias):
         return {}
@@ -224,6 +237,9 @@ class Comp7Controller(IComp7Controller):
         return False
 
     def hasSuitableVehicles(self):
+        return False
+
+    def hasEnoughReadyToFightVehicles(self):
         return False
 
     def vehicleIsAvailableForBuy(self):
@@ -242,13 +258,14 @@ class Comp7Controller(IComp7Controller):
         return False
 
     def getAlertBlock(self):
-        return (False, None, None)
+        return (
+         False, None, None)
 
     def getPlatoonRatingRestriction(self):
-        return None
+        return
 
     def getPlatoonMaxRankRestriction(self):
-        pass
+        return 0
 
     def getStatsSeasonsKeys(self):
         return []
@@ -257,16 +274,16 @@ class Comp7Controller(IComp7Controller):
         return {}
 
     def getMaxAvailableSeasonPoints(self):
-        pass
+        return 0
 
     def isQualificationPassedInSeason(self, seasonNumber):
         return False
 
     def getRatingForSeason(self, seasonNumber):
-        pass
+        return 0
 
     def getMaxRankNumberForSeason(self, seasonNumber=None):
-        pass
+        return 0
 
     def isEliteForSeason(self, seasonNumber=None):
         return False
@@ -275,7 +292,7 @@ class Comp7Controller(IComp7Controller):
         pass
 
     def getPlatoonRankRestriction(self, squadSize=None):
-        pass
+        return 0
 
     def tryToShowSeasonStatistics(self):
         pass

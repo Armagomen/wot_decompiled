@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/customization/style_unlocked_view/style_unlocked_view.py
-import BigWorld
-import WWISE
+import BigWorld, WWISE
 from CurrentVehicle import g_currentVehicle
 from frameworks.wulf import ViewSettings
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -54,7 +51,7 @@ class StyleUnlockedView(ViewImpl):
         self.__vehicle = self.itemsCache.items.getItemByCD(vehicleCD) if vehicleCD != UNBOUND_VEH_KEY else g_currentVehicle.item
         if self.__vehicle is None:
             raise SoftException('invalid vehicle: &s', vehicleCD)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             if vehicleCD != UNBOUND_VEH_KEY:
                 self.__setVehicleInfo(model)
             self.__updateC11nButton(model=model)
@@ -97,7 +94,7 @@ class StyleUnlockedView(ViewImpl):
     @replaceNoneKwargsModel
     def __updateC11nButton(self, lock=False, model=None):
         isEnabled = not lock and self.__isCustEnabledForActiveVehicle()
-        if any((handler() for handler in collectCustomizationHangarDecorator())):
+        if any(handler() for handler in collectCustomizationHangarDecorator()):
             isEnabled = False
         if isEnabled:
             tooltipText = ''

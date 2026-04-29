@@ -1,12 +1,11 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_results/composer.py
 import typing
 from constants import ARENA_BONUS_TYPE
 from gui.battle_results import templates
 from gui.battle_results.components import base
-from gui.battle_results.stats_ctrl import IBattleResultStatsCtrl
 from gui.battle_results.random_stats_ctrl import RandomBattleResultStatsCtrl
+from gui.battle_results.stats_ctrl import IBattleResultStatsCtrl
 from gui.shared import event_dispatcher
+from gui.shared.event_dispatcher import showLegacyBattleResultsWindow
 from gui.shared.system_factory import registerBattleResultStatsCtrl
 from helpers import dependency
 from skeletons.gui.game_control import IMapsTrainingController
@@ -16,7 +15,7 @@ if typing.TYPE_CHECKING:
     TooltipModelType = typing.TypeVar('TooltipModelType', bound=ViewModel)
 
 class StatsComposer(IBattleResultStatsCtrl):
-    __slots__ = ('_block',)
+    __slots__ = ('_block', )
 
     def __init__(self, reusable, common, personal, teams, text):
         super(StatsComposer, self).__init__()
@@ -47,7 +46,7 @@ class StatsComposer(IBattleResultStatsCtrl):
 
     @staticmethod
     def onShowResults(arenaUniqueID):
-        return event_dispatcher.showBattleResultsWindow(arenaUniqueID)
+        pass
 
     def _registerTabs(self, reusable):
         self._block.addNextComponent(templates.REGULAR_TABS_BLOCK.clone())
@@ -62,6 +61,9 @@ class RegularStatsComposer(StatsComposer):
     def __init__(self, reusable):
         super(RegularStatsComposer, self).__init__(reusable, templates.REGULAR_COMMON_STATS_BLOCK.clone(), templates.REGULAR_PERSONAL_STATS_BLOCK.clone(), templates.REGULAR_TEAMS_STATS_BLOCK.clone(), templates.REGULAR_TEXT_STATS_BLOCK.clone())
         self._block.addNextComponent(templates.PROGRESSIVE_REWARD_VO.clone())
+
+    def onResultsPosted(self, arenaUniqueID):
+        showLegacyBattleResultsWindow(arenaUniqueID)
 
 
 class EpicStatsComposer(StatsComposer):

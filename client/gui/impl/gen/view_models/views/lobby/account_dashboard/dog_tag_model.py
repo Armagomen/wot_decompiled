@@ -1,9 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/account_dashboard/dog_tag_model.py
 from frameworks.wulf import ViewModel
 
 class DogTagModel(ViewModel):
-    __slots__ = ('onClick',)
+    __slots__ = ('onClick', )
 
     def __init__(self, properties=6, commands=1):
         super(DogTagModel, self).__init__(properties=properties, commands=commands)

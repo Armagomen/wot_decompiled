@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client_common/OwnVehicleBase.py
 from collections import namedtuple
 from functools import partial
 import BigWorld
@@ -18,17 +16,17 @@ class OwnVehicleBase(BigWorld.DynamicScriptComponent):
 
     def __init__(self):
         super(OwnVehicleBase, self).__init__()
-        self._doLog('OwnVehicleBase __init__ {}'.format(self.entity.id))
+        self._doLog(('OwnVehicleBase __init__ {}').format(self.entity.id))
         self.__isInitialUpdated = False
         self.__isAttachingToVehicle = False
         self.initialUpdate()
 
     def onDestroy(self):
-        self._doLog('onDestroy {}'.format(self.entity.id))
+        self._doLog(('onDestroy {}').format(self.entity.id))
         self.__onDestroy()
 
     def onLeaveWorld(self):
-        self._doLog('onLeaveWorld {}'.format(self.entity.id))
+        self._doLog(('onLeaveWorld {}').format(self.entity.id))
         self.__onDestroy()
 
     def __onDestroy(self):
@@ -138,7 +136,8 @@ class OwnVehicleBase(BigWorld.DynamicScriptComponent):
             for cd in dualGunState.cooldowns:
                 if cd.endTime > 0 and useEndTime:
                     cooldowns.append(Cooldowns(cd.id, max(0.0, cd.endTime - self._serverTime()), cd.baseTime))
-                cooldowns.append(Cooldowns(cd.id, cd.leftTime, cd.baseTime))
+                else:
+                    cooldowns.append(Cooldowns(cd.id, cd.leftTime, cd.baseTime))
 
             avatar.updateDualGunState(self.entity.id, dualGunState.activeGun, dualGunState.gunStates, cooldowns)
             return
@@ -273,7 +272,7 @@ class OwnVehicleBase(BigWorld.DynamicScriptComponent):
         if not avatar:
             return
         if _DO_LOG:
-            self._doLog('onBattleEvents {}'.format(battleEvents))
+            self._doLog(('onBattleEvents {}').format(battleEvents))
         avatar.onBattleEvents(battleEvents)
 
     def onObservedByEnemy(self, detectionType):
@@ -281,7 +280,7 @@ class OwnVehicleBase(BigWorld.DynamicScriptComponent):
         if not avatar:
             return
         if _DO_LOG:
-            self._doLog('onObservedByEnemy {}'.format(detectionType))
+            self._doLog(('onObservedByEnemy {}').format(detectionType))
         avatar.onObservedByEnemy(self.entity.id, detectionType)
 
     def onSectorShooting(self, sectorID):
@@ -289,7 +288,7 @@ class OwnVehicleBase(BigWorld.DynamicScriptComponent):
         if not avatar:
             return
         if _DO_LOG:
-            self._doLog('onSectorShooting {}'.format(sectorID))
+            self._doLog(('onSectorShooting {}').format(sectorID))
         avatar.onSectorShooting(sectorID)
 
     def stopSetupSelection(self):
@@ -309,7 +308,7 @@ class OwnVehicleBase(BigWorld.DynamicScriptComponent):
         if not avatar:
             return
         if _DO_LOG:
-            self._doLog('showOwnVehicleHitDirection {}'.format(data))
+            self._doLog(('showOwnVehicleHitDirection {}').format(data))
         avatar.showOwnVehicleHitDirection(data.hitDirYaw, data.attackerID, data.damage, data.crits, data.isBlocked, data.isShellHE, data.damagedID, data.attackReasonID)
 
     def redrawVehicleOnRespawn(self, vehicleID, newVehCompactDescr, newVehOutfitCompactDescr):
@@ -324,10 +323,14 @@ class OwnVehicleBase(BigWorld.DynamicScriptComponent):
             vehicle.onHealthChanged(health, health, 0, 0, -1)
 
     def getReloadTime(self):
-        return self.__getTimeLeftBaseTime(self.vehicleGunReloadTime, True) if self.vehicleGunReloadTime else (0, 0)
+        if self.vehicleGunReloadTime:
+            return self.__getTimeLeftBaseTime(self.vehicleGunReloadTime, True)
+        return (0, 0)
 
     def getSiegeStateTimeLeft(self):
-        return self.__getTimeLeft(self.siegeStateStatus, useEndTime=True) if self.siegeStateStatus else 0
+        if self.siegeStateStatus:
+            return self.__getTimeLeft(self.siegeStateStatus, useEndTime=True)
+        return 0
 
     def resetGunReloadTime(self):
         vehicleGunReloadTime = self.vehicleGunReloadTime
@@ -385,12 +388,15 @@ class OwnVehicleBase(BigWorld.DynamicScriptComponent):
         return self.__getVehicleSetting(VEHICLE_SETTING.NEXT_SHELLS)
 
     def __getItemsByType(self, ammoType):
-        return [ ammo for ammo in self.vehicleAmmoList if vehicles.parseIntCompactDescr(ammo.compactDescr)[0] == ammoType ]
+        return [ ammo for ammo in self.vehicleAmmoList if vehicles.parseIntCompactDescr(ammo.compactDescr)[0] == ammoType
+               ]
 
     def __getVehicleSetting(self, code):
         for item in self.vehicleSettings:
             if item.code == code:
                 return item.value
+
+        return -1
 
     def initialUpdate(self, force=False):
         if not force:
@@ -429,7 +435,7 @@ class OwnVehicleBase(BigWorld.DynamicScriptComponent):
 
     def __getattr__(self, item):
         if _DO_LOG:
-            self._doLog('__getAttr {}'.format(item))
+            self._doLog(('__getAttr {}').format(item))
         parts = item.split('_')
         if len(parts) == 2 and (parts[0] == 'set' or parts[0] == 'setNested' or parts[0] == 'setSlice'):
             if hasattr(self, parts[1]):
@@ -445,12 +451,12 @@ class OwnVehicleBase(BigWorld.DynamicScriptComponent):
                         attrFunc = partial(self.__setSlice, func, parts[1])
                     self.__dict__[item] = attrFunc
                     return attrFunc
-        raise AttributeError('OwnVehicle does not have attribute {}'.format(item))
+        raise AttributeError(('OwnVehicle does not have attribute {}').format(item))
         return
 
     def __set(self, func, propname, oldValue=None):
         if _DO_LOG:
-            self._doLog('__set {} {} {}'.format(propname, getattr(self, propname), oldValue))
+            self._doLog(('__set {} {} {}').format(propname, getattr(self, propname), oldValue))
         prop = getattr(self, propname)
         if prop is not None or getattr(func, '__isNoneAccepted', False):
             func(prop)
@@ -458,18 +464,18 @@ class OwnVehicleBase(BigWorld.DynamicScriptComponent):
 
     def __setNested(self, func, propname, changePath, oldValue=None):
         if _DO_LOG:
-            self._doLog('__setNested {} {} {} {}'.format(propname, getattr(self, propname), changePath, oldValue))
+            self._doLog(('__setNested {} {} {} {}').format(propname, getattr(self, propname), changePath, oldValue))
         func(getattr(self, propname)[changePath[0]:changePath[0] + 1])
 
     def __setSlice(self, func, propname, changePath, oldValue=None):
         if _DO_LOG:
-            self._doLog('__setSlice {} {} {} {}'.format(propname, changePath, getattr(self, propname), oldValue))
+            self._doLog(('__setSlice {} {} {} {}').format(propname, changePath, getattr(self, propname), oldValue))
         if oldValue:
             return
         prop = getattr(self, propname)
         if not prop:
             return
-        fromIndex, toIndex = changePath[-1]
+        fromIndex, toIndex = changePath[(-1)]
         func(prop[fromIndex:toIndex])
 
     def _doLog(self, msg):

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/prb_windows/BattleSessionList.py
 import typing
 from adisp import adisp_process
 from constants import PREBATTLE_TYPE
@@ -77,13 +75,13 @@ class BattleSessionList(PrebattlesListWindow, BattleSessionListMeta):
                 startTime = self.__getClanBattleStartTime(bs)
             else:
                 startTime = formatters.getBattleSessionStartTimeString(bs.startTime)
-            result.append({'prbID': bs.prbID,
-             'prbType': bs.prbType,
-             'descr': formatters.getPrebattleFullDescription(bs.description),
-             'opponents': formatters.getPrebattleOpponentsString(bs.description),
-             'startTime': startTime,
-             'unitName': detachment,
-             'vehicleLevel': vehicleLvl})
+            result.append({'prbID': bs.prbID, 
+               'prbType': bs.prbType, 
+               'descr': formatters.getPrebattleFullDescription(bs.description), 
+               'opponents': formatters.getPrebattleOpponentsString(bs.description), 
+               'startTime': startTime, 
+               'unitName': detachment, 
+               'vehicleLevel': vehicleLvl})
 
         self.as_refreshListS(result)
 

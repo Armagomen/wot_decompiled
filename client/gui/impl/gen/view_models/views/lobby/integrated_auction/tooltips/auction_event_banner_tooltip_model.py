@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/integrated_auction/tooltips/auction_event_banner_tooltip_model.py
 from frameworks.wulf import ViewModel
 
 class AuctionEventBannerTooltipModel(ViewModel):

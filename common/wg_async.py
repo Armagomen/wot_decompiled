@@ -1,9 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/wg_async.py
 from future.utils import raise_
-import sys
-import time
-import weakref
+import sys, time, weakref
 from collections import deque
 from soft_exception import SoftException
 import BigWorld
@@ -174,7 +170,8 @@ else:
 
     def delayWhileTickPending(maxTicksToDelay=1, timeout=0.105, minTimeout=0.1, logID=None):
         promise = _Promise()
-        _onDelayWhileTickPendingTimer(0, (logID,
+        _onDelayWhileTickPendingTimer(0, (
+         logID,
          timeout,
          maxTicksToDelay,
          max(0.0, (timeout - minTimeout) / max(maxTicksToDelay - 1, 1)) if minTimeout else 0.0,
@@ -242,7 +239,10 @@ def distributeLoopOverTicks2(loopOperator, maxRuntime=0.01, logID=None, tickLeng
 
 
 def forwardAsFuture(value):
-    return value if type(value) is _Future else _AlwaysReadyFuture(_FulfilledPromiseResult(value, None))
+    if type(value) is _Future:
+        return value
+    else:
+        return _AlwaysReadyFuture(_FulfilledPromiseResult(value, None))
 
 
 class TimeoutError(SoftException):
@@ -254,7 +254,7 @@ class BrokenPromiseError(SoftException):
 
 
 class _AlwaysReadyFuture(object):
-    __slots__ = ('__result',)
+    __slots__ = ('__result', )
 
     def __init__(self, result):
         self.__result = result
@@ -264,7 +264,8 @@ class _AlwaysReadyFuture(object):
 
 
 class _Future(object):
-    __slots__ = ('__promise', '__callback', '__callback_set', '__result', '__result_set', '__timerID', '__expired')
+    __slots__ = ('__promise', '__callback', '__callback_set', '__result', '__result_set',
+                 '__timerID', '__expired')
 
     def __init__(self, promise):
         self.__promise = weakref.proxy(promise)
@@ -294,16 +295,15 @@ class _Future(object):
                 LOG_CURRENT_EXCEPTION()
 
             return
+        self.__cancel_timeout()
+        self.__result_set = True
+        if self.__callback is not None:
+            callback = self.__callback
+            self.__callback = None
+            callback(result)
         else:
-            self.__cancel_timeout()
-            self.__result_set = True
-            if self.__callback is not None:
-                callback = self.__callback
-                self.__callback = None
-                callback(result)
-            else:
-                self.__result = result
-            return
+            self.__result = result
+        return
 
     def then(self, callback):
         self.__callback_set = True
@@ -352,7 +352,8 @@ class _Future(object):
 
 
 class _Promise(object):
-    __slots__ = ('__value_set', '__future_set', '__exc_info', '__value', '__future', '__cancelled', '__cancel', '__weakref__')
+    __slots__ = ('__value_set', '__future_set', '__exc_info', '__value', '__future',
+                 '__cancelled', '__cancel', '__weakref__')
 
     def __init__(self):
         self.__value_set = self.__future_set = False

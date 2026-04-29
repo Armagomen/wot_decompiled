@@ -1,7 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/__init__.py
+from __future__ import absolute_import
 import logging
 from collections import defaultdict
+from future.utils import viewvalues
+from past.builtins import unicode
 import nations
 from constants import IS_DEVELOPMENT, HAS_DEV_RESOURCES
 from gui import promo
@@ -22,8 +23,9 @@ DEPTH_OF_PlayerBonusesPanel = 0.2
 DEPTH_OF_Aim = 0.6
 DEPTH_OF_GunMarker = 0.56
 DEPTH_OF_VehicleMarker = 0.9
-TANKMEN_ROLES_ORDER_DICT = {'plain': ('commander', 'gunner', 'driver', 'radioman', 'loader'),
- 'enum': ('commander', 'gunner1', 'gunner2', 'driver', 'radioman1', 'radioman2', 'loader1', 'loader2')}
+TANKMEN_ROLES_ORDER_DICT = {'plain': ('commander', 'gunner', 'driver', 'radioman', 'loader'), 
+   'enum': ('commander', 'gunner1', 'gunner2', 'driver', 'radioman1', 'radioman2', 'loader1',
+ 'loader2')}
 
 def onRepeatKeyEvent(event):
     safeCopy = frozenset(g_repeatKeyHandlers)
@@ -56,25 +58,32 @@ except AttributeError:
 GUI_NATIONS_ORDER_INDEX = {name:idx for idx, name in enumerate(GUI_NATIONS)}
 GUI_NATIONS_ORDER_INDEX[NONE_NATION_NAME] = nations.NONE_INDEX
 GUI_NATIONS_ORDER_INDEX_REVERSED = {name:idx for idx, name in enumerate(reversed(GUI_NATIONS))}
-GUI_NATIONS_ORDER_INDICES = {nations.INDICES.get(name, nations.NONE_INDEX):idx for name, idx in GUI_NATIONS_ORDER_INDEX.iteritems()}
+GUI_NATIONS_ORDER_INDICES = {nations.INDICES.get(name, nations.NONE_INDEX):idx for name, idx in GUI_NATIONS_ORDER_INDEX.items()}
 
 def nationCompareByName(first, second):
     if second is None:
         return -1
     else:
-        return 1 if first is None else GUI_NATIONS_ORDER_INDEX[first] - GUI_NATIONS_ORDER_INDEX[second]
+        if first is None:
+            return 1
+        return GUI_NATIONS_ORDER_INDEX[first] - GUI_NATIONS_ORDER_INDEX[second]
 
 
 def nationCompareByIndex(first, second):
 
     def getNationName(idx):
-        return nations.NAMES[idx] if idx != nations.NONE_INDEX else NONE_NATION_NAME
+        if idx != nations.NONE_INDEX:
+            return nations.NAMES[idx]
+        return NONE_NATION_NAME
 
     return nationCompareByName(getNationName(first), getNationName(second))
 
 
 def getNationIndex(nationOrderIndex):
-    return nations.INDICES.get(GUI_NATIONS[nationOrderIndex]) if nationOrderIndex < len(GUI_NATIONS) else None
+    if nationOrderIndex < len(GUI_NATIONS):
+        return nations.INDICES.get(GUI_NATIONS[nationOrderIndex])
+    else:
+        return
 
 
 HTML_TEMPLATES_DIR_PATH = 'gui/{0:>s}.xml'
@@ -88,7 +97,7 @@ class HtmlTemplatesCache(defaultdict):
         ns = path[1] if len(path) > 1 else ''
         value = XMLCollection(domain, ns)
         value.load()
-        if isinstance(value, str):
+        if isinstance(value, bytes):
             value = unicode(value)
         self[key] = value
         return value
@@ -98,7 +107,7 @@ g_htmlTemplates = HtmlTemplatesCache()
 if IS_DEVELOPMENT:
 
     def _reload_ht():
-        for collection in g_htmlTemplates.itervalues():
+        for collection in viewvalues(g_htmlTemplates):
             collection.load(clear=True)
 
 

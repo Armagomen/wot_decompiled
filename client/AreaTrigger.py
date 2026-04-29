@@ -1,7 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/AreaTrigger.py
-import BigWorld
-import TriggersManager
+from __future__ import absolute_import
+import BigWorld, TriggersManager
 
 class AreaTrigger(BigWorld.UserDataObject):
 

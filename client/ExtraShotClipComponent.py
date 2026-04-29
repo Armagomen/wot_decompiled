@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/ExtraShotClipComponent.py
+from __future__ import absolute_import
 from constants import ExtraShotClipStates
 from events_handler import eventHandler
 from gui.battle_control.components_states.ammo import DefaultComponentAmmoState, AmmoShootPossibility
@@ -19,11 +18,15 @@ class ExtraShotAmmoState(DefaultComponentAmmoState):
         return self.__reloadState
 
     def isReloadAfterShot(self, timeLeft, baseTime):
-        return self.__reloadState & ExtraShotClipStates.FULL_RELOAD_WITH_EXTRA_TIME if self.__reloadState & ExtraShotClipStates.EXTRA_FULL_RELOAD else timeLeft == baseTime
+        if self.__reloadState & ExtraShotClipStates.EXTRA_FULL_RELOAD:
+            return self.__reloadState & ExtraShotClipStates.FULL_RELOAD_WITH_EXTRA_TIME
+        return timeLeft == baseTime
 
     def getShootPossibility(self, currentShells):
         isShootPossible = currentShells[1] == 1 and self.__reloadState == ExtraShotClipStates.EXTRA_FULL_RELOAD
-        return AmmoShootPossibility.ALLOWED if isShootPossible else AmmoShootPossibility.NOT_DEFINED
+        if isShootPossible:
+            return AmmoShootPossibility.ALLOWED
+        return AmmoShootPossibility.NOT_DEFINED
 
 
 @ReprInjector.withParent()

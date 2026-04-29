@@ -1,10 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/DestructiblesCache.py
 from __future__ import absolute_import, print_function
-import ResMgr
-import BigWorld
-import Math
-import math
+import ResMgr, BigWorld, Math, math
 from constants import TREE_TAG, CUSTOM_DESTRUCTIBLE_TAGS
 import string
 from material_kinds import EFFECT_MATERIALS, EFFECT_MATERIAL_INDEXES_BY_NAMES
@@ -70,7 +65,7 @@ class DestructiblesCache():
             descs.append(desc)
 
         self.__descs = descs
-        self.__descIDs = dict(((desc['filename'], i) for i, desc in enumerate(descs)))
+        self.__descIDs = dict((desc['filename'], i) for i, desc in enumerate(descs))
         ResMgr.purge(DESTRUCTIBLES_CONFIG_FILE, True)
 
     @property
@@ -86,14 +81,20 @@ class DestructiblesCache():
         return self.__projectilePiercingPowerReduction
 
     def getDescByID(self, descID):
-        return self.__descs[descID] if descID < len(self.__descs) else None
+        if descID < len(self.__descs):
+            return self.__descs[descID]
+        else:
+            return
 
     def getDescIDByFilename(self, filename):
         return self.__descIDs.get(filename)
 
     def getDescByFilename(self, filename):
         id = self.getDescIDByFilename(filename)
-        return self.__descs[id] if id is not None else None
+        if id is not None:
+            return self.__descs[id]
+        else:
+            return
 
     def __readStructure(self, structSec):
         filename = structSec.readString('filename')
@@ -138,7 +139,7 @@ class DestructiblesCache():
             normalMat = matkindNMin + i
             matkindsNormal.append(normalMat)
             modules[normalMat] = module
-            map[normalMat] = tuple((ids.index(id) + matkindNMin for id in depends))
+            map[normalMat] = tuple(ids.index(id) + matkindNMin for id in depends)
 
         destroyDepends = {}
         for root in map.iterkeys():
@@ -163,8 +164,7 @@ class DestructiblesCache():
             for mat in depends:
                 inversedDestroyDepends.setdefault(mat, set()).add(keyMat)
 
-        statePresets = {DESTR_STATE_NAME_UNDAMAGED: [],
-         DESTR_STATE_NAME_DESTROYED: matkindsNormal}
+        statePresets = {DESTR_STATE_NAME_UNDAMAGED: [], DESTR_STATE_NAME_DESTROYED: matkindsNormal}
         if structSec.has_key('states'):
             for stateSec in structSec['states'].values():
                 name = stateSec.readString('name').strip()
@@ -180,12 +180,10 @@ class DestructiblesCache():
 
                 statePresets[name] = matKinds
 
-        desc = {'filename': filename,
-         'type': DESTR_TYPE_STRUCTURE,
-         'modules': modules,
-         'destroyDepends': destroyDepends,
-         'inversedDestroyDepends': inversedDestroyDepends,
-         'statePresets': statePresets}
+        desc = {'filename': filename, 'type': DESTR_TYPE_STRUCTURE, 'modules': modules, 
+           'destroyDepends': destroyDepends, 
+           'inversedDestroyDepends': inversedDestroyDepends, 
+           'statePresets': statePresets}
         self.__readAchievementTag(structSec, desc)
         return desc
 
@@ -193,19 +191,18 @@ class DestructiblesCache():
         explosiveSec = fragileSec['explosive']
         if explosiveSec:
             effName = explosiveSec.readString('effects', 'smallArmorPiercing')
-            desc['explosive'] = {'radius': explosiveSec.readFloat('explosionRadius', 0),
-             'armorDamage': explosiveSec.readFloat('damage/armor', 0),
-             'devicesDamage': explosiveSec.readFloat('damage/devices', 0),
-             'effect': items.vehicles.g_cache.shotEffectsIndexes.get(effName),
-             'fireRadius': explosiveSec.readFloat('fireRadius', 0)}
+            desc['explosive'] = {'radius': explosiveSec.readFloat('explosionRadius', 0), 
+               'armorDamage': explosiveSec.readFloat('damage/armor', 0), 
+               'devicesDamage': explosiveSec.readFloat('damage/devices', 0), 
+               'effect': items.vehicles.g_cache.shotEffectsIndexes.get(effName), 
+               'fireRadius': explosiveSec.readFloat('fireRadius', 0)}
 
     def __readFragile(self, fragileSec):
         filename = fragileSec.readString('filename')
         kineticDamageCorrection = fragileSec.readFloat('kineticDamageCorrection', 0.0)
-        desc = {'filename': filename,
-         'health': fragileSec.readInt('health'),
-         'kineticDamageCorrection': kineticDamageCorrection,
-         'type': DESTR_TYPE_FRAGILE}
+        desc = {'filename': filename, 'health': fragileSec.readInt('health'), 
+           'kineticDamageCorrection': kineticDamageCorrection, 
+           'type': DESTR_TYPE_FRAGILE}
         self.__readAchievementTag(fragileSec, desc)
         self.__readExplosive(fragileSec, desc)
         matName = fragileSec.readString('matName')
@@ -230,12 +227,11 @@ class DestructiblesCache():
     def __readTree(self, treeSec):
         filename = treeSec.readString('filename')
         kineticDamageCorrection = treeSec.readFloat('kineticDamageCorrection', 0.0)
-        desc = {'filename': filename,
-         'health': treeSec.readInt('health'),
-         'density': treeSec.readFloat('density'),
-         'kineticDamageCorrection': kineticDamageCorrection,
-         'type': DESTR_TYPE_TREE,
-         'achievementTag': TREE_TAG}
+        desc = {'filename': filename, 'health': treeSec.readInt('health'), 
+           'density': treeSec.readFloat('density'), 
+           'kineticDamageCorrection': kineticDamageCorrection, 
+           'type': DESTR_TYPE_TREE, 
+           'achievementTag': TREE_TAG}
         physParams = _readDestructiblePhysicParams(treeSec)
         desc.update(physParams)
         if IS_CLIENT:
@@ -251,10 +247,9 @@ class DestructiblesCache():
     def __readFallingAtom(self, fallingSec):
         filename = fallingSec.readString('filename')
         kineticDamageCorrection = fallingSec.readFloat('kineticDamageCorrection', 0.0)
-        desc = {'filename': filename,
-         'health': fallingSec.readInt('health'),
-         'kineticDamageCorrection': kineticDamageCorrection,
-         'type': DESTR_TYPE_FALLING_ATOM}
+        desc = {'filename': filename, 'health': fallingSec.readInt('health'), 
+           'kineticDamageCorrection': kineticDamageCorrection, 
+           'type': DESTR_TYPE_FALLING_ATOM}
         self.__readAchievementTag(fallingSec, desc)
         physParams = _readDestructiblePhysicParams(fallingSec)
         desc.update(physParams)
@@ -279,22 +274,23 @@ class DestructiblesCache():
             if tag in CUSTOM_DESTRUCTIBLE_TAGS:
                 desc['achievementTag'] = tag
             else:
-                raise SoftException("Wrong achievement tag '%s' in destructible '%s'" % (tag, section.readString('filename')))
+                raise SoftException("Wrong achievement tag '%s' in destructible '%s'" % (
+                 tag, section.readString('filename')))
 
     def getEffect(self, effectName, effectCategory, needLogErrors=True):
         if not effectName:
             if needLogErrors:
                 LOG_WARNING('Failed to read %s name in %s' % (effectName, effectCategory))
             return
-        elif string.lower(effectName) == 'none':
-            return
-        effects = self.__effects[effectCategory]
-        effect = effects.get(effectName)
-        if effect is None:
-            if needLogErrors:
-                LOG_ERROR('Destructibles effect %s is not found' % effectName)
+        if string.lower(effectName) == 'none':
             return
         else:
+            effects = self.__effects[effectCategory]
+            effect = effects.get(effectName)
+            if effect is None:
+                if needLogErrors:
+                    LOG_ERROR('Destructibles effect %s is not found' % effectName)
+                return
             return effect
 
 
@@ -316,10 +312,7 @@ def _parseMaterialName(matName, filename):
         surface = intern(filter(str.isalpha, arr[1]))
         id = int(arr[2])
         depends = map(int, arr[3:])
-        res = (type,
-         surface,
-         id,
-         depends)
+        res = (type, surface, id, depends)
     except:
         LOG_ERROR('Fail to parse material name %s in structure %s' % (matName, filename))
         res = None
@@ -373,13 +366,13 @@ def _readEffectsTimeLine(section):
 
 def _readDestructiblePhysicParams(section):
     params = _readFloatArray(section['physicParams'], 7)
-    cfg = {'mass': params[0],
-     'height': params[1],
-     'springAngle': params[2],
-     'springStiffnes': params[3],
-     'springResist': params[4],
-     'airResist': params[5],
-     'buryDepth': params[6]}
+    cfg = {'mass': params[0], 
+       'height': params[1], 
+       'springAngle': params[2], 
+       'springStiffnes': params[3], 
+       'springResist': params[4], 
+       'airResist': params[5], 
+       'buryDepth': params[6]}
     return cfg
 
 
@@ -464,7 +457,8 @@ def chunkIDFromChunkIndexes(gridX, gridZ):
 
 
 def chunkIndexesFromChunkID(id):
-    return ((id >> 8) - 127, (id & 255) - 127)
+    return (
+     (id >> 8) - 127, (id & 255) - 127)
 
 
 def areaDestructiblesPositionFromChunkID(chunkID):
@@ -476,7 +470,8 @@ def areaDestructiblesPositionFromChunkID(chunkID):
 
 
 def encodeUint16(value):
-    return (value >> 8 & 255, value & 255)
+    return (
+     value >> 8 & 255, value & 255)
 
 
 def decodeUint16(data):
@@ -488,7 +483,8 @@ def encodeDestructibleModule(destrID, matKind, isShotDamage):
 
 
 def decodeDestructibleModule(data):
-    return (decodeUint16(data[:2]), data[2] >> 1, bool(data[2] & 1))
+    return (
+     decodeUint16(data[:2]), data[2] >> 1, bool(data[2] & 1))
 
 
 def encodeFragile(destrID, isShotDamage):
@@ -496,7 +492,8 @@ def encodeFragile(destrID, isShotDamage):
 
 
 def decodeFragile(data):
-    return (decodeUint16(data[:2]), bool(data[2]))
+    return (
+     decodeUint16(data[:2]), bool(data[2]))
 
 
 def encodeFallenColumn(destrID, fallYaw, fallSpeed):
@@ -523,7 +520,4 @@ def decodeFallenTree(data):
     params = data[4]
     fallYaw = unpackAngleFromUint(params >> 2, 6)
     fallSpeed = float(params & 3)
-    return (destrID,
-     fallYaw,
-     fallPitchConstr,
-     fallSpeed)
+    return (destrID, fallYaw, fallPitchConstr, fallSpeed)

@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/personal_missions.py
-import typing
-import potapov_quests
-import persistent_data_cache_common as pdc
+import typing, potapov_quests, persistent_data_cache_common as pdc
 from quest_xml_source import QuestValidationSerializer
 g_cache = None
 g_operationsCache = None
@@ -39,7 +35,8 @@ class PM3QType(object):
 
 def _createPMCache():
     auxData = {}
-    return (PMCache(auxData), auxData)
+    return (
+     PMCache(auxData), auxData)
 
 
 def init():

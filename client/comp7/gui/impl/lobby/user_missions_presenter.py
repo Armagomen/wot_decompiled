@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/user_missions_presenter.py
 from comp7.gui.Scaleform.genConsts.COMP7_HANGAR_ALIASES import COMP7_HANGAR_ALIASES
 from comp7.gui.impl.lobby.entry_point_presenter import EntryPointPresenter
 from comp7.gui.impl.lobby.user_missions.hangar_widget.overlap_ctrl import Comp7OverlapCtrlMixin
@@ -19,7 +17,8 @@ class _QuestsPresenter(QuestsPresenter, Comp7OverlapCtrlMixin):
 
 
 class _EventBannersPresenter(EventBannersPresenter, Comp7OverlapCtrlMixin):
-    __ALLOWED_EVENT_IDS = (COMP7_HANGAR_ALIASES.COMP7_OLS_ENTRY_POINT,)
+    __ALLOWED_EVENT_IDS = (
+     COMP7_HANGAR_ALIASES.COMP7_OLS_ENTRY_POINT,)
 
     def _getEventEntries(self):
         allEventEntries = super(_EventBannersPresenter, self)._getEventEntries()
@@ -27,10 +26,10 @@ class _EventBannersPresenter(EventBannersPresenter, Comp7OverlapCtrlMixin):
 
 
 class Comp7UserMissionsPresenter(UserMissionsPresenter):
-    _CHILDREN = {R.aliases.user_missions.hangarWidget.BattlePass(): _BattlePassPresenter,
-     R.aliases.user_missions.hangarWidget.Events(): _EventBannersPresenter,
-     R.aliases.user_missions.hangarWidget.Quests(): _QuestsPresenter}
+    _CHILDREN = {R.aliases.user_missions.hangarWidget.BattlePass(): _BattlePassPresenter, 
+       R.aliases.user_missions.hangarWidget.Events(): _EventBannersPresenter, 
+       R.aliases.user_missions.hangarWidget.Quests(): _QuestsPresenter}
 
     def _getChildComponents(self):
-        return {R.aliases.comp7.shared.EntryPoint(): EntryPointPresenter,
-         R.aliases.comp7.shared.WeeklyQuestsWidget(): WeeklyQuestsWidgetPresenter}
+        return {R.aliases.comp7.shared.EntryPoint(): EntryPointPresenter, 
+           R.aliases.comp7.shared.WeeklyQuestsWidget(): WeeklyQuestsWidgetPresenter}

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/ranked_battles_widget.py
-import logging
-import SoundGroups
+import logging, SoundGroups
 from PlayerEvents import g_playerEvents
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import ENABLE_RANKED_ANIMATIONS
@@ -41,7 +38,7 @@ class _RankedWidgetSoundManager(object):
 class RankedBattleResultsWidget(RankedBattlesHangarWidgetMeta):
     rankedController = dependency.descriptor(IRankedBattlesController)
     _soundMgr = _RankedWidgetSoundManager()
-    __slots__ = ('_soundCallerType',)
+    __slots__ = ('_soundCallerType', )
 
     def __init__(self):
         super(RankedBattleResultsWidget, self).__init__()
@@ -100,9 +97,10 @@ class RankedBattleResultsWidget(RankedBattlesHangarWidgetMeta):
                                 states.append(StateBlock(RANKEDBATTLES_ALIASES.FIRST_RANK_RECEIVE_STATE, rankID, nextRankID, None))
                         if nextRank.isInitialForNextDivision() and not nextRank.isQualification():
                             states.append(StateBlock(RANKEDBATTLES_ALIASES.DIVISION_RECEIVE_STATE, rankID, nextRankID, None))
-                    if rankID < maxRankID:
+                    elif rankID < maxRankID:
                         states.append(StateBlock(RANKEDBATTLES_ALIASES.RANK_REACHIVE_STATE, rankID, nextRankID, None))
-                    states.append(StateBlock(RANKEDBATTLES_ALIASES.RANK_RECEIVE_STATE, rankID, nextRankID, None))
+                    else:
+                        states.append(StateBlock(RANKEDBATTLES_ALIASES.RANK_RECEIVE_STATE, rankID, nextRankID, None))
 
                 if lastRank.isInitial() and lastRank.isQualification():
                     states[0] = StateBlock(RANKEDBATTLES_ALIASES.QUAL_DIVISION_FINISHED_STATE, lastRankID, lastRankID + 1, None)
@@ -112,52 +110,54 @@ class RankedBattleResultsWidget(RankedBattlesHangarWidgetMeta):
                 for rankID, prevRankID in zip(reversed(range(currentRankID + 1, lastRankID + 1)), reversed(range(currentRankID, lastRankID))):
                     if ranks[prevRankID].isInitialForNextDivision():
                         states.append(StateBlock(RANKEDBATTLES_ALIASES.FIRST_RANK_LOST_STATE, rankID, prevRankID, None))
-                    states.append(StateBlock(RANKEDBATTLES_ALIASES.RANK_LOST_STATE, rankID, prevRankID, None))
+                    else:
+                        states.append(StateBlock(RANKEDBATTLES_ALIASES.RANK_LOST_STATE, rankID, prevRankID, None))
 
             return states
-        else:
-            shieldStatus = currentRank.getShieldStatus()
-            if shieldStatus is not None:
-                prevShieldHP, shiedHP, maxHP, shieldState, _ = shieldStatus
-                if shieldState == RANKEDBATTLES_ALIASES.SHIELD_ENABLED:
-                    if shiedHP < maxHP:
-                        state = RANKEDBATTLES_ALIASES.ANIM_SHIELD_NOT_FULL
-                    else:
-                        state = RANKEDBATTLES_ALIASES.RANK_IDLE_STATE
-                elif shieldState == RANKEDBATTLES_ALIASES.SHIELD_RENEW:
-                    state = RANKEDBATTLES_ALIASES.ANIM_SHIELD_RENEW
-                elif shieldState == RANKEDBATTLES_ALIASES.SHIELD_FULL_RENEW:
-                    state = RANKEDBATTLES_ALIASES.ANIM_SHIELD_FULL_RENEW
-                elif shieldState == RANKEDBATTLES_ALIASES.SHIELD_LOSE:
-                    if prevShieldHP == maxHP:
-                        state = RANKEDBATTLES_ALIASES.ANIM_SHIELD_LOSE_FROM_FULL
-                    else:
-                        state = RANKEDBATTLES_ALIASES.ANIM_SHIELD_LOSE
-                elif shieldState == RANKEDBATTLES_ALIASES.SHIELD_LOSE_STEP:
-                    if prevShieldHP == maxHP:
-                        state = RANKEDBATTLES_ALIASES.ANIM_SHIELD_LOSE_STEP_FROM_FULL
-                    else:
-                        state = RANKEDBATTLES_ALIASES.ANIM_SHIELD_LOSE_STEP
+        shieldStatus = currentRank.getShieldStatus()
+        if shieldStatus is not None:
+            prevShieldHP, shiedHP, maxHP, shieldState, _ = shieldStatus
+            if shieldState == RANKEDBATTLES_ALIASES.SHIELD_ENABLED:
+                if shiedHP < maxHP:
+                    state = RANKEDBATTLES_ALIASES.ANIM_SHIELD_NOT_FULL
                 else:
                     state = RANKEDBATTLES_ALIASES.RANK_IDLE_STATE
+            elif shieldState == RANKEDBATTLES_ALIASES.SHIELD_RENEW:
+                state = RANKEDBATTLES_ALIASES.ANIM_SHIELD_RENEW
+            elif shieldState == RANKEDBATTLES_ALIASES.SHIELD_FULL_RENEW:
+                state = RANKEDBATTLES_ALIASES.ANIM_SHIELD_FULL_RENEW
+            elif shieldState == RANKEDBATTLES_ALIASES.SHIELD_LOSE:
+                if prevShieldHP == maxHP:
+                    state = RANKEDBATTLES_ALIASES.ANIM_SHIELD_LOSE_FROM_FULL
+                else:
+                    state = RANKEDBATTLES_ALIASES.ANIM_SHIELD_LOSE
+            elif shieldState == RANKEDBATTLES_ALIASES.SHIELD_LOSE_STEP:
+                if prevShieldHP == maxHP:
+                    state = RANKEDBATTLES_ALIASES.ANIM_SHIELD_LOSE_STEP_FROM_FULL
+                else:
+                    state = RANKEDBATTLES_ALIASES.ANIM_SHIELD_LOSE_STEP
             else:
                 state = RANKEDBATTLES_ALIASES.RANK_IDLE_STATE
-            if state == RANKEDBATTLES_ALIASES.RANK_IDLE_STATE:
-                if currentRank.isInitialForNextDivision():
-                    state = RANKEDBATTLES_ALIASES.RANK_INIT_STATE
-                if currentRank.isInitial() and currentRank.isQualification():
-                    state = RANKEDBATTLES_ALIASES.QUAL_IDLE_STATE
-                if state == RANKEDBATTLES_ALIASES.RANK_IDLE_STATE and currentRank.isFinal():
-                    state = RANKEDBATTLES_ALIASES.LEAGUE_UPDATE_STATE
-            states = [StateBlock(state, currentRankID, currentRankID, None)]
-            return states
+        else:
+            state = RANKEDBATTLES_ALIASES.RANK_IDLE_STATE
+        if state == RANKEDBATTLES_ALIASES.RANK_IDLE_STATE:
+            if currentRank.isInitialForNextDivision():
+                state = RANKEDBATTLES_ALIASES.RANK_INIT_STATE
+            if currentRank.isInitial() and currentRank.isQualification():
+                state = RANKEDBATTLES_ALIASES.QUAL_IDLE_STATE
+            if state == RANKEDBATTLES_ALIASES.RANK_IDLE_STATE and currentRank.isFinal():
+                state = RANKEDBATTLES_ALIASES.LEAGUE_UPDATE_STATE
+        states = [
+         StateBlock(state, currentRankID, currentRankID, None)]
+        return states
 
     def __extendWithQualificationStatesSequence(self, statesSequence):
         if not statesSequence:
             _logger.error('There can not be empty statesSequence')
             return statesSequence
         firstBlock = statesSequence[0]
-        if firstBlock.state in (RANKEDBATTLES_ALIASES.QUAL_IDLE_STATE, RANKEDBATTLES_ALIASES.QUAL_DIVISION_FINISHED_STATE):
+        if firstBlock.state in (RANKEDBATTLES_ALIASES.QUAL_IDLE_STATE,
+         RANKEDBATTLES_ALIASES.QUAL_DIVISION_FINISHED_STATE):
             battlesInQualification = self.rankedController.getStatsComposer().amountBattles
             totalQualificationBattles = self.rankedController.getTotalQualificationBattles()
             statesSequence[0] = StateBlock(firstBlock.state, firstBlock.lastID, firstBlock.currentID, getQualAddVOs(battlesInQualification, totalQualificationBattles))
@@ -167,7 +167,7 @@ class RankedBattleResultsWidget(RankedBattlesHangarWidgetMeta):
         if not statesSequence:
             _logger.error('There can not be empty statesSequence')
             return statesSequence
-        lastBlock = statesSequence[-1]
+        lastBlock = statesSequence[(-1)]
         if lastBlock.state in (RANKEDBATTLES_ALIASES.LEAGUE_RECEIVE_STATE, RANKEDBATTLES_ALIASES.LEAGUE_UPDATE_STATE):
             statesSequence.pop()
             statsComposer = self.rankedController.getStatsComposer()

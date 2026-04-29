@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/doc_loaders/battle_royale_settings_loader.py
 from __future__ import absolute_import
 import logging
 from collections import namedtuple
@@ -14,16 +12,22 @@ if typing.TYPE_CHECKING:
 _BATTLE_ROYALE_CONFIG_XML_PATH = 'gui/battle_royale_settings.xml'
 _BATTLE_ROYALE_SETTINGS = None
 _logger = logging.getLogger(__name__)
-ModuleData = namedtuple('ModuleData', ('titleText', 'icon', 'deltaParams', 'priorityParams', 'params', 'constParams'))
-VehicleProperties = namedtuple('VehicleProperties', ('difficulty', 'survivability', 'mobility', 'damage', 'spotting'))
+ModuleData = namedtuple('ModuleData', ('titleText', 'icon', 'deltaParams', 'priorityParams',
+                                       'params', 'constParams'))
+VehicleProperties = namedtuple('VehicleProperties', ('difficulty', 'survivability',
+                                                     'mobility', 'damage', 'spotting'))
 _PriorityParameter = namedtuple('PriorityParameter', ('name', 'type'))
-_BRSettings = namedtuple('_BRSettings', ('radar', 'detector', 'spawn', 'techTree', 'vehicleProperties', 'upgradeAttentionTime', 'observerBotMarkersVisibilityDistance', 'sounds'))
-_SpawnSettings = namedtuple('_SpawnSettings', ('selectEndingSoonTime',))
+_BRSettings = namedtuple('_BRSettings', ('radar', 'detector', 'spawn', 'techTree',
+                                         'vehicleProperties', 'upgradeAttentionTime',
+                                         'observerBotMarkersVisibilityDistance',
+                                         'sounds'))
+_SpawnSettings = namedtuple('_SpawnSettings', ('selectEndingSoonTime', ))
 _SoundsSettings = namedtuple('_SoundsSettings', ('finalEnemiesCount', 'middleAverageLevel'))
 _TechTreeSettings = namedtuple('_TechTreeSettings', ('modules', 'vehicleParams'))
-_MarkerLifetimeSettings = namedtuple('_MarkerLifetimeSettings', ('fadeIn', 'fadeOut', 'lifeTime'))
-_RadarSettings = namedtuple('_RadarSettings', ('marker',))
-_AirdropSettings = namedtuple('_AirdropSettings', ('marker',))
+_MarkerLifetimeSettings = namedtuple('_MarkerLifetimeSettings', ('fadeIn', 'fadeOut',
+                                                                 'lifeTime'))
+_RadarSettings = namedtuple('_RadarSettings', ('marker', ))
+_AirdropSettings = namedtuple('_AirdropSettings', ('marker', ))
 
 def _getModuleText(txtPath):
     treeTxt = R.strings.battle_royale.techtree.dyn(txtPath, None)
@@ -88,7 +92,7 @@ def _readConstModuleParams(section, priorityParams):
             param = value.asString
             if innerTag != 'priority':
                 params[innerTag] = param
-            if param == '1':
+            elif param == '1':
                 isPriority = True
 
         if isPriority:
@@ -125,17 +129,26 @@ def getTreeModuleSettings(vModule):
 
 def getTreeVehicleParams():
     data = getBattleRoyaleSettings().techTree.vehicleParams
-    return None if not data else data
+    if not data:
+        return None
+    else:
+        return data
 
 
 def getTreeModuleHeader(vModule):
     mData = getTreeModuleSettings(vModule)
-    return mData.titleText if mData is not None else ''
+    if mData is not None:
+        return mData.titleText
+    else:
+        return ''
 
 
 def getTreeModuleIcon(vModule):
     data = getTreeModuleSettings(vModule)
-    return data.icon if data is not None else ''
+    if data is not None:
+        return data.icon
+    else:
+        return ''
 
 
 def getVehicleProperties(nationName):

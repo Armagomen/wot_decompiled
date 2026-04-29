@@ -1,10 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/StaticDeathZone.py
-import functools
-import random
-import BigWorld
-import Math
-import Event
+from __future__ import absolute_import
+import functools, random, BigWorld, Math, Event
 from LimitedVisibilityEntity import LimitedVisibilityEntity
 from items import vehicles
 from helpers import dependency
@@ -77,10 +72,13 @@ class StaticDeathZone(LimitedVisibilityEntity):
         if not self.visual:
             return self.position
         else:
-            distances = [self.visual.getClosestPoint(pos, searchRadius)]
+            distances = [
+             self.visual.getClosestPoint(pos, searchRadius)]
             distances.extend([ mask.getClosestPoint(pos, searchRadius) for mask in self.masks ])
             distances = sorted([ value for value in distances if value is not None ], key=lambda value: value[1])
-            return distances[0][0] if distances else None
+            if distances:
+                return distances[0][0]
+            return
 
     def onEntityEnteredInZone(self, entityID):
         if self._marker is not None:
@@ -235,12 +233,12 @@ class _DeathZoneMarkerHandler(object):
         player = BigWorld.player()
         if not player or self._matrix is None:
             return
+        vehicle = player.getVehicleAttached()
+        isVisible = vehicle is not None and vehicle.id not in self._vehiclesInZone and vehicle.health > 0
+        self.setVisible(isVisible)
+        if not isVisible:
+            return
         else:
-            vehicle = player.getVehicleAttached()
-            isVisible = vehicle is not None and vehicle.id not in self._vehiclesInZone and vehicle.health > 0
-            self.setVisible(isVisible)
-            if not isVisible:
-                return
             vehiclePos = vehicle.position
             markerPos = self._zone.getClosestPoint(vehiclePos, self._searchRadius)
             if not markerPos:

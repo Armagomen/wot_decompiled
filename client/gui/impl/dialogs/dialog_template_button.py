@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/dialogs/dialog_template_button.py
+from __future__ import absolute_import
 import typing
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
@@ -9,6 +8,7 @@ from gui.impl.gen import R
 from gui.impl.gen.view_models.views.dialogs.dialog_template_button_view_model import ButtonType
 from gui.impl.gen.view_models.views.dialogs.dialog_template_button_view_model import DialogTemplateButtonViewModel
 from gui.impl.gen.view_models.views.dialogs.custom_sound_button_model import CustomSoundButtonModel
+from gui.impl.gen.view_models.views.dialogs.mono_dialog_template_button_model import MonoDialogTemplateButtonModel, ButtonType as MonoButtonType
 from gui.impl.pub.dialog_window import DialogButtons
 from gui.shared.money import Currency
 from helpers import dependency
@@ -121,7 +121,7 @@ class CustomSoundButtonPresenter(ButtonPresenter):
 
 
 class CheckMoneyButton(ButtonPresenter):
-    __slots__ = ('__money',)
+    __slots__ = ('__money', )
     _itemsCache = dependency.descriptor(IItemsCache)
 
     def __init__(self, money, label=R.strings.dialogs.dialogTemplates.confirm(), buttonID=DialogButtons.SUBMIT, buttonType=ButtonType.PRIMARY, isDisabled=False):
@@ -165,8 +165,29 @@ class CheckMoneyButton(ButtonPresenter):
 
     def __notEnoughMoneyTooltipFactory(self):
         currency = self.shortage.getCurrency()
-        return createBackportTooltipContent(TOOLTIPS_CONSTANTS.NOT_ENOUGH_MONEY, (self.shortage.get(currency), currency))
+        return createBackportTooltipContent(TOOLTIPS_CONSTANTS.NOT_ENOUGH_MONEY, (
+         self.shortage.get(currency), currency))
 
 
 def getConfirmButton(presenter=ButtonPresenter, label=R.strings.dialogs.dialogTemplates.confirm(), buttonID=DialogButtons.SUBMIT, buttonType=ButtonType.PRIMARY, tooltipFactory=None, isBackportTooltip=False, isDisabled=False, *args, **kwargs):
     return presenter(label, buttonID, buttonType, tooltipFactory, isBackportTooltip, isDisabled, *args, **kwargs)
+
+
+class MonoButtonTemplate(object):
+    __slots__ = ('_viewModel', )
+
+    def __init__(self, action, label, soundTarget='Button', buttonType=MonoButtonType.PRIMARY, isDisabled=False):
+        super(MonoButtonTemplate, self).__init__()
+        self._viewModel = self._getViewModel()
+        self._viewModel.setAction(action)
+        self._viewModel.setLabel(label)
+        self._viewModel.setSoundTarget(soundTarget)
+        self._viewModel.setType(buttonType)
+        self._viewModel.setIsDisabled(isDisabled)
+
+    @property
+    def viewModel(self):
+        return self._viewModel
+
+    def _getViewModel(self):
+        return MonoDialogTemplateButtonModel()

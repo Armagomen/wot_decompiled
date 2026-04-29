@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/visual_script/qa_blocks.py
 import BigWorld
 from block import Block, Meta, InitParam, buildStrKeysValue, makeResEditorData
 from slot_types import SLOT_TYPE, arrayOf
@@ -11,15 +9,15 @@ class QAMeta(Meta):
 
     @classmethod
     def blockCategory(cls):
-        pass
+        return 'QA Blocks'
 
     @classmethod
     def blockColor(cls):
-        pass
+        return 10375605
 
     @classmethod
     def blockIcon(cls):
-        pass
+        return ':vse/blocks/debug'
 
     @classmethod
     def mode(cls):
@@ -30,7 +28,7 @@ class TestIdentifier(Block, QAMeta):
 
     def __init__(self, *args, **kwargs):
         super(TestIdentifier, self).__init__(*args, **kwargs)
-        self._nameType = self._getInitParams()
+        self._nameType, = self._getInitParams()
         if self._nameType == 'single id':
             self.inInt = self._makeDataInputSlot('test_id', SLOT_TYPE.INT)
             self.outID = self._makeDataOutputSlot('Identifier', SLOT_TYPE.ID, self._execute)
@@ -44,7 +42,8 @@ class TestIdentifier(Block, QAMeta):
 
     @classmethod
     def initParams(cls):
-        return [InitParam('amount of test IDs', SLOT_TYPE.STR, buildStrKeysValue('single id', 'array of IDs'), EDITOR_TYPE.STR_KEY_SELECTOR)]
+        return [
+         InitParam('amount of test IDs', SLOT_TYPE.STR, buildStrKeysValue('single id', 'array of IDs'), EDITOR_TYPE.STR_KEY_SELECTOR)]
 
 
 class TestSlotPyObjectToArrayVSEBlock(Block, QAMeta):
@@ -95,7 +94,7 @@ class AddTestResult(Block, QAMeta):
         arena = self._arena.getValue()
         arenaInfo = arena.ai.gameMode.arenaInfo
         stats = ArenaTestResultStats.get(arena.ai.aiArena)
-        stats.setTestResult(arenaInfo.aiScenario, ', '.join(arenaInfo.vsePlanNames), self._success.getValue(), self._msg.getValue())
+        stats.setTestResult(arenaInfo.aiScenario, (', ').join(arenaInfo.vsePlanNames), self._success.getValue(), self._msg.getValue())
         stats.publishToInsights()
         stats.reset()
         self._out.call()

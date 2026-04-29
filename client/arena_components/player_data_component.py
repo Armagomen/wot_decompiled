@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/arena_components/player_data_component.py
 from arena_component_system.client_arena_component_system import ClientArenaComponent
-import Event
-import player_ranks
+import Event, player_ranks
 from debug_utils import LOG_DEBUG_DEV
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as BONUS_CAPS
 from gui.battle_control import avatar_getter
@@ -69,7 +66,7 @@ class PlayerDataComponent(ClientArenaComponent):
         arena = avatar_getter.getArena()
         if arena is not None:
             key = 'playerGroup'
-            gameModeStats = dict(((vehID, {key: playerGroup}) for vehID, playerGroup in args.iteritems()))
+            gameModeStats = dict((vehID, {key: playerGroup}) for vehID, playerGroup in args.iteritems())
             arena.updateGameModeSpecificStats(True, gameModeStats)
         self.onPlayerGroupsUpdated(args)
         return
@@ -103,7 +100,7 @@ class PlayerDataComponent(ClientArenaComponent):
             for _, ranksPerTeam in args.iteritems():
                 if playerVehicleId in ranksPerTeam:
                     self.__playerRank = ranksPerTeam[playerVehicleId]
-                gameModeStats = dict(((vehID, {key: rank}) for vehID, rank in ranksPerTeam.iteritems()))
+                gameModeStats = dict((vehID, {key: rank}) for vehID, rank in ranksPerTeam.iteritems())
                 arena.updateGameModeSpecificStats(False, gameModeStats)
 
         return

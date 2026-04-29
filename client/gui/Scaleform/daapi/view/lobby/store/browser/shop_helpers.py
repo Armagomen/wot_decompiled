@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/store/browser/shop_helpers.py
 import typing
 from gui import GUI_SETTINGS
 from gui.Scaleform.daapi.view.lobby.hangar.BrowserView import makeBrowserParams
@@ -136,6 +134,10 @@ def getWotPlusShopUrl():
     return _getUrl('buyWotPlus')
 
 
+def getWotPlusProShopUrl():
+    return _getUrl('buyWotPlusPro')
+
+
 def getIntegratedAuctionUrl():
     return _getUrl('integratedAuction')
 
@@ -145,8 +147,8 @@ def getShowcaseUrl():
 
 
 def getClientControlledCloseCtx():
-    return {'browserParams': makeBrowserParams(isCloseBtnVisible=True),
-     'forcedSkipEscape': True}
+    return {'browserParams': makeBrowserParams(isCloseBtnVisible=True), 
+       'forcedSkipEscape': True}
 
 
 def getSteelHunterProductsUrl():

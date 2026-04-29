@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/crew/common/crew_operations_button_model.py
 from gui.impl.gen.view_models.views.lobby.crew.common.button_model import ButtonModel
 
 class CrewOperationsButtonModel(ButtonModel):

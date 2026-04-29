@@ -1,10 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/vehicle_mechanics/mechanic_widgets/pillbox_siege_widget.py
 from __future__ import absolute_import
 from collections import namedtuple
-import BigWorld
-import typing
-import CommandMapping
+import BigWorld, typing, CommandMapping
 from PillboxSiegeComponent import PillboxSiegeComponent
 from constants import VEHICLE_SIEGE_STATE as PILLBOX_STATES, VEHICLE_MISC_STATUS
 from events_containers.common.containers import ContainersListener
@@ -32,27 +28,34 @@ _HotKeyInfo = namedtuple('_HotKeyInfo', ['affectOn', 'duration'])
 
 class PillboxSiegeMechanicWidget(PillboxSiegeWidgetMeta, ContainersListener, IMechanicStatesListenerLogic, IMechanicCommandsListenerLogic, IVehicleMiscStatusView, IVehicleDeviceStatusView):
     __sessionProvider = dependency.descriptor(IBattleSessionProvider)
-    _PILLBOX_SIEGE_UI_STATES = {(PILLBOX_STATES.DISABLED, PILLBOX_STATES.DISABLED): PILLBOX_SIEGE_WIDGET_CONST.IDLE,
-     (PILLBOX_STATES.ENABLED, PILLBOX_STATES.ENABLED): PILLBOX_SIEGE_WIDGET_CONST.SIEDGE,
-     (PILLBOX_STATES.PILLBOX_ENABLED, PILLBOX_STATES.PILLBOX_ENABLED): PILLBOX_SIEGE_WIDGET_CONST.PILLBOX,
-     (PILLBOX_STATES.DISABLED, PILLBOX_STATES.ENABLED): PILLBOX_SIEGE_WIDGET_CONST.IDLE_TO_SIEDGE,
-     (PILLBOX_STATES.DISABLED, PILLBOX_STATES.PILLBOX_ENABLED): PILLBOX_SIEGE_WIDGET_CONST.IDLE_TO_PILLBOX,
-     (PILLBOX_STATES.ENABLED, PILLBOX_STATES.DISABLED): PILLBOX_SIEGE_WIDGET_CONST.SIEDGE_TO_IDLE,
-     (PILLBOX_STATES.ENABLED, PILLBOX_STATES.PILLBOX_ENABLED): PILLBOX_SIEGE_WIDGET_CONST.SIEDGE_TO_PILLBOX,
-     (PILLBOX_STATES.PILLBOX_ENABLED, PILLBOX_STATES.DISABLED): PILLBOX_SIEGE_WIDGET_CONST.PILLBOX_TO_IDLE,
-     (PILLBOX_STATES.PILLBOX_ENABLED, PILLBOX_STATES.ENABLED): PILLBOX_SIEGE_WIDGET_CONST.PILLBOX_TO_SIEDGE}
-    _PILLBOX_CONDITIONS = {DEVICE_STATE_CRITICAL: PILLBOX_SIEGE_WIDGET_CONST.CONDITION_WARNING,
-     DEVICE_STATE_DESTROYED: PILLBOX_SIEGE_WIDGET_CONST.CONDITION_CRITICAL}
-    _HOT_KEY_MAP = {CommandMapping.CMD_CM_VEHICLE_SWITCH_AUTOROTATION: [HotKeyData(VehicleMechanicCommand.ALTERNATIVE_ACTIVATE.value, True), HotKeyData(VehicleMechanicCommand.ACTIVATE.value, False)]}
-    _HOT_KEY_UI_MAP = {VehicleMechanicCommand.ACTIVATE: _HotKeyInfo(VehicleMechanicCommand.ACTIVATE.value, 0),
-     VehicleMechanicCommand.ALTERNATIVE_ACTIVATE: _HotKeyInfo(VehicleMechanicCommand.ALTERNATIVE_ACTIVATE.value, 0),
-     VehicleMechanicCommand.PREPARING: _HotKeyInfo(VehicleMechanicCommand.ALTERNATIVE_ACTIVATE.value, PillboxSiegeComponent.DURATION),
-     VehicleMechanicCommand.CANCELLED: _HotKeyInfo(VehicleMechanicCommand.ALTERNATIVE_ACTIVATE.value, 0)}
-    _VEHICLE_MISC_OBSERVE = {VEHICLE_MISC_STATUS.VEHICLE_IS_OVERTURNED: (MISC_STATUS_LEVEL_CRITICAL, MISC_STATUS_LEVEL_WARNING),
-     VEHICLE_MISC_STATUS.VEHICLE_DROWN_WARNING: (MISC_STATUS_LEVEL_CRITICAL,)}
-    _VEHICLE_DEVICES_OBSERVE = {'leftTrack0': (DEVICE_STATE_DESTROYED,),
-     'rightTrack0': (DEVICE_STATE_DESTROYED,),
-     'engine': (DEVICE_STATE_CRITICAL, DEVICE_STATE_DESTROYED)}
+    _PILLBOX_SIEGE_UI_STATES = {(PILLBOX_STATES.DISABLED, PILLBOX_STATES.DISABLED): PILLBOX_SIEGE_WIDGET_CONST.IDLE, 
+       (PILLBOX_STATES.ENABLED, PILLBOX_STATES.ENABLED): PILLBOX_SIEGE_WIDGET_CONST.SIEDGE, 
+       (PILLBOX_STATES.PILLBOX_ENABLED, PILLBOX_STATES.PILLBOX_ENABLED): PILLBOX_SIEGE_WIDGET_CONST.PILLBOX, 
+       (PILLBOX_STATES.DISABLED, PILLBOX_STATES.ENABLED): PILLBOX_SIEGE_WIDGET_CONST.IDLE_TO_SIEDGE, 
+       (PILLBOX_STATES.DISABLED, PILLBOX_STATES.PILLBOX_ENABLED): PILLBOX_SIEGE_WIDGET_CONST.IDLE_TO_PILLBOX, 
+       (PILLBOX_STATES.ENABLED, PILLBOX_STATES.DISABLED): PILLBOX_SIEGE_WIDGET_CONST.SIEDGE_TO_IDLE, 
+       (PILLBOX_STATES.ENABLED, PILLBOX_STATES.PILLBOX_ENABLED): PILLBOX_SIEGE_WIDGET_CONST.SIEDGE_TO_PILLBOX, 
+       (PILLBOX_STATES.PILLBOX_ENABLED, PILLBOX_STATES.DISABLED): PILLBOX_SIEGE_WIDGET_CONST.PILLBOX_TO_IDLE, 
+       (PILLBOX_STATES.PILLBOX_ENABLED, PILLBOX_STATES.ENABLED): PILLBOX_SIEGE_WIDGET_CONST.PILLBOX_TO_SIEDGE}
+    _PILLBOX_CONDITIONS = {DEVICE_STATE_CRITICAL: PILLBOX_SIEGE_WIDGET_CONST.CONDITION_WARNING, 
+       DEVICE_STATE_DESTROYED: PILLBOX_SIEGE_WIDGET_CONST.CONDITION_CRITICAL}
+    _HOT_KEY_MAP = {CommandMapping.CMD_CM_VEHICLE_SWITCH_AUTOROTATION: [
+                                                         HotKeyData(VehicleMechanicCommand.ALTERNATIVE_ACTIVATE.value, True),
+                                                         HotKeyData(VehicleMechanicCommand.ACTIVATE.value, False)]}
+    _HOT_KEY_UI_MAP = {VehicleMechanicCommand.ACTIVATE: _HotKeyInfo(VehicleMechanicCommand.ACTIVATE.value, 0), 
+       VehicleMechanicCommand.ALTERNATIVE_ACTIVATE: _HotKeyInfo(VehicleMechanicCommand.ALTERNATIVE_ACTIVATE.value, 0), 
+       VehicleMechanicCommand.PREPARING: _HotKeyInfo(VehicleMechanicCommand.ALTERNATIVE_ACTIVATE.value, PillboxSiegeComponent.DURATION), 
+       VehicleMechanicCommand.CANCELLED: _HotKeyInfo(VehicleMechanicCommand.ALTERNATIVE_ACTIVATE.value, 0)}
+    _VEHICLE_MISC_OBSERVE = {VEHICLE_MISC_STATUS.VEHICLE_IS_OVERTURNED: (
+                                                 MISC_STATUS_LEVEL_CRITICAL, MISC_STATUS_LEVEL_WARNING), 
+       VEHICLE_MISC_STATUS.VEHICLE_DROWN_WARNING: (
+                                                 MISC_STATUS_LEVEL_CRITICAL,)}
+    _VEHICLE_DEVICES_OBSERVE = {'leftTrack0': (
+                    DEVICE_STATE_DESTROYED,), 
+       'rightTrack0': (
+                     DEVICE_STATE_DESTROYED,), 
+       'engine': (
+                DEVICE_STATE_CRITICAL, DEVICE_STATE_DESTROYED)}
 
     def __init__(self):
         super(PillboxSiegeMechanicWidget, self).__init__()
@@ -94,7 +97,8 @@ class PillboxSiegeMechanicWidget(PillboxSiegeWidgetMeta, ContainersListener, IMe
         return
 
     def _getViewUpdaters(self):
-        return [VehicleMechanicPassengerUpdater(VehicleMechanic.PILLBOX_SIEGE_MODE, self),
+        return [
+         VehicleMechanicPassengerUpdater(VehicleMechanic.PILLBOX_SIEGE_MODE, self),
          VehicleMechanicStatesUpdater(VehicleMechanic.PILLBOX_SIEGE_MODE, self),
          VehicleMiscStatusUpdater(self._VEHICLE_MISC_OBSERVE, self),
          VehicleDeviceStatusUpdater(self._VEHICLE_DEVICES_OBSERVE, self),
@@ -102,8 +106,11 @@ class PillboxSiegeMechanicWidget(PillboxSiegeWidgetMeta, ContainersListener, IMe
          HotKeysViewUpdater(list(self._HOT_KEY_MAP.keys()), self)]
 
     def __getDisplayState(self, state):
-        key = (state.state, state.nextState)
-        return self._PILLBOX_SIEGE_UI_STATES[key] if key in self._PILLBOX_SIEGE_UI_STATES else PILLBOX_SIEGE_WIDGET_CONST.IDLE
+        key = (
+         state.state, state.nextState)
+        if key in self._PILLBOX_SIEGE_UI_STATES:
+            return self._PILLBOX_SIEGE_UI_STATES[key]
+        return PILLBOX_SIEGE_WIDGET_CONST.IDLE
 
     def __getCondition(self):
         player = BigWorld.player()
@@ -111,11 +118,13 @@ class PillboxSiegeMechanicWidget(PillboxSiegeWidgetMeta, ContainersListener, IMe
         if player is None or vehicle is None:
             return PILLBOX_SIEGE_WIDGET_CONST.CONDITION_NORMAL
         else:
-            return PILLBOX_SIEGE_WIDGET_CONST.CONDITION_CRITICAL if self.__miscStatuses and self.__miscStatuses.hasNegativeEffect else self._PILLBOX_CONDITIONS.get(self.__devicesStatuses.get('engine'), PILLBOX_SIEGE_WIDGET_CONST.CONDITION_NORMAL)
+            if self.__miscStatuses and self.__miscStatuses.hasNegativeEffect:
+                return PILLBOX_SIEGE_WIDGET_CONST.CONDITION_CRITICAL
+            return self._PILLBOX_CONDITIONS.get(self.__devicesStatuses.get('engine'), PILLBOX_SIEGE_WIDGET_CONST.CONDITION_NORMAL)
 
     def __makeDeviceState(self, deviceName, deviceState):
-        return {'deviceName': VEHICLE_DEVICE_IN_COMPLEX_ITEM.get(deviceName, deviceName),
-         'deviceState': deviceState}
+        return {'deviceName': VEHICLE_DEVICE_IN_COMPLEX_ITEM.get(deviceName, deviceName), 
+           'deviceState': deviceState}
 
     def __invalidateState(self, state, isInstantly=False):
         self.__invalidateProgress(state)

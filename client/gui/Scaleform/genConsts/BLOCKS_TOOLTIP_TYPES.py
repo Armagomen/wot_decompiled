@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/genConsts/BLOCKS_TOOLTIP_TYPES.py
 
 
 class BLOCKS_TOOLTIP_TYPES(object):
@@ -12,6 +10,8 @@ class BLOCKS_TOOLTIP_TYPES(object):
     TOOLTIP_ATLASICON_TEXT_BLOCK_LINKAGE = 'AtlasIconTextBlockUI'
     TOOLTIP_RENDERER_TEXT_BLOCK_LINKAGE = 'RendererTextBlockInBlockUI'
     TOOLTIP_TEXT_PARAMETER_BLOCK_LINKAGE = 'TextParameterBlockUI'
+    TOOLTIP_TEXT_PARAMETER_BLOCK_TWO_COL_LINKAGE = 'TextParameterBlockTwoColUI'
+    TOOLTIP_TEXT_PARAMETER_BLOCK_TWO_COL_WITH_ICON_LINKAGE = 'TextParameterBlockTwoColWithIconUI'
     TOOLTIP_OPT_DEVICE_SLOT_BLOCK = 'OptDeviceSlotBlockUI'
     TOOLTIP_ABILITY_BATTLE_RANK_BLOCK = 'AbilityBattleRanksBlockUI'
     TOOLTIP_ABILITY_BATTLE_RANK_ITEM_BLOCK = 'AbilityBattleRankItemUI'

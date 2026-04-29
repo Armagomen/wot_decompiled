@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_pass/tooltips/battle_pass_in_progress_tooltip_view_model.py
 from enum import Enum
 from frameworks.wulf import ViewModel
 from gui.impl.wrappers.user_list_model import UserListModel
@@ -17,7 +15,7 @@ class ChapterType(Enum):
 class BattlePassInProgressTooltipViewModel(ViewModel):
     __slots__ = ()
 
-    def __init__(self, properties=14, commands=0):
+    def __init__(self, properties=16, commands=0):
         super(BattlePassInProgressTooltipViewModel, self).__init__(properties=properties, commands=commands)
 
     @property
@@ -112,6 +110,18 @@ class BattlePassInProgressTooltipViewModel(ViewModel):
     def setChapterType(self, value):
         self._setString(13, value.value)
 
+    def getIsWotPlusShown(self):
+        return self._getBool(14)
+
+    def setIsWotPlusShown(self, value):
+        self._setBool(14, value)
+
+    def getCustomBattleTypeIcon(self):
+        return self._getString(15)
+
+    def setCustomBattleTypeIcon(self, value):
+        self._setString(15, value)
+
     def _initialize(self):
         super(BattlePassInProgressTooltipViewModel, self)._initialize()
         self._addViewModelProperty('rewardPoints', UserListModel())
@@ -128,3 +138,5 @@ class BattlePassInProgressTooltipViewModel(ViewModel):
         self._addNumberProperty('notChosenRewardCount', 0)
         self._addNumberProperty('expireTime', 0)
         self._addStringProperty('chapterType')
+        self._addBoolProperty('isWotPlusShown', False)
+        self._addStringProperty('customBattleTypeIcon', '')

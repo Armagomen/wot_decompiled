@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/common/personal_reserves/reserves_group_model.py
 from enum import Enum
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.common.personal_reserves.booster_model import BoosterModel

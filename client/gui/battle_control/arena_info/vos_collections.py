@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/arena_info/vos_collections.py
 from gui.shared.sort_key import SortKey
 from gui.battle_control.arena_info.arena_vos import EPIC_RANDOM_KEYS, EPIC_BATTLE_KEYS
 
@@ -26,11 +24,13 @@ class VehicleInfoSortKey(SortKey):
         if result:
             return result
         result = cmp(xvInfoVO.vehicleType, yvInfoVO.vehicleType)
-        return result if result else cmp(xvInfoVO.player, yvInfoVO.player)
+        if result:
+            return result
+        return cmp(xvInfoVO.player, yvInfoVO.player)
 
 
 class SquadmanVehicleInfoSortKey(VehicleInfoSortKey):
-    __slots__ = ('prebattleID',)
+    __slots__ = ('prebattleID', )
 
     def __init__(self, prebattleID, item):
         super(SquadmanVehicleInfoSortKey, self).__init__(item)
@@ -38,7 +38,9 @@ class SquadmanVehicleInfoSortKey(VehicleInfoSortKey):
 
     def _cmp(self, other):
         result = cmp(other.vInfoVO.isSquadMan(self.prebattleID), self.vInfoVO.isSquadMan(self.prebattleID))
-        return result if result else super(SquadmanVehicleInfoSortKey, self)._cmp(other)
+        if result:
+            return result
+        return super(SquadmanVehicleInfoSortKey, self)._cmp(other)
 
 
 class SpawnGroupVehicleInfoSortKey(VehicleInfoSortKey):
@@ -46,7 +48,9 @@ class SpawnGroupVehicleInfoSortKey(VehicleInfoSortKey):
 
     def _cmp(self, other):
         result = cmp(self.vInfoVO.gameModeSpecific.getValue(EPIC_RANDOM_KEYS.PLAYER_GROUP), other.vInfoVO.gameModeSpecific.getValue(EPIC_RANDOM_KEYS.PLAYER_GROUP))
-        return result if result else super(SpawnGroupVehicleInfoSortKey, self)._cmp(other)
+        if result:
+            return result
+        return super(SpawnGroupVehicleInfoSortKey, self)._cmp(other)
 
 
 class RankedVehicleInfoSortKey(VehicleInfoSortKey):
@@ -54,11 +58,13 @@ class RankedVehicleInfoSortKey(VehicleInfoSortKey):
 
     def _cmp(self, other):
         result = cmp(other.vInfoVO.ranked.rank, self.vInfoVO.ranked.rank)
-        return result if result else super(RankedVehicleInfoSortKey, self)._cmp(other)
+        if result:
+            return result
+        return super(RankedVehicleInfoSortKey, self)._cmp(other)
 
 
 class SquadmanSpawnGroupVehicleInfoSortKey(SpawnGroupVehicleInfoSortKey):
-    __slots__ = ('prebattleID',)
+    __slots__ = ('prebattleID', )
 
     def __init__(self, prebattleID, item):
         super(SquadmanSpawnGroupVehicleInfoSortKey, self).__init__(item)
@@ -66,7 +72,9 @@ class SquadmanSpawnGroupVehicleInfoSortKey(SpawnGroupVehicleInfoSortKey):
 
     def _cmp(self, other):
         result = cmp(other.vInfoVO.isSquadMan(self.prebattleID), self.vInfoVO.isSquadMan(self.prebattleID))
-        return result if result else super(SquadmanSpawnGroupVehicleInfoSortKey, self)._cmp(other)
+        if result:
+            return result
+        return super(SquadmanSpawnGroupVehicleInfoSortKey, self)._cmp(other)
 
 
 class FragCorrelationSortKey(VehicleInfoSortKey):
@@ -76,7 +84,9 @@ class FragCorrelationSortKey(VehicleInfoSortKey):
         xvInfoVO = self.vInfoVO
         yvInfoVO = other.vInfoVO
         result = cmp(yvInfoVO.isAlive(), xvInfoVO.isAlive())
-        return result if result else cmp(xvInfoVO.vehicleType.getOrderByClass(), yvInfoVO.vehicleType.getOrderByClass())
+        if result:
+            return result
+        return cmp(xvInfoVO.vehicleType.getOrderByClass(), yvInfoVO.vehicleType.getOrderByClass())
 
 
 class RespawnSortKey(VehicleInfoSortKey):
@@ -94,7 +104,9 @@ class RespawnSortKey(VehicleInfoSortKey):
         if result:
             return result
         result = cmp(xvInfoVO.vehicleType, yvInfoVO.vehicleType)
-        return result if result else cmp(xvInfoVO.player, yvInfoVO.player)
+        if result:
+            return result
+        return cmp(xvInfoVO.player, yvInfoVO.player)
 
 
 class RankSortKey(VehicleInfoSortKey):
@@ -113,7 +125,9 @@ class RankSortKey(VehicleInfoSortKey):
         if result:
             return result
         result = cmp(xvInfoVO.vehicleType, yvInfoVO.vehicleType)
-        return result if result else cmp(xvInfoVO.player, yvInfoVO.player)
+        if result:
+            return result
+        return cmp(xvInfoVO.player, yvInfoVO.player)
 
 
 class EpicRankSortKey(VehicleInfoSortKey):
@@ -138,11 +152,13 @@ class EpicRankSortKey(VehicleInfoSortKey):
             if result:
                 return result
             result = cmp(yvStatsVO.frags, xvStatsVO.frags)
-            return result if result else cmp(xvInfoVO.player, yvInfoVO.player)
+            if result:
+                return result
+            return cmp(xvInfoVO.player, yvInfoVO.player)
 
 
 class _Collection(object):
-    __slots__ = ('_sortKey',)
+    __slots__ = ('_sortKey', )
 
     def __init__(self, sortKey=None):
         super(_Collection, self).__init__()
@@ -180,7 +196,7 @@ class VehiclesInfoCollection(_Collection):
 
 
 class TeamVehiclesInfoCollection(_Collection):
-    __slots__ = ('_team',)
+    __slots__ = ('_team', )
 
     def __init__(self, team, sortKey=None):
         super(TeamVehiclesInfoCollection, self).__init__(sortKey=sortKey)
@@ -225,7 +241,7 @@ class EnemyItemsCollection(VehiclesItemsCollection):
 
 
 class AliveItemsCollection(VehiclesItemsCollection):
-    __slots__ = ('_collection',)
+    __slots__ = ('_collection', )
 
     def __init__(self, collection):
         super(AliveItemsCollection, self).__init__()

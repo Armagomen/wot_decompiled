@@ -1,12 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gameplay/states.py
-import logging
-import enum
-import typing
-import BattleReplay
-import BigWorld
-import persistent_data_cache as pdc
-import wg_async
+import logging, enum, typing, BattleReplay, BigWorld, persistent_data_cache as pdc, wg_async
 from PlayerEvents import g_playerEvents
 from constants import IS_DEVELOPMENT
 from frameworks.state_machine import State, StateFlags, StringEvent
@@ -30,7 +22,7 @@ class SyncingProgress(enum.IntEnum):
 
 
 class WaitingMainLoopState(State):
-    __slots__ = ('_callbackId',)
+    __slots__ = ('_callbackId', )
 
     def __init__(self):
         super(WaitingMainLoopState, self).__init__(GameplayStateID.WAITING_MAIN_LOOP, flags=StateFlags.INITIAL | StateFlags.SINGULAR)

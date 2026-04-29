@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/classic/battle_end_warning_panel.py
+from __future__ import absolute_import
 import WWISE
 from constants import ARENA_PERIOD
 from gui.Scaleform.daapi.view.meta.BattleEndWarningPanelMeta import BattleEndWarningPanelMeta
@@ -41,8 +40,8 @@ class BattleEndWarningPanel(BattleEndWarningPanelMeta, IAbstractPeriodView):
         if not self.isLoaded() or not self._isDAAPIInited():
             return
         minutes, seconds = divmod(int(totalTime), ONE_MINUTE)
-        minutesStr = '{:02d}'.format(minutes)
-        secondsStr = '{:02d}'.format(seconds)
+        minutesStr = ('{:02d}').format(minutes)
+        secondsStr = ('{:02d}').format(seconds)
         if self.__isShown:
             self.as_setTotalTimeS(minutesStr, secondsStr)
         if self.__isAlertTimerInterval(totalTime) and not self.__isShown and self.__warningIsValid:
@@ -62,4 +61,6 @@ class BattleEndWarningPanel(BattleEndWarningPanelMeta, IAbstractPeriodView):
         return self.__appearTime - self.__duration < totalTime <= self.__appearTime
 
     def __validateWarningTime(self):
-        return False if self.__appearTime < self.__duration or self.__appearTime <= 0 or self.__duration <= 0 or self.__appearTime > self.__roundLength or self.__duration > self.__roundLength and self.sessionProvider.arenaVisitor.isBattleEndWarningEnabled() else True
+        if self.__appearTime < self.__duration or self.__appearTime <= 0 or self.__duration <= 0 or self.__appearTime > self.__roundLength or self.__duration > self.__roundLength and self.sessionProvider.arenaVisitor.isBattleEndWarningEnabled():
+            return False
+        return True

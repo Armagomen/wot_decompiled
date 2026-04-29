@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/skill_parameters/formatters.py
 import typing
 from gui.impl import backport
 from gui.impl.backport import getNiceNumberFormat
@@ -33,7 +31,9 @@ def getKpiValue(paramDescrArg, value):
 
 
 def getParamSign(value):
-    return EMPTY_STRING if value == ParamSignType.SIGN_LESS else str(backport.text(R.strings.crew_perks.sign.dyn(value)()))
+    if value == ParamSignType.SIGN_LESS:
+        return EMPTY_STRING
+    return str(backport.text(R.strings.crew_perks.sign.dyn(value)()))
 
 
 def getKpiDescription(paramDescrArg):

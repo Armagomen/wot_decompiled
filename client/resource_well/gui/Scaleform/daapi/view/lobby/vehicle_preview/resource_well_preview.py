@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/gui/Scaleform/daapi/view/lobby/vehicle_preview/resource_well_preview.py
 from __future__ import absolute_import
 from gui.Scaleform.daapi.view.lobby.vehicle_preview.vehicle_preview import VehiclePreview
 from gui.Scaleform.genConsts.VEHPREVIEW_CONSTANTS import VEHPREVIEW_CONSTANTS
@@ -54,8 +52,8 @@ class ResourceWellVehiclePreview(VehiclePreview):
     def _getExitEvent(self):
         exitEvent = super(ResourceWellVehiclePreview, self)._getExitEvent()
         ctx = exitEvent.ctx
-        ctx.update({'numberStyle': self.__numberStyle,
-         'rewardID': self.__rewardID})
+        ctx.update({'numberStyle': self.__numberStyle, 
+           'rewardID': self.__rewardID})
         topPanelData = ctx.get('topPanelData', {})
         if topPanelData:
             appearance = self.__hangarSpace.getVehicleEntityAppearance()

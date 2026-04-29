@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/ranked_battles/ranked_models.py
-import operator
-import typing
+import operator, typing
 from collections import namedtuple
 from gui.impl import backport
 from gui.impl.gen import R
@@ -82,7 +79,9 @@ class RankStep(object):
         self._state = stepState
 
     def __eq__(self, other):
-        return False if self.getID() != other.getID() or self.getState() != other.getState() else True
+        if self.getID() != other.getID() or self.getState() != other.getState():
+            return False
+        return True
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -116,7 +115,9 @@ class RankProgress(object):
         self._steps = steps
 
     def __eq__(self, other):
-        return False if self.getSteps() != other.getSteps() else True
+        if self.getSteps() != other.getSteps():
+            return False
+        return True
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -132,12 +133,15 @@ class RankProgress(object):
 
 
 class Division(object):
-    __slots__ = ('firstRank', 'lastRank', '__divisionID', '__currentRank', '__isFinal', '__rankIDs', '__isQualification', '__isPostQualification')
+    __slots__ = ('firstRank', 'lastRank', '__divisionID', '__currentRank', '__isFinal',
+                 '__rankIDs', '__isQualification', '__isPostQualification')
 
     def __eq__(self, other):
         if self.getID() != other.getID() or self.getRanksIDs() != other.getRanksIDs():
             return False
-        return False if self.isFinal() != other.isFinal() else True
+        if self.isFinal() != other.isFinal():
+            return False
+        return True
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -162,10 +166,15 @@ class Division(object):
         return str(self.getRankUserId(rankID))
 
     def getRankUserId(self, rankID):
-        return rankID - self.firstRank + 1 if rankID in self.getRanksIDs() else None
+        if rankID in self.getRanksIDs():
+            return rankID - self.firstRank + 1
+        else:
+            return
 
     def getUserID(self):
-        return RANKEDBATTLES_ALIASES.DIVISIONS_ORDER[self.__divisionID] if self.__divisionID < len(RANKEDBATTLES_ALIASES.DIVISIONS_ORDER) else ''
+        if self.__divisionID < len(RANKEDBATTLES_ALIASES.DIVISIONS_ORDER):
+            return RANKEDBATTLES_ALIASES.DIVISIONS_ORDER[self.__divisionID]
+        return ''
 
     def getUserName(self):
         return backport.text(R.strings.ranked_battles.division.dyn(self.getUserID())())
@@ -192,12 +201,8 @@ class Division(object):
 
 
 class Rank(object):
-    _ICON_SIZES = {'tiny': '24x24',
-     'small': '58x80',
-     'medium': '80x110',
-     'big': '114x160',
-     'huge': '190x260',
-     'final': '216x300'}
+    _ICON_SIZES = {'tiny': '24x24', 
+       'small': '58x80', 'medium': '80x110', 'big': '114x160', 'huge': '190x260', 'final': '216x300'}
 
     def __init__(self, rankID, rankState, progress=None, division=None, quests=None, shield=None, isUnburnable=False):
         super(Rank, self).__init__()
@@ -215,7 +220,9 @@ class Rank(object):
             return False
         if self.getID() != other.getID() or self.getProgress() != other.getProgress():
             return False
-        return False if self.getShieldStatus() != other.getShieldStatus() or self.getDivision() != other.getDivision() else True
+        if self.getShieldStatus() != other.getShieldStatus() or self.getDivision() != other.getDivision():
+            return False
+        return True
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -271,7 +278,9 @@ class Rank(object):
 
     def getIcon(self, size):
         size = self._ICON_SIZES.get(size, '58x80')
-        return backport.image(R.images.gui.maps.icons.rankedBattles.divisions.num(size).num(self.__division.getID())()) if self.isQualification() else backport.image(R.images.gui.maps.icons.rankedBattles.ranks.num(size).dyn('rank%s_%s' % (self.__division.getID(), self.getUserName()))())
+        if self.isQualification():
+            return backport.image(R.images.gui.maps.icons.rankedBattles.divisions.num(size).num(self.__division.getID())())
+        return backport.image(R.images.gui.maps.icons.rankedBattles.ranks.num(size).dyn('rank%s_%s' % (self.__division.getID(), self.getUserName()))())
 
     def getID(self):
         return self.__rankID
@@ -301,7 +310,10 @@ class Rank(object):
         return self.__division.getRankUserName(self.__rankID)
 
 
-class PostBattleRankInfo(namedtuple('PostBattleRankInfo', ('accRank', 'accStep', 'stepChanges', 'updatedStepChanges', 'prevAccRank', 'prevAccStep', 'prevMaxRank', 'prevMaxStep', 'shields', 'prevShields', 'isBonusBattle', 'stepsBonusBattles', 'efficiencyBonusBattles'))):
+class PostBattleRankInfo(namedtuple('PostBattleRankInfo', ('accRank', 'accStep', 'stepChanges', 'updatedStepChanges',
+                                  'prevAccRank', 'prevAccStep', 'prevMaxRank', 'prevMaxStep',
+                                  'shields', 'prevShields', 'isBonusBattle', 'stepsBonusBattles',
+                                  'efficiencyBonusBattles'))):
     __slots__ = ()
 
     @classmethod
@@ -360,7 +372,7 @@ class RankedDossier(namedtuple('RankedDossier', 'rank, step, vehRankCount, ladde
 
     @staticmethod
     def defaults():
-        pass
+        return (0, 0, 0, 0, 0)
 
 
 class RankedAlertData(AlertData):

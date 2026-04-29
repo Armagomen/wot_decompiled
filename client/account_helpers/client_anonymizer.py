@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/account_helpers/client_anonymizer.py
 import logging
 from functools import partial
 import AccountCommands
@@ -34,7 +32,8 @@ class ClientAnonymizer(object):
         self.__account = account
 
     def setAnonymized(self, anonymized=True, callback=_printResponse):
-        self.__account._doCmdIntArr(AccountCommands.CMD_SET_ANONYMIZER_STATE, [int(anonymized)], lambda requestID, resultID, errorCode: callback(resultID, errorCode))
+        self.__account._doCmdIntArr(AccountCommands.CMD_SET_ANONYMIZER_STATE, [
+         int(anonymized)], lambda requestID, resultID, errorCode: callback(resultID, errorCode))
 
     def synchronize(self, isFullSync, diff):
         _logger.debug('Synchronize Anonymizer')
@@ -48,16 +47,14 @@ class ClientAnonymizer(object):
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, None)
             return
-        else:
-            self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
-            return
+        self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
+        return
 
     def __onGetCacheResponse(self, callback, resultID):
         if resultID < 0:
             if callback is not None:
                 callback(resultID, None)
             return
-        else:
-            if callback is not None:
-                callback(resultID, self.__cache)
-            return
+        if callback is not None:
+            callback(resultID, self.__cache)
+        return

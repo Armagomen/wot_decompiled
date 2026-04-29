@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/maps_blacklist/maps_blacklist_confirm_view.py
-import logging
-import typing
+import logging, typing
 from gui.impl import backport
 from gui.impl.dialogs.dialog_template import DialogTemplateView
 from gui.impl.dialogs.dialog_template_button import CancelButton, ConfirmButton
@@ -50,7 +47,9 @@ class MapsBlacklistDialog(DialogTemplateView):
         super(MapsBlacklistDialog, self)._onLoading(*args, **kwargs)
 
     def _getEvents(self):
-        return ((self._selector.onSelectionChanged, self._onSelectionChanged),)
+        return (
+         (
+          self._selector.onSelectionChanged, self._onSelectionChanged),)
 
     def _setTitle(self, mapAmount, mapName):
         if mapAmount == 0:
@@ -80,4 +79,7 @@ class MapsBlacklistDialog(DialogTemplateView):
             self._confirmButton.isDisabled = False
 
     def _getAdditionalData(self):
-        return None if self._selector.selectedIndex == -1 else self.mapsToReplace[self._selector.selectedIndex]
+        if self._selector.selectedIndex == -1:
+            return None
+        else:
+            return self.mapsToReplace[self._selector.selectedIndex]

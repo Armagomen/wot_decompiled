@@ -1,12 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_results/components/progress.py
-import logging
-import operator
+import logging, operator
 from collections import namedtuple
 from copy import deepcopy
 from itertools import chain
-import typing
-import personal_missions
+import typing, personal_missions
 from battle_pass_common import BattlePassConsts, isPostProgressionChapter
 from constants import EVENT_TYPE
 from gui.Scaleform.daapi.view.lobby.customization.progression_helpers import getC11nProgressionLinkBtnParams, parseEventID, getC11n2dProgressionLinkBtnParams, getProgressiveCustomizationProgress
@@ -64,10 +60,10 @@ def _makeTankmanVO(tman, newSkillEarned, bonusSkillsAmount, avgBattles2NewSkill,
         prediction = _ms(BATTLE_RESULTS.COMMON_NEWSKILLPREDICTION, battles=backport.getIntegralFormat(avgBattles2NewSkill))
     data = {'linkId': tman.invID}
     if newSkillEarned:
-        data.update({'title': _ms(BATTLE_RESULTS.COMMON_CREWMEMBER_NEWSKILL),
-         'prediction': prediction,
-         'linkEvent': PROGRESS_ACTION.NEW_SKILL_UNLOCK_TYPE,
-         'bonusSkillsAmount': bonusSkillsAmount})
+        data.update({'title': _ms(BATTLE_RESULTS.COMMON_CREWMEMBER_NEWSKILL), 
+           'prediction': prediction, 
+           'linkEvent': PROGRESS_ACTION.NEW_SKILL_UNLOCK_TYPE, 
+           'bonusSkillsAmount': bonusSkillsAmount})
     if skinItem is not None:
         data['tankmenIcon'] = Tankman.getCrewSkinIconBig(skinItem.getIconID())
         fullTankmanName = localizedFullName(skinItem)
@@ -79,27 +75,27 @@ def _makeTankmanVO(tman, newSkillEarned, bonusSkillsAmount, avgBattles2NewSkill,
 
 
 def _makeUnlockModuleVO(item, unlockProps):
-    return {'title': _ms(BATTLE_RESULTS.COMMON_FITTING_RESEARCH),
-     'description': text_styles.main(item.userName),
-     'fittingType': item.getGUIEmblemID(),
-     'lvlIcon': getLevelIconPath(item.level),
-     'price': getItemUnlockPricesVO(unlockProps),
-     'linkEvent': PROGRESS_ACTION.RESEARCH_UNLOCK_TYPE,
-     'linkId': unlockProps.parentID}
+    return {'title': _ms(BATTLE_RESULTS.COMMON_FITTING_RESEARCH), 
+       'description': text_styles.main(item.userName), 
+       'fittingType': item.getGUIEmblemID(), 
+       'lvlIcon': getLevelIconPath(item.level), 
+       'price': getItemUnlockPricesVO(unlockProps), 
+       'linkEvent': PROGRESS_ACTION.RESEARCH_UNLOCK_TYPE, 
+       'linkId': unlockProps.parentID}
 
 
 def _makeUnlockVehicleVO(item, unlockProps, avgBattlesTillUnlock):
     prediction = ''
     if avgBattlesTillUnlock > 0:
         prediction = _ms(BATTLE_RESULTS.COMMON_RESEARCHPREDICTION, battles=avgBattlesTillUnlock)
-    return {'title': _ms(BATTLE_RESULTS.COMMON_VEHICLE_RESEARCH),
-     'description': _makeVehicleDescription(item),
-     'vehicleIcon': item.iconSmall,
-     'lvlIcon': getLevelIconPath(item.level),
-     'prediction': prediction,
-     'price': getItemUnlockPricesVO(unlockProps),
-     'linkEvent': PROGRESS_ACTION.RESEARCH_UNLOCK_TYPE,
-     'linkId': unlockProps.parentID}
+    return {'title': _ms(BATTLE_RESULTS.COMMON_VEHICLE_RESEARCH), 
+       'description': _makeVehicleDescription(item), 
+       'vehicleIcon': item.iconSmall, 
+       'lvlIcon': getLevelIconPath(item.level), 
+       'prediction': prediction, 
+       'price': getItemUnlockPricesVO(unlockProps), 
+       'linkEvent': PROGRESS_ACTION.RESEARCH_UNLOCK_TYPE, 
+       'linkId': unlockProps.parentID}
 
 
 class VehicleProgressBlock(base.StatsBlock):
@@ -132,7 +128,9 @@ class VehicleProgressBlock(base.StatsBlock):
             helper.clear()
 
 
-PMComplete = namedtuple('PMComplete', ['isMainComplete', 'isAddComplete'])
+PMComplete = namedtuple('PMComplete', [
+ 'isMainComplete',
+ 'isAddComplete'])
 
 class BattlePassProgressBlock(base.StatsBlock):
     __battlePass = dependency.descriptor(IBattlePassController)
@@ -161,23 +159,24 @@ class BattlePassProgressBlock(base.StatsBlock):
 
     @classmethod
     def __formatBattlePassProgress(cls, progress, level, chapter):
-        return ('', {'awards': cls.__makeProgressAwards(progress, chapter, level),
-          'questInfo': cls.__makeProgressQuestInfo(progress, chapter, level),
-          'questType': EVENT_TYPE.BATTLE_QUEST,
-          'progressList': cls.__makeProgressList(progress, chapter, level),
-          'questState': {'statusState': cls.__getMissionState(progress.isDone(chapterID=chapter))},
-          'linkBtnTooltip': '' if progress.isApplied else backport.text(R.strings.battle_pass.progression.error()),
-          'linkBtnEnabled': progress.isApplied})
+        return (
+         '',
+         {'awards': cls.__makeProgressAwards(progress, chapter, level), 
+            'questInfo': cls.__makeProgressQuestInfo(progress, chapter, level), 
+            'questType': EVENT_TYPE.BATTLE_QUEST, 
+            'progressList': cls.__makeProgressList(progress, chapter, level), 
+            'questState': {'statusState': cls.__getMissionState(progress.isDone(chapterID=chapter))}, 'linkBtnTooltip': '' if progress.isApplied else backport.text(R.strings.battle_pass.progression.error()), 
+            'linkBtnEnabled': progress.isApplied})
 
     @classmethod
     def __formatBattlePassPoints(cls, progress):
-        return ('', {'awards': [],
-          'questInfo': cls.__makePointsInfo(progress),
-          'questType': EVENT_TYPE.BATTLE_QUEST,
-          'progressList': cls.__makePointsList(progress),
-          'questState': {'statusState': MISSIONS_STATES.IN_PROGRESS},
-          'linkBtnTooltip': '' if progress.isApplied else backport.text(R.strings.battle_pass.progression.error()),
-          'linkBtnEnabled': progress.isApplied})
+        return (
+         '',
+         {'awards': [], 'questInfo': cls.__makePointsInfo(progress), 
+            'questType': EVENT_TYPE.BATTLE_QUEST, 
+            'progressList': cls.__makePointsList(progress), 
+            'questState': {'statusState': MISSIONS_STATES.IN_PROGRESS}, 'linkBtnTooltip': '' if progress.isApplied else backport.text(R.strings.battle_pass.progression.error()), 
+            'linkBtnEnabled': progress.isApplied})
 
     @staticmethod
     def __makeProgressAwards(progress, chapter, level):
@@ -194,7 +193,8 @@ class BattlePassProgressBlock(base.StatsBlock):
 
         if awardsList:
             return [ award.getDict() for award in awardsList ]
-        return [makeUnavailableBlockData().getDict()]
+        return [
+         makeUnavailableBlockData().getDict()]
 
     @classmethod
     def __makeProgressQuestInfo(cls, progress, chapterID, level):
@@ -207,41 +207,43 @@ class BattlePassProgressBlock(base.StatsBlock):
         else:
             level %= len(cls.__battlePass.getLevelsConfig(chapterID))
             title = backport.text(_POST_BATTLE_RES.title.postProgression(), level=level + 1)
-        return {'status': cls.__getMissionState(isDone=isProgressDone),
-         'questID': BattlePassConsts.FAKE_QUEST_ID,
-         'rendererType': QUESTS_ALIASES.RENDERER_TYPE_QUEST,
-         'eventType': EVENT_TYPE.BATTLE_QUEST,
-         'maxProgrVal': progress.getMaxLevelPoints(chapterID),
-         'tooltip': TOOLTIPS.QUESTS_RENDERER_LABEL,
-         'description': title,
-         'currentProgrVal': progress.getCurrentLevelPoints(chapterID),
-         'tasksCount': -1,
-         'progrBarType': cls.__getProgressBarType(not progress.isDone(chapterID)),
-         'linkTooltip': TOOLTIPS.QUESTS_LINKBTN_BATTLEPASS if chapterID and not cls.__battlePass.isChapterCompleted(chapterID) else TOOLTIPS.QUESTS_LINKBTN_BATTLEPASS_SELECT}
+        return {'status': cls.__getMissionState(isDone=isProgressDone), 
+           'questID': BattlePassConsts.FAKE_QUEST_ID, 
+           'rendererType': QUESTS_ALIASES.RENDERER_TYPE_QUEST, 
+           'eventType': EVENT_TYPE.BATTLE_QUEST, 
+           'maxProgrVal': progress.getMaxLevelPoints(chapterID), 
+           'tooltip': TOOLTIPS.QUESTS_RENDERER_LABEL, 
+           'description': title, 
+           'currentProgrVal': progress.getCurrentLevelPoints(chapterID), 
+           'tasksCount': -1, 
+           'progrBarType': cls.__getProgressBarType(not progress.isDone(chapterID)), 
+           'linkTooltip': TOOLTIPS.QUESTS_LINKBTN_BATTLEPASS if chapterID and not cls.__battlePass.isChapterCompleted(chapterID) else TOOLTIPS.QUESTS_LINKBTN_BATTLEPASS_SELECT}
 
     @classmethod
     def __makePointsInfo(cls, progress):
         chapterID = progress.previousChapterID
-        return {'status': '',
-         'questID': BattlePassConsts.FAKE_QUEST_ID,
-         'eventType': EVENT_TYPE.BATTLE_QUEST,
-         'description': backport.text(_POST_BATTLE_RES.progress.points()),
-         'progrBarType': formatters.PROGRESS_BAR_TYPE.NONE,
-         'tasksCount': -1,
-         'linkTooltip': TOOLTIPS.QUESTS_LINKBTN_BATTLEPASS if chapterID and not cls.__battlePass.isChapterCompleted(chapterID) else TOOLTIPS.QUESTS_LINKBTN_BATTLEPASS_SELECT}
+        return {'status': '', 
+           'questID': BattlePassConsts.FAKE_QUEST_ID, 
+           'eventType': EVENT_TYPE.BATTLE_QUEST, 
+           'description': backport.text(_POST_BATTLE_RES.progress.points()), 
+           'progrBarType': formatters.PROGRESS_BAR_TYPE.NONE, 
+           'tasksCount': -1, 
+           'linkTooltip': TOOLTIPS.QUESTS_LINKBTN_BATTLEPASS if chapterID and not cls.__battlePass.isChapterCompleted(chapterID) else TOOLTIPS.QUESTS_LINKBTN_BATTLEPASS_SELECT}
 
     @classmethod
     def __makeProgressList(cls, progress, chapter, level):
         isCurrentChapterLevel = level == progress.getCurrentLevel(chapter)
         isMaxChapterLevel = progress.isLevelMax(chapter)
         isFreePoints = progress.pointsAux and not isMaxChapterLevel or isMaxChapterLevel and isCurrentChapterLevel
-        progressLevel = {'description': cls._getDescription(progress),
-         'maxProgrVal': progress.getMaxLevelPoints(chapter),
-         'progressDiff': '+ {}'.format(progress.getPointsDiff(chapter) if not isFreePoints else progress.pointsAux),
-         'progressDiffTooltip': cls._getProgressDiffTooltip(progress, chapter),
-         'currentProgrVal': progress.getCurrentLevelPoints(chapter),
-         'progrBarType': cls.__getProgressBarType(not progress.pointsAux)}
-        return [progressLevel] if not progress.isDone(chapter) or progress.pointsAux and not isMaxChapterLevel or isCurrentChapterLevel else []
+        progressLevel = {'description': cls._getDescription(progress), 
+           'maxProgrVal': progress.getMaxLevelPoints(chapter), 
+           'progressDiff': ('+ {}').format((isFreePoints or progress.getPointsDiff)(chapter) if 1 else progress.pointsAux), 
+           'progressDiffTooltip': cls._getProgressDiffTooltip(progress, chapter), 
+           'currentProgrVal': progress.getCurrentLevelPoints(chapter), 
+           'progrBarType': cls.__getProgressBarType(not progress.pointsAux)}
+        if not progress.isDone(chapter) or progress.pointsAux and not isMaxChapterLevel or isCurrentChapterLevel:
+            return [progressLevel]
+        return []
 
     @classmethod
     def __makePointsList(cls, progress):
@@ -265,17 +267,19 @@ class BattlePassProgressBlock(base.StatsBlock):
 
     @staticmethod
     def __getPointsInfo(description, tooltip, points):
-        pointsInfo = {'description': description,
-         'maxProgrVal': 0,
-         'progressDiff': '+ {}'.format(points),
-         'progressDiffTooltip': tooltip,
-         'currentProgrVal': 0,
-         'progrBarType': formatters.PROGRESS_BAR_TYPE.NONE}
+        pointsInfo = {'description': description, 
+           'maxProgrVal': 0, 
+           'progressDiff': ('+ {}').format(points), 
+           'progressDiffTooltip': tooltip, 
+           'currentProgrVal': 0, 
+           'progrBarType': formatters.PROGRESS_BAR_TYPE.NONE}
         return pointsInfo
 
     @classmethod
     def __getChapterName(cls, chapterID):
-        return backport.text(R.strings.battle_pass.chapter.fullName.num(chapterID)()) if chapterID else ''
+        if chapterID:
+            return backport.text(R.strings.battle_pass.chapter.fullName.num(chapterID)())
+        return ''
 
     @staticmethod
     def _getDescription(progress):
@@ -295,11 +299,15 @@ class BattlePassProgressBlock(base.StatsBlock):
 
     @staticmethod
     def __getMissionState(isDone):
-        return MISSIONS_STATES.COMPLETED if isDone else MISSIONS_STATES.IN_PROGRESS
+        if isDone:
+            return MISSIONS_STATES.COMPLETED
+        return MISSIONS_STATES.IN_PROGRESS
 
     @staticmethod
     def __getProgressBarType(needShow):
-        return formatters.PROGRESS_BAR_TYPE.SIMPLE if needShow else formatters.PROGRESS_BAR_TYPE.NONE
+        if needShow:
+            return formatters.PROGRESS_BAR_TYPE.SIMPLE
+        return formatters.PROGRESS_BAR_TYPE.NONE
 
 
 class QuestsProgressBlock(base.StatsBlock):
@@ -333,15 +341,13 @@ class QuestsProgressBlock(base.StatsBlock):
                 if isC11nQuest(qID):
                     quest = allCommonQuests.get(qID)
                     if quest is not None:
-                        c11nQuests.append((quest,
-                         {pGroupBy: pCur},
-                         {pGroupBy: pPrev},
-                         isCompleted))
-                if qID in allCommonQuests:
+                        c11nQuests.append((
+                         quest, {pGroupBy: pCur}, {pGroupBy: pPrev}, isCompleted))
+                elif qID in allCommonQuests:
                     data = packQuestProgressData(qID, allCommonQuests, qProgress, isCompleted)
                     if data:
                         commonQuests.append(data)
-                if personal_missions.g_cache.isPersonalMission(qID):
+                elif personal_missions.g_cache.isPersonalMission(qID):
                     pqID = personal_missions.g_cache.getPersonalMissionIDByUniqueID(qID)
                     questsCache = self.__eventsCache.getPersonalMissions()
                     quest = questsCache.getAllQuests(personal_missions.PM_BRANCH.ALL)[pqID]
@@ -355,8 +361,9 @@ class QuestsProgressBlock(base.StatsBlock):
                 quest = quests[qID]
                 if quest in personalMissions:
                     personalMissions[quest].update(data)
-                progress = personalMissions.setdefault(quest, {})
-                progress.update(data)
+                else:
+                    progress = personalMissions.setdefault(quest, {})
+                    progress.update(data)
 
         for quest, data in sorted(personalMissions.items(), key=operator.itemgetter(0), cmp=self.__sortPersonalMissions):
             if data.get(quest.getAddQuestID(), False):
@@ -379,10 +386,7 @@ class QuestsProgressBlock(base.StatsBlock):
             if styleID <= 0:
                 continue
             quests = questsByStyle.setdefault(styleID, list())
-            quests.append((e,
-             pCur,
-             pPrev,
-             complete))
+            quests.append((e, pCur, pPrev, complete))
 
         for styleID, quests in questsByStyle.items():
             info = get2dProgressionStylePostBattleInfo(styleID, quests)
@@ -402,7 +406,9 @@ class QuestsProgressBlock(base.StatsBlock):
         if aFullCompleted != bFullCompleted:
             return bFullCompleted - aFullCompleted
         aCompleted, bCompleted = a.isCompleted(), b.isCompleted()
-        return bCompleted - aCompleted if aCompleted != bCompleted else b.getCampaignID() - a.getCampaignID()
+        if aCompleted != bCompleted:
+            return bCompleted - aCompleted
+        return b.getCampaignID() - a.getCampaignID()
 
     @staticmethod
     def __sortCommonQuestsFunc(aData, bData):
@@ -437,12 +443,12 @@ class DogTagsProgressBlock(base.StatsBlock):
 
     @classmethod
     def _formatDogTag(cls, dogTagProgress):
-        return {'title': cls.__getInfoTitle(dogTagProgress),
-         'description': cls.__getInfoDescription(dogTagProgress),
-         'dogTagType': dogTagProgress.dogTagType,
-         'componentId': dogTagProgress.componentId,
-         'imageSrc': dogTagComposer.getComponentImage(dogTagProgress.componentId, dogTagProgress.compGrade),
-         'unlockType': dogTagProgress.unlockType}
+        return {'title': cls.__getInfoTitle(dogTagProgress), 
+           'description': cls.__getInfoDescription(dogTagProgress), 
+           'dogTagType': dogTagProgress.dogTagType, 
+           'componentId': dogTagProgress.componentId, 
+           'imageSrc': dogTagComposer.getComponentImage(dogTagProgress.componentId, dogTagProgress.compGrade), 
+           'unlockType': dogTagProgress.unlockType}
 
     @staticmethod
     def __getInfoTitle(dogTagProgress):
@@ -515,15 +521,18 @@ class PrestigeProgressVO(base.StatsItem):
 
     def _convert(self, result, reusable):
         prestigeProgress = getPrestigeProgress(reusable)
-        return self.__createPrestigeVO(prestigeProgress) if prestigeProgress else None
+        if prestigeProgress:
+            return self.__createPrestigeVO(prestigeProgress)
+        else:
+            return
 
     @staticmethod
     def __createPrestigeVO(prestigeData):
-        return {'vehCD': prestigeData.vehCD,
-         'gradeType': prestigeData.currentGradeType.value,
-         'grade': str(prestigeData.currentGrade),
-         'lvl': str(prestigeData.newLvl),
-         'currentXP': prestigeData.currentXP,
-         'nextLvlXP': prestigeData.currentNextLvlXP,
-         'gainedXP': '+ {}'.format(backport.getIntegralFormat(prestigeData.gainedXP)),
-         'isLvlUp': prestigeData.oldLvl < prestigeData.newLvl}
+        return {'vehCD': prestigeData.vehCD, 
+           'gradeType': prestigeData.currentGradeType.value, 
+           'grade': str(prestigeData.currentGrade), 
+           'lvl': str(prestigeData.newLvl), 
+           'currentXP': prestigeData.currentXP, 
+           'nextLvlXP': prestigeData.currentNextLvlXP, 
+           'gainedXP': ('+ {}').format(backport.getIntegralFormat(prestigeData.gainedXP)), 
+           'isLvlUp': prestigeData.oldLvl < prestigeData.newLvl}

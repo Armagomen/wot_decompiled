@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/integrated_auction/auction_event_banner.py
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import INTEGRATED_AUCTION_FIRST_APPEARANCE_TIMESTAMP, INTEGRATED_AUCTION_INTRO_CLICK_TIMESTAMP
 from gui.Scaleform.daapi.view.lobby.store.browser.shop_helpers import getIntegratedAuctionUrl
@@ -19,7 +17,10 @@ from helpers.time_utils import getServerUTCTime, getTimestampByStrDate
 @dependency.replace_none_kwargs(eventService=IEventsService)
 def isAuctionEventBannerAvailable(eventService=None):
     auctionEntry = eventService.getEntryData(AUCTION_ENTRY_POINT_NAME)
-    return auctionEntry.isValidDateForCreation() if auctionEntry is not None else False
+    if auctionEntry is not None:
+        return auctionEntry.isValidDateForCreation()
+    else:
+        return False
 
 
 class IntegratedAuctionEventBanner(Notifiable, BaseEventBanner):
@@ -41,11 +42,13 @@ class IntegratedAuctionEventBanner(Notifiable, BaseEventBanner):
 
     @property
     def borderColor(self):
-        pass
+        return '#0E80FB'
 
     @property
     def timerValue(self):
-        return self.__timerValue if self.__state == EventBannerState.INACTIVE else 0
+        if self.__state == EventBannerState.INACTIVE:
+            return self.__timerValue
+        return 0
 
     @property
     def playAppearAnim(self):
@@ -53,7 +56,9 @@ class IntegratedAuctionEventBanner(Notifiable, BaseEventBanner):
 
     @property
     def timerText(self):
-        return str(backport.text(R.strings.hangar_event_banners.event.IntegratedAuctionEntryPont.timer.inactive())) if self.__state == EventBannerState.INACTIVE else ''
+        if self.__state == EventBannerState.INACTIVE:
+            return str(backport.text(R.strings.hangar_event_banners.event.IntegratedAuctionEntryPont.timer.inactive()))
+        return ''
 
     def createToolTipContent(self, event):
         return EventBannerTooltip()
@@ -85,7 +90,9 @@ class IntegratedAuctionEventBanner(Notifiable, BaseEventBanner):
 
     def __auctionStart(self):
         start = self.__entry.data.get('auctionStart')
-        return getTimestampByStrDate(start) if start else 0
+        if start:
+            return getTimestampByStrDate(start)
+        return 0
 
     def __timeRemaining(self):
         self.__entry = self.__eventsService.getEntryData(self.NAME)
@@ -95,12 +102,15 @@ class IntegratedAuctionEventBanner(Notifiable, BaseEventBanner):
         self.__entry = self.__eventsService.getEntryData(self.NAME)
         if self.__entry is None or not self.__entry.isValidDateForCreation:
             return (EventBannerState.INACTIVE, -1)
-        elif self.__auctionStart():
-            self.__timerValue = self.__entry.startDate < getServerUTCTime() < self.__auctionStart() and self.__auctionStart() - getServerUTCTime()
-            return (EventBannerState.INACTIVE, self.__timerValue)
         else:
+            if self.__auctionStart() and self.__entry.startDate < getServerUTCTime() < self.__auctionStart():
+                self.__timerValue = self.__auctionStart() - getServerUTCTime()
+                return (
+                 EventBannerState.INACTIVE, self.__timerValue)
             savedClickTime = AccountSettings.getSettings(INTEGRATED_AUCTION_INTRO_CLICK_TIMESTAMP)
-            return (EventBannerState.INTRO, self.__timeRemaining()) if savedClickTime < self.__auctionStart() else (EventBannerState.IN_PROGRESS, self.__timeRemaining())
+            if savedClickTime < self.__auctionStart():
+                return (EventBannerState.INTRO, self.__timeRemaining())
+            return (EventBannerState.IN_PROGRESS, self.__timeRemaining())
 
     def __onUpdate(self, *_):
         if isAuctionEventBannerAvailable():

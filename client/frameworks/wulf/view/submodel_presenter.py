@@ -1,17 +1,16 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/frameworks/wulf/view/submodel_presenter.py
-import typing
+import logging, weakref, typing
 from helpers.events_handler import EventsHandler
 if typing.TYPE_CHECKING:
     from typing import Optional
     from frameworks.wulf import View, ViewEvent, Window
+_logger = logging.getLogger(__name__)
 
 class SubModelPresenter(EventsHandler):
     __slots__ = ('__viewModel', '__isLoaded', '__parentView')
 
     def __init__(self, viewModel, parentView):
         self.__parentView = parentView
-        self.__viewModel = viewModel
+        self.__viewModel = weakref.proxy(viewModel)
         self.__isLoaded = False
 
     @property
@@ -33,6 +32,9 @@ class SubModelPresenter(EventsHandler):
         self.__isLoaded = True
 
     def finalize(self):
+        if not self.__isLoaded:
+            _logger.warning('Try to destroy %r which is not loaded', type(self))
+            return
         self.__isLoaded = False
         self._unsubscribe()
 
@@ -41,19 +43,19 @@ class SubModelPresenter(EventsHandler):
         return
 
     def createToolTipContent(self, event, contentID):
-        return None
+        return
 
     def createPopOverContent(self, event):
-        return None
+        return
 
     def createContextMenuContent(self, event):
-        return None
+        return
 
     def createToolTip(self, event):
-        return None
+        return
 
     def createPopOver(self, event):
-        return None
+        return
 
     def createContextMenu(self, event):
-        return None
+        return

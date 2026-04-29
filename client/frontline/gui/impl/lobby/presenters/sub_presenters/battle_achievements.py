@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/impl/lobby/presenters/sub_presenters/battle_achievements.py
-import typing
-import json
+import typing, json
 from frameworks.wulf import Array
 from frameworks.wulf.view.array import fillViewModelsArray
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
@@ -14,7 +11,8 @@ from frontline.gui.frontline_presenters_packers import getAchievementResultsMode
 if typing.TYPE_CHECKING:
     from frameworks.wulf import ViewModel
     from gui.battle_results.stats_ctrl import BattleResults
-AchievementTooltipType = (TOOLTIPS_CONSTANTS.BATTLE_STATS_MARKS_ON_GUN_ACHIEVEMENT,
+AchievementTooltipType = (
+ TOOLTIPS_CONSTANTS.BATTLE_STATS_MARKS_ON_GUN_ACHIEVEMENT,
  TOOLTIPS_CONSTANTS.MARK_OF_MASTERY,
  TOOLTIPS_CONSTANTS.BATTLE_STATS_ACHIEVS,
  TOOLTIPS_CONSTANTS.FRONTLINE_RANK)

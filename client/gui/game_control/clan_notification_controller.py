@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/clan_notification_controller.py
 import logging
 from constants import ClansConfig
 from Event import Event
@@ -26,7 +24,7 @@ class ClanNotificationController(GameWindowController, IClanNotificationControll
     __appLoader = dependency.descriptor(IAppLoader)
     __clansCtrl = dependency.descriptor(IWebController)
     CLAN_NEWS_ALIAS = 'clanNews'
-    DEPRECATED_ALIASES = ('wgcq_hangar_bubble',)
+    DEPRECATED_ALIASES = ('wgcq_hangar_bubble', )
 
     def __init__(self):
         super(ClanNotificationController, self).__init__()
@@ -39,7 +37,9 @@ class ClanNotificationController(GameWindowController, IClanNotificationControll
 
     def getCounters(self, aliases=None):
         counters = AccountSettings.getCounters(CLAN_NOTIFICATION_COUNTERS)
-        return counters if not aliases else {elem:counters.get(elem, 0) for elem in aliases}
+        if not aliases:
+            return counters
+        return {elem:counters.get(elem, 0) for elem in aliases}
 
     @MethodsRules.delayable('onLobbyInited')
     def setCounters(self, alias, count, isIncrement=False):
@@ -83,14 +83,14 @@ class ClanNotificationController(GameWindowController, IClanNotificationControll
         browserView = self.__getBrowserView()
         if browserView:
             return
-        ctx = {'url': url,
-         'webHandlers': createNotificationWebHandlers(),
-         'browser_alias': VIEW_ALIAS.CLAN_NOTIFICATION_WINDOW,
-         'showCloseBtn': True,
-         'useSpecialKeys': True,
-         'showWaiting': True,
-         'showActionBtn': False,
-         'allowRightClick': True}
+        ctx = {'url': url, 
+           'webHandlers': createNotificationWebHandlers(), 
+           'browser_alias': VIEW_ALIAS.CLAN_NOTIFICATION_WINDOW, 
+           'showCloseBtn': True, 
+           'useSpecialKeys': True, 
+           'showWaiting': True, 
+           'showActionBtn': False, 
+           'allowRightClick': True}
         g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.CLAN_NOTIFICATION_WINDOW), ctx=ctx), scope=EVENT_BUS_SCOPE.LOBBY)
 
     def __getBrowserView(self):

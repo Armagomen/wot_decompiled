@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_results/submodel_presenters/battle_efficiency.py
 import typing
 from frameworks.wulf import Array
 from gui.impl.lobby.tooltips.battle_efficiency_tooltips_views import BattleResultsStatsTooltipView, BattleResultsCriticalDamageTooltipView
@@ -14,17 +12,17 @@ if typing.TYPE_CHECKING:
     from gui.battle_results.stats_ctrl import BattleResults
     from gui.battle_results.reusable.shared import VehicleSummarizeInfo
     from gui.impl.gen.view_models.views.lobby.battle_results.base_capture_info_model import BaseCaptureInfoModel
-EFFICIENCY_ITEMS_TO_PROPERTIES = {DetailedPersonalEfficiencyItemModel.KILLED: 'targetKills',
- DetailedPersonalEfficiencyItemModel.SPOTTED: 'spotted',
- DetailedPersonalEfficiencyItemModel.DAMAGE_DEALT: 'damageDealt',
- DetailedPersonalEfficiencyItemModel.PIERCINGS: 'piercings',
- DetailedPersonalEfficiencyItemModel.STUN: 'damageAssistedStun',
- DetailedPersonalEfficiencyItemModel.STUN_COUNT: 'stunNum',
- DetailedPersonalEfficiencyItemModel.DAMAGE_ASSISTED: 'damageAssisted',
- DetailedPersonalEfficiencyItemModel.CRITICAL_DAMAGE: 'critsCount',
- DetailedPersonalEfficiencyItemModel.DAMAGE_BLOCKED_BY_ARMOR: 'damageBlockedByArmor',
- DetailedPersonalEfficiencyItemModel.RICKOCHETS_RECEIVED: 'rickochetsReceived',
- DetailedPersonalEfficiencyItemModel.NO_DAMAGE_DIRECT_HITS_RECIEVEVD: 'noDamageDirectHitsReceived'}
+EFFICIENCY_ITEMS_TO_PROPERTIES = {DetailedPersonalEfficiencyItemModel.KILLED: 'targetKills', 
+   DetailedPersonalEfficiencyItemModel.SPOTTED: 'spotted', 
+   DetailedPersonalEfficiencyItemModel.DAMAGE_DEALT: 'damageDealt', 
+   DetailedPersonalEfficiencyItemModel.PIERCINGS: 'piercings', 
+   DetailedPersonalEfficiencyItemModel.STUN: 'damageAssistedStun', 
+   DetailedPersonalEfficiencyItemModel.STUN_COUNT: 'stunNum', 
+   DetailedPersonalEfficiencyItemModel.DAMAGE_ASSISTED: 'damageAssisted', 
+   DetailedPersonalEfficiencyItemModel.CRITICAL_DAMAGE: 'critsCount', 
+   DetailedPersonalEfficiencyItemModel.DAMAGE_BLOCKED_BY_ARMOR: 'damageBlockedByArmor', 
+   DetailedPersonalEfficiencyItemModel.RICKOCHETS_RECEIVED: 'rickochetsReceived', 
+   DetailedPersonalEfficiencyItemModel.NO_DAMAGE_DIRECT_HITS_RECIEVEVD: 'noDamageDirectHitsReceived'}
 
 def getEfficiencyParametersToPropertiesMap():
     return EFFICIENCY_ITEMS_TO_PROPERTIES

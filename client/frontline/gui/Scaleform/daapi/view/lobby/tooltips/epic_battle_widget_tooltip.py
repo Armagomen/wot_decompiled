@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/lobby/tooltips/epic_battle_widget_tooltip.py
 from gui.Scaleform.daapi.view.lobby.epicBattle.after_battle_reward_view_helpers import getProgressionIconVODict
 from gui.Scaleform.daapi.view.lobby.epicBattle.epic_helpers import getTimeToEndStr
 from .common_blocks import packEpicBattleInfoBlock, packEpicBattleSeasonBlock
@@ -66,7 +64,8 @@ class EpicBattleWidgetTooltip(BlocksTooltipData):
         tDiff = currentCycle.endDate - time_utils.getCurrentLocalServerTimestamp() if currentCycle is not None else 0
         timeLeft = backport.text(R.strings.epic_battle.tooltips.end()) if tDiff == 0 else text_styles.main(getTimeToEndStr(tDiff))
         items.append(formatters.packTextBlockData(text=text_styles.main(timeLeft), padding=formatters.packPadding(left=20, right=20)))
-        items.append(formatters.packBuildUpBlockData(blocks=[formatters.packBlockDataItem(linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_EPIC_BATTLE_META_LEVEL_BLOCK_LINKAGE, data=getProgressionIconVODict(cycleNumber=cycleNumber, playerLevel=currentLevel), padding=formatters.packPadding(left=-20))], layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_HORIZONTAL, align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER))
+        items.append(formatters.packBuildUpBlockData(blocks=[
+         formatters.packBlockDataItem(linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_EPIC_BATTLE_META_LEVEL_BLOCK_LINKAGE, data=getProgressionIconVODict(cycleNumber=cycleNumber, playerLevel=currentLevel), padding=formatters.packPadding(left=-20))], layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_HORIZONTAL, align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER))
         items.append(self.__packLevelBlock(currentLevel))
         if currentLevel < self.__epicController.getMaxPlayerLevel():
             famePtsToProgress = self.__epicController.getPointsProgressForLevel(currentLevel)
@@ -87,9 +86,7 @@ class EpicBattleWidgetTooltip(BlocksTooltipData):
 
     @staticmethod
     def __getPlayerProgressToLevelBlock(playerFamePts, famePtsToProgress, progressColor='orange'):
-        res = formatters.packBlockDataItem(linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_META_LEVEL_PROGRESS_BLOCK_LINKAGE, data={'progressBarData': {'value': playerFamePts,
-                             'maxValue': famePtsToProgress,
-                             'progressColor': progressColor}}, padding=formatters.packPadding(left=20), blockWidth=280)
+        res = formatters.packBlockDataItem(linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_META_LEVEL_PROGRESS_BLOCK_LINKAGE, data={'progressBarData': {'value': playerFamePts, 'maxValue': famePtsToProgress, 'progressColor': progressColor}}, padding=formatters.packPadding(left=20), blockWidth=280)
         return res
 
     @staticmethod

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/lobby/hangar/fun_random_hangar.py
 from __future__ import absolute_import
 import typing
 from ClientSelectableCameraObject import ClientSelectableCameraObject
@@ -16,7 +14,7 @@ from fun_random.gui.impl.lobby.hangar.presenters.fun_random_vehicle_filters_pres
 from fun_random.gui.impl.lobby.hangar.presenters.fun_random_vehicles_info_presenter import FunRandomVehiclesInfoPresenter
 from fun_random.gui.impl.lobby.hangar.presenters.fun_random_vehicle_inventory_presenter import FunRandomVehicleInventoryPresenter
 from fun_random.gui.impl.lobby.hangar.presenters.fun_random_user_missions_presenter import FunRandomUserMissionsPresenter
-from fun_random.gui.impl.lobby.hangar.presenters.fun_random_vehicle_menu_presenter import FunRandomVehiclesMenuPresenter
+from gui.impl.lobby.hangar.presenters.vehicle_menu_presenter import VehicleMenuPresenter
 from gui.app_loader import app_getter
 from gui.Scaleform.lobby_entry import getLobbyStateMachine
 from gui.game_loading.resources.consts import Milestones
@@ -91,25 +89,25 @@ class FunRandomHangar(ViewComponent[RouterModel], IRoutableView):
         hangar = R.aliases.hangar.shared
         battleModifiersHangar = R.aliases.battle_modifiers.shared
         funRandom = R.aliases.fun_random.shared
-        return {common.DynamicEconomics(): DynamicEconomicsPresenter,
-         hangar.VehiclesInfo(): lambda : FunRandomVehiclesInfoPresenter(self.__vehicleInvFilter),
-         hangar.VehiclesStatistics(): lambda : VehiclesStatisticsPresenter(self.__vehicleInvFilter, self.__accountStyles),
-         hangar.Loadout(): FunRandomLoadoutPresenter,
-         hangar.Crew(): CrewPresenter,
-         hangar.VehicleParams(): HangarVehicleParamsPresenter,
-         hangar.VehiclesInventory(): lambda : FunRandomVehicleInventoryPresenter(self.__vehicleInvFilter),
-         hangar.VehicleFilters(): lambda : FunRandomVehicleFiltersDataProvider(self.__carouselFilter),
-         hangar.MainMenu(): lambda : MainMenuPresenter(getMenuItems()),
-         hangar.VehicleMenu(): FunRandomVehiclesMenuPresenter,
-         hangar.SpaceInteraction(): lambda : SpaceInteractionPresenter(self.__createSelectableLogic()),
-         hangar.Teaser(): TeaserPresenter,
-         hangar.HeroTank(): HeroTankPresenter,
-         hangar.ModeState(): FunRandomModeStatePresenter,
-         hangar.Settings(): lambda : SettingsPresenter(HangarSettingsModel, HANGAR_VIEW_SETTINGS),
-         hangar.KeyBindings(): lambda : SettingsPresenter(KeyBindingsModel, HANGAR_KEY_BINDINGS, readOnly=True),
-         hangar.PetObjectTooltip(): PetObjectTooltipPresenter,
-         battleModifiersHangar.Modifiers(): FunRandomModifiersPresenter,
-         funRandom.UserMissions(): FunRandomUserMissionsPresenter}
+        return {common.DynamicEconomics(): DynamicEconomicsPresenter, 
+           hangar.VehiclesInfo(): lambda : FunRandomVehiclesInfoPresenter(self.__vehicleInvFilter), 
+           hangar.VehiclesStatistics(): lambda : VehiclesStatisticsPresenter(self.__vehicleInvFilter, self.__accountStyles), 
+           hangar.Loadout(): FunRandomLoadoutPresenter, 
+           hangar.Crew(): CrewPresenter, 
+           hangar.VehicleParams(): HangarVehicleParamsPresenter, 
+           hangar.VehiclesInventory(): lambda : FunRandomVehicleInventoryPresenter(self.__vehicleInvFilter), 
+           hangar.VehicleFilters(): lambda : FunRandomVehicleFiltersDataProvider(self.__carouselFilter), 
+           hangar.MainMenu(): lambda : MainMenuPresenter(getMenuItems()), 
+           hangar.VehicleMenu(): VehicleMenuPresenter, 
+           hangar.SpaceInteraction(): lambda : SpaceInteractionPresenter(self.__createSelectableLogic()), 
+           hangar.Teaser(): TeaserPresenter, 
+           hangar.HeroTank(): HeroTankPresenter, 
+           hangar.ModeState(): FunRandomModeStatePresenter, 
+           hangar.Settings(): lambda : SettingsPresenter(HangarSettingsModel, HANGAR_VIEW_SETTINGS), 
+           hangar.KeyBindings(): lambda : SettingsPresenter(KeyBindingsModel, HANGAR_KEY_BINDINGS, readOnly=True), 
+           hangar.PetObjectTooltip(): PetObjectTooltipPresenter, 
+           battleModifiersHangar.Modifiers(): FunRandomModifiersPresenter, 
+           funRandom.UserMissions(): FunRandomUserMissionsPresenter}
 
     def _finalize(self):
         super(FunRandomHangar, self)._finalize()
@@ -145,7 +143,7 @@ class FunRandomHangar(ViewComponent[RouterModel], IRoutableView):
 
     @app_getter
     def __app(self):
-        return None
+        return
 
     def __initializeSubSystems(self):
         lsm = getLobbyStateMachine()

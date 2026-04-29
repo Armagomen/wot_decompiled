@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/web/web_client_api/quests/__init__.py
-import itertools
-import logging
-import sys
-import typing
+import itertools, logging, sys, typing
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.server_events.awards_formatters import AWARDS_SIZES
 from gui.server_events.bonuses import HIDDEN_BONUSES
@@ -36,36 +31,33 @@ class _RawQuestConditionsFormatters(CardBattleConditionsFormatters):
 def _formatQuestConditions(quest):
     formatter = _RawQuestConditionsFormatters()
     conditions = formatter.format(quest)
-    return [ {'description': cond['description'],
-     'title': cond['title'],
-     'type': cond['state'],
-     'icon': sanitizeResPath(cond['icon']),
-     'progress': cond['progress']} for cond in itertools.chain.from_iterable((component['data'] for component in conditions)) ]
+    return [ {'description': cond['description'], 'title': cond['title'], 'type': cond['state'], 'icon': sanitizeResPath(cond['icon']), 'progress': cond['progress']} for cond in itertools.chain.from_iterable(component['data'] for component in conditions)
+           ]
 
 
 def _formatQuestBonuses(quest):
     entries = []
     for bonus in quest.getBonuses():
-        if any((isinstance(bonus, hb) for hb in HIDDEN_BONUSES)):
+        if any(isinstance(bonus, hb) for hb in HIDDEN_BONUSES):
             continue
         for item in bonus.getWrappedEpicBonusList():
             icon = {size:sanitizeResPath(path) for size, path in item.get('icon').iteritems()}
-            entries.append({'id': item.get('id', 0),
-             'type': item['type'],
-             'icon': icon,
-             'value': item.get('value', 0)})
+            entries.append({'id': item.get('id', 0), 
+               'type': item['type'], 
+               'icon': icon, 
+               'value': item.get('value', 0)})
 
     return entries
 
 
 def _questAsDict(quest):
-    return {'id': quest.getID(),
-     'description': quest.getDescription(),
-     'name': quest.getUserName(),
-     'conditions': _formatQuestConditions(quest),
-     'bonuses': _formatQuestBonuses(quest),
-     'is_completed': quest.isCompleted(),
-     'priority': quest.getPriority()}
+    return {'id': quest.getID(), 
+       'description': quest.getDescription(), 
+       'name': quest.getUserName(), 
+       'conditions': _formatQuestConditions(quest), 
+       'bonuses': _formatQuestBonuses(quest), 
+       'is_completed': quest.isCompleted(), 
+       'priority': quest.getPriority()}
 
 
 @w2capi(name='user_data', key='action')
@@ -78,8 +70,7 @@ class QuestsWebApi(W2CSchema):
         tokens = self._eventsCache.questsProgress.getTokensData()
         if hasattr(command, 'ids') and command.ids:
             tokens = {k:v for k, v in tokens.iteritems() if k in command.ids}
-        return {'token_list': tokens,
-         'action': 'get_tokens'}
+        return {'token_list': tokens, 'action': 'get_tokens'}
 
     @w2c(_QuestsSchema, 'get_quests')
     def handleGetQuests(self, command):
@@ -99,10 +90,10 @@ class QuestsWebApi(W2CSchema):
         def _processQuest(progressData, questData):
             data = {}
             if questData is not None:
-                data.update({'startTime': questData.getStartTime(),
-                 'startTimeLeft': questData.getStartTimeLeft(),
-                 'finishTime': questData.getFinishTime(),
-                 'finishTimeLeft': questData.getFinishTimeLeft()})
+                data.update({'startTime': questData.getStartTime(), 
+                   'startTimeLeft': questData.getStartTimeLeft(), 
+                   'finishTime': questData.getFinishTime(), 
+                   'finishTimeLeft': questData.getFinishTimeLeft()})
             data.update(progressData)
             return data
 
@@ -110,8 +101,8 @@ class QuestsWebApi(W2CSchema):
         if hasattr(command, 'ids') and command.ids:
             quests = {k:v for k, v in quests.iteritems() if k in command.ids}
         quests = {k:_processQuest(v, self._eventsCache.getHiddenQuests().get(k)) for k, v in quests.items()}
-        return {'quest_list': quests,
-         'action': 'get_quests'}
+        return {'quest_list': quests, 
+           'action': 'get_quests'}
 
     @w2c(_QuestsSchema, 'get_step')
     def handleGetStep(self, command):
@@ -119,8 +110,8 @@ class QuestsWebApi(W2CSchema):
             marathon = self._marathonsCtrl.getMarathon(command.custom_parameters['prefix'])
             if marathon is not None:
                 currentStep, allSteps = marathon.getMarathonProgress()
-                return {'current_step': currentStep,
-                 'all_steps': allSteps}
+                return {'current_step': currentStep, 
+                   'all_steps': allSteps}
         return
 
     @w2c(_RequestQuestBonusSchema, 'get_quest_descr')
@@ -133,8 +124,7 @@ class QuestsWebApi(W2CSchema):
             questInfo['description'] = questData.getDescription()
             iconKey = questData.getID().replace(questIdBase, '').lstrip('_')
             if iconKey:
-                questInfo['icon'] = {AWARDS_SIZES.BIG: RES_ICONS.get128ConditionIcon(iconKey),
-                 AWARDS_SIZES.SMALL: RES_ICONS.get90ConditionIcon(iconKey)}
+                questInfo['icon'] = {AWARDS_SIZES.BIG: RES_ICONS.get128ConditionIcon(iconKey), AWARDS_SIZES.SMALL: RES_ICONS.get90ConditionIcon(iconKey)}
                 break
         else:
             _logger.warning('Missing icon for quest: %s', questIdBase)

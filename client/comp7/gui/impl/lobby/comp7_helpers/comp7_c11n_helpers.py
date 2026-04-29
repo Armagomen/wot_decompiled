@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/comp7_helpers/comp7_c11n_helpers.py
-import logging
-import typing
+import logging, typing
 from random import shuffle
 from CurrentVehicle import g_currentVehicle
 from comp7.gui.shared.gui_items.dossier.stats import getComp7DossierStats
@@ -37,12 +34,12 @@ def getComp7ProgressionStyleCamouflage(styleID, branch, level, c11nService=None)
     if level >= len(groupItems):
         _logger.error('Wrong progress level [%s] for customization progress group [%s]', level, tokenID)
         return
-    levelItems = groupItems[level]
-    camoID = first(levelItems.get(CustomizationType.CAMOUFLAGE, ()))
-    if camoID is None:
-        _logger.error('Missing camouflage for level [%s] in customization progress group [%s]', level, tokenID)
-        return
     else:
+        levelItems = groupItems[level]
+        camoID = first(levelItems.get(CustomizationType.CAMOUFLAGE, ()))
+        if camoID is None:
+            _logger.error('Missing camouflage for level [%s] in customization progress group [%s]', level, tokenID)
+            return
         return c11nService.getItemByID(GUI_ITEM_TYPE.CAMOUFLAGE, camoID)
 
 
@@ -64,7 +61,9 @@ def getComp7ProgressionStyle(seasonNum=None, comp7Ctrl=None, eventsCache=None, c
                 styleID = cust.get('id')
                 break
 
-        return None if styleID is None else c11n.getItemByID(GUI_ITEM_TYPE.STYLE, styleID)
+        if styleID is None:
+            return
+        return c11n.getItemByID(GUI_ITEM_TYPE.STYLE, styleID)
 
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache, comp7Controller=IComp7Controller)
@@ -119,11 +118,14 @@ def getPreviewOutfit(style, branchID, progressLevel, vehicleCD, itemsFactory=Non
     return itemsFactory.createOutfit(component=outfitComponent, vehicleCD=outfit.vehicleCD)
 
 
-def isC11nItemTokenAttainable(allTokens, item, supportedTypes=(GUI_ITEM_TYPE.EMBLEM, GUI_ITEM_TYPE.INSCRIPTION)):
+def isC11nItemTokenAttainable(allTokens, item, supportedTypes=(
+ GUI_ITEM_TYPE.EMBLEM, GUI_ITEM_TYPE.INSCRIPTION)):
     if item.itemTypeID not in supportedTypes or item.isUnlockingExpired():
         return False
     requiredToken = item.requiredToken
-    return False if not requiredToken or requiredToken in allTokens and allTokens[requiredToken][1] >= item.descriptor.requiredTokenCount else True
+    if not requiredToken or requiredToken in allTokens and allTokens[requiredToken][1] >= item.descriptor.requiredTokenCount:
+        return False
+    return True
 
 
 def getVehicleForStyle(items, criteria, sortKey, style, preferredVeh=None):
@@ -131,22 +133,24 @@ def getVehicleForStyle(items, criteria, sortKey, style, preferredVeh=None):
     styleIsInInventory = style.isInInventory
     if preferredVeh and criteria(preferredVeh) and (styleIsInInventory or preferredVeh.hasStyle(styleID)):
         return (preferredVeh, '')
-    validVehs = list(items.getVehicles(criteria).values())
-    if not validVehs:
-        return (None, 'noValidVehicles')
-    shuffle(validVehs)
-    styledVehs = [ veh for veh in validVehs if veh.hasStyle(styleID) ]
-    if styledVehs:
-        return (max(styledVehs, key=sortKey), '')
     else:
-        return (None, 'allStylesInstalledOnInvalids') if not styleIsInInventory else (max(validVehs, key=sortKey), '')
+        validVehs = list(items.getVehicles(criteria).values())
+        if not validVehs:
+            return (None, 'noValidVehicles')
+        shuffle(validVehs)
+        styledVehs = [ veh for veh in validVehs if veh.hasStyle(styleID) ]
+        if styledVehs:
+            return (max(styledVehs, key=sortKey), '')
+        if not styleIsInInventory:
+            return (None, 'allStylesInstalledOnInvalids')
+        return (max(validVehs, key=sortKey), '')
 
 
 def getMaxLevelAndBattlesVehicleSortKey(items):
     vehRndStats = items.getAccountDossier().getRandomStats().getVehicles()
 
     def maxLevelAndBattlesVehicleSortKey(vehicle):
-        battlesCount = vehRndStats.get(vehicle.intCD, (0,))[0]
+        battlesCount = vehRndStats.get(vehicle.intCD, (0, ))[0]
         return (vehicle.level, battlesCount)
 
     return maxLevelAndBattlesVehicleSortKey

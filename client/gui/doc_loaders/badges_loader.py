@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/doc_loaders/badges_loader.py
 from __future__ import absolute_import
 from typing import TYPE_CHECKING
 import resource_helper
@@ -36,7 +34,7 @@ def _readBadges():
         else:
             layout = value['layout']
             if layout not in BadgeLayouts.ALL():
-                raise SoftException('Invalid badge layout type "{}" is provided'.format(layout))
+                raise SoftException(('Invalid badge layout type "{}" is provided').format(layout))
         value['name'] = item.name
         result[value['id']] = value
 
@@ -57,7 +55,8 @@ def getSelectedByLayout(badgesIDs):
             else:
                 suffixBadge = bID
 
-    return (prefixBadge, suffixBadge)
+    return (
+     prefixBadge, suffixBadge)
 
 
 def getAvailableBadges():

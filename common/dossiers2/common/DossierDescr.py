@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/dossiers2/common/DossierDescr.py
 import struct
 from array import array
 from typing import Dict, Iterable
@@ -14,7 +12,8 @@ class DossierDescr(object):
         self.__blocksOffset = struct.calcsize(headerFormat)
         self.__blocksLayout = [ builder.name for builder in blockBuilders ]
         self.__blocksIndexes = dict([ (name, idx) for idx, name in enumerate(self.__blocksLayout) ])
-        self.__blocksBuilders = dict([ (builder.name, builder) for builder in blockBuilders ])
+        self.__blocksBuilders = dict([ (builder.name, builder) for builder in blockBuilders
+                                     ])
         self.__blocks = {}
         self._dependentUpdates = 0
         self.__popUps = {}
@@ -61,12 +60,12 @@ class DossierDescr(object):
         return self[name].expand()
 
     def addPopUp(self, block, record, value, addLogRecord=True):
-        self.__popUps[block, record] = value
+        self.__popUps[(block, record)] = value
         if addLogRecord:
             self.addLogRecord(block, record, value)
 
     def addLogRecord(self, block, record, value):
-        self.__logRecords[block, record] = value
+        self.__logRecords[(block, record)] = value
 
     def popPopUps(self):
         popUps = self.__popUps

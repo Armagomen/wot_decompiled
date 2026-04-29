@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/vehicle_hub/sub_presenters/research_purchase_sub_presenter.py
 from __future__ import absolute_import
 import typing
 from adisp import adisp_process
@@ -43,17 +41,25 @@ class ResearchPurchaseSubPresenter(SubPresenterBase):
         self.__fillViewModel()
 
     def _getEvents(self):
-        return ((self.viewModel.onAction, self.__onAction),
-         (self.viewModel.onBlueprint, self.__onShowBlueprint),
-         (self._itemsCache.onSyncCompleted, self.__onSyncCompleted),
-         (self._wallet.onWalletStatusChanged, self.__onWalletStatusChanged),
-         (self._restores.onRestoreChangeNotify, self.__onRestoreChanged))
+        return (
+         (
+          self.viewModel.onAction, self.__onAction),
+         (
+          self.viewModel.onBlueprint, self.__onShowBlueprint),
+         (
+          self._itemsCache.onSyncCompleted, self.__onSyncCompleted),
+         (
+          self._wallet.onWalletStatusChanged, self.__onWalletStatusChanged),
+         (
+          self._restores.onRestoreChangeNotify, self.__onRestoreChanged))
 
     def _getListeners(self):
-        return ((VehicleBuyEvent.VEHICLE_SELECTED, self.__onTradeInVehicleToSellSelected, EVENT_BUS_SCOPE.DEFAULT),)
+        return (
+         (
+          VehicleBuyEvent.VEHICLE_SELECTED, self.__onTradeInVehicleToSellSelected, EVENT_BUS_SCOPE.DEFAULT),)
 
     def __fillViewModel(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self.__fillResearchPurchase(model)
 
     def __fillResearchPurchase(self, model):
@@ -174,16 +180,22 @@ class ResearchPurchaseSubPresenter(SubPresenterBase):
         if vehPrice <= 0:
             return (actionState, actionStateReason)
         if not isCurrencyAvailable:
-            return (ResearchPurchaseModel.ACTION_STATE_DISABLED, ResearchPurchaseModel.ACTION_DESC_WALLET_UNAVAILABLE)
+            return (ResearchPurchaseModel.ACTION_STATE_DISABLED,
+             ResearchPurchaseModel.ACTION_DESC_WALLET_UNAVAILABLE)
         if mayObtainForMoney:
             return (actionState, actionStateReason)
         if not isGoldAvailable:
-            return (ResearchPurchaseModel.ACTION_STATE_DISABLED, ResearchPurchaseModel.ACTION_DESC_WALLET_UNAVAILABLE)
+            return (ResearchPurchaseModel.ACTION_STATE_DISABLED,
+             ResearchPurchaseModel.ACTION_DESC_WALLET_UNAVAILABLE)
         if mayObtainWithExchange:
             return (actionState, actionStateReason)
         if currency == Currency.GOLD and isBuyingAvailable:
             return (actionState, actionStateReason)
-        return (ResearchPurchaseModel.ACTION_STATE_DISABLED, ResearchPurchaseModel.ACTION_DESC_RESTORE_REQUESTED) if info and info.isInCooldown() else (ResearchPurchaseModel.ACTION_STATE_DISABLED, ResearchPurchaseModel.ACTION_DESC_NOT_ENOUGH_CREDITS)
+        if info and info.isInCooldown():
+            return (ResearchPurchaseModel.ACTION_STATE_DISABLED,
+             ResearchPurchaseModel.ACTION_DESC_RESTORE_REQUESTED)
+        return (ResearchPurchaseModel.ACTION_STATE_DISABLED,
+         ResearchPurchaseModel.ACTION_DESC_NOT_ENOUGH_CREDITS)
 
     def __walletAvailableForCurrency(self, currency):
         return self._wallet.componentsStatuses.get(currency) == self._wallet.STATUS.AVAILABLE
@@ -199,7 +211,7 @@ class ResearchPurchaseSubPresenter(SubPresenterBase):
             _, bestActionID = min(actions, key=lambda elem: elem[0])
             return self._eventsCache.getActions().get(bestActionID)
         else:
-            return None
+            return
 
     @args2params(str)
     def __onAction(self, action):
@@ -207,7 +219,8 @@ class ResearchPurchaseSubPresenter(SubPresenterBase):
         if action == ResearchPurchaseModel.ACTION_RESEARCH:
             unlockProps = g_techTreeDP.getUnlockProps(veh.intCD, veh.level)
             factory.doAction(factory.UNLOCK_ITEM, veh.intCD, unlockProps)
-        elif action in (ResearchPurchaseModel.ACTION_PURCHASE, ResearchPurchaseModel.ACTION_RESTORE, ResearchPurchaseModel.ACTION_READY_FOR_TRADE_IN):
+        elif action in (ResearchPurchaseModel.ACTION_PURCHASE, ResearchPurchaseModel.ACTION_RESTORE,
+         ResearchPurchaseModel.ACTION_READY_FOR_TRADE_IN):
             factory.doAction(factory.BUY_VEHICLE, self.currentVehicle.intCD)
         elif action == ResearchPurchaseModel.ACTION_PURCHASE_SHOP:
             self.__purchaseHeroTank()

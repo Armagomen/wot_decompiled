@@ -1,11 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/abilities/dynamic_cache_loader.py
-import logging
-import BigWorld
-import NetworkComponents
-import Math
-import CGF
-import ResMgr
+import logging, BigWorld, NetworkComponents, Math, CGF, ResMgr
 from constants import IS_CLIENT
 from helpers import dependency
 from helpers.EffectsList import effectsFromSection
@@ -25,7 +18,7 @@ else:
 _logger = logging.getLogger(__name__)
 
 def _getTrapOrRepairPointDescr(equipmentID):
-    print vehicles.g_cache.equipments()
+    _logger.info(vehicles.g_cache.equipments())
     return vehicles.g_cache.equipments()[equipmentID].influenceZone
 
 
@@ -35,7 +28,9 @@ def _getPlayerVehicleImpl(who):
         return
     else:
         playerEntityImpl = playerEntityRef.implementation
-        return None if not isinstance(playerEntityImpl, Vehicle.Vehicle) else playerEntityImpl
+        if not isinstance(playerEntityImpl, Vehicle.Vehicle):
+            return
+        return playerEntityImpl
 
 
 class DynamicObjectsCacheLoader(object):
@@ -115,7 +110,8 @@ class DynamicObjectsCacheLoader(object):
             else:
                 zoneHeight = pointDescr.height
                 zoneDepth = pointDescr.depth
-            scale = (x, zoneHeight + zoneDepth, z)
+            scale = (
+             x, zoneHeight + zoneDepth, z)
             from battleground.components import SequenceComponent
             yShift = -zoneDepth
             position = position + Math.Vector3(0, yShift, 0)
@@ -134,7 +130,9 @@ class DynamicObjectsCacheLoader(object):
         if not pointEffect:
             return None
         else:
-            return pointEffect.ally if self.guiSessionProvider.getArenaDP().isAllyTeam(self.team) else pointEffect.enemy
+            if self.guiSessionProvider.getArenaDP().isAllyTeam(self.team):
+                return pointEffect.ally
+            return pointEffect.enemy
 
     def _onUpdateObservedVehicleData(self, vehicleID, *args):
         self.deactivate()

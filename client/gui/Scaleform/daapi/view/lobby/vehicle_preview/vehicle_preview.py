@@ -1,9 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/vehicle_preview.py
 import itertools
 from copy import deepcopy
-import BigWorld
-import SoundGroups
+import BigWorld, SoundGroups
 from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
 from HeroTank import HeroTank
 from account_helpers import AccountSettings
@@ -33,7 +30,6 @@ from gui.impl import backport
 from gui.impl.gen import R
 from gui.impl.lobby.battle_results.states import PostBattleResultsEntryState
 from gui.impl.lobby.hangar.buy_vehicle_view import BuyVehicleWindow
-from gui.impl.lobby.common.view_mixins import HeaderMenuVisibilityState, LobbyHeaderVisibilityAction, LobbyHeaderState
 from gui.prb_control.dispatcher import g_prbLoader
 from gui.shared import EVENT_BUS_SCOPE, event_bus_handlers, event_dispatcher, events, g_eventBus
 from gui.shared.formatters import getRoleTextWithIcon, text_styles
@@ -53,40 +49,37 @@ from uilogging.shop.loggers import getPreviewUILoggers
 from uilogging.shop.logging_constants import ShopCloseItemStates
 from web.web_client_api.common import ItemPackEntry, ItemPackType, ItemPackTypeGroup
 from gui.shared.events import ViewEventType
-VEHICLE_PREVIEW_ALIASES = {VIEW_ALIAS.VEHICLE_PREVIEW,
- VIEW_ALIAS.HERO_VEHICLE_PREVIEW,
- VIEW_ALIAS.OFFER_GIFT_VEHICLE_PREVIEW,
- VIEW_ALIAS.TRADE_IN_VEHICLE_PREVIEW,
- VIEW_ALIAS.MARATHON_VEHICLE_PREVIEW,
- VIEW_ALIAS.CONFIGURABLE_VEHICLE_PREVIEW,
- VIEW_ALIAS.RENTAL_VEHICLE_PREVIEW,
- VIEW_ALIAS.RESOURCE_WELL_VEHICLE_PREVIEW}
-_BACK_BTN_LABELS = {VIEW_ALIAS.LOBBY_HANGAR: 'hangar',
- VIEW_ALIAS.LEGACY_LOBBY_HANGAR: 'hangar',
- VIEW_ALIAS.LOBBY_STORE: 'shop',
- VIEW_ALIAS.LOBBY_STORAGE: 'storage',
- VIEW_ALIAS.LOBBY_RESEARCH: 'researchTree',
- VIEW_ALIAS.LOBBY_TECHTREE: 'researchTree',
- VIEW_ALIAS.VEHICLE_COMPARE: 'vehicleCompare',
- VIEW_ALIAS.REFERRAL_PROGRAM_WINDOW: 'referralProgram',
- VIEW_ALIAS.EPIC_BATTLE_PAGE: 'frontline',
- VIEW_ALIAS.RANKED_BATTLE_PAGE: 'ranked',
- VIEW_ALIAS.ADVENT_CALENDAR: 'adventCalendar',
- VIEW_ALIAS.VEH_POST_PROGRESSION: 'vehPostProgression',
- PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSIONS_AWARDS_VIEW_ALIAS: 'personalAwards',
- VIEW_ALIAS.RENTAL_VEHICLE_PREVIEW: None,
- VIEW_ALIAS.CONFIGURABLE_VEHICLE_PREVIEW: None,
- VIEW_ALIAS.RESOURCE_WELL_VEHICLE_PREVIEW: 'resourceWell'}
-_TABS_DATA = ({'id': VEHPREVIEW_CONSTANTS.BROWSE_LINKAGE,
-  'label': VEHICLE_PREVIEW.INFOPANEL_TAB_BROWSE_NAME,
-  'linkage': VEHPREVIEW_CONSTANTS.BROWSE_LINKAGE,
-  'viewId': VEHPREVIEW_CONSTANTS.BROWSE_LINKAGE}, {'id': VEHPREVIEW_CONSTANTS.MODULES_LINKAGE,
-  'label': VEHICLE_PREVIEW.INFOPANEL_TAB_MODULES_NAME,
-  'linkage': VEHPREVIEW_CONSTANTS.MODULES_LINKAGE,
-  'viewId': VEHPREVIEW_CONSTANTS.MODULES_LINKAGE}, {'id': VEHPREVIEW_CONSTANTS.CREW_TAB_INJECT,
-  'label': VEHICLE_PREVIEW.INFOPANEL_TAB_CREWINFO_NAME,
-  'linkage': VEHPREVIEW_CONSTANTS.CREW_TAB_INJECT,
-  'viewId': VEHPREVIEW_CONSTANTS.CREW_TAB_INJECT})
+VEHICLE_PREVIEW_ALIASES = {
+ VIEW_ALIAS.VEHICLE_PREVIEW, VIEW_ALIAS.HERO_VEHICLE_PREVIEW, VIEW_ALIAS.OFFER_GIFT_VEHICLE_PREVIEW,
+ VIEW_ALIAS.TRADE_IN_VEHICLE_PREVIEW, VIEW_ALIAS.MARATHON_VEHICLE_PREVIEW, VIEW_ALIAS.CONFIGURABLE_VEHICLE_PREVIEW,
+ VIEW_ALIAS.RENTAL_VEHICLE_PREVIEW, VIEW_ALIAS.RESOURCE_WELL_VEHICLE_PREVIEW}
+_BACK_BTN_LABELS = {VIEW_ALIAS.LOBBY_HANGAR: 'hangar', 
+   VIEW_ALIAS.LEGACY_LOBBY_HANGAR: 'hangar', 
+   VIEW_ALIAS.LOBBY_STORE: 'shop', 
+   VIEW_ALIAS.LOBBY_STORAGE: 'storage', 
+   VIEW_ALIAS.LOBBY_TECHTREE: 'researchTree', 
+   VIEW_ALIAS.VEHICLE_COMPARE: 'vehicleCompare', 
+   VIEW_ALIAS.REFERRAL_PROGRAM_WINDOW: 'referralProgram', 
+   VIEW_ALIAS.EPIC_BATTLE_PAGE: 'frontline', 
+   VIEW_ALIAS.RANKED_BATTLE_PAGE: 'ranked', 
+   VIEW_ALIAS.VEH_POST_PROGRESSION: 'vehPostProgression', 
+   PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSIONS_AWARDS_VIEW_ALIAS: 'personalAwards', 
+   VIEW_ALIAS.RENTAL_VEHICLE_PREVIEW: None, 
+   VIEW_ALIAS.CONFIGURABLE_VEHICLE_PREVIEW: None, 
+   VIEW_ALIAS.RESOURCE_WELL_VEHICLE_PREVIEW: 'resourceWell'}
+_TABS_DATA = (
+ {'id': VEHPREVIEW_CONSTANTS.BROWSE_LINKAGE, 
+    'label': VEHICLE_PREVIEW.INFOPANEL_TAB_BROWSE_NAME, 
+    'linkage': VEHPREVIEW_CONSTANTS.BROWSE_LINKAGE, 
+    'viewId': VEHPREVIEW_CONSTANTS.BROWSE_LINKAGE},
+ {'id': VEHPREVIEW_CONSTANTS.MODULES_LINKAGE, 
+    'label': VEHICLE_PREVIEW.INFOPANEL_TAB_MODULES_NAME, 
+    'linkage': VEHPREVIEW_CONSTANTS.MODULES_LINKAGE, 
+    'viewId': VEHPREVIEW_CONSTANTS.MODULES_LINKAGE},
+ {'id': VEHPREVIEW_CONSTANTS.CREW_TAB_INJECT, 
+    'label': VEHICLE_PREVIEW.INFOPANEL_TAB_CREWINFO_NAME, 
+    'linkage': VEHPREVIEW_CONSTANTS.CREW_TAB_INJECT, 
+    'viewId': VEHPREVIEW_CONSTANTS.CREW_TAB_INJECT})
 
 def _isCollectibleVehicleWithModules():
     return g_currentPreviewVehicle.isCollectible() and g_currentPreviewVehicle.hasModulesToSelect()
@@ -112,9 +105,8 @@ def _updatePostProgressionParameters():
         return
 
 
-@dependency.replace_none_kwargs(settingsCore=ISettingsCore)
-def _isPostProgressionBulletVisible(settingsCore=None):
-    return g_currentPreviewVehicle.isPostProgressionExists() and not settingsCore.serverSettings.getUIStorage().get(UI_STORAGE_KEYS.VEH_PREVIEW_POST_PROGRESSION_BULLET_SHOWN)
+def _isPostProgressionBulletVisible(settingsCore):
+    return g_currentPreviewVehicle.isPostProgressionExists() and not g_currentPreviewVehicle.item.postProgression.isVehSkillTree() and not settingsCore.serverSettings.getUIStorage().get(UI_STORAGE_KEYS.VEH_PREVIEW_POST_PROGRESSION_BULLET_SHOWN)
 
 
 def _getModulesTabIdx():
@@ -138,7 +130,7 @@ class VehiclePreview(LobbySelectableView, VehiclePreviewMeta):
         self._itemsPack = ctx.get('itemsPack')
         if self._backAlias == VIEW_ALIAS.LOBBY_STORE or self._itemsPack is not None:
             self._COMMON_SOUND_SPACE = SHOP_PREVIEW_SOUND_SPACE
-        elif self._backAlias in (VIEW_ALIAS.LOBBY_TECHTREE, VIEW_ALIAS.LOBBY_RESEARCH):
+        elif self._backAlias in (VIEW_ALIAS.LOBBY_TECHTREE,):
             self._COMMON_SOUND_SPACE = RESEARCH_PREVIEW_SOUND_SPACE
         elif self._backAlias in (VIEW_ALIAS.RANKED_BATTLE_PAGE, VIEW_ALIAS.VEH_POST_PROGRESSION):
             self._COMMON_SOUND_SPACE = VEHICLE_PREVIEW_SOUND_SPACE
@@ -151,7 +143,6 @@ class VehiclePreview(LobbySelectableView, VehiclePreviewMeta):
         self._previousBackAlias = ctx.get('previousBackAlias')
         self._previewBackCb = ctx.get('previewBackCb')
         self.__isHeroTank = ctx.get('isHeroTank', False)
-        self.__isHiddenMenu = ctx.get('isHiddenMenu', False)
         self.__customizationCD = (ctx.get('vehParams') or {}).get('styleCD')
         self.__offers = ctx.get('offers')
         self._price = ctx.get('price', MONEY_UNDEFINED)
@@ -166,12 +157,11 @@ class VehiclePreview(LobbySelectableView, VehiclePreviewMeta):
         self.__subscriptions = ctx.get('subscriptions') or ()
         self.__unmodifiedItemsPack = deepcopy(self._itemsPack)
         addBuiltInEquipment(self._itemsPack, self._itemsCache, self._vehicleCD)
-        notInteractive = (VIEW_ALIAS.LOBBY_STORE,
-         VIEW_ALIAS.RANKED_BATTLE_PAGE,
-         VIEW_ALIAS.VEH_POST_PROGRESSION,
+        notInteractive = (
+         VIEW_ALIAS.LOBBY_STORE, VIEW_ALIAS.RANKED_BATTLE_PAGE, VIEW_ALIAS.VEH_POST_PROGRESSION,
          VIEW_ALIAS.RESOURCE_WELL_VEHICLE_PREVIEW)
         self._heroInteractive = not (self._itemsPack or self.__offers or ctx.get('offerID', 0) or self.__topPanelData or self._backAlias in notInteractive) and ctx.get('heroInteractive', True)
-        self.__haveCustomCrew = any((item.type == ItemPackType.CREW_CUSTOM for item in self._itemsPack)) if self._itemsPack else False
+        self.__haveCustomCrew = any(item.type == ItemPackType.CREW_CUSTOM for item in self._itemsPack) if self._itemsPack else False
         self.__obtainingMethod = ctx.get('obtainingMethod')
         self.__hangarVehicleCD = ctx.get('hangarVehicleCD')
         self.__previewAppearance = ctx.get('previewAppearance')
@@ -202,37 +192,36 @@ class VehiclePreview(LobbySelectableView, VehiclePreviewMeta):
             g_currentPreviewVehicle.resetAppearance()
             g_currentPreviewVehicle.selectVehicle(self.__hangarVehicleCD, style=self.__style, outfit=self.__outfit)
             g_currentPreviewVehicle.resetAppearance(self.__previewAppearance)
-        elif g_currentPreviewVehicle.intCD == self._vehicleCD and not self.__isHeroTank:
-            g_currentPreviewVehicle.selectNoVehicle()
-        g_currentPreviewVehicle.selectVehicle(self._vehicleCD, self.__vehicleStrCD, style=self.__style, outfit=self.__outfit)
-        super(VehiclePreview, self)._populate()
-        g_currentPreviewVehicle.onChanged += self.__onVehicleChanged
-        g_currentPreviewVehicle.onVehicleInventoryChanged += self._onInventoryChanged
-        self.__comparisonBasket.onChange += self.__onCompareBasketChanged
-        self.__comparisonBasket.onSwitchChange += self.__updateHeaderData
-        self._hangarSpace.onSpaceCreate += self.__onHangarCreateOrRefresh
-        self._hangarSpace.onSpaceRefresh += self.closeView
-        self._hangarSpace.lockVehicleSelectable(self)
-        if not g_currentPreviewVehicle.isPresent():
-            event_dispatcher.showHangar()
-        if not self._heroInteractive:
-            self.__heroTanksControl.setInteractive(False)
-        if self._backAlias == VIEW_ALIAS.LOBBY_STORE:
-            self.__uiFlowLogger.logOpenPreview()
-            self.__uiMetricsLogger.onViewOpen()
-        self.addListener(CameraRelatedEvents.CAMERA_ENTITY_UPDATED, self.handleSelectedEntityUpdated)
-        specialData = getHeroTankPreviewParams() if self.__isHeroTank else None
-        if specialData is not None and specialData.enterEvent:
-            SoundGroups.g_instance.playSound2D(specialData.enterEvent)
-        g_eventBus.addListener(OFFER_CHANGED_EVENT, self.__onOfferChanged)
-        g_eventBus.addListener(ViewEventType.LOAD_VIEW, self.__onViewLoaded, scope=EVENT_BUS_SCOPE.LOBBY)
-        _updateCollectorHintParameters()
-        _updatePostProgressionParameters()
-        for event, callback in self.__subscriptions:
-            event += callback
+        else:
+            if g_currentPreviewVehicle.intCD == self._vehicleCD and not self.__isHeroTank:
+                g_currentPreviewVehicle.selectNoVehicle()
+            g_currentPreviewVehicle.selectVehicle(self._vehicleCD, self.__vehicleStrCD, style=self.__style, outfit=self.__outfit)
+            super(VehiclePreview, self)._populate()
+            g_currentPreviewVehicle.onChanged += self.__onVehicleChanged
+            g_currentPreviewVehicle.onVehicleInventoryChanged += self._onInventoryChanged
+            self.__comparisonBasket.onChange += self.__onCompareBasketChanged
+            self.__comparisonBasket.onSwitchChange += self.__updateHeaderData
+            self._hangarSpace.onSpaceCreate += self.__onHangarCreateOrRefresh
+            self._hangarSpace.onSpaceRefresh += self.closeView
+            self._hangarSpace.lockVehicleSelectable(self)
+            if not g_currentPreviewVehicle.isPresent():
+                event_dispatcher.showHangar()
+            if not self._heroInteractive:
+                self.__heroTanksControl.setInteractive(False)
+            if self._backAlias == VIEW_ALIAS.LOBBY_STORE:
+                self.__uiFlowLogger.logOpenPreview()
+                self.__uiMetricsLogger.onViewOpen()
+            self.addListener(CameraRelatedEvents.CAMERA_ENTITY_UPDATED, self.handleSelectedEntityUpdated)
+            specialData = getHeroTankPreviewParams() if self.__isHeroTank else None
+            if specialData is not None and specialData.enterEvent:
+                SoundGroups.g_instance.playSound2D(specialData.enterEvent)
+            g_eventBus.addListener(OFFER_CHANGED_EVENT, self.__onOfferChanged)
+            g_eventBus.addListener(ViewEventType.LOAD_VIEW, self.__onViewLoaded, scope=EVENT_BUS_SCOPE.LOBBY)
+            _updateCollectorHintParameters()
+            _updatePostProgressionParameters()
+            for event, callback in self.__subscriptions:
+                event += callback
 
-        if self.__isHiddenMenu:
-            self._updateTopMenu(HeaderMenuVisibilityState.NOTHING, LobbyHeaderVisibilityAction.ENTER)
         return
 
     def _dispose(self):
@@ -264,8 +253,6 @@ class VehiclePreview(LobbySelectableView, VehiclePreviewMeta):
             g_currentPreviewVehicle.resetAppearance()
             if self.__isHeroTank:
                 g_currentPreviewVehicle.selectHeroTank(False)
-        if self.__isHiddenMenu:
-            self._updateTopMenu(HeaderMenuVisibilityState.ALL, LobbyHeaderVisibilityAction.EXIT)
         g_eventBus.removeListener(OFFER_CHANGED_EVENT, self.__onOfferChanged)
         g_eventBus.removeListener(ViewEventType.LOAD_VIEW, self.__onViewLoaded, scope=EVENT_BUS_SCOPE.LOBBY)
         for event, callback in self.__subscriptions:
@@ -318,9 +305,6 @@ class VehiclePreview(LobbySelectableView, VehiclePreviewMeta):
     def _createSelectableLogic(self):
         return PreviewSelectableLogic()
 
-    def _updateTopMenu(self, state, action):
-        g_eventBus.handleEvent(events.LobbyHeaderMenuEvent(events.LobbyHeaderMenuEvent.TOGGLE_VISIBILITY, ctx={'state': LobbyHeaderState(self.alias, state, action)}), EVENT_BUS_SCOPE.LOBBY)
-
     def _onRegisterFlashComponent(self, viewPy, alias):
         if alias == VEHPREVIEW_CONSTANTS.TOP_PANEL_TABS_PY_ALIAS:
             viewPy.setData(**self.__topPanelData)
@@ -358,26 +342,26 @@ class VehiclePreview(LobbySelectableView, VehiclePreviewMeta):
         vehicleName = makeHtmlString('html_templates:lobby/vehicle_preview', vehicleNameStyle, {'name': vehicle.descriptor.type.shortUserString})
         compareBtnEnabled, compareBtnTooltip = resolveStateTooltip(self.__comparisonBasket, vehicle, VEH_COMPARE.STORE_COMPAREVEHICLEBTN_TOOLTIPS_ADDTOCOMPARE, VEH_COMPARE.STORE_COMPAREVEHICLEBTN_TOOLTIPS_DISABLED)
         showPostProgressionBtn = vehicle.isPostProgressionExists and not vehicle.postProgression.isVehSkillTree()
-        result = {'showPostProgressionBtn': showPostProgressionBtn,
-         'vehicleName': vehicleName,
-         'vehicleLevel': vehicleLevel,
-         'vehicleType': vehicle.type,
-         'isVehicleElite': vehicle.isElite,
-         'nationFlagIcon': RES_ICONS.getNationFlag(vehicle.nationName),
-         'compareBtnTooltip': compareBtnTooltip,
-         'showCompareBtn': compareBtnEnabled,
-         'listDesc': self.__getInfoPanelListDescription(vehicle),
-         'isMultinational': vehicle.hasNationGroup,
-         'roleText': getRoleTextWithIcon(vehicle.role, vehicle.roleLabel),
-         'roleId': vehicle.role,
-         'vehicleCD': vehicle.intCD}
+        result = {'showPostProgressionBtn': showPostProgressionBtn, 
+           'vehicleName': vehicleName, 
+           'vehicleLevel': vehicleLevel, 
+           'vehicleType': vehicle.type, 
+           'isVehicleElite': vehicle.isElite, 
+           'nationFlagIcon': RES_ICONS.getNationFlag(vehicle.nationName), 
+           'compareBtnTooltip': compareBtnTooltip, 
+           'showCompareBtn': compareBtnEnabled, 
+           'listDesc': self.__getInfoPanelListDescription(vehicle), 
+           'isMultinational': vehicle.hasNationGroup, 
+           'roleText': getRoleTextWithIcon(vehicle.role, vehicle.roleLabel), 
+           'roleId': vehicle.role, 
+           'vehicleCD': vehicle.intCD}
         return result
 
     def __prepareItems(self):
         previewVehicleIntCD = g_currentPreviewVehicle.item.intCD
         if self._itemsPack:
-            vehicleItems = tuple((item for item in self._itemsPack if item.type in ItemPackTypeGroup.VEHICLE))
-            crewItems = tuple((item for item in self._itemsPack if item.type in ItemPackTypeGroup.CREW))
+            vehicleItems = tuple(item for item in self._itemsPack if item.type in ItemPackTypeGroup.VEHICLE)
+            crewItems = tuple(item for item in self._itemsPack if item.type in ItemPackTypeGroup.CREW)
             if crewItems and not vehicleItems:
                 groupID = crewItems[0].groupID
                 vehicleItems = (ItemPackEntry(id=previewVehicleIntCD, groupID=groupID),)
@@ -388,13 +372,16 @@ class VehiclePreview(LobbySelectableView, VehiclePreviewMeta):
         elif self.__isHeroTank:
             crewData = self.__heroTanksControl.getCurrentTankCrew()
             if crewData and crewData.get('tankmen'):
-                vehicleItems = (ItemPackEntry(id=previewVehicleIntCD, groupID=1),)
+                vehicleItems = (
+                 ItemPackEntry(id=previewVehicleIntCD, groupID=1),)
                 crewItems = (ItemPackEntry(type=ItemPackType.CREW_CUSTOM, groupID=1, extra=crewData),)
             else:
-                vehicleItems = (ItemPackEntry(id=previewVehicleIntCD, groupID=1),)
+                vehicleItems = (
+                 ItemPackEntry(id=previewVehicleIntCD, groupID=1),)
                 crewItems = ()
         else:
-            vehicleItems = (ItemPackEntry(id=previewVehicleIntCD, groupID=1),)
+            vehicleItems = (
+             ItemPackEntry(id=previewVehicleIntCD, groupID=1),)
             crewItems = ()
         return (vehicleItems, crewItems)
 
@@ -455,10 +442,11 @@ class VehiclePreview(LobbySelectableView, VehiclePreviewMeta):
 
     @staticmethod
     def __getInfoPanelListDescription(vehicle):
-        hasSkillBonuses = any((tMan.skills for _, tMan in vehicle.crew))
-        hasEquipBonuses = any(itertools.chain(vehicle.optDevices.installed, vehicle.battleAbilities.installed, vehicle.battleBoosters.installed, (rCons and rCons.getKpi() for rCons in vehicle.consumables.installed), (vehicle.hasOutfit(vehicle.getAnyOutfitSeason()),)))
+        hasSkillBonuses = any(tMan.skills for _, tMan in vehicle.crew)
+        hasEquipBonuses = any(itertools.chain(vehicle.optDevices.installed, vehicle.battleAbilities.installed, vehicle.battleBoosters.installed, (rCons and rCons.getKpi() for rCons in vehicle.consumables.installed), (
+         vehicle.hasOutfit(vehicle.getAnyOutfitSeason()),)))
         descriptions = ('crew', 'crewSkills', 'crewEquips', 'crewSkillsEquips')
-        descr = descriptions[hasEquipBonuses << 1 | hasSkillBonuses]
+        descr = descriptions[(hasEquipBonuses << 1 | hasSkillBonuses)]
         return text_styles.main(backport.text(R.strings.vehicle_preview.infoPanel.tab.listDesc.dyn(descr)()))
 
     def _getPrbEntityType(self):
@@ -467,7 +455,9 @@ class VehiclePreview(LobbySelectableView, VehiclePreviewMeta):
             return QUEUE_TYPE.UNKNOWN
         else:
             entity = prbDispatcher.getEntity()
-            return entity.getQueueType() if entity is not None else QUEUE_TYPE.UNKNOWN
+            if entity is not None:
+                return entity.getQueueType()
+            return QUEUE_TYPE.UNKNOWN
 
     def __onHangarCreateOrRefresh(self):
         if self._getPrbEntityType() in (QUEUE_TYPE.BATTLE_ROYALE, QUEUE_TYPE.BATTLE_ROYALE_TOURNAMENT):
@@ -514,9 +504,9 @@ class VehiclePreview(LobbySelectableView, VehiclePreviewMeta):
         self.__currentOffer = event.ctx.get('offer')
 
     def __updateModuleBullet(self):
-        self.as_setBulletVisibilityS(_getModulesTabIdx(), _isPostProgressionBulletVisible())
+        self.as_setBulletVisibilityS(_getModulesTabIdx(), _isPostProgressionBulletVisible(self.__settingsCore))
 
     def _resetPostProgressionBullet(self):
-        if _isPostProgressionBulletVisible(settingsCore=self.__settingsCore):
+        if _isPostProgressionBulletVisible(self.__settingsCore):
             self.__settingsCore.serverSettings.saveInUIStorage({UI_STORAGE_KEYS.VEH_PREVIEW_POST_PROGRESSION_BULLET_SHOWN: True})
             self.__updateModuleBullet()

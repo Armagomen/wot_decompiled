@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/messages/player_messages.py
+from __future__ import absolute_import
 import logging
 from typing import TYPE_CHECKING
 from constants import EQUIPMENT_STAGES, ARENA_GUI_TYPE
@@ -47,8 +46,8 @@ class PlayerMessages(fading_messages.FadingMessages):
     def __onShowDestructibleEntityMessageByCode(self, code, entityID, attackerID):
         _logger.debug('onShowDestructibleEntityMessage %r %r %r', code, entityID, attackerID)
         getFullName = self.sessionProvider.getCtx().getPlayerFullName
-        self.showMessage(code, {'target': str(entityID),
-         'attacker': getFullName(attackerID, showClan=False)})
+        self.showMessage(code, {'target': str(entityID), 
+           'attacker': getFullName(attackerID, showClan=False)})
 
     def _onShowPlayerMessageByCode(self, code, postfix, targetID, attackerID, equipmentID, ignoreMessages):
         _logger.debug('onShowPlayerMessage %r %r %r %r %r', code, postfix, targetID, attackerID, equipmentID)
@@ -59,9 +58,11 @@ class PlayerMessages(fading_messages.FadingMessages):
             if equipmentID:
                 equipment = vehicles.g_cache.equipments().get(equipmentID)
                 if equipment is not None:
-                    postfix = '_'.join((postfix, equipment.messagePostfix))
-            self.showMessage(code, {'target': getFullName(targetID, showClan=False),
-             'attacker': getFullName(attackerID, showClan=False)}, extra=(('target', targetID), ('attacker', attackerID)), postfix=postfix)
+                    postfix = ('_').join((postfix, equipment.messagePostfix))
+            self.showMessage(code, {'target': getFullName(targetID, showClan=False), 
+               'attacker': getFullName(attackerID, showClan=False)}, extra=(
+             (
+              'target', targetID), ('attacker', attackerID)), postfix=postfix)
             return
 
     def __onShowPlayerMessageByKey(self, key, args=None, extra=None):
@@ -88,7 +89,9 @@ class PlayerMessages(fading_messages.FadingMessages):
                 getFullName = battleCxt.getPlayerFullName
                 if equipment is None:
                     return
-                self.showMessage('COMBAT_EQUIPMENT_USED', {'player': getFullName(shooterID, showClan=False)}, extra=(('player', shooterID),), postfix=self._getPostfixFromEquipment(equipment))
+                self.showMessage('COMBAT_EQUIPMENT_USED', {'player': getFullName(shooterID, showClan=False)}, extra=(
+                 (
+                  'player', shooterID),), postfix=self._getPostfixFromEquipment(equipment))
             return
 
     @staticmethod

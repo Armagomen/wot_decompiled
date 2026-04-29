@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/framework/entities/view_impl_adaptor.py
-import logging
-import typing
-import BigWorld
+from __future__ import absolute_import
+import logging, typing, BigWorld
 from frameworks.wulf import WindowStatus, WindowSettings, Window, ViewFlags
 from gui.Scaleform.framework import ScopeTemplates
 from gui.Scaleform.framework.entities.DisposableEntity import DisposableEntity, EntityState
@@ -25,7 +22,7 @@ class ViewImplAdaptor(DisposableEntity, ViewInterface):
         return
 
     def __repr__(self):
-        return '{}(key={})'.format(self.__class__.__name__, self.__key)
+        return ('{}(key={})').format(self.__class__.__name__, self.__key)
 
     @property
     def view(self):
@@ -57,7 +54,7 @@ class ViewImplAdaptor(DisposableEntity, ViewInterface):
 
     @property
     def settings(self):
-        return None
+        return
 
     @property
     def soundManager(self):
@@ -73,7 +70,7 @@ class ViewImplAdaptor(DisposableEntity, ViewInterface):
         raise SoftException('This method is not implemented')
 
     def getSubContainersSettings(self):
-        pass
+        return ()
 
     def getUniqueName(self):
         return self.__key.name
@@ -91,7 +88,10 @@ class ViewImplAdaptor(DisposableEntity, ViewInterface):
         return self.__window
 
     def isLoaded(self):
-        return False if self.__window is None else self.__window.windowStatus == WindowStatus.LOADED
+        if self.__window is None:
+            return False
+        else:
+            return self.__window.windowStatus == WindowStatus.LOADED
 
     def isWindowValid(self):
         return self.__window is not None

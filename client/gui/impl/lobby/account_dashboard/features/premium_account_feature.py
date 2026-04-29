@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/account_dashboard/features/premium_account_feature.py
 import typing
 from constants import PREMIUM_TYPE
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -35,8 +33,8 @@ class PremiumAccountFeature(FeatureItem):
     def __startListening(self):
         self.__lobbyContext.getServerSettings().onServerSettingsChange += self.__onSettingsChange
         self.__gameSession.onPremiumNotify += self.__onPremiumStatusChanged
-        g_clientUpdateManager.addCallbacks({'stats.dummySessionStats': self.__onStatsChanged,
-         'premium': self.__onPremiumStatusChanged})
+        g_clientUpdateManager.addCallbacks({'stats.dummySessionStats': self.__onStatsChanged, 
+           'premium': self.__onPremiumStatusChanged})
         self._viewModel.premiumAccount.onClick += self.__onClick
 
     def __stopListening(self):
@@ -46,7 +44,8 @@ class PremiumAccountFeature(FeatureItem):
         g_clientUpdateManager.removeObjectCallbacks(self)
 
     def __onSettingsChange(self, diff):
-        if not {'tankPremiumBonus', 'premSquad_config'} & set(diff.keys()):
+        if not {
+         'tankPremiumBonus', 'premSquad_config'} & set(diff.keys()):
             return
         self.__setPremBonusValues()
 
@@ -80,7 +79,9 @@ class PremiumAccountFeature(FeatureItem):
     def __getTimeLeft(self, premType):
         expiryTime = self.__getStatsRequester().premiumInfo.get(premType, {}).get('expiryTime', 0)
         serverTime = time_utils.getCurrentLocalServerTimestamp()
-        return -1 if expiryTime == 0 or expiryTime <= serverTime else expiryTime - serverTime
+        if expiryTime == 0 or expiryTime <= serverTime:
+            return -1
+        return expiryTime - serverTime
 
     def __getStatsRequester(self):
         return self.__itemsCache.items.stats

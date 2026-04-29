@@ -1,9 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/instructions/booster_buy_model.py
 from gui.impl.gen.view_models.views.lobby.common.buy_sell_items_dialog_model import BuySellItemsDialogModel
 
 class BoosterBuyModel(BuySellItemsDialogModel):
-    __slots__ = ('onSetIsRearm',)
+    __slots__ = ('onSetIsRearm', )
 
     def __init__(self, properties=27, commands=4):
         super(BoosterBuyModel, self).__init__(properties=properties, commands=commands)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/exchange/exchange_with_items_model.py
 from gui.impl.gen.view_models.views.lobby.common.dialog_with_exchange import DialogWithExchange
 from gui.impl.gen.view_models.views.lobby.common.multiple_items_content_model import MultipleItemsContentModel
 

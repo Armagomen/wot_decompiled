@@ -1,19 +1,19 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hangar_widget/overlap_ctrl.py
 from debug_utils import LOG_CURRENT_EXCEPTION
 from frameworks.wulf import WindowStatus, WindowLayer
 from gui.Scaleform.lobby_entry import getLobbyStateMachine
 from gui.impl.lobby.hangar.states import DefaultHangarState
 
 class OverlapCtrlMixin(object):
-    __RESTRICTED_LAYERS = (WindowLayer.FULLSCREEN_WINDOW,
+    __RESTRICTED_LAYERS = (
+     WindowLayer.FULLSCREEN_WINDOW,
      WindowLayer.OVERLAY,
      WindowLayer.TOP_WINDOW,
      WindowLayer.WINDOW,
      WindowLayer.TOP_SUB_VIEW)
     _MIN_WINDOW_WIDTH = 1000
     _MIN_WINDOW_HEIGHT = 600
-    __ACTIVE_WINDOW_STATUSES = (WindowStatus.LOADING, WindowStatus.LOADED)
+    __ACTIVE_WINDOW_STATUSES = (
+     WindowStatus.LOADING, WindowStatus.LOADED)
 
     def __init__(self, *args, **kwargs):
         self._lobbyStateMachine = None
@@ -70,7 +70,11 @@ class OverlapCtrlMixin(object):
         super(OverlapCtrlMixin, self)._finalize()
 
     def _getEvents(self):
-        return super(OverlapCtrlMixin, self)._getEvents() + ((self._lobbyStateMachine.onVisibleRouteChanged, self._onVisibleRouteChanged), (self.gui.windowsManager.onWindowStatusChanged, self._onWindowStatusChanged))
+        return super(OverlapCtrlMixin, self)._getEvents() + (
+         (
+          self._lobbyStateMachine.onVisibleRouteChanged, self._onVisibleRouteChanged),
+         (
+          self.gui.windowsManager.onWindowStatusChanged, self._onWindowStatusChanged))
 
     def _onVisibleRouteChanged(self, routeInfo):
         self._isInHangar = routeInfo.state == self._lobbyStateMachine.getStateByCls(DefaultHangarState)

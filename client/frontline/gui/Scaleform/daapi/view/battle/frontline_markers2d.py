@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/battle/frontline_markers2d.py
-import logging
-import BigWorld
+import logging, BigWorld
 from Math import Vector3, Vector4, Matrix, WGTerrainMP, WGClampMP, Vector2
 from arena_component_system.epic_sector_warning_component import WARNING_TYPE
 from chat_commands_consts import BATTLE_CHAT_COMMAND_NAMES, INVALID_MARKER_ID, INVALID_MARKER_SUBTYPE, MarkerType, DefaultMarkerSubType, INVALID_TARGET_ID, INVALID_COMMAND_ID
@@ -45,7 +42,7 @@ _ENEMY_OWNER = 'enemy'
 _logger = logging.getLogger(__name__)
 
 class FrontlineMissionsPlugin(plugins.MarkerPlugin):
-    __slots__ = ('_isInFreeSpectatorMode',)
+    __slots__ = ('_isInFreeSpectatorMode', )
 
     def __init__(self, parentObj):
         super(FrontlineMissionsPlugin, self).__init__(parentObj)
@@ -118,9 +115,10 @@ class FrontlineMissionsPlugin(plugins.MarkerPlugin):
 
 
 class SectorBasesPlugin(FrontlineMissionsPlugin, ChatCommunicationComponent):
-    _AUTO_COMMIT_STATE_TO_STATE = {BATTLE_CHAT_COMMAND_NAMES.DEFENDING_BASE: BATTLE_CHAT_COMMAND_NAMES.DEFEND_BASE,
-     BATTLE_CHAT_COMMAND_NAMES.ATTACKING_BASE: BATTLE_CHAT_COMMAND_NAMES.ATTACK_BASE}
-    __slots__ = ('_markers', '__highlightedBaseID', '__basesToBeActive', '__capturedBases', '__insideCircle', '__clazz')
+    _AUTO_COMMIT_STATE_TO_STATE = {BATTLE_CHAT_COMMAND_NAMES.DEFENDING_BASE: BATTLE_CHAT_COMMAND_NAMES.DEFEND_BASE, 
+       BATTLE_CHAT_COMMAND_NAMES.ATTACKING_BASE: BATTLE_CHAT_COMMAND_NAMES.ATTACK_BASE}
+    __slots__ = ('_markers', '__highlightedBaseID', '__basesToBeActive', '__capturedBases',
+                 '__insideCircle', '__clazz')
 
     def __init__(self, parentObj, clazz=markers.BaseMarker):
         super(SectorBasesPlugin, self).__init__(parentObj)
@@ -213,7 +211,9 @@ class SectorBasesPlugin(FrontlineMissionsPlugin, ChatCommunicationComponent):
     def getMarkerSubtype(self, targetID):
         if targetID == INVALID_TARGET_ID or targetID not in self._markers:
             return INVALID_MARKER_SUBTYPE
-        return DefaultMarkerSubType.ALLY_MARKER_SUBTYPE if _ALLY_OWNER == self._markers[targetID].getOwningTeam() else DefaultMarkerSubType.ENEMY_MARKER_SUBTYPE
+        if self._markers[targetID].getOwningTeam() == _ALLY_OWNER:
+            return DefaultMarkerSubType.ALLY_MARKER_SUBTYPE
+        return DefaultMarkerSubType.ENEMY_MARKER_SUBTYPE
 
     def _onPlayerMissionUpdated(self, mission, _):
         self.__resetBaseHighlight()
@@ -251,7 +251,9 @@ class SectorBasesPlugin(FrontlineMissionsPlugin, ChatCommunicationComponent):
         return
 
     def _getMarkerFromTargetID(self, targetID, markerType):
-        return None if targetID not in self._markers or markerType != self.getMarkerType() else self._markers[targetID]
+        if targetID not in self._markers or markerType != self.getMarkerType():
+            return None
+        return self._markers[targetID]
 
     def __onActionAddedToMarkerReceived(self, senderID, commandID, markerType, uniqueBaseID):
         if markerType != self.getMarkerType() or uniqueBaseID not in self._markers or _ACTIONS.battleChatCommandFromActionID(commandID).name not in BASE_CMD_NAMES:
@@ -415,7 +417,8 @@ class SectorBasesPlugin(FrontlineMissionsPlugin, ChatCommunicationComponent):
 
 
 class HeadquartersPlugin(FrontlineMissionsPlugin, ChatCommunicationComponent):
-    __slots__ = ('_markers', '__isHQBattle', '__visibleHQ', '__hqMissionActive', '__clazz', '__entitiesDamageType')
+    __slots__ = ('_markers', '__isHQBattle', '__visibleHQ', '__hqMissionActive', '__clazz',
+                 '__entitiesDamageType')
 
     def __init__(self, parentObj, clazz=BaseMarker):
         super(HeadquartersPlugin, self).__init__(parentObj)
@@ -501,7 +504,9 @@ class HeadquartersPlugin(FrontlineMissionsPlugin, ChatCommunicationComponent):
         if targetID == INVALID_MARKER_ID or targetID not in self._markers:
             return INVALID_MARKER_SUBTYPE
         isAttacker = avatar_getter.getPlayerTeam() == EPIC_BATTLE_TEAM_ID.TEAM_ATTACKER
-        return DefaultMarkerSubType.ENEMY_MARKER_SUBTYPE if isAttacker else DefaultMarkerSubType.ALLY_MARKER_SUBTYPE
+        if isAttacker:
+            return DefaultMarkerSubType.ENEMY_MARKER_SUBTYPE
+        return DefaultMarkerSubType.ALLY_MARKER_SUBTYPE
 
     def _onPlayerMissionUpdated(self, mission, _):
         if not mission.isObjectivesMission():
@@ -542,7 +547,9 @@ class HeadquartersPlugin(FrontlineMissionsPlugin, ChatCommunicationComponent):
             return
 
     def _getMarkerFromTargetID(self, targetID, markerType):
-        return None if targetID not in self._markers or markerType != self.getMarkerType() else self._markers[targetID]
+        if targetID not in self._markers or markerType != self.getMarkerType():
+            return None
+        return self._markers[targetID]
 
     def _onVehicleFeedbackReceived(self, eventID, vehicleID, value):
         if eventID == _EVENT_ID.ENTITY_IN_FOCUS:
@@ -611,10 +618,10 @@ class HeadquartersPlugin(FrontlineMissionsPlugin, ChatCommunicationComponent):
         if destructibleComponent is None:
             _logger.error('Expected DestructibleEntityComponent not present!')
             return
-        elif entity is None:
-            _logger.error('Expected DestructibleEntity not present!')
-            return
         else:
+            if entity is None:
+                _logger.error('Expected DestructibleEntity not present!')
+                return
             handle = self._createMarkerWithMatrix(settings.MARKER_SYMBOL_NAME.HEADQUARTER_TYPE, self.__getMarkerMatrix(entity))
             if handle is None:
                 return
@@ -692,7 +699,7 @@ class HeadquartersPlugin(FrontlineMissionsPlugin, ChatCommunicationComponent):
             battleSpamCtrl = self.sessionProvider.shared.battleSpamCtrl
             aInfo = self.sessionProvider.getArenaDP().getVehicleInfo(attackerID)
             if hasImpactMask and battleSpamCtrl is not None and aInfo and aInfo.isAutoShootGunVehicle():
-                hasImpactMask = battleSpamCtrl.filterMarkersHitState(entityId, 'impact{}'.format(attackerID))
+                hasImpactMask = battleSpamCtrl.filterMarkersHitState(entityId, ('impact{}').format(attackerID))
             self.__entitiesDamageType[entityId] = self.__getVehicleDamageType(aInfo)
             self._invokeMarker(marker.getMarkerID(), 'setHealth', newHealth, self.__entitiesDamageType[entityId], hasImpactMask)
             return
@@ -704,7 +711,9 @@ class HeadquartersPlugin(FrontlineMissionsPlugin, ChatCommunicationComponent):
         if attackerID == BigWorld.player().playerVehicleID:
             return settings.DamageType.FROM_PLAYER
         entityName = self.sessionProvider.getCtx().getPlayerGuiProps(attackerID, attackerInfo.team)
-        return settings.DamageType.FROM_SQUAD if entityName == PLAYER_GUI_PROPS.squadman else settings.DamageType.FROM_OTHER
+        if entityName == PLAYER_GUI_PROPS.squadman:
+            return settings.DamageType.FROM_SQUAD
+        return settings.DamageType.FROM_OTHER
 
     def __activateDestructibleMarker(self, entityId, isActive):
         marker = self._markers.get(entityId, None)
@@ -747,7 +756,7 @@ class HeadquartersPlugin(FrontlineMissionsPlugin, ChatCommunicationComponent):
 
 
 class StepRepairPointPlugin(plugins.MarkerPlugin):
-    __slots__ = ('__markers',)
+    __slots__ = ('__markers', )
 
     def __init__(self, parentObj):
         super(StepRepairPointPlugin, self).__init__(parentObj)
@@ -855,8 +864,8 @@ class StepRepairPointPlugin(plugins.MarkerPlugin):
 
 
 class SectorWarningPlugin(plugins.MarkerPlugin):
-    WARNING_ID_TO_MARKER_TYPE = {WARNING_TYPE.PROTECTED: EPIC_CONSTS.PROTECTION_ZONE_WARNING,
-     WARNING_TYPE.BOMBING: EPIC_CONSTS.BOMBING_WARNING}
+    WARNING_ID_TO_MARKER_TYPE = {WARNING_TYPE.PROTECTED: EPIC_CONSTS.PROTECTION_ZONE_WARNING, 
+       WARNING_TYPE.BOMBING: EPIC_CONSTS.BOMBING_WARNING}
     X_DIR = 0
     Y_DIR = 1
     Z_DIR = 2
@@ -919,7 +928,7 @@ class SectorWarningPlugin(plugins.MarkerPlugin):
                         if timerSectorId is not None and sc.getSectorById(timerSectorId).groupID == sectorGroupID:
                             self.__updateTimer(marker, seconds)
 
-                if marker.target == sectorGroupID:
+                elif marker.target == sectorGroupID:
                     self.__updateTimer(marker, seconds)
 
             return
@@ -936,15 +945,15 @@ class SectorWarningPlugin(plugins.MarkerPlugin):
         if sectorWarningComponent is None:
             _logger.error('Expected SectorWarningComponent not present!')
             return
-        elif None in (edgeID, warningID, targetSectorGroupID):
-            _logger.error('[SectorWarningPlugin] Wrong argument!')
-            return
-        elif warningID in (WARNING_TYPE.NONE, WARNING_TYPE.SAFE):
-            if edgeID in self.__markers:
-                self._destroyMarker(self.__markers[edgeID].markerID)
-                del self.__markers[edgeID]
-            return
         else:
+            if None in (edgeID, warningID, targetSectorGroupID):
+                _logger.error('[SectorWarningPlugin] Wrong argument!')
+                return
+            if warningID in (WARNING_TYPE.NONE, WARNING_TYPE.SAFE):
+                if edgeID in self.__markers:
+                    self._destroyMarker(self.__markers[edgeID].markerID)
+                    del self.__markers[edgeID]
+                return
             if edgeID in self.__markers:
                 marker = self.__markers[edgeID]
                 marker.target = targetSectorGroupID
@@ -978,7 +987,9 @@ class SectorWarningPlugin(plugins.MarkerPlugin):
 
 
 class SectorWaypointsPlugin(plugins.MarkerPlugin, IVehiclesAndPositionsController):
-    __slots__ = ('__markers', '__currentWaypointSector', '__markerActiveState', '__suspendedForLane', '__currentWaypointPositon', '__marker', '__timeCB', '__currentEndTime', '__suspendedForBase', '__shownWaypoints')
+    __slots__ = ('__markers', '__currentWaypointSector', '__markerActiveState', '__suspendedForLane',
+                 '__currentWaypointPositon', '__marker', '__timeCB', '__currentEndTime',
+                 '__suspendedForBase', '__shownWaypoints')
 
     def __init__(self, parentObj):
         super(SectorWaypointsPlugin, self).__init__(parentObj)
@@ -1052,11 +1063,11 @@ class SectorWaypointsPlugin(plugins.MarkerPlugin, IVehiclesAndPositionsControlle
     def updatePositions(self, iterator):
         if not self.__marker or not self.__currentWaypointSector:
             return
+        sectorComponent = getattr(self.sessionProvider.arenaVisitor.getComponentSystem(), 'sectorComponent', None)
+        if sectorComponent is None:
+            _logger.error('Expected SectorComponent not present!')
+            return
         else:
-            sectorComponent = getattr(self.sessionProvider.arenaVisitor.getComponentSystem(), 'sectorComponent', None)
-            if sectorComponent is None:
-                _logger.error('Expected SectorComponent not present!')
-                return
             waypointPosition = sectorComponent.getClosestWayPointForSectorAndTeam(self.__currentWaypointSector.sectorID, self.sessionProvider.arenaVisitor.type, avatar_getter.getPlayerTeam(), avatar_getter.getOwnVehiclePosition())
             if waypointPosition is None:
                 return
@@ -1097,7 +1108,9 @@ class SectorWaypointsPlugin(plugins.MarkerPlugin, IVehiclesAndPositionsControlle
                 return
             sectorGroup, sectorID, _ = waypointSectorTimeTuple
             if not self.__marker:
-                self.__marker = self._createMarkerWithPosition(settings.MARKER_SYMBOL_NAME.WAYPOINT_MARKER, (0, 0, 0))
+                self.__marker = self._createMarkerWithPosition(settings.MARKER_SYMBOL_NAME.WAYPOINT_MARKER, (0,
+                                                                                                             0,
+                                                                                                             0))
                 self._invokeMarker(self.__marker, 'isAttacker', False)
                 self._setMarkerActive(self.__marker, False)
             if sectorGroup and sectorID:

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/container_views/base/components.py
 import typing
 from weakref import ref
 from Event import Event
@@ -40,7 +38,7 @@ class ContainerBase(object):
         return self.__lifecycleEvents
 
     def refresh(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             self._fillViewModel(vm)
             for component in self.components.values():
                 component.refreshView(vm)
@@ -197,22 +195,22 @@ class ComponentBase(object):
         return self._getViewModel(self.parent.viewModel)
 
     def createContextMenu(self, event):
-        return None
+        return
 
     def createContextMenuContent(self, event):
-        return None
+        return
 
     def createPopOver(self, event):
-        return None
+        return
 
     def createPopOverContent(self, event):
-        return None
+        return
 
     def createToolTip(self, event):
-        return None
+        return
 
     def createToolTipContent(self, event, contentID):
-        return None
+        return
 
     def setData(self, data):
         pass
@@ -223,7 +221,7 @@ class ComponentBase(object):
             cmpViewModel.setComponentKey(self.key)
             self._fillViewModel(cmpViewModel)
             return
-        with self.parent.viewModel.transaction() as vm:
+        with self.parent.viewModel.transaction() as (vm):
             cmpViewModel = self._getViewModel(vm)
             cmpViewModel.setComponentKey(self.key)
             self._fillViewModel(cmpViewModel)

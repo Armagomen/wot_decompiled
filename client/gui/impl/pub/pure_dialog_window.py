@@ -1,10 +1,10 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/pub/pure_dialog_window.py
+from __future__ import absolute_import
 import typing
-from frameworks.wulf import ViewModel, Array
 from gui.impl.gen.resources import R
 from gui.impl.gen.view_models.constants.dialog_presets import DialogPresets
 from gui.impl.pub.dialog_window import DialogWindow, DialogFlags
+if typing.TYPE_CHECKING:
+    from frameworks.wulf import ViewModel, Array
 
 class PureDialogWindow(DialogWindow):
 
@@ -36,7 +36,10 @@ class PureDialogWindow(DialogWindow):
         self.viewModel.setBackgroundImage(backImg)
 
     def _getResultData(self):
-        return self.bottomContentViewModel.getIsSelected() if self.bottomContentViewModel is not None else super(PureDialogWindow, self)._getResultData()
+        if self.bottomContentViewModel is not None:
+            return self.bottomContentViewModel.getIsSelected()
+        else:
+            return super(PureDialogWindow, self)._getResultData()
 
     @staticmethod
     def _addArgsOfModel(arrModel, args):

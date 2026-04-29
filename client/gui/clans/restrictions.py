@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/clans/restrictions.py
 import weakref
 from constants import CLAN_MEMBER_FLAGS
 from debug_utils import LOG_DEBUG, LOG_WARNING
@@ -142,7 +140,9 @@ class AccountClanLimits(BaseAccountClanLimits):
             return error(_CCR.FORBIDDEN_ACCOUNT_TYPE)
         if not clan.hasFreePlaces():
             return error(_CCR.CLAN_IS_FULL)
-        return error(_CCR.CLAN_ENTER_COOLDOWN) if self.__profile.isInClanEnterCooldown() else self.__checkPermissions('canSendApplication', clan)
+        if self.__profile.isInClanEnterCooldown():
+            return error(_CCR.CLAN_ENTER_COOLDOWN)
+        return self.__checkPermissions('canSendApplication', clan)
 
     def canRevokeApplication(self, clan):
         return self.__checkPermissions('canRevokeApplication', clan)
@@ -169,11 +169,15 @@ class AccountClanLimits(BaseAccountClanLimits):
         return self.__checkPermissions('canDeclineInvite', clan)
 
     def canSearchClans(self, pattern):
-        return error(_CCR.SEARCH_PATTERN_INVALID) if not isValidPattern(pattern) else self.__checkPermissions('canSeeClans')
+        if not isValidPattern(pattern):
+            return error(_CCR.SEARCH_PATTERN_INVALID)
+        return self.__checkPermissions('canSeeClans')
 
     def __checkPermissions(self, permName, clan=None):
         perms = self.__profile.getPermissions(clan)
         if not hasattr(perms, permName):
             LOG_WARNING('There is error while checking account clan permissions', clan, permName)
             return error(_CCR.DEFAULT)
-        return error(_CCR.DEFAULT) if not getattr(perms, permName)() else success()
+        if not getattr(perms, permName)():
+            return error(_CCR.DEFAULT)
+        return success()

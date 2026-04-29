@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/locale/FORTIFICATIONS.py
 from debug_utils import LOG_WARNING
 
 class FORTIFICATIONS(object):
@@ -131,16 +129,17 @@ class FORTIFICATIONS(object):
     TOOLTIP_VEHICLETYPES_BODY = '#fortifications:tooltip/vehicleTypes/body'
     INSPIRE_INSPIRING = '#fortifications:inspire/inspiring'
     INSPIRE_INSPIRED = '#fortifications:inspire/inspired'
-    STRONGHOLDDIRECTION_ENUM = (STRONGHOLDDIRECTION_A,
+    STRONGHOLDDIRECTION_ENUM = (
+     STRONGHOLDDIRECTION_A,
      STRONGHOLDDIRECTION_B,
      STRONGHOLDDIRECTION_C,
      STRONGHOLDDIRECTION_D)
 
     @classmethod
     def getDirection(cls, direction):
-        outcome = '#fortifications:strongholddirection/{}'.format(direction)
+        outcome = ('#fortifications:strongholddirection/{}').format(direction)
         if outcome not in cls.STRONGHOLDDIRECTION_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/battle_royale/battle_results/personal/battle_reward_item_model.py
 from frameworks.wulf import ViewModel
 
 class BattleRewardItemModel(ViewModel):
@@ -10,6 +8,7 @@ class BattleRewardItemModel(ViewModel):
     PROGRESSION_POINTS = 'progression'
     BATTLE_PASS_POINTS = 'battlePassPoints'
     BATTLE_ROYALE_COIN = 'brcoin'
+    ST_PATRICK_COIN = 'stpcoin'
     BR_PROGRESSION_TOKEN = 'brProgressionToken'
 
     def __init__(self, properties=2, commands=0):

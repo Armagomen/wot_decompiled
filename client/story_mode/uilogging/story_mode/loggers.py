@@ -1,0 +1,210 @@
+import json, typing
+from gui.game_loading import loading as gameLoading
+from helpers import dependency
+from skeletons.gui.shared import IItemsCache
+from story_mode.skeletons.story_mode_controller import IStoryModeController
+from story_mode.uilogging.story_mode.consts import Features, LogActions, LogWindows, LogButtons, LogBattleResultStats, TOOLTIP_MIN_VIEW_TIME
+from uilogging.base.logger import MetricsLogger
+from wotdecorators import noexcept
+if typing.TYPE_CHECKING:
+    from uilogging.types import ItemType, ItemStateType, InfoType
+
+def _getBattlesInfo():
+    itemsCache = dependency.instance(IItemsCache)
+    battlesCount = itemsCache.items.getAccountDossier().getRandomStats().getBattlesCount()
+    return json.dumps({'battle_cnt': battlesCount})
+
+
+class BaseMetricsLogger(MetricsLogger):
+    __slots__ = ('_item', )
+    _storyModeCtrl = dependency.descriptor(IStoryModeController)
+
+    def __init__(self, item):
+        feature = Features.ONBOARDING if self._storyModeCtrl.isOnboarding else Features.STORY_MODE
+        super(BaseMetricsLogger, self).__init__(feature)
+        self._item = item
+
+
+class WindowLogger(BaseMetricsLogger):
+    __slots__ = ('_isOpened', )
+
+    def __init__(self, item):
+        super(WindowLogger, self).__init__(item)
+        self._isOpened = False
+
+    def logOpen(self, state=None, info=None):
+        self.log(action=LogActions.OPEN, item=self._item, itemState=state, info=info)
+        self._isOpened = True
+
+    def logClose(self, state=None):
+        self.log(action=LogActions.CLOSE, item=self._item, itemState=state)
+        self._isOpened = False
+
+    def logButtonShown(self, button, once=False, state=None):
+        if self._isOpened:
+            if once:
+                self.logOnce(action=LogActions.SHOW, item=button, parentScreen=self._item, itemState=state)
+            else:
+                self.log(action=LogActions.SHOW, item=button, parentScreen=self._item, itemState=state)
+
+    def logClick(self, button, state=None):
+        if self._isOpened:
+            self.log(action=LogActions.CLICK, item=button, itemState=state, parentScreen=self._item)
+
+
+class WindowBehindGameLoadingLogger(WindowLogger):
+    __slots__ = ()
+
+    @noexcept
+    def logGameLoadingClose(self):
+        if self._isOpened and gameLoading.getLoader().isLoading:
+            self.log(action=LogActions.GAME_LOADING_CLOSE, item=self._item)
+
+
+class MissionWindowLogger(WindowLogger):
+    __slots__ = ()
+
+    @noexcept
+    def logOpen(self, missionId=None, info=None):
+        super(MissionWindowLogger, self).logOpen(state=None if missionId is None else str(missionId), info=info)
+        return
+
+
+class PostBattleWindowLogger(MissionWindowLogger):
+    __slots__ = ()
+
+    def __init__(self):
+        super(PostBattleWindowLogger, self).__init__(LogWindows.POST_BATTLE)
+
+    @noexcept
+    def logOpen(self, missionId=None, win=False):
+        result = LogBattleResultStats.WIN if win else LogBattleResultStats.LOST
+        super(PostBattleWindowLogger, self).logOpen(missionId=missionId, info=result)
+
+
+class SelectMissionWindow(MissionWindowLogger):
+    __slots__ = ()
+
+    def __init__(self):
+        super(SelectMissionWindow, self).__init__(LogWindows.MISSION_SELECTION)
+
+    @noexcept
+    def logMissionSelectClick(self, missionId):
+        self.logClick(LogButtons.SELECT, state=str(missionId))
+
+    @noexcept
+    def logAutoSelect(self, missionId):
+        if self._isOpened:
+            self.log(LogActions.AUTO_SELECT, item=self._item, itemState=str(missionId))
+
+    @noexcept
+    def logTabChanged(self, missionId):
+        self.logClick(LogButtons.TAB_SECTION, state=str(missionId))
+
+
+class SelectorCardLogger(BaseMetricsLogger):
+    __slots__ = ()
+
+    def __init__(self):
+        super(SelectorCardLogger, self).__init__(LogWindows.MODE_SELECTOR_CARD)
+
+    @noexcept
+    def logSelfClick(self):
+        self.log(action=LogActions.CLICK, item=self._item, info=_getBattlesInfo())
+
+    @noexcept
+    def logInfoClick(self):
+        self.log(action=LogActions.CLICK, item=LogButtons.INFO, parentScreen=self._item, info=_getBattlesInfo())
+
+
+class BaseVideoLogger(WindowLogger):
+    __slots__ = ()
+
+    def logVideoStarted(self, missionId):
+        if self._isOpened:
+            self.log(LogActions.PLAY, item=self._item, itemState=str(missionId))
+
+
+class IntroVideoLogger(BaseVideoLogger):
+    __slots__ = ()
+
+    def __init__(self):
+        super(IntroVideoLogger, self).__init__(LogWindows.INTRO_VIDEO)
+
+
+class OutroVideoLogger(BaseVideoLogger):
+    __slots__ = ()
+
+    def __init__(self):
+        super(OutroVideoLogger, self).__init__(LogWindows.OUTRO_VIDEO)
+
+
+class EntryPointLogger(MetricsLogger):
+    __slots__ = ()
+
+    def __init__(self):
+        super(EntryPointLogger, self).__init__(Features.STORY_MODE)
+
+    @noexcept
+    def logClick(self):
+        self.log(LogActions.CLICK, LogWindows.ENTRY_POINT_EVENT, info=_getBattlesInfo())
+
+
+class NewbieEntryPointLogger(MetricsLogger):
+    __slots__ = ()
+
+    def __init__(self):
+        super(NewbieEntryPointLogger, self).__init__(Features.STORY_MODE)
+
+    @noexcept
+    def logClick(self):
+        self.log(LogActions.CLICK, LogWindows.ENTRY_POINT, info=_getBattlesInfo())
+
+
+class EventEntryPointTooltipLogger(BaseMetricsLogger):
+    __slots__ = ()
+
+    def __init__(self):
+        super(EventEntryPointTooltipLogger, self).__init__(LogWindows.ENTRY_POINT_TOOLTIP_EVENT)
+
+    def start(self):
+        self.startAction(LogActions.WATCHED)
+
+    @noexcept
+    def stop(self):
+        self.stopAction(LogActions.WATCHED, self._item, info=_getBattlesInfo(), timeLimit=TOOLTIP_MIN_VIEW_TIME)
+
+
+class NewbieEntryPointTooltipLogger(BaseMetricsLogger):
+    __slots__ = ()
+
+    def __init__(self):
+        super(NewbieEntryPointTooltipLogger, self).__init__(LogWindows.ENTRY_POINT_TOOLTIP)
+
+    def start(self):
+        self.startAction(LogActions.WATCHED)
+
+    @noexcept
+    def stop(self):
+        self.stopAction(LogActions.WATCHED, self._item, info=_getBattlesInfo(), timeLimit=TOOLTIP_MIN_VIEW_TIME)
+
+
+class NewbieAdvertisingViewLogger(WindowLogger):
+    __slots__ = ()
+
+    def __init__(self):
+        super(NewbieAdvertisingViewLogger, self).__init__(LogWindows.NEWBIE_ADVERTISING)
+
+
+class EventWelcomeViewLogger(WindowLogger):
+    __slots__ = ()
+
+    def __init__(self):
+        super(EventWelcomeViewLogger, self).__init__(LogWindows.EVENT_WELCOME)
+
+
+class TasksCompletedWarningLogger(WindowLogger):
+    __slots__ = ()
+
+    def __init__(self):
+        super(TasksCompletedWarningLogger, self).__init__(LogWindows.COMPLETED_TASKS_WARNING)

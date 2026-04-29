@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/items/vehicle_items.py
-import functools
-import typing
-import Math
-import nations
+import functools, typing, Math, nations
 from constants import SHELL_TYPES, ATTACK_REASON, SHELL_MECHANICS_TYPE, INFINITE_SHELL_TAG, RandomizationType, FORCE_FINITE_SHELL_TAG, SHELL_TYPES_INDICES
 from items import ITEM_TYPES, ITEM_TYPE_NAMES, makeIntCompactDescrByID
 from items.basic_item import BasicItem
@@ -37,7 +32,7 @@ class CHASSIS_ITEM_TYPE(object):
 
 
 class _ShallowCopyWrapper(object):
-    __slots__ = ('__exclude',)
+    __slots__ = ('__exclude', )
 
     def __init__(self, *exclude):
         super(_ShallowCopyWrapper, self).__init__()
@@ -47,7 +42,7 @@ class _ShallowCopyWrapper(object):
         fields = getattr(clazz, '__slots__', None)
         method = getattr(clazz, 'copy', None)
         if method is None or not callable(method):
-            raise ValueError('Method "copy" is not found in {}'.format(clazz))
+            raise ValueError(('Method "copy" is not found in {}').format(clazz))
 
         def wrapCopy(func):
 
@@ -80,12 +75,14 @@ class VehicleItem(BasicItem):
         self.status = status
 
     def __repr__(self):
-        return '{}(id={}, name={}, level={}, status={})'.format(self.__class__.__name__, self.id, self.name, self.level, self.status)
+        return ('{}(id={}, name={}, level={}, status={})').format(self.__class__.__name__, self.id, self.name, self.level, self.status)
 
 
 @add_shallow_copy('unlocks')
 class InstallableItem(VehicleItem):
-    __slots__ = ('weight', 'modelsSets', 'models', 'materials', 'hitTesterManager', 'unlocks', 'armorHomogenization', 'camouflage', 'healthParams', 'sounds', 'emblemSlots', 'slotsAnchors')
+    __slots__ = ('weight', 'modelsSets', 'models', 'materials', 'hitTesterManager',
+                 'unlocks', 'armorHomogenization', 'camouflage', 'healthParams',
+                 'sounds', 'emblemSlots', 'slotsAnchors')
     __metaclass__ = ReflectionMetaclass
 
     def __init__(self, typeID, componentID, componentName, compactDescr, level=1):
@@ -152,7 +149,16 @@ class InstallableItem(VehicleItem):
 @add_shallow_copy()
 class Chassis(InstallableItem):
     __metaclass__ = ReflectionMetaclass
-    __slots__ = ('hullPosition', 'topRightCarryingPoint', 'navmeshGirth', 'minPlaneNormalY', 'specificFriction', 'rotationSpeed', 'rotationSpeedLimit', 'rotationIsAroundCenter', 'shotDispersionFactors', 'terrainResistance', 'bulkHealthFactor', 'carryingTriangles', 'drivingWheelsSizes', 'chassisLodDistance', 'traces', 'tracks', 'wheels', 'trackPairs', 'bboxManager', 'groundNodes', 'trackNodes', 'trackSplineParams', 'splineDesc', 'leveredSuspension', 'suspensionSpringsLength', 'hullAimingSound', 'effects', 'customEffects', 'AODecals', 'brakeForce', 'physicalTracks', 'customizableVehicleAreas', 'generalWheelsAnimatorConfig', 'wheelHealthParams', 'wheelsArmor', '_chassisType', 'prefabs', 'slotPrefabs', 'objectSlots')
+    __slots__ = ('hullPosition', 'topRightCarryingPoint', 'navmeshGirth', 'minPlaneNormalY',
+                 'specificFriction', 'rotationSpeed', 'rotationSpeedLimit', 'rotationIsAroundCenter',
+                 'shotDispersionFactors', 'terrainResistance', 'bulkHealthFactor',
+                 'carryingTriangles', 'drivingWheelsSizes', 'chassisLodDistance',
+                 'traces', 'tracks', 'wheels', 'trackPairs', 'bboxManager', 'groundNodes',
+                 'trackNodes', 'trackSplineParams', 'splineDesc', 'leveredSuspension',
+                 'suspensionSpringsLength', 'hullAimingSound', 'effects', 'customEffects',
+                 'AODecals', 'brakeForce', 'physicalTracks', 'customizableVehicleAreas',
+                 'generalWheelsAnimatorConfig', 'wheelHealthParams', 'wheelsArmor',
+                 '_chassisType', 'prefabs', 'slotPrefabs', 'objectSlots')
 
     def __init__(self, typeID, componentID, componentName, compactDescr, level=1):
         super(Chassis, self).__init__(typeID, componentID, componentName, compactDescr, level=level)
@@ -227,7 +233,8 @@ class Chassis(InstallableItem):
 
 @add_shallow_copy()
 class Engine(InstallableItem):
-    __slots__ = ('power', 'fireStartingChance', 'minFireStartingDamage', 'rpm_min', 'rpm_max')
+    __slots__ = ('power', 'fireStartingChance', 'minFireStartingDamage', 'rpm_min',
+                 'rpm_max')
 
     def __init__(self, typeID, componentID, componentName, compactDescr, level=1):
         super(Engine, self).__init__(typeID, componentID, componentName, compactDescr, level)
@@ -259,7 +266,12 @@ class Radio(InstallableItem):
 @add_shallow_copy()
 class Turret(InstallableItem):
     __metaclass__ = ReflectionMetaclass
-    __slots__ = ('gunPosition', 'gunJointPitch', 'rotationSpeed', 'turretRotatorHealth', 'surveyingDeviceHealth', 'invisibilityFactor', 'primaryArmor', 'ceilless', 'showEmblemsOnGun', 'guns', 'secondaryGuns', 'turretRotatorSoundManual', 'turretRotatorSoundGear', 'AODecals', 'turretDetachmentEffects', 'physicsShape', 'circularVisionRadius', 'customizableVehicleAreas', 'multiGun', 'prefabs', 'slotPrefabs', 'objectSlots')
+    __slots__ = ('gunPosition', 'gunJointPitch', 'rotationSpeed', 'turretRotatorHealth',
+                 'surveyingDeviceHealth', 'invisibilityFactor', 'primaryArmor', 'ceilless',
+                 'showEmblemsOnGun', 'guns', 'secondaryGuns', 'turretRotatorSoundManual',
+                 'turretRotatorSoundGear', 'AODecals', 'turretDetachmentEffects',
+                 'physicsShape', 'circularVisionRadius', 'customizableVehicleAreas',
+                 'multiGun', 'prefabs', 'slotPrefabs', 'objectSlots')
 
     def __init__(self, typeID, componentID, componentName, compactDescr, level=1):
         super(Turret, self).__init__(typeID, componentID, componentName, compactDescr, level)
@@ -295,7 +307,16 @@ class Turret(InstallableItem):
 @add_shallow_copy('__weakref__')
 class Gun(InstallableItem):
     __metaclass__ = ReflectionMetaclass
-    __slots__ = ('rotationSpeed', 'reloadTime', 'aimingTime', 'maxAmmo', 'invisibilityFactorAtShot', 'effectsCaliber', 'effects', 'reloadEffect', 'impulse', 'recoil', 'animateEmblemSlots', 'shotOffset', 'multiGunState', 'turretYawLimits', 'pitchLimits', 'staticTurretYaw', 'staticPitch', 'shotDispersionAngle', 'shotDispersionFactors', 'burst', 'clip', 'shots', 'autoreload', 'autoreloadHasBoost', 'drivenJoints', 'customizableVehicleAreas', 'dualGun', 'edgeByVisualModel', 'prefabs', 'shootImpulses', 'dualAccuracy', 'isDamageMutable', 'forcedReloadTime', 'autoShoot', 'twinGun', 'slotPrefabs', 'objectSlots', 'prefabEffects', 'muzzleBrake', 'secondaryGunID', 'controllableReload', 'mechanicsParams', '__weakref__')
+    __slots__ = ('rotationSpeed', 'reloadTime', 'aimingTime', 'maxAmmo', 'invisibilityFactorAtShot',
+                 'effectsCaliber', 'effects', 'reloadEffect', 'impulse', 'recoil',
+                 'animateEmblemSlots', 'shotOffset', 'multiGunState', 'turretYawLimits',
+                 'pitchLimits', 'staticTurretYaw', 'staticPitch', 'shotDispersionAngle',
+                 'shotDispersionFactors', 'burst', 'clip', 'shots', 'autoreload',
+                 'autoreloadHasBoost', 'drivenJoints', 'customizableVehicleAreas',
+                 'dualGun', 'edgeByVisualModel', 'prefabs', 'shootImpulses', 'dualAccuracy',
+                 'isDamageMutable', 'forcedReloadTime', 'autoShoot', 'twinGun', 'slotPrefabs',
+                 'objectSlots', 'prefabEffects', 'muzzleBrake', 'secondaryGunID',
+                 'controllableReload', 'mechanicsParams', '__weakref__')
 
     def __init__(self, typeID, componentID, componentName, compactDescr, level=1):
         super(Gun, self).__init__(typeID, componentID, componentName, compactDescr, level)
@@ -351,13 +372,26 @@ class Gun(InstallableItem):
 
     @property
     def multiGun(self):
-        return self.multiGunState.multiGun if self.multiGunState is not None else None
+        if self.multiGunState is not None:
+            return self.multiGunState.multiGun
+        else:
+            return
+
+    @property
+    def hasClip(self):
+        return 'clip' in self.tags
 
 
 @add_shallow_copy('variantName')
 class Hull(BasicItem):
     __metaclass__ = ReflectionMetaclass
-    __slots__ = ('variantName', 'hitTesterManager', 'materials', 'weight', 'maxHealth', 'ammoBayHealth', 'armorHomogenization', 'turretPositions', 'turretPitches', 'turretHardPoints', 'variantMatch', 'fakeTurrets', 'emblemSlots', 'slotsAnchors', 'modelsSets', 'models', 'swinging', 'customEffects', 'AODecals', 'camouflage', 'hangarShadowTexture', 'primaryArmor', 'customizableVehicleAreas', 'burnoutAnimation', 'prefabs', 'slotPrefabs', 'objectSlots')
+    __slots__ = ('variantName', 'hitTesterManager', 'materials', 'weight', 'maxHealth',
+                 'ammoBayHealth', 'armorHomogenization', 'turretPositions', 'turretPitches',
+                 'turretHardPoints', 'variantMatch', 'fakeTurrets', 'emblemSlots',
+                 'slotsAnchors', 'modelsSets', 'models', 'swinging', 'customEffects',
+                 'AODecals', 'camouflage', 'hangarShadowTexture', 'primaryArmor',
+                 'customizableVehicleAreas', 'burnoutAnimation', 'prefabs', 'slotPrefabs',
+                 'objectSlots')
 
     def __init__(self):
         super(Hull, self).__init__(component_constants.UNDEFINED_ITEM_TYPE_ID, component_constants.ZERO_INT, component_constants.EMPTY_STRING, component_constants.ZERO_INT)
@@ -399,7 +433,12 @@ class Hull(BasicItem):
 
 
 class Shell(BasicItem):
-    __slots__ = ('caliber', 'isTracer', 'isForceTracer', 'armorDamage', 'deviceDamage', 'damageRandomization', 'damageRandomizationType', 'piercingPowerRandomization', 'piercingPowerRandomizationType', 'icon', 'iconName', 'isGold', 'type', 'stun', 'effectsCaliber', 'effectsIndex', 'prefabEffectsIndex', 'secondaryAttackReason', 'isDamageMutable', 'maxDistance', 'dynamicEffectsIndexes', 'obstaclesDamage', 'obstaclesPowerReduction')
+    __slots__ = ('caliber', 'isTracer', 'isForceTracer', 'armorDamage', 'deviceDamage',
+                 'damageRandomization', 'damageRandomizationType', 'piercingPowerRandomization',
+                 'piercingPowerRandomizationType', 'icon', 'iconName', 'isGold',
+                 'type', 'stun', 'effectsCaliber', 'effectsIndex', 'prefabEffectsIndex',
+                 'secondaryAttackReason', 'isDamageMutable', 'maxDistance', 'dynamicEffectsIndexes',
+                 'obstaclesDamage', 'obstaclesPowerReduction')
 
     def __init__(self, typeID, componentID, componentName, compactDescr):
         super(Shell, self).__init__(typeID, componentID, componentName, compactDescr)
@@ -429,7 +468,7 @@ class Shell(BasicItem):
 
     def __repr__(self):
         nationId, shellId = self.id
-        return 'Shell(nation = {}, shellId = {}, shellName={})'.format(nations.NAMES[nationId], shellId, self.name)
+        return ('Shell(nation = {}, shellId = {}, shellName={})').format(nations.NAMES[nationId], shellId, self.name)
 
     @property
     def kind(self):
@@ -445,11 +484,16 @@ class Shell(BasicItem):
 
     @property
     def isArmorPercingType(self):
-        return self.kind in (SHELL_TYPES.ARMOR_PIERCING, SHELL_TYPES.ARMOR_PIERCING_HE, SHELL_TYPES.ARMOR_PIERCING_CR)
+        return self.kind in (
+         SHELL_TYPES.ARMOR_PIERCING,
+         SHELL_TYPES.ARMOR_PIERCING_HE,
+         SHELL_TYPES.ARMOR_PIERCING_CR)
 
     @property
     def isPiercingDistanceDependent(self):
-        return self.kind in (SHELL_TYPES.ARMOR_PIERCING, SHELL_TYPES.ARMOR_PIERCING_CR)
+        return self.kind in (
+         SHELL_TYPES.ARMOR_PIERCING,
+         SHELL_TYPES.ARMOR_PIERCING_CR)
 
     @property
     def isModernHE(self):
@@ -472,21 +516,21 @@ class Shell(BasicItem):
     @property
     def prereqEffectIndexes(self):
         indexes = (self.effectsIndex,) if self.effectsIndex != component_constants.INVALID_EFFECT_INDEX else tuple()
-        return indexes + tuple((item.effectsIndex for item in self.dynamicEffectsIndexes))
+        return indexes + tuple(item.effectsIndex for item in self.dynamicEffectsIndexes)
 
 
-_TYPE_ID_TO_CLASS = {ITEM_TYPES.vehicleChassis: Chassis,
- ITEM_TYPES.vehicleTurret: Turret,
- ITEM_TYPES.vehicleGun: Gun,
- ITEM_TYPES.vehicleEngine: Engine,
- ITEM_TYPES.vehicleFuelTank: FuelTank,
- ITEM_TYPES.vehicleRadio: Radio}
+_TYPE_ID_TO_CLASS = {ITEM_TYPES.vehicleChassis: Chassis, 
+   ITEM_TYPES.vehicleTurret: Turret, 
+   ITEM_TYPES.vehicleGun: Gun, 
+   ITEM_TYPES.vehicleEngine: Engine, 
+   ITEM_TYPES.vehicleFuelTank: FuelTank, 
+   ITEM_TYPES.vehicleRadio: Radio}
 
 def createInstallableItem(itemTypeID, nationID, itemID, name):
     if itemTypeID in _TYPE_ID_TO_CLASS:
         clazz = _TYPE_ID_TO_CLASS[itemTypeID]
         return clazz(itemTypeID, (nationID, itemID), name, makeIntCompactDescrByID(ITEM_TYPE_NAMES[itemTypeID], nationID, itemID))
-    raise SoftException('Item can not be created by type {}'.format(itemTypeID))
+    raise SoftException(('Item can not be created by type {}').format(itemTypeID))
 
 
 def createChassis(nationID, componentID, name):

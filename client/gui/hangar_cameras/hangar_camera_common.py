@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/hangar_cameras/hangar_camera_common.py
 from enum import Enum
 from gui.shared.events import HasCtxEvent
 
@@ -21,3 +19,4 @@ class CameraRelatedEvents(HasCtxEvent):
     LOBBY_VIEW_MOUSE_MOVE = 'MouseMove'
     FORCE_DISABLE_IDLE_PARALAX_MOVEMENT = 'cameraRelatedEvents/forceDisableIdleParalaxMovement'
     FORCE_DISABLE_CAMERA_MOVEMENT = 'cameraRelatedEvents/forceDisableCameraMovement'
+    ON_RESIZE = 'OnResize'

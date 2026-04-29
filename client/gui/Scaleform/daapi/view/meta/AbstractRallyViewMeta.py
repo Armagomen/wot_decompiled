@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/AbstractRallyViewMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class AbstractRallyViewMeta(BaseDAAPIComponent):
@@ -8,10 +6,13 @@ class AbstractRallyViewMeta(BaseDAAPIComponent):
         self._printOverrideError('viewSize')
 
     def as_setPyAliasS(self, alias):
-        return self.flashObject.as_setPyAlias(alias) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setPyAlias(alias)
 
     def as_getPyAliasS(self):
-        return self.flashObject.as_getPyAlias() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_getPyAlias()
 
     def as_loadBrowserS(self):
-        return self.flashObject.as_loadBrowser() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_loadBrowser()

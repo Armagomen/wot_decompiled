@@ -1,11 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/smoke_screen.py
+from __future__ import absolute_import, division
 import logging
 from helpers.EffectsList import effectsFromSection
 from items import vehicles
-import BigWorld
-import ResMgr
-import Math
+import BigWorld, ResMgr, Math
 from Flock import DebugGizmo
 ENVIRONMENT_EFFECTS_CONFIG_FILE = 'scripts/dynamic_objects.xml'
 _SHOW_DEBUG_SMOKE = False

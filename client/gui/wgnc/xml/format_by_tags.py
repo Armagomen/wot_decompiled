@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/wgnc/xml/format_by_tags.py
 import re
 from debug_utils import LOG_CURRENT_EXCEPTION, LOG_WARNING
 from gui.impl import backport
@@ -7,7 +5,7 @@ from helpers import i18n
 _RE_FLAGS = re.M | re.U
 
 class _TagFormatter(object):
-    __slots__ = ('_compiled',)
+    __slots__ = ('_compiled', )
 
     def __init__(self, name):
         super(_TagFormatter, self).__init__()
@@ -53,7 +51,7 @@ class _ValueFormatter(_TagFormatter):
         raise NotImplementedError
 
     def _makePattern(self, name):
-        return re.compile('(<{0}.*?>(.+?)</{0}>)'.format(name), _RE_FLAGS)
+        return re.compile(('(<{0}.*?>(.+?)</{0}>)').format(name), _RE_FLAGS)
 
 
 class _GoldFormatter(_ValueFormatter):
@@ -141,7 +139,7 @@ class _DateTimeFormatter(_TimeFormatter):
 
     def _getValue(self, value):
         value = self._getLocalTime(value)
-        return u'{0:>s} {1:>s}'.format(backport.getShortDateFormat(value), backport.getLongTimeFormat(value))
+        return ('{0:>s} {1:>s}').format(backport.getShortDateFormat(value), backport.getLongTimeFormat(value))
 
 
 _LINK_HTML = '<a href="event:{0}">{1}</a>'
@@ -163,10 +161,12 @@ class _LinkFormatter(_TagFormatter):
             if not actions:
                 LOG_WARNING('Actions are empty. It is removed', tag)
                 yield (tag, '')
-            yield (tag, _LINK_HTML.format(actions, label))
+            else:
+                yield (
+                 tag, _LINK_HTML.format(actions, label))
 
     def _makePattern(self, name):
-        return re.compile('(<{0} actions=(["|\\\']+?)(.+?)\\2>(.+?)</{0}>)'.format(name), _RE_FLAGS)
+        return re.compile(('(<{0} actions=(["|\\\']+?)(.+?)\\2>(.+?)</{0}>)').format(name), _RE_FLAGS)
 
 
 class _LocalizationFormatter(_TagFormatter):
@@ -188,7 +188,8 @@ class _LocalizationFormatter(_TagFormatter):
         return re.compile('(\\_\\(([^)]+)\\))', _RE_FLAGS)
 
 
-_formatters = (_GoldFormatter(),
+_formatters = (
+ _GoldFormatter(),
  _IntegerFormatter(),
  _FloatFormatter(),
  _NiceNumberFormatter(),

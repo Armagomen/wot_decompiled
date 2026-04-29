@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/gui/Scaleform/battle_entry.py
-import weakref
-import BigWorld
-import Keys
+import weakref, BigWorld, Keys
 from aih_constants import CTRL_MODE_NAME
 from debug_utils import LOG_ERROR
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE
@@ -29,11 +25,11 @@ class BattleEntry(IGUIEntry):
 
     @storage_getter('channels')
     def channelsStorage(self):
-        return None
+        return
 
     @proto_getter(PROTO_TYPE.MIGRATION)
     def proto(self):
-        return None
+        return
 
     @property
     def channelsCtrl(self):
@@ -114,36 +110,39 @@ class BattleEntry(IGUIEntry):
         isFocused = self.isFocused()
         if not isFocused and BigWorld.isKeyDown(Keys.KEY_TAB):
             return False
-        player = BigWorld.player()
-        currentMode = ''
-        if player is not None and player.inputHandler is not None:
-            inputHandler = player.inputHandler
-            currentMode = inputHandler.ctrlModeName
-        if event.isKeyDown() and not event.isAltDown() and key in (Keys.KEY_RETURN, Keys.KEY_NUMPADENTER) and currentMode != CTRL_MODE_NAME.KILL_CAM:
-            return self.__handleEnterPressed()
-        if key in (Keys.KEY_LCONTROL, Keys.KEY_RCONTROL):
-            self.__handleCTRLPressed(key == Keys.KEY_LCONTROL, event.isKeyDown())
-        if isFocused:
-            if event.isKeyDown():
-                if key == Keys.KEY_ESCAPE:
-                    self.__setFocused(False)
-                elif key == Keys.KEY_TAB:
-                    self.__setNextReceiver()
-            return event.key != Keys.KEY_SYSRQ
         else:
+            player = BigWorld.player()
+            currentMode = ''
+            if player is not None and player.inputHandler is not None:
+                inputHandler = player.inputHandler
+                currentMode = inputHandler.ctrlModeName
+            if event.isKeyDown() and not event.isAltDown() and key in (Keys.KEY_RETURN, Keys.KEY_NUMPADENTER) and currentMode != CTRL_MODE_NAME.KILL_CAM:
+                return self.__handleEnterPressed()
+            if key in (Keys.KEY_LCONTROL, Keys.KEY_RCONTROL):
+                self.__handleCTRLPressed(key == Keys.KEY_LCONTROL, event.isKeyDown())
+            if isFocused:
+                if event.isKeyDown():
+                    if key == Keys.KEY_ESCAPE:
+                        self.__setFocused(False)
+                    elif key == Keys.KEY_TAB:
+                        self.__setNextReceiver()
+                return event.key != Keys.KEY_SYSRQ
             return False
 
     def isFocused(self):
         view = self.__view()
-        return view.isFocused() if view is not None else False
+        if view is not None:
+            return view.isFocused()
+        else:
+            return False
 
     def __setEnable(self):
         if self.__view() is None or not BATTLE_CHANNEL.isInitialized(self.__initialized):
             return
+        import BattleReplay
+        if BattleReplay.g_replayCtrl.isPlaying:
+            return
         else:
-            import BattleReplay
-            if BattleReplay.g_replayCtrl.isPlaying:
-                return
             view = self.__view()
             if view is not None:
                 view.enableToSendMessage()
@@ -221,11 +220,11 @@ class BattleEntry(IGUIEntry):
         if controller is None:
             LOG_ERROR('Controller not found', command)
             return
-        elif command.getCommandType() != MESSENGER_COMMAND_TYPE.BATTLE:
-            return
-        elif command.isInSilentMode() or not controller.filterMessage(command) or command.isServerCommand():
-            return
         else:
+            if command.getCommandType() != MESSENGER_COMMAND_TYPE.BATTLE:
+                return
+            if command.isInSilentMode() or not controller.filterMessage(command) or command.isServerCommand():
+                return
             controller.addCommand(command)
             return
 
@@ -253,9 +252,9 @@ class BattleEntry(IGUIEntry):
         if controller is None:
             LOG_ERROR('Controller is not defined', event.ctx)
             return
-        elif not self.__channelsCtrl.hasController(controller):
-            return
         else:
+            if not self.__channelsCtrl.hasController(controller):
+                return
             flag = controller.getSettings().initFlag
             if flag & self.__initialized > 0:
                 return

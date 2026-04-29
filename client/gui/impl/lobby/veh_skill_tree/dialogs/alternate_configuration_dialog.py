@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/veh_skill_tree/dialogs/alternate_configuration_dialog.py
 import json
 from functools import partial
 import BigWorld
@@ -17,8 +15,8 @@ from post_progression_common import ACTION_TYPES, GROUP_ID_BY_FEATURE
 from skeletons.gui.shared import IItemsCache
 from gui.impl.gen.view_models.views.lobby.vehicle_hub.views.sub_models.veh_skill_tree import alternate_configuration_dialog_model
 from gui.impl.gen.view_models.views.lobby.vehicle_hub.views.sub_models.veh_skill_tree import alternate_configuration_dialog_loadout_model
-_FEATURE_TO_LOADOUT_TYPE = {'shells_consumables_switch': alternate_configuration_dialog_loadout_model.LoadoutType.SHELLSCONSUMABLESSWITCH,
- 'opt_dev_boosters_switch': alternate_configuration_dialog_loadout_model.LoadoutType.OPTDEVBOOSTERSSWITCH}
+_FEATURE_TO_LOADOUT_TYPE = {'shells_consumables_switch': alternate_configuration_dialog_loadout_model.LoadoutType.SHELLSCONSUMABLESSWITCH, 
+   'opt_dev_boosters_switch': alternate_configuration_dialog_loadout_model.LoadoutType.OPTDEVBOOSTERSSWITCH}
 _LOADOUT_TYPE_TO_FEATURE = {loadoutType:feature for feature, loadoutType in _FEATURE_TO_LOADOUT_TYPE.items()}
 
 class AlternateConfigurationDialog(FullScreenDialogBaseView):
@@ -58,7 +56,13 @@ class AlternateConfigurationDialog(FullScreenDialogBaseView):
         self.__update()
 
     def _getEvents(self):
-        return ((self.viewModel.onClose, self.__onClose), (self.viewModel.onAffirmate, self.__onAffirmate), (self.__itemsCache.onSyncCompleted, self.__onInventoryResync))
+        return (
+         (
+          self.viewModel.onClose, self.__onClose),
+         (
+          self.viewModel.onAffirmate, self.__onAffirmate),
+         (
+          self.__itemsCache.onSyncCompleted, self.__onInventoryResync))
 
     def __onInventoryResync(self, reason, diff):
         if self.__vehicle and self.__vehicle.intCD in diff.get(GUI_ITEM_TYPE.VEHICLE, {}):
@@ -85,12 +89,11 @@ class AlternateConfigurationDialog(FullScreenDialogBaseView):
     def __update(self):
         if self.__vehicle is None or self.__feature is None or self.__nodeID is None:
             return
-        else:
-            with self.viewModel.transaction() as vm:
-                self.__fillLoadouts(vm)
-                fillVehicleInfo(vm.vehicleInfo, self.__vehicle)
-                vm.setNodeID(self.__nodeID)
-            return
+        with self.viewModel.transaction() as (vm):
+            self.__fillLoadouts(vm)
+            fillVehicleInfo(vm.vehicleInfo, self.__vehicle)
+            vm.setNodeID(self.__nodeID)
+        return
 
     def __fillLoadouts(self, viewModel):
         loadouts = viewModel.getLoadouts()

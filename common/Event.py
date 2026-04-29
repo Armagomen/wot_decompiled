@@ -1,10 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/Event.py
 from WeakMethod import WeakMethodProxy
 from debug_utils import LOG_CURRENT_EXCEPTION
 
 class Event(list):
-    __slots__ = ('__weakref__',)
+    __slots__ = ('__weakref__', )
 
     def __init__(self, manager=None):
         list.__init__(self)
@@ -54,7 +52,7 @@ class SafeEvent(Event):
 
 
 class LateEvent(SafeEvent):
-    __slots__ = ('__lateCallback',)
+    __slots__ = ('__lateCallback', )
 
     def __init__(self, lateCallback, manager=None):
         super(LateEvent, self).__init__(manager)
@@ -71,7 +69,7 @@ class LateEvent(SafeEvent):
 
 
 class Handler(object):
-    __slots__ = ('__delegate',)
+    __slots__ = ('__delegate', )
 
     def __init__(self, manager=None):
         self.__delegate = None
@@ -80,7 +78,10 @@ class Handler(object):
         return
 
     def __call__(self, *args, **kwargs):
-        return self.__delegate(*args, **kwargs) if self.__delegate is not None else None
+        if self.__delegate is not None:
+            return self.__delegate(*args, **kwargs)
+        else:
+            return
 
     def set(self, delegate):
         self.__delegate = delegate
@@ -91,7 +92,7 @@ class Handler(object):
 
 
 class EventManager(object):
-    __slots__ = ('__events',)
+    __slots__ = ('__events', )
 
     def __init__(self):
         self.__events = []
@@ -109,7 +110,7 @@ class EventManager(object):
 
 
 class SuspendedEvent(Event):
-    __slots__ = ('__manager',)
+    __slots__ = ('__manager', )
 
     def __init__(self, manager):
         super(SuspendedEvent, self).__init__(manager)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/rewards_selection_screen.py
 from enum import Enum
 import typing
 from comp7.gui.impl.gen.view_models.views.lobby.enums import MetaRootViews
@@ -22,7 +20,9 @@ if typing.TYPE_CHECKING:
     from gui.SystemMessages import ResultMsg
 WEEKLY_TAB_PARTIAL = 'weekly:'
 YEARLY_TAB_PARTIAL = 'yearly:'
-TABS_PRIORITY = (WEEKLY_TAB_PARTIAL, '%s%s' % (YEARLY_TAB_PARTIAL, 'modernized'), '%s%s' % (YEARLY_TAB_PARTIAL, 'deluxe'))
+TABS_PRIORITY = (WEEKLY_TAB_PARTIAL,
+ '%s%s' % (YEARLY_TAB_PARTIAL, 'modernized'),
+ '%s%s' % (YEARLY_TAB_PARTIAL, 'deluxe'))
 
 class Comp7SelectableRewardType(Enum):
     NONE = 0
@@ -73,11 +73,14 @@ class Comp7RewardsSelectionView(SelectableRewardBase):
     def __getSelectedMetaTabId(uiLoader=None):
         contentResId = R.views.comp7.mono.lobby.meta_root_view()
         metaView = uiLoader.windowsManager.getViewByLayoutID(contentResId)
-        return metaView.tabId if metaView else None
+        if metaView:
+            return metaView.tabId
+        else:
+            return
 
 
 class Comp7RewardsSelectionWindow(LobbyWindow):
-    __slots__ = ('__rewardTokens',)
+    __slots__ = ('__rewardTokens', )
 
     def __init__(self, rewardSelectionType=Comp7SelectableRewardType.NONE, category=None):
         if category and category.endswith('_gift'):
@@ -85,7 +88,8 @@ class Comp7RewardsSelectionWindow(LobbyWindow):
         yearlyToken = COMP7_OFFER_YEARLY_REWARD_TOKEN_PREFIX
         weeklyToken = getComp7OfferWeeklyQuestsRewardTokenPrefix()
         if rewardSelectionType is Comp7SelectableRewardType.NONE:
-            self.__rewardTokens = (yearlyToken, weeklyToken)
+            self.__rewardTokens = (
+             yearlyToken, weeklyToken)
         elif rewardSelectionType is Comp7SelectableRewardType.WEEKLY_QUESTS:
             self.__rewardTokens = (offerRewardCategoryToken(weeklyToken, category),) if category else (weeklyToken,)
         elif rewardSelectionType is Comp7SelectableRewardType.YEARLY:
@@ -95,4 +99,4 @@ class Comp7RewardsSelectionWindow(LobbyWindow):
         super(Comp7RewardsSelectionWindow, self).__init__(wndFlags=WindowFlags.WINDOW | WindowFlags.WINDOW_FULLSCREEN, content=Comp7RewardsSelectionView(self.tokenCondition))
 
     def tokenCondition(self, token):
-        return not self.__rewardTokens or any((token.startswith(prefix) for prefix in self.__rewardTokens))
+        return not self.__rewardTokens or any(token.startswith(prefix) for prefix in self.__rewardTokens)

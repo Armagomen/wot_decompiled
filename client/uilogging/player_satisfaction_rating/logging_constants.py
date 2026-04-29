@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/uilogging/player_satisfaction_rating/logging_constants.py
 from enum import Enum
 from chat_commands_consts import BATTLE_CHAT_COMMAND_NAMES
 from gui.Scaleform.daapi.view.lobby.lobby_constants import USER
@@ -51,11 +49,11 @@ class PlayerSatisfactionRatingInfoKeys(object):
     PREBATTLE_ID_KEY = 'prebattle_id'
 
 
-ARENA_PERIOD_TO_KEY = {0: 'idle',
- 1: 'waiting',
- 2: 'prebattle',
- 3: 'battle',
- 4: 'afterbattle'}
+ARENA_PERIOD_TO_KEY = {0: 'idle', 
+   1: 'waiting', 
+   2: 'prebattle', 
+   3: 'battle', 
+   4: 'afterbattle'}
 
 class PlayerSatisfactionRatingRadialMenuActions(Enum):
     NO_ACTION = 'no_action'
@@ -66,19 +64,19 @@ class PlayerSatisfactionRatingRadialMenuActions(Enum):
     RETREAT = 'retreat'
 
 
-RADIAL_MENU_ACTIONS_TO_LOGGING_ACTIONS = {BATTLE_CHAT_COMMAND_NAMES.THANKS: PlayerSatisfactionRatingRadialMenuActions.THANK_YOU,
- BATTLE_CHAT_COMMAND_NAMES.HELPME: PlayerSatisfactionRatingRadialMenuActions.HELP_ASKED,
- BATTLE_CHAT_COMMAND_NAMES.TURNBACK: PlayerSatisfactionRatingRadialMenuActions.RETREAT,
- BATTLE_CHAT_COMMAND_NAMES.SUPPORTING_ALLY: PlayerSatisfactionRatingRadialMenuActions.HELP_PROVIDE}
-POST_BATTLE_CM_ACTION_TO_PLAYER_SATISFACTION_CM_ACTION = {USER.ADD_TO_FRIENDS: PlayerSatisfactionRatingCMActions.FRIEND_ACTION,
- USER.REMOVE_FROM_FRIENDS: PlayerSatisfactionRatingCMActions.FRIEND_ACTION,
- USER.REQUEST_FRIENDSHIP: PlayerSatisfactionRatingCMActions.FRIEND_ACTION,
- USER.CREATE_PRIVATE_CHANNEL: PlayerSatisfactionRatingCMActions.SEND_MESSAGE,
- USER.CREATE_SQUAD: PlayerSatisfactionRatingCMActions.CREATE_PLATOON,
- USER.INVITE: PlayerSatisfactionRatingCMActions.CREATE_UNIT,
- DENUNCIATIONS.INCORRECT_BEHAVIOR: PlayerSatisfactionRatingCMActions.COMPLAIN,
- DENUNCIATIONS.NOT_FAIR_PLAY: PlayerSatisfactionRatingCMActions.COMPLAIN,
- DENUNCIATIONS.FORBIDDEN_NICK: PlayerSatisfactionRatingCMActions.COMPLAIN,
- DENUNCIATIONS.BOT: PlayerSatisfactionRatingCMActions.COMPLAIN,
- USER.ADD_TO_IGNORED: PlayerSatisfactionRatingCMActions.BLACKLIST,
- USER.REMOVE_FROM_IGNORED: PlayerSatisfactionRatingCMActions.BLACKLIST}
+RADIAL_MENU_ACTIONS_TO_LOGGING_ACTIONS = {BATTLE_CHAT_COMMAND_NAMES.THANKS: PlayerSatisfactionRatingRadialMenuActions.THANK_YOU, 
+   BATTLE_CHAT_COMMAND_NAMES.HELPME: PlayerSatisfactionRatingRadialMenuActions.HELP_ASKED, 
+   BATTLE_CHAT_COMMAND_NAMES.TURNBACK: PlayerSatisfactionRatingRadialMenuActions.RETREAT, 
+   BATTLE_CHAT_COMMAND_NAMES.SUPPORTING_ALLY: PlayerSatisfactionRatingRadialMenuActions.HELP_PROVIDE}
+POST_BATTLE_CM_ACTION_TO_PLAYER_SATISFACTION_CM_ACTION = {USER.ADD_TO_FRIENDS: PlayerSatisfactionRatingCMActions.FRIEND_ACTION, 
+   USER.REMOVE_FROM_FRIENDS: PlayerSatisfactionRatingCMActions.FRIEND_ACTION, 
+   USER.REQUEST_FRIENDSHIP: PlayerSatisfactionRatingCMActions.FRIEND_ACTION, 
+   USER.CREATE_PRIVATE_CHANNEL: PlayerSatisfactionRatingCMActions.SEND_MESSAGE, 
+   USER.CREATE_SQUAD: PlayerSatisfactionRatingCMActions.CREATE_PLATOON, 
+   USER.INVITE: PlayerSatisfactionRatingCMActions.CREATE_UNIT, 
+   DENUNCIATIONS.INCORRECT_BEHAVIOR: PlayerSatisfactionRatingCMActions.COMPLAIN, 
+   DENUNCIATIONS.NOT_FAIR_PLAY: PlayerSatisfactionRatingCMActions.COMPLAIN, 
+   DENUNCIATIONS.FORBIDDEN_NICK: PlayerSatisfactionRatingCMActions.COMPLAIN, 
+   DENUNCIATIONS.BOT: PlayerSatisfactionRatingCMActions.COMPLAIN, 
+   USER.ADD_TO_IGNORED: PlayerSatisfactionRatingCMActions.BLACKLIST, 
+   USER.REMOVE_FROM_IGNORED: PlayerSatisfactionRatingCMActions.BLACKLIST}

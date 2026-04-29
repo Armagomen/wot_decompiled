@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/goodies/Goodie.py
 import time
 from itertools import chain
 from typing import Dict, Tuple
@@ -28,11 +26,8 @@ def mergeExpirationsInto(source, target):
 
 
 class Goodie(object):
-    __slots__ = ['uid',
-     'state',
-     'finishTime',
-     'counter',
-     'expirations']
+    __slots__ = [
+     'uid', 'state', 'finishTime', 'counter', 'expirations']
 
     def __init__(self, uid, state=GOODIE_STATE.INACTIVE, finishTime=0, counter=0, expirations=None):
         self.uid = uid
@@ -42,11 +37,11 @@ class Goodie(object):
         self.expirations = {}
         if expirations is not None:
             self.expirations = expirations
-        LOG_DEBUG_DEV('[GOODIE_EXPIRE] Goodie created: {}'.format(self))
+        LOG_DEBUG_DEV(('[GOODIE_EXPIRE] Goodie created: {}').format(self))
         return
 
     def __repr__(self):
-        return 'Goodie[{}, {}, {}, {}, {}]'.format(self.uid, self.state, self.finishTime, self.counter, self.expirations)
+        return ('Goodie[{}, {}, {}, {}, {}]').format(self.uid, self.state, self.finishTime, self.counter, self.expirations)
 
     def isActive(self):
         return self.state == GOODIE_STATE.ACTIVE
@@ -75,12 +70,12 @@ class Goodie(object):
         for expireTimeStamp, count in self.expirations.iteritems():
             if expireTimeStamp <= now:
                 expired[expireTimeStamp] = count
-            valid[expireTimeStamp] = count
+            else:
+                valid[expireTimeStamp] = count
 
-        return (expired, valid)
+        return (
+         expired, valid)
 
     def toPdata(self):
-        return (self.state,
-         self.finishTime,
-         self.counter,
-         self.expirations)
+        return (
+         self.state, self.finishTime, self.counter, self.expirations)

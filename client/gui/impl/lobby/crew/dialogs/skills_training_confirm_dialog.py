@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/dialogs/skills_training_confirm_dialog.py
 from gui.impl.dialogs.dialog_template import DialogTemplateView
 from gui.impl.dialogs.dialog_template_button import ConfirmButton, CancelButton
 from gui.impl.dialogs.sub_views.title.simple_text_title import SimpleTextTitle
@@ -11,7 +9,8 @@ from gui.impl.lobby.crew.crew_helpers.skill_model_setup import skillSimpleModelS
 from gui.shared.gui_items.tankman_skill import getTankmanSkill
 
 class SkillsTrainingConfirmDialog(DialogTemplateView):
-    __slots__ = ('__tankman', '__skillsRole', '__skillsList', '__availableSkillsData', '__isClosed')
+    __slots__ = ('__tankman', '__skillsRole', '__skillsList', '__availableSkillsData',
+                 '__isClosed')
     LAYOUT_ID = R.views.lobby.crew.dialogs.SkillsTrainingConfirmDialog()
     VIEW_MODEL = SkillsTrainingConfirmDialogModel
 
@@ -32,7 +31,7 @@ class SkillsTrainingConfirmDialog(DialogTemplateView):
         self.setSubView(DefaultDialogPlaceHolders.TITLE, SimpleTextTitle(R.strings.dialogs.skillsTrainingConfirm.message()))
         self.addButton(ConfirmButton(R.strings.dialogs.skillsTrainingConfirm.submit()))
         self.addButton(CancelButton())
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             skillsListVM = vm.getSkillsList()
             for idx, skillName in enumerate(self.__skillsList):
                 skill = getTankmanSkill(skillName, self.__skillsRole, self.__tankman)

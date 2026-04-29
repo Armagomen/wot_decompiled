@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/rankedBattles/ranked_battles_intro.py
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import GUI_START_BEHAVIOR
 from account_helpers.settings_core.settings_constants import GuiSettingsBehavior
@@ -39,7 +37,8 @@ class RankedBattlesIntro(LobbySubView, RankedBattlesIntroMeta):
 
     def onDetailedClick(self):
         url = GUI_SETTINGS.lookup('infoPageRanked')
-        showBrowserOverlayView(url, VIEW_ALIAS.WEB_VIEW_TRANSPARENT, hiddenLayers=(WindowLayer.MARKER, WindowLayer.VIEW, WindowLayer.WINDOW))
+        showBrowserOverlayView(url, VIEW_ALIAS.WEB_VIEW_TRANSPARENT, hiddenLayers=(
+         WindowLayer.MARKER, WindowLayer.VIEW, WindowLayer.WINDOW))
 
     def onPlayVideoClick(self):
         self.__showVideo()
@@ -58,23 +57,23 @@ class RankedBattlesIntro(LobbySubView, RankedBattlesIntroMeta):
         super(RankedBattlesIntro, self)._dispose()
 
     def __update(self, _=None):
-        headerData = {'title': backport.text(R.strings.ranked_battles.rankedBattle.title()),
-         'mainDescr': backport.text(R.strings.ranked_battles.introPage.description()),
-         'extraDescr': None,
-         'tooltip': None}
+        headerData = {'title': backport.text(R.strings.ranked_battles.rankedBattle.title()), 
+           'mainDescr': backport.text(R.strings.ranked_battles.introPage.description()), 
+           'extraDescr': None, 
+           'tooltip': None}
         blocksData = []
         for index in range(BLOCKS_COUNT):
             index += 1
-            imgSource = backport.image(R.images.gui.maps.icons.rankedBattles.intro.dyn('block{}'.format(index))())
-            title = text_styles.promoSubTitle(backport.text(R.strings.ranked_battles.introPage.blocks.dyn('block{}'.format(index)).title()))
-            descr = text_styles.mainBig(backport.text(R.strings.ranked_battles.introPage.blocks.dyn('block{}'.format(index)).description()))
-            blocksData.append({'imgSource': imgSource,
-             'title': title,
-             'description': descr})
+            imgSource = backport.image(R.images.gui.maps.icons.rankedBattles.intro.dyn(('block{}').format(index))())
+            title = text_styles.promoSubTitle(backport.text(R.strings.ranked_battles.introPage.blocks.dyn(('block{}').format(index)).title()))
+            descr = text_styles.mainBig(backport.text(R.strings.ranked_battles.introPage.blocks.dyn(('block{}').format(index)).description()))
+            blocksData.append({'imgSource': imgSource, 
+               'title': title, 
+               'description': descr})
 
         if not self.__rankedController.isYearRewardEnabled():
-            blocksData[-1]['imgSource'] = backport.image(R.images.gui.maps.icons.rankedBattles.intro.yearRewardDisabled())
-            blocksData[-1]['description'] = text_styles.mainBig(backport.text(R.strings.ranked_battles.introPage.blocks.yearRewardDisabled()))
+            blocksData[(-1)]['imgSource'] = backport.image(R.images.gui.maps.icons.rankedBattles.intro.yearRewardDisabled())
+            blocksData[(-1)]['description'] = text_styles.mainBig(backport.text(R.strings.ranked_battles.introPage.blocks.yearRewardDisabled()))
         url = getRankedBattlesIntroPageUrl()
         self.__state = RANKEDBATTLES_CONSTS.INTRO_STATE_NORMAL
         if self.__rankedController.isFrozen():
@@ -82,32 +81,32 @@ class RankedBattlesIntro(LobbySubView, RankedBattlesIntroMeta):
             if not self.__rankedController.getSeasonsPassed() and not self.__rankedController.getCurrentSeason():
                 self.__state = RANKEDBATTLES_CONSTS.INTRO_STATE_BEFORE_SEASON
         if self.__state == RANKEDBATTLES_CONSTS.INTRO_STATE_DISABLED:
-            self.as_setAlertMessageBlockDataS({'alertIcon': backport.image(R.images.gui.maps.icons.library.alertBigIcon()),
-             'statusText': text_styles.vehicleStatusCriticalText(backport.text(R.strings.ranked_battles.introPage.alert.disabled())),
-             'buttonVisible': False})
+            self.as_setAlertMessageBlockDataS({'alertIcon': backport.image(R.images.gui.maps.icons.library.alertBigIcon()), 
+               'statusText': text_styles.vehicleStatusCriticalText(backport.text(R.strings.ranked_battles.introPage.alert.disabled())), 
+               'buttonVisible': False})
         elif self.__state == RANKEDBATTLES_CONSTS.INTRO_STATE_BEFORE_SEASON:
             self.__updateTimer()
         if self.__state != RANKEDBATTLES_CONSTS.INTRO_STATE_NORMAL and self.__rankedController.getRankedWelcomeCallback() is None:
             self.__rankedController.setRankedWelcomeCallback(lambda : None)
-        self.as_setDataS({'state': self.__state,
-         'hasURL': bool(url),
-         'headerData': headerData,
-         'blocksData': blocksData})
+        self.as_setDataS({'state': self.__state, 
+           'hasURL': bool(url), 
+           'headerData': headerData, 
+           'blocksData': blocksData})
         return
 
     def __updateTimer(self):
         timeTill = self.__rankedController.getTimer()
         if self.__state == RANKEDBATTLES_CONSTS.INTRO_STATE_BEFORE_SEASON:
-            self.as_setBeforeSeasonBlockDataS({'title': text_styles.highlightText(backport.text(R.strings.ranked_battles.introPage.alert.beforeSeason())),
-             'time': text_styles.highlightText(backport.getTillTimeStringByRClass(timeTill, R.strings.ranked_battles.introPage.timeLeft)),
-             'iconSrc': backport.image(R.images.gui.maps.icons.library.ClockIcon_1())})
+            self.as_setBeforeSeasonBlockDataS({'title': text_styles.highlightText(backport.text(R.strings.ranked_battles.introPage.alert.beforeSeason())), 
+               'time': text_styles.highlightText(backport.getTillTimeStringByRClass(timeTill, R.strings.ranked_battles.introPage.timeLeft)), 
+               'iconSrc': backport.image(R.images.gui.maps.icons.library.ClockIcon_1())})
 
     def __showVideo(self):
         webHandlers = webApiCollection(ui_web_api.CloseViewWebApi, sound_web_api.SoundWebApi, sound_web_api.HangarSoundWebApi)
         alias = VIEW_ALIAS.BROWSER_VIEW
-        self.fireEvent(events.LoadViewEvent(SFViewLoadParams(alias, getUniqueViewName(alias)), ctx={'url': getRankedBattlesIntroPageUrl(),
-         'webHandlers': webHandlers,
-         'returnAlias': self.alias}), EVENT_BUS_SCOPE.LOBBY)
+        self.fireEvent(events.LoadViewEvent(SFViewLoadParams(alias, getUniqueViewName(alias)), ctx={'url': getRankedBattlesIntroPageUrl(), 
+           'webHandlers': webHandlers, 
+           'returnAlias': self.alias}), EVENT_BUS_SCOPE.LOBBY)
 
     def __getShowStateFlags(self):
         defaults = AccountSettings.getFilterDefault(GUI_START_BEHAVIOR)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/inventory/crew_books_tab.py
 from gui.Scaleform.daapi.view.lobby.storage.inventory.filters.filter_by_nation import FiltrableInventoryCategoryByNationTabView
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
@@ -19,38 +17,44 @@ class _CrewBooksFilterBit(CONST_CONTAINER):
     UNIVERSAL = 16
 
 
-_TYPE_FILTER_ITEMS = [{'filterValue': _CrewBooksFilterBit.RARE_1,
-  'selected': False,
-  'tooltip': makeTooltip(body=TOOLTIPS.CREWBOOKS_STORAGE_FILTERS_BROCHURE_TITLE),
-  'icon': RES_ICONS.MAPS_ICONS_STORAGE_FILTERS_ICON_BUTTON_RARE_1},
- {'filterValue': _CrewBooksFilterBit.RARE_2,
-  'selected': False,
-  'tooltip': makeTooltip(body=TOOLTIPS.CREWBOOKS_STORAGE_FILTERS_GUIDE_TITLE),
-  'icon': RES_ICONS.MAPS_ICONS_STORAGE_FILTERS_ICON_BUTTON_RARE_2},
- {'filterValue': _CrewBooksFilterBit.RARE_3,
-  'selected': False,
-  'tooltip': makeTooltip(body=TOOLTIPS.CREWBOOKS_STORAGE_FILTERS_CREWBOOK_TITLE),
-  'icon': RES_ICONS.MAPS_ICONS_STORAGE_FILTERS_ICON_BUTTON_RARE_3},
- {'filterValue': _CrewBooksFilterBit.PERSONAL,
-  'selected': False,
-  'tooltip': makeTooltip(body=TOOLTIPS.CREWBOOKS_STORAGE_FILTERS_PERSONALBOOK_TITLE),
-  'icon': RES_ICONS.MAPS_ICONS_STORAGE_FILTERS_ICON_BUTTON_PERSONAL},
- {'filterValue': _CrewBooksFilterBit.UNIVERSAL,
-  'selected': False,
-  'tooltip': makeTooltip(body=TOOLTIPS.CREWBOOKS_STORAGE_FILTERS_UNIVERSALBOOK_TITLE),
-  'icon': RES_ICONS.MAPS_ICONS_STORAGE_FILTERS_ICON_BUTTON_UNIVERSAL}]
-_TYPE_ID_BIT_TO_TYPE_ID_MAP = {_CrewBooksFilterBit.RARE_1: (CREW_BOOK_RARITY.CREW_COMMON,),
- _CrewBooksFilterBit.RARE_2: (CREW_BOOK_RARITY.CREW_RARE,),
- _CrewBooksFilterBit.RARE_3: (CREW_BOOK_RARITY.CREW_EPIC,),
- _CrewBooksFilterBit.PERSONAL: (CREW_BOOK_RARITY.PERSONAL,),
- _CrewBooksFilterBit.UNIVERSAL: (CREW_BOOK_RARITY.UNIVERSAL, CREW_BOOK_RARITY.UNIVERSAL_GUIDE, CREW_BOOK_RARITY.UNIVERSAL_BROCHURE)}
+_TYPE_FILTER_ITEMS = [
+ {'filterValue': _CrewBooksFilterBit.RARE_1, 
+    'selected': False, 
+    'tooltip': makeTooltip(body=TOOLTIPS.CREWBOOKS_STORAGE_FILTERS_BROCHURE_TITLE), 
+    'icon': RES_ICONS.MAPS_ICONS_STORAGE_FILTERS_ICON_BUTTON_RARE_1},
+ {'filterValue': _CrewBooksFilterBit.RARE_2, 
+    'selected': False, 
+    'tooltip': makeTooltip(body=TOOLTIPS.CREWBOOKS_STORAGE_FILTERS_GUIDE_TITLE), 
+    'icon': RES_ICONS.MAPS_ICONS_STORAGE_FILTERS_ICON_BUTTON_RARE_2},
+ {'filterValue': _CrewBooksFilterBit.RARE_3, 
+    'selected': False, 
+    'tooltip': makeTooltip(body=TOOLTIPS.CREWBOOKS_STORAGE_FILTERS_CREWBOOK_TITLE), 
+    'icon': RES_ICONS.MAPS_ICONS_STORAGE_FILTERS_ICON_BUTTON_RARE_3},
+ {'filterValue': _CrewBooksFilterBit.PERSONAL, 
+    'selected': False, 
+    'tooltip': makeTooltip(body=TOOLTIPS.CREWBOOKS_STORAGE_FILTERS_PERSONALBOOK_TITLE), 
+    'icon': RES_ICONS.MAPS_ICONS_STORAGE_FILTERS_ICON_BUTTON_PERSONAL},
+ {'filterValue': _CrewBooksFilterBit.UNIVERSAL, 
+    'selected': False, 
+    'tooltip': makeTooltip(body=TOOLTIPS.CREWBOOKS_STORAGE_FILTERS_UNIVERSALBOOK_TITLE), 
+    'icon': RES_ICONS.MAPS_ICONS_STORAGE_FILTERS_ICON_BUTTON_UNIVERSAL}]
+_TYPE_ID_BIT_TO_TYPE_ID_MAP = {_CrewBooksFilterBit.RARE_1: (
+                              CREW_BOOK_RARITY.CREW_COMMON,), 
+   _CrewBooksFilterBit.RARE_2: (
+                              CREW_BOOK_RARITY.CREW_RARE,), 
+   _CrewBooksFilterBit.RARE_3: (
+                              CREW_BOOK_RARITY.CREW_EPIC,), 
+   _CrewBooksFilterBit.PERSONAL: (
+                                CREW_BOOK_RARITY.PERSONAL,), 
+   _CrewBooksFilterBit.UNIVERSAL: (
+                                 CREW_BOOK_RARITY.UNIVERSAL, CREW_BOOK_RARITY.UNIVERSAL_GUIDE, CREW_BOOK_RARITY.UNIVERSAL_BROCHURE)}
 
 class CrewBooksTabView(FiltrableInventoryCategoryByNationTabView):
     __lobbyContext = dependency.descriptor(ILobbyContext)
     filterItems = _TYPE_FILTER_ITEMS
 
     def _getClientSectionKey(self):
-        pass
+        return 'storage_crew_books'
 
     def _getItemTypeID(self):
         return GUI_ITEM_TYPE.CREW_BOOKS

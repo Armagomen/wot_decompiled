@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/locale/BATTLE_RESULTS.py
 from debug_utils import LOG_WARNING
 
 class BATTLE_RESULTS(object):
@@ -311,10 +309,6 @@ class BATTLE_RESULTS(object):
     TEAM_STATS_LABELS_FLAGS = '#battle_results:team/stats/labels_flags'
     TEAM_STATS_LABELS_DEATHS = '#battle_results:team/stats/labels_deaths'
     TEAM_STATS_MILEAGE = '#battle_results:team/stats/mileage'
-    TEAM_STATS_LABELS_DAMAGEDEALTBYSKILLS = '#battle_results:team/stats/labels_damageDealtBySkills'
-    TEAM_STATS_LABELS_HEALED = '#battle_results:team/stats/labels_healed'
-    TEAM_STATS_LABELS_CAPTUREDPOINTSOFINTEREST = '#battle_results:team/stats/labels_capturedPointsOfInterest'
-    TEAM_STATS_LABELS_ROLESKILLUSED = '#battle_results:team/stats/labels_roleSkillUsed'
     TEAM_STATS_CLOSE = '#battle_results:team/stats/close'
     TEAM_RANKHEADER_HEADER = '#battle_results:team/rankHeader/header'
     TEAM_RANKHEADER_BODY = '#battle_results:team/rankHeader/body'
@@ -353,6 +347,7 @@ class BATTLE_RESULTS(object):
     DETAILS_CALCULATIONS_BASE = '#battle_results:details/calculations/base'
     DETAILS_CALCULATIONS_WOTPLUS = '#battle_results:details/calculations/wotPlus'
     DETAILS_CALCULATIONS_WOTPLUSBONUS = '#battle_results:details/calculations/wotPlusBonus'
+    DETAILS_CALCULATIONS_WOTPLUSPROBOOST = '#battle_results:details/calculations/wotPlusProBoost'
     DETAILS_CALCULATIONS_XPRECORD = '#battle_results:details/calculations/xpRecord'
     DETAILS_CALCULATIONS_XPRECORDSIMPLE = '#battle_results:details/calculations/xpRecordSimple'
     DETAILS_CALCULATIONS_MAXIMUM = '#battle_results:details/calculations/maximum'
@@ -511,13 +506,19 @@ class BATTLE_RESULTS(object):
     MISSIONSPROGRESS_NOTIFICATIONSTABS_PERSONALMISSIONS_OPERATION_MISSION_COMPLETE = '#battle_results:missionsProgress/notificationsTabs/personalMissions/operation_mission_complete'
     CONDITIONS_TYPE_OR = '#battle_results:conditions/type/or'
     CONDITIONS_TYPE_AND = '#battle_results:conditions/type/and'
-    DETAILS_TIME_LBL_ENUM = (DETAILS_TIME_LBL_OBJECTIVESREACHED,
+    TEAM_STATS_LABELS_DAMAGEDEALTBYSKILLS = '#battle_results:team/stats/labels_damageDealtBySkills'
+    TEAM_STATS_LABELS_HEALED = '#battle_results:team/stats/labels_healed'
+    TEAM_STATS_LABELS_CAPTUREDPOINTSOFINTEREST = '#battle_results:team/stats/labels_capturedPointsOfInterest'
+    TEAM_STATS_LABELS_ROLESKILLUSED = '#battle_results:team/stats/labels_roleSkillUsed'
+    DETAILS_TIME_LBL_ENUM = (
+     DETAILS_TIME_LBL_OBJECTIVESREACHED,
      DETAILS_TIME_LBL_OBJECTIVESDESTROYED,
      DETAILS_TIME_LBL_BASESCAPTURED,
      DETAILS_TIME_LBL_ARENACREATETIMEONLYSTR,
      DETAILS_TIME_LBL_DURATION,
      DETAILS_TIME_LBL_PLAYERKILLED)
-    DETAILS_CALCULATIONS_ENUM = (DETAILS_CALCULATIONS_BOOSTERS,
+    DETAILS_CALCULATIONS_ENUM = (
+     DETAILS_CALCULATIONS_BOOSTERS,
      DETAILS_CALCULATIONS_BATTLEPAYMENTS,
      DETAILS_CALCULATIONS_TACTICALTRAINING,
      DETAILS_CALCULATIONS_MILITARYMANEUVERS,
@@ -529,6 +530,7 @@ class BATTLE_RESULTS(object):
      DETAILS_CALCULATIONS_BASE,
      DETAILS_CALCULATIONS_WOTPLUS,
      DETAILS_CALCULATIONS_WOTPLUSBONUS,
+     DETAILS_CALCULATIONS_WOTPLUSPROBOOST,
      DETAILS_CALCULATIONS_XPRECORD,
      DETAILS_CALCULATIONS_XPRECORDSIMPLE,
      DETAILS_CALCULATIONS_MAXIMUM,
@@ -575,7 +577,8 @@ class BATTLE_RESULTS(object):
      DETAILS_CALCULATIONS_CRYSTAL_EVENTS,
      DETAILS_CALCULATIONS_PETCREDITS_FULLLABEL,
      DETAILS_CALCULATIONS_PETCREDITS_SIMPLELABEL)
-    TEAM_STATS_LABELS_ENUM = (TEAM_STATS_LABELS_XP,
+    TEAM_STATS_LABELS_ENUM = (
+     TEAM_STATS_LABELS_XP,
      TEAM_STATS_LABELS_XPFORATTACK,
      TEAM_STATS_LABELS_XPFORASSIST,
      TEAM_STATS_LABELS_XPOTHER,
@@ -613,16 +616,23 @@ class BATTLE_RESULTS(object):
      TEAM_STATS_LABELS_TIMESDESTROYED,
      TEAM_STATS_LABELS_FLAGS,
      TEAM_STATS_LABELS_DEATHS,
+     TEAM_STATS_LABELS_DESTROYRECOVERYRATIO,
+     TEAM_STATS_LABELS_ATKOBJECTIVES,
+     TEAM_STATS_LABELS_DEFOBJECTIVES,
      TEAM_STATS_LABELS_DAMAGEDEALTBYSKILLS,
      TEAM_STATS_LABELS_HEALED,
      TEAM_STATS_LABELS_CAPTUREDPOINTSOFINTEREST,
-     TEAM_STATS_LABELS_ROLESKILLUSED,
-     TEAM_STATS_LABELS_DESTROYRECOVERYRATIO,
-     TEAM_STATS_LABELS_ATKOBJECTIVES,
-     TEAM_STATS_LABELS_DEFOBJECTIVES)
-    TEAM_STATS_INFOTIP_ALL_HEADER_ENUM = (TEAM_STATS_INFOTIP_XPFORATTACK_HEADER, TEAM_STATS_INFOTIP_XPFORASSIST_HEADER, TEAM_STATS_INFOTIP_XPOTHER_HEADER)
-    TEAM_STATS_INFOTIP_ALL_BODY_ENUM = (TEAM_STATS_INFOTIP_XPFORATTACK_BODY, TEAM_STATS_INFOTIP_XPFORASSIST_BODY, TEAM_STATS_INFOTIP_XPOTHER_BODY)
-    COMMON_VEHICLESTATE_DEAD_ENUM = (COMMON_VEHICLESTATE_DEAD0,
+     TEAM_STATS_LABELS_ROLESKILLUSED)
+    TEAM_STATS_INFOTIP_ALL_HEADER_ENUM = (
+     TEAM_STATS_INFOTIP_XPFORATTACK_HEADER,
+     TEAM_STATS_INFOTIP_XPFORASSIST_HEADER,
+     TEAM_STATS_INFOTIP_XPOTHER_HEADER)
+    TEAM_STATS_INFOTIP_ALL_BODY_ENUM = (
+     TEAM_STATS_INFOTIP_XPFORATTACK_BODY,
+     TEAM_STATS_INFOTIP_XPFORASSIST_BODY,
+     TEAM_STATS_INFOTIP_XPOTHER_BODY)
+    COMMON_VEHICLESTATE_DEAD_ENUM = (
+     COMMON_VEHICLESTATE_DEAD0,
      COMMON_VEHICLESTATE_DEAD0_WITH_KILLERNAME,
      COMMON_VEHICLESTATE_DEAD0_WITH_KILLERNAME_AND_CLAN,
      COMMON_VEHICLESTATE_DEAD1,
@@ -653,54 +663,54 @@ class BATTLE_RESULTS(object):
 
     @classmethod
     def getDetailsTimeLbl(cls, statName):
-        outcome = '#battle_results:details/time/lbl_{}'.format(statName)
+        outcome = ('#battle_results:details/time/lbl_{}').format(statName)
         if outcome not in cls.DETAILS_TIME_LBL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getDetailsCalculation(cls, statName):
-        outcome = '#battle_results:details/calculations/{}'.format(statName)
+        outcome = ('#battle_results:details/calculations/{}').format(statName)
         if outcome not in cls.DETAILS_CALCULATIONS_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getTeamStatsLabel(cls, statName):
-        outcome = '#battle_results:team/stats/labels_{}'.format(statName)
+        outcome = ('#battle_results:team/stats/labels_{}').format(statName)
         if outcome not in cls.TEAM_STATS_LABELS_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getTeamStatsInfotipHeader(cls, statName):
-        outcome = '#battle_results:team/stats/infotip_{}/header'.format(statName)
+        outcome = ('#battle_results:team/stats/infotip_{}/header').format(statName)
         if outcome not in cls.TEAM_STATS_INFOTIP_ALL_HEADER_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getTeamStatsInfotipBody(cls, statName):
-        outcome = '#battle_results:team/stats/infotip_{}/body'.format(statName)
+        outcome = ('#battle_results:team/stats/infotip_{}/body').format(statName)
         if outcome not in cls.TEAM_STATS_INFOTIP_ALL_BODY_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getVehicleDeadState(cls, intType):
-        outcome = '#battle_results:common/vehicleState/dead{}'.format(intType)
+        outcome = ('#battle_results:common/vehicleState/dead{}').format(intType)
         if outcome not in cls.COMMON_VEHICLESTATE_DEAD_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome

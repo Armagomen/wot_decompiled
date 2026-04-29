@@ -1,7 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/pub/view_component.py
-import logging
-import weakref
+from __future__ import absolute_import
+import logging, weakref
 from future.utils import iteritems
 from typing import TYPE_CHECKING
 from Event import Event, EventManager
@@ -40,7 +38,10 @@ class ViewComponent(ViewImpl[TViewModel]):
 
     def getChildByPosId(self, posId):
         uid = self._childrenUidByPosition[posId]
-        return None if uid is None else self._childrenByUid[uid]
+        if uid is None:
+            return
+        else:
+            return self._childrenByUid[uid]
 
     def setEnabled(self, value):
         if self.__enabled == value:

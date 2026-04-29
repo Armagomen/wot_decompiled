@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/veh_skill_tree/notifications/perk_available_view_model.py
 from gui.impl.gen.view_models.common.notification_base_model import NotificationBaseModel
 from gui.impl.gen.view_models.views.lobby.common.vehicle_model import VehicleModel
 

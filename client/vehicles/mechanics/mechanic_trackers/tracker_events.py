@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicles/mechanics/mechanic_trackers/tracker_events.py
 from __future__ import absolute_import
-import typing
-import weakref
+import typing, weakref
 from future.utils import viewitems, viewvalues
 from events_handler import eventHandler
 from events_containers.common.containers import ClientEventsContainer, ContainersListener
@@ -39,7 +36,7 @@ class VehicleMechanicsTracker(ClientEventsContainer, ContainersListener, IVehicl
         self.onMechanicComponentReleasing = self._createEvent()
 
     def __repr__(self):
-        return 'VehicleMechanicsTracker(\n\t{}\n)'.format('\n\t'.join(('{}: {}'.format(str(k), self.getTrackedComponent(k)) for k in self.__trackedMechanics)))
+        return ('VehicleMechanicsTracker(\n\t{}\n)').format(('\n\t').join(('{}: {}').format(str(k), self.getTrackedComponent(k)) for k in self.__trackedMechanics))
 
     @property
     def trackedComponents(self):
@@ -47,7 +44,10 @@ class VehicleMechanicsTracker(ClientEventsContainer, ContainersListener, IVehicl
 
     def getTrackedComponent(self, mechanic):
         trackedComponentRef = self.__trackedComponents.get(mechanic)
-        return trackedComponentRef() if trackedComponentRef is not None else None
+        if trackedComponentRef is not None:
+            return trackedComponentRef()
+        else:
+            return
 
     def destroy(self):
         self.__releaseMechanicComponents()

@@ -1,7 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/lobby_context.py
-from helpers.server_settings import ServerSettings
+from __future__ import absolute_import
+from future.utils import viewitems
 import BigWorld
+from helpers.server_settings import ServerSettings
 from Event import Event, EventManager
 from account_helpers import isRoamingEnabled
 from adisp import adisp_async, adisp_process
@@ -65,19 +65,22 @@ class LobbyContext(ILobbyContext):
         self.__guiCtx = ctx or {}
 
     def getArenaUniqueIDByClientID(self, clientArenaID):
-        for arenaUniqueID, cArenaID in self.__arenaUniqueIDs.iteritems():
+        for arenaUniqueID, cArenaID in viewitems(self.__arenaUniqueIDs):
             if cArenaID == clientArenaID:
                 return arenaUniqueID
+
+        return 0
 
     def getClientIDByArenaUniqueID(self, arenaUniqueID):
         if arenaUniqueID in self.__arenaUniqueIDs:
             return self.__arenaUniqueIDs[arenaUniqueID]
-        clientID = self.__clientArenaIDGenerator.next()
+        clientID = next(self.__clientArenaIDGenerator)
         self.__arenaUniqueIDs[arenaUniqueID] = clientID
         return clientID
 
     def setCredentials(self, login, token):
-        self.__credentials = (login, token)
+        self.__credentials = (
+         login, token)
 
     def getCredentials(self):
         return self.__credentials
@@ -129,11 +132,11 @@ class LobbyContext(ILobbyContext):
         if clanInfo and len(clanInfo) > 1:
             clanAbbrev = clanInfo[1]
         if clanAbbrev:
-            fullName = '{0:>s} [{1:>s}]'.format(pName, clanAbbrev)
+            fullName = ('{0:>s} [{1:>s}]').format(pName, clanAbbrev)
         if pDBID is not None:
             regionCode = self.getRegionCode(pDBID)
         if regionCode:
-            fullName = '{0:>s} {1:>s}'.format(fullName, regionCode)
+            fullName = ('{0:>s} {1:>s}').format(fullName, regionCode)
         return fullName
 
     def getClanAbbrev(self, clanInfo):

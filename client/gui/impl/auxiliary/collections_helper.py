@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/auxiliary/collections_helper.py
+from __future__ import absolute_import
 import typing
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import IS_BATTLE_PASS_COLLECTION_SEEN
@@ -38,14 +37,14 @@ def fillCollectionModel(model, collectionId, collectionsSystem=None):
 def getCollectionsBonusPacker():
     mapping = getDefaultBonusPackersMap()
     currencyPacker = CurrencyBonusUIPacker()
-    mapping.update({COLLECTION_ITEM_BONUS_NAME: CollectionItemBonusPacker(),
-     Currency.BPCOIN: BattlePassCoinBonusPacker(),
-     Currency.CREDITS: currencyPacker,
-     Currency.CRYSTAL: currencyPacker,
-     Currency.GOLD: currencyPacker,
-     'customizations': CustomizationsBonusPacker(),
-     'freeXP': currencyPacker,
-     'tmanToken': TmanTemplateBonusPacker()})
+    mapping.update({COLLECTION_ITEM_BONUS_NAME: CollectionItemBonusPacker(), 
+       Currency.BPCOIN: BattlePassCoinBonusPacker(), 
+       Currency.CREDITS: currencyPacker, 
+       Currency.CRYSTAL: currencyPacker, 
+       Currency.GOLD: currencyPacker, 
+       'customizations': CustomizationsBonusPacker(), 
+       'freeXP': currencyPacker, 
+       'tmanToken': TmanTemplateBonusPacker()})
     return BonusUIPacker(mapping)
 
 
@@ -62,7 +61,8 @@ class BattlePassCoinBonusPacker(CurrencyBonusUIPacker):
 
     @classmethod
     def _getContentId(cls, bonus):
-        return [R.views.lobby.battle_pass.tooltips.BattlePassCoinTooltipView()]
+        return [
+         R.views.lobby.battle_pass.tooltips.BattlePassCoinTooltipView()]
 
     @classmethod
     def _packSingleBonus(cls, bonus, label):
@@ -76,7 +76,7 @@ class TmanTemplateBonusPacker(BaseBonusUIPacker):
     @classmethod
     def _pack(cls, bonus):
         result = []
-        for tokenID in bonus.getTokens().iterkeys():
+        for tokenID in bonus.getTokens():
             if tokenID.startswith(RECRUIT_TMAN_TOKEN_PREFIX):
                 packed = cls.__packTmanTemplateToken(tokenID, bonus)
                 if packed is not None:
@@ -87,15 +87,17 @@ class TmanTemplateBonusPacker(BaseBonusUIPacker):
     @classmethod
     def _getToolTip(cls, bonus):
         tooltipData = []
-        for tokenID in bonus.getTokens().iterkeys():
+        for tokenID in bonus.getTokens():
             if tokenID.startswith(RECRUIT_TMAN_TOKEN_PREFIX):
-                tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.TANKMAN_NOT_RECRUITED, specialArgs=[tokenID]))
+                tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.TANKMAN_NOT_RECRUITED, specialArgs=[
+                 tokenID]))
 
         return tooltipData
 
     @classmethod
     def _getContentId(cls, bonus):
-        return [ BACKPORT_TOOLTIP_CONTENT_ID for tokenID in bonus.getTokens().iterkeys() if tokenID.startswith(RECRUIT_TMAN_TOKEN_PREFIX) ]
+        return [ BACKPORT_TOOLTIP_CONTENT_ID for tokenID in bonus.getTokens() if tokenID.startswith(RECRUIT_TMAN_TOKEN_PREFIX)
+               ]
 
     @classmethod
     def __packTmanTemplateToken(cls, tokenID, bonus):
@@ -128,7 +130,8 @@ class CollectionItemBonusPacker(SimpleBonusUIPacker):
 
     @classmethod
     def _pack(cls, bonus):
-        return [cls._packSingleBonus(bonus, '')]
+        return [
+         cls._packSingleBonus(bonus, '')]
 
     @classmethod
     def _packSingleBonus(cls, bonus, label):
@@ -142,13 +145,15 @@ class CollectionItemBonusPacker(SimpleBonusUIPacker):
 
     @classmethod
     def _getContentId(cls, bonus):
-        return [R.views.lobby.collection.tooltips.CollectionItemTooltipView()]
+        return [
+         R.views.lobby.collection.tooltips.CollectionItemTooltipView()]
 
     @classmethod
     def _getToolTip(cls, bonus):
         itemId = bonus.getItemId()
         collectionId = bonus.getCollectionId()
-        tooltipData = [TooltipData(tooltip=None, isSpecial=True, specialAlias=None, specialArgs=[itemId, collectionId, True])]
+        tooltipData = [
+         TooltipData(tooltip=None, isSpecial=True, specialAlias=None, specialArgs=[itemId, collectionId, True])]
         return tooltipData
 
     @classmethod

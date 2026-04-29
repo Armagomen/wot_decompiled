@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_light/scripts/common/comp7_light_constants.py
-import constants
-import enum
+import constants, enum
 from constants_utils import ConstInjector
 import UnitBase
 
@@ -9,7 +6,8 @@ class Configs(enum.Enum):
     COMP7_LIGHT_CONFIG = 'comp7_light_config'
 
 
-COMP7_LIGHT_INBATTLE_CONFIGS = (Configs.COMP7_LIGHT_CONFIG.value,)
+COMP7_LIGHT_INBATTLE_CONFIGS = (
+ Configs.COMP7_LIGHT_CONFIG.value,)
 BATTLE_MODE_VEH_TAGS_EXCEPT_COMP7_LIGHT = constants.BATTLE_MODE_VEHICLE_TAGS - {'comp7_light'}
 
 class ARENA_GUI_TYPE(constants.ARENA_GUI_TYPE, ConstInjector):

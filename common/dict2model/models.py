@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/dict2model/models.py
 from __future__ import absolute_import
 import typing
 from itertools import chain
@@ -11,11 +9,11 @@ class Model(object):
         super(Model, self).__init__()
 
     def toDict(self):
-        slots = set(chain.from_iterable((getattr(cls, '__slots__', tuple()) for cls in self.__class__.__mro__)))
+        slots = set(chain.from_iterable(getattr(cls, '__slots__', tuple()) for cls in self.__class__.__mro__))
         return {attr:getattr(self, attr) for attr in slots if hasattr(self, attr)}
 
     def _reprArgs(self):
-        pass
+        return ''
 
     def __repr__(self):
-        return '<{}({})>'.format(self.__class__.__name__, self._reprArgs() or str(self.toDict()))
+        return ('<{}({})>').format(self.__class__.__name__, self._reprArgs() or str(self.toDict()))

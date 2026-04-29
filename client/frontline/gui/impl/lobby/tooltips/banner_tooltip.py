@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/impl/lobby/tooltips/banner_tooltip.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.pub import ViewImpl
@@ -15,7 +13,7 @@ from account_helpers.AccountSettings import AccountSettings, FRONTLINE_BANNER_IN
 
 class BannerTooltipView(ViewImpl):
     __epicController = dependency.descriptor(IEpicBattleMetaGameController)
-    __slots__ = ('_isForFrontlineWidget',)
+    __slots__ = ('_isForFrontlineWidget', )
 
     def __init__(self, layoutID=R.views.frontline.mono.lobby.tooltips.banner_tooltip(), isForFrontlineWidget=False):
         settings = ViewSettings(layoutID)
@@ -39,7 +37,7 @@ class BannerTooltipView(ViewImpl):
                     frontlineState = FrontlineState.INTRO
         currentLevel = self.__epicController.getCurrentLevel()
         vehicleLevels = self.__epicController.getValidVehicleLevels()
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             model.setState(STATES_MAP[frontlineState])
             model.setEventStartDate(eventStartDate)
             model.setEventEndDate(eventEndDate)

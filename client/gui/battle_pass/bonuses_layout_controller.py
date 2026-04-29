@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_pass/bonuses_layout_controller.py
-import typing
-import ResMgr
+import typing, ResMgr
 from items import _xml
 from gui.battle_pass.battle_pass_bonuses_helper import BonusesHelper
 from gui.battle_pass.battle_pass_constants import BonusesLayoutConsts
@@ -84,9 +81,10 @@ class BonusesLayoutController(object):
                     storage[name][sectionName] = item.asBool
                 elif sectionName == BonusesLayoutConsts.BIG_ICON_KEY:
                     storage[name][sectionName] = item.asString
-            if sectionName == BonusesLayoutConsts.OVERRIDE_KEY:
+            elif sectionName == BonusesLayoutConsts.OVERRIDE_KEY:
                 cls.__parseOverride(storage[name], item)
-            cls.__parseSection(storage[name], sectionName, item)
+            else:
+                cls.__parseSection(storage[name], sectionName, item)
 
     @classmethod
     def __parseOverride(cls, storage, section):
@@ -100,7 +98,7 @@ class BonusesLayoutController(object):
                     values[name] = item.asBool
                 elif name == BonusesLayoutConsts.BIG_ICON_KEY:
                     values[name] = item.asString
-            if name in (BonusesLayoutConsts.ID_KEY, BonusesLayoutConsts.LEVEL_KEY):
+            elif name in (BonusesLayoutConsts.ID_KEY, BonusesLayoutConsts.LEVEL_KEY):
                 ids = item.asString
 
         names = ids.split(' ')

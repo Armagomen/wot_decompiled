@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/debug_panel.py
+from __future__ import absolute_import
 from gui.Scaleform.daapi.view.meta.DebugPanelMeta import DebugPanelMeta
 from gui.battle_control.controllers.debug_ctrl import IDebugPanel
 
@@ -13,7 +12,7 @@ class DebugPanel(DebugPanelMeta, IDebugPanel):
 
     def updateDebugInfo(self, ping, fps, isLaggingNow, fpsReplay):
         if fpsReplay > 0:
-            fps = '{0}({1})'.format(fpsReplay, fps)
+            fps = ('{0}({1})').format(fpsReplay, fps)
         else:
             fps = str(fps)
         if self._isLaggingNow != isLaggingNow:

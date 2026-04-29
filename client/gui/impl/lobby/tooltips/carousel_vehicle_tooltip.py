@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/tooltips/carousel_vehicle_tooltip.py
-import logging
-import math
-import typing
+import logging, math, typing
 from dossiers2.ui.achievements import MARK_ON_GUN_RECORD
 from frameworks.wulf.view.array import fillIntsArray
 from gui.battle_pass.battle_pass_helpers import getSupportedCurrentArenaBonusType
@@ -31,13 +27,14 @@ if typing.TYPE_CHECKING:
 _logger = logging.getLogger(__name__)
 
 class CarouselVehicleTooltipView(ViewComponent[CarouselVehicleTooltipModel]):
+    LAYOUT_ID = R.views.mono.hangar.vehicle_tooltip()
     _itemsCache = dependency.descriptor(IItemsCache)
     _battlePass = dependency.descriptor(IBattlePassController)
     _wotPlusCtrl = dependency.descriptor(IWotPlusController)
 
     def __init__(self, inventoryId):
         self._inventoryId = inventoryId
-        super(CarouselVehicleTooltipView, self).__init__(R.views.mono.hangar.vehicle_tooltip(), CarouselVehicleTooltipModel)
+        super(CarouselVehicleTooltipView, self).__init__(self.LAYOUT_ID, CarouselVehicleTooltipModel)
 
     @property
     def viewModel(self):
@@ -54,8 +51,8 @@ class CarouselVehicleTooltipView(ViewComponent[CarouselVehicleTooltipModel]):
             _logger.error('No vehicle for with inventoryId %s for displaying a tooltip', self._inventoryId)
             return
         else:
-            vState, vStateLevel = vehicle.getState()
-            with self.viewModel.transaction() as model:
+            vState, vStateLevel = self._getVehicleStatus(vehicle)
+            with self.viewModel.transaction() as (model):
                 model.setStatus(vState)
                 model.setStateLevel(vStateLevel)
                 model.setBpEntityValid(self._getIsBpEntityValid())
@@ -65,6 +62,10 @@ class CarouselVehicleTooltipView(ViewComponent[CarouselVehicleTooltipModel]):
                 self.__setServiceRecords(model.serviceRecords, vehicle)
                 fillVehicleMechanicsArray(model.getMechanics(), vehicle)
             return
+
+    def _getVehicleStatus(self, vehicle):
+        vState, vStateLevel = vehicle.getState()
+        return (vState, vStateLevel)
 
     def _getDailyXPFactor(self, vehicle):
         return vehicle.dailyXPFactor
@@ -77,7 +78,7 @@ class CarouselVehicleTooltipView(ViewComponent[CarouselVehicleTooltipModel]):
 
     @prbEntityProperty
     def __prbEntity(self):
-        return None
+        return
 
     def __getCurrentArenaBonusType(self):
         return getSupportedCurrentArenaBonusType(self.__prbEntity.getQueueType())
@@ -90,7 +91,7 @@ class CarouselVehicleTooltipView(ViewComponent[CarouselVehicleTooltipModel]):
         statisticsModel.setNationId(vehicle.nationID)
         statisticsModel.setRole(vehicle.role)
         statisticsModel.setElite(vehicle.isElite)
-        statisticsModel.setRentLeftTime(vehicle.rentLeftTime if not math.isinf(vehicle.rentLeftTime) else -1)
+        statisticsModel.setRentLeftTime((math.isinf(vehicle.rentLeftTime) or vehicle).rentLeftTime if 1 else -1)
         statisticsModel.setRentLeftBattles(vehicle.rentLeftBattles or 0)
         statisticsModel.setRentLeftWins(vehicle.rentLeftWins or 0)
 

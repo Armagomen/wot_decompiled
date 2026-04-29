@@ -1,10 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/component_marker/markers_components.py
-import math
-import weakref
-import AnimationSequence
-import BigWorld
-import Math
+from __future__ import absolute_import, division
+import logging, typing, math, weakref
+from past.utils import old_div
+import AnimationSequence, BigWorld, Math
 from account_helpers.settings_core.settings_constants import BattleCommStorageKeys
 from chat_commands_consts import INVALID_TARGET_ID, MarkerType
 from ids_generators import SequenceIDGenerator
@@ -21,6 +18,9 @@ from gui.impl.gen import R
 from debug_utils import LOG_CURRENT_EXCEPTION
 import CombatSelectedArea
 from gui.battle_control import minimap_utils
+if typing.TYPE_CHECKING:
+    import ResMgr
+_logger = logging.getLogger(__name__)
 
 def _getDirectionIndicator(swf, mcName):
     indicator = None
@@ -32,6 +32,14 @@ def _getDirectionIndicator(swf, mcName):
     return indicator
 
 
+class Blending(object):
+    NORMAL = 'normal'
+    ADD = 'add'
+    MULTIPLY = 'multiply'
+    SCREEN = 'screen'
+    SUBTRACT = 'subtract'
+
+
 class ComponentBitMask(BitmaskHelper):
     NONE = 0
     MARKER_2D = 1
@@ -40,16 +48,12 @@ class ComponentBitMask(BitmaskHelper):
     ANIM_SEQUENCE_MARKER = 8
     TERRAIN_MARKER = 16
     FULLSCREEN_MAP_MARKER = 32
-    LIST = (MARKER_2D,
-     MINIMAP_MARKER,
-     DIRECTION_INDICATOR,
-     ANIM_SEQUENCE_MARKER,
-     TERRAIN_MARKER,
-     FULLSCREEN_MAP_MARKER)
+    LIST = (
+     MARKER_2D, MINIMAP_MARKER, DIRECTION_INDICATOR, ANIM_SEQUENCE_MARKER, TERRAIN_MARKER, FULLSCREEN_MAP_MARKER)
 
 
-COMPONENT_MARKER_TYPE_NAMES = dict([ (k, v) for k, v in ComponentBitMask.__dict__.iteritems() if isinstance(v, int) ])
-COMPONENT_MARKER_TYPE_IDS = dict([ (v, k) for k, v in COMPONENT_MARKER_TYPE_NAMES.iteritems() ])
+COMPONENT_MARKER_TYPE_NAMES = {k:v for k, v in ComponentBitMask.__dict__.items() if isinstance(v, int) if isinstance(v, int)}
+COMPONENT_MARKER_TYPE_IDS = {v:k for k, v in COMPONENT_MARKER_TYPE_NAMES.items()}
 
 class _IMarkerComponentBase(object):
     settingsCore = dependency.descriptor(ISettingsCore)
@@ -57,7 +61,7 @@ class _IMarkerComponentBase(object):
 
     def __init__(self, config, matrixProduct, entity=None, targetID=INVALID_TARGET_ID, isVisible=True):
         super(_IMarkerComponentBase, self).__init__()
-        self._componentID = self._idGen.next()
+        self._componentID = self._idGen.nextSequenceID
         self._config = config
         self._matrixProduct = matrixProduct
         self._isVisible = isVisible
@@ -133,13 +137,13 @@ class World2DMarkerComponent(_IMarkerComponentBase):
 
     @classmethod
     def configReader(cls, section):
-        config = {'shape': section.readString('shape', 'arrow'),
-         'min_distance': section.readFloat('min_distance', 0.0),
-         'max_distance': section.readFloat('max_distance', 0.0),
-         'distance': section.readFloat('distance', 0.0),
-         'distanceFieldColor': section.readString('distanceFieldColor', 'yellow'),
-         'display_distance': section.readBool('display_distance', True),
-         'symbol': section.readString('symbol', MARKER_SYMBOL_NAME.STATIC_OBJECT_MARKER)}
+        config = {'shape': section.readString('shape', 'arrow'), 
+           'min_distance': section.readFloat('min_distance', 0.0), 
+           'max_distance': section.readFloat('max_distance', 0.0), 
+           'distance': section.readFloat('distance', 0.0), 
+           'distanceFieldColor': section.readString('distanceFieldColor', 'yellow'), 
+           'display_distance': section.readBool('display_distance', True), 
+           'symbol': section.readString('symbol', MARKER_SYMBOL_NAME.STATIC_OBJECT_MARKER)}
         return config
 
     @property
@@ -229,21 +233,21 @@ class World2DActionMarkerComponent(World2DMarkerComponent):
 
     @classmethod
     def configReader(cls, section):
-        config = {'shape': section.readString('shape', 'targetPoint'),
-         'shapeReplyMe': section.readString('shapeReplyMe', 'targetPointReplyMe'),
-         'shapeHighlight': section.readString('shapeHighlight', 'targetPointHighlight'),
-         'min_distance': section.readFloat('min_distance', 0.0),
-         'max_distance': section.readFloat('max_distance', 0.0),
-         'distance': section.readFloat('distance', 0.0),
-         'distanceFieldColor': section.readString('distanceFieldColor', 'yellow'),
-         'display_distance': section.readBool('display_distance', True),
-         'symbol': section.readString('symbol', MARKER_SYMBOL_NAME.STATIC_OBJECT_MARKER),
-         'is_sticky': section.readBool('is_sticky', True),
-         'cull_distance': section.readFloat('cull_distance', cls.MARKER_CULL_DISTANCE),
-         'min_scale': section.readFloat('min_scale', cls.MARKER_MIN_SCALE),
-         'bounds': section.readVector4('bounds', cls.MARKER_BOUNDS),
-         'inner_bounds': section.readVector4('inner_bounds', cls.MARKER_INNER_BOUNDS),
-         'bounds_min_scale': section.readVector2('bounds_min_scale', cls.MARKER_BOUND_MIN_SCALE)}
+        config = {'shape': section.readString('shape', 'targetPoint'), 
+           'shapeReplyMe': section.readString('shapeReplyMe', 'targetPointReplyMe'), 
+           'shapeHighlight': section.readString('shapeHighlight', 'targetPointHighlight'), 
+           'min_distance': section.readFloat('min_distance', 0.0), 
+           'max_distance': section.readFloat('max_distance', 0.0), 
+           'distance': section.readFloat('distance', 0.0), 
+           'distanceFieldColor': section.readString('distanceFieldColor', 'yellow'), 
+           'display_distance': section.readBool('display_distance', True), 
+           'symbol': section.readString('symbol', MARKER_SYMBOL_NAME.STATIC_OBJECT_MARKER), 
+           'is_sticky': section.readBool('is_sticky', True), 
+           'cull_distance': section.readFloat('cull_distance', cls.MARKER_CULL_DISTANCE), 
+           'min_scale': section.readFloat('min_scale', cls.MARKER_MIN_SCALE), 
+           'bounds': section.readVector4('bounds', cls.MARKER_BOUNDS), 
+           'inner_bounds': section.readVector4('inner_bounds', cls.MARKER_INNER_BOUNDS), 
+           'bounds_min_scale': section.readVector2('bounds_min_scale', cls.MARKER_BOUND_MIN_SCALE)}
         return config
 
     @property
@@ -312,18 +316,18 @@ class World2DLocationMarkerComponent(World2DMarkerComponent):
 
     @classmethod
     def configReader(cls, section):
-        config = {'symbol': section.readString('symbol', MARKER_SYMBOL_NAME.LOCATION_MARKER),
-         'cull_distance': section.readFloat('cull_distance', cls.CULL_DISTANCE),
-         'min_scale': section.readFloat('min_scale', cls.MIN_SCALE),
-         'bounds': section.readVector4('bounds', cls.BOUNDS),
-         'inner_bounds': section.readVector4('inner_bounds', cls.INNER_BOUNDS),
-         'bounds_min_scale': section.readVector2('bounds_min_scale', cls.BOUNDS_MIN_SCALE),
-         'is_sticky': section.readBool('is_sticky', True),
-         'min_y_offset': section.readFloat('min_y_offset', cls.MIN_Y_OFFSET),
-         'max_y_offset': section.readFloat('max_y_offset', cls.MAX_Y_OFFSET),
-         'max_y_boost': section.readFloat('max_y_boost', cls.MAX_Y_BOOST),
-         'distance_for_min_y_offset': section.readFloat('distance_for_min_y_offset', cls.DISTANCE_FOR_MIN_Y_OFFSET),
-         'boost_start': section.readFloat('boost_start', cls.BOOST_START)}
+        config = {'symbol': section.readString('symbol', MARKER_SYMBOL_NAME.LOCATION_MARKER), 
+           'cull_distance': section.readFloat('cull_distance', cls.CULL_DISTANCE), 
+           'min_scale': section.readFloat('min_scale', cls.MIN_SCALE), 
+           'bounds': section.readVector4('bounds', cls.BOUNDS), 
+           'inner_bounds': section.readVector4('inner_bounds', cls.INNER_BOUNDS), 
+           'bounds_min_scale': section.readVector2('bounds_min_scale', cls.BOUNDS_MIN_SCALE), 
+           'is_sticky': section.readBool('is_sticky', True), 
+           'min_y_offset': section.readFloat('min_y_offset', cls.MIN_Y_OFFSET), 
+           'max_y_offset': section.readFloat('max_y_offset', cls.MAX_Y_OFFSET), 
+           'max_y_boost': section.readFloat('max_y_boost', cls.MAX_Y_BOOST), 
+           'distance_for_min_y_offset': section.readFloat('distance_for_min_y_offset', cls.DISTANCE_FOR_MIN_Y_OFFSET), 
+           'boost_start': section.readFloat('boost_start', cls.BOOST_START)}
         return config
 
     @property
@@ -375,9 +379,9 @@ class BaseMinimapMarkerComponent(_IMarkerComponentBase):
 
     @classmethod
     def configReader(cls, section):
-        config = {'symbol': section.readString('symbol', 'ArtyMarkerMinimapEntry'),
-         'container': section.readString('container', 'personal'),
-         'onlyTranslation': section.readBool('onlyTranslation', False)}
+        config = {'symbol': section.readString('symbol', 'ArtyMarkerMinimapEntry'), 
+           'container': section.readString('container', 'personal'), 
+           'onlyTranslation': section.readBool('onlyTranslation', False)}
         return config
 
     @property
@@ -436,7 +440,9 @@ class BaseMinimapMarkerComponent(_IMarkerComponentBase):
             gui.setMatrix(self._componentID, mtx)
 
     def _getPlugin(self, guiProvider):
-        return guiProvider.getFullscreenMapPlugin() if self.maskType == ComponentBitMask.FULLSCREEN_MAP_MARKER else guiProvider.getMinimapPlugin()
+        if self.maskType == ComponentBitMask.FULLSCREEN_MAP_MARKER:
+            return guiProvider.getFullscreenMapPlugin()
+        return guiProvider.getMinimapPlugin()
 
     def _setupMarker(self, gui, **kwargs):
         pass
@@ -471,9 +477,11 @@ class DirectionIndicatorMarkerComponent(_IMarkerComponentBase):
 
     @classmethod
     def configReader(cls, section):
-        config = {'dIndicatorShapes': (section.readString('dIndicatorShapes/default', 'green'), section.readString('dIndicatorShapes/colorBlind', 'green')),
-         'swf': section.readString('swf', cls._DIRECT_INDICATOR_SWF),
-         'mcName': section.readString('mcName', cls._DIRECT_INDICATOR_MC_NAME)}
+        config = {'dIndicatorShapes': (
+                              section.readString('dIndicatorShapes/default', 'green'),
+                              section.readString('dIndicatorShapes/colorBlind', 'green')), 
+           'swf': section.readString('swf', cls._DIRECT_INDICATOR_SWF), 
+           'mcName': section.readString('mcName', cls._DIRECT_INDICATOR_MC_NAME)}
         return config
 
     @property
@@ -547,7 +555,9 @@ class DirectionIndicatorMarkerComponent(_IMarkerComponentBase):
 
     @property
     def __currentShape(self):
-        return self.__shapes[1] if self.settingsCore.getSetting('isColorBlind') else self.__shapes[0]
+        if self.settingsCore.getSetting('isColorBlind'):
+            return self.__shapes[1]
+        return self.__shapes[0]
 
     def __onSettingsChanged(self, diff):
         if self.__indicator is None:
@@ -634,13 +644,13 @@ class TerrainMarkerComponent(_IMarkerComponentBase):
 
     @classmethod
     def configReader(cls, section):
-        config = {'path': section.readString('path'),
-         'size': section.readVector2('size', cls.DEF_SIZE),
-         'direction': section.readVector3('direction', cls.DEF_DIRECTION),
-         'objDirection': section.readBool('objDirection', True),
-         'color': int(section.readString('color', '0'), 16) or cls.DEF_COLOR,
-         'enableWaterCollision': section.readBool('enableWaterCollision', False),
-         'enableAccurateCollision': section.readBool('enableAccurateCollision', True)}
+        config = {'path': section.readString('path'), 
+           'size': section.readVector2('size', cls.DEF_SIZE), 
+           'direction': section.readVector3('direction', cls.DEF_DIRECTION), 
+           'objDirection': section.readBool('objDirection', True), 
+           'color': int(section.readString('color', '0'), 16) or cls.DEF_COLOR, 
+           'enableWaterCollision': section.readBool('enableWaterCollision', False), 
+           'enableAccurateCollision': section.readBool('enableAccurateCollision', True)}
         return config
 
     @property
@@ -671,13 +681,6 @@ class TerrainMarkerComponent(_IMarkerComponentBase):
 
 class PolygonalZoneMinimapMarkerComponent(MinimapMarkerComponent):
 
-    class Blending(object):
-        NORMAL = 'normal'
-        ADD = 'add'
-        MULTIPLY = 'multiply'
-        SCREEN = 'screen'
-        SUBTRACT = 'subtract'
-
     def __init__(self, config, matrixProduct, entity=None, targetID=INVALID_TARGET_ID, isVisible=True):
         super(PolygonalZoneMinimapMarkerComponent, self).__init__(config, matrixProduct, entity, targetID, isVisible)
         self._polygon = None
@@ -693,16 +696,16 @@ class PolygonalZoneMinimapMarkerComponent(MinimapMarkerComponent):
         color = {}
         for colorType in ('default', 'colorBlind'):
             colorTypeSection = colorSection[colorType]
-            color.update({colorType: {'fillColor': int(colorTypeSection.readString('fillColor', '0'), 16),
-                         'fillAlpha': colorTypeSection.readFloat('fillAlpha'),
-                         'fillBlendMode': colorTypeSection.readString('fillBlendMode', cls.Blending.NORMAL),
-                         'outlineColor': int(colorTypeSection.readString('outlineColor', '0'), 16),
-                         'outlineAlpha': colorTypeSection.readFloat('outlineAlpha'),
-                         'outlineBlendMode': colorTypeSection.readString('outlineBlendMode', cls.Blending.NORMAL),
-                         'lineThickness': colorTypeSection.readFloat('lineThickness'),
-                         'useGradient': colorTypeSection.readBool('useGradient', False),
-                         'gradientColor': int(colorTypeSection.readString('gradientColor', '0'), 16),
-                         'gradientAlpha': colorTypeSection.readFloat('gradientAlpha', 1.0)}})
+            color.update({colorType: {'fillColor': int(colorTypeSection.readString('fillColor', '0'), 16), 
+                           'fillAlpha': colorTypeSection.readFloat('fillAlpha'), 
+                           'fillBlendMode': colorTypeSection.readString('fillBlendMode', Blending.NORMAL), 
+                           'outlineColor': int(colorTypeSection.readString('outlineColor', '0'), 16), 
+                           'outlineAlpha': colorTypeSection.readFloat('outlineAlpha'), 
+                           'outlineBlendMode': colorTypeSection.readString('outlineBlendMode', Blending.NORMAL), 
+                           'lineThickness': colorTypeSection.readFloat('lineThickness'), 
+                           'useGradient': colorTypeSection.readBool('useGradient', False), 
+                           'gradientColor': int(colorTypeSection.readString('gradientColor', '0'), 16), 
+                           'gradientAlpha': colorTypeSection.readFloat('gradientAlpha', 1.0)}})
 
         config.update({'color': color})
         return config
@@ -713,7 +716,10 @@ class PolygonalZoneMinimapMarkerComponent(MinimapMarkerComponent):
 
     def getPolygon(self):
         udo = BigWorld.userDataObjects.get(self._entity.clientVisualComp.udoGuid, None)
-        return [] if udo is None else udo.minimapMarkerPolygon
+        if udo is None:
+            return []
+        else:
+            return udo.minimapMarkerPolygon
 
     def _setupMarker(self, gui, **kwargs):
         self.settingsCore.onSettingsChanged += self.__onSettingsChanged
@@ -756,7 +762,7 @@ class PolygonalZoneMinimapMarkerComponent(MinimapMarkerComponent):
         udo = BigWorld.userDataObjects.get(guid, None)
         if udo:
             delta = udo.position - self.position
-            polygon = sum(([(p[0] + delta[0]) * xc, (p[1] - delta[2]) * yc] for p in udo.minimapMarkerPolygon), list())
+            polygon = sum(([(p[0] + delta[0]) * xc, (p[1] - delta[2]) * yc] for p in udo.minimapMarkerPolygon), [])
             self._gui().invoke(self._componentID, 'addZoneData', polygon)
         return
 
@@ -766,12 +772,12 @@ class PolygonalZoneMinimapMarkerComponent(MinimapMarkerComponent):
             return
         else:
             xc, yc = self._getSize()
-            self._polygon = sum(([p[0] * xc, p[1] * yc] for p in polygon), list())
+            self._polygon = sum(([p[0] * xc, p[1] * yc] for p in polygon), [])
             for mask in self._entity.masks:
                 udo = BigWorld.userDataObjects.get(mask.udoGuid, None)
                 if udo:
                     delta = udo.position - self.position
-                    self._maskingPolygons.append(sum(([(p[0] + delta[0]) * xc, (p[1] - delta[2]) * yc] for p in udo.minimapMarkerPolygon), list()))
+                    self._maskingPolygons.append(sum(([(p[0] + delta[0]) * xc, (p[1] - delta[2]) * yc] for p in udo.minimapMarkerPolygon), []))
 
             return
 
@@ -791,20 +797,16 @@ class PolygonalZoneMinimapMarkerComponent(MinimapMarkerComponent):
 
     def _getGradientSize(self):
         dimensions = self._entity.clientVisualComp.getDimensions()
-        return max(dimensions.x, dimensions.z) / 2
+        return old_div(max(dimensions.x, dimensions.z), 2)
 
     def __getMarkerProperties(self, isColorBlind):
-        props = self._properties['default'] if not isColorBlind else self._properties['colorBlind']
-        return (props['fillColor'],
-         props['fillAlpha'],
-         props['outlineColor'],
-         props['outlineAlpha'],
-         props['lineThickness'],
-         props['fillBlendMode'],
-         props['outlineBlendMode'],
-         props['useGradient'],
-         props['gradientColor'],
-         props['gradientAlpha'],
+        props = (isColorBlind or self._properties)['default'] if 1 else self._properties['colorBlind']
+        return (
+         props['fillColor'], props['fillAlpha'],
+         props['outlineColor'], props['outlineAlpha'],
+         props['lineThickness'], props['fillBlendMode'],
+         props['outlineBlendMode'], props['useGradient'],
+         props['gradientColor'], props['gradientAlpha'],
          self._getGradientSize())
 
     def __isColorBlind(self):
@@ -824,7 +826,199 @@ class StaticDeathZoneMinimapMarkerComponent(PolygonalZoneMinimapMarkerComponent)
     def getPolygon(self):
         p = self._entity.position
         min, max = self._entity.clientVisualComp.getCorners()
-        return [(min.x - p.x, min.z - p.z),
-         (min.x - p.x, max.z - p.z),
-         (max.x - p.x, max.z - p.z),
-         (max.x - p.x, min.z - p.z)]
+        return [
+         (
+          min.x - p.x, min.z - p.z),
+         (
+          min.x - p.x, max.z - p.z),
+         (
+          max.x - p.x, max.z - p.z),
+         (
+          max.x - p.x, min.z - p.z)]
+
+
+class W2GTBattleZoneMinimapMarkerComponent(MinimapMarkerComponent):
+    FILL_COLOR = '0xffdd99'
+    FILL_ALPHA = 0.5
+    OUTLINE_THICKNESS = 1.0
+    OUTLINE_COLOR = '0xffdd99'
+    OUTLINE_ALPHA = 1.0
+    DOT_RADIUS = 1.0
+    DOT_GAP = 2.0
+
+    class OutlineStyle(object):
+        SOLID = 'solid'
+        DOTTED = 'dotted'
+
+    class Colors(object):
+        DEFAULT = 'color'
+        BLIND = 'colorBlind'
+        ALL = (
+         DEFAULT, BLIND)
+
+    class ZoneState(object):
+        DEFAULT = 'default'
+        ACTIVE = 'active'
+        HIGHLIGHT = 'highlight'
+        ALL = (
+         DEFAULT, ACTIVE, HIGHLIGHT)
+
+    def __init__(self, config, matrixProduct, entity=None, targetID=INVALID_TARGET_ID, isVisible=True):
+        super(W2GTBattleZoneMinimapMarkerComponent, self).__init__(config, matrixProduct, entity, targetID, isVisible)
+        self.__polygon = None
+        self.__isHighlight = False
+        self.__isActive = False
+        self.__colorSection = None
+        self.__state = None
+        self.__isVisible = True
+        self._properties = config['colors']
+        self._states = config['states']
+        return
+
+    @property
+    def bcMarkerType(self):
+        return MarkerType.ZONE_MARKER_TYPE
+
+    @classmethod
+    def configReader(cls, section):
+        config = super(W2GTBattleZoneMinimapMarkerComponent, cls).configReader(section)
+        colors = {}
+        for sectionType in cls.Colors.ALL:
+            colorSection = section[sectionType]
+            colors.update({sectionType: {'fillColor': int(colorSection.readString('fillColor', cls.FILL_COLOR), 16), 
+                             'fillAlpha': colorSection.readFloat('fillAlpha', cls.FILL_ALPHA), 
+                             'fillBlendMode': colorSection.readString('fillBlendMode', Blending.NORMAL), 
+                             'outlineStyle': colorSection.readString('outlineStyle', cls.OutlineStyle.SOLID), 
+                             'outlineThickness': colorSection.readFloat('outlineThickness', cls.OUTLINE_THICKNESS), 
+                             'outlineColor': int(colorSection.readString('outlineColor', cls.OUTLINE_COLOR), 16), 
+                             'outlineAlpha': colorSection.readFloat('outlineAlpha', cls.OUTLINE_ALPHA), 
+                             'dotRadius': colorSection.readFloat('dotRadius', cls.DOT_RADIUS), 
+                             'dotGap': colorSection.readFloat('dotGap', cls.DOT_GAP), 
+                             'outlineBlendMode': colorSection.readString('outlineBlendMode', Blending.NORMAL)}})
+
+        states = {}
+        statesSection = section['states']
+        for stateType in cls.ZoneState.ALL:
+            stateSection = statesSection[stateType]
+            states.update({stateType: {'fillAlpha': stateSection.readFloat('fillAlpha', cls.FILL_ALPHA)}})
+
+        config.update({'colors': colors, 
+           'states': states})
+        return config
+
+    def highlightZone(self, isHighlight):
+        if self.__isHighlight == isHighlight:
+            return
+        self.__isHighlight = isHighlight
+        self.__updateState()
+
+    def activeZone(self, isActive):
+        if self.__isActive == isActive:
+            return
+        self.__isActive = isActive
+        self.__updateState()
+
+    def changeVisibility(self, isVisible):
+        self.__isVisible = isVisible
+
+    def detachGUI(self):
+        super(W2GTBattleZoneMinimapMarkerComponent, self).detachGUI()
+        self.__polygon = None
+        self.settingsCore.onSettingsChanged -= self.__onSettingsChanged
+        return
+
+    def setVisible(self, isVisible):
+        super(W2GTBattleZoneMinimapMarkerComponent, self).setVisible(isVisible and self.__isVisible)
+
+    def _setupMarker(self, gui, polygon=None, zoneType='', icon='empty', iconX=0, iconY=0, **kwargs):
+        self.settingsCore.onSettingsChanged += self.__onSettingsChanged
+        state = self._states[self.ZoneState.HIGHLIGHT]
+        hoverAlpha = state.get('fillAlpha', 0)
+        self._gui().invoke(self._componentID, 'initUI', zoneType, hoverAlpha)
+        self.__setIcon(icon, iconX, iconY)
+        self._initPolygon(polygon)
+        if self.__polygon:
+            self._setupPolygon()
+        self.__updateState()
+
+    def _initPolygon(self, polygon):
+        if not polygon:
+            return
+        if not self.__isPolygonValid(polygon):
+            _logger.error('W2GT: BattleZone has invalid polygon')
+            return
+        xc, yc = self._getSize()
+        self.__polygon = sum(([p[0] * xc, -p[1] * yc] for p in polygon), [])
+
+    def _getSize(self):
+        boundingBox = BigWorld.player().arena.arenaType.boundingBox
+        arenaSize = boundingBox[1] - boundingBox[0]
+        xc = minimap_utils.MINIMAP_SIZE[0] / arenaSize[0]
+        yc = minimap_utils.MINIMAP_SIZE[1] / arenaSize[1]
+        return (xc, yc)
+
+    def _setupPolygon(self):
+        self.__updateColorsProperties()
+        self._gui().invoke(self._componentID, 'addZoneData', self.__polygon)
+        self._gui().setActive(self._componentID, self._isVisible and self.__isVisible)
+
+    def __setIcon(self, icon, iconX, iconY):
+        xc, yc = self._getSize()
+        self._gui().invoke(self._componentID, 'setIcon', icon, iconX * xc, -iconY * yc)
+
+    def __getMarkerProperties(self, colorSection, state):
+        props = self._properties[colorSection]
+        state = self._states[state]
+        props.update(state)
+        return (
+         props['fillColor'],
+         props['fillAlpha'],
+         props['fillBlendMode'],
+         props['outlineStyle'],
+         props['outlineThickness'],
+         props['outlineColor'],
+         props['outlineAlpha'],
+         props['dotRadius'],
+         props['dotGap'],
+         props['outlineBlendMode'])
+
+    def __getState(self):
+        if self.__isHighlight:
+            return self.ZoneState.HIGHLIGHT
+        if self.__isActive:
+            return self.ZoneState.ACTIVE
+        return self.ZoneState.DEFAULT
+
+    def __isColorBlind(self):
+        return self.settingsCore.getSetting(settings_constants.GRAPHICS.COLOR_BLIND)
+
+    def __updateColorsProperties(self):
+        gui = self._gui()
+        if gui is None:
+            return
+        else:
+            colorSection = 'colorBlind' if self.__isColorBlind() else 'color'
+            state = self.__getState()
+            if self.__colorSection == colorSection and self.__state == state:
+                return
+            self.__colorSection = colorSection
+            self.__state = state
+            gui.invoke(self._componentID, 'setProperties', *self.__getMarkerProperties(colorSection, state))
+            return
+
+    def __updateState(self):
+        gui = self._gui()
+        if gui is None:
+            return
+        else:
+            stateType = self.__getState()
+            state = self._states[stateType]
+            gui.invoke(self._componentID, 'setState', state['fillAlpha'])
+            return
+
+    def __onSettingsChanged(self, diff):
+        if settings_constants.GRAPHICS.COLOR_BLIND in diff:
+            self.__updateColorsProperties()
+
+    def __isPolygonValid(self, polygon):
+        return all(len(p) == 2 for p in polygon)

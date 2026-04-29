@@ -1,9 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/season_provider.py
 from collections import defaultdict
 from operator import itemgetter
-import typing
-import season_common
+import typing, season_common
 from shared_utils import first, findFirst
 from skeletons.gui.game_control import ISeasonProvider
 from helpers import time_utils, dependency
@@ -13,6 +10,8 @@ from gui.server_events.events_helpers import EventInfoModel
 from gui.periodic_battles.models import PrimeTime, PeriodType, PeriodInfo, AlertData, PERIOD_TO_STANDALONE, PrimeTimeStatus
 from predefined_hosts import g_preDefinedHosts, HOST_AVAILABILITY
 from skeletons.connection_mgr import IConnectionManager
+if typing.TYPE_CHECKING:
+    from typing import Optional, Dict
 
 class SeasonProvider(ISeasonProvider):
     _ALERT_DATA_CLASS = AlertData
@@ -43,7 +42,10 @@ class SeasonProvider(ISeasonProvider):
 
     def hasAnySeason(self):
         settings = self.__getSeasonSettings()
-        return bool(settings.seasons) if settings is not None else None
+        if settings is not None:
+            return bool(settings.seasons)
+        else:
+            return
 
     def hasAvailablePrimeTimeServers(self, now=None):
         return self._hasPrimeStatusServer((PrimeTimeStatus.AVAILABLE,), now)
@@ -59,6 +61,15 @@ class SeasonProvider(ISeasonProvider):
         currentTime = time_utils.getCurrentLocalServerTimestamp()
         return findFirst(lambda primeTime: primeTime.getNextPeriodStart(currentTime, currentCycleEndTime), primeTimes.values(), default=False)
 
+    def hasPrimeTimesPassedForCurrentCycle(self):
+        _, isCycleActive = self.getCurrentCycleInfo()
+        if not isCycleActive:
+            return False
+        startDate = self.getCurrentSeason().getStartDate()
+        primeTimes = self.getPrimeTimes()
+        currentTime = time_utils.getCurrentLocalServerTimestamp()
+        return findFirst(lambda primeTime: bool(primeTime.getPeriodsBetween(startDate, currentTime, includeEnd=False)), primeTimes.values(), default=False)
+
     def getClosestStateChangeTime(self, now=None):
         now = now or self.__getNow()
         season = self.getCurrentSeason(now)
@@ -71,7 +82,9 @@ class SeasonProvider(ISeasonProvider):
             return season.getEndDate()
         else:
             season = self.getNextSeason(now)
-            return season.getStartDate() if season else 0
+            if season:
+                return season.getStartDate()
+            return 0
 
     def getCurrentCycleID(self):
         now = self.__getNow()
@@ -80,7 +93,7 @@ class SeasonProvider(ISeasonProvider):
             _, _, _, cycleID = seasonInfo
             return cycleID
         else:
-            return None
+            return
 
     def getCurrentCycleInfo(self):
         season = self.getCurrentSeason()
@@ -89,7 +102,8 @@ class SeasonProvider(ISeasonProvider):
                 return (season.getCycleEndDate(), True)
             return (season.getCycleStartDate(), False)
         else:
-            return (None, False)
+            return (
+             None, False)
 
     def getCurrentSeason(self, now=None):
         now = now or self.__getNow()
@@ -97,16 +111,12 @@ class SeasonProvider(ISeasonProvider):
         if seasonSettings is not None:
             for seasonID, seasonData in seasonSettings.seasons.iteritems():
                 if seasonData['startSeason'] <= now < seasonData['endSeason']:
-                    currCycleInfo = (None,
-                     None,
-                     seasonID,
-                     None)
+                    currCycleInfo = (
+                     None, None, seasonID, None)
                     for cycleID, cycleTimes in seasonData['cycles'].iteritems():
                         if cycleTimes['start'] <= now < cycleTimes['end']:
-                            currCycleInfo = (cycleTimes['start'],
-                             cycleTimes['end'],
-                             seasonID,
-                             cycleID)
+                            currCycleInfo = (
+                             cycleTimes['start'], cycleTimes['end'], seasonID, cycleID)
 
                     return self._createSeason(currCycleInfo, seasonData)
 
@@ -120,17 +130,20 @@ class SeasonProvider(ISeasonProvider):
             cycle = season.getNextByTimeCycle(currTime)
             if cycle is None:
                 cycle = season.getLastCycleInfo()
-            return cycle.ordinalNumber if cycle else 0
+            if cycle:
+                return cycle.ordinalNumber
+            return 0
 
     def getEventEndTimestamp(self):
         if self.hasPrimeTimesLeftForCurrentCycle():
             currServerTime = time_utils.getCurrentLocalServerTimestamp()
             actualSeason = self.getCurrentSeason() or self.getNextSeason()
             actualCycle = actualSeason.getCycleInfo() or actualSeason.getNextCycleInfo(currServerTime)
-            lastPrimeTimeEnd = max([ period[1] for primeTime in self.getPrimeTimes().values() for period in primeTime.getPeriodsBetween(int(currServerTime), actualCycle.endDate) ])
+            lastPrimeTimeEnd = max([ period[1] for primeTime in self.getPrimeTimes().values() for period in primeTime.getPeriodsBetween(int(currServerTime), actualCycle.endDate)
+                                   ])
             return lastPrimeTimeEnd
         else:
-            return None
+            return
 
     def getNextSeason(self, now=None):
         now = now or self.__getNow()
@@ -207,7 +220,10 @@ class SeasonProvider(ISeasonProvider):
             if delta and delta < _min:
                 _min = delta
 
-        return _min if _min != float('+inf') else 0
+        if _min != float('+inf'):
+            return _min
+        else:
+            return 0
 
     def getPreviousSeason(self, now=None):
         seasonsPassed = self.getSeasonsPassed(now)
@@ -215,17 +231,19 @@ class SeasonProvider(ISeasonProvider):
             seasonID, _ = max(seasonsPassed, key=itemgetter(1))
             return self.getSeason(seasonID)
         else:
-            return None
+            return
 
-    def getPrimeTimeStatus(self, now=None, peripheryID=None):
+    def getPrimeTimeStatus(self, now=None, peripheryID=None, primeTimes=None):
         if peripheryID is None:
             peripheryID = self.__connectionMgr.peripheryID
-        primeTime = self.getPrimeTimes().get(peripheryID)
+        if primeTimes is None:
+            primeTimes = self.getPrimeTimes()
+        primeTime = primeTimes.get(peripheryID)
         if primeTime is None:
             return (PrimeTimeStatus.NOT_SET, 0, False)
-        elif not primeTime.hasAnyPeriods():
-            return (PrimeTimeStatus.FROZEN, 0, False)
         else:
+            if not primeTime.hasAnyPeriods():
+                return (PrimeTimeStatus.FROZEN, 0, False)
             now = now or self.__getNow()
             season = self.getCurrentSeason(now)
             if season and season.hasActiveCycle(now):
@@ -240,7 +258,8 @@ class SeasonProvider(ISeasonProvider):
                         if primeTimeStart:
                             timeTillUpdate = max(primeTimeStart, nextCycle.startDate) - now
             status = PrimeTimeStatus.AVAILABLE if isNow else PrimeTimeStatus.NOT_AVAILABLE
-            return (status, timeTillUpdate, isNow)
+            return (
+             status, timeTillUpdate, isNow)
 
     def getPrimeTimes(self):
         gameModeSettings = self.__getSeasonSettings()
@@ -273,11 +292,12 @@ class SeasonProvider(ISeasonProvider):
                 for name, period in serversPeriodsMapping.iteritems():
                     serverInMapping = name if period == dayPeriods else None
                     if serverInMapping:
-                        newName = '{0}, {1}'.format(serverInMapping, serverShortName)
+                        newName = ('{0}, {1}').format(serverInMapping, serverShortName)
                         serversPeriodsMapping[newName] = serversPeriodsMapping.pop(serverInMapping)
                         break
 
-            serversPeriodsMapping[serverShortName] = dayPeriods
+            else:
+                serversPeriodsMapping[serverShortName] = dayPeriods
 
         return serversPeriodsMapping
 
@@ -286,10 +306,7 @@ class SeasonProvider(ISeasonProvider):
         seasonCycleInfos = season_common.getAllSeasonCycleInfos(settings.asDict(), seasonID)
         seasonData = settings.seasons.get(seasonID, {})
         if seasonData:
-            cycleInfo = first(seasonCycleInfos, (None,
-             None,
-             seasonID,
-             None))
+            cycleInfo = first(seasonCycleInfos, (None, None, seasonID, None))
             return self._createSeason(cycleInfo, seasonData)
         else:
             return
@@ -307,7 +324,7 @@ class SeasonProvider(ISeasonProvider):
         return seasonsPassed
 
     def getAllSeasons(self):
-        return sorted(list((self.getSeason(sID) for sID in self.__getSeasonSettings().seasons.keys())), key=lambda s: s.getNumber())
+        return sorted(list(self.getSeason(sID) for sID in self.__getSeasonSettings().seasons.keys()), key=lambda s: s.getNumber())
 
     def getTimer(self, now=None, peripheryID=None):
         now = now or self.__getNow()
@@ -321,7 +338,9 @@ class SeasonProvider(ISeasonProvider):
         seasonsChangeTime = self.getClosestStateChangeTime(now)
         if seasonsChangeTime and (now + timeLeft > seasonsChangeTime or timeLeft == 0):
             timeLeft = seasonsChangeTime - now
-        return timeLeft + 1 if timeLeft > 0 else 0
+        if timeLeft > 0:
+            return timeLeft + 1
+        return 0
 
     def getLeftTimeToPrimeTimesEnd(self, now=None):
         if self.isInPrimeTime():
@@ -336,11 +355,14 @@ class SeasonProvider(ISeasonProvider):
             if status == PrimeTimeStatus.NOT_AVAILABLE:
                 times.append(peripheryTime)
 
-        return min(times) if times else 0
+        if times:
+            return min(times)
+        return 0
 
     def getQuestsTimerLeft(self):
         status, primeTimeLeft, _ = self.getPrimeTimeStatus()
-        if primeTimeLeft == 0 and status in (PrimeTimeStatus.NOT_AVAILABLE, PrimeTimeStatus.NOT_SET, PrimeTimeStatus.FROZEN):
+        if primeTimeLeft == 0 and status in (PrimeTimeStatus.NOT_AVAILABLE, PrimeTimeStatus.NOT_SET,
+         PrimeTimeStatus.FROZEN):
             return -1
         dailyQuestProgressDelta = EventInfoModel.getDailyProgressResetTimeDelta()
         currentCycleEndTime = self.getEndTime()
@@ -348,7 +370,8 @@ class SeasonProvider(ISeasonProvider):
         cycleTimeLeft = currentCycleEndTime - currServerTime
         if cycleTimeLeft < time_utils.ONE_DAY and cycleTimeLeft < dailyQuestProgressDelta:
             primeTime = self.getPrimeTimes().get(self.__connectionMgr.peripheryID)
-            lastPrimeTimeEnd = max([ period[1] for period in primeTime.getPeriodsBetween(int(currServerTime), currentCycleEndTime) ])
+            lastPrimeTimeEnd = max([ period[1] for period in primeTime.getPeriodsBetween(int(currServerTime), currentCycleEndTime)
+                                   ])
             dailyQuestProgressDelta = time_utils.getTimeDeltaFromNow(lastPrimeTimeEnd)
         return dailyQuestProgressDelta
 
@@ -362,7 +385,10 @@ class SeasonProvider(ISeasonProvider):
 
     def _getAlertBlockData(self):
         periodInfo = self.getPeriodInfo()
-        return None if periodInfo.periodType in (PeriodType.AVAILABLE, PeriodType.UNDEFINED) else self._ALERT_DATA_CLASS.construct(periodInfo, self.__connectionMgr.serverUserNameShort)
+        if periodInfo.periodType in (PeriodType.AVAILABLE, PeriodType.UNDEFINED):
+            return None
+        else:
+            return self._ALERT_DATA_CLASS.construct(periodInfo, self.__connectionMgr.serverUserNameShort)
 
     def _getAllPeripheryIDs(self):
         if self.__connectionMgr.isStandalone():
@@ -372,11 +398,10 @@ class SeasonProvider(ISeasonProvider):
     def _getHostList(self):
         hostsList = g_preDefinedHosts.getSimpleHostsList(g_preDefinedHosts.hostsWithRoaming(), withShortName=True)
         if self.__connectionMgr.isStandalone():
-            hostsList.insert(0, (self.__connectionMgr.url,
-             self.__connectionMgr.serverUserName,
+            hostsList.insert(0, (
+             self.__connectionMgr.url, self.__connectionMgr.serverUserName,
              self.__connectionMgr.serverUserNameShort,
-             HOST_AVAILABILITY.IGNORED,
-             0))
+             HOST_AVAILABILITY.IGNORED, 0))
         return hostsList
 
     def _createSeason(self, cycleInfo, seasonData):

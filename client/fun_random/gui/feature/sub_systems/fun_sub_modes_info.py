@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/feature/sub_systems/fun_sub_modes_info.py
 from __future__ import absolute_import
 import typing
 from itertools import chain
@@ -27,32 +25,37 @@ class FunSubModesInfo(IFunRandomController.IFunSubModesInfo):
         return
 
     def isAvailable(self):
-        return any((subMode.isAvailable() for subMode in self.__subModes.getSubModes()))
+        return any(subMode.isAvailable() for subMode in self.__subModes.getSubModes())
 
     def isEntryPointAvailable(self):
         isAvailable = self.getSubModesStatus().state not in FunSubModesState.HIDDEN_ENTRY_STATES
-        return isAvailable and any((subMode.isEntryPointAvailable() for subMode in self.__subModes.getSubModes()))
+        return isAvailable and any(subMode.isEntryPointAvailable() for subMode in self.__subModes.getSubModes())
 
     def getEventEndDate(self, now=None, subModesIDs=None):
         now = now or time_utils.getCurrentTimestamp()
         subModes = self.__subModes.getSubModes(subModesIDs)
-        leftSeasons = sorted([ s for s in list(chain.from_iterable([ sm.getAllSeasons() for sm in subModes ])) if s.getEndDate() > now ], key=lambda s: s.getStartDate())
+        leftSeasons = sorted([ s for s in chain.from_iterable([ sm.getAllSeasons() for sm in subModes ]) if s.getEndDate() > now ], key=lambda s: s.getStartDate())
         if not leftSeasons:
             return 0
         minEndTimestamp = leftSeasons[0].getEndDate()
-        return max([ s.getEndDate() for s in leftSeasons if s.getStartDate() <= minEndTimestamp ])
+        return max(s.getEndDate() for s in leftSeasons if s.getStartDate() <= minEndTimestamp)
 
     def getLeftTimeToPrimeTimesEnd(self, now=None, subModes=None):
         now = now or time_utils.getCurrentTimestamp()
         subModes = subModes if subModes is not None else self.__subModes.getSubModes()
         timesLeft = (sm.getLeftTimeToPrimeTimesEnd(now) for sm in subModes)
-        timesLeft = tuple((timeLeft for timeLeft in timesLeft if timeLeft > 0))
-        return min(timesLeft) if timesLeft else 0
+        timesLeft = tuple(timeLeft for timeLeft in timesLeft if timeLeft > 0)
+        if timesLeft:
+            return min(timesLeft)
+        else:
+            return 0
 
     def getPrimeTimesForDay(self, selectedTime, groupIdentical=False):
         subModes = self.__subModes.getSubModes()
         allPrimeTimes = [ sm.getPrimeTimesForDay(selectedTime, groupIdentical) for sm in subModes ]
-        return first(allPrimeTimes) if len(subModes) == 1 else mergeIntervals(allPrimeTimes)
+        if len(subModes) == 1:
+            return first(allPrimeTimes)
+        return mergeIntervals(allPrimeTimes)
 
     def getPerformanceAlertGroup(self, subModesIDs=None):
         subModes = self.__subModes.getSubModes(subModesIDs)
@@ -65,25 +68,25 @@ class FunSubModesInfo(IFunRandomController.IFunSubModesInfo):
             return FunSubModesStatus(FunSubModesState.UNDEFINED)
         else:
             now = time_utils.getCurrentTimestamp()
-            periodInfos = tuple((subMode.getPeriodInfo(now) for subMode in subModes))
+            periodInfos = tuple(subMode.getPeriodInfo(now) for subMode in subModes)
             endTime = self.getEventEndDate(now, subModesIDs)
-            if all((periodInfo.periodType in _OUTSIDE_PERIODS for periodInfo in periodInfos)):
+            if all(periodInfo.periodType in _OUTSIDE_PERIODS for periodInfo in periodInfos):
                 state = FunSubModesState.BETWEEN_SEASONS
                 nearestStartTimes = [ pInfo.seasonBorderRight.timestamp for pInfo in periodInfos if pInfo.seasonBorderRight ]
-                if all((periodInfo.periodType == PeriodType.AFTER_SEASON for periodInfo in periodInfos)):
+                if all(periodInfo.periodType == PeriodType.AFTER_SEASON for periodInfo in periodInfos):
                     state = FunSubModesState.AFTER_SEASON
-                elif all((periodInfo.periodType == PeriodType.BEFORE_SEASON for periodInfo in periodInfos)):
+                elif all(periodInfo.periodType == PeriodType.BEFORE_SEASON for periodInfo in periodInfos):
                     state = FunSubModesState.BEFORE_SEASON
                 return FunSubModesStatus(state, min(nearestStartTimes) if nearestStartTimes else None, endTime=endTime)
             state = FunSubModesState.AVAILABLE
-            periodInfos = tuple((pInfo for pInfo in periodInfos if pInfo.periodType not in _OUTSIDE_PERIODS))
-            latestEndTime = max([ pInfo.seasonBorderRight.timestamp for pInfo in periodInfos ])
+            periodInfos = tuple(pInfo for pInfo in periodInfos if pInfo.periodType not in _OUTSIDE_PERIODS)
+            latestEndTime = max(pInfo.seasonBorderRight.timestamp for pInfo in periodInfos)
             primeDelta = time_utils.getTimeDeltaFromNowInLocal(latestEndTime)
-            if all((periodInfo.periodType in _NO_BATTLES_PERIODS for periodInfo in periodInfos)):
+            if all(periodInfo.periodType in _NO_BATTLES_PERIODS for periodInfo in periodInfos):
                 state = FunSubModesState.NOT_AVAILABLE_END
-            elif all((periodInfo.periodType == PeriodType.FROZEN for periodInfo in periodInfos)):
+            elif all(periodInfo.periodType == PeriodType.FROZEN for periodInfo in periodInfos):
                 state = FunSubModesState.FROZEN
-            elif all((not sm.hasAvailablePrimeTimeServers(now) for sm in subModes)):
+            elif all(not sm.hasAvailablePrimeTimeServers(now) for sm in subModes):
                 state = FunSubModesState.NOT_AVAILABLE
                 primeDelta = self.getLeftTimeToPrimeTimesEnd(now, subModes)
             if len(subModes) == 1:

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/lobby/hangar_vehicle_info_view.py
-import logging
-import CommandMapping
+import logging, CommandMapping
 from CurrentVehicle import g_currentVehicle
 from gui.Scaleform.daapi.view.common.battle_royale import br_helpers
 from gui.shared.gui_items.Vehicle import getTypeBigIconPath
@@ -110,11 +107,11 @@ class HangarVehicleInfo(BattleRoyaleVehicleInfoMeta, IGlobalListener):
         super(HangarVehicleInfo, self)._populate()
         self.__battleRoyaleController.onUpdated += self.__onBattleRoyaleEnabledChanged
         self.startGlobalListening()
-        self.as_setDataS({'infoIconSource': backport.image(R.images.gui.maps.icons.library.info()),
-         'infoText': text_styles.highlightText(backport.text(R.strings.battle_royale.hangarVehicleInfo.moduleTreeTip(), key=text_styles.neutral(br_helpers.getHotKeyString(CommandMapping.CMD_UPGRADE_PANEL_SHOW)))),
-         'vehTitle': text_styles.grandTitle(self.__vehicle.shortUserName),
-         'vehTypeIcon': getTypeBigIconPath(self.__vehicle.type),
-         'tutorialText': backport.text(R.strings.battle_royale.hangarVehicleInfo.tutorialText())})
+        self.as_setDataS({'infoIconSource': backport.image(R.images.gui.maps.icons.library.info()), 
+           'infoText': text_styles.highlightText(backport.text(R.strings.battle_royale.hangarVehicleInfo.moduleTreeTip(), key=text_styles.neutral(br_helpers.getHotKeyString(CommandMapping.CMD_UPGRADE_PANEL_SHOW)))), 
+           'vehTitle': text_styles.grandTitle(self.__vehicle.shortUserName), 
+           'vehTypeIcon': getTypeBigIconPath(self.__vehicle.type), 
+           'tutorialText': backport.text(R.strings.battle_royale.hangarVehicleInfo.tutorialText())})
 
     def _onRegisterFlashComponent(self, viewPy, alias):
         if isinstance(viewPy, HangarVehicleModulesConfigurator):

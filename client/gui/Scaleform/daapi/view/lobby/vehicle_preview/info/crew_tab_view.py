@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/info/crew_tab_view.py
 import typing
 from CurrentVehicle import g_currentPreviewVehicle
 from debug_utils import LOG_DEBUG_DEV
@@ -31,7 +29,8 @@ if typing.TYPE_CHECKING:
 DOG = 'dog'
 
 class CrewTabView(ViewImpl):
-    __slots__ = ('_toolTipMgr', '_title', '_crewItemPack', '_isCustomCrew', '_vehicle', '_crew')
+    __slots__ = ('_toolTipMgr', '_title', '_crewItemPack', '_isCustomCrew', '_vehicle',
+                 '_crew')
     __appLoader = dependency.descriptor(IAppLoader)
     __itemsCache = dependency.descriptor(IItemsCache)
 
@@ -59,12 +58,7 @@ class CrewTabView(ViewImpl):
                 skillName = str(event.getArgument('skillName'))
                 roleName = str(event.getArgument('roleName'))
                 skillLevel = crewMemberRealSkillLevel(self._vehicle, skillName)
-                args = [skillName,
-                 roleName,
-                 None,
-                 skillLevel,
-                 None,
-                 event.getArgument('customName')]
+                args = [skillName, roleName, None, skillLevel, None, event.getArgument('customName')]
                 self._toolTipMgr.onCreateWulfTooltip(TOOLTIPS_CONSTANTS.CREW_PERK_GF, args, event.mouse.positionX, event.mouse.positionY, parent=self.getParentWindow())
                 return TOOLTIPS_CONSTANTS.CREW_PERK_GF
             if tooltipId == TooltipConstants.VEHICLE_PREVIEW_CREW_MEMBER:
@@ -86,10 +80,10 @@ class CrewTabView(ViewImpl):
     def updateData(self, crewStr, vehicleItems, crewItemPack):
         if vehicleItems is None or crewItemPack is None:
             return
+        gID = first(item.groupID for item in vehicleItems if item.id == g_currentPreviewVehicle.item.intCD)
+        if gID is None:
+            return
         else:
-            gID = first((item.groupID for item in vehicleItems if item.id == g_currentPreviewVehicle.item.intCD))
-            if gID is None:
-                return
             sortedCrewItems = sorted([ item for item in crewItemPack if item.groupID == gID ], key=lambda i: ItemPackTypeGroup.CREW.index(i.type), reverse=True)
             self._title = crewStr
             self._crewItemPack = sortedCrewItems[0] if sortedCrewItems else None
@@ -100,7 +94,7 @@ class CrewTabView(ViewImpl):
             return
 
     def _fillViewModel(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             self._fillExtraInfo(vm)
             self._fillTankmen(vm)
 
@@ -171,7 +165,9 @@ class CrewTabView(ViewImpl):
         return
 
     def _getListeners(self):
-        return ((OFFER_CHANGED_EVENT, self._onOfferChanged),)
+        return (
+         (
+          OFFER_CHANGED_EVENT, self._onOfferChanged),)
 
     def _getVehicle(self):
         vehicle = self.__itemsCache.items.getVehicleCopy(g_currentPreviewVehicle.item)

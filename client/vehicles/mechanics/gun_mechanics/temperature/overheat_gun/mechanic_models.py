@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicles/mechanics/gun_mechanics/temperature/overheat_gun/mechanic_models.py
 from __future__ import absolute_import, division
-import math
-import typing
+import math, typing
 from chat_commands_consts import BATTLE_CHAT_COMMAND_NAMES
 from constants import OVERHEAT_GUN_STATE
 from gui.battle_control.battle_constants import CANT_SHOOT_ERROR
@@ -49,8 +46,8 @@ class OverheatGunMechanicState(IOverheatGunMechanicState):
         self.__params = params
 
     @classmethod
-    def fromComponentStatus(cls, state, params):
-        return cls(state, params)
+    def fromComponentStatus(cls, overheatState, params):
+        return cls(overheatState, params)
 
     @property
     def isOverheated(self):
@@ -63,8 +60,10 @@ class OverheatGunMechanicState(IOverheatGunMechanicState):
     def isTransition(self, other):
         return self.overheatState != other.overheatState
 
-    def overheatTimeLeft(self, temperatureState):
-        return temperatureState.getCoolingTime(self.__params.overheatOffThreshold) if self.isOverheated else -1.0
+    def overheatTimeLeft(self, temperatureGunState):
+        if self.isOverheated:
+            return temperatureGunState.getCoolingTime(self.__params.overheatOffThreshold)
+        return -1.0
 
 
 class OverheatGunAmmoState(DefaultComponentAmmoState):
@@ -74,7 +73,9 @@ class OverheatGunAmmoState(DefaultComponentAmmoState):
         self.__mechanicState = mechanicState
 
     def canShootValidation(self):
-        return (False, CANT_SHOOT_ERROR.GUN_OVERHEATED) if self.__mechanicState.isOverheated else super(OverheatGunAmmoState, self).canShootValidation()
+        if self.__mechanicState.isOverheated:
+            return (False, CANT_SHOOT_ERROR.GUN_OVERHEATED)
+        return super(OverheatGunAmmoState, self).canShootValidation()
 
     def getSpecialReloadMessage(self):
         if not self.__mechanicState.isOverheated:

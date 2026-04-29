@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client_common/script_component/ScriptComponent.py
-import logging
-import BigWorld
-import Avatar
+import logging, BigWorld, Avatar
 from PlayerEvents import g_playerEvents
 from helpers import dependency, isPlayerAvatar
 from shared_utils import nextTick

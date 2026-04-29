@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hub/tabs/basic/weekly_missions.py
 import sys
 from datetime import datetime
 import typing
@@ -101,11 +99,17 @@ class WeeklyMissions(ViewComponent[WeeklyMissionsModel]):
         return
 
     def _getEvents(self):
-        return ((self.viewModel.onReroll, self.__onReRoll), (self.eventsCache.onSyncCompleted, self.__onSyncCompleted), (self.lobbyContext.getServerSettings().onServerSettingsChange, self._onServerSettingsChanged))
+        return (
+         (
+          self.viewModel.onReroll, self.__onReRoll),
+         (
+          self.eventsCache.onSyncCompleted, self.__onSyncCompleted),
+         (
+          self.lobbyContext.getServerSettings().onServerSettingsChange, self._onServerSettingsChanged))
 
     def _updateModel(self):
         self._rerollTimeout = getWeeklyRerollTimeout()
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             self.__weeklyQuests = self.eventsCache.getWeeklyQuests()
             tx.setUpdateWeekDay(self._firstWeekDay)
             self.__fillWeeklyMissions(tx, self.__getQuestData(self.__weeklyQuests))
@@ -156,7 +160,6 @@ class WeeklyMissions(ViewComponent[WeeklyMissionsModel]):
         wmm.setIsRerollInProgress(False)
         wmm.setRerollCooldown(self._rerollTimeout)
         wmm.setTimeToNextReroll(self.__getCountdown(weeklyQuest.getID()))
-        weeklyQuestModel.unbind()
         return wmm
 
     def __getProgressFromQuest(self, quest, conditionModel):
@@ -168,7 +171,8 @@ class WeeklyMissions(ViewComponent[WeeklyMissionsModel]):
                 if not isCompleted:
                     return (currentProgress, earned)
                 return (total, earned)
-        return (conditionModel.getCurrent(), conditionModel.getEarned())
+        return (
+         conditionModel.getCurrent(), conditionModel.getEarned())
 
     def __getQuestData(self, weeklyQuests):
         questData = {}
@@ -214,7 +218,7 @@ class WeeklyMissions(ViewComponent[WeeklyMissionsModel]):
         return max(nextRerollTime - curTime, 0)
 
     def _onRerollTimerEnd(self):
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             self._updateCountdownsUntilNextReroll(tx)
 
     def _onServerSettingsChanged(self, diff=None):
@@ -223,7 +227,7 @@ class WeeklyMissions(ViewComponent[WeeklyMissionsModel]):
             dqDiff = diff[Configs.WEEKLY_QUESTS_CONFIG.value]
             rerollTimeoutChanged = 'rerollTimeout' in dqDiff and dqDiff['rerollTimeout'] != self._rerollTimeout
             if rerollTimeoutChanged:
-                with self.viewModel.transaction() as tx:
+                with self.viewModel.transaction() as (tx):
                     self._updateCountdownsUntilNextReroll(tx)
 
     def __getRerollCountdown(self):
@@ -242,7 +246,7 @@ class WeeklyMissions(ViewComponent[WeeklyMissionsModel]):
         quest = quests[questId]
         result = yield weekly_quests.WeeklyQuestReroll(quest).request()
         if result.success and self.viewModel.proxy:
-            with self.viewModel.transaction() as tx:
+            with self.viewModel.transaction() as (tx):
                 self._setRerollInProgress(tx, questId)
         if result.userMsg:
             SystemMessages.pushMessage(result.userMsg, type=result.sysMsgType)

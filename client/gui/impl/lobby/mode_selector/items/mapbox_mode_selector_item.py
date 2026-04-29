@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/mode_selector/items/mapbox_mode_selector_item.py
 import typing
 from gui.impl import backport
 from gui.impl.gen import R
@@ -61,7 +59,7 @@ class MapboxModeSelectorItem(ModeSelectorLegacyItem):
             self.__fillViewModel()
 
     def __fillViewModel(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setTimeLeft(formatSeasonLeftTime(self.__mapboxCtrl.getCurrentSeason()))
             vm.setStatusNotActive(self.__getNotActiveStatus())
             vm.setIsDisabled(self._getIsDisabled())
@@ -73,11 +71,17 @@ class MapboxModeSelectorItem(ModeSelectorLegacyItem):
 
     def __getNotActiveStatus(self):
         nextSeason = self.__mapboxCtrl.getNextSeason()
-        return backport.text(R.strings.mapbox.selector.startEvent(), day=self.__getDate(nextSeason.getStartDate())) if not self._getIsDisabled() and not self.__mapboxCtrl.isActive() and nextSeason is not None else ''
+        if not self._getIsDisabled() and not self.__mapboxCtrl.isActive() and nextSeason is not None:
+            return backport.text(R.strings.mapbox.selector.startEvent(), day=self.__getDate(nextSeason.getStartDate()))
+        else:
+            return ''
 
     def __getCurrentSeasonDate(self):
         currentSeason = self.__mapboxCtrl.getCurrentSeason()
-        return self.__getDate(currentSeason.getEndDate()) if currentSeason is not None else ''
+        if currentSeason is not None:
+            return self.__getDate(currentSeason.getEndDate())
+        else:
+            return ''
 
     def __getDate(self, date):
         timeStamp = time_utils.makeLocalServerTime(date)

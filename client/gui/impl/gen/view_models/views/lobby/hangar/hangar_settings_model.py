@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/hangar/hangar_settings_model.py
 from gui.impl.gen.view_models.views.lobby.common.settings_model import SettingsModel
 from gui.impl.gen.view_models.views.lobby.hangar.all_vehicles_settings_model import AllVehiclesSettingsModel
 

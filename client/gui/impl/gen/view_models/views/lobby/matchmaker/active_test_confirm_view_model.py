@@ -1,9 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/matchmaker/active_test_confirm_view_model.py
 from gui.impl.gen.view_models.windows.full_screen_dialog_window_model import FullScreenDialogWindowModel
 
 class ActiveTestConfirmViewModel(FullScreenDialogWindowModel):
-    __slots__ = ('onOpenPortalClicked',)
+    __slots__ = ('onOpenPortalClicked', )
 
     def __init__(self, properties=14, commands=4):
         super(ActiveTestConfirmViewModel, self).__init__(properties=properties, commands=commands)

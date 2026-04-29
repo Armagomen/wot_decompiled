@@ -1,9 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/page/platoon_presenter.py
 from __future__ import absolute_import
-import json
-import typing as t
-import BigWorld
+import json, typing as t, BigWorld
 from constants import PREBATTLE_TYPE, SquadManStates, EPlatoonButtonState, QUEUE_TYPE
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.game_control.platoon_controller import PopoverParams
@@ -82,10 +78,16 @@ class PlatoonPresenter(ViewComponent[PlatoonModel], IGlobalListener):
         return
 
     def _getEvents(self):
-        return ((self.__platoonCtrl.onMembersUpdate, self._onUpdatePlatoon), (self.viewModel.onInPlatoonAction, self._onInPlatoonAction))
+        return (
+         (
+          self.__platoonCtrl.onMembersUpdate, self._onUpdatePlatoon),
+         (
+          self.viewModel.onInPlatoonAction, self._onInPlatoonAction))
 
     def _getListeners(self):
-        return ((events.LobbyHeaderMenuEvent.UPDATE_PREBATTLE_CONTROLS, self.__onUpdatePrbControls, EVENT_BUS_SCOPE.LOBBY),)
+        return (
+         (
+          events.LobbyHeaderMenuEvent.UPDATE_PREBATTLE_CONTROLS, self.__onUpdatePrbControls, EVENT_BUS_SCOPE.LOBBY),)
 
     def _onLoading(self, *args, **kwargs):
         self._onUpdatePlatoon()
@@ -101,7 +103,7 @@ class PlatoonPresenter(ViewComponent[PlatoonModel], IGlobalListener):
 
     def _onUpdatePlatoon(self):
         pFuncState = self.prbDispatcher.getFunctionalState()
-        isInSquad = any((pFuncState.isInUnit(prbType) for prbType in PREBATTLE_TYPE.SQUAD_PREBATTLES))
+        isInSquad = any(pFuncState.isInUnit(prbType) for prbType in PREBATTLE_TYPE.SQUAD_PREBATTLES)
         isSquadEnabled = isInSquad or self.__platoonCtrl.getPermissions().canCreateSquad()
         extendedSquadInfoVo = self.__platoonCtrl.buildExtendedSquadInfoVo()
         isInQueue = self.prbEntity.isInQueue()
@@ -140,7 +142,8 @@ class PlatoonPresenter(ViewComponent[PlatoonModel], IGlobalListener):
             squadTooltip = headerTooltips.inSquad if isInSquad else headerTooltips.squad
             header = squadTooltip.header()
             body = squadTooltip.body()
-        return (header, body, params)
+        return (
+         header, body, params)
 
     def __getPlayerIndex(self):
         slotsData = self.__platoonCtrl.getPlatoonSlotsData()

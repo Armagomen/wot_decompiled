@@ -1,12 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/markers2d/plugins.py
+from __future__ import absolute_import
 import logging
 from collections import defaultdict
 from functools import partial
-import BattleReplay
-import BigWorld
-import Math
-import constants
+from future.utils import viewitems, viewvalues
+import BattleReplay, BigWorld, Math, constants
 from aih_constants import CTRL_MODE_NAME
 from AvatarInputHandler import aih_global_binding, AvatarInputHandler
 from AvatarInputHandler.aih_global_binding import BINDING_ID
@@ -32,6 +29,7 @@ from gui.shared.events import GameEvent, DeathCamEvent
 from gui.shared.utils.plugins import IPlugin
 from helpers import dependency
 from helpers import i18n
+from math_common import round_py2_style
 from messenger.proto.bw_chat2.battle_chat_cmd import AUTOCOMMIT_COMMAND_NAMES
 from messenger_common_chat2 import MESSENGER_ACTION_IDS as _ACTIONS
 from shared_utils import findFirst, nextTick
@@ -39,14 +37,14 @@ from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
 from vehicle_systems.stricted_loading import makeCallbackWeak
 _logger = logging.getLogger(__name__)
-_LOCATION_SUBTYPE_TO_FLASH_SYMBOL_NAME = {LocationMarkerSubType.SPG_AIM_AREA_SUBTYPE: settings.MARKER_SYMBOL_NAME.STATIC_ARTY_MARKER,
- LocationMarkerSubType.GOING_TO_MARKER_SUBTYPE: settings.MARKER_SYMBOL_NAME.LOCATION_MARKER,
- LocationMarkerSubType.PREBATTLE_WAYPOINT_SUBTYPE: settings.MARKER_SYMBOL_NAME.LOCATION_MARKER,
- LocationMarkerSubType.ATTENTION_TO_MARKER_SUBTYPE: settings.MARKER_SYMBOL_NAME.ATTENTION_MARKER,
- LocationMarkerSubType.SHOOTING_POINT_SUBTYPE: settings.MARKER_SYMBOL_NAME.SHOOTING_MARKER,
- LocationMarkerSubType.NAVIGATION_POINT_SUBTYPE: settings.MARKER_SYMBOL_NAME.NAVIGATION_MARKER,
- LocationMarkerSubType.FLAG_POINT_SUBTYPE: settings.MARKER_SYMBOL_NAME.FLAG_MARKER,
- LocationMarkerSubType.TARGET_DESIGNATOR_UNSPOTTED_MARKER_HIT: settings.MARKER_SYMBOL_NAME.UNSPOTTED_MARKER_HIT}
+_LOCATION_SUBTYPE_TO_FLASH_SYMBOL_NAME = {LocationMarkerSubType.SPG_AIM_AREA_SUBTYPE: settings.MARKER_SYMBOL_NAME.STATIC_ARTY_MARKER, 
+   LocationMarkerSubType.GOING_TO_MARKER_SUBTYPE: settings.MARKER_SYMBOL_NAME.LOCATION_MARKER, 
+   LocationMarkerSubType.PREBATTLE_WAYPOINT_SUBTYPE: settings.MARKER_SYMBOL_NAME.LOCATION_MARKER, 
+   LocationMarkerSubType.ATTENTION_TO_MARKER_SUBTYPE: settings.MARKER_SYMBOL_NAME.ATTENTION_MARKER, 
+   LocationMarkerSubType.SHOOTING_POINT_SUBTYPE: settings.MARKER_SYMBOL_NAME.SHOOTING_MARKER, 
+   LocationMarkerSubType.NAVIGATION_POINT_SUBTYPE: settings.MARKER_SYMBOL_NAME.NAVIGATION_MARKER, 
+   LocationMarkerSubType.FLAG_POINT_SUBTYPE: settings.MARKER_SYMBOL_NAME.FLAG_MARKER, 
+   LocationMarkerSubType.TARGET_DESIGNATOR_UNSPOTTED_MARKER_HIT: settings.MARKER_SYMBOL_NAME.UNSPOTTED_MARKER_HIT}
 _STATIC_MARKER_CULL_DISTANCE = 1800
 _STATIC_MARKER_MIN_SCALE = 60.0
 _BASE_MARKER_MIN_SCALE = 100.0
@@ -73,10 +71,10 @@ class IMarkersManager(object):
     def setMarkerActive(self, markerID, active):
         raise NotImplementedError
 
-    def setMarkerLocationOffset(self, markerID, minY, maxY, distForMinY, maxBoost, boostStart):
+    def setMarkerLocationOffset(self, markerID, minYOffset, maxYOffset, distanceForMinYOffset, maxBoost, boostStart):
         raise NotImplementedError
 
-    def setMarkerRenderInfo(self, markerID, minScale, offset, innerOffset, cullDistance, boundsMinScale):
+    def setMarkerRenderInfo(self, markerID, minScale, bounds, innerBounds, cullDistance, markerBoundsScale):
         raise NotImplementedError
 
     def setMarkerCullPlanarEnabled(self, markerID, enabled):
@@ -364,7 +362,9 @@ class ChatCommunicationComponent(IPlugin):
 
 
 class VehicleMarkerTargetPlugin(MarkerPlugin, IArenaVehiclesController):
-    __slots__ = ('_markers', '_vehicleID', '_showExtendedInfo', '_markersStates', '_clazz', '__markerType', '__markerBaseAimMarker2D', '__markerAltAimMarker2D', '__arenaDP', '__baseMarker', '__altMarker')
+    __slots__ = ('_markers', '_vehicleID', '_showExtendedInfo', '_markersStates', '_clazz',
+                 '__markerType', '__markerBaseAimMarker2D', '__markerAltAimMarker2D',
+                 '__arenaDP', '__baseMarker', '__altMarker')
 
     def __init__(self, parentObj, clazz=markers.VehicleTargetMarker):
         super(VehicleMarkerTargetPlugin, self).__init__(parentObj)
@@ -560,7 +560,7 @@ class VehicleMarkerTargetPluginReplayRecording(VehicleMarkerTargetPlugin):
 
     def _handleAutoAimMarker(self, event):
         super(VehicleMarkerTargetPluginReplayRecording, self)._handleAutoAimMarker(event)
-        if BattleReplay.g_replayCtrl.isRecording:
+        if BattleReplay.isRecording():
             BattleReplay.g_replayCtrl.serializeCallbackData(CallbackDataNames.ON_TARGET_VEHICLE_CHANGED, (event,))
 
 
@@ -612,7 +612,7 @@ class EquipmentsMarkerPlugin(MarkerPlugin):
             else:
                 marker = item.getEnemyMarker()
                 markerColor = item.getEnemyMarkerColor()
-            self._invokeMarker(markerID, 'init', marker, _EQUIPMENT_DELAY_FORMAT.format(round(delay)), self.__defaultPostfix, markerColor)
+            self._invokeMarker(markerID, 'init', marker, _EQUIPMENT_DELAY_FORMAT.format(round_py2_style(delay)), self.__defaultPostfix, markerColor)
             self.__setCallback(item, markerID, BigWorld.serverTime() + delay)
             return
 
@@ -626,7 +626,8 @@ class EquipmentsMarkerPlugin(MarkerPlugin):
         self.__clearCallback(item)
 
     def __setCallback(self, item, markerID, finishTime, interval=_EQUIPMENT_DEFAULT_INTERVAL):
-        self.__callbackIDs[item] = (markerID, BigWorld.callback(interval, partial(self.__handleCallback, item, markerID, finishTime)))
+        self.__callbackIDs[item] = (markerID,
+         BigWorld.callback(interval, partial(self.__handleCallback, item, markerID, finishTime)))
 
     def __clearCallback(self, item):
         _, callbackID = self.__callbackIDs.pop(item, (None, None))
@@ -640,7 +641,7 @@ class EquipmentsMarkerPlugin(MarkerPlugin):
         if delay <= 0:
             self._destroyMarker(markerID)
         else:
-            self._invokeMarker(markerID, 'updateTimer', _EQUIPMENT_DELAY_FORMAT.format(abs(round(delay))))
+            self._invokeMarker(markerID, 'updateTimer', _EQUIPMENT_DELAY_FORMAT.format(abs(round_py2_style(delay))))
             self.__setCallback(item, markerID, finishTime, min(delay, _EQUIPMENT_DEFAULT_INTERVAL))
         return
 
@@ -687,8 +688,8 @@ class AreaStaticMarkerPlugin(MarkerPlugin, ChatCommunicationComponent):
         vStateCtrl = self.sessionProvider.shared.vehicleState
         if vStateCtrl is not None:
             vStateCtrl.onVehicleStateUpdated -= self.__onVehicleStateUpdated
-        for markerKey in self._markers.iterkeys():
-            self._destroyMarker(self._markers[markerKey].getMarkerID())
+        for marker in viewvalues(self._markers):
+            self._destroyMarker(marker.getMarkerID())
 
         self._markers.clear()
         super(AreaStaticMarkerPlugin, self).stop()
@@ -698,8 +699,8 @@ class AreaStaticMarkerPlugin(MarkerPlugin, ChatCommunicationComponent):
         return MarkerType.LOCATION_MARKER_TYPE
 
     def getTargetIDFromMarkerID(self, markerID):
-        for targetID in self._markers:
-            if self._markers[targetID].getMarkerID() == markerID:
+        for targetID, marker in viewitems(self._markers):
+            if marker.getMarkerID() == markerID:
                 return targetID
 
         return INVALID_MARKER_ID
@@ -714,7 +715,9 @@ class AreaStaticMarkerPlugin(MarkerPlugin, ChatCommunicationComponent):
         return markerSubtypeName
 
     def _getMarkerFromTargetID(self, targetID, markerType):
-        return None if targetID not in self._markers or markerType != self.getMarkerType() else self._markers[targetID]
+        if targetID not in self._markers or markerType != self.getMarkerType():
+            return None
+        return self._markers[targetID]
 
     def __onVehicleStateUpdated(self, state, value):
         if state in (VEHICLE_VIEW_STATE.DESTROYED, VEHICLE_VIEW_STATE.CREW_DEACTIVATED):
@@ -728,8 +731,7 @@ class AreaStaticMarkerPlugin(MarkerPlugin, ChatCommunicationComponent):
 
     def __checkMarkers(self):
         _logger.debug('__checkPrebattleMarkers')
-        for key in g_locationPointManager.markedAreas:
-            locationPoint = g_locationPointManager.markedAreas[key]
+        for locationPoint in viewvalues(g_locationPointManager.markedAreas):
             _logger.debug('created a marker')
             self.__onStaticMarkerAdded(locationPoint.targetID, locationPoint.creatorID, locationPoint.position, locationPoint.markerSubType, locationPoint.markerText, locationPoint.replyCount, False)
 
@@ -782,8 +784,7 @@ class AreaStaticMarkerPlugin(MarkerPlugin, ChatCommunicationComponent):
             advChatCmp = getattr(self.sessionProvider.arenaVisitor.getComponentSystem(), 'advancedChatComponent', None)
             if advChatCmp is None:
                 return
-            for targetID in self._markers:
-                marker = self._markers[targetID]
+            for marker in viewvalues(self._markers):
                 replyCount = marker.getReplyCount()
                 if marker.getMarkerSubtype() == LocationMarkerSubType.PREBATTLE_WAYPOINT_SUBTYPE and replyCount > 0:
                     self._invokeMarker(marker.getMarkerID(), 'alwaysShowCreatorName', False)
@@ -796,7 +797,8 @@ class AreaStaticMarkerPlugin(MarkerPlugin, ChatCommunicationComponent):
         if newTargetType == self.getMarkerType() and newTargetID in self._markers:
             newMarker = self._markers[newTargetID]
             pos = newMarker.getPosition()
-            if pos is not None and newMarker.getMarkerSubtype() in [LocationMarkerSubType.SPG_AIM_AREA_SUBTYPE, LocationMarkerSubType.ATTENTION_TO_MARKER_SUBTYPE]:
+            if pos is not None and newMarker.getMarkerSubtype() in [LocationMarkerSubType.SPG_AIM_AREA_SUBTYPE,
+             LocationMarkerSubType.ATTENTION_TO_MARKER_SUBTYPE]:
                 if pos.distTo(avatar_getter.getOwnVehiclePosition()) > MAX_DISTANCE_TEMP_STICKY:
                     return
             self.__makeMarkerSticky(newTargetID, True)
@@ -848,12 +850,12 @@ class TeamsOrControlsPointsPlugin(MarkerPlugin, ChatCommunicationComponent):
         return
 
     def setAllMarkersActive(self, value):
-        for targetID in self._markers:
-            self._setMarkerActive(self._markers[targetID].getMarkerID(), value)
+        for marker in viewvalues(self._markers):
+            self._setMarkerActive(marker.getMarkerID(), value)
 
     def __removeExistingMarkers(self):
-        for markerKey in self._markers.iterkeys():
-            self._destroyMarker(self._markers[markerKey].getMarkerID())
+        for maker in viewvalues(self._markers):
+            self._destroyMarker(maker.getMarkerID())
 
         self._markers.clear()
 
@@ -861,7 +863,7 @@ class TeamsOrControlsPointsPlugin(MarkerPlugin, ChatCommunicationComponent):
         return MarkerType.BASE_MARKER_TYPE
 
     def getTargetIDFromMarkerID(self, markerID):
-        for baseID, marker in self._markers.iteritems():
+        for baseID, marker in viewitems(self._markers):
             if markerID == marker.getMarkerID():
                 return baseID
 
@@ -872,7 +874,9 @@ class TeamsOrControlsPointsPlugin(MarkerPlugin, ChatCommunicationComponent):
         if foundMarker is None:
             return INVALID_MARKER_SUBTYPE
         else:
-            return DefaultMarkerSubType.ALLY_MARKER_SUBTYPE if foundMarker.getOwningTeam() == 'ally' else DefaultMarkerSubType.ENEMY_MARKER_SUBTYPE
+            if foundMarker.getOwningTeam() == 'ally':
+                return DefaultMarkerSubType.ALLY_MARKER_SUBTYPE
+            return DefaultMarkerSubType.ENEMY_MARKER_SUBTYPE
 
     def _restart(self):
         self.__personalTeam = self.sessionProvider.getArenaDP().getNumberOfTeam()
@@ -881,11 +885,17 @@ class TeamsOrControlsPointsPlugin(MarkerPlugin, ChatCommunicationComponent):
         self.__addControlPoints()
 
     def _getMarkerFromTargetID(self, targetID, markerType):
-        return None if targetID not in self._markers or markerType != self.getMarkerType() else self._markers[targetID]
+        if targetID not in self._markers or markerType != self.getMarkerType():
+            return None
+        return self._markers[targetID]
 
     def _getTerrainHeightAt(self, spaceID, x, z):
         collisionWithTerrain = BigWorld.wg_collideSegment(spaceID, Math.Vector3(x, 1000.0, z), Math.Vector3(x, -1000.0, z), 128)
-        return collisionWithTerrain.closestPoint if collisionWithTerrain is not None else (x, 0, z)
+        if collisionWithTerrain is not None:
+            return collisionWithTerrain.closestPoint
+        else:
+            return (
+             x, 0, z)
 
     def __addBaseOrControlPointMarker(self, owner, position, baseOrControlPointID):
         position = self._getTerrainHeightAt(BigWorld.player().spaceID, position[0], position[2])
@@ -1015,7 +1025,7 @@ class BaseAreaMarkerPlugin(MarkerPlugin, ChatCommunicationComponent):
         vStateCtrl = self.sessionProvider.shared.vehicleState
         if vStateCtrl is not None:
             vStateCtrl.onVehicleStateUpdated -= self.__onVehicleStateUpdated
-        for marker in self.__markers.itervalues():
+        for marker in viewvalues(self.__markers):
             self._destroyMarker(marker.getMarkerID())
 
         self.__markers = {}
@@ -1032,16 +1042,22 @@ class BaseAreaMarkerPlugin(MarkerPlugin, ChatCommunicationComponent):
         return self.__markers
 
     def getMarkerType(self, markerID=INVALID_MARKER_ID):
-        marker = findFirst(lambda item: item.getMarkerID() == markerID, self.__markers.itervalues())
-        return marker.getBCMarkerType() if marker else MarkerType.INVALID_MARKER_TYPE
+        marker = findFirst(lambda item: item.getMarkerID() == markerID, viewvalues(self.__markers))
+        if marker:
+            return marker.getBCMarkerType()
+        return MarkerType.INVALID_MARKER_TYPE
 
     def getMarkerSubtype(self, targetID):
-        marker = findFirst(lambda item: item.getTargetID() == targetID, self.__markers.itervalues())
-        return INVALID_MARKER_SUBTYPE if targetID == INVALID_MARKER_ID or not marker else DefaultMarkerSubType.ALLY_MARKER_SUBTYPE
+        marker = findFirst(lambda item: item.getTargetID() == targetID, viewvalues(self.__markers))
+        if targetID == INVALID_MARKER_ID or not marker:
+            return INVALID_MARKER_SUBTYPE
+        return DefaultMarkerSubType.ALLY_MARKER_SUBTYPE
 
     def getTargetIDFromMarkerID(self, markerID):
-        marker = findFirst(lambda item: item.getMarkerID() == markerID, self.__markers.itervalues())
-        return marker.getTargetID() if marker else INVALID_MARKER_ID
+        marker = findFirst(lambda item: item.getMarkerID() == markerID, viewvalues(self.__markers))
+        if marker:
+            return marker.getTargetID()
+        return INVALID_MARKER_ID
 
     def createMarker(self, uniqueID, targetID, symbol, matrixProvider, active, bcMarkerType, guiMarkerType):
         if uniqueID in self.__markers:
@@ -1113,18 +1129,15 @@ class BaseAreaMarkerPlugin(MarkerPlugin, ChatCommunicationComponent):
             return
 
     def _getMarkerFromTargetID(self, targetID, markerType):
-        return findFirst(lambda item: item.getTargetID() == targetID and item.getBCMarkerType() == markerType, self.__markers.itervalues())
+        return findFirst(lambda item: item.getTargetID() == targetID and item.getBCMarkerType() == markerType, viewvalues(self.__markers))
 
     def _onReplyFeedbackReceived(self, targetID, replierID, markerType, oldReplyCount, newReplyCount):
         marker = self._getMarkerFromTargetID(targetID, markerType)
         if marker is not None:
             self._setMarkerRepliesAndCheckState(marker, newReplyCount, replierID == avatar_getter.getPlayerVehicleID())
         elif BattleReplay.g_replayCtrl.isPlaying:
-            self.__replayMarkersFeedbackStorage.setdefault((targetID, markerType), []).append((targetID,
-             replierID,
-             markerType,
-             oldReplyCount,
-             newReplyCount))
+            self.__replayMarkersFeedbackStorage.setdefault((
+             targetID, markerType), []).append((targetID, replierID, markerType, oldReplyCount, newReplyCount))
         return
 
     def __checkReplayFeedback(self, targetID, markerType):

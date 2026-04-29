@@ -1,20 +1,15 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/Fire.py
-import random
-import weakref
-import BigWorld
+from __future__ import absolute_import
+import random, weakref, BigWorld
 from constants import FIRE_NOTIFICATION_CODES
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
-import Statuses
-import TriggersManager
+import Statuses, TriggersManager
 from TriggersManager import TRIGGER_TYPE
 from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE
 
 class Fire(BigWorld.DynamicScriptComponent):
     __guiSessionProvider = dependency.descriptor(IBattleSessionProvider)
-    __FIRE_SOUNDS = {'fireStarted': 'fire_started',
-     'fireStopped': 'fire_stopped'}
+    __FIRE_SOUNDS = {'fireStarted': 'fire_started', 'fireStopped': 'fire_stopped'}
     __EXTENDED_NOTIFICATION_WINDOW = 1
 
     def __init__(self):
@@ -30,15 +25,14 @@ class Fire(BigWorld.DynamicScriptComponent):
         appearance = vehicle.appearance
         if appearance is None or not appearance.isConstructed:
             return False
-        else:
-            if vehicle.health > 0:
-                fire = appearance.findComponentByType(Statuses.FireComponent)
-                if fire is None:
-                    appearance.createComponent(Statuses.FireComponent)
-                isUnderwater = appearance.isUnderwater
-                if not isUnderwater and self.__effectListPlayerRef is None:
-                    self.__playEffect()
-            return True
+        if vehicle.health > 0:
+            fire = appearance.findComponentByType(Statuses.FireComponent)
+            if fire is None:
+                appearance.createComponent(Statuses.FireComponent)
+            isUnderwater = appearance.isUnderwater
+            if not isUnderwater and self.__effectListPlayerRef is None:
+                self.__playEffect()
+        return True
 
     def set_fireInfo(self, _=None):
         fireInfo = self.fireInfo
@@ -67,29 +61,31 @@ class Fire(BigWorld.DynamicScriptComponent):
         vehicle = self.entity
         if vehicle.isDestroyed or not vehicle.inWorld:
             return
+        if vehicle.appearance:
+            vehicle.appearance.removeComponentByType(Statuses.FireComponent)
+        vehicle.events.onAppearanceReady -= self.__tryShowFlameEffect
+        if vehicle.health > 0:
+            self.__fadeEffects()
         else:
-            if vehicle.appearance:
-                vehicle.appearance.removeComponentByType(Statuses.FireComponent)
-            vehicle.events.onAppearanceReady -= self.__tryShowFlameEffect
+            self.__stopEffects()
+        avatar = BigWorld.player()
+        fireInfo = self.fireInfo
+        if fireInfo is not None:
             if vehicle.health > 0:
-                self.__fadeEffects()
-            else:
-                self.__stopEffects()
-            avatar = BigWorld.player()
-            fireInfo = self.fireInfo
-            if fireInfo is not None:
-                if vehicle.health > 0:
-                    soundCheck = lambda veh=vehicle, player=avatar: player.vehicle == veh and not veh.isOnFire()
-                    avatar.playSoundIfNotMuted(self.__FIRE_SOUNDS['fireStopped'], checkFn=soundCheck)
-                    deviceExtraIndex = fireInfo['deviceExtraIndex']
-                    extra = vehicle.typeDescriptor.extras[deviceExtraIndex] if deviceExtraIndex != 0 else None
-                    self.__guiSessionProvider.shared.messages.showVehicleDamageInfo(avatar, 'FIRE_STOPPED', vehicle.id, fireInfo['attackerID'], extra, fireInfo['equipmentID'])
-                TriggersManager.g_manager.deactivateTrigger(TRIGGER_TYPE.PLAYER_VEHICLE_IN_FIRE)
-                self.__guiSessionProvider.invalidateVehicleState(VEHICLE_VIEW_STATE.FIRE, False)
-            return
+                soundCheck = lambda veh=vehicle, player=avatar: player.vehicle == veh and not veh.isOnFire()
+                avatar.playSoundIfNotMuted(self.__FIRE_SOUNDS['fireStopped'], checkFn=soundCheck)
+                deviceExtraIndex = fireInfo['deviceExtraIndex']
+                extra = vehicle.typeDescriptor.extras[deviceExtraIndex] if deviceExtraIndex != 0 else None
+                self.__guiSessionProvider.shared.messages.showVehicleDamageInfo(avatar, 'FIRE_STOPPED', vehicle.id, fireInfo['attackerID'], extra, fireInfo['equipmentID'])
+            TriggersManager.g_manager.deactivateTrigger(TRIGGER_TYPE.PLAYER_VEHICLE_IN_FIRE)
+            self.__guiSessionProvider.invalidateVehicleState(VEHICLE_VIEW_STATE.FIRE, False)
+        return
 
     def __getEffectsListPlayer(self):
-        return self.__effectListPlayerRef() if self.__effectListPlayerRef is not None else None
+        if self.__effectListPlayerRef is not None:
+            return self.__effectListPlayerRef()
+        else:
+            return
 
     def __playEffect(self):
         vehicle = self.entity

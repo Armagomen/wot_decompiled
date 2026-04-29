@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/commendations_controller.py
 from enum import Enum
 import Event
 from gui.server_events import settings
@@ -10,8 +8,10 @@ from gui.SystemMessages import SM_TYPE
 from skeletons.gui.game_control import ICommendationsController
 
 class NotificationTypeTemplate(Enum):
-    MESSAGES = ('#messenger:serviceChannelMessages/commendations/messages/enable', '#messenger:serviceChannelMessages/commendations/messages/disable')
-    LIVE_TAGS = ('#messenger:serviceChannelMessages/commendations/liveTags/enable', '#messenger:serviceChannelMessages/commendations/liveTags/disable')
+    MESSAGES = ('#messenger:serviceChannelMessages/commendations/messages/enable',
+                '#messenger:serviceChannelMessages/commendations/messages/disable')
+    LIVE_TAGS = ('#messenger:serviceChannelMessages/commendations/liveTags/enable',
+                 '#messenger:serviceChannelMessages/commendations/liveTags/disable')
 
     @property
     def getEnable(self):
@@ -72,7 +72,7 @@ class CommendationsController(ICommendationsController):
     def _processSwitchNotifications(self):
         isCommsEnabled = self.isCommendationsEnabled
         isLiveTagsEnabled = self.isLiveTagsEnabled
-        with settings.commendationsSettings() as commsSettings:
+        with settings.commendationsSettings() as (commsSettings):
             wasCommsEnabled = commsSettings.isMessagesEnable
             wasLiveTagsEnabled = commsSettings.isLiveTagsEnable
             self._notifyClient(wasCommsEnabled, isCommsEnabled, NotificationTypeTemplate.MESSAGES)

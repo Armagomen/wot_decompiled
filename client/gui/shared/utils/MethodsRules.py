@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/utils/MethodsRules.py
 import logging
 from collections import defaultdict
 from types import MethodType

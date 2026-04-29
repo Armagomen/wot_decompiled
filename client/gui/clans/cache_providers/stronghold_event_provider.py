@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/clans/cache_providers/stronghold_event_provider.py
-import weakref
-import typing
+import weakref, typing
 from constants import CLAN_ROLES
 from gui.Scaleform.daapi.view.lobby.clans.clan_helpers import getStrongholdEventEnabled
 from gui.clans.cache_providers.base_provider import BaseProvider, RequestSettings, UpdatePeriodType
@@ -43,7 +40,9 @@ class StrongholdEventProvider(BaseProvider):
         else:
             role = CLAN_ROLES.getRole(self.__clanCache.clanRole)
             unfreezeRoles = settings.getEventConfig().getUnfreezeVehicleRoles()
-            return role in unfreezeRoles if unfreezeRoles else False
+            if unfreezeRoles:
+                return role in unfreezeRoles
+            return False
 
     @property
     def _dataNameContainer(self):

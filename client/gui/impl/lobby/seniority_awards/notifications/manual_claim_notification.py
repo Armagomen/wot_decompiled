@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/seniority_awards/notifications/manual_claim_notification.py
 from __future__ import absolute_import
 from gui.impl.gen.view_models.views.lobby.seniority_awards.notifications.manual_claim_model import ManualClaimModel
 from gui.impl.lobby.gf_notifications import NotificationBase
@@ -21,10 +19,14 @@ class ManualClaimNotification(NotificationBase):
 
     def _getEvents(self):
         events = super(ManualClaimNotification, self)._getEvents()
-        return events + ((self.viewModel.onClick, self.__onClick), (self.viewModel.onClose, self.__onClose))
+        return events + (
+         (
+          self.viewModel.onClick, self.__onClick),
+         (
+          self.viewModel.onClose, self.__onClose))
 
     def _update(self):
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             tx.setIsPopUp(self._isPopUp)
 
     def __onClick(self):

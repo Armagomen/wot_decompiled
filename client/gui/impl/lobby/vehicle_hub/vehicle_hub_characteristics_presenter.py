@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/vehicle_hub/vehicle_hub_characteristics_presenter.py
 from __future__ import absolute_import
 from gui.impl.lobby.hangar.sub_views.vehicle_params_view import VehicleParamsPresenter
 from gui.impl.gen import R

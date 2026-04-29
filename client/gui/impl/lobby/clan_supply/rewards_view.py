@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/clan_supply/rewards_view.py
-import typing
-import SoundGroups
+import typing, SoundGroups
 from frameworks.wulf import ViewFlags, ViewSettings, WindowFlags
 from gui.impl import backport
 from gui.impl.auxiliary.tooltips.compensation_tooltip import VehicleCompensationTooltipContent
@@ -41,13 +38,12 @@ class RewardsView(ViewImpl):
         tooltipId = event.getArgument('tooltipId')
         if event.contentID == R.views.common.tooltip_window.loot_box_compensation_tooltip.LootBoxVehicleCompensationTooltipContent():
             if tooltipId in self.__tooltips:
-                tooltipData = {'iconBefore': event.getArgument('iconBefore', ''),
-                 'labelBefore': event.getArgument('labelBefore', ''),
-                 'iconAfter': event.getArgument('iconAfter', ''),
-                 'labelAfter': event.getArgument('labelAfter', ''),
-                 'bonusName': event.getArgument('bonusName', ''),
-                 'countBefore': event.getArgument('countBefore', 1),
-                 'tooltipType': LootBoxCompensationTooltipTypes.VEHICLE}
+                tooltipData = {'iconBefore': event.getArgument('iconBefore', ''), 'labelBefore': event.getArgument('labelBefore', ''), 
+                   'iconAfter': event.getArgument('iconAfter', ''), 
+                   'labelAfter': event.getArgument('labelAfter', ''), 
+                   'bonusName': event.getArgument('bonusName', ''), 
+                   'countBefore': event.getArgument('countBefore', 1), 
+                   'tooltipType': LootBoxCompensationTooltipTypes.VEHICLE}
                 tooltipData.update(self.__tooltips[tooltipId].specialArgs)
                 settings = ViewSettings(R.views.common.tooltip_window.loot_box_compensation_tooltip.LootBoxVehicleCompensationTooltipContent())
                 settings.flags = ViewFlags.VIEW
@@ -58,16 +54,23 @@ class RewardsView(ViewImpl):
 
     def getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        return None if tooltipId is None else self.__tooltips.get(tooltipId)
+        if tooltipId is None:
+            return
+        else:
+            return self.__tooltips.get(tooltipId)
 
     def _getEvents(self):
-        return super(RewardsView, self)._getEvents() + ((self.viewModel.onClose, self.__onClose), (self.viewModel.onGoToHangar, self.__onGoToHangar))
+        return super(RewardsView, self)._getEvents() + (
+         (
+          self.viewModel.onClose, self.__onClose),
+         (
+          self.viewModel.onGoToHangar, self.__onGoToHangar))
 
     def _onLoading(self, isElite, rewards, *args, **kwargs):
         super(RewardsView, self)._onLoading(*args, **kwargs)
         SoundGroups.g_instance.playSound2D(backport.sound(R.sounds.gui_reward_screen_general()))
         self.__vehicleCD = findVehicle(rewards)
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             bonusAllocator = None
             if isElite and self.__vehicleCD is not None:
                 bonusAllocator = self.__mainVehicleBonusAllocator
@@ -108,12 +111,13 @@ class RewardsView(ViewImpl):
         additionalBonuses = []
         for b in bonuses:
             bonusName = b.getName()
-            if bonusName in ('vehicles',):
+            if bonusName in ('vehicles', ):
                 mainBonuses.append(b)
-            if bonusName in ('customizations',):
+            elif bonusName in ('customizations', ):
                 additionalBonuses.append(b)
 
-        return (mainBonuses, additionalBonuses)
+        return (
+         mainBonuses, additionalBonuses)
 
 
 class RewardsViewWindow(LobbyNotificationWindow):

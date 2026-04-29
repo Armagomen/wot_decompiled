@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/server_events/settings.py
 import time
 from contextlib import contextmanager
 from account_helpers.AccountSettings import DOG_TAGS, WOT_PLUS, TELECOM_RENTALS, PERSONAL_RESERVES, COMMENDATIONS
@@ -61,8 +59,8 @@ class _DogTagsRootSettings(utils.SettingRootRecord):
 
 class _WotPlusSettings(utils.SettingRootRecord):
 
-    def __init__(self, isFirstTime=True, isWotPlusEnabled=False, isGoldReserveEnabled=False, isPassiveXpEnabled=False, isFreeDemountingEnabled=False, isExcludedMapEnabled=False, isDailyAttendancesEnabled=False, amountOfDailyAttendance=0, isBattleBonusesEnabled=False, isBadgesEnabled=False, isAdditionalXPEnabled=False, isOptionalDevicesAssistantEnabled=False, isCrewAssistantEnabled=False, **_):
-        super(_WotPlusSettings, self).__init__(isFirstTime=isFirstTime, isWotPlusEnabled=isWotPlusEnabled, isGoldReserveEnabled=isGoldReserveEnabled, isPassiveXpEnabled=isPassiveXpEnabled, isFreeDemountingEnabled=isFreeDemountingEnabled, isExcludedMapEnabled=isExcludedMapEnabled, isDailyAttendancesEnabled=isDailyAttendancesEnabled, amountOfDailyAttendance=amountOfDailyAttendance, isBattleBonusesEnabled=isBattleBonusesEnabled, isBadgesEnabled=isBadgesEnabled, isAdditionalXPEnabled=isAdditionalXPEnabled, isOptionalDevicesAssistantEnabled=isOptionalDevicesAssistantEnabled, isCrewAssistantEnabled=isCrewAssistantEnabled)
+    def __init__(self, isFirstTime=True, isWotPlusEnabled=False, isGoldReserveEnabled=False, isPassiveXpEnabled=False, isFreeDemountingEnabled=False, isExcludedMapEnabled=False, isDailyAttendancesEnabled=False, amountOfDailyAttendance=0, isBattleBonusesEnabled=False, isBadgesEnabled=False, isAdditionalXPEnabled=False, isOptionalDevicesAssistantEnabled=False, isCrewAssistantEnabled=False, isServiceRecordCustomizationEnabled=False, isProBoostEnabled=False, isBattlePassEnabled=False, **_):
+        super(_WotPlusSettings, self).__init__(isFirstTime=isFirstTime, isWotPlusEnabled=isWotPlusEnabled, isGoldReserveEnabled=isGoldReserveEnabled, isPassiveXpEnabled=isPassiveXpEnabled, isFreeDemountingEnabled=isFreeDemountingEnabled, isExcludedMapEnabled=isExcludedMapEnabled, isDailyAttendancesEnabled=isDailyAttendancesEnabled, amountOfDailyAttendance=amountOfDailyAttendance, isBattleBonusesEnabled=isBattleBonusesEnabled, isBadgesEnabled=isBadgesEnabled, isAdditionalXPEnabled=isAdditionalXPEnabled, isOptionalDevicesAssistantEnabled=isOptionalDevicesAssistantEnabled, isCrewAssistantEnabled=isCrewAssistantEnabled, isServiceRecordCustomizationEnabled=isServiceRecordCustomizationEnabled, isProBoostEnabled=isProBoostEnabled, isBattlePassEnabled=isBattlePassEnabled)
 
     def setIsFirstTime(self, isFirstTime):
         self.update(isFirstTime=isFirstTime)
@@ -105,6 +103,15 @@ class _WotPlusSettings(utils.SettingRootRecord):
 
     def setCrewAssistantEnabled(self, isEnabled):
         self.update(isCrewAssistantEnabled=isEnabled)
+
+    def setServiceRecordCustomizationEnabled(self, isEnabled):
+        self.update(isServiceRecordCustomizationEnabled=isEnabled)
+
+    def setProBoostEnabled(self, isEnabled):
+        self.update(isProBoostEnabled=isEnabled)
+
+    def setBattlePassEnabled(self, isEnabled):
+        self.update(isBattlePassEnabled=isEnabled)
 
     @classmethod
     def _getSettingName(cls):
@@ -207,7 +214,7 @@ class _QuestSettings(utils.SettingRootRecord):
 
     @classmethod
     def _getSettingName(cls):
-        pass
+        return 'quests'
 
 
 def get():
@@ -273,7 +280,7 @@ def expandGroup(groupID, isExpanded):
 
 def updateCommonEventsSettings(svrEvents):
     s = get()
-    s.removeCompleted(set((e.getID() for e in svrEvents.itervalues() if e.isCompleted())))
+    s.removeCompleted(set(e.getID() for e in svrEvents.itervalues() if e.isCompleted()))
     s.save()
 
 

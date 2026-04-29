@@ -1,8 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/DemonstratorWindow.py
+from __future__ import absolute_import, division
 import logging
-from itertools import ifilter
+from future.utils import lfilter, viewitems
 from operator import itemgetter
+from past.utils import old_div
 import ArenaType
 from CurrentVehicle import g_currentVehicle
 from account_helpers import gameplay_ctx, isDemonstratorExpert
@@ -36,29 +36,54 @@ class BATTLE_TYPES(object):
     BOT3 = 6
 
 
-BATTLE_TEMPLATES = [([-2, -1, 0], BATTLE_TYPES.TOP3),
- ([-1, 0], BATTLE_TYPES.TOP2),
- ([0], BATTLE_TYPES.TOP1),
- ([-1, 0, 1], BATTLE_TYPES.MID3),
- ([0, 1], BATTLE_TYPES.BOT2),
- ([0, 1, 2], BATTLE_TYPES.BOT3)]
-BATTLE_TO_VEHICLE_LEVELS = [(1,),
- (1, 2),
- (2, 3),
- (3, 4),
- (4, 5),
- (4, 5, 6),
- (5, 6, 7),
- (6, 7, 8),
- (7, 8, 9),
- (8, 9, 10)]
+BATTLE_TEMPLATES = [
+ (
+  [
+   -2, -1, 0], BATTLE_TYPES.TOP3),
+ (
+  [
+   -1, 0], BATTLE_TYPES.TOP2),
+ (
+  [
+   0], BATTLE_TYPES.TOP1),
+ (
+  [
+   -1, 0, 1], BATTLE_TYPES.MID3),
+ (
+  [
+   0, 1], BATTLE_TYPES.BOT2),
+ (
+  [
+   0, 1, 2], BATTLE_TYPES.BOT3)]
+BATTLE_TO_VEHICLE_LEVELS = [
+ (
+  1,),
+ (
+  1, 2),
+ (
+  2, 3),
+ (
+  3, 4),
+ (
+  4, 5),
+ (
+  4, 5, 6),
+ (
+  5, 6, 7),
+ (
+  6, 7, 8),
+ (
+  7, 8, 9),
+ (
+  8, 9, 10)]
 _logger = logging.getLogger(__name__)
 
 class DemonstratorWindow(DemonstratorWindowMeta, IGlobalListener):
     __lobbyContext = dependency.descriptor(ILobbyContext)
     __settingsCore = dependency.instance(ISettingsCore)
     __itemsCache = dependency.descriptor(IItemsCache)
-    __slots__ = ('__mapListDP', '__isDemonstratorExpert', '__gameplaySelected', '__mapSelected', '__spawnSelected', '__levelSelected', '__vehicleSelected', '__availableBattleTypes')
+    __slots__ = ('__mapListDP', '__isDemonstratorExpert', '__gameplaySelected', '__mapSelected',
+                 '__spawnSelected', '__levelSelected', '__vehicleSelected', '__availableBattleTypes')
 
     def __init__(self, ctx=None):
         super(DemonstratorWindow, self).__init__(ctx)
@@ -166,23 +191,21 @@ class DemonstratorWindow(DemonstratorWindowMeta, IGlobalListener):
             self.__disableBattleButton()
 
     def __setGameplayTabs(self):
-        self.__availableGameplayTypes = [(GAMEPLAY.CTF, self.__settingsCore.getSetting(GAME.GAMEPLAY_CTF))]
-        gameplayTabs = list(({'label': backport.text(R.strings.arenas.type.dyn(battleType).name()),
-         'enabled': isEnabled} for battleType, isEnabled in self.__availableGameplayTypes))
+        self.__availableGameplayTypes = [
+         (
+          GAMEPLAY.CTF, self.__settingsCore.getSetting(GAME.GAMEPLAY_CTF))]
+        gameplayTabs = list({'label': backport.text(R.strings.arenas.type.dyn(battleType).name()), 'enabled': isEnabled} for battleType, isEnabled in self.__availableGameplayTypes)
         self.as_setGameplayTabsS(gameplayTabs, self.__gameplaySelected)
 
     def __setSpawnsList(self):
         isEnabled = self.__availableMapsLength != 0
-        spawnsList = [{'label': backport.text(R.strings.menu.demonstrator.window.any()),
-          'enabled': isEnabled}, {'label': backport.text(R.strings.menu.demonstrator.window.spawn.green()),
-          'enabled': isEnabled}, {'label': backport.text(R.strings.menu.demonstrator.window.spawn.red()),
-          'enabled': isEnabled}]
+        spawnsList = [{'label': backport.text(R.strings.menu.demonstrator.window.any()), 'enabled': isEnabled}, {'label': backport.text(R.strings.menu.demonstrator.window.spawn.green()), 'enabled': isEnabled}, {'label': backport.text(R.strings.menu.demonstrator.window.spawn.red()), 'enabled': isEnabled}]
         self.as_setSpawnsS(spawnsList, 0)
 
     def __setMapsList(self):
         self.__mapSelected = 0
         self.__mapListDP.buildList(self.__vehicleSelected.level, self.__availableGameplayTypes[self.__gameplaySelected][0])
-        self.__availableMapsLength = len(list(ifilter(itemgetter('enabled'), self.__mapListDP.collection)))
+        self.__availableMapsLength = len(lfilter(itemgetter('enabled'), self.__mapListDP.collection))
         self.__setSpawnsList()
         self.__setLevelsList()
 
@@ -218,13 +241,13 @@ class DemonstratorWindow(DemonstratorWindowMeta, IGlobalListener):
             return
         availableLevels, availableBattleTypes = self.__getAvailableLevelsBattleTypes()
         self.__availableBattleTypes = [BATTLE_TYPES.UNKNOWN] + availableBattleTypes
-        battleLevelsSelector = [{'label': backport.text(R.strings.menu.demonstrator.window.any()),
-          'enabled': self.__availableMapsLength != 0}]
+        battleLevelsSelector = [
+         {'label': backport.text(R.strings.menu.demonstrator.window.any()), 
+            'enabled': self.__availableMapsLength != 0}]
         for availableLevel, isEnabled in availableLevels:
             levelToRoman = [ int2roman(level) for level in availableLevel ]
-            label = ', '.join(levelToRoman)
-            battleLevelsSelector.append({'label': label,
-             'enabled': isEnabled})
+            label = (', ').join(levelToRoman)
+            battleLevelsSelector.append({'label': label, 'enabled': isEnabled})
 
         self.as_setLevelsS(battleLevelsSelector, 0)
 
@@ -237,7 +260,7 @@ class DemonstratorWindow(DemonstratorWindowMeta, IGlobalListener):
         battleTypes = []
         for battleTemplate, battleType in BATTLE_TEMPLATES:
             level = [ vehicleLevel + diff for diff in battleTemplate ]
-            if not any((battleConfig.issuperset(level) for battleConfig in battleConfigs)):
+            if not any(battleConfig.issuperset(level) for battleConfig in battleConfigs):
                 continue
             if not (battleType != BATTLE_TYPES.TOP1 or minBattleLevel <= vehicleLevel <= maxBattleLevel):
                 continue
@@ -256,9 +279,10 @@ class DemonstratorWindow(DemonstratorWindowMeta, IGlobalListener):
         if vehicleName in battleLevels:
             vehicleBattleLevels = battleLevels[vehicleName]
         else:
-            vehicleBattleLevels = battleLevels[vehicleType][vehicleLevel - 1]
+            vehicleBattleLevels = battleLevels[vehicleType][(vehicleLevel - 1)]
         minBattleLevel, maxBattleLevel = vehicleBattleLevels
-        return (minBattleLevel, maxBattleLevel)
+        return (
+         minBattleLevel, maxBattleLevel)
 
     def __packMMData(self, arenaTypeID, levelType, team):
         return team << 28 | levelType << 24 | arenaTypeID
@@ -269,7 +293,7 @@ class ArenasCache(object):
     def __init__(self):
         self.__cache = []
         self.__playerTeam = 1
-        for arenaTypeID, arenaType in ArenaType.g_cache.iteritems():
+        for arenaTypeID, arenaType in viewitems(ArenaType.g_cache):
             if arenaType.explicitRequestOnly or not gameplay_ctx.isCreationEnabled(arenaType.gameplayName, False):
                 continue
             iconRes = R.images.gui.maps.icons.map.num(arenaType.geometryName)
@@ -278,12 +302,12 @@ class ArenasCache(object):
             else:
                 _logger.warning('Resource id is not found for area geometry %s', arenaType.geometryName)
                 icon = ''
-            self.__cache.append({'id': arenaTypeID,
-             'name': arenaType.name,
-             'gameplayName': arenaType.gameplayName,
-             'icon': icon,
-             'points': self.__getPointsList(arenaType),
-             'enabled': False})
+            self.__cache.append({'id': arenaTypeID, 
+               'name': arenaType.name, 
+               'gameplayName': arenaType.gameplayName, 
+               'icon': icon, 
+               'points': self.__getPointsList(arenaType), 
+               'enabled': False})
 
         self.__cache = sorted(self.__cache, key=lambda x: (x['gameplayName'].lower(), x['name'].lower()))
 
@@ -294,34 +318,36 @@ class ArenasCache(object):
         offset = (upperRight + bottomLeft) * 0.5
 
         def _normalizePoint(posX, posY):
-            return ((posX - offset.x) / mapWidthScale, (posY - offset.y) / mapHeightScale)
+            return (
+             old_div(posX - offset.x, mapWidthScale),
+             old_div(posY - offset.y, mapHeightScale))
 
         for team, teamSpawnPoints in enumerate(arenaType.teamSpawnPoints, 1):
             for spawn, spawnPoint in enumerate(teamSpawnPoints, 1):
                 posX, posY = _normalizePoint(spawnPoint[0], spawnPoint[1])
-                result.append({'posX': posX,
-                 'posY': posY,
-                 'pointType': 'spawn',
-                 'color': SPAWNS.BLUE if team == self.__playerTeam else SPAWNS.RED,
-                 'id': spawn + 1 if len(teamSpawnPoints) > 1 else 1})
+                result.append({'posX': posX, 
+                   'posY': posY, 
+                   'pointType': 'spawn', 
+                   'color': SPAWNS.BLUE if team == self.__playerTeam else SPAWNS.RED, 
+                   'id': spawn + 1 if len(teamSpawnPoints) > 1 else 1})
 
         for team, teamBasePoints in enumerate(arenaType.teamBasePositions, 1):
             for baseNumber, basePoint in enumerate(teamBasePoints.values(), 2):
                 posX, posY = _normalizePoint(basePoint[0], basePoint[1])
-                result.append({'posX': posX,
-                 'posY': posY,
-                 'pointType': 'base',
-                 'color': SPAWNS.BLUE if team == self.__playerTeam else SPAWNS.RED,
-                 'id': baseNumber + 1 if len(teamBasePoints) > 1 else 1})
+                result.append({'posX': posX, 
+                   'posY': posY, 
+                   'pointType': 'base', 
+                   'color': SPAWNS.BLUE if team == self.__playerTeam else SPAWNS.RED, 
+                   'id': baseNumber + 1 if len(teamBasePoints) > 1 else 1})
 
         if arenaType.controlPoints:
             for index, controlPoint in enumerate(arenaType.controlPoints, 2):
                 posX, posY = _normalizePoint(controlPoint[0], controlPoint[1])
-                result.append({'posX': posX,
-                 'posY': posY,
-                 'pointType': 'control',
-                 'color': 'empty',
-                 'id': index if len(arenaType.controlPoints) > 1 else 1})
+                result.append({'posX': posX, 
+                   'posY': posY, 
+                   'pointType': 'control', 
+                   'color': 'empty', 
+                   'id': index if len(arenaType.controlPoints) > 1 else 1})
 
         return result
 
@@ -343,7 +369,7 @@ class MapListDataProvider(ListDAAPIDataProvider):
         return self._list
 
     def emptyItem(self):
-        return None
+        return
 
     def clear(self):
         self._list = []
@@ -358,7 +384,8 @@ class MapListDataProvider(ListDAAPIDataProvider):
 
     def buildList(self, currentVehicleLevel=0, gameplayName=None):
         self.clear()
-        filteredList = [ mapData for mapData in self._cache.cache if mapData['gameplayName'] == gameplayName ]
+        filteredList = [ mapData for mapData in self._cache.cache if mapData['gameplayName'] == gameplayName
+                       ]
         serverSettings = self.__lobbyContext.getServerSettings()
         randomMaps = serverSettings.getRandomMapsForDemonstrator()
         for item in filteredList:

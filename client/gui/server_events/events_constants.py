@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/server_events/events_constants.py
 from constants import DailyQuestsTokensPrefixes
 BATTLE_MATTERS_QUEST_ID = 'battle_matters'
 BATTLE_MATTERS_INTERMEDIATE_QUEST_ID = 'intermediate_battle_matters'

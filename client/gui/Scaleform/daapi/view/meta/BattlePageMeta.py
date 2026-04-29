@@ -1,35 +1,43 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/BattlePageMeta.py
 from gui.Scaleform.framework.entities.View import View
 
 class BattlePageMeta(View):
 
     def as_checkDAAPIS(self):
-        return self.flashObject.as_checkDAAPI() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_checkDAAPI()
 
     def as_onPostmortemActiveS(self, isPostMortem):
-        return self.flashObject.as_onPostmortemActive(isPostMortem) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_onPostmortemActive(isPostMortem)
 
     def as_setComponentsVisibilityS(self, visible, hidden):
-        return self.flashObject.as_setComponentsVisibility(visible, hidden) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setComponentsVisibility(visible, hidden)
 
     def as_setComponentsVisibilityWithFadeS(self, visible, hidden):
-        return self.flashObject.as_setComponentsVisibilityWithFade(visible, hidden) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setComponentsVisibilityWithFade(visible, hidden)
 
     def as_isComponentVisibleS(self, componentKey):
-        return self.flashObject.as_isComponentVisible(componentKey) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_isComponentVisible(componentKey)
 
     def as_getComponentsVisibilityS(self):
-        return self.flashObject.as_getComponentsVisibility() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_getComponentsVisibility()
 
     def as_toggleCtrlPressFlagS(self, isCtrlPressed):
-        return self.flashObject.as_toggleCtrlPressFlag(isCtrlPressed) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_toggleCtrlPressFlag(isCtrlPressed)
 
     def as_createRoleDescriptionS(self):
-        return self.flashObject.as_createRoleDescription() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_createRoleDescription()
 
     def as_setArtyShotIndicatorFlagS(self, isVisible):
-        return self.flashObject.as_setArtyShotIndicatorFlag(isVisible) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setArtyShotIndicatorFlag(isVisible)
 
     def as_togglePiercingPanelS(self):
-        return self.flashObject.as_togglePiercingPanel() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_togglePiercingPanel()

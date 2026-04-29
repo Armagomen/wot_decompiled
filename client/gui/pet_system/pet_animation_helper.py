@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/pet_system/pet_animation_helper.py
 from gui.pet_system.synergy_helper import SynergyItem
 from helpers.CallbackDelayer import CallbackDelayer
 from skeletons.gui.shared.utils import IHangarSpace
@@ -40,7 +38,9 @@ class PetPrefabProxy(CallbackDelayer):
             return AnimationStateName.PROMOTION
         if self._ctrl.getStateBehavior() == PetStateBehavior.BASIC and not self._ctrl.isInStorage:
             return AnimationStateName.DEFAULT
-        return AnimationStateName.HIDDEN if self._ctrl.getStateBehavior() == PetStateBehavior.HIDDEN else AnimationStateName.DISABLED
+        if self._ctrl.getStateBehavior() == PetStateBehavior.HIDDEN:
+            return AnimationStateName.HIDDEN
+        return AnimationStateName.DISABLED
 
     @property
     def petStaticTrigger(self):
@@ -62,7 +62,10 @@ class PetPrefabProxy(CallbackDelayer):
     def getPlaceName(self, isInStorage=None):
         if isInStorage is None:
             isInStorage = self._ctrl.isInStorage
-        return PetPlaceName.STORAGE if isInStorage or self._ctrl.getStateBehavior() == PetStateBehavior.HIDDEN else PetPlaceName.DEFAULT
+        if isInStorage or self._ctrl.getStateBehavior() == PetStateBehavior.HIDDEN:
+            return PetPlaceName.STORAGE
+        else:
+            return PetPlaceName.DEFAULT
 
     def setPlaceName(self, placeName):
         self.onUpdatePetPlace(placeName)
@@ -154,7 +157,9 @@ class StoragePrefabProxy(object):
     def storageStaticTrigger(self):
         if not self._ctrl.isEnabled:
             return StorageStaticTrigger.EMPTY
-        return StorageStaticTrigger.DISABLED if not self._ctrl.haveActivePromotion() and not self._ctrl.getActivePet() else StorageStaticTrigger.IDLE
+        if not self._ctrl.haveActivePromotion() and not self._ctrl.getActivePet():
+            return StorageStaticTrigger.DISABLED
+        return StorageStaticTrigger.IDLE
 
     def setStorageStaticTrigger(self, staticTrigger):
         self.onUpdateStorageStaticTrigger(staticTrigger)

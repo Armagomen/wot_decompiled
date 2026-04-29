@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/skeletons/gui/shared/utils/requesters.py
 import typing
 if typing.TYPE_CHECKING:
     from typing import Dict, Generator, List, NamedTuple, Optional, Sequence, Set, Tuple, Union
@@ -380,10 +378,6 @@ class IStatsRequester(IRequester):
 
     @property
     def additionalXPCache(self):
-        raise NotImplementedError
-
-    @property
-    def isGoldFishBonusApplied(self):
         raise NotImplementedError
 
     @property
@@ -852,6 +846,10 @@ class IBattleRoyaleRequester(IRequester):
 
     @property
     def topCount(self):
+        raise NotImplementedError
+
+    @property
+    def dailyBonusUsedVehicles(self):
         raise NotImplementedError
 
     def getStats(self, arenaBonusType, playerDatabaseID=None):

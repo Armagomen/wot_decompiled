@@ -1,10 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/helpers/dependency.py
-import functools
-import inspect
-import logging
-import typing
+import functools, inspect, logging, typing
 from ids_generators import SequenceIDGenerator
+from py2to3.utils import getargspec
 from soft_exception import SoftException
 InterfaceType = typing.TypeVar('InterfaceType')
 _logger = logging.getLogger(__name__)
@@ -56,22 +52,19 @@ class replace_none_kwargs(object):
         self.__services = {}
         for name, class_ in services.iteritems():
             if not inspect.isclass(class_):
-                raise DependencyError('Value is not class, {}'.format(class_))
+                raise DependencyError(('Value is not class, {}').format(class_))
             self.__services[name] = class_
 
     def __call__(self, func):
-        spec = inspect.getargspec(func)
+        spec = getargspec(func)
         for name, _ in self.__services.iteritems():
             if name not in spec.args:
-                raise DependencyError('Argument {} is not found in {}'.format(name, func))
+                raise DependencyError(('Argument {} is not found in {}').format(name, func))
 
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             for serviceName, clazz in self.__services.iteritems():
-                if serviceName not in kwargs:
-                    actual = None
-                else:
-                    actual = kwargs[serviceName]
+                actual = kwargs.get(serviceName)
                 if actual is None:
                     kwargs[serviceName] = instance(clazz)
 
@@ -96,7 +89,7 @@ class DependencyManager(object):
         try:
             result = self.__services[class_].value()
         except KeyError:
-            raise DependencyError('Service {} is not created'.format(class_))
+            raise DependencyError(('Service {} is not created').format(class_))
 
         return result
 
@@ -109,7 +102,7 @@ class DependencyManager(object):
         if class_ not in self.__services:
             _logger.warning('No implementation found for Service %r prior to replace!', class_)
         elif class_ in self.__replacedServices and not force:
-            raise DependencyError('Service {} is already replaced'.format(class_))
+            raise DependencyError(('Service {} is already replaced').format(class_))
         else:
             self.__services[class_].finalize()
             self.__services[class_].clear()
@@ -140,20 +133,20 @@ class DependencyManager(object):
 
     def _validate(self, class_):
         if not inspect.isclass(class_):
-            raise DependencyError('First argument is not class, {}'.format(class_))
+            raise DependencyError(('First argument is not class, {}').format(class_))
         if class_ in self.__services:
-            raise DependencyError('Service {} is already added'.format(class_))
+            raise DependencyError(('Service {} is already added').format(class_))
 
 
 class _ServiceDescriptor(object):
-    __slots__ = ('__class',)
+    __slots__ = ('__class', )
 
     def __init__(self, class_):
         super(_ServiceDescriptor, self).__init__()
         self.__class = class_
 
     def __set__(self, _, value):
-        raise AttributeError('Service {} can not be rewritten'.format(self.__class))
+        raise AttributeError(('Service {} can not be rewritten').format(self.__class))
 
     def __get__(self, inst, owner=None):
         if _g_manager is None:
@@ -169,7 +162,7 @@ class _DependencyItem(object):
         self._order = order
         self._service = service
         if finalizer is not None and not callable(finalizer) and not isinstance(finalizer, basestring):
-            raise DependencyError('Finalizer {} is invalid'.format(finalizer))
+            raise DependencyError(('Finalizer {} is invalid').format(finalizer))
         self._finalizer = finalizer
         return
 
@@ -182,20 +175,19 @@ class _DependencyItem(object):
     def finalize(self):
         if self._service is None or self._finalizer is None:
             return
+        if callable(self._finalizer):
+            self._finalizer(self._service)
         else:
-            if callable(self._finalizer):
-                self._finalizer(self._service)
-            else:
-                finalizer = getattr(self._service, self._finalizer, None)
-                if finalizer is not None and callable(finalizer):
-                    try:
-                        finalizer()
-                    except Exception:
-                        _logger.exception('Error finalizing %r', self._service)
+            finalizer = getattr(self._service, self._finalizer, None)
+            if finalizer is not None and callable(finalizer):
+                try:
+                    finalizer()
+                except Exception:
+                    _logger.exception('Error finalizing %r', self._service)
 
-                else:
-                    raise DependencyError('Finalizer {} is not found'.format(self._finalizer))
-            return
+            else:
+                raise DependencyError(('Finalizer {} is not found').format(self._finalizer))
+        return
 
     def clear(self):
         self._finalizer = None

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/doc_loaders/GuiDirReader.py
 from __future__ import absolute_import
 from constants import CURRENT_REALM
 import ResMgr
@@ -18,7 +16,8 @@ class GuiDirReader(object):
         ds = ResMgr.openSection(custom_path)
         if ds is not None:
             custom_mask = mask.format(realm=realm)
-            return (custom_path, custom_mask)
+            return (
+             custom_path, custom_mask)
         else:
             default_mask = mask.format(realm='')
             return (path, default_mask)

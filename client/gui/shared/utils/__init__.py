@@ -1,16 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/utils/__init__.py
-import imghdr
-import itertools
-import sys
-import inspect
-import uuid
-import struct
+import imghdr, itertools, sys, inspect, uuid, struct
 from collections import namedtuple
-import BigWorld
-import AccountCommands
-import Settings
-import constants
+import BigWorld, AccountCommands, Settings, constants
 from debug_utils import LOG_CURRENT_EXCEPTION, LOG_ERROR, LOG_DEBUG, LOG_WARNING
 from gui.impl import backport
 from gui.impl.gen import R
@@ -88,16 +78,20 @@ GUN_CAN_BE_AUTO_SHOOT = 9
 GUN_AUTO_SHOOT = 10
 GUN_CAN_BE_TWIN_GUN = 11
 GUN_TWIN_GUN = 12
+GUN_CAN_BE_LOW_CHARGE_SHOT = 13
+LOW_CHARGE_SHOT = 14
 EXTRA_MODULE_INFO = 'extraModuleInfo'
 FIELD_SPECIALIZATIONS = 'specs'
 FIELD_HIGHLIGHT_TYPE = 'highlightType'
 _FLASH_OBJECT_SYS_ATTRS = ('isPrototypeOf', 'propertyIsEnumerable', 'hasOwnProperty')
-ValidationResult = namedtuple('ValidationResult', ['isValid', 'reason'])
+ValidationResult = namedtuple('ValidationResult', [
+ 'isValid',
+ 'reason'])
 
 def flashObject2Dict(obj):
     if hasattr(obj, 'children'):
         filtered = itertools.ifilter(lambda item: item[0] not in _FLASH_OBJECT_SYS_ATTRS, obj.children.iteritems())
-        return dict(((k, flashObject2Dict(v)) for k, v in filtered))
+        return dict((k, flashObject2Dict(v)) for k, v in filtered)
     return obj
 
 
@@ -120,7 +114,13 @@ def code2str(code):
         return 'Identical requests cooldown'
     if code == AccountCommands.RES_HIDDEN_DOSSIER:
         return 'Player dossier is hidden'
-    return 'Dossiers are unavailable' if code == AccountCommands.RES_CENTER_DISCONNECTED else 'Unknown error code'
+    if code == AccountCommands.RES_CENTER_DISCONNECTED:
+        return 'Dossiers are unavailable'
+    if code == AccountCommands.RES_RATE_LIMIT_COOLDOWN:
+        return 'Identical requests rate limit cooldown'
+    if code == AccountCommands.RES_LOCKED_VEHICLE:
+        return 'Vehicle is locked for this request type'
+    return 'Unknown error code'
 
 
 def isVehicleObserver(vehTypeCompDescr):
@@ -153,6 +153,8 @@ def sortByFields(fields, sequence, valueGetter=dict.get):
                     return cmp(fieldValueX, fieldValueY)
                 return cmp(fieldValueY, fieldValueX)
 
+        return 0
+
     return sorted(sequence, cmp=comparator)
 
 
@@ -163,10 +165,10 @@ def roundByModulo(value, rate):
     return value
 
 
-_STR_CASING_OPTIONS = {'el': (8, 1, 0),
- 'ro': (24, 1, 0),
- 'tr': (31, 1, 0)}
-_REPLACEMENTS = {'el': (u'\u0386\u0388\u038a\u0389\u038e\u038c\u038f', u'\u0391\u0395\u0399\u0397\u03a5\u039f\u03a9')}
+_STR_CASING_OPTIONS = {'el': (8, 1, 0), 
+   'ro': (24, 1, 0), 
+   'tr': (31, 1, 0)}
+_REPLACEMENTS = {'el': ('ΆΈΊΉΎΌΏ', 'ΑΕΙΗΥΟΩ')}
 
 def changeStringCasing(string, isUpper):
     langID = getLanguageCode()
@@ -211,7 +213,9 @@ class SettingRecord(dict):
         self.__setitem__(name, value)
 
     def __getattr__(self, item):
-        return self.__getitem__(item) if item in self else dict.__getattribute__(self, item)
+        if item in self:
+            return self.__getitem__(item)
+        return dict.__getattribute__(self, item)
 
     def _asdict(self):
         return dict(self)
@@ -227,11 +231,11 @@ class SettingRootRecord(SettingRecord):
         try:
             return cls(**AccountSettings.getSettings(cls._getSettingName()))
         except Exception:
-            LOG_ERROR('There is error while unpacking {} settings'.format(cls._getSettingName()), AccountSettings.getSettings(cls._getSettingName()))
+            LOG_ERROR(('There is error while unpacking {} settings').format(cls._getSettingName()), AccountSettings.getSettings(cls._getSettingName()))
             LOG_CURRENT_EXCEPTION()
-            return None
+            return
 
-        return None
+        return
 
     def save(self):
         return AccountSettings.setSettings(self._getSettingName(), self._asdict())
@@ -249,9 +253,8 @@ def mapTextureToTheMemory(textureData, uniqueID=None, temp=True):
         else:
             BigWorld.wg_addScaleformTexture(uniqueID, textureData)
         return uniqueID
-    else:
-        LOG_WARNING('There is invalid data for the memory mapping', textureData, uniqueID)
-        return
+    LOG_WARNING('There is invalid data for the memory mapping', textureData, uniqueID)
+    return
 
 
 def removeTextureFromMemory(textureID):
@@ -272,7 +275,8 @@ def getImageSize(imageData):
         elif imgType == 'jpeg':
             LOG_WARNING('JPEG image type is not supported')
             width, height = (None, None)
-    return (width, height)
+    return (
+     width, height)
 
 
 def showInvitationInWindowsBar():
@@ -291,7 +295,9 @@ def getPlayerName():
 
 
 def avg(devidend, devider):
-    return float(devidend) / devider if devider > 0 else 0
+    if devider > 0:
+        return float(devidend) / devider
+    return 0
 
 
 def weightedAvg(*args):
@@ -304,7 +310,9 @@ def weightedAvg(*args):
         valSum += values[i] * weight
         weightSum += weight
 
-    return float(valSum) / weightSum if weightSum != 0 else 0
+    if weightSum != 0:
+        return float(valSum) / weightSum
+    return 0
 
 
 def makeSearchableString(inputString):
@@ -317,10 +325,14 @@ def makeSearchableString(inputString):
 def isPopupsWindowsOpenDisabled():
     userPrefs = Settings.g_instance.userPrefs
     ds = userPrefs['development']
-    return ds.readBool(Settings.POPUPS_WINDOWS_DISABLED) and constants.IS_DEVELOPMENT if ds is not None else False
+    if ds is not None:
+        return ds.readBool(Settings.POPUPS_WINDOWS_DISABLED) and constants.IS_DEVELOPMENT
+    else:
+        return False
 
 
-_ROMAN_FORBIDDEN_LANGUAGES = {'ko', 'no'}
+_ROMAN_FORBIDDEN_LANGUAGES = {
+ 'ko', 'no'}
 
 def isRomanNumberForbidden():
     return bool(_ROMAN_FORBIDDEN_LANGUAGES.intersection((backport.text(R.strings.settings.LANGUAGE_CODE()),)))

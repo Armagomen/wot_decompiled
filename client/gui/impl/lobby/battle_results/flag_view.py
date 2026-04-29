@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_results/flag_view.py
 from gui.Scaleform.lobby_entry import getLobbyStateMachine
 from gui.lobby_state_machine.routable_view import IRoutableView
 from gui.impl.gen.view_models.views.lobby.battle_results.flag.flag_view_model import FlagViewModel
@@ -16,13 +14,14 @@ class FlagWindow(WindowImpl):
 
 
 class FlagView(ViewImpl, IRoutableView):
+    _VIEW_SETTINGS_LAYOUT_ID = R.views.mono.post_battle.flag()
+    _VIEW_MODEL = FlagViewModel
 
     def __init__(self):
-        from gui.impl.lobby.battle_results.states import PostBattleResultsState
-        settings = ViewSettings(R.views.mono.post_battle.flag())
-        settings.model = FlagViewModel()
+        settings = ViewSettings(self._VIEW_SETTINGS_LAYOUT_ID)
+        settings.model = self._VIEW_MODEL()
         lsm = getLobbyStateMachine()
-        self.__router = SubstateRouter(lsm, self, lsm.getStateByCls(PostBattleResultsState))
+        self.__router = SubstateRouter(lsm, self, lsm.getStateByCls(self._getLsmStateClass()))
         super(FlagView, self).__init__(settings)
 
     def _onLoading(self, *args, **kwargs):
@@ -34,6 +33,10 @@ class FlagView(ViewImpl, IRoutableView):
         self.__router = None
         super(FlagView, self)._finalize()
         return
+
+    def _getLsmStateClass(self):
+        from gui.impl.lobby.battle_results.states import PostBattleResultsState
+        return PostBattleResultsState
 
     def getRouterModel(self):
         return self.viewModel.router

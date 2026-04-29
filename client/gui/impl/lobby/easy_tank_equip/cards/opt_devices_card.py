@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/easy_tank_equip/cards/opt_devices_card.py
 from typing import TYPE_CHECKING
 from gui.impl.gen import R
 from gui.impl.gen.view_models.constants.item_highlight_types import ItemHighlightTypes

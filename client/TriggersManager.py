@@ -1,9 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/TriggersManager.py
+from __future__ import absolute_import
 import math
-import BigWorld
-import Math
-import PlayerEvents
+from future.utils import itervalues, viewvalues, viewitems
+import BigWorld, Math, PlayerEvents
 from constants import ARENA_PERIOD
 from debug_utils import LOG_CURRENT_EXCEPTION
 from helpers import isPlayerAvatar
@@ -56,7 +54,7 @@ class TriggersManager(object):
 
     def __init__(self):
         self.__autoTriggers = {}
-        self.__activeAutoTriggers = set()
+        self.__activeAutoTriggers = {}
         self.__pendingManualTriggers = {}
         self.__activeManualTriggers = {}
         self.__listeners = set()
@@ -100,24 +98,25 @@ class TriggersManager(object):
         self.__activeManualTriggers = {}
         if not keepTriggersFromMap:
             self.__autoTriggers = {}
-            self.__activeAutoTriggers = set()
+            self.__activeAutoTriggers = {}
         else:
             autoTriggers = self.__autoTriggers.copy()
-            for k, v in autoTriggers.iteritems():
+            for k, v in viewitems(autoTriggers):
                 tType = v['type']
                 if tType not in (TRIGGER_TYPE.AIM, TRIGGER_TYPE.AREA, TRIGGER_TYPE.CURRENT_VEHICLE_AREA):
                     del self.__autoTriggers[k]
-                    self.__activeAutoTriggers.discard(k)
+                    self.__activeAutoTriggers.get(tType, set()).discard(k)
 
     def addListener(self, listener):
         if listener in self.__listeners:
             return
         self.__listeners.add(listener)
         if self.isActive:
-            for tID in self.__activeAutoTriggers:
-                listener.onTriggerActivated(self.__autoTriggers[tID])
+            for tIDs in viewvalues(self.__activeAutoTriggers):
+                for tID in tIDs:
+                    listener.onTriggerActivated(self.__autoTriggers[tID])
 
-            for _, trigger in self.__activeManualTriggers.iteritems():
+            for trigger in viewvalues(self.__activeManualTriggers):
                 listener.onTriggerActivated(trigger)
 
     def delListener(self, listener):
@@ -133,7 +132,10 @@ class TriggersManager(object):
     def delTrigger(self, triggerID):
         if triggerID in self.__autoTriggers:
             del self.__autoTriggers[triggerID]
-            self.__activeAutoTriggers.discard(triggerID)
+            for triggerIDS in itervalues(self.__activeAutoTriggers):
+                if triggerID in triggerIDS:
+                    triggerIDS.discard(triggerID)
+                    break
 
     def fireTrigger(self, tType, **kwargs):
         params = dict(kwargs) if kwargs is not None else {}
@@ -181,7 +183,7 @@ class TriggersManager(object):
             playerVehicle = BigWorld.entities.get(player.playerVehicleID)
             currentVehicle = player.getVehicleAttached()
             try:
-                for tType, data in self.__pendingManualTriggers.iteritems():
+                for tType, data in viewitems(self.__pendingManualTriggers):
                     for isTwoState, args in data:
                         params = dict(args)
                         params['type'] = tType
@@ -192,11 +194,12 @@ class TriggersManager(object):
                             self.__activeManualTriggers[tType] = params
 
                 self.__pendingManualTriggers = {}
-                for tID, params in self.__autoTriggers.iteritems():
-                    wasActive = tID in self.__activeAutoTriggers
+                for tID, params in viewitems(self.__autoTriggers):
+                    tType = params['type']
+                    activeAutoTriggers = self.__activeAutoTriggers.setdefault(tType, set())
+                    wasActive = tID in activeAutoTriggers
                     isActive = False
                     distance = -1.0
-                    tType = params['type']
                     if tType == TRIGGER_TYPE.AREA:
                         isActive = self.__getAreaTriggerActivationStatus(playerVehicle, params, wasActive)
                     if tType == TRIGGER_TYPE.CURRENT_VEHICLE_AREA:
@@ -207,12 +210,12 @@ class TriggersManager(object):
                     params['distance'] = distance
                     if wasActive != isActive:
                         if isActive:
-                            self.__activeAutoTriggers.add(tID)
+                            activeAutoTriggers.add(tID)
                             for listener in self.__listeners:
                                 listener.onTriggerActivated(params)
 
                         else:
-                            self.__activeAutoTriggers.discard(tID)
+                            activeAutoTriggers.clear()
                             for listener in self.__listeners:
                                 listener.onTriggerDeactivated(params)
 
@@ -225,25 +228,25 @@ class TriggersManager(object):
             return
 
     def getTriggerPosition(self, tType, name):
-        for params in self.__autoTriggers.itervalues():
+        for params in viewvalues(self.__autoTriggers):
             if params['type'] == tType and params['name'] == name:
                 return params.get('position')
 
-        return None
+        return
 
     def getDistanceToTrigger(self, tType, name):
-        for params in self.__autoTriggers.itervalues():
+        for params in viewvalues(self.__autoTriggers):
             if params['type'] == tType and params['name'] == name:
                 return params.get('distance')
 
-        return None
+        return
 
     def isAutoTriggerActive(self, tType, name):
-        for tID, params in self.__autoTriggers.iteritems():
+        for tID, params in viewitems(self.__autoTriggers):
             if params['type'] == tType and params['name'] == name:
-                return tID in self.__activeAutoTriggers
+                return tID in self.__activeAutoTriggers.get(tType, set())
 
-        return None
+        return
 
     def __onArenaPeriodChange(self, period, periodEndTime, periodLength, periodAdditionalInfo):
         isOnArena = period == ARENA_PERIOD.BATTLE

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client_common/arena_component_system/sectors_arena_component.py
 from collections import defaultdict
 from client_arena_component_system import ClientArenaComponent
 import Event
@@ -50,7 +48,8 @@ class SectorGroup(object):
         self.__center = (self.__upperRight + self.__bottomLeft) * 0.5
 
     def getBound(self):
-        return (self.__bottomLeft, self.__upperRight)
+        return (
+         self.__bottomLeft, self.__upperRight)
 
     def isInSector(self, position):
         return self.__bottomLeft.x <= position.x < self.__upperRight.x and self.__bottomLeft.z <= position.z < self.__upperRight.z
@@ -63,7 +62,7 @@ class SectorGroup(object):
     def getClosestWayPointPosition(self, arenaType, team, position):
         wayPoints = self.getWaypointsForTeam(arenaType, team)
         if not wayPoints:
-            return None
+            return
         else:
             distTuples = []
             for point in wayPoints:
@@ -74,7 +73,9 @@ class SectorGroup(object):
                 return item[1]
 
             sortedList = sorted(distTuples, key=getTupleKey)
-            return sortedList[0][0] if sortedList else None
+            if sortedList:
+                return sortedList[0][0]
+            return
 
     @property
     def state(self):
@@ -129,8 +130,7 @@ class SectorsArenaComponent(ClientArenaComponent):
         self.__currentPlayerSectorGroupID = None
         self.__currentWayPointSector = None
         self.__currentPlayerSectorID = None
-        self.__wayPointRepetitionRules = {EPIC_BATTLE_TEAM_ID.TEAM_ATTACKER: (4, 2),
-         EPIC_BATTLE_TEAM_ID.TEAM_DEFENDER: (4, 2)}
+        self.__wayPointRepetitionRules = {EPIC_BATTLE_TEAM_ID.TEAM_ATTACKER: (4, 2), EPIC_BATTLE_TEAM_ID.TEAM_DEFENDER: (4, 2)}
         self.onSectorAdded = Event.Event(self._eventManager)
         self.onSectorTransitionTimeChanged = Event.Event(self._eventManager)
         self.onSectorGroupUpdated = Event.Event(self._eventManager)
@@ -188,7 +188,7 @@ class SectorsArenaComponent(ClientArenaComponent):
                 return sector
 
         LOG_WARNING('Requested Sector not found ', sectorID)
-        return None
+        return
 
     def getSectorGroupById(self, sectorGroupID):
         return self.__sectorGroups[sectorGroupID]
@@ -203,12 +203,16 @@ class SectorsArenaComponent(ClientArenaComponent):
 
     def getNeighbouringSectorIdsByOwnSectorId(self, ownSectorId):
         ownSector = self.getSectorById(ownSectorId)
-        values = [-1, 0, 1]
+        values = [
+         -1, 0, 1]
         lanes = [ self.playerGroups.get(ownSector.playerGroup + x, None) for x in values ]
-        offsetsInLanes = [[0], [-1, 1], [0]]
+        offsetsInLanes = [
+         [
+          0], [-1, 1], [0]]
         sectorsGroupIds = []
         for laneIdx, lane in [ item for item in enumerate(lanes) if item[1] is not None ]:
-            sectorsGroupIds.extend([ sector for sector in [ lane.sectors.get(ownSector.IDInPlayerGroup + offset, None) for offset in offsetsInLanes[laneIdx] ] if sector is not None and sector != ownSectorId ])
+            sectorsGroupIds.extend([ sector for sector in [ lane.sectors.get(ownSector.IDInPlayerGroup + offset, None) for offset in offsetsInLanes[laneIdx] ] if sector is not None and sector != ownSectorId
+                                   ])
 
         return sectorsGroupIds
 
@@ -220,11 +224,18 @@ class SectorsArenaComponent(ClientArenaComponent):
             if playerSector is None:
                 return (None, None, 0)
             affectedSectorGroup, transitionSectorID, transitionEndTime = self.getActiveWaypointSectorGroupForPlayerGroup(playerSector.playerGroup)
-            return (None, None, transitionEndTime) if playerSector.state not in {SECTOR_STATE.TRANSITION, SECTOR_STATE.CAPTURED} else (affectedSectorGroup, transitionSectorID, transitionEndTime)
+            if playerSector.state not in {SECTOR_STATE.TRANSITION, SECTOR_STATE.CAPTURED}:
+                return (None, None, transitionEndTime)
+            return (affectedSectorGroup, transitionSectorID, transitionEndTime)
 
     def getActiveWaypointSectorGroupForPlayerGroup(self, playerGroupID):
         transitionSector = next((sector for sector in self.getAllSectorsForPlayerGroup(playerGroupID) if sector.state == SECTOR_STATE.TRANSITION), None)
-        return (None, None, 0) if transitionSector is None else (self.getSectorGroupById(transitionSector.groupID), transitionSector.sectorID, transitionSector.endOfTransitionPeriod)
+        if transitionSector is None:
+            return (None, None, 0)
+        else:
+            return (
+             self.getSectorGroupById(transitionSector.groupID), transitionSector.sectorID,
+             transitionSector.endOfTransitionPeriod)
 
     def getClosestWayPointForSectorAndTeam(self, sectorID, arenaType, teamID, position):
         waypointSector = self.getSectorById(sectorID)

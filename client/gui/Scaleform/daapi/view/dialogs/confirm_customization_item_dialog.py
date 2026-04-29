@@ -1,5 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/dialogs/confirm_customization_item_dialog.py
+from __future__ import absolute_import
+from past.utils import old_div
 from debug_utils import LOG_ERROR
 from PlayerEvents import g_playerEvents
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -26,9 +26,9 @@ class ConfirmCustomizationItemDialog(ConfirmItemWindowMeta):
         g_playerEvents.onShopResync += self.__onUpdate
         g_clientUpdateManager.addCallbacks({'stats': self.__onUpdate})
         self._prepareAndSendData()
-        self.as_setSettingsS({'title': self.meta.getTitle(),
-         'submitBtnLabel': self.meta.getSubmitButtonLabel(),
-         'cancelBtnLabel': self.meta.getCancelButtonLabel()})
+        self.as_setSettingsS({'title': self.meta.getTitle(), 
+           'submitBtnLabel': self.meta.getSubmitButtonLabel(), 
+           'cancelBtnLabel': self.meta.getCancelButtonLabel()})
 
     def _dispose(self):
         g_playerEvents.onShopResync -= self.__onUpdate
@@ -50,7 +50,7 @@ class ConfirmCustomizationItemDialog(ConfirmItemWindowMeta):
     def proceedSubmit(self, count, currency):
         item = self.meta.getItem()
         stepFactor = self.meta.getStepFactor(item)
-        count = count / stepFactor
+        count = old_div(count, stepFactor)
         self.meta.submit(item, count, currency, self.meta.vehicle)
         self._callHandler(True, item, count, currency)
         self.destroy()
@@ -82,24 +82,24 @@ class ConfirmCustomizationItemDialog(ConfirmItemWindowMeta):
                 icon = item.iconByProgressionLevel(progressionLevel)
             else:
                 icon = item.icon
-            smallSlotVO = {'itemIcon': icon,
-             'isBgVisible': False,
-             'isFrameVisible': True,
-             'iconWidth': iconWidth,
-             'iconHeight': iconHeight}
+            smallSlotVO = {'itemIcon': icon, 
+               'isBgVisible': False, 
+               'isFrameVisible': True, 
+               'iconWidth': iconWidth, 
+               'iconHeight': iconHeight}
             stepFactor = self.meta.getStepFactor(item)
-            resultData = {'id': item.intCD,
-             'price': getMoneyVO(actualPrices),
-             'actionPriceData': action,
-             'name': item.userName,
-             'description': item.userType,
-             'currency': currency,
-             'defaultValue': self.meta.getDefaultValue(item) * stepFactor,
-             'maxAvailableCount': self.meta.getMaxAvailableItemsCount(item),
-             'hasSeveralPrices': hasAlternativePrice,
-             'smallSlotVO': smallSlotVO,
-             'countLabel': countLabel,
-             'stepSize': stepFactor}
+            resultData = {'id': item.intCD, 
+               'price': getMoneyVO(actualPrices), 
+               'actionPriceData': action, 
+               'name': item.userName, 
+               'description': item.userType, 
+               'currency': currency, 
+               'defaultValue': self.meta.getDefaultValue(item) * stepFactor, 
+               'maxAvailableCount': self.meta.getMaxAvailableItemsCount(item), 
+               'hasSeveralPrices': hasAlternativePrice, 
+               'smallSlotVO': smallSlotVO, 
+               'countLabel': countLabel, 
+               'stepSize': stepFactor}
             self.as_setDataS(resultData)
         else:
             LOG_ERROR("Couldn't find given customization item: ", self.meta.getItem())

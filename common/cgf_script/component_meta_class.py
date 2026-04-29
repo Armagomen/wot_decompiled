@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/cgf_script/component_meta_class.py
-import sys
-import CGF
-import inspect
+import sys, CGF, inspect
 from debug_utils import LOG_CURRENT_EXCEPTION
 
 class CGFMetaTypes(object):
@@ -40,11 +36,7 @@ class ComponentProperty(object):
 
     def __init__(self, type=CGFMetaTypes.INT, value=0, editorName='', **kwarg):
         global g_propertyIndex
-        kwarg.update({'type': type,
-         'value': value,
-         'editorName': editorName,
-         'name': '',
-         'ownerName': ''})
+        kwarg.update({'type': type, 'value': value, 'editorName': editorName, 'name': '', 'ownerName': ''})
         self.__metadata = kwarg
         self.__index = 0
         self.__baseIndex = g_propertyIndex
@@ -158,10 +150,10 @@ class CGFComponentConverter(object):
     __metaclass__ = CGFConverterMetaClass
 
     def sourceVersion(self):
-        pass
+        return 0
 
     def targetVersion(self):
-        pass
+        return 0
 
     def convert(self, sourceConfig, convertedConfig):
         pass

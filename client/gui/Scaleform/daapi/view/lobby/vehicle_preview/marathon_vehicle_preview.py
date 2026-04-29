@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/marathon_vehicle_preview.py
 import typing
 from gui.Scaleform.daapi.view.lobby.vehicle_preview.vehicle_preview import VehiclePreview
 from gui.Scaleform.genConsts.VEHPREVIEW_CONSTANTS import VEHPREVIEW_CONSTANTS
@@ -22,12 +20,12 @@ class MarathonVehiclePreview(VehiclePreview):
             if self._itemsPack is not None:
                 viewPy.setMarathonEvent(self.__marathonPrefix)
                 viewPy.setInfoTooltip()
-                items = tuple((item for item in self._itemsPack if item.type not in ItemPackTypeGroup.CREW))
+                items = tuple(item for item in self._itemsPack if item.type not in ItemPackTypeGroup.CREW)
                 viewPy.setPackItems(items, self._price, self._oldPrice, self._title)
         elif alias == VEHPREVIEW_CONSTANTS.CREW_TAB_INJECT:
             if self._itemsPack:
-                crewItems = tuple((item for item in self._itemsPack if item.type in ItemPackTypeGroup.CREW))
-                vehicleItems = tuple((item for item in self._itemsPack if item.type in ItemPackTypeGroup.VEHICLE))
+                crewItems = tuple(item for item in self._itemsPack if item.type in ItemPackTypeGroup.CREW)
+                vehicleItems = tuple(item for item in self._itemsPack if item.type in ItemPackTypeGroup.VEHICLE)
                 viewPy.updateInjectData(None, vehicleItems, crewItems)
         return
 

@@ -1,12 +1,10 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/frameworks/wulf/view/command.py
 import typing
 from Event import Event
 from ..py_object_binder import PyObjectEntity
 from ..py_object_wrappers import PyObjectCommand
 
 class Command(PyObjectEntity):
-    __slots__ = ('__event',)
+    __slots__ = ('__event', )
 
     def __init__(self):
         super(Command, self).__init__(PyObjectCommand())
@@ -14,7 +12,8 @@ class Command(PyObjectEntity):
 
     def __call__(self, args=None):
         if args is not None:
-            args = (args,)
+            args = (
+             args,)
         else:
             args = ()
         self.__event(*args)
@@ -26,7 +25,8 @@ class Command(PyObjectEntity):
 
     def execute(self, args=None):
         if args is not None:
-            args = (args,)
+            args = (
+             args,)
         else:
             args = ()
         self.proxy.execute(*args)
@@ -38,7 +38,8 @@ class Command(PyObjectEntity):
 
     def _cNotify(self, args=None):
         if args is not None:
-            args = (args,)
+            args = (
+             args,)
         else:
             args = ()
         self.__event(*args)

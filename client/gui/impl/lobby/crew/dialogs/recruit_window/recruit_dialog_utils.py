@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/dialogs/recruit_window/recruit_dialog_utils.py
 from gui.impl.gen.resources import R
 from gui.impl import backport
 from gui.server_events import recruit_helper
@@ -26,14 +24,14 @@ def getIconName(iconID):
 
 
 def getIcon(iconName='', isFemale=False):
-    specialID = R.images.gui.maps.icons.tankmen.icons.special.dyn(attr='{}'.format(replaceHyphenToUnderscore(iconName)))
+    specialID = R.images.gui.maps.icons.tankmen.icons.special.dyn(attr=('{}').format(replaceHyphenToUnderscore(iconName)))
     if specialID is not None and specialID.exists():
         return (specialID(), True)
     else:
-        bigID = R.images.gui.maps.icons.tankmen.icons.big.dyn(attr='{}'.format(replaceHyphenToUnderscore(iconName)))
+        bigID = R.images.gui.maps.icons.tankmen.icons.big.dyn(attr=('{}').format(replaceHyphenToUnderscore(iconName)))
         if bigID is not None and bigID.exists():
             return (bigID(), False)
-        icon = recruit_helper._TANKMAN_ICON if not isFemale else recruit_helper._TANKWOMAN_ICON
+        icon = (isFemale or recruit_helper)._TANKMAN_ICON if 1 else recruit_helper._TANKWOMAN_ICON
         return (R.images.gui.maps.icons.tankmen.icons.special.dyn(replaceHyphenToUnderscore(getIconName(icon)))(), True)
 
 
@@ -42,7 +40,9 @@ def getIconBackground(resurceID=None, dynIconName=None, dynPath=RECRUIT_BG_DYN):
         if resurceID and event in resurceID or dynIconName and event in dynIconName:
             return dynPath.bg_recruitment_twitch()
 
-    return dynPath.bg_recruitment_ny() if resurceID and resurceID[:2] == 'ny' else dynPath.bg_recruitment_regular()
+    if resurceID and resurceID[:2] == 'ny':
+        return dynPath.bg_recruitment_ny()
+    return dynPath.bg_recruitment_regular()
 
 
 def getSortedItems(unsortedItems, itemsOrderedList):

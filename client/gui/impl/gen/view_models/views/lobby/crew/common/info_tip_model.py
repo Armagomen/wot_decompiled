@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/crew/common/info_tip_model.py
 from enum import Enum
 from frameworks.wulf import ViewModel
 

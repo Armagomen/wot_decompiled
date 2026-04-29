@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/array_providers/opt_device.py
 import logging
 from functools import partial
 from itertools import izip, chain
@@ -37,13 +35,14 @@ class ListTypes(object):
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
 def _getInstalledSet(itemsCache=None):
     invVehicles = itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY)
-    return set((optDevice for veh in invVehicles.itervalues() for optDevice in veh.optDevices.setupLayouts.getIntCDs()))
+    return set(optDevice for veh in invVehicles.itervalues() for optDevice in veh.optDevices.setupLayouts.getIntCDs())
 
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
 def _getModernizedInstalledList(itemsCache=None):
     invVehicles = itemsCache.items.getVehicles(REQ_CRITERIA.INVENTORY)
-    return [ (veh.intCD, optDevice) for veh in invVehicles.itervalues() for optDevice in veh.optDevices.setupLayouts.getUniqueItems() if optDevice.isModernized ]
+    return [ (veh.intCD, optDevice) for veh in invVehicles.itervalues() for optDevice in veh.optDevices.setupLayouts.getUniqueItems() if optDevice.isModernized
+           ]
 
 
 class ArrayOptDeviceProvider(BaseArrayProvider):
@@ -58,10 +57,12 @@ class ArrayOptDeviceProvider(BaseArrayProvider):
         self._fillEffects(model, item)
 
     def _getItemTypeID(self):
-        return (GUI_ITEM_TYPE.OPTIONALDEVICE,)
+        return (
+         GUI_ITEM_TYPE.OPTIONALDEVICE,)
 
     def _getItemSortKey(self, item, ctx):
-        return (item.level,
+        return (
+         item.level,
          not item.isUpgraded,
          not item.isUpgradable,
          item.getBuyPrice().price,
@@ -101,7 +102,9 @@ class ArrayOptDeviceProvider(BaseArrayProvider):
 class DeconstructOptDeviceStorageProvider(ArrayOptDeviceProvider):
 
     def getLimit(self, item, upgradedPair):
-        return item.inventoryCount - 1 if upgradedPair and not upgradedPair[1] and upgradedPair[0] == item else item.inventoryCount
+        if upgradedPair and not upgradedPair[1] and upgradedPair[0] == item:
+            return item.inventoryCount - 1
+        return item.inventoryCount
 
     def getItemViewModel(self):
         return DeconstructItemModel()
@@ -138,7 +141,7 @@ class DeconstructOptDeviceStorageProvider(ArrayOptDeviceProvider):
             upgradedItem, vehCD = upgradedPair
             if not vehCD:
                 return lambda items: (item for item in items if item != upgradedItem or item.inventoryCount > 1)
-        return None
+        return
 
 
 class DeconstructOptDeviceOnVehicleProvider(ArrayOptDeviceProvider):
@@ -157,7 +160,7 @@ class DeconstructOptDeviceOnVehicleProvider(ArrayOptDeviceProvider):
 
     def _fillSelectedCount(self, model, itemPair, ctx):
         vehSpecsDict = ctx.cart.onVehicle
-        selectedCount = 1 if any((itemPair == (vehCD, item) for vehCD, items in vehSpecsDict.items() for item in items)) else 0
+        selectedCount = 1 if any(itemPair == (vehCD, item) for vehCD, items in vehSpecsDict.items() for item in items) else 0
         model.setSelectedCount(selectedCount)
 
     def getTotalPrice(self, ctx):
@@ -174,7 +177,7 @@ class DeconstructOptDeviceOnVehicleProvider(ArrayOptDeviceProvider):
             upgradedItem, vehCD = upgradedPair
             if vehCD:
                 return lambda items: (item for item in items if not (item[1] == upgradedItem and vehCD == item[0]))
-        return None
+        return
 
     def _getItemSortKey(self, item, ctx):
         _, item = item
@@ -183,7 +186,6 @@ class DeconstructOptDeviceOnVehicleProvider(ArrayOptDeviceProvider):
 
 class BaseOptDeviceProvider(VehicleBaseArrayProvider):
     _wotPlusController = dependency.descriptor(IWotPlusController)
-    _lobbyContext = dependency.descriptor(ILobbyContext)
     __slots__ = ()
 
     def getItemViewModel(self):
@@ -194,7 +196,7 @@ class BaseOptDeviceProvider(VehicleBaseArrayProvider):
         if item.isModernized:
             model.setDestroyTooltipBodyPath('destroy_modernized')
             return
-        if item.isDeluxe and not self._lobbyContext.getServerSettings().isFreeDeluxeEquipmentDemountingEnabled():
+        if item.isDeluxe and not self._wotPlusController.getSettingsStorage().isFreeDeluxeEquipmentDemountingEnabled():
             model.setDestroyTooltipBodyPath('destroy_without_wotplus_demount')
             return
         model.setDestroyTooltipBodyPath('destroy')
@@ -223,7 +225,8 @@ class BaseOptDeviceProvider(VehicleBaseArrayProvider):
             value = bonusModel.getValues()[0]
             if activeCategories and kpi.specValue is not None:
                 value.setValue(kpi.specValue)
-            value.setValue(kpi.value)
+            else:
+                value.setValue(kpi.value)
 
         model.setActiveSpecsMask(getCategoriesMask(activeCategories))
         for specializationModel in model.specializations.getSpecializations():
@@ -275,9 +278,9 @@ class BaseOptDeviceProvider(VehicleBaseArrayProvider):
         return self._getVehicle().optDevices
 
     def _getItemSortKey(self, item, ctx):
-        return (not item.isUpgraded,
-         not item.isUpgradable,
-         [ category not in item.descriptor.categories for category in SlotCategories.ORDER ],
+        return (
+         not item.isUpgraded,
+         not item.isUpgradable, [ category not in item.descriptor.categories for category in SlotCategories.ORDER ],
          item.getBuyPrice().price,
          item.userName)
 
@@ -305,7 +308,9 @@ class DeluxeOptDeviceProvider(BaseOptDeviceProvider):
         return model
 
     def _getItemSortKey(self, item, ctx):
-        return (item.getBuyPrice().price, item.userName)
+        return (
+         item.getBuyPrice().price,
+         item.userName)
 
     @staticmethod
     def _fillHighlight(model, item):
@@ -336,7 +341,9 @@ class ModernisedOptDeviceProvider(DeluxeOptDeviceProvider):
         model.setHighlightType(ItemHighlightTypes.MODERNIZED)
 
     def _getItemSortKey(self, item, ctx):
-        return (-item.level, item.userName)
+        return (
+         -item.level,
+         item.userName)
 
     def _sortItems(self, items, ctx):
         items.sort(key=partial(self._getItemSortKey, ctx=ctx))
@@ -349,7 +356,8 @@ class ModernisedOptDeviceProvider(DeluxeOptDeviceProvider):
 class TrophyOptDeviceProvider(DeluxeOptDeviceProvider):
 
     def _getItemSortKey(self, item, ctx):
-        return (-item.level,
+        return (
+         -item.level,
          item.userName,
          not item.isUpgraded,
          not item.isUpgradable)

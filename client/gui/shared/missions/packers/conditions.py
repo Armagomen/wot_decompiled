@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/missions/packers/conditions.py
-import logging
-import typing
+import logging, typing
 from gui.Scaleform.genConsts.MISSIONS_ALIASES import MISSIONS_ALIASES
 from gui.impl import backport
 from gui.impl.gen import R
@@ -29,11 +26,13 @@ CONDITION_GROUP_OR = 'or'
 CONDITION_GROUP_NOP = 'nop'
 CONDITION_GROUP_NOT = 'not'
 CONDITION_DEFAULT_NAME = 'play'
-CONDITION_GROUP_TYPE_LIST = (CONDITION_GROUP_AND,
+CONDITION_GROUP_TYPE_LIST = (
+ CONDITION_GROUP_AND,
  CONDITION_GROUP_OR,
  CONDITION_GROUP_NOP,
  CONDITION_GROUP_NOT)
-CONDITION_SPECIFIC_TYPE_LIST = (CONDITION_DEFAULT_NAME,)
+CONDITION_SPECIFIC_TYPE_LIST = (
+ CONDITION_DEFAULT_NAME,)
 CONDITION_TYPE_LIST = CONDITION_GROUP_TYPE_LIST + CONDITION_SPECIFIC_TYPE_LIST
 
 class PreFormattedConditionModelPacker(object):
@@ -71,8 +70,7 @@ class PreFormattedConditionModelPacker(object):
 class UIConditionPacker(object):
 
     def _packConditions(self, conditions, event):
-        ctx = {'data': conditions,
-         'event': event}
+        ctx = {'data': conditions, 'event': event}
         classType = None
         try:
             classType = ctx['data'].classType
@@ -124,11 +122,10 @@ class UIConditionPacker(object):
             if not ctx['event'].isGuiDisabled():
                 _logger.error('Should not be reached: preFormattedConditionTuple was not received.')
             return None
-        else:
-            if len(preFormattedCondition) > 1:
-                _logger.error('Should not be reached: More than one tuple was received.')
-            preFmtCond = preFormattedCondition[0]
-            return getDefaultPreFormattedConditionModelPacker().pack(preFmtCond, conditionName)
+        if len(preFormattedCondition) > 1:
+            _logger.error('Should not be reached: More than one tuple was received.')
+        preFmtCond = preFormattedCondition[0]
+        return getDefaultPreFormattedConditionModelPacker().pack(preFmtCond, conditionName)
 
     def _travers(self, ctx):
         ctx['data'] = ctx.get('data', [])
@@ -143,11 +140,11 @@ class UIConditionPacker(object):
             booleanOperation = contextData.getName()
             ctx['data'] = contextData.items
             return self._traversConditionGroup(ctx, booleanOperation)
-        elif classType == 'Condition':
-            if contextData.isHidden():
-                return
-            return self._traversCondition(ctx)
         else:
+            if classType == 'Condition':
+                if contextData.isHidden():
+                    return
+                return self._traversCondition(ctx)
             _logger.error('Condition packer for %s type is not implemented yet.', type(contextData))
             return
 
@@ -179,7 +176,7 @@ class BonusConditionPacker(UIConditionPacker):
         isItemAddedToBonusCondModel = False
         if not bonusCondsModelList:
             _logger.debug('BonusConditions were not received for event %s.', event.getID())
-            return None
+            return
         else:
             for bonusCondModel in bonusCondsModelList:
                 if not bonusCondModel:
@@ -189,7 +186,7 @@ class BonusConditionPacker(UIConditionPacker):
 
             if isItemAddedToBonusCondModel:
                 model.setConditionType(typeOfBonusConditionGroup)
-            return None
+            return
 
 
 class PostBattleConditionPacker(UIConditionPacker):
@@ -212,7 +209,7 @@ class PostBattleConditionPacker(UIConditionPacker):
         postBattleCondsModelList, typeOfPostBattleConditionGroup = self._packConditions(postBattleConditions, event)
         if not postBattleCondsModelList:
             _logger.debug('PostBattleConditions were not received for event %s.', event.getID())
-            return None
+            return
         else:
             for postBattleCondModel in postBattleCondsModelList:
                 if not postBattleCondModel:
@@ -220,7 +217,7 @@ class PostBattleConditionPacker(UIConditionPacker):
                 model.getItems().addViewModel(postBattleCondModel)
 
             model.setConditionType(typeOfPostBattleConditionGroup)
-            return None
+            return
 
     @classmethod
     def packDefaultCondition(cls, event, model):
@@ -233,7 +230,8 @@ class PostBattleConditionPacker(UIConditionPacker):
             icon = CONDITION_ICON.FOLDER
         else:
             icon = CONDITION_ICON.BATTLES
-        titleArgs = (backport.text(R.strings.quests.details.conditions.playBattle.title()),)
+        titleArgs = (
+         backport.text(R.strings.quests.details.conditions.playBattle.title()),)
         descrArgs = (backport.text(R.strings.quests.missionDetails.conditions.playBattle()),)
         playBattleCondition = formatters.packMissionIconCondition(FormattableField(FORMATTER_IDS.SIMPLE_TITLE, titleArgs), MISSIONS_ALIASES.NONE, FormattableField(FORMATTER_IDS.DESCRIPTION, descrArgs), icon)
         return packer.pack(playBattleCondition, CONDITION_DEFAULT_NAME)

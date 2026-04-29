@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_results/currency_records_item_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.battle_results.currency_records_item_details_model import CurrencyRecordsItemDetailsModel
 
@@ -29,6 +27,7 @@ class CurrencyRecordsItemModel(ViewModel):
     SQUAD_BONUS_XP = 'squadBonusXP'
     SQUAD_PENALTY_XP = 'squadPenaltyXP'
     WOT_PLUS_BONUS_XP = 'wotPlusBonusXP'
+    WOT_PLUS_PRO_BOOST_XP = 'wotPlusProBoostXP'
     TOTAL_XP = 'totalXP'
     ORIGINAL_FREE_XP = 'originalFreeXP'
     ACHIEVEMENT_FREE_XP = 'achievementFreeXP'
@@ -40,6 +39,7 @@ class CurrencyRecordsItemModel(ViewModel):
     EVENT_FREE_XP = 'eventFreeXP'
     PREMIUM_VEHICLE_FREE_XP = 'premiumVehicleFreeXP'
     WOT_PLUS_BONUS_FREE_XP = 'wotPlusBonusFreeXP'
+    WOT_PLUS_PRO_BOOST_FREE_XP = 'wotPlusProBoostFreeXP'
     TOTAL_FREE_XP = 'totalFreeXP'
     BASE_EARNED_CREDITS = 'baseEarnedCredits'
     SQUAD_BONUS_CREDITS = 'squadBonusCredits'
@@ -50,6 +50,7 @@ class CurrencyRecordsItemModel(ViewModel):
     EVENT_PAYMENTS_CREDITS = 'eventPaymentsCredits'
     REFERRAL_BONUS_CREDITS = 'referralBonusCredits'
     WOT_PLUS_BONUS_CREDITS = 'wotPlusBonusCredits'
+    WOT_PLUS_PRO_BOOST_CREDITS = 'wotPlusProBoostCredits'
     FRIENDLY_FIRE_PENALTY_CREDITS = 'friendlyFirePenaltyCredits'
     FRIENDLY_FIRE_COMPENSATION_CREDITS = 'friendlyFireCompensationCredits'
     PIGGY_BANK_CREDITS = 'piggyBankCredits'

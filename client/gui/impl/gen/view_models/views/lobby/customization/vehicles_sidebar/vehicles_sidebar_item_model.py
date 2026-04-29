@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/customization/vehicles_sidebar/vehicles_sidebar_item_model.py
 from frameworks.wulf import Array
 from gui.impl.gen.view_models.views.lobby.common.vehicle_model import VehicleModel
 from gui.impl.gen.view_models.views.lobby.customization.vehicles_sidebar.customization_3D_attachments import Customization3DAttachments
@@ -7,26 +5,26 @@ from gui.impl.gen.view_models.views.lobby.customization.vehicles_sidebar.customi
 class VehiclesSidebarItemModel(VehicleModel):
     __slots__ = ()
 
-    def __init__(self, properties=14, commands=0):
+    def __init__(self, properties=13, commands=0):
         super(VehiclesSidebarItemModel, self).__init__(properties=properties, commands=commands)
 
     def getInDepot(self):
-        return self._getBool(11)
+        return self._getBool(10)
 
     def setInDepot(self, value):
-        self._setBool(11, value)
+        self._setBool(10, value)
 
     def getNationOrder(self):
-        return self._getNumber(12)
+        return self._getNumber(11)
 
     def setNationOrder(self, value):
-        self._setNumber(12, value)
+        self._setNumber(11, value)
 
     def getCustomization3DAttachments(self):
-        return self._getArray(13)
+        return self._getArray(12)
 
     def setCustomization3DAttachments(self, value):
-        self._setArray(13, value)
+        self._setArray(12, value)
 
     @staticmethod
     def getCustomization3DAttachmentsType():

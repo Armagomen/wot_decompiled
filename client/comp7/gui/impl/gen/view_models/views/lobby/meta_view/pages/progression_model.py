@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/gen/view_models/views/lobby/meta_view/pages/progression_model.py
 from enum import IntEnum
 from comp7.gui.impl.gen.view_models.views.lobby.enums import StatisticsMode
 from frameworks.wulf import Array
@@ -18,7 +16,8 @@ class PageState(IntEnum):
 
 
 class ProgressionModel(ProgressionBaseModel):
-    __slots__ = ('onSelectDay', 'onOpenCustomization', 'onCustomizationProgressShown', 'onOpenVehicleStats', 'onRefresh')
+    __slots__ = ('onSelectDay', 'onOpenCustomization', 'onCustomizationProgressShown',
+                 'onOpenVehicleStats', 'onRefresh')
     DEFAULT_SELECTED_DAY = -1
 
     def __init__(self, properties=19, commands=5):

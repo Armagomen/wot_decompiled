@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/ClientSelectableCameraObject.py
+from __future__ import absolute_import
 import CGF
 from ClientSelectableObject import ClientSelectableObject
 from gui.hangar_cameras.hangar_camera_common import CameraMovementStates, CameraRelatedEvents
@@ -25,7 +24,9 @@ class ClientSelectableCameraObject(ClientSelectableObject):
             ClientSelectableCameraObject.allCameraObjects.remove(self)
 
     def onMouseClick(self):
-        ClientSelectableCameraObject.switchCamera(self)
+        ClientSelectableObject.onMouseClick(self)
+        ClientSelectableCameraObject.deselectAll()
+        self.onSelect()
         return self.state != CameraMovementStates.FROM_OBJECT
 
     @classmethod
@@ -63,8 +64,7 @@ class ClientSelectableCameraObject(ClientSelectableObject):
 
     def setState(self, state):
         self.__state = state
-        g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.CAMERA_ENTITY_UPDATED, ctx={'state': self.__state,
-         'entityId': self.id}), scope=EVENT_BUS_SCOPE.DEFAULT)
+        g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.CAMERA_ENTITY_UPDATED, ctx={'state': self.__state, 'entityId': self.id}), scope=EVENT_BUS_SCOPE.DEFAULT)
 
     @property
     def state(self):

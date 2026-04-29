@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/common/comp7_common/comp7_constants.py
-import enum
-import UnitBase
-import constants
+import enum, UnitBase, constants
 from constants_utils import ConstInjector
 DEFAULT_ASSETS_PACK = 'undefined'
 DEFAULT_SETTINGS_KEY = 'undefined'
@@ -17,14 +13,16 @@ class Configs(enum.Enum):
     COMP7_REWARDS_CONFIG = 'comp7_rewards_config'
 
 
-COMP7_INBATTLE_CONFIGS = (Configs.COMP7_CONFIG.value, Configs.COMP7_RANKS_CONFIG.value)
+COMP7_INBATTLE_CONFIGS = (
+ Configs.COMP7_CONFIG.value, Configs.COMP7_RANKS_CONFIG.value)
 BATTLE_MODE_VEH_TAGS_EXCEPT_COMP7 = constants.BATTLE_MODE_VEHICLE_TAGS - {'comp7'}
 
 class ARENA_GUI_TYPE(constants.ARENA_GUI_TYPE, ConstInjector):
     COMP7 = 30
     TOURNAMENT_COMP7 = 33
     TRAINING_COMP7 = 34
-    COMP7_RANGE = (COMP7, TOURNAMENT_COMP7, TRAINING_COMP7)
+    COMP7_RANGE = (
+     COMP7, TOURNAMENT_COMP7, TRAINING_COMP7)
 
 
 class UNIT_MGR_FLAGS(UnitBase.UNIT_MGR_FLAGS, ConstInjector):
@@ -50,3 +48,8 @@ class CLIENT_UNIT_CMD(UnitBase.CLIENT_UNIT_CMD, ConstInjector):
 
 class GameSeasonType(constants.GameSeasonType, ConstInjector):
     COMP7 = 7
+
+
+class BATTLE_PROGRESS_CATEGORY(constants.BATTLE_PROGRESS_CATEGORY, ConstInjector):
+    COMP7_WEEKLY_QUESTS = 8
+    COMP7_CUSTOMISATION_QUESTS = 9

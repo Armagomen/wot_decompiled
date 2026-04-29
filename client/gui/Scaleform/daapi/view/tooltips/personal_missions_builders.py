@@ -1,13 +1,13 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/tooltips/personal_missions_builders.py
+from __future__ import absolute_import
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.shared.tooltips import contexts, common
 from gui.shared.tooltips import personal_missions
 from gui.shared.tooltips.builders import DataBuilder, TooltipWindowBuilder
-__all__ = ('getTooltipBuilders',)
+__all__ = ('getTooltipBuilders', )
 
 def getTooltipBuilders():
-    return (DataBuilder(TOOLTIPS_CONSTANTS.PERSONAL_QUESTS_PREVIEW, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI, personal_missions.PersonalMissionPreviewTooltipData(contexts.PersonalMissionContext())),
+    return (
+     DataBuilder(TOOLTIPS_CONSTANTS.PERSONAL_QUESTS_PREVIEW, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI, personal_missions.PersonalMissionPreviewTooltipData(contexts.PersonalMissionContext())),
      DataBuilder(TOOLTIPS_CONSTANTS.PERSONAL_MISSIONS_TANKWOMAN, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI, personal_missions.TankwomanTooltipData(contexts.PersonalMissionContext())),
      DataBuilder(TOOLTIPS_CONSTANTS.PERSONAL_MISSIONS_TANKMODULE, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI, personal_missions.TankModuleTooltipData(contexts.PersonalMissionContext())),
      DataBuilder(TOOLTIPS_CONSTANTS.FREE_SHEET, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI, personal_missions.FreeSheetTooltip(contexts.PersonalMissionCampaignContext())),

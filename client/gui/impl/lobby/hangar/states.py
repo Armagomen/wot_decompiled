@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/hangar/states.py
 from __future__ import absolute_import
 import logging
 from WeakMethod import WeakMethodProxy
@@ -29,7 +27,8 @@ def registerTransitions(machine):
 class LegacyHangarState(SFViewLobbyState, IPrbListener):
     STATE_ID = VIEW_ALIAS.LEGACY_LOBBY_HANGAR
     VIEW_KEY = ViewKey(VIEW_ALIAS.LEGACY_LOBBY_HANGAR)
-    __LEGACY_HANGAR_MODE_FLAGS = {FUNCTIONAL_FLAG.E_SPORT,
+    __LEGACY_HANGAR_MODE_FLAGS = {
+     FUNCTIONAL_FLAG.E_SPORT,
      FUNCTIONAL_FLAG.EVENT,
      FUNCTIONAL_FLAG.RANKED,
      FUNCTIONAL_FLAG.TOURNAMENT,
@@ -49,7 +48,7 @@ class LegacyHangarState(SFViewLobbyState, IPrbListener):
         if event.targetStateID != HangarState.STATE_ID:
             return False
         prbFlags = self.prbEntity.getModeFlags()
-        return any((bool(prbFlags & flag) for flag in self.__LEGACY_HANGAR_MODE_FLAGS))
+        return any(bool(prbFlags & flag) for flag in self.__LEGACY_HANGAR_MODE_FLAGS)
 
 
 HangarState, DefaultHangarState, AllVehiclesState, EasyTankEquipState = generateBasicHangarStateClasses(SubScopeSubLayerState, R.invalid)

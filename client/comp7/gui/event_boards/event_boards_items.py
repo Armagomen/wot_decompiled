@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/event_boards/event_boards_items.py
-import datetime
-import typing
-import math
+import datetime, typing, math
 from comp7.gui.shared.gui_items.dossier.stats import getComp7DossierStats
 from comp7.gui.impl.lobby.comp7_helpers.comp7_shared import getRankEnumValue, getPlayerDivisionByDvsnID
 from gui.event_boards.event_boards_items import LeaderBoard, IPlayerProgression, isDataSchemaValid
@@ -33,7 +29,14 @@ class BattleUnitTypeData(object):
 
 
 class DailyVehicleData(object):
-    __slots__ = ('dayIndex', 'vehicleCD', 'prestigePoints', 'totalDeathsPerUnitType', 'totalAssistedPerUnitType', 'damageReceivedPerUnitType', 'battleCountWinPerUnitType', 'battleCountLossPerUnitType', 'battleCountDrawPerUnitType', 'totalDamagePerUnitType', 'firstBattleTimestampsPerUnitType', 'fragsPerUnitType', 'lastBattleTimestampsPerUnitType', 'battleLengthTotalSecondsPerUnitType', 'totalSuperPlatoonBattles', 'totalPlatoonBattles', 'totalSoloBattles', 'totalBattles', 'damageEfficiency', 'fragsEfficiency', 'winsEfficiency', 'avgDamage', 'avgDamageAssisted', 'avgPrestigePoints')
+    __slots__ = ('dayIndex', 'vehicleCD', 'prestigePoints', 'totalDeathsPerUnitType',
+                 'totalAssistedPerUnitType', 'damageReceivedPerUnitType', 'battleCountWinPerUnitType',
+                 'battleCountLossPerUnitType', 'battleCountDrawPerUnitType', 'totalDamagePerUnitType',
+                 'firstBattleTimestampsPerUnitType', 'fragsPerUnitType', 'lastBattleTimestampsPerUnitType',
+                 'battleLengthTotalSecondsPerUnitType', 'totalSuperPlatoonBattles',
+                 'totalPlatoonBattles', 'totalSoloBattles', 'totalBattles', 'damageEfficiency',
+                 'fragsEfficiency', 'winsEfficiency', 'avgDamage', 'avgDamageAssisted',
+                 'avgPrestigePoints')
 
     def __init__(self, vehicleCD, rawDailyVehicleData, dayIndex):
         self.dayIndex = dayIndex
@@ -77,7 +80,14 @@ class DailyVehicleData(object):
 
 class DailyData(object):
     _itemsCache = descriptor(IItemsCache)
-    __slots__ = ('dayIndex', 'lastRatingPoints', 'lastDivision', 'maxDamage', 'inactivityPenalty', 'maxRatingPoints', 'lastActivityPoints', 'maxPrestigePoints', 'dataPerVehicle', 'date', 'maxDamageVehicle', 'maxPrestigePointsVehicle', 'isQualification', 'diffRatingPoints', 'totalDamage', 'maxDivisionIndex', 'totalPrestigePoints', 'totalSuperPlatoonBattles', 'totalPlatoonBattles', 'totalSoloBattles', 'totalBattles', 'totalWinsCount', 'totalLossCount', 'totalDrawCount', 'dayRatingPlayerDivision', 'dayPlayerRank', 'maxPlayerRank', 'winsEfficiency', 'avgDmgDealt', 'avgPrestige', 'topVehiclesCDs')
+    __slots__ = ('dayIndex', 'lastRatingPoints', 'lastDivision', 'maxDamage', 'inactivityPenalty',
+                 'maxRatingPoints', 'lastActivityPoints', 'maxPrestigePoints', 'dataPerVehicle',
+                 'date', 'maxDamageVehicle', 'maxPrestigePointsVehicle', 'isQualification',
+                 'diffRatingPoints', 'totalDamage', 'maxDivisionIndex', 'totalPrestigePoints',
+                 'totalSuperPlatoonBattles', 'totalPlatoonBattles', 'totalSoloBattles',
+                 'totalBattles', 'totalWinsCount', 'totalLossCount', 'totalDrawCount',
+                 'dayRatingPlayerDivision', 'dayPlayerRank', 'maxPlayerRank', 'winsEfficiency',
+                 'avgDmgDealt', 'avgPrestige', 'topVehiclesCDs')
 
     def __init__(self, dayIndex, rawDailyData, qualificationCompleteDate, previousDayRatingPoints):
         self.dayIndex = dayIndex
@@ -147,7 +157,10 @@ class DailyData(object):
         return
 
     def __getSortedTopDailyVehiclesCDs(self):
-        sortKey = lambda vehicleDayData: (-vehicleDayData.totalBattles, self._itemsCache.items.getItemByCD(vehicleDayData.vehicleCD).nationName, vehicleDayData.vehicleCD)
+        sortKey = lambda vehicleDayData: (
+         -vehicleDayData.totalBattles,
+         self._itemsCache.items.getItemByCD(vehicleDayData.vehicleCD).nationName,
+         vehicleDayData.vehicleCD)
         sortedDayVehiclesData = sorted(self.dataPerVehicle.values(), key=sortKey)
         return [ dayVehicleData.vehicleCD for dayVehicleData in sortedDayVehiclesData ]
 
@@ -177,11 +190,13 @@ class AggregatedDailyData(object):
             if dayData and dayData.maxRatingPoints > maxRating:
                 dayOfMaxRating, maxRating = dayData.dayIndex, dayData.maxRatingPoints
 
-        return (dayOfMaxRating, maxRating)
+        return (
+         dayOfMaxRating, maxRating)
 
 
 class Comp7LeaderBoard(LeaderBoard):
-    __CUSTOM_EXPECTED_FIELDS_META = ['elite_rank_position_threshold', 'elite_rank_points_threshold', 'master_rank_position_threshold']
+    __CUSTOM_EXPECTED_FIELDS_META = [
+     'elite_rank_position_threshold', 'elite_rank_points_threshold', 'master_rank_position_threshold']
     EXPECTED_FIELDS_META = LeaderBoard.EXPECTED_FIELDS_META + __CUSTOM_EXPECTED_FIELDS_META
 
     def __init__(self):
@@ -215,9 +230,15 @@ class Comp7PlayerProgression(IPlayerProgression):
     _DAYS_FIELD = 'days'
     _META_FIELD = 'meta'
     _EXPECTED_ROOT_FIELDS = (_DAYS_FIELD, _META_FIELD)
-    _EXPECTED_DAY_FIELDS = ('date', 'vehicles', 'max_rating_points_division', 'max_rating_points', 'last_rating_points', 'last_division', 'last_activity_points', 'inactivity_penalty', 'max_prestige_points', 'max_prestige_points_veh_cd', 'max_damage', 'max_damage_veh_cd')
+    _EXPECTED_DAY_FIELDS = ('date', 'vehicles', 'max_rating_points_division', 'max_rating_points',
+                            'last_rating_points', 'last_division', 'last_activity_points',
+                            'inactivity_penalty', 'max_prestige_points', 'max_prestige_points_veh_cd',
+                            'max_damage', 'max_damage_veh_cd')
     _EXPECTED_META_FIELDS = ('last_update', 'qualification_complete_date')
-    _EXPECTED_VEHICLE_FIELDS = ('frags', 'last_battle', 'first_battle', 'total_damage', 'total_assisted', 'prestige_points', 'battle_count_win', 'battle_count_draw', 'battle_count_loss', 'battle_length_total_seconds', 'total_received_damage', 'total_deaths')
+    _EXPECTED_VEHICLE_FIELDS = ('frags', 'last_battle', 'first_battle', 'total_damage',
+                                'total_assisted', 'prestige_points', 'battle_count_win',
+                                'battle_count_draw', 'battle_count_loss', 'battle_length_total_seconds',
+                                'total_received_damage', 'total_deaths')
 
     def __init__(self, rawData, eventID, leaderboardID):
         super(Comp7PlayerProgression, self).__init__(rawData, eventID, leaderboardID)
@@ -243,11 +264,10 @@ class Comp7PlayerProgression(IPlayerProgression):
             seasonDayDateTime = seasonStartBusinessDate + datetime.timedelta(days=i)
             rawDayData = rawDayDataByDate.get(seasonDayDateTime, {})
             if not rawDayData:
-                rawDayData = {'date': seasonDayDateTime.strftime('%Y-%m-%d'),
-                 'last_rating_points': lastKnownDayData.lastRatingPoints if lastKnownDayData else 0,
-                 'last_division': lastKnownDayData.lastDivision if lastKnownDayData else 0,
-                 'max_rating_points_division': lastKnownDayData.maxDivisionIndex if lastKnownDayData else 0,
-                 'max_rating_points': lastKnownDayData.maxRatingPoints if lastKnownDayData else 0}
+                rawDayData = {'date': seasonDayDateTime.strftime('%Y-%m-%d'), 'last_rating_points': lastKnownDayData.lastRatingPoints if lastKnownDayData else 0, 
+                   'last_division': lastKnownDayData.lastDivision if lastKnownDayData else 0, 
+                   'max_rating_points_division': lastKnownDayData.maxDivisionIndex if lastKnownDayData else 0, 
+                   'max_rating_points': lastKnownDayData.maxRatingPoints if lastKnownDayData else 0}
             previousDayRatingPoints = lastKnownDayData.lastRatingPoints if lastKnownDayData else 0
             dailyData = DailyData(i, rawDayData, qualDate, previousDayRatingPoints)
             self.__allDaysData.append(dailyData)
@@ -293,13 +313,16 @@ class Comp7PlayerProgression(IPlayerProgression):
         seasonStatsVehicles = seasonStats.getVehicles()
         if not seasonStatsVehicles:
             return []
-        sortKey = lambda vStat: (-vStat[1].battlesCount, self._itemsCache.items.getItemByCD(vStat[0]).nationName, vStat[0])
+        sortKey = lambda vStat: (
+         -vStat[1].battlesCount,
+         self._itemsCache.items.getItemByCD(vStat[0]).nationName,
+         vStat[0])
         sortedVehicles = sorted(seasonStatsVehicles.items(), key=sortKey)
         return [ self._itemsCache.items.getItemByCD(vehicleCD) for vehicleCD, _ in sortedVehicles[:3] ]
 
     @classmethod
     def _isDataStructureValid(cls, data):
-        return bool(data) and isDataSchemaValid(cls._EXPECTED_ROOT_FIELDS, data) and isDataSchemaValid(cls._EXPECTED_META_FIELDS, data[cls._META_FIELD]) and all((isDataSchemaValid(cls._EXPECTED_DAY_FIELDS, day) for day in data[cls._DAYS_FIELD])) and all((isDataSchemaValid(cls._EXPECTED_VEHICLE_FIELDS, vehicleData) for day in data[cls._DAYS_FIELD] for vehicleData in day['vehicles'].itervalues()))
+        return bool(data) and isDataSchemaValid(cls._EXPECTED_ROOT_FIELDS, data) and isDataSchemaValid(cls._EXPECTED_META_FIELDS, data[cls._META_FIELD]) and all(isDataSchemaValid(cls._EXPECTED_DAY_FIELDS, day) for day in data[cls._DAYS_FIELD]) and all(isDataSchemaValid(cls._EXPECTED_VEHICLE_FIELDS, vehicleData) for day in data[cls._DAYS_FIELD] for vehicleData in day['vehicles'].itervalues())
 
     def __getBusinessDate(self, dt, ranksConfig):
         isDtInPreviousBusinessDay = dt.hour < ranksConfig.businessDayStartHour
@@ -309,8 +332,13 @@ class Comp7PlayerProgression(IPlayerProgression):
     def __isPrimeHourBefore(self, hour):
         comp7ModeSettings = self._comp7Ctrl.getModeSettings()
         firstPrimeTimeStartHour = first(first(comp7ModeSettings.primeTimes.values(), {}).get('start'))
-        return True if firstPrimeTimeStartHour and firstPrimeTimeStartHour < hour else False
+        if firstPrimeTimeStartHour and firstPrimeTimeStartHour < hour:
+            return True
+        return False
 
 
 def _dateStrToDatetime(dateStr):
-    return datetime.datetime.strptime(dateStr, '%Y-%m-%d') if dateStr else None
+    if dateStr:
+        return datetime.datetime.strptime(dateStr, '%Y-%m-%d')
+    else:
+        return

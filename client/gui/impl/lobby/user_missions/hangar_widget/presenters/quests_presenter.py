@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hangar_widget/presenters/quests_presenter.py
 from frameworks.wulf import Array
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.user_missions.widget.quests_list_model import QuestsListModel
@@ -67,7 +65,13 @@ class QuestsPresenter(TooltipPositionerMixin, OverlapCtrlMixin, ViewComponent[Qu
         self.stopGlobalListening()
 
     def _getEvents(self):
-        return super(QuestsPresenter, self)._getEvents() + ((self.viewModel.onMissionClick, self.__onMissionClick), (self.viewModel.onMarkAsViewed, self.__onMarkAsViewed), (self._missionController.onChanged, self._onChanged))
+        return super(QuestsPresenter, self)._getEvents() + (
+         (
+          self.viewModel.onMissionClick, self.__onMissionClick),
+         (
+          self.viewModel.onMarkAsViewed, self.__onMarkAsViewed),
+         (
+          self._missionController.onChanged, self._onChanged))
 
     def _onLoading(self, *args, **kwargs):
         self.initOverlapCtrl()
@@ -85,7 +89,7 @@ class QuestsPresenter(TooltipPositionerMixin, OverlapCtrlMixin, ViewComponent[Qu
 
     def _updateCurrentMissionCountDown(self, missionItem):
         if missionItem.itemType == 'bonus':
-            with self.viewModel.transaction() as vm:
+            with self.viewModel.transaction() as (vm):
                 modelQuests = vm.getQuests()
                 item = findFirst(lambda i: i.getId() == missionItem.itemId, modelQuests)
                 if item:
@@ -94,7 +98,7 @@ class QuestsPresenter(TooltipPositionerMixin, OverlapCtrlMixin, ViewComponent[Qu
 
     def _rawUpdate(self):
         super(QuestsPresenter, self)._rawUpdate()
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             quests = self._missionController.getSortedQuests()
             modelQuests = vm.getQuests()
             modelQuests.clear()

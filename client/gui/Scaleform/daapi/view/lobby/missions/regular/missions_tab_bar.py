@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/missions/regular/missions_tab_bar.py
 import logging
 from frameworks.wulf import ViewFlags
 from gui.Scaleform.framework.entities.inject_component_adaptor import InjectComponentAdaptor
@@ -40,7 +38,7 @@ class MissionsTabBarView(ViewImpl):
     def setTabs(self, tabs):
         self.__tabsData = tabs
         i = 0
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             views = model.getViews()
             views.clear()
             for tabData in tabs:

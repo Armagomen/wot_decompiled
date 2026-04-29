@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/BattleResultsMeta.py
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 
 class BattleResultsMeta(AbstractWindowView):
@@ -41,13 +39,17 @@ class BattleResultsMeta(AbstractWindowView):
         self._printOverrideError('showVehicleStats')
 
     def as_setDataS(self, data):
-        return self.flashObject.as_setData(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setData(data)
 
     def as_setClanEmblemS(self, uid, iconTag):
-        return self.flashObject.as_setClanEmblem(uid, iconTag) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setClanEmblem(uid, iconTag)
 
     def as_setTeamInfoS(self, uid, iconTag, teamName):
-        return self.flashObject.as_setTeamInfo(uid, iconTag, teamName) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setTeamInfo(uid, iconTag, teamName)
 
     def as_setIsInBattleQueueS(self, value):
-        return self.flashObject.as_setIsInBattleQueue(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setIsInBattleQueue(value)

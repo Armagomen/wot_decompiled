@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/context/custom_mode.py
-import logging
-import typing
-import BigWorld
+import logging, typing, BigWorld
 from CurrentVehicle import g_currentVehicle
 from adisp import adisp_process, adisp_async
 from gui.Scaleform.daapi.view.lobby.customization.context.customization_mode import CustomizationMode
@@ -27,8 +23,8 @@ if typing.TYPE_CHECKING:
 _logger = logging.getLogger(__name__)
 
 class CustomMode(CustomizationMode):
-    __SELFINSTALL_ITEM_TYPES = {GUI_ITEM_TYPE.MODIFICATION: C11nId(areaId=Area.MISC, slotType=GUI_ITEM_TYPE.MODIFICATION, regionIdx=0),
-     GUI_ITEM_TYPE.STYLE: C11nId(areaId=Area.MISC, slotType=GUI_ITEM_TYPE.STYLE, regionIdx=0)}
+    __SELFINSTALL_ITEM_TYPES = {GUI_ITEM_TYPE.MODIFICATION: C11nId(areaId=Area.MISC, slotType=GUI_ITEM_TYPE.MODIFICATION, regionIdx=0), 
+       GUI_ITEM_TYPE.STYLE: C11nId(areaId=Area.MISC, slotType=GUI_ITEM_TYPE.STYLE, regionIdx=0)}
 
     def __init__(self, ctx):
         super(CustomMode, self).__init__(ctx)
@@ -274,7 +270,7 @@ class CustomMode(CustomizationMode):
         return super(CustomMode, self)._unselectSlot()
 
     def _installItem(self, intCD, slotId, season=None, component=None):
-        outfit = self._modifiedOutfits[self.season if season is None else season]
+        outfit = self._modifiedOutfits[(self.season if season is None else season)]
         if isItemsQuantityLimitReached(outfit, slotId.slotType) and not isSlotFilled(outfit, slotId):
             return False
         else:
@@ -285,7 +281,7 @@ class CustomMode(CustomizationMode):
             return True
 
     def _removeItem(self, slotId, season=None):
-        outfit = self._modifiedOutfits[self.season if season is None else season]
+        outfit = self._modifiedOutfits[(self.season if season is None else season)]
         multiSlot = outfit.getContainer(slotId.areaId).slotFor(slotId.slotType)
         multiSlot.remove(slotId.regionIdx)
         return True
@@ -371,10 +367,10 @@ class CustomMode(CustomizationMode):
         prevComponent = self.getComponentFromSlot(slotId)
         if prevItem is None:
             return newComponent
-        elif prevItem.itemTypeID == item.itemTypeID:
-            self.__storedComponent = None
-            return prevComponent
         else:
+            if prevItem.itemTypeID == item.itemTypeID:
+                self.__storedComponent = None
+                return prevComponent
             if self.__storedComponent is not None:
                 if self.__storedComponent.customType == newComponent.customType:
                     newComponent = self.__storedComponent
@@ -405,13 +401,13 @@ class CustomMode(CustomizationMode):
         if not canBeMirroredHorizontally:
             component.options &= ~Options.MIRRORED_HORIZONTALLY
             return
-        elif prevItem is not None and prevItem.canBeMirroredHorizontally:
-            if not item.canBeMirroredHorizontally:
-                component.options &= ~Options.MIRRORED_HORIZONTALLY
-            elif item.direction != prevItem.direction:
-                component.options ^= Options.MIRRORED_HORIZONTALLY
-            return
         else:
+            if prevItem is not None and prevItem.canBeMirroredHorizontally:
+                if not item.canBeMirroredHorizontally:
+                    component.options &= ~Options.MIRRORED_HORIZONTALLY
+                elif item.direction != prevItem.direction:
+                    component.options ^= Options.MIRRORED_HORIZONTALLY
+                return
             if isNeedToMirrorProjectionDecal(item, slot):
                 component.options |= Options.MIRRORED_HORIZONTALLY
             return

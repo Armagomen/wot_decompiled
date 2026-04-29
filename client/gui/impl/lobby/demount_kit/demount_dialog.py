@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/demount_kit/demount_dialog.py
 import typing
 from gui.goodies.demount_kit import getDemountKitForOptDevice
 from gui.goodies.goodie_items import DemountKit
@@ -102,8 +100,7 @@ class DemountOptionalDeviceDialog(DialogTemplateView):
 
     def _getAdditionalData(self):
         dk, _ = getDemountKitForOptDevice(self.__item)
-        return {'useDemountKit': self._isSelected(DEMOUNT_KIT),
-         'openSingleDemountWindow': dk and not dk.enabled}
+        return {'useDemountKit': self._isSelected(DEMOUNT_KIT), 'openSingleDemountWindow': dk and not dk.enabled}
 
     def _isGoldEnough(self, gold=None):
         _gold = gold or self._itemsCache.items.stats.gold

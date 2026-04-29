@@ -1,7 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/HeroTank.py
-import math
-import random
+from __future__ import absolute_import
+import math, random
 from typing import TYPE_CHECKING
 from ClientSelectableCameraVehicle import ClientSelectableCameraVehicle
 from CurrentVehicle import g_currentPreviewVehicle
@@ -75,6 +73,7 @@ class HeroTank(ClientSelectableCameraVehicle):
 
     def onMouseClick(self):
         from gui.shared.event_dispatcher import showVehicleHubOverview
+        super(HeroTank, self).onMouseClick()
         style = None
         styleId = self._heroTankCtrl.getCurrentTankStyleId()
         if styleId is not None:

@@ -1,10 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/states.py
-import logging
-import math
-import typing
-import BigWorld
-import adisp
+import logging, math, typing, BigWorld, adisp
 from BWUtil import AsyncReturn
 from ClientSelectableCameraObject import ClientSelectableCameraObject
 from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
@@ -55,6 +49,7 @@ def registerTransitions(machine):
 class CustomizationState(LobbyState, EventsHandler, SubhangarStateGroupConfigProvider):
     STATE_ID = 'customization'
     __CAMERA_NAME = 'Customization'
+    __ENVIRONMENT_NAME = 'Customization'
     __hangarSpace = dependency.descriptor(IHangarSpace)
     __c11n = dependency.descriptor(ICustomizationService)
 
@@ -74,19 +69,20 @@ class CustomizationState(LobbyState, EventsHandler, SubhangarStateGroupConfigPro
         loading.addNavigationTransition(main)
 
     def getSubhangarStateGroupConfig(self):
-        return SubhangarStateGroupConfig((SubhangarStateGroups.Customization,))
+        return SubhangarStateGroupConfig((
+         SubhangarStateGroups.Customization,), environmentName=self.__ENVIRONMENT_NAME)
 
     def makeTransition(self, transitionType, record):
         return _CustomizationTransition(transitionType, record)
 
     def serializeParams(self):
         ctx = self.__c11n.getCtx()
-        return {'season': ctx.season,
-         'modeId': ctx.modeId,
-         'tabId': ctx.mode.tabId,
-         'source': ctx.mode.source,
-         'itemCD': ctx.mode.selectedItem,
-         'callback': None}
+        return {'season': ctx.season, 
+           'modeId': ctx.modeId, 
+           'tabId': ctx.mode.tabId, 
+           'source': ctx.mode.source, 
+           'itemCD': ctx.mode.selectedItem, 
+           'callback': None}
 
     def _onEntered(self, event):
         super(CustomizationState, self)._onEntered(event)
@@ -102,10 +98,14 @@ class CustomizationState(LobbyState, EventsHandler, SubhangarStateGroupConfigPro
         return {'ctx': event.params}
 
     def _getListeners(self):
-        return ((events.CustomizationEvent.CLOSE, self.__showHangar, EVENT_BUS_SCOPE.LOBBY),)
+        return (
+         (
+          events.CustomizationEvent.CLOSE, self.__showHangar, EVENT_BUS_SCOPE.LOBBY),)
 
     def _getEvents(self):
-        return ((self.__hangarSpace.onSpaceChanged, self.__onSpaceChanged),)
+        return (
+         (
+          self.__hangarSpace.onSpaceChanged, self.__onSpaceChanged),)
 
     @staticmethod
     def __showHangar(event):
@@ -164,7 +164,13 @@ class _LoadingState(LobbyState, EventsHandler):
         Waiting.hide('loadContent')
 
     def _getEvents(self):
-        return ((g_currentVehicle.onChanged, self.__onVehicleChanged), (g_currentPreviewVehicle.onChanged, self.__onVehicleChanged), (self.__hangarSpace.onSpaceChanged, self.__onSpaceChanged))
+        return (
+         (
+          g_currentVehicle.onChanged, self.__onVehicleChanged),
+         (
+          g_currentPreviewVehicle.onChanged, self.__onVehicleChanged),
+         (
+          self.__hangarSpace.onSpaceChanged, self.__onSpaceChanged))
 
     def __onVehicleChanged(self):
         self.__goToMain()
@@ -184,7 +190,8 @@ class _MainState(SFViewLobbyState, EventsHandler):
     __CAMERA_NAME = 'Customization'
     __GUN_PITCH_ANGLE = 0.0
     __TURRET_YAW_ANGLE = 0.0
-    __RESTRICTED_EVENTS = [events.PrbInvitesEvent.ACCEPT,
+    __RESTRICTED_EVENTS = [
+     events.PrbInvitesEvent.ACCEPT,
      events.PrbActionEvent.SELECT,
      events.PrbActionEvent.LEAVE,
      events.TrainingEvent.RETURN_TO_TRAINING_ROOM]
@@ -205,13 +212,18 @@ class _MainState(SFViewLobbyState, EventsHandler):
 
     def mustConfirmExit(self, event):
         ctx = self.__c11n.getCtx()
-        return False if self.proceedWithoutSave or not ctx or ctx.applyingItems else ctx.isOutfitsModified()
+        if self.proceedWithoutSave or not ctx or ctx.applyingItems:
+            return False
+        return ctx.isOutfitsModified()
 
     def getNavigationDescription(self):
-        return None
+        return
 
     def getBackNavigationDescription(self, params):
-        return None if self.getMachine().getStateByCls(_CustomizationMidState).isEntered() else backport.text(R.strings.pages.titles.customization())
+        if self.getMachine().getStateByCls(_CustomizationMidState).isEntered():
+            return None
+        else:
+            return backport.text(R.strings.pages.titles.customization())
 
     def _onEntered(self, event):
         super(_MainState, self)._onEntered(event)
@@ -224,7 +236,8 @@ class _MainState(SFViewLobbyState, EventsHandler):
         self.__hangarSpace.space.getVehicleEntity().onSelect(True)
         self.__setupTankTransformation()
         self.__c11n.onVisibilityChanged(True)
-        self.__c11n.createCtx(**{k:event.params.get(k) for k in ('season', 'modeId', 'tabId', 'itemCD')})
+        self.__c11n.createCtx(**{k:event.params.get(k) for k in ('season', 'modeId',
+                                                                 'tabId', 'itemCD')})
         self._subscribe()
         self.__lobbyContext.addPlatoonCreationConfirmator(self.__confirmatorWrapper)
         self.__lobbyContext.addHeaderNavigationConfirmator(self.__confirmatorWrapper)
@@ -263,9 +276,10 @@ class _MainState(SFViewLobbyState, EventsHandler):
         pitch = math.radians(cfg['v_start_angles'][1])
         roll = math.radians(cfg['v_start_angles'][2])
         shadowYOffset = cfg['shadow_forward_y_offset'] if isForwardPipeline else cfg['shadow_deferred_y_offset']
-        g_eventBus.handleEvent(events.HangarCustomizationEvent(events.HangarCustomizationEvent.CHANGE_VEHICLE_MODEL_TRANSFORM, ctx={'targetPos': targetPos,
-         'rotateYPR': (yaw, pitch, roll),
-         'shadowYOffset': shadowYOffset}), scope=EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.handleEvent(events.HangarCustomizationEvent(events.HangarCustomizationEvent.CHANGE_VEHICLE_MODEL_TRANSFORM, ctx={'targetPos': targetPos, 
+           'rotateYPR': (
+                       yaw, pitch, roll), 
+           'shadowYOffset': shadowYOffset}), scope=EVENT_BUS_SCOPE.LOBBY)
 
     @wg_async
     def __handleRestrictedEvent(self, event=None):
@@ -327,7 +341,7 @@ class _ConfirmLeaveState(LobbyState):
         return
 
     def getNavigationDescription(self):
-        return None
+        return
 
     @wg_async
     def waitForResult(self):
@@ -415,7 +429,9 @@ class _CustomizationMidState(LobbyState):
         target = machine.getStateByID(event.targetStateID)
         if target is machine.getEmptyStateInSubtreeOf(self):
             return False
-        return True if target is machine.findOwningSubtree(self) else machine.findOwningSubtree(target) is not machine.findOwningSubtree(self)
+        if target is machine.findOwningSubtree(self):
+            return True
+        return machine.findOwningSubtree(target) is not machine.findOwningSubtree(self)
 
 
 @_CustomizationMidState.parentOf
@@ -477,8 +493,8 @@ class ProgressiveItemsState(GuiImplViewLobbyState):
     @dependency.replace_none_kwargs(appLoader=IAppLoader)
     def _getViewLoadCtx(self, event, appLoader=None):
         c11nView = appLoader.getApp().containerManager.getViewByKey(_MainState.VIEW_KEY)
-        return {'c11nView': c11nView,
-         'itemIntCD': event.params.get('itemIntCD')}
+        return {'c11nView': c11nView, 
+           'itemIntCD': event.params.get('itemIntCD')}
 
     def getNavigationDescription(self):
         return LobbyStateDescription(title=backport.text(R.strings.pages.titles.customization.progressive_items()))

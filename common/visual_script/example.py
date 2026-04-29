@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/visual_script/example.py
 import BigWorld
 from block import Block, Meta, InitParam, buildStrKeysValue, makeResEditorData
 from slot_types import SLOT_TYPE, arrayOf
@@ -12,7 +10,7 @@ class Example(Meta):
 
     @classmethod
     def blockCategory(cls):
-        pass
+        return 'Example'
 
     @classmethod
     def mode(cls):
@@ -27,14 +25,14 @@ class HelloFromPython(Block, Example):
         self._outSlot = self._makeDataOutputSlot('result', SLOT_TYPE.STR, self._execute)
 
     def _execute(self):
-        res = ' '.join(('Hello', self._inSlot.getValue(), 'from python vse...'))
+        res = (' ').join(('Hello', self._inSlot.getValue(), 'from python vse...'))
         self._outSlot.setValue(res)
 
 
 class HelloFromPythonOverride(HelloFromPython):
 
     def _execute(self):
-        res = ' '.join(('(Override) Hello', self._inSlot.getValue(), 'from python vse...'))
+        res = (' ').join(('(Override) Hello', self._inSlot.getValue(), 'from python vse...'))
         self._outSlot.setValue(res)
 
 
@@ -47,7 +45,7 @@ class StringSelectorExample(Block, Example):
         self._outSlot = self._makeDataOutputSlot('result', SLOT_TYPE.STR, self._execute)
 
     def _execute(self):
-        res = ' '.join(('String', self._inSlot.getValue(), 'was selected'))
+        res = (' ').join(('String', self._inSlot.getValue(), 'was selected'))
         self._outSlot.setValue(res)
 
 
@@ -114,7 +112,7 @@ class WeightSequence(Block, Example):
     def __init__(self, *args, **kwargs):
         super(WeightSequence, self).__init__(*args, **kwargs)
         self._in = self._makeEventInputSlot('in', WeightSequence._execute)
-        n = self._getInitParams()
+        n, = self._getInitParams()
         self._weightSlots = [ self._makeDataInputSlot('w' + str(i), SLOT_TYPE.FLOAT) for i in xrange(n) ]
         self._outSlots = [ self._makeEventOutputSlot('out' + str(i)) for i in xrange(n) ]
 
@@ -129,27 +127,32 @@ class WeightSequence(Block, Example):
 
 
 class SelectProjectID(Block, Example):
-    convert = {'WoT': 0,
-     'WoP': 1,
-     'WoS': 2}
+    convert = {'WoT': 0, 
+       'WoP': 1, 
+       'WoS': 2}
 
     def __init__(self, *args, **kwargs):
         super(SelectProjectID, self).__init__(*args, **kwargs)
         self.outSlot = self._makeDataOutputSlot('get', SLOT_TYPE.INT, None)
-        self._name = self._getInitParams()
+        self._name, = self._getInitParams()
         self.outSlot.setValue(SelectProjectID.convert[self._name])
         return
 
     @classmethod
     def initParams(cls):
-        return [InitParam('Names', SLOT_TYPE.STR, buildStrKeysValue(*cls.convert.keys()), EDITOR_TYPE.STR_KEY_SELECTOR)]
+        return [
+         InitParam('Names', SLOT_TYPE.STR, buildStrKeysValue(*cls.convert.keys()), EDITOR_TYPE.STR_KEY_SELECTOR)]
 
     def captionText(self):
-        return ' : '.join((self.__class__.__name__, self._name))
+        return (' : ').join((self.__class__.__name__, self._name))
 
 
 class AnimalComplexKeySelect(Block, Example):
-    animals = [('Carnivorous', ('Tiger', 'Lion', 'Cat')), ('Herbivorous', ('Moose', 'Deer', 'Cow'))]
+    animals = [
+     (
+      'Carnivorous', ('Tiger', 'Lion', 'Cat')),
+     (
+      'Herbivorous', ('Moose', 'Deer', 'Cow'))]
 
     def __init__(self, *args, **kwargs):
         super(AnimalComplexKeySelect, self).__init__(*args, **kwargs)
@@ -165,7 +168,9 @@ class AnimalComplexKeySelect(Block, Example):
 
     @classmethod
     def initParams(cls):
-        return [InitParam('Type, Name', SLOT_TYPE.STR, 'Herbivorous.Deer', EDITOR_TYPE.COMPLEX_KEY_SELECTOR, AnimalComplexKeySelect.animals), InitParam('Count', SLOT_TYPE.INT, 0)]
+        return [
+         InitParam('Type, Name', SLOT_TYPE.STR, 'Herbivorous.Deer', EDITOR_TYPE.COMPLEX_KEY_SELECTOR, AnimalComplexKeySelect.animals),
+         InitParam('Count', SLOT_TYPE.INT, 0)]
 
 
 class TestTunableEvent(TunableEventBlock, Example):
@@ -241,7 +246,7 @@ class ClampedBlock(Block, Example):
 
     def __init__(self, *args, **kwargs):
         super(ClampedBlock, self).__init__(*args, **kwargs)
-        value = self._getInitParams()
+        value, = self._getInitParams()
         self._int = self._makeDataOutputSlot('res', SLOT_TYPE.INT, None)
         self._int.setValue(value)
         return
@@ -256,7 +261,7 @@ class TestStruct(VScriptStruct):
     value = VScriptStructField('year', SLOT_TYPE.INT)
 
     def __repr__(self):
-        return 'TestStruct(name = {}, year = {})'.format(self.name, self.value)
+        return ('TestStruct(name = {}, year = {})').format(self.name, self.value)
 
 
 class TestType(VScriptType):
@@ -267,7 +272,7 @@ class TestType(VScriptType):
 
     @classmethod
     def vs_connectionColor(cls):
-        pass
+        return 7206136
 
 
 class TestEnum(VScriptEnum):
@@ -343,7 +348,7 @@ class PrintTestStruct(Block, Example):
         return
 
     def _exec(self):
-        self._writeLog('PrintTestStruct: {}'.format(self._s.getValue()))
+        self._writeLog(('PrintTestStruct: {}').format(self._s.getValue()))
         newStuct = TestStruct()
         newStuct.name = 'Metallica'
         newStuct.value = 1981

@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/server_events/daily_quests.py
-import logging
-import BigWorld
-import AccountCommands
-import wg_async
+import logging, BigWorld, AccountCommands, wg_async
 from helpers import dependency, time_utils
 from skeletons.gui.server_events import IEventsCache
 from gui.shared.utils.requesters import REQ_CRITERIA
@@ -21,7 +16,9 @@ _logger = logging.getLogger(__name__)
 class DQRerollEnabledValidator(SyncValidator):
 
     def _validate(self):
-        return makeError('reroll_disabled') if not isRerollEnabled() else makeSuccess()
+        if not isRerollEnabled():
+            return makeError('reroll_disabled')
+        return makeSuccess()
 
 
 class DQRerollCooldown(SyncValidator):
@@ -29,7 +26,9 @@ class DQRerollCooldown(SyncValidator):
 
     def _validate(self):
         naxtRerollAvailableTimestamp = self.eventsCache.dailyQuests.getNextAvailableRerollTimestamp()
-        return makeError('reroll_in_cooldown') if naxtRerollAvailableTimestamp > time_utils.getCurrentLocalServerTimestamp() else makeSuccess()
+        if naxtRerollAvailableTimestamp > time_utils.getCurrentLocalServerTimestamp():
+            return makeError('reroll_in_cooldown')
+        return makeSuccess()
 
 
 class DQNotCompletedValidator(SyncValidator):
@@ -39,7 +38,9 @@ class DQNotCompletedValidator(SyncValidator):
         self.__quest = quest
 
     def _validate(self):
-        return makeError('quest_is_already_completed') if self.__quest.isCompleted() else makeSuccess()
+        if self.__quest.isCompleted():
+            return makeError('quest_is_already_completed')
+        return makeSuccess()
 
 
 class DQRerollConfirmator(AwaitConfirmator):
@@ -76,12 +77,15 @@ class DQRerollConfirmator(AwaitConfirmator):
             warningString = backport.text(R.strings.dialogs.dailyQuests.dialogWarningConfirmReroll.warning())
             builder = WarningDialogBuilder()
             builder.setMessagesAndButtons(dialogParams)
-            builder.setMessageArgs(fmtArgs=[FmtArgs(warningString, 'warning', R.styles.NeutralTextBigStyle()), FmtArgs(timeLimitMsg, 'timeLimitMsg', R.styles.NeutralTextBigStyle())])
+            builder.setMessageArgs(fmtArgs=[
+             FmtArgs(warningString, 'warning', R.styles.NeutralTextBigStyle()),
+             FmtArgs(timeLimitMsg, 'timeLimitMsg', R.styles.NeutralTextBigStyle())])
         else:
             dialogParams = R.strings.dialogs.dailyQuests.dialogInfoConfirmReroll
             builder = ResSimpleDialogBuilder()
             builder.setMessagesAndButtons(dialogParams)
-            builder.setMessageArgs(fmtArgs=[FmtArgs(timeLimitMsg, 'timeLimitMsg', R.styles.NeutralTextBigStyle())])
+            builder.setMessageArgs(fmtArgs=[
+             FmtArgs(timeLimitMsg, 'timeLimitMsg', R.styles.NeutralTextBigStyle())])
         self._dialog = builder.build()
         self._callback = callback
         result = yield wg_async.wg_await(dialogs.showSimple(self._dialog))
@@ -106,7 +110,8 @@ class DailyQuestReroll(Processor):
     eventsCache = dependency.descriptor(IEventsCache)
 
     def __init__(self, quest):
-        super(DailyQuestReroll, self).__init__(plugins=(DQRerollEnabledValidator(),
+        super(DailyQuestReroll, self).__init__(plugins=(
+         DQRerollEnabledValidator(),
          DQRerollCooldown(),
          DQNotCompletedValidator(quest),
          DQRerollConfirmator()))
@@ -147,4 +152,6 @@ class DailyQuestReroll(Processor):
         self._stopListeningForResponse()
 
     def __resID2ErrStr(self, resID):
-        return 'reroll_in_cooldown' if resID == AccountCommands.RES_COOLDOWN else ''
+        if resID == AccountCommands.RES_COOLDOWN:
+            return 'reroll_in_cooldown'
+        return ''

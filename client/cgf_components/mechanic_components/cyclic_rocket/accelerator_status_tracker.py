@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/cgf_components/mechanic_components/cyclic_rocket/accelerator_status_tracker.py
 import CGF
 from StagedJetBoostersController import StagedJetBoostersController
 from constants import AcceleratorStatus
@@ -12,7 +10,7 @@ class AcceleratorStatusTrackerComponent(object):
     editorTitle = 'Accelerator Status Tracker'
     domain = CGF.DomainOption.DomainClient
     target = ComponentProperty(CGFMetaTypes.LINK, editorName='Target GO', value=CGF.GameObject)
-    type = ComponentProperty(CGFMetaTypes.INT, editorName='Type', value=AcceleratorStatus.NONE, annotations={'comboBox': {e.name:str(e.value) for e in AcceleratorStatus.__members__.values() if e != AcceleratorStatus.BOTH}})
+    type = ComponentProperty(CGFMetaTypes.INT, editorName='Type', value=AcceleratorStatus.NONE, annotations={'comboBox': {e.name:str(e.value) for e in AcceleratorStatus.__members__.values() if e != AcceleratorStatus.BOTH if e != AcceleratorStatus.BOTH}})
 
     def __init__(self):
         self.status = AcceleratorStatus.NONE

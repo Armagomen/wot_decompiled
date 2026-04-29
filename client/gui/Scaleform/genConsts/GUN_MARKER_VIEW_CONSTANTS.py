@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/genConsts/GUN_MARKER_VIEW_CONSTANTS.py
 
 
 class GUN_MARKER_VIEW_CONSTANTS(object):
@@ -19,6 +17,7 @@ class GUN_MARKER_VIEW_CONSTANTS(object):
     CHARGE_GUN_MARKER_LINKAGE = 'ChargeGunMarkerUI'
     TWIN_GUN_MARKER_DEBUG_LINKAGE = 'TwinGunMarkerDebugUI'
     PENETRATION_FX_LINKAGE = 'PenetrationFxUI'
+    LOW_CHARGE_SHOT_GUN_MARKER_LINKAGE = 'LowChargeShotGunMarkerUI'
     ARCADE_GUN_MARKER_NAME = 'arcadeGunMarker'
     SNIPER_GUN_MARKER_NAME = 'sniperGunMarker'
     SPG_GUN_MARKER_NAME = 'spgGunMarker'
@@ -45,16 +44,12 @@ class GUN_MARKER_VIEW_CONSTANTS(object):
     DEBUG_DUAL_GUN_SNIPER_MARKER_NAME = 'sniperDebugDualGunMarker'
     DEBUG_TWIN_GUN_ARCADE_MARKER_NAME = 'arcadeDebugTwinGunMarker'
     DEBUG_TWIN_GUN_SNIPER_MARKER_NAME = 'sniperDebugTwinGunMarker'
-    GUN_TAG_RELOADING_TYPES = [1,
-     4,
-     7,
-     10,
-     13]
-    GUN_TAG_SHOT_RESULT_TYPES = [0,
-     3,
-     6,
-     9,
-     12]
+    LOW_CHARGE_SHOT_GUN_ARCADE_MARKER_NAME = 'arcadeLowChargeShotGunMarker'
+    LOW_CHARGE_SHOT_GUN_SNIPER_MARKER_NAME = 'sniperLowChargeShotGunMarker'
+    DEBUG_LOW_CHARGE_SHOT_GUN_ARCADE_MARKER_NAME = 'arcadeDebugLowChargeShotGunMarker'
+    DEBUG_LOW_CHARGE_SHOT_GUN_SNIPER_MARKER_NAME = 'sniperDebugLowChargeShotGunMarker'
+    GUN_TAG_RELOADING_TYPES = [1, 4, 7, 10, 13]
+    GUN_TAG_SHOT_RESULT_TYPES = [0, 3, 6, 9, 12]
     DISPERSION_CIRCLE_RELOADING_TYPES = [0, 1, 2]
     AIM_DAMAGE_STAGE_0 = 'stage0'
     AIM_DAMAGE_STAGE_1 = 'stage1'

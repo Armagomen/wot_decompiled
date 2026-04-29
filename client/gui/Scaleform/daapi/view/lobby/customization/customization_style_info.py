@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/customization_style_info.py
 from collections import namedtuple
 from CurrentVehicle import g_currentVehicle
 from gui import makeHtmlString
@@ -20,7 +18,8 @@ from items.components.c11n_constants import SeasonType
 from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.shared import IItemsCache
 from vehicle_outfit.outfit import Area
-StyleInfoVO = namedtuple('StyleInfoVO', ('styleName', 'styleInfo', 'styleInfoBig', 'suitableBlock', 'styleParams'))
+StyleInfoVO = namedtuple('StyleInfoVO', ('styleName', 'styleInfo', 'styleInfoBig',
+                                         'suitableBlock', 'styleParams'))
 ButtonVO = namedtuple('ButtonVO', ('enabled', 'label', 'disabledTooltip', 'visible'))
 ParamVO = namedtuple('ParamVO', ('iconSrc', 'paramText'))
 STYLE_INFO_BLUR_DELAY = 0.2
@@ -135,10 +134,10 @@ class CustomizationStyleInfo(CustomizationStyleInfoMeta, CallbackDelayer):
         styleParams = self.__makeParamsVO(style)
         styleName = style.userName
         styleInfoText = style.longDescriptionSpecial
-        styleInfo = text_styles.mainBig(styleInfoText % {'insertion_open': _INSERTION_OPEN_TAG,
-         'insertion_close': _INSERTION_CLOSE_TAG})
-        styleInfoBig = text_styles.mainBig(styleInfoText % {'insertion_open': _INSERTION_OPEN_TAG_BIG,
-         'insertion_close': _INSERTION_CLOSE_TAG})
+        styleInfo = text_styles.mainBig(styleInfoText % {'insertion_open': _INSERTION_OPEN_TAG, 
+           'insertion_close': _INSERTION_CLOSE_TAG})
+        styleInfoBig = text_styles.mainBig(styleInfoText % {'insertion_open': _INSERTION_OPEN_TAG_BIG, 
+           'insertion_close': _INSERTION_CLOSE_TAG})
         suitableText = getSuitableText(style, g_currentVehicle.item)
         if suitableText:
             suitableBlock = text_styles.mainBig(backport.text(R.strings.vehicle_customization.styleInfo.suitable()))
@@ -241,7 +240,8 @@ class CustomizationStyleInfo(CustomizationStyleInfoMeta, CallbackDelayer):
     def onWidthUpdated(self, x, width, height):
         if not self.visible:
             return
-        blurRect = (round(x),
+        blurRect = (
+         round(x),
          0,
          round(x + width),
          round(height))

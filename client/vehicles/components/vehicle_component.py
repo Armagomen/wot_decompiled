@@ -1,9 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicles/components/vehicle_component.py
 from __future__ import absolute_import
-import logging
-import typing
-import BigWorld
+import logging, typing, BigWorld
 from cgf_client_common.entity_dyn_components import ReplicableDynamicScriptComponent
 from events_containers.common.containers import ContainersListener
 from events_containers.components.life_cycle import createComponentLifeCycleEvents, ILifeCycleComponent
@@ -118,12 +114,11 @@ class VehicleDynamicComponent(ReplicableDynamicScriptComponent, ILifeCycleCompon
         typeDescriptor = self.entity.typeDescriptor
         if typeDescriptor is None or typeDescriptor.type.compactDescr != self.vehTypeCD:
             return False
-        else:
-            player = BigWorld.player()
-            if player is None or player.isDisableRespawnMode:
-                return False
-            appearance = self.entity.appearance
-            return appearance is not None and appearance.isConstructed and not appearance.isDestroyed
+        player = BigWorld.player()
+        if player is None or player.isDisableRespawnMode:
+            return False
+        appearance = self.entity.appearance
+        return appearance is not None and appearance.isConstructed and not appearance.isDestroyed
 
     @ifPlayerVehicle
     def __onAvatarReady(self, player=None):

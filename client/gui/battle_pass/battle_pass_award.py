@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_pass/battle_pass_award.py
 import typing
 from battle_pass_common import BATTLE_PASS_SELECT_BONUS_NAME
 from gui.server_events.bonuses import getNonQuestBonuses, mergeBonuses, splitBonuses

@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/lobby/mode_selector/items/fun_random_mode_selector_item.py
 from __future__ import absolute_import
-import typing
-import math_utils
+import typing, math_utils
 from fun_random.gui.feature.fun_constants import FunSubModesState
 from fun_random.gui.feature.util.fun_mixins import FunAssetPacksMixin, FunProgressionWatcher, FunSubModesWatcher
 from fun_random.gui.feature.util.fun_wrappers import hasActiveProgression, hasAnySubMode, hasMultipleSubModes, avoidSubModesStates
@@ -27,16 +24,16 @@ if typing.TYPE_CHECKING:
     from fun_random.gui.feature.models.common import FunSubModesStatus
     from fun_random.gui.impl.lobby.mode_selector.items.fun_random_mode_selector_helpers import IModeSelectorHelper
     from gui.impl.gen.view_models.views.lobby.mode_selector.mode_selector_fun_random_widget_model import ModeSelectorFunRandomWidgetModel
-_PROGRESSION_STATUS_MAP = {FunRandomProgressionStatus.ACTIVE_RESETTABLE: SimpleFunProgressionStatus.ACTIVE,
- FunRandomProgressionStatus.ACTIVE_FINAL: SimpleFunProgressionStatus.ACTIVE,
- FunRandomProgressionStatus.ACTIVE_INFINITE_RESETTABLE: SimpleFunProgressionStatus.ACTIVE,
- FunRandomProgressionStatus.ACTIVE_INFINITE_FINAL: SimpleFunProgressionStatus.ACTIVE,
- FunRandomProgressionStatus.COMPLETED_RESETTABLE: SimpleFunProgressionStatus.RESETTABLE,
- FunRandomProgressionStatus.COMPLETED_FINAL: SimpleFunProgressionStatus.DISABLED,
- FunRandomProgressionStatus.DISABLED: SimpleFunProgressionStatus.DISABLED}
+_PROGRESSION_STATUS_MAP = {FunRandomProgressionStatus.ACTIVE_RESETTABLE: SimpleFunProgressionStatus.ACTIVE, 
+   FunRandomProgressionStatus.ACTIVE_FINAL: SimpleFunProgressionStatus.ACTIVE, 
+   FunRandomProgressionStatus.ACTIVE_INFINITE_RESETTABLE: SimpleFunProgressionStatus.ACTIVE, 
+   FunRandomProgressionStatus.ACTIVE_INFINITE_FINAL: SimpleFunProgressionStatus.ACTIVE, 
+   FunRandomProgressionStatus.COMPLETED_RESETTABLE: SimpleFunProgressionStatus.RESETTABLE, 
+   FunRandomProgressionStatus.COMPLETED_FINAL: SimpleFunProgressionStatus.DISABLED, 
+   FunRandomProgressionStatus.DISABLED: SimpleFunProgressionStatus.DISABLED}
 
 class FunRandomSelectorItem(ModeSelectorLegacyItem, FunAssetPacksMixin, FunSubModesWatcher, FunProgressionWatcher):
-    __slots__ = ('__subModesHelper',)
+    __slots__ = ('__subModesHelper', )
     _CARD_VISUAL_TYPE = ModeSelectorCardTypes.FUN_RANDOM
     _VIEW_MODEL = ModeSelectorFunRandomModel
 
@@ -54,7 +51,7 @@ class FunRandomSelectorItem(ModeSelectorLegacyItem, FunAssetPacksMixin, FunSubMo
         return False
 
     def setDisabledProgression(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.widget.setStatus(SimpleFunProgressionStatus.DISABLED)
             self.__invalidateRewards(model.getRewardList())
 
@@ -84,17 +81,21 @@ class FunRandomSelectorItem(ModeSelectorLegacyItem, FunAssetPacksMixin, FunSubMo
         super(FunRandomSelectorItem, self)._onDisposing()
 
     def __getStatusText(self, status):
-        return backport.text(R.strings.fun_random.modeSelector.notStarted()) if status.state in FunSubModesState.BEFORE_STATES else ''
+        if status.state in FunSubModesState.BEFORE_STATES:
+            return backport.text(R.strings.fun_random.modeSelector.notStarted())
+        return ''
 
     def __getTimeLeftText(self, status):
-        return getFormattedTimeLeft(time_utils.getTimeDeltaFromNowInLocal(status.endTime)) if status.state in FunSubModesState.INNER_STATES else ''
+        if status.state in FunSubModesState.INNER_STATES:
+            return getFormattedTimeLeft(time_utils.getTimeDeltaFromNowInLocal(status.endTime))
+        return ''
 
     def __addListeners(self):
         self.startSubSettingsListening(self.__invalidateAll)
         self.startSubStatusListening(self.__invalidateAll, tickMethod=self.__invalidateSubModesTimer)
         self.startProgressionListening(self.__invalidateProgression, tickMethod=self.__invalidateProgressionTimer)
-        g_clientUpdateManager.addCallbacks({'inventory.1': self.__invalidateNewLabel,
-         'stats.unlocks': self.__invalidateNewLabel})
+        g_clientUpdateManager.addCallbacks({'inventory.1': self.__invalidateNewLabel, 
+           'stats.unlocks': self.__invalidateNewLabel})
 
     def __removeListeners(self):
         g_clientUpdateManager.removeObjectCallbacks(self)
@@ -105,7 +106,7 @@ class FunRandomSelectorItem(ModeSelectorLegacyItem, FunAssetPacksMixin, FunSubMo
     @avoidSubModesStates(states=FunSubModesState.HIDDEN_SELECTOR_STATES, abortAction='onCardChange')
     def __invalidateAll(self, status, *_):
         self.__reloadModeHelper()
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self.__fillCardModel(model, status)
             if status.state in FunSubModesState.INNER_STATES:
                 self.__fillProgression(model.widget)
@@ -114,7 +115,7 @@ class FunRandomSelectorItem(ModeSelectorLegacyItem, FunAssetPacksMixin, FunSubMo
 
     @hasActiveProgression(abortAction='setDisabledProgression')
     def __invalidateProgression(self, *_):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self.__invalidateRewards(model.getRewardList())
             self.__fillProgression(model.widget)
 
@@ -166,7 +167,7 @@ class FunRandomSelectorItem(ModeSelectorLegacyItem, FunAssetPacksMixin, FunSubMo
     def __fillProgressionReward(self):
         progression = self.getActiveProgression()
         rewardID = ModeSelectorRewardID.OTHER
-        if progression.isInUnlimitedProgression and all((isinstance(b, LootBoxTokensBonus) for b in progression.unlimitedProgression.bonuses)):
+        if progression.isInUnlimitedProgression and all(isinstance(b, LootBoxTokensBonus) for b in progression.unlimitedProgression.bonuses):
             rewardID = ModeSelectorRewardID.RANDOM
         self._addReward(rewardID, tooltipID=ModeSelectorTooltipsConstants.FUN_RANDOM_REWARDS)
 

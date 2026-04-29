@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/FLStealthRadarComponent.py
 import BigWorld
 from PlayerEvents import g_playerEvents
 from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE

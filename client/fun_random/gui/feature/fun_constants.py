@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/feature/fun_constants.py
 from __future__ import absolute_import
 from enum import unique, Enum
 from gui.periodic_battles.models import PeriodType
@@ -31,16 +29,10 @@ class FunSubModesState(object):
     SINGLE_FROZEN = 7
     NOT_AVAILABLE = 8
     NOT_AVAILABLE_END = 9
-    BEFORE_STATES = {BEFORE_SEASON, BETWEEN_SEASONS}
-    INNER_STATES = {AVAILABLE,
-     FROZEN,
-     SINGLE_FROZEN,
-     NOT_AVAILABLE,
-     NOT_AVAILABLE_END}
-    HIDDEN_ENTRY_STATES = {UNDEFINED,
-     AFTER_SEASON,
-     SINGLE_FROZEN,
-     FROZEN}
+    BEFORE_STATES = {
+     BEFORE_SEASON, BETWEEN_SEASONS}
+    INNER_STATES = {AVAILABLE, FROZEN, SINGLE_FROZEN, NOT_AVAILABLE, NOT_AVAILABLE_END}
+    HIDDEN_ENTRY_STATES = {UNDEFINED, AFTER_SEASON, SINGLE_FROZEN, FROZEN}
     HIDDEN_SELECTOR_STATES = {UNDEFINED, AFTER_SEASON}
 
 
@@ -75,3 +67,9 @@ class FunNotificationSubModeState(Enum):
 class FunSubModeBroadcast(Enum):
     START_NOTIFICATION = 'startNotification'
     STOP_NOTIFICATION = 'stopNotification'
+
+
+@unique
+class FunCustomShellsSource(Enum):
+    REGULAR = 'regular'
+    CUSTOM = 'custom'

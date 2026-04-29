@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/achievements/achievements/advanced_achievements_view.py
 from frameworks.wulf.view.submodel_presenter import SubModelPresenter
 from gui.impl.gen.view_models.views.lobby.achievements.views.achievements.advanced_achievements_view_model import AdvancedAchievementsViewModel
 from gui.impl.gen.view_models.views.lobby.achievements.views.achievements.upcoming_model import UpcomingModel
@@ -16,16 +14,19 @@ from skeletons.gui.game_control import IAchievementsController
 from skeletons.gui.impl import IGuiLoader
 
 class AdvancedAchievementsView(SubModelPresenter):
-    __slots__ = ('__userId', '__achievementList', '__isAnimationInProgress', '__isWindowOverlapped', '__uiLogger')
+    __slots__ = ('__userId', '__achievementList', '__isAnimationInProgress', '__isWindowOverlapped',
+                 '__uiLogger')
     __itemsCache = dependency.descriptor(IItemsCache)
     __advAchmntCtrl = dependency.descriptor(IAchievementsController)
     __guiLoader = dependency.descriptor(IGuiLoader)
-    __RESTRICTED_LAYERS = {WindowLayer.FULLSCREEN_WINDOW,
+    __RESTRICTED_LAYERS = {
+     WindowLayer.FULLSCREEN_WINDOW,
      WindowLayer.OVERLAY,
      WindowLayer.TOP_WINDOW,
      WindowLayer.WINDOW,
      WindowLayer.TOP_SUB_VIEW}
-    __ACTIVE_WINDOW_STATUSES = (WindowStatus.LOADING, WindowStatus.LOADED)
+    __ACTIVE_WINDOW_STATUSES = (
+     WindowStatus.LOADING, WindowStatus.LOADED)
 
     def __init__(self, achievementsModel, parentView, userId):
         self.__userId = userId
@@ -55,14 +56,23 @@ class AdvancedAchievementsView(SubModelPresenter):
         self.__uiLogger.onViewOpen(AdvancedAchievementViewKey.PLAYER_COLLECTION, AdvancedAchievementViewKey.HANGAR, isOtherPlayer=self.__isOtherPlayer)
 
     def _getEvents(self):
-        return ((self.viewModel.onOpenDetails, self.__onOpenDetails),
-         (self.viewModel.onCupClick, self.__onCupClick),
-         (self.viewModel.onOpenTrophies, self.__onOpenTrophies),
-         (self.viewModel.onAnimationInProgress, self.__onAnimationInProgress),
-         (self.viewModel.onAllAnimationEnd, self.__onAllAnimationEnd),
-         (self.viewModel.onAchievementHover, self.__onAchievementHover),
-         (self.__advAchmntCtrl.onNewAchievementsEarned, self.__onNewAchievementsEarned),
-         (self.__guiLoader.windowsManager.onWindowStatusChanged, self.__onWindowStatusChanged))
+        return (
+         (
+          self.viewModel.onOpenDetails, self.__onOpenDetails),
+         (
+          self.viewModel.onCupClick, self.__onCupClick),
+         (
+          self.viewModel.onOpenTrophies, self.__onOpenTrophies),
+         (
+          self.viewModel.onAnimationInProgress, self.__onAnimationInProgress),
+         (
+          self.viewModel.onAllAnimationEnd, self.__onAllAnimationEnd),
+         (
+          self.viewModel.onAchievementHover, self.__onAchievementHover),
+         (
+          self.__advAchmntCtrl.onNewAchievementsEarned, self.__onNewAchievementsEarned),
+         (
+          self.__guiLoader.windowsManager.onWindowStatusChanged, self.__onWindowStatusChanged))
 
     def finalize(self):
         self.__achievementList = None
@@ -93,7 +103,7 @@ class AdvancedAchievementsView(SubModelPresenter):
         subcategoryData = self.__advAchmntCtrl.getPrevCategoryData()
         prevCategoryData = []
         self.__updateUpcomingAchievements(dossierDescr)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             if self.__isOtherPlayer:
                 model.setPrevAchievementsScore(currentAchievementScore)
                 model.setPrevCategoryProgress(achievementProgress.getAsPercent())
@@ -115,7 +125,8 @@ class AdvancedAchievementsView(SubModelPresenter):
                 prevScore = subcategory.getScore().current if self.__isOtherPlayer else subcategoryData[idx][0]
                 prevValue = subcategory.getProgress().getAsPercent() if self.__isOtherPlayer else subcategoryData[idx][1]
                 subCategories.addViewModel(fillSubcategoryAdvancedAchievementModel(subcategory, bubbles, prevScore, prevValue))
-                prevCategoryData.append((subcategory.getScore().current, int(subcategory.getProgress().getAsPercent())))
+                prevCategoryData.append((
+                 subcategory.getScore().current, int(subcategory.getProgress().getAsPercent())))
 
             subCategories.invalidate()
         if not self.__isOtherPlayer:
@@ -142,7 +153,7 @@ class AdvancedAchievementsView(SubModelPresenter):
         else:
             self.__achievementList = getNearest()
         if self.__achievementList:
-            with self.viewModel.transaction() as model:
+            with self.viewModel.transaction() as (model):
                 nearestAchievements = model.getUpcomingAchievements()
                 nearestAchievements.clear()
                 for achievement in self.__achievementList:
@@ -152,7 +163,7 @@ class AdvancedAchievementsView(SubModelPresenter):
 
     def __fillUpcomingAchievement(self, achievement):
         upcomingModel = UpcomingModel()
-        with upcomingModel.transaction() as model:
+        with upcomingModel.transaction() as (model):
             fillAdvancedAchievementModel(achievement, model, self.__isOtherPlayer)
             if achievement.getType() == AchievementType.REGULAR:
                 conditionID = achievement.getConditionID()

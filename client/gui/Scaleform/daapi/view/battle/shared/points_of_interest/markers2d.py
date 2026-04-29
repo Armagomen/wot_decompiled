@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/points_of_interest/markers2d.py
-import logging
-import typing
-import Math
+from __future__ import absolute_import
+import logging, typing, Math
 from gui.Scaleform.daapi.view.battle.shared.markers2d import plugins
 from gui.Scaleform.daapi.view.battle.shared.points_of_interest.constants import POI_TYPE_UI_MAPPING, POI_STATUS_UI_MAPPING
 from gui.Scaleform.daapi.view.battle.shared.points_of_interest.poi_helpers import getPoiCooldownProgress
@@ -123,4 +120,7 @@ class PointsOfInterestPlugin(plugins.MarkerPlugin, PointsOfInterestListener):
 
     def __isMarkerActive(self, poiID):
         poiVehicleState = self._poiVehicleState
-        return False if poiVehicleState is not None and poiVehicleState.id == poiID else True
+        if poiVehicleState is not None and poiVehicleState.id == poiID:
+            return False
+        else:
+            return True

@@ -1,19 +1,13 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/hit_direction_ctrl/components.py
-import weakref
-import typing
+import weakref, typing
 from account_helpers.settings_core.settings_constants import DAMAGE_INDICATOR, GRAPHICS
 if typing.TYPE_CHECKING:
     from gui.battle_control.controllers.hit_direction_ctrl.base import IHitIndicator
     from gui.battle_control.controllers.hit_direction_ctrl.pulls import BaseHitPull
-_VISUAL_DAMAGE_INDICATOR_SETTINGS = (DAMAGE_INDICATOR.TYPE,
- DAMAGE_INDICATOR.VEHICLE_INFO,
- DAMAGE_INDICATOR.DAMAGE_VALUE,
- DAMAGE_INDICATOR.ANIMATION,
- GRAPHICS.COLOR_BLIND,
- DAMAGE_INDICATOR.DYNAMIC_INDICATOR,
- DAMAGE_INDICATOR.PRESET_CRITS,
- DAMAGE_INDICATOR.PRESET_ALLIES)
+_VISUAL_DAMAGE_INDICATOR_SETTINGS = (
+ DAMAGE_INDICATOR.TYPE, DAMAGE_INDICATOR.VEHICLE_INFO,
+ DAMAGE_INDICATOR.DAMAGE_VALUE, DAMAGE_INDICATOR.ANIMATION,
+ GRAPHICS.COLOR_BLIND, DAMAGE_INDICATOR.DYNAMIC_INDICATOR,
+ DAMAGE_INDICATOR.PRESET_CRITS, DAMAGE_INDICATOR.PRESET_ALLIES)
 
 class BaseHitComponent(object):
 

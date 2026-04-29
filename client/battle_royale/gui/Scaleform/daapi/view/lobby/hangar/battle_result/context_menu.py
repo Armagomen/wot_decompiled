@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/lobby/hangar/battle_result/context_menu.py
 from stats_params import BATTLE_ROYALE_STATS_ENABLED
 from helpers import dependency
 from gui.shared import utils, events, g_eventBus
@@ -31,14 +29,14 @@ class BRBattleResultContextMenu(AbstractContextMenuHandler):
     __lobbyContext = dependency.descriptor(ILobbyContext)
 
     def __init__(self, cmProxy, ctx=None):
-        handlers = {VEHICLE.USER_INFO: 'showUserInfo',
-         VEHICLE.ADD_TO_FRIEND: 'addToFriend',
-         VEHICLE.CREATE_PRIVATE_CHANNEL: 'createPrivetChannel',
-         VEHICLE.COPY_TO_CLIP_BOARD: 'copyToClipBoard',
-         VEHICLE.CREATE_BR_SQUAD: 'createBRSquad',
-         VEHICLE.ADD_TO_IGNORED: 'addToIgnored',
-         VEHICLE.REMOVE_FROM_FRIENDS: 'removeFromFriends',
-         VEHICLE.REMOVE_FROM_IGNORED: 'removeFromIgnored'}
+        handlers = {VEHICLE.USER_INFO: 'showUserInfo', 
+           VEHICLE.ADD_TO_FRIEND: 'addToFriend', 
+           VEHICLE.CREATE_PRIVATE_CHANNEL: 'createPrivetChannel', 
+           VEHICLE.COPY_TO_CLIP_BOARD: 'copyToClipBoard', 
+           VEHICLE.CREATE_BR_SQUAD: 'createBRSquad', 
+           VEHICLE.ADD_TO_IGNORED: 'addToIgnored', 
+           VEHICLE.REMOVE_FROM_FRIENDS: 'removeFromFriends', 
+           VEHICLE.REMOVE_FROM_IGNORED: 'removeFromIgnored'}
         super(BRBattleResultContextMenu, self).__init__(cmProxy, ctx, handlers)
         self.__playerName = ctx.userName
         self.__playerDBId = ctx.databaseID
@@ -82,7 +80,8 @@ class BRBattleResultContextMenu(AbstractContextMenuHandler):
         utils.copyToClipboard(self.__playerName)
 
     def createBRSquad(self):
-        action = PrbAction(PREBATTLE_ACTION_NAME.BATTLE_ROYALE_SQUAD, accountsToInvite=(self.__playerDBId,))
+        action = PrbAction(PREBATTLE_ACTION_NAME.BATTLE_ROYALE_SQUAD, accountsToInvite=(
+         self.__playerDBId,))
         event = events.PrbActionEvent(action, events.PrbActionEvent.SELECT)
         g_eventBus.handleEvent(event, EVENT_BUS_SCOPE.LOBBY)
 
@@ -97,11 +96,11 @@ class BRBattleResultContextMenu(AbstractContextMenuHandler):
 
     @storage_getter('users')
     def usersStorage(self):
-        return None
+        return
 
     @proto_getter(PROTO_TYPE.MIGRATION)
     def proto(self):
-        return None
+        return
 
     def __isEnabledInRoaming(self, dbID):
         roaming = self.__lobbyContext.getServerSettings().roaming

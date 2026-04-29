@@ -1,23 +1,11 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/items/passports.py
 
 
 def invalidFemalePassportProducer(nationID, isPremium=False):
-    return (-1, (nationID,
-      isPremium,
-      True,
-      0,
-      0,
-      0))
+    return (-1, (nationID, isPremium, True, 0, 0, 0))
 
 
 def invalidMalePassportProducer(nationID, isPremium=False):
-    return (-1, (nationID,
-      isPremium,
-      False,
-      0,
-      0,
-      0))
+    return (-1, (nationID, isPremium, False, 0, 0, 0))
 
 
 def passport_generator(nationID, isPremium=False, method=invalidMalePassportProducer, *filters):
@@ -51,7 +39,9 @@ def acceptOn(key, value):
 def distinctFrom(old=()):
 
     def wrapper(seqId, group, passport):
-        return False if old and passport in old else True
+        if old and passport in old:
+            return False
+        return True
 
     return wrapper
 
@@ -59,7 +49,9 @@ def distinctFrom(old=()):
 def uniformIds():
 
     def wrapper(seqId, group, passport):
-        return True if len(set(passport[3:])) == 1 else False
+        if len(set(passport[3:])) == 1:
+            return True
+        return False
 
     return wrapper
 

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/user_missions/hangar_widget/event_banners/comp7_wci_entry_point.py
 from comp7.gui.Scaleform.genConsts.COMP7_HANGAR_ALIASES import COMP7_HANGAR_ALIASES
 from comp7.gui.comp7_constants import FUNCTIONAL_FLAG
 from comp7.gui.impl.lobby.user_missions.hangar_widget.event_banners.comp7_tournament_event_banner import Comp7TournamentEventBanner
@@ -20,4 +18,7 @@ class Comp7WCIEntryPoint(Comp7TournamentEventBanner):
 
     @classmethod
     def __isRandomPrbActive(cls):
-        return bool(cls.prbEntity.getModeFlags() & FUNCTIONAL_FLAG.RANDOM) if cls.prbEntity is not None else False
+        if cls.prbEntity is not None:
+            return bool(cls.prbEntity.getModeFlags() & FUNCTIONAL_FLAG.RANDOM)
+        else:
+            return False

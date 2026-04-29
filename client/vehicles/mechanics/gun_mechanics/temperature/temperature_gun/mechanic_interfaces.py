@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicles/mechanics/gun_mechanics/temperature/temperature_gun/mechanic_interfaces.py
 from __future__ import absolute_import
 import typing
 from vehicles.mechanics.gun_mechanics.temperature.common import ITemperatureComponentParams, ITemperatureMechanicState

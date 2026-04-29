@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/seniority_awards/notifications/available_tokens_notification.py
 from __future__ import absolute_import
 from gui.Scaleform.daapi.view.lobby.store.browser.shop_helpers import getPlayerSeniorityAwardsUrl
 from gui.impl.gen.view_models.views.lobby.seniority_awards.notifications.available_tokens_model import AvailableTokensModel
@@ -23,11 +21,15 @@ class AvailableTokensNotification(NotificationBase):
 
     def _getEvents(self):
         events = super(AvailableTokensNotification, self)._getEvents()
-        return events + ((self.viewModel.onClick, self.__onClick), (self.viewModel.onClose, self.__onClose))
+        return events + (
+         (
+          self.viewModel.onClick, self.__onClick),
+         (
+          self.viewModel.onClose, self.__onClose))
 
     def _update(self):
         data = self._getPayload()
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             tx.setIsPopUp(self._isPopUp)
             tx.setCount(data.get('count', 0))
             tx.setTimeLeft(data.get('timeLeft', 0))

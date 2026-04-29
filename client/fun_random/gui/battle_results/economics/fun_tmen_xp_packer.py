@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/battle_results/economics/fun_tmen_xp_packer.py
 from __future__ import absolute_import
 from functools import partial
 from itertools import chain
@@ -21,6 +19,8 @@ def _getTmenXpValue(records, _, __, tID, xpList):
         if invID == tID:
             return xp
 
+    return 0
+
 
 TOTAL_TMEN_XP = CurrencyRecord(recordNames=(), subtractRecords=(), baseAccountValueExtractor=getTotalTMenXPToShow, premiumAccountValueExtractor=getTotalTMenXPToShow, detailsValuesExtractors=(), capsToBeChecked=None, label=_STR_PATH.title.total, paramName='totalTmenXP', modifiers=(), showZeroValue=True, currencyType=CurrenciesConstants.TMEN_XP)
 
@@ -39,7 +39,9 @@ class FunTmenXpPacker(CurrencyPacker):
 
     @classmethod
     def _getExtractors(cls, currencyType, battleResults):
-        return ((lambda battleResults: battleResults,), zip)
+        return (
+         (
+          lambda battleResults: battleResults,), zip)
 
     @classmethod
     def _getEarnedConfig(cls, battleResults):
@@ -58,4 +60,6 @@ class FunTmenXpPacker(CurrencyPacker):
                     continue
                 records.append(CurrencyRecord(recordNames=(), subtractRecords=(), baseAccountValueExtractor=partial(_getTmenXpValue, tID=tman.invID, xpList=tmenXps), premiumAccountValueExtractor=partial(_getTmenXpValue, tID=tman.invID, xpList=tmenXps), detailsValuesExtractors=(), capsToBeChecked=None, paramName='tmenXP', label=R.strings.ingame_gui.tankmen.dyn(tman.role), modifiers=(), showZeroValue=False, currencyType=CurrenciesConstants.TMEN_XP))
 
-            return CurrencyGroup(label=None, records=list(chain(cls._EARNED.records, records))) if records else cls._EARNED
+            if records:
+                return CurrencyGroup(label=None, records=list(chain(cls._EARNED.records, records)))
+            return cls._EARNED

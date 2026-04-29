@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/genConsts/BATTLE_VIEW_ALIASES.py
 
 
 class BATTLE_VIEW_ALIASES(object):
@@ -89,6 +87,8 @@ class BATTLE_VIEW_ALIASES(object):
     COMP7_TANK_CAROUSEL = 'comp7BattleTankCarousel'
     COMP7_TANK_CAROUSEL_FILTER_POPOVER = 'comp7TankCarouselFilterPopover'
     COMP7_RECON_FLIGHT = 'comp7ReconFlight'
+    COMP7_BANS_WIDGET = 'comp7BansWidget'
+    COMP7_BANS_PROGRESS_WIDGET = 'comp7BansProgressWidget'
     WIDGETS_PANEL = 'widgetPanel'
     ROCKET_ACCELERATOR_INDICATOR = 'rocketAcceleratorIndicator'
     RECHARGEABLE_NITRO_WIDGET = 'rechargeableNitroWidget'
@@ -104,7 +104,10 @@ class BATTLE_VIEW_ALIASES(object):
     STATIONARY_RELOAD_WIDGET = 'stationaryReloadWidget'
     TEMPERATURE_GUN_OVERHEAT_WIDGET = 'temperatureGunOverheatWidget'
     TEMPERATURE_GUN_HEAT_ZONES_WIDGET = 'temperatureGunHeatZonesWidget'
+    LOW_CHARGE_SHOT_WIDGET = 'lowChargeShotMechanicWidget'
     STAGED_JET_BOOSTERS_WIDGET = 'stagedJetBoostersWidget'
+    PROPELLANT_GUN_WIDGET = 'propellantGunWidget'
+    WHEELED_DASH_WIDGET = 'wheeledDashWidget'
     DECORATIVE_CROSSHAIR_PANEL = 'decorativeCrosshairPanel'
     CONCENTRATION_DECORATIVE_CROSSHAIR = 'concentrationDecorativeCrosshair'
     ACCURACY_DECORATIVE_CROSSHAIR = 'accuracyDecorativeCrosshair'
@@ -114,3 +117,6 @@ class BATTLE_VIEW_ALIASES(object):
     TEMPERATURE_GUN_OVERHEAT_DECORATIVE_CROSSHAIR = 'temperatureGunOverheatDecorativeCrosshair'
     TARGET_DESIGNATOR_UNSPOTTED_MARKER = 'targetDesignatorUnspottedMarker'
     VEHICLE_MECHANICS_PANELS = [WIDGETS_PANEL, DECORATIVE_CROSSHAIR_PANEL]
+    BR_SHAMROCK_CONTROLLER = 'BRShamrockController'
+    BR_SHAMROCK_SIDEBAR = 'ShamrockSideBar'
+    BR_SHAMROCK_COLLECT = 'ShamrockCollect'

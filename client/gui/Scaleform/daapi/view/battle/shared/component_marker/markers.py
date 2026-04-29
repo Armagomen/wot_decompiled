@@ -1,6 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/component_marker/markers.py
+from __future__ import absolute_import
 import logging
+from future.utils import viewvalues
 from chat_commands_consts import INVALID_TARGET_ID
 from gui.Scaleform.daapi.view.battle.shared.component_marker.markers_components import World2DMarkerComponent, MinimapMarkerComponent, AnimationSequenceMarkerComponent, DirectionIndicatorMarkerComponent, ComponentBitMask, TerrainMarkerComponent, FullscreenMapComponent
 from ids_generators import SequenceIDGenerator
@@ -8,16 +8,16 @@ _logger = logging.getLogger(__name__)
 
 class MarkerBase(object):
     _idGen = SequenceIDGenerator()
-    COMPONENT_CLASS = {ComponentBitMask.MARKER_2D: World2DMarkerComponent,
-     ComponentBitMask.MINIMAP_MARKER: MinimapMarkerComponent,
-     ComponentBitMask.DIRECTION_INDICATOR: DirectionIndicatorMarkerComponent,
-     ComponentBitMask.ANIM_SEQUENCE_MARKER: AnimationSequenceMarkerComponent,
-     ComponentBitMask.TERRAIN_MARKER: TerrainMarkerComponent,
-     ComponentBitMask.FULLSCREEN_MAP_MARKER: FullscreenMapComponent}
+    COMPONENT_CLASS = {ComponentBitMask.MARKER_2D: World2DMarkerComponent, 
+       ComponentBitMask.MINIMAP_MARKER: MinimapMarkerComponent, 
+       ComponentBitMask.DIRECTION_INDICATOR: DirectionIndicatorMarkerComponent, 
+       ComponentBitMask.ANIM_SEQUENCE_MARKER: AnimationSequenceMarkerComponent, 
+       ComponentBitMask.TERRAIN_MARKER: TerrainMarkerComponent, 
+       ComponentBitMask.FULLSCREEN_MAP_MARKER: FullscreenMapComponent}
 
     def __init__(self, config, entity=None, targetID=INVALID_TARGET_ID):
         super(MarkerBase, self).__init__()
-        self.__markerID = self._idGen.next()
+        self.__markerID = self._idGen.nextSequenceID
         self._isVisible = config.get('visible', True)
         self._blockChangVisibility = not self._isVisible
         self._components = {}
@@ -58,10 +58,10 @@ class MarkerBase(object):
         return self.mask & ComponentBitMask.FULLSCREEN_MAP_MARKER
 
     def getMarkerPosition(self):
-        for component in self._components.itervalues():
+        for component in viewvalues(self._components):
             return component.position
 
-        return None
+        return
 
     def isEmpty(self):
         return not self._components
@@ -76,16 +76,16 @@ class MarkerBase(object):
         return
 
     def getComponentByType(self, flag):
-        return [ component for component in self._components.itervalues() if component.maskType == flag ]
+        return [ component for component in viewvalues(self._components) if component.maskType == flag ]
 
     def update(self, *args, **kwargs):
         mask = kwargs.get('componentMaskType', ComponentBitMask.NONE)
-        for component in self._components.itervalues():
+        for component in viewvalues(self._components):
             if not mask & component.maskType:
                 component.update(*args, **kwargs)
 
     def clear(self):
-        for component in self._components.itervalues():
+        for component in viewvalues(self._components):
             component.clear()
 
         self._components = {}
@@ -94,23 +94,23 @@ class MarkerBase(object):
         if self.blockChangVisibility:
             return
         self._isVisible = isVisible
-        for component in self._components.itervalues():
+        for component in viewvalues(self._components):
             component.setVisible(self.isVisible)
 
     def attachGUI(self, guiProvider, **kwargs):
-        for component in self._components.itervalues():
+        for component in viewvalues(self._components):
             component.attachGUI(guiProvider, **kwargs)
 
     def detachGUI(self):
-        for component in self._components.itervalues():
+        for component in viewvalues(self._components):
             component.detachGUI()
 
     def setMatrix(self, matrix):
-        for component in self._components.itervalues():
+        for component in viewvalues(self._components):
             component.setMarkerMatrix(matrix)
 
     def setEntity(self, entity):
-        for component in self._components.itervalues():
+        for component in viewvalues(self._components):
             component.setMarkerEntity(entity)
 
     def __initComponents(self, config, markerBitMask, entity, targetID):

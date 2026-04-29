@@ -1,5 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_modifiers/scripts/common/battle_modifiers_ext/remapping/remapping_conditions.py
+from __future__ import absolute_import
+from future.utils import viewitems
 from typing import Dict, FrozenSet, TYPE_CHECKING
 from battle_modifiers_ext.constants_ext import GunCaliber, ShellCaliber, ShellKind, RemappingConditionNames
 from nations import NAMES
@@ -29,9 +29,11 @@ class _BaseCondition(IRemappingCondition):
         currentParam = self._getParam(ctx)
         if not self._remapping:
             return currentParam
-        for sources, target in self._remapping.iteritems():
+        for sources, target in viewitems(self._remapping):
             if currentParam in sources:
                 return target
+
+        return ''
 
     @classmethod
     def getName(cls):
@@ -63,7 +65,9 @@ class _OutfitCondition(_BaseCondition):
 
     def _getParam(self, ctx):
         outfit = ctx.modificationCtx['outfit']
-        return outfit if outfit != 'default' else ''
+        if outfit != 'default':
+            return outfit
+        return ''
 
 
 class _GunNameCondition(_BaseCondition):
@@ -96,7 +100,9 @@ class _ShellShotsCountCondition(_BaseCondition):
 
     def _getParam(self, ctx):
         shotsCount = ctx.modificationCtx['shotsCount']
-        return str(shotsCount) if shotsCount > 0 else ''
+        if shotsCount > 0:
+            return str(shotsCount)
+        return ''
 
 
 class _ShellCaliberCondition(_BaseCondition):
@@ -107,14 +113,14 @@ class _ShellCaliberCondition(_BaseCondition):
         return ShellCaliber.get(ctx.modificationCtx['gun'].shots[0].shell.effectsCaliber)
 
 
-_CONDITIONS_FACTORY = {RemappingConditionNames.REMAPPING_NAME: _RemappingNameCondition,
- RemappingConditionNames.NATION: _NationCondition,
- RemappingConditionNames.OUTFIT: _OutfitCondition,
- RemappingConditionNames.GUN_CALIBER: _GunCaliberCondition,
- RemappingConditionNames.GUN_NAME: _GunNameCondition,
- RemappingConditionNames.SHELL_KIND: _ShellKindCondition,
- RemappingConditionNames.SHELL_SHOTS_COUNT: _ShellShotsCountCondition,
- RemappingConditionNames.SHELL_CALIBER: _ShellCaliberCondition}
+_CONDITIONS_FACTORY = {RemappingConditionNames.REMAPPING_NAME: _RemappingNameCondition, 
+   RemappingConditionNames.NATION: _NationCondition, 
+   RemappingConditionNames.OUTFIT: _OutfitCondition, 
+   RemappingConditionNames.GUN_CALIBER: _GunCaliberCondition, 
+   RemappingConditionNames.GUN_NAME: _GunNameCondition, 
+   RemappingConditionNames.SHELL_KIND: _ShellKindCondition, 
+   RemappingConditionNames.SHELL_SHOTS_COUNT: _ShellShotsCountCondition, 
+   RemappingConditionNames.SHELL_CALIBER: _ShellCaliberCondition}
 
 def getConditionClass(conditionName):
     return _CONDITIONS_FACTORY.get(conditionName)

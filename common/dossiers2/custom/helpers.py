@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/dossiers2/custom/helpers.py
-import time
-import typing
+import time, typing
 from constants import INVOICE_EMITTER
 from achievements20.cache import getCache as getAchievementsCache
 from debug_utils import LOG_SENTRY
@@ -18,10 +15,11 @@ def getTankExpertRequirements(vehTypeFrags, nationID=ALL_NATIONS_INDEX):
     if nationID == ALL_NATIONS_INDEX:
         nationIDs = cache['nationsWithVehiclesInTree']
     else:
-        nationIDs = [nationID]
+        nationIDs = [
+         nationID]
     vehiclesInTreesByNation = cache['vehiclesInTreesByNation']
     for nationIdx in nationIDs:
-        res[''.join(['tankExpert', str(nationIdx)])] = vehiclesInTreesByNation[nationIdx] - killedVehTypes
+        res[('').join(['tankExpert', str(nationIdx)])] = vehiclesInTreesByNation[nationIdx] - killedVehTypes
 
     return res
 
@@ -33,9 +31,10 @@ def getMechanicEngineerRequirements(defaultUnlocks, unlocks, nationID=ALL_NATION
     if nationID == ALL_NATIONS_INDEX:
         nationIDs = cache['nationsWithVehiclesInTree']
     else:
-        nationIDs = [nationID]
+        nationIDs = [
+         nationID]
     for nationIdx in nationIDs:
-        res[''.join(['mechanicEngineer', str(nationIdx)])] = vehiclesInTreesByNation[nationIdx] - defaultUnlocks - unlocks
+        res[('').join(['mechanicEngineer', str(nationIdx)])] = vehiclesInTreesByNation[nationIdx] - defaultUnlocks - unlocks
 
     return res
 
@@ -47,7 +46,7 @@ def getVehicleCollectorRequirements(inventoryVehicles, nationID=ALL_NATIONS_INDE
     collectorVehiclesByNations = cache['collectorVehiclesByNations']
     nationIDs = collectorVehiclesByNations.keys() if nationID == ALL_NATIONS_INDEX else [nationID]
     for nationIdx in nationIDs:
-        achievementName = ''.join(['collectorVehicle', str(nationIdx)])
+        achievementName = ('').join(['collectorVehicle', str(nationIdx)])
         collectorVehiclesByNation = collectorVehiclesByNations.get(nationIdx, set())
         if collectorVehiclesByNation:
             res[achievementName] = collectorVehiclesByNation - inventoryVehicles
@@ -73,8 +72,10 @@ def getCollector20Requirements(inventoryVehicles):
 
 
 def getRecordMaxValue(block, record):
-    recordPacking = RECORDS[RECORD_INDICES[block, record]]
-    return 1 if recordPacking[2] == 'b' or recordPacking[2] == 'bs' else recordPacking[4]
+    recordPacking = RECORDS[RECORD_INDICES[(block, record)]]
+    if recordPacking[2] == 'b' or recordPacking[2] == 'bs':
+        return 1
+    return recordPacking[4]
 
 
 def updateTankExpert(dossierDescr, vehTypeFrags, nationID):
@@ -125,7 +126,7 @@ def updateVehicleBoughtListAchievements(dossierDescr, vehDescr):
         return
     level = vehDescr.level
     if 5 <= level <= 11:
-        medalName = 'steamGetTankLevel{0}Medal'.format(level)
+        medalName = ('steamGetTankLevel{0}Medal').format(level)
         if not dossierDescr['steamAchievements'][medalName]:
             dossierDescr['steamAchievements'][medalName] = True
 
@@ -135,7 +136,7 @@ def updateRareAchievements(dossierDescr, achievements):
     for achievement in achievements:
         if achievement > 0:
             block.append(achievement)
-        if achievement < 0:
+        elif achievement < 0:
             try:
                 block.remove(abs(achievement))
             except:
@@ -147,32 +148,31 @@ def processAchievements20(dossierDescr, receivedItemCompDescrs, item, invoicePro
     achievements = achievementsCache.getAchievementsByItem(item, receivedItemCompDescrs)
     if not achievements:
         return
-    else:
-        achievementBlockBackups = {}
-        for achievement in achievements:
-            achievementType = achievement.type
-            if achievementType not in achievementBlockBackups:
-                achievementBlockBackups[achievementType] = dict(dossierDescr[achievementType])
-            achievement.updateValueInDossier(dossierDescr)
+    achievementBlockBackups = {}
+    for achievement in achievements:
+        achievementType = achievement.type
+        if achievementType not in achievementBlockBackups:
+            achievementBlockBackups[achievementType] = dict(dossierDescr[achievementType])
+        achievement.updateValueInDossier(dossierDescr)
 
-        dossierChanges = dossierDescr.getChanges()
-        rewards = {}
-        for achievementType, blockBackup in achievementBlockBackups.iteritems():
-            for achievementID in dossierChanges.get(achievementType, ()):
-                achievement = achievementsCache.getAchievementByID(achievementType, achievementID)
-                currentValue, currentStage, currentTimestamp = achievement.getCurrentDataFromDossier(dossierDescr)
-                if blockBackup.get(achievementID, (0, 0))[1] != currentStage:
-                    achievementRewards = achievement.getStageBonusByValue(currentStage)
-                    if achievementRewards:
-                        for key, value in achievementRewards.iteritems():
-                            if key in BONUS_MERGERS:
-                                BONUS_MERGERS[key](rewards, key, value, False, 1, None)
+    dossierChanges = dossierDescr.getChanges()
+    rewards = {}
+    for achievementType, blockBackup in achievementBlockBackups.iteritems():
+        for achievementID in dossierChanges.get(achievementType, ()):
+            achievement = achievementsCache.getAchievementByID(achievementType, achievementID)
+            currentValue, currentStage, currentTimestamp = achievement.getCurrentDataFromDossier(dossierDescr)
+            if blockBackup.get(achievementID, (0, 0))[1] != currentStage:
+                achievementRewards = achievement.getStageBonusByValue(currentStage)
+                if achievementRewards:
+                    for key, value in achievementRewards.iteritems():
+                        if key in BONUS_MERGERS:
+                            BONUS_MERGERS[key](rewards, key, value, False, 1, None)
 
-        if rewards:
-            status, error, invoice = invoiceProcessor.processData(rewards, 0, 0, emitterID=INVOICE_EMITTER.DEVELOPMENT, needRunInvoiceUpdaters=False)
-            if status < 0:
-                LOG_SENTRY('Failed to add achievement rewards. Error - {}, invoice - {}, dossier changes - {}'.format(error, invoice, dossierChanges))
-        return
+    if rewards:
+        status, error, invoice = invoiceProcessor.processData(rewards, 0, 0, emitterID=INVOICE_EMITTER.DEVELOPMENT, needRunInvoiceUpdaters=False)
+        if status < 0:
+            LOG_SENTRY(('Failed to add achievement rewards. Error - {}, invoice - {}, dossier changes - {}').format(error, invoice, dossierChanges))
+    return
 
 
 def convertDossierPathToDBId(path):

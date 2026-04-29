@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/mode_selector/items/base_item.py
 from abc import ABCMeta, abstractmethod
-import typing
-import Event
+import typing, Event
 from frameworks.wulf import WindowLayer
 from gui import GUI_SETTINGS
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -31,7 +28,9 @@ def getFormattedTimeLeft(seconds):
 
 
 def formatSeasonLeftTime(currentSeason):
-    return getFormattedTimeLeft(max(0, currentSeason.getEndDate() - time_utils.getServerUTCTime())) if currentSeason else ''
+    if currentSeason:
+        return getFormattedTimeLeft(max(0, currentSeason.getEndDate() - time_utils.getServerUTCTime()))
+    return ''
 
 
 def getInfoPageKey(modeName):
@@ -115,7 +114,8 @@ class ModeSelectorItem(object):
 
     def handleInfoPageClick(self):
         url = self._urlProcessing(GUI_SETTINGS.lookup(getInfoPageKey(self.modeName)))
-        showBrowserOverlayView(url, VIEW_ALIAS.WEB_VIEW_TRANSPARENT, hiddenLayers=(WindowLayer.MARKER, WindowLayer.VIEW, WindowLayer.WINDOW))
+        showBrowserOverlayView(url, VIEW_ALIAS.WEB_VIEW_TRANSPARENT, hiddenLayers=(
+         WindowLayer.MARKER, WindowLayer.VIEW, WindowLayer.WINDOW))
 
     def _onInitializing(self):
         self.viewModel.setIsDisabled(self._getIsDisabled())
@@ -151,7 +151,7 @@ class ModeSelectorItem(object):
 
 
 class ModeSelectorNormalCardItem(ModeSelectorItem):
-    __slots__ = ('onCardChange',)
+    __slots__ = ('onCardChange', )
     _VIEW_MODEL = ModeSelectorNormalCardModel
 
     def __init__(self):
@@ -164,7 +164,7 @@ class ModeSelectorNormalCardItem(ModeSelectorItem):
 
     @property
     def calendarTooltipText(self):
-        pass
+        return ''
 
     @property
     def viewModel(self):
@@ -233,7 +233,7 @@ class ModeSelectorNormalCardItem(ModeSelectorItem):
 
 
 class ModeSelectorLegacyItem(ModeSelectorNormalCardItem):
-    __slots__ = ('_legacySelectorItem',)
+    __slots__ = ('_legacySelectorItem', )
 
     def __init__(self, oldSelectorItem):
         super(ModeSelectorLegacyItem, self).__init__()

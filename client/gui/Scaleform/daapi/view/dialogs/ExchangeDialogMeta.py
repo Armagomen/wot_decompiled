@@ -1,7 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/dialogs/ExchangeDialogMeta.py
-import operator
-import Event
+from __future__ import absolute_import
+import operator, Event
 from adisp import adisp_async, adisp_process
 from exchange.personal_discounts_constants import EXCHANGE_RATE_FREE_XP_NAME, EXCHANGE_RATE_GOLD_NAME, ExchangeDiscountType
 from exchange.personal_discounts_helper import getDiscountsRequiredForExchange
@@ -46,21 +44,21 @@ class InfoItemBase(object):
 
     @property
     def itemTypeName(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
     @property
     def userName(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
     @property
     def itemTypeID(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def getExtraIconInfo(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def getGUIEmblemID(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
 
 class _ExchangeSubmitterBase(object):
@@ -120,40 +118,40 @@ class _ExchangeSubmitterBase(object):
         pass
 
     def submit(self, gold, valueToExchange, callback=None):
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def _getType(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def _getInfoItem(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def _getResourceToExchange(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def _getCurrencyIconStr(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def _getNeedItemsType(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def _getCurrencyIconPath(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def _getCurrencyFormat(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def _getColorScheme(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def _getRateToColorScheme(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def _getExchangeRateItemsIcon(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def _getMaxExchangeValue(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
 
 class _ExchangeRate(object):
@@ -211,14 +209,20 @@ class _ExchangeRate(object):
 
     def _isExchangeRateDiscountLimited(self):
         discount = self._getExchangeRateDiscount()
-        return discount.discountType == ExchangeDiscountType.LIMITED if self._isExchangeRateDiscountAvailable() and discount is not None else False
+        if self._isExchangeRateDiscountAvailable() and discount is not None:
+            return discount.discountType == ExchangeDiscountType.LIMITED
+        else:
+            return False
 
     def _discountsAmountAppliedForExchange(self, goldAmount):
         return len(getDiscountsRequiredForExchange(self._exchangeRate.allPersonalLimitedDiscounts, goldAmount, getCurrentTime()))
 
     def _getExchangeRateDiscountLimit(self):
         discount = self._getExchangeRateDiscount()
-        return discount.amountOfDiscount if self._isExchangeRateDiscountAvailable() and discount is not None else 0
+        if self._isExchangeRateDiscountAvailable() and discount is not None:
+            return discount.amountOfDiscount
+        else:
+            return 0
 
     def _getExchangeRate(self):
         return self._exchangeRate.discountRate.resourceRateValue
@@ -230,7 +234,7 @@ class _ExchangeRate(object):
         return self._getResourceAmountToExchangeForGold(goldAmount)
 
     def getExchangeType(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def _getResourceAmountToExchangeForGold(self, goldAmount):
         return self._exchangeRate.calculateExchange(goldAmount)
@@ -318,23 +322,23 @@ class _ExchangeDialogMeta(I18nConfirmDialogMeta):
         item = submitter.infoItem
         resToExchange = submitter.resourceToExchange
         state, stateMsg = self._getState(resToExchange)
-        return {'title': self.getTitle(),
-         'exchangeBtnText': self.getButtonLabels()[0]['label'],
-         'cancelBtnText': self.getButtonLabels()[1]['label'],
-         'state': state,
-         'lockExchangeMessage': stateMsg,
-         'iconExtraInfo': item.getExtraIconInfo(),
-         'iconModuleType': item.itemTypeName,
-         'icon': self._getItemIcon(item),
-         'iconType': self._getItemIconType(item),
-         'itemName': text_styles.middleTitle(item.userName),
-         'needItemsText': self._getResourceToExchangeTxt(resToExchange),
-         'needItemsType': self._needItemsType(),
-         'needGoldText': self._getGoldToExchangeTxt(resToExchange),
-         'exchangeBlockData': self._getExchangeBlockData(resToExchange)}
+        return {'title': self.getTitle(), 
+           'exchangeBtnText': self.getButtonLabels()[0]['label'], 
+           'cancelBtnText': self.getButtonLabels()[1]['label'], 
+           'state': state, 
+           'lockExchangeMessage': stateMsg, 
+           'iconExtraInfo': item.getExtraIconInfo(), 
+           'iconModuleType': item.itemTypeName, 
+           'icon': self._getItemIcon(item), 
+           'iconType': self._getItemIconType(item), 
+           'itemName': text_styles.middleTitle(item.userName), 
+           'needItemsText': self._getResourceToExchangeTxt(resToExchange), 
+           'needItemsType': self._needItemsType(), 
+           'needGoldText': self._getGoldToExchangeTxt(resToExchange), 
+           'exchangeBlockData': self._getExchangeBlockData(resToExchange)}
 
     def _getSubmitterType(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def _getSubmitter(self):
         return self.__submitter
@@ -357,39 +361,44 @@ class _ExchangeDialogMeta(I18nConfirmDialogMeta):
         needItemsStepperTitle = text_styles.main(self._makeString(I18N_NEEDITEMSSTEPPERTITLE_KEY))
         maxGold, maxNeedItems = handleUserValuesInput(selectedGold=submitter.maxExchangeValue, selectedCurrency=0, exchangeProvider=self.getExchangeProvider())
         goldForExchange = self._getGoldToExchange(resToExchange)
-        return {'goldStepperTitle': goldStepperTitleFmt,
-         'needItemsIcon': submitter.currencyIconPath,
-         'needItemsStepperTitle': needItemsStepperTitle,
-         'goldIcon': RES_ICONS.MAPS_ICONS_LIBRARY_GOLDICON_2,
-         'defaultExchangeRate': submitter.baseExchangeRate,
-         'exchangeRate': submitter.exchangeRate,
-         'discountLimit': submitter.exchangeRateDiscountLimit,
-         'isDiscountAvailable': submitter.exchangeRate != submitter.baseExchangeRate,
-         'maxDiscountsAppliedForMoreInfo': MAX_SHOW_DISCOUNTS_INDEX,
-         'isDiscountLimited': submitter.isExchangeRateDiscountLimited,
-         'limitRestrictionsBtnText': backport.text(R.strings.personal_exchange_rates.common.limitRestrictions()),
-         'discountLimitText': backport.text(R.strings.personal_exchange_rates.common.limitExceeded()),
-         'discountLimitOverExceededText': backport.text(R.strings.personal_exchange_rates.common.limitOverExceeded()),
-         'defaultGoldValue': goldForExchange,
-         'goldStepSize': STEP_SIZE,
-         'maxGoldValue': maxGold,
-         'maxNeedItemsValue': maxNeedItems,
-         'goldTextColorId': TEXT_MANAGER_STYLES.GOLD_TEXT,
-         'itemsTextColorId': submitter.colorScheme,
-         'exchangeHeaderData': {'labelText': MENU.EXCHANGE_RATE,
-                                'rateFromIcon': ICON_TEXT_FRAMES.GOLD,
-                                'rateToIcon': submitter.exchangeRateItemsIcon,
-                                'rateFromTextColor': self._getRGB(TEXT_COLOR_ID_XP),
-                                'rateToTextColor': self._getRGB(submitter.rateToColorScheme)}}
+        return {'goldStepperTitle': goldStepperTitleFmt, 
+           'needItemsIcon': submitter.currencyIconPath, 
+           'needItemsStepperTitle': needItemsStepperTitle, 
+           'goldIcon': RES_ICONS.MAPS_ICONS_LIBRARY_GOLDICON_2, 
+           'defaultExchangeRate': submitter.baseExchangeRate, 
+           'exchangeRate': submitter.exchangeRate, 
+           'discountLimit': submitter.exchangeRateDiscountLimit, 
+           'isDiscountAvailable': submitter.exchangeRate != submitter.baseExchangeRate, 
+           'maxDiscountsAppliedForMoreInfo': MAX_SHOW_DISCOUNTS_INDEX, 
+           'isDiscountLimited': submitter.isExchangeRateDiscountLimited, 
+           'limitRestrictionsBtnText': backport.text(R.strings.personal_exchange_rates.common.limitRestrictions()), 
+           'discountLimitText': backport.text(R.strings.personal_exchange_rates.common.limitExceeded()), 
+           'discountLimitOverExceededText': backport.text(R.strings.personal_exchange_rates.common.limitOverExceeded()), 
+           'defaultGoldValue': goldForExchange, 
+           'goldStepSize': STEP_SIZE, 
+           'maxGoldValue': maxGold, 
+           'maxNeedItemsValue': maxNeedItems, 
+           'goldTextColorId': TEXT_MANAGER_STYLES.GOLD_TEXT, 
+           'itemsTextColorId': submitter.colorScheme, 
+           'exchangeHeaderData': {'labelText': MENU.EXCHANGE_RATE, 
+                                  'rateFromIcon': ICON_TEXT_FRAMES.GOLD, 
+                                  'rateToIcon': submitter.exchangeRateItemsIcon, 
+                                  'rateFromTextColor': self._getRGB(TEXT_COLOR_ID_XP), 
+                                  'rateToTextColor': self._getRGB(submitter.rateToColorScheme)}}
 
     def _getState(self, resToExchange):
         if resToExchange <= 0:
-            return (CONFIRM_EXCHANGE_DIALOG_TYPES.EXCHANGE_NOT_NEEED_STATE, text_styles.success(self._makeString(I18N_EXCHANGENONEEDTEXT_KEY)))
+            return (
+             CONFIRM_EXCHANGE_DIALOG_TYPES.EXCHANGE_NOT_NEEED_STATE,
+             text_styles.success(self._makeString(I18N_EXCHANGENONEEDTEXT_KEY)))
         if not self._isEnoughGold(resToExchange):
             goldToExchange = self._getGoldToExchange(resToExchange)
-            fmtGold = ''.join((text_styles.gold(backport.getGoldFormat(goldToExchange)), icons.gold()))
-            return (CONFIRM_EXCHANGE_DIALOG_TYPES.NOT_ENOUGH_GOLD_STATE, text_styles.error(self._makeString(I18N_GOLDNOTENOUGHTEXT_KEY, {'gold': fmtGold})))
-        return (CONFIRM_EXCHANGE_DIALOG_TYPES.NORMAL_STATE, '')
+            fmtGold = ('').join((text_styles.gold(backport.getGoldFormat(goldToExchange)), icons.gold()))
+            return (
+             CONFIRM_EXCHANGE_DIALOG_TYPES.NOT_ENOUGH_GOLD_STATE,
+             text_styles.error(self._makeString(I18N_GOLDNOTENOUGHTEXT_KEY, {'gold': fmtGold})))
+        return (
+         CONFIRM_EXCHANGE_DIALOG_TYPES.NORMAL_STATE, '')
 
     def _isEnoughGold(self, resToExchange):
         return self._getGoldToExchange(resToExchange) <= self.itemsCache.items.stats.gold
@@ -400,6 +409,7 @@ class _ExchangeDialogMeta(I18nConfirmDialogMeta):
             submitter = self._getSubmitter()
             resStr = submitter.currencyFormat(resource) + submitter.currencyIconStr
             return text_styles.error(self._makeString(I18N_NEEDITEMSTEXT_KEY, {'value': resStr}))
+        return ''
 
     def _needItemsType(self):
         submitter = self._getSubmitter()
@@ -408,16 +418,20 @@ class _ExchangeDialogMeta(I18nConfirmDialogMeta):
     def _getGoldToExchangeTxt(self, resToExchange):
         if resToExchange > 0:
             goldToExchange = self._getGoldToExchange(resToExchange)
-            fmtGold = ''.join((text_styles.gold(backport.getGoldFormat(goldToExchange)), icons.gold()))
+            fmtGold = ('').join((text_styles.gold(backport.getGoldFormat(goldToExchange)), icons.gold()))
             return text_styles.main(self._makeString(I18N_NEEDGOLDTEXT_KEY, {'gold': fmtGold}))
+        return ''
 
     def _getGoldToExchange(self, resToExchange):
         if resToExchange > 0:
             submitter = self._getSubmitter()
             return submitter.getGoldToExchange(resToExchange)
+        return 0
 
     def _getItemIconType(self, item):
-        return CONFIRM_EXCHANGE_DIALOG_TYPES.VEHICLE_ICON if item.itemTypeID == GUI_ITEM_TYPE.VEHICLE else CONFIRM_EXCHANGE_DIALOG_TYPES.MODULE_ICON
+        if item.itemTypeID == GUI_ITEM_TYPE.VEHICLE:
+            return CONFIRM_EXCHANGE_DIALOG_TYPES.VEHICLE_ICON
+        return CONFIRM_EXCHANGE_DIALOG_TYPES.MODULE_ICON
 
     def _getItemIcon(self, item):
         if item.itemTypeID == GUI_ITEM_TYPE.VEHICLE:
@@ -425,8 +439,7 @@ class _ExchangeDialogMeta(I18nConfirmDialogMeta):
             if item.isElite:
                 icon += '_elite'
             return icon
-        else:
-            return item.getGUIEmblemID()
+        return item.getGUIEmblemID()
 
 
 class _ExchangeItem(object):
@@ -486,21 +499,21 @@ class _WebProductInfoItem(InfoItemBase):
 
     @property
     def itemTypeName(self):
-        pass
+        return ''
 
     @property
     def itemTypeID(self):
-        return None
+        return
 
     @property
     def userName(self):
         return self.__name
 
     def getExtraIconInfo(self):
-        return None
+        return
 
     def getGUIEmblemID(self):
-        pass
+        return 'notFound'
 
 
 class _WebProductExchangeItem(_ExchangeItem):
@@ -529,21 +542,21 @@ class _SlotInfoItem(InfoItemBase):
 
     @property
     def itemTypeName(self):
-        pass
+        return ''
 
     @property
     def itemTypeID(self):
-        return None
+        return
 
     @property
     def userName(self):
         return self.__name
 
     def getExtraIconInfo(self):
-        return None
+        return
 
     def getGUIEmblemID(self):
-        pass
+        return 'slots'
 
 
 class _SlotExchangeItem(_ExchangeItem):
@@ -629,7 +642,7 @@ class _ExchangeCreditsSubscriber(object):
         g_clientUpdateManager.removeObjectCallbacks(self)
 
     def _onStatsChanged(self, *args):
-        raise NotImplementedError()
+        raise NotImplementedError
 
 
 class ExchangeCreditsSingleItemMeta(_ExchangeDialogMeta, _ExchangeCreditsSubscriber):
@@ -717,7 +730,9 @@ class ExchangeCreditsWebProductMeta(_ExchangeDialogMeta, _ExchangeCreditsSubscri
         self.__isModal = isModal
 
     def getEventType(self):
-        return events.ShowDialogEvent.SHOW_EXCHANGE_DIALOG_MODAL if self.__isModal else super(ExchangeCreditsWebProductMeta, self).getEventType()
+        if self.__isModal:
+            return events.ShowDialogEvent.SHOW_EXCHANGE_DIALOG_MODAL
+        return super(ExchangeCreditsWebProductMeta, self).getEventType()
 
     def _getItemIconType(self, item):
         return CONFIRM_EXCHANGE_DIALOG_TYPES.PLATFORM_PACK_ICON
@@ -762,9 +777,9 @@ class _ExchangeXpSubmitter(_ExchangeSubmitterBase, _XpTranslationExchangeRate):
 
     @adisp_async
     @wg_async
-    def submit(self, gold, xpToExchange, callback=None):
+    def submit(self, gold, valueToExchange, callback=None):
         isOk, result, xpExchanged = yield wg_await(showExchangeXPDialogWindow(self.getResourceAmountToExchangeForGold(gold)))
-        if xpExchanged < xpToExchange:
+        if xpExchanged < valueToExchange:
             result = makeError(auxData=[result])
         if callback is not None:
             callback(result if isOk else None)
@@ -823,11 +838,11 @@ class ExchangeXpMeta(_ExchangeDialogMeta):
         super(ExchangeXpMeta, self).__init__((_SingleExchangeItem(itemCD), parentCD, xpCost), key='confirmExchangeDialog/exchangeXp')
         self.__exchangeRatesProvider.freeXpTranslation.onUpdated += self._onStatsChanged
         g_clientUpdateManager.addCurrencyCallback(Currency.GOLD, self._onStatsChanged)
-        g_clientUpdateManager.addCallbacks({'shop.freeXPConversion': self._onStatsChanged,
-         'inventory.1': self._onStatsChanged,
-         'stats.vehTypeXP': self._onStatsChanged,
-         'stats.freeXP': self._onStatsChanged,
-         'stats.unlocks': self.__checkUnlocks})
+        g_clientUpdateManager.addCallbacks({'shop.freeXPConversion': self._onStatsChanged, 
+           'inventory.1': self._onStatsChanged, 
+           'stats.vehTypeXP': self._onStatsChanged, 
+           'stats.freeXP': self._onStatsChanged, 
+           'stats.unlocks': self.__checkUnlocks})
 
     def destroy(self):
         self.__exchangeRatesProvider.freeXpTranslation.onUpdated -= self._onStatsChanged

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/utils/transport.py
-import zlib
-import cPickle
+import zlib, cPickle
 from debug_utils import LOG_ERROR
 
 def z_dumps(obj, protocol=-1, level=1):

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_pass/holiday_final_view_model.py
 from enum import Enum, IntEnum
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.views.lobby.battle_pass.awards_widget_model import AwardsWidgetModel
@@ -19,7 +17,8 @@ class FinalRewardTypes(Enum):
 
 
 class HolidayFinalViewModel(ViewModel):
-    __slots__ = ('onTakeRewardsClick', 'showTankmen', 'onPreviewVehicle', 'showHangar', 'onClose')
+    __slots__ = ('onTakeRewardsClick', 'showTankmen', 'onPreviewVehicle', 'showHangar',
+                 'onClose')
     BUY_STATE = 'buyState'
     REWARDS_STATE = 'rewardsState'
     TANKMEN_STATE = 'tankmenState'

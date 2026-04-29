@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/vehicle_hub/sound_constants.py
 from __future__ import absolute_import
 from sound_gui_manager import CommonSoundSpaceSettings
 from shared_utils import CONST_CONTAINER

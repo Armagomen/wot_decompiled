@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/marathon/marathon_reward_helper.py
 from collections import namedtuple
 import re
 from gui.impl.gen import R
@@ -7,7 +5,10 @@ from gui.shared.gui_items import Vehicle
 from helpers import dependency, int2roman
 from skeletons.gui.impl import IGuiLoader
 from skeletons.gui.shared import IItemsCache
-SpecialRewardData = namedtuple('SpecialRewardData', ('sourceName', 'congratsSourceId', 'vehicleName', 'vehicleLvl', 'vehicleIsElite', 'vehicleType', 'goToVehicleBtn', 'videoShownKey'))
+SpecialRewardData = namedtuple('SpecialRewardData', ('sourceName', 'congratsSourceId',
+                                                     'vehicleName', 'vehicleLvl',
+                                                     'vehicleIsElite', 'vehicleType',
+                                                     'goToVehicleBtn', 'videoShownKey'))
 
 def getVehicleStrID(vehicleName):
     return vehicleName.split(':')[1]
@@ -15,7 +16,9 @@ def getVehicleStrID(vehicleName):
 
 def formatEliteVehicle(isElite, typeName):
     ubFormattedTypeName = Vehicle.getIconResourceName(typeName)
-    return '{}_elite'.format(ubFormattedTypeName) if isElite else ubFormattedTypeName
+    if isElite:
+        return ('{}_elite').format(ubFormattedTypeName)
+    return ubFormattedTypeName
 
 
 def loadedViewPredicate(layoutID):
@@ -42,11 +45,17 @@ def showMarathonReward(vehicleCD, videoShownKey):
 
 
 def getRewardImage(path):
-    return '' if path is None else path.replace('../', 'img://gui/')
+    if path is None:
+        return ''
+    else:
+        return path.replace('../', 'img://gui/')
 
 
 def getRewardLabel(label):
-    return '' if label is None else re.sub('\\D', '', label)
+    if label is None:
+        return ''
+    else:
+        return re.sub('\\D', '', label)
 
 
 def getRewardOverlayType(overlayType):

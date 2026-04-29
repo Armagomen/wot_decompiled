@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/impl/gen/view_models/views/lobby/views/post_battle_results_view/vehicle_financial_report_model.py
 from gui.impl.gen.view_models.views.lobby.battle_results.financial_report_model import FinancialReportModel
 from gui.impl.gen.view_models.views.lobby.common.vehicle_model import VehicleModel
 

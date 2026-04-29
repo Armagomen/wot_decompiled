@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/battle/frontline_battle_timer.py
 import BigWorld
 from frontline.gui.Scaleform.daapi.view.meta.FrontlineBattleTimerMeta import FrontlineBattleTimerMeta
 from helpers import dependency
@@ -22,7 +20,7 @@ class FrontlineBattleTimer(FrontlineBattleTimerMeta):
 
     def _sendTime(self, totalTime):
         minutes, seconds = divmod(int(totalTime), 60)
-        self.as_setTotalTimeWithSecondsS('{:02d}'.format(minutes), '{:02d}'.format(seconds), (minutes * 60 + seconds) * self.__overTimeMaxTimeFac)
+        self.as_setTotalTimeWithSecondsS(('{:02d}').format(minutes), ('{:02d}').format(seconds), (minutes * 60 + seconds) * self.__overTimeMaxTimeFac)
 
     def _setColor(self):
         if not self.__overTimeTickingPlaying:

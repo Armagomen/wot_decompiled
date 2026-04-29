@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/filter/data_providers.py
-import operator
-import random
+import operator, random
 from collections import OrderedDict, namedtuple
 from typing import Optional
 import nations
@@ -28,7 +25,8 @@ class _TankmenSortCriteriaMixin(object):
 
         def key(item):
             tdescr = item.descriptor
-            return (GUI_NATIONS_ORDER_INDICES[item.nationID],
+            return (
+             GUI_NATIONS_ORDER_INDICES[item.nationID],
              -tdescr.getTotalSkillsProgressPercent(withFree=True),
              Tankman.TANKMEN_ROLES_ORDER[tdescr.role],
              getFullUserName(item.nationID, tdescr.firstNameID, tdescr.lastNameID))
@@ -62,7 +60,9 @@ class _ItemCallProxy(object):
 
     def __getattr__(self, name):
         attr = getattr(self._item, name)
-        return self._proxy(attr) if callable(attr) else attr
+        if callable(attr):
+            return self._proxy(attr)
+        return attr
 
     def _proxy(self, method):
 
@@ -214,11 +214,11 @@ class CompoundDataProvider(object):
 
     @property
     def itemsCount(self):
-        return sum((provider.itemsCount for provider in self.__dataProviders.itervalues()))
+        return sum(provider.itemsCount for provider in self.__dataProviders.itervalues())
 
     @property
     def initialItemsCount(self):
-        return sum((provider.initialItemsCount for provider in self.__dataProviders.itervalues()))
+        return sum(provider.initialItemsCount for provider in self.__dataProviders.itervalues())
 
     def _onProviderDataChanged(self):
         self.__updatingCount -= 1
@@ -236,7 +236,8 @@ class VehiclesDataProvider(FilterableItemsDataProvider):
     def items(self):
         items = super(VehiclesDataProvider, self).items()
         if items and self.__vehicle and self.__vehicle not in items:
-            items = [self.__vehicle] + items
+            items = [
+             self.__vehicle] + items
         return items
 
     @property
@@ -257,7 +258,8 @@ class VehiclesDataProvider(FilterableItemsDataProvider):
         super(VehiclesDataProvider, self).updateRoot(vehicle)
 
     def _getFiltersList(self):
-        return [self._getFilterByVehicleTypeCriteria(),
+        return [
+         self._getFilterByVehicleTypeCriteria(),
          self._getFilterByVehicleTierCriteria(),
          self._getFilterByVehicleGradeCriteria(),
          self._getFilterByVehicleLocationCriteria(),
@@ -278,24 +280,38 @@ class VehiclesDataProvider(FilterableItemsDataProvider):
 
     def _getFilterByVehicleTypeCriteria(self):
         vehicleTypes = self._state[ToggleGroupType.VEHICLETYPE.value]
-        return REQ_CRITERIA.VEHICLE.CLASSES(tuple(vehicleTypes)) if vehicleTypes else None
+        if vehicleTypes:
+            return REQ_CRITERIA.VEHICLE.CLASSES(tuple(vehicleTypes))
+        else:
+            return
 
     def _getFilterByVehicleTierCriteria(self):
         vehicleTiers = self._state[ToggleGroupType.VEHICLETIER.value]
         vehicleTiers = {int(t) for t in vehicleTiers}
-        return REQ_CRITERIA.VEHICLE.LEVELS(vehicleTiers) if vehicleTiers else None
+        if vehicleTiers:
+            return REQ_CRITERIA.VEHICLE.LEVELS(vehicleTiers)
+        else:
+            return
 
     def _getFilterByVehicleGradeCriteria(self):
         vehicleGrades = self._state[ToggleGroupType.VEHICLEGRADE.value]
         criteria = REQ_CRITERIA.VEHICLE.PREMIUM
-        return criteria if GRADE_PREMIUM in vehicleGrades else ~criteria
+        if GRADE_PREMIUM in vehicleGrades:
+            return criteria
+        return ~criteria
 
     def _getFilterByVehicleLocationCriteria(self):
         vehicleLocations = self._state[ToggleGroupType.LOCATION.value]
-        return REQ_CRITERIA.INVENTORY if VEHICLE_LOCATION_IN_HANGAR in vehicleLocations else None
+        if VEHICLE_LOCATION_IN_HANGAR in vehicleLocations:
+            return REQ_CRITERIA.INVENTORY
+        else:
+            return
 
     def _getSearchCriteria(self):
-        return REQ_CRITERIA.VEHICLE.NAME_VEHICLE_WITH_SHORT(self._state.searchString.lower()) if self._state.searchString else None
+        if self._state.searchString:
+            return REQ_CRITERIA.VEHICLE.NAME_VEHICLE_WITH_SHORT(self._state.searchString.lower())
+        else:
+            return
 
     def _getSortKeyCriteria(self):
         criteria = REQ_CRITERIA.CUSTOM(lambda item: VEHICLE_TYPES_ORDER_INDICES[item.type])
@@ -323,7 +339,9 @@ class JunkTankmenDataProvider(_TankmenSortCriteriaMixin, FilterableItemsDataProv
         return filter(criteria, items)
 
     def _getFiltersList(self):
-        return [self._getFilterByInBarracksCriteria(), self._getFilterByIsJunkCriteria()]
+        return [
+         self._getFilterByInBarracksCriteria(),
+         self._getFilterByIsJunkCriteria()]
 
     def _getFilterByInBarracksCriteria(self):
         return ~REQ_CRITERIA.TANKMAN.IN_TANK
@@ -342,7 +360,7 @@ class TankmenDataProvider(_TankmenSortCriteriaMixin, FilterableItemsDataProvider
         return
 
     def tankmenInBarracksCount(self):
-        return sum((1 for tankman in self._getInventoryTankmen() if not tankman.isInTank))
+        return sum(1 for tankman in self._getInventoryTankmen() if not tankman.isInTank)
 
     def reinit(self):
         super(TankmenDataProvider, self).reinit()
@@ -355,7 +373,8 @@ class TankmenDataProvider(_TankmenSortCriteriaMixin, FilterableItemsDataProvider
         return ToggleGroupType.VEHICLEGRADE.value
 
     def _getFiltersList(self):
-        return [self._getFilterByVehicleTypeCriteria(),
+        return [
+         self._getFilterByVehicleTypeCriteria(),
          self._getFilterByVehicleTierCriteria(),
          self._getFilterByVehicleGradeCriteria(),
          self._getFilterByVehicleCDCriteria(),
@@ -369,12 +388,18 @@ class TankmenDataProvider(_TankmenSortCriteriaMixin, FilterableItemsDataProvider
 
     def _getFilterByVehicleTypeCriteria(self):
         vehicleTypes = self._state[ToggleGroupType.VEHICLETYPE.value]
-        return REQ_CRITERIA.TANKMAN.VEHICLE_NATIVE_TYPES(vehicleTypes) if vehicleTypes else None
+        if vehicleTypes:
+            return REQ_CRITERIA.TANKMAN.VEHICLE_NATIVE_TYPES(vehicleTypes)
+        else:
+            return
 
     def _getFilterByVehicleTierCriteria(self):
         vehicleTiers = self._state[ToggleGroupType.VEHICLETIER.value]
         vehicleTiers = {int(t) for t in vehicleTiers}
-        return REQ_CRITERIA.TANKMAN.VEHICLE_NATIVE_LEVELS(vehicleTiers) if vehicleTiers else None
+        if vehicleTiers:
+            return REQ_CRITERIA.TANKMAN.VEHICLE_NATIVE_LEVELS(vehicleTiers)
+        else:
+            return
 
     def _getFilterByVehicleGradeCriteria(self):
         grades = self._state[ToggleGroupType.VEHICLEGRADE.value]
@@ -392,11 +417,17 @@ class TankmenDataProvider(_TankmenSortCriteriaMixin, FilterableItemsDataProvider
 
     def _getFilterByVehicleCDCriteria(self):
         vehicleCDs = self._state[ToggleGroupType.VEHICLECD.value]
-        return REQ_CRITERIA.TANKMAN.NATIVE_TANKS(vehicleCDs) if vehicleCDs else None
+        if vehicleCDs:
+            return REQ_CRITERIA.TANKMAN.NATIVE_TANKS(vehicleCDs)
+        else:
+            return
 
     def _getFilterByNationCriteria(self):
         value = self._state[ToggleGroupType.NATION.value]
-        return REQ_CRITERIA.TANKMAN.NATION(value) if value else None
+        if value:
+            return REQ_CRITERIA.TANKMAN.NATION(value)
+        else:
+            return
 
     def _getFilterByLocationCriteria(self):
         locations = self._state[self._locationStateKey]
@@ -412,10 +443,16 @@ class TankmenDataProvider(_TankmenSortCriteriaMixin, FilterableItemsDataProvider
 
     def _getFilterByTankmanRoleCriteria(self):
         roles = self._state[ToggleGroupType.TANKMANROLE.value]
-        return REQ_CRITERIA.TANKMAN.ROLES(roles) if roles else None
+        if roles:
+            return REQ_CRITERIA.TANKMAN.ROLES(roles)
+        else:
+            return
 
     def _getSearchCriteria(self):
-        return REQ_CRITERIA.TANKMAN.SPECIFIC_BY_NAME_OR_SKIN(self._state.searchString) if self._state.searchString else None
+        if self._state.searchString:
+            return REQ_CRITERIA.TANKMAN.SPECIFIC_BY_NAME_OR_SKIN(self._state.searchString)
+        else:
+            return
 
     def _getConditionSortCriteria(self):
         criteria = REQ_CRITERIA.TANKMAN.ACTIVE
@@ -425,7 +462,8 @@ class TankmenDataProvider(_TankmenSortCriteriaMixin, FilterableItemsDataProvider
     def _itemsGetter(self, criteria, initial=False):
         tankmenKinds = self._state[ToggleGroupType.TANKMANKIND.value]
         if not tankmenKinds or initial:
-            tankmenKinds = ['tankman', 'dismissed']
+            tankmenKinds = [
+             'tankman', 'dismissed']
         items = []
         if 'tankman' in tankmenKinds:
             items += self._getInventoryTankmen()
@@ -457,33 +495,47 @@ class RecruitsDataProvider(FilterableItemsDataProvider):
         return recruit_helper.getNewRecruitsCounter()
 
     def _getFiltersList(self):
-        return [self._getFilterByRoles(),
+        return [
+         self._getFilterByRoles(),
          self._getFilterByNations(),
          self._getFilterByLocationCriteria(),
          self._getSearchCriteria()]
 
     def _getFilterByRoles(self):
         roles = self._state[ToggleGroupType.TANKMANROLE.value]
-        return REQ_CRITERIA.RECRUIT.ROLES(roles) if roles else None
+        if roles:
+            return REQ_CRITERIA.RECRUIT.ROLES(roles)
+        else:
+            return
 
     def _getFilterByNations(self):
         value = self._state[ToggleGroupType.NATION.value]
-        return REQ_CRITERIA.RECRUIT.NATION(value) if value else None
+        if value:
+            return REQ_CRITERIA.RECRUIT.NATION(value)
+        else:
+            return
 
     def _getFilterByLocationCriteria(self):
         locations = self._state[ToggleGroupType.LOCATION.value]
         if not locations or TankmanLocation.INBARRACKS.value in locations:
-            return None
+            return
+        if {
+         TankmanLocation.INTANK.value, TankmanLocation.DISMISSED.value} & locations:
+            return REQ_CRITERIA.NONE
         else:
-            return REQ_CRITERIA.NONE if {TankmanLocation.INTANK.value, TankmanLocation.DISMISSED.value} & locations else None
+            return
 
     def _getSearchCriteria(self):
-        return REQ_CRITERIA.RECRUIT.SPECIFIC_BY_NAME(self._state.searchString) if self._state.searchString else None
+        if self._state.searchString:
+            return REQ_CRITERIA.RECRUIT.SPECIFIC_BY_NAME(self._state.searchString)
+        else:
+            return
 
     def _getSortKeyCriteria(self):
         rolesOrder = Tankman.TANKMEN_ROLES_ORDER
         nationsOrder = GUI_NATIONS_ORDER_INDICES
-        criteria = REQ_CRITERIA.CUSTOM(lambda item: (-len(item.getFreeSkills()), -len(item.getEarnedSkills(multiplyNew=True))))
+        criteria = REQ_CRITERIA.CUSTOM(lambda item: (
+         -len(item.getFreeSkills()), -len(item.getEarnedSkills(multiplyNew=True))))
         criteria |= REQ_CRITERIA.CUSTOM(lambda item: -item.getFreeXP())
         criteria |= REQ_CRITERIA.CUSTOM(lambda item: nationsOrder[item.defaultNation] if len(item.getNations()) == 1 else nations.NONE_INDEX)
         criteria |= REQ_CRITERIA.CUSTOM(lambda item: rolesOrder[item.defaultRole] if len(item.getRoles()) == 1 else len(rolesOrder))
@@ -496,7 +548,8 @@ class RecruitsDataProvider(FilterableItemsDataProvider):
     def _itemsGetter(self, criteria, initial=False):
         tankmenKinds = self._state[ToggleGroupType.TANKMANKIND.value]
         if not tankmenKinds or initial:
-            tankmenKinds = ['recruit']
+            tankmenKinds = [
+             'recruit']
         items = []
         if 'recruit' in tankmenKinds:
             items += recruit_helper.getAllRecruitsInfo(sortByExpireTime=True)
@@ -542,7 +595,8 @@ class TankmenChangeDataProvider(_BonusSkillsMixin, TankmenDataProvider):
         return _TankmanBonusSkillsWrapper
 
     def _getFiltersList(self):
-        return [self._getFilterByTankmanRoleCriteria(),
+        return [
+         self._getFilterByTankmanRoleCriteria(),
          self._getFilterByVehicleCDCriteria(),
          self._getFilterByVehicleTypeCriteria(),
          self._getFilterByVehicleTierCriteria(),
@@ -578,7 +632,9 @@ class TankmenChangeDataProvider(_BonusSkillsMixin, TankmenDataProvider):
 
     def _getInitialItems(self):
         items = super(TankmenChangeDataProvider, self)._getInitialItems()
-        return [self.__tankman] + items if self.__tankman else items
+        if self.__tankman:
+            return [self.__tankman] + items
+        return items
 
     def _itemsGetter(self, criteria, initial=False):
         tankmenKinds = self._state[ToggleGroupType.TANKMANKIND.value]
@@ -587,7 +643,8 @@ class TankmenChangeDataProvider(_BonusSkillsMixin, TankmenDataProvider):
         if 'recruit' in self._state[ToggleGroupType.LOCATION.value]:
             tankmenKinds = tankmenKinds | {'recruit'}
         if not tankmenKinds or initial:
-            tankmenKinds = ['tankman']
+            tankmenKinds = [
+             'tankman']
         items = []
         if 'dismissed' in tankmenKinds:
             items += self._getDismissedTankmen()
@@ -599,7 +656,8 @@ class TankmenChangeDataProvider(_BonusSkillsMixin, TankmenDataProvider):
         return items
 
     def __reorderRoles(self, requiredRole):
-        roles = [requiredRole] + [ role for role in Tankman.TANKMEN_ROLES_ORDER if role != requiredRole ]
+        roles = [
+         requiredRole] + [ role for role in Tankman.TANKMEN_ROLES_ORDER if role != requiredRole ]
         self.__rolesOrder = OrderedDict([ (role, idx) for idx, role in enumerate(roles) ])
 
 
@@ -641,7 +699,8 @@ class RecruitsChangeDataProvider(_BonusSkillsMixin, RecruitsDataProvider):
     def _getSortKeyCriteria(self):
         rolesOrder = Tankman.TANKMEN_ROLES_ORDER
         criteria = REQ_CRITERIA.CUSTOM(lambda item: rolesOrder[item.defaultRole] if len(item.getRoles()) == 1 else len(rolesOrder))
-        criteria |= REQ_CRITERIA.CUSTOM(lambda item: (-len(item.getFreeSkills()), -len(item.getEarnedSkills(multiplyNew=True))))
+        criteria |= REQ_CRITERIA.CUSTOM(lambda item: (
+         -len(item.getFreeSkills()), -len(item.getEarnedSkills(multiplyNew=True))))
         criteria |= REQ_CRITERIA.CUSTOM(lambda item: -item.getFreeXP())
         criteria |= REQ_CRITERIA.CUSTOM(lambda item: item.getFullUserName())
         return criteria
@@ -651,7 +710,8 @@ class RecruitsChangeDataProvider(_BonusSkillsMixin, RecruitsDataProvider):
             return []
         tankmenKinds = {'recruit', 'tankman'} & self._state[ToggleGroupType.LOCATION.value]
         if not tankmenKinds or initial:
-            tankmenKinds = {'recruit'}
+            tankmenKinds = {
+             'recruit'}
         items = []
         if 'recruit' in tankmenKinds:
             items += recruit_helper.getAllRecruitsInfo(sortByExpireTime=True)
@@ -675,7 +735,8 @@ class CrewSkinsDataProvider(FilterableItemsDataProvider):
         return criteria
 
     def _getFiltersList(self):
-        return [self._getFilterByPersonalDataTypeCriteria()]
+        return [
+         self._getFilterByPersonalDataTypeCriteria()]
 
     def _removeCurrentItemCriteria(self):
         return ~REQ_CRITERIA.CUSTOM(lambda item: item.descriptor.id == self.__tankman.skinID)
@@ -705,8 +766,11 @@ class CrewSkinsDataProvider(FilterableItemsDataProvider):
     def _itemsGetter(self, criteria, initial=False):
         dataTypes = self._state[ToggleGroupType.PERSONALDATATYPE.value]
         if not dataTypes or initial:
-            dataTypes = {'suitableSkin'}
-        return self.itemsCache.items.getItems(GUI_ITEM_TYPE.CREW_SKINS, criteria) if 'suitableSkin' in dataTypes else []
+            dataTypes = {
+             'suitableSkin'}
+        if 'suitableSkin' in dataTypes:
+            return self.itemsCache.items.getItems(GUI_ITEM_TYPE.CREW_SKINS, criteria)
+        return []
 
 
 class DocumentsDataProvider(FilterableItemsDataProvider):
@@ -746,7 +810,8 @@ class DocumentsDataProvider(FilterableItemsDataProvider):
     def _itemsGetter(self, criteria, initial=False):
         dataTypes = self._state[ToggleGroupType.PERSONALDATATYPE.value]
         if not dataTypes or initial:
-            dataTypes = ['document']
+            dataTypes = [
+             'document']
         if 'document' not in dataTypes:
             return []
         config = tankmen.getNationConfig(self.tankman.nationID)
@@ -775,7 +840,8 @@ class MentorDataProvider(TankmenDataProvider):
         return ToggleGroupType.LOCATION.value
 
     def _getFiltersList(self):
-        return [self._getFilterByTankmanRoleCriteria(),
+        return [
+         self._getFilterByTankmanRoleCriteria(),
          self._getFilterByVehicleTypeCriteria(),
          self._getFilterByVehicleTierCriteria(),
          self._getFilterByLocationCriteria()]

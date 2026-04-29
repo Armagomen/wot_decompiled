@@ -1,10 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/platform/products_fetcher/controller.py
-import json
-import logging
+import json, logging
 from functools import partial
-import BigWorld
-import typing
+import BigWorld, typing
 from BWUtil import AsyncReturn
 import wg_async
 from adisp import adisp_process
@@ -47,7 +43,7 @@ class _PlatformProductListParams(object):
         return
 
     def __repr__(self):
-        return 'storefront: {storefront} country: {country}, language: {language}'.format(storefront=self.storefront, country=self.country, language=self.language)
+        return ('storefront: {storefront} country: {country}, language: {language}').format(storefront=self.storefront, country=self.country, language=self.language)
 
 
 class ProductsDownloader(object):

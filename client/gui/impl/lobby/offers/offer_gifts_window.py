@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/offers/offer_gifts_window.py
 import logging
 from functools import partial
 import ResMgr
@@ -16,10 +14,10 @@ from gui.shared import event_dispatcher
 from gui.shared.gui_items.processors.offers import ReceiveOfferGiftProcessor
 from gui.shared.money import Currency
 from helpers import dependency, time_utils
-from frameworks.wulf import ViewSettings, ViewFlags
+from frameworks.wulf import ViewSettings, WindowFlags
 from gui.impl.gen.view_models.views.lobby.offers.gift_model import GiftModel
 from gui.impl.gen.view_models.views.lobby.offers.offer_model import OfferModel
-from gui.impl.pub import ViewImpl
+from gui.impl.pub import ViewImpl, WindowImpl
 from shared_utils import awaitNextFrame
 from skeletons.gui.game_control import IExternalLinksController
 from skeletons.gui.lobby_context import ILobbyContext
@@ -28,18 +26,21 @@ from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
 from web.cache.web_cache import CachePrefetchResult
 _logger = logging.getLogger(__name__)
-RENT_TYPE_TO_MODEL_CONSTANT = {RentType.NO_RENT: GiftModel.RENT_TYPE_NO,
- RentType.TIME_RENT: GiftModel.RENT_TYPE_TIME,
- RentType.BATTLES_RENT: GiftModel.RENT_TYPE_BATTLES,
- RentType.WINS_RENT: GiftModel.RENT_TYPE_WINS}
-BONUSES_WITHOUT_COUNTER = {Currency.CREDITS,
- Currency.GOLD,
- Currency.CRYSTAL,
- 'freeXP',
- PREMIUM_ENTITLEMENTS.PLUS,
- 'vehicles'}
+RENT_TYPE_TO_MODEL_CONSTANT = {RentType.NO_RENT: GiftModel.RENT_TYPE_NO, 
+   RentType.TIME_RENT: GiftModel.RENT_TYPE_TIME, 
+   RentType.BATTLES_RENT: GiftModel.RENT_TYPE_BATTLES, 
+   RentType.WINS_RENT: GiftModel.RENT_TYPE_WINS}
+BONUSES_WITHOUT_COUNTER = {
+ Currency.CREDITS, Currency.GOLD, Currency.CRYSTAL, 'freeXP',
+ PREMIUM_ENTITLEMENTS.PLUS, 'vehicles'}
 
-class OfferGiftsWindow(ViewImpl):
+class OfferGiftsWindow(WindowImpl):
+
+    def __init__(self, layer, *args, **kwargs):
+        super(OfferGiftsWindow, self).__init__(content=OfferGiftsView(*args, **kwargs), wndFlags=WindowFlags.WINDOW | WindowFlags.WINDOW_FULLSCREEN, layer=layer)
+
+
+class OfferGiftsView(ViewImpl):
     _lobbyContext = dependency.descriptor(ILobbyContext)
     _eventsCache = dependency.descriptor(IEventsCache)
     _itemsCache = dependency.descriptor(IItemsCache)
@@ -47,9 +48,9 @@ class OfferGiftsWindow(ViewImpl):
     _offersNovelty = dependency.descriptor(IOffersNovelty)
     _externalBrowser = dependency.descriptor(IExternalLinksController)
 
-    def __init__(self, layoutID, offerID, overrideSuccessCallback=None, overrideOnBackCallback=None):
-        settings = ViewSettings(layoutID=layoutID, flags=ViewFlags.LOBBY_SUB_VIEW, model=OfferModel())
-        super(OfferGiftsWindow, self).__init__(settings)
+    def __init__(self, offerID, layoutID=R.views.lobby.offers.OfferGiftsWindow(), overrideSuccessCallback=None, overrideOnBackCallback=None):
+        settings = ViewSettings(layoutID=layoutID, model=OfferModel())
+        super(OfferGiftsView, self).__init__(settings)
         self._offerID = offerID
         self.__overrideSuccessCallback = overrideSuccessCallback
         self.__overrideOnBackCallback = overrideOnBackCallback
@@ -67,7 +68,7 @@ class OfferGiftsWindow(ViewImpl):
         return self._offersProvider.getOffer(self._offerID)
 
     def _initialize(self, *args, **kwargs):
-        super(OfferGiftsWindow, self)._initialize()
+        super(OfferGiftsView, self)._initialize()
         self._viewModel.onBack += self._onBack
         self._viewModel.onLearnMore += self._onLearnMore
         g_playerEvents.onAccountBecomeNonPlayer += self._onBecomeNonPlayer
@@ -76,7 +77,7 @@ class OfferGiftsWindow(ViewImpl):
         self._offersProvider.onOffersUpdated += self._onOffersUpdated
 
     def _finalize(self):
-        super(OfferGiftsWindow, self)._finalize()
+        super(OfferGiftsView, self)._finalize()
         self._viewModel.onBack -= self._onBack
         self._viewModel.onLearnMore -= self._onLearnMore
         g_playerEvents.onAccountBecomeNonPlayer -= self._onBecomeNonPlayer
@@ -86,7 +87,7 @@ class OfferGiftsWindow(ViewImpl):
 
     @adisp_process
     def _onLoading(self, *args, **kwargs):
-        super(OfferGiftsWindow, self)._onLoading(*args, **kwargs)
+        super(OfferGiftsView, self)._onLoading(*args, **kwargs)
         offerItem = self._offerItem
         if offerItem is not None:
             result = yield self.syncOfferResources()
@@ -96,7 +97,7 @@ class OfferGiftsWindow(ViewImpl):
                 self.destroyWindow()
                 return
             self._offersNovelty.saveAsSeen(self._offerID)
-            with self._viewModel.transaction() as model:
+            with self._viewModel.transaction() as (model):
                 localization = ResMgr.openSection(self._offersProvider.getCdnResourcePath(offerItem.cdnLocFilePath, relative=False))
                 description = localization.readString('description') if localization else ''
                 linkText = localization.readString('linkText') if localization else ''
@@ -187,11 +188,7 @@ class OfferGiftsWindow(ViewImpl):
             count = gift.giftCount if gift.bonusType not in BONUSES_WITHOUT_COUNTER else 0
         price = gift.price
         imgPath = getGfImagePath(icon) or ''
-        return (title,
-         description,
-         imgPath,
-         count,
-         price)
+        return (title, description, imgPath, count, price)
 
     def _onGiftClicked(self, args):
         giftID = args.get('index')
@@ -225,7 +222,7 @@ class OfferGiftsWindow(ViewImpl):
         if self._offerItem is None:
             return
         else:
-            with self._viewModel.transaction() as model:
+            with self._viewModel.transaction() as (model):
                 for giftModel in model.gifts.getItems():
                     gift = self._offerItem.getGift(giftModel.getId())
                     notEnoughTokens = self._offerItem.availableTokens < gift.price
@@ -245,7 +242,7 @@ class OfferGiftsWindow(ViewImpl):
             self.destroyWindow()
             return
         else:
-            with self._viewModel.transaction() as model:
+            with self._viewModel.transaction() as (model):
                 self._setDynamicInfo(model)
                 self._generateGifts(model)
             return

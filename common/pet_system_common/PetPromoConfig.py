@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/pet_system_common/PetPromoConfig.py
 import typing
 from pet_constants import PetPromoConsts
 if typing.TYPE_CHECKING:

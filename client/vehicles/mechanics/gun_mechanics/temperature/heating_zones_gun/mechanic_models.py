@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicles/mechanics/gun_mechanics/temperature/heating_zones_gun/mechanic_models.py
 from __future__ import absolute_import, division
 import typing
 from constants import HEATING_ZONES_GUN_STATE
@@ -17,7 +15,7 @@ class HeatingZonesGunComponentParams(IHeatingZonesGunComponentParams):
 
     @classmethod
     def fromMechanicParams(cls, params):
-        maxBorderValue = params.zones[-1][1]
+        maxBorderValue = params.zones[(-1)][1]
         return cls(*(borderValue / maxBorderValue for stateID, borderValue in params.zones[1:-1]))
 
     @property

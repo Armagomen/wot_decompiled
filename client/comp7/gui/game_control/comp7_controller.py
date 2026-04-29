@@ -1,14 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/game_control/comp7_controller.py
-import itertools
-import logging
-import time
+import itertools, logging, time
 from collections import namedtuple
-import adisp
-import typing
-import Event
+import adisp, typing, Event
 from Event import EventManager
 from PlayerEvents import g_playerEvents
+from comp7_core.gui.comp7_core_constants import BATTLE_CTRL_ID
 from comp7.gui.comp7_constants import FUNCTIONAL_FLAG
 from comp7.gui.entitlements_cache import EntitlementsCache, CacheStatus
 from comp7.gui.event_boards.event_boards_items import Comp7LeaderBoard, Comp7PlayerProgression
@@ -19,9 +14,11 @@ from comp7.helpers.comp7_server_settings import Comp7ServerSettings
 from comp7_common.comp7_constants import Configs
 from comp7_common_const import Comp7QualificationState, SEASON_POINTS_ENTITLEMENTS, qualificationTokenBySeasonNumber, ratingEntNameBySeasonNumber, eliteRankEntNameBySeasonNumber, activityPointsEntNameBySeasonNumber, maxRankEntNameBySeasonNumber
 from constants import RESTRICTION_TYPE, COMP7_SCENE, ARENA_BONUS_TYPE, QUEUE_TYPE, ARENA_GUI_TYPE
+from disjoint_set import DisjointSet
 from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.game_control.season_provider import SeasonProvider
 from gui.prb_control import prb_getters
+from gui.prb_control.entities.base.actions_validator import VehicleActionsValidator
 from gui.prb_control.entities.listener import IGlobalListener
 from gui.prb_control.items import ValidationResult
 from gui.prb_control.settings import PRE_QUEUE_RESTRICTION
@@ -29,6 +26,7 @@ from gui.shared import g_eventBus, EVENT_BUS_SCOPE
 from gui.shared.events import LobbyHeaderMenuEvent
 from gui.shared.gui_items.Vehicle import Vehicle
 from gui.shared.utils.requesters import REQ_CRITERIA
+from gui.shared.utils.requesters.ItemsRequester import SelectDistinctFilter
 from gui.shared.utils.scheduled_notifications import Notifiable, TimerNotifier, SimpleNotifier
 from helpers import dependency
 from helpers.CallbackDelayer import CallbackDelayer
@@ -45,7 +43,8 @@ if typing.TYPE_CHECKING:
     from items.artefacts import Equipment
 
 class Comp7Controller(Notifiable, SeasonProvider, IComp7Controller, IGlobalListener):
-    __SEASON_ENTITLEMENT_NAME_FACTORIES = {ratingEntNameBySeasonNumber, eliteRankEntNameBySeasonNumber, activityPointsEntNameBySeasonNumber}
+    __SEASON_ENTITLEMENT_NAME_FACTORIES = {
+     ratingEntNameBySeasonNumber, eliteRankEntNameBySeasonNumber, activityPointsEntNameBySeasonNumber}
     __STATS_SEASONS_KEYS = ('1', '2', '3')
     __itemsCache = dependency.descriptor(IItemsCache)
     __spaceSwitchController = dependency.descriptor(IHangarSpaceSwitchController)
@@ -72,6 +71,7 @@ class Comp7Controller(Notifiable, SeasonProvider, IComp7Controller, IGlobalListe
         self.__leaderboardDataProvider = _LeaderboardDataProvider()
         self.__progressionDataProvider = _ProgressionDataProvider()
         self.__isHangarLoadedAfterLogin = False
+        self.__vehicleCopiesInfo = DisjointSet()
         self.__eventsManager = em = EventManager()
         self.onStatusUpdated = Event.Event(em)
         self.onStatusTick = Event.Event(em)
@@ -99,9 +99,9 @@ class Comp7Controller(Notifiable, SeasonProvider, IComp7Controller, IGlobalListe
                 if equipmentConfig['equipmentID'] is not None:
                     startCharge = equipmentConfig['startCharge']
                     startLevel = len([ levelCost for levelCost in equipmentConfig['cost'] if levelCost <= startCharge ])
-                    self.__roleEquipmentsCache[role] = {'item': equipmentsCache[equipmentConfig['equipmentID']],
-                     'startLevel': startLevel,
-                     'overrides': equipmentConfig['overrides']}
+                    self.__roleEquipmentsCache[role] = {'item': equipmentsCache[equipmentConfig['equipmentID']], 
+                       'startLevel': startLevel, 
+                       'overrides': equipmentConfig['overrides']}
 
         return self.__roleEquipmentsCache
 
@@ -123,7 +123,10 @@ class Comp7Controller(Notifiable, SeasonProvider, IComp7Controller, IGlobalListe
 
     @property
     def banDuration(self):
-        return max(0, getTimeDeltaFromNow(self.__banExpiryTime)) if self.__banExpiryTime is not None else 0
+        if self.__banExpiryTime is not None:
+            return max(0, getTimeDeltaFromNow(self.__banExpiryTime))
+        else:
+            return 0
 
     @property
     def isOffline(self):
@@ -144,7 +147,10 @@ class Comp7Controller(Notifiable, SeasonProvider, IComp7Controller, IGlobalListe
     @property
     def qualificationBattlesNumber(self):
         modeSettings = self.getModeSettings()
-        return modeSettings.qualification.battlesNumber if modeSettings else None
+        if modeSettings:
+            return modeSettings.qualification.battlesNumber
+        else:
+            return
 
     @property
     def qualificationBattlesStatuses(self):
@@ -160,15 +166,23 @@ class Comp7Controller(Notifiable, SeasonProvider, IComp7Controller, IGlobalListe
     def remainingOfferTokensNotifications(self):
         return self.getModeSettings().remainingOfferTokensNotifications
 
+    @property
+    def bans(self):
+        return self.getModeSettings().bans
+
+    @property
+    def vehicleCopiesInfo(self):
+        return self.__vehicleCopiesInfo
+
     def init(self):
         super(Comp7Controller, self).init()
         self.addNotificator(SimpleNotifier(self.getTimer, self.__timerUpdate))
         self.addNotificator(TimerNotifier(self.getTimer, self.__timerTick))
-        g_clientUpdateManager.addCallbacks({'cache.entitlements': self.__onEntitlementsChanged,
-         'cache.comp7.isOnline': self.__onOfflineStatusChanged,
-         'stats.restrictions': self.__onRestrictionsChanged,
-         'cache.comp7.qualification.battles': self.__onQualificationBattlesChanged,
-         'cache.comp7.qualification.state': self.__onQualificationStateChanged})
+        g_clientUpdateManager.addCallbacks({'cache.entitlements': self.__onEntitlementsChanged, 
+           'cache.comp7.isOnline': self.__onOfflineStatusChanged, 
+           'stats.restrictions': self.__onRestrictionsChanged, 
+           'cache.comp7.qualification.battles': self.__onQualificationBattlesChanged, 
+           'cache.comp7.qualification.state': self.__onQualificationStateChanged})
 
     def fini(self):
         self.clearNotification()
@@ -211,6 +225,7 @@ class Comp7Controller(Notifiable, SeasonProvider, IComp7Controller, IGlobalListe
             self.__updateMainConfig()
             self.__roleEquipmentsCache = None
         self.__applyEquipmentOverrides()
+        self.__updateVehicleBanData()
         return
 
     def onConnected(self):
@@ -256,7 +271,10 @@ class Comp7Controller(Notifiable, SeasonProvider, IComp7Controller, IGlobalListe
         return self.__comp7RanksConfig
 
     def getYearlyRewards(self):
-        return self.__comp7ServerSettings.comp7RewardsConfig if self.__comp7ServerSettings else None
+        if self.__comp7ServerSettings:
+            return self.__comp7ServerSettings.comp7RewardsConfig
+        else:
+            return
 
     def isEnabled(self):
         return self.__comp7Config is not None and self.__comp7Config.isEnabled and self.__isRanksConfigAvailable()
@@ -275,12 +293,18 @@ class Comp7Controller(Notifiable, SeasonProvider, IComp7Controller, IGlobalListe
     def isTrainingEnabled(self):
         return self.__comp7Config is not None and self.__comp7Config.isTrainingEnabled
 
+    def isVehicleBanEnabled(self):
+        return self.__comp7Config is not None and self.__comp7Config.isVehicleBanEnabled
+
     def hasActiveSeason(self, includePreannounced=False):
         return self.isAvailable() and bool(self.getCurrentSeason(includePreannounced=includePreannounced))
 
     def getActualSeasonNumber(self, includePreannounced=False):
         season = self.getCurrentSeason(includePreannounced=includePreannounced) or self.getPreviousSeason()
-        return season.getNumber() if season else None
+        if season:
+            return season.getNumber()
+        else:
+            return
 
     def getCurrentSeason(self, now=None, includePreannounced=False):
         currentSeason = super(Comp7Controller, self).getCurrentSeason(now=now)
@@ -307,7 +331,8 @@ class Comp7Controller(Notifiable, SeasonProvider, IComp7Controller, IGlobalListe
             for seasonId, season in seasons.iteritems():
                 startPreannounce = season.get('startPreannounce')
                 if startPreannounce is not None:
-                    return startPreannounce < now < season['startSeason'] and seasonId
+                    if startPreannounce < now < season['startSeason']:
+                        return seasonId
 
             return
 
@@ -321,10 +346,7 @@ class Comp7Controller(Notifiable, SeasonProvider, IComp7Controller, IGlobalListe
         else:
             season = self.__comp7Config.seasons[seasonID]
             cycleID, cycle = season['cycles'].items()[0]
-            cycleInfo = (cycle['start'],
-             cycle['end'],
-             seasonID,
-             cycleID)
+            cycleInfo = (cycle['start'], cycle['end'], seasonID, cycleID)
             return self._createSeason(cycleInfo, season)
 
     def getRoleEquipment(self, roleName):
@@ -352,15 +374,26 @@ class Comp7Controller(Notifiable, SeasonProvider, IComp7Controller, IGlobalListe
         if vehicle.level not in config.levels:
             restriction = PRE_QUEUE_RESTRICTION.LIMIT_LEVEL
             ctx = {'levels': config.levels}
-        return ValidationResult(False, restriction, ctx) if restriction is not None else None
+        if restriction is not None:
+            return ValidationResult(False, restriction, ctx)
+        else:
+            return
 
     def getViewData(self, viewAlias):
         return self.__viewData.setdefault(viewAlias, {})
 
     def hasSuitableVehicles(self):
         criteria = self.__filterEnabledVehiclesCriteria(~REQ_CRITERIA.VEHICLE.EVENT_BATTLE | ~REQ_CRITERIA.VEHICLE.BATTLE_ROYALE | REQ_CRITERIA.INVENTORY | ~REQ_CRITERIA.VEHICLE.MODE_HIDDEN)
-        v = self.__itemsCache.items.getVehicles(criteria)
-        return len(v) > 0
+        suitableVehicles = self.__itemsCache.items.getVehicles(criteria=criteria, limit=1)
+        return len(suitableVehicles) > 0
+
+    def hasEnoughReadyToFightVehicles(self):
+        if not self.isVehicleBanEnabled():
+            return self.hasSuitableVehicles()
+        selectDistinctFilter = SelectDistinctFilter(self.__vehicleCopiesInfo)
+        criteria = self.__filterEnabledVehiclesCriteria(~REQ_CRITERIA.VEHICLE.EVENT_BATTLE | ~REQ_CRITERIA.VEHICLE.BATTLE_ROYALE | REQ_CRITERIA.INVENTORY | ~REQ_CRITERIA.VEHICLE.MODE_HIDDEN | REQ_CRITERIA.CUSTOM(VehicleActionsValidator.validateVehicleBool) | REQ_CRITERIA.CUSTOM(lambda vehicle: selectDistinctFilter(vehicle.intCD)))
+        suitableVehicles = self.__itemsCache.items.getVehicles(criteria=criteria, limit=self.__comp7Config.minVehiclesRequired)
+        return len(suitableVehicles) >= self.__comp7Config.minVehiclesRequired
 
     def vehicleIsAvailableForBuy(self):
         criteria = self.__filterEnabledVehiclesCriteria(REQ_CRITERIA.UNLOCKED)
@@ -380,10 +413,16 @@ class Comp7Controller(Notifiable, SeasonProvider, IComp7Controller, IGlobalListe
         return len(v) > 0
 
     def isModePrbActive(self):
-        return False if self.prbEntity is None else bool(self.prbEntity.getModeFlags() & FUNCTIONAL_FLAG.COMP7) or self.prbEntity.getQueueType() == QUEUE_TYPE.SPEC_BATTLE and self.prbEntity.getSettings()['arenaGuiType'] in ARENA_GUI_TYPE.COMP7_RANGE
+        if self.prbEntity is None:
+            return False
+        else:
+            return bool(self.prbEntity.getModeFlags() & FUNCTIONAL_FLAG.COMP7) or self.prbEntity.getQueueType() == QUEUE_TYPE.SPEC_BATTLE and self.prbEntity.getSettings()['arenaGuiType'] in ARENA_GUI_TYPE.COMP7_RANGE
 
     def isRandomPrbActive(self):
-        return False if self.prbEntity is None else bool(self.prbEntity.getModeFlags() & FUNCTIONAL_FLAG.RANDOM)
+        if self.prbEntity is None:
+            return False
+        else:
+            return bool(self.prbEntity.getModeFlags() & FUNCTIONAL_FLAG.RANDOM)
 
     def isBattleModifiersAvailable(self):
         return len(self.battleModifiers) > 0
@@ -392,10 +431,9 @@ class Comp7Controller(Notifiable, SeasonProvider, IComp7Controller, IGlobalListe
         unitMgr = prb_getters.getClientUnitMgr()
         if unitMgr is None or unitMgr.unit is None:
             return 0
-        else:
-            if squadSize is None:
-                squadSize = unitMgr.unit.getSquadSize()
-            return self.__comp7Config.squadRankRestriction.get(squadSize, 0)
+        if squadSize is None:
+            squadSize = unitMgr.unit.getSquadSize()
+        return self.__comp7Config.squadRankRestriction.get(squadSize, 0)
 
     def getPlatoonMaxRankRestriction(self):
         return max(self.__comp7Config.squadRankRestriction.itervalues())
@@ -456,7 +494,7 @@ class Comp7Controller(Notifiable, SeasonProvider, IComp7Controller, IGlobalListe
 
     def __updateArenaBans(self):
         arenaBans = self.__itemsCache.items.stats.restrictions.get(RESTRICTION_TYPE.ARENA_BAN, {})
-        comp7Bans = tuple((b for b in arenaBans.itervalues() if ARENA_BONUS_TYPE.COMP7 in b.get('bonusTypes', ())))
+        comp7Bans = tuple(b for b in arenaBans.itervalues() if ARENA_BONUS_TYPE.COMP7 in b.get('bonusTypes', ()))
         if comp7Bans:
             ban = max(comp7Bans, key=lambda b: b.get('expiryTime', 0))
             expiryTime = ban['expiryTime']
@@ -492,10 +530,19 @@ class Comp7Controller(Notifiable, SeasonProvider, IComp7Controller, IGlobalListe
             self.__updateMainConfig()
             self.__roleEquipmentsCache = None
             self.__resetTimer()
+            self.__updateVehicleCopiesInfo()
             self.onModeConfigChanged()
         if Configs.COMP7_REWARDS_CONFIG.value in diff:
             self.onComp7RewardsConfigChanged()
         return
+
+    def __updateVehicleCopiesInfo(self):
+        dsu = self.__vehicleCopiesInfo = DisjointSet()
+        for baseCD, copiesCDs in self.__comp7Config.vehicleCopiesInfo.iteritems():
+            dsu.add(baseCD)
+            for copyCD in copiesCDs:
+                dsu.add(copyCD)
+                dsu.union(baseCD, copyCD)
 
     def __clearEquipmentOverrides(self):
         for equipment, originalParams in self.__equipmentCacheOverrides.iteritems():
@@ -522,6 +569,17 @@ class Comp7Controller(Notifiable, SeasonProvider, IComp7Controller, IGlobalListe
 
     def __updateMainConfig(self):
         self.__comp7Config = self.__comp7ServerSettings.comp7Config
+
+    def __updateVehicleBanData(self):
+        vehicleBanCtrl = self.__battleSessionProvider.dynamic.getControllerByID(BATTLE_CTRL_ID.COMP7_VEHICLE_BAN_CTRL)
+        if vehicleBanCtrl is None:
+            return
+        else:
+            if self.__battleSessionProvider.arenaVisitor.getArenaGuiType() not in ARENA_GUI_TYPE.COMP7_RANGE:
+                return
+            vehicleBanCtrl.isVehicleBanEnabled = self.isVehicleBanEnabled()
+            vehicleBanCtrl.updateVehicleCopiesInfo(self.__comp7Config.vehicleCopiesInfo)
+            return
 
     def __resetTimer(self):
         self.startNotification()
@@ -613,14 +671,19 @@ class Comp7Controller(Notifiable, SeasonProvider, IComp7Controller, IGlobalListe
 
     def __getActualEntitlements(self):
         actualSeasonNumber = self.getActualSeasonNumber()
-        return set() if not actualSeasonNumber else {nameFactory(actualSeasonNumber) for nameFactory in self.__SEASON_ENTITLEMENT_NAME_FACTORIES}
+        if not actualSeasonNumber:
+            return set()
+        return {nameFactory(actualSeasonNumber) for nameFactory in self.__SEASON_ENTITLEMENT_NAME_FACTORIES}
 
     def __getActivityPointsForSeason(self, seasonNumber):
         return self.__getEntitlementCount(activityPointsEntNameBySeasonNumber(str(seasonNumber)))
 
     def __getEntitlementCount(self, entitlementName):
         entitlementCount = self.__entitlementsCache.getEntitlementCount(entitlementName)
-        return entitlementCount if entitlementCount is not None else self.__itemsCache.items.stats.entitlements.get(entitlementName, 0)
+        if entitlementCount is not None:
+            return entitlementCount
+        else:
+            return self.__itemsCache.items.stats.entitlements.get(entitlementName, 0)
 
     def __getComp7Stats(self):
         return self.__itemsCache.items.stats.getCacheValue('comp7', {})
@@ -654,7 +717,7 @@ class _LeaderboardDataProvider(object):
 
     def getMinimumPointsNeeded(self):
         divisions = [ d for d in self.__getRanksConfig().divisions if d.rank == self.__MASTER_RANK_ID ]
-        return min((division.range.begin for division in divisions))
+        return min(division.range.begin for division in divisions)
 
     @adisp.adisp_async
     @adisp.adisp_process
@@ -708,7 +771,7 @@ class _LeaderboardDataProvider(object):
         pageIDs = range(startPage, endPage + 1)
         result = yield self.__requestPages(pageIDs)
         if result:
-            records = list(itertools.chain.from_iterable((self.__cachedPages.get(pID, ()) for pID in pageIDs)))
+            records = list(itertools.chain.from_iterable(self.__cachedPages.get(pID, ()) for pID in pageIDs))
             records = records[startRecord:endRecord + 1]
         else:
             records = None
@@ -793,7 +856,9 @@ class _LeaderboardDataProvider(object):
         startPage, startRecord = divmod(offset, pageSize)
         endPage = (offset + limit - 1) // pageSize
         endRecord = startRecord + limit - 1
-        return ((startPage, endPage), (startRecord, endRecord))
+        return (
+         (
+          startPage, endPage), (startRecord, endRecord))
 
 
 class _ProgressionDataProvider(object):

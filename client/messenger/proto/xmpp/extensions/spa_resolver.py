@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/proto/xmpp/extensions/spa_resolver.py
 from messenger.proto.xmpp.extensions import PyExtension, PyQuery
 from messenger.proto.xmpp.extensions.ext_constants import XML_NAME_SPACE as _NS
 from messenger.proto.xmpp.extensions.ext_constants import XML_TAG_NAME as _TAG
@@ -13,10 +11,10 @@ class SpaResolverError(PyExtension):
 
     @classmethod
     def getDefaultData(cls):
-        pass
+        return ''
 
     def getTag(self):
-        pass
+        return ''
 
     def parseTag(self, pyGlooxTag):
         return pyGlooxTag.getCData()
@@ -44,7 +42,8 @@ class SpaResolverItem(PyExtension):
             dbID = 0
         nickname = pyGlooxTag.findAttribute('nickname')
         error = self._getChildData(pyGlooxTag, 0, SpaResolverError.getDefaultData())
-        return (dbID, nickname, error)
+        return (
+         dbID, nickname, error)
 
 
 class SpaResolverQuery(PyExtension):

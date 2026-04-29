@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shop.py
+from __future__ import absolute_import
 import logging
 from collections import namedtuple
 from adisp import adisp_process
@@ -20,15 +19,15 @@ from skeletons.gui.game_control import ITradeInController
 from skeletons.gui.shared import IItemsCache
 _logger = logging.getLogger(__name__)
 _ProductInfo = namedtuple('_ProductInfo', ('price', 'href', 'method'))
-SHOP_RENT_TYPE_MAP = {RentType.NO_RENT: 'none',
- RentType.TIME_RENT: 'time',
- RentType.BATTLES_RENT: 'battles',
- RentType.WINS_RENT: 'wins',
- RentType.SEASON_RENT: 'season',
- RentType.SEASON_CYCLE_RENT: 'cycle'}
-SHOP_RENT_SEASON_TYPE_MAP = {GameSeasonType.NONE: 'none',
- GameSeasonType.RANKED: 'ranked',
- GameSeasonType.EPIC: 'frontline'}
+SHOP_RENT_TYPE_MAP = {RentType.NO_RENT: 'none', 
+   RentType.TIME_RENT: 'time', 
+   RentType.BATTLES_RENT: 'battles', 
+   RentType.WINS_RENT: 'wins', 
+   RentType.SEASON_RENT: 'season', 
+   RentType.SEASON_CYCLE_RENT: 'cycle'}
+SHOP_RENT_SEASON_TYPE_MAP = {GameSeasonType.NONE: 'none', 
+   GameSeasonType.RANKED: 'ranked', 
+   GameSeasonType.EPIC: 'frontline'}
 
 class _GoldPurchaseReason(object):
     VEHICLE = 'vehicle'
@@ -52,7 +51,6 @@ class Source(object):
 class Origin(object):
     STORAGE = 'storage'
     HERO_TANK = 'hero_tank'
-    ADVENT_CALENDAR = 'advent_calendar'
     BATTLE_BOOSTERS = 'battle_boosters'
     CONSUMABLES = 'consumables'
     WITHOUT_NAME = 'without_name'
@@ -61,22 +59,26 @@ class Origin(object):
 
 
 def _getParams(reason, price, itemId=None):
-    params = {'reason': reason,
-     'goldPrice': price,
-     'source': Source.EXTERNAL}
+    params = {'reason': reason, 
+       'goldPrice': price, 
+       'source': Source.EXTERNAL}
     if itemId is not None:
         params['itemId'] = itemId
     return params
 
 
 def _makeBuyItemUrl(categoryUrl, itemId=None):
-    return '{}/items/$PARAMS(web2client_{})'.format(categoryUrl, itemId) if itemId else categoryUrl
+    if itemId:
+        return ('{}/items/$PARAMS(web2client_{})').format(categoryUrl, itemId)
+    return categoryUrl
 
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
 def canBuyGoldForItemThroughWeb(itemID, itemsCache=None):
     item = itemsCache.items.getItemByCD(itemID)
-    return canBuyGoldForVehicleThroughWeb(item) if item.itemTypeID == GUI_ITEM_TYPE.VEHICLE else False
+    if item.itemTypeID == GUI_ITEM_TYPE.VEHICLE:
+        return canBuyGoldForVehicleThroughWeb(item)
+    return False
 
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache, tradeIn=ITradeInController)
@@ -193,8 +195,8 @@ def showBlueprintsExchangeOverlay(url=None, parent=None):
 @adisp_process
 def _showBlurredWebOverlay(url, params=None, parent=None, isClientCloseControl=False):
     url = yield URLMacros().parse(url, params)
-    ctx = {'url': url,
-     'allowRightClick': False}
+    ctx = {'url': url, 
+       'allowRightClick': False}
     if isClientCloseControl:
         ctx.update(helpers.getClientControlledCloseCtx())
     g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.WEB_VIEW_TRANSPARENT, parent=parent), ctx=ctx), EVENT_BUS_SCOPE.LOBBY)
@@ -253,5 +255,5 @@ def showRentProductOverlay(params=None):
 def _showOverlayWebStoreDefault(url, params=None):
     if url:
         url = yield URLMacros().parse(url, params=params)
-        g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.OVERLAY_WEB_STORE), ctx={'url': url,
-         'browserParams': makeBrowserParams(R.strings.waiting.updating(), True, True, 0.5)}), EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.OVERLAY_WEB_STORE), ctx={'url': url, 
+           'browserParams': makeBrowserParams(R.strings.waiting.updating(), True, True, 0.5)}), EVENT_BUS_SCOPE.LOBBY)

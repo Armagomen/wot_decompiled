@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/comp7_helpers/comp7_quest_helpers.py
-import logging
-import re
-import typing
+import logging, re, typing
 from comp7_common_const import COMP7_OFFER_YEARLY_REWARD_TOKEN_PREFIX, Comp7QuestType, offerWeeklyQuestsRewardTokenPrefixBySeasonNumber, weeklyQuestsCompleteTokenName, COMP7_YEARLY_REWARD_TOKEN, COMP7_OFFER_PREFIX
 from gui.server_events.cond_formatters.bonus import BattlesCountFormatter
 from gui.shared.items_cache import ItemsCache
@@ -35,7 +31,10 @@ def isComp7VisibleQuest(qID):
 
 def getComp7QuestType(qID):
     parsedID = Comp7ParsedQuestID(qID)
-    return parsedID.questType if parsedID else None
+    if parsedID:
+        return parsedID.questType
+    else:
+        return
 
 
 def isFirstWeeklyQuest(qID):
@@ -60,13 +59,15 @@ def getRequiredTokensCountToComplete(qID):
 @dependency.replace_none_kwargs(ctrl=IComp7Controller)
 def getComp7WeeklyQuestsCompleteToken(ctrl=None):
     actualSeasonNumber = ctrl.getActualSeasonNumber()
-    return weeklyQuestsCompleteTokenName(actualSeasonNumber) if actualSeasonNumber else None
+    if actualSeasonNumber:
+        return weeklyQuestsCompleteTokenName(actualSeasonNumber)
 
 
 @dependency.replace_none_kwargs(ctrl=IComp7Controller)
 def getComp7OfferWeeklyQuestsRewardTokenPrefix(ctrl=None):
     actualSeasonNumber = ctrl.getActualSeasonNumber()
-    return offerWeeklyQuestsRewardTokenPrefixBySeasonNumber(actualSeasonNumber) if actualSeasonNumber else None
+    if actualSeasonNumber:
+        return offerWeeklyQuestsRewardTokenPrefixBySeasonNumber(actualSeasonNumber)
 
 
 def isComp7OfferYearlyRewardToken(token):
@@ -80,7 +81,7 @@ def isComp7OfferYearlyRewardGiftToken(token):
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
 def hasAvailableOfferYearlyRewardGiftTokens(itemsCache=None):
     tokens = itemsCache.items.tokens.getTokens().iteritems()
-    return any((amount[1] > 0 and isComp7OfferYearlyRewardGiftToken(name) for name, amount in tokens))
+    return any(amount[1] > 0 and isComp7OfferYearlyRewardGiftToken(name) for name, amount in tokens)
 
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
@@ -132,13 +133,14 @@ def parseQuestsByDivision(quests, parser, questType):
         division = parser(quest.getID())
         if division is not None:
             questsByDivision[division.dvsnID] = quest
-        _logger.error('Division number could not be parsed - %s', quest.getID())
+        else:
+            _logger.error('Division number could not be parsed - %s', quest.getID())
 
     return questsByDivision
 
 
 class Comp7ParsedQuestID(object):
-    __questIDMatcher = re.compile('comp7_(\\d+)_(\\d+)_({})_(.+)'.format('|'.join((el.value for el in Comp7QuestType)))).match
+    __questIDMatcher = re.compile(('comp7_(\\d+)_(\\d+)_({})_(.+)').format(('|').join(el.value for el in Comp7QuestType))).match
     __slots__ = ('season', 'questType', 'extraInfo')
 
     def __new__(cls, questID):
@@ -150,7 +152,7 @@ class Comp7ParsedQuestID(object):
             self.questType = Comp7QuestType(questType)
             return self
         else:
-            return None
+            return
 
 
 def getDescriptionAndProgressFromC11nDecalQuest(quest, vehicleCondFormatter=getDefaultVehicleCondFormatter(), postBattleCondFormatter=getDefaultPostBattleCondFormatter(), missionsBonusCondsFmt=getDefaultMissionsBonusConditionsFormatter()):

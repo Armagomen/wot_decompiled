@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/account_helpers/spa_flags.py
 from external_strings_utils import strtobool, InvalidStringValueException
 from shared_utils.account_helpers.diff_utils import synchronizeDicts
 from constants import SPA_ATTRS
@@ -43,7 +41,10 @@ class SPAFlags(object):
         return
 
     def getFlag(self, flagName):
-        return self.__cache['spaFlags'].get(flagName, None) if self.__cache and 'spaFlags' in self.__cache else None
+        if self.__cache and 'spaFlags' in self.__cache:
+            return self.__cache['spaFlags'].get(flagName, None)
+        else:
+            return
 
     def getCountry(self):
         return self.__country

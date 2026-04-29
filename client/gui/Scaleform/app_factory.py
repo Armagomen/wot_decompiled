@@ -1,9 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/app_factory.py
-import logging
-import weakref
-import BattleReplay
-import BigWorld
+from __future__ import absolute_import
+import logging, weakref
+from future.utils import viewitems
+import BattleReplay, BigWorld
 from constants import ARENA_GUI_TYPE
 from frameworks.wulf import WindowFlags
 from gui import GUI_SETTINGS
@@ -55,7 +53,8 @@ class EmptyAppFactory(AlwaysValidObject, IAppFactory):
 
 
 class AS3_AppFactory(IAppFactory):
-    __slots__ = ('__apps', '__packages', '__importer', '__waiting', '__ctrlModeFlags', '__weakref__', '__gui')
+    __slots__ = ('__apps', '__packages', '__importer', '__waiting', '__ctrlModeFlags',
+                 '__weakref__')
     __gui = dependency.descriptor(IGuiLoader)
 
     def __init__(self):
@@ -221,9 +220,8 @@ class AS3_AppFactory(IAppFactory):
             return
 
     def destroy(self):
-        for appNS in self.__apps.iterkeys():
+        for appNS, entry in viewitems(self.__apps):
             _logger.info('Destroying app: %s', appNS)
-            entry = self.__apps[appNS]
             if entry:
                 entry.close()
             self.__apps[appNS] = None
@@ -247,13 +245,9 @@ class AS3_AppFactory(IAppFactory):
         if appNS != _SPACE.SF_LOBBY:
             return
         app = self.getApp(appNS=appNS)
-        libs = ['guiControlsLobbyBattleDynamic.swf',
-         'guiControlsLobbyDynamic.swf',
-         'guiControlsLobbyDynamic2.swf',
-         'popovers.swf',
-         'iconLibrary.swf',
-         'Achievements.swf',
-         'guiControlsLobby2.swf']
+        libs = [
+         'guiControlsLobbyBattleDynamic.swf', 'guiControlsLobbyDynamic.swf', 'guiControlsLobbyDynamic2.swf',
+         'popovers.swf', 'iconLibrary.swf', 'Achievements.swf', 'guiControlsLobby2.swf']
         app.as_loadLibrariesS(libs)
         mainWindow = self.getMainWindow()
         g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.LOBBY, parent=mainWindow)), EVENT_BUS_SCOPE.LOBBY)
@@ -287,7 +281,10 @@ class AS3_AppFactory(IAppFactory):
 
     def handleKey(self, appNS, isDown, key, mods):
         app = self.getApp(appNS=appNS)
-        return app.handleKey(isDown, key, mods) if app is not None else False
+        if app is not None:
+            return app.handleKey(isDown, key, mods)
+        else:
+            return False
 
     def _setActive(self, appNS, isActive):
         app = self.__apps[appNS]

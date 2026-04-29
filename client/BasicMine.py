@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/BasicMine.py
+from __future__ import absolute_import
 from battleground.mines_object import loadMines
 from entity_game_object import EntityGameObject
 

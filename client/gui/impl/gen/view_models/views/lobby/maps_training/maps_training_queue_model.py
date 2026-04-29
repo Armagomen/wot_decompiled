@@ -1,10 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/maps_training/maps_training_queue_model.py
 from frameworks.wulf import ViewModel
 from gui.impl.gen import R
 
 class MapsTrainingQueueModel(ViewModel):
-    __slots__ = ('onQuit', 'onMenu', 'onShowPrevTip', 'onShowNextTip', 'onMoveSpace', 'onMouseOver3dScene')
+    __slots__ = ('onQuit', 'onMenu', 'onShowPrevTip', 'onShowNextTip', 'onMoveSpace',
+                 'onMouseOver3dScene')
     DELAY_DEFAULT = ''
     DELAY_NORMAL = 'normal'
     DELAY_LONG = 'long'

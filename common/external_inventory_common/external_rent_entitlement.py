@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/external_inventory_common/external_rent_entitlement.py
 from items import vehicles
 EXTERNAL_RENT_ENTITLEMENT_PREFIX = 'ext_rent'
 
@@ -22,6 +20,7 @@ def parseEntitlement(entitlementCode):
         partnerCode = None
         if len(tokens) >= 4:
             partnerCode = tokens[3]
-        data = {'vehTypeCompDescr': vehTypeCompDescr,
-         'partnerCode': partnerCode}
-        return (True, data, '')
+        data = {'vehTypeCompDescr': vehTypeCompDescr, 
+           'partnerCode': partnerCode}
+        return (
+         True, data, '')

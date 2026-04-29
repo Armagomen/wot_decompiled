@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/vehicle_compare/builder.py
 from gui.impl.gen.view_models.views.lobby.tank_setup.main_tank_setup_model import MainTankSetupModel
 from gui.impl.lobby.vehicle_compare.battle_booster import CompareBattleBoosterSetupSubView
 from gui.impl.lobby.vehicle_compare.consumable import CompareConsumableSetupSubView

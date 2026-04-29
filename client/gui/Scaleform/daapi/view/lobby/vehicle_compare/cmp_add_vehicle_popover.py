@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_compare/cmp_add_vehicle_popover.py
 from __future__ import absolute_import
 from gui.Scaleform.daapi.view.lobby.popover.vehicle_select_popover_base import VehicleSelectPopoverBase
 from gui.Scaleform.daapi.view.lobby.vehicle_compare.formatters import packHeaderColumnData
@@ -15,15 +13,15 @@ from skeletons.gui.game_control import IVehicleComparisonBasket
 from skeletons.gui.shared import IItemsCache
 
 def _makeVehicleCmpVO(vehicle):
-    return {'dbID': vehicle.intCD,
-     'level': vehicle.level,
-     'shortUserName': vehicle.shortUserName,
-     'smallIconPath': getSmallIconPath(vehicle.name),
-     'nationID': vehicle.nationID,
-     'type': vehicle.type,
-     'typeIcon': getTypeSmallIconPath(vehicle.type, vehicle.isPremium),
-     'selected': False,
-     'inHangar': vehicle.isInInventory}
+    return {'dbID': vehicle.intCD, 
+       'level': vehicle.level, 
+       'shortUserName': vehicle.shortUserName, 
+       'smallIconPath': getSmallIconPath(vehicle.name), 
+       'nationID': vehicle.nationID, 
+       'type': vehicle.type, 
+       'typeIcon': getTypeSmallIconPath(vehicle.type, vehicle.isPremium), 
+       'selected': False, 
+       'inHangar': vehicle.isInInventory}
 
 
 class VehicleCompareAddVehiclePopover(VehicleSelectPopoverBase, VehicleSelectorBase):
@@ -63,10 +61,10 @@ class VehicleCompareAddVehiclePopover(VehicleSelectPopoverBase, VehicleSelectorB
             tooltip = VEH_COMPARE.ADDVEHPOPOVER_TOOLTIPS_ADDTOCOMPARE
             icon = None
             isEnabled = selectedCount > 0
-        self.as_setAddButtonStateS({'btnLabel': _ms(VEH_COMPARE.ADDVEHPOPOVER_BTNADD, count=selectedCount),
-         'btnTooltip': tooltip,
-         'btnIcon': icon,
-         'btnEnabled': isEnabled})
+        self.as_setAddButtonStateS({'btnLabel': _ms(VEH_COMPARE.ADDVEHPOPOVER_BTNADD, count=selectedCount), 
+           'btnTooltip': tooltip, 
+           'btnIcon': icon, 
+           'btnEnabled': isEnabled})
         return
 
     def addButtonClicked(self):
@@ -94,15 +92,15 @@ class VehicleCompareAddVehiclePopover(VehicleSelectPopoverBase, VehicleSelectorB
             self.onWindowClose()
 
     def __initControls(self):
-        common = {'btnHeight': 34,
-         'enabled': True}
-        headers = [packHeaderColumnData('check', 45, icon=RES_ICONS.MAPS_ICONS_BUTTONS_ICON_TABLE_COMPARISON_CHECKMARK, tooltip=VEH_COMPARE.ADDVEHPOPOVER_TOOLTIPS_SELECTVEHICLE, **common),
+        common = {'btnHeight': 34, 'enabled': True}
+        headers = [
+         packHeaderColumnData('check', 45, icon=RES_ICONS.MAPS_ICONS_BUTTONS_ICON_TABLE_COMPARISON_CHECKMARK, tooltip=VEH_COMPARE.ADDVEHPOPOVER_TOOLTIPS_SELECTVEHICLE, **common),
          packHeaderColumnData('nations', 45, icon=RES_ICONS.MAPS_ICONS_FILTERS_NATIONS_ALL, tooltip=VEH_COMPARE.ADDVEHPOPOVER_TOOLTIPS_NATION, **common),
          packHeaderColumnData('type', 45, icon=RES_ICONS.MAPS_ICONS_FILTERS_TANKS_ALL, tooltip=VEH_COMPARE.ADDVEHPOPOVER_TOOLTIPS_TYPE, **common),
          packHeaderColumnData('level', 45, icon=RES_ICONS.MAPS_ICONS_BUTTONS_TAB_SORT_BUTTON_LEVEL, tooltip=VEH_COMPARE.ADDVEHPOPOVER_TOOLTIPS_LEVEL, **common),
          packHeaderColumnData('name', 130, label=VEH_COMPARE.ADDVEHPOPOVER_VEHICLENAME, tooltip=VEH_COMPARE.ADDVEHPOPOVER_TOOLTIPS_TITLE, direction='ascending', **common),
          packHeaderColumnData('hangar', 45, icon=RES_ICONS.MAPS_ICONS_BUTTONS_ICON_TABLE_COMPARISON_INHANGAR, tooltip=VEH_COMPARE.ADDVEHPOPOVER_TOOLTIPS_INHANGAR, **common)]
-        self.as_setInitDataS({'tableHeaders': headers,
-         'filters': self.initFilters(),
-         'header': text_styles.highTitle(_ms(VEH_COMPARE.ADDVEHPOPOVER_HEADER)),
-         'btnCancel': VEH_COMPARE.ADDVEHPOPOVER_BTNCANCEL})
+        self.as_setInitDataS({'tableHeaders': headers, 
+           'filters': self.initFilters(), 
+           'header': text_styles.highTitle(_ms(VEH_COMPARE.ADDVEHPOPOVER_HEADER)), 
+           'btnCancel': VEH_COMPARE.ADDVEHPOPOVER_BTNCANCEL})

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/impl/lobby/views/frontline_battle_results_view.py
 from frontline.constants.aliases import FrontlineHangarAliases
 from frameworks.wulf import ViewSettings, WindowFlags, ViewFlags
 from gui.Scaleform.framework.entities.View import ViewKey
@@ -41,11 +39,17 @@ class FrontlineBattleResultsView(ViewImpl, IRoutableView):
 
     def createContextMenu(self, event):
         window = self.__subPresenter.createContextMenu(event)
-        return window if window is not None else super(FrontlineBattleResultsView, self).createContextMenu(event)
+        if window is not None:
+            return window
+        else:
+            return super(FrontlineBattleResultsView, self).createContextMenu(event)
 
     def createToolTipContent(self, event, contentID):
         content = self.__subPresenter.createToolTipContent(event, contentID)
-        return content if content is not None else super(FrontlineBattleResultsView, self).createToolTipContent(event, contentID)
+        if content is not None:
+            return content
+        else:
+            return super(FrontlineBattleResultsView, self).createToolTipContent(event, contentID)
 
     @classmethod
     def getLocalStorage(cls):
@@ -54,10 +58,6 @@ class FrontlineBattleResultsView(ViewImpl, IRoutableView):
     @classmethod
     def saveLocalStorage(cls, ctx):
         cls.__localStorage = ctx
-
-    def _initialize(self, *args, **kwargs):
-        super(FrontlineBattleResultsView, self)._initialize(*args, **kwargs)
-        self.__subPresenter.initialize()
 
     def _finalize(self):
         self.__subPresenter.finalize()
@@ -69,7 +69,9 @@ class FrontlineBattleResultsView(ViewImpl, IRoutableView):
         return
 
     def _getEvents(self):
-        return ((self.viewModel.onClose, self.__onClose),)
+        return (
+         (
+          self.viewModel.onClose, self.__onClose),)
 
     def _onLoading(self, *args, **kwargs):
         lsm = getLobbyStateMachine()
@@ -79,6 +81,7 @@ class FrontlineBattleResultsView(ViewImpl, IRoutableView):
         super(FrontlineBattleResultsView, self)._onLoading(*args, **kwargs)
         statsController = self.__battleResults.getStatsCtrl(self.__arenaUniqueID)
         battleResults = statsController.getResults()
+        self.__subPresenter.initialize()
         with self.viewModel.transaction():
             self.__subPresenter.packBattleResults(battleResults)
 

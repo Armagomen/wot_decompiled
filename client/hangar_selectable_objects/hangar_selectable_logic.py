@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/hangar_selectable_objects/hangar_selectable_logic.py
-import BigWorld
-import SoundGroups
+import BigWorld, SoundGroups
 from gui.Scaleform.Waiting import Waiting
 from hangar_selectable_objects import ISelectableObject
 from helpers import dependency
@@ -47,17 +44,19 @@ class HangarSelectableLogic(BaseSelectableLogic):
     def _filterEntity(self, entity):
         if entity is None:
             return False
-        elif not isinstance(entity, ISelectableObject):
-            return False
-        elif not self._hangarSpace.isCursorOver3DScene:
-            return False
         else:
-            return False if not entity.enabled else True
+            if not isinstance(entity, ISelectableObject):
+                return False
+            if not self._hangarSpace.isCursorOver3DScene:
+                return False
+            if not entity.enabled:
+                return False
+            return True
 
     def _onMouseEnter(self, entity):
         if self.__onMouseEnter(entity) and entity.mouseOverSoundName:
             if entity.isOver3DSound:
-                SoundGroups.g_instance.playSoundPos(entity.mouseOverSoundName, entity.model.root.position)
+                SoundGroups.g_instance.playSoundPos(entity.mouseOverSoundName, entity.model.position)
             else:
                 SoundGroups.g_instance.playSound2D(entity.mouseOverSoundName)
 

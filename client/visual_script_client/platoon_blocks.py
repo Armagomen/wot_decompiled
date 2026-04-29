@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/visual_script_client/platoon_blocks.py
 from skeletons.gui.game_control import IPlatoonController
 from visual_script.block import Meta, Block
 from visual_script.dependency import dependencyImporter
@@ -11,15 +9,15 @@ class PlatoonMeta(Meta):
 
     @classmethod
     def blockColor(cls):
-        pass
+        return 16758861
 
     @classmethod
     def blockCategory(cls):
-        pass
+        return 'Platoon'
 
     @classmethod
     def blockIcon(cls):
-        pass
+        return ':vse/blocks/platoon'
 
     @classmethod
     def blockAspects(cls):

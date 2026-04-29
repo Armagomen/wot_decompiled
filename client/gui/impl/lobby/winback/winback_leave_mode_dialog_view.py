@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/winback/winback_leave_mode_dialog_view.py
 from functools import partial
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.impl.gen import R
@@ -21,4 +19,8 @@ class WinbackLeaveModeDialogView(FullScreenDialogBaseView):
         return super(WinbackLeaveModeDialogView, self).getViewModel()
 
     def _getEvents(self):
-        return ((self.viewModel.onLeaveMode, partial(self._setResult, DialogButtons.SUBMIT)), (self.viewModel.onClose, partial(self._setResult, DialogButtons.CANCEL)))
+        return (
+         (
+          self.viewModel.onLeaveMode, partial(self._setResult, DialogButtons.SUBMIT)),
+         (
+          self.viewModel.onClose, partial(self._setResult, DialogButtons.CANCEL)))

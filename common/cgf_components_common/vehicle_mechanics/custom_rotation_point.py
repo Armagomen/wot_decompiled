@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/cgf_components_common/vehicle_mechanics/custom_rotation_point.py
 import CGF
 from cgf_script.component_meta_class import ComponentProperty, CGFMetaTypes, registerComponent
 

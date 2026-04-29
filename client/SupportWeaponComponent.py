@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/SupportWeaponComponent.py
+from __future__ import absolute_import, division
 import typing
 from collections import namedtuple
 import BigWorld
@@ -23,7 +22,9 @@ class SupportWeaponState(namedtuple('SupportWeaponState', ('gunInstallationIndex
 
     @property
     def progress(self):
-        return 1.0 - self.timeLeft / self.baseTime if self.baseTime > 0 else 1.0
+        if self.baseTime > 0:
+            return 1.0 - self.timeLeft / self.baseTime
+        return 1.0
 
     @property
     def timeLeft(self):
@@ -57,10 +58,14 @@ class SupportWeaponComponent(VehicleDynamicComponent, IMechanicComponent, IMecha
         return self.__statesEvents
 
     def getMechanicState(self):
-        return SupportWeaponState.fromComponentStatus(self.status) if self.status else self.DEFAULT_WEAPON_STATE
+        if self.status:
+            return SupportWeaponState.fromComponentStatus(self.status)
+        return self.DEFAULT_WEAPON_STATE
 
     def getSupportInstallationIndex(self):
-        return self.status.gunInstallationIndex if self.status else UNKNOWN_GUN_INSTALLATION_INDEX
+        if self.status:
+            return self.status.gunInstallationIndex
+        return UNKNOWN_GUN_INSTALLATION_INDEX
 
     def set_status(self, _):
         self._updateComponentAppearance()

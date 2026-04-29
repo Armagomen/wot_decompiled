@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/account_helpers/AccountSyncData.py
 from functools import partial
 import AccountCommands
 from SyncController import SyncController
@@ -51,7 +49,7 @@ class AccountSyncData(object):
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER)
             return
-        elif self.__isSynchronized:
+        if self.__isSynchronized:
             callback(AccountCommands.RES_CACHE)
             return
         else:
@@ -88,9 +86,9 @@ class AccountSyncData(object):
     def _synchronize(self):
         if self.__ignore:
             return
-        elif self.__isSynchronized:
-            return
         else:
+            if self.__isSynchronized:
+                return
             self.__syncController.request(self.__getNextSyncID(), None)
             return
 
@@ -129,9 +127,9 @@ class AccountSyncData(object):
     def __onSyncComplete(self, syncID, data):
         if syncID != self.__syncID:
             return
-        elif data is None:
-            return
         else:
+            if data is None:
+                return
             self.revision = data['rev']
             if not self.__account._update(False, data):
                 return
@@ -148,7 +146,7 @@ class AccountSyncData(object):
         if self.__ignore:
             return
         crc = self.__persistentCache.getDescr()
-        self.__account._doCmdInt3(AccountCommands.CMD_SYNC_DATA, self.revision, 0 if not crc else crc, 0, proxy)
+        self.__account._doCmdInt3(AccountCommands.CMD_SYNC_DATA, self.revision, crc if crc else 0, 0, proxy)
 
     def __clearPersistentCache(self):
         self.__persistentCache.data = None
@@ -200,28 +198,25 @@ class BaseSyncDataCache(object):
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, None)
             return
-        else:
-            self._syncData.waitForSync(partial(self._onGetCacheResponse, callback))
-            return
+        self._syncData.waitForSync(partial(self._onGetCacheResponse, callback))
+        return
 
     def getItems(self, itemsType, callback):
         if self._ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, None)
             return
-        else:
-            self._syncData.waitForSync(partial(self._onGetItemsResponse, itemsType, callback))
-            return
+        self._syncData.waitForSync(partial(self._onGetItemsResponse, itemsType, callback))
+        return
 
     def _onGetCacheResponse(self, callback, resultID):
         if resultID < 0:
             if callback is not None:
                 callback(resultID, None)
             return
-        else:
-            if callback is not None:
-                callback(resultID, self._cache)
-            return
+        if callback is not None:
+            callback(resultID, self._cache)
+        return
 
     @property
     def _itemsStorage(self):
@@ -232,10 +227,9 @@ class BaseSyncDataCache(object):
             if callback is not None:
                 callback(resultID, None)
             return
-        else:
-            if callback is not None:
-                callback(resultID, self._itemsStorage.get(itemsType, None))
-            return
+        if callback is not None:
+            callback(resultID, self._itemsStorage.get(itemsType, None))
+        return
 
 
 def isFullSyncDiff(diff):

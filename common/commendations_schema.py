@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/commendations_schema.py
 from game_params_common.base_manager import GameParamsSchema
 from constants import Configs
 from dict2model import models, fields as d2mfields
@@ -13,5 +11,5 @@ class CommendationsConfigModel(models.Model):
         self.isLiveTagsEnabled = isLiveTagsEnabled
 
 
-commendationsConfigSchema = GameParamsSchema[CommendationsConfigModel](gameParamsKey=Configs.COMMENDATIONS_CONFIG.value, fields={'isLiveTagsEnabled': d2mfields.Boolean(),
- 'isCommendationsEnabled': d2mfields.Boolean()}, modelClass=CommendationsConfigModel, checkUnknown=True, usedInReplay=True)
+commendationsConfigSchema = GameParamsSchema[CommendationsConfigModel](gameParamsKey=Configs.COMMENDATIONS_CONFIG.value, fields={'isLiveTagsEnabled': d2mfields.Boolean(), 
+   'isCommendationsEnabled': d2mfields.Boolean()}, modelClass=CommendationsConfigModel, checkUnknown=True, usedInReplay=True)

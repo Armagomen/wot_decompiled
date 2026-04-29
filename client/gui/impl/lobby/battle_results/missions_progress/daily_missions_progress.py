@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_results/missions_progress/daily_missions_progress.py
 from constants import EVENT_TYPE
 from gui.battle_results.pbs_helpers.common import getBattleResults
 from gui.battle_results.progress.progress_helpers import getReceivedTokensInfo
@@ -11,7 +9,7 @@ from gui.impl.gen.view_models.views.lobby.battle_results.progression.daily_quest
 from gui.impl.lobby.battle_results.missions_progress.rewards_helper import packBonusesWithActualTokensConvertion
 from gui.impl.lobby.battle_results.missions_progress.progression_presenter_interface import IProgressionCategoryPresenter
 from gui.impl.lobby.common.tooltips.extended_text_tooltip import ExtendedTextTooltip
-from gui.impl.lobby.missions.daily_quests_view import DailyTabs
+from gui.impl.lobby.user_missions.hub.hub_view import DailyTabs
 from gui.impl.lobby.tooltips.additional_rewards_tooltip import AdditionalRewardsTooltip
 from gui.server_events import conditions
 from gui.impl.pub.view_component import ViewComponent
@@ -84,7 +82,9 @@ class DailyMissionsProgressPresenter(ViewComponent[DailyQuestsProgressModel], IP
         return
 
     def _getEvents(self):
-        return ((self.viewModel.onNavigate, self.__onNavigate),)
+        return (
+         (
+          self.viewModel.onNavigate, self.__onNavigate),)
 
     def _onLoading(self, *args, **kwargs):
         super(DailyMissionsProgressPresenter, self)._onLoading(*args, **kwargs)
@@ -121,23 +121,24 @@ class DailyMissionsProgressPresenter(ViewComponent[DailyQuestsProgressModel], IP
         packer.pack(model)
         if complete:
             model.setStatus(EventStatus.DONE)
-        elif event.isAvailable()[0]:
-            model.setStatus(EventStatus.ACTIVE)
         else:
-            model.setStatus(EventStatus.LOCKED)
-        model.setNavigationEnabled(True)
-        if event.getType() == EVENT_TYPE.TOKEN_QUEST:
-            model.setLevel(DailyQuestTypes.EPIC)
-        elif isPremium(eventID):
-            model.setLevel(DailyQuestTypes.PREMIUM)
-        else:
-            model.setLevel(DailyQuestTypes(event.getLevel()))
-        bonusPacker = getDailyMissionsBonusPacker()
-        packBonusesWithActualTokensConvertion(pCur, model, event, questTokensConvertion, questTokensCount, self.__tooltipData[eventID], bonusPacker)
-        self.__bonusesModel[eventID] = model.getBonuses()
-        condsRoot = event.bonusCond.getConditions()
-        if condsRoot.isEmpty():
-            return model
+            if event.isAvailable()[0]:
+                model.setStatus(EventStatus.ACTIVE)
+            else:
+                model.setStatus(EventStatus.LOCKED)
+            model.setNavigationEnabled(True)
+            if event.getType() == EVENT_TYPE.TOKEN_QUEST:
+                model.setLevel(DailyQuestTypes.EPIC)
+            elif isPremium(eventID):
+                model.setLevel(DailyQuestTypes.PREMIUM)
+            else:
+                model.setLevel(DailyQuestTypes(event.getLevel()))
+            bonusPacker = getDailyMissionsBonusPacker()
+            packBonusesWithActualTokensConvertion(pCur, model, event, questTokensConvertion, questTokensCount, self.__tooltipData[eventID], bonusPacker)
+            self.__bonusesModel[eventID] = model.getBonuses()
+            condsRoot = event.bonusCond.getConditions()
+            if condsRoot.isEmpty():
+                return model
         if not reset:
             index = 0
             items = model.bonusCondition.getItems()

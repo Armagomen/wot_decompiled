@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/SequenceNetworkSync.py
-import logging
-import BigWorld
-import CGF
+from __future__ import absolute_import
+import logging, BigWorld, CGF
 from constants import HAS_DEV_RESOURCES
 from cgf_client_common.entity_dyn_components import ReplicableDynamicScriptComponent
 from cgf_components.sequence_components import SequencePauseComponent, SequenceSnapshotComponent
@@ -28,11 +25,16 @@ class SequenceNetworkSync(ReplicableDynamicScriptComponent):
     @property
     def name(self):
         go = self.entity.entityGameObject
-        return go.name if go is not None else 'unknown'
+        if go is not None:
+            return go.name
+        else:
+            return 'unknown'
 
     @property
     def actualTime(self):
-        return self.syncTime if self.state == _INT_STATE_PAUSED else (BigWorld.serverTime() - self.syncTime) * self.speed - self.timeCorrection
+        if self.state == _INT_STATE_PAUSED:
+            return self.syncTime
+        return (BigWorld.serverTime() - self.syncTime) * self.speed - self.timeCorrection
 
     if HAS_DEV_RESOURCES:
 
@@ -106,7 +108,7 @@ class SequenceNetworkSyncManager(CGF.ComponentManager):
     def __init__(self):
         super(SequenceNetworkSyncManager, self).__init__()
         self.__isSyncPaused = False
-        self.__snapshots = dict()
+        self.__snapshots = {}
 
     @onAddedQuery(SequenceNetworkSync, Sequence)
     def onSequenceAdded(self, sync, sequence):
@@ -161,7 +163,8 @@ class SequenceNetworkSyncManager(CGF.ComponentManager):
         if transition is None:
             return False
         else:
-            transitionTuple = (transition['layerIdx'], transition['time'])
+            transitionTuple = (
+             transition['layerIdx'], transition['time'])
             if transitionTuple == sequence.transition:
                 return False
             sequence.requestLayerChange(transition['layerIdx'], transition['time'])
@@ -184,15 +187,12 @@ class SequenceNetworkSyncManager(CGF.ComponentManager):
         if syncState == _INT_STATE_STOPPED and sequence.state != _STATE_STOPPED:
             sequence.stop()
             return
-        if syncState == _INT_STATE_RUNNING or syncState == _INT_STATE_PAUSED:
+        if syncState in (_INT_STATE_RUNNING, _INT_STATE_PAUSED):
             SequenceNetworkSyncManager.__updateTime(sync, sequence)
             return
 
     @staticmethod
     def __updateTime(sync, sequence):
-        time = sync.actualTime
-        duration = sequence.duration
-        if time >= duration:
-            time = duration
+        time = min(sync.actualTime, sequence.duration)
         if sequence.time != time:
             sequence.requestTime(time)

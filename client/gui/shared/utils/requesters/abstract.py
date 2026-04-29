@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/utils/requesters/abstract.py
 import logging
 from collections import namedtuple
 import BigWorld
@@ -50,7 +48,7 @@ class AbstractRequester(object):
         self._response(0, self._getDefaultDataValue(), callback)
 
     def _getDefaultDataValue(self):
-        return None
+        return
 
     def _preprocessValidData(self, data):
         return data
@@ -59,7 +57,9 @@ class AbstractRequester(object):
 class AbstractSyncDataRequester(AbstractRequester):
 
     def getCacheValue(self, key, defaultValue=None):
-        return self._data[key] if key in self._data else defaultValue
+        if key in self._data:
+            return self._data[key]
+        return defaultValue
 
     def getCacheValueByPath(self, path, defaultValue=None):
         value = self._data
@@ -87,10 +87,10 @@ class RequestCtx(object):
         return
 
     def getRequestType(self):
-        pass
+        return 0
 
     def getSingulizerKey(self):
-        return None
+        return
 
     def getWaitingID(self):
         return self._waitingID
@@ -130,7 +130,7 @@ class RequestCtx(object):
         return
 
     def getCooldown(self):
-        pass
+        return 0.0
 
 
 class DataRequestCtx(RequestCtx):
@@ -229,7 +229,10 @@ class RequestsByIDProcessor(object):
 
     def _doCall(self, method, *args, **kwargs):
         result = method(*args, **kwargs)
-        return self._idsGenerator.next() if self._idsGenerator is not None else result
+        if self._idsGenerator is not None:
+            return self._idsGenerator.next()
+        else:
+            return result
 
     def _getSenderMethod(self, sender, methodName):
         return getattr(sender, methodName, None)
@@ -239,12 +242,14 @@ class RequestsByIDProcessor(object):
         requester = self.getSender()
         if not requester:
             _logger.warning('There is not sender is present: %r', self)
-            return (result, requestID)
+            return (
+             result, requestID)
         method = self._getSenderMethod(requester, methodName)
         if callable(method):
             requestID = self._doCall(method, *args, **kwargs)
             if requestID > 0:
-                self._requests[requestID] = (ctx, chain)
+                self._requests[requestID] = (
+                 ctx, chain)
                 result = True
             else:
                 _logger.error('Request ID can not be null')
@@ -283,11 +288,8 @@ class DataRequestsByIDProcessor(RequestsByIDProcessor):
         return requestID
 
 
-_Response = namedtuple('_Response', ['code',
- 'txtStr',
- 'data',
- 'extraCode',
- 'headers'])
+_Response = namedtuple('_Response', [
+ 'code', 'txtStr', 'data', 'extraCode', 'headers'])
 _Response.__new__.__defaults__ = (0, '', None, 0, None)
 
 class Response(_Response):

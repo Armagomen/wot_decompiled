@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/veh_post_progression/dialogs/destroy_pair_modification.py
 from __future__ import absolute_import
 from future.utils import iteritems
 from gui.impl import backport
@@ -24,9 +22,8 @@ class DestroyPairModificationsDialog(DialogTemplateView):
 
     def __init__(self, layoutID=None, uniqueID=None, **kwargs):
         super(DestroyPairModificationsDialog, self).__init__(layoutID, uniqueID, **kwargs)
-        self.__vehicle = kwargs.get('vehicle', None)
+        self.__vehicle = kwargs.get('vehicle')
         self.__stepIDs = kwargs.get('stepIDs', ())
-        return
 
     def _initialize(self, *args, **kwargs):
         super(DestroyPairModificationsDialog, self)._initialize()
@@ -57,7 +54,9 @@ class DestroyPairModificationsDialog(DialogTemplateView):
     def __getDescriptionText(self):
         action = self.__vehicle.postProgression.getStep(self.__stepIDs[0]).action
         currency, _ = first(iteritems(action.getPurchasedModification().getPrice()))
-        return _R_PATH.destroyOne.description.dyn(currency, _R_PATH.destroyOne.description.default) if len(self.__stepIDs) == 1 else _R_PATH.destroyAll.description.dyn(currency, _R_PATH.destroyAll.description.default)
+        if len(self.__stepIDs) == 1:
+            return _R_PATH.destroyOne.description.dyn(currency, _R_PATH.destroyOne.description.default)
+        return _R_PATH.destroyAll.description.dyn(currency, _R_PATH.destroyAll.description.default)
 
     def __onInventoryResync(self, _, diff):
         changedVehicles = diff.get(GUI_ITEM_TYPE.VEHICLE, {})
@@ -78,9 +77,9 @@ class DestroyPairModificationsDialog(DialogTemplateView):
     def __checkDestroy(self):
         if self.__vehicle is None:
             return True
-        elif not self.__stepIDs:
-            return True
         else:
+            if not self.__stepIDs:
+                return True
             self.__vehicle = self.__itemsCache.items.getItemByCD(self.__vehicle.intCD)
             if not self.__vehicle.postProgressionAvailability():
                 return True

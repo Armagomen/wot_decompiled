@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/locale/STORE.py
 from debug_utils import LOG_WARNING
 
 class STORE(object):
@@ -22,13 +20,16 @@ class STORE(object):
     CONGRATULATIONANIM_COLLECTIBLELABEL = '#store:congratulationAnim/collectibleLabel'
     CONGRATULATIONANIM_RESTORELABEL = '#store:congratulationAnim/restoreLabel'
     CONGRATULATIONANIM_SHOWPREVIEWBTNLABEL = '#store:congratulationAnim/showPreviewBtnLabel'
-    RENTALTERMSELECTIONPOPOVER_TERMSLOTALLDAYS_ENUM = (RENTALTERMSELECTIONPOPOVER_TERMSLOT3DAYS, RENTALTERMSELECTIONPOPOVER_TERMSLOT7DAYS, RENTALTERMSELECTIONPOPOVER_TERMSLOT30DAYS)
+    RENTALTERMSELECTIONPOPOVER_TERMSLOTALLDAYS_ENUM = (
+     RENTALTERMSELECTIONPOPOVER_TERMSLOT3DAYS,
+     RENTALTERMSELECTIONPOPOVER_TERMSLOT7DAYS,
+     RENTALTERMSELECTIONPOPOVER_TERMSLOT30DAYS)
 
     @classmethod
     def getRentTermDays(cls, days):
-        outcome = '#store:rentalTermSelectionPopover/termSlot{}Days'.format(days)
+        outcome = ('#store:rentalTermSelectionPopover/termSlot{}Days').format(days)
         if outcome not in cls.RENTALTERMSELECTIONPOPOVER_TERMSLOTALLDAYS_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome

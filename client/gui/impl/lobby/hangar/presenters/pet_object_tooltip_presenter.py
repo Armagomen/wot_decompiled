@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/hangar/presenters/pet_object_tooltip_presenter.py
 from __future__ import absolute_import
 from gui.impl import backport
 from gui.impl.auxiliary.tooltips.simple_tooltip import createSimpleTooltip
@@ -34,7 +32,9 @@ class PetObjectTooltipPresenter(ViewComponent[PetObjectTooltipModel]):
         return super(PetObjectTooltipPresenter, self).getViewModel()
 
     def createToolTipContent(self, event, contentID):
-        return PetStorageTooltip() if contentID == R.views.mono.pet_system.tooltips.pet_storage_tooltip() else super(PetObjectTooltipPresenter, self).createToolTipContent(event, contentID)
+        if contentID == R.views.mono.pet_system.tooltips.pet_storage_tooltip():
+            return PetStorageTooltip()
+        return super(PetObjectTooltipPresenter, self).createToolTipContent(event, contentID)
 
     def createToolTip(self, event):
         if event.contentID == R.views.common.tooltip_window.simple_tooltip_content.SimpleTooltipContent():
@@ -52,7 +52,11 @@ class PetObjectTooltipPresenter(ViewComponent[PetObjectTooltipModel]):
         super(PetObjectTooltipPresenter, self)._finalize()
 
     def _getListeners(self):
-        return ((PetObjectHoverEvent.HOVER_IN, self.__onHoverInEvent), (PetObjectHoverEvent.HOVER_OUT, self.__onHoverOutEvent))
+        return (
+         (
+          PetObjectHoverEvent.HOVER_IN, self.__onHoverInEvent),
+         (
+          PetObjectHoverEvent.HOVER_OUT, self.__onHoverOutEvent))
 
     def __onHoverInEvent(self, event):
         if PetItem.getActivePetID() == INVALID_PET_ID:
@@ -60,7 +64,7 @@ class PetObjectTooltipPresenter(ViewComponent[PetObjectTooltipModel]):
         tooltip = self.__getTooltipToShow(event.ctx.get('objectName'))
         if tooltip == _Tooltips.NONE:
             return
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             model.setIsStorageTooltipVisible(tooltip == _Tooltips.STORAGE)
             model.setIs3dObjectTooltipVisible(tooltip == _Tooltips.EVENT)
 
@@ -77,6 +81,6 @@ class PetObjectTooltipPresenter(ViewComponent[PetObjectTooltipModel]):
         return _Tooltips.NONE
 
     def __onHoverOutEvent(self, _):
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             model.setIsStorageTooltipVisible(False)
             model.setIs3dObjectTooltipVisible(False)

@@ -1,12 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_core/scripts/client/comp7_core/gui/battle_control/controllers/comp7_voip_ctrl.py
-import logging
-import BigWorld
-import Keys
-import typing
-import CommandMapping
-import SoundGroups
-import VOIP
+import logging, BigWorld, Keys, typing, CommandMapping, SoundGroups, VOIP
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import COMP7_IS_VOIP_IN_BATTLE_ACTIVATED
 from comp7_core.gui.battle_control.interfaces import IComp7VOIPController
@@ -81,13 +73,13 @@ class Comp7VOIPController(IComp7VOIPController):
     def toggleChannelConnection(self, automatic=False):
         if self.__sessionProvider.isReplayPlaying:
             return
-        elif self.__cooldownCallback is not None:
-            _logger.info('Failed to toggle Comp7 team VOIP channel. Cooldown is in progress.')
-            return
-        elif not self.isTeamVoipEnabled:
-            _logger.error('Failed to toggle Comp7 team VOIP channel. Joining is not allowed.')
-            return
         else:
+            if self.__cooldownCallback is not None:
+                _logger.info('Failed to toggle Comp7 team VOIP channel. Cooldown is in progress.')
+                return
+            if not self.isTeamVoipEnabled:
+                _logger.error('Failed to toggle Comp7 team VOIP channel. Joining is not allowed.')
+                return
             _logger.info('toggleChannelConnection')
             if not automatic and self.__isSoloPlayer():
                 AccountSettings.setSettings(COMP7_IS_VOIP_IN_BATTLE_ACTIVATED, not self.__VOIPManager.isCurrentChannelEnabled())
@@ -125,14 +117,13 @@ class Comp7VOIPController(IComp7VOIPController):
     def __tryShowInfoMessage(self):
         if self.__messageShown or self.__VOIPManager.isCurrentChannelEnabled():
             return
-        else:
-            arenaPeriod = self.__sessionProvider.shared.arenaPeriod.getPeriod()
-            if arenaPeriod <= ARENA_PERIOD.PREBATTLE:
-                message = self.__getMessage()
-                if message is not None:
-                    g_messengerEvents.onCustomMessage(message)
-                    self.__messageShown = True
-            return
+        arenaPeriod = self.__sessionProvider.shared.arenaPeriod.getPeriod()
+        if arenaPeriod <= ARENA_PERIOD.PREBATTLE:
+            message = self.__getMessage()
+            if message is not None:
+                g_messengerEvents.onCustomMessage(message)
+                self.__messageShown = True
+        return
 
     def __getMessage(self):
         command = CommandMapping.CMD_VOICECHAT_ENABLE

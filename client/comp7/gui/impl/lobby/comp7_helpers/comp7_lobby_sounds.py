@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/comp7_helpers/comp7_lobby_sounds.py
 from enum import Enum
 import SoundGroups
 from shared_utils import CONST_CONTAINER
@@ -9,8 +7,8 @@ from sound_gui_manager import CommonSoundSpaceSettings
 class MetaViewSounds(Enum):
     ENTER_EVENT = 'comp_7_progression_enter'
     EXIT_EVENT = 'comp_7_progression_exit'
-    ENTER_TAB_EVENTS = {MetaRootViews.YEARLYSTATISTICS: 'comp_7_season_statistics_screen_appear',
-     MetaRootViews.SHOP: 'comp_7_shop_enter'}
+    ENTER_TAB_EVENTS = {MetaRootViews.YEARLYSTATISTICS: 'comp_7_season_statistics_screen_appear', 
+       MetaRootViews.SHOP: 'comp_7_shop_enter'}
     EXIT_TAB_EVENTS = {MetaRootViews.SHOP: 'comp_7_progression_enter'}
 
 

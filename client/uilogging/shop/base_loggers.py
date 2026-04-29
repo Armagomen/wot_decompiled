@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/uilogging/shop/base_loggers.py
-import abc
-import logging
+import abc, logging
 from uilogging.base.logger import FlowLogger, MetricsLogger
 from uilogging.shop.logging_constants import FEATURE
 _logger = logging.getLogger(__name__)

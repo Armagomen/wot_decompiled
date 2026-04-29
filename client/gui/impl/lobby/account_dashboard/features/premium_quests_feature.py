@@ -1,10 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/account_dashboard/features/premium_quests_feature.py
 from Event import Event
 from constants import PremiumConfigs, PREMIUM_TYPE
 from gui.impl.gen.view_models.views.lobby.account_dashboard.premium_quests_model import PremiumQuestsModel
 from gui.impl.lobby.account_dashboard.features.base import FeatureItem
-from gui.impl.lobby.missions.daily_quests_view import DailyTabs
+from gui.impl.lobby.user_missions.hub.hub_view import DailyTabs
 from gui.impl.wrappers.function_helpers import replaceNoneKwargsModel
 from gui.server_events.events_dispatcher import showDailyQuests
 from gui.server_events.events_helpers import isPremiumQuestsEnable, premMissionsSortFunc

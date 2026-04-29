@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/proto/bw/ClanListener.py
 import BigWorld
 from PlayerEvents import g_playerEvents
 from debug_utils import LOG_DEBUG, LOG_ERROR
@@ -27,11 +25,11 @@ class ClanListener(object):
 
     @storage_getter('users')
     def usersStorage(self):
-        return None
+        return
 
     @storage_getter('playerCtx')
     def playerCtx(self):
-        return None
+        return
 
     def start(self):
         self.__findClanChannel()
@@ -87,7 +85,7 @@ class ClanListener(object):
                     user.update(gosBit=GAME_ONLINE_STATUS.IN_CLAN_CHAT)
                     events.onUserStatusUpdated(user)
                     changed = True
-            if isOnline:
+            elif isOnline:
                 user.update(gosBit=-GAME_ONLINE_STATUS.IN_CLAN_CHAT)
                 events.onUserStatusUpdated(user)
                 changed = True

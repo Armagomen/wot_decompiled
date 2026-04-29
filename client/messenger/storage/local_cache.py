@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/storage/local_cache.py
-import types
-import Event
+import types, Event
 from helpers import dependency
 from helpers.local_cache import FileLocalCache, PickleIO, CryptIO
 from skeletons.account_helpers.settings_core import ISettingsCache
@@ -15,7 +12,7 @@ def _normalizeRev(rev):
 
 
 class SimpleCachedStorage(object):
-    __slots__ = ('onRestoredFromCache',)
+    __slots__ = ('onRestoredFromCache', )
 
     def __init__(self):
         super(SimpleCachedStorage, self).__init__()
@@ -68,7 +65,8 @@ class RevCachedStorage(SimpleCachedStorage):
 
     def makeRecordInCache(self):
         if self.__rev:
-            record = [self.__rev]
+            record = [
+             self.__rev]
             record.extend(self._getCachedData())
         else:
             record = self.__record
@@ -107,7 +105,10 @@ class RevCachedStorage(SimpleCachedStorage):
         raise NotImplementedError
 
     def __getServerRev(self):
-        return self.settingsCache.getSetting(self._getServerRevKey(), None) if self.settingsCache.isSynced() else None
+        if self.settingsCache.isSynced():
+            return self.settingsCache.getSetting(self._getServerRevKey(), None)
+        else:
+            return
 
     def __setServerRev(self, rev):
         self.settingsCache.setSettings({self._getServerRevKey(): rev})
@@ -130,7 +131,7 @@ class RevCachedStorage(SimpleCachedStorage):
 
 
 class StorageLocalCache(FileLocalCache):
-    __slots__ = ('_cache',)
+    __slots__ = ('_cache', )
 
     def __init__(self, tags):
         super(StorageLocalCache, self).__init__(_MESSENGER_CACHE_DIR, tags, io=CryptIO(PickleIO()), isAsync=True)
@@ -147,7 +148,8 @@ class StorageLocalCache(FileLocalCache):
         return self._cache.pop(name, None)
 
     def _getCache(self):
-        return (_MESSENGER_CACHE_VERSION, self._cache.copy())
+        return (
+         _MESSENGER_CACHE_VERSION, self._cache.copy())
 
     def _setCache(self, data):
         version, cache = data

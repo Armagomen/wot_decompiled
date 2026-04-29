@@ -1,7 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/framework/managers/event_logging.py
-import time
-import itertools
+from __future__ import absolute_import
+import time, itertools
 from constants import REQUEST_COOLDOWN
 from debug_utils import LOG_DEBUG, LOG_WARNING
 from gui.Scaleform.framework.entities.abstract.EventLogManagerMeta import EventLogManagerMeta
@@ -64,11 +62,8 @@ class EventLogManager(EventLogManagerMeta):
         eventTypeIdx = EVENT_LOG_CONSTANTS.EVENT_TYPES.index(eventType)
         eventTypeId = EVENT_LOG_CONSTANTS.EVENT_CODES[eventTypeIdx]
         timestamp = int(BigWorld.time())
-        return [timestamp,
-         subSystemType,
-         eventTypeId,
-         uiid,
-         arg]
+        return [
+         timestamp, subSystemType, eventTypeId, uiid, arg]
 
     def logEvent(self, subSystemType, eventType, uiid, arg):
         if self.__packageIdx <= PACKAGE_LIMIT:

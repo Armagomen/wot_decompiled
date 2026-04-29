@@ -1,14 +1,10 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/items/_xml.py
 from typing import *
 from functools import wraps, partial
 from soft_exception import SoftException
 import constants
 from constants import SEASON_TYPE_BY_NAME, RentType
 from debug_utils import LOG_ERROR
-import type_traits
-import collections
-import ResMgr
+import type_traits, collections, ResMgr
 _g_floats = {'count': 0}
 _g_intTuples = {'count': 0}
 _g_floatTuples = {'count': 0}
@@ -105,7 +101,8 @@ def getSubSectionWithContext(xmlCtx, section, subsectionName, throwIfMissing=Tru
 
 
 def getItemsWithContext(xmlCtx, section, selectSubSectionName=None):
-    return [ (subsectionName, ((xmlCtx, subsectionName), subsection)) for subsectionName, subsection in section.items() if selectSubSectionName is None or selectSubSectionName == subsectionName ]
+    return [ (subsectionName, ((xmlCtx, subsectionName), subsection)) for subsectionName, subsection in section.items() if selectSubSectionName is None or selectSubSectionName == subsectionName
+           ]
 
 
 def getChildrenWithContext(xmlCtx, section, subsectionName, throwIfMissing=True):
@@ -122,12 +119,18 @@ def readString(xmlCtx, section, subsectionName):
 
 def readStringOrNone(xmlCtx, section, subsectionName):
     subsection = section[subsectionName]
-    return None if subsection is None else intern(subsection.asString)
+    if subsection is None:
+        return
+    else:
+        return intern(subsection.asString)
 
 
 def readStringOrEmpty(xmlCtx, section, subsectionName):
     subsection = section[subsectionName]
-    return intern('') if subsection is None else intern(subsection.asString)
+    if subsection is None:
+        return intern('')
+    else:
+        return intern(subsection.asString)
 
 
 def readNonEmptyString(xmlCtx, section, subsectionName):
@@ -140,11 +143,13 @@ def readNonEmptyString(xmlCtx, section, subsectionName):
 def readStringWithDefaultValue(xmlCtx, section, subsectionName, defaultValue=None):
     if defaultValue is None:
         return readStringOrNone(xmlCtx, section, subsectionName)
-    elif defaultValue == '':
-        return readStringOrEmpty(xmlCtx, section, subsectionName)
     else:
+        if defaultValue == '':
+            return readStringOrEmpty(xmlCtx, section, subsectionName)
         subsection = section[subsectionName]
-        return intern(str(defaultValue)) if subsection is None else intern(subsection.asString)
+        if subsection is None:
+            return intern(str(defaultValue))
+        return intern(subsection.asString)
 
 
 def readBool(xmlCtx, section, subsectionName, default=None):
@@ -175,8 +180,7 @@ def readNonNegativeInt(xmlCtx, section, subsectionName, defaultValue=None):
         if defaultValue < 0:
             raiseWrongSection(xmlCtx, subsectionName if subsectionName else section.name)
         return defaultValue
-    else:
-        return readInt(xmlCtx, section, subsectionName, minVal=0)
+    return readInt(xmlCtx, section, subsectionName, minVal=0)
 
 
 def readIntOrNone(xmlCtx, section, subsectionName):
@@ -307,7 +311,7 @@ def readTupleOfFloats(xmlCtx, section, subsectionName, count=None, defaultValue=
 @cacheFloatTuples
 def readTupleOfPositiveFloats(xmlCtx, section, subsectionName, count=None):
     floats = readTupleOfFloats(xmlCtx, section, subsectionName, count)
-    if sum((1 for val in floats if val <= 0)):
+    if sum(1 for val in floats if val <= 0):
         raiseWrongSection(xmlCtx, subsectionName if subsectionName else section.name)
     return floats
 
@@ -315,7 +319,7 @@ def readTupleOfPositiveFloats(xmlCtx, section, subsectionName, count=None):
 @cacheFloatTuples
 def readTupleOfNonNegativeFloats(xmlCtx, section, subsectionName, count=None):
     floats = readTupleOfFloats(xmlCtx, section, subsectionName, count)
-    if sum((1 for val in floats if val < 0)):
+    if sum(1 for val in floats if val < 0):
         raiseWrongSection(xmlCtx, subsectionName if subsectionName else section.name)
     return floats
 
@@ -326,7 +330,7 @@ def readTupleOfInts(xmlCtx, section, subsectionName, count=None):
     if count is not None and len(strings) != count:
         raiseWrongXml(xmlCtx, subsectionName, '%d ints expected' % count)
     try:
-        return tuple((int(float(s)) for s in strings))
+        return tuple(int(float(s)) for s in strings)
     except Exception:
         raiseWrongSection(xmlCtx, subsectionName if subsectionName else section.name)
 
@@ -336,7 +340,7 @@ def readTupleOfInts(xmlCtx, section, subsectionName, count=None):
 @cacheIntTuples
 def readTupleOfPositiveInts(xmlCtx, section, subsectionName, count=None):
     ints = readTupleOfInts(xmlCtx, section, subsectionName, count)
-    if sum((1 for val in ints if val <= 0)):
+    if sum(1 for val in ints if val <= 0):
         raiseWrongSection(xmlCtx, subsectionName if subsectionName else section.name)
     return ints
 
@@ -344,7 +348,7 @@ def readTupleOfPositiveInts(xmlCtx, section, subsectionName, count=None):
 @cacheIntTuples
 def readTupleOfNonNegativeInts(xmlCtx, section, subsectionName, count=None):
     ints = readTupleOfInts(xmlCtx, section, subsectionName, count)
-    if sum((1 for val in ints if val < 0)):
+    if sum(1 for val in ints if val < 0):
         raiseWrongSection(xmlCtx, subsectionName if subsectionName else section.name)
     return ints
 
@@ -371,7 +375,7 @@ def readTupleOfBools(xmlCtx, section, subsectionName, count=None):
 def readPrice(xmlCtx, section, subsectionName):
     key = 'credits'
     for currency in ('gold', 'crystal', 'xp', 'freeXP', 'equipCoin'):
-        if section[subsectionName + '/' + currency] is not None:
+        if section[(subsectionName + '/' + currency)] is not None:
             if key != 'credits':
                 raiseWrongXml(xmlCtx, subsectionName, 'Multiple price not allowed')
             key = currency
@@ -382,7 +386,7 @@ def readPrice(xmlCtx, section, subsectionName):
 def readPostProgressionPrice(xmlCtx, section, subsectionName):
     key = None
     for currency in ('gold', 'crystal', 'xp', 'freeXP', 'credits'):
-        if section[subsectionName + '/' + currency] is not None:
+        if section[(subsectionName + '/' + currency)] is not None:
             if key is not None:
                 raiseWrongXml(xmlCtx, subsectionName, 'Multiple price not allowed')
             key = currency
@@ -405,11 +409,11 @@ def readRentPrice(xmlCtx, section, subsectionName):
 
 
 def raiseWrongSeasonID(xmlCtx, rentPackageName, subsectionName):
-    raiseWrongXml(xmlCtx, rentPackageName, '<{}><id> has wrong format. Expected: season_YYYYMMDD.'.format(subsectionName))
+    raiseWrongXml(xmlCtx, rentPackageName, ('<{}><id> has wrong format. Expected: season_YYYYMMDD.').format(subsectionName))
 
 
 def raiseWrongSeasonCycleID(xmlCtx, rentPackageName, subsectionName, cycleID):
-    raiseWrongXml(xmlCtx, rentPackageName, '<{}><cycles><{}> has wrong format. Expected: cycle_YYYYMMDD.'.format(subsectionName, cycleID))
+    raiseWrongXml(xmlCtx, rentPackageName, ('<{}><cycles><{}> has wrong format. Expected: cycle_YYYYMMDD.').format(subsectionName, cycleID))
 
 
 def readRentDays(xmlCtx, rentPrices, previousRentDays, section, subsectionName, rentPackageName):
@@ -421,8 +425,8 @@ def readRentDays(xmlCtx, rentPrices, previousRentDays, section, subsectionName, 
             raiseWrongXml(xmlCtx, rentPackageName, '<days> Rent duration for time rent is not unique.')
         price = readPrice(xmlCtx, section, 'cost')
         compensation = readPrice(xmlCtx, section, 'compensation')
-        rentConfig = {'cost': (price.get('credits', 0), price.get('gold', 0)),
-         'compensation': (compensation.get('credits', 0), compensation.get('gold', 0))}
+        rentConfig = {'cost': (price.get('credits', 0), price.get('gold', 0)), 'compensation': (
+                          compensation.get('credits', 0), compensation.get('gold', 0))}
         previousRentDays.append(days)
         rentPrices.setdefault(RentType.TIME_RENT, {})[days] = rentConfig
     return
@@ -441,7 +445,7 @@ def readRentSeason(xmlCtx, rentPrices, previousSeasonIDs, section, subsectionNam
             raiseWrongSeasonID(xmlCtx, rentPackageName, subsectionName)
 
         if seasonID in previousSeasonIDs:
-            raiseWrongXml(xmlCtx, rentPackageName, '<{}><id> Season ID is not unique.'.format(subsectionName))
+            raiseWrongXml(xmlCtx, rentPackageName, ('<{}><id> Season ID is not unique.').format(subsectionName))
         defaultCyclePrice = readPrice(xmlCtx, season, 'cycleCost')
         defaultCycleCompensation = readPrice(xmlCtx, season, 'cycleCompensation')
         seasonType = SEASON_TYPE_BY_NAME.get(readString(xmlCtx, season, 'type'), None)
@@ -450,11 +454,14 @@ def readRentSeason(xmlCtx, rentPrices, previousSeasonIDs, section, subsectionNam
         cycles = readRentSeasonCycles(xmlCtx, season, 'cycles', defaultCyclePrice, defaultCycleCompensation, seasonType, rentPackageName)
         seasonPrice = readPrice(xmlCtx, section, 'cost')
         seasonCompensation = readPrice(xmlCtx, section, 'compensation')
-        seasonRentConfig = {'cost': (seasonPrice.get('credits', 0), seasonPrice.get('gold', 0)),
-         'compensation': (seasonCompensation.get('credits', 0), seasonCompensation.get('gold', 0)),
-         'seasonType': seasonType,
-         'defaultCycleCost': (defaultCyclePrice.get('credits', 0), defaultCyclePrice.get('gold', 0)),
-         'cycles': cycles.keys()}
+        seasonRentConfig = {'cost': (
+                  seasonPrice.get('credits', 0), seasonPrice.get('gold', 0)), 
+           'compensation': (
+                          seasonCompensation.get('credits', 0), seasonCompensation.get('gold', 0)), 
+           'seasonType': seasonType, 
+           'defaultCycleCost': (
+                              defaultCyclePrice.get('credits', 0), defaultCyclePrice.get('gold', 0)), 
+           'cycles': cycles.keys()}
         rentPrices.setdefault(RentType.SEASON_CYCLE_RENT, {}).update(cycles)
         rentPrices.setdefault(RentType.SEASON_RENT, {})[seasonID] = seasonRentConfig
     return
@@ -481,13 +488,13 @@ def readRentSeasonCycles(xmlCtx, section, subsectionName, defaultPrice, defaultC
                 compensation = readPrice(xmlCtx, cycle, 'compensation')
             else:
                 compensation = defaultCompensation
-            cycleRentConfig = {'cost': (cyclePrice.get('credits', 0), cyclePrice.get('gold', 0)),
-             'seasonType': seasonType,
-             'compensation': (compensation.get('credits', 0), compensation.get('gold', 0))}
+            cycleRentConfig = {'cost': (cyclePrice.get('credits', 0), cyclePrice.get('gold', 0)), 'seasonType': seasonType, 
+               'compensation': (
+                              compensation.get('credits', 0), compensation.get('gold', 0))}
             cyclesRentPrices[cycleID] = cycleRentConfig
 
     else:
-        raiseWrongXml(xmlCtx, packageName, '<{}><{}> missing!'.format(subsectionName, subsectionName))
+        raiseWrongXml(xmlCtx, packageName, ('<{}><{}> missing!').format(subsectionName, subsectionName))
     return cyclesRentPrices
 
 
@@ -497,13 +504,15 @@ def readIconWithDefaultParams(xmlCtx, section, subsectionName, defaultValue=0):
     while len(strings) < iconDatalength:
         strings.append(defaultValue)
 
-    return (strings[0], int(strings[1]), int(strings[2]))
+    return (
+     strings[0], int(strings[1]), int(strings[2]))
 
 
 def readIcon(xmlCtx, section, subsectionName):
     strings = getSubsection(xmlCtx, section, subsectionName).asString.split()
     try:
-        return (strings[0], int(strings[1]), int(strings[2]))
+        return (
+         strings[0], int(strings[1]), int(strings[2]))
     except Exception:
         raiseWrongSection(xmlCtx, subsectionName if subsectionName else section.name)
 
@@ -580,18 +589,18 @@ def rewriteData(section, subsectionName, value, defaultValue, createNew, accessF
 def tupleToString(values, writeFunSuffix):
     if values is None or len(values) == 0:
         return ''
+    ds = ResMgr.DataSection()
+    asProp = 'as' + writeFunSuffix
+    if not hasattr(ds, asProp):
+        LOG_ERROR('tupleToString(): There is no property ' + asProp)
+        return ''
     else:
-        ds = ResMgr.DataSection()
-        asProp = 'as' + writeFunSuffix
-        if not hasattr(ds, asProp):
-            LOG_ERROR('tupleToString(): There is no property ' + asProp)
-            return ''
         strings = []
         for v in values:
             setattr(ds, asProp, v)
             strings.append(ds.asString)
 
-        return ' '.join(strings)
+        return (' ').join(strings)
 
 
 def deleteAndCleanup(section, path):
@@ -629,9 +638,11 @@ def removeSameSection(sectionA, sectionB):
             for a, b in zip(childSectionsA, childSectionsB):
                 if removeSameSection(a, b):
                     childSectionsToRemove.append(a)
-                isAllChildRemoved = False
+                else:
+                    isAllChildRemoved = False
 
-        isAllChildRemoved = False
+        else:
+            isAllChildRemoved = False
 
     for section in childSectionsToRemove:
         sectionA.deleteSection(section)
@@ -685,7 +696,7 @@ def matchChild(section, path, predicate):
     for child in matchChildren(section, path, predicate):
         return child
 
-    return None
+    return
 
 
 def keyMatches(section, key, value):

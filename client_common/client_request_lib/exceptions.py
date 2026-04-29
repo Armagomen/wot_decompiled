@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client_common/client_request_lib/exceptions.py
 from soft_exception import SoftException
 
 class ResponseCodes(object):
@@ -45,6 +43,7 @@ class ResponseCodes(object):
     ACCOUNT_ALREADY_INVITED = 41
     ACCOUNT_ALREADY_APPLIED = 42
     ACCOUNT_IN_COOLDOWN = 43
+    W2GT_ERROR = 44
 
 
 class BaseRequestError(SoftException):

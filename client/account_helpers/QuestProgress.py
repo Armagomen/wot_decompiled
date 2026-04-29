@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/account_helpers/QuestProgress.py
 from functools import partial
 import AccountCommands
 from shared_utils.account_helpers.diff_utils import synchronizeDicts
@@ -37,35 +35,31 @@ class QuestProgress(object):
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, None)
             return
-        else:
-            self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
-            return
+        self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
+        return
 
     def getItems(self, itemsType, callback):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, None)
             return
-        else:
-            self.__syncData.waitForSync(partial(self.__onGetItemsResponse, itemsType, callback))
-            return
+        self.__syncData.waitForSync(partial(self.__onGetItemsResponse, itemsType, callback))
+        return
 
     def __onGetCacheResponse(self, callback, resultID):
         if resultID < 0:
             if callback is not None:
                 callback(resultID, None)
             return
-        else:
-            if callback is not None:
-                callback(resultID, self.__cache)
-            return
+        if callback is not None:
+            callback(resultID, self.__cache)
+        return
 
     def __onGetItemsResponse(self, itemsType, callback, resultID):
         if resultID < 0:
             if callback is not None:
                 callback(resultID, None)
             return
-        else:
-            if callback is not None:
-                callback(resultID, self.__cache.get(itemsType, None))
-            return
+        if callback is not None:
+            callback(resultID, self.__cache.get(itemsType, None))
+        return

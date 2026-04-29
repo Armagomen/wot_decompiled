@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/bonus.py
 import typing
 from epic_constants import EPIC_SKILL_TOKEN_NAME, EPIC_SELECT_BONUS_NAME
 from gui.server_events.bonuses import IntegralBonus, SimpleBonus
@@ -38,7 +36,7 @@ def mergeSelectable(frontlineLevel, startLvl, endLvl, bonuses, bonusesByLvl):
             if level > frontlineLevel:
                 bonuses[idx].updateContext({'canClaim': False})
                 indexToCheck.remove(idx)
-            if mergedBonus.getName() == EPIC_SELECT_BONUS_NAME and not mergedBonus.isReceived():
+            elif mergedBonus.getName() == EPIC_SELECT_BONUS_NAME and not mergedBonus.isReceived():
                 bonuses[idx].updateContext({'canClaim': True})
                 indexToCheck.remove(idx)
 

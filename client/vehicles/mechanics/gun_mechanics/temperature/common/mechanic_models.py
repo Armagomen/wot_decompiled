@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicles/mechanics/gun_mechanics/temperature/common/mechanic_models.py
 from __future__ import absolute_import, division
-import typing
-import BigWorld
+import typing, BigWorld
 from cache import last_cached_method
 from constants import SERVER_TICK_LENGTH
 from gui.shared.utils.decorators import ReprInjector
@@ -25,7 +22,9 @@ class TemperatureComponentParams(ITemperatureComponentParams):
         return self.__maxTemperature
 
 
-@ReprInjector.simple(('_state', 'state'), ('_updateTime', 'updateTime'), ('_temperature', 'temperature'), ('_directionFactor', 'directionFactor'))
+@ReprInjector.simple(('_state', 'state'), ('_updateTime', 'updateTime'), ('_temperature',
+                                                                          'temperature'), ('_directionFactor',
+                                                                                           'directionFactor'))
 class TemperatureMechanicState(ITemperatureMechanicState):
 
     def __init__(self, state, thermalStateID, temperature, updateTime, directionFactor, coolingPerSecFactor, isStaticTemperature, params):
@@ -44,7 +43,9 @@ class TemperatureMechanicState(ITemperatureMechanicState):
 
     @property
     def currentTemperature(self):
-        return self._temperature if self._isStaticTemperature else self.__getCurrentTemperature(BigWorld.serverTime())
+        if self._isStaticTemperature:
+            return self._temperature
+        return self.__getCurrentTemperature(BigWorld.serverTime())
 
     @property
     def maxTemperature(self):
@@ -58,7 +59,8 @@ class TemperatureMechanicState(ITemperatureMechanicState):
         return self.getTransitionKey() != other.getTransitionKey()
 
     def getTransitionKey(self):
-        return (self._state,)
+        return (
+         self._state,)
 
     @last_cached_method()
     def __getCurrentTemperature(self, serverTime):

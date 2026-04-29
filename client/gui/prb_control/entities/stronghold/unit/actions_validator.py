@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/entities/stronghold/unit/actions_validator.py
 from constants import BATTLE_MODE_VEH_TAGS_EXCEPT_CLAN
 from gui.prb_control import prb_getters
 from gui.prb_control.entities.base.squad.actions_validator import UnitActionsValidator
@@ -32,13 +30,17 @@ class StrongholdUnitSlotsValidator(CommanderValidator):
                 return ValidationResult(False, UNIT_RESTRICTION.MIN_SLOTS)
             if not allMembersReady:
                 return ValidationResult(False, UNIT_RESTRICTION.NOT_READY_IN_SLOTS)
-        return ValidationResult(True, UNIT_RESTRICTION.HAS_FROZEN_VEHICLES) if hasEventFrozenVehicles else super(StrongholdUnitSlotsValidator, self)._validate()
+        if hasEventFrozenVehicles:
+            return ValidationResult(True, UNIT_RESTRICTION.HAS_FROZEN_VEHICLES)
+        return super(StrongholdUnitSlotsValidator, self)._validate()
 
 
 class StrongholdUnitStateValidator(UnitStateValidator):
 
     def _validate(self):
-        return ValidationResult(False, UNIT_RESTRICTION.UNIT_IS_IN_PLAYERS_MATCHING) if self._entity.inPlayersMatchingMode() else super(StrongholdUnitStateValidator, self)._validate()
+        if self._entity.inPlayersMatchingMode():
+            return ValidationResult(False, UNIT_RESTRICTION.UNIT_IS_IN_PLAYERS_MATCHING)
+        return super(StrongholdUnitStateValidator, self)._validate()
 
 
 class StrongholdUnitPlayerValidator(UnitPlayerValidator):
@@ -46,7 +48,9 @@ class StrongholdUnitPlayerValidator(UnitPlayerValidator):
     def _validate(self):
         if self._entity.inPlayersMatchingMode():
             return ValidationResult(False, UNIT_RESTRICTION.UNIT_IS_IN_PLAYERS_MATCHING)
-        return ValidationResult(False, UNIT_RESTRICTION.PLAY_LIMITS_IS_ACTIVE) if prb_getters.isParentControlActivated() else super(StrongholdUnitPlayerValidator, self)._validate()
+        if prb_getters.isParentControlActivated():
+            return ValidationResult(False, UNIT_RESTRICTION.PLAY_LIMITS_IS_ACTIVE)
+        return super(StrongholdUnitPlayerValidator, self)._validate()
 
 
 class StrongholdActionsValidator(UnitActionsValidator):

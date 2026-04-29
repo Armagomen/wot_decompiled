@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/impl/lobby/progression_screen_view.py
 import SoundGroups
 from frameworks.wulf import ViewFlags, ViewSettings
 from frontline.frontline_account_settings import getReceivedRewardTokens, setReceivedRewardTokens
@@ -10,7 +8,6 @@ from frontline.gui.impl.gen.view_models.views.lobby.views.progression_screen.tie
 from gui.battle_pass.battle_pass_decorators import createBackportTooltipDecorator, createTooltipContentDecorator
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.user_missions.constants.event_banner_state import EventBannerState
-from gui.impl.lobby.common.view_mixins import LobbyHeaderVisibility
 from gui.impl.pub import ViewImpl
 from gui.prb_control.entities.listener import IGlobalListener
 from gui.shared.event_dispatcher import showEpicRewardsSelectionWindow, showFrontlineAwards, showHangar
@@ -19,7 +16,7 @@ from helpers import dependency
 from skeletons.gui.game_control import IEpicBattleMetaGameController
 from sound_gui_manager import CommonSoundSpaceSettings
 
-class ProgressionScreenView(ViewImpl, LobbyHeaderVisibility, IGlobalListener):
+class ProgressionScreenView(ViewImpl, IGlobalListener):
     _COMMON_SOUND_SPACE = CommonSoundSpaceSettings(name=EPIC_SOUND.HANGAR, entranceStates={}, exitStates={}, persistentSounds=(), stoppableSounds=(), priorities=(), autoStart=True, enterEvent=None, exitEvent=None)
     __epicController = dependency.descriptor(IEpicBattleMetaGameController)
     __slots__ = ('__tooltipItems', '__rewardsSelectionWindow')
@@ -65,17 +62,25 @@ class ProgressionScreenView(ViewImpl, LobbyHeaderVisibility, IGlobalListener):
 
     @createTooltipContentDecorator()
     def createToolTipContent(self, event, contentID):
-        return None
+        return
 
     def getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        return self.__tooltipItems.get(tooltipId) if tooltipId else None
+        if tooltipId:
+            return self.__tooltipItems.get(tooltipId)
+        else:
+            return
 
     def _getEvents(self):
-        return [(self.__epicController.onUpdated, self.__onEpicUpdated),
-         (self.__epicController.onGameModeStatusTick, self.__onGameModeStatusChange),
-         (self.viewModel.onClaimRewards, self.__onClaimRewards),
-         (self.viewModel.onClose, self.__onClose)]
+        return [
+         (
+          self.__epicController.onUpdated, self.__onEpicUpdated),
+         (
+          self.__epicController.onGameModeStatusTick, self.__onGameModeStatusChange),
+         (
+          self.viewModel.onClaimRewards, self.__onClaimRewards),
+         (
+          self.viewModel.onClose, self.__onClose)]
 
     def _onLoading(self, *args, **kwargs):
         super(ProgressionScreenView, self)._onLoading(*args, **kwargs)
@@ -84,7 +89,7 @@ class ProgressionScreenView(ViewImpl, LobbyHeaderVisibility, IGlobalListener):
         SoundGroups.g_instance.playSound2D(EPIC_SOUND.PROGRESS_PAGE_ENTER)
 
     def _fillModel(self):
-        with self.getViewModel().transaction() as vm:
+        with self.getViewModel().transaction() as (vm):
             self._updateFrontlineState(vm)
             self._fillTiersSection(vm)
 
@@ -150,7 +155,7 @@ class ProgressionScreenView(ViewImpl, LobbyHeaderVisibility, IGlobalListener):
         state, _, _ = getFrontlineState()
         if self.__gameModeStatus != state:
             self.__gameModeStatus = state
-            with self.viewModel.transaction() as tx:
+            with self.viewModel.transaction() as (tx):
                 self._updateFrontlineState(tx)
 
     def __onClose(self):

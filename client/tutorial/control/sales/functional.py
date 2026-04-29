@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/tutorial/control/sales/functional.py
 from debug_utils import LOG_ERROR
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.shared import g_eventBus, events
@@ -40,7 +38,7 @@ class FunctionalShowHint(FunctionalEffect):
             if text:
                 text = self._tutorial.getVars().get(text, default=text)
             hintID = hint.getID()
-            uniqueID = '{}_{}'.format(self._data.getID(), hintID)
+            uniqueID = ('{}_{}').format(self._data.getID(), hintID)
             props = HintProps(uniqueID, hintID, hint.getTargetID(), text, hint.hasBox(), hint.getArrow(), hint.getPadding(), updateRuntime=False, hideImmediately=hint.getHideImmediately(), checkViewArea=False)
             silent = False
             return self._gui.playEffect(GUI_EFFECT_NAME.SHOW_HINT, (props, hint.getActionTypes(), silent))

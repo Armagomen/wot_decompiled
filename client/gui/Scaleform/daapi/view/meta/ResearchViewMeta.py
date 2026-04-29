@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/ResearchViewMeta.py
 from gui.Scaleform.framework.entities.View import View
 
 class ResearchViewMeta(View):
@@ -26,16 +24,21 @@ class ResearchViewMeta(View):
         self._printOverrideError('goToVehicleCollection')
 
     def as_setNodesStatesS(self, primary, data, isRequiredInvalidation=False):
-        return self.flashObject.as_setNodesStates(primary, data, isRequiredInvalidation) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setNodesStates(primary, data, isRequiredInvalidation)
 
     def as_setNext2UnlockS(self, data):
-        return self.flashObject.as_setNext2Unlock(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setNext2Unlock(data)
 
     def as_setVehicleTypeXPS(self, xps):
-        return self.flashObject.as_setVehicleTypeXP(xps) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setVehicleTypeXP(xps)
 
     def as_setInventoryItemsS(self, data):
-        return self.flashObject.as_setInventoryItems(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setInventoryItems(data)
 
     def as_setNodeVehCompareDataS(self, data):
-        return self.flashObject.as_setNodeVehCompareData(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setNodeVehCompareData(data)

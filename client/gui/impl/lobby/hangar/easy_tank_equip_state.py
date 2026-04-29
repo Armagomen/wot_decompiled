@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/hangar/easy_tank_equip_state.py
 from __future__ import absolute_import
-import logging
-import typing
+import logging, typing
 from CurrentVehicle import g_currentVehicle
 from gui.impl import backport
 from gui.impl.gen import R
@@ -23,7 +20,9 @@ class EasyTankEquipStatePrototype(LobbyState, EventsHandler):
         lsm.addNavigationTransitionFromParent(self)
 
     def _getEvents(self):
-        return ((g_currentVehicle.onChangeStarted, self.__onVehicleChanged),)
+        return (
+         (
+          g_currentVehicle.onChangeStarted, self.__onVehicleChanged),)
 
     def _onEntered(self, event):
         super(EasyTankEquipStatePrototype, self)._onEntered(event)
@@ -56,7 +55,8 @@ class EasyTankEquipStatePrototype(LobbyState, EventsHandler):
 def generateEasyTankEquipStates(hangarStateCls, easyTankEquipStateProtoCls=EasyTankEquipStatePrototype):
 
     @hangarStateCls.parentOf
-    class GeneratedEasyTankEquipState(easyTankEquipStateProtoCls):
+    class easyTankEquipStateProtoCls(easyTankEquipStateProtoCls):
         STATE_ID = easyTankEquipStateProtoCls.STATE_ID or 'easyTankEquip'
 
-    return (GeneratedEasyTankEquipState,)
+    return (
+     GeneratedEasyTankEquipState,)

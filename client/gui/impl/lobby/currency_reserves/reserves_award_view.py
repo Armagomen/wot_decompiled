@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/currency_reserves/reserves_award_view.py
 from constants import PREMIUM_TYPE
 from frameworks.wulf import ViewSettings
 from gui.Scaleform.daapi.view.lobby.store.browser.shop_helpers import getBuyPremiumUrl, getWotPlusShopUrl
@@ -20,7 +18,7 @@ class ReservesAwardView(ViewImpl):
     _itemsCache = dependency.descriptor(IItemsCache)
     _lobbyContext = dependency.descriptor(ILobbyContext)
     _wotPlusCtrl = dependency.descriptor(IWotPlusController)
-    __slots__ = ('_wotPlusUILogger',)
+    __slots__ = ('_wotPlusUILogger', )
     _COMMON_SOUND_SPACE = RESERVES_AWARD_SOUND_SPACE
 
     def __init__(self, layoutID, *args, **kwargs):
@@ -47,7 +45,7 @@ class ReservesAwardView(ViewImpl):
 
     def _onLoading(self, creditsEarned, goldEarned):
         showCreditWarning = self._isPiggyBankEnabled() and not self._isPremiumPlusActive() and creditsEarned
-        showGoldWarning = self._isGoldReserveEnabled() and not self._wotPlusCtrl.isEnabled() and goldEarned
+        showGoldWarning = self._isGoldReserveEnabled() and not self._wotPlusCtrl.hasSubscription() and goldEarned
         self.viewModel.setCreditAmount(creditsEarned)
         self.viewModel.setGoldAmount(goldEarned)
         self.viewModel.setShowCreditWarning(showCreditWarning)
@@ -60,7 +58,7 @@ class ReservesAwardView(ViewImpl):
         return self._lobbyContext.getServerSettings().getPiggyBankConfig().get('enabled', False)
 
     def _isGoldReserveEnabled(self):
-        return self._lobbyContext.getServerSettings().isRenewableSubGoldReserveEnabled()
+        return self._wotPlusCtrl.getSettingsStorage().isGoldReserveFeatureEnabled()
 
     def _onPremiumAccountExtend(self):
         self._wotPlusUILogger.logClickEvent(ReservesKeys.CREDITS_INFO)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/dialogs/skin_apply_dialog.py
 from base_crew_dialog_template_view import BaseCrewDialogTemplateView
 from gui.impl.dialogs.dialog_template_button import CancelButton, ConfirmButton
 from gui.impl.dialogs.sub_views.icon.icon_set import IconSet
@@ -33,7 +31,8 @@ class SkinApplyDialog(BaseCrewDialogTemplateView):
         skinItem = self._itemsCache.items.getCrewSkin(self._crewSkinID)
         self.setBackgroundImagePath(R.images.gui.maps.icons.windows.background())
         self.setSubView(Placeholder.TITLE, SimpleTextTitle(localizedFullName(skinItem)))
-        self.setSubView(Placeholder.ICON, IconSet(R.images.gui.maps.icons.tankmen.icons.big.crewSkins.dyn(skinItem.getIconID())(), None, [R.images.gui.maps.icons.tankmen.windows.lipSmall_dialogs()]))
+        self.setSubView(Placeholder.ICON, IconSet(R.images.gui.maps.icons.tankmen.icons.big.crewSkins.dyn(skinItem.getIconID())(), None, [
+         R.images.gui.maps.icons.tankmen.windows.lipSmall_dialogs()]))
         self.addButton(ConfirmButton(R.strings.dialogs.skinApplyDialog.button.submit()))
         self.addButton(CancelButton())
         self._updateViewModel()
@@ -51,7 +50,7 @@ class SkinApplyDialog(BaseCrewDialogTemplateView):
         yield equip.request()
 
     def _updateViewModel(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             self._fillViewModel(vm)
 
     def _fillViewModel(self, vm):

@@ -1,7 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/BattleHintsComponent.py
-import typing
-import logging
+from __future__ import absolute_import
+import typing, logging
 from BigWorld import DynamicScriptComponent
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
@@ -15,7 +13,7 @@ class BattleHintsComponent(DynamicScriptComponent):
     def showHint(self, hintName, hintParams, immediately=False):
         controller = self.sessionProvider.dynamic.battleHints
         if controller:
-            controller.showHint(hintName=hintName, params={name:param for name, param in hintParams}, immediately=immediately)
+            controller.showHint(hintName=hintName, params=dict(hintParams), immediately=immediately)
         else:
             _logger.warning('No battle hints controller on show hint call.')
 

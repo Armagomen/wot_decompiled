@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/common/ammunition_panel/ammunition_panel_blocks.py
+from __future__ import absolute_import
 import typing
 from account_helpers.settings_core.options import KeyboardSetting
 from constants import PLAYER_RANK
@@ -67,10 +66,12 @@ class BaseBlock(object):
         raise NotImplementedError
 
     def _getKeySettings(self):
-        pass
+        return ()
 
     def _getSectionLayout(self):
-        return self._getLayout() if self._currentSection == self._getSectionName() else self._getInstalled()
+        if self._currentSection == self._getSectionName():
+            return self._getLayout()
+        return self._getInstalled()
 
     def _getLayout(self):
         raise NotImplementedError
@@ -121,7 +122,7 @@ class BaseBlock(object):
 
     def __updateSlotKeyName(self, model, idx):
         keySettings = self._getKeySettings()
-        if idx < len(keySettings):
+        if idx < len(keySettings) and keySettings[idx]:
             model.setKeyName(KeyboardSetting(keySettings[idx]).getKeyName())
 
 
@@ -226,7 +227,7 @@ class ShellsBlock(BaseBlock):
         return TankSetupConstants.SHELLS
 
     def _getKeySettings(self):
-        pass
+        return ('CMD_AMMO_CHOICE_1', 'CMD_AMMO_CHOICE_2', 'CMD_AMMO_CHOICE_3')
 
     def _getAmmunitionSlotModel(self):
         return ShellAmmunitionSlot()
@@ -261,7 +262,7 @@ class ConsumablesBlock(BaseBlock):
         return TankSetupConstants.CONSUMABLES
 
     def _getKeySettings(self):
-        pass
+        return ('CMD_AMMO_CHOICE_4', 'CMD_AMMO_CHOICE_5', 'CMD_AMMO_CHOICE_6')
 
     def _getInstalled(self):
         return self._vehicle.consumables.installed
@@ -338,7 +339,7 @@ class BattleAbilitiesBlock(BaseBlock):
         return TankSetupConstants.BATTLE_ABILITIES
 
     def _getKeySettings(self):
-        pass
+        return ('CMD_AMMO_CHOICE_7', 'CMD_AMMO_CHOICE_8', 'CMD_AMMO_CHOICE_9')
 
     def _getAmmunitionSlotModel(self):
         return BattleAbilityAmmunitionSlot()
@@ -385,7 +386,7 @@ class BattleAbilitiesBlock(BaseBlock):
         slots = self._vehicle.battleAbilities.slots
         slotsOrder = self.__epicMetaGameCtrl.getAbilitySlotsOrder(self._vehicle.descriptor.type)
         if idx >= len(slots):
-            return None
+            return
         else:
             sID = slotsOrder[idx]
             for slot in slots:
@@ -395,6 +396,6 @@ class BattleAbilitiesBlock(BaseBlock):
                 slotCategory = tuple(categories.intersection(slot.tags))
                 if slotCategory:
                     return slotCategory[0]
-                return None
+                return
 
-            return None
+            return

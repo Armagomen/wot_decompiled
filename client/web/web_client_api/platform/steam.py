@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/web/web_client_api/platform/steam.py
 from __future__ import absolute_import
-import logging
-import Steam
+import logging, Steam
 from constants import DISTRIBUTION_PLATFORM
 from web.web_client_api.platform.base import IPlatformWebApi
 _logger = logging.getLogger(__name__)

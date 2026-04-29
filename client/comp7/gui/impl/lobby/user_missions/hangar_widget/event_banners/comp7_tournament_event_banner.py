@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/user_missions/hangar_widget/event_banners/comp7_tournament_event_banner.py
 from comp7.gui.impl.lobby.tooltips.entry_point_tooltip_tournament import Comp7TournamentEntryPointTooltip
 from gui.impl import backport
 from gui.impl.gen import R
@@ -16,13 +14,13 @@ from skeletons.gui.game_control import IIngameTournamentController
 class Comp7TournamentEventBanner(BaseEventBanner):
     _TOURNAMENT_TYPE = None
     _BORDER_COLOR = '#FFCF5F'
-    __tournamentStateBannerStateMap = {IngameTournamentState.INTRO: EventBannerState.INTRO,
-     IngameTournamentState.IN_PROGRESS: EventBannerState.IN_PROGRESS,
-     IngameTournamentState.BETWEEN_SHOWMATCHES: EventBannerState.INTRO,
-     IngameTournamentState.FINISHED: EventBannerState.INTRO}
-    __tournamentStateDescriptionMap = {IngameTournamentState.INTRO: R.strings.hangar_event_banners.event.Comp7TournamentEntryPoint.intro.description,
-     IngameTournamentState.IN_PROGRESS: R.strings.hangar_event_banners.event.Comp7TournamentEntryPoint.in_live.description,
-     IngameTournamentState.FINISHED: R.strings.hangar_event_banners.event.Comp7TournamentEntryPoint.finished.description}
+    __tournamentStateBannerStateMap = {IngameTournamentState.INTRO: EventBannerState.INTRO, 
+       IngameTournamentState.IN_PROGRESS: EventBannerState.IN_PROGRESS, 
+       IngameTournamentState.BETWEEN_SHOWMATCHES: EventBannerState.INTRO, 
+       IngameTournamentState.FINISHED: EventBannerState.INTRO}
+    __tournamentStateDescriptionMap = {IngameTournamentState.INTRO: R.strings.hangar_event_banners.event.Comp7TournamentEntryPoint.intro.description, 
+       IngameTournamentState.IN_PROGRESS: R.strings.hangar_event_banners.event.Comp7TournamentEntryPoint.in_live.description, 
+       IngameTournamentState.FINISHED: R.strings.hangar_event_banners.event.Comp7TournamentEntryPoint.finished.description}
     __tournamentController = dependency.descriptor(IIngameTournamentController)
 
     def __init__(self):
@@ -44,19 +42,27 @@ class Comp7TournamentEventBanner(BaseEventBanner):
 
     @property
     def borderColor(self):
-        return self._BORDER_COLOR if self.__state == IngameTournamentState.INTRO else ''
+        if self.__state == IngameTournamentState.INTRO:
+            return self._BORDER_COLOR
+        return ''
 
     @property
     def timerText(self):
-        return str(backport.text(R.strings.hangar_event_banners.event.Comp7TournamentEntryPoint.timer.text())) if self.__state == IngameTournamentState.BETWEEN_SHOWMATCHES else ''
+        if self.__state == IngameTournamentState.BETWEEN_SHOWMATCHES:
+            return str(backport.text(R.strings.hangar_event_banners.event.Comp7TournamentEntryPoint.timer.text()))
+        return ''
 
     @property
     def timerValue(self):
-        return max(self.__nextMatchDate - getCurrentLocalServerTimestamp(), ONE_MINUTE) if self.__state == IngameTournamentState.BETWEEN_SHOWMATCHES else 0
+        if self.__state == IngameTournamentState.BETWEEN_SHOWMATCHES:
+            return max(self.__nextMatchDate - getCurrentLocalServerTimestamp(), ONE_MINUTE)
+        return 0
 
     @property
     def showTimerBeforeEventEnd(self):
-        return self.timerValue + 1000 if self.__state == IngameTournamentState.BETWEEN_SHOWMATCHES else 0
+        if self.__state == IngameTournamentState.BETWEEN_SHOWMATCHES:
+            return self.timerValue + 1000
+        return 0
 
     @property
     def eventStartDate(self):
@@ -69,17 +75,21 @@ class Comp7TournamentEventBanner(BaseEventBanner):
     @property
     def introDescription(self):
         descriptionKey = self.__tournamentStateDescriptionMap.get(self.__state)
-        return backport.text(descriptionKey()) if descriptionKey else ''
+        if descriptionKey:
+            return backport.text(descriptionKey())
+        return ''
 
     @property
     def inProgressDescription(self):
         descriptionKey = self.__tournamentStateDescriptionMap.get(self.__state)
-        return backport.text(descriptionKey()) if descriptionKey else ''
+        if descriptionKey:
+            return backport.text(descriptionKey())
+        return ''
 
     @prbEntityProperty
     @classmethod
     def prbEntity(cls):
-        return None
+        return
 
     @classmethod
     def isTournamentEntryPointAvailable(cls):

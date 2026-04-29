@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/cgf_components/hover_component.py
-import BigWorld
-import CGF
-import GUI
-import Event
+import BigWorld, CGF, GUI, Event
 from GenericComponents import VSEComponent
 from Physics import CameraCollideComponent
 from cgf_common.cgf_helpers import getParentGameObjectByComponent
@@ -101,5 +96,4 @@ class HoverManager(CGF.ComponentManager):
             if cameraCollideComponent and cameraCollideComponent.isColliding:
                 return
             return gameObject
-        else:
-            return
+        return

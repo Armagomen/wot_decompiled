@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/frontline_presenters_packers.py
-import typing
-import json
+import typing, json
 from epic_constants import EPIC_BATTLE_TEAM_ID
 from frameworks.wulf.view.array import fillViewModelsArray
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
@@ -141,8 +138,8 @@ def getAchievementResultsModel(achievement):
 
 def getRankAchievementResultsModel(playerRank):
     achievementModel = AchievementModel()
-    achievementModel.setName('rank{}'.format(playerRank))
-    achievementModel.setIconName('rank_{}'.format(playerRank))
+    achievementModel.setName(('rank{}').format(playerRank))
+    achievementModel.setIconName(('rank_{}').format(playerRank))
     achievementModel.setGroupID(AchievementModel.RANK)
     achievementModel.setTooltipId(TOOLTIPS_CONSTANTS.FRONTLINE_RANK)
     achievementTooltipArgs = [playerRank]

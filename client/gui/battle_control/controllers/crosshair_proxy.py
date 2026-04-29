@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/crosshair_proxy.py
-import Event
-import GUI
-import aih_constants
-import BattleReplay
+import Event, GUI, aih_constants, BattleReplay
 from AvatarInputHandler import aih_global_binding
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID, CROSSHAIR_VIEW_ID, STRATEGIC_CAMERA_ID
 from gui.battle_control.controllers.interfaces import IBattleController
@@ -14,29 +9,27 @@ _CTRL_MODE = aih_constants.CTRL_MODE_NAME
 _MARKER_TYPE = aih_constants.GUN_MARKER_TYPE
 _MARKER_FLAG = aih_constants.GUN_MARKER_FLAG
 _STRATEGIC_CAMERA = aih_constants.STRATEGIC_CAMERA
-_CTRL_MODE_TO_VIEW_ID = {_CTRL_MODE.ARCADE: CROSSHAIR_VIEW_ID.ARCADE,
- _CTRL_MODE.STRATEGIC: CROSSHAIR_VIEW_ID.STRATEGIC,
- _CTRL_MODE.ARTY: CROSSHAIR_VIEW_ID.STRATEGIC,
- _CTRL_MODE.SNIPER: CROSSHAIR_VIEW_ID.SNIPER,
- _CTRL_MODE.POSTMORTEM: CROSSHAIR_VIEW_ID.POSTMORTEM,
- _CTRL_MODE.RESPAWN_DEATH: CROSSHAIR_VIEW_ID.POSTMORTEM,
- _CTRL_MODE.DEATH_FREE_CAM: CROSSHAIR_VIEW_ID.POSTMORTEM,
- _CTRL_MODE.DUAL_GUN: CROSSHAIR_VIEW_ID.SNIPER,
- _CTRL_MODE.TWIN_GUN: CROSSHAIR_VIEW_ID.SNIPER}
-_GUN_MARKERS_SET_IDS = (_BINDING_ID.GUN_MARKERS_FLAGS,
+_CTRL_MODE_TO_VIEW_ID = {_CTRL_MODE.ARCADE: CROSSHAIR_VIEW_ID.ARCADE, 
+   _CTRL_MODE.STRATEGIC: CROSSHAIR_VIEW_ID.STRATEGIC, 
+   _CTRL_MODE.ARTY: CROSSHAIR_VIEW_ID.STRATEGIC, 
+   _CTRL_MODE.SNIPER: CROSSHAIR_VIEW_ID.SNIPER, 
+   _CTRL_MODE.POSTMORTEM: CROSSHAIR_VIEW_ID.POSTMORTEM, 
+   _CTRL_MODE.RESPAWN_DEATH: CROSSHAIR_VIEW_ID.POSTMORTEM, 
+   _CTRL_MODE.DEATH_FREE_CAM: CROSSHAIR_VIEW_ID.POSTMORTEM, 
+   _CTRL_MODE.DUAL_GUN: CROSSHAIR_VIEW_ID.SNIPER, 
+   _CTRL_MODE.TWIN_GUN: CROSSHAIR_VIEW_ID.SNIPER}
+_GUN_MARKERS_SET_IDS = (
+ _BINDING_ID.GUN_MARKERS_FLAGS,
  _BINDING_ID.CLIENT_GUN_MARKER_DATA_PROVIDER,
  _BINDING_ID.SERVER_GUN_MARKER_DATA_PROVIDER,
  _BINDING_ID.CLIENT_SPG_GUN_MARKER_DATA_PROVIDER,
  _BINDING_ID.SERVER_SPG_GUN_MARKER_DATA_PROVIDER,
  _BINDING_ID.DUAL_ACC_GUN_MARKER_DATA_PROVIDER)
-_STRATEGIC_CAMERA_TO_ID = {_STRATEGIC_CAMERA.AERIAL: STRATEGIC_CAMERA_ID.AERIAL,
- _STRATEGIC_CAMERA.TRAJECTORY: STRATEGIC_CAMERA_ID.TRAJECTORY}
+_STRATEGIC_CAMERA_TO_ID = {_STRATEGIC_CAMERA.AERIAL: STRATEGIC_CAMERA_ID.AERIAL, 
+   _STRATEGIC_CAMERA.TRAJECTORY: STRATEGIC_CAMERA_ID.TRAJECTORY}
 
 def getCrosshairViewIDByCtrlMode(ctrlMode):
-    if ctrlMode in _CTRL_MODE_TO_VIEW_ID:
-        viewID = _CTRL_MODE_TO_VIEW_ID[ctrlMode]
-    else:
-        viewID = CROSSHAIR_VIEW_ID.UNDEFINED
+    viewID = _CTRL_MODE_TO_VIEW_ID.get(ctrlMode, CROSSHAIR_VIEW_ID.UNDEFINED)
     return viewID
 
 
@@ -69,7 +62,12 @@ class GunMarkersSetInfo(object):
 
 
 class CrosshairDataProxy(IBattleController):
-    __slots__ = ('__width', '__height', '__positionX', '__positionY', '__scale', '__viewID', '__eManager', '__isArenaStarted', '__strategicCameraID', 'onCrosshairViewChanged', 'onCrosshairOffsetChanged', 'onCrosshairSizeChanged', 'onCrosshairPositionChanged', 'onCrosshairScaleChanged', 'onCrosshairZoomFactorChanged', 'onGunMarkerStateChanged', 'onGunMarkersSetChanged', 'onStrategicCameraChanged', 'onMultiGunCollisionsUpdated', 'onSPGShotsIndicatorStateChanged')
+    __slots__ = ('__width', '__height', '__positionX', '__positionY', '__scale', '__viewID',
+                 '__eManager', '__isArenaStarted', '__strategicCameraID', 'onCrosshairViewChanged',
+                 'onCrosshairOffsetChanged', 'onCrosshairSizeChanged', 'onCrosshairPositionChanged',
+                 'onCrosshairScaleChanged', 'onCrosshairZoomFactorChanged', 'onGunMarkerStateChanged',
+                 'onGunMarkersSetChanged', 'onStrategicCameraChanged', 'onMultiGunCollisionsUpdated',
+                 'onSPGShotsIndicatorStateChanged')
     settingsCore = dependency.descriptor(ISettingsCore)
     __spgShotsIndicatorState = aih_global_binding.bindRO(_BINDING_ID.SPG_SHOTS_INDICATOR_STATE)
     __multiGunCollisions = aih_global_binding.bindRO(_BINDING_ID.MULTI_GUN_COLLISIONS)
@@ -140,10 +138,12 @@ class CrosshairDataProxy(IBattleController):
         return self.__viewID
 
     def getSize(self):
-        return (self.__width, self.__height)
+        return (
+         self.__width, self.__height)
 
     def getPosition(self):
-        return (self.__positionX, self.__positionY)
+        return (
+         self.__positionX, self.__positionY)
 
     def getScaledPosition(self):
         if self.__scale > 1.0:
@@ -162,14 +162,16 @@ class CrosshairDataProxy(IBattleController):
             else:
                 posX = int(0.5 * self.__width)
                 posY = int(0.5 * self.__height)
-            return (posX, posY)
+            return (
+             posX, posY)
         return self.getScaledPosition()
 
     def getScaleFactor(self):
         return self.__scale
 
     def getOffset(self):
-        return (self.__offset.x, self.__offset.y)
+        return (
+         self.__offset.x, self.__offset.y)
 
     def getZoomFactor(self):
         return self.__zoomFactor
@@ -244,10 +246,7 @@ class CrosshairDataProxy(IBattleController):
         self.onSPGShotsIndicatorStateChanged(value)
 
     def __onStrategicCameraChanged(self, camera):
-        if camera in _STRATEGIC_CAMERA_TO_ID:
-            cameraID = _STRATEGIC_CAMERA_TO_ID[camera]
-        else:
-            cameraID = STRATEGIC_CAMERA_ID.UNDEFINED
+        cameraID = _STRATEGIC_CAMERA_TO_ID.get(camera, STRATEGIC_CAMERA_ID.UNDEFINED)
         if self.__strategicCameraID != cameraID:
             self.__strategicCameraID = cameraID
             self.onStrategicCameraChanged(cameraID)

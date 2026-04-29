@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hub/hub_view.py
 from collections import OrderedDict
 from account_helpers.AccountSettings import Winback
 from PlayerEvents import g_playerEvents
@@ -18,7 +16,14 @@ from gui.shared.events import UserMissionsEvent
 from gui.winback.winback_helpers import getWinbackSetting, setWinbackSetting
 from helpers import dependency
 from skeletons.gui.game_control import IWinbackController
-TABS = OrderedDict([(TabId.BASIC, BasicMissionsTab)])
+TABS = OrderedDict([
+ (
+  TabId.BASIC, BasicMissionsTab)])
+
+class DailyTabs(object):
+    QUESTS = 0
+    PREMIUM_MISSIONS = 1
+
 
 class HubView(ViewComponent[HubViewModel]):
     __winbackController = dependency.descriptor(IWinbackController)
@@ -51,7 +56,7 @@ class HubView(ViewComponent[HubViewModel]):
         return getWinbackSetting(Winback.INTRO_SHOWN)
 
     def _updateTabs(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             tabsList = vm.getTabsList()
             tabsList.clear()
             if umgConfigSchema.getModel().enableDailyWeeklyUI:
@@ -66,10 +71,16 @@ class HubView(ViewComponent[HubViewModel]):
                 self.__changeTab(tabsList[0].getId())
 
     def _getEvents(self):
-        return ((self.viewModel.onTabChange, self.__onTabChange), (self.viewModel.onContentLayoutChanged, self.__onContentLayoutChanged), (g_playerEvents.onConfigModelUpdated, self.__onConfigModelUpdated))
+        return ((self.viewModel.onTabChange, self.__onTabChange),
+         (
+          self.viewModel.onContentLayoutChanged, self.__onContentLayoutChanged),
+         (
+          g_playerEvents.onConfigModelUpdated, self.__onConfigModelUpdated))
 
     def _getListeners(self):
-        return ((UserMissionsEvent.TRANSITION_TO_MISSION, self.__onTransitionToMission, EVENT_BUS_SCOPE.LOBBY),)
+        return (
+         (
+          UserMissionsEvent.TRANSITION_TO_MISSION, self.__onTransitionToMission, EVENT_BUS_SCOPE.LOBBY),)
 
     def __createTab(self, tabID, title):
         tab = TabModel()

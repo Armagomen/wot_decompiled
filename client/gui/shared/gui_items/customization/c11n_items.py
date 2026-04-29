@@ -1,12 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/gui_items/customization/c11n_items.py
-import logging
-import os
-import urllib
+import logging, os, urllib
 from copy import deepcopy
-import typing
-import Math
-import ResMgr
+import typing, Math, ResMgr
 from CurrentVehicle import g_currentVehicle
 from gui.customization.shared import EDITABLE_STYLE_APPLY_TO_ALL_AREAS_TYPES, getAvailableRegions
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
@@ -56,44 +50,54 @@ _PN_SWATCH_HEIGHT = 104
 _TEXTURES_PATH = 'gui/maps/vehicles/'
 _PREVIEW_ICON_TEMPLATE = 'img://preview_icon,{width},{height},{innerWidth},{innerHeight},"{texture}"'
 _PREVIEW_ICON_URL = 'preview://{texture}?{params}'
-_PREVIEW_ICON_SIZE = (226, 102)
+_PREVIEW_ICON_SIZE = (
+ 226, 102)
 _PREVIEW_ICON_INNER_SIZE_DEFAULT = (74, 74)
-_PREVIEW_ICON_INNER_SIZE = {ProjectionDecalFormTags.SQUARE: (74, 74),
- ProjectionDecalFormTags.RECT1X2: (174, 87),
- ProjectionDecalFormTags.RECT1X3: (186, 62),
- ProjectionDecalFormTags.RECT1X4: (220, 55),
- ProjectionDecalFormTags.RECT1X6: (220, 37)}
+_PREVIEW_ICON_INNER_SIZE = {ProjectionDecalFormTags.SQUARE: (
+                                  74, 74), 
+   ProjectionDecalFormTags.RECT1X2: (
+                                   174, 87), 
+   ProjectionDecalFormTags.RECT1X3: (
+                                   186, 62), 
+   ProjectionDecalFormTags.RECT1X4: (
+                                   220, 55), 
+   ProjectionDecalFormTags.RECT1X6: (
+                                   220, 37)}
 _STYLE_GROUP_ID_TO_GROUP_NAME_MAP = {}
 _STYLE_GROUP_ID_TO_FULL_GROUP_NAME_MAP = {}
 _PROGRESSION_LEVEL_CONDITION_INDEX = 1
-STYLE_GROUP_ID_TO_GROUP_NAME_MAP = {VEHICLE_CUSTOMIZATION.STYLES_SPECIAL_STYLES: VEHICLE_CUSTOMIZATION.CUSTOMIZATION_INFOTYPE_TYPE_STYLE_SPECIAL,
- VEHICLE_CUSTOMIZATION.STYLES_MAIN_STYLES: VEHICLE_CUSTOMIZATION.CUSTOMIZATION_INFOTYPE_TYPE_STYLE_MAIN,
- VEHICLE_CUSTOMIZATION.STYLES_RENTED_STYLES: VEHICLE_CUSTOMIZATION.CUSTOMIZATION_INFOTYPE_TYPE_STYLE_RENTAL,
- VEHICLE_CUSTOMIZATION.STYLES_UNIQUE_STYLES: VEHICLE_CUSTOMIZATION.CUSTOMIZATION_INFOTYPE_TYPE_STYLE_UNIQUE,
- VEHICLE_CUSTOMIZATION.STYLES_HISTORICAL_STYLES: VEHICLE_CUSTOMIZATION.CUSTOMIZATION_INFOTYPE_TYPE_STYLE_HISTORICAL}
+STYLE_GROUP_ID_TO_GROUP_NAME_MAP = {VEHICLE_CUSTOMIZATION.STYLES_SPECIAL_STYLES: VEHICLE_CUSTOMIZATION.CUSTOMIZATION_INFOTYPE_TYPE_STYLE_SPECIAL, 
+   VEHICLE_CUSTOMIZATION.STYLES_MAIN_STYLES: VEHICLE_CUSTOMIZATION.CUSTOMIZATION_INFOTYPE_TYPE_STYLE_MAIN, 
+   VEHICLE_CUSTOMIZATION.STYLES_RENTED_STYLES: VEHICLE_CUSTOMIZATION.CUSTOMIZATION_INFOTYPE_TYPE_STYLE_RENTAL, 
+   VEHICLE_CUSTOMIZATION.STYLES_UNIQUE_STYLES: VEHICLE_CUSTOMIZATION.CUSTOMIZATION_INFOTYPE_TYPE_STYLE_UNIQUE, 
+   VEHICLE_CUSTOMIZATION.STYLES_HISTORICAL_STYLES: VEHICLE_CUSTOMIZATION.CUSTOMIZATION_INFOTYPE_TYPE_STYLE_HISTORICAL}
 
 def getStyleGroupNameResourceID(groupID):
     if not _STYLE_GROUP_ID_TO_GROUP_NAME_MAP:
         _groupIDs = R.strings.vehicle_customization.styles
         _groupNames = R.strings.vehicle_customization.customization.infotype.type.style
-        _STYLE_GROUP_ID_TO_GROUP_NAME_MAP.update({backport.msgid(_groupIDs.special_styles()): _groupNames.special(),
-         backport.msgid(_groupIDs.main_styles()): _groupNames.main(),
-         backport.msgid(_groupIDs.rented_styles()): _groupNames.rental(),
-         backport.msgid(_groupIDs.unique_styles()): _groupNames.unique(),
-         backport.msgid(_groupIDs.historical_styles()): _groupNames.historical()})
-    return _STYLE_GROUP_ID_TO_GROUP_NAME_MAP[groupID] if groupID in _STYLE_GROUP_ID_TO_GROUP_NAME_MAP else R.invalid()
+        _STYLE_GROUP_ID_TO_GROUP_NAME_MAP.update({backport.msgid(_groupIDs.special_styles()): _groupNames.special(), 
+           backport.msgid(_groupIDs.main_styles()): _groupNames.main(), 
+           backport.msgid(_groupIDs.rented_styles()): _groupNames.rental(), 
+           backport.msgid(_groupIDs.unique_styles()): _groupNames.unique(), 
+           backport.msgid(_groupIDs.historical_styles()): _groupNames.historical()})
+    if groupID in _STYLE_GROUP_ID_TO_GROUP_NAME_MAP:
+        return _STYLE_GROUP_ID_TO_GROUP_NAME_MAP[groupID]
+    return R.invalid()
 
 
 def getGroupFullNameResourceID(groupID):
     if not _STYLE_GROUP_ID_TO_FULL_GROUP_NAME_MAP:
         _groupIDs = R.strings.vehicle_customization.styles
         _groupNames = R.strings.vehicle_customization.carousel.swatch.style
-        _STYLE_GROUP_ID_TO_FULL_GROUP_NAME_MAP.update({backport.msgid(_groupIDs.special_styles()): _groupNames.special(),
-         backport.msgid(_groupIDs.main_styles()): _groupNames.main(),
-         backport.msgid(_groupIDs.rented_styles()): _groupNames.rented(),
-         backport.msgid(_groupIDs.unique_styles()): _groupNames.unique(),
-         backport.msgid(_groupIDs.historical_styles()): _groupNames.historical()})
-    return _STYLE_GROUP_ID_TO_FULL_GROUP_NAME_MAP[groupID] if groupID in _STYLE_GROUP_ID_TO_FULL_GROUP_NAME_MAP else R.invalid()
+        _STYLE_GROUP_ID_TO_FULL_GROUP_NAME_MAP.update({backport.msgid(_groupIDs.special_styles()): _groupNames.special(), 
+           backport.msgid(_groupIDs.main_styles()): _groupNames.main(), 
+           backport.msgid(_groupIDs.rented_styles()): _groupNames.rented(), 
+           backport.msgid(_groupIDs.unique_styles()): _groupNames.unique(), 
+           backport.msgid(_groupIDs.historical_styles()): _groupNames.historical()})
+    if groupID in _STYLE_GROUP_ID_TO_FULL_GROUP_NAME_MAP:
+        return _STYLE_GROUP_ID_TO_FULL_GROUP_NAME_MAP[groupID]
+    return R.invalid()
 
 
 def getTexturePath(itemTypeName, size, name, extension):
@@ -112,60 +116,51 @@ class SpecialEvents(object):
     WINTER_HUNT = 'winter_hunt'
     KURSK_BATTLE = 'Kursk_battle'
     HALLOWEEN = 'Halloween'
-    ALL = (NY,
-     NY18,
-     NY19,
-     NY20,
-     NY21,
-     NY22,
-     NY23,
-     FOOTBALL18,
-     WINTER_HUNT,
-     KURSK_BATTLE,
-     HALLOWEEN)
-    ICONS = {NY: R.images.gui.maps.icons.customization.style_info.newYear(),
-     NY18: R.images.gui.maps.icons.customization.style_info.newYear(),
-     NY19: R.images.gui.maps.icons.customization.style_info.newYear(),
-     NY20: R.images.gui.maps.icons.customization.style_info.newYear(),
-     NY21: R.images.gui.maps.icons.customization.style_info.newYear(),
-     NY22: R.images.gui.maps.icons.customization.style_info.newYear(),
-     NY23: R.images.gui.maps.icons.customization.style_info.newYear(),
-     FOOTBALL18: R.images.gui.maps.icons.customization.style_info.football(),
-     WINTER_HUNT: R.images.gui.maps.icons.customization.style_info.marathon(),
-     KURSK_BATTLE: R.images.gui.maps.icons.customization.style_info.marathon(),
-     HALLOWEEN: R.images.gui.maps.icons.customization.style_info.halloween()}
-    NAMES = {NY: R.strings.vehicle_customization.styleInfo.event.ny(),
-     NY18: R.strings.vehicle_customization.styleInfo.event.ny18(),
-     NY19: R.strings.vehicle_customization.styleInfo.event.ny19(),
-     NY20: R.strings.vehicle_customization.styleInfo.event.ny20(),
-     NY21: R.strings.vehicle_customization.styleInfo.event.ny21(),
-     NY22: R.strings.vehicle_customization.styleInfo.event.ny22(),
-     NY23: R.strings.vehicle_customization.styleInfo.event.ny23(),
-     FOOTBALL18: R.strings.vehicle_customization.styleInfo.event.football18(),
-     WINTER_HUNT: R.strings.vehicle_customization.styleInfo.event.winter_hunt(),
-     KURSK_BATTLE: R.strings.vehicle_customization.styleInfo.event.kursk_battle(),
-     HALLOWEEN: R.strings.vehicle_customization.styleInfo.event.halloween()}
+    ALL = (
+     NY, NY18, NY19, NY20, NY21, NY22, NY23, FOOTBALL18, WINTER_HUNT, KURSK_BATTLE, HALLOWEEN)
+    ICONS = {NY: R.images.gui.maps.icons.customization.style_info.newYear(), 
+       NY18: R.images.gui.maps.icons.customization.style_info.newYear(), 
+       NY19: R.images.gui.maps.icons.customization.style_info.newYear(), 
+       NY20: R.images.gui.maps.icons.customization.style_info.newYear(), 
+       NY21: R.images.gui.maps.icons.customization.style_info.newYear(), 
+       NY22: R.images.gui.maps.icons.customization.style_info.newYear(), 
+       NY23: R.images.gui.maps.icons.customization.style_info.newYear(), 
+       FOOTBALL18: R.images.gui.maps.icons.customization.style_info.football(), 
+       WINTER_HUNT: R.images.gui.maps.icons.customization.style_info.marathon(), 
+       KURSK_BATTLE: R.images.gui.maps.icons.customization.style_info.marathon(), 
+       HALLOWEEN: R.images.gui.maps.icons.customization.style_info.halloween()}
+    NAMES = {NY: R.strings.vehicle_customization.styleInfo.event.ny(), 
+       NY18: R.strings.vehicle_customization.styleInfo.event.ny18(), 
+       NY19: R.strings.vehicle_customization.styleInfo.event.ny19(), 
+       NY20: R.strings.vehicle_customization.styleInfo.event.ny20(), 
+       NY21: R.strings.vehicle_customization.styleInfo.event.ny21(), 
+       NY22: R.strings.vehicle_customization.styleInfo.event.ny22(), 
+       NY23: R.strings.vehicle_customization.styleInfo.event.ny23(), 
+       FOOTBALL18: R.strings.vehicle_customization.styleInfo.event.football18(), 
+       WINTER_HUNT: R.strings.vehicle_customization.styleInfo.event.winter_hunt(), 
+       KURSK_BATTLE: R.strings.vehicle_customization.styleInfo.event.kursk_battle(), 
+       HALLOWEEN: R.strings.vehicle_customization.styleInfo.event.halloween()}
 
 
 def camoIconTemplate(texture, width, height, colors, background=_CAMO_SWATCH_BACKGROUND, options=ImageOptions.NONE):
     weights = Math.Vector4(*[ (color >> 24) / 255.0 for color in colors ])
-    return _CAMO_ICON_TEMPLATE.format(width=width, height=height, options=options, texture=texture, background=background, colors=','.join((str(color) for color in colors)), weights=','.join((str(weight) for weight in weights)))
+    return _CAMO_ICON_TEMPLATE.format(width=width, height=height, options=options, texture=texture, background=background, colors=(',').join(str(color) for color in colors), weights=(',').join(str(weight) for weight in weights))
 
 
 def camoIconUrl(texture, width, height, colors, background=_CAMO_SWATCH_BACKGROUND, options=ImageOptions.NONE):
     weights = Math.Vector4(*[ (color >> 24) / 255.0 for color in colors ])
-    params = {'back': background,
-     'w': width,
-     'h': height,
-     'r': colors[0],
-     'g': colors[1],
-     'b': colors[2],
-     'a': colors[3],
-     'o': options,
-     'rw': weights[0],
-     'gw': weights[1],
-     'bw': weights[2],
-     'aw': weights[3]}
+    params = {'back': background, 
+       'w': width, 
+       'h': height, 
+       'r': colors[0], 
+       'g': colors[1], 
+       'b': colors[2], 
+       'a': colors[3], 
+       'o': options, 
+       'rw': weights[0], 
+       'gw': weights[1], 
+       'bw': weights[2], 
+       'aw': weights[3]}
     return _CAMO_ICON_URL.format(texture=texture, params=urllib.urlencode(params))
 
 
@@ -174,12 +169,12 @@ def personalNumIconTemplate(number, width, height, texture, fontPath, textureMas
 
 
 def personalNumIconUrl(number, width, height, texture, fontPath, textureMask='', background=''):
-    params = {'num': number,
-     'w': width,
-     'h': height,
-     'font': fontPath,
-     'mask': textureMask,
-     'back': background}
+    params = {'num': number, 
+       'w': width, 
+       'h': height, 
+       'font': fontPath, 
+       'mask': textureMask, 
+       'back': background}
     return _PERSONAL_NUM_ICON_URL.format(texture=texture, params=urllib.urlencode(params))
 
 
@@ -188,10 +183,10 @@ def previewTemplate(texture, width, height, innerWidth, innerHeight):
 
 
 def previewUrl(texture, width, height, innerWidth, innerHeight):
-    params = {'w': width,
-     'h': height,
-     'iw': innerWidth,
-     'ih': innerHeight}
+    params = {'w': width, 
+       'h': height, 
+       'iw': innerWidth, 
+       'ih': innerHeight}
     return _PREVIEW_ICON_URL.format(texture=texture, params=urllib.urlencode(params))
 
 
@@ -207,7 +202,7 @@ class ConcealmentBonus(object):
         return still
 
     def getFormattedValue(self, vehicle):
-        return '{:.0%}'.format(self.getValue(vehicle))
+        return ('{:.0%}').format(self.getValue(vehicle))
 
     @property
     def iconBig(self):
@@ -235,7 +230,9 @@ class ConcealmentBonus(object):
 
 
 class Customization(FittingItem):
-    __slots__ = ('_boundVehicles', '_bonus', '_installedVehicles', '__noveltyData', '__progressingData', '__installedCount', '__boundInventoryCount', '__fullInventoryCount', '__fullCount', '__questProgressInfo')
+    __slots__ = ('_boundVehicles', '_bonus', '_installedVehicles', '__noveltyData',
+                 '__progressingData', '__installedCount', '__boundInventoryCount',
+                 '__fullInventoryCount', '__fullCount', '__questProgressInfo')
     eventsCache = dependency.descriptor(IEventsCache)
     _service = dependency.descriptor(ICustomizationService)
 
@@ -268,10 +265,12 @@ class Customization(FittingItem):
         return
 
     def __cmp__(self, other):
-        return cmp(self.userName, other.userName) if isinstance(other, Customization) else -1
+        if isinstance(other, Customization):
+            return cmp(self.userName, other.userName)
+        return -1
 
     def __repr__(self):
-        return '{}<intCD:{}, id:{}>'.format(self.__class__.__name__, self.intCD, self.id)
+        return ('{}<intCD:{}, id:{}>').format(self.__class__.__name__, self.intCD, self.id)
 
     @property
     def id(self):
@@ -370,9 +369,7 @@ class Customization(FittingItem):
 
     def boundInventoryCount(self, vehicleIntCD=None):
         if vehicleIntCD is not None:
-            if vehicleIntCD in self._boundVehicles:
-                return self._boundVehicles[vehicleIntCD]
-            return 0
+            return self._boundVehicles.get(vehicleIntCD, 0)
         else:
             if self.__boundInventoryCount is None:
                 self.__boundInventoryCount = sum(self._boundVehicles.itervalues())
@@ -388,9 +385,7 @@ class Customization(FittingItem):
 
     def installedCount(self, vehicleIntCD=None):
         if vehicleIntCD is not None:
-            if vehicleIntCD in self._installedVehicles:
-                return self._installedVehicles[vehicleIntCD]
-            return 0
+            return self._installedVehicles.get(vehicleIntCD, 0)
         else:
             if self.__installedCount is None:
                 self.__installedCount = sum(self._installedVehicles.itervalues())
@@ -408,7 +403,9 @@ class Customization(FittingItem):
     def buyCount(self):
         if self.isHidden:
             return 0
-        return max(self.descriptor.maxNumber - self.fullCount(), 0) if self.isLimited else float('inf')
+        if self.isLimited:
+            return max(self.descriptor.maxNumber - self.fullCount(), 0)
+        return float('inf')
 
     @property
     def mayApply(self):
@@ -422,12 +419,16 @@ class Customization(FittingItem):
     @property
     def specialEventIcon(self):
         imageKey = SpecialEvents.ICONS.get(self.specialEventTag, '')
-        return backport.image(imageKey) if imageKey != '' else imageKey
+        if imageKey != '':
+            return backport.image(imageKey)
+        return imageKey
 
     @property
     def specialEventName(self):
         nameKey = SpecialEvents.NAMES.get(self.specialEventTag, '')
-        return backport.text(nameKey) if nameKey != '' else nameKey
+        if nameKey != '':
+            return backport.text(nameKey)
+        return nameKey
 
     @property
     def isProgressive(self):
@@ -435,11 +436,16 @@ class Customization(FittingItem):
 
     @property
     def isProgressionAutoBound(self):
-        return self.descriptor.progression.autobound if self.isProgressive else False
+        if self.isProgressive:
+            return self.descriptor.progression.autobound
+        return False
 
     @property
     def progressionConditions(self):
-        return self.descriptor.progression.levels if self.isProgressive else None
+        if self.isProgressive:
+            return self.descriptor.progression.levels
+        else:
+            return
 
     @property
     def isProgressionRewindEnabled(self):
@@ -452,9 +458,9 @@ class Customization(FittingItem):
     def getQuestsProgressionInfo(self):
         if not self.isQuestsProgression:
             return ('', -1)
-        elif self.__questProgressInfo is not None:
-            return self.__questProgressInfo
         else:
+            if self.__questProgressInfo is not None:
+                return self.__questProgressInfo
             customizationCache = vehicles.g_cache.customization20()
             if self.intCD in customizationCache.itemToQuestProgressionStyle:
                 styleDescr = customizationCache.itemToQuestProgressionStyle[self.intCD]
@@ -467,8 +473,10 @@ class Customization(FittingItem):
                         if self.id in itemsIdsForType:
                             if len(groupItems) == level and not hasOtherItemsInChain:
                                 level = -1
-                            self.__questProgressInfo = (token, level)
-                            return (token, level)
+                            self.__questProgressInfo = (
+                             token, level)
+                            return (
+                             token, level)
                         hasOtherItemsInChain = hasOtherItemsInChain or bool(itemsIdsForType)
 
                 _logger.error('Wrong itemToQuestProgressionStyle info for compCD "%s" ', self.intCD)
@@ -530,10 +538,15 @@ class Customization(FittingItem):
                 return False
             quest = first(quests)
             tokenCount = self.eventsCache.questsProgress.getTokenCount(self.requiredToken)
-            return False if not (quest and quest.isAvailable() and self.descriptor.requiredTokenCount == tokenCount + 1) else True
+            if not (quest and quest.isAvailable() and self.descriptor.requiredTokenCount == tokenCount + 1):
+                return False
+            return True
 
     def getUnlockingQuests(self):
-        return self._getQuestsForToken() if self.requiredToken else None
+        if self.requiredToken:
+            return self._getQuestsForToken()
+        else:
+            return
 
     def isUnlockingExpired(self):
         if not self.requiredToken:
@@ -558,7 +571,7 @@ class Customization(FittingItem):
         return not self._matchVehicleTags(g_currentVehicle.item) or self.descriptor.isHiddenInUI()
 
     def getGUIEmblemID(self):
-        pass
+        return 'camouflage'
 
     def isNew(self):
         return bool(self.__noveltyData)
@@ -570,17 +583,21 @@ class Customization(FittingItem):
 
     @staticmethod
     def getSpecialArgs(component):
-        return None
+        return
 
     def getMaxProgressionLevel(self):
-        return len(self.descriptor.progression.levels) if self.isProgressive else -1
+        if self.isProgressive:
+            return len(self.descriptor.progression.levels)
+        return -1
 
     def getLatestOpenedProgressionLevel(self, vehicle):
         vehProgressData = self.getCurrentProgressionDataForVehicle(vehicle)
         if vehProgressData is not None:
             return vehProgressData.currentLevel
         else:
-            return self.descriptor.progression.defaultLvl if self.isProgressive and self.descriptor.progression else -1
+            if self.isProgressive and self.descriptor.progression:
+                return self.descriptor.progression.defaultLvl
+            return -1
 
     def getCurrentProgressOnCurrentLevel(self, vehicle, conditionPath=None):
         if self.isProgressive:
@@ -591,8 +608,7 @@ class Customization(FittingItem):
                 if vehProgressData.currentProgressOnLevel.values():
                     return vehProgressData.currentProgressOnLevel.values()[0]
             return 0
-        else:
-            return -1
+        return -1
 
     def getMaxProgressOnCurrentLevel(self, vehicle, conditionPath=None):
         vehProgressData = self.getCurrentProgressionDataForVehicle(vehicle)
@@ -624,28 +640,36 @@ class Customization(FittingItem):
             if progressionLevel == 0:
                 progressionLevel = self.getLatestOpenedProgressionLevel(g_currentVehicle.item if vehicle is None else vehicle)
             return progressionLevel
-        else:
-            return -1
+        return -1
 
     def iconByProgressionLevel(self, progressionLevel):
-        return self.getTextureByProgressionLevel(self.texture, progressionLevel).replace('gui/', '../', 1) if self.isProgressive else None
+        if self.isProgressive:
+            return self.getTextureByProgressionLevel(self.texture, progressionLevel).replace('gui/', '../', 1)
+        else:
+            return
 
     def iconUrlByProgressionLevel(self, progressionLevel):
-        return getTextureLinkByID(self.getTextureByProgressionLevel(self.texture, progressionLevel)) if self.isProgressive else None
+        if self.isProgressive:
+            return getTextureLinkByID(self.getTextureByProgressionLevel(self.texture, progressionLevel))
+        else:
+            return
 
     def iconResourceByProgressionLevel(self, progressionLevel):
-        return getImageResourceFromPath(self.getTextureByProgressionLevel(self.texture, progressionLevel)) if self.isProgressive else None
+        if self.isProgressive:
+            return getImageResourceFromPath(self.getTextureByProgressionLevel(self.texture, progressionLevel))
+        else:
+            return
 
     def availableForPurchaseProgressive(self, vehicle):
         if self.isHidden:
             return 0
-        elif self.isProgressionAutoBound and vehicle is not None:
-            availableSlotsCount = cc.getAvailableSlotsCount(self.descriptor, vehicle.descriptor) * len(SeasonType.COMMON_SEASONS)
-            installed = self.installedCount(vehicle.intCD)
-            bounded = self.boundInventoryCount(vehicle.intCD)
-            availableToBuy = availableSlotsCount - installed - bounded
-            return max(0, availableToBuy)
         else:
+            if self.isProgressionAutoBound and vehicle is not None:
+                availableSlotsCount = cc.getAvailableSlotsCount(self.descriptor, vehicle.descriptor) * len(SeasonType.COMMON_SEASONS)
+                installed = self.installedCount(vehicle.intCD)
+                bounded = self.boundInventoryCount(vehicle.intCD)
+                availableToBuy = availableSlotsCount - installed - bounded
+                return max(0, availableToBuy)
             return float('inf')
 
     def getProgressionLevel(self, vehicle=None):
@@ -657,7 +681,10 @@ class Customization(FittingItem):
                     return -1
                 vehicleCD = vehicle.intCD if self.isProgressionAutoBound else vehicleCD
             progress = self.__progressingData.get(vehicleCD)
-        return progress.currentLevel if progress is not None else -1
+        if progress is not None:
+            return progress.currentLevel
+        else:
+            return -1
 
     def getCurrentProgressionDataForVehicle(self, vehicle):
         if self.isProgressive and self.__progressingData is not None:
@@ -826,7 +853,7 @@ class Insignia(Customization):
 
 
 class ProjectionDecal(Decal):
-    __slots__ = ('__previewIcon',)
+    __slots__ = ('__previewIcon', )
 
     def __init__(self, *args, **kwargs):
         super(ProjectionDecal, self).__init__(*args, **kwargs)
@@ -911,19 +938,24 @@ class ProjectionDecal(Decal):
         return True
 
     def _matchVehicleTags(self, vehicle):
-        return self.isProgressive if vehicle and vehicle.isProgressionDecalsOnly else super(ProjectionDecal, self)._matchVehicleTags(vehicle)
+        if vehicle and vehicle.isProgressionDecalsOnly:
+            return self.isProgressive
+        return super(ProjectionDecal, self)._matchVehicleTags(vehicle)
 
     def __getPreviewParams(self, level=None, size=None, innerSize=None):
         texture = self.getTextureByProgressionLevel(self.texture, level) if level is not None else self.texture
         size = size or _PREVIEW_ICON_SIZE
         innerSize = innerSize or _PREVIEW_ICON_INNER_SIZE.get(self.formfactor, _PREVIEW_ICON_INNER_SIZE_DEFAULT)
-        return (texture, size, innerSize)
+        return (
+         texture, size, innerSize)
 
     @staticmethod
     def __getPreviewIcon(icon):
         f, _ = os.path.splitext(icon)
-        iconPath = '{}_preview.png'.format(f)
-        return iconPath if ResMgr.isFile(iconPath) else icon
+        iconPath = ('{}_preview.png').format(f)
+        if ResMgr.isFile(iconPath):
+            return iconPath
+        return icon
 
 
 class PersonalNumber(Customization):
@@ -956,14 +988,18 @@ class PersonalNumber(Customization):
         return True
 
     def numberIcon(self, number=''):
-        return super(PersonalNumber, self).icon if not number else personalNumIconTemplate(number, _PN_SWATCH_WIDTH, _PN_SWATCH_HEIGHT, self.fontInfo.texture, self.fontInfo.alphabet, self.fontInfo.mask)
+        if not number:
+            return super(PersonalNumber, self).icon
+        return personalNumIconTemplate(number, _PN_SWATCH_WIDTH, _PN_SWATCH_HEIGHT, self.fontInfo.texture, self.fontInfo.alphabet, self.fontInfo.mask)
 
     @property
     def itemFullTypeName(self):
         return self.itemTypeName + '_' + str(self.digitsCount)
 
     def numberIconUrl(self, number=''):
-        return self.iconUrl if not number else personalNumIconUrl(number, _PN_SWATCH_WIDTH, _PN_SWATCH_HEIGHT, self.fontInfo.texture, self.fontInfo.alphabet, self.fontInfo.mask)
+        if not number:
+            return self.iconUrl
+        return personalNumIconUrl(number, _PN_SWATCH_WIDTH, _PN_SWATCH_HEIGHT, self.fontInfo.texture, self.fontInfo.alphabet, self.fontInfo.mask)
 
 
 class Sequence(Customization):
@@ -1087,7 +1123,8 @@ class StatTracker(Attachment):
 
 
 class Style(Customization):
-    __slots__ = ('_changableTypes', '_itemsCache', '__outfits', '__dependenciesByIntCD', '__serialNumber')
+    __slots__ = ('_changableTypes', '_itemsCache', '__outfits', '__dependenciesByIntCD',
+                 '__serialNumber')
     _itemsCache = dependency.descriptor(IItemsCache)
 
     def __init__(self, intCompactDescr, proxy=None):
@@ -1115,7 +1152,9 @@ class Style(Customization):
 
     @property
     def isRented(self):
-        return False if not self.isRentable else bool(self.boundInventoryCount())
+        if not self.isRentable:
+            return False
+        return bool(self.boundInventoryCount())
 
     @property
     def isProgressionRequired(self):
@@ -1135,7 +1174,9 @@ class Style(Customization):
 
     @property
     def rentCount(self):
-        return self.descriptor.rentCount if self.isRentable else 0
+        if self.isRentable:
+            return self.descriptor.rentCount
+        return 0
 
     @property
     def modelsSet(self):
@@ -1190,7 +1231,10 @@ class Style(Customization):
 
     def getAlternateItem(self, itemType, itemID):
         itemsOfType = self.descriptor.alternateItems.get(itemType)
-        return self._service.getItemByCD(makeIntCompactDescrByID('customizationItem', itemType, itemID)) if itemsOfType is not None and itemID in itemsOfType else None
+        if itemsOfType is not None and itemID in itemsOfType:
+            return self._service.getItemByCD(makeIntCompactDescrByID('customizationItem', itemType, itemID))
+        else:
+            return
 
     def getDescription(self):
         return self.longDescriptionSpecial or self.fullDescription or self.shortDescriptionSpecial or self.shortDescription
@@ -1296,7 +1340,10 @@ class Style(Customization):
 
     def getAdditionalOutfit(self, level, season, vehicleCD):
         additionalOutfit = self.descriptor.styleProgressions.get(level, {}).get('additionalOutfit', {})
-        return Outfit(strCompactDescr=additionalOutfit.get(season).makeCompDescr(), vehicleCD=vehicleCD) if additionalOutfit and additionalOutfit.get(season) else None
+        if additionalOutfit and additionalOutfit.get(season):
+            return Outfit(strCompactDescr=additionalOutfit.get(season).makeCompDescr(), vehicleCD=vehicleCD)
+        else:
+            return
 
     def __createOutfit(self, season, vehicleCD='', diff=None):
         component = deepcopy(self.descriptor.outfits[season])

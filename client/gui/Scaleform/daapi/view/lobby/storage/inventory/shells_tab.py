@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/inventory/shells_tab.py
 from constants import SHELL_TYPES
 from gui.Scaleform.daapi.view.lobby.storage import storage_helpers
 from gui.Scaleform.daapi.view.lobby.storage.inventory.filters.filter_by_vehicle import FiltrableInventoryCategoryByVehicleTabView
@@ -17,39 +15,41 @@ class _ShellsFilterBit(CONST_CONTAINER):
     HIGH_EXPLOSIVE = 8
 
 
-_TYPE_FILTER_ITEMS = [{'filterValue': _ShellsFilterBit.ARMOR_PIERCING,
-  'selected': False,
-  'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_SHELLS_BTNS_TYPE_ARMOR_PIERCING),
-  'icon': RES_ICONS.MAPS_ICONS_STORAGE_FILTERS_ICON_ARMOR_PIERCING_GR},
- {'filterValue': _ShellsFilterBit.ARMOR_PIERCING_GR,
-  'selected': False,
-  'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_SHELLS_BTNS_TYPE_ARMOR_PIERCING_CR),
-  'icon': RES_ICONS.MAPS_ICONS_STORAGE_FILTERS_ICON_ARMOR_PIERCING_CR},
- {'filterValue': _ShellsFilterBit.HOLLOW_CHARGE,
-  'selected': False,
-  'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_SHELLS_BTNS_TYPE_HOLLOW_CHARGE),
-  'icon': RES_ICONS.MAPS_ICONS_STORAGE_FILTERS_ICON_HOLLOW_CHARGE},
- {'filterValue': _ShellsFilterBit.HIGH_EXPLOSIVE,
-  'selected': False,
-  'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_SHELLS_BTNS_TYPE_HIGH_EXPLOSIVE),
-  'icon': RES_ICONS.MAPS_ICONS_STORAGE_FILTERS_ICON_HIGH_EXPLOSIVE}]
-_TYPE_ID_BIT_TO_TYPE_ID_MAP = {_ShellsFilterBit.ARMOR_PIERCING: SHELL_TYPES.ARMOR_PIERCING,
- _ShellsFilterBit.ARMOR_PIERCING_GR: SHELL_TYPES.ARMOR_PIERCING_CR,
- _ShellsFilterBit.HOLLOW_CHARGE: SHELL_TYPES.HOLLOW_CHARGE,
- _ShellsFilterBit.HIGH_EXPLOSIVE: SHELL_TYPES.HIGH_EXPLOSIVE}
+_TYPE_FILTER_ITEMS = [
+ {'filterValue': _ShellsFilterBit.ARMOR_PIERCING, 
+    'selected': False, 
+    'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_SHELLS_BTNS_TYPE_ARMOR_PIERCING), 
+    'icon': RES_ICONS.MAPS_ICONS_STORAGE_FILTERS_ICON_ARMOR_PIERCING_GR},
+ {'filterValue': _ShellsFilterBit.ARMOR_PIERCING_GR, 
+    'selected': False, 
+    'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_SHELLS_BTNS_TYPE_ARMOR_PIERCING_CR), 
+    'icon': RES_ICONS.MAPS_ICONS_STORAGE_FILTERS_ICON_ARMOR_PIERCING_CR},
+ {'filterValue': _ShellsFilterBit.HOLLOW_CHARGE, 
+    'selected': False, 
+    'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_SHELLS_BTNS_TYPE_HOLLOW_CHARGE), 
+    'icon': RES_ICONS.MAPS_ICONS_STORAGE_FILTERS_ICON_HOLLOW_CHARGE},
+ {'filterValue': _ShellsFilterBit.HIGH_EXPLOSIVE, 
+    'selected': False, 
+    'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_SHELLS_BTNS_TYPE_HIGH_EXPLOSIVE), 
+    'icon': RES_ICONS.MAPS_ICONS_STORAGE_FILTERS_ICON_HIGH_EXPLOSIVE}]
+_TYPE_ID_BIT_TO_TYPE_ID_MAP = {_ShellsFilterBit.ARMOR_PIERCING: SHELL_TYPES.ARMOR_PIERCING, 
+   _ShellsFilterBit.ARMOR_PIERCING_GR: SHELL_TYPES.ARMOR_PIERCING_CR, 
+   _ShellsFilterBit.HOLLOW_CHARGE: SHELL_TYPES.HOLLOW_CHARGE, 
+   _ShellsFilterBit.HIGH_EXPLOSIVE: SHELL_TYPES.HIGH_EXPLOSIVE}
 
 class ShellsTabView(FiltrableInventoryCategoryByVehicleTabView):
     filterItems = _TYPE_FILTER_ITEMS
 
     def _getClientSectionKey(self):
-        pass
+        return 'storage_shells'
 
     def _getItemTypeID(self):
         return GUI_ITEM_TYPE.SHELL
 
     def _getFilteredCriteria(self):
         criteria = super(ShellsTabView, self)._getFilteredCriteria()
-        kindsList = [ _TYPE_ID_BIT_TO_TYPE_ID_MAP[bit] for bit in _TYPE_ID_BIT_TO_TYPE_ID_MAP.iterkeys() if self._filterMask & bit ]
+        kindsList = [ _TYPE_ID_BIT_TO_TYPE_ID_MAP[bit] for bit in _TYPE_ID_BIT_TO_TYPE_ID_MAP.iterkeys() if self._filterMask & bit
+                    ]
         if kindsList:
             criteria |= REQ_CRITERIA.SHELL.TYPE(kindsList)
         if self._selectedVehicle:
@@ -58,5 +58,6 @@ class ShellsTabView(FiltrableInventoryCategoryByVehicleTabView):
 
     def _getRequestCriteria(self, invVehicles):
         criteria = REQ_CRITERIA.INVENTORY
-        criteria |= REQ_CRITERIA.TYPE_CRITERIA((GUI_ITEM_TYPE.SHELL,), storage_helpers.getStorageShellsCriteria(self._itemsCache, invVehicles, True))
+        criteria |= REQ_CRITERIA.TYPE_CRITERIA((
+         GUI_ITEM_TYPE.SHELL,), storage_helpers.getStorageShellsCriteria(self._itemsCache, invVehicles, True))
         return criteria

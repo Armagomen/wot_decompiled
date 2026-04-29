@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_results/missions_progress/battle_pass_progress.py
 import typing
 from battle_pass_common import BattlePassConsts, NON_CHAPTER_ID, isPostProgressionChapter
 from gui.battle_pass.battle_pass_bonuses_packers import packBonusModelAndTooltipData
@@ -8,18 +6,23 @@ from gui.battle_results.pbs_helpers.common import getBattleResults
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.battle_results.progression.battle_pass_progress_model import BattlePassProgressModel
 from gui.impl.gen.view_models.views.lobby.tooltips.additional_rewards_tooltip_model import AdditionalRewardsTooltipModel
+from gui.impl.lobby.battle_pass.battle_pass_wot_plus import isWotPlusBattlePassAvailableForAnyTier
 from gui.impl.lobby.battle_results.missions_progress.progression_presenter_interface import IProgressionCategoryPresenter
 from gui.impl.lobby.tooltips.additional_rewards_tooltip import AdditionalBattlePassRewardsTooltip
 from gui.impl.pub.view_component import ViewComponent
 from gui.impl.wrappers.user_list_model import UserListModel
 from gui.shared.event_dispatcher import showBattlePass
 from helpers import dependency
-from skeletons.gui.game_control import IBattlePassController
+from renewable_subscription_common.settings_constants import WOTP_REQUESTER_NAME
+from skeletons.gui.game_control import IBattlePassController, IWotPlusController
 if typing.TYPE_CHECKING:
     from gui.Scaleform.daapi.view.lobby.server_events.events_helpers import BattlePassProgress
+    from gui.impl.gen.view_models.views.lobby.battle_results.progression.external_points_model import ExternalPointsModel
+EXTERNAL_POINTS_LABELS_MAP = {WOTP_REQUESTER_NAME: {True: R.strings.battle_pass.reward.postBattle.progress.points.wotPlusPro, False: R.strings.battle_pass.reward.postBattle.progress.points.wotPlusCore}}
 
 class BattlePassProgressPresenter(ViewComponent[BattlePassProgressModel], IProgressionCategoryPresenter):
     __battlePassController = dependency.descriptor(IBattlePassController)
+    __wotPlusController = dependency.descriptor(IWotPlusController)
 
     def __init__(self, categoryProgressFilter, arenaUniqueID, *args, **kwargs):
         super(BattlePassProgressPresenter, self).__init__(model=BattlePassProgressModel)
@@ -53,7 +56,10 @@ class BattlePassProgressPresenter(ViewComponent[BattlePassProgressModel], IProgr
 
     def getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        return None if tooltipId is None else self.__tooltipItems.get(tooltipId)
+        if tooltipId is None:
+            return
+        else:
+            return self.__tooltipItems.get(tooltipId)
 
     @classmethod
     def getPathToResource(cls):
@@ -86,7 +92,13 @@ class BattlePassProgressPresenter(ViewComponent[BattlePassProgressModel], IProgr
         return
 
     def _getEvents(self):
-        return ((self.viewModel.onNavigate, self.__onNavigate), (self.__battlePassController.onBattlePassSettingsChange, self.__onSettingsChange), (self.__battlePassController.onSeasonStateChanged, self.__onSeasonStateChanged))
+        return (
+         (
+          self.viewModel.onNavigate, self.__onNavigate),
+         (
+          self.__battlePassController.onBattlePassSettingsChange, self.__onSettingsChange),
+         (
+          self.__battlePassController.onSeasonStateChanged, self.__onSeasonStateChanged))
 
     def _updateProgress(self):
         battleResults = getBattleResults(self.__arenaUniqueID)
@@ -94,7 +106,7 @@ class BattlePassProgressPresenter(ViewComponent[BattlePassProgressModel], IProgr
             self.__progress = self.__categoryProgressFilter(battleResults.reusable)
 
     def __packBattlePassProgress(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             if not self.__progress:
                 return
             isHoliday = self.__battlePassController.isHoliday()
@@ -113,14 +125,15 @@ class BattlePassProgressPresenter(ViewComponent[BattlePassProgressModel], IProgr
             model.setHasBattlePass(self.__progress.hasBattlePass)
             model.setBattlePassComplete(self.__progress.battlePassComplete)
             model.setAvailablePoints(self.__progress.availablePoints)
-            model.setBpTopPoints(self.__progress.bpTopPoints)
+            model.setBpTopPoints(self.__progress.bpTopPoints - self.__progress.bpTopExternalPointsTotalAmount)
+            self.__packExternalPoints(model)
             model.setPointsAux(self.__progress.pointsAux)
             model.setQuestPoints(self.__progress.questPoints)
             model.setBonusCapPoints(self.__progress.bonusCapPoints)
             model.setCurrentLevelPoints(self.__progress.getCurrentLevelPoints(self.__chapter))
             model.setMaxLevelPoints(maxLevelPoints)
             model.setCurrentLevel(level)
-            pointsDiff = self.__progress.getPointsDiff(self.__chapter) if not isHoliday else self.__progress.getPointsDiff(currentChapter)
+            pointsDiff = (isHoliday or self.__progress.getPointsDiff)(self.__chapter) if 1 else self.__progress.getPointsDiff(currentChapter)
             model.setPointsDiff(pointsDiff)
             model.setLevelReached(self.__progress.isLevelReached(self.__chapter))
             model.setPreviousMaxLevelPoints(previousMaxLevelPoints)
@@ -135,15 +148,35 @@ class BattlePassProgressPresenter(ViewComponent[BattlePassProgressModel], IProgr
             model.setNavigationEnabled(not self.__battlePassController.isDisabled())
             model.setHolidayBattlePass(isHoliday)
             if maxLevelPoints != 0:
-                numberOfLevels = self.__battlePassController.getLevelsConfig(currentChapter)[-1] / maxLevelPoints
+                numberOfLevels = self.__battlePassController.getLevelsConfig(currentChapter)[(-1)] / maxLevelPoints
             else:
                 numberOfLevels = 0
             if previousMaxLevelPoints:
-                model.setLevelsInPreviousChapter(self.__battlePassController.getLevelsConfig(previousChapter)[-1] / previousMaxLevelPoints)
+                model.setLevelsInPreviousChapter(self.__battlePassController.getLevelsConfig(previousChapter)[(-1)] / previousMaxLevelPoints)
             model.setLevelsInPostProgression(numberOfLevels)
 
+    def __packExternalPoints(self, model):
+        extPointsList = model.getBpTopExternalPoints()
+        extPointsList.clear()
+        if isWotPlusBattlePassAvailableForAnyTier():
+            externalPoints = self.__progress.bpTopExternalPoints
+            extPointsList.reserve(len(externalPoints))
+            for extSource, extData in externalPoints.iteritems():
+                isAcquired = extData.get('acquired', False)
+                pointModel = model.getBpTopExternalPointsType()()
+                pointModel.setPoints(extData.get('points', 0))
+                pointModel.setLabel(EXTERNAL_POINTS_LABELS_MAP.get(extSource, {}).get(isAcquired, R.invalid)())
+                pointModel.setIsActive(isAcquired)
+                extPointsList.addViewModel(pointModel)
+
+        extPointsList.invalidate()
+
     def __packAwards(self, progress, currentChapter, level, model):
-        rewardTypes = [(BattlePassConsts.REWARD_FREE, model.getCurrentFreeAwards()), (BattlePassConsts.REWARD_PAID, model.getCurrentPaidAwards())]
+        rewardTypes = [
+         (
+          BattlePassConsts.REWARD_FREE, model.getCurrentFreeAwards()),
+         (
+          BattlePassConsts.REWARD_PAID, model.getCurrentPaidAwards())]
         for rewardType, currentAwardsModel in rewardTypes:
             currentAwards = progress.getLevelAwardsByType(progress.currentChapterID, level + 1, rewardType)
             packBonusModelAndTooltipData(currentAwards, currentAwardsModel, self.__tooltipItems)
@@ -153,7 +186,9 @@ class BattlePassProgressPresenter(ViewComponent[BattlePassProgressModel], IProgr
         else:
             chapter = progress.currentChapterID
         if progress.isLevelReached(chapter) or progress.isLevelReached(progress.previousChapterID):
-            previousModels = [(BattlePassConsts.REWARD_FREE, model.getPreviousFreeAwards()), (BattlePassConsts.REWARD_PAID, model.getPreviousPaidAwards())]
+            previousModels = [(BattlePassConsts.REWARD_FREE, model.getPreviousFreeAwards()),
+             (
+              BattlePassConsts.REWARD_PAID, model.getPreviousPaidAwards())]
             for rewardType, getPrevModel in previousModels:
                 previousAwardsModel = getPrevModel
                 previousAwardsModel.clear()

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_pass/trophy_device_confirm_view.py
 import logging
 from frameworks.wulf import ViewSettings
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -61,7 +59,7 @@ class TrophyDeviceUpgradeConfirmView(DialogWindow):
 
     def __setUpgradeCost(self):
         upgradeCost = self.gui.systemLocale.getNumberFormat(self.__upgradePrice.credits)
-        with self.bottomContentViewModel.transaction() as model:
+        with self.bottomContentViewModel.transaction() as (model):
             model.valueMain.setType(Currency.CREDITS)
             model.valueMain.setValue(upgradeCost)
             model.valueMain.setNotEnough(not self.__trophyBasicModule.mayPurchaseUpgrade(self.__itemsCache.items))
@@ -83,7 +81,9 @@ class TrophyDeviceUpgradeConfirmView(DialogWindow):
         self.__setUpgradeCost()
 
     def __getSubmitBtnTooltip(self, canUpgrade):
-        return R.invalid() if canUpgrade else R.strings.battle_pass.trophyDeviceUpgradeConfim.submitTooltip()
+        if canUpgrade:
+            return R.invalid()
+        return R.strings.battle_pass.trophyDeviceUpgradeConfim.submitTooltip()
 
 
 class TrophyDeviceUpgradeConfirmDialogContent(DialogContent):
@@ -97,7 +97,7 @@ class TrophyDeviceUpgradeConfirmDialogContent(DialogContent):
 
     def _initialize(self):
         super(TrophyDeviceUpgradeConfirmDialogContent, self)._initialize()
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             model.setTrophyBasicName(self.__trophyBasicModule.name)
             model.setTrophyBasicImg(self.__trophyBasicModule.getShopIcon(size=STORE_CONSTANTS.ICON_SIZE_SMALL))
             for baseKpi, upgradedKpi in zip(self.__trophyBasicModule.getKpi(), self.__trophyUpgadedModule.getKpi()):

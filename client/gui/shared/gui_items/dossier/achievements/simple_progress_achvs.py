@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/gui_items/dossier/achievements/simple_progress_achvs.py
 from helpers import dependency
 from skeletons.gui.shared import IItemsCache
 from gui.shared.utils.requesters import REQ_CRITERIA
@@ -17,7 +15,8 @@ class BeasthunterAchievement(SimpleProgressAchievement):
         super(BeasthunterAchievement, self).__init__('beasthunter', _AB.TOTAL, dossier, value)
 
     def getNextLevelInfo(self):
-        return ('vehiclesLeft', self._lvlUpValue)
+        return (
+         'vehiclesLeft', self._lvlUpValue)
 
     def _readProgressValue(self, dossier):
         return dossier.getRecordValue(_AB.TOTAL, 'fragsBeast')
@@ -110,7 +109,8 @@ class MousebaneAchievement(SimpleProgressAchievement):
         super(MousebaneAchievement, self).__init__('mousebane', _AB.TOTAL, dossier, value)
 
     def getNextLevelInfo(self):
-        return ('vehiclesLeft', self._lvlUpValue)
+        return (
+         'vehiclesLeft', self._lvlUpValue)
 
     def _readProgressValue(self, dossier):
         return dossier.getBlock('vehTypeFrags').get(getDossiersCache()['mausTypeCompDescr'], 0)

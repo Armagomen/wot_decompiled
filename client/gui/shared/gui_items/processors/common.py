@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/gui_items/processors/common.py
-import logging
-import copy
-import time
-import BigWorld
+import logging, copy, time, BigWorld
 from BWUtil import AsyncReturn
 from constants import EMPTY_GEOMETRY_ID, PREMIUM_TYPE
 from exchange.personal_discounts_helper import getDiscountsRequiredForExchange
@@ -33,12 +28,13 @@ class TankmanBerthsBuyer(Processor):
 
     def __init__(self, berthsPrice, countPacksBerths):
         super(TankmanBerthsBuyer, self).__init__()
-        self.addPlugins([plugins.MoneyValidator(berthsPrice)])
+        self.addPlugins([
+         plugins.MoneyValidator(berthsPrice)])
         self.berthsPrice = berthsPrice
         self.countPacksBerths = countPacksBerths
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        return makeI18nError(sysMsgKey='buy_tankmen_berths/{}'.format(errStr), defaultSysMsgKey='buy_tankmen_berths/server_error')
+        return makeI18nError(sysMsgKey=('buy_tankmen_berths/{}').format(errStr), defaultSysMsgKey='buy_tankmen_berths/server_error')
 
     def _successHandler(self, code, ctx=None):
         return makeI18nSuccess(sysMsgKey='buy_tankmen_berths/success', money=formatPrice(self.berthsPrice, useStyle=True, justValue=True), type=SM_TYPE.FinancialTransactionWithGold)
@@ -52,7 +48,8 @@ class PremiumAccountBuyer(Processor):
 
     def __init__(self, period, price, arenaUniqueID=0, withoutBenefits=False, requireConfirm=True):
         self.wasPremium = self.itemsCache.items.stats.isPremium
-        plugList = [plugins.MoneyValidator(Money(gold=price))]
+        plugList = [
+         plugins.MoneyValidator(Money(gold=price))]
         if requireConfirm:
             plugList.insert(0, self.__getConfirmator(withoutBenefits, period, price))
         super(PremiumAccountBuyer, self).__init__(plugList)
@@ -61,7 +58,7 @@ class PremiumAccountBuyer(Processor):
         self.arenaUniqueID = arenaUniqueID
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        return makeI18nError(sysMsgKey='premium/{}'.format(errStr), defaultSysMsgKey='premium/server_error', auxData={'errStr': errStr}, period=self.period)
+        return makeI18nError(sysMsgKey=('premium/{}').format(errStr), defaultSysMsgKey='premium/server_error', auxData={'errStr': errStr}, period=self.period)
 
     def _successHandler(self, code, ctx=None):
         localKey = 'premium/continueSuccess' if self.wasPremium else 'premium/buyingSuccess'
@@ -73,11 +70,11 @@ class PremiumAccountBuyer(Processor):
 
     def __getConfirmator(self, withoutBenefits, period, price):
         if withoutBenefits:
-            return plugins.HtmlMessageConfirmator('buyPremWithoutBenefitsConfirmation', 'html_templates:lobby/dialogs', 'confirmBuyPremWithoutBenefeits', {'days': text_styles.stats(period),
-             Currency.GOLD: text_styles.concatStylesWithSpace(text_styles.gold(backport.getGoldFormat(price)), icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_GOLDICON_2))})
+            return plugins.HtmlMessageConfirmator('buyPremWithoutBenefitsConfirmation', 'html_templates:lobby/dialogs', 'confirmBuyPremWithoutBenefeits', {'days': text_styles.stats(period), 
+               Currency.GOLD: text_styles.concatStylesWithSpace(text_styles.gold(backport.getGoldFormat(price)), icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_GOLDICON_2))})
         localKey = 'premiumContinueConfirmation' if self.wasPremium else 'premiumBuyConfirmation'
-        return plugins.MessageConfirmator(localKey, ctx={'days': text_styles.stats(period),
-         Currency.GOLD: text_styles.concatStylesWithSpace(text_styles.gold(backport.getGoldFormat(price)), icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_GOLDICON_2))})
+        return plugins.MessageConfirmator(localKey, ctx={'days': text_styles.stats(period), 
+           Currency.GOLD: text_styles.concatStylesWithSpace(text_styles.gold(backport.getGoldFormat(price)), icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_GOLDICON_2))})
 
 
 class GoldToCreditsExchanger(Processor):
@@ -92,16 +89,19 @@ class GoldToCreditsExchanger(Processor):
         self.credits = rate.calculateExchange(self.gold)
         super(GoldToCreditsExchanger, self).__init__()
         if withConfirm:
-            self.addPlugin(plugins.HtmlMessageConfirmator('exchangeGoldConfirmation', 'html_templates:lobby/dialogs', 'confirmExchange', {'primaryCurrencyAmount': backport.getGoldFormat(self.gold),
-             'resultCurrencyAmount': backport.getIntegralFormat(self.credits)}))
-        self.addPlugins([plugins.MoneyValidator(Money(gold=self.gold)), plugins.ExchangeValidator(self.gold), plugins.ExchangeValidator(self.credits)])
+            self.addPlugin(plugins.HtmlMessageConfirmator('exchangeGoldConfirmation', 'html_templates:lobby/dialogs', 'confirmExchange', {'primaryCurrencyAmount': backport.getGoldFormat(self.gold), 
+               'resultCurrencyAmount': backport.getIntegralFormat(self.credits)}))
+        self.addPlugins([
+         plugins.MoneyValidator(Money(gold=self.gold)),
+         plugins.ExchangeValidator(self.gold),
+         plugins.ExchangeValidator(self.credits)])
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        return makeI18nError(sysMsgKey='exchange/{}'.format(errStr), defaultSysMsgKey='exchange/server_error', gold=int(self.gold))
+        return makeI18nError(sysMsgKey=('exchange/{}').format(errStr), defaultSysMsgKey='exchange/server_error', gold=int(self.gold))
 
     def _successHandler(self, code, ctx=None):
         rate = self.__exchangeRatesProvider.goldToCredits
-        isUnlimDiscount = True if rate.unlimitedDiscountInfo is not None and rate.unlimitedDiscountInfo.isPersonal else False
+        isUnlimDiscount = rate.unlimitedDiscountInfo is not None and rate.unlimitedDiscountInfo.isPersonal
         return createSystemExchangeNotification(discounts=self.discounts, goldAmount=self.gold, defaultRate=rate.defaultRate, baseRate=self.baseRate, isPersonalUnlimRate=isUnlimDiscount, exchangeType=rate.getExchangeRateName)
 
     def _request(self, callback):
@@ -119,18 +119,19 @@ class FreeXPExchanger(Processor):
         allDiscounts = copy.deepcopy(rate.allPersonalLimitedDiscounts)
         curTime = getCurrentTime()
         self.discounts = getDiscountsRequiredForExchange(allDiscounts, self.gold, curTime) if allDiscounts else {}
-        super(FreeXPExchanger, self).__init__(plugins=(self.__makeConfirmator(),
+        super(FreeXPExchanger, self).__init__(plugins=(
+         self.__makeConfirmator(),
          plugins.MoneyValidator(Money(gold=self.gold)),
          plugins.ExchangeValidator(self.gold),
          plugins.ExchangeValidator(self.xp),
          plugins.EliteVehiclesValidator(self.vehiclesCD)))
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        return makeI18nError(sysMsgKey='exchangeXP/{}'.format(errStr), defaultSysMsgKey='exchangeXP/server_error', xp=backport.getIntegralFormat(self.xp))
+        return makeI18nError(sysMsgKey=('exchangeXP/{}').format(errStr), defaultSysMsgKey='exchangeXP/server_error', xp=backport.getIntegralFormat(self.xp))
 
     def _successHandler(self, code, ctx=None):
         rate = self.__exchangeRatesProvider.freeXpTranslation
-        isUnlimDiscount = True if rate.unlimitedDiscountInfo is not None and rate.unlimitedDiscountInfo.isPersonal else False
+        isUnlimDiscount = rate.unlimitedDiscountInfo is not None and rate.unlimitedDiscountInfo.isPersonal
         return createSystemExchangeNotification(discounts=self.discounts, goldAmount=self.gold, defaultRate=rate.defaultRate, baseRate=self.baseRate, isPersonalUnlimRate=isUnlimDiscount, exchangeType=rate.getExchangeRateName)
 
     def _request(self, callback):
@@ -138,8 +139,8 @@ class FreeXPExchanger(Processor):
         BigWorld.player().stats.convertToFreeXP(self.vehiclesCD, self.xp, self.gold, lambda code: self._response(code, callback))
 
     def __makeConfirmator(self):
-        extra = {'resultCurrencyAmount': backport.getIntegralFormat(self.xp),
-         'primaryCurrencyAmount': backport.getGoldFormat(self.gold)}
+        extra = {'resultCurrencyAmount': backport.getIntegralFormat(self.xp), 
+           'primaryCurrencyAmount': backport.getGoldFormat(self.gold)}
         return plugins.HtmlMessageConfirmator('exchangeXPConfirmation', 'html_templates:lobby/dialogs', 'confirmExchangeXP', extra, sourceKey='XP_EXCHANGE_FOR_GOLD')
 
 
@@ -169,7 +170,7 @@ class OutfitApplier(Processor):
         self.outfitData = outfitData
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        return makeI18nError('customization/{}'.format(errStr or 'server_error'))
+        return makeI18nError(('customization/{}').format(errStr or 'server_error'))
 
     def _request(self, callback):
         _logger.debug('Make server request to put on outfit on vehicle %s, outfitData %s', self.vehicle.invID, self.outfitData)
@@ -191,7 +192,7 @@ class CustomizationsBuyer(Processor):
         self.count = count
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        return makeI18nError('customization/{}'.format(errStr or 'server_error'))
+        return makeI18nError(('customization/{}').format(errStr or 'server_error'))
 
     def _request(self, callback):
         invID = self.vehicle.invID if self.vehicle else 0
@@ -206,10 +207,10 @@ class CustomizationsBuyer(Processor):
 
     def _getMsgCtx(self):
         styleItemType = backport.text(R.strings.item_types.customization.style())
-        return {'itemType': styleItemType if self.item.itemTypeID == GUI_ITEM_TYPE.STYLE else self.item.userType,
-         'itemName': self.item.userName,
-         'count': backport.getIntegralFormat(int(self.count)),
-         'money': formatPrice(self._getTotalPrice(), useStyle=True)}
+        return {'itemType': styleItemType if self.item.itemTypeID == GUI_ITEM_TYPE.STYLE else self.item.userType, 
+           'itemName': self.item.userName, 
+           'count': backport.getIntegralFormat(int(self.count)), 
+           'money': formatPrice(self._getTotalPrice(), useStyle=True)}
 
     def _successHandler(self, code, ctx=None):
         currency = self.item.buyPrices.itemPrice.price.getCurrency(byWeight=True)
@@ -218,8 +219,8 @@ class CustomizationsBuyer(Processor):
         if self.count == 1:
             msg = backport.text(R.strings.messenger.serviceChannelMessages.sysMsg.customization.buyOne(), **msgCtx)
         else:
-            msgCtx = {'items': backport.text(R.strings.messenger.serviceChannelMessages.sysMsg.customization.item(), **msgCtx) + '.',
-             'money': msgCtx['money']}
+            msgCtx = {'items': backport.text(R.strings.messenger.serviceChannelMessages.sysMsg.customization.item(), **msgCtx) + '.', 
+               'money': msgCtx['money']}
             msg = backport.text(R.strings.messenger.serviceChannelMessages.sysMsg.customization.buyMany(), **msgCtx)
         SystemMessages.pushMessage(msg, type=sysMsgType)
         return makeSuccess(auxData=ctx)
@@ -234,7 +235,7 @@ class CustomizationsSeller(Processor):
         self.count = count
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        return makeI18nError('customization/{}'.format(errStr or 'server_error'))
+        return makeI18nError(('customization/{}').format(errStr or 'server_error'))
 
     def _getTotalPrice(self):
         sellPrice = self.item.sellPrices.itemPrice.price
@@ -244,11 +245,11 @@ class CustomizationsSeller(Processor):
 
     def _getMsgCtx(self):
         styleItemType = backport.text(R.strings.item_types.customization.style())
-        return {'itemType': styleItemType if self.item.itemTypeID == GUI_ITEM_TYPE.STYLE else self.item.userType,
-         'itemName': self.item.userName,
-         'count': backport.getIntegralFormat(int(self.count)),
-         'money': formatPrice(self._getTotalPrice()),
-         'priority': NotificationPriorityLevel.MEDIUM}
+        return {'itemType': styleItemType if self.item.itemTypeID == GUI_ITEM_TYPE.STYLE else self.item.userType, 
+           'itemName': self.item.userName, 
+           'count': backport.getIntegralFormat(int(self.count)), 
+           'money': formatPrice(self._getTotalPrice()), 
+           'priority': NotificationPriorityLevel.MEDIUM}
 
     def _successHandler(self, code, ctx=None):
         messageType = MESSENGER.SERVICECHANNELMESSAGES_SYSMSG_CUSTOMIZATIONS_SELL
@@ -272,16 +273,17 @@ class BadgesSelector(Processor):
             plugs = ()
             badges = ()
         else:
-            plugs = (plugins.BadgesValidator(badges),)
+            plugs = (
+             plugins.BadgesValidator(badges),)
         super(BadgesSelector, self).__init__(plugs)
         self.__badges = badges
         return
 
     def _getMessagePrefix(self):
-        pass
+        return 'badges/select'
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        return makeI18nError(sysMsgKey='{}/server_error/{}'.format(self._getMessagePrefix(), errStr), defaultSysMsgKey='{}/server_error'.format(self._getMessagePrefix()))
+        return makeI18nError(sysMsgKey=('{}/server_error/{}').format(self._getMessagePrefix(), errStr), defaultSysMsgKey=('{}/server_error').format(self._getMessagePrefix()))
 
     def _request(self, callback):
         _logger.debug('Make server request to select badges %s', self.__badges)
@@ -302,75 +304,56 @@ class ConvertBlueprintFragmentProcessor(Processor):
 
 
 class _MapsBlackListSelector(Processor):
+    _SKIPPED_MAP_ID_LOWER_BOUND = EMPTY_GEOMETRY_ID
 
-    def __init__(self, selectedMaps=None):
+    def __init__(self, toAddMapID=_SKIPPED_MAP_ID_LOWER_BOUND, toRemoveMapID=_SKIPPED_MAP_ID_LOWER_BOUND):
         super(_MapsBlackListSelector, self).__init__()
-        if selectedMaps is None:
-            selectedMaps = ()
-        self.__selectedMaps = selectedMaps
-        return
+        self.__toAddMapID = toAddMapID
+        self.__toRemoveMapId = toRemoveMapID
 
     def _getMessagePrefix(self):
-        pass
+        return 'maps_black_list/select'
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        return makeI18nError(sysMsgKey='{}/server_error/{}'.format(self._getMessagePrefix(), errStr), defaultSysMsgKey='{}/server_error'.format(self._getMessagePrefix()))
+        return makeI18nError(sysMsgKey=('{}/server_error/{}').format(self._getMessagePrefix(), errStr), defaultSysMsgKey=('{}/server_error').format(self._getMessagePrefix()))
 
     def _successHandler(self, code, ctx=None):
         itemsCache = dependency.instance(IItemsCache)
-        wotPLusController = dependency.instance(IWotPlusController)
+        wotPlusController = dependency.instance(IWotPlusController)
         isPremiumActive = itemsCache.items.stats.isActivePremium(PREMIUM_TYPE.PLUS)
-        isWotPlusActive = wotPLusController.isEnabled()
+        isWotPlusActive = wotPlusController.hasSubscription()
         if not isPremiumActive and not isWotPlusActive:
-            return makeI18nSuccess(sysMsgKey='{}/success/noSubscriptions'.format(self._getMessagePrefix()))
+            return makeI18nSuccess(sysMsgKey=('{}/success/noSubscriptions').format(self._getMessagePrefix()))
         if isPremiumActive and not isWotPlusActive:
-            return makeI18nSuccess(sysMsgKey='{}/success/premium'.format(self._getMessagePrefix()))
-        return makeI18nSuccess(sysMsgKey='{}/success/wotPlus'.format(self._getMessagePrefix())) if not isPremiumActive and isWotPlusActive else makeI18nSuccess(sysMsgKey='{}/success'.format(self._getMessagePrefix()))
+            return makeI18nSuccess(sysMsgKey=('{}/success/premium').format(self._getMessagePrefix()))
+        if not isPremiumActive and isWotPlusActive:
+            return makeI18nSuccess(sysMsgKey=('{}/success/wotPlus').format(self._getMessagePrefix()))
+        return makeI18nSuccess(sysMsgKey=('{}/success').format(self._getMessagePrefix()))
 
     def _request(self, callback):
-        _logger.debug('Make server request to select black maps %r', self.__selectedMaps)
-        BigWorld.player().stats.setMapsBlackList(self.__selectedMaps, lambda code, errStr, ext: self._response(code, callback, ctx=ext, errStr=errStr))
-
-    def _getLayout(self):
-        return [ mapID for mapID, _ in self.itemsCache.items.stats.getMapsBlackList() ]
+        if self.__toAddMapID <= self._SKIPPED_MAP_ID_LOWER_BOUND and self.__toRemoveMapId <= self._SKIPPED_MAP_ID_LOWER_BOUND:
+            _logger.warning('Invalid blacklist maps. To addID=%d, toRemoveID=%d', self.__toAddMapID, self.__toRemoveMapId)
+            return
+        _logger.debug('Make server request to update blacklist maps. To addID=%d, toRemoveID=%d', self.__toAddMapID, self.__toRemoveMapId)
+        BigWorld.player().stats.setMapsBlackList(self.__toAddMapID, self.__toRemoveMapId, lambda code, errStr, ext: self._response(code, callback, ctx=ext, errStr=errStr))
 
 
 class MapsBlackListSetter(_MapsBlackListSelector):
 
     def __init__(self, selectedMapID):
-        layout = self._getLayout()
-        wasInserted = False
-        for idx, mapID in enumerate(layout):
-            if mapID == EMPTY_GEOMETRY_ID:
-                layout[idx] = selectedMapID
-                wasInserted = True
-                break
-
-        if not wasInserted:
-            layout.append(selectedMapID)
-        super(MapsBlackListSetter, self).__init__(layout)
+        super(MapsBlackListSetter, self).__init__(toAddMapID=selectedMapID)
 
 
 class MapsBlackListRemover(_MapsBlackListSelector):
 
     def __init__(self, removeMapID):
-        layout = self._getLayout()
-        if removeMapID in layout:
-            layout[layout.index(removeMapID)] = EMPTY_GEOMETRY_ID
-        else:
-            _logger.error('Cannot remove mapID %d from layout %r', removeMapID, layout)
-        super(MapsBlackListRemover, self).__init__(layout)
+        super(MapsBlackListRemover, self).__init__(toRemoveMapID=removeMapID)
 
 
 class MapsBlackListChanger(_MapsBlackListSelector):
 
     def __init__(self, srcMapID, destMapID):
-        layout = self._getLayout()
-        if srcMapID in layout:
-            layout[layout.index(srcMapID)] = destMapID
-        else:
-            _logger.error('Cannot change srcMapID %d from layout %r', srcMapID, layout)
-        super(MapsBlackListChanger, self).__init__(layout)
+        super(MapsBlackListChanger, self).__init__(destMapID, srcMapID)
 
 
 class PremiumBonusApplier(Processor):
@@ -381,10 +364,10 @@ class PremiumBonusApplier(Processor):
         self.__vehTypeCompDescr = vehTypeCompDescr
 
     def _getMessagePrefix(self):
-        pass
+        return 'premiumXPBonus/apply'
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        return makeI18nError(sysMsgKey='{}/server_error/{}'.format(self._getMessagePrefix(), errStr), defaultSysMsgKey='{}/server_error'.format(self._getMessagePrefix()))
+        return makeI18nError(sysMsgKey=('{}/server_error/{}').format(self._getMessagePrefix(), errStr), defaultSysMsgKey=('{}/server_error').format(self._getMessagePrefix()))
 
     def _request(self, callback):
         _logger.debug('Make server request to apply premium XP bonus %d', self.__arenaUniqueID)
@@ -415,14 +398,15 @@ class UseCrewBookProcessor(GroupedRequestProcessor):
         return makeI18nSuccess(sysMsgKey='crewBooksNotification/success', auxData=self._makeSuccessData(ctx=ctx))
 
     def _errorHandler(self, code, errStr='', ctx=None):
-        return makeI18nError(sysMsgKey='crewBooks/{}'.format(errStr), auxData=self._makeErrorData(errStr), defaultSysMsgKey='crewBooks/failed')
+        return makeI18nError(sysMsgKey=('crewBooks/{}').format(errStr), auxData=self._makeErrorData(errStr), defaultSysMsgKey='crewBooks/failed')
 
 
 class ClaimRewardForPostProgression(Processor):
 
     def __init__(self, xppToConvert):
         super(ClaimRewardForPostProgression, self).__init__()
-        self.addPlugins([plugins.ExperiencePostProgressionValidator(xppToConvert)])
+        self.addPlugins([
+         plugins.ExperiencePostProgressionValidator(xppToConvert)])
 
     def _request(self, callback):
         _logger.debug('Make server request to claim reward for post progression.')

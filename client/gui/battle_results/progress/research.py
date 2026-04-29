@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_results/progress/research.py
 import math
 from collections import namedtuple
 from constants import NEW_PERK_SYSTEM as NPS
@@ -11,7 +9,8 @@ from skeletons.gui.shared import IItemsCache
 from items import tankmen
 from items.components.crew_skins_constants import NO_CREW_SKIN_ID
 MIN_BATTLES_TO_SHOW_PROGRESS = 5
-TankmanProgress = namedtuple('TankmanProgress', ('tman', 'newSkillEarned', 'bonusSkillsAmount', 'avgBattles2NewSkill', 'skin'))
+TankmanProgress = namedtuple('TankmanProgress', ('tman', 'newSkillEarned', 'bonusSkillsAmount',
+                                                 'avgBattles2NewSkill', 'skin'))
 VehicleProgress = namedtuple('VehicleProgress', ('item', 'unlockProps', 'avgBattles2Unlock'))
 ModuleProgress = namedtuple('ModuleProgress', ('item', 'unlockProps'))
 
@@ -27,7 +26,7 @@ class VehicleProgressHelper(object):
         self.__vehTypeCompDescr = vehTypeCompDescr
         self.__vehicle = items.getItemByCD(vehTypeCompDescr)
         self.__vehicleXp = stats.vehiclesXPs.get(self.__vehTypeCompDescr, 0)
-        self.__avgVehicleXp = self.__getAvgVehicleXp(self.__vehTypeCompDescr)
+        self.__avgVehicleXp = self._getAvgVehicleXp(self.__vehTypeCompDescr)
 
     def clear(self):
         self.__unlocks = None
@@ -37,7 +36,7 @@ class VehicleProgressHelper(object):
         self.__vehTypeCompDescr = None
         return
 
-    def __getAvgVehicleXp(self, vehTypeCompDescr):
+    def _getAvgVehicleXp(self, vehTypeCompDescr):
         vehiclesStats = self._itemsCache.items.getAccountDossier().getRandomStats().getVehicles()
         vehicleStats = vehiclesStats.get(vehTypeCompDescr, None)
         if vehicleStats is not None:
@@ -45,8 +44,7 @@ class VehicleProgressHelper(object):
             if battlesCount:
                 return xp / battlesCount
             return 0
-        else:
-            return 0
+        return 0
 
     def getReady2UnlockItems(self, vehicleBattleXp):
         ready2UnlockModules = []
@@ -55,15 +53,16 @@ class VehicleProgressHelper(object):
         getter = self._itemsCache.items.getItemByCD
         for itemTypeCD, unlockProps in possible2UnlockItems.iteritems():
             item = getter(itemTypeCD)
-            if self.__vehicleXp - unlockProps.xpCost <= vehicleBattleXp and item.itemTypeID == GUI_ITEM_TYPE.VEHICLE:
-                avgBattles2Unlock = self.__getAvgBattles2Unlock(unlockProps)
-                if not self.__vehicleXp > unlockProps.xpCost:
-                    if 0 < avgBattles2Unlock <= MIN_BATTLES_TO_SHOW_PROGRESS:
+            if self.__vehicleXp - unlockProps.xpCost <= vehicleBattleXp:
+                if item.itemTypeID == GUI_ITEM_TYPE.VEHICLE:
+                    avgBattles2Unlock = self.__getAvgBattles2Unlock(unlockProps)
+                    if self.__vehicleXp > unlockProps.xpCost or 0 < avgBattles2Unlock <= MIN_BATTLES_TO_SHOW_PROGRESS:
                         ready2UnlockVehicles.append(VehicleProgress(item, unlockProps, avgBattles2Unlock))
                 elif self.__vehicleXp > unlockProps.xpCost:
                     ready2UnlockModules.append(ModuleProgress(item, unlockProps))
 
-        return (ready2UnlockVehicles, ready2UnlockModules)
+        return (
+         ready2UnlockVehicles, ready2UnlockModules)
 
     def getNewSkilledTankmen(self, tankmenXps):
         skilledTankmen = []
@@ -101,10 +100,15 @@ class VehicleProgressHelper(object):
             if (skillsCountBefore + tmanToCheck.freeSkillsCount) % 2 == 0:
                 bonusSkillsAmount = newSkillsCount * (len(tmanToCheck.combinedRoles) - 1)
             return (True, bonusSkillsAmount)
-        return (False, 0)
+        return (
+         False, 0)
 
     def __getAvgBattles2Unlock(self, unlockProps):
-        return int(math.ceil((unlockProps.xpCost - self.__vehicleXp) / float(self.__avgVehicleXp))) if self.__avgVehicleXp > 0 else 0
+        if self.__avgVehicleXp > 0:
+            return int(math.ceil((unlockProps.xpCost - self.__vehicleXp) / float(self.__avgVehicleXp)))
+        return 0
 
     def __getAvgBattles2NewSkill(self, avgTmanXp, tman):
-        return max(1, math.ceil(tman.getNextSkillXpCost() / avgTmanXp)) if avgTmanXp > 0 else 0
+        if avgTmanXp > 0:
+            return max(1, math.ceil(tman.getNextSkillXpCost() / avgTmanXp))
+        return 0

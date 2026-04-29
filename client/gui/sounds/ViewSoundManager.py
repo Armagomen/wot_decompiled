@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/sounds/ViewSoundManager.py
-import WWISE
-import SoundGroups
+import WWISE, SoundGroups
 from debug_utils import LOG_WARNING
 from helpers import dependency
 from skeletons.gui.app_loader import IAppLoader, GuiGlobalSpaceID
@@ -40,7 +37,7 @@ class _ViewSoundsManager(object):
             if sound:
                 self.__sounds[eventName] = sound
             else:
-                LOG_WARNING('Could not find 2D sound {}.'.format(eventName))
+                LOG_WARNING(('Could not find 2D sound {}.').format(eventName))
         if sound and not sound.isPlaying:
             if self.__invalidatePriority(eventName):
                 sound.play()
@@ -48,7 +45,10 @@ class _ViewSoundsManager(object):
 
     def isSoundPlaying(self, eventName):
         sound = self.__sounds.get(eventName)
-        return sound.isPlaying if WWISE.enabled and sound is not None else False
+        if WWISE.enabled and sound is not None:
+            return sound.isPlaying
+        else:
+            return False
 
     def stopSound(self, eventName):
         sound = self.__sounds.get(eventName)
@@ -126,7 +126,7 @@ class _ViewSoundsManager(object):
             for soundName in self.__soundSpaceSettings.priorities:
                 if soundName == eventName:
                     checkingSuperior = True
-                if soundName in self.__sounds:
+                elif soundName in self.__sounds:
                     if not checkingSuperior:
                         self.stopSound(soundName)
                     elif self.__sounds.get(soundName).isPlaying:

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/container_vews/service_record/controller.py
 import typing
 from Event import Event
 from gui.impl.lobby.crew.container_vews.common.base_personal_case_controller import BasePersonalCaseController
@@ -15,7 +13,9 @@ class ServiceRecordInteractionController(BasePersonalCaseController):
         return BasePersonalCaseComponentViewEvents()
 
     def _getEvents(self):
-        return super(ServiceRecordInteractionController, self)._getEvents() + [(self.itemsCache.onSyncCompleted, self._onCacheResync)]
+        return super(ServiceRecordInteractionController, self)._getEvents() + [
+         (
+          self.itemsCache.onSyncCompleted, self._onCacheResync)]
 
     def _onCacheResync(self, reason, _):
         if reason in (CACHE_SYNC_REASON.STATS_RESYNC, CACHE_SYNC_REASON.SHOW_GUI):

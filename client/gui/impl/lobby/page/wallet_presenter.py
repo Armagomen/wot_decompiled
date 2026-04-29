@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/page/wallet_presenter.py
 from __future__ import absolute_import
-import logging
-import typing
+import logging, typing
 from future.utils import itervalues
 from helpers.events_handler import EventsHandler
 from Event import Event
@@ -55,7 +52,9 @@ class CurrencyStatusProvider(EventsHandler):
         self.onChanged(self._currencyType)
 
     def _getCallbacks(self):
-        return (('stats.{}'.format(self._currencyType), self._changed),)
+        return (
+         (
+          ('stats.{}').format(self._currencyType), self._changed),)
 
 
 class CrystalProvider(CurrencyStatusProvider):
@@ -74,7 +73,9 @@ class CrystalProvider(CurrencyStatusProvider):
         shared_events.showCrystalWindow()
 
     def _getEvents(self):
-        return ((self._wallet.onWalletStatusChanged, self._changed),)
+        return (
+         (
+          self._wallet.onWalletStatusChanged, self._changed),)
 
 
 class GoldProvider(CurrencyStatusProvider):
@@ -101,7 +102,9 @@ class GoldProvider(CurrencyStatusProvider):
             showShop(getBuyGoldUrl())
 
     def _getEvents(self):
-        return ((self._wallet.onWalletStatusChanged, self._changed),)
+        return (
+         (
+          self._wallet.onWalletStatusChanged, self._changed),)
 
 
 class CreditsProvider(CurrencyStatusProvider):
@@ -125,7 +128,11 @@ class CreditsProvider(CurrencyStatusProvider):
         shared_events.showExchangeCurrencyWindow()
 
     def _getEvents(self):
-        return ((self._wallet.onWalletStatusChanged, self._changed), (self._exchangeRates.goldToCredits.onUpdated, self._changed))
+        return (
+         (
+          self._wallet.onWalletStatusChanged, self._changed),
+         (
+          self._exchangeRates.goldToCredits.onUpdated, self._changed))
 
 
 class FreeXpProvider(CurrencyStatusProvider):
@@ -145,7 +152,11 @@ class FreeXpProvider(CurrencyStatusProvider):
         shared_events.showExchangeXPWindow()
 
     def _getEvents(self):
-        return ((self._wallet.onWalletStatusChanged, self._changed), (self._exchangeRates.freeXpTranslation.onUpdated, self._changed))
+        return (
+         (
+          self._wallet.onWalletStatusChanged, self._changed),
+         (
+          self._exchangeRates.freeXpTranslation.onUpdated, self._changed))
 
 
 class WalletPresenter(ViewComponent[WalletModel]):
@@ -164,7 +175,9 @@ class WalletPresenter(ViewComponent[WalletModel]):
         return super(WalletPresenter, self).getViewModel()
 
     def _getEvents(self):
-        return ((self.viewModel.onCurrencyAction, self.__onCurrencyAction),)
+        return (
+         (
+          self.viewModel.onCurrencyAction, self.__onCurrencyAction),)
 
     def _onLoading(self, *args, **kwargs):
         super(WalletPresenter, self)._onLoading(*args, **kwargs)
@@ -185,7 +198,7 @@ class WalletPresenter(ViewComponent[WalletModel]):
 
     def __onCurrencyChanged(self, currencyType):
         currencyWatcher = self._currencyProviders.get(currencyType)
-        with self.viewModel.getCurrencies() as currencies:
+        with self.viewModel.getCurrencies() as (currencies):
             currency = currencies.get(currencyType)
             if currency is None:
                 currency = currencyWatcher.createModel()

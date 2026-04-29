@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/battle/postmortem_panel.py
 import BigWorld
 from arena_bonus_type_caps import ARENA_BONUS_TYPE
 from gui.Scaleform.daapi.view.battle.shared.postmortem_panel import _ALLOWED_EQUIPMENT_DEATH_CODES
@@ -12,7 +10,8 @@ class BattleRoyalePostmortemPanel(BattleRoyalePostmortemPanelMeta):
     def __init__(self):
         super(BattleRoyalePostmortemPanel, self).__init__()
         bonusType = BigWorld.player().arenaBonusType
-        self.__isBattleRoyaleTournament = bonusType in (ARENA_BONUS_TYPE.BATTLE_ROYALE_TRN_SOLO, ARENA_BONUS_TYPE.BATTLE_ROYALE_TRN_SQUAD)
+        self.__isBattleRoyaleTournament = bonusType in (
+         ARENA_BONUS_TYPE.BATTLE_ROYALE_TRN_SOLO, ARENA_BONUS_TYPE.BATTLE_ROYALE_TRN_SQUAD)
         vehicle = BigWorld.entity(BigWorld.player().playerVehicleID)
         self.__isObserver = 'observer' in vehicle.typeDescriptor.type.tags if vehicle else False
 
@@ -20,7 +19,7 @@ class BattleRoyalePostmortemPanel(BattleRoyalePostmortemPanelMeta):
         if equipmentID:
             equipment = vehicles.g_cache.equipments().get(equipmentID)
             if code not in _ALLOWED_EQUIPMENT_DEATH_CODES and equipment:
-                code = '_'.join((code, equipment.name.upper()))
+                code = ('_').join((code, equipment.name.upper()))
                 self._prepareMessage(code, entityID, self._getDevice(extra))
                 return
         super(BattleRoyalePostmortemPanel, self)._onShowVehicleMessageByCode(code, postfix, entityID, extra, equipmentID, ignoreMessages)
@@ -59,10 +58,7 @@ class BattleRoyalePostmortemPanel(BattleRoyalePostmortemPanelMeta):
     def _prepareMessage(self, code, killerVehID, device=None):
         if self.__isBattleRoyaleBotVehicle(killerVehID):
             msgText, colors = self._messages['DEATH_FROM_BR_BOT']
-            self._deathInfo = {'text': msgText,
-             'colors': colors,
-             'killerVehicle': killerVehID,
-             'device': device}
+            self._deathInfo = {'text': msgText, 'colors': colors, 'killerVehicle': killerVehID, 'device': device}
             self._deathInfoReceived()
         else:
             super(BattleRoyalePostmortemPanel, self)._prepareMessage(code, killerVehID, device)

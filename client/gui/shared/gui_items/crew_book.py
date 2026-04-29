@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/gui_items/crew_book.py
 import nations
 from gui.impl import backport
 from gui.impl.gen import R
@@ -61,7 +59,9 @@ class CrewBook(FittingItem):
     def getBookSpread(self):
         if self.isPersonal():
             return CREW_BOOK_SPREAD.PERSONAL_BOOK
-        return CREW_BOOK_SPREAD.CREW_BOOK_NO_NATION if self.getNationID() == nations.NONE_INDEX else CREW_BOOK_SPREAD.CREW_BOOK
+        if self.getNationID() == nations.NONE_INDEX:
+            return CREW_BOOK_SPREAD.CREW_BOOK_NO_NATION
+        return CREW_BOOK_SPREAD.CREW_BOOK
 
     def isPersonal(self):
         return self.getBookType() == CREW_BOOK_RARITY.PERSONAL
@@ -70,7 +70,9 @@ class CrewBook(FittingItem):
         return self.getBookType() in CREW_BOOK_RARITY.NO_NATION_TYPES
 
     def getFreeCount(self):
-        return 0 if not self.__count else self.__count
+        if not self.__count:
+            return 0
+        return self.__count
 
     def getNation(self):
         return self._bookData().nation
@@ -100,10 +102,12 @@ class CrewBook(FittingItem):
         else:
             sizeID = R.images.gui.maps.icons.crewBooks.books.dyn('s' + size)
         resID = sizeID.dyn(replaceHyphenToUnderscore(self.getBonusIconName()))()
-        return backport.image(resID) if resID != -1 else ''
+        if resID != -1:
+            return backport.image(resID)
+        return ''
 
     def getGUIEmblemID(self):
-        return '{}_{}'.format(self.itemTypeName, self.getBookType())
+        return ('{}_{}').format(self.itemTypeName, self.getBookType())
 
     def formattedShortDescription(self, formatter):
         description = self.shortDescription
@@ -111,7 +115,7 @@ class CrewBook(FittingItem):
 
     @property
     def level(self):
-        pass
+        return 0
 
     @property
     def inventoryCount(self):

@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/persistent_data_cache_common/serializers.py
-import abc
-import typing
-import wg_pickle
+import abc, typing, wg_pickle
 if typing.TYPE_CHECKING:
     from persistent_data_cache_common.types import TData
 

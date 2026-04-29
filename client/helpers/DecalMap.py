@@ -1,11 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/helpers/DecalMap.py
 from functools import partial
-import typing
-import BigWorld
-import ResMgr
-import material_kinds
-import persistent_data_cache as pdc
+import typing, BigWorld, ResMgr, material_kinds, persistent_data_cache as pdc
 from constants import IS_EDITOR
 from debug_utils import LOG_ERROR, LOG_CURRENT_EXCEPTION
 
@@ -30,7 +24,8 @@ class DecalMap(object):
         for tsName, tset in config['textureSets'].iteritems():
             self.__textureSets[tsName] = {}
             for mName, material in tset.iteritems():
-                self.__textureSets[tsName][mName] = [ (self.__texMap[texName] if texName is not None else None) for texName in material ]
+                self.__textureSets[tsName][mName] = [ self.__texMap[texName] if texName is not None else None for texName in material
+                                                    ]
 
         self._initGroups(config)
         return
@@ -46,7 +41,8 @@ class DecalMap(object):
                 index = BigWorld.wg_decalTextureIndex(tex[1])
                 if index == -1:
                     LOG_ERROR("texture '%s' is not exist or to more textures added to the texture atlas.Max textures count is 16." % tex[1])
-                self.__texMap[tex[0]] = index
+                else:
+                    self.__texMap[tex[0]] = index
 
         except Exception:
             LOG_CURRENT_EXCEPTION()
@@ -90,22 +86,16 @@ def _readCfg(dataSec):
         LOG_ERROR('Invalid dataSection.')
         return {}
     else:
-        config = {'criticalHitDecalAngle': dataSec.readFloat('criticalAngle', 30.0),
-         'groups': {group.name:{'lifeTime': _readFloat(group, 'lifeTime', 0, 1000, 1),
-                    'trianglesCount': _readFloat(group, 'trianglesCount', 1000, 100000, 1000)} for group in dataSec['groups'].values()},
-         'chassisEffectsGroups': {},
-         'textures': {texture.name:texture.readString('texture') for texture in dataSec['textures'].values()},
-         'scales': [],
-         'traceTextures': set(),
-         'textureSets': {}}
+        config = {'criticalHitDecalAngle': dataSec.readFloat('criticalAngle', 30.0), 'groups': {group.name:{'lifeTime': _readFloat(group, 'lifeTime', 0, 1000, 1), 'trianglesCount': _readFloat(group, 'trianglesCount', 1000, 100000, 1000)} for group in dataSec['groups'].values()}, 
+           'chassisEffectsGroups': {}, 'textures': {texture.name:texture.readString('texture') for texture in dataSec['textures'].values()}, 'scales': [], 'traceTextures': set(), 
+           'textureSets': {}}
         chassisEffectsSection = ResMgr.openSection('scripts/item_defs/vehicles/common/chassis_effects.xml')
         if not chassisEffectsSection or chassisEffectsSection['decals'] is None:
             LOG_ERROR('Failed to read chassis_effects.xml file')
             return config
         dataSec = chassisEffectsSection['decals']
         for group in dataSec['bufferPrefs'].values():
-            desc = {'lifeTime': _readFloat(group, 'lifeTime', 0, 1000, 1),
-             'trianglesCount': _readFloat(group, 'trianglesCount', 1000, 100000, 1000)}
+            desc = {'lifeTime': _readFloat(group, 'lifeTime', 0, 1000, 1), 'trianglesCount': _readFloat(group, 'trianglesCount', 1000, 100000, 1000)}
             config['groups'][group.name] = desc
             config['chassisEffectsGroups'][group.name] = desc
 
@@ -119,10 +109,7 @@ def _readCfg(dataSec):
             _STRAFE_DIF_TEXT = 2
             _STRAFE_BUMP_TEXT = 3
             for dsMaterial in dsTexSet.values():
-                tsMaterial = [None,
-                 None,
-                 None,
-                 None]
+                tsMaterial = [None, None, None, None]
                 ts[dsMaterial.name] = tsMaterial
                 for dsTexture in dsMaterial.values():
                     texName = dsMaterial.readString(dsTexture.name)

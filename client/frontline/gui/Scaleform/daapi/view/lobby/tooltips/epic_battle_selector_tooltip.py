@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/lobby/tooltips/epic_battle_selector_tooltip.py
 from .common_blocks import packEpicBattleInfoBlock, packEpicBattleSeasonBlock
 from gui.game_control.epic_meta_game_ctrl import EPIC_PERF_GROUP
 from gui.impl import backport
@@ -38,36 +36,41 @@ class EpicBattleSelectorTooltip(BlocksTooltipData):
         return [ p for p in [ pack() for pack in packers ] if p is not None ]
 
     def __getPackersBeforeStart(self):
-        return (packEpicBattleInfoBlock, packEpicBattleSeasonBlock)
+        return (
+         packEpicBattleInfoBlock,
+         packEpicBattleSeasonBlock)
 
     def __getPackersInProgress(self):
-        return (packEpicBattleInfoBlock,
+        return (
+         packEpicBattleInfoBlock,
          self.__packScheduleBlock,
          packEpicBattleSeasonBlock,
          self.__packPerformanceWarningBlock)
 
     def __getPackersAfterEnd(self):
-        return (packEpicBattleInfoBlock, packEpicBattleSeasonBlock)
+        return (
+         packEpicBattleInfoBlock,
+         packEpicBattleSeasonBlock)
 
     def __packScheduleBlock(self):
         primeTime = self.__epicController.getPrimeTimes().get(self.__connectionMgr.peripheryID)
         if primeTime is None or self.__epicController.hasAnySeason() is None:
             return
-        else:
-            timeTableBlocks = [self.__packTimeTableHeaderBlock()]
-            todayStart, todayEnd = time_utils.getDayTimeBoundsForLocal()
-            todayEnd += 1
-            tomorrowStart, tomorrowEnd = todayStart + time_utils.ONE_DAY, todayEnd + time_utils.ONE_DAY
-            boundaryTime, _ = self.__epicController.getCurrentCycleInfo()
-            tomorrowPeriods = ()
-            todayPeriods = primeTime.getPeriodsBetween(todayStart, min(todayEnd, boundaryTime))
-            if tomorrowStart < boundaryTime:
-                tomorrowPeriods = primeTime.getPeriodsBetween(tomorrowStart, min(tomorrowEnd, boundaryTime))
-            todayStr = self.__packPeriods(todayPeriods)
-            timeTableBlocks.append(self.__packTimeBlock(message=text_styles.main(backport.text(_R_TIMETABLE.today())), timeStr=text_styles.stats(todayStr)))
-            tomorrowStr = self.__packPeriods(tomorrowPeriods)
-            timeTableBlocks.append(self.__packTimeBlock(message=text_styles.main(backport.text(_R_TIMETABLE.tomorrow())), timeStr=text_styles.main(tomorrowStr)))
-            return formatters.packBuildUpBlockData(timeTableBlocks)
+        timeTableBlocks = [
+         self.__packTimeTableHeaderBlock()]
+        todayStart, todayEnd = time_utils.getDayTimeBoundsForLocal()
+        todayEnd += 1
+        tomorrowStart, tomorrowEnd = todayStart + time_utils.ONE_DAY, todayEnd + time_utils.ONE_DAY
+        boundaryTime, _ = self.__epicController.getCurrentCycleInfo()
+        tomorrowPeriods = ()
+        todayPeriods = primeTime.getPeriodsBetween(todayStart, min(todayEnd, boundaryTime))
+        if tomorrowStart < boundaryTime:
+            tomorrowPeriods = primeTime.getPeriodsBetween(tomorrowStart, min(tomorrowEnd, boundaryTime))
+        todayStr = self.__packPeriods(todayPeriods)
+        timeTableBlocks.append(self.__packTimeBlock(message=text_styles.main(backport.text(_R_TIMETABLE.today())), timeStr=text_styles.stats(todayStr)))
+        tomorrowStr = self.__packPeriods(tomorrowPeriods)
+        timeTableBlocks.append(self.__packTimeBlock(message=text_styles.main(backport.text(_R_TIMETABLE.tomorrow())), timeStr=text_styles.main(tomorrowStr)))
+        return formatters.packBuildUpBlockData(timeTableBlocks)
 
     def __packPerformanceWarningBlock(self):
         performanceGroup = self.__epicController.getPerformanceGroup()
@@ -97,7 +100,7 @@ class EpicBattleSelectorTooltip(BlocksTooltipData):
                 endTime = formatDate('%H:%M', periodEnd)
                 periodsStr.append(backport.text(R.strings.ranked_battles.calendarDay.time(), start=startTime, end=endTime))
 
-            return '\n'.join(periodsStr)
+            return ('\n').join(periodsStr)
         return backport.text(_R_TIMETABLE.dash())
 
     def __packTimeBlock(self, message, timeStr):

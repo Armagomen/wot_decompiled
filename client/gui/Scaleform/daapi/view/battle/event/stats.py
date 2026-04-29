@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/event/stats.py
+from __future__ import absolute_import
 from PlayerEvents import g_playerEvents
 from constants import ARENA_PERIOD
 from gui.Scaleform.daapi.view.meta.EventStatsMeta import EventStatsMeta
@@ -16,7 +15,7 @@ class EventStats(EventStatsMeta, IArenaVehiclesController):
         super(EventStats, self).__init__()
         self._title = None
         self._desc = None
-        self._points = dict()
+        self._points = {}
         self.__arenaDP = self.sessionProvider.getArenaDP()
         return
 
@@ -70,21 +69,21 @@ class EventStats(EventStatsMeta, IArenaVehiclesController):
         isPlayerHimself = vehID == playerVehicle.vehicleID
         playerName = vInfo.player.name
         if vInfo.player.clanAbbrev:
-            playerName = '{}[{}]'.format(vInfo.player.name, vInfo.player.clanAbbrev)
+            playerName = ('{}[{}]').format(vInfo.player.name, vInfo.player.clanAbbrev)
         badge = buildBadge(badgeID, vInfo.getBadgeExtraInfo())
         badgeVO = badge.getBadgeVO(ICONS_SIZES.X24, {'isAtlasSource': True}, shortIconName=True) if badge else None
-        return {'playerName': playerName,
-         'squadIndex': str(vInfo.squadIndex) if vInfo.squadIndex else '',
-         'badgeVO': badgeVO,
-         'suffixBadgeIcon': 'badge_{}'.format(suffixBadgeId) if suffixBadgeId else '',
-         'suffixBadgeStripIcon': 'strip_{}'.format(suffixBadgeId) if suffixBadgeId else '',
-         'isAlive': vInfo.isAlive(),
-         'isSquad': isSquad,
-         'points': str(int(self.getPoints(vehID))),
-         'kills': str(int(frags)),
-         'vehicleName': vInfo.vehicleType.shortName,
-         'vehicleTypeIcon': 'fullStatsVehicleType_green_{}'.format(vInfo.vehicleType.classTag),
-         'isPlayerHimself': isPlayerHimself}
+        return {'playerName': playerName, 
+           'squadIndex': str(vInfo.squadIndex) if vInfo.squadIndex else '', 
+           'badgeVO': badgeVO, 
+           'suffixBadgeIcon': ('badge_{}').format(suffixBadgeId) if suffixBadgeId else '', 
+           'suffixBadgeStripIcon': ('strip_{}').format(suffixBadgeId) if suffixBadgeId else '', 
+           'isAlive': vInfo.isAlive(), 
+           'isSquad': isSquad, 
+           'points': str(int(self.getPoints(vehID))), 
+           'kills': str(int(frags)), 
+           'vehicleName': vInfo.vehicleType.shortName, 
+           'vehicleTypeIcon': ('fullStatsVehicleType_green_{}').format(vInfo.vehicleType.classTag), 
+           'isPlayerHimself': isPlayerHimself}
 
     def getPoints(self, vehID):
         return self._points.get(vehID, 0)

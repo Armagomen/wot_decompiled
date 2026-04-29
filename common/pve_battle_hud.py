@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/pve_battle_hud.py
 import logging
 from logging import Logger
 import enum
@@ -45,7 +43,9 @@ class PrimaryObjectiveState(enum.IntEnum):
     FAILURE = 10
 
     def isCompleted(self):
-        return self in [PrimaryObjectiveState.HIDDEN, PrimaryObjectiveState.SUCCESS, PrimaryObjectiveState.FAILURE]
+        return self in [PrimaryObjectiveState.HIDDEN,
+         PrimaryObjectiveState.SUCCESS,
+         PrimaryObjectiveState.FAILURE]
 
 
 @enum.unique

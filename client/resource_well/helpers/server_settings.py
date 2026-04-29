@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/helpers/server_settings.py
 from __future__ import absolute_import
 import logging
 from collections import namedtuple
@@ -9,7 +7,8 @@ from typing import Tuple, List
 from shared_utils import makeTupleByDict
 _logger = logging.getLogger(__name__)
 
-class RewardConfig(namedtuple('RewardConfig', ('bonus', 'limit', 'isSerial', 'sequence', 'resources', 'availableAfter', 'points', 'order'))):
+class RewardConfig(namedtuple('RewardConfig', ('bonus', 'limit', 'isSerial', 'sequence', 'resources',
+                            'availableAfter', 'points', 'order'))):
     __slots__ = ()
 
     def __new__(cls, **kwargs):
@@ -44,7 +43,8 @@ class _ResourceConfig(namedtuple('_ResourceConfig', ('name', 'rate', 'limit'))):
         return cls()
 
 
-class ResourceWellConfig(namedtuple('_ResourceWellConfig', ('isEnabled', 'season', 'finishTime', 'remindTime', 'rewards', 'startTime', 'infoPageUrl'))):
+class ResourceWellConfig(namedtuple('_ResourceWellConfig', ('isEnabled', 'season', 'finishTime', 'remindTime',
+                                   'rewards', 'startTime', 'infoPageUrl'))):
     __slots__ = ()
 
     def __new__(cls, **kwargs):
@@ -59,7 +59,7 @@ class ResourceWellConfig(namedtuple('_ResourceWellConfig', ('isEnabled', 'season
 
     def replace(self, data):
         allowedFields = self._fields
-        dataToUpdate = dict(((k, v) for k, v in iteritems(data) if k in allowedFields))
+        dataToUpdate = dict((k, v) for k, v in iteritems(data) if k in allowedFields)
         self.__packRewardsConfigs(dataToUpdate)
         return self._replace(**dataToUpdate)
 

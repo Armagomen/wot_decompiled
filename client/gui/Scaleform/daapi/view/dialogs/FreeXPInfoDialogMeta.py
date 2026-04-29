@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/dialogs/FreeXPInfoDialogMeta.py
+from __future__ import absolute_import
 from gui import makeHtmlString
 from gui.Scaleform.daapi.view.dialogs import IDialogMeta
 from gui.Scaleform.framework import ScopeTemplates
@@ -10,13 +9,13 @@ from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 class FreeXPInfoBaseMeta(IDialogMeta):
 
     def getTitle(self):
-        pass
+        return ''
 
     def getSubmitLbl(self):
-        pass
+        return ''
 
     def getTextInfo(self):
-        pass
+        return ''
 
     def getViewScopeType(self):
         return ScopeTemplates.DEFAULT_SCOPE

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/impl/lobby/dialogs/battle_abilities_confirm_dialog.py
 from frameworks.wulf import ViewSettings
 from gui.impl.lobby.dialogs.full_screen_dialog_view import FullScreenDialogBaseView
 from gui.impl.gen import R
@@ -30,18 +28,24 @@ class BattleAbilitiesConfirmDialog(FullScreenDialogBaseView):
         self._fillViewModel()
 
     def _getEvents(self):
-        return ((self.viewModel.onCheckBoxClick, self._onCheckBoxClick),
-         (self.viewModel.onSubmitClick, self._onSubmitClick),
-         (self.viewModel.onCloseClick, self._onCloseClick),
-         (self.viewModel.onCancelClick, self._onCancelClick),
-         (g_playerEvents.onAccountBecomeNonPlayer, self.destroyWindow))
+        return (
+         (
+          self.viewModel.onCheckBoxClick, self._onCheckBoxClick),
+         (
+          self.viewModel.onSubmitClick, self._onSubmitClick),
+         (
+          self.viewModel.onCloseClick, self._onCloseClick),
+         (
+          self.viewModel.onCancelClick, self._onCancelClick),
+         (
+          g_playerEvents.onAccountBecomeNonPlayer, self.destroyWindow))
 
     def _fillViewModel(self):
         price = 0
         epicSkills = self.__epicMetaGameCtrl.getEpicSkills()
         skills = [ epicSkills[item.innationID] for item in self.__skillsInteractor.getChangedList() ]
         isMultipleAbilities = len(skills) > 1
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             icons = vm.getIcons()
             names = vm.getNames()
             icons.clear()
@@ -66,8 +70,7 @@ class BattleAbilitiesConfirmDialog(FullScreenDialogBaseView):
             vm.setBonus(self.__epicMetaGameCtrl.getRandomReservesBonusProbability())
 
     def _getAdditionalData(self):
-        return {'rollBack': not self.__isCloseButtonClicked,
-         'applyForAllOfType': self.__skillsInteractor.getCheckboxState()}
+        return {'rollBack': not self.__isCloseButtonClicked, 'applyForAllOfType': self.__skillsInteractor.getCheckboxState()}
 
     def _onCheckBoxClick(self):
         state = not self.viewModel.getIsTypeSelected()

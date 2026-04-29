@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_light/scripts/client/comp7_light/gui/impl/lobby/comp7_light_helpers/comp7_light_mission_packer.py
 from gui.Scaleform.genConsts.MISSIONS_STATES import MISSIONS_STATES
 from gui.impl import backport
 from gui.impl.gen import R
@@ -11,7 +9,9 @@ from skeletons.gui.server_events import IEventsCache
 def getFirstConditionModelFromQuestModel(dailyQuestModel):
     postBattleModel = findFirstConditionModel(dailyQuestModel.postBattleCondition)
     bonusConditionModel = findFirstConditionModel(dailyQuestModel.bonusCondition)
-    return postBattleModel if postBattleModel else bonusConditionModel
+    if postBattleModel:
+        return postBattleModel
+    return bonusConditionModel
 
 
 @dependency.replace_none_kwargs(eventsCache=IEventsCache)
@@ -21,7 +21,7 @@ def packMissionItem(model, raw, questPacker=None, eventsCache=None):
         condinionalModel = questModel.postBattleCondition if questModel.postBattleCondition.getItems() else questModel.bonusCondition
         items = condinionalModel.getItems()
         descriptions = [ item.getDescrData() for item in items ]
-        separator = ' {} '.format(backport.text(R.strings.quests.dailyQuests.postBattle.conditionTypeAnd()))
+        separator = (' {} ').format(backport.text(R.strings.quests.dailyQuests.postBattle.conditionTypeAnd()))
         if condinionalModel.getConditionType() == CONDITION_GROUP_AND:
             result = separator.join(descriptions)
         else:
@@ -48,5 +48,4 @@ def packMissionItem(model, raw, questPacker=None, eventsCache=None):
     if preFormattedConditionModel:
         setDescription(model, fullQuestModel)
         setProgress(model, fullQuestModel)
-    fullQuestModel.unbind()
     return (isCompleted, model.getCurrentProgress())

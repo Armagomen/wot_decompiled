@@ -1,11 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/helpers/blueprint_generator.py
-import logging
-import typing
+import logging, typing
 from collections import namedtuple
-import BigWorld
-import Math
-import ResMgr
+import BigWorld, Math, ResMgr
 from items import vehicles, parseIntCompactDescr, ITEM_TYPES
 from vehicle_systems import model_assembler as ma
 from vehicle_systems.stricted_loading import makeCallbackWeak
@@ -74,13 +69,14 @@ class BlueprintGenerator(object):
             BigWorld.buildBlueprint(self.__cachedCompound[vehicleName], _BLUEPRINT_BG_TEXTURE, layout.projections)
             self.__inProgress = None
             return
-        elif vehicleName in self.__pendingCompound:
-            _logger.debug('Vehicle compound of "%s" is loading at the moment.', vehicleName)
-            return
         else:
+            if vehicleName in self.__pendingCompound:
+                _logger.debug('Vehicle compound of "%s" is loading at the moment.', vehicleName)
+                return
             _logger.debug('Loading vehicle compound of "%s".', vehicleName)
             self.__pendingCompound.add(vehicleName)
-            resources = (ma.prepareCompoundAssembler(vehicleDescr, ModelsSetParams('', 'undamaged', []), BigWorld.camera().spaceID, lodIdx=layout.lodIdx, skipMaterials=True),)
+            resources = (
+             ma.prepareCompoundAssembler(vehicleDescr, ModelsSetParams('', 'undamaged', []), BigWorld.camera().spaceID, lodIdx=layout.lodIdx, skipMaterials=True),)
             BigWorld.loadResourceListBG(resources, makeCallbackWeak(self.__onResourcesLoaded, vehicleName))
             return
 
@@ -116,7 +112,7 @@ class BlueprintGenerator(object):
                     for vehicleName in layout['vehicles'].asString.split():
                         layouts[vehicleName] = bpLayout
 
-            except:
+            except Exception:
                 _logger.exception("Can't read blueprint layouts config")
 
         finally:

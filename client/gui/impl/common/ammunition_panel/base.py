@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/common/ammunition_panel/base.py
+from __future__ import absolute_import
 import logging
 from gui.impl.common.ammunition_panel.ammunition_groups_controller import GROUPS_MAP
 from gui.impl.common.base_sub_model_view import BaseSubModelView
@@ -21,7 +20,7 @@ class BaseAmmunitionPanel(BaseSubModelView):
 
     def onLoading(self, *args, **kwargs):
         super(BaseAmmunitionPanel, self).onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             if kwargs:
                 self.changeSelectedSection(**kwargs)
             self._controller.createGroupsModels(model.getSectionGroups())
@@ -34,7 +33,7 @@ class BaseAmmunitionPanel(BaseSubModelView):
 
     def update(self, vehicle, fullUpdate=False):
         self.updateVehicle(vehicle)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             if fullUpdate or vehicle is None:
                 self._controller.createGroupsModels(model.getSectionGroups())
             else:
@@ -47,12 +46,12 @@ class BaseAmmunitionPanel(BaseSubModelView):
         self._controller.updateVehicle(vehicle)
 
     def updateSection(self, sectionName):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self._controller.updateGroupSectionModel(sectionName, model.getSectionGroups())
             model.setSyncInitiator((model.getSyncInitiator() + 1) % 1000)
 
     def updateSectionsWithKeySettings(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             for section in (TankSetupConstants.SHELLS, TankSetupConstants.BATTLE_ABILITIES, TankSetupConstants.CONSUMABLES):
                 self._controller.updateGroupSectionModel(section, model.getSectionGroups())
 

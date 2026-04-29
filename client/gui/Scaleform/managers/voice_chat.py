@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/managers/voice_chat.py
+from __future__ import absolute_import
 from frameworks.wulf import WindowLayer
 from VOIP import getVOIPManager
 from messenger.proto.events import g_messengerEvents
@@ -20,7 +19,7 @@ class BaseVoiceChatManager(VoiceChatManagerMeta):
 
     @proto_getter(PROTO_TYPE.BW_CHAT2)
     def bwProto(self):
-        return None
+        return
 
     def isPlayerSpeaking(self, accountDBID):
         return self.bwProto.voipController.isPlayerSpeaking(accountDBID)

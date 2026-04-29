@@ -1,14 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicles/mechanics/mechanic_logging/mechanic_input_logger.py
 from __future__ import absolute_import
-import json
-import logging
-import typing
-import weakref
+import json, logging, typing, weakref
 from functools import partial
-import BigWorld
-import CGF
-import constants
+import BigWorld, CGF, constants
 from events_containers.common.containers import ContainersListener
 from events_containers.components.life_cycle import IComponentLifeCycleListenerLogic
 from events_handler import eventHandler
@@ -32,7 +25,7 @@ class MechanicInputLogger(ContainersListener, IComponentLifeCycleListenerLogic):
         self.__actions = []
         for command in commands:
             action = InputAction(command, [InputTriggerPressed()], isConsuming=False)
-            actionName = '{}_log_input'.format(command)
+            actionName = ('{}_log_input').format(command)
             action.bindEventReaction(TriggerEvent.Triggered, partial(self.log, command))
             self.__actions.append((actionName, action))
 
@@ -59,21 +52,25 @@ class MechanicInputLogger(ContainersListener, IComponentLifeCycleListenerLogic):
 
             return
 
-    @eventHandler
-    def onComponentDestroyed(self, component):
+    def destroy(self):
         self._mechanicComponent = None
         self._uiLogger = None
         player = BigWorld.player()
         inputSingleton = CGF.findSingleton(player.spaceID, InputSingleton) if player is not None else None
-        for actionName, action in self.__actions:
-            action.unbindEventReaction(TriggerEvent.Triggered)
-            if inputSingleton is not None:
-                inputSingleton.removeAction(actionName)
+        if self.__actions is not None:
+            for actionName, action in self.__actions:
+                action.unbindEventReaction(TriggerEvent.Triggered)
+                if inputSingleton is not None:
+                    inputSingleton.removeAction(actionName)
 
         self.__actions = None
         self.__vehCD = None
         self.__arenaUniqueID = None
         return
+
+    @eventHandler
+    def onComponentDestroyed(self, component):
+        self.destroy()
 
     @noexcept
     def log(self, triggeredAction):

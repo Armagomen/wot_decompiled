@@ -1,8 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/classic/tab_screen.py
+from __future__ import absolute_import
 import logging
-import BattleReplay
-import BigWorld
+from future.utils import viewvalues
+import BattleReplay, BigWorld
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from ReplayEvents import g_replayEvents
 from account_helpers import AccountSettings
@@ -144,40 +143,43 @@ class TabScreenComponent(TabScreenMeta):
         isProgressTrackingEnabled = progressViewType == QuestsProgressViewType.TYPE_STANDARD
         trackingData = []
         personalMissions = self.__eventsCache.getPersonalMissions()
-        for quest in sorted(questProgress.getInProgressQuests().itervalues(), key=lambda q: q.getQuestBranch()):
+        for quest in sorted(viewvalues(questProgress.getInProgressQuests()), key=lambda q: q.getQuestBranch()):
             isSelected = quest == selectedQuest
             operation = personalMissions.getOperationsForBranch(quest.getQuestBranch())[quest.getOperationID()]
-            trackingData.append({'eyeBtnVisible': isProgressTrackingEnabled and isSelected,
-             'selected': isSelected,
-             'missionName': makeString(quest.getShortUserName()),
-             'fullMissionName': makeString(quest.getUserName()),
-             'operationName': makeString(operation.getShortUserName()),
-             'vehicle': QUESTSPROGRESS.getOperationTrackingIcon(operation.getID()),
-             'questID': quest.getID(),
-             'onPause': quest.isOnPause})
+            trackingData.append({'eyeBtnVisible': isProgressTrackingEnabled and isSelected, 
+               'selected': isSelected, 
+               'missionName': makeString(quest.getShortUserName()), 
+               'fullMissionName': makeString(quest.getUserName()), 
+               'operationName': makeString(operation.getShortUserName()), 
+               'vehicle': QUESTSPROGRESS.getOperationTrackingIcon(operation.getID()), 
+               'questID': quest.getID(), 
+               'onPause': quest.isOnPause})
 
         trackingStatus = ''
         if len(trackingData) > 1:
-            trackingStatus = ''.join((icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_NOTIFICATIONS_OFF, 16, 16, -2, 0), ' ', text_styles.standard(PERSONAL_MISSIONS.QUESTPROGRESSTRACKING_TRACKINGSTATUS)))
-        self.as_updateProgressTrackingS({'trackingStatus': trackingStatus,
-         'trackingData': trackingData})
+            trackingStatus = ('').join((
+             icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_NOTIFICATIONS_OFF, 16, 16, -2, 0),
+             ' ',
+             text_styles.standard(PERSONAL_MISSIONS.QUESTPROGRESSTRACKING_TRACKINGSTATUS)))
+        self.as_updateProgressTrackingS({'trackingStatus': trackingStatus, 
+           'trackingData': trackingData})
 
     def __setNoQuestsDescription(self):
         settings = self.__lobbyContext.getServerSettings()
         questProgress = self.sessionProvider.shared.questProgress
         if questProgress.areQuestsEnabledForArena():
             if not settings.isPMBattleProgressEnabled():
-                self.as_questProgressPerformS({'hasQuestToPerform': False,
-                 'noQuestTitle': text_styles.promoSubTitle(INGAME_GUI.STATISTICS_TAB_QUESTS_SWITCHOFF_TITLE),
-                 'noQuestDescr': ''})
+                self.as_questProgressPerformS({'hasQuestToPerform': False, 
+                   'noQuestTitle': text_styles.promoSubTitle(INGAME_GUI.STATISTICS_TAB_QUESTS_SWITCHOFF_TITLE), 
+                   'noQuestDescr': ''})
             else:
-                self.as_questProgressPerformS({'hasQuestToPerform': questProgress.hasQuestsToPerform(),
-                 'noQuestTitle': text_styles.promoSubTitle(INGAME_GUI.STATISTICS_TAB_QUESTS_NOTHINGTOPERFORM_TITLE),
-                 'noQuestDescr': text_styles.highlightText(INGAME_GUI.STATISTICS_TAB_QUESTS_NOTHINGTOPERFORM_DESCR)})
+                self.as_questProgressPerformS({'hasQuestToPerform': questProgress.hasQuestsToPerform(), 
+                   'noQuestTitle': text_styles.promoSubTitle(INGAME_GUI.STATISTICS_TAB_QUESTS_NOTHINGTOPERFORM_TITLE), 
+                   'noQuestDescr': text_styles.highlightText(INGAME_GUI.STATISTICS_TAB_QUESTS_NOTHINGTOPERFORM_DESCR)})
         else:
-            self.as_questProgressPerformS({'hasQuestToPerform': False,
-             'noQuestTitle': text_styles.promoSubTitle(INGAME_GUI.STATISTICS_TAB_QUESTS_NOTAVAILABLE_TITLE),
-             'noQuestDescr': ''})
+            self.as_questProgressPerformS({'hasQuestToPerform': False, 
+               'noQuestTitle': text_styles.promoSubTitle(INGAME_GUI.STATISTICS_TAB_QUESTS_NOTAVAILABLE_TITLE), 
+               'noQuestDescr': ''})
 
 
 class _TabsBuilder(object):
@@ -187,18 +189,18 @@ class _TabsBuilder(object):
         self.__tabs = []
 
     def addStatisticsTab(self):
-        self.__tabs.append({'label': backport.text(R.strings.ingame_gui.statistics.tab.line_up.header()),
-         'alias': TabsAliases.STATS})
+        self.__tabs.append({'label': backport.text(R.strings.ingame_gui.statistics.tab.line_up.header()), 
+           'alias': TabsAliases.STATS})
 
     def addPersonalQuestsTab(self):
         if self.__lobbyContext.getServerSettings().isPersonalMissionsEnabled():
-            self.__tabs.append({'label': backport.text(R.strings.ingame_gui.statistics.tab.quests.header()),
-             'alias': TabsAliases.QUESTS_PROGRESS})
+            self.__tabs.append({'label': backport.text(R.strings.ingame_gui.statistics.tab.quests.header()), 
+               'alias': TabsAliases.QUESTS_PROGRESS})
 
     def addBoostersTab(self):
         if self.__isBoosterProcessingAvailable():
-            self.__tabs.append({'label': backport.text(R.strings.ingame_gui.statistics.tab.personalReserves.header()),
-             'alias': TabsAliases.BOOSTERS})
+            self.__tabs.append({'label': backport.text(R.strings.ingame_gui.statistics.tab.personalReserves.header()), 
+               'alias': TabsAliases.BOOSTERS})
 
     def getTabs(self):
         return self.__tabs

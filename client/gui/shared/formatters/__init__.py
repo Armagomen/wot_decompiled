@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/formatters/__init__.py
 import logging
 from itertools import combinations
 from typing import Optional
@@ -58,14 +56,16 @@ def formatActionPrices(oldPrice, newPrice, isBuying, checkGold=False):
     newPrice = Money.makeFromMoneyTuple(newPrice)
     if not newPrice.isDefined():
         newPrice = Money.makeFrom(oldPrice.getCurrency(), 0)
-    return (_getFormattedPrice(oldPrice, isBuying, checkGold), _getFormattedPrice(newPrice, isBuying, checkGold))
+    return (_getFormattedPrice(oldPrice, isBuying, checkGold),
+     _getFormattedPrice(newPrice, isBuying, checkGold))
 
 
 def formatPrice(price, reverse=False, currency=Currency.CREDITS, useIcon=False, useStyle=False, ignoreZeros=False, justValue=False):
     outPrice = []
     currencies = [ c for c in Currency.ALL if price.get(c) is not None ]
     if not currencies:
-        currencies = [currency]
+        currencies = [
+         currency]
     for c in currencies:
         value = price.get(c, 0)
         if value == 0 and ignoreZeros and not (c == Currency.CREDITS and not price.getSetCurrencies()):
@@ -78,11 +78,12 @@ def formatPrice(price, reverse=False, currency=Currency.CREDITS, useIcon=False, 
             cIdentifier = ''
             cSpace = ''
         else:
-            cIdentifier = makeString('#menu:price/{}'.format(c))
+            cIdentifier = makeString(('#menu:price/{}').format(c))
             cSpace = ' ' if reverse else ': '
-        outPrice.append(''.join((cFormatted, cSpace, cIdentifier) if reverse else (cIdentifier, cSpace, cFormatted)))
+        outPrice.append(('').join((cFormatted, cSpace, cIdentifier) if reverse else (
+         cIdentifier, cSpace, cFormatted)))
 
-    return ', '.join(outPrice)
+    return (', ').join(outPrice)
 
 
 def formatPriceValue(value, currency, useStyle=False):
@@ -103,7 +104,9 @@ def formatGoldPrice(gold, reverse=False):
 
 
 def getGlobalRatingFmt(globalRating):
-    return backport.getIntegralFormat(globalRating) if globalRating >= 0 else '--'
+    if globalRating >= 0:
+        return backport.getIntegralFormat(globalRating)
+    return '--'
 
 
 def moneyWithIcon(money, currType=None):
@@ -121,7 +124,7 @@ def moneyWithIcon(money, currType=None):
 
 
 def getMoneyVO(moneyObj):
-    return tuple(((c, v) for c, v in moneyObj.iteritems()))
+    return tuple((c, v) for c, v in moneyObj.iteritems())
 
 
 def getMoneyVOWithReason(errorMsg, moneyObj):
@@ -129,7 +132,8 @@ def getMoneyVOWithReason(errorMsg, moneyObj):
     for c, v in moneyObj.iteritems():
         if errorMsg == GUI_ITEM_ECONOMY_CODE.getCurrencyError(c):
             result.append(('%sError' % c, v))
-        result.append((c, v))
+        else:
+            result.append((c, v))
 
     return tuple(result)
 
@@ -139,11 +143,12 @@ def getItemPricesVO(*itemPrices):
     for itemPrice in itemPrices:
         action = itemPrice.getActionPrcAsMoney()
         if action.isDefined():
-            vo = {'price': getMoneyVO(itemPrice.price),
-             'defPrice': getMoneyVO(itemPrice.defPrice),
-             'action': getMoneyVO(action)}
+            vo = {'price': getMoneyVO(itemPrice.price), 
+               'defPrice': getMoneyVO(itemPrice.defPrice), 
+               'action': getMoneyVO(action)}
             resultVO.append(vo)
-        resultVO.append({'price': getMoneyVO(itemPrice.price)})
+        else:
+            resultVO.append({'price': getMoneyVO(itemPrice.price)})
 
     return resultVO
 
@@ -172,11 +177,12 @@ def getItemPricesVOWithReason(reason, *itemPrices):
     for itemPrice in itemPrices:
         action = itemPrice.getActionPrcAsMoney()
         if action.isDefined():
-            vo = {'price': getMoneyVOWithReason(reason, itemPrice.price),
-             'defPrice': getMoneyVO(itemPrice.defPrice),
-             'action': getMoneyVO(action)}
+            vo = {'price': getMoneyVOWithReason(reason, itemPrice.price), 
+               'defPrice': getMoneyVO(itemPrice.defPrice), 
+               'action': getMoneyVO(action)}
             resultVO.append(vo)
-        resultVO.append({'price': getMoneyVOWithReason(reason, itemPrice.price)})
+        else:
+            resultVO.append({'price': getMoneyVOWithReason(reason, itemPrice.price)})
 
     return resultVO
 
@@ -185,18 +191,27 @@ def getItemUnlockPricesVO(*unlockProps):
     resultVO = []
     for unlockProp in unlockProps:
         if unlockProp.discount:
-            resultVO.append({'price': ((CURRENCIES_CONSTANTS.XP_COST, unlockProp.xpCost),),
-             'defPrice': ((CURRENCIES_CONSTANTS.XP_COST, unlockProp.xpFullCost),),
-             'action': ((CURRENCIES_CONSTANTS.XP_COST, unlockProp.discount),)})
-        resultVO.append({'price': ((CURRENCIES_CONSTANTS.XP_COST, unlockProp.xpCost),)})
+            resultVO.append({'price': (
+                       (
+                        CURRENCIES_CONSTANTS.XP_COST, unlockProp.xpCost),), 
+               'defPrice': (
+                          (
+                           CURRENCIES_CONSTANTS.XP_COST, unlockProp.xpFullCost),), 
+               'action': (
+                        (
+                         CURRENCIES_CONSTANTS.XP_COST, unlockProp.discount),)})
+        else:
+            resultVO.append({'price': (
+                       (
+                        CURRENCIES_CONSTANTS.XP_COST, unlockProp.xpCost),)})
 
     return resultVO
 
 
 def getUnlockDiscountXpVO(unlockProps, xpType):
-    return {'cost': unlockProps.xpCost,
-     'fullCost': unlockProps.xpFullCost,
-     'xpType': xpType}
+    return {'cost': unlockProps.xpCost, 
+       'fullCost': unlockProps.xpFullCost, 
+       'xpType': xpType}
 
 
 def getItemSellPricesVO(sellCurrency, *sellPrices):
@@ -220,34 +235,36 @@ def chooseItemPriceVO(priceType, price):
 
 def formatPurchaseItems(purchaseItems):
     formattedItems = []
-    items = set((purchaseItem.item for purchaseItem in purchaseItems if not purchaseItem.isFromInventory and purchaseItem.selected))
+    items = set(purchaseItem.item for purchaseItem in purchaseItems if not purchaseItem.isFromInventory and purchaseItem.selected)
     for item in items:
-        count = sum((purchaseItem.item.intCD == item.intCD and not purchaseItem.isFromInventory and purchaseItem.selected for purchaseItem in purchaseItems))
+        count = sum(purchaseItem.item.intCD == item.intCD and not purchaseItem.isFromInventory and purchaseItem.selected for purchaseItem in purchaseItems)
         if item.itemTypeID == GUI_ITEM_TYPE.STYLE and item.isProgression:
             c11nService = dependency.instance(ICustomizationService)
-            ctx = {'styleName': item.userName,
-             'level': int2roman(c11nService.getCurrentProgressionStyleLevel())}
+            ctx = {'styleName': item.userName, 
+               'level': int2roman(c11nService.getCurrentProgressionStyleLevel())}
             resource = R.strings.messenger.serviceChannelMessages.sysMsg.customization.item.progressionStyle
         else:
-            ctx = {'itemType': item.userType,
-             'itemName': item.userName,
-             'count': count}
+            ctx = {'itemType': item.userType, 
+               'itemName': item.userName, 
+               'count': count}
             resource = R.strings.messenger.serviceChannelMessages.sysMsg.customization.item
         formattedItem = backport.text(resource(), **ctx)
         formattedItems.append(formattedItem)
 
-    return ', \n'.join(formattedItems) + '.'
+    return (', \n').join(formattedItems) + '.'
 
 
 def getRoleTextWithIcon(role, roleLabel):
-    return text_styles.concatStylesToSingleLine(getRoleIcon(roleLabel), makeHtmlString('html_templates:vehicleRoles', 'roleMain', {'message': getRoleText(roleLabel)})) if role else ''
+    if role:
+        return text_styles.concatStylesToSingleLine(getRoleIcon(roleLabel), makeHtmlString('html_templates:vehicleRoles', 'roleMain', {'message': getRoleText(roleLabel)}))
+    return ''
 
 
 def getRoleTextWithLabel(role, roleLabel):
     roleStr = ''
     if role:
         roleText = backport.text(R.strings.dialogs.vehicleSellDialog.vehicle.role())
-        roleStr = text_styles.main(''.join([roleText, getRoleText(roleLabel)]))
+        roleStr = text_styles.main(('').join([roleText, getRoleText(roleLabel)]))
     return roleStr
 
 
@@ -256,4 +273,6 @@ def getRoleText(roleLabel):
 
 
 def calculateWinRate(wins, battles, precision=0):
-    return round(100.0 * wins / battles, precision) if battles > 0 else 0.0
+    if battles > 0:
+        return round(100.0 * wins / battles, precision)
+    return 0.0

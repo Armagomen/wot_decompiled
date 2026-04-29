@@ -1,10 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/player_subscriptions/subscription_model.py
 from enum import Enum
 from frameworks.wulf import ViewModel
 
 class SubscriptionTypeEnum(Enum):
     WOTSUBSCRIPTION = 'WotSubscription'
+    WOTPROSUBSCRIPTION = 'WotProSubscription'
     EXTERNALSUBSCRIPTION = 'ExternalSubscription'
 
 

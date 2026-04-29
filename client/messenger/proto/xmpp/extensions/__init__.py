@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/proto/xmpp/extensions/__init__.py
 _XML_NAMESPACE_ATTR = 'xmlns'
 
 class PyExtension(object):
@@ -57,7 +55,7 @@ class PyExtension(object):
             name = self._name
         attrName, attrValue = self._getXPathAttr()
         if attrName and attrValue:
-            result = "{0}[@{1}='{2}']".format(name, attrName, attrValue)
+            result = ("{0}[@{1}='{2}']").format(name, attrName, attrValue)
         else:
             result = name
         if index is not None:
@@ -69,49 +67,50 @@ class PyExtension(object):
     def getTag(self):
         subTags = self._makeChildrenString()
         if subTags:
-            result = '<{0}{1}>{2}</{0}>'.format(self._name, self._makeAttributesString(), subTags)
+            result = ('<{0}{1}>{2}</{0}>').format(self._name, self._makeAttributesString(), subTags)
         elif self._name:
-            result = '<{0}{1}/>'.format(self._name, self._makeAttributesString())
+            result = ('<{0}{1}/>').format(self._name, self._makeAttributesString())
         else:
             result = ''
         self.clear()
         return result
 
     def parseTag(self, pyGlooxTag):
-        return None
+        return
 
     @classmethod
     def getDefaultData(cls):
-        return None
+        return
 
     def _getXPathAttr(self):
-        return (_XML_NAMESPACE_ATTR, self.getXmlNs())
+        return (
+         _XML_NAMESPACE_ATTR, self.getXmlNs())
 
     def _makeAttributesString(self):
         result = []
         for name, value in self._attributes:
-            result.append(" {0}='{1}'".format(name, value))
+            result.append((" {0}='{1}'").format(name, value))
 
-        return ''.join(result)
+        return ('').join(result)
 
     def _makeChildrenString(self):
         result = []
         for child in self._children:
             result.append(child.getTag())
 
-        return ''.join(result)
+        return ('').join(result)
 
     def _addChildToXPath(self, xPath, child, suffix=''):
         childPath = child.getXPath()
         if hasattr(childPath, '__iter__'):
-            xPath = '|'.join([ '/'.join((xPath, path)) for path in childPath ])
+            xPath = ('|').join([ ('/').join((xPath, path)) for path in childPath ])
         else:
-            xPath = '/'.join((xPath, childPath))
+            xPath = ('/').join((xPath, childPath))
         return self._addSuffixToXPath(xPath, suffix)
 
     def _addSuffixToXPath(self, xPath, suffix=''):
         if suffix:
-            xPath = '{0}/{1}'.format(xPath, suffix)
+            xPath = ('{0}/{1}').format(xPath, suffix)
         return xPath
 
     def _getChildTags(self, pyGlooxTag, index=0):
@@ -129,7 +128,7 @@ class PyExtension(object):
 
 
 class SimpleExtension(PyExtension):
-    __slots__ = ('_value',)
+    __slots__ = ('_value', )
 
     def __init__(self, name, value):
         super(SimpleExtension, self).__init__(name)
@@ -162,7 +161,7 @@ class PyQuery(object):
 
 
 class PyHandler(object):
-    __slots__ = ('_ext',)
+    __slots__ = ('_ext', )
 
     def __init__(self, ext):
         super(PyHandler, self).__init__()

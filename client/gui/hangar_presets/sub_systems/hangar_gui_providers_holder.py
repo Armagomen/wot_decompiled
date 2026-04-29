@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/hangar_presets/sub_systems/hangar_gui_providers_holder.py
 import typing
 from itertools import chain
 from constants import QUEUE_TYPE

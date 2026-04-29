@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/tooltips/boosters.py
 from typing import TYPE_CHECKING
 from gui import makeHtmlString
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
@@ -43,7 +41,8 @@ class BoosterTooltipData(BlocksTooltipData):
         infoBlocks = self.__getInfoBlocks(booster, stats)
         if infoBlocks:
             items.append(infoBlocks)
-        items.append(formatters.packBuildUpBlockData([self.__getBonusBlocks(booster)], linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE, padding=formatters.packPadding(top=-5, bottom=-10)))
+        items.append(formatters.packBuildUpBlockData([
+         self.__getBonusBlocks(booster)], linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE, padding=formatters.packPadding(top=-5, bottom=-10)))
         priceStorageItems = list()
         priceInfo = self.__getPriceInfo(stats, booster)
         if priceInfo:
@@ -68,7 +67,9 @@ class BoosterTooltipData(BlocksTooltipData):
         if isinstance(booster, ClanReservePresenter):
             descriptionText = R.strings.fortifications.orders.dyn(booster.clanReserveType)()
             descriptionColor = _ts.main
-        return formatters.packBuildUpBlockData([formatters.packTitleDescBlock(title=_ts.highTitle(text(R.strings.tooltips.boostersWindow.booster.activateInfo.title.dyn(booster.boosterGuiType)())), desc=descriptionColor(text(descriptionText))), formatters.packImageBlockData(img=booster.bigTooltipIcon, align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, width=180, height=135, padding=formatters.packPadding(top=-14, bottom=-14))])
+        return formatters.packBuildUpBlockData([
+         formatters.packTitleDescBlock(title=_ts.highTitle(text(R.strings.tooltips.boostersWindow.booster.activateInfo.title.dyn(booster.boosterGuiType)())), desc=descriptionColor(text(descriptionText))),
+         formatters.packImageBlockData(img=booster.bigTooltipIcon, align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, width=180, height=135, padding=formatters.packPadding(top=-14, bottom=-14))])
 
     def __getInfoBlocks(self, booster, stats):
         blocks = []
@@ -82,7 +83,8 @@ class BoosterTooltipData(BlocksTooltipData):
                 dueDateStr = text(R.strings.tooltips.boostersWindow.boostersWindow.boostersTableRenderer.undefineTime())
             dueDate = formatters.packTitleDescBlock(title=_ts.middleTitle(R.strings.tooltips.boostersWindow.booster.dueDate.title()), desc=_ts.main(dueDateStr))
             blocks.append(dueDate)
-        return formatters.packBuildUpBlockData(blocks, padding=formatters.packPadding(bottom=-16)) if blocks else None
+        if blocks:
+            return formatters.packBuildUpBlockData(blocks, padding=formatters.packPadding(bottom=-16))
 
     def __getBonusBlocks(self, booster):
         return formatters.packMultipleText('', formatters.getImage(image(R.images.gui.maps.icons.personal_reserves.tooltips.lightening_icon()), width=10, height=16, vspace=-3), _ts.gold(text(R.strings.tooltips.boostersWindow.booster.activateInfo.bonus())), ' ', _ts.main(text(R.strings.tooltips.boostersWindow.booster.activateInfo.bonusValueTime.dyn(booster.boosterGuiType)(), effectValue=booster.getFormattedValue(), effectTime=booster.getEffectTimeStr(hoursOnly=True))))
@@ -90,9 +92,9 @@ class BoosterTooltipData(BlocksTooltipData):
     def __getPriceInfo(self, stats, booster):
         if booster.boosterID not in PREMIUM_BOOSTER_IDS:
             return
-        elif stats.activeState and booster.inCooldown or not booster.getBuyPrice().price.gold:
-            return
         else:
+            if stats.activeState and booster.inCooldown or not booster.getBuyPrice().price.gold:
+                return
             itemPrice = booster.getBuyPrice()
             currency = itemPrice.price.getCurrency()
             value = itemPrice.price.getSignValue(currency)
@@ -101,7 +103,8 @@ class BoosterTooltipData(BlocksTooltipData):
                 needValue = None
             oldPrice = itemPrice.defPrice.getSignValue(currency)
             percent = itemPrice.getActionPrc()
-            return formatters.packBuildUpBlockData([makePriceBlock(value, CURRENCY_SETTINGS.getBuySetting(currency), neededValue=needValue, oldPrice=oldPrice, percent=percent, valueWidth=-1, leftPadding=0, iconRightOffset=0)], padding=formatters.packPadding(left=0 if percent else -38, top=-12, bottom=0))
+            return formatters.packBuildUpBlockData([
+             makePriceBlock(value, CURRENCY_SETTINGS.getBuySetting(currency), neededValue=needValue, oldPrice=oldPrice, percent=percent, valueWidth=-1, leftPadding=0, iconRightOffset=0)], padding=formatters.packPadding(left=0 if percent else -38, top=-12, bottom=0))
 
     def __getInDepot(self, booster):
         return formatters.packMultipleText(' ', _ts.stats(getTotalBoostersByResourceAndPremium(booster, BoosterTooltipData.goodiesCache)), formatters.getImage(image(R.images.gui.maps.icons.personal_reserves.tooltips.in_hangar_icon()), width=30, height=24, vspace=-6), _ts.main(text(R.strings.tooltips.boostersWindow.booster.activateInfo.inDepot())), padding=formatters.packPadding(top=-10, bottom=-10))
@@ -111,7 +114,8 @@ class BoosterTooltipData(BlocksTooltipData):
             receiveText = R.strings.tooltips.boostersWindow.booster.activateInfo.clanReserveReceiveInfo()
         else:
             receiveText = R.strings.tooltips.boostersWindow.booster.activateInfo.dyn('paidReceiveInfo' if booster.boosterID in PREMIUM_BOOSTER_IDS else 'nonPaidReceiveInfo')()
-        return formatters.packBuildUpBlockData([formatters.packTitleDescBlock(title=_ts.middleTitle(text(R.strings.tooltips.boostersWindow.booster.activateInfo.receive())), desc=_ts.main(text(receiveText)))], padding=formatters.packPadding(bottom=-16))
+        return formatters.packBuildUpBlockData([
+         formatters.packTitleDescBlock(title=_ts.middleTitle(text(R.strings.tooltips.boostersWindow.booster.activateInfo.receive())), desc=_ts.main(text(receiveText)))], padding=formatters.packPadding(bottom=-16))
 
     def __getActivationInfo(self, booster):
         result = []
@@ -121,19 +125,27 @@ class BoosterTooltipData(BlocksTooltipData):
                 return result
             result.append(self.__packGrayText(text(R.strings.tooltips.boostersWindow.booster.activateInfo.bonusTimeInfo())))
             return result
-        return [formatters.packBuildUpBlockData([formatters.packTitleDescBlock(title=_ts.middleTitle(text(R.strings.tooltips.boostersWindow.booster.activateInfo.activation()))), formatters.packTitleDescBlock(title=_ts.main(text(R.strings.tooltips.boostersWindow.booster.activateInfo.activationInfo())))], padding=formatters.packPadding(bottom=-16)), self.__packGrayText(text(R.strings.tooltips.boostersWindow.booster.activateInfo.notActivated()))]
+        return [
+         formatters.packBuildUpBlockData([
+          formatters.packTitleDescBlock(title=_ts.middleTitle(text(R.strings.tooltips.boostersWindow.booster.activateInfo.activation()))),
+          formatters.packTitleDescBlock(title=_ts.main(text(R.strings.tooltips.boostersWindow.booster.activateInfo.activationInfo())))], padding=formatters.packPadding(bottom=-16)),
+         self.__packGrayText(text(R.strings.tooltips.boostersWindow.booster.activateInfo.notActivated()))]
 
     def __packGrayText(self, message):
-        return formatters.packBuildUpBlockData([formatters.packAlignedTextBlockData(text=makeHtmlString('html_templates:lobby/textStyle', 'standardText', {'message': message}), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=formatters.packPadding(top=-8, bottom=-16))], linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE)
+        return formatters.packBuildUpBlockData([
+         formatters.packAlignedTextBlockData(text=makeHtmlString('html_templates:lobby/textStyle', 'standardText', {'message': message}), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=formatters.packPadding(top=-8, bottom=-16))], linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE)
 
     def __getAccessCondition(self, questsResult):
-        qNames = '"{}"'.format(', '.join(questsResult))
-        return formatters.packBuildUpBlockData([formatters.packTitleDescBlock(_ts.middleTitle(text(R.strings.tooltips.boostersWindow.booster.getCondition.title())), _ts.standard(text(R.strings.tooltips.boostersWindow.booster.getCondition.value(), questName=_ts.neutral(qNames))))])
+        qNames = ('"{}"').format((', ').join(questsResult))
+        return formatters.packBuildUpBlockData([
+         formatters.packTitleDescBlock(_ts.middleTitle(text(R.strings.tooltips.boostersWindow.booster.getCondition.title())), _ts.standard(text(R.strings.tooltips.boostersWindow.booster.getCondition.value(), questName=_ts.neutral(qNames))))])
 
     def __getActiveState(self, time):
         state = _ts.statInfo(text(R.strings.tooltips.boostersWindow.booster.active.title()))
         timeLeft = _ts.main(text(R.strings.tooltips.boostersWindow.booster.active.value(), time=_ts.stats(time)))
-        return formatters.packBuildUpBlockData([formatters.packTitleDescParameterWithIconBlockData(title=state, icon=image(R.images.gui.maps.icons.tooltip.activeIcon()), padding=formatters.packPadding(left=132), titlePadding=formatters.packPadding(), iconPadding=formatters.packPadding(top=2, left=-2)), formatters.packAlignedTextBlockData(text=timeLeft, align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=formatters.packPadding(bottom=-10))])
+        return formatters.packBuildUpBlockData([
+         formatters.packTitleDescParameterWithIconBlockData(title=state, icon=image(R.images.gui.maps.icons.tooltip.activeIcon()), padding=formatters.packPadding(left=132), titlePadding=formatters.packPadding(), iconPadding=formatters.packPadding(top=2, left=-2)),
+         formatters.packAlignedTextBlockData(text=timeLeft, align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=formatters.packPadding(bottom=-10))])
 
     def __getBoosterQuestNames(self, boosterID):
         questsResult = set()

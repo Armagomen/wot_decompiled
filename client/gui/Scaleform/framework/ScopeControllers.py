@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/framework/ScopeControllers.py
+from __future__ import absolute_import
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE
 from gui.shared.events import ComponentEvent
 from gui.shared.utils.callable_delayer import delayUntilParentWindowReady, CallableDelayer
@@ -84,7 +83,8 @@ class ScopeController(DisposableEntity):
             if removingScopeController.getCurrentType() == scopeType:
                 self.__removeSubController(removingScopeController)
                 removingScopeController.destroy()
-            removingScopeController.removeSubScopeController(scopeType)
+            else:
+                removingScopeController.removeSubScopeController(scopeType)
 
     def isViewLoading(self, pyView=None, key=None):
         if pyView is not None:
@@ -96,7 +96,7 @@ class ScopeController(DisposableEntity):
                         break
 
             return outcome
-        elif key is not None:
+        if key is not None:
             return self.getLoadingViewByKey(key) is not None
         else:
             raise SoftException('pyView or pyView alias can not be None!')
@@ -156,14 +156,15 @@ class ScopeController(DisposableEntity):
                         return searchedScopeController
 
             return
-        else:
-            return self
-            return
+        return self
+        return
 
     @classmethod
     def extractScopeFromView(cls, pyView):
         scope = pyView.viewScope
-        return pyView.getCurrentScope() if scope.getScopeType() == ScopeTemplates.DYNAMIC_SCOPE.getScopeType() else scope
+        if scope.getScopeType() == ScopeTemplates.DYNAMIC_SCOPE.getScopeType():
+            return pyView.getCurrentScope()
+        return scope
 
     def _dispose(self):
         self.__mainView = None
@@ -187,11 +188,10 @@ class ScopeController(DisposableEntity):
         if existingScopeController is None:
             outcome = self.__searchOwnerAndCreateControllerChain(scope)
             if outcome is None:
-                raise ScopeControllerError('Could not to construct scopeController for {}'.format(scope))
+                raise ScopeControllerError(('Could not to construct scopeController for {}').format(scope))
             return outcome
-        else:
-            return existingScopeController
-            return
+        return existingScopeController
+        return
 
     def __getLoadingViews(self):
         views = set()
@@ -217,7 +217,7 @@ class ScopeController(DisposableEntity):
     def __searchOwnerAndCreateControllerChain(self, scope):
         ownScopes = ScopeTemplates.GLOBAL_SCOPE.searchOwnersFor(scope)
         if not ownScopes:
-            raise ScopeControllerError('Could not to construct scopeController for {} - own scopes can not be found'.format(scope))
+            raise ScopeControllerError(('Could not to construct scopeController for {} - own scopes can not be found').format(scope))
         newController = None
         for ownScope in ownScopes:
             ownController = self.getScopeControllerForScopeType(ownScope.getScopeType())
@@ -228,7 +228,8 @@ class ScopeController(DisposableEntity):
                     newController = ScopeController(scope)
                     newController.create()
                 ownController.addSubController(newController)
-            raise ScopeControllerError('Could not create a controllers chain!')
+            else:
+                raise ScopeControllerError('Could not create a controllers chain!')
 
         return newController
 
@@ -252,7 +253,7 @@ class ScopeController(DisposableEntity):
             pyView.onDispose -= cls._handleViewDispose
 
     def __repr__(self):
-        return '{}[{}]=[type=[{}], mainView=[{}], views=[{}], loadingViews=[{}], child=[{}]]'.format(self.__class__.__name__, hex(id(self)), self.__currentType, self.__mainView, self.__views, self.__loadingViews, self.__subControllers)
+        return ('{}[{}]=[type=[{}], mainView=[{}], views=[{}], loadingViews=[{}], child=[{}]]').format(self.__class__.__name__, hex(id(self)), self.__currentType, self.__mainView, self.__views, self.__loadingViews, self.__subControllers)
 
 
 class GlobalScopeController(ScopeController):

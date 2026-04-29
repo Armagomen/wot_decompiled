@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/dialogs/reset_all_perks_confirm_dialog.py
 from gui.impl.dialogs.dialog_template_button import CancelButton, ConfirmButton
 from gui.impl.dialogs.sub_views.content.simple_text_content import SimpleTextContent
 from gui.impl.dialogs.sub_views.icon.icon_set import IconSet
@@ -14,7 +12,8 @@ class ResetAllPerksConfirmDialog(BaseCrewDialogTemplateWithBlurView):
         rDialogTemplates = R.strings.dialogs.resetAllPerks
         rDialogs = R.images.gui.maps.uiKit.dialogs
         self.setSubView(Placeholder.TITLE, SimpleTextTitle(rDialogTemplates.title()))
-        self.setSubView(Placeholder.ICON, IconSet(rDialogs.icons.alert(), [rDialogs.highlights.yellow_1()]))
+        self.setSubView(Placeholder.ICON, IconSet(rDialogs.icons.alert(), [
+         rDialogs.highlights.yellow_1()]))
         self.setSubView(Placeholder.CONTENT, SimpleTextContent(rDialogTemplates.warning()))
         self.addButton(ConfirmButton(rDialogTemplates.submit()))
         self.addButton(CancelButton(rDialogTemplates.cancel()))

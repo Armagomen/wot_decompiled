@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/crew/member_change_tankman_model.py
 from gui.impl.gen.view_models.views.lobby.crew.tankman_model import TankmanModel
 
 class MemberChangeTankmanModel(TankmanModel):

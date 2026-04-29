@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/data_structures.py
 from collections import defaultdict
 from constants import PICKLER_PROTOCOL_METHODS
 from soft_exception import SoftException
@@ -12,7 +10,7 @@ class DictObj(dict):
         else:
             if name in PICKLER_PROTOCOL_METHODS:
                 raise AttributeError(name)
-            return None
+            return
 
     def __setattr__(self, name, value):
         self[name] = value
@@ -83,21 +81,21 @@ class OrderedSet(set):
 
     def intersection(self, other):
         other = set(other)
-        return self.__class__((a for a in self if a in other))
+        return self.__class__(a for a in self if a in other)
 
     __and__ = intersection
 
     def symmetric_difference(self, other):
         other = set(other)
-        result = self.__class__((a for a in self if a not in other))
-        result.update((a for a in other if a not in self))
+        result = self.__class__(a for a in self if a not in other)
+        result.update(a for a in other if a not in self)
         return result
 
     __xor__ = symmetric_difference
 
     def difference(self, other):
         other = set(other)
-        return self.__class__((a for a in self if a not in other))
+        return self.__class__(a for a in self if a not in other)
 
     __sub__ = difference
 
@@ -137,7 +135,7 @@ class DynamicFactorCollectorKeyError(SoftException):
 
 
 class VariableState(object):
-    __slots__ = ('_description',)
+    __slots__ = ('_description', )
 
     def __init__(self, description='unknown'):
         self._description = description
@@ -154,4 +152,4 @@ class VariableState(object):
         return self
 
     def __repr__(self):
-        return '<state.{}>'.format(self._description)
+        return ('<state.{}>').format(self._description)

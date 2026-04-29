@@ -1,13 +1,13 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/impl/lobby/views/frontline_event_widget.py
 from CurrentVehicle import g_currentVehicle
 from constants import LoadoutParams
 from frontline.frontline_account_settings import isRentBannerClicked, setRentBannerClicked
+from frontline.gui.impl.gen.view_models.views.lobby.views.frontline_const import FrontlineConst
 from frontline.gui.impl.gen.view_models.views.lobby.views.event_widget_model import EventWidgetModel
 from frontline.gui.impl.lobby.states import ProgressionScreenState, FrontlineBattleAbilitiesLoadoutState
 from frontline.gui.impl.lobby.tooltips.banner_tooltip import BannerTooltipView
 from frontline.gui.impl.lobby.user_missions.hangar_widget.overlap_ctrl import FLOverlapCtrlMixin
 from gui.Scaleform.daapi.view.lobby.store.browser.shop_helpers import getRentVehicleUrl
+from gui.impl.gen.view_models.views.lobby.tank_setup.common.ammunition_panel_constants import AmmunitionPanelConstants
 from gui.impl.lobby.user_missions.hangar_widget.tooltip_positioner import TooltipPositionerMixin
 from gui.impl.pub.view_component import ViewComponent
 from gui.shared.event_dispatcher import showShop, showEpicRewardsSelectionWindow
@@ -38,12 +38,12 @@ class _LastEntryState(object):
 
 
 class BattleAbilitiesLoadoutParams(object):
-    loadoutGroupIndex = 0
-    loadoutSectionIndex = 2
+    loadoutGroupId = AmmunitionPanelConstants.NO_GROUP
+    loadoutSectionName = FrontlineConst.BATTLE_ABILITIES
     loadoutSlotIndex = 0
-    parameters = {LoadoutParams.groupIndex: loadoutGroupIndex,
-     LoadoutParams.sectionIndex: loadoutSectionIndex,
-     LoadoutParams.slotIndex: loadoutSlotIndex}
+    parameters = {LoadoutParams.groupId: loadoutGroupId, 
+       LoadoutParams.sectionName: loadoutSectionName, 
+       LoadoutParams.slotIndex: loadoutSlotIndex}
 
 
 _g_entryLastState = _LastEntryState()
@@ -52,7 +52,9 @@ class FrontlineEventWidget(TooltipPositionerMixin, FLOverlapCtrlMixin, ViewCompo
     __epicController = dependency.descriptor(IEpicBattleMetaGameController)
     __itemsCache = dependency.descriptor(IItemsCache)
     __hangarSpace = dependency.descriptor(IHangarSpace)
-    __abilitiesPanelCriteria = (REQ_CRITERIA.VEHICLE.READY, REQ_CRITERIA.VEHICLE.WOT_PLUS_VEHICLE, REQ_CRITERIA.VEHICLE.EXPIRED_RENT)
+    __abilitiesPanelCriteria = (
+     REQ_CRITERIA.VEHICLE.READY, REQ_CRITERIA.VEHICLE.WOT_PLUS_VEHICLE,
+     REQ_CRITERIA.VEHICLE.EXPIRED_RENT)
 
     def __init__(self):
         super(FrontlineEventWidget, self).__init__(model=EventWidgetModel)
@@ -71,16 +73,27 @@ class FrontlineEventWidget(TooltipPositionerMixin, FLOverlapCtrlMixin, ViewCompo
         self.queueUpdate()
 
     def _getEvents(self):
-        return ((self.gui.windowsManager.onWindowStatusChanged, self._onWindowStatusChanged),
-         (self.__epicController.onUpdated, self.__onEpicUpdated),
-         (self.__epicController.onGameModeStatusTick, self.__onGameModeStatusChange),
-         (self.viewModel.goToProgressionScreen, self.__onProgressionClick),
-         (self.viewModel.goToCombatReservesScreen, self.__onCombatReservesClick),
-         (self.viewModel.goToSpecialVehicleRentScreen, self.__onVehicleRentClick),
-         (self.__itemsCache.onSyncCompleted, self.__onCacheResync),
-         (self.__hangarSpace.onSpaceCreate, self.__onSpaceCreate),
-         (g_currentVehicle.onChanged, self.__onChangedVehicle),
-         (g_playerEvents.onClientUpdated, self.__onTokensUpdate))
+        return (
+         (
+          self.gui.windowsManager.onWindowStatusChanged, self._onWindowStatusChanged),
+         (
+          self.__epicController.onUpdated, self.__onEpicUpdated),
+         (
+          self.__epicController.onGameModeStatusTick, self.__onGameModeStatusChange),
+         (
+          self.viewModel.goToProgressionScreen, self.__onProgressionClick),
+         (
+          self.viewModel.goToCombatReservesScreen, self.__onCombatReservesClick),
+         (
+          self.viewModel.goToSpecialVehicleRentScreen, self.__onVehicleRentClick),
+         (
+          self.__itemsCache.onSyncCompleted, self.__onCacheResync),
+         (
+          self.__hangarSpace.onSpaceCreate, self.__onSpaceCreate),
+         (
+          g_currentVehicle.onChanged, self.__onChangedVehicle),
+         (
+          g_playerEvents.onClientUpdated, self.__onTokensUpdate))
 
     def _prepareRewardsData(self):
         hasNewRewards = False
@@ -98,7 +111,7 @@ class FrontlineEventWidget(TooltipPositionerMixin, FLOverlapCtrlMixin, ViewCompo
         super(FrontlineEventWidget, self)._rawUpdate()
         self.__setRentHightlighted()
         self.__updateBattleAbilitiesPanel()
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             self.__fillWidgetModel(vm)
             if self.__hangarSpace.spaceInited:
                 rewards, rewardsHash = self._prepareRewardsData()
@@ -145,7 +158,7 @@ class FrontlineEventWidget(TooltipPositionerMixin, FLOverlapCtrlMixin, ViewCompo
 
     def __setRentHightlighted(self):
         isRentHightlighted = not (isRentBannerClicked() or self.__epicController.hasSuitableVehicles(~REQ_CRITERIA.VEHICLE.EXPIRED_RENT))
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setIsRentHighlighted(isRentHightlighted)
 
     def __fillWidgetModel(self, vm):
@@ -164,8 +177,8 @@ class FrontlineEventWidget(TooltipPositionerMixin, FLOverlapCtrlMixin, ViewCompo
 
     def __updateBattleAbilitiesPanel(self):
         ctrl = self.__epicController
-        isSuitable = ctrl.isCurVehicleSuitable() and any((ctrl.isCurVehicleSuitable(criteria, True) for criteria in self.__abilitiesPanelCriteria))
-        with self.viewModel.transaction() as vm:
+        isSuitable = ctrl.isCurVehicleSuitable() and any(ctrl.isCurVehicleSuitable(criteria, True) for criteria in self.__abilitiesPanelCriteria)
+        with self.viewModel.transaction() as (vm):
             vm.setIsSelectedSuitableVehicle(isSuitable)
 
     def __onChangedVehicle(self):

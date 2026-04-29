@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/tutorial/gui/Scaleform/lobby/proxy.py
 import weakref
 from debug_utils import LOG_CURRENT_EXCEPTION
 from frameworks.wulf import WindowLayer
@@ -27,14 +25,23 @@ from gui.app_loader import sf_lobby
 from soft_exception import SoftException
 _TEvent = events.TutorialEvent
 _AppEvent = events.AppLifeCycleEvent
-_EventClassByTriggerType = {TUTORIAL_TRIGGER_TYPES.CLICK_TYPE: (ClickEvent, 'Player has clicked'),
- TUTORIAL_TRIGGER_TYPES.CLICK_OUTSIDE_TYPE: (ClickOutsideEvent, 'Player has clicked outside'),
- TUTORIAL_TRIGGER_TYPES.ESCAPE: (EscEvent, 'Player has pressed ESC'),
- TUTORIAL_TRIGGER_TYPES.ENABLED: (EnableEvent, 'Button has been enabled'),
- TUTORIAL_TRIGGER_TYPES.DISABLED: (DisableEvent, 'Button has been disabled'),
- TUTORIAL_TRIGGER_TYPES.VISIBLE_CHANGE: (VisibleChangeEvent, 'Component visibility has been changed'),
- TUTORIAL_TRIGGER_TYPES.ENABLED_CHANGE: (EnabledChangeEvent, 'Component enables has been changed')}
-CLIENT_CHECKED_TRIGGERS = frozenset([TUTORIAL_TRIGGER_TYPES.VISIBLE_CHANGE, TUTORIAL_TRIGGER_TYPES.ENABLED_CHANGE])
+_EventClassByTriggerType = {TUTORIAL_TRIGGER_TYPES.CLICK_TYPE: (
+                                     ClickEvent, 'Player has clicked'), 
+   TUTORIAL_TRIGGER_TYPES.CLICK_OUTSIDE_TYPE: (
+                                             ClickOutsideEvent, 'Player has clicked outside'), 
+   TUTORIAL_TRIGGER_TYPES.ESCAPE: (
+                                 EscEvent, 'Player has pressed ESC'), 
+   TUTORIAL_TRIGGER_TYPES.ENABLED: (
+                                  EnableEvent, 'Button has been enabled'), 
+   TUTORIAL_TRIGGER_TYPES.DISABLED: (
+                                   DisableEvent, 'Button has been disabled'), 
+   TUTORIAL_TRIGGER_TYPES.VISIBLE_CHANGE: (
+                                         VisibleChangeEvent, 'Component visibility has been changed'), 
+   TUTORIAL_TRIGGER_TYPES.ENABLED_CHANGE: (
+                                         EnabledChangeEvent, 'Component enables has been changed')}
+CLIENT_CHECKED_TRIGGERS = frozenset([
+ TUTORIAL_TRIGGER_TYPES.VISIBLE_CHANGE,
+ TUTORIAL_TRIGGER_TYPES.ENABLED_CHANGE])
 
 class SfLobbyProxy(GUIProxy):
     statsCollector = dependency.descriptor(IStatisticsCollector)
@@ -49,11 +56,11 @@ class SfLobbyProxy(GUIProxy):
 
     @sf_lobby
     def app(self):
-        return None
+        return
 
     @proto_getter(PROTO_TYPE.BW)
     def proto(self):
-        return None
+        return
 
     def getViewSettings(self):
         raise SoftException('Routine getViewSettings must be implemented')
@@ -142,11 +149,11 @@ class SfLobbyProxy(GUIProxy):
         return self.effects.isStillRunning(effectName, effectID=effectID, effectSubType=effectSubType)
 
     def showWaiting(self, messageID, isSingle=False):
-        Waiting.show('tutorial-{0:>s}'.format(messageID), isSingle=isSingle)
+        Waiting.show(('tutorial-{0:>s}').format(messageID), isSingle=isSingle)
 
     def hideWaiting(self, messageID=None):
         if messageID is not None:
-            Waiting.hide('tutorial-{0:>s}'.format(messageID))
+            Waiting.hide(('tutorial-{0:>s}').format(messageID))
         else:
             Waiting.close()
         return
@@ -193,24 +200,22 @@ class SfLobbyProxy(GUIProxy):
         app = self.app
         if app is None or app.containerManager is None:
             return
-        else:
-            app.containerManager.clear()
-            return
+        app.containerManager.clear()
+        return
 
     def isGuiDialogDisplayed(self):
         app = self.app
         if app is None or app.containerManager is None:
             return False
-        else:
-            container = app.containerManager.getContainer(WindowLayer.TOP_WINDOW)
-            result = False
-            if container is not None:
-                dialogCount = container.getViewCount(isModal=True)
-                if dialogCount > 0:
-                    if self.effects.isStillRunning(GUI_EFFECT_NAME.SHOW_DIALOG):
-                        dialogCount -= 1
-                    result = dialogCount > 0
-            return result
+        container = app.containerManager.getContainer(WindowLayer.TOP_WINDOW)
+        result = False
+        if container is not None:
+            dialogCount = container.getViewCount(isModal=True)
+            if dialogCount > 0:
+                if self.effects.isStillRunning(GUI_EFFECT_NAME.SHOW_DIALOG):
+                    dialogCount -= 1
+                result = dialogCount > 0
+        return result
 
     def isTutorialDialogDisplayed(self, dialogID):
         return self.effects.isStillRunning(GUI_EFFECT_NAME.SHOW_DIALOG, effectID=dialogID)
@@ -283,7 +288,8 @@ class SfLobbyProxy(GUIProxy):
     def __onViewLoadError(self, key, msg, item):
         if item is not None:
             effectID = item.name
-            for effectName in (GUI_EFFECT_NAME.SHOW_DIALOG, GUI_EFFECT_NAME.SHOW_WINDOW):
+            for effectName in (
+             GUI_EFFECT_NAME.SHOW_DIALOG, GUI_EFFECT_NAME.SHOW_WINDOW):
                 if self.effects.isStillRunning(effectName, effectID=effectID):
                     self.effects.stop(effectName, effectID=effectID)
                     break
@@ -308,13 +314,14 @@ class SfLobbyProxy(GUIProxy):
         if not event.targetID:
             LOG_ERROR('Key targetID is not defined in the event ON_TRIGGER_ACTIVATED')
             return
-        elif not event.settingsID:
-            LOG_ERROR('Key settingsID is not defined in the event ON_TRIGGER_ACTIVATED')
-            return
         else:
+            if not event.settingsID:
+                LOG_ERROR('Key settingsID is not defined in the event ON_TRIGGER_ACTIVATED')
+                return
             triggerType = event.settingsID
             componentID = event.targetID
-            eventClass, logMessage = _EventClassByTriggerType.get(triggerType, (None, None))
+            eventClass, logMessage = _EventClassByTriggerType.get(triggerType, (None,
+                                                                                None))
             if eventClass is not None:
                 LOG_DEBUG(logMessage, componentID)
                 self.onGUIInput(eventClass(componentID))
@@ -336,6 +343,8 @@ class SfLobbyProxy(GUIProxy):
         app = self.app
         if app is None or app.containerManager is None:
             return
+        container = app.containerManager.getContainer(layer)
+        if container is None:
+            return
         else:
-            container = app.containerManager.getContainer(layer)
-            return None if container is None else container.getView(criteria)
+            return container.getView(criteria)

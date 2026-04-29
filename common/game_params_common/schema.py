@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/game_params_common/schema.py
 import typing
 from constants import IS_CLIENT, IS_BASEAPP, IS_CELLAPP
 from dict2model.fields import Field

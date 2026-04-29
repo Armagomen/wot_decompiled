@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/tooltips/common_builders.py
+from __future__ import absolute_import
 from gui.Scaleform.genConsts.CURRENCIES_CONSTANTS import CURRENCIES_CONSTANTS
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.impl.lobby.exchange.discount_info_tooltip_decorator import DiscountInfoTooltipContentWindowData, LimitedDiscountInfoTooltipContentWindowData
@@ -7,10 +6,11 @@ from gui.shared.tooltips import advanced, common, contexts, stronghold
 from gui.shared.tooltips.builders import AdvancedDataBuilder, DataBuilder, DefaultFormatBuilder, TooltipWindowBuilder
 from gui.shared.tooltips.dog_tags import DogTagInfoTooltip
 from gui.shared.tooltips.filter import VehicleFilterTooltip
-__all__ = ('getTooltipBuilders',)
+__all__ = ('getTooltipBuilders', )
 
 def getTooltipBuilders():
-    return (DataBuilder(TOOLTIPS_CONSTANTS.EFFICIENCY_PARAM, TOOLTIPS_CONSTANTS.FINAL_STSTS_UI, common.EfficiencyTooltipData(contexts.FinalStatisticContext())),
+    return (
+     DataBuilder(TOOLTIPS_CONSTANTS.EFFICIENCY_PARAM, TOOLTIPS_CONSTANTS.FINAL_STSTS_UI, common.EfficiencyTooltipData(contexts.FinalStatisticContext())),
      DataBuilder(TOOLTIPS_CONSTANTS.IGR_INFO, TOOLTIPS_CONSTANTS.IGR_INFO_UI, common.IgrTooltipData(contexts.HangarContext())),
      DataBuilder(TOOLTIPS_CONSTANTS.CONTACT, TOOLTIPS_CONSTANTS.CONTACT_UI, common.ContactTooltipData(contexts.ContactContext())),
      DataBuilder(TOOLTIPS_CONSTANTS.SORTIE_DIVISION, TOOLTIPS_CONSTANTS.SORTIE_DIVISION_UI, common.SortieDivisionTooltipData(contexts.FortificationContext())),

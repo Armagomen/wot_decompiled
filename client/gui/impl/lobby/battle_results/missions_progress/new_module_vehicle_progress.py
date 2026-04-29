@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_results/missions_progress/new_module_vehicle_progress.py
 from CurrentVehicle import g_currentPreviewVehicle
 from gui.Scaleform.daapi.view.lobby.techtree.data import ResearchItemsData
 from gui.battle_results.pbs_helpers.common import getBattleResults
@@ -49,12 +47,14 @@ class NewModuleVehicleProgressPresenter(ViewComponent[ModuleVehicleProgressModel
         if tooltipId in (TOOLTIPS_CONSTANTS.TECHTREE_MODULE, TOOLTIPS_CONSTANTS.TECHTREE_VEHICLE):
             itemCD = int(event.getArgument('itemCD', 0))
             if not itemCD:
-                return None
+                return
             currentNode = self._data.getNodeByItemCD(itemCD)
             guiNode = GUINode(itemCD, currentNode.getState(), currentNode.getUnlockProps())
-            return createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=(guiNode, self.__vehicleIntCD))
+            return createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=(
+             guiNode,
+             self.__vehicleIntCD))
         else:
-            return None
+            return
 
     def prepare(self):
         self._subscribe()
@@ -74,10 +74,14 @@ class NewModuleVehicleProgressPresenter(ViewComponent[ModuleVehicleProgressModel
         return
 
     def _getEvents(self):
-        return ((self.viewModel.onNavigate, self.__onNavigate),)
+        return (
+         (
+          self.viewModel.onNavigate, self.__onNavigate),)
 
     def _getListeners(self):
-        return ((events.LobbySimpleEvent.PREMIUM_XP_BONUS_CHANGED, self.__onPremiumXpBonusChanged),)
+        return (
+         (
+          events.LobbySimpleEvent.PREMIUM_XP_BONUS_CHANGED, self.__onPremiumXpBonusChanged),)
 
     def _onLoading(self, *args, **kwargs):
         self._data = ResearchItemsData(ModulesTreeViewDumper())
@@ -88,7 +92,7 @@ class NewModuleVehicleProgressPresenter(ViewComponent[ModuleVehicleProgressModel
         plugins.set(self.getViewAlias(), self.getPathToResource())
 
     def _updateModel(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             for unlockVehicles, unlockModules in self.__progress.values():
                 unlockedVehicles = model.getUnlockedVehicles()
                 unlockedVehicles.clear()

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/prb_windows/SwitchPeripheryWindow.py
 import constants
 from adisp import adisp_process
 from debug_utils import LOG_DEBUG
@@ -58,10 +56,10 @@ class SwitchPeripheryWindow(SwitchPeripheryWindowMeta, Notifiable):
         serversList = []
         for hostName, name, csisStatus, peripheryID in hostsList:
             if self.__ctx.isPeripheryAvailable(peripheryID):
-                serversList.append({'label': name,
-                 'id': peripheryID,
-                 'csisStatus': csisStatus,
-                 'data': hostName})
+                serversList.append({'label': name, 
+                   'id': peripheryID, 
+                   'csisStatus': csisStatus, 
+                   'data': hostName})
 
         label = _ms(self.__ctx.getSelectServerLabel())
         if not serversList:
@@ -90,15 +88,17 @@ class SwitchPeripheryWindow(SwitchPeripheryWindowMeta, Notifiable):
             g_preDefinedHosts.onCsisQueryStart += self.__onServersUpdate
             g_preDefinedHosts.onCsisQueryComplete += self.__onServersUpdate
             g_preDefinedHosts.onPingPerformed += self.__onServersUpdate
-        self.as_setButtonsS([{'label': _ms(DIALOGS.SWITCHPERIPHERYWINDOW_BTNSWITCH),
-          'btnLinkage': BUTTON_LINKAGES.BUTTON_NORMAL,
-          'action': self._SWITCH_BTN_ACTION,
-          'isFocused': True,
-          'tooltip': ''}, {'label': _ms(DIALOGS.SWITCHPERIPHERYWINDOW_BTNCANCEL),
-          'btnLinkage': BUTTON_LINKAGES.BUTTON_BLACK,
-          'action': self._CLOSE_BTN_ACTION,
-          'isFocused': False,
-          'tooltip': ''}], TEXT_ALIGN.RIGHT, self._BTN_WIDTH)
+        self.as_setButtonsS([
+         {'label': _ms(DIALOGS.SWITCHPERIPHERYWINDOW_BTNSWITCH), 
+            'btnLinkage': BUTTON_LINKAGES.BUTTON_NORMAL, 
+            'action': self._SWITCH_BTN_ACTION, 
+            'isFocused': True, 
+            'tooltip': ''},
+         {'label': _ms(DIALOGS.SWITCHPERIPHERYWINDOW_BTNCANCEL), 
+            'btnLinkage': BUTTON_LINKAGES.BUTTON_BLACK, 
+            'action': self._CLOSE_BTN_ACTION, 
+            'isFocused': False, 
+            'tooltip': ''}], TEXT_ALIGN.RIGHT, self._BTN_WIDTH)
 
     def _dispose(self):
         self.stopNotification()

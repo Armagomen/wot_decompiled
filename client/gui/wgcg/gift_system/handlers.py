@@ -1,13 +1,11 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/wgcg/gift_system/handlers.py
 from gui.wgcg.base.handlers import RequestHandlers
 from gui.wgcg.settings import WebRequestDataType
 
 class GiftSystemRequestHandlers(RequestHandlers):
 
     def get(self):
-        handlers = {WebRequestDataType.GIFT_SYSTEM_STATE: self.__getGiftSystemState,
-         WebRequestDataType.GIFT_SYSTEM_POST_GIFT: self.__postGiftSystemGift}
+        handlers = {WebRequestDataType.GIFT_SYSTEM_STATE: self.__getGiftSystemState, 
+           WebRequestDataType.GIFT_SYSTEM_POST_GIFT: self.__postGiftSystemGift}
         return handlers
 
     def __getGiftSystemState(self, ctx, callback):

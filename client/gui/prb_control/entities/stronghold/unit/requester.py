@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/entities/stronghold/unit/requester.py
 import typing
 from adisp import adisp_process
 from debug_utils import LOG_ERROR
@@ -16,24 +14,24 @@ class StrongholdUnitRequestProcessor(IUnitRequestProcessor):
 
     def init(self):
         REQUEST_TYPE = settings.REQUEST_TYPE
-        self.__unitContextRemap = {REQUEST_TYPE.LEAVE: StrongholdLeaveCtx,
-         REQUEST_TYPE.ASSIGN: StrongholdAssignCtx,
-         REQUEST_TYPE.UNASSIGN: StrongholdUnassignCtx,
-         REQUEST_TYPE.CHANGE_OPENED: StrongholdChangeOpenedCtx,
-         REQUEST_TYPE.SET_VEHICLE: StrongholdSetVehicleCtx,
-         REQUEST_TYPE.SET_PLAYER_STATE: StrongholdSetReadyCtx,
-         REQUEST_TYPE.KICK: StrongholdKickPlayerCtx,
-         REQUEST_TYPE.BATTLE_QUEUE: StrongholdBattleQueueCtx,
-         REQUEST_TYPE.GIVE_LEADERSHIP: StrongholdGiveLeadershipCtx,
-         REQUEST_TYPE.SET_RESERVE: StrongholdSetReserveCtx,
-         REQUEST_TYPE.UNSET_RESERVE: StrongholdUnsetReserveCtx,
-         REQUEST_TYPE.SEND_INVITE: StrongholdSendInvitesCtx,
-         REQUEST_TYPE.JOIN: StrongholdJoinBattleCtx,
-         REQUEST_TYPE.SET_EQUIPMENT_COMMANDER: StrongholdSetEquipmentCommanderCtx,
-         REQUEST_TYPE.MATCHMAKING_INFO: StrongholdMatchmakingInfoCtx,
-         REQUEST_TYPE.SET_SLOT_VEHICLE_TYPE_FILTER: StrongholdSetSlotVehicleTypeFilter,
-         REQUEST_TYPE.SET_SLOT_VEHICLES_FILTER: StrongholdSetSlotVehiclesFilter,
-         REQUEST_TYPE.STOP_PLAYERS_MATCHING: StrongholdStopPlayersMatchingCtx}
+        self.__unitContextRemap = {REQUEST_TYPE.LEAVE: StrongholdLeaveCtx, 
+           REQUEST_TYPE.ASSIGN: StrongholdAssignCtx, 
+           REQUEST_TYPE.UNASSIGN: StrongholdUnassignCtx, 
+           REQUEST_TYPE.CHANGE_OPENED: StrongholdChangeOpenedCtx, 
+           REQUEST_TYPE.SET_VEHICLE: StrongholdSetVehicleCtx, 
+           REQUEST_TYPE.SET_PLAYER_STATE: StrongholdSetReadyCtx, 
+           REQUEST_TYPE.KICK: StrongholdKickPlayerCtx, 
+           REQUEST_TYPE.BATTLE_QUEUE: StrongholdBattleQueueCtx, 
+           REQUEST_TYPE.GIVE_LEADERSHIP: StrongholdGiveLeadershipCtx, 
+           REQUEST_TYPE.SET_RESERVE: StrongholdSetReserveCtx, 
+           REQUEST_TYPE.UNSET_RESERVE: StrongholdUnsetReserveCtx, 
+           REQUEST_TYPE.SEND_INVITE: StrongholdSendInvitesCtx, 
+           REQUEST_TYPE.JOIN: StrongholdJoinBattleCtx, 
+           REQUEST_TYPE.SET_EQUIPMENT_COMMANDER: StrongholdSetEquipmentCommanderCtx, 
+           REQUEST_TYPE.MATCHMAKING_INFO: StrongholdMatchmakingInfoCtx, 
+           REQUEST_TYPE.SET_SLOT_VEHICLE_TYPE_FILTER: StrongholdSetSlotVehicleTypeFilter, 
+           REQUEST_TYPE.SET_SLOT_VEHICLES_FILTER: StrongholdSetSlotVehiclesFilter, 
+           REQUEST_TYPE.STOP_PLAYERS_MATCHING: StrongholdStopPlayersMatchingCtx}
 
     def fini(self):
         self.__unitContextRemap.clear()

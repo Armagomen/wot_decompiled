@@ -1,11 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/loadout/shells/shells_model.py
 from frameworks.wulf import Array
 from gui.impl.gen.view_models.views.lobby.loadout.base_loadout_model import BaseLoadoutModel
 from gui.impl.gen.view_models.views.lobby.loadout.shells.shell_model import ShellModel
 
 class ShellsModel(BaseLoadoutModel):
-    __slots__ = ('onShellUpdate',)
+    __slots__ = ('onShellUpdate', )
 
     def __init__(self, properties=7, commands=2):
         super(ShellsModel, self).__init__(properties=properties, commands=commands)

@@ -1,7 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/DogTagComponent.py
-import logging
-import BigWorld
+from __future__ import absolute_import
+import logging, BigWorld
 _logger = logging.getLogger(__name__)
 
 class DogTagComponent(BigWorld.DynamicScriptComponent):
@@ -31,4 +29,7 @@ class DogTagComponent(BigWorld.DynamicScriptComponent):
     @staticmethod
     def _isObserving():
         player_vehicle = BigWorld.player().getVehicleAttached()
-        return not player_vehicle.isPlayerVehicle if player_vehicle is not None else False
+        if player_vehicle is not None:
+            return not player_vehicle.isPlayerVehicle
+        else:
+            return False

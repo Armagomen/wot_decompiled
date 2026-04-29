@@ -1,41 +1,26 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/gui/Scaleform/data/ChannelsDataProvider.py
-import BigWorld
-import Event
+import BigWorld, Event
 from debug_utils import LOG_ERROR
-from gui.Scaleform.framework.entities.DAAPIDataProvider import DAAPIDataProvider
+from future.utils import itervalues
 from gui.prb_control.events_dispatcher import TOOLTIP_PRB_DATA
-DEFAULT_FIELDS = {'clientID': 0,
- 'label': '',
- 'canClose': False,
- 'isNotified': False,
- 'icon': None,
- 'order': 0,
- 'isInProgress': False,
- 'isWindowOpened': False,
- 'readyData': None,
- 'isWindowFocused': False,
- 'tooltipData': None}
+DEFAULT_FIELDS = {'clientID': 0, 
+   'label': '', 
+   'canClose': False, 
+   'isNotified': False, 
+   'icon': None, 
+   'order': 0, 
+   'isInProgress': False, 
+   'isWindowOpened': False, 
+   'readyData': None, 
+   'isWindowFocused': False, 
+   'tooltipData': None}
 
-class ChannelsDataProvider(DAAPIDataProvider):
+class ChannelsDataProvider(object):
 
     def __init__(self):
         super(ChannelsDataProvider, self).__init__()
         self.__data = {}
         self.__list = []
-        self.__isInited = False
         self.onDataUpdated = Event.Event()
-
-    def initGUI(self, flashObj):
-        if not self.__isInited:
-            self.setFlashObject(flashObj, autoPopulate=False)
-            self.create()
-            self.__isInited = True
-
-    def finiGUI(self):
-        if self.__isInited:
-            self.destroy()
-            self.__isInited = False
 
     def clear(self):
         self.__data.clear()
@@ -47,17 +32,17 @@ class ChannelsDataProvider(DAAPIDataProvider):
         tooltipData = data.get('tooltipData', None)
         if tooltipData is None:
             tooltipData = TOOLTIP_PRB_DATA(tooltipId=None, label=label)._asdict()
-        item = {'clientID': clientID,
-         'label': label,
-         'canClose': data.get('canClose', False),
-         'isNotified': data.get('isNotified', False),
-         'icon': data.get('icon'),
-         'order': data.get('order', (0, BigWorld.time())),
-         'isInProgress': data.get('isInProgress', False),
-         'isWindowOpened': data.get('isWindowOpened', False),
-         'readyData': data.get('readyData', None),
-         'isWindowFocused': data.get('isWindowFocused', False),
-         'tooltipData': tooltipData}
+        item = {'clientID': clientID, 
+           'label': label, 
+           'canClose': data.get('canClose', False), 
+           'isNotified': data.get('isNotified', False), 
+           'icon': data.get('icon'), 
+           'order': data.get('order', (0, BigWorld.time())), 
+           'isInProgress': data.get('isInProgress', False), 
+           'isWindowOpened': data.get('isWindowOpened', False), 
+           'readyData': data.get('readyData', None), 
+           'isWindowFocused': data.get('isWindowFocused', False), 
+           'tooltipData': tooltipData}
         if clientID in self.__data:
             self.__data[clientID].update(item)
         else:
@@ -105,13 +90,8 @@ class ChannelsDataProvider(DAAPIDataProvider):
         return self.__list
 
     def buildList(self):
-        self.__list = sorted(self.__data.itervalues(), key=lambda item: item['order'])
-
-    def emptyItem(self):
-        return DEFAULT_FIELDS
+        self.__list = sorted(itervalues(self.__data), key=lambda item: item['order'])
 
     def refresh(self):
         self.buildList()
         self.onDataUpdated()
-        if self.flashObject:
-            super(ChannelsDataProvider, self).refresh()

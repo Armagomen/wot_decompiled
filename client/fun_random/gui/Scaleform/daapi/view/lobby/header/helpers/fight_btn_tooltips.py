@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/Scaleform/daapi/view/lobby/header/helpers/fight_btn_tooltips.py
 from __future__ import absolute_import
 from gui.impl import backport
 from gui.impl.gen import R

@@ -1,17 +1,21 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/frameworks/wulf/py_object_binder.py
 
 
 def getProxy(object_):
-    return object_.proxy if object_ is not None else None
+    if object_ is not None:
+        return object_.proxy
+    else:
+        return
 
 
 def getObject(proxy):
-    return proxy.object if proxy is not None else None
+    if proxy is not None:
+        return proxy.object
+    else:
+        return
 
 
 class PyObjectEntity(object):
-    __slots__ = ('__cppObject',)
+    __slots__ = ('__cppObject', '__weakref__')
 
     def __init__(self, cppObject=None):
         super(PyObjectEntity, self).__init__()

@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/dialogs/sub_views/common/single_price.py
+from __future__ import absolute_import
 import typing
 from frameworks.wulf import ViewSettings
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -20,7 +19,8 @@ if typing.TYPE_CHECKING:
     from gui.shared.money import Money
 
 def _convertMoneyToTuple(money):
-    return (money.credits, money.gold, money.crystal)
+    return (
+     money.credits, money.gold, money.crystal)
 
 
 class SinglePrice(ViewImpl):
@@ -57,19 +57,17 @@ class SinglePrice(ViewImpl):
     def createToolTipContent(self, event, contentID):
         if contentID == R.views.dialogs.common.DialogTemplateGenericTooltip():
             if self.__price.isActionPrice():
-                specialAlias = (None,
-                 None,
+                specialAlias = (
+                 None, None,
                  _convertMoneyToTuple(self.__price.price),
                  _convertMoneyToTuple(self.__price.defPrice),
-                 True,
-                 False,
-                 None,
-                 True)
+                 True, False, None, True)
                 return createBackportTooltipContent(specialAlias=TOOLTIPS_CONSTANTS.ACTION_PRICE, specialArgs=specialAlias)
             shortage = self._itemsCache.items.stats.money.getShortage(self.__price.price)
             if bool(shortage):
                 currency = shortage.getCurrency()
-                return createBackportTooltipContent(TOOLTIPS_CONSTANTS.NOT_ENOUGH_MONEY, (shortage.get(currency), currency))
+                return createBackportTooltipContent(TOOLTIPS_CONSTANTS.NOT_ENOUGH_MONEY, (
+                 shortage.get(currency), currency))
         return super(SinglePrice, self).createToolTipContent(event, contentID)
 
     def _onLoading(self, *args, **kwargs):
@@ -85,7 +83,7 @@ class SinglePrice(ViewImpl):
         self.__updateViewModel()
 
     def __updateViewModel(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setText(toString(self.__text))
             isDiscount = self.__price.isActionPrice()
             isEnough = bool(self._itemsCache.items.stats.money.getShortage(self.__price.price))

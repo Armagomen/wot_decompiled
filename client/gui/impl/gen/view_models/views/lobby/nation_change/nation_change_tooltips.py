@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/nation_change/nation_change_tooltips.py
 from frameworks.wulf import ViewModel
 
 class NationChangeTooltips(ViewModel):

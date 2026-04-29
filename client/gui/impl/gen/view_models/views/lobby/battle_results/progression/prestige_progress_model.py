@@ -1,10 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_results/progression/prestige_progress_model.py
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.views.lobby.prestige.prestige_emblem_model import PrestigeEmblemModel
 
 class PrestigeProgressModel(ViewModel):
-    __slots__ = ('onNavigate',)
+    __slots__ = ('onNavigate', )
     PATH = 'coui://gui/gameface/_dist/production/mono/plugins/post_battle/elite_system/elite_system.js'
 
     def __init__(self, properties=11, commands=1):

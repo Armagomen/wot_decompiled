@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_core/scripts/client/comp7_core/avatar_input_handler/map_case_mode.py
-import logging
-import BigWorld
+import logging, BigWorld
 from Math import Vector2
 from AvatarInputHandler.MapCaseMode import _ArenaBoundArtilleryStrikeSelector, _DEFAULT_STRIKE_DIRECTION
 from helpers import dependency
@@ -37,11 +34,10 @@ class Comp7ArenaBoundArtilleryStrikeSelector(_ArenaBoundArtilleryStrikeSelector)
     def __onRoleEquipmentStateChanged(self, state, previousState=None):
         if state is None or previousState is None:
             return
-        else:
-            if state.level > previousState.level:
-                if self.area is not None:
-                    self.area.updateSize(self._getAreaSize())
-            return
+        if state.level > previousState.level:
+            if self.area is not None:
+                self.area.updateSize(self._getAreaSize())
+        return
 
 
 class Comp7ArenaBoundPlaneStrikeSelector(Comp7ArenaBoundArtilleryStrikeSelector):

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/dialogs/main_content/main_contents.py
 import typing
 from gui.impl.gen.view_models.constants.fitting_types import FittingTypes
 from gui.impl.lobby.dialogs.auxiliary.confirmed_item_helpers import ConfirmedItemWarningTypes
@@ -11,7 +9,7 @@ if typing.TYPE_CHECKING:
     from gui.shared.utils.requesters import RequestCriteria
 
 class AmmunitionBuyMainContent(MultipleItemsContent):
-    __slots__ = ('__filterCriteria',)
+    __slots__ = ('__filterCriteria', )
 
     def __init__(self, viewModel, items, itemsType=None, vehicleInvID=None, filterCriteria=None):
         super(AmmunitionBuyMainContent, self).__init__(viewModel, items, vehicleInvID, itemsType)
@@ -19,13 +17,13 @@ class AmmunitionBuyMainContent(MultipleItemsContent):
 
     def onLoading(self, *args, **kwargs):
         super(AmmunitionBuyMainContent, self).onLoading(*args, **kwargs)
-        with self._viewModel.transaction() as model:
+        with self._viewModel.transaction() as (model):
             self.__lacksItem(model.getLacksItem())
 
     def updateFilter(self, filterCriteria):
         if self.__filterCriteria != filterCriteria:
             self.__filterCriteria = filterCriteria
-            with self._viewModel.transaction() as model:
+            with self._viewModel.transaction() as (model):
                 self._fillItems(model.getConfirmedItems())
 
     def _fillItems(self, array):
@@ -39,7 +37,8 @@ class AmmunitionBuyMainContent(MultipleItemsContent):
     def __lacksItem(self, array):
         array.clear()
         for item in self._confirmedItemsPacker.packItems(items=self._items):
-            devicesName = [ name for warningType, warning in item.getWarnings().iteritems() for name in warning.getDevicesName() if warningType == ConfirmedItemWarningTypes.DEPENDS_ON_DEVICES ]
+            devicesName = [ name for warningType, warning in item.getWarnings().iteritems() for name in warning.getDevicesName() if warningType == ConfirmedItemWarningTypes.DEPENDS_ON_DEVICES
+                          ]
             for deviceName in devicesName:
                 array.addString(deviceName)
 
@@ -55,7 +54,7 @@ class NeedRepairMainContent(BaseSubModelView):
 
     def onLoading(self, *args, **kwargs):
         super(NeedRepairMainContent, self).onLoading(*args, **kwargs)
-        with self._viewModel.transaction() as model:
+        with self._viewModel.transaction() as (model):
             model.setRepairPercentage(self._repairPercentage)
             model.setFreeAutoRepair(self.vehicle.level == 1 and self.vehicle.repairCost == 0)
 

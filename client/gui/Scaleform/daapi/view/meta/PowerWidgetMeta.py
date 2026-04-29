@@ -1,8 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/PowerWidgetMeta.py
 from gui.Scaleform.daapi.view.battle.shared.vehicle_mechanics.mechanic_widgets.vehicle_mechanic_widget import VehicleMechanicWidget
 
 class PowerWidgetMeta(VehicleMechanicWidget):
 
     def as_setProgressS(self, progress):
-        return self.flashObject.as_setProgress(progress) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setProgress(progress)

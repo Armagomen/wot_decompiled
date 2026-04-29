@@ -1,9 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/pve_base/secondary_objectives/secondary_objectives.py
+from __future__ import absolute_import
 import typing
 from helpers.time_utils import ONE_MINUTE
-import BattleReplay
-import BigWorld
+import BattleReplay, BigWorld
 from gui.Scaleform.daapi.view.battle.pve_base.base.pve_hud_widget import SeveralItemsPveHudWidget
 from gui.Scaleform.daapi.view.battle.pve_base.secondary_objectives.settings_model import SecondaryObjectiveServerModel
 from gui.Scaleform.daapi.view.battle.pve_base.secondary_objectives.state_machine.machine import SecondaryObjectiveStateMachine
@@ -18,13 +16,13 @@ class PveSecondaryObjectives(SeveralItemsPveHudWidget, PveSecondaryObjectivesMet
 
     def addObjective(self, serverSettings, clientSettings):
         hasProgressBar = serverSettings.progress is not None
-        newObjective = {'id': serverSettings.id,
-         'icon': clientSettings.icon,
-         'isTimerEnable': bool(serverSettings.timer),
-         'title': clientSettings.getHeader(serverSettings.params),
-         'description': clientSettings.getSubheader(),
-         'isVisibleProgressBar': hasProgressBar,
-         'progressBarValue': serverSettings.progress * 100 if hasProgressBar else 0}
+        newObjective = {'id': serverSettings.id, 
+           'icon': clientSettings.icon, 
+           'isTimerEnable': bool(serverSettings.timer), 
+           'title': clientSettings.getHeader(serverSettings.params), 
+           'description': clientSettings.getSubheader(), 
+           'isVisibleProgressBar': hasProgressBar, 
+           'progressBarValue': serverSettings.progress * 100 if hasProgressBar else 0}
         self.as_addObjectS(newObjective)
         self.updateProgress(serverSettings.id, serverSettings.progress)
         return
@@ -35,7 +33,7 @@ class PveSecondaryObjectives(SeveralItemsPveHudWidget, PveSecondaryObjectivesMet
     def updateTimer(self, objectiveId, timerValue, isWarning=False):
         timerValue = max(timerValue, 0)
         minutes, seconds = divmod(int(timerValue), ONE_MINUTE)
-        formattedTime = '{:02d}:{:02d}'.format(minutes, seconds)
+        formattedTime = ('{:02d}:{:02d}').format(minutes, seconds)
         self.as_updateTimeS(objectiveId, formattedTime, isWarning)
 
     def updateProgress(self, objectiveId, progress):
@@ -53,11 +51,12 @@ class PveSecondaryObjectives(SeveralItemsPveHudWidget, PveSecondaryObjectivesMet
     def _getStateToRestore(self, serverSettings):
         serverState = serverSettings.state
         timeLeft = serverSettings.finishTime - BigWorld.serverTime()
-        completeStates = [SecondaryObjectiveState.SUCCESS,
-         SecondaryObjectiveState.FAILURE,
-         SecondaryObjectiveState.DISAPPEARANCE,
-         SecondaryObjectiveState.HIDDEN]
+        completeStates = [SecondaryObjectiveState.SUCCESS, SecondaryObjectiveState.FAILURE,
+         SecondaryObjectiveState.DISAPPEARANCE, SecondaryObjectiveState.HIDDEN]
         if serverState in completeStates or serverSettings.finishTime and timeLeft <= 0:
             return None
+        if serverState in [SecondaryObjectiveState.APPEARANCE, SecondaryObjectiveState.REGULAR,
+         SecondaryObjectiveState.RESTORED]:
+            return SecondaryObjectiveState.RESTORED
         else:
-            return SecondaryObjectiveState.RESTORED if serverState in [SecondaryObjectiveState.APPEARANCE, SecondaryObjectiveState.REGULAR, SecondaryObjectiveState.RESTORED] else serverState
+            return serverState

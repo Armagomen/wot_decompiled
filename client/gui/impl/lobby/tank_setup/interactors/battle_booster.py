@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/interactors/battle_booster.py
 import typing
 from adisp import adisp_process
 from wg_async import wg_async, await_callback

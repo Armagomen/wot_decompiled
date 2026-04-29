@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/ingame_tournament_controller.py
-import logging
-import typing
+import logging, typing
 from adisp import adisp_process
 from gui.shared.event_dispatcher import showOfferGiftsWindow
 from shared_utils import findFirst, first
@@ -27,7 +24,9 @@ from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.offers import IOffersDataProvider
 _logger = logging.getLogger(__name__)
 
-class _TeamData(typing.NamedTuple('_TeamData', (('teamID', int), ('name', str), ('logoURLs', dict)))):
+class _TeamData(typing.NamedTuple('_TeamData', (
+ (
+  'teamID', int), ('name', str), ('logoURLs', dict)))):
 
     @classmethod
     def fromParamsDict(cls, params):
@@ -45,19 +44,15 @@ class _TeamData(typing.NamedTuple('_TeamData', (('teamID', int), ('name', str), 
 
     @staticmethod
     def __getLogoSizeByStr(logoSizeStr):
-        logoSizeStr = logoSizeStr.replace('\xc3\x97', 'x')
+        logoSizeStr = logoSizeStr.replace('×', 'x')
         return findFirst(lambda logo: logo.value == logoSizeStr, IngameTournamentLogoSize)
 
 
-class _MatchData(typing.NamedTuple('_MatchData', (('round', int),
- ('startTime', int),
- ('victories', int),
- ('bracketType', IngameTournamentBracketType),
- ('teamID1', int),
- ('teamScore1', int),
- ('teamID2', int),
- ('teamScore2', int),
- ('stageIndex', int)))):
+class _MatchData(typing.NamedTuple('_MatchData', (
+ (
+  'round', int), ('startTime', int), ('victories', int), ('bracketType', IngameTournamentBracketType),
+ (
+  'teamID1', int), ('teamScore1', int), ('teamID2', int), ('teamScore2', int), ('stageIndex', int)))):
 
     @classmethod
     def fromParamsDict(cls, params, bracketType, stageIndex):
@@ -82,14 +77,18 @@ class _MatchData(typing.NamedTuple('_MatchData', (('round', int),
         if currentTime < self.startTime:
             return IngameTournamentMatchState.UPCOMING
         else:
-            return IngameTournamentMatchState.COMPLETED if self.teamScore1 is not None and self.teamScore2 is not None else IngameTournamentMatchState.IN_LIVE
+            if self.teamScore1 is not None and self.teamScore2 is not None:
+                return IngameTournamentMatchState.COMPLETED
+            return IngameTournamentMatchState.IN_LIVE
 
     @property
     def bestOf(self):
         return self.victories * 2 - 1
 
 
-class _GroupData(typing.NamedTuple('_GroupData', (('groupID', int), ('matches', list)))):
+class _GroupData(typing.NamedTuple('_GroupData', (
+ (
+  'groupID', int), ('matches', list)))):
 
     @classmethod
     def fromParamsDict(cls, params, bracketType, stageIndex):
@@ -109,7 +108,9 @@ class _GroupData(typing.NamedTuple('_GroupData', (('groupID', int), ('matches', 
         return cls(groupID, formattedMatches)
 
 
-class _StageData(typing.NamedTuple('_StageData', (('groups', list),))):
+class _StageData(typing.NamedTuple('_StageData', (
+ (
+  'groups', list),))):
 
     @classmethod
     def fromParamsDict(cls, params, stageIndex):
@@ -128,7 +129,9 @@ class _StageData(typing.NamedTuple('_StageData', (('groups', list),))):
         return cls(formattedGroups)
 
 
-class _RewardData(typing.NamedTuple('_RewardData', (('fromPosition', int), ('toPosition', int), ('amount', int)))):
+class _RewardData(typing.NamedTuple('_RewardData', (
+ (
+  'fromPosition', int), ('toPosition', int), ('amount', int)))):
 
     @classmethod
     def fromParamsDict(cls, params):
@@ -142,7 +145,9 @@ class _RewardData(typing.NamedTuple('_RewardData', (('fromPosition', int), ('toP
         return cls(fromPosition, toPosition, amount)
 
 
-class _LeaderboardData(typing.NamedTuple('_LeaderboardData', (('fromPosition', int), ('toPosition', int), ('teamIDs', list)))):
+class _LeaderboardData(typing.NamedTuple('_LeaderboardData', (
+ (
+  'fromPosition', int), ('toPosition', int), ('teamIDs', list)))):
 
     @classmethod
     def fromParamsData(cls, paramsData):
@@ -153,11 +158,34 @@ class _LeaderboardData(typing.NamedTuple('_LeaderboardData', (('fromPosition', i
         return cls(position - len(teams) + 1, position, teams)
 
 
-class _IngameTournamentData(typing.NamedTuple('_IngameTournamentData', (('stages', list),
- ('rewards', list),
- ('streamURLs', dict),
- ('teams', dict),
- ('leaderboard', list)))):
+class _PrizePoolData(typing.NamedTuple('_PrizePoolData', (
+ (
+  'qty', int), ('updated_at', int), ('is_dynamic', bool)))):
+
+    @classmethod
+    def fromParamsData(cls, paramsData):
+        amount = paramsData.get('qty')
+        if amount is None:
+            _logger.warning('Ingame tournament parsing error - dynamic prize_pool->qty is not set')
+        updatedAt = paramsData.get('updated_at')
+        if updatedAt is None:
+            _logger.warning('Ingame tournament parsing error - dynamic prize_pool->updated_at is not set')
+        return cls(amount, updatedAt, True)
+
+
+class _IngameTournamentData(typing.NamedTuple('_IngameTournamentData', (
+ (
+  'stages', list),
+ (
+  'rewards', list),
+ (
+  'streamURLs', dict),
+ (
+  'teams', dict),
+ (
+  'leaderboard', list),
+ (
+  'prizePool', _PrizePoolData)))):
 
     @classmethod
     def fromRequestResponse(cls, wgcgResponse):
@@ -207,7 +235,16 @@ class _IngameTournamentData(typing.NamedTuple('_IngameTournamentData', (('stages
                 formattedLeaderboard.append(_LeaderboardData.fromParamsData(positionData))
 
             formattedLeaderboard.sort(key=lambda leaderboardPosition: leaderboardPosition.fromPosition)
-            return cls(formattedStages, formattedRewards, formattedURLs, formattedTeams, formattedLeaderboard)
+            prizePool = data.get('prize_pool', {})
+            if prizePool:
+                formattedPrizePool = _PrizePoolData.fromParamsData(prizePool)
+                formattedRewards = [ _RewardData(fromPosition=rewardData.fromPosition, toPosition=rewardData.toPosition, amount=rewardData.amount * formattedPrizePool.qty // 100000000) for rewardData in formattedRewards
+                                   ]
+                _logger.info('Ingame tournament - dynamic prize pool configured')
+            else:
+                formattedPrizePool = _PrizePoolData(0, 0, False)
+                _logger.info('Ingame tournament - constant prize pool configured')
+            return cls(formattedStages, formattedRewards, formattedURLs, formattedTeams, formattedLeaderboard, formattedPrizePool)
 
     def getLiveMatch(self):
         for stage in self.stages:
@@ -237,7 +274,15 @@ class _IngameTournamentData(typing.NamedTuple('_IngameTournamentData', (('stages
         return matches
 
     def getTotalRewardAmount(self):
+        if self.prizePool.is_dynamic:
+            return self.prizePool.qty
         return sum([ reward.amount for reward in self.rewards ])
+
+    def getLastPrizePoolUpdate(self):
+        return self.prizePool.updated_at
+
+    def isDynamicPrizePool(self):
+        return self.prizePool.is_dynamic
 
     def getLeaderboardDataByTeam(self, teamID):
         return findFirst(lambda data: teamID in data.teamIDs, self.leaderboard)
@@ -254,7 +299,8 @@ class _IngameTournamentData(typing.NamedTuple('_IngameTournamentData', (('stages
             _logger.warning('Ingame tournament parsing error - stream URL or type must be set to valid value')
             return (None, None)
         else:
-            return (urlType, url)
+            return (
+             urlType, url)
 
 
 class IngameTournamentController(IIngameTournamentController, IGlobalListener):
@@ -309,45 +355,46 @@ class IngameTournamentController(IIngameTournamentController, IGlobalListener):
         currentTime = getServerUTCTime()
         if currentTime < config.startTime or config.endTime < currentTime:
             return
-        elif not self.getIsIntroSeen(tournamentType):
+        if not self.getIsIntroSeen(tournamentType):
             return IngameTournamentState.INTRO
-        elif self.getCurrentShowmatch(tournamentType):
-            return IngameTournamentState.IN_PROGRESS
         else:
-            return IngameTournamentState.BETWEEN_SHOWMATCHES if self.getNextShowmatch(tournamentType) else IngameTournamentState.FINISHED
+            if self.getCurrentShowmatch(tournamentType):
+                return IngameTournamentState.IN_PROGRESS
+            if self.getNextShowmatch(tournamentType):
+                return IngameTournamentState.BETWEEN_SHOWMATCHES
+            return IngameTournamentState.FINISHED
 
     def getCurrentShowmatch(self, tournamentType):
         config = self.__getConfigByTournamentType(tournamentType)
         if config is None or not config.isEnabled:
             return
-        else:
-            currentTime = getServerUTCTime()
-            return findFirst(lambda showmatch: showmatch.startTime <= currentTime <= showmatch.endTime, config.showmatches)
+        currentTime = getServerUTCTime()
+        return findFirst(lambda showmatch: showmatch.startTime <= currentTime <= showmatch.endTime, config.showmatches)
 
     def getNextShowmatch(self, tournamentType):
         config = self.__getConfigByTournamentType(tournamentType)
         if config is None or not config.isEnabled:
             return
-        else:
-            currentTime = getServerUTCTime()
-            upcomingShowmatches = [ showmatch for showmatch in config.showmatches if currentTime < showmatch.startTime ]
-            upcomingShowmatches.sort(key=lambda showmatch: showmatch.startTime)
-            return first(upcomingShowmatches)
+        currentTime = getServerUTCTime()
+        upcomingShowmatches = [ showmatch for showmatch in config.showmatches if currentTime < showmatch.startTime ]
+        upcomingShowmatches.sort(key=lambda showmatch: showmatch.startTime)
+        return first(upcomingShowmatches)
 
     def getTournamentShowmatchPeriod(self, tournamentType):
         config = self.__getConfigByTournamentType(tournamentType)
         if config is None or not config.isEnabled:
             return (None, None)
-        else:
-            start = min([ showmatch.startTime for showmatch in config.showmatches ])
-            end = max([ showmatch.endTime for showmatch in config.showmatches ])
-            return (start, end)
+        start = min([ showmatch.startTime for showmatch in config.showmatches ])
+        end = max([ showmatch.endTime for showmatch in config.showmatches ])
+        return (start, end)
 
     def getIsIntroSeen(self, tournamentType):
         settings = AccountSettings.getUIFlag(INGAME_TOURNAMENT_SECTION)
         if tournamentType == IngameTournamentType.WCI:
             return settings.get(INGAME_TOURNAMENT_WCI_INTRO_SEEN, False)
-        return settings.get(INGAME_TOURNAMENT_OLS_INTRO_SEEN, False) if tournamentType == IngameTournamentType.OLS else False
+        if tournamentType == IngameTournamentType.OLS:
+            return settings.get(INGAME_TOURNAMENT_OLS_INTRO_SEEN, False)
+        return False
 
     def setIsIntroSeen(self, tournamentType):
         settings = AccountSettings.getUIFlag(INGAME_TOURNAMENT_SECTION)
@@ -362,9 +409,17 @@ class IngameTournamentController(IIngameTournamentController, IGlobalListener):
         res = yield self.__webCtrl.sendRequest(IngameTournamentGetDataCtx())
         self.onTournamentWGCGDataUpdated(_IngameTournamentData.fromRequestResponse(res))
 
+    def getTokenStoreOpeningTime(self, tournamentType):
+        config = self.__getConfigByTournamentType(tournamentType)
+        if config:
+            return config.tokenStoreOpeningTime
+        return 0
+
     def getOfferGiftsToken(self, tournamentType):
         config = self.__getConfigByTournamentType(tournamentType)
-        return config.offerGiftsToken if config else ''
+        if config:
+            return config.offerGiftsToken
+        return ''
 
     def openOfferGifts(self, tournamentType, overrideOnBackCallback=None):
         tokenStoreToken = self.getOfferGiftsToken(tournamentType)
@@ -372,6 +427,11 @@ class IngameTournamentController(IIngameTournamentController, IGlobalListener):
             _logger.warning('offerGiftsToken is not defined in tournament config')
             return
         else:
+            currentTime = getServerUTCTime()
+            config = self.__getConfigByTournamentType(tournamentType)
+            if currentTime < config.tokenStoreOpeningTime:
+                _logger.warning('Token Store is not available yet')
+                return
             offer = self.__offersProvider.getOfferByToken(tokenStoreToken)
             offerID = offer.id if offer else None
             if not offerID:
@@ -387,7 +447,7 @@ class IngameTournamentController(IIngameTournamentController, IGlobalListener):
         realmConfig = findFirst(lambda config: CURRENT_REALM in config.realms, shopConfigs)
         if realmConfig is not None:
             if realmConfig.ingameShopRelativePath:
-                url = '{}{}'.format(getShopURL(), realmConfig.ingameShopRelativePath)
+                url = ('{}{}').format(getShopURL(), realmConfig.ingameShopRelativePath)
                 showIngameShop(url)
             elif realmConfig.shopUrl:
                 parsedUrl = yield URLMacros().parse(realmConfig.shopUrl)
@@ -432,19 +492,31 @@ class IngameTournamentController(IIngameTournamentController, IGlobalListener):
 
     def __getNextUpdateTimestamp(self):
         timers = []
-        for showmatch in (self.getCurrentShowmatch(IngameTournamentType.WCI), self.getCurrentShowmatch(IngameTournamentType.OLS)):
+        for showmatch in (
+         self.getCurrentShowmatch(IngameTournamentType.WCI),
+         self.getCurrentShowmatch(IngameTournamentType.OLS)):
             if showmatch is not None:
                 timers.append(showmatch.endTime)
 
-        for showmatch in (self.getNextShowmatch(IngameTournamentType.WCI), self.getNextShowmatch(IngameTournamentType.OLS)):
+        for showmatch in (self.getNextShowmatch(IngameTournamentType.WCI),
+         self.getNextShowmatch(IngameTournamentType.OLS)):
             if showmatch is not None:
                 timers.append(showmatch.startTime)
 
-        return min(timers) if timers else None
+        if timers:
+            return min(timers)
+        else:
+            return
 
     def __getConfig(self):
-        return self.__serverSettings.ingameTournamentConfig if self.__serverSettings is not None else None
+        if self.__serverSettings is not None:
+            return self.__serverSettings.ingameTournamentConfig
+        else:
+            return
 
     def __getConfigByTournamentType(self, tournamentType):
         config = self.__getConfig()
-        return getattr(config, tournamentType.value, None) if config is not None else None
+        if config is not None:
+            return getattr(config, tournamentType.value, None)
+        else:
+            return

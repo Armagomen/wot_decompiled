@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/pet_system_common/EventConfig.py
 import typing
 from pet_constants import PetEventsConsts as pc, PetEventTypeConsts as eventTypes
 if typing.TYPE_CHECKING:

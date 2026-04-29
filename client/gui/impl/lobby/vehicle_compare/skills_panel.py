@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/vehicle_compare/skills_panel.py
 import typing
 from frameworks.wulf import ViewSettings, ViewFlags
 from gui.Scaleform.daapi.view.lobby.vehicle_compare import cmp_helpers
@@ -17,6 +15,7 @@ from gui.shared.gui_items.Tankman import crewMemberRealSkillLevel
 from helpers import dependency
 from items.components.skills_constants import SKILL_INDICES_ORDERED
 from skeletons.gui.app_loader import IAppLoader
+from skeletons.gui.impl import IGuiLoader
 if typing.TYPE_CHECKING:
     from gui.Scaleform.daapi.view.lobby.vehicle_compare.cmp_configurator_view import CrewSkillsManager, VehicleCompareConfiguratorMain
 
@@ -29,14 +28,15 @@ def compareLevelGetter(vehicle, skillName, **__):
     return skillLevel
 
 
-propsGetters = {ModelProps.NAME: None,
- ModelProps.ICON_NAME: compareIconGetter,
- ModelProps.LEVEL: compareLevelGetter,
- ModelProps.ROLE_NAME: getRoleBySkillName}
+propsGetters = {ModelProps.NAME: None, 
+   ModelProps.ICON_NAME: compareIconGetter, 
+   ModelProps.LEVEL: compareLevelGetter, 
+   ModelProps.ROLE_NAME: getRoleBySkillName}
 
 class CompareSkillsPanelView(ViewImpl):
     __slots__ = ('__toolTipMgr', '__cmpConf')
     __appLoader = dependency.descriptor(IAppLoader)
+    __guiLoader = dependency.descriptor(IGuiLoader)
 
     def __init__(self):
         settings = ViewSettings(R.views.lobby.vehicle_compare.CompareSkillsPanelView())
@@ -54,16 +54,18 @@ class CompareSkillsPanelView(ViewImpl):
         if event.contentID == R.views.common.tooltip_window.backport_tooltip_content.BackportTooltipContent():
             tooltipId = event.getArgument('tooltipId')
             if tooltipId == TooltipConstants.SKILL:
-                args = [str(event.getArgument('skillName')),
-                 event.getArgument('roleName'),
-                 None,
+                args = [
+                 str(event.getArgument('skillName')), event.getArgument('roleName'), None,
                  event.getArgument('level')]
                 self.__toolTipMgr.onCreateWulfTooltip(TOOLTIPS_CONSTANTS.CREW_PERK_GF, args, event.mouse.positionX, event.mouse.positionY, parent=self.getParentWindow())
                 return TOOLTIPS_CONSTANTS.CREW_PERK_GF
         return super(CompareSkillsPanelView, self).createToolTip(event)
 
     def createToolTipContent(self, event, contentID):
-        return VehCmpSkillsTooltip() if contentID == R.views.lobby.crew.tooltips.VehCmpSkillsTooltip() else None
+        if contentID == R.views.lobby.crew.tooltips.VehCmpSkillsTooltip():
+            return VehCmpSkillsTooltip()
+        else:
+            return
 
     def onCrewSkillUpdated(self):
         self._fillViewModel()
@@ -78,7 +80,7 @@ class CompareSkillsPanelView(ViewImpl):
         vehicle = crewSkillsManager.getVehicle()
         skillsToShow = {skill for _, roleSkills in selectedSkills.values() for skill in roleSkills}
         skillsToShow = sorted(skillsToShow, key=lambda x: SKILL_INDICES_ORDERED.get(x, -1))
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             skills = vm.getSkills()
             skills.clear()
             for skillName in skillsToShow:
@@ -89,11 +91,19 @@ class CompareSkillsPanelView(ViewImpl):
             skills.invalidate()
 
     def _getEvents(self):
-        return ((self.viewModel.onClick, self.__onClick), (self.viewModel.onReset, self.__onReset))
+        return (
+         (
+          self.viewModel.onClick, self.__onClick),
+         (
+          self.viewModel.onReset, self.__onReset))
 
     def _finalize(self):
         self.__toolTipMgr = None
         self.__cmpConf = None
+        view = self.__guiLoader.windowsManager.getViewByLayoutID(R.views.lobby.vehicle_compare.SkillSelectView())
+        if view is not None:
+            window = view.getParentWindow()
+            window.destroy()
         super(CompareSkillsPanelView, self)._finalize()
         return
 

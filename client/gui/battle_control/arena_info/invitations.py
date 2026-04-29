@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/arena_info/invitations.py
 import BattleReplay
 from adisp import adisp_process
 from constants import INVITATION_TYPE
@@ -14,7 +12,8 @@ from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
 
 class SquadInvitationsFilter(object):
-    __slots__ = ('__arenaUniqueID', '__isReceivingProhibited', '__isSendingProhibited', '__received', '__sent')
+    __slots__ = ('__arenaUniqueID', '__isReceivingProhibited', '__isSendingProhibited',
+                 '__received', '__sent')
 
     def __init__(self):
         super(SquadInvitationsFilter, self).__init__()
@@ -44,7 +43,7 @@ class SquadInvitationsFilter(object):
         if vInfoVO.isInSquad():
             if playerInfo.isPrebattleCreator:
                 count = arenaDP.getVehiclesCountInPrebattle(vInfoVO.team, vInfoVO.prebattleID)
-                maxSlots = SquadRoster.MAX_SLOTS if not isEpicBattle else EpicRoster.MAX_SLOTS
+                maxSlots = (isEpicBattle or SquadRoster).MAX_SLOTS if 1 else EpicRoster.MAX_SLOTS
                 self.__isSendingProhibited = count >= maxSlots
             else:
                 self.__isSendingProhibited = True
@@ -84,8 +83,11 @@ class SquadInvitationsFilter(object):
             if invite is None:
                 continue
             if self.__isInviteValid(invite):
-                yield (invite.creatorID, _STATUS.RECEIVED_FROM, _STATUS.RECEIVED_INACTIVE)
-            yield (invite.creatorID, _STATUS.RECEIVED_INACTIVE, _STATUS.NONE)
+                yield (
+                 invite.creatorID, _STATUS.RECEIVED_FROM, _STATUS.RECEIVED_INACTIVE)
+            else:
+                yield (
+                 invite.creatorID, _STATUS.RECEIVED_INACTIVE, _STATUS.NONE)
 
         inverted = dict(zip(self.__received.values(), self.__received.keys()))
         for clientID in deleted:
@@ -93,7 +95,8 @@ class SquadInvitationsFilter(object):
                 continue
             accountID = inverted[clientID]
             if self.__received.pop(accountID, None) is not None:
-                yield (accountID, _STATUS.NONE, _STATUS.RECEIVED_FROM | _STATUS.RECEIVED_INACTIVE)
+                yield (
+                 accountID, _STATUS.NONE, _STATUS.RECEIVED_FROM | _STATUS.RECEIVED_INACTIVE)
 
         return
 
@@ -112,8 +115,11 @@ class SquadInvitationsFilter(object):
             if invite is None:
                 continue
             if self.__isInviteValid(invite):
-                yield (invite.receiverID, _STATUS.SENT_TO, _STATUS.SENT_INACTIVE)
-            yield (invite.receiverID, _STATUS.SENT_INACTIVE, _STATUS.NONE)
+                yield (
+                 invite.receiverID, _STATUS.SENT_TO, _STATUS.SENT_INACTIVE)
+            else:
+                yield (
+                 invite.receiverID, _STATUS.SENT_INACTIVE, _STATUS.NONE)
 
         inverted = dict(zip(self.__sent.values(), self.__sent.keys()))
         for clientID in deleted:
@@ -121,7 +127,8 @@ class SquadInvitationsFilter(object):
                 continue
             accountID = inverted[clientID]
             if self.__sent.pop(accountID, None) is not None:
-                yield (accountID, _STATUS.NONE, _STATUS.SENT_TO | _STATUS.SENT_INACTIVE)
+                yield (
+                 accountID, _STATUS.NONE, _STATUS.SENT_TO | _STATUS.SENT_INACTIVE)
 
         return
 
@@ -130,11 +137,13 @@ class SquadInvitationsFilter(object):
             return False
         if not invite.isSameBattle(self.__arenaUniqueID):
             return False
-        return False if not invite.isActive() else True
+        if not invite.isActive():
+            return False
+        return True
 
 
 class _SquadInvitationsHandler(ISquadInvitationsHandler):
-    __slots__ = ('__sessionProvider',)
+    __slots__ = ('__sessionProvider', )
 
     def __init__(self, setup):
         super(_SquadInvitationsHandler, self).__init__()
@@ -142,7 +151,7 @@ class _SquadInvitationsHandler(ISquadInvitationsHandler):
 
     @prbInvitesProperty
     def prbInvites(self):
-        return None
+        return
 
     def clear(self):
         self.__sessionProvider = None
@@ -184,11 +193,11 @@ class _SquadInvitationsHandler(ISquadInvitationsHandler):
             if invite.type in INVITATION_TYPE.RANGE and getID(invite) == sessionID:
                 return invite.clientID
 
-        return None
+        return
 
 
 class _SquadInvitationsRecorder(_SquadInvitationsHandler):
-    __slots__ = ('__idGen',)
+    __slots__ = ('__idGen', )
 
     def __init__(self, setup):
         super(_SquadInvitationsRecorder, self).__init__(setup)
@@ -213,12 +222,24 @@ class _SquadInvitationsPlayer(_SquadInvitationsHandler):
     def __init__(self, setup):
         super(_SquadInvitationsPlayer, self).__init__(setup)
         setCallback = BattleReplay.g_replayCtrl.setDataCallback
-        for action, method in [(CallbackDataNames.DYN_SQUAD_SEND_ACTION_NAME, self.__onSend), (CallbackDataNames.DYN_SQUAD_ACCEPT_ACTION_NAME, self.__onAccept), (CallbackDataNames.DYN_SQUAD_REJECT_ACTION_NAME, self.__onReject)]:
+        for action, method in [
+         (
+          CallbackDataNames.DYN_SQUAD_SEND_ACTION_NAME, self.__onSend),
+         (
+          CallbackDataNames.DYN_SQUAD_ACCEPT_ACTION_NAME, self.__onAccept),
+         (
+          CallbackDataNames.DYN_SQUAD_REJECT_ACTION_NAME, self.__onReject)]:
             setCallback(action, method)
 
     def clear(self):
         delCallback = BattleReplay.g_replayCtrl.delDataCallback
-        for eventName, method in [(CallbackDataNames.DYN_SQUAD_SEND_ACTION_NAME, self.__onSend), (CallbackDataNames.DYN_SQUAD_ACCEPT_ACTION_NAME, self.__onAccept), (CallbackDataNames.DYN_SQUAD_REJECT_ACTION_NAME, self.__onReject)]:
+        for eventName, method in [
+         (
+          CallbackDataNames.DYN_SQUAD_SEND_ACTION_NAME, self.__onSend),
+         (
+          CallbackDataNames.DYN_SQUAD_ACCEPT_ACTION_NAME, self.__onAccept),
+         (
+          CallbackDataNames.DYN_SQUAD_REJECT_ACTION_NAME, self.__onReject)]:
             delCallback(eventName, method)
 
         super(_SquadInvitationsPlayer, self).clear()

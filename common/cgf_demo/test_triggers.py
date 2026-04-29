@@ -1,13 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/cgf_demo/test_triggers.py
-import functools
-import random
-import math
-import time
-import GenericComponents
-import Triggers
-import CGF
-import Math
+import functools, random, math, time, GenericComponents, Triggers, CGF, Math
 from cgf_demo.demo_category import DEMO_CATEGORY
 from cgf_script.component_meta_class import ComponentProperty, CGFMetaTypes, registerComponent
 from cgf_demo.test_movers import TestScriptAxisRotator
@@ -121,7 +112,8 @@ class TestTriggersManager(CGF.ComponentManager):
         for config, trigger, rotator in self.whileInTrigger:
             if trigger.objectsInProximity:
                 rotator.rotationSpeedYaw = config.rotationSpeed
-            rotator.rotationSpeedYaw = 0.0
+            else:
+                rotator.rotationSpeedYaw = 0.0
 
 
 @registerComponent

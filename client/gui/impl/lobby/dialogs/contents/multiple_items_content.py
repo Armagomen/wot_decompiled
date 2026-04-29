@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/dialogs/contents/multiple_items_content.py
 import typing
 from gui.impl.gen.view_models.constants.fitting_types import FittingTypes
 from gui.impl.common.base_sub_model_view import BaseSubModelView
@@ -21,7 +19,7 @@ class MultipleItemsContent(BaseSubModelView):
 
     def onLoading(self, *args, **kwargs):
         super(MultipleItemsContent, self).onLoading(*args, **kwargs)
-        with self._viewModel.transaction() as model:
+        with self._viewModel.transaction() as (model):
             model.setItemsType(self._itemsType)
             self._fillItems(model.getConfirmedItems())
 
@@ -34,4 +32,6 @@ class MultipleItemsContent(BaseSubModelView):
 
     def _determineItemsType(self, items):
         itemsTypes = self._confirmedItemsPacker.packItemsType(items, typesToCombine={GUI_ITEM_TYPE.VEHICLE_MODULES: FittingTypes.MODULE})
-        return '' if not items or len(itemsTypes) > 1 else itemsTypes.pop()
+        if not items or len(itemsTypes) > 1:
+            return ''
+        return itemsTypes.pop()

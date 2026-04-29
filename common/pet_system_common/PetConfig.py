@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/pet_system_common/PetConfig.py
 import typing
 from pet_constants import PetsConsts as pc
 if typing.TYPE_CHECKING:
@@ -46,6 +44,9 @@ class PetConfig(object):
 
     def getPetSynergyGroupID(self, petID):
         return self.getPet(petID).get(pc.PET_SYNERGY_GROUP_ID, INVALID_ID)
+
+    def getPetNotInShop(self, petID):
+        return self.getPet(petID).get(pc.PET_NOT_IN_SHOP)
 
     def getStockNames(self):
         return self._config.get(pc.STOCK_NAMES, set())

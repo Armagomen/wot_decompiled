@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_results/missions_progress/personal_missions_progress.py
 import typing
 from gui.battle_results.pbs_helpers.common import getBattleResults
 from gui.battle_results.progress.progress_helpers import isPMOperationAndMissionEnabled
@@ -75,7 +73,13 @@ class PersonalMissionsProgressPresenter(ViewComponent[PersonalMissionsProgressMo
         return super(PersonalMissionsProgressPresenter, self).createToolTipContent(event, contentID)
 
     def _getEvents(self):
-        return ((self.viewModel.onNavigate, self.__onNavigate), (self.__eventsCache.getPersonalMissions().onSwitcherUpdated, self.__onSwitcherUpdated), (self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged))
+        return (
+         (
+          self.viewModel.onNavigate, self.__onNavigate),
+         (
+          self.__eventsCache.getPersonalMissions().onSwitcherUpdated, self.__onSwitcherUpdated),
+         (
+          self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged))
 
     def _finalize(self):
         self.__tooltipData.clear()
@@ -104,7 +108,7 @@ class PersonalMissionsProgressPresenter(ViewComponent[PersonalMissionsProgressMo
             self.__progress = self.__categoryProgressFilter(battleResults.reusable)
 
     def _updateModel(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             event, isCompleted = self.__progress[0]
             eventId = event.getID()
             questConfig = getMissionConfigData(event)
@@ -137,15 +141,20 @@ class PersonalMissionsProgressPresenter(ViewComponent[PersonalMissionsProgressMo
         operationID, _ = self.__currentOperationOfPbs
         pm3operations = self.__eventsCache.getPersonalMissions().getAllOperations(PM_BRANCH.V2_BRANCHES)
         operationFromPBS = pm3operations.get(operationID)
-        if all((operation.isFullCompleted(isFinalRewardReceived=False) for operation in pm3operations.values())):
+        if all(operation.isFullCompleted(isFinalRewardReceived=False) for operation in pm3operations.values()):
             return PM3Status.CAMPAIGN_COMPLETED_WITH_HONOR
         if operationFromPBS.isFullCompleted(isFinalRewardReceived=False):
             return PM3Status.OPERATION_COMPLETED_WITH_HONOR
-        return PM3Status.OPERATION_MISSION_PROGRESS if not isQuestFullyCompleted else PM3Status.OPERATION_MISSION_COMPLETE
+        if not isQuestFullyCompleted:
+            return PM3Status.OPERATION_MISSION_PROGRESS
+        return PM3Status.OPERATION_MISSION_COMPLETE
 
     def __getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        return None if tooltipId is None else self.__tooltipData.get(tooltipId)
+        if tooltipId is None:
+            return
+        else:
+            return self.__tooltipData.get(tooltipId)
 
     def __onNavigate(self):
         if self.__currentOperationOfPbs is not None:

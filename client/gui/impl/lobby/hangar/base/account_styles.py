@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/hangar/base/account_styles.py
 from __future__ import absolute_import
-import typing
-import Event
+import typing, Event
 from gui.impl.lobby.hangar.base.hangar_interfaces import IAccountStyles
 from gui.impl.lobby.hangar.presenters.utils import take3DStyles
 from gui.shared.gui_items import GUI_ITEM_TYPE
@@ -11,7 +8,9 @@ from gui.shared.utils.requesters import REQ_CRITERIA, RequestCriteria
 from skeletons.gui.customization import ICustomizationService
 from helpers import dependency
 from skeletons.gui.shared import IItemsCache
-UPDATES = (CACHE_SYNC_REASON.INVENTORY_RESYNC, CACHE_SYNC_REASON.CLIENT_UPDATE)
+UPDATES = (
+ CACHE_SYNC_REASON.INVENTORY_RESYNC,
+ CACHE_SYNC_REASON.CLIENT_UPDATE)
 
 class AccountStyles(IAccountStyles):
     _customizationService = dependency.descriptor(ICustomizationService)

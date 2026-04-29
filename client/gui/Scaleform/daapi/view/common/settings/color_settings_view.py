@@ -1,5 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/common/settings/color_settings_view.py
+from __future__ import absolute_import
+from future.utils import viewitems
+from past.utils import old_div
 import BigWorld
 from debug_utils import LOG_DEBUG
 import GUI
@@ -44,18 +45,14 @@ class ColorSettingsView(LayerVisibilityMixin, ColorSettingsViewMeta):
         self.__blur = None
         return
 
-    def setViewWidth(self, width):
-        self.__componentWidth = width
+    def setViewWidth(self, value):
+        self.__componentWidth = value
         if self.__isColorPreviewFilterActive:
             self.__showColorPreviewFilter()
 
     def moveSpace(self, dx, dy, dz):
-        self.fireEvent(CameraRelatedEvents(CameraRelatedEvents.LOBBY_VIEW_MOUSE_MOVE, ctx={'dx': dx,
-         'dy': dy,
-         'dz': dz}))
-        self.fireEvent(events.LobbySimpleEvent(events.LobbySimpleEvent.NOTIFY_SPACE_MOVED, ctx={'dx': dx,
-         'dy': dy,
-         'dz': dz}))
+        self.fireEvent(CameraRelatedEvents(CameraRelatedEvents.LOBBY_VIEW_MOUSE_MOVE, ctx={'dx': dx, 'dy': dy, 'dz': dz}))
+        self.fireEvent(events.LobbySimpleEvent(events.LobbySimpleEvent.NOTIFY_SPACE_MOVED, ctx={'dx': dx, 'dy': dy, 'dz': dz}))
 
     def onSettingsChange(self, settingName, settingValue):
         settingValue = flashObject2Dict(settingValue)
@@ -120,23 +117,23 @@ class ColorSettingsView(LayerVisibilityMixin, ColorSettingsViewMeta):
             self.addListener(GameEvent.ON_BACKGROUND_ALPHA_CHANGE, self.__onExternalBackgroundAlphaChange, EVENT_BUS_SCOPE.GLOBAL)
             self.__wasGraphicsOptimizationEnabled = self.app.graphicsOptimizationManager.getEnable()
             self.app.graphicsOptimizationManager.switchOptimizationEnabled(False)
-        self.as_initDataS({'header': text_styles.superPromoTitle(SETTINGS.COLORSETTINGS_VIEW_HEADER),
-         'typesHeader': text_styles.highTitle(SETTINGS.COLORSETTINGS_VIEW_SUBTITLE),
-         'typesDesc': text_styles.main(SETTINGS.COLORSETTINGS_VIEW_DESCRIPTION),
-         'applyLabel': i18n.makeString(SETTINGS.APPLY_BUTTON),
-         'cancelLabel': i18n.makeString(SETTINGS.CANCEL_BUTTON),
-         'settingsTypes': self.__getTypes(),
-         'closeLabel': i18n.makeString(SETTINGS.COLORSETTINGS_VIEW_CLOSEBTN),
-         'beforeStr': text_styles.promoSubTitle(SETTINGS.COLORSETTINGS_VIEW_BEFORE),
-         'afterStr': text_styles.promoSubTitle(SETTINGS.COLORSETTINGS_VIEW_AFTER),
-         'filtersHeader': text_styles.highTitle(SETTINGS.COLORSETTINGS_TAB_FILTERS),
-         'filterPowerLabel': i18n.makeString(SETTINGS.COLORSETTINGS_TAB_FILTERS_INTENSITY),
-         'filtersTypes': self.__getFiltersTypes(),
-         'manualHeader': text_styles.highTitle(SETTINGS.COLORSETTINGS_TAB_CUSTOMSETTINGS),
-         'brightnessLabel': i18n.makeString(SETTINGS.COLORSETTINGS_TAB_CUSTOMSETTINGS_BRIGHTNESS),
-         'contrastLabel': i18n.makeString(SETTINGS.COLORSETTINGS_TAB_CUSTOMSETTINGS_CONTRAST),
-         'saturationLabel': i18n.makeString(SETTINGS.COLORSETTINGS_TAB_CUSTOMSETTINGS_SATURATION),
-         'resetLabel': i18n.makeString(SETTINGS.COLORSETTINGS_VIEW_RESETBTN)})
+        self.as_initDataS({'header': text_styles.superPromoTitle(SETTINGS.COLORSETTINGS_VIEW_HEADER), 
+           'typesHeader': text_styles.highTitle(SETTINGS.COLORSETTINGS_VIEW_SUBTITLE), 
+           'typesDesc': text_styles.main(SETTINGS.COLORSETTINGS_VIEW_DESCRIPTION), 
+           'applyLabel': i18n.makeString(SETTINGS.APPLY_BUTTON), 
+           'cancelLabel': i18n.makeString(SETTINGS.CANCEL_BUTTON), 
+           'settingsTypes': self.__getTypes(), 
+           'closeLabel': i18n.makeString(SETTINGS.COLORSETTINGS_VIEW_CLOSEBTN), 
+           'beforeStr': text_styles.promoSubTitle(SETTINGS.COLORSETTINGS_VIEW_BEFORE), 
+           'afterStr': text_styles.promoSubTitle(SETTINGS.COLORSETTINGS_VIEW_AFTER), 
+           'filtersHeader': text_styles.highTitle(SETTINGS.COLORSETTINGS_TAB_FILTERS), 
+           'filterPowerLabel': i18n.makeString(SETTINGS.COLORSETTINGS_TAB_FILTERS_INTENSITY), 
+           'filtersTypes': self.__getFiltersTypes(), 
+           'manualHeader': text_styles.highTitle(SETTINGS.COLORSETTINGS_TAB_CUSTOMSETTINGS), 
+           'brightnessLabel': i18n.makeString(SETTINGS.COLORSETTINGS_TAB_CUSTOMSETTINGS_BRIGHTNESS), 
+           'contrastLabel': i18n.makeString(SETTINGS.COLORSETTINGS_TAB_CUSTOMSETTINGS_CONTRAST), 
+           'saturationLabel': i18n.makeString(SETTINGS.COLORSETTINGS_TAB_CUSTOMSETTINGS_SATURATION), 
+           'resetLabel': i18n.makeString(SETTINGS.COLORSETTINGS_VIEW_RESETBTN)})
         self.as_updateDataS(self.__selectedTabIdx, self.__initSettings)
         self.__blur = CachedBlur(enabled=False)
         return
@@ -162,9 +159,8 @@ class ColorSettingsView(LayerVisibilityMixin, ColorSettingsViewMeta):
     def __getLastAppliedTabsSettings(self):
         lastAppliedSettings = AccountSettings.getSettings(APPLIED_COLOR_SETTINGS)
         filterTabsKeys = (GRAPHICS.COLOR_GRADING_TECHNIQUE, GRAPHICS.COLOR_FILTER_INTENSITY)
-        return {TABS.DEFAULT: {},
-         TABS.FILTERS: self.__getTabSettings(lastAppliedSettings, TABS.FILTERS, filterTabsKeys),
-         TABS.CUSTOM: self.__getTabSettings(lastAppliedSettings, TABS.CUSTOM, GRAPHICS.getCustomColorSettings())}
+        return {TABS.DEFAULT: {}, TABS.FILTERS: self.__getTabSettings(lastAppliedSettings, TABS.FILTERS, filterTabsKeys), 
+           TABS.CUSTOM: self.__getTabSettings(lastAppliedSettings, TABS.CUSTOM, GRAPHICS.getCustomColorSettings())}
 
     def __getTabSettings(self, lastAppliedSettings, tabIdx, settingKeys):
         tabSettings = lastAppliedSettings.get(tabIdx, {})
@@ -175,13 +171,16 @@ class ColorSettingsView(LayerVisibilityMixin, ColorSettingsViewMeta):
         return settings
 
     def __getTypes(self):
-        return [{'id': TABS.DEFAULT,
-          'label': text_styles.highlightText(SETTINGS.COLORSETTINGS_TAB_DEFAULT),
-          'icon': RES_ICONS.MAPS_ICONS_SETTINGS_COLORSETTINGS_DEFAULT}, {'id': TABS.FILTERS,
-          'label': text_styles.highlightText(SETTINGS.COLORSETTINGS_TAB_FILTERS),
-          'icon': RES_ICONS.MAPS_ICONS_SETTINGS_COLORSETTINGS_FILTERS}, {'id': TABS.CUSTOM,
-          'label': text_styles.highlightText(SETTINGS.COLORSETTINGS_TAB_CUSTOMSETTINGS),
-          'icon': RES_ICONS.MAPS_ICONS_SETTINGS_COLORSETTINGS_MANUAL}]
+        return [
+         {'id': TABS.DEFAULT, 
+            'label': text_styles.highlightText(SETTINGS.COLORSETTINGS_TAB_DEFAULT), 
+            'icon': RES_ICONS.MAPS_ICONS_SETTINGS_COLORSETTINGS_DEFAULT},
+         {'id': TABS.FILTERS, 
+            'label': text_styles.highlightText(SETTINGS.COLORSETTINGS_TAB_FILTERS), 
+            'icon': RES_ICONS.MAPS_ICONS_SETTINGS_COLORSETTINGS_FILTERS},
+         {'id': TABS.CUSTOM, 
+            'label': text_styles.highlightText(SETTINGS.COLORSETTINGS_TAB_CUSTOMSETTINGS), 
+            'icon': RES_ICONS.MAPS_ICONS_SETTINGS_COLORSETTINGS_MANUAL}]
 
     def __getFiltersTypes(self):
         result = []
@@ -189,9 +188,9 @@ class ColorSettingsView(LayerVisibilityMixin, ColorSettingsViewMeta):
         images = graphics.getGraphicSettingColorSettingsFiletersImages()
         if setting is not None:
             for option in setting.getOptions():
-                result.append({'id': option.get('data', COLOR_GRADING_TECHNIQUE_DEFAULT),
-                 'label': text_styles.stats(option.get('label')),
-                 'icon': images.get(option.get('data', COLOR_GRADING_TECHNIQUE_DEFAULT))})
+                result.append({'id': option.get('data', COLOR_GRADING_TECHNIQUE_DEFAULT), 
+                   'label': text_styles.stats(option.get('label')), 
+                   'icon': images.get(option.get('data', COLOR_GRADING_TECHNIQUE_DEFAULT))})
 
             result = sorted(result, key=lambda k: k['id'])
         return result
@@ -205,8 +204,8 @@ class ColorSettingsView(LayerVisibilityMixin, ColorSettingsViewMeta):
 
     def __showColorPreviewFilter(self):
         width, _ = GUI.screenResolution()[:2]
-        witdthPrc = self.__componentWidth / width
-        delimiterPrc = witdthPrc + (1 - witdthPrc) / 2
+        witdthPrc = old_div(self.__componentWidth, width)
+        delimiterPrc = witdthPrc + old_div(1 - witdthPrc, 2)
         BigWorld.setColorBCSSetup(1, delimiterPrc)
         self.__isColorPreviewFilterActive = True
 
@@ -235,7 +234,7 @@ class ColorSettingsView(LayerVisibilityMixin, ColorSettingsViewMeta):
         return settings
 
     def __previewSettings(self, settings):
-        for settingName, value in settings.iteritems():
+        for settingName, value in viewitems(settings):
             self.settingsCore.applySetting(settingName, value)
 
     def __onExternalBackgroundAlphaChange(self, event):

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/frontline/ammunition_setup.py
 from gui.impl.lobby.tank_setup.ammunition_setup.hangar import HangarAmmunitionSetupView
 from gui.impl.gen import R
 from helpers import dependency

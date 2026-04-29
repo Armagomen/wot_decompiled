@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well_personality.py
 from __future__ import absolute_import
 from gui.impl.lobby.user_missions.hangar_widget.event_banners.event_banners_container import EventBannersContainer
 from gui.shared.system_factory import registerAwardControllerHandlers

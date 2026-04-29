@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/tooltips/battle_consumable.py
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared.formatters import text_styles
@@ -44,7 +42,7 @@ class BattleConsumableTooltipBlockConstructor(object):
         self.rightPadding = rightPadding
 
     def construct(self):
-        return None
+        return
 
 
 class HeaderBlockConstructor(BattleConsumableTooltipBlockConstructor):

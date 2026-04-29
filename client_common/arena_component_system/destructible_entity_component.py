@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client_common/arena_component_system/destructible_entity_component.py
 import Event
 from client_arena_component_system import ClientArenaComponent
 
@@ -90,4 +88,6 @@ class DestructibleEntitiesComponent(ClientArenaComponent):
             return (None, None)
         else:
             closestHQ = min(aliveHQs, key=getDistance)
-            return (closestHQ.destructibleEntityID, getDistance(closestHQ)) if closestHQ else (None, None)
+            if closestHQ:
+                return (closestHQ.destructibleEntityID, getDistance(closestHQ))
+            return (None, None)

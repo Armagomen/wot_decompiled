@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/filter/state.py
 from collections import Iterable, defaultdict
 from account_helpers.AccountSettings import AccountSettings, TANKMEN_LIST
 from Event import Event
@@ -12,7 +10,7 @@ class FilterState(object):
         self.onStateChanged = Event()
         self._state = defaultdict(set)
         self._initialState = initialState or {}
-        self.__searchString = u''
+        self.__searchString = ''
         self._isWotPlus = isWotPlus
         self._persistor = persistor
         self.reinit()
@@ -27,7 +25,7 @@ class FilterState(object):
         return iter(self._state)
 
     def __repr__(self):
-        return '{0}<initialState={1!r}, state={2!r}, searchString={3!r}, isWotPlus={4!r}, persistor={5!r}>'.format(self.__class__.__name__, self._initialState, self._state, self.__searchString, self._isWotPlus, self._persistor)
+        return ('{0}<initialState={1!r}, state={2!r}, searchString={3!r}, isWotPlus={4!r}, persistor={5!r}>').format(self.__class__.__name__, self._initialState, self._state, self.__searchString, self._isWotPlus, self._persistor)
 
     @property
     def searchString(self):
@@ -82,13 +80,14 @@ class FilterState(object):
                     for item in value:
                         self._state[groupID].add(item)
 
-                self._state[groupID].add(value)
+                else:
+                    self._state[groupID].add(value)
 
             return
 
     def _clear(self):
         self._state = defaultdict(set)
-        self.__searchString = u''
+        self.__searchString = ''
 
 
 class Persistor(object):
@@ -100,7 +99,7 @@ class Persistor(object):
         self.__ignoreDefault = ignoreDefault
 
     def __repr__(self):
-        return '{0}<storageKey={1!r}, persistentGroups={2!r}, excludeKeys={3!r}>'.format(self.__class__.__name__, self.__key, self.__persistentGroups, self.__excludeKeys)
+        return ('{0}<storageKey={1!r}, persistentGroups={2!r}, excludeKeys={3!r}>').format(self.__class__.__name__, self.__key, self.__persistentGroups, self.__excludeKeys)
 
     def load(self, stateDict):
         stored = AccountSettings.getFilter(TANKMEN_LIST)

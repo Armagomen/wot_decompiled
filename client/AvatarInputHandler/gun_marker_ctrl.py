@@ -1,15 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/AvatarInputHandler/gun_marker_ctrl.py
-import logging
-import math
-import typing
+import logging, math, typing
 from collections import namedtuple
-import BattleReplay
-import BigWorld
-import GUI
-import Math
-import constants
-import aih_constants
+import BattleReplay, BigWorld, GUI, Math, constants, aih_constants
 from aih_constants import GunMarkerState
 from Vehicle import Vehicle as VehicleEntity
 from DestructibleEntity import DestructibleEntity
@@ -56,12 +47,14 @@ def computePiercingPowerAtDist(piercingPowerDescription, dist, maxDist, piercing
         if power > 0.0:
             return power
         return 0.0
+    return 0.0
 
 
 def _computePiercingPowerRandomizationImpl(piercingPowerRandomization, minimum, maximum):
     minPP = _BASE_PIERCING_PERCENT * (1.0 - piercingPowerRandomization * minimum)
     maxPP = _BASE_PIERCING_PERCENT * (1.0 + piercingPowerRandomization * maximum)
-    return (minPP, maxPP)
+    return (
+     minPP, maxPP)
 
 
 def useServerGunMarker():
@@ -159,12 +152,13 @@ class _CrosshairShotResults(object):
     _PP_RANDOM_ADJUSTMENT_MIN = 0.5
     _MAX_HIT_ANGLE_BOUND = math.pi / 2.0 - 1e-05
     _CRIT_ONLY_SHOT_RESULT = _SHOT_RESULT.NOT_PIERCED
-    shellExtraData = namedtuple('shellExtraData', ('hasNormalization', 'mayRicochet', 'checkCaliberForRicochet', 'jetLossPPByDist'))
-    _SHELL_EXTRA_DATA = {constants.SHELL_TYPES.ARMOR_PIERCING: shellExtraData(True, True, True, 0.0),
-     constants.SHELL_TYPES.ARMOR_PIERCING_CR: shellExtraData(True, True, True, 0.0),
-     constants.SHELL_TYPES.ARMOR_PIERCING_HE: shellExtraData(True, False, False, 0.0),
-     constants.SHELL_TYPES.HOLLOW_CHARGE: shellExtraData(False, True, False, 0.5),
-     constants.SHELL_TYPES.HIGH_EXPLOSIVE: shellExtraData(False, False, False, 0.0)}
+    shellExtraData = namedtuple('shellExtraData', ('hasNormalization', 'mayRicochet',
+                                                   'checkCaliberForRicochet', 'jetLossPPByDist'))
+    _SHELL_EXTRA_DATA = {constants.SHELL_TYPES.ARMOR_PIERCING: shellExtraData(True, True, True, 0.0), 
+       constants.SHELL_TYPES.ARMOR_PIERCING_CR: shellExtraData(True, True, True, 0.0), 
+       constants.SHELL_TYPES.ARMOR_PIERCING_HE: shellExtraData(True, False, False, 0.0), 
+       constants.SHELL_TYPES.HOLLOW_CHARGE: shellExtraData(False, True, False, 0.5), 
+       constants.SHELL_TYPES.HIGH_EXPLOSIVE: shellExtraData(False, False, False, 0.0)}
     __sessionProvider = dependency.descriptor(IBattleSessionProvider)
 
     @classmethod
@@ -252,7 +246,9 @@ class _CrosshairShotResults(object):
                 cls.__sendDebugInfo(gunMarker, [])
                 return _SHOT_RESULT.UNDEFINED
             minPP, maxPP = cls._computePiercingPowerRandomization(shell)
-            return cls.__shotResultModernHE(gunMarker, collisionsDetails, fullPPower, shell, minPP, maxPP, entity) if shell.kind == constants.SHELL_TYPES.HIGH_EXPLOSIVE and shell.type.mechanics == constants.SHELL_MECHANICS_TYPE.MODERN else cls.__shotResultDefault(gunMarker, collisionsDetails, fullPPower, shell, minPP, maxPP, entity)
+            if shell.kind == constants.SHELL_TYPES.HIGH_EXPLOSIVE and shell.type.mechanics == constants.SHELL_MECHANICS_TYPE.MODERN:
+                return cls.__shotResultModernHE(gunMarker, collisionsDetails, fullPPower, shell, minPP, maxPP, entity)
+            return cls.__shotResultDefault(gunMarker, collisionsDetails, fullPPower, shell, minPP, maxPP, entity)
 
     @classmethod
     def __shotResultModernHE(cls, gunMarker, collisionsDetails, fullPiercingPower, shell, minPP, maxPP, entity):
@@ -380,34 +376,38 @@ class _CrosshairShotResults(object):
 
     @classmethod
     def __isDestructibleComponent(cls, entity, componentID):
-        return entity.isDestructibleComponent(componentID) if isinstance(entity, DestructibleEntity) else True
+        if isinstance(entity, DestructibleEntity):
+            return entity.isDestructibleComponent(componentID)
+        return True
 
     @classmethod
     def __collectDebugPiercingData(cls, piercingList, penetrationArmor, hitAngleCos, minPPower, maxPPower, piercingPercent, matInfo, result):
         if constants.IS_DEVELOPMENT:
-            piercingList.append({'penetrationArmor': penetrationArmor,
-             'angle': math.degrees(math.acos(hitAngleCos)),
-             'minPPowerLeft': minPPower,
-             'maxPPowerLeft': maxPPower,
-             'piercingPercent': piercingPercent,
-             'matInfo': matInfo,
-             'result': result})
+            piercingList.append({'penetrationArmor': penetrationArmor, 
+               'angle': math.degrees(math.acos(hitAngleCos)), 
+               'minPPowerLeft': minPPower, 
+               'maxPPowerLeft': maxPPower, 
+               'piercingPercent': piercingPercent, 
+               'matInfo': matInfo, 
+               'result': result})
 
     @classmethod
     def __sendDebugInfo(cls, gunMarker, piercingData, minPP=None, maxPP=None, fullPP=None):
         if constants.IS_DEVELOPMENT:
-            g_eventBus.handleEvent(GunMarkerEvent(GunMarkerEvent.UPDATE_PIERCING_DATA, ctx={'gunMarker': gunMarker,
-             'piercingData': piercingData,
-             'minPP': minPP,
-             'maxPP': maxPP,
-             'fullPP': fullPP}), scope=EVENT_BUS_SCOPE.BATTLE)
+            g_eventBus.handleEvent(GunMarkerEvent(GunMarkerEvent.UPDATE_PIERCING_DATA, ctx={'gunMarker': gunMarker, 
+               'piercingData': piercingData, 
+               'minPP': minPP, 
+               'maxPP': maxPP, 
+               'fullPP': fullPP}), scope=EVENT_BUS_SCOPE.BATTLE)
 
 
 def _setupGunMarkerSizeLimits(dataProvider, scale=None):
     if scale is None:
         settingsCore = dependency.instance(ISettingsCore)
         scale = settingsCore.interfaceScale.get()
-    limits = (aih_constants.GUN_MARKER_MIN_SIZE * scale, min(GUI.screenResolution()))
+    limits = (
+     aih_constants.GUN_MARKER_MIN_SIZE * scale,
+     min(GUI.screenResolution()))
     dataProvider.sizeConstraint = limits
     return limits
 
@@ -500,7 +500,8 @@ class _GunMarkersDPFactory(object):
         dataProvider.maxTime = 7.0
         dataProvider.serverTickLength = constants.SERVER_TICK_LENGTH
         dataProvider.sizeScaleRate = aih_constants.SPG_GUN_MARKER_SCALE_RATE
-        dataProvider.sizeConstraint = (aih_constants.SPG_GUN_MARKER_MIN_SIZE, aih_constants.SPG_GUN_MARKER_MAX_SIZE)
+        dataProvider.sizeConstraint = (
+         aih_constants.SPG_GUN_MARKER_MIN_SIZE, aih_constants.SPG_GUN_MARKER_MAX_SIZE)
         dataProvider.setRelaxTime(constants.SERVER_TICK_LENGTH)
         return dataProvider
 
@@ -585,15 +586,18 @@ class _GunMarkersDecorator(IGunMarkerController):
             if self.__gunMarkersFlags & _MARKER_FLAG.CLIENT_MODE_ENABLED:
                 self.__clientMarker.update(markerType, gunMarkerInfo, supportMarkersInfo, relaxTime)
                 size = self.__clientMarker.getSizes()[0]
-            self.__clientState = (GunMarkerState.fromGunMarkerInfo(gunMarkerInfo, size), supportMarkersInfo)
+            self.__clientState = (
+             GunMarkerState.fromGunMarkerInfo(gunMarkerInfo, size), supportMarkersInfo)
         elif markerType == _MARKER_TYPE.SERVER:
             size = gunMarkerInfo.size
             if self.__gunMarkersFlags & _MARKER_FLAG.SERVER_MODE_ENABLED:
                 self.__serverMarker.update(markerType, gunMarkerInfo, supportMarkersInfo, relaxTime)
                 size = self.__serverMarker.getSizes()[0]
-            self.__serverState = (GunMarkerState.fromGunMarkerInfo(gunMarkerInfo, size), supportMarkersInfo)
+            self.__serverState = (
+             GunMarkerState.fromGunMarkerInfo(gunMarkerInfo, size), supportMarkersInfo)
         elif markerType == _MARKER_TYPE.DUAL_ACC:
-            self.__dualAccState = (GunMarkerState.fromGunMarkerInfo(gunMarkerInfo), supportMarkersInfo)
+            self.__dualAccState = (
+             GunMarkerState.fromGunMarkerInfo(gunMarkerInfo), supportMarkersInfo)
             if self.__gunMarkersFlags & _MARKER_FLAG.CLIENT_MODE_ENABLED:
                 self.__dualAccMarker.update(markerType, gunMarkerInfo, supportMarkersInfo, relaxTime)
         else:
@@ -603,7 +607,7 @@ class _GunMarkersDecorator(IGunMarkerController):
         pass
 
     def getSizes(self):
-        pass
+        return (0.0, 0.0)
 
     def setSizes(self, newSizes):
         pass
@@ -704,14 +708,16 @@ class _GunMarkerController(IGunMarkerController):
         pass
 
     def getSizes(self):
-        pass
+        return (0.0, 0.0)
 
     def setSizes(self, newSizes):
         pass
 
     def _updateMatrixProvider(self, positionMatrix, relaxTime=0.0):
         animationMatrix = self._dataProvider.positionMatrixProvider
-        animationMatrix.keyframes = ((0.0, Math.Matrix(animationMatrix)), (relaxTime, positionMatrix))
+        animationMatrix.keyframes = (
+         (
+          0.0, Math.Matrix(animationMatrix)), (relaxTime, positionMatrix))
         animationMatrix.time = 0.0
 
 
@@ -880,7 +886,8 @@ class _SPGGunMarkerController(_GunMarkerController):
         gunMat = AimingSystems.getPlayerGunMat(self._gunRotator.turretYaw, self._gunRotator.gunPitch)
         position = gunMat.translation
         velocity = gunMat.applyVector(Math.Vector3(0, 0, self._shotSpeed))
-        return (position, velocity, Math.Vector3(0, -self._shotGravity, 0))
+        return (
+         position, velocity, Math.Vector3(0, -self._shotGravity, 0))
 
     def _updateDispersionData(self):
         dispersionAngle = self._gunRotator.dispersionAngle
@@ -923,7 +930,9 @@ class _SPGGunMarkerController(_GunMarkerController):
 
     def __getCurrentRelaxTime(self):
         relaxTime = self._dataProvider.relaxTime
-        return 1.0 / relaxTime if not almostZero(relaxTime) else self._BIG_RELAX_TIME
+        if not almostZero(relaxTime):
+            return 1.0 / relaxTime
+        return self._BIG_RELAX_TIME
 
 
 class _ArtyHitMarkerController(_SPGGunMarkerController):
@@ -955,7 +964,8 @@ class _ArtyHitMarkerController(_SPGGunMarkerController):
     def enable(self):
         super(_ArtyHitMarkerController, self).enable()
         self.__delayer.delayCallback(self.__interval, self.__tick)
-        self.__trajectoryDrawer.setParams(1000.0, Math.Vector3(0, -self.__artyEquipmentUDO.gravity, 0), (0, 0))
+        self.__trajectoryDrawer.setParams(1000.0, Math.Vector3(0, -self.__artyEquipmentUDO.gravity, 0), (0,
+                                                                                                         0))
 
     def disable(self):
         self.__delayer.stopCallback(self.__tick)
@@ -971,7 +981,8 @@ class _ArtyHitMarkerController(_SPGGunMarkerController):
         launchPosition = self._position + self.__artyEquipmentUDO.position
         launchVelocity = self.__artyEquipmentUDO.launchVelocity
         gravity = Math.Vector3(0, -self.__artyEquipmentUDO.gravity, 0)
-        return (launchPosition, launchVelocity, gravity)
+        return (
+         launchPosition, launchVelocity, gravity)
 
     def _updateDispersionData(self):
         self._dataProvider.setupFlatRadialDispersion(self.__areaRadius)
@@ -1001,7 +1012,8 @@ class _ArcadeArtilleryHitMarkerController(_SPGGunMarkerController):
         launchPosition = self._position + self.__artyEquipmentUDO.position
         launchVelocity = self.__artyEquipmentUDO.launchVelocity
         gravity = Math.Vector3(0, -self.__artyEquipmentUDO.gravity, 0)
-        return (launchPosition, launchVelocity, gravity)
+        return (
+         launchPosition, launchVelocity, gravity)
 
     def _updateDispersionData(self):
         self._dataProvider.setupFlatRadialDispersion(self.__areaRadius)

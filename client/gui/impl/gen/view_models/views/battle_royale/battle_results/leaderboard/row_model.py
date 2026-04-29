@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/battle_royale/battle_results/leaderboard/row_model.py
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.common.user_name_model import UserNameModel
 

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/gui_items/vehicle_helpers.py
 from Vehicle import Vehicle
 from constants import ROLE_TYPE, ROLE_TYPE_TO_LABEL
 from gui import makeHtmlString

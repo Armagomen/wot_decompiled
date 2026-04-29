@@ -1,7 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/PoiTeamInfoComponent.py
-import logging
-import typing
+from __future__ import absolute_import
+import logging, typing
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from script_component.ScriptComponent import ScriptComponent
 from helpers import dependency

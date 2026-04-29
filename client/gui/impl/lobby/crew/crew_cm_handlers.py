@@ -1,9 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/crew_cm_handlers.py
 from gui.impl.lobby.crew.widget.crew_widget_cm_handlers import CrewContextMenuHandler, CREW
 from helpers import dependency
 from skeletons.gui.shared import IItemsCache
-VISIBLE_OPTIONS = (CREW.PERSONAL_FILE,
+VISIBLE_OPTIONS = (
+ CREW.PERSONAL_FILE,
  CREW.DISMISS,
  CREW.QUICK_TRAINING,
  CREW.SEND_TO_BARRACKS)

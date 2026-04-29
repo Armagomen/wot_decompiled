@@ -1,13 +1,10 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/common/battle_royale/br_helpers.py
-import logging
-import math
-import BigWorld
-import CommandMapping
+from __future__ import absolute_import
+import logging, math, BigWorld, CommandMapping
 from constants import BATTLE_ROYALE_SCENE
+from gui.Scaleform.daapi.view.common.keybord_helpers import getHotKeyList, getHotKeysInfo
+from gui.server_events.awards_formatters import BR_PROGRESSION_TOKEN
 from helpers import dependency
 from items import vehicles, parseIntCompactDescr, ITEM_TYPES
-from gui.Scaleform.daapi.view.common.keybord_helpers import getHotKeyList, getHotKeysInfo
 from skeletons.gui.game_control import IHangarSpaceSwitchController
 from skeletons.gui.lobby_context import ILobbyContext
 _logger = logging.getLogger(__name__)
@@ -19,14 +16,17 @@ def getEquipmentById(equipmentId):
 def getSmokeDataByPredicate(smokeInfo, predicate):
     if smokeInfo is None or not predicate:
         return (None, None)
+    if predicate(smokeInfo['equipmentID']):
+        return (smokeInfo['endTime'], getEquipmentById(smokeInfo['equipmentID']))
     else:
-        return (smokeInfo['endTime'], getEquipmentById(smokeInfo['equipmentID'])) if predicate(smokeInfo['equipmentID']) else (None, None)
+        return (None, None)
 
 
 def parseSmokeData(smokesInfo):
     if smokesInfo:
-        maxEndTime, eqId = max(((smokeInfo['endTime'], smokeInfo['equipmentID']) for smokeInfo in smokesInfo))
-        return (maxEndTime, getEquipmentById(eqId))
+        maxEndTime, eqId = max((smokeInfo['endTime'], smokeInfo['equipmentID']) for smokeInfo in smokesInfo)
+        return (
+         maxEndTime, getEquipmentById(eqId))
     else:
         return (None, None)
 
@@ -50,7 +50,7 @@ def getCircularVisionAngle(vehicle=None):
 
 
 def getHotKeyString(command):
-    return ' +'.join(getHotKeyList(command))
+    return (' +').join(getHotKeyList(command))
 
 
 def getHotKeyInfoListByIndex(index):
@@ -98,3 +98,17 @@ def getAvailableNationsNames(lobbyContext=None):
 
 def getAvailableVehicleTypes():
     return frozenset(('lightTank', 'mediumTank', 'heavyTank'))
+
+
+def sortQuestsByProgressionPointBonus(quests):
+    return sorted(quests, key=_getProgressionPointBonus)
+
+
+def _getProgressionPointBonus(quest):
+    for bonus in quest.getBonuses():
+        if bonus.getName() == 'battleToken':
+            for tokenID, tokenValue in bonus.getTokens().items():
+                if tokenID.startswith(BR_PROGRESSION_TOKEN):
+                    return tokenValue.count
+
+    return 0

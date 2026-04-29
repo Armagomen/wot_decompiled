@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/dog_tags/dog_tag_composer.py
 import logging
 from collections import defaultdict
 import typing
@@ -58,22 +56,29 @@ class CoupledSection(Enum):
     Animated = 'ANIMATED'
 
 
-PURPOSE_TO_TOOLTIP_PURPOSE_GROUP_MAP = {EngravingSection.SKILL: TooltipPurposeGroup.SEASON,
- EngravingSection.TRIUMPH: TooltipPurposeGroup.TRIUMPH,
- EngravingSection.DEDICATION: TooltipPurposeGroup.DEDICATION}
-SECTION_ORDER_MAP = {SectionType.BACKGROUND: [BackgroundSection.TRIUMPH_MEDAL],
- SectionType.ENGRAVING: [EngravingSection.DEDICATION, EngravingSection.SKILL, EngravingSection.TRIUMPH],
- SectionType.COUPLED: [CoupledSection.Animated]}
-IN_SECTION_ORDER_WEIGHT = [ComponentPurpose.RANKED_SKILL, ComponentPurpose.SKILL]
-SECTION_BY_PURPOSE = {ComponentPurpose.TRIUMPH: EngravingSection.TRIUMPH,
- ComponentPurpose.SKILL: EngravingSection.SKILL,
- ComponentPurpose.RANKED_SKILL: EngravingSection.SKILL,
- ComponentPurpose.DEDICATION: EngravingSection.DEDICATION,
- ComponentPurpose.BASE: BackgroundSection.TRIUMPH_MEDAL,
- ComponentPurpose.TRIUMPH_MEDAL: BackgroundSection.TRIUMPH_MEDAL,
- ComponentPurpose.COUPLED: CoupledSection.Animated}
-SECTION_TYPE_BY_COMPONENT_VIEW_TYPE = {ComponentViewType.BACKGROUND: SectionType.BACKGROUND,
- ComponentViewType.ENGRAVING: SectionType.ENGRAVING}
+PURPOSE_TO_TOOLTIP_PURPOSE_GROUP_MAP = {EngravingSection.SKILL: TooltipPurposeGroup.SEASON, 
+   EngravingSection.TRIUMPH: TooltipPurposeGroup.TRIUMPH, 
+   EngravingSection.DEDICATION: TooltipPurposeGroup.DEDICATION}
+SECTION_ORDER_MAP = {SectionType.BACKGROUND: [
+                          BackgroundSection.TRIUMPH_MEDAL], 
+   SectionType.ENGRAVING: [
+                         EngravingSection.DEDICATION,
+                         EngravingSection.SKILL,
+                         EngravingSection.TRIUMPH], 
+   SectionType.COUPLED: [
+                       CoupledSection.Animated]}
+IN_SECTION_ORDER_WEIGHT = [
+ ComponentPurpose.RANKED_SKILL,
+ ComponentPurpose.SKILL]
+SECTION_BY_PURPOSE = {ComponentPurpose.TRIUMPH: EngravingSection.TRIUMPH, 
+   ComponentPurpose.SKILL: EngravingSection.SKILL, 
+   ComponentPurpose.RANKED_SKILL: EngravingSection.SKILL, 
+   ComponentPurpose.DEDICATION: EngravingSection.DEDICATION, 
+   ComponentPurpose.BASE: BackgroundSection.TRIUMPH_MEDAL, 
+   ComponentPurpose.TRIUMPH_MEDAL: BackgroundSection.TRIUMPH_MEDAL, 
+   ComponentPurpose.COUPLED: CoupledSection.Animated}
+SECTION_TYPE_BY_COMPONENT_VIEW_TYPE = {ComponentViewType.BACKGROUND: SectionType.BACKGROUND, 
+   ComponentViewType.ENGRAVING: SectionType.ENGRAVING}
 
 class DogTagComposerLobby(DogTagComposerClient):
     lobbyContext = dependency.descriptor(ILobbyContext)
@@ -128,7 +133,8 @@ class DogTagComposerLobby(DogTagComposerClient):
             if equippedBackground.componentDefinition.purpose == ComponentPurpose.COUPLED:
                 components = [ component.componentId for component in componentConfig.getDefaultDogTag().components ]
             else:
-                components = [equippedBackground.compId, equippedEngraving.compId]
+                components = [
+                 equippedBackground.compId, equippedEngraving.compId]
         return self._dtHelper.getDisplayableDTForComponents(components, clanProfile)
 
     def fillGrid(self, viewModel):
@@ -216,9 +222,10 @@ class DogTagComposerLobby(DogTagComposerClient):
         for compId, component in components.iteritems():
             if component.isDefault:
                 defaults[compId] = component
-            if compId in unlockedIds:
+            elif compId in unlockedIds:
                 unlocked[compId] = component
-            locked[compId] = component
+            else:
+                locked[compId] = component
 
         self._fillItems(defaults, itemsArray, True)
         self._fillItems(unlocked, itemsArray, True)
@@ -230,7 +237,8 @@ class DogTagComposerLobby(DogTagComposerClient):
         maxIdx = len(IN_SECTION_ORDER_WEIGHT)
         purpose = item.purpose
         itemOrderIdx = IN_SECTION_ORDER_WEIGHT.index(purpose) if purpose in IN_SECTION_ORDER_WEIGHT else maxIdx
-        return (itemOrderIdx, item.componentId)
+        return (
+         itemOrderIdx, item.componentId)
 
     def _fillItems(self, components, itemsArray, unlocked):
         for component in sorted(components.values(), key=self._getSortedKeys):
@@ -260,7 +268,9 @@ class DogTagComposerLobby(DogTagComposerClient):
             model.setIsDemoted(True)
 
     def __getComponentProgress(self, component):
-        return getCoupledDogTagProgress(self._getDossier(), component) if component.purpose == ComponentPurpose.COUPLED else self._dtHelper.getComponentProgress(component.componentId)
+        if component.purpose == ComponentPurpose.COUPLED:
+            return getCoupledDogTagProgress(self._getDossier(), component)
+        return self._dtHelper.getComponentProgress(component.componentId)
 
     @replace_none_kwargs(itemsCache=IItemsCache)
     def _getDossier(self, itemsCache=None):
@@ -275,4 +285,6 @@ class DogTagComposerLobby(DogTagComposerClient):
         comp = componentConfig.getComponentById(compId)
         if not comp.grades:
             return NO_PROGRESS
-        return NO_PROGRESS if grade >= len(comp.grades) else comp.grades[grade]
+        if grade >= len(comp.grades):
+            return NO_PROGRESS
+        return comp.grades[grade]

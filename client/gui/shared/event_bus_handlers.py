@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/event_bus_handlers.py
 from functools import partial, wraps
 from types import FunctionType
 from gui.Scaleform.framework.entities.EventSystemEntity import EventSystemEntity
@@ -34,7 +32,8 @@ class EventBusListener(type):
 def eventBusHandler(event, scope):
 
     def wrapped(method):
-        method.__event_bus_data__ = (event, scope)
+        method.__event_bus_data__ = (
+         event, scope)
         return method
 
     return wrapped
@@ -47,7 +46,7 @@ def _populateWrapper(method):
         for (event, scope), handler in self.__event_bus_handlers__.items():
             boundHandler = partial(handler, self)
             self.addListener(event, boundHandler, scope)
-            self.__event_bus_bound_handlers__[event, scope] = boundHandler
+            self.__event_bus_bound_handlers__[(event, scope)] = boundHandler
 
         return method(self, *args, **kwargs)
 

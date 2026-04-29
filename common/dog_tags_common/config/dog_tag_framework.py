@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/dog_tags_common/config/dog_tag_framework.py
-import inspect
-import sys
+import inspect, sys
 from functools import partial
 import typing
 from common import ParameterType, Visibility, ParseException, ComponentPurpose, ComponentViewType, ComponentNumberType
@@ -30,44 +27,82 @@ class XMLObjBuilder(object):
 
 class ComponentBuilder(XMLObjBuilder):
     TAG = 'component'
-    PARAMS = {'componentId': (ParameterType.INT, Visibility.ALL),
-     'resourceRoot': (ParameterType.STR, Visibility.ALL),
-     'viewType': (ParameterType.VIEW_TYPE, Visibility.ALL),
-     'coupledComponentId': (ParameterType.INT, Visibility.ALL),
-     'animation': (ParameterType.STR, Visibility.ALL),
-     'isShowInPrebattle': (ParameterType.BOOL, Visibility.ALL),
-     'purpose': (ParameterType.TYPE, Visibility.ALL),
-     'unlockKey': (ParameterType.STR_LIST, Visibility.ALL),
-     'progressKey': (ParameterType.STR_LIST, Visibility.ALL),
-     'isHidden': (ParameterType.BOOL, Visibility.ALL),
-     'isSecret': (ParameterType.BOOL, Visibility.ALL),
-     'isDefault': (ParameterType.BOOL, Visibility.ALL),
-     'isExternalUnlockOnly': (ParameterType.BOOL, Visibility.ALL),
-     'grades': (ParameterType.FLOAT_LIST, Visibility.ALL),
-     'isDeprecated': (ParameterType.BOOL, Visibility.ALL),
-     'numberType': (ParameterType.NUMBER_TYPE, Visibility.ALL),
-     'src': (ParameterType.STR, Visibility.CLIENT),
-     'minLevel': (ParameterType.INT, Visibility.ALL),
-     'battleTypes': (ParameterType.INT_LIST, Visibility.ALL),
-     'glossaryName': (ParameterType.STR, Visibility.ALL)}
-    DEFAULTS = {'isSecret': False,
-     'isHidden': False,
-     'isDefault': False,
-     'isDeprecated': False,
-     'isExternalUnlockOnly': False,
-     'isShowInPrebattle': False,
-     'numberType': ComponentNumberType.NUMBER,
-     'glossaryName': ''}
-    VALIDATORS = {ComponentPurpose.TRIUMPH_MEDAL: [validateCommon, partial(validateViewType, viewType=ComponentViewType.BACKGROUND, purpose=ComponentPurpose.TRIUMPH_MEDAL), validateTriumphMedal],
-     ComponentPurpose.TRIUMPH: [validateCommon, partial(validateViewType, viewType=ComponentViewType.ENGRAVING, purpose=ComponentPurpose.TRIUMPH), validateTriumph],
-     ComponentPurpose.SKILL: [validateCommon, partial(validateViewType, viewType=ComponentViewType.ENGRAVING, purpose=ComponentPurpose.SKILL), validateSkill],
-     ComponentPurpose.DEDICATION: [validateCommon,
+    PARAMS = {'componentId': (
+                     ParameterType.INT, Visibility.ALL), 
+       'resourceRoot': (
+                      ParameterType.STR, Visibility.ALL), 
+       'viewType': (
+                  ParameterType.VIEW_TYPE, Visibility.ALL), 
+       'coupledComponentId': (
+                            ParameterType.INT, Visibility.ALL), 
+       'animation': (
+                   ParameterType.STR, Visibility.ALL), 
+       'isShowInPrebattle': (
+                           ParameterType.BOOL, Visibility.ALL), 
+       'purpose': (
+                 ParameterType.TYPE, Visibility.ALL), 
+       'unlockKey': (
+                   ParameterType.STR_LIST, Visibility.ALL), 
+       'progressKey': (
+                     ParameterType.STR_LIST, Visibility.ALL), 
+       'isHidden': (
+                  ParameterType.BOOL, Visibility.ALL), 
+       'isSecret': (
+                  ParameterType.BOOL, Visibility.ALL), 
+       'isDefault': (
+                   ParameterType.BOOL, Visibility.ALL), 
+       'isExternalUnlockOnly': (
+                              ParameterType.BOOL, Visibility.ALL), 
+       'grades': (
+                ParameterType.FLOAT_LIST, Visibility.ALL), 
+       'isDeprecated': (
+                      ParameterType.BOOL, Visibility.ALL), 
+       'numberType': (
+                    ParameterType.NUMBER_TYPE, Visibility.ALL), 
+       'src': (
+             ParameterType.STR, Visibility.CLIENT), 
+       'minLevel': (
+                  ParameterType.INT, Visibility.ALL), 
+       'battleTypes': (
+                     ParameterType.INT_LIST, Visibility.ALL), 
+       'glossaryName': (
+                      ParameterType.STR, Visibility.ALL)}
+    DEFAULTS = {'isSecret': False, 
+       'isHidden': False, 
+       'isDefault': False, 
+       'isDeprecated': False, 
+       'isExternalUnlockOnly': False, 
+       'isShowInPrebattle': False, 
+       'numberType': ComponentNumberType.NUMBER, 
+       'glossaryName': ''}
+    VALIDATORS = {ComponentPurpose.TRIUMPH_MEDAL: [
+                                      validateCommon,
+                                      partial(validateViewType, viewType=ComponentViewType.BACKGROUND, purpose=ComponentPurpose.TRIUMPH_MEDAL),
+                                      validateTriumphMedal], 
+       ComponentPurpose.TRIUMPH: [
+                                validateCommon,
+                                partial(validateViewType, viewType=ComponentViewType.ENGRAVING, purpose=ComponentPurpose.TRIUMPH),
+                                validateTriumph], 
+       ComponentPurpose.SKILL: [
+                              validateCommon,
+                              partial(validateViewType, viewType=ComponentViewType.ENGRAVING, purpose=ComponentPurpose.SKILL),
+                              validateSkill], 
+       ComponentPurpose.DEDICATION: [
+                                   validateCommon,
                                    partial(validateViewType, viewType=ComponentViewType.ENGRAVING, purpose=ComponentPurpose.DEDICATION),
                                    validateDedication,
-                                   validateDedicationUnlock],
-     ComponentPurpose.RANKED_SKILL: [validateCommon, partial(validateViewType, viewType=ComponentViewType.ENGRAVING, purpose=ComponentPurpose.RANKED_SKILL), validateRankedSkill],
-     ComponentPurpose.COUPLED: [validateCommon, validateCoupled],
-     ComponentPurpose.BASE: [validateCommon, partial(validateViewType, viewType=ComponentViewType.BACKGROUND, purpose=ComponentPurpose.BASE), validateBase]}
+                                   validateDedicationUnlock], 
+       ComponentPurpose.RANKED_SKILL: [
+                                     validateCommon,
+                                     partial(validateViewType, viewType=ComponentViewType.ENGRAVING, purpose=ComponentPurpose.RANKED_SKILL),
+                                     validateRankedSkill], 
+       ComponentPurpose.COUPLED: [
+                                validateCommon,
+                                validateCoupled], 
+       ComponentPurpose.BASE: [
+                             validateCommon,
+                             partial(validateViewType, viewType=ComponentViewType.BACKGROUND, purpose=ComponentPurpose.BASE),
+                             validateBase]}
 
     def __init__(self):
         super(ComponentBuilder, self).__init__(ComponentDefinition)
@@ -139,8 +174,10 @@ class ComponentBuilder(XMLObjBuilder):
 
 class StartingComponentsBuilder(XMLObjBuilder):
     TAG = 'startingComponents'
-    PARAMS = {'components': (ParameterType.INT_LIST, Visibility.ALL)}
-    VALIDATORS = [validateStartingComponent]
+    PARAMS = {'components': (
+                    ParameterType.INT_LIST, Visibility.ALL)}
+    VALIDATORS = [
+     validateStartingComponent]
 
     def __init__(self, componentDefs=None):
         super(StartingComponentsBuilder, self).__init__(StartingComponents)
@@ -196,7 +233,7 @@ class ComponentDefinition(object):
         return
 
     def __str__(self):
-        return "[id: {componentId}, {purpose}, {viewType}, unlock keys: {unlockKey}, progress keys: {progressKey}, hidden: {isHidden}, default: {isDefault}, deprecated: {isDeprecated}, grades: {grades}, secret: {isSecret}, only external unlock: {isExternalUnlockOnly}, src: '{src}', coupled component id: {coupledComponentId}, animation: {animation}]".format(componentId=self.componentId, purpose='None' if self.purpose is None else self.purpose.value, viewType='None' if self.viewType is None else self.viewType.value, unlockKey=self.unlockKey, progressKey=self.progressKey, isHidden=self.isHidden, isDefault=self.isDefault, isDeprecated=self.isDeprecated, grades=self.grades, isSecret=self.isSecret, isExternalUnlockOnly=self.isExternalUnlockOnly, src=self.src, coupledComponentId=self.coupledComponentId, animation=self.animation)
+        return ("[id: {componentId}, {purpose}, {viewType}, unlock keys: {unlockKey}, progress keys: {progressKey}, hidden: {isHidden}, default: {isDefault}, deprecated: {isDeprecated}, grades: {grades}, secret: {isSecret}, only external unlock: {isExternalUnlockOnly}, src: '{src}', coupled component id: {coupledComponentId}, animation: {animation}]").format(componentId=self.componentId, purpose='None' if self.purpose is None else self.purpose.value, viewType='None' if self.viewType is None else self.viewType.value, unlockKey=self.unlockKey, progressKey=self.progressKey, isHidden=self.isHidden, isDefault=self.isDefault, isDeprecated=self.isDeprecated, grades=self.grades, isSecret=self.isSecret, isExternalUnlockOnly=self.isExternalUnlockOnly, src=self.src, coupledComponentId=self.coupledComponentId, animation=self.animation)
 
     def __repr__(self):
         return self.__str__()
@@ -230,11 +267,7 @@ def buildParserInfo():
                 paramsInfo[paramName] = paramType
 
             defaults = getattr(cls, 'DEFAULTS', {})
-            res[tag] = (name,
-             cls,
-             paramNames,
-             paramsInfo,
-             defaults)
+            res[tag] = (name, cls, paramNames, paramsInfo, defaults)
 
     return res
 

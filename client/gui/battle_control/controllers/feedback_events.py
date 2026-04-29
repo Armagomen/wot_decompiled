@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/feedback_events.py
 import logging
 from BattleFeedbackCommon import BATTLE_EVENT_TYPE as _BET, NONE_SHELL_TYPE
 from DamageComponents import DamageZoneType
@@ -27,57 +25,62 @@ def _unpackMultiStun(packedData):
     return _MultiStunExtra(packedData, True)
 
 
-_BATTLE_EVENT_TO_PLAYER_FEEDBACK_EVENT = {_BET.KILL: _FET.PLAYER_KILLED_ENEMY,
- _BET.DAMAGE: _FET.PLAYER_DAMAGED_HP_ENEMY,
- _BET.CRIT: _FET.PLAYER_DAMAGED_DEVICE_ENEMY,
- _BET.SPOTTED: _FET.PLAYER_SPOTTED_ENEMY,
- _BET.RADIO_ASSIST: _FET.PLAYER_ASSIST_TO_KILL_ENEMY,
- _BET.TRACK_ASSIST: _FET.PLAYER_ASSIST_TO_KILL_ENEMY,
- _BET.STUN_ASSIST: _FET.PLAYER_ASSIST_TO_STUN_ENEMY,
- _BET.BASE_CAPTURE_POINTS: _FET.PLAYER_CAPTURED_BASE,
- _BET.BASE_CAPTURE_DROPPED: _FET.PLAYER_DROPPED_CAPTURE,
- _BET.BASE_CAPTURE_BLOCKED: _FET.PLAYER_BLOCKED_CAPTURE,
- _BET.TANKING: _FET.PLAYER_USED_ARMOR,
- _BET.RECEIVED_DAMAGE: _FET.ENEMY_DAMAGED_HP_PLAYER,
- _BET.RECEIVED_CRIT: _FET.ENEMY_DAMAGED_DEVICE_PLAYER,
- _BET.TARGET_VISIBILITY: _FET.VEHICLE_VISIBILITY_CHANGED,
- _BET.DETECTED: _FET.VEHICLE_DETECTED,
- _BET.ENEMY_SECTOR_CAPTURED: _FET.ENEMY_SECTOR_CAPTURED,
- _BET.DESTRUCTIBLE_DAMAGED: _FET.DESTRUCTIBLE_DAMAGED,
- _BET.DESTRUCTIBLE_DESTROYED: _FET.DESTRUCTIBLE_DESTROYED,
- _BET.DESTRUCTIBLES_DEFENDED: _FET.DESTRUCTIBLES_DEFENDED,
- _BET.DEFENDER_BONUS: _FET.DEFENDER_BONUS,
- _BET.SMOKE_ASSIST: _FET.SMOKE_ASSIST,
- _BET.INSPIRE_ASSIST: _FET.INSPIRE_ASSIST,
- _BET.MULTI_STUN: _FET.PLAYER_STUN_ENEMIES,
- _BET.EQUIPMENT_TIMER_EXPIRED: _FET.EQUIPMENT_TIMER_EXPIRED,
- _BET.VEHICLE_HEALTH_ADDED: _FET.VEHICLE_HEALTH_ADDED}
-_PLAYER_FEEDBACK_EXTRA_DATA_CONVERTERS = {_FET.PLAYER_DAMAGED_HP_ENEMY: _unpackDamage,
- _FET.PLAYER_ASSIST_TO_KILL_ENEMY: _unpackDamage,
- _FET.PLAYER_CAPTURED_BASE: _unpackInteger,
- _FET.PLAYER_DROPPED_CAPTURE: _unpackInteger,
- _FET.PLAYER_BLOCKED_CAPTURE: _unpackInteger,
- _FET.PLAYER_USED_ARMOR: _unpackDamage,
- _FET.PLAYER_DAMAGED_DEVICE_ENEMY: _unpackCrits,
- _FET.ENEMY_DAMAGED_HP_PLAYER: _unpackDamage,
- _FET.ENEMY_DAMAGED_DEVICE_PLAYER: _unpackCrits,
- _FET.PLAYER_ASSIST_TO_STUN_ENEMY: _unpackDamage,
- _FET.VEHICLE_VISIBILITY_CHANGED: _unpackVisibility,
- _FET.VEHICLE_DETECTED: _unpackVisibility,
- _FET.DESTRUCTIBLE_DAMAGED: _unpackDamage,
- _FET.DESTRUCTIBLES_DEFENDED: _unpackInteger,
- _FET.SMOKE_ASSIST: _unpackDamage,
- _FET.INSPIRE_ASSIST: _unpackDamage,
- _FET.PLAYER_SPOTTED_ENEMY: _unpackVisibility,
- _FET.PLAYER_STUN_ENEMIES: _unpackMultiStun,
- _FET.VEHICLE_HEALTH_ADDED: _unpackInteger}
+_BATTLE_EVENT_TO_PLAYER_FEEDBACK_EVENT = {_BET.KILL: _FET.PLAYER_KILLED_ENEMY, 
+   _BET.DAMAGE: _FET.PLAYER_DAMAGED_HP_ENEMY, 
+   _BET.CRIT: _FET.PLAYER_DAMAGED_DEVICE_ENEMY, 
+   _BET.SPOTTED: _FET.PLAYER_SPOTTED_ENEMY, 
+   _BET.RADIO_ASSIST: _FET.PLAYER_ASSIST_TO_KILL_ENEMY, 
+   _BET.TRACK_ASSIST: _FET.PLAYER_ASSIST_TO_KILL_ENEMY, 
+   _BET.STUN_ASSIST: _FET.PLAYER_ASSIST_TO_STUN_ENEMY, 
+   _BET.BASE_CAPTURE_POINTS: _FET.PLAYER_CAPTURED_BASE, 
+   _BET.BASE_CAPTURE_DROPPED: _FET.PLAYER_DROPPED_CAPTURE, 
+   _BET.BASE_CAPTURE_BLOCKED: _FET.PLAYER_BLOCKED_CAPTURE, 
+   _BET.TANKING: _FET.PLAYER_USED_ARMOR, 
+   _BET.RECEIVED_DAMAGE: _FET.ENEMY_DAMAGED_HP_PLAYER, 
+   _BET.RECEIVED_CRIT: _FET.ENEMY_DAMAGED_DEVICE_PLAYER, 
+   _BET.TARGET_VISIBILITY: _FET.VEHICLE_VISIBILITY_CHANGED, 
+   _BET.DETECTED: _FET.VEHICLE_DETECTED, 
+   _BET.ENEMY_SECTOR_CAPTURED: _FET.ENEMY_SECTOR_CAPTURED, 
+   _BET.DESTRUCTIBLE_DAMAGED: _FET.DESTRUCTIBLE_DAMAGED, 
+   _BET.DESTRUCTIBLE_DESTROYED: _FET.DESTRUCTIBLE_DESTROYED, 
+   _BET.DESTRUCTIBLES_DEFENDED: _FET.DESTRUCTIBLES_DEFENDED, 
+   _BET.DEFENDER_BONUS: _FET.DEFENDER_BONUS, 
+   _BET.SMOKE_ASSIST: _FET.SMOKE_ASSIST, 
+   _BET.INSPIRE_ASSIST: _FET.INSPIRE_ASSIST, 
+   _BET.MULTI_STUN: _FET.PLAYER_STUN_ENEMIES, 
+   _BET.EQUIPMENT_TIMER_EXPIRED: _FET.EQUIPMENT_TIMER_EXPIRED, 
+   _BET.VEHICLE_HEALTH_ADDED: _FET.VEHICLE_HEALTH_ADDED}
+_PLAYER_FEEDBACK_EXTRA_DATA_CONVERTERS = {_FET.PLAYER_DAMAGED_HP_ENEMY: _unpackDamage, 
+   _FET.PLAYER_ASSIST_TO_KILL_ENEMY: _unpackDamage, 
+   _FET.PLAYER_CAPTURED_BASE: _unpackInteger, 
+   _FET.PLAYER_DROPPED_CAPTURE: _unpackInteger, 
+   _FET.PLAYER_BLOCKED_CAPTURE: _unpackInteger, 
+   _FET.PLAYER_USED_ARMOR: _unpackDamage, 
+   _FET.PLAYER_DAMAGED_DEVICE_ENEMY: _unpackCrits, 
+   _FET.ENEMY_DAMAGED_HP_PLAYER: _unpackDamage, 
+   _FET.ENEMY_DAMAGED_DEVICE_PLAYER: _unpackCrits, 
+   _FET.PLAYER_ASSIST_TO_STUN_ENEMY: _unpackDamage, 
+   _FET.VEHICLE_VISIBILITY_CHANGED: _unpackVisibility, 
+   _FET.VEHICLE_DETECTED: _unpackVisibility, 
+   _FET.DESTRUCTIBLE_DAMAGED: _unpackDamage, 
+   _FET.DESTRUCTIBLES_DEFENDED: _unpackInteger, 
+   _FET.SMOKE_ASSIST: _unpackDamage, 
+   _FET.INSPIRE_ASSIST: _unpackDamage, 
+   _FET.PLAYER_SPOTTED_ENEMY: _unpackVisibility, 
+   _FET.PLAYER_STUN_ENEMIES: _unpackMultiStun, 
+   _FET.VEHICLE_HEALTH_ADDED: _unpackInteger}
 
 def _getShellType(shellTypeID):
-    return None if shellTypeID == NONE_SHELL_TYPE else BATTLE_LOG_SHELL_TYPES(shellTypeID)
+    if shellTypeID == NONE_SHELL_TYPE:
+        return None
+    else:
+        return BATTLE_LOG_SHELL_TYPES(shellTypeID)
 
 
 class _DamageExtra(object):
-    __slots__ = ('__damage', '__attackReasonID', '__isBurst', '__shellType', '__isShellGold', '__secondaryAttackReasonID', '__isRoleAction', '__isAutoShoot', '__attackReasonExtID')
+    __slots__ = ('__damage', '__attackReasonID', '__isBurst', '__shellType', '__isShellGold',
+                 '__secondaryAttackReasonID', '__isRoleAction', '__isAutoShoot',
+                 '__attackReasonExtID')
 
     def __init__(self, damage=0, attackReasonID=0, isBurst=False, shellTypeID=NONE_SHELL_TYPE, shellIsGold=False, secondaryAttackReasonID=0, isRoleAction=False, isAutoShoot=False, attackReasonExtID=-1):
         super(_DamageExtra, self).__init__()
@@ -141,40 +144,64 @@ class _DamageExtra(object):
         return self.isAttackReason(ATTACK_REASON.MINEFIELD_ZONE)
 
     def isProtectionZone(self, primary=True):
-        return self.isAttackReason(ATTACK_REASON.ARTILLERY_PROTECTION) or self.isAttackReason(ATTACK_REASON.ARTILLERY_SECTOR) if primary else self.isSecondaryAttackReason(ATTACK_REASON.ARTILLERY_PROTECTION) or self.isSecondaryAttackReason(ATTACK_REASON.ARTILLERY_SECTOR)
+        if primary:
+            return self.isAttackReason(ATTACK_REASON.ARTILLERY_PROTECTION) or self.isAttackReason(ATTACK_REASON.ARTILLERY_SECTOR)
+        return self.isSecondaryAttackReason(ATTACK_REASON.ARTILLERY_PROTECTION) or self.isSecondaryAttackReason(ATTACK_REASON.ARTILLERY_SECTOR)
 
     def isArtilleryEq(self, primary=True):
-        return self.isAttackReason(ATTACK_REASON.ARTILLERY_EQ) if primary else self.isSecondaryAttackReason(ATTACK_REASON.ARTILLERY_EQ)
+        if primary:
+            return self.isAttackReason(ATTACK_REASON.ARTILLERY_EQ)
+        return self.isSecondaryAttackReason(ATTACK_REASON.ARTILLERY_EQ)
 
     def isFortArtilleryEq(self, primary=True):
-        return self.isAttackReason(ATTACK_REASON.FORT_ARTILLERY_EQ) if primary else self.isSecondaryAttackReason(ATTACK_REASON.FORT_ARTILLERY_EQ)
+        if primary:
+            return self.isAttackReason(ATTACK_REASON.FORT_ARTILLERY_EQ)
+        return self.isSecondaryAttackReason(ATTACK_REASON.FORT_ARTILLERY_EQ)
 
     def isBomberEq(self, primary=True):
-        return self.isAttackReason(ATTACK_REASON.BOMBER_EQ) if primary else self.isSecondaryAttackReason(ATTACK_REASON.BOMBER_EQ)
+        if primary:
+            return self.isAttackReason(ATTACK_REASON.BOMBER_EQ)
+        return self.isSecondaryAttackReason(ATTACK_REASON.BOMBER_EQ)
 
     def isBombers(self, primary=True):
-        return self.isAttackReason(ATTACK_REASON.BOMBERS) if primary else self.isSecondaryAttackReason(ATTACK_REASON.BOMBERS)
+        if primary:
+            return self.isAttackReason(ATTACK_REASON.BOMBERS)
+        return self.isSecondaryAttackReason(ATTACK_REASON.BOMBERS)
 
     def isMineField(self, primary=True):
-        return self.isAttackReason(ATTACK_REASON.MINEFIELD_EQ) if primary else self.isSecondaryAttackReason(ATTACK_REASON.MINEFIELD_EQ)
+        if primary:
+            return self.isAttackReason(ATTACK_REASON.MINEFIELD_EQ)
+        return self.isSecondaryAttackReason(ATTACK_REASON.MINEFIELD_EQ)
 
     def isDamagingSmoke(self, primary=True):
-        return self.isAttackReason(ATTACK_REASON.SMOKE) if primary else self.isSecondaryAttackReason(ATTACK_REASON.SMOKE)
+        if primary:
+            return self.isAttackReason(ATTACK_REASON.SMOKE)
+        return self.isSecondaryAttackReason(ATTACK_REASON.SMOKE)
 
     def isCorrodingShot(self, primary=True):
-        return self.isAttackReason(ATTACK_REASON.CORRODING_SHOT) if primary else self.isSecondaryAttackReason(ATTACK_REASON.CORRODING_SHOT)
+        if primary:
+            return self.isAttackReason(ATTACK_REASON.CORRODING_SHOT)
+        return self.isSecondaryAttackReason(ATTACK_REASON.CORRODING_SHOT)
 
     def isFireCircle(self, primary=True):
-        return self.isAttackReason(ATTACK_REASON.FIRE_CIRCLE) if primary else self.isSecondaryAttackReason(ATTACK_REASON.FIRE_CIRCLE)
+        if primary:
+            return self.isAttackReason(ATTACK_REASON.FIRE_CIRCLE)
+        return self.isSecondaryAttackReason(ATTACK_REASON.FIRE_CIRCLE)
 
     def isThunderStrike(self, primary=True):
-        return self.isAttackReason(ATTACK_REASON.THUNDER_STRIKE) if primary else self.isSecondaryAttackReason(ATTACK_REASON.THUNDER_STRIKE)
+        if primary:
+            return self.isAttackReason(ATTACK_REASON.THUNDER_STRIKE)
+        return self.isSecondaryAttackReason(ATTACK_REASON.THUNDER_STRIKE)
 
     def isBattleshipStrike(self, primary=True):
-        return self.isAttackReason(ATTACK_REASON.BATTLESHIP) if primary else self.isSecondaryAttackReason(ATTACK_REASON.BATTLESHIP)
+        if primary:
+            return self.isAttackReason(ATTACK_REASON.BATTLESHIP)
+        return self.isSecondaryAttackReason(ATTACK_REASON.BATTLESHIP)
 
     def isDestroyerStrike(self, primary=True):
-        return self.isAttackReason(ATTACK_REASON.DESTROYER) if primary else self.isSecondaryAttackReason(ATTACK_REASON.DESTROYER)
+        if primary:
+            return self.isAttackReason(ATTACK_REASON.DESTROYER)
+        return self.isSecondaryAttackReason(ATTACK_REASON.DESTROYER)
 
     def isFireDamageZone(self, primary=True):
         if self.__attackReasonExtID == int(DamageZoneType.FIRE_DAMAGE_ZONE):
@@ -193,10 +220,14 @@ class _DamageExtra(object):
         return self.__isRoleAction
 
     def isSpawnedBotExplosion(self, primary=True):
-        return self.isAttackReason(ATTACK_REASON.SPAWNED_BOT_EXPLOSION) if primary else self.isSecondaryAttackReason(ATTACK_REASON.SPAWNED_BOT_EXPLOSION)
+        if primary:
+            return self.isAttackReason(ATTACK_REASON.SPAWNED_BOT_EXPLOSION)
+        return self.isSecondaryAttackReason(ATTACK_REASON.SPAWNED_BOT_EXPLOSION)
 
     def isSpawnedBotRam(self, primary=True):
-        return self.isAttackReason(ATTACK_REASON.BRANDER_RAM) if primary else self.isSecondaryAttackReason(ATTACK_REASON.BRANDER_RAM)
+        if primary:
+            return self.isAttackReason(ATTACK_REASON.BRANDER_RAM)
+        return self.isSecondaryAttackReason(ATTACK_REASON.BRANDER_RAM)
 
     def isClingBrander(self):
         isShot = self.isAttackReason(ATTACK_REASON.SHOT)
@@ -247,7 +278,8 @@ class _MultiStunExtra(object):
 
 
 class _CritsExtra(object):
-    __slots__ = ('__critsCount', '__shellType', '__isShellGold', '__attackReasonID', '__secondaryAttackReasonID', '__isAutoShoot', '__attackReasonExtID')
+    __slots__ = ('__critsCount', '__shellType', '__isShellGold', '__attackReasonID',
+                 '__secondaryAttackReasonID', '__isAutoShoot', '__attackReasonExtID')
 
     def __init__(self, critsCount=0, attackReasonID=0, shellTypeID=NONE_SHELL_TYPE, shellIsGold=False, secondaryAttackReasonID=0, isAutoShoot=False, attackReasonExtID=-1):
         super(_CritsExtra, self).__init__()
@@ -308,25 +340,39 @@ class _CritsExtra(object):
         return self.isAttackReason(ATTACK_REASON.MINEFIELD_ZONE)
 
     def isProtectionZone(self, primary=True):
-        return self.isAttackReason(ATTACK_REASON.ARTILLERY_PROTECTION) or self.isAttackReason(ATTACK_REASON.ARTILLERY_SECTOR) if primary else self.isSecondaryAttackReason(ATTACK_REASON.ARTILLERY_PROTECTION) or self.isSecondaryAttackReason(ATTACK_REASON.ARTILLERY_SECTOR)
+        if primary:
+            return self.isAttackReason(ATTACK_REASON.ARTILLERY_PROTECTION) or self.isAttackReason(ATTACK_REASON.ARTILLERY_SECTOR)
+        return self.isSecondaryAttackReason(ATTACK_REASON.ARTILLERY_PROTECTION) or self.isSecondaryAttackReason(ATTACK_REASON.ARTILLERY_SECTOR)
 
     def isArtilleryEq(self, primary=True):
-        return self.isAttackReason(ATTACK_REASON.ARTILLERY_EQ) if primary else self.isSecondaryAttackReason(ATTACK_REASON.ARTILLERY_EQ)
+        if primary:
+            return self.isAttackReason(ATTACK_REASON.ARTILLERY_EQ)
+        return self.isSecondaryAttackReason(ATTACK_REASON.ARTILLERY_EQ)
 
     def isFortArtilleryEq(self, primary=True):
-        return self.isAttackReason(ATTACK_REASON.FORT_ARTILLERY_EQ) if primary else self.isSecondaryAttackReason(ATTACK_REASON.FORT_ARTILLERY_EQ)
+        if primary:
+            return self.isAttackReason(ATTACK_REASON.FORT_ARTILLERY_EQ)
+        return self.isSecondaryAttackReason(ATTACK_REASON.FORT_ARTILLERY_EQ)
 
     def isBomberEq(self, primary=True):
-        return self.isAttackReason(ATTACK_REASON.BOMBER_EQ) if primary else self.isSecondaryAttackReason(ATTACK_REASON.BOMBER_EQ)
+        if primary:
+            return self.isAttackReason(ATTACK_REASON.BOMBER_EQ)
+        return self.isSecondaryAttackReason(ATTACK_REASON.BOMBER_EQ)
 
     def isBombers(self, primary=True):
-        return self.isAttackReason(ATTACK_REASON.BOMBERS) if primary else self.isSecondaryAttackReason(ATTACK_REASON.BOMBERS)
+        if primary:
+            return self.isAttackReason(ATTACK_REASON.BOMBERS)
+        return self.isSecondaryAttackReason(ATTACK_REASON.BOMBERS)
 
     def isBattleshipStrike(self, primary=True):
-        return self.isAttackReason(ATTACK_REASON.BATTLESHIP) if primary else self.isSecondaryAttackReason(ATTACK_REASON.BATTLESHIP)
+        if primary:
+            return self.isAttackReason(ATTACK_REASON.BATTLESHIP)
+        return self.isSecondaryAttackReason(ATTACK_REASON.BATTLESHIP)
 
     def isDestroyerStrike(self, primary=True):
-        return self.isAttackReason(ATTACK_REASON.DESTROYER) if primary else self.isSecondaryAttackReason(ATTACK_REASON.DESTROYER)
+        if primary:
+            return self.isAttackReason(ATTACK_REASON.DESTROYER)
+        return self.isSecondaryAttackReason(ATTACK_REASON.DESTROYER)
 
     def isFireDamageZone(self, primary=True):
         if self.__attackReasonExtID == int(DamageZoneType.FIRE_DAMAGE_ZONE):
@@ -354,7 +400,7 @@ class _CritsExtra(object):
 
 
 class _FeedbackEvent(object):
-    __slots__ = ('__eventType',)
+    __slots__ = ('__eventType', )
 
     def __init__(self, feedbackEventType):
         super(_FeedbackEvent, self).__init__()
@@ -369,7 +415,8 @@ class _FeedbackEvent(object):
 
 
 class PlayerFeedbackEvent(_FeedbackEvent):
-    __slots__ = ('__battleEventType', '__targetID', '__count', '__extra', '__attackReasonID', '__isBurst', '__role')
+    __slots__ = ('__battleEventType', '__targetID', '__count', '__extra', '__attackReasonID',
+                 '__isBurst', '__role')
 
     def __init__(self, feedbackEventType, eventType, targetID, count, role, extra):
         super(PlayerFeedbackEvent, self).__init__(feedbackEventType)
@@ -391,7 +438,7 @@ class PlayerFeedbackEvent(_FeedbackEvent):
                 extra = None
             role = ROLE_TYPE_TO_LABEL[ROLE_TYPE.NOT_DEFINED]
             if additionalData is not None:
-                role = ROLE_TYPE_TO_LABEL[additionalData.get('role') or ROLE_TYPE.NOT_DEFINED]
+                role = ROLE_TYPE_TO_LABEL[(additionalData.get('role') or ROLE_TYPE.NOT_DEFINED)]
             return PlayerFeedbackEvent(feedbackEventType, battleEventData['eventType'], battleEventData['targetID'], battleEventData['count'], role, extra)
         else:
             _logger.error('Battle Event Type not found %i', battleEventType)
@@ -414,7 +461,8 @@ class PlayerFeedbackEvent(_FeedbackEvent):
 
 
 class BattleSummaryFeedbackEvent(_FeedbackEvent):
-    __slots__ = ('__damage', '__trackAssistDamage', '__radioAssistDamage', '__blockedDamage', '__stunAssist')
+    __slots__ = ('__damage', '__trackAssistDamage', '__radioAssistDamage', '__blockedDamage',
+                 '__stunAssist')
 
     def __init__(self, damage, trackAssist, radioAssist, tankings, stunAssist):
         super(BattleSummaryFeedbackEvent, self).__init__(_FET.DAMAGE_LOG_SUMMARY)

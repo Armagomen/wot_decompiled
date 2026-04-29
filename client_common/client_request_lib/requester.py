@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client_common/client_request_lib/requester.py
 from functools import wraps
 from client_request_lib.data_sources.staging import StagingDataAccessor
 from client_request_lib.data_sources.fake import FakeDataAccessor
@@ -22,7 +20,10 @@ class RequestDescriptor(object):
         self.accessor = accessor_class
 
     def __get__(self, instance, owner):
-        return self if instance is None else self.accessor(instance.data_source)
+        if instance is None:
+            return self
+        else:
+            return self.accessor(instance.data_source)
 
 
 def _in_bigworld(func):
@@ -47,7 +48,9 @@ def bigworld_callback_wrapper(func):
 
 
 def bigworld_wrapped(attr):
-    return bigworld_callback_wrapper(attr) if callable(attr) else attr
+    if callable(attr):
+        return bigworld_callback_wrapper(attr)
+    return attr
 
 
 class BigworldCallbackMutator(type):
@@ -65,12 +68,6 @@ class BaseAccessor(object):
 
     def __init__(self, data_source):
         self._data_source = data_source
-
-
-class AdventCalendarAccessor(BaseAccessor):
-
-    def advent_calendar_fetch_hero_tank_info(self, callback):
-        return self._data_source.advent_calendar_fetch_hero_tank_info(callback)
 
 
 class CrafmachineAccessor(BaseAccessor):
@@ -454,11 +451,16 @@ class IngameTournamentsAccessor(BaseAccessor):
         return self._data_source.get_ingame_tournaments(callback, *args, **kwargs)
 
 
+class W2gtAccessor(BaseAccessor):
+
+    def get_w2gt_tips(self, callback, headers, params):
+        return self._data_source.get_w2gt_tips(callback, headers, params)
+
+
 class Requester(object):
-    available_data_sources = {'stagings': StagingDataAccessor,
-     'fake': FakeDataAccessor,
-     'gateway': GatewayDataAccessor}
-    advent_calendar = RequestDescriptor(AdventCalendarAccessor)
+    available_data_sources = {'stagings': StagingDataAccessor, 
+       'fake': FakeDataAccessor, 
+       'gateway': GatewayDataAccessor}
     global_map = RequestDescriptor(GmAccessor)
     ratings = RequestDescriptor(RatingAccessor)
     strongholds = RequestDescriptor(StrongholdsAccessor)
@@ -480,6 +482,7 @@ class Requester(object):
     server_replays = RequestDescriptor(ServerReplaysAccessor)
     loadouts_assistant = RequestDescriptor(LoadoutsAssistantAccessor)
     tournaments = RequestDescriptor(IngameTournamentsAccessor)
+    w2gt = RequestDescriptor(W2gtAccessor)
 
     @classmethod
     def create_requester(cls, url_fetcher, config, client_lang=None, user_agent=None):

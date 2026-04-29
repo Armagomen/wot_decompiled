@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/storage/__init__.py
 from messenger import error
 from helpers.ro_property import ROPropertyMeta
 from messenger.storage.ChannelsStorage import ChannelsStorage
@@ -7,10 +5,10 @@ from messenger.storage.shown_messages_storage import ShownMessagesStorage
 from messenger.storage.local_cache import StorageLocalCache, SimpleCachedStorage
 from messenger.storage.PlayerCtxStorage import PlayerCtxStorage
 from messenger.storage.UsersStorage import UsersStorage
-_STORAGE = {'channels': ChannelsStorage(),
- 'users': UsersStorage(),
- 'playerCtx': PlayerCtxStorage(),
- 'shownMessages': ShownMessagesStorage()}
+_STORAGE = {'channels': ChannelsStorage(), 
+   'users': UsersStorage(), 
+   'playerCtx': PlayerCtxStorage(), 
+   'shownMessages': ShownMessagesStorage()}
 _DYN_STORAGE = {}
 
 class storage_getter(object):
@@ -18,7 +16,7 @@ class storage_getter(object):
     def __init__(self, name):
         super(storage_getter, self).__init__()
         if name not in _STORAGE:
-            raise error('Storage "{0:>s}" not found'.format(name))
+            raise error(('Storage "{0:>s}" not found').format(name))
         self.__name = name
 
     def __call__(self, *args):
@@ -36,7 +34,7 @@ class dyn_storage_getter(object):
         def _getStorage(_self):
             global _DYN_STORAGE
             if self.__name not in _DYN_STORAGE:
-                raise error('Dyn storage "{0:>s}" not found'.format(self.__name))
+                raise error(('Dyn storage "{0:>s}" not found').format(self.__name))
             return _DYN_STORAGE[self.__name]
 
         return property(_getStorage)
@@ -46,7 +44,7 @@ def addDynStorage(name, storage):
     if name not in _DYN_STORAGE:
         _DYN_STORAGE[name] = storage
     else:
-        raise error('Storage "{0:>s}" is exists'.format(name))
+        raise error(('Storage "{0:>s}" is exists').format(name))
 
 
 def clearDynStorage(name):
@@ -62,7 +60,7 @@ class StorageDecorator(object):
     __readonly__ = _STORAGE
 
     def __repr__(self):
-        return 'StorageDecorator(id=0x{0:08X}, ro={1!r:s})'.format(id(self), self.__readonly__.keys())
+        return ('StorageDecorator(id=0x{0:08X}, ro={1!r:s})').format(id(self), self.__readonly__.keys())
 
     def __init__(self):
         super(StorageDecorator, self).__init__()
@@ -73,7 +71,8 @@ class StorageDecorator(object):
         if self.__storageCache:
             return
         from gui.shared.utils import getPlayerDatabaseID, getPlayerName
-        self.__storageCache = StorageLocalCache((getPlayerDatabaseID(), getPlayerName(), 'storage'))
+        self.__storageCache = StorageLocalCache((
+         getPlayerDatabaseID(), getPlayerName(), 'storage'))
         self.__storageCache.onRead += self.__onRead
         self.__storageCache.read()
 

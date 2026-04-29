@@ -1,12 +1,10 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/items/badges_common.py
 import struct
 from typing import TYPE_CHECKING, List, Tuple, Any
 import battle_pass_common
 if TYPE_CHECKING:
     from BaseAccount import BaseAccount
 ExtraInfo = List[Any]
-BadgesInfo = Tuple[List[int], ExtraInfo]
+BadgesInfo = Tuple[(List[int], ExtraInfo)]
 
 class BadgesCommon(object):
     _BADGE_IDS_LEN_FORMAT = '<B'

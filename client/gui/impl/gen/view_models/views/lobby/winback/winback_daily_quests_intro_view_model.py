@@ -1,9 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/winback/winback_daily_quests_intro_view_model.py
 from frameworks.wulf import ViewModel
 
 class WinbackDailyQuestsIntroViewModel(ViewModel):
-    __slots__ = ('onClose',)
+    __slots__ = ('onClose', )
 
     def __init__(self, properties=1, commands=1):
         super(WinbackDailyQuestsIntroViewModel, self).__init__(properties=properties, commands=commands)

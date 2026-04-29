@@ -1,9 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/seniority_awards/seniority_awards_vehicles_view.py
 from __future__ import absolute_import
-import logging
-import typing
-import BigWorld
+import logging, typing, BigWorld
 from BWUtil import AsyncReturn
 from constants import ROLE_TYPE
 from frameworks.wulf import ViewSettings, WindowLayer
@@ -36,7 +32,8 @@ from skeletons.gui.shared import IItemsCache
 from uilogging.seniority_awards.loggers import VehicleSelectionErrorNotificationsLogger
 from wg_async import wg_async, wg_await, BrokenPromiseError, AsyncScope, AsyncEvent, TimeoutError
 _logger = logging.getLogger(__name__)
-_SENIORITY_VEHICLES_ORDER = ('uk:GB156_Black_Prince_II',
+_SENIORITY_VEHICLES_ORDER = (
+ 'uk:GB156_Black_Prince_II',
  'uk:GB146_Gabler_s_Destroyer',
  'germany:G170_PzKpfwIV_Ausf_F2',
  'ussr:R197_KV_1S_MZ',
@@ -48,7 +45,9 @@ _SENIORITY_VEHICLES_ORDER = ('uk:GB156_Black_Prince_II',
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
 def _vehiclesSortOrder(vehicleCD, itemsCache=None):
     vehicle = itemsCache.items.getItemByCD(vehicleCD)
-    return _SENIORITY_VEHICLES_ORDER.index(vehicle.name) if vehicle and vehicle.name in _SENIORITY_VEHICLES_ORDER else len(_SENIORITY_VEHICLES_ORDER)
+    if vehicle and vehicle.name in _SENIORITY_VEHICLES_ORDER:
+        return _SENIORITY_VEHICLES_ORDER.index(vehicle.name)
+    return len(_SENIORITY_VEHICLES_ORDER)
 
 
 def _sortVehiclesDict(vehDictItem):
@@ -113,14 +112,16 @@ class SeniorityRewardVehiclesView(ViewImpl):
             if vehicleCD:
                 return VehicleRolesTooltipView(vehicleCD)
             _logger.warning('Parameter vehicleCD is missing')
-        return SeniorityAwardsTooltip(str(self.viewModel.getCategory()), self.viewModel.getMaxCategory(), self.__seniorityAwardsCtrl.yearsInGame) if contentID == R.views.mono.seniority_awards.tooltips.seniority_tooltip() else getRewardTooltipContent(event, self.__getBackportTooltipData(event))
+        if contentID == R.views.mono.seniority_awards.tooltips.seniority_tooltip():
+            return SeniorityAwardsTooltip(str(self.viewModel.getCategory()), self.viewModel.getMaxCategory(), self.__seniorityAwardsCtrl.yearsInGame)
+        return getRewardTooltipContent(event, self.__getBackportTooltipData(event))
 
     def _onLoading(self, vehicles, fromEntryPoint, *args, **kwargs):
         super(SeniorityRewardVehiclesView, self)._onLoading(*args, **kwargs)
         if not self.__seniorityAwardsCtrl.isVehicleSelectionAvailable and not vehicles:
             _logger.error('Wrong data to show view')
             return
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             category = getRewardCategoryForUI()
             vm.setCategory(category.lower())
             vm.setMaxCategory(self.__seniorityAwardsCtrl.maxCategory)
@@ -136,13 +137,21 @@ class SeniorityRewardVehiclesView(ViewImpl):
             vm.setViewState(self.__state)
 
     def _getEvents(self):
-        return ((self.viewModel.onMoreRewards, self.__handleOnMoreRewards),
-         (self.viewModel.onGoToHangar, self.__handleShowHangar),
-         (self.viewModel.onClose, self.__handleOnClose),
-         (self.viewModel.onSelectVehicleReward, self.__handleOnSelectVehicleReward),
-         (self.__seniorityAwardsCtrl.onUpdated, self.__onSettingsChange),
-         (self.__seniorityAwardsCtrl.onVehicleSelectionChanged, self.__onVehicleSelectionChanged),
-         (self.__seniorityAwardsCtrl.onQuestsReceived, self.__onQuestsReceived))
+        return (
+         (
+          self.viewModel.onMoreRewards, self.__handleOnMoreRewards),
+         (
+          self.viewModel.onGoToHangar, self.__handleShowHangar),
+         (
+          self.viewModel.onClose, self.__handleOnClose),
+         (
+          self.viewModel.onSelectVehicleReward, self.__handleOnSelectVehicleReward),
+         (
+          self.__seniorityAwardsCtrl.onUpdated, self.__onSettingsChange),
+         (
+          self.__seniorityAwardsCtrl.onVehicleSelectionChanged, self.__onVehicleSelectionChanged),
+         (
+          self.__seniorityAwardsCtrl.onQuestsReceived, self.__onQuestsReceived))
 
     def _finalize(self):
         self.__vehicles = []
@@ -162,7 +171,6 @@ class SeniorityRewardVehiclesView(ViewImpl):
             vehicleItem = self.__itemsCache.items.getItemByCD(vehicleCD)
             vehicleModel = SeniorityAwardsVehicleModel()
             fillVehicleModel(vehicleModel, vehicleItem)
-            vehicleModel.setRole(vehicleItem.role)
             vehiclesList.addViewModel(vehicleModel)
 
         vehiclesList.invalidate()
@@ -179,7 +187,6 @@ class SeniorityRewardVehiclesView(ViewImpl):
             vehName = removeNationFromTechName(vehicle.name)
             vehicleModel.setDescription(backport.text(R.strings.seniority_awards.vehicle.dyn(vehName)()))
             vehicleModel.setVehicleId(vehicleId)
-            vehicleModel.setRole(vehicle.role)
             vehiclesList.addViewModel(vehicleModel)
 
         vehiclesList.invalidate()
@@ -192,17 +199,20 @@ class SeniorityRewardVehiclesView(ViewImpl):
             vehicleCD = getVehicleCD(event.getArgument('vehicleCD'))
             if vehicleCD is None:
                 return
-            return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.SENIORITY_AWARD_VEHICLE, specialArgs=(vehicleCD,
-             100,
-             None,
-             None,
-             None,
-             None,
-             None,
-             False,
-             True,
-             True,
-             False)) if tooltipId == SeniorityAwardsTooltipConstants.TOOLTIP_VEHICLE_REWARD else None
+            if tooltipId == SeniorityAwardsTooltipConstants.TOOLTIP_VEHICLE_REWARD:
+                return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.SENIORITY_AWARD_VEHICLE, specialArgs=(
+                 vehicleCD,
+                 100,
+                 None,
+                 None,
+                 None,
+                 None,
+                 None,
+                 False,
+                 True,
+                 True,
+                 False))
+            return
 
     def __updateVehicles(self, vehicles):
         self.__vehicles = getSeniorityAwardsVehicles(vehicles, sortKey=_vehiclesSortOrder)
@@ -237,7 +247,8 @@ class SeniorityRewardVehiclesView(ViewImpl):
                 self.__state = ViewState.VIEW_REWARD_AFTER_SELECTION
                 vehicle = self.__seniorityAwardsCtrl.getVehicleSelectionQuestReward(self.__selectedVehicleId)
                 if vehicle:
-                    self.__vehicles = [vehicle.intCD]
+                    self.__vehicles = [
+                     vehicle.intCD]
                     self.__updateModelAfterSelection()
                 else:
                     self.destroyWindow()
@@ -266,7 +277,7 @@ class SeniorityRewardVehiclesView(ViewImpl):
         Waiting.hide('selectSeniorityAwards')
 
     def __updateModelAfterSelection(self):
-        with self.getViewModel().transaction() as vm:
+        with self.getViewModel().transaction() as (vm):
             self.__setRewards(vm)
             vm.setViewState(self.__state)
 
@@ -276,7 +287,7 @@ class SeniorityRewardVehiclesView(ViewImpl):
 
     def __onVehicleForSelectionChanged(self):
         if self.__state == ViewState.SELECTION:
-            with self.viewModel.transaction() as vm:
+            with self.viewModel.transaction() as (vm):
                 self.__setAvailableVehicles(vm)
                 vm.setAvailableRewardsCount(self.__seniorityAwardsCtrl.getVehiclesForSelectionCount)
 

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/pet_system/states.py
-import typing
-import CGF
+import typing, CGF
 from Event import Event
 from cgf_components.hangar_camera_manager import HangarCameraManager
 from frameworks.state_machine import StateFlags, StateIdsObserver
@@ -72,7 +69,8 @@ class PetStorageState(SFViewLobbyState, EventsHandler, SubhangarStateGroupConfig
         return SubhangarStateGroupConfig((SubhangarStateGroups.PetDenStorage,), self.__cameraMover)
 
     def getNavigationDescription(self):
-        return LobbyStateDescription(title=backport.text(R.strings.pet_system.petStorage.title()), infos=(LobbyStateDescription.Info(onMoreInfoRequested=showPetInfoPage),))
+        return LobbyStateDescription(title=backport.text(R.strings.pet_system.petStorage.title()), infos=(
+         LobbyStateDescription.Info(onMoreInfoRequested=showPetInfoPage),))
 
     def compareParams(self, params, otherParams):
         return True
@@ -95,7 +93,9 @@ class PetStorageState(SFViewLobbyState, EventsHandler, SubhangarStateGroupConfig
         super(PetStorageState, self)._onExited()
 
     def _getEvents(self):
-        return ((self.__hangarSpace.onSpaceChanged, self.__onSpaceChanged),)
+        return (
+         (
+          self.__hangarSpace.onSpaceChanged, self.__onSpaceChanged),)
 
     def __onSpaceChanged(self):
         showHangar()
@@ -135,7 +135,9 @@ class PetEventFullscreenWindowState(SFViewLobbyState, EventsHandler):
             yield self.fadeManager.hide(WindowLayer.OVERLAY)
 
     def _getEvents(self):
-        return ((self.hangarSpace.onSpaceChanged, self.__onSpaceChanged),)
+        return (
+         (
+          self.hangarSpace.onSpaceChanged, self.__onSpaceChanged),)
 
     def __onSpaceChanged(self):
         showHangar()

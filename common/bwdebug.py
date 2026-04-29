@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/bwdebug.py
-import BigWorld
-import sys
+import BigWorld, sys
 printPath = False
 
 def getClassName(f):
@@ -10,7 +7,8 @@ def getClassName(f):
         try:
             mro = selfClass.__mro__
         except AttributeError:
-            stack = [selfClass]
+            stack = [
+             selfClass]
             mro = []
             while stack:
                 curr = stack.pop(0)
@@ -21,7 +19,7 @@ def getClassName(f):
         for c in mro:
             try:
                 if funcName.startswith('__'):
-                    method = c.__dict__['_' + c.__name__ + funcName]
+                    method = c.__dict__[('_' + c.__name__ + funcName)]
                 else:
                     method = c.__dict__[funcName]
                 if method.func_code == f.f_code:
@@ -32,12 +30,14 @@ def getClassName(f):
     except:
         pass
 
+    return ''
+
 
 def defaultOutputMethod(category, message, metaData):
     if category == '':
         print message
     else:
-        print '[{category}] {message}'.format(category=category, message=message)
+        print ('[{category}] {message}').format(category=category, message=message)
 
 
 def _printMessage(outputMethod, args, printPath):
@@ -46,12 +46,14 @@ def _printMessage(outputMethod, args, printPath):
     if printPath:
         output += f.f_code.co_filename + '(' + str(f.f_lineno) + ') : '
     output += getClassName(f) + f.f_code.co_name + ': '
-    output += ' '.join([ str(m) for m in args ])
+    output += (' ').join([ str(m) for m in args ])
     outputMethod('', output, '')
 
 
 def getOutputMethod(method):
-    return defaultOutputMethod if not hasattr(BigWorld, method) else getattr(BigWorld, method)
+    if not hasattr(BigWorld, method):
+        return defaultOutputMethod
+    return getattr(BigWorld, method)
 
 
 def TRACE_MSG(*args):
@@ -86,7 +88,8 @@ def HACK_MSG(*args):
     _printMessage(getOutputMethod('logHack'), args, True)
 
 
-__all__ = ['TRACE_MSG',
+__all__ = [
+ 'TRACE_MSG',
  'DEBUG_MSG',
  'INFO_MSG',
  'NOTICE_MSG',

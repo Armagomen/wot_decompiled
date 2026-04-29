@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/ranked_battles/ranked_builders/widget_vos.py
 from collections import namedtuple
-import logging
-import typing
+import logging, typing
 from gui.impl.gen import R
 from gui.impl import backport
 from gui.ranked_battles.ranked_helpers import getBonusMultiplierLabel
@@ -51,7 +48,7 @@ class StepsStatesCollector(object):
 
 
 class CustomStepsStatesCollector(StepsStatesCollector):
-    __slots__ = ('_resultState',)
+    __slots__ = ('_resultState', )
 
     def __init__(self, resultState):
         super(CustomStepsStatesCollector, self).__init__()
@@ -64,7 +61,9 @@ class CustomStepsStatesCollector(StepsStatesCollector):
 class AcquiredStepsStatesCollector(CustomStepsStatesCollector):
 
     def _getSpecializedState(self, state):
-        if state in (RANKEDBATTLES_ALIASES.STEP_JUST_RECEIVED_STATE, RANKEDBATTLES_ALIASES.STEP_JUST_RECEIVED_SHORT_STATE):
+        if state in (
+         RANKEDBATTLES_ALIASES.STEP_JUST_RECEIVED_STATE,
+         RANKEDBATTLES_ALIASES.STEP_JUST_RECEIVED_SHORT_STATE):
             state = self._resultState
         return state
 
@@ -84,34 +83,35 @@ class _SequencePart(CONST_CONTAINER):
     CHAIN_TAIL = 3
 
 
-_NEUTRAL_SEQUENCE_STEPS = {_SequencePart.NOT_IN_CHAIN: StepsStatesCollector(),
- _SequencePart.CHAIN_HEAD: StepsStatesCollector(),
- _SequencePart.CHAIN_MIDDLE: StepsStatesCollector(),
- _SequencePart.CHAIN_TAIL: StepsStatesCollector()}
-_INCREASE_SEQUENCE_STEPS = {_SequencePart.NOT_IN_CHAIN: StepsStatesCollector(),
- _SequencePart.CHAIN_HEAD: StepsStatesCollector(),
- _SequencePart.CHAIN_MIDDLE: CustomStepsStatesCollector(RANKEDBATTLES_ALIASES.STEP_RECEIVED_POSITIVE_STATE),
- _SequencePart.CHAIN_TAIL: CustomStepsStatesCollector(RANKEDBATTLES_ALIASES.STEP_RECEIVED_POSITIVE_STATE)}
-_INCREASE_SEQUENCE_NEW_STEPS = {_SequencePart.NOT_IN_CHAIN: AcquiredStepsStatesCollector(RANKEDBATTLES_ALIASES.STEP_RECEIVED_BLINK_STATE),
- _SequencePart.CHAIN_HEAD: CustomStepsStatesCollector(RANKEDBATTLES_ALIASES.STEP_RECEIVED_BLINK_STATE),
- _SequencePart.CHAIN_MIDDLE: CustomStepsStatesCollector(RANKEDBATTLES_ALIASES.STEP_RECEIVED_BLINK_STATE),
- _SequencePart.CHAIN_TAIL: AcquiredStepsStatesCollector(RANKEDBATTLES_ALIASES.STEP_RECEIVED_BLINK_STATE)}
-_DECREASE_SEQUENCE_STEPS = {_SequencePart.NOT_IN_CHAIN: LostStepsStatesCollector(RANKEDBATTLES_ALIASES.STEP_JUST_LOST_SHORT_STATE),
- _SequencePart.CHAIN_HEAD: LostStepsStatesCollector(RANKEDBATTLES_ALIASES.STEP_JUST_LOST_SHORT_STATE),
- _SequencePart.CHAIN_MIDDLE: CustomStepsStatesCollector(RANKEDBATTLES_ALIASES.STEP_NOT_RECEIVED_STATE),
- _SequencePart.CHAIN_TAIL: CustomStepsStatesCollector(RANKEDBATTLES_ALIASES.STEP_NOT_RECEIVED_STATE)}
-_DECREASE_SEQUENCE_NEW_STEPS = {_SequencePart.NOT_IN_CHAIN: LostStepsStatesCollector(RANKEDBATTLES_ALIASES.STEP_LOST_BLINK_STATE),
- _SequencePart.CHAIN_HEAD: CustomStepsStatesCollector(RANKEDBATTLES_ALIASES.STEP_LOST_BLINK_STATE),
- _SequencePart.CHAIN_MIDDLE: CustomStepsStatesCollector(RANKEDBATTLES_ALIASES.STEP_LOST_BLINK_STATE),
- _SequencePart.CHAIN_TAIL: LostStepsStatesCollector(RANKEDBATTLES_ALIASES.STEP_LOST_BLINK_STATE)}
-_BONUS_STEPS = {RANKEDBATTLES_ALIASES.STEP_RECEIVED_POSITIVE_STATE: RANKEDBATTLES_ALIASES.STEP_RECEIVED_BONUS_STATE,
- RANKEDBATTLES_ALIASES.STEP_JUST_RECEIVED_STATE: RANKEDBATTLES_ALIASES.STEP_JUST_RECEIVED_BONUS_STATE,
- RANKEDBATTLES_ALIASES.STEP_JUST_RECEIVED_SHORT_STATE: RANKEDBATTLES_ALIASES.STEP_JUST_RECEIVED_SHORT_BONUS_STATE,
- RANKEDBATTLES_ALIASES.STEP_RECEIVED_BLINK_STATE: RANKEDBATTLES_ALIASES.STEP_RECEIVED_BLINK_BONUS_STATE}
+_NEUTRAL_SEQUENCE_STEPS = {_SequencePart.NOT_IN_CHAIN: StepsStatesCollector(), 
+   _SequencePart.CHAIN_HEAD: StepsStatesCollector(), 
+   _SequencePart.CHAIN_MIDDLE: StepsStatesCollector(), 
+   _SequencePart.CHAIN_TAIL: StepsStatesCollector()}
+_INCREASE_SEQUENCE_STEPS = {_SequencePart.NOT_IN_CHAIN: StepsStatesCollector(), 
+   _SequencePart.CHAIN_HEAD: StepsStatesCollector(), 
+   _SequencePart.CHAIN_MIDDLE: CustomStepsStatesCollector(RANKEDBATTLES_ALIASES.STEP_RECEIVED_POSITIVE_STATE), 
+   _SequencePart.CHAIN_TAIL: CustomStepsStatesCollector(RANKEDBATTLES_ALIASES.STEP_RECEIVED_POSITIVE_STATE)}
+_INCREASE_SEQUENCE_NEW_STEPS = {_SequencePart.NOT_IN_CHAIN: AcquiredStepsStatesCollector(RANKEDBATTLES_ALIASES.STEP_RECEIVED_BLINK_STATE), 
+   _SequencePart.CHAIN_HEAD: CustomStepsStatesCollector(RANKEDBATTLES_ALIASES.STEP_RECEIVED_BLINK_STATE), 
+   _SequencePart.CHAIN_MIDDLE: CustomStepsStatesCollector(RANKEDBATTLES_ALIASES.STEP_RECEIVED_BLINK_STATE), 
+   _SequencePart.CHAIN_TAIL: AcquiredStepsStatesCollector(RANKEDBATTLES_ALIASES.STEP_RECEIVED_BLINK_STATE)}
+_DECREASE_SEQUENCE_STEPS = {_SequencePart.NOT_IN_CHAIN: LostStepsStatesCollector(RANKEDBATTLES_ALIASES.STEP_JUST_LOST_SHORT_STATE), 
+   _SequencePart.CHAIN_HEAD: LostStepsStatesCollector(RANKEDBATTLES_ALIASES.STEP_JUST_LOST_SHORT_STATE), 
+   _SequencePart.CHAIN_MIDDLE: CustomStepsStatesCollector(RANKEDBATTLES_ALIASES.STEP_NOT_RECEIVED_STATE), 
+   _SequencePart.CHAIN_TAIL: CustomStepsStatesCollector(RANKEDBATTLES_ALIASES.STEP_NOT_RECEIVED_STATE)}
+_DECREASE_SEQUENCE_NEW_STEPS = {_SequencePart.NOT_IN_CHAIN: LostStepsStatesCollector(RANKEDBATTLES_ALIASES.STEP_LOST_BLINK_STATE), 
+   _SequencePart.CHAIN_HEAD: CustomStepsStatesCollector(RANKEDBATTLES_ALIASES.STEP_LOST_BLINK_STATE), 
+   _SequencePart.CHAIN_MIDDLE: CustomStepsStatesCollector(RANKEDBATTLES_ALIASES.STEP_LOST_BLINK_STATE), 
+   _SequencePart.CHAIN_TAIL: LostStepsStatesCollector(RANKEDBATTLES_ALIASES.STEP_LOST_BLINK_STATE)}
+_BONUS_STEPS = {RANKEDBATTLES_ALIASES.STEP_RECEIVED_POSITIVE_STATE: RANKEDBATTLES_ALIASES.STEP_RECEIVED_BONUS_STATE, 
+   RANKEDBATTLES_ALIASES.STEP_JUST_RECEIVED_STATE: RANKEDBATTLES_ALIASES.STEP_JUST_RECEIVED_BONUS_STATE, 
+   RANKEDBATTLES_ALIASES.STEP_JUST_RECEIVED_SHORT_STATE: RANKEDBATTLES_ALIASES.STEP_JUST_RECEIVED_SHORT_BONUS_STATE, 
+   RANKEDBATTLES_ALIASES.STEP_RECEIVED_BLINK_STATE: RANKEDBATTLES_ALIASES.STEP_RECEIVED_BLINK_BONUS_STATE}
 
 def getVOsSequence(preferences, stateBlocks, ranks):
     result = []
-    sequenceStates = [_SequencePart.NOT_IN_CHAIN]
+    sequenceStates = [
+     _SequencePart.NOT_IN_CHAIN]
     if len(stateBlocks) > 1:
         sequenceStates = [ _SequencePart.CHAIN_MIDDLE for _ in stateBlocks ]
         sequenceStates[0] = _SequencePart.CHAIN_HEAD
@@ -120,7 +120,8 @@ def getVOsSequence(preferences, stateBlocks, ranks):
         builder = _BLOCKS_VOS_BUILDERS.get(block.state)
         if builder is not None:
             result.append(builder(preferences, block, sequenceStates[index], ranks))
-        _logger.error('Can not find builder for state = %s', block.state)
+        else:
+            _logger.error('Can not find builder for state = %s', block.state)
 
     return result
 
@@ -138,7 +139,7 @@ def getLeagueAdditionalVOs(currentEfficiency, currentEfficiencyDiff, currentRati
 
 
 def _buildInitRankVO(preferences, stateBlock, sequenceState, ranks):
-    nextRank = ranks[stateBlock.currentID + 1]
+    nextRank = ranks[(stateBlock.currentID + 1)]
     stepsOverrider = _NEUTRAL_SEQUENCE_STEPS[sequenceState]
     steps = _getStepsVO(nextRank, preferences, stepsOverrider)
     rankRightVO = _getRankVO(nextRank, preferences)
@@ -148,7 +149,7 @@ def _buildInitRankVO(preferences, stateBlock, sequenceState, ranks):
 def _buildDecreaseRankVO(preferences, stateBlock, sequenceState, ranks):
     lastRank = ranks[stateBlock.lastID]
     currentRank = ranks[stateBlock.currentID]
-    nextRank = ranks[stateBlock.lastID + 1]
+    nextRank = ranks[(stateBlock.lastID + 1)]
     stepsOverrider = _DECREASE_SEQUENCE_STEPS[sequenceState]
     steps = _getStepsVO(nextRank, preferences, stepsOverrider)
     newStepsOverrider = _DECREASE_SEQUENCE_NEW_STEPS[sequenceState]
@@ -164,7 +165,7 @@ def _buildDecreaseRankVO(preferences, stateBlock, sequenceState, ranks):
 def _buildIncreaseRankVO(preferences, stateBlock, sequenceState, ranks):
     lastRank = ranks[stateBlock.lastID]
     currentRank = ranks[stateBlock.currentID]
-    nextRank = ranks[stateBlock.currentID + 1]
+    nextRank = ranks[(stateBlock.currentID + 1)]
     stepsOverrider = _INCREASE_SEQUENCE_STEPS[sequenceState]
     steps = _getStepsVO(currentRank, preferences, stepsOverrider)
     newStepsOverrider = _INCREASE_SEQUENCE_NEW_STEPS[sequenceState]
@@ -179,7 +180,7 @@ def _buildIncreaseRankVO(preferences, stateBlock, sequenceState, ranks):
 
 def _buildSameRankVO(preferences, stateBlock, sequenceState, ranks):
     currentRank = ranks[stateBlock.currentID]
-    nextRank = ranks[stateBlock.currentID + 1]
+    nextRank = ranks[(stateBlock.currentID + 1)]
     stepsOverrider = _NEUTRAL_SEQUENCE_STEPS[sequenceState]
     steps = _getStepsVO(nextRank, preferences, stepsOverrider)
     rankLeftVO = _getRankVO(currentRank, preferences, True)
@@ -191,7 +192,7 @@ def _buildSameRankVO(preferences, stateBlock, sequenceState, ranks):
 def _buildDivisionRecieveVO(preferences, stateBlock, sequenceState, ranks):
     lastRank = ranks[stateBlock.lastID]
     currentRank = ranks[stateBlock.currentID]
-    nextRank = ranks[stateBlock.currentID + 1]
+    nextRank = ranks[(stateBlock.currentID + 1)]
     stepsOverrider = _INCREASE_SEQUENCE_STEPS[sequenceState]
     steps = _getStepsVO(currentRank, preferences, stepsOverrider)
     newStepsOverrider = _INCREASE_SEQUENCE_NEW_STEPS[sequenceState]
@@ -204,7 +205,7 @@ def _buildDivisionRecieveVO(preferences, stateBlock, sequenceState, ranks):
 
 
 def _buildQualificationIdleVO(preferences, stateBlock, sequenceState, ranks):
-    nextRank = ranks[stateBlock.currentID + 1]
+    nextRank = ranks[(stateBlock.currentID + 1)]
     infoText, nextInfoText = _getInfoTexts(stateBlock)
     rankRightVO = _getQualificationVO(nextRank)
     return _getBlockVO(preferences, stateBlock.state, rankRightVO=rankRightVO, infoText=infoText, nextInfoText=nextInfoText)
@@ -212,7 +213,7 @@ def _buildQualificationIdleVO(preferences, stateBlock, sequenceState, ranks):
 
 def _buildQualificationRecieveVO(preferences, stateBlock, sequenceState, ranks):
     currentRank = ranks[stateBlock.currentID]
-    nextRank = ranks[stateBlock.currentID + 1]
+    nextRank = ranks[(stateBlock.currentID + 1)]
     newStepsOverrider = _INCREASE_SEQUENCE_NEW_STEPS[sequenceState]
     newSteps = _getStepsVO(nextRank, preferences, newStepsOverrider)
     infoText, nextInfoText = _getInfoTexts(stateBlock)
@@ -224,7 +225,7 @@ def _buildQualificationRecieveVO(preferences, stateBlock, sequenceState, ranks):
 
 def _buildLeagueRecieveVO(preferences, stateBlock, sequenceState, ranks):
     lastRank = ranks[stateBlock.lastID]
-    currentRank = ranks[stateBlock.lastID + 1]
+    currentRank = ranks[(stateBlock.lastID + 1)]
     stepsOverrider = _INCREASE_SEQUENCE_STEPS[sequenceState]
     steps = _getStepsVO(currentRank, preferences, stepsOverrider)
     rankLeftVO = _getRankVO(lastRank, preferences, True)
@@ -240,7 +241,7 @@ def _buildLeagueUpdateVO(preferences, stateBlock, sequenceState, ranks):
         leagueVO = _getLeagueVO(stateBlock.lastID, stateBlock.additionalVOs.lastEfficiencyVO, stateBlock.additionalVOs.lastRatingVO)
         title = ''
         infoText = ''
-        newLeagueName = backport.text(R.strings.ranked_battles.rankedBattlesWidget.dyn('league{}'.format(stateBlock.currentID))())
+        newLeagueName = backport.text(R.strings.ranked_battles.rankedBattlesWidget.dyn(('league{}').format(stateBlock.currentID))())
         if stateBlock.state == RANKEDBATTLES_ALIASES.LEAGUE_INCREASE_STATE:
             title = backport.text(R.strings.ranked_battles.rankedBattlesWidget.leagueIncrease.title())
             infoText = backport.text(R.strings.ranked_battles.rankedBattlesWidget.leagueIncrease.info(), leagueName=newLeagueName)
@@ -251,28 +252,28 @@ def _buildLeagueUpdateVO(preferences, stateBlock, sequenceState, ranks):
     return _getBlockVO(preferences, stateBlock.state, leagueVO=leagueVO, newLeagueVO=newLeagueVO)
 
 
-_BLOCKS_VOS_BUILDERS = {RANKEDBATTLES_ALIASES.RANK_IDLE_STATE: _buildSameRankVO,
- RANKEDBATTLES_ALIASES.RANK_INIT_STATE: _buildInitRankVO,
- RANKEDBATTLES_ALIASES.RANK_LOST_STATE: _buildDecreaseRankVO,
- RANKEDBATTLES_ALIASES.FIRST_RANK_LOST_STATE: _buildDecreaseRankVO,
- RANKEDBATTLES_ALIASES.FIRST_RANK_RECEIVE_STATE: _buildIncreaseRankVO,
- RANKEDBATTLES_ALIASES.FIRST_RANK_REACHIVE_STATE: _buildIncreaseRankVO,
- RANKEDBATTLES_ALIASES.RANK_RECEIVE_STATE: _buildIncreaseRankVO,
- RANKEDBATTLES_ALIASES.RANK_REACHIVE_STATE: _buildIncreaseRankVO,
- RANKEDBATTLES_ALIASES.QUAL_IDLE_STATE: _buildQualificationIdleVO,
- RANKEDBATTLES_ALIASES.QUAL_DIVISION_FINISHED_STATE: _buildQualificationRecieveVO,
- RANKEDBATTLES_ALIASES.DIVISION_RECEIVE_STATE: _buildDivisionRecieveVO,
- RANKEDBATTLES_ALIASES.LEAGUE_RECEIVE_STATE: _buildLeagueRecieveVO,
- RANKEDBATTLES_ALIASES.LEAGUE_INCREASE_STATE: _buildLeagueUpdateVO,
- RANKEDBATTLES_ALIASES.LEAGUE_DECREASE_STATE: _buildLeagueUpdateVO,
- RANKEDBATTLES_ALIASES.LEAGUE_IDLE_STATE: _buildLeagueUpdateVO,
- RANKEDBATTLES_ALIASES.ANIM_SHIELD_NOT_FULL: _buildSameRankVO,
- RANKEDBATTLES_ALIASES.ANIM_SHIELD_RENEW: _buildSameRankVO,
- RANKEDBATTLES_ALIASES.ANIM_SHIELD_FULL_RENEW: _buildSameRankVO,
- RANKEDBATTLES_ALIASES.ANIM_SHIELD_LOSE_FROM_FULL: _buildSameRankVO,
- RANKEDBATTLES_ALIASES.ANIM_SHIELD_LOSE: _buildSameRankVO,
- RANKEDBATTLES_ALIASES.ANIM_SHIELD_LOSE_STEP_FROM_FULL: _buildSameRankVO,
- RANKEDBATTLES_ALIASES.ANIM_SHIELD_LOSE_STEP: _buildSameRankVO}
+_BLOCKS_VOS_BUILDERS = {RANKEDBATTLES_ALIASES.RANK_IDLE_STATE: _buildSameRankVO, 
+   RANKEDBATTLES_ALIASES.RANK_INIT_STATE: _buildInitRankVO, 
+   RANKEDBATTLES_ALIASES.RANK_LOST_STATE: _buildDecreaseRankVO, 
+   RANKEDBATTLES_ALIASES.FIRST_RANK_LOST_STATE: _buildDecreaseRankVO, 
+   RANKEDBATTLES_ALIASES.FIRST_RANK_RECEIVE_STATE: _buildIncreaseRankVO, 
+   RANKEDBATTLES_ALIASES.FIRST_RANK_REACHIVE_STATE: _buildIncreaseRankVO, 
+   RANKEDBATTLES_ALIASES.RANK_RECEIVE_STATE: _buildIncreaseRankVO, 
+   RANKEDBATTLES_ALIASES.RANK_REACHIVE_STATE: _buildIncreaseRankVO, 
+   RANKEDBATTLES_ALIASES.QUAL_IDLE_STATE: _buildQualificationIdleVO, 
+   RANKEDBATTLES_ALIASES.QUAL_DIVISION_FINISHED_STATE: _buildQualificationRecieveVO, 
+   RANKEDBATTLES_ALIASES.DIVISION_RECEIVE_STATE: _buildDivisionRecieveVO, 
+   RANKEDBATTLES_ALIASES.LEAGUE_RECEIVE_STATE: _buildLeagueRecieveVO, 
+   RANKEDBATTLES_ALIASES.LEAGUE_INCREASE_STATE: _buildLeagueUpdateVO, 
+   RANKEDBATTLES_ALIASES.LEAGUE_DECREASE_STATE: _buildLeagueUpdateVO, 
+   RANKEDBATTLES_ALIASES.LEAGUE_IDLE_STATE: _buildLeagueUpdateVO, 
+   RANKEDBATTLES_ALIASES.ANIM_SHIELD_NOT_FULL: _buildSameRankVO, 
+   RANKEDBATTLES_ALIASES.ANIM_SHIELD_RENEW: _buildSameRankVO, 
+   RANKEDBATTLES_ALIASES.ANIM_SHIELD_FULL_RENEW: _buildSameRankVO, 
+   RANKEDBATTLES_ALIASES.ANIM_SHIELD_LOSE_FROM_FULL: _buildSameRankVO, 
+   RANKEDBATTLES_ALIASES.ANIM_SHIELD_LOSE: _buildSameRankVO, 
+   RANKEDBATTLES_ALIASES.ANIM_SHIELD_LOSE_STEP_FROM_FULL: _buildSameRankVO, 
+   RANKEDBATTLES_ALIASES.ANIM_SHIELD_LOSE_STEP: _buildSameRankVO}
 
 def _getStepsVO(rank, preferences, statesCollector=StepsStatesCollector()):
     infoText = ''
@@ -280,55 +281,57 @@ def _getStepsVO(rank, preferences, statesCollector=StepsStatesCollector()):
         progress = rank.getProgress()
         if progress and preferences.isHuge and progress.getBonusSteps():
             infoText = _getBonusStepsLabel()
-    return {'steps': statesCollector.getStates(rank),
-     'infoText': infoText}
+    return {'steps': statesCollector.getStates(rank), 'infoText': infoText}
 
 
 def _getRankVO(rank, preferences, isEnabled=False):
-    return shared_vos.buildRankVO(rank=rank, isEnabled=isEnabled, imageSize=RANKEDBATTLES_ALIASES.WIDGET_HUGE if preferences.isHuge else RANKEDBATTLES_ALIASES.WIDGET_MEDIUM, hasTooltip=preferences.hasAdditionalRankInfo, shieldStatus=rank.getShieldStatus(), shieldAnimated=True, showUnburnable=True) if rank is not None else None
+    if rank is not None:
+        return shared_vos.buildRankVO(rank=rank, isEnabled=isEnabled, imageSize=RANKEDBATTLES_ALIASES.WIDGET_HUGE if preferences.isHuge else RANKEDBATTLES_ALIASES.WIDGET_MEDIUM, hasTooltip=preferences.hasAdditionalRankInfo, shieldStatus=rank.getShieldStatus(), shieldAnimated=True, showUnburnable=True)
+    else:
+        return
 
 
 def _getQualificationVO(rank):
-    return {'imageSrc': backport.image(R.images.gui.maps.icons.rankedBattles.divisions.c_80x110.c_0()),
-     'smallImageSrc': backport.image(R.images.gui.maps.icons.rankedBattles.divisions.c_58x80.c_0()),
-     'isEnabled': True,
-     'rankID': str(rank.getID()),
-     'hasTooltip': False,
-     'shield': None}
+    return {'imageSrc': backport.image(R.images.gui.maps.icons.rankedBattles.divisions.c_80x110.c_0()), 
+       'smallImageSrc': backport.image(R.images.gui.maps.icons.rankedBattles.divisions.c_58x80.c_0()), 
+       'isEnabled': True, 
+       'rankID': str(rank.getID()), 
+       'hasTooltip': False, 
+       'shield': None}
 
 
 def _getDivisionVO(divisionID, newDivisionID):
-    return {'division': divisionID,
-     'newDivision': newDivisionID,
-     'title': backport.text(R.strings.ranked_battles.rankedBattlesWidget.newDivisionCongrat.title()),
-     'infoText': backport.text(R.strings.ranked_battles.rankedBattlesWidget.newDivisionCongrat.info())}
+    return {'division': divisionID, 
+       'newDivision': newDivisionID, 
+       'title': backport.text(R.strings.ranked_battles.rankedBattlesWidget.newDivisionCongrat.title()), 
+       'infoText': backport.text(R.strings.ranked_battles.rankedBattlesWidget.newDivisionCongrat.info())}
 
 
 def _getLeagueVO(leagueID, efficiencyVO, positionVO, title='', infoText=''):
-    return {'league': leagueID,
-     'efficiency': efficiencyVO,
-     'position': positionVO,
-     'title': title,
-     'infoText': infoText}
+    return {'league': leagueID, 
+       'efficiency': efficiencyVO, 
+       'position': positionVO, 
+       'title': title, 
+       'infoText': infoText}
 
 
 def _getBlockVO(preferences, state, infoText='', nextInfoText='', rankLeftVO=None, rankRightVO=None, newRankVO=None, steps=None, newSteps=None, leagueVO=None, newLeagueVO=None, divisionVO=None, finalState=None):
-    return {'state': state,
-     'rankLeftVO': rankLeftVO,
-     'rankRightVO': rankRightVO,
-     'newRankVO': newRankVO,
-     'stepsContainerVO': steps or {'steps': (),
-                          'infoText': ''},
-     'newStepsContainerVO': newSteps or {'steps': (),
-                             'infoText': ''},
-     'infoText': infoText,
-     'nextInfoText': nextInfoText,
-     'divisionVO': divisionVO,
-     'leagueVO': leagueVO,
-     'newLeagueVO': newLeagueVO,
-     'isHuge': preferences.isHuge,
-     'animationEnabled': preferences.isAnimationEnabled,
-     'finalState': finalState}
+    return {'state': state, 
+       'rankLeftVO': rankLeftVO, 
+       'rankRightVO': rankRightVO, 
+       'newRankVO': newRankVO, 
+       'stepsContainerVO': steps or {'steps': (), 
+                            'infoText': ''}, 
+       'newStepsContainerVO': newSteps or {'steps': (), 
+                               'infoText': ''}, 
+       'infoText': infoText, 
+       'nextInfoText': nextInfoText, 
+       'divisionVO': divisionVO, 
+       'leagueVO': leagueVO, 
+       'newLeagueVO': newLeagueVO, 
+       'isHuge': preferences.isHuge, 
+       'animationEnabled': preferences.isAnimationEnabled, 
+       'finalState': finalState}
 
 
 def _getFinalState(preferences, state, rankLeftVO=None, rankRightVO=None, steps=None):
@@ -361,7 +364,8 @@ def _getInfoTexts(stateBlock):
         infoText = text_styles.highlightText(backport.text(R.strings.ranked_battles.rankedBattlesWidget.qualificationIdleText(), currentBattles=text_styles.highlightText(stateBlock.additionalVOs.currentBattles), totalBattles=text_styles.mainBig(stateBlock.additionalVOs.totalBattles)))
     if stateBlock.state in (RANKEDBATTLES_ALIASES.FIRST_RANK_RECEIVE_STATE, RANKEDBATTLES_ALIASES.RANK_RECEIVE_STATE):
         newInfoText = text_styles.hightlight(backport.text(R.strings.ranked_battles.rankedBattlesWidget.newRankCongrat()))
-    return (infoText, newInfoText)
+    return (
+     infoText, newInfoText)
 
 
 def _updateShield(rankVO):
@@ -381,8 +385,8 @@ def _updateSteps(stepsVO):
         for step in stepsVO.get('steps'):
             if step in RANKEDBATTLES_ALIASES.STEP_RECEIVED_STATES:
                 resultVO.append(RANKEDBATTLES_ALIASES.STEP_RECEIVED_STATE)
-            resultVO.append(RANKEDBATTLES_ALIASES.STEP_NOT_RECEIVED_STATE)
+            else:
+                resultVO.append(RANKEDBATTLES_ALIASES.STEP_NOT_RECEIVED_STATE)
 
         infoText = stepsVO.get('infoText', '')
-    return {'steps': resultVO,
-     'infoText': infoText}
+    return {'steps': resultVO, 'infoText': infoText}

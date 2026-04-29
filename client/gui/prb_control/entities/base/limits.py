@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/entities/base/limits.py
 import weakref
 from collections import defaultdict
 from shared_utils import findFirst
@@ -14,13 +12,15 @@ from prebattle_shared import isTeamValid, isVehicleValid
 class IVehicleLimit(object):
 
     def check(self, teamLimits):
-        return (True, '')
+        return (
+         True, '')
 
 
 class ITeamLimit(object):
 
     def check(self, rosters, team, teamLimits):
-        return (True, '')
+        return (
+         True, '')
 
 
 class VehicleIsValid(IVehicleLimit):
@@ -80,7 +80,8 @@ class TeamNoPlayersInBattle(ITeamLimit):
                 if filtered:
                     return (False, PREBATTLE_RESTRICTION.HAS_PLAYER_IN_BATTLE)
 
-        return (True, '')
+        return (
+         True, '')
 
     def __isPlayerInBattle(self, player):
         return player['state'] & PREBATTLE_ACCOUNT_STATE.IN_BATTLE != 0
@@ -89,7 +90,9 @@ class TeamNoPlayersInBattle(ITeamLimit):
 class TeamAllPlayersReady(AbstractTeamIsValid):
 
     def check(self, rosters, team, teamLimits):
-        return (False, PREBATTLE_RESTRICTION.VEHICLE_NOT_READY) if findFirst(self.__isPlayerNotReady, self._getAccountsInfo(rosters, team).itervalues()) else (True, '')
+        if findFirst(self.__isPlayerNotReady, self._getAccountsInfo(rosters, team).itervalues()):
+            return (False, PREBATTLE_RESTRICTION.VEHICLE_NOT_READY)
+        return (True, '')
 
     def __isPlayerNotReady(self, player):
         return player['state'] & PREBATTLE_ACCOUNT_STATE.NOT_READY != 0
@@ -114,8 +117,11 @@ class MaxCount(ITeamLimit):
                 key = PREBATTLE_ROSTER.UNASSIGNED_IN_TEAM1
             else:
                 key = PREBATTLE_ROSTER.UNASSIGNED_IN_TEAM2
-        maxCount = prb_getters.getMaxSizeLimits(teamLimits)[index]
-        return (False, PREBATTLE_RESTRICTION.LIMIT_MAX_COUNT) if key in rosters and len(rosters[key]) >= maxCount else (True, '')
+            maxCount = prb_getters.getMaxSizeLimits(teamLimits)[index]
+            if key in rosters and len(rosters[key]) >= maxCount:
+                return (False, PREBATTLE_RESTRICTION.LIMIT_MAX_COUNT)
+        return (
+         True, '')
 
 
 class TotalMaxCount(ITeamLimit):
@@ -124,9 +130,11 @@ class TotalMaxCount(ITeamLimit):
         maxCount = sum(prb_getters.getMaxSizeLimits(teamLimits))
         result, restriction = True, ''
         if team is 1:
-            keys = [PREBATTLE_ROSTER.ASSIGNED_IN_TEAM1, PREBATTLE_ROSTER.UNASSIGNED_IN_TEAM1]
+            keys = [PREBATTLE_ROSTER.ASSIGNED_IN_TEAM1,
+             PREBATTLE_ROSTER.UNASSIGNED_IN_TEAM1]
         else:
-            keys = [PREBATTLE_ROSTER.ASSIGNED_IN_TEAM2, PREBATTLE_ROSTER.UNASSIGNED_IN_TEAM2]
+            keys = [PREBATTLE_ROSTER.ASSIGNED_IN_TEAM2,
+             PREBATTLE_ROSTER.UNASSIGNED_IN_TEAM2]
         playersCount = 0
         for key in keys:
             if key in rosters:
@@ -159,7 +167,8 @@ class VehiclesLevelLimit(ITeamLimit):
             if not minLevel <= totalLevel <= maxLevel:
                 isValid = False
                 notValidReason = PREBATTLE_RESTRICTION.LIMIT_TOTAL_LEVEL
-        return (isValid, notValidReason)
+        return (
+         isValid, notValidReason)
 
     def __calculate(self, rosters):
         classLevels = defaultdict(lambda : 0)
@@ -178,7 +187,8 @@ class VehiclesLevelLimit(ITeamLimit):
                     classLevels[vehClass] = max(classLevels[vehClass], level)
                 totalLevel += level
 
-        return (totalLevel, classLevels)
+        return (
+         totalLevel, classLevels)
 
 
 class LimitsCollection(object):
@@ -229,7 +239,8 @@ class LimitsCollection(object):
         settings = self.__entity.getSettings()
         rosters = prb_getters.getPrebattleRosters()
         result, errorCode = MaxCount(assigned=assigned).check(rosters, team, settings.getTeamLimits(team))
-        return ValidationResult(result, errorCode) if not result else None
+        if not result:
+            return ValidationResult(result, errorCode)
 
     def _getEntity(self):
         return self.__entity

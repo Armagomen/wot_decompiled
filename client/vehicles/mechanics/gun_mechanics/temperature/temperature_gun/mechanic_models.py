@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicles/mechanics/gun_mechanics/temperature/temperature_gun/mechanic_models.py
 from __future__ import absolute_import, division
-import typing
-import BigWorld
+import typing, BigWorld
 from constants import TEMPERATURE_GUN_STATE
 from gui.battle_control.components_states.ammo import DefaultComponentAmmoState
 from gui.shared.utils.decorators import ReprInjector

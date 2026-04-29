@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_pass/state_machine/state_machine_helpers.py
-import logging
-import typing
+import logging, typing
 from battle_pass_common import BATTLE_PASS_OFFER_TOKEN_PREFIX, BATTLE_PASS_TOKEN_3D_STYLE, BattlePassRewardReason, getBattlePassPassEntitlementName, getBattlePassShopEntitlementName, isPostProgressionChapter
 from gui.battle_pass.battle_pass_helpers import getOfferTokenByGift, getStyleInfoForChapter, makeChapterMediaName
 from gui.impl.gen import R
@@ -19,7 +16,7 @@ _logger.addHandler(logging.NullHandler())
 @dependency.replace_none_kwargs(battlePass=IBattlePassController)
 def isProgressionComplete(_, battlePass=None):
     if battlePass.getMainChapterIDs():
-        isCompleted = all((battlePass.isChapterCompleted(chapter) for chapter in battlePass.getMainChapterIDs()))
+        isCompleted = all(battlePass.isChapterCompleted(chapter) for chapter in battlePass.getMainChapterIDs())
         isAllChosen = battlePass.getNotChosenRewardCount() == 0
         isAllChaptersBought = battlePass.isAllMainChaptersBought()
         return isCompleted and isAllChosen and isAllChaptersBought
@@ -57,13 +54,13 @@ def separateRewards(rewards):
 
 
 @dependency.replace_none_kwargs(battlePass=IBattlePassController)
-def packStartEvent(rewards, data, packageRewards, eventMethod, battlePass=None):
+def packStartEvent(rewards, data, packageRewards, starterPack, eventMethod, battlePass=None):
     if rewards is None or data is None:
         return
+    reason = data['reason']
+    if reason in (BattlePassRewardReason.STYLE_UPGRADE,):
+        return
     else:
-        reason = data['reason']
-        if reason in (BattlePassRewardReason.STYLE_UPGRADE,):
-            return
         if not ('newLevel' in data and 'chapter' in data):
             return
         isPremiumPurchase = reason in BattlePassRewardReason.PURCHASE_REASONS
@@ -86,29 +83,31 @@ def packStartEvent(rewards, data, packageRewards, eventMethod, battlePass=None):
             rewards['entitlements'].pop(getBattlePassShopEntitlementName(battlePass.getSeasonID()), None)
             if not rewards['entitlements']:
                 rewards.pop('entitlements')
-        return None if not isPremiumPurchase and not isRareLevel and not isFinalLevel or not rewards else EventNotificationCommand(NotificationEvent(method=eventMethod, rewards=[rewards], data=data, packageRewards=packageRewards))
+        if not isPremiumPurchase and not isRareLevel and not isFinalLevel or not rewards:
+            return
+        return EventNotificationCommand(NotificationEvent(method=eventMethod, rewards=[
+         rewards], data=data, packageRewards=packageRewards, starterPack=starterPack))
 
 
 @dependency.replace_none_kwargs(battlePass=IBattlePassController)
-def multipleBattlePassPurchasedEventMethod(rewards, data, packageRewards, battlePass=None):
+def multipleBattlePassPurchasedEventMethod(rewards, data, packageRewards, starterPack, battlePass=None):
     if battlePass.isDisabled():
         return
     else:
         currentChapterID = battlePass.getCurrentChapterID()
         chapterID = currentChapterID if not isPostProgressionChapter(currentChapterID) else None
         showBattlePass(R.aliases.battle_pass.Progression() if chapterID else None, chapterID)
-        battlePass.getRewardLogic().startRewardFlow(rewards, data, packageRewards)
+        battlePass.getRewardLogic().startRewardFlow(rewards, data, packageRewards, starterPack)
         return
 
 
 @dependency.replace_none_kwargs(battlePass=IBattlePassController)
-def defaultEventMethod(rewards, data, packageRewards, battlePass=None):
-    battlePass.getRewardLogic().startRewardFlow(rewards, data, packageRewards)
+def defaultEventMethod(rewards, data, packageRewards, starterPack, battlePass=None):
+    battlePass.getRewardLogic().startRewardFlow(rewards, data, packageRewards, starterPack)
 
 
 def packToken(tokenID):
-    return {'tokens': {tokenID: {'count': 1,
-                          'expires': {'after': 1}}}}
+    return {'tokens': {tokenID: {'count': 1, 'expires': {'after': 1}}}}
 
 
 @dependency.replace_none_kwargs(battlePass=IBattlePassController)

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/lootbox_system/base/utils.py
-import logging
-import random
+import logging, random
 from typing import TYPE_CHECKING
 import BigWorld
 from CurrentVehicle import g_currentVehicle
@@ -40,11 +37,13 @@ def openBoxes(eventName, category, count, processResult=None, lootBoxes=None):
         result = yield LootBoxSystemOpenProcessor(box, count).request()
         if result and result.success:
             if callable(processResult):
-                processResult([ AwardsManager.composeBonuses(eventName, [slot]) for slot in result.auxData['bonus'] ])
+                processResult([ AwardsManager.composeBonuses(eventName, [slot]) for slot in result.auxData['bonus']
+                              ])
         else:
             _logger.error('Failed to open loot box')
     else:
-        pathParts = 'serviceChannelMessages/server_error'.split('/')
+        pathParts = [
+         'serviceChannelMessages', 'server_error']
         SystemMessages.pushMessage(text=backport.text(getTextResource(pathParts + ['DISABLED'], eventName)()), type=SystemMessages.SM_TYPE.ErrorHeader, priority=NotificationPriorityLevel.MEDIUM, messageData={'header': backport.text(getTextResource(pathParts, eventName)())})
         g_eventBus.handleEvent(events.LootBoxSystemEvent(events.LootBoxSystemEvent.OPENING_ERROR), scope=EVENT_BUS_SCOPE.LOBBY)
     return
@@ -52,7 +51,9 @@ def openBoxes(eventName, category, count, processResult=None, lootBoxes=None):
 
 @dependency.replace_none_kwargs(lootBoxes=ILootBoxSystemController)
 def getPreferredBox(eventName, category='', lootBoxes=None):
-    return first(lootBoxes.getBoxes(eventName, lambda b: b.getCategory() == category)) if category else first(lootBoxes.getActiveBoxes(eventName, lambda b: b.getInventoryCount())) or first(lootBoxes.getActiveBoxes(eventName))
+    if category:
+        return first(lootBoxes.getBoxes(eventName, lambda b: b.getCategory() == category))
+    return first(lootBoxes.getActiveBoxes(eventName, lambda b: b.getInventoryCount())) or first(lootBoxes.getActiveBoxes(eventName))
 
 
 def getSystemSettings(setting):
@@ -62,23 +63,35 @@ def getSystemSettings(setting):
 def getInfoPageSettings(eventName, setting):
     settings = getSystemSettings('infoPage').get(setting) or {}
     eventSetting = settings.get(eventName)
-    return eventSetting if eventSetting is not None else settings.get('default')
+    if eventSetting is not None:
+        return eventSetting
+    else:
+        return settings.get('default')
 
 
 def getIsShowIntro(eventName):
     visibilitySettings = getSystemSettings('intro').get('isShowIntro') or {}
-    return visibilitySettings.get('default', True) if visibilitySettings.get(eventName) is None else visibilitySettings.get(eventName)
+    if visibilitySettings.get(eventName) is None:
+        return visibilitySettings.get('default', True)
+    else:
+        return visibilitySettings.get(eventName)
 
 
 def getIntroVideoUrl(eventName):
     urlSettings = getSystemSettings('intro').get('introUrl') or {}
     urlPart = urlSettings.get(eventName) if urlSettings.get(eventName) is not None else urlSettings.get('default', '')
-    return ''.join((GUI_SETTINGS.baseUrls['webBridgeRootURL'], urlPart)) if urlPart else ''
+    if urlPart:
+        return ('').join((GUI_SETTINGS.baseUrls['webBridgeRootURL'], urlPart))
+    else:
+        return ''
 
 
 def getIsStartFinishNotificationsVisible(eventName):
     notificationSettings = getSystemSettings('isStartFinishNotificationsVisible') or {}
-    return notificationSettings.get('default', True) if notificationSettings.get(eventName) is None else notificationSettings.get(eventName)
+    if notificationSettings.get(eventName) is None:
+        return notificationSettings.get('default', True)
+    else:
+        return notificationSettings.get(eventName)
 
 
 def getOpeningOptions(eventName):
@@ -94,7 +107,10 @@ def getShopOverlayUrl(eventName):
 
 def isShopVisible(eventName):
     shopVisibility = getSystemSettings('shop').get('isShopVisible') or {}
-    return shopVisibility.get('default', True) if shopVisibility.get(eventName) is None else shopVisibility.get(eventName)
+    if shopVisibility.get(eventName) is None:
+        return shopVisibility.get('default', True)
+    else:
+        return shopVisibility.get(eventName)
 
 
 def isCountryForShowingExternalLootList():
@@ -119,7 +135,10 @@ def setIsAnimationActive(eventName, value, lootBoxes=None):
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
 def getLootboxStatisticsKey(eventName, boxID=None, itemsCache=None):
     box = findFirst(lambda b: b.getID() == boxID, itemsCache.items.tokens.getLootBoxes().itervalues())
-    return box.getStatsName() or str(boxID) if box is not None else getPreferredBox(eventName).getStatsName()
+    if box is not None:
+        return box.getStatsName() or str(boxID)
+    else:
+        return getPreferredBox(eventName).getStatsName()
 
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
@@ -139,7 +158,9 @@ def getVehicleForStyle(style, itemsCache=None):
         if suitableVehicles:
             return first(suitableVehicles)
         suitableVehicles = _getVehiclesForStylePreview(criteria=~REQ_CRITERIA.INVENTORY | ~REQ_CRITERIA.VEHICLE.IS_OUTFIT_LOCKED | REQ_CRITERIA.VEHICLE.FOR_ITEM(style) | ~REQ_CRITERIA.VEHICLE.EVENT)
-        return random.choice(suitableVehicles) if suitableVehicles else first(_getVehiclesForStylePreview(criteria=REQ_CRITERIA.VEHICLE.FOR_ITEM(style)))
+        if suitableVehicles:
+            return random.choice(suitableVehicles)
+        return first(_getVehiclesForStylePreview(criteria=REQ_CRITERIA.VEHICLE.FOR_ITEM(style)))
 
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)

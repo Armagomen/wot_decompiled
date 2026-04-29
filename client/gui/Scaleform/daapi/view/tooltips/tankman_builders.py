@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/tooltips/tankman_builders.py
+from __future__ import absolute_import
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.impl import backport
 from gui.impl.backport.backport_tooltip import DecoratedTooltipWindow
@@ -26,7 +25,7 @@ from helpers import dependency
 from skeletons.gui.game_control import IBattleRoyaleController
 from skeletons.gui.goodies import IGoodiesCache
 from skeletons.gui.shared import IItemsCache
-__all__ = ('getTooltipBuilders',)
+__all__ = ('getTooltipBuilders', )
 
 def _advancedPerkCondition(skillName, *_):
     return skillName in advanced.SKILL_MOVIES
@@ -64,16 +63,16 @@ class SpecialTankmanTooltipBuilder(DataBuilder):
 
 class CrewPerkTooltipData(ToolTipBaseData):
 
-    def __init__(self, context):
-        super(CrewPerkTooltipData, self).__init__(context, TOOLTIPS_CONSTANTS.CREW_PERK_GF)
+    def __init__(self, context, toolTipType=TOOLTIPS_CONSTANTS.CREW_PERK_GF):
+        super(CrewPerkTooltipData, self).__init__(context, toolTipType)
 
     def getDisplayableData(self, skillName, skillRole, tankmanId, skillLevel=None, showAdditionalInfo=True, crewCustomName='', isBonus=None, skillIdx=-1, guiTankman=None, vehicle=None, *args, **kwargs):
         parent = kwargs.pop('parent', None)
         return DecoratedTooltipWindow(CrewPerksTooltip(skillName, skillRole, tankmanId, skillLevel, showAdditionalInfo, crewCustomName=crewCustomName, isBonus=isBonus, tankman=guiTankman, vehicle=vehicle, *args, **kwargs), parent, False)
 
     def buildToolTip(self, *args, **kwargs):
-        return {'type': self.getType(),
-         'component': self.context.getComponent()}
+        return {'type': self.getType(), 
+           'component': self.context.getComponent()}
 
     def setSupportAdvanced(self, supportAdvanced):
         pass
@@ -108,7 +107,7 @@ class CommanderBonusTooltipData(ToolTipBaseData):
         super(CommanderBonusTooltipData, self).__init__(context, TOOLTIPS_CONSTANTS.COMMANDER_BONUS)
 
     def getDisplayableData(self, tankmanId=None, *args, **kwargs):
-        parent = kwargs.get('parent', None)
+        parent = kwargs.get('parent')
         return DecoratedTooltipWindow(CommanderBonusTooltip(tankmanId), parent, useDecorator=False)
 
 
@@ -124,7 +123,7 @@ class TankmanTooltipData(ToolTipBaseData):
         super(TankmanTooltipData, self).__init__(context, TOOLTIPS_CONSTANTS.TANKMAN)
 
     def getDisplayableData(self, *args, **kwargs):
-        parent = kwargs.get('parent', None)
+        parent = kwargs.get('parent')
         kwargs['layoutID'] = parent.content.layoutID if parent else None
         return DecoratedTooltipWindow(TankmanTooltip(*args, **kwargs), parent, useDecorator=False)
 
@@ -189,7 +188,7 @@ class MentorAssignmentTooltipData(ToolTipBaseData):
 
     @staticmethod
     def getDisplayableData(*args, **kwargs):
-        parent = kwargs.get('parent', None)
+        parent = kwargs.get('parent')
         kwargs['layoutID'] = parent.content.layoutID if parent else None
         return DecoratedTooltipWindow(MentorAssignmentTooltip(*args, **kwargs), parent, useDecorator=False)
 
@@ -219,7 +218,8 @@ class EmptySkillTooltipData(ToolTipBaseData):
 
 
 def getTooltipBuilders():
-    return (NotRecruitedTankmanTooltipBuilder(TOOLTIPS_CONSTANTS.TANKMAN_NOT_RECRUITED, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI),
+    return (
+     NotRecruitedTankmanTooltipBuilder(TOOLTIPS_CONSTANTS.TANKMAN_NOT_RECRUITED, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI),
      BattleRoyaleTankmanTooltipBuilder(TOOLTIPS_CONSTANTS.BATTLE_ROYALE_TANKMAN, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI),
      SpecialTankmanTooltipBuilder(TOOLTIPS_CONSTANTS.SPECIAL_TANKMAN, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI),
      AdvancedTooltipWindowBuilder(TOOLTIPS_CONSTANTS.CREW_PERK_GF, None, CrewPerkTooltipData(contexts.ToolTipContext(None)), CrewPerkTooltipDataAdditional(contexts.ToolTipContext(None)), condition=_advancedPerkCondition),

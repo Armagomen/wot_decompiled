@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/ClanPersonalInvitesViewMeta.py
 from gui.Scaleform.daapi.view.lobby.clans.invites.ClanInvitesViewWithTable import ClanInvitesViewWithTable
 
 class ClanPersonalInvitesViewMeta(ClanInvitesViewWithTable):
@@ -20,7 +18,9 @@ class ClanPersonalInvitesViewMeta(ClanInvitesViewWithTable):
         self._printOverrideError('declineAllSelectedInvites')
 
     def as_setDeclineAllSelectedInvitesStateS(self, text, enabled):
-        return self.flashObject.as_setDeclineAllSelectedInvitesState(text, enabled) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setDeclineAllSelectedInvitesState(text, enabled)
 
     def as_setSelectAllCheckboxStateS(self, selected, visible):
-        return self.flashObject.as_setSelectAllCheckboxState(selected, visible) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setSelectAllCheckboxState(selected, visible)

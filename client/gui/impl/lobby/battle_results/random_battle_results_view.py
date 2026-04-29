@@ -1,29 +1,26 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_results/random_battle_results_view.py
 import logging
-import typing
 from functools import partial
+import typing
+from frameworks.wulf import WindowFlags
+from gui.Scaleform.lobby_entry import getLobbyStateMachine
+from gui.impl.gen import R
+from gui.impl.gen.view_models.views.lobby.battle_results.random.random_battle_results_view_model import RandomBattleResultsViewModel
 from gui.impl.lobby.battle_results.flag_view import FlagWindow
 from gui.impl.lobby.battle_results.missions_progress.progress_presenters_helpers import getProgressionCategoriesPresenters
 from gui.impl.lobby.battle_results.sounds import RANDOM_BATTLE_RESULTS_SOUND_SPACE
-from gui.impl.lobby.missions.daily_quests_view import DailyTabs
+from gui.impl.lobby.battle_results.submodel_presenters.battle_achievements import BattleAchievementsSubPresenter
+from gui.impl.lobby.battle_results.submodel_presenters.random_sub_presenter import RandomBattleResultsSubPresenter
+from gui.impl.lobby.user_missions.hub.hub_view import DailyTabs
+from gui.impl.pub import WindowImpl
 from gui.impl.pub.view_component import ViewComponent
 from gui.lobby_state_machine.routable_view import IRoutableView
-from frameworks.wulf import WindowFlags
-from gui.impl.gen import R
-from gui.impl.gen.view_models.views.lobby.battle_results.random.random_battle_results_view_model import RandomBattleResultsViewModel
-from gui.impl.lobby.battle_results.submodel_presenters.random_sub_presenter import RandomBattleResultsSubPresenter
-from gui.impl.pub import WindowImpl
 from gui.server_events.events_dispatcher import showDailyQuests
-from gui.impl.lobby.battle_results.submodel_presenters.battle_achievements import BattleAchievementsSubPresenter
 from gui.shared.view_helpers.blur_manager import ImmediateSceneBlurConfig
 from gui.sounds.ambients import BattleResultsEnv
 from helpers import dependency
+from skeletons.connection_mgr import IConnectionManager
 from skeletons.gui.battle_results import IBattleResultsService
 from skeletons.gui.customization import ICustomizationService
-from skeletons.connection_mgr import IConnectionManager
-from gui.Scaleform.lobby_entry import getLobbyStateMachine
-from gui.lobby_state_machine.router import SubstateRouter
 from skeletons.gui.game_control import IBlurController
 from skeletons.gui.shared.utils import IHangarSpace
 if typing.TYPE_CHECKING:
@@ -52,8 +49,8 @@ class RandomBattleResultsView(ViewComponent[RandomBattleResultsViewModel], IRout
         self.__arenaUniqueID = ctx.get('arenaUniqueID', None)
         self.__subPresenter = RandomBattleResultsSubPresenter(self.viewModel, self)
         self.__flagWindow = None
-        self.__router = None
-        self.__blur = self.__blurCtrl.createBlur((ImmediateSceneBlurConfig(spaceID=self.__hangarSpace.spaceID, settings=self.__blurCtrl.getSettingsByAlias(self._POST_BATTLE_BLUR_SETTINGS_KEY), persistent=True),))
+        self.__blur = self.__blurCtrl.createBlur((
+         ImmediateSceneBlurConfig(spaceID=self.__hangarSpace.spaceID, settings=self.__blurCtrl.getSettingsByAlias(self._POST_BATTLE_BLUR_SETTINGS_KEY), persistent=True),))
         return
 
     @property
@@ -73,11 +70,17 @@ class RandomBattleResultsView(ViewComponent[RandomBattleResultsViewModel], IRout
 
     def createContextMenu(self, event):
         window = self.__subPresenter.createContextMenu(event)
-        return window if window is not None else super(RandomBattleResultsView, self).createContextMenu(event)
+        if window is not None:
+            return window
+        else:
+            return super(RandomBattleResultsView, self).createContextMenu(event)
 
     def createToolTipContent(self, event, contentID):
         content = self.__subPresenter.createToolTipContent(event, contentID)
-        return content if content is not None else super(RandomBattleResultsView, self).createToolTipContent(event, contentID)
+        if content is not None:
+            return content
+        else:
+            return super(RandomBattleResultsView, self).createToolTipContent(event, contentID)
 
     @classmethod
     def getLocalStorage(cls):
@@ -96,10 +99,6 @@ class RandomBattleResultsView(ViewComponent[RandomBattleResultsViewModel], IRout
 
         return childComponents
 
-    def _initialize(self, *args, **kwargs):
-        super(RandomBattleResultsView, self)._initialize(*args, **kwargs)
-        self.__subPresenter.initialize()
-
     def _finalize(self):
         self.__arenaUniqueID = None
         self.__subPresenter.finalize()
@@ -107,8 +106,6 @@ class RandomBattleResultsView(ViewComponent[RandomBattleResultsViewModel], IRout
         if self.__flagWindow:
             self.__flagWindow.destroy()
             self.__flagWindow = None
-        self.__router.fini()
-        self.__router = None
         self.__blur.disable()
         self.__blur.fini()
         self.__blur = None
@@ -116,21 +113,26 @@ class RandomBattleResultsView(ViewComponent[RandomBattleResultsViewModel], IRout
         return
 
     def _getEvents(self):
-        return ((self.viewModel.onClose, self._onClose), (self.viewModel.onOpenMissions, self._onOpenMissions))
+        return (
+         (
+          self.viewModel.onClose, self._onClose),
+         (
+          self.viewModel.onOpenMissions, self._onOpenMissions))
 
     def _onLoading(self, *args, **kwargs):
-        lsm = getLobbyStateMachine()
-        self.__router = SubstateRouter(lsm, self, lsm.getStateFromView(self))
-        self.__router.init()
         super(RandomBattleResultsView, self)._onLoading(*args, **kwargs)
         statsController = self.__battleResults.getStatsCtrl(self.__arenaUniqueID)
         battleResults = statsController.getResults()
         self.__createFlagWindow()
+        self.__subPresenter.initialize()
         with self.viewModel.transaction():
             self.__subPresenter.packBattleResults(battleResults)
 
     def _onClose(self):
-        self.destroyWindow()
+        state = getLobbyStateMachine().getStateFromView(self)
+        if state is not None:
+            state.goBack()
+        return
 
     def _onOpenMissions(self):
         showDailyQuests(subTab=DailyTabs.QUESTS)

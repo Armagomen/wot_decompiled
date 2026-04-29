@@ -1,12 +1,11 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/VehicleInfoWindow.py
+from __future__ import absolute_import
 import typing
+from future.utils import lzip
 from debug_utils import LOG_ERROR
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.Scaleform import MENU
 from gui.Scaleform.daapi.view.meta.VehicleInfoMeta import VehicleInfoMeta
-from gui.Scaleform.locale.VEH_COMPARE import VEH_COMPARE
 from gui.shared.formatters import getRoleTextWithLabel
 from gui.shared.items_parameters import formatters
 from gui.shared.utils import AUTO_RELOAD_PROP_NAME, TURBOSHAFT_ENGINE_POWER, TURBOSHAFT_SPEED_MODE_SPEED, TURBOSHAFT_SWITCH_TIME, TURBOSHAFT_INVISIBILITY_MOVING_FACTOR, TURBOSHAFT_INVISIBILITY_STILL_FACTOR, ROCKET_ACCELERATION_ENGINE_POWER, ROCKET_ACCELERATION_SPEED_LIMITS, ROCKET_ACCELERATION_REUSE_AND_DURATION, DUAL_ACCURACY_COOLING_DELAY, SHOT_DISPERSION_ANGLE, AVG_DAMAGE_PER_SECOND, CONTINUOUS_SHOTS_PER_MINUTE, TWIN_GUN_SWITCH_FIRE_MODE_TIME, TWIN_GUN_TOP_SPEED, RELOAD_TIME_SECS_PROP_NAME, TWIN_GUN_RELOAD_TIME
@@ -34,25 +33,44 @@ class _Highlight(object):
         self.__checker = checker
         return
 
-    def __nonzero__(self):
+    def __bool__(self):
         if self.__highlight is None:
             self.__highlight = self.__checker()
         return self.__highlight
 
+    __nonzero__ = __bool__
+
 
 def _highlightsMap(settings, vehicle=None):
-    config = (((AUTO_RELOAD_PROP_NAME,), _Highlight(lambda : settings.checkAutoReloadHighlights(increase=True))),
-     ((AVG_DAMAGE_PER_SECOND, CONTINUOUS_SHOTS_PER_MINUTE), _Highlight(lambda : settings.checkAutoShootHighlights(increase=True))),
-     ((TURBOSHAFT_ENGINE_POWER,
-       TURBOSHAFT_SPEED_MODE_SPEED,
-       TURBOSHAFT_SWITCH_TIME,
-       TURBOSHAFT_INVISIBILITY_STILL_FACTOR,
-       TURBOSHAFT_INVISIBILITY_MOVING_FACTOR), _Highlight(lambda : settings.checkTurboshaftHighlights(increase=True))),
-     ((ROCKET_ACCELERATION_ENGINE_POWER, ROCKET_ACCELERATION_SPEED_LIMITS, ROCKET_ACCELERATION_REUSE_AND_DURATION), _Highlight(lambda : settings.checkRocketAccelerationHighlights(increase=True))),
-     ((DUAL_ACCURACY_COOLING_DELAY, SHOT_DISPERSION_ANGLE), _Highlight(lambda : vehicle.descriptor.hasDualAccuracy and settings.checkDualAccuracyHighlights(increase=True))),
-     ((TWIN_GUN_SWITCH_FIRE_MODE_TIME, TWIN_GUN_TOP_SPEED, RELOAD_TIME_SECS_PROP_NAME), _Highlight(lambda : vehicle.descriptor.isTwinGunVehicle and settings.checkTwinGunHighlights(increase=True))))
-    mapping = [ zip(params, [highlight] * len(params)) for params, highlight in config ]
-    return dict([ item for sub in mapping for item in sub ])
+    config = (
+     (
+      (
+       AUTO_RELOAD_PROP_NAME,),
+      _Highlight(lambda : settings.checkAutoReloadHighlights(increase=True))),
+     (
+      (
+       AVG_DAMAGE_PER_SECOND, CONTINUOUS_SHOTS_PER_MINUTE),
+      _Highlight(lambda : settings.checkAutoShootHighlights(increase=True))),
+     (
+      (
+       TURBOSHAFT_ENGINE_POWER, TURBOSHAFT_SPEED_MODE_SPEED, TURBOSHAFT_SWITCH_TIME,
+       TURBOSHAFT_INVISIBILITY_STILL_FACTOR, TURBOSHAFT_INVISIBILITY_MOVING_FACTOR),
+      _Highlight(lambda : settings.checkTurboshaftHighlights(increase=True))),
+     (
+      (
+       ROCKET_ACCELERATION_ENGINE_POWER, ROCKET_ACCELERATION_SPEED_LIMITS,
+       ROCKET_ACCELERATION_REUSE_AND_DURATION),
+      _Highlight(lambda : settings.checkRocketAccelerationHighlights(increase=True))),
+     (
+      (
+       DUAL_ACCURACY_COOLING_DELAY, SHOT_DISPERSION_ANGLE),
+      _Highlight(lambda : vehicle.descriptor.hasDualAccuracy and settings.checkDualAccuracyHighlights(increase=True))),
+     (
+      (
+       TWIN_GUN_SWITCH_FIRE_MODE_TIME, TWIN_GUN_TOP_SPEED, RELOAD_TIME_SECS_PROP_NAME),
+      _Highlight(lambda : vehicle.descriptor.isTwinGunVehicle and settings.checkTwinGunHighlights(increase=True))))
+    mapping = (lzip(params, [highlight] * len(params)) for params, highlight in config)
+    return {k:v for sub in mapping for k, v in sub}
 
 
 class VehicleInfoWindow(VehicleInfoMeta):
@@ -60,7 +78,9 @@ class VehicleInfoWindow(VehicleInfoMeta):
     _comparisonBasket = dependency.descriptor(IVehicleComparisonBasket)
     _settingsCore = dependency.descriptor(ISettingsCore)
     _lobbyContext = dependency.instance(ILobbyContext)
-    __OVERRIDED_PARAM_NAMES = (('isTwinGunVehicle', {RELOAD_TIME_SECS_PROP_NAME: TWIN_GUN_RELOAD_TIME}),)
+    __OVERRIDED_PARAM_NAMES = (
+     (
+      'isTwinGunVehicle', {RELOAD_TIME_SECS_PROP_NAME: TWIN_GUN_RELOAD_TIME}),)
 
     def __init__(self, ctx=None):
         super(VehicleInfoWindow, self).__init__()
@@ -82,7 +102,7 @@ class VehicleInfoWindow(VehicleInfoMeta):
             return
         else:
             params = vehicle.getParams()
-            tankmenParams = list()
+            tankmenParams = []
             for slotIdx, tankman in vehicle.crew:
                 role = vehicle.descriptor.type.crewRoles[slotIdx][0]
                 tankmanLabel = ''
@@ -92,22 +112,22 @@ class VehicleInfoWindow(VehicleInfoMeta):
                         skinItem = self._itemsCache.items.getCrewSkin(tankman.skinID)
                         lastUserName = i18n.makeString(skinItem.getLastName())
                     tankmanLabel = '%s %s' % (tankman.rankUserName, lastUserName)
-                tankmenParams.append({'tankmanType': getRoleUserName(role),
-                 'value': tankmanLabel})
+                tankmenParams.append({'tankmanType': getRoleUserName(role), 
+                   'value': tankmanLabel})
 
             roleStr = getRoleTextWithLabel(vehicle.role, vehicle.roleLabel)
             paramsList = formatters.getFormattedParamsList(vehicle.descriptor, params['parameters'], excludeRelative=True)
-            info = {'vehicleName': vehicle.longUserName,
-             'vehicleDescription': vehicle.fullDescription,
-             'vehicleImage': vehicle.icon,
-             'vehicleLevel': vehicle.level,
-             'vehicleNation': vehicle.nationID,
-             'vehicleElite': vehicle.isElite,
-             'vehicleType': vehicle.type,
-             'propsData': self.__packParams(paramsList),
-             'baseData': params['base'],
-             'crewData': tankmenParams,
-             'roleStr': roleStr}
+            info = {'vehicleName': vehicle.longUserName, 
+               'vehicleDescription': vehicle.fullDescription, 
+               'vehicleImage': vehicle.icon, 
+               'vehicleLevel': vehicle.level, 
+               'vehicleNation': vehicle.nationID, 
+               'vehicleElite': vehicle.isElite, 
+               'vehicleType': vehicle.type, 
+               'propsData': self.__packParams(paramsList), 
+               'baseData': params['base'], 
+               'crewData': tankmenParams, 
+               'roleStr': roleStr}
             self.as_setVehicleInfoS(info)
             return
 
@@ -116,7 +136,7 @@ class VehicleInfoWindow(VehicleInfoMeta):
 
     def changeNation(self):
         vehicle = self._itemsCache.items.getItemByCD(self.__vehicleCompactDescr)
-        vehCD = vehicle.intCD if vehicle.activeInNationGroup else iterVehTypeCDsInNationGroup(vehicle.intCD).next()
+        vehCD = vehicle.intCD if vehicle.activeInNationGroup else next(iterVehTypeCDsInNationGroup(vehicle.intCD))
         ItemsActionsFactory.doAction(ItemsActionsFactory.CHANGE_NATION, vehCD)
         self.destroy()
 
@@ -141,8 +161,7 @@ class VehicleInfoWindow(VehicleInfoMeta):
         vehDesc = self._itemsCache.items.getItemByCD(self.__vehicleCompactDescr).descriptor
         overridedNamesMap = {source:target for vehType, params in self.__OVERRIDED_PARAM_NAMES if getattr(vehDesc, vehType) for source, target in params.items()}
         for name, value in paramsList:
-            paramVO = {'name': overridedNamesMap.get(name, name),
-             'value': value}
+            paramVO = {'name': overridedNamesMap.get(name, name), 'value': value}
             if self.__highlightsMap.get(name, False):
                 paramVO['highlight'] = True
             result.append(paramVO)
@@ -150,16 +169,14 @@ class VehicleInfoWindow(VehicleInfoMeta):
         return result
 
     def __updateCompareButtonState(self):
-        if not self._comparisonBasket.isAvailable():
-            tooltip = VEH_COMPARE.COMPAREVEHICLEBTN_TOOLTIPS_MINICLIENT
-        elif self._comparisonBasket.isFull():
+        if self._comparisonBasket.isAvailable() and self._comparisonBasket.isFull():
             tooltip = MENU.VEHICLEINFO_COMPAREBTN_TOOLTIP
         else:
             tooltip = ''
-        self.as_setCompareButtonDataS({'visible': self._comparisonBasket.isEnabled(),
-         'enabled': self._comparisonBasket.isReadyToAdd(self._itemsCache.items.getItemByCD(self.__vehicleCompactDescr)),
-         'label': MENU.VEHICLEINFO_COMPAREBTN_LABEL,
-         'tooltip': tooltip})
+        self.as_setCompareButtonDataS({'visible': self._comparisonBasket.isEnabled(), 
+           'enabled': self._comparisonBasket.isReadyToAdd(self._itemsCache.items.getItemByCD(self.__vehicleCompactDescr)), 
+           'label': MENU.VEHICLEINFO_COMPAREBTN_LABEL, 
+           'tooltip': tooltip})
 
     def __onVehCompareBasketChanged(self, changedData):
         if changedData.isFullChanged:
@@ -169,11 +186,11 @@ class VehicleInfoWindow(VehicleInfoMeta):
         vehicle = self._itemsCache.items.getItemByCD(self.__vehicleCompactDescr)
         enabled = vehicle.isNationChangeAvailable
         tooltip = getChangeNationTooltip(vehicle)
-        self.as_setChangeNationButtonDataS({'visible': vehicle.hasNationGroup and vehicle.isInInventory,
-         'enabled': enabled,
-         'label': backport.text(R.strings.menu.vehicleInfo.nationChangeBtn.label()),
-         'isNew': not AccountSettings.getSettings(NATION_CHANGE_VIEWED),
-         'tooltip': tooltip})
+        self.as_setChangeNationButtonDataS({'visible': vehicle.hasNationGroup and vehicle.isInInventory, 
+           'enabled': enabled, 
+           'label': backport.text(R.strings.menu.vehicleInfo.nationChangeBtn.label()), 
+           'isNew': not AccountSettings.getSettings(NATION_CHANGE_VIEWED), 
+           'tooltip': tooltip})
 
     def __updateNationChangeBtn(self, *args, **kwargs):
         self.__updateChangeNationButtonState()

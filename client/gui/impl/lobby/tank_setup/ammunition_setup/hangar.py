@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/ammunition_setup/hangar.py
 import logging
 from CurrentVehicle import g_currentVehicle
 from constants import QUEUE_TYPE
@@ -31,7 +29,7 @@ class HangarAmmunitionSetupView(BaseHangarAmmunitionSetupView, IGlobalListener):
         if not self.prbEntity:
             return
         queueType = self.prbEntity.getQueueType()
-        if self._lobbyContext.getServerSettings().isOptionalDevicesAssistantEnabled() and self._wotPlusController.isEnabled() and queueType in (QUEUE_TYPE.RANDOMS, QUEUE_TYPE.COMP7):
+        if self._wotPlusController.getSettingsStorage().isOptionalDevicesAssistantAvailable() and queueType in (QUEUE_TYPE.RANDOMS, QUEUE_TYPE.COMP7):
             self._optionalDevicesAssistant = OptionalDevicesAssistantView(self.viewModel.optionalDevicesAssistant, queueType)
             self._optionalDevicesAssistant.onLoading()
 

@@ -1,8 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/TargetMarkersComponent.py
-import BigWorld
-import Math
-import TriggersManager
+from __future__ import absolute_import
+from future.utils import viewitems
+import BigWorld, Math, TriggersManager
 from gui.battle_control.controllers.area_marker_ctrl import AreaMarkersController
 from script_component.DynamicScriptComponent import DynamicScriptComponent
 from helpers import dependency
@@ -32,12 +30,13 @@ class TargetMarkersComponent(DynamicScriptComponent, TriggersManager.ITriggerLis
         for settings in markerSettings:
             self._deleteMarkerBySettingId(settings['targetId'], settings['settingId'])
 
-    def onTriggerActivated(self, params):
-        triggerType = params.get('type')
-        if triggerType not in [TriggersManager.TRIGGER_TYPE.VEHICLE_VISUAL_VISIBILITY_CHANGED, TriggersManager.TRIGGER_TYPE.VEHICLE_DESTROYED]:
+    def onTriggerActivated(self, args):
+        triggerType = args.get('type')
+        if triggerType not in [TriggersManager.TRIGGER_TYPE.VEHICLE_VISUAL_VISIBILITY_CHANGED,
+         TriggersManager.TRIGGER_TYPE.VEHICLE_DESTROYED]:
             return
         else:
-            vehicleId = params['vehicleId']
+            vehicleId = args['vehicleId']
             for marker in self._markers.get(vehicleId, {}).values():
                 self._deleteMarker(vehicleId, marker)
 
@@ -47,7 +46,7 @@ class TargetMarkersComponent(DynamicScriptComponent, TriggersManager.ITriggerLis
                     self._markers[vehicleId] = {}
                     for settings in self.markersSettings:
                         if vehicle.id == settings['targetId']:
-                            if params['isVisible']:
+                            if args['isVisible']:
                                 self._createVisibleMarker(vehicle.id, settings, vehicle)
                             else:
                                 self._createInvisibleMarker(vehicle.id, settings, vehicle.position)
@@ -63,7 +62,7 @@ class TargetMarkersComponent(DynamicScriptComponent, TriggersManager.ITriggerLis
                 lastVisiblePosition = settings['lastVisiblePosition']
                 if target is not None:
                     self._createVisibleMarker(targetId, settings, target)
-                if lastVisiblePosition:
+                elif lastVisiblePosition:
                     self._createInvisibleMarker(targetId, settings, lastVisiblePosition)
 
         return
@@ -81,16 +80,14 @@ class TargetMarkersComponent(DynamicScriptComponent, TriggersManager.ITriggerLis
         ctrl = self.sessionProvider.shared.areaMarker
         if ctrl is None or not markerType:
             return
-        else:
-            params = {'markerType': markerType,
-             'visible': True,
-             'matrix': matrix,
-             'targetID': vehicleId,
-             'entity': vehicle}
-            marker = ctrl.createMarker(**params)
-            ctrl.addMarker(marker)
-            self._markers.setdefault(vehicleId, {})[settingId] = marker
-            return
+        params = {'markerType': markerType, 'visible': True, 
+           'matrix': matrix, 
+           'targetID': vehicleId, 
+           'entity': vehicle}
+        marker = ctrl.createMarker(**params)
+        ctrl.addMarker(marker)
+        self._markers.setdefault(vehicleId, {})[settingId] = marker
+        return
 
     def _deleteMarker(self, targetId, marker):
         self._removeMarker(marker.markerID)
@@ -109,11 +106,11 @@ class TargetMarkersComponent(DynamicScriptComponent, TriggersManager.ITriggerLis
         return
 
     def _getSettingId(self, targetId, marker):
-        for sId, m in self._markers.get(targetId, {}).iteritems():
+        for sId, m in viewitems(self._markers.get(targetId, {})):
             if m == marker:
                 return sId
 
-        return None
+        return
 
     def _removeMarker(self, markerID):
         ctrl = self.sessionProvider.shared.areaMarker

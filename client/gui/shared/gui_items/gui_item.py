@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/gui_items/gui_item.py
-import typing
-import nations
+import typing, nations
 from gui.impl import backport
 from gui.impl.gen import R
 from items import ITEM_TYPE_NAMES, vehicles
@@ -28,11 +25,15 @@ class HasIntCD(object):
 
     @property
     def nationName(self):
-        return nations.NAMES[self.nationID] if self.nationID != nations.NONE_INDEX else ''
+        if self.nationID != nations.NONE_INDEX:
+            return nations.NAMES[self.nationID]
+        return ''
 
     @property
     def nationUserName(self):
-        return backport.text(R.strings.menu.nations.dyn(self.nationName)()) if self.nationName else ''
+        if self.nationName:
+            return backport.text(R.strings.menu.nations.dyn(self.nationName)())
+        return ''
 
     def _parseIntCompDescr(self, intCompactDescr):
         return vehicles.parseIntCompactDescr(intCompactDescr)
@@ -41,11 +42,13 @@ class HasIntCD(object):
         if self is other:
             return 1
         res = nationCompareByIndex(self.nationID, other.nationID)
-        return res if res else 0
+        if res:
+            return res
+        return 0
 
 
 class HasStrCD(object):
-    __slots__ = ('strCompactDescr',)
+    __slots__ = ('strCompactDescr', )
 
     def __init__(self, strCompactDescr):
         super(HasStrCD, self).__init__()
@@ -66,10 +69,13 @@ class GUIItem(object):
         self._strCD = strCD
 
     def __repr__(self):
-        return '{}(intCD={}, strCD={})'.format(self.__class__.__name__, self._intCD, self._strCD)
+        return ('{}(intCD={}, strCD={})').format(self.__class__.__name__, self._intCD, self._strCD)
 
     def __cmp__(self, other):
-        return cmp(self._intCD, other.intCDO) if self._intCD is not None else super(GUIItem, self).__cmp__(other)
+        if self._intCD is not None:
+            return cmp(self._intCD, other.intCDO)
+        else:
+            return super(GUIItem, self).__cmp__(other)
 
     @property
     def intCDO(self):
@@ -77,15 +83,24 @@ class GUIItem(object):
 
     @property
     def intCD(self):
-        return self._intCD.intCompactDescr if self._intCD is not None else 0
+        if self._intCD is not None:
+            return self._intCD.intCompactDescr
+        else:
+            return 0
 
     @property
     def strCD(self):
-        return self._strCD.strCD if self._strCD is not None else ''
+        if self._strCD is not None:
+            return self._strCD.strCD
+        else:
+            return ''
 
     @property
     def itemTypeID(self):
-        return self._intCD.itemTypeID if self._intCD is not None else 0
+        if self._intCD is not None:
+            return self._intCD.itemTypeID
+        else:
+            return 0
 
     @itemTypeID.setter
     def itemTypeID(self, typeID):
@@ -97,20 +112,35 @@ class GUIItem(object):
 
     @property
     def itemTypeName(self):
-        return self._intCD.itemTypeName if self._intCD is not None else ''
+        if self._intCD is not None:
+            return self._intCD.itemTypeName
+        else:
+            return ''
 
     @property
     def nationID(self):
-        return self._intCD.nationID if self._intCD is not None else -1
+        if self._intCD is not None:
+            return self._intCD.nationID
+        else:
+            return -1
 
     @property
     def innationID(self):
-        return self._intCD.innationID if self._intCD is not None else -1
+        if self._intCD is not None:
+            return self._intCD.innationID
+        else:
+            return -1
 
     @property
     def nationName(self):
-        return self._intCD.nationName if self._intCD is not None else ''
+        if self._intCD is not None:
+            return self._intCD.nationName
+        else:
+            return ''
 
     @property
     def nationUserName(self):
-        return self._intCD.nationUserName if self._intCD is not None else ''
+        if self._intCD is not None:
+            return self._intCD.nationUserName
+        else:
+            return ''

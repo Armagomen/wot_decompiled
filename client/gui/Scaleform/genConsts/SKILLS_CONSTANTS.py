@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/genConsts/SKILLS_CONSTANTS.py
 
 
 class SKILLS_CONSTANTS(object):

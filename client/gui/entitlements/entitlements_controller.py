@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/entitlements/entitlements_controller.py
 import logging
 from BWUtil import AsyncReturn
 from Event import Event
@@ -52,13 +50,22 @@ class EntitlementsController(IEntitlementsController):
         return self.__cache is not None
 
     def getBalanceEntitlementFromCache(self, code):
-        return self.__cache.getBalanceEntitlement(code) if self.isCacheInited() else None
+        if self.isCacheInited():
+            return self.__cache.getBalanceEntitlement(code)
+        else:
+            return
 
     def getConsumedEntitlementFromCache(self, code):
-        return self.__cache.getHoldConsumedEntitlement(code) if self.isCacheInited() else None
+        if self.isCacheInited():
+            return self.__cache.getHoldConsumedEntitlement(code)
+        else:
+            return
 
     def getGrantedEntitlementFromCache(self, code):
-        return self.__cache.getHoldGrantedEntitlement(code) if self.isCacheInited() else None
+        if self.isCacheInited():
+            return self.__cache.getHoldGrantedEntitlement(code)
+        else:
+            return
 
     def updateCache(self, codes):
         self.__sendRequest(codes, self.__onResponse)
@@ -74,7 +81,7 @@ class EntitlementsController(IEntitlementsController):
     @nextTick
     @adisp_process
     def __sendRequest(self, codes, callback):
-        if self.__cacheWaitSync or not any((c.isConsumesEntitlements for c in iterConsumers())):
+        if self.__cacheWaitSync or not any(c.isConsumesEntitlements for c in iterConsumers()):
             callback(False)
             return
         else:

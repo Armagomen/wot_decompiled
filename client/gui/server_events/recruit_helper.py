@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/server_events/recruit_helper.py
 import typing
 from account_helpers.AccountSettings import AccountSettings, RECRUITS_NOTIFICATIONS
 from helpers.i18n import makeString as _ms
@@ -88,60 +86,13 @@ class RecruitSourceID(object):
     COMMANDER_PATRICK = 'commander_patrick'
     TWITCH_GIRL = 'twitch_girl'
     TWITCH_GUY = 'twitch_guy'
-    EVENTS = (TWITCH_0,
-     TWITCH_1,
-     TWITCH_2,
-     TWITCH_3,
-     TWITCH_4,
-     TWITCH_5,
-     TWITCH_6,
-     TWITCH_7,
-     TWITCH_8,
-     TWITCH_9,
-     COMMANDER_MARINA,
-     COMMANDER_PATRICK,
-     TWITCH_10,
-     TWITCH_11,
-     TWITCH_12,
-     TWITCH_13,
-     TWITCH_14,
-     TWITCH_15,
-     TWITCH_16,
-     TWITCH_17,
-     TWITCH_18,
-     TWITCH_19,
-     TWITCH_20,
-     TWITCH_21,
-     TWITCH_22,
-     TWITCH_23,
-     TWITCH_24,
-     TWITCH_25,
-     TWITCH_26,
-     TWITCH_27,
-     TWITCH_28,
-     TWITCH_29,
-     TWITCH_30,
-     TWITCH_31,
-     TWITCH_32,
-     TWITCH_33,
-     TWITCH_34,
-     TWITCH_35,
-     TWITCH_36,
-     TWITCH_37,
-     TWITCH_38,
-     TWITCH_39,
-     TWITCH_40,
-     TWITCH_41,
-     TWITCH_42,
-     TWITCH_43,
-     TWITCH_44,
-     TWITCH_45,
-     TWITCH_46,
-     TWITCH_47,
-     TWITCH_48,
-     TWITCH_49,
-     TWITCH_50,
-     TWITCH_GIRL,
+    EVENTS = (
+     TWITCH_0, TWITCH_1, TWITCH_2, TWITCH_3, TWITCH_4, TWITCH_5, TWITCH_6, TWITCH_7, TWITCH_8, TWITCH_9,
+     COMMANDER_MARINA, COMMANDER_PATRICK, TWITCH_10, TWITCH_11, TWITCH_12, TWITCH_13, TWITCH_14, TWITCH_15,
+     TWITCH_16, TWITCH_17, TWITCH_18, TWITCH_19, TWITCH_20, TWITCH_21, TWITCH_22, TWITCH_23, TWITCH_24,
+     TWITCH_25, TWITCH_26, TWITCH_27, TWITCH_28, TWITCH_29, TWITCH_30, TWITCH_31, TWITCH_32, TWITCH_33,
+     TWITCH_34, TWITCH_35, TWITCH_36, TWITCH_37, TWITCH_38, TWITCH_39, TWITCH_40, TWITCH_41, TWITCH_42,
+     TWITCH_43, TWITCH_44, TWITCH_45, TWITCH_46, TWITCH_47, TWITCH_48, TWITCH_49, TWITCH_50, TWITCH_GIRL,
      TWITCH_GUY)
 
 
@@ -155,7 +106,10 @@ _TANKWOMAN_LEARNT_SKILLS = ['brotherhood']
 _INCREASE_LIMIT_LOGIN = 5
 
 class _BaseRecruitInfo(object):
-    __slots__ = ('_recruitID', '_expiryTime', '_nations', '_freeSkills', '_learntSkills', '_freeXP', '_roleLevel', '_lastSkillLevel', '_roles', '_firstName', '_lastName', '_group', '_icon', '_sourceID', '_isPremium', '_isFemale', '_hasNewSkill', '_crewCustomName')
+    __slots__ = ('_recruitID', '_expiryTime', '_nations', '_freeSkills', '_learntSkills',
+                 '_freeXP', '_roleLevel', '_lastSkillLevel', '_roles', '_firstName',
+                 '_lastName', '_group', '_icon', '_sourceID', '_isPremium', '_isFemale',
+                 '_hasNewSkill', '_crewCustomName')
 
     def __init__(self, recruitID, expiryTime, nations, learntSkills, freeSkills, freeXP, roleLevel, lastSkillLevel, firstName, lastName, roles, icon, group, sourceID, isPremium, isFemale, hasNewSkill):
         self._recruitID = recruitID
@@ -223,7 +177,7 @@ class _BaseRecruitInfo(object):
         return self.getFreeSkills() + self.getEarnedSkills(multiplyNew)
 
     def getFreeSkills(self):
-        freeSkills = [ (skill if skill != 'any' else _NEW_SKILL) for skill in self._freeSkills ]
+        freeSkills = [ skill if skill != 'any' else _NEW_SKILL for skill in self._freeSkills ]
         freeSkills.sort(key=lambda x: x == _NEW_SKILL)
         return freeSkills
 
@@ -231,7 +185,9 @@ class _BaseRecruitInfo(object):
         return self._lastSkillLevel
 
     def getExpiryTime(self):
-        return backport.getShortDateFormat(self._expiryTime) if self._expiryTime and self._expiryTime < ENDLESS_TOKEN_TIME else ''
+        if self._expiryTime and self._expiryTime < ENDLESS_TOKEN_TIME:
+            return backport.getShortDateFormat(self._expiryTime)
+        return ''
 
     def getExpiryTimeStamp(self):
         return self._expiryTime
@@ -244,7 +200,9 @@ class _BaseRecruitInfo(object):
 
     def getBigIcon(self):
         dynAccessor = R.images.gui.maps.icons.tankmen.icons.big.dyn(self.getDynIconName())
-        return backport.image(dynAccessor()) if dynAccessor.isValid() else backport.image(R.images.gui.maps.icons.tankmen.icons.big.tankman())
+        if dynAccessor.isValid():
+            return backport.image(dynAccessor())
+        return backport.image(R.images.gui.maps.icons.tankmen.icons.big.tankman())
 
     def getBarracksIcon(self):
         return self._icon
@@ -264,7 +222,9 @@ class _BaseRecruitInfo(object):
         lastName = self.getLastName()
         if not firstName:
             return lastName
-        return firstName if not lastName else '{} {}'.format(firstName, lastName)
+        if not lastName:
+            return firstName
+        return ('{} {}').format(firstName, lastName)
 
     def getRankID(self):
         return Tankman.calculateRankID(tankmen.MAX_SKILL_LEVEL, self._freeXP, skills=self._getSkillsForDescr(), freeSkills=self._getFreeSkillsForDescr(), lastSkillLevel=self._lastSkillLevel)
@@ -274,7 +234,10 @@ class _BaseRecruitInfo(object):
 
     def getSpecialIcon(self):
         dynAccessor = R.images.gui.maps.icons.tankmen.icons.special.dyn(self.getDynIconName())
-        return backport.image(dynAccessor()) if dynAccessor.isValid() else None
+        if dynAccessor.isValid():
+            return backport.image(dynAccessor())
+        else:
+            return
 
     def isFemale(self):
         return self._isFemale
@@ -298,7 +261,9 @@ class _BaseRecruitInfo(object):
             if onlyFull and lastSkillLevel != MAX_SKILL_LEVEL:
                 count = max(count - 1, 0)
                 lastSkillLevel = MAX_SKILL_LEVEL
-            return (count, lastSkillLevel)
+            return (
+             count, lastSkillLevel)
+        return (0, 0)
 
     def getCrewCustomName(self):
         return self._crewCustomName
@@ -307,7 +272,7 @@ class _BaseRecruitInfo(object):
         return self._learntSkills
 
     def _getFreeSkillsForDescr(self):
-        pass
+        return ()
 
     def _getCrewCustomName(self):
         return EMPTY_STRING
@@ -346,7 +311,7 @@ class _BaseRecruitInfo(object):
 
 
 class _QuestRecruitInfo(_BaseRecruitInfo):
-    __slots__ = ('__operationName',)
+    __slots__ = ('__operationName', )
 
     def __init__(self, questID, operationName):
         super(_QuestRecruitInfo, self).__init__(recruitID=questID, expiryTime=0, nations=NationNames, group=RecruitGroupID.WOMEN1, freeSkills=_TANKWOMAN_LEARNT_SKILLS, learntSkills=[], freeXP=TankmanDescr.skillUpXpCost(1), roleLevel=_TANKWOMAN_ROLE_LEVEL, lastSkillLevel=0, firstName=_ms(QUESTS.BONUSES_ITEM_TANKWOMAN), lastName=EMPTY_STRING, roles=[], icon=_TANKWOMAN_ICON, sourceID=RecruitSourceID.TANKWOMAN, isPremium=True, isFemale=True, hasNewSkill=True)
@@ -362,56 +327,70 @@ class _QuestRecruitInfo(_BaseRecruitInfo):
         return _ms(TOOLTIPS.NOTRECRUITEDTANKMAN_TANKWOMAN_DESC)
 
     def getHowToGetInfo(self):
-        pass
+        return ''
 
     def getNewSkillCount(self, onlyFull=False):
-        return (1, 0) if self._hasNewSkill else (0, 0)
+        if self._hasNewSkill:
+            return (1, 0)
+        return (0, 0)
 
     def _getFreeSkillsForDescr(self):
         return _TANKWOMAN_LEARNT_SKILLS
 
 
 class _TokenRecruitInfo(_BaseRecruitInfo):
-    __slots__ = ('__freeSkills',)
+    __slots__ = ('__freeSkills', )
 
     def __init__(self, tokenName, expiryTime, nations, isPremium, group, freeSkills, skills, freeXP, lastSkillLevel, roleLevel, sourceID, roles):
         self._isPremium = isPremium
         self._group = group
         self.__freeSkills = freeSkills
         nationNames = [ NationNames[i] for i in nations ]
-        needXP = sum((TankmanDescr.levelUpXpCost(level, len(skills) + 1) for level in xrange(0, tankmen.MAX_SKILL_LEVEL)))
+        needXP = sum(TankmanDescr.levelUpXpCost(level, len(skills) + 1) for level in xrange(0, tankmen.MAX_SKILL_LEVEL))
         hasNewSkill = freeXP >= needXP
         nation = nations[0] if nations else NONE_INDEX
         allowedRoles, firstName, lastName, icon, isFemale = self.__parseTankmanData(nation)
         if roles:
             for role in roles:
                 if skills_constants.SKILL_NAMES[role] not in allowedRoles:
-                    raise SoftException('Requested role (%s) is not in the list of allowed roles (%s)' % (skills_constants.SKILL_NAMES[role], ', '.join(map(str, allowedRoles))))
+                    raise SoftException('Requested role (%s) is not in the list of allowed roles (%s)' % (
+                     skills_constants.SKILL_NAMES[role], (', ').join(map(str, allowedRoles))))
 
             allowedRoles = [ skills_constants.SKILL_NAMES[role] for role in roles ]
         super(_TokenRecruitInfo, self).__init__(tokenName, expiryTime, nationNames, skills, freeSkills, freeXP, roleLevel, lastSkillLevel, firstName, lastName, allowedRoles, icon, group, sourceID, isPremium, isFemale, hasNewSkill)
 
     def getEventName(self):
         dynAccessor = R.strings.tooltips.notrecruitedtankman.dyn(replaceHyphenToUnderscore(self._sourceID))
-        return backport.text(dynAccessor.event()) if dynAccessor.isValid() and dynAccessor.dyn('event').isValid() else backport.text(R.strings.tooltips.notrecruitedtankman.base.event())
+        if dynAccessor.isValid() and dynAccessor.dyn('event').isValid():
+            return backport.text(dynAccessor.event())
+        return backport.text(R.strings.tooltips.notrecruitedtankman.base.event())
 
     def getLabel(self):
         dynAccessor = R.strings.tooltips.notrecruitedtankman.dyn(replaceHyphenToUnderscore(self._sourceID))
-        return backport.text(dynAccessor.label()) if dynAccessor.isValid() and dynAccessor.dyn('label').isValid() else backport.text(R.strings.tooltips.notrecruitedtankman.tankman.label())
+        if dynAccessor.isValid() and dynAccessor.dyn('label').isValid():
+            return backport.text(dynAccessor.label())
+        return backport.text(R.strings.tooltips.notrecruitedtankman.tankman.label())
 
     def getDescription(self):
         dynAccessor = R.strings.tooltips.notrecruitedtankman.dyn(replaceHyphenToUnderscore(self._sourceID))
-        return backport.text(dynAccessor.desc()) if dynAccessor.isValid() and dynAccessor.dyn('desc').isValid() else backport.text(R.strings.tooltips.notrecruitedtankman.tankman.desc())
+        if dynAccessor.isValid() and dynAccessor.dyn('desc').isValid():
+            return backport.text(dynAccessor.desc())
+        return backport.text(R.strings.tooltips.notrecruitedtankman.tankman.desc())
 
     def getHowToGetInfo(self):
         dynAccessor = R.strings.tooltips.notrecruitedtankman.dyn(replaceHyphenToUnderscore(self._sourceID))
-        return backport.text(dynAccessor.howToGetInfo()) if dynAccessor.isValid() and dynAccessor.dyn('howToGetInfo').isValid() else backport.text(R.strings.tooltips.notrecruitedtankman.tankman.howToGetInfo())
+        if dynAccessor.isValid() and dynAccessor.dyn('howToGetInfo').isValid():
+            return backport.text(dynAccessor.howToGetInfo())
+        return backport.text(R.strings.tooltips.notrecruitedtankman.tankman.howToGetInfo())
 
     def getFullUserNameByNation(self, nationID=None):
         if nationID is None:
             nationID = self._getDefaultNation()
         _, firstName, lastName, _, _ = self.__parseTankmanData(nationID)
-        return lastName if not firstName else '{} {}'.format(firstName, lastName)
+        if not firstName:
+            return lastName
+        else:
+            return ('{} {}').format(firstName, lastName)
 
     def getIconByNation(self, nationID):
         _, _, _, icon, _ = self.__parseTankmanData(nationID)
@@ -427,14 +406,12 @@ class _TokenRecruitInfo(_BaseRecruitInfo):
         nationID = self._getDefaultNation()
         nationGroup = self._getNationGroup(nationID)
         customCrewName = CustomCrew.getCrewName(nationID, nationGroup.groupID, self._isPremium)
-        return customCrewName if customCrewName else super(_TokenRecruitInfo, self)._getCrewCustomName()
+        if customCrewName:
+            return customCrewName
+        return super(_TokenRecruitInfo, self)._getCrewCustomName()
 
     def __parseTankmanData(self, nationID):
-        empty = ([],
-         EMPTY_STRING,
-         EMPTY_STRING,
-         EMPTY_STRING,
-         False)
+        empty = ([], EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, False)
         nationGroup = self._getNationGroup(nationID)
         if nationGroup is None:
             return empty
@@ -446,24 +423,17 @@ class _TokenRecruitInfo(_BaseRecruitInfo):
                 return empty
             if len(firstNamesList) > 1 or len(lastNamesList) > 1 or len(iconsList) > 1:
                 if nationGroup.isFemales:
-                    return (nationGroup.rolesList,
-                     _ms(QUESTS.BONUSES_ITEM_TANKWOMAN),
-                     EMPTY_STRING,
-                     _TANKWOMAN_ICON,
+                    return (nationGroup.rolesList, _ms(QUESTS.BONUSES_ITEM_TANKWOMAN), EMPTY_STRING, _TANKWOMAN_ICON,
                      nationGroup.isFemales)
-                return (nationGroup.rolesList,
-                 _ms(QUESTS.BONUSES_ITEM_TANKMAN),
-                 EMPTY_STRING,
-                 _TANKMAN_ICON,
+                return (nationGroup.rolesList, _ms(QUESTS.BONUSES_ITEM_TANKMAN), EMPTY_STRING, _TANKMAN_ICON,
                  nationGroup.isFemales)
             firstNameId = nationGroup.firstNamesList[0]
             lastNameId = nationGroup.lastNamesList[0]
             iconId = nationGroup.iconsList[0]
             nationConfig = tankmen.getNationConfig(nationID)
-            return (nationGroup.rolesList,
-             nationConfig.getFirstName(firstNameId),
-             nationConfig.getLastName(lastNameId),
-             nationConfig.getIcon(iconId),
+            return (
+             nationGroup.rolesList, nationConfig.getFirstName(firstNameId),
+             nationConfig.getLastName(lastNameId), nationConfig.getIcon(iconId),
              nationGroup.isFemales)
 
 
@@ -472,14 +442,17 @@ def _getRecruitInfoFromQuest(questID):
         if questID == quest.getID():
             return _QuestRecruitInfo(questID, opName)
 
-    return None
+    return
 
 
 @dependency.replace_none_kwargs(eventsCache=IEventsCache)
 def _getRecruitInfoFromToken(tokenName, eventsCache=None):
     tokenData = tankmen.getRecruitInfoFromToken(tokenName)
     expiryTime = eventsCache.questsProgress.getTokenExpiryTime(tokenName)
-    return None if tokenData is None else _TokenRecruitInfo(tokenName, expiryTime, **tokenData)
+    if tokenData is None:
+        return
+    else:
+        return _TokenRecruitInfo(tokenName, expiryTime, **tokenData)
 
 
 def getRecruitInfo(recruitID):
@@ -524,7 +497,10 @@ def getRecruitIDs(eventsCache=None):
 
 def getSourceIdFromQuest(questID):
     sourceID = questID.split(':', 1)[0]
-    return sourceID if sourceID in RecruitSourceID.EVENTS else None
+    if sourceID in RecruitSourceID.EVENTS:
+        return sourceID
+    else:
+        return
 
 
 def getNewRecruitsCounter():

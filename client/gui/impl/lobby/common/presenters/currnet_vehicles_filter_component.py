@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/common/presenters/currnet_vehicles_filter_component.py
-import logging
-import typing
-import Event
+import logging, typing, Event
 from CurrentVehicle import g_currentVehicle
 from gui.impl.lobby.hangar.base.hangar_interfaces import IVehicleFilter
 from helpers import dependency
@@ -21,7 +17,7 @@ class CurrentVehicleFilterComponent(IVehicleFilter):
     @property
     def criteria(self):
         _logger.warning('Tried to access filter criteria for a current vehicle')
-        return None
+        return
 
     @property
     def vehicles(self):

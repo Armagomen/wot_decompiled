@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/customization/progressive_items_reward/progressive_items_upgrade_view.py
-import BigWorld
-import WWISE
+import BigWorld, WWISE
 from CurrentVehicle import g_currentVehicle
 from adisp import adisp_process
 from frameworks.wulf import ViewSettings
@@ -69,7 +66,7 @@ class ProgressiveItemsUpgradeView(ViewImpl):
         if self.__level > 1 and not self.__itemsInNeedToUpgrade and getItemInstalledCount(self.__item) > 0:
             self.__resetItemNovelty()
         isNewItem = self.__level == 1
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setIsNewItem(isNewItem)
             showSecondButton = showSecondButton and isVehicleCanBeCustomized(self.__vehicle, GUI_ITEM_TYPE.STYLE, itemsFilter=lambda item: item.isProgressionRequiredCanBeEdited(self.__vehicle.intCD))
             if vehicleCD != UNBOUND_VEH_KEY:
@@ -149,7 +146,7 @@ class ProgressiveItemsUpgradeView(ViewImpl):
     def __updateButtons(self, lock=False, model=None):
         okEnabled = True
         c11nEnabled = not lock and self.__vehicle.isCustomizationEnabled()
-        if any((handler() for handler in collectCustomizationHangarDecorator())):
+        if any(handler() for handler in collectCustomizationHangarDecorator()):
             c11nEnabled = False
         if self.__itemsInNeedToUpgrade:
             okEnabled = c11nEnabled
@@ -171,7 +168,8 @@ class ProgressiveItemsUpgradeView(ViewImpl):
         for season in SeasonType.RANGE:
             outfit = self.__vehicle.getOutfit(season)
             if outfit is not None:
-                components = [ slotData.component for slotData in outfit.slotsData() if slotData.intCD == self.__item.intCD and slotData.component.progressionLevel != 0 ]
+                components = [ slotData.component for slotData in outfit.slotsData() if slotData.intCD == self.__item.intCD and slotData.component.progressionLevel != 0
+                             ]
                 if components:
                     itemsInNeedToUpgrade.update({season: components})
 

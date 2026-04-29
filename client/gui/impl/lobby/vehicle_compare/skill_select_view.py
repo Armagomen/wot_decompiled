@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/vehicle_compare/skill_select_view.py
 from copy import deepcopy
 import typing
 from constants import NEW_PERK_SYSTEM as NPS
@@ -68,26 +66,32 @@ def _updateSkills(skillsVl, selectedSkills, defaultState):
 
 
 def _getRowModel(vm, rowIndex, skillType):
-    return vm.getBonusSkillRows().getValue(rowIndex) if skillType == SkillType.BONUS.value else vm.getMajorSkillRows().getValue(rowIndex)
+    if skillType == SkillType.BONUS.value:
+        return vm.getBonusSkillRows().getValue(rowIndex)
+    return vm.getMajorSkillRows().getValue(rowIndex)
 
 
 def _getSkillModel(rowVM, skillIndex, skillType):
     if skillType == SkillType.MAJOR.value:
         return rowVM.getSkills().getValue(skillIndex)
-    return rowVM.getCommonSkills().getValue(skillIndex) if skillType == SkillType.COMMON.value else rowVM.getSkills().getValue(skillIndex)
+    if skillType == SkillType.COMMON.value:
+        return rowVM.getCommonSkills().getValue(skillIndex)
+    return rowVM.getSkills().getValue(skillIndex)
 
 
 def _getSkillsCountByRole(role, selectedSkills, skillType):
     skills = SKILLS_BY_ROLES.get(role).intersection(selectedSkills)
     if skillType != SkillType.BONUS.value:
         count = len(skills)
-        return (count, count >= NPS.MAX_MAJOR_PERKS)
+        return (
+         count, count >= NPS.MAX_MAJOR_PERKS)
     count = len(skills.difference(COMMON_SKILLS))
     return (count, count >= NPS.MAX_BONUS_SKILLS_PER_ROLE)
 
 
 class SkillSelectView(ViewImpl):
-    __slots__ = ('__paramsView', '__toolTipMgr', '__cmpConf', '__skillsManager', '__selectedSkills', '__vehicle')
+    __slots__ = ('__paramsView', '__toolTipMgr', '__cmpConf', '__skillsManager', '__selectedSkills',
+                 '__vehicle')
     itemsCache = dependency.descriptor(IItemsCache)
     __appLoader = dependency.descriptor(IAppLoader)
 
@@ -115,16 +119,15 @@ class SkillSelectView(ViewImpl):
                 skillName = str(event.getArgument('skillName'))
                 roleName = str(event.getArgument('roleName'))
                 level = round(crewMemberRealSkillLevel(self.__skillsManager.getVehicle(), skillName), 2)
-                args = [skillName,
-                 roleName,
-                 None,
-                 level]
+                args = [skillName, roleName, None, level]
                 self.__toolTipMgr.onCreateWulfTooltip(TOOLTIPS_CONSTANTS.CREW_PERK_GF, args, event.mouse.positionX, event.mouse.positionY, parent=self.getParentWindow())
                 return TOOLTIPS_CONSTANTS.CREW_PERK_GF
         return super(SkillSelectView, self).createToolTip(event)
 
     def createToolTipContent(self, event, contentID):
-        return CrewRolesTooltipView(self.__vehicle) if contentID == R.views.lobby.vehicle_compare.tooltips.CrewRolesTooltip() else super(SkillSelectView, self).createToolTipContent(event, contentID)
+        if contentID == R.views.lobby.vehicle_compare.tooltips.CrewRolesTooltip():
+            return CrewRolesTooltipView(self.__vehicle)
+        return super(SkillSelectView, self).createToolTipContent(event, contentID)
 
     def _onLoading(self, *args, **kwargs):
         super(SkillSelectView, self)._onLoading(*args, **kwargs)
@@ -136,7 +139,7 @@ class SkillSelectView(ViewImpl):
 
     def _fillModel(self):
         vehicle = self.__skillsManager.getVehicle()
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             fillVehicleInfo(vm.vehicleInfo, vehicle, separateIGRTag=True)
             majorRows = vm.getMajorSkillRows()
             bonusRows = vm.getBonusSkillRows()
@@ -177,11 +180,16 @@ class SkillSelectView(ViewImpl):
 
     def _getEvents(self):
         return ((self.viewModel.onRestore, self._onRestore),
-         (self.viewModel.onCancel, self._onCancel),
-         (self.viewModel.onClose, self._onClose),
-         (self.viewModel.onConfirm, self._onConfirm),
-         (self.viewModel.onClick, self._onClick),
-         (g_playerEvents.onDisconnected, self._onClose))
+         (
+          self.viewModel.onCancel, self._onCancel),
+         (
+          self.viewModel.onClose, self._onClose),
+         (
+          self.viewModel.onConfirm, self._onConfirm),
+         (
+          self.viewModel.onClick, self._onClick),
+         (
+          g_playerEvents.onDisconnected, self._onClose))
 
     def _finalize(self):
         self.__paramsView = None
@@ -212,7 +220,7 @@ class SkillSelectView(ViewImpl):
         self.__updateSkills(int(event.get('rowIndex')), int(event.get('skillIndex')), event.get('skillType'))
 
     def __updateSkills(self, rowIndex, skillIndex, skillType):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             rowVM = _getRowModel(vm, rowIndex, skillType)
             skillVM = _getSkillModel(rowVM, skillIndex, skillType)
             skillState = skillVM.getState()
@@ -243,7 +251,7 @@ class SkillSelectView(ViewImpl):
 
 
 class SkillSelectWindow(WindowImpl):
-    __slots__ = ('__blur',)
+    __slots__ = ('__blur', )
 
     def __init__(self):
         super(SkillSelectWindow, self).__init__(WindowFlags.WINDOW | WindowFlags.WINDOW_FULLSCREEN, layer=WindowLayer.TOP_WINDOW, content=SkillSelectView())

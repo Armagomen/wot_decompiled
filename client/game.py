@@ -1,25 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/game.py
 from __future__ import absolute_import, print_function
-import cPickle
-import functools
-import locale
-import sys
-import zlib
-import Account
-import AreaDestructibles
-import BigWorld
-import CommandMapping
-import GUI
-import MusicControllerWWISE
-import Settings
-import SoundGroups
-import TriggersManager
-import VOIP
-import WebBrowser
-import constants
-import persistent_data_cache as pdc
-import services_config
+import functools, locale, sys, zlib
+from future.moves import pickle
+import Account, AreaDestructibles, BigWorld, CommandMapping, GUI, MusicControllerWWISE, Settings, SoundGroups, TriggersManager, VOIP, WebBrowser, constants, persistent_data_cache as pdc, services_config
 from MemoryCriticalController import g_critMemHandler
 from debug_utils import LOG_CURRENT_EXCEPTION, LOG_DEBUG, LOG_ERROR, LOG_NOTE
 from gui import onRepeatKeyEvent, g_keyEventHandlers, g_mouseEventHandlers, InputHandler
@@ -252,18 +234,14 @@ def onRecreateDevice():
 
 def onStreamComplete(streamID, desc, data):
     try:
-        origPacketLen, origCrc32 = cPickle.loads(desc)
+        origPacketLen, origCrc32 = pickle.loads(desc)
     except Exception:
         origPacketLen, origCrc32 = (-1, -1)
 
     packetLen = len(data)
     crc32 = zlib.crc32(data)
     isCorrupted = origPacketLen != packetLen or origCrc32 != crc32
-    desc = (isCorrupted,
-     origPacketLen,
-     packetLen,
-     origCrc32,
-     crc32)
+    desc = (isCorrupted, origPacketLen, packetLen, origCrc32, crc32)
     player = BigWorld.player()
     if player is None:
         LOG_ERROR('onStreamComplete: no player entity available for process stream (%d, %s) data' % (streamID, desc))
@@ -285,11 +263,14 @@ def onConnected():
 def onGeometryMapped(spaceID, path):
     SoundGroups.g_instance.unloadAll()
     LOG_NOTE('[SPACE] Loading space: ' + path)
-    arenaName = path.split('/')[-1]
+    arenaName = path.split('/')[(-1)]
     BigWorld.notifySpaceChange(path)
     SoundGroups.g_instance.preloadSoundGroups(arenaName)
     from ArenaType import g_geometryNamesToIDs
-    return None if arenaName not in g_geometryNamesToIDs else g_geometryNamesToIDs[arenaName]
+    if arenaName not in g_geometryNamesToIDs:
+        return None
+    else:
+        return g_geometryNamesToIDs[arenaName]
 
 
 def onDisconnected():
@@ -325,9 +306,9 @@ def handleKeyEvent(event):
         DevHotkeysController.handleKeyEvent(event)
     if OfflineMode.handleKeyEvent(event):
         return True
-    elif LightingGenerationMode.handleKeyEvent(event):
-        return True
     else:
+        if LightingGenerationMode.handleKeyEvent(event):
+            return True
         isDown, key, mods, isRepeat = convertKeyEvent(event)
         if WebBrowser.g_mgr.handleKeyEvent(event):
             return True
@@ -361,11 +342,11 @@ def handleKeyEvent(event):
 def handleMouseEvent(event):
     if GUI.handleMouseEvent(event):
         return True
-    elif OfflineMode.handleMouseEvent(event):
-        return True
-    elif LightingGenerationMode.handleMouseEvent(event):
-        return True
     else:
+        if OfflineMode.handleMouseEvent(event):
+            return True
+        if LightingGenerationMode.handleMouseEvent(event):
+            return True
         dx, dy, dz, _ = convertMouseEvent(event)
         if g_replayCtrl.isPlaying:
             if g_replayCtrl.handleMouseEvent(dx, dy, dz):
@@ -407,7 +388,7 @@ def addChatMsg(*msg):
 def expandMacros(line):
     import re
     from python_macroses import g_macroses
-    patt = '\\$(' + functools.reduce(lambda x, y: x + '|' + y, g_macroses.iterkeys()) + ')(\\W|\\Z)'
+    patt = '\\$(' + functools.reduce(lambda x, y: x + '|' + y, g_macroses) + ')(\\W|\\Z)'
 
     def repl(match):
         return g_macroses[match.group(1)] + match.group(2)
@@ -438,18 +419,14 @@ def convertKeyEvent(event):
     isDown = event.isKeyDown()
     key = event.key
     isRepeat = event.isRepeatedEvent()
-    mods = 1 if event.isShiftDown() else (2 if event.isCtrlDown() else (4 if event.isAltDown() else 0))
-    return (isDown,
-     key,
-     mods,
-     isRepeat)
+    mods = 1 if event.isShiftDown() else 2 if event.isCtrlDown() else 4 if event.isAltDown() else 0
+    return (
+     isDown, key, mods, isRepeat)
 
 
 def convertMouseEvent(event):
-    return (event.dx,
-     event.dy,
-     event.dz,
-     event.cursorPosition)
+    return (
+     event.dx, event.dy, event.dz, event.cursorPosition)
 
 
 def onMemoryCritical():
@@ -464,5 +441,5 @@ def checkBotNet():
     from path_manager import g_pathManager
     g_pathManager.setPathes()
     from test_player import g_testPlayer
-    port = int(sys.argv[sys.argv.index(botArg) + 1])
+    port = int(sys.argv[(sys.argv.index(botArg) + 1)])
     g_testPlayer.initTestPlayer(port)

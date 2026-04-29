@@ -1,15 +1,10 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/predefined_hosts.py
-import operator
-import random
-import time
-import threading
-import urllib2
-from urllib import urlencode
+from __future__ import absolute_import
+import operator, random, time, threading
 from collections import namedtuple
-import BigWorld
-import ResMgr
-import constants
+from future.moves.urllib import parse
+from future.moves.urllib import request
+from future.utils import viewitems
+import BigWorld, ResMgr, constants
 from Event import Event, EventManager
 from helpers.time_utils import ONE_MINUTE
 from shared_utils import BitmaskHelper
@@ -43,13 +38,15 @@ def _getPingStatus(pingVal):
         return PING_STATUSES.UNDEFINED
     if pingVal <= _LOW_PING_BOUNDARY_VAL:
         return PING_STATUSES.LOW
-    return PING_STATUSES.NORM if pingVal <= _NORM_PING_BOUNDARY_VAL else PING_STATUSES.HIGH
+    if pingVal <= _NORM_PING_BOUNDARY_VAL:
+        return PING_STATUSES.NORM
+    return PING_STATUSES.HIGH
 
 
 def _isReplay(opType=''):
     import BattleReplay
     if BattleReplay.isLoading() or BattleReplay.isPlaying():
-        LOG_DEBUG('Replay is currently playing. {} requesting operations are forbidden'.format(opType))
+        LOG_DEBUG(('Replay is currently playing. {} requesting operations are forbidden').format(opType))
         return True
     return False
 
@@ -102,7 +99,7 @@ def _CSISResponseParser(out, requestedIDs):
 
 
 def _createDefaultCSISResponse(requestedIDs):
-    return dict(((reqID, HOST_AVAILABILITY.UNKNOWN) for reqID in requestedIDs))
+    return dict((reqID, HOST_AVAILABILITY.UNKNOWN) for reqID in requestedIDs)
 
 
 class _CSISRequestWorker(threading.Thread):
@@ -123,9 +120,9 @@ class _CSISRequestWorker(threading.Thread):
                 try:
                     url = self._makeUrl()
                     LOG_DEBUG('CSIS url', url)
-                    req = urllib2.Request(url=url)
-                    urllib2.build_opener(urllib2.HTTPHandler())
-                    info = urllib2.urlopen(req, timeout=CSIS_REQUEST_TIMEOUT)
+                    req = request.Request(url=url)
+                    request.build_opener(request.HTTPHandler())
+                    info = request.urlopen(req, timeout=CSIS_REQUEST_TIMEOUT)
                     if info.code == 200 and info.headers.type == 'text/xml':
                         response = _CSISResponseParser(info.read(), self.__params)
                 except IOError:
@@ -148,8 +145,8 @@ class _CSISRequestWorker(threading.Thread):
     def _makeUrl(self):
         url = self.__url
         if self.__params:
-            data = urlencode([ ('periphery', param) for param in self.__params ])
-            url = '{0:>s}?{1:>s}'.format(self.__url, data)
+            data = parse.urlencode([ ('periphery', param) for param in self.__params ])
+            url = ('{0:>s}?{1:>s}').format(self.__url, data)
         return url
 
 
@@ -178,14 +175,15 @@ class _LoginAppUrlIterator(list):
     def resume(self):
         self.__lock = False
 
-    def next(self):
+    def nextUrl(self):
         value = self[self.cursor]
         if not self.__lock:
             self.cursor += 1
         return value
 
 
-_HostItem = namedtuple('HostItem', ' '.join(['name',
+_HostItem = namedtuple('HostItem', (' ').join([
+ 'name',
  'shortName',
  'url',
  'urlToken',
@@ -204,7 +202,7 @@ def getHostURL(item, token2=None, useIterator=False):
         if useIterator and urls is not None:
             if urls.end():
                 urls.cursor = 0
-            url = urls.next()
+            url = urls.nextUrl()
             LOG_DEBUG('Gets next LoginApp url:', url)
     return result
 
@@ -264,12 +262,12 @@ class _PingRequester(object):
 
     def __pingCallback(self, result):
         self.__isRequestPingInProgress = False
-        LOG_DEBUG('Ping performed {}'.format(result))
+        LOG_DEBUG(('Ping performed {}').format(result))
         self.__updatePing(result)
 
     def __updatePing(self, pingData, state=None):
         self.__lastUpdateTime = time.time()
-        for rKey, pData in self.__pingResult.iteritems():
+        for rKey, pData in viewitems(self.__pingResult):
             self.__pingResult[rKey] = PingData(pData.value, PING_STATUSES.UNDEFINED)
 
         try:
@@ -354,19 +352,19 @@ class _PreDefinedHostList(object):
         if callback is None:
             LOG_WARNING('Callback is not defined.')
             return
-        elif self.__autoLoginQueryState != AUTO_LOGIN_QUERY_STATE.DEFAULT:
-            LOG_WARNING('Auto login query in process. Current state: {}'.format(self.__autoLoginQueryState))
-            return
-        elif len(self._hosts) < 2:
-            callback(self.first())
-            return
-        elif self.__recommended:
-            LOG_DEBUG('Gets recommended from previous query', self.__recommended)
-            host = self.__choiceFromRecommended()
-            LOG_DEBUG('Recommended host', host)
-            callback(host)
-            return
         else:
+            if self.__autoLoginQueryState != AUTO_LOGIN_QUERY_STATE.DEFAULT:
+                LOG_WARNING(('Auto login query in process. Current state: {}').format(self.__autoLoginQueryState))
+                return
+            if len(self._hosts) < 2:
+                callback(self.first())
+                return
+            if self.__recommended:
+                LOG_DEBUG('Gets recommended from previous query', self.__recommended)
+                host = self.__choiceFromRecommended()
+                LOG_DEBUG('Recommended host', host)
+                callback(host)
+                return
             self.__autoLoginQueryState = AUTO_LOGIN_QUERY_STATE.START
             self.__queryCallback = callback
             self.__pingRequester.request(self.peripheries())
@@ -381,50 +379,52 @@ class _PreDefinedHostList(object):
     def readScriptConfig(self, dataSection, userDataSection=None):
         if self._isDataLoaded or dataSection is None:
             return
-        else:
 
-            def _readSvrList(section, nodeName):
-                return section[nodeName].items() if section is not None and section.has_key(nodeName) else []
+        def _readSvrList(section, nodeName):
+            if section is not None and section.has_key(nodeName):
+                return section[nodeName].items()
+            else:
+                return []
 
-            self.__csisUrl = dataSection.readString('csisUrl')
-            self._hosts = []
-            self._urlMap.clear()
-            self._nameMap.clear()
-            self._peripheryMap.clear()
-            svrList = _readSvrList(dataSection, 'login') + _readSvrList(userDataSection, 'development/login')
-            for name, subSec in svrList:
-                name = subSec.readString('name')
-                shortName = subSec.readString('short_name')
-                urls = _LoginAppUrlIterator(subSec.readStrings('url'))
-                host = urls.primary
-                if host is not None:
-                    if not name:
-                        name = host
-                    keyPath = subSec.readString('public_key_path')
-                    if not keyPath:
-                        keyPath = None
-                    areaID = subSec.readString('game_area_id')
-                    if not areaID:
-                        areaID = None
-                    app = self._makeHostItem(name, shortName, host, urlToken=subSec.readString('url_token'), urlIterator=urls if len(urls) > 1 else None, keyPath=keyPath, areaID=areaID, peripheryID=subSec.readInt('periphery_id', 0))
-                    idx = len(self._hosts)
-                    url = app.url
-                    if url in self._urlMap:
-                        LOG_WARNING('Host url is already added. This host is ignored', url)
-                        continue
-                    self._urlMap[url] = idx
-                    urlToken = app.urlToken
-                    if urlToken:
-                        if urlToken in self._urlMap:
-                            LOG_WARNING('Alternative host url is already added. This url is ignored', app.url)
-                        else:
-                            self._urlMap[urlToken] = idx
-                    self._nameMap[app.name] = idx
-                    self._peripheryMap[app.peripheryID] = idx
-                    self._hosts.append(app)
+        self.__csisUrl = dataSection.readString('csisUrl')
+        self._hosts = []
+        self._urlMap.clear()
+        self._nameMap.clear()
+        self._peripheryMap.clear()
+        svrList = _readSvrList(dataSection, 'login') + _readSvrList(userDataSection, 'development/login')
+        for name, subSec in svrList:
+            name = subSec.readString('name')
+            shortName = subSec.readString('short_name')
+            urls = _LoginAppUrlIterator(subSec.readStrings('url'))
+            host = urls.primary
+            if host is not None:
+                if not name:
+                    name = host
+                keyPath = subSec.readString('public_key_path')
+                if not keyPath:
+                    keyPath = None
+                areaID = subSec.readString('game_area_id')
+                if not areaID:
+                    areaID = None
+                app = self._makeHostItem(name, shortName, host, urlToken=subSec.readString('url_token'), urlIterator=urls if len(urls) > 1 else None, keyPath=keyPath, areaID=areaID, peripheryID=subSec.readInt('periphery_id', 0))
+                idx = len(self._hosts)
+                url = app.url
+                if url in self._urlMap:
+                    LOG_WARNING('Host url is already added. This host is ignored', url)
+                    continue
+                self._urlMap[url] = idx
+                urlToken = app.urlToken
+                if urlToken:
+                    if urlToken in self._urlMap:
+                        LOG_WARNING('Alternative host url is already added. This url is ignored', app.url)
+                    else:
+                        self._urlMap[urlToken] = idx
+                self._nameMap[app.name] = idx
+                self._peripheryMap[app.peripheryID] = idx
+                self._hosts.append(app)
 
-            self._isDataLoaded = True
-            return
+        self._isDataLoaded = True
+        return
 
     def predefined(self, url):
         return url in self._urlMap
@@ -433,7 +433,9 @@ class _PreDefinedHostList(object):
         return url in [ p.url for p in self.roamingHosts() ]
 
     def first(self):
-        return self._hosts[0] if self._hosts else self._makeHostItem('', '', '')
+        if self._hosts:
+            return self._hosts[0]
+        return self._makeHostItem('', '', '')
 
     def byUrl(self, url):
         result = self._makeHostItem('', '', url)
@@ -465,16 +467,13 @@ class _PreDefinedHostList(object):
     def shortList(self):
         result = self.getSimpleHostsList(self._hosts)
         if AUTO_LOGIN_QUERY_ENABLED and len(result) > 1 and len(self.peripheries()) > 1:
-            result.insert(0, (AUTO_LOGIN_QUERY_URL,
-             i18n.makeString('#menu:login/auto'),
-             HOST_AVAILABILITY.IGNORED,
-             None))
+            result.insert(0, (AUTO_LOGIN_QUERY_URL, i18n.makeString('#menu:login/auto'), HOST_AVAILABILITY.IGNORED, None))
         return result
 
     def getSimpleHostsList(self, hosts, withShortName=False):
         result = []
         defAvail = self.getDefaultCSISStatus()
-        predefined = tuple((host.url for host in self.peripheries()))
+        predefined = tuple(host.url for host in self.peripheries())
         isInProgress = self._isCSISQueryInProgress
         csisResGetter = self.__csisResponse.get
         for item in hosts:
@@ -483,23 +482,15 @@ class _PreDefinedHostList(object):
             else:
                 status = defAvail if isInProgress else csisResGetter(item.peripheryID, defAvail)
             if withShortName:
-                result.append((item.url,
-                 item.name,
-                 item.shortName,
-                 status,
-                 item.peripheryID))
-            result.append((item.url,
-             item.name,
-             status,
-             item.peripheryID))
+                result.append((item.url, item.name, item.shortName, status, item.peripheryID))
+            else:
+                result.append((item.url, item.name, status, item.peripheryID))
 
         return result
 
     def getDefaultCSISStatus(self):
         from gui import GUI_SETTINGS
-        if not self.__csisUrl:
-            defAvail = HOST_AVAILABILITY.IGNORED
-        elif GUI_SETTINGS.csisRequestRate == REQUEST_RATE.NEVER:
+        if not self.__csisUrl or GUI_SETTINGS.csisRequestRate == REQUEST_RATE.NEVER:
             defAvail = HOST_AVAILABILITY.IGNORED
         elif len(g_preDefinedHosts.hosts()) > 1:
             defAvail = HOST_AVAILABILITY.REQUESTED
@@ -520,10 +511,10 @@ class _PreDefinedHostList(object):
             return self._hosts[index]
         else:
             if useRoaming:
-                roamingHosts = dict(((host.peripheryID, host) for host in self.roamingHosts()))
+                roamingHosts = dict((host.peripheryID, host) for host in self.roamingHosts())
                 if peripheryID in roamingHosts:
                     return roamingHosts[peripheryID]
-            return None
+            return
 
     def peripheries(self):
         return [ app for app in self._hosts if app.peripheryID ]
@@ -539,7 +530,7 @@ class _PreDefinedHostList(object):
         return self.__lastRoamingHosts
 
     def hostsWithRoaming(self):
-        predefined = tuple((host.url for host in self.peripheries()))
+        predefined = tuple(host.url for host in self.peripheries())
         hosts = self.peripheries()
         for h in self.roamingHosts():
             if h.url not in predefined:
@@ -574,7 +565,8 @@ class _PreDefinedHostList(object):
         else:
             peripheries = self.peripheries()
         LOG_NOTE('Peripheries for autoconnect: ', peripheries)
-        queryResult = [ (host, self.getHostPingData(host.url).value, csisResGetter(host.peripheryID, defAvail)) for host in peripheries ]
+        queryResult = [ (host, self.getHostPingData(host.url).value, csisResGetter(host.peripheryID, defAvail)) for host in peripheries
+                      ]
         self.__recommended = [ item for item in queryResult if item[2] == HOST_AVAILABILITY.RECOMMENDED ]
         if not self.__recommended:
             self.__recommended = [ item for item in queryResult if item[2] == HOST_AVAILABILITY.NOT_RECOMMENDED ]

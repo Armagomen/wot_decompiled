@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/tooltips/element.py
 import logging
 from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
 from gui.Scaleform.daapi.view.lobby.customization.shared import getItemInventoryCount, makeVehiclesShortNamesString, getSuitableText, ITEM_TYPE_TO_TAB, CustomizationTabs
@@ -68,7 +66,8 @@ class SimpleCustomizationTooltip(BlocksTooltipData):
     def _packBlocks(self, *args, **kwargs):
         blocks = self._packItemBlocks(*args, **kwargs)
         blockData = formatters.packBuildUpBlockData(blocks, gap=-6, padding={'bottom': -5})
-        return [blockData]
+        return [
+         blockData]
 
     def _packItemBlocks(self, *args, **kwargs):
         raise NotImplementedError
@@ -77,8 +76,9 @@ class SimpleCustomizationTooltip(BlocksTooltipData):
     def _packNonHistoricBlock(topPadding):
         title = R.strings.vehicle_customization.customization.tooltip.description.historic.false.title
         desc = R.strings.vehicle_customization.customization.tooltip.description.historic.false.description
-        blocks = [formatters.packTextBlockData(text=text_styles.middleTitle(backport.text(title())), padding={'top': topPadding,
-          'bottom': 10}), formatters.packTextBlockData(text=text_styles.main(backport.text(desc())))]
+        blocks = [
+         formatters.packTextBlockData(text=text_styles.middleTitle(backport.text(title())), padding={'top': topPadding, 'bottom': 10}),
+         formatters.packTextBlockData(text=text_styles.main(backport.text(desc())))]
         return blocks
 
 
@@ -88,8 +88,9 @@ class NonHistoricTooltip(SimpleCustomizationTooltip):
         img = R.images.gui.maps.icons.customization.non_historical
         nonHistoricTitle = R.strings.vehicle_customization.customization.tooltip.description.nonHistoric.title
         nonHistoricDesc = R.strings.vehicle_customization.customization.tooltip.description.historic.false.description
-        blocks = [formatters.packImageTextBlockData(title=text_styles.middleTitle(backport.text(nonHistoricTitle())), img=backport.image(img()), imgPadding={'left': -3,
-          'top': -4}), formatters.packTextBlockData(text=text_styles.main(backport.text(nonHistoricDesc())))]
+        blocks = [
+         formatters.packImageTextBlockData(title=text_styles.middleTitle(backport.text(nonHistoricTitle())), img=backport.image(img()), imgPadding={'left': -3, 'top': -4}),
+         formatters.packTextBlockData(text=text_styles.main(backport.text(nonHistoricDesc())))]
         return blocks
 
 
@@ -99,8 +100,9 @@ class FantasticalTooltip(SimpleCustomizationTooltip):
         img = R.images.gui.maps.icons.customization.fantastical
         fantasticalTitle = R.strings.vehicle_customization.customization.tooltip.description.fantastical.title
         fantasticalDesc = R.strings.vehicle_customization.customization.tooltip.description.historic.false.description
-        blocks = [formatters.packImageTextBlockData(title=text_styles.middleTitle(backport.text(fantasticalTitle())), img=backport.image(img()), imgPadding={'left': -3,
-          'top': -4}), formatters.packTextBlockData(text=text_styles.main(backport.text(fantasticalDesc())))]
+        blocks = [
+         formatters.packImageTextBlockData(title=text_styles.middleTitle(backport.text(fantasticalTitle())), img=backport.image(img()), imgPadding={'left': -3, 'top': -4}),
+         formatters.packTextBlockData(text=text_styles.main(backport.text(fantasticalDesc())))]
         return blocks
 
 
@@ -114,9 +116,9 @@ class ChainedTooltip(SimpleCustomizationTooltip):
         img = R.images.gui.maps.icons.customization.chained_ico
         title = R.strings.vehicle_customization.carousel.chained.header
         desc = R.strings.vehicle_customization.carousel.chained.description
-        blocks = [formatters.packImageTextBlockData(title=text_styles.middleTitle(backport.text(title())), img=backport.image(img()), imgPadding={'left': 4,
-          'right': 6,
-          'top': 4}, padding={'bottom': 10}), formatters.packTextBlockData(text=text_styles.main(backport.text(desc())))]
+        blocks = [
+         formatters.packImageTextBlockData(title=text_styles.middleTitle(backport.text(title())), img=backport.image(img()), imgPadding={'left': 4, 'right': 6, 'top': 4}, padding={'bottom': 10}),
+         formatters.packTextBlockData(text=text_styles.main(backport.text(desc())))]
         return blocks
 
 
@@ -139,7 +141,9 @@ class PopoverTooltip(SimpleCustomizationTooltip):
             mapName = R.strings.vehicle_customization.season.selection.mapName.all
         title = R.strings.vehicle_customization.customization.itemsPopover.btn
         desc = R.strings.vehicle_customization.season.selection.tooltip
-        blocks = [formatters.packTextBlockData(text=text_styles.middleTitle(backport.text(title()))), formatters.packTextBlockData(text=text_styles.main(backport.text(desc(), mapName=backport.text(mapName()))), padding={'top': 10})]
+        blocks = [
+         formatters.packTextBlockData(text=text_styles.middleTitle(backport.text(title()))),
+         formatters.packTextBlockData(text=text_styles.main(backport.text(desc(), mapName=backport.text(mapName()))), padding={'top': 10})]
         return blocks
 
 
@@ -155,10 +159,10 @@ class ElementTooltip(BlocksTooltipData):
     CUSTOMIZATION_TOOLTIP_ICON_WIDTH_OTHER_BIG = 226
     CUSTOMIZATION_TOOLTIP_ICON_WIDTH_INSCRIPTION = 278
     CUSTOMIZATION_TOOLTIP_ICON_WIDTH_PERSONAL_NUMBER = 390
-    CUSTOMIZATION_TOOLTIP_ICON_WIDTHS = {GUI_ITEM_TYPE.ATTACHMENT: 232,
-     GUI_ITEM_TYPE.STAT_TRACKER: 232}
-    CUSTOMIZATION_TOOLTIP_ICON_HEIGHTS = {GUI_ITEM_TYPE.ATTACHMENT: 174,
-     GUI_ITEM_TYPE.STAT_TRACKER: 174}
+    CUSTOMIZATION_TOOLTIP_ICON_WIDTHS = {GUI_ITEM_TYPE.ATTACHMENT: 232, 
+       GUI_ITEM_TYPE.STAT_TRACKER: 232}
+    CUSTOMIZATION_TOOLTIP_ICON_HEIGHTS = {GUI_ITEM_TYPE.ATTACHMENT: 174, 
+       GUI_ITEM_TYPE.STAT_TRACKER: 174}
     ALL_SEASON_MAP_ICON = 'all_season'
     HISTORICAL_ICON = 'historical'
     NON_HISTORICAL_ICON = 'non_historical'
@@ -213,9 +217,11 @@ class ElementTooltip(BlocksTooltipData):
         self.bonusDescription = VEHICLE_CUSTOMIZATION.BONUS_CONDITION_SEASON
         topBlocks = []
         if self._item.isRare and self._item.rarity != Rarity.UNKNOWN:
-            topBlocks = [self._packRarityHeaderBlock()]
+            topBlocks = [
+             self._packRarityHeaderBlock()]
         else:
-            topBlocks = [self._packTitleBlock(), self._packIconBlock(self._item.isDim())]
+            topBlocks = [
+             self._packTitleBlock(), self._packIconBlock(self._item.isDim())]
         items = [formatters.packBuildUpBlockData(blocks=topBlocks, gap=10)]
         self.boundVehs = self._item.getBoundVehicles()
         self.installedVehs = self._item.getInstalledVehicles()
@@ -325,37 +331,36 @@ class ElementTooltip(BlocksTooltipData):
         blocks = []
         if not self._item.isQuestsProgression or self._item.itemTypeID == GUI_ITEM_TYPE.STYLE:
             return None
+        rStatus = R.strings.vehicle_customization.customization.tooltip.quests.status
+        _, level = self._item.getQuestsProgressionInfo()
+        if not self._item.requiredToken:
+            blocks.append(formatters.packImageTextBlockData(desc=text_styles.bonusAppliedText(backport.text(rStatus.completed(), level=int2roman(level))), img=backport.image(R.images.gui.maps.icons.library.ConfirmIcon_1()), imgPadding=formatters.packPadding(top=2)))
         else:
-            rStatus = R.strings.vehicle_customization.customization.tooltip.quests.status
-            _, level = self._item.getQuestsProgressionInfo()
-            if not self._item.requiredToken:
+            quests = self._item.getUnlockingQuests()
+            tokenCount = self.__itemsCache.items.tokens.getTokenCount(self._item.requiredToken)
+            isCompleted = any(quest.isCompleted() for quest in quests) if quests else False
+            if isCompleted or tokenCount >= self._item.descriptor.requiredTokenCount:
+                if level < 1:
+                    return None
                 blocks.append(formatters.packImageTextBlockData(desc=text_styles.bonusAppliedText(backport.text(rStatus.completed(), level=int2roman(level))), img=backport.image(R.images.gui.maps.icons.library.ConfirmIcon_1()), imgPadding=formatters.packPadding(top=2)))
             else:
-                quests = self._item.getUnlockingQuests()
-                tokenCount = self.__itemsCache.items.tokens.getTokenCount(self._item.requiredToken)
-                isCompleted = any((quest.isCompleted() for quest in quests)) if quests else False
-                if isCompleted or tokenCount >= self._item.descriptor.requiredTokenCount:
-                    if level < 1:
-                        return None
-                    blocks.append(formatters.packImageTextBlockData(desc=text_styles.bonusAppliedText(backport.text(rStatus.completed(), level=int2roman(level))), img=backport.image(R.images.gui.maps.icons.library.ConfirmIcon_1()), imgPadding=formatters.packPadding(top=2)))
+                isAvailable = tokenCount == self._item.descriptor.requiredTokenCount - 1
+                isValid = self.__skipQuestValidation or not self._item.isUnlockingExpired()
+                if not isValid or not isAvailable:
+                    unavailableBlocks = []
+                    unavailableBlocks.append(formatters.packImageTextBlockData(desc=text_styles.error(backport.text(rStatus.unavailable())), img=backport.image(R.images.gui.maps.icons.library.CancelIcon_1()), imgPadding=formatters.packPadding(top=2)))
+                    if not isValid:
+                        unavailableBlocks.append(formatters.packAlignedTextBlockData(text=text_styles.main(backport.text(rStatus.timedOut())), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER))
+                    elif not isAvailable:
+                        unavailableBlocks.append(formatters.packAlignedTextBlockData(text=text_styles.main(backport.text(rStatus.insufficientLevel())), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER))
+                    blocks.append(formatters.packBuildUpBlockData(blocks=unavailableBlocks, align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=formatters.packPadding(bottom=-8)))
                 else:
-                    isAvailable = tokenCount == self._item.descriptor.requiredTokenCount - 1
-                    isValid = self.__skipQuestValidation or not self._item.isUnlockingExpired()
-                    if not isValid or not isAvailable:
-                        unavailableBlocks = []
-                        unavailableBlocks.append(formatters.packImageTextBlockData(desc=text_styles.error(backport.text(rStatus.unavailable())), img=backport.image(R.images.gui.maps.icons.library.CancelIcon_1()), imgPadding=formatters.packPadding(top=2)))
-                        if not isValid:
-                            unavailableBlocks.append(formatters.packAlignedTextBlockData(text=text_styles.main(backport.text(rStatus.timedOut())), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER))
-                        elif not isAvailable:
-                            unavailableBlocks.append(formatters.packAlignedTextBlockData(text=text_styles.main(backport.text(rStatus.insufficientLevel())), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER))
-                        blocks.append(formatters.packBuildUpBlockData(blocks=unavailableBlocks, align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=formatters.packPadding(bottom=-8)))
-                    else:
-                        blocks.append(formatters.packImageTextBlockData(desc=text_styles.neutral(backport.text(rStatus.inProgress())), img=backport.image(R.images.gui.maps.icons.library.inProgressIcon()), imgPadding=formatters.packPadding(top=2)))
-                        questsConfig = getC11nQuestsConfig()[self._item.requiredToken]
-                        timeLeft = time_utils.getServerTimeDiffInLocal(time_utils.makeLocalServerTime(questsConfig[self._item.descriptor.requiredTokenCount]['finishTime']))
-                        if timeLeft <= time_utils.ONE_WEEK:
-                            blocks.append(formatters.packImageTextBlockData(desc=text_styles.tutorial(backport.backport_time_utils.getTillTimeStringByRClass(timeLeft, R.strings.vehicle_customization.customization.tooltip.quests.status.timeLeft)), img=backport.image(R.images.gui.maps.icons.library.ClockIcon_1()), imgPadding=formatters.packPadding(top=-8, right=-8), padding=formatters.packPadding(bottom=-15)))
-            return formatters.packBuildUpBlockData(blocks=blocks, padding=formatters.packPadding(top=-3, bottom=-13, right=20), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_HORIZONTAL)
+                    blocks.append(formatters.packImageTextBlockData(desc=text_styles.neutral(backport.text(rStatus.inProgress())), img=backport.image(R.images.gui.maps.icons.library.inProgressIcon()), imgPadding=formatters.packPadding(top=2)))
+                    questsConfig = getC11nQuestsConfig()[self._item.requiredToken]
+                    timeLeft = time_utils.getServerTimeDiffInLocal(time_utils.makeLocalServerTime(questsConfig[self._item.descriptor.requiredTokenCount]['finishTime']))
+                    if timeLeft <= time_utils.ONE_WEEK:
+                        blocks.append(formatters.packImageTextBlockData(desc=text_styles.tutorial(backport.backport_time_utils.getTillTimeStringByRClass(timeLeft, R.strings.vehicle_customization.customization.tooltip.quests.status.timeLeft)), img=backport.image(R.images.gui.maps.icons.library.ClockIcon_1()), imgPadding=formatters.packPadding(top=-8, right=-8), padding=formatters.packPadding(bottom=-15)))
+        return formatters.packBuildUpBlockData(blocks=blocks, padding=formatters.packPadding(top=-3, bottom=-13, right=20), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_HORIZONTAL)
 
     def _packQuestsBlock(self):
         blocks = []
@@ -363,77 +368,76 @@ class ElementTooltip(BlocksTooltipData):
         tokenCount = self.__itemsCache.items.tokens.getTokenCount(self._item.requiredToken)
         if not self._item.requiredToken or self._item.requiredToken and (self._item.isUnlockingExpired() or tokenCount >= self._item.descriptor.requiredTokenCount):
             return
-        else:
-            blocks.append(formatters.packTitleDescBlock(title=text_styles.middleTitle(backport.text(R.strings.vehicle_customization.customization.tooltip.quests.title()))))
-            padding = formatters.packPadding(left=83, bottom=0)
+        blocks.append(formatters.packTitleDescBlock(title=text_styles.middleTitle(backport.text(R.strings.vehicle_customization.customization.tooltip.quests.title()))))
+        padding = formatters.packPadding(left=83, bottom=0)
 
-            def formatCondition(quest, isCompleted, isAvailable, current, total, description):
-                if current == total or quest.isCompleted():
-                    value = text_styles.bonusAppliedText(backport.text(R.strings.vehicle_customization.customization.tooltip.quests.progress()))
-                    icon = backport.image(R.images.gui.maps.icons.library.ConfirmIcon_1())
-                    iconPadding = formatters.packPadding(top=2, left=4)
-                    titlePadding = formatters.packPadding(left=4)
+        def formatCondition(quest, isCompleted, isAvailable, current, total, description):
+            if current == total or quest.isCompleted():
+                value = text_styles.bonusAppliedText(backport.text(R.strings.vehicle_customization.customization.tooltip.quests.progress()))
+                icon = backport.image(R.images.gui.maps.icons.library.ConfirmIcon_1())
+                iconPadding = formatters.packPadding(top=2, left=4)
+                titlePadding = formatters.packPadding(left=4)
+            else:
+                if isAvailable:
+                    value = ('{} / {}').format(text_styles.neutral(current), total)
                 else:
-                    if isAvailable:
-                        value = '{} / {}'.format(text_styles.neutral(current), total)
-                    else:
-                        value = text_styles.standard('{} / {}'.format(current, total))
-                    icon = backport.image(R.images.gui.maps.icons.library.circle())
-                    iconPadding = formatters.packPadding(top=5, left=7)
-                    titlePadding = formatters.packPadding(left=6)
-                return formatters.packTitleDescParameterWithIconBlockData(title=text_styles.standard(description) if isCompleted or not isAvailable else text_styles.main(description), value=value, icon=icon, padding=padding, titlePadding=titlePadding, iconPadding=iconPadding, titleWidth=300)
+                    value = text_styles.standard(('{} / {}').format(current, total))
+                icon = backport.image(R.images.gui.maps.icons.library.circle())
+                iconPadding = formatters.packPadding(top=5, left=7)
+                titlePadding = formatters.packPadding(left=6)
+            return formatters.packTitleDescParameterWithIconBlockData(title=text_styles.standard(description) if isCompleted or not isAvailable else text_styles.main(description), value=value, icon=icon, padding=padding, titlePadding=titlePadding, iconPadding=iconPadding, titleWidth=300)
 
-            isLevelCompleted = False
-            progressPercents = []
-            isAvailable = tokenCount == self._item.descriptor.requiredTokenCount - 1
-            if quests:
-                delimitersToPost = len(quests) - 1
-                for quest in quests:
-                    conditionsDescription = quest.getConditionsDescription()
-                    vehCond = getDefaultVehicleCondFormatter().format(quest.vehicleReqs, quest)
-                    postBattleCond = getDefaultPostBattleCondFormatter().format(quest.postBattleCond, quest)
-                    bonusCond = getDefaultMissionsBonusConditionsFormatter().format(quest.bonusCond, quest)
-                    isCompleted = quest is not None and quest.isCompleted() or tokenCount >= self._item.descriptor.requiredTokenCount
-                    isLevelCompleted = isLevelCompleted or isCompleted
-                    battleCountCondition = quest.bonusCond.getConditions().find('battles')
-                    battlesCount = None
-                    if battleCountCondition is not None:
-                        battlesCount = first(BattlesCountFormatter(bool(postBattleCond)).format(battleCountCondition, quest))
-                    conditionsBlocks = []
-                    for orItem in postBattleCond:
-                        progress = 0
-                        andItems = orItem + first(vehCond, []) + first(bonusCond, [])
-                        for andItem in andItems:
-                            descrData = andItem.descrData
-                            if andItem.conditionData:
-                                description = andItem.conditionData.get('data', {}).get('description')
-                            elif descrData and first(descrData.args):
-                                description = CARD_FIELDS_FORMATTERS[descrData.formatterID](*descrData.args)
-                            else:
-                                description = ''
-                                _logger.error('Description is not provided for questID: %d', 0)
-                            current = int(andItem.current or 0 if battlesCount is None else battlesCount.current)
-                            total = int(andItem.total or 1 if battlesCount is None else battlesCount.total)
-                            progress += int(round(current * 100.0 / total))
-                            conditionsBlocks.append(formatCondition(quest, isCompleted, isAvailable, current, total, description))
+        isLevelCompleted = False
+        progressPercents = []
+        isAvailable = tokenCount == self._item.descriptor.requiredTokenCount - 1
+        if quests:
+            delimitersToPost = len(quests) - 1
+            for quest in quests:
+                conditionsDescription = quest.getConditionsDescription()
+                vehCond = getDefaultVehicleCondFormatter().format(quest.vehicleReqs, quest)
+                postBattleCond = getDefaultPostBattleCondFormatter().format(quest.postBattleCond, quest)
+                bonusCond = getDefaultMissionsBonusConditionsFormatter().format(quest.bonusCond, quest)
+                isCompleted = quest is not None and quest.isCompleted() or tokenCount >= self._item.descriptor.requiredTokenCount
+                isLevelCompleted = isLevelCompleted or isCompleted
+                battleCountCondition = quest.bonusCond.getConditions().find('battles')
+                battlesCount = None
+                if battleCountCondition is not None:
+                    battlesCount = first(BattlesCountFormatter(bool(postBattleCond)).format(battleCountCondition, quest))
+                conditionsBlocks = []
+                for orItem in postBattleCond:
+                    progress = 0
+                    andItems = orItem + first(vehCond, []) + first(bonusCond, [])
+                    for andItem in andItems:
+                        descrData = andItem.descrData
+                        if andItem.conditionData:
+                            description = andItem.conditionData.get('data', {}).get('description')
+                        elif descrData and first(descrData.args):
+                            description = CARD_FIELDS_FORMATTERS[descrData.formatterID](*descrData.args)
+                        else:
+                            description = ''
+                            _logger.error('Description is not provided for questID: %d', 0)
+                        current = int(andItem.current or 0 if battlesCount is None else battlesCount.current)
+                        total = int(andItem.total or 1 if battlesCount is None else battlesCount.total)
+                        progress += int(round(current * 100.0 / total))
+                        conditionsBlocks.append(formatCondition(quest, isCompleted, isAvailable, current, total, description))
 
-                        if andItems:
-                            progress /= len(andItems)
-                        progressPercents.append(progress)
+                    if andItems:
+                        progress /= len(andItems)
+                    progressPercents.append(progress)
 
-                    if quest.accountReqs.getTokens() and not conditionsBlocks:
-                        blocks.append(formatCondition(quest, isCompleted, isAvailable, 0, 1, quest.getDescription()))
-                    elif conditionsDescription:
-                        blocks.append(formatCondition(quest, isCompleted, isAvailable, 0 if battlesCount is None else battlesCount.current, 1 if battlesCount is None else battlesCount.total, conditionsDescription))
-                    elif conditionsBlocks:
-                        blocks.extend(conditionsBlocks)
-                    if delimitersToPost:
-                        blocks.append(formatters.packQuestOrConditionBlockData(padding=formatters.packPadding(bottom=-22, right=17)))
-                        delimitersToPost -= 1
+                if quest.accountReqs.getTokens() and not conditionsBlocks:
+                    blocks.append(formatCondition(quest, isCompleted, isAvailable, 0, 1, quest.getDescription()))
+                elif conditionsDescription:
+                    blocks.append(formatCondition(quest, isCompleted, isAvailable, 0 if battlesCount is None else battlesCount.current, 1 if battlesCount is None else battlesCount.total, conditionsDescription))
+                elif conditionsBlocks:
+                    blocks.extend(conditionsBlocks)
+                if delimitersToPost:
+                    blocks.append(formatters.packQuestOrConditionBlockData(padding=formatters.packPadding(bottom=-22, right=17)))
+                    delimitersToPost -= 1
 
-                if not isLevelCompleted and isAvailable:
-                    blocks.append(formatters.packQuestProgressBlockData(max(progressPercents), padding=formatters.packPadding(left=-19, top=13, bottom=-35)))
-            return formatters.packBuildUpBlockData(blocks=blocks, padding=formatters.packPadding(top=-8, bottom=-8))
+            if not isLevelCompleted and isAvailable:
+                blocks.append(formatters.packQuestProgressBlockData(max(progressPercents), padding=formatters.packPadding(left=-19, top=13, bottom=-35)))
+        return formatters.packBuildUpBlockData(blocks=blocks, padding=formatters.packPadding(top=-8, bottom=-8))
 
     def _packCharacteristicsBlock(self):
         blocks = []
@@ -560,7 +564,9 @@ class ElementTooltip(BlocksTooltipData):
                 return
             if self._item.mayApply or self.__vehicle.intCD in self.installedVehs:
                 return formatters.packTitleDescBlock(title=text_styles.middleTitle(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_LIMITED_ON_VEHICLE), desc=text_styles.main(makeVehiclesShortNamesString(vehicles, self.__vehicle)), padding=formatters.packPadding(top=-2))
-            blocks = [formatters.packImageTextBlockData(title=text_styles.critical(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_LIMITED_ON_OTHER_VEHICLE), img=RES_ICONS.MAPS_ICONS_LIBRARY_MARKER_BLOCKED, imgPadding=formatters.packPadding(left=2, top=2)), formatters.packTextBlockData(text=text_styles.main(_ms(makeVehiclesShortNamesString(vehicles, self.__vehicle))), padding=formatters.packPadding(top=-7))]
+            blocks = [
+             formatters.packImageTextBlockData(title=text_styles.critical(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_LIMITED_ON_OTHER_VEHICLE), img=RES_ICONS.MAPS_ICONS_LIBRARY_MARKER_BLOCKED, imgPadding=formatters.packPadding(left=2, top=2)),
+             formatters.packTextBlockData(text=text_styles.main(_ms(makeVehiclesShortNamesString(vehicles, self.__vehicle))), padding=formatters.packPadding(top=-7))]
             return formatters.packBuildUpBlockData(blocks, gap=3, padding=formatters.packPadding(bottom=-5))
 
     def _packSpecialBlock(self):
@@ -582,7 +588,7 @@ class ElementTooltip(BlocksTooltipData):
             return
         else:
             if len(specials) > 1:
-                specials = [ '<li>{}</li>'.format(s) for s in specials ]
+                specials = [ ('<li>{}</li>').format(s) for s in specials ]
             for special in specials:
                 blocks.append(formatters.packTextBlockData(text=text_styles.main(special)))
 
@@ -605,7 +611,7 @@ class ElementTooltip(BlocksTooltipData):
         rarity = self._item.rarity
         videoSource = ''
         if rarity in Rarity.UI_EFFECT:
-            videoSource = 'videos/rarity/{0}.usm'.format(rarity)
+            videoSource = ('videos/rarity/{0}.usm').format(rarity)
         imageOffset = 100
         if self._item.itemTypeID == GUI_ITEM_TYPE.ATTACHMENT:
             imageOffset = 65
@@ -616,7 +622,9 @@ class ElementTooltip(BlocksTooltipData):
         tooltipKey = TOOLTIPS.getItemBoxTooltip(self._item.itemTypeName)
         if tooltipKey:
             title = _ms(tooltipKey, group=self._item.userType, value=self._item.userName)
-        return formatters.packItemTitleDescBlockData(title=text_styles.highTitle(title), highlightPath=RES_ICONS.MAPS_ICONS_CUSTOMIZATION_CORNER_RARE, img=RES_ICONS.MAPS_ICONS_CUSTOMIZATION_BRUSH_RARE, imgPadding=formatters.packPadding(top=5, left=8), padding=formatters.packPadding(top=-10, left=-19, bottom=-7), txtPadding=formatters.packPadding(top=10, left=-8), descPadding=formatters.packPadding(top=25, left=-8)) if self._item.isRare() else formatters.packTitleDescBlock(title=text_styles.highTitle(title), descPadding=formatters.packPadding(top=-5))
+        if self._item.isRare():
+            return formatters.packItemTitleDescBlockData(title=text_styles.highTitle(title), highlightPath=RES_ICONS.MAPS_ICONS_CUSTOMIZATION_CORNER_RARE, img=RES_ICONS.MAPS_ICONS_CUSTOMIZATION_BRUSH_RARE, imgPadding=formatters.packPadding(top=5, left=8), padding=formatters.packPadding(top=-10, left=-19, bottom=-7), txtPadding=formatters.packPadding(top=10, left=-8), descPadding=formatters.packPadding(top=25, left=-8))
+        return formatters.packTitleDescBlock(title=text_styles.highTitle(title), descPadding=formatters.packPadding(top=-5))
 
     def _packInventoryBlock(self, showBuyPrice, showSellPrice, showInventoryCount):
         subBlocks = []
@@ -645,14 +653,16 @@ class ElementTooltip(BlocksTooltipData):
                 actionPercent = itemPrice.getActionPrc()
                 if actionPercent > 0:
                     subBlocks.append(formatters.packTextParameterWithIconBlockData(name=text_styles.main(TOOLTIPS.ACTIONPRICE_SELL_BODY_SIMPLE), value=text_styles.concatStylesToSingleLine(text_styles.credits(backport.getIntegralFormat(value)), '    ', icons.credits()), icon='alertMedium', valueWidth=88, padding=formatters.packPadding(left=-5)))
-                subBlocks.append(makePriceBlock(value, CURRENCY_SETTINGS.SELL_PRICE, oldPrice=defValue if defValue > 0 else None, percent=actionPercent, valueWidth=88, leftPadding=49, iconRightOffset=2, gap=4))
+                else:
+                    subBlocks.append(makePriceBlock(value, CURRENCY_SETTINGS.SELL_PRICE, oldPrice=defValue if defValue > 0 else None, percent=actionPercent, valueWidth=88, leftPadding=49, iconRightOffset=2, gap=4))
 
         if self._item.isQuestsProgression and self._item.itemTypeID == GUI_ITEM_TYPE.STYLE and self._item.descriptor.questsProgression:
             padding = formatters.packPadding(left=83, bottom=0)
             titlePadding = formatters.packPadding(left=-1)
             totalItems = self._item.descriptor.questsProgression.getTotalCount()
-            itemsOpened = sum([ self._item.descriptor.questsProgression.getUnlockedCount(token, self.__eventsCache.questsProgress.getTokenCount(token)) for token in self._item.descriptor.questsProgression.getGroupTokens() ])
-            countText = '{} / {}'.format(text_styles.stats(itemsOpened), text_styles.main(totalItems))
+            itemsOpened = sum([ self._item.descriptor.questsProgression.getUnlockedCount(token, self.__eventsCache.questsProgress.getTokenCount(token)) for token in self._item.descriptor.questsProgression.getGroupTokens()
+                              ])
+            countText = ('{} / {}').format(text_styles.stats(itemsOpened), text_styles.main(totalItems))
             subBlocks.append(formatters.packTitleDescParameterWithIconBlockData(title=text_styles.main(backport.text(R.strings.vehicle_customization.customization.tooltip.characteristics.opened())), value=countText, icon=backport.image(R.images.gui.maps.icons.customization.opened()), padding=padding, titlePadding=titlePadding, iconPadding=formatters.packPadding(top=2)))
         if self._item.isUnlockedByToken():
             if self.__ctx is not None:
@@ -699,7 +709,8 @@ class ElementTooltip(BlocksTooltipData):
                 iconWidth = self.CUSTOMIZATION_TOOLTIP_ICON_WIDTH_WIDE
             elif self._item.itemTypeID == GUI_ITEM_TYPE.PERSONAL_NUMBER:
                 iconWidth = self.CUSTOMIZATION_TOOLTIP_ICON_WIDTH_PERSONAL_NUMBER
-            elif self._item.itemTypeID in (GUI_ITEM_TYPE.MODIFICATION, GUI_ITEM_TYPE.STYLE, GUI_ITEM_TYPE.PROJECTION_DECAL):
+            elif self._item.itemTypeID in (GUI_ITEM_TYPE.MODIFICATION, GUI_ITEM_TYPE.STYLE,
+             GUI_ITEM_TYPE.PROJECTION_DECAL):
                 iconWidth = self.CUSTOMIZATION_TOOLTIP_ICON_WIDTH_OTHER_BIG
         return iconWidth
 
@@ -758,17 +769,20 @@ class ElementTooltip(BlocksTooltipData):
                 blocks.append(formatters.packTextBlockData(text=text_styles.main(desc)))
         elif desc:
             blocks.append(formatters.packTextBlockData(text=text_styles.main(desc)))
-        return formatters.packBuildUpBlockData(blocks, gap=-6, padding=formatters.packPadding(bottom=-5)) if blocks else None
+        if blocks:
+            return formatters.packBuildUpBlockData(blocks, gap=-6, padding=formatters.packPadding(bottom=-5))
+        else:
+            return
 
     def _packUnsupportedBlock(self):
         if isRendererPipelineDeferred():
-            return None
+            return
         else:
             hasGMTexture = self._item.itemTypeID == GUI_ITEM_TYPE.PROJECTION_DECAL and self._item.descriptor.glossTexture
             if self._item.itemTypeID == GUI_ITEM_TYPE.MODIFICATION or self._item.itemTypeID == GUI_ITEM_TYPE.ATTACHMENT or hasGMTexture:
                 desc = backport.text(R.strings.vehicle_customization.customization.tooltip.warning.title())
                 return formatters.packImageTextBlockData(img=backport.image(R.images.gui.maps.icons.library.alertIcon()), imgPadding=formatters.packPadding(top=3, right=3), desc=text_styles.alert(desc))
-            return None
+            return
 
     def _packProgressBlock(self):
         blocks = []
@@ -831,11 +845,14 @@ class ElementTooltip(BlocksTooltipData):
     def __packInheritorBlock(self, ancestors):
         getItemByCD = self.__itemsCache.items.getItemByCD
         quotedText = R.strings.vehicle_customization.quotedText
-        blocks = [self.__packChainedBlockTitle(R.strings.vehicle_customization.customization.tooltip.chained.suitable()), self.__packDependentContentFormat(text=', '.join([ backport.text(quotedText(), getItemByCD(intCD).userName) for intCD in ancestors ]), icon=backport.image(R.images.gui.maps.icons.customization.customization_icon.c_16x16.camouflage()))]
+        blocks = [
+         self.__packChainedBlockTitle(R.strings.vehicle_customization.customization.tooltip.chained.suitable()),
+         self.__packDependentContentFormat(text=(', ').join([ backport.text(quotedText(), getItemByCD(intCD).userName) for intCD in ancestors ]), icon=backport.image(R.images.gui.maps.icons.customization.customization_icon.c_16x16.camouflage()))]
         return formatters.packBuildUpBlockData(blocks=blocks, padding=formatters.packPadding(top=-3))
 
     def __packAncestorBlock(self, dependentItems):
-        blocks = [self.__packChainedBlockTitle(R.strings.vehicle_customization.customization.tooltip.chained.default())]
+        blocks = [
+         self.__packChainedBlockTitle(R.strings.vehicle_customization.customization.tooltip.chained.default())]
         getItemByCD = self.__itemsCache.items.getItemByCD
         quotedText = R.strings.vehicle_customization.quotedText
         itemsBySlot = {}
@@ -845,12 +862,14 @@ class ElementTooltip(BlocksTooltipData):
             itemSlotType = CustomizationTabs.SLOT_TYPES[itemTabID]
             itemSlotName = GUI_ITEM_TYPE_NAMES[itemSlotType]
             if itemSlotName not in itemsBySlot.keys():
-                itemsBySlot[itemSlotName] = [item.userName]
-            itemsBySlot[itemSlotName].append(item.userName)
+                itemsBySlot[itemSlotName] = [
+                 item.userName]
+            else:
+                itemsBySlot[itemSlotName].append(item.userName)
 
         image = R.images.gui.maps.icons.customization.customization_icon.c_16x16
         for key, value in itemsBySlot.iteritems():
-            blocks.append(self.__packDependentContentFormat(text=', '.join([ backport.text(quotedText(), slotTypeName) for slotTypeName in value ]), icon=backport.image(image.dyn(key)())))
+            blocks.append(self.__packDependentContentFormat(text=(', ').join([ backport.text(quotedText(), slotTypeName) for slotTypeName in value ]), icon=backport.image(image.dyn(key)())))
 
         return formatters.packBuildUpBlockData(blocks=blocks, padding=formatters.packPadding(top=-3))
 
@@ -892,7 +911,7 @@ class ElementAwardTooltip(ElementTooltip):
         elif self._item.itemTypeName == 'camouflage':
             bonusDescription = VEHICLE_CUSTOMIZATION.ELEMENTAWARDTOOLTIP_DESCRIPTION_CAMOUFLAGE
         minBonus, maxBonus = g_cache.getCamouflageBonusDelta()
-        bonusPercent = '{min:.0f}-{max:.0f}%'.format(min=minBonus * 100, max=maxBonus * 100)
+        bonusPercent = ('{min:.0f}-{max:.0f}%').format(min=minBonus * 100, max=maxBonus * 100)
         blocks.append(formatters.packCustomizationCharacteristicBlockData(text=text_styles.main(text_styles.main(bonusDescription)), icon=bonusPercent, isTextIcon=True, padding=formatters.packPadding(right=20)))
         return formatters.packBuildUpBlockData(blocks, gap=-6, padding=formatters.packPadding(bottom=-5), linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE)
 

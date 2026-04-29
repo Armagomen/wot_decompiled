@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/nation_change/__init__.py
 from constants import ITEM_DEFS_PATH
 from NationChangeSettings import NationChangeSettings
 g_settings = None
@@ -14,4 +12,7 @@ def init(settingsXml=CONFIG_XML_PATH):
 
 def findVehicleNationGroupId(vehicleTypeName):
     group = g_settings.findVehicleGroup(vehicleTypeName)
-    return UNDEFINED_ID if group is None else group.ID
+    if group is None:
+        return UNDEFINED_ID
+    else:
+        return group.ID

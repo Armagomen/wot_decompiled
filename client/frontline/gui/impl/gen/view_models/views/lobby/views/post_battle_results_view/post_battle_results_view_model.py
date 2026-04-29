@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/impl/gen/view_models/views/lobby/views/post_battle_results_view/post_battle_results_view_model.py
 from frameworks.wulf import Array, ViewModel
 from frontline.gui.impl.gen.view_models.views.lobby.views.post_battle_results_view.achievement_model import AchievementModel
 from frontline.gui.impl.gen.view_models.views.lobby.views.post_battle_results_view.battle_financial_report_model import BattleFinancialReportModel
@@ -9,7 +7,7 @@ from gui.impl.gen.view_models.views.lobby.battle_results.detailed_personal_effic
 from gui.impl.gen.view_models.views.lobby.common.router_model import RouterModel
 
 class PostBattleResultsViewModel(ViewModel):
-    __slots__ = ('onClose',)
+    __slots__ = ('onClose', )
 
     def __init__(self, properties=6, commands=1):
         super(PostBattleResultsViewModel, self).__init__(properties=properties, commands=commands)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/inventory/inventory_cm_handlers.py
 from adisp import adisp_process
 from gui import shop
 from gui.Scaleform.daapi.view.lobby.shared.cm_handlers import ContextMenu, option, CMLabel
@@ -98,7 +96,8 @@ class EquipmentCMHandler(_ArmingCMHandler):
         self._enabled = bool(ctx.enabled)
 
     def _getHighlightedLabels(self):
-        return (CMLabel.BUY_MORE,)
+        return (
+         CMLabel.BUY_MORE,)
 
     def _getOptionCustomData(self, label):
         optionData = super(EquipmentCMHandler, self)._getOptionCustomData(label)
@@ -128,7 +127,8 @@ class OptionalDeviceCMHandler(_ArmingCMHandler):
         return options
 
     def _getHighlightedLabels(self):
-        return (CMLabel.BUY_MORE, CMLabel.UPGRADE)
+        return (
+         CMLabel.BUY_MORE, CMLabel.UPGRADE)
 
 
 class OptionalModernizedDeviceCMHandler(OptionalDeviceCMHandler):
@@ -183,7 +183,9 @@ class BattleBoostersCMHandler(ContextMenu):
         return optionData
 
     def _isVisible(self, label):
-        return not self._itemsCache.items.getItemByCD(self._id).isHidden if label == CMLabel.BUY_MORE else super(BattleBoostersCMHandler, self)._isVisible(label)
+        if label == CMLabel.BUY_MORE:
+            return not self._itemsCache.items.getItemByCD(self._id).isHidden
+        return super(BattleBoostersCMHandler, self)._isVisible(label)
 
 
 class DemountKitsCMHandler(ContextMenu):

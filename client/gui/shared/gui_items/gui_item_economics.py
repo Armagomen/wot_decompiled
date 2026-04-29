@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/gui_items/gui_item_economics.py
 import typing
 from collections import namedtuple
 from gui.shared.money import Money, Currency, MONEY_UNDEFINED, ZERO_MONEY
@@ -30,7 +28,7 @@ def cmpByCurrencyWeight(p1, p2):
                 return v1
             if v1 != v2:
                 return v1 - v2
-        if v2 is not None:
+        elif v2 is not None:
             return -v2
 
     return 0
@@ -52,17 +50,23 @@ def isItemBuyPriceAvailable(item, itemPrice, shop):
 
 def getItemBuyPrice(item, currency, shop):
     itemPrice = item.buyPrices.getMinItemPriceByCurrency(currency)
-    return itemPrice if itemPrice is not None and isItemBuyPriceAvailable(item, itemPrice, shop) else None
+    if itemPrice is not None and isItemBuyPriceAvailable(item, itemPrice, shop):
+        return itemPrice
+    else:
+        return
 
 
 def getPriceTypeAndValue(item, money, exchangeRate):
     mayRent, _ = item.mayRent(money)
-    if item.isRestorePossible() and (item.isRestorePossible() and item.mayRestoreWithExchange(money, exchangeRate) or not mayRent):
-        return _DisplayPrice(ActualPrice.RESTORE_PRICE, item.restorePrice)
+    if item.isRestorePossible():
+        if item.isRestorePossible() and item.mayRestoreWithExchange(money, exchangeRate) or not mayRent:
+            return _DisplayPrice(ActualPrice.RESTORE_PRICE, item.restorePrice)
     if item.hasRestoreCooldown() and not item.minRentPrice:
         return _DisplayPrice(ActualPrice.RESTORE_PRICE, item.restorePrice)
     minRentItemPrice = getMinRentItemPrice(item)
-    return _DisplayPrice(ActualPrice.RENT_PRICE, minRentItemPrice) if minRentItemPrice else _DisplayPrice(ActualPrice.BUY_PRICE, item.getBuyPrice(preferred=False))
+    if minRentItemPrice:
+        return _DisplayPrice(ActualPrice.RENT_PRICE, minRentItemPrice)
+    return _DisplayPrice(ActualPrice.BUY_PRICE, item.getBuyPrice(preferred=False))
 
 
 def getMinRentItemPrice(item):
@@ -72,19 +76,22 @@ def getMinRentItemPrice(item):
         minRentDefPriceValue = minRentPricePackage['defaultRentPrice']
         return ItemPrice(price=minRentPriceValue, defPrice=minRentDefPriceValue)
     else:
-        return None
+        return
 
 
 def getVehicleConsumablesLayoutPrice(vehicle):
-    return sum([ item.getBuyPrice() for item in vehicle.consumables.layout.getItems() if not item.isInInventory and not vehicle.consumables.setupLayouts.isInSetup(item) ], ITEM_PRICE_ZERO)
+    return sum([ item.getBuyPrice() for item in vehicle.consumables.layout.getItems() if not item.isInInventory and not vehicle.consumables.setupLayouts.isInSetup(item)
+               ], ITEM_PRICE_ZERO)
 
 
 def getVehicleBattleBoostersLayoutPrice(vehicle):
-    return sum([ item.getBuyPrice() for item in vehicle.battleBoosters.layout.getItems() if not item.isInInventory and not vehicle.battleBoosters.setupLayouts.isInSetup(item) ], ITEM_PRICE_ZERO)
+    return sum([ item.getBuyPrice() for item in vehicle.battleBoosters.layout.getItems() if not item.isInInventory and not vehicle.battleBoosters.setupLayouts.isInSetup(item)
+               ], ITEM_PRICE_ZERO)
 
 
 def getVehicleOptionalDevicesLayoutPrice(vehicle):
-    return sum([ item.getBuyPrice() for item in vehicle.optDevices.layout.getItems() if not item.isInInventory and not vehicle.optDevices.setupLayouts.isInSetup(item) ], ITEM_PRICE_ZERO)
+    return sum([ item.getBuyPrice() for item in vehicle.optDevices.layout.getItems() if not item.isInInventory and not vehicle.optDevices.setupLayouts.isInSetup(item)
+               ], ITEM_PRICE_ZERO)
 
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
@@ -120,7 +127,7 @@ class ItemPrice(object):
         return self.price != other.price or self.defPrice != other.defPrice
 
     def __repr__(self):
-        return 'ItemPrice(price: {}, defPrice: {})'.format(self.price, self.defPrice)
+        return ('ItemPrice(price: {}, defPrice: {})').format(self.price, self.defPrice)
 
     def __add__(self, other):
         return ItemPrice(self.price + other.price, self.defPrice + other.defPrice)
@@ -164,7 +171,9 @@ class ItemPrice(object):
         return self.__price != self.__defPrice
 
     def getActionPrc(self):
-        return getActionPrc(self.__price, self.__defPrice) if self.isActionPrice() else 0
+        if self.isActionPrice():
+            return getActionPrc(self.__price, self.__defPrice)
+        return 0
 
     def getActionPrcAsMoney(self):
         actionPrc = MONEY_UNDEFINED
@@ -191,7 +200,9 @@ class ItemPrices(object):
         return self.iteritems(directOrder=True)
 
     def __nonzero__(self):
-        return True if self.__itemPrice else False
+        if self.__itemPrice:
+            return True
+        return False
 
     @property
     def itemPrice(self):

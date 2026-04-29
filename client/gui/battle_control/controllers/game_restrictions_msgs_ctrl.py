@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/game_restrictions_msgs_ctrl.py
-import sys
-import time
+import sys, time
 from constants import getTimeOnArena, getArenaStartTime
 from messenger import MessengerEntry, g_settings
 from gui.battle_control.avatar_getter import getAvatarPlayLimits, getArenaUniqueID
@@ -40,25 +37,37 @@ class GameRestrictionsMessagesController(Notifiable, IBattleController):
 
     def __getDailyPlayTimeLeft(self):
         res = self.__playLimits['dailyPlayLimit']
-        return res if res != -1 else sys.maxint
+        if res != -1:
+            return res
+        return sys.maxint
 
     def __getWeeklyPlayTimeLeft(self):
         res = self.__playLimits['weeklyPlayLimit']
-        return res if res != -1 else sys.maxint
+        if res != -1:
+            return res
+        return sys.maxint
 
     def __getCurfew(self):
         res = self.__playLimits['curfew']
-        return res if res != -1 else sys.maxint
+        if res != -1:
+            return res
+        return sys.maxint
 
     def __getSessionPlayTimeLeft(self):
         res = self.__playLimits['sessionLimit']
-        return res if res != -1 else sys.maxint
+        if res != -1:
+            return res
+        return sys.maxint
 
     def __getTimeLeft(self):
         return min(self.__getCurfew(), self.__getDailyPlayTimeLeft(), self.__getWeeklyPlayTimeLeft(), self.__getSessionPlayTimeLeft())
 
     def __getTimeLeftPriority(self):
-        return min((self.__getCurfew(), self.CURFEW), (self.__getDailyPlayTimeLeft(), self.DAILY), (self.__getWeeklyPlayTimeLeft(), self.WEEKLY), (self.__getSessionPlayTimeLeft(), self.SESSION))
+        return min((
+         self.__getCurfew(), self.CURFEW), (
+         self.__getDailyPlayTimeLeft(), self.DAILY), (
+         self.__getWeeklyPlayTimeLeft(), self.WEEKLY), (
+         self.__getSessionPlayTimeLeft(), self.SESSION))
 
     def __getNotificationStr(self):
         timeLeft, priority = self.__getTimeLeftPriority()
@@ -69,7 +78,8 @@ class GameRestrictionsMessagesController(Notifiable, IBattleController):
             return backport.text(R.strings.messenger.chat.koreaMessage.weeklyLimit(), timeLeft=self.__minutesCount)
         if priority == self.DAILY:
             return backport.text(R.strings.messenger.chat.koreaMessage.dailyLimit(), timeLeft=self.__minutesCount)
-        return backport.text(R.strings.messenger.chat.parentControlMessage.timeLimit(), timeLeft=self.__minutesCount) if priority == self.SESSION else None
+        if priority == self.SESSION:
+            return backport.text(R.strings.messenger.chat.parentControlMessage.timeLimit(), timeLeft=self.__minutesCount)
 
     def __onBanNotifyHandler(self):
         MessengerEntry.g_instance.gui.addClientMessage(g_settings.htmlTemplates.format('battleErrorMessage', ctx={'error': self.__getNotificationStr()}))

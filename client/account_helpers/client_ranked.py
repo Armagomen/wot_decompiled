@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/account_helpers/client_ranked.py
 from functools import partial
 import AccountCommands
 from shared_utils.account_helpers.diff_utils import synchronizeDicts
@@ -43,7 +41,7 @@ class ClientRanked(object):
         self.__account = account
 
     def synchronize(self, _, diff):
-        for item in ('ranked',):
+        for item in ('ranked', ):
             itemDiff = diff.get(item, None)
             if itemDiff is not None:
                 synchronizeDicts(itemDiff, self.__cache.setdefault(item, {}))
@@ -55,35 +53,31 @@ class ClientRanked(object):
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, None)
             return
-        else:
-            self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
-            return
+        self.__syncData.waitForSync(partial(self.__onGetCacheResponse, callback))
+        return
 
     def get(self, itemName, callback):
         if self.__ignore:
             if callback is not None:
                 callback(AccountCommands.RES_NON_PLAYER, None)
             return
-        else:
-            self.__syncData.waitForSync(partial(self.__onGetResponse, itemName, callback))
-            return
+        self.__syncData.waitForSync(partial(self.__onGetResponse, itemName, callback))
+        return
 
     def __onGetCacheResponse(self, callback, resultID):
         if resultID < 0:
             if callback is not None:
                 callback(resultID, None)
             return
-        else:
-            if callback is not None:
-                callback(resultID, self.__cache)
-            return
+        if callback is not None:
+            callback(resultID, self.__cache)
+        return
 
     def __onGetResponse(self, itemName, callback, resultID):
         if resultID < 0:
             if callback is not None:
                 callback(resultID, None)
             return
-        else:
-            if callback is not None:
-                callback(resultID, self.__cache['ranked'].get(itemName, None))
-            return
+        if callback is not None:
+            callback(resultID, self.__cache['ranked'].get(itemName, None))
+        return

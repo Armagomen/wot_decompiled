@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/hangar_presets/hangar_gui_controller.py
 import typing
 from gui.prb_control.entities.listener import IPrbListener
 from gui.hangar_presets.obsolete.hangar_gui_sf_controller import HangarGuiScaleformController
@@ -37,4 +35,5 @@ class HangarGuiController(IHangarGuiController, IPrbListener):
             subSystem.fini()
 
     def __getSubSystems(self):
-        return (self.__providersHolder, self.__dynamicEconomics, self.__sfController)
+        return (
+         self.__providersHolder, self.__dynamicEconomics, self.__sfController)

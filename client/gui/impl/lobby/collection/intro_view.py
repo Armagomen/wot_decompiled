@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/collection/intro_view.py
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.impl.gen.view_models.views.lobby.collection.intro_view_model import IntroViewModel
 from gui.impl.pub import ViewImpl
@@ -27,7 +25,9 @@ class IntroView(ViewImpl):
         super(IntroView, self)._finalize()
 
     def _getEvents(self):
-        return ((self.viewModel.onClose, self.__onClose),)
+        return (
+         (
+          self.viewModel.onClose, self.__onClose),)
 
     def __onClose(self):
         self.destroyWindow()

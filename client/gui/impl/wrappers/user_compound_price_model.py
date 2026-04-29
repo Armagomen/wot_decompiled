@@ -1,7 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/wrappers/user_compound_price_model.py
-import logging
-import typing
+from __future__ import absolute_import
+import logging, typing
+from future.utils import iteritems
 from frameworks.wulf import Array
 from gui.impl.gen.view_models.common.compound_price_model import CompoundPriceModel
 from gui.impl.gen.view_models.common.price_model import PriceModel
@@ -13,7 +12,7 @@ from skeletons.gui.shared import IItemsCache
 _logger = logging.getLogger(__name__)
 if typing.TYPE_CHECKING:
     from typing import Dict, Tuple, Optional, Union, Iterable
-    Price = Union[Money, Dict]
+    Price = Union[(Money, Dict)]
 
 class UserCompoundPriceModel(CompoundPriceModel):
     __slots__ = ()
@@ -88,14 +87,14 @@ class PriceModelBuilder(object):
 
     @classmethod
     def _getCurrencyIterator(cls, price):
-        return price.iteritems()
+        return iteritems(price)
 
 
 class BuyPriceModelBuilder(PriceModelBuilder):
     _itemsCache = dependency.descriptor(IItemsCache)
 
     @classmethod
-    def fillPriceModel(cls, priceModel, price, action=None, defPrice=None, balance=None, checkBalanceAvailability=False):
+    def fillPriceModel(cls, priceModel, price, action=None, defPrice=None, checkBalanceAvailability=False, priceID='', balance=None):
         cls.fillPriceItemModel(priceModel.getPrice(), price, balance, checkBalanceAvailability=checkBalanceAvailability)
         if action is not None:
             cls.fillPriceItemModel(priceModel.getDiscount(), action, balance, checkBalanceAvailability=checkBalanceAvailability)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/impl/lobby/tooltips/battle_ability_alt_tooltip.py
 from frameworks.wulf import ViewSettings
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.game_control.epic_meta_game_ctrl import EpicMetaGameSkill
@@ -14,7 +12,7 @@ from skeletons.gui.game_control import IEpicBattleMetaGameController
 from skeletons.gui.shared import IItemsCache
 
 class BattleAbilityAltTooltipView(ViewImpl):
-    _slots__ = ('intCD',)
+    _slots__ = ('intCD', )
     __epicController = dependency.descriptor(IEpicBattleMetaGameController)
     __itemsCache = dependency.descriptor(IItemsCache)
 
@@ -35,7 +33,7 @@ class BattleAbilityAltTooltipView(ViewImpl):
         if not item:
             return
         else:
-            with self.getViewModel().transaction() as model:
+            with self.getViewModel().transaction() as (model):
                 skill = self.__epicSkills[item.innationID]
                 info = skill.getSkillInfo()
                 model.setName(info.name)
@@ -55,5 +53,5 @@ class BattleAbilityAltTooltipData(ToolTipBaseData):
 
     @staticmethod
     def getDisplayableData(intCD, *args, **kwargs):
-        parent = kwargs.get('parent', None)
+        parent = kwargs.get('parent')
         return DecoratedTooltipWindow(BattleAbilityAltTooltipView(intCD, *args, **kwargs), parent, useDecorator=False)

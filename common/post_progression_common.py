@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/post_progression_common.py
 from typing import Dict, Set, List, Callable, Optional, TYPE_CHECKING
 from copy import copy
 from itertools import chain
@@ -12,21 +10,20 @@ EXT_DATA_PROGRESSION_KEY = 'vehPostProgression'
 SETUPS_FEATURES = ('shells_consumables_switch', 'opt_dev_boosters_switch')
 ROLESLOT_FEATURE = 'roleSlot'
 FEATURES_NAMES = SETUPS_FEATURES + (ROLESLOT_FEATURE,)
-POST_PROGRESSION_UNLOCK_MODIFICATIONS_PRICES = ('unlockBaseModificationCost', 'unlockPairModificationCost', 'Modification10000xp', 'Modification20000xp', 'Modification25000xp', 'Modification30000xp', 'Modification40000xp')
-POST_PROGRESSION_BUY_MODIFICATIONS_PRICES = ('buyPairModificationCost',)
+POST_PROGRESSION_UNLOCK_MODIFICATIONS_PRICES = ('unlockBaseModificationCost', 'unlockPairModificationCost',
+                                                'Modification10000xp', 'Modification20000xp',
+                                                'Modification25000xp', 'Modification30000xp',
+                                                'Modification40000xp')
+POST_PROGRESSION_BUY_MODIFICATIONS_PRICES = ('buyPairModificationCost', )
 CUSTOM_ROLE_SLOT_CHANGE_PRICE = 'customRoleSlotChangeCost'
 POST_PROGRESSION_UNLOCK_AND_BUY_MODIFICATIONS_PRICES = POST_PROGRESSION_UNLOCK_MODIFICATIONS_PRICES + POST_PROGRESSION_BUY_MODIFICATIONS_PRICES
 POST_PROGRESSION_ALL_PRICES = POST_PROGRESSION_UNLOCK_AND_BUY_MODIFICATIONS_PRICES + (CUSTOM_ROLE_SLOT_CHANGE_PRICE,)
-ALLOWED_CURRENCIES_FOR_TREE_STEP = {'xp'}
+ALLOWED_CURRENCIES_FOR_TREE_STEP = {
+ 'xp'}
 ALLOWED_CURRENCIES_FOR_BUY_MODIFICATION_STEP = {'credits'}
 ALLOWED_CURRENCIES_FOR_CUSTOM_ROLE_SLOT_CHANGE = {'credits'}
-ALLOWED_ACTIONS_CATEGORIES = {'survivability',
- 'mobility',
- 'firepower',
- 'spotting',
- 'concealment',
- 'special',
- 'mechanics'}
+ALLOWED_ACTIONS_CATEGORIES = {'survivability', 'mobility', 'firepower', 'spotting', 'concealment',
+ 'special', 'mechanics'}
 ID_THRESHOLD = 16384
 VEH_SKILL_TREE_ID_OFFSET = 10000
 
@@ -62,13 +59,17 @@ class TankSetupGroupsId(object):
     OPTIONAL_DEVICES_AND_BOOSTERS = 2
 
 
-TANK_SETUP_GROUPS = {TankSetupGroupsId.OPTIONAL_DEVICES_AND_BOOSTERS: (TankSetupLayouts.OPTIONAL_DEVICES, TankSetupLayouts.BATTLE_BOOSTERS),
- TankSetupGroupsId.EQUIPMENT_AND_SHELLS: (TankSetupLayouts.EQUIPMENT, TankSetupLayouts.SHELLS)}
-MAX_LAYOUTS_NUMBER_ON_VEHICLE = {TankSetupGroupsId.OPTIONAL_DEVICES_AND_BOOSTERS: 2,
- TankSetupGroupsId.EQUIPMENT_AND_SHELLS: 2}
+TANK_SETUP_GROUPS = {TankSetupGroupsId.OPTIONAL_DEVICES_AND_BOOSTERS: (
+                                                   TankSetupLayouts.OPTIONAL_DEVICES,
+                                                   TankSetupLayouts.BATTLE_BOOSTERS), 
+   TankSetupGroupsId.EQUIPMENT_AND_SHELLS: (
+                                          TankSetupLayouts.EQUIPMENT,
+                                          TankSetupLayouts.SHELLS)}
+MAX_LAYOUTS_NUMBER_ON_VEHICLE = {TankSetupGroupsId.OPTIONAL_DEVICES_AND_BOOSTERS: 2, 
+   TankSetupGroupsId.EQUIPMENT_AND_SHELLS: 2}
 GROUP_ID_BY_LAYOUT = {layout:groupName for groupName, layouts in TANK_SETUP_GROUPS.iteritems() for layout in layouts}
-FEATURE_BY_GROUP_ID = {TankSetupGroupsId.EQUIPMENT_AND_SHELLS: 'shells_consumables_switch',
- TankSetupGroupsId.OPTIONAL_DEVICES_AND_BOOSTERS: 'opt_dev_boosters_switch'}
+FEATURE_BY_GROUP_ID = {TankSetupGroupsId.EQUIPMENT_AND_SHELLS: 'shells_consumables_switch', 
+   TankSetupGroupsId.OPTIONAL_DEVICES_AND_BOOSTERS: 'opt_dev_boosters_switch'}
 GROUP_ID_BY_FEATURE = {feature:groupID for groupID, feature in FEATURE_BY_GROUP_ID.iteritems()}
 DEFAULT_LAYOUT_CAPACITY = 1
 SWITCH_LAYOUT_CAPACITY = 2
@@ -107,15 +108,12 @@ def makeActionCompDescr(actionType, itemId, subId=0):
 
 
 def makeDefaultSetupsIndexes():
-    return {TankSetupGroupsId.OPTIONAL_DEVICES_AND_BOOSTERS: 0,
-     TankSetupGroupsId.EQUIPMENT_AND_SHELLS: 0}
+    return {TankSetupGroupsId.OPTIONAL_DEVICES_AND_BOOSTERS: 0, 
+       TankSetupGroupsId.EQUIPMENT_AND_SHELLS: 0}
 
 
 def makeDefaultSetupsInVehicle():
-    return {TankSetups.SHELLS: [[]],
-     TankSetups.BATTLE_BOOSTERS: [[]],
-     TankSetups.EQUIPMENT: [[]],
-     TankSetups.OPTIONAL_DEVICES: [[]]}
+    return {TankSetups.SHELLS: [[]], TankSetups.BATTLE_BOOSTERS: [[]], TankSetups.EQUIPMENT: [[]], TankSetups.OPTIONAL_DEVICES: [[]]}
 
 
 def parseActionCompDescr(compDescr):
@@ -154,9 +152,10 @@ def packPostProgression(unlocks, pairs, tree):
                 value = pairs.get(step.id, 0)
             packed |= value << pos
             pos += 2
-        if step.id in unlocks:
-            packed |= 1 << pos
-        pos += 1
+        else:
+            if step.id in unlocks:
+                packed |= 1 << pos
+            pos += 1
 
     mask = 268435455
     while packed:
@@ -198,11 +197,12 @@ def unpackActiveModifications(actionCDs, vppCache, treeID):
                 result.append(vppCache.pairs[itemID].first[0])
             elif value == PAIR_TYPES.SECOND:
                 result.append(vppCache.pairs[itemID].second[0])
-        if actionID == atModification:
+        elif actionID == atModification:
             if packed >> pos & 1:
                 result.append(itemID)
             pos += 1
-        pos += 1
+        else:
+            pos += 1
 
     return result
 
@@ -224,9 +224,10 @@ def unpackActionCDs(actionCDs, vppCache, treeID):
             pos += 2
             if value:
                 result.append(makeActionCompDescr(actionID, itemID, value))
-        if packed >> pos & 1:
-            result.append(makeActionCompDescr(actionID, itemID, 0))
-        pos += 1
+        else:
+            if packed >> pos & 1:
+                result.append(makeActionCompDescr(actionID, itemID, 0))
+            pos += 1
 
     atBitPack = ACTION_TYPES.BIT_PACK
     result.extend([ actionCD >> 4 for actionCD in actionCDs if actionCD & 15 != atBitPack ])
@@ -352,7 +353,8 @@ class VehicleState(object):
         return packPostProgression(self._unlocks, self._pairs, tree)
 
     def toRawData(self):
-        return [self._unlocks,
+        return [
+         self._unlocks,
          self._pairs,
          self._features,
          self._disabledSwitches]
@@ -365,7 +367,8 @@ class VehicleState(object):
 
     @staticmethod
     def getDefaultState():
-        return [VehicleState.__getDefaultUnlocksState(),
+        return [
+         VehicleState.__getDefaultUnlocksState(),
          VehicleState.__getDefaultPairsState(),
          VehicleState.__getDefaultFeaturesState(),
          VehicleState.__getDefaultDisabledSwitchesState()]
@@ -408,7 +411,9 @@ class VehiclesPostProgression(object):
 
     def getVehicleFeaturesList(self, vehTypeCD):
         postProgression = self._storage.get(vehTypeCD, {})
-        return () if not postProgression else tuple(postProgression[POST_PROGRESSION_FEATURES_IDX])
+        if not postProgression:
+            return ()
+        return tuple(postProgression[POST_PROGRESSION_FEATURES_IDX])
 
     def setVehicleState(self, vehTypeCD, vehicleState):
         if vehicleState.isEmpty():

@@ -1,14 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/AvatarInputHandler/DynamicCameras/StrategicCamera.py
 import math
 from collections import namedtuple
-import BigWorld
-import Math
+import BigWorld, Math
 from Math import Vector2, Vector3
-import BattleReplay
-import Settings
-import constants
-import math_utils
+import BattleReplay, Settings, constants, math_utils
 from AvatarInputHandler import cameras, aih_global_binding
 from BigWorld import StrategicAimingSystem, StrategicAimingSystemRemote
 from AvatarInputHandler.DynamicCameras import createOscillatorFromSection, CameraDynamicConfig, CameraWithSettings, SPGScrollSmoother
@@ -18,10 +12,7 @@ from account_helpers.settings_core import settings_constants
 from aih_constants import CTRL_MODE_NAME
 from debug_utils import LOG_WARNING
 from helpers.CallbackDelayer import CallbackDelayer
-_DistRangeSetting = namedtuple('_DistRangeSetting', ['minArenaSize',
- 'distRange',
- 'scrollMultiplier',
- 'acceleration'])
+_DistRangeSetting = namedtuple('_DistRangeSetting', ['minArenaSize', 'distRange', 'scrollMultiplier', 'acceleration'])
 _CAM_YAW_ROUND = 4
 
 def getCameraAsSettingsHolder(settingsDataSec):
@@ -54,7 +45,8 @@ class StrategicCamera(CameraWithSettings, CallbackDelayer):
         self.__activeDistRangeSettings = None
         self.__dynamicCfg = CameraDynamicConfig()
         self.__cameraYaw = 0.0
-        self.__switchers = CameraSwitcherCollection(cameraSwitchers=[CameraSwitcher(switchType=SwitchTypes.FROM_TRANSITION_DIST_AS_MIN, switchToName=CTRL_MODE_NAME.ARTY, switchToPos=1.0)], isEnabled=True)
+        self.__switchers = CameraSwitcherCollection(cameraSwitchers=[
+         CameraSwitcher(switchType=SwitchTypes.FROM_TRANSITION_DIST_AS_MIN, switchToName=CTRL_MODE_NAME.ARTY, switchToPos=1.0)], isEnabled=True)
         self._readConfigs(dataSec)
         self.__cam = BigWorld.CursorCamera()
         self.__cam.isHangar = False
@@ -192,10 +184,8 @@ class StrategicCamera(CameraWithSettings, CallbackDelayer):
 
     def calcVisibleAreaRatio(self):
         from ClientArena import Plane
-        points = [Math.Vector2(1, 1),
-         Math.Vector2(1, -1),
-         Math.Vector2(-1, -1),
-         Math.Vector2(-1, 1)]
+        points = [
+         Math.Vector2(1, 1), Math.Vector2(1, -1), Math.Vector2(-1, -1), Math.Vector2(-1, 1)]
         dirsPos = [ getWorldRayAndPoint(point.x, point.y) for point in points ]
         planeXZ = Plane(Math.Vector3(0, 1, 0), 0)
         collisionPoints = []
@@ -218,7 +208,8 @@ class StrategicCamera(CameraWithSettings, CallbackDelayer):
         arenaUpperRight = bb[1]
         arenaX = arenaUpperRight[0] - arenaBottomLeft[0]
         arenaZ = arenaUpperRight[1] - arenaBottomLeft[1]
-        return ((x0 + x1) * 0.5 / arenaX, (z0 + z1) * 0.5 / arenaZ)
+        return (
+         (x0 + x1) * 0.5 / arenaX, (z0 + z1) * 0.5 / arenaZ)
 
     def applyImpulse(self, position, impulse, reason=ImpulseReason.ME_HIT):
         adjustedImpulse, noiseMagnitude = self.__dynamicCfg.adjustImpulse(impulse, reason)
@@ -362,7 +353,7 @@ class StrategicCamera(CameraWithSettings, CallbackDelayer):
 
     def __updateCameraYaw(self):
         altModeEnabled = self.settingsCore.getSetting(settings_constants.SPGAim.SPG_STRATEGIC_CAM_MODE) == 1
-        pitch = -math.pi * 0.499 if not altModeEnabled else math.radians(-88.0)
+        pitch = (altModeEnabled or -math.pi) * 0.499 if 1 else math.radians(-88.0)
         self.__cameraYaw = round(self.aimingSystem.getCamYaw(), _CAM_YAW_ROUND)
         srcMat = math_utils.createRotationMatrix((self.__cameraYaw, pitch, 0.0))
         self.__cam.source = srcMat
@@ -395,7 +386,8 @@ class StrategicCamera(CameraWithSettings, CallbackDelayer):
         bcfg['keySensitivity'] = readFloat(dataSec, 'keySensitivity', 0.005, 10, 0.025)
         bcfg['sensitivity'] = readFloat(dataSec, 'sensitivity', 0.005, 10, 0.025)
         bcfg['scrollSensitivity'] = readFloat(dataSec, 'scrollSensitivity', 0.005, 10, 0.025)
-        bcfg['distRange'] = readVec2(dataSec, 'distRange', (1, 1), (10000, 10000), (2, 30))
+        bcfg['distRange'] = readVec2(dataSec, 'distRange', (1, 1), (10000, 10000), (2,
+                                                                                    30))
         bcfg['transitionDist'] = readFloat(dataSec, 'transitionDist', 1.0, 10000.0, 60.0)
         bcfg['distRangeForArenaSize'] = self.__readDynamicDistRangeData(dataSec)
         bcfg['scrollSmoothingTime'] = readFloat(dataSec, 'scrollSmoothingTime', 0.0, 1.0, 0.3)
@@ -439,7 +431,8 @@ class StrategicCamera(CameraWithSettings, CallbackDelayer):
         else:
             value = section['dynamicDistRange']
             minArenaSize = readFloat(value, 'minArenaSize', 0.1, 2000, 2000.0)
-            distRange = readVec2(value, 'distRangeOverride', (1, 1), (2000, 2000), (40, 300))
+            distRange = readVec2(value, 'distRangeOverride', (1, 1), (2000, 2000), (40,
+                                                                                    300))
             acceleration = readFloat(value, 'acceleration', 0.0, 100.0, 0.0)
             scrollMultiplier = readFloat(value, 'scrollMultiplier', 0.0, 100.0, 1.0)
             dynamicDistRanges.append(_DistRangeSetting(minArenaSize, distRange, scrollMultiplier, acceleration))
@@ -463,13 +456,19 @@ class StrategicCamera(CameraWithSettings, CallbackDelayer):
         return currentDistRange
 
     def __getDistRange(self):
-        return self._cfg['distRange'] if not self.__activeDistRangeSettings else self.__activeDistRangeSettings.distRange
+        if not self.__activeDistRangeSettings:
+            return self._cfg['distRange']
+        return self.__activeDistRangeSettings.distRange
 
     def __getCameraAcceleration(self):
-        return 0.0 if not self.__activeDistRangeSettings else self.__activeDistRangeSettings.acceleration
+        if not self.__activeDistRangeSettings:
+            return 0.0
+        return self.__activeDistRangeSettings.acceleration
 
     def __getCameraScrollMultiplier(self):
-        return 1.0 if not self.__activeDistRangeSettings else self.__activeDistRangeSettings.scrollMultiplier
+        if not self.__activeDistRangeSettings:
+            return 1.0
+        return self.__activeDistRangeSettings.scrollMultiplier
 
     def __enableSwitchers(self, updateTransitionEnabled=True):
         minDist, _ = self.__getDistRange()

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/actions/__init__.py
-import BigWorld
-import game_loading_bindings
+import BigWorld, game_loading_bindings
 from adisp import adisp_process
 from debug_utils import LOG_DEBUG, LOG_ERROR
 from frameworks.wulf import WindowLayer
@@ -19,7 +16,8 @@ from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.login_manager import ILoginManager
 from constants import WINBACK_BATTLE_TOKEN_DRAW_REASON
-__all__ = ('LeavePrbModalEntity', 'DisconnectFromPeriphery', 'ConnectToPeriphery', 'PrbInvitesInit', 'ActionsChain')
+__all__ = ('LeavePrbModalEntity', 'DisconnectFromPeriphery', 'ConnectToPeriphery',
+           'PrbInvitesInit', 'ActionsChain')
 
 class Action(object):
 

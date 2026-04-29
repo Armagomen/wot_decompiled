@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/proto/xmpp/errors.py
 from gui.Scaleform.locale.MESSENGER import MESSENGER as I18N_MESSENGER
 from helpers import i18n, time_utils
 from messenger.m_constants import CLIENT_ACTION_ID, CLIENT_ERROR_ID
@@ -16,7 +14,7 @@ class _ContactErrorID(shared_errors.I18nErrorID):
         if self.errorID in xmpp_constants.CONTACT_ERROR_NAMES:
             errorName = xmpp_constants.CONTACT_ERROR_NAMES[self.errorID]
         else:
-            errorName = 'CONTACT_ERROR_{0}'.format(self.errorID)
+            errorName = ('CONTACT_ERROR_{0}').format(self.errorID)
         return errorName
 
     def getI18nKey(self):
@@ -29,7 +27,7 @@ class _LimitErrorID(shared_errors.I18nErrorID):
         if self.errorID in xmpp_constants.LIMIT_ERROR_NAMES:
             errorName = xmpp_constants.LIMIT_ERROR_NAMES[self.errorID]
         else:
-            errorName = 'LIMIT_ERROR_{0}'.format(self.errorID)
+            errorName = ('LIMIT_ERROR_{0}').format(self.errorID)
         return errorName
 
     def getI18nKey(self):
@@ -42,7 +40,7 @@ class _ChannelErrorID(shared_errors.I18nErrorID):
         if self.errorID in xmpp_constants.CHANNEL_ERROR_NAMES:
             errorName = xmpp_constants.CHANNEL_ERROR_NAMES[self.errorID]
         else:
-            errorName = 'CONTACT_ERROR_{0}'.format(self.errorID)
+            errorName = ('CONTACT_ERROR_{0}').format(self.errorID)
         return errorName
 
     def getI18nKey(self):
@@ -55,7 +53,7 @@ class _UserRoomCreationErrorID(shared_errors.I18nErrorID):
         if self.errorID in xmpp_constants.MUC_CREATION_ERROR_NAMES:
             errorName = xmpp_constants.MUC_CREATION_ERROR_NAMES[self.errorID]
         else:
-            errorName = 'MUC_CREATION_ERROR_{0}'.format(self.errorID)
+            errorName = ('MUC_CREATION_ERROR_{0}').format(self.errorID)
         return errorName
 
     def getI18nKey(self):
@@ -96,7 +94,7 @@ class ClientChannelError(shared_errors.ClientError):
 
 
 class StanzaConditionError(IChatError):
-    __slots__ = ('_condition',)
+    __slots__ = ('_condition', )
 
     def __init__(self, errorType, condition):
         super(StanzaConditionError, self).__init__()
@@ -114,7 +112,7 @@ class StanzaConditionError(IChatError):
 
 
 class ServerActionError(StanzaConditionError):
-    __slots__ = ('_action',)
+    __slots__ = ('_action', )
 
     def __init__(self, actionID, errorType, condition):
         super(ServerActionError, self).__init__(errorType, condition)
@@ -128,7 +126,7 @@ class ServerActionError(StanzaConditionError):
 
 
 class ServerUserRoomCreationError(IChatError):
-    __slots__ = ('_error',)
+    __slots__ = ('_error', )
 
     def __init__(self, errorID, roomName):
         super(ServerUserRoomCreationError, self).__init__()
@@ -175,7 +173,9 @@ def createServerMessageError(pyGlooxTag):
 
 def createServerActionMessageError(actionID, pyGlooxTag):
     errorType, condition = ProxyHandler(StanzaErrorExtension()).handleTag(pyGlooxTag)
-    return ServerActionError(actionID, errorType, condition) if condition != DEF_STANZA_ERROR_CONDITION else ClientActionError(actionID, CLIENT_ERROR_ID.GENERIC)
+    if condition != DEF_STANZA_ERROR_CONDITION:
+        return ServerActionError(actionID, errorType, condition)
+    return ClientActionError(actionID, CLIENT_ERROR_ID.GENERIC)
 
 
 def createChatBanError(banInfo):

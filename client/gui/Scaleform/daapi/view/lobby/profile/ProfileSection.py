@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/profile/ProfileSection.py
 from collections import namedtuple
 from helpers import dependency, i18n
 from gui.Scaleform.daapi.view.meta.ProfileSectionMeta import ProfileSectionMeta
@@ -31,27 +29,30 @@ class ProfileSection(ProfileSectionMeta):
         return
 
     def __initHandlers(self):
-        self._battleTypeHandlers = {PROFILE_DROPDOWN_KEYS.ALL: DropdownData(True, '_getTotalStatsBlock', {}),
-         PROFILE_DROPDOWN_KEYS.TEAM: DropdownData(False, 'getTeam7x7Stats', {}),
-         PROFILE_DROPDOWN_KEYS.STATICTEAM: DropdownData(False, 'getRated7x7Stats', {}),
-         PROFILE_DROPDOWN_KEYS.HISTORICAL: DropdownData(False, 'getHistoricalStats', {}),
-         PROFILE_DROPDOWN_KEYS.FORTIFICATIONS: DropdownData(True, '_receiveFortDossier', {}),
-         PROFILE_DROPDOWN_KEYS.FORTIFICATIONS_SORTIES: DropdownData(False, 'getFortSortiesStats', {}),
-         PROFILE_DROPDOWN_KEYS.FORTIFICATIONS_BATTLES: DropdownData(False, 'getFortBattlesStats', {}),
-         PROFILE_DROPDOWN_KEYS.COMPANY: DropdownData(False, 'getCompanyStats', {}),
-         PROFILE_DROPDOWN_KEYS.CLAN: DropdownData(False, 'getGlobalMapStats', {}),
-         PROFILE_DROPDOWN_KEYS.FALLOUT: DropdownData(False, 'getFalloutStats', {}),
-         PROFILE_DROPDOWN_KEYS.RANKED: DropdownData(False, 'getRankedStats', {}),
-         PROFILE_DROPDOWN_KEYS.RANKED_10X10: DropdownData(False, 'getRanked10x10Stats', {}),
-         PROFILE_DROPDOWN_KEYS.EPIC_RANDOM: DropdownData(False, 'getEpicRandomStats', {}),
-         PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SOLO: DropdownData(False, 'getBattleRoyaleSoloStats', {}),
-         PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SQUAD: DropdownData(False, 'getBattleRoyaleSquadStats', {})}
+        self._battleTypeHandlers = {PROFILE_DROPDOWN_KEYS.ALL: DropdownData(True, '_getTotalStatsBlock', {}), 
+           PROFILE_DROPDOWN_KEYS.TEAM: DropdownData(False, 'getTeam7x7Stats', {}), 
+           PROFILE_DROPDOWN_KEYS.STATICTEAM: DropdownData(False, 'getRated7x7Stats', {}), 
+           PROFILE_DROPDOWN_KEYS.HISTORICAL: DropdownData(False, 'getHistoricalStats', {}), 
+           PROFILE_DROPDOWN_KEYS.FORTIFICATIONS: DropdownData(True, '_receiveFortDossier', {}), 
+           PROFILE_DROPDOWN_KEYS.FORTIFICATIONS_SORTIES: DropdownData(False, 'getFortSortiesStats', {}), 
+           PROFILE_DROPDOWN_KEYS.FORTIFICATIONS_BATTLES: DropdownData(False, 'getFortBattlesStats', {}), 
+           PROFILE_DROPDOWN_KEYS.COMPANY: DropdownData(False, 'getCompanyStats', {}), 
+           PROFILE_DROPDOWN_KEYS.CLAN: DropdownData(False, 'getGlobalMapStats', {}), 
+           PROFILE_DROPDOWN_KEYS.FALLOUT: DropdownData(False, 'getFalloutStats', {}), 
+           PROFILE_DROPDOWN_KEYS.RANKED: DropdownData(False, 'getRankedStats', {}), 
+           PROFILE_DROPDOWN_KEYS.RANKED_10X10: DropdownData(False, 'getRanked10x10Stats', {}), 
+           PROFILE_DROPDOWN_KEYS.EPIC_RANDOM: DropdownData(False, 'getEpicRandomStats', {}), 
+           PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SOLO: DropdownData(False, 'getBattleRoyaleSoloStats', {}), 
+           PROFILE_DROPDOWN_KEYS.BATTLE_ROYALE_SQUAD: DropdownData(False, 'getBattleRoyaleSquadStats', {})}
 
     def __getData(self, battleType, obj):
         data = self._battleTypeHandlers.get(battleType)
         if data is None:
             raise SoftException('ProfileSection: Unknown battle type: ' + self._battlesType)
-        return getattr(self, data.funcName)(obj, **data.params) if data.useSelf else getattr(obj, data.funcName)(**data.params)
+        if data.useSelf:
+            return getattr(self, data.funcName)(obj, **data.params)
+        else:
+            return getattr(obj, data.funcName)(**data.params)
 
     def _populate(self):
         super(ProfileSection, self)._populate()
@@ -90,7 +91,7 @@ class ProfileSection(ProfileSectionMeta):
         return data
 
     def _receiveFortDossier(self, accountDossier):
-        return None
+        return
 
     def _sendAccountData(self, targetData, accountDossier):
         self._data = targetData
@@ -112,8 +113,7 @@ class ProfileSection(ProfileSectionMeta):
         return self.__isActive
 
     def _formIconLabelInitObject(self, i18key, icon):
-        return {'description': i18n.makeString(i18key),
-         'icon': icon}
+        return {'description': i18n.makeString(i18key), 'icon': icon}
 
     @classmethod
     def _makeBattleTypesDropDown(cls, accountDossier, forVehiclesPage=False):
@@ -150,5 +150,4 @@ class BattleTypesDropDownItems(list):
         self.__addEntry(key, label)
 
     def __addEntry(self, key, label):
-        self.append({'key': key,
-         'label': label})
+        self.append({'key': key, 'label': label})

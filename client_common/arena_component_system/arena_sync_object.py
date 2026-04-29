@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client_common/arena_component_system/arena_sync_object.py
 from collections import defaultdict
 from debug_utils import LOG_ERROR
 from shared_utils.account_helpers.diff_utils import synchronizeDicts
@@ -76,4 +74,8 @@ class ArenaSyncObject(object):
 
     def __processDiffPath(self, diffpath, changeList):
         diff_ptr = changeList
-        return (False, None) if diffpath not in diff_ptr else (True, diff_ptr[diffpath])
+        if diffpath not in diff_ptr:
+            return (False, None)
+        else:
+            return (
+             True, diff_ptr[diffpath])

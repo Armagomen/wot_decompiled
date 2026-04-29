@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/entities/base/pre_queue/entity.py
 from PlayerEvents import g_playerEvents
 from soft_exception import SoftException
 from constants import QUEUE_TYPE
@@ -163,25 +161,24 @@ class PreQueueEntity(BasePreQueueEntity, ListenersCollection):
             if callback is not None:
                 callback(False)
             return
-        elif self.isInQueue():
+        if self.isInQueue():
             LOG_ERROR('Player already is in the queue', self._requestCtx)
             if callback is not None:
                 callback(False)
             return
-        elif self._validateParentControl():
+        if self._validateParentControl():
             if callback is not None:
                 callback(False)
             return
-        else:
-            self._requestCtx = ctx
-            self._requestCtx.startProcessing(callback)
-            try:
-                self._doQueue(ctx)
-            except (AttributeError, TypeError, NotImplementedError):
-                LOG_CURRENT_EXCEPTION()
-                self._requestCtx.stopProcessing(False)
+        self._requestCtx = ctx
+        self._requestCtx.startProcessing(callback)
+        try:
+            self._doQueue(ctx)
+        except (AttributeError, TypeError, NotImplementedError):
+            LOG_CURRENT_EXCEPTION()
+            self._requestCtx.stopProcessing(False)
 
-            return
+        return
 
     def dequeue(self, ctx, callback=None):
         if self._requestCtx.isProcessing():
@@ -189,21 +186,20 @@ class PreQueueEntity(BasePreQueueEntity, ListenersCollection):
             if callback:
                 callback(False)
             return
-        elif not self.isInQueue():
+        if not self.isInQueue():
             LOG_ERROR('Player is not in the queue', ctx)
             if callback is not None:
                 callback(False)
             return
-        else:
-            self._requestCtx = ctx
-            self._requestCtx.startProcessing(callback)
-            try:
-                self._doDequeue(ctx)
-            except (AttributeError, TypeError, NotImplementedError):
-                LOG_CURRENT_EXCEPTION()
-                self._requestCtx.stopProcessing(False)
+        self._requestCtx = ctx
+        self._requestCtx.startProcessing(callback)
+        try:
+            self._doDequeue(ctx)
+        except (AttributeError, TypeError, NotImplementedError):
+            LOG_CURRENT_EXCEPTION()
+            self._requestCtx.stopProcessing(False)
 
-            return
+        return
 
     def leave(self, ctx, callback=None):
 

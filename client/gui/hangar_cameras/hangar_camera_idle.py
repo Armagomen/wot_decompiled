@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/hangar_cameras/hangar_camera_idle.py
-import math
-import BigWorld
-import Math
+import math, BigWorld, Math
 from helpers.CallbackDelayer import CallbackDelayer, TimeDeltaMeter
 import math_utils
 from account_helpers.settings_core.settings_constants import GAME
@@ -157,7 +153,9 @@ class HangarCameraIdle(HangarCameraSettingsListener, CallbackDelayer, TimeDeltaM
     def __updateValue(self, params):
         if params.period <= 0:
             return params.startValue
-        return params.startValue + math_utils.easeOutQuad(self.__currentIdleTime, self.__sinValue(params) - params.startValue, self.__easingInTime) if self.__currentIdleTime < self.__easingInTime else self.__sinValue(params)
+        if self.__currentIdleTime < self.__easingInTime:
+            return params.startValue + math_utils.easeOutQuad(self.__currentIdleTime, self.__sinValue(params) - params.startValue, self.__easingInTime)
+        return self.__sinValue(params)
 
     def __sinValue(self, params):
         a = params.minValue

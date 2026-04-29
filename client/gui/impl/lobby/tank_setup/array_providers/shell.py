@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/array_providers/shell.py
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.shell_slot_model import ShellSlotModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.shell_specification_model import ShellSpecificationModel
 from gui.impl.lobby.tank_setup.array_providers.base import VehicleBaseArrayProvider
@@ -10,12 +8,8 @@ from gui.shared.utils import AVG_DAMAGE_PER_SECOND
 from post_progression_common import TankSetupGroupsId
 from helpers import dependency, i18n
 from skeletons.gui.shared import IItemsCache
-_SHELLS_INFO_PARAMS = ('avgDamage',
- AVG_DAMAGE_PER_SECOND,
- 'avgPiercingPower',
- 'shotSpeed',
- 'explosionRadius',
- 'stunDurationList')
+_SHELLS_INFO_PARAMS = (
+ 'avgDamage', AVG_DAMAGE_PER_SECOND, 'avgPiercingPower', 'shotSpeed', 'explosionRadius', 'stunDurationList')
 
 class ShellProvider(VehicleBaseArrayProvider):
     __slots__ = ()

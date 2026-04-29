@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/shared/fitting_select/module_extenders.py
 import typing
 from account_helpers.settings_core.ServerSettingsManager import UI_STORAGE_KEYS, ServerSettingsManager
 from gui.shared.gui_items import GUI_ITEM_TYPE
@@ -8,7 +6,11 @@ from gui.shared.gui_items.vehicle_modules import VehicleEngine, VehicleGun
 if typing.TYPE_CHECKING:
     from items.vehicles import VehicleDescriptor
     from gui.shared.gui_items.vehicle_modules import VehicleModule
-_ModuleParamExtendInfo = typing.NamedTuple('_ModuleParamsExtenderData', (('param', str), ('replaceParam', str)))
+_ModuleParamExtendInfo = typing.NamedTuple('_ModuleParamsExtenderData', (
+ (
+  'param', str),
+ (
+  'replaceParam', str)))
 
 class ModuleParamsExtender(object):
     __slots__ = ('__settingsKey', '__settingsUpdated')
@@ -30,11 +32,12 @@ class ModuleParamsExtender(object):
             self.__settingsUpdated = True
 
     def extendParamList(self, paramList):
-        return (paramList, None)
+        return (
+         paramList, None)
 
 
 class ReplaceModuleParamsExtender(ModuleParamsExtender):
-    __slots__ = ('__replaceInfo',)
+    __slots__ = ('__replaceInfo', )
 
     def __init__(self, settingsKey, replaceInfo):
         super(ReplaceModuleParamsExtender, self).__init__(settingsKey)
@@ -49,13 +52,15 @@ class ReplaceModuleParamsExtender(ModuleParamsExtender):
 
             return (params, replaceMap.keys())
         else:
-            return (paramList, None)
+            return (
+             paramList, None)
 
 
 class AutoReloadParamsExtender(ReplaceModuleParamsExtender):
 
     def __init__(self):
-        super(AutoReloadParamsExtender, self).__init__(UI_STORAGE_KEYS.AUTO_RELOAD_HIGHLIGHTS_COUNTER, (_ModuleParamExtendInfo('reloadTime', 'autoReloadTime'),))
+        super(AutoReloadParamsExtender, self).__init__(UI_STORAGE_KEYS.AUTO_RELOAD_HIGHLIGHTS_COUNTER, (
+         _ModuleParamExtendInfo('reloadTime', 'autoReloadTime'),))
 
     def check(self, vehicleModule, vehicleDescriptor):
         if vehicleModule.itemTypeID == GUI_ITEM_TYPE.GUN:
@@ -70,7 +75,8 @@ class AutoReloadParamsExtender(ReplaceModuleParamsExtender):
 class AutoShootParamsExtender(ReplaceModuleParamsExtender):
 
     def __init__(self):
-        super(AutoShootParamsExtender, self).__init__(UI_STORAGE_KEYS.AUTO_SHOOT_HIGHLIGHTS_COUNTER, (_ModuleParamExtendInfo('reloadTime', CONTINUOUS_SHOTS_PER_MINUTE),))
+        super(AutoShootParamsExtender, self).__init__(UI_STORAGE_KEYS.AUTO_SHOOT_HIGHLIGHTS_COUNTER, (
+         _ModuleParamExtendInfo('reloadTime', CONTINUOUS_SHOTS_PER_MINUTE),))
 
     def check(self, vehicleModule, vehicleDescriptor):
         if vehicleModule.itemTypeID == GUI_ITEM_TYPE.GUN:
@@ -85,7 +91,8 @@ class AutoShootParamsExtender(ReplaceModuleParamsExtender):
 class DualGunParamsExtender(ReplaceModuleParamsExtender):
 
     def __init__(self):
-        super(DualGunParamsExtender, self).__init__(UI_STORAGE_KEYS.DUAL_GUN_HIGHLIGHTS_COUNTER, (_ModuleParamExtendInfo('reloadTime', 'reloadTimeSecs'),))
+        super(DualGunParamsExtender, self).__init__(UI_STORAGE_KEYS.DUAL_GUN_HIGHLIGHTS_COUNTER, (
+         _ModuleParamExtendInfo('reloadTime', 'reloadTimeSecs'),))
 
     def check(self, vehicleModule, vehicleDescriptor):
         if vehicleModule.itemTypeID == GUI_ITEM_TYPE.GUN:
@@ -115,7 +122,8 @@ class TurboshaftParamsExtender(ModuleParamsExtender):
         ind = paramList.index('enginePower') + 1 if 'enginePower' in paramList else 0
         params = list(paramList)
         params.insert(ind, TURBOSHAFT_ENGINE_POWER)
-        return (params, [ind])
+        return (
+         params, [ind])
 
 
 class RocketAccelerationParamsExtender(ModuleParamsExtender):
@@ -136,12 +144,11 @@ class RocketAccelerationParamsExtender(ModuleParamsExtender):
         ind = paramList.index('enginePower') + 1 if 'enginePower' in paramList else 0
         params = list(paramList)
         params.insert(ind, ROCKET_ACCELERATION_ENGINE_POWER)
-        return (params, [ind])
+        return (
+         params, [ind])
 
 
 def fittingSelectModuleExtenders():
-    return (AutoReloadParamsExtender(),
-     AutoShootParamsExtender(),
-     DualGunParamsExtender(),
-     TurboshaftParamsExtender(),
-     RocketAccelerationParamsExtender())
+    return (
+     AutoReloadParamsExtender(), AutoShootParamsExtender(), DualGunParamsExtender(),
+     TurboshaftParamsExtender(), RocketAccelerationParamsExtender())

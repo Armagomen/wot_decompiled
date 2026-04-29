@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/vehicle_mechanics/mechanic_widgets/staged_jet_boosters_widget.py
 from __future__ import absolute_import
-import typing
-import CommandMapping
+import typing, CommandMapping
 from constants import AcceleratorStatus, PHASED_MECHANIC_STATE
 from events_containers.common.containers import ContainersListener
 from events_handler import eventHandler
@@ -20,18 +17,19 @@ if typing.TYPE_CHECKING:
     from StagedJetBoostersController import StagedJetBoostersState
 
 class StagedJetBoostersMechanicWidget(StagedJetBoostersWidgetMeta, ContainersListener, IMechanicStatesListenerLogic):
-    _UI_STATES = {PHASED_MECHANIC_STATE.NOT_RUNNING: MECHANICS_WIDGET_CONST.IDLE,
-     PHASED_MECHANIC_STATE.DEPLOYING: MECHANICS_WIDGET_CONST.PREPARING,
-     PHASED_MECHANIC_STATE.PREPARING: MECHANICS_WIDGET_CONST.PREPARING,
-     PHASED_MECHANIC_STATE.READY: MECHANICS_WIDGET_CONST.READY,
-     PHASED_MECHANIC_STATE.ACTIVE: MECHANICS_WIDGET_CONST.ACTIVE,
-     PHASED_MECHANIC_STATE.DISABLED: MECHANICS_WIDGET_CONST.DISABLE,
-     PHASED_MECHANIC_STATE.EMPTY: MECHANICS_WIDGET_CONST.EMPTY}
-    _HOT_KEY_MAP = {CommandMapping.CMD_CM_SPECIAL_ABILITY: [HotKeyData(VehicleMechanicCommand.ACTIVATE.value, False)]}
-    _UI_MOVEMENT_INFO = {AcceleratorStatus.NONE: STAGED_JET_BOOSTERS_CONSTS.BACKWARD,
-     AcceleratorStatus.LEFT: STAGED_JET_BOOSTERS_CONSTS.RIGHT,
-     AcceleratorStatus.RIGHT: STAGED_JET_BOOSTERS_CONSTS.LEFT,
-     AcceleratorStatus.BOTH: STAGED_JET_BOOSTERS_CONSTS.FORWARD}
+    _UI_STATES = {PHASED_MECHANIC_STATE.NOT_RUNNING: MECHANICS_WIDGET_CONST.IDLE, 
+       PHASED_MECHANIC_STATE.DEPLOYING: MECHANICS_WIDGET_CONST.PREPARING, 
+       PHASED_MECHANIC_STATE.PREPARING: MECHANICS_WIDGET_CONST.PREPARING, 
+       PHASED_MECHANIC_STATE.READY: MECHANICS_WIDGET_CONST.READY, 
+       PHASED_MECHANIC_STATE.ACTIVE: MECHANICS_WIDGET_CONST.ACTIVE, 
+       PHASED_MECHANIC_STATE.DISABLED: MECHANICS_WIDGET_CONST.DISABLE, 
+       PHASED_MECHANIC_STATE.EMPTY: MECHANICS_WIDGET_CONST.EMPTY}
+    _HOT_KEY_MAP = {CommandMapping.CMD_CM_SPECIAL_ABILITY: [
+                                             HotKeyData(VehicleMechanicCommand.ACTIVATE.value, False)]}
+    _UI_MOVEMENT_INFO = {AcceleratorStatus.NONE: STAGED_JET_BOOSTERS_CONSTS.BACKWARD, 
+       AcceleratorStatus.LEFT: STAGED_JET_BOOSTERS_CONSTS.RIGHT, 
+       AcceleratorStatus.RIGHT: STAGED_JET_BOOSTERS_CONSTS.LEFT, 
+       AcceleratorStatus.BOTH: STAGED_JET_BOOSTERS_CONSTS.FORWARD}
 
     def __init__(self):
         super(StagedJetBoostersMechanicWidget, self).__init__()
@@ -43,15 +41,18 @@ class StagedJetBoostersMechanicWidget(StagedJetBoostersWidgetMeta, ContainersLis
         self.__invalidateAll(state, isInstantly=True)
 
     @eventHandler
-    def onStateObservation(self, newState):
-        self.__invalidateAll(newState)
+    def onStateObservation(self, state):
+        self.__invalidateAll(state)
 
     @eventHandler
     def onStateTick(self, state):
         self.__invalidateProgress(state)
 
     def _getViewUpdaters(self):
-        return [VehicleMechanicPassengerUpdater(VehicleMechanic.STAGED_JET_BOOSTERS, self), VehicleMechanicStatesUpdater(VehicleMechanic.STAGED_JET_BOOSTERS, self), HotKeysViewUpdater(list(self._HOT_KEY_MAP.keys()), self)]
+        return [
+         VehicleMechanicPassengerUpdater(VehicleMechanic.STAGED_JET_BOOSTERS, self),
+         VehicleMechanicStatesUpdater(VehicleMechanic.STAGED_JET_BOOSTERS, self),
+         HotKeysViewUpdater(list(self._HOT_KEY_MAP.keys()), self)]
 
     def __invalidateAll(self, state, isInstantly=False):
         self.as_setStateS(self._UI_STATES[state.state], isInstantly)

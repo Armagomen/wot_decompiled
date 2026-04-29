@@ -1,11 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/ShotsReceiver.py
+from __future__ import absolute_import
 import logging
 from functools import partial
-import BigWorld
-import CGF
-import GenericComponents
-import Math
+import BigWorld, CGF, GenericComponents, Math
 from cgf_client_common.entity_dyn_components import ReplicableDynamicScriptComponent
 from cgf_components_common.material_component import MaterialComponent
 from cgf_components.on_shot_components import EffectOnShotComponent, SoundOnShotComponent
@@ -39,27 +35,23 @@ class ShotReceiverManager(CGF.ComponentManager):
         shotsReceiver.onShot -= self.__onShot
 
     def __onShot(self, go, hitPoint, hitDir, speed, normal, shotID, effectIndex, prefabEffectIndex, shellType, shellCaliber, matKind, damagedDestructibles):
-        effectQuery = CGF.Query(self.spaceID, (CGF.GameObject,
-         ShotsReceiver,
-         EffectOnShotComponent,
-         GenericComponents.TransformComponent))
-        soundQuery = CGF.Query(self.spaceID, (CGF.GameObject,
-         ShotsReceiver,
-         SoundOnShotComponent,
-         GenericComponents.TransformComponent))
+        effectQuery = CGF.Query(self.spaceID, (CGF.GameObject, ShotsReceiver,
+         EffectOnShotComponent, GenericComponents.TransformComponent))
+        soundQuery = CGF.Query(self.spaceID, (CGF.GameObject, ShotsReceiver,
+         SoundOnShotComponent, GenericComponents.TransformComponent))
         explosionQuery = CGF.Query(self.spaceID, (CGF.GameObject, ShotsReceiver, CGF.No(EffectOnShotComponent)))
         normal.normalise()
-        shot = {'hitPoint': hitPoint,
-         'hitDir': hitDir,
-         'speed': speed,
-         'normal': normal,
-         'shotID': int(shotID),
-         'effectIndex': int(effectIndex),
-         'prefabEffectIndex': int(prefabEffectIndex),
-         'shellType': int(shellType),
-         'caliber': float(shellCaliber),
-         'matKind': int(matKind),
-         'damagedDestructibles': damagedDestructibles}
+        shot = {'hitPoint': hitPoint, 
+           'hitDir': hitDir, 
+           'speed': speed, 
+           'normal': normal, 
+           'shotID': int(shotID), 
+           'effectIndex': int(effectIndex), 
+           'prefabEffectIndex': int(prefabEffectIndex), 
+           'shellType': int(shellType), 
+           'caliber': float(shellCaliber), 
+           'matKind': int(matKind), 
+           'damagedDestructibles': damagedDestructibles}
         for gameObject, _, effectComponent, transform in effectQuery:
             if gameObject.id == go.id:
                 self.__processEffect(gameObject, shot, effectComponent.effectPath, transform)

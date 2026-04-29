@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/helpers/LobbyAutomation.py
 import BigWorld
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.Waiting import Waiting

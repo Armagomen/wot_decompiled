@@ -1,10 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/tutorial/doc_loader/sub_parsers/__init__.py
 import importlib
 from collections import namedtuple
 from functools import partial
-import nations
-import resource_helper
+import nations, resource_helper
 from gui.Scaleform.genConsts.LAYER_NAMES import LAYER_NAMES
 from items import _xml, vehicles
 from helpers.html import translation
@@ -34,15 +31,18 @@ def _parseOneState(xml, section):
 def _parseNeededState(xmlCtx, section):
     stateSection = section['checked-ui-state']
     if not stateSection:
-        return None
+        return
     else:
         result = []
         for name, subSection in stateSection.items():
             if name == 'simple-state':
                 result.append(_parseOneState(xmlCtx, subSection))
-            _xml.raiseWrongXml(xmlCtx, section, 'Tag %s are not found' % name)
+            else:
+                _xml.raiseWrongXml(xmlCtx, section, 'Tag %s are not found' % name)
 
-        return result if result else None
+        if result:
+            return result
+        return
 
 
 def _readFlagCondition(xmlCtx, section, state, flags):
@@ -78,30 +78,30 @@ def _readViewPresentCondition(xmlCtx, section, state):
     return tut_conditions.ViewPresentCondition(layer, viewAlias, state=state)
 
 
-_GAME_ITEM_CONDITION_TAGS = {'selected': _COND_STATE.SELECTED,
- 'not-selected': ~_COND_STATE.SELECTED,
- 'premium': _COND_STATE.PREMIUM,
- 'not-premium': ~_COND_STATE.PREMIUM,
- 'unlocked': _COND_STATE.UNLOCKED,
- 'not-unlocked': ~_COND_STATE.UNLOCKED,
- 'in-inventory': _COND_STATE.IN_INVENTORY,
- 'not-in-inventory': ~_COND_STATE.IN_INVENTORY,
- 'crew-has-any-skill': _COND_STATE.CREW_HAS_ANY_SKILL,
- 'crew-has-not-any-skill': ~_COND_STATE.CREW_HAS_ANY_SKILL,
- 'xp-enough': _COND_STATE.XP_ENOUGH,
- 'xp-not-enough': ~_COND_STATE.XP_ENOUGH,
- 'money-enough': _COND_STATE.MONEY_ENOUGH,
- 'money-not-enough': ~_COND_STATE.MONEY_ENOUGH,
- 'level': _COND_STATE.LEVEL,
- 'not-level': ~_COND_STATE.LEVEL,
- 'may-install': _COND_STATE.MAY_INSTALL,
- 'may-not-install': ~_COND_STATE.MAY_INSTALL,
- 'installed': _COND_STATE.INSTALLED,
- 'not-installed': ~_COND_STATE.INSTALLED,
- 'has-regular-consumables': _COND_STATE.HAS_REGULAR_CONSUMABLES,
- 'has-no-regular-consumables': ~_COND_STATE.HAS_REGULAR_CONSUMABLES,
- 'has-optional-devices': _COND_STATE.HAS_OPTIONAL_DEVICES,
- 'has-no-optional-devices': ~_COND_STATE.HAS_OPTIONAL_DEVICES}
+_GAME_ITEM_CONDITION_TAGS = {'selected': _COND_STATE.SELECTED, 
+   'not-selected': ~_COND_STATE.SELECTED, 
+   'premium': _COND_STATE.PREMIUM, 
+   'not-premium': ~_COND_STATE.PREMIUM, 
+   'unlocked': _COND_STATE.UNLOCKED, 
+   'not-unlocked': ~_COND_STATE.UNLOCKED, 
+   'in-inventory': _COND_STATE.IN_INVENTORY, 
+   'not-in-inventory': ~_COND_STATE.IN_INVENTORY, 
+   'crew-has-any-skill': _COND_STATE.CREW_HAS_ANY_SKILL, 
+   'crew-has-not-any-skill': ~_COND_STATE.CREW_HAS_ANY_SKILL, 
+   'xp-enough': _COND_STATE.XP_ENOUGH, 
+   'xp-not-enough': ~_COND_STATE.XP_ENOUGH, 
+   'money-enough': _COND_STATE.MONEY_ENOUGH, 
+   'money-not-enough': ~_COND_STATE.MONEY_ENOUGH, 
+   'level': _COND_STATE.LEVEL, 
+   'not-level': ~_COND_STATE.LEVEL, 
+   'may-install': _COND_STATE.MAY_INSTALL, 
+   'may-not-install': ~_COND_STATE.MAY_INSTALL, 
+   'installed': _COND_STATE.INSTALLED, 
+   'not-installed': ~_COND_STATE.INSTALLED, 
+   'has-regular-consumables': _COND_STATE.HAS_REGULAR_CONSUMABLES, 
+   'has-no-regular-consumables': ~_COND_STATE.HAS_REGULAR_CONSUMABLES, 
+   'has-optional-devices': _COND_STATE.HAS_OPTIONAL_DEVICES, 
+   'has-no-optional-devices': ~_COND_STATE.HAS_OPTIONAL_DEVICES}
 _GAME_ITEM_CONDITION_SET = set(_GAME_ITEM_CONDITION_TAGS.keys())
 
 def _readGameItemCondition(xmlCtx, section, _):
@@ -109,8 +109,8 @@ def _readGameItemCondition(xmlCtx, section, _):
     tags = set(section.keys()) & _GAME_ITEM_CONDITION_SET
     if tags:
         if len(tags) > 1:
-            _xml.raiseWrongXml(xmlCtx, 'var', 'One state of vehicle condition must be defined, found {0}'.format(tags))
-            return None
+            _xml.raiseWrongXml(xmlCtx, 'var', ('One state of vehicle condition must be defined, found {0}').format(tags))
+            return
         tag = tags.pop()
         state = _GAME_ITEM_CONDITION_TAGS[tag]
         if state.base in _COND_STATE.GAME_ITEM_RELATE_STATE:
@@ -118,8 +118,8 @@ def _readGameItemCondition(xmlCtx, section, _):
             return tut_conditions.GameItemRelateStateCondition(varID, otherIDs, state)
         return tut_conditions.GameItemSimpleStateCondition(varID, state)
     else:
-        _xml.raiseWrongXml(xmlCtx, 'var', 'State of vehicle condition is not found: {0}'.format(section.keys()))
-        return None
+        _xml.raiseWrongXml(xmlCtx, 'var', ('State of vehicle condition is not found: {0}').format(section.keys()))
+        return
 
 
 def _readVarCondition(xmlCtx, section, _):
@@ -127,15 +127,15 @@ def _readVarCondition(xmlCtx, section, _):
     tags = section.keys()
     if 'is-none' in tags:
         return tut_conditions.VarDefinedCondition(varID, ~_COND_STATE.ACTIVE)
-    elif 'is-not-none' in tags:
-        return tut_conditions.VarDefinedCondition(varID, _COND_STATE.ACTIVE)
-    elif 'equals' in tags:
-        return tut_conditions.VarCompareCondition(varID, _xml.readString(xmlCtx, section, 'equals'), _COND_STATE.EQUALS)
-    elif 'not-equals' in tags:
-        return tut_conditions.VarCompareCondition(varID, _xml.readString(xmlCtx, section, 'not-equals'), ~_COND_STATE.EQUALS)
     else:
+        if 'is-not-none' in tags:
+            return tut_conditions.VarDefinedCondition(varID, _COND_STATE.ACTIVE)
+        if 'equals' in tags:
+            return tut_conditions.VarCompareCondition(varID, _xml.readString(xmlCtx, section, 'equals'), _COND_STATE.EQUALS)
+        if 'not-equals' in tags:
+            return tut_conditions.VarCompareCondition(varID, _xml.readString(xmlCtx, section, 'not-equals'), ~_COND_STATE.EQUALS)
         _xml.raiseWrongXml(xmlCtx, 'var', 'State of var condition is not found')
-        return None
+        return
 
 
 def _readConnectedItemCondition(xmlCtx, section, _=None):
@@ -209,27 +209,27 @@ def _getClass(entityID, xmlCtx, section):
     return resultClass
 
 
-_BASE_CONDITION_TAGS = {'active': lambda xmlCtx, section, flags: _readFlagCondition(xmlCtx, section, _COND_STATE.ACTIVE, flags),
- 'inactive': lambda xmlCtx, section, flags: _readFlagCondition(xmlCtx, section, ~_COND_STATE.ACTIVE, flags),
- 'global-active': lambda xmlCtx, section, flags: _readGlobalFlagCondition(xmlCtx, section, _COND_STATE.ACTIVE),
- 'global-inactive': lambda xmlCtx, section, flags: _readGlobalFlagCondition(xmlCtx, section, ~_COND_STATE.ACTIVE),
- 'is-widow-opened': lambda xmlCtx, section, flags: _readWindowOnSceneCondition(xmlCtx, section, _COND_STATE.ACTIVE),
- 'is-widow-closed': lambda xmlCtx, section, flags: _readWindowOnSceneCondition(xmlCtx, section, ~_COND_STATE.ACTIVE),
- 'game-item': _readGameItemCondition,
- 'var': _readVarCondition,
- 'effect-triggered': _readEffectTriggeredCondition,
- 'effect-not-triggered': _readEffectNotTriggeredCondition,
- 'service': _readServiceCondition,
- 'class-condition': _readClassCondition,
- 'component-on-scene': lambda xmlCtx, section, flags: _readComponentOnSceneCondition(xmlCtx, section, _COND_STATE.ACTIVE),
- 'component-not-on-scene': lambda xmlCtx, section, flags: _readComponentOnSceneCondition(xmlCtx, section, ~_COND_STATE.ACTIVE),
- 'on-scene': lambda xmlCtx, section, flags: _readCurrentSceneCondition(xmlCtx, section, _COND_STATE.ACTIVE),
- 'not-on-scene': lambda xmlCtx, section, flags: _readCurrentSceneCondition(xmlCtx, section, ~_COND_STATE.ACTIVE),
- 'view-present': lambda xmlCtx, section, flags: _readViewPresentCondition(xmlCtx, section, _COND_STATE.ACTIVE),
- 'view-not-present': lambda xmlCtx, section, flags: _readViewPresentCondition(xmlCtx, section, ~_COND_STATE.ACTIVE),
- 'condition-hint-showed': _readConnectedItemCondition,
- 'condition-and': _readComplexConditionAnd,
- 'condition-or': _readComplexConditionOr}
+_BASE_CONDITION_TAGS = {'active': lambda xmlCtx, section, flags: _readFlagCondition(xmlCtx, section, _COND_STATE.ACTIVE, flags), 
+   'inactive': lambda xmlCtx, section, flags: _readFlagCondition(xmlCtx, section, ~_COND_STATE.ACTIVE, flags), 
+   'global-active': lambda xmlCtx, section, flags: _readGlobalFlagCondition(xmlCtx, section, _COND_STATE.ACTIVE), 
+   'global-inactive': lambda xmlCtx, section, flags: _readGlobalFlagCondition(xmlCtx, section, ~_COND_STATE.ACTIVE), 
+   'is-widow-opened': lambda xmlCtx, section, flags: _readWindowOnSceneCondition(xmlCtx, section, _COND_STATE.ACTIVE), 
+   'is-widow-closed': lambda xmlCtx, section, flags: _readWindowOnSceneCondition(xmlCtx, section, ~_COND_STATE.ACTIVE), 
+   'game-item': _readGameItemCondition, 
+   'var': _readVarCondition, 
+   'effect-triggered': _readEffectTriggeredCondition, 
+   'effect-not-triggered': _readEffectNotTriggeredCondition, 
+   'service': _readServiceCondition, 
+   'class-condition': _readClassCondition, 
+   'component-on-scene': lambda xmlCtx, section, flags: _readComponentOnSceneCondition(xmlCtx, section, _COND_STATE.ACTIVE), 
+   'component-not-on-scene': lambda xmlCtx, section, flags: _readComponentOnSceneCondition(xmlCtx, section, ~_COND_STATE.ACTIVE), 
+   'on-scene': lambda xmlCtx, section, flags: _readCurrentSceneCondition(xmlCtx, section, _COND_STATE.ACTIVE), 
+   'not-on-scene': lambda xmlCtx, section, flags: _readCurrentSceneCondition(xmlCtx, section, ~_COND_STATE.ACTIVE), 
+   'view-present': lambda xmlCtx, section, flags: _readViewPresentCondition(xmlCtx, section, _COND_STATE.ACTIVE), 
+   'view-not-present': lambda xmlCtx, section, flags: _readViewPresentCondition(xmlCtx, section, ~_COND_STATE.ACTIVE), 
+   'condition-hint-showed': _readConnectedItemCondition, 
+   'condition-and': _readComplexConditionAnd, 
+   'condition-or': _readComplexConditionOr}
 
 class ConditionTags(object):
 
@@ -251,25 +251,29 @@ def readConditions(xmlCtx, section, flags):
         if name == 'either':
             eitherCondition = readConditions(xmlCtx, subSec, flags)
             result.appendEitherBlock(eitherCondition)
-        function = _conditions.tags.get(name)
-        if function is None:
-            LOG_ERROR('Condition is not supported: ', name)
-            continue
-        result.append(function(xmlCtx, subSec, flags))
+        else:
+            function = _conditions.tags.get(name)
+            if function is None:
+                LOG_ERROR('Condition is not supported: ', name)
+                continue
+            result.append(function(xmlCtx, subSec, flags))
 
     return result
 
 
 def _parseConditions(xmlCtx, section, flags):
     condSec = section['condition']
-    return readConditions(xmlCtx, condSec, flags) if condSec is not None else None
+    if condSec is not None:
+        return readConditions(xmlCtx, condSec, flags)
+    else:
+        return
 
 
-ACTION_TAGS = {'click': GuiEventType.CLICK,
- 'click-outside': GuiEventType.CLICK_OUTSIDE,
- 'esc': GuiEventType.ESC,
- 'enable': GuiEventType.ENABLE,
- 'disable': GuiEventType.DISABLE}
+ACTION_TAGS = {'click': GuiEventType.CLICK, 
+   'click-outside': GuiEventType.CLICK_OUTSIDE, 
+   'esc': GuiEventType.ESC, 
+   'enable': GuiEventType.ENABLE, 
+   'disable': GuiEventType.DISABLE}
 
 def parseAction(xmlCtx, section, flags):
     name = section.name
@@ -300,7 +304,7 @@ def parseActions(xmlCtx, section, flags):
 
 def _readEffectsGroupSection(xmlCtx, section, flags, conditions):
     _effects = (_parseEffect(xmlCtx, effectSec, flags) for _, effectSec in _xml.getChildren(xmlCtx, section, 'effects'))
-    return effects.EffectsGroup(tuple((e for e in _effects if e is not None)), conditions)
+    return effects.EffectsGroup(tuple(e for e in _effects if e is not None), conditions)
 
 
 def _readActivateEffectSection(xmlCtx, section, flags, conditions):
@@ -438,47 +442,48 @@ def _readPlaySoundEffectSection(xmlCtx, section, flags, conditions):
 def _readCloseViewEffectSection(xmlCtx, section, flags, conditions):
     layer = LAYER_NAMES.LAYER_ORDER.index(_xml.readString(xmlCtx, section, 'type'))
     viewAlias = _xml.readString(xmlCtx, section, 'alias')
-    return effects.HasTargetEffect((layer, viewAlias), effects.EFFECT_TYPE.CLOSE_VIEW, conditions=conditions)
+    return effects.HasTargetEffect((
+     layer, viewAlias), effects.EFFECT_TYPE.CLOSE_VIEW, conditions=conditions)
 
 
 def makeSimpleEffectReader(effectType):
     return lambda xmlCtx, section, flags, conditions: effects.SimpleEffect(effectType=effectType, conditions=conditions)
 
 
-_BASE_EFFECT_TAGS = {'effects-group': _readEffectsGroupSection,
- 'activate': _readActivateEffectSection,
- 'inactivate': _readDeactivateEffectSection,
- 'global-activate': _readGlobalActivateEffectSection,
- 'global-inactivate': _readGlobalDeactivateEffectSection,
- 'refuse-training': makeSimpleEffectReader(_EFFECT_TYPE.REFUSE_TRAINING),
- 'run-trigger': _readRunTriggerEffectSection,
- 'set-gui-item-props': _readGuiItemPropertiesEffectSection,
- 'set-visible': partial(_readGuiItemPropertiesEffectSection, fixedProp=('visible', 'asBool')),
- 'set-button-enabled': partial(_readGuiItemPropertiesEffectSection, fixedProp=('enabled', 'asBool')),
- 'update-layout': partial(_readGuiItemPropertiesEffectSection, fixedProp=('layout', None)),
- 'play-animation': _readPlayAnimationEffectSection,
- 'finish-training': makeSimpleEffectReader(_EFFECT_TYPE.FINISH_TRAINING),
- 'go-scene': _readGoSceneSection,
- 'invoke-gui-cmd': _readInvokeGuiCmdSection,
- 'show-hint': _readShowHintSection,
- 'close-hint': _readCloseHintSection,
- 'show-dialog': _readShowDialogSection,
- 'show-window': _readShowWindowSection,
- 'set-gui-item-criteria': _readSetGuiItemCriteria,
- 'set-gui-item-view-criteria': _setReadGuiItemViewCriteria,
- 'set-action': _readSetActionSection,
- 'remove-action': _readRemoveActionSection,
- 'set-var': _readSetVarSection,
- 'clear-scene': makeSimpleEffectReader(_EFFECT_TYPE.CLEAR_SCENE),
- 'set-allowed-to-fight': _readSetAllowedToFightEffectSection,
- 'select-in-hangar': _readSelectVehicleInHangarSection,
- 'play-sound': _readPlaySoundEffectSection,
- 'close-view': _readCloseViewEffectSection}
+_BASE_EFFECT_TAGS = {'effects-group': _readEffectsGroupSection, 
+   'activate': _readActivateEffectSection, 
+   'inactivate': _readDeactivateEffectSection, 
+   'global-activate': _readGlobalActivateEffectSection, 
+   'global-inactivate': _readGlobalDeactivateEffectSection, 
+   'refuse-training': makeSimpleEffectReader(_EFFECT_TYPE.REFUSE_TRAINING), 
+   'run-trigger': _readRunTriggerEffectSection, 
+   'set-gui-item-props': _readGuiItemPropertiesEffectSection, 
+   'set-visible': partial(_readGuiItemPropertiesEffectSection, fixedProp=('visible', 'asBool')), 
+   'set-button-enabled': partial(_readGuiItemPropertiesEffectSection, fixedProp=('enabled', 'asBool')), 
+   'update-layout': partial(_readGuiItemPropertiesEffectSection, fixedProp=('layout', None)), 
+   'play-animation': _readPlayAnimationEffectSection, 
+   'finish-training': makeSimpleEffectReader(_EFFECT_TYPE.FINISH_TRAINING), 
+   'go-scene': _readGoSceneSection, 
+   'invoke-gui-cmd': _readInvokeGuiCmdSection, 
+   'show-hint': _readShowHintSection, 
+   'close-hint': _readCloseHintSection, 
+   'show-dialog': _readShowDialogSection, 
+   'show-window': _readShowWindowSection, 
+   'set-gui-item-criteria': _readSetGuiItemCriteria, 
+   'set-gui-item-view-criteria': _setReadGuiItemViewCriteria, 
+   'set-action': _readSetActionSection, 
+   'remove-action': _readRemoveActionSection, 
+   'set-var': _readSetVarSection, 
+   'clear-scene': makeSimpleEffectReader(_EFFECT_TYPE.CLEAR_SCENE), 
+   'set-allowed-to-fight': _readSetAllowedToFightEffectSection, 
+   'select-in-hangar': _readSelectVehicleInHangarSection, 
+   'play-sound': _readPlaySoundEffectSection, 
+   'close-view': _readCloseViewEffectSection}
 _EFFECT_TAGS = _BASE_EFFECT_TAGS.copy()
 
 def setEffectsParsers(parsers):
-    global _EFFECT_TAGS
     global _BASE_EFFECT_TAGS
+    global _EFFECT_TAGS
     _EFFECT_TAGS.clear()
     _EFFECT_TAGS = _BASE_EFFECT_TAGS.copy()
     _EFFECT_TAGS.update(parsers)
@@ -581,7 +586,7 @@ def _readAsDictSection(_, section):
 
 
 def _readAsIntSequence(_, section):
-    return [ (int(item) if item else None) for item in section.asString.split(' ') ]
+    return [ int(item) if item else None for item in section.asString.split(' ') ]
 
 
 def _readAsVehTypeNameSection(_, section):
@@ -616,20 +621,20 @@ def _readAsItemsDict(_, section):
     return value
 
 
-CUSTOM_VARS_PARERS = {'asString': _readAsStringSection,
- 'asDict': _readAsDictSection,
- 'asList': _readAsListSection,
- 'asIntSequence': _readAsIntSequence,
- 'asVehTypeName': _readAsVehTypeNameSection,
- 'asVehChassisName': lambda name, section: _readAsVehItemNameSection('vehicleChassis', 'chassisIDs', section),
- 'asVehGunName': lambda name, section: _readAsVehItemNameSection('vehicleGun', 'gunIDs', section),
- 'asVehEngineName': lambda name, section: _readAsVehItemNameSection('vehicleEngine', 'engineIDs', section),
- 'asVehRadioName': lambda name, section: _readAsVehItemNameSection('vehicleRadio', 'radioIDs', section),
- 'asVehTurretName': lambda name, section: _readAsVehItemNameSection('vehicleTurret', 'turretIDs', section),
- 'asEquipment': _readAsEquipmentSection,
- 'asItem': _readAsItemSection,
- 'asBooster': _readAsBoosterSection,
- 'asItemsDict': _readAsItemsDict}
+CUSTOM_VARS_PARERS = {'asString': _readAsStringSection, 
+   'asDict': _readAsDictSection, 
+   'asList': _readAsListSection, 
+   'asIntSequence': _readAsIntSequence, 
+   'asVehTypeName': _readAsVehTypeNameSection, 
+   'asVehChassisName': lambda name, section: _readAsVehItemNameSection('vehicleChassis', 'chassisIDs', section), 
+   'asVehGunName': lambda name, section: _readAsVehItemNameSection('vehicleGun', 'gunIDs', section), 
+   'asVehEngineName': lambda name, section: _readAsVehItemNameSection('vehicleEngine', 'engineIDs', section), 
+   'asVehRadioName': lambda name, section: _readAsVehItemNameSection('vehicleRadio', 'radioIDs', section), 
+   'asVehTurretName': lambda name, section: _readAsVehItemNameSection('vehicleTurret', 'turretIDs', section), 
+   'asEquipment': _readAsEquipmentSection, 
+   'asItem': _readAsItemSection, 
+   'asBooster': _readAsBoosterSection, 
+   'asItemsDict': _readAsItemsDict}
 
 def readVarValue(name, section):
     if name in CUSTOM_VARS_PARERS:
@@ -677,14 +682,14 @@ def _parseDialog(xmlCtx, section, flags):
     submitID = bSec.readString('submit', '')
     cancelID = bSec.readString('cancel', '')
     customID = bSec.readString('custom', '')
-    content = {'type': dialogType,
-     'dialogID': dialogID,
-     'submitID': submitID,
-     'cancelID': cancelID,
-     'customID': customID,
-     'title': translation(_xml.readStringOrNone(xmlCtx, section, 'title') or ''),
-     'message': translation(_xml.readStringOrNone(xmlCtx, section, 'text') or ''),
-     'imageUrl': _xml.readStringOrNone(xmlCtx, section, 'image') or ''}
+    content = {'type': dialogType, 
+       'dialogID': dialogID, 
+       'submitID': submitID, 
+       'cancelID': cancelID, 
+       'customID': customID, 
+       'title': translation(_xml.readStringOrNone(xmlCtx, section, 'title') or ''), 
+       'message': translation(_xml.readStringOrNone(xmlCtx, section, 'text') or ''), 
+       'imageUrl': _xml.readStringOrNone(xmlCtx, section, 'image') or ''}
     parser = _DIALOG_SUB_PARERS.get(dialogType)
     if parser is not None:
         dialog = parser(xmlCtx, section, flags, dialogID, dialogType, content)
@@ -739,7 +744,8 @@ def _readGuiItemCriteria(xmlCtx, section, _):
 
 def _readGuiItemViewCriteria(xmlCtx, section, _):
     criteriaID = parseID(xmlCtx, section, 'Specify a criteria ID')
-    componentIDs = [ parseID(xmlCtx, componentSec, 'Specify a component ID') for _, componentSec in _xml.getChildren(xmlCtx, section, 'components') ]
+    componentIDs = [ parseID(xmlCtx, componentSec, 'Specify a component ID') for _, componentSec in _xml.getChildren(xmlCtx, section, 'components')
+                   ]
     return tutorial_chapter.GuiItemViewCriteria(criteriaID, componentIDs, _xml.readString(xmlCtx, section, 'value'))
 
 
@@ -801,22 +807,22 @@ def _readGameAttribute(xmlCtx, section, _):
     return tutorial_chapter.GameAttribute(attributeID, name, varID, args)
 
 
-_BASE_ENTITY_PARSERS = {'dialog': _parseDialog,
- 'window': _parseWindow,
- 'message': _parseMessage,
- 'gui-item-criteria': _readGuiItemCriteria,
- 'gui-item-view-criteria': _readGuiItemViewCriteria,
- 'click-action': _readClickAction,
- 'click-outside-action': _readClickOutsideAction,
- 'esc-action': _readEscapeAction,
- 'enable-action': _readEnableAction,
- 'disable-action': _readDisableAction,
- 'game-attribute': _readGameAttribute}
+_BASE_ENTITY_PARSERS = {'dialog': _parseDialog, 
+   'window': _parseWindow, 
+   'message': _parseMessage, 
+   'gui-item-criteria': _readGuiItemCriteria, 
+   'gui-item-view-criteria': _readGuiItemViewCriteria, 
+   'click-action': _readClickAction, 
+   'click-outside-action': _readClickOutsideAction, 
+   'esc-action': _readEscapeAction, 
+   'enable-action': _readEnableAction, 
+   'disable-action': _readDisableAction, 
+   'game-attribute': _readGameAttribute}
 _ENTITY_PARSERS = _BASE_ENTITY_PARSERS.copy()
 
 def setEntitiesParsers(parsers):
-    global _ENTITY_PARSERS
     global _BASE_ENTITY_PARSERS
+    global _ENTITY_PARSERS
     _ENTITY_PARSERS.clear()
     _ENTITY_PARSERS = _BASE_ENTITY_PARSERS.copy()
     _ENTITY_PARSERS.update(parsers)
@@ -864,7 +870,7 @@ def parseHint(xmlCtx, section):
         subSec = section['arrow']
         direction = _xml.readString(xmlCtx, subSec, 'direction')
         if direction not in _AVAILABLE_DIRECTIONS:
-            _xml.raiseWrongXml(xmlCtx, section, 'Arrow direction {} is invalid.'.format(direction))
+            _xml.raiseWrongXml(xmlCtx, section, ('Arrow direction {} is invalid.').format(direction))
         positionValue = _xml.readFloat(xmlCtx, subSec, 'position-value', 0.5)
         textPadding = _xml.readFloat(xmlCtx, subSec, 'text-padding', 0)
         sectionInfo['arrow'] = _ArrowProps(direction, _xml.readBool(xmlCtx, subSec, 'loop'), positionValue, textPadding)

@@ -1,7 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/PoiCaptureBlockerComponent.py
-import logging
-import typing
+from __future__ import absolute_import
+import logging, typing
 from PoiBaseComponent import PoiBaseComponent
 from helpers import fixed_dict
 from points_of_interest.components import PoiCaptureBlockerStateComponent
@@ -38,4 +36,4 @@ class PoiCaptureBlockerComponent(PoiBaseComponent):
         return
 
     def __getBlockReasons(self):
-        return tuple((fixed_dict.getStatusWithTimeInterval(reason, PoiBlockReasons) for reason in self.blockReasons))
+        return tuple(fixed_dict.getStatusWithTimeInterval(reason, PoiBlockReasons) for reason in self.blockReasons)

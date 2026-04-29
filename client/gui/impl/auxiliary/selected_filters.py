@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/auxiliary/selected_filters.py
+from __future__ import absolute_import
 import operator
 from collections import OrderedDict, namedtuple
 from gui.impl.gen.view_models.views.lobby.tank_setup.common.filters_model import FiltersModel
@@ -11,7 +10,10 @@ def getFilterDecorator(selectedFitler, model):
     def makeFilter(items):
         return selectedFitler.getItems(items, model)
 
-    return makeFilter if selectedFitler is not None else None
+    if selectedFitler is not None:
+        return makeFilter
+    else:
+        return
 
 
 class BaseSelectedFilters(object):
@@ -75,7 +77,7 @@ class BaseSelectedFilters(object):
         return
 
     def _getFilteredItems(self, items):
-        result = tuple((item for item in items if self.checkItem(item)))
+        result = tuple(item for item in items if self.checkItem(item))
         return result
 
     @staticmethod

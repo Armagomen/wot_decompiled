@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/battle/abilities/corroding_shot_indicator.py
 import BigWorld
 from helpers import dependency
 from gui.battle_control.controllers.period_ctrl import IAbstractPeriodView

@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/battle/dog_tags/dog_tag_marker_view.py
+from __future__ import absolute_import
 import BigWorld
 from frameworks.wulf import ViewSettings
 from gui.impl.pub import ViewImpl
@@ -31,5 +30,5 @@ class DogTagMarkerView(ViewImpl):
         playerInfo = self.__sessionProvider.getArenaDP().getVehicleInfo(self.__vehicleID).player
         dogTagInfo = BigWorld.entity(self.__vehicleID).dogTag['dogTag']
         dogTag = DisplayableDogTag(PlayerDogTag.fromDict(dogTagInfo), playerInfo.name, playerInfo.clanAbbrev)
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             self.__composer.fillModel(tx, dogTag)

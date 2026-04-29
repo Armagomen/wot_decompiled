@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/common/veh_modules_config_cmp.py
 import logging
 from gui.Scaleform.daapi.view.meta.VehModulesConfiguratorCmpMeta import VehModulesConfiguratorCmpMeta
 from gui.doc_loaders.battle_royale_settings_loader import getTreeModuleIcon
@@ -10,22 +8,21 @@ from helpers import int2roman
 _logger = logging.getLogger(__name__)
 _GAP_BETWEEN_COLUMNS = 100
 _GAP_BETWEEN_MODULES = 60
-_ITEM_TYPE_TO_HEADER_ICON = {GUI_ITEM_TYPE.TURRET: backport.image(R.images.gui.maps.icons.battleRoyale.tree.header.tower()),
- GUI_ITEM_TYPE.GUN: backport.image(R.images.gui.maps.icons.battleRoyale.tree.header.gun()),
- GUI_ITEM_TYPE.ENGINE: backport.image(R.images.gui.maps.icons.battleRoyale.tree.header.engine()),
- GUI_ITEM_TYPE.RADIO: backport.image(R.images.gui.maps.icons.battleRoyale.tree.header.radio()),
- GUI_ITEM_TYPE.CHASSIS: backport.image(R.images.gui.maps.icons.battleRoyale.tree.header.chassis()),
- 'hull': backport.image(R.images.gui.maps.icons.battleRoyale.tree.header.hull()),
- 'vehicle': backport.image(R.images.gui.maps.icons.battleRoyale.tree.header.vehicle())}
+_ITEM_TYPE_TO_HEADER_ICON = {GUI_ITEM_TYPE.TURRET: backport.image(R.images.gui.maps.icons.battleRoyale.tree.header.tower()), 
+   GUI_ITEM_TYPE.GUN: backport.image(R.images.gui.maps.icons.battleRoyale.tree.header.gun()), 
+   GUI_ITEM_TYPE.ENGINE: backport.image(R.images.gui.maps.icons.battleRoyale.tree.header.engine()), 
+   GUI_ITEM_TYPE.RADIO: backport.image(R.images.gui.maps.icons.battleRoyale.tree.header.radio()), 
+   GUI_ITEM_TYPE.CHASSIS: backport.image(R.images.gui.maps.icons.battleRoyale.tree.header.chassis()), 
+   'hull': backport.image(R.images.gui.maps.icons.battleRoyale.tree.header.hull()), 
+   'vehicle': backport.image(R.images.gui.maps.icons.battleRoyale.tree.header.vehicle())}
 
 def _makeItemVO(intCD, icon, selected):
-    return {'intCD': intCD,
-     'icon': icon,
-     'potentialLinks': [],
-     'activeLink': -1,
-     'selected': selected,
-     'available': False,
-     'gap': _GAP_BETWEEN_MODULES}
+    return {'intCD': intCD, 
+       'icon': icon, 
+       'potentialLinks': [], 'activeLink': -1, 
+       'selected': selected, 
+       'available': False, 
+       'gap': _GAP_BETWEEN_MODULES}
 
 
 def _makeModuleVO(item, selected):
@@ -34,22 +31,25 @@ def _makeModuleVO(item, selected):
 
 
 def _makeColumnVO(index, modules, headerIcon, selected=False):
-    return {'index': index,
-     'headerIcon': headerIcon,
-     'headerText': int2roman(index + 1),
-     'selected': selected,
-     'highlighted': False,
-     'availableForSelection': False,
-     'modules': modules,
-     'gap': _GAP_BETWEEN_COLUMNS}
+    return {'index': index, 
+       'headerIcon': headerIcon, 
+       'headerText': int2roman(index + 1), 
+       'selected': selected, 
+       'highlighted': False, 
+       'availableForSelection': False, 
+       'modules': modules, 
+       'gap': _GAP_BETWEEN_COLUMNS}
 
 
 def _makeFirstColumnVO(vehicle):
-    return _makeColumnVO(0, [_makeItemVO(vehicle.intCD, 'vehicle', selected=True)], _ITEM_TYPE_TO_HEADER_ICON['vehicle'], selected=True)
+    return _makeColumnVO(0, [
+     _makeItemVO(vehicle.intCD, 'vehicle', selected=True)], _ITEM_TYPE_TO_HEADER_ICON['vehicle'], selected=True)
 
 
 def _getHeaderIcon(item, vehicle):
-    return _ITEM_TYPE_TO_HEADER_ICON['hull'] if item.itemTypeID == GUI_ITEM_TYPE.CHASSIS and isItemVehicleHull(item.intCD, vehicle) else _ITEM_TYPE_TO_HEADER_ICON[item.itemTypeID]
+    if item.itemTypeID == GUI_ITEM_TYPE.CHASSIS and isItemVehicleHull(item.intCD, vehicle):
+        return _ITEM_TYPE_TO_HEADER_ICON['hull']
+    return _ITEM_TYPE_TO_HEADER_ICON[item.itemTypeID]
 
 
 class VehicleModulesConfiguratorCmp(VehModulesConfiguratorCmpMeta):
@@ -132,14 +132,16 @@ class VehicleModulesConfiguratorCmp(VehModulesConfiguratorCmpMeta):
                 if not self._columnsVOs[columnIndex]:
                     moduleSelected = self._isModuleSelected(item, vehicle)
                     self._columnsVOs[columnIndex] = _makeColumnVO(columnIndex, [_makeModuleVO(item, moduleSelected)], _getHeaderIcon(item, vehicle))
-                    self.__moduleIntCdToPosition[item.intCD] = (columnIndex, 0)
+                    self.__moduleIntCdToPosition[item.intCD] = (
+                     columnIndex, 0)
                 else:
                     modules = self._columnsVOs[columnIndex]['modules']
                     for m in modules:
                         if m['intCD'] == intCD:
                             break
                     else:
-                        self.__moduleIntCdToPosition[item.intCD] = (columnIndex, len(modules))
+                        self.__moduleIntCdToPosition[item.intCD] = (
+                         columnIndex, len(modules))
                         moduleSelected = self._isModuleSelected(item, vehicle)
                         modules.append(_makeModuleVO(item, moduleSelected))
 
@@ -210,7 +212,8 @@ class VehicleModulesConfiguratorCmp(VehModulesConfiguratorCmpMeta):
                         moduleItem = self._getItem(mVO['intCD'])
                         success = self._mayInstallModuleOnCurrentVehicle(moduleItem)
                         mVO['available'] = success
-                    mVO['available'] = False
+                    else:
+                        mVO['available'] = False
 
                 changedColumns.add(j)
             if columnVO['highlighted']:
@@ -242,7 +245,7 @@ class VehicleModulesConfiguratorCmp(VehModulesConfiguratorCmpMeta):
                                         moduleVO['activeLink'] = unlockIntCD
 
                         if not hasDirectLinks:
-                            columnVOO = self._columnsVOs[i - 1]
+                            columnVOO = self._columnsVOs[(i - 1)]
                             if not columnVOO:
                                 pass
                             else:

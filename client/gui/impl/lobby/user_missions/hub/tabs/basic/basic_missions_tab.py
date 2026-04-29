@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hub/tabs/basic/basic_missions_tab.py
 from PlayerEvents import g_playerEvents
 from config_schemas.umg_config import umgConfigSchema
 from gui.Scaleform.daapi.view.lobby.missions.missions_helper import getSuitableVehicles
@@ -37,9 +35,9 @@ class BasicMissionsTab(UpdateChildrenMixin, ViewComponent[BasicMissionsTabModel]
         return super(BasicMissionsTab, self).getViewModel()
 
     def _getChildComponents(self):
-        return {DailyMissionsSectionPresenter.LAYOUT_ID: lambda : DailyMissionsSectionPresenter(self._targetQuestId),
-         WeeklyMissions.LAYOUT_ID: WeeklyMissions,
-         PersonalMissionsWindgetPresenter.LAYOUT_ID: PersonalMissionsWindgetPresenter}
+        return {DailyMissionsSectionPresenter.LAYOUT_ID: lambda : DailyMissionsSectionPresenter(self._targetQuestId), 
+           WeeklyMissions.LAYOUT_ID: WeeklyMissions, 
+           PersonalMissionsWindgetPresenter.LAYOUT_ID: PersonalMissionsWindgetPresenter}
 
     def _onLoaded(self, *args, **kwargs):
         super(BasicMissionsTab, self)._onLoaded()
@@ -48,13 +46,20 @@ class BasicMissionsTab(UpdateChildrenMixin, ViewComponent[BasicMissionsTabModel]
         self.__updatePersonalMissionSection()
 
     def _getCallbacks(self):
-        return super(BasicMissionsTab, self)._getCallbacks() + (('inventory.1.compDescr', self.__onVehiclesInventorySyncCompleted),)
+        return super(BasicMissionsTab, self)._getCallbacks() + (
+         (
+          'inventory.1.compDescr', self.__onVehiclesInventorySyncCompleted),)
 
     def _getEvents(self):
-        return ((g_playerEvents.onConfigModelUpdated, self.__onConfigModelUpdated),
-         (self.eventsCache.onPMSyncCompleted, self.__onCacheSyncCompleted),
-         (self.itemsCache.onSyncCompleted, self.__onInventoryCacheSyncCompleted),
-         (self.lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged))
+        return (
+         (
+          g_playerEvents.onConfigModelUpdated, self.__onConfigModelUpdated),
+         (
+          self.eventsCache.onPMSyncCompleted, self.__onCacheSyncCompleted),
+         (
+          self.itemsCache.onSyncCompleted, self.__onInventoryCacheSyncCompleted),
+         (
+          self.lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged))
 
     def _updateDailyBlockStatus(self):
         self.viewModel.setIsDailySectionAvailable(umgConfigSchema.getModel().enableAllDaily)

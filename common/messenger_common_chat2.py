@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/messenger_common_chat2.py
 from collections import namedtuple
 from string import Template
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
@@ -30,12 +28,12 @@ _TIMEFRAME_FOR_ATTENTION_TO_STORAGE = 5
 _MAX_ATTENTION_TO_PER_TEAM = 3
 
 def messageArgs(int32Arg1=0, int64Arg1=0, floatArg1=0, strArg1='', strArg2='', int8Arg1=0):
-    return {GENERIC_MESSENGER_ARGS.INT32_ARG_1.value: int32Arg1,
-     GENERIC_MESSENGER_ARGS.INT64_ARG_1.value: int64Arg1,
-     GENERIC_MESSENGER_ARGS.FLOAT_ARG_1.value: floatArg1,
-     GENERIC_MESSENGER_ARGS.STR_ARG_1.value: strArg1,
-     GENERIC_MESSENGER_ARGS.STR_ARG_2.value: strArg2,
-     GENERIC_MESSENGER_ARGS.INT8_ARG_1.value: int8Arg1}
+    return {GENERIC_MESSENGER_ARGS.INT32_ARG_1.value: int32Arg1, 
+       GENERIC_MESSENGER_ARGS.INT64_ARG_1.value: int64Arg1, 
+       GENERIC_MESSENGER_ARGS.FLOAT_ARG_1.value: floatArg1, 
+       GENERIC_MESSENGER_ARGS.STR_ARG_1.value: strArg1, 
+       GENERIC_MESSENGER_ARGS.STR_ARG_2.value: strArg2, 
+       GENERIC_MESSENGER_ARGS.INT8_ARG_1.value: int8Arg1}
 
 
 EMPTY_ARGS = messageArgs()
@@ -57,7 +55,10 @@ class MESSENGER_ERRORS():
     @staticmethod
     def getErrorName(errorCode):
         name = _MESSENGER_ERROR_NAMES.get(errorCode)
-        return name if name is not None else 'ERROR_CODE_' + str(errorCode)
+        if name is not None:
+            return name
+        else:
+            return 'ERROR_CODE_' + str(errorCode)
 
 
 class MESSENGER_LIMITS():
@@ -112,7 +113,9 @@ class MESSENGER_ACTION_IDS():
             if cmd is not None:
                 return 'command:' + cmd.name
             offs = actionID - actions.CUSTOM_ACTION_ID
-            return 'CUSTOM_ACTION_ID+' + str(offs) if offs >= 0 else str(actionID)
+            if offs >= 0:
+                return 'CUSTOM_ACTION_ID+' + str(offs)
+            return str(actionID)
 
     @staticmethod
     def isBattleChatAction(actionID):
@@ -142,28 +145,40 @@ class MESSENGER_ACTION_IDS():
         actions = MESSENGER_ACTION_IDS
         if actions.adminChatCommandFromActionID(actionID) is not None:
             return True
-        elif actions.isBattleChatAction(actionID):
-            return actions.battleChatCommandFromActionID(actionID) is None
         else:
-            return True if actions.isUnitChatAction(actionID) else False
+            if actions.isBattleChatAction(actionID):
+                return actions.battleChatCommandFromActionID(actionID) is None
+            if actions.isUnitChatAction(actionID):
+                return True
+            return False
 
     @staticmethod
     def battleChatCommandFromActionID(actionID):
         startID = MESSENGER_ACTION_IDS._BATTLE_CHAT_COMMAND_START_ID
-        return BATTLE_CHAT_COMMANDS[actionID - startID] if startID <= actionID < startID + len(BATTLE_CHAT_COMMANDS) else None
+        if startID <= actionID < startID + len(BATTLE_CHAT_COMMANDS):
+            return BATTLE_CHAT_COMMANDS[(actionID - startID)]
+        else:
+            return
 
     @staticmethod
     def unitChatCommandFromActionID(actionID):
         startID = MESSENGER_ACTION_IDS._UNIT_COMMAND_START_ID
-        return UNIT_CHAT_COMMANDS[actionID - startID] if startID <= actionID < startID + len(UNIT_CHAT_COMMANDS) else None
+        if startID <= actionID < startID + len(UNIT_CHAT_COMMANDS):
+            return UNIT_CHAT_COMMANDS[(actionID - startID)]
+        else:
+            return
 
     @staticmethod
     def adminChatCommandFromActionID(actionID):
         startID = MESSENGER_ACTION_IDS._ADMIN_COMMAND_START_ID
-        return ADMIN_CHAT_COMMANDS[actionID - startID] if startID <= actionID < startID + len(ADMIN_CHAT_COMMANDS) else None
+        if startID <= actionID < startID + len(ADMIN_CHAT_COMMANDS):
+            return ADMIN_CHAT_COMMANDS[(actionID - startID)]
+        else:
+            return
 
 
-RESPONSE_MESSENGER_ACTION_IDS = (MESSENGER_ACTION_IDS.RESPONSE_SUCCESS, MESSENGER_ACTION_IDS.RESPONSE_FAILURE)
+RESPONSE_MESSENGER_ACTION_IDS = (
+ MESSENGER_ACTION_IDS.RESPONSE_SUCCESS, MESSENGER_ACTION_IDS.RESPONSE_FAILURE)
 
 class CHAT_COMMAND_COOLDOWN_TYPE_IDS():
     TIMEFRAME_DATA_COOLDOWN = _makeID()
@@ -173,12 +188,18 @@ class CHAT_COMMAND_COOLDOWN_TYPE_IDS():
     ATTENTION_TO_BLOCKED_COOLDOWN = _makeID()
 
 
-_MESSENGER_ACTION_NAMES = {_id:_name for _name, _id in MESSENGER_ACTION_IDS.__dict__.iteritems() if isinstance(_id, int) and not _name.startswith('_')}
-_MESSENGER_ERROR_NAMES = {_id:_name for _name, _id in MESSENGER_ERRORS.__dict__.iteritems() if not _name.startswith('_')}
-AdminChatCommand = namedtuple('AdminChatCommand', ('id', 'name', 'timeout'))
-ADMIN_CHAT_COMMANDS = (AdminChatCommand(id=_makeID(start=MESSENGER_ACTION_IDS._ADMIN_COMMAND_START_ID), name='USERBAN', timeout=30.0), AdminChatCommand(id=_makeID(), name='USERUNBAN', timeout=30.0))
+_MESSENGER_ACTION_NAMES = {_id:_name for _name, _id in MESSENGER_ACTION_IDS.__dict__.iteritems() if isinstance(_id, int) and not _name.startswith('_') if isinstance(_id, int) and not _name.startswith('_')}
+_MESSENGER_ERROR_NAMES = {_id:_name for _name, _id in MESSENGER_ERRORS.__dict__.iteritems() if not _name.startswith('_') if not _name.startswith('_')}
+AdminChatCommand = namedtuple('AdminChatCommand', (
+ 'id',
+ 'name',
+ 'timeout'))
+ADMIN_CHAT_COMMANDS = (
+ AdminChatCommand(id=_makeID(start=MESSENGER_ACTION_IDS._ADMIN_COMMAND_START_ID), name='USERBAN', timeout=30.0),
+ AdminChatCommand(id=_makeID(), name='USERUNBAN', timeout=30.0))
 ADMIN_CHAT_COMMANDS_BY_NAMES = {v.name:v for v in ADMIN_CHAT_COMMANDS}
-BattleChatCommand = namedtuple('BattleChatCommand', ('id',
+BattleChatCommand = namedtuple('BattleChatCommand', (
+ 'id',
  'name',
  'cooldownPeriod',
  'msgText',
@@ -187,22 +208,18 @@ BattleChatCommand = namedtuple('BattleChatCommand', ('id',
  'soundNotification',
  'msgOnMarker',
  'soundNotificationReply'))
-BattleChatCommand.__new__.__defaults__ = (0,
- None,
- 0,
- None,
- None,
- None,
- None,
- None,
- None)
-UnitChatCommand = namedtuple('UnitChatCommand', ('id',
+BattleChatCommand.__new__.__defaults__ = (
+ 0, None, 0, None, None, None, None, None, None)
+UnitChatCommand = namedtuple('UnitChatCommand', (
+ 'id',
  'name',
  'cooldownPeriod',
  'msgText'))
-UNIT_CHAT_COMMANDS = (UnitChatCommand(id=_makeID(start=MESSENGER_ACTION_IDS._UNIT_COMMAND_START_ID), name='ATTENTIONTOCELL', cooldownPeriod=1.0 + _COOLDOWN_OFFSET, msgText='attention_to_cell'),)
+UNIT_CHAT_COMMANDS = (
+ UnitChatCommand(id=_makeID(start=MESSENGER_ACTION_IDS._UNIT_COMMAND_START_ID), name='ATTENTIONTOCELL', cooldownPeriod=1.0 + _COOLDOWN_OFFSET, msgText='attention_to_cell'),)
 UNIT_CHAT_COMMANDS_BY_NAMES = {v.name:v for v in UNIT_CHAT_COMMANDS}
-BATTLE_CHAT_COMMANDS = (BattleChatCommand(id=_makeID(start=MESSENGER_ACTION_IDS._BATTLE_CHAT_COMMAND_START_ID), name=BATTLE_CHAT_COMMAND_NAMES.SOS, cooldownPeriod=_SAME_BATTLE_CHAT_CMD_COOLDOWN_DURATION, msgText='help_me', vehMarker='help_me', senderVehMarker=None, soundNotification='ibc_ping_request', soundNotificationReply='ibc_ping_help_me_ex_reply'),
+BATTLE_CHAT_COMMANDS = (
+ BattleChatCommand(id=_makeID(start=MESSENGER_ACTION_IDS._BATTLE_CHAT_COMMAND_START_ID), name=BATTLE_CHAT_COMMAND_NAMES.SOS, cooldownPeriod=_SAME_BATTLE_CHAT_CMD_COOLDOWN_DURATION, msgText='help_me', vehMarker='help_me', senderVehMarker=None, soundNotification='ibc_ping_request', soundNotificationReply='ibc_ping_help_me_ex_reply'),
  BattleChatCommand(id=_makeID(), name=BATTLE_CHAT_COMMAND_NAMES.POSITIVE, cooldownPeriod=_SAME_PRIVATE_BATTLE_CHAT_CMD_COOLDOWN_DURATION, msgText='positive', vehMarker='positive', senderVehMarker=None, soundNotification='ibc_ping_affirmative', soundNotificationReply=None),
  BattleChatCommand(id=_makeID(), name=BATTLE_CHAT_COMMAND_NAMES.NEGATIVE, cooldownPeriod=_SAME_PRIVATE_BATTLE_CHAT_CMD_COOLDOWN_DURATION, msgText='negative', vehMarker=None, senderVehMarker=None, soundNotification=None, soundNotificationReply=None),
  BattleChatCommand(id=_makeID(), name=BATTLE_CHAT_COMMAND_NAMES.AFFIRMATIVE, cooldownPeriod=_SAME_PRIVATE_BATTLE_CHAT_CMD_COOLDOWN_DURATION, msgText='affirmative', vehMarker=None, senderVehMarker=None, soundNotification=None, soundNotificationReply=None),
@@ -292,12 +309,14 @@ def canResolveMucRoomsOfService(service):
     return canResolve
 
 
-ChatCommandBlockedData = namedtuple('ChatCommandBlockedData', ('reqID',
+ChatCommandBlockedData = namedtuple('ChatCommandBlockedData', (
+ 'reqID',
  'cmdID',
  'cooldownType',
  'cooldownEnd',
  'targetID'))
-COOLDOWN_SETTING_NAMES = ('teamChatCmdCooldown',
+COOLDOWN_SETTING_NAMES = (
+ 'teamChatCmdCooldown',
  'sameChatCmdCooldown',
  'sameTargetChatCmdCooldown',
  'otherChatCmdCooldown',
@@ -317,17 +336,18 @@ def areSenderCooldownsActive(currTime, listOfCoolDownTimeData, cmdIDToSend, targ
         for cmdBlockedData in listOfCoolDownTimeData:
             if round(cmdBlockedData.cooldownEnd - currTime, 2) <= BATTLE_CMD_COOLDOWN_ALLOWED_MARGIN:
                 removeDataList.append(cmdBlockedData)
-            validBlockData = None
-            if cmdBlockedData.cooldownType == CHAT_COMMAND_COOLDOWN_TYPE_IDS.SAME_COMMAND_COOLDOWN and cmdBlockedData.cmdID == cmdIDToSend:
-                validBlockData = cmdBlockedData
-            elif cmdBlockedData.cooldownType == CHAT_COMMAND_COOLDOWN_TYPE_IDS.OTHER_COMMANDS_COOLDOWN and cmdBlockedData.cmdID != cmdIDToSend:
-                validBlockData = cmdBlockedData
-            elif cmdBlockedData.cooldownType == CHAT_COMMAND_COOLDOWN_TYPE_IDS.PRIVATE_COMMANDS_COOLDOWN and cmdBlockedData.targetID == targetIDToSend:
-                validBlockData = cmdBlockedData
-            elif cmdBlockedData.cooldownType == CHAT_COMMAND_COOLDOWN_TYPE_IDS.ATTENTION_TO_BLOCKED_COOLDOWN and cmdBlockedData.cmdID == cmdIDToSend:
-                validBlockData = cmdBlockedData
-            if cmdBlockedData.cooldownType != CHAT_COMMAND_COOLDOWN_TYPE_IDS.TIMEFRAME_DATA_COOLDOWN and validBlockData is not None:
-                blockReasonData = validBlockData
+            else:
+                validBlockData = None
+                if cmdBlockedData.cooldownType == CHAT_COMMAND_COOLDOWN_TYPE_IDS.SAME_COMMAND_COOLDOWN and cmdBlockedData.cmdID == cmdIDToSend:
+                    validBlockData = cmdBlockedData
+                elif cmdBlockedData.cooldownType == CHAT_COMMAND_COOLDOWN_TYPE_IDS.OTHER_COMMANDS_COOLDOWN and cmdBlockedData.cmdID != cmdIDToSend:
+                    validBlockData = cmdBlockedData
+                elif cmdBlockedData.cooldownType == CHAT_COMMAND_COOLDOWN_TYPE_IDS.PRIVATE_COMMANDS_COOLDOWN and cmdBlockedData.targetID == targetIDToSend:
+                    validBlockData = cmdBlockedData
+                elif cmdBlockedData.cooldownType == CHAT_COMMAND_COOLDOWN_TYPE_IDS.ATTENTION_TO_BLOCKED_COOLDOWN and cmdBlockedData.cmdID == cmdIDToSend:
+                    validBlockData = cmdBlockedData
+                if cmdBlockedData.cooldownType != CHAT_COMMAND_COOLDOWN_TYPE_IDS.TIMEFRAME_DATA_COOLDOWN and validBlockData is not None:
+                    blockReasonData = validBlockData
 
         if removeDataList:
             for cdData in removeDataList:
@@ -340,7 +360,8 @@ def areSenderCooldownsActive(currTime, listOfCoolDownTimeData, cmdIDToSend, targ
 def addCoolDowns(currTime, listOfCoolDownTimeData, cmdID, cmdName, cmdCooldownTime, cmdTargetID, reqID, cooldownConf):
     listOfCoolDownTimeData.append(ChatCommandBlockedData(reqID=reqID, cmdID=cmdID, cooldownType=CHAT_COMMAND_COOLDOWN_TYPE_IDS.SAME_COMMAND_COOLDOWN, cooldownEnd=currTime + cmdCooldownTime, targetID=cmdTargetID))
     listOfCoolDownTimeData.append(ChatCommandBlockedData(reqID=reqID, cmdID=cmdID, cooldownType=CHAT_COMMAND_COOLDOWN_TYPE_IDS.OTHER_COMMANDS_COOLDOWN, cooldownEnd=currTime + cooldownConf.otherChatCmdCooldown, targetID=cmdTargetID))
-    if cmdName in (BATTLE_CHAT_COMMAND_NAMES.HELPME, BATTLE_CHAT_COMMAND_NAMES.THANKS, BATTLE_CHAT_COMMAND_NAMES.TURNBACK):
+    if cmdName in (BATTLE_CHAT_COMMAND_NAMES.HELPME, BATTLE_CHAT_COMMAND_NAMES.THANKS,
+     BATTLE_CHAT_COMMAND_NAMES.TURNBACK):
         listOfCoolDownTimeData.append(ChatCommandBlockedData(reqID=reqID, cmdID=cmdID, cooldownType=CHAT_COMMAND_COOLDOWN_TYPE_IDS.PRIVATE_COMMANDS_COOLDOWN, cooldownEnd=currTime + cooldownConf.sameTargetChatCmdCooldown, targetID=cmdTargetID))
     if cmdName == BATTLE_CHAT_COMMAND_NAMES.ATTENTION_TO_POSITION:
         activeOldAttComands = [ blockData for blockData in listOfCoolDownTimeData if blockData.cmdID == cmdID and blockData.cooldownType == CHAT_COMMAND_COOLDOWN_TYPE_IDS.TIMEFRAME_DATA_COOLDOWN ]

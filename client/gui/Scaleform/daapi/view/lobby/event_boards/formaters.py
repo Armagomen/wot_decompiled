@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/event_boards/formaters.py
 import nations
 from gui import makeHtmlString
 from gui.impl import backport
@@ -16,45 +14,48 @@ from gui.event_boards.event_boards_timer import FORMAT_MINUTE_STR
 
 def formatNotAvailableTextWithIcon(text):
     icon = icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_CYBERSPORT_NOTAVAILABLEICON)
-    return u'{} {}'.format(icon, text_styles.main(_ms(text)))
+    return ('{} {}').format(icon, text_styles.main(_ms(text)))
 
 
 def formatErrorTextWithIcon(text):
     icon = icons.makeImageTag(RES_ICONS.MAPS_ICONS_TOOLTIP_DUPLICATED_OPTIONAL, 16, 16, -3, 0)
-    return u'{} {}'.format(icon, text_styles.error(_ms(text)))
+    return ('{} {}').format(icon, text_styles.error(_ms(text)))
 
 
 def formatAllertTextWithIcon(text):
     icon = icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_CYBERSPORT_ALERTICON)
-    return u'{} {}'.format(icon, text_styles.error(_ms(text)))
+    return ('{} {}').format(icon, text_styles.error(_ms(text)))
 
 
 def formatAttentionTextWithIcon(text):
     icon = icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_ATTENTIONICON, 16, 16, -4, 0)
-    return u'{} {}'.format(icon, text_styles.error(_ms(text)))
+    return ('{} {}').format(icon, text_styles.error(_ms(text)))
 
 
 def formatOkTextWithIcon(text):
     icon = icons.makeImageTag(RES_ICONS.MAPS_ICONS_BUTTONS_CHECKMARK, 16, 16, -3, 0)
-    return u'{} {}'.format(icon, text_styles.success(_ms(text)))
+    return ('{} {}').format(icon, text_styles.success(_ms(text)))
 
 
 def formatVehicleNameWithTypeIcon(vehicle, path):
     icon = icons.makeImageTag(Vehicle.getTypeSmallIconPath(vehicle.type, vehicle.isPremium))
     level = int2roman(vehicle.level)
     key = 'vehicle_prem' if vehicle.isPremium else 'vehicle'
-    return makeHtmlString(path, key, {'msg': '{} {}{}'.format(level, icon, vehicle.userName)})
+    return makeHtmlString(path, key, {'msg': ('{} {}{}').format(level, icon, vehicle.userName)})
 
 
 def formatVehicleNationAndTypeIcon(vehicle, path):
     iconType = icons.makeImageTag(Vehicle.getTypeSmallIconPath(vehicle.type, vehicle.isPremium))
     iconNation = icons.makeImageTag(RES_ICONS.getFilterNation(vehicle.nationName), width=26, height=16)
     level = int2roman(vehicle.level)
-    return makeHtmlString(path, 'vehicle', {'msg': '{}{}{}'.format(iconNation, iconType, level)})
+    return makeHtmlString(path, 'vehicle', {'msg': ('{}{}{}').format(iconNation, iconType, level)})
 
 
 def getNationEmblemIcon(nation):
-    return RES_ICONS.getNationEmblemIcon(nation) if nation in nations.AVAILABLE_NAMES else None
+    if nation in nations.AVAILABLE_NAMES:
+        return RES_ICONS.getNationEmblemIcon(nation)
+    else:
+        return
 
 
 def getNationBigFlagIcon(nation, forVehicle):
@@ -63,7 +64,7 @@ def getNationBigFlagIcon(nation, forVehicle):
             return RES_ICONS.getEventBoardNationTankFlagIcon(nation)
         return RES_ICONS.getEventBoardNationFlagIcon(nation)
     else:
-        return None
+        return
 
 
 def getLevelBackgroundIcon():
@@ -76,11 +77,11 @@ def getNationText(nation):
 
 def getNationTextWithIcon(nation):
     iconNation = icons.makeImageTag(RES_ICONS.getFilterNation(nation), width=26, height=16)
-    return u'{}{}'.format(iconNation, getNationText(nation))
+    return ('{}{}').format(iconNation, getNationText(nation))
 
 
 def vehicleTypeText(vType):
-    return _ms('#quests:classes/{}'.format(vType))
+    return _ms(('#quests:classes/{}').format(vType))
 
 
 def formatTimeToEnd(timeValue, period):
@@ -88,22 +89,29 @@ def formatTimeToEnd(timeValue, period):
         timeValue = 1
         period = FORMAT_MINUTE_STR
     timeName = EVENT_BOARDS.time_period(period)
-    text = u'{} {}'.format(timeValue, _ms(timeName))
+    text = ('{} {}').format(timeValue, _ms(timeName))
     return text
 
 
 def getClanTag(abbrev, color):
     if isinstance(color, int):
-        color = '#{}'.format(hex(color)[2:].zfill(6))
-    return '<font color="{color}">[{abbrev}]</font>'.format(abbrev=abbrev, color=color) if abbrev else ''
+        color = ('#{}').format(hex(color)[2:].zfill(6))
+    if abbrev:
+        return ('<font color="{color}">[{abbrev}]</font>').format(abbrev=abbrev, color=color)
+    return ''
 
 
 def getFullName(name, clanAbbrev, clanColor):
-    return '{name} {clanTag}'.format(name=name, clanTag=getClanTag(clanAbbrev, clanColor)) if clanAbbrev else name
+    if clanAbbrev:
+        return ('{name} {clanTag}').format(name=name, clanTag=getClanTag(clanAbbrev, clanColor))
+    return name
 
 
 def getString(value, default='--'):
-    return str(value) if value is not None else default
+    if value is not None:
+        return str(value)
+    else:
+        return default
 
 
 def getStatusTitleStyle(text):
@@ -119,7 +127,10 @@ def timeEndStyle(text):
 
 
 def formatDate(ts, default='--'):
-    return str(backport.getShortDateFormat(ts)) if ts is not None else default
+    if ts is not None:
+        return str(backport.getShortDateFormat(ts))
+    else:
+        return default
 
 
 def formatTime(ts):
@@ -127,7 +138,7 @@ def formatTime(ts):
 
 
 def formatTimeAndDate(ts):
-    return '{0:>s} {1:>s}'.format(formatDate(ts), formatTime(ts))
+    return ('{0:>s} {1:>s}').format(formatDate(ts), formatTime(ts))
 
 
 def niceNumberFormatter(param):
@@ -141,7 +152,7 @@ _additionalFormatters = {CALCULATION_METHODS.MAX: {1: {'valueTime': formatTime}}
 def formatParameters(method, params):
     if method in _specialFormatters:
         special = _specialFormatters[method]
-        return [ (special[idx](params[idx]) if idx in special else _defaultFormatter(params[idx])) for idx in range(3) ]
+        return [ special[idx](params[idx]) if idx in special else _defaultFormatter(params[idx]) for idx in range(3) ]
     return [ _defaultFormatter(params[idx]) for idx in range(3) ]
 
 

@@ -1,9 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/dict2model/schemas.py
 from __future__ import absolute_import
-import logging
-import traceback
-import typing
+import logging, traceback, typing
 from future.utils import viewitems
 from dict2model import validate
 from dict2model.exceptions import ValidationError, ValidationErrorMessage
@@ -14,13 +10,14 @@ from soft_exception import SoftException
 if typing.TYPE_CHECKING:
     from dict2model.fields import Field
     from dict2model.types import ValidatorsType, SchemaModelClassesType, TFilter
-    TRawData = typing.Dict[str, typing.Any]
+    TRawData = typing.Dict[(str, typing.Any)]
 _logger = logging.getLogger(__name__)
-SchemaModelType = typing.TypeVar('SchemaModelType', bound=typing.Union[Model, typing.Dict])
+SchemaModelType = typing.TypeVar('SchemaModelType', bound=typing.Union[(Model, typing.Dict)])
 accessDeniedField = AccessDeniedField()
 
 class Schema(patched_typing.Generic[SchemaModelType]):
-    __slots__ = ('_modelClass', '_checkUnknown', '_fields', '_serializedValidators', '_deserializedValidators')
+    __slots__ = ('_modelClass', '_checkUnknown', '_fields', '_serializedValidators',
+                 '_deserializedValidators')
 
     def __init__(self, fields, modelClass=dict, checkUnknown=True, serializedValidators=None, deserializedValidators=None):
         if not issubclass(modelClass, (Model, dict)):
@@ -34,7 +31,7 @@ class Schema(patched_typing.Generic[SchemaModelType]):
     def serialize(self, incoming, filter_=None, silent=False, logError=True, skipValidation=False, **kwargs):
         try:
             if not isinstance(incoming, self._modelClass):
-                raise ValidationError('Data not a {} type.'.format(self._modelClass))
+                raise ValidationError(('Data not a {} type.').format(self._modelClass))
             modelAsDict = incoming.toDict() if isinstance(incoming, Model) else incoming
             result = self._serialize(modelAsDict, filter_=filter_, skipValidation=skipValidation, **kwargs)
             if not skipValidation:
@@ -46,7 +43,7 @@ class Schema(patched_typing.Generic[SchemaModelType]):
             if logError:
                 _logger.error('Serialized validation errors: %s.', errors)
 
-        return None
+        return
 
     def deserialize(self, incoming, filter_=None, silent=False, logError=True, skipValidation=False, **kwargs):
         try:
@@ -56,7 +53,7 @@ class Schema(patched_typing.Generic[SchemaModelType]):
                 if self._checkUnknown:
                     unknown = set(incoming) - set(self._fields)
                     if unknown:
-                        raise ValidationError('Unexpected attributes: {}.'.format(unknown))
+                        raise ValidationError(('Unexpected attributes: {}.').format(unknown))
             result = self._deserialize(incoming, filter_=filter_, skipValidation=skipValidation, **kwargs)
             if not skipValidation:
                 validate.runValidators(self._deserializedValidators, result)
@@ -67,7 +64,7 @@ class Schema(patched_typing.Generic[SchemaModelType]):
             if logError:
                 _logger.error('Deserialized validation errors: %s.', errors)
 
-        return None
+        return
 
     def _serialize(self, incoming, filter_=None, skipValidation=False, **kwargs):
         serialized, errors = {}, None
@@ -77,7 +74,7 @@ class Schema(patched_typing.Generic[SchemaModelType]):
                     continue
                 if name not in incoming:
                     if field.required:
-                        raise ValidationError('Required attribute: {} missing.'.format(name))
+                        raise ValidationError(('Required attribute: {} missing.').format(name))
                 else:
                     if not field.required:
                         default = field.default() if callable(field.default) else field.default
@@ -85,7 +82,7 @@ class Schema(patched_typing.Generic[SchemaModelType]):
                             continue
                     serialized[name] = field.serialize(incoming[name], skipValidation=skipValidation, filter_=filter_, **kwargs)
             except ValidationError as ve:
-                error = ValidationErrorMessage(ve.error.data, title='Field({})'.format(name))
+                error = ValidationErrorMessage(ve.error.data, title=('Field({})').format(name))
                 errors = errors + error if errors else error
 
         if errors:
@@ -100,13 +97,13 @@ class Schema(patched_typing.Generic[SchemaModelType]):
                     deserialized[name] = accessDeniedField
                 elif name not in incoming:
                     if field.required:
-                        raise ValidationError('Required attribute: {} missing.'.format(name))
+                        raise ValidationError(('Required attribute: {} missing.').format(name))
                     default = field.default() if callable(field.default) else field.default
                     deserialized[name] = default
                 else:
                     deserialized[name] = field.deserialize(incoming[name], skipValidation=skipValidation, filter_=filter_, **kwargs)
             except ValidationError as ve:
-                error = ValidationErrorMessage(ve.error.data, title='Field({})'.format(name))
+                error = ValidationErrorMessage(ve.error.data, title=('Field({})').format(name))
                 errors = errors + error if errors else error
 
         if errors:
@@ -114,6 +111,6 @@ class Schema(patched_typing.Generic[SchemaModelType]):
         try:
             return self._modelClass(**deserialized)
         except Exception as error:
-            raise ValidationError('Model: {}, error: {}, traceback: {}'.format(self._modelClass, error, traceback.format_exc()))
+            raise ValidationError(('Model: {}, error: {}, traceback: {}').format(self._modelClass, error, traceback.format_exc()))
 
         return

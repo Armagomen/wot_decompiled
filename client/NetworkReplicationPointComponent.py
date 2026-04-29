@@ -1,7 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/NetworkReplicationPointComponent.py
-import logging
-import CGF
+from __future__ import absolute_import
+import logging, CGF
 from BigWorld import DynamicScriptComponent
 from cgf_network import ClientReplicableDataSingleton, ReplicationState, ObjectCommand
 _logger = logging.getLogger(__name__)
@@ -20,6 +18,9 @@ class NetworkReplicationPointComponent(DynamicScriptComponent):
             return
 
     def onLeaveWorld(self):
+        self.onDestroy()
+
+    def onDestroy(self):
         for status in self.status:
             self.__createRemoveState(status['networkID'])
 

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: server_side_replay/scripts/client/server_side_replay/gui/impl/gen/view_models/views/lobby/pages/my_replays_model.py
 from server_side_replay.gui.impl.gen.view_models.views.lobby.table_base_model import TableBaseModel
 
 class MyReplaysModel(TableBaseModel):

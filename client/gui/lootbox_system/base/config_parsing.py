@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/lootbox_system/base/config_parsing.py
 from gui.server_events.bonuses import getNonQuestBonuses
 
 def parseAllOfSection(data):
@@ -17,8 +15,10 @@ def parseAllOfSection(data):
 def parseSlotSection(data):
     if isinstance(data, tuple) and len(data) == 4:
         probability, _, _, rawData = data
-        return (probability, parseGroupsSection(rawData))
-    return (0, [])
+        return (
+         probability, parseGroupsSection(rawData))
+    return (
+     0, [])
 
 
 def parseGroupsSection(data):
@@ -42,6 +42,7 @@ def parseOneOfSection(data):
                     for k, v in rawData.iteritems():
                         if k == 'groups':
                             bonuses.extend(parseGroupsSection(rawData))
-                        bonuses.extend(getNonQuestBonuses(k, v))
+                        else:
+                            bonuses.extend(getNonQuestBonuses(k, v))
 
     return bonuses

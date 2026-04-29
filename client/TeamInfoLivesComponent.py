@@ -1,7 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/TeamInfoLivesComponent.py
-import BigWorld
-import Event
+from __future__ import absolute_import
+import BigWorld, Event
 from helpers import isPlayerAvatar
 from script_component.DynamicScriptComponent import DynamicScriptComponent
 
@@ -41,9 +39,11 @@ class TeamInfoLivesComponent(DynamicScriptComponent):
     @classmethod
     def getInstance(cls):
         if not isPlayerAvatar():
-            return None
+            return
         else:
             player = BigWorld.player()
             if not player:
-                return None
-            return None if not player.arena or not player.arena.teamInfo else getattr(player.arena.teamInfo, 'teamLivesComponent', None)
+                return
+            if not player.arena or not player.arena.teamInfo:
+                return
+            return getattr(player.arena.teamInfo, 'teamLivesComponent', None)

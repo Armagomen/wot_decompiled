@@ -1,9 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/entities/tournament/unit/entity.py
 import logging
 from functools import partial
-import datetime
-import BigWorld
+import datetime, BigWorld
 from client_request_lib.exceptions import ResponseCodes
 from constants import PREBATTLE_TYPE, QUEUE_TYPE
 from gui import SystemMessages
@@ -398,15 +395,15 @@ class TournamentEntity(UnitEntity):
     def canPlayerDoAction(self):
         if self.__errorCount > 0:
             return ValidationResult(False, UNIT_RESTRICTION.UNIT_MAINTENANCE)
-        elif self.isTournamentUnitWaitingForData():
-            isPlayerInSlot = self._isPlayerInSlot()
-            if isPlayerInSlot and self.isTournamentUnitWaitingForData():
-                return ValidationResult(False, UNIT_RESTRICTION.UNIT_WAITINGFORDATA)
-            if isPlayerInSlot and self._hasInArenaMembers():
-                return ValidationResult(False, UNIT_RESTRICTION.IS_IN_ARENA)
-            result = self._actionsValidator.canPlayerDoAction() or ValidationResult(False, UNIT_RESTRICTION.UNDEFINED)
-            return ValidationResult(False, result.restriction, result.ctx)
         else:
+            if self.isTournamentUnitWaitingForData():
+                isPlayerInSlot = self._isPlayerInSlot()
+                if isPlayerInSlot and self.isTournamentUnitWaitingForData():
+                    return ValidationResult(False, UNIT_RESTRICTION.UNIT_WAITINGFORDATA)
+                if isPlayerInSlot and self._hasInArenaMembers():
+                    return ValidationResult(False, UNIT_RESTRICTION.IS_IN_ARENA)
+                result = self._actionsValidator.canPlayerDoAction() or ValidationResult(False, UNIT_RESTRICTION.UNDEFINED)
+                return ValidationResult(False, result.restriction, result.ctx)
             return ValidationResult(True, UNIT_RESTRICTION.UNDEFINED)
 
     def isPlayerJoined(self, ctx):
@@ -433,7 +430,7 @@ class TournamentEntity(UnitEntity):
             return {}
         else:
             players = unit.getPlayers()
-            memberIDs = set((value['accountDBID'] for value in unit.getMembers().itervalues()))
+            memberIDs = set(value['accountDBID'] for value in unit.getMembers().itervalues())
             dbIDs = set(players.keys()).difference(memberIDs)
             result = {}
             for dbID, data in players.iteritems():
@@ -502,8 +499,7 @@ class TournamentEntity(UnitEntity):
         return [ slot_id for slot_id in self.getSlotFilters().keys() ]
 
     def getSlotFilters(self):
-        slotFilters = {item['slot_id']:{'vehicle_types': item['vehicle_types'],
-         'vehicle_cds': item['vehicle_cds']} for item in self.__slotVehicleFilters}
+        slotFilters = {item['slot_id']:{'vehicle_types': item['vehicle_types'], 'vehicle_cds': item['vehicle_cds']} for item in self.__slotVehicleFilters}
         return slotFilters
 
     def getTournamentSettings(self):
@@ -574,16 +570,17 @@ class TournamentEntity(UnitEntity):
             if not pInfo.isLegionary():
                 clanMembers.append(memberDBID)
 
-        return (members, clanMembers)
+        return (
+         members, clanMembers)
 
     def _getRequestHandlers(self):
         RQ_TYPE = settings.REQUEST_TYPE
         handlers = super(TournamentEntity, self)._getRequestHandlers()
-        handlers.update({RQ_TYPE.SET_RESERVE: self.setReserve,
-         RQ_TYPE.UNSET_RESERVE: self.unsetReserve,
-         RQ_TYPE.SET_SLOT_VEHICLE_TYPE_FILTER: self.setVehicleTypeFilter,
-         RQ_TYPE.SET_SLOT_VEHICLES_FILTER: self.setVehiclesFilter,
-         RQ_TYPE.STOP_PLAYERS_MATCHING: self.stopPlayersMatching})
+        handlers.update({RQ_TYPE.SET_RESERVE: self.setReserve, 
+           RQ_TYPE.UNSET_RESERVE: self.unsetReserve, 
+           RQ_TYPE.SET_SLOT_VEHICLE_TYPE_FILTER: self.setVehicleTypeFilter, 
+           RQ_TYPE.SET_SLOT_VEHICLES_FILTER: self.setVehiclesFilter, 
+           RQ_TYPE.STOP_PLAYERS_MATCHING: self.stopPlayersMatching})
         return handlers
 
     def _buildPlayerInfo(self, unitMgrID, unit, dbID, slotIdx=-1, data=None):
@@ -601,7 +598,8 @@ class TournamentEntity(UnitEntity):
         return TournamentUnitRequestProcessor()
 
     def _getCurrentUTCTime(self):
-        return (time_utils.getDateTimeInUTC(time_utils.getServerUTCTime()), datetime.datetime.utcnow())
+        return (
+         time_utils.getDateTimeInUTC(time_utils.getServerUTCTime()), datetime.datetime.utcnow())
 
     def _convertUTCStructToLocalTimestamp(self, val):
         val = time_utils.utcToLocalDatetime(val).timetuple()
@@ -609,7 +607,10 @@ class TournamentEntity(UnitEntity):
 
     def _getUnitRevision(self):
         extra = self.getExtra()
-        return extra.rev if extra is not None else 0
+        if extra is not None:
+            return extra.rev
+        else:
+            return 0
 
     def __onTournamentUpdate(self, response):
         if not self.__processResponseMessage(response):

@@ -1,10 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/tooltips/crew_skin_builders.py
+from __future__ import absolute_import
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.shared.tooltips import contexts
 from gui.shared.tooltips import crew_skin
 from gui.shared.tooltips.builders import DataBuilder
-__all__ = ('getTooltipBuilders',)
+__all__ = ('getTooltipBuilders', )
 
 class CrewSkinTooltipBuilder(DataBuilder):
     __slots__ = ()
@@ -17,4 +16,5 @@ class CrewSkinTooltipBuilder(DataBuilder):
 
 
 def getTooltipBuilders():
-    return (CrewSkinTooltipBuilder(TOOLTIPS_CONSTANTS.CREW_SKIN, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI),)
+    return (
+     CrewSkinTooltipBuilder(TOOLTIPS_CONSTANTS.CREW_SKIN, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI),)

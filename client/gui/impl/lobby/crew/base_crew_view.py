@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/base_crew_view.py
 from typing import TYPE_CHECKING, Optional
 from AccountCommands import LOCK_REASON
 from PlayerEvents import g_playerEvents
@@ -7,7 +5,6 @@ from crew_sounds import CREW_SOUND_SPACE, CREW_SOUND_OVERLAY_SPACE
 from frameworks.wulf import WindowLayer
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.crew.common.base_crew_view_model import BaseCrewViewModel
-from gui.impl.lobby.common.view_mixins import LobbyHeaderVisibility
 from gui.impl.pub import ViewImpl
 from gui.lobby_state_machine.states import isHangarState
 from gui.prb_control.entities.listener import IGlobalListener
@@ -30,7 +27,7 @@ class BaseCrewSubView(BaseCrewSoundView):
     _COMMON_SOUND_SPACE = CREW_SOUND_OVERLAY_SPACE
 
 
-class BaseCrewWidgetView(BaseCrewSoundView, LobbyHeaderVisibility, IGlobalListener):
+class BaseCrewWidgetView(BaseCrewSoundView, IGlobalListener):
     __slots__ = ('_isHangar', '_crewWidget', '_currentViewID', '_previousViewID')
 
     def __init__(self, settings, **kwargs):
@@ -83,7 +80,8 @@ class BaseCrewWidgetView(BaseCrewSoundView, LobbyHeaderVisibility, IGlobalListen
             if tankman[1] and tankman[1].invID == tankmanID:
                 return (index, tankman[1])
 
-        return (NO_SLOT, None)
+        return (
+         NO_SLOT, None)
 
     def _subscribe(self):
         super(BaseCrewWidgetView, self)._subscribe()
@@ -95,7 +93,6 @@ class BaseCrewWidgetView(BaseCrewSoundView, LobbyHeaderVisibility, IGlobalListen
 
     def _finalize(self):
         super(BaseCrewWidgetView, self)._finalize()
-        self.resumeLobbyHeader(self.uniqueID)
         self._crewWidget = None
         return
 
@@ -114,31 +111,39 @@ class BaseCrewWidgetView(BaseCrewSoundView, LobbyHeaderVisibility, IGlobalListen
         tankmanInvID = kwargs.get('tankmanInvID', NO_TANKMAN)
         vehicleInvID = kwargs.get('vehicleInvID', NO_VEHICLE_ID)
         slotIdx = kwargs.get('slotIdx', NO_SLOT)
-        previousViewID = kwargs.get('previousViewID', None)
+        previousViewID = kwargs.get('previousViewID')
         self._crewWidget = crewWidgetClass(tankmanInvID, vehicleInvID, slotIdx, self._currentViewID, previousViewID, self._isCrewWidgetButtonBarVisible())
         if slotIdx == NO_SLOT:
             slotIdx, _, __ = self._crewWidget.getWidgetData()
         self.setChildView(crewWidgetLayoutDynAccessor, self._crewWidget)
         self._crewWidget.updateSlotIdx(slotIdx)
-        return
 
     def _getCrewWidgetBaseData(self):
         from gui.impl.lobby.crew.widget.crew_widget import CrewWidget
-        return (CrewWidget, CrewWidget.LAYOUT_DYN_ACCESSOR())
-
-    def _onLoaded(self, *args, **kwargs):
-        self.suspendLobbyHeader(self.uniqueID)
-        super(BaseCrewWidgetView, self)._onLoaded(*args, **kwargs)
+        return (
+         CrewWidget, CrewWidget.LAYOUT_DYN_ACCESSOR())
 
     def _getEvents(self):
         eventsTuple = super(BaseCrewWidgetView, self)._getEvents()
         if self._crewWidget is not None:
-            eventsTuple += ((self._crewWidget.onSlotClick, self._onWidgetSlotClick), (self._crewWidget.onChangeCrewClick, self._onWidgetChangeCrewClick), (self._crewWidget.onSlotTrySelect, self.widgetAutoSelectSlot))
-        return eventsTuple + ((self.viewModel.onClose, self._onClose),
-         (self.viewModel.onBack, self._onBack),
-         (self.viewModel.onHangar, self._onHangar),
-         (self.viewModel.onAbout, self._onAbout),
-         (g_playerEvents.onVehicleLockChanged, self._onVehicleLockChanged))
+            eventsTuple += (
+             (
+              self._crewWidget.onSlotClick, self._onWidgetSlotClick),
+             (
+              self._crewWidget.onChangeCrewClick, self._onWidgetChangeCrewClick),
+             (
+              self._crewWidget.onSlotTrySelect, self.widgetAutoSelectSlot))
+        return eventsTuple + (
+         (
+          self.viewModel.onClose, self._onClose),
+         (
+          self.viewModel.onBack, self._onBack),
+         (
+          self.viewModel.onHangar, self._onHangar),
+         (
+          self.viewModel.onAbout, self._onAbout),
+         (
+          g_playerEvents.onVehicleLockChanged, self._onVehicleLockChanged))
 
     def _getCrewTankmanIndex(self, slotIDX, crew):
         for index, slot in enumerate(crew):
@@ -154,7 +159,9 @@ class BaseCrewWidgetView(BaseCrewSoundView, LobbyHeaderVisibility, IGlobalListen
         else:
             crew = vehicle.crew
             index = self._getCrewTankmanIndex(slotIDX, crew)
-            return crew[index::] + crew[:index:] if index != NO_SLOT else crew
+            if index != NO_SLOT:
+                return crew[index::] + crew[:index:]
+            return crew
 
     def _getAutoSelectWidget(self, tankmanID, slotIDX):
         crew = self._getCrewBySlotIDX(slotIDX)
@@ -163,6 +170,8 @@ class BaseCrewWidgetView(BaseCrewSoundView, LobbyHeaderVisibility, IGlobalListen
                 return (tankman.invID, index)
 
         _, __, tankman = self._crewWidget.getWidgetData()
+        if not crew and tankmanID != NO_TANKMAN and tankman and not tankman.isDismissed:
+            return (tankmanID, 0)
         if crew or tankmanID == NO_TANKMAN or tankman and tankman.isDismissed:
             slotIDX = NO_SLOT
         return (tankmanID, slotIDX)
@@ -228,7 +237,7 @@ class BaseCrewView(BaseCrewWidgetView):
         self._updateViewModel()
 
     def _updateViewModel(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             self._fillViewModel(vm)
 
     def _fillViewModel(self, vm):

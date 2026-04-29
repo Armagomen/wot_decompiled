@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/server_events/token_converter_helper.py
 from copy import deepcopy
 from typing import TYPE_CHECKING, NamedTuple
 from optional_bonuses import TrackVisitor
@@ -44,9 +42,11 @@ def convertTokensInBonusData(event, bonusData, questTokensConvertion, questToken
             wasUsed = convertTokens(token, tokens, convertionData)
             if wasUsed:
                 usedConverters.append(index)
-            break
+            else:
+                break
 
-        questTokensConvertion[token] = [ convertionData for index, convertionData in enumerate(tokenConvertionData) if index not in usedConverters ]
+        questTokensConvertion[token] = [ convertionData for index, convertionData in enumerate(tokenConvertionData) if index not in usedConverters
+                                       ]
         if not questTokensConvertion[token]:
             questTokensConvertion.pop(token)
 
@@ -63,12 +63,18 @@ def getBonusDataFromOneOfBonuses(event, pCur=None):
         pCurInnerDict = pCur.itervalues().next()
         bonusTracks = pCurInnerDict.get('bonusTracks', [])
         if bonusTracks:
-            trackReplay = TrackVisitor(bonusTracks[-1], 1, None)
+            trackReplay = TrackVisitor(bonusTracks[(-1)], 1, None)
             trackReplay.walkBonuses(bonusData, trackResult)
     return trackResult
 
 
-class TokenConvertionData(NamedTuple('TokenConvertionData', [('tokenTo', str), ('limit', int), ('rate', float)])):
+class TokenConvertionData(NamedTuple('TokenConvertionData', [
+ (
+  'tokenTo', str),
+ (
+  'limit', int),
+ (
+  'rate', float)])):
 
     def __new__(cls, **kwargs):
         defaults = dict(tokenTo='', limit=0, rate=1.0)

@@ -1,7 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/schema_manager.py
-import typing
-import logging
+from __future__ import absolute_import
+import typing, logging
 from game_params_common.base_manager import BaseSchemaManager, SchemaInfo
 from game_params_common.scope import clientFilter
 if typing.TYPE_CHECKING:
@@ -10,7 +8,7 @@ if typing.TYPE_CHECKING:
 _logger = logging.getLogger(__name__)
 
 class ClientSchemaInfo(SchemaInfo):
-    __slots__ = ('skipValidation',)
+    __slots__ = ('skipValidation', )
 
     def __init__(self, schema, skipValidation):
         super(ClientSchemaInfo, self).__init__(schema)
@@ -31,9 +29,12 @@ class SchemaManager(BaseSchemaManager[ClientSchemaInfo]):
             schema = schemaInfo.schema
             if schema.gpKey in serverSettings:
                 rawConfig = serverSettings[schema.gpKey]
-                self._models[schema.gpKey] = schema.deserialize(rawConfig, filter_=clientFilter, skipValidation=schemaInfo.skipValidation)
-                from PlayerEvents import g_playerEvents
-                g_playerEvents.onConfigModelUpdated(schema.gpKey)
+                if rawConfig is not None:
+                    self._models[schema.gpKey] = schema.deserialize(rawConfig, filter_=clientFilter, skipValidation=schemaInfo.skipValidation)
+                    from PlayerEvents import g_playerEvents
+                    g_playerEvents.onConfigModelUpdated(schema.gpKey)
+
+        return
 
     def update(self, serverSettingsDiff):
         for schemaInfo in self.getSchemasInfo():
@@ -43,9 +44,12 @@ class SchemaManager(BaseSchemaManager[ClientSchemaInfo]):
                     _logger.error('Update is called before set. schema=%s', schema.gpKey)
                     continue
                 rawConfig = serverSettingsDiff[schema.gpKey]
-                self._models[schema.gpKey] = schema.deserialize(rawConfig, filter_=clientFilter, skipValidation=schemaInfo.skipValidation)
-                from PlayerEvents import g_playerEvents
-                g_playerEvents.onConfigModelUpdated(schema.gpKey)
+                if rawConfig is not None:
+                    self._models[schema.gpKey] = schema.deserialize(rawConfig, filter_=clientFilter, skipValidation=schemaInfo.skipValidation)
+                    from PlayerEvents import g_playerEvents
+                    g_playerEvents.onConfigModelUpdated(schema.gpKey)
+
+        return
 
     def getModel(self, schema, **kwargs):
         model = self._models.get(schema.gpKey)

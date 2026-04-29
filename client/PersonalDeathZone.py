@@ -1,11 +1,10 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/PersonalDeathZone.py
-import Math
-import BigWorld
+from __future__ import absolute_import
+import Math, BigWorld
 from AreaOfEffect import AreaOfEffect
 import TriggersManager
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
 from helpers import dependency
+from math_common import round_py2_style
 from skeletons.gui.battle_session import IBattleSessionProvider
 TRIGGER_NAME_PREFIX = 'personal_deathzone'
 
@@ -47,10 +46,9 @@ class PersonalDeathZone(AreaOfEffect, TriggersManager.ITriggerListener):
         vehicle = BigWorld.player().vehicle
         if vehicle is None or not vehicle.isAlive():
             return
-        else:
-            if self._isOwnTrigger(args) and self._guiController:
-                self._guiController.onPlayerEntered(self)
-            return
+        if self._isOwnTrigger(args) and self._guiController:
+            self._guiController.onPlayerEntered(self)
+        return
 
     def onTriggerDeactivated(self, args):
         if self._isOwnTrigger(args) and self._guiController:
@@ -58,7 +56,7 @@ class PersonalDeathZone(AreaOfEffect, TriggersManager.ITriggerListener):
 
     @property
     def adjustedDelay(self):
-        return round(self._adjustedDelay)
+        return round_py2_style(self._adjustedDelay)
 
     @property
     def delay(self):

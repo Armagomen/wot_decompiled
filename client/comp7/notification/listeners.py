@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/notification/listeners.py
 from functools import partial
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import COMP7_BOND_EQUIPMENT_REMINDER_SHOWN_TIMESTAMP, COMP7_LAST_SEASON_WITH_SEEN_REWARD, COMP7_LAST_MASKOT_WITH_SEEN_REWARD
@@ -27,7 +25,8 @@ class Comp7OfferTokenListener(BaseReminderListener, Notifiable):
     __TYPE = NOTIFICATION_TYPE.COMP7_OFFER_TOKENS
     __ENTITY_ID = 0
     __TEMPLATE = 'BondEquipmentChoosingMessage'
-    __noNoftifyRewardViews = (TokensRewardsView, YearlyRewardsView)
+    __noNoftifyRewardViews = (
+     TokensRewardsView, YearlyRewardsView)
     __noNoftifyRewardSelectionViews = (Comp7RewardsSelectionView,)
     __noNotifyViewTypes = __noNoftifyRewardViews + __noNoftifyRewardSelectionViews
 
@@ -72,15 +71,15 @@ class Comp7OfferTokenListener(BaseReminderListener, Notifiable):
     def __onViewStatusChanged(self, viewID, status):
         if status == ViewStatus.CREATED:
             view = self.__guiLoader.windowsManager.getView(viewID)
-            if any((isinstance(view, viewType) for viewType in self.__noNotifyViewTypes)):
+            if any(isinstance(view, viewType) for viewType in self.__noNotifyViewTypes):
                 self.__isNotificationBlockedByView = True
         elif status == ViewStatus.DESTROYING:
             view = self.__guiLoader.windowsManager.getView(viewID)
-            if any((isinstance(view, viewType) for viewType in self.__noNoftifyRewardViews)):
+            if any(isinstance(view, viewType) for viewType in self.__noNoftifyRewardViews):
                 self.__isNotificationBlockedByView = opensRewardSelection = view.willOpenRewardsSelection()
                 if not opensRewardSelection:
                     self.__tryNotify()
-            elif any((isinstance(view, viewType) for viewType in self.__noNoftifyRewardSelectionViews)):
+            elif any(isinstance(view, viewType) for viewType in self.__noNoftifyRewardSelectionViews):
                 self.__isNotificationBlockedByView = False
                 self.__tryNotify()
 
@@ -92,7 +91,7 @@ class Comp7OfferTokenListener(BaseReminderListener, Notifiable):
         actualSeason = self.__comp7Controller.getActualSeasonNumber()
         lastShownSeason = AccountSettings.getNotifications(COMP7_LAST_SEASON_WITH_SEEN_REWARD)
         hasSeenTokenRewardsViewWithOffer = actualSeason == lastShownSeason
-        hasSeenYearlyRewardsViewWithOffer = COMP7_MASKOT_ID == AccountSettings.getNotifications(COMP7_LAST_MASKOT_WITH_SEEN_REWARD)
+        hasSeenYearlyRewardsViewWithOffer = AccountSettings.getNotifications(COMP7_LAST_MASKOT_WITH_SEEN_REWARD) == COMP7_MASKOT_ID
         if not hasSeenTokenRewardsViewWithOffer and not hasSeenYearlyRewardsViewWithOffer:
             return
         if self.__isNotificationBlockedByView:

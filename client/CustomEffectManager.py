@@ -1,9 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/CustomEffectManager.py
-import weakref
-import BigWorld
-import Math
-import material_kinds
+from __future__ import absolute_import
+import weakref, BigWorld, Math, material_kinds
 from constants import IS_EDITOR
 from helpers.PixieNode import PixieCache
 from CustomEffect import EffectSettings
@@ -30,7 +26,7 @@ class CustomEffectManager(Component):
         else:
             self.__vt = None
         self.__selectors = []
-        self.__variableArgs = dict()
+        self.__variableArgs = {}
         self.__vehicle = None
         self.__appearance = appearance
         self.__engineState = appearance.detailedEngineState
@@ -145,7 +141,9 @@ class CustomEffectManager(Component):
 
     def __createChassisCenterNodes(self):
         compoundModel = self.__appearance.compoundModel
-        self.__trailParticleNodes = [compoundModel.node(TankNodeNames.TRACK_LEFT_MID), compoundModel.node(TankNodeNames.TRACK_RIGHT_MID)]
+        self.__trailParticleNodes = [
+         compoundModel.node(TankNodeNames.TRACK_LEFT_MID),
+         compoundModel.node(TankNodeNames.TRACK_RIGHT_MID)]
 
     def onGearUp(self):
         self.__gearUP = True
@@ -158,36 +156,36 @@ class CustomEffectManager(Component):
         self.__variableArgs['isPC'] = isPC = isVehicleAttached(self.__vehicle)
         if vehicleSpeed > _VEHICLE_DIRECTION_THRESHOLD:
             direction = 1
-        elif vehicleSpeed < -_VEHICLE_DIRECTION_THRESHOLD:
-            direction = -1
         else:
-            direction = 0
-        self.__variableArgs['direction'] = direction
-        self.__variableArgs['rotSpeed'] = speedInfo[1]
-        matKindsUnderTracks = getCorrectedMatKinds(appearance)
-        self.__variableArgs['deltaR'], self.__variableArgs['directionR'], self.__variableArgs['matkindR'] = self.__getScrollParams(appearance.trackScrollController.rightSlip(), appearance.trackScrollController.rightContact(), matKindsUnderTracks[CustomEffectManager._RIGHT_TRACK], direction)
-        self.__variableArgs['deltaL'], self.__variableArgs['directionL'], self.__variableArgs['matkindL'] = self.__getScrollParams(appearance.trackScrollController.leftSlip(), appearance.trackScrollController.leftContact(), matKindsUnderTracks[CustomEffectManager._LEFT_TRACK], direction)
-        self.__variableArgs['commonSlip'] = appearance.transmissionSlip
-        self.__variableArgs['hullAngle'] = Math.calcHullAngle(self.__vehicle.matrix, self.__vehicle.filter.velocity)
-        self.__variableArgs['isUnderWater'] = 1 if appearance.isUnderwater else 0
-        self.__correctWaterNodes()
-        self.__variableArgs['gearUp'] = self.__gearUP
-        self.__variableArgs['RPM'] = rpm = self.__engineState.relativeRPM
-        self.__gearUP = False
-        self.__variableArgs['engineLoad'] = self.__engineState.mode
-        self.__variableArgs['engineState'] = self.__engineState.engineState
-        engineStart = self.__engineState.starting
-        self.__variableArgs['engineStart'] = engineStart and not self.__variableArgs.get('__engineStarted', False) and not appearance.isIgnoreEngineStart()
-        if engineStart or not isPC and rpm:
-            self.__variableArgs['__engineStarted'] = True
-        self.__variableArgs['physicLoad'] = self.__engineState.physicLoad
-        if self.__wheelsData is not None:
-            for wheelIndex in xrange(0, len(self.__wheelsData)):
-                nodeName = self.__wheelsData[wheelIndex]
-                self.__variableArgs[nodeName + ':contact'] = 0 if appearance.wheelsAnimator.wheelIsFlying(wheelIndex) else 1
+            if vehicleSpeed < -_VEHICLE_DIRECTION_THRESHOLD:
+                direction = -1
+            else:
+                direction = 0
+            self.__variableArgs['direction'] = direction
+            self.__variableArgs['rotSpeed'] = speedInfo[1]
+            matKindsUnderTracks = getCorrectedMatKinds(appearance)
+            self.__variableArgs['deltaR'], self.__variableArgs['directionR'], self.__variableArgs['matkindR'] = self.__getScrollParams(appearance.trackScrollController.rightSlip(), appearance.trackScrollController.rightContact(), matKindsUnderTracks[CustomEffectManager._RIGHT_TRACK], direction)
+            self.__variableArgs['deltaL'], self.__variableArgs['directionL'], self.__variableArgs['matkindL'] = self.__getScrollParams(appearance.trackScrollController.leftSlip(), appearance.trackScrollController.leftContact(), matKindsUnderTracks[CustomEffectManager._LEFT_TRACK], direction)
+            self.__variableArgs['commonSlip'] = appearance.transmissionSlip
+            self.__variableArgs['hullAngle'] = Math.calcHullAngle(self.__vehicle.matrix, self.__vehicle.filter.velocity)
+            self.__variableArgs['isUnderWater'] = 1 if appearance.isUnderwater else 0
+            self.__correctWaterNodes()
+            self.__variableArgs['gearUp'] = self.__gearUP
+            self.__variableArgs['RPM'] = rpm = self.__engineState.relativeRPM
+            self.__gearUP = False
+            self.__variableArgs['engineLoad'] = self.__engineState.mode
+            self.__variableArgs['engineState'] = self.__engineState.engineState
+            engineStart = self.__engineState.starting
+            self.__variableArgs['engineStart'] = engineStart and not self.__variableArgs.get('__engineStarted', False) and not appearance.isIgnoreEngineStart()
+            if engineStart or not isPC and rpm:
+                self.__variableArgs['__engineStarted'] = True
+            self.__variableArgs['physicLoad'] = self.__engineState.physicLoad
+            if self.__wheelsData is not None:
+                for wheelIndex, nodeName in enumerate(self.__wheelsData):
+                    self.__variableArgs[nodeName + ':contact'] = 0 if appearance.wheelsAnimator.wheelIsFlying(wheelIndex) else 1
 
-        for effectSelector in self.__selectors:
-            effectSelector.update(self.__variableArgs)
+            for effectSelector in self.__selectors:
+                effectSelector.update(self.__variableArgs)
 
         if _ENABLE_VALUE_TRACKER:
             self.__vt.addValue2('speed', self.__variableArgs['speed'])
@@ -257,7 +255,8 @@ class CustomEffectManager(Component):
 def getCorrectedMatKinds(vehicleAppearance):
     correctedMatKinds = vehicleAppearance.terrainMatKind
     if vehicleAppearance.isInWater:
-        correctedMatKinds = [material_kinds.getWaterMatKind()] * len(correctedMatKinds)
+        correctedMatKinds = [
+         material_kinds.getWaterMatKind()] * len(correctedMatKinds)
     return correctedMatKinds
 
 

@@ -1,11 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/connection_mgr.py
-import hashlib
-import json
-import ResMgr
-import BigWorld
-import constants
-import pwd_token
+from __future__ import absolute_import
+import hashlib, json, ResMgr, BigWorld, constants, pwd_token
 from Event import Event, EventManager
 from PlayerEvents import g_playerEvents
 from debug_utils import LOG_DEBUG, LOG_NOTE, LOG_WARNING
@@ -115,7 +109,7 @@ class ConnectionManager(IConnectionManager):
     def __connect(self):
         self.__retryConnectionCallbackID = None
         if constants.IS_DEVELOPMENT:
-            LOG_DEBUG('Calling BigWorld.connect with params: {0}, serverName: {1}, inactivityTimeout: {2}, publicKeyPath: {3}'.format(self.__connectionData.username, self.__connectionUrl, constants.CLIENT_INACTIVITY_TIMEOUT, self.__connectionData.publicKeyPath))
+            LOG_DEBUG(('Calling BigWorld.connect with params: {0}, serverName: {1}, inactivityTimeout: {2}, publicKeyPath: {3}').format(self.__connectionData.username, self.__connectionUrl, constants.CLIENT_INACTIVITY_TIMEOUT, self.__connectionData.publicKeyPath))
         if self.__connectionInProgress:
             LOG_WARNING('Try to call BigWorld.connect while connection in progress')
             return
@@ -143,7 +137,7 @@ class ConnectionManager(IConnectionManager):
     @uniprof.regionDecorator(label='offline.connect', scope='exit')
     def __serverResponseHandler(self, stage, status, responseDataJSON):
         if constants.IS_DEVELOPMENT:
-            LOG_DEBUG('Received server response with stage: {0}, status: {1}, responseData: {2}'.format(stage, status, responseDataJSON))
+            LOG_DEBUG(('Received server response with stage: {0}, status: {1}, responseData: {2}').format(stage, status, responseDataJSON))
         status = str(status)
         self.__connectionInProgress = False
         self.__connectionStatus = status
@@ -183,7 +177,7 @@ class ConnectionManager(IConnectionManager):
         if constants.IS_IGR_ENABLED:
             params['is_igr'] = '1'
         username_ = json.dumps(params, encoding='utf-8')
-        LOG_NOTE('User authentication method: {0}'.format(params['auth_method']))
+        LOG_NOTE(('User authentication method: {0}').format(params['auth_method']))
         if 'token2' in params and params['token2']:
             password = ''
         else:
@@ -195,8 +189,8 @@ class ConnectionManager(IConnectionManager):
         self.__connectionData.username = username_
         self.__connectionData.password = password
         self.__connectionData.inactivityTimeout = constants.CLIENT_INACTIVITY_TIMEOUT
-        self.__connectionData.clientContext = json.dumps({'lang_id': getClientLanguage(),
-         'publication': params.get('publication')})
+        self.__connectionData.clientContext = json.dumps({'lang_id': getClientLanguage(), 
+           'publication': params.get('publication')})
         if constants.IS_DEVELOPMENT and params['auth_method'] == CONNECTION_METHOD.BASIC and params['login'][0] == '@':
             try:
                 self.__connectionData.username = params['login'][1:]
@@ -255,7 +249,10 @@ class ConnectionManager(IConnectionManager):
 
     @property
     def areaID(self):
-        return self.__hostItem.areaID if not self.isDisconnected() else None
+        if not self.isDisconnected():
+            return self.__hostItem.areaID
+        else:
+            return
 
     @property
     def url(self):
@@ -263,7 +260,10 @@ class ConnectionManager(IConnectionManager):
 
     @property
     def loginName(self):
-        return self.__lastLoginName if not self.isDisconnected() else None
+        if not self.isDisconnected():
+            return self.__lastLoginName
+        else:
+            return
 
     @property
     def lastLoginName(self):
@@ -275,7 +275,10 @@ class ConnectionManager(IConnectionManager):
 
     @property
     def databaseID(self):
-        return BigWorld.player().databaseID if not self.isDisconnected() else None
+        if not self.isDisconnected():
+            return BigWorld.player().databaseID
+        else:
+            return
 
     @property
     def connectionMethod(self):
@@ -295,10 +298,9 @@ class ConnectionManager(IConnectionManager):
     def isAvailablePeriphery(self, peripheryID=None):
         if self.__connectionData.peripheryRoutingGroup is None or self.__availableHosts is None:
             return True
-        else:
-            if peripheryID is None:
-                peripheryID = self.peripheryID
-            return peripheryID in self.__availableHosts
+        if peripheryID is None:
+            peripheryID = self.peripheryID
+        return peripheryID in self.__availableHosts
 
     def disconnect(self):
         BigWorld.disconnect()
@@ -317,8 +319,10 @@ class ConnectionManager(IConnectionManager):
         return self.__connectionStatus == LOGIN_STATUS.LOGGED_ON
 
     def checkClientServerVersions(self, clientVersion, serverVersion):
-        if not isValidClientVersion(clientVersion, serverVersion) or ResMgr.activeContentType() in (constants.CONTENT_TYPE.INCOMPLETE, constants.CONTENT_TYPE.TUTORIAL):
-            LOG_DEBUG('Version mismatch. Client is "%s", server needs "%s".' % (clientVersion, serverVersion))
+        if not isValidClientVersion(clientVersion, serverVersion) or ResMgr.activeContentType() in (constants.CONTENT_TYPE.INCOMPLETE,
+         constants.CONTENT_TYPE.TUTORIAL):
+            LOG_DEBUG('Version mismatch. Client is "%s", server needs "%s".' % (
+             clientVersion, serverVersion))
             self.onRejected(LOGIN_STATUS.LOGIN_BAD_PROTOCOL_VERSION, {})
             BigWorld.disconnect()
 

@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/SendInvitesWindow.py
+from __future__ import absolute_import
 from debug_utils import LOG_ERROR
 from gui import SystemMessages
 from gui.Scaleform.daapi.view.meta.SendInvitesWindowMeta import SendInvitesWindowMeta
@@ -46,7 +45,7 @@ class SendInvitesWindow(SendInvitesWindowMeta, ISearchHandler):
 
     @storage_getter('users')
     def usersStorage(self):
-        return None
+        return
 
     @prbDispatcherProperty
     def prbDispatcher(self):

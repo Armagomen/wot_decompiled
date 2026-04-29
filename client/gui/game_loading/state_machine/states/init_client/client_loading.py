@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_loading/state_machine/states/init_client/client_loading.py
-import typing
-import game_loading_bindings
+import typing, game_loading_bindings
 from frameworks.state_machine import StateFlags
 from gui.game_loading import loggers
 from gui.game_loading.state_machine.const import GameLoadingStates, TickingMode
@@ -25,7 +22,7 @@ class ClientLoadingSlideState(SlideState):
 
 
 class ClientLoadingProgressStateComponent(ProgressBarStateComponent):
-    __slots__ = ('_stepsBegin',)
+    __slots__ = ('_stepsBegin', )
 
     def __init__(self, preferences, progressSettings):
         super(ClientLoadingProgressStateComponent, self).__init__(stateID=GameLoadingStates.CLIENT_INIT_LOADING_PROGRESS.value, flags=StateFlags.UNDEFINED, settings=progressSettings, preferences=preferences, tickingMode=TickingMode.BOTH, onCompleteEvent=None)

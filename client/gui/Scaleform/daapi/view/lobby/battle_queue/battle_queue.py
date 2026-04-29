@@ -1,11 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/battle_queue/battle_queue.py
-import weakref
-import BigWorld
+import weakref, BigWorld
 from adisp import adisp_process, adisp_async
 from client_request_lib.exceptions import ResponseCodes
-import MusicControllerWWISE
-import constants
+import MusicControllerWWISE, constants
 from CurrentVehicle import g_currentVehicle
 from PlayerEvents import g_playerEvents
 from debug_utils import LOG_DEBUG
@@ -42,11 +38,17 @@ from helpers.time_utils import getCurrentTimestamp
 from skeletons.gui.game_control import IWinbackController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
-TYPES_ORDERED = (('heavyTank', ITEM_TYPES.VEHICLE_TAGS_HEAVY_TANK_NAME),
- ('mediumTank', ITEM_TYPES.VEHICLE_TAGS_MEDIUM_TANK_NAME),
- ('lightTank', ITEM_TYPES.VEHICLE_TAGS_LIGHT_TANK_NAME),
- ('AT-SPG', ITEM_TYPES.VEHICLE_TAGS_AT_SPG_NAME),
- ('SPG', ITEM_TYPES.VEHICLE_TAGS_SPG_NAME))
+TYPES_ORDERED = (
+ (
+  'heavyTank', ITEM_TYPES.VEHICLE_TAGS_HEAVY_TANK_NAME),
+ (
+  'mediumTank', ITEM_TYPES.VEHICLE_TAGS_MEDIUM_TANK_NAME),
+ (
+  'lightTank', ITEM_TYPES.VEHICLE_TAGS_LIGHT_TANK_NAME),
+ (
+  'AT-SPG', ITEM_TYPES.VEHICLE_TAGS_AT_SPG_NAME),
+ (
+  'SPG', ITEM_TYPES.VEHICLE_TAGS_SPG_NAME))
 _LONG_WAITING_LEVELS = (9, 10)
 _HTMLTEMP_PLAYERSLABEL = 'html_templates:lobby/queue/playersLabel'
 
@@ -96,14 +98,16 @@ class QueueProvider(object):
         return False
 
     def additionalInfo(self):
-        pass
+        return ''
 
     def getAdditionalParams(self):
         return {}
 
     def getTitle(self, guiType):
         titleRes = R.strings.menu.loading.battleTypes.num(guiType)
-        return backport.text(titleRes()) if titleRes.exists() else ''
+        if titleRes.exists():
+            return backport.text(titleRes())
+        return ''
 
     def getIconPath(self, iconlabel):
         return backport.image(R.images.gui.maps.icons.battleTypes.c_136x136.dyn(iconlabel)())
@@ -118,7 +122,7 @@ class QueueProvider(object):
         return vehicle.shortUserName
 
     def getLayoutStr(self):
-        pass
+        return ''
 
     def forceStart(self):
         currPlayer = BigWorld.player()
@@ -132,7 +136,8 @@ class QueueProvider(object):
         currPlayer.requestQueueInfo(*params)
 
     def _getRequestQueueInfoParams(self):
-        return (self._queueType,)
+        return (
+         self._queueType,)
 
 
 class RandomQueueProvider(QueueProvider):
@@ -155,9 +160,9 @@ class RandomQueueProvider(QueueProvider):
             vClassesData = []
             for vClass, message in TYPES_ORDERED:
                 idx = constants.VEHICLE_CLASS_INDICES[vClass]
-                vClassesData.append({'type': message,
-                 'icon': getTypeBigIconPath(vClass),
-                 'count': vClasses[idx] if idx < vClassesLen else 0})
+                vClassesData.append({'type': message, 
+                   'icon': getTypeBigIconPath(vClass), 
+                   'count': vClasses[idx] if idx < vClassesLen else 0})
 
             self._proxy.as_setDPS(vClassesData)
         self._proxy.as_showStartS(self._isStartButtonDisplayed(vClasses))
@@ -194,7 +199,7 @@ class _WinbackQueueProvider(RandomQueueProvider):
     __winbackController = dependency.descriptor(IWinbackController)
 
     def getLayoutStr(self):
-        pass
+        return 'winback'
 
     def getTitle(self, guiType):
         return backport.text(R.strings.winback.winbackBattleQueue.title())
@@ -202,8 +207,8 @@ class _WinbackQueueProvider(RandomQueueProvider):
     def getAdditionalParams(self):
         subTitleMainText = backport.text(R.strings.winback.winbackBattleQueue.subTitle.text())
         subTitleBattlesLeft = backport.text(R.strings.winback.winbackBattleQueue.subTitle.battleRemaining(), battlesCount=text_styles.tutorial(str(self.__winbackController.getWinbackBattlesCountLeft())))
-        return {'subTitle': ' '.join((subTitleMainText, text_styles.stats(subTitleBattlesLeft))),
-         'footerText': backport.text(R.strings.winback.winbackBattleQueue.footer.text())}
+        return {'subTitle': (' ').join((subTitleMainText, text_styles.stats(subTitleBattlesLeft))), 
+           'footerText': backport.text(R.strings.winback.winbackBattleQueue.footer.text())}
 
 
 registerBattleQueueProvider(constants.QUEUE_TYPE.RANDOMS, RandomQueueProvider)
@@ -230,7 +235,7 @@ class BattleQueue(BattleQueueMeta, LobbySubView):
 
     @prbEntityProperty
     def prbEntity(self):
-        return None
+        return
 
     def onEscape(self):
         dialogsContainer = self.app.containerManager.getContainer(WindowLayer.TOP_WINDOW)
@@ -291,15 +296,15 @@ class BattleQueue(BattleQueueMeta, LobbySubView):
             tankName = self.__provider.getTankName(vehicle)
             iconPath = self.__provider.getTankIcon(vehicle)
             layoutStr = self.__provider.getLayoutStr()
-            typeInfo = {'iconLabel': iconlabel,
-             'iconPath': self.__provider.getIconPath(iconlabel),
-             'title': title,
-             'description': description,
-             'additional': additional,
-             'tankLabel': text_styles.main(textLabel),
-             'tankIcon': iconPath,
-             'tankName': tankName,
-             'layoutStr': layoutStr}
+            typeInfo = {'iconLabel': iconlabel, 
+               'iconPath': self.__provider.getIconPath(iconlabel), 
+               'title': title, 
+               'description': description, 
+               'additional': additional, 
+               'tankLabel': text_styles.main(textLabel), 
+               'tankIcon': iconPath, 
+               'tankName': tankName, 
+               'layoutStr': layoutStr}
             typeInfo.update(self.__provider.getAdditionalParams())
             self.as_setTypeInfoS(typeInfo)
             return
@@ -361,7 +366,7 @@ class BattleStrongholdsQueue(BattleStrongholdsQueueMeta, LobbySubView, ClanEmble
 
     @prbEntityProperty
     def prbEntity(self):
-        return None
+        return
 
     def exitClick(self):
         self.prbEntity.exitFromQueue()
@@ -425,13 +430,13 @@ class BattleStrongholdsQueue(BattleStrongholdsQueueMeta, LobbySubView, ClanEmble
         super(BattleStrongholdsQueue, self)._dispose()
 
     def __getBattleQueueVO(self):
-        return {'iconLabel': constants.ARENA_GUI_TYPE_LABEL.LABELS[constants.ARENA_GUI_TYPE.SORTIE_2],
-         'title': self.__getTitle(),
-         'leagueIcon': '',
-         'myClanIcon': '',
-         'myClanName': '',
-         'myClanElo': text_styles.highTitleDisabled('--'),
-         'myClanRating': ''}
+        return {'iconLabel': constants.ARENA_GUI_TYPE_LABEL.LABELS[constants.ARENA_GUI_TYPE.SORTIE_2], 
+           'title': self.__getTitle(), 
+           'leagueIcon': '', 
+           'myClanIcon': '', 
+           'myClanName': '', 
+           'myClanElo': text_styles.highTitleDisabled('--'), 
+           'myClanRating': ''}
 
     def __requestClanIcon(self):
         myClanIcon = self.__battleQueueVO['myClanIcon']
@@ -492,10 +497,9 @@ class BattleStrongholdsQueue(BattleStrongholdsQueueMeta, LobbySubView, ClanEmble
         for group in groupsData:
             clans = []
             for clan in group.get('clans', []):
-                clanVO = {'title': makeString(FORTIFICATIONS.BATTLEQUEUE_CLANPOSITION, position='--'),
-                 'clanName': getClanTag(clan.get('tag'), clan.get('color') or ''),
-                 'clanElo': '--',
-                 'tooltip': ''}
+                clanVO = {'title': makeString(FORTIFICATIONS.BATTLEQUEUE_CLANPOSITION, position='--'), 'clanName': getClanTag(clan.get('tag'), clan.get('color') or ''), 
+                   'clanElo': '--', 
+                   'tooltip': ''}
                 leagueIconUrl = clan.get('back_emblem')
                 if leagueIconUrl:
                     clanVO['leagueIcon'] = yield self.__imagesFetchCoordinator.fetchImageByUrl(clan.get('back_emblem'), oneUse=False)
@@ -515,8 +519,8 @@ class BattleStrongholdsQueue(BattleStrongholdsQueueMeta, LobbySubView, ClanEmble
                     clanVO['title'] = makeString(FORTIFICATIONS.BATTLEQUEUE_CLANPOSITION, position=position)
                 clans.append(clanVO)
 
-            groups.append({'title': group.get('title'),
-             'leagues': clans})
+            groups.append({'title': group.get('title'), 
+               'leagues': clans})
 
         callback(groups)
 
@@ -539,7 +543,9 @@ class BattleStrongholdsQueue(BattleStrongholdsQueueMeta, LobbySubView, ClanEmble
 
     def __onMatchmakingTimerChanged(self, event):
         data = event.ctx
-        if data['dtime'] > 0 and data['textid'] in (TOOLTIPS.STRONGHOLDS_TIMER_SQUADINQUEUE, FORTIFICATIONS.ROSTERINTROWINDOW_INTROVIEW_FORTBATTLES_NEXTTIMEOFBATTLESOON):
+        if data['dtime'] > 0 and data['textid'] in (
+         TOOLTIPS.STRONGHOLDS_TIMER_SQUADINQUEUE,
+         FORTIFICATIONS.ROSTERINTROWINDOW_INTROVIEW_FORTBATTLES_NEXTTIMEOFBATTLESOON):
             timerLabel = i18n.makeString(FORTIFICATIONS.BATTLEQUEUE_WAITBATTLE)
             currentTime = data['dtime']
         else:
@@ -562,7 +568,7 @@ class BattleStrongholdsQueue(BattleStrongholdsQueueMeta, LobbySubView, ClanEmble
                 self.__startAnimationTime = time_utils.getCurrentTimestamp()
             i, r = divmod(int(time_utils.getCurrentTimestamp() - self.__startAnimationTime), self.__animationDuration)
             if r == 0:
-                self.as_setLeaguesS(self.__groups[i % n])
+                self.as_setLeaguesS(self.__groups[(i % n)])
         return
 
     @staticmethod

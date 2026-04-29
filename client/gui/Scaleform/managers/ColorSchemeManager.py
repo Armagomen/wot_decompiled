@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/managers/ColorSchemeManager.py
+from __future__ import absolute_import, division
 import BigWorld
 from gui.Scaleform.framework.entities.abstract.ColorSchemeManagerMeta import ColorSchemeManagerMeta
 from gui.battle_control.arena_info.interfaces import IArenaVehiclesController
@@ -16,7 +15,9 @@ class ColorSchemeManager(ColorSchemeManagerMeta):
         self.colors = GuiColorsLoader.load()
 
     def getColorGroup(self):
-        return 'color_blind' if self.settingsCore.getSetting('isColorBlind') else 'default'
+        if self.settingsCore.getSetting('isColorBlind'):
+            return 'color_blind'
+        return 'default'
 
     def getRGBA(self, schemeName):
         return self.colors.getSubScheme(schemeName, self.getColorGroup())['rgba']
@@ -24,11 +25,11 @@ class ColorSchemeManager(ColorSchemeManagerMeta):
     def getColorScheme(self, schemeName):
         scheme = self.colors.getSubScheme(schemeName, self.getColorGroup())
         transform = scheme['transform']
-        return {'aliasColor': scheme['alias_color'],
-         'rgb': self._packRGB(scheme['rgba']),
-         'adjust': {'offset': scheme['adjust']['offset'].tuple()},
-         'transform': {'mult': transform['mult'].tuple(),
-                       'offset': transform['offset'].tuple()}}
+        return {'aliasColor': scheme['alias_color'], 
+           'rgb': self._packRGB(scheme['rgba']), 
+           'adjust': {'offset': scheme['adjust']['offset'].tuple()}, 
+           'transform': {'mult': transform['mult'].tuple(), 
+                         'offset': transform['offset'].tuple()}}
 
     def getIsColorBlind(self):
         return self.settingsCore.getSetting('isColorBlind')

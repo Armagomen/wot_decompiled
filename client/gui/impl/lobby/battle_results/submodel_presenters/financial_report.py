@@ -1,27 +1,27 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_results/submodel_presenters/financial_report.py
-from math import ceil
 from functools import partial
+from math import ceil
 import typing
+from shared_utils import first
 import BigWorld
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from constants import PremiumConfigs, PREMIUM_TYPE
-from helpers import dependency, server_settings, time_utils
+from gui.Scaleform.daapi.view.lobby.store.browser.shop_helpers import getBuyPremiumUrl, getWotPlusShopUrl
 from gui.battle_results.pbs_helpers.additional_bonuses import getAccountStatusToBRPS, getAdditionalXpBonusStatus, isAddXpBonusStatusAcceptable, isAdditionalXpBonusAvailable, getLeftAdditionalBonus, getAdditionalXPFactor10FromResult, getAdditionalXpBonusDiff
 from gui.battle_results.presenters.battle_results_sub_presenter import BattleResultsSubPresenter
 from gui.battle_results.presenters.packers.economics.financial_report_packers import CrystalsDetailsPacker, XpDetailsPacker, FreeXpDetailsPacker, CreditsStatisticsPacker, GoldStatisticsPacker
 from gui.battle_results.settings import BATTLE_RESULTS_RECORD as _RECORD
-from gui.impl.gen.view_models.views.lobby.battle_results.financial_report_model import FinancialReportModel
+from gui.game_control.wot_plus.utils import WOT_PLUS_TIER_MAP
 from gui.impl.gen.view_models.views.lobby.battle_results.additional_bonus_model import AdditionalBonusModel, PremiumXpBonusRestriction, BonusStates
 from gui.impl.gen.view_models.views.lobby.battle_results.currency_records_item_model import CurrencyRecordsItemModel
-from gui.shared import events
+from gui.impl.gen.view_models.views.lobby.battle_results.financial_report_model import FinancialReportModel
 from gui.impl.lobby.premacc import premacc_helpers
-from shared_utils import first
-from skeletons.gui.shared import IItemsCache
-from skeletons.gui.lobby_context import ILobbyContext
-from skeletons.gui.game_control import IGameSessionController, IWotPlusController
-from gui.Scaleform.daapi.view.lobby.store.browser.shop_helpers import getBuyPremiumUrl, getWotPlusShopUrl
+from gui.shared import events
 from gui.shared.event_dispatcher import showShop, showDailyExpPageView
+from helpers import dependency, server_settings, time_utils
+from renewable_subscription_common.settings_constants import RS_TIER
+from skeletons.gui.game_control import IGameSessionController, IWotPlusController
+from skeletons.gui.lobby_context import ILobbyContext
+from skeletons.gui.shared import IItemsCache
 if typing.TYPE_CHECKING:
     from frameworks.wulf import ViewModel
 
@@ -46,10 +46,12 @@ class ManageableBonusSubPresenter(BattleResultsSubPresenter):
         period = piggyBankConfig.get('cycleLength', time_utils.ONE_DAY)
         periodInDays = ceil(period / time_utils.ONE_DAY)
         dailyXp = self.__itemsCache.items.stats.dailyAppliedAdditionalXP
+        hasPenalties = reusable.personal.avatar.hasPenalties()
         self.getViewModel().setDailyAppliedAdditionalXP(dailyXp)
         self.getViewModel().setCreditsThreshold(piggyBankMaxAmount)
         self.getViewModel().setDurationInDays(periodInDays)
-        self.getViewModel().setHasWotPlus(reusable.personal.isWotPlus)
+        self.getViewModel().setWotPlusType(WOT_PLUS_TIER_MAP[reusable.personal.wotPlusTier])
+        self.getViewModel().setHasPenalties(hasPenalties)
         self.getViewModel().setHasAnyPremium(reusable.personal.hasAnyPremium)
         hasPremiumPlus = self.__itemsCache.items.stats.isActivePremium(PREMIUM_TYPE.PLUS)
         self.getViewModel().setHasPremium(hasPremiumPlus)
@@ -59,7 +61,7 @@ class ManageableBonusSubPresenter(BattleResultsSubPresenter):
         self.getViewModel().setWasPremium(wasPremiumPlusInBattle)
         isXpBonusAvailable = isAdditionalXpBonusAvailable(self.arenaUniqueID, reusable, hasPremiumPlus, isAddXpBonusStatusAcceptable)
         self.getViewModel().setIsXpBonusEnabled(isXpBonusAvailable)
-        hasWotPlus = self.__wotPlusController.isEnabled()
+        hasWotPlus = self.__wotPlusController.hasSubscription()
         _, leftCount, _ = getLeftAdditionalBonus(hasWotPlus, hasPremiumPlus)
         self.getViewModel().setLeftBonusCount(leftCount)
         isPersonalTeamWin = reusable.isPersonalTeamWin()
@@ -79,18 +81,31 @@ class ManageableBonusSubPresenter(BattleResultsSubPresenter):
         self.getViewModel().setLocalStorage(self.parentView.getLocalStorage())
 
     def _getEvents(self):
-        return ((self.getViewModel().onPremiumXpBonusApplied, self.__onXpBonusApplied),
-         (self.getViewModel().onLocalStorageUpdated, self.__onLocalStorageUpdated),
-         (self.getViewModel().onShowDetails, self.__onShowDetails),
-         (self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged),
-         (self.__wotPlusController.onDataChanged, self.__onWotPlusChanged),
-         (self.__gameSession.onPremiumTypeChanged, self.__onPremiumStatusChanged))
+        return (
+         (
+          self.getViewModel().onPremiumXpBonusApplied, self.__onXpBonusApplied),
+         (
+          self.getViewModel().onLocalStorageUpdated, self.__onLocalStorageUpdated),
+         (
+          self.getViewModel().onShowDetails, self._onShowDetails),
+         (
+          self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged),
+         (
+          self.__wotPlusController.onDataChanged, self.__onWotPlusChanged),
+         (
+          self.__gameSession.onPremiumTypeChanged, self.__onPremiumStatusChanged))
 
     def _getListeners(self):
-        return ((events.LobbySimpleEvent.PREMIUM_XP_BONUS_CHANGED, self.__onXpBonusStatusChanged),)
+        return (
+         (
+          events.LobbySimpleEvent.PREMIUM_XP_BONUS_CHANGED, self.__onXpBonusStatusChanged),)
 
     def _getCallbacks(self):
-        return (('stats.applyAdditionalXPCount', self.__onXpBonusStatusChanged), ('stats.applyAdditionalWoTPlusXPCount', self.__onXpBonusStatusChanged))
+        return (
+         (
+          'stats.applyAdditionalXPCount', self.__onXpBonusStatusChanged),
+         (
+          'stats.applyAdditionalWoTPlusXPCount', self.__onXpBonusStatusChanged))
 
     def __onXpBonusApplied(self):
         self._battleResults.applyAdditionalBonus(self.arenaUniqueID)
@@ -101,7 +116,7 @@ class ManageableBonusSubPresenter(BattleResultsSubPresenter):
             self.packBattleResults(self.getBattleResults())
 
     def __onWotPlusChanged(self, data):
-        if 'isEnabled' not in data:
+        if RS_TIER not in data:
             return
         with self.getViewModel().transaction():
             self.packBattleResults(self.getBattleResults())
@@ -121,10 +136,13 @@ class ManageableBonusSubPresenter(BattleResultsSubPresenter):
         ctx = event.get('localStorage', '')
         self.parentView.saveLocalStorage(ctx)
 
-    def __onShowDetails(self, _=None):
+    def _onShowDetails(self, _=None):
         bonusState = self.getViewModel().getState()
         if bonusState == BonusStates.PLUSEARNINGS:
-            url = getWotPlusShopUrl()
+            if self.__itemsCache.items.stats.isActivePremium(PREMIUM_TYPE.PLUS):
+                url = getWotPlusShopUrl()
+            else:
+                url = getBuyPremiumUrl()
             BigWorld.callback(0.0, partial(showShop, url))
         elif bonusState in (BonusStates.PREMIUMEARNINGS, BonusStates.PREMIUMADVERTISING, BonusStates.PREMIUMINFO):
             url = getBuyPremiumUrl()
@@ -148,10 +166,16 @@ class FinancialReportSubPresenter(BattleResultsSubPresenter):
         GoldStatisticsPacker.packModel(viewModel.gold, CurrencyRecordsItemModel.GOLD, battleResults)
 
     def _getListeners(self):
-        return ((events.LobbySimpleEvent.PREMIUM_XP_BONUS_CHANGED, self.__onXpBonusStatusChanged),)
+        return (
+         (
+          events.LobbySimpleEvent.PREMIUM_XP_BONUS_CHANGED, self.__onXpBonusStatusChanged),)
 
     def _getCallbacks(self):
-        return (('stats.applyAdditionalXPCount', self.__onXpBonusStatusChanged), ('stats.applyAdditionalWoTPlusXPCount', self.__onXpBonusStatusChanged))
+        return (
+         (
+          'stats.applyAdditionalXPCount', self.__onXpBonusStatusChanged),
+         (
+          'stats.applyAdditionalWoTPlusXPCount', self.__onXpBonusStatusChanged))
 
     def __onXpBonusStatusChanged(self, _=None):
         with self.getViewModel().transaction():

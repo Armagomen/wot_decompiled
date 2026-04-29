@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/lobby/views/presenters/loadout_panel_presenter/commander_presenter.py
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.impl.gen import R
 from gui.impl.pub.view_component import ViewComponent
@@ -8,6 +6,7 @@ from items.tankmen import ROLES_BY_SKILLS
 from shared_utils import first
 from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.game_control import IBattleRoyaleController
+from battle_royale.gui.impl.lobby.br_helpers.utils import setEventInfo
 from battle_royale.gui.impl.gen.view_models.views.lobby.views.commander_view_model import CommanderViewModel, CommanderPerkModel
 
 class CommanderPresenter(ViewComponent[CommanderViewModel]):
@@ -33,11 +32,7 @@ class CommanderPresenter(ViewComponent[CommanderViewModel]):
             if commanderID is None:
                 return
             role = first(ROLES_BY_SKILLS[tooltipId])
-            args = (tooltipId,
-             role,
-             None,
-             None,
-             False)
+            args = (tooltipId, role, None, None, False)
             self.__toolTipMgr.onCreateWulfTooltip(TOOLTIPS_CONSTANTS.CREW_PERK_GF, args, event.mouse.positionX, event.mouse.positionY, parent=self.getParentWindow())
             return TOOLTIPS_CONSTANTS.CREW_PERK_GF
         else:
@@ -55,7 +50,7 @@ class CommanderPresenter(ViewComponent[CommanderViewModel]):
     def __updateModel(self):
         if not self.__vehicle:
             return
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setNation(self.__vehicle.nationName)
             perkList = model.getPerkList()
             perkList.clear()
@@ -67,13 +62,16 @@ class CommanderPresenter(ViewComponent[CommanderViewModel]):
                 perkList.addViewModel(perkModel)
 
             perkList.invalidate()
+            setEventInfo(model.eventInfo)
 
     def __getCommanderID(self):
         if not self.__vehicle:
-            return None
+            return
         else:
             crew = self.__vehicle.crew
-            return None if crew is None else crew[0][1].invID
+            if crew is None:
+                return
+            return crew[0][1].invID
 
     def update(self, vehicle):
         self.__vehicle = vehicle

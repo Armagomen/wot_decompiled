@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/login/__init__.py
+from __future__ import absolute_import
 from frameworks.wulf import WindowLayer
 from gui import GUI_SETTINGS
 from gui.app_loader import settings as app_settings
@@ -9,7 +8,7 @@ from gui.Scaleform.framework import ViewSettings, GroupedViewSettings, ScopeTemp
 from gui.Scaleform.framework.package_layout import PackageBusinessHandler
 
 def getContextMenuHandlers():
-    pass
+    return ()
 
 
 def getViewSettings():
@@ -18,10 +17,11 @@ def getViewSettings():
     from gui.Scaleform.daapi.view.login.LoginQueue import LoginQueue
     from gui.Scaleform.daapi.view.login.RssNewsFeed import RssNewsFeed
     if GUI_SETTINGS.socialNetworkLogin['enabled']:
-        from SocialLoginView import SocialLoginView as LoginView
+        from gui.Scaleform.daapi.view.login.SocialLoginView import SocialLoginView as LoginView
     else:
-        from LoginView import LoginView
-    return (ViewSettings(VIEW_ALIAS.LOGIN, LoginView, 'login.swf', WindowLayer.VIEW, None, ScopeTemplates.DEFAULT_SCOPE),
+        from gui.Scaleform.daapi.view.login.LoginView import LoginView
+    return (
+     ViewSettings(VIEW_ALIAS.LOGIN, LoginView, 'login.swf', WindowLayer.VIEW, None, ScopeTemplates.DEFAULT_SCOPE),
      GroupedViewSettings(VIEW_ALIAS.EULA, EULADlg, 'EULADlg.swf', WindowLayer.TOP_WINDOW, '', None, ScopeTemplates.DEFAULT_SCOPE, isModal=True, canDrag=False),
      GroupedViewSettings(VIEW_ALIAS.LEGAL_INFO_WINDOW, LegalInfoWindow, 'legalInfoWindow.swf', WindowLayer.WINDOW, 'legalInfoWindow', None, ScopeTemplates.DEFAULT_SCOPE),
      GroupedViewSettings(VIEW_ALIAS.EULA_FULL, EULADlg, 'EULAFullDlg.swf', WindowLayer.TOP_WINDOW, '', None, ScopeTemplates.DEFAULT_SCOPE, isModal=True, canClose=False, canDrag=False),
@@ -30,15 +30,22 @@ def getViewSettings():
 
 
 def getBusinessHandlers():
-    return (LoginPackageBusinessHandler(),)
+    return (
+     LoginPackageBusinessHandler(),)
 
 
 class LoginPackageBusinessHandler(PackageBusinessHandler):
 
     def __init__(self):
-        listeners = ((VIEW_ALIAS.EULA, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.EULA_FULL, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.LOGIN, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.LEGAL_INFO_WINDOW, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.LOGIN_QUEUE, self.loadView))
+        listeners = (
+         (
+          VIEW_ALIAS.EULA, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.EULA_FULL, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.LOGIN, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.LEGAL_INFO_WINDOW, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.LOGIN_QUEUE, self.loadView))
         super(LoginPackageBusinessHandler, self).__init__(listeners, app_settings.APP_NAME_SPACE.SF_LOBBY, EVENT_BUS_SCOPE.LOBBY)

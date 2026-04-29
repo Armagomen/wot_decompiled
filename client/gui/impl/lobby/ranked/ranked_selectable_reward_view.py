@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/ranked/ranked_selectable_reward_view.py
 import typing
 from AccountCommands import RES_SUCCESS
 from frameworks.wulf import WindowFlags
@@ -19,13 +17,9 @@ if typing.TYPE_CHECKING:
 class RankedSelectableRewardView(SelectableRewardBase):
     __slots__ = ('__allRewards', '__points')
     __rankedController = dependency.descriptor(IRankedBattlesController)
-    __REWARDS_ORDER = ['deluxImprovedVentilation',
-     'deluxAimingStabilizer',
-     'deluxRammer',
-     'deluxEnhancedAimDrives',
-     'deluxCoatedOptics',
-     'deluxImprovedConfiguration',
-     'deluxeTurbocharger',
+    __REWARDS_ORDER = [
+     'deluxImprovedVentilation', 'deluxAimingStabilizer', 'deluxRammer', 'deluxEnhancedAimDrives',
+     'deluxCoatedOptics', 'deluxImprovedConfiguration', 'deluxeTurbocharger',
      'deluxeExtraHealthReserve']
     _helper = RankedSelectableRewardManager
 
@@ -45,7 +39,7 @@ class RankedSelectableRewardView(SelectableRewardBase):
     def _onLoading(self, *args, **kwargs):
         super(RankedSelectableRewardView, self)._onLoading()
         rankedType = self.__rankedController.getAwardTypeByPoints(self.__points) or YEAR_AWARDS_ORDER[0]
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             tx.setRewardType(rankedType)
 
     def _processReceivedRewards(self, result):

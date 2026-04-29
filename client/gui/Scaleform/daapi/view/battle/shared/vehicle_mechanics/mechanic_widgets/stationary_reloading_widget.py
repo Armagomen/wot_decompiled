@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/vehicle_mechanics/mechanic_widgets/stationary_reloading_widget.py
 from __future__ import absolute_import
 import typing
 from constants import STATIONARY_RELOAD_STATE, GUN_LOCK_REASONS
@@ -19,11 +17,11 @@ if typing.TYPE_CHECKING:
     from gui.veh_mechanics.battle.updaters.updaters_common import IViewUpdater
 
 class StationaryReloadingMechanicWidget(StationaryReloadWidgetMeta, ContainersListener, IMechanicStatesListenerLogic):
-    _STATIONARY_RELOADING_UI_STATES = {STATIONARY_RELOAD_STATE.IDLE: MECHANICS_WIDGET_CONST.IDLE,
-     STATIONARY_RELOAD_STATE.FIXING_GUN: MECHANICS_WIDGET_CONST.PREPARING,
-     STATIONARY_RELOAD_STATE.PREPARING: MECHANICS_WIDGET_CONST.ACTIVE,
-     STATIONARY_RELOAD_STATE.RELOADING: MECHANICS_WIDGET_CONST.IDLE,
-     STATIONARY_RELOAD_STATE.FINISHING: MECHANICS_WIDGET_CONST.ACTIVE}
+    _STATIONARY_RELOADING_UI_STATES = {STATIONARY_RELOAD_STATE.IDLE: MECHANICS_WIDGET_CONST.IDLE, 
+       STATIONARY_RELOAD_STATE.FIXING_GUN: MECHANICS_WIDGET_CONST.PREPARING, 
+       STATIONARY_RELOAD_STATE.PREPARING: MECHANICS_WIDGET_CONST.ACTIVE, 
+       STATIONARY_RELOAD_STATE.RELOADING: MECHANICS_WIDGET_CONST.IDLE, 
+       STATIONARY_RELOAD_STATE.FINISHING: MECHANICS_WIDGET_CONST.ACTIVE}
 
     def __init__(self):
         super(StationaryReloadingMechanicWidget, self).__init__()
@@ -48,7 +46,10 @@ class StationaryReloadingMechanicWidget(StationaryReloadWidgetMeta, ContainersLi
         self.__invalidateTimer()
 
     def _getViewUpdaters(self):
-        return [VehicleMechanicPassengerUpdater(VehicleMechanic.STATIONARY_RELOAD, self), VehicleMechanicStatesUpdater(VehicleMechanic.STATIONARY_RELOAD, self), VehicleDeviceStatusUpdater({'turretRotator': (DEVICE_STATE_NORMAL, DEVICE_STATE_CRITICAL)}, self)]
+        return [
+         VehicleMechanicPassengerUpdater(VehicleMechanic.STATIONARY_RELOAD, self),
+         VehicleMechanicStatesUpdater(VehicleMechanic.STATIONARY_RELOAD, self),
+         VehicleDeviceStatusUpdater({'turretRotator': (DEVICE_STATE_NORMAL, DEVICE_STATE_CRITICAL)}, self)]
 
     def __invalidateState(self, state, isInstantly=False):
         self.__state = state

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/items/components/c11n_constants.py
 import constants
 from soft_exception import SoftException
 from functools import reduce
@@ -46,47 +44,22 @@ class CustomizationType(object):
     SEQUENCE = 11
     ATTACHMENT = 12
     STAT_TRACKER = 13
-    RANGE = {PAINT,
-     CAMOUFLAGE,
-     DECAL,
-     STYLE,
-     MODIFICATION,
-     ITEM_GROUP,
-     PROJECTION_DECAL,
-     PERSONAL_NUMBER,
-     FONT,
-     ATTACHMENT,
-     STAT_TRACKER}
+    RANGE = {
+     PAINT, CAMOUFLAGE, DECAL, STYLE, MODIFICATION, ITEM_GROUP, PROJECTION_DECAL, PERSONAL_NUMBER, FONT,
+     ATTACHMENT, STAT_TRACKER}
     STYLE_ONLY_RANGE = {SEQUENCE}
     FULL_RANGE = RANGE | STYLE_ONLY_RANGE
-    APPLIED_TO_TYPES = (PAINT,
-     CAMOUFLAGE,
-     DECAL,
-     PERSONAL_NUMBER)
-    SIMPLE_TYPES = (STYLE,
-     MODIFICATION,
-     PROJECTION_DECAL,
-     SEQUENCE,
-     ATTACHMENT,
-     STAT_TRACKER)
+    APPLIED_TO_TYPES = (
+     PAINT, CAMOUFLAGE, DECAL, PERSONAL_NUMBER)
+    SIMPLE_TYPES = (STYLE, MODIFICATION, PROJECTION_DECAL, SEQUENCE, ATTACHMENT, STAT_TRACKER)
     SIMPLE_OUTFIT_COMPONENT_TYPES = (MODIFICATION, PROJECTION_DECAL)
-    DISMOUNT_TYPE = (PAINT,
-     CAMOUFLAGE,
-     DECAL,
-     PERSONAL_NUMBER,
-     MODIFICATION,
-     PROJECTION_DECAL,
-     ATTACHMENT,
+    DISMOUNT_TYPE = (PAINT, CAMOUFLAGE, DECAL, PERSONAL_NUMBER, MODIFICATION, PROJECTION_DECAL, ATTACHMENT,
      STAT_TRACKER)
-    TYPES_FOR_EDITABLE_STYLE = (PAINT,
-     DECAL,
-     PERSONAL_NUMBER,
-     MODIFICATION,
-     PROJECTION_DECAL)
+    TYPES_FOR_EDITABLE_STYLE = (PAINT, DECAL, PERSONAL_NUMBER, MODIFICATION, PROJECTION_DECAL)
     COMMON_TYPES = (ATTACHMENT, STAT_TRACKER)
 
 
-CustomizationTypeNames = {getattr(CustomizationType, k):k for k in dir(CustomizationType) if isinstance(getattr(CustomizationType, k), int)}
+CustomizationTypeNames = {getattr(CustomizationType, k):k for k in dir(CustomizationType) if isinstance(getattr(CustomizationType, k), int) if isinstance(getattr(CustomizationType, k), int)}
 CustomizationNamesToTypes = {v:k for k, v in CustomizationTypeNames.iteritems()}
 
 class CustomizationDisplayType(object):
@@ -133,12 +106,8 @@ class ProjectionDecalDirectionTags(object):
     LEFT = 'left'
     RIGHT = 'right'
     FRONT = 'front'
-    ALL = (ANY,
-     LEFT_TO_RIGHT,
-     RIGHT_TO_LEFT,
-     LEFT,
-     RIGHT,
-     FRONT)
+    ALL = (
+     ANY, LEFT_TO_RIGHT, RIGHT_TO_LEFT, LEFT, RIGHT, FRONT)
 
 
 class ProjectionDecalFormTags(object):
@@ -148,11 +117,8 @@ class ProjectionDecalFormTags(object):
     RECT1X3 = PREFIX + 'rect1x3'
     RECT1X4 = PREFIX + 'rect1x4'
     RECT1X6 = PREFIX + 'rect1x6'
-    ALL = (SQUARE,
-     RECT1X2,
-     RECT1X3,
-     RECT1X4,
-     RECT1X6)
+    ALL = (
+     SQUARE, RECT1X2, RECT1X3, RECT1X4, RECT1X6)
 
 
 class ProjectionDecalPreferredTags(object):
@@ -162,11 +128,8 @@ class ProjectionDecalPreferredTags(object):
     RECT1X3 = PREFIX + ProjectionDecalFormTags.RECT1X3
     RECT1X4 = PREFIX + ProjectionDecalFormTags.RECT1X4
     RECT1X6 = PREFIX + ProjectionDecalFormTags.RECT1X6
-    ALL = (SQUARE,
-     RECT1X2,
-     RECT1X3,
-     RECT1X4,
-     RECT1X6)
+    ALL = (
+     SQUARE, RECT1X2, RECT1X3, RECT1X4, RECT1X6)
 
 
 class ProjectionDecalMatchingTags(object):
@@ -201,15 +164,11 @@ class ApplyArea(object):
     GUN_2 = 16384
     GUN_3 = 32768
     ALL = 65535
-    CHASSIS_REGIONS = (CHASSIS,
-     CHASSIS_1,
-     CHASSIS_2,
-     CHASSIS_3)
+    CHASSIS_REGIONS = (
+     CHASSIS, CHASSIS_1, CHASSIS_2, CHASSIS_3)
     CHASSIS_PAINT_REGIONS = (CHASSIS, CHASSIS_1, CHASSIS_2)
-    HULL_REGIONS = (HULL,
-     HULL_1,
-     HULL_2,
-     HULL_3)
+    HULL_REGIONS = (
+     HULL, HULL_1, HULL_2, HULL_3)
     HULL_PAINT_REGIONS = (HULL, HULL_1, HULL_2)
     HULL_CAMOUFLAGE_REGIONS = (HULL,)
     HULL_EMBLEM_REGIONS = (HULL, HULL_1)
@@ -217,10 +176,8 @@ class ApplyArea(object):
     HULL_DECAL_REGIONS = HULL_EMBLEM_REGIONS + HULL_INSCRIPTION_REGIONS
     HULL_INSIGNIA_REGIONS = (HULL, HULL_1)
     HULL_PERSONAL_NUMBER_REGIONS = (HULL_2, HULL_3)
-    TURRET_REGIONS = (TURRET,
-     TURRET_1,
-     TURRET_2,
-     TURRET_3)
+    TURRET_REGIONS = (
+     TURRET, TURRET_1, TURRET_2, TURRET_3)
     TURRET_PAINT_REGIONS = (TURRET, TURRET_1, TURRET_2)
     TURRET_CAMOUFLAGE_REGIONS = (TURRET,)
     TURRET_EMBLEM_REGIONS = (TURRET, TURRET_1)
@@ -228,10 +185,8 @@ class ApplyArea(object):
     TURRET_DECAL_REGIONS = TURRET_EMBLEM_REGIONS + TURRET_INSCRIPTION_REGIONS
     TURRET_INSIGNIA_REGIONS = (TURRET, TURRET_1)
     TURRET_PERSONAL_NUMBER_REGIONS = (TURRET_2, TURRET_3)
-    GUN_REGIONS = (GUN,
-     GUN_1,
-     GUN_2,
-     GUN_3)
+    GUN_REGIONS = (
+     GUN, GUN_1, GUN_2, GUN_3)
     GUN_PAINT_REGIONS = (GUN, GUN_1, GUN_2)
     GUN_CAMOUFLAGE_REGIONS = (GUN,)
     GUN_EMBLEM_REGIONS = (GUN, GUN_1)
@@ -239,30 +194,15 @@ class ApplyArea(object):
     GUN_DECAL_REGIONS = GUN_EMBLEM_REGIONS + GUN_INSCRIPTION_REGIONS
     GUN_INSIGNIA_REGIONS = (GUN, GUN_1)
     GUN_PERSONAL_NUMBER_REGIONS = (GUN_2, GUN_3)
-    RANGE = {HULL,
-     HULL_1,
-     HULL_2,
-     HULL_3,
-     TURRET,
-     TURRET_1,
-     TURRET_2,
-     TURRET_3,
-     GUN,
-     GUN_1,
-     GUN_2,
-     GUN_3,
-     CHASSIS,
-     CHASSIS_1,
-     CHASSIS_2,
-     CHASSIS_3}
+    RANGE = {
+     HULL, HULL_1, HULL_2, HULL_3,
+     TURRET, TURRET_1, TURRET_2, TURRET_3,
+     GUN, GUN_1, GUN_2, GUN_3,
+     CHASSIS, CHASSIS_1, CHASSIS_2, CHASSIS_3}
     DECAL_REGIONS = HULL_DECAL_REGIONS + TURRET_DECAL_REGIONS + GUN_DECAL_REGIONS
     CAMOUFLAGE_REGIONS = HULL_CAMOUFLAGE_REGIONS + TURRET_CAMOUFLAGE_REGIONS + GUN_CAMOUFLAGE_REGIONS
     PAINT_REGIONS = CHASSIS_PAINT_REGIONS + HULL_PAINT_REGIONS + TURRET_PAINT_REGIONS + GUN_PAINT_REGIONS
-    USER_PAINT_ALLOWED_REGIONS = {CHASSIS,
-     HULL,
-     TURRET,
-     GUN,
-     GUN_2}
+    USER_PAINT_ALLOWED_REGIONS = {CHASSIS, HULL, TURRET, GUN, GUN_2}
     EMBLEM_REGIONS = HULL_EMBLEM_REGIONS + TURRET_EMBLEM_REGIONS + GUN_EMBLEM_REGIONS
     INSCRIPTION_REGIONS = HULL_INSCRIPTION_REGIONS + TURRET_INSCRIPTION_REGIONS + GUN_INSCRIPTION_REGIONS
     INSIGNIA_REGIONS = HULL_INSIGNIA_REGIONS + TURRET_INSIGNIA_REGIONS + GUN_INSIGNIA_REGIONS
@@ -293,15 +233,10 @@ class SeasonType(object):
     DESERT = 4
     EVENT = 8
     ALL = WINTER | SUMMER | DESERT | EVENT
-    RANGE = (WINTER,
-     SUMMER,
-     DESERT,
-     EVENT,
-     ALL)
-    SEASONS = (WINTER,
-     SUMMER,
-     DESERT,
-     EVENT)
+    RANGE = (
+     WINTER, SUMMER, DESERT, EVENT, ALL)
+    SEASONS = (
+     WINTER, SUMMER, DESERT, EVENT)
     COMMON_SEASONS = (WINTER, SUMMER, DESERT)
     REGULAR = COMMON_SEASONS + (ALL,)
 
@@ -316,7 +251,7 @@ class SeasonType(object):
         raise SoftException('unknown arenaKind', arenaKind)
 
 
-SeasonTypeNames = {getattr(SeasonType, k):k for k in dir(SeasonType) if not k.startswith('_') and isinstance(getattr(SeasonType, k), int)}
+SeasonTypeNames = {getattr(SeasonType, k):k for k in dir(SeasonType) if not k.startswith('_') and isinstance(getattr(SeasonType, k), int) if not k.startswith('_') and isinstance(getattr(SeasonType, k), int)}
 
 class ModificationType(object):
     UNDEFINED = 0
@@ -331,10 +266,11 @@ class ModificationType(object):
 class DecalType(object):
     EMBLEM = 1
     INSCRIPTION = 2
-    ALL = (EMBLEM, INSCRIPTION)
+    ALL = (
+     EMBLEM, INSCRIPTION)
 
 
-DecalTypeNames = {getattr(DecalType, k):k for k in dir(DecalType) if not k.startswith('_')}
+DecalTypeNames = {getattr(DecalType, k):k for k in dir(DecalType) if not k.startswith('_') if not k.startswith('_')}
 
 class StyleFlags(object):
     ENABLED = 1
@@ -348,11 +284,10 @@ class Options:
     MIRRORED_HORIZONTALLY = 1
     MIRRORED_VERTICALLY = 2
     COMBO_MIRRORED = MIRRORED_HORIZONTALLY | MIRRORED_VERTICALLY
-    RANGE = (NONE,
-     MIRRORED_HORIZONTALLY,
-     MIRRORED_VERTICALLY,
-     COMBO_MIRRORED)
-    PROJECTION_DECALS_ALLOWED_OPTIONS = (MIRRORED_HORIZONTALLY, MIRRORED_VERTICALLY, COMBO_MIRRORED)
+    RANGE = (
+     NONE, MIRRORED_HORIZONTALLY, MIRRORED_VERTICALLY, COMBO_MIRRORED)
+    PROJECTION_DECALS_ALLOWED_OPTIONS = (
+     MIRRORED_HORIZONTALLY, MIRRORED_VERTICALLY, COMBO_MIRRORED)
     PROJECTION_DECALS_ALLOWED_OPTIONS_VALUE = reduce(int.__or__, PROJECTION_DECALS_ALLOWED_OPTIONS)
 
 
@@ -361,12 +296,13 @@ class ImageOptions:
     FULL_RGB = 1
 
 
-NO_OUTFIT_DATA = ('', StyleFlags.EMPTY)
+NO_OUTFIT_DATA = (
+ '', StyleFlags.EMPTY)
 C11N_MAX_REGION_NUM = 3
 C11N_GUN_REGION = 0
 C11N_MASK_REGION = 2
-C11N_GUN_APPLY_REGIONS = {'GUN': C11N_GUN_REGION,
- 'GUN_2': C11N_MASK_REGION}
+C11N_GUN_APPLY_REGIONS = {'GUN': C11N_GUN_REGION, 
+   'GUN_2': C11N_MASK_REGION}
 CUSTOMIZATION_SLOTS_VEHICLE_PARTS = ('hull', 'chassis', 'turret', 'gun')
 UNBOUND_VEH_KEY = 0
 
@@ -379,8 +315,12 @@ class CamouflageTilingType(object):
     RANGE = None
 
 
-CamouflageTilingType.RANGE = tuple([ getattr(CamouflageTilingType, k) for k in dir(CamouflageTilingType) if not k.startswith('_') and k not in ('RANGE', 'NONE') ])
-CamouflageTilingTypeNames = {getattr(CamouflageTilingType, k):k for k in dir(CamouflageTilingType) if not k.startswith('_') and k not in ('RANGE', 'NONE')}
+CamouflageTilingType.RANGE = tuple([ getattr(CamouflageTilingType, k) for k in dir(CamouflageTilingType) if not k.startswith('_') and k not in ('RANGE',
+                                                                                                                                                'NONE')
+                                   ])
+CamouflageTilingTypeNames = {getattr(CamouflageTilingType, k):k for k in dir(CamouflageTilingType) if not k.startswith('_') and k not in ('RANGE',
+                                                                                                                                          'NONE') if not k.startswith('_') and k not in ('RANGE',
+                                                                                                                                                                                         'NONE')}
 CamouflageTilingTypeNameToType = {v:k for k, v in CamouflageTilingTypeNames.iteritems()}
 EASING_TRANSITION_DURATION = 0.8
 IMMEDIATE_TRANSITION_DURATION = 0.0
@@ -399,22 +339,13 @@ class SLOT_TYPE_NAMES(object):
     FIXED_EMBLEM = 'fixedEmblem'
     FIXED_INSCRIPTION = 'fixedInscription'
     FIXED_PROJECTION_DECAL = 'fixedProjectionDecal'
-    EDITABLE_STYLE_DELETABLE = (INSCRIPTION, EMBLEM, PROJECTION_DECAL)
+    EDITABLE_STYLE_DELETABLE = (
+     INSCRIPTION, EMBLEM, PROJECTION_DECAL)
     DECALS = (INSCRIPTION, EMBLEM)
     FIXED = (FIXED_EMBLEM, FIXED_INSCRIPTION, FIXED_PROJECTION_DECAL)
-    ALL = (PAINT,
-     CAMOUFLAGE,
-     INSCRIPTION,
-     EMBLEM,
-     STYLE,
-     EFFECT,
-     PROJECTION_DECAL,
-     INSIGNIA,
-     FIXED_EMBLEM,
-     FIXED_INSCRIPTION,
-     FIXED_PROJECTION_DECAL,
-     ATTACHMENT,
-     STAT_TRACKER)
+    ALL = (
+     PAINT, CAMOUFLAGE, INSCRIPTION, EMBLEM, STYLE, EFFECT, PROJECTION_DECAL, INSIGNIA,
+     FIXED_EMBLEM, FIXED_INSCRIPTION, FIXED_PROJECTION_DECAL, ATTACHMENT, STAT_TRACKER)
 
 
 class EDITING_STYLE_REASONS(object):
@@ -422,7 +353,8 @@ class EDITING_STYLE_REASONS(object):
     NOT_EDITABLE = 'notEditable'
     NOT_REACHED_LEVEL = 'notReachedLevel'
     NOT_HAVE_ANY_PROGRESSIVE_DECALS = 'notHaveAnyProgressiveDecals'
-    ENABLED = (IS_EDITABLE,)
+    ENABLED = (
+     IS_EDITABLE,)
     DISABLED = (NOT_EDITABLE, NOT_REACHED_LEVEL, NOT_HAVE_ANY_PROGRESSIVE_DECALS)
 
 
@@ -431,7 +363,8 @@ class Rarity(object):
     RARE = 'rare'
     EPIC = 'epic'
     LEGENDARY = 'legendary'
-    FILTERABLE = (LEGENDARY, EPIC, RARE)
+    FILTERABLE = (
+     LEGENDARY, EPIC, RARE)
     UI_EFFECT = (EPIC, LEGENDARY)
     ALL = FILTERABLE + (UNKNOWN,)
 
@@ -442,10 +375,7 @@ class AttachmentLogic(object):
     FLAG_ANIMATION = 'flagAnimation'
     PREFAB = 'prefab'
     FLAGS = (FLAG_PART, FLAG_ANIMATION)
-    ALL = (UNKNOWN,
-     FLAG_PART,
-     FLAG_ANIMATION,
-     PREFAB)
+    ALL = (UNKNOWN, FLAG_PART, FLAG_ANIMATION, PREFAB)
 
 
 class AttachmentType(object):
@@ -457,18 +387,8 @@ class AttachmentType(object):
     GUN_STATIC = 'gunStatic'
     GUN_RIGHT = 'gunRight'
     GUN_LEFT = 'gunLeft'
-    GUN_SLOTS = (GUN,
-     GUN_STATIC,
-     GUN_RIGHT,
-     GUN_LEFT)
-    ALL = (UNKNOWN,
-     UNIVERSAL,
-     TURRET,
-     GUN_MANTLET,
-     GUN,
-     GUN_STATIC,
-     GUN_RIGHT,
-     GUN_LEFT)
+    GUN_SLOTS = (GUN, GUN_STATIC, GUN_RIGHT, GUN_LEFT)
+    ALL = (UNKNOWN, UNIVERSAL, TURRET, GUN_MANTLET, GUN, GUN_STATIC, GUN_RIGHT, GUN_LEFT)
 
 
 class AttachmentSize(object):
@@ -476,10 +396,7 @@ class AttachmentSize(object):
     SMALL = 'small'
     MEDIUM = 'medium'
     LARGE = 'large'
-    ALL = (UNKNOWN,
-     SMALL,
-     MEDIUM,
-     LARGE)
+    ALL = (UNKNOWN, SMALL, MEDIUM, LARGE)
     DEFAULT = MEDIUM
 
 

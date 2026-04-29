@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/clans/data_wrapper/utils.py
 from debug_utils import LOG_ERROR
 from gui.clans import formatters as clans_fmts
 from helpers import time_utils
@@ -10,7 +8,9 @@ def getTimestamp(datetimeValue):
 
 
 def toPercents(value):
-    return 100 * value if value else value
+    if value:
+        return 100 * value
+    return value
 
 
 def getEfficiency(dividend, delimiter):
@@ -31,7 +31,7 @@ class FieldsCheckerMixin(object):
         super(FieldsCheckerMixin, self).__init__()
         self.__class = self.__class__
         if hasattr(self, '_fields'):
-            self._invalidFields = set((arg for arg in self._fields if arg not in kwargs))
+            self._invalidFields = set(arg for arg in self._fields if arg not in kwargs)
         else:
             self._invalidFields = set()
 
@@ -67,20 +67,22 @@ def fmtUnavailableValue(fields=tuple(), dummy=clans_fmts.DUMMY_UNAVAILABLE_DATA)
             checkAvailability = kwargs.pop('checkAvailability', False)
             if checkAvailability:
                 return _isAvailable(fields)
-            doFmt = kwargs.get('doFmt', False)
-            placeholder = kwargs.get('dummy', dummy) or dummy
-            f = kwargs.get('formatter', None)
-            if doFmt and not _isAvailable(fields):
-                return placeholder
-            try:
-                value = func(self)
-            except ValueError:
-                value = None
-
-            if value is None:
-                return placeholder
             else:
-                return f(value) if f is not None else value
+                doFmt = kwargs.get('doFmt', False)
+                placeholder = kwargs.get('dummy', dummy) or dummy
+                f = kwargs.get('formatter')
+                if doFmt and not _isAvailable(fields):
+                    return placeholder
+                try:
+                    value = func(self)
+                except ValueError:
+                    value = None
+
+                if value is None:
+                    return placeholder
+                if f is not None:
+                    return f(value)
+                return value
 
         return wrapper
 
@@ -124,7 +126,9 @@ def fmtZeroDivisionValue(defValue=0, dummy=clans_fmts.DUMMY_NULL_DATA):
 
 
 def formatString(value):
-    return clans_fmts.DUMMY_UNAVAILABLE_DATA if not value else passCensor(value)
+    if not value:
+        return clans_fmts.DUMMY_UNAVAILABLE_DATA
+    return passCensor(value)
 
 
 def fmtDelegat(path, dummy=clans_fmts.DUMMY_UNAVAILABLE_DATA):
@@ -143,7 +147,9 @@ def fmtDelegat(path, dummy=clans_fmts.DUMMY_UNAVAILABLE_DATA):
             if checkAvailability:
                 return _getGetter(path)(checkAvailability=checkAvailability)
             else:
-                return _getGetter(path)(doFmt=doFmt, dummy=placeholder, formatter=f) if doFmt else func(self, *args, **kwargs)
+                if doFmt:
+                    return _getGetter(path)(doFmt=doFmt, dummy=placeholder, formatter=f)
+                return func(self, *args, **kwargs)
 
         return wrapper
 
@@ -156,7 +162,7 @@ def conditionFormatter(formatter=None):
 
         def wrapper(self, *args, **kwargs):
             doFmt = kwargs.get('doFmt', False)
-            fmt = kwargs.get('formatter', None) or formatter
+            fmt = kwargs.get('formatter') or formatter
             value = func(self)
             if doFmt and fmt:
                 value = fmt(value)

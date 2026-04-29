@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/tank_setup/context_menu/consumable.py
 import SoundGroups
 from adisp import adisp_process, adisp_async
 from gui import shop

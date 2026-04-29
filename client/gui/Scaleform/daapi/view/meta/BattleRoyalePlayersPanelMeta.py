@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/BattleRoyalePlayersPanelMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class BattleRoyalePlayersPanelMeta(BaseDAAPIComponent):
@@ -8,10 +6,13 @@ class BattleRoyalePlayersPanelMeta(BaseDAAPIComponent):
         self._printOverrideError('switchToPlayer')
 
     def as_setPlayersDataS(self, data, lostIndex):
-        return self.flashObject.as_setPlayersData(data, lostIndex) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setPlayersData(data, lostIndex)
 
     def as_setRespawnVisibilityS(self, isVisible):
-        return self.flashObject.as_setRespawnVisibility(isVisible) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setRespawnVisibility(isVisible)
 
     def as_setIsSquadModeS(self, isSquadMode):
-        return self.flashObject.as_setIsSquadMode(isSquadMode) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setIsSquadMode(isSquadMode)

@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/role_description.py
+from __future__ import absolute_import
 import typing
 from constants import ROLE_TYPE_TO_LABEL, ACTION_TYPE_TO_LABEL, ARENA_PERIOD
 from items.vehicles import getActionsByRole
@@ -61,15 +60,15 @@ class RoleDescription(RoleDescriptionMeta):
         classWithRole = backport.text(roleExp.roleName.dyn(roleName, '')(), groupName=makeHtmlString(_ROLE_HTML_TEMPLATE, 'role', {'role': roleStr}))
         title = makeHtmlString(_ROLE_HTML_TEMPLATE, 'className', {'className': classWithRole})
         actions = getActionsByRole(roleId)
-        self.as_setDataS({'roleIcon': backport.image(R.images.gui.maps.icons.roleExp.roles.c_100x100.dyn(roleName, '')()),
-         'roleDescription': title,
-         'roleActions': [ self.__getRoleActionVO(action) for action in actions ]})
+        self.as_setDataS({'roleIcon': backport.image(R.images.gui.maps.icons.roleExp.roles.c_100x100.dyn(roleName, '')()), 
+           'roleDescription': title, 
+           'roleActions': [ self.__getRoleActionVO(action) for action in actions ]})
 
     @staticmethod
     def __getRoleActionVO(action):
         actionLbl = ACTION_TYPE_TO_LABEL[action]
-        return {'image': backport.image(R.images.gui.maps.icons.roleExp.actions.c_128x128.dyn(actionLbl, '')()),
-         'description': backport.text(R.strings.menu.roleExp.action.dyn(actionLbl, '')())}
+        return {'image': backport.image(R.images.gui.maps.icons.roleExp.actions.c_128x128.dyn(actionLbl, '')()), 
+           'description': backport.text(R.strings.menu.roleExp.action.dyn(actionLbl, '')())}
 
     def __hide(self):
         self.__removeListeners()

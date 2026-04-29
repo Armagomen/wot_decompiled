@@ -1,31 +1,13 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/account_helpers/settings_core/options.py
 from enum import Enum
 from typing import TYPE_CHECKING
-import Sound
-import base64
-import cPickle
-import random
-import sys
-import fractions
-import itertools
-import weakref
+import Sound, base64, cPickle, random, sys, fractions, itertools, weakref
 from collections import namedtuple, OrderedDict
 from operator import itemgetter
-import logging
-import AvatarInputHandler.control_modes
+import logging, AvatarInputHandler.control_modes
 from aih_constants import CTRL_MODE_NAME
 import GUI
 from AvatarInputHandler.cameras import FovExtended
-import BigWorld
-import ResMgr
-import Keys
-import BattleReplay
-import VOIP
-import Settings
-import SoundGroups
-import ArenaType
-import WWISE
+import BigWorld, ResMgr, Keys, BattleReplay, VOIP, Settings, SoundGroups, ArenaType, WWISE
 from constants import CONTENT_TYPE, IS_CHINA
 from gui.Scaleform.genConsts.ACOUSTICS import ACOUSTICS
 from gui.app_loader import app_getter
@@ -36,8 +18,7 @@ from gui.sounds.sound_constants import SPEAKERS_CONFIG
 from helpers import dependency
 from helpers import isPlayerAvatar
 from helpers.i18n import makeString
-import nations
-import CommandMapping
+import nations, CommandMapping
 from helpers import i18n
 from AvatarInputHandler import INPUT_HANDLER_CFG, AvatarInputHandler
 from AvatarInputHandler.DynamicCameras import ArcadeCamera, SniperCamera, StrategicCamera, ArtyCamera, DualGunCamera, kill_cam_camera, free_camera, twin_gun_camera
@@ -68,7 +49,7 @@ from skeletons.gui.battle_hints.newbie_battle_hints_controller import INewbieBat
 from skeletons.gui.prebattle_hints.newbie_controller import INewbiePrebattleHintsController
 from skeletons.gui.sounds import ISoundsController
 from gui import makeHtmlString
-from skeletons.gui.game_control import ICommendationsController, ISpecialSoundCtrl, IAnonymizerController, IVehiclePostProgressionController
+from skeletons.gui.game_control import ICommendationsController, ISpecialSoundCtrl, IAnonymizerController, IVehiclePostProgressionController, IW2GTGameController
 if TYPE_CHECKING:
     from typing import Tuple as TTuple
 _logger = logging.getLogger(__name__)
@@ -85,7 +66,9 @@ def highestPriorityMethod(methods):
         return APPLY_METHOD.RESTART
     if APPLY_METHOD.DELAYED in methods:
         return APPLY_METHOD.DELAYED
-    return APPLY_METHOD.NEXT_BATTLE if APPLY_METHOD.NEXT_BATTLE in methods else APPLY_METHOD.NORMAL
+    if APPLY_METHOD.NEXT_BATTLE in methods:
+        return APPLY_METHOD.NEXT_BATTLE
+    return APPLY_METHOD.NORMAL
 
 
 SettingsExtraData = namedtuple('SettingsExtraData', 'current options extraData')
@@ -124,10 +107,10 @@ class SettingAbstract(ISetting):
         return
 
     def _get(self):
-        return None
+        return
 
     def _getOptions(self):
-        return None
+        return
 
     def _set(self, value):
         pass
@@ -175,13 +158,16 @@ class SettingAbstract(ISetting):
 
     def pack(self):
         options = self._getOptions()
-        return self._get() if options is None else self.PackStruct(self._get(), options)._asdict()
+        if options is None:
+            return self._get()
+        else:
+            return self.PackStruct(self._get(), options)._asdict()
 
     def dump(self):
         pass
 
     def getDefaultValue(self):
-        return None
+        return
 
     def setSystemValue(self, value):
         pass
@@ -207,7 +193,7 @@ class SettingsContainer(ISetting):
     def __init__(self, settings):
         super(SettingsContainer, self).__init__()
         self.settings = settings
-        self.indices = dict(((n, idx) for idx, (n, s) in enumerate(self.settings)))
+        self.indices = dict((n, idx) for idx, (n, s) in enumerate(self.settings))
 
     def __forEach(self, names, processor):
         for name, param in self.settings:
@@ -318,10 +304,14 @@ class SoundSetting(SettingAbstract):
         return float(volume) / self.VOLUME_MULT
 
     def _get(self):
-        return self.__toGuiVolume(SoundGroups.g_instance.getMasterVolume()) if self.group == 'master' else self.__toGuiVolume(SoundGroups.g_instance.getVolume(self.group))
+        if self.group == 'master':
+            return self.__toGuiVolume(SoundGroups.g_instance.getMasterVolume())
+        return self.__toGuiVolume(SoundGroups.g_instance.getVolume(self.group))
 
     def _set(self, value):
-        return SoundGroups.g_instance.setMasterVolume(self.__toSysVolume(value)) if self.group == 'master' else SoundGroups.g_instance.setVolume(self.group, self.__toSysVolume(value))
+        if self.group == 'master':
+            return SoundGroups.g_instance.setMasterVolume(self.__toSysVolume(value))
+        return SoundGroups.g_instance.setVolume(self.group, self.__toSysVolume(value))
 
 
 class SoundEnableSetting(SettingAbstract):
@@ -413,8 +403,8 @@ class StorageSetting(RegularSetting):
 
     def _set(self, value):
         result = self.setSystemValue(value)
-        setting = {'option': self.settingName,
-         'value': value}
+        setting = {'option': self.settingName, 
+           'value': value}
         self._storage.store(setting)
         return result
 
@@ -434,7 +424,9 @@ class StorageDumpSetting(StorageSetting):
         BattleReplay.g_replayCtrl.setSetting(self.settingName, self.getDumpValue())
 
     def _get(self):
-        return self.getDumpedValue() if BattleReplay.isPlaying() else super(StorageDumpSetting, self)._get()
+        if BattleReplay.isPlaying():
+            return self.getDumpedValue()
+        return super(StorageDumpSetting, self)._get()
 
     def _set(self, value):
         if BattleReplay.isPlaying():
@@ -461,7 +453,9 @@ class AccountDumpSetting(AccountSetting):
         BattleReplay.g_replayCtrl.setSetting(self.__dumpName, self.getDumpValue())
 
     def _get(self):
-        return self.getDumpedValue() if BattleReplay.isPlaying() else super(AccountDumpSetting, self)._get()
+        if BattleReplay.isPlaying():
+            return self.getDumpedValue()
+        return super(AccountDumpSetting, self)._get()
 
     def _save(self, value):
         if BattleReplay.isPlaying():
@@ -493,7 +487,9 @@ class CommendationsSettings(EnablingSettingMixin, StorageDumpSetting):
         return True
 
     def _get(self):
-        return super(CommendationsSettings, self)._get() if self._isEnabled() else False
+        if self._isEnabled():
+            return super(CommendationsSettings, self)._get()
+        return False
 
     def _isEnabled(self):
         return dependency.instance(ICommendationsController).isCommendationsEnabled
@@ -506,10 +502,10 @@ class UserPrefsSetting(SettingAbstract):
         self.sectionName = sectionName
 
     def _readValue(self, section):
-        return None
+        return
 
     def _writeValue(self, section, value):
-        return None
+        return
 
     def _get(self):
         return self._readValue(Settings.g_instance.userPrefs)
@@ -522,7 +518,10 @@ class UserPrefsBoolSetting(UserPrefsSetting):
 
     def _readValue(self, section):
         default = self.getDefaultValue()
-        return section.readBool(self.sectionName, default) if section is not None else default
+        if section is not None:
+            return section.readBool(self.sectionName, default)
+        else:
+            return default
 
     def _writeValue(self, section, value):
         if section is not None:
@@ -539,7 +538,10 @@ class UserPrefsStringSetting(UserPrefsSetting):
 
     def _readValue(self, section):
         default = self.getDefaultValue()
-        return section.readString(self.sectionName, str(default)) if section is not None else default
+        if section is not None:
+            return section.readString(self.sectionName, str(default))
+        else:
+            return default
 
     def _writeValue(self, section, value):
         if section is not None:
@@ -549,14 +551,17 @@ class UserPrefsStringSetting(UserPrefsSetting):
             return False
 
     def getDefaultValue(self):
-        pass
+        return ''
 
 
 class UserPrefsFloatSetting(UserPrefsSetting):
 
     def _readValue(self, section):
         default = self.getDefaultValue()
-        return section.readFloat(self.sectionName, float(default)) if section is not None else default
+        if section is not None:
+            return section.readFloat(self.sectionName, float(default))
+        else:
+            return default
 
     def _writeValue(self, section, value):
         if section is not None:
@@ -566,14 +571,17 @@ class UserPrefsFloatSetting(UserPrefsSetting):
             return False
 
     def getDefaultValue(self):
-        pass
+        return 0.0
 
 
 class UserPrefsInt64Setting(UserPrefsSetting):
 
     def _readValue(self, section):
         default = self.getDefaultValue()
-        return section.readInt64(self.sectionName, long(default)) if section is not None else default
+        if section is not None:
+            return section.readInt64(self.sectionName, long(default))
+        else:
+            return default
 
     def _writeValue(self, section, value):
         if section is not None:
@@ -583,7 +591,7 @@ class UserPrefsInt64Setting(UserPrefsSetting):
             return False
 
     def getDefaultValue(self):
-        pass
+        return 0
 
 
 class PreferencesSetting(SettingAbstract):
@@ -608,7 +616,8 @@ class PostMortemModeSetting(StorageDumpSetting):
         ENEMY = 'enemy'
         SELF = 'self'
 
-    POST_MORTEM_MODES = (OPTIONS.ANALYSIS,
+    POST_MORTEM_MODES = (
+     OPTIONS.ANALYSIS,
      OPTIONS.SIMPLE,
      OPTIONS.ENEMY,
      OPTIONS.SELF)
@@ -645,11 +654,15 @@ class PlayersPanelStateSetting(AccountDumpSetting):
 
 class MinimapSizeSetting(AccountDumpSetting):
     settingsCore = dependency.descriptor(ISettingsCore)
-    MINIMAP_SIZE_INDEX = OrderedDict([(1300, 4),
+    MINIMAP_SIZE_INDEX = OrderedDict([
+     (1300, 4),
      (1050, 3),
      (900, 2),
      (0, 1)])
-    MINIMAP_SIZE_INDEX_WITH_SCALE = OrderedDict([(1050, 3), (900, 2), (0, 1)])
+    MINIMAP_SIZE_INDEX_WITH_SCALE = OrderedDict([
+     (1050, 3),
+     (900, 2),
+     (0, 1)])
 
     def getDefaultValue(self):
         currentWindowHeight = g_monitorSettings.screenResolution.height
@@ -709,7 +722,7 @@ class VOIPChannelSetting(UserPrefsInt64Setting):
         super(VOIPChannelSetting, self)._save(flags)
 
     def getDefaultValue(self):
-        pass
+        return 0
 
 
 class VOIPCaptureDevicesSetting(UserPrefsStringSetting):
@@ -718,41 +731,40 @@ class VOIPCaptureDevicesSetting(UserPrefsStringSetting):
         super(VOIPCaptureDevicesSetting, self).__init__(Settings.KEY_VOIP_DEVICE, isPreview)
 
     def _get(self):
+        currentDevice = super(VOIPCaptureDevicesSetting, self)._get()
         vm = VOIP.getVOIPManager()
-        currentDeviceName = super(VOIPCaptureDevicesSetting, self)._get()
-        deviceIdx = self.__getDeviceIdxByName(currentDeviceName)
+        deviceIdx = self.__getDeviceIdx(currentDevice)
         if deviceIdx == -1:
-            deviceIdx = self.__getDeviceIdxByName(vm.getCurrentCaptureDevice())
+            deviceIdx = self.__getDeviceIdx(vm.getCurrentCaptureDevice())
         return deviceIdx
 
     def _getOptions(self):
-        return [ i18n.encodeUtf8(device.decode(sys.getfilesystemencoding())) for device in self._getRawOptions() ]
-
-    def _getRawOptions(self):
-        return VOIP.getVOIPManager().getCaptureDevices()
+        devicesNames = VOIP.getVOIPManager().getCaptureDevicesNames()
+        return [ i18n.encodeUtf8(deviceName.decode(sys.getfilesystemencoding())) for deviceName in devicesNames ]
 
     def _set(self, value):
         vm = VOIP.getVOIPManager()
-        if vm.getCaptureDevices():
-            device = self.__getDeviceNameByIdx(value)
+        devices = vm.getCaptureDevices()
+        if devices:
+            device = self.__getDeviceByIdx(value)
             vm.setCaptureDevice(device)
-            LOG_DEBUG('Selecting new capture device', device)
             super(VOIPCaptureDevicesSetting, self)._set(device)
 
     def _save(self, value):
-        super(VOIPCaptureDevicesSetting, self)._save(self.__getDeviceNameByIdx(value))
+        super(VOIPCaptureDevicesSetting, self)._save(self.__getDeviceByIdx(value))
 
     @classmethod
-    def __getDeviceNameByIdx(cls, idx):
-        vm = VOIP.getVOIPManager()
-        device = vm.getCaptureDevices()[0]
-        if len(vm.getCaptureDevices()) > idx:
-            device = vm.getCaptureDevices()[int(idx)]
-        return device
+    def __getDeviceByIdx(cls, idx):
+        devices = VOIP.getVOIPManager().getCaptureDevices()
+        if len(devices) > idx:
+            return devices[int(idx)]
+        return devices[0]
 
-    def __getDeviceIdxByName(self, deviceName):
-        options = self._getRawOptions()
-        return options.index(deviceName) if deviceName in options else -1
+    def __getDeviceIdx(self, device):
+        devices = VOIP.getVOIPManager().getCaptureDevices()
+        if device in devices:
+            return devices.index(device)
+        return -1
 
 
 class VOIPSupportSetting(ReadOnlySetting):
@@ -762,7 +774,7 @@ class VOIPSupportSetting(ReadOnlySetting):
 
     @proto_getter(PROTO_TYPE.BW_CHAT2)
     def bwProto(self):
-        return None
+        return
 
     def __isVoiceChatReady(self):
         return self.bwProto.voipController.isReady()
@@ -775,7 +787,10 @@ class MessengerSetting(StorageDumpSetting):
 
     def getDefaultValue(self):
         data = messenger_settings.userPrefs._asdict()
-        return data[self.settingName] if self.settingName in data else None
+        if self.settingName in data:
+            return data[self.settingName]
+        else:
+            return
 
 
 class MessengerDateTimeSetting(MessengerSetting):
@@ -806,7 +821,10 @@ class ClansSetting(MessengerSetting):
 
     def _get(self):
         isEnabled = self.lobbyContext.getServerSettings().clanProfile.isEnabled()
-        return super(ClansSetting, self)._get() if isEnabled else None
+        if isEnabled:
+            return super(ClansSetting, self)._get()
+        else:
+            return
 
     def getDefaultValue(self):
         return True
@@ -968,7 +986,10 @@ class GraphicSetting(SettingAbstract):
         self._currentValue = graphics.getGraphicsSetting(self.name)
 
     def _get(self):
-        return self._currentValue.value if self._currentValue is not None else None
+        if self._currentValue is not None:
+            return self._currentValue.value
+        else:
+            return
 
     def _getOptions(self):
         if self._currentValue is not None:
@@ -976,10 +997,10 @@ class GraphicSetting(SettingAbstract):
                 return self._currentValue.options
             options = []
             for label, data, advanced, supported in self._currentValue.options:
-                options.append({'label': '#settings:graphicsSettingsOptions/%s' % str(label),
-                 'data': data,
-                 'advanced': advanced,
-                 'supported': supported})
+                options.append({'label': '#settings:graphicsSettingsOptions/%s' % str(label), 
+                   'data': data, 
+                   'advanced': advanced, 
+                   'supported': supported})
 
             options = sorted(options, key=itemgetter('data'), reverse=True)
             return options
@@ -1102,7 +1123,10 @@ class WindowSizeSetting(PreferencesSetting):
 
     def _get(self):
         size = self._storage.windowSize
-        return self.__getWindowSizeIndex(*size) if size is not None else None
+        if size is not None:
+            return self.__getWindowSizeIndex(*size)
+        else:
+            return
 
     def _getOptions(self):
         allModes = []
@@ -1132,6 +1156,8 @@ class WindowSizeSetting(PreferencesSetting):
         for index, (w, h) in enumerate(self.__getWindowSizes()):
             if w == width and h == height:
                 return index
+
+        return 0
 
     def __getWindowSizes(self):
         sizes = self.__getSuitableWindowSizes()[self._storage.monitor]
@@ -1179,9 +1205,14 @@ class ResolutionSetting(PreferencesSetting):
             if w == width and h == height:
                 return idx
 
+        return 0
+
     def _get(self):
         resolution = self._storage.resolution
-        return self._getResolutionIndex(*resolution) if resolution is not None else None
+        if resolution is not None:
+            return self._getResolutionIndex(*resolution)
+        else:
+            return
 
     def _findBestAspect(self, aspect, maxInt):
         w = 4
@@ -1200,7 +1231,8 @@ class ResolutionSetting(PreferencesSetting):
 
             w = w + 1
 
-        return (bestW, bestH)
+        return (
+         bestW, bestH)
 
     def _getOptions(self):
         res = []
@@ -1217,7 +1249,7 @@ class ResolutionSetting(PreferencesSetting):
                 if widthOpt == 8:
                     widthOpt *= 2
                     heightOpt *= 2
-                formatedRes.append('{0}x{1} [{2}:{3}]'.format(width, height, widthOpt, heightOpt))
+                formatedRes.append(('{0}x{1} [{2}:{3}]').format(width, height, widthOpt, heightOpt))
 
             res.append(formatedRes)
 
@@ -1252,7 +1284,10 @@ class BorderlessSizeSetting(ResolutionSetting):
 
     def _get(self):
         resolution = self._storage.borderlessSize
-        return self._getResolutionIndex(*resolution) if resolution is not None else None
+        if resolution is not None:
+            return self._getResolutionIndex(*resolution)
+        else:
+            return
 
     def _set(self, value):
         size = self._getResolutions()[int(value)]
@@ -1304,9 +1339,9 @@ class VideoModeSettings(PreferencesSetting):
     WINDOWED = 0
     FULLSCREEN = 1
     BORDERLESS = 2
-    OPTIONS = {WINDOWED: 'windowed',
-     FULLSCREEN: 'fullscreen',
-     BORDERLESS: 'borderless'}
+    OPTIONS = {WINDOWED: 'windowed', 
+       FULLSCREEN: 'fullscreen', 
+       BORDERLESS: 'borderless'}
 
     def __init__(self, storage):
         super(VideoModeSettings, self).__init__()
@@ -1315,12 +1350,16 @@ class VideoModeSettings(PreferencesSetting):
 
     def _getOptions(self):
         result = []
-        allowScreenModes = ((BigWorld.WindowModeWindowed, self.OPTIONS[self.WINDOWED]), (BigWorld.WindowModeExclusiveFullscreen, self.OPTIONS[self.FULLSCREEN]))
+        allowScreenModes = (
+         (
+          BigWorld.WindowModeWindowed, self.OPTIONS[self.WINDOWED]),
+         (
+          BigWorld.WindowModeExclusiveFullscreen, self.OPTIONS[self.FULLSCREEN]))
         if graphics.getSuitableVideoModes():
             allowScreenModes += ((BigWorld.WindowModeBorderless, self.OPTIONS[self.BORDERLESS]),)
         for data, label in allowScreenModes:
-            result.append({'data': data,
-             'label': '#settings:screenMode/%s' % label})
+            result.append({'data': data, 
+               'label': '#settings:screenMode/%s' % label})
 
         return result
 
@@ -1400,7 +1439,8 @@ class VehicleMarkerSetting(StorageAccountSetting):
                     value = self._storage.extract(self.settingName, on, self._default[on])
                 if param == self.OPTIONS.PARAMS.HP and forcePackingHP:
                     marker[on] = self.PackStruct(value, [ '#settings:marker/hp/type%d' % mid for mid in xrange(4) ])._asdict()
-                marker[on] = value
+                else:
+                    marker[on] = value
 
         return marker
 
@@ -1422,10 +1462,14 @@ class AimSetting(StorageAccountSetting):
         GUN_TAG_TYPE = 'gunTagType'
         ZOOM_INDICATOR = 'zoomIndicator'
 
-    VIRTUAL_OPTIONS = {OPTIONS.MIXING_TYPE: (OPTIONS.MIXING, 4),
-     OPTIONS.GUN_TAG_TYPE: (OPTIONS.GUN_TAG, 15),
-     OPTIONS.CENTRAL_TAG_TYPE: (OPTIONS.CENTRAL_TAG, 14),
-     OPTIONS.NET_TYPE: (OPTIONS.NET, 4)}
+    VIRTUAL_OPTIONS = {OPTIONS.MIXING_TYPE: (
+                           OPTIONS.MIXING, 4), 
+       OPTIONS.GUN_TAG_TYPE: (
+                            OPTIONS.GUN_TAG, 15), 
+       OPTIONS.CENTRAL_TAG_TYPE: (
+                                OPTIONS.CENTRAL_TAG, 14), 
+       OPTIONS.NET_TYPE: (
+                        OPTIONS.NET, 4)}
 
     def _get(self):
         result = {}
@@ -1454,9 +1498,8 @@ class AimSetting(StorageAccountSetting):
         result = self._get()
         for vname, (name, optsLen) in self.VIRTUAL_OPTIONS.iteritems():
             if vname in result:
-                types = [ {'loc': makeString('#settings:aim/%s/type%d' % (name, i)),
-                 'label': '#settings:aim/%s/type%d' % (name, i),
-                 'index': i} for i in xrange(int(optsLen)) ]
+                types = [ {'loc': makeString('#settings:aim/%s/type%d' % (name, i)), 'label': '#settings:aim/%s/type%d' % (name, i), 'index': i} for i in xrange(int(optsLen))
+                        ]
                 types = sorted(types, key=itemgetter('loc'))
                 for item in types:
                     item.pop('loc', None)
@@ -1488,9 +1531,9 @@ class SPGAimSetting(StorageDumpSetting):
         return data
 
     def pack(self):
-        return {'current': self._get(),
-         'options': self._getOptions(),
-         'extraData': self.getExtraData()}
+        return {'current': self._get(), 
+           'options': self._getOptions(), 
+           'extraData': self.getExtraData()}
 
     def getDefaultValue(self):
         return AccountSettings.getSettingsDefault('spgAim').get(self.settingName, None)
@@ -1499,26 +1542,30 @@ class SPGAimSetting(StorageDumpSetting):
 class _BaseAimContourSetting(StorageDumpSetting):
     _RES_ROOT = None
     _OPTIONS_NUMBER = None
-    _LOW_QUALITY_PRESETS = ('LOW',)
+    _LOW_QUALITY_PRESETS = ('LOW', )
     _DEFAULT_VALUE = None
 
     def getDefaultValue(self):
-        return self._DEFAULT_VALUE if self._isHighQualityPreset() else AccountSettings.getSettingsDefault('contour').get(self.settingName, None)
+        if self._isHighQualityPreset():
+            return self._DEFAULT_VALUE
+        else:
+            return AccountSettings.getSettingsDefault('contour').get(self.settingName, None)
 
     def setSystemValue(self, value):
         raise NotImplementedError
 
     def pack(self):
-        return {'current': self._get(),
-         'options': self._getOptions()}
+        return {'current': self._get(), 
+           'options': self._getOptions()}
 
     def _getOptions(self):
-        return [ {'data': value,
-         'label': backport.text(self._RES_ROOT.dyn('type{}'.format(value))())} for value in xrange(self._OPTIONS_NUMBER) ]
+        return [ {'data': value, 'label': backport.text(self._RES_ROOT.dyn(('type{}').format(value))())} for value in xrange(self._OPTIONS_NUMBER)
+               ]
 
     def _isHighQualityPreset(self):
         presetIndx = BigWorld.detectGraphicsPresetFromSystemSettings()
-        lowQualityPresets = [ BigWorld.getSystemPerformancePresetIdFromName(pName) for pName in self._LOW_QUALITY_PRESETS ]
+        lowQualityPresets = [ BigWorld.getSystemPerformancePresetIdFromName(pName) for pName in self._LOW_QUALITY_PRESETS
+                            ]
         isHighQualityPreset = presetIndx not in lowQualityPresets
         return isHighQualityPreset
 
@@ -1532,12 +1579,13 @@ class ContourSetting(_BaseAimContourSetting):
         BigWorld.enableEdgeDrawerVisual(not value)
 
     def getExtraData(self):
-        return [ {'tooltip': makeTooltip(body=backport.text(self._RES_ROOT.dyn('type{}'.format(value)).tooltip()))} for value in xrange(self._OPTIONS_NUMBER) ]
+        return [ {'tooltip': makeTooltip(body=backport.text(self._RES_ROOT.dyn(('type{}').format(value)).tooltip()))} for value in xrange(self._OPTIONS_NUMBER)
+               ]
 
     def pack(self):
-        return {'current': self._get(),
-         'options': self._getOptions(),
-         'extraData': self.getExtraData()}
+        return {'current': self._get(), 
+           'options': self._getOptions(), 
+           'extraData': self.getExtraData()}
 
 
 class ContourPenetratableZoneSetting(_BaseAimContourSetting):
@@ -1564,7 +1612,9 @@ class SPGStrategicCamMode(StorageDumpSetting):
         BASE = 'base'
         ALT = 'alt'
 
-    ARTY_CAM_OPTIONS = [OPTIONS.BASE, OPTIONS.ALT]
+    ARTY_CAM_OPTIONS = [
+     OPTIONS.BASE,
+     OPTIONS.ALT]
 
     def getDefaultValue(self):
         return self.ARTY_CAM_OPTIONS.index(self.OPTIONS.BASE)
@@ -1577,9 +1627,9 @@ class SPGStrategicCamMode(StorageDumpSetting):
         return data
 
     def pack(self):
-        return {'current': self._get(),
-         'options': self._getOptions(),
-         'extraData': self.getExtraData()}
+        return {'current': self._get(), 
+           'options': self._getOptions(), 
+           'extraData': self.getExtraData()}
 
     def _getOptions(self):
         settingsKey = '#settings:aim/spg/{}/{}'
@@ -1595,9 +1645,9 @@ class SPGAimEntranceMode(StorageDumpSetting):
         return {'label': backport.text(R.strings.settings.aim.spg.aimEntranceMode())}
 
     def pack(self):
-        return {'current': self._get(),
-         'options': self._getOptions(),
-         'extraData': self.getExtraData()}
+        return {'current': self._get(), 
+           'options': self._getOptions(), 
+           'extraData': self.getExtraData()}
 
     def _getOptions(self):
         settingsKey = '#settings:aim/spg/{}/{}'
@@ -1617,7 +1667,10 @@ class MinimapVehModelsSetting(StorageDumpSetting):
         ALT = 'alt'
         ALWAYS = 'always'
 
-    VEHICLE_MODELS_TYPES = [OPTIONS.NEVER, OPTIONS.ALT, OPTIONS.ALWAYS]
+    VEHICLE_MODELS_TYPES = [
+     OPTIONS.NEVER,
+     OPTIONS.ALT,
+     OPTIONS.ALWAYS]
 
     def _getOptions(self):
         settingsKey = '#settings:game/%s/%s'
@@ -1633,7 +1686,9 @@ class MinimapArtyHitSetting(StorageDumpSetting):
         HIDE = 'hide'
         DOT = 'dot'
 
-    ARTY_HIT_OPTIONS = [OPTIONS.HIDE, OPTIONS.DOT]
+    ARTY_HIT_OPTIONS = [
+     OPTIONS.HIDE,
+     OPTIONS.DOT]
 
     def getDefaultValue(self):
         return self.ARTY_HIT_OPTIONS.index(self.OPTIONS.DOT)
@@ -1660,7 +1715,9 @@ class CarouselTypeSetting(StorageDumpSetting):
         SINGLE = 'single'
         DOUBLE = 'double'
 
-    CAROUSEL_TYPES = (OPTIONS.SINGLE, OPTIONS.DOUBLE)
+    CAROUSEL_TYPES = (
+     OPTIONS.SINGLE,
+     OPTIONS.DOUBLE)
 
     def _getOptions(self):
         settingsKey = '#settings:game/%s/%s'
@@ -1680,7 +1737,10 @@ class CustomizationDisplayTypeSetting(StorageDumpSetting):
         NOT_HISTORICAL = 'notHistorical'
         ALL = 'all'
 
-    CONTENT_TYPES = (OPTIONS.HISTORICAL, OPTIONS.NOT_HISTORICAL, OPTIONS.ALL)
+    CONTENT_TYPES = (
+     OPTIONS.HISTORICAL,
+     OPTIONS.NOT_HISTORICAL,
+     OPTIONS.ALL)
 
     def _getOptions(self):
         settingsKey = '#settings:game/%s/%s'
@@ -1699,7 +1759,9 @@ class DoubleCarouselTypeSetting(StorageDumpSetting):
         ADAPTIVE = 'adaptive'
         SMALL = 'small'
 
-    DOUBLE_CAROUSEL_TYPES = (OPTIONS.ADAPTIVE, OPTIONS.SMALL)
+    DOUBLE_CAROUSEL_TYPES = (
+     OPTIONS.ADAPTIVE,
+     OPTIONS.SMALL)
 
     def _getOptions(self):
         settingsKey = '#settings:game/%s/%s'
@@ -1727,10 +1789,13 @@ class BattleLoadingTipSetting(AccountDumpSetting):
         TEXT = 'textTip'
         VISUAL = 'visualTip'
         MINIMAP = 'minimap'
-        TIPS_TYPES = (TEXT, VISUAL, MINIMAP)
+        TIPS_TYPES = (
+         TEXT, VISUAL, MINIMAP)
 
     def getSettingID(self, isVisualOnly=False):
-        return self.OPTIONS.VISUAL if isVisualOnly else self.OPTIONS.TIPS_TYPES[self._get()]
+        if isVisualOnly:
+            return self.OPTIONS.VISUAL
+        return self.OPTIONS.TIPS_TYPES[self._get()]
 
     def _getOptions(self):
         settingsKey = '#settings:game/%s/%s'
@@ -1755,6 +1820,13 @@ class NewbieBattleHintsSetting(EnablingSettingMixin, StorageSetting):
         return True
 
 
+class W2GTEnabledSetting(EnablingSettingMixin, StorageSetting):
+    __w2gtGameCtrl = dependency.descriptor(IW2GTGameController)
+
+    def _isEnabled(self):
+        return self.__w2gtGameCtrl.isEnabledByServer and not BattleReplay.isPlaying()
+
+
 class ShowMarksOnGunSetting(StorageAccountSetting):
 
     def _get(self):
@@ -1771,7 +1843,7 @@ class ControlSetting(SettingAbstract):
     ControlPackStruct = namedtuple('ControlPackStruct', 'current default')
 
     def _getDefault(self):
-        return None
+        return
 
     def pack(self):
         return self.ControlPackStruct(self._get(), self._getDefault())._asdict()
@@ -1782,15 +1854,24 @@ class StorageControlSetting(StorageDumpSetting, ControlSetting):
 
 
 class MouseSetting(ControlSetting):
-    CAMERAS = {CTRL_MODE_NAME.POSTMORTEM: (ArcadeCamera.getCameraAsSettingsHolder, 'postMortemMode/camera'),
-     CTRL_MODE_NAME.ARCADE: (ArcadeCamera.getCameraAsSettingsHolder, 'arcadeMode/camera'),
-     CTRL_MODE_NAME.SNIPER: (SniperCamera.getCameraAsSettingsHolder, 'sniperMode/camera'),
-     CTRL_MODE_NAME.DUAL_GUN: (DualGunCamera.getCameraAsSettingsHolder, 'sniperMode/camera'),
-     CTRL_MODE_NAME.TWIN_GUN: (twin_gun_camera.getCameraAsSettingsHolder, 'sniperMode/camera'),
-     CTRL_MODE_NAME.STRATEGIC: (StrategicCamera.getCameraAsSettingsHolder, 'strategicMode/camera'),
-     CTRL_MODE_NAME.ARTY: (ArtyCamera.getCameraAsSettingsHolder, 'artyMode/camera'),
-     CTRL_MODE_NAME.KILL_CAM: (kill_cam_camera.getCameraAsSettingsHolder, 'killCamMode/camera'),
-     CTRL_MODE_NAME.DEATH_FREE_CAM: (free_camera.getCameraAsSettingsHolder, 'freeVideoMode/camera')}
+    CAMERAS = {CTRL_MODE_NAME.POSTMORTEM: (
+                                 ArcadeCamera.getCameraAsSettingsHolder, 'postMortemMode/camera'), 
+       CTRL_MODE_NAME.ARCADE: (
+                             ArcadeCamera.getCameraAsSettingsHolder, 'arcadeMode/camera'), 
+       CTRL_MODE_NAME.SNIPER: (
+                             SniperCamera.getCameraAsSettingsHolder, 'sniperMode/camera'), 
+       CTRL_MODE_NAME.DUAL_GUN: (
+                               DualGunCamera.getCameraAsSettingsHolder, 'sniperMode/camera'), 
+       CTRL_MODE_NAME.TWIN_GUN: (
+                               twin_gun_camera.getCameraAsSettingsHolder, 'sniperMode/camera'), 
+       CTRL_MODE_NAME.STRATEGIC: (
+                                StrategicCamera.getCameraAsSettingsHolder, 'strategicMode/camera'), 
+       CTRL_MODE_NAME.ARTY: (
+                           ArtyCamera.getCameraAsSettingsHolder, 'artyMode/camera'), 
+       CTRL_MODE_NAME.KILL_CAM: (
+                               kill_cam_camera.getCameraAsSettingsHolder, 'killCamMode/camera'), 
+       CTRL_MODE_NAME.DEATH_FREE_CAM: (
+                                     free_camera.getCameraAsSettingsHolder, 'freeVideoMode/camera')}
 
     def __init__(self, mode, setting, default, isPreview=False, masterSwitch=''):
         super(MouseSetting, self).__init__(isPreview)
@@ -1817,10 +1898,12 @@ class MouseSetting(ControlSetting):
 
     def _get(self):
         if self._isDisabledByMasterSwitch():
-            return None
+            return
         else:
             camera = self.getCamera()
-            return camera.getUserConfigValue(self.setting) if camera is not None else self.default
+            if camera is not None:
+                return camera.getUserConfigValue(self.setting)
+            return self.default
 
     def _set(self, value):
         if self._isDisabledByMasterSwitch():
@@ -1875,7 +1958,8 @@ class FOVSetting(RegularSetting):
         self.__storage.proxyFOV(self)
 
     def _get(self):
-        return (self.__static.get(),) + tuple(self.__dynamic.get())
+        return (
+         self.__static.get(),) + tuple(self.__dynamic.get())
 
     def _set(self, value):
         self.__static.apply(value[0])
@@ -1982,7 +2066,7 @@ class KeyboardSetting(ControlSetting):
 
     @app_getter
     def app(self):
-        return None
+        return
 
     def _getDefault(self):
         command = CommandMapping.g_instance.getCommand(self.cmd)
@@ -2019,14 +2103,26 @@ class KeyboardSetting(ControlSetting):
 
 
 class KeyboardSettings(SettingsContainer):
-    KEYS_LAYOUT = (('movement', (('forward', 'CMD_MOVE_FORWARD'),
+    KEYS_LAYOUT = (
+     (
+      'movement',
+      (
+       ('forward', 'CMD_MOVE_FORWARD'),
        ('backward', 'CMD_MOVE_BACKWARD'),
        ('left', 'CMD_ROTATE_LEFT'),
        ('right', 'CMD_ROTATE_RIGHT'),
        ('auto_rotation', 'CMD_CM_VEHICLE_SWITCH_AUTOROTATION'),
        ('block_tracks', 'CMD_BLOCK_TRACKS'))),
-     ('cruis_control', (('forward_cruise', 'CMD_INCREMENT_CRUISE_MODE'), ('backward_cruise', 'CMD_DECREMENT_CRUISE_MODE'), ('stop_fire', 'CMD_STOP_UNTIL_FIRE'))),
-     ('firing', (('fire', 'CMD_CM_SHOOT'),
+     (
+      'cruis_control',
+      (
+       ('forward_cruise', 'CMD_INCREMENT_CRUISE_MODE'),
+       ('backward_cruise', 'CMD_DECREMENT_CRUISE_MODE'),
+       ('stop_fire', 'CMD_STOP_UNTIL_FIRE'))),
+     (
+      'firing',
+      (
+       ('fire', 'CMD_CM_SHOOT'),
        ('chargeFire', 'CMD_CM_CHARGE_SHOT'),
        ('lock_target', 'CMD_CM_LOCK_TARGET'),
        ('lock_target_off', 'CMD_CM_LOCK_TARGET_OFF'),
@@ -2035,11 +2131,17 @@ class KeyboardSettings(SettingsContainer):
        ('trajectory_view', 'CMD_CM_TRAJECTORY_VIEW'),
        ('reloadPartialClip', 'CMD_RELOAD_PARTIAL_CLIP'),
        ('specialAbility', 'CMD_CM_SPECIAL_ABILITY'))),
-     ('vehicle_other', (('showHUD', 'CMD_TOGGLE_GUI'),
+     (
+      'vehicle_other',
+      (
+       ('showHUD', 'CMD_TOGGLE_GUI'),
        ('showQuestProgress', 'CMD_QUEST_PROGRESS_SHOW'),
        ('frontlineSelfDestruction', 'CMD_REQUEST_RECOVERY'),
        ('showPersonalReserves', 'CMD_SHOW_PERSONAL_RESERVES'))),
-     ('equipment', (('item01', 'CMD_AMMO_CHOICE_1'),
+     (
+      'equipment',
+      (
+       ('item01', 'CMD_AMMO_CHOICE_1'),
        ('item02', 'CMD_AMMO_CHOICE_2'),
        ('item03', 'CMD_AMMO_CHOICE_3'),
        ('item04', 'CMD_AMMO_CHOICE_4'),
@@ -2049,7 +2151,10 @@ class KeyboardSettings(SettingsContainer):
        ('item08', 'CMD_AMMO_CHOICE_8'),
        ('item09', 'CMD_AMMO_CHOICE_9'),
        ('item00', 'CMD_AMMO_CHOICE_0'))),
-     ('team_communication', (('highlightLocation', 'CMD_CHAT_SHORTCUT_CONTEXT_COMMAND'),
+     (
+      'team_communication',
+      (
+       ('highlightLocation', 'CMD_CHAT_SHORTCUT_CONTEXT_COMMAND'),
        ('highlightTarget', 'CMD_CHAT_SHORTCUT_CONTEXT_COMMIT'),
        ('showRadialMenu', 'CMD_RADIAL_MENU_SHOW'),
        ('help', 'CMD_CHAT_SHORTCUT_HELPME'),
@@ -2058,19 +2163,33 @@ class KeyboardSettings(SettingsContainer):
        ('affirmative', 'CMD_CHAT_SHORTCUT_AFFIRMATIVE'),
        ('negative', 'CMD_CHAT_SHORTCUT_NEGATIVE'),
        ('thankYou', 'CMD_CHAT_SHORTCUT_THANKYOU'))),
-     ('camera', (('camera_up', 'CMD_CM_CAMERA_ROTATE_UP'),
+     (
+      'camera',
+      (
+       ('camera_up', 'CMD_CM_CAMERA_ROTATE_UP'),
        ('camera_down', 'CMD_CM_CAMERA_ROTATE_DOWN'),
        ('camera_left', 'CMD_CM_CAMERA_ROTATE_LEFT'),
        ('camera_right', 'CMD_CM_CAMERA_ROTATE_RIGHT'))),
-     ('voicechat', (('pushToTalk', 'CMD_VOICECHAT_MUTE'), ('voicechat_enable', 'CMD_VOICECHAT_ENABLE'))),
-     ('minimap', (('sizeUp', 'CMD_MINIMAP_SIZE_UP'), ('sizeDown', 'CMD_MINIMAP_SIZE_DOWN'), ('visible', 'CMD_MINIMAP_VISIBLE'))))
-    IMPORTANT_BINDS = ('forward', 'backward', 'left', 'right', 'fire', 'item01', 'item02', 'item03', 'item04', 'item05', 'item06', 'item07', 'item08', 'item09', 'item00')
-    KEYS_TOOLTIPS = {'auto_rotation': 'SettingKeySwitchMode',
-     'chargeFire': 'SettingsKeyChargeFire',
-     'highlightLocation': 'SettingsKeyHighlightLocation',
-     'highlightTarget': 'SettingsKeyHighlightTarget',
-     'showRadialMenu': 'SettingsKeyShowRadialMenu',
-     'specialAbility': 'SettingKeySpecialAbility'}
+     (
+      'voicechat',
+      (
+       ('pushToTalk', 'CMD_VOICECHAT_MUTE'),
+       ('voicechat_enable', 'CMD_VOICECHAT_ENABLE'))),
+     (
+      'minimap',
+      (
+       ('sizeUp', 'CMD_MINIMAP_SIZE_UP'),
+       ('sizeDown', 'CMD_MINIMAP_SIZE_DOWN'),
+       ('visible', 'CMD_MINIMAP_VISIBLE'))))
+    IMPORTANT_BINDS = ('forward', 'backward', 'left', 'right', 'fire', 'item01', 'item02',
+                       'item03', 'item04', 'item05', 'item06', 'item07', 'item08',
+                       'item09', 'item00')
+    KEYS_TOOLTIPS = {'auto_rotation': 'SettingKeySwitchMode', 
+       'chargeFire': 'SettingsKeyChargeFire', 
+       'highlightLocation': 'SettingsKeyHighlightLocation', 
+       'highlightTarget': 'SettingsKeyHighlightTarget', 
+       'showRadialMenu': 'SettingsKeyShowRadialMenu', 
+       'specialAbility': 'SettingKeySpecialAbility'}
     __hiddenGroups = set()
 
     def __init__(self):
@@ -2078,7 +2197,11 @@ class KeyboardSettings(SettingsContainer):
             self.hideGroup('minimap', hide=True)
         if not GUI_SETTINGS.voiceChat:
             self.hideGroup('voicechat', hide=True)
-        settings = [('keysLayout', ReadOnlySetting(self._getLayout)), ('keysTooltips', ReadOnlySetting(lambda : self.KEYS_TOOLTIPS))]
+        settings = [
+         (
+          'keysLayout', ReadOnlySetting(self._getLayout)),
+         (
+          'keysTooltips', ReadOnlySetting(lambda : self.KEYS_TOOLTIPS))]
         for group in self._getLayout(True):
             for setting in group['values']:
                 settings.append((setting['key'], KeyboardSetting(setting['cmd'])))
@@ -2102,8 +2225,8 @@ class KeyboardSettings(SettingsContainer):
                 if not progressEnabled:
                     groupValues = list(groupValues)
                     del groupValues[2]
-            layout.append({'key': groupName,
-             'values': [ cls.__mapValues(*x) for x in groupValues ]})
+            layout.append({'key': groupName, 
+               'values': [ cls.__mapValues(*x) for x in groupValues ]})
 
         return layout
 
@@ -2148,8 +2271,7 @@ class KeyboardSettings(SettingsContainer):
 
     @classmethod
     def __mapValues(cls, key, cmd):
-        return {'key': key,
-         'cmd': cmd}
+        return {'key': key, 'cmd': cmd}
 
 
 class _BaseSoundPresetSetting(AccountDumpSetting):
@@ -2188,24 +2310,24 @@ class _BaseSoundPresetSetting(AccountDumpSetting):
 class ArmorFlashlightEnabledSettings(AccountDumpSetting):
 
     def pack(self):
-        return {'current': self._get(),
-         'extraData': self._getExtraData()}
+        return {'current': self._get(), 
+           'extraData': self._getExtraData()}
 
     @staticmethod
     def _getExtraData():
         localeFolder = R.strings.settings.aim.armorFlashlight.enabled
-        data = {'label': backport.text(localeFolder.label()),
-         'enabled': isArmorFlashlightEnabled(),
-         'tooltip': makeTooltip(header=backport.text(localeFolder.tooltip.header()), body=backport.text(localeFolder.tooltip.body()))}
+        data = {'label': backport.text(localeFolder.label()), 
+           'enabled': isArmorFlashlightEnabled(), 
+           'tooltip': makeTooltip(header=backport.text(localeFolder.tooltip.header()), body=backport.text(localeFolder.tooltip.body()))}
         return data
 
 
 class ArmorFlashlightColorSchemasSettings(AccountDumpSetting):
 
     def pack(self):
-        return {'current': self._get(),
-         'options': self._getOptions(),
-         'extraData': {'enabled': isArmorFlashlightEnabled()}}
+        return {'current': self._get(), 
+           'options': self._getOptions(), 
+           'extraData': {'enabled': isArmorFlashlightEnabled()}}
 
     def _getOptions(self):
         options = []
@@ -2213,9 +2335,9 @@ class ArmorFlashlightColorSchemasSettings(AccountDumpSetting):
         config = getArmorFlashlightConfig()
         for schema in config.colorSchemas:
             optionR = localeFolder.dyn(schema.name)
-            options.append({'label': backport.text(optionR.label()),
-             'tooltip': makeTooltip(header=backport.text(optionR.tooltip.header()), body=backport.text(optionR.tooltip.body())),
-             'id': schema.name})
+            options.append({'label': backport.text(optionR.label()), 
+               'tooltip': makeTooltip(header=backport.text(optionR.tooltip.header()), body=backport.text(optionR.tooltip.body())), 
+               'id': schema.name})
 
         return options
 
@@ -2223,36 +2345,35 @@ class ArmorFlashlightColorSchemasSettings(AccountDumpSetting):
 class ArmorFlashlightFillSettings(AccountDumpSetting):
 
     def pack(self):
-        return {'current': self._get(),
-         'options': self._getOptions(),
-         'extraData': {'enabled': isArmorFlashlightEnabled()}}
+        return {'current': self._get(), 
+           'options': self._getOptions(), 
+           'extraData': {'enabled': isArmorFlashlightEnabled()}}
 
     def _getOptions(self):
         localeFolder = R.strings.settings.aim.armorFlashlight.fill
-        return [ {'label': backport.text(localeFolder.dyn(pattern.name)()),
-         'id': pattern.name} for pattern in getArmorFlashlightConfig().patterns ]
+        return [ {'label': backport.text(localeFolder.dyn(pattern.name)()), 'id': pattern.name} for pattern in getArmorFlashlightConfig().patterns
+               ]
 
 
 class ArmorFlashlightOpacity(AccountDumpSetting):
 
     def pack(self):
-        return {'current': self._get(),
-         'extraData': {'enabled': isArmorFlashlightEnabled()}}
+        return {'current': self._get(), 
+           'extraData': {'enabled': isArmorFlashlightEnabled()}}
 
 
 class ArmorFlashlightResolutionSettings(AccountDumpSetting):
     settingsCore = dependency.descriptor(ISettingsCore)
 
     def pack(self):
-        return {'current': self._get(),
-         'options': self._getOptions(),
-         'extraData': {'enabled': isArmorFlashlightEnabled()}}
+        return {'current': self._get(), 
+           'options': self._getOptions(), 
+           'extraData': {'enabled': isArmorFlashlightEnabled()}}
 
     def _getOptions(self):
         localeFolder = R.strings.settings.aim.armorFlashlight.resolution
-        return [ {'label': backport.text(localeFolder.dyn(resolution.name)()),
-         'name': resolution.name,
-         'data': index} for index, resolution in enumerate(getArmorFlashlightConfig().resolutions) ]
+        return [ {'label': backport.text(localeFolder.dyn(resolution.name)()), 'name': resolution.name, 'data': index} for index, resolution in enumerate(getArmorFlashlightConfig().resolutions)
+               ]
 
     def getDefaultValue(self):
         postProcessingSetting = self.settingsCore.getSetting(POST_PROCESSING_QUALITY)
@@ -2262,10 +2383,15 @@ class ArmorFlashlightResolutionSettings(AccountDumpSetting):
         return defaultValue
 
 
-_SPEAKER_PRESET_CONFIG = ((ACOUSTICS.TYPE_ACOUSTIC_20, SPEAKERS_CONFIG.SPEAKER_SETUP_2_0),
- (ACOUSTICS.TYPE_ACOUSTIC_51, SPEAKERS_CONFIG.SPEAKER_SETUP_5_1),
- (ACOUSTICS.TYPE_ACOUSTIC_71, SPEAKERS_CONFIG.SPEAKER_SETUP_7_1),
- (ACOUSTICS.TYPE_AUTO, SPEAKERS_CONFIG.AUTO_DETECTION))
+_SPEAKER_PRESET_CONFIG = (
+ (
+  ACOUSTICS.TYPE_ACOUSTIC_20, SPEAKERS_CONFIG.SPEAKER_SETUP_2_0),
+ (
+  ACOUSTICS.TYPE_ACOUSTIC_51, SPEAKERS_CONFIG.SPEAKER_SETUP_5_1),
+ (
+  ACOUSTICS.TYPE_ACOUSTIC_71, SPEAKERS_CONFIG.SPEAKER_SETUP_7_1),
+ (
+  ACOUSTICS.TYPE_AUTO, SPEAKERS_CONFIG.AUTO_DETECTION))
 
 def _makeSoundPresetIDsSeq():
     return [ item[1] for item in _SPEAKER_PRESET_CONFIG ]
@@ -2276,7 +2402,7 @@ def _makeSoundGuiIDsSeq():
 
 
 def _makeSoundPresetIDToGuiID():
-    return dict(((item[1], item[0]) for item in _SPEAKER_PRESET_CONFIG))
+    return dict((item[1], item[0]) for item in _SPEAKER_PRESET_CONFIG)
 
 
 class SoundDevicePresetSetting(_BaseSoundPresetSetting):
@@ -2288,14 +2414,22 @@ class SoundDevicePresetSetting(_BaseSoundPresetSetting):
         LAPTOP = 2
 
     def __init__(self, settingName, key, subKey=None, isPreview=False):
-        super(SoundDevicePresetSetting, self).__init__(((self.__setSound, self.SYSTEMS.SPEAKERS), (self.__setSound, self.SYSTEMS.HEADPHONES), (self.__setSound, self.SYSTEMS.LAPTOP)), settingName, key, subKey=subKey)
+        super(SoundDevicePresetSetting, self).__init__((
+         (
+          self.__setSound, self.SYSTEMS.SPEAKERS),
+         (
+          self.__setSound, self.SYSTEMS.HEADPHONES),
+         (
+          self.__setSound, self.SYSTEMS.LAPTOP)), settingName, key, subKey=subKey)
 
     def getSystemState(self):
         selectedID = self.get()
         speakersCountID = SPEAKERS_CONFIG.SPEAKER_SETUP_2_0
         if selectedID == self.SYSTEMS.SPEAKERS:
             speakersCountID = self.soundsCtrl.system.getUserSpeakersPresetID()
-        return (speakersCountID in (SPEAKERS_CONFIG.AUTO_DETECTION, self.soundsCtrl.system.getSystemSpeakersPresetID()), speakersCountID)
+        return (
+         speakersCountID in (SPEAKERS_CONFIG.AUTO_DETECTION, self.soundsCtrl.system.getSystemSpeakersPresetID()),
+         speakersCountID)
 
     def _getOptions(self):
         options = []
@@ -2310,21 +2444,23 @@ class SoundDevicePresetSetting(_BaseSoundPresetSetting):
         else:
             LOG_ERROR('Selected preset is unresolved', selectedID)
             acousticType = ACOUSTICS.TYPE_ACOUSTICS
-        accousticValid = self.soundsCtrl.system.getUserSpeakersPresetID() in (SPEAKERS_CONFIG.AUTO_DETECTION, self.soundsCtrl.system.getSystemSpeakersPresetID())
+        accousticValid = self.soundsCtrl.system.getUserSpeakersPresetID() in (
+         SPEAKERS_CONFIG.AUTO_DETECTION, self.soundsCtrl.system.getSystemSpeakersPresetID())
         otherValid = self.soundsCtrl.system.getSystemSpeakersPresetID() == SPEAKERS_CONFIG.SPEAKER_SETUP_2_0
 
         def iterator():
-            yield (ACOUSTICS.TYPE_ACOUSTICS, acousticType, accousticValid)
+            yield (
+             ACOUSTICS.TYPE_ACOUSTICS, acousticType, accousticValid)
             yield (ACOUSTICS.TYPE_HEADPHONES, ACOUSTICS.TYPE_HEADPHONES, otherValid)
             yield (ACOUSTICS.TYPE_LAPTOP, ACOUSTICS.TYPE_LAPTOP, otherValid)
 
         for baseID, selectedID, isValid in iterator():
-            options.append({'id': baseID,
-             'label': SETTINGS.sounds_sounddevice(selectedID),
-             'image': '../maps/icons/settings/{}.png'.format(baseID),
-             'tooltip': SETTINGS.sounds_sounddevice(selectedID),
-             'speakerId': selectedID,
-             'showDeviceAlert': not isValid})
+            options.append({'id': baseID, 
+               'label': SETTINGS.sounds_sounddevice(selectedID), 
+               'image': ('../maps/icons/settings/{}.png').format(baseID), 
+               'tooltip': SETTINGS.sounds_sounddevice(selectedID), 
+               'speakerId': selectedID, 
+               'showDeviceAlert': not isValid})
 
         return options
 
@@ -2361,7 +2497,7 @@ class SoundSpeakersPresetSetting(SettingAbstract):
             return presetIDs.index(presetID)
         else:
             LOG_ERROR('Index of selected preset is not found', presetID)
-            return None
+            return
 
     def _set(self, value):
         value = int(value)
@@ -2377,10 +2513,10 @@ class SoundSpeakersPresetSetting(SettingAbstract):
         for guiID in _makeSoundGuiIDsSeq():
             label = SETTINGS.sounds_acoustictype(guiID)
             device = SETTINGS.sounds_sounddevice(guiID)
-            options.append({'id': guiID,
-             'label': label,
-             'tooltip': device,
-             'isAutodetect': guiID == ACOUSTICS.TYPE_AUTO})
+            options.append({'id': guiID, 
+               'label': label, 
+               'tooltip': device, 
+               'isAutodetect': guiID == ACOUSTICS.TYPE_AUTO})
 
         return options
 
@@ -2418,7 +2554,9 @@ class PhysicsQualitySoundSettings(UserPrefsStringSetting):
         if presetName in self._SETTINGS:
             return presetName
         presetName = Sound.getSpatialAudioPreset()
-        return presetName if presetName in self._SETTINGS else Sound.getRecommendedPreset()
+        if presetName in self._SETTINGS:
+            return presetName
+        return Sound.getRecommendedPreset()
 
     def _get(self):
         return self._SETTINGS.index(self._getString())
@@ -2436,8 +2574,8 @@ class PhysicsQualitySoundSettings(UserPrefsStringSetting):
         options = []
         locale = R.strings.settings.sounds.physicsQuality.options
         for guiID in self._SETTINGS:
-            options.append({'data': guiID,
-             'label': backport.text(locale.dyn(guiID)())})
+            options.append({'data': guiID, 
+               'label': backport.text(locale.dyn(guiID)())})
 
         return options
 
@@ -2515,7 +2653,7 @@ class PreviewSoundSetting(AccountSetting):
     def _getOptions(self):
         options = []
         for sample in self._WWISE_EVENTS:
-            option = {'label': '#settings:sound/{}/{}'.format(self.key, sample)}
+            option = {'label': ('#settings:sound/{}/{}').format(self.key, sample)}
             if sample == self._USER_SOUND:
                 option.update(tooltip='#settings:sounds/%s' % self._USER_SOUND)
             options.append(option)
@@ -2556,7 +2694,8 @@ class ArtyShotAlertSound(PreviewSoundSetting):
 
 
 class AltVoicesSetting(StorageDumpSetting):
-    ALT_VOICES_PREVIEW = itertools.cycle(('wwsound_mode_preview01', 'wwsound_mode_preview02', 'wwsound_mode_preview03'))
+    ALT_VOICES_PREVIEW = itertools.cycle(('wwsound_mode_preview01', 'wwsound_mode_preview02',
+                                          'wwsound_mode_preview03'))
     DEFAULT_IDX = 0
     PREVIEW_SOUNDS_COUNT = 3
     __specialSounds = dependency.descriptor(ISpecialSoundCtrl)
@@ -2570,15 +2709,15 @@ class AltVoicesSetting(StorageDumpSetting):
         super(AltVoicesSetting, self).__init__(settingName, storage, True)
         self.__previewSound = None
         self.__lastPreviewedValue = None
-        self._handlers = {self.SOUND_MODE_TYPE.UNKNOWN: lambda *args: False,
-         self.SOUND_MODE_TYPE.REGULAR: self.__applyRegularMode,
-         self.SOUND_MODE_TYPE.NATIONAL: self.__applyNationalMode}
+        self._handlers = {self.SOUND_MODE_TYPE.UNKNOWN: lambda *args: False, 
+           self.SOUND_MODE_TYPE.REGULAR: self.__applyRegularMode, 
+           self.SOUND_MODE_TYPE.NATIONAL: self.__applyNationalMode}
         self.__previewNations = []
         return
 
     @app_getter
     def app(self):
-        return None
+        return
 
     def fini(self):
         super(AltVoicesSetting, self).fini()
@@ -2594,7 +2733,8 @@ class AltVoicesSetting(StorageDumpSetting):
             sndPath = sndMgr.sounds.getEffectSound(next(self.ALT_VOICES_PREVIEW))
             if SoundGroups.g_instance.soundModes.currentNationalPreset[1]:
                 g = functions.rnd_choice(*nations.AVAILABLE_NAMES)
-                self.__previewNations = [next(g), next(g), next(g)]
+                self.__previewNations = [
+                 next(g), next(g), next(g)]
                 self.__previewSound = SoundGroups.g_instance.getSound2D(sndPath)
                 if self.__previewSound is not None:
                     self.__previewSound.setCallback(self.playPreview)
@@ -2604,8 +2744,7 @@ class AltVoicesSetting(StorageDumpSetting):
             if self.__previewSound is not None:
                 self.__previewSound.play()
             return True
-        else:
-            return False
+        return False
 
     def playPreview(self, sound):
         if self.__previewNations and self.__previewSound == sound:
@@ -2640,8 +2779,8 @@ class AltVoicesSetting(StorageDumpSetting):
     def _getOptions(self):
         options = []
         for sm in self.__getSoundModesList():
-            options.append({'label': sm.description,
-             'tooltip': '#settings:sounds/altVoice/{}'.format(sm.name)})
+            options.append({'label': sm.description, 
+               'tooltip': ('#settings:sounds/altVoice/{}').format(sm.name)})
 
         return options
 
@@ -2668,7 +2807,9 @@ class AltVoicesSetting(StorageDumpSetting):
     def _get(self):
         value = super(AltVoicesSetting, self)._get()
         modes = self.__getSoundModesList()
-        return value if value < len(modes) else self.DEFAULT_IDX
+        if value < len(modes):
+            return value
+        return self.DEFAULT_IDX
 
     def setSystemValue(self, value):
         if not self.isOptionEnabled():
@@ -2685,7 +2826,9 @@ class AltVoicesSetting(StorageDumpSetting):
     def __getSoundModeType(self, soundMode):
         if soundMode.name in SoundGroups.g_instance.soundModes.modes:
             return self.SOUND_MODE_TYPE.REGULAR
-        return self.SOUND_MODE_TYPE.NATIONAL if soundMode.name in SoundGroups.g_instance.soundModes.nationalPresets else self.SOUND_MODE_TYPE.UNKNOWN
+        if soundMode.name in SoundGroups.g_instance.soundModes.nationalPresets:
+            return self.SOUND_MODE_TYPE.NATIONAL
+        return self.SOUND_MODE_TYPE.UNKNOWN
 
     def __applyRegularMode(self, mode):
         specialVoice = self.__specialSounds.specialVoice
@@ -2758,7 +2901,8 @@ class WindowsTarget4StoredData(SettingAbstract):
 
 
 class ReplaySetting(StorageAccountSetting):
-    REPLAY_TYPES = ['none', 'last', 'all']
+    REPLAY_TYPES = [
+     'none', 'last', 'all']
 
     def _getOptions(self):
         settingsKey = '#settings:game/%s/%s'
@@ -2769,10 +2913,8 @@ class ReplaySetting(StorageAccountSetting):
 
 
 class SniperZoomSetting(StorageAccountSetting):
-    SNIPER_TYPES = ['remember',
-     'double',
-     'quadruple',
-     'octuple']
+    SNIPER_TYPES = [
+     'remember', 'double', 'quadruple', 'octuple']
 
     def _getOptions(self):
         settingsKey = '#settings:game/%s/%s'
@@ -2810,7 +2952,8 @@ class HangarCamPeriodSetting(StorageAccountSetting):
         TYPE1 = 'type1'
         TYPE2 = 'type2'
         NEVER = 'never'
-        HANGAR_CAM_TYPES = (TYPE0,
+        HANGAR_CAM_TYPES = (
+         TYPE0,
          TYPE1,
          TYPE2,
          NEVER)
@@ -2855,7 +2998,10 @@ class InterfaceScaleSetting(UserPrefsFloatSetting):
         g_monitorSettings.setGlyphCache(scale)
 
     def _getOptions(self):
-        return [self.__getScales(graphics.getSuitableWindowSizes(), BigWorld.wg_getCurrentResolution(BigWorld.WindowModeWindowed)), self.__getScales(graphics.getSuitableVideoModes()), self.__getScales(graphics.getSuitableVideoModes())]
+        return [
+         self.__getScales(graphics.getSuitableWindowSizes(), BigWorld.wg_getCurrentResolution(BigWorld.WindowModeWindowed)),
+         self.__getScales(graphics.getSuitableVideoModes()),
+         self.__getScales(graphics.getSuitableVideoModes())]
 
     def _set(self, value):
         super(InterfaceScaleSetting, self)._save(value)
@@ -2880,7 +3026,10 @@ class InterfaceScaleSetting(UserPrefsFloatSetting):
 
 
 class GraphicsQualityNote(SettingAbstract):
-    _GRAPHICS_QUALITY_TYPES = {CONTENT_TYPE.SD_TEXTURES, CONTENT_TYPE.TUTORIAL, CONTENT_TYPE.SANDBOX}
+    _GRAPHICS_QUALITY_TYPES = {
+     CONTENT_TYPE.SD_TEXTURES,
+     CONTENT_TYPE.TUTORIAL,
+     CONTENT_TYPE.SANDBOX}
 
     def _get(self):
         activeContentType = ResMgr.activeContentType()
@@ -2889,17 +3038,23 @@ class GraphicsQualityNote(SettingAbstract):
             contentTypeName = SETTINGS.GRAPHICSQUALITYHDSD_SD
         elif activeContentType == CONTENT_TYPE.HD_TEXTURES:
             contentTypeName = SETTINGS.GRAPHICSQUALITYHDSD_HD
-        return '{0}{1}  {2}{3}'.format("<font face='$FieldFont' size='13' color='#595950'>", i18n.makeString(contentTypeName), icons.info(), '</font>') if contentTypeName is not None else ''
+        if contentTypeName is not None:
+            return ('{0}{1}  {2}{3}').format("<font face='$FieldFont' size='13' color='#595950'>", i18n.makeString(contentTypeName), icons.info(), '</font>')
+        else:
+            return ''
 
     def _set(self, value):
         pass
 
 
 class GraphicsHigtQualityNote(SettingAbstract):
-    _GRAPHICS_QUALITY_TYPES = {CONTENT_TYPE.SD_TEXTURES}
+    _GRAPHICS_QUALITY_TYPES = {
+     CONTENT_TYPE.SD_TEXTURES}
 
     def _get(self):
-        return '{0}{1}  {2}{3}'.format("<font face='$FieldFont' size='13' color='#595950'>", i18n.makeString(SETTINGS.GRAPHICSQUALITYHDSD_SD), icons.alert(), '</font>') if ResMgr.activeContentType() in self._GRAPHICS_QUALITY_TYPES else ''
+        if ResMgr.activeContentType() in self._GRAPHICS_QUALITY_TYPES:
+            return ('{0}{1}  {2}{3}').format("<font face='$FieldFont' size='13' color='#595950'>", i18n.makeString(SETTINGS.GRAPHICSQUALITYHDSD_SD), icons.alert(), '</font>')
+        return ''
 
     def _set(self, value):
         pass
@@ -2922,7 +3077,7 @@ class AnonymizerSetting(AccountDumpSetting):
 
     @storage_getter('users')
     def usersStorage(self):
-        return None
+        return
 
     def getExtraData(self):
         user = self.usersStorage.getUser(getPlayerDatabaseID())
@@ -2934,17 +3089,17 @@ class AnonymizerSetting(AccountDumpSetting):
             footer = backport.text(tooltip.bodyFooter.inBattle())
         else:
             footer = backport.text(tooltip.bodyFooter.default())
-        body = '{body}{vspace}{footer}'.format(body=backport.text((tooltip.body.clan if isInClan else tooltip.body.noClan)()), vspace='\n\n' if footer else '', footer=text_styles.neutral(footer))
+        body = ('{body}{vspace}{footer}').format(body=backport.text((tooltip.body.clan if isInClan else tooltip.body.noClan)()), vspace='\n\n' if footer else '', footer=text_styles.neutral(footer))
         header = backport.text(tooltip.header())
-        return {'checkBoxLabel': backport.text(R.strings.settings.game.anonymizer()),
-         'tooltip': makeTooltip(header, body),
-         'visible': self.__ctrl.isEnabled,
-         'enabled': not (self.__ctrl.isInBattle or self.__ctrl.isRestricted)}
+        return {'checkBoxLabel': backport.text(R.strings.settings.game.anonymizer()), 
+           'tooltip': makeTooltip(header, body), 
+           'visible': self.__ctrl.isEnabled, 
+           'enabled': not (self.__ctrl.isInBattle or self.__ctrl.isRestricted)}
 
     def pack(self):
-        return {'current': self._get(),
-         'options': self._getOptions(),
-         'extraData': self.getExtraData()}
+        return {'current': self._get(), 
+           'options': self._getOptions(), 
+           'extraData': self.getExtraData()}
 
     def _get(self):
         return self.__ctrl.isAnonymized
@@ -2963,7 +3118,8 @@ class ShowDamageIconSetting(StorageAccountSetting):
 
     def getExtraData(self):
         templateName = 'html_templates:lobby/tooltips/settings_show_damage_icon'
-        showDamageIconTooltipContent = (makeHtmlString(templateName, 'ricochet'),
+        showDamageIconTooltipContent = (
+         makeHtmlString(templateName, 'ricochet'),
          makeHtmlString(templateName, 'trackDamage'),
          makeHtmlString(templateName, 'criticalDamage'),
          makeHtmlString(templateName, 'blocked'),
@@ -2971,8 +3127,8 @@ class ShowDamageIconSetting(StorageAccountSetting):
          makeHtmlString(templateName, 'trackBlocked'),
          makeHtmlString(templateName, 'wheelBlocked'),
          makeHtmlString(templateName, 'missArmor'))
-        return {'checkBoxLabel': backport.text(R.strings.settings.game.showDamageIcon()),
-         'tooltip': makeTooltip(backport.text(R.strings.tooltips.showDamageIcon.header()), '<br/>'.join(showDamageIconTooltipContent))}
+        return {'checkBoxLabel': backport.text(R.strings.settings.game.showDamageIcon()), 
+           'tooltip': makeTooltip(backport.text(R.strings.tooltips.showDamageIcon.header()), ('<br/>').join(showDamageIconTooltipContent))}
 
     def pack(self):
         res = SettingsExtraData(self._get(), self._getOptions(), self.getExtraData())._asdict()
@@ -2989,7 +3145,7 @@ class MouseAffectedSetting(RegularSetting):
         self._mouseSettings = [ MouseSetting(camera, self.settingName, self.getDefaultValue()) for camera in self._getCameras() ]
 
     def _getCameras(self):
-        pass
+        return ()
 
     def setSystemValue(self, value):
         forEach(lambda mouseSetting: mouseSetting.apply(value), self._mouseSettings)
@@ -3001,8 +3157,8 @@ class IncreasedZoomSetting(StorageAccountSetting, MouseAffectedSetting):
         zooms = self._mouseSettings[0].getCamera().getConfigValue('zooms')[-2:]
         zoomStrs = [ i18n.makeString(SETTINGS.GAME_INCREASEDZOOM_ZOOMSTR, zoom=zoom) for zoom in zooms ]
         zoomStr = i18n.makeString(SETTINGS.GAME_INCREASEDZOOM_DELIMETER).join(zoomStrs)
-        return {'checkBoxLabel': i18n.makeString(SETTINGS.GAME_INCREASEDZOOM_BASE, zooms=zoomStr),
-         'tooltip': makeTooltip(TOOLTIPS.INCREASEDZOOM_HEADER, i18n.makeString(TOOLTIPS.INCREASEDZOOM_BODY, zooms=zoomStr))}
+        return {'checkBoxLabel': i18n.makeString(SETTINGS.GAME_INCREASEDZOOM_BASE, zooms=zoomStr), 
+           'tooltip': makeTooltip(TOOLTIPS.INCREASEDZOOM_HEADER, i18n.makeString(TOOLTIPS.INCREASEDZOOM_BODY, zooms=zoomStr))}
 
     def pack(self):
         return SettingsExtraData(self._get(), self._getOptions(), self.getExtraData())._asdict()
@@ -3013,16 +3169,15 @@ class IncreasedZoomSetting(StorageAccountSetting, MouseAffectedSetting):
         super(IncreasedZoomSetting, self).setSystemValue(value)
 
     def _getCameras(self):
-        return (CTRL_MODE_NAME.SNIPER, CTRL_MODE_NAME.DUAL_GUN, CTRL_MODE_NAME.TWIN_GUN)
+        return (
+         CTRL_MODE_NAME.SNIPER, CTRL_MODE_NAME.DUAL_GUN, CTRL_MODE_NAME.TWIN_GUN)
 
 
 class SniperModeByShiftSetting(StorageAccountSetting, MouseAffectedSetting):
 
     def _getCameras(self):
-        return (CTRL_MODE_NAME.ARCADE,
-         CTRL_MODE_NAME.SNIPER,
-         CTRL_MODE_NAME.DUAL_GUN,
-         CTRL_MODE_NAME.TWIN_GUN)
+        return (
+         CTRL_MODE_NAME.ARCADE, CTRL_MODE_NAME.SNIPER, CTRL_MODE_NAME.DUAL_GUN, CTRL_MODE_NAME.TWIN_GUN)
 
 
 class GroupSetting(StorageDumpSetting):
@@ -3038,7 +3193,9 @@ class GroupSetting(StorageDumpSetting):
         if v in self._visibleOrder:
             return v
         else:
-            return self._visibleOrder[0] if self._visibleOrder else None
+            if self._visibleOrder:
+                return self._visibleOrder[0]
+            return
 
     def _getOptions(self):
         return [ self._getOptionData(key) for key in self._visibleOrder ]
@@ -3047,65 +3204,65 @@ class GroupSetting(StorageDumpSetting):
         return sorted(self._options.iterkeys())
 
     def _getOptionData(self, key):
-        return {'label': self._getOptionLabel(key),
-         'data': key}
+        return {'label': self._getOptionLabel(key), 
+           'data': key}
 
     def _getOptionLabel(self, key):
         return self._settingsKey % str(self._options[key])
 
 
 class DamageIndicatorTypeSetting(GroupSetting):
-    OPTIONS = {0: 'standard',
-     1: 'extended'}
+    OPTIONS = {0: 'standard', 
+       1: 'extended'}
 
     def __init__(self, settingName, storage, isPreview=False):
         super(DamageIndicatorTypeSetting, self).__init__(settingName, storage, options=self.OPTIONS, settingsKey='#settings:feedback/tab/damageIndicator/type/%s', isPreview=isPreview)
 
     def getDefaultValue(self):
-        pass
+        return 1
 
 
 class DamageLogDetailsSetting(GroupSetting):
     SHOW_ALWAYS = 0
     SHOW_BY_ALT_PRESS = 1
     HIDE = 2
-    _OPTIONS = {SHOW_ALWAYS: 'always',
-     SHOW_BY_ALT_PRESS: 'byAlt',
-     HIDE: 'hide'}
+    _OPTIONS = {SHOW_ALWAYS: 'always', 
+       SHOW_BY_ALT_PRESS: 'byAlt', 
+       HIDE: 'hide'}
 
     def __init__(self, settingName, storage, isPreview=False):
         super(DamageLogDetailsSetting, self).__init__(settingName, storage, options=self._OPTIONS, settingsKey='#settings:feedback/tab/damageLogPanel/details/%s', isPreview=isPreview)
 
     def getDefaultValue(self):
-        pass
+        return 0
 
 
 class DamageLogEventTypesSetting(GroupSetting):
     ALL = 0
     ONLY_POSITIVE = 1
     ONLY_NEGATIVE = 2
-    _OPTIONS = {ALL: 'both',
-     ONLY_POSITIVE: 'positive',
-     ONLY_NEGATIVE: 'negative'}
+    _OPTIONS = {ALL: 'both', 
+       ONLY_POSITIVE: 'positive', 
+       ONLY_NEGATIVE: 'negative'}
 
     def __init__(self, settingName, storage, isPreview=False):
         super(DamageLogEventTypesSetting, self).__init__(settingName, storage, options=self._OPTIONS, settingsKey='#settings:feedback/tab/damageLogPanel/eventTypes/%s', isPreview=isPreview)
 
     def getDefaultValue(self):
-        pass
+        return 0
 
 
 class DamageLogEventPositionsSetting(GroupSetting):
     ALL_BOTTOM = 0
     NEGATIVE_AT_TOP = 1
-    _OPTIONS = {ALL_BOTTOM: 'bottom',
-     NEGATIVE_AT_TOP: 'topBottom'}
+    _OPTIONS = {ALL_BOTTOM: 'bottom', 
+       NEGATIVE_AT_TOP: 'topBottom'}
 
     def __init__(self, settingName, storage, isPreview=False):
         super(DamageLogEventPositionsSetting, self).__init__(settingName, storage, options=self._OPTIONS, settingsKey='#settings:feedback/tab/damageLogPanel/eventPositions/%s', isPreview=isPreview)
 
     def getDefaultValue(self):
-        pass
+        return 0
 
 
 class BattleEventsSetting(SettingFalseByDefault):
@@ -3115,7 +3272,10 @@ class BattleEventsSetting(SettingFalseByDefault):
         super(BattleEventsSetting, self).__init__(settingName, storage, isPreview)
 
     def _get(self):
-        return None if not self.__callable() else super(BattleEventsSetting, self)._get()
+        if not self.__callable():
+            return None
+        else:
+            return super(BattleEventsSetting, self)._get()
 
 
 class BattleBorderMapModeShow(GroupSetting):
@@ -3123,10 +3283,10 @@ class BattleBorderMapModeShow(GroupSetting):
     SHOW_ALWAYS = 1
     HIDE = 2
     ALWAYS_HIDE = 3
-    OPTIONS = {SHOW_BY_ALT_PRESS: 'alt',
-     SHOW_ALWAYS: 'always',
-     HIDE: 'hide',
-     ALWAYS_HIDE: 'alwaysHide'}
+    OPTIONS = {SHOW_BY_ALT_PRESS: 'alt', 
+       SHOW_ALWAYS: 'always', 
+       HIDE: 'hide', 
+       ALWAYS_HIDE: 'alwaysHide'}
 
     def __init__(self, settingName, storage, isPreview=False):
         super(BattleBorderMapModeShow, self).__init__(settingName, storage, options=self.OPTIONS, settingsKey='#settings:feedback/tab/borderMap/showMode/%s', isPreview=isPreview)
@@ -3139,9 +3299,9 @@ class BattleBorderMapType(GroupSetting):
     TYPE_WALL = 0
     TYPE_DOTTED = 1
     TYPE_HIDE = 2
-    OPTIONS = {TYPE_WALL: 'wall',
-     TYPE_DOTTED: 'dotted',
-     TYPE_HIDE: 'hide'}
+    OPTIONS = {TYPE_WALL: 'wall', 
+       TYPE_DOTTED: 'dotted', 
+       TYPE_HIDE: 'hide'}
 
     def __init__(self, settingName, storage, isPreview=False):
         super(BattleBorderMapType, self).__init__(settingName, storage, options=self.OPTIONS, settingsKey='#settings:feedback/tab/borderMap/typeBorder/%s', isPreview=isPreview)
@@ -3174,8 +3334,8 @@ class LoginServerSelectionSetting(PreferencesSetting):
 class QuestsProgressViewType(GroupSetting):
     TYPE_STANDARD = 0
     TYPE_HIDE = 1
-    OPTIONS = {TYPE_STANDARD: 'standard',
-     TYPE_HIDE: 'hidden'}
+    OPTIONS = {TYPE_STANDARD: 'standard', 
+       TYPE_HIDE: 'hidden'}
 
     def __init__(self, settingName, storage, isPreview=False):
         super(QuestsProgressViewType, self).__init__(settingName, storage, options=self.OPTIONS, settingsKey='#settings:feedback/tab/questsProgress/type/%s', isPreview=isPreview)
@@ -3187,8 +3347,8 @@ class QuestsProgressViewType(GroupSetting):
 class QuestsProgressDisplayType(GroupSetting):
     SHOW_ALL = 0
     PROGRESS_ONLY = 1
-    OPTIONS = {SHOW_ALL: 'showAll',
-     PROGRESS_ONLY: 'showProgress'}
+    OPTIONS = {SHOW_ALL: 'showAll', 
+       PROGRESS_ONLY: 'showProgress'}
 
     def __init__(self, settingName, storage, isPreview=False):
         super(QuestsProgressDisplayType, self).__init__(settingName, storage, options=self.OPTIONS, settingsKey='#settings:feedback/tab/questsProgress/standardConditions/%s', isPreview=isPreview)
@@ -3199,7 +3359,7 @@ class QuestsProgressDisplayType(GroupSetting):
 
 class SwitchSetupsInLoadingSetting(AccountSetting):
     _PackStructure = namedtuple('SwitchSetupsInLoadingSettingData', 'current options extraData')
-    _ENABLED_BY_DEFAULT = ('LOW',)
+    _ENABLED_BY_DEFAULT = ('LOW', )
     __postProgressionCtrl = dependency.descriptor(IVehiclePostProgressionController)
 
     def pack(self):
@@ -3210,11 +3370,17 @@ class SwitchSetupsInLoadingSetting(AccountSetting):
 
     def _get(self):
         settingValue = super(SwitchSetupsInLoadingSetting, self)._get()
-        return self.__detectDefaultValue() if settingValue is None else settingValue
+        if settingValue is None:
+            return self.__detectDefaultValue()
+        else:
+            return settingValue
 
     def getDefaultValue(self):
         settingValue = super(SwitchSetupsInLoadingSetting, self).getDefaultValue()
-        return self.__detectDefaultValue(False) if settingValue is None else settingValue
+        if settingValue is None:
+            return self.__detectDefaultValue(False)
+        else:
+            return settingValue
 
     def __detectDefaultValue(self, write=True):
         presetIndx = BigWorld.detectGraphicsPresetFromSystemSettings()

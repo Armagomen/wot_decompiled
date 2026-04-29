@@ -1,5 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/DebugMonitorView.py
+from __future__ import absolute_import
+from past.builtins import xrange
 from debug_utils import LOG_ERROR, LOG_CURRENT_EXCEPTION
 from gui.DebugView import DebugView
 from gui.DebugView import DebugViewItem
@@ -72,10 +72,7 @@ class DebugMonitorView(DebugView):
                         subResult = self.__buildContentItemsBy(itemValue, baseIndent + 1, itemKeyname)
                         if subResult is not None:
                             result += subResult
-                    if isinstance(itemValue, (int,
-                     float,
-                     bool,
-                     str)) or itemValue is None:
+                    if isinstance(itemValue, (int, float, bool, str)) or itemValue is None:
                         deltaValue = self.__updateContentInfoItem(itemKeyname, itemValue)
                         valueStr1 = '%0.3f' % itemValue if isinstance(itemValue, float) else str(itemValue)
                         valueStr2 = '%0.3f' % deltaValue if isinstance(deltaValue, float) else str(deltaValue)

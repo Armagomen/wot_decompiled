@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/genConsts/TOURNAMENT_ALIASES.py
 
 
 class TOURNAMENT_ALIASES(object):
@@ -15,7 +13,4 @@ class TOURNAMENT_ALIASES(object):
     STATE_FOUNDATION = 1
     STATE_FOUNDATION_DEF = 2
     STATE_BUILDING = 3
-    STATES = [STATE_TROWEL,
-     STATE_FOUNDATION,
-     STATE_FOUNDATION_DEF,
-     STATE_BUILDING]
+    STATES = [STATE_TROWEL, STATE_FOUNDATION, STATE_FOUNDATION_DEF, STATE_BUILDING]

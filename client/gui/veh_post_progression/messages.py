@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/veh_post_progression/messages.py
 from gui import SystemMessages
 from gui.SystemMessages import SM_TYPE
 from gui.impl import backport
@@ -9,10 +7,10 @@ from gui.shared.notifications import NotificationPriorityLevel
 from gui.veh_post_progression.formatters.ext_currency import formatExtendedCurrencyValue
 from gui.veh_post_progression.models.ext_money import ExtendedCurrency
 from post_progression_common import ACTION_TYPES
-_SPENT_MESSAGES = {ExtendedCurrency.VEH_XP: R.strings.system_messages.vehiclePostProgression.experienceSpent(),
- ExtendedCurrency.XP: R.strings.system_messages.vehiclePostProgression.experienceSpent(),
- ExtendedCurrency.FREE_XP: R.strings.system_messages.vehiclePostProgression.freeExperienceSpent(),
- ExtendedCurrency.CREDITS: R.strings.system_messages.vehiclePostProgression.creditsSpent()}
+_SPENT_MESSAGES = {ExtendedCurrency.VEH_XP: R.strings.system_messages.vehiclePostProgression.experienceSpent(), 
+   ExtendedCurrency.XP: R.strings.system_messages.vehiclePostProgression.experienceSpent(), 
+   ExtendedCurrency.FREE_XP: R.strings.system_messages.vehiclePostProgression.freeExperienceSpent(), 
+   ExtendedCurrency.CREDITS: R.strings.system_messages.vehiclePostProgression.creditsSpent()}
 
 def makeSpentString(price, ignoreCurrencies=()):
     result = []
@@ -22,12 +20,15 @@ def makeSpentString(price, ignoreCurrencies=()):
             if currencyR:
                 result.append(backport.text(currencyR, value=formatExtendedCurrencyValue(currency, value)))
 
-    return ' '.join(result)
+    return (' ').join(result)
 
 
 def makeUnlockFeatureMessage(featureName, vehicleUserName, priority=NotificationPriorityLevel.HIGH):
     msgKey = R.strings.system_messages.vehiclePostProgression.unlockFeature.dyn(featureName)
-    return makeSuccess(backport.text(msgKey.body(), vehicle=vehicleUserName), msgType=SM_TYPE.InformationHeader, msgData={'header': backport.text(msgKey.title())}, msgPriority=priority) if msgKey else None
+    if msgKey:
+        return makeSuccess(backport.text(msgKey.body(), vehicle=vehicleUserName), msgType=SM_TYPE.InformationHeader, msgData={'header': backport.text(msgKey.title())}, msgPriority=priority)
+    else:
+        return
 
 
 def makeModificationErrorMsg(msgKey=R.strings.system_messages.vehiclePostProgression.modificationProcessorError):
@@ -59,7 +60,7 @@ def makeBuyPairMsg(vehicle, stepID, modID):
     mod = vehicle.postProgression.getStep(stepID).action.getModificationByID(modID)
     userMsg = backport.text(msgKey.body(), vehicle=vehicle.userName, modification=backport.text(mod.getLocNameRes()()))
     spentString = makeSpentString(mod.getPrice())
-    return makeSuccess(' '.join((userMsg, spentString)), SM_TYPE.BuyPostProgressionModForCredits)
+    return makeSuccess((' ').join((userMsg, spentString)), SM_TYPE.BuyPostProgressionModForCredits)
 
 
 def makePurchaseStepsMsg(vehicle, stepIDs, price):
@@ -79,13 +80,13 @@ def makePurchaseStepsMsg(vehicle, stepIDs, price):
     if len(levels) > 1:
         msgKey = R.strings.system_messages.vehiclePostProgression.researchSteps.body
         separator = backport.text(R.strings.system_messages.vehiclePostProgression.researchSteps.levels.separator())
-        ctx['levels'] = separator.join((str(level) for level in levels))
+        ctx['levels'] = separator.join(str(level) for level in levels)
     else:
         msgKey = R.strings.system_messages.vehiclePostProgression.researchStep.body
         ctx['level'] = str(levels[0]) if levels else ''
     userMsg = backport.text(msgKey(), **ctx)
     spentString = makeSpentString(price, ignoreCurrencies=(ExtendedCurrency.XP,))
-    return makeSuccess(' '.join((userMsg, spentString)), SM_TYPE.ResearchVehiclePostProgressionSteps, featureUnlockMsgs)
+    return makeSuccess((' ').join((userMsg, spentString)), SM_TYPE.ResearchVehiclePostProgressionSteps, featureUnlockMsgs)
 
 
 def makePurchasePerksMsg(vehicle, stepIDs, price):
@@ -113,17 +114,22 @@ def makePurchasePerksMsg(vehicle, stepIDs, price):
         ctx['perk'] = backport.text(perkName)
     userMsg = backport.text(msgKey(), **ctx)
     spentString = makeSpentString(price, ignoreCurrencies=(ExtendedCurrency.XP,))
-    return makeSuccess(' '.join((userMsg, spentString)), SM_TYPE.VehicleSkillTreePerksResearched, perksUnlockMsgs, msgData={'title': backport.text(msgTitle())})
+    return makeSuccess((' ').join((userMsg, spentString)), SM_TYPE.VehicleSkillTreePerksResearched, perksUnlockMsgs, msgData={'title': backport.text(msgTitle())})
 
 
 def _getSlotCategoryName(slot):
     categoryR = R.strings.tank_setup.categories.dyn(next(iter(slot.categories))) if slot.categories else R.invalid
-    return backport.text(categoryR()) if categoryR else ''
+    if categoryR:
+        return backport.text(categoryR())
+    return ''
 
 
 def makeSetSlotCategoryMsg(vehicle, slot):
     msgKey = R.strings.system_messages.vehiclePostProgression.setSlotCategory
-    return makeSuccess(backport.text(msgKey.body(), vehicle=vehicle.userName, category=_getSlotCategoryName(slot)), msgType=SM_TYPE.InformationHeader, msgData={'header': backport.text(msgKey.title())}, msgPriority=NotificationPriorityLevel.HIGH) if slot is not None else makeSuccess()
+    if slot is not None:
+        return makeSuccess(backport.text(msgKey.body(), vehicle=vehicle.userName, category=_getSlotCategoryName(slot)), msgType=SM_TYPE.InformationHeader, msgData={'header': backport.text(msgKey.title())}, msgPriority=NotificationPriorityLevel.HIGH)
+    else:
+        return makeSuccess()
 
 
 def makeChangeSlotCategoryMsg(vehicle, slot, price):
@@ -131,14 +137,16 @@ def makeChangeSlotCategoryMsg(vehicle, slot, price):
     if slot is not None:
         userMsg = backport.text(msgKey.body(), vehicle=vehicle.userName, category=_getSlotCategoryName(slot))
         spentString = makeSpentString(price)
-        return makeSuccess(' '.join((userMsg, spentString)), msgType=SM_TYPE.ChangeSlotCategory)
+        return makeSuccess((' ').join((userMsg, spentString)), msgType=SM_TYPE.ChangeSlotCategory)
     else:
         return makeSuccess()
 
 
 def makeVehiclePostProgressionUnlockMsg(vehicle):
     msgKey = R.strings.system_messages.vehiclePostProgression.vehiclesUnlockPostProgression
-    return makeSuccess(backport.text(msgKey.single.body(), vehicle=vehicle.userName), msgType=SM_TYPE.InformationHeader, msgPriority=NotificationPriorityLevel.HIGH, msgData={'header': backport.text(msgKey.title())}) if vehicle.postProgressionAvailability(unlockOnly=True) and not vehicle.typeDescr.eliteByProgression else makeSuccess()
+    if vehicle.postProgressionAvailability(unlockOnly=True) and not vehicle.typeDescr.eliteByProgression:
+        return makeSuccess(backport.text(msgKey.single.body(), vehicle=vehicle.userName), msgType=SM_TYPE.InformationHeader, msgPriority=NotificationPriorityLevel.HIGH, msgData={'header': backport.text(msgKey.title())})
+    return makeSuccess()
 
 
 def showWelcomeUnlockMsg():

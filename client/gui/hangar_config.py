@@ -1,28 +1,14 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/hangar_config.py
+from __future__ import absolute_import
 import math
 from Math import Vector3
 from items.components import component_constants
 
 class HangarConfig(object):
-    __slots__ = ['cfg',
-     'vStartAngles',
-     'vStartPos',
-     'emblemsAlphaDamaged',
-     'emblemsAlphaUndamaged',
-     'shadowLightDir',
-     'shadowModelName',
-     'shadowForwardYOffset',
-     'shadowDeferredYOffset',
-     'shadowDefaultTextureName',
-     'shadowEmptyTextureName',
-     'vehicleGunPitch',
-     'vehicleTurretYaw',
-     'camMinDistVehicleHullLengthK',
-     'camCapsuleScale',
-     'camCapsuleGunScale',
-     'cameraName',
-     'translation',
+    __slots__ = [
+     'cfg', 'vStartAngles', 'vStartPos', 'emblemsAlphaDamaged', 'emblemsAlphaUndamaged',
+     'shadowLightDir', 'shadowModelName', 'shadowForwardYOffset', 'shadowDeferredYOffset',
+     'shadowDefaultTextureName', 'shadowEmptyTextureName', 'vehicleGunPitch', 'vehicleTurretYaw',
+     'camMinDistVehicleHullLengthK', 'camCapsuleScale', 'camCapsuleGunScale', 'cameraName', 'translation',
      'pivotTransform']
 
     def __init__(self):
@@ -40,7 +26,7 @@ class HangarConfig(object):
         self.vehicleGunPitch = component_constants.ZERO_FLOAT
         self.vehicleTurretYaw = component_constants.ZERO_FLOAT
         self.camMinDistVehicleHullLengthK = component_constants.ZERO_FLOAT
-        self.pivotTransform = dict()
+        self.pivotTransform = {}
         self.camCapsuleScale = Vector3()
         self.camCapsuleGunScale = Vector3()
         self.cameraName = component_constants.EMPTY_STRING
@@ -64,8 +50,7 @@ class HangarConfig(object):
     def loadConfig(self, xml, defaultCfg=None):
         if defaultCfg is None:
             defaultCfg = self
-        defaultFakeShadowOffsetsCfg = {'shadow_forward_y_offset': 0.0,
-         'shadow_deferred_y_offset': 0.0}
+        defaultFakeShadowOffsetsCfg = {'shadow_forward_y_offset': 0.0, 'shadow_deferred_y_offset': 0.0}
         self.vStartAngles = self.loadConfigValue('v_start_angles', xml, xml.readVector3, defaultCfg)
         self.vStartPos = self.loadConfigValue('v_start_pos', xml, xml.readVector3, defaultCfg)
         self.emblemsAlphaDamaged = self.loadConfigValue('emblems_alpha_damaged', xml, xml.readFloat, defaultCfg)
@@ -76,8 +61,7 @@ class HangarConfig(object):
         self.shadowDeferredYOffset = self.loadConfigValue('shadow_deferred_y_offset', xml, xml.readFloat, defaultFakeShadowOffsetsCfg)
         self.shadowDefaultTextureName = self.loadConfigValue('shadow_default_texture_name', xml, xml.readString, defaultCfg)
         self.shadowEmptyTextureName = self.loadConfigValue('shadow_empty_texture_name', xml, xml.readString, defaultCfg)
-        defaultVehicleAnglesCfg = {'vehicle_gun_pitch': 0.0,
-         'vehicle_turret_yaw': 0.0}
+        defaultVehicleAnglesCfg = {'vehicle_gun_pitch': 0.0, 'vehicle_turret_yaw': 0.0}
         self.vehicleGunPitch = self.loadConfigValue('vehicle_gun_pitch', xml, xml.readFloat, defaultVehicleAnglesCfg)
         self.vehicleTurretYaw = self.loadConfigValue('vehicle_turret_yaw', xml, xml.readFloat, defaultVehicleAnglesCfg)
         for i in range(0, 3):
@@ -97,8 +81,8 @@ class HangarConfig(object):
         self.loadConfigValue(hangarPathKey, xml, xml.readString)
 
     def loadCustomizationConfig(self, xml):
-        defaultFakeShadowOffsetsCfg = {'shadow_forward_y_offset': 0.0,
-         'shadow_deferred_y_offset': 0.0}
+        defaultFakeShadowOffsetsCfg = {'shadow_forward_y_offset': 0.0, 
+           'shadow_deferred_y_offset': 0.0}
         self.vStartPos = self.loadConfigValue('v_start_pos', xml, xml.readVector3, self)
         self.vStartAngles = self.loadConfigValue('v_start_angles', xml, xml.readVector3, self)
         self.shadowForwardYOffset = self.loadConfigValue('shadow_forward_y_offset', xml, xml.readFloat, defaultFakeShadowOffsetsCfg)
@@ -116,8 +100,8 @@ class HangarConfig(object):
             self.pivotTransform['offsetDistance'] = self.loadConfigValue('offsetDistance', pivotCfg, pivotCfg.readFloat, self)
 
     def loadSecondaryConfig(self, xml):
-        defaultShadowOffsetsCfg = {'shadow_forward_y_offset': 0.0,
-         'shadow_deferred_y_offset': 0.0}
+        defaultShadowOffsetsCfg = {'shadow_forward_y_offset': 0.0, 
+           'shadow_deferred_y_offset': 0.0}
         self.vStartPos = self.loadConfigValue('v_start_pos', xml, xml.readVector3, self)
         self.vStartAngles = self.loadConfigValue('v_start_angles', xml, xml.readVector3, self)
         for i in range(0, 3):

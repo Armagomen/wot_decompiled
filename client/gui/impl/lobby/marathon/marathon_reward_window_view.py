@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/marathon/marathon_reward_window_view.py
-import typing
-import constants
+import typing, constants
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.marathon.bonus_model import BonusModel
 from gui.impl.gen.view_models.views.lobby.marathon.marathon_prize_reward_model import MarathonPrizeRewardModel
@@ -28,7 +25,8 @@ if typing.TYPE_CHECKING:
     from gui.server_events.bonuses import SimpleBonus
 _R_BACKPORT_TOOLTIP = R.views.common.tooltip_window.backport_tooltip_content.BackportTooltipContent()
 _ICON_PATH = R.images.gui.maps.icons.marathon.rewardWindow
-REWARDS_PRIORITY = ('vehicles',
+REWARDS_PRIORITY = (
+ 'vehicles',
  'tankmen',
  constants.PREMIUM_ENTITLEMENTS.PLUS,
  'optionalDevice',
@@ -81,7 +79,7 @@ class MarathonRewardWindowView(ViewImpl):
 
     def _onLoading(self, *args, **kwargs):
         super(MarathonRewardWindowView, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self._fillModel(model)
 
     def _initialize(self, *args, **kwargs):
@@ -107,7 +105,9 @@ class MarathonRewardWindowView(ViewImpl):
         current, last = self.__marathon.getMarathonProgress()
         if current == 0:
             return R.strings.marathon.reward.stageAllComplete()
-        return R.strings.marathon.reward.stageNotAllComplete() if current < last else R.strings.marathon.reward.stageCompleteLast()
+        if current < last:
+            return R.strings.marathon.reward.stageNotAllComplete()
+        return R.strings.marathon.reward.stageCompleteLast()
 
     def _fillModel(self, model):
         isMainProgressionReward = not self.__marathon.isPostRewardObtained()
@@ -176,7 +176,7 @@ class MarathonRewardWindowView(ViewImpl):
         return results
 
     def __setTooltip(self, model, reward):
-        tooltipId = '{}'.format(self.__idGen.next())
+        tooltipId = ('{}').format(self.__idGen.next())
         self.__bonusCache[tooltipId] = reward
         model.setTooltipId(tooltipId)
 
@@ -191,7 +191,9 @@ class MarathonRewardWindowView(ViewImpl):
             if epicBonusList:
                 id_ = epicBonusList[0]['id']
                 name = self.itemsCache.items.getItemByCD(id_).itemTypeName
-        return priority.index(name) if name in priority else defaultPriority
+        if name in priority:
+            return priority.index(name)
+        return defaultPriority
 
     def __convertRewards(self, ctx):
         self.__rewards = ctx.get('rewards', [])

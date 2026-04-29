@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_pass/battle_pass_buy_levels_view.py
-import logging
-import SoundGroups
+import logging, SoundGroups
 from battle_pass_common import BattlePassState
 from gui.battle_pass.battle_pass_bonuses_packers import packBonusModelAndTooltipData
 from gui.battle_pass.battle_pass_buyer import BattlePassBuyer
@@ -43,7 +40,10 @@ class BuyLevelsPresenter(ViewComponent[BattlePassBuyLevelViewModel]):
 
     def getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        return None if tooltipId is None else self.__tooltipItems.get(tooltipId)
+        if tooltipId is None:
+            return
+        else:
+            return self.__tooltipItems.get(tooltipId)
 
     def updateInitialData(self, **kwargs):
         self.__backCallback = kwargs.get('backCallback')
@@ -77,7 +77,7 @@ class BuyLevelsPresenter(ViewComponent[BattlePassBuyLevelViewModel]):
 
     def _onLoading(self, *args, **kwargs):
         super(BuyLevelsPresenter, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             tx.setIsWalletAvailable(self.__wallet.isAvailable)
             if self.__backCallback:
                 backBtnText = backport.text(_rBattlePass.battlePassBuyLevelsView.backBtnText.shop())
@@ -104,7 +104,7 @@ class BuyLevelsPresenter(ViewComponent[BattlePassBuyLevelViewModel]):
         return
 
     def __showConfirmAny(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self.__setConfirmAnyNumberModel(model=model.confirmAnyNumber)
             model.setState(model.CONFIRM_ANY_NUMBER_STATE)
         SoundGroups.g_instance.playSound2D(BattlePassSounds.CONFIRM_BUY)
@@ -113,17 +113,28 @@ class BuyLevelsPresenter(ViewComponent[BattlePassBuyLevelViewModel]):
         self.viewModel.setState(self.viewModel.REWARDS_STATE)
 
     def _getListeners(self):
-        return ((events.BattlePassEvent.BUYING_THINGS, self.__onBuying, EVENT_BUS_SCOPE.LOBBY),)
+        return (
+         (
+          events.BattlePassEvent.BUYING_THINGS, self.__onBuying, EVENT_BUS_SCOPE.LOBBY),)
 
     def _getEvents(self):
-        return ((self.viewModel.showConfirmAny, self.__showConfirmAny),
-         (self.viewModel.confirmAnyNumber.onChangeSelectedLevels, self.__onChangeSelectedLevels),
-         (self.viewModel.confirmAnyNumber.onBuyClick, self.__onBuyBattlePassClick),
-         (self.viewModel.confirmAnyNumber.onShowRewardsClick, self.__showRewards),
-         (self.__battlePass.onLevelUp, self.__onLevelUp),
-         (self.__battlePass.onBattlePassSettingsChange, self.__onSettingsChanged),
-         (self.__battlePass.onSeasonStateChanged, self.__onSettingsChanged),
-         (self.__wallet.onWalletStatusChanged, self.__onWalletChanged))
+        return (
+         (
+          self.viewModel.showConfirmAny, self.__showConfirmAny),
+         (
+          self.viewModel.confirmAnyNumber.onChangeSelectedLevels, self.__onChangeSelectedLevels),
+         (
+          self.viewModel.confirmAnyNumber.onBuyClick, self.__onBuyBattlePassClick),
+         (
+          self.viewModel.confirmAnyNumber.onShowRewardsClick, self.__showRewards),
+         (
+          self.__battlePass.onLevelUp, self.__onLevelUp),
+         (
+          self.__battlePass.onBattlePassSettingsChange, self.__onSettingsChanged),
+         (
+          self.__battlePass.onSeasonStateChanged, self.__onSettingsChanged),
+         (
+          self.__wallet.onWalletStatusChanged, self.__onWalletChanged))
 
     def __onBuying(self, _):
         self.__battlePass.onLevelUp += self.__onLevelUp
@@ -146,7 +157,7 @@ class BuyLevelsPresenter(ViewComponent[BattlePassBuyLevelViewModel]):
             self.__updateState()
 
     def __onWalletChanged(self, _):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setIsWalletAvailable(self.__wallet.isAvailable)
 
     def __updateState(self):
@@ -159,7 +170,7 @@ class BuyLevelsPresenter(ViewComponent[BattlePassBuyLevelViewModel]):
             dynamicLevelsCount = self.__package.getDynamicLevelsCount()
             if levelsDelta and dynamicLevelsCount > 1:
                 self.__package.setLevels(dynamicLevelsCount - levelsDelta)
-            with model.confirmAnyNumber.transaction() as tx:
+            with model.confirmAnyNumber.transaction() as (tx):
                 self.__setConfirmAnyNumberModel(tx)
         elif model.getState() == model.REWARDS_STATE:
             self.__updateDetailRewards()
@@ -175,7 +186,7 @@ class BuyLevelsPresenter(ViewComponent[BattlePassBuyLevelViewModel]):
     def __updateConfirmAnyNumberModel(self, count):
         self.__package.setLevels(int(count))
         self.__clearTooltips()
-        with self.viewModel.confirmAnyNumber.transaction() as tx:
+        with self.viewModel.confirmAnyNumber.transaction() as (tx):
             tx.setPrice(self.__package.getPrice())
             tx.setLevelsSelected(self.__package.getLevelsCount() + self.__package.getCurrentLevel())
             tx.rewards.clearItems()
@@ -186,7 +197,7 @@ class BuyLevelsPresenter(ViewComponent[BattlePassBuyLevelViewModel]):
         curLevel = self.__package.getCurrentLevel()
         fromLevel = curLevel
         toLevel = curLevel + self.__package.getLevelsCount()
-        with self.viewModel.rewards.transaction() as tx:
+        with self.viewModel.rewards.transaction() as (tx):
             tx.nowRewards.clearItems()
             tx.setFromLevel(fromLevel + 1)
             tx.setToLevel(toLevel)

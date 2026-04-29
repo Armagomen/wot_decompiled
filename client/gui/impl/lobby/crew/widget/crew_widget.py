@@ -1,12 +1,11 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/widget/crew_widget.py
 from collections import OrderedDict
 from itertools import chain
+from helpers.dependency import descriptor
 from typing import TYPE_CHECKING, NamedTuple, Generator
 import Event
+from PlayerEvents import g_playerEvents
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import CREW_BOOKS_VIEWED
-from constants import RENEWABLE_SUBSCRIPTION_CONFIG, JUNK_TANKMAN_NOVELTY
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui import SystemMessages
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -15,7 +14,6 @@ from gui.Scaleform.genConsts.CONTEXT_MENU_HANDLER_TYPE import CONTEXT_MENU_HANDL
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.impl import backport
 from gui.impl.auxiliary.crew_books_helper import crewBooksViewedCache
-from gui.impl.auxiliary.junk_tankman_helper import JunkTankmanHelper
 from gui.impl.backport import BackportContextMenuWindow, createContextMenuData
 from gui.impl.backport.backport_pop_over import BackportPopOverContent, createPopOverData
 from gui.impl.backport.backport_tooltip import createBackportTooltipContent
@@ -42,32 +40,38 @@ from gui.shared.gui_items.processors.vehicle import VehicleTmenXPAccelerator
 from gui.shared.items_cache import CACHE_SYNC_REASON
 from gui.shared.utils import decorators
 from helpers import dependency, int2roman
-from helpers.dependency import descriptor
 from items.tankmen import MAX_SKILL_LEVEL, getLessMasteredIDX, sortTankmanRoles
 from renewable_subscription_common.passive_xp import isTagsSetOk
+from renewable_subscription_common.schema import renewableSubscriptionsConfigSchema
 from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.game_control import IWotPlusController
-from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 from wg_async import wg_async, wg_await
 if TYPE_CHECKING:
     from gui.impl.gen.view_models.views.lobby.crew.common.crew_widget_tankman_model import CrewWidgetTankmanModel
     from gui.impl.gen.view_models.views.lobby.crew.common.crew_skill_model import CrewSkillModel
     from typing import Union
-BuildedMessage = NamedTuple('BuildedMessage', [('text', str),
- ('iconFrom', DynAccessor),
- ('iconTo', DynAccessor),
- ('vehFromCD', DynAccessor),
- ('vehToCD', DynAccessor)])
+BuildedMessage = NamedTuple('BuildedMessage', [
+ (
+  'text', str),
+ (
+  'iconFrom', DynAccessor),
+ (
+  'iconTo', DynAccessor),
+ (
+  'vehFromCD', DynAccessor),
+ (
+  'vehToCD', DynAccessor)])
 DOG = 'dog'
 
 class CrewWidget(ViewImpl, IGlobalListener):
-    __slots__ = ('__toolTipMgr', '__currentViewID', '__previousViewID', '__currentTankman', '__currentVehicle', 'onSlotClick', '__currentSlotIdx', 'onChangeCrewClick', 'onSlotTrySelect', '__isButtonBarVisible')
+    __slots__ = ('__toolTipMgr', '__currentViewID', '__previousViewID', '__currentTankman',
+                 '__currentVehicle', 'onSlotClick', '__currentSlotIdx', 'onChangeCrewClick',
+                 'onSlotTrySelect', '__isButtonBarVisible')
     LAYOUT_DYN_ACCESSOR = R.views.lobby.crew.widgets.CrewWidget
     PREBATTLE_TYPE_TO_SLOT_MODE = {}
     DEFAULT_SLOT_MODE = SlotSizeMode.DEFAULT
     itemsCache = dependency.descriptor(IItemsCache)
-    lobbyContext = dependency.descriptor(ILobbyContext)
     wotPlusCtrl = dependency.descriptor(IWotPlusController)
     appLoader = descriptor(IAppLoader)
 
@@ -104,7 +108,8 @@ class CrewWidget(ViewImpl, IGlobalListener):
         return
 
     def getWidgetData(self):
-        return (self.__currentSlotIdx, self.__currentVehicle, self.__currentTankman)
+        return (
+         self.__currentSlotIdx, self.__currentVehicle, self.__currentTankman)
 
     def updateTankmanId(self, tankmanID):
         if self.__currentTankman is None or tankmanID != self.__currentTankman.invID:
@@ -153,20 +158,16 @@ class CrewWidget(ViewImpl, IGlobalListener):
 
     def setCurrentViewID(self, value):
         self.__currentViewID = value
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setCurrentLayoutID(self.__currentViewID)
 
     def createToolTip(self, event):
         if event.contentID == R.views.common.tooltip_window.backport_tooltip_content.BackportTooltipContent():
             tooltipId = event.getArgument('tooltipId')
             if tooltipId == TooltipConstants.SKILL:
-                args = [event.getArgument('skillName'),
-                 event.getArgument('roleName'),
-                 int(event.getArgument('tankmanID')),
-                 None,
-                 True,
-                 None,
-                 event.getArgument('isBonus'),
+                args = [
+                 event.getArgument('skillName'), event.getArgument('roleName'),
+                 int(event.getArgument('tankmanID')), None, True, None, event.getArgument('isBonus'),
                  int(event.getArgument('skillIndex'))]
                 self.__toolTipMgr.onCreateWulfTooltip(TOOLTIPS_CONSTANTS.CREW_PERK_GF, args, event.mouse.positionX, event.mouse.positionY, parent=self.getParentWindow())
                 return TOOLTIPS_CONSTANTS.CREW_PERK_GF
@@ -176,7 +177,8 @@ class CrewWidget(ViewImpl, IGlobalListener):
                 self.__toolTipMgr.onCreateWulfTooltip(TooltipConstants.TANKMAN, args, event.mouse.positionX, event.mouse.positionY, parent=self.getParentWindow())
                 return TooltipConstants.TANKMAN
             if tooltipId == TooltipConstants.SKILLS_EFFICIENCY:
-                args = (event.getArgument('tankmanID'),)
+                args = (
+                 event.getArgument('tankmanID'),)
                 self.__toolTipMgr.onCreateWulfTooltip(tooltipId, args, event.mouse.positionX, event.mouse.positionY, parent=self.getParentWindow())
                 return tooltipId
             if tooltipId == TooltipConstants.CREW_SKILL_UNTRAINED:
@@ -189,32 +191,33 @@ class CrewWidget(ViewImpl, IGlobalListener):
         tooltipId = event.getArgument('tooltipId')
         if contentID == R.views.lobby.crew.CrewHeaderTooltipView():
             return CrewHeaderTooltipView(self.__getIdleCrewState())
-        elif tooltipId == TooltipConstants.VEHICLE_CREW_MEMBER_IN_HANGAR:
-            slotIdx = int(event.getArgument('slotIdx'))
-            tankmanID = int(event.getArgument('tankmanID'))
-            if tankmanID == NO_TANKMAN:
-                role = self.__currentVehicle.descriptor.type.crewRoles[slotIdx][0]
-            else:
-                tankman = self.itemsCache.items.getTankman(tankmanID)
-                role = tankman.role
-                for idx, roles in enumerate(tankman.vehicleNativeDescr.type.crewRoles):
-                    if roles and role == roles[0]:
-                        slotIdx = idx
-                        break
-
-            args = [role,
-             tankmanID,
-             slotIdx,
-             None,
-             None,
-             None,
-             None,
-             None]
-            return createBackportTooltipContent(specialAlias=TOOLTIPS_CONSTANTS.VEHICLE_CREW_MEMBER_IN_HANGAR, specialArgs=args)
-        elif contentID == R.views.lobby.crew.tooltips.EmptySkillTooltip():
-            tman = self.itemsCache.items.getTankman(int(event.getArgument('tankmanID')))
-            return EmptySkillTooltip(tman, int(event.getArgument('skillIndex')))
         else:
+            if tooltipId == TooltipConstants.VEHICLE_CREW_MEMBER_IN_HANGAR:
+                slotIdx = int(event.getArgument('slotIdx'))
+                tankmanID = int(event.getArgument('tankmanID'))
+                if tankmanID == NO_TANKMAN:
+                    role = self.__currentVehicle.descriptor.type.crewRoles[slotIdx][0]
+                else:
+                    tankman = self.itemsCache.items.getTankman(tankmanID)
+                    role = tankman.role
+                    for idx, roles in enumerate(tankman.vehicleNativeDescr.type.crewRoles):
+                        if roles and role == roles[0]:
+                            slotIdx = idx
+                            break
+
+                args = [
+                 role,
+                 tankmanID,
+                 slotIdx,
+                 None,
+                 None,
+                 None,
+                 None,
+                 None]
+                return createBackportTooltipContent(specialAlias=TOOLTIPS_CONSTANTS.VEHICLE_CREW_MEMBER_IN_HANGAR, specialArgs=args)
+            if contentID == R.views.lobby.crew.tooltips.EmptySkillTooltip():
+                tman = self.itemsCache.items.getTankman(int(event.getArgument('tankmanID')))
+                return EmptySkillTooltip(tman, int(event.getArgument('skillIndex')))
             return super(CrewWidget, self).createToolTipContent(event, contentID)
 
     def createContextMenu(self, event):
@@ -224,17 +227,15 @@ class CrewWidget(ViewImpl, IGlobalListener):
             tankmanID = event.getArgument('tankmanID')
             if tankmanID == NO_TANKMAN:
                 return None
-            contextMenuArgs = {'tankmanID': tankmanID,
-             'slotIdx': event.getArgument('slotIdx'),
-             'previousViewID': self.__currentViewID}
+            contextMenuArgs = {'tankmanID': tankmanID, 'slotIdx': event.getArgument('slotIdx'), 
+               'previousViewID': self.__currentViewID}
             contextMenuData = createContextMenuData(self._getContextMenuType(), contextMenuArgs)
             window = BackportContextMenuWindow(contextMenuData, self.getParentWindow())
             window.load()
             return window
 
     def createPopOverContent(self, event):
-        args = {'crewIds': getLowEfficiencyCrew(self.__currentVehicle),
-         'vehicleCD': self.__currentVehicle.intCD}
+        args = {'crewIds': getLowEfficiencyCrew(self.__currentVehicle), 'vehicleCD': self.__currentVehicle.intCD}
         return BackportPopOverContent(createPopOverData(VIEW_ALIAS.CREW_OPERATIONS_POPOVER, args))
 
     def getSlotIdxByTankmanID(self, tankmanID):
@@ -246,7 +247,7 @@ class CrewWidget(ViewImpl, IGlobalListener):
 
     def _onLoading(self, *args, **kwargs):
         super(CrewWidget, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setCurrentLayoutID(self.__currentViewID)
             if self.__previousViewID is not None:
                 vm.setPreviousLayoutID(self.__previousViewID)
@@ -255,22 +256,36 @@ class CrewWidget(ViewImpl, IGlobalListener):
         return
 
     def _getCallbacks(self):
-        return (('inventory.13.2', self.__updateTankmen),
-         ('inventory.8.compDescr', self.__updateTankmen),
-         ('idleCrewXP', self.__idleCrewXPUpdated),
-         ('inventory.1', self.__onVehicleDossierUpdate))
+        return (
+         (
+          'inventory.13.2', self.__updateTankmen),
+         (
+          'inventory.8.compDescr', self.__updateTankmen),
+         (
+          'idleCrewXP', self.__idleCrewXPUpdated),
+         (
+          'inventory.1', self.__onVehicleDossierUpdate))
 
     def _getEvents(self):
-        return ((self.viewModel.onSlotClick, self._onSlotClick),
-         (self.viewModel.onChangeCrewClick, self.__onChangeCrewClick),
-         (self.viewModel.onDogMoreInfoClick, self.__onDogMoreInfoClick),
-         (self.viewModel.buttonsBar.onCrewBooksClick, self.__onCrewBooksClick),
-         (self.viewModel.buttonsBar.onAcceleratedTrainingClick, self.__onAcceleratedTrainingClick),
-         (self.viewModel.buttonsBar.onWotPlusClick, self.__onWotPlusClick),
-         (self.itemsCache.onSyncCompleted, self.__onCacheResync),
-         (self.lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChange),
-         (AccountSettings.onSettingsChanging, self.__onAccountSettingsChanging),
-         (JunkTankmanHelper().onShowNoveltyUpdated, self.__onShowNoveltyUpdated))
+        return (
+         (
+          self.viewModel.onSlotClick, self._onSlotClick),
+         (
+          self.viewModel.onChangeCrewClick, self.__onChangeCrewClick),
+         (
+          self.viewModel.onDogMoreInfoClick, self.__onDogMoreInfoClick),
+         (
+          self.viewModel.buttonsBar.onCrewBooksClick, self.__onCrewBooksClick),
+         (
+          self.viewModel.buttonsBar.onAcceleratedTrainingClick, self.__onAcceleratedTrainingClick),
+         (
+          self.viewModel.buttonsBar.onWotPlusClick, self.__onWotPlusClick),
+         (
+          self.itemsCache.onSyncCompleted, self.__onCacheResync),
+         (
+          AccountSettings.onSettingsChanging, self.__onAccountSettingsChanging),
+         (
+          g_playerEvents.onConfigModelUpdated, self._onConfigModelUpdated))
 
     def _finalize(self):
         super(CrewWidget, self)._finalize()
@@ -295,7 +310,7 @@ class CrewWidget(ViewImpl, IGlobalListener):
             vmButtonsBar.crewOperations.setIsAutoReturnOn(self.__currentVehicle.isAutoReturn)
             self.__updateCrewBooksDiscount(vmButtonsBar.crewBooks)
             isXPToTman = self.__currentVehicle.isXPToTman if self.__currentVehicle else False
-            vmButtonsBar.acceleratedTraining.setState(ToggleState.ON if isXPToTman else (ToggleState.OFF if self.__currentVehicle.isElite else ToggleState.DISABLED))
+            vmButtonsBar.acceleratedTraining.setState(ToggleState.ON if isXPToTman else ToggleState.OFF if self.__currentVehicle.isElite else ToggleState.DISABLED)
             self.__updateWotPlusButtonModel(vmButtonsBar.wotPlus)
         return
 
@@ -306,7 +321,7 @@ class CrewWidget(ViewImpl, IGlobalListener):
         return lastSkillLevel.intSkillLvl
 
     def __updateWidgetModel(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             if self.__currentVehicle:
                 self.__updateWidgetModelByVehicle(vm)
             elif self.__currentTankman:
@@ -316,7 +331,10 @@ class CrewWidget(ViewImpl, IGlobalListener):
         self.__setSlotMode()
 
     def __setSlotMode(self):
-        mode = self.PREBATTLE_TYPE_TO_SLOT_MODE.get(self.prbEntity.getEntityType(), self.DEFAULT_SLOT_MODE)
+        if self.prbEntity:
+            mode = self.PREBATTLE_TYPE_TO_SLOT_MODE.get(self.prbEntity.getEntityType(), self.DEFAULT_SLOT_MODE)
+        else:
+            mode = self.DEFAULT_SLOT_MODE
         self.viewModel.setSlotSizeMode(mode)
 
     def __updateWidgetModelByVehicle(self, vm):
@@ -351,12 +369,13 @@ class CrewWidget(ViewImpl, IGlobalListener):
             eqs = diff.get('eqs', {})
             compDescr = diff.get('compDescr', {})
             boosters = diff.get('boosters', {})
-            changedVehicles = [ (vehInvID if isinstance(vehInvID, int) else vehInvID[0]) for vehInvID in crews.iterkeys() ]
-            changedVehicles.extend((vehInvID for vehInvID in chain(settings.iterkeys(), eqs.iterkeys(), compDescr.iterkeys(), boosters.iterkeys())))
+            changedVehicles = [ vehInvID if isinstance(vehInvID, int) else vehInvID[0] for vehInvID in crews.iterkeys()
+                              ]
+            changedVehicles.extend(vehInvID for vehInvID in chain(settings.iterkeys(), eqs.iterkeys(), compDescr.iterkeys(), boosters.iterkeys()))
             if self.__currentVehicle.invID in changedVehicles:
                 self.__currentVehicle = self.itemsCache.items.getVehicle(self.__currentVehicle.invID)
                 self.__updateWidgetModel()
-        elif self.__currentTankman and any((self.__currentTankman.invID in tankmen for tankmen in crews.itervalues() if tankmen is not None)):
+        elif self.__currentTankman and any(self.__currentTankman.invID in tankmen for tankmen in crews.itervalues() if tankmen is not None):
             self.__currentTankman = self.itemsCache.items.getTankman(self.__currentTankman.invID)
             if self.__currentTankman.isInTank:
                 self.__currentVehicle = self.itemsCache.items.getVehicle(self.__currentTankman.vehicleInvID)
@@ -373,7 +392,7 @@ class CrewWidget(ViewImpl, IGlobalListener):
         return
 
     def __idleCrewXPUpdated(self, diff):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             self.__updateWotPlusButtonModel(vm.buttonsBar.wotPlus)
 
     def __updateTankmen(self, diff=None):
@@ -390,7 +409,7 @@ class CrewWidget(ViewImpl, IGlobalListener):
             else:
                 self.onSlotTrySelect(slotIDX=NO_SLOT, tankmanInvId=NO_TANKMAN)
         else:
-            with self.viewModel.transaction() as vm:
+            with self.viewModel.transaction() as (vm):
                 self._updateButtonsBar(vm.buttonsBar)
 
     def __checkIsTankmanUpdated(self, diff):
@@ -414,19 +433,19 @@ class CrewWidget(ViewImpl, IGlobalListener):
         self.updateSlotIdx(slotIdx)
         self.onSlotClick(tankmanID, slotIdx)
 
-    def __onServerSettingsChange(self, diff):
-        if RENEWABLE_SUBSCRIPTION_CONFIG in diff:
-            with self.viewModel.transaction() as vm:
+    def _onConfigModelUpdated(self, gpKey):
+        if renewableSubscriptionsConfigSchema.gpKey == gpKey:
+            with self.viewModel.transaction() as (vm):
                 self.__updateWotPlusButtonModel(vm.buttonsBar.wotPlus)
                 self.__updateWidgetModel()
 
     def __onAccountSettingsChanging(self, key, _):
         if key == CREW_BOOKS_VIEWED:
-            with self.viewModel.transaction() as vm:
+            with self.viewModel.transaction() as (vm):
                 self.__updateCrewBooksAmount(vm.buttonsBar.crewBooks)
 
     def __onCacheResync(self, reason, diff):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             if reason == CACHE_SYNC_REASON.SHOP_RESYNC:
                 self.__updateCrewBooksDiscount(vm.buttonsBar.crewBooks)
             if diff is not None and GUI_ITEM_TYPE.CREW_BOOKS in diff:
@@ -435,7 +454,7 @@ class CrewWidget(ViewImpl, IGlobalListener):
 
     def __findTmanData(self):
         crew = OrderedDict(sorted(self.__currentVehicle.crew, key=lambda item: item[0]))
-        tankmenDescrs = [ (tman.descriptor if tman else None) for tman in crew.itervalues() ]
+        tankmenDescrs = [ tman.descriptor if tman else None for tman in crew.itervalues() ]
         return getLessMasteredIDX(tankmenDescrs)
 
     def __fillVehicleInfo(self, vm):
@@ -499,8 +518,9 @@ class CrewWidget(ViewImpl, IGlobalListener):
     def __updateWotPlusButtonModel(self, vmWotPlusButton):
         wotPlusState = ToggleState.HIDDEN
         vehicle = self.__currentVehicle
-        if vehicle and self.lobbyContext.getServerSettings().isRenewableSubPassiveCrewXPEnabled():
-            wotPlusState = ToggleState.DISABLED if not self.wotPlusCtrl.isEnabled() or not isTagsSetOk(vehicle.tags) or vehicle.isCrewFullyTrained else (ToggleState.ON if self.wotPlusCtrl.hasVehicleCrewIdleXP(vehicle.invID) else ToggleState.OFF)
+        settingsStorage = self.wotPlusCtrl.getSettingsStorage()
+        if vehicle and settingsStorage.isPassiveCrewXPEnabled():
+            wotPlusState = ToggleState.DISABLED if not settingsStorage.isPassiveCrewXPAvailable() or not isTagsSetOk(vehicle.tags) or vehicle.isCrewFullyTrained else ToggleState.ON if self.wotPlusCtrl.hasVehicleCrewIdleXP(vehicle.invID) else ToggleState.OFF
         vmWotPlusButton.setState(wotPlusState)
 
     def __onDogMoreInfoClick(self):
@@ -559,22 +579,23 @@ class CrewWidget(ViewImpl, IGlobalListener):
         stringRoot = R.strings.dialogs.idleCrewBonus
         message = None
         if previousVehicle:
-            vehicleFromName = '{} %(typeIconFrom) {}'.format(int2roman(previousVehicle.level), previousVehicle.userName)
+            vehicleFromName = ('{} %(typeIconFrom) {}').format(int2roman(previousVehicle.level), previousVehicle.userName)
             removeTypeStringFrom = backport.text(stringRoot.message.removeTypeFrom())
             removeVehFromNameString = backport.text(stringRoot.message.removeName(), vehicleName=vehicleFromName)
-            vehicleToName = '{} %(typeIconTo) {}'.format(int2roman(self.__currentVehicle.level), self.__currentVehicle.userName)
+            vehicleToName = ('{} %(typeIconTo) {}').format(int2roman(self.__currentVehicle.level), self.__currentVehicle.userName)
             removeTypeStringTo = backport.text(stringRoot.message.removeTypeTo())
             removeVehToNameString = backport.text(stringRoot.message.removeName(), vehicleName=vehicleToName)
             endDot = backport.text(stringRoot.message.dot())
-            finalString = '{} {} {} {}{}'.format(removeTypeStringFrom, removeVehFromNameString, removeTypeStringTo, removeVehToNameString, endDot)
+            finalString = ('{} {} {} {}{}').format(removeTypeStringFrom, removeVehFromNameString, removeTypeStringTo, removeVehToNameString, endDot)
             message = BuildedMessage(text=finalString, iconFrom=R.images.gui.maps.icons.vehicleTypes.num('24x24').dyn(getIconResourceName(previousVehicle.type)), iconTo=R.images.gui.maps.icons.vehicleTypes.num('24x24').dyn(getIconResourceName(self.__currentVehicle.type)), vehFromCD=previousVehicle.intCD, vehToCD=self.__currentVehicle.intCD)
         return message
 
     def __getIdleCrewState(self):
         vehicle = self.__currentVehicle
-        if not self.lobbyContext.getServerSettings().isRenewableSubPassiveCrewXPEnabled():
+        settingsStorage = self.wotPlusCtrl.getSettingsStorage()
+        if not settingsStorage.isPassiveCrewXPEnabled():
             return IdleCrewBonusEnum.INVISIBLE
-        if not self.wotPlusCtrl.isEnabled():
+        if not settingsStorage.isPassiveCrewXPAvailable():
             return IdleCrewBonusEnum.DISABLED
         if not isTagsSetOk(vehicle.tags):
             return IdleCrewBonusEnum.INCOMPATIBLEWITHCURRENTVEHICLE
@@ -582,11 +603,9 @@ class CrewWidget(ViewImpl, IGlobalListener):
             return IdleCrewBonusEnum.POSTPROGRESSIONREACHED
         if self.wotPlusCtrl.hasVehicleCrewIdleXP(vehicle.invID):
             return IdleCrewBonusEnum.ACTIVEONCURRENTVEHICLE
-        return IdleCrewBonusEnum.ACTIVEONANOTHERVEHICLE if self.wotPlusCtrl.getVehicleIDWithIdleXP() else IdleCrewBonusEnum.ENABLED
-
-    def __onShowNoveltyUpdated(self):
-        with self.viewModel.transaction() as vm:
-            self.__updateCrewBooksAmount(vm.buttonsBar.crewBooks)
+        if self.wotPlusCtrl.getVehicleIDWithIdleXP():
+            return IdleCrewBonusEnum.ACTIVEONANOTHERVEHICLE
+        return IdleCrewBonusEnum.ENABLED
 
     def __updateCrewBooksAmount(self, vmCrewBooks):
         if self.__currentVehicle is None:
@@ -597,8 +616,6 @@ class CrewWidget(ViewImpl, IGlobalListener):
             newCrewBooksAmount = viewedCache.newCrewBooksAmount
             if newCrewBooksAmount:
                 vmCrewBooks.setNewAmount(str(int(newCrewBooksAmount)))
-            elif JunkTankmanHelper().isShowNovelty(showPlace=JUNK_TANKMAN_NOVELTY.WIDGET):
-                vmCrewBooks.setNewAmount(backport.text(R.strings.crew.common.exclamationMark()))
             else:
                 vmCrewBooks.setNewAmount('0')
             vmCrewBooks.setTotalAmount(viewedCache.crewBooksAmount)
@@ -630,7 +647,7 @@ class QuickTrainingCrewWidget(CrewWidget):
     def updatePossibleSkillsLevel(self, possibleSkillsLevels, skillsEffLevels):
         self._cachePossibleSkillsLevels = possibleSkillsLevels
         self._cachePossibleSkillsEfficiency = skillsEffLevels
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vmSlots = vm.getSlots()
             self.__updatePossibleSkillsViewModel(vmSlots)
             self.__updatePossibleSkillsEfficiency(vmSlots)
@@ -704,7 +721,7 @@ class QuickTrainingCrewWidget(CrewWidget):
 class SkillsTrainingCrewWidget(CrewWidget):
 
     def updateSelectedSkills(self, tankman, selectedSkills, role):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             for slotVM in vm.getSlots():
                 if slotVM.tankman.getTankmanID() == tankman.invID:
                     possibleSkills = slotVM.tankman.possibleSkills

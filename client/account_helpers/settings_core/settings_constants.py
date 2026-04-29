@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/account_helpers/settings_core/settings_constants.py
 from shared_utils import CONST_CONTAINER
 VERSION = 'VERSION'
 POST_PROCESSING_QUALITY = 'POST_PROCESSING_QUALITY'
@@ -42,7 +40,8 @@ class GRAPHICS(CONST_CONTAINER):
 
     @classmethod
     def getScreenConstants(cls):
-        return (cls.MONITOR,
+        return (
+         cls.MONITOR,
          cls.VIDEO_MODE,
          cls.WINDOW_SIZE,
          cls.RESOLUTION,
@@ -53,7 +52,8 @@ class GRAPHICS(CONST_CONTAINER):
 
     @classmethod
     def getColorSettings(cls):
-        return (cls.COLOR_FILTER_INTENSITY,
+        return (
+         cls.COLOR_FILTER_INTENSITY,
          cls.BRIGHTNESS_CORRECTION,
          cls.CONTRAST_CORRECTION,
          cls.COLOR_GRADING_TECHNIQUE,
@@ -61,7 +61,10 @@ class GRAPHICS(CONST_CONTAINER):
 
     @classmethod
     def getCustomColorSettings(cls):
-        return (cls.BRIGHTNESS_CORRECTION, cls.CONTRAST_CORRECTION, cls.SATURATION_CORRECTON)
+        return (
+         cls.BRIGHTNESS_CORRECTION,
+         cls.CONTRAST_CORRECTION,
+         cls.SATURATION_CORRECTON)
 
 
 class GAME(CONST_CONTAINER):
@@ -139,6 +142,7 @@ class GAME(CONST_CONTAINER):
     LIMITED_UI_ACTIVE = 'limitedUIActive'
     NEWBIE_PREBATTLE_HINTS = 'newbiePrebattleHints'
     NEWBIE_BATTLE_HINTS = 'newbieBattleHints'
+    W2GT_ENABLE = 'w2gtEnable'
 
 
 class SOUND(CONST_CONTAINER):
@@ -184,10 +188,8 @@ class SoundPhysicsQuality(CONST_CONTAINER):
     LOW = 'low'
     MEDIUM = 'medium'
     HIGH = 'high'
-    ORDER = (HIGH,
-     MEDIUM,
-     LOW,
-     DISABLE)
+    ORDER = (
+     HIGH, MEDIUM, LOW, DISABLE)
 
 
 class CONTROLS(CONST_CONTAINER):
@@ -237,7 +239,10 @@ class SPGAimEntranceModeOptions(CONST_CONTAINER):
     LAST = 'last'
     STRATEGIC = 'strategic'
     TRAJECTORY = 'trajectory'
-    SETTINGS_OPTIONS = [LAST, STRATEGIC, TRAJECTORY]
+    SETTINGS_OPTIONS = [
+     LAST,
+     STRATEGIC,
+     TRAJECTORY]
 
 
 class MARKERS(CONST_CONTAINER):
@@ -307,6 +312,47 @@ class QUESTS_PROGRESS(CONST_CONTAINER):
     DISPLAY_TYPE = 'progressViewConditions'
 
 
+class SITUATIONAL_PERKS(CONST_CONTAINER):
+    ARMOR_PATCHING = 'armorPatching'
+    COMMANDER_EAGLE_EYE = 'commander_eagleEye'
+    COMMANDER_EMERGENCY = 'commander_emergency'
+    COMMANDER_TUTOR = 'commander_tutor'
+    COMMANDER_COORDINATION = 'commander_coordination'
+    COMMANDER_HOLD_LINE = 'commander_holdLine'
+    COMMANDER_STAY_SHARP = 'commander_staySharp'
+    GUNNER_FOCUS = 'gunner_focus'
+    GUNNER_LONE_WOLF = 'gunner_loneWolf'
+    DRIVER_MOTOR_EXPERT = 'driver_motorExpert'
+    DRIVER_SUSPENSION_REPAIR = 'driver_suspensionRepair'
+    DRIVER_BULLETPROOF = 'driver_bulletproof'
+    LOADER_DESPERADO = 'loader_desperado'
+    LOADER_INTUITION = 'loader_intuition'
+    LOADER_SECOND_CHANCE = 'loader_secondChance'
+    LOADER_MELEE = 'loader_melee'
+    RADIOMAN_SIDE_BY_SIDE = 'radioman_sideBySide'
+    RADIOMAN_EXPERT = 'radioman_expert'
+    RADIOMAN_THREAT_SEARCH = 'radioman_threatSearch'
+
+
+GROUPS_NOVELTY_SETTINGS = {'crewPerks': SITUATIONAL_PERKS.ALL() + (BATTLE_EVENTS.CREW_PERKS,), 
+   'battleEfficiency': (
+                      BATTLE_EVENTS.BASE_CAPTURE_DROP,
+                      BATTLE_EVENTS.BASE_CAPTURE,
+                      BATTLE_EVENTS.ENEMY_DETECTION,
+                      BATTLE_EVENTS.ENEMY_RAM_ATTACK,
+                      BATTLE_EVENTS.ENEMY_KILL,
+                      BATTLE_EVENTS.ENEMY_TRACK_DAMAGE,
+                      BATTLE_EVENTS.ENEMY_CRITICAL_HIT,
+                      BATTLE_EVENTS.ENEMY_HP_DAMAGE,
+                      BATTLE_EVENTS.ENEMY_WORLD_COLLISION,
+                      BATTLE_EVENTS.ENEMY_DETECTION_DAMAGE,
+                      BATTLE_EVENTS.ENEMY_ASSIST_STUN,
+                      BATTLE_EVENTS.ENEMY_BURNING), 
+   'damage': (
+            BATTLE_EVENTS.BLOCKED_DAMAGE,
+            BATTLE_EVENTS.RECEIVED_DAMAGE,
+            BATTLE_EVENTS.RECEIVED_CRITS)}
+
 class CONTACTS(CONST_CONTAINER):
     SHOW_OFFLINE_USERS = 'showOfflineUsers'
     SHOW_OTHERS_CATEGORY = 'showOthersCategory'
@@ -331,14 +377,12 @@ class GuiSettingsBehavior(CONST_CONTAINER):
     VEH_POST_PROGRESSION_UNLOCK_MSG_NEED_SHOW = 'vehPostProgressionUnlockMsgNeedShow'
     BIRTHDAY_CALENDAR_INTRO_SHOWED = 'birthdayCalendarIntroShowed'
     COMP7_YEARLY_ANIMATION_SEEN = 'isComp7YearlyAnimationSeen'
-    CREW_22_WELCOME_SHOWN = 'crew22WelcomeShown'
-    CREW_5075_WELCOME_SHOWN = 'crew5075WelcomeShown'
-    CREW_NPS_WELCOME_SHOWN = 'crewNpsWelcomeShown'
-    CREW_NPS_INTRO_SHOWN = 'crewNpsIntroShown'
+    CREW_PE_WELCOME_SHOWN = 'crewPEWelcomeShown'
     IS_PRESTIGE_ONBOARDING_VIEWED = 'isPrestigeOnboardingViewed'
     PRESTIGE_FIRST_ENTRY_NOTIFICATION_SHOWN = 'prestigeFirstEntryNotificationShown'
     CLAN_SUPPLY_INTRO_SHOWN = 'clanSupplyIntroShown'
     CREW_MENTORING_LICENSE_AWARDS_SHOWN = 'crewMentoringLicenseAwardsShown'
+    W2GT_APPLIED = 'w2gtApplied'
 
 
 class OnceOnlyHints(CONST_CONTAINER):
@@ -488,11 +532,13 @@ class SESSION_STATS(CONST_CONTAINER):
 
     @classmethod
     def getCommonBlock(cls):
-        return (cls.IS_NOT_NEEDED_RESET_STATS_EVERY_DAY, cls.IS_NEEDED_SAVE_CURRENT_TAB)
+        return (cls.IS_NOT_NEEDED_RESET_STATS_EVERY_DAY,
+         cls.IS_NEEDED_SAVE_CURRENT_TAB)
 
     @classmethod
     def getEconomicBlockView(cls):
-        return (cls.ECONOMIC_BLOCK_VIEW_WITHOUT_SPENDING, cls.ECONOMIC_BLOCK_VIEW_WITH_SPENDING)
+        return (cls.ECONOMIC_BLOCK_VIEW_WITHOUT_SPENDING,
+         cls.ECONOMIC_BLOCK_VIEW_WITH_SPENDING)
 
 
 class BattlePassStorageKeys(CONST_CONTAINER):
@@ -538,6 +584,12 @@ class PersonalMission3(CONST_CONTAINER):
     PM_BANNER_ANIMATION_KEY = 'PM_BANNER_ANIMATION'
     LAST_FULL_COMPLETED_OP = 'LAST_FULL_COMPLETED_OP'
     PART_NO = 'PART_NO'
+
+
+class ArmorInspector(object):
+    SETTINGS = 'armorInspector'
+    SELECTED_MODE = 'selectedMode'
+    SESSION_ATTACKING_VEHICLES = 'sessionAttackingVehicles'
 
 
 COLOR_GRADING_TECHNIQUE_DEFAULT = 0

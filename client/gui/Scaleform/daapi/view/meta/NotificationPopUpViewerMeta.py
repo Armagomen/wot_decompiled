@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/NotificationPopUpViewerMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class NotificationPopUpViewerMeta(BaseDAAPIComponent):
@@ -20,22 +18,29 @@ class NotificationPopUpViewerMeta(BaseDAAPIComponent):
         self._printOverrideError('registerGFNotification')
 
     def as_hasPopUpIndexS(self, typeID, entityID):
-        return self.flashObject.as_hasPopUpIndex(typeID, entityID) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_hasPopUpIndex(typeID, entityID)
 
     def as_appendMessageS(self, data):
-        return self.flashObject.as_appendMessage(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_appendMessage(data)
 
     def as_updateMessageS(self, data):
-        return self.flashObject.as_updateMessage(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateMessage(data)
 
     def as_removeMessageS(self, typeID, entityID):
-        return self.flashObject.as_removeMessage(typeID, entityID) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_removeMessage(typeID, entityID)
 
     def as_removeAllMessagesS(self):
-        return self.flashObject.as_removeAllMessages() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_removeAllMessages()
 
     def as_initInfoS(self, maxMessagessCount, padding):
-        return self.flashObject.as_initInfo(maxMessagessCount, padding) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_initInfo(maxMessagessCount, padding)
 
     def as_setViewPaddingS(self, enabled, paddingX, paddingY):
-        return self.flashObject.as_setViewPadding(enabled, paddingX, paddingY) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setViewPadding(enabled, paddingX, paddingY)

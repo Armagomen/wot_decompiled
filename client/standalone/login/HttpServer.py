@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/standalone/login/HttpServer.py
 from BaseHTTPServer import HTTPServer
 from socket import error as SocketError
 from threading import Thread
@@ -15,10 +13,11 @@ class HttpServer(HTTPServer):
         for port_number in self.__PORTS_POOL:
             try:
                 if not socketBindSuccess:
-                    HTTPServer.__init__(self, (self.__BIND_ADDRESS, port_number), requestHandlerClass)
+                    HTTPServer.__init__(self, (
+                     self.__BIND_ADDRESS, port_number), requestHandlerClass)
                     socketBindSuccess = True
             except SocketError as e:
-                self._currentStatus = 'Failed to bind socket to {0}:{1}'.format(self.__BIND_ADDRESS, port_number)
+                self._currentStatus = ('Failed to bind socket to {0}:{1}').format(self.__BIND_ADDRESS, port_number)
                 self._logStatus()
                 if port_number == self.__PORTS_POOL[4]:
                     self._currentStatus = 'Giving up.'
@@ -55,7 +54,7 @@ class HttpServer(HTTPServer):
             return
 
     def __setStatus(self, status):
-        self._currentStatus = '{0} (http://localhost:{1}): {2}.'.format(self.__name, self.server_port, status)
+        self._currentStatus = ('{0} (http://localhost:{1}): {2}.').format(self.__name, self.server_port, status)
 
     def _logStatus(self):
         sys.stdout.write(self._currentStatus + '\n')

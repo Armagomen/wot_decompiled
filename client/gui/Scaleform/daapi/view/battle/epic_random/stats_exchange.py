@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/epic_random/stats_exchange.py
+from __future__ import absolute_import
 from gui.Scaleform.daapi.view.battle.classic.stats_exchange import ClassicStatisticsDataController, DynamicVehicleStatsComponent
 from gui.Scaleform.daapi.view.battle.shared.stats_exchange import createExchangeBroker
 from gui.Scaleform.daapi.view.battle.shared.stats_exchange import broker
@@ -17,7 +16,13 @@ class EpicRandomStatisticsDataController(ClassicStatisticsDataController):
 
     def _createExchangeBroker(self, exchangeCtx):
         exchangeBroker = createExchangeBroker(exchangeCtx)
-        exchangeBroker.setVehiclesInfoExchange(vehicle.VehiclesExchangeBlock(EpicRandomVehicleInfoComponent(), positionComposer=broker.BiDirectionComposer(), idsComposers=(vehicle.TeamsSortedIDsComposer(), vehicle.TeamsCorrelationIDsComposer()), statsComposers=None))
-        exchangeBroker.setVehiclesStatsExchange(vehicle.VehiclesExchangeBlock(DynamicVehicleStatsComponent(), positionComposer=broker.BiDirectionComposer(), idsComposers=None, statsComposers=(vehicle.TotalStatsComposer(),)))
-        exchangeBroker.setVehicleStatusExchange(vehicle.VehicleStatusComponent(idsComposers=(vehicle.TeamsSortedIDsComposer(), vehicle.TeamsCorrelationIDsComposer()), statsComposers=(vehicle.TotalStatsComposer(),)))
+        exchangeBroker.setVehiclesInfoExchange(vehicle.VehiclesExchangeBlock(EpicRandomVehicleInfoComponent(), positionComposer=broker.BiDirectionComposer(), idsComposers=(
+         vehicle.TeamsSortedIDsComposer(),
+         vehicle.TeamsCorrelationIDsComposer()), statsComposers=None))
+        exchangeBroker.setVehiclesStatsExchange(vehicle.VehiclesExchangeBlock(DynamicVehicleStatsComponent(), positionComposer=broker.BiDirectionComposer(), idsComposers=None, statsComposers=(
+         vehicle.TotalStatsComposer(),)))
+        exchangeBroker.setVehicleStatusExchange(vehicle.VehicleStatusComponent(idsComposers=(
+         vehicle.TeamsSortedIDsComposer(),
+         vehicle.TeamsCorrelationIDsComposer()), statsComposers=(
+         vehicle.TotalStatsComposer(),)))
         return exchangeBroker

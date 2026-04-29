@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_results/components/common.py
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from constants import ARENA_GUI_TYPE, FINISH_REASON
 from gui.impl import backport
@@ -31,9 +29,12 @@ def makeEpicBattleFinishResultLabel(finishReason, teamResult):
     if finishReason is FINISH_REASON.TIMEOUT:
         finishReason = FINISH_REASON.DESTROYED_OBJECTS
         teamResult = _TEAM_RESULT.DEFEAT
-    elif finishReason is FINISH_REASON.DESTROYED_OBJECTS:
-        teamResult = _TEAM_RESULT.WIN
-    return backport.text(R.strings.battle_results.finish.reason.dyn('c_{}{}'.format(finishReason, teamResult))()) if finishReason in {FINISH_REASON.EXTERMINATION, FINISH_REASON.TIMEOUT, FINISH_REASON.DESTROYED_OBJECTS} else backport.text(R.strings.battle_results.finish.reason.dyn('c_{}'.format(finishReason))())
+    else:
+        if finishReason is FINISH_REASON.DESTROYED_OBJECTS:
+            teamResult = _TEAM_RESULT.WIN
+        if finishReason in {FINISH_REASON.EXTERMINATION, FINISH_REASON.TIMEOUT, FINISH_REASON.DESTROYED_OBJECTS}:
+            return backport.text(R.strings.battle_results.finish.reason.dyn(('c_{}{}').format(finishReason, teamResult))())
+    return backport.text(R.strings.battle_results.finish.reason.dyn(('c_{}').format(finishReason))())
 
 
 class ArenaShortTimeVO(base.StatsItem):
@@ -47,7 +48,9 @@ class ArenaDateTimeItem(base.StatsItem):
     __slots__ = ()
 
     def _convert(self, record, reusable):
-        return ' '.join((backport.getShortDateFormat(record), backport.getShortTimeFormat(record)))
+        return (' ').join((
+         backport.getShortDateFormat(record),
+         backport.getShortTimeFormat(record)))
 
 
 class RegularArenaFullNameItem(base.StatsItem):
@@ -148,19 +151,23 @@ class FinishResultMeta(base.DictMeta):
     __slots__ = ()
 
     def __init__(self, finishReasonLabel, finishReasonClarificationLabel, shortResultLabel, fullResultLabel):
-        meta = {finishReasonLabel: '',
-         finishReasonClarificationLabel: '',
-         shortResultLabel: '',
-         fullResultLabel: ''}
-        auto = ((0, base.StatsItem(finishReasonLabel, 'finishReasonLabel')),
-         (1, base.StatsItem(finishReasonClarificationLabel, 'finishReasonClarificationLabel')),
-         (2, base.StatsItem(shortResultLabel, 'shortResultLabel')),
-         (3, base.StatsItem(fullResultLabel, 'fullResultLabel')))
+        meta = {finishReasonLabel: '', 
+           finishReasonClarificationLabel: '', shortResultLabel: '', fullResultLabel: ''}
+        auto = (
+         (
+          0, base.StatsItem(finishReasonLabel, 'finishReasonLabel')),
+         (
+          1, base.StatsItem(finishReasonClarificationLabel, 'finishReasonClarificationLabel')),
+         (
+          2, base.StatsItem(shortResultLabel, 'shortResultLabel')),
+         (
+          3, base.StatsItem(fullResultLabel, 'fullResultLabel')))
         super(FinishResultMeta, self).__init__(meta, auto)
 
 
 class RegularFinishResultBlock(base.StatsBlock):
-    __slots__ = ('finishReasonLabel', 'finishReasonClarificationLabel', 'shortResultLabel', 'fullResultLabel')
+    __slots__ = ('finishReasonLabel', 'finishReasonClarificationLabel', 'shortResultLabel',
+                 'fullResultLabel')
 
     def __init__(self, meta=None, field='', *path):
         super(RegularFinishResultBlock, self).__init__(meta, field, *path)
@@ -230,14 +237,14 @@ class AllyTeamClanTitle(base.StatsItem):
     __slots__ = ()
 
     def _convert(self, value, reusable):
-        return '{} [{}]'.format(backport.text(R.strings.battle_results.team.stats.ownTeam()), reusable.players.getFirstAllyClan(reusable.getPersonalTeam()).clanAbbrev)
+        return ('{} [{}]').format(backport.text(R.strings.battle_results.team.stats.ownTeam()), reusable.players.getFirstAllyClan(reusable.getPersonalTeam()).clanAbbrev)
 
 
 class EnemyTeamClanTitle(base.StatsItem):
     __slots__ = ()
 
     def _convert(self, value, reusable):
-        return '{} [{}]'.format(backport.text(R.strings.battle_results.team.stats.enemyTeam()), reusable.players.getFirstEnemyClan(reusable.getPersonalTeam()).clanAbbrev)
+        return ('{} [{}]').format(backport.text(R.strings.battle_results.team.stats.enemyTeam()), reusable.players.getFirstEnemyClan(reusable.getPersonalTeam()).clanAbbrev)
 
 
 class ClanInfoBlock(base.StatsBlock):
@@ -252,7 +259,7 @@ class ClanInfoBlock(base.StatsBlock):
     def setRecord(self, record, reusable):
         if record is not None:
             self.clanDBID = record.clanDBID
-            self.clanAbbrev = '[{}]'.format(record.clanAbbrev)
+            self.clanAbbrev = ('[{}]').format(record.clanAbbrev)
         return
 
 

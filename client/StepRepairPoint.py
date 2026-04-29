@@ -1,11 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/StepRepairPoint.py
-import BigWorld
-import AnimationSequence
+from __future__ import absolute_import
+import BigWorld, AnimationSequence
 from Math import Vector2
 from Math import Matrix
-import ResMgr
-import SoundGroups
+import ResMgr, SoundGroups
 
 class _StepRepairPointSettingsCache(object):
 
@@ -23,7 +20,7 @@ ENVIRONMENT_EFFECTS_CONFIG_FILE = 'scripts/dynamic_objects.xml'
 _g_stepRepairPointSettings = None
 
 class StepRepairPoint(BigWorld.Entity):
-    _COLOR = 4294967295L
+    _COLOR = 4294967295
     _OVER_TERRAIN_HEIGHT = 0.5
 
     def __init__(self):

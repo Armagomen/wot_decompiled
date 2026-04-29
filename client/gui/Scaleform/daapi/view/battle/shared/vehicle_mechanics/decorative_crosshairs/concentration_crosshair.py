@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/vehicle_mechanics/decorative_crosshairs/concentration_crosshair.py
 from __future__ import absolute_import
 import typing
 from constants import CONCENTRATION_MODE_STATE
@@ -26,7 +24,9 @@ class ConcentrationDecorativeCrosshair(ConcentrationDecorativeCrosshairMeta, Con
         self.__invalidateAll(newState)
 
     def _getViewUpdaters(self):
-        return [VehicleMechanicPassengerUpdater(VehicleMechanic.CONCENTRATION_MODE, self), VehicleMechanicStatesUpdater(VehicleMechanic.CONCENTRATION_MODE, self)]
+        return [
+         VehicleMechanicPassengerUpdater(VehicleMechanic.CONCENTRATION_MODE, self),
+         VehicleMechanicStatesUpdater(VehicleMechanic.CONCENTRATION_MODE, self)]
 
     def __invalidateAll(self, state, isInstantly=False):
         isActive = state.state == CONCENTRATION_MODE_STATE.ACTIVE

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/veh_skill_tree/rarity_reward_screen/rarity_reward_screen.py
 import SoundGroups
 from frameworks.wulf import ViewFlags, ViewSettings, WindowLayer, WindowFlags
 from gui.impl.gen import R
@@ -29,11 +27,13 @@ class RarityRewardScreen(ViewImpl):
         return super(RarityRewardScreen, self).getViewModel()
 
     def _getEvents(self):
-        return ((self.viewModel.onClose, self.__onClose),)
+        return (
+         (
+          self.viewModel.onClose, self.__onClose),)
 
     def _onLoading(self, *args, **kwargs):
         super(RarityRewardScreen, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setName(self.__element.name)
             model.setTitle(self.__element.userName)
             model.setRarity(self.__element.rarity)
@@ -53,7 +53,7 @@ class RarityRewardScreen(ViewImpl):
 
 
 class RarityRewardWindow(LobbyWindow):
-    __slots__ = ('_blur',)
+    __slots__ = ('_blur', )
 
     def __init__(self, element):
         self._blur = None

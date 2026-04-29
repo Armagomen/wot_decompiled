@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/easy_tank_equip/cards/crew_card.py
-import typing
-import nations
+import typing, nations
 from gui.impl.gen.view_models.views.lobby.easy_tank_equip.crew_preset_model import CrewPresetModel
 from gui.impl.lobby.crew.crew_helpers.model_setters import setTankmanModel, setTmanSkillsModel
 from gui.impl.lobby.easy_tank_equip.cards.base_card import BaseCard, BasePreset

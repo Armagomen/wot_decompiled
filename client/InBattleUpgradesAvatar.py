@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/InBattleUpgradesAvatar.py
 import BigWorld
 from debug_utils import LOG_DEBUG, LOG_WARNING
 import BattleReplay
@@ -18,9 +16,9 @@ class InBattleUpgradesAvatar(BigWorld.DynamicScriptComponent):
 
         def __vehicleUpgradeLogger(isSuccess, intCD, reason, moduleTxt):
             if isSuccess:
-                LOG_DEBUG('{} intCD = {} successfully installed'.format(moduleTxt, intCD))
+                LOG_DEBUG(('{} intCD = {} successfully installed').format(moduleTxt, intCD))
             else:
-                LOG_WARNING('Could not install {} intCD = {}. Reason - {}!'.format(moduleTxt, intCD, reason))
+                LOG_WARNING(('Could not install {} intCD = {}. Reason - {}!').format(moduleTxt, intCD, reason))
 
         for intCD, reason in zip(intCDs, reasons):
             __vehicleUpgradeLogger(reason == '', intCD, reason, 'Main' if intCD is intCDs[0] else 'Additional')

@@ -1,22 +1,21 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/frameworks/wulf/view/array.py
 import typing
 from contextlib import contextmanager
-from ..py_object_binder import PyObjectEntity
 from ..py_object_wrappers import PyObjectArray
 if typing.TYPE_CHECKING:
     from typing import Iterable, Union
-    from .. import ViewModel
+    from .. import ViewModel, Map
 T = typing.TypeVar('T')
 
-class Array(PyObjectEntity, typing.Iterable[T]):
-    __slots__ = ()
+class Array(typing.Iterable[T]):
+    slots = ('proxy', '__weakref__')
 
     def __init__(self):
-        super(Array, self).__init__(PyObjectArray())
+        self.proxy = PyObjectArray()
+        self.proxy.bindPyObject(self)
+        super(Array, self).__init__()
 
     def __repr__(self):
-        return 'Array(size={})'.format(self.proxy.getSize() if self.proxy is not None else 0)
+        return ('Array(size={})').format(self.proxy.getSize() if self.proxy is not None else 0)
 
     def __str__(self):
         return self.proxy.toString()
@@ -29,7 +28,7 @@ class Array(PyObjectEntity, typing.Iterable[T]):
             return (self.proxy.getValue(i) for i in xrange(index.start or 0, index.stop or len(self), index.step or 1))
         if index < 0:
             if abs(index) > self.proxy.getSize():
-                raise IndexError('Array index %d out of range'.format(index))
+                raise IndexError(('Array index %d out of range').format(index))
             index = len(self) + index
         return self.proxy.getValue(index)
 
@@ -71,6 +70,9 @@ class Array(PyObjectEntity, typing.Iterable[T]):
     def addArray(self, value):
         self.proxy.addArray(value.proxy)
 
+    def addMap(self, value):
+        self.proxy.addMap(value.proxy)
+
     def setNumber(self, index, value):
         self.proxy.setNumber(index, value)
 
@@ -91,6 +93,9 @@ class Array(PyObjectEntity, typing.Iterable[T]):
 
     def setArray(self, index, value):
         self.proxy.setArray(index, value.proxy)
+
+    def setMap(self, index, value):
+        self.proxy.setMap(index, value.proxy)
 
     def remove(self, index):
         self.proxy.removeValue(index)

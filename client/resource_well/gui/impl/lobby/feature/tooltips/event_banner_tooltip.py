@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/gui/impl/lobby/feature/tooltips/event_banner_tooltip.py
 from __future__ import absolute_import
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
@@ -23,11 +21,15 @@ class EventBannerTooltip(ViewImpl):
         return super(EventBannerTooltip, self).getViewModel()
 
     def _getEvents(self):
-        return ((self.__resourceWell.onEventUpdated, self.__onEventUpdated), (self.__resourceWell.onSettingsChanged, self.__onSettingsChanged))
+        return (
+         (
+          self.__resourceWell.onEventUpdated, self.__onEventUpdated),
+         (
+          self.__resourceWell.onSettingsChanged, self.__onSettingsChanged))
 
     def _onLoading(self, *args, **kwargs):
         super(EventBannerTooltip, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self.__fillEventState(model=model)
             self.__fillEventTime(model=model)
             self.__fillRewards(model=model)
@@ -64,13 +66,13 @@ class EventBannerTooltip(ViewImpl):
             model.setState(EventBannerState.IN_PROGRESS)
 
     def __onEventUpdated(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self.__fillEventState(model=model)
             self.__fillEventTime(model=model)
             self.__fillRewards(model=model)
 
     def __onSettingsChanged(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self.__fillEventState(model=model)
             self.__fillEventTime(model=model)
             self.__fillRewards(model=model)

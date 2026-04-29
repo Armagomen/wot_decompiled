@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/event/players_panel.py
+from __future__ import absolute_import
 import BigWorld
 from constants import ARENA_PERIOD
 from gui.battle_control.arena_info.interfaces import IArenaVehiclesController
@@ -18,7 +17,7 @@ class EventPlayersPanel(EventPlayersPanelMeta, IArenaVehiclesController):
 
     def __init__(self):
         super(EventPlayersPanel, self).__init__()
-        self._points = dict()
+        self._points = {}
         self.__arenaDP = self.sessionProvider.getArenaDP()
 
     def invalidateVehiclesInfo(self, _):
@@ -27,8 +26,8 @@ class EventPlayersPanel(EventPlayersPanelMeta, IArenaVehiclesController):
     def invalidateArenaInfo(self):
         self.invalidateVehiclesInfo(self.sessionProvider.getArenaDP())
 
-    def addVehicleInfo(self, vInfo, _):
-        self.__updateTeammate(vInfo, vInfo.vehicleType.maxHealth)
+    def addVehicleInfo(self, vo, _):
+        self.__updateTeammate(vo, vo.vehicleType.maxHealth)
 
     def updateVehiclesInfo(self, updated, arenaDP):
         for _, vInfo in updated:
@@ -99,17 +98,16 @@ class EventPlayersPanel(EventPlayersPanelMeta, IArenaVehiclesController):
             badge = buildBadge(badgeID, vInfo.getBadgeExtraInfo())
             badgeVO = badge.getBadgeVO(ICONS_SIZES.X24, {'isAtlasSource': True}, shortIconName=True) if badge else None
             suffixBadgeId = vInfo.selectedSuffixBadge
-            self.as_setPlayerPanelInfoS({'vehID': vInfo.vehicleID,
-             'name': vInfo.player.name,
-             'badgeVO': badgeVO,
-             'suffixBadgeIcon': 'badge_{}'.format(suffixBadgeId) if suffixBadgeId else '',
-             'suffixBadgeStripIcon': 'strip_{}'.format(suffixBadgeId) if suffixBadgeId else '',
-             'nameVehicle': vInfo.vehicleType.shortName,
-             'typeVehicle': vInfo.vehicleType.classTag,
-             'hpMax': vInfo.vehicleType.maxHealth,
-             'hpCurrent': hpCurrent,
-             'countPoints': self.getPoints(vInfo.vehicleID),
-             'isSquad': isSquad})
+            self.as_setPlayerPanelInfoS({'vehID': vInfo.vehicleID, 'name': vInfo.player.name, 
+               'badgeVO': badgeVO, 
+               'suffixBadgeIcon': ('badge_{}').format(suffixBadgeId) if suffixBadgeId else '', 
+               'suffixBadgeStripIcon': ('strip_{}').format(suffixBadgeId) if suffixBadgeId else '', 
+               'nameVehicle': vInfo.vehicleType.shortName, 
+               'typeVehicle': vInfo.vehicleType.classTag, 
+               'hpMax': vInfo.vehicleType.maxHealth, 
+               'hpCurrent': hpCurrent, 
+               'countPoints': self.getPoints(vInfo.vehicleID), 
+               'isSquad': isSquad})
             self.as_setPlayerPanelHpS(vInfo.vehicleID, vInfo.vehicleType.maxHealth, min(hpCurrent, vInfo.vehicleType.maxHealth))
             if hpCurrent <= 0:
                 self.as_setPlayerDeadS(vInfo.vehicleID)

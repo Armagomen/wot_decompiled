@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/arena_info/arena_descrs.py
-import weakref
-import BattleReplay
+import weakref, BattleReplay
 from constants import IS_DEVELOPMENT, ARENA_GUI_TYPE
 from frontline.gui.frontline_helpers import FLBattleTypeDescription
 from gui.impl import backport
@@ -17,7 +14,9 @@ from gui.shared.system_factory import registerArenaDescrs, collectArenaDescrs
 from skeletons.gui.lobby_context import ILobbyContext
 
 def _getDefaultTeamName(isAlly):
-    return i18n.makeString(MENU.LOADING_TEAMS_ALLIES) if isAlly else i18n.makeString(MENU.LOADING_TEAMS_ENEMIES)
+    if isAlly:
+        return i18n.makeString(MENU.LOADING_TEAMS_ALLIES)
+    return i18n.makeString(MENU.LOADING_TEAMS_ENEMIES)
 
 
 class IArenaGuiDescription(object):
@@ -88,7 +87,8 @@ class IArenaGuiDescription(object):
 
 
 class DefaultArenaGuiDescription(IArenaGuiDescription):
-    __slots__ = ('_visitor', '_team', '_questInfo', '_isPersonalDataSet', '_selectedQuestIDs', '_selectedQuestInfo')
+    __slots__ = ('_visitor', '_team', '_questInfo', '_isPersonalDataSet', '_selectedQuestIDs',
+                 '_selectedQuestInfo')
 
     def __init__(self, visitor):
         super(DefaultArenaGuiDescription, self).__init__()
@@ -128,17 +128,21 @@ class DefaultArenaGuiDescription(IArenaGuiDescription):
 
     def getDescriptionString(self, isInBattle=True):
         descriptionRes = R.strings.menu.loading.battleTypes.num(self._visitor.getArenaGuiType())
-        return backport.text(descriptionRes()) if descriptionRes.exists() else ''
+        if descriptionRes.exists():
+            return backport.text(descriptionRes())
+        return ''
 
     def getWinString(self, isInBattle=True):
         return functions.getBattleSubTypeWinText(self._visitor.type.getID(), 1 if self.isBaseExists() else 2)
 
     def getFrameLabel(self):
-        pass
+        return 'neutral'
 
     def getBattleTypeIconPath(self, sizeFolder='c_136x136'):
         iconRes = R.images.gui.maps.icons.battleTypes.dyn(sizeFolder).dyn(self.getFrameLabel())
-        return backport.image(iconRes()) if iconRes.exists() else ''
+        if iconRes.exists():
+            return backport.image(iconRes())
+        return ''
 
     def getLegacyFrameLabel(self):
         return self._visitor.getArenaGuiType() + 1
@@ -168,7 +172,7 @@ class DefaultArenaGuiDescription(IArenaGuiDescription):
         return self._getScreenImg('respawn')
 
     def getGuiEventType(self):
-        pass
+        return 'normal'
 
     def isInvitationEnabled(self):
         return False
@@ -183,14 +187,14 @@ class DefaultArenaGuiDescription(IArenaGuiDescription):
         return self._selectedQuestInfo
 
     def getReservesModifier(self):
-        return None
+        return
 
 
 class ArenaWithBasesDescription(DefaultArenaGuiDescription):
     __slots__ = ()
 
     def getDescriptionString(self, isInBattle=True):
-        return i18n.makeString('#arenas:type/{}/name'.format(functions.getArenaSubTypeName(self._visitor.type.getID())))
+        return i18n.makeString(('#arenas:type/{}/name').format(functions.getArenaSubTypeName(self._visitor.type.getID())))
 
     def getFrameLabel(self):
         return getNecessaryArenaFrameName(functions.getArenaSubTypeName(self._visitor.type.getID()), self.isBaseExists())
@@ -294,7 +298,7 @@ class ArenaWithL10nDescription(IArenaGuiDescription):
         return self._decorated.getSelectedQuestInfo()
 
     def getReservesModifier(self):
-        return None
+        return
 
 
 class BattleRoyaleDescription(ArenaWithLabelDescription):
@@ -323,7 +327,9 @@ class EpicBattlesDescription(ArenaDescriptionWithInvitation):
     def getTeamName(self, team):
         from epic_constants import EPIC_BATTLE_TEAM_ID
         from gui.Scaleform.locale.EPIC_BATTLE import EPIC_BATTLE
-        return EPIC_BATTLE.TEAM1NAME if team == EPIC_BATTLE_TEAM_ID.TEAM_ATTACKER else EPIC_BATTLE.TEAM2NAME
+        if team == EPIC_BATTLE_TEAM_ID.TEAM_ATTACKER:
+            return EPIC_BATTLE.TEAM1NAME
+        return EPIC_BATTLE.TEAM2NAME
 
     def getReservesModifier(self):
         data = self._visitor.getArenaExtraData() or {}

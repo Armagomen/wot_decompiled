@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/mode_selector/tooltips/simply_format_tooltip.py
 from gui.impl.gen import R
 from gui.impl.pub import ViewImpl
 from frameworks.wulf import ViewSettings
@@ -9,7 +7,8 @@ class SimplyFormatTooltipView(ViewImpl):
 
     def __init__(self, header, body):
         settings = ViewSettings(R.views.lobby.mode_selector.tooltips.SimplyFormatTooltip(), model=SimpleTooltipContentModel())
-        settings.args = (header, body)
+        settings.args = (
+         header, body)
         super(SimplyFormatTooltipView, self).__init__(settings)
 
     @property

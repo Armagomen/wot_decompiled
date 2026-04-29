@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/lobby/epicBattleTraining/epic_battle_training_room.py
 from frontline.gui.prb_control.entities.epic_battle_training.ctx import EpicTrainingSettingsCtx
 from adisp import adisp_process
 from constants import PREBATTLE_TYPE
@@ -32,8 +30,7 @@ class EpicBattleTrainingRoom(EpicBattleTrainingRoomMeta):
 
     def showTrainingSettings(self):
         settings = EpicTrainingSettingsCtx()
-        self.fireEvent(events.LoadViewEvent(SFViewLoadParams(PREBATTLE_ALIASES.EPIC_TRAINING_SETTINGS_WINDOW_PY), ctx={'isCreateRequest': False,
-         'settings': settings}), scope=EVENT_BUS_SCOPE.LOBBY)
+        self.fireEvent(events.LoadViewEvent(SFViewLoadParams(PREBATTLE_ALIASES.EPIC_TRAINING_SETTINGS_WINDOW_PY), ctx={'isCreateRequest': False, 'settings': settings}), scope=EVENT_BUS_SCOPE.LOBBY)
 
     def onRostersChanged(self, entity, rosters, full):
         if PREBATTLE_ROSTER.ASSIGNED_IN_TEAM1 in rosters:
@@ -143,9 +140,10 @@ class EpicBattleTrainingRoom(EpicBattleTrainingRoomMeta):
         isPlayerSpeaking = self.app.voiceChatManager.isPlayerSpeaking
         accounts = sorted(accounts, cmp=getPlayersComparator())
         getUser = self.usersStorage.getUser
-        lanecounter = [0, 0, 0]
+        lanecounter = [
+         0, 0, 0]
         for account in accounts:
-            lanecounter[account.group - 1] += 1
+            lanecounter[(account.group - 1)] += 1
             if lane >= 0 and lane == account.group:
                 vContourIcon = ''
                 vShortName = ''
@@ -159,27 +157,27 @@ class EpicBattleTrainingRoom(EpicBattleTrainingRoomMeta):
                     vLevel = int2roman(vehicle.level)
                 badge = account.getBadge()
                 badgeVO = badge.getBadgeVO(ICONS_SIZES.X24, {'isAtlasSource': False}) if badge else {}
-                listData.append({'accID': account.accID,
-                 'dbID': account.dbID,
-                 'userName': account.name,
-                 'fullName': account.getFullName(),
-                 'stateString': formatters.getPlayerStateString(account.state),
-                 'icon': vContourIcon,
-                 'vShortName': vShortName,
-                 'vLevel': vLevel,
-                 'tags': list(user.getTags()) if user else [],
-                 'isPlayerSpeaking': bool(isPlayerSpeaking(account.dbID)),
-                 'clanAbbrev': account.clanAbbrev,
-                 'region': self.lobbyContext.getRegionCode(account.dbID),
-                 'igrType': account.igrType,
-                 'badgeVisualVO': badgeVO})
+                listData.append({'accID': account.accID, 
+                   'dbID': account.dbID, 
+                   'userName': account.name, 
+                   'fullName': account.getFullName(), 
+                   'stateString': formatters.getPlayerStateString(account.state), 
+                   'icon': vContourIcon, 
+                   'vShortName': vShortName, 
+                   'vLevel': vLevel, 
+                   'tags': list(user.getTags()) if user else [], 
+                   'isPlayerSpeaking': bool(isPlayerSpeaking(account.dbID)), 
+                   'clanAbbrev': account.clanAbbrev, 
+                   'region': self.lobbyContext.getRegionCode(account.dbID), 
+                   'igrType': account.igrType, 
+                   'badgeVisualVO': badgeVO})
 
         label = ''
         if rLabel is not None:
             label = text_styles.neutral(backport.text(rLabel, lane1=str(lanecounter[0]), lane2=str(lanecounter[1]), lane3=str(lanecounter[2])))
-        result = {'listData': listData,
-         'teamLabel': label,
-         'lane': lane}
+        result = {'listData': listData, 
+           'teamLabel': label, 
+           'lane': lane}
         return result
 
     def __updateWindowOpenState(self, flag):

@@ -1,11 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/loadout/equipments/equipments_model.py
 from frameworks.wulf import Array
 from gui.impl.gen.view_models.views.lobby.loadout.base_loadout_model import BaseLoadoutModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.opt_device_slot_model import OptDeviceSlotModel
 
 class EquipmentsModel(BaseLoadoutModel):
-    __slots__ = ('onGetMoreCurrency',)
+    __slots__ = ('onGetMoreCurrency', )
 
     def __init__(self, properties=8, commands=2):
         super(EquipmentsModel, self).__init__(properties=properties, commands=commands)

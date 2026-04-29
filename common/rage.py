@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/rage.py
 import ResMgr
 from items import vehicles
 _CONFIG_FILE = 'scripts/item_defs/rage.xml'
@@ -49,7 +47,8 @@ class RageSettings(object):
         return damageSettings.pointsForKill
 
     def __getattr__(self, item):
-        if item in ('pointsForFlagPickup', 'pointsForFlagCapture', 'pointsForOneResource', 'deathPenalty'):
+        if item in ('pointsForFlagPickup', 'pointsForFlagCapture', 'pointsForOneResource',
+                    'deathPenalty'):
             return lambda isSolo: getattr(self.soloSettings, item) if isSolo else getattr(self.teamSettings, item)
         else:
             return super(RageSettings, self).__getattr__(item)

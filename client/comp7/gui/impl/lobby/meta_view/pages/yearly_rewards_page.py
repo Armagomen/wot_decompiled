@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/meta_view/pages/yearly_rewards_page.py
 from functools import partial
 import typing
 from shared_utils import first, findFirst
@@ -96,51 +94,62 @@ class YearlyRewardsPage(PageSubModelPresenter):
 
     def createToolTipContent(self, event, contentID):
         if contentID == R.views.comp7.mono.lobby.tooltips.season_point_tooltip():
-            params = {'state': SeasonPointState(event.getArgument('state')),
-             'ignoreState': event.getArgument('ignoreState')}
+            params = {'state': SeasonPointState(event.getArgument('state')), 'ignoreState': event.getArgument('ignoreState')}
             return SeasonPointTooltip(params=params)
-        elif contentID == R.views.comp7.mono.lobby.tooltips.general_rank_tooltip():
-            params = {'rank': Rank(event.getArgument('rank')),
-             'divisions': event.getArgument('divisions'),
-             'from': event.getArgument('from'),
-             'to': event.getArgument('to')}
-            return GeneralRankTooltip(params=params)
-        elif contentID == R.views.comp7.mono.lobby.tooltips.fifth_rank_tooltip():
-            return FifthRankTooltip()
-        elif contentID == R.views.comp7.mono.lobby.tooltips.sixth_rank_tooltip():
-            return SixthRankTooltip()
-        elif contentID == R.views.comp7.mono.lobby.tooltips.style3d_tooltip():
-            tooltipId = event.getArgument('tooltipId')
-            if tooltipId is None:
-                return
-            tooltipData = self.__tooltips[int(tooltipId)]
-            return Style3dTooltip(*tooltipData.specialArgs)
-        elif contentID == R.views.comp7.mono.lobby.tooltips.crew_members_tooltip():
-            return CrewMembersTooltip()
-        elif contentID == R.views.lobby.ranked.tooltips.RankedBattlesRolesTooltipView():
-            vehicleCD = int(event.getArgument('vehicleCD'))
-            return VehicleRolesTooltipView(vehicleCD)
-        elif contentID == R.views.lobby.tooltips.AdditionalRewardsTooltip():
-            fromIndex = int(event.getArgument('fromIndex'))
-            index = int(event.getArgument('index'))
-            bonuses = [ bonus for bonus in self.__bonusData[index][fromIndex - 1:] ]
-            return AdditionalRewardsTooltip(bonuses)
         else:
+            if contentID == R.views.comp7.mono.lobby.tooltips.general_rank_tooltip():
+                params = {'rank': Rank(event.getArgument('rank')), 'divisions': event.getArgument('divisions'), 
+                   'from': event.getArgument('from'), 
+                   'to': event.getArgument('to')}
+                return GeneralRankTooltip(params=params)
+            if contentID == R.views.comp7.mono.lobby.tooltips.fifth_rank_tooltip():
+                return FifthRankTooltip()
+            if contentID == R.views.comp7.mono.lobby.tooltips.sixth_rank_tooltip():
+                return SixthRankTooltip()
+            if contentID == R.views.comp7.mono.lobby.tooltips.style3d_tooltip():
+                tooltipId = event.getArgument('tooltipId')
+                if tooltipId is None:
+                    return
+                tooltipData = self.__tooltips[int(tooltipId)]
+                return Style3dTooltip(*tooltipData.specialArgs)
+            if contentID == R.views.comp7.mono.lobby.tooltips.crew_members_tooltip():
+                return CrewMembersTooltip()
+            if contentID == R.views.lobby.ranked.tooltips.RankedBattlesRolesTooltipView():
+                vehicleCD = int(event.getArgument('vehicleCD'))
+                return VehicleRolesTooltipView(vehicleCD)
+            if contentID == R.views.lobby.tooltips.AdditionalRewardsTooltip():
+                fromIndex = int(event.getArgument('fromIndex'))
+                index = int(event.getArgument('index'))
+                bonuses = [ bonus for bonus in self.__bonusData[index][fromIndex - 1:] ]
+                return AdditionalRewardsTooltip(bonuses)
             return
 
     def _getEvents(self):
-        return ((self.viewModel.onGoToStylePreview, self.__onStylePreviewOpen),
-         (self.viewModel.onGoToVehiclePreview, self.__onVehiclePreviewOpen),
-         (self.viewModel.onGoToRewardsSelection, self.__onGoToRewardsSelection),
-         (self.viewModel.onIntroViewed, self.__setInitialAnimationViewed),
-         (self.__comp7Controller.onQualificationStateUpdated, self.__onQualificationStateUpdated),
-         (self.__comp7Controller.onSeasonPointsUpdated, self.__onSeasonPointsUpdated),
-         (self.__comp7Controller.onRankUpdated, self.__onRankUpdated),
-         (self.__comp7Controller.onModeConfigChanged, self.__onConfigChanged),
-         (self.__comp7Controller.onComp7RanksConfigChanged, self.__onRanksConfigChanged),
-         (self.__comp7Controller.onComp7RewardsConfigChanged, self.__onRewardsConfigChanged),
-         (self.__comp7Controller.onEntitlementsUpdated, self.__onEntitlementsUpdated),
-         (self.__itemsCache.onSyncCompleted, self.__onSyncCompleted))
+        return (
+         (
+          self.viewModel.onGoToStylePreview, self.__onStylePreviewOpen),
+         (
+          self.viewModel.onGoToVehiclePreview, self.__onVehiclePreviewOpen),
+         (
+          self.viewModel.onGoToRewardsSelection, self.__onGoToRewardsSelection),
+         (
+          self.viewModel.onIntroViewed, self.__setInitialAnimationViewed),
+         (
+          self.__comp7Controller.onQualificationStateUpdated, self.__onQualificationStateUpdated),
+         (
+          self.__comp7Controller.onSeasonPointsUpdated, self.__onSeasonPointsUpdated),
+         (
+          self.__comp7Controller.onRankUpdated, self.__onRankUpdated),
+         (
+          self.__comp7Controller.onModeConfigChanged, self.__onConfigChanged),
+         (
+          self.__comp7Controller.onComp7RanksConfigChanged, self.__onRanksConfigChanged),
+         (
+          self.__comp7Controller.onComp7RewardsConfigChanged, self.__onRewardsConfigChanged),
+         (
+          self.__comp7Controller.onEntitlementsUpdated, self.__onEntitlementsUpdated),
+         (
+          self.__itemsCache.onSyncCompleted, self.__onSyncCompleted))
 
     def __onQualificationStateUpdated(self):
         self.__updateAllData()
@@ -159,11 +168,11 @@ class YearlyRewardsPage(PageSubModelPresenter):
         self.__updateAllData()
 
     def __onRanksConfigChanged(self):
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             self.__setLegendData(tx)
 
     def __onRewardsConfigChanged(self):
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             self.__setCards(tx)
 
     def __onEntitlementsUpdated(self):
@@ -184,7 +193,7 @@ class YearlyRewardsPage(PageSubModelPresenter):
     def __showStylePreview(self, styleBonus, cardIndex, vehicleCD=None):
         styleId = styleBonus.getStyleID() if styleBonus else None
         style = self.__c11nService.getItemByID(GUI_ITEM_TYPE.STYLE, styleId)
-        vehicleCD = getStylePreviewVehicle(style, makeVehicleTypeCompDescrByName(_DEFAULT_PREVIEW_VEHICLE)) if not vehicleCD else vehicleCD
+        vehicleCD = vehicleCD if vehicleCD else getStylePreviewVehicle(style, makeVehicleTypeCompDescrByName(_DEFAULT_PREVIEW_VEHICLE))
         params = {'backCallback': partial(showComp7MetaRootTab, self.pageId, index=cardIndex)}
         showComp7StylePreview(vehicleCD, style, **params)
         return
@@ -194,7 +203,7 @@ class YearlyRewardsPage(PageSubModelPresenter):
         showComp7YearlyRewardsSelectionWindow(category=name)
 
     def __setInitialAnimationViewed(self):
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             tx.setWithIntro(False)
             self.__setYearlyAnimationSeen()
 
@@ -203,7 +212,7 @@ class YearlyRewardsPage(PageSubModelPresenter):
             self.__updateAllData()
 
     def __updateAllData(self):
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             self.__setCommonData(tx)
             self.__setCards(tx)
 
@@ -237,7 +246,7 @@ class YearlyRewardsPage(PageSubModelPresenter):
                 division = getPlayerDivisionByRating(self.__comp7Controller.getRatingForSeason(actualSeason))
                 model.setCurrentRank(getRankEnumValue(division))
             seasons = self.__comp7Controller.getAllSeasons()
-            canBeRewarded = any((self.__comp7Controller.isQualificationPassedInSeason(s.getNumber()) for s in seasons))
+            canBeRewarded = any(self.__comp7Controller.isQualificationPassedInSeason(s.getNumber()) for s in seasons)
             yearState = getProgressionYearState(self.__comp7Controller, YearState)
             if yearState == YearState.FINISHED and canBeRewarded:
                 if not hasYearlyRewardToken():
@@ -282,11 +291,13 @@ class YearlyRewardsPage(PageSubModelPresenter):
         cards.invalidate()
 
     def __getRewardStateForCard(self, cardSeasonPoints):
-        if all((pointState == SeasonPointState.ACHIEVED for pointState, _ in cardSeasonPoints)):
+        if all(pointState == SeasonPointState.ACHIEVED for pointState, _ in cardSeasonPoints):
             if hasYearlyRewardToken():
                 return RewardsState.CLAIMED
             return RewardsState.GUARANTEED
-        return RewardsState.POSSIBLE if not any((pointState == SeasonPointState.NOTACHIEVED for pointState, _ in cardSeasonPoints)) else RewardsState.NOTAVAILABLE
+        if not any(pointState == SeasonPointState.NOTACHIEVED for pointState, _ in cardSeasonPoints):
+            return RewardsState.POSSIBLE
+        return RewardsState.NOTAVAILABLE
 
     def __fillRewards(self, cardModel, bonuses):
         rewards = cardModel.getRewards()

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/meta_view/meta_view_helper.py
-import logging
-import typing
+import logging, typing
 from comp7.gui.impl.gen.view_models.views.lobby.enums import Division, Rank
 from comp7.gui.impl.gen.view_models.views.lobby.progression_division import ProgressionDivision, State
 from comp7.gui.impl.lobby.comp7_helpers import comp7_shared
@@ -29,21 +26,24 @@ def setProgressionItemData(itemModel, parentModel, rankIdx, ranksConfig):
 
 def setRankData(itemModel, rank, ranksConfig):
     sortedDivisions = getRankDivisions(rank, ranksConfig)
-    rankLimits = Interval(sortedDivisions[0].range.begin, sortedDivisions[-1].range.end)
+    rankLimits = Interval(sortedDivisions[0].range.begin, sortedDivisions[(-1)].range.end)
     itemModel.setRank(comp7_shared.getRankById(rank))
     itemModel.setFrom(rankLimits.begin)
     itemModel.setTo(rankLimits.end + 1)
 
 
 @dependency.replace_none_kwargs(comp7Controller=IComp7Controller)
-def setCurrentProgressionIdx(model, rank, ranksConfig, comp7Controller=None):
+def setCurrentProgressionIdx(model, rank, ranksConfig, rating=None, comp7Controller=None):
     sortedDivisions = getRankDivisions(rank, ranksConfig)
-    rankLimits = Interval(sortedDivisions[0].range.begin, sortedDivisions[-1].range.end)
-    isRankElite = rank == _getEliteRank()
+    rankLimits = Interval(sortedDivisions[0].range.begin, sortedDivisions[(-1)].range.end)
+    isRankElite = rank == getEliteRank()
+    if rating is None:
+        rating = comp7Controller.rating
     if not isRankElite or comp7Controller.isElite:
-        if comp7Controller.rating in rankLimits:
+        if rating in rankLimits:
             rankIdx = ranksConfig.ranksOrder.index(rank)
             model.setCurrentItemIndex(rankIdx)
+    return
 
 
 def getRankDivisions(rank, ranksConfig):
@@ -55,33 +55,35 @@ def getRankDivisions(rank, ranksConfig):
     return sortedDivisions
 
 
-def setDivisionData(itemModel, divisions):
+def setDivisionData(itemModel, divisions, rating=None):
     divisionsArray = itemModel.getDivisions()
     divisionsArray.clear()
     for division in divisions:
         divisionModel = ProgressionDivision()
         divisionModel.setName(comp7_shared.getDivisionEnumValue(division))
-        divisionModel.setState(getDivisionState(division))
+        divisionModel.setState(getDivisionState(division, rating))
         divisionsArray.addViewModel(divisionModel)
 
     divisionsArray.invalidate()
 
 
 @dependency.replace_none_kwargs(comp7Controller=IComp7Controller)
-def getDivisionState(division, comp7Controller=None):
-    eliteRank = _getEliteRank()
+def getDivisionState(division, rating=None, comp7Controller=None):
+    eliteRank = getEliteRank()
     if division.rank == eliteRank and not comp7Controller.isElite:
         return State.INACTIVE
-    currentRating = comp7Controller.rating
-    if division.range.begin <= currentRating:
-        if currentRating <= division.range.end:
-            return State.CURRENT
-        return State.ACHIEVED
-    return State.INACTIVE
+    else:
+        if rating is None:
+            rating = comp7Controller.rating
+        if division.range.begin <= rating:
+            if rating <= division.range.end:
+                return State.CURRENT
+            return State.ACHIEVED
+        return State.INACTIVE
 
 
 @dependency.replace_none_kwargs(comp7Controller=IComp7Controller)
-def _getEliteRank(comp7Controller=None):
+def getEliteRank(comp7Controller=None):
     ranksConfig = comp7Controller.getRanksConfig()
-    eliteRank = ranksConfig.ranksOrder[-1]
+    eliteRank = ranksConfig.ranksOrder[(-1)]
     return eliteRank

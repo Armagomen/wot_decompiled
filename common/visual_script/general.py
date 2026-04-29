@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/visual_script/general.py
 from block import Block, makeResEditorData, InitParam
 from slot_types import SLOT_TYPE, arrayOf
 from uuid_utils import genUUID
@@ -30,12 +28,12 @@ class GenerateUniqueString(Block):
 
     @classmethod
     def blockIcon(cls):
-        pass
+        return ':vse/blocks/text'
 
     @classmethod
     def blockCategory(cls):
-        pass
+        return 'Strings'
 
     def _getData(self):
         prefix = self._prefix.getValue() if self._prefix.hasValue() else ''
-        self._res.setValue('{prefix}_{ts}'.format(prefix=prefix, ts=genUUID().time))
+        self._res.setValue(('{prefix}_{ts}').format(prefix=prefix, ts=genUUID().time))

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/vehicle_compare/base_sub_view.py
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_setup_model import BaseSetupModel
 from gui.impl.lobby.tank_setup.sub_views.base_setup import BaseSetupSubView
 

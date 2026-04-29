@@ -1,11 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/Weather.py
 from __future__ import absolute_import, print_function
-import random
-import traceback
+import random, traceback
 from vehicle_systems.stricted_loading import makeCallbackWeak
-import BigWorld
-import ResMgr
+import BigWorld, ResMgr
 from Listener import Listenable
 import Math
 if BigWorld.component != 'editor':
@@ -30,10 +26,7 @@ class WeatherSystem(object):
         self.fader = Math.Vector4Morph()
         self.fader.duration = 1.0
         f = self._fogAmount(self.fog[3])
-        self.fader.target = (f,
-         0,
-         1,
-         0)
+        self.fader.target = (f, 0, 1, 0)
         self.fxName = ds.readString('sfx')
         self.loaded = False
 
@@ -85,10 +78,7 @@ class WeatherSystem(object):
 
             f = self._fogAmount(self.fog[3])
             self.fader.duration = fadeSpeed - 0.1
-            self.fader.target = (f,
-             0,
-             1,
-             1)
+            self.fader.target = (f, 0, 1, 1)
             try:
                 BigWorld.weather().windAverage(self.windSpeed[0], self.windSpeed[1])
                 BigWorld.weather().windGustiness(self.windGustiness)
@@ -103,10 +93,7 @@ class WeatherSystem(object):
                 fadeSpeed = max(fadeSpeed, sfxFadeSpeed)
             BigWorld.callback(fadeSpeed, self._unload)
             self.fader.duration = fadeSpeed - 0.1
-            self.fader.target = (curr[0],
-             curr[1],
-             curr[2],
-             0)
+            self.fader.target = (curr[0], curr[1], curr[2], 0)
         return
 
     def _fogAmount(self, amount):
@@ -190,7 +177,7 @@ class Weather(Listenable):
         else:
             idx -= 1
         self.toggleRandomWeather(False)
-        self.summon(systems[idx % len(systems)].name, immediate)
+        self.summon(systems[(idx % len(systems))].name, immediate)
         return
 
     def _randomWeather(self, initial=False):
@@ -246,29 +233,30 @@ class Weather(Listenable):
         else:
             if resummon:
                 self._setFadeSpeed(0.1)
-            elif immediate:
-                self._setFadeSpeed(2.5)
             else:
-                self._setFadeSpeed(15.0)
-            if self.summoning and not immediate:
-                self.pendingWeatherChange = systemName
-                self.listeners.weather(systemName=systemName)
-                return
-            for ds in weatherXML.values():
-                if ds.name == systemName:
-                    try:
-                        if not serverSync and BigWorld.getEnvironmentSync():
-                            p = BigWorld.player()
-                            p.cell.syncServWeather(p.spaceID, systemName)
-                    except KeyError:
-                        pass
-                    except AttributeError:
-                        pass
+                if immediate:
+                    self._setFadeSpeed(2.5)
+                else:
+                    self._setFadeSpeed(15.0)
+                if self.summoning and not immediate:
+                    self.pendingWeatherChange = systemName
+                    self.listeners.weather(systemName=systemName)
+                    return
+                for ds in weatherXML.values():
+                    if ds.name == systemName:
+                        try:
+                            if not serverSync and BigWorld.getEnvironmentSync():
+                                p = BigWorld.player()
+                                p.cell.syncServWeather(p.spaceID, systemName)
+                        except KeyError:
+                            pass
+                        except AttributeError:
+                            pass
 
-                    system = WeatherSystem(ds)
-                    self.summoning = True
-                    self.listeners.weather(system=system)
-                    system.prepareResources(makeCallbackWeak(self._systemReadySummon, system, immediate, resummon), immediate)
+                        system = WeatherSystem(ds)
+                        self.summoning = True
+                        self.listeners.weather(system=system)
+                        system.prepareResources(makeCallbackWeak(self._systemReadySummon, system, immediate, resummon), immediate)
 
             return
 
@@ -311,7 +299,7 @@ class Weather(Listenable):
                 system = WeatherSystem(ds)
                 return system
 
-        return None
+        return
 
     def _animateValue(self, value, v4a, index):
         expected = Math.Vector4(v4a.target)

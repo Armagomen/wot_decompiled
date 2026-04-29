@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/Scaleform/daapi/view/meta/Comp7PrebattleTimerMeta.py
 from gui.Scaleform.daapi.view.battle.shared.battle_timers import PreBattleTimer
 
 class Comp7PrebattleTimerMeta(PreBattleTimer):
@@ -8,4 +6,5 @@ class Comp7PrebattleTimerMeta(PreBattleTimer):
         self._printOverrideError('onReadyBtnClick')
 
     def as_hideInfoS(self):
-        return self.flashObject.as_hideInfo() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_hideInfo()

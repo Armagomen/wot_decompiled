@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/easy_tank_equip/data_providers/crew_data_provider.py
 from typing import TYPE_CHECKING
 import nations
 from gui.impl.gen.view_models.views.lobby.easy_tank_equip.common.preset_model import PresetDisableReason
@@ -54,7 +52,7 @@ class CrewDataProvider(BaseDataProvider):
     def initialize(self):
         self.__setTankmenPresets()
         crewSetupIsNotFull = self.__countTankmenInTank < self.__countRolesInTank
-        isProposalSelected = self.__isEnoughBunksForPreset(self.currentPresetIndex) if not all(self.__tankmenPresets[self.currentPresetIndex]) else crewSetupIsNotFull
+        isProposalSelected = (all(self.__tankmenPresets[self.currentPresetIndex]) or self.__isEnoughBunksForPreset)(self.currentPresetIndex) if 1 else crewSetupIsNotFull
         self.isProposalSelected = isProposalSelected or self.__hasNotSuitableTankmen()
         super(CrewDataProvider, self).initialize()
 
@@ -80,7 +78,7 @@ class CrewDataProvider(BaseDataProvider):
             if presetIndex == self.EXPERIENCED_PRESET_NUMBER and self.__isExperiencedPresetNeeded():
                 installed = self.__isExperiencedTankmenPresetInstalled()
                 presetsInfo.append(self.__getPresetInfo(installed, CrewPresetType.EXPERIENCED, presetIndex))
-            if presetIndex == self.NEW_CREW_PRESET_NUMBER and not self.__vehicleCrewIsLocked:
+            elif presetIndex == self.NEW_CREW_PRESET_NUMBER and not self.__vehicleCrewIsLocked:
                 presetsInfo.append(self.__getPresetInfo(False, CrewPresetType.NEW_CREW, presetIndex))
 
         return presetsInfo
@@ -100,8 +98,8 @@ class CrewDataProvider(BaseDataProvider):
     def getCurrentPresetItemsIds(self):
         if self.isProposalDisabled() or self.isCurrentPresetDisabled():
             return []
-        else:
-            return [ (tankman.invID if tankman is not None else self.NEW_TANKMAN_INV_ID) for _, tankman in self.__tankmenPresetsForApplying[self.currentPresetIndex] ]
+        return [ tankman.invID if tankman is not None else self.NEW_TANKMAN_INV_ID for _, tankman in self.__tankmenPresetsForApplying[self.currentPresetIndex]
+               ]
 
     def _getPresetDataForApplying(self):
         applyingData = []
@@ -112,7 +110,9 @@ class CrewDataProvider(BaseDataProvider):
         return applyingData
 
     def __isEnoughBunksForPreset(self, presetIndex):
-        return True if self.__countEmptySlotInPreset[presetIndex] == 0 else self.__getFreeBerthsCount() >= self.__countEmptySlotInPreset[presetIndex]
+        if self.__countEmptySlotInPreset[presetIndex] == 0:
+            return True
+        return self.__getFreeBerthsCount() >= self.__countEmptySlotInPreset[presetIndex]
 
     def __getPresetInfo(self, installed, presetType, presetIndex):
         disableReason = PresetDisableReason.NONE if self.__isEnoughBunksForPreset(presetIndex) else PresetDisableReason.NOT_ENOUGH_BUNKS
@@ -122,13 +122,14 @@ class CrewDataProvider(BaseDataProvider):
         self.vehicle.crew = self.__tankmenPresetsForApplying[self.currentPresetIndex]
 
     def __hasNotSuitableTankmen(self):
-        return any((not tankman.descriptor.isOwnVehicleOrPremium(self.__vehDescrType) for tankman in self.__tankmenInTank))
+        return any(not tankman.descriptor.isOwnVehicleOrPremium(self.__vehDescrType) for tankman in self.__tankmenInTank)
 
     def __isExperiencedPresetNeeded(self):
         return self.__tankmenPresets[self.EXPERIENCED_PRESET_NUMBER] != self.__tankmenPresets[self.NEW_CREW_PRESET_NUMBER]
 
     def __getSortedTankmenByRoles(self):
-        crew = [ (vehicleSlotIdx, tankman) for vehicleSlotIdx, tankman in enumerate(self.__tankmenPresets[self.NEW_CREW_PRESET_NUMBER]) ]
+        crew = [ (vehicleSlotIdx, tankman) for vehicleSlotIdx, tankman in enumerate(self.__tankmenPresets[self.NEW_CREW_PRESET_NUMBER])
+               ]
         crew = sortCrew(crew, self.__vehDescrType.crewRoles)
         return crew
 
@@ -136,7 +137,8 @@ class CrewDataProvider(BaseDataProvider):
         crew = self.__getSortedTankmenByRoles()
         if presetIndex == self.NEW_CREW_PRESET_NUMBER:
             return crew
-        return [ (item[0], self.__tankmenPresets[presetIndex][slotIndex]) for slotIndex, item in enumerate(crew) ]
+        return [ (item[0], self.__tankmenPresets[presetIndex][slotIndex]) for slotIndex, item in enumerate(crew)
+               ]
 
     def __getSortedTankmenForTTC(self, presetIndex):
         crew = self.__getSortedTankmenByRoles()
@@ -148,7 +150,8 @@ class CrewDataProvider(BaseDataProvider):
             vehicleSlotIdx = item[0]
             if tankman and self.vehicle.invID != tankman.vehicleInvID:
                 tmanDescr = tankman.descriptor
-                tankman = self.__itemsFactory.createTankman(tmanDescr.makeCompactDescr(), vehicle=self.vehicle, vehicleSlotIdx=vehicleSlotIdx, bonusSkillsLevels=[tmanDescr.bonusSkillsLevels])
+                tankman = self.__itemsFactory.createTankman(tmanDescr.makeCompactDescr(), vehicle=self.vehicle, vehicleSlotIdx=vehicleSlotIdx, bonusSkillsLevels=[
+                 tmanDescr.bonusSkillsLevels])
             result.append((vehicleSlotIdx, tankman))
 
         return result
@@ -211,7 +214,8 @@ class CrewDataProvider(BaseDataProvider):
                 experiencedTankmen.append(tankmanCandidate)
                 tankmenNativeVeh.append(tankmanNativeVeh)
 
-        return (experiencedTankmen, tankmenNativeVeh, emptySlotCount)
+        return (
+         experiencedTankmen, tankmenNativeVeh, emptySlotCount)
 
     def __getTankmanCandidateForRole(self, sortedTankmenByRating, experiencedTankmen, tankmanInVehicle=None):
         for tankmanCandidate in sortedTankmenByRating:

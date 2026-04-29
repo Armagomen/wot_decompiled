@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/entities/e_sport/unit/public/entity.py
 import account_helpers
 from UnitBase import UNIT_BROWSER_TYPE
 from constants import PREBATTLE_TYPE, QUEUE_TYPE

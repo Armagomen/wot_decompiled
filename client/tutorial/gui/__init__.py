@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/tutorial/gui/__init__.py
 import typing
 from enum import unique, IntEnum
 import Event
@@ -90,7 +88,7 @@ class GUIProxy(object):
         pass
 
     def showServiceMessage(self, data, msgTypeName):
-        pass
+        return 0
 
     def getItemsOnScene(self):
         return set()
@@ -114,13 +112,13 @@ class GUIProxy(object):
         pass
 
     def getGuiRoot(self):
-        return None
+        return
 
     def setDispatcher(self, dispatcher):
         pass
 
     def getDispatcher(self):
-        return None
+        return
 
 
 class GUIDispatcher(object):
@@ -188,13 +186,13 @@ class GuiType(IntEnum):
     WULF = 2
 
 
-ComponentDescr = typing.NamedTuple('ComponentDescr', (('ID', str),
- ('viewType', GuiType),
- ('viewId', str),
- ('path', str)))
+ComponentDescr = typing.NamedTuple('ComponentDescr', (
+ (
+  'ID', str), ('viewType', GuiType), ('viewId', str), ('path', str)))
 
 class IGuiImpl(object):
-    __slots__ = ('onComponentFound', 'onTriggerActivated', 'onComponentDisposed', 'onEffectCompleted', 'onInit')
+    __slots__ = ('onComponentFound', 'onTriggerActivated', 'onComponentDisposed', 'onEffectCompleted',
+                 'onInit')
     if typing.TYPE_CHECKING:
         onComponentFound = None
         onComponentDisposed = None

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/locale/CYBERSPORT.py
 from debug_utils import LOG_WARNING
 
 class CYBERSPORT(object):
@@ -90,6 +88,7 @@ class CYBERSPORT(object):
     WINDOW_UNIT_MESSAGE_VEHICLEINNOTREADY_RENTISOVER = '#cyberSport:window/unit/message/vehicleInNotReady/rentIsOver'
     WINDOW_UNIT_MESSAGE_VEHICLEINNOTREADY_ROTATIONGROUPLOCKED = '#cyberSport:window/unit/message/vehicleInNotReady/rotationGroupLocked'
     WINDOW_UNIT_MESSAGE_VEHICLEINNOTREADY_ISINBATTLE = '#cyberSport:window/unit/message/vehicleInNotReady/isInBattle'
+    WINDOW_UNIT_MESSAGE_VEHICLEINNOTREADY_NOTENOUGHVEHICLES = '#cyberSport:window/unit/message/vehicleInNotReady/notEnoughVehicles'
     WINDOW_UNIT_MESSAGE_VEHICLEINNOTREADY_WRONGMODE = '#cyberSport:window/unit/message/vehicleInNotReady/wrongMode'
     WINDOW_UNIT_MESSAGE_VEHICLENOTVALIDFOREVENT = '#cyberSport:window/unit/message/vehicleNotValidForEvent'
     WINDOW_UNIT_MESSAGE_VEHICLEINNOTREADY_WRONGUNITDATA = '#cyberSport:window/unit/message/vehicleInNotReady/wrongUnitData'
@@ -231,16 +230,17 @@ class CYBERSPORT(object):
     RESPAWN_FIGHT_STATUS_COMMANDER = '#cyberSport:respawn/fight/status/commander'
     RESPAWN_FIGHT_STATUS_PRIVATE = '#cyberSport:respawn/fight/status/private'
     SQUADWINDOW_WAITINGFORBATTLE = '#cyberSport:squadWindow/waitingForBattle'
-    WINDOW_UNIT_MESSAGE_INVALIDLEVELERROR_ENUM = (WINDOW_UNIT_MESSAGE_INVALIDLEVELERROR_UNRESOLVED,
+    WINDOW_UNIT_MESSAGE_INVALIDLEVELERROR_ENUM = (
+     WINDOW_UNIT_MESSAGE_INVALIDLEVELERROR_UNRESOLVED,
      WINDOW_UNIT_MESSAGE_INVALIDLEVELERROR_6,
      WINDOW_UNIT_MESSAGE_INVALIDLEVELERROR_7,
      WINDOW_UNIT_MESSAGE_INVALIDLEVELERROR_6_7)
 
     @classmethod
     def window_unit_message_invalidlevelerror(cls, key0):
-        outcome = '#cyberSport:window/unit/message/invalidLevelError/{}'.format(key0)
+        outcome = ('#cyberSport:window/unit/message/invalidLevelError/{}').format(key0)
         if outcome not in cls.WINDOW_UNIT_MESSAGE_INVALIDLEVELERROR_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome

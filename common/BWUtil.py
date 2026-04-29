@@ -1,12 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/BWUtil.py
-import sys
-import os
+import sys, os
 from functools import partial, wraps
 from types import GeneratorType
-import platform
-import ResMgr
-import BigWorld
+import platform, ResMgr, BigWorld
 from bwdebug import TRACE_MSG
 
 class _BuiltinsAccessor(object):
@@ -88,7 +83,7 @@ def bwResRelativeOpen(name, *args):
     try:
         absname = ResMgr.resolveToAbsolutePath(name)
     except Exception as e:
-        raise IOError(2, 'Error = {}; name = {}'.format(str(e), name))
+        raise IOError(2, ('Error = {}; name = {}').format(str(e), name))
 
     absname = unicode(absname)
     return _open_accessor.original(absname, *args)
@@ -130,11 +125,14 @@ def extendPath(path, name):
 def longDistroNameToShort(longDistroName):
     if longDistroName.startswith('Red Hat'):
         return 'rhel'
-    return 'CentOS' if longDistroName.startswith('CentOS') else longDistroName
+    if longDistroName.startswith('CentOS'):
+        return 'CentOS'
+    return longDistroName
 
 
 SHORT_NAME_ENTERPRISE_LINUX = 'el'
-ENTERPRISE_LINUX_DISTROS = ['centos', 'rhel']
+ENTERPRISE_LINUX_DISTROS = [
+ 'centos', 'rhel']
 ALLOWED_DISTROS = ENTERPRISE_LINUX_DISTROS + ['fedora']
 
 def finaliseShortNameFromReleaseInfo(longDistroName, versionStr, releaseName):
@@ -160,10 +158,10 @@ def findPlatformName():
             platformData = platform.linux_distribution()
         except AttributeError:
             sys.stderr.write('Unable to detect linux distribution. An old version of Python may be present. BigWorld requires Python 2.7.\n')
-            return None
+            return
 
         return finaliseShortNameFromReleaseInfo(*platformData)
-        return None
+        return
 
 
 def getPlatformArchitecutre():
@@ -171,9 +169,9 @@ def getPlatformArchitecutre():
         return platform.processor()
     except:
         sys.stderr.write('Unable to detect platform architecture')
-        return None
+        return
 
-    return None
+    return
 
 
 def getPlatformSuffix():
@@ -191,7 +189,7 @@ def getPlatformSuffix():
 
 
 class AsyncReturn(StopIteration):
-    __slots__ = ('value',)
+    __slots__ = ('value', )
 
     def __init__(self, value):
         self.value = value

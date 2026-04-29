@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/battle_control/controllers/consumables/epic_equipment_ctrl.py
 import BigWorld
 from constants import EQUIPMENT_STAGES as STAGES
 from frontline_common.frontline_constants import FLBattleReservesModifier
@@ -42,19 +40,15 @@ class EpicEquipmentsController(equipment_ctrl.EquipmentsController):
         if stage == STAGES.WAIT_FOR_CHOICE:
             if slot and slot[3] == stage:
                 return
-            self._equipmentsIdxSlot[index] = (0,
-             0,
-             slotIdx,
-             stage)
+            self._equipmentsIdxSlot[index] = (
+             0, 0, slotIdx, stage)
             idx = index if index > 0 else 0
             self.onSlotWaited(idx, quantity)
         elif intCD == 0 and stage == STAGES.UNAVAILABLE:
             if slot and slot[3] == stage:
                 return
-            self._equipmentsIdxSlot[index] = (0,
-             0,
-             slotIdx,
-             stage)
+            self._equipmentsIdxSlot[index] = (
+             0, 0, slotIdx, stage)
             self.onSlotBlocked(index)
         else:
             if stage == STAGES.PREPARING:
@@ -76,7 +70,8 @@ class EpicEquipmentsController(equipment_ctrl.EquipmentsController):
 
 
 class EpicReplayEquipmentController(EpicEquipmentsController):
-    __slots__ = ('__callbackID', '__callbackTimeID', '__percentGetters', '__percents', '__timeGetters', '__times')
+    __slots__ = ('__callbackID', '__callbackTimeID', '__percentGetters', '__percents',
+                 '__timeGetters', '__times')
 
     def __init__(self, setup):
         super(EpicReplayEquipmentController, self).__init__(setup)
@@ -96,7 +91,9 @@ class EpicReplayEquipmentController(EpicEquipmentsController):
             return None
         else:
             intCD, index = key
-            return self.getEquipmentByIDx(index - 1) if index > 0 else self.getEquipment(intCD)
+            if index > 0:
+                return self.getEquipmentByIDx(index - 1)
+            return self.getEquipment(intCD)
 
     def clear(self, leave=True):
         arenaDP = self.sessionProvider.getArenaDP()
@@ -152,7 +149,7 @@ class EpicReplayEquipmentController(EpicEquipmentsController):
         return item
 
     def getActivationCode(self, intCD, entityName=None, avatar=None):
-        return None
+        return
 
     def canActivate(self, intCD, entityName=None, avatar=None):
         return (False, None)

@@ -1,15 +1,13 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/shared/event_dispatcher.py
-import logging
-import typing
+import logging, typing
 from comp7.gui.impl.gen.view_models.views.lobby.enums import MetaRootViews
 from frameworks.wulf import Window
+from gui.Scaleform.daapi.view.lobby.vehicle_preview.configurable_vehicle_preview import OptionalBlocks
+from gui.impl.gen import R
 from gui.impl.pub.notification_commands import WindowNotificationCommand
 from gui.server_events.events_dispatcher import ifPrbNavigationEnabled
 from helpers import dependency
-from skeletons.gui.game_control import IComp7Controller, IIngameTournamentController
-from skeletons.gui.game_control import IHangarSpaceSwitchController
-from skeletons.gui.impl import INotificationWindowController
+from skeletons.gui.game_control import IComp7Controller, IHangarSpaceSwitchController, IIngameTournamentController
+from skeletons.gui.impl import IGuiLoader, INotificationWindowController
 if typing.TYPE_CHECKING:
     from enum import Enum
 _logger = logging.getLogger(__name__)
@@ -177,7 +175,8 @@ def showComp7InfoPage():
     from gui.impl.lobby.mode_selector.items.base_item import getInfoPageKey
     from gui.shared.event_dispatcher import showBrowserOverlayView
     url = GUI_SETTINGS.lookup(getInfoPageKey(SELECTOR_BATTLE_TYPES.COMP7))
-    showBrowserOverlayView(url, VIEW_ALIAS.WEB_VIEW_TRANSPARENT, hiddenLayers=(WindowLayer.MARKER, WindowLayer.VIEW, WindowLayer.WINDOW))
+    showBrowserOverlayView(url, VIEW_ALIAS.WEB_VIEW_TRANSPARENT, hiddenLayers=(
+     WindowLayer.MARKER, WindowLayer.VIEW, WindowLayer.WINDOW))
 
 
 def showTournamentInfoPage(infoPageKey):
@@ -186,7 +185,8 @@ def showTournamentInfoPage(infoPageKey):
     from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
     from gui.shared.event_dispatcher import showBrowserOverlayView
     url = GUI_SETTINGS.lookup(infoPageKey)
-    showBrowserOverlayView(url, VIEW_ALIAS.WEB_VIEW_TRANSPARENT, hiddenLayers=(WindowLayer.MARKER, WindowLayer.VIEW, WindowLayer.WINDOW))
+    showBrowserOverlayView(url, VIEW_ALIAS.WEB_VIEW_TRANSPARENT, hiddenLayers=(
+     WindowLayer.MARKER, WindowLayer.VIEW, WindowLayer.WINDOW))
 
 
 def showWciInfoPage():
@@ -201,18 +201,20 @@ def showOlsInfoPage():
 
 def showComp7StylePreview(vehCD, style, **kwargs):
     from comp7.gui.impl.lobby.hangar.states import Comp7StylePreviewState
-    kwargs.update({'itemCD': vehCD,
-     'style': style,
-     'showBackButton': False})
+    kwargs.update({'itemCD': vehCD, 
+       'style': style, 
+       'showBackButton': False})
     params = {'ctx': kwargs}
     Comp7StylePreviewState.goTo(**params)
 
 
 def showComp7VehiclePreview(vehCD, **kwargs):
     from comp7.gui.impl.lobby.hangar.states import Comp7VehiclePreviewState
-    kwargs.update({'itemCD': vehCD,
-     'showBackButton': False,
-     'showCloseButton': False})
+    kwargs.update({'itemCD': vehCD, 
+       'showBackButton': False, 
+       'showCloseButton': False, 
+       'hiddenBlocks': (
+                      OptionalBlocks.ALL,)})
     params = {'ctx': kwargs}
     Comp7VehiclePreviewState.goTo(**params)
 
@@ -228,7 +230,17 @@ def showComp7SeasonVehiclesStatisticsView(closeCallback=None, vehicleCD=None):
     from gui.Scaleform.genConsts.PROFILE_DROPDOWN_KEYS import PROFILE_DROPDOWN_KEYS
     from gui.shared import events, g_eventBus, EVENT_BUS_SCOPE
     from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-    g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.LOBBY_PROFILE), ctx={'selectedAlias': VIEW_ALIAS.PROFILE_TECHNIQUE_PAGE,
-     'closeCallback': closeCallback,
-     'battlesType': PROFILE_DROPDOWN_KEYS.COMP7,
-     'vehicleCD': vehicleCD}), scope=EVENT_BUS_SCOPE.LOBBY)
+    g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.LOBBY_PROFILE), ctx={'selectedAlias': VIEW_ALIAS.PROFILE_TECHNIQUE_PAGE, 
+       'closeCallback': closeCallback, 
+       'battlesType': PROFILE_DROPDOWN_KEYS.COMP7, 
+       'vehicleCD': vehicleCD}), scope=EVENT_BUS_SCOPE.LOBBY)
+
+
+def showComp7VehicleBanWindow():
+    from comp7.gui.impl.battle.vehicle_ban.ban_view import BanViewWindow
+    uiLoader = dependency.instance(IGuiLoader)
+    viewID = R.views.comp7.mono.battle.ban_view()
+    if uiLoader.windowsManager.getViewByLayoutID(viewID) is None:
+        window = BanViewWindow()
+        window.load()
+    return

@@ -1,5 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/DebugView.py
+from __future__ import absolute_import
+from future.utils import viewvalues
 import GUI
 from gui import g_guiResetters
 
@@ -9,14 +9,9 @@ class DebugView(object):
         self.__listKeynames = []
         self.__dictItems = {}
         self.__bAutoUpdate = False
-        self.__align = [False,
-         False,
-         False,
-         False]
-        self.__margin = [0.0,
-         0.0,
-         0.0,
-         0.0]
+        self.__align = [
+         False, False, False, False]
+        self.__margin = [0.0, 0.0, 0.0, 0.0]
         self.__window = None
         self.__createMainWindow(parentGUI)
         g_guiResetters.add(self.__onChangeScreenResolution)
@@ -62,7 +57,10 @@ class DebugView(object):
 
     def getParentSize(self):
         parent = self.__window.parent
-        return parent.size if parent is not None else None
+        if parent is not None:
+            return parent.size
+        else:
+            return
 
     def setAutoUpdate(self, bValue):
         self.__bAutoUpdate = bool(bValue)
@@ -72,29 +70,31 @@ class DebugView(object):
 
     def setAlign(self, value, index=None):
         if index is None:
-            self.__align = [bool(value[0]),
-             bool(value[1]),
-             bool(value[2]),
-             bool(value[3])]
+            self.__align = [
+             bool(value[0]), bool(value[1]), bool(value[2]), bool(value[3])]
         else:
             self.__align[index] = bool(value)
         return
 
     def getAlign(self, index=None):
-        return list(self.__align) if index is None else self.__align[index]
+        if index is None:
+            return list(self.__align)
+        else:
+            return self.__align[index]
 
     def setMargin(self, value, index=None):
         if index is None:
-            self.__margin = [float(value[0]),
-             float(value[1]),
-             float(value[2]),
-             float(value[3])]
+            self.__margin = [
+             float(value[0]), float(value[1]), float(value[2]), float(value[3])]
         else:
             self.__margin[index] = float(value)
         return
 
     def getMargin(self, index=None):
-        return list(self.__margin) if index is None else self.__margin[index]
+        if index is None:
+            return list(self.__margin)
+        else:
+            return self.__margin[index]
 
     def getListKeynames(self):
         return list(self.__listKeynames)
@@ -106,7 +106,7 @@ class DebugView(object):
         return iter(self.__listKeynames)
 
     def iteritems(self):
-        return self.__dictItems.itervalues()
+        return iter(viewvalues(self.__dictItems))
 
     def getItemsCount(self):
         return len(self.__listKeynames)
@@ -163,13 +163,13 @@ class DebugView(object):
         saved_size = self.getSize()
         saved_textureName = self.getTextureName()
         saved_visible = self.getVisible()
-        for curItem in self.__dictItems.itervalues():
+        for curItem in viewvalues(self.__dictItems):
             self.__window.delChild(curItem._guiName)
             self.__window.delChild(curItem._guiValue)
 
         GUI.delRoot(self.__window)
         self.__window = None
-        for curItem in self.__dictItems.itervalues():
+        for curItem in viewvalues(self.__dictItems):
             curItem._rebuild()
 
         self.__createMainWindow(saved_parent)
@@ -177,7 +177,7 @@ class DebugView(object):
         self.setSize(saved_size)
         self.setTextureName(saved_textureName)
         self.setVisible(saved_visible)
-        for curItem in self.__dictItems.itervalues():
+        for curItem in viewvalues(self.__dictItems):
             self.__window.addChild(curItem._guiName)
             self.__window.addChild(curItem._guiValue)
 
@@ -196,11 +196,11 @@ class DebugView(object):
         if deltaLine < 0:
             block = self.__listKeynames[ind + deltaLine:ind]
             block.insert(0, keyname)
-            self.__listKeynames[ind + deltaLine:ind + 1] = block
+            self.__listKeynames[(ind + deltaLine):(ind + 1)] = block
         else:
             block = self.__listKeynames[ind + 1:ind + 1 + deltaLine]
             block.append(keyname)
-            self.__listKeynames[ind:ind + 1 + deltaLine] = block
+            self.__listKeynames[ind:(ind + 1 + deltaLine)] = block
         if self.__bAutoUpdate:
             self.update()
 
@@ -236,7 +236,8 @@ class DebugView(object):
             totalHeight += curLineHeight
 
         totalWidth = maxWidth1 + maxWidth2
-        self.__window.size = (totalWidth, totalHeight)
+        self.__window.size = (
+         totalWidth, totalHeight)
         curHeight = 0.0
         for curKeyname in self.__listKeynames:
             curItem = self.__dictItems[curKeyname]
@@ -332,7 +333,8 @@ class DebugViewItem(object):
         self._guiName.font = str(font)
 
     def getFont(self):
-        return (self._guiName.font, self._guiValue.font)
+        return (
+         self._guiName.font, self._guiValue.font)
 
     def getFontName(self):
         return self._guiName.font
@@ -351,7 +353,8 @@ class DebugViewItem(object):
         self._guiValue.colour = tuple(colour)
 
     def getColour(self):
-        return (self._guiName.colour, self._guiValue.colour)
+        return (
+         self._guiName.colour, self._guiValue.colour)
 
     def getColourName(self):
         return self._guiName.colour
@@ -367,7 +370,8 @@ class DebugViewItem(object):
         self._guiValue.materialFX = materialFX
 
     def getMaterialFX(self):
-        return (self._guiName.materialFX, self._guiValue.materialFX)
+        return (
+         self._guiName.materialFX, self._guiValue.materialFX)
 
     def getMaterialFXValue(self):
         return self._guiValue.materialFX
@@ -386,11 +390,13 @@ class DebugViewItem(object):
         self._guiName.position, self._guiValue.position = pos2
 
     def _getPosition(self):
-        return (self._guiName.position, self._guiValue.position)
+        return (
+         self._guiName.position, self._guiValue.position)
 
     def _rebuild(self):
         saved_font2 = self.getFont()
-        saved_colour2 = ((255.0, 255.0, 255.0, 255.0), (255.0, 255.0, 255.0, 255.0))
+        saved_colour2 = (
+         (255.0, 255.0, 255.0, 255.0), (255.0, 255.0, 255.0, 255.0))
         saved_position2 = self._getPosition()
         saved_visible = self.getVisible()
         self.__createGUI()

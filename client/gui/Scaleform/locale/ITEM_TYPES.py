@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/locale/ITEM_TYPES.py
 from debug_utils import LOG_WARNING
 
 class ITEM_TYPES(object):
@@ -152,18 +150,21 @@ class ITEM_TYPES(object):
     CREWSKINS_ITEMTYPE_EPIC = '#item_types:crewSkins/itemType/epic'
     TANKMAN_GENDER_MAN = '#item_types:tankman/gender/man'
     TANKMAN_GENDER_WOMAN = '#item_types:tankman/gender/woman'
-    SHELL_KINDSABBREVIATION_ENUM = (SHELL_KINDSABBREVIATION_ARMOR_PIERCING,
+    SHELL_KINDSABBREVIATION_ENUM = (
+     SHELL_KINDSABBREVIATION_ARMOR_PIERCING,
      SHELL_KINDSABBREVIATION_ARMOR_PIERCING_CR,
      SHELL_KINDSABBREVIATION_ARMOR_PIERCING_HE,
      SHELL_KINDSABBREVIATION_HOLLOW_CHARGE,
      SHELL_KINDSABBREVIATION_HIGH_EXPLOSIVE)
-    TANKMAN_SKILLS_ENUM = (TANKMAN_SKILLS_MAIN,
+    TANKMAN_SKILLS_ENUM = (
+     TANKMAN_SKILLS_MAIN,
      TANKMAN_SKILLS_TYPE_SKILL,
      TANKMAN_SKILLS_TYPE_SKILL_SHORT,
      TANKMAN_SKILLS_TYPE_PERK,
      TANKMAN_SKILLS_TYPE_PERK_COMMON,
      TANKMAN_SKILLS_TYPE_PERK_SHORT)
-    TANKMAN_ROLES_ENUM = (TANKMAN_ROLES_COMMANDER,
+    TANKMAN_ROLES_ENUM = (
+     TANKMAN_ROLES_COMMANDER,
      TANKMAN_ROLES_DRIVER,
      TANKMAN_ROLES_RADIOMAN,
      TANKMAN_ROLES_GUNNER,
@@ -203,12 +204,14 @@ class ITEM_TYPES(object):
      TANKMAN_ROLES_FEMALE_OBJECTIVECASE_UPPERCASE_RADIOMAN,
      TANKMAN_ROLES_FEMALE_OBJECTIVECASE_UPPERCASE_GUNNER,
      TANKMAN_ROLES_FEMALE_OBJECTIVECASE_UPPERCASE_LOADER)
-    TANKMAN_SKILLS_TYPE_ENUM = (TANKMAN_SKILLS_TYPE_SKILL,
+    TANKMAN_SKILLS_TYPE_ENUM = (
+     TANKMAN_SKILLS_TYPE_SKILL,
      TANKMAN_SKILLS_TYPE_SKILL_SHORT,
      TANKMAN_SKILLS_TYPE_PERK,
      TANKMAN_SKILLS_TYPE_PERK_COMMON,
      TANKMAN_SKILLS_TYPE_PERK_SHORT)
-    CUSTOMIZATION_ENUM = (CUSTOMIZATION_PAINT,
+    CUSTOMIZATION_ENUM = (
+     CUSTOMIZATION_PAINT,
      CUSTOMIZATION_CAMOUFLAGE,
      CUSTOMIZATION_MODIFICATION,
      CUSTOMIZATION_OUTFIT,
@@ -236,7 +239,8 @@ class ITEM_TYPES(object):
      CUSTOMIZATION_PLURAL_PERSONALNUMBER,
      CUSTOMIZATION_PLURAL_ATTACHMENT,
      CUSTOMIZATION_PLURAL_STATTRACKER)
-    CUSTOMIZATION_PLURAL_ENUM = (CUSTOMIZATION_PLURAL_PAINT,
+    CUSTOMIZATION_PLURAL_ENUM = (
+     CUSTOMIZATION_PLURAL_PAINT,
      CUSTOMIZATION_PLURAL_CAMOUFLAGE,
      CUSTOMIZATION_PLURAL_MODIFICATION,
      CUSTOMIZATION_PLURAL_OUTFIT,
@@ -252,54 +256,54 @@ class ITEM_TYPES(object):
 
     @classmethod
     def shell_kindsabbreviation(cls, key0):
-        outcome = '#item_types:shell/kindsAbbreviation/{}'.format(key0)
+        outcome = ('#item_types:shell/kindsAbbreviation/{}').format(key0)
         if outcome not in cls.SHELL_KINDSABBREVIATION_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def tankman_skills(cls, key0):
-        outcome = '#item_types:tankman/skills/{}'.format(key0)
+        outcome = ('#item_types:tankman/skills/{}').format(key0)
         if outcome not in cls.TANKMAN_SKILLS_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def tankman_roles(cls, key0):
-        outcome = '#item_types:tankman/roles/{}'.format(key0)
+        outcome = ('#item_types:tankman/roles/{}').format(key0)
         if outcome not in cls.TANKMAN_ROLES_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def tankman_skills_type(cls, key0):
-        outcome = '#item_types:tankman/skills/type/{}'.format(key0)
+        outcome = ('#item_types:tankman/skills/type/{}').format(key0)
         if outcome not in cls.TANKMAN_SKILLS_TYPE_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def customization(cls, key0):
-        outcome = '#item_types:customization/{}'.format(key0)
+        outcome = ('#item_types:customization/{}').format(key0)
         if outcome not in cls.CUSTOMIZATION_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def customizationPlural(cls, key0):
-        outcome = '#item_types:customization/plural/{}'.format(key0)
+        outcome = ('#item_types:customization/plural/{}').format(key0)
         if outcome not in cls.CUSTOMIZATION_PLURAL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome

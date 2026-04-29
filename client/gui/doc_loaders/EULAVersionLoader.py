@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/doc_loaders/EULAVersionLoader.py
 from __future__ import absolute_import
 import ResMgr
 from helpers import VERSION_FILE_PATH
@@ -24,6 +22,5 @@ class EULAVersionLoader(object):
             raise SoftException('EULAVersionLoader.loadXMLVersion %s file is missing' % VERSION_FILE_PATH)
         xmlVersion = xmlFile.readString(VERSION_TAG)
         if not xmlVersion:
-            raise SoftException('Subsection EULAVersionLoader.loadXMLVersion EULAVersion tag <%(ver)s> is missing or empty in %(path)s' % {'ver': VERSION_TAG,
-             'path': VERSION_FILE_PATH})
+            raise SoftException('Subsection EULAVersionLoader.loadXMLVersion EULAVersion tag <%(ver)s> is missing or empty in %(path)s' % {'ver': VERSION_TAG, 'path': VERSION_FILE_PATH})
         self.__xmlVersion = int(xmlVersion)

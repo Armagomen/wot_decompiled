@@ -1,9 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/visual_script_client/arena_blocks.py
 import weakref
 from typing import List
-import BigWorld
-import Math
+import BigWorld, Math
 from ArenaType import g_cache
 from constants import IS_VS_EDITOR, ARENA_PERIOD, ARENA_PERIOD_NAMES, CollisionFlags, TEAMS_IN_ARENA
 from visual_script.block import Block, InitParam
@@ -28,7 +25,8 @@ class ClientArena(Block, ArenaMeta):
 
     @classmethod
     def blockAspects(cls):
-        return [ASPECT.CLIENT]
+        return [
+         ASPECT.CLIENT]
 
 
 class GetControlPoint(Block, ArenaMeta):
@@ -48,14 +46,15 @@ class GetControlPoint(Block, ArenaMeta):
         self._value = self._makeDataOutputSlot('value', SLOT_TYPE.CONTROL_POINT, self._execValue)
 
     def _execValue(self):
-        baseKey = (self._team.getValue(), self._baseID.getValue())
+        baseKey = (
+         self._team.getValue(), self._baseID.getValue())
         if baseKey not in GetControlPoint._CACHE:
             GetControlPoint._CACHE[baseKey] = GetControlPoint.TeamBase(*baseKey)
         self._value.setValue(weakref.proxy(GetControlPoint._CACHE[baseKey]))
 
     @classmethod
     def blockIcon(cls):
-        pass
+        return ':vse/blocks/teambase'
 
     @classmethod
     def blockAspects(cls):
@@ -78,14 +77,16 @@ class GetActiveControlPoints(Block, ArenaMeta):
         teambases = []
         if team == TEAMS_IN_ARENA.ANY_TEAM and controlPoints is not None:
             for i, _ in enumerate(controlPoints):
-                baseKey = (team, i + 1)
+                baseKey = (
+                 team, i + 1)
                 if baseKey not in self._CACHE:
                     self._CACHE[baseKey] = self.TeamBase(*baseKey)
                 teambases.append(self._CACHE[baseKey])
 
         elif team != TEAMS_IN_ARENA.ANY_TEAM and team <= len(teamBasePositions):
-            for baseId in teamBasePositions[team - 1].iterkeys():
-                baseKey = (team, baseId)
+            for baseId in teamBasePositions[(team - 1)].iterkeys():
+                baseKey = (
+                 team, baseId)
                 if baseKey not in self._CACHE:
                     self._CACHE[baseKey] = self.TeamBase(*baseKey)
                 teambases.append(self._CACHE[baseKey])
@@ -95,7 +96,7 @@ class GetActiveControlPoints(Block, ArenaMeta):
 
     @classmethod
     def blockIcon(cls):
-        pass
+        return ':vse/blocks/teambase'
 
     @classmethod
     def blockAspects(cls):
@@ -103,10 +104,8 @@ class GetActiveControlPoints(Block, ArenaMeta):
 
 
 class OnCaptureControlPoint(TunableEventBlock, ArenaMeta):
-    _EVENT_SLOT_NAMES = ['onStarted',
-     'onStopped',
-     'onUpdated',
-     'onCompleted']
+    _EVENT_SLOT_NAMES = [
+     'onStarted', 'onStopped', 'onUpdated', 'onCompleted']
 
     def __init__(self, *args, **kwargs):
         super(OnCaptureControlPoint, self).__init__(*args, **kwargs)
@@ -116,7 +115,7 @@ class OnCaptureControlPoint(TunableEventBlock, ArenaMeta):
 
     @classmethod
     def blockIcon(cls):
-        pass
+        return ':vse/blocks/arena_event'
 
     def onStartScript(self):
         arena = self.arena
@@ -134,7 +133,10 @@ class OnCaptureControlPoint(TunableEventBlock, ArenaMeta):
 
     @property
     def arena(self):
-        return getattr(BigWorld.player(), 'arena') if not IS_VS_EDITOR else None
+        if not IS_VS_EDITOR:
+            return getattr(BigWorld.player(), 'arena')
+        else:
+            return
 
     def _isCurrControlPoint(self, baseID, team):
         controlPoint = self._controlPoint.getValue()
@@ -143,19 +145,18 @@ class OnCaptureControlPoint(TunableEventBlock, ArenaMeta):
     def _capturingInfoUpdate(self, team, baseID, lastData, currData):
         if not self._isCurrControlPoint(baseID, team) or self.arena is None:
             return
-        else:
-            lastPoints, lastInvadersCnt, _ = lastData
-            points, invadersCnt, capturingStopped = currData
-            if points != lastPoints:
-                self._index = 2
-                self._callUpdated()
-            if capturingStopped or lastInvadersCnt > 0 and invadersCnt <= 0:
-                self._index = 1
-                self._callStopped()
-            elif lastInvadersCnt <= 0 and invadersCnt > 0:
-                self._index = 0
-                self._callStarted()
-            return
+        lastPoints, lastInvadersCnt, _ = lastData
+        points, invadersCnt, capturingStopped = currData
+        if points != lastPoints:
+            self._index = 2
+            self._callUpdated()
+        if capturingStopped or lastInvadersCnt > 0 and invadersCnt <= 0:
+            self._index = 1
+            self._callStopped()
+        elif lastInvadersCnt <= 0 and invadersCnt > 0:
+            self._index = 0
+            self._callStarted()
+        return
 
     def _onCaptured(self, team, baseID):
         if self._isCurrControlPoint(baseID, team):
@@ -195,7 +196,9 @@ class OnCaptureControlPoint(TunableEventBlock, ArenaMeta):
         return
 
     def validate(self):
-        return 'ControlPoint value is required' if not self._controlPoint.hasValue() else super(OnCaptureControlPoint, self).validate()
+        if not self._controlPoint.hasValue():
+            return 'ControlPoint value is required'
+        return super(OnCaptureControlPoint, self).validate()
 
     @classmethod
     def blockAspects(cls):
@@ -212,7 +215,7 @@ class ArenaPeriod(Block, ArenaMeta):
         self._isPeriodActive = self._makeDataOutputSlot('isActive', SLOT_TYPE.BOOL, self._execIsStart)
         self._timeFromStartSlot = self._makeDataOutputSlot('timeFromStart', SLOT_TYPE.FLOAT, self._execTimeFromStart)
         self._timeToEndSlot = self._makeDataOutputSlot('timeToEnd', SLOT_TYPE.FLOAT, self._execTimeToEnd)
-        self._periodType = self._getInitParams()
+        self._periodType, = self._getInitParams()
 
     @property
     def _arena(self):
@@ -239,18 +242,20 @@ class ArenaPeriod(Block, ArenaMeta):
 
     @classmethod
     def blockIcon(cls):
-        pass
+        return ':vse/blocks/arena_time'
 
     def captionText(self):
         return 'Arena Period: ' + ARENA_PERIOD_NAMES.get(self._periodType, 'Unknown')
 
     @classmethod
     def initParams(cls):
-        return [InitParam('Period', SLOT_TYPE.E_ARENA_PERIOD, ARENA_PERIOD.BATTLE)]
+        return [
+         InitParam('Period', SLOT_TYPE.E_ARENA_PERIOD, ARENA_PERIOD.BATTLE)]
 
     @classmethod
     def blockAspects(cls):
-        return [ASPECT.CLIENT]
+        return [
+         ASPECT.CLIENT]
 
 
 class ArenaPeriodStartEvent(Block, ArenaMeta):
@@ -260,7 +265,7 @@ class ArenaPeriodStartEvent(Block, ArenaMeta):
         self._start = self._makeEventOutputSlot('start')
         self._update = self._makeEventOutputSlot('update')
         self._timeToEndSlot = self._makeDataOutputSlot('timeToEnd', SLOT_TYPE.FLOAT, self._execTimeToEnd)
-        self._periodType = self._getInitParams()
+        self._periodType, = self._getInitParams()
         self.__periodTypeLast = None
         return
 
@@ -270,18 +275,20 @@ class ArenaPeriodStartEvent(Block, ArenaMeta):
 
     @classmethod
     def blockIcon(cls):
-        pass
+        return ':vse/blocks/arena_event'
 
     def captionText(self):
         return 'Arena Period Start: ' + ARENA_PERIOD_NAMES.get(self._periodType, 'Unknown')
 
     @classmethod
     def blockAspects(cls):
-        return [ASPECT.CLIENT]
+        return [
+         ASPECT.CLIENT]
 
     @classmethod
     def initParams(cls):
-        return [InitParam('Period', SLOT_TYPE.E_ARENA_PERIOD, ARENA_PERIOD.BATTLE)]
+        return [
+         InitParam('Period', SLOT_TYPE.E_ARENA_PERIOD, ARENA_PERIOD.BATTLE)]
 
     def onStartScript(self):
         self.__subscribe()
@@ -326,7 +333,7 @@ class OnBattleRoundFinished(Block, ArenaMeta):
 
     @classmethod
     def blockIcon(cls):
-        pass
+        return ':vse/blocks/arena_event'
 
     def onStartScript(self):
         g_playerEvents.onRoundFinished += self._onRoundFinished
@@ -341,11 +348,14 @@ class OnBattleRoundFinished(Block, ArenaMeta):
 
     @classmethod
     def blockAspects(cls):
-        return [ASPECT.CLIENT]
+        return [
+         ASPECT.CLIENT]
 
 
 class GetUDOByName(GetUDOByNameBase):
-    _UDOTypes = [SLOT_TYPE.MARKER_POINT, SLOT_TYPE.AREA_TRIGGER]
+    _UDOTypes = [
+     SLOT_TYPE.MARKER_POINT,
+     SLOT_TYPE.AREA_TRIGGER]
 
     @classmethod
     def blockAspects(cls):
@@ -468,8 +478,8 @@ class GetControlPointPosition(Block, ArenaMeta):
             teamBasePositions = g_cache[BigWorld.player().arenaTypeID].teamBasePositions
             if team == TEAMS_IN_ARENA.ANY_TEAM and controlPoints is not None:
                 x, z = controlPoints[0]
-            elif team <= len(teamBasePositions) and baseID in teamBasePositions[team - 1]:
-                x, z = teamBasePositions[team - 1][baseID]
+            elif team <= len(teamBasePositions) and baseID in teamBasePositions[(team - 1)]:
+                x, z = teamBasePositions[(team - 1)][baseID]
             else:
                 self._position.setValue(Math.Vector3(0.0, 0.0, 0.0))
                 return
@@ -486,7 +496,7 @@ class GetControlPointPosition(Block, ArenaMeta):
 
     @classmethod
     def blockIcon(cls):
-        pass
+        return ':vse/blocks/teambase'
 
 
 class SetEnvironment(Block, ArenaMeta):

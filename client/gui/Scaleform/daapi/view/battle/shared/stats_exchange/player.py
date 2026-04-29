@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/stats_exchange/player.py
+from __future__ import absolute_import
 from gui.Scaleform.daapi.view.battle.shared.stats_exchange import broker
 from gui.battle_control.arena_info.settings import INVITATION_DELIVERY_STATUS
 from gui.battle_control.arena_info.settings import PLAYER_STATUS
@@ -57,9 +56,12 @@ class UserTagsItemData(broker.VehicleComponent):
             tags = self._ctx.getUserTags(self._avatarSessionID, self._igrType)
         else:
             tags = self._ctx.addTagByIGRType(self._tags, self._igrType)
-        return {'isEnemy': self._isEnemy,
-         'vehicleID': self._vehicleID,
-         'userTags': tags} if forced or tags else {}
+        if forced or tags:
+            return {'isEnemy': self._isEnemy, 
+               'vehicleID': self._vehicleID, 
+               'userTags': tags}
+        else:
+            return {}
 
     def addVehicleInfo(self, vInfoVO):
         playerVO = vInfoVO.player

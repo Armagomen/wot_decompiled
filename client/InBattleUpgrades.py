@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/InBattleUpgrades.py
 import BigWorld
 from aih_constants import CTRL_MODE_NAME
 from wotdecorators import noexcept

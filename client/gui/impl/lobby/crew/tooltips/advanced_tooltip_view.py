@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/tooltips/advanced_tooltip_view.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.crew.tooltips.advanced_tooltip_view_model import AdvancedTooltipViewModel
@@ -21,7 +19,7 @@ class AdvancedTooltipView(ViewImpl):
 
     def _onLoading(self, *args, **kwargs):
         super(AdvancedTooltipView, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             tx.setMovie(self._movie)
             tx.setHeader(self._header)
             tx.setDescription(self._description)

@@ -1,10 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/vehicle_playlists_controller.py
-import json
-import logging
-import os
-import typing
-import Event
+import json, logging, os, uuid, typing, Event
 from PlayerEvents import g_playerEvents
 from gui.shared.utils import getPlayerDatabaseID
 from helpers.local_cache import FileLocalCache
@@ -35,7 +29,8 @@ class _VehiclePlaylistsCache(FileLocalCache):
     __SPACE = 'playlists_cache'
 
     def __init__(self, userDatabaseID):
-        fileTags = ('playlists', userDatabaseID)
+        fileTags = (
+         'playlists', userDatabaseID)
         super(_VehiclePlaylistsCache, self).__init__(self.__SPACE, fileTags, isAsync=True)
         self.__filePath = self._buildLocalCachePath(self.__SPACE, fileTags)
         self.data = {}
@@ -65,7 +60,7 @@ class _VehiclePlaylistsCache(FileLocalCache):
         if len(data) != 3:
             _logger.warning('Expected len of cached data is 3, but received %d', len(data))
             return
-        if self.__VERSION == data[0]:
+        if data[0] == self.__VERSION:
             self.selectedID = data[1]
             self.data = data[2] or {}
             return
@@ -85,7 +80,7 @@ class VehiclePlaylist(object):
 
         missing = [ field for field in PLAY_LIST_SCHEMA if field not in data ]
         if missing:
-            raise ValueError('Missed field: %s' % ', '.join(missing))
+            raise ValueError('Missed field: %s' % (', ').join(missing))
         for field in PLAY_LIST_SCHEMA:
             setattr(self, field, data[field])
 
@@ -137,8 +132,13 @@ class VehiclePlaylistsController(IVehiclePlaylistsController):
     def isEnabled(self):
         return self.__isEnabled
 
+    def generateId(self):
+        return uuid.uuid4().hex
+
     def getSelectedID(self):
-        return '' if not self.isEnabled else self.__cache.selectedID
+        if not self.isEnabled:
+            return ''
+        return self.__cache.selectedID
 
     def setSelectedID(self, val):
         if not self.isEnabled:
@@ -150,7 +150,8 @@ class VehiclePlaylistsController(IVehiclePlaylistsController):
     def iterPlaylists(self):
         if self.isEnabled and self.__cache:
             for plID, pStrData in self.__cache.data.iteritems():
-                yield (plID, pStrData)
+                yield (
+                 plID, pStrData)
 
     def simplePlayListParser(self, pStrData):
         try:
@@ -158,9 +159,9 @@ class VehiclePlaylistsController(IVehiclePlaylistsController):
             return playlist
         except ValueError as e:
             _logger.error("Couldn't parse playlist '%s'!", e)
-            return None
+            return
 
-        return None
+        return
 
     def updateModifiedPlaylist(self, plStrID, playlistData):
         if not self.isEnabled:
@@ -207,7 +208,8 @@ class VehiclePlaylistsController(IVehiclePlaylistsController):
         self.setSelectedID(playlisID)
         self.__cache.write()
         self.onPlaylistSaved(playlisID, playlist)
-        return (playlisID, playlist)
+        return (
+         playlisID, playlist)
 
     def setModifiedPlaylistChanged(self, isChanged):
         if not self.isEnabled:
@@ -223,7 +225,9 @@ class VehiclePlaylistsController(IVehiclePlaylistsController):
     def isModifiedPlaylistChanged(self):
         if not self.isEnabled:
             return False
-        return False if not self.__modifiedPlaylist.id else self.__modifiedPlaylist.isReallyChanged
+        if not self.__modifiedPlaylist.id:
+            return False
+        return self.__modifiedPlaylist.isReallyChanged
 
     def createPlaylist(self, plStrID, playlistData):
         if not self.isEnabled:

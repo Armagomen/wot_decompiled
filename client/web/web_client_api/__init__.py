@@ -1,15 +1,11 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/web/web_client_api/__init__.py
-import json
-import inspect
-import logging
-import weakref
+import json, inspect, logging, weakref
 from functools import partial
 from itertools import chain
-from types import FunctionType, BooleanType, TypeType
+from types import FunctionType, TypeType
 import typing
 from Event import Event
 from helpers import uniprof
+from py2to3.utils import getargspec
 from soft_exception import SoftException
 if typing.TYPE_CHECKING:
     from typing import Callable, Dict, Iterable, NamedTuple, Optional, Type, Union
@@ -90,8 +86,8 @@ class W2CSchemaMeta(ISchemeMeta):
 
     def __init__(cls, *args, **kwargs):
         super(W2CSchemaMeta, cls).__init__(*args, **kwargs)
-        cls.__schema = {k:v for k, v in args[2].iteritems() if isinstance(v, Field)}
-        cls.__methods = {k:v for k, v in args[2].iteritems() if isinstance(v, FunctionType)}
+        cls.__schema = {k:v for k, v in args[2].iteritems() if isinstance(v, Field) if isinstance(v, Field)}
+        cls.__methods = {k:v for k, v in args[2].iteritems() if isinstance(v, FunctionType) if isinstance(v, FunctionType)}
 
     def validate(cls, data):
         for key, value in cls.__schema.iteritems():
@@ -138,10 +134,10 @@ class W2CSchemaMeta(ISchemeMeta):
                         isValid = schema.validator(data[key], data)
                     except SoftException as err:
                         isValid = False
-                        errmsg = '; {}'.format(err)
+                        errmsg = ('; {}').format(err)
 
                     if not isValid:
-                        return 'Invalid value for field {}: {}{}'.format(key, data[key], errmsg)
+                        return ('Invalid value for field {}: {}{}').format(key, data[key], errmsg)
                 deprecatedMessage = schema.deprecated
                 if deprecatedMessage is not None:
                     _logger.warning('"%s" parameter is deprecated (%s)!', key, deprecatedMessage)
@@ -164,7 +160,7 @@ class Schema2Command(object):
     def __getattr__(self, name):
         if name in self.__data:
             return self.__data[name]
-        raise AttributeError('Property is not found in {0}: {1}'.format(self.__class__, name))
+        raise AttributeError(('Property is not found in {0}: {1}').format(self.__class__, name))
 
 
 class W2CSchema(Schema):
@@ -240,7 +236,8 @@ class _W2CApi(object):
 
                 def getter(api):
                     subcommands = {wrapper.w2c_name:SubCommand(wrapper.w2c_schema, partial(wrapper, api)) for _, wrapper in inspect.getmembers(clazz, inspect.ismethod) if getattr(wrapper, 'w2c_name', None)}
-                    return [createSubCommandsHandler(api.w2c_name or clazz.__name__.lower(), scheme, key, subcommands, finiHandlerFunc=partial(getattr(clazz, self.__finiHandlerName), api) if self.__finiHandlerName else None)]
+                    return [
+                     createSubCommandsHandler(api.w2c_name or clazz.__name__.lower(), scheme, key, subcommands, finiHandlerFunc=partial(getattr(clazz, self.__finiHandlerName), api) if self.__finiHandlerName else None)]
 
                 return getter
 
@@ -248,7 +245,8 @@ class _W2CApi(object):
         else:
 
             def getHandlers(api):
-                return [ createCommandHandler(commandName=wrapper.w2c_name, commandSchema=wrapper.w2c_schema, handlerFunc=partial(wrapper, api), finiHandlerFunc=partial(getattr(clazz, wrapper.w2c_fini), api) if wrapper.w2c_fini else None) for _, wrapper in inspect.getmembers(clazz, inspect.ismethod) if getattr(wrapper, 'w2c_name', None) ]
+                return [ createCommandHandler(commandName=wrapper.w2c_name, commandSchema=wrapper.w2c_schema, handlerFunc=partial(wrapper, api), finiHandlerFunc=partial(getattr(clazz, wrapper.w2c_fini), api) if wrapper.w2c_fini else None) for _, wrapper in inspect.getmembers(clazz, inspect.ismethod) if getattr(wrapper, 'w2c_name', None)
+                       ]
 
         clazz.getHandlers = getHandlers
         return clazz
@@ -267,11 +265,13 @@ class _CallbackDispatcher(object):
     def call(self, callers):
         single = not inspect.isgenerator(callers)
         if single:
-            callers = [callers]
+            callers = [
+             callers]
         for caller in callers:
             if callable(caller):
                 caller(callback=self.callback)
-            self.handler(caller)
+            else:
+                self.handler(caller)
 
     def callback(self, arg):
         try:
@@ -285,16 +285,18 @@ def w2c(schema, name='', finiHandlerName=None):
     def decorator(fn):
         if inspect.isgeneratorfunction(fn):
 
-            @uniprof.regionDecorator(label='w2c {}'.format(name), scope='wrap')
+            @uniprof.regionDecorator(label=('w2c {}').format(name), scope='wrap')
             def handler(self, cmd, ctx):
                 _CallbackDispatcher(fn(self, cmd), ctx['callback'])
 
         else:
 
-            @uniprof.regionDecorator(label='w2c {}'.format(name), scope='wrap')
+            @uniprof.regionDecorator(label=('w2c {}').format(name), scope='wrap')
             def handler(self, cmd, ctx):
-                argspec = inspect.getargspec(fn)
-                return ctx['callback'](fn(self, cmd, ctx)) if 'ctx' in argspec.args and argspec.args.index('ctx') == 2 else ctx['callback'](fn(self, cmd))
+                argspec = getargspec(fn)
+                if 'ctx' in argspec.args and argspec.args.index('ctx') == 2:
+                    return ctx['callback'](fn(self, cmd, ctx))
+                return ctx['callback'](fn(self, cmd))
 
         handler.w2c_schema = schema
         handler.w2c_name = name or fn.__name__
@@ -363,18 +365,18 @@ class WebCommandHandler(object):
     def __createCtx(self, commandName, webId):
 
         def callback(data):
-            callbackData = {'command': commandName,
-             'data': data,
-             'web_id': webId}
+            callbackData = {'command': commandName, 
+               'data': data, 
+               'web_id': webId}
             _logger.debug('Web2Client callback: %s', callbackData)
             jsonMessage = json.dumps(callbackData)
             self.onCallback(jsonMessage)
 
-        return {'browser_id': self.__browserID,
-         'browser_alias': self.__alias,
-         'browser_view': self.__browserView,
-         'callback': callback}
+        return {'browser_id': self.__browserID, 
+           'browser_alias': self.__alias, 
+           'browser_view': self.__browserView, 
+           'callback': callback}
 
 
 def webApiCollection(*apiProviders):
-    return list(chain.from_iterable((provider().getHandlers() for provider in apiProviders)))
+    return list(chain.from_iterable(provider().getHandlers() for provider in apiProviders))

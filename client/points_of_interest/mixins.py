@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/points_of_interest/mixins.py
-import typing
-import CGF
+import typing, CGF
 from points_of_interest.components import PoiStateComponent, PoiStateUIListenerComponent, PoiVehicleStateComponent
 from shared_utils import first
 from gui.battle_control import avatar_getter
@@ -15,20 +12,26 @@ class PointsOfInterestListener(object):
     @property
     def _poiStateQuery(self):
         spaceID = avatar_getter.getSpaceID()
-        return CGF.Query(spaceID, PoiStateComponent) if spaceID is not None else []
+        if spaceID is not None:
+            return CGF.Query(spaceID, PoiStateComponent)
+        else:
+            return []
 
     @property
     def _poiVehicleState(self):
         spaceID = avatar_getter.getSpaceID()
-        return first(CGF.Query(spaceID, PoiVehicleStateComponent)) if spaceID is not None else None
+        if spaceID is not None:
+            return first(CGF.Query(spaceID, PoiVehicleStateComponent))
+        else:
+            return
 
-    def onPoiAdded(self, state):
+    def onPoiAdded(self, poiState):
         pass
 
-    def onPoiRemoved(self, state):
+    def onPoiRemoved(self, poiState):
         pass
 
-    def onProcessPoi(self, state):
+    def onProcessPoi(self, poiState):
         pass
 
     def onPoiEntered(self, poiID):

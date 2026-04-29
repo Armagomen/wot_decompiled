@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/dialogs/mentor_assignment_dialog.py
-import typing
-import SoundGroups
+import typing, SoundGroups
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.impl.auxiliary.tankman_operations import packBaseTankman
 from gui.impl.dialogs.dialog_template_button import CancelButton, ConfirmButton
@@ -35,7 +32,8 @@ def _packTankman(vmTankman, guiTankman):
 
 
 class MentorAssignmentDialog(BaseCrewDialogTemplateView):
-    __slots__ = ('__sourceTankman', '__targetTankman', '__targetVehicle', '__totalXp', '__loseXp', '_toolTipMgr')
+    __slots__ = ('__sourceTankman', '__targetTankman', '__targetVehicle', '__totalXp',
+                 '__loseXp', '_toolTipMgr')
     LAYOUT_ID = R.views.lobby.crew.dialogs.MentorAssignmentDialog()
     VIEW_MODEL = MentorAssignmentDialogModel
     _itemsCache = dependency.descriptor(IItemsCache)
@@ -69,16 +67,7 @@ class MentorAssignmentDialog(BaseCrewDialogTemplateView):
                 roleName = event.getArgument('roleName')
                 tankman = self.__sourceTankman if isDonor else self.__targetTankman
                 vehicle = self.__sourceTankman.getVehicle() if isDonor else self.__targetVehicle
-                args = [skillName,
-                 roleName,
-                 None,
-                 None,
-                 True,
-                 '',
-                 None,
-                 -1,
-                 tankman,
-                 vehicle]
+                args = [skillName, roleName, None, None, True, '', None, -1, tankman, vehicle]
                 self._toolTipMgr.onCreateWulfTooltip(TOOLTIPS_CONSTANTS.CREW_PERK_GF, args, event.mouse.positionX, event.mouse.positionY, parent=self.getParentWindow())
                 return TOOLTIPS_CONSTANTS.CREW_PERK_GF
         super(MentorAssignmentDialog, self).createToolTip(event)
@@ -101,7 +90,7 @@ class MentorAssignmentDialog(BaseCrewDialogTemplateView):
             if inVehicleTankmanId == self.__sourceTankman.invID:
                 sourceTmanIndex = getTankmanIndex(self.__targetVehicle, self.__sourceTankman.vehicleSlotIdx)
                 self.__targetVehicle.crew[sourceTmanIndex] = (self.__sourceTankman.vehicleSlotIdx, None)
-            crewDescr = [ (tman.descriptor.makeCompactDescr() if tman else None) for _, tman in self.__targetVehicle.crew ]
+            crewDescr = [ tman.descriptor.makeCompactDescr() if tman else None for _, tman in self.__targetVehicle.crew ]
             self.__targetVehicle.calcCrewBonuses(crewDescr, None, fromBattle=True)
             for _, tman in self.__targetVehicle.crew:
                 if tman:
@@ -118,7 +107,7 @@ class MentorAssignmentDialog(BaseCrewDialogTemplateView):
         self.addButton(ConfirmButton(isDisabled=True))
         self.addButton(CancelButton())
         self.setDisplayFlags(DisplayFlags.DISABLERESPONSIVECONTENTPOSITION.value)
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             _packTankman(vm.sourceTankman, self.__sourceTankman)
             _packTankman(vm.targetTankman, self.__targetTankman)
             vm.setXpTransfer(self.__totalXp)
@@ -153,4 +142,6 @@ class MentorAssignmentDialog(BaseCrewDialogTemplateView):
         if isDonor:
             return None
         else:
-            return crewMemberRealSkillLevel(self.__targetVehicle, skillName) if self.__targetVehicle else event.getArgument('level')
+            if self.__targetVehicle:
+                return crewMemberRealSkillLevel(self.__targetVehicle, skillName)
+            return event.getArgument('level')

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/tank_setup/context_menu/battle_ability.py
 from adisp import adisp_process, adisp_async
 from gui.Scaleform.daapi.view.lobby.shared.cm_handlers import option, CMLabel
 from gui.Scaleform.daapi.view.lobby.tank_setup.context_menu.base import TankSetupCMLabel
@@ -19,7 +17,9 @@ class BattleAbilityItemContextMenu(BaseEquipmentItemContextMenu):
     def _isVisible(self, label):
         if label == CMLabel.INFORMATION:
             return False
-        return False if label == TankSetupCMLabel.TAKE_OFF else super(BattleAbilityItemContextMenu, self)._isVisible(label)
+        if label == TankSetupCMLabel.TAKE_OFF:
+            return False
+        return super(BattleAbilityItemContextMenu, self)._isVisible(label)
 
     def _getVehicleItems(self):
         return self._getVehicle().battleAbilities
@@ -43,7 +43,9 @@ class BattleAbilitySlotContextMenu(BaseEquipmentSlotContextMenu):
     def _isVisible(self, label):
         if label == CMLabel.INFORMATION:
             return False
-        return False if label == TankSetupCMLabel.TAKE_OFF else super(BattleAbilitySlotContextMenu, self)._isVisible(label)
+        if label == TankSetupCMLabel.TAKE_OFF:
+            return False
+        return super(BattleAbilitySlotContextMenu, self)._isVisible(label)
 
     def _getVehicleItems(self):
         return self._getVehicle().battleAbilities
@@ -79,7 +81,9 @@ class HangarBattleAbilitySlotContextMenu(BaseHangarEquipmentSlotContextMenu):
     def _isVisible(self, label):
         if label == CMLabel.INFORMATION:
             return False
-        return False if label == TankSetupCMLabel.TAKE_OFF else super(HangarBattleAbilitySlotContextMenu, self)._isVisible(label)
+        if label == TankSetupCMLabel.TAKE_OFF:
+            return False
+        return super(HangarBattleAbilitySlotContextMenu, self)._isVisible(label)
 
     @adisp_async
     @adisp_process

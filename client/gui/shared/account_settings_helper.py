@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/account_settings_helper.py
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import GUI_START_BEHAVIOR
 from helpers import dependency

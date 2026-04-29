@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/dyn_components_groups.py
 from inspect import getargspec
 from functools import partial
 from cache import cached_property
@@ -20,10 +18,10 @@ def groupComponent(**specs):
             parts = self.keyName.split('__')
             if len(parts) == 2 or len(parts) == 3:
                 groupName = parts[0]
-                idx = parts[-1]
+                idx = parts[(-1)]
                 return DynComponentsGroupsRepo.getGroup(groupName)[int(idx)][1]
             else:
-                return None
+                return
 
         allSpecs = {}
         for base in componentCls.__bases__:
@@ -104,7 +102,7 @@ class DynComponentsGroupsReader(object):
         specDefaults = spec.defaults or ()
         initParamsDefaults = dict(zip(spec.args[-len(specDefaults):], specDefaults))
         initParamsOrder = spec.args[1:]
-        result = tuple((cls._getParam(paramName, cfg, kwargs, initParamsDefaults) for paramName in initParamsOrder))
+        result = tuple(cls._getParam(paramName, cfg, kwargs, initParamsDefaults) for paramName in initParamsOrder)
         return result
 
     @staticmethod

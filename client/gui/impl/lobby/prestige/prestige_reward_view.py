@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/prestige/prestige_reward_view.py
-import typing
-import SoundGroups
+import typing, SoundGroups
 from frameworks.wulf import ViewFlags, ViewSettings, WindowFlags
 from gui.impl import backport
 from gui.impl.gen import R
@@ -32,7 +29,9 @@ class PrestigeRewardView(ViewImpl):
         return super(PrestigeRewardView, self).getViewModel()
 
     def _getEvents(self):
-        return ((self.viewModel.onClose, self.destroyWindow),)
+        return (
+         (
+          self.viewModel.onClose, self.destroyWindow),)
 
     def _onLoading(self, vehIntCD, level):
         super(PrestigeRewardView, self)._onLoading()

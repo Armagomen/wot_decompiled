@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_light/scripts/client/Comp7LightPersonality.py
 import comp7_light.gui.comp7_light_constants as gui_constants
 from comp7_core.gui import initCoreGuiTypes
 from comp7_light.gui.Scaleform import registerComp7LightScaleform
@@ -13,8 +11,10 @@ from comp7_light_constants import ARENA_GUI_TYPE, GameSeasonType
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.override_scaleform_views_manager import g_overrideScaleFormViewsConfig
 from gui.prb_control.prb_utils import initGuiTypes
-_LOBBY_EXT_PACKAGES = ['comp7_light.gui.impl.lobby.hangar']
-_BATTLE_EXT_PACKAGES = ['comp7_light.gui.Scaleform.daapi.view.battle.shared']
+_LOBBY_EXT_PACKAGES = [
+ 'comp7_light.gui.impl.lobby.hangar']
+_BATTLE_EXT_PACKAGES = [
+ 'comp7_light.gui.Scaleform.daapi.view.battle.shared']
 
 class ClientComp7LightBattleMode(Comp7LightBattleMode):
     _CLIENT_PRB_ACTION_NAME = gui_constants.PREBATTLE_ACTION_NAME.COMP7_LIGHT
@@ -30,7 +30,11 @@ class ClientComp7LightBattleMode(Comp7LightBattleMode):
         from comp7_light.skeletons.gui.game_control import IComp7LightProgressionController
         from comp7_light.gui.game_control.comp7_light_controller import Comp7LightController
         from comp7_light.gui.game_control.comp7_light_progression_controller import Comp7LightProgressionController
-        return ((IComp7LightController, Comp7LightController, True), (IComp7LightProgressionController, Comp7LightProgressionController, False))
+        return (
+         (
+          IComp7LightController, Comp7LightController, True),
+         (
+          IComp7LightProgressionController, Comp7LightProgressionController, False))
 
     @property
     def _client_selectorColumn(self):
@@ -120,7 +124,11 @@ class ClientComp7LightBattleMode(Comp7LightBattleMode):
         from gui.impl.gen import R
         from gui.impl.lobby.platoon.platoon_config import EPlatoonLayout, MembersWindow, PlatoonLayout
         from gui.impl.lobby.platoon.view.platoon_selection_view import SelectionWindow
-        return [(EPlatoonLayout.MEMBER, PlatoonLayout(R.views.comp7_light.lobby.MembersWindow(), MembersWindow)), (EPlatoonLayout.WELCOME, PlatoonLayout(R.views.comp7_light.lobby.PlatoonDropdown(), SelectionWindow))]
+        return [
+         (
+          EPlatoonLayout.MEMBER, PlatoonLayout(R.views.comp7_light.lobby.MembersWindow(), MembersWindow)),
+         (
+          EPlatoonLayout.WELCOME, PlatoonLayout(R.views.comp7_light.lobby.PlatoonDropdown(), SelectionWindow))]
 
     @property
     def _client_platoonViewClass(self):
@@ -131,7 +139,9 @@ class ClientComp7LightBattleMode(Comp7LightBattleMode):
     def _client_LobbyContextMenuOptions(self):
         from comp7_light.gui.Scaleform.daapi.view.lobby.lobby_constants import USER
         from comp7_light.gui.Scaleform.daapi.view.lobby.user_cm_handlers import createComp7LightSquad, addComp7LightSquadInfo
-        return ((USER.CREATE_COMP7_LIGHT_SQUAD, addComp7LightSquadInfo, createComp7LightSquad),)
+        return (
+         (
+          USER.CREATE_COMP7_LIGHT_SQUAD, addComp7LightSquadInfo, createComp7LightSquad),)
 
     @property
     def _client_arenaDescrClass(self):
@@ -168,8 +178,8 @@ class ClientComp7LightBattleMode(Comp7LightBattleMode):
     def _client_battleResultsReusables(self):
         from gui.battle_results.reusable.extension_utils import ReusableInfoFactory
         from comp7_core.gui.battle_results.reusable.shared import Comp7CoreVehicleDetailedInfo, Comp7CoreVehicleSummarizeInfo
-        return {ReusableInfoFactory.Keys.VEHICLE_DETAILED: Comp7CoreVehicleDetailedInfo,
-         ReusableInfoFactory.Keys.VEHICLE_SUMMARIZED: Comp7CoreVehicleSummarizeInfo}
+        return {ReusableInfoFactory.Keys.VEHICLE_DETAILED: Comp7CoreVehicleDetailedInfo, 
+           ReusableInfoFactory.Keys.VEHICLE_SUMMARIZED: Comp7CoreVehicleSummarizeInfo}
 
     @property
     def _client_battleControllersRepository(self):

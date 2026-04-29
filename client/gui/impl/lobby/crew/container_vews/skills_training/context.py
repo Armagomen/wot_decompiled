@@ -1,12 +1,11 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/container_vews/skills_training/context.py
 from constants import NEW_PERK_SYSTEM as NPS
 from gui.impl.lobby.crew.container_vews.common.base_personal_case_context import BasePersonalCaseContext
 from gui.impl.lobby.crew.crew_helpers.skill_helpers import getTmanNewSkillCount
 from items.tankmen import MAX_SKILL_LEVEL
 
 class SkillsTrainingViewContext(BasePersonalCaseContext):
-    __slots__ = ('_role', '_hoveredSkill', '_selectedSkills', '_availableSkillsData', '_activeSkillsForTTC')
+    __slots__ = ('_role', '_hoveredSkill', '_selectedSkills', '_availableSkillsData',
+                 '_activeSkillsForTTC')
 
     def __init__(self, tankmanID, role):
         self._role = role
@@ -27,7 +26,9 @@ class SkillsTrainingViewContext(BasePersonalCaseContext):
 
     @property
     def totalSkillsAmount(self):
-        return NPS.MAX_MAJOR_PERKS if self.isMajorQualification else NPS.MAX_BONUS_SKILLS_PER_ROLE
+        if self.isMajorQualification:
+            return NPS.MAX_MAJOR_PERKS
+        return NPS.MAX_BONUS_SKILLS_PER_ROLE
 
     @property
     def areAllSkillsLearned(self):
@@ -70,7 +71,8 @@ class SkillsTrainingViewContext(BasePersonalCaseContext):
         else:
             currSkillsAmount = self.tankman.bonusSkillsCountByRole[self._role] + skillsCnt
             availableSkillsAmount = self.tankman.newBonusSkillsCountByRole[self._role] - skillsCnt
-        return (currSkillsAmount, availableSkillsAmount)
+        return (
+         currSkillsAmount, availableSkillsAmount)
 
     def update(self, tankmanID, updateRole=False):
         super(SkillsTrainingViewContext, self).update(tankmanID)
@@ -80,13 +82,15 @@ class SkillsTrainingViewContext(BasePersonalCaseContext):
         if self.isMajorQualification:
             newSkillsCount, lastSkillLevel = getTmanNewSkillCount(self.tankman, withFree=True)
             for i in range(newSkillsCount):
-                self._availableSkillsData.append((MAX_SKILL_LEVEL if i < newSkillsCount - 1 else lastSkillLevel.realSkillLvl, i < self.tankman.newFreeSkillsCount))
+                self._availableSkillsData.append((
+                 MAX_SKILL_LEVEL if i < newSkillsCount - 1 else lastSkillLevel.realSkillLvl,
+                 i < self.tankman.newFreeSkillsCount))
 
         else:
             learnedSkillsCount = self.tankman.bonusSkillsCountByRole[self._role]
             newSkillsCount = self.tankman.newBonusSkillsCountByRole[self._role]
             for i in range(newSkillsCount):
-                self._availableSkillsData.append((self.tankman.bonusSkillsLevels[learnedSkillsCount + i], False))
+                self._availableSkillsData.append((self.tankman.bonusSkillsLevels[(learnedSkillsCount + i)], False))
 
     def clearSelection(self):
         self._selectedSkills = []

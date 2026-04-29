@@ -1,10 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_results/progression/weekly_quests_progress_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.battle_results.progression.weekly_quest_progress_model import WeeklyQuestProgressModel
 
 class WeeklyQuestsProgressModel(ViewModel):
-    __slots__ = ('onNavigate',)
+    __slots__ = ('onNavigate', )
     PATH = 'coui://gui/gameface/_dist/production/mono/plugins/post_battle/weekly_quests/weekly_quests.js'
 
     def __init__(self, properties=1, commands=1):

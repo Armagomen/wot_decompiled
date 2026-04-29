@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/TeamInfo.py
+from __future__ import absolute_import
 import BigWorld
 from debug_utils import LOG_DEBUG_DEV
 from helpers import dependency
@@ -12,11 +11,11 @@ class TeamInfo(BigWorld.Entity):
         self.__sessionProvider.shared.equipments.onCombatEquipmentUsed(vehicleID, equipmentID)
 
     def onEnterWorld(self, prereqs):
-        LOG_DEBUG_DEV('[TeamInfo] onEnterWorld: team = {}'.format(self.teamID))
+        LOG_DEBUG_DEV(('[TeamInfo] onEnterWorld: team = {}').format(self.teamID))
         BigWorld.player().arena.registerTeamInfo(self)
 
     def onLeaveWorld(self):
-        LOG_DEBUG_DEV('[TeamInfo] onLeaveWorld: team = {}'.format(self.teamID))
+        LOG_DEBUG_DEV(('[TeamInfo] onLeaveWorld: team = {}').format(self.teamID))
         BigWorld.player().arena.unregisterTeamInfo(self)
 
     def onDynamicComponentCreated(self, component):

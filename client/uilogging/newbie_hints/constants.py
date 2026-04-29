@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/uilogging/newbie_hints/constants.py
 from enum import Enum
 from account_helpers.settings_core.options import AimSetting
 from account_helpers.settings_core import settings_constants
@@ -40,11 +38,12 @@ class NewbieHintsLogItems(str, Enum):
     TOOLTIP_SETTINGS_INBATTLE_HINTS_RESET = 'inbattle_reset_tooltip'
 
 
-SETTINGS_CHECKBOX_KEYS_MAPPING = {settings_constants.GAME.NEWBIE_PREBATTLE_HINTS: NewbieHintsLogItems.CHECKBOX_PREBATTLE_HINTS,
- settings_constants.GAME.NEWBIE_BATTLE_HINTS: NewbieHintsLogItems.CHECKBOX_INBATTLE_HINTS}
-TOOLTIP_ID_MAPPING = {SettingsNewbieTooltips.PREBATTLE_HINTS: NewbieHintsLogItems.TOOLTIP_SETTINGS_PREBATTLE_HINTS,
- SettingsNewbieTooltips.INBATTLE_HINTS: NewbieHintsLogItems.TOOLTIP_SETTINGS_INBATTLE_HINTS,
- SettingsNewbieTooltips.INBATTLE_HINTS_RESET: NewbieHintsLogItems.TOOLTIP_SETTINGS_INBATTLE_HINTS_RESET}
-NEWBIE_HINTS_RETICLE_MAPPING = {settings_constants.AIM.ARCADE: NewbieHintsLogViews.SETTINGS_ARCADE,
- settings_constants.AIM.SNIPER: NewbieHintsLogViews.SETTINGS_SNIPER}
-NEWBIE_SETTINGS_RETICLE_PARAMS = [AimSetting.OPTIONS.GUN_TAG_TYPE]
+SETTINGS_CHECKBOX_KEYS_MAPPING = {settings_constants.GAME.NEWBIE_PREBATTLE_HINTS: NewbieHintsLogItems.CHECKBOX_PREBATTLE_HINTS, 
+   settings_constants.GAME.NEWBIE_BATTLE_HINTS: NewbieHintsLogItems.CHECKBOX_INBATTLE_HINTS}
+TOOLTIP_ID_MAPPING = {SettingsNewbieTooltips.PREBATTLE_HINTS: NewbieHintsLogItems.TOOLTIP_SETTINGS_PREBATTLE_HINTS, 
+   SettingsNewbieTooltips.INBATTLE_HINTS: NewbieHintsLogItems.TOOLTIP_SETTINGS_INBATTLE_HINTS, 
+   SettingsNewbieTooltips.INBATTLE_HINTS_RESET: NewbieHintsLogItems.TOOLTIP_SETTINGS_INBATTLE_HINTS_RESET}
+NEWBIE_HINTS_RETICLE_MAPPING = {settings_constants.AIM.ARCADE: NewbieHintsLogViews.SETTINGS_ARCADE, 
+   settings_constants.AIM.SNIPER: NewbieHintsLogViews.SETTINGS_SNIPER}
+NEWBIE_SETTINGS_RETICLE_PARAMS = [
+ AimSetting.OPTIONS.GUN_TAG_TYPE]

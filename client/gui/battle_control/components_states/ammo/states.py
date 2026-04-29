@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/components_states/ammo/states.py
 from __future__ import absolute_import
 import typing
 from gui.battle_control.battle_constants import CANT_SHOOT_ERROR
@@ -15,13 +13,14 @@ class DefaultComponentAmmoState(IComponentAmmoState):
         return True
 
     def canShootValidation(self):
-        return (True, CANT_SHOOT_ERROR.UNDEFINED)
+        return (
+         True, CANT_SHOOT_ERROR.UNDEFINED)
 
     def getShotsAmount(self):
-        pass
+        return -1
 
     def getShootPossibility(self, currentShells):
         return AmmoShootPossibility.NOT_DEFINED
 
     def getSpecialReloadMessage(self):
-        return None
+        return

@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/helpers/platform/steam.py
 from __future__ import absolute_import
-import logging
-import Steam
+import logging, Steam
 from helpers.platform.base import BasePublishPlatform
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:

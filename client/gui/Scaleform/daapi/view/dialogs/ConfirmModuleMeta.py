@@ -1,6 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/dialogs/ConfirmModuleMeta.py
+from __future__ import absolute_import
 import math
+from past.utils import old_div
 from gui.Scaleform.daapi.view.dialogs import IDialogMeta
 import Event
 from gui.Scaleform.framework import ScopeTemplates
@@ -50,7 +50,7 @@ class ConfirmModuleMeta(IDialogMeta):
         return CurrencyCollection(*(1 for _ in Currency.ALL))
 
     def getDefaultValue(self, module):
-        pass
+        return -1
 
     def getActualPrices(self, module):
         return MONEY_UNDEFINED
@@ -62,7 +62,7 @@ class ConfirmModuleMeta(IDialogMeta):
         return self.getActualPrices(module).getCurrency(byWeight=True)
 
     def getActionVO(self, module):
-        return None
+        return
 
     def getViewScopeType(self):
         return ScopeTemplates.DEFAULT_SCOPE
@@ -120,7 +120,7 @@ class BuyModuleMeta(ConfirmModuleMeta):
         result = 0
         modulePrice = self.getActualPrices(module)
         if modulePrice.get(currency, 0) > 0:
-            result = math.floor(self.__balance.get(currency, 0) / modulePrice.get(currency))
+            result = math.floor(old_div(self.__balance.get(currency, 0), modulePrice.get(currency)))
         return min(result, MAX_ITEMS_FOR_OPERATION)
 
     def destroy(self):
@@ -131,7 +131,7 @@ class BuyModuleMeta(ConfirmModuleMeta):
         return CurrencyCollection(*(self.__getMaxCount(module, currency) for currency in Currency.ALL))
 
     def getDefaultValue(self, module):
-        pass
+        return 1
 
     def getActualPrices(self, module):
         return module.buyPrices.getSum().price

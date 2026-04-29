@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/backport/backport_system_locale.py
+from __future__ import absolute_import
 from frameworks import wulf
 
 def getIntegralFormat(value):
@@ -11,11 +10,11 @@ def getGoldFormat(value):
 
 
 def getFractionalFormat(value):
-    return wulf.getRealFormat(value, wulf.RealFormatType.FRACTIONAL)
+    return wulf.getRealFormat(value, wulf.RealFormatType.FRACTIONAL, 2)
 
 
 def getNiceNumberFormat(value):
-    return wulf.getRealFormat(value, wulf.RealFormatType.WO_ZERO_DIGITS)
+    return wulf.getRealFormat(value, wulf.RealFormatType.WO_ZERO_DIGITS, 2)
 
 
 def getShortTimeFormat(value):
@@ -39,11 +38,11 @@ def getYearMonthFormat(value):
 
 
 def getDateTimeFormat(value):
-    return u'{0:>s} {1:>s}'.format(wulf.getDateFormat(value, wulf.DateFormatType.LONG_FORMAT), wulf.getTimeFormat(value, wulf.TimeFormatType.SHORT_FORMAT))
+    return ('{0:>s} {1:>s}').format(wulf.getDateFormat(value, wulf.DateFormatType.LONG_FORMAT), wulf.getTimeFormat(value, wulf.TimeFormatType.SHORT_FORMAT))
 
 
 def getShortDateTimeFormat(value):
-    return u'{0:>s} {1:>s}'.format(wulf.getDateFormat(value, wulf.DateFormatType.SHORT_FORMAT), wulf.getTimeFormat(value, wulf.TimeFormatType.SHORT_FORMAT))
+    return ('{0:>s} {1:>s}').format(wulf.getDateFormat(value, wulf.DateFormatType.SHORT_FORMAT), wulf.getTimeFormat(value, wulf.TimeFormatType.SHORT_FORMAT))
 
 
 def upper(value):

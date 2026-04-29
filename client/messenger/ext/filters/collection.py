@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/ext/filters/collection.py
-import re
-import sre_compile
-import BigWorld
+import re, sre_compile, BigWorld
 from debug_utils import LOG_CURRENT_EXCEPTION
 from constants import IS_CHINA
 from external_strings_utils import normalized_unicode_trim
@@ -23,7 +19,9 @@ class ObsceneLanguageFilter(IIncomingMessageFilter):
         g_olDictionary.resetReplacementFunction()
 
     def filter(self, senderID, text):
-        return text if isCurrentPlayer(senderID) else g_olDictionary.searchAndReplace(text)
+        if isCurrentPlayer(senderID):
+            return text
+        return g_olDictionary.searchAndReplace(text)
 
 
 class ChinaMessageFilter(ObsceneLanguageFilter):
@@ -33,7 +31,9 @@ class ChinaMessageFilter(ObsceneLanguageFilter):
 
 
 def getObsceneLanguageFilter():
-    return ChinaMessageFilter() if IS_CHINA else ObsceneLanguageFilter()
+    if IS_CHINA:
+        return ChinaMessageFilter()
+    return ObsceneLanguageFilter()
 
 
 class ColoringObsceneLanguageFilter(IIncomingMessageFilter):
@@ -51,7 +51,7 @@ class ColoringObsceneLanguageFilter(IIncomingMessageFilter):
 
     @storage_getter('users')
     def usersStorage(self):
-        return None
+        return
 
     def __processBadWord(self, word):
         self.usersStorage.markAsBreaker(self.__currentID, True)
@@ -60,7 +60,9 @@ class ColoringObsceneLanguageFilter(IIncomingMessageFilter):
     def filter(self, senderID, text):
         self.__currentID = senderID
         self.usersStorage.markAsBreaker(self.__currentID, False)
-        return text if isCurrentPlayer(senderID) else g_olDictionary.searchAndReplace(text)
+        if isCurrentPlayer(senderID):
+            return text
+        return g_olDictionary.searchAndReplace(text)
 
 
 class SpamFilter(IIncomingMessageFilter):
@@ -81,7 +83,9 @@ class SpamFilter(IIncomingMessageFilter):
             self._filter = Dummy()
 
     def filter(self, senderID, text):
-        return text if isCurrentPlayer(senderID) else self._filter.removeSpam(text)
+        if isCurrentPlayer(senderID):
+            return text
+        return self._filter.removeSpam(text)
 
 
 class FloodFilter(IIncomingMessageFilter):
@@ -102,7 +106,7 @@ class FloodFilter(IIncomingMessageFilter):
             for msgTime, msgText in userHistory:
                 if currTime - msgTime > MESSAGE_FLOOD_COOLDOWN:
                     recentCount -= 1
-                if text == msgText:
+                elif text == msgText:
                     text = ''
                     break
 
@@ -123,7 +127,9 @@ class DomainNameFilter(IIncomingMessageFilter):
         g_dnDictionary.resetReplacementFunction()
 
     def filter(self, senderID, text):
-        return text if isCurrentPlayer(senderID) else g_dnDictionary.searchAndReplace(text)
+        if isCurrentPlayer(senderID):
+            return text
+        return g_dnDictionary.searchAndReplace(text)
 
 
 class HtmlEscapeFilter(IIncomingMessageFilter):
@@ -156,4 +162,4 @@ class NormalizeMessageFilter(IOutgoingMessageFilter):
 
     def filter(self, message, limits):
         truncated = normalized_unicode_trim(message.strip(), limits.getMessageMaxLength())
-        return ' '.join(truncated.split())
+        return (' ').join(truncated.split())

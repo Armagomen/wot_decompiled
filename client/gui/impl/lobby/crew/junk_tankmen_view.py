@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/junk_tankmen_view.py
 import nations
 from frameworks.wulf import ViewFlags, ViewSettings, WindowLayer, WindowFlags
 from gui.impl.gen.view_models.views.lobby.crew.junk_tankmen_view_model import JunkTankmenViewModel
@@ -16,7 +14,7 @@ from PlayerEvents import g_playerEvents
 
 class JunkTankmenView(BaseTankmanListView):
     itemsCache = dependency.descriptor(IItemsCache)
-    __slots__ = ('__dataProvider',)
+    __slots__ = ('__dataProvider', )
 
     def __init__(self, layoutID=R.views.lobby.crew.JunkTankmenView(), *args, **kwargs):
         settings = ViewSettings(layoutID, flags=ViewFlags.VIEW, model=JunkTankmenViewModel(), args=args, kwargs=kwargs)
@@ -32,11 +30,17 @@ class JunkTankmenView(BaseTankmanListView):
         self.__dataProvider.update()
 
     def _getEvents(self):
-        return ((self.viewModel.onLoadCards, self._onLoadCards),
-         (self.viewModel.onClose, self._onClose),
-         (self.viewModel.onConfirm, self._onConfirm),
-         (self.__dataProvider.onDataChanged, self.__fillCardList),
-         (g_playerEvents.onDisconnected, self.__onDisconnected))
+        return (
+         (
+          self.viewModel.onLoadCards, self._onLoadCards),
+         (
+          self.viewModel.onClose, self._onClose),
+         (
+          self.viewModel.onConfirm, self._onConfirm),
+         (
+          self.__dataProvider.onDataChanged, self.__fillCardList),
+         (
+          g_playerEvents.onDisconnected, self.__onDisconnected))
 
     @property
     def _tankmenProvider(self):
@@ -44,11 +48,11 @@ class JunkTankmenView(BaseTankmanListView):
 
     @property
     def _recruitsProvider(self):
-        return None
+        return
 
     @property
     def _filterState(self):
-        return None
+        return
 
     def _fillTankmanCard(self, cardsList, tankman):
         tm = TankmanModel()
@@ -62,7 +66,7 @@ class JunkTankmenView(BaseTankmanListView):
         cardsList.addViewModel(tm)
 
     def _fillRecruits(self, cardsList, limit, offset):
-        pass
+        return (0, 0)
 
     def _onClose(self):
         self.destroyWindow()
@@ -77,7 +81,7 @@ class JunkTankmenView(BaseTankmanListView):
         self.destroyWindow()
 
     def __fillCardList(self):
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             tx.setItemsAmount(self.__dataProvider.itemsCount)
             tx.setItemsOffset(self._itemsOffset)
             self._fillVisibleCards(tx.getTankmanList())

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/hangar/states.py
-import logging
-import typing
+import logging, typing
 from WeakMethod import WeakMethodProxy
 from comp7.gui.Scaleform.genConsts.COMP7_HANGAR_ALIASES import COMP7_HANGAR_ALIASES
 from comp7.gui.impl.gen.view_models.views.lobby.enums import MetaRootViews
@@ -71,11 +68,7 @@ class Comp7ModeState(LobbyState):
         parent.addNavigationTransition(comp7Hangar)
         parent.addTransition(HijackTransition(HangarState, hijackCondition), comp7Hangar)
         parent.addTransition(HijackTransition(EasyTankEquipState, hijackCondition), comp7EasyTankEquip)
-        for cls in (Comp7AllVehiclesState,
-         Comp7NoVehiclesState,
-         Comp7IntroState,
-         Comp7PrimeTimeState,
-         Comp7OLSState,
+        for cls in (Comp7AllVehiclesState, Comp7NoVehiclesState, Comp7IntroState, Comp7PrimeTimeState, Comp7OLSState,
          Comp7EasyTankEquipState):
             state = lsm.getStateByCls(cls)
             comp7Hangar.addNavigationTransition(state)
@@ -166,7 +159,8 @@ class Comp7WCIState(GuiImplViewLobbyState):
         super(Comp7WCIState, self).__init__(WciView, ScopeTemplates.LOBBY_SUB_SCOPE)
 
     def getNavigationDescription(self):
-        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.comp7.tournament()), infos=(LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=showWciInfoPage, tooltipHeader=backport.text(R.strings.comp7_ext.tournament.tooltip.infoPageButton.header())),))
+        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.comp7.tournament()), infos=(
+         LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=showWciInfoPage, tooltipHeader=backport.text(R.strings.comp7_ext.tournament.tooltip.infoPageButton.header())),))
 
     def registerTransitions(self):
         lsm = self.getMachine()
@@ -183,12 +177,16 @@ class Comp7OLSState(GuiImplViewLobbyState):
         super(Comp7OLSState, self).__init__(OlsView, ScopeTemplates.LOBBY_SUB_SCOPE)
 
     def getNavigationDescription(self):
-        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.comp7.tournament()), infos=(LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=showOlsInfoPage, tooltipHeader=backport.text(R.strings.comp7_ext.tournament.tooltip.infoPageButton.header())),))
+        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.comp7.tournament()), infos=(
+         LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=showOlsInfoPage, tooltipHeader=backport.text(R.strings.comp7_ext.tournament.tooltip.infoPageButton.header())),))
 
     def registerTransitions(self):
+        from gui.Scaleform.daapi.view.lobby.storage.states import OfferGiftsState
+        from gui.Scaleform.daapi.view.lobby.storage.states import StorageState
         lsm = self.getMachine()
-        state = lsm.getStateByCls(ShopState)
-        self.addNavigationTransition(state, record=True)
+        self.addNavigationTransition(lsm.getStateByCls(ShopState), record=True)
+        self.addNavigationTransition(lsm.getStateByCls(OfferGiftsState), record=True)
+        self.addNavigationTransition(lsm.getStateByCls(StorageState), record=True)
 
 
 @Comp7ModeState.parentOf
@@ -247,7 +245,9 @@ class Comp7MetaState(GuiImplViewLobbyState):
         Comp7MetaProgressionState.goTo()
 
 
-metaStateNavigationButtons = (LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=showComp7InfoPage, tooltipHeader=backport.text(R.strings.comp7_ext.tooltip.infoPageButton.header())), LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.QUESTION, onMoreInfoRequested=showComp7WhatsNewScreen, tooltipHeader=backport.text(R.strings.comp7_ext.tooltip.whatsNewButton.header())))
+metaStateNavigationButtons = (
+ LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=showComp7InfoPage, tooltipHeader=backport.text(R.strings.comp7_ext.tooltip.infoPageButton.header())),
+ LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.QUESTION, onMoreInfoRequested=showComp7WhatsNewScreen, tooltipHeader=backport.text(R.strings.comp7_ext.tooltip.whatsNewButton.header())))
 
 @Comp7MetaState.parentOf
 class Comp7MetaProgressionState(LobbyState, IMetaTabState):
@@ -433,4 +433,4 @@ class _Comp7LoadoutConfirmStatePrototype(_LoadoutConfirmStatePrototype):
 
 
 Comp7LoadoutState, _, _, Comp7ShellsLoadoutState, Comp7EquipmentLoadoutState, _, _ = generateBasicLoadoutStateClasses(Comp7HangarState, R.invalid, confirmStatePrototypeCls=_Comp7LoadoutConfirmStatePrototype)
-Comp7EasyTankEquipState = generateEasyTankEquipStates(Comp7HangarState)
+Comp7EasyTankEquipState, = generateEasyTankEquipStates(Comp7HangarState)

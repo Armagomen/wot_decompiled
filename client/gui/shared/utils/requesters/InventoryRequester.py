@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/utils/requesters/InventoryRequester.py
 import typing
 from future.utils import iteritems, iterkeys
 from itertools import imap
@@ -22,7 +20,9 @@ class InventoryRequester(AbstractSyncDataRequester, IInventoryRequester):
     ITEM_DATA = namedtuple('ITEM_DATA', ('compDescr', 'descriptor', 'count'))
     TMAN_DATA = namedtuple('TMAN_DATA', ('compDescr', 'descriptor', 'vehicle', 'invID'))
     OUTFIT_DATA = namedtuple('OUTFIT_DATA', ('compDescr', 'flags'))
-    CUSTOMIZATION_PROGRESS_DATA = namedtuple('CUSTOMIZATION_PROGRESS_DATA', ('currentLevel', 'currentProgressOnLevel', 'maxProgressOnLevel'))
+    CUSTOMIZATION_PROGRESS_DATA = namedtuple('CUSTOMIZATION_PROGRESS_DATA', ('currentLevel',
+                                                                             'currentProgressOnLevel',
+                                                                             'maxProgressOnLevel'))
 
     def __init__(self):
         super(InventoryRequester, self).__init__()
@@ -61,20 +61,13 @@ class InventoryRequester(AbstractSyncDataRequester, IInventoryRequester):
 
     def getC11nItemAppliedVehicles(self, itemCD):
         _, itemType, itemId = parseIntCompactDescr(itemCD)
-        path = (GUI_ITEM_TYPE.CUSTOMIZATION,
-         CustomizationInvData.DRESSED,
-         itemType,
-         itemId)
+        path = (GUI_ITEM_TYPE.CUSTOMIZATION, CustomizationInvData.DRESSED, itemType, itemId)
         vehs = self.getCacheValueByPath(path, defaultValue={})
         return vehs.keys()
 
     def getC11nItemAppliedOnVehicleCount(self, itemCD, vehicleIntCD):
         _, itemType, itemId = parseIntCompactDescr(itemCD)
-        path = (GUI_ITEM_TYPE.CUSTOMIZATION,
-         CustomizationInvData.DRESSED,
-         itemType,
-         itemId,
-         vehicleIntCD)
+        path = (GUI_ITEM_TYPE.CUSTOMIZATION, CustomizationInvData.DRESSED, itemType, itemId, vehicleIntCD)
         count = self.getCacheValueByPath(path, defaultValue=0)
         return count
 
@@ -104,7 +97,8 @@ class InventoryRequester(AbstractSyncDataRequester, IInventoryRequester):
                     counter += itemData.get(vehCD, 0)
                 if counter:
                     vehData[itemIntCD] = counter
-                vehData.pop(itemIntCD, None)
+                else:
+                    vehData.pop(itemIntCD, None)
 
         else:
             self.__newC11nItems.pop(itemIntCD, None)
@@ -186,7 +180,9 @@ class InventoryRequester(AbstractSyncDataRequester, IInventoryRequester):
 
     def getItemData(self, typeCompDescr):
         itemTypeID = getTypeOfCompactDescr(typeCompDescr)
-        return self.getVehicleData(self.__vehsIDsByCD.get(typeCompDescr, -1)) if itemTypeID == GUI_ITEM_TYPE.VEHICLE else self.__makeSimpleItem(typeCompDescr)
+        if itemTypeID == GUI_ITEM_TYPE.VEHICLE:
+            return self.getVehicleData(self.__vehsIDsByCD.get(typeCompDescr, -1))
+        return self.__makeSimpleItem(typeCompDescr)
 
     def getTankmanData(self, tmanInvID):
         return self.__makeTankman(tmanInvID)
@@ -207,15 +203,13 @@ class InventoryRequester(AbstractSyncDataRequester, IInventoryRequester):
             return self.__getTankmenData(dataIdx)
         if itemTypeIdx == GUI_ITEM_TYPE.CUSTOMIZATION:
             return self.__getCustomizationsData(dataIdx)
-        return self.__getCrewSkinsData(dataIdx) if itemTypeIdx == GUI_ITEM_TYPE.CREW_SKINS else self.__getItemsData(itemTypeIdx, dataIdx)
+        if itemTypeIdx == GUI_ITEM_TYPE.CREW_SKINS:
+            return self.__getCrewSkinsData(dataIdx)
+        return self.__getItemsData(itemTypeIdx, dataIdx)
 
     def getC11nSerialNumber(self, itemCD):
         _, itemType, itemID = parseIntCompactDescr(itemCD)
-        path = (GUI_ITEM_TYPE.CUSTOMIZATION,
-         CustomizationInvData.SERIAL_NUMBERS,
-         itemType,
-         itemID,
-         'serial_number')
+        path = (GUI_ITEM_TYPE.CUSTOMIZATION, CustomizationInvData.SERIAL_NUMBERS, itemType, itemID, 'serial_number')
         return self.getCacheValueByPath(path)
 
     def getFreeSlots(self, vehiclesSlots):
@@ -244,8 +238,8 @@ class InventoryRequester(AbstractSyncDataRequester, IInventoryRequester):
         return self.__vehPostProgression.getVehicleState(vehIntCD)
 
     def getVehExtData(self, vehIntCD):
-        return {EXT_DATA_SLOT_KEY: self.getDynSlotTypeID(vehIntCD),
-         EXT_DATA_PROGRESSION_KEY: self.getVehPostProgression(vehIntCD)}
+        return {EXT_DATA_SLOT_KEY: self.getDynSlotTypeID(vehIntCD), 
+           EXT_DATA_PROGRESSION_KEY: self.getVehPostProgression(vehIntCD)}
 
     def getVehPostProgressionFeaturesListByCD(self, vehIntCD):
         return self.__vehPostProgression.getVehicleFeaturesList(vehIntCD)
@@ -265,13 +259,16 @@ class InventoryRequester(AbstractSyncDataRequester, IInventoryRequester):
             self.__vehPostProgression = VehiclesPostProgression(invData[GUI_ITEM_TYPE.VEHICLE])
         else:
             self.__vehPostProgression = _DUMMY_VEH_POST_PROGRESSION
-        self.__vehsIDsByCD = dict(((v, k) for k, v in self.__vehsCDsByID.iteritems()))
+        self.__vehsIDsByCD = dict((v, k) for k, v in self.__vehsCDsByID.iteritems())
         super(InventoryRequester, self)._response(resID, invData, callback)
         return
 
     def __getItemsData(self, itemTypeIdx, compactDescr=None):
         result = self.getCacheValue(itemTypeIdx)
-        return result.get(compactDescr) if result is not None and compactDescr is not None else result
+        if result is not None and compactDescr is not None:
+            return result.get(compactDescr)
+        else:
+            return result
 
     def __makeItem(self, itemTypeID, invDataIdx):
         return self.__getMaker(itemTypeID)(invDataIdx)
@@ -279,7 +276,9 @@ class InventoryRequester(AbstractSyncDataRequester, IInventoryRequester):
     def __getMaker(self, itemTypeID):
         if itemTypeID == GUI_ITEM_TYPE.VEHICLE:
             return self.__makeVehicle
-        return self.__makeTankman if itemTypeID == GUI_ITEM_TYPE.TANKMAN else self.__makeSimpleItem
+        if itemTypeID == GUI_ITEM_TYPE.TANKMAN:
+            return self.__makeTankman
+        return self.__makeSimpleItem
 
     def __makeVehicle(self, vehInvID):
         if vehInvID not in self.__vehsCDsByID:
@@ -336,24 +335,25 @@ class InventoryRequester(AbstractSyncDataRequester, IInventoryRequester):
 
     def __makeOutfit(self, intCD, season):
         cache = self.__itemsCache[GUI_ITEM_TYPE.OUTFIT]
-        if (intCD, season) in cache:
-            return cache[intCD, season]
+        if (
+         intCD, season) in cache:
+            return cache[(intCD, season)]
         else:
             invData = self.getCacheValue(GUI_ITEM_TYPE.CUSTOMIZATION, {})
             outfitsData = invData.get(CustomizationInvData.OUTFITS, {})
             vehicleOutfits = outfitsData.get(intCD, {})
             if season not in vehicleOutfits:
                 return None
-            outfitCD = cache[intCD, season] = vehicleOutfits[season]
+            outfitCD = cache[(intCD, season)] = vehicleOutfits[season]
             return outfitCD
 
     def __getTankmenData(self, inventoryID=None):
         tankmanItemsData = self.__getItemsData(vehicles._TANKMAN)
         if tankmanItemsData is None:
             return
-        elif inventoryID is not None:
-            return self.__getTankmanData(tankmanItemsData, inventoryID)
         else:
+            if inventoryID is not None:
+                return self.__getTankmanData(tankmanItemsData, inventoryID)
             result = dict()
             for invID in tankmanItemsData.get('compDescr', dict()).iterkeys():
                 result[invID] = self.__getTankmanData(tankmanItemsData, invID)
@@ -376,11 +376,11 @@ class InventoryRequester(AbstractSyncDataRequester, IInventoryRequester):
         vehItemsData = self.__getItemsData(vehicles._VEHICLE)
         if vehItemsData is None:
             return
-        elif 'compDescr' not in vehItemsData:
-            return {}
-        elif inventoryID is not None:
-            return {key:values[inventoryID] for key, values in iteritems(vehItemsData) if inventoryID in values}
         else:
+            if 'compDescr' not in vehItemsData:
+                return {}
+            if inventoryID is not None:
+                return {key:values[inventoryID] for key, values in iteritems(vehItemsData) if inventoryID in values}
             ids = iterkeys(vehItemsData['compDescr'])
             return {invID:{key:values[invID] for key, values in iteritems(vehItemsData) if invID in values} for invID in ids}
 
@@ -427,4 +427,7 @@ class InventoryRequester(AbstractSyncDataRequester, IInventoryRequester):
     def __getCrewSkinsData(self, idx):
         crewSkinsInvData = self.getCacheValue(GUI_ITEM_TYPE.CREW_SKINS, {})
         itemsInvData = crewSkinsInvData.get(SkinInvData.ITEMS, {})
-        return itemsInvData.get(idx, 0) if idx is not None else itemsInvData
+        if idx is not None:
+            return itemsInvData.get(idx, 0)
+        else:
+            return itemsInvData

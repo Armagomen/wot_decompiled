@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicles/components/component_interfaces.py
 from __future__ import absolute_import
 from GenericComponents import COMPOSITION_ROOT_SLOT_NAME
 from constants import DEFAULT_GUN_INSTALLATION_INDEX

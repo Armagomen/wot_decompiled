@@ -1,7 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/vehicle_hub/vehicle_hub_main_view.py
 from __future__ import absolute_import
-import typing
+import BigWorld, typing
+from functools import partial
 from collections import namedtuple, OrderedDict
 from future.utils import itervalues
 from CurrentVehicle import g_currentPreviewVehicle
@@ -43,14 +42,13 @@ from skeletons.gui.game_control import IVehicleComparisonBasket, IRentalsControl
 from skeletons.gui.shared import IItemsCache
 if typing.TYPE_CHECKING:
     from typing import Dict
-_REQUIRED_TAGS = [VEHICLE_TAGS.SPECIAL,
+_REQUIRED_TAGS = [
+ VEHICLE_TAGS.SPECIAL,
  VEHICLE_TAGS.PREMIUM,
  VEHICLE_TAGS.EARN_CRYSTALS,
+ VEHICLE_TAGS.WOT_PLUS,
  CollectorVehicleConsts.COLLECTOR_VEHICLES_TAG]
-VehicleHubCtx = namedtuple('VehicleHubCtx', ('intCD',
- 'vehicleStrCD',
- 'style',
- 'outfit'))
+VehicleHubCtx = namedtuple('VehicleHubCtx', ('intCD', 'vehicleStrCD', 'style', 'outfit'))
 
 class _VehicleHubStatesObserver(StateIdsObserver):
     __itemsCache = dependency.descriptor(IItemsCache)
@@ -65,7 +63,8 @@ class _VehicleHubStatesObserver(StateIdsObserver):
         from gui.impl.lobby.vehicle_hub.states import VehSkillTreeInitialState
         from gui.impl.lobby.vehicle_hub.states import VehSkillTreeProgressionState
         from gui.impl.lobby.vehicle_hub.states import VehSkillTreePrestigeState
-        super(_VehicleHubStatesObserver, self).__init__([OverviewState.STATE_ID,
+        super(_VehicleHubStatesObserver, self).__init__([
+         OverviewState.STATE_ID,
          ArmorState.STATE_ID,
          StatsState.STATE_ID,
          ModulesState.STATE_ID,
@@ -115,7 +114,10 @@ class VehicleHubMainView(ViewComponent, IRoutableView):
 
     @property
     def currentPresenter(self):
-        return self.__contentPresentersMap[self.__activeTab].presenter if self.__activeTab else None
+        if self.__activeTab:
+            return self.__contentPresentersMap[self.__activeTab].presenter
+        else:
+            return
 
     @property
     def vehicleCtx(self):
@@ -154,29 +156,49 @@ class VehicleHubMainView(ViewComponent, IRoutableView):
             self.__updateComparisonInfo()
             self.__updateMenuItems()
 
-    def _initChildren(self):
+    def _getChildComponents(self):
         vehicleHub = R.aliases.vehicle_hub.default
-        self._registerChild(vehicleHub.VehicleParams(), VehicleHubCharacteristicsPresenter(self.__vhCtx.intCD))
-        self._registerChild(vehicleHub.Wallet(), VehicleHubWalletPresenter())
+        return {vehicleHub.VehicleParams(): partial(VehicleHubCharacteristicsPresenter, self.__vhCtx.intCD), 
+           vehicleHub.Wallet(): VehicleHubWalletPresenter}
 
     def _getEvents(self):
         eventsTuple = super(VehicleHubMainView, self)._getEvents()
-        return eventsTuple + ((self.__lsmObserver.onNavigationChanged, self.__onNavigationChanged),
-         (self.__rentals.onRentChangeNotify, self.__onRentChange),
-         (self.viewModel.onMoveSpace, self.__onMoveSpace),
-         (self.viewModel.onMouseOver3dScene, self.__onMouseOver3dScene),
-         (self.viewModel.comparisonModel.onAddToComparison, self.__onAddToComparison),
-         (self.__comparisonBasket.onChange, self.__onVehCompareBasketChanged),
-         (self.__comparisonBasket.onSwitchChange, self.__updateComparisonInfo),
-         (g_playerEvents.onClientUpdated, self.__onClientUpdate),
-         (AccountSettings.onSettingsChanging, self.__onAccountSettingsChanging))
+        return eventsTuple + (
+         (
+          self.__lsmObserver.onNavigationChanged, self.__onNavigationChanged),
+         (
+          self.__rentals.onRentChangeNotify, self.__onRentChange),
+         (
+          self.viewModel.onMoveSpace, self.__onMoveSpace),
+         (
+          self.viewModel.onMouseOver3dScene, self.__onMouseOver3dScene),
+         (
+          self.viewModel.onResize, self.__onResize),
+         (
+          self.viewModel.comparisonModel.onAddToComparison, self.__onAddToComparison),
+         (
+          self.__comparisonBasket.onChange, self.__onVehCompareBasketChanged),
+         (
+          self.__comparisonBasket.onSwitchChange, self.__updateComparisonInfo),
+         (
+          g_playerEvents.onClientUpdated, self.__onClientUpdate),
+         (
+          AccountSettings.onSettingsChanging, self.__onAccountSettingsChanging))
 
     def _getCallbacks(self):
         callbacksTuple = super(VehicleHubMainView, self)._getCallbacks()
-        return callbacksTuple + (('inventory', self.__onInventoryUpdate), ('cache.vehsLock', self.__onVehsLockUpdate), ('stats.eliteVehicles', self.__onVehicleBecomeElite))
+        return callbacksTuple + (
+         (
+          'inventory', self.__onInventoryUpdate),
+         (
+          'cache.vehsLock', self.__onVehsLockUpdate),
+         (
+          'stats.eliteVehicles', self.__onVehicleBecomeElite))
 
     def _getListeners(self):
-        return ((VehicleBuyEvent.VEHICLE_SELECTED, self.__onTradeOffSelectedChanged, EVENT_BUS_SCOPE.DEFAULT),)
+        return (
+         (
+          VehicleBuyEvent.VEHICLE_SELECTED, self.__onTradeOffSelectedChanged, EVENT_BUS_SCOPE.DEFAULT),)
 
     def _finalize(self):
         super(VehicleHubMainView, self)._finalize()
@@ -185,8 +207,6 @@ class VehicleHubMainView(ViewComponent, IRoutableView):
         if self.__router is not None:
             self.__router.fini()
             self.__router = None
-        if self.currentPresenter is not None:
-            self.currentPresenter.finalize()
         self.__lsmObserver = None
         self.__clearAllSubPresenters()
         self.__activeTab = None
@@ -212,11 +232,17 @@ class VehicleHubMainView(ViewComponent, IRoutableView):
         return self.__vehicle.postProgression.isVehSkillTree()
 
     def __getMenuItems(self):
-        return OrderedDict([(VehicleHubViewModel.OVERVIEW, (None, None)),
-         (VehicleHubViewModel.STATS, (None, None)),
-         (VehicleHubViewModel.MODULES, (self.__getUnviewedResearchedModulesCount, None)),
-         (VehicleHubViewModel.VEH_SKILL_TREE, (None, self.__getVehSkillTreeVisibility)),
-         (VehicleHubViewModel.ARMOR, (None, None))])
+        return OrderedDict([
+         (
+          VehicleHubViewModel.OVERVIEW, (None, None)),
+         (
+          VehicleHubViewModel.STATS, (None, None)),
+         (
+          VehicleHubViewModel.MODULES, (self.__getUnviewedResearchedModulesCount, None)),
+         (
+          VehicleHubViewModel.VEH_SKILL_TREE, (None, self.__getVehSkillTreeVisibility)),
+         (
+          VehicleHubViewModel.ARMOR, (None, None))])
 
     @replaceNoneKwargsModel
     def __setCommonInfo(self, model=None):
@@ -338,14 +364,25 @@ class VehicleHubMainView(ViewComponent, IRoutableView):
             dx = args.get('dx')
             dy = args.get('dy')
             dz = args.get('dz')
-            g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.LOBBY_VIEW_MOUSE_MOVE, ctx={'dx': dx,
-             'dy': dy,
-             'dz': dz}), EVENT_BUS_SCOPE.GLOBAL)
+            g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.LOBBY_VIEW_MOUSE_MOVE, ctx={'dx': dx, 'dy': dy, 'dz': dz}), EVENT_BUS_SCOPE.GLOBAL)
             return
 
     @staticmethod
     def __onMouseOver3dScene(args):
         g_eventBus.handleEvent(events.LobbySimpleEvent(events.LobbySimpleEvent.NOTIFY_CURSOR_OVER_3DSCENE, ctx={'isOver3dScene': bool(args.get('isOver3dScene'))}))
+
+    @staticmethod
+    def __onResize(args):
+        if args is None:
+            return
+        else:
+            screenWidth, screenHeight = BigWorld.windowSize()
+            xmin = float(args.get('xmin', 0))
+            ymin = float(args.get('ymin', 0))
+            xmax = float(args.get('xmax', screenWidth))
+            ymax = float(args.get('ymax', screenHeight))
+            g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.ON_RESIZE, ctx={'xmin': xmin, 'ymin': ymin, 'xmax': xmax, 'ymax': ymax}))
+            return
 
     @property
     def __disabledTabs(self):

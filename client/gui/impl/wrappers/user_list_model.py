@@ -1,8 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/wrappers/user_list_model.py
-import typing
-import logging
-import Event
+from __future__ import absolute_import
+import typing, logging, Event
+from WeakMethod import WeakMethodProxy
 from gui.impl.gen.view_models.ui_kit.list_model import ListModel
 if typing.TYPE_CHECKING:
     from frameworks.wulf import Array
@@ -52,9 +50,9 @@ class UserListModel(ListModel[T]):
             return self.getItems()[index]
         except IndexError:
             _logger.error('Index %d is out of range', index)
-            return None
+            return
 
-        return None
+        return
 
     def findItems(self, predicate):
         return [ item for item in self.getItems() if predicate(item) ]
@@ -70,7 +68,10 @@ class UserListModel(ListModel[T]):
 
     def getSelectedItem(self):
         selectedItemsIndices = self.getSelectedIndices()
-        return self.getItem(selectedItemsIndices[0]) if selectedItemsIndices else None
+        if selectedItemsIndices:
+            return self.getItem(selectedItemsIndices[0])
+        else:
+            return
 
     def getSelectedItems(self):
         result = []
@@ -104,15 +105,8 @@ class UserListModel(ListModel[T]):
 
     def _initialize(self):
         super(UserListModel, self)._initialize()
-        self.onSelectionChanged += self.__onSelectionChanged
-        self.onItemClicked += self.__onItemClicked
-
-    def _finalize(self):
-        self.onSelectionChanged -= self.__onSelectionChanged
-        self.onItemClicked -= self.__onItemClicked
-        self.onUserSelectionChanged.clear()
-        self.onUserItemClicked.clear()
-        super(UserListModel, self)._finalize()
+        self.onSelectionChanged += WeakMethodProxy(self.__onSelectionChanged)
+        self.onItemClicked += WeakMethodProxy(self.__onItemClicked)
 
     def __onSelectionChanged(self, args=None):
         if 'selectedIndex' not in args or 'unselectedIndex' not in args:

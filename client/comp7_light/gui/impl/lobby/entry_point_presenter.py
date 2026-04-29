@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_light/scripts/client/comp7_light/gui/impl/lobby/entry_point_presenter.py
 from comp7_light.gui.impl.gen.view_models.views.lobby.entry_point_model import EntryPointModel, ProgressionState
 from comp7_light.gui.impl.gen.view_models.views.lobby.tooltips.leaderboard_reward_tooltip_model import State
 from comp7_light.gui.impl.lobby.comp7_light_helpers.account_settings import setUmgProgressionPointsSeen, getPrevUmgProgressionPointsSeen, markUmgEntryPointSeen, getUmgEntryPointSeen
@@ -47,7 +45,7 @@ class EntryPointPresenter(TooltipPositionerMixin, Comp7LightOverlapCtrlMixin, Vi
         isInProgress = self.__comp7LightProgressionController.isEnabled and not self.__comp7LightProgressionController.isFinished
         if isInProgress:
             currentStage = self.__comp7LightProgressionController.getCurrentStageData().get('currentStage')
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setCurrentStage(currentStage)
             model.setCurProgressPoints(data['curPoints'])
             model.setPrevProgressPoints(getPrevUmgProgressionPointsSeen())
@@ -56,11 +54,17 @@ class EntryPointPresenter(TooltipPositionerMixin, Comp7LightOverlapCtrlMixin, Vi
             model.setState(ProgressionState.INPROGRESS if isInProgress else ProgressionState.COMPLETED)
 
     def _getEvents(self):
-        return super(EntryPointPresenter, self)._getEvents() + ((self.viewModel.onOpenProgression, self.__onOpenProgression),
-         (self.viewModel.onAnimationEnd, self.__onAnimationEnd),
-         (self.viewModel.onEntryPointAnimationSeen, self.__onEntryPointAnimationSeen),
-         (self.__comp7LightProgressionController.onProgressPointsUpdated, self._updateViewModel),
-         (self.__comp7LightProgressionController.onSettingsChanged, self._updateViewModel))
+        return super(EntryPointPresenter, self)._getEvents() + (
+         (
+          self.viewModel.onOpenProgression, self.__onOpenProgression),
+         (
+          self.viewModel.onAnimationEnd, self.__onAnimationEnd),
+         (
+          self.viewModel.onEntryPointAnimationSeen, self.__onEntryPointAnimationSeen),
+         (
+          self.__comp7LightProgressionController.onProgressPointsUpdated, self._updateViewModel),
+         (
+          self.__comp7LightProgressionController.onSettingsChanged, self._updateViewModel))
 
     def __onAnimationEnd(self):
         setUmgProgressionPointsSeen(self.__comp7LightProgressionController.getProgressionData()['curPoints'])

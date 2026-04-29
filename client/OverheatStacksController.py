@@ -1,7 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/OverheatStacksController.py
-import typing
-import BigWorld
+from __future__ import absolute_import, division
+import typing, BigWorld
 from constants import OVERHEAT_GAIN_STATE as STATE
 from gui.shared.utils.decorators import ReprInjector
 from math_utils import clamp
@@ -17,19 +15,15 @@ if typing.TYPE_CHECKING:
 _LOG_OVERHEAT_STACKS_DEBUG = False
 
 @ReprInjector.simple('level', 'gainState', 'startTime', 'endTime', 'delayTimerElapsed', 'stackTimeElapsed')
-class OverheatStacksState(typing.NamedTuple('OverheatStacksState', (('level', int),
- ('gainState', STATE),
- ('startTime', int),
- ('endTime', int),
- ('delayTimerElapsed', float),
- ('stackTimeElapsed', float),
- ('delayTimerDuration', float),
- ('stackDuration', float),
- ('dmgLevelBonus', float),
- ('speedThreshold', float),
- ('maxLevel', int),
- ('heatingTime', float),
- ('coolingTime', float))), IMechanicState):
+class OverheatStacksState(typing.NamedTuple('OverheatStacksState', (
+ (
+  'level', int), ('gainState', STATE), ('startTime', int), ('endTime', int),
+ (
+  'delayTimerElapsed', float), ('stackTimeElapsed', float), ('delayTimerDuration', float),
+ (
+  'stackDuration', float), ('dmgLevelBonus', float), ('speedThreshold', float), ('maxLevel', int),
+ (
+  'heatingTime', float), ('coolingTime', float))), IMechanicState):
 
     @classmethod
     def fromComponentStatus(cls, curLevel, gainState, timeElapsed, delayTimerElapsed, timeNextGain, params):

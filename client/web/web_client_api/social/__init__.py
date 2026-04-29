@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/web/web_client_api/social/__init__.py
 import BigWorld
 from gui.clans.clan_cache import g_clanCache
 from gui.shared.view_helpers import UsersInfoHelper
@@ -47,14 +45,14 @@ class SocialWebApi(object):
 
     @storage_getter('users')
     def usersStorage(self):
-        return None
+        return
 
     @w2c(W2CSchema, name='friends_status')
     def friendsStatus(self, cmd):
         storage = self.usersStorage
         friends = storage.getList(MutualFriendsFindCriteria())
-        return {'action': 'friends_status',
-         'friends_status': getStatuses(friends)}
+        return {'action': 'friends_status', 
+           'friends_status': getStatuses(friends)}
 
     @w2c(_PlayerStatusSchema, name='player_status')
     def isPlayerOnline(self, cmd, ctx):
@@ -85,6 +83,6 @@ class SocialWebApi(object):
             clanAbbrev = clanInfo[1]
         else:
             clanAbbrev = ''
-        return {'fullName': self.lobbyContext.getPlayerFullName(name, clanInfo=clanInfo),
-         'userName': name,
-         'clanAbbrev': clanAbbrev}
+        return {'fullName': self.lobbyContext.getPlayerFullName(name, clanInfo=clanInfo), 
+           'userName': name, 
+           'clanAbbrev': clanAbbrev}

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_matters/battle_matters_entry_point_view.py
 import typing
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.impl.gen.view_models.views.lobby.battle_matters.battle_matters_entry_point_view_model import BattleMattersEntryPointViewModel, State
@@ -31,17 +29,25 @@ class BattleMattersEntryPointView(ViewImpl):
         return super(BattleMattersEntryPointView, self).getViewModel()
 
     def createToolTipContent(self, event, contentID):
-        return BattleMattersEntryTooltipView() if contentID == R.views.lobby.battle_matters.tooltips.BattleMattersEntryTooltipView() else super(BattleMattersEntryPointView, self).createToolTipContent(event, contentID)
+        if contentID == R.views.lobby.battle_matters.tooltips.BattleMattersEntryTooltipView():
+            return BattleMattersEntryTooltipView()
+        return super(BattleMattersEntryPointView, self).createToolTipContent(event, contentID)
 
     def _onLoading(self):
         super(BattleMattersEntryPointView, self)._onLoading()
         self.__update()
 
     def _getEvents(self):
-        return ((self.viewModel.onClick, self.__onClick), (self.__battleMattersController.onStateChanged, self.__update), (self.__eventsCache.onSyncCompleted, self.__update))
+        return (
+         (
+          self.viewModel.onClick, self.__onClick),
+         (
+          self.__battleMattersController.onStateChanged, self.__update),
+         (
+          self.__eventsCache.onSyncCompleted, self.__update))
 
     def __update(self, *_):
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             currentQuest = self.__battleMattersController.getCurrentQuest()
             tx.setIsCompleted(currentQuest is None)
             state = State.NORMAL

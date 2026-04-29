@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/tooltips/stronghold.py
-import logging
-import typing
+import logging, typing
 from gui.Scaleform.daapi.view.lobby.rally.vo_converters import getReserveNameVO
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
 from gui.impl import backport
@@ -49,25 +46,27 @@ class ReserveTooltipData(StrongholdTooltipData):
         if reserve.intCD is None:
             _logger.error('%s intCD is None! Check wgsh version on staging.', reserveName)
             return tooltipBlocks
+        item = self.context.buildItem(reserve.intCD)
+        tooltipBlocks.append(self.__getHeaderBlock(item, reserveName, reserveLevel, reserveCount, isPlayerLegionary))
+        tooltipBlocks.append(formatters.packBuildUpBlockData(self.__getMainParamsBlock(reserveName, item), padding=formatters.packPadding(left=10, right=10, top=-4, bottom=-2), linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE, gap=-2, blockWidth=450))
+        tooltipBlocks.append(formatters.packBuildUpBlockData(self.__getAdditionalParamsBlock(reserve), padding=formatters.packPadding(left=10, right=10, top=-4, bottom=-2), gap=-2))
+        if selected:
+            status = R.strings.fortifications.reserves.tooltip.selected()
         else:
-            item = self.context.buildItem(reserve.intCD)
-            tooltipBlocks.append(self.__getHeaderBlock(item, reserveName, reserveLevel, reserveCount, isPlayerLegionary))
-            tooltipBlocks.append(formatters.packBuildUpBlockData(self.__getMainParamsBlock(reserveName, item), padding=formatters.packPadding(left=10, right=10, top=-4, bottom=-2), linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE, gap=-2, blockWidth=450))
-            tooltipBlocks.append(formatters.packBuildUpBlockData(self.__getAdditionalParamsBlock(reserve), padding=formatters.packPadding(left=10, right=10, top=-4, bottom=-2), gap=-2))
-            if selected:
-                status = R.strings.fortifications.reserves.tooltip.selected()
-            else:
-                status = R.strings.fortifications.reserves.tooltip.readyToSelect()
-            tooltipBlocks.append(formatters.packAlignedTextBlockData(text_styles.statInfo(backport.text(status)), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, blockWidth=430, padding=formatters.packPadding(left=10, right=10, top=-7, bottom=-7)))
-            return tooltipBlocks
+            status = R.strings.fortifications.reserves.tooltip.readyToSelect()
+        tooltipBlocks.append(formatters.packAlignedTextBlockData(text_styles.statInfo(backport.text(status)), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, blockWidth=430, padding=formatters.packPadding(left=10, right=10, top=-7, bottom=-7)))
+        return tooltipBlocks
 
     def __getHeaderBlock(self, item, name, level, count, isPlayerLegionary):
         reserveIcon = R.images.gui.maps.icons.reserveTypes.dyn(self.__getReserveIconName(name, level))()
-        countStr = text_styles.main(backport.text(R.strings.fortifications.reserves.tooltip.inStorage(), count=text_styles.expText(count))) if not isPlayerLegionary else ''
-        return formatters.packImageTextBlockData(title=text_styles.highTitle(item.shortUserName), desc='\n'.join([text_styles.neutral(backport.text(R.strings.fortifications.reserves.tooltip.level(), level=int2roman(level))), countStr]), img=backport.image(reserveIcon), imgPadding=formatters.packPadding(left=5, right=10), imgAtLeft=True, txtAlign='left', linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_IMAGETEXT_BLOCK_LINKAGE, padding=formatters.packPadding(top=6), blockWidth=500)
+        countStr = (isPlayerLegionary or text_styles.main)(backport.text(R.strings.fortifications.reserves.tooltip.inStorage(), count=text_styles.expText(count))) if 1 else ''
+        return formatters.packImageTextBlockData(title=text_styles.highTitle(item.shortUserName), desc=('\n').join([
+         text_styles.neutral(backport.text(R.strings.fortifications.reserves.tooltip.level(), level=int2roman(level))),
+         countStr]), img=backport.image(reserveIcon), imgPadding=formatters.packPadding(left=5, right=10), imgAtLeft=True, txtAlign='left', linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_IMAGETEXT_BLOCK_LINKAGE, padding=formatters.packPadding(top=6), blockWidth=500)
 
     def __getMainParamsBlock(self, name, item):
-        block = [formatters.packTitleDescBlock(title=text_styles.middleTitle(backport.text(R.strings.fortifications.reserves.tooltip.mainApplyEffect())), desc=text_styles.standard(backport.text(R.strings.fortifications.reserves.tooltip.applyDescription.dyn(name)())), descPadding=formatters.packPadding(top=4))]
+        block = [
+         formatters.packTitleDescBlock(title=text_styles.middleTitle(backport.text(R.strings.fortifications.reserves.tooltip.mainApplyEffect())), desc=text_styles.standard(backport.text(R.strings.fortifications.reserves.tooltip.applyDescription.dyn(name)())), descPadding=formatters.packPadding(top=4))]
         params = params_helper.getParameters(item)
         paramsResult = paramsFormatters.getFormattedParamsList(item.descriptor, params)
         for paramName, paramValue in paramsResult:
@@ -76,7 +75,9 @@ class ReserveTooltipData(StrongholdTooltipData):
         return block
 
     def __getAdditionalParamsBlock(self, reserve):
-        block = [formatters.packTitleDescBlock(title=text_styles.middleTitle(backport.text(R.strings.fortifications.reserves.tooltip.additionalApplyEffect()))), self.__packParameterBlock(reserve.getDescription(), '+%s%%' % reserve.getBonusPercent(), '')]
+        block = [
+         formatters.packTitleDescBlock(title=text_styles.middleTitle(backport.text(R.strings.fortifications.reserves.tooltip.additionalApplyEffect()))),
+         self.__packParameterBlock(reserve.getDescription(), '+%s%%' % reserve.getBonusPercent(), '')]
         return block
 
     def __packParameterBlock(self, name, value, measureUnits):

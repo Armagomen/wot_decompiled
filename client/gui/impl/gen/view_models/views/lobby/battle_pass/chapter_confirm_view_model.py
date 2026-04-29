@@ -1,11 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_pass/chapter_confirm_view_model.py
 from frameworks.wulf import ViewModel
 
 class ChapterConfirmViewModel(ViewModel):
-    __slots__ = ()
+    __slots__ = ('onAccept', 'onCancel')
 
-    def __init__(self, properties=3, commands=0):
+    def __init__(self, properties=3, commands=2):
         super(ChapterConfirmViewModel, self).__init__(properties=properties, commands=commands)
 
     def getPrevChapter(self):
@@ -31,3 +29,5 @@ class ChapterConfirmViewModel(ViewModel):
         self._addNumberProperty('prevChapter', 0)
         self._addNumberProperty('nextChapter', 0)
         self._addBoolProperty('isSwitchFromPostProgressionToExtraChapter', False)
+        self.onAccept = self._addCommand('onAccept')
+        self.onCancel = self._addCommand('onCancel')

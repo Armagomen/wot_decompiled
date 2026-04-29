@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/user_missions/states.py
 from frameworks.state_machine import StateFlags
 from frameworks.state_machine.transitions import TransitionType
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -55,14 +53,16 @@ class UserMissionsState(SFViewLobbyState, EventsHandler):
         return self.__cachedParams
 
     def _getListeners(self):
-        return ((UserMissionsEvent.CHANGE_TAB, self.__onTabChanged, EVENT_BUS_SCOPE.LOBBY),)
+        return (
+         (
+          UserMissionsEvent.CHANGE_TAB, self.__onTabChanged, EVENT_BUS_SCOPE.LOBBY),)
 
     def _onEntered(self, event):
         super(UserMissionsState, self)._onEntered(event)
         self._subscribe()
         self.__cachedParams = event.params
         targetTab = event.params.get('tab')
-        childState = first(self.getChildren(lambda n: isinstance(n, MISSION_TABS) and n.TAB_ID == targetTab))
+        childState = first(self.getChildren(lambda n: isinstance(n, MISSION_TABS) and targetTab == n.TAB_ID))
         if childState:
             childState.goTo(**self.__cachedParams)
 
@@ -77,7 +77,7 @@ class UserMissionsState(SFViewLobbyState, EventsHandler):
     def __onTabChanged(self, event):
         self.__cachedParams['tab'] = event.tabID
         targetTab = event.tabID
-        childState = first(self.getChildren(lambda n: isinstance(n, MISSION_TABS) and n.TAB_ID == targetTab))
+        childState = first(self.getChildren(lambda n: isinstance(n, MISSION_TABS) and targetTab == n.TAB_ID))
         if childState:
             childState.goTo(**self.__cachedParams)
 
@@ -91,13 +91,16 @@ class _EntryState(LobbyState):
 class _BasicMissionTab(LobbyState):
     STATE_ID = TabId.BASIC
     TAB_ID = TabId.BASIC
-    LOBBY_STATE_DESCR = LobbyStateDescription(title=backport.text(R.strings.pages.titles.userMissions()), infos=(LobbyStateDescription.Info(tooltipHeader=backport.text(R.strings.user_missions.tooltip.hub.info_button.header()), tooltipBody=backport.text(R.strings.user_missions.tooltip.hub.info_button.body()), onMoreInfoRequested=_onMoreInfoRequested),))
+    LOBBY_STATE_DESCR = LobbyStateDescription(title=backport.text(R.strings.pages.titles.userMissions()), infos=(
+     LobbyStateDescription.Info(tooltipHeader=backport.text(R.strings.user_missions.tooltip.hub.info_button.header()), tooltipBody=backport.text(R.strings.user_missions.tooltip.hub.info_button.body()), onMoreInfoRequested=_onMoreInfoRequested),))
 
     def registerTransitions(self):
+        from gui.impl.lobby.personal_missions_30.state import ProgressionState
         from gui.Scaleform.daapi.view.lobby.store.browser.states import ShopState
         lsm = self.getMachine()
         self.addNavigationTransition(lsm.getStateByCls(_CommonMissionTab))
         self.addNavigationTransition(lsm.getStateByCls(ShopState), record=True)
+        self.addNavigationTransition(lsm.getStateByCls(ProgressionState), record=True)
 
     def getNavigationDescription(self):
         return self.LOBBY_STATE_DESCR
@@ -132,4 +135,5 @@ class _CommonMissionTab(LobbyState):
         self.__cachedParams = {}
 
 
-MISSION_TABS = (_BasicMissionTab, _CommonMissionTab)
+MISSION_TABS = (
+ _BasicMissionTab, _CommonMissionTab)

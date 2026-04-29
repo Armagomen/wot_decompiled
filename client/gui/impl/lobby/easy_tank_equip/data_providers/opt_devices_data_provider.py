@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/easy_tank_equip/data_providers/opt_devices_data_provider.py
 import logging
 from collections import OrderedDict
 from enum import Enum
@@ -82,10 +80,13 @@ class OptDevicesDemountInfo(object):
                     demountKits += 1
                 else:
                     self.byMoney.append(optDevice)
-            self.byMoney.append(optDevice)
+            else:
+                self.byMoney.append(optDevice)
 
     def getDemountPrice(self):
-        return (len(self.byDemountKit), sum([ device.getRemovalPrice(self.__itemsCache.items) for device in self.byMoney ], ITEM_PRICE_ZERO))
+        return (
+         len(self.byDemountKit),
+         sum([ device.getRemovalPrice(self.__itemsCache.items) for device in self.byMoney ], ITEM_PRICE_ZERO))
 
 
 class OptDevicesDataProvider(BaseDataProvider):
@@ -154,13 +155,14 @@ class OptDevicesDataProvider(BaseDataProvider):
     def _getPresetDataForApplying(self):
         data = super(OptDevicesDataProvider, self)._getPresetDataForApplying()
         demountInfo = self.__optDevicesForDemount.values()[self.currentPresetIndex]
-        data.update({'optDevices': self.__optDevicesPresets.values()[self.currentPresetIndex],
-         'demountByDemountKit': demountInfo.byDemountKit,
-         'demountForFree': demountInfo.forFree})
+        data.update({'optDevices': self.__optDevicesPresets.values()[self.currentPresetIndex], 
+           'demountByDemountKit': demountInfo.byDemountKit, 
+           'demountForFree': demountInfo.forFree})
         return data
 
     def __getPresetsInfo(self):
-        return [ self.__getOptDevicesPresetInfo(presetType, items) for presetType, items in self.__optDevicesPresets.items() ]
+        return [ self.__getOptDevicesPresetInfo(presetType, items) for presetType, items in self.__optDevicesPresets.items()
+               ]
 
     def __isAdvancedPresetNeeded(self, optDevices):
         if len(optDevices) != self.__optDevicesCapacity or not all(optDevices):
@@ -187,9 +189,10 @@ class OptDevicesDataProvider(BaseDataProvider):
         for modernizedOptDevice, upgradedOptDevice in zip(modernizedOptDevices, upgradedOptDevices):
             if modernizedOptDevice and upgradedOptDevice:
                 advancedOptDevices.append(modernizedOptDevice if self.__getOptDeviceIndex(modernizedOptDevice) < self.__getOptDeviceIndex(upgradedOptDevice) else upgradedOptDevice)
-            advancedDevice = modernizedOptDevice or upgradedOptDevice
-            if advancedDevice:
-                advancedOptDevices.append(advancedDevice)
+            else:
+                advancedDevice = modernizedOptDevice or upgradedOptDevice
+                if advancedDevice:
+                    advancedOptDevices.append(advancedDevice)
 
         if self.__isStandardPresetNeeded(standardOptDevices):
             self.__optDevicesPresets[OptDevicesPresetType.STANDARD] = standardOptDevices
@@ -209,7 +212,8 @@ class OptDevicesDataProvider(BaseDataProvider):
         return OptionalDevicesPresetInfo(installed=installed, storedItemsCount=len([ item for item in presetItems if item.info.storedItemsCount > 0 ]), installedItemsCount=len([ item for item in presetItems if item.info.installedItemsCount > 0 ]), itemPrice=sum([ item.info.itemPrice for item in presetItems ], ITEM_PRICE_ZERO) + demountItemsPrice, demountKits=demountKits, presetType=presetType, items=presetItems)
 
     def __getOptDevicesPresetItems(self, optDevices):
-        return [ OptDevicesPresetSlotInfo(optDevice=optDevice, slotData=self.vehicle.optDevices.getSlot(slotIdx), info=self.__getSlotInfo(optDevice), slotIdx=slotIdx) for slotIdx, optDevice in enumerate(optDevices) ]
+        return [ OptDevicesPresetSlotInfo(optDevice=optDevice, slotData=self.vehicle.optDevices.getSlot(slotIdx), info=self.__getSlotInfo(optDevice), slotIdx=slotIdx) for slotIdx, optDevice in enumerate(optDevices)
+               ]
 
     def __getSlotInfo(self, optDevice):
         optDeviceOnVehicleCount = int(self.vehicle.optDevices.setupLayouts.containsIntCD(optDevice.intCD))
@@ -289,5 +293,5 @@ class OptDevicesDataProvider(BaseDataProvider):
 
         self.vehicle.optDevices.setLayout(*devices)
         self.vehicle.optDevices.setInstalled(*devices)
-        self.vehicle.descriptor.installOptDevsSequence([ (optDevice.intCD if optDevice is not None else 0) for optDevice in devices ])
+        self.vehicle.descriptor.installOptDevsSequence([ optDevice.intCD if optDevice is not None else 0 for optDevice in devices ])
         return

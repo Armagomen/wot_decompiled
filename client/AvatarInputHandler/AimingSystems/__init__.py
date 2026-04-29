@@ -1,11 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/AvatarInputHandler/AimingSystems/__init__.py
 import math
 from functools import wraps
-import logging.handlers
-import BigWorld
-import Math
-import ShadowEffect
+import logging.handlers, BigWorld, Math, ShadowEffect
 from Math import Vector3
 import math_utils
 from math_utils import MatrixProviders
@@ -24,11 +19,11 @@ class CollisionStrategy(object):
     def getCollisionFunction(cls, collisionStrategy):
         if collisionStrategy == CollisionStrategy.COLLIDE_DYNAMIC_AND_STATIC:
             return collideDynamicAndStatic
-        elif collisionStrategy == CollisionStrategy.COLLIDE_VEHICLES_AND_STATIC_SCENE:
-            return collideVehiclesAndStaticScene
         else:
+            if collisionStrategy == CollisionStrategy.COLLIDE_VEHICLES_AND_STATIC_SCENE:
+                return collideVehiclesAndStaticScene
             _logger.error('CollisionStrategy: getCollisionFunction: Unknown strategy %i.', collisionStrategy)
-            return None
+            return
 
 
 class IAimingSystem(object):
@@ -60,10 +55,10 @@ class IAimingSystem(object):
         pass
 
     def getShotPoint(self):
-        return None
+        return
 
     def getZoom(self):
-        return None
+        return
 
     def setAimingLimits(self, distances):
         pass
@@ -102,7 +97,8 @@ def getPlayerTurretMats(turretYaw=0.0, gunPitch=0.0, overrideTurretLocalZ=None):
     vehicleMatrix = player.getOwnVehicleStabilisedMatrix()
     turretMat = getTurretJointMat(vehicleTypeDescriptor, vehicleMatrix, turretYaw, overrideTurretLocalZ)
     gunMat = getGunJointMat(vehicleTypeDescriptor, turretMat, gunPitch, overrideTurretLocalZ)
-    return (turretMat, gunMat)
+    return (
+     turretMat, gunMat)
 
 
 def getPlayerGunMat(turretYaw=0.0, gunPitch=0.0, overrideTurretLocalZ=None):
@@ -124,7 +120,7 @@ def getGunMatrixProvider(vehicleTypeDescriptor, turretMatrixProvider, gunPitchMa
 
 
 def getTurretYawGunPitch(vehTypeDescr, vehicleMatrix, targetPos, compensateGravity=False):
-    return BigWorld.getAimingAngles(targetPos, vehicleMatrix, vehTypeDescr.chassis.hullPosition + vehTypeDescr.hull.turretPositions[0], vehTypeDescr.activeGunShotPosition, vehTypeDescr.shot.speed, vehTypeDescr.shot.gravity if not compensateGravity else 0.0)
+    return BigWorld.getAimingAngles(targetPos, vehicleMatrix, vehTypeDescr.chassis.hullPosition + vehTypeDescr.hull.turretPositions[0], vehTypeDescr.activeGunShotPosition, vehTypeDescr.shot.speed, (compensateGravity or vehTypeDescr.shot).gravity if 1 else 0.0)
 
 
 def _getDesiredShotPointUncached(start, direction, onlyOnGround, isStrategicMode, terrainOnlyCheck, shotDistance):
@@ -144,7 +140,9 @@ def _getDesiredShotPointUncached(start, direction, onlyOnGround, isStrategicMode
     if point is not None:
         return point[0]
     else:
-        return shootInSkyPoint(start, direction) if not onlyOnGround else None
+        if not onlyOnGround:
+            return shootInSkyPoint(start, direction)
+        return
 
 
 g_desiredShotPoint = math_utils.VectorConstant.Vector3Zero
@@ -187,17 +185,15 @@ def getShotTargetInfo(vehicle, preferredTargetPoint, gunRotator):
     shotPos, shotVec, gravity = gunRotator.getShotParams(preferredTargetPoint, True)
     minBounds, maxBounds = BigWorld.player().arena.getArenaBB()
     endPos, direction, _, _ = getCappedShotTargetInfos(shotPos, shotVec, gravity, vehicle.typeDescriptor.shot, vehicle.id, minBounds, maxBounds, CollisionStrategy.COLLIDE_VEHICLES_AND_STATIC_SCENE)
-    return (endPos, direction)
+    return (
+     endPos, direction)
 
 
 def getCappedShotTargetInfos(shotPos, shotVec, gravity, shotDescr, vehicleID, minBounds, maxBounds, collisionStrategy):
     endPos, direction, collData, usedMaxDistance = BigWorld.wg_getCappedShotTargetInfos(BigWorld.player().spaceID, shotPos, shotVec, gravity, shotDescr.maxDistance, vehicleID, minBounds, maxBounds, collisionStrategy)
     if collData is not None:
         collData = EntityCollisionData(*collData)
-    return (endPos,
-     direction,
-     collData,
-     usedMaxDistance)
+    return (endPos, direction, collData, usedMaxDistance)
 
 
 @_trackcalls
@@ -262,13 +258,13 @@ def __collideTerrainOnly(start, end):
         if distance - waterHeight < 0.2:
             return result
         return resultWater
-    else:
-        return result
+    return result
 
 
 def __collideStaticOnly(startPoint, endPoint):
     res = None
     testRes = BigWorld.wg_collideSegment(BigWorld.player().spaceID, startPoint, endPoint, 128)
     if testRes is not None:
-        res = (testRes.closestPoint, None)
+        res = (
+         testRes.closestPoint, None)
     return res

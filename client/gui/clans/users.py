@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/clans/users.py
 import weakref
 from adisp import adisp_async, adisp_process
 from gui.wgcg.clan.contexts import AccountClanRatingsCtx
@@ -26,5 +24,5 @@ class UserCache(object):
 
             else:
                 status = False
-        users = dict(((usrID, self.__cache[usrID]) for usrID in dbIDs if usrID in self.__cache))
+        users = dict((usrID, self.__cache[usrID]) for usrID in dbIDs if usrID in self.__cache)
         callback((status, users))

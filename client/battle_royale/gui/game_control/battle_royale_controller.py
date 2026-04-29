@@ -1,23 +1,22 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/game_control/battle_royale_controller.py
-import json
-import logging
+import json, logging
 from collections import namedtuple
 from functools import partial
 from itertools import groupby
-import BigWorld
-import typing
-import Event
-import season_common
+import BigWorld, typing
+from adisp import adisp_process
+from shared_utils import first, makeTupleByDict, nextTick
+import BattleReplay, Event, season_common
 from CurrentVehicle import g_currentVehicle
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import ROYALE_VEHICLE, CURRENT_VEHICLE, ROYALE_INTRO_VIDEO_SHOWN_FOR_SEASON
-from adisp import adisp_process
 from battle_royale.gui.constants import AmmoTypes, BattleRoyalePerfProblems, BattleRoyaleSubMode, BattleRoyaleModeState
+from battle_royale.gui.constants import BR_COIN
+from battle_royale.gui.constants import STP_COIN
+from battle_royale.gui.constants import SUB_MODE_ID_KEY
 from battle_royale.gui.game_control.br_vo_controller import BRVoiceOverController
 from battle_royale.gui.royale_models import BattleRoyaleSeason
 from battle_royale.gui.shared.event_dispatcher import showInfoPage
-from battle_royale_progression.skeletons.game_controller import IBRProgressionOnTokensController
+from battle_royale.skeletons.game_controller import IBRProgressionOnTokensController
 from constants import QUEUE_TYPE, Configs, PREBATTLE_TYPE, ARENA_BONUS_TYPE, BATTLE_ROYALE_SCENE
 from gui import GUI_NATIONS_ORDER_INDEX
 from gui import GUI_SETTINGS
@@ -39,17 +38,16 @@ from gui.shared.event_dispatcher import getParentWindow, showBrowserOverlayView
 from gui.shared.events import ProfilePageEvent, ProfileStatisticEvent, ProfileTechniqueEvent
 from gui.shared.gui_items.Vehicle import VEHICLE_TAGS, VEHICLE_TYPES_ORDER_INDICES
 from gui.shared.items_parameters.params import ShellParams
+from gui.shared.money import DynamicMoney
 from gui.shared.utils import SelectorBattleTypesUtils
 from gui.shared.utils.graphics import getGraphicsEngineValue
 from gui.shared.utils.requesters import REQ_CRITERIA
 from gui.shared.utils.scheduled_notifications import Notifiable, SimpleNotifier, PeriodicNotifier, TimerNotifier
 from helpers import dependency, time_utils
+from helpers.server_settings import BattleRoyaleConfig
 from helpers.statistics import HARDWARE_SCORE_PARAMS
 from items import vehicles
 from items.battle_royale import isBattleRoyale
-from battle_royale.gui.constants import SUB_MODE_ID_KEY
-from shared_utils import first
-from shared_utils import nextTick
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.game_control import IEventsNotificationsController, IHangarSpaceSwitchController, IBattleRoyaleController, IBattleRoyaleTournamentController
 from skeletons.gui.impl import IGuiLoader
@@ -58,10 +56,7 @@ from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
 from skeletons.gui.shared.utils import IHangarSpace
 from stats_params import BATTLE_ROYALE_STATS_ENABLED
-from gui.shared.money import DynamicMoney
-from battle_royale.gui.constants import BR_COIN
 if typing.TYPE_CHECKING:
-    from helpers.server_settings import BattleRoyaleConfig
     from gui.shared.gui_items.tankman_skill import TankmanSkill
 _logger = logging.getLogger(__name__)
 BattleRoyaleProgressionPoints = namedtuple('BattleRoyaleProgressionPoints', ['lastInRange', 'points'])
@@ -71,28 +66,25 @@ class BATTLE_ROYALE_GAME_LIMIT_TYPE(object):
     HARDWARE_PARAMS = 1
 
 
-PERFORMANCE_GROUP_LIMITS = {BattleRoyalePerfProblems.HIGH_RISK: [{BATTLE_ROYALE_GAME_LIMIT_TYPE.SYSTEM_DATA: {'osBit': 1,
-                                                                                   'graphicsEngine': 0}}, {BATTLE_ROYALE_GAME_LIMIT_TYPE.HARDWARE_PARAMS: {HARDWARE_SCORE_PARAMS.PARAM_GPU_MEMORY: 490}}, {BATTLE_ROYALE_GAME_LIMIT_TYPE.SYSTEM_DATA: {'graphicsEngine': 0},
-                                       BATTLE_ROYALE_GAME_LIMIT_TYPE.HARDWARE_PARAMS: {HARDWARE_SCORE_PARAMS.PARAM_RAM: 2900}}],
- BattleRoyalePerfProblems.MEDIUM_RISK: [{BATTLE_ROYALE_GAME_LIMIT_TYPE.HARDWARE_PARAMS: {HARDWARE_SCORE_PARAMS.PARAM_GPU_SCORE: 300}}, {BATTLE_ROYALE_GAME_LIMIT_TYPE.HARDWARE_PARAMS: {HARDWARE_SCORE_PARAMS.PARAM_CPU_SCORE: 50000}}]}
-_PERIOD_INFO_TO_MOD_STATE = {PeriodType.UNDEFINED: BattleRoyaleModeState.Unavailable,
- PeriodType.BEFORE_SEASON: BattleRoyaleModeState.Unavailable,
- PeriodType.BETWEEN_SEASONS: BattleRoyaleModeState.Unavailable,
- PeriodType.AFTER_SEASON: BattleRoyaleModeState.Finished,
- PeriodType.BEFORE_CYCLE: BattleRoyaleModeState.Unavailable,
- PeriodType.BETWEEN_CYCLES: BattleRoyaleModeState.Unavailable,
- PeriodType.AFTER_CYCLE: BattleRoyaleModeState.Finished,
- PeriodType.AVAILABLE: BattleRoyaleModeState.Regular,
- PeriodType.FROZEN: BattleRoyaleModeState.Unavailable,
- PeriodType.NOT_AVAILABLE: BattleRoyaleModeState.CeasefireCurrentServer,
- PeriodType.ALL_NOT_AVAILABLE: BattleRoyaleModeState.CeasefireAllServers,
- PeriodType.STANDALONE_NOT_AVAILABLE: BattleRoyaleModeState.CeasefireAllServers,
- PeriodType.NOT_AVAILABLE_END: BattleRoyaleModeState.CeasefireCurrentServer,
- PeriodType.ALL_NOT_AVAILABLE_END: BattleRoyaleModeState.Finished,
- PeriodType.STANDALONE_NOT_AVAILABLE_END: BattleRoyaleModeState.Finished,
- PeriodType.NOT_SET: BattleRoyaleModeState.Unavailable,
- PeriodType.ALL_NOT_SET: BattleRoyaleModeState.Unavailable,
- PeriodType.STANDALONE_NOT_SET: BattleRoyaleModeState.Unavailable}
+PERFORMANCE_GROUP_LIMITS = {BattleRoyalePerfProblems.HIGH_RISK: [{BATTLE_ROYALE_GAME_LIMIT_TYPE.SYSTEM_DATA: {'osBit': 1, 'graphicsEngine': 0}}, {BATTLE_ROYALE_GAME_LIMIT_TYPE.HARDWARE_PARAMS: {HARDWARE_SCORE_PARAMS.PARAM_GPU_MEMORY: 490}}, {BATTLE_ROYALE_GAME_LIMIT_TYPE.SYSTEM_DATA: {'graphicsEngine': 0}, BATTLE_ROYALE_GAME_LIMIT_TYPE.HARDWARE_PARAMS: {HARDWARE_SCORE_PARAMS.PARAM_RAM: 2900}}], BattleRoyalePerfProblems.MEDIUM_RISK: [{BATTLE_ROYALE_GAME_LIMIT_TYPE.HARDWARE_PARAMS: {HARDWARE_SCORE_PARAMS.PARAM_GPU_SCORE: 300}}, {BATTLE_ROYALE_GAME_LIMIT_TYPE.HARDWARE_PARAMS: {HARDWARE_SCORE_PARAMS.PARAM_CPU_SCORE: 50000}}]}
+_PERIOD_INFO_TO_MOD_STATE = {PeriodType.UNDEFINED: BattleRoyaleModeState.Unavailable, 
+   PeriodType.BEFORE_SEASON: BattleRoyaleModeState.Unavailable, 
+   PeriodType.BETWEEN_SEASONS: BattleRoyaleModeState.Unavailable, 
+   PeriodType.AFTER_SEASON: BattleRoyaleModeState.Finished, 
+   PeriodType.BEFORE_CYCLE: BattleRoyaleModeState.Unavailable, 
+   PeriodType.BETWEEN_CYCLES: BattleRoyaleModeState.Unavailable, 
+   PeriodType.AFTER_CYCLE: BattleRoyaleModeState.Finished, 
+   PeriodType.AVAILABLE: BattleRoyaleModeState.Regular, 
+   PeriodType.FROZEN: BattleRoyaleModeState.Unavailable, 
+   PeriodType.NOT_AVAILABLE: BattleRoyaleModeState.CeasefireCurrentServer, 
+   PeriodType.ALL_NOT_AVAILABLE: BattleRoyaleModeState.CeasefireAllServers, 
+   PeriodType.STANDALONE_NOT_AVAILABLE: BattleRoyaleModeState.CeasefireAllServers, 
+   PeriodType.NOT_AVAILABLE_END: BattleRoyaleModeState.CeasefireCurrentServer, 
+   PeriodType.ALL_NOT_AVAILABLE_END: BattleRoyaleModeState.Finished, 
+   PeriodType.STANDALONE_NOT_AVAILABLE_END: BattleRoyaleModeState.Finished, 
+   PeriodType.NOT_SET: BattleRoyaleModeState.Unavailable, 
+   PeriodType.ALL_NOT_SET: BattleRoyaleModeState.Unavailable, 
+   PeriodType.STANDALONE_NOT_SET: BattleRoyaleModeState.Unavailable}
 
 class BattleRoyaleController(Notifiable, SeasonProvider, IBattleRoyaleController, IPrbListener):
     __lobbyContext = dependency.descriptor(ILobbyContext)
@@ -165,8 +157,8 @@ class BattleRoyaleController(Notifiable, SeasonProvider, IBattleRoyaleController
         super(BattleRoyaleController, self).onLobbyInited(event)
         if not self.__clientValuesInited:
             self.__clientValuesInited = True
-        g_clientUpdateManager.addCallbacks({'battleRoyale': self.__updateRoyale,
-         'cache.dynamicCurrencies': self.__updateDynamicCurrencies})
+        g_clientUpdateManager.addCallbacks({'battleRoyale': self.__updateRoyale, 
+           'cache.dynamicCurrencies': self.__updateDynamicCurrencies})
         self.startNotification()
         self.__initBalanceCurrencies()
         self.__hangarsSpace.onVehicleChanged += self.__onVehicleChanged
@@ -181,8 +173,32 @@ class BattleRoyaleController(Notifiable, SeasonProvider, IBattleRoyaleController
         g_eventBus.addListener(events.HangarVehicleEvent.SELECT_VEHICLE_IN_HANGAR, self.__onSelectVehicleInHangar, scope=EVENT_BUS_SCOPE.LOBBY)
         nextTick(self.__eventAvailabilityUpdate)()
 
-    def getBRCoinBalance(self, default=None):
-        return self.__balance.get(BR_COIN, default) if self.__balance is not None else default
+    def getBRCoinBalance(self):
+        if self.__balance is not None:
+            return self.__balance.get(BR_COIN, 0)
+        else:
+            return 0
+
+    def getSTPCoinBalance(self):
+        if self.__balance is not None:
+            return self.__balance.get(STP_COIN, 0)
+        else:
+            return 0
+
+    def hasDailyBonus(self, vehicle):
+        if self.isStPatrick():
+            return vehicle.compactDescr not in self.__itemsCache.items.battleRoyale.dailyBonusUsedVehicles
+        return False
+
+    def getStpCoinsPerPlace(self, place):
+        if self.isStPatrick():
+            coinAward = self.getModeSettings().coinAward
+            bonusType = BigWorld.player().arenaBonusType
+            for placeInBattle, coins in coinAward.get(bonusType, []):
+                if place == placeInBattle:
+                    return coins
+
+        return 0
 
     def __initBalanceCurrencies(self):
         self.__updateBalanceCurrencies()
@@ -192,12 +208,17 @@ class BattleRoyaleController(Notifiable, SeasonProvider, IBattleRoyaleController
         self.__balance = self.__itemsCache.items.stats.getDynamicMoney()
 
     def __updateDynamicCurrencies(self, currencies):
-        if BR_COIN not in currencies:
-            return False
-        brCoin = currencies.get(BR_COIN, 0)
-        if self.getBRCoinBalance(0) != brCoin:
-            self.__updateBalanceCurrencies()
-        self.onBalanceUpdated()
+        brCoin = currencies.get(BR_COIN, None)
+        if brCoin is not None:
+            if self.getBRCoinBalance() != brCoin:
+                self.__updateBalanceCurrencies()
+            self.onBalanceUpdated()
+        stpCoin = currencies.get(STP_COIN, None)
+        if stpCoin is not None:
+            if self.getSTPCoinBalance() != stpCoin:
+                self.__updateBalanceCurrencies()
+            self.onBalanceUpdated()
+        return
 
     def __onEventNotification(self, added, removed=()):
         for evNotification in removed:
@@ -249,10 +270,16 @@ class BattleRoyaleController(Notifiable, SeasonProvider, IBattleRoyaleController
         self.__selectRoyaleBattle(extData=extData, **kwargs)
 
     def getModeSettings(self):
+        if BattleReplay.isPlaying() and not BattleReplay.isServerSideReplay():
+            settings = BattleReplay.g_replayCtrl.arenaInfo['serverSettings']
+            return makeTupleByDict(BattleRoyaleConfig, settings[Configs.BATTLE_ROYALE_CONFIG.value])
         return self.__lobbyContext.getServerSettings().battleRoyale
 
     def isEnabled(self):
         return self.getModeSettings().isEnabled
+
+    def isStPatrick(self):
+        return self.getModeSettings().isStPatrick
 
     def getEndTime(self):
         return self.getCurrentSeason().getCycleEndDate()
@@ -276,14 +303,16 @@ class BattleRoyaleController(Notifiable, SeasonProvider, IBattleRoyaleController
     def getVehicleShells(self, vehicleName):
         vehicleType = vehicles.g_cache.vehicle(*vehicles.g_list.getIDsByName(vehicleName))
         vehicle = self.__itemsCache.items.getItemByCD(vehicleType.compactDescr)
-        return [ (shell, vehicle.gun.maxAmmo * self.__equipmentCount.get(AmmoTypes.BASIC_SHELL if ShellParams(shell.descriptor, vehicle.descriptor).isBasic else AmmoTypes.PREMIUM_SHELL, 0)) for shell in vehicle.shells.installed ]
+        return [ (shell, vehicle.gun.maxAmmo * self.__equipmentCount.get(AmmoTypes.BASIC_SHELL if ShellParams(shell.descriptor, vehicle.descriptor).isBasic else AmmoTypes.PREMIUM_SHELL, 0)) for shell in vehicle.shells.installed
+               ]
 
     def getVehicleEquipment(self, vehicleName):
         vehiclesSlotsConfig = self.getModeSettings().vehiclesSlotsConfig
         if vehicleName not in vehiclesSlotsConfig:
             _logger.error("Get equipment for vehicle '%r' failed. Vehicle not found in config. Slots config %s", vehicleName, vehiclesSlotsConfig)
             return []
-        return [ (vehicles.g_cache.equipments()[eqId], self.__equipmentCount.get(chargeId, 0)) for chargeId, eqId in sorted(vehiclesSlotsConfig[vehicleName].items(), key=lambda s: s[0]) ]
+        return [ (vehicles.g_cache.equipments()[eqId], self.__equipmentCount.get(chargeId, 0)) for chargeId, eqId in sorted(vehiclesSlotsConfig[vehicleName].items(), key=lambda s: s[0])
+               ]
 
     @staticmethod
     def getBrCommanderSkills():
@@ -380,7 +409,9 @@ class BattleRoyaleController(Notifiable, SeasonProvider, IBattleRoyaleController
 
     def getQuests(self):
         _, isCycleActive = self.getCurrentCycleInfo()
-        return {k:v for k, v in self.__eventsCache.getQuests().items() if v.getGroupID() == BATTLE_ROYALE_GROUPS_ID and self.__tokenIsValid(v)} if self.isGeneralHangarEntryPoint() and isCycleActive else {}
+        if self.isGeneralHangarEntryPoint() and isCycleActive:
+            return {k:v for k, v in self.__eventsCache.getQuests().items() if v.getGroupID() == BATTLE_ROYALE_GROUPS_ID and self.__tokenIsValid(v)}
+        return {}
 
     def isDailyQuestsRefreshAvailable(self):
         if self.hasPrimeTimesLeftForCurrentCycle():
@@ -421,7 +452,8 @@ class BattleRoyaleController(Notifiable, SeasonProvider, IBattleRoyaleController
         for gameMode in gameModes:
             gameModeLists.append(self.__getProgressionPointsPerPlace(gameMode))
 
-        return (gameModes, gameModeLists)
+        return (
+         gameModes, gameModeLists)
 
     def getTournamentBannerData(self):
         currentTime = time_utils.getCurrentLocalServerTimestamp()
@@ -429,7 +461,7 @@ class BattleRoyaleController(Notifiable, SeasonProvider, IBattleRoyaleController
             if bannerData['startDate'] <= currentTime < bannerData['endDate']:
                 return bannerData
 
-        return None
+        return
 
     @property
     def isTournamentBannerEnabled(self):
@@ -442,7 +474,9 @@ class BattleRoyaleController(Notifiable, SeasonProvider, IBattleRoyaleController
             return None
         else:
             introVideoUrl = GUI_SETTINGS.battleRoyaleVideo.get('introVideo')
-            return GUI_SETTINGS.checkAndReplaceWebBridgeMacros(introVideoUrl) if introVideoUrl else introVideoUrl
+            if introVideoUrl:
+                return GUI_SETTINGS.checkAndReplaceWebBridgeMacros(introVideoUrl)
+            return introVideoUrl
 
     def __progressionPointsConfig(self):
         return self.__battleRoyaleSettings.progressionTokenAward
@@ -489,9 +523,9 @@ class BattleRoyaleController(Notifiable, SeasonProvider, IBattleRoyaleController
     def __eventAvailabilityUpdate(self, *_):
         if g_prbLoader.getDispatcher() is None:
             return
-        elif self.__battleRoyaleTournamentController.isSelected():
-            return
         else:
+            if self.__battleRoyaleTournamentController.isSelected():
+                return
             battleRoyaleEnabled = self.isEnabled() and self.getCurrentSeason() is not None
             isSelectRandom = not battleRoyaleEnabled and self.isBattleRoyaleMode()
             if battleRoyaleEnabled and not self.isActive():
@@ -516,7 +550,9 @@ class BattleRoyaleController(Notifiable, SeasonProvider, IBattleRoyaleController
         if not royaleVehicleID or vehicle is None or not vehicle.isOnlyForBattleRoyaleBattles:
             criteria = REQ_CRITERIA.VEHICLE.HAS_TAGS([VEHICLE_TAGS.BATTLE_ROYALE]) | REQ_CRITERIA.INVENTORY
             values = self.__itemsCache.items.getVehicles(criteria=criteria).values()
-            royaleVehicle = first(sorted(values, key=lambda item: (GUI_NATIONS_ORDER_INDEX[item.nationName], VEHICLE_TYPES_ORDER_INDICES[item.type], item.userName)))
+            royaleVehicle = first(sorted(values, key=lambda item: (GUI_NATIONS_ORDER_INDEX[item.nationName],
+             VEHICLE_TYPES_ORDER_INDICES[item.type],
+             item.userName)))
             if royaleVehicle:
                 royaleVehicleID = royaleVehicle.invID
         if royaleVehicleID:
@@ -757,7 +793,9 @@ class BattleRoyaleController(Notifiable, SeasonProvider, IBattleRoyaleController
 
     def __tokenIsValid(self, quest):
         tokens = quest.accountReqs.getTokens()
-        return False if tokens and not tokens[0].isAvailable() else True
+        if tokens and not tokens[0].isAvailable():
+            return False
+        return True
 
     def __updateTournamentBannerState(self):
         self.__isTournamentBannerEnabled = self.__getTournamentBannerAvailability()
@@ -771,8 +809,8 @@ class BattleRoyaleController(Notifiable, SeasonProvider, IBattleRoyaleController
             currentTime = time_utils.getCurrentLocalServerTimestamp()
             prevBannerData = None
             for bannerData in self.getModeSettings().tournamentsWidget.get('widgets', []):
-                if currentTime < bannerData['startDate'] and prevBannerData:
-                    if currentTime < prevBannerData['endDate'] < bannerData['startDate']:
+                if currentTime < bannerData['startDate']:
+                    if prevBannerData and currentTime < prevBannerData['endDate'] < bannerData['startDate']:
                         startDate = prevBannerData['endDate']
                     else:
                         startDate = bannerData['startDate']

@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicles/mechanics/mechanic_commands/mechanic_events.py
 from __future__ import absolute_import
-import typing
-import weakref
+import typing, weakref
 from events_containers.common.containers import ClientEventsContainer
 from events_containers.components.common import ClientComponentEventsDebugger
 from vehicles.mechanics.mechanic_commands.mechanic_interfaces import IMechanicCommandsEventsLogic
@@ -26,7 +23,10 @@ class MechanicCommandsEvents(ClientEventsContainer, IMechanicCommandsEventsLogic
         self.onMechanicCommand(command)
 
     def _getComponent(self):
-        return self.__componentRef() if self.__componentRef is not None else None
+        if self.__componentRef is not None:
+            return self.__componentRef()
+        else:
+            return
 
     def _createEventsDebugger(self):
         return MechanicCommandsEventsDebugger(self, self._getComponent())

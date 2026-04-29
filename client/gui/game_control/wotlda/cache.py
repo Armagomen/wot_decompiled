@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/wotlda/cache.py
-import os
-import logging
+import os, logging
 from typing import Dict, Any
 from helpers.local_cache import FileLocalCache
 from gui.game_control.wotlda.constants import LAST_UPDATE_TIMESTAMP, SupportedWTRRange

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/gen/view_models/views/lobby/weekly_quest_model.py
 from gui.impl.gen.view_models.views.lobby.user_missions.widget.widget_quest_model import WidgetQuestModel
 
 class WeeklyQuestModel(WidgetQuestModel):

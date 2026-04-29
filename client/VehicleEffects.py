@@ -1,19 +1,15 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/VehicleEffects.py
+from __future__ import absolute_import
 from collections import namedtuple
-import typing
-import cgf_network
-import Physics
+import typing, cgf_network, Physics
 from Math import Vector3, Vector4, Matrix
 from constants import VEHICLE_HIT_EFFECT
 from debug_utils import LOG_CODEPOINT_WARNING, LOG_DEBUG_DEV
 from items import vehicles
-from helpers_common import decodeSegment, getComponentIndexFromEncodedSegment, HitParamsEncoder
+from helpers_common import decodeSegment, getComponentIndexFromEncodedSegment, HitParamsEncoder, decodeStickerIdData
 from vehicle_systems.tankStructure import TankPartIndexes, TankPartNames
 if typing.TYPE_CHECKING:
     from Entity import PyFixedDictDataInstance
     from BigWorld import CollisionComponent
-    from VehicleStickers import DamageStickerData
     from typing import Optional, Union, TypeVar, List, Tuple
     TYPE_VEH_HIT_POINT = TypeVar('TYPE_VEH_HIT_POINT', bound=PyFixedDictDataInstance)
 DUMMY_NODE_PREFIX = 'DM'
@@ -21,7 +17,9 @@ MAX_FALLBACK_CHECK_DISTANCE = 10000.0
 HitEffectMapping = namedtuple('HitEffectMapping', ('componentName', 'hitTester'))
 
 class DamageFromShotDecoder(object):
-    ShotPoint = namedtuple('ShotPoint', ('componentName', 'componentIdx', 'matrix', 'hitEffectCode', 'hitEffectGroup', 'isDynCollision', 'hitType', 'shellType', 'caliber', 'normal'))
+    ShotPoint = namedtuple('ShotPoint', ('componentName', 'componentIdx', 'matrix',
+                                         'hitEffectCode', 'hitEffectGroup', 'isDynCollision',
+                                         'hitType', 'shellType', 'caliber', 'normal'))
     _PRIMARY_COLLISION_INDEX = 0
     _ENCODED_SEGMENT_BITS = 64
 
@@ -31,11 +29,15 @@ class DamageFromShotDecoder(object):
 
     @staticmethod
     def convertComponentIndex(compIdx, collisionComponent):
-        return collisionComponent.maxStaticPartIndex - compIdx if compIdx > collisionComponent.maxStaticPartIndex else compIdx
+        if compIdx > collisionComponent.maxStaticPartIndex:
+            return collisionComponent.maxStaticPartIndex - compIdx
+        return compIdx
 
     @staticmethod
     def getPartName(partIndex, collisionComponent):
-        return collisionComponent.getPartName(partIndex) if partIndex < 0 else TankPartIndexes.getName(partIndex)
+        if partIndex < 0:
+            return collisionComponent.getPartName(partIndex)
+        return TankPartIndexes.getName(partIndex)
 
     @classmethod
     def encodeHitPoint(cls, hitPoint):
@@ -51,7 +53,8 @@ class DamageFromShotDecoder(object):
         if distance < 0.0:
             bbox = collisionComponent.getBoundingBox(compIdx)
             width, height, depth = (bbox[1] - bbox[0]) / 256.0
-            directions = [Vector3(0.0, -height, 0.0),
+            directions = [
+             Vector3(0.0, -height, 0.0),
              Vector3(0.0, height, 0.0),
              Vector3(-width, 0.0, 0.0),
              Vector3(width, 0.0, 0.0),
@@ -85,7 +88,8 @@ class DamageFromShotDecoder(object):
                     invParentTransform.invertOrthonormal()
                     hitPoint = invParentTransform.applyPoint(childTransform.applyPoint(hitPoint))
                     hitDir = invParentTransform.applyVector(childTransform.applyVector(hitDir))
-            return (hitPoint, hitDir, normal)
+            return (
+             hitPoint, hitDir, normal)
 
     @classmethod
     def parseHitPoints(cls, hitPoints, collisionComponent):
@@ -136,41 +140,35 @@ class DamageFromShotDecoder(object):
         else:
             _, data, start, end = decodeSegment(segment, collisionComponent.getBoundingBox(compIndex))
             hitType, shellType, caliber = HitParamsEncoder.decode(params)
-            return (compIndex,
-             data,
-             start,
-             end,
-             hitType,
-             shellType,
-             caliber)
+            return (
+             compIndex, data, start, end, hitType, shellType, caliber)
 
     @classmethod
     def getPartIndexByNetworkID(cls, spaceID, networkID):
         gameObject = cgf_network.getGameObjectByNetworkID(spaceID, networkID)
         if not gameObject.isValid():
-            LOG_DEBUG_DEV("[DamageFromShotDecoder] Can't find game object for networkID {}".format(networkID))
-            return None
+            LOG_DEBUG_DEV(("[DamageFromShotDecoder] Can't find game object for networkID {}").format(networkID))
+            return
         else:
             linker = gameObject.findComponentByType(Physics.DynamicCollisionLinker)
             if linker and linker.collisionPartIndexes:
                 return linker.collisionPartIndexes[cls._PRIMARY_COLLISION_INDEX]
-            LOG_DEBUG_DEV("[DamageFromShotDecoder] Can't find collision for networkID {}".format(networkID))
-            return None
+            LOG_DEBUG_DEV(("[DamageFromShotDecoder] Can't find collision for networkID {}").format(networkID))
+            return
 
     @classmethod
     def parseDamageStickerHitPoint(cls, hitPoint, collisions, segLength=None):
-        from VehicleStickers import damageStickerData, parametrizedDamageStickerData, resizeSegment
+        from VehicleStickers import DamageStickerData, resizeSegment
         parsedHitPoint = DamageFromShotDecoder.parseHitPoint(hitPoint, collisions)
         if parsedHitPoint is None:
             return
         else:
-            componentIdx, stickerID, segStart, segEnd, hitType, shellType, caliber = parsedHitPoint
+            componentIdx, data, segStart, segEnd, hitType, shellType, caliber = parsedHitPoint
             segStart, segEnd = resizeSegment(segStart, segEnd, segLength)
-            if hitPoint['params'] != HitParamsEncoder.INVALID_HIT_PARAMS:
-                data = parametrizedDamageStickerData(componentIdx, segStart, segEnd, caliber, hitType, shellType)
-            else:
-                data = damageStickerData(componentIdx, segStart, segEnd)
-            return (stickerID, data)
+            stickerID, isParametrized = decodeStickerIdData(data)
+            data = DamageStickerData(componentIdx, segStart, segEnd, isParametrized, caliber, hitType, shellType)
+            return (
+             stickerID, data)
 
 
 class RepaintParams(object):
@@ -188,4 +186,5 @@ class RepaintParams(object):
         repaintGlossRangeScale = vehicleDescr.type.repaintParameters['refGlossMult']
         repaintReferenceColor = Vector4(refColor.x, refColor.y, refColor.z, repaintReferenceGloss)
         repaintReplaceColor.w = repaintColorRangeScale
-        return (repaintReferenceColor, repaintReplaceColor, repaintGlossRangeScale)
+        return (
+         repaintReferenceColor, repaintReplaceColor, repaintGlossRangeScale)

@@ -1,12 +1,11 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/store/action_composer.py
 from debug_utils import LOG_WARNING
 from shared_utils import findFirst, first
 
 class ComposedActionsCollection(object):
 
     def __init__(self, action):
-        self._actions = [action]
+        self._actions = [
+         action]
         self.finishTime = action.getFinishTime()
         self.value = action.discount.getParamValue()
 
@@ -14,7 +13,8 @@ class ComposedActionsCollection(object):
         self._actions.append(action)
 
     def compose(self):
-        return [first(self._actions)]
+        return [
+         first(self._actions)]
 
 
 class SimpleMixCollection(ComposedActionsCollection):
@@ -23,7 +23,9 @@ class SimpleMixCollection(ComposedActionsCollection):
 
     def compose(self):
         actionsGroups = self._separateActions()
-        return [self._findBetter(self._actions)] if len(self._actions) == 1 or len(actionsGroups) == 1 else self._composeActions(map(self._findBetter, actionsGroups.values()))
+        if len(self._actions) == 1 or len(actionsGroups) == 1:
+            return [self._findBetter(self._actions)]
+        return self._composeActions(map(self._findBetter, actionsGroups.values()))
 
     def _composeActions(self, actions, compositionKey='mixed'):
         result = []
@@ -53,7 +55,7 @@ class SimpleMixCollection(ComposedActionsCollection):
         return result
 
     def _buildCompositionName(self, compositionType):
-        return '/'.join([self._localizationKey, compositionType])
+        return ('/').join([self._localizationKey, compositionType])
 
     @classmethod
     def _findBetter(cls, actionsGroup):
@@ -86,7 +88,9 @@ class PremiumActionsCollection(SimpleMixCollection):
 
     def compose(self):
         actionsGroups = self._separateActions()
-        return [self._findBetter(self._actions)] if len(self._actions) == 1 or len(actionsGroups) == 1 else map(self._findBetter, actionsGroups.values())
+        if len(self._actions) == 1 or len(actionsGroups) == 1:
+            return [self._findBetter(self._actions)]
+        return map(self._findBetter, actionsGroups.values())
 
 
 class CompositionRule(object):
@@ -127,15 +131,14 @@ class EquipmentRule(CompositionRule):
 
 class PremiumRule(CompositionRule):
     collectionClass = PremiumActionsCollection
-    _applicableParamsNames = ('premiumPacket1Cost', 'premiumPacket3Cost', 'premiumPacket7Cost', 'premiumPacket14Cost', 'premiumPacket30Cost', 'premiumPacket90Cost', 'premiumPacket180Cost', 'premiumPacket360Cost')
+    _applicableParamsNames = ('premiumPacket1Cost', 'premiumPacket3Cost', 'premiumPacket7Cost',
+                              'premiumPacket14Cost', 'premiumPacket30Cost', 'premiumPacket90Cost',
+                              'premiumPacket180Cost', 'premiumPacket360Cost')
 
 
 class ActionComposer(object):
-    __compositionRules = (TankmenRule,
-     DropSkillsRule,
-     ShellsRule,
-     EquipmentRule,
-     PremiumRule)
+    __compositionRules = (
+     TankmenRule, DropSkillsRule, ShellsRule, EquipmentRule, PremiumRule)
 
     def __init__(self):
         self.__collections = {}

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/gen/view_models/views/lobby/dialogs/purchase_dialog_model.py
 from enum import IntEnum
 from frameworks.wulf import Array, ViewModel
 from comp7.gui.impl.gen.view_models.views.lobby.base_product_model import BaseProductModel

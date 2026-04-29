@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/lobby/tooltips/fun_random_battle_results_economic_tooltip_view.py
 from __future__ import absolute_import
 from frameworks.wulf import ViewSettings
 from fun_random.gui.battle_results.tooltips.earned_currency_tooltips import FunEarnedCurrencyTooltipsPacker
@@ -32,5 +30,5 @@ class FunRandomBattleResultsEconomicTooltipView(ViewImpl):
 
     def __invalidateAll(self):
         statsCtrl = self.__battleResults.getStatsCtrl(self.arenaUniqueID)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             FunEarnedCurrencyTooltipsPacker.packTooltip(model, statsCtrl.getResults(), ctx={'currencyType': self.__currencyType})

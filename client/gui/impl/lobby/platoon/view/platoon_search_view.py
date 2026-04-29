@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/platoon/view/platoon_search_view.py
-import logging
-import time
+import logging, time
 from gui.impl.gen.view_models.windows.pop_over_window_model import PopOverWindowModel
 from gui.prb_control import prb_getters
 from helpers.CallbackDelayer import CallbackDelayer
@@ -52,7 +49,7 @@ class SearchView(ViewImpl, CallbackDelayer):
         self.setChildView(self.__tiersLimitSubview.layoutID, self.__tiersLimitSubview)
         self.delayCallback(0, self.__askForPlayerQueueInfo)
         self.__initButtons()
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setSearchStartTime(SearchView.searchTimestamp)
         self.__updateEstimatedTime()
         self._setBackgroundImage()
@@ -62,10 +59,12 @@ class SearchView(ViewImpl, CallbackDelayer):
         return self.getViewModel()
 
     def createToolTipContent(self, event, contentID):
-        return SquadBonusTooltipContent(bonusState=getPlatoonBonusState(False)) if contentID == R.views.lobby.premacc.tooltips.SquadBonusTooltip() else super(SearchView, self).createToolTipContent(event=event, contentID=contentID)
+        if contentID == R.views.lobby.premacc.tooltips.SquadBonusTooltip():
+            return SquadBonusTooltipContent(bonusState=getPlatoonBonusState(False))
+        return super(SearchView, self).createToolTipContent(event=event, contentID=contentID)
 
     def __addListeners(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.cancelSearch.onClick += self.__cancelSearch
             model.onOutsideClick += self.__onOutsideClick
         g_playerEvents.onQueueInfoReceived += self.__onQueueInfoReceived
@@ -74,7 +73,7 @@ class SearchView(ViewImpl, CallbackDelayer):
             unitMgr.unit.onUnitEstimateInQueueChanged += self.__updateEstimatedTime
 
     def __removeListeners(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.cancelSearch.onClick -= self.__cancelSearch
             model.onOutsideClick -= self.__onOutsideClick
         g_playerEvents.onQueueInfoReceived -= self.__onQueueInfoReceived
@@ -87,7 +86,7 @@ class SearchView(ViewImpl, CallbackDelayer):
             g_eventBus.handleEvent(PlatoonDropdownEvent(PlatoonDropdownEvent.NAME, ctx={'showing': False}))
 
     def __initButtons(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             bonusState = getPlatoonBonusState(False)
             model.setHasXpBonus(BonusState.hasAnyBitSet(BonusState.XP_BONUS, bonusState))
             model.setHasCreditsBonus(BonusState.hasAnyBitSet(BonusState.SQUAD_CREDITS_BONUS | BonusState.PREM_CREDITS_BONUS, bonusState))
@@ -105,7 +104,7 @@ class SearchView(ViewImpl, CallbackDelayer):
     def __onQueueInfoReceived(self, queueInfo):
         actualQueueInfo = getQueueInfoByQueueType(queueInfo, self.__platoonCtrl.getQueueType())
         numInQueue = actualQueueInfo['numInQueue']
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setSeekers(numInQueue)
 
     def __updateEstimatedTime(self):
@@ -113,14 +112,14 @@ class SearchView(ViewImpl, CallbackDelayer):
         if unitMgr and unitMgr.unit:
             estimatedTime = unitMgr.unit.getEstimatedTimeInQueue()
             if estimatedTime != UNDEFINED_ESTIMATED_TIME:
-                with self.viewModel.transaction() as model:
+                with self.viewModel.transaction() as (model):
                     model.setEstimatedTime(formatSearchEstimatedTime(estimatedTime))
 
     def _setBackgroundImage(self):
         queueType = self.__platoonCtrl.getQueueType()
         backgrounds = R.images.gui.maps.icons.platoon.dropdown_backgrounds
         background = backgrounds.squad()
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             if queueType == QUEUE_TYPE.EVENT_BATTLES:
                 background = backgrounds.event()
             elif queueType == QUEUE_TYPE.EPIC:
@@ -139,7 +138,7 @@ class SearchWindow(PreloadableWindow):
         areaID = R.areas.pop_over()
         super(SearchWindow, self).__init__(wndFlags=WindowFlags.POP_OVER, content=SearchView(), decorator=decorator, layer=WindowLayer.WINDOW, areaID=areaID)
         if popoverParams is not None:
-            with self.popOverModel.transaction() as tx:
+            with self.popOverModel.transaction() as (tx):
                 tx.setBoundX(popoverParams.bbox.positionX)
                 tx.setBoundY(popoverParams.bbox.positionY)
                 tx.setBoundWidth(popoverParams.bbox.width)

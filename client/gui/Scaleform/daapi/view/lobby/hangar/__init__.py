@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/__init__.py
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.hangar.crew_panel_inject import CrewPanelInject
@@ -15,10 +13,15 @@ def getContextMenuHandlers():
     from gui.Scaleform.daapi.view.lobby.hangar import hangar_cm_handlers
     from gui.impl.lobby.crew.widget.crew_widget_cm_handlers import CrewContextMenuHandler
     from gui.impl.lobby.crew.crew_cm_handlers import CrewTankmanContextMenuHandler
-    return ((CONTEXT_MENU_HANDLER_TYPE.VEHICLE, hangar_cm_handlers.VehicleContextMenuHandler),
-     (CONTEXT_MENU_HANDLER_TYPE.TECHNICAL_MAINTENANCE, hangar_cm_handlers.TechnicalMaintenanceCMHandler),
-     (CONTEXT_MENU_HANDLER_TYPE.CREW_MEMBER, CrewContextMenuHandler),
-     (CONTEXT_MENU_HANDLER_TYPE.CREW_TANKMAN, CrewTankmanContextMenuHandler))
+    return (
+     (
+      CONTEXT_MENU_HANDLER_TYPE.VEHICLE, hangar_cm_handlers.VehicleContextMenuHandler),
+     (
+      CONTEXT_MENU_HANDLER_TYPE.TECHNICAL_MAINTENANCE, hangar_cm_handlers.TechnicalMaintenanceCMHandler),
+     (
+      CONTEXT_MENU_HANDLER_TYPE.CREW_MEMBER, CrewContextMenuHandler),
+     (
+      CONTEXT_MENU_HANDLER_TYPE.CREW_TANKMAN, CrewTankmanContextMenuHandler))
 
 
 def getViewSettings():
@@ -39,24 +42,20 @@ def getViewSettings():
     from gui.Scaleform.daapi.view.lobby.hangar.ranked_battles_widget import RankedBattlesHangarWidget
     from gui.Scaleform.daapi.view.lobby.hangar.battle_royale_tournament_widget import BattleRoyaleTournamentHangarWidget
     from gui.Scaleform.daapi.view.lobby.hangar.alert_message_block import AlertMessageBlock
-    from gui.Scaleform.daapi.view.lobby.hangar.daily_quest_widget import DailyQuestWidget
     from gui.Scaleform.daapi.view.lobby.hangar.progressive_reward_widget import ProgressiveRewardWidget
     from gui.Scaleform.daapi.view.lobby.hangar.ammunition_panel_inject import AmmunitionPanelInject
     from gui.impl.lobby.battle_pass.battle_pass_entry_point_view import BattlePassEntryPointComponent
     from gui.impl.lobby.battle_pass.battle_pass_secondary_entry_point import BattlePassSecondaryEntryPointWidget
     from gui.impl.lobby.hangar.random.random_hangar import HangarWindow
     from gui.impl.lobby.vehicle_hub.vehicle_hub_main_view import VehicleHubWindow
-    from gui.Scaleform.daapi.view.lobby.hangar.entry_points.craftmachine_entry_point import CraftMachineEntryPoint
-    from gui.Scaleform.daapi.view.lobby.hangar.entry_points.mapbox_entry_point import MapBoxEntryPoint
-    from gui.Scaleform.daapi.view.lobby.hangar.entry_points.marathon_entry_point import MarathonEntryPoint
     from gui.Scaleform.daapi.view.lobby.hangar.battle_matters_entry_point import BattleMattersEntryPoint
     from gui.Scaleform.daapi.view.lobby.hangar.TournamentsView import TournamentsView
-    from gui.impl.lobby.personal_reserves.personal_reserves_widget_inject import PersonalReservesWidgetInject
     from gui.Scaleform.daapi.view.lobby.hangar.carousel_event_entry_widget import CarouselEventEntryHolder
     from gui.Scaleform.daapi.view.lobby.hangar.prestige_hangar_entry_point_inject import PrestigeHangarEntryPointInject
     from gui.Scaleform.daapi.view.lobby.hangar.Hangar import Hangar
     from gui.impl.lobby.player_satisfaction_rating.player_satisfaction_widget import PlayerSatisfactionWidget
-    return (ViewSettings(VIEW_ALIAS.LOBBY_HANGAR, HangarWindow, '', WindowLayer.SUB_VIEW, VIEW_ALIAS.LOBBY_HANGAR, ScopeTemplates.LOBBY_SUB_SCOPE),
+    return (
+     ViewSettings(VIEW_ALIAS.LOBBY_HANGAR, HangarWindow, '', WindowLayer.SUB_VIEW, VIEW_ALIAS.LOBBY_HANGAR, ScopeTemplates.LOBBY_SUB_SCOPE),
      ViewSettings(VIEW_ALIAS.LEGACY_LOBBY_HANGAR, Hangar, 'hangar.swf', WindowLayer.SUB_VIEW, VIEW_ALIAS.LEGACY_LOBBY_HANGAR, ScopeTemplates.LOBBY_SUB_SCOPE),
      ViewSettings(VIEW_ALIAS.LOBBY_STRONGHOLD, StrongholdView, 'StrongholdView.swf', WindowLayer.SUB_VIEW, VIEW_ALIAS.LOBBY_STRONGHOLD, ScopeTemplates.LOBBY_SUB_SCOPE),
      ViewSettings(VIEW_ALIAS.STRONGHOLD_ADS, StrongholdAdsView, 'browserScreen.swf', WindowLayer.TOP_SUB_VIEW, VIEW_ALIAS.STRONGHOLD_ADS, ScopeTemplates.LOBBY_SUB_SCOPE),
@@ -80,7 +79,6 @@ def getViewSettings():
      ComponentSettings(HANGAR_ALIASES.ALERT_MESSAGE_BLOCK, AlertMessageBlock, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(HANGAR_ALIASES.BATTLE_ROYALE_TOURNAMENT, BattleRoyaleTournamentHangarWidget, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(HANGAR_ALIASES.PROGRESSIVE_REWARD_WIDGET, ProgressiveRewardWidget, ScopeTemplates.DEFAULT_SCOPE),
-     ComponentSettings(HANGAR_ALIASES.DAILY_QUEST_WIDGET, DailyQuestWidget, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(HANGAR_ALIASES.BATTLEPASS_TANK_CAROUSEL, BattlePassTankCarousel, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(HANGAR_ALIASES.BATTLE_PASSS_ENTRY_POINT, BattlePassEntryPointComponent, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(HANGAR_ALIASES.LIVE_OPS_WEB_EVENTS_ENTRY_POINT, LiveOpsWebEventsEntryPointComponent, ScopeTemplates.DEFAULT_SCOPE),
@@ -88,32 +86,42 @@ def getViewSettings():
      ComponentSettings(HANGAR_ALIASES.AMMUNITION_PANEL_INJECT, AmmunitionPanelInject, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(HANGAR_ALIASES.CREW_PANEL_INJECT, CrewPanelInject, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(HANGAR_ALIASES.PRESTIGE_PROGRESS_WIDGET, PrestigeHangarEntryPointInject, ScopeTemplates.DEFAULT_SCOPE),
-     ComponentSettings(HANGAR_ALIASES.CRAFT_MACHINE_ENTRY_POINT, CraftMachineEntryPoint, ScopeTemplates.DEFAULT_SCOPE),
-     ComponentSettings(HANGAR_ALIASES.MAPBOX_ENTRY_POINT, MapBoxEntryPoint, ScopeTemplates.DEFAULT_SCOPE),
-     ComponentSettings(HANGAR_ALIASES.MARATHON_ENTRY_POINT, MarathonEntryPoint, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(HANGAR_ALIASES.BATTLE_MATTERS_ENTRY_POINT, BattleMattersEntryPoint, ScopeTemplates.DEFAULT_SCOPE),
-     ComponentSettings(HANGAR_ALIASES.PERSONAL_RESERVES_WIDGET_INJECT, PersonalReservesWidgetInject, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(HANGAR_ALIASES.CAROUSEL_EVENT_ENTRY_HOLDER, CarouselEventEntryHolder, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(HANGAR_ALIASES.PLAYER_SATISFACTION_WIDGET, PlayerSatisfactionWidget, ScopeTemplates.DEFAULT_SCOPE))
 
 
 def getBusinessHandlers():
-    return (HangarPackageBusinessHandler(),)
+    return (
+     HangarPackageBusinessHandler(),)
 
 
 class HangarPackageBusinessHandler(PackageBusinessHandler):
 
     def __init__(self):
-        listeners = ((VIEW_ALIAS.TANK_CAROUSEL_FILTER_POPOVER, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.HANGAR_TANK_CAROUSEL_FILTER_POPOVER, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.BATTLEPASS_CAROUSEL_FILTER_POPOVER, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.LOBBY_HANGAR, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.LEGACY_LOBBY_HANGAR, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.LOBBY_STRONGHOLD, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.STRONGHOLD_ADS, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.BROWSER_VIEW, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.LOBBY_TOURNAMENTS, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.FITTING_SELECT_POPOVER, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.VEHICLES_FILTER_POPOVER, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.VEHICLE_HUB, self.loadViewByCtxEvent))
+        listeners = (
+         (
+          VIEW_ALIAS.TANK_CAROUSEL_FILTER_POPOVER, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.HANGAR_TANK_CAROUSEL_FILTER_POPOVER, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.BATTLEPASS_CAROUSEL_FILTER_POPOVER, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.LOBBY_HANGAR, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.LEGACY_LOBBY_HANGAR, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.LOBBY_STRONGHOLD, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.STRONGHOLD_ADS, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.BROWSER_VIEW, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.LOBBY_TOURNAMENTS, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.FITTING_SELECT_POPOVER, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.VEHICLES_FILTER_POPOVER, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.VEHICLE_HUB, self.loadViewByCtxEvent))
         super(HangarPackageBusinessHandler, self).__init__(listeners, app_settings.APP_NAME_SPACE.SF_LOBBY, EVENT_BUS_SCOPE.LOBBY)

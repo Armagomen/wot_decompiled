@@ -1,10 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicles/components/vehicle_prefabs.py
 from __future__ import absolute_import
-import logging
-import typing
-import weakref
-import CGF
+import logging, typing, weakref, CGF
 from events_containers.common.containers import ContainersListener
 from events_containers.components.life_cycle import IComponentLifeCycleListenerLogic
 from events_handler import eventHandler
@@ -58,11 +53,11 @@ class VehiclePrefabSpawner(ContainersListener, IComponentLifeCycleListenerLogic)
         if not root.isValid:
             _logger.error('[VehiclePrefabSpawner] failed to load prefab: %s', self.__prefabPath)
             return
-        elif self.__vehicle is None:
-            _logger.debug('[VehiclePrefabSpawner] removeGameObject (onLoaded) for %s', self.__vehicleID)
-            CGF.removeGameObject(root)
-            return
         else:
+            if self.__vehicle is None:
+                _logger.debug('[VehiclePrefabSpawner] removeGameObject (onLoaded) for %s', self.__vehicleID)
+                CGF.removeGameObject(root)
+                return
             self.__prefabRoot = root
             return
 

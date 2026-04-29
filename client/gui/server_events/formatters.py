@@ -1,10 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/server_events/formatters.py
-import re
-import types
+import re, types
 from collections import namedtuple
-import logging
-import ArenaType
+import logging, ArenaType
 from constants import ARENA_BONUS_TYPE, GAMEPLAY_NAMES_WITH_DISABLED_QUESTS
 from gui import makeHtmlString
 from gui.Scaleform.locale.QUESTS import QUESTS
@@ -26,15 +22,17 @@ def getLinkedActionID(groupID, actions):
     delimiter = ':'
     if groupID and delimiter in groupID:
         splittedGroup = groupID.split(delimiter)
-        splitID = splittedGroup[-1]
+        splitID = splittedGroup[(-1)]
         if splittedGroup and splitID in actions:
             return splitID
-    return None
+    return
 
 
 def parseComplexToken(tokenID):
     match = re.match(COMPLEX_TOKEN_TEMPLATE, tokenID)
-    return TokenComplex(True, match.group('styleID'), match.group('webID')) if match else TokenComplex(False, '', '')
+    if match:
+        return TokenComplex(True, match.group('styleID'), match.group('webID'))
+    return TokenComplex(False, '', '')
 
 
 class DISCOUNT_TYPE(CONST_CONTAINER):
@@ -64,12 +62,12 @@ class RELATIONS(CONST_CONTAINER):
     NEQ = 'notEqual'
     LSQ = 'lessOrEqual'
     GTQ = 'greaterOrEqual'
-    _OPPOSITE = {GT: LSQ,
-     LS: GTQ,
-     EQ: NEQ,
-     NEQ: EQ,
-     LSQ: GT,
-     GTQ: LS}
+    _OPPOSITE = {GT: LSQ, 
+       LS: GTQ, 
+       EQ: NEQ, 
+       NEQ: EQ, 
+       LSQ: GT, 
+       GTQ: LS}
 
     @classmethod
     def getOppositeRelation(cls, relation):
@@ -107,7 +105,10 @@ class UiElement(object):
         return self._dict
 
     def getLabel(self):
-        return self._dict[self._labelFieldName] if self._labelFieldName is not None else None
+        if self._labelFieldName is not None:
+            return self._dict[self._labelFieldName]
+        else:
+            return
 
     def setIndex(self, index):
         if self._labelFieldName is not None and self._labelFieldName in self._dict:
@@ -138,21 +139,22 @@ def indexing(uiElements, startIndex=1, step=1):
 
 
 def _packIconTextElement(label='', icon='', dataType=None, dataValue=None, counter='', iconAutoSize=True):
-    return UiElement({'linkage': 'QuestIconElement_UI',
-     'label': label,
-     'icon': icon,
-     'dataType': dataType,
-     'dataValue': dataValue,
-     'counter': counter,
-     'iconAutoSize': iconAutoSize}, 'label')
+    return UiElement({'linkage': 'QuestIconElement_UI', 
+       'label': label, 
+       'icon': icon, 
+       'dataType': dataType, 
+       'dataValue': dataValue, 
+       'counter': counter, 
+       'iconAutoSize': iconAutoSize}, 'label')
 
 
 def formatRelation(value, relation, relationI18nType=RELATIONS_SCHEME.DEFAULT):
     relation = relation or 'equal'
     if not isinstance(value, types.StringTypes):
         value = backport.getNiceNumberFormat(value)
-    return makeHtmlString('html_templates:lobby/quests', 'relation', {'relation': i18n.makeString('#quests:details/relations%d/%s' % (relationI18nType, relation)),
-     'value': value})
+    return makeHtmlString('html_templates:lobby/quests', 'relation', {'relation': i18n.makeString('#quests:details/relations%d/%s' % (
+                  relationI18nType, relation)), 
+       'value': value})
 
 
 def makeUniquePath(path, name):
@@ -170,12 +172,14 @@ def formatStrDiscount(discountVal):
                 txtKey = QUESTS.ACTION_DISCOUNT_DISCOUNTTEXT
         else:
             txtKey = QUESTS.ACTION_DISCOUNT_TRADEINLABELTEXT
-        return '{} {}'.format(i18n.makeString(txtKey), i18n.makeString(QUESTS.ACTION_DISCOUNT_PERCENT, value=discountVal.discountValue))
+        return ('{} {}').format(i18n.makeString(txtKey), i18n.makeString(QUESTS.ACTION_DISCOUNT_PERCENT, value=discountVal.discountValue))
     if dt == DISCOUNT_TYPE.MULTIPLIER:
         return i18n.makeString(QUESTS.ACTION_DISCOUNT_MODIFIER, count=discountVal.discountValue)
     if dt == DISCOUNT_TYPE.GOLD:
         return formatGoldPrice(discountVal.discountValue)
-    return formatCreditPrice(discountVal.discountValue) if dt == DISCOUNT_TYPE.CREDITS else ''
+    if dt == DISCOUNT_TYPE.CREDITS:
+        return formatCreditPrice(discountVal.discountValue)
+    return ''
 
 
 def formatMultiplierValue(value):
@@ -193,43 +197,43 @@ def formatVehicleLevel(value):
 def formatCreditPriceNormalCard(value):
     value = backport.getIntegralFormat(value)
     icon = gui_icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_CREDITSICON_1, vSpace=-1)
-    return '{} {}'.format(text_styles.creditsTextNormalCard(value), icon)
+    return ('{} {}').format(text_styles.creditsTextNormalCard(value), icon)
 
 
 def formatGoldPriceNormalCard(value):
     value = backport.getIntegralFormat(value)
     icon = gui_icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_GOLDICON_1, vSpace=-1)
-    return '{} {}'.format(text_styles.goldTextNormalCard(value), icon)
+    return ('{} {}').format(text_styles.goldTextNormalCard(value), icon)
 
 
 def formatGoldPrice(value):
     value = backport.getIntegralFormat(value)
     icon = gui_icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_GOLDICON_2, vSpace=-4)
-    return '{} {}'.format(text_styles.gold(value), icon)
+    return ('{} {}').format(text_styles.gold(value), icon)
 
 
 def formatCreditPrice(value):
     value = backport.getIntegralFormat(value)
     icon = gui_icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_CREDITSICON_2, vSpace=-4)
-    return '{} {}'.format(text_styles.credits(value), icon)
+    return ('{} {}').format(text_styles.credits(value), icon)
 
 
 def formatGoldPriceBig(value):
     value = backport.getIntegralFormat(value)
     icon = gui_icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_GOLDICON_1, vSpace=-1)
-    return '{} {}'.format(text_styles.goldTextBig(value), icon)
+    return ('{} {}').format(text_styles.goldTextBig(value), icon)
 
 
 def formatCreditPriceBig(value):
     value = backport.getIntegralFormat(value)
     icon = gui_icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_CREDITSICON_1, vSpace=-1)
-    return '{} {}'.format(text_styles.creditsTextBig(value), icon)
+    return ('{} {}').format(text_styles.creditsTextBig(value), icon)
 
 
 def formatCrystalPrice(value):
     value = backport.getIntegralFormat(value)
     icon = gui_icons.makeImageTag(RES_ICONS.MAPS_ICONS_LIBRARY_CRYSTALICON_2, vSpace=-4)
-    return '{} {}'.format(text_styles.crystal(value), icon)
+    return ('{} {}').format(text_styles.crystal(value), icon)
 
 
 def formatYellow(msg, *args, **kwargs):
@@ -241,8 +245,7 @@ def formatGold(msg, *args, **kwargs):
 
 
 def formatIndex(index, msg):
-    return makeHtmlString('html_templates:lobby/quests', 'index', {'index': index,
-     'label': msg})
+    return makeHtmlString('html_templates:lobby/quests', 'index', {'index': index, 'label': msg})
 
 
 def packTextBlock(label, value=None, relation=None, questID=None, isAvailable=True, fullLabel=None, counterValue=0, showDone=False, relationI18nType=RELATIONS_SCHEME.DEFAULT, counterDescr=None):
@@ -250,53 +253,53 @@ def packTextBlock(label, value=None, relation=None, questID=None, isAvailable=Tr
         value = formatRelation(value, relation, relationI18nType)
     if counterDescr is None:
         counterDescr = i18n.makeString('#quests:quests/table/amount')
-    blockData = {'linkage': 'CounterTextElement_UI',
-     'label': label,
-     'fullLabel': fullLabel,
-     'value': value,
-     'linkID': questID,
-     'isNotAvailable': not isAvailable,
-     'counterValue': counterValue,
-     'counterDescr': counterDescr,
-     'showDone': showDone}
+    blockData = {'linkage': 'CounterTextElement_UI', 
+       'label': label, 
+       'fullLabel': fullLabel, 
+       'value': value, 
+       'linkID': questID, 
+       'isNotAvailable': not isAvailable, 
+       'counterValue': counterValue, 
+       'counterDescr': counterDescr, 
+       'showDone': showDone}
     return UiElement(blockData, 'label')
 
 
 def packSimpleBonusesBlock(bonusesList, endlineSymbol='', complexTooltip=''):
-    data = {'linkage': 'QuestTextAwardBlockUI',
-     'items': bonusesList,
-     'separator': ', ',
-     'ellipsis': '..',
-     'endline': endlineSymbol,
-     'complexTooltip': complexTooltip}
+    data = {'linkage': 'QuestTextAwardBlockUI', 
+       'items': bonusesList, 
+       'separator': ', ', 
+       'ellipsis': '..', 
+       'endline': endlineSymbol, 
+       'complexTooltip': complexTooltip}
     return UiElement(data)
 
 
 def packLongBonusesBlock(bonusesList, endlineSymbol='', complexTooltip='', linesLimit=-1):
-    data = {'linkage': 'LongQuestTextAwardBlockUI',
-     'items': bonusesList,
-     'separator': ',\n',
-     'ellipsis': '..',
-     'endline': endlineSymbol,
-     'linesLimit': linesLimit,
-     'complexTooltip': complexTooltip}
+    data = {'linkage': 'LongQuestTextAwardBlockUI', 
+       'items': bonusesList, 
+       'separator': ',\n', 
+       'ellipsis': '..', 
+       'endline': endlineSymbol, 
+       'linesLimit': linesLimit, 
+       'complexTooltip': complexTooltip}
     return UiElement(data)
 
 
 def packNewStyleBonusesBlock(bonusesList, endlineSymbol=''):
-    data = {'linkage': QUEST_AWARD_BLOCK_ALIASES.QUEST_BIG_ICON_AWARD_BLOCK,
-     'items': bonusesList,
-     'separator': ', ',
-     'ellipsis': '..',
-     'endline': endlineSymbol,
-     'showInNewLine': False}
+    data = {'linkage': QUEST_AWARD_BLOCK_ALIASES.QUEST_BIG_ICON_AWARD_BLOCK, 
+       'items': bonusesList, 
+       'separator': ', ', 
+       'ellipsis': '..', 
+       'endline': endlineSymbol, 
+       'showInNewLine': False}
     return UiElement(data)
 
 
 def packVehiclesBonusBlock(label, questID):
-    blockData = {'linkage': 'VehiclesBonusTextElement_UI',
-     'label': label,
-     'questID': questID}
+    blockData = {'linkage': 'VehiclesBonusTextElement_UI', 
+       'label': label, 
+       'questID': questID}
     return UiElement(blockData, 'label')
 
 
@@ -313,8 +316,8 @@ def _packAchieveElement(userName, iconPath, block, record, value=0):
 
 
 def packCustomizations(elements):
-    return UiElement({'linkage': 'CustomizationsBlockUI',
-     'list': elements})
+    return UiElement({'linkage': 'CustomizationsBlockUI', 
+       'list': elements})
 
 
 ProgressData = namedtuple('ProgressData', 'rendererLinkage, progressList')
@@ -371,8 +374,7 @@ def getUniqueBonusTypes(bonusTypes):
 def packMissionPrebattleCondition(label, icons='', tooltip=''):
     if icons:
         label = text_styles.concatStylesWithSpace(icons, label)
-    return {'label': label,
-     'tooltip': tooltip}
+    return {'label': label, 'tooltip': tooltip}
 
 
 def packMissionCamoElement(camoTypeName, width=32, height=32, vSpace=-11):
@@ -381,7 +383,9 @@ def packMissionCamoElement(camoTypeName, width=32, height=32, vSpace=-11):
 
 def packMissionkMapElement(arenaTypeID):
     mapName = getMapName(arenaTypeID)
-    return _IconData('', mapName) if mapName else mapName
+    if mapName:
+        return _IconData('', mapName)
+    return mapName
 
 
 def getMapName(arenaTypeID):
@@ -429,10 +433,12 @@ def _titleRelationFormat(value, relation, relationI18nType=RELATIONS_SCHEME.DEFA
             value = backport.getNiceNumberFormat(value)
         relation = i18n.makeString('#quests:details/relations%s/%s' % (relationI18nType, relation))
         return '%s %s' % (relation, value)
-    elif titleKey:
-        return i18n.makeString(titleKey)
     else:
-        return i18n.makeString(QUESTS.DETAILS_CONDITIONS_TARGET_TITLE)
+        if titleKey:
+            return i18n.makeString(titleKey)
+        else:
+            return i18n.makeString(QUESTS.DETAILS_CONDITIONS_TARGET_TITLE)
+
         return
 
 
@@ -470,15 +476,21 @@ def minimizedTitleComplexRelationFormat(value, relation, titleKey=None):
 
 
 def titleCumulativeFormat(current, total):
-    return text_styles.promoSubTitle('%s / %s' % (backport.getNiceNumberFormat(int(current)), backport.getNiceNumberFormat(int(total))))
+    return text_styles.promoSubTitle('%s / %s' % (
+     backport.getNiceNumberFormat(int(current)),
+     backport.getNiceNumberFormat(int(total))))
 
 
 def titleCumulativeFormatPlain(current, total):
-    return text_styles.promoSubTitlePlain('%s / %s' % (backport.getNiceNumberFormat(int(current)), backport.getNiceNumberFormat(int(total))))
+    return text_styles.promoSubTitlePlain('%s / %s' % (
+     backport.getNiceNumberFormat(int(current)),
+     backport.getNiceNumberFormat(int(total))))
 
 
 def personalTitleCumulativeFormat(current, total):
-    return i18n.makeString('%s / %s' % (backport.getNiceNumberFormat(int(current)), backport.getNiceNumberFormat(int(total))))
+    return i18n.makeString('%s / %s' % (
+     backport.getNiceNumberFormat(int(current)),
+     backport.getNiceNumberFormat(int(total))))
 
 
 def minimizedTitleCumulativeFormat(current, total):

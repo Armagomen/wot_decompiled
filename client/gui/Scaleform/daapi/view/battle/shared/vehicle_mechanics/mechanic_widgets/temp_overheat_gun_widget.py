@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/vehicle_mechanics/mechanic_widgets/temp_overheat_gun_widget.py
 from __future__ import absolute_import, division
 import typing
 from cache import last_cached_method
@@ -51,7 +49,10 @@ class TemperatureOverheatGunWidget(TemperatureGunOverheatWidgetMeta, ContainersL
         self.__invalidateProgresses(state.temperatureProgress, self.__overheatState.overheatTimeLeft(state))
 
     def _getViewUpdaters(self):
-        return [VehicleMechanicLifeCycleUpdater(VehicleMechanic.OVERHEAT_GUN, self), VehicleMechanicPassengerUpdater(VehicleMechanic.OVERHEAT_GUN, self), TemperatureOverheatGunStatesUpdater(self)]
+        return [
+         VehicleMechanicLifeCycleUpdater(VehicleMechanic.OVERHEAT_GUN, self),
+         VehicleMechanicPassengerUpdater(VehicleMechanic.OVERHEAT_GUN, self),
+         TemperatureOverheatGunStatesUpdater(self)]
 
     def __invalidateAll(self, tempState, overheatState, isInstantly=False):
         self.__tempState, self.__overheatState = tempState, overheatState

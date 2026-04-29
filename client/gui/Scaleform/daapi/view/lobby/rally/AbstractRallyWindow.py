@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/rally/AbstractRallyWindow.py
 from adisp import adisp_process
 from debug_utils import LOG_ERROR
 from gui.Scaleform.daapi.view.meta.AbstractRallyWindowMeta import AbstractRallyWindowMeta
@@ -40,7 +38,8 @@ class AbstractRallyWindow(AbstractRallyWindowMeta, IPrbListener):
     def _requestViewLoad(self, flashAlias, itemID):
         pyAlias = self._getPythonAlias(flashAlias)
         if pyAlias is not None:
-            self._viewToLoad = (flashAlias, pyAlias, itemID)
+            self._viewToLoad = (
+             flashAlias, pyAlias, itemID)
             self._currentView = flashAlias
             self.as_loadViewS(flashAlias, pyAlias)
         else:

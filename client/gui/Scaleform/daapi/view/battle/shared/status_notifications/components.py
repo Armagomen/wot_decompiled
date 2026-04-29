@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/status_notifications/components.py
+from __future__ import absolute_import
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -35,14 +34,14 @@ class StatusNotificationItem(object):
         super(StatusNotificationItem, self).__init__()
         self.__updateCallback = updateCallback
         self._isPulseVisible = False
-        self._vo = {'typeID': self.getViewTypeID(),
-         'title': '',
-         'description': '',
-         'totalTime': 0.0,
-         'currentTime': 0.0,
-         'iconName': self.NOT_CHANGE_DEFAULT_ICON,
-         'iconSmallName': self.NOT_CHANGE_DEFAULT_ICON,
-         'pulseVisible': self._getIsPulseVisible()}
+        self._vo = {'typeID': self.getViewTypeID(), 
+           'title': '', 
+           'description': '', 
+           'totalTime': 0.0, 
+           'currentTime': 0.0, 
+           'iconName': self.NOT_CHANGE_DEFAULT_ICON, 
+           'iconSmallName': self.NOT_CHANGE_DEFAULT_ICON, 
+           'pulseVisible': self._getIsPulseVisible()}
         self._isVisible = False
 
     def start(self):

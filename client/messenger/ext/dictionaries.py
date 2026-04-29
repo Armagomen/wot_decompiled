@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/ext/dictionaries.py
-import re
-import types
-import sre_compile
-import ResMgr
+import re, types, sre_compile, ResMgr
 from debug_utils import LOG_CURRENT_EXCEPTION, LOG_ERROR
 from helpers import html
 _defaultReplacementFunction = lambda word: '*' * len(word)
@@ -82,7 +77,7 @@ class BasicOLDictionary(ObsceneLanguageDictionary):
                     words[idx] = self.replace(word)
                     break
 
-        return ' '.join(words)
+        return (' ').join(words)
 
 
 class SpecialOLDictionary(ObsceneLanguageDictionary):
@@ -124,7 +119,7 @@ class SpecialOLDictionary(ObsceneLanguageDictionary):
                 if offset:
                     processed.append(text[offset:])
                 if processed:
-                    text = ''.join(processed)
+                    text = ('').join(processed)
 
         except Exception:
             LOG_ERROR('There is exception in special bad words filter')
@@ -189,7 +184,7 @@ class ChinaOLDictionary(SpecialOLDictionary):
                 if offset:
                     processed.append(text[offset:])
                 if processed:
-                    text = ''.join(processed)
+                    text = ('').join(processed)
 
         except Exception:
             LOG_ERROR('There is exception in special bad words filter')
@@ -239,4 +234,4 @@ class DomainNameDictionary(object):
                     words[idx] = self.replace(word)
                     break
 
-        return ' '.join(words)
+        return (' ').join(words)

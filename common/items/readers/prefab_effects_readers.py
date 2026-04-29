@@ -1,25 +1,75 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/items/readers/prefab_effects_readers.py
-import typing
-import ResMgr
+import typing, ResMgr
+from constants import SHELL_TYPES_INDICES
+from debug_utils import LOG_ERROR
 from items import _xml
 from items.components import component_constants
-from soft_exception import SoftException
 EffectDesc = typing.NamedTuple('EffectDesc', (('prefab', str),))
 ShotEffectItemDesc = typing.NamedTuple('ShotEffectItemDesc', (('prefab', str), ('decal', int)))
-EffectDescMap = typing.Dict[str, EffectDesc]
-ShotEffectGroups = typing.Dict[str, ShotEffectItemDesc]
-GunEffectDesc = typing.NamedTuple('GunEffectDesc', (('idx', int), ('explosion', EffectDesc), ('groundwave', EffectDesc)))
-GunEffectDescMap = typing.Dict[str, GunEffectDesc]
-ShotEffectDesc = typing.NamedTuple('ShotEffectDesc', (('idx', int), ('groups', ShotEffectGroups)))
-ShotEffects = typing.NamedTuple('ShotEffects', (('effects', typing.Sequence[ShotEffectDesc]), ('indexes', typing.Dict[str, int])))
-DecalDesc = typing.NamedTuple('DecalDesc', (('idx', int), ('priority', int), ('prefab', str)))
-Decals = typing.NamedTuple('Decals', (('effects', typing.Sequence[DecalDesc]), ('indexes', typing.Dict[str, int])))
-Defaults = typing.NamedTuple('Defaults', (('gun', str), ('shot', str)))
+EffectDescMap = typing.Dict[(str, EffectDesc)]
+ShotEffectGroups = typing.Dict[(str, ShotEffectItemDesc)]
+GunEffectDesc = typing.NamedTuple('GunEffectDesc', (
+ (
+  'idx', int),
+ (
+  'explosion', EffectDesc),
+ (
+  'groundwave', EffectDesc)))
+GunEffectDescMap = typing.Dict[(str, GunEffectDesc)]
+ShotEffectDesc = typing.NamedTuple('ShotEffectDesc', (
+ (
+  'idx', int),
+ (
+  'defaultHit', ShotEffectItemDesc),
+ (
+  'defaultVehicleHit', ShotEffectItemDesc),
+ (
+  'defaultSceneHit', ShotEffectItemDesc),
+ (
+  'groups', ShotEffectGroups)))
+ShotEffects = typing.NamedTuple('ShotEffects', (
+ (
+  'effects', typing.Sequence[ShotEffectDesc]),
+ (
+  'indexes', typing.Dict[(str, int)])))
+DecalDesc = typing.NamedTuple('DecalDesc', (
+ (
+  'idx', int),
+ (
+  'priority', int),
+ (
+  'prefab', str)))
+Decals = typing.NamedTuple('Decals', (
+ (
+  'effects', typing.Sequence[DecalDesc]),
+ (
+  'indexes', typing.Dict[(str, int)])))
+ShotDefaults = typing.NamedTuple('ShotDefaults', (
+ (
+  'default', str),
+ (
+  'shellTypeEffects', typing.Dict[(str, str)])))
+Defaults = typing.NamedTuple('Defaults', (
+ (
+  'gun', str),
+ (
+  'shot', ShotDefaults)))
 
 def readDefaultPrefabEffects(xmlCtx, section, subsectionName):
     section = _xml.getSubsection(xmlCtx, section, subsectionName)
-    return Defaults(_xml.readStringOrEmpty(xmlCtx, section, 'gun'), _xml.readStringOrEmpty(xmlCtx, section, 'shot'))
+    gunDefault = _xml.readStringOrEmpty(xmlCtx, section, 'gun').strip()
+    shotDefault = ''
+    shotShellTypeEffects = {}
+    shotSection = section['shot']
+    if shotSection is not None:
+        for sectionName, subsection in shotSection.items():
+            if sectionName == 'default':
+                shotDefault = subsection.asString.strip() or shotDefault
+            elif sectionName in SHELL_TYPES_INDICES:
+                shotShellTypeEffects[sectionName] = subsection.asString.strip()
+            else:
+                LOG_ERROR(('Unrecognized shell type name when reading defaultPrefabEffects: {}').format(sectionName))
+
+    return Defaults(gunDefault, ShotDefaults(shotDefault, shotShellTypeEffects))
 
 
 def readGunEffects(xmlPath):
@@ -27,10 +77,12 @@ def readGunEffects(xmlPath):
     if section is None:
         _xml.raiseWrongXml(None, xmlPath, 'can not open or read')
     res = {}
-    xmlCtx = (None, xmlPath)
+    xmlCtx = (
+     None, xmlPath)
     idx = 0
     for sname, subsection in section.items():
-        ctx = (xmlCtx, sname)
+        ctx = (
+         xmlCtx, sname)
         res[sname] = _readGunEffect(ctx, subsection, idx)
         idx += 1
 
@@ -43,9 +95,11 @@ def readShotEffects(xmlPath, decals):
         _xml.raiseWrongXml(None, xmlPath, 'can not open or read')
     effects = []
     indexes = {}
-    xmlCtx = (None, xmlPath)
+    xmlCtx = (
+     None, xmlPath)
     for sname, subsection in section.items():
-        ctx = (xmlCtx, sname)
+        ctx = (
+         xmlCtx, sname)
         indexes[sname] = len(effects)
         effects.append(_readShotEffect(ctx, subsection, decals, len(effects)))
 
@@ -58,9 +112,11 @@ def readDecals(xmlPath):
         _xml.raiseWrongXml(None, xmlPath, 'can not open or read')
     decals = []
     indexes = {}
-    xmlCtx = (None, xmlPath)
+    xmlCtx = (
+     None, xmlPath)
     for sname, subsection in section.items():
-        ctx = (xmlCtx, sname)
+        ctx = (
+         xmlCtx, sname)
         indexes[sname] = len(decals)
         decals.append(_readDecal(ctx, subsection, len(decals)))
 
@@ -90,11 +146,23 @@ def _readShotEffectItem(xmlCtx, section, decals):
 
 def _readShotEffect(xmlCtx, section, decals, idx):
     res = {}
+    defaultHit = ShotEffectItemDesc('', component_constants.INVALID_EFFECT_INDEX)
+    defaultVehicleHit = ShotEffectItemDesc('', component_constants.INVALID_EFFECT_INDEX)
+    defaultSceneHit = ShotEffectItemDesc('', component_constants.INVALID_EFFECT_INDEX)
     for sname, subsection in section.items():
-        xmlCtx = (xmlCtx, sname)
-        res[sname] = _readShotEffectItem(xmlCtx, subsection, decals)
+        xmlCtx = (
+         xmlCtx, sname)
+        shotEffectItem = _readShotEffectItem(xmlCtx, subsection, decals)
+        if sname == 'defaultHit':
+            defaultHit = shotEffectItem
+        elif sname == 'defaultVehicleHit':
+            defaultVehicleHit = shotEffectItem
+        elif sname == 'defaultSceneHit':
+            defaultSceneHit = shotEffectItem
+        else:
+            res[sname] = shotEffectItem
 
-    return ShotEffectDesc(idx, res)
+    return ShotEffectDesc(idx, defaultHit, defaultVehicleHit, defaultSceneHit, res)
 
 
 def _readDecal(xmlCtx, section, idx):

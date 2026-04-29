@@ -1,14 +1,10 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/user_missions/missions_group_packers.py
-import locale
-import logging
-import time
-import weakref
+import locale, logging, time, weakref
 from collections import namedtuple, defaultdict, OrderedDict
 from CurrentVehicle import g_currentVehicle
 from Event import EventManager, Event
 from constants import EVENT_TYPE, PREMIUM_TYPE
 from gui.Scaleform.daapi.settings import BUTTON_LINKAGES
+from gui.Scaleform.daapi.view.common.battle_royale.br_helpers import sortQuestsByProgressionPointBonus
 from gui.Scaleform.daapi.view.lobby.event_boards.event_helpers import EventInfo, EventHeader
 from gui.Scaleform.daapi.view.lobby.missions.awards_formatters import MarathonAwardComposer
 from gui.Scaleform.daapi.view.lobby.missions.missions_helper import getMissionInfoData
@@ -53,14 +49,15 @@ class GuiGroupBlockID(object):
     MARATHON_GROUPED_BLOCK = 'marathonGroupedBlock'
     ELEN_QUEST_BLOCK = 'elenQuest'
     PREMIUM_QUESTS_BLOCK = 'premiumQuests'
-    ORDER = (BASE,
+    ORDER = (
+     BASE,
      PREMIUM_QUESTS_BLOCK,
      UNGROUPED_BLOCK,
      REGULAR_GROUPED_BLOCK,
      MOTIVE_QUESTS_BLOCK,
      MARATHON_GROUPED_BLOCK,
      ELEN_QUEST_BLOCK)
-    ORDER_INDICES = dict(((n, i) for i, n in enumerate(ORDER)))
+    ORDER_INDICES = dict((n, i) for i, n in enumerate(ORDER))
 
     @classmethod
     def getBlockPriority(cls, blockID):
@@ -70,9 +67,9 @@ class GuiGroupBlockID(object):
 def getGroupPackerByContextID(contextID, proxy):
     if contextID == DEFAULTS_GROUPS.UNGROUPED_QUESTS:
         return _UngroupedQuestsBlockInfo()
-    elif contextID == DEFAULTS_GROUPS.MOTIVE_QUESTS:
-        return _MotiveQuestsBlockInfo()
     else:
+        if contextID == DEFAULTS_GROUPS.MOTIVE_QUESTS:
+            return _MotiveQuestsBlockInfo()
         if contextID is not None and contextID != DEFAULTS_GROUPS.FOR_CURRENT_VEHICLE:
             groups = proxy.getGroups()
             group = groups.get(contextID)
@@ -176,7 +173,8 @@ class VehicleGroupBuilder(_EventsBlockBuilder):
         self.__em.clear()
 
     def _getDefaultBlocks(self):
-        return [_VehicleQuestsBlockInfo()]
+        return [
+         _VehicleQuestsBlockInfo()]
 
     def __onVehicleChanged(self):
         self.onBlocksDataChanged()
@@ -267,10 +265,13 @@ class QuestsGroupsBuilder(GroupedEventsBlocksBuilder):
         return
 
     def _getDefaultBlocks(self):
-        return [_MotiveQuestsBlockInfo(), _UngroupedQuestsBlockInfo()]
+        return [_MotiveQuestsBlockInfo(),
+         _UngroupedQuestsBlockInfo()]
 
     def _createGroupedEventsBlock(self, group):
-        return _MapsTrainingGroupedQuestsBlockInfo(group) if events_helpers.isMapsTraining(group.getID()) else _GroupedQuestsBlockInfo(group)
+        if events_helpers.isMapsTraining(group.getID()):
+            return _MapsTrainingGroupedQuestsBlockInfo(group)
+        return _GroupedQuestsBlockInfo(group)
 
     def _getEventsGroups(self):
         return self.eventsCache.getGroups(filterFunc=lambda g: g.isRegularQuest())
@@ -325,7 +326,8 @@ class _EventsBlockInfo(object):
         self._cachedInfo.clear()
 
     def getSortPriority(self):
-        return (self._getGuiBlockPriority(), self._getAdvancePriority())
+        return (
+         self._getGuiBlockPriority(), self._getAdvancePriority())
 
     def buildEventsBlockData(self, srvEvents, filterFunc):
         self._suitableEvents = self.findEvents(srvEvents)
@@ -353,24 +355,24 @@ class _EventsBlockInfo(object):
         return GuiGroupBlockID.getBlockPriority(self.blockType)
 
     def _getAdvancePriority(self):
-        pass
+        return 0
 
     def _findEvents(self, srvEvents):
         raise NotImplementedError
 
     def _getVO(self):
         vo = self._getGuiLinkages()
-        vo.update({'blockId': self.getEventsBlockID(),
-         'headerData': self._getHeaderData(),
-         'bodyData': self._getBodyData()})
+        vo.update({'blockId': self.getEventsBlockID(), 
+           'headerData': self._getHeaderData(), 
+           'bodyData': self._getBodyData()})
         return vo
 
     def _getMainQuest(self):
-        return None
+        return
 
     def _getGuiLinkages(self):
-        return {'headerLinkage': self._headerLinkage,
-         'bodyLinkage': self._bodyLinkage}
+        return {'headerLinkage': self._headerLinkage, 
+           'bodyLinkage': self._bodyLinkage}
 
     def _getBodyData(self):
         cardsList = []
@@ -384,15 +386,18 @@ class _EventsBlockInfo(object):
             if missionData is not None:
                 cardsList.append(missionData.getInfo())
 
-        return {'missions': cardsList,
-         'dummy': {'iconSource': RES_ICONS.MAPS_ICONS_LIBRARY_ALERTBIGICON,
-                   'htmlText': text_styles.alert(_ms(QUESTS.MISSIONS_NOTASKSBODY_DUMMY_TEXT)),
-                   'alignCenter': False,
-                   'btnVisible': True,
-                   'btnLabel': QUESTS.MISSIONS_NOTASKSBODY_DUMMY_BTNLABEL,
-                   'btnTooltip': '',
-                   'btnEvent': 'ResetFilterEvent',
-                   'btnLinkage': BUTTON_LINKAGES.BUTTON_BLACK}} if not cardsList and self._suitableEvents else {'missions': cardsList}
+        if not cardsList and self._suitableEvents:
+            return {'missions': cardsList, 
+               'dummy': {'iconSource': RES_ICONS.MAPS_ICONS_LIBRARY_ALERTBIGICON, 
+                         'htmlText': text_styles.alert(_ms(QUESTS.MISSIONS_NOTASKSBODY_DUMMY_TEXT)), 
+                         'alignCenter': False, 
+                         'btnVisible': True, 
+                         'btnLabel': QUESTS.MISSIONS_NOTASKSBODY_DUMMY_BTNLABEL, 
+                         'btnTooltip': '', 
+                         'btnEvent': 'ResetFilterEvent', 
+                         'btnLinkage': BUTTON_LINKAGES.BUTTON_BLACK}}
+        else:
+            return {'missions': cardsList}
 
     def _getHeaderData(self):
         raise NotImplementedError
@@ -418,7 +423,12 @@ class _GroupedEventsBlockInfo(_CollapsableEventsBlockInfo):
     def buildEventsBlockData(self, srvEvents, filterFunc):
         self._suitableEvents = self.findEvents(srvEvents)
         self._events = filter(filterFunc, self._suitableEvents) if self._filterEnable else self._suitableEvents
-        return None if not self._suitableEvents else _EventsBlockData(len(self._events), len(self._suitableEvents), self._getVO())
+        if self.getEventsBlockID() == BATTLE_ROYALE_GROUPS_ID:
+            self._events = sortQuestsByProgressionPointBonus(self._events)
+        if not self._suitableEvents:
+            return None
+        else:
+            return _EventsBlockData(len(self._events), len(self._suitableEvents), self._getVO())
 
     def clear(self):
         self._group = None
@@ -432,27 +442,29 @@ class _GroupedEventsBlockInfo(_CollapsableEventsBlockInfo):
 
     def getTitleBlock(self):
         linkedActionID = self._group.getLinkedAction(self.eventsCache.getActions())
-        return {'title': self.getTitle(),
-         'action': {'actionID': linkedActionID,
-                    'label': text_styles.tutorial(QUESTS.MISSIONS_TAB_MARATHONS_HEADER_TITLE_ACTION),
-                    'visible': linkedActionID is not None}}
+        return {'title': self.getTitle(), 
+           'action': {'actionID': linkedActionID, 
+                      'label': text_styles.tutorial(QUESTS.MISSIONS_TAB_MARATHONS_HEADER_TITLE_ACTION), 
+                      'visible': linkedActionID is not None}}
 
     def _findEvents(self, srvEvents):
         return self._group.getGroupContent(srvEvents)
 
     def _getAdvancePriority(self):
-        return 0 if not self._group else self._group.getPriority()
+        if not self._group:
+            return 0
+        return self._group.getPriority()
 
     def _getDescrBlock(self):
         minStartTime = min([ q.getStartTime() for q in self._suitableEvents ])
         maxFinishTime = max([ q.getFinishTime() for q in self._suitableEvents ])
-        return {'period': text_styles.middleTitle(_ms(QUESTS.MISSIONS_TAB_MARATHONS_HEADER_PERIOD, startDate=backport.getLongDateFormat(minStartTime), endDate=backport.getLongDateFormat(maxFinishTime))),
-         'isMultiline': True,
-         'hasCalendarIcon': True}
+        return {'period': text_styles.middleTitle(_ms(QUESTS.MISSIONS_TAB_MARATHONS_HEADER_PERIOD, startDate=backport.getLongDateFormat(minStartTime), endDate=backport.getLongDateFormat(maxFinishTime))), 
+           'isMultiline': True, 
+           'hasCalendarIcon': True}
 
     def _getHeaderData(self):
-        return {'titleBlock': self.getTitleBlock(),
-         'descBlock': self._getDescrBlock()}
+        return {'titleBlock': self.getTitleBlock(), 
+           'descBlock': self._getDescrBlock()}
 
 
 class _GroupedQuestsBlockInfo(_GroupedEventsBlockInfo):
@@ -472,14 +484,15 @@ class _GroupedQuestsBlockInfo(_GroupedEventsBlockInfo):
                 result = self.__battleRoyaleController.getQuests().values()
             else:
                 result = []
-        elif self._group.getID() == MAPS_TRAINING_GROUPS_ID:
-            result = [ event for event in self._group.getGroupContent(srvEvents) if event.shouldBeShown() ]
         else:
-            result = self._group.getGroupContent(srvEvents)
-        self._completedQuestsCount = 0
-        for quest in result:
-            if quest.isCompleted():
-                self._completedQuestsCount += 1
+            if self._group.getID() == MAPS_TRAINING_GROUPS_ID:
+                result = [ event for event in self._group.getGroupContent(srvEvents) if event.shouldBeShown() ]
+            else:
+                result = self._group.getGroupContent(srvEvents)
+            self._completedQuestsCount = 0
+            for quest in result:
+                if quest.isCompleted():
+                    self._completedQuestsCount += 1
 
         self._totalQuestsCount = len(result)
         return result
@@ -531,20 +544,19 @@ class _MissionsGroupQuestsBlockInfo(_GroupedEventsBlockInfo):
             uiDecoration = self._mainQuest.getIconID()
             if uiDecoration:
                 awardImgSource = prefetcher.getMissionDecoration(uiDecoration, DECORATION_SIZES.BONUS)
-                awardImgTooltip = {'isSpecial': True,
-                 'specialAlias': TOOLTIPS_CONSTANTS.ADDITIONAL_AWARDS,
-                 'specialArgs': awardsFormatters.getShortBonusesData(self._mainQuest.getBonuses())}
+                awardImgTooltip = {'isSpecial': True, 
+                   'specialAlias': TOOLTIPS_CONSTANTS.ADDITIONAL_AWARDS, 
+                   'specialArgs': awardsFormatters.getShortBonusesData(self._mainQuest.getBonuses())}
             else:
                 awardsData = awardsFormatters.getFormattedBonuses(self._mainQuest.getBonuses(), AWARDS_SIZES.BIG)
-        return {'uiDecoration': prefetcher.getMissionDecoration(self._group.getIconID(), DECORATION_SIZES.MARATHON),
-         'titleBlock': self.getTitleBlock(),
-         'descBlock': self._getDescrBlock(),
-         'conditionBlock': {'title': text_styles.middleTitle(QUESTS.MISSIONS_TAB_MARATHONS_HEADER_CONDITION),
-                            'tokensData': tokensData},
-         'awardBlock': {'title': text_styles.middleTitle(QUESTS.MISSIONS_TAB_MARATHONS_HEADER_AWARD),
-                        'awardsData': awardsData,
-                        'awardImgSource': awardImgSource,
-                        'awardImgTooltip': awardImgTooltip}}
+        return {'uiDecoration': prefetcher.getMissionDecoration(self._group.getIconID(), DECORATION_SIZES.MARATHON), 'titleBlock': self.getTitleBlock(), 
+           'descBlock': self._getDescrBlock(), 
+           'conditionBlock': {'title': text_styles.middleTitle(QUESTS.MISSIONS_TAB_MARATHONS_HEADER_CONDITION), 
+                              'tokensData': tokensData}, 
+           'awardBlock': {'title': text_styles.middleTitle(QUESTS.MISSIONS_TAB_MARATHONS_HEADER_AWARD), 
+                          'awardsData': awardsData, 
+                          'awardImgSource': awardImgSource, 
+                          'awardImgTooltip': awardImgTooltip}}
 
 
 class _UngroupedQuestsBlockInfo(_CollapsableEventsBlockInfo):
@@ -558,7 +570,10 @@ class _UngroupedQuestsBlockInfo(_CollapsableEventsBlockInfo):
     def buildEventsBlockData(self, srvEvents, filterFunc):
         self._suitableEvents = self.findEvents(srvEvents)
         self._events = filter(filterFunc, self._suitableEvents)
-        return None if not self._suitableEvents else _EventsBlockData(len(self._events), len(self._suitableEvents), self._getVO())
+        if not self._suitableEvents:
+            return None
+        else:
+            return _EventsBlockData(len(self._events), len(self._suitableEvents), self._getVO())
 
     def getEventsBlockID(self):
         return DEFAULTS_GROUPS.UNGROUPED_QUESTS
@@ -573,20 +588,21 @@ class _UngroupedQuestsBlockInfo(_CollapsableEventsBlockInfo):
         raise SoftException('This method should not be reached in this context')
 
     def _findEvents(self, srvEvents):
-        suitabaleQuests = [ q for q in srvEvents.itervalues() if q.getGroupID() == DEFAULTS_GROUPS.UNGROUPED_QUESTS and q.getType() != EVENT_TYPE.MOTIVE_QUEST ]
+        suitabaleQuests = [ q for q in srvEvents.itervalues() if q.getGroupID() == DEFAULTS_GROUPS.UNGROUPED_QUESTS and q.getType() != EVENT_TYPE.MOTIVE_QUEST
+                          ]
         self.__totalQuestsCount = len(suitabaleQuests)
         self.__completedQuestsCount = len([ q for q in suitabaleQuests if q.isCompleted() ])
         return suitabaleQuests
 
     def _getHeaderData(self):
-        return {'titleBlock': self.getTitleBlock(),
-         'descBlock': self._getDescrBlock()}
+        return {'titleBlock': self.getTitleBlock(), 
+           'descBlock': self._getDescrBlock()}
 
     def _getDescrBlock(self):
-        return {'descr': _getMissionsCountLabel(self.__completedQuestsCount, self.__totalQuestsCount),
-         'period': text_styles.middleTitle(QUESTS.MISSIONS_GROUP_OTHERS_LABEL),
-         'hasCalendarIcon': False,
-         'isMultiline': False}
+        return {'descr': _getMissionsCountLabel(self.__completedQuestsCount, self.__totalQuestsCount), 
+           'period': text_styles.middleTitle(QUESTS.MISSIONS_GROUP_OTHERS_LABEL), 
+           'hasCalendarIcon': False, 
+           'isMultiline': False}
 
 
 class _MotiveQuestsBlockInfo(_CollapsableEventsBlockInfo):
@@ -598,7 +614,10 @@ class _MotiveQuestsBlockInfo(_CollapsableEventsBlockInfo):
     def buildEventsBlockData(self, srvEvents, filterFunc):
         self._suitableEvents = self.findEvents(srvEvents)
         self._events = filter(filterFunc, self._suitableEvents)
-        return None if not self._suitableEvents else _EventsBlockData(len(self._events), len(self._suitableEvents), self._getVO())
+        if not self._suitableEvents:
+            return None
+        else:
+            return _EventsBlockData(len(self._events), len(self._suitableEvents), self._getVO())
 
     def getEventsBlockID(self):
         return DEFAULTS_GROUPS.MOTIVE_QUESTS
@@ -610,18 +629,19 @@ class _MotiveQuestsBlockInfo(_CollapsableEventsBlockInfo):
         return {'title': self.getTitle()}
 
     def _findEvents(self, srvEvents):
-        suitabaleQuests = [ q for q in srvEvents.itervalues() if q.getType() == EVENT_TYPE.MOTIVE_QUEST and not q.isCompleted() and q.isAvailable()[0] ]
+        suitabaleQuests = [ q for q in srvEvents.itervalues() if q.getType() == EVENT_TYPE.MOTIVE_QUEST and not q.isCompleted() and q.isAvailable()[0]
+                          ]
         return suitabaleQuests
 
     def _getHeaderData(self):
-        return {'titleBlock': self.getTitleBlock(),
-         'descBlock': self._getDescrBlock()}
+        return {'titleBlock': self.getTitleBlock(), 
+           'descBlock': self._getDescrBlock()}
 
     def _getDescrBlock(self):
-        return {'descr': '',
-         'period': text_styles.middleTitle(QUESTS.MISSIONS_GROUP_MOTIVE_LABEL),
-         'hasCalendarIcon': False,
-         'isMultiline': False}
+        return {'descr': '', 
+           'period': text_styles.middleTitle(QUESTS.MISSIONS_GROUP_MOTIVE_LABEL), 
+           'hasCalendarIcon': False, 
+           'isMultiline': False}
 
 
 class _VehicleQuestsBlockInfo(_EventsBlockInfo):
@@ -639,9 +659,8 @@ class _VehicleQuestsBlockInfo(_EventsBlockInfo):
             item = g_currentVehicle.item
             tankInfo = text_styles.concatStylesToMultiLine(text_styles.promoSubTitle(item.userName), text_styles.stats(MENU.levels_roman(item.level)))
             tankType = '../maps/icons/vehicleTypes/big/%s.png' % item.type
-        return {'title': self.getTitle(),
-         'tankType': tankType,
-         'tankInfo': tankInfo}
+        return {'title': self.getTitle(), 'tankType': tankType, 
+           'tankInfo': tankInfo}
 
     def _findEvents(self, srvEvents):
         return filter(self.__applyFilter, srvEvents.itervalues())
@@ -653,12 +672,17 @@ class _VehicleQuestsBlockInfo(_EventsBlockInfo):
         return {'titleBlock': self.getTitleBlock()}
 
     def __applyFilter(self, quest):
-        forbiddenQuestConditions = [lambda q: q.getType() in (EVENT_TYPE.TOKEN_QUEST,), lambda q: not q.getFinishTimeLeft(), lambda q: isBattleMattersQuestID(q.getGroupID()) or isPremium(q.getGroupID())]
-        if any((isForbidden(quest) for isForbidden in forbiddenQuestConditions)):
+        forbiddenQuestConditions = [
+         lambda q: q.getType() in (EVENT_TYPE.TOKEN_QUEST,),
+         lambda q: not q.getFinishTimeLeft(),
+         lambda q: isBattleMattersQuestID(q.getGroupID()) or isPremium(q.getGroupID())]
+        if any(isForbidden(quest) for isForbidden in forbiddenQuestConditions):
             return False
         if not g_currentVehicle.isPresent():
             return False
-        return quest.isValidVehicleCondition(g_currentVehicle.item) if quest.getType() != EVENT_TYPE.MOTIVE_QUEST else quest.isValidVehicleCondition(g_currentVehicle.item) and not quest.isCompleted() and quest.isAvailable()[0]
+        if quest.getType() != EVENT_TYPE.MOTIVE_QUEST:
+            return quest.isValidVehicleCondition(g_currentVehicle.item)
+        return quest.isValidVehicleCondition(g_currentVehicle.item) and not quest.isCompleted() and quest.isAvailable()[0]
 
 
 class _ElenBlockInfo(_EventsBlockInfo):
@@ -702,20 +726,20 @@ class _ElenBlockInfo(_EventsBlockInfo):
     def _getBodyData(self):
         event = EventInfo(self._event, self._playerData, self._eventsTop)
         top = event.getTopInfo()
-        result = {'missions': top,
-         'taskBlock': event.getTaskInfo(),
-         'conditionBlock': event.getConditionInfo(),
-         'awardBlock': event.getAwardInfo(),
-         'isEventBegan': self._event.isStarted(),
-         'uiDecoration': self._event.getKeyArtBig(),
-         'popoverAlias': event.getPopoverAlias(),
-         'eventID': self._event.getEventID()}
+        result = {'missions': top, 
+           'taskBlock': event.getTaskInfo(), 
+           'conditionBlock': event.getConditionInfo(), 
+           'awardBlock': event.getAwardInfo(), 
+           'isEventBegan': self._event.isStarted(), 
+           'uiDecoration': self._event.getKeyArtBig(), 
+           'popoverAlias': event.getPopoverAlias(), 
+           'eventID': self._event.getEventID()}
         result.update(event.getServerData())
         result.update(event.getStatusData())
         if top:
-            result.update({'taskBlock': event.getTaskInfo(),
-             'conditionBlock': event.getConditionInfo(),
-             'awardBlock': event.getAwardInfo()})
+            result.update({'taskBlock': event.getTaskInfo(), 
+               'conditionBlock': event.getConditionInfo(), 
+               'awardBlock': event.getAwardInfo()})
         return result
 
 
@@ -734,7 +758,7 @@ class _PremiumGroupedQuestsBlockInfo(_GroupedQuestsBlockInfo):
 
     def getTitle(self):
         title = backport.text(R.strings.quests.premiumQuests.header.default())
-        return '{}{}'.format(makeImageTag(backport.image(R.images.gui.maps.icons.premacc.icons.premium_40x40()), 40, 40, -12), title)
+        return ('{}{}').format(makeImageTag(backport.image(R.images.gui.maps.icons.premacc.icons.premium_40x40()), 40, 40, -12), title)
 
     def _getVO(self):
         vo = super(_PremiumGroupedQuestsBlockInfo, self)._getVO()
@@ -757,19 +781,19 @@ class _PremiumGroupedQuestsBlockInfo(_GroupedQuestsBlockInfo):
         isAllCompleted = self._completedQuestsCount == self._totalQuestsCount
         timeStr = self.__getDailyResetStatus()
         completeTitle = text_styles.missionStatusAvailable(backport.text(R.strings.quests.premiumQuests.body.complete(), time=timeStr) if isAllCompleted else '')
-        return {'missions': cardsList,
-         'title': text_styles.promoTitle(QUESTS.PREMIUMQUESTS_BODY_TITLE),
-         'description': text_styles.highlightText(QUESTS.PREMIUMQUESTS_BODY_DESCRIPTION),
-         'buttonDetails': QUESTS.PREMIUMQUESTS_BODY_BUTTONDETAILS,
-         'icon': backport.image(R.images.gui.maps.icons.premacc.icons.premium_256x242()),
-         'hasPremium': isPremEnabled,
-         'completeTitle': completeTitle,
-         'uiDecoration': backport.image(R.images.gui.maps.icons.premacc.quests.background())}
+        return {'missions': cardsList, 
+           'title': text_styles.promoTitle(QUESTS.PREMIUMQUESTS_BODY_TITLE), 
+           'description': text_styles.highlightText(QUESTS.PREMIUMQUESTS_BODY_DESCRIPTION), 
+           'buttonDetails': QUESTS.PREMIUMQUESTS_BODY_BUTTONDETAILS, 
+           'icon': backport.image(R.images.gui.maps.icons.premacc.icons.premium_256x242()), 
+           'hasPremium': isPremEnabled, 
+           'completeTitle': completeTitle, 
+           'uiDecoration': backport.image(R.images.gui.maps.icons.premacc.quests.background())}
 
     def _getHeaderData(self):
         info = _getMissionsCountLabel(self._completedQuestsCount, self._totalQuestsCount)
-        return {'titleBlock': self.getTitleBlock(),
-         'info': info}
+        return {'titleBlock': self.getTitleBlock(), 
+           'info': info}
 
     def __isPremiumEnabled(self):
         return self.__itemsCache.items.stats.isActivePremium(PREMIUM_TYPE.PLUS)
@@ -786,6 +810,8 @@ class _PremiumGroupedQuestsBlockInfo(_GroupedQuestsBlockInfo):
                 _logger.error('Current time locale: %r', locale.getlocale(locale.LC_TIME))
                 _logger.error('Selected language: %r', getLanguageCode())
                 _logger.exception('Invalid formatting string %r to delta of time %r', timeFmt, parts)
+
+        return ''
 
 
 class _MapsTrainingGroupedQuestsBlockInfo(_GroupedQuestsBlockInfo):

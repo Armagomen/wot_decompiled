@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/armor_flashlight/config.py
-import typing
-import BattleReplay
-import ResMgr
-import section2dict
+import typing, BattleReplay, ResMgr, section2dict
 from armor_flashlight_common.server_config import serverConfigSchema
 from debug_utils import LOG_ERROR
 from dict2model import models, schemas, fields, validate
@@ -26,15 +21,16 @@ class ArmorPiercingColorsSchemaModel(models.Model):
         self.greatPierced = greatPierced
 
     def toFloats(self):
-        return (self.notPierced.toFloats(), self.littlePierced.toFloats(), self.greatPierced.toFloats())
+        return (
+         self.notPierced.toFloats(), self.littlePierced.toFloats(), self.greatPierced.toFloats())
 
     def _reprArgs(self):
-        return 'notPierced={}, littlePierced={}, greatPierced={}'.format(self.notPierced, self.littlePierced, self.greatPierced)
+        return ('notPierced={}, littlePierced={}, greatPierced={}').format(self.notPierced, self.littlePierced, self.greatPierced)
 
 
-_armorPiercingColorsSchema = schemas.Schema(fields={'notPierced': fields.Nested(colorSchema),
- 'littlePierced': fields.Nested(colorSchema),
- 'greatPierced': fields.Nested(colorSchema)}, modelClass=ArmorPiercingColorsSchemaModel)
+_armorPiercingColorsSchema = schemas.Schema(fields={'notPierced': fields.Nested(colorSchema), 
+   'littlePierced': fields.Nested(colorSchema), 
+   'greatPierced': fields.Nested(colorSchema)}, modelClass=ArmorPiercingColorsSchemaModel)
 
 class ColorSchemaModel(models.Model):
     __slots__ = ('name', 'normal', 'colorBlindness')
@@ -46,12 +42,12 @@ class ColorSchemaModel(models.Model):
         self.colorBlindness = colorBlindness
 
     def _reprArgs(self):
-        return 'name={}, normal={}, colorBlindness={}'.format(self.name, self.normal, self.colorBlindness)
+        return ('name={}, normal={}, colorBlindness={}').format(self.name, self.normal, self.colorBlindness)
 
 
-_colorSchemaSchema = schemas.Schema(fields={'name': fields.NonEmptyString(),
- 'normal': fields.Nested(_armorPiercingColorsSchema),
- 'colorBlindness': fields.Nested(_armorPiercingColorsSchema)}, modelClass=ColorSchemaModel)
+_colorSchemaSchema = schemas.Schema(fields={'name': fields.NonEmptyString(), 
+   'normal': fields.Nested(_armorPiercingColorsSchema), 
+   'colorBlindness': fields.Nested(_armorPiercingColorsSchema)}, modelClass=ColorSchemaModel)
 
 class PatternModel(models.Model):
     __slots__ = ('name', 'texturePath')
@@ -62,11 +58,11 @@ class PatternModel(models.Model):
         self.texturePath = texturePath
 
     def _reprArgs(self):
-        return 'name={}, texturePath={}'.format(self.name, self.texturePath)
+        return ('name={}, texturePath={}').format(self.name, self.texturePath)
 
 
-_patternSchema = schemas.Schema(fields={'name': fields.NonEmptyString(),
- 'texturePath': fields.NonEmptyString()}, modelClass=PatternModel)
+_patternSchema = schemas.Schema(fields={'name': fields.NonEmptyString(), 
+   'texturePath': fields.NonEmptyString()}, modelClass=PatternModel)
 
 class DistanceConfigModel(models.Model):
     __slots__ = ('distance', 'value')
@@ -77,18 +73,19 @@ class DistanceConfigModel(models.Model):
         self.value = value
 
     def _reprArgs(self):
-        return 'distance={}, value={}'.format(self.distance, self.value)
+        return ('distance={}, value={}').format(self.distance, self.value)
 
     def getTuple(self):
-        return (self.distance, self.value)
+        return (
+         self.distance, self.value)
 
     @staticmethod
     def sortedByDist(config):
         return sorted(config, key=lambda x: x.distance)
 
 
-_distanceConfigSchema = schemas.Schema(fields={'distance': fields.Integer(required=True, deserializedValidators=validate.Range(minValue=0)),
- 'value': fields.Float(required=True)}, modelClass=DistanceConfigModel)
+_distanceConfigSchema = schemas.Schema(fields={'distance': fields.Integer(required=True, deserializedValidators=validate.Range(minValue=0)), 
+   'value': fields.Float(required=True)}, modelClass=DistanceConfigModel)
 
 class ResolutionModel(models.Model):
     __slots__ = ('name', 'downscale')
@@ -99,11 +96,11 @@ class ResolutionModel(models.Model):
         self.downscale = downscale
 
     def _reprArgs(self):
-        return 'name={}, downscale={}'.format(self.name, self.downscale)
+        return ('name={}, downscale={}').format(self.name, self.downscale)
 
 
-_resolutionSchema = schemas.Schema(fields={'name': fields.NonEmptyString(required=True),
- 'downscale': fields.Float(required=True, deserializedValidators=validate.Range(minValue=1.0))}, modelClass=ResolutionModel)
+_resolutionSchema = schemas.Schema(fields={'name': fields.NonEmptyString(required=True), 
+   'downscale': fields.Float(required=True, deserializedValidators=validate.Range(minValue=1.0))}, modelClass=ResolutionModel)
 
 class DefaultResolutionByPostProcessingModel(models.Model):
     __slots__ = ('postProcessingLevel', 'maxResolutionName')
@@ -114,14 +111,17 @@ class DefaultResolutionByPostProcessingModel(models.Model):
         self.maxResolutionName = maxResolutionName
 
     def _reprArgs(self):
-        return 'postProcessingLevel={}, maxResolutionName={}'.format(self.postProcessingLevel, self.maxResolutionName)
+        return ('postProcessingLevel={}, maxResolutionName={}').format(self.postProcessingLevel, self.maxResolutionName)
 
 
-_defaultResolutionByPostProcessingSchema = schemas.Schema(fields={'postProcessingLevel': fields.Integer(required=True, deserializedValidators=validate.Range(minValue=0, maxValue=4)),
- 'maxResolutionName': fields.NonEmptyString(required=True, deserializedValidators=validate.Range(minValue=1))}, modelClass=DefaultResolutionByPostProcessingModel)
+_defaultResolutionByPostProcessingSchema = schemas.Schema(fields={'postProcessingLevel': fields.Integer(required=True, deserializedValidators=validate.Range(minValue=0, maxValue=4)), 
+   'maxResolutionName': fields.NonEmptyString(required=True, deserializedValidators=validate.Range(minValue=1))}, modelClass=DefaultResolutionByPostProcessingModel)
 
 class ConfigModel(models.Model):
-    __slots__ = ('colorSchemas', 'patterns', 'textureTilingFactor', 'alphaByDist', 'radiusByDist', 'appearanceDurationByDist', 'resolutions', 'defaultResolutionByPostProcessing', 'noiseIntensityMultiplier', 'maxSizePercentOfWindow', 'fadeoffFactorWhenNotAimed', 'borderSmoothness', 'aimingCircleAdjustment', 'smoothnessInAimingCircleAdjustment')
+    __slots__ = ('colorSchemas', 'patterns', 'textureTilingFactor', 'alphaByDist',
+                 'radiusByDist', 'appearanceDurationByDist', 'resolutions', 'defaultResolutionByPostProcessing',
+                 'noiseIntensityMultiplier', 'maxSizePercentOfWindow', 'fadeoffFactorWhenNotAimed',
+                 'borderSmoothness', 'aimingCircleAdjustment', 'smoothnessInAimingCircleAdjustment')
 
     def __init__(self, colorSchemas, patterns, textureTilingFactor, alphaByDist, radiusByDist, appearanceDurationByDist, resolutions, defaultResolutionByPostProcessing, noiseIntensityMultiplier, maxSizePercentOfWindow, fadeoffFactorWhenNotAimed, borderSmoothness, aimingCircleAdjustment, smoothnessInAimingCircleAdjustment):
         super(ConfigModel, self).__init__()
@@ -163,7 +163,7 @@ class ConfigModel(models.Model):
             if resByPostProc.postProcessingLevel == postProcessingLevel:
                 return resByPostProc
 
-        LOG_ERROR('No flashlight resolution provided for post processing level {}'.format(postProcessingLevel))
+        LOG_ERROR(('No flashlight resolution provided for post processing level {}').format(postProcessingLevel))
         return self.defaultResolutionByPostProcessing[_DEFAULT_RESOLUTION_INDEX]
 
     def _getResolutionIndexByName(self, name):
@@ -171,18 +171,18 @@ class ConfigModel(models.Model):
             if resolution.name == name:
                 return index
 
-        LOG_ERROR('{} resolution does not exist'.format(name))
+        LOG_ERROR(('{} resolution does not exist').format(name))
         return _DEFAULT_RESOLUTION_INDEX
 
     def _reprArgs(self):
-        return 'colorSchemas={}, patterns={}, textureTilingFactor={}, alphaByDist={}, radiusByDist={}, appearanceDurationByDist={}, resolutions={}, defaultResolutionByPostProcessing={}, noiseIntensityMultiplier={}, maxSizePercentOfWindow={}, fadeoffFactorWhenNotAimed={}, borderSmoothness={}, aimingCircleAdjustment={}, smoothnessInAimingCircleAdjustment={}'.format(self.colorSchemas, self.patterns, self.textureTilingFactor, self.alphaByDist, self.radiusByDist, self.appearanceDurationByDist, self.resolutions, self.defaultResolutionByPostProcessing, self.noiseIntensityMultiplier, self.maxSizePercentOfWindow, self.fadeoffFactorWhenNotAimed, self.borderSmoothness, self.aimingCircleAdjustment, self.smoothnessInAimingCircleAdjustment)
+        return ('colorSchemas={}, patterns={}, textureTilingFactor={}, alphaByDist={}, radiusByDist={}, appearanceDurationByDist={}, resolutions={}, defaultResolutionByPostProcessing={}, noiseIntensityMultiplier={}, maxSizePercentOfWindow={}, fadeoffFactorWhenNotAimed={}, borderSmoothness={}, aimingCircleAdjustment={}, smoothnessInAimingCircleAdjustment={}').format(self.colorSchemas, self.patterns, self.textureTilingFactor, self.alphaByDist, self.radiusByDist, self.appearanceDurationByDist, self.resolutions, self.defaultResolutionByPostProcessing, self.noiseIntensityMultiplier, self.maxSizePercentOfWindow, self.fadeoffFactorWhenNotAimed, self.borderSmoothness, self.aimingCircleAdjustment, self.smoothnessInAimingCircleAdjustment)
 
 
 def _validateUniqueNames(items, itemType):
     names = set()
     for item in items:
         if item.name in names:
-            raise ValidationError('{} name is not unique: {}.'.format(itemType, item.name))
+            raise ValidationError(('{} name is not unique: {}.').format(itemType, item.name))
         names.add(item.name)
 
 
@@ -199,30 +199,28 @@ def _validateResolutionNames(config):
 
 
 def _validateMaxResolutionNames(config):
-    validNames = set((resolution.name for resolution in config.resolutions))
+    validNames = set(resolution.name for resolution in config.resolutions)
     for resolutionByPostProcessing in config.defaultResolutionByPostProcessing:
         name = resolutionByPostProcessing.maxResolutionName
         if name not in validNames:
-            raise ValidationError('maxResolutionName {} is not present is resolutions list.'.format(name))
+            raise ValidationError(('maxResolutionName {} is not present is resolutions list.').format(name))
 
 
-_configSchema = schemas.Schema(fields={'colorSchemas': fields.UniCapList(_colorSchemaSchema, deserializedValidators=validate.Length(minValue=1)),
- 'patterns': fields.UniCapList(_patternSchema, deserializedValidators=validate.Length(minValue=1)),
- 'textureTilingFactor': fields.Float(required=True, deserializedValidators=validate.Range(minValue=0.01)),
- 'alphaByDist': fields.UniCapList(_distanceConfigSchema, deserializedValidators=validate.Length(minValue=1)),
- 'radiusByDist': fields.UniCapList(_distanceConfigSchema, deserializedValidators=validate.Length(minValue=1)),
- 'appearanceDurationByDist': fields.UniCapList(_distanceConfigSchema, deserializedValidators=validate.Length(minValue=1)),
- 'resolutions': fields.UniCapList(_resolutionSchema, deserializedValidators=validate.Length(minValue=1)),
- 'defaultResolutionByPostProcessing': fields.UniCapList(_defaultResolutionByPostProcessingSchema, deserializedValidators=validate.Length(minValue=5, maxValue=5)),
- 'noiseIntensityMultiplier': fields.Float(required=True, deserializedValidators=validate.Range(minValue=0.01)),
- 'maxSizePercentOfWindow': fields.Float(required=True, deserializedValidators=validate.Range(minValue=0.1, maxValue=100.0)),
- 'fadeoffFactorWhenNotAimed': fields.Float(required=True, deserializedValidators=validate.Range(minValue=0.01)),
- 'borderSmoothness': fields.Float(required=True, deserializedValidators=validate.Range(minValue=0.0, maxValue=1.0)),
- 'aimingCircleAdjustment': fields.Float(required=True, deserializedValidators=validate.Range(minValue=0.01)),
- 'smoothnessInAimingCircleAdjustment': fields.Float(required=True, deserializedValidators=validate.Range(minValue=1.0))}, modelClass=ConfigModel, deserializedValidators=[_validateColorSchemasNames,
- _validatePatternsNames,
- _validateResolutionNames,
- _validateMaxResolutionNames])
+_configSchema = schemas.Schema(fields={'colorSchemas': fields.UniCapList(_colorSchemaSchema, deserializedValidators=validate.Length(minValue=1)), 
+   'patterns': fields.UniCapList(_patternSchema, deserializedValidators=validate.Length(minValue=1)), 
+   'textureTilingFactor': fields.Float(required=True, deserializedValidators=validate.Range(minValue=0.01)), 
+   'alphaByDist': fields.UniCapList(_distanceConfigSchema, deserializedValidators=validate.Length(minValue=1)), 
+   'radiusByDist': fields.UniCapList(_distanceConfigSchema, deserializedValidators=validate.Length(minValue=1)), 
+   'appearanceDurationByDist': fields.UniCapList(_distanceConfigSchema, deserializedValidators=validate.Length(minValue=1)), 
+   'resolutions': fields.UniCapList(_resolutionSchema, deserializedValidators=validate.Length(minValue=1)), 
+   'defaultResolutionByPostProcessing': fields.UniCapList(_defaultResolutionByPostProcessingSchema, deserializedValidators=validate.Length(minValue=5, maxValue=5)), 
+   'noiseIntensityMultiplier': fields.Float(required=True, deserializedValidators=validate.Range(minValue=0.01)), 
+   'maxSizePercentOfWindow': fields.Float(required=True, deserializedValidators=validate.Range(minValue=0.1, maxValue=100.0)), 
+   'fadeoffFactorWhenNotAimed': fields.Float(required=True, deserializedValidators=validate.Range(minValue=0.01)), 
+   'borderSmoothness': fields.Float(required=True, deserializedValidators=validate.Range(minValue=0.0, maxValue=1.0)), 
+   'aimingCircleAdjustment': fields.Float(required=True, deserializedValidators=validate.Range(minValue=0.01)), 
+   'smoothnessInAimingCircleAdjustment': fields.Float(required=True, deserializedValidators=validate.Range(minValue=1.0))}, modelClass=ConfigModel, deserializedValidators=[
+ _validateColorSchemasNames, _validatePatternsNames, _validateResolutionNames, _validateMaxResolutionNames])
 
 def getConfig():
     global _config
@@ -236,4 +234,7 @@ def getConfig():
 
 def isFeatureEnabled():
     serverConfig = serverConfigSchema.getModel()
-    return serverConfig.enabled if serverConfig is not None else BattleReplay.isPlaying()
+    if serverConfig is not None:
+        return serverConfig.enabled
+    else:
+        return BattleReplay.isPlaying()

@@ -1,9 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/ribbons_aggregator.py
-from collections import defaultdict
+from __future__ import absolute_import
 import logging
-import Event
-import BattleReplay
+from collections import defaultdict
+from future.utils import viewitems, viewvalues
+import Event, BattleReplay
 from constants import ROLE_TYPE
 from gui.Scaleform.genConsts.DAMAGE_SOURCE_TYPES import DAMAGE_SOURCE_TYPES
 from ids_generators import SequenceIDGenerator
@@ -15,7 +14,7 @@ from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
 _logger = logging.getLogger(__name__)
 
-class DAMAGE_SOURCE():
+class DAMAGE_SOURCE(object):
     PLAYER = 'player'
     ARTILLERY = 'artillery'
     BOMBERS = 'airstrike'
@@ -35,7 +34,7 @@ class _Ribbon(object):
         raise NotImplementedError
 
     def getFormatter(self):
-        return None
+        return
 
     def getType(self):
         raise NotImplementedError
@@ -83,7 +82,7 @@ class _RoleRibbon(_Ribbon):
 
 
 class _BasePointsRibbon(_Ribbon):
-    __slots__ = ('_points',)
+    __slots__ = ('_points', )
 
     def __init__(self, ribbonID, points):
         super(_BasePointsRibbon, self).__init__(ribbonID)
@@ -101,7 +100,7 @@ class _BasePointsRibbon(_Ribbon):
 
 
 class _PerkRibbon(_Ribbon):
-    __slots__ = ('__perkID',)
+    __slots__ = ('__perkID', )
 
     def __init__(self, ribbonID, perkID):
         super(_PerkRibbon, self).__init__(ribbonID)
@@ -122,7 +121,7 @@ class _PerkRibbon(_Ribbon):
 
 
 class _WeatherZoneRibbon(_Ribbon):
-    __slots__ = ('__weatherZoneID',)
+    __slots__ = ('__weatherZoneID', )
 
     def __init__(self, ribbonID, weatherZoneID):
         super(_WeatherZoneRibbon, self).__init__(ribbonID)
@@ -146,7 +145,7 @@ class _WeatherZoneRibbon(_Ribbon):
 
 
 class _BaseCaptureRibbon(_BasePointsRibbon):
-    __slots__ = ('_sessionID',)
+    __slots__ = ('_sessionID', )
 
     def __init__(self, ribbonID, points, sessionID):
         super(_BaseCaptureRibbon, self).__init__(ribbonID, points)
@@ -263,7 +262,7 @@ class _EnemyKillRibbon(_SingleVehicleDamageRibbon):
 
     @classmethod
     def _extractExtraValue(cls, event):
-        pass
+        return 0
 
     def _canAggregate(self, ribbon):
         return self.getVehicleID() == ribbon.getVehicleID() and self.isRoleBonus() == ribbon.isRoleBonus()
@@ -518,7 +517,7 @@ class _StunAssistRibbon(_SingleVehicleDamageRibbon):
 
 
 class _MultiTargetsRibbon(_RoleRibbon):
-    __slots__ = ('_targetsAmount',)
+    __slots__ = ('_targetsAmount', )
 
     def __init__(self, ribbonID, isRoleBonus, role, extraValue):
         super(_MultiTargetsRibbon, self).__init__(ribbonID, isRoleBonus, role)
@@ -558,14 +557,14 @@ class _EnemiesStunRibbon(_MultiTargetsRibbon):
 
 
 class _ReceivedDamageByUnknownSourceRibbon(_RoleRibbon):
-    __slots__ = ('__extraValue',)
+    __slots__ = ('__extraValue', )
 
     def __init__(self, ribbonID, extra):
         super(_ReceivedDamageByUnknownSourceRibbon, self).__init__(ribbonID, False, ROLE_TYPE.NOT_DEFINED)
         self.__extraValue = extra
 
     def getDamageSource(self):
-        pass
+        return ''
 
     def setExtraValue(self, value):
         self.__extraValue = value
@@ -705,7 +704,7 @@ class _BattleshipRibbon(_SingleVehicleDamageRibbon):
 
 
 class _MultiVehicleRibbon(_MultiTargetsRibbon):
-    __slots__ = ('_vehicles',)
+    __slots__ = ('_vehicles', )
 
     def __init__(self, ribbonID, vehID, isRoleBonus, role, extraValue):
         super(_MultiVehicleRibbon, self).__init__(ribbonID, isRoleBonus, role, extraValue)
@@ -717,13 +716,13 @@ class _MultiVehicleRibbon(_MultiTargetsRibbon):
         return cls(ribbonID, event.getTargetID(), _isRoleBonus(event), event.getRole(), cls._extractExtraValue(event))
 
     def getVehIDs(self):
-        return self._vehicles.keys()
+        return list(self._vehicles)
 
     def getExtraValue(self, vehID):
         return self._vehicles[vehID]
 
     def getTotalExtraValue(self):
-        return sum(self._vehicles.itervalues())
+        return sum(viewvalues(self._vehicles))
 
     def _canAggregate(self, ribbon):
         return super(_MultiVehicleRibbon, self)._canAggregate(ribbon) and self.isRoleBonus() == ribbon.isRoleBonus()
@@ -739,11 +738,11 @@ class _EnemyDetectionRibbon(_MultiVehicleRibbon):
 
     @classmethod
     def _extractExtraValue(cls, _):
-        pass
+        return 0
 
     @classmethod
     def _extractTargetsAmount(cls, _):
-        pass
+        return 1
 
     def getType(self):
         return BATTLE_EFFICIENCY_TYPES.DETECTION
@@ -763,11 +762,11 @@ class _RibbonClassFactory(object):
     __slots__ = ()
 
     def getRibbonClass(self, event):
-        return None
+        return
 
 
 class _RibbonSingleClassFactory(_RibbonClassFactory):
-    __slots__ = ('__cls',)
+    __slots__ = ('__cls', )
 
     def __init__(self, ribbonCls):
         super(_RibbonSingleClassFactory, self).__init__()
@@ -793,7 +792,14 @@ class _CriticalRibbonClassFactory(_RibbonClassFactory):
 
 
 class _DamageRibbonClassFactory(_RibbonClassFactory):
-    __slots__ = ('__damageCls', '__fireCls', '__ramCls', '__wcCls', '__artDmgCls', '__bombDmgCls', '__artFireCls', '__bombFireCls', '__recoveryCls', '__deathZoneCls', '__damagedByFortArtillery', '__berserker', '__spawnedBotDmgCls', '__damageByMinefield', '__damagedBySmoke', '__damagedByCorrodingShot', '__dmgByFireCircle', '__dmgByClingBrander', '__damageByThunderStrike', '__damageByAirStrike', '__damageByArtillery', '__staticDeathZoneCls', '__minefieldZoneCls', '__damagedByBattleshipCls', '__damagedByDestroyerCls', '__fireDamageZoneCls')
+    __slots__ = ('__damageCls', '__fireCls', '__ramCls', '__wcCls', '__artDmgCls',
+                 '__bombDmgCls', '__artFireCls', '__bombFireCls', '__recoveryCls',
+                 '__deathZoneCls', '__damagedByFortArtillery', '__berserker', '__spawnedBotDmgCls',
+                 '__damageByMinefield', '__damagedBySmoke', '__damagedByCorrodingShot',
+                 '__dmgByFireCircle', '__dmgByClingBrander', '__damageByThunderStrike',
+                 '__damageByAirStrike', '__damageByArtillery', '__staticDeathZoneCls',
+                 '__minefieldZoneCls', '__damagedByBattleshipCls', '__damagedByDestroyerCls',
+                 '__fireDamageZoneCls')
 
     def __init__(self, damageCls, fireCls, ramCls, wcCls, artDmgCls, bombDmgCls, artFireCls, bombFireCls, deathZoneCls, recoveryCls, berserker, spawnedBotDmgCls, minefieldDamageCls, damagedBySmoke, dmgByCorrodingShot, dmgByFireCircle, dmgByClingBrander, dmgByThunderStrike, damagedByFortArtillery, airStrikeDamageCls, artilleryDamageCls, staticDeathZoneCls, minefieldZoneCls, damagedByBattleshipCls, damagedByDestroyerCls, fireDamageZoneCls):
         super(_DamageRibbonClassFactory, self).__init__()
@@ -896,10 +902,12 @@ class _AssistRibbonClassFactory(_RibbonClassFactory):
     def getRibbonClass(self, event):
         if event.getBattleEventType() == _BET.TRACK_ASSIST:
             return self.__trackAssistCls
-        elif event.getBattleEventType() == _BET.RADIO_ASSIST:
-            return self.__radioAssistCls
         else:
-            return self.__stunAssistCls if event.getBattleEventType() == _BET.STUN_ASSIST else None
+            if event.getBattleEventType() == _BET.RADIO_ASSIST:
+                return self.__radioAssistCls
+            if event.getBattleEventType() == _BET.STUN_ASSIST:
+                return self.__stunAssistCls
+            return
 
 
 class _EpicBaseRibbon(_Ribbon):
@@ -910,11 +918,11 @@ class _EpicBaseRibbon(_Ribbon):
         return cls(ribbonID)
 
     def getExtraValue(self):
-        pass
+        return ''
 
 
 class _EpicRecoveryRibbon(_EpicBaseRibbon):
-    __slots__ = ('__extraValue',)
+    __slots__ = ('__extraValue', )
 
     def __init__(self, ribbonID, extraValue):
         super(_EpicRecoveryRibbon, self).__init__(ribbonID)
@@ -939,7 +947,7 @@ class _EpicEnemySectorCapturedRibbon(_EpicBaseRibbon):
 
 
 class _EpicDestructibleDestroyed(_EpicBaseRibbon):
-    __slots__ = ('__extraValue',)
+    __slots__ = ('__extraValue', )
 
     def __init__(self, ribbonID, extraValue):
         super(_EpicDestructibleDestroyed, self).__init__(ribbonID)
@@ -957,7 +965,7 @@ class _EpicDestructibleDestroyed(_EpicBaseRibbon):
 
 
 class _EpicDestructiblesDefended(_EpicBaseRibbon):
-    __slots__ = ('__extraValue',)
+    __slots__ = ('__extraValue', )
 
     def __init__(self, ribbonID, extraValue):
         super(_EpicDestructiblesDefended, self).__init__(ribbonID)
@@ -993,7 +1001,7 @@ class _EpicAbilityAssist(_SingleVehicleReceivedHitRibbon):
 
 
 class _EpicDestructibleDamaged(_Ribbon):
-    __slots__ = ('_damagePoints',)
+    __slots__ = ('_damagePoints', )
 
     def __init__(self, ribbonID, extra):
         super(_EpicDestructibleDamaged, self).__init__(ribbonID)
@@ -1016,36 +1024,43 @@ class _EpicDestructibleDamaged(_Ribbon):
         self._damagePoints += ribbon.getExtraValue()
 
 
-_RIBBON_TYPES_AGGREGATED_WITH_KILL_RIBBON = (BATTLE_EFFICIENCY_TYPES.DAMAGE,
- BATTLE_EFFICIENCY_TYPES.BURN,
- BATTLE_EFFICIENCY_TYPES.RAM,
- BATTLE_EFFICIENCY_TYPES.WORLD_COLLISION)
-_RIBBON_TYPES_EXCLUDED_IF_KILL_RIBBON = (BATTLE_EFFICIENCY_TYPES.CRITS,)
-_RIBBON_TYPES_EXCLUDED_IN_POSTMORTEM = ((BATTLE_EFFICIENCY_TYPES.RECEIVED_CRITS, None), (BATTLE_EFFICIENCY_TYPES.RECEIVED_RAM, lambda ribbon, vehId: ribbon.getVehicleID() == vehId))
-_NOT_CACHED_RIBBON_TYPES = (BATTLE_EFFICIENCY_TYPES.DETECTION, BATTLE_EFFICIENCY_TYPES.DEFENCE, BATTLE_EFFICIENCY_TYPES.STUN)
-_ACCUMULATED_RIBBON_TYPES = (BATTLE_EFFICIENCY_TYPES.CAPTURE, BATTLE_EFFICIENCY_TYPES.BASE_CAPTURE_BLOCKED)
-_FEEDBACK_EVENT_TO_RIBBON_CLS_FACTORY = {FEEDBACK_EVENT_ID.PLAYER_CAPTURED_BASE: _RibbonSingleClassFactory(_BaseCaptureRibbon),
- FEEDBACK_EVENT_ID.PLAYER_DROPPED_CAPTURE: _RibbonSingleClassFactory(_BaseDefenceRibbon),
- FEEDBACK_EVENT_ID.PLAYER_BLOCKED_CAPTURE: _RibbonSingleClassFactory(_BaseCaptureBlocked),
- FEEDBACK_EVENT_ID.PLAYER_SPOTTED_ENEMY: _RibbonSingleClassFactory(_EnemyDetectionRibbon),
- FEEDBACK_EVENT_ID.PLAYER_STUN_ENEMIES: _RibbonSingleClassFactory(_EnemiesStunRibbon),
- FEEDBACK_EVENT_ID.PLAYER_USED_ARMOR: _RibbonSingleClassFactory(_BlockedDamageRibbon),
- FEEDBACK_EVENT_ID.PLAYER_DAMAGED_DEVICE_ENEMY: _RibbonSingleClassFactory(_CriticalHitRibbon),
- FEEDBACK_EVENT_ID.PLAYER_KILLED_ENEMY: _RibbonSingleClassFactory(_EnemyKillRibbon),
- FEEDBACK_EVENT_ID.ENEMY_DAMAGED_DEVICE_PLAYER: _CriticalRibbonClassFactory(),
- FEEDBACK_EVENT_ID.PLAYER_DAMAGED_HP_ENEMY: _DamageRibbonClassFactory(damageCls=_CausedDamageRibbon, fireCls=_FireHitRibbon, ramCls=_RamHitRibbon, wcCls=_WorldCollisionHitRibbon, artDmgCls=_ArtilleryHitRibbon, bombDmgCls=_BombersHitRibbon, artFireCls=_ArtilleryFireHitRibbon, bombFireCls=_BombersFireHitRibbon, recoveryCls=_EpicRecoveryRibbon, deathZoneCls=_DeathZoneRibbon, berserker=_ReceivedBerserkerHitRibbon, spawnedBotDmgCls=_SpawnedBotCausedDamageRibbon, minefieldDamageCls=_MinefieldDamageRibbon, damagedBySmoke=_ReceivedByDamagingSmokeRibbon, dmgByCorrodingShot=_DealtDamageByCorrodingShot, dmgByFireCircle=_DealtDamageByFireCircle, dmgByClingBrander=_DealtDamageByClingBrander, dmgByThunderStrike=_DealtDamageByThunderStrike, damagedByFortArtillery=_FortArtilleryHitRibbon, airStrikeDamageCls=_AirStrikeDamageRibbon, artilleryDamageCls=_ArtilleryDamageRibbon, staticDeathZoneCls=_StaticDeathZoneRibbon, minefieldZoneCls=_MinefieldZoneRibbon, damagedByBattleshipCls=_BattleshipRibbon, damagedByDestroyerCls=_BattleshipRibbon, fireDamageZoneCls=_ReceivedFireDamageZoneRibbon),
- FEEDBACK_EVENT_ID.ENEMY_DAMAGED_HP_PLAYER: _DamageRibbonClassFactory(damageCls=_ReceivedDamageHitRibbon, fireCls=_ReceivedFireHitRibbon, ramCls=_ReceivedRamHitRibbon, wcCls=_ReceivedWorldCollisionHitRibbon, artDmgCls=_ArtilleryReceivedDamageHitRibbon, bombDmgCls=_BombersReceivedDamageHitRibbon, artFireCls=_ArtilleryReceivedFireHitRibbon, bombFireCls=_BombersReceivedFireHitRibbon, recoveryCls=_EpicRecoveryRibbon, deathZoneCls=_DeathZoneRibbon, berserker=_ReceivedBerserkerHitRibbon, spawnedBotDmgCls=_ReceivedBySpawnedBotHitRibbon, minefieldDamageCls=_ReceivedByMinefieldRibbon, damagedBySmoke=_ReceivedByDamagingSmokeRibbon, dmgByCorrodingShot=_ReceivedByDamagingCorrodingShotRibbon, dmgByFireCircle=_ReceivedByFireCircleRibbon, dmgByClingBrander=_ReceivedByClingBranderRibbon, dmgByThunderStrike=_ReceivedByDamagingThunderStrikeRibbon, damagedByFortArtillery=_FortArtilleryReceivedDamageHitRibbon, airStrikeDamageCls=_ReceivedByAirStrikeRibbon, artilleryDamageCls=_ReceivedByArtilleryRibbon, staticDeathZoneCls=_StaticDeathZoneRibbon, minefieldZoneCls=_MinefieldZoneRibbon, damagedByBattleshipCls=_BattleshipRibbon, damagedByDestroyerCls=_BattleshipRibbon, fireDamageZoneCls=_ReceivedFireDamageZoneRibbon),
- FEEDBACK_EVENT_ID.PLAYER_ASSIST_TO_KILL_ENEMY: _AssistRibbonClassFactory(trackAssistCls=_TrackAssistRibbon, radioAssistCls=_RadioAssistRibbon, stunAssistCls=_StunAssistRibbon),
- FEEDBACK_EVENT_ID.PLAYER_ASSIST_TO_STUN_ENEMY: _AssistRibbonClassFactory(trackAssistCls=_TrackAssistRibbon, radioAssistCls=_RadioAssistRibbon, stunAssistCls=_StunAssistRibbon),
- FEEDBACK_EVENT_ID.ENEMY_SECTOR_CAPTURED: _RibbonSingleClassFactory(_EpicEnemySectorCapturedRibbon),
- FEEDBACK_EVENT_ID.DESTRUCTIBLE_DAMAGED: _RibbonSingleClassFactory(_EpicDestructibleDamaged),
- FEEDBACK_EVENT_ID.DESTRUCTIBLE_DESTROYED: _RibbonSingleClassFactory(_EpicDestructibleDestroyed),
- FEEDBACK_EVENT_ID.DESTRUCTIBLES_DEFENDED: _RibbonSingleClassFactory(_EpicDestructiblesDefended),
- FEEDBACK_EVENT_ID.DEFENDER_BONUS: _RibbonSingleClassFactory(_EpicDefenderBonus),
- FEEDBACK_EVENT_ID.SMOKE_ASSIST: _RibbonSingleClassFactory(_EpicAbilityAssist),
- FEEDBACK_EVENT_ID.INSPIRE_ASSIST: _RibbonSingleClassFactory(_EpicAbilityAssist),
- FEEDBACK_EVENT_ID.VEHICLE_HEALTH_ADDED: _RibbonSingleClassFactory(_ReceivedByHealthAddedRibbon)}
-_FEEDBACK_EVENTS_TO_IGNORE = (FEEDBACK_EVENT_ID.EQUIPMENT_TIMER_EXPIRED,)
+_RIBBON_TYPES_AGGREGATED_WITH_KILL_RIBBON = (
+ BATTLE_EFFICIENCY_TYPES.DAMAGE, BATTLE_EFFICIENCY_TYPES.BURN,
+ BATTLE_EFFICIENCY_TYPES.RAM, BATTLE_EFFICIENCY_TYPES.WORLD_COLLISION)
+_RIBBON_TYPES_EXCLUDED_IF_KILL_RIBBON = (
+ BATTLE_EFFICIENCY_TYPES.CRITS,)
+_RIBBON_TYPES_EXCLUDED_IN_POSTMORTEM = (
+ (
+  BATTLE_EFFICIENCY_TYPES.RECEIVED_CRITS, None),
+ (
+  BATTLE_EFFICIENCY_TYPES.RECEIVED_RAM, lambda ribbon, vehId: ribbon.getVehicleID() == vehId))
+_NOT_CACHED_RIBBON_TYPES = (
+ BATTLE_EFFICIENCY_TYPES.DETECTION, BATTLE_EFFICIENCY_TYPES.DEFENCE, BATTLE_EFFICIENCY_TYPES.STUN)
+_ACCUMULATED_RIBBON_TYPES = (
+ BATTLE_EFFICIENCY_TYPES.CAPTURE, BATTLE_EFFICIENCY_TYPES.BASE_CAPTURE_BLOCKED)
+_FEEDBACK_EVENT_TO_RIBBON_CLS_FACTORY = {FEEDBACK_EVENT_ID.PLAYER_CAPTURED_BASE: _RibbonSingleClassFactory(_BaseCaptureRibbon), 
+   FEEDBACK_EVENT_ID.PLAYER_DROPPED_CAPTURE: _RibbonSingleClassFactory(_BaseDefenceRibbon), 
+   FEEDBACK_EVENT_ID.PLAYER_BLOCKED_CAPTURE: _RibbonSingleClassFactory(_BaseCaptureBlocked), 
+   FEEDBACK_EVENT_ID.PLAYER_SPOTTED_ENEMY: _RibbonSingleClassFactory(_EnemyDetectionRibbon), 
+   FEEDBACK_EVENT_ID.PLAYER_STUN_ENEMIES: _RibbonSingleClassFactory(_EnemiesStunRibbon), 
+   FEEDBACK_EVENT_ID.PLAYER_USED_ARMOR: _RibbonSingleClassFactory(_BlockedDamageRibbon), 
+   FEEDBACK_EVENT_ID.PLAYER_DAMAGED_DEVICE_ENEMY: _RibbonSingleClassFactory(_CriticalHitRibbon), 
+   FEEDBACK_EVENT_ID.PLAYER_KILLED_ENEMY: _RibbonSingleClassFactory(_EnemyKillRibbon), 
+   FEEDBACK_EVENT_ID.ENEMY_DAMAGED_DEVICE_PLAYER: _CriticalRibbonClassFactory(), 
+   FEEDBACK_EVENT_ID.PLAYER_DAMAGED_HP_ENEMY: _DamageRibbonClassFactory(damageCls=_CausedDamageRibbon, fireCls=_FireHitRibbon, ramCls=_RamHitRibbon, wcCls=_WorldCollisionHitRibbon, artDmgCls=_ArtilleryHitRibbon, bombDmgCls=_BombersHitRibbon, artFireCls=_ArtilleryFireHitRibbon, bombFireCls=_BombersFireHitRibbon, recoveryCls=_EpicRecoveryRibbon, deathZoneCls=_DeathZoneRibbon, berserker=_ReceivedBerserkerHitRibbon, spawnedBotDmgCls=_SpawnedBotCausedDamageRibbon, minefieldDamageCls=_MinefieldDamageRibbon, damagedBySmoke=_ReceivedByDamagingSmokeRibbon, dmgByCorrodingShot=_DealtDamageByCorrodingShot, dmgByFireCircle=_DealtDamageByFireCircle, dmgByClingBrander=_DealtDamageByClingBrander, dmgByThunderStrike=_DealtDamageByThunderStrike, damagedByFortArtillery=_FortArtilleryHitRibbon, airStrikeDamageCls=_AirStrikeDamageRibbon, artilleryDamageCls=_ArtilleryDamageRibbon, staticDeathZoneCls=_StaticDeathZoneRibbon, minefieldZoneCls=_MinefieldZoneRibbon, damagedByBattleshipCls=_BattleshipRibbon, damagedByDestroyerCls=_BattleshipRibbon, fireDamageZoneCls=_ReceivedFireDamageZoneRibbon), 
+   FEEDBACK_EVENT_ID.ENEMY_DAMAGED_HP_PLAYER: _DamageRibbonClassFactory(damageCls=_ReceivedDamageHitRibbon, fireCls=_ReceivedFireHitRibbon, ramCls=_ReceivedRamHitRibbon, wcCls=_ReceivedWorldCollisionHitRibbon, artDmgCls=_ArtilleryReceivedDamageHitRibbon, bombDmgCls=_BombersReceivedDamageHitRibbon, artFireCls=_ArtilleryReceivedFireHitRibbon, bombFireCls=_BombersReceivedFireHitRibbon, recoveryCls=_EpicRecoveryRibbon, deathZoneCls=_DeathZoneRibbon, berserker=_ReceivedBerserkerHitRibbon, spawnedBotDmgCls=_ReceivedBySpawnedBotHitRibbon, minefieldDamageCls=_ReceivedByMinefieldRibbon, damagedBySmoke=_ReceivedByDamagingSmokeRibbon, dmgByCorrodingShot=_ReceivedByDamagingCorrodingShotRibbon, dmgByFireCircle=_ReceivedByFireCircleRibbon, dmgByClingBrander=_ReceivedByClingBranderRibbon, dmgByThunderStrike=_ReceivedByDamagingThunderStrikeRibbon, damagedByFortArtillery=_FortArtilleryReceivedDamageHitRibbon, airStrikeDamageCls=_ReceivedByAirStrikeRibbon, artilleryDamageCls=_ReceivedByArtilleryRibbon, staticDeathZoneCls=_StaticDeathZoneRibbon, minefieldZoneCls=_MinefieldZoneRibbon, damagedByBattleshipCls=_BattleshipRibbon, damagedByDestroyerCls=_BattleshipRibbon, fireDamageZoneCls=_ReceivedFireDamageZoneRibbon), 
+   FEEDBACK_EVENT_ID.PLAYER_ASSIST_TO_KILL_ENEMY: _AssistRibbonClassFactory(trackAssistCls=_TrackAssistRibbon, radioAssistCls=_RadioAssistRibbon, stunAssistCls=_StunAssistRibbon), 
+   FEEDBACK_EVENT_ID.PLAYER_ASSIST_TO_STUN_ENEMY: _AssistRibbonClassFactory(trackAssistCls=_TrackAssistRibbon, radioAssistCls=_RadioAssistRibbon, stunAssistCls=_StunAssistRibbon), 
+   FEEDBACK_EVENT_ID.ENEMY_SECTOR_CAPTURED: _RibbonSingleClassFactory(_EpicEnemySectorCapturedRibbon), 
+   FEEDBACK_EVENT_ID.DESTRUCTIBLE_DAMAGED: _RibbonSingleClassFactory(_EpicDestructibleDamaged), 
+   FEEDBACK_EVENT_ID.DESTRUCTIBLE_DESTROYED: _RibbonSingleClassFactory(_EpicDestructibleDestroyed), 
+   FEEDBACK_EVENT_ID.DESTRUCTIBLES_DEFENDED: _RibbonSingleClassFactory(_EpicDestructiblesDefended), 
+   FEEDBACK_EVENT_ID.DEFENDER_BONUS: _RibbonSingleClassFactory(_EpicDefenderBonus), 
+   FEEDBACK_EVENT_ID.SMOKE_ASSIST: _RibbonSingleClassFactory(_EpicAbilityAssist), 
+   FEEDBACK_EVENT_ID.INSPIRE_ASSIST: _RibbonSingleClassFactory(_EpicAbilityAssist), 
+   FEEDBACK_EVENT_ID.VEHICLE_HEALTH_ADDED: _RibbonSingleClassFactory(_ReceivedByHealthAddedRibbon)}
+_FEEDBACK_EVENTS_TO_IGNORE = (
+ FEEDBACK_EVENT_ID.EQUIPMENT_TIMER_EXPIRED,)
 
 def _isRoleBonus(event):
     return getattr(event.getExtra(), 'isRoleAction', lambda : False)()
@@ -1098,7 +1113,7 @@ class _RibbonsCache(object):
             self.__typeToIDs[ribbon.getType()].remove(ribbonID)
             return ribbon
         else:
-            return None
+            return
 
     def add(self, ribbon):
         self[ribbon.getID()] = ribbon
@@ -1210,14 +1225,14 @@ class RibbonsAggregator(object):
         self.__isInPostmortemMode = False
 
     def _onPerksChanged(self, perkData):
-        self._aggregateRibbons([_PerkRibbon.createFromFeedbackEvent(self.__idGenerator.next(), perkData)])
+        self._aggregateRibbons([_PerkRibbon.createFromFeedbackEvent(self.__idGenerator.nextSequenceID, perkData)])
 
     def _onVehicleStateUpdated(self, state, value):
         if state in VEHICLE_VIEW_STATE.WEATHER_ZONES and not value.needToCloseTimer():
-            self._aggregateRibbons([_WeatherZoneRibbon(self.__idGenerator.next(), state)])
+            self._aggregateRibbons([_WeatherZoneRibbon(self.__idGenerator.nextSequenceID, state)])
 
     def _onPlayerFeedbackReceived(self, events):
-        self._aggregateRibbons(list((_createRibbonFromPlayerFeedbackEvent(self, self.__idGenerator.next(), e) for e in events)))
+        self._aggregateRibbons(list(_createRibbonFromPlayerFeedbackEvent(self, self.__idGenerator.nextSequenceID, e) for e in events))
 
     def _aggregateRibbons(self, ribbons):
         aggregatedRibbons = {}
@@ -1234,7 +1249,9 @@ class RibbonsAggregator(object):
                 else:
                     temporaryRibbons.append(ribbon)
 
-            aggregatedRibbons[ribbon.getType()] = [ribbon]
+            else:
+                aggregatedRibbons[ribbon.getType()] = [
+                 ribbon]
 
         filteredRibbons = self.__filterRibbons(aggregatedRibbons)
         sortedRibbons = self.__getSortedList(filteredRibbons)
@@ -1243,30 +1260,31 @@ class RibbonsAggregator(object):
             if etype in _NOT_CACHED_RIBBON_TYPES:
                 self.__cache.add(ribbon)
                 self.onRibbonAdded(ribbon)
-            for cachedRibbon in self.__cache.iterByType(etype):
-                if cachedRibbon.aggregate(ribbon):
-                    if not self.__isSuspended:
-                        updateData = cachedRibbon if cachedRibbon.isAggregating else ribbon
-                        self.onRibbonUpdated(updateData)
-                    break
             else:
-                if etype in _ACCUMULATED_RIBBON_TYPES:
-                    for accumulatedRibbon in self.__accumulatedRibbons.iterByType(etype):
-                        if accumulatedRibbon.aggregate(ribbon):
-                            if not self.__isSuspended:
-                                self.__accumulatedRibbons.pop(accumulatedRibbon.getID())
-                                self.__cache.add(accumulatedRibbon)
-                                self.onRibbonAdded(accumulatedRibbon)
-                            break
-                    else:
-                        if self.__isSuspended:
-                            self.__accumulatedRibbons.add(ribbon)
+                for cachedRibbon in self.__cache.iterByType(etype):
+                    if cachedRibbon.aggregate(ribbon):
+                        if not self.__isSuspended:
+                            updateData = cachedRibbon if cachedRibbon.isAggregating else ribbon
+                            self.onRibbonUpdated(updateData)
+                        break
+                else:
+                    if etype in _ACCUMULATED_RIBBON_TYPES:
+                        for accumulatedRibbon in self.__accumulatedRibbons.iterByType(etype):
+                            if accumulatedRibbon.aggregate(ribbon):
+                                if not self.__isSuspended:
+                                    self.__accumulatedRibbons.pop(accumulatedRibbon.getID())
+                                    self.__cache.add(accumulatedRibbon)
+                                    self.onRibbonAdded(accumulatedRibbon)
+                                break
                         else:
-                            self.__cache.add(ribbon)
-                            self.onRibbonAdded(ribbon)
-                if not self.__isSuspended:
-                    self.__cache.add(ribbon)
-                    self.onRibbonAdded(ribbon)
+                            if self.__isSuspended:
+                                self.__accumulatedRibbons.add(ribbon)
+                            else:
+                                self.__cache.add(ribbon)
+                                self.onRibbonAdded(ribbon)
+                    elif not self.__isSuspended:
+                        self.__cache.add(ribbon)
+                        self.onRibbonAdded(ribbon)
 
         return
 
@@ -1278,26 +1296,27 @@ class RibbonsAggregator(object):
                 isValid = True
                 if condition is not None and self.__vehicleStateCtrl is not None:
                     vehId = self.__vehicleStateCtrl.getControllingVehicleID()
-                    isValid = all([ condition(r, vehId) for r in ribbons[rType] ])
+                    isValid = all(condition(r, vehId) for r in ribbons[rType])
                 if isValid:
                     del ribbons[rType]
 
         if self.KILL_RIBBON_BATTLE_EFFICIENCY_TYPE in ribbons:
-            killRibbons = dict(((r.getVehicleID(), r) for r in ribbons[self.KILL_RIBBON_BATTLE_EFFICIENCY_TYPE]))
-            damageRibbons = dict(((t, ribbons[t]) for t in self.RIBBON_TYPES_AGGREGATED_WITH_KILL_RIBBON if t in ribbons))
-            for rType, tmpRibbons in damageRibbons.iteritems():
+            killRibbons = dict((r.getVehicleID(), r) for r in ribbons[self.KILL_RIBBON_BATTLE_EFFICIENCY_TYPE])
+            damageRibbons = dict((t, ribbons[t]) for t in self.RIBBON_TYPES_AGGREGATED_WITH_KILL_RIBBON if t in ribbons)
+            for rType, tmpRibbons in viewitems(damageRibbons):
                 filteredRibbons = []
                 for tmpRibbon in tmpRibbons:
                     if tmpRibbon.getVehicleID() in killRibbons:
                         killRibbon = killRibbons[tmpRibbon.getVehicleID()]
                         if not killRibbon.aggregate(tmpRibbon):
                             filteredRibbons.append(tmpRibbon)
-                    filteredRibbons.append(tmpRibbon)
+                    else:
+                        filteredRibbons.append(tmpRibbon)
 
                 ribbons[rType] = filteredRibbons
 
-            excludedRibbons = dict(((t, ribbons[t]) for t in _RIBBON_TYPES_EXCLUDED_IF_KILL_RIBBON if t in ribbons))
-            for rType, tmpRibbons in excludedRibbons.iteritems():
+            excludedRibbons = dict((t, ribbons[t]) for t in _RIBBON_TYPES_EXCLUDED_IF_KILL_RIBBON if t in ribbons)
+            for rType, tmpRibbons in viewitems(excludedRibbons):
                 filteredRibbons = [ r for r in tmpRibbons if r.getVehicleID() not in killRibbons ]
                 ribbons[rType] = filteredRibbons
 
@@ -1315,7 +1334,7 @@ class RibbonsAggregator(object):
             if detectionRibbons is not None:
                 sortedRibons.extend(sorted(detectionRibbons, key=_sortKey))
             remaningRibbons = []
-            for newRibbons in ribbons.itervalues():
+            for newRibbons in viewvalues(ribbons):
                 remaningRibbons.extend(newRibbons)
 
             sortedRibons.extend(sorted(remaningRibbons, key=_sortKey))
@@ -1347,4 +1366,6 @@ class RibbonsAggregatorPlayer(RibbonsAggregator):
 
 
 def createRibbonsAggregator():
-    return RibbonsAggregatorPlayer() if BattleReplay.g_replayCtrl.isPlaying else RibbonsAggregator()
+    if BattleReplay.g_replayCtrl.isPlaying:
+        return RibbonsAggregatorPlayer()
+    return RibbonsAggregator()

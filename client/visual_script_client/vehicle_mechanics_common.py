@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/visual_script_client/vehicle_mechanics_common.py
 import typing
 from constants import IS_VS_EDITOR, UNKNOWN_VEHICLE_ID
 from events_containers.common.containers import ContainersListener
@@ -65,7 +63,7 @@ class VehicleMechanicEventsBlock(Block, VehicleMechanicsMeta, ContainersListener
         return [ASPECT.CLIENT]
 
     def captionText(self):
-        return 'On {} {}'.format(self._vehicleMechanic.value, self._EVENTS_NAME)
+        return ('On {} {}').format(self._vehicleMechanic.value, self._EVENTS_NAME)
 
     @classmethod
     def _getVehicleMechanic(cls, initParams):
@@ -88,7 +86,8 @@ class VehicleSelectableMechanicEventsBlock(VehicleMechanicEventsBlock):
 
     @classmethod
     def initParams(cls):
-        return [InitParam('Vehicle Mechanic', SLOT_TYPE.STR, buildStrKeysValue(*cls._getInitParamMechanics()), EDITOR_TYPE.STR_KEY_SELECTOR)]
+        return [
+         InitParam('Vehicle Mechanic', SLOT_TYPE.STR, buildStrKeysValue(*cls._getInitParamMechanics()), EDITOR_TYPE.STR_KEY_SELECTOR)]
 
     @classmethod
     def _getInitParamMechanics(cls):

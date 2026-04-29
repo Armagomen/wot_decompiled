@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: server_side_replay/scripts/client/server_side_replay/gui/impl/lobby/replays_root_view.py
-import logging
-import typing
+import logging, typing
 from frameworks.wulf import ViewFlags, ViewSettings
 from ..gen.view_models.views.lobby.root_view_model import RootViewModel
 from ..gen.view_models.views.lobby.tab_model import TabModel
@@ -112,7 +109,10 @@ class ReplaysRootView(ViewImpl, IGlobalListener):
         self.stopGlobalListening()
 
     def __initPages(self):
-        pages = (BestReplaysPage(self.viewModel.bestReplays, self), MyReplaysPage(self.viewModel.myReplays, self), FindReplayPage(self.viewModel.findReplay, self))
+        pages = (
+         BestReplaysPage(self.viewModel.bestReplays, self),
+         MyReplaysPage(self.viewModel.myReplays, self),
+         FindReplayPage(self.viewModel.findReplay, self))
         self.__pages = {p.pageId:p for p in pages}
 
     def __clearPages(self):
@@ -121,7 +121,7 @@ class ReplaysRootView(ViewImpl, IGlobalListener):
         self.__pages.clear()
 
     def __updateTabs(self):
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             tabs = tx.sidebar.getItems()
             tabs.clear()
             for tab in tuple(ReplaysViews):

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/battle/player_format.py
-import logging
-import BigWorld
+import logging, BigWorld
 from gui.battle_control.arena_info.arena_vos import VehicleArenaInfoVO
 from gui.battle_control.arena_info.player_format import PlayerFullNameFormatter
 from helpers import dependency

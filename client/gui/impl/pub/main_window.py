@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/pub/main_window.py
+from __future__ import absolute_import
 import typing
 from frameworks.wulf import WindowFlags
 from gui.impl.gen import R

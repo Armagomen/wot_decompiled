@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/impl/lobby/presenters/sub_presenters/financial_report.py
 import typing
 from frontline.gui.impl.gen.view_models.views.lobby.views.post_battle_results_view.vehicle_financial_report_model import VehicleFinancialReportModel
 from gui.battle_results.presenters.battle_results_sub_presenter import BattleResultsSubPresenter
@@ -33,11 +31,17 @@ class FrontlineFinancialReportSubPresenter(BattleResultsSubPresenter):
 
     def getVehBattleResultsModel(self, vehicle, battleResults, vehIdx):
         vehicleReportModel = VehicleFinancialReportModel()
-        dataToPack = [(FrontlineCrystalsDetailsPacker, vehicleReportModel.crystals, CurrencyRecordsItemModel.CRYSTAL),
-         (FrontlineXpDetailsPacker, vehicleReportModel.xp, CurrencyRecordsItemModel.XP_COST),
-         (FrontlineFreeXpDetailsPacker, vehicleReportModel.freeXp, CurrencyRecordsItemModel.FREE_XP),
-         (FrontlineCreditsStatisticsPacker, vehicleReportModel.credits, CurrencyRecordsItemModel.CREDITS),
-         (FrontlineGoldStatisticsPacker, vehicleReportModel.gold, CurrencyRecordsItemModel.GOLD)]
+        dataToPack = [
+         (
+          FrontlineCrystalsDetailsPacker, vehicleReportModel.crystals, CurrencyRecordsItemModel.CRYSTAL),
+         (
+          FrontlineXpDetailsPacker, vehicleReportModel.xp, CurrencyRecordsItemModel.XP_COST),
+         (
+          FrontlineFreeXpDetailsPacker, vehicleReportModel.freeXp, CurrencyRecordsItemModel.FREE_XP),
+         (
+          FrontlineCreditsStatisticsPacker, vehicleReportModel.credits, CurrencyRecordsItemModel.CREDITS),
+         (
+          FrontlineGoldStatisticsPacker, vehicleReportModel.gold, CurrencyRecordsItemModel.GOLD)]
         for packer, modelAttr, currencyItem in dataToPack:
             packer.packModel(modelAttr, currencyItem, battleResults, vehIdx)
 
@@ -49,10 +53,16 @@ class FrontlineFinancialReportSubPresenter(BattleResultsSubPresenter):
         return vehicleReportModel
 
     def _getListeners(self):
-        return ((events.LobbySimpleEvent.PREMIUM_XP_BONUS_CHANGED, self.__onXpBonusStatusChanged),)
+        return (
+         (
+          events.LobbySimpleEvent.PREMIUM_XP_BONUS_CHANGED, self.__onXpBonusStatusChanged),)
 
     def _getCallbacks(self):
-        return (('stats.applyAdditionalXPCount', self.__onXpBonusStatusChanged), ('stats.applyAdditionalWoTPlusXPCount', self.__onXpBonusStatusChanged))
+        return (
+         (
+          'stats.applyAdditionalXPCount', self.__onXpBonusStatusChanged),
+         (
+          'stats.applyAdditionalWoTPlusXPCount', self.__onXpBonusStatusChanged))
 
     def __onXpBonusStatusChanged(self, _=None):
         with self.getViewModel().transaction():

@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/PowerModeController.py
+from __future__ import absolute_import, division
 import typing
 from collections import namedtuple
 import BigWorld
@@ -27,7 +26,9 @@ class PowerModeState(namedtuple('PowerModeState', ('state', 'directionChangeTime
 
     @property
     def activeProgress(self):
-        return self.progress if self.state in POWER_MODE_STATE.ACTIVE_MODES else 0.0
+        if self.state in POWER_MODE_STATE.ACTIVE_MODES:
+            return self.progress
+        return 0.0
 
     @property
     def progress(self):

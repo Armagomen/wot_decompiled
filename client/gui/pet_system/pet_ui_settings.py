@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/pet_system/pet_ui_settings.py
 import typing
 from copy import deepcopy
 from account_helpers import AccountSettings

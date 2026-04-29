@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/view_components.py
-import logging
-import weakref
+import logging, weakref
 from collections import defaultdict
 from soft_exception import SoftException
 from gui.battle_control.battle_constants import VIEW_COMPONENT_RULE
@@ -34,7 +31,7 @@ class IViewComponentsController(IBattleController):
 
 
 class ViewComponentsController(IViewComponentsController):
-    __slots__ = ('_viewComponents',)
+    __slots__ = ('_viewComponents', )
 
     def __init__(self):
         super(ViewComponentsController, self).__init__()
@@ -72,19 +69,20 @@ class _ComponentsBridge(object):
     def registerViewComponents(self, *data):
         for item in data:
             if len(item) < 2:
-                raise ComponentsBridgeError('Item is invalid: {}'.format(item))
+                raise ComponentsBridgeError(('Item is invalid: {}').format(item))
             ctrlID, componentsIDs = item[:2]
             if not isinstance(componentsIDs, (tuple, list)):
-                raise ComponentsBridgeError('Item is invalid: {}'.format(item))
+                raise ComponentsBridgeError(('Item is invalid: {}').format(item))
             if ctrlID in self.__components:
                 sameViewAliases = set(componentsIDs).intersection(self.__indexes[ctrlID])
                 if sameViewAliases:
-                    raise ComponentsBridgeError('Linkage of controller ID to view alias have to be defined only once! ' + 'Controller ID: {}, same view aliases: {}'.format(ctrlID, sameViewAliases))
+                    raise ComponentsBridgeError('Linkage of controller ID to view alias have to be defined only once! ' + ('Controller ID: {}, same view aliases: {}').format(ctrlID, sameViewAliases))
                 else:
                     self.__components[ctrlID].extend([None] * len(componentsIDs))
                     self.__indexes[ctrlID].extend(componentsIDs)
             else:
-                self.__components[ctrlID] = [None] * len(componentsIDs)
+                self.__components[ctrlID] = [
+                 None] * len(componentsIDs)
                 self.__indexes[ctrlID] = list(componentsIDs)
             for componentID in componentsIDs:
                 self.__componentToCrl[componentID].append(ctrlID)
@@ -111,7 +109,8 @@ class _ComponentsBridge(object):
                 if ctrlID in self.__ctrls:
                     ctrl = self.__ctrls[ctrlID]
                     ctrl.setViewComponents(*components)
-                _logger.warning('Controller is not found: %r', ctrlID)
+                else:
+                    _logger.warning('Controller is not found: %r', ctrlID)
 
             return
 
@@ -142,7 +141,7 @@ class _ComponentsBridge(object):
 
     def registerController(self, ctrl):
         if not isinstance(ctrl, IViewComponentsController):
-            raise ComponentsBridgeError('Controller {0} is not extended IViewComponentsController'.format(ctrl))
+            raise ComponentsBridgeError(('Controller {0} is not extended IViewComponentsController').format(ctrl))
         self.__ctrls[ctrl.getControllerID()] = weakref.proxy(ctrl)
 
     def registerControllers(self, *ctrls):
@@ -151,10 +150,12 @@ class _ComponentsBridge(object):
 
     def __getIndexByComponentID(self, ctrlID, componentID):
         if ctrlID not in self.__indexes:
-            return None
+            return
         else:
             indexes = self.__indexes[ctrlID]
-            return indexes.index(componentID) if componentID in indexes else None
+            if componentID in indexes:
+                return indexes.index(componentID)
+            return
 
 
 def createComponentsBridge():

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/web/resource_well_w2c.py
 from __future__ import absolute_import
 import logging
 from helpers import dependency

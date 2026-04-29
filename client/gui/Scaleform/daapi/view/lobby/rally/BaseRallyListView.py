@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/rally/BaseRallyListView.py
 from abc import abstractmethod
 from gui import makeHtmlString
 from gui.Scaleform.daapi.view.meta.BaseRallyListViewMeta import BaseRallyListViewMeta
@@ -14,7 +12,7 @@ class BaseRallyListView(BaseRallyListViewMeta):
 
     @abstractmethod
     def getPyDataProvider(self):
-        return None
+        return
 
     def setData(self, initialData):
         pass
@@ -39,8 +37,7 @@ class BaseRallyListView(BaseRallyListViewMeta):
         return vo
 
     def _updateVehiclesLabel(self, minVal, maxVal):
-        self.as_setVehiclesTitleS(makeHtmlString('html_templates:lobby/rally/', 'vehiclesLabel', {'minValue': minVal,
-         'maxValue': maxVal}))
+        self.as_setVehiclesTitleS(makeHtmlString('html_templates:lobby/rally/', 'vehiclesLabel', {'minValue': minVal, 'maxValue': maxVal}))
 
     def _onUserActionReceived(self, _, user, shadowMode):
         pass

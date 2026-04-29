@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/items/components/skills_components.py
 from typing import Optional
 from items.components import legacy_stuff
 from items.components import skills_constants
@@ -16,7 +14,7 @@ class BasicSkill(legacy_stuff.LegacyStuff):
         self.__uiSettings = uiSettings
 
     def __repr__(self):
-        return '{}({})'.format(self.__class__.__name__, self.__name)
+        return ('{}({})').format(self.__class__.__name__, self.__name)
 
     @property
     def name(self):
@@ -28,11 +26,15 @@ class BasicSkill(legacy_stuff.LegacyStuff):
 
     @property
     def kpi(self):
-        return self.uiSettings.kpi if self.uiSettings else []
+        if self.uiSettings:
+            return self.uiSettings.kpi
+        return []
 
     @property
     def tooltipSection(self):
-        return self.uiSettings.tooltipSection if self.uiSettings else 'skill'
+        if self.uiSettings:
+            return self.uiSettings.tooltipSection
+        return 'skill'
 
     def recreate(self, *args):
         raise NotImplementedError
@@ -43,19 +45,25 @@ class BasicSkill(legacy_stuff.LegacyStuff):
 
     @property
     def situational(self):
-        return self.uiSettings.typeName == SkillTypeName.SITUATIONAL if self.uiSettings else False
+        if self.uiSettings:
+            return self.uiSettings.typeName == SkillTypeName.SITUATIONAL
+        return False
 
     @property
     def typeName(self):
-        return self.uiSettings.typeName if self.uiSettings else SkillTypeName.MAIN
+        if self.uiSettings:
+            return self.uiSettings.typeName
+        return SkillTypeName.MAIN
 
     @property
     def params(self):
-        return self.uiSettings.params if self.uiSettings else {}
+        if self.uiSettings:
+            return self.uiSettings.params
+        return {}
 
 
 class ExtendedSkill(BasicSkill):
-    __slots__ = ('_setOfParameters',)
+    __slots__ = ('_setOfParameters', )
 
     def __init__(self, basicSkill, *args):
         super(ExtendedSkill, self).__init__(basicSkill.name, vsePerk=basicSkill.vsePerk, uiSettings=basicSkill.uiSettings)

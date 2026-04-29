@@ -1,8 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/legacy_mechanics/dualgun_component.py
+from __future__ import absolute_import
+from future.utils import viewitems
 from weakref import proxy
-import BattleReplay
-import BigWorld
+import BattleReplay, BigWorld
 from ReplayEvents import g_replayEvents
 from Vehicle import StunInfo
 from aih_constants import CTRL_MODE_NAME
@@ -11,12 +10,12 @@ from constants import DUALGUN_CHARGER_STATUS
 from constants import DUAL_GUN
 from constants import VEHICLE_MISC_STATUS
 from debug_utils import LOG_WARNING
-from dualgun_sounds import DualGunSounds
 from items.utils import getFirstReloadTime
 from gui.Scaleform.daapi.view.meta.DualGunPanelMeta import DualGunPanelMeta
 from gui.battle_control import avatar_getter
 from gui.battle_control.battle_constants import VEHICLE_VIEW_STATE, FEEDBACK_EVENT_ID, DestroyTimerViewState
 from gui.battle_control.controllers.prebattle_setups_ctrl import IPrebattleSetupsListener
+from gui.Scaleform.daapi.view.battle.shared.legacy_mechanics.dualgun_sounds import DualGunSounds
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE
 from gui.shared.events import GameEvent
 from helpers import dependency
@@ -92,8 +91,9 @@ class DeviceAffectPolicy(ReloadingAffectPolicy):
 
 
 class DestroyStateAffectPolicy(ReloadingAffectPolicy):
-    __AFFECT_STATES = (VEHICLE_MISC_STATUS.VEHICLE_IS_OVERTURNED,)
-    __AFFECT_LEVEL = ('critical',)
+    __AFFECT_STATES = (
+     VEHICLE_MISC_STATUS.VEHICLE_IS_OVERTURNED,)
+    __AFFECT_LEVEL = ('critical', )
 
     def __call__(self, value):
         if not isinstance(value, DestroyTimerViewState):
@@ -118,11 +118,11 @@ class DualGunComponent(DualGunPanelMeta, IPrebattleSetupsListener):
     def __init__(self):
         super(DualGunComponent, self).__init__()
         self.__reloadingState = ReloadFactorsState()
-        self.__deviceStateHandlers = {VEHICLE_VIEW_STATE.FIRE: ReloadingAffectPolicy(self.__reloadingState, VEHICLE_VIEW_STATE.FIRE),
-         VEHICLE_VIEW_STATE.DEVICES: DeviceAffectPolicy(self.__reloadingState, VEHICLE_VIEW_STATE.DEVICES),
-         VEHICLE_VIEW_STATE.CREW_DEACTIVATED: DeviceAffectPolicy(self.__reloadingState, VEHICLE_VIEW_STATE.CREW_DEACTIVATED),
-         VEHICLE_VIEW_STATE.STUN: StunAffectPolicy(self.__reloadingState, VEHICLE_VIEW_STATE.STUN),
-         VEHICLE_VIEW_STATE.DESTROY_TIMER: DestroyStateAffectPolicy(self.__reloadingState, VEHICLE_VIEW_STATE.DESTROY_TIMER)}
+        self.__deviceStateHandlers = {VEHICLE_VIEW_STATE.FIRE: ReloadingAffectPolicy(self.__reloadingState, VEHICLE_VIEW_STATE.FIRE), 
+           VEHICLE_VIEW_STATE.DEVICES: DeviceAffectPolicy(self.__reloadingState, VEHICLE_VIEW_STATE.DEVICES), 
+           VEHICLE_VIEW_STATE.CREW_DEACTIVATED: DeviceAffectPolicy(self.__reloadingState, VEHICLE_VIEW_STATE.CREW_DEACTIVATED), 
+           VEHICLE_VIEW_STATE.STUN: StunAffectPolicy(self.__reloadingState, VEHICLE_VIEW_STATE.STUN), 
+           VEHICLE_VIEW_STATE.DESTROY_TIMER: DestroyStateAffectPolicy(self.__reloadingState, VEHICLE_VIEW_STATE.DESTROY_TIMER)}
         self.__isEnabled = False
         self.__isObservingVehicle = False
         self.__isAllowedByContext = True
@@ -184,7 +184,7 @@ class DualGunComponent(DualGunPanelMeta, IPrebattleSetupsListener):
             player = BigWorld.player()
             if player is not None and player.inputHandler is not None:
                 player.inputHandler.onCameraChanged += self.__onCameraChanged
-        self.as_setChangeGunTweenPropsS(MS_IN_SECOND / 2, MS_IN_SECOND)
+        self.as_setChangeGunTweenPropsS(MS_IN_SECOND // 2, MS_IN_SECOND)
         arenaDP = self.__sessionProvider.getArenaDP()
         if arenaDP is not None:
             vInfo = arenaDP.getVehicleInfo()
@@ -275,15 +275,15 @@ class DualGunComponent(DualGunPanelMeta, IPrebattleSetupsListener):
         if ctrl is None:
             return
         else:
-            for stateID in self.__deviceStateHandlers.iterkeys():
+            for stateID, handler in viewitems(self.__deviceStateHandlers):
                 value = ctrl.getStateValue(stateID)
                 if value is not None:
                     if stateID == VEHICLE_VIEW_STATE.DEVICES:
                         for v in value:
-                            self.__deviceStateHandlers[stateID](v)
+                            handler(v)
 
                     else:
-                        self.__deviceStateHandlers[stateID](value)
+                        handler(value)
 
             self.as_setReloadingTimeIncreasedS(self.__reloadingState.hasNegativeEffect())
             return
@@ -292,10 +292,12 @@ class DualGunComponent(DualGunPanelMeta, IPrebattleSetupsListener):
     def _convertServerStateToUI(state):
         if state == DUAL_GUN.GUN_STATE.EMPTY:
             return GunStatesUI.EMPTY
-        elif state == DUAL_GUN.GUN_STATE.RELOADING:
-            return GunStatesUI.RELOADING
         else:
-            return GunStatesUI.READY if state == DUAL_GUN.GUN_STATE.READY else None
+            if state == DUAL_GUN.GUN_STATE.RELOADING:
+                return GunStatesUI.RELOADING
+            if state == DUAL_GUN.GUN_STATE.READY:
+                return GunStatesUI.READY
+            return
 
     def __onBattleStarted(self):
         self.__updateContextAvailability()
@@ -354,7 +356,7 @@ class DualGunComponent(DualGunPanelMeta, IPrebattleSetupsListener):
         switchBaseTime = int(baseTime * DualGunConstants.TIME_MULTIPLIER)
         if self.__reloadEventReceived:
             if cooldownTimes[activeGun].leftTime != activeGunReloadingTimeLeft:
-                self.__soundManager.onWeaponChanged(switchLeftTime / MS_IN_SECOND)
+                self.__soundManager.onWeaponChanged(switchLeftTime // MS_IN_SECOND)
             self.__reloadEventReceived = False
         self.as_updateActiveGunS(activeGun, switchLeftTime, switchBaseTime)
         self.__updateDualGunState(states, cooldownTimes)
@@ -462,7 +464,10 @@ class DualGunComponent(DualGunPanelMeta, IPrebattleSetupsListener):
 
     def __isPlayerVehicle(self):
         player = BigWorld.player()
-        return player.vehicle.isPlayerVehicle if player is not None and player.vehicle is not None else False
+        if player is not None and player.vehicle is not None:
+            return player.vehicle.isPlayerVehicle
+        else:
+            return False
 
     @noexceptReturn(False)
     def __isVisible(self):

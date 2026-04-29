@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/utils/requesters/offers_requester.py
 import BigWorld
 from gui.shared.utils.requesters.abstract import AbstractSyncDataRequester
 from skeletons.gui.shared.utils.requesters import IOffersRequester

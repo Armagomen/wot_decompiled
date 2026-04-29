@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/framework/entities/sf_window.py
-import logging
-import weakref
-import typing
+from __future__ import absolute_import
+import logging, weakref, typing
 from frameworks.wulf.gui_constants import ShowingStatus
 from wg_async import wg_async, wg_await, AsyncReturn
 import Event
@@ -16,7 +13,8 @@ if typing.TYPE_CHECKING:
 _logger = logging.getLogger(__name__)
 
 class SFWindow(Window):
-    __slots__ = ('__loadParams', '__scope', '__fireEvent', '__view', 'args', 'kwargs', 'onContentLoaded')
+    __slots__ = ('__loadParams', '__scope', '__fireEvent', '__view', 'args', 'kwargs',
+                 'onContentLoaded')
 
     def __init__(self, loadParams, scope=EVENT_BUS_SCOPE.DEFAULT, fireEvent=True, *args, **kwargs):
         self.args = args
@@ -37,10 +35,10 @@ class SFWindow(Window):
         return
 
     def __repr__(self):
-        return '{}(uniqueID={}, layer={}, decorator={}, content={}, viewKey={})'.format(self.__class__.__name__, self.uniqueID, self.layer, self.decorator, self.content, self.__loadParams.viewKey)
+        return ('{}(uniqueID={}, layer={}, decorator={}, content={}, viewKey={})').format(self.__class__.__name__, self.uniqueID, self.layer, self.decorator, self.content, self.__loadParams.viewKey)
 
     def getName(self):
-        return 'SFWindow [{}]'.format(self.__loadParams.viewKey.name)
+        return ('SFWindow [{}]').format(self.__loadParams.viewKey.name)
 
     @property
     def loadParams(self):
@@ -53,11 +51,16 @@ class SFWindow(Window):
     @property
     def windowStatus(self):
         status = super(SFWindow, self).windowStatus
-        return WindowStatus.LOADING if status == WindowStatus.LOADED and self.__view is None else status
+        if status == WindowStatus.LOADED and self.__view is None:
+            return WindowStatus.LOADING
+        else:
+            return status
 
     @property
     def showingStatus(self):
-        return ShowingStatus.SHOWN if self.windowStatus == WindowStatus.LOADED else ShowingStatus.HIDDEN
+        if self.windowStatus == WindowStatus.LOADED:
+            return ShowingStatus.SHOWN
+        return ShowingStatus.HIDDEN
 
     def isParamsEqual(self, loadParams, scope=EVENT_BUS_SCOPE.DEFAULT, fireEvent=True, *args, **kwargs):
         return self.__loadParams.viewKey == loadParams.viewKey and self.args == args and self.kwargs == kwargs
@@ -65,7 +68,7 @@ class SFWindow(Window):
     def load(self):
         _logger.debug('Loading window: %r', self)
         if self.windowStatus != WindowStatus.CREATED:
-            raise SoftException('Window {} has already loaded!'.format(self.__loadParams.viewKey))
+            raise SoftException(('Window {} has already loaded!').format(self.__loadParams.viewKey))
         super(SFWindow, self).load()
         if self.__fireEvent:
             g_eventBus.handleEvent(events.LoadViewEvent(self.__loadParams, *self.args, **self.kwargs), self.__scope)

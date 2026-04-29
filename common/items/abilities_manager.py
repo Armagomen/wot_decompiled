@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/items/abilities_manager.py
 import typing
 from operator import add
 from collections import defaultdict, namedtuple
@@ -18,11 +16,11 @@ class AbilitiesManager(object):
         self.reset()
 
     def addBuild(self, vehInvID, scopeName, perksDict, priority=DEFAULT_PRIORITY):
-        validPerks = {perkID:perkLevel for perkID, perkLevel in perksDict.iteritems() if perks.g_cache.perks.validatePerk(perkID) and perkLevel > 0}
+        validPerks = {perkID:perkLevel for perkID, perkLevel in perksDict.iteritems() if perks.g_cache.perks.validatePerk(perkID) and perkLevel > 0 if perks.g_cache.perks.validatePerk(perkID) and perkLevel > 0}
         if len(validPerks) != len(perksDict):
-            LOG_DEBUG_DEV('AbilitiesManager.addBuild: build is empty or holds not valid perks: {}, {}, {}, {}'.format(vehInvID, scopeName, priority, perksDict))
+            LOG_DEBUG_DEV(('AbilitiesManager.addBuild: build is empty or holds not valid perks: {}, {}, {}, {}').format(vehInvID, scopeName, priority, perksDict))
         if validPerks:
-            LOG_DEBUG_DEV('AbilitiesManager.addBuild:{}, {}, {}, {}'.format(vehInvID, scopeName, priority, validPerks))
+            LOG_DEBUG_DEV(('AbilitiesManager.addBuild:{}, {}, {}, {}').format(vehInvID, scopeName, priority, validPerks))
             del_index = None
             for i, (pr, rec) in enumerate(self._scopes[vehInvID]):
                 if rec.name == scopeName:
@@ -44,7 +42,7 @@ class AbilitiesManager(object):
                 break
 
         if build is None:
-            LOG_DEBUG_DEV('AbilitiesManager.modifyBuild: could not find build {} for vehicle {} to modify. Creating a new one'.format(scopeName, vehInvID))
+            LOG_DEBUG_DEV(('AbilitiesManager.modifyBuild: could not find build {} for vehicle {} to modify. Creating a new one').format(scopeName, vehInvID))
             self.addBuild(vehInvID, scopeName, modDict)
             return
         else:
@@ -52,7 +50,8 @@ class AbilitiesManager(object):
                 buildValue = build.get(perkID)
                 if buildValue is None:
                     build[perkID] = mod
-                build[perkID] = operator(buildValue, mod)
+                else:
+                    build[perkID] = operator(buildValue, mod)
 
             return
 
@@ -62,7 +61,9 @@ class AbilitiesManager(object):
             return {}
         else:
             vehBuilds = sorted(vehiclePerks, key=lambda e: e[0])
-            return {vehBuild[1].name:tuple(((perkID, min(perksMaxLevelConfig.getMaxPerkLevel(perkID, level), level)) for perkID, level in vehBuild[1].perks.iteritems())) for vehBuild in vehBuilds} if perksMaxLevelConfig is not None else {vehBuild[1].name:tuple(vehBuild[1].perks.iteritems()) for vehBuild in vehBuilds}
+            if perksMaxLevelConfig is not None:
+                return {vehBuild[1].name:tuple((perkID, min(perksMaxLevelConfig.getMaxPerkLevel(perkID, level), level)) for perkID, level in vehBuild[1].perks.iteritems()) for vehBuild in vehBuilds}
+            return {vehBuild[1].name:tuple(vehBuild[1].perks.iteritems()) for vehBuild in vehBuilds}
 
     def getPerksListByVehicle(self, vehInvID):
         vehiclePerks = self._scopes.get(vehInvID)
@@ -76,6 +77,8 @@ class AbilitiesManager(object):
         for pr, rec in self._scopes[vehInvID]:
             if rec.name == scopeName:
                 return rec.perks.get(perkID, 0)
+
+        return 0
 
     def getScopesNames(self, vehInvID):
         vehiclePerks = self._scopes.get(vehInvID)
@@ -106,7 +109,10 @@ class PerksMaxLevelConfig(object):
             maxLevel = self._getMaxPerkLevelFromConfig(self._config['overrides'][self._bonusType], perkID)
         if maxLevel is None:
             maxLevel = self._getMaxPerkLevelFromConfig(self._config['default'], perkID)
-        return maxLevel if maxLevel is not None else default
+        if maxLevel is not None:
+            return maxLevel
+        else:
+            return default
 
     def _getMaxPerkLevelFromConfig(self, config, perkID):
         return config['maxPerkLevels'].get(perkID, config['maxLevel'])

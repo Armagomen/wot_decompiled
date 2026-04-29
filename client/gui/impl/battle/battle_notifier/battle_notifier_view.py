@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/battle/battle_notifier/battle_notifier_view.py
+from __future__ import absolute_import
 import logging
 from collections import deque
 import ArenaType
@@ -52,7 +51,7 @@ class BattleNotifierView(ViewImpl):
     def _fillComponentModel(self):
         if self.__resultsQueue:
             battleResult = self.__resultsQueue.popleft()
-            with self.viewModel.transaction() as tr:
+            with self.viewModel.transaction() as (tr):
                 tr.setBattleResult(battleResult['result'])
                 tr.setBattleStartTime(battleResult['time'])
                 tr.setMapName(battleResult['arenaName'])
@@ -78,15 +77,14 @@ def _randomBattleResults(message):
         arenaType = None
     arenaCreateTime = battleResults.get('arenaCreateTime', None)
     if arenaCreateTime and arenaType:
-        results = {'time': arenaCreateTime,
-         'vehicleTier': 'N/A',
-         'vehicleClass': 'N/A',
-         'vehicleName': 'N/A',
-         'result': ResultEnum(battleResults.get('isWinner', 0)),
-         'arenaName': arenaType.name,
-         'xp': 0,
-         Currency.CREDITS: 0,
-         Currency.CRYSTAL: 0}
+        results = {'time': arenaCreateTime, 'vehicleTier': 'N/A', 
+           'vehicleClass': 'N/A', 
+           'vehicleName': 'N/A', 
+           'result': ResultEnum(battleResults.get('isWinner', 0)), 
+           'arenaName': arenaType.name, 
+           'xp': 0, 
+           Currency.CREDITS: 0, 
+           Currency.CRYSTAL: 0}
         intCD = battleResults.get('playerVehicles', {}).keys()[0]
         vehicleType = getVehicleType(intCD)
         results['vehicleName'] = vehicleType.shortUserString
@@ -102,15 +100,14 @@ def _randomBattleResults(message):
         if crystal:
             results[Currency.CRYSTAL] = int(crystal)
         return results
-    else:
-        _logger.warning('Could not format message, no arena createTime or arenaType found in message.')
-        return
-        return
+    _logger.warning('Could not format message, no arena createTime or arenaType found in message.')
+    return
+    return
 
 
-_formatters = {ARENA_BONUS_TYPE.REGULAR: _randomBattleResults,
- ARENA_BONUS_TYPE.EPIC_RANDOM: _randomBattleResults,
- ARENA_BONUS_TYPE.RANDOM_NP2: _randomBattleResults}
+_formatters = {ARENA_BONUS_TYPE.REGULAR: _randomBattleResults, 
+   ARENA_BONUS_TYPE.EPIC_RANDOM: _randomBattleResults, 
+   ARENA_BONUS_TYPE.RANDOM_NP2: _randomBattleResults}
 
 def _collectResults(message):
     arenaBonusType = message.data.get('bonusType', None)
@@ -118,7 +115,7 @@ def _collectResults(message):
         _logger.warning('[BattleNotifier] no "bonusType" item found in battle results. Cannot parse results.')
         return
     else:
-        formatter = _formatters.get(arenaBonusType, None)
+        formatter = _formatters.get(arenaBonusType)
         if formatter is None:
             _logger.debug('[BattleNotifier] The arena bonus type, %s, is not yet supported. Chat message: %s', arenaBonusType, message)
             return

@@ -1,9 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/personal_missions_30/state.py
 import logging
 from functools import partial
-import typing
-import SoundGroups
+import typing, SoundGroups
 from cgf_components.pm30_hangar_components import PERSONAL_MISSIONS_3_SUB_HANGAR_IS_READY
 from frameworks.state_machine import StateFlags
 from frameworks.state_machine.transitions import TransitionType
@@ -57,13 +54,17 @@ class CampaignSelectorState(ViewLobbyState):
     VIEW_KEY = ViewKey(VIEW_ALIAS.CAMPAIGN_SELECTOR)
 
     def registerTransitions(self):
+        from gui.Scaleform.daapi.view.lobby.missions.personal.state import PersonalMissionsPageState
         lsm = self.getMachine()
         self.addNavigationTransition(lsm.getStateByCls(ProgressionState), record=True)
         self.addNavigationTransition(lsm.getStateByCls(AssemblingState), record=True)
         self.addNavigationTransition(lsm.getStateByCls(MissionsState), record=True)
+        self.addNavigationTransition(lsm.getStateByCls(PersonalMissionsPageState), record=True)
 
     def getNavigationDescription(self):
-        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.campaign_selector()), infos=(LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=openInfoPageScreen, tooltipBody=backport.text(R.strings.personal_missions.pages.button.infopage.description())), LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.VIDEO, onMoreInfoRequested=lambda : showPM30IntroWindow(force=True), tooltipBody=backport.text(R.strings.personal_missions.pages.button.video.description()))))
+        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.campaign_selector()), infos=(
+         LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=openInfoPageScreen, tooltipBody=backport.text(R.strings.personal_missions.pages.button.infopage.description())),
+         LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.VIDEO, onMoreInfoRequested=lambda : showPM30IntroWindow(force=True), tooltipBody=backport.text(R.strings.personal_missions.pages.button.video.description()))))
 
     def getBackNavigationDescription(self, params):
         return backport.text(R.strings.personal_missions.navigation.backButton.campaignSelector())
@@ -82,7 +83,8 @@ class PersonalMissions3EntryState(LobbyState, EventsHandler, SubhangarStateGroup
         return
 
     def getSubhangarStateGroupConfig(self):
-        return SubhangarStateGroupConfig((SubhangarStateGroups.PersonalMissions,), PersonalMissions3CameraMover(callback=self.moveCamera))
+        return SubhangarStateGroupConfig((
+         SubhangarStateGroups.PersonalMissions,), PersonalMissions3CameraMover(callback=self.moveCamera))
 
     def registerStates(self):
         lsm = self.getMachine()
@@ -118,7 +120,9 @@ class PersonalMissions3EntryState(LobbyState, EventsHandler, SubhangarStateGroup
             _logger.error('PersonalMissions3EntryState cachedParams is empty')
 
     def _getEvents(self):
-        return ((self.__hangarSpace.onSpaceChanged, self.__onSpaceChanged),)
+        return (
+         (
+          self.__hangarSpace.onSpaceChanged, self.__onSpaceChanged),)
 
     def __onSpaceChanged(self):
         machine = self.getMachine()
@@ -141,14 +145,17 @@ class PersonalMissions3State(ViewLobbyState, EventsHandler):
 
     def _getViewLoadCtx(self, event):
         ctx = dict(event.params)
-        return {'assemblingManager': self.getParent().assemblingManager,
-         'state': ctx.get('state'),
-         'operationID': ctx.get('operationID')}
+        return {'assemblingManager': self.getParent().assemblingManager, 
+           'state': ctx.get('state'), 
+           'operationID': ctx.get('operationID')}
 
     def serializeParams(self):
         mainView = self.getMachine().getRelatedView(self)
-        return {'operationID': mainView.getOperationID(),
-         'state': mainView.viewModel.getMainScreenState().value} if mainView is not None and mainView.viewStatus == ViewStatus.LOADED else self.__cachedParams
+        if mainView is not None and mainView.viewStatus == ViewStatus.LOADED:
+            return {'operationID': mainView.getOperationID(), 
+               'state': mainView.viewModel.getMainScreenState().value}
+        else:
+            return self.__cachedParams
 
     def registerStates(self):
         self.addChildState(ProgressionState(flags=StateFlags.INITIAL))
@@ -179,12 +186,19 @@ class PersonalMissions3State(ViewLobbyState, EventsHandler):
 
     def _getEvents(self):
         assemblingManager = self.getParent().assemblingManager
-        return ((self.__eventsCache.onSyncCompleted, self.__onEventsCacheSync),
-         (assemblingManager.onAssemblingVideoFinished, self.__onAssemblingVideoFinished),
-         (assemblingManager.onAssemblingAnimationStarted, self.__onAssemblingAnimationStarted),
-         (assemblingManager.onAssemblingAnimationFinished, self.__onAssemblingAnimationFinished),
-         (assemblingManager.onCameraFlightStarted, self.__onCameraFlightStarted),
-         (assemblingManager.onCameraFlightFinished, self.__onCameraFlightFinished))
+        return (
+         (
+          self.__eventsCache.onSyncCompleted, self.__onEventsCacheSync),
+         (
+          assemblingManager.onAssemblingVideoFinished, self.__onAssemblingVideoFinished),
+         (
+          assemblingManager.onAssemblingAnimationStarted, self.__onAssemblingAnimationStarted),
+         (
+          assemblingManager.onAssemblingAnimationFinished, self.__onAssemblingAnimationFinished),
+         (
+          assemblingManager.onCameraFlightStarted, self.__onCameraFlightStarted),
+         (
+          assemblingManager.onCameraFlightFinished, self.__onCameraFlightFinished))
 
     def _onEntered(self, event):
         super(PersonalMissions3State, self)._onEntered(event)
@@ -277,7 +291,8 @@ class _PersonalMissionsChildState(LobbyState):
         return mainView and mainView.viewStatus in (ViewStatus.LOADED, ViewStatus.LOADING) and self.assemblingManager.isVehicleGOForOperationReady(self._cachedParams.get('operationID'))
 
     def getNavigationDescription(self):
-        return LobbyStateDescription(title=self._getNavigationDescriptionTitle(), infos=(LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=self.__onMoreInfoRequested, tooltipBody=backport.text(R.strings.personal_missions.pages.button.infopage.description())),))
+        return LobbyStateDescription(title=self._getNavigationDescriptionTitle(), infos=(
+         LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=self.__onMoreInfoRequested, tooltipBody=backport.text(R.strings.personal_missions.pages.button.infopage.description())),))
 
     def _getNavigationDescriptionTitle(self):
         raise NotImplementedError
@@ -312,10 +327,14 @@ class _LoadingState(_PersonalMissionsChildState, EventsHandler):
 
     def _getEvents(self):
         eventsTuple = super(_LoadingState, self)._getEvents()
-        return eventsTuple + ((self.__uiLoader.windowsManager.onWindowStatusChanged, self.__onWindowStatusChanged),)
+        return eventsTuple + (
+         (
+          self.__uiLoader.windowsManager.onWindowStatusChanged, self.__onWindowStatusChanged),)
 
     def _getListeners(self):
-        return ((PERSONAL_MISSIONS_3_SUB_HANGAR_IS_READY, self.__onSubHangarReady, EVENT_BUS_SCOPE.LOBBY),)
+        return (
+         (
+          PERSONAL_MISSIONS_3_SUB_HANGAR_IS_READY, self.__onSubHangarReady, EVENT_BUS_SCOPE.LOBBY),)
 
     def _onEntered(self, event):
         super(_LoadingState, self)._onEntered(event)

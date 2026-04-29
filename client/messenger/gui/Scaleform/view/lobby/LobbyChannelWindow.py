@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/gui/Scaleform/view/lobby/LobbyChannelWindow.py
 from constants import PREBATTLE_TYPE
 from gui.Scaleform.managers.windows_stored_data import DATA_TYPE, TARGET_ID
 from gui.Scaleform.managers.windows_stored_data import stored_window
@@ -27,7 +25,7 @@ class LobbyChannelWindow(LobbyChannelWindowMeta):
         super(LobbyChannelWindow, self)._populate()
         channel = self._controller.getChannel()
         if self._controller.hasUntrustedMembers() and antispam_message.isShown():
-            self.as_showWarningS('{} {}\n{}'.format(icons.markerBlocked(), text_styles.error(i18n.makeString(MESSENGER.CHAT_PERSONALMESSAGE_WARNINGHEAD)), i18n.makeString(MESSENGER.CHAT_PERSONALMESSAGE_WARNINGBODY)))
+            self.as_showWarningS(('{} {}\n{}').format(icons.markerBlocked(), text_styles.error(i18n.makeString(MESSENGER.CHAT_PERSONALMESSAGE_WARNINGHEAD)), i18n.makeString(MESSENGER.CHAT_PERSONALMESSAGE_WARNINGBODY)))
         if channel.haveMembers():
             membersDP = MembersDataProvider()
             membersDP.setFlashObject(self.as_getMembersDPS())

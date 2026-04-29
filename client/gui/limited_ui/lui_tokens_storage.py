@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/limited_ui/lui_tokens_storage.py
 from collections import namedtuple
 from itertools import chain
 import typing
@@ -43,7 +41,9 @@ class LimitedUICondition(object):
         return self.__tokenID
 
     def value(self):
-        return self.__value if self.__isActive else self._getValue()
+        if self.__isActive:
+            return self.__value
+        return self._getValue()
 
     def activate(self):
         self.__subscribe()
@@ -111,13 +111,21 @@ class _BattleCountCondition(LimitedUICondition):
     __itemsCache = dependency.descriptor(IItemsCache)
 
     def _getValue(self):
-        return 0 if not self.__itemsCache.items.stats.isSynced() else self.__itemsCache.items.getAccountDossier().getTotalStats().getBattlesCount()
+        if not self.__itemsCache.items.stats.isSynced():
+            return 0
+        return self.__itemsCache.items.getAccountDossier().getTotalStats().getBattlesCount()
 
     def _getEvents(self):
-        return ((g_playerEvents.onDossiersResync, self._update), (self.__itemsCache.onSyncCompleted, self.__onSyncCompleted))
+        return (
+         (
+          g_playerEvents.onDossiersResync, self._update),
+         (
+          self.__itemsCache.onSyncCompleted, self.__onSyncCompleted))
 
     def __onSyncCompleted(self, reason, diff):
-        if reason in (CACHE_SYNC_REASON.SHOW_GUI, CACHE_SYNC_REASON.CLIENT_UPDATE, CACHE_SYNC_REASON.DOSSIER_RESYNC):
+        if reason in (CACHE_SYNC_REASON.SHOW_GUI,
+         CACHE_SYNC_REASON.CLIENT_UPDATE,
+         CACHE_SYNC_REASON.DOSSIER_RESYNC):
             self._update()
 
 
@@ -130,7 +138,9 @@ class _BattleMattersCompletedQuests(LimitedUICondition):
         return self.__battleMattersController.getCompletedBattleMattersQuestsCount()
 
     def _getEvents(self):
-        return ((self.__eventsCache.onSyncCompleted, self._update),)
+        return (
+         (
+          self.__eventsCache.onSyncCompleted, self._update),)
 
 
 class _VehicleInventoryUpdater(object):
@@ -212,7 +222,7 @@ class _VehicleInventoryUpdater(object):
 
 
 class _VehicleCondition(LimitedUICondition):
-    __slots__ = ('__criteria',)
+    __slots__ = ('__criteria', )
     __itemsCache = dependency.descriptor(IItemsCache)
 
     def __init__(self, tokenID):
@@ -235,11 +245,13 @@ class _VehicleCondition(LimitedUICondition):
         return criteria
 
     def _getValue(self):
-        return 0 if not self.__itemsCache.isSynced() else len(self.__itemsCache.items.getVehicles(self.__criteria))
+        if not self.__itemsCache.isSynced():
+            return 0
+        return len(self.__itemsCache.items.getVehicles(self.__criteria))
 
 
 class _VehicleInventoryCondition(_VehicleCondition):
-    __slots__ = ('__vehicleUpdater',)
+    __slots__ = ('__vehicleUpdater', )
 
     def __init__(self, tokenID):
         super(_VehicleInventoryCondition, self).__init__(tokenID)
@@ -272,7 +284,9 @@ class _VehicleInventoryCondition(_VehicleCondition):
         return self.__vehicleUpdater.getValue(self.criteria)
 
     def _getEvents(self):
-        return ((self.__vehicleUpdater.onValueUpdated, self._update),)
+        return (
+         (
+          self.__vehicleUpdater.onValueUpdated, self._update),)
 
 
 class _MinVehicleLevel(_VehicleInventoryCondition):
@@ -304,10 +318,12 @@ class _MinUnlockedVehicleLevel(_VehicleCondition):
         return criteria
 
     def _getCallbacks(self):
-        return (('stats.unlocks', self.__onUnlocksUpdate),)
+        return (
+         (
+          'stats.unlocks', self.__onUnlocksUpdate),)
 
     def __onUnlocksUpdate(self, unlocks):
-        if any((getTypeOfCompactDescr(intCD) == GUI_ITEM_TYPE.VEHICLE for intCD in unlocks)):
+        if any(getTypeOfCompactDescr(intCD) == GUI_ITEM_TYPE.VEHICLE for intCD in unlocks):
             self._update()
 
 
@@ -320,7 +336,9 @@ class _DailyMissionsCompletedCount(LimitedUICondition):
         return len(quests.keys())
 
     def _getEvents(self):
-        return ((self.__eventsCache.onSyncCompleted, self._update),)
+        return (
+         (
+          self.__eventsCache.onSyncCompleted, self._update),)
 
 
 class _BattlePassPoints(LimitedUICondition):
@@ -334,7 +352,9 @@ class _BattlePassPoints(LimitedUICondition):
         return points + freePoints
 
     def _getEvents(self):
-        return ((self.__battlePass.onPointsUpdated, self._update),)
+        return (
+         (
+          self.__battlePass.onPointsUpdated, self._update),)
 
 
 class _PersonalMissionsActive(LimitedUICondition):
@@ -344,13 +364,17 @@ class _PersonalMissionsActive(LimitedUICondition):
     def _getValue(self):
         for branch in PM_BRANCH.ALL:
             operations = self.__eventsCache.getPersonalMissions().getOperationsForBranch(branch)
-            if any((operation.isInProgress() for operation in itervalues(operations))):
+            if any(operation.isInProgress() for operation in itervalues(operations)):
                 return True
 
         return False
 
     def _getEvents(self):
-        return ((self.__eventsCache.onSyncCompleted, self._update), (self.__eventsCache.onProgressUpdated, self._update))
+        return (
+         (
+          self.__eventsCache.onSyncCompleted, self._update),
+         (
+          self.__eventsCache.onProgressUpdated, self._update))
 
 
 class _BluePrintsAvailability(LimitedUICondition):
@@ -358,10 +382,13 @@ class _BluePrintsAvailability(LimitedUICondition):
     __itemsCache = dependency.descriptor(IItemsCache)
 
     def _getValue(self):
-        return False if not self.__itemsCache.isSynced() else self.__itemsCache.items.blueprints.hasBlueprintsOrFragments()
+        if not self.__itemsCache.isSynced():
+            return False
+        return self.__itemsCache.items.blueprints.hasBlueprintsOrFragments()
 
     def _getCallbacks(self):
-        return ('blueprints', self._update)
+        return (
+         'blueprints', self._update)
 
 
 class _PersonalReservesAvailability(LimitedUICondition):
@@ -370,10 +397,14 @@ class _PersonalReservesAvailability(LimitedUICondition):
     __itemsCache = dependency.descriptor(IItemsCache)
 
     def _getValue(self):
-        return False if not self.__itemsCache.isSynced() else bool(self.__goodiesCache.getBoosters(criteria=REQ_CRITERIA.BOOSTER.IN_ACCOUNT))
+        if not self.__itemsCache.isSynced():
+            return False
+        return bool(self.__goodiesCache.getBoosters(criteria=REQ_CRITERIA.BOOSTER.IN_ACCOUNT))
 
     def _getEvents(self):
-        return ((self.__itemsCache.onSyncCompleted, self._update),)
+        return (
+         (
+          self.__itemsCache.onSyncCompleted, self._update),)
 
 
 class _WereRealMoneyExpenses(LimitedUICondition):
@@ -382,10 +413,14 @@ class _WereRealMoneyExpenses(LimitedUICondition):
     __REAL_MONEY_EXPENSES_ENTITLEMENT = 'real_money_expenses'
 
     def _getValue(self):
-        return False if not self.__itemsCache.isSynced() else self.__itemsCache.items.stats.entitlements.get(self.__REAL_MONEY_EXPENSES_ENTITLEMENT, 0) > 0
+        if not self.__itemsCache.isSynced():
+            return False
+        return self.__itemsCache.items.stats.entitlements.get(self.__REAL_MONEY_EXPENSES_ENTITLEMENT, 0) > 0
 
     def _getCallbacks(self):
-        return (('cache.entitlements', self.__updateEntitlements),)
+        return (
+         (
+          'cache.entitlements', self.__updateEntitlements),)
 
     def __updateEntitlements(self, entitlements):
         if entitlements.get(self.__REAL_MONEY_EXPENSES_ENTITLEMENT, 0):
@@ -400,11 +435,14 @@ class _AdvancedAchievementsCount(LimitedUICondition):
         return self.__advAchmntCtrl.getTotalAchievementsCount()
 
     def _getEvents(self):
-        return ((self.__advAchmntCtrl.onNewAchievementsEarned, self._update),)
+        return (
+         (
+          self.__advAchmntCtrl.onNewAchievementsEarned, self._update),)
 
 
-_VEHICLE_LEVEL_TOKENS = tuple((tokenInfo for tokenInfo in chain.from_iterable(((LimitedUITokenInfo('minVehicleLevel_{}'.format(vehLevel), _MinVehicleLevel, (vehLevel,)), LimitedUITokenInfo('minNonPremiumVehicleLevel_{}'.format(vehLevel), _MinNonPremiumVehicleLevel, (vehLevel,)), LimitedUITokenInfo('minUnlockedVehicleLevel_{}'.format(vehLevel), _MinUnlockedVehicleLevel, (vehLevel,))) for vehLevel in range(MIN_VEHICLE_LEVEL, MAX_VEHICLE_LEVEL + 1)))))
-_REGISTER_TOKENS = (LimitedUITokenInfo('permanentTrue', _PermanentTrue, None),
+_VEHICLE_LEVEL_TOKENS = tuple(tokenInfo for tokenInfo in chain.from_iterable((LimitedUITokenInfo(('minVehicleLevel_{}').format(vehLevel), _MinVehicleLevel, (vehLevel,)), LimitedUITokenInfo(('minNonPremiumVehicleLevel_{}').format(vehLevel), _MinNonPremiumVehicleLevel, (vehLevel,)), LimitedUITokenInfo(('minUnlockedVehicleLevel_{}').format(vehLevel), _MinUnlockedVehicleLevel, (vehLevel,))) for vehLevel in range(MIN_VEHICLE_LEVEL, MAX_VEHICLE_LEVEL + 1)))
+_REGISTER_TOKENS = (
+ LimitedUITokenInfo('permanentTrue', _PermanentTrue, None),
  LimitedUITokenInfo('permanentFalse', _PermanentFalse, None),
  LimitedUITokenInfo('battlesCount', _BattleCountCondition, None),
  LimitedUITokenInfo('bmCompletedQuests', _BattleMattersCompletedQuests, None),

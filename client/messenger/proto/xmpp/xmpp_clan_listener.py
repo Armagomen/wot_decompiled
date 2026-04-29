@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/proto/xmpp/xmpp_clan_listener.py
 import BigWorld
 from PlayerEvents import g_playerEvents
 from debug_utils import LOG_ERROR, LOG_DEBUG
@@ -27,15 +25,15 @@ class XmppClanListener(ClientHolder):
 
     @storage_getter('users')
     def usersStorage(self):
-        return None
+        return
 
     @storage_getter('playerCtx')
     def playerCtx(self):
-        return None
+        return
 
     @storage_getter('channels')
     def channelsStorage(self):
-        return None
+        return
 
     def registerHandlers(self):
         g_messengerEvents.onPluginConnected += self.__onPluginConnected
@@ -99,7 +97,7 @@ class XmppClanListener(ClientHolder):
                     user.update(gosBit=GAME_ONLINE_STATUS.IN_CLAN_CHAT)
                     events.onUserStatusUpdated(user)
                     changed = True
-            if isOnline:
+            elif isOnline:
                 user.update(gosBit=-GAME_ONLINE_STATUS.IN_CLAN_CHAT)
                 events.onUserStatusUpdated(user)
                 changed = True
@@ -130,7 +128,7 @@ class XmppClanListener(ClientHolder):
         else:
 
             def getter(dbID):
-                return None
+                return
 
         playerID = getPlayerDatabaseID()
         for dbID, (name, roleFlags) in clanMembers.iteritems():

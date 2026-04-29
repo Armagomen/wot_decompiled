@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/battle_hints/component.py
 import typing
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
@@ -25,7 +23,7 @@ class BattleHintComponent(IBattleHintView):
     def __init__(self, battleHintsQueueParams=None, *args, **kwargs):
         self.__battleHintsQueueParams = battleHintsQueueParams
         if self.__battleHintsQueueParams is None:
-            self.__battleHintsQueueParams = BattleHintQueueParams(name='{}_{}'.format(self.__class__.__name__, id(self)))
+            self.__battleHintsQueueParams = BattleHintQueueParams(name=('{}_{}').format(self.__class__.__name__, id(self)))
         super(BattleHintComponent, self).__init__(*args, **kwargs)
         _logger.debug('Initialized with queue params %s.', self.__battleHintsQueueParams)
         return

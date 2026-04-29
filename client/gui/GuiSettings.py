@@ -1,10 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/GuiSettings.py
+from __future__ import absolute_import
 import logging
 from collections import namedtuple
-import nations
-import constants
-import resource_helper
+from future.utils import viewitems
+import nations, constants, resource_helper
 from helpers import getClientLanguage, time_utils
 from gui import macroses
 from soft_exception import SoftException
@@ -42,7 +40,7 @@ def _readMacros(xmlCtx, section, valueName='value', nameFromSection=True):
     for nextCtx, nextSection in resource_helper.getIterator(subCtx, subSection):
         item = resource_helper.readItem(nextCtx, nextSection)
         if not item.name:
-            raise resource_helper.ResourceError(nextCtx, '{0}: name is required in each item'.format(name))
+            raise resource_helper.ResourceError(nextCtx, ('{0}: name is required in each item').format(name))
         result[item.name] = item.value
 
     return resource_helper.ResourceItem('macros', name, _MacrosValue(macros, result))
@@ -64,81 +62,67 @@ def _convertEULASetting(_, item):
     return EULAProps(**item.value)
 
 
-_SETTING_CONVERTERS = {'loginRssFeed': _convertToNamedTuple,
- 'eula': _convertEULASetting,
- 'markerScaleSettings': _convertVector4ToTuple,
- 'browser': _convertToNamedTuple,
- 'postBattleExchange': _convertToNamedTuple,
- 'easterEgg': _convertToNamedTuple}
-_DEFAULT_SETTINGS = {'registrationURL': '',
- 'registrationProxyURL': '',
- 'recoveryPswdURL': '',
- 'paymentURL': '',
- 'securitySettingsURL': '',
- 'supportURL': '',
- 'migrationURL': '',
- 'nations_order': nations.AVAILABLE_NAMES[:],
- 'language_bar': [],
- 'guiEnabled': True,
- 'disabledUIElements': [],
- 'trainingObserverModeEnabled': False,
- 'minimapSize': True,
- 'goldTransfer': False,
- 'voiceChat': True,
- 'technicalInfo': True,
- 'nationHangarSpace': False,
- 'customizationHorns': False,
- 'showMinimapSuperHeavy': False,
- 'showMinimapDeath': True,
- 'permanentMinimapDeath': False,
- 'markerHitSplashDuration': 0,
- 'sixthSenseDuration': 0,
- 'reconFlightDuration': 0,
- 'minimapDeathDuration': 0,
- 'rememberPassVisible': True,
- 'clearLoginValue': False,
- 'markerScaleSettings': (0, 0, 0, 0),
- 'specPrebatlesVisible': True,
- 'roaming': False,
- 'loginRssFeed': LoginRssFeedProps(True, '', False),
- 'eula': EULAProps(),
- 'igrCredentialsReset': False,
- 'igrEnabled': False,
- 'battleEndWarningEnabled': True,
- 'isPollEnabled': False,
- 'csisRequestRate': 0,
- 'showSectorLines': False,
- 'showDirectionLine': False,
- 'isBattleCmdCoolDownVisible': True,
- 'browser': BrowserProps('about:blank', ''),
- 'reportBugLink': '',
- 'cache': [],
- 'imageCache': [],
- 'postBattleExchange': PostBattleExchangeProps(False, ''),
- 'actionComeToEnd': time_utils.QUARTER_HOUR,
- 'goldFishActionShowCooldown': 86400,
- 'guiScale': [],
- 'playerFeedbackDelay': 0.75,
- 'allowedNotSupportedGraphicSettings': {},
- 'userRoomsService': '',
- 'cryptLoginInfo': True,
- 'compulsoryIntroVideos': [],
- 'useDefaultGunMarkers': False,
- 'spgAlternativeAimingCameraEnabled': False,
- 'tokenShopAvailabilityURL': '',
- 'frontlineChangedURL': '',
- 'tokenShopAPIKey': '',
- 'progressiveItems': {},
- 'rankedBattles': {},
- 'referralProgram': {},
- 'easterEgg': EasterEggProps(True, []),
- 'premiumInfo': {},
- 'crew': {'welcomeScreens': {}},
- 'checkPromoFrequencyInBattles': 5,
- 'vivoxLicense': '',
- 'spgHitDirectionDelta': 10.0,
- 'vehicleDisclaimerURLs': {},
- 'reportContentURL': ''}
+_SETTING_CONVERTERS = {'loginRssFeed': _convertToNamedTuple, 
+   'eula': _convertEULASetting, 
+   'markerScaleSettings': _convertVector4ToTuple, 
+   'browser': _convertToNamedTuple, 
+   'postBattleExchange': _convertToNamedTuple, 
+   'easterEgg': _convertToNamedTuple}
+_DEFAULT_SETTINGS = {'registrationURL': '', 
+   'registrationProxyURL': '', 
+   'recoveryPswdURL': '', 
+   'paymentURL': '', 
+   'securitySettingsURL': '', 
+   'supportURL': '', 
+   'migrationURL': '', 
+   'nations_order': nations.AVAILABLE_NAMES[:], 
+   'language_bar': [], 'guiEnabled': True, 
+   'disabledUIElements': [], 'trainingObserverModeEnabled': False, 
+   'minimapSize': True, 
+   'goldTransfer': False, 
+   'voiceChat': True, 
+   'technicalInfo': True, 
+   'nationHangarSpace': False, 
+   'customizationHorns': False, 
+   'showMinimapSuperHeavy': False, 
+   'showMinimapDeath': True, 
+   'permanentMinimapDeath': False, 
+   'markerHitSplashDuration': 0, 
+   'sixthSenseDuration': 0, 
+   'reconFlightDuration': 0, 
+   'minimapDeathDuration': 0, 
+   'rememberPassVisible': True, 
+   'clearLoginValue': False, 
+   'markerScaleSettings': (0, 0, 0, 0), 
+   'specPrebatlesVisible': True, 
+   'roaming': False, 
+   'loginRssFeed': LoginRssFeedProps(True, '', False), 
+   'eula': EULAProps(), 
+   'igrCredentialsReset': False, 
+   'igrEnabled': False, 
+   'battleEndWarningEnabled': True, 
+   'isPollEnabled': False, 
+   'csisRequestRate': 0, 
+   'showSectorLines': False, 
+   'showDirectionLine': False, 
+   'isBattleCmdCoolDownVisible': True, 
+   'browser': BrowserProps('about:blank', ''), 
+   'reportBugLink': '', 
+   'cache': [], 'imageCache': [], 'postBattleExchange': PostBattleExchangeProps(False, ''), 
+   'actionComeToEnd': time_utils.QUARTER_HOUR, 
+   'guiScale': [], 'playerFeedbackDelay': 0.75, 
+   'allowedNotSupportedGraphicSettings': {}, 'userRoomsService': '', 
+   'cryptLoginInfo': True, 
+   'compulsoryIntroVideos': [], 'useDefaultGunMarkers': False, 
+   'spgAlternativeAimingCameraEnabled': False, 
+   'tokenShopAvailabilityURL': '', 
+   'frontlineChangedURL': '', 
+   'tokenShopAPIKey': '', 
+   'progressiveItems': {}, 'rankedBattles': {}, 'referralProgram': {}, 'easterEgg': EasterEggProps(True, []), 
+   'premiumInfo': {}, 'crew': {'welcomeScreens': {}}, 'checkPromoFrequencyInBattles': 5, 
+   'vivoxLicense': '', 
+   'spgHitDirectionDelta': 10.0, 
+   'vehicleDisclaimerURLs': {}, 'reportContentURL': ''}
 
 class GuiSettings(object):
 
@@ -163,13 +147,13 @@ class GuiSettings(object):
     def __getattr__(self, name):
         if name in self.__settings:
             return self.__applyMacros(self.__settings[name])
-        raise AttributeError('Setting not found in {0}: {1}'.format(self.__class__, name))
+        raise AttributeError(('Setting not found in {0}: {1}').format(self.__class__, name))
 
     def __setattr__(self, name, value):
         if name == '_GuiSettings__settings':
             self.__dict__[name] = value
         elif name in self.__settings:
-            raise AttributeError('Assignment is forbidden for {0}. Argument name: {1}'.format(self.__class__, name))
+            raise AttributeError(('Assignment is forbidden for {0}. Argument name: {1}').format(self.__class__, name))
 
     def __contains__(self, item):
         return item in self.__settings
@@ -205,8 +189,11 @@ class GuiSettings(object):
 
     def __checkAndReplaceMacros(self, rootUrlName, url):
         rootUrl = self.baseUrls.get(rootUrlName)
-        macros = '{_}'.replace('_', rootUrlName)
-        return url.replace(macros, rootUrl) if rootUrl is not None else url
+        macros = ('{_}').replace('_', rootUrlName)
+        if rootUrl is not None:
+            return url.replace(macros, rootUrl)
+        else:
+            return url
 
     def __applyMacros(self, value):
         if isinstance(value, _MacrosValue):
@@ -218,14 +205,14 @@ class GuiSettings(object):
             else:
                 if macros == 'MACROS_DICT':
                     value = {}
-                    for key, mValue in dictValue.iteritems():
+                    for key, mValue in viewitems(dictValue):
                         value[key] = self.__applyMacros(mValue)
 
                     return value
-                raise SoftException("Unsupported macros '{0}', not found in {1}".format(macros, simpleMacroses))
+                raise SoftException(("Unsupported macros '{0}', not found in {1}").format(macros, simpleMacroses))
             if macrosKey in dictValue:
                 return self.__applyMacros(dictValue[macrosKey])
             if 'default' in dictValue:
                 return self.__applyMacros(dictValue['default'])
-            raise SoftException("Incorrect section in {0}, dict {1} with macros '{2}' should contains item '{3}' or 'default'".format(GUI_SETTINGS_FILE_PATH, dictValue, macros, macrosKey))
+            raise SoftException(("Incorrect section in {0}, dict {1} with macros '{2}' should contains item '{3}' or 'default'").format(GUI_SETTINGS_FILE_PATH, dictValue, macros, macrosKey))
         return value

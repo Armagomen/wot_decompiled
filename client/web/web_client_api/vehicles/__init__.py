@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/web/web_client_api/vehicles/__init__.py
 import nations
 from gui.shared.gui_items.processors.vehicle import SetEnhancementProcessor, DismountEnhancementProcessor
 from gui.shared.items_parameters import params
@@ -35,14 +33,14 @@ class VehiclesWebApi(W2CSchema, ItemsWebApiMixin):
         except Exception:
             res = {'error': 'vehicle_id is invalid.'}
         else:
-            res = {'vehicle': {'vehicle_id': vehicle.compactDescr,
-                         'tag': vehicle.name,
-                         'name': vehicle.userString,
-                         'short_name': vehicle.shortUserString,
-                         'nation': nations.NAMES[vehicle.id[0]],
-                         'type': vehicles.getVehicleClassFromVehicleType(vehicle),
-                         'tier': vehicle.level,
-                         'is_premium': bool('premium' in vehicle.tags)}}
+            res = {'vehicle': {'vehicle_id': vehicle.compactDescr, 
+                           'tag': vehicle.name, 
+                           'name': vehicle.userString, 
+                           'short_name': vehicle.shortUserString, 
+                           'nation': nations.NAMES[vehicle.id[0]], 
+                           'type': vehicles.getVehicleClassFromVehicleType(vehicle), 
+                           'tier': vehicle.level, 
+                           'is_premium': bool('premium' in vehicle.tags)}}
 
         return res
 
@@ -59,8 +57,8 @@ class VehiclesWebApi(W2CSchema, ItemsWebApiMixin):
                 error = 'Undefined server error'
         else:
             error = 'Vehicle not found'
-        yield {'success': success,
-         'error': error}
+        yield {'success': success, 
+           'error': error}
 
     @w2c(_VehicleEnhancementDismountSchema, 'vehicle_enhancement_dismount')
     def dismountVehicleEnhancement(self, cmd):
@@ -73,15 +71,15 @@ class VehiclesWebApi(W2CSchema, ItemsWebApiMixin):
                 success, error = response.success, response.userMsg
                 if response.auxData:
                     dismountResult, enhancementID = response.auxData
-                    serverResponse = {'dismount_result': dismountResult,
-                     'enhancement_id': enhancementID}
+                    serverResponse = {'dismount_result': dismountResult, 
+                       'enhancement_id': enhancementID}
             else:
                 error = 'Undefined server error'
         else:
             error = 'Vehicle not found'
-        yield {'success': success,
-         'error': error,
-         'response': serverResponse}
+        yield {'success': success, 
+           'error': error, 
+           'response': serverResponse}
 
     @w2c(_VehicleInfoSchema, 'vehicle_params')
     def vehicleParams(self, cmd):
@@ -91,20 +89,20 @@ class VehiclesWebApi(W2CSchema, ItemsWebApiMixin):
             stockVehicle = self.itemsCache.items.getStockVehicle(cmd.vehicle_id)
             vehicle = self.itemsCache.items.getItemByCD(cmd.vehicle_id)
             vehicleParams = params.VehicleParams(stockVehicle)
-            res = {'vehicle': {'vehicle_id': vehicle.compactDescr,
-                         'type_user_name': vehicle.typeUserName,
-                         'user_name': vehicle.userName,
-                         'nation': vehicle.nationName,
-                         'type': vehicle.type,
-                         'level': vehicle.level,
-                         'is_premium': vehicle.isPremium,
-                         'health': vehicleParams.maxHealth,
-                         'hull_armor': vehicleParams.hullArmor,
-                         'turret_armor': vehicleParams.turretArmor,
-                         'avg_damage': self.__getAvgDamageShells(vehicle.descriptor),
-                         'piercing_power': self.__getPiercingPowerShells(vehicle.descriptor),
-                         'reload_time': vehicleParams.reloadTime,
-                         'clip_fire_rate': vehicleParams.clipFireRate}}
+            res = {'vehicle': {'vehicle_id': vehicle.compactDescr, 
+                           'type_user_name': vehicle.typeUserName, 
+                           'user_name': vehicle.userName, 
+                           'nation': vehicle.nationName, 
+                           'type': vehicle.type, 
+                           'level': vehicle.level, 
+                           'is_premium': vehicle.isPremium, 
+                           'health': vehicleParams.maxHealth, 
+                           'hull_armor': vehicleParams.hullArmor, 
+                           'turret_armor': vehicleParams.turretArmor, 
+                           'avg_damage': self.__getAvgDamageShells(vehicle.descriptor), 
+                           'piercing_power': self.__getPiercingPowerShells(vehicle.descriptor), 
+                           'reload_time': vehicleParams.reloadTime, 
+                           'clip_fire_rate': vehicleParams.clipFireRate}}
         return res
 
     @staticmethod

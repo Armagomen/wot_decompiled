@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/classic/players_panel.py
+from __future__ import absolute_import
 from account_helpers.settings_core.options import VehicleHPInPlayersPanelSetting
 from account_helpers.settings_core.settings_constants import GAME
 from debug_utils import LOG_ERROR
@@ -13,14 +12,12 @@ from gui.shared import events, EVENT_BUS_SCOPE
 from helpers import dependency
 from skeletons.account_helpers.settings_core import ISettingsCore, IBattleCommunicationsSettings
 from skeletons.gui.battle_session import IBattleSessionProvider
-_PLAYERS_PANEL_STATE_RANGE = (PLAYERS_PANEL_STATE.HIDDEN,
- PLAYERS_PANEL_STATE.SHORT,
- PLAYERS_PANEL_STATE.MEDIUM,
- PLAYERS_PANEL_STATE.LONG,
- PLAYERS_PANEL_STATE.FULL)
-PLAYER_PANEL_SETTINGS_TO_HP_STATE = {VehicleHPInPlayersPanelSetting.Options.ALT: PLAYERS_PANEL_STATE.SHOW_HP_ON_ALT,
- VehicleHPInPlayersPanelSetting.Options.ALWAYS: PLAYERS_PANEL_STATE.ALWAYS_SHOW_HP,
- VehicleHPInPlayersPanelSetting.Options.NEVER: PLAYERS_PANEL_STATE.NEVER_SHOW_HP}
+_PLAYERS_PANEL_STATE_RANGE = (
+ PLAYERS_PANEL_STATE.HIDDEN, PLAYERS_PANEL_STATE.SHORT, PLAYERS_PANEL_STATE.MEDIUM,
+ PLAYERS_PANEL_STATE.LONG, PLAYERS_PANEL_STATE.FULL)
+PLAYER_PANEL_SETTINGS_TO_HP_STATE = {VehicleHPInPlayersPanelSetting.Options.ALT: PLAYERS_PANEL_STATE.SHOW_HP_ON_ALT, 
+   VehicleHPInPlayersPanelSetting.Options.ALWAYS: PLAYERS_PANEL_STATE.ALWAYS_SHOW_HP, 
+   VehicleHPInPlayersPanelSetting.Options.NEVER: PLAYERS_PANEL_STATE.NEVER_SHOW_HP}
 
 def convertSettingToFeatures(value):
     return PLAYER_PANEL_SETTINGS_TO_HP_STATE.get(VehicleHPInPlayersPanelSetting.Options(value), -1)
@@ -32,7 +29,9 @@ class PlayerPanelStateSetting(object):
     @classmethod
     def read(cls):
         state = cls.settingsCore.getSetting(GAME.PLAYERS_PANELS_STATE)
-        return state if state in _PLAYERS_PANEL_STATE_RANGE else PLAYERS_PANEL_STATE.MEDIUM
+        if state in _PLAYERS_PANEL_STATE_RANGE:
+            return state
+        return PLAYERS_PANEL_STATE.MEDIUM
 
     @classmethod
     def write(cls, state):
@@ -63,9 +62,9 @@ class PlayersPanel(IBattleFieldListener, PlayersPanelMeta, IAbstractPeriodView):
             isAlly = arenaDP.isAllyTeam(vInfo.team)
         self.as_setPlayerHPS(isAlly, vehicleID, normalizeHealthPercent(newHealth, maxHealth))
 
-    def tryToSetPanelModeByMouse(self, mode):
-        if mode != self._mode and PlayerPanelStateSetting.write(mode):
-            self.__setMode(mode)
+    def tryToSetPanelModeByMouse(self, panelMode):
+        if panelMode != self._mode and PlayerPanelStateSetting.write(panelMode):
+            self.__setMode(panelMode)
 
     def switchToOtherPlayer(self, vehicleID):
         aih = avatar_getter.getInputHandler()

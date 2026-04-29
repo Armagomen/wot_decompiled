@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: server_side_replay/scripts/client/server_side_replay/gui/impl/lobby/filter/state.py
 from collections import defaultdict, Iterable
 from Event import Event
 from ...gen.view_models.views.lobby.filter_toggle_group_model import ToggleGroupType
@@ -10,7 +8,7 @@ class FilterState(object):
     def __init__(self, initialState=None):
         self.onStateChanged = Event()
         self._state = defaultdict(set)
-        self.__searchString = u''
+        self.__searchString = ''
         self._initialState = initialState or {}
         self.isPrimeTime = False
         self.lastDays = 14
@@ -65,12 +63,13 @@ class FilterState(object):
                     for item in value:
                         self._state[groupID].add(item)
 
-                self._state[groupID].add(value)
+                else:
+                    self._state[groupID].add(value)
 
             return
 
     def __clear(self):
         self._state = defaultdict(set)
-        self.__searchString = u''
+        self.__searchString = ''
         self.isPrimeTime = False
         self.lastDays = 14

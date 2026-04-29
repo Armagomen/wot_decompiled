@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/profile/QueuedVehicleDossierReceiver.py
 from Event import Event
 from adisp import adisp_process
 from debug_utils import LOG_ERROR
@@ -20,7 +18,8 @@ class QueuedVehicleDossierReceiver(object):
 
     def invoke(self, databaseID, vehicleID):
         if self.__isUnderRequesting:
-            self.__queuedVehicleData = (databaseID, vehicleID)
+            self.__queuedVehicleData = (
+             databaseID, vehicleID)
         else:
             self.__requestData(databaseID, vehicleID)
 

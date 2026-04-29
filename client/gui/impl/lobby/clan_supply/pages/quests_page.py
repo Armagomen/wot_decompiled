@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/clan_supply/pages/quests_page.py
-import json
-import logging
-import typing
-import SoundGroups
+import json, logging, typing, SoundGroups
 from adisp import adisp_process
 from frameworks.wulf.view.submodel_presenter import SubModelPresenter
 from gui import SystemMessages
@@ -31,19 +26,20 @@ if typing.TYPE_CHECKING:
     from gui.impl.gen.view_models.views.lobby.clan_supply.pages.quests_model import QuestsModel
 _logger = logging.getLogger(__name__)
 BUBBLES_ALIAS = 'clansupply_hangar_bubble'
-_QuestDataStatusToModelStatus = {DataQuestStatus.INCOMPLETE: QuestStatus.IN_PROGRESS,
- DataQuestStatus.REWARD_AVAILABLE: QuestStatus.REWARD_AVAILABLE,
- DataQuestStatus.REWARD_PENDING: QuestStatus.REWARD_PENDING,
- DataQuestStatus.COMPLETE: QuestStatus.COMPLETE}
-_QuestDataConditionToModelCondition = {ConditionRuleType.FRAGS: QuestCondition.FRAGS,
- ConditionRuleType.FULL_DAMAGE: QuestCondition.FULL_DAMAGE,
- ConditionRuleType.EXP: QuestCondition.EXP,
- ConditionRuleType.WIN: QuestCondition.WIN}
-_QuestDataSquadStateToModelSquadState = {ConditionSquadState.SOLO: QuestSquadState.SOLO,
- ConditionSquadState.PLATOON: QuestSquadState.PLATOON,
- ConditionSquadState.DETACHMENT: QuestSquadState.DETACHMENT,
- (ConditionSquadState.SOLO, ConditionSquadState.PLATOON): QuestSquadState.SOLO_AND_PLATOON}
-_ExistMainSquadStateLocalizationKeys = (QuestSquadState.PLATOON, QuestSquadState.SOLO_AND_PLATOON)
+_QuestDataStatusToModelStatus = {DataQuestStatus.INCOMPLETE: QuestStatus.IN_PROGRESS, 
+   DataQuestStatus.REWARD_AVAILABLE: QuestStatus.REWARD_AVAILABLE, 
+   DataQuestStatus.REWARD_PENDING: QuestStatus.REWARD_PENDING, 
+   DataQuestStatus.COMPLETE: QuestStatus.COMPLETE}
+_QuestDataConditionToModelCondition = {ConditionRuleType.FRAGS: QuestCondition.FRAGS, 
+   ConditionRuleType.FULL_DAMAGE: QuestCondition.FULL_DAMAGE, 
+   ConditionRuleType.EXP: QuestCondition.EXP, 
+   ConditionRuleType.WIN: QuestCondition.WIN}
+_QuestDataSquadStateToModelSquadState = {ConditionSquadState.SOLO: QuestSquadState.SOLO, 
+   ConditionSquadState.PLATOON: QuestSquadState.PLATOON, 
+   ConditionSquadState.DETACHMENT: QuestSquadState.DETACHMENT, 
+   (ConditionSquadState.SOLO, ConditionSquadState.PLATOON): QuestSquadState.SOLO_AND_PLATOON}
+_ExistMainSquadStateLocalizationKeys = (
+ QuestSquadState.PLATOON, QuestSquadState.SOLO_AND_PLATOON)
 _ExistMainConditionLocalizationKeys = (QuestCondition.FRAGS, QuestCondition.FULL_DAMAGE, QuestCondition.EXP)
 _ExistAlternativeSquadStateLocalizationKeys = (QuestSquadState.DETACHMENT,)
 _ExistAlternativeConditionLocalizationKeys = (QuestCondition.WIN,)
@@ -70,7 +66,10 @@ class QuestsPage(SubModelPresenter):
 
     def getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        return None if tooltipId is None else self.__tooltips.get(tooltipId)
+        if tooltipId is None:
+            return
+        else:
+            return self.__tooltips.get(tooltipId)
 
     def initialize(self, *args, **kwargs):
         super(QuestsPage, self).initialize(*args, **kwargs)
@@ -88,14 +87,22 @@ class QuestsPage(SubModelPresenter):
         return
 
     def _getEvents(self):
-        return super(QuestsPage, self)._getEvents() + ((g_clanCache.clanSupplyProvider.onDataReceived, self.__onDataReceived),
-         (g_clanCache.clanSupplyProvider.onDataFailed, self.__onDataFailed),
-         (self.viewModel.onRefresh, self.__onRefresh),
-         (self.viewModel.onClaimReward, self.__onClaimReward),
-         (self.viewModel.onGoToClans, self.__onGoToClans))
+        return super(QuestsPage, self)._getEvents() + (
+         (
+          g_clanCache.clanSupplyProvider.onDataReceived, self.__onDataReceived),
+         (
+          g_clanCache.clanSupplyProvider.onDataFailed, self.__onDataFailed),
+         (
+          self.viewModel.onRefresh, self.__onRefresh),
+         (
+          self.viewModel.onClaimReward, self.__onClaimReward),
+         (
+          self.viewModel.onGoToClans, self.__onGoToClans))
 
     def _getCallbacks(self):
-        return (('stats.clanInfo', self.__updateClanInfo),)
+        return (
+         (
+          'stats.clanInfo', self.__updateClanInfo),)
 
     def __updateState(self):
         questsObj = g_clanCache.clanSupplyProvider.getQuestsInfo()
@@ -117,35 +124,37 @@ class QuestsPage(SubModelPresenter):
             return
         else:
             isPrevRewardsEmpty = self.__isPreviousRewardsEmpty(questsInfo.previous_rewards)
-            with self.viewModel.transaction() as tx:
+            with self.viewModel.transaction() as (tx):
                 if not g_clanCache.isInClan:
                     status = ScreenStatus.PLAYER_NOT_IN_CLAN
-                elif not isPrevRewardsEmpty:
-                    status = ScreenStatus.PREVIOUS_REWARDS
-                elif any([ q for q in questsInfo.quests if q.status == DataQuestStatus.REWARD_AVAILABLE ]):
-                    status = ScreenStatus.REWARD_AVAILABLE
                 else:
-                    status = ScreenStatus.IN_PROGRESS
-                    if sum(self.__notificationCtrl.getCounters((BUBBLES_ALIAS,)).values()):
-                        self.__notificationCtrl.setCounters(BUBBLES_ALIAS, 0)
-                tx.setStatus(status)
-                tx.setUpdateTime(questsInfo.cycle_end)
-                tx.setCycleDuration(questsInfo.cycle_duration)
-                self.__restartNotifier(questsInfo.cycle_end - time_utils.getServerUTCTime())
-                quests = tx.getQuests()
-                quests.clear()
-                prevQuestData = None
-                hasError = False
-                for questData in questsInfo.quests:
-                    questModel, questHasError = self.__fillQuestModel(questData, prevQuestData, status)
-                    quests.addViewModel(questModel)
-                    prevQuestData = questData
-                    hasError |= questHasError
+                    if not isPrevRewardsEmpty:
+                        status = ScreenStatus.PREVIOUS_REWARDS
+                    else:
+                        if any([ q for q in questsInfo.quests if q.status == DataQuestStatus.REWARD_AVAILABLE ]):
+                            status = ScreenStatus.REWARD_AVAILABLE
+                        else:
+                            status = ScreenStatus.IN_PROGRESS
+                            if sum(self.__notificationCtrl.getCounters((BUBBLES_ALIAS,)).values()):
+                                self.__notificationCtrl.setCounters(BUBBLES_ALIAS, 0)
+                        tx.setStatus(status)
+                        tx.setUpdateTime(questsInfo.cycle_end)
+                        tx.setCycleDuration(questsInfo.cycle_duration)
+                        self.__restartNotifier(questsInfo.cycle_end - time_utils.getServerUTCTime())
+                        quests = tx.getQuests()
+                        quests.clear()
+                        prevQuestData = None
+                        hasError = False
+                        for questData in questsInfo.quests:
+                            questModel, questHasError = self.__fillQuestModel(questData, prevQuestData, status)
+                            quests.addViewModel(questModel)
+                            prevQuestData = questData
+                            hasError |= questHasError
 
-                quests.invalidate()
-                if hasError:
-                    self.viewModel.setStatus(ScreenStatus.ERROR)
-                    return
+                    quests.invalidate()
+                    if hasError:
+                        self.viewModel.setStatus(ScreenStatus.ERROR)
+                        return
                 previousRewards = tx.getPreviousRewards()
                 previousRewards.clear()
                 if not isPrevRewardsEmpty:
@@ -178,10 +187,12 @@ class QuestsPage(SubModelPresenter):
         altSquadState = self.__getQuestSquadState(questData.conditions.alternative)
         hasError |= altSquadState not in _ExistAlternativeSquadStateLocalizationKeys
         questModel.setAlternativeSquadState(altSquadState)
-        questModel.setConditionParams(self.__getConditionParams([questData.conditions.main.rule, questData.conditions.alternative.rule]))
+        questModel.setConditionParams(self.__getConditionParams([
+         questData.conditions.main.rule, questData.conditions.alternative.rule]))
         rewards = getCurrencyReward(questData.rewards)
         packBonusModelAndTooltipData(composeBonuses(rewards), questModel.getRewards(), self.__tooltips)
-        return (questModel, hasError)
+        return (
+         questModel, hasError)
 
     def __onDataReceived(self, dataName, data):
         if dataName not in (DataNames.QUESTS_INFO, DataNames.QUESTS_INFO_POST):

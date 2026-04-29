@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/crew/quick_training/books_list_component_model.py
 from frameworks.wulf import Array
 from gui.impl.gen.view_models.views.lobby.crew.components.component_base_model import ComponentBaseModel
 from gui.impl.gen.view_models.views.lobby.crew.quick_training.training_book_model import TrainingBookModel

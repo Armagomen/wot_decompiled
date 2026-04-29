@@ -1,11 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/hangar_cameras/c11n_hangar_camera_manager.py
-import copy
-import math
-import math_utils
-import BigWorld
-import Math
-import CGF
+import copy, math, math_utils, BigWorld, Math, CGF
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.utils.graphics import isLowPreset
 from items.components.c11n_constants import EASING_TRANSITION_DURATION
@@ -121,9 +114,9 @@ class C11nHangarCameraManager(TimeDeltaMeter):
         cameraManager = CGF.getManager(self._hangarSpace.spaceID, HangarCameraManager)
         if not cameraManager:
             return
-        elif self.vEntity is None or self.vEntity.appearance is None or self.vEntity.appearance.compoundModel is None:
-            return
         else:
+            if self.vEntity is None or self.vEntity.appearance is None or self.vEntity.appearance.compoundModel is None:
+                return
             appearance = self.vEntity.appearance
             mat = Math.Matrix()
             mat.setRotateYPR((_STYLE_INFO_YAW, -_STYLE_INFO_PITCH, 0.0))
@@ -178,20 +171,20 @@ class C11nHangarCameraManager(TimeDeltaMeter):
     def __getStyleInfoDOFParams(self, cameraPos):
         if self.vEntity is None or self.vEntity.appearance is None:
             return
-        else:
-            compoundModel = self.vEntity.appearance.compoundModel
-            chassisBounds = Math.Matrix(compoundModel.getBoundsForPart(TankPartIndexes.CHASSIS))
-            outsidePoints = (chassisBounds.applyPoint((0, 1, 0)),
-             chassisBounds.applyPoint((0, 1, 1)),
-             chassisBounds.applyPoint((1, 1, 0)),
-             chassisBounds.applyPoint((1, 1, 1)))
-            dists = []
-            for point in outsidePoints:
-                dist = point - cameraPos
-                dists.append(dist.length)
+        compoundModel = self.vEntity.appearance.compoundModel
+        chassisBounds = Math.Matrix(compoundModel.getBoundsForPart(TankPartIndexes.CHASSIS))
+        outsidePoints = (
+         chassisBounds.applyPoint((0, 1, 0)),
+         chassisBounds.applyPoint((0, 1, 1)),
+         chassisBounds.applyPoint((1, 1, 0)),
+         chassisBounds.applyPoint((1, 1, 1)))
+        dists = []
+        for point in outsidePoints:
+            dist = point - cameraPos
+            dists.append(dist.length)
 
-            dists.sort()
-            return DOFParams(nearStart=0, nearDist=0, farStart=dists[2], farDist=1)
+        dists.sort()
+        return DOFParams(nearStart=0, nearDist=0, farStart=dists[2], farDist=1)
 
     def __getCameraYawPitch(self, up, normal, clipCos=None, maxPitch=None):
         if up.dot(_WORLD_UP) > 0.99:
@@ -206,4 +199,8 @@ class C11nHangarCameraManager(TimeDeltaMeter):
                 direction = -direction
             if clipCos is not None and direction.dot(-normal) < clipCos:
                 direction = -normal
-        return (direction.yaw, -math_utils.clamp(-maxPitch, maxPitch, direction.pitch)) if maxPitch is not None else (direction.yaw, -direction.pitch)
+        if maxPitch is not None:
+            return (direction.yaw, -math_utils.clamp(-maxPitch, maxPitch, direction.pitch))
+        else:
+            return (
+             direction.yaw, -direction.pitch)

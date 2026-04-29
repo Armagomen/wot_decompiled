@@ -1,8 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/platform/products_fetcher/user_subscriptions/controller.py
 import logging
 from functools import partial
 import typing
+from future.utils import listvalues
 from BWUtil import AsyncReturn
 import wg_async
 from adisp import adisp_process
@@ -12,9 +11,9 @@ from gui.platform.products_fetcher.user_subscriptions.user_subscription import U
 from gui.wgcg.utils.contexts import PlatformGetUserSubscriptionsCtx
 from helpers import dependency
 from skeletons.connection_mgr import IConnectionManager
-from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.platform.product_fetch_controller import IUserSubscriptionsFetchController
 from skeletons.gui.web import IWebController
+from skeletons.gui.game_control import IWotPlusController
 _logger = logging.getLogger(__name__)
 if typing.TYPE_CHECKING:
     from gui.wgcg.web_controller import WebController
@@ -23,16 +22,17 @@ __doc__ = '\nModule takes care of player subscriptions from platform.\n\nUsers c
 class PlatformGetUserSubscriptionsParams(object):
 
     def __init__(self):
-        self.status = [SubscriptionStatus.ACTIVE.value, SubscriptionStatus.INACTIVE.value]
+        self.status = [
+         SubscriptionStatus.ACTIVE.value, SubscriptionStatus.INACTIVE.value]
 
     def __str__(self):
-        return 'status: {status}'.format(status=self.status)
+        return ('status: {status}').format(status=self.status)
 
 
 class UserSubscriptionsFetchController(IUserSubscriptionsFetchController):
     _webCtrl = dependency.descriptor(IWebController)
     _connectionMgr = dependency.descriptor(IConnectionManager)
-    _lobbyContext = dependency.descriptor(ILobbyContext)
+    _wotPlusCtrl = dependency.descriptor(IWotPlusController)
     platformFetchCtx = PlatformGetUserSubscriptionsCtx
 
     def __init__(self):
@@ -54,18 +54,21 @@ class UserSubscriptionsFetchController(IUserSubscriptionsFetchController):
         self._fetchResult.reset()
         subscriptionParams = PlatformGetUserSubscriptionsParams()
         requestSuccess, subscriptionsData = yield wg_async.await_callback(partial(self._requestSubscriptions, subscriptionParams))()
-        serverSettings = self._lobbyContext.getServerSettings()
-        subscriptionProductCodes = serverSettings.getWotPlusProductCodes()
+        subscriptionProductCodes = self._wotPlusCtrl.getSettingsStorage().getAllProductCodes()
         if requestSuccess and subscriptionsData:
             _logger.debug('Subscriptions request from %s has been successfully processed.', str(subscriptionParams))
+            subsLookup = {}
             for subscriptionData in subscriptionsData:
-                if subscriptionData.get('product_code') not in subscriptionProductCodes:
+                productCode = subscriptionData.get('product_code')
+                if productCode not in subscriptionProductCodes:
                     continue
                 userSubscription = UserSubscription(subscriptionData)
-                hasSubscription = any([ subscription.subscriptionId == userSubscription.subscriptionId for subscription in self._fetchResult.products ])
-                if not hasSubscription:
-                    self._fetchResult.products.append(userSubscription)
+                if productCode not in subsLookup:
+                    subsLookup[productCode] = userSubscription
+                elif userSubscription.nextBillingTime > subsLookup[productCode].nextBillingTime:
+                    subsLookup[productCode] = userSubscription
 
+            self._fetchResult.products = listvalues(subsLookup)
         if requestSuccess:
             self._fetchResult.setProcessed()
         else:

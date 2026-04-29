@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/gui/impl/lobby/feature/states.py
 from __future__ import absolute_import
 from typing import Optional
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -41,7 +39,8 @@ class BaseProgressionState(ViewLobbyState):
         return backport.text(R.strings.resource_well.mainView.navbar.backBtn())
 
     def getNavigationDescription(self):
-        return LobbyStateDescription(title=backport.text(R.strings.resource_well.mainView.navbar.title()), infos=(LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=openInfoPageScreen, tooltipBody=backport.text(R.strings.resource_well.tooltips.mainView.info_tip.body())),))
+        return LobbyStateDescription(title=backport.text(R.strings.resource_well.mainView.navbar.title()), infos=(
+         LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=openInfoPageScreen, tooltipBody=backport.text(R.strings.resource_well.tooltips.mainView.info_tip.body())),))
 
 
 @SubScopeSubLayerState.parentOf
@@ -63,8 +62,8 @@ class VehiclePreviewState(BaseVehiclePreviewState):
 
     def _getViewLoadCtx(self, event):
         params = super(VehiclePreviewState, self)._getViewLoadCtx(event)
-        params['ctx'].update({'rewardID': event.params.get('rewardID', None),
-         'numberStyle': event.params.get('numberStyle', None)})
+        params['ctx'].update({'rewardID': event.params.get('rewardID', None), 
+           'numberStyle': event.params.get('numberStyle', None)})
         return params
 
     def getNavigationDescription(self):

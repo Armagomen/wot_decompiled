@@ -1,11 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_results/progression/module_vehicle_progress_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.battle_results.progression.unlock_module_progress_model import UnlockModuleProgressModel
 from gui.impl.gen.view_models.views.lobby.battle_results.progression.unlock_vehicle_progress_model import UnlockVehicleProgressModel
 
 class ModuleVehicleProgressModel(ViewModel):
-    __slots__ = ('onNavigate',)
+    __slots__ = ('onNavigate', )
     PATH = 'coui://gui/gameface/_dist/production/mono/plugins/post_battle/vehicle_research/vehicle_research.js'
 
     def __init__(self, properties=2, commands=1):

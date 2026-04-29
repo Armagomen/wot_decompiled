@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/proto/xmpp/jid.py
-import random
-import types
-import time
+import random, types, time
 from string import Template
 from helpers import dependency
 from ids_generators import SequenceIDGenerator
@@ -63,14 +59,14 @@ class BareJID(object):
         self._domain = domain.lower()
 
     def getResource(self):
-        pass
+        return ''
 
     def setResource(self, resource):
         pass
 
     def __str__(self):
         if self._node:
-            jid = '{0}@{1}'.format(self._node, self._domain)
+            jid = ('{0}@{1}').format(self._node, self._domain)
         else:
             jid = self._domain
         return jid
@@ -98,7 +94,7 @@ class BareJID(object):
 
 
 class JID(BareJID):
-    __slots__ = ('_resource',)
+    __slots__ = ('_resource', )
 
     def setJID(self, jid):
         self._resource = super(JID, self).setJID(jid)
@@ -115,7 +111,7 @@ class JID(BareJID):
     def __str__(self):
         jid = super(JID, self).__str__()
         if self._resource:
-            jid = '{0}/{1}'.format(jid, self._resource)
+            jid = ('{0}/{1}').format(jid, self._resource)
         return jid
 
 
@@ -164,7 +160,7 @@ def makeUserRoomJID(room=''):
     if not service or not service['hostname']:
         return jid
     if not room:
-        room = 'user_room_{:08X}_{:08X}_{:04X}'.format(long(time.time()) & 4294967295L, random.randrange(1, 4294967295L), _counter.next())
+        room = ('user_room_{:08X}_{:08X}_{:04X}').format(long(time.time()) & 4294967295, random.randrange(1, 4294967295), _counter.next())
     jid.setNode(room)
     jid.setDomain(service['hostname'])
     return jid
@@ -190,7 +186,10 @@ def _getSystemChannelNameFormatter(service, connectionMgr=None):
     else:
         peripheryID = 0
     chanTemplate = Template(service['format'])
-    return chanTemplate.safe_substitute(peripheryID=peripheryID, userString=service['userString'], hostname=service['hostname'], type=service['type']) if chanTemplate else None
+    if chanTemplate:
+        return chanTemplate.safe_substitute(peripheryID=peripheryID, userString=service['userString'], hostname=service['hostname'], type=service['type'])
+    else:
+        return
 
 
 def makeClanRoomJID(clandDbId, channelType=XMPP_MUC_CHANNEL_TYPE.CLANS):

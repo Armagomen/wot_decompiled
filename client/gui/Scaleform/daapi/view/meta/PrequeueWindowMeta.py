@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/PrequeueWindowMeta.py
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 
 class PrequeueWindowMeta(AbstractWindowView):
@@ -20,7 +18,9 @@ class PrequeueWindowMeta(AbstractWindowView):
         self._printOverrideError('isLeaveBtnEnabled')
 
     def as_enableLeaveBtnS(self, value):
-        return self.flashObject.as_enableLeaveBtn(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_enableLeaveBtn(value)
 
     def as_enableEnqueueBtnS(self, value):
-        return self.flashObject.as_enableEnqueueBtn(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_enableEnqueueBtn(value)

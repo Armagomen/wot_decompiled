@@ -1,13 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_core/scripts/client/comp7_core/arena_components/comp7_core_equipment_component.py
 from collections import defaultdict
-import typing
-import logging
-import GenericComponents
-import BigWorld
-import CGF
-import Math
-import math_utils
+import typing, logging, GenericComponents, BigWorld, CGF, Math, math_utils
 from arena_component_system.client_arena_component_system import ClientArenaComponent
 from constants import ROLE_TYPE_TO_LABEL
 from gui.battle_control import avatar_getter
@@ -168,5 +160,9 @@ class _AoeHealEffect(_Effect):
             _logger.error('Failed to update Effect radius. Missing TransformComponent component.')
             return
         else:
-            transformComponent.transform = math_utils.createSRTMatrix(Math.Vector3(self.radius, 1.0, self.radius), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0))
+            transformComponent.transform = math_utils.createSRTMatrix(Math.Vector3(self.radius, 1.0, self.radius), (0.0,
+                                                                                                                    0.0,
+                                                                                                                    0.0), (0.0,
+                                                                                                                           0.0,
+                                                                                                                           0.0))
             return

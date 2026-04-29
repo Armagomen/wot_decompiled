@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/battle/tooltips/epic_quests_tooltips.py
 from CurrentVehicle import g_currentVehicle
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
 from gui.impl import backport
@@ -29,9 +27,9 @@ class EpicBattleQuestsTooltipData(BlocksTooltipData):
         completedIds = args[1] if args[1] != 'None' else None
         quests = self.__getQuestForVehicle(g_currentVehicle.item, sortByPriority=True, questIDs=completedIds)
         if quests:
-            return [self._packHeader(quests)] + [ self.__packQuest(q) for q in quests ]
-        else:
-            return super(EpicBattleQuestsTooltipData, self)._packBlocks()
+            return [
+             self._packHeader(quests)] + [ self.__packQuest(q) for q in quests ]
+        return super(EpicBattleQuestsTooltipData, self)._packBlocks()
 
     def _packHeader(self, quests):
         return formatters.packImageTextBlockData(title=text_styles.highTitle(backport.text(R.strings.epic_battle.questsTooltip.epicBattle.header())), desc=text_styles.main(self.__formatDescription(quests)), img=backport.image(R.images.gui.maps.icons.quests.epic_quests_infotip()), txtPadding=formatters.packPadding(top=18), descPadding=formatters.packPadding(top=15), txtOffset=20)
@@ -41,7 +39,9 @@ class EpicBattleQuestsTooltipData(BlocksTooltipData):
         return quest.isCompleted()
 
     def __packQuest(self, quest):
-        return formatters.packBuildUpBlockData([self.__packQuestInfo(quest), self.__packQuestRewards(quest)])
+        return formatters.packBuildUpBlockData([
+         self.__packQuestInfo(quest),
+         self.__packQuestRewards(quest)])
 
     def __packQuestInfo(self, quest):
         title = text_styles.middleTitle(quest.getUserName())
@@ -68,7 +68,8 @@ class EpicBattleQuestsTooltipData(BlocksTooltipData):
             padding = formatters.packPadding(top=-16)
         iconBlock = formatters.packImageBlockData(img=bonus.getImage(AWARDS_SIZES.SMALL), align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER)
         textBlock = formatters.packAlignedTextBlockData(text=bonus.getFormattedLabel(), align=align, padding=padding)
-        return formatters.packBuildUpBlockData(blocks=[iconBlock, textBlock], blockWidth=72, align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=formatters.packPadding(top=-8, bottom=-6))
+        return formatters.packBuildUpBlockData(blocks=[
+         iconBlock, textBlock], blockWidth=72, align=BLOCKS_TOOLTIP_TYPES.ALIGN_CENTER, padding=formatters.packPadding(top=-8, bottom=-6))
 
     def __formatDescription(self, quests):
         season = self.__epicController.getCurrentSeason() or self.__epicController.getNextSeason()
@@ -91,7 +92,7 @@ class EpicBattleQuestsTooltipData(BlocksTooltipData):
                 textStyle = text_styles.main
                 description = textStyle(backport.text(messageID(), time=timeStr))
                 return text_styles.concatStylesWithSpace(icon, description)
-            if all((q.isCompleted() for q in quests)) and self.__epicController.isDailyQuestsRefreshAvailable():
+            if all(q.isCompleted() for q in quests) and self.__epicController.isDailyQuestsRefreshAvailable():
                 data = time_utils.ONE_DAY - time_utils.getServerRegionalTimeCurrentDay()
                 valueStyle = text_styles.tutorial
                 timeToStr = valueStyle(getTimeStr(data, R.strings.menu.Time.timeLeftShort))
@@ -113,7 +114,8 @@ class EpicBattleQuestsTooltipData(BlocksTooltipData):
             questFilter = lambda quest: isDailyEpic(quest.getGroupID())
         else:
             questFilter = lambda quest: quest.getID() in questIDs
-        quests = [ q for q in self.__questController.getQuestForVehicle(vehicle) if questFilter(q) ]
+        quests = [ q for q in self.__questController.getQuestForVehicle(vehicle) if questFilter(q)
+                 ]
         if sortByPriority:
             quests.sort(key=lambda _q: _q.getPriority(), reverse=True)
         return quests

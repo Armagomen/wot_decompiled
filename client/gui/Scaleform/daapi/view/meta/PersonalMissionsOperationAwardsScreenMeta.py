@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/PersonalMissionsOperationAwardsScreenMeta.py
 from gui.Scaleform.framework.entities.View import View
 
 class PersonalMissionsOperationAwardsScreenMeta(View):
@@ -11,13 +9,17 @@ class PersonalMissionsOperationAwardsScreenMeta(View):
         self._printOverrideError('onPlaySound')
 
     def as_setInitDataS(self, data):
-        return self.flashObject.as_setInitData(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setInitData(data)
 
     def as_setAwardDataS(self, awardData):
-        return self.flashObject.as_setAwardData(awardData) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setAwardData(awardData)
 
     def as_setCloseBtnEnabledS(self, enabled):
-        return self.flashObject.as_setCloseBtnEnabled(enabled) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setCloseBtnEnabled(enabled)
 
     def as_playAwardsAnimationS(self):
-        return self.flashObject.as_playAwardsAnimation() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_playAwardsAnimation()

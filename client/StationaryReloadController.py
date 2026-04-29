@@ -1,7 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/StationaryReloadController.py
-import math
-import typing
+from __future__ import absolute_import
+import math, typing
 from collections import namedtuple
 import BigWorld
 from chat_commands_consts import BATTLE_CHAT_COMMAND_NAMES
@@ -34,6 +32,9 @@ class StationaryReloadAmmoState(DefaultComponentAmmoState):
     def __eq__(self, other):
         return isinstance(other, StationaryReloadAmmoState) and self.__state == other.stationaryReloadState and self.__baseTime == other.stationaryBaseTime and self.__timeLeft == other.stationaryTimeLeft
 
+    def __hash__(self):
+        return hash((self.__state, self.__baseTime, self.__timeLeft))
+
     @classmethod
     def fromComponentStatus(cls, status):
         return cls(status.state, status.baseTime, status.timeLeft)
@@ -55,7 +56,9 @@ class StationaryReloadAmmoState(DefaultComponentAmmoState):
 
     def getShootPossibility(self, _):
         isShootPossible = self.__state == STATIONARY_RELOAD_STATE.IDLE
-        return AmmoShootPossibility.NOT_DEFINED if isShootPossible else AmmoShootPossibility.DENIED
+        if isShootPossible:
+            return AmmoShootPossibility.NOT_DEFINED
+        return AmmoShootPossibility.DENIED
 
     def getSpecialReloadMessage(self):
         if self.__state not in STATIONARY_RELOAD_STATE.TO_RELOADING_STATES:
@@ -64,7 +67,9 @@ class StationaryReloadAmmoState(DefaultComponentAmmoState):
             ammo = self.__sessionProvider.shared.ammo
             timeLeft = math.ceil(ammo.getGunReloadingState().getActualValue())
             quantity = ammo.getShellsQuantityLeft()
-            return (BATTLE_CHAT_COMMAND_NAMES.RELOADING_CASSETE, messageArgs(floatArg1=timeLeft, int32Arg1=quantity)) if quantity > 0 and quantity != ammo.getGunSettings().clip.size else (BATTLE_CHAT_COMMAND_NAMES.RELOADINGGUN, messageArgs(floatArg1=timeLeft))
+            if quantity > 0 and quantity != ammo.getGunSettings().clip.size:
+                return (BATTLE_CHAT_COMMAND_NAMES.RELOADING_CASSETE, messageArgs(floatArg1=timeLeft, int32Arg1=quantity))
+            return (BATTLE_CHAT_COMMAND_NAMES.RELOADINGGUN, messageArgs(floatArg1=timeLeft))
 
 
 class StationaryReloadModeState(namedtuple('StationaryReloadModeState', ('state', 'gunLockMask', 'sequenceEndTime')), IMechanicState):
@@ -110,10 +115,14 @@ class StationaryReloadController(VehicleDynamicComponent, IGunMechanicComponent,
         return self.__statesEvents
 
     def getAmmoState(self):
-        return StationaryReloadAmmoState.fromComponentStatus(self.status) if self.status else self.DEFAULT_AMMO_STATE
+        if self.status:
+            return StationaryReloadAmmoState.fromComponentStatus(self.status)
+        return self.DEFAULT_AMMO_STATE
 
     def getMechanicState(self):
-        return StationaryReloadModeState.fromComponentStatus(self.status) if self.status else self.DEFAULT_MODE_STATE
+        if self.status:
+            return StationaryReloadModeState.fromComponentStatus(self.status)
+        return self.DEFAULT_MODE_STATE
 
     def onDestroy(self):
         self.__commandsEvents.destroy()

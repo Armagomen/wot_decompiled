@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/battle_control/controllers/notification_manager.py
-import logging
-import BigWorld
-import typing
+import logging, BigWorld, typing
 from enum import IntEnum
 from Event import Event
 from helpers.CallbackDelayer import CallbackDelayer
@@ -126,22 +122,12 @@ class RespawnMessage(CallbackDelayer):
         return floatLength
 
     def __repr__(self):
-        return 'RespawnMessage(msgType: %s, messageVO: %s, delay: %s, time: %s, showBefore: %s)' % (self.msgType,
-         self.messageVO,
-         self.delay,
-         self.time,
-         self.showBefore)
+        return 'RespawnMessage(msgType: %s, messageVO: %s, delay: %s, time: %s, showBefore: %s)' % (
+         self.msgType, self.messageVO, self.delay, self.time, self.showBefore)
 
     def __cmp__(self, other):
-        return cmp((self.msgType,
-         self.messageVO,
-         self.delay,
-         self.time,
-         self.showBefore), (other.msgType,
-         other.messageVO,
-         other.delay,
-         other.time,
-         other.showBefore))
+        return cmp((self.msgType, self.messageVO, self.delay, self.time, self.showBefore), (
+         other.msgType, other.messageVO, other.delay, other.time, other.showBefore))
 
 
 class MessageType(IntEnum):
@@ -156,8 +142,10 @@ class MessageType(IntEnum):
     vehicleDeadMsg = 8
 
 
-InvalidMessageTypeRange = (MessageType.vehicleDeadMsg,)
-allMessageTypes = (MessageType.respActivatedMsg,
+InvalidMessageTypeRange = (
+ MessageType.vehicleDeadMsg,)
+allMessageTypes = (
+ MessageType.respActivatedMsg,
  MessageType.respFinishedMsg,
  MessageType.respNotAvailableMsg,
  MessageType.allyInBattleMsg,
@@ -165,13 +153,21 @@ allMessageTypes = (MessageType.respActivatedMsg,
  MessageType.pickUpSphereMsg,
  MessageType.allyRespawnedMessage,
  MessageType.respNotAvailableSoonMsg)
-DeleteMsgTypeMapping = {MessageType.respActivatedMsg: allMessageTypes,
- MessageType.stayInCoverMsg: allMessageTypes,
- MessageType.allyInBattleMsg: (MessageType.allyInBattleMsg, MessageType.respActivatedMsg, MessageType.stayInCoverMsg),
- MessageType.respFinishedMsg: (MessageType.respActivatedMsg, MessageType.allyInBattleMsg),
- MessageType.vehicleDeadMsg: (MessageType.respFinishedMsg,),
- MessageType.allyRespawnedMessage: (MessageType.stayInCoverMsg, MessageType.allyInBattleMsg),
- MessageType.respNotAvailableMsg: (MessageType.stayInCoverMsg, MessageType.allyInBattleMsg, MessageType.respNotAvailableSoonMsg)}
+DeleteMsgTypeMapping = {MessageType.respActivatedMsg: allMessageTypes, 
+   MessageType.stayInCoverMsg: allMessageTypes, 
+   MessageType.allyInBattleMsg: (
+                               MessageType.allyInBattleMsg, MessageType.respActivatedMsg,
+                               MessageType.stayInCoverMsg), 
+   MessageType.respFinishedMsg: (
+                               MessageType.respActivatedMsg, MessageType.allyInBattleMsg), 
+   MessageType.vehicleDeadMsg: (
+                              MessageType.respFinishedMsg,), 
+   MessageType.allyRespawnedMessage: (
+                                    MessageType.stayInCoverMsg, MessageType.allyInBattleMsg), 
+   MessageType.respNotAvailableMsg: (
+                                   MessageType.stayInCoverMsg,
+                                   MessageType.allyInBattleMsg,
+                                   MessageType.respNotAvailableSoonMsg)}
 
 class INotificationHandler(object):
 
@@ -198,7 +194,8 @@ class NotificationManager(object):
 
     @property
     def handlersList(self):
-        return (self.upgradeHandler, self.respawnHandler)
+        return (
+         self.upgradeHandler, self.respawnHandler)
 
     def fini(self):
         if self.respawnHandler:
@@ -304,9 +301,11 @@ class UpgradeHandler(INotificationHandler):
         self.update()
         if self.__isUpgradeVisible:
             self.isActive = True
-            return (True, False)
+            return (
+             True, False)
         logger.warning('UpgradeHandler.tryToProceed return False after updateseems like manager change internal state of handler')
-        return (False, True)
+        return (
+         False, True)
 
 
 class RespawnHandler(INotificationHandler):
@@ -351,9 +350,11 @@ class RespawnHandler(INotificationHandler):
             message.delay = self.RESPAWN_ADDITIONAL_DELAY
 
     def addMessageToQueues(self, newMsg):
-        if newMsg.msgType in (MessageType.allyInBattleMsg, MessageType.stayInCoverMsg):
+        if newMsg.msgType in (MessageType.allyInBattleMsg,
+         MessageType.stayInCoverMsg):
             self.__curStateMsg = newMsg
-        elif newMsg.msgType in (MessageType.allyRespawnedMessage, MessageType.respNotAvailableMsg):
+        elif newMsg.msgType in (MessageType.allyRespawnedMessage,
+         MessageType.respNotAvailableMsg):
             self.__curStateMsg = None
         deleteMsgTypes = DeleteMsgTypeMapping.get(newMsg.msgType)
         addToQueue = True
@@ -382,8 +383,10 @@ class RespawnHandler(INotificationHandler):
         self.update()
         if self.hasMessage:
             self.isActive = True
-            return (True, False)
-        return (False, True)
+            return (
+             True, False)
+        return (
+         False, True)
 
     def update(self):
         if self.__curStateMsg and self.__curStateMsg.msgType not in [ msg.msgType for msg in self._highPriorQueue ] and self.isHighPriority:
@@ -399,7 +402,8 @@ class RespawnHandler(INotificationHandler):
             msg.delay = max(msg.delay, self.__upgradeHideTimeout)
             if not self.isHighPriority:
                 msg.updateTime(self.RESPAWN_FAST_SHOW_TIME)
-            elif msg.msgType in (MessageType.respActivatedMsg, MessageType.stayInCoverMsg, MessageType.allyInBattleMsg):
+            elif msg.msgType in (MessageType.respActivatedMsg, MessageType.stayInCoverMsg,
+             MessageType.allyInBattleMsg):
                 msg.time = max(0, msg.showBefore - msg.delay - BigWorld.serverTime())
             self.send(msg)
             return
@@ -438,8 +442,9 @@ class RespawnHandler(INotificationHandler):
             while BigWorld.serverTime() > msg.showBefore:
                 if self._highPriorQueue:
                     msg = self._highPriorQueue.pop(0)
-                msg = None
-                break
+                else:
+                    msg = None
+                    break
 
             return msg
 

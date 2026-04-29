@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/cgf_demo_client/test_gun_effects_controller.py
-import functools
-import CGF
-import Triggers
-import Vehicular
+import functools, CGF, Triggers, Vehicular
 from cgf_demo.demo_category import DEMO_CATEGORY
 from cgf_script.component_meta_class import ComponentProperty, CGFMetaTypes, registerComponent
 from cgf_script.managers_registrator import onAddedQuery
@@ -31,10 +26,9 @@ class EntranceSingleShotManager(CGF.ComponentManager):
         gunGO = entrance.gun.gameObject
         if gunGO is None or not gunGO.isValid():
             return
-        else:
-            spaceID = gunGO.spaceID
-            gun_events.postVehicularSingleShotEvent(spaceID, gunGO.index, gunGO.name, UNKNOWN_GUN_INDEX)
-            return
+        spaceID = gunGO.spaceID
+        gun_events.postVehicularSingleShotEvent(spaceID, gunGO.index, gunGO.name, UNKNOWN_GUN_INDEX)
+        return
 
 
 @registerComponent
@@ -59,16 +53,14 @@ class EntranceContinuousBurstManager(CGF.ComponentManager):
         gunGO = entrance.gun.gameObject
         if gunGO is None or not gunGO.isValid():
             return
-        else:
-            spaceID = gunGO.spaceID
-            gun_events.postVehicularContinuousBurstEvent(spaceID, gunGO.index, gunGO.name, True)
-            return
+        spaceID = gunGO.spaceID
+        gun_events.postVehicularContinuousBurstEvent(spaceID, gunGO.index, gunGO.name, True)
+        return
 
     def __onExit(self, entrance, who, where):
         gunGO = entrance.gun.gameObject
         if gunGO is None or not gunGO.isValid():
             return
-        else:
-            spaceID = gunGO.spaceID
-            gun_events.postVehicularContinuousBurstEvent(spaceID, gunGO.index, gunGO.name, False)
-            return
+        spaceID = gunGO.spaceID
+        gun_events.postVehicularContinuousBurstEvent(spaceID, gunGO.index, gunGO.name, False)
+        return

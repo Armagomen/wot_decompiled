@@ -1,33 +1,20 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/web/web_client_api/common.py
 import itertools
 from collections import namedtuple
 from enum import Enum, unique
 from gui.shared.money import MONEY_UNDEFINED
 from shared_utils import CONST_CONTAINER
-SPA_ID_TYPES = (int, long)
-VehicleOfferEntry = namedtuple('VehicleOfferEntry', ('id', 'eventType', 'rent', 'crew', 'name', 'label', 'left', 'buyPrice', 'bestOffer', 'buyParams', 'preferred'))
-VehicleOfferEntry.__new__.__defaults__ = ('',
- None,
- None,
- None,
- 'Unnamed',
- 'Unnamed',
- (),
- MONEY_UNDEFINED,
- None,
- None,
- False)
-ItemPackEntry = namedtuple('ItemPackEntry', ('type', 'id', 'count', 'groupID', 'compensation', 'iconSource', 'title', 'description', 'extra'))
-ItemPackEntry.__new__.__defaults__ = (None,
- None,
- None,
- None,
- None,
- None,
- '',
- '',
- {})
+SPA_ID_TYPES = (
+ int, long)
+VehicleOfferEntry = namedtuple('VehicleOfferEntry', ('id', 'eventType', 'rent', 'crew',
+                                                     'name', 'label', 'left', 'buyPrice',
+                                                     'bestOffer', 'buyParams', 'preferred'))
+VehicleOfferEntry.__new__.__defaults__ = (
+ '', None, None, None, 'Unnamed', 'Unnamed', (), MONEY_UNDEFINED, None, None, False)
+ItemPackEntry = namedtuple('ItemPackEntry', ('type', 'id', 'count', 'groupID', 'compensation',
+                                             'iconSource', 'title', 'description',
+                                             'extra'))
+ItemPackEntry.__new__.__defaults__ = (
+ None, None, None, None, None, None, '', '', {})
 
 class _Enum(Enum):
 
@@ -165,36 +152,51 @@ class ItemPackType(CONST_CONTAINER):
 
 
 class ItemPackTypeGroup(CONST_CONTAINER):
-    ITEM = (ItemPackType.ITEM_SHELL, ItemPackType.ITEM_DEVICE, ItemPackType.ITEM_EQUIPMENT)
-    VEHICLE = (ItemPackType.VEHICLE,
+    ITEM = (
+     ItemPackType.ITEM_SHELL,
+     ItemPackType.ITEM_DEVICE,
+     ItemPackType.ITEM_EQUIPMENT)
+    VEHICLE = (
+     ItemPackType.VEHICLE,
      ItemPackType.VEHICLE_SPG,
      ItemPackType.VEHICLE_AT_SPG,
      ItemPackType.VEHICLE_HEAVY,
      ItemPackType.VEHICLE_MEDIUM,
      ItemPackType.VEHICLE_LIGHT)
-    GOODIE = (ItemPackType.GOODIE_GOLD,
+    GOODIE = (
+     ItemPackType.GOODIE_GOLD,
      ItemPackType.GOODIE_CREDITS,
      ItemPackType.GOODIE_EXPERIENCE,
      ItemPackType.GOODIE_CREW_EXPERIENCE,
      ItemPackType.GOODIE_FREE_EXPERIENCE,
      ItemPackType.GOODIE_FREE_AND_CREW_EXPERIENCE,
      ItemPackType.GOODIE_FRONTLINE_EXPERIENCE)
-    CAMOUFLAGE = (ItemPackType.CAMOUFLAGE_ALL,
+    CAMOUFLAGE = (
+     ItemPackType.CAMOUFLAGE_ALL,
      ItemPackType.CAMOUFLAGE_DESERT,
      ItemPackType.CAMOUFLAGE_SUMMER,
      ItemPackType.CAMOUFLAGE_WINTER)
-    PAINT = (ItemPackType.PAINT_ALL,
+    PAINT = (
+     ItemPackType.PAINT_ALL,
      ItemPackType.PAINT_DESERT,
      ItemPackType.PAINT_SUMMER,
      ItemPackType.PAINT_WINTER)
-    STYLE = (ItemPackType.STYLE,)
-    MODIFICATION = (ItemPackType.MODIFICATION,)
-    ATTACHMENT = (ItemPackType.ATTACHMENT,)
-    DECAL = (ItemPackType.DECAL_1, ItemPackType.DECAL_2)
-    PROJECTION_DECAL = (ItemPackType.PROJECTION_DECAL,)
-    PERSONAL_NUMBER = (ItemPackType.PERSONAL_NUMBER,)
+    STYLE = (
+     ItemPackType.STYLE,)
+    MODIFICATION = (
+     ItemPackType.MODIFICATION,)
+    ATTACHMENT = (
+     ItemPackType.ATTACHMENT,)
+    DECAL = (
+     ItemPackType.DECAL_1,
+     ItemPackType.DECAL_2)
+    PROJECTION_DECAL = (
+     ItemPackType.PROJECTION_DECAL,)
+    PERSONAL_NUMBER = (
+     ItemPackType.PERSONAL_NUMBER,)
     CUSTOMIZATION = tuple(itertools.chain(STYLE, CAMOUFLAGE, PAINT, DECAL, PROJECTION_DECAL, PERSONAL_NUMBER, MODIFICATION, ATTACHMENT))
-    CUSTOM = (ItemPackType.CUSTOM_PREMIUM,
+    CUSTOM = (
+     ItemPackType.CUSTOM_PREMIUM,
      ItemPackType.CUSTOM_PREMIUM_PLUS,
      ItemPackType.CUSTOM_CRYSTAL,
      ItemPackType.CUSTOM_GOLD,
@@ -206,23 +208,31 @@ class ItemPackTypeGroup(CONST_CONTAINER):
      ItemPackType.CUSTOM_REFERRAL_CREW,
      ItemPackType.CUSTOM_SLOT,
      ItemPackType.CUSTOM_SUPPLY_POINT)
-    CREW = (ItemPackType.CREW_50,
+    CREW = (
+     ItemPackType.CREW_50,
      ItemPackType.CREW_75,
      ItemPackType.CREW_100,
      ItemPackType.CUSTOM_CREW_100,
      ItemPackType.CREW_BUNDLE,
      ItemPackType.CREW_CUSTOM)
-    TOKEN = (ItemPackType.TOKEN,)
-    DISCOUNT = (ItemPackType.FRONTLINE_TOKEN,)
-    TRADE_IN = (ItemPackType.TRADE_IN_INFO,)
-    CREW_BOOKS = (ItemPackType.CREW_BOOK,
+    TOKEN = (
+     ItemPackType.TOKEN,)
+    DISCOUNT = (
+     ItemPackType.FRONTLINE_TOKEN,)
+    TRADE_IN = (
+     ItemPackType.TRADE_IN_INFO,)
+    CREW_BOOKS = (
+     ItemPackType.CREW_BOOK,
      ItemPackType.CREW_BOOK_BROCHURE,
      ItemPackType.CREW_BOOK_GUIDE,
      ItemPackType.CREW_BOOK_CREW_BOOK,
      ItemPackType.CREW_BOOK_PERSONAL_BOOK,
      ItemPackType.CREW_BOOK_UNIVERSAL_BOOK)
-    OFFER = (ItemPackType.OFFER_BATTLE_BOOSTER, ItemPackType.OFFER_BROCHURE)
-    TMAN_TOKEN = {ItemPackType.TMAN_TOKEN}
+    OFFER = (
+     ItemPackType.OFFER_BATTLE_BOOSTER,
+     ItemPackType.OFFER_BROCHURE)
+    TMAN_TOKEN = {
+     ItemPackType.TMAN_TOKEN}
 
 
 CompensationSpec = namedtuple('CompensationSpec', ('type', 'value', 'count'))
@@ -242,3 +252,4 @@ def sanitizeResPath(relPath):
         if relPath.startswith('..'):
             relPath = 'gui' + relPath[2:]
         return relPath
+    return ''

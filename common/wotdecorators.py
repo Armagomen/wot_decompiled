@@ -1,17 +1,13 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/wotdecorators.py
-import inspect
-import logging
+import inspect, logging
 from functools import update_wrapper, wraps
 from typing import TypeVar, Type, Generic, Callable, Any
-from constants import IS_CLIENT, IS_BOT, IS_CGF_DUMP, IS_VS_EDITOR, IS_UE_EDITOR, IS_BASEAPP, IS_CELLAPP, IS_DEVELOPMENT, SERVER_TICK_LENGTH
+from constants import IS_CLIENT, IS_BOT, IS_CGF_DUMP, IS_VS_EDITOR, IS_UE_EDITOR, IS_BASEAPP, IS_CELLAPP, IS_DEVELOPMENT, SERVER_TICK_LENGTH, IS_PROCESS_REPLAY
 from debug_utils import LOG_CURRENT_EXCEPTION, CRITICAL_ERROR, LOG_ERROR
 from soft_exception import SoftException
 from time_tracking import LOG_TIME_WARNING
-import time
-import time_tracking
+import time, time_tracking
 CLASS = TypeVar('CLASS')
-if not IS_CLIENT and not IS_BOT and not IS_CGF_DUMP and not IS_VS_EDITOR and not IS_UE_EDITOR:
+if not IS_CLIENT and not IS_BOT and not IS_CGF_DUMP and not IS_VS_EDITOR and not IS_UE_EDITOR and not IS_PROCESS_REPLAY:
     from insights.measurements import incrTickOverspends
 logger = logging.getLogger(__name__)
 
@@ -87,10 +83,7 @@ def exposedtoclient(func):
             result = func(*args, **kwArgs)
             timeSinceLastTick = time.time() - lastTick
             if timeSinceLastTick > time_tracking.DEFAULT_TIME_LIMIT:
-                LOG_TIME_WARNING(timeSinceLastTick, context=(getattr(args[0], 'id', 0),
-                 func.__name__,
-                 args,
-                 kwArgs))
+                LOG_TIME_WARNING(timeSinceLastTick, context=(getattr(args[0], 'id', 0), func.__name__, args, kwArgs))
                 if not IS_CLIENT and not IS_BOT:
                     incrTickOverspends()
             return result
@@ -145,11 +138,8 @@ def condition(attributeName, logFunc=None, logStack=True):
 def limitExposedToClientCalls(cooldown=SERVER_TICK_LENGTH - 0.01, periodLength=1.0, errorThreshold=1, storageAttr='__exposedCallsStorage__'):
     if IS_DEVELOPMENT:
         if not (IS_BASEAPP or IS_CELLAPP) or cooldown <= 0 or periodLength <= cooldown or errorThreshold < 1:
-            raise SoftException('Invalid parameters for limitExposedToClientCalls decorator: cooldown=%.4f, periodLength=%.2f, errorThreshold=%d, isBase=%s, isCell=%s' % (cooldown,
-             periodLength,
-             errorThreshold,
-             IS_BASEAPP,
-             IS_CELLAPP))
+            raise SoftException('Invalid parameters for limitExposedToClientCalls decorator: cooldown=%.4f, periodLength=%.2f, errorThreshold=%d, isBase=%s, isCell=%s' % (
+             cooldown, periodLength, errorThreshold, IS_BASEAPP, IS_CELLAPP))
     DROP_COUNT, PERIOD_START, LAST_CALL = (0, 1, 2)
 
     def _decorator(func):
@@ -165,7 +155,8 @@ def limitExposedToClientCalls(cooldown=SERVER_TICK_LENGTH - 0.01, periodLength=1
                 setattr(self, storageAttr, storage)
             stats = storage.get(key)
             if stats is None:
-                stats = [0, now, 0.0]
+                stats = [
+                 0, now, 0.0]
                 storage[key] = stats
             if now - stats[PERIOD_START] >= periodLength:
                 stats[DROP_COUNT] = 0

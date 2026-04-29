@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicles/mechanics/mechanic_logging/__init__.py
 from __future__ import absolute_import
 import typing
 from vehicles.mechanics.mechanic_logging.mechanic_input_logger import MechanicInputLogger

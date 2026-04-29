@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/lobby/common/fun_view_helpers.py
 from __future__ import absolute_import
 from account_helpers.AccountSettings import AccountSettings, FUN_RANDOM_PROGRESSION, FUN_RANDOM_PROGR_PREV_COUNTER, FUN_RANDOM_INF_PROGR_PREV_COUNTER, FUN_RANDOM_INF_PROGR_PREV_COMPLETE_COUNT
 from typing import Any, Dict, List, Optional, Tuple, Union, TYPE_CHECKING
@@ -36,37 +34,38 @@ if TYPE_CHECKING:
     from fun_random.gui.impl.gen.view_models.views.lobby.common.fun_random_progression_condition import FunRandomProgressionCondition
     from fun_random.gui.impl.gen.view_models.views.lobby.common.fun_random_infinite_progression_condition import FunRandomInfiniteProgressionCondition
     from fun_random.gui.server_events.event_items import FunProgressionTriggerQuest
-_PROGRESSION_STATUS_MAP = {(False, False, False): FunRandomProgressionStatus.ACTIVE_RESETTABLE,
- (False, False, True): FunRandomProgressionStatus.ACTIVE_RESETTABLE,
- (True, False, False): FunRandomProgressionStatus.COMPLETED_RESETTABLE,
- (False, True, False): FunRandomProgressionStatus.ACTIVE_FINAL,
- (False, True, True): FunRandomProgressionStatus.ACTIVE_FINAL,
- (True, True, False): FunRandomProgressionStatus.COMPLETED_FINAL,
- (True, False, True): FunRandomProgressionStatus.ACTIVE_INFINITE_RESETTABLE,
- (True, True, True): FunRandomProgressionStatus.ACTIVE_INFINITE_FINAL}
-_EVENT_STATE_MAP = {FunSubModesState.BEFORE_SEASON: EventBannerState.ANNOUNCE,
- FunSubModesState.BETWEEN_SEASONS: EventBannerState.ANNOUNCE,
- FunSubModesState.AVAILABLE: EventBannerState.IN_PROGRESS,
- FunSubModesState.NOT_AVAILABLE: EventBannerState.INACTIVE,
- FunSubModesState.NOT_AVAILABLE_END: EventBannerState.FINISHED}
-_PERFORMANCE_GROUP_TO_RISK_ENUM = {PerformanceGroup.LOW_RISK: PerformanceRiskEnum.LOWRISK,
- PerformanceGroup.MEDIUM_RISK: PerformanceRiskEnum.MEDIUMRISK,
- PerformanceGroup.HIGH_RISK: PerformanceRiskEnum.HIGHRISK}
-FUN_RANDOM_MAPPING = {'tokens': FunRandomLootBoxTokenBonusPacker,
- 'lootBox': FunRandomLootBoxTokenBonusPacker,
- 'tmanToken': TmanTemplateBonusPacker,
- 'vehicles': VehiclesBonusUIPacker,
- 'customizations': Customization3Dand2DbonusUIPacker,
- BlueprintBonusTypes.BLUEPRINTS: ExtendedBlueprintBonusUIPacker,
- BlueprintBonusTypes.BLUEPRINTS_ANY: ExtendedBlueprintBonusUIPacker,
- BlueprintBonusTypes.FINAL_BLUEPRINTS: ExtendedBlueprintBonusUIPacker}
-RARITY_ORDER = (Rarity.ORDINARY,
+_PROGRESSION_STATUS_MAP = {(False, False, False): FunRandomProgressionStatus.ACTIVE_RESETTABLE, 
+   (False, False, True): FunRandomProgressionStatus.ACTIVE_RESETTABLE, 
+   (True, False, False): FunRandomProgressionStatus.COMPLETED_RESETTABLE, 
+   (False, True, False): FunRandomProgressionStatus.ACTIVE_FINAL, 
+   (False, True, True): FunRandomProgressionStatus.ACTIVE_FINAL, 
+   (True, True, False): FunRandomProgressionStatus.COMPLETED_FINAL, 
+   (True, False, True): FunRandomProgressionStatus.ACTIVE_INFINITE_RESETTABLE, 
+   (True, True, True): FunRandomProgressionStatus.ACTIVE_INFINITE_FINAL}
+_EVENT_STATE_MAP = {FunSubModesState.BEFORE_SEASON: EventBannerState.ANNOUNCE, 
+   FunSubModesState.BETWEEN_SEASONS: EventBannerState.ANNOUNCE, 
+   FunSubModesState.AVAILABLE: EventBannerState.IN_PROGRESS, 
+   FunSubModesState.NOT_AVAILABLE: EventBannerState.INACTIVE, 
+   FunSubModesState.NOT_AVAILABLE_END: EventBannerState.FINISHED}
+_PERFORMANCE_GROUP_TO_RISK_ENUM = {PerformanceGroup.LOW_RISK: PerformanceRiskEnum.LOWRISK, 
+   PerformanceGroup.MEDIUM_RISK: PerformanceRiskEnum.MEDIUMRISK, 
+   PerformanceGroup.HIGH_RISK: PerformanceRiskEnum.HIGHRISK}
+FUN_RANDOM_MAPPING = {'tokens': FunRandomLootBoxTokenBonusPacker, 
+   'lootBox': FunRandomLootBoxTokenBonusPacker, 
+   'tmanToken': TmanTemplateBonusPacker, 
+   'vehicles': VehiclesBonusUIPacker, 
+   'customizations': Customization3Dand2DbonusUIPacker, 
+   BlueprintBonusTypes.BLUEPRINTS: ExtendedBlueprintBonusUIPacker, 
+   BlueprintBonusTypes.BLUEPRINTS_ANY: ExtendedBlueprintBonusUIPacker, 
+   BlueprintBonusTypes.FINAL_BLUEPRINTS: ExtendedBlueprintBonusUIPacker}
+RARITY_ORDER = (
+ Rarity.ORDINARY,
  Rarity.UNUSUAL,
  Rarity.RARE,
  Rarity.EPIC,
  Rarity.LEGENDARY)
 LOOTBOX_TYPE = 'fep_{0}'
-RARITY_VALUES = tuple((LOOTBOX_TYPE.format(v.value) for v in RARITY_ORDER))
+RARITY_VALUES = tuple(LOOTBOX_TYPE.format(v.value) for v in RARITY_ORDER)
 
 def getFormattedTimeLeft(seconds):
     return time_formatters.getTillTimeByResource(seconds, R.strings.fun_random.modeSelector.status.timeLeft, removeLeadingZeros=True)
@@ -79,7 +78,9 @@ def getConditionText(rootStrPath, levels):
     levels = toRomanRangeString(levels)
     if levelCondition.exists() and levels:
         components.append(backport.text(levelCondition(), levels=levels))
-    return ' '.join(components) if len(components) > 1 else first(components, '')
+    if len(components) > 1:
+        return (' ').join(components)
+    return first(components, '')
 
 
 def getFunRandomEventState(status):
@@ -102,13 +103,17 @@ def getCompensatedFunRandomBonusPacker():
 def getFunRandomSpecialBonusPacker():
     mapping = getDefaultBonusPackersMap()
     mapping.update(FUN_RANDOM_MAPPING)
-    mapping.update({'tokens': FunRandomRewardLootBoxTokenBonusPacker,
-     'lootBox': FunRandomRewardLootBoxTokenBonusPacker})
+    mapping.update({'tokens': FunRandomRewardLootBoxTokenBonusPacker, 
+       'lootBox': FunRandomRewardLootBoxTokenBonusPacker})
     return BonusUIPacker(mapping)
 
 
 def defineProgressionStatus(progression):
-    return _PROGRESSION_STATUS_MAP[progression.state.isCompleted, progression.state.isLastProgression, progression.hasUnlimitedProgression] if progression is not None else FunRandomProgressionStatus.DISABLED
+    if progression is not None:
+        return _PROGRESSION_STATUS_MAP[(
+         progression.state.isCompleted, progression.state.isLastProgression, progression.hasUnlimitedProgression)]
+    else:
+        return FunRandomProgressionStatus.DISABLED
 
 
 def packAdditionalRewards(progression, stageIndex, showCount, isSpecial=False):
@@ -223,7 +228,8 @@ def sortFunProgressionBonuses(bonuses):
     for bonus in bonuses:
         if isinstance(bonus, LootBoxTokensBonus):
             lootboxes.append(bonus)
-        other.append(bonus)
+        else:
+            other.append(bonus)
 
     return sorted(lootboxes) + sorted(other)
 

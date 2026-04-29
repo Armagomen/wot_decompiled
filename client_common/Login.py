@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client_common/Login.py
 import BigWorld
 from PlayerEvents import g_playerEvents
 from debug_utils import LOG_DEBUG

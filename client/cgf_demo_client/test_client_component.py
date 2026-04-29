@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/cgf_demo_client/test_client_component.py
-import logging
-import GenericComponents
-import CGF
+import logging, GenericComponents, CGF
 from cgf_demo.demo_category import DEMO_CATEGORY
 from cgf_script.component_meta_class import ComponentProperty, CGFMetaTypes, registerComponent
 _logger = logging.getLogger(__name__)
@@ -11,9 +7,15 @@ _logger = logging.getLogger(__name__)
 class ClientTestComponent(object):
     category = DEMO_CATEGORY
     domain = CGF.DomainOption.DomainClient | CGF.DomainOption.DomainEditor
-    stringList = ComponentProperty(type=CGFMetaTypes.STRING_LIST, editorName='String List', value=('Test1', 'Test2'))
-    intList = ComponentProperty(type=CGFMetaTypes.INT_LIST, editorName='Int List', value=(1, 2, 3))
-    floatList = ComponentProperty(type=CGFMetaTypes.FLOAT_LIST, editorName='Float List', value=(4.0, 5.0, 6.0, 7.0))
+    stringList = ComponentProperty(type=CGFMetaTypes.STRING_LIST, editorName='String List', value=('Test1',
+                                                                                                   'Test2'))
+    intList = ComponentProperty(type=CGFMetaTypes.INT_LIST, editorName='Int List', value=(1,
+                                                                                          2,
+                                                                                          3))
+    floatList = ComponentProperty(type=CGFMetaTypes.FLOAT_LIST, editorName='Float List', value=(4.0,
+                                                                                                5.0,
+                                                                                                6.0,
+                                                                                                7.0))
     double = ComponentProperty(type=CGFMetaTypes.FLOAT, editorName='Double', value=55.0)
     integer = ComponentProperty(type=CGFMetaTypes.INT, editorName='Integer', value=777)
     string = ComponentProperty(type=CGFMetaTypes.STRING, editorName='String', value='Tiger')

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hangar_widget/event_banners/event_banners_container.py
-import typing
-import Event
+import typing, Event
 from soft_exception import SoftException
 if typing.TYPE_CHECKING:
     from typing import Dict, Type
@@ -30,7 +27,7 @@ class EventBannersContainer(object):
 
     def registerEventBanner(self, eventBannerCls):
         if self.__eventsMap.has_key(eventBannerCls.NAME):
-            raise SoftException('Banner for key {0} is already registered'.format(eventBannerCls.NAME))
+            raise SoftException(('Banner for key {0} is already registered').format(eventBannerCls.NAME))
         self.__eventsMap[eventBannerCls.NAME] = eventBannerCls()
 
     def getEventBanner(self, key):

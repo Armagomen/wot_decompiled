@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/offers/offer_banner_window.py
 import BigWorld
 from PlayerEvents import g_playerEvents
 from frameworks.wulf import ViewSettings, WindowFlags
@@ -56,7 +54,7 @@ class OfferBannerWindowView(ViewImpl):
             return
         else:
             localization = ResMgr.openSection(self._offersProvider.getCdnResourcePath(offer.cdnLocFilePath, relative=False))
-            with self.viewModel.transaction() as model:
+            with self.viewModel.transaction() as (model):
                 model.setTitle(R.strings.offers.banner.title())
                 model.setDescription(localization.readString('bannerDescription', default=''))
                 model.setName(localization.readString('nameInBanner', default=''))

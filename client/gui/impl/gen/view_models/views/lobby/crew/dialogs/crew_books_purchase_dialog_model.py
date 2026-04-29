@@ -1,10 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/crew/dialogs/crew_books_purchase_dialog_model.py
 from gui.impl.gen.view_models.views.dialogs.dialog_template_view_model import DialogTemplateViewModel
 from gui.impl.gen.view_models.views.dialogs.sub_views.currency_view_model import CurrencyViewModel
 
 class CrewBooksPurchaseDialogModel(DialogTemplateViewModel):
-    __slots__ = ('onStepperChanged',)
+    __slots__ = ('onStepperChanged', )
 
     def __init__(self, properties=10, commands=3):
         super(CrewBooksPurchaseDialogModel, self).__init__(properties=properties, commands=commands)

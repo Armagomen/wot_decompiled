@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/impl/lobby/presenters/sub_presenters/team_statistics.py
 import typing
 from frontline.gui.impl.gen.view_models.views.lobby.views.post_battle_results_view.battle_team_stats_model import BattleTeamStatsModel
 from helpers import dependency
@@ -36,7 +34,9 @@ class FrontlineTeamStatisticsSubPresenter(BattleResultsSubPresenter):
         return
 
     def _getEvents(self):
-        return ((self.getViewModel().onStatsSorted, self.__onTeamStatsSorted),)
+        return (
+         (
+          self.getViewModel().onStatsSorted, self.__onTeamStatsSorted),)
 
     def __getContextMenuArgs(self, databaseID, vehicleCD):
         reusable = self.getBattleResults().reusable

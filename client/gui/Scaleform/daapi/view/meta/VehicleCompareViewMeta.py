@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/VehicleCompareViewMeta.py
 from gui.Scaleform.daapi.view.meta.VehicleCompareCommonViewMeta import VehicleCompareCommonViewMeta
 
 class VehicleCompareViewMeta(VehicleCompareCommonViewMeta):
@@ -29,13 +27,17 @@ class VehicleCompareViewMeta(VehicleCompareCommonViewMeta):
         self._printOverrideError('onRemoveAllVehicles')
 
     def as_setParamsDeltaS(self, data):
-        return self.flashObject.as_setParamsDelta(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setParamsDelta(data)
 
     def as_setVehicleParamsDataS(self, data):
-        return self.flashObject.as_setVehicleParamsData(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setVehicleParamsData(data)
 
     def as_getVehiclesDPS(self):
-        return self.flashObject.as_getVehiclesDP() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_getVehiclesDP()
 
     def as_setVehiclesCountTextS(self, text):
-        return self.flashObject.as_setVehiclesCountText(text) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setVehiclesCountText(text)

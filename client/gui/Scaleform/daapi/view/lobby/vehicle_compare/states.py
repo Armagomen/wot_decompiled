@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_compare/states.py
 from __future__ import absolute_import
 import typing
 from frameworks.state_machine import StateFlags
@@ -73,6 +71,7 @@ class VehicleCompareConfiguratorState(ViewLobbyState):
 
     def _onEntered(self, event):
         super(VehicleCompareConfiguratorState, self)._onEntered(event)
+        self.__cachedParams = event.params
         if not self.comparisonBasket.isAvailable():
             showHangar()
 

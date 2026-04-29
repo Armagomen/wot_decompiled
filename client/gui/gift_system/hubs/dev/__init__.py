@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/gift_system/hubs/dev/__init__.py
 from gui import SystemMessages
 from gui.shared.formatters import text_styles
 

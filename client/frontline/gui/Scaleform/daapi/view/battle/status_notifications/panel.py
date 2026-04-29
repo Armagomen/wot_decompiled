@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/battle/status_notifications/panel.py
-import logging
-import BigWorld
+import logging, BigWorld
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from frontline.gui.Scaleform.daapi.view.battle.status_notifications import sn_items as frontline_sn_items
 from gui.Scaleform.daapi.view.battle.shared.status_notifications import sn_items
@@ -16,7 +13,8 @@ _logger = logging.getLogger(__name__)
 class _FrontlineBattleHighPriorityGroup(components.StatusNotificationsGroup):
 
     def __init__(self, updateCallback):
-        super(_FrontlineBattleHighPriorityGroup, self).__init__((sn_items.OverturnedSN,
+        super(_FrontlineBattleHighPriorityGroup, self).__init__((
+         sn_items.OverturnedSN,
          sn_items.HalfOverturnedSN,
          sn_items.DrownSN,
          frontline_sn_items.FrontlineDeathZoneDamagingSN,
@@ -30,7 +28,8 @@ class _FrontlineBattleHighPriorityGroup(components.StatusNotificationsGroup):
 class FrontlineStatusNotificationTimerPanel(StatusNotificationTimerPanel):
 
     def _generateItems(self):
-        items = [_FrontlineBattleHighPriorityGroup,
+        items = [
+         _FrontlineBattleHighPriorityGroup,
          frontline_sn_items.ResupplyTimerSN,
          sn_items.StunSN,
          frontline_sn_items.FrontlineEnemySmokeSN,

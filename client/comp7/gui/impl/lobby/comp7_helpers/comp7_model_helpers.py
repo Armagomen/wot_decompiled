@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/comp7_helpers/comp7_model_helpers.py
 import logging
 from itertools import izip
 import typing
@@ -14,9 +12,9 @@ if typing.TYPE_CHECKING:
     from comp7_ranks_common import Comp7Division
     from comp7.gui.impl.gen.view_models.views.lobby.division_info_model import DivisionInfoModel
 _logger = logging.getLogger(__name__)
-SEASONS_NUMBERS_BY_NAME = {SeasonName.FIRST.value: 1,
- SeasonName.SECOND.value: 2,
- SeasonName.THIRD.value: 3}
+SEASONS_NUMBERS_BY_NAME = {SeasonName.FIRST.value: 1, 
+   SeasonName.SECOND.value: 2, 
+   SeasonName.THIRD.value: 3}
 
 def setDivisionInfo(model, division=None):
     division = division or comp7_shared.getPlayerDivision()
@@ -67,8 +65,8 @@ def setMaxRankInfo(model, comp7Controller=None):
     seasonNumber = comp7Controller.getActualSeasonNumber()
     if not seasonNumber:
         return
-    maxAchivedRankNumber = comp7Controller.getMaxRankNumberForSeason(seasonNumber)
+    maxAchievedRankNumber = comp7Controller.getMaxRankNumberForSeason(seasonNumber)
     config = comp7Controller.getRanksConfig()
     ranksOrder = config.ranksOrder
-    rankId = ranksOrder[maxAchivedRankNumber - 1]
+    rankId = ranksOrder[(maxAchievedRankNumber - 1)]
     model.setMaxAchievedRank(comp7_shared.getRankById(rankId))

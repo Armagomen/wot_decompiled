@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/lobby_state_machine/observers.py
 from __future__ import absolute_import
-import logging
-import weakref
+import logging, weakref
 from functools import partial
 import typing
 from frameworks.state_machine import BaseStateObserver, State
@@ -103,7 +100,8 @@ class _ViewKillingObserver(BaseStateObserver):
             return
         else:
             enteredStateViewKeys = [ s.getViewKey() for s in lsm.getNonEmptyEnteredStates(onlyLeaves=False) ]
-            viewKeys = [ viewKey for viewKey in self.__viewKeysToKill if viewKey and viewKey not in enteredStateViewKeys ]
+            viewKeys = [ viewKey for viewKey in self.__viewKeysToKill if viewKey and viewKey not in enteredStateViewKeys
+                       ]
             for window in self.__windowsWithViewKeys(viewKeys):
                 if window.windowStatus not in (WindowStatus.DESTROYING, WindowStatus.DESTROYED):
                     _logger.debug('Killing window: %s', window.content)
@@ -139,7 +137,7 @@ class _ViewKillingObserver(BaseStateObserver):
     def __windowsWithViewKeys(self, viewKeys):
 
         def windowFilter(viewKeys, w):
-            return w.content and any((compareViewKeys(w.content, viewKey) for viewKey in viewKeys))
+            return w.content and any(compareViewKeys(w.content, viewKey) for viewKey in viewKeys)
 
         uiLoader = dependency.instance(IGuiLoader)
         windowsManager = uiLoader.windowsManager

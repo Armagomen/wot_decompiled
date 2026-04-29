@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/locale/SETTINGS.py
 from debug_utils import LOG_WARNING
 
 class SETTINGS(object):
@@ -681,6 +679,8 @@ class SETTINGS(object):
     FEEDBACK_TAB_BATTLEEVENTS_LABEL_NEGATIVE = '#settings:feedback/tab/battleEvents/label/negative'
     FEEDBACK_TAB_BATTLEEVENTS_LABEL_POSITIVE = '#settings:feedback/tab/battleEvents/label/positive'
     FEEDBACK_TAB_BATTLEEVENTS_LABEL_BATTLEEVENTS = '#settings:feedback/tab/battleEvents/label/BattleEvents'
+    FEEDBACK_TAB_BATTLEEVENTS_LABEL_CREWPERKS = '#settings:feedback/tab/battleEvents/label/crewPerks'
+    FEEDBACK_TAB_BATTLEEVENTS_CHECKBOX_ALLSITUATIONALPERKS = '#settings:feedback/tab/battleEvents/checkbox/allSituationalPerks'
     FEEDBACK_TAB_BATTLEEVENTS_CHECKBOX_SHOWINBATTLE = '#settings:feedback/tab/battleEvents/checkbox/ShowInBattle'
     FEEDBACK_TAB_BATTLEEVENTS_CHECKBOX_ENEMYHPDAMAGE = '#settings:feedback/tab/battleEvents/checkbox/EnemyHpDamage'
     FEEDBACK_TAB_BATTLEEVENTS_CHECKBOX_ENEMYBURNING = '#settings:feedback/tab/battleEvents/checkbox/EnemyBurning'
@@ -699,7 +699,6 @@ class SETTINGS(object):
     FEEDBACK_TAB_BATTLEEVENTS_CHECKBOX_RECEIVEDDAMAGE = '#settings:feedback/tab/battleEvents/checkbox/ReceivedDamage'
     FEEDBACK_TAB_BATTLEEVENTS_CHECKBOX_RECEIVEDCRITS = '#settings:feedback/tab/battleEvents/checkbox/ReceivedCrits'
     FEEDBACK_TAB_BATTLEEVENTS_CHECKBOX_ASSISTSTUN = '#settings:feedback/tab/battleEvents/checkbox/AssistStun'
-    FEEDBACK_TAB_BATTLEEVENTS_CHECKBOX_CREWPERKS = '#settings:feedback/tab/battleEvents/checkbox/CrewPerks'
     FEEDBACK_TAB_BATTLEEVENTS_INFO = '#settings:feedback/tab/battleEvents/info'
     FEEDBACK_TAB_BATTLEEVENTS_RECEIVEDDAMAGE = '#settings:feedback/tab/battleEvents/receivedDamage'
     FEEDBACK_TAB_DAMAGEINDICATOR = '#settings:feedback/tab/damageIndicator'
@@ -801,7 +800,10 @@ class SETTINGS(object):
     GAME_SHOWVEHICLEHPINMINIMAP_NEVER = '#settings:game/showVehicleHPinMinimap/never'
     GAME_SHOWVEHICLEHPINMINIMAP_ALT = '#settings:game/showVehicleHPinMinimap/alt'
     GAME_SHOWVEHICLEHPINMINIMAP_ALWAYS = '#settings:game/showVehicleHPinMinimap/always'
-    SOUNDS_ACOUSTICTYPE_ENUM = (SOUNDS_ACOUSTICTYPE_ACOUSTICS20,
+    GAME_NEWBEETIPSTITLE = '#settings:game/newbeeTipsTitle'
+    GAME_W2GTENABLE = '#settings:game/w2gtEnable'
+    SOUNDS_ACOUSTICTYPE_ENUM = (
+     SOUNDS_ACOUSTICTYPE_ACOUSTICS20,
      SOUNDS_ACOUSTICTYPE_ACOUSTICS51,
      SOUNDS_ACOUSTICTYPE_ACOUSTICS71,
      SOUNDS_ACOUSTICTYPE_AUTO,
@@ -822,7 +824,8 @@ class SETTINGS(object):
      SOUNDS_ACOUSTICTYPE_POPOVER_ITEM_RIGHTBACK,
      SOUNDS_ACOUSTICTYPE_POPOVER_ITEM_CENTER,
      SOUNDS_ACOUSTICTYPE_POPOVER_ITEM_SUB)
-    SOUNDS_SOUNDDEVICE_ENUM = (SOUNDS_SOUNDDEVICE_ACOUSTICS20,
+    SOUNDS_SOUNDDEVICE_ENUM = (
+     SOUNDS_SOUNDDEVICE_ACOUSTICS20,
      SOUNDS_SOUNDDEVICE_ACOUSTICS20_HEADER,
      SOUNDS_SOUNDDEVICE_ACOUSTICS20_BODY,
      SOUNDS_SOUNDDEVICE_ACOUSTICS51,
@@ -840,11 +843,13 @@ class SETTINGS(object):
      SOUNDS_SOUNDDEVICE_LAPTOP,
      SOUNDS_SOUNDDEVICE_LAPTOP_HEADER,
      SOUNDS_SOUNDDEVICE_LAPTOP_BODY)
-    SOUNDS_PHYSICSQUALITY_OPTIONS_ENUM = (SOUNDS_PHYSICSQUALITY_OPTIONS_DISABLED,
+    SOUNDS_PHYSICSQUALITY_OPTIONS_ENUM = (
+     SOUNDS_PHYSICSQUALITY_OPTIONS_DISABLED,
      SOUNDS_PHYSICSQUALITY_OPTIONS_LOW,
      SOUNDS_PHYSICSQUALITY_OPTIONS_MEDIUM,
      SOUNDS_PHYSICSQUALITY_OPTIONS_HIGH)
-    GRAPHICSSETTINGSOPTIONS_ENUM = (GRAPHICSSETTINGSOPTIONS_DEFERRED,
+    GRAPHICSSETTINGSOPTIONS_ENUM = (
+     GRAPHICSSETTINGSOPTIONS_DEFERRED,
      GRAPHICSSETTINGSOPTIONS_FORWARD,
      GRAPHICSSETTINGSOPTIONS_PIPELINE_STANDARD,
      GRAPHICSSETTINGSOPTIONS_PIPELINE_SIMPLIFIED,
@@ -887,36 +892,36 @@ class SETTINGS(object):
 
     @classmethod
     def sounds_acoustictype(cls, key0):
-        outcome = '#settings:sounds/acousticType/{}'.format(key0)
+        outcome = ('#settings:sounds/acousticType/{}').format(key0)
         if outcome not in cls.SOUNDS_ACOUSTICTYPE_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def sounds_sounddevice(cls, key0):
-        outcome = '#settings:sounds/soundDevice/{}'.format(key0)
+        outcome = ('#settings:sounds/soundDevice/{}').format(key0)
         if outcome not in cls.SOUNDS_SOUNDDEVICE_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def sounds_physicsquality_options(cls, key0):
-        outcome = '#settings:sounds/physicsQuality/options/{}'.format(key0)
+        outcome = ('#settings:sounds/physicsQuality/options/{}').format(key0)
         if outcome not in cls.SOUNDS_PHYSICSQUALITY_OPTIONS_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getGraphicsSettingsOption(cls, key0):
-        outcome = '#settings:graphicsSettingsOptions/{}'.format(key0)
+        outcome = ('#settings:graphicsSettingsOptions/{}').format(key0)
         if outcome not in cls.GRAPHICSSETTINGSOPTIONS_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome

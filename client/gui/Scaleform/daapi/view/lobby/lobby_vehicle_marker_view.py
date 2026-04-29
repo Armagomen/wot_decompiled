@@ -1,9 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/lobby_vehicle_marker_view.py
+from __future__ import absolute_import
 import typing
+from future.utils import viewitems
 from collections import defaultdict
-import GUI
-import Math
+import GUI, Math
 from gui.Scaleform.daapi.view.meta.LobbyVehicleMarkerViewMeta import LobbyVehicleMarkerViewMeta
 from gui.shared.gui_items.Vehicle import getVehicleClassTag
 from gui.shared import events, EVENT_BUS_SCOPE
@@ -18,7 +17,8 @@ if typing.TYPE_CHECKING:
     from cgf_components.marker_component import LobbyFlashMarker
 
 class LobbyVehicleMarkerView(LobbyVehicleMarkerViewMeta):
-    __LAYERS_WITHOUT_MARKERS = {WindowLayer.FULLSCREEN_WINDOW,
+    __LAYERS_WITHOUT_MARKERS = {
+     WindowLayer.FULLSCREEN_WINDOW,
      WindowLayer.OVERLAY,
      WindowLayer.SUB_VIEW,
      WindowLayer.TOP_SUB_VIEW}
@@ -82,10 +82,10 @@ class LobbyVehicleMarkerView(LobbyVehicleMarkerViewMeta):
         entityId = event.ctx['entityId']
         if self.__isMarkerDisabled or self.__markersCache[entityId] is None:
             return
+        state = event.ctx['state']
+        if state == CameraMovementStates.FROM_OBJECT:
+            return
         else:
-            state = event.ctx['state']
-            if state == CameraMovementStates.FROM_OBJECT:
-                return
             self.__markersCache[entityId].markerSetActive(self.hangarSpace.space.vehicleEntityId == entityId)
             return
 
@@ -113,7 +113,8 @@ class LobbyVehicleMarkerView(LobbyVehicleMarkerViewMeta):
         vClass = getVehicleClassTag(vehicleType.tags)
         vName = vehicleType.userString
         vMatrix = LobbyVehicleMarkerView.__getCorrectedHPGuiMatrix(vehicle)
-        return (vClass, vName, vMatrix)
+        return (
+         vClass, vName, vMatrix)
 
     @staticmethod
     def __getCorrectedHPGuiMatrix(vehicle):
@@ -152,7 +153,7 @@ class LobbyVehicleMarkerView(LobbyVehicleMarkerViewMeta):
         return
 
     def __destroyAllMarkers(self):
-        for k, marker in self.__markersCache.iteritems():
+        for k, marker in viewitems(self.__markersCache):
             self.as_removeMarkerS(k)
             if marker is not None:
                 marker.markerSetActive(False)

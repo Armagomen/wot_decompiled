@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/proto/xmpp/XmppServerSettings.py
-import random
-import types
+import random, types
 from debug_utils import LOG_ERROR
 from gui.shared.utils import getPlayerDatabaseID
 from messenger.proto.interfaces import IProtoSettings
@@ -65,14 +62,15 @@ class ConnectionsIterator(object):
 
 
 class XmppServerSettings(IProtoSettings):
-    __slots__ = ('enabled', 'connections', 'domain', 'port', 'resource', 'altConnections', 'boshConnections', 'mucServices')
+    __slots__ = ('enabled', 'connections', 'domain', 'port', 'resource', 'altConnections',
+                 'boshConnections', 'mucServices')
 
     def __init__(self):
         super(XmppServerSettings, self).__init__()
         self.clear()
 
     def __repr__(self):
-        return 'XmppServerSettings(enabled = {0!r:s}, connections = {1!r:s}, altConnections = {2!r:s}, boshConnections = {3!r:s}, domain = {4:>s}, port = {5:n}, resource = {6:>s}, mucServices = {7:>s})'.format(self.enabled, self.connections, self.altConnections, self.boshConnections, self.domain, self.port, self.resource, self.mucServices)
+        return ('XmppServerSettings(enabled = {0!r:s}, connections = {1!r:s}, altConnections = {2!r:s}, boshConnections = {3!r:s}, domain = {4:>s}, port = {5:n}, resource = {6:>s}, mucServices = {7:>s})').format(self.enabled, self.connections, self.altConnections, self.boshConnections, self.domain, self.port, self.resource, self.mucServices)
 
     @property
     def userRoomsService(self):
@@ -161,4 +159,7 @@ class XmppServerSettings(IProtoSettings):
         return False
 
     def getChannelByType(self, channelType):
-        return self.mucServices[channelType] if channelType in self.mucServices else None
+        if channelType in self.mucServices:
+            return self.mucServices[channelType]
+        else:
+            return

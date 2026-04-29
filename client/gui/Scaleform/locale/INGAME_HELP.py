@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/locale/INGAME_HELP.py
 
 
 class INGAME_HELP(object):
@@ -156,22 +154,17 @@ class INGAME_HELP(object):
     DETAILSHELP_MECHANICS_STATIONARYRELOAD_PAGE2_DESCRIPTION = '#ingame_help:detailsHelp/mechanics/stationaryReload/page2/description'
     DETAILSHELP_MECHANICS_HEATINGZONESGUN_PAGE1_TITLE = '#ingame_help:detailsHelp/mechanics/heatingZonesGun/page1/title'
     DETAILSHELP_MECHANICS_HEATINGZONESGUN_PAGE1_DESCRIPTION = '#ingame_help:detailsHelp/mechanics/heatingZonesGun/page1/description'
+    DETAILSHELP_MECHANICS_PROPELLANTAFTERBURNERGUN_PAGE1_TITLE = '#ingame_help:detailsHelp/mechanics/propellantAfterburnerGun/page1/title'
+    DETAILSHELP_MECHANICS_PROPELLANTAFTERBURNERGUN_PAGE1_DESCRIPTION = '#ingame_help:detailsHelp/mechanics/propellantAfterburnerGun/page1/description'
+    DETAILSHELP_MECHANICS_PROPELLANTAFTERBURNERGUN_PAGE2_TITLE = '#ingame_help:detailsHelp/mechanics/propellantAfterburnerGun/page2/title'
+    DETAILSHELP_MECHANICS_PROPELLANTAFTERBURNERGUN_PAGE2_DESCRIPTION = '#ingame_help:detailsHelp/mechanics/propellantAfterburnerGun/page2/description'
     DETAILSHELP_MECHANICS_STAGEDJETBOOSTERS_PAGE1_TITLE = '#ingame_help:detailsHelp/mechanics/stagedJetBoosters/page1/title'
     DETAILSHELP_MECHANICS_STAGEDJETBOOSTERS_PAGE1_DESCRIPTION = '#ingame_help:detailsHelp/mechanics/stagedJetBoosters/page1/description'
+    DETAILSHELP_MECHANICS_LOWCHARGESHOT_PAGE1_TITLE = '#ingame_help:detailsHelp/mechanics/lowChargeShot/page1/title'
+    DETAILSHELP_MECHANICS_LOWCHARGESHOT_PAGE1_DESCRIPTION = '#ingame_help:detailsHelp/mechanics/lowChargeShot/page1/description'
+    DETAILSHELP_MECHANICS_WHEELEDDASH_PAGE1_TITLE = '#ingame_help:detailsHelp/mechanics/wheeledDash/page1/title'
+    DETAILSHELP_MECHANICS_WHEELEDDASH_PAGE1_DESCRIPTION = '#ingame_help:detailsHelp/mechanics/wheeledDash/page1/description'
     DETAILSHELP_NOKEYSWARNING = '#ingame_help:detailsHelp/noKeysWarning'
-    DETAILSHELP_BATTLEROYALE_RADAR_TITLE = '#ingame_help:detailsHelp/battleRoyale/radar/title'
-    DETAILSHELP_BATTLEROYALE_RADAR_DESCRIPTION = '#ingame_help:detailsHelp/battleRoyale/radar/description'
-    DETAILSHELP_BATTLEROYALE_SECTORVISION_TITLE = '#ingame_help:detailsHelp/battleRoyale/sectorVision/title'
-    DETAILSHELP_BATTLEROYALE_SECTORVISION_DESCRIPTION = '#ingame_help:detailsHelp/battleRoyale/sectorVision/description'
-    DETAILSHELP_BATTLEROYALE_ZONE_TITLE = '#ingame_help:detailsHelp/battleRoyale/zone/title'
-    DETAILSHELP_BATTLEROYALE_ZONE_DESCRIPTION = '#ingame_help:detailsHelp/battleRoyale/zone/description'
-    DETAILSHELP_BATTLEROYALE_AIRDROP_TITLE = '#ingame_help:detailsHelp/battleRoyale/airDrop/title'
-    DETAILSHELP_BATTLEROYALE_AIRDROP_DESCRIPTION = '#ingame_help:detailsHelp/battleRoyale/airDrop/description'
-    DETAILSHELP_BATTLEROYALE_UPGRADE_TITLE = '#ingame_help:detailsHelp/battleRoyale/upgrade/title'
-    DETAILSHELP_BATTLEROYALE_UPGRADE_DESCRIPTION = '#ingame_help:detailsHelp/battleRoyale/upgrade/description'
-    DETAILSHELP_BATTLEROYALE_UNIQUEABILITIES_TITLE = '#ingame_help:detailsHelp/battleRoyale/uniqueAbilities/title'
-    DETAILSHELP_BATTLEROYALE_UNIQUEABILITIES_DESCRIPTION = '#ingame_help:detailsHelp/battleRoyale/uniqueAbilities/description'
-    DETAILSHELP_NOKEY = '#ingame_help:detailsHelp/noKey'
     DETAILSHELP_ROLE_TITLE = '#ingame_help:detailsHelp/role/title'
     DETAILSHELP_ROLE_DESCRIPTION = '#ingame_help:detailsHelp/role/description'
     ROLEDESCRIPTION_MSG = '#ingame_help:roleDescription/msg'

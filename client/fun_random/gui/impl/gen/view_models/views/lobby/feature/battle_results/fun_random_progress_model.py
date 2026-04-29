@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/gen/view_models/views/lobby/feature/battle_results/fun_random_progress_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.common.missions.bonuses.item_bonus_model import ItemBonusModel
 

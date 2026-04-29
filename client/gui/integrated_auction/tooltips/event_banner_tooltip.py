@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/integrated_auction/tooltips/event_banner_tooltip.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.pub import ViewImpl
@@ -27,17 +25,21 @@ class EventBannerTooltip(ViewImpl):
         super(EventBannerTooltip, self)._onLoading(*args, **kwargs)
         self.__entry = self.__eventService.getEntryData(AUCTION_ENTRY_POINT_NAME)
         if self.__entry is not None:
-            with self.getViewModel().transaction() as model:
+            with self.getViewModel().transaction() as (model):
                 model.setIsAvailable(self.__getIsAvailable())
                 model.setTimerValue(self.__getTimerValue())
         return
 
     def __getTimerValue(self):
-        return self.__entry.endDate - getServerUTCTime() if self.__getIsAvailable() else self.__getAuctionStart() - getServerUTCTime()
+        if self.__getIsAvailable():
+            return self.__entry.endDate - getServerUTCTime()
+        return self.__getAuctionStart() - getServerUTCTime()
 
     def __getAuctionStart(self):
         auctionStart = self.__entry.data.get('auctionStart')
-        return getTimestampByStrDate(auctionStart) if auctionStart else 0
+        if auctionStart:
+            return getTimestampByStrDate(auctionStart)
+        return 0
 
     def __getIsAvailable(self):
         return self.__getAuctionStart() <= getServerUTCTime() < self.__entry.endDate

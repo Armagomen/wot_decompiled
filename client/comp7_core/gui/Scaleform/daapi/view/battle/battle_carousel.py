@@ -1,15 +1,16 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_core/scripts/client/comp7_core/gui/Scaleform/daapi/view/battle/battle_carousel.py
 import logging
 from collections import namedtuple
-import BigWorld
-import typing
-import nations
+import BigWorld, typing, nations
 from account_helpers.AccountSettings import AccountSettings
 from comp7_core.gui.Scaleform.daapi.view.battle.common import getSavedRowCountValue, rowValueToRowCount
 from comp7_core.gui.Scaleform.daapi.view.meta.Comp7BattleTankCarouselMeta import Comp7BattleTankCarouselMeta
+from comp7_core.gui.comp7_core_constants import BATTLE_CTRL_ID
+from comp7_core_constants import ArenaPrebattlePhase
 from constants import REQUEST_COOLDOWN, ARENA_PERIOD
+from gui.impl import backport
+from gui.impl.gen import R
 from gui import GUI_NATIONS_ORDER_INDEX
+from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.filters.carousel_filter import CarouselFilter, RoleCriteriesGroup
 from gui.Scaleform import getButtonsAssetPath
 from gui.Scaleform.daapi.view.common.filter_contexts import getFilterSetupContexts, FilterSetupContext
@@ -78,30 +79,44 @@ class _PrebattleCarouselFilter(CarouselFilter):
         self._updateCriteriesGroups()
 
     def _setCriteriaGroups(self):
-        self._criteriesGroups = (_InBattleRentedCriteriesGroup(self.__rentedList), RoleCriteriesGroup())
+        self._criteriesGroups = (
+         _InBattleRentedCriteriesGroup(self.__rentedList), RoleCriteriesGroup())
 
 
 def getComp7CarouselVehicleDataVO(vehicle):
-    return {'vehicleName': vehicle.shortUserName,
-     'flagIcon': _FLAG_ICON_TEMPLATE % nations.NAMES[vehicle.nationID],
-     'flagIconSmall': _FLAG_SMALL_ICON_TEMPLATE % nations.NAMES[vehicle.nationID],
-     'vehicleIcon': vehicle.icon,
-     'vehicleIconSmall': vehicle.iconSmall,
-     'vehicleTypeIcon': _TYPE_ICON_TEMPLATE % vehicle.type,
-     'vehicleTypeIconSmall': _TYPE_ICON_SMALL_TEMPLATE % vehicle.type,
-     'favorite': vehicle.isFavorite,
-     'enabled': True,
-     'roleName': '' if vehicle.roleLabel in ('NotDefined', 'role_SPG') else vehicle.roleLabel}
+    return {'vehicleName': vehicle.shortUserName, 
+       'flagIcon': _FLAG_ICON_TEMPLATE % nations.NAMES[vehicle.nationID], 
+       'flagIconSmall': _FLAG_SMALL_ICON_TEMPLATE % nations.NAMES[vehicle.nationID], 
+       'vehicleIcon': vehicle.icon, 
+       'vehicleIconSmall': vehicle.iconSmall, 
+       'vehicleTypeIcon': _TYPE_ICON_TEMPLATE % vehicle.type, 
+       'vehicleTypeIconSmall': _TYPE_ICON_SMALL_TEMPLATE % vehicle.type, 
+       'favorite': vehicle.isFavorite, 
+       'enabled': True, 
+       'roleName': '' if vehicle.roleLabel in ('NotDefined', 'role_SPG') else vehicle.roleLabel}
 
 
 class _PrebattleCarouselDataProvider(CarouselDataProvider):
     __itemsFactory = dependency.descriptor(IGuiItemsFactory)
-    _RawVehicleData = namedtuple('_RawVehicleData', ('strCD', 'settings', 'isElite', 'isRented'))
+    __sessionProvider = dependency.descriptor(IBattleSessionProvider)
+    _RawVehicleData = namedtuple('_RawVehicleData', ('strCD', 'settings', 'isElite',
+                                                     'isRented'))
 
     def __init__(self, carouselFilter, itemsCache):
         super(_PrebattleCarouselDataProvider, self).__init__(carouselFilter, itemsCache)
         self.__vehiclesData = {}
         self.__selectedCD = None
+        self.__onBanPhaseUpdated()
+        banCtrl = self.__getVehicleBanCtrl()
+        if banCtrl is not None:
+            banCtrl.onBanPhaseUpdated += self.__onBanPhaseUpdated
+        return
+
+    def _dispose(self):
+        banCtrl = self.__getVehicleBanCtrl()
+        if banCtrl is not None:
+            banCtrl.onBanPhaseUpdated -= self.__onBanPhaseUpdated
+        super(_PrebattleCarouselDataProvider, self)._dispose()
         return
 
     def getSelectedCD(self):
@@ -162,7 +177,7 @@ class _PrebattleCarouselDataProvider(CarouselDataProvider):
         self._vehicles = []
         self._vehicleItems = []
         vehicleIcons = []
-        for vehicleData in self.__vehiclesData.itervalues():
+        for vehicleData in self.__vehiclesData.values():
             vehicle = self.__makeGuiVehicle(vehicleData)
             vehicleIcons.append(vehicle.icon)
             self._vehicles.append(vehicle)
@@ -172,10 +187,36 @@ class _PrebattleCarouselDataProvider(CarouselDataProvider):
 
     @classmethod
     def _vehicleComparisonKey(cls, vehicle):
-        return (not vehicle.isFavorite,
+        return (
+         not vehicle.isFavorite,
          GUI_NATIONS_ORDER_INDEX[vehicle.nationName],
          VEHICLE_TYPES_ORDER_INDICES[vehicle.type],
          vehicle.userName)
+
+    def __onBanPhaseUpdated(self):
+        banCtrl = self.__getVehicleBanCtrl()
+        if banCtrl.getArenaPrebattlePhase() == ArenaPrebattlePhase.PICK:
+            bannedVehicleCDs = []
+            for banVehicleInfo in banCtrl.bannedVehicles.values():
+                vehicleCD = banVehicleInfo['vehicleCD']
+                vehicleCopies = banCtrl.getVehicleCopies(vehicleCD)
+                bannedVehicleCDs.append(vehicleCD)
+                bannedVehicleCDs.extend(vehicleCopies)
+
+            anyBanned = False
+            for i, vehicle in enumerate(self._vehicles):
+                if vehicle.compactDescr in bannedVehicleCDs:
+                    self._vehicleItems[i].update({'enabled': False, 
+                       'disableReasonIcon': RES_ICONS.MAPS_ICONS_HANGAR_CAROUSEL_CARDS_ALERTS_NOTSUITABLE, 
+                       'disableReasonMsg': backport.text(R.strings.comp7_ext.carousel.banned())})
+                    anyBanned = True
+
+            if anyBanned:
+                self.refresh()
+                self._filterByIndices()
+
+    def __getVehicleBanCtrl(self):
+        return self.__sessionProvider.dynamic.getControllerByID(BATTLE_CTRL_ID.COMP7_VEHICLE_BAN_CTRL)
 
     @staticmethod
     def __makeGuiVehicle(vehicleData):
@@ -260,7 +301,7 @@ class PrebattleTankCarousel(Comp7BattleTankCarouselMeta, IAbstractPeriodView):
         return
 
     def _getFilters(self):
-        pass
+        return ('rented', 'favorite')
 
     def __isSelectionInCooldown(self):
         return self.__cooldownCallback is not None
@@ -273,16 +314,16 @@ class PrebattleTankCarousel(Comp7BattleTankCarouselMeta, IAbstractPeriodView):
         hotFilters = []
         for entry in self._usedFilters:
             filterCtx = contexts.get(entry, FilterSetupContext())
-            hotFilters.append({'id': entry,
-             'value': getButtonsAssetPath(filterCtx.asset or entry),
-             'selected': filters[entry],
-             'enabled': True,
-             'tooltip': makeTooltip('#tank_carousel_filter:tooltip/{}/header'.format(entry), _ms('#tank_carousel_filter:tooltip/{}/body'.format(entry), **filterCtx.ctx))})
+            hotFilters.append({'id': entry, 
+               'value': getButtonsAssetPath(filterCtx.asset or entry), 
+               'selected': filters[entry], 
+               'enabled': True, 
+               'tooltip': makeTooltip(('#tank_carousel_filter:tooltip/{}/header').format(entry), _ms(('#tank_carousel_filter:tooltip/{}/body').format(entry), **filterCtx.ctx))})
 
-        filtersVO = {'mainBtn': {'value': getButtonsAssetPath('params'),
-                     'tooltip': '#comp7.comp7_ext:battleCarousel/filterButtonTooltip'},
-         'hotFilters': hotFilters,
-         'isVisible': True}
+        filtersVO = {'mainBtn': {'value': getButtonsAssetPath('params'), 
+                       'tooltip': '#comp7.comp7_ext:battleCarousel/filterButtonTooltip'}, 
+           'hotFilters': hotFilters, 
+           'isVisible': True}
         return filtersVO
 
     def __onViewLoaded(self, view, *args):

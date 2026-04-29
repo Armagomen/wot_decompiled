@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/veh_post_progression/veh_post_progression_cm_handlers.py
 from __future__ import absolute_import
 import typing
 from account_helpers import AccountSettings
@@ -25,13 +23,13 @@ class PostProgressionContextMenuHandler(SimpleVehicleCMHandler):
     __lobbyContext = dependency.descriptor(ILobbyContext)
 
     def __init__(self, cmProxy, ctx=None):
-        super(PostProgressionContextMenuHandler, self).__init__(cmProxy, ctx, {VEHICLE.INFO: 'showVehicleInfo',
-         VEHICLE.STATS: 'showVehicleStats',
-         VEHICLE.COMPARE: 'compareVehicle',
-         VEHICLE.BUY: 'buyVehicle',
-         VEHICLE.SELL: 'sellVehicle',
-         VEHICLE.NATION_CHANGE: 'changeVehicleNation',
-         VEHICLE.SELECT: 'selectVehicle'})
+        super(PostProgressionContextMenuHandler, self).__init__(cmProxy, ctx, {VEHICLE.INFO: 'showVehicleInfo', 
+           VEHICLE.STATS: 'showVehicleStats', 
+           VEHICLE.COMPARE: 'compareVehicle', 
+           VEHICLE.BUY: 'buyVehicle', 
+           VEHICLE.SELL: 'sellVehicle', 
+           VEHICLE.NATION_CHANGE: 'changeVehicleNation', 
+           VEHICLE.SELECT: 'selectVehicle'})
 
     def getVehCD(self):
         return self._vehCD
@@ -69,7 +67,8 @@ class PostProgressionContextMenuHandler(SimpleVehicleCMHandler):
     def _generateOptions(self, ctx=None):
         vehicle = self.__itemsCache.items.getItemByCD(self._vehCD)
         isPrevSeparator = False
-        options = [self._makeItem(VEHICLE.INFO, MENU.CONTEXTMENU_VEHICLEINFOEX)]
+        options = [
+         self._makeItem(VEHICLE.INFO, MENU.CONTEXTMENU_VEHICLEINFOEX)]
         self.__addStatsOption(options, vehicle)
         self.__addCompareOption(options, vehicle)
         isPrevSeparator |= self.__addSeparator(options, isPrevSeparator)
@@ -118,8 +117,7 @@ class PostProgressionContextMenuHandler(SimpleVehicleCMHandler):
         if vehicle.isInInventory or vehicle.isRented:
             isNationChangeAvailable = vehicle.isNationChangeAvailable
             nationChangeIsNew = not AccountSettings.getSettings(NATION_CHANGE_VIEWED)
-        options.append(self._makeItem(VEHICLE.NATION_CHANGE, MENU.CONTEXTMENU_NATIONCHANGE, {'enabled': isNationChangeAvailable,
-         'isNew': nationChangeIsNew}))
+        options.append(self._makeItem(VEHICLE.NATION_CHANGE, MENU.CONTEXTMENU_NATIONCHANGE, {'enabled': isNationChangeAvailable, 'isNew': nationChangeIsNew}))
         return True
 
     def __addSelectOption(self, options, vehicle):

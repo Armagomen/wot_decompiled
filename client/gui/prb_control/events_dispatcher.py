@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/events_dispatcher.py
 import weakref
 from collections import namedtuple
 from constants import PREBATTLE_TYPE
@@ -30,8 +28,11 @@ from skeletons.gui.app_loader import IAppLoader
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.game_control import IGameSessionController
 from skeletons.gui.game_control import IPlatoonController
-TOOLTIP_PRB_DATA = namedtuple('TOOLTIP_PRB_DATA', ('tooltipId', 'label'))
-_CarouselItemCtx = namedtuple('_CarouselItemCtx', ['label',
+TOOLTIP_PRB_DATA = namedtuple('TOOLTIP_PRB_DATA', (
+ 'tooltipId',
+ 'label'))
+_CarouselItemCtx = namedtuple('_CarouselItemCtx', [
+ 'label',
  'canClose',
  'isNotified',
  'icon',
@@ -42,8 +43,12 @@ _CarouselItemCtx = namedtuple('_CarouselItemCtx', ['label',
  'readyData',
  'tooltipData'])
 _defCarouselItemCtx = _CarouselItemCtx(label=None, canClose=False, isNotified=False, icon=None, order=channel_num_gen.getOrder4Prebattle(), criteria=None, layer=WindowLayer.WINDOW, openHandler=None, readyData=None, tooltipData=None)
-_LOCKED_SCREENS = (PREBATTLE_ALIASES.TRAINING_ROOM_VIEW_PY, PREBATTLE_ALIASES.TRAINING_LIST_VIEW_PY)
-_EPIC_SCREENS = (PREBATTLE_ALIASES.EPIC_TRAINING_ROOM_VIEW_PY, PREBATTLE_ALIASES.EPICBATTLE_LIST_VIEW_PY)
+_LOCKED_SCREENS = (
+ PREBATTLE_ALIASES.TRAINING_ROOM_VIEW_PY,
+ PREBATTLE_ALIASES.TRAINING_LIST_VIEW_PY)
+_EPIC_SCREENS = (
+ PREBATTLE_ALIASES.EPIC_TRAINING_ROOM_VIEW_PY,
+ PREBATTLE_ALIASES.EPICBATTLE_LIST_VIEW_PY)
 
 class EventDispatcher(object):
     gameSession = dependency.descriptor(IGameSessionController)
@@ -58,7 +63,7 @@ class EventDispatcher(object):
 
     @sf_lobby
     def app(self):
-        return None
+        return
 
     def init(self, dispatcher):
         self.__setPrebattleDispatcher(dispatcher)
@@ -104,9 +109,9 @@ class EventDispatcher(object):
         self.addTrainingToCarousel()
         self.__showTrainingList()
 
-    def loadTrainingRoom(self):
+    def loadTrainingRoom(self, silently=False):
         self.addTrainingToCarousel(False)
-        self.__showTrainingRoom()
+        self.__showTrainingRoom(silently=silently)
 
     def loadEpicTrainingList(self):
         self.addEpicTrainingToCarousel()
@@ -194,7 +199,7 @@ class EventDispatcher(object):
         if not clientID:
             LOG_ERROR('Client ID not found', 'addEpicTrainingToCarousel')
             return
-        label = '{} - {}'.format(backport.text(R.strings.menu.headerButtons.battle.types.epicTraining()), backport.text(R.strings.menu.headerButtons.battle.types.epicTraining.descr()))
+        label = ('{} - {}').format(backport.text(R.strings.menu.headerButtons.battle.types.epicTraining()), backport.text(R.strings.menu.headerButtons.battle.types.epicTraining.descr()))
         currCarouselItemCtx = _defCarouselItemCtx._replace(label=label, criteria={POP_UP_CRITERIA.VIEW_ALIAS: alias}, layer=WindowLayer.SUB_VIEW, openHandler=handler)
         self.__handleAddPreBattleRequest(clientID, currCarouselItemCtx._asdict())
 
@@ -254,10 +259,10 @@ class EventDispatcher(object):
         if not clientID:
             LOG_ERROR('Client ID not found', 'notifySpecialBattleWindow')
             return
-        self.__fireEvent(events.ChannelManagementEvent(clientID, events.ChannelManagementEvent.REQUEST_TO_CHANGE, {'key': 'isNotified',
-         'value': True,
-         'isShowByReq': True,
-         'showIfClosed': True}), scope=EVENT_BUS_SCOPE.LOBBY)
+        self.__fireEvent(events.ChannelManagementEvent(clientID, events.ChannelManagementEvent.REQUEST_TO_CHANGE, {'key': 'isNotified', 
+           'value': True, 
+           'isShowByReq': True, 
+           'showIfClosed': True}), scope=EVENT_BUS_SCOPE.LOBBY)
 
     def showUnitWindow(self, prbType):
         if prbType in PREBATTLE_TYPE.SQUAD_PREBATTLES:
@@ -305,10 +310,10 @@ class EventDispatcher(object):
         if not clientID:
             LOG_ERROR('Client ID not found', 'setUnitProgressInCarousel', prbType)
             return
-        self.__fireEvent(events.ChannelManagementEvent(clientID, events.ChannelManagementEvent.REQUEST_TO_CHANGE, {'key': 'isInProgress',
-         'value': isInProgress,
-         'isShowByReq': isInProgress,
-         'showIfClosed': True}))
+        self.__fireEvent(events.ChannelManagementEvent(clientID, events.ChannelManagementEvent.REQUEST_TO_CHANGE, {'key': 'isInProgress', 
+           'value': isInProgress, 
+           'isShowByReq': isInProgress, 
+           'showIfClosed': True}))
 
     def showUnitProgressInCarousel(self, prbType):
         self._showUnitProgress(prbType, True)
@@ -331,10 +336,10 @@ class EventDispatcher(object):
         if not clientID:
             LOG_ERROR('Client ID not found', 'setSquadTeamReadyInCarousel', prbType)
             return
-        g_eventBus.handleEvent(events.ChannelManagementEvent(clientID, events.ChannelManagementEvent.REQUEST_TO_CHANGE, {'key': 'tooltipData',
-         'value': self.__getTooltipPrbData(CHAT.CHANNELS_SQUADREADY_TOOLTIP if isTeamReady else CHAT.CHANNELS_SQUADNOTREADY_TOOLTIP),
-         'isShowByReq': False,
-         'showIfClosed': True}), scope=EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.handleEvent(events.ChannelManagementEvent(clientID, events.ChannelManagementEvent.REQUEST_TO_CHANGE, {'key': 'tooltipData', 
+           'value': self.__getTooltipPrbData(CHAT.CHANNELS_SQUADREADY_TOOLTIP if isTeamReady else CHAT.CHANNELS_SQUADNOTREADY_TOOLTIP), 
+           'isShowByReq': False, 
+           'showIfClosed': True}), scope=EVENT_BUS_SCOPE.LOBBY)
 
     def needToLoadHangar(self, ctx, modeFlags, aliasToLoad):
         if ctx is not None:
@@ -361,9 +366,9 @@ class EventDispatcher(object):
     def __showSquadWindow(self, prbType, showInvitesWindow=False, toggleUI=False):
         self.platoonCtrl.evaluateVisibility(toggleUI=toggleUI)
 
-    def __showTrainingRoom(self):
+    def __showTrainingRoom(self, silently=False):
         from gui.Scaleform.daapi.view.lobby.trainings.states import TrainingRoomState
-        TrainingRoomState.goTo()
+        TrainingRoomState.goTo(silently=silently)
 
     def __returnToTrainingRoom(self, event=None):
         self.__prbDispatcher.doAction()
@@ -393,10 +398,10 @@ class EventDispatcher(object):
         if self.__getLoadedEvent() == eventName:
             LOG_DEBUG('View already is loaded', eventName)
             return
-        elif self.__loadingEvent and self.__loadingEvent == eventName:
-            LOG_DEBUG('View is still loading. It is ignored', self.__loadingEvent, eventName)
-            return
         else:
+            if self.__loadingEvent and self.__loadingEvent == eventName:
+                LOG_DEBUG('View is still loading. It is ignored', self.__loadingEvent, eventName)
+                return
             self.__loadingEvent = eventName
             if arg is None:
                 self.__fireEvent(events.LoadViewEvent(SFViewLoadParams(eventName)))

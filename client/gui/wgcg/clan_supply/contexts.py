@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/wgcg/clan_supply/contexts.py
-import logging
-import typing
+import logging, typing
 from gui.clans.data_wrapper import clan_supply
 from gui.wgcg.base.contexts import CommonWebRequestCtx
 from gui.wgcg.settings import WebRequestDataType
@@ -81,7 +78,8 @@ class PurchaseProgressionStageCtx(CommonWebRequestCtx):
         self.__price = price
 
     def getRequestArgs(self):
-        return (self.__stageID, self.__price)
+        return (
+         self.__stageID, self.__price)
 
     def getRequestType(self):
         return WebRequestDataType.CLAN_SUPPLY_PURCHASE_PROGRESSION_STAGE

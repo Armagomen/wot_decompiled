@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/dialogs/sub_views/content/text_warning_content.py
+from __future__ import absolute_import
 from frameworks.wulf import ViewSettings
 from gui.impl.dialogs.dialog_template_utils import toString
 from gui.impl.gen import R
@@ -12,8 +11,8 @@ class TextWithWarning(ViewImpl):
     def __init__(self, mainText, warningText=None):
         settings = ViewSettings(R.views.dialogs.sub_views.content.TextWithWarning())
         settings.model = TextWithWarningViewModel()
-        settings.kwargs = {'mainText': mainText,
-         'warningText': warningText}
+        settings.kwargs = {'mainText': mainText, 
+           'warningText': warningText}
         super(TextWithWarning, self).__init__(settings)
 
     def _onLoading(self, mainText, warningText, *args, **kwargs):

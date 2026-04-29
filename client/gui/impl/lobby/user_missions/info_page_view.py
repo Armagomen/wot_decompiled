@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/user_missions/info_page_view.py
 import typing
 from config_schemas.umg_config import umgConfigSchema
 from frameworks.wulf import ViewSettings
@@ -17,7 +15,9 @@ class InfoPageView(ViewImpl):
         return super(InfoPageView, self).getViewModel()
 
     def _getEvents(self):
-        return ((self.viewModel.onClose, self._onViewClose),)
+        return (
+         (
+          self.viewModel.onClose, self._onViewClose),)
 
     def _onLoading(self, *args, **kwargs):
         super(InfoPageView, self)._onLoading(*args, **kwargs)

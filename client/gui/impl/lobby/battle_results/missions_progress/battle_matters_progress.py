@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_results/missions_progress/battle_matters_progress.py
 import typing
 from gui.battle_results.pbs_helpers.common import getBattleResults
 from gui.impl.gen import R
@@ -66,10 +64,15 @@ class BattleMattersProgressPresenter(ViewComponent[BattleMattersProgressModel], 
 
     def getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        return None if tooltipId is None else self.__tooltipData.get(tooltipId)
+        if tooltipId is None:
+            return
+        else:
+            return self.__tooltipData.get(tooltipId)
 
     def _getEvents(self):
-        return ((self.viewModel.onNavigate, self.__onNavigate),)
+        return (
+         (
+          self.viewModel.onNavigate, self.__onNavigate),)
 
     def _onLoading(self, *args, **kwargs):
         super(BattleMattersProgressPresenter, self)._onLoading(*args, **kwargs)
@@ -86,12 +89,12 @@ class BattleMattersProgressPresenter(ViewComponent[BattleMattersProgressModel], 
             self.__progress = self.__categoryProgressFilter(battleResults.reusable, self.__allCommonQuests)
 
     def _updateModel(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             questsModel = model.getBattleMatters()
             questsModel.clear()
             model.setNavigationEnabled(self.__battleMattersController.isEnabled())
-            for event, pCur, pPrev, _, _ in self.__progress:
-                questsModel.addViewModel(self.__createQuestModel(event, pCur, pPrev))
+            for event, pCur, pPrev, _, isCompleted in self.__progress:
+                questsModel.addViewModel(self.__createQuestModel(event, pCur, pPrev, isCompleted))
 
             questsModel.invalidate()
 
@@ -107,11 +110,11 @@ class BattleMattersProgressPresenter(ViewComponent[BattleMattersProgressModel], 
         super(BattleMattersProgressPresenter, self)._finalize()
         return
 
-    def __createQuestModel(self, quest, pCur, pPrev):
+    def __createQuestModel(self, quest, pCur, pPrev, isCompleted):
         questModel = QuestViewModel()
         questModel.setNumber(quest.getOrder())
         questState = State.UNAVAILABLE
-        if quest.isCompleted():
+        if isCompleted:
             questState = State.DONE
         elif quest.isAvailable().isValid:
             questState = State.INPROGRESS

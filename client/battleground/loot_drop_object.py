@@ -1,13 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/battleground/loot_drop_object.py
-import random
-import math
+import random, math
 from collections import namedtuple
-import Math
-import BigWorld
-import CGF
-import AnimationSequence
-import math_utils
+import Math, BigWorld, CGF, AnimationSequence, math_utils
 from battleground.components import ModelComponent, SequenceComponent
 from math_utils import Easing
 from BombersWing import CompoundBomber, BomberDesc, CurveControlPoint
@@ -217,8 +210,8 @@ class PlaneLootAirdrop(CallbackDelayer, ISelfAssembler):
         if self.plane is not None:
             crateYaw = self.plane.flightYaw
         self.inactiveCargo = parachuteCargo = ParachuteCargo(crateYaw, dropPoint, self.deliveryPosition, self.deliveryTime, self.DESCEND_TIME)
-        loadComponentSystem(parachuteCargo, self.__onCargoLoad, {'model': Loader(modelAssembler),
-         'landingAnimation': Loader(animationBuilder)})
+        loadComponentSystem(parachuteCargo, self.__onCargoLoad, {'model': Loader(modelAssembler), 
+           'landingAnimation': Loader(animationBuilder)})
         self.delayCallback(self.deliveryTime - BigWorld.time() + self.POST_DELIVERY_CARGO_LIFETIME, self.__killCargo)
         return
 

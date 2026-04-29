@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/crew/dialogs/recruit_window/recruit_icon_view_model.py
 from frameworks.wulf import ViewModel
 from gui.impl.gen.view_models.views.dialogs.sub_views.icon_view_model import IconViewModel
 

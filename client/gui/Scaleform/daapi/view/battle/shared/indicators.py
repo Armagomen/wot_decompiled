@@ -1,10 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/indicators.py
+from __future__ import absolute_import, division
 import typing
-import BigWorld
-import GUI
-import SCALEFORM
-import SoundGroups
+from past.builtins import xrange
+import BigWorld, GUI, SCALEFORM, SoundGroups
 from account_helpers.settings_core.settings_constants import SOUND, DAMAGE_INDICATOR, GRAPHICS
 from constants import VEHICLE_SIEGE_STATE as _SIEGE_STATE, DIRECT_DETECTION_TYPE
 from debug_utils import LOG_DEBUG, LOG_DEBUG_DEV, LOG_WARNING
@@ -44,7 +41,8 @@ _DIRECT_ARTY_INDICATOR_MC_NAME = '_root.artyDirectionalIndicatorMc'
 _DIRECT_INDICATOR_SWF_SIZE = (680, 680)
 _MARKER_SMALL_SIZE_THRESHOLD = 0.1
 _MARKER_LARGE_SIZE_THRESHOLD = 0.3
-_VIEWS_WITH_INV_CAMERA_ORIENTATION = (CROSSHAIR_VIEW_ID.STRATEGIC,)
+_VIEWS_WITH_INV_CAMERA_ORIENTATION = (
+ CROSSHAIR_VIEW_ID.STRATEGIC,)
 
 class _MARKER_TYPE(CONST_CONTAINER):
     HP_DAMAGE = 0
@@ -64,78 +62,78 @@ class DAMAGE_INDICATOR_TYPE(CONST_CONTAINER):
     EXTENDED = 1
 
 
-_EXTENDED_MARKER_TYPE_TO_CIRCLE_BG = {_MARKER_TYPE.HP_DAMAGE: DAMAGEINDICATOR.DAMAGE_CIRCLE,
- _MARKER_TYPE.HP_ALLAY_DAMAGE: DAMAGEINDICATOR.DAMAGE_CIRCLE,
- _MARKER_TYPE.BLOCKED_DAMAGE: DAMAGEINDICATOR.BLOCK_CIRCLE,
- _MARKER_TYPE.CRITICAL_DAMAGE: DAMAGEINDICATOR.CRIT_CIRCLE}
-_EXTENDED_BLIND_MARKER_TYPE_TO_CIRCLE_BG = {_MARKER_TYPE.HP_DAMAGE: DAMAGEINDICATOR.DAMAGE_CIRCLE_BLIND,
- _MARKER_TYPE.HP_ALLAY_DAMAGE: DAMAGEINDICATOR.DAMAGE_CIRCLE_BLIND,
- _MARKER_TYPE.BLOCKED_DAMAGE: DAMAGEINDICATOR.BLOCK_CIRCLE,
- _MARKER_TYPE.CRITICAL_DAMAGE: DAMAGEINDICATOR.CRIT_CIRCLE_BLIND}
-_CRITICAL_DAMAGE_TYPE_TO_CIRCLE_BG = {'engine': DAMAGEINDICATOR.ENGINE_CIRCLE,
- 'ammoBay': DAMAGEINDICATOR.AMMO_CIRCLE,
- 'fuelTank': DAMAGEINDICATOR.TANKS_CIRCLE,
- 'radio': DAMAGEINDICATOR.RADIO_CIRCLE,
- 'track': DAMAGEINDICATOR.TRACKS_CIRCLE,
- 'wheel': DAMAGEINDICATOR.WHEEL_CIRCLE,
- 'gun': DAMAGEINDICATOR.GUN_CIRCLE,
- 'turretRotator': DAMAGEINDICATOR.TURRET_CIRCLE,
- 'surveyingDevice': DAMAGEINDICATOR.TRIPLEX_CIRCLE,
- 'commander': DAMAGEINDICATOR.COMMANDER_CIRCLE,
- 'driver': DAMAGEINDICATOR.DRIVER_CIRCLE,
- 'radioman': DAMAGEINDICATOR.RADIOMAN_CIRCLE,
- 'gunner': DAMAGEINDICATOR.GUNNER_CIRCLE,
- 'loader': DAMAGEINDICATOR.RELOADER_CIRCLE,
- 'ally_engine': DAMAGEINDICATOR.ENGINE_CIRCLE,
- 'ally_ammoBay': DAMAGEINDICATOR.AMMO_CIRCLE,
- 'ally_fuelTank': DAMAGEINDICATOR.TANKS_CIRCLE,
- 'ally_radio': DAMAGEINDICATOR.RADIO_CIRCLE,
- 'ally_track': DAMAGEINDICATOR.TRACKS_CIRCLE,
- 'ally_wheel': DAMAGEINDICATOR.WHEEL_CIRCLE,
- 'ally_gun': DAMAGEINDICATOR.GUN_CIRCLE,
- 'ally_turretRotator': DAMAGEINDICATOR.TURRET_CIRCLE,
- 'ally_surveyingDevice': DAMAGEINDICATOR.TRIPLEX_CIRCLE,
- 'ally_commander': DAMAGEINDICATOR.COMMANDER_CIRCLE,
- 'ally_driver': DAMAGEINDICATOR.DRIVER_CIRCLE,
- 'ally_radioman': DAMAGEINDICATOR.RADIOMAN_CIRCLE,
- 'ally_gunner': DAMAGEINDICATOR.GUNNER_CIRCLE,
- 'ally_loader': DAMAGEINDICATOR.RELOADER_CIRCLE}
-_STANDARD_MARKER_TYPE_TO_BG = {_MARKER_TYPE.HP_DAMAGE: DAMAGEINDICATOR.DAMAGE_STANDARD,
- _MARKER_TYPE.HP_ALLAY_DAMAGE: DAMAGEINDICATOR.DAMAGE_STANDARD,
- _MARKER_TYPE.BLOCKED_DAMAGE: DAMAGEINDICATOR.BLOCKED_STANDARD,
- _MARKER_TYPE.CRITICAL_DAMAGE: DAMAGEINDICATOR.DAMAGE_STANDARD}
-_STANDARD_BLIND_MARKER_TYPE_TO_BG = {_MARKER_TYPE.HP_DAMAGE: DAMAGEINDICATOR.DAMAGE_STANDARD_BLIND,
- _MARKER_TYPE.HP_ALLAY_DAMAGE: DAMAGEINDICATOR.DAMAGE_STANDARD_BLIND,
- _MARKER_TYPE.BLOCKED_DAMAGE: DAMAGEINDICATOR.BLOCKED_STANDARD,
- _MARKER_TYPE.CRITICAL_DAMAGE: DAMAGEINDICATOR.DAMAGE_STANDARD_BLIND}
-_EXTENDED_MARKER_TYPE_TO_BG = {_MARKER_TYPE.HP_DAMAGE: {_MARKER_SIZE_TYPE.SMALL: DAMAGEINDICATOR.DAMAGE_SMALL,
-                          _MARKER_SIZE_TYPE.MEDIUM: DAMAGEINDICATOR.DAMAGE_MEDIUM,
-                          _MARKER_SIZE_TYPE.LARGE: DAMAGEINDICATOR.DAMAGE_BIG},
- _MARKER_TYPE.HP_ALLAY_DAMAGE: {_MARKER_SIZE_TYPE.SMALL: DAMAGEINDICATOR.DAMAGE_SMALL,
-                                _MARKER_SIZE_TYPE.MEDIUM: DAMAGEINDICATOR.DAMAGE_MEDIUM,
-                                _MARKER_SIZE_TYPE.LARGE: DAMAGEINDICATOR.DAMAGE_BIG},
- _MARKER_TYPE.BLOCKED_DAMAGE: {_MARKER_SIZE_TYPE.SMALL: DAMAGEINDICATOR.BLOCKED_SMALL,
-                               _MARKER_SIZE_TYPE.MEDIUM: DAMAGEINDICATOR.BLOCKED_MEDIUM,
-                               _MARKER_SIZE_TYPE.LARGE: DAMAGEINDICATOR.BLOCKED_BIG},
- _MARKER_TYPE.CRITICAL_DAMAGE: {_MARKER_SIZE_TYPE.SMALL: DAMAGEINDICATOR.CRIT,
-                                _MARKER_SIZE_TYPE.MEDIUM: DAMAGEINDICATOR.CRIT,
-                                _MARKER_SIZE_TYPE.LARGE: DAMAGEINDICATOR.CRIT}}
-_EXTENDED_BLIND_MARKER_TYPE_TO_BG = {_MARKER_TYPE.HP_DAMAGE: {_MARKER_SIZE_TYPE.SMALL: DAMAGEINDICATOR.DAMAGE_SMALL_BLIND,
-                          _MARKER_SIZE_TYPE.MEDIUM: DAMAGEINDICATOR.DAMAGE_MEDIUM_BLIND,
-                          _MARKER_SIZE_TYPE.LARGE: DAMAGEINDICATOR.DAMAGE_BIG_BLIND},
- _MARKER_TYPE.HP_ALLAY_DAMAGE: {_MARKER_SIZE_TYPE.SMALL: DAMAGEINDICATOR.DAMAGE_SMALL_BLIND,
-                                _MARKER_SIZE_TYPE.MEDIUM: DAMAGEINDICATOR.DAMAGE_MEDIUM_BLIND,
-                                _MARKER_SIZE_TYPE.LARGE: DAMAGEINDICATOR.DAMAGE_BIG_BLIND},
- _MARKER_TYPE.BLOCKED_DAMAGE: {_MARKER_SIZE_TYPE.SMALL: DAMAGEINDICATOR.BLOCKED_SMALL,
-                               _MARKER_SIZE_TYPE.MEDIUM: DAMAGEINDICATOR.BLOCKED_MEDIUM,
-                               _MARKER_SIZE_TYPE.LARGE: DAMAGEINDICATOR.BLOCKED_BIG},
- _MARKER_TYPE.CRITICAL_DAMAGE: {_MARKER_SIZE_TYPE.SMALL: DAMAGEINDICATOR.CRIT_BLIND,
-                                _MARKER_SIZE_TYPE.MEDIUM: DAMAGEINDICATOR.CRIT_BLIND,
-                                _MARKER_SIZE_TYPE.LARGE: DAMAGEINDICATOR.CRIT_BLIND}}
-_MARKER_TYPE_TO_PRIORITY = {_MARKER_TYPE.HP_DAMAGE: 3,
- _MARKER_TYPE.HP_ALLAY_DAMAGE: 3,
- _MARKER_TYPE.BLOCKED_DAMAGE: 1,
- _MARKER_TYPE.CRITICAL_DAMAGE: 2}
+_EXTENDED_MARKER_TYPE_TO_CIRCLE_BG = {_MARKER_TYPE.HP_DAMAGE: DAMAGEINDICATOR.DAMAGE_CIRCLE, 
+   _MARKER_TYPE.HP_ALLAY_DAMAGE: DAMAGEINDICATOR.DAMAGE_CIRCLE, 
+   _MARKER_TYPE.BLOCKED_DAMAGE: DAMAGEINDICATOR.BLOCK_CIRCLE, 
+   _MARKER_TYPE.CRITICAL_DAMAGE: DAMAGEINDICATOR.CRIT_CIRCLE}
+_EXTENDED_BLIND_MARKER_TYPE_TO_CIRCLE_BG = {_MARKER_TYPE.HP_DAMAGE: DAMAGEINDICATOR.DAMAGE_CIRCLE_BLIND, 
+   _MARKER_TYPE.HP_ALLAY_DAMAGE: DAMAGEINDICATOR.DAMAGE_CIRCLE_BLIND, 
+   _MARKER_TYPE.BLOCKED_DAMAGE: DAMAGEINDICATOR.BLOCK_CIRCLE, 
+   _MARKER_TYPE.CRITICAL_DAMAGE: DAMAGEINDICATOR.CRIT_CIRCLE_BLIND}
+_CRITICAL_DAMAGE_TYPE_TO_CIRCLE_BG = {'engine': DAMAGEINDICATOR.ENGINE_CIRCLE, 
+   'ammoBay': DAMAGEINDICATOR.AMMO_CIRCLE, 
+   'fuelTank': DAMAGEINDICATOR.TANKS_CIRCLE, 
+   'radio': DAMAGEINDICATOR.RADIO_CIRCLE, 
+   'track': DAMAGEINDICATOR.TRACKS_CIRCLE, 
+   'wheel': DAMAGEINDICATOR.WHEEL_CIRCLE, 
+   'gun': DAMAGEINDICATOR.GUN_CIRCLE, 
+   'turretRotator': DAMAGEINDICATOR.TURRET_CIRCLE, 
+   'surveyingDevice': DAMAGEINDICATOR.TRIPLEX_CIRCLE, 
+   'commander': DAMAGEINDICATOR.COMMANDER_CIRCLE, 
+   'driver': DAMAGEINDICATOR.DRIVER_CIRCLE, 
+   'radioman': DAMAGEINDICATOR.RADIOMAN_CIRCLE, 
+   'gunner': DAMAGEINDICATOR.GUNNER_CIRCLE, 
+   'loader': DAMAGEINDICATOR.RELOADER_CIRCLE, 
+   'ally_engine': DAMAGEINDICATOR.ENGINE_CIRCLE, 
+   'ally_ammoBay': DAMAGEINDICATOR.AMMO_CIRCLE, 
+   'ally_fuelTank': DAMAGEINDICATOR.TANKS_CIRCLE, 
+   'ally_radio': DAMAGEINDICATOR.RADIO_CIRCLE, 
+   'ally_track': DAMAGEINDICATOR.TRACKS_CIRCLE, 
+   'ally_wheel': DAMAGEINDICATOR.WHEEL_CIRCLE, 
+   'ally_gun': DAMAGEINDICATOR.GUN_CIRCLE, 
+   'ally_turretRotator': DAMAGEINDICATOR.TURRET_CIRCLE, 
+   'ally_surveyingDevice': DAMAGEINDICATOR.TRIPLEX_CIRCLE, 
+   'ally_commander': DAMAGEINDICATOR.COMMANDER_CIRCLE, 
+   'ally_driver': DAMAGEINDICATOR.DRIVER_CIRCLE, 
+   'ally_radioman': DAMAGEINDICATOR.RADIOMAN_CIRCLE, 
+   'ally_gunner': DAMAGEINDICATOR.GUNNER_CIRCLE, 
+   'ally_loader': DAMAGEINDICATOR.RELOADER_CIRCLE}
+_STANDARD_MARKER_TYPE_TO_BG = {_MARKER_TYPE.HP_DAMAGE: DAMAGEINDICATOR.DAMAGE_STANDARD, 
+   _MARKER_TYPE.HP_ALLAY_DAMAGE: DAMAGEINDICATOR.DAMAGE_STANDARD, 
+   _MARKER_TYPE.BLOCKED_DAMAGE: DAMAGEINDICATOR.BLOCKED_STANDARD, 
+   _MARKER_TYPE.CRITICAL_DAMAGE: DAMAGEINDICATOR.DAMAGE_STANDARD}
+_STANDARD_BLIND_MARKER_TYPE_TO_BG = {_MARKER_TYPE.HP_DAMAGE: DAMAGEINDICATOR.DAMAGE_STANDARD_BLIND, 
+   _MARKER_TYPE.HP_ALLAY_DAMAGE: DAMAGEINDICATOR.DAMAGE_STANDARD_BLIND, 
+   _MARKER_TYPE.BLOCKED_DAMAGE: DAMAGEINDICATOR.BLOCKED_STANDARD, 
+   _MARKER_TYPE.CRITICAL_DAMAGE: DAMAGEINDICATOR.DAMAGE_STANDARD_BLIND}
+_EXTENDED_MARKER_TYPE_TO_BG = {_MARKER_TYPE.HP_DAMAGE: {_MARKER_SIZE_TYPE.SMALL: DAMAGEINDICATOR.DAMAGE_SMALL, 
+                            _MARKER_SIZE_TYPE.MEDIUM: DAMAGEINDICATOR.DAMAGE_MEDIUM, 
+                            _MARKER_SIZE_TYPE.LARGE: DAMAGEINDICATOR.DAMAGE_BIG}, 
+   _MARKER_TYPE.HP_ALLAY_DAMAGE: {_MARKER_SIZE_TYPE.SMALL: DAMAGEINDICATOR.DAMAGE_SMALL, 
+                                  _MARKER_SIZE_TYPE.MEDIUM: DAMAGEINDICATOR.DAMAGE_MEDIUM, 
+                                  _MARKER_SIZE_TYPE.LARGE: DAMAGEINDICATOR.DAMAGE_BIG}, 
+   _MARKER_TYPE.BLOCKED_DAMAGE: {_MARKER_SIZE_TYPE.SMALL: DAMAGEINDICATOR.BLOCKED_SMALL, 
+                                 _MARKER_SIZE_TYPE.MEDIUM: DAMAGEINDICATOR.BLOCKED_MEDIUM, 
+                                 _MARKER_SIZE_TYPE.LARGE: DAMAGEINDICATOR.BLOCKED_BIG}, 
+   _MARKER_TYPE.CRITICAL_DAMAGE: {_MARKER_SIZE_TYPE.SMALL: DAMAGEINDICATOR.CRIT, 
+                                  _MARKER_SIZE_TYPE.MEDIUM: DAMAGEINDICATOR.CRIT, 
+                                  _MARKER_SIZE_TYPE.LARGE: DAMAGEINDICATOR.CRIT}}
+_EXTENDED_BLIND_MARKER_TYPE_TO_BG = {_MARKER_TYPE.HP_DAMAGE: {_MARKER_SIZE_TYPE.SMALL: DAMAGEINDICATOR.DAMAGE_SMALL_BLIND, 
+                            _MARKER_SIZE_TYPE.MEDIUM: DAMAGEINDICATOR.DAMAGE_MEDIUM_BLIND, 
+                            _MARKER_SIZE_TYPE.LARGE: DAMAGEINDICATOR.DAMAGE_BIG_BLIND}, 
+   _MARKER_TYPE.HP_ALLAY_DAMAGE: {_MARKER_SIZE_TYPE.SMALL: DAMAGEINDICATOR.DAMAGE_SMALL_BLIND, 
+                                  _MARKER_SIZE_TYPE.MEDIUM: DAMAGEINDICATOR.DAMAGE_MEDIUM_BLIND, 
+                                  _MARKER_SIZE_TYPE.LARGE: DAMAGEINDICATOR.DAMAGE_BIG_BLIND}, 
+   _MARKER_TYPE.BLOCKED_DAMAGE: {_MARKER_SIZE_TYPE.SMALL: DAMAGEINDICATOR.BLOCKED_SMALL, 
+                                 _MARKER_SIZE_TYPE.MEDIUM: DAMAGEINDICATOR.BLOCKED_MEDIUM, 
+                                 _MARKER_SIZE_TYPE.LARGE: DAMAGEINDICATOR.BLOCKED_BIG}, 
+   _MARKER_TYPE.CRITICAL_DAMAGE: {_MARKER_SIZE_TYPE.SMALL: DAMAGEINDICATOR.CRIT_BLIND, 
+                                  _MARKER_SIZE_TYPE.MEDIUM: DAMAGEINDICATOR.CRIT_BLIND, 
+                                  _MARKER_SIZE_TYPE.LARGE: DAMAGEINDICATOR.CRIT_BLIND}}
+_MARKER_TYPE_TO_PRIORITY = {_MARKER_TYPE.HP_DAMAGE: 3, 
+   _MARKER_TYPE.HP_ALLAY_DAMAGE: 3, 
+   _MARKER_TYPE.BLOCKED_DAMAGE: 1, 
+   _MARKER_TYPE.CRITICAL_DAMAGE: 2}
 
 class _MarkerData(object):
 
@@ -161,22 +159,24 @@ class _MarkerData(object):
 class _MarkerVOBuilder(object):
 
     def buildVO(self, markerData):
-        return {'itemIdx': markerData.idx,
-         'frame': markerData.timeLeft * self._getIndicatorFrameRate(),
-         'bgStr': self._getBackground(markerData),
-         'priority': _MARKER_TYPE_TO_PRIORITY[markerData.markerType]}
+        return {'itemIdx': markerData.idx, 
+           'frame': markerData.timeLeft * self._getIndicatorFrameRate(), 
+           'bgStr': self._getBackground(markerData), 
+           'priority': _MARKER_TYPE_TO_PRIORITY[markerData.markerType]}
 
     def _getIndicatorFrameRate(self):
         return _DamageIndicator._DAMAGE_INDICATOR_FRAME_RATE
 
     def _getBackground(self, markerData):
-        pass
+        return ''
 
 
 class _StandardMarkerVOBuilder(_MarkerVOBuilder):
 
     def _getBackground(self, markerData):
-        return _STANDARD_BLIND_MARKER_TYPE_TO_BG[markerData.markerType] if markerData.isBlind else _STANDARD_MARKER_TYPE_TO_BG[markerData.markerType]
+        if markerData.isBlind:
+            return _STANDARD_BLIND_MARKER_TYPE_TO_BG[markerData.markerType]
+        return _STANDARD_MARKER_TYPE_TO_BG[markerData.markerType]
 
 
 class _ExtendedMarkerVOBuilder(_MarkerVOBuilder):
@@ -188,11 +188,11 @@ class _ExtendedMarkerVOBuilder(_MarkerVOBuilder):
     def buildVO(self, markerData):
         vo = super(_ExtendedMarkerVOBuilder, self).buildVO(markerData)
         hitData = markerData.hitData
-        vo.update({'circleStr': self._getCircleBackground(markerData),
-         'tankTypeStr': self._getTankType(markerData),
-         'tankName': hitData.getAttackerVehicleName(),
-         'damageValue': self._getDamageLabel(markerData),
-         'isFriendlyFire': hitData.isFriendlyFire()})
+        vo.update({'circleStr': self._getCircleBackground(markerData), 
+           'tankTypeStr': self._getTankType(markerData), 
+           'tankName': hitData.getAttackerVehicleName(), 
+           'damageValue': self._getDamageLabel(markerData), 
+           'isFriendlyFire': hitData.isFriendlyFire()})
         return vo
 
     def _getBackground(self, markerData):
@@ -204,7 +204,9 @@ class _ExtendedMarkerVOBuilder(_MarkerVOBuilder):
         return bgMap[markerData.markerType][sizeType]
 
     def _getCircleBackground(self, markerData):
-        return _EXTENDED_BLIND_MARKER_TYPE_TO_CIRCLE_BG[markerData.markerType] if markerData.isBlind else _EXTENDED_MARKER_TYPE_TO_CIRCLE_BG[markerData.markerType]
+        if markerData.isBlind:
+            return _EXTENDED_BLIND_MARKER_TYPE_TO_CIRCLE_BG[markerData.markerType]
+        return _EXTENDED_MARKER_TYPE_TO_CIRCLE_BG[markerData.markerType]
 
     def _getTankType(self, markerData):
         tankTypeStr = markerData.hitData.getAttackerVehicleClassTag()
@@ -213,7 +215,9 @@ class _ExtendedMarkerVOBuilder(_MarkerVOBuilder):
         return tankTypeStr
 
     def _getDamageLabel(self, markerData):
-        return backport.text(R.strings.ingame_gui.damageIndicator.friendlyFire.noDamageLabel()) if markerData.hitData.isFriendlyFire() else str(markerData.hitData.getDamage())
+        if markerData.hitData.isFriendlyFire():
+            return backport.text(R.strings.ingame_gui.damageIndicator.friendlyFire.noDamageLabel())
+        return str(markerData.hitData.getDamage())
 
     def _getSizeType(self, hp, damage):
         sizeType = _MARKER_SIZE_TYPE.SMALL
@@ -240,12 +244,16 @@ class _ExtendedCriticalMarkerVOBuilder(_ExtendedMarkerVOBuilder):
 
     def _getDamageLabel(self, markerData):
         critsCount = markerData.hitData.getCritsCount()
-        return i18n.makeString(INGAME_GUI.DAMAGEINDICATOR_MULTIPLIER, multiplier=str(critsCount)) if critsCount > 1 else ''
+        if critsCount > 1:
+            return i18n.makeString(INGAME_GUI.DAMAGEINDICATOR_MULTIPLIER, multiplier=str(critsCount))
+        return ''
 
     @staticmethod
     def _getCritType(mask):
         for _, critType in critsParserGenerator(mask):
             return critType
+
+        return ''
 
     @staticmethod
     def _makeCritType(mask, isAlly):
@@ -272,7 +280,9 @@ class _ExtendedMarkerVOBuilderFactory(_AbstractMarkerVOBuilderFactory):
         self.__isIndicatorSizeDynamic = isIndicatorSizeDynamic
 
     def getVOBuilder(self, markerData):
-        return _ExtendedCriticalMarkerVOBuilder(self.__isIndicatorSizeDynamic) if markerData.markerType == _MARKER_TYPE.CRITICAL_DAMAGE else _ExtendedMarkerVOBuilder(self.__isIndicatorSizeDynamic)
+        if markerData.markerType == _MARKER_TYPE.CRITICAL_DAMAGE:
+            return _ExtendedCriticalMarkerVOBuilder(self.__isIndicatorSizeDynamic)
+        return _ExtendedMarkerVOBuilder(self.__isIndicatorSizeDynamic)
 
 
 class _StandardMarkerVOBuilderFactory(_AbstractMarkerVOBuilderFactory):
@@ -342,7 +352,7 @@ class _DamageIndicator(DamageIndicatorMeta, IHitIndicator):
     settingsCore = dependency.descriptor(ISettingsCore)
 
     def __init__(self, hitsCount):
-        names = tuple((self._DAMAGE_INDICATOR_MC_NAME.format(x) for x in xrange(hitsCount)))
+        names = tuple(self._DAMAGE_INDICATOR_MC_NAME.format(x) for x in xrange(hitsCount))
         super(_DamageIndicator, self).__init__(self._DAMAGE_INDICATOR_SWF, self._DAMAGE_INDICATOR_COMPONENT, (names,))
         self.__voBuilderFactory = None
         self.__updateMethod = None
@@ -403,7 +413,7 @@ class _DamageIndicator(DamageIndicatorMeta, IHitIndicator):
         self.as_setYawS(idx, hitData.getYaw())
         markerData = _MarkerData(idx=idx, timeLeft=timeLeft, hitData=hitData, isBlind=self.__isBlind)
         vo = self.__voBuilderFactory.buildMarkerVO(markerData)
-        LOG_DEBUG_DEV('showHitDirection hit={}, vo={}'.format(hitData, vo))
+        LOG_DEBUG_DEV(('showHitDirection hit={}, vo={}').format(hitData, vo))
         self.__updateMethod(**vo)
 
     def hideHitDirection(self, idx):
@@ -445,22 +455,15 @@ class SixthSenseIndicator(SixthSenseMeta, ISpottingIndicator):
         toggle = self._sixthSenseToggle
         duration = GUI_SETTINGS.sixthSenseDuration / float(MS_IN_SECOND)
         enabled = self._isSixthSenseEnabled
-        return [(DIRECT_DETECTION_TYPE.RAYTRACE,
-          toggle,
-          duration,
-          enabled),
-         (DIRECT_DETECTION_TYPE.RECON,
-          toggle,
-          duration,
-          enabled),
-         (DIRECT_DETECTION_TYPE.FORCED,
-          toggle,
-          duration,
-          enabled),
-         (DIRECT_DETECTION_TYPE.STEALTH_RADAR,
-          toggle,
-          duration,
-          enabled)]
+        return [
+         (
+          DIRECT_DETECTION_TYPE.RAYTRACE, toggle, duration, enabled),
+         (
+          DIRECT_DETECTION_TYPE.RECON, toggle, duration, enabled),
+         (
+          DIRECT_DETECTION_TYPE.FORCED, toggle, duration, enabled),
+         (
+          DIRECT_DETECTION_TYPE.STEALTH_RADAR, toggle, duration, enabled)]
 
     def _populate(self):
         super(SixthSenseIndicator, self)._populate()
@@ -540,10 +543,9 @@ class SixthSenseSound(object):
 class TargetDesignatorUnspottedIndicator(SixthSenseMeta, ISpottingIndicator):
 
     def getIndicatorTogglesByType(self):
-        return [(DIRECT_DETECTION_TYPE.UNSPOTTED,
-          self.__toggle,
-          0.0,
-          self.__isEnabled)]
+        return [
+         (
+          DIRECT_DETECTION_TYPE.UNSPOTTED, self.__toggle, 0.0, self.__isEnabled)]
 
     def _populate(self):
         super(TargetDesignatorUnspottedIndicator, self)._populate()
@@ -642,8 +644,7 @@ class SiegeModeIndicator(SiegeModeIndicatorMeta):
         LOG_DEBUG('Updating siege mode: devices')
         device = max(self._devices.items(), key=self.__getDeviceStateLevel)
         deviceName, deviceState = device
-        if deviceName in VEHICLE_DEVICE_IN_COMPLEX_ITEM:
-            deviceName = VEHICLE_DEVICE_IN_COMPLEX_ITEM[deviceName]
+        deviceName = VEHICLE_DEVICE_IN_COMPLEX_ITEM.get(deviceName, deviceName)
         self.as_updateDeviceStateS(deviceName, deviceState)
 
     def __onVehicleControlling(self, vehicle):
@@ -664,10 +665,10 @@ class SiegeModeIndicator(SiegeModeIndicatorMeta):
             if hasSiegeMode:
                 siegeModeParams = vType.siegeModeParams
                 self._siegeComponent.staticMode = vTypeDesc.hasAutoSiegeMode
-                self._switchTimeTable.update({_SIEGE_STATE.DISABLED: siegeModeParams[_SIEGE_STATE.SWITCHING_ON],
-                 _SIEGE_STATE.SWITCHING_ON: siegeModeParams[_SIEGE_STATE.SWITCHING_ON],
-                 _SIEGE_STATE.ENABLED: siegeModeParams[_SIEGE_STATE.SWITCHING_OFF],
-                 _SIEGE_STATE.SWITCHING_OFF: siegeModeParams[_SIEGE_STATE.SWITCHING_OFF]})
+                self._switchTimeTable.update({_SIEGE_STATE.DISABLED: siegeModeParams[_SIEGE_STATE.SWITCHING_ON], 
+                   _SIEGE_STATE.SWITCHING_ON: siegeModeParams[_SIEGE_STATE.SWITCHING_ON], 
+                   _SIEGE_STATE.ENABLED: siegeModeParams[_SIEGE_STATE.SWITCHING_OFF], 
+                   _SIEGE_STATE.SWITCHING_OFF: siegeModeParams[_SIEGE_STATE.SWITCHING_OFF]})
                 states.append(VEHICLE_VIEW_STATE.SIEGE_MODE)
             for stateID in states:
                 value = vStateCtrl.getStateValue(stateID)
@@ -786,11 +787,15 @@ class SiegeModeIndicator(SiegeModeIndicatorMeta):
 
     @staticmethod
     def __twinGunVehicleDeviceStateConverter(deviceName, state):
-        return DEVICE_STATE_NORMAL if state == DEVICE_STATE_CRITICAL and deviceName == 'gun' else state
+        if state == DEVICE_STATE_CRITICAL and deviceName == 'gun':
+            return DEVICE_STATE_NORMAL
+        return state
 
     @staticmethod
     def __turboshaftDeviceStateConverter(deviceName, state):
-        return DEVICE_STATE_NORMAL if state == DEVICE_STATE_CRITICAL and deviceName == 'engine' else state
+        if state == DEVICE_STATE_CRITICAL and deviceName == 'engine':
+            return DEVICE_STATE_NORMAL
+        return state
 
     @staticmethod
     def __getUIType(vTypeDesc):
@@ -812,9 +817,9 @@ class SiegeModeIndicator(SiegeModeIndicatorMeta):
         if vTypeDesc.hasHydraulicChassis or vTypeDesc.hasAutoSiegeMode:
             deviceNames = ('engine', 'leftTrack0', 'rightTrack0')
         elif vTypeDesc.hasTurboshaftEngine:
-            deviceNames = ('engine',)
+            deviceNames = ('engine', )
         elif vTypeDesc.isTwinGunVehicle:
-            deviceNames = ('gun',)
+            deviceNames = ('gun', )
         elif vTypeDesc.isTrackWithinTrack:
             deviceNames = ('leftTrack0', 'rightTrack0', 'leftTrack1', 'rightTrack1')
         else:
@@ -888,7 +893,7 @@ class _DirectionIndicator(Flash, IDirectionIndicator):
         return
 
     def setVisibility(self, isVisible):
-        if not self.__isVisible == isVisible:
+        if self.__isVisible != isVisible:
             self.__isVisible = isVisible
             self.component.visible = isVisible
 
@@ -951,7 +956,7 @@ class _ArtyDirectionIndicator(Flash, IDirectionIndicator):
         return
 
     def setVisibility(self, isVisible):
-        if not self.__isVisible == isVisible:
+        if self.__isVisible != isVisible:
             self.__isVisible = isVisible
             self.component.visible = isVisible
 
@@ -1002,7 +1007,7 @@ class _PredictionIndicator(PredictionIndicatorMeta, IHitIndicator):
     settingsCore = dependency.descriptor(ISettingsCore)
 
     def __init__(self, hitsCount):
-        names = tuple((self._PREDICTION_INDICATOR_MC_NAME.format(x) for x in xrange(hitsCount)))
+        names = tuple(self._PREDICTION_INDICATOR_MC_NAME.format(x) for x in xrange(hitsCount))
         super(_PredictionIndicator, self).__init__(self._PREDICTION_INDICATOR_SWF, self._PREDICTION_INDICATOR_COMPONENT, (names,))
         self.component.wg_inputKeyMode = InputKeyMode.NO_HANDLE
         self.component.position.z = DEPTH_OF_Aim
@@ -1044,7 +1049,7 @@ class _PredictionIndicator(PredictionIndicatorMeta, IHitIndicator):
         return self._PREDICTION_INDICATOR_MAX_DUR
 
     def getBeginAnimationDuration(self):
-        pass
+        return 0
 
     def showHitDirection(self, idx, hitData, timeLeft):
         self.as_setYawS(idx, hitData.getYaw())

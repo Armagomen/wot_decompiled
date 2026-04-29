@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/preview_bottom_panel_constants.py
 import logging
 from collections import namedtuple
 from enum import Enum
@@ -20,11 +18,11 @@ class ObtainingMethods(_Enum):
     OBTAIN_FOR_FREE = 'obtain_for_free'
 
 
-SHOWCASE_STYLE_OBTAINING_METHOD_INFO = {ObtainingMethods.BUY.value: ObtainingMethodInfo('buyConfirmation', R.strings.vehicle_preview.showcaseStyleBuying.actionBtn.label.buy()),
- ObtainingMethods.OBTAIN_FOR_COINS.value: ObtainingMethodInfo('forCoinsObtainConfirmation', R.strings.vehicle_preview.buyingPanel.buyBtn.label.forCoinsObtain()),
- ObtainingMethods.OBTAIN_FOR_FREE.value: ObtainingMethodInfo('freeObtainConfirmation', R.strings.vehicle_preview.buyingPanel.buyBtn.label.freeObtain())}
-ITEM_PACK_OBTAINING_METHOD_INFO = {ObtainingMethods.BUY.value: ObtainingMethodInfo('buyConfirmation', R.strings.vehicle_preview.buyingPanel.buyBtn.label.buyItemPack()),
- ObtainingMethods.OBTAIN_FOR_FREE.value: ObtainingMethodInfo('freeObtainConfirmation', R.strings.vehicle_preview.buyingPanel.buyBtn.label.freeObtain())}
+SHOWCASE_STYLE_OBTAINING_METHOD_INFO = {ObtainingMethods.BUY.value: ObtainingMethodInfo('buyConfirmation', R.strings.vehicle_preview.showcaseStyleBuying.actionBtn.label.buy()), 
+   ObtainingMethods.OBTAIN_FOR_COINS.value: ObtainingMethodInfo('forCoinsObtainConfirmation', R.strings.vehicle_preview.buyingPanel.buyBtn.label.forCoinsObtain()), 
+   ObtainingMethods.OBTAIN_FOR_FREE.value: ObtainingMethodInfo('freeObtainConfirmation', R.strings.vehicle_preview.buyingPanel.buyBtn.label.freeObtain())}
+ITEM_PACK_OBTAINING_METHOD_INFO = {ObtainingMethods.BUY.value: ObtainingMethodInfo('buyConfirmation', R.strings.vehicle_preview.buyingPanel.buyBtn.label.buyItemPack()), 
+   ObtainingMethods.OBTAIN_FOR_FREE.value: ObtainingMethodInfo('freeObtainConfirmation', R.strings.vehicle_preview.buyingPanel.buyBtn.label.freeObtain())}
 
 def getItemPackObtainingInfo(obtainingMethod=ObtainingMethods.BUY.value):
     return ITEM_PACK_OBTAINING_METHOD_INFO.get(obtainingMethod)

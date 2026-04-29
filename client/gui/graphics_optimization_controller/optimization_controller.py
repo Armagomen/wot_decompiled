@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/graphics_optimization_controller/optimization_controller.py
-import logging
-import GUI
-import Event
+import logging, GUI, Event
 from gui.graphics_optimization_controller.settings import OPTIMIZED_VIEWS_SETTINGS
 from gui.graphics_optimization_controller.utils import getRectBounds, PERMANENT_SETTING_ID, getSettingsNames
 from gui.shared import g_eventBus, events, EVENT_BUS_SCOPE
@@ -31,6 +27,7 @@ class GraphicsOptimizationController(IGraphicsOptimizationController):
 
     def init(self):
         self.__config.update(collectOptimizedViews())
+        self.__settingsNames = getSettingsNames(self.__config)
         g_eventBus.addListener(events.GameEvent.GUI_VISIBILITY, self.__handleGuiVisibility, scope=EVENT_BUS_SCOPE.BATTLE)
         self.__settingsCore.onSettingsChanged += self.__onSettingsChanged
 
@@ -49,6 +46,7 @@ class GraphicsOptimizationController(IGraphicsOptimizationController):
 
     def updateConfig(self, config):
         self.__config.update(config)
+        self.__settingsNames = getSettingsNames(self.__config)
 
     def registerOptimizationArea(self, x, y, width, height):
         if width < 0 or height < 0:

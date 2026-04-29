@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/personal_missions_30/stage_view.py
 from typing import TYPE_CHECKING
 import SoundGroups
 from frameworks.wulf import ViewFlags, ViewSettings, WindowFlags, WindowLayer
@@ -26,7 +24,7 @@ class AssemblingVideoView(ViewImpl):
     def _onLoading(self, *args, **kwargs):
         super(AssemblingVideoView, self)._onLoading()
         setVideoOverlayOn()
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             tx.setOperationID(self.operationID)
             tx.setStageNumber(self.stageNumber)
 
@@ -37,7 +35,9 @@ class AssemblingVideoView(ViewImpl):
         super(AssemblingVideoView, self)._finalize()
 
     def _getEvents(self):
-        return super(AssemblingVideoView, self)._getEvents() + ((self.viewModel.startAssembling, self.__startAssembling),)
+        return super(AssemblingVideoView, self)._getEvents() + (
+         (
+          self.viewModel.startAssembling, self.__startAssembling),)
 
     def __startAssembling(self):
         if self.closingCallback is not None:

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/account_helpers/settings_core/IntUserSettings.py
 from functools import partial
 import AccountCommands
 from account_helpers.settings_core import longToInt32
@@ -38,7 +36,8 @@ class IntUserSettings(object):
             for key, value in settingsDiff.iteritems():
                 if value is not None:
                     cache[key] = value
-                cache.pop(key, None)
+                else:
+                    cache.pop(key, None)
 
         LOG_DEBUG('IntUserSettings synchronize: cache now=%s' % self.__cache)
         return
@@ -64,10 +63,11 @@ class IntUserSettings(object):
                 if isinstance(key, int) and isinstance(value, int):
                     arr.append(key)
                     arr.append(value)
-                import traceback
-                traceback.print_stack()
-                LOG_ERROR('Bad key:value pair in addIntUserSettings: %r:%r (should be int:int)' % (k, v))
-                return
+                else:
+                    import traceback
+                    traceback.print_stack()
+                    LOG_ERROR('Bad key:value pair in addIntUserSettings: %r:%r (should be int:int)' % (k, v))
+                    return
 
         else:
             import traceback
@@ -89,8 +89,9 @@ class IntUserSettings(object):
         for k in listIntKeys:
             if isinstance(k, int):
                 arr.append(k)
-            LOG_ERROR('Bad key in delIntSettings: %r (should be int)' % k)
-            return
+            else:
+                LOG_ERROR('Bad key in delIntSettings: %r (should be int)' % k)
+                return
 
         if arr:
             if callback is not None:
@@ -111,17 +112,15 @@ class IntUserSettings(object):
             if callback is not None:
                 callback(resultID, None)
             return
-        else:
-            if callback is not None:
-                callback(resultID, self.__cache.get(statName, None))
-            return
+        if callback is not None:
+            callback(resultID, self.__cache.get(statName, None))
+        return
 
     def __onGetCacheResponse(self, callback, resultID):
         if resultID < 0:
             if callback is not None:
                 callback(resultID, None)
             return
-        else:
-            if callback is not None:
-                callback(resultID, self.__cache)
-            return
+        if callback is not None:
+            callback(resultID, self.__cache)
+        return

@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_core/scripts/client/comp7_core/gui/battle_control/controllers/consumables/comp7_equipment_ctrl.py
-import typing
-import BigWorld
-import CGF
-import Event
+import typing, BigWorld, CGF, Event
 from constants import EQUIPMENT_STAGES
 from gui.battle_control import avatar_getter
 from gui.battle_control.controllers.consumables import equipment_ctrl
@@ -30,7 +25,9 @@ class Comp7EquipmentController(equipment_ctrl.EquipmentsController):
     @classmethod
     def createItem(cls, descriptor, quantity, stage, timeRemaining, totalTime):
         tags, clazz = equipment_ctrl._getInitialTagsAndClass(descriptor, EQUIPMENT_TAG_TO_ITEM)
-        return clazz(descriptor, quantity, stage, timeRemaining, totalTime, tags) if tags and clazz else super(Comp7EquipmentController, cls).createItem(descriptor, quantity, stage, timeRemaining, totalTime)
+        if tags and clazz:
+            return clazz(descriptor, quantity, stage, timeRemaining, totalTime, tags)
+        return super(Comp7EquipmentController, cls).createItem(descriptor, quantity, stage, timeRemaining, totalTime)
 
     def startControl(self, *args):
         super(Comp7EquipmentController, self).startControl(*args)
@@ -109,7 +106,10 @@ class Comp7EquipmentController(equipment_ctrl.EquipmentsController):
         cache = vehicles.g_cache
         name = PoiEquipmentNamesByPoiType[poiType]
         equipmentID = cache.equipmentIDs().get(name)
-        return cache.equipments()[equipmentID] if equipmentID is not None else None
+        if equipmentID is not None:
+            return cache.equipments()[equipmentID]
+        else:
+            return
 
 
 class Comp7ReplayEquipmentController(equipment_ctrl.EquipmentsReplayPlayer, Comp7EquipmentController):
@@ -117,4 +117,6 @@ class Comp7ReplayEquipmentController(equipment_ctrl.EquipmentsReplayPlayer, Comp
     @classmethod
     def createItem(cls, descriptor, quantity, stage, timeRemaining, totalTime):
         tags, clazz = equipment_ctrl._getInitialTagsAndClass(descriptor, REPLAY_EQUIPMENT_TAG_TO_ITEM)
-        return clazz(descriptor, quantity, stage, timeRemaining, totalTime, tags) if tags and clazz else super(Comp7ReplayEquipmentController, cls).createItem(descriptor, quantity, stage, timeRemaining, totalTime)
+        if tags and clazz:
+            return clazz(descriptor, quantity, stage, timeRemaining, totalTime, tags)
+        return super(Comp7ReplayEquipmentController, cls).createItem(descriptor, quantity, stage, timeRemaining, totalTime)

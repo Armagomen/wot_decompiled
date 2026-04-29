@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/BrowserMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class BrowserMeta(BaseDAAPIComponent):
@@ -32,22 +30,29 @@ class BrowserMeta(BaseDAAPIComponent):
         self._printOverrideError('setBrowserSize')
 
     def as_loadBitmapS(self, url):
-        return self.flashObject.as_loadBitmap(url) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_loadBitmap(url)
 
     def as_resizeS(self, width, height):
-        return self.flashObject.as_resize(width, height) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_resize(width, height)
 
     def as_loadingStartS(self, showContentUnderWaiting):
-        return self.flashObject.as_loadingStart(showContentUnderWaiting) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_loadingStart(showContentUnderWaiting)
 
     def as_loadingStopS(self):
-        return self.flashObject.as_loadingStop() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_loadingStop()
 
     def as_showServiceViewS(self, header, description):
-        return self.flashObject.as_showServiceView(header, description) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_showServiceView(header, description)
 
     def as_hideServiceViewS(self):
-        return self.flashObject.as_hideServiceView() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_hideServiceView()
 
     def as_changeTitleS(self, title):
-        return self.flashObject.as_changeTitle(title) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_changeTitle(title)

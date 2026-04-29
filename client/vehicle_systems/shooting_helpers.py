@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicle_systems/shooting_helpers.py
 import typing
 from cgf_events import gun_events
 from constants import IS_CLIENT, DEFAULT_GUN_INDEX

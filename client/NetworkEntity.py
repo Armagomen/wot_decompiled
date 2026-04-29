@@ -1,7 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/NetworkEntity.py
-import CGF
-import BigWorld
+from __future__ import absolute_import
+import CGF, BigWorld
 from debug_utils import LOG_DEBUG_DEV
 
 class NetworkEntity(BigWorld.Entity):
@@ -14,15 +12,16 @@ class NetworkEntity(BigWorld.Entity):
 
     def onEnterWorld(self, _):
         if CGF.addNetworkEntity(self.spaceID, self, self.unique_id, self.prefab_path):
-            direction = (self.yaw, self.pitch, self.roll)
-            LOG_DEBUG_DEV('New NetworkEntity [{}][{}] position {} rotation {} scale {}'.format(self.id, self.unique_id, self.position, direction, self.scale))
+            direction = (
+             self.yaw, self.pitch, self.roll)
+            LOG_DEBUG_DEV(('New NetworkEntity [{}][{}] position {} rotation {} scale {}').format(self.id, self.unique_id, self.position, direction, self.scale))
 
     def onLeaveWorld(self):
         if self.entityGameObject and self.prefab_path:
             CGF.removeGameObject(self.entityGameObject)
         self.entityGameObject = None
         if CGF.removeNetworkEntity(self.spaceID, self, self.unique_id):
-            LOG_DEBUG_DEV('Removed NetworkEntity [{}]'.format(self.id))
+            LOG_DEBUG_DEV(('Removed NetworkEntity [{}]').format(self.id))
         return
 
     @property

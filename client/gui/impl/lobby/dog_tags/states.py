@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/dog_tags/states.py
 import typing
 from WeakMethod import WeakMethodProxy
 from frameworks.state_machine.transitions import TransitionType
@@ -34,7 +32,7 @@ class DogTagConfirmState(LobbyState):
     STATE_ID = 'dogTagConfirmLeave'
 
     def getNavigationDescription(self):
-        return None
+        return
 
     @wg_async
     def _onEntered(self, event):
@@ -67,12 +65,18 @@ class DogTagState(GuiImplViewLobbyState):
     @property
     def selectedBackground(self):
         view = self.getMachine().getRelatedView(self)
-        return view.selectedBackground if view is not None else None
+        if view is not None:
+            return view.selectedBackground
+        else:
+            return
 
     @property
     def selectedEngraving(self):
         view = self.getMachine().getRelatedView(self)
-        return view.selectedEngraving if view is not None else None
+        if view is not None:
+            return view.selectedEngraving
+        else:
+            return
 
     def registerStates(self):
         lsm = self.getMachine()
@@ -89,8 +93,8 @@ class DogTagState(GuiImplViewLobbyState):
         return LobbyStateDescription(title=backport.text(R.strings.pages.titles.dog_tags()))
 
     def _getViewLoadCtx(self, event):
-        return {'highlightedComponentId': event.params.get('highlightedComponentId', -1),
-         'makeTopView': event.params.get('makeTopView', True)}
+        return {'highlightedComponentId': event.params.get('highlightedComponentId', -1), 
+           'makeTopView': event.params.get('makeTopView', True)}
 
     def _dogTagConfirm(self, event):
         dogTagsEntered = self.isEntered()
@@ -113,8 +117,8 @@ class AnimatedDogTagState(GuiImplViewLobbyState):
         super(AnimatedDogTagState, self).__init__(AnimatedDogTagsView, ScopeTemplates.LOBBY_SUB_SCOPE)
 
     def _getViewLoadCtx(self, event):
-        return {'initBackgroundId': event.params.get('initBackgroundId', None),
-         'initEngravingId': event.params.get('initEngravingId', None)}
+        return {'initBackgroundId': event.params.get('initBackgroundId', None), 
+           'initEngravingId': event.params.get('initEngravingId', None)}
 
     def getNavigationDescription(self):
         return LobbyStateDescription(title=backport.text(R.strings.pages.titles.animated_dog_tags()))

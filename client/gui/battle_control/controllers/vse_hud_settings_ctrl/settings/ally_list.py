@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/vse_hud_settings_ctrl/settings/ally_list.py
 from gui.battle_control.controllers.vse_hud_settings_ctrl.settings.base_models import BaseClientModel
 
 class AllyListClientModel(BaseClientModel):
@@ -12,4 +10,5 @@ class AllyListClientModel(BaseClientModel):
         self.highlightElite = highlightElite
 
     def __repr__(self):
-        return '<AllyListClientModel>: showFrags=%s, showVehicleTypeIcon=%s, highlightElite=%s' % (self.showFrags, self.showVehicleTypeIcon, self.highlightElite)
+        return '<AllyListClientModel>: showFrags=%s, showVehicleTypeIcon=%s, highlightElite=%s' % (
+         self.showFrags, self.showVehicleTypeIcon, self.highlightElite)

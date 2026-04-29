@@ -1,15 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/AreaOfEffect.py
+from __future__ import absolute_import
+import math, random
 from functools import partial
-import math
-import random
-import BigWorld
-import AnimationSequence
-import CGF
-import GenericComponents
-import Math
-import math_utils
-import CombatSelectedArea
+from future.utils import viewvalues
+from past.builtins import xrange
+import BigWorld, AnimationSequence, CGF, GenericComponents, Math, math_utils, CombatSelectedArea
 from ProjectileMover import collideDynamicAndStatic
 from account_helpers.settings_core.settings_constants import GRAPHICS
 from gui.battle_control import avatar_getter
@@ -41,13 +35,16 @@ class EffectRunner(object):
 
     @property
     def areaColor(self):
-        return self._equipment.areaColorBlind if self.__settingsCore.getSetting(GRAPHICS.COLOR_BLIND) and self._equipment.areaColorBlind is not None else self._equipment.areaColor
+        if self.__settingsCore.getSetting(GRAPHICS.COLOR_BLIND) and self._equipment.areaColorBlind is not None:
+            return self._equipment.areaColorBlind
+        else:
+            return self._equipment.areaColor
 
     def prerequisites(self):
         prereqs = []
         if self._equipment.areaVisual:
             prereqs.append(self._equipment.areaVisual)
-        for effect in self._equipment.effects.itervalues():
+        for effect in viewvalues(self._equipment.effects):
             if not effect:
                 continue
             for sequence in effect['sequences']:
@@ -64,7 +61,7 @@ class EffectRunner(object):
             repeatDelay = effect['repeatDelay']
             repeatDelayDeviationPercent = effect['repeatDelayDeviationPercent']
             for _ in xrange(effect['repeatCount']):
-                playID = self._idGen.next()
+                playID = self._idGen.nextSequenceID
                 play = partial(self._play, playID, effect, position)
                 self._callbacks[playID] = BigWorld.callback(delayOffset, play)
                 delayOffset += getValueWithDeviationInPercent(repeatDelay, repeatDelayDeviationPercent)
@@ -72,7 +69,7 @@ class EffectRunner(object):
             if effect['areaColor']:
                 area = CombatSelectedArea.CombatSelectedArea()
                 area.setup(position, Math.Vector3(0, 0, 0), Math.Vector2(radius * 2, radius * 2), CombatSelectedArea.DEFAULT_RADIUS_MODEL, effect['areaColor'], None)
-                areaID = self._idGen.next()
+                areaID = self._idGen.nextSequenceID
                 self._areas[areaID] = area
             return
 
@@ -136,7 +133,10 @@ class AreaOfEffect(BigWorld.Entity, EffectRunner):
 
     @property
     def areaColor(self):
-        return self._equipment.areaColorBlind if self.__settingsCore.getSetting(GRAPHICS.COLOR_BLIND) and self._equipment.areaColorBlind is not None else self._equipment.areaColor or CombatSelectedArea.COLOR_WHITE
+        if self.__settingsCore.getSetting(GRAPHICS.COLOR_BLIND) and self._equipment.areaColorBlind is not None:
+            return self._equipment.areaColorBlind
+        else:
+            return self._equipment.areaColor or CombatSelectedArea.COLOR_WHITE
 
     def onEnterWorld(self, prereqs):
         timeOffset = BigWorld.serverTime() - self.launchTime
@@ -155,14 +155,14 @@ class AreaOfEffect(BigWorld.Entity, EffectRunner):
     def onLeaveWorld(self):
         self.__settingsCore.onSettingsChanged -= self.__onSettingsChanged
         g_eventBus.removeListener(MarkersManagerEvent.MARKERS_CREATED, self._onMarkersCreated, EVENT_BUS_SCOPE.BATTLE)
-        for callbackID in self._callbacks.itervalues():
+        for callbackID in viewvalues(self._callbacks):
             BigWorld.cancelCallback(callbackID)
 
         self._callbacks = {}
         if self.__destroyGoCallback is not None:
             BigWorld.cancelCallback(self.__destroyGoCallback)
         self.__destroyGoCallback = None
-        for area in self._areas.itervalues():
+        for area in viewvalues(self._areas):
             area.destroy()
 
         self._areas = {}
@@ -213,7 +213,7 @@ class AreaOfEffect(BigWorld.Entity, EffectRunner):
                 area.setup(self.position, self._direction, areaSize, areaVisual, self.areaColor, None)
                 area.enableAccurateCollision(self._equipment.areaAccurateCollision)
                 area.enableWaterCollision(True)
-                areaID = self._idGen.next()
+                areaID = self._idGen.nextSequenceID
                 self._areas[areaID] = area
                 self._callbacks[areaID] = BigWorld.callback(areaTimeout, partial(self._areaDestroy, areaID))
                 self.__mainAreaID = areaID
@@ -249,7 +249,10 @@ class AreaOfEffect(BigWorld.Entity, EffectRunner):
         floatEpsilon = 0.001
         xScale = self._equipment.areaWidth * 0.5
         zScale = self._equipment.areaLength * 0.5
-        t.transform = math_utils.createSRTMatrix(Math.Vector3(xScale, 1.0, zScale), (0.0, 0.0, 0.0), (0.0, floatEpsilon, 0.0))
+        t.transform = math_utils.createSRTMatrix(Math.Vector3(xScale, 1.0, zScale), (0.0,
+                                                                                     0.0,
+                                                                                     0.0), (
+         0.0, floatEpsilon, 0.0))
 
     def __destroyAreaGO(self):
         if self.__areaGO is not None:

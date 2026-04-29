@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/personal_reserves/personal_reserves_dialogs.py
 from typing import TYPE_CHECKING
 from wg_async import wg_async
 from adisp import adisp_async
@@ -24,12 +22,12 @@ if TYPE_CHECKING:
     from gui.impl.dialogs.dialog_template import DialogTemplateView
     from gui.shared.gui_items.gui_item_economics import ItemPrice
 __all__ = ('getUpgradeBoosterDialog', 'getBuyAndActivateBoosterDialog', 'getBuyGoldDialog')
-BOOSTER_IMAGE_LOOKUP = {GOODIE_RESOURCE_TYPE.XP: R.images.gui.maps.icons.quests.bonuses.s360x270.booster_xp_premium(),
- GOODIE_RESOURCE_TYPE.CREDITS: R.images.gui.maps.icons.quests.bonuses.s360x270.booster_credits_premium(),
- GOODIE_RESOURCE_TYPE.FREE_XP_CREW_XP: R.images.gui.maps.icons.quests.bonuses.s360x270.booster_free_xp_and_crew_xp_premium()}
-UPGRADE_IMAGE_LOOKUP = {GOODIE_RESOURCE_TYPE.XP: R.images.gui.maps.icons.personal_reserves.upgrade_tank_xp(),
- GOODIE_RESOURCE_TYPE.CREDITS: R.images.gui.maps.icons.personal_reserves.upgrade_silver_boost(),
- GOODIE_RESOURCE_TYPE.FREE_XP_CREW_XP: R.images.gui.maps.icons.personal_reserves.upgrade_combined_xp()}
+BOOSTER_IMAGE_LOOKUP = {GOODIE_RESOURCE_TYPE.XP: R.images.gui.maps.icons.quests.bonuses.s360x270.booster_xp_premium(), 
+   GOODIE_RESOURCE_TYPE.CREDITS: R.images.gui.maps.icons.quests.bonuses.s360x270.booster_credits_premium(), 
+   GOODIE_RESOURCE_TYPE.FREE_XP_CREW_XP: R.images.gui.maps.icons.quests.bonuses.s360x270.booster_free_xp_and_crew_xp_premium()}
+UPGRADE_IMAGE_LOOKUP = {GOODIE_RESOURCE_TYPE.XP: R.images.gui.maps.icons.personal_reserves.upgrade_tank_xp(), 
+   GOODIE_RESOURCE_TYPE.CREDITS: R.images.gui.maps.icons.personal_reserves.upgrade_silver_boost(), 
+   GOODIE_RESOURCE_TYPE.FREE_XP_CREW_XP: R.images.gui.maps.icons.personal_reserves.upgrade_combined_xp()}
 
 @adisp_async
 @wg_async
@@ -92,7 +90,9 @@ class BuyAndActivateBoosterDialogBuilder(ResDialogBuilder):
             template.setSubView(DefaultDialogPlaceHolders.CONTENT, SimpleTextContent(self.warning, imageSubstitutions=[image]))
 
     def _getConfirmLabel(self, needsToBuy):
-        return R.strings.personal_reserves.activation.BuyAndActivateConfirm() if needsToBuy else R.strings.personal_reserves.activation.ActivateConfirm()
+        if needsToBuy:
+            return R.strings.personal_reserves.activation.BuyAndActivateConfirm()
+        return R.strings.personal_reserves.activation.ActivateConfirm()
 
 
 class BuyGoldDialogBuilder(ResDialogBuilder):

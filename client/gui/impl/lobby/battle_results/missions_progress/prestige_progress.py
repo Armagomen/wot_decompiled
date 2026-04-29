@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_results/missions_progress/prestige_progress.py
 from constants import Configs
 from gui.battle_results.pbs_helpers.common import getBattleResults
 from gui.impl.gen import R
@@ -34,7 +32,11 @@ class PrestigeProgressPresenter(ViewComponent[PrestigeProgressModel], IProgressi
         return super(PrestigeProgressPresenter, self).getViewModel()
 
     def _getEvents(self):
-        return ((self.viewModel.onNavigate, self.__onNavigate), (self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingChanged))
+        return (
+         (
+          self.viewModel.onNavigate, self.__onNavigate),
+         (
+          self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingChanged))
 
     def _finalize(self):
         self.__progress = None
@@ -58,7 +60,7 @@ class PrestigeProgressPresenter(ViewComponent[PrestigeProgressModel], IProgressi
             self.__progress = self.__categoryProgressFilter(battleResults.reusable)
 
     def _updateModel(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setVehCD(self.__progress.vehCD)
             model.setGainedXP(self.__progress.gainedXP)
             model.setOldLvl(self.__progress.oldLvl)

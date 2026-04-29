@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/entitlements/tankmen_entitlements_cache.py
-import BigWorld
-import logging
+import BigWorld, logging
 from collections import namedtuple
 import typing
 from enum import Enum
@@ -78,9 +75,9 @@ class TankmenEntitlementsCache(object):
         return Entitlement(response.get('code', ''), response.get('tags', []), response.get('amount', 0))
 
     def __createFilterByTags(self, tags):
-        tagsFilter = {'key': _FilterKeys.TAG.value,
-         'operator': _FilterOperators.IN.value,
-         'value': tags}
+        tagsFilter = {'key': _FilterKeys.TAG.value, 
+           'operator': _FilterOperators.IN.value, 
+           'value': tags}
         return self.__createFilter([tagsFilter])
 
     def __createFilter(self, filters):

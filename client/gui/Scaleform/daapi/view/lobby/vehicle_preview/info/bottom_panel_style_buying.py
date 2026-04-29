@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/info/bottom_panel_style_buying.py
 import typing
 from CurrentVehicle import g_currentPreviewVehicle
 from frameworks.wulf import ViewFlags, ViewSettings
@@ -67,10 +65,16 @@ class _StyleBuyingPanelView(ViewImpl):
         self.__buyingProcessor.setBuyParams(buyParams)
 
     def _getCallbacks(self):
-        return (('stats.{}'.format(c), self.__updateVMData) for c in Currency.ALL)
+        return ((('stats.{}').format(c), self.__updateVMData) for c in Currency.ALL)
 
     def _getEvents(self):
-        return ((g_currentPreviewVehicle.onChangeStarted, self.__onVehicleChangeStarted), (g_currentPreviewVehicle.onChanged, self.__onVehicleChanged), (self.viewModel.onBuy, self.__onBuy))
+        return (
+         (
+          g_currentPreviewVehicle.onChangeStarted, self.__onVehicleChangeStarted),
+         (
+          g_currentPreviewVehicle.onChanged, self.__onVehicleChanged),
+         (
+          self.viewModel.onBuy, self.__onBuy))
 
     def _onLoaded(self, *args, **kwargs):
         self.__updateVMData()
@@ -96,7 +100,7 @@ class _StyleBuyingPanelView(ViewImpl):
 
     def __updateVMData(self, *_):
         currency, price, userCurrency, level, status = self.__prepareVMData()
-        with self.getViewModel().transaction() as tx:
+        with self.getViewModel().transaction() as (tx):
             tx.setCurrency(currency)
             tx.setPrice(price)
             tx.setUserCurrency(userCurrency)
@@ -109,12 +113,9 @@ class _StyleBuyingPanelView(ViewImpl):
         price = money.get(currency, 0)
         userCurrency = dyn_utils.getUserMoney(currency)
         mayObtain = self.__buyingProcessor.mayObtain(money)
-        status = StyleBuyingStatus.BPNOTPASSED if not self.__battlePass.isCompleted() else (StyleBuyingStatus.AVAILABLE if mayObtain else StyleBuyingStatus.NOTENOUGHMONEY)
-        return (currency,
-         int(price),
-         userCurrency,
-         self.__level or 0,
-         status)
+        status = (self.__battlePass.isCompleted() or StyleBuyingStatus).BPNOTPASSED if 1 else StyleBuyingStatus.AVAILABLE if mayObtain else StyleBuyingStatus.NOTENOUGHMONEY
+        return (
+         currency, int(price), userCurrency, self.__level or 0, status)
 
     def __applyStyle(self):
         if self.__level:

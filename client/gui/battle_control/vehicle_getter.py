@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/vehicle_getter.py
 from collections import defaultdict
 from gui import TANKMEN_ROLES_ORDER_DICT
 from gui.battle_control import avatar_getter
@@ -19,15 +17,24 @@ def hasTurretRotator(vDesc):
 
 
 def isWheeledTech(vDesc):
-    return False if vDesc is None else 'wheeledVehicle' in vDesc.type.tags
+    if vDesc is None:
+        return False
+    else:
+        return 'wheeledVehicle' in vDesc.type.tags
 
 
 def isTrackWithinTrackTech(vDesc):
-    return False if vDesc is None else vDesc.isTrackWithinTrack
+    if vDesc is None:
+        return False
+    else:
+        return vDesc.isTrackWithinTrack
 
 
 def getYawLimits(vDesc):
-    return None if vDesc is None else vDesc.gun.turretYawLimits
+    if vDesc is None:
+        return
+    else:
+        return vDesc.gun.turretYawLimits
 
 
 def hasYawLimits(vDesc):
@@ -63,16 +70,20 @@ def getOptionalDevicesByVehID(vehicleID, avatar=None):
     arena = avatar_getter.getArena(avatar=avatar)
     if arena is None:
         return []
-    elif vehicleID not in arena.vehicles:
-        return []
     else:
+        if vehicleID not in arena.vehicles:
+            return []
         vehicleType = arena.vehicles[vehicleID].get('vehicleType')
-        return [] if vehicleType is None else vehicleType.optionalDevices
+        if vehicleType is None:
+            return []
+        return vehicleType.optionalDevices
 
 
 def getOptionalDevices(avatar=None):
     vehicleID = avatar_getter.getPlayerVehicleID(avatar=avatar)
-    return [] if not vehicleID else getOptionalDevicesByVehID(vehicleID, avatar=avatar)
+    if not vehicleID:
+        return []
+    return getOptionalDevicesByVehID(vehicleID, avatar=avatar)
 
 
 def isCoatedOpticsInstalled(avatar=None):
@@ -128,10 +139,11 @@ class TankmenStatesIterator(object):
                 state = self._states[role]
             else:
                 state = None
-            return (role, state)
+            return (
+             role, state)
         else:
             self._states.clear()
-            raise StopIteration()
+            raise StopIteration
             return
 
 
@@ -159,8 +171,8 @@ class VehicleDeviceStatesIterator(object):
             return (name, self._states[name])
         else:
             self._states.clear()
-            raise StopIteration()
-            return None
+            raise StopIteration
+            return
 
     def clear(self):
         self._states.clear()

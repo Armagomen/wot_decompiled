@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/lootbox_system/tooltips/guaranteed_reward_info_tooltip_view_model.py
 from frameworks.wulf import ViewModel
 
 class GuaranteedRewardInfoTooltipViewModel(ViewModel):

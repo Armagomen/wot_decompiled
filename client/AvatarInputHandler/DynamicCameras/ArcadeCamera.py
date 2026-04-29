@@ -1,16 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/AvatarInputHandler/DynamicCameras/ArcadeCamera.py
 from collections import namedtuple
-import logging
-import math
-import GUI
-import Keys
-import Math
-import BattleReplay
-import Settings
-import constants
-import math_utils
-import BigWorld
+import logging, math, GUI, Keys, Math, BattleReplay, Settings, constants, math_utils, BigWorld
 from Math import Vector2, Vector3, Vector4, Matrix
 from AvatarInputHandler import cameras, aih_global_binding
 from BigWorld import ArcadeAimingSystem, ArcadeAimingSystemRemote
@@ -35,7 +24,8 @@ _DEFAULT_ZOOM_DURATION = 0.5
 _COLLIDE_ANIM_DIST = 1.0
 _COLLIDE_ANIM_INTERVAL = 0.2
 
-class CollisionVolumeGroup(namedtuple('CollisionVolumeGroup', ('minVolume',
+class CollisionVolumeGroup(namedtuple('CollisionVolumeGroup', (
+ 'minVolume',
  'lowSpeedLimit',
  'vehicleVisibilityLimit',
  'approachSpeed',
@@ -53,10 +43,8 @@ class CollisionVolumeGroup(namedtuple('CollisionVolumeGroup', ('minVolume',
         return CollisionVolumeGroup(dataSection.readFloat(next(it), next(defaultIt)), dataSection.readFloat(next(it), next(defaultIt)), dataSection.readFloat(next(it), next(defaultIt)), dataSection.readVector2(next(it), next(defaultIt)), dataSection.readFloat(next(it), next(defaultIt)), dataSection.readFloat(next(it), next(defaultIt)), dataSection.readBool(next(it), next(defaultIt)))
 
 
-VOLUME_GROUPS_NAMES = ['tiny',
- 'small',
- 'medium',
- 'large']
+VOLUME_GROUPS_NAMES = [
+ 'tiny', 'small', 'medium', 'large']
 _INERTIA_EASING = math_utils.Easing.exponentialEasing
 ENABLE_INPUT_ROTATION_INERTIA = False
 
@@ -102,9 +90,8 @@ ArcadeCameraState = namedtuple('ArcadeCameraState', ('camDist', 'zoomSwitcherSta
 
 class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
     __settingsCache = dependency.descriptor(ISettingsCache)
-    REASONS_AFFECT_CAMERA_DIRECTLY = (ImpulseReason.MY_SHOT,
-     ImpulseReason.OTHER_SHOT,
-     ImpulseReason.VEHICLE_EXPLOSION,
+    REASONS_AFFECT_CAMERA_DIRECTLY = (
+     ImpulseReason.MY_SHOT, ImpulseReason.OTHER_SHOT, ImpulseReason.VEHICLE_EXPLOSION,
      ImpulseReason.HE_EXPLOSION)
     _DYNAMIC_ENABLED = True
 
@@ -483,7 +470,7 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
         eScrollDirection = EScrollDir.convertDZ(dz)
         if eScrollDirection:
             self.__overScrollProtector.updateOnScroll(eScrollDirection)
-        self.__curSense = self._cfg['keySensitivity'] if updatedByKeyboard else (self.__sensitivity * self._userCfg['sensitivity'] if self.__sensitivity else self._cfg['sensitivity'])
+        self.__curSense = self._cfg['keySensitivity'] if updatedByKeyboard else self.__sensitivity * self._userCfg['sensitivity'] if self.__sensitivity else self._cfg['sensitivity']
         self.__curScrollSense = self._cfg['keySensitivity'] if updatedByKeyboard else self.__scrollSensitivity
         self.__updatedByKeyboard = updatedByKeyboard
         if updatedByKeyboard:
@@ -525,430 +512,55 @@ class ArcadeCamera(CameraWithSettings, CallbackDelayer, TimeDeltaMeter):
     def __updateAngles(self, dx, dy):
         yawDelta, pitchDelta = calcYawPitchDelta(self._cfg, self.__curSense, dx, dy)
         self.__aimingSystem.handleMovement(yawDelta, -pitchDelta)
-        return (self.__aimingSystem.yaw, self.__aimingSystem.pitch, 0)
+        return (
+         self.__aimingSystem.yaw, self.__aimingSystem.pitch, 0)
 
-    def __update--- This code section failed: ---
-
- 749       0	LOAD_FAST         'self'
-           3	LOAD_ATTR         '__aimingSystem'
-           6	POP_JUMP_IF_TRUE  '13'
-
- 750       9	LOAD_CONST        ''
-          12	RETURN_END_IF     ''
-
- 752      13	LOAD_GLOBAL       'EScrollDir'
-          16	LOAD_ATTR         'convertDZ'
-          19	LOAD_FAST         'dz'
-          22	CALL_FUNCTION_1   ''
-          25	STORE_FAST        'eScrollDir'
-
- 754      28	LOAD_FAST         'self'
-          31	LOAD_ATTR         '__inputInertia'
-          34	LOAD_ATTR         'calcWorldPos'
-          37	LOAD_FAST         'self'
-          40	LOAD_ATTR         '__aimingSystem'
-          43	LOAD_ATTR         'matrixProvider'
-          46	CALL_FUNCTION_1   ''
-          49	STORE_FAST        'prevPos'
-
- 755      52	LOAD_FAST         'self'
-          55	LOAD_ATTR         '__aimingSystem'
-          58	LOAD_ATTR         'distanceFromFocus'
-          61	STORE_FAST        'prevDist'
-
- 756      64	LOAD_FAST         'self'
-          67	LOAD_ATTR         '_distRange'
-          70	STORE_FAST        'distMinMax'
-
- 758      73	LOAD_FAST         'self'
-          76	LOAD_ATTR         '__isCamInTransition'
-          79	POP_JUMP_IF_FALSE '103'
-
- 759      82	LOAD_FAST         'self'
-          85	LOAD_ATTR         '__cameraTransition'
-          88	LOAD_ATTR         'isInTransition'
-          91	CALL_FUNCTION_0   ''
-          94	LOAD_FAST         'self'
-          97	STORE_ATTR        '__isCamInTransition'
-         100	JUMP_FORWARD      '103'
-       103_0	COME_FROM         '100'
-
- 762     103	LOAD_FAST         'self'
-         106	LOAD_ATTR         '__cam'
-         109	LOAD_ATTR         'hasCollision'
-         112	CALL_FUNCTION_0   ''
-         115	STORE_FAST        'isColliding'
-
- 765     118	LOAD_GLOBAL       'False'
-         121	STORE_FAST        'collisionWhileGlide'
-
- 766     124	LOAD_FAST         'self'
-         127	LOAD_ATTR         '__inputInertia'
-         130	LOAD_ATTR         'isGliding'
-         133	CALL_FUNCTION_0   ''
-         136	POP_JUMP_IF_FALSE '228'
-         139	LOAD_FAST         'isColliding'
-         142	UNARY_NOT         ''
-         143	POP_JUMP_IF_FALSE '228'
-         146	LOAD_FAST         'eScrollDir'
-         149	LOAD_GLOBAL       'EScrollDir'
-         152	LOAD_ATTR         'OUT'
-         155	COMPARE_OP        'is'
-       158_0	COME_FROM         '136'
-       158_1	COME_FROM         '143'
-         158	POP_JUMP_IF_FALSE '228'
-
- 767     161	LOAD_FAST         'self'
-         164	LOAD_ATTR         '__compareCurrStateSettingsKey'
-         167	LOAD_GLOBAL       'GAME'
-         170	LOAD_ATTR         'COMMANDER_CAM'
-         173	CALL_FUNCTION_1   ''
-         176	UNARY_NOT         ''
-       177_0	COME_FROM         '158'
-         177	POP_JUMP_IF_FALSE '228'
-
- 769     180	LOAD_FAST         'self'
-         183	LOAD_ATTR         '__aimingSystem'
-         186	LOAD_ATTR         'matrix'
-         189	LOAD_ATTR         'translation'
-         192	STORE_FAST        'cameraPos'
-
- 770     195	LOAD_FAST         'self'
-         198	LOAD_ATTR         '__cam'
-         201	LOAD_ATTR         'isColliding'
-         204	LOAD_GLOBAL       'BigWorld'
-         207	LOAD_ATTR         'player'
-         210	CALL_FUNCTION_0   ''
-         213	LOAD_ATTR         'spaceID'
-         216	LOAD_FAST         'cameraPos'
-         219	CALL_FUNCTION_2   ''
-         222	STORE_FAST        'collisionWhileGlide'
-         225	JUMP_FORWARD      '228'
-       228_0	COME_FROM         '225'
-
- 772     228	LOAD_FAST         'isColliding'
-         231	POP_JUMP_IF_TRUE  '240'
-         234	LOAD_FAST         'collisionWhileGlide'
-       237_0	COME_FROM         '231'
-         237	JUMP_IF_FALSE_OR_POP '271'
-         240	LOAD_FAST         'eScrollDir'
-         243	LOAD_GLOBAL       'EScrollDir'
-         246	LOAD_ATTR         'OUT'
-         249	COMPARE_OP        'is'
-         252	JUMP_IF_FALSE_OR_POP '271'
-
- 773     255	LOAD_FAST         'self'
-         258	LOAD_ATTR         '__compareCurrStateSettingsKey'
-         261	LOAD_GLOBAL       'GAME'
-         264	LOAD_ATTR         'COMMANDER_CAM'
-         267	CALL_FUNCTION_1   ''
-         270	UNARY_NOT         ''
-       271_0	COME_FROM         '237'
-       271_1	COME_FROM         '252'
-         271	STORE_FAST        'preventScrollOut'
-
- 776     274	LOAD_FAST         'preventScrollOut'
-         277	POP_JUMP_IF_FALSE '374'
-         280	LOAD_FAST         'prevDist'
-         283	LOAD_FAST         'distMinMax'
-         286	LOAD_ATTR         'max'
-         289	COMPARE_OP        '=='
-         292	POP_JUMP_IF_FALSE '374'
-         295	LOAD_FAST         'self'
-         298	LOAD_ATTR         '__isSettingsEnabled'
-         301	LOAD_GLOBAL       'GAME'
-         304	LOAD_ATTR         'COMMANDER_CAM'
-         307	CALL_FUNCTION_1   ''
-       310_0	COME_FROM         '277'
-       310_1	COME_FROM         '292'
-         310	POP_JUMP_IF_FALSE '374'
-
- 777     313	LOAD_FAST         'self'
-         316	LOAD_ATTR         'isInArcadeZoomState'
-         319	CALL_FUNCTION_0   ''
-         322	POP_JUMP_IF_FALSE '344'
-         325	LOAD_FAST         'self'
-         328	LOAD_ATTR         '__isSettingsEnabled'
-         331	LOAD_GLOBAL       'GAME'
-         334	LOAD_ATTR         'PRE_COMMANDER_CAM'
-         337	CALL_FUNCTION_1   ''
-         340	UNARY_NOT         ''
-       341_0	COME_FROM         '322'
-         341	POP_JUMP_IF_TRUE  '362'
-
- 778     344	LOAD_FAST         'self'
-         347	LOAD_ATTR         '__compareCurrStateSettingsKey'
-         350	LOAD_GLOBAL       'GAME'
-         353	LOAD_ATTR         'PRE_COMMANDER_CAM'
-         356	CALL_FUNCTION_1   ''
-       359_0	COME_FROM         '310'
-       359_1	COME_FROM         '341'
-         359	POP_JUMP_IF_FALSE '374'
-
- 779     362	LOAD_GLOBAL       'False'
-         365	STORE_FAST        'preventScrollOut'
-         368	JUMP_ABSOLUTE     '374'
-         371	JUMP_FORWARD      '374'
-       374_0	COME_FROM         '371'
-
- 781     374	LOAD_FAST         'isColliding'
-         377	POP_JUMP_IF_FALSE '417'
-         380	LOAD_FAST         'eScrollDir'
-         383	LOAD_GLOBAL       'EScrollDir'
-         386	LOAD_ATTR         'OUT'
-         389	COMPARE_OP        'is'
-       392_0	COME_FROM         '377'
-         392	POP_JUMP_IF_FALSE '417'
-
- 783     395	LOAD_FAST         'self'
-         398	LOAD_ATTR         '__collideAnimatorEasing'
-         401	LOAD_ATTR         'start'
-         404	LOAD_GLOBAL       '_COLLIDE_ANIM_DIST'
-         407	LOAD_GLOBAL       '_COLLIDE_ANIM_INTERVAL'
-         410	CALL_FUNCTION_2   ''
-         413	POP_TOP           ''
-         414	JUMP_FORWARD      '417'
-       417_0	COME_FROM         '414'
-
- 786     417	LOAD_GLOBAL       'False'
-         420	STORE_FAST        'distChanged'
-
- 787     423	LOAD_FAST         'zoomMode'
-         426	POP_JUMP_IF_FALSE '856'
-         429	LOAD_FAST         'eScrollDir'
-         432	POP_JUMP_IF_FALSE '856'
-         435	LOAD_FAST         'self'
-         438	LOAD_ATTR         '__overScrollProtector'
-         441	LOAD_ATTR         'isProtecting'
-         444	CALL_FUNCTION_0   ''
-         447	UNARY_NOT         ''
-         448	POP_JUMP_IF_FALSE '856'
-         451	LOAD_FAST         'preventScrollOut'
-         454	UNARY_NOT         ''
-       455_0	COME_FROM         '426'
-       455_1	COME_FROM         '432'
-       455_2	COME_FROM         '448'
-         455	POP_JUMP_IF_FALSE '856'
-
- 790     458	LOAD_FAST         'eScrollDir'
-         461	LOAD_GLOBAL       'EScrollDir'
-         464	LOAD_ATTR         'OUT'
-         467	COMPARE_OP        'is'
-         470	POP_JUMP_IF_FALSE '542'
-         473	LOAD_FAST         'self'
-         476	LOAD_ATTR         '__compareCurrStateSettingsKey'
-         479	LOAD_GLOBAL       'GAME'
-         482	LOAD_ATTR         'COMMANDER_CAM'
-         485	CALL_FUNCTION_1   ''
-         488	UNARY_NOT         ''
-       489_0	COME_FROM         '470'
-         489	POP_JUMP_IF_FALSE '542'
-
- 791     492	LOAD_FAST         'self'
-         495	LOAD_ATTR         '__isSettingsEnabled'
-         498	LOAD_GLOBAL       'GAME'
-         501	LOAD_ATTR         'COMMANDER_CAM'
-         504	CALL_FUNCTION_1   ''
-         507	POP_JUMP_IF_FALSE '542'
-         510	LOAD_FAST         'self'
-         513	LOAD_ATTR         '__postmortemMode'
-         516	UNARY_NOT         ''
-       517_0	COME_FROM         '507'
-         517	POP_JUMP_IF_FALSE '542'
-
- 792     520	LOAD_GLOBAL       'event_dispatcher'
-         523	LOAD_ATTR         'showCommanderCamHint'
-         526	LOAD_CONST        'show'
-         529	LOAD_GLOBAL       'True'
-         532	CALL_FUNCTION_256 ''
-         535	POP_TOP           ''
-         536	JUMP_ABSOLUTE     '542'
-         539	JUMP_FORWARD      '542'
-       542_0	COME_FROM         '539'
-
- 794     542	LOAD_FAST         'dz'
-         545	LOAD_GLOBAL       'float'
-         548	LOAD_FAST         'self'
-         551	LOAD_ATTR         '__curScrollSense'
-         554	CALL_FUNCTION_1   ''
-         557	BINARY_MULTIPLY   ''
-         558	STORE_FAST        'distDelta'
-
- 795     561	LOAD_GLOBAL       'math_utils'
-         564	LOAD_ATTR         'clamp'
-         567	LOAD_FAST         'distMinMax'
-         570	LOAD_ATTR         'min'
-         573	LOAD_FAST         'distMinMax'
-         576	LOAD_ATTR         'max'
-         579	LOAD_FAST         'prevDist'
-         582	LOAD_FAST         'distDelta'
-         585	BINARY_SUBTRACT   ''
-         586	CALL_FUNCTION_3   ''
-         589	STORE_FAST        'newDist'
-
- 796     592	LOAD_CONST        0.001
-         595	STORE_FAST        'floatEps'
-
- 798     598	LOAD_GLOBAL       'abs'
-         601	LOAD_FAST         'newDist'
-         604	LOAD_FAST         'prevDist'
-         607	BINARY_SUBTRACT   ''
-         608	CALL_FUNCTION_1   ''
-         611	LOAD_FAST         'floatEps'
-         614	COMPARE_OP        '>'
-         617	POP_JUMP_IF_FALSE '682'
-
- 799     620	LOAD_FAST         'self'
-         623	LOAD_ATTR         '_updateCameraSettings'
-         626	LOAD_FAST         'newDist'
-         629	CALL_FUNCTION_1   ''
-         632	POP_TOP           ''
-
- 802     633	LOAD_FAST         'self'
-         636	LOAD_ATTR         '__inputInertia'
-         639	LOAD_ATTR         'glideFov'
-         642	LOAD_FAST         'self'
-         645	LOAD_ATTR         '__calcRelativeDist'
-         648	CALL_FUNCTION_0   ''
-         651	CALL_FUNCTION_1   ''
-         654	POP_TOP           ''
-
- 803     655	LOAD_FAST         'self'
-         658	LOAD_ATTR         '__calcAimMatrix'
-         661	CALL_FUNCTION_0   ''
-         664	LOAD_FAST         'self'
-         667	LOAD_ATTR         '__aimingSystem'
-         670	STORE_ATTR        'aimMatrix'
-
- 804     673	LOAD_GLOBAL       'True'
-         676	STORE_FAST        'distChanged'
-         679	JUMP_FORWARD      '682'
-       682_0	COME_FROM         '679'
-
- 808     682	LOAD_GLOBAL       'abs'
-         685	LOAD_FAST         'newDist'
-         688	LOAD_FAST         'prevDist'
-         691	BINARY_SUBTRACT   ''
-         692	CALL_FUNCTION_1   ''
-         695	LOAD_FAST         'floatEps'
-         698	COMPARE_OP        '<'
-         701	POP_JUMP_IF_FALSE '790'
-         704	LOAD_GLOBAL       'math_utils'
-         707	LOAD_ATTR         'almostZero'
-         710	LOAD_FAST         'newDist'
-         713	LOAD_FAST         'distMinMax'
-         716	LOAD_ATTR         'min'
-         719	BINARY_SUBTRACT   ''
-         720	CALL_FUNCTION_1   ''
-       723_0	COME_FROM         '701'
-         723	POP_JUMP_IF_FALSE '790'
-
- 809     726	LOAD_FAST         'self'
-         729	LOAD_ATTR         'isInArcadeZoomState'
-         732	CALL_FUNCTION_0   ''
-         735	POP_JUMP_IF_FALSE '771'
-         738	LOAD_FAST         'self'
-         741	LOAD_ATTR         '__onChangeControlMode'
-         744	POP_JUMP_IF_FALSE '771'
-         747	LOAD_FAST         'self'
-         750	LOAD_ATTR         '__updatedByKeyboard'
-         753	UNARY_NOT         ''
-       754_0	COME_FROM         '735'
-       754_1	COME_FROM         '744'
-         754	POP_JUMP_IF_FALSE '771'
-
- 810     757	LOAD_FAST         'self'
-         760	LOAD_ATTR         '__onChangeControlMode'
-         763	CALL_FUNCTION_0   ''
-         766	POP_TOP           ''
-
- 811     767	LOAD_CONST        ''
-         770	RETURN_END_IF     ''
-
- 813     771	LOAD_FAST         'self'
-         774	LOAD_ATTR         '__changeZoomState'
-         777	LOAD_GLOBAL       'EScrollDir'
-         780	LOAD_ATTR         'IN'
-         783	CALL_FUNCTION_1   ''
-         786	POP_TOP           ''
-         787	JUMP_ABSOLUTE     '856'
-
- 814     790	LOAD_GLOBAL       'abs'
-         793	LOAD_FAST         'newDist'
-         796	LOAD_FAST         'prevDist'
-         799	BINARY_SUBTRACT   ''
-         800	CALL_FUNCTION_1   ''
-         803	LOAD_FAST         'floatEps'
-         806	COMPARE_OP        '<'
-         809	POP_JUMP_IF_FALSE '856'
-         812	LOAD_GLOBAL       'math_utils'
-         815	LOAD_ATTR         'almostZero'
-         818	LOAD_FAST         'newDist'
-         821	LOAD_FAST         'distMinMax'
-         824	LOAD_ATTR         'max'
-         827	BINARY_SUBTRACT   ''
-         828	CALL_FUNCTION_1   ''
-       831_0	COME_FROM         '809'
-         831	POP_JUMP_IF_FALSE '856'
-
- 815     834	LOAD_FAST         'self'
-         837	LOAD_ATTR         '__changeZoomState'
-         840	LOAD_GLOBAL       'EScrollDir'
-         843	LOAD_ATTR         'OUT'
-         846	CALL_FUNCTION_1   ''
-         849	POP_TOP           ''
-         850	JUMP_ABSOLUTE     '856'
-         853	JUMP_FORWARD      '856'
-       856_0	COME_FROM         '853'
-
- 817     856	LOAD_FAST         'rotateMode'
-         859	POP_JUMP_IF_FALSE '891'
-         862	LOAD_FAST         'self'
-         865	LOAD_ATTR         '__isCamInTransition'
-         868	UNARY_NOT         ''
-       869_0	COME_FROM         '859'
-         869	POP_JUMP_IF_FALSE '891'
-
- 818     872	LOAD_FAST         'self'
-         875	LOAD_ATTR         '__updateAngles'
-         878	LOAD_FAST         'dx'
-         881	LOAD_FAST         'dy'
-         884	CALL_FUNCTION_2   ''
-         887	POP_TOP           ''
-         888	JUMP_FORWARD      '891'
-       891_0	COME_FROM         '888'
-
- 821     891	LOAD_GLOBAL       'ENABLE_INPUT_ROTATION_INERTIA'
-         894	POP_JUMP_IF_FALSE '923'
-         897	LOAD_FAST         'distChanged'
-         900	UNARY_NOT         ''
-       901_0	COME_FROM         '894'
-         901	POP_JUMP_IF_FALSE '923'
-
- 822     904	LOAD_FAST         'self'
-         907	LOAD_ATTR         '__aimingSystem'
-         910	LOAD_ATTR         'update'
-         913	LOAD_CONST        0.0
-         916	CALL_FUNCTION_1   ''
-         919	POP_TOP           ''
-         920	JUMP_FORWARD      '923'
-       923_0	COME_FROM         '920'
-
- 824     923	LOAD_GLOBAL       'ENABLE_INPUT_ROTATION_INERTIA'
-         926	POP_JUMP_IF_TRUE  '935'
-         929	LOAD_FAST         'distChanged'
-       932_0	COME_FROM         '926'
-         932	POP_JUMP_IF_FALSE '951'
-
- 825     935	LOAD_FAST         'self'
-         938	LOAD_ATTR         '__startInputInertiaTransition'
-         941	LOAD_FAST         'prevPos'
-         944	CALL_FUNCTION_1   ''
-         947	POP_TOP           ''
-         948	JUMP_FORWARD      '951'
-       951_0	COME_FROM         '948'
-
-Syntax error at or near 'JUMP_FORWARD' token at offset 371
+    def __update(self, dx, dy, dz, rotateMode=True, zoomMode=True):
+        if not self.__aimingSystem:
+            return
+        eScrollDir = EScrollDir.convertDZ(dz)
+        prevPos = self.__inputInertia.calcWorldPos(self.__aimingSystem.matrixProvider)
+        prevDist = self.__aimingSystem.distanceFromFocus
+        distMinMax = self._distRange
+        if self.__isCamInTransition:
+            self.__isCamInTransition = self.__cameraTransition.isInTransition()
+        isColliding = self.__cam.hasCollision()
+        collisionWhileGlide = False
+        if self.__inputInertia.isGliding() and not isColliding and eScrollDir is EScrollDir.OUT and not self.__compareCurrStateSettingsKey(GAME.COMMANDER_CAM):
+            cameraPos = self.__aimingSystem.matrix.translation
+            collisionWhileGlide = self.__cam.isColliding(BigWorld.player().spaceID, cameraPos)
+        preventScrollOut = (isColliding or collisionWhileGlide) and eScrollDir is EScrollDir.OUT and not self.__compareCurrStateSettingsKey(GAME.COMMANDER_CAM)
+        if preventScrollOut and prevDist == distMinMax.max and self.__isSettingsEnabled(GAME.COMMANDER_CAM):
+            if self.isInArcadeZoomState() and not self.__isSettingsEnabled(GAME.PRE_COMMANDER_CAM) or self.__compareCurrStateSettingsKey(GAME.PRE_COMMANDER_CAM):
+                preventScrollOut = False
+        if isColliding and eScrollDir is EScrollDir.OUT:
+            self.__collideAnimatorEasing.start(_COLLIDE_ANIM_DIST, _COLLIDE_ANIM_INTERVAL)
+        distChanged = False
+        if zoomMode and eScrollDir and not self.__overScrollProtector.isProtecting() and not preventScrollOut:
+            if eScrollDir is EScrollDir.OUT and not self.__compareCurrStateSettingsKey(GAME.COMMANDER_CAM):
+                if self.__isSettingsEnabled(GAME.COMMANDER_CAM) and not self.__postmortemMode:
+                    event_dispatcher.showCommanderCamHint(show=True)
+            distDelta = dz * float(self.__curScrollSense)
+            newDist = math_utils.clamp(distMinMax.min, distMinMax.max, prevDist - distDelta)
+            floatEps = 0.001
+            if abs(newDist - prevDist) > floatEps:
+                self._updateCameraSettings(newDist)
+                self.__inputInertia.glideFov(self.__calcRelativeDist())
+                self.__aimingSystem.aimMatrix = self.__calcAimMatrix()
+                distChanged = True
+            if abs(newDist - prevDist) < floatEps and math_utils.almostZero(newDist - distMinMax.min):
+                if self.isInArcadeZoomState() and self.__onChangeControlMode and not self.__updatedByKeyboard:
+                    self.__onChangeControlMode()
+                    return
+                self.__changeZoomState(EScrollDir.IN)
+            elif abs(newDist - prevDist) < floatEps and math_utils.almostZero(newDist - distMinMax.max):
+                self.__changeZoomState(EScrollDir.OUT)
+        if rotateMode and not self.__isCamInTransition:
+            self.__updateAngles(dx, dy)
+        if ENABLE_INPUT_ROTATION_INERTIA and not distChanged:
+            self.__aimingSystem.update(0.0)
+        if ENABLE_INPUT_ROTATION_INERTIA or distChanged:
+            self.__startInputInertiaTransition(prevPos)
 
     def __adjustMinDistForShotPointCalc(self):
         if self.__aimingSystem:
@@ -987,10 +599,10 @@ Syntax error at or near 'JUMP_FORWARD' token at offset 371
     def __changeZoomState(self, eScrollDirection):
         if eScrollDirection not in (EScrollDir.IN, EScrollDir.OUT):
             return
-        elif self.__zoomStateSwitcher.isEmpty():
-            self._updateProperties(state=None)
-            return
         else:
+            if self.__zoomStateSwitcher.isEmpty():
+                self._updateProperties(state=None)
+                return
             state = None
             if eScrollDirection is EScrollDir.OUT:
                 state = self.__zoomStateSwitcher.getNextState()
@@ -1059,7 +671,9 @@ Syntax error at or near 'JUMP_FORWARD' token at offset 371
 
     def __compareCurrStateSettingsKey(self, key):
         state = self.__zoomStateSwitcher.getCurrentState()
-        return state.settingsKey == key if state else False
+        if state:
+            return state.settingsKey == key
+        return False
 
     def __isSettingsEnabled(self, settingsKey):
         if settingsKey and self.__settingsCache.isSynced():
@@ -1220,7 +834,8 @@ Syntax error at or near 'JUMP_FORWARD' token at offset 371
             self.__impulseOscillator.reset()
             self.__movementOscillator.reset()
             self.__noiseOscillator.reset()
-            return (Vector3(math_utils.VectorConstant.Vector3Zero), Vector3(math_utils.VectorConstant.Vector3Zero), 1.0)
+            return (
+             Vector3(math_utils.VectorConstant.Vector3Zero), Vector3(math_utils.VectorConstant.Vector3Zero), 1.0)
         oscillatorAcceleration = self.__calcCurOscillatorAcceleration(deltaTime)
         self.__movementOscillator.externalForce += oscillatorAcceleration
         self.__impulseOscillator.update(deltaTime)
@@ -1273,11 +888,11 @@ Syntax error at or near 'JUMP_FORWARD' token at offset 371
     def handleKeyEvent(self, isDown, key, mods, event=None):
         if self.__shiftKeySensor is None:
             return False
-        elif BigWorld.isKeyDown(Keys.KEY_CAPSLOCK) and mods & 4:
-            if key == Keys.KEY_C:
-                self.shiftCamPos()
-            return self.__shiftKeySensor.handleKeyEvent(key, isDown)
         else:
+            if BigWorld.isKeyDown(Keys.KEY_CAPSLOCK) and mods & 4:
+                if key == Keys.KEY_C:
+                    self.shiftCamPos()
+                return self.__shiftKeySensor.handleKeyEvent(key, isDown)
             self.__shiftKeySensor.reset(Math.Vector3())
             return False
 
@@ -1357,7 +972,8 @@ Syntax error at or near 'JUMP_FORWARD' token at offset 371
         bcfg['keySensitivity'] = readFloat(dataSec, 'keySensitivity', 0, 10, 0.01)
         bcfg['sensitivity'] = readFloat(dataSec, 'sensitivity', 0, 10, 0.01)
         bcfg['scrollSensitivity'] = readFloat(dataSec, 'scrollSensitivity', 0, 10, 0.01)
-        bcfg['angleRange'] = readVec2(dataSec, 'angleRange', (0, 0), (180, 180), (10, 110))
+        bcfg['angleRange'] = readVec2(dataSec, 'angleRange', (0, 0), (180, 180), (10,
+                                                                                  110))
         distRangeVec = readVec2(dataSec, 'distRange', (1, 1), (100, 100), (2, 20))
         bcfg['distRange'] = MinMax(distRangeVec.x, distRangeVec.y)
         bcfg['minStartDist'] = readFloat(dataSec, 'minStartDist', bcfg['distRange'][0], bcfg['distRange'][1], bcfg['distRange'][0])

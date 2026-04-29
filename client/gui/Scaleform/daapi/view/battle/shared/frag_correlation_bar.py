@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/frag_correlation_bar.py
+from __future__ import absolute_import, division
 from collections import namedtuple
 import typing
 from account_helpers.settings_core.settings_constants import ScorePanelStorageKeys, GAME
@@ -22,11 +21,15 @@ class _FragBarViewState(BitmaskHelper):
     SHOW_HP_BAR = 16
 
 
-GuiTypeViewStateBehaviour = namedtuple('GuiTypeViewStateBehaviour', ('allowHPBar', 'allowHPVal', 'allowDiff', 'allowTierGrp', 'allowVehIcons'))
+GuiTypeViewStateBehaviour = namedtuple('GuiTypeViewStateBehaviour', ('allowHPBar',
+                                                                     'allowHPVal',
+                                                                     'allowDiff',
+                                                                     'allowTierGrp',
+                                                                     'allowVehIcons'))
 _DEFAULT_GUI_TYPE = GuiTypeViewStateBehaviour(True, True, True, True, True)
-_GUI_TYPE_VIEW_STATE_BEHAVIOUR = {ARENA_GUI_TYPE.TRAINING: GuiTypeViewStateBehaviour(True, True, True, IS_DEVELOPMENT, True),
- ARENA_GUI_TYPE.EPIC_RANDOM: GuiTypeViewStateBehaviour(True, True, True, False, False),
- ARENA_GUI_TYPE.EPIC_RANDOM_TRAINING: GuiTypeViewStateBehaviour(True, True, True, False, False)}
+_GUI_TYPE_VIEW_STATE_BEHAVIOUR = {ARENA_GUI_TYPE.TRAINING: GuiTypeViewStateBehaviour(True, True, True, IS_DEVELOPMENT, True), 
+   ARENA_GUI_TYPE.EPIC_RANDOM: GuiTypeViewStateBehaviour(True, True, True, False, False), 
+   ARENA_GUI_TYPE.EPIC_RANDOM_TRAINING: GuiTypeViewStateBehaviour(True, True, True, False, False)}
 
 class FragCorrelationBar(FragCorrelationBarMeta, IBattleFieldListener):
     sessionProvider = dependency.descriptor(IBattleSessionProvider)

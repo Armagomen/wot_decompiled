@@ -1,13 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/cgf_components/marker_component.py
-import importlib
-import logging
-import typing
-import CGF
-import Event
-import GenericComponents
-import Math
-import math_utils
+import importlib, logging, typing, CGF, Event, GenericComponents, Math, math_utils
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from cache import cached_property
 from cgf_script.bonus_caps_rules import bonusCapsManager
@@ -166,18 +157,19 @@ class CombatMarkerManager(CGF.ComponentManager):
     def onAddedMarker(self, combatMarker, transform):
         transform = transform.worldTransform
         matrixProduct = math_utils.MatrixProviders.product(transform, math_utils.createTranslationMatrix(combatMarker.offset))
-        data = {'visible': True,
-         'areaRadius': combatMarker.areaRadius,
-         'disappearingRadius': combatMarker.disappearanceRadius,
-         'reverseDisappearing': combatMarker.reverseDisappearing,
-         ComponentBitMask.MARKER_2D: [{'shape': combatMarker.shape,
-                                       'min-distance': 0.0,
-                                       'max-distance': 0.0,
-                                       'distance': 0.0,
-                                       'distanceFieldColor': combatMarker.distanceFieldColor,
-                                       'displayDistance': False}],
-         'matrixProduct': matrixProduct,
-         'bitMask': ComponentBitMask.MARKER_2D}
+        data = {'visible': True, 
+           'areaRadius': combatMarker.areaRadius, 
+           'disappearingRadius': combatMarker.disappearanceRadius, 
+           'reverseDisappearing': combatMarker.reverseDisappearing, 
+           ComponentBitMask.MARKER_2D: [
+                                      {'shape': combatMarker.shape, 
+                                         'min-distance': 0.0, 
+                                         'max-distance': 0.0, 
+                                         'distance': 0.0, 
+                                         'distanceFieldColor': combatMarker.distanceFieldColor, 
+                                         'displayDistance': False}], 
+           'matrixProduct': matrixProduct, 
+           'bitMask': ComponentBitMask.MARKER_2D}
         combatMarker.marker = AreaMarker(data)
         combatMarker.markerID = self.__guiSessionProvider.shared.areaMarker.addMarker(combatMarker.marker)
 

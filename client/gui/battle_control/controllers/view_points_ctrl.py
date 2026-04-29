@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/view_points_ctrl.py
-import weakref
-import functools
-import BigWorld
+import weakref, functools, BigWorld
 from debug_utils import LOG_DEBUG
 from gui.battle_control.arena_info.interfaces import IViewPointsController
 from gui.battle_control.arena_info.vos_collections import VehicleInfoSortKey, VehiclesItemsCollection
@@ -14,7 +10,8 @@ from gui.battle_control.arena_info.vos_collections import RankedVehicleInfoSortK
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
 
 class ViewPointsController(IViewPointsController):
-    __slots__ = ('__points', '__arenaDP', '__currentViewPointID', '__currentVehicleID', '__normalSortKey', '__squadManSortKey')
+    __slots__ = ('__points', '__arenaDP', '__currentViewPointID', '__currentVehicleID',
+                 '__normalSortKey', '__squadManSortKey')
 
     def __init__(self, setup):
         super(ViewPointsController, self).__init__()
@@ -79,22 +76,26 @@ class ViewPointsController(IViewPointsController):
             items.reverse()
         switchToNext = False
         if self.__currentViewPointID is not None:
-            currentItem = (True, self.__currentViewPointID)
+            currentItem = (
+             True, self.__currentViewPointID)
         else:
-            currentItem = (False, self.__currentVehicleID)
+            currentItem = (
+             False, self.__currentVehicleID)
             if self.__currentVehicleID == playerVehicleID:
                 switchToNext = True
         if self.__doSwitch(switchToNext, items, currentItem):
             return True
         else:
-            return True if self.__doSelect(False, playerVehicleID) else self.__doSwitch(True, items, currentItem)
+            if self.__doSelect(False, playerVehicleID):
+                return True
+            return self.__doSwitch(True, items, currentItem)
 
     def __doSwitch(self, switchToNext, items, currentItem):
         for item in items:
             if switchToNext:
                 if self.__doSelect(*item):
                     return True
-            if item == currentItem:
+            elif item == currentItem:
                 switchToNext = True
 
         return False

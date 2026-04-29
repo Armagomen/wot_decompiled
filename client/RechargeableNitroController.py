@@ -1,7 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/RechargeableNitroController.py
-import typing
-import BigWorld
+from __future__ import absolute_import, division
+import typing, BigWorld
 from constants import RECHARGEABLE_NITRO_STATE
 from gui.shared.utils.decorators import ReprInjector
 from items.components.shared_components import RechargeableNitroParams
@@ -18,13 +16,21 @@ if typing.TYPE_CHECKING:
     from vehicles.mechanics.mechanic_states import IMechanicStatesEvents
 
 @ReprInjector.simple('state', 'endTime', 'remainingTime', 'isCharged', 'isEmpty')
-class RechargeableNitroState(typing.NamedTuple('RechargeableNitroState', (('state', RECHARGEABLE_NITRO_STATE),
- ('endTime', float),
- ('remainingTime', float),
- ('isCharged', bool),
- ('isEmpty', bool),
- ('isBelowThreshold', bool),
- ('params', typing.Optional[RechargeableNitroParams]))), IMechanicState):
+class RechargeableNitroState(typing.NamedTuple('RechargeableNitroState', (
+ (
+  'state', RECHARGEABLE_NITRO_STATE),
+ (
+  'endTime', float),
+ (
+  'remainingTime', float),
+ (
+  'isCharged', bool),
+ (
+  'isEmpty', bool),
+ (
+  'isBelowThreshold', bool),
+ (
+  'params', typing.Optional[RechargeableNitroParams]))), IMechanicState):
 
     @classmethod
     def fromComponentStatus(cls, status, params):

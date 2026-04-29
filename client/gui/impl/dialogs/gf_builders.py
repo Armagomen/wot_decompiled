@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/dialogs/gf_builders.py
+from __future__ import absolute_import
 import typing
 from frameworks.wulf import WindowLayer
 from gui.impl.dialogs.dialog_template import DialogTemplateView, DEFAULT_DIMMER_ALPHA
@@ -31,7 +30,9 @@ class BuilderDialogTemplateView(DialogTemplateView):
 
 
 class BaseDialogBuilder(object):
-    __slots__ = ('__title', '__description', '__icon', '__buttons', '__uniqueID', '__backgroundID', '__dimmerAlpha', '__layoutID', '__selectedButtonID', '__doBlur', '__layer', '__displayFlags')
+    __slots__ = ('__title', '__description', '__icon', '__buttons', '__uniqueID', '__backgroundID',
+                 '__dimmerAlpha', '__layoutID', '__selectedButtonID', '__doBlur',
+                 '__layer', '__displayFlags')
 
     def __init__(self, uniqueID=None):
         super(BaseDialogBuilder, self).__init__()
@@ -83,17 +84,17 @@ class BaseDialogBuilder(object):
         self.__description = toString(text)
 
     def setIcon(self, mainIcon, backgrounds=None, overlays=None, layoutID=None, iconPositionLogic=IconPositionLogicEnum.CENTREDANDTHROUGHCONTENT.value):
-        self.__icon = {'iconResID': mainIcon,
-         'backgroundResIDList': backgrounds,
-         'overlayResIDList': overlays,
-         'layoutID': layoutID,
-         'iconPositionLogic': iconPositionLogic}
+        self.__icon = {'iconResID': mainIcon, 
+           'backgroundResIDList': backgrounds, 
+           'overlayResIDList': overlays, 
+           'layoutID': layoutID, 
+           'iconPositionLogic': iconPositionLogic}
 
     def addButton(self, buttonSettings):
         self.__buttons.append(buttonSettings)
 
     def getButton(self, buttonID):
-        return next((data for data in self.__buttons if data.buttonID == buttonID))
+        return next(data for data in self.__buttons if data.buttonID == buttonID)
 
     def setBackground(self, resourceID):
         self.__backgroundID = resourceID
@@ -121,7 +122,7 @@ class BaseDialogBuilder(object):
 
 
 class ResDialogBuilder(BaseDialogBuilder):
-    __slots__ = ('__showBalance',)
+    __slots__ = ('__showBalance', )
 
     def __init__(self, uniqueID=None):
         super(ResDialogBuilder, self).__init__(uniqueID)
@@ -187,7 +188,7 @@ class ConfirmCancelWarningDialogBuilder(ConfirmCancelDialogBuilder):
 
 
 class ConfirmCancelDescriptionDialogBuilder(ConfirmCancelDialogBuilder):
-    __slots__ = ('__descriptionMsg',)
+    __slots__ = ('__descriptionMsg', )
 
     def __init__(self, uniqueID=None):
         super(ConfirmCancelDescriptionDialogBuilder, self).__init__(uniqueID)
@@ -259,7 +260,8 @@ class PassiveXPDialogBuilder(ConfirmCancelDialogBuilder):
         if self.__descriptionMsg and self.__iconFrom:
             imageFrom = ImageSubstitution(self.__iconFrom(), 'typeIconFrom', -1, -5, -5, -5)
             imageTo = ImageSubstitution(self.__iconTo(), 'typeIconTo', -1, -5, -5, -5)
-            template.setSubView(DefaultDialogPlaceHolders.CONTENT, SimpleTextContent(self.__descriptionMsg, imageSubstitutions=[imageFrom, imageTo]))
+            template.setSubView(DefaultDialogPlaceHolders.CONTENT, SimpleTextContent(self.__descriptionMsg, imageSubstitutions=[
+             imageFrom, imageTo]))
         if self.__vehsCD:
             template.setSubView(DefaultDialogPlaceHolders.ICON, ItemIcons(self.__vehsCD, True))
 

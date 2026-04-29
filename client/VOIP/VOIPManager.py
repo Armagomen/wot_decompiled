@@ -1,11 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/VOIP/VOIPManager.py
-import logging
-import BigWorld
-import Event
-import Settings
-import SoundGroups
-import VOIPCommon
+import logging, BigWorld, Event, Settings, SoundGroups, VOIPCommon
 from VOIP.voip_constants import VOIP_SUPPORTED_API
 from VOIPFsm import VOIPFsm, VOIP_FSM_STATE as STATE
 from VOIPHandler import VOIPHandler
@@ -40,8 +33,10 @@ class VOIPManager(VOIPHandler):
         self.__voipServer = ''
         self.__voipDomain = ''
         self.__testDomain = ''
-        self.__user = ['', '']
-        self.__channel = ['', '']
+        self.__user = [
+         '', '']
+        self.__channel = [
+         '', '']
         self.__currentChannel = ''
         self.__isChannelRejoin = False
         self.__inTesting = False
@@ -54,6 +49,7 @@ class VOIPManager(VOIPHandler):
         self.__reLoginCallbackID = None
         self.__activateMicByVoice = False
         self.__captureDevices = []
+        self.__captureDevicesNames = []
         self.__currentCaptureDevice = ''
         self.__channelUsers = {}
         self.__eventManager = em = Event.EventManager()
@@ -70,15 +66,15 @@ class VOIPManager(VOIPHandler):
 
     @proto_getter(PROTO_TYPE.BW_CHAT2)
     def bwProto(self):
-        return None
+        return
 
     @storage_getter('users')
     def usersStorage(self):
-        return None
+        return
 
     @proto_getter(PROTO_TYPE.MIGRATION)
     def proto(self):
-        return None
+        return
 
     def destroy(self):
         self.__fsm.onStateChanged -= self.__onStateChanged
@@ -109,7 +105,9 @@ class VOIPManager(VOIPHandler):
         return self.getVOIPDomain() != '' and self.isInitialized()
 
     def isChannelAvailable(self):
-        return True if self.bwProto.voipProvider.getChannelParams()[0] else False
+        if self.bwProto.voipProvider.getChannelParams()[0]:
+            return True
+        return False
 
     def hasDesiredChannel(self):
         channelUrl = self.__channel[0]
@@ -122,7 +120,7 @@ class VOIPManager(VOIPHandler):
         return self.__user[0]
 
     def isInDesiredChannel(self):
-        if not self.__channel[0] == self.__currentChannel:
+        if self.__channel[0] != self.__currentChannel:
             return False
         if self.__currentChannel == self.__testDomain:
             return True
@@ -131,6 +129,9 @@ class VOIPManager(VOIPHandler):
 
     def getCaptureDevices(self):
         return self.__captureDevices
+
+    def getCaptureDevicesNames(self):
+        return self.__captureDevicesNames
 
     def getCurrentCaptureDevice(self):
         return self.__currentCaptureDevice
@@ -234,13 +235,12 @@ class VOIPManager(VOIPHandler):
             section = section['development']
             if section.has_key('vivoxLogLevel'):
                 logLevel = section['vivoxLogLevel'].asInt
-        vinit = {VOIPCommon.KEY_SERVER: 'http://%s/api2' % self.__voipServer,
-         VOIPCommon.KEY_MIN_PORT: '0',
-         VOIPCommon.KEY_MAX_PORT: '0',
-         VOIPCommon.KEY_LOG_PREFIX: 'voip',
-         VOIPCommon.KEY_LOG_SUFFIX: '.txt',
-         VOIPCommon.KEY_LOG_FOLDER: '.',
-         VOIPCommon.KEY_LOG_LEVEL: str(logLevel)}
+        vinit = {VOIPCommon.KEY_SERVER: 'http://%s/api2' % self.__voipServer, VOIPCommon.KEY_MIN_PORT: '0', 
+           VOIPCommon.KEY_MAX_PORT: '0', 
+           VOIPCommon.KEY_LOG_PREFIX: 'voip', 
+           VOIPCommon.KEY_LOG_SUFFIX: '.txt', 
+           VOIPCommon.KEY_LOG_FOLDER: '.', 
+           VOIPCommon.KEY_LOG_LEVEL: str(logLevel)}
         BigWorld.VOIP.initialise(vinit)
 
     def __login(self, name, password):
@@ -388,10 +388,12 @@ class VOIPManager(VOIPHandler):
         self.bwProto.voipProvider.requestCredentials(reset)
 
     def __clearDesiredChannel(self):
-        self.__channel = ['', '']
+        self.__channel = [
+         '', '']
 
     def __clearUser(self):
-        self.__user = ['', '']
+        self.__user = [
+         '', '']
 
     def __onChatActionMute(self, dbid, muted):
         _logger.debug('OnChatActionMute: dbID = %d, muted = %r', dbid, muted)
@@ -402,9 +404,9 @@ class VOIPManager(VOIPHandler):
         _logger.debug('MuteParticipantForMe: %d, %s', dbid, str(mute))
         self.__channelUsers[dbid]['muted'] = mute
         uri = self.__channelUsers[dbid]['uri']
-        cmd = {VOIPCommon.KEY_COMMAND: VOIPCommon.CMD_SET_PARTICIPANT_MUTE,
-         VOIPCommon.KEY_PARTICIPANT_URI: uri,
-         VOIPCommon.KEY_STATE: str(mute)}
+        cmd = {VOIPCommon.KEY_COMMAND: VOIPCommon.CMD_SET_PARTICIPANT_MUTE, 
+           VOIPCommon.KEY_PARTICIPANT_URI: uri, 
+           VOIPCommon.KEY_STATE: str(mute)}
         BigWorld.VOIP.command(cmd)
         return True
 
@@ -488,8 +490,10 @@ class VOIPManager(VOIPHandler):
             return
         captureDevicesCount = int(data[VOIPCommon.KEY_COUNT])
         self.__captureDevices = []
+        self.__captureDevicesNames = []
         for i in xrange(captureDevicesCount):
-            self.__captureDevices.append(str(data[VOIPCommon.KEY_CAPTURE_DEVICES + '_' + str(i)]))
+            self.__captureDevices.append(str(data[(VOIPCommon.KEY_CAPTURE_DEVICES + '_' + str(i))]))
+            self.__captureDevicesNames.append(str(data[(VOIPCommon.KEY_CAPTURE_DEVICES_NAMES + '_' + str(i))]))
 
         self.__currentCaptureDevice = str(data[VOIPCommon.KEY_CURRENT_CAPTURE_DEVICE])
         self.onCaptureDevicesUpdated()
@@ -594,9 +598,7 @@ class VOIPManager(VOIPHandler):
         dbid, _ = self.__extractDBIDFromURI(uri)
         if dbid == -1:
             return
-        self.__channelUsers[dbid] = {'talking': False,
-         'uri': uri,
-         'muted': False}
+        self.__channelUsers[dbid] = {'talking': False, 'uri': uri, 'muted': False}
         user = self.usersStorage.getUser(dbid)
         if user and user.isMuted():
             self.__muteParticipantForMe(dbid, True)
@@ -635,8 +637,7 @@ class VOIPManager(VOIPHandler):
         if hasattr(BigWorld.player(), 'arena'):
             arena = BigWorld.player().arena
             return not (arena is not None and arena.guiType in ARENA_GUI_TYPE.VOIP_SUPPORTED)
-        else:
-            return True
+        return True
 
     def __me_onChannelAvailable(self, uri, pwd, isRejoin):
         self.__isChannelRejoin = isRejoin

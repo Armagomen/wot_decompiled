@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_light/scripts/client/comp7_light/gui/impl/lobby/comp7_light_helpers/comp7_light_packers.py
 import typing
 from comp7_light.skeletons.gui.game_control import IComp7LightProgressionController
 from constants import EVENT_TYPE
@@ -20,17 +18,20 @@ if typing.TYPE_CHECKING:
 
 def getComp7LightBonusPacker():
     packer = getBattlePassBonusPacker()
-    packer.getPackers().update({'battleToken': Comp7LightTokenBonusUIPacker(),
-     'token': Comp7LightTokenBonusUIPacker(),
-     Currency.CREDITS: _CurrencyBonusUIPacker(),
-     Currency.GOLD: _CurrencyBonusUIPacker(),
-     Currency.CRYSTAL: _CurrencyBonusUIPacker(),
-     Currency.EQUIP_COIN: _CurrencyBonusUIPacker()})
+    packer.getPackers().update({'battleToken': Comp7LightTokenBonusUIPacker(), 
+       'token': Comp7LightTokenBonusUIPacker(), 
+       Currency.CREDITS: _CurrencyBonusUIPacker(), 
+       Currency.GOLD: _CurrencyBonusUIPacker(), 
+       Currency.CRYSTAL: _CurrencyBonusUIPacker(), 
+       Currency.EQUIP_COIN: _CurrencyBonusUIPacker()})
     return packer
 
 
 def getComp7LightEventUIDataPacker(event):
-    return Comp7LightDailyQuestUIDataPacker(event) if event.getType() in EVENT_TYPE.LIKE_BATTLE_QUESTS else None
+    if event.getType() in EVENT_TYPE.LIKE_BATTLE_QUESTS:
+        return Comp7LightDailyQuestUIDataPacker(event)
+    else:
+        return
 
 
 class Comp7LightDailyQuestUIDataPacker(DailyQuestUIDataPacker):
@@ -73,7 +74,8 @@ class _CurrencyBonusUIPacker(SimpleBonusUIPacker):
 
     @classmethod
     def _pack(cls, bonus):
-        return [cls._packSingleBonus(bonus, '')]
+        return [
+         cls._packSingleBonus(bonus, '')]
 
     @classmethod
     def _packSingleBonus(cls, bonus, label):

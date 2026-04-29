@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/achievements/tooltips/editing_tooltip.py
 from frameworks.wulf import ViewSettings
 from gui.impl.pub import ViewImpl
 from gui.impl.gen import R
@@ -21,7 +19,7 @@ class EditingTooltip(ViewImpl):
 
     def _onLoading(self, *args, **kwargs):
         super(EditingTooltip, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setTooltipType(self.__getTooltipType())
             model.setRequiredAchievementsCount(self.__lobbyContext.getServerSettings().getAchievements20GeneralConfig().getLayoutLength() + 1)
 
@@ -37,4 +35,5 @@ class EditingTooltip(ViewImpl):
             return TooltipType.DISABLED
         if TooltipType.DISABLED_LAYOUT.value == self.__tooltipType:
             return TooltipType.DISABLED_LAYOUT
-        return TooltipType.OTHER_PLAYER if TooltipType.OTHER_PLAYER.value == self.__tooltipType else None
+        if TooltipType.OTHER_PLAYER.value == self.__tooltipType:
+            return TooltipType.OTHER_PLAYER

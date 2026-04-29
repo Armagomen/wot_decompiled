@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/visual_script_client/pet_system_blocks.py
-import typing
-import skeletons.gui.pet_system
+import typing, skeletons.gui.pet_system
 from pet_system_common.pet_constants import AnimationStateName, PetHangarObject, PetStateBehavior, PetStaticTrigger, PetTrigger, StorageStaticTrigger
 from visual_script.misc import EDITOR_TYPE
 from visual_script.type import VScriptEnum
@@ -15,15 +12,15 @@ class PetSystemMeta(Meta):
 
     @classmethod
     def blockColor(cls):
-        pass
+        return 16776960
 
     @classmethod
     def blockCategory(cls):
-        pass
+        return 'PetSystem'
 
     @classmethod
     def blockIcon(cls):
-        pass
+        return ':vse/blocks/arena'
 
     @classmethod
     def blockAspects(cls):
@@ -100,7 +97,7 @@ class PetTriggerEnum(VScriptEnum):
 
     @classmethod
     def vs_name(cls):
-        pass
+        return 'PetTriggerT'
 
     @classmethod
     def vs_enum(cls):
@@ -118,34 +115,46 @@ class PetTriggerEnum(VScriptEnum):
 
         return entriesData
 
+    @classmethod
+    def vs_aspects(cls):
+        return [ASPECT.HANGAR]
+
 
 class StorageStaticTriggerEnum(VScriptEnum):
 
     @classmethod
     def vs_name(cls):
-        pass
+        return 'StorageStaticTriggerT'
 
     @classmethod
     def vs_enum(cls):
         return StorageStaticTrigger
+
+    @classmethod
+    def vs_aspects(cls):
+        return [ASPECT.HANGAR]
 
 
 class PetStaticTriggerEnum(VScriptEnum):
 
     @classmethod
     def vs_name(cls):
-        pass
+        return 'PetStaticTriggerT'
 
     @classmethod
     def vs_enum(cls):
         return PetStaticTrigger
+
+    @classmethod
+    def vs_aspects(cls):
+        return [ASPECT.HANGAR]
 
 
 class AnimationStateNameEnum(VScriptEnum):
 
     @classmethod
     def vs_name(cls):
-        pass
+        return 'AnimationStateNameT'
 
     @classmethod
     def vs_enum(cls):
@@ -162,6 +171,10 @@ class AnimationStateNameEnum(VScriptEnum):
             entriesData[name] = index
 
         return entriesData
+
+    @classmethod
+    def vs_aspects(cls):
+        return [ASPECT.HANGAR]
 
 
 class GetPetState(Block, PetSystemMeta):

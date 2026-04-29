@@ -1,12 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicle_extras.py
-import typing
-import logging
+from __future__ import absolute_import, division, print_function
+import typing, logging
 from functools import partial
-import AnimationSequence
-import BigWorld
-import Math
-import material_kinds
+from future.utils import lrange, viewitems, viewvalues
+import AnimationSequence, BigWorld, Math, material_kinds
 from GenericComponents import findSlot
 from constants import IS_EDITOR, CollisionFlags, DEFAULT_GUN_INSTALLATION_INDEX, IS_UE_EDITOR
 from cgf_events import shot_event
@@ -25,13 +21,14 @@ from vehicle_systems.vehicle_composition import VehicleSlots
 _logger = logging.getLogger(__name__)
 
 def reload():
-    modNames = (reload.__module__,)
+    modNames = (
+     reload.__module__,)
     from sys import modules
-    import __builtin__
+    from py2to3.moves import importLib
     for m in modNames:
-        __builtin__.reload(modules[m])
+        importLib.reload(modules[m])
 
-    print 'vehicle_extras reloaded'
+    print('vehicle_extras reloaded')
 
 
 class NoneExtra(EntityExtra):
@@ -56,7 +53,8 @@ class ShowShooting(EntityExtra):
             stages, effects, _ = gunDescr.effects
             data['_effectsListPlayer'] = EffectsListPlayer(effects, stages, **data)
         data['entity_id'] = vehicle.id
-        data['_burst'] = (burstCount, gunDescr.burst[1])
+        data['_burst'] = (
+         burstCount, gunDescr.burst[1])
         data['_gunModel'] = vehicle.appearance.compoundModel
         data['_shellType'] = shellType
         self.__doShot(data)
@@ -90,7 +88,8 @@ class ShowShooting(EntityExtra):
                     data['_timerID'] = BigWorld.callback(0.01, onComplete)
                 withShot = 1
             else:
-                data['_burst'] = (burstCount - 1, burstInterval)
+                data['_burst'] = (
+                 burstCount - 1, burstInterval)
                 data['_timerID'] = BigWorld.callback(burstInterval, partial(self.__doShot, data))
                 withShot = 2
             if effPlayer is not None:
@@ -168,13 +167,15 @@ class ShowShootingMultiGun(ShowShooting):
         data['_gunInstallationSlot'] = gunInstallationSlot
         gunDescr = vehicle.typeDescriptor.gun
         if currentGuns == self._SHOT_ALL_GUNS:
-            data['_gunIndex'] = range(0, len(gunDescr.effects))
+            data['_gunIndex'] = lrange(0, len(gunDescr.effects))
             data['_gunSequence'] = [data['_gunIndex']] * burstCount
         else:
-            data['_gunIndex'] = [currentGuns]
+            data['_gunIndex'] = [
+             currentGuns]
             data['_gunSequence'] = [data['_gunIndex']] * burstCount
         if vehicle.typeDescriptor.isDualgunVehicle:
-            positions = [None] * len(gunDescr.multiGun)
+            positions = [
+             None] * len(gunDescr.multiGun)
         else:
             positions = [ (multiGunInstance.gunFire,) for multiGunInstance in gunDescr.multiGun ]
         data['entity_id'] = vehicle.id
@@ -184,7 +185,8 @@ class ShowShootingMultiGun(ShowShooting):
             effectPlayers[gunIndex] = EffectsListPlayer(effects, stages, position=positions[gunIndex], **data)
 
         data['_effectsListPlayers'] = effectPlayers
-        data['_burst'] = (burstCount, burstCount, gunDescr.burst[1])
+        data['_burst'] = (
+         burstCount, burstCount, gunDescr.burst[1])
         data['_gunModel'] = vehicle.appearance.compoundModel
         self.__doShot(data)
         return
@@ -212,7 +214,7 @@ class ShowShootingMultiGun(ShowShooting):
                 self.stop(data)
                 return
             burstSize, burstCount, burstInterval = data['_burst']
-            gunIndexes = data['_gunSequence'][burstSize - burstCount]
+            gunIndexes = data['_gunSequence'][(burstSize - burstCount)]
             if len(gunIndexes) > 1:
                 processVehicleMultiShot(vehicle, data['_gunInstallationSlot'], gunIndexes)
             else:
@@ -221,7 +223,8 @@ class ShowShootingMultiGun(ShowShooting):
                 self.__doGunEffect(data, gunIndexes, True)
                 withShot = 1
             else:
-                data['_burst'] = (burstSize, burstCount - 1, burstInterval)
+                data['_burst'] = (
+                 burstSize, burstCount - 1, burstInterval)
                 data['_timerID'] = BigWorld.callback(burstInterval, partial(self.__doShot, data))
                 self.__doGunEffect(data, gunIndexes, False)
                 withShot = 2
@@ -294,9 +297,9 @@ class DamageMarker(EntityExtra):
 
 def wheelHealths(name, index, containerName, dataSection, vehType):
     extras = []
-    maxAxleCount = max((len(c[1]['axleSteeringLockAngles']) for c in vehType.xphysics['chassis'].iteritems()))
+    maxAxleCount = max(len(c[1]['axleSteeringLockAngles']) for c in viewitems(vehType.xphysics['chassis']))
     template = vehicles.makeMultiExtraNameTemplate(name)
-    for number in xrange(maxAxleCount * 2):
+    for number in range(maxAxleCount * 2):
         extraName = template.format(number)
         wheelHealth = DamageMarker(extraName, number + index, containerName, dataSection)
         extras.append(wheelHealth)
@@ -342,7 +345,8 @@ class TankmanHealth(DamageMarker):
 
 
 class BlinkingLaserSight(EntityExtra):
-    __slots__ = ('_isEnabledBlinking', '_shouldCollideTarget', '_beamLength', '_bindNode', '_beamSeqs')
+    __slots__ = ('_isEnabledBlinking', '_shouldCollideTarget', '_beamLength', '_bindNode',
+                 '_beamSeqs')
     _SEQUENCE_NAMES = ('beamStaticSeq', 'beamReloadStartSeq', 'beamReloadFininshSeq')
     _MAX_LASER_DISTANCE = 564
 
@@ -351,16 +355,15 @@ class BlinkingLaserSight(EntityExtra):
         self._shouldCollideTarget = dataSection.readBool('shouldCollideTarget')
         self._beamLength = dataSection.readFloat('beamLength', 1.0)
         self._bindNode = dataSection.readString('bindNode')
-        self._beamSeqs = dict(((name, dataSection.readString(name)) for name in self._SEQUENCE_NAMES if self._isEnabledBlinking or name == 'beamStaticSeq'))
+        self._beamSeqs = dict((name, dataSection.readString(name)) for name in self._SEQUENCE_NAMES if self._isEnabledBlinking or name == 'beamStaticSeq')
 
     def _newData(self, entity):
         data = super(BlinkingLaserSight, self)._newData(entity)
-        data.update({'beamModelRef': None,
-         'bindNodeRef': None,
-         'beamMP': None,
-         'animatorRefs': {},
-         'currSeq': None,
-         'isVehicleTakenAtGunPoint': False})
+        data.update({'beamModelRef': None, 
+           'bindNodeRef': None, 
+           'beamMP': None, 
+           'animatorRefs': {}, 'currSeq': None, 
+           'isVehicleTakenAtGunPoint': False})
         return data
 
     def _start(self, data, args):
@@ -373,7 +376,7 @@ class BlinkingLaserSight(EntityExtra):
             data['beamModelRef'].addMotor(BigWorld.Servo(data['beamMP'].beamMatrix))
             player = BigWorld.player()
             player.addModel(data['beamModelRef'])
-            for beamSeq in self._beamSeqs.itervalues():
+            for beamSeq in viewvalues(self._beamSeqs):
                 loader = AnimationSequence.Loader(beamSeq, player.spaceID)
                 data['animatorRefs'][beamSeq] = loader.loadSync()
                 BigWorld.loadResourceListBG((loader,), makeCallbackWeak(self.__onSequenceLoaded, beamSeq, data))
@@ -385,9 +388,9 @@ class BlinkingLaserSight(EntityExtra):
         if not (vehicle.health > 0 and vehicle.isCrewActive):
             self.stop(data)
             return
-        elif args is None or data['bindNodeRef'] is None:
-            return
         else:
+            if args is None or data['bindNodeRef'] is None:
+                return
             gunMatr = Math.Matrix(data['bindNodeRef'])
             gunPos = gunMatr.applyToOrigin()
             gunDir = gunMatr.applyToAxis(2)
@@ -415,7 +418,7 @@ class BlinkingLaserSight(EntityExtra):
         self.__stopModel(data)
         data['bindNodeRef'] = None
         data['beamMP'] = None
-        for animator in data['animatorRefs'].itervalues():
+        for animator in viewvalues(data['animatorRefs']):
             animator.unbind()
 
         data['animatorRefs'] = {}

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: server_side_replay/scripts/client/server_side_replay/gui/wgcg/providers/server_replays_provider.py
 from copy import deepcopy
 import typing
 from server_side_replay.gui.wgcg.providers.base_provider import BaseProvider, RequestSettings, UpdatePeriodType
@@ -46,8 +44,8 @@ class ServerReplaysProvider(BaseProvider):
         return deepcopy(EXAMPLE_DATA)
 
     def _getSettings(self):
-        return {DataNames.BEST_REPLAYS: RequestSettings(contextClazz=contexts.BestReplaysCtx, isCached=False, updatePeriodType=UpdatePeriodType.NONE, updateKwargs=None),
-         DataNames.MY_REPLAYS: RequestSettings(contextClazz=contexts.BestReplaysCtx, isCached=False, updatePeriodType=UpdatePeriodType.NONE, updateKwargs=None),
-         DataNames.TOP_REPLAYS: RequestSettings(contextClazz=contexts.TopReplaysCtx, isCached=True, updatePeriodType=UpdatePeriodType.AFTER_BATTLE, updateKwargs=None),
-         DataNames.REPLAY_LINK: RequestSettings(contextClazz=contexts.ReplayLinkCtx, isCached=False, updatePeriodType=UpdatePeriodType.NONE, updateKwargs=None),
-         DataNames.FIND_REPLAY: RequestSettings(contextClazz=contexts.FindReplayCtx, isCached=False, updatePeriodType=UpdatePeriodType.NONE, updateKwargs=None)}
+        return {DataNames.BEST_REPLAYS: RequestSettings(contextClazz=contexts.BestReplaysCtx, isCached=False, updatePeriodType=UpdatePeriodType.NONE, updateKwargs=None), 
+           DataNames.MY_REPLAYS: RequestSettings(contextClazz=contexts.BestReplaysCtx, isCached=False, updatePeriodType=UpdatePeriodType.NONE, updateKwargs=None), 
+           DataNames.TOP_REPLAYS: RequestSettings(contextClazz=contexts.TopReplaysCtx, isCached=True, updatePeriodType=UpdatePeriodType.AFTER_BATTLE, updateKwargs=None), 
+           DataNames.REPLAY_LINK: RequestSettings(contextClazz=contexts.ReplayLinkCtx, isCached=False, updatePeriodType=UpdatePeriodType.NONE, updateKwargs=None), 
+           DataNames.FIND_REPLAY: RequestSettings(contextClazz=contexts.FindReplayCtx, isCached=False, updatePeriodType=UpdatePeriodType.NONE, updateKwargs=None)}

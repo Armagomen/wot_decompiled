@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/genConsts/SESSION_STATS_CONSTANTS.py
 
 
 class SESSION_STATS_CONSTANTS(object):
@@ -8,7 +6,6 @@ class SESSION_STATS_CONSTANTS(object):
     SESSION_BATTLE_STATS_VIEW_LINKAGE = 'SessionBattleStatsViewUI'
     SESSION_VEHICLE_STATS_VIEW_PY_ALIAS = 'SessionVehicleStatsView'
     SESSION_VEHICLE_STATS_VIEW_LINKAGE = 'SessionVehicleStatsViewUI'
-    SESSION_STATS_BUTTON_ALIAS = 'SessionStatsButtonAlias'
     SESSION_STATS_PROPS_WTR = 'wtr'
     SESSION_STATS_PROPS_RATIO_DAMAGE = 'ratioDamage'
     SESSION_STATS_PROPS_RATIO_KILL = 'ratioKill'

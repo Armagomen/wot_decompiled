@@ -1,9 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/LobbyView.py
-import logging
-import typing
-import constants
-import gui
+from __future__ import absolute_import
+import logging, typing, constants, gui
 from frameworks.wulf import WindowLayer
 from gui import SystemMessages
 from gui.Scaleform.Waiting import Waiting
@@ -21,7 +17,6 @@ from gui.Scaleform.locale.SYSTEM_MESSAGES import SYSTEM_MESSAGES
 from gui.hangar_cameras.hangar_camera_common import CameraRelatedEvents
 from gui.impl import backport
 from gui.impl.gen import R
-from gui.impl.pub.view_component import ViewComponent
 from gui.prb_control.dispatcher import g_prbLoader
 from gui.prb_control.entities.listener import IGlobalListener
 from gui.shared import EVENT_BUS_SCOPE, events
@@ -33,8 +28,11 @@ from skeletons.gui.app_loader import IWaitingWidget
 from skeletons.gui.game_control import IIGRController, IMapsTrainingController, IWalletController, IHangarGuiController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
+if typing.TYPE_CHECKING:
+    from gui.impl.pub.view_component import ViewComponent
 _logger = logging.getLogger(__name__)
-registerLifecycleHandledSubViews([VIEW_ALIAS.LOBBY_HANGAR,
+registerLifecycleHandledSubViews([
+ VIEW_ALIAS.LOBBY_HANGAR,
  VIEW_ALIAS.LEGACY_LOBBY_HANGAR,
  VIEW_ALIAS.LOBBY_STORE,
  VIEW_ALIAS.LOBBY_STORAGE,
@@ -52,7 +50,6 @@ registerLifecycleHandledSubViews([VIEW_ALIAS.LOBBY_HANGAR,
  PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSIONS_PAGE_ALIAS,
  PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSIONS_OPERATION_AWARDS_SCREEN_ALIAS,
  VIEW_ALIAS.VEHICLE_COMPARE_MAIN_CONFIGURATOR,
- VIEW_ALIAS.LOBBY_RESEARCH,
  VIEW_ALIAS.LOBBY_TECHTREE,
  VIEW_ALIAS.BATTLE_QUEUE,
  VIEW_ALIAS.BATTLE_STRONGHOLDS_QUEUE,
@@ -63,7 +60,8 @@ registerLifecycleHandledSubViews([VIEW_ALIAS.LOBBY_HANGAR,
 
 class _LobbySubViewsLifecycleHandler(IViewLifecycleHandler):
     __WAITING_LBL = 'loadPage'
-    __DYNAMIC_VIEWS = (R.views.lobby.dog_tags.AnimatedDogTagsView(),)
+    __DYNAMIC_VIEWS = (
+     R.views.lobby.dog_tags.AnimatedDogTagsView(),)
 
     def __init__(self):
         super(_LobbySubViewsLifecycleHandler, self).__init__([ ViewKey(alias) for alias in collectLifecycleHandledSubViews() + collectViewsForMonitoring() ] + [ ViewKeyDynamic(alias) for alias in list(self.__DYNAMIC_VIEWS) + collectDynamicViewsForMonitoring() ])
@@ -105,10 +103,9 @@ class LobbyPanelInjector(InjectComponentAdaptor, IGlobalListener):
         self._viewType = self._getViewType()
         if self._injectView is None or type(self._injectView) is self._viewType:
             return
-        else:
-            self._destroyInjected()
-            self._createInjectView()
-            return
+        self._destroyInjected()
+        self._createInjectView()
+        return
 
     def destroy(self):
         self.stopGlobalListening()
@@ -130,7 +127,10 @@ class LobbyHeaderInject(LobbyPanelInjector):
 
     def _getViewType(self):
         controlsHelper = self._hangarGuiCtrl.currentGuiProvider.getLobbyHeaderHelper()
-        return controlsHelper.getHeaderType() if controlsHelper is not None else None
+        if controlsHelper is not None:
+            return controlsHelper.getHeaderType()
+        else:
+            return
 
 
 class LobbyFooterInject(LobbyPanelInjector):
@@ -138,7 +138,10 @@ class LobbyFooterInject(LobbyPanelInjector):
 
     def _getViewType(self):
         controlsHelper = self._hangarGuiCtrl.currentGuiProvider.getLobbyHeaderHelper()
-        return controlsHelper.getFooterType() if controlsHelper is not None else None
+        if controlsHelper is not None:
+            return controlsHelper.getFooterType()
+        else:
+            return
 
 
 class LobbyView(LobbyPageMeta, IWaitingWidget, IGlobalListener):
@@ -166,21 +169,17 @@ class LobbyView(LobbyPageMeta, IWaitingWidget, IGlobalListener):
 
     @proto_getter(PROTO_TYPE.BW_CHAT2)
     def bwProto(self):
-        return None
+        return
 
-    def showWaiting(self, message, softStart=False, showBg=True):
-        self.as_showWaitingS(backport.text(message))
+    def showWaiting(self, messageID, softStart=False, showBg=True):
+        self.as_showWaitingS(backport.text(messageID))
 
     def hideWaiting(self):
         self.as_hideWaitingS()
 
     def moveSpace(self, dx, dy, dz):
-        self.fireEvent(CameraRelatedEvents(CameraRelatedEvents.LOBBY_VIEW_MOUSE_MOVE, ctx={'dx': dx,
-         'dy': dy,
-         'dz': dz}))
-        self.fireEvent(events.LobbySimpleEvent(events.LobbySimpleEvent.NOTIFY_SPACE_MOVED, ctx={'dx': dx,
-         'dy': dy,
-         'dz': dz}))
+        self.fireEvent(CameraRelatedEvents(CameraRelatedEvents.LOBBY_VIEW_MOUSE_MOVE, ctx={'dx': dx, 'dy': dy, 'dz': dz}))
+        self.fireEvent(events.LobbySimpleEvent(events.LobbySimpleEvent.NOTIFY_SPACE_MOVED, ctx={'dx': dx, 'dy': dy, 'dz': dz}))
 
     def notifyCursorOver3dScene(self, isOver3dScene):
         if self.mapsTrainingController.isMapsTrainingPrbActive:

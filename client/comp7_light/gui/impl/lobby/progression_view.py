@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_light/scripts/client/comp7_light/gui/impl/lobby/progression_view.py
-import typing
-import SoundGroups
+import typing, SoundGroups
 from comp7_core.gui.impl.lobby.comp7_core_helpers import comp7_core_model_helpers
 from comp7_light.gui.impl.gen.view_models.views.lobby.progression.progress_level_model import ProgressLevelModel
 from comp7_light.gui.impl.lobby.comp7_light_helpers.comp7_light_packers import getComp7LightBonusPacker, getComp7LightEventUIDataPacker
@@ -47,7 +44,7 @@ class ProgressionView(SubModelPresenter):
             tooltipId = event.getArgument('tooltipId')
             tooltipData = self.getTooltipData(event)
             if tooltipId == COMP7_LIGHT_TOOLTIPS.COMP7_LIGHT_CALENDAR_DAY_INFO:
-                tooltipData = createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=(None,))
+                tooltipData = createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=(None, ))
                 window = BackportTooltipWindow(tooltipData, self.getParentWindow())
                 window.load()
                 return window
@@ -69,7 +66,10 @@ class ProgressionView(SubModelPresenter):
 
     def getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        return None if tooltipId is None else self.__tooltipData.get(tooltipId)
+        if tooltipId is None:
+            return
+        else:
+            return self.__tooltipData.get(tooltipId)
 
     def initialize(self, *args, **kwargs):
         super(ProgressionView, self).initialize(args, kwargs)
@@ -84,12 +84,19 @@ class ProgressionView(SubModelPresenter):
         super(ProgressionView, self).finalize()
 
     def _getEvents(self):
-        return ((self.viewModel.onClose, self.__onClose),
-         (self.viewModel.onAboutClicked, self.__onAboutClicked),
-         (self.__comp7LightProgressionController.onProgressPointsUpdated, self.__updateProgressionPoints),
-         (self.__comp7LightProgressionController.onSettingsChanged, self.__updateModel),
-         (self.viewModel.scheduleInfo.season.pollServerTime, self.__updateSchedule),
-         (self.__eventsCache.onSyncCompleted, self.__onSyncCompleted))
+        return (
+         (
+          self.viewModel.onClose, self.__onClose),
+         (
+          self.viewModel.onAboutClicked, self.__onAboutClicked),
+         (
+          self.__comp7LightProgressionController.onProgressPointsUpdated, self.__updateProgressionPoints),
+         (
+          self.__comp7LightProgressionController.onSettingsChanged, self.__updateModel),
+         (
+          self.viewModel.scheduleInfo.season.pollServerTime, self.__updateSchedule),
+         (
+          self.__eventsCache.onSyncCompleted, self.__onSyncCompleted))
 
     def __onClose(self):
         showHangar()
@@ -110,7 +117,7 @@ class ProgressionView(SubModelPresenter):
         if not self.__comp7LightProgressionController.isEnabled:
             return
         data = self.__comp7LightProgressionController.getProgressionData()
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self.__updateBattleQuestsCards(model.battleQuests, data)
             self.__updateMissionVisitedArray(model.battleQuests.getMissionsCompletedVisited(), data['battleQuests'].keys())
             self.__markAsVisited(data)
@@ -120,14 +127,14 @@ class ProgressionView(SubModelPresenter):
         if not self.__comp7LightProgressionController.isEnabled:
             return
         data = self.__comp7LightProgressionController.getProgessionPointsData()
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setCurProgressPoints(data['curPoints'])
 
     def __updateModel(self):
         if not self.__comp7LightProgressionController.isEnabled:
             return
         data = self.__comp7LightProgressionController.getProgressionData()
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self.__updateBattleQuestsCards(model.battleQuests, data)
             self.__updateProgression(data, model)
             self.__updateMissionVisitedArray(model.battleQuests.getMissionsCompletedVisited(), data['questsOrder'])

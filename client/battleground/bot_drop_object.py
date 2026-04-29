@@ -1,11 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/battleground/bot_drop_object.py
 import logging
 from functools import partial
-import AnimationSequence
-import BigWorld
-import Math
-import CGF
+import AnimationSequence, BigWorld, Math, CGF
 from constants import AirdropType
 from helpers import dependency
 import BattleReplay
@@ -25,9 +20,9 @@ class BotAirdrop(ScriptGameObject, CallbackDelayer, ISelfAssembler):
     __sessionProvider = dependency.descriptor(IBattleSessionProvider)
     ALTITUDE_CORRECTING = 0.5
     END_ANIMATION_TIME_CORRECTING = 0.18
-    __slots__ = ('owner', '__deliveryPosition', '__markerArea', '__deliveryEffect', '__teamID', '__yawAxis', '__plannedAnimDuration', '__deliveryTime')
-    TYPE_TO_EQUIPMENT = {AirdropType.BOT: 'spawn_kamikaze',
-     AirdropType.BOT_CLING: 'clingBrander'}
+    __slots__ = ('owner', '__deliveryPosition', '__markerArea', '__deliveryEffect',
+                 '__teamID', '__yawAxis', '__plannedAnimDuration', '__deliveryTime')
+    TYPE_TO_EQUIPMENT = {AirdropType.BOT: 'spawn_kamikaze', AirdropType.BOT_CLING: 'clingBrander'}
 
     def __init__(self, dropID, deliveryPosition, teamID, yawAxis, deliveryTime, airdropType):
         self.__spaceID = BigWorld.player().spaceID
@@ -78,7 +73,9 @@ class BotAirdrop(ScriptGameObject, CallbackDelayer, ISelfAssembler):
         self.__removeDeliveryEffect()
 
     def __getEffect(self, effects):
-        return effects.ally if self.__sessionProvider.getArenaDP().isAllyTeam(self.__teamID) else effects.enemy
+        if self.__sessionProvider.getArenaDP().isAllyTeam(self.__teamID):
+            return effects.ally
+        return effects.enemy
 
     def __createMarkerArea(self, config, equipmentDescr):
         markerArea = CGF.GameObject(self.__spaceID)
@@ -96,12 +93,11 @@ class BotAirdrop(ScriptGameObject, CallbackDelayer, ISelfAssembler):
         markerArea = self.__markerArea
         if effectP in resourceRefs.failedIDs or markerArea is None:
             return
-        else:
-            clientVisuals = equipmentDescr.clientVisuals
-            sequenceComponent = markerArea.createComponent(SequenceComponent, resourceRefs[effectP])
-            sequenceComponent.createTerrainEffect(position + clientVisuals.markerPositionOffset, scale=clientVisuals.markerScale, loopCount=-1)
-            markerArea.activate()
-            return
+        clientVisuals = equipmentDescr.clientVisuals
+        sequenceComponent = markerArea.createComponent(SequenceComponent, resourceRefs[effectP])
+        sequenceComponent.createTerrainEffect(position + clientVisuals.markerPositionOffset, scale=clientVisuals.markerScale, loopCount=-1)
+        markerArea.activate()
+        return
 
     def __createDeliveryEffect(self, config):
         if self.__airdropType == AirdropType.BOT_CLING:
@@ -110,7 +106,8 @@ class BotAirdrop(ScriptGameObject, CallbackDelayer, ISelfAssembler):
             effect = self.__getEffect(config.getBotDeliveryEffect())
         if effect is not None:
             effectPath = effect.path
-            BigWorld.loadResourceListBG((AnimationSequence.Loader(effectPath, self.__spaceID),), makeCallbackWeak(self.__onDeliverEffectLoaded, effectPath, self.__deliveryPosition))
+            BigWorld.loadResourceListBG((
+             AnimationSequence.Loader(effectPath, self.__spaceID),), makeCallbackWeak(self.__onDeliverEffectLoaded, effectPath, self.__deliveryPosition))
             return
         else:
             return

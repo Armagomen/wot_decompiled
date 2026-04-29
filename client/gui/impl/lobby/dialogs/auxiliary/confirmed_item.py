@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/dialogs/auxiliary/confirmed_item.py
 import typing
 from gui.Scaleform.genConsts.FITTING_TYPES import FITTING_TYPES
 from gui.impl import backport
@@ -13,7 +11,6 @@ from gui.impl.gen.view_models.views.lobby.common.confirmed_item_model import Con
 from helpers import dependency
 from post_progression_common import ACTION_TYPES
 from skeletons.gui.game_control import IWotPlusController
-from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
 if typing.TYPE_CHECKING:
@@ -42,10 +39,10 @@ class ConfirmedItem(object):
         return R.invalid()
 
     def getHighlightsType(self):
-        pass
+        return ''
 
     def getOverlayType(self):
-        pass
+        return ''
 
     def getWarnings(self):
         return self._warnings
@@ -57,10 +54,12 @@ class ConfirmedItem(object):
         return False
 
     def getOptItemDescKey(self):
-        return 'itemWithDemountKit' if self.canUseDemountKit() else 'itemDeluxe'
+        if self.canUseDemountKit():
+            return 'itemWithDemountKit'
+        return 'itemDeluxe'
 
     def getLevel(self):
-        pass
+        return 0
 
     @classmethod
     def createFromGUIItem(cls, item, ctx=None):
@@ -72,7 +71,9 @@ class ConfirmedItem(object):
             return ConfirmedShell(item, ctx)
         if item.itemTypeID == GUI_ITEM_TYPE.BATTLE_ABILITY:
             return ConfirmedBattleAbility(item, ctx)
-        return ConfirmedPostProgressionActionItem.createFromGUIItem(item, ctx) if item.itemTypeID == GUI_ITEM_TYPE.VEH_POST_PROGRESSION else ConfirmedItem(item)
+        if item.itemTypeID == GUI_ITEM_TYPE.VEH_POST_PROGRESSION:
+            return ConfirmedPostProgressionActionItem.createFromGUIItem(item, ctx)
+        return ConfirmedItem(item)
 
     def getCofirmedItemViewModel(self):
         itemModel = ConfirmedItemModel()
@@ -95,7 +96,9 @@ class ConfirmedArtefact(ConfirmedItem):
 
     def getImageSource(self):
         imageSource = R.images.gui.maps.shop.artefacts.c_180x135.dyn(self._item.getGUIEmblemID())
-        return imageSource() if imageSource else R.invalid()
+        if imageSource:
+            return imageSource()
+        return R.invalid()
 
     def getHighlightsType(self):
         return getHighlightsTypeByItem(self._item)
@@ -107,13 +110,14 @@ class ConfirmedArtefact(ConfirmedItem):
     def createFromGUIItem(cls, item, ctx=None):
         if item.itemTypeID == GUI_ITEM_TYPE.BATTLE_BOOSTER:
             return ConfirmedBattleBooster(item, ctx)
-        return ConfirmedOptDevice(item, ctx) if item.itemTypeID == GUI_ITEM_TYPE.OPTIONALDEVICE else ConfirmedArtefact(item, ctx)
+        if item.itemTypeID == GUI_ITEM_TYPE.OPTIONALDEVICE:
+            return ConfirmedOptDevice(item, ctx)
+        return ConfirmedArtefact(item, ctx)
 
 
 class ConfirmedOptDevice(ConfirmedArtefact):
     __itemsCache = dependency.descriptor(IItemsCache)
     __wotPlus = dependency.descriptor(IWotPlusController)
-    __lobbyContext = dependency.descriptor(ILobbyContext)
 
     def getRemovalPrice(self):
         return self._item.getRemovalPrice(self.__itemsCache.items)
@@ -122,9 +126,10 @@ class ConfirmedOptDevice(ConfirmedArtefact):
         return not self._item.isRemovable and not self._item.isDeluxe and self._item.canUseDemountKit
 
     def getOptItemDescKey(self):
-        isActive = self.__wotPlus.isEnabled()
-        isFEDEnabled = self.__lobbyContext.getServerSettings().isFreeEquipmentDemountingEnabled()
-        isDeluxeEnabled = self.__lobbyContext.getServerSettings().isFreeDeluxeEquipmentDemountingEnabled()
+        isActive = self.__wotPlus.hasSubscription()
+        settingsModel = self.__wotPlus.getSettingsStorage()
+        isFEDEnabled = settingsModel.isFreeEquipmentDemountingEnabled()
+        isDeluxeEnabled = settingsModel.isFreeDeluxeEquipmentDemountingAvailable()
         isDeluxe = self._item.isDeluxe
         if not isFEDEnabled:
             return super(ConfirmedOptDevice, self).getOptItemDescKey()
@@ -137,7 +142,9 @@ class ConfirmedOptDevice(ConfirmedArtefact):
         if self._item.isModernized:
             if self._item.level > 1:
                 return 'itemDeluxe'
-        return 'itemWotPlus' if isActive else 'itemWithDemountKit'
+        if isActive:
+            return 'itemWotPlus'
+        return 'itemWithDemountKit'
 
     @classmethod
     def createFromGUIItem(cls, item, ctx=None):
@@ -149,7 +156,10 @@ class ConfirmedBattleBooster(ConfirmedArtefact):
 
     def getOverlayType(self):
         vehInvID = self._ctx.get(CTX_VEHICLE_INV_ID, None)
-        return getOverlayTypeByItem(self._item, self.__getBoosterReplaceCriteria(vehInvID)) if vehInvID is not None else getOverlayTypeByItem(self._item)
+        if vehInvID is not None:
+            return getOverlayTypeByItem(self._item, self.__getBoosterReplaceCriteria(vehInvID))
+        else:
+            return getOverlayTypeByItem(self._item)
 
     @classmethod
     def createFromGUIItem(cls, item, ctx=None):
@@ -177,8 +187,8 @@ class ConfirmedBattleBooster(ConfirmedArtefact):
     def __getBoosterReplaceCriteria(self, vehInvID):
         vehicleToInstall = self.__itemsCache.items.getVehicle(vehInvID)
         skillLearn = REQ_CRITERIA.CUSTOM(lambda item: not item.isAffectedSkillLearnt(vehicleToInstall) and not item.isBuiltinPerkBooster())
-        return {ItemHighlightTypes.BATTLE_BOOSTER_REPLACE: REQ_CRITERIA.BATTLE_BOOSTER.CREW_EFFECT | skillLearn,
-         ItemHighlightTypes.BATTLE_BOOSTER: (REQ_CRITERIA.BATTLE_BOOSTER.CREW_EFFECT | ~skillLearn) ^ REQ_CRITERIA.BATTLE_BOOSTER.OPTIONAL_DEVICE_EFFECT}
+        return {ItemHighlightTypes.BATTLE_BOOSTER_REPLACE: REQ_CRITERIA.BATTLE_BOOSTER.CREW_EFFECT | skillLearn, 
+           ItemHighlightTypes.BATTLE_BOOSTER: (REQ_CRITERIA.BATTLE_BOOSTER.CREW_EFFECT | ~skillLearn) ^ REQ_CRITERIA.BATTLE_BOOSTER.OPTIONAL_DEVICE_EFFECT}
 
 
 class ConfirmedBattleAbility(ConfirmedItem):
@@ -188,10 +198,14 @@ class ConfirmedBattleAbility(ConfirmedItem):
 
     def getImageSource(self):
         imageSource = R.images.gui.maps.icons.epicBattles.skills.c_180x135.dyn(self._item.getGUIEmblemID())
-        return imageSource() if imageSource else R.invalid()
+        if imageSource:
+            return imageSource()
+        return R.invalid()
 
     def getLevel(self):
-        return self._item.level if self._item.isUnlocked else 0
+        if self._item.isUnlocked:
+            return self._item.level
+        return 0
 
     @classmethod
     def createFromGUIItem(cls, item, ctx=None):
@@ -202,18 +216,24 @@ class ConfirmedModule(ConfirmedItem):
 
     def getImageSource(self):
         imageSource = R.images.gui.maps.shop.modules.c_180x135.dyn(self._item.getGUIEmblemID())
-        return imageSource() if imageSource else R.invalid()
+        if imageSource:
+            return imageSource()
+        return R.invalid()
 
     @classmethod
     def createFromGUIItem(cls, item, ctx=None):
-        return ConfirmedDualGun(item, ctx) if item.itemTypeID == GUI_ITEM_TYPE.GUN and item.isDualGun() else ConfirmedModule(item, ctx)
+        if item.itemTypeID == GUI_ITEM_TYPE.GUN and item.isDualGun():
+            return ConfirmedDualGun(item, ctx)
+        return ConfirmedModule(item, ctx)
 
 
 class ConfirmedDualGun(ConfirmedModule):
 
     def getImageSource(self):
         imageSource = R.images.gui.maps.shop.modules.c_180x135.dyn(FITTING_TYPES.VEHICLE_GUN)
-        return imageSource() if imageSource else R.invalid()
+        if imageSource:
+            return imageSource()
+        return R.invalid()
 
     @classmethod
     def createFromGUIItem(cls, item, ctx=None):
@@ -224,7 +244,9 @@ class ConfirmedShell(ConfirmedItem):
 
     def getImageSource(self):
         imageSource = R.images.gui.maps.shop.shells.c_180x135.dyn(self._item.getGUIEmblemID())
-        return imageSource() if imageSource else R.invalid()
+        if imageSource:
+            return imageSource()
+        return R.invalid()
 
     @classmethod
     def createFromGUIItem(cls, item, ctx=None):
@@ -243,11 +265,16 @@ class ConfirmedPostProgressionActionItem(ConfirmedItem):
     def getLevel(self):
         vehInvID = self._ctx.get(CTX_VEHICLE_INV_ID, None)
         vehicle = self.__itemsCache.items.getVehicle(vehInvID)
-        return vehicle.postProgression.getStep(self._item.parentStepID).getLevel() if vehicle is not None and vehicle.postProgressionAvailability() else 0
+        if vehicle is not None and vehicle.postProgressionAvailability():
+            return vehicle.postProgression.getStep(self._item.parentStepID).getLevel()
+        else:
+            return 0
 
     @classmethod
     def createFromGUIItem(cls, item, ctx=None):
-        return ConfirmedPostProgressionPairModification(item, ctx) if item.actionType in (ACTION_TYPES.PAIR_MODIFICATION, ACTION_TYPES.MODIFICATION) else ConfirmedPostProgressionActionItem(item, ctx)
+        if item.actionType in (ACTION_TYPES.PAIR_MODIFICATION, ACTION_TYPES.MODIFICATION):
+            return ConfirmedPostProgressionPairModification(item, ctx)
+        return ConfirmedPostProgressionActionItem(item, ctx)
 
 
 class ConfirmedPostProgressionPairModification(ConfirmedPostProgressionActionItem):

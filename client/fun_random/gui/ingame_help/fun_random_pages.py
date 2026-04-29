@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/ingame_help/fun_random_pages.py
 from __future__ import absolute_import
 from fun_random_common.fun_constants import ARENA_GUI_TYPE
 from fun_random.gui.ingame_help import HelpPagePriority
@@ -11,7 +9,11 @@ from gui.ingame_help.detailed_help_pages import addPage, DetailedHelpPagesBuilde
 from gui.shared.formatters import text_styles
 
 class FunRandomHelpPagesBuilder(DetailedHelpPagesBuilder, FunSubModesWatcher):
-    _SUITABLE_CTX_KEYS = ('isFunRandom',)
+    _SUITABLE_CTX_KEYS = ('isFunRandom', )
+
+    @classmethod
+    def isExclusive(cls):
+        return cls.getBattleSubMode().getConfigurationModel().subMode.isExclusiveHelpPages
 
     @classmethod
     def priority(cls):
@@ -22,14 +24,14 @@ class FunRandomHelpPagesBuilder(DetailedHelpPagesBuilder, FunSubModesWatcher):
     def buildPages(cls, _):
         pages = []
         battleSubMode = cls.getBattleSubMode()
-        iconsRoot = battleSubMode.getIconsResRoot()
+        iconsRoot = battleSubMode.getIconsResRoot().battle_help
         localsRoot = battleSubMode.getLocalsResRoot()
         commonTitle = backport.text(localsRoot.detailsHelpTitle())
         for pageID, pageRes in sorted(localsRoot.detailsHelp.items()):
-            addPage(pages, commonTitle, backport.text(pageRes.title()), text_styles.mainBig(backport.text(pageRes.description())), [], backport.image(iconsRoot.battle_help.dyn(pageID)()), hintCtx=HelpHintContext.FUN_RANDOM)
+            addPage(pages, commonTitle, backport.text(pageRes.title()), text_styles.mainBig(backport.text(pageRes.description())), [], backport.image(iconsRoot.dyn(pageID)()), hintCtx=HelpHintContext.FUN_RANDOM)
 
         return pages
 
     @classmethod
     def _collectHelpCtx(cls, ctx, arenaVisitor, vehicle):
-        ctx['isFunRandom'] = arenaVisitor.getArenaGuiType() == ARENA_GUI_TYPE.FUN_RANDOM
+        ctx['isFunRandom'] = arenaVisitor.getArenaGuiType() in ARENA_GUI_TYPE.FUN_RANDOM_RANGE

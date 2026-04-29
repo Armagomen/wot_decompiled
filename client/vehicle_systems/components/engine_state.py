@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicle_systems/components/engine_state.py
 from random import uniform
 import BigWorld
 from constants import ARENA_PERIOD
@@ -18,10 +16,9 @@ class EngineLoad(object):
     _HIGH = 3
 
 
-_StateConvertor = {'destroyed': EngineState.DESTROYED,
- 'critical': EngineState.CRITICAL,
- 'repaired': EngineState.REPAIRED,
- 'normal': EngineState.NORMAL}
+_StateConvertor = {'destroyed': EngineState.DESTROYED, 'critical': EngineState.CRITICAL, 
+   'repaired': EngineState.REPAIRED, 
+   'normal': EngineState.NORMAL}
 
 def getEngineStateFromName(stateName):
     return _StateConvertor.get(stateName, EngineState.NORMAL)

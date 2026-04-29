@@ -1,8 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/DebugDrawEntity.py
+from __future__ import absolute_import
 from collections import defaultdict
-import BigWorld
-import GUI
+from future.utils import viewvalues
+from past.builtins import xrange
+import BigWorld, GUI
 from Math import Vector3, Matrix
 import math_utils
 from helpers.CallbackDelayer import CallbackDelayer
@@ -13,9 +13,7 @@ class DebugDrawEntity(BigWorld.Entity):
 
     def __init__(self):
         super(DebugDrawEntity, self).__init__()
-        self.objectStates = defaultdict(lambda : {'version': 0,
-         'models': [],
-         '3Dtexts': []})
+        self.objectStates = defaultdict(lambda : {'version': 0, 'models': [], '3Dtexts': []})
         self.reuseModels = defaultdict(list)
         self.reuse3DTexts = []
         self.timer = CallbackDelayer()
@@ -27,14 +25,14 @@ class DebugDrawEntity(BigWorld.Entity):
         self.__update()
 
     def onLeaveWorld(self):
-        for _, state in self.objectStates.iteritems():
+        for state in viewvalues(self.objectStates):
             for _, model, _ in state['models']:
                 BigWorld.delModel(model)
 
             for model, _, _ in state['3Dtexts']:
                 BigWorld.delModel(model)
 
-        for listOfModels in self.reuseModels.itervalues():
+        for listOfModels in viewvalues(self.reuseModels):
             for model, _ in listOfModels:
                 BigWorld.delModel(model)
 
@@ -77,7 +75,7 @@ class DebugDrawEntity(BigWorld.Entity):
             for line in draw['lines']:
                 points = line['points']
                 width = line['width']
-                for segment in [ (points[i - 1], points[i]) for i in xrange(1, len(points)) ]:
+                for segment in [ (points[(i - 1)], points[i]) for i in xrange(1, len(points)) ]:
                     obj = self.__createDirectedLine(segment[0], segment[1], width)
                     state['models'].append(obj)
 
@@ -97,7 +95,7 @@ class DebugDrawEntity(BigWorld.Entity):
                 obj = self.__create3DText(text['position'], text['text'], text['color'], text['textSize'])
                 state['3Dtexts'].append(obj)
 
-        for listOfModels in self.reuseModels.itervalues():
+        for listOfModels in viewvalues(self.reuseModels):
             for model, _ in listOfModels:
                 BigWorld.delModel(model)
 
@@ -141,7 +139,8 @@ class DebugDrawEntity(BigWorld.Entity):
             motor = BigWorld.Servo(Matrix())
             model.addMotor(motor)
             BigWorld.addModel(model, self.spaceID)
-        return (model, motor)
+        return (
+         model, motor)
 
     def __create3DText(self, position, text, color, textSize):
         if self.reuse3DTexts:
@@ -165,4 +164,5 @@ class DebugDrawEntity(BigWorld.Entity):
         component.size = (0, textSize)
         component.colour = color
         motor.signal = math_utils.createTranslationMatrix(position)
-        return (model, motor, component)
+        return (
+         model, motor, component)

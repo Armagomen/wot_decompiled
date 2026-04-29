@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/proto/xmpp/contacts/block_tasks.py
 from shared_utils import findFirst
 from messenger.m_constants import USER_ACTION_ID, USER_TAG, PROTO_TYPE, CLIENT_ACTION_ID
 from messenger.proto.xmpp import entities, errors
@@ -104,14 +102,14 @@ class RemoveBlockItemTask(_BlockItemTask):
 
 
 class SyncBlockItemTask(IQTask):
-    __slots__ = ('_handlers',)
+    __slots__ = ('_handlers', )
 
     def __init__(self):
         super(SyncBlockItemTask, self).__init__()
         block = blocking_cmd.BlockItemHandler().getFilterString()
         unblock = blocking_cmd.UnblockItemHandler().getFilterString()
-        self._handlers = {block: AddBlockItemTask,
-         unblock: RemoveBlockItemTask}
+        self._handlers = {block: AddBlockItemTask, 
+           unblock: RemoveBlockItemTask}
 
     def set(self, pyGlooxTag):
         for xPath, clazz in self._handlers.iteritems():

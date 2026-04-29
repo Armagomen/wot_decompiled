@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/dialogs/full_screen_dialog_view.py
-import logging
-import typing
+import logging, typing
 from PlayerEvents import g_playerEvents
 from frameworks.wulf import WindowLayer
 from gui.impl import backport
@@ -49,7 +46,7 @@ class FullScreenDialogBaseView(ViewImpl):
         raise AsyncReturn(DialogResult(self.__result, self._getAdditionalData()))
 
     def _getAdditionalData(self):
-        return None
+        return
 
     def _finalize(self):
         super(FullScreenDialogBaseView, self)._finalize()
@@ -64,7 +61,7 @@ class FullScreenDialogBaseView(ViewImpl):
 
 
 class FullScreenDialogView(FullScreenDialogBaseView, patched_typing.Generic[TViewModel]):
-    __slots__ = ('_stats',)
+    __slots__ = ('_stats', )
     _itemsCache = dependency.descriptor(IItemsCache)
 
     def __init__(self, settings):
@@ -87,7 +84,7 @@ class FullScreenDialogView(FullScreenDialogBaseView, patched_typing.Generic[TVie
         self._addListeners()
 
     def _onInventoryResync(self, *args, **kwargs):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self.__setStats(model)
 
     def _setBaseParams(self, model):
@@ -95,7 +92,7 @@ class FullScreenDialogView(FullScreenDialogBaseView, patched_typing.Generic[TVie
 
     def _onLoading(self, *args, **kwargs):
         super(FullScreenDialogView, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self._setBaseParams(model)
 
     def _finalize(self):
@@ -154,7 +151,9 @@ class FullScreenDialogView(FullScreenDialogBaseView, patched_typing.Generic[TVie
             return window
         else:
             params = NO_WGM_TOOLTIP_DATA.get(CurrencyType(currency))
-            return None if params is None else createSimpleTooltip(self.getParentWindow(), event, backport.text(params['header']), backport.text(params['body']))
+            if params is None:
+                return
+            return createSimpleTooltip(self.getParentWindow(), event, backport.text(params['header']), backport.text(params['body']))
 
 
 class FullScreenDialogWindowWrapper(LobbyWindow):
@@ -184,7 +183,10 @@ class FullScreenDialogWindowWrapper(LobbyWindow):
     @classmethod
     def createIfNotExist(cls, layoutID, wrappedViewClass, parent=None, *args, **kwargs):
         currentView = cls.__gui.windowsManager.getViewByLayoutID(layoutID)
-        return FullScreenDialogWindowWrapper(wrappedViewClass(*args, **kwargs), parent) if currentView is None else None
+        if currentView is None:
+            return FullScreenDialogWindowWrapper(wrappedViewClass(*args, **kwargs), parent)
+        else:
+            return
 
     def _finalize(self):
         if self._blur:
@@ -193,4 +195,4 @@ class FullScreenDialogWindowWrapper(LobbyWindow):
         super(FullScreenDialogWindowWrapper, self)._finalize()
 
     def __makeNotificationLockKey(self):
-        return '{}{}'.format(self.__NOTIFICATIONS_LOCK_KEY, self.uniqueID)
+        return ('{}{}').format(self.__NOTIFICATIONS_LOCK_KEY, self.uniqueID)

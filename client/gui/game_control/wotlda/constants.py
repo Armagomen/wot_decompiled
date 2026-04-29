@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/wotlda/constants.py
 import enum
 
 class SupportedWotldaLoadoutType(enum.Enum):
@@ -23,7 +21,8 @@ EQUIPMENT_ARCHETYPE_2 = 'equipment_archetype_id_2'
 EQUIPMENT_ARCHETYPE_3 = 'equipment_archetype_id_3'
 LOADOUT_USAGE_PERCENTAGE = 'usage_percentage'
 LAST_UPDATE_TIMESTAMP = 'updated_at'
-ExpectedArchetypes = {'improvedConfiguration',
+ExpectedArchetypes = {
+ 'improvedConfiguration',
  'improvedVentilation',
  'tankRammer',
  'coatedOptics',

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_results/presenters/packers/team/team_stats_packer.py
 import typing
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as _CAPS
 from frameworks.wulf.view.array import fillViewModelsArray
@@ -27,9 +25,10 @@ _VehicleTags = (VEHICLE_TAGS.PREMIUM_IGR,)
 class TeamStats(IBattleResultsPacker):
     _PLAYER_MODEL_CLS = PlayerModel
     _PLAYER_INFO_PACKER = PlayerInfo
-    _STATS_VALUES_COLUMNS = {TeamStatsColumnTypes.DAMAGE: None,
-     TeamStatsColumnTypes.FRAG: None,
-     TeamStatsColumnTypes.XP: lambda reusable: reusable.common.checkBonusCaps(_CAPS.XP)}
+    _STATS_PACKER = Statistics
+    _STATS_VALUES_COLUMNS = {TeamStatsColumnTypes.DAMAGE: None, 
+       TeamStatsColumnTypes.FRAG: None, 
+       TeamStatsColumnTypes.XP: lambda reusable: reusable.common.checkBonusCaps(_CAPS.XP)}
     _SORTING_PRIORITIES = ()
 
     @classmethod
@@ -43,7 +42,7 @@ class TeamStats(IBattleResultsPacker):
     @classmethod
     def packPlayer(cls, playerModel, summarizeInfo, battleResults):
         cls._PLAYER_INFO_PACKER.packModel(playerModel, battleResults, summarizeInfo)
-        Statistics.packModel(playerModel.getDetailedStatistics(), summarizeInfo, battleResults)
+        cls._STATS_PACKER.packModel(playerModel.getDetailedStatistics(), summarizeInfo, battleResults)
         cls._packEfficiency(playerModel.efficiencyValues, summarizeInfo)
         if summarizeInfo.vehicle is not None:
             fillVehicleModel(playerModel.vehicle, summarizeInfo.vehicle, _VehicleTags)
@@ -56,7 +55,8 @@ class TeamStats(IBattleResultsPacker):
             if condition is None or condition(reusable):
                 return (column, sortingOrder)
 
-        return (TeamStatsColumnTypes.VEHICLE, SortingOrder.DESC.value)
+        return (
+         TeamStatsColumnTypes.VEHICLE, SortingOrder.DESC.value)
 
     @classmethod
     def _packEfficiency(cls, efficiencyModel, summarizeInfo):

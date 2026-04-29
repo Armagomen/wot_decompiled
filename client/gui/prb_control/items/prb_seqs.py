@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/items/prb_seqs.py
 import time
 from constants import PREBATTLE_CACHE_KEY
 from constants import PREBATTLE_TYPE
@@ -31,7 +29,8 @@ def AutoInvitesIterator():
 
 
 class PrbListItem(object):
-    __slots__ = ('prbID', 'time', 'arenaTypeID', 'creator', 'clanAbbrev', 'playersCount', 'isOpened', 'comment', 'creatorIgrType', 'creatorDbId', 'badges')
+    __slots__ = ('prbID', 'time', 'arenaTypeID', 'creator', 'clanAbbrev', 'playersCount',
+                 'isOpened', 'comment', 'creatorIgrType', 'creatorDbId', 'badges')
 
     def __init__(self, t, prbID, info):
         super(PrbListItem, self).__init__()
@@ -67,24 +66,27 @@ class PrbListItem(object):
         self.badges = BadgesHelper(creatorBadges)
 
     def __repr__(self):
-        return 'PrbListItem(prbID = {0:n}, arenaTypeID = {1:n}, creator = {2:>s}, playersCount = {3:n}, isOpened = {4!r:s}, time = {5:n}, creatorIgrType = {6:n}, creatorDbId = {7:n})'.format(self.prbID, self.arenaTypeID, self.getCreatorFullName(), self.playersCount, self.isOpened, self.time, self.creatorIgrType, self.creatorDbId)
+        return ('PrbListItem(prbID = {0:n}, arenaTypeID = {1:n}, creator = {2:>s}, playersCount = {3:n}, isOpened = {4!r:s}, time = {5:n}, creatorIgrType = {6:n}, creatorDbId = {7:n})').format(self.prbID, self.arenaTypeID, self.getCreatorFullName(), self.playersCount, self.isOpened, self.time, self.creatorIgrType, self.creatorDbId)
 
     def getCreatorFullName(self):
         if self.clanAbbrev:
-            fullName = '{0:>s}[{1:>s}]'.format(self.creator, self.clanAbbrev)
+            fullName = ('{0:>s}[{1:>s}]').format(self.creator, self.clanAbbrev)
         else:
             fullName = self.creator
         return fullName
 
     def getCensoredComment(self):
-        return passCensor(self.comment) if self.comment else ''
+        if self.comment:
+            return passCensor(self.comment)
+        return ''
 
     def getBadge(self):
         return self.badges.getBadge()
 
 
 class AutoInviteItem(object):
-    __slots__ = ('prbID', 'peripheryID', 'description', 'startTime', 'isValid', 'prbType', 'addInfo', 'arenaTypeID')
+    __slots__ = ('prbID', 'peripheryID', 'description', 'startTime', 'isValid', 'prbType',
+                 'addInfo', 'arenaTypeID')
 
     def __init__(self, prbID, type=PREBATTLE_TYPE.CLAN, peripheryID=0, description=None, startTime=0, arenaTypeID=0, isValid=True, addInfo=None):
         super(AutoInviteItem, self).__init__()
@@ -104,4 +106,4 @@ class AutoInviteItem(object):
         self.isValid = isValid
 
     def __repr__(self):
-        return 'AutoInviteItem(prbID = {0:n}, peripheryID = {1:n}, type = {2:n} description = {3!r:s}, startTime = {4:n}, isValid = {5!r:s})'.format(self.prbID, self.prbType, self.peripheryID, self.description, self.startTime, self.isValid)
+        return ('AutoInviteItem(prbID = {0:n}, peripheryID = {1:n}, type = {2:n} description = {3!r:s}, startTime = {4:n}, isValid = {5!r:s})').format(self.prbID, self.prbType, self.peripheryID, self.description, self.startTime, self.isValid)

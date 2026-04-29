@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/platform/base/statuses/status.py
 import typing
 from gui.platform.base.statuses.constants import StatusTypes
 
@@ -26,7 +24,8 @@ class Status(object):
         return self.type == statusType
 
     def __eq__(self, other):
-        return (self.type, self.data) == (other.type, other.data)
+        return (
+         self.type, self.data) == (other.type, other.data)
 
     def __str__(self):
         return '<%s>: type=%s' % (self.__class__.__name__, self.type)

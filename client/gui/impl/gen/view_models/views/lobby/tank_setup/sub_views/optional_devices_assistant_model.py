@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/tank_setup/sub_views/optional_devices_assistant_model.py
 from enum import Enum
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.optional_devices_assistant_preset import OptionalDevicesAssistantPreset
@@ -38,7 +36,7 @@ class OptionalDevicesAssistantStateEnum(Enum):
 
 
 class OptionalDevicesAssistantModel(ViewModel):
-    __slots__ = ('onPresetSelected',)
+    __slots__ = ('onPresetSelected', )
 
     def __init__(self, properties=3, commands=1):
         super(OptionalDevicesAssistantModel, self).__init__(properties=properties, commands=commands)

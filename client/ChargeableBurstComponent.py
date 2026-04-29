@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/ChargeableBurstComponent.py
+from __future__ import absolute_import
 import typing
 from collections import namedtuple
 from events_handler import eventHandler
@@ -33,7 +32,8 @@ class ChargeableBurstAmmoState(DefaultComponentAmmoState):
 
 
 @ReprInjector.simple('isBurstActive', 'charges', 'shots')
-class ChargeableBurstModeState(namedtuple('ChargeableBurstModeState', ('isBurstActive', 'charges', 'shots', 'penetrationCount', 'burstCount')), IMechanicState):
+class ChargeableBurstModeState(namedtuple('ChargeableBurstModeState', ('isBurstActive', 'charges', 'shots', 'penetrationCount',
+                                        'burstCount')), IMechanicState):
 
     def isTransition(self, other):
         return self.isBurstActive != other.isBurstActive
@@ -58,7 +58,8 @@ class ChargeableBurstComponent(VehicleDynamicComponent, IGunMechanicComponent, I
         return self.__statesEvents
 
     def getComponentParams(self):
-        return (self.__penetrationCount, self.__burstCount)
+        return (
+         self.__penetrationCount, self.__burstCount)
 
     def getMechanicState(self):
         return ChargeableBurstModeState(self.isBurstActive, self.charges, self.shots, self.__penetrationCount, self.__burstCount)

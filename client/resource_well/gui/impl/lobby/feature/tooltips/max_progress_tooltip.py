@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/gui/impl/lobby/feature/tooltips/max_progress_tooltip.py
 from __future__ import absolute_import
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
@@ -22,7 +20,7 @@ class MaxProgressTooltip(ViewImpl):
 
     def _onLoading(self, currentValue, maxValue, resourceType, *args, **kwargs):
         super(MaxProgressTooltip, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setCurrentValue(currentValue)
             model.setMaxValue(maxValue)
             model.setResourceType(resourceType)

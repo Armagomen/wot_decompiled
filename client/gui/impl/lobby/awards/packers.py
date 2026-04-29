@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/awards/packers.py
-import logging
-import typing
+import logging, typing
 from adisp import adisp_async, adisp_process
 from constants import RentType, OFFER_TOKEN_PREFIX
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
@@ -28,10 +25,10 @@ if typing.TYPE_CHECKING:
     from gui.shared.gui_items.Vehicle import Vehicle
     from typing import Optional, Callable
 VEH_COMP_R_ID = R.views.common.tooltip_window.loot_box_compensation_tooltip.LootBoxVehicleCompensationTooltipContent()
-_GAMEPLAY_TO_UI_RENT_MAPPING = {RentType.NO_RENT: RentTypeEnum.NONE,
- RentType.TIME_RENT: RentTypeEnum.DAYS,
- RentType.BATTLES_RENT: RentTypeEnum.BATTLES,
- RentType.WINS_RENT: RentTypeEnum.WINS}
+_GAMEPLAY_TO_UI_RENT_MAPPING = {RentType.NO_RENT: RentTypeEnum.NONE, 
+   RentType.TIME_RENT: RentTypeEnum.DAYS, 
+   RentType.BATTLES_RENT: RentTypeEnum.BATTLES, 
+   RentType.WINS_RENT: RentTypeEnum.WINS}
 _LOCAL_FOLDER_NAME = 'multiple_awards'
 _logger = logging.getLogger(__name__)
 
@@ -53,7 +50,8 @@ def _getOffersTokenStateData(offers):
             if gift.isVehicle:
                 vehicles.append(gift.bonus.displayedItem.intCD)
                 if gift.rentType != RentType.NO_RENT:
-                    incomingRentType = (gift.rentType, gift.rentValue)
+                    incomingRentType = (
+                     gift.rentType, gift.rentValue)
                     for rD in rentData:
                         if rD == incomingRentType:
                             break
@@ -61,18 +59,19 @@ def _getOffersTokenStateData(offers):
                         rentData.append(incomingRentType)
 
     rentTypesCount = len(rentData)
-    return (offersIDs[0] if len(offersIDs) == 1 else 0,
+    return (
+     offersIDs[0] if len(offersIDs) == 1 else 0,
      vehicles,
      rentTypesCount > 0,
      rentData[0] if rentTypesCount == 1 else None)
 
 
 def getVehicleUIData(vehicle):
-    return {'vehicleName': vehicle.shortUserName,
-     'vehicleType': getIconResourceName(vehicle.type),
-     'isElite': vehicle.isElite,
-     'vehicleLvl': int2roman(vehicle.level),
-     'vehicleLvlNum': vehicle.level}
+    return {'vehicleName': vehicle.shortUserName, 
+       'vehicleType': getIconResourceName(vehicle.type), 
+       'isElite': vehicle.isElite, 
+       'vehicleLvl': int2roman(vehicle.level), 
+       'vehicleLvlNum': vehicle.level}
 
 
 class _MultiProductAwardTokenBonusUIPacker(BaseBonusUIPacker):
@@ -113,11 +112,12 @@ class _MultiProductAwardTokenBonusUIPacker(BaseBonusUIPacker):
             iconSmallPath, iconBigPath = yield prefetcher.getImageData(tID)
             if not iconSmallPath:
                 _logger.warning("Couldn't obtain big image for %s!", tID)
-            if not iconBigPath:
+            elif not iconBigPath:
                 _logger.warning("Couldn't obtain small image for %s!", tID)
-            model.setIconBig(iconBigPath)
-            model.setIconSmall(iconSmallPath)
-            result.append(model)
+            else:
+                model.setIconBig(iconBigPath)
+                model.setIconSmall(iconSmallPath)
+                result.append(model)
 
         callback(result)
 
@@ -195,7 +195,8 @@ class MultiAwardVehiclesBonusUIPacker(VehiclesBonusUIPacker):
                 for _ in compensation:
                     outcome.append(cls._getVehicleCompensationTooltipContent())
 
-            outcome.append(BACKPORT_TOOLTIP_CONTENT_ID)
+            else:
+                outcome.append(BACKPORT_TOOLTIP_CONTENT_ID)
 
         return outcome
 
@@ -212,7 +213,10 @@ class MultiAwardVehiclesBonusUIPacker(VehiclesBonusUIPacker):
     def _packTooltip(cls, bonus, vehicle, vehInfo):
         tooltipData = super(MultiAwardVehiclesBonusUIPacker, cls)._packTooltip(bonus, vehicle, vehInfo)
         tmanRoleLevel = bonus.getTmanRoleLevel(vehInfo)
-        tooltipData.specialArgs.extend([tmanRoleLevel > 0, False, False])
+        tooltipData.specialArgs.extend([
+         tmanRoleLevel > 0,
+         False,
+         False])
         return tooltipData
 
     @classmethod
@@ -220,14 +224,14 @@ class MultiAwardVehiclesBonusUIPacker(VehiclesBonusUIPacker):
         iconAfterRes = R.images.gui.maps.icons.quests.bonuses.big.dyn(bonusComp.getName())
         if not iconAfterRes.exists():
             iconAfterRes = R.images.gui.maps.icons.quests.bonuses.big.gold
-        specialArgs = {'labelBefore': '',
-         'iconAfter': backport.image(iconAfterRes()),
-         'labelAfter': bonusComp.getIconLabel(),
-         'bonusName': bonusComp.getName()}
+        specialArgs = {'labelBefore': '', 
+           'iconAfter': backport.image(iconAfterRes()), 
+           'labelAfter': bonusComp.getIconLabel(), 
+           'bonusName': bonusComp.getName()}
         uiData = getVehicleUIData(vehicle)
         formattedTypeName = uiData['vehicleType']
         isElite = vehicle.isElite
-        uiData['vehicleType'] = '{}_elite'.format(formattedTypeName) if isElite else formattedTypeName
+        uiData['vehicleType'] = ('{}_elite').format(formattedTypeName) if isElite else formattedTypeName
         specialArgs.update(uiData)
         vehicleName = getNationLessName(vehicle.name)
         vehIcon = R.images.gui.maps.shop.vehicles.c_180x135.dyn(vehicleName)()
@@ -272,7 +276,8 @@ class _TmanTemplateProductBonusPacker(BaseBonusUIPacker):
         tooltipData = []
         for tokenID in bonus.getTokens().iterkeys():
             if tokenID.startswith(tankmen.RECRUIT_TMAN_TOKEN_PREFIX):
-                tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.TANKMAN_NOT_RECRUITED, specialArgs=[tokenID]))
+                tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.TANKMAN_NOT_RECRUITED, specialArgs=[
+                 tokenID]))
 
         callback(tooltipData)
         return
@@ -308,29 +313,29 @@ class _TmanTemplateProductBonusPacker(BaseBonusUIPacker):
             return ''
         else:
             groupName = recruitInfo.getGroupName()
-            bonusImageName = '_'.join([cls.__getBonusImageName(recruitInfo), groupName])
+            bonusImageName = ('_').join([cls.__getBonusImageName(recruitInfo), groupName])
             return bonusImageName
 
     @classmethod
     def _getProductToken(cls, tokenName):
         tokenData = tankmen.getRecruitInfoFromToken(tokenName)
-        return '{}_{}'.format(tankmen.RECRUIT_TMAN_TOKEN_PREFIX, tokenData['sourceID'])
+        return ('{}_{}').format(tankmen.RECRUIT_TMAN_TOKEN_PREFIX, tokenData['sourceID'])
 
     @classmethod
     def __getBonusImageName(cls, recruitInfo):
-        baseName = 'tank{}man'.format('wo' if recruitInfo.isFemale() else '')
+        baseName = ('tank{}man').format('wo' if recruitInfo.isFemale() else '')
         return baseName
 
 
 def getMultipleProductAwardsBonusPacker(productCode):
     tokenBonus = _MultiProductAwardTokenBonusUIPacker(productCode)
     mapping = getDefaultBonusPackersMap()
-    mapping.update({'vehicles': MultiAwardVehiclesBonusUIPacker(),
-     'tmanToken': _TmanTemplateProductBonusPacker(productCode),
-     'customizations': Customization3Dand2DbonusUIPacker(),
-     SupportedTokenTypes.BATTLE_TOKEN: tokenBonus,
-     SupportedTokenTypes.TOKENS: tokenBonus,
-     SupportedTokenTypes.PROGRESSION_XP_TOKEN: tokenBonus})
+    mapping.update({'vehicles': MultiAwardVehiclesBonusUIPacker(), 
+       'tmanToken': _TmanTemplateProductBonusPacker(productCode), 
+       'customizations': Customization3Dand2DbonusUIPacker(), 
+       SupportedTokenTypes.BATTLE_TOKEN: tokenBonus, 
+       SupportedTokenTypes.TOKENS: tokenBonus, 
+       SupportedTokenTypes.PROGRESSION_XP_TOKEN: tokenBonus})
     return AsyncBonusUIPacker(mapping)
 
 

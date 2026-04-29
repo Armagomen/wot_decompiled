@@ -1,5 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/destroy_times_mapping.py
+from __future__ import absolute_import
+from future.utils import listvalues, viewitems
 import SoundGroups
 from constants import VEHICLE_MISC_STATUS, DEATH_ZONES
 from debug_utils import LOG_ERROR
@@ -7,8 +7,8 @@ from gui.Scaleform.genConsts.BATTLE_NOTIFICATIONS_TIMER_TYPES import BATTLE_NOTI
 _TIMER_STATES = BATTLE_NOTIFICATIONS_TIMER_TYPES
 
 def getDefaultMiscStatuses():
-    return {VEHICLE_MISC_STATUS.VEHICLE_DROWN_WARNING: _TIMER_STATES.DROWN,
-     VEHICLE_MISC_STATUS.VEHICLE_IS_OVERTURNED: _TIMER_STATES.OVERTURNED}
+    return {VEHICLE_MISC_STATUS.VEHICLE_DROWN_WARNING: _TIMER_STATES.DROWN, 
+       VEHICLE_MISC_STATUS.VEHICLE_IS_OVERTURNED: _TIMER_STATES.OVERTURNED}
 
 
 def getDefaultDeathZonesCodes():
@@ -49,20 +49,20 @@ class FrontendMapping(object):
             return self.__miscStatuses[code]
         else:
             LOG_ERROR('Destroy timer is not found by code', code)
-            return None
+            return
 
     def getTimerTypeIDByDeathZoneCode(self, code):
         if code in self.__deathZonesCodes:
             return self.__deathZonesCodes[code]
         else:
             LOG_ERROR('Death zone timer is not found by code', code)
-            return None
+            return
 
     def getDestroyTimersTypesIDs(self):
-        return self.__miscStatuses.values()
+        return listvalues(self.__miscStatuses)
 
     def getDeathZoneTimersTypesIDs(self):
-        return self.__deathZonesCodes.values()
+        return listvalues(self.__deathZonesCodes)
 
     def getSoundByDeathZone(self, code, level):
         sound = None
@@ -74,7 +74,7 @@ class FrontendMapping(object):
     @staticmethod
     def __loadDeathZoneSounds(soundsIDs):
         sounds = {}
-        for key, soundID in soundsIDs.iteritems():
+        for key, soundID in viewitems(soundsIDs):
             sounds[key] = SoundGroups.g_instance.getSound2D(soundID)
 
         return sounds

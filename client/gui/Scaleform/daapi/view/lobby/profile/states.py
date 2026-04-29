@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/profile/states.py
 import typing
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.framework.entities.View import ViewKey
@@ -38,7 +36,9 @@ class ServiceRecordState(SFViewLobbyState):
     def serializeParams(self):
         view = self.getMachine().getRelatedView(self)
         tabId = view.tabId
-        return {'ctx': {'selectedAlias': tabId}} if tabId else {}
+        if tabId:
+            return {'ctx': {'selectedAlias': tabId}}
+        return {}
 
     def getNavigationDescription(self):
         return LobbyStateDescription(title=backport.text(R.strings.pages.titles.service_record()))

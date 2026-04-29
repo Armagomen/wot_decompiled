@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/mapbox/map_box_awards_view.py
 from frameworks.wulf import ViewSettings, WindowFlags
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.mapbox.map_box_awards_view_model import MapBoxAwardsViewModel
@@ -33,7 +31,7 @@ class MapBoxAwardsView(ViewImpl):
     def _onLoading(self, *args, **kwargs):
         super(MapBoxAwardsView, self)._onLoading(*args, **kwargs)
         packer = getMapboxBonusPacker()
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setBattlesNumber(self.__numBattles)
             rewardsList = model.rewards
             packMapboxRewardModelAndTooltip(rewardsList, self.__reward, packer, self.__numBattles, self.__tooltips)

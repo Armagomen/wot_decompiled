@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/vehicle_view_states.py
 from __future__ import absolute_import
 from fun_random.gui.feature.util.fun_mixins import FunSubModesWatcher
 from fun_random.gui.feature.util.fun_wrappers import hasDesiredSubMode
@@ -9,7 +7,7 @@ class FunRandomVehicleViewState(SelectedViewState, FunSubModesWatcher):
 
     @classmethod
     def isSuitableVehicle(cls, vehicle):
-        return vehicle.item.isOnlyForFunRandomBattles
+        return cls._funRandomCtrl.isOnlyFunRandomVehicle(vehicle.item)
 
     def setCustomizationVisible(self, customizationVisible):
         self._isCustomizationVisible = customizationVisible

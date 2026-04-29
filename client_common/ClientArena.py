@@ -1,16 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client_common/ClientArena.py
-import cPickle
-import zlib
-import weakref
+import cPickle, zlib, weakref
 from collections import namedtuple, defaultdict
 from typing import Dict
-import ArenaType
-import BigWorld
-import CGF
-import Event
-import Math
-import arena_component_system.client_arena_component_assembler as assembler
+import ArenaType, BigWorld, CGF, Event, Math, arena_component_system.client_arena_component_assembler as assembler
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as BONUS_CAPS
 from battle_modifiers_common import BattleModifiers, EXT_DATA_MODIFIERS_KEY
 from constants import ARENA_PERIOD, ARENA_UPDATE, ATTACK_REASON
@@ -28,7 +19,7 @@ TeamBaseProvider = namedtuple('TeamBaseProvider', ('points', 'invadersCnt', 'cap
 class _ArenaVehiclesAwaiter(AsyncEvent):
 
     def __init__(self, scope, arena, vehIDs):
-        state = not vehIDs or all((v in arena.vehicles for v in vehIDs))
+        state = not vehIDs or all(v in arena.vehicles for v in vehIDs)
         super(_ArenaVehiclesAwaiter, self).__init__(state, scope)
         self._ids = set(vehIDs)
         self._arenaRef = weakref.ref(arena)
@@ -69,35 +60,30 @@ class _ArenaVehiclesAwaiter(AsyncEvent):
 
 
 class ClientArena(object):
-    __onUpdate = {ARENA_UPDATE.SETTINGS: '_ClientArena__onArenaSettingsUpdate',
-     ARENA_UPDATE.PERIOD: '_ClientArena__onPeriodInfoUpdate',
-     ARENA_UPDATE.STATISTICS: '_ClientArena__onStatisticsUpdate',
-     ARENA_UPDATE.VEHICLE_STATISTICS: '_ClientArena__onVehicleStatisticsUpdate',
-     ARENA_UPDATE.BASE_POINTS: '_ClientArena__onBasePointsUpdate',
-     ARENA_UPDATE.BASE_CAPTURED: '_ClientArena__onBaseCaptured',
-     ARENA_UPDATE.COMBAT_EQUIPMENT_USED: '_ClientArena__onCombatEquipmentUsed',
-     ARENA_UPDATE.FLAG_TEAMS: '_ClientArena__onFlagTeamsReceived',
-     ARENA_UPDATE.FLAG_STATE_CHANGED: '_ClientArena__onFlagStateChanged',
-     ARENA_UPDATE.INTERACTIVE_STATS: '_ClientArena__onInteractiveStats',
-     ARENA_UPDATE.RESOURCE_POINT_STATE_CHANGED: '_ClientArena__onResourcePointStateChanged',
-     ARENA_UPDATE.OWN_VEHICLE_INSIDE_RP: '_ClientArena__onOwnVehicleInsideRP',
-     ARENA_UPDATE.OWN_VEHICLE_LOCKED_FOR_RP: '_ClientArena__onOwnVehicleLockedForRP',
-     ARENA_UPDATE.VIEW_POINTS: '_ClientArena__onViewPoints',
-     ARENA_UPDATE.FOG_OF_WAR: '_ClientArena__onFogOfWar',
-     ARENA_UPDATE.RADAR_INFO_RECEIVED: '_ClientArena__onRadarInfoReceived'}
+    __onUpdate = {ARENA_UPDATE.SETTINGS: '_ClientArena__onArenaSettingsUpdate', 
+       ARENA_UPDATE.PERIOD: '_ClientArena__onPeriodInfoUpdate', 
+       ARENA_UPDATE.BASE_POINTS: '_ClientArena__onBasePointsUpdate', 
+       ARENA_UPDATE.BASE_CAPTURED: '_ClientArena__onBaseCaptured', 
+       ARENA_UPDATE.COMBAT_EQUIPMENT_USED: '_ClientArena__onCombatEquipmentUsed', 
+       ARENA_UPDATE.FLAG_TEAMS: '_ClientArena__onFlagTeamsReceived', 
+       ARENA_UPDATE.FLAG_STATE_CHANGED: '_ClientArena__onFlagStateChanged', 
+       ARENA_UPDATE.INTERACTIVE_STATS: '_ClientArena__onInteractiveStats', 
+       ARENA_UPDATE.RESOURCE_POINT_STATE_CHANGED: '_ClientArena__onResourcePointStateChanged', 
+       ARENA_UPDATE.OWN_VEHICLE_INSIDE_RP: '_ClientArena__onOwnVehicleInsideRP', 
+       ARENA_UPDATE.OWN_VEHICLE_LOCKED_FOR_RP: '_ClientArena__onOwnVehicleLockedForRP', 
+       ARENA_UPDATE.VIEW_POINTS: '_ClientArena__onViewPoints', 
+       ARENA_UPDATE.RADAR_INFO_RECEIVED: '_ClientArena__onRadarInfoReceived'}
     DEFAULT_ARENA_WORLD_ID = -1
     VEHICLES_AWAIT_TIMEOUT = 5.0
+    NONE_POSITION = (-32768, -32768)
 
-    def __init__(self, arenaUniqueID, arenaTypeID, arenaBonusType, arenaGuiType, arenaExtraData, spaceID):
+    def __init__(self, arenaUniqueID, arenaTypeID, arenaBonusType, arenaGuiType, arenaExtraData, spaceID, avatar):
         self.__vehicles = {}
-        self.__vehicleIndexToId = {}
         self.__positions = {}
         self.__statistics = {}
         self.__teamBasesData = defaultdict(dict)
-        self.__periodInfo = (ARENA_PERIOD.WAITING,
-         0,
-         0,
-         None)
+        self.__periodInfo = (
+         ARENA_PERIOD.WAITING, 0, 0, None)
         self.__viewPoints = []
         self.__isFogOfWarEnabled = False
         self.__hasFogOfWarHiddenVehicles = False
@@ -151,6 +137,7 @@ class ClientArena(object):
         self.gameSpace = CGF.World(spaceID)
         self.componentSystem = assembler.createComponentSystem(self, self.bonusType, self.arenaType)
         self._awaitVehiclesScope = AsyncScope()
+        self.__avatar = avatar
         return
 
     settings = property(lambda self: self.__settings)
@@ -164,7 +151,7 @@ class ClientArena(object):
     viewPoints = property(lambda self: self.__viewPoints)
     isFogOfWarEnabled = property(lambda self: self.__isFogOfWarEnabled)
     hasFogOfWarHiddenVehicles = property(lambda self: self.__hasFogOfWarHiddenVehicles)
-    hasObservers = property(lambda self: any(('observer' in v['vehicleType'].type.tags for v in self.__vehicles.itervalues() if v['vehicleType'] is not None)) or self.hasBonusCap(BONUS_CAPS.SERVER_REPLAY))
+    hasObservers = property(lambda self: any('observer' in v['vehicleType'].type.tags for v in self.__vehicles.itervalues() if v['vehicleType'] is not None) or self.hasBonusCap(BONUS_CAPS.SERVER_REPLAY))
     teamBasesData = property(lambda self: self.__teamBasesData)
     arenaInfo = property(lambda self: self.__arenaInfo)
     arenaObserverInfo = property(lambda self: self.__arenaObserverInfo)
@@ -188,39 +175,46 @@ class ClientArena(object):
         self.componentSystem.update(updateType, argStr)
         return
 
-    def updatePositions(self, indices, positions):
-        self.__positions.clear()
-        if indices:
-            lenPos = len(positions)
-            lenInd = len(indices)
-            indexToId = self.__vehicleIndexToId
-            for i in xrange(0, lenInd):
-                if indices[i] in indexToId:
-                    positionTuple = (positions[2 * i], 0, positions[2 * i + 1])
-                    self.__positions[indexToId[indices[i]]] = positionTuple
-
-        self.onPositionsUpdated()
-
     def updateTeamHealthPercent(self, percents):
         self.onTeamHealthPercentUpdate(percents)
 
     def collideWithArenaBB(self, start, end):
-        return None if self.__arenaBBCollider is None and not self.__setupBBColliders() else self.__arenaBBCollider.collide(start, end)
+        if self.__arenaBBCollider is None and not self.__setupBBColliders():
+            return
+        else:
+            return self.__arenaBBCollider.collide(start, end)
 
     def getArenaBB(self):
-        return (None, None) if self.__arenaBBCollider is None and not self.__setupBBColliders() else (self.__arenaBBCollider.getMinBounds(), self.__arenaBBCollider.getMaxBounds())
+        if self.__arenaBBCollider is None and not self.__setupBBColliders():
+            return (None, None)
+        else:
+            return (
+             self.__arenaBBCollider.getMinBounds(), self.__arenaBBCollider.getMaxBounds())
 
     def getClosestPointOnArenaBB(self, point):
-        return None if self.__arenaBBCollider is None and not self.__setupBBColliders() else self.__arenaBBCollider.getClosestPointOnBB(point)
+        if self.__arenaBBCollider is None and not self.__setupBBColliders():
+            return
+        else:
+            return self.__arenaBBCollider.getClosestPointOnBB(point)
 
     def collideWithSpaceBB(self, start, end):
-        return (None, None) if self.__spaceBBCollider is None and not self.__setupBBColliders() else self.__spaceBBCollider.collide(start, end)
+        if self.__spaceBBCollider is None and not self.__setupBBColliders():
+            return (None, None)
+        else:
+            return self.__spaceBBCollider.collide(start, end)
 
     def getSpaceBB(self):
-        return (None, None) if self.__spaceBBCollider is None and not self.__setupBBColliders() else (self.__spaceBBCollider.getMinBounds(), self.__spaceBBCollider.getMaxBounds())
+        if self.__spaceBBCollider is None and not self.__setupBBColliders():
+            return (None, None)
+        else:
+            return (
+             self.__spaceBBCollider.getMinBounds(), self.__spaceBBCollider.getMaxBounds())
 
     def isPointInsideArenaBB(self, point):
-        return None if self.__arenaBBCollider is None and not self.__setupBBColliders() else self.__arenaBBCollider.isPointInsideBB(point)
+        if self.__arenaBBCollider is None and not self.__setupBBColliders():
+            return
+        else:
+            return self.__arenaBBCollider.isPointInsideBB(point)
 
     def registerArenaInfo(self, arenaInfo):
         self.__arenaInfo = arenaInfo
@@ -254,6 +248,10 @@ class ClientArena(object):
     def hasBonusCap(self, bonusCap):
         return BONUS_CAPS.checkAny(self.bonusType, bonusCap, specificOverrides=self.bonusCapsOverrides)
 
+    @property
+    def isAvatarReady(self):
+        return self.__avatar.userSeesWorld()
+
     def __setupBBColliders(self):
         if BigWorld.wg_getSpaceBounds().length == 0.0:
             return False
@@ -279,36 +277,9 @@ class ClientArena(object):
         LOG_DEBUG('[VIEW POINTS] received view points', self.__viewPoints)
         self.onViewPoints(self.__viewPoints)
 
-    def __onFogOfWar(self, argStr):
-        status = cPickle.loads(argStr)
-        self.__isFogOfWarEnabled = bool(status & 1)
-        self.onFogOfWarEnabled(self.__isFogOfWarEnabled)
-        self.__hasFogOfWarHiddenVehicles = bool(status & 2)
-        self.onFogOfWarHiddenVehiclesSet(self.__hasFogOfWarHiddenVehicles)
-
     def __onRadarInfoReceived(self, argStr):
         status = cPickle.loads(argStr)
         self.onRadarInfoReceived(status)
-
-    @wg_async
-    def __onStatisticsUpdate(self, argStr):
-        self.__statistics = {}
-        awaitVehicles = []
-        statList = cPickle.loads(zlib.decompress(argStr))
-        for s in statList:
-            vehicleID, stats = self.__vehicleStatisticsAsDict(s)
-            awaitVehicles.append(vehicleID)
-            self.__statistics[vehicleID] = stats
-
-        yield self.awaitVehiclesAdded(awaitVehicles)
-        self.onNewStatisticsReceived()
-
-    def __onVehicleStatisticsUpdate(self, argStr):
-        vehicleID, stats = self.__vehicleStatisticsAsDict(cPickle.loads(zlib.decompress(argStr)))
-        self.__statistics[vehicleID] = stats
-        if vehicleID not in self.__vehicles:
-            return
-        self.onVehicleStatisticsUpdate(vehicleID)
 
     def __getArenaPlans(self):
         arenaPlans = list(self.arenaType.visualScript[ASPECT.CLIENT])
@@ -360,14 +331,6 @@ class ClientArena(object):
         self.onInteractiveStats(stats)
         LOG_DEBUG_DEV('[RESPAWN] onInteractiveStats', stats)
 
-    def __rebuildIndexToId(self):
-        vehs = self.__vehicles
-        self.__vehicleIndexToId = dict(zip(range(len(vehs)), sorted(vehs.keys())))
-
-    def __vehicleStatisticsAsDict(self, stats):
-        return (stats[0], {'frags': stats[1],
-          'tkills': stats[2]})
-
     def runVsePlan(self, planName, params, key='', context=None):
         if self._vsePlans is not None:
             self._vsePlans.startPlan(planName, params, key, context)
@@ -396,13 +359,17 @@ class ClientArena(object):
             info['name'] = info['name'] if info['name'] is not None else ''
         if 'fakeName' in info:
             info['fakeName'] = info['fakeName'] if info['fakeName'] is not None else ''
+        if 'position' in info:
+            info['position'] = info['position']
         return info
 
     def getVehicleType(self, vehInfo, compDescr):
-        extVehicleTypeData = {EXT_DATA_PROGRESSION_KEY: vehInfo['vehPostProgression'],
-         EXT_DATA_SLOT_KEY: vehInfo['customRoleSlotTypeId'],
-         EXT_DATA_MODIFIERS_KEY: self.battleModifiers}
-        return None if not compDescr else vehicles.VehicleDescr(compactDescr=compDescr, extData=extVehicleTypeData)
+        extVehicleTypeData = {EXT_DATA_PROGRESSION_KEY: vehInfo['vehPostProgression'], EXT_DATA_SLOT_KEY: vehInfo['customRoleSlotTypeId'], 
+           EXT_DATA_MODIFIERS_KEY: self.battleModifiers}
+        if not compDescr:
+            return None
+        else:
+            return vehicles.VehicleDescr(compactDescr=compDescr, extData=extVehicleTypeData)
 
     def updateVehicleInfo(self, vehID, vehInfo):
         newVehInfo = self.__preprocessVehicleInfo(vehID, vehInfo)
@@ -414,17 +381,55 @@ class ClientArena(object):
         for vehInfo in vehInfoList:
             self.addVehInfo(vehInfo, False)
 
+        self.onNewStatisticsReceived()
         self.onNewVehicleListReceived()
 
     def addVehInfo(self, vehInfo, notify=True):
         vehInfo = dict(vehInfo)
         vehID = vehInfo.pop('vehicleID')
         self.__vehicles[vehID] = self.__preprocessVehicleInfo(vehID, vehInfo)
-        self.__rebuildIndexToId()
+        self.__statistics[vehID] = {'frags': vehInfo['frags'], 'tkills': vehInfo['tkills']}
         if notify:
             self.onVehicleAdded(vehID)
-        if vehID in self.__statistics:
-            self.onVehicleStatisticsUpdate(vehID)
+        self.onVehicleStatisticsUpdate(vehID)
+
+    def updateVehiclesFrags(self, vehicleID, fragsCount):
+        if vehicleID not in self.__statistics:
+            return
+        self.__statistics[vehicleID] = {'frags': fragsCount}
+        self.onVehicleStatisticsUpdate(vehicleID)
+
+    def updateVehiclesTkills(self, vehicleID, tkillsCount):
+        if vehicleID not in self.__statistics:
+            return
+        self.__statistics[vehicleID] = {'tkills': tkillsCount}
+        self.onVehicleStatisticsUpdate(vehicleID)
+
+    def updateFogOfWar(self, fogOfWar):
+        self.__isFogOfWarEnabled = bool(fogOfWar & 1)
+        self.onFogOfWarEnabled(self.__isFogOfWarEnabled)
+        self.__hasFogOfWarHiddenVehicles = bool(fogOfWar & 2)
+        self.onFogOfWarHiddenVehiclesSet(self.__hasFogOfWarHiddenVehicles)
+
+    def invalidateVehiclesPosition(self):
+        for vehID, vehInfo in self.__vehicles.iteritems():
+            self.__setVehiclePosition(vehID, vehInfo['position'])
+
+        self.onPositionsUpdated()
+
+    def updateVehiclesPosition(self, vehID, position):
+        if not self.isAvatarReady:
+            return
+        self.__setVehiclePosition(vehID, position)
+        self.onPositionsUpdated()
+
+    def __setVehiclePosition(self, vehID, position):
+        if position != self.NONE_POSITION:
+            self.__positions[vehID] = (
+             position[0], 0, position[1])
+        else:
+            self.__positions.pop(vehID, None)
+        return
 
     def updateVehicleIsAlive(self, vehID, compDescr, isPlayerVehicle):
         vehInfo = self.__vehicles[vehID]
@@ -458,7 +463,9 @@ class ClientArena(object):
 
 
 def _convertToList(vec4):
-    return ((vec4.x, vec4.y), (vec4.z, vec4.w))
+    return (
+     (
+      vec4.x, vec4.y), (vec4.z, vec4.w))
 
 
 class CollisionResult(object):
@@ -491,7 +498,9 @@ class _BBCollider(object):
         return self.__min.x <= point3D[0] <= self.__max.x and self.__min.y <= point3D[1] <= self.__max.y and self.__min.z <= point3D[2] <= self.__max.z
 
     def getClosestPointOnBB(self, point):
-        return self._findClosestPointInside(point) if self.isPointInsideBB(point) else self._findClosestPointOutside(point)
+        if self.isPointInsideBB(point):
+            return self._findClosestPointInside(point)
+        return self._findClosestPointOutside(point)
 
     def _findClosestPointInside(self, point):
         nearestX = self.__min.x if point.x < self.__center.x else self.__max.x
@@ -502,10 +511,12 @@ class _BBCollider(object):
         offsetZ = abs(nearestZ - point.z)
         if offsetX <= offsetY and offsetX <= offsetZ:
             return Math.Vector3(nearestX, point.y, point.z)
-        return Math.Vector3(point.x, nearestY, point.z) if offsetY <= offsetX and offsetY <= offsetZ else Math.Vector3(point.x, point.y, nearestZ)
+        if offsetY <= offsetX and offsetY <= offsetZ:
+            return Math.Vector3(point.x, nearestY, point.z)
+        return Math.Vector3(point.x, point.y, nearestZ)
 
     def _findClosestPointOutside(self, point):
-        return Math.Vector3(self.__max.x if point.x > self.__max.x else (self.__min.x if point.x < self.__min.x else point.x), self.__max.y if point.y > self.__max.y else (self.__min.y if point.y < self.__min.y else point.y), self.__max.z if point.z > self.__max.z else (self.__min.z if point.z < self.__min.z else point.z))
+        return Math.Vector3(self.__max.x if point.x > self.__max.x else self.__min.x if point.x < self.__min.x else point.x, self.__max.y if point.y > self.__max.y else self.__min.y if point.y < self.__min.y else point.y, self.__max.z if point.z > self.__max.z else self.__min.z if point.z < self.__min.z else point.z)
 
     def collide(self, start, end):
         startIsInside = self.isPointInsideBB(start)
@@ -523,7 +534,8 @@ class _BBCollider(object):
                         dist = tmpDist
                         finalPoint = intersecPoint
 
-            return (CollisionResult.INTERSECTION, finalPoint)
+            return (
+             CollisionResult.INTERSECTION, finalPoint)
 
 
 class Plane(object):
@@ -536,10 +548,12 @@ class Plane(object):
         ab = b - a
         normalDotDir = self.n.dot(ab)
         if normalDotDir == 0:
-            return None
+            return
         else:
             t = (self.d - self.n.dot(a)) / normalDotDir
-            return a + ab.scale(t) if 0.0 <= t <= 1.0 else None
+            if 0.0 <= t <= 1.0:
+                return a + ab.scale(t)
+            return
 
     def testPoint(self, point):
-        return True if self.n.dot(point) - self.d >= 0.0 else False
+        return self.n.dot(point) - self.d >= 0.0

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/points_of_interest/poi_view_states.py
 from collections import namedtuple
 import typing
 from helpers import dependency
@@ -8,8 +6,8 @@ PointViewState = namedtuple('PointState', ('id', 'type', 'status', 'invader'))
 VehicleViewState = namedtuple('VehicleState', ('id', 'blockReasons'))
 if typing.TYPE_CHECKING:
     from points_of_interest.components import PoiStateComponent, PoiCaptureBlockerStateComponent
-    StateComponent = typing.Union[PoiStateComponent, PoiCaptureBlockerStateComponent]
-    ViewState = typing.Union[PointViewState, VehicleViewState]
+    StateComponent = typing.Union[(PoiStateComponent, PoiCaptureBlockerStateComponent)]
+    ViewState = typing.Union[(PointViewState, VehicleViewState)]
 
 class _ViewStateUpdater(object):
     __guiSessionProvider = dependency.descriptor(IBattleSessionProvider)

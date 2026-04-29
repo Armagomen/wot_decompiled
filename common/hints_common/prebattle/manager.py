@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/hints_common/prebattle/manager.py
-import logging
-import typing
+import logging, typing
 from dict2model import exceptions
 from hints_common.common.manager import BaseHintsModelsManager
 from hints_common.prebattle.schemas import hintSchema, BaseHintSchema
@@ -22,7 +19,7 @@ class PrebattleHintsModelsManager(BaseHintsModelsManager):
 
     def _checkSchemaType(self, schema):
         if not isinstance(schema, BaseHintSchema):
-            raise exceptions.ValidationError('Schema type must be {} or inherited.'.format(BaseHintSchema))
+            raise exceptions.ValidationError(('Schema type must be {} or inherited.').format(BaseHintSchema))
 
     def _addToStorage(self, schema, hint):
         self._hints.append(hint)
@@ -33,7 +30,7 @@ class PrebattleHintsModelsManager(BaseHintsModelsManager):
             try:
                 schema.validateRegistered(list(self._hints))
             except exceptions.ValidationError as ve:
-                error = exceptions.ValidationErrorMessage(ve.error.data, title='{}'.format(path))
+                error = exceptions.ValidationErrorMessage(ve.error.data, title=('{}').format(path))
                 errors = errors + error if errors else error
 
         if errors:

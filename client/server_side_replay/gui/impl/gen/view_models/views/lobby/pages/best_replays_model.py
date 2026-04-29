@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: server_side_replay/scripts/client/server_side_replay/gui/impl/gen/view_models/views/lobby/pages/best_replays_model.py
 from frameworks.wulf import Array
 from server_side_replay.gui.impl.gen.view_models.views.lobby.table_base_model import TableBaseModel
 from server_side_replay.gui.impl.gen.view_models.views.lobby.top_replay_model import TopReplayModel

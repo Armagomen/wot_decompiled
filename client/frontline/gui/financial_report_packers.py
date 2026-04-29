@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/financial_report_packers.py
 from itertools import izip_longest
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from gui.battle_results.pbs_helpers.economics import getDirectXpRecords, FinancialRecordValues, getDirectFreeXpRecords, getDirectMoneyRecords
@@ -22,10 +20,11 @@ class FrontlineDetailedCurrencyPacker(DetailedCurrencyPacker):
             raise SoftException('Invalid currency data')
         records = [ extractor(battleResults.reusable) for extractor in recordsExtractors ]
         if vehIdx >= 0 and isinstance(first(records), FinancialRecordValues):
-            baseAccountValue, premiumAccountValue, additionalValue, extraValue, baseAccountValueWithWotPlus, premiumAccountValueWithWotPlus = list(izip_longest(*[ item or [] for item in records[0] ]))[vehIdx + 1]
-            specRecords = [FinancialRecordValues(baseAccountValue=RecordsIterator([baseAccountValue]) if baseAccountValue else None, premiumAccountValue=RecordsIterator([premiumAccountValue]) if premiumAccountValue else None, additionalValue=RecordsIterator([additionalValue]) if additionalValue else None, extraValue=RecordsIterator([extraValue]) if extraValue else None, baseAccountValueWithWotPlus=RecordsIterator([baseAccountValueWithWotPlus]) if baseAccountValueWithWotPlus else None, premiumAccountValueWithWotPlus=RecordsIterator([premiumAccountValueWithWotPlus]) if premiumAccountValueWithWotPlus else None)]
+            baseAccountValue, premiumAccountValue, additionalValue, extraValue, baseAccountValueWithWotPlus, premiumAccountValueWithWotPlus = list(izip_longest(*[ item or [] for item in records[0] ]))[(vehIdx + 1)]
+            specRecords = [
+             FinancialRecordValues(baseAccountValue=RecordsIterator([baseAccountValue]) if baseAccountValue else None, premiumAccountValue=RecordsIterator([premiumAccountValue]) if premiumAccountValue else None, additionalValue=RecordsIterator([additionalValue]) if additionalValue else None, extraValue=RecordsIterator([extraValue]) if extraValue else None, baseAccountValueWithWotPlus=RecordsIterator([baseAccountValueWithWotPlus]) if baseAccountValueWithWotPlus else None, premiumAccountValueWithWotPlus=RecordsIterator([premiumAccountValueWithWotPlus]) if premiumAccountValueWithWotPlus else None)]
         elif vehIdx >= 0 and isinstance(first(records), RecordsIterator):
-            recordItem = zip(records[0])[vehIdx + 1]
+            recordItem = zip(records[0])[(vehIdx + 1)]
             specRecords = [RecordsIterator(recordItem) if recordItem else None]
         else:
             specRecords = records
@@ -35,10 +34,12 @@ class FrontlineDetailedCurrencyPacker(DetailedCurrencyPacker):
         return
 
 
-RANK_BONUS_XP = CurrencyRecord(recordNames=('playerRankXPFactor100',), subtractRecords=(), baseAccountValueExtractor=getBaseAccountValue, premiumAccountValueExtractor=getPremiumAccountValue, detailsValuesExtractors=(), capsToBeChecked={ARENA_BONUS_TYPE_CAPS.PLAYER_RANK_MECHANICS}, paramName='playerRankXP', label=R.strings.battle_results.details.calculations.playerRankXP, modifiers=(), showZeroValue=False, currencyType=CurrenciesConstants.XP_COST)
+RANK_BONUS_XP = CurrencyRecord(recordNames=('playerRankXPFactor100', ), subtractRecords=(), baseAccountValueExtractor=getBaseAccountValue, premiumAccountValueExtractor=getPremiumAccountValue, detailsValuesExtractors=(), capsToBeChecked={
+ ARENA_BONUS_TYPE_CAPS.PLAYER_RANK_MECHANICS}, paramName='playerRankXP', label=R.strings.battle_results.details.calculations.playerRankXP, modifiers=(), showZeroValue=False, currencyType=CurrenciesConstants.XP_COST)
 
 class FrontlineXpDetailsPacker(FrontlineDetailedCurrencyPacker):
-    _EARNED = (xp_records.ORIGINAL_XP,
+    _EARNED = (
+     xp_records.ORIGINAL_XP,
      xp_records.ACHIEVEMENT_XP,
      xp_records.FRIENDLY_FIRE_PENALTY_XP,
      xp_records.IGR_BONUS_XP,
@@ -66,7 +67,8 @@ class FrontlineXpDetailsPacker(FrontlineDetailedCurrencyPacker):
 
 
 class FrontlineCrystalsDetailsPacker(FrontlineDetailedCurrencyPacker):
-    _EARNED = (ORIGINAL_CRYSTALS, EVENT_CRYSTALS)
+    _EARNED = (
+     ORIGINAL_CRYSTALS, EVENT_CRYSTALS)
     _EXPENSES = (AUTO_EQUIP_CRYSTALS,)
     _TOTAL = (TOTAL_CRYSTALS,)
 
@@ -76,7 +78,8 @@ class FrontlineCrystalsDetailsPacker(FrontlineDetailedCurrencyPacker):
 
 
 class FrontlineFreeXpDetailsPacker(FrontlineDetailedCurrencyPacker):
-    _EARNED = (free_xp_records.ORIGINAL_FREE_XP,
+    _EARNED = (
+     free_xp_records.ORIGINAL_FREE_XP,
      free_xp_records.ACHIEVEMENT_FREE_XP,
      free_xp_records.IGR_BONUS_FREE_XP,
      free_xp_records.FIRST_WIN_FREE_XP,
@@ -99,7 +102,8 @@ class FrontlineFreeXpDetailsPacker(FrontlineDetailedCurrencyPacker):
 
 
 class FrontlineCreditsStatisticsPacker(FrontlineDetailedCurrencyPacker):
-    _EARNED = (credits_records.BASE_EARNED_CREDITS,
+    _EARNED = (
+     credits_records.BASE_EARNED_CREDITS,
      credits_records.SQUAD_BONUS_CREDITS,
      credits_records.ACHIEVEMENT_CREDITS,
      credits_records.BOOSTERS_CREDITS,
@@ -115,8 +119,13 @@ class FrontlineCreditsStatisticsPacker(FrontlineDetailedCurrencyPacker):
      credits_records.FRIENDLY_FIRE_COMPENSATION_CREDITS,
      common_records.AOGAS_FACTOR,
      credits_records.PIGGY_BANK_CREDITS)
-    _EXPENSES = (credits_records.AUTO_REPAIR_CREDITS, credits_records.AUTO_LOAD_CREDITS, credits_records.AUTO_EQUIP_CREDITS)
-    _TOTAL = (credits_records.INTERMEDIATE_TOTAL_CREDITS, credits_records.TOTAL_CREDITS)
+    _EXPENSES = (
+     credits_records.AUTO_REPAIR_CREDITS,
+     credits_records.AUTO_LOAD_CREDITS,
+     credits_records.AUTO_EQUIP_CREDITS)
+    _TOTAL = (
+     credits_records.INTERMEDIATE_TOTAL_CREDITS,
+     credits_records.TOTAL_CREDITS)
 
     @classmethod
     def _getExtractors(cls, battleResults):
@@ -124,9 +133,13 @@ class FrontlineCreditsStatisticsPacker(FrontlineDetailedCurrencyPacker):
 
 
 class FrontlineGoldStatisticsPacker(FrontlineDetailedCurrencyPacker):
-    _EARNED = (gold_records.GOLD_PIGGY_BANK, gold_records.GOLD_EVENT_PAYMENTS)
+    _EARNED = (
+     gold_records.GOLD_PIGGY_BANK,
+     gold_records.GOLD_EVENT_PAYMENTS)
     _EXPENSES = None
-    _TOTAL = (gold_records.TOTAL_GOLD, gold_records.INTERMEDIATE_TOTAL_GOLD)
+    _TOTAL = (
+     gold_records.TOTAL_GOLD,
+     gold_records.INTERMEDIATE_TOTAL_GOLD)
 
     @classmethod
     def _getExtractors(cls, battleResults):

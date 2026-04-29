@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/TwinGunController.py
+from __future__ import absolute_import
 import typing
 from constants import DUPLET_GUN_INDEXES_TUPLE
 from events_handler import eventHandler
@@ -7,6 +6,7 @@ from gui.shared.utils.decorators import ReprInjector
 from gui.battle_control.components_states.ammo import DefaultComponentAmmoState
 from vehicles.components.component_wrappers import ifAppearanceReady
 from vehicles.components.vehicle_component import VehicleDynamicComponent
+from vehicles.entities import ShotParams
 from vehicles.mechanics.common import IMechanicComponentLogic
 from vehicles.mechanics.mechanic_constants import VehicleMechanic
 from vehicles.parts.guns.twin_shoot import ITwinShootGunComponent, createTwinShootingEvents
@@ -76,6 +76,10 @@ class TwinGunController(VehicleDynamicComponent, ITwinShootGunComponent, IMechan
     @eventHandler
     def onCollectAmmoStates(self, ammoStates):
         ammoStates[self.vehicleMechanic.value] = TwinGunAmmoState(self.shotsCount)
+
+    @eventHandler
+    def onCollectShotParams(self, shotParamsList):
+        shotParamsList.append(ShotParams(self.vehicleMechanic, 0, 0, False))
 
     def _onAppearanceReady(self):
         super(TwinGunController, self)._onAppearanceReady()

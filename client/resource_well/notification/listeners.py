@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/notification/listeners.py
 from __future__ import absolute_import
 import logging
 from typing import Optional
@@ -50,26 +48,26 @@ class ResourceWellListener(_NotificationListener):
         if not isStartNotificationShown() and self.__resourceWell.isActive():
             self.__pushStarted()
             return
-        elif self.__prevIsFinished is None:
-            self.__prevIsFinished = self.__resourceWell.isFinished()
-            return
-        isFinished = self.__resourceWell.isFinished()
-        if not isFinishNotificationShown() and self.__prevIsFinished != isFinished:
-            self.__prevIsFinished = isFinished
-            if isFinished:
-                self.__pushFinished()
-            return
         else:
+            if self.__prevIsFinished is None:
+                self.__prevIsFinished = self.__resourceWell.isFinished()
+                return
+            isFinished = self.__resourceWell.isFinished()
+            if not isFinishNotificationShown() and self.__prevIsFinished != isFinished:
+                self.__prevIsFinished = isFinished
+                if isFinished:
+                    self.__pushFinished()
+                return
             return
 
     def __checkPause(self):
         if not self.__resourceWell.isStarted() or self.__resourceWell.isFinished():
             self.__prevIsEnabled = None
             return
-        elif self.__prevIsEnabled is None and self.__resourceWell.isStarted() and not self.__resourceWell.isFinished():
-            self.__prevIsEnabled = self.__resourceWell.isEnabled()
-            return
         else:
+            if self.__prevIsEnabled is None and self.__resourceWell.isStarted() and not self.__resourceWell.isFinished():
+                self.__prevIsEnabled = self.__resourceWell.isEnabled()
+                return
             isEnabled = self.__resourceWell.isEnabled()
             if self.__prevIsEnabled is not isEnabled:
                 self.__prevIsEnabled = isEnabled
@@ -90,13 +88,13 @@ class ResourceWellListener(_NotificationListener):
     def __pushStarted(self):
         model = self._model()
         if model is not None:
-            if self.__resourceWell.getPurchaseMode() in (PurchaseMode.SEQUENTIAL_PRODUCT, PurchaseMode.ONE_SERIAL_PRODUCT):
+            if self.__resourceWell.getPurchaseMode() in (
+             PurchaseMode.SEQUENTIAL_PRODUCT, PurchaseMode.ONE_SERIAL_PRODUCT):
                 text = self.__getSingleVehicleText()
             else:
                 text = self.__getTwoVehiclesText()
             title = backport.text(R.strings.messenger.serviceChannelMessages.resourceWell.start.title())
-            messageData = {'title': title,
-             'text': text}
+            messageData = {'title': title, 'text': text}
             model.addNotification(ResourceWellStartDecorator(message=messageData, entityID=self.__START_ENTITY_ID, model=model))
             setStartNotificationShown()
         return
@@ -109,7 +107,7 @@ class ResourceWellListener(_NotificationListener):
 
     def __getTwoVehiclesText(self):
         rewardIDs = list(self.__resourceWell.config.rewards)
-        if not len(rewardIDs) == 2:
+        if len(rewardIDs) != 2:
             _logger.error('At parallel launch must be two vehicles, got %s', rewardIDs)
             return
         else:

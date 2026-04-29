@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/dossiers2/custom/comp7_helpers.py
-import collections
-import operator
+import collections, operator
 from dossiers2.common.updater_utils import getStaticSizeBlockRecordValues, getDictBlockRecordValues, updateDictRecords, addRecords, removeRecords, updateStaticSizeBlockRecords
 SEASON_KEY = 'comp7Season'
 MAX_SEASON_KEY = 'maxComp7Season'
@@ -10,7 +7,7 @@ CUT_SEASON_KEY = 'comp7CutSeason'
 def getSeasonsRecords(seasonKey, seasonsNumber, ctx, packing):
     seasonsRecords = []
     for seasonNumber in range(seasonsNumber):
-        key = '{}{}'.format(seasonKey, seasonNumber + 1)
+        key = ('{}{}').format(seasonKey, seasonNumber + 1)
         seasonsRecords.append(getStaticSizeBlockRecordValues(ctx, key, packing))
 
     return seasonsRecords
@@ -19,7 +16,7 @@ def getSeasonsRecords(seasonKey, seasonsNumber, ctx, packing):
 def getCutSeasonsRecords(seasonKey, seasonsNumber, ctx):
     cutRecords = []
     for seasonNumber in range(seasonsNumber):
-        key = '{}{}'.format(seasonKey, seasonNumber + 1)
+        key = ('{}{}').format(seasonKey, seasonNumber + 1)
         cutRecords.append(getDictBlockRecordValues(ctx, key, 'I', 'IIII'))
 
     return cutRecords
@@ -37,7 +34,7 @@ def getMaxSeasonsValues(seasonsValues):
                 continue
             if value >= maxValues.get(key):
                 maxValues[key] = value
-                vehicleKey = '{}Vehicle'.format(key)
+                vehicleKey = ('{}Vehicle').format(key)
                 if vehicleKey in seasonValues:
                     maxValues[vehicleKey] = seasonValues[vehicleKey]
 
@@ -64,12 +61,12 @@ def prepareArchiveCutSeasonsRecords(cutSeasonsValues):
 
 def clearSeasonsRecords(seasonsNumber, seasonsKey, ctx, packing):
     for seasonNumber in range(seasonsNumber):
-        removeRecords(ctx, '{}{}'.format(seasonsKey, seasonNumber + 1), packing)
+        removeRecords(ctx, ('{}{}').format(seasonsKey, seasonNumber + 1), packing)
 
 
 def clearCutSeasonsRecords(seasonsNumber, ctx):
     for seasonNumber in range(seasonsNumber):
-        updateDictRecords(ctx, '{}{}'.format(CUT_SEASON_KEY, seasonNumber + 1), 'I', 'IIII', {})
+        updateDictRecords(ctx, ('{}{}').format(CUT_SEASON_KEY, seasonNumber + 1), 'I', 'IIII', {})
 
 
 def addSeasonRecord(updateCtx, seasonKey, fields, values):

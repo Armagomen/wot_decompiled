@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_results/missions_progress/common_battle_quests_progress.py
 import constants
 from gui.battle_results.pbs_helpers.common import getBattleResults
 from gui.battle_results.progress.progress_helpers import getReceivedTokensInfo
@@ -84,7 +82,11 @@ class CommonBattleQuestsProgressPresenter(ViewComponent[CommonBattleQuestsProgre
         return
 
     def _getEvents(self):
-        return ((self.viewModel.onNavigate, self.__onNavigate), (self.__eventsCache.onSyncCompleted, self.__onEventsUpdate))
+        return (
+         (
+          self.viewModel.onNavigate, self.__onNavigate),
+         (
+          self.__eventsCache.onSyncCompleted, self.__onEventsUpdate))
 
     def _onLoading(self, *args, **kwargs):
         super(CommonBattleQuestsProgressPresenter, self)._onLoading(*args, **kwargs)
@@ -124,7 +126,7 @@ class CommonBattleQuestsProgressPresenter(ViewComponent[CommonBattleQuestsProgre
             packer = BattleQuestUIDataPacker(event)
             packer.pack(model)
         else:
-            return None
+            return
         bonusPacker = getDefaultBonusPacker()
         packBonusesWithActualTokensConvertion(pCur, model, event, questTokensConvertion, questTokensCount, self.__tooltipData[eventID], bonusPacker)
         self.__bonusesModel[eventID] = model.getBonuses()

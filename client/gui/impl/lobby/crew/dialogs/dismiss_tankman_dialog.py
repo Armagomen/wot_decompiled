@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/dialogs/dismiss_tankman_dialog.py
 from base_crew_dialog_template_view import BaseCrewDialogTemplateView
 from gui.impl.dialogs.dialog_template_button import CancelButton, ConfirmButton
 from gui.impl.gen import R
@@ -14,7 +12,7 @@ from skeletons.gui.game_control import IRestoreController
 from skeletons.gui.shared import IItemsCache
 
 class DismissTankmanDialog(BaseCrewDialogTemplateView):
-    __slots__ = ('_tankman',)
+    __slots__ = ('_tankman', )
     LAYOUT_ID = R.views.lobby.crew.dialogs.DismissTankmanDialog()
     VIEW_MODEL = DismissTankmanDialogModel
     _itemsCache = dependency.descriptor(IItemsCache)
@@ -29,7 +27,9 @@ class DismissTankmanDialog(BaseCrewDialogTemplateView):
         return self.getViewModel()
 
     def _getEvents(self):
-        return ((self.viewModel.onInputChanged, self._onInputChanged),)
+        return (
+         (
+          self.viewModel.onInputChanged, self._onInputChanged),)
 
     def _onLoading(self, *args, **kwargs):
         self.setBackgroundImagePath(R.images.gui.maps.icons.windows.background())
@@ -51,7 +51,7 @@ class DismissTankmanDialog(BaseCrewDialogTemplateView):
         super(DismissTankmanDialog, self)._setResult(result)
 
     def _updateViewModel(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             self._fillViewModel(vm)
 
     def _fillViewModel(self, vm):
@@ -62,7 +62,7 @@ class DismissTankmanDialog(BaseCrewDialogTemplateView):
         setTmanSkillsModel(vm.tankman.skills, self._tankman, fillBonusSkills=False)
         skills = self._tankman.skills
         if skills:
-            lastSkill = skills[-1]
+            lastSkill = skills[(-1)]
             vm.setPerkName(lastSkill.name)
             vm.setPerkLevel(lastSkill.level)
         if self._tankman.isRestorable():
@@ -74,7 +74,7 @@ class DismissTankmanDialog(BaseCrewDialogTemplateView):
             isLmtReached = self._restoreCtrl.getMaxTankmenBufferLength() - dismissedTmenSize <= 0
             vm.setIsLimitReached(isLmtReached)
             if isLmtReached and dismissedTmenSize:
-                replacedTman = dismissedTmenList[-1]
+                replacedTman = dismissedTmenList[(-1)]
                 replacedTmanVeh = self._itemsCache.items.getItemByCD(replacedTman.vehicleNativeDescr.type.compactDescr)
                 setReplacedTankmanModel(vm.replacedTankman, replacedTman, replacedTmanVeh)
         vm.setTrainingLevel(self._tankman.roleLevel if hasFullSkills else 0)

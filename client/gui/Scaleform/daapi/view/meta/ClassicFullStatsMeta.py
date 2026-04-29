@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/ClassicFullStatsMeta.py
 from gui.Scaleform.daapi.view.battle.shared.tabbed_full_stats import TabbedFullStatsComponent
 
 class ClassicFullStatsMeta(TabbedFullStatsComponent):
@@ -11,7 +9,9 @@ class ClassicFullStatsMeta(TabbedFullStatsComponent):
         self._printOverrideError('onStatsTableVisibiltyToggled')
 
     def as_questProgressPerformS(self, data):
-        return self.flashObject.as_questProgressPerform(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_questProgressPerform(data)
 
     def as_updateProgressTrackingS(self, data):
-        return self.flashObject.as_updateProgressTracking(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateProgressTracking(data)

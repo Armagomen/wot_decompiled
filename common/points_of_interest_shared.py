@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/points_of_interest_shared.py
 import enum
 ENEMY_VEHICLE_ID = -1
 INVALID_TIMESTAMP = -1
@@ -27,6 +25,6 @@ class PoiBlockReasons(enum.IntEnum):
     OVERTURNED = 3
 
 
-PoiEquipmentNamesByPoiType = {PoiType.ARTILLERY: 'poi_artillery_aoe',
- PoiType.RECON: 'poi_radar'}
+PoiEquipmentNamesByPoiType = {PoiType.ARTILLERY: 'poi_artillery_aoe', 
+   PoiType.RECON: 'poi_radar'}
 PoiTypesByPoiEquipmentName = {name:poiType for poiType, name in PoiEquipmentNamesByPoiType.iteritems()}

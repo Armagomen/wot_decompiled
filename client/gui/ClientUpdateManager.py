@@ -1,13 +1,13 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/ClientUpdateManager.py
+from __future__ import absolute_import
 import inspect
+from future.utils import viewitems
 from gui.shared.money import Currency
 
 class _ClientUpdateManager(object):
     EVENT_TYPE_DELIMITER = '.'
 
     def __init__(self):
-        self.__handlers = dict()
+        self.__handlers = {}
         self.__removedHandlers = set()
 
     def update(self, diff):
@@ -25,11 +25,11 @@ class _ClientUpdateManager(object):
         self.__subscribeHandler(handler, diffpath)
 
     def addCallbacks(self, map_of_handlers):
-        for diffpath, handler in map_of_handlers.iteritems():
+        for diffpath, handler in viewitems(map_of_handlers):
             self.__subscribeHandler(handler, diffpath)
 
     def addCurrencyCallback(self, currency, handler):
-        self.__subscribeHandler(handler, 'stats.{}'.format(currency))
+        self.__subscribeHandler(handler, ('stats.{}').format(currency))
 
     def addMoneyCallback(self, handler):
         for c in Currency.ALL:
@@ -39,10 +39,10 @@ class _ClientUpdateManager(object):
         self.__unsubscribeHandler(handler, diffpath)
 
     def removeCurrencyCallback(self, currency, handler):
-        self.__unsubscribeHandler(handler, 'stats.{}'.format(currency))
+        self.__unsubscribeHandler(handler, ('stats.{}').format(currency))
 
     def removeObjectCallbacks(self, obj_instance, force=False):
-        removed = set((key for key in self.__handlers.iterkeys() if inspect.ismethod(key) and key.__self__ is obj_instance))
+        removed = set(key for key in self.__handlers if inspect.ismethod(key) and key.__self__ is obj_instance)
         if force:
             for item in removed:
                 del self.__handlers[item]
@@ -71,12 +71,13 @@ class _ClientUpdateManager(object):
             return (True, diff_ptr)
         else:
             for key in diffpath.split(self.EVENT_TYPE_DELIMITER):
-                key = (key[:-2], '_r') if key.endswith('_r') else (key if not key.isdigit() else int(key))
+                key = (key[:-2], '_r') if key.endswith('_r') else key if not key.isdigit() else int(key)
                 if not isinstance(diff_ptr, dict) or key not in diff_ptr:
                     return (False, None)
                 diff_ptr = diff_ptr[key]
 
-            return (True, diff_ptr)
+            return (
+             True, diff_ptr)
 
     def __clearRemoved(self):
         if not self.__removedHandlers:

@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/uilogging/mods_statistic/logger.py
-import BigWorld
-import json
-import logging
+import BigWorld, json, logging
 from wotdecorators import noexcept
 from uilogging.base.logger import _BaseLogger as Logger
 from uilogging.constants import DEFAULT_LOGGER_NAME
@@ -39,7 +35,8 @@ class ModsStatisticLogger(Logger):
             if jsonStrLen + rowStrLen <= self.MAX_JSON_STR_LEN:
                 tmpMods[modName] = md5
                 jsonStrLen += rowStrLen + 1
-            break
+            else:
+                break
 
         modsJson = json.dumps(tmpMods)
         super(ModsStatisticLogger, self)._log(self.ACTION, mods_statistic_json=modsJson, total_mods=len(mods))

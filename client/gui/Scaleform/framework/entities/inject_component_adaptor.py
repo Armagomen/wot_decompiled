@@ -1,7 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/framework/entities/inject_component_adaptor.py
-import logging
-import typing
+from __future__ import absolute_import
+import logging, typing
 from functools import wraps
 from gui.Scaleform.daapi.view.meta.InjectComponentMeta import InjectComponentMeta
 from helpers import dependency
@@ -77,14 +75,14 @@ class InjectComponentAdaptor(InjectComponentMeta):
         if not self._isDAAPIInited():
             _logger.warning('GFxValue is not created for %s', self.getAlias())
             return
-        elif self.__view is not None:
-            _logger.error('View %r is already created in component %s', self.__view, self.getAlias())
-            return
         else:
+            if self.__view is not None:
+                _logger.error('View %r is already created in component %s', self.__view, self.getAlias())
+                return
             self.__view = self._makeInjectView(*args)
             if self.__view is None:
                 return
-            elif self.__view.viewFlags != ViewFlags.VIEW:
+            if self.__view.viewFlags != ViewFlags.VIEW:
                 _logger.error('View %r with flags %r is not supported to be injected. %r. ViewFlags.VIEW is the only supported.', self.__view, self.__view.viewFlags, self.getAlias())
                 return
             self.__view.onStatusChanged += self.__onViewStatusChanged

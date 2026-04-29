@@ -1,7 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/status_notifications/sn_items.py
-import typing
-import BigWorld
+from __future__ import absolute_import
+import typing, BigWorld
 from AvatarInputHandler import AvatarInputHandler
 from aih_constants import CTRL_MODE_NAME
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
@@ -54,7 +52,8 @@ class SimpleSnapshotHandler(TimeSnapshotHandler):
 
 class VehicleStateSN(StatusNotificationItem):
     _sessionProvider = dependency.descriptor(IBattleSessionProvider)
-    _HIDE_STATES_TRIGGERS = (VEHICLE_VIEW_STATE.DESTROYED, VEHICLE_VIEW_STATE.CREW_DEACTIVATED, VEHICLE_VIEW_STATE.SWITCHING)
+    _HIDE_STATES_TRIGGERS = (
+     VEHICLE_VIEW_STATE.DESTROYED, VEHICLE_VIEW_STATE.CREW_DEACTIVATED, VEHICLE_VIEW_STATE.SWITCHING)
 
     def __init__(self, updateCallback):
         super(VehicleStateSN, self).__init__(updateCallback)
@@ -106,13 +105,13 @@ class VehicleStateSN(StatusNotificationItem):
             self._sendUpdate()
 
     def _getTitle(self, value):
-        pass
+        return ''
 
     def _getDescription(self, value):
-        pass
+        return ''
 
     def _getEquipmentName(self):
-        pass
+        return ''
 
     def _onVehicleControlling(self, vehicle):
         ctrl = self._sessionProvider.shared.vehicleState
@@ -232,7 +231,7 @@ class StaticDeathZoneSN(_DestroyTimerSN):
         self._sendUpdate()
 
     def _getSupportedLevel(self):
-        return None
+        return
 
 
 class PersonalDeathZoneSN(TimerSN):
@@ -268,7 +267,8 @@ class PersonalDeathZoneSN(TimerSN):
         self._setVisible(False)
 
     def __hideTimer(self):
-        params = (self._isVisible, 0, 0)
+        params = (
+         self._isVisible, 0, 0)
         self._update(params)
 
 
@@ -286,7 +286,7 @@ class DeathZoneDamagingSN(_DeathZoneSN):
             return False
 
     def _getSupportedLevel(self):
-        return None
+        return
 
 
 class DeathZoneDangerSN(_DeathZoneSN):
@@ -295,7 +295,9 @@ class DeathZoneDangerSN(_DeathZoneSN):
         return BATTLE_NOTIFICATIONS_TIMER_TYPES.DEATH_ZONE
 
     def _canBeShown(self, value):
-        return value.needToShow() if super(DeathZoneDangerSN, self)._canBeShown(value) else False
+        if super(DeathZoneDangerSN, self)._canBeShown(value):
+            return value.needToShow()
+        return False
 
     def _getSupportedLevel(self):
         return TIMER_VIEW_STATE.CRITICAL
@@ -307,7 +309,9 @@ class DeathZoneWarningSN(_DeathZoneSN):
         return BATTLE_NOTIFICATIONS_TIMER_TYPES.ORANGE_ZONE
 
     def _canBeShown(self, value):
-        return value.needToShow() if super(DeathZoneWarningSN, self)._canBeShown(value) else False
+        if super(DeathZoneWarningSN, self)._canBeShown(value):
+            return value.needToShow()
+        return False
 
     def _getSupportedLevel(self):
         return TIMER_VIEW_STATE.WARNING
@@ -330,7 +334,7 @@ class DestroyMiscTimerSN(_DestroyTimerSN):
         if self._getSupportedMiscStatus() == value.code:
             if value.needToCloseTimer():
                 self._setVisible(False)
-            elif supportedLevel == self._ANY_SUPPORTED_LEVEL or supportedLevel == level:
+            elif supportedLevel in (self._ANY_SUPPORTED_LEVEL, level):
                 if not value.needToCloseTimer():
                     self._isVisible = True
                     self._updateTimeParams(value.totalTime, 0)
@@ -349,7 +353,9 @@ class _OverturnedBaseSN(LocalizationProvider, DestroyMiscTimerSN):
         return VEHICLE_MISC_STATUS.VEHICLE_IS_OVERTURNED
 
     def _getDescription(self, value=None):
-        return backport.text(R.strings.ingame_gui.destroyTimer.liftOver()) if BigWorld.player().hasBonusCap(ARENA_BONUS_TYPE_CAPS.LIFT_OVER) else ''
+        if BigWorld.player().hasBonusCap(ARENA_BONUS_TYPE_CAPS.LIFT_OVER):
+            return backport.text(R.strings.ingame_gui.destroyTimer.liftOver())
+        return ''
 
 
 class OverturnedSN(_OverturnedBaseSN):
@@ -394,8 +400,8 @@ class UnderFireSN(VehicleStateSN):
     def getViewTypeID(self):
         return BATTLE_NOTIFICATIONS_TIMER_TYPES.UNDER_FIRE
 
-    def _update(self, isUnderFire):
-        self._setVisible(isUnderFire)
+    def _update(self, value):
+        self._setVisible(value)
 
 
 class FireSN(VehicleStateSN):
@@ -410,8 +416,8 @@ class FireSN(VehicleStateSN):
     def getViewTypeID(self):
         return BATTLE_NOTIFICATIONS_TIMER_TYPES.FIRE
 
-    def _update(self, isInFire):
-        self._setVisible(isInFire)
+    def _update(self, value):
+        self._setVisible(value)
 
 
 class StunSN(TimerSN):
@@ -451,17 +457,16 @@ class _SmokeBase(LocalizationProvider, TimerSN):
     def getItemID(self):
         return VEHICLE_VIEW_STATE.SMOKE
 
-    def _update(self, smokesInfo):
-        endTime, equipment = self._getSmokeData(smokesInfo)
+    def _update(self, value):
+        endTime, equipment = self._getSmokeData(value)
         if endTime is None:
             if self._isVisible:
                 self._setVisible(False)
             return
-        else:
-            self._updateTimeParams(equipment.expireDelay if smokesInfo['expiring'] else equipment.totalDuration, endTime)
-            self._isVisible = True
-            self._sendUpdate()
-            return
+        self._updateTimeParams(equipment.expireDelay if value['expiring'] else equipment.totalDuration, endTime)
+        self._isVisible = True
+        self._sendUpdate()
+        return
 
     def _getSmokeData(self, smokesInfo):
         raise NotImplementedError
@@ -533,7 +538,9 @@ class HealingSN(_BaseHealingSN):
         healingString = self._stringResource.healPoint.healing
         beingHealedString = self._stringResource.healPoint.healed
         isSourceVehicle = value.get('isSourceVehicle', False)
-        return backport.text(healingString()) if isSourceVehicle else backport.text(beingHealedString())
+        if isSourceVehicle:
+            return backport.text(healingString())
+        return backport.text(beingHealedString())
 
 
 class HealingCooldownSN(_BaseHealingSN):

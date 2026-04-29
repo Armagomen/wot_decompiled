@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/battle_results/sub_presenters/fun_progression.py
 from __future__ import absolute_import
 import typing
 from collections import namedtuple
@@ -35,7 +33,7 @@ class FunProgressionSubPresenter(BattleResultsSubPresenter, FunProgressionWatche
         return FunRandomProgressModel
 
     def packBattleResults(self, battleResults):
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             progression = FunProgressionWatcher.getActiveProgression()
             if progression is None:
                 model.setHasProgress(False)
@@ -59,13 +57,13 @@ class FunProgressionSubPresenter(BattleResultsSubPresenter, FunProgressionWatche
             if lootboxID:
                 return FunRandomLootBoxTooltipView(lootboxID)
             return
-        elif contentID == R.views.lobby.tooltips.AdditionalRewardsTooltip():
+        if contentID == R.views.lobby.tooltips.AdditionalRewardsTooltip():
             showCount = max(0, int(event.getArgument('showCount')) - 1)
             bonuses = packBonuses(self.__rewardsData.bonuses, showCount, isSpecial=True)
             if bonuses:
                 return AdditionalRewardsTooltip(bonuses)
             return
-        elif contentID == R.views.common.tooltip_window.backport_tooltip_content.BackportTooltipContent():
+        if contentID == R.views.common.tooltip_window.backport_tooltip_content.BackportTooltipContent():
             tooltipId = event.getArgument('tooltipId')
             return createBackportTooltipContent(specialAlias=tooltipId, tooltipData=self.__getTooltipData(event))
         else:
@@ -73,7 +71,10 @@ class FunProgressionSubPresenter(BattleResultsSubPresenter, FunProgressionWatche
 
     def __getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        return None if tooltipId is None else self.__rewardsData.tooltips.get(tooltipId)
+        if tooltipId is None:
+            return
+        else:
+            return self.__rewardsData.tooltips.get(tooltipId)
 
     def __packModel(self, model, progressionData):
         model.setHasProgress(True)
@@ -99,6 +100,6 @@ class FunProgressionSubPresenter(BattleResultsSubPresenter, FunProgressionWatche
 
     @staticmethod
     def __createProgressionHelper(questsProgress):
-        unlimitedTriggers = {qID:p for qID, p in viewitems(questsProgress) if isFunProgressionUnlimitedTrigger(qID)}
+        unlimitedTriggers = {qID:p for qID, p in viewitems(questsProgress) if isFunProgressionUnlimitedTrigger(qID) if isFunProgressionUnlimitedTrigger(qID)}
         helperCls = FunPbsUnlimitedProgressionHelper if unlimitedTriggers else FunPbsProgressionHelper
         return helperCls()

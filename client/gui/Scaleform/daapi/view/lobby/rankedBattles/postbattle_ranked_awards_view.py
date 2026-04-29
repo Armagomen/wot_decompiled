@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/rankedBattles/postbattle_ranked_awards_view.py
 import SoundGroups
 from gui.Scaleform.genConsts.RANKEDBATTLES_ALIASES import RANKEDBATTLES_ALIASES
 from gui.impl import backport
@@ -29,9 +27,9 @@ class PostbattleRankedAwardsView(RankedBattlesAwardsViewMeta):
     def _populate(self):
         super(PostbattleRankedAwardsView, self)._populate()
         vosSequence = getVOsSequence(self.__awardsSequence, self.__rankedController.getRanksChain(min(self.__awardsSequence, key=lambda x: x.rankID).rankID if self.__awardsSequence else 0, max(self.__awardsSequence, key=lambda x: x.rankID).rankID + 1 if self.__awardsSequence else 0), self.__rankedInfo)
-        self.as_setDataS({'vosSequence': vosSequence,
-         'title': backport.text(R.strings.ranked_battles.awards.congratulation()),
-         'nextButtonLabel': backport.text(R.strings.ranked_battles.awards.yes())})
+        self.as_setDataS({'vosSequence': vosSequence, 
+           'title': backport.text(R.strings.ranked_battles.awards.congratulation()), 
+           'nextButtonLabel': backport.text(R.strings.ranked_battles.awards.yes())})
 
     def _dispose(self):
         self.onSoundTrigger(RANKEDBATTLES_ALIASES.SOUND_AWARD_QUALIFICATION_STOP)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/formatters/tooltips.py
 import typing
 from gui.impl.gen import R
 from gui.impl import backport
@@ -14,12 +12,13 @@ from gui.prb_control.settings import SELECTOR_BATTLE_TYPES
 if typing.TYPE_CHECKING:
     from season_common import GameSeason
     from skeletons.gui.game_control import ISeasonProvider
-_MODENAME_TO_PO_FILE = {SELECTOR_BATTLE_TYPES.RANKED: 'ranked_battles',
- SELECTOR_BATTLE_TYPES.MAPBOX: 'mapbox'}
+_MODENAME_TO_PO_FILE = {SELECTOR_BATTLE_TYPES.RANKED: 'ranked_battles', 
+   SELECTOR_BATTLE_TYPES.MAPBOX: 'mapbox'}
 
 @dependency.replace_none_kwargs(connectionMgr=IConnectionManager)
 def getTimeTableBlock(modeCtrl, modeName, leftPadding=0, connectionMgr=None):
-    timeTableBlocks = [packTimeTableHeaderBlock(modeName)]
+    timeTableBlocks = [
+     packTimeTableHeaderBlock(modeName)]
     primeTime = modeCtrl.getPrimeTimes().get(connectionMgr.peripheryID)
     currentCycleEnd = modeCtrl.getCurrentSeason().getCycleEndDate()
     todayStart, todayEnd = time_utils.getDayTimeBoundsForLocal()
@@ -53,7 +52,7 @@ def packCalendarBlock(modeCtrl, selectedTime, modeName):
 
         else:
             periodsStr = backport.text(R.strings.common.common.dash())
-        blocks.append(__packServerTimeBlock(serverStr=text_styles.main(backport.text(R.strings.dyn(modeName).calendarDay.serverName(), server=serverName)), timeStr=text_styles.stats('\n'.join(periodsStr))))
+        blocks.append(__packServerTimeBlock(serverStr=text_styles.main(backport.text(R.strings.dyn(modeName).calendarDay.serverName(), server=serverName)), timeStr=text_styles.stats(('\n').join(periodsStr))))
 
     return blocks
 
@@ -74,7 +73,7 @@ def _packPeriods(periods, modeName):
             endTime = formatDate('%H:%M', periodEnd)
             periodsStr.append(backport.text(R.strings.dyn(modeName).calendarDay.time(), start=startTime, end=endTime))
 
-        return '\n'.join(periodsStr)
+        return ('\n').join(periodsStr)
     return backport.text(R.strings.dyn(modeName).selectorTooltip.timeTable.empty())
 
 
@@ -105,4 +104,4 @@ def _getTimeBlock(isSeasonStarted, tillEnd, timeStamp, modeName, timeStringGette
     else:
         tillStartStr = R.strings.tooltips.battleTypes.dyn(modeName).tillStartCycle
         tillEndStr = R.strings.tooltips.battleTypes.dyn(modeName).tillEndCycle
-    return formatters.packTextBlockData('{} {}'.format(text_styles.main(backport.text(tillEndStr() if tillEnd else tillStartStr())), text_styles.stats(timeStringGetter(timeStamp))), padding=formatters.packPadding(left=leftPadding))
+    return formatters.packTextBlockData(('{} {}').format(text_styles.main(backport.text(tillEndStr() if tillEnd else tillStartStr())), text_styles.stats(timeStringGetter(timeStamp))), padding=formatters.packPadding(left=leftPadding))

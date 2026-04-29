@@ -1,11 +1,10 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/lootbox_system/submodels/has_boxes_view_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.lootbox_system.box_info_model import BoxInfoModel
 from gui.impl.gen.view_models.views.lobby.lootbox_system.submodels.statistics_model import StatisticsModel
 
 class HasBoxesViewModel(ViewModel):
-    __slots__ = ('onInfoOpen', 'onBoxesOpen', 'onBuyBoxes', 'onAnimationStateChanged', 'onOpeningOptionChanged', 'onBoxOptionChanged', 'onClose', 'onResetError')
+    __slots__ = ('onInfoOpen', 'onBoxesOpen', 'onBuyBoxes', 'onAnimationStateChanged',
+                 'onOpeningOptionChanged', 'onBoxOptionChanged', 'onClose', 'onResetError')
 
     def __init__(self, properties=10, commands=8):
         super(HasBoxesViewModel, self).__init__(properties=properties, commands=commands)

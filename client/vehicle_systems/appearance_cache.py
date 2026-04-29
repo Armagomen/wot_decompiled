@@ -1,10 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicle_systems/appearance_cache.py
-import functools
-import logging
+import functools, logging
 from collections import namedtuple
-import BigWorld
-import Event
+import BigWorld, Event
 from skeletons.vehicle_appearance_cache import IAppearanceCache
 from soft_exception import SoftException
 from vehicle_systems.CompoundAppearance import CompoundAppearance
@@ -48,10 +44,12 @@ class AppearanceCache(IAppearanceCache):
             if onCreatedCallback is not None:
                 onCreatedCallback(appearance)
             return appearance
-        elif needLoad is False:
+        if needLoad is False:
             return
         else:
-            return self.__construct(key, onCreatedCallback) if key in self.__assemblerCache else self.__load(key, info, onCreatedCallback)
+            if key in self.__assemblerCache:
+                return self.__construct(key, onCreatedCallback)
+            return self.__load(key, info, onCreatedCallback)
 
     def removeAppearance(self, vId, strCD=None):
         _logger.debug('removeAppearance(%d)', vId)
@@ -120,7 +118,7 @@ class AppearanceCache(IAppearanceCache):
         if key in self.__appearanceCache:
             checker += 1
         if checker > 1:
-            raise SoftException('Invalid appearance cache state for id = {}!'.format(key))
+            raise SoftException(('Invalid appearance cache state for id = {}!').format(key))
 
     def __validateResourceCache(self, compactDescr):
         checker = 0
@@ -129,7 +127,7 @@ class AppearanceCache(IAppearanceCache):
         if compactDescr in self.__resourceCache:
             checker += 1
         if checker > 1:
-            raise SoftException('Invalid resource cache state for id = {}!'.format(repr(compactDescr)))
+            raise SoftException(('Invalid resource cache state for id = {}!').format(repr(compactDescr)))
 
     def __construct(self, key, onFinishedCallback):
         _logger.debug('__construct(%d)', key[0])
@@ -163,7 +161,7 @@ class AppearanceCache(IAppearanceCache):
         _logger.debug('__onAppearanceLoaded(%d)', key[0])
         info = self.__loadingAssemblerQueue.pop(key, None)
         if info is None:
-            raise SoftException('appearance {} is loaded but is missing from loadingQueue! info = {}'.format(key, info))
+            raise SoftException(('appearance {} is loaded but is missing from loadingQueue! info = {}').format(key, info))
         self.__assemblerCache[key] = _AssemblerData(info.appearance, info.typeDescr, resourceRefs)
         self.__construct(key, info.onConstructed)
         return
@@ -171,7 +169,7 @@ class AppearanceCache(IAppearanceCache):
     def __onResourceLoaded(self, compactDescr, resourceRefs):
         _logger.debug('__onResourceLoaded(%s)', repr(compactDescr))
         if compactDescr in self.__resourceCache:
-            raise SoftException('resource {} is already loaded!'.format(repr(compactDescr)))
+            raise SoftException(('resource {} is already loaded!').format(repr(compactDescr)))
         self.__resourceCache[compactDescr] = resourceRefs
 
     @staticmethod

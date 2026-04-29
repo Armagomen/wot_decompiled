@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/prebattle_timers/timer_base.py
+from __future__ import absolute_import
 import BigWorld
 from constants import ARENA_PERIOD
 from gui.Scaleform.daapi.view.meta.PrebattleTimerBaseMeta import PrebattleTimerBaseMeta
@@ -13,9 +12,9 @@ from helpers import i18n
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.lobby_context import ILobbyContext
 _TIMER_ANIMATION_SHIFT = 0.4
-_STATE_TO_MESSAGE = {COUNTDOWN_STATE.WAIT: R.strings.ingame_gui.timer.waiting(),
- COUNTDOWN_STATE.START: R.strings.ingame_gui.timer.starting(),
- COUNTDOWN_STATE.STOP: R.strings.ingame_gui.timer.started()}
+_STATE_TO_MESSAGE = {COUNTDOWN_STATE.WAIT: R.strings.ingame_gui.timer.waiting(), 
+   COUNTDOWN_STATE.START: R.strings.ingame_gui.timer.starting(), 
+   COUNTDOWN_STATE.STOP: R.strings.ingame_gui.timer.started()}
 
 class PreBattleTimerBase(PrebattleTimerBaseMeta, IAbstractPeriodView, IArenaVehiclesController):
     sessionProvider = dependency.descriptor(IBattleSessionProvider)

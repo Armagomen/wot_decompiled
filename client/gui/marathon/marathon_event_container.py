@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/marathon/marathon_event_container.py
 import typing
 from cache import cached_property
 from gui.server_events.event_items import Group, Quest
@@ -60,8 +58,8 @@ class MarathonEventContainer(object):
         return
 
     def _initialize(self):
-        self.awardTokens = tuple((AWARD_TOKENS_FORMAT.format(self.tokenPrefix, postfix) for postfix in self.awardTokensPostfix))
-        self.postAwardTokens = tuple((AWARD_TOKENS_FORMAT.format(self.tokenPrefix, postfix) for postfix in self.awardPostTokensPostfix))
+        self.awardTokens = tuple(AWARD_TOKENS_FORMAT.format(self.tokenPrefix, postfix) for postfix in self.awardTokensPostfix)
+        self.postAwardTokens = tuple(AWARD_TOKENS_FORMAT.format(self.tokenPrefix, postfix) for postfix in self.awardPostTokensPostfix)
         self.tabTooltip = getattr(QUESTS, MISSION_TAB_FORMAT.format(self.prefix.upper()), QUESTS.MISSIONS_TAB_MARATHONS)
 
     def _override(self):
@@ -69,22 +67,34 @@ class MarathonEventContainer(object):
 
     @cached_property
     def vehicleID(self):
-        return 0 if not self.vehicleName else makeVehicleTypeCompDescrByName(self.vehicleName)
+        if not self.vehicleName:
+            return 0
+        return makeVehicleTypeCompDescrByName(self.vehicleName)
 
     def getTimeFromGroupStart(self):
-        return self.group.getTimeFromStartTillNow() if self.group else ZERO_TIME
+        if self.group:
+            return self.group.getTimeFromStartTillNow()
+        return ZERO_TIME
 
     def getGroupStartFinishTime(self):
-        return (self.group.getStartTimeRaw(), self.group.getFinishTimeRaw()) if self.group else (ZERO_TIME, ZERO_TIME)
+        if self.group:
+            return (self.group.getStartTimeRaw(), self.group.getFinishTimeRaw())
+        return (ZERO_TIME, ZERO_TIME)
 
     def getGroupTimeInterval(self):
-        return (self.group.getStartTimeLeft(), self.group.getFinishTimeLeft()) if self.group else (ZERO_TIME, ZERO_TIME)
+        if self.group:
+            return (self.group.getStartTimeLeft(), self.group.getFinishTimeLeft())
+        return (ZERO_TIME, ZERO_TIME)
 
     def getQuestTimeInterval(self):
-        return (self.quest.getStartTimeLeft(), self.quest.getFinishTimeLeft()) if self.quest else (ZERO_TIME, ZERO_TIME)
+        if self.quest:
+            return (self.quest.getStartTimeLeft(), self.quest.getFinishTimeLeft())
+        return (ZERO_TIME, ZERO_TIME)
 
     def getQuestStartFinishTime(self):
-        return (self.quest.getStartTimeRaw(), self.quest.getFinishTimeRaw()) if self.quest else (ZERO_TIME, ZERO_TIME)
+        if self.quest:
+            return (self.quest.getStartTimeRaw(), self.quest.getFinishTimeRaw())
+        return (ZERO_TIME, ZERO_TIME)
 
     def setQuest(self, quests, currentStep):
         self.suspendFlag = False
@@ -99,9 +109,9 @@ class MarathonEventContainer(object):
                     break
 
             try:
-                self.quest = sortedQuests[currentStep * self.questsPerStep]
+                self.quest = sortedQuests[(currentStep * self.questsPerStep)]
             except IndexError:
-                self.quest = sortedQuests[-1]
+                self.quest = sortedQuests[(-1)]
 
             return
 

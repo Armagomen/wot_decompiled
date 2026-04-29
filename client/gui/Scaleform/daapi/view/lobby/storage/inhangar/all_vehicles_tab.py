@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/inhangar/all_vehicles_tab.py
 from PlayerEvents import g_playerEvents
 from gui.filters.carousel_filter import CriteriesGroup
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -72,7 +70,9 @@ class AllVehiclesTabView(AllVehiclesTabViewMeta, StorageCarouselEnvironment):
         return
 
     def _onCacheResync(self, reason, diff):
-        updateReasons = {CACHE_SYNC_REASON.CLIENT_UPDATE, CACHE_SYNC_REASON.SHOP_RESYNC, CACHE_SYNC_REASON.DOSSIER_RESYNC}
+        updateReasons = {CACHE_SYNC_REASON.CLIENT_UPDATE,
+         CACHE_SYNC_REASON.SHOP_RESYNC,
+         CACHE_SYNC_REASON.DOSSIER_RESYNC}
         if reason in updateReasons:
             self._dataProvider.buildList()
             self.__updateVehicles()

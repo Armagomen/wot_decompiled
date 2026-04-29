@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/locale/MENU.py
 from debug_utils import LOG_WARNING
 
 class MENU(object):
@@ -154,6 +152,7 @@ class MENU(object):
     LOADING_BATTLETYPES_DESC_22 = '#menu:loading/battleTypes/desc/22'
     LOADING_BATTLETYPES_23 = '#menu:loading/battleTypes/23'
     LOADING_BATTLETYPES_DESC_23 = '#menu:loading/battleTypes/desc/23'
+    LOADING_BATTLETYPES_SUBTITLE_23 = '#menu:loading/battleTypes/subTitle/23'
     LOADING_BATTLETYPES_24 = '#menu:loading/battleTypes/24'
     LOADING_BATTLETYPES_DESC_24 = '#menu:loading/battleTypes/desc/24'
     LOADING_BATTLETYPES_25 = '#menu:loading/battleTypes/25'
@@ -548,6 +547,12 @@ class MENU(object):
     TANK_PARAMS_DESIGNATORCOOLDOWNS = '#menu:tank_params/designatorCooldownS'
     TANK_PARAMS_DESIGNATORMARKDURATIONS = '#menu:tank_params/designatorMarkDurationS'
     TANK_PARAMS_DESIGNATORMARKEDENEMIESADDITIONALDAMAGE = '#menu:tank_params/designatorMarkedEnemiesAdditionalDamage'
+    TANK_PARAMS_LOWCHARGESHOTAVGDAMAGE = '#menu:tank_params/lowChargeShotAvgDamage'
+    TANK_PARAMS_LOWCHARGESHOTPENETRATION = '#menu:tank_params/lowChargeShotPenetration'
+    TANK_PARAMS_LOWCHARGESHOTRATEOFFIRE = '#menu:tank_params/lowChargeShotRateOfFire'
+    TANK_PARAMS_LOWCHARGESHOTDISPERTION = '#menu:tank_params/lowChargeShotDispertion'
+    TANK_PARAMS_LOWCHARGESHOTVELOCITY = '#menu:tank_params/lowChargeShotVelocity'
+    TANK_PARAMS_LOWCHARGESHOTBLOCKDURATION = '#menu:tank_params/lowChargeShotBlockDuration'
     TANK_PARAMS_MAXHEALTH = '#menu:tank_params/maxHealth'
     TANK_PARAMS_VEHICLEWEIGHT = '#menu:tank_params/vehicleWeight'
     TANK_PARAMS_ENGINEPOWER = '#menu:tank_params/enginePower'
@@ -665,6 +670,16 @@ class MENU(object):
     TANK_PARAMS_HEATINGPERSHOT = '#menu:tank_params/heatingPerShot'
     TANK_PARAMS_OVERHEATDURATION = '#menu:tank_params/overheatDuration'
     TANK_PARAMS_TIMETOOVERHEAT = '#menu:tank_params/timeToOverheat'
+    TANK_PARAMS_PROPELLANTPRELIMITDAMAGEBONUS = '#menu:tank_params/propellantPreLimitDamageBonus'
+    TANK_PARAMS_PROPELLANTPOSTLIMITDAMAGESPIKE = '#menu:tank_params/propellantPostLimitDamageSpike'
+    TANK_PARAMS_PROPELLANTPOSTLIMITDAMAGEBONUS = '#menu:tank_params/propellantPostLimitDamageBonus'
+    TANK_PARAMS_PROPELLANTCHARGINGPERSEC = '#menu:tank_params/propellantChargingPerSec'
+    TANK_PARAMS_PROPELLANTCHARGESPENDINGAFTERSHOT = '#menu:tank_params/propellantChargeSpendingAfterShot'
+    TANK_PARAMS_PROPELLANTCHARGELIMIT = '#menu:tank_params/propellantChargeLimit'
+    TANK_PARAMS_PROPELLANTDISCHARGINGPERSEC = '#menu:tank_params/propellantDischargingPerSec'
+    TANK_PARAMS_PROPELLANTPOSTLIMITDISPERSION = '#menu:tank_params/propellantPostLimitDispersion'
+    TANK_PARAMS_PROPELLANTPOSTLIMITAIMINGTIME = '#menu:tank_params/propellantPostLimitAimingTime'
+    TANK_PARAMS_PROPELLANTOVERCHARGESWITCHCOOLDOWN = '#menu:tank_params/propellantOverchargeSwitchCooldown'
     TANK_PARAMS_T = '#menu:tank_params/t'
     TANK_PARAMS_P = '#menu:tank_params/p'
     TANK_PARAMS_PT = '#menu:tank_params/pt'
@@ -673,6 +688,7 @@ class MENU(object):
     TANK_PARAMS_SPM = '#menu:tank_params/spm'
     TANK_PARAMS_S = '#menu:tank_params/s'
     TANK_PARAMS_YOH_S_S = '#menu:tank_params/yoh_s_s'
+    TANK_PARAMS_PERCENT_PER_S = '#menu:tank_params/percent_per_s'
     TANK_PARAMS_MM = '#menu:tank_params/mm'
     TANK_PARAMS_VAL = '#menu:tank_params/val'
     TANK_PARAMS_VPM = '#menu:tank_params/vpm'
@@ -696,6 +712,7 @@ class MENU(object):
     TANK_PARAMS_STUNMINDURATION = '#menu:tank_params/stunMinDuration'
     TANK_PARAMS_STUNDURATIONLIST = '#menu:tank_params/stunDurationList'
     TANK_PARAMS_CHARGETIME = '#menu:tank_params/chargeTime'
+    TANK_PARAMS_PENETRATIONLOSS = '#menu:tank_params/penetrationLoss'
     TANK_PARAMS_NO_BRACKETS_KG = '#menu:tank_params/no_brackets/kg'
     TANK_PARAMS_NO_BRACKETS_S = '#menu:tank_params/no_brackets/s'
     TANK_PARAMS_NO_BRACKETS_MM = '#menu:tank_params/no_brackets/mm'
@@ -706,6 +723,13 @@ class MENU(object):
     TANK_PARAMS_STAGEDJETBOOSTERSCHARGESCOUNT = '#menu:tank_params/stagedJetBoostersChargesCount'
     TANK_PARAMS_STAGEDJETBOOSTERSCHARGEDURATION = '#menu:tank_params/stagedJetBoostersChargeDuration'
     TANK_PARAMS_STAGEDJETBOOSTERSCOOLDOWNTIME = '#menu:tank_params/stagedJetBoostersCooldownTime'
+    TANK_PARAMS_WHEELEDDASHABILITYDURATION = '#menu:tank_params/wheeledDashAbilityDuration'
+    TANK_PARAMS_WHEELEDDASHENGINEPOWER = '#menu:tank_params/wheeledDashEnginePower'
+    TANK_PARAMS_WHEELEDDASHTOPSPEED = '#menu:tank_params/wheeledDashTopSpeed'
+    TANK_PARAMS_WHEELEDDASHABILITYRELOADTIME = '#menu:tank_params/wheeledDashAbilityReloadTime'
+    TANK_PARAMS_WHEELEDDASHABILITYRELOADTIMEBONUS = '#menu:tank_params/wheeledDashAbilityReloadTimeBonus'
+    TANK_PARAMS_WHEELEDDASHSPEEDLIMITS = '#menu:tank_params/wheeledDashSpeedLimits'
+    TANK_PARAMS_WHEELEDDASHREVERSESPEED = '#menu:tank_params/wheeledDashReverseSpeed'
     EXTRAPARAMS_HEADER = '#menu:extraParams/header'
     EXTRAPARAMS_MULTIDESC = '#menu:extraParams/multiDesc'
     EXTRAPARAMS_DESC = '#menu:extraParams/desc'
@@ -755,9 +779,12 @@ class MENU(object):
     EXTRAPARAMS_NAME_VEHICLEINVISIBILITYAFTERSHOT = '#menu:extraParams/name/vehicleInvisibilityAfterShot'
     EXTRAPARAMS_NAME_DAMAGEANDPIERCINGDISTRIBUTIONLOWERBOUND = '#menu:extraParams/name/damageAndPiercingDistributionLowerBound'
     EXTRAPARAMS_NAME_DAMAGEANDPIERCINGDISTRIBUTIONUPPERBOUND = '#menu:extraParams/name/damageAndPiercingDistributionUpperBound'
+    EXTRAPARAMS_NAME_PIERCINGHESHELLSDISTRIBUTIONUPPERBOUND = '#menu:extraParams/name/piercingHEShellsDistributionUpperBound'
     EXTRAPARAMS_NAME_ENEMYMODULESCREWCRITCHANCE = '#menu:extraParams/name/enemyModulesCrewCritChance'
     EXTRAPARAMS_NAME_SHELLVELOCITY = '#menu:extraParams/name/shellVelocity'
     EXTRAPARAMS_NAME_COMMANDERLAMPDELAY = '#menu:extraParams/name/commanderLampDelay'
+    EXTRAPARAMS_NAME_SUSPENSIONDAMAGEREDUCTION = '#menu:extraParams/name/suspensionDamageReduction'
+    EXTRAPARAMS_NAME_HPRECOVER = '#menu:extraParams/name/hpRecover'
     DESCRIPTIONS_VEHICLE = '#menu:descriptions/vehicle'
     DESCRIPTIONS_VEHICLEGUN = '#menu:descriptions/vehicleGun'
     DESCRIPTIONS_VEHICLEGUN_AUTOSHOOT = '#menu:descriptions/vehicleGun/autoShoot'
@@ -774,7 +801,6 @@ class MENU(object):
     DESCRIPTIONS_MUTABLEDAMAGESHELL = '#menu:descriptions/mutableDamageShell'
     DESCRIPTIONS_MUTABLEDAMAGESHELLFULL = '#menu:descriptions/mutableDamageShellFull'
     HEADERBUTTONS_BTNLABEL_PREMIUM = '#menu:headerButtons/btnLabel/premium'
-    HEADERBUTTONS_DOLABEL_PREMIUM = '#menu:headerButtons/doLabel/premium'
     HEADERBUTTONS_BTNLABEL_PREMSHOP = '#menu:headerButtons/btnLabel/premShop'
     HEADERBUTTONS_BTNLABEL_GOLD = '#menu:headerButtons/btnLabel/gold'
     HEADERBUTTONS_BTNLABEL_CRYSTAL = '#menu:headerButtons/btnLabel/crystal'
@@ -925,30 +951,34 @@ class MENU(object):
     HEADERBUTTONS_FIGHTBTN_TOOLTIP_RENTALISOVER_BODY = '#menu:headerButtons/fightBtn/tooltip/rentalIsOver/body'
     HEADERBUTTONS_FIGHTBTN_TOOLTIP_TELECOMRENTALISOVER_HEADER = '#menu:headerButtons/fightBtn/tooltip/telecomRentalIsOver/header'
     HEADERBUTTONS_FIGHTBTN_TOOLTIP_TELECOMRENTALISOVER_BODY = '#menu:headerButtons/fightBtn/tooltip/telecomRentalIsOver/body'
-    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7OFFLINE_HEADER = '#menu:headerButtons/fightBtn/tooltip/comp7Offline/header'
-    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7OFFLINE_BODY = '#menu:headerButtons/fightBtn/tooltip/comp7Offline/body'
-    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7NOTSET_HEADER = '#menu:headerButtons/fightBtn/tooltip/comp7NotSet/header'
-    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7NOTSET_BODY = '#menu:headerButtons/fightBtn/tooltip/comp7NotSet/body'
-    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7LIGHTNOTSET_HEADER = '#menu:headerButtons/fightBtn/tooltip/comp7LightNotSet/header'
-    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7LIGHTNOTSET_BODY = '#menu:headerButtons/fightBtn/tooltip/comp7LightNotSet/body'
-    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7DISABLED_HEADER = '#menu:headerButtons/fightBtn/tooltip/comp7Disabled/header'
-    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7DISABLED_BODY = '#menu:headerButtons/fightBtn/tooltip/comp7Disabled/body'
-    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7LIGHTDISABLED_HEADER = '#menu:headerButtons/fightBtn/tooltip/comp7LightDisabled/header'
-    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7LIGHTDISABLED_BODY = '#menu:headerButtons/fightBtn/tooltip/comp7LightDisabled/body'
     HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7BANISSET_HEADER = '#menu:headerButtons/fightBtn/tooltip/comp7BanIsSet/header'
     HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7BANISSET_BODY = '#menu:headerButtons/fightBtn/tooltip/comp7BanIsSet/body'
-    HEADERBUTTONS_FIGHTBTN_TOOLTIP_WOTPLUSEXCLUSIVEUNAVAILABLE_HEADER = '#menu:headerButtons/fightBtn/tooltip/wotPlusExclusiveUnavailable/header'
-    HEADERBUTTONS_FIGHTBTN_TOOLTIP_WOTPLUSEXCLUSIVEUNAVAILABLE_BODY = '#menu:headerButtons/fightBtn/tooltip/wotPlusExclusiveUnavailable/body'
-    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7RATINGCALCULATION_HEADER = '#menu:headerButtons/fightBtn/tooltip/comp7RatingCalculation/header'
-    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7RATINGCALCULATION_BODY = '#menu:headerButtons/fightBtn/tooltip/comp7RatingCalculation/body'
     HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7VEHLEVEL_HEADER = '#menu:headerButtons/fightBtn/tooltip/comp7VehLevel/header'
     HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7VEHLEVEL_BODY = '#menu:headerButtons/fightBtn/tooltip/comp7VehLevel/body'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7VEHLEVEL_DELIMITER = '#menu:headerButtons/fightBtn/tooltip/comp7VehLevel/delimiter'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7NOTENOUGHSUITABLEVEHICLES_HEADER = '#menu:headerButtons/fightBtn/tooltip/comp7NotEnoughSuitableVehicles/header'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7NOTENOUGHSUITABLEVEHICLES_BODY = '#menu:headerButtons/fightBtn/tooltip/comp7NotEnoughSuitableVehicles/body'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7PREANNOUNCE_HEADER = '#menu:headerButtons/fightBtn/tooltip/comp7Preannounce/header'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7PREANNOUNCE_BODY = '#menu:headerButtons/fightBtn/tooltip/comp7Preannounce/body'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7SEASONEND_HEADER = '#menu:headerButtons/fightBtn/tooltip/comp7SeasonEnd/header'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7QUALIFICATIONCALCULATION_HEADER = '#menu:headerButtons/fightBtn/tooltip/comp7QualificationCalculation/header'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7QUALIFICATIONCALCULATION_BODY = '#menu:headerButtons/fightBtn/tooltip/comp7QualificationCalculation/body'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7NOTSET_HEADER = '#menu:headerButtons/fightBtn/tooltip/comp7NotSet/header'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7NOTSET_BODY = '#menu:headerButtons/fightBtn/tooltip/comp7NotSet/body'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7DISABLED_HEADER = '#menu:headerButtons/fightBtn/tooltip/comp7Disabled/header'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7DISABLED_BODY = '#menu:headerButtons/fightBtn/tooltip/comp7Disabled/body'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7OFFLINE_HEADER = '#menu:headerButtons/fightBtn/tooltip/comp7Offline/header'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7OFFLINE_BODY = '#menu:headerButtons/fightBtn/tooltip/comp7Offline/body'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7UNSUITABLEVEHICLE_HEADER = '#menu:headerButtons/fightBtn/tooltip/comp7UnsuitableVehicle/header'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7LIGHTNOTSET_HEADER = '#menu:headerButtons/fightBtn/tooltip/comp7LightNotSet/header'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7LIGHTNOTSET_BODY = '#menu:headerButtons/fightBtn/tooltip/comp7LightNotSet/body'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7LIGHTDISABLED_HEADER = '#menu:headerButtons/fightBtn/tooltip/comp7LightDisabled/header'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7LIGHTDISABLED_BODY = '#menu:headerButtons/fightBtn/tooltip/comp7LightDisabled/body'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_WOTPLUSEXCLUSIVEUNAVAILABLE_HEADER = '#menu:headerButtons/fightBtn/tooltip/wotPlusExclusiveUnavailable/header'
+    HEADERBUTTONS_FIGHTBTN_TOOLTIP_WOTPLUSEXCLUSIVEUNAVAILABLE_BODY = '#menu:headerButtons/fightBtn/tooltip/wotPlusExclusiveUnavailable/body'
     HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7LIGHTVEHLEVEL_HEADER = '#menu:headerButtons/fightBtn/tooltip/comp7LightVehLevel/header'
     HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7LIGHTVEHLEVEL_BODY = '#menu:headerButtons/fightBtn/tooltip/comp7LightVehLevel/body'
     HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7LIGHTVEHLEVEL_DELIMITER = '#menu:headerButtons/fightBtn/tooltip/comp7LightVehLevel/delimiter'
-    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7PREANNOUNCE_HEADER = '#menu:headerButtons/fightBtn/tooltip/comp7Preannounce/header'
-    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7PREANNOUNCE_BODY = '#menu:headerButtons/fightBtn/tooltip/comp7Preannounce/body'
-    HEADERBUTTONS_FIGHTBTN_TOOLTIP_COMP7VEHLEVEL_DELIMITER = '#menu:headerButtons/fightBtn/tooltip/comp7VehLevel/delimiter'
     HEADERBUTTONS_DEFAULTCOUNTER = '#menu:headerButtons/defaultCounter'
     HEADERBUTTONS_RATING = '#menu:headerButtons/rating'
     HEADERBUTTONS_PROFILE = '#menu:headerButtons/profile'
@@ -1199,12 +1229,6 @@ class MENU(object):
     PREMIUM_SUBMITBUY = '#menu:premium/submitBuy'
     PREMIUM_SUBMITCONTINUE = '#menu:premium/submitContinue'
     PREMIUM_CANCEL = '#menu:premium/cancel'
-    GOLDFISH_WINDOWHEADER = '#menu:goldFish/windowHeader'
-    GOLDFISH_HEADER = '#menu:goldFish/header'
-    GOLDFISH_EVENTTITLE = '#menu:goldFish/eventTitle'
-    GOLDFISH_EVENTTEXT = '#menu:goldFish/eventText'
-    GOLDFISH_EVENTLINK = '#menu:goldFish/eventLink'
-    GOLDFISH_BUTTONCLOSE = '#menu:goldFish/buttonClose'
     BLUEPRINTS_CONVERSIONVIEW_TITLE = '#menu:blueprints/conversionView/title'
     BLUEPRINTS_CONVERSIONVIEW_MULTICONVERSION_TITLE = '#menu:blueprints/conversionView/multiConversion/title'
     BLUEPRINTS_CONVERSIONVIEW_MULTICONVERSION_DESCRIPTION = '#menu:blueprints/conversionView/multiConversion/description'
@@ -1225,12 +1249,15 @@ class MENU(object):
     MODULEINFO_HYDRAULICWHEELEDCHASSIS = '#menu:moduleInfo/hydraulicWheeledChassis'
     MODULEINFO_MAGAZINEGUN = '#menu:moduleInfo/magazineGun'
     MODULEINFO_OVERHEATGUN = '#menu:moduleInfo/overheatGun'
+    MODULEINFO_PROPELLANTAFTERBURNERGUN = '#menu:moduleInfo/propellantAfterburnerGun'
     MODULEINFO_ROCKETACCELERATION = '#menu:moduleInfo/rocketAcceleration'
     MODULEINFO_STAGEDJETBOOSTERS = '#menu:moduleInfo/stagedJetBoosters'
     MODULEINFO_TRACKWITHINTRACK = '#menu:moduleInfo/trackWithinTrack'
     MODULEINFO_TURBOSHAFTENGINE = '#menu:moduleInfo/turboshaftEngine'
     MODULEINFO_TWINGUN = '#menu:moduleInfo/twinGun'
     MODULEINFO_NONPIERCINGDAMAGELABEL = '#menu:moduleInfo/nonPiercingDamageLabel'
+    MODULEINFO_LOWCHARGESHOT = '#menu:moduleInfo/lowChargeShot'
+    MODULEINFO_WHEELEDDASH = '#menu:moduleInfo/wheeledDash'
     MODULEINFO_PARAMS_SHOTSPEED = '#menu:moduleInfo/params/shotSpeed'
     MODULEINFO_PARAMS_CHASSISREPAIRTIME = '#menu:moduleInfo/params/chassisRepairTime'
     MODULEINFO_PARAMS_CHASSISREPAIRTIMEYOH = '#menu:moduleInfo/params/chassisRepairTimeYoh'
@@ -1299,6 +1326,8 @@ class MENU(object):
     MODULEINFO_PARAMS_PIERCINGDISTANCE_FOOTNOTE = '#menu:moduleInfo/params/piercingDistance/footnote'
     MODULEINFO_PARAMS_NOPIERCINGDISTANCE_FOOTNOTE_MAXDISTANCE = '#menu:moduleInfo/params/noPiercingDistance/footnote/maxDistance'
     MODULEINFO_PARAMS_GUARANTEEDDAMAGE_FOOTNOTE = '#menu:moduleInfo/params/guaranteedDamage/footnote'
+    MODULEINFO_PARAMS_PENETRATIONLOSS_FOOTNOTE = '#menu:moduleInfo/params/penetrationLoss/footnote'
+    MODULEINFO_PARAMS_SCREENSARMORMULTIPLIER_FOOTNOTE = '#menu:moduleInfo/params/screensArmorMultiplier/footnote'
     MODULEINFO_PARAMS_STUNMAXDURATION = '#menu:moduleInfo/params/stunMaxDuration'
     MODULEINFO_PARAMS_STUNMINDURATION = '#menu:moduleInfo/params/stunMinDuration'
     MODULEINFO_PARAMS_STUNMAXDURATIONLIST = '#menu:moduleInfo/params/stunMaxDurationList'
@@ -1318,6 +1347,11 @@ class MENU(object):
     MODULEINFO_PARAMS_ENGINEPOWERPERTON = '#menu:moduleInfo/params/enginePowerPerTon'
     MODULEINFO_PARAMS_TURBOSHAFTENGINEPOWER = '#menu:moduleInfo/params/turboshaftEnginePower'
     MODULEINFO_PARAMS_ROCKETACCELERATIONENGINEPOWER = '#menu:moduleInfo/params/rocketAccelerationEnginePower'
+    MODULEINFO_PARAMS_NORMALIZATIONANGLE = '#menu:moduleInfo/params/normalizationAngle'
+    MODULEINFO_PARAMS_RICOCHETANGLE = '#menu:moduleInfo/params/ricochetAngle'
+    MODULEINFO_PARAMS_PENETRATIONLOSS = '#menu:moduleInfo/params/penetrationLoss'
+    MODULEINFO_PARAMS_SCREENSARMORMULTIPLIER = '#menu:moduleInfo/params/screensArmorMultiplier'
+    MODULEINFO_PARAMS_SCREENSARMORMULTIPLIER_VALUE = '#menu:moduleInfo/params/screensArmorMultiplier/value'
     MODULEINFO_COMPATIBLE_TURRETS = '#menu:moduleInfo/compatible/turrets'
     MODULEINFO_COMPATIBLE_SHELLS = '#menu:moduleInfo/compatible/shells'
     MODULEINFO_COMPATIBLE_GUNS = '#menu:moduleInfo/compatible/guns'
@@ -1642,7 +1676,9 @@ class MENU(object):
     TRAINING_INVITATIONS_TITLE = '#menu:training/invitations/title'
     TRAINING_NOTIFICATIONTEXT_ONLYTIERX = '#menu:training/notificationText/onlyTierX'
     TRAINING_NOTIFICATIONTEXT_FREESUPPLIES = '#menu:training/notificationText/freeSupplies'
+    TRAINING_NOTIFICATIONTEXT_VEHICLEREQUIRED3 = '#menu:training/notificationText/vehicleRequired3'
     TRAINING_ADDITIONALINFO_FREESUPPLIESCOMP7 = '#menu:training/additionalInfo/freeSuppliesComp7'
+    TRAINING_ADDITIONALINFO_VEHICLEREQUIRED3 = '#menu:training/additionalInfo/vehicleRequired3'
     TANKMANRETRAININGBTN_FREE = '#menu:tankmanRetrainingBtn/free'
     VEHICLESCAROUSEL_CONTEXTMENU_VEHICLEINFO = '#menu:vehiclesCarousel/contextMenu/vehicleInfo'
     VEHICLESCAROUSEL_CONTEXTMENU_VEHICLESELL = '#menu:vehiclesCarousel/contextMenu/vehicleSell'
@@ -1763,6 +1799,8 @@ class MENU(object):
     CONTEXTMENU_BOTNOACTIONS = '#menu:contextMenu/botNoActions'
     CONTEXTMENU_VEHICLEPOSTPROGRESSION = '#menu:contextMenu/vehiclePostProgression'
     CONTEXTMENU_VEHSKILLTREE = '#menu:contextMenu/vehSkillTree'
+    CONTEXTMENU_MANAGEPLAYLISTS = '#menu:contextMenu/managePlaylists'
+    CONTEXTMENU_CREATEPLAYLIST = '#menu:contextMenu/createPlaylist'
     CONTEXTMENU_COMPARE = '#menu:contextMenu/compare'
     CONTEXTMENU_USERVEHICLECOMPARE = '#menu:contextMenu/userVehicleCompare'
     CONTEXTMENU_PROFILEVEHICLECOMPARE = '#menu:contextMenu/profileVehicleCompare'
@@ -1801,7 +1839,6 @@ class MENU(object):
     FINALSTATISTIC_COMMONSTATS_RESULTLABEL_TECHWIN = '#menu:finalStatistic/commonStats/resultlabel/techWin'
     FINALSTATISTIC_COMMONSTATS_RESULTLABEL_ENDED = '#menu:finalStatistic/commonStats/resultlabel/ended'
     BROWSER_WINDOW_TITLE = '#menu:browser/window/title'
-    ADVENTCALENDAR_WINDOW_TITLE = '#menu:adventCalendar/window/title'
     BROWSER_DATAUNAVAILABLE_HEADER = '#menu:browser/dataUnavailable/header'
     BROWSER_DATAUNAVAILABLE_DESCRIPTION = '#menu:browser/dataUnavailable/description'
     BROWSER_CUSTOMTITLE_FORT_OFFENSIVERESULT = '#menu:browser/customTitle/fort/offensiveResult'
@@ -2080,9 +2117,6 @@ class MENU(object):
     MAPBLACKLIST_TIMELEFTSHORT_HOURS = '#menu:mapBlackList/timeLeftShort/hours'
     MAPBLACKLIST_TIMELEFTSHORT_MIN = '#menu:mapBlackList/timeLeftShort/min'
     MAPBLACKLIST_TIMELEFTSHORT_LESSMIN = '#menu:mapBlackList/timeLeftShort/lessMin'
-    PROMO_PATCH_TITLE = '#menu:promo/patch/title'
-    PROMO_PATCH_MESSAGE = '#menu:promo/patch/message'
-    PROMO_TOARCHIVE = '#menu:promo/toArchive'
     PROMO_TEASERTIMEFORMAT_DAYS = '#menu:promo/teaserTimeFormat/days'
     PROMO_TEASERTIMEFORMAT_HOURS = '#menu:promo/teaserTimeFormat/hours'
     PROMO_TEASERTIMEFORMAT_MIN = '#menu:promo/teaserTimeFormat/min'
@@ -2192,10 +2226,6 @@ class MENU(object):
     FITTINGSELECTPOPOVER_DESCTEXT = '#menu:fittingSelectPopover/descText'
     FITTINGSELECTPOPOVER_DESCTEXT_CRYSTAL = '#menu:fittingSelectPopover/descText/crystal'
     QUOTE = '#menu:quote'
-    TECHTREE_ANNOUNCEMENT = '#menu:techtree/Announcement'
-    TECHTREE_PREMIUMPANEL_TITLE = '#menu:techtree/premiumPanel/title'
-    TECHTREE_PREMIUMPANEL_BTNLABEL = '#menu:techtree/premiumPanel/btnLabel'
-    TECHTREE_PREMIUMPANEL_BTNLABEL_COUNT = '#menu:techtree/premiumPanel/btnLabel/count'
     CST_ITEM_CTX_MENU_BUY = '#menu:cst_item_ctx_menu/buy'
     CST_ITEM_CTX_MENU_EXCHANGE = '#menu:cst_item_ctx_menu/exchange'
     CST_ITEM_CTX_MENU_BUYMORE = '#menu:cst_item_ctx_menu/buyMore'
@@ -2260,17 +2290,6 @@ class MENU(object):
     VIEWHEADER_BACKBTN_DESCRLABEL_TECHTREE_SWEDEN = '#menu:viewHeader/backBtn/descrLabel/techtree/sweden'
     VIEWHEADER_BACKBTN_DESCRLABEL_TECHTREE_POLAND = '#menu:viewHeader/backBtn/descrLabel/techtree/poland'
     VIEWHEADER_BACKBTN_DESCRLABEL_TECHTREE_ITALY = '#menu:viewHeader/backBtn/descrLabel/techtree/italy'
-    VIEWHEADER_BACKBTN_DESCRLABEL_TECHTREE_USSR_BLUEPRINTS = '#menu:viewHeader/backBtn/descrLabel/techtree/ussr/blueprints'
-    VIEWHEADER_BACKBTN_DESCRLABEL_TECHTREE_GERMANY_BLUEPRINTS = '#menu:viewHeader/backBtn/descrLabel/techtree/germany/blueprints'
-    VIEWHEADER_BACKBTN_DESCRLABEL_TECHTREE_USA_BLUEPRINTS = '#menu:viewHeader/backBtn/descrLabel/techtree/usa/blueprints'
-    VIEWHEADER_BACKBTN_DESCRLABEL_TECHTREE_FRANCE_BLUEPRINTS = '#menu:viewHeader/backBtn/descrLabel/techtree/france/blueprints'
-    VIEWHEADER_BACKBTN_DESCRLABEL_TECHTREE_UK_BLUEPRINTS = '#menu:viewHeader/backBtn/descrLabel/techtree/uk/blueprints'
-    VIEWHEADER_BACKBTN_DESCRLABEL_TECHTREE_CHINA_BLUEPRINTS = '#menu:viewHeader/backBtn/descrLabel/techtree/china/blueprints'
-    VIEWHEADER_BACKBTN_DESCRLABEL_TECHTREE_JAPAN_BLUEPRINTS = '#menu:viewHeader/backBtn/descrLabel/techtree/japan/blueprints'
-    VIEWHEADER_BACKBTN_DESCRLABEL_TECHTREE_CZECH_BLUEPRINTS = '#menu:viewHeader/backBtn/descrLabel/techtree/czech/blueprints'
-    VIEWHEADER_BACKBTN_DESCRLABEL_TECHTREE_SWEDEN_BLUEPRINTS = '#menu:viewHeader/backBtn/descrLabel/techtree/sweden/blueprints'
-    VIEWHEADER_BACKBTN_DESCRLABEL_TECHTREE_POLAND_BLUEPRINTS = '#menu:viewHeader/backBtn/descrLabel/techtree/poland/blueprints'
-    VIEWHEADER_BACKBTN_DESCRLABEL_TECHTREE_ITALY_BLUEPRINTS = '#menu:viewHeader/backBtn/descrLabel/techtree/italy/blueprints'
     INTERNET_PROVIDER_LOCALPARTNER2_NAME = '#menu:internet_provider/LocalPartner2/name'
     INTERNET_PROVIDER_LOCALPARTNER2_TARIFF = '#menu:internet_provider/LocalPartner2/tariff'
     INTERNET_PROVIDER_LOCALPARTNER3_NAME = '#menu:internet_provider/LocalPartner3/name'
@@ -2401,7 +2420,8 @@ class MENU(object):
     CONTEXTMENU_CREWWIDGETQUICKTRAINING = '#menu:contextMenu/crewWidgetQuickTraining'
     CONTEXTMENU_MENTORASSIGNMENT = '#menu:contextMenu/mentorAssignment'
     CONTEXTMENU_CREWWIDGETCHANGESPECIALIZATION = '#menu:contextMenu/crewWidgetChangeSpecialization'
-    CONTEXTMENU_ENUM = (CONTEXTMENU_EXCHANGE,
+    CONTEXTMENU_ENUM = (
+     CONTEXTMENU_EXCHANGE,
      CONTEXTMENU_VEHICLEINFO,
      CONTEXTMENU_VEHICLEINFOEX,
      CONTEXTMENU_GOTONATIONTREE,
@@ -2482,6 +2502,8 @@ class MENU(object):
      CONTEXTMENU_BOTNOACTIONS,
      CONTEXTMENU_VEHICLEPOSTPROGRESSION,
      CONTEXTMENU_VEHSKILLTREE,
+     CONTEXTMENU_MANAGEPLAYLISTS,
+     CONTEXTMENU_CREATEPLAYLIST,
      CONTEXTMENU_COMPARE,
      CONTEXTMENU_USERVEHICLECOMPARE,
      CONTEXTMENU_PROFILEVEHICLECOMPARE,
@@ -2508,7 +2530,8 @@ class MENU(object):
      CONTEXTMENU_CREWWIDGETQUICKTRAINING,
      CONTEXTMENU_MENTORASSIGNMENT,
      CONTEXTMENU_CREWWIDGETCHANGESPECIALIZATION)
-    NATIONS_ENUM = (NATIONS_TITLE,
+    NATIONS_ENUM = (
+     NATIONS_TITLE,
      NATIONS_USSR,
      NATIONS_GERMANY,
      NATIONS_USA,
@@ -2521,7 +2544,8 @@ class MENU(object):
      NATIONS_POLAND,
      NATIONS_ITALY,
      NATIONS_ALL)
-    TANKMEN_ENUM = (TANKMEN_LIGHTTANK,
+    TANKMEN_ENUM = (
+     TANKMEN_LIGHTTANK,
      TANKMEN_MEDIUMTANK,
      TANKMEN_HEAVYTANK,
      TANKMEN_AT_SPG,
@@ -2530,7 +2554,8 @@ class MENU(object):
      TANKMEN_LOCKREASON_PREBATTLE,
      TANKMEN_LOCKREASON_BROKEN,
      TANKMEN_LOCKREASON_DISABLED)
-    TANKCAROUSEL_VEHICLESTATES_ENUM = (TANKCAROUSEL_VEHICLESTATES_BATTLE,
+    TANKCAROUSEL_VEHICLESTATES_ENUM = (
+     TANKCAROUSEL_VEHICLESTATES_BATTLE,
      TANKCAROUSEL_VEHICLESTATES_LOCKED,
      TANKCAROUSEL_VEHICLESTATES_CLANLOCKED,
      TANKCAROUSEL_VEHICLESTATES_INPREBATTLE,
@@ -2575,21 +2600,24 @@ class MENU(object):
      TANKCAROUSEL_VEHICLESTATES_XPMULTRECEIVED_NOT,
      TANKCAROUSEL_VEHICLESTATES_ROTATIONGROUPUNLOCKED,
      TANKCAROUSEL_VEHICLESTATES_ROTATIONGROUPLOCKED)
-    DATETIME_WEEKDAYS_FULL_ENUM = (DATETIME_WEEKDAYS_FULL_1,
+    DATETIME_WEEKDAYS_FULL_ENUM = (
+     DATETIME_WEEKDAYS_FULL_1,
      DATETIME_WEEKDAYS_FULL_2,
      DATETIME_WEEKDAYS_FULL_3,
      DATETIME_WEEKDAYS_FULL_4,
      DATETIME_WEEKDAYS_FULL_5,
      DATETIME_WEEKDAYS_FULL_6,
      DATETIME_WEEKDAYS_FULL_7)
-    DATETIME_WEEKDAYS_SHORT_ENUM = (DATETIME_WEEKDAYS_SHORT_1,
+    DATETIME_WEEKDAYS_SHORT_ENUM = (
+     DATETIME_WEEKDAYS_SHORT_1,
      DATETIME_WEEKDAYS_SHORT_2,
      DATETIME_WEEKDAYS_SHORT_3,
      DATETIME_WEEKDAYS_SHORT_4,
      DATETIME_WEEKDAYS_SHORT_5,
      DATETIME_WEEKDAYS_SHORT_6,
      DATETIME_WEEKDAYS_SHORT_7)
-    DATETIME_MONTHS_FULL_ENUM = (DATETIME_MONTHS_FULL_1,
+    DATETIME_MONTHS_FULL_ENUM = (
+     DATETIME_MONTHS_FULL_1,
      DATETIME_MONTHS_FULL_2,
      DATETIME_MONTHS_FULL_3,
      DATETIME_MONTHS_FULL_4,
@@ -2601,7 +2629,8 @@ class MENU(object):
      DATETIME_MONTHS_FULL_10,
      DATETIME_MONTHS_FULL_11,
      DATETIME_MONTHS_FULL_12)
-    DATETIME_MONTHS_SHORT_ENUM = (DATETIME_MONTHS_SHORT_1,
+    DATETIME_MONTHS_SHORT_ENUM = (
+     DATETIME_MONTHS_SHORT_1,
      DATETIME_MONTHS_SHORT_2,
      DATETIME_MONTHS_SHORT_3,
      DATETIME_MONTHS_SHORT_4,
@@ -2613,7 +2642,8 @@ class MENU(object):
      DATETIME_MONTHS_SHORT_10,
      DATETIME_MONTHS_SHORT_11,
      DATETIME_MONTHS_SHORT_12)
-    DATETIME_MONTHS_ENUM = (DATETIME_MONTHS_FULL_1,
+    DATETIME_MONTHS_ENUM = (
+     DATETIME_MONTHS_FULL_1,
      DATETIME_MONTHS_FULL_2,
      DATETIME_MONTHS_FULL_3,
      DATETIME_MONTHS_FULL_4,
@@ -2673,7 +2703,8 @@ class MENU(object):
      DATETIME_MONTHS_SHORTSMALL_10,
      DATETIME_MONTHS_SHORTSMALL_11,
      DATETIME_MONTHS_SHORTSMALL_12)
-    LEVELS_ENUM = (LEVELS_1,
+    LEVELS_ENUM = (
+     LEVELS_1,
      LEVELS_2,
      LEVELS_3,
      LEVELS_4,
@@ -2696,7 +2727,8 @@ class MENU(object):
      LEVELS_ROMAN_10,
      LEVELS_ROMAN_11,
      LEVELS_ALL)
-    LEVELS_ROMAN_ENUM = (LEVELS_ROMAN_1,
+    LEVELS_ROMAN_ENUM = (
+     LEVELS_ROMAN_1,
      LEVELS_ROMAN_2,
      LEVELS_ROMAN_3,
      LEVELS_ROMAN_4,
@@ -2707,18 +2739,21 @@ class MENU(object):
      LEVELS_ROMAN_9,
      LEVELS_ROMAN_10,
      LEVELS_ROMAN_11)
-    MODULEINFO_COMPATIBLE_ENUM = (MODULEINFO_COMPATIBLE_TURRETS,
+    MODULEINFO_COMPATIBLE_ENUM = (
+     MODULEINFO_COMPATIBLE_TURRETS,
      MODULEINFO_COMPATIBLE_SHELLS,
      MODULEINFO_COMPATIBLE_GUNS,
      MODULEINFO_COMPATIBLE_SHELLGUNS,
      MODULEINFO_COMPATIBLE_VEHICLES,
      MODULEINFO_COMPATIBLE_UNICHARGEDVEHICLES,
      MODULEINFO_COMPATIBLE_CLIPVEHICLES)
-    DENUNCIATION_ENUM = (DENUNCIATION_1,
+    DENUNCIATION_ENUM = (
+     DENUNCIATION_1,
      DENUNCIATION_2,
      DENUNCIATION_3,
      DENUNCIATION_7)
-    HEADER_LEVEL_ENUM = (HEADER_LEVEL_1,
+    HEADER_LEVEL_ENUM = (
+     HEADER_LEVEL_1,
      HEADER_LEVEL_2,
      HEADER_LEVEL_3,
      HEADER_LEVEL_4,
@@ -2729,7 +2764,8 @@ class MENU(object):
      HEADER_LEVEL_9,
      HEADER_LEVEL_10,
      HEADER_LEVEL_11)
-    HEADER_VEHICLETYPE_ENUM = (HEADER_VEHICLETYPE_LIGHTTANK,
+    HEADER_VEHICLETYPE_ENUM = (
+     HEADER_VEHICLETYPE_LIGHTTANK,
      HEADER_VEHICLETYPE_MEDIUMTANK,
      HEADER_VEHICLETYPE_HEAVYTANK,
      HEADER_VEHICLETYPE_AT_SPG,
@@ -2743,12 +2779,14 @@ class MENU(object):
      HEADER_VEHICLETYPE_ALLIANCE_GERMANY,
      HEADER_VEHICLETYPE_ALLIANCE_USA,
      HEADER_VEHICLETYPE_ALLIANCE_FRANCE)
-    HEADER_VEHICLETYPE_ELITE_ENUM = (HEADER_VEHICLETYPE_ELITE_LIGHTTANK,
+    HEADER_VEHICLETYPE_ELITE_ENUM = (
+     HEADER_VEHICLETYPE_ELITE_LIGHTTANK,
      HEADER_VEHICLETYPE_ELITE_MEDIUMTANK,
      HEADER_VEHICLETYPE_ELITE_HEAVYTANK,
      HEADER_VEHICLETYPE_ELITE_AT_SPG,
      HEADER_VEHICLETYPE_ELITE_SPG)
-    CLASSES_SHORT_ENUM = (CLASSES_SHORT_LIGHTTANK,
+    CLASSES_SHORT_ENUM = (
+     CLASSES_SHORT_LIGHTTANK,
      CLASSES_SHORT_MEDIUMTANK,
      CLASSES_SHORT_HEAVYTANK,
      CLASSES_SHORT_SPG,
@@ -2757,13 +2795,19 @@ class MENU(object):
      CLASSES_SHORT_ALLIANCE_GERMANY,
      CLASSES_SHORT_ALLIANCE_USA,
      CLASSES_SHORT_ALLIANCE_FRANCE)
-    HANGAR_HEADER_BATTLE_QUESTS_LABEL_ENUM = (HANGAR_HEADER_BATTLE_QUESTS_LABEL_ACTIVE, HANGAR_HEADER_BATTLE_QUESTS_LABEL_INACTIVE)
-    HANGAR_HEADER_PERSONAL_QUESTS_LABEL_ENUM = (HANGAR_HEADER_PERSONAL_QUESTS_LABEL_ACTIVE,
+    HANGAR_HEADER_BATTLE_QUESTS_LABEL_ENUM = (
+     HANGAR_HEADER_BATTLE_QUESTS_LABEL_ACTIVE,
+     HANGAR_HEADER_BATTLE_QUESTS_LABEL_INACTIVE)
+    HANGAR_HEADER_PERSONAL_QUESTS_LABEL_ENUM = (
+     HANGAR_HEADER_PERSONAL_QUESTS_LABEL_ACTIVE,
      HANGAR_HEADER_PERSONAL_QUESTS_LABEL_EMPTY,
      HANGAR_HEADER_PERSONAL_QUESTS_LABEL_INACTIVE,
      HANGAR_HEADER_PERSONAL_QUESTS_LABEL_ALL_DONE)
-    HANGAR_HEADER_MAPBOX_PROGRESSION_LABEL_ENUM = (HANGAR_HEADER_MAPBOX_PROGRESSION_LABEL_ACTIVE, HANGAR_HEADER_MAPBOX_PROGRESSION_LABEL_INACTIVE)
-    TANK_PARAMS_ENUM = (TANK_PARAMS_FURYMAXRELOADEFFAVGDPM,
+    HANGAR_HEADER_MAPBOX_PROGRESSION_LABEL_ENUM = (
+     HANGAR_HEADER_MAPBOX_PROGRESSION_LABEL_ACTIVE,
+     HANGAR_HEADER_MAPBOX_PROGRESSION_LABEL_INACTIVE)
+    TANK_PARAMS_ENUM = (
+     TANK_PARAMS_FURYMAXRELOADEFFAVGDPM,
      TANK_PARAMS_FURYMAXRELOADEFFICIENCYLEVEL,
      TANK_PARAMS_FURYRELOADSPEEDBONUSPEREFFICIENCYLEVEL,
      TANK_PARAMS_FURYRELOADEFFICIENCYLEVELDURATION,
@@ -2815,6 +2859,12 @@ class MENU(object):
      TANK_PARAMS_DESIGNATORCOOLDOWNS,
      TANK_PARAMS_DESIGNATORMARKDURATIONS,
      TANK_PARAMS_DESIGNATORMARKEDENEMIESADDITIONALDAMAGE,
+     TANK_PARAMS_LOWCHARGESHOTAVGDAMAGE,
+     TANK_PARAMS_LOWCHARGESHOTPENETRATION,
+     TANK_PARAMS_LOWCHARGESHOTRATEOFFIRE,
+     TANK_PARAMS_LOWCHARGESHOTDISPERTION,
+     TANK_PARAMS_LOWCHARGESHOTVELOCITY,
+     TANK_PARAMS_LOWCHARGESHOTBLOCKDURATION,
      TANK_PARAMS_MAXHEALTH,
      TANK_PARAMS_VEHICLEWEIGHT,
      TANK_PARAMS_ENGINEPOWER,
@@ -2932,6 +2982,16 @@ class MENU(object):
      TANK_PARAMS_HEATINGPERSHOT,
      TANK_PARAMS_OVERHEATDURATION,
      TANK_PARAMS_TIMETOOVERHEAT,
+     TANK_PARAMS_PROPELLANTPRELIMITDAMAGEBONUS,
+     TANK_PARAMS_PROPELLANTPOSTLIMITDAMAGESPIKE,
+     TANK_PARAMS_PROPELLANTPOSTLIMITDAMAGEBONUS,
+     TANK_PARAMS_PROPELLANTCHARGINGPERSEC,
+     TANK_PARAMS_PROPELLANTCHARGESPENDINGAFTERSHOT,
+     TANK_PARAMS_PROPELLANTCHARGELIMIT,
+     TANK_PARAMS_PROPELLANTDISCHARGINGPERSEC,
+     TANK_PARAMS_PROPELLANTPOSTLIMITDISPERSION,
+     TANK_PARAMS_PROPELLANTPOSTLIMITAIMINGTIME,
+     TANK_PARAMS_PROPELLANTOVERCHARGESWITCHCOOLDOWN,
      TANK_PARAMS_T,
      TANK_PARAMS_P,
      TANK_PARAMS_PT,
@@ -2940,6 +3000,7 @@ class MENU(object):
      TANK_PARAMS_SPM,
      TANK_PARAMS_S,
      TANK_PARAMS_YOH_S_S,
+     TANK_PARAMS_PERCENT_PER_S,
      TANK_PARAMS_MM,
      TANK_PARAMS_VAL,
      TANK_PARAMS_VPM,
@@ -2963,6 +3024,7 @@ class MENU(object):
      TANK_PARAMS_STUNMINDURATION,
      TANK_PARAMS_STUNDURATIONLIST,
      TANK_PARAMS_CHARGETIME,
+     TANK_PARAMS_PENETRATIONLOSS,
      TANK_PARAMS_NO_BRACKETS_KG,
      TANK_PARAMS_NO_BRACKETS_S,
      TANK_PARAMS_NO_BRACKETS_MM,
@@ -2972,9 +3034,19 @@ class MENU(object):
      TANK_PARAMS_STAGEDJETBOOSTERSROTATIONSPEED,
      TANK_PARAMS_STAGEDJETBOOSTERSCHARGESCOUNT,
      TANK_PARAMS_STAGEDJETBOOSTERSCHARGEDURATION,
-     TANK_PARAMS_STAGEDJETBOOSTERSCOOLDOWNTIME)
-    BROWSER_CUSTOMTITLE_ENUM = (BROWSER_CUSTOMTITLE_FORT_OFFENSIVERESULT, BROWSER_CUSTOMTITLE_FORT_CONGRATULATION)
-    LOADING_BATTLETYPES_DESC_ENUM = (LOADING_BATTLETYPES_DESC_0,
+     TANK_PARAMS_STAGEDJETBOOSTERSCOOLDOWNTIME,
+     TANK_PARAMS_WHEELEDDASHABILITYDURATION,
+     TANK_PARAMS_WHEELEDDASHENGINEPOWER,
+     TANK_PARAMS_WHEELEDDASHTOPSPEED,
+     TANK_PARAMS_WHEELEDDASHABILITYRELOADTIME,
+     TANK_PARAMS_WHEELEDDASHABILITYRELOADTIMEBONUS,
+     TANK_PARAMS_WHEELEDDASHSPEEDLIMITS,
+     TANK_PARAMS_WHEELEDDASHREVERSESPEED)
+    BROWSER_CUSTOMTITLE_ENUM = (
+     BROWSER_CUSTOMTITLE_FORT_OFFENSIVERESULT,
+     BROWSER_CUSTOMTITLE_FORT_CONGRATULATION)
+    LOADING_BATTLETYPES_DESC_ENUM = (
+     LOADING_BATTLETYPES_DESC_0,
      LOADING_BATTLETYPES_DESC_1,
      LOADING_BATTLETYPES_DESC_2,
      LOADING_BATTLETYPES_DESC_4,
@@ -3006,7 +3078,8 @@ class MENU(object):
      LOADING_BATTLETYPES_DESC_33,
      LOADING_BATTLETYPES_DESC_34,
      LOADING_BATTLETYPES_DESC_35)
-    LOADING_BATTLETYPES_ENUM = (LOADING_BATTLETYPES_0,
+    LOADING_BATTLETYPES_ENUM = (
+     LOADING_BATTLETYPES_0,
      LOADING_BATTLETYPES_DESC_0,
      LOADING_BATTLETYPES_1,
      LOADING_BATTLETYPES_DESC_1,
@@ -3050,6 +3123,7 @@ class MENU(object):
      LOADING_BATTLETYPES_DESC_22,
      LOADING_BATTLETYPES_23,
      LOADING_BATTLETYPES_DESC_23,
+     LOADING_BATTLETYPES_SUBTITLE_23,
      LOADING_BATTLETYPES_24,
      LOADING_BATTLETYPES_DESC_24,
      LOADING_BATTLETYPES_25,
@@ -3070,7 +3144,8 @@ class MENU(object):
      LOADING_BATTLETYPES_DESC_34,
      LOADING_BATTLETYPES_35,
      LOADING_BATTLETYPES_DESC_35)
-    CST_ITEM_CTX_MENU_ENUM = (CST_ITEM_CTX_MENU_BUY,
+    CST_ITEM_CTX_MENU_ENUM = (
+     CST_ITEM_CTX_MENU_BUY,
      CST_ITEM_CTX_MENU_EXCHANGE,
      CST_ITEM_CTX_MENU_BUYMORE,
      CST_ITEM_CTX_MENU_SELL,
@@ -3113,30 +3188,35 @@ class MENU(object):
      CST_ITEM_CTX_MENU_PUTONTHIRD,
      CST_ITEM_CTX_MENU_UNLOAD,
      CST_ITEM_CTX_MENU_DECONSTRUCT)
-    INTERNET_PROVIDER_ALL_NAME_ENUM = (INTERNET_PROVIDER_LOCALPARTNER2_NAME,
+    INTERNET_PROVIDER_ALL_NAME_ENUM = (
+     INTERNET_PROVIDER_LOCALPARTNER2_NAME,
      INTERNET_PROVIDER_LOCALPARTNER3_NAME,
      INTERNET_PROVIDER_LOCALPARTNER4_NAME,
      INTERNET_PROVIDER_KAZAKHTELECOM_NAME,
      INTERNET_PROVIDER_BEELINEKZ_NAME)
-    INTERNET_PROVIDER_ALL_TARIFF_ENUM = (INTERNET_PROVIDER_LOCALPARTNER2_TARIFF,
+    INTERNET_PROVIDER_ALL_TARIFF_ENUM = (
+     INTERNET_PROVIDER_LOCALPARTNER2_TARIFF,
      INTERNET_PROVIDER_LOCALPARTNER3_TARIFF,
      INTERNET_PROVIDER_LOCALPARTNER4_TARIFF,
      INTERNET_PROVIDER_KAZAKHTELECOM_TARIFF,
      INTERNET_PROVIDER_BEELINEKZ_TARIFF)
-    BOOSTER_USERNAME_ENUM = (BOOSTER_USERNAME_BOOSTER_XP,
+    BOOSTER_USERNAME_ENUM = (
+     BOOSTER_USERNAME_BOOSTER_XP,
      BOOSTER_USERNAME_BOOSTER_FREE_XP,
      BOOSTER_USERNAME_BOOSTER_CREW_XP,
      BOOSTER_USERNAME_BOOSTER_FREE_XP_AND_CREW_XP,
      BOOSTER_USERNAME_BOOSTER_CREDITS,
      BOOSTER_USERNAME_BOOSTER_REPAIR,
      BOOSTER_USERNAME_BOOSTER_FL_XP)
-    BOOSTER_INFLUENCE_ENUM = (BOOSTER_INFLUENCE_BOOSTER_XP,
+    BOOSTER_INFLUENCE_ENUM = (
+     BOOSTER_INFLUENCE_BOOSTER_XP,
      BOOSTER_INFLUENCE_BOOSTER_FREE_XP,
      BOOSTER_INFLUENCE_BOOSTER_CREW_XP,
      BOOSTER_INFLUENCE_BOOSTER_FREE_XP_AND_CREW_XP,
      BOOSTER_INFLUENCE_BOOSTER_CREDITS,
      BOOSTER_INFLUENCE_BOOSTER_FL_XP)
-    BOOSTER_DESCRIPTION_ENUM = (BOOSTER_DESCRIPTION_BOOSTER_XP,
+    BOOSTER_DESCRIPTION_ENUM = (
+     BOOSTER_DESCRIPTION_BOOSTER_XP,
      BOOSTER_DESCRIPTION_BONUSVALUETIME_BOOSTER_XP,
      BOOSTER_DESCRIPTION_BOOSTER_FREE_XP,
      BOOSTER_DESCRIPTION_BONUSVALUETIME_BOOSTER_FREE_XP,
@@ -3151,21 +3231,28 @@ class MENU(object):
      BOOSTER_DESCRIPTION_EFFECTVALUETIME,
      BOOSTER_DESCRIPTION_BOOSTER_FL_XP,
      BOOSTER_DESCRIPTION_BONUSVALUETIME_BOOSTER_FL_XP)
-    BOOSTER_DESCRIPTION_BONUSVALUETIME_ENUM = (BOOSTER_DESCRIPTION_BONUSVALUETIME_BOOSTER_XP,
+    BOOSTER_DESCRIPTION_BONUSVALUETIME_ENUM = (
+     BOOSTER_DESCRIPTION_BONUSVALUETIME_BOOSTER_XP,
      BOOSTER_DESCRIPTION_BONUSVALUETIME_BOOSTER_FREE_XP,
      BOOSTER_DESCRIPTION_BONUSVALUETIME_BOOSTER_CREW_XP,
      BOOSTER_DESCRIPTION_BONUSVALUETIME_BOOSTER_FREE_XP_AND_CREW_XP,
      BOOSTER_DESCRIPTION_BONUSVALUETIME_BOOSTER_CREDITS,
      BOOSTER_DESCRIPTION_BONUSVALUETIME_BOOSTER_FL_XP)
-    BOOSTER_QUALITY_ENUM = (BOOSTER_QUALITY_SMALL, BOOSTER_QUALITY_MEDIUM, BOOSTER_QUALITY_BIG)
-    BOOSTER_BONUS_ENUM = (BOOSTER_BONUS_BOOSTER_XP,
+    BOOSTER_QUALITY_ENUM = (
+     BOOSTER_QUALITY_SMALL,
+     BOOSTER_QUALITY_MEDIUM,
+     BOOSTER_QUALITY_BIG)
+    BOOSTER_BONUS_ENUM = (
+     BOOSTER_BONUS_BOOSTER_XP,
      BOOSTER_BONUS_BOOSTER_FREE_XP,
      BOOSTER_BONUS_BOOSTER_CREW_XP,
      BOOSTER_BONUS_BOOSTER_FREE_XP_AND_CREW_XP,
      BOOSTER_BONUS_BOOSTER_CREDITS,
      BOOSTER_BONUS_BOOSTER_FL_XP)
-    BOOSTER_LIMIT_ENUM = (BOOSTER_LIMIT_BOOSTER_FL_XP,)
-    NATION_TREE_TITLE_ENUM = (NATION_TREE_TITLE_USSR,
+    BOOSTER_LIMIT_ENUM = (
+     BOOSTER_LIMIT_BOOSTER_FL_XP,)
+    NATION_TREE_TITLE_ENUM = (
+     NATION_TREE_TITLE_USSR,
      NATION_TREE_TITLE_GERMANY,
      NATION_TREE_TITLE_USA,
      NATION_TREE_TITLE_FRANCE,
@@ -3179,315 +3266,315 @@ class MENU(object):
 
     @classmethod
     def contextmenu(cls, key0):
-        outcome = '#menu:contextMenu/{}'.format(key0)
+        outcome = ('#menu:contextMenu/{}').format(key0)
         if outcome not in cls.CONTEXTMENU_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def nations(cls, key0):
-        outcome = '#menu:nations/{}'.format(key0)
+        outcome = ('#menu:nations/{}').format(key0)
         if outcome not in cls.NATIONS_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def tankmen(cls, key0):
-        outcome = '#menu:tankmen/{}'.format(key0)
+        outcome = ('#menu:tankmen/{}').format(key0)
         if outcome not in cls.TANKMEN_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def tankcarousel_vehiclestates(cls, key0):
-        outcome = '#menu:tankCarousel/vehicleStates/{}'.format(key0)
+        outcome = ('#menu:tankCarousel/vehicleStates/{}').format(key0)
         if outcome not in cls.TANKCAROUSEL_VEHICLESTATES_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def datetime_weekdays_full(cls, key0):
-        outcome = '#menu:dateTime/weekDays/full/{}'.format(key0)
+        outcome = ('#menu:dateTime/weekDays/full/{}').format(key0)
         if outcome not in cls.DATETIME_WEEKDAYS_FULL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def datetime_weekdays_short(cls, key0):
-        outcome = '#menu:dateTime/weekDays/short/{}'.format(key0)
+        outcome = ('#menu:dateTime/weekDays/short/{}').format(key0)
         if outcome not in cls.DATETIME_WEEKDAYS_SHORT_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def datetime_months_full(cls, key0):
-        outcome = '#menu:dateTime/months/full/{}'.format(key0)
+        outcome = ('#menu:dateTime/months/full/{}').format(key0)
         if outcome not in cls.DATETIME_MONTHS_FULL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def datetime_months_short(cls, key0):
-        outcome = '#menu:dateTime/months/short/{}'.format(key0)
+        outcome = ('#menu:dateTime/months/short/{}').format(key0)
         if outcome not in cls.DATETIME_MONTHS_SHORT_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def datetime_months(cls, key0):
-        outcome = '#menu:dateTime/months/{}'.format(key0)
+        outcome = ('#menu:dateTime/months/{}').format(key0)
         if outcome not in cls.DATETIME_MONTHS_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def levels(cls, key0):
-        outcome = '#menu:levels/{}'.format(key0)
+        outcome = ('#menu:levels/{}').format(key0)
         if outcome not in cls.LEVELS_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def levels_roman(cls, key0):
-        outcome = '#menu:levels/roman/{}'.format(key0)
+        outcome = ('#menu:levels/roman/{}').format(key0)
         if outcome not in cls.LEVELS_ROMAN_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def moduleinfo_compatible(cls, key0):
-        outcome = '#menu:moduleInfo/compatible/{}'.format(key0)
+        outcome = ('#menu:moduleInfo/compatible/{}').format(key0)
         if outcome not in cls.MODULEINFO_COMPATIBLE_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def denunciation(cls, key0):
-        outcome = '#menu:denunciation/{}'.format(key0)
+        outcome = ('#menu:denunciation/{}').format(key0)
         if outcome not in cls.DENUNCIATION_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def header_level(cls, key0):
-        outcome = '#menu:header/level/{}'.format(key0)
+        outcome = ('#menu:header/level/{}').format(key0)
         if outcome not in cls.HEADER_LEVEL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def header_vehicletype(cls, key0):
-        outcome = '#menu:header/vehicleType/{}'.format(key0)
+        outcome = ('#menu:header/vehicleType/{}').format(key0)
         if outcome not in cls.HEADER_VEHICLETYPE_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def header_vehicletype_elite(cls, key0):
-        outcome = '#menu:header/vehicleType/elite/{}'.format(key0)
+        outcome = ('#menu:header/vehicleType/elite/{}').format(key0)
         if outcome not in cls.HEADER_VEHICLETYPE_ELITE_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def classesShort(cls, key0):
-        outcome = '#menu:classes/short/{}'.format(key0)
+        outcome = ('#menu:classes/short/{}').format(key0)
         if outcome not in cls.CLASSES_SHORT_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def hangarHeaderBattleQuestsLabel(cls, key0):
-        outcome = '#menu:hangar_header/battle_quests_label/{}'.format(key0)
+        outcome = ('#menu:hangar_header/battle_quests_label/{}').format(key0)
         if outcome not in cls.HANGAR_HEADER_BATTLE_QUESTS_LABEL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def hangarHeaderPersonalMissionsLabel(cls, key0):
-        outcome = '#menu:hangar_header/personal_quests_label/{}'.format(key0)
+        outcome = ('#menu:hangar_header/personal_quests_label/{}').format(key0)
         if outcome not in cls.HANGAR_HEADER_PERSONAL_QUESTS_LABEL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def hangarHeaderMapboxProgressionLabel(cls, key0):
-        outcome = '#menu:hangar_header/mapbox_progression_label/{}'.format(key0)
+        outcome = ('#menu:hangar_header/mapbox_progression_label/{}').format(key0)
         if outcome not in cls.HANGAR_HEADER_MAPBOX_PROGRESSION_LABEL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def tank_params(cls, key0):
-        outcome = '#menu:tank_params/{}'.format(key0)
+        outcome = ('#menu:tank_params/{}').format(key0)
         if outcome not in cls.TANK_PARAMS_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def browser_customtitle(cls, key0):
-        outcome = '#menu:browser/customTitle/{}'.format(key0)
+        outcome = ('#menu:browser/customTitle/{}').format(key0)
         if outcome not in cls.BROWSER_CUSTOMTITLE_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def loading_battletypes_desc(cls, key0):
-        outcome = '#menu:loading/battleTypes/desc/{}'.format(key0)
+        outcome = ('#menu:loading/battleTypes/desc/{}').format(key0)
         if outcome not in cls.LOADING_BATTLETYPES_DESC_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def loading_battletypes(cls, key0):
-        outcome = '#menu:loading/battleTypes/{}'.format(key0)
+        outcome = ('#menu:loading/battleTypes/{}').format(key0)
         if outcome not in cls.LOADING_BATTLETYPES_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def cst_item_ctx_menu(cls, key0):
-        outcome = '#menu:cst_item_ctx_menu/{}'.format(key0)
+        outcome = ('#menu:cst_item_ctx_menu/{}').format(key0)
         if outcome not in cls.CST_ITEM_CTX_MENU_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def internetProviderName(cls, key0):
-        outcome = '#menu:internet_provider/{}/name'.format(key0)
+        outcome = ('#menu:internet_provider/{}/name').format(key0)
         if outcome not in cls.INTERNET_PROVIDER_ALL_NAME_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def internetProviderTariff(cls, key0):
-        outcome = '#menu:internet_provider/{}/tariff'.format(key0)
+        outcome = ('#menu:internet_provider/{}/tariff').format(key0)
         if outcome not in cls.INTERNET_PROVIDER_ALL_TARIFF_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def boosterTypeLocale(cls, value):
-        outcome = '#menu:booster/userName/{}'.format(value)
+        outcome = ('#menu:booster/userName/{}').format(value)
         if outcome not in cls.BOOSTER_USERNAME_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def boosterInfluenceLocale(cls, value):
-        outcome = '#menu:booster/influence/{}'.format(value)
+        outcome = ('#menu:booster/influence/{}').format(value)
         if outcome not in cls.BOOSTER_INFLUENCE_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def boosterDescriptionLocale(cls, value):
-        outcome = '#menu:booster/description/{}'.format(value)
+        outcome = ('#menu:booster/description/{}').format(value)
         if outcome not in cls.BOOSTER_DESCRIPTION_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def boosterDescriptionBVTLocale(cls, value):
-        outcome = '#menu:booster/description/bonusValueTime/{}'.format(value)
+        outcome = ('#menu:booster/description/bonusValueTime/{}').format(value)
         if outcome not in cls.BOOSTER_DESCRIPTION_BONUSVALUETIME_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def boosterQualityLocale(cls, value):
-        outcome = '#menu:booster/quality/{}'.format(value)
+        outcome = ('#menu:booster/quality/{}').format(value)
         if outcome not in cls.BOOSTER_QUALITY_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def boosterBonusLocale(cls, value):
-        outcome = '#menu:booster/bonus/{}'.format(value)
+        outcome = ('#menu:booster/bonus/{}').format(value)
         if outcome not in cls.BOOSTER_BONUS_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def boosterLimitLocale(cls, value):
-        outcome = '#menu:booster/limit/{}'.format(value)
+        outcome = ('#menu:booster/limit/{}').format(value)
         if outcome not in cls.BOOSTER_LIMIT_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getNationTreeTitle(cls, key0):
-        outcome = '#menu:nation_tree/title/{}'.format(key0)
+        outcome = ('#menu:nation_tree/title/{}').format(key0)
         if outcome not in cls.NATION_TREE_TITLE_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome

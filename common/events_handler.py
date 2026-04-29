@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/events_handler.py
 from inspect import isfunction, ismethod, getmembers
 from metaclass import Metaclass
 from operator import attrgetter
@@ -100,6 +98,6 @@ class EventsQuery(object):
         try:
             return self.__eventsQuery__(object)
         except AttributeError:
-            return None
+            return
 
-        return None
+        return

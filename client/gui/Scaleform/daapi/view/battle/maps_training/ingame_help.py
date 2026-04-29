@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/maps_training/ingame_help.py
+from __future__ import absolute_import
 from gui import GUI_CTRL_MODE_FLAG
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.meta.MapsTrainingIngameHelpWindowMeta import MapsTrainingIngameHelpWindowMeta
@@ -25,16 +24,16 @@ class MapsTrainingIngameHelpWindow(MapsTrainingIngameHelpWindowMeta, BattleGUIKe
         self.app.registerGuiKeyHandler(self)
         self.app.enterGuiControlMode(VIEW_ALIAS.INGAME_HELP, cursorVisible=True, enableAiming=False)
         avatar_getter.setForcedGuiControlMode(GUI_CTRL_MODE_FLAG.GUI_ENABLED, enableAiming=False)
-        self.as_setDataS([ self.__getPageConfig(pageNum + 1) for pageNum in xrange(4) ])
+        self.as_setDataS([ self.__getPageConfig(pageNum + 1) for pageNum in range(4) ])
 
     @staticmethod
     def __getPageConfig(pageNum):
-        pageData = {'rendererLinkage': 'MapsTrainingHint{}PageBigUI'.format(pageNum),
-         'header1Text': backport.text(R.strings.maps_training.loadingScreen.num(pageNum).title()),
-         'header1AutoSize': 'center',
-         'description1Text': backport.text(R.strings.maps_training.loadingScreen.num(pageNum).description()),
-         'description1AutoSize': 'center',
-         'background': backport.image(R.images.gui.maps.icons.mapsTraining.dyn('tip_bg_0{}'.format(pageNum))())}
+        pageData = {'rendererLinkage': ('MapsTrainingHint{}PageBigUI').format(pageNum), 
+           'header1Text': backport.text(R.strings.maps_training.loadingScreen.num(pageNum).title()), 
+           'header1AutoSize': 'center', 
+           'description1Text': backport.text(R.strings.maps_training.loadingScreen.num(pageNum).description()), 
+           'description1AutoSize': 'center', 
+           'background': backport.image(R.images.gui.maps.icons.mapsTraining.dyn(('tip_bg_0{}').format(pageNum))())}
         return pageData
 
     def _dispose(self):

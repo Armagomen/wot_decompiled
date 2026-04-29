@@ -1,7 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/AccuracyStacksController.py
-import typing
-import BigWorld
+from __future__ import absolute_import, division
+import typing, BigWorld
 from gui.shared.utils.decorators import ReprInjector
 from vehicles.components.vehicle_component import VehicleDynamicComponent
 from vehicles.components.vehicle_prefabs import createMechanicPrefabSpawner
@@ -14,14 +12,11 @@ if typing.TYPE_CHECKING:
     from vehicles.mechanics.mechanic_states import IMechanicStatesEvents
 
 @ReprInjector.simple('level', 'startTime', 'endTime', 'timeElapsed')
-class AccuracyStacksState(typing.NamedTuple('AccuracyStacksState', (('level', int),
- ('maxLevel', int),
- ('startTime', float),
- ('endTime', float),
- ('isGainingActive', bool),
- ('duration', float),
- ('timeElapsed', float),
- ('speedThreshold', float))), IMechanicState):
+class AccuracyStacksState(typing.NamedTuple('AccuracyStacksState', (
+ (
+  'level', int), ('maxLevel', int), ('startTime', float), ('endTime', float), ('isGainingActive', bool),
+ (
+  'duration', float), ('timeElapsed', float), ('speedThreshold', float))), IMechanicState):
 
     @classmethod
     def fromComponentStatus(cls, status, stackDuration, speedThreshold):
@@ -61,7 +56,8 @@ class AccuracyStacksController(VehicleDynamicComponent, IMechanicComponent, IMec
         return self.__statesEvents
 
     def getComponentParams(self):
-        return (self.__stackDuration, self.__speedThreshold)
+        return (
+         self.__stackDuration, self.__speedThreshold)
 
     def getMechanicState(self):
         return AccuracyStacksState.fromComponentStatus(self.abilityState, self.__stackDuration, self.__speedThreshold)

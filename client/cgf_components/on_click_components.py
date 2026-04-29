@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/cgf_components/on_click_components.py
-import logging
-import CGF
+import logging, CGF
 from GenericComponents import VSEComponent
 from adisp import adisp_process
 from cgf_script.component_meta_class import CGFMetaTypes, ComponentProperty, registerComponent

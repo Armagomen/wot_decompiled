@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/vehicle_compare/modifications_panel.py
 import typing
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.Scaleform.daapi.view.lobby.vehicle_compare import cmp_helpers
@@ -18,13 +16,13 @@ if typing.TYPE_CHECKING:
     from frameworks.wulf import Array, ViewEvent
     from gui.veh_post_progression.models.progression import PostProgressionItem
     from gui.veh_post_progression.models.progression_step import PostProgressionStepItem
-_ACTION_TOOLTIP_MAP = {PostProgressionActionTooltip.SIMPLEMOD: R.invalid(),
- PostProgressionActionTooltip.MULTIMOD: R.views.lobby.veh_post_progression.tooltip.PairModificationTooltipView(),
- PostProgressionActionTooltip.FEATURE: R.invalid(),
- PostProgressionActionTooltip.ROLESLOT: R.invalid()}
+_ACTION_TOOLTIP_MAP = {PostProgressionActionTooltip.SIMPLEMOD: R.invalid(), 
+   PostProgressionActionTooltip.MULTIMOD: R.views.lobby.veh_post_progression.tooltip.PairModificationTooltipView(), 
+   PostProgressionActionTooltip.FEATURE: R.invalid(), 
+   PostProgressionActionTooltip.ROLESLOT: R.invalid()}
 
 class CompareModificationsPanelView(ViewImpl):
-    __slots__ = ('__vehItem',)
+    __slots__ = ('__vehItem', )
 
     def __init__(self, layoutID=R.views.lobby.vehicle_compare.CompareModificationsPanelView()):
         settings = ViewSettings(layoutID, flags=ViewFlags.VIEW, model=CompareModificationsPanelViewModel())
@@ -41,12 +39,15 @@ class CompareModificationsPanelView(ViewImpl):
         if contentID == R.views.lobby.veh_post_progression.tooltip.PairModificationTooltipView() and stepId is not None and modId is not None:
             return CmpPanelPairModificationTooltipView(self.__vehItem.getItem(), stepId, modId)
         else:
-            return BaseProgressionLevelTooltipView(self.__vehItem.getItem(), stepId) if contentID == R.views.lobby.veh_post_progression.tooltip.PostProgressionLevelTooltipView() and stepId is not None else super(CompareModificationsPanelView, self).createToolTipContent(event, contentID)
+            if contentID == R.views.lobby.veh_post_progression.tooltip.PostProgressionLevelTooltipView() and stepId is not None:
+                return BaseProgressionLevelTooltipView(self.__vehItem.getItem(), stepId)
+            return super(CompareModificationsPanelView, self).createToolTipContent(event, contentID)
 
     def update(self):
         postProgression = self.__vehItem.getItem().postProgression
-        suitableSteps = [ step for step in postProgression.iterOrderedSteps() if not step.isRestricted() and not step.action.isMultiAction() and not step.action.isFeatureAction() ]
-        with self.viewModel.transaction() as model:
+        suitableSteps = [ step for step in postProgression.iterOrderedSteps() if not step.isRestricted() and not step.action.isMultiAction() and not step.action.isFeatureAction()
+                        ]
+        with self.viewModel.transaction() as (model):
             model.setIsEmpty(postProgression.getCompletion() is PostProgressionCompletion.EMPTY)
             self.__updateSteps(model.getSteps(), suitableSteps, postProgression)
 
@@ -91,7 +92,8 @@ class CompareModificationsPanelView(ViewImpl):
             stepId = int(stepId)
         if modId is not None:
             modId = int(modId)
-        return (stepId, modId)
+        return (
+         stepId, modId)
 
     def __updateSteps(self, stepsArray, suitableSteps, postProgression):
         stepsArray.clear()

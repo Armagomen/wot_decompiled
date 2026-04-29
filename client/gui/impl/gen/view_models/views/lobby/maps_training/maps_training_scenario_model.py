@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/maps_training/maps_training_scenario_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.common.missions.bonuses.bonus_model import BonusModel
 

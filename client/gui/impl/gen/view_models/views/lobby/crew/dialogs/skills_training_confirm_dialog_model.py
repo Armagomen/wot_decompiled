@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/crew/dialogs/skills_training_confirm_dialog_model.py
 from frameworks.wulf import Array
 from gui.impl.gen.view_models.views.dialogs.dialog_template_view_model import DialogTemplateViewModel
 from gui.impl.gen.view_models.views.lobby.crew.common.skill.skill_model import SkillModel

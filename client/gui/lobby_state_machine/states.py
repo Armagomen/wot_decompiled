@@ -1,10 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/lobby_state_machine/states.py
 from __future__ import absolute_import
-import itertools
-import logging
-import typing
-import weakref
+import itertools, logging, typing, weakref
 from enum import IntEnum
 from WeakMethod import WeakMethodProxy
 from frameworks.state_machine import State, StateFlags
@@ -13,12 +8,11 @@ from frameworks.state_machine.visitor import isDescendantOf, getLCA
 from frameworks.wulf import WindowStatus
 from gui.Scaleform.framework import ScopeTemplates
 from gui.Scaleform.framework.ScopeTemplates import SimpleScope
-from gui.Scaleform.framework.entities.View import ViewKey, View
+from gui.Scaleform.framework.entities.View import View
 from gui.Scaleform.framework.entities.wulf_adapter import WulfPackageLayoutAdapter
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams, GuiImplViewLoadParams
 from gui.impl import backport
 from gui.impl.gen import R
-from gui.impl.pub import ViewImpl
 from gui.lobby_state_machine.events import _NonViewClosingBackNavigationEvent, _BackNavigationEvent
 from gui.lobby_state_machine.transitions import GuardTransition, NavigationTransition, _StopTransition
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE
@@ -27,6 +21,8 @@ from helpers import dependency
 from skeletons.gui.impl import IGuiLoader
 if typing.TYPE_CHECKING:
     from gui.lobby_state_machine.lobby_state_machine import LobbyStateMachine
+    from gui.Scaleform.framework.entities.View import ViewKey
+    from gui.impl.pub import ViewImpl
 _logger = logging.getLogger(__name__)
 UNTRACKED_STATE_ID_ENDING = 'untracked'
 EMPTY_STATE_ID_ENDING = 'empty'
@@ -42,7 +38,7 @@ def isInHangarState():
     lsm = getLobbyStateMachine()
     if not lsm:
         return False
-    inHangarState = any((s.getFlags() & LobbyStateFlags.HANGAR for s in lsm.getNonEmptyEnteredStates()))
+    inHangarState = any(s.getFlags() & LobbyStateFlags.HANGAR for s in lsm.getNonEmptyEnteredStates())
     return inHangarState
 
 
@@ -51,7 +47,8 @@ def isHangarState(state):
     lsm = getLobbyStateMachine()
     if not lsm:
         return False
-    return state.getFlags() & LobbyStateFlags.HANGAR if state else None
+    if state:
+        return state.getFlags() & LobbyStateFlags.HANGAR
 
 
 class LobbyStateDescription(object):
@@ -63,14 +60,14 @@ class LobbyStateDescription(object):
             QUESTION = 1
             VIDEO = 2
 
-        def __init__(self, label=u'', tooltipHeader=u'', tooltipBody=u'', type=Type.INFO, onMoreInfoRequested=lambda : None):
+        def __init__(self, label='', tooltipHeader='', tooltipBody='', type=Type.INFO, onMoreInfoRequested=lambda : None):
             self.label = label
             self.tooltipHeader = tooltipHeader
             self.tooltipBody = tooltipBody
             self.type = type
             self.onMoreInfoRequested = onMoreInfoRequested
 
-    def __init__(self, title=u'', infos=()):
+    def __init__(self, title='', infos=()):
         self.title = title
         self.infos = infos
 
@@ -246,7 +243,9 @@ class UntrackedState(LobbyState):
         if params:
             return params[self.LOAD_PARAMS_KEY].loadParams.viewKey
         else:
-            return self._paramsEnteredWith[self.LOAD_PARAMS_KEY].loadParams.viewKey if self._paramsEnteredWith and self.LOAD_PARAMS_KEY in self._paramsEnteredWith else None
+            if self._paramsEnteredWith and self.LOAD_PARAMS_KEY in self._paramsEnteredWith:
+                return self._paramsEnteredWith[self.LOAD_PARAMS_KEY].loadParams.viewKey
+            return
 
     def serializeParams(self):
         return self._paramsEnteredWith
@@ -300,7 +299,9 @@ class _SubScopeSubLayerUntrackedState(UntrackedState):
 
     def getNavigationDescription(self):
         from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.hangar())) if self.getViewKey().alias == VIEW_ALIAS.LOBBY_HANGAR else super(_SubScopeSubLayerUntrackedState, self).getNavigationDescription()
+        if self.getViewKey().alias == VIEW_ALIAS.LOBBY_HANGAR:
+            return LobbyStateDescription(title=backport.text(R.strings.pages.titles.hangar()))
+        return super(_SubScopeSubLayerUntrackedState, self).getNavigationDescription()
 
 
 @SubScopeSubLayerState.parentOf
@@ -402,4 +403,5 @@ class _TopScopeTopLayerEmptyState(EmptyState):
 def compareViewKeys(view, stateViewKey):
     if hasattr(view, 'key'):
         return stateViewKey == view.key
-    return stateViewKey.alias == view.layoutID if hasattr(view, 'layoutID') else None
+    if hasattr(view, 'layoutID'):
+        return stateViewKey.alias == view.layoutID

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/common/vehicle_mechanic_model.py
 from enum import Enum
 from frameworks.wulf import ViewModel
 
@@ -37,7 +35,10 @@ class MechanicsEnum(Enum):
     STATIONARY_RELOAD = 'stationaryReload'
     OVERHEAT_GUN = 'overheatGun'
     HEATING_ZONES_GUN = 'heatingZonesGun'
+    LOW_CHARGE_SHOT = 'lowChargeShot'
     STAGED_JET_BOOSTERS = 'stagedJetBoosters'
+    PROPELLANT_GUN = 'propellantAfterburnerGun'
+    WHEELED_DASH = 'wheeledDash'
 
 
 class MechanicsRank(Enum):

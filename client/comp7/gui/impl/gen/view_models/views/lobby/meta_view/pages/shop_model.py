@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/gen/view_models/views/lobby/meta_view/pages/shop_model.py
 from enum import IntEnum
 from comp7.gui.impl.gen.view_models.views.lobby.enums import Rank
 from frameworks.wulf import Array, ViewModel
@@ -13,7 +11,9 @@ class ShopState(IntEnum):
 
 
 class ShopModel(ViewModel):
-    __slots__ = ('onProductSeen', 'onProductSelect', 'onProductPurchase', 'onProductRestore', 'onGoToHangar', 'onGoToPreview', 'onGoToCustomization', 'onAddToVehicleCompare', 'onMouseOver3dScene', 'onMoveSpace')
+    __slots__ = ('onProductSeen', 'onProductSelect', 'onProductPurchase', 'onProductRestore',
+                 'onGoToHangar', 'onGoToPreview', 'onGoToCustomization', 'onAddToVehicleCompare',
+                 'onMouseOver3dScene', 'onMoveSpace')
 
     def __init__(self, properties=8, commands=10):
         super(ShopModel, self).__init__(properties=properties, commands=commands)

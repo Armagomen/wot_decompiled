@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/framework/entities/abstract/EventLogManagerMeta.py
 from gui.Scaleform.framework.entities.BaseDAAPIComponent import BaseDAAPIComponent
 
 class EventLogManagerMeta(BaseDAAPIComponent):
@@ -8,4 +6,5 @@ class EventLogManagerMeta(BaseDAAPIComponent):
         self._printOverrideError('logEvent')
 
     def as_setSystemEnabledS(self, isEnabled):
-        return self.flashObject.as_setSystemEnabled(isEnabled) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setSystemEnabled(isEnabled)

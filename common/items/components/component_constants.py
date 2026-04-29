@@ -1,34 +1,22 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/items/components/component_constants.py
-import collections
-import enum
+import collections, enum
 from soft_exception import SoftException
 from wrapped_reflection_framework import reflectedNamedTuple
 from Math import Vector3
-Autoreload = collections.namedtuple('Autoreload', ['reloadTime',
- 'boostStartTime',
- 'boostResidueTime',
- 'boostFraction'])
-AutoShoot = collections.namedtuple('AutoShoot', ['maxShotDispersion',
- 'groupSize',
- 'shotDispersionPerShot',
- 'aimingDelay'])
-DualGun = reflectedNamedTuple('DualGun', ['chargeTime',
- 'shootImpulse',
- 'reloadLockTime',
- 'reloadTimes',
- 'rateTime',
- 'chargeThreshold',
- 'afterShotDelay',
- 'preChargeIndication',
- 'chargeCancelTime'])
-DualAccuracy = collections.namedtuple('DualAccuracy', ['afterShotDispersionAngle', 'coolingDelay'])
-TwinGun = collections.namedtuple('TwinGun', ['afterShotDelay',
- 'gunMarkerOffset',
- 'shootImpulse',
- 'twinGunReloadTime'])
-MultiGunState = collections.namedtuple('MultiGunState', ['gunIndexes', 'multiGun'])
-ControllableReload = collections.namedtuple('ControllableReload', ['allowToReloadAfterShot'])
+Autoreload = collections.namedtuple('Autoreload', [
+ 'reloadTime', 'boostStartTime', 'boostResidueTime', 'boostFraction'])
+AutoShoot = collections.namedtuple('AutoShoot', [
+ 'maxShotDispersion', 'groupSize', 'shotDispersionPerShot', 'aimingDelay'])
+DualGun = reflectedNamedTuple('DualGun', [
+ 'chargeTime', 'shootImpulse', 'reloadLockTime', 'reloadTimes', 'rateTime', 'chargeThreshold',
+ 'afterShotDelay', 'preChargeIndication', 'chargeCancelTime'])
+DualAccuracy = collections.namedtuple('DualAccuracy', [
+ 'afterShotDispersionAngle', 'coolingDelay'])
+TwinGun = collections.namedtuple('TwinGun', [
+ 'afterShotDelay', 'gunMarkerOffset', 'shootImpulse', 'twinGunReloadTime'])
+MultiGunState = collections.namedtuple('MultiGunState', [
+ 'gunIndexes', 'multiGun'])
+ControllableReload = collections.namedtuple('ControllableReload', [
+ 'allowToReloadAfterShot'])
 UNDEFINED_ITEM_TYPE_ID = 0
 ZERO_FLOAT = 0.0
 ZERO_INT = 0
@@ -55,15 +43,16 @@ EMPTY_DICT = _ReadOnlyDict()
 EMPTY_TAGS = frozenset()
 LEVEL = 1
 DEFAULT_ARMOR_HOMOGENIZATION = 1.0
-DEFAULT_GUN_AUTORELOAD = Autoreload(reloadTime=(0.0,), boostStartTime=0.0, boostResidueTime=0.0, boostFraction=1.0)
-DEFAULT_GUN_BURST = (1, 0.0, False)
+DEFAULT_GUN_AUTORELOAD = Autoreload(reloadTime=(0.0, ), boostStartTime=0.0, boostResidueTime=0.0, boostFraction=1.0)
+DEFAULT_GUN_BURST = (
+ 1, 0.0, False)
 DEFAULT_GUN_CLIP = (1, 0.0)
-DEFAULT_GUN_DUALGUN = DualGun(chargeTime=4.0, shootImpulse=100.0, reloadLockTime=10.0, reloadTimes=(10, 8), rateTime=5, chargeThreshold=0.5, afterShotDelay=0.5, preChargeIndication=0.25, chargeCancelTime=0.18)
+DEFAULT_GUN_DUALGUN = DualGun(chargeTime=4.0, shootImpulse=100.0, reloadLockTime=10.0, reloadTimes=(10,
+                                                                                                    8), rateTime=5, chargeThreshold=0.5, afterShotDelay=0.5, preChargeIndication=0.25, chargeCancelTime=0.18)
 DEFAULT_GUN_DUAL_ACCURACY = DualAccuracy(afterShotDispersionAngle=1.0, coolingDelay=5.0)
 DEFAULT_GUN_AUTOSHOOT = AutoShoot(maxShotDispersion=0.0, shotDispersionPerShot=0.0, aimingDelay=0.0, groupSize=1)
 DEFAULT_GUN_TWINGUN = TwinGun(afterShotDelay=0.5, gunMarkerOffset=0.0, shootImpulse=0, twinGunReloadTime=0.0)
-DEFAULT_FAKE_TURRETS = {'lobby': (),
- 'battle': ()}
+DEFAULT_FAKE_TURRETS = {'lobby': (), 'battle': ()}
 DEFAULT_HULL_VARIANT_MATCH = (None, None)
 DEFAULT_PREMIUM_VEHICLE_XP_FACTOR = 0.0
 DEFAULT_SPECIFIC_FRICTION = 0.6867000000000001
@@ -81,9 +70,10 @@ KMH_TO_MS = 0.27778
 MS_TO_KMH = 3.5999712
 KG_TO_NEWTON = 9.81
 HP_TO_WATTS = 735.5
-ALLOWED_EMBLEM_SLOTS = ('player', 'clan', 'inscription', 'insignia', 'insigniaOnGun', 'fixedEmblem', 'fixedInscription')
+ALLOWED_EMBLEM_SLOTS = ('player', 'clan', 'inscription', 'insignia', 'insigniaOnGun',
+                        'fixedEmblem', 'fixedInscription')
 ALLOWED_PROJECTION_DECALS_ANCHORS = ('projectionDecal', 'fixedProjectionDecal')
-ALLOWED_MISC_SLOTS = ('sequence',)
+ALLOWED_MISC_SLOTS = ('sequence', )
 ALLOWED_SLOTS_ANCHORS = ('paint', 'camouflage', 'effect', 'style')
 ALLOWED_ATTACHMENT_SLOTS = ('attachment', 'statTracker')
 TANKMEN_GROUPS = ('normalGroups', 'premiumGroups')
@@ -92,11 +82,13 @@ DEFAULT_TRACK_HIT_VECTOR = Vector3(0.0, 10.0, 0.0)
 TrackState = collections.namedtuple('TrackState', ['isBroken', 'hitPoint', 'isDebris'])
 DynamicShotEffect = collections.namedtuple('DynamicShotEffect', ['effectsIndex', 'minShotsCount', 'maxShotsCount'])
 DYNAMIC_SHOT_MAX_COUNT = 10000
-ShootImpulse = collections.namedtuple('ShootImpulse', ['magnitude', 'applicationPoint', 'isStillSafe'])
+ShootImpulse = collections.namedtuple('ShootImpulse', [
+ 'magnitude', 'applicationPoint', 'isStillSafe'])
 
 class ObjectSlotType(object):
     ATTACHMENT = 'attachment'
-    ALL = (ATTACHMENT,)
+    ALL = (
+     ATTACHMENT,)
 
 
 class MuzzleBrakeType(enum.IntEnum):

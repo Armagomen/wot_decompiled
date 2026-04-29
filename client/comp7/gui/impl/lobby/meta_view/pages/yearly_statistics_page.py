@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/meta_view/pages/yearly_statistics_page.py
 from shared_utils import findFirst
 from comp7.gui.impl.gen.view_models.views.lobby.constants import Constants
 from comp7.gui.impl.gen.view_models.views.lobby.enums import MetaRootViews
@@ -34,7 +32,7 @@ class YearlyStatisticsPage(PageSubModelPresenter):
 
     def initialize(self, **params):
         super(YearlyStatisticsPage, self).initialize(**params)
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             seasonCards = tx.getSeasonCards()
             seasonCards.clear()
             for season in self.__comp7Controller.getAllSeasons():
@@ -50,11 +48,17 @@ class YearlyStatisticsPage(PageSubModelPresenter):
         super(YearlyStatisticsPage, self).finalize()
 
     def _getEvents(self):
-        return ((self.viewModel.onGoToSeasonStatistics, self.__onGoToSeasonStatistics),
-         (self.__comp7Controller.onRankUpdated, self.__onRatingUpdated),
-         (self.__comp7Controller.onModeConfigChanged, self.__updateSeasonModels),
-         (self.__comp7Controller.onStatusUpdated, self.__updateSeasonModels),
-         (self.__comp7Controller.onEntitlementsUpdated, self.__updateSeasonModels))
+        return (
+         (
+          self.viewModel.onGoToSeasonStatistics, self.__onGoToSeasonStatistics),
+         (
+          self.__comp7Controller.onRankUpdated, self.__onRatingUpdated),
+         (
+          self.__comp7Controller.onModeConfigChanged, self.__updateSeasonModels),
+         (
+          self.__comp7Controller.onStatusUpdated, self.__updateSeasonModels),
+         (
+          self.__comp7Controller.onEntitlementsUpdated, self.__updateSeasonModels))
 
     def __onRatingUpdated(self, *_):
         self.__invalidateCurrentSeasonCard()
@@ -96,7 +100,7 @@ class YearlyStatisticsPage(PageSubModelPresenter):
             superSquadWinRate = float(superSquadWinsCount) / superSquadBattlesCount * 100
         else:
             superSquadWinRate = Constants.NOT_AVAILABLE_STATISTIC_VALUE
-        with seasonStatisticsModel.transaction() as tx:
+        with seasonStatisticsModel.transaction() as (tx):
             tx.setHasRankReceived(hasRankReceived)
             tx.setHasStatisticsCalculated(self.__isSeasonPointsReceived(seasonNumber))
             tx.setDivision(comp7_shared.getDivisionEnumValue(division))
@@ -109,12 +113,16 @@ class YearlyStatisticsPage(PageSubModelPresenter):
 
     @staticmethod
     def __getRatingValue(hasRankReceived, value):
-        return value if hasRankReceived else Constants.NOT_AVAILABLE_STATISTIC_VALUE
+        if hasRankReceived:
+            return value
+        return Constants.NOT_AVAILABLE_STATISTIC_VALUE
 
     @staticmethod
     def __getBattlesCountValue(season, value):
         isCurrentOrPastSeason = season.getStartDate() <= time_utils.getCurrentLocalServerTimestamp()
-        return value if isCurrentOrPastSeason else Constants.NOT_AVAILABLE_STATISTIC_VALUE
+        if isCurrentOrPastSeason:
+            return value
+        return Constants.NOT_AVAILABLE_STATISTIC_VALUE
 
     def __isSeasonPointsReceived(self, seasonNumber):
         receivedPoints = self.__comp7Controller.getReceivedSeasonPoints()

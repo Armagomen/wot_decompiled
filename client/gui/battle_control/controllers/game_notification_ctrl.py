@@ -1,9 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/game_notification_ctrl.py
 from collections import defaultdict
-import Event
-import SoundGroups
-import BigWorld
+import Event, SoundGroups, BigWorld
 from debug_utils import LOG_DEBUG, LOG_ERROR
 from gui.sounds.epic_sound_constants import EPIC_SOUND, EPIC_OVERTIME_SOUND_NOTIFICATIONS
 from gui.sounds.epic_sound_constants import BF_EB_MAIN_OBJECTIVES_SOUND_NOTIFICATIONS
@@ -18,7 +14,8 @@ import TriggersManager
 from PlayerEvents import g_playerEvents
 
 class GameNotificationsController(IViewComponentsController, TriggersManager.ITriggerListener):
-    __slots__ = ('_notificationMap', 'onGameNotificationRecieved', '__eManager', '__ui', '_sessionProvider')
+    __slots__ = ('_notificationMap', 'onGameNotificationRecieved', '__eManager', '__ui',
+                 '_sessionProvider')
 
     def __init__(self, setup):
         super(GameNotificationsController, self).__init__()
@@ -95,7 +92,8 @@ class EPIC_NOTIFICATION(CONST_CONTAINER):
     RETREAT_SUCCESSFUL = 14
 
 
-OVERTIME_DURATION_WARNINGS = [30]
+OVERTIME_DURATION_WARNINGS = [
+ 30]
 
 class EpicGameNotificationsController(GameNotificationsController):
 
@@ -249,7 +247,9 @@ class EpicGameNotificationsController(GameNotificationsController):
         if sector is None:
             return False
         else:
-            return True if sector.playerGroup == componentSystem.playerDataComponent.physicalLane else False
+            if sector.playerGroup == componentSystem.playerDataComponent.physicalLane:
+                return True
+            return False
 
     def _getBaseNameByBaseId(self, sectorBaseId):
         return ID_TO_BASENAME[sectorBaseId]
@@ -278,10 +278,9 @@ class EpicGameNotificationsController(GameNotificationsController):
     def __playSound(self, eventName):
         if not EPIC_SOUND.EPIC_MSG_SOUNDS_ENABLED or eventName is None:
             return
-        else:
-            soundNotifications = avatar_getter.getSoundNotifications()
-            if soundNotifications and hasattr(soundNotifications, 'play'):
-                soundNotifications.play(eventName)
-                if self.__shutDownSoundNotifications:
-                    EPIC_SOUND.EPIC_MSG_SOUNDS_ENABLED = False
-            return
+        soundNotifications = avatar_getter.getSoundNotifications()
+        if soundNotifications and hasattr(soundNotifications, 'play'):
+            soundNotifications.play(eventName)
+            if self.__shutDownSoundNotifications:
+                EPIC_SOUND.EPIC_MSG_SOUNDS_ENABLED = False
+        return

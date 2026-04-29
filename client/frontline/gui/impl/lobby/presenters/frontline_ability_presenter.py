@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/impl/lobby/presenters/frontline_ability_presenter.py
 from __future__ import absolute_import
 import typing
-from frontline.constants.common import BATTLE_ABILITY_GROUP_INDEX
 from frontline.gui.frontline_helpers import AbilitiesTemplates, getFrontlineState
 from frontline.gui.frontline_helpers import getSkillParams
 from frontline.gui.impl.gen.view_models.views.lobby.components.loadout.battle_abilities_setup_model import BattleAbilitiesSetupModel
@@ -21,6 +18,7 @@ from epic_constants import CATEGORIES_ORDER
 from frameworks.wulf import Array
 from gui.game_control.epic_meta_game_ctrl import EpicMetaGameSkill
 from gui.impl.gen import R
+from gui.impl.gen.view_models.views.lobby.tank_setup.common.ammunition_panel_constants import AmmunitionPanelConstants
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_setup_model import BaseSetupModel
 from gui.impl.lobby.hangar.presenters.loadout_presenter_base import LoadoutPresenterBase, LoadoutEntityProvider
 from gui.impl.lobby.tank_setup.array_providers.base import BaseVehSectionContext
@@ -58,20 +56,22 @@ class FrontlineAbilityPresenter(LoadoutPresenterBase[BattleAbilitiesSetupModel])
         return actions
 
     def createToolTipContent(self, event, contentID):
-        return SkillOrderTooltip() if contentID == R.views.frontline.mono.lobby.tooltips.skill_order_tooltip() else super(FrontlineAbilityPresenter, self).createToolTipContent(event, contentID)
+        if contentID == R.views.frontline.mono.lobby.tooltips.skill_order_tooltip():
+            return SkillOrderTooltip()
+        return super(FrontlineAbilityPresenter, self).createToolTipContent(event, contentID)
 
     def updateBlock(self, viewModel):
         pass
 
     def _getKeySettings(self):
-        pass
+        return ('CMD_AMMO_CHOICE_7', 'CMD_AMMO_CHOICE_8', 'CMD_AMMO_CHOICE_9')
 
     def _getSlotIdxByCategory(self, category):
         for idx, slot in enumerate(self._vehicle.battleAbilities.slots):
             if category == tuple(slot.tags)[0]:
                 return idx
 
-        return None
+        return
 
     @property
     def _vehicle(self):
@@ -83,17 +83,25 @@ class FrontlineAbilityPresenter(LoadoutPresenterBase[BattleAbilitiesSetupModel])
 
     def _selectItem(self, slotID, itemCD):
         self._selectedSlotId = slotID
-        self.__slotSelectionObserver.onPanelSlotSelect(self._currentSectionName, BATTLE_ABILITY_GROUP_INDEX, slotID)
+        self.__slotSelectionObserver.onPanelSlotSelect(AmmunitionPanelConstants.NO_GROUP, self._currentSectionName, slotID)
         super(FrontlineAbilityPresenter, self)._selectItem(slotID, int(itemCD))
 
     def _getEvents(self):
-        return super(FrontlineAbilityPresenter, self)._getEvents() + ((self.__epicController.onUpdated, self.__onEpicUpdated),
-         (self.__epicController.onBattleAbilitiesUpdated, self.__onBattleAbilitiesUpdated),
-         (self.__epicController.onGameModeStatusTick, self.__onGameModeStatusChange),
-         (self.getViewModel().onApplyToTypeChanged, self.__onApplyToTypeChanged),
-         (self.getViewModel().onCurrentAbilityLevelChanged, self.__onCurrentAbilityLevelChanged),
-         (g_currentVehicle.onChanged, self.__onChangedVehicle),
-         (self.getViewModel().dealPanel.onDealCancelled, self.__onDealCancelled))
+        return super(FrontlineAbilityPresenter, self)._getEvents() + (
+         (
+          self.__epicController.onUpdated, self.__onEpicUpdated),
+         (
+          self.__epicController.onBattleAbilitiesUpdated, self.__onBattleAbilitiesUpdated),
+         (
+          self.__epicController.onGameModeStatusTick, self.__onGameModeStatusChange),
+         (
+          self.getViewModel().onApplyToTypeChanged, self.__onApplyToTypeChanged),
+         (
+          self.getViewModel().onCurrentAbilityLevelChanged, self.__onCurrentAbilityLevelChanged),
+         (
+          g_currentVehicle.onChanged, self.__onChangedVehicle),
+         (
+          self.getViewModel().dealPanel.onDealCancelled, self.__onDealCancelled))
 
     def _createProvider(self, vehInteractingItem):
         self._provider = LoadoutEntityProvider(vehInteractingItem, FrontlineInteractor, {EpicBattleTabs.BATTLE_ABILITY: BattleAbilityProvider})
@@ -111,7 +119,7 @@ class FrontlineAbilityPresenter(LoadoutPresenterBase[BattleAbilitiesSetupModel])
                 self._pendingPurchaseItemIntCDs.append(item.intCD)
                 self._totalPurchasePrice += skill.price
 
-        with self.getViewModel().transaction() as vm:
+        with self.getViewModel().transaction() as (vm):
             dataProvider.fillArray(vm.getSlots(), BaseVehSectionContext(self._currentSlotIndex))
             vehicle = g_currentVehicle.item
             vm.setModeState(self.__gameModeStatus.value)
@@ -166,7 +174,7 @@ class FrontlineAbilityPresenter(LoadoutPresenterBase[BattleAbilitiesSetupModel])
         if not item:
             return
         detailsModel = self.getViewModel().details
-        with detailsModel.transaction() as vm:
+        with detailsModel.transaction() as (vm):
             skill = self.__epicSkills[item.innationID]
             info = skill.getSkillInfo()
             needFullUpdate = vm.getIntCD() != item.intCD
@@ -226,7 +234,7 @@ class FrontlineAbilityPresenter(LoadoutPresenterBase[BattleAbilitiesSetupModel])
         item = self.__getCurrentLayoutItem(self._selectedSlotId)
         self._itemDetailsLevelMap[item.intCD] = level
         detailsModel = self.getViewModel().details
-        with detailsModel.transaction() as vm:
+        with detailsModel.transaction() as (vm):
             vm.setSelectedLevel(level)
 
     def __getCurrentLayoutItem(self, slotId):

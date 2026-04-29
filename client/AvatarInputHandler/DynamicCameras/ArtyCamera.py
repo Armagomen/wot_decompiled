@@ -1,11 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/AvatarInputHandler/DynamicCameras/ArtyCamera.py
 from math import pi, copysign, atan2, sqrt
 import BigWorld
 from Math import slerp, Vector2, Vector3, Matrix, MatrixProduct
-import BattleReplay
-import Settings
-import math_utils
+import BattleReplay, Settings, math_utils
 from AvatarInputHandler import aih_global_binding, cameras
 from BigWorld import ArtyAimingSystem, ArtyAimingSystemRemote
 from AvatarInputHandler.DynamicCameras import createOscillatorFromSection, CameraDynamicConfig, CameraWithSettings, SPGScrollSmoother
@@ -79,7 +75,8 @@ class ArtyCamera(CameraWithSettings, CallbackDelayer):
         self.isAimOffsetEnabled = True
         self.__positionOscillator = None
         self.__positionNoiseOscillator = None
-        self.__switchers = CameraSwitcherCollection(cameraSwitchers=[CameraSwitcher(switchType=SwitchTypes.FROM_TRANSITION_DIST_AS_MAX, switchToName=CTRL_MODE_NAME.STRATEGIC, switchToPos=0.0)], isEnabled=True)
+        self.__switchers = CameraSwitcherCollection(cameraSwitchers=[
+         CameraSwitcher(switchType=SwitchTypes.FROM_TRANSITION_DIST_AS_MAX, switchToName=CTRL_MODE_NAME.STRATEGIC, switchToPos=0.0)], isEnabled=True)
         self.__dynamicCfg = CameraDynamicConfig()
         self._readConfigs(dataSec)
         self.__cam = BigWorld.CursorCamera()
@@ -380,7 +377,8 @@ class ArtyCamera(CameraWithSettings, CallbackDelayer):
         collisionDist = max(distRange[0], collisionDist)
         desiredDistance = self.__scrollSmoother.update(deltaTime)
         rotation = Vector3(cameraDirection.yaw, -cameraDirection.pitch, 0.0)
-        return (rotation, desiredDistance, collisionDist)
+        return (
+         rotation, desiredDistance, collisionDist)
 
     def __interpolateStates(self, deltaTime, rotation, desiredDistance, collisionDist):
         lerpParam = math_utils.clamp(0.0, 1.0, deltaTime * self._cfg['interpolationSpeed'])
@@ -393,7 +391,8 @@ class ArtyCamera(CameraWithSettings, CallbackDelayer):
         self.__collisionDist = math_utils.lerp(self.__collisionDist, collisionDist, collisionLerpParam)
         desiredDistance = max(desiredDistance, self.__collisionDist)
         self.__targetMatrix.translation = self.__camViewPoint - camDirection.scale(desiredDistance)
-        return (self.__sourceMatrix, self.__targetMatrix)
+        return (
+         self.__sourceMatrix, self.__targetMatrix)
 
     def __cameraUpdate(self):
         deltaTime = self.__updateTime()
@@ -452,7 +451,8 @@ class ArtyCamera(CameraWithSettings, CallbackDelayer):
         bcfg['sensitivity'] = readFloat(dataSec, 'sensitivity', 0.005, 10.0, 0.025)
         bcfg['scrollSensitivity'] = readFloat(dataSec, 'scrollSensitivity', 0.005, 10.0, 0.025)
         bcfg['angularSpeed'] = readFloat(dataSec, 'angularSpeed', pi / 720.0, pi / 0.5, pi / 360.0)
-        bcfg['distRange'] = readVec2(dataSec, 'distRange', (1.0, 1.0), (10000.0, 10000.0), (2.0, 30.0))
+        bcfg['distRange'] = readVec2(dataSec, 'distRange', (1.0, 1.0), (10000.0, 10000.0), (2.0,
+                                                                                            30.0))
         bcfg['transitionDist'] = readFloat(dataSec, 'transitionDist', 1.0, 10000.0, 60.0)
         bcfg['minimalPitch'] = readFloat(dataSec, 'minimalPitch', pi / 36.0, pi / 3.0, pi / 18.0)
         bcfg['maximalPitch'] = readFloat(dataSec, 'maximalPitch', pi / 6.0, pi / 3.0, pi / 3.5)

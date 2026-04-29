@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/hints_common/prebattle/schemas.py
 import typing
 from game_params_common.schema import GameParamsSchema
 from constants import ARENA_BONUS_TYPE_IDS
@@ -27,7 +25,7 @@ class BaseHintModel(models.Model):
         return self.viewClass.split(self._VIEW_CLASS_DELIMITER)
 
     def _reprArgs(self):
-        return 'hintType={}, viewClass={}'.format(self.hintType, self.viewClass)
+        return ('hintType={}, viewClass={}').format(self.hintType, self.viewClass)
 
 
 _BHMType = typing.TypeVar('_BHMType', bound=BaseHintModel)
@@ -37,8 +35,9 @@ class BaseHintSchema(Schema[_BHMType]):
     def __init__(self, fields, modelClass, checkUnknown=True, serializedValidators=None, deserializedValidators=None):
         if not issubclass(modelClass, BaseHintModel):
             raise SoftException('modelClass should be a subclass of BaseHintModel')
-        baseFields = {'hintType': String(required=True, default='', deserializedValidators=[validate.Length(minValue=1, maxValue=100)]),
-         'viewClass': String(required=False, default='')}
+        baseFields = {'hintType': String(required=True, default='', deserializedValidators=[
+                      validate.Length(minValue=1, maxValue=100)]), 
+           'viewClass': String(required=False, default='')}
         baseFields.update(fields)
         super(BaseHintSchema, self).__init__(fields=baseFields, checkUnknown=checkUnknown, serializedValidators=serializedValidators, deserializedValidators=deserializedValidators, modelClass=modelClass)
 
@@ -47,7 +46,7 @@ class BaseHintSchema(Schema[_BHMType]):
 
 
 class HintModel(BaseHintModel):
-    __slots__ = ('arenaBonusTypes',)
+    __slots__ = ('arenaBonusTypes', )
 
     def __init__(self, arenaBonusTypes, hintType, viewClass):
         super(HintModel, self).__init__(hintType, viewClass)
@@ -60,7 +59,8 @@ class HintModel(BaseHintModel):
 class HintSchema(BaseHintSchema[HintModel]):
 
     def __init__(self):
-        super(HintSchema, self).__init__(fields={'arenaBonusTypes': fields.List(required=True, fieldOrSchema=fields.Integer(deserializedValidators=[validate.OneOf(ARENA_BONUS_TYPE_IDS.keys())]))}, checkUnknown=True, modelClass=HintModel)
+        super(HintSchema, self).__init__(fields={'arenaBonusTypes': fields.List(required=True, fieldOrSchema=fields.Integer(deserializedValidators=[
+                             validate.OneOf(ARENA_BONUS_TYPE_IDS.keys())]))}, checkUnknown=True, modelClass=HintModel)
 
 
 hintSchema = HintSchema()
@@ -74,8 +74,8 @@ class PrebattleHintsConfigModel(models.Model):
         self.battleTimerThreshold = battleTimerThreshold
 
     def _reprArgs(self):
-        return 'enabled={}, battleTimerThreshold={}'.format(self.enabled, self.battleTimerThreshold)
+        return ('enabled={}, battleTimerThreshold={}').format(self.enabled, self.battleTimerThreshold)
 
 
-configSchema = GameParamsSchema[PrebattleHintsConfigModel](gameParamsKey='prebattle_hints_config', fields={'enabled': fields.Boolean(required=True),
- 'battleTimerThreshold': fields.Integer(required=True, deserializedValidators=validate.Range(minValue=0))}, modelClass=PrebattleHintsConfigModel)
+configSchema = GameParamsSchema[PrebattleHintsConfigModel](gameParamsKey='prebattle_hints_config', fields={'enabled': fields.Boolean(required=True), 
+   'battleTimerThreshold': fields.Integer(required=True, deserializedValidators=validate.Range(minValue=0))}, modelClass=PrebattleHintsConfigModel)

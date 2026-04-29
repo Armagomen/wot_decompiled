@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/utils/graphics.py
 import math
 from collections import namedtuple
 import BigWorld
@@ -97,11 +95,17 @@ GraphicSetting = namedtuple('GraphicSetting', 'label value options hint advanced
 
 def getGraphicsSetting(settingName):
     setting = BigWorld.graphicSetting(settingName)
-    return None if setting is None else GraphicSetting(*setting)
+    if setting is None:
+        return
+    else:
+        return GraphicSetting(*setting)
 
 
 def getGraphicsPresets(presetIdx=None):
-    return BigWorld.getGraphicsPreset(presetIdx) if presetIdx is not None else BigWorld.getGraphicsPresets()
+    if presetIdx is not None:
+        return BigWorld.getGraphicsPreset(presetIdx)
+    else:
+        return BigWorld.getGraphicsPresets()
 
 
 def getGraphicsPresetsIndices():
@@ -188,9 +192,8 @@ def isGammaSupported():
         else:
             isNativeSelected = False
         return isNativeSelected
-    else:
-        return isRendererPipelineDeferred()
-        return
+    return isRendererPipelineDeferred()
+    return
 
 
 def isRendererPipelineDeferred():
@@ -202,4 +205,6 @@ def isLowPreset():
 
 
 def getGraphicsEngineValue():
-    return 1 if isLowPreset() else 0
+    if isLowPreset():
+        return 1
+    return 0

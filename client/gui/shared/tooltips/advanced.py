@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/tooltips/advanced.py
 from constants import SHELL_TYPES
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
 from gui.Scaleform.genConsts.FITTING_TYPES import FITTING_TYPES
@@ -19,6 +17,7 @@ from gui.shared.tooltips.common import BlocksTooltipData
 from helpers import dependency
 from helpers import i18n
 from skeletons.account_helpers.settings_core import ISettingsCore
+from vehicles.mechanics.mechanic_constants import VehicleMechanic
 DISABLED_ITEMS_ID = 12793
 CHASSIS_TRACK_WITHIN_TRACK = 'vehicleTrackWithinTrackChassis'
 
@@ -74,7 +73,7 @@ class BaseAdvancedTooltip(BlocksTooltipData):
     def _getBlocksList(self, *args, **kwargs):
         pass
 
-    def _packAdvancedBlocks(self, movie, header, description, descReady=False):
+    def _getDescrText(self, description, descReady=False):
         tokens = description.split('|')
         if len(tokens) == 2:
             description = tokens[1]
@@ -86,11 +85,30 @@ class BaseAdvancedTooltip(BlocksTooltipData):
                 descrText = '#tooltips:advanced/' + description
         else:
             descrText = description
-        if movie is None:
-            items = [formatters.packTextBlockData(text=text_styles.highTitle(header), padding=formatters.packPadding(left=20, top=20)), formatters.packTextBlockData(text=text_styles.main(descrText), padding=formatters.packPadding(left=20, top=10, bottom=20))]
-        else:
-            items = [formatters.packTextBlockData(text=text_styles.highTitle(header), padding=formatters.packPadding(left=20, top=20)), formatters.packImageBlockData(BaseAdvancedTooltip.getMovieAnimationPath(movie), BLOCKS_TOOLTIP_TYPES.ALIGN_LEFT, padding=5, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_ADVANCED_CLIP_BLOCK_LINKAGE), formatters.packTextBlockData(text=text_styles.main(descrText), padding=formatters.packPadding(left=20, top=10, bottom=20))]
+        return descrText
+
+    def _packAdvancedBlocks(self, movie, header, description, descReady=False):
+        descrText = self._getDescrText(description, descReady)
+        items = [
+         formatters.packTextBlockData(text=text_styles.highTitle(header), padding=formatters.packPadding(left=20, top=20))]
+        if movie is not None:
+            items.append(formatters.packImageBlockData(BaseAdvancedTooltip.getMovieAnimationPath(movie), BLOCKS_TOOLTIP_TYPES.ALIGN_LEFT, padding=5, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_ADVANCED_CLIP_BLOCK_LINKAGE))
+        items.append(formatters.packTextBlockData(text=text_styles.main(descrText), padding=formatters.packPadding(left=20, top=10, bottom=20)))
         return items
+
+
+class AdvancedTooltipWithMechanics(BaseAdvancedTooltip):
+
+    def _hasMechanic(self, vehicle, mechanicName):
+        return vehicle and mechanicName in vehicle.getMechanics()
+
+    def _getDescrText(self, description, descReady=False):
+        descrText = super(AdvancedTooltipWithMechanics, self)._getDescrText(description, descReady)
+        statsConfig = self.context.getStatsConfiguration(self._item)
+        vehicle = statsConfig.vehicle
+        if self._hasMechanic(vehicle, VehicleMechanic.LOW_CHARGE_SHOT):
+            descrText = text_styles.concatStylesToMultiLine(text_styles.concatStylesToMultiLine(descrText, ''), i18n.makeString(TOOLTIPS.ADVANCED_LOW_CHARGE_SHOT_FOOTER, fireMode=text_styles.stats(TOOLTIPS.ADVANCED_LOW_CHARGE_SHOT_FIREMODE), fireRate=text_styles.stats(TOOLTIPS.ADVANCED_LOW_CHARGE_SHOT_FIRERATE)))
+        return descrText
 
 
 class FakeAdvancedTooltip(BaseAdvancedTooltip):
@@ -103,7 +121,7 @@ class ComplexAdvanced(BaseAdvancedTooltip):
 
     def _getBlocksList(self, item, *args, **kwargs):
         text, linkage = item
-        headerKey = '#tooltips:advanced/{}/header'.format(text)
+        headerKey = ('#tooltips:advanced/{}/header').format(text)
         if headerKey in TOOLTIPS.ADVANCED_ENUM:
             header = headerKey
         else:
@@ -111,7 +129,7 @@ class ComplexAdvanced(BaseAdvancedTooltip):
         return self._packAdvancedBlocks(text, header, text)
 
 
-class HangarShellAdvanced(BaseAdvancedTooltip):
+class HangarShellAdvanced(AdvancedTooltipWithMechanics):
     _MODERN_SUFFIX = '_MODERN'
     _NOT_PIERCING_DAMAGE = '_NOT_PIERCING_DAMAGE'
     _TRAY = '_TRAY'
@@ -151,7 +169,11 @@ class HangarBoosterAdvanced(BaseAdvancedTooltip):
         return self._packAdvancedBlocks(movie, header, itemId, descReady)
 
 
-class HangarModuleAdvanced(BaseAdvancedTooltip):
+class HangarModuleAdvanced(AdvancedTooltipWithMechanics):
+
+    def _hasMechanic(self, vehicle, mechanicName):
+        mechanics = self._item.getMechanics(vehicle.descriptor) or ()
+        return mechanicName in mechanics
 
     def _getBlocksList(self, *args, **kwargs):
         item = self._item
@@ -160,6 +182,8 @@ class HangarModuleAdvanced(BaseAdvancedTooltip):
         descrKey = itemId
         isEquipment = item.itemTypeName == STORE_CONSTANTS.EQUIPMENT
         isOptionalDevice = item.itemTypeName == STORE_CONSTANTS.OPTIONAL_DEVICE
+        statsConfig = self.context.getStatsConfiguration(self._item)
+        vehicle = statsConfig.vehicle
         if isEquipment or isOptionalDevice:
             header = self._item.shortUserName
         else:
@@ -167,12 +191,18 @@ class HangarModuleAdvanced(BaseAdvancedTooltip):
         if itemId == FITTING_TYPES.VEHICLE_CHASSIS and item.isTrackWithinTrack():
             movieKey = CHASSIS_TRACK_WITHIN_TRACK
             descrKey = CHASSIS_TRACK_WITHIN_TRACK
-        elif isEquipment and item.isStimulator:
-            descrKey = 'ration'
-        if movieKey not in MODULE_MOVIES:
-            movieModule = None
         else:
-            movieModule = MODULE_MOVIES[movieKey]
+            if isEquipment and item.isStimulator:
+                descrKey = 'ration'
+            mechanics = item.getMechanics(vehicle.descriptor) or ()
+            movieModule = None
+            for mechanicName in mechanics:
+                movieModule = MODULE_MOVIES.get('%s_%s' % (movieKey, mechanicName.value))
+                if movieModule:
+                    break
+
+        if not movieModule:
+            movieModule = MODULE_MOVIES.get(movieKey)
         return self._packAdvancedBlocks(movieModule, header, descrKey)
 
 
@@ -183,11 +213,11 @@ class TankmanPreviewTooltipAdvanced(BaseAdvancedTooltip):
 
 
 class VehicleParametersAdvanced(ToolTipBaseData):
-    _movies = {'relativePower': 'statFirepower',
-     'relativeArmor': 'statSurvivability',
-     'relativeMobility': 'statMobility',
-     'relativeCamouflage': 'statConcealment',
-     'relativeVisibility': 'statSpotting'}
+    _movies = {'relativePower': 'statFirepower', 
+       'relativeArmor': 'statSurvivability', 
+       'relativeMobility': 'statMobility', 
+       'relativeCamouflage': 'statConcealment', 
+       'relativeVisibility': 'statSpotting'}
 
     def __init__(self, context):
         super(VehicleParametersAdvanced, self).__init__(context, None)
@@ -199,10 +229,10 @@ class VehicleParametersAdvanced(ToolTipBaseData):
 
 
 class MoneyAndXpAdvanced(BaseAdvancedTooltip):
-    _moviesOrDescriptions = {'crystal': 'economyBonds',
-     'credits': 'economyCredits',
-     'gold': 'economyGold',
-     'freeXP': 'economyConvertExp'}
+    _moviesOrDescriptions = {'crystal': 'economyBonds', 
+       'credits': 'economyCredits', 
+       'gold': 'economyGold', 
+       'freeXP': 'economyConvertExp'}
 
     def _getBlocksList(self, *args, **kwargs):
         _type = args[0]
@@ -223,143 +253,128 @@ class DemountKitTooltipAdvanced(BaseAdvancedTooltip):
     def _packBlocks(self, *args, **kwargs):
         demountKit = self.context.buildItem(*args, **kwargs)
         dkType = demountKit.demountKitGuiType
-        return self._packAdvancedBlocks('demountKit', demountKit.userName, 'demountKit/{}'.format(dkType))
+        return self._packAdvancedBlocks('demountKit', demountKit.userName, ('demountKit/{}').format(dkType))
 
 
-SKILL_MOVIES = {'repair': 'skillRepairs',
- 'camouflage': 'skillConcealment',
- 'naturalCover': 'skillConcealment',
- 'fireFighting': 'skillFirefighting',
- 'brotherhood': 'skillBrothersInArms',
- 'commander_tutor': 'skillCommanderTutor',
- 'commander_eagleEye': 'skillEagleEye',
- 'commander_universalist': 'skillJackOfAllTrades',
- 'commander_coordination': 'skillCommanderCoordination',
- 'commander_sixthSense': 'skillSixthSense',
- 'commander_enemyShotPredictor': 'skillCommanderEnemyShotPredictor',
- 'commander_practical': 'skillCommanderPractical',
- 'commander_emergency': 'skillCommanderEmergency',
- 'gunner_rancorous': 'skillDesignatedTarget',
- 'gunner_armorer': 'skillGunnerArmorer',
- 'gunner_sniper': 'skillSniper',
- 'gunner_smoothTurret': 'skillSnapShot',
- 'gunner_focus': 'skillGunnerFocus',
- 'gunner_quickAiming': 'skillGunnerQuickAiming',
- 'driver_rammingMaster': 'skillDriverRammingMaster',
- 'driver_badRoadsKing': 'skillOffRoadDriving',
- 'driver_tidyPerson': 'skillPreventativeMaintenance',
- 'driver_virtuoso': 'skillClutchBraking',
- 'driver_smoothDriving': 'skillSmoothRide',
- 'driver_motorExpert': 'skillDriverMotorExpert',
- 'driver_reliablePlacement': 'skillDriverReliablePlacement',
- 'radioman_finder': 'skillSituationalAwareness',
- 'radioman_expert': 'skillRadiomanExpert',
- 'radioman_sideBySide': 'skillRadiomanSideBySide',
- 'radioman_interference': 'skillRadiomanInterference',
- 'radioman_signalInterception': 'skillRadiomanSignalInterception',
- 'loader_desperado': 'skillAdrenalineRush',
- 'loader_pedant': 'skillSafeStowage',
- 'loader_intuition': 'skillIntuition',
- 'loader_ambushMaster': 'skillAmbushMaster',
- 'loader_ammunitionImprove': 'skillLoaderAmmunitionImprove',
- 'loader_melee': 'skillLoaderMelee',
- 'loader_perfectCharge': 'skillLoaderPerfectCharge'}
-MODULE_MOVIES = {'largeRepairkit': 'consumablesRepairKitBig',
- 'smallRepairkit': 'consumablesRepairKitSmall',
- 'largeMedkit': 'consumablesFirstAidBig',
- 'smallMedkit': 'consumablesFirstAidSmall',
- 'autoExtinguishers': 'consumablesExtinguisherBig',
- 'handExtinguishers': 'consumablesExtinguisherSmall',
- 'qualityFuel': 'consumablesQualityFuel',
- 'excellentFuel': 'consumablesExcellentFuel',
- 'removedRpmLimiter': 'consumablesSpeedGovernorRemoved',
- 'aimingStabilizer': 'equipmentVerticalStabilizer',
- 'enhancedAimDrives': 'equipmentGunLayingDrive',
- 'coatedOptics': 'equipmentCoatedOptics',
- 'stereoscope': 'equipmentBinocularTelescope',
- 'camouflageNet': 'equipmentCamouflageNet',
- 'antifragmentationLining': 'equipmentLightSpallLiner',
- 'improvedVentilation': 'equipmentImprovedVentilation',
- 'rammer': 'equipmentMediumCaliberTankGunRammer',
- 'vehicleGun': 'moduleGun',
- 'vehicleDualGun': 'moduleDualGun',
- 'vehicleRadio': 'moduleRadio',
- 'vehicleEngine': 'moduleEngine',
- 'vehicleChassis': 'moduleSuspension',
- 'vehicleWheeledChassis': 'moduleWheel',
- 'vehicleTrackWithinTrackChassis': 'moduleTrackWithinTrack',
- 'vehicleTurret': 'moduleTurret',
- 'cocacola': 'consumablesCola',
- 'chocolate': 'consumablesChocolate',
- 'ration': 'consumablesExtraCombatRations',
- 'hotCoffee': 'consumablesStrongCoffee',
- 'ration_china': 'consumablesImprovedCombatRations',
- 'ration_uk': 'consumablesPuddingAndTea',
- 'ration_japan': 'consumablesOnigiri',
- 'ration_czech': 'consumablesBuchty',
- 'ration_sweden': 'consumablesCoffeeWithCinnamonBuns',
- 'ration_poland': 'consumablesBreadWithSchmaltz',
- 'ration_italy': 'consumablesSpaghetti',
- 'grousers': 'equipmentAdditionalGrousers',
- 'artillery': 'artillery',
- 'bomber': 'bomber',
- 'inspire': 'inspire',
- 'arcade_minefield': 'minefield',
- 'stealthRadar': 'patrol',
- 'recon': 'recon',
- 'regenerationKit': 'resuply',
- 'passive_engineering': 'sabotageSquad',
- 'smoke': 'smokeCloud',
- 'commandersView': 'equipmentCommandersVisionSystem',
- 'modernizedImprovedSightsEnhancedAimDrives': 'equipmentExperimentalAccuracy',
- 'modernizedAimDrivesAimingStabilizer': 'equipmentExperimentalAiming',
- 'modernizedExtraHealthReserveAntifragmentationLining': 'equipmentExperimentalHardening',
- 'modernizedTurbochargerRotationMechanism': 'equipmentExperimentalTurbocharger',
- 'improvedSights': 'equipmentImprovedAiming',
- 'extraHealthReserve': 'equipmentImprovedHardening',
- 'improvedRadioCommunication': 'equipmentImprovedRadioSet',
- 'improvedRotationMechanism': 'equipmentImprovedRotationMechanism',
- 'additionalInvisibilityDevice': 'equipmentLowNoiseExhaustSystem',
- 'improvedConfiguration': 'equipmentModifiedConfiguration',
- 'turbocharger': 'equipmentTurbocharger'}
-TANKMAN_MOVIES = {'commander': 'crewCommander',
- 'driver': 'crewDriver',
- 'gunner': 'crewGunner',
- 'loader': 'crewLoader',
- 'radioman': 'crewRadioOperator'}
-SHELL_MOVIES = {(SHELL_TYPES.ARMOR_PIERCING,
- False,
- False,
- False): 'bulletAP',
- (SHELL_TYPES.HOLLOW_CHARGE,
- False,
- False,
- False): 'bulletHEAT',
- (SHELL_TYPES.HIGH_EXPLOSIVE,
- False,
- False,
- False): 'bulletHE',
- (SHELL_TYPES.ARMOR_PIERCING_CR,
- False,
- False,
- False): 'bulletAPCR',
- (SHELL_TYPES.HIGH_EXPLOSIVE,
- True,
- False,
- False): 'bulletHEModern',
- (SHELL_TYPES.ARMOR_PIERCING,
- False,
- True,
- False): 'bulletAP',
- (SHELL_TYPES.ARMOR_PIERCING_CR,
- False,
- True,
- False): 'bulletAPCR',
- (SHELL_TYPES.ARMOR_PIERCING,
- False,
- False,
- True): 'bulletAPMutable',
- (SHELL_TYPES.ARMOR_PIERCING_CR,
- False,
- False,
- True): 'bulletAPCRMutable'}
+SKILL_MOVIES = {'repair': 'skillRepairs', 
+   'camouflage': 'skillConcealment', 
+   'naturalCover': 'skillConcealment', 
+   'fireFighting': 'skillFirefighting', 
+   'brotherhood': 'skillBrothersInArms', 
+   'armorPatching': 'skillArmorPatching', 
+   'commander_tutor': 'skillCommanderTutor', 
+   'commander_eagleEye': 'skillEagleEye', 
+   'commander_universalist': 'skillJackOfAllTrades', 
+   'commander_coordination': 'skillCommanderCoordination', 
+   'commander_sixthSense': 'skillSixthSense', 
+   'commander_enemyShotPredictor': 'skillCommanderEnemyShotPredictor', 
+   'commander_practical': 'skillCommanderPractical', 
+   'commander_emergency': 'skillCommanderEmergency', 
+   'commander_holdLine': 'skillHoldLine', 
+   'commander_staySharp': 'skillStaySharp', 
+   'gunner_rancorous': 'skillDesignatedTarget', 
+   'gunner_armorer': 'skillGunnerArmorer', 
+   'gunner_sniper': 'skillSniper', 
+   'gunner_smoothTurret': 'skillSnapShot', 
+   'gunner_focus': 'skillGunnerFocus', 
+   'gunner_quickAiming': 'skillGunnerQuickAiming', 
+   'gunner_pointBlast': 'skillPointBlast', 
+   'gunner_loneWolf': 'skillGunnerLoneWolf', 
+   'driver_rammingMaster': 'skillDriverRammingMaster', 
+   'driver_badRoadsKing': 'skillOffRoadDriving', 
+   'driver_tidyPerson': 'skillPreventativeMaintenance', 
+   'driver_virtuoso': 'skillClutchBraking', 
+   'driver_smoothDriving': 'skillSmoothRide', 
+   'driver_motorExpert': 'skillDriverMotorExpert', 
+   'driver_reliablePlacement': 'skillDriverReliablePlacement', 
+   'driver_suspensionRepair': 'skillSuspensionRepair', 
+   'driver_bulletproof': 'skillBulletproof', 
+   'radioman_finder': 'skillSituationalAwareness', 
+   'radioman_expert': 'skillRadiomanExpert', 
+   'radioman_sideBySide': 'skillRadiomanSideBySide', 
+   'radioman_interference': 'skillRadiomanInterference', 
+   'radioman_signalInterception': 'skillRadiomanSignalInterception', 
+   'radioman_battleTempered': 'skillBattleTempered', 
+   'radioman_threatSearch': 'skillThreatSearch', 
+   'loader_desperado': 'skillAdrenalineRush', 
+   'loader_pedant': 'skillSafeStowage', 
+   'loader_intuition': 'skillIntuition', 
+   'loader_ambushMaster': 'skillAmbushMaster', 
+   'loader_ammunitionImprove': 'skillLoaderAmmunitionImprove', 
+   'loader_melee': 'skillLoaderMelee', 
+   'loader_magMastery': 'skillMagMastery', 
+   'loader_perfectCharge': 'skillLoaderPerfectCharge', 
+   'loader_secondChance': 'skillSecondChance'}
+MODULE_MOVIES = {'largeRepairkit': 'consumablesRepairKitBig', 
+   'smallRepairkit': 'consumablesRepairKitSmall', 
+   'largeMedkit': 'consumablesFirstAidBig', 
+   'smallMedkit': 'consumablesFirstAidSmall', 
+   'autoExtinguishers': 'consumablesExtinguisherBig', 
+   'handExtinguishers': 'consumablesExtinguisherSmall', 
+   'qualityFuel': 'consumablesQualityFuel', 
+   'excellentFuel': 'consumablesExcellentFuel', 
+   'removedRpmLimiter': 'consumablesSpeedGovernorRemoved', 
+   'aimingStabilizer': 'equipmentVerticalStabilizer', 
+   'enhancedAimDrives': 'equipmentGunLayingDrive', 
+   'coatedOptics': 'equipmentCoatedOptics', 
+   'stereoscope': 'equipmentBinocularTelescope', 
+   'camouflageNet': 'equipmentCamouflageNet', 
+   'antifragmentationLining': 'equipmentLightSpallLiner', 
+   'improvedVentilation': 'equipmentImprovedVentilation', 
+   'rammer': 'equipmentMediumCaliberTankGunRammer', 
+   'vehicleGun': 'moduleGun', 
+   'vehicleGun_lowChargeShot': 'moduleGun_lowChargeShot', 
+   'vehicleDualGun': 'moduleDualGun', 
+   'vehicleRadio': 'moduleRadio', 
+   'vehicleEngine': 'moduleEngine', 
+   'vehicleChassis': 'moduleSuspension', 
+   'vehicleWheeledChassis': 'moduleWheel', 
+   'vehicleTrackWithinTrackChassis': 'moduleTrackWithinTrack', 
+   'vehicleTurret': 'moduleTurret', 
+   'cocacola': 'consumablesCola', 
+   'chocolate': 'consumablesChocolate', 
+   'ration': 'consumablesExtraCombatRations', 
+   'hotCoffee': 'consumablesStrongCoffee', 
+   'ration_china': 'consumablesImprovedCombatRations', 
+   'ration_uk': 'consumablesPuddingAndTea', 
+   'ration_japan': 'consumablesOnigiri', 
+   'ration_czech': 'consumablesBuchty', 
+   'ration_sweden': 'consumablesCoffeeWithCinnamonBuns', 
+   'ration_poland': 'consumablesBreadWithSchmaltz', 
+   'ration_italy': 'consumablesSpaghetti', 
+   'grousers': 'equipmentAdditionalGrousers', 
+   'artillery': 'artillery', 
+   'bomber': 'bomber', 
+   'inspire': 'inspire', 
+   'arcade_minefield': 'minefield', 
+   'stealthRadar': 'patrol', 
+   'recon': 'recon', 
+   'regenerationKit': 'resuply', 
+   'passive_engineering': 'sabotageSquad', 
+   'smoke': 'smokeCloud', 
+   'commandersView': 'equipmentCommandersVisionSystem', 
+   'modernizedImprovedSightsEnhancedAimDrives': 'equipmentExperimentalAccuracy', 
+   'modernizedAimDrivesAimingStabilizer': 'equipmentExperimentalAiming', 
+   'modernizedExtraHealthReserveAntifragmentationLining': 'equipmentExperimentalHardening', 
+   'modernizedTurbochargerRotationMechanism': 'equipmentExperimentalTurbocharger', 
+   'improvedSights': 'equipmentImprovedAiming', 
+   'extraHealthReserve': 'equipmentImprovedHardening', 
+   'improvedRadioCommunication': 'equipmentImprovedRadioSet', 
+   'improvedRotationMechanism': 'equipmentImprovedRotationMechanism', 
+   'additionalInvisibilityDevice': 'equipmentLowNoiseExhaustSystem', 
+   'improvedConfiguration': 'equipmentModifiedConfiguration', 
+   'turbocharger': 'equipmentTurbocharger'}
+TANKMAN_MOVIES = {'commander': 'crewCommander', 
+   'driver': 'crewDriver', 
+   'gunner': 'crewGunner', 
+   'loader': 'crewLoader', 
+   'radioman': 'crewRadioOperator'}
+SHELL_MOVIES = {(SHELL_TYPES.ARMOR_PIERCING, False, False, False): 'bulletAP', 
+   (SHELL_TYPES.HOLLOW_CHARGE, False, False, False): 'bulletHEAT', 
+   (SHELL_TYPES.HIGH_EXPLOSIVE, False, False, False): 'bulletHE', 
+   (SHELL_TYPES.ARMOR_PIERCING_CR, False, False, False): 'bulletAPCR', 
+   (SHELL_TYPES.HIGH_EXPLOSIVE, True, False, False): 'bulletHEModern', 
+   (SHELL_TYPES.ARMOR_PIERCING, False, True, False): 'bulletAP', 
+   (SHELL_TYPES.ARMOR_PIERCING_CR, False, True, False): 'bulletAPCR', 
+   (SHELL_TYPES.ARMOR_PIERCING, False, False, True): 'bulletAPMutable', 
+   (SHELL_TYPES.ARMOR_PIERCING_CR, False, False, True): 'bulletAPCRMutable'}

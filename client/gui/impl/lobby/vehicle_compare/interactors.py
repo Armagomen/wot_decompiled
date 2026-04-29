@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/vehicle_compare/interactors.py
 import Event
 from gui.Scaleform.daapi.view.lobby.vehicle_compare import cmp_helpers
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.base_setup_model import BaseSetupModel
@@ -27,7 +25,7 @@ def _sendSelectSlotAction(interactor, slotID, itemIntCD):
 
 
 class CompareInteractingItem(InteractingItem):
-    __slots__ = ('onSelected',)
+    __slots__ = ('onSelected', )
 
     def __init__(self, item):
         super(CompareInteractingItem, self).__init__(item)

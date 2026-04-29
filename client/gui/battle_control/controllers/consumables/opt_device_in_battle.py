@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/consumables/opt_device_in_battle.py
-import BattleReplay
-import SoundGroups
-import nations
-import functools
+import BattleReplay, SoundGroups, nations, functools
 from constants import ARENA_PERIOD
 from gui.impl import backport
 from gui.impl.gen import R
@@ -23,7 +18,9 @@ def skipOnRewind(func):
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        return None if BattleReplay.isPlaying() and BattleReplay.g_replayCtrl.isTimeWarpInProgress else func(*args, **kwargs)
+        if BattleReplay.isPlaying() and BattleReplay.g_replayCtrl.isTimeWarpInProgress:
+            return
+        return func(*args, **kwargs)
 
     return wrapper
 
@@ -32,19 +29,21 @@ def createOptDeviceInBattle(deviceID, status):
     descriptor = _getDescriptor(deviceID)
     if isinstance(descriptor, ImprovedConfiguration):
         return ResurrectionOptDeviceInBattle(deviceID, status)
-    return StillStillOptDeviceInBattle(deviceID, status) if isinstance(descriptor, StillVehicleOptionalDevice) else OptDeviceInBattle(deviceID, status)
+    if isinstance(descriptor, StillVehicleOptionalDevice):
+        return StillStillOptDeviceInBattle(deviceID, status)
+    return OptDeviceInBattle(deviceID, status)
 
 
 class DevicesSound(object):
     __camoNetEvents = ('camo_net_start', 'camo_net_stop')
     __stereoEvents = ('stereo_trumpet_start', 'stereo_trumpet_stop')
-    __eventsMap = {'camouflageNet': __camoNetEvents,
-     'deluxeCamouflageNet': __camoNetEvents,
-     'stereoscope': __stereoEvents,
-     'deluxeStereoscope': __stereoEvents}
-    __resurrectionEventsMap = {'ammoBay': 'cons_wet_ammo',
-     'fuelTank': 'cons_co2',
-     'engine': 'cons_cyclone_filter'}
+    __eventsMap = {'camouflageNet': __camoNetEvents, 
+       'deluxeCamouflageNet': __camoNetEvents, 
+       'stereoscope': __stereoEvents, 
+       'deluxeStereoscope': __stereoEvents}
+    __resurrectionEventsMap = {'ammoBay': 'cons_wet_ammo', 
+       'fuelTank': 'cons_co2', 
+       'engine': 'cons_cyclone_filter'}
     __enabled = False
 
     @classmethod
@@ -60,7 +59,7 @@ class DevicesSound(object):
         if cls.__enabled:
             events = cls.__eventsMap.get(deviceID, None)
             if events is not None:
-                SoundGroups.g_instance.playSound2D(events[0 if isOn else 1])
+                SoundGroups.g_instance.playSound2D(events[(0 if isOn else 1)])
         return
 
     @classmethod
@@ -81,7 +80,7 @@ class OptDeviceInBattle(object):
         self._lastStatus = status
 
     def __repr__(self):
-        return 'OptDeviceInBattle({0!r:s})'.format(self._status)
+        return ('OptDeviceInBattle({0!r:s})').format(self._status)
 
     @property
     def deviceID(self):
@@ -161,4 +160,4 @@ class ResurrectionOptDeviceInBattle(OptDeviceInBattle):
                 self.sessionProvider.shared.messages.onShowVehicleMessageByKey(OPT_DEVICE_USED, {'message': text})
 
     def _getModules(self):
-        pass
+        return ('engine', 'fuelTank', 'ammoBay')

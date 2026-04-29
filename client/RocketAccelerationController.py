@@ -1,10 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/RocketAccelerationController.py
-import logging
-import typing
+from __future__ import absolute_import
+import logging, typing
 from functools import partial
-import BigWorld
-import CGF
+import BigWorld, CGF
 from constants import ROCKET_ACCELERATION_STATE
 from Event import Event
 from events_containers.components.life_cycle import createComponentLifeCycleEvents, ILifeCycleComponent
@@ -70,12 +67,11 @@ class RocketAccelerationController(BigWorld.DynamicScriptComponent, ILifeCycleCo
     def unsubscribe(self, callback=None, tryActivateCallback=None):
         if self.entity.isDestroyed or not self.entity.inWorld:
             return
-        else:
-            if callback is not None:
-                self.__onStateChanged -= callback
-            if tryActivateCallback is not None:
-                self.__onTryActivate -= tryActivateCallback
-            return
+        if callback is not None:
+            self.__onStateChanged -= callback
+        if tryActivateCallback is not None:
+            self.__onTryActivate -= tryActivateCallback
+        return
 
     def sendStateToAllSubscribers(self):
         self.__onStateChanged(self.stateStatus, False)
@@ -83,15 +79,14 @@ class RocketAccelerationController(BigWorld.DynamicScriptComponent, ILifeCycleCo
     def cleanup(self):
         if self.entity.isDestroyed or not self.entity.inWorld:
             return
-        else:
-            self.__lifeCycleEvents.destroy()
-            self.__onStateChanged.clear()
-            self.__onTryActivate.clear()
-            self.entity.events.onAppearanceReady -= self.__tryUpdatePrefab
-            if self.__prefabGameObject is not None:
-                CGF.removeGameObject(self.__prefabGameObject)
-                self.__prefabGameObject = None
-            return
+        self.__lifeCycleEvents.destroy()
+        self.__onStateChanged.clear()
+        self.__onTryActivate.clear()
+        self.entity.events.onAppearanceReady -= self.__tryUpdatePrefab
+        if self.__prefabGameObject is not None:
+            CGF.removeGameObject(self.__prefabGameObject)
+            self.__prefabGameObject = None
+        return
 
     def __initAppearance(self):
         if not self.__tryUpdatePrefab():
@@ -110,11 +105,13 @@ class RocketAccelerationController(BigWorld.DynamicScriptComponent, ILifeCycleCo
             typeDescriptor = self.entity.typeDescriptor
             if typeDescriptor is None:
                 return False
+            if typeDescriptor.type.compactDescr != self.vehTypeCD:
+                return False
             appearance = self.entity.appearance
             if appearance is None or not appearance.isConstructed or appearance.isDestroyed:
                 return False
             modelsSet = appearance.outfit.modelsSet
-            outfit = _DEFAULT_OUTFIT if not modelsSet else modelsSet
+            outfit = modelsSet if modelsSet else _DEFAULT_OUTFIT
             prefabPath = typeDescriptor.type.prefabs[outfit]['mechanicEffects'][0]
             loadAppearancePrefab(prefabPath, appearance, partial(self.__onLoaded, prefabPath))
             return True

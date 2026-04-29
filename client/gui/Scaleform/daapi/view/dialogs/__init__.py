@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/dialogs/__init__.py
+from __future__ import absolute_import
 import BigWorld
 from constants import ACCOUNT_KICK_REASONS, IS_CHINA
 from gui import makeHtmlString
@@ -42,16 +41,16 @@ class ISimpleDialogButtonsMeta(object):
 class ISimpleDialogMeta(IDialogMeta):
 
     def getTitle(self):
-        pass
+        return ''
 
     def getMessage(self):
-        pass
+        return ''
 
     def getButtonLabels(self):
         return []
 
     def getTimer(self):
-        pass
+        return 0
 
 
 class InfoDialogButtons(ISimpleDialogButtonsMeta):
@@ -61,9 +60,10 @@ class InfoDialogButtons(ISimpleDialogButtonsMeta):
         self._close = close
 
     def getLabels(self):
-        return [{'id': DIALOG_BUTTON_ID.CLOSE,
-          'label': self._close,
-          'focused': True}]
+        return [
+         {'id': DIALOG_BUTTON_ID.CLOSE, 
+            'label': self._close, 
+            'focused': True}]
 
 
 class ConfirmDialogButtons(InfoDialogButtons):
@@ -73,11 +73,13 @@ class ConfirmDialogButtons(InfoDialogButtons):
         self._submit = submit
 
     def getLabels(self):
-        return [{'id': DIALOG_BUTTON_ID.SUBMIT,
-          'label': self._submit,
-          'focused': True}, {'id': DIALOG_BUTTON_ID.SUBMIT,
-          'label': self._close,
-          'focused': False}]
+        return [
+         {'id': DIALOG_BUTTON_ID.SUBMIT, 
+            'label': self._submit, 
+            'focused': True},
+         {'id': DIALOG_BUTTON_ID.SUBMIT, 
+            'label': self._close, 
+            'focused': False}]
 
 
 class I18nInfoDialogButtons(ISimpleDialogButtonsMeta):
@@ -88,9 +90,10 @@ class I18nInfoDialogButtons(ISimpleDialogButtonsMeta):
         self._buttonID = buttonID
 
     def getLabels(self):
-        return [{'id': self._buttonID,
-          'label': _getDialogStr(I18N_CANCEL_KEY.format(self._i18nKey)),
-          'focused': True}]
+        return [
+         {'id': self._buttonID, 
+            'label': _getDialogStr(I18N_CANCEL_KEY.format(self._i18nKey)), 
+            'focused': True}]
 
 
 class I18nConfirmDialogButtons(I18nInfoDialogButtons):
@@ -101,12 +104,14 @@ class I18nConfirmDialogButtons(I18nInfoDialogButtons):
         self._focusedIndex = focusedIndex
 
     def getLabels(self):
-        return [self.__getButtonInfoObject(DIALOG_BUTTON_ID.SUBMIT, _getDialogStr(I18N_SUBMIT_KEY.format(self._i18nKey)), self._focusedIndex == DIALOG_BUTTON_ID.SUBMIT if self._focusedIndex is not None else True), self.__getButtonInfoObject(DIALOG_BUTTON_ID.CLOSE, _getDialogStr(I18N_CANCEL_KEY.format(self._i18nKey)), self._focusedIndex == DIALOG_BUTTON_ID.CLOSE if self._focusedIndex is not None else False)]
+        return [
+         self.__getButtonInfoObject(DIALOG_BUTTON_ID.SUBMIT, _getDialogStr(I18N_SUBMIT_KEY.format(self._i18nKey)), self._focusedIndex == DIALOG_BUTTON_ID.SUBMIT if self._focusedIndex is not None else True),
+         self.__getButtonInfoObject(DIALOG_BUTTON_ID.CLOSE, _getDialogStr(I18N_CANCEL_KEY.format(self._i18nKey)), self._focusedIndex == DIALOG_BUTTON_ID.CLOSE if self._focusedIndex is not None else False)]
 
     def __getButtonInfoObject(self, buttonID, label, focused):
-        return {'id': buttonID,
-         'label': label,
-         'focused': focused}
+        return {'id': buttonID, 
+           'label': label, 
+           'focused': focused}
 
 
 class SimpleDialogMeta(ISimpleDialogMeta):
@@ -126,7 +131,10 @@ class SimpleDialogMeta(ISimpleDialogMeta):
         return self._message
 
     def getButtonLabels(self):
-        return self._buttons.getLabels() if self._buttons is not None else []
+        if self._buttons is not None:
+            return self._buttons.getLabels()
+        else:
+            return []
 
     def getTimer(self):
         return self._timer
@@ -172,7 +180,9 @@ class I18nDialogMeta(SimpleDialogMeta):
         if self._buttons is not None:
             return self._buttons.getLabels()
         else:
-            return self._meta.getButtonLabels() if self._meta is not None else []
+            if self._meta is not None:
+                return self._meta.getButtonLabels()
+            return []
 
     def getTimer(self):
         result = self._timer
@@ -181,13 +191,18 @@ class I18nDialogMeta(SimpleDialogMeta):
         return result
 
     def getKey(self):
-        return self._meta.getKey() if self._meta else self._key
+        if self._meta:
+            return self._meta.getKey()
+        return self._key
 
     def _makeString(self, key, ctx):
         return i18n.makeString(_getDialogStr(key), **ctx)
 
     def getViewScopeType(self):
-        return self._meta.getViewScopeType() if self._meta is not None else super(I18nDialogMeta, self).getViewScopeType()
+        if self._meta is not None:
+            return self._meta.getViewScopeType()
+        else:
+            return super(I18nDialogMeta, self).getViewScopeType()
 
 
 class I18nInfoDialogMeta(I18nDialogMeta):
@@ -268,7 +283,7 @@ class HtmlMessageDialogMeta(SimpleDialogMeta):
         self._sourceKey = sourceKey
 
     def getTitle(self):
-        return None
+        return
 
     def getMessage(self):
         return makeHtmlString(self._path, self._key, ctx=self._ctx, sourceKey=self._sourceKey)
@@ -298,13 +313,13 @@ class DisconnectMeta(I18nInfoDialogMeta):
         return wrapper
 
     def getMessage(self):
-        formatArgs = {'reason': '',
-         'expiryTime': ''}
+        formatArgs = {'reason': '', 'expiryTime': ''}
         if self.reason:
             formatArgs['reason'] = i18n.makeString(DIALOGS.DISCONNECTED_REASON, i18n.makeString(self.reason))
         if self.expiryTime:
             expiryTime = time_utils.makeLocalServerTime(int(self.expiryTime))
-            formatArgs['expiryTime'] = '%s %s' % (backport.getLongDateFormat(expiryTime), backport.getLongTimeFormat(expiryTime))
+            formatArgs['expiryTime'] = '%s %s' % (backport.getLongDateFormat(expiryTime),
+             backport.getLongTimeFormat(expiryTime))
         key = DIALOGS.DISCONNECTED_MESSAGEKICK
         if self.kickReasonType in ACCOUNT_KICK_REASONS.BAN_RANGE:
             if IS_CHINA and self.kickReasonType == ACCOUNT_KICK_REASONS.CURFEW_BAN:
@@ -331,8 +346,7 @@ class CheckBoxDialogMeta(I18nConfirmDialogMeta):
 
     def getButtonsSubmitCancel(self):
         submit, cancel = self.getButtonLabels()
-        return {'submit': i18n.makeString(submit['label']),
-         'cancel': i18n.makeString(cancel['label'])}
+        return {'submit': i18n.makeString(submit['label']), 'cancel': i18n.makeString(cancel['label'])}
 
     def getCheckBoxButtonLabel(self):
         return self._makeString('%s/checkBox' % self._key, {})

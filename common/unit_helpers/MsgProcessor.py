@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/unit_helpers/MsgProcessor.py
 from debug_utils import LOG_DEBUG_DEV, LOG_DEBUG_DEV
 from ops_pack import OpsPacker, OpsUnpacker, initOpsFormatDef
 
@@ -10,9 +8,9 @@ class CBM_OP:
 
 
 class ClanBattleMgrMsgProcessor(OpsUnpacker):
-    _opsFormatDefs = initOpsFormatDef({CBM_OP.SET_ROUND: ('B', '_setRound'),
-     CBM_OP.SET_RESULTS: ('b', '_setResults'),
-     CBM_OP.SET_ENEMY_READY: ('B', '_setEnemyReady')})
+    _opsFormatDefs = initOpsFormatDef({CBM_OP.SET_ROUND: ('B', '_setRound'), 
+       CBM_OP.SET_RESULTS: ('b', '_setResults'), 
+       CBM_OP.SET_ENEMY_READY: ('B', '_setEnemyReady')})
 
     def __init__(self, unit):
         self._unit = unit

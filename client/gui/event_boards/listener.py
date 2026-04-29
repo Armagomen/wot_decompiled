@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/event_boards/listener.py
 from gui.shared.utils.listeners_collection import ListenersCollection
 
 class IEventBoardsListener(ListenersCollection):

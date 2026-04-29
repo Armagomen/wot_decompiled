@@ -1,9 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/StagedJetBoostersController.py
-import logging
-import typing
-import BigWorld
-import CGF
+from __future__ import absolute_import, division
+import logging, typing, BigWorld, CGF
 from CommandMapping import CMD_CM_SPECIAL_ABILITY, CMD_CM_VEHICLE_SWITCH_AUTOROTATION
 from cgf_components_common.vehicle_mechanics.staged_jet_boosters import StagedJetBoostersControllerDescriptor
 from cgf_script.component_meta_class import registerReplicableComponent
@@ -25,12 +21,19 @@ if IS_CLIENT:
 _logger = logging.getLogger(__name__)
 
 @ReprInjector.simple('state', 'endTime', 'duration', 'count', 'acceleratorStatus', 'params')
-class StagedJetBoostersState(typing.NamedTuple('StagedJetBoostersState', (('state', PHASED_MECHANIC_STATE),
- ('endTime', float),
- ('duration', float),
- ('count', int),
- ('acceleratorStatus', AcceleratorStatus),
- ('params', typing.Optional[StagedJetBoostersParams]))), IMechanicState):
+class StagedJetBoostersState(typing.NamedTuple('StagedJetBoostersState', (
+ (
+  'state', PHASED_MECHANIC_STATE),
+ (
+  'endTime', float),
+ (
+  'duration', float),
+ (
+  'count', int),
+ (
+  'acceleratorStatus', AcceleratorStatus),
+ (
+  'params', typing.Optional[StagedJetBoostersParams]))), IMechanicState):
 
     @classmethod
     def fromComponentStatus(cls, status, acceleratorStatus, params):
@@ -67,7 +70,7 @@ class StagedJetBoostersController(VehicleDynamicComponent, StagedJetBoostersCont
         self.__currentState = StagedJetBoostersState(PHASED_MECHANIC_STATE.NOT_RUNNING, 0.0, 0.0, 0, AcceleratorStatus.NONE, None)
         self.__commandsEvents = createMechanicCommandsEvents(self)
         self.__statesEvents = createMechanicStatesEvents(self)
-        self.__mechanicInputLogger = createMechanicInputLogger(self, CMD_CM_SPECIAL_ABILITY, CMD_CM_VEHICLE_SWITCH_AUTOROTATION)
+        self.__mechanicInputLogger = None
         self.__inputAction = None
         self._initComponent()
         return
@@ -113,11 +116,19 @@ class StagedJetBoostersController(VehicleDynamicComponent, StagedJetBoostersCont
             self.__inputAction = None
             return
 
+    @ifPlayerVehicle
+    def createInputLogger(self, _):
+        if self.__mechanicInputLogger is not None:
+            self.__mechanicInputLogger.destroy()
+        self.__mechanicInputLogger = createMechanicInputLogger(self, CMD_CM_SPECIAL_ABILITY, CMD_CM_VEHICLE_SWITCH_AUTOROTATION)
+        self.__mechanicInputLogger.start()
+        return
+
     def getMechanicLogState(self):
-        return {'state': self.__currentState.state,
-         'time_left': self.__currentState.timeLeft,
-         'duration': self.__currentState.duration,
-         'mechanic_name': self.vehicleMechanic.name}
+        return {'state': self.__currentState.state, 
+           'time_left': self.__currentState.timeLeft, 
+           'duration': self.__currentState.duration, 
+           'mechanic_name': self.vehicleMechanic.name}
 
     def getMechanicState(self):
         return self.__currentState
@@ -137,11 +148,8 @@ class StagedJetBoostersController(VehicleDynamicComponent, StagedJetBoostersCont
 
     def _onAppearanceReady(self):
         super(StagedJetBoostersController, self)._onAppearanceReady()
+        self.__updateMechanicState()
         self.__statesEvents.processStatePrepared()
-
-    def _onAvatarReady(self, player):
-        super(StagedJetBoostersController, self)._onAvatarReady(player)
-        self.__mechanicInputLogger.start()
 
     def _collectComponentParams(self, typeDescriptor):
         super(StagedJetBoostersController, self)._collectComponentParams(typeDescriptor)
@@ -149,6 +157,8 @@ class StagedJetBoostersController(VehicleDynamicComponent, StagedJetBoostersCont
 
     def _onComponentAppearanceUpdate(self, **kwargs):
         super(StagedJetBoostersController, self)._onComponentAppearanceUpdate(**kwargs)
-        if self.stateStatus:
-            self.__currentState = StagedJetBoostersState.fromComponentStatus(self.stateStatus, self.acceleratorStatus, self.__params)
+        self.__updateMechanicState()
         self.__statesEvents.updateMechanicState(self.__currentState)
+
+    def __updateMechanicState(self):
+        self.__currentState = StagedJetBoostersState.fromComponentStatus(self.stateStatus, self.acceleratorStatus, self.__params) if self.stateStatus else self.__currentState

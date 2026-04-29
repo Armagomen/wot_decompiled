@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/frameworks/state_machine/states.py
 import typing
 from collections import namedtuple
 from past.builtins import cmp
@@ -55,7 +53,7 @@ class State(Node):
         self.__descendantsCache = []
 
     def __repr__(self):
-        return '{}({})'.format(self.__class__.__name__, self.__stateID)
+        return ('{}({})').format(self.__class__.__name__, self.__stateID)
 
     def clear(self):
         self.__isEntered = False
@@ -108,7 +106,7 @@ class State(Node):
     def getInitial(self):
         initial = self.getChildren(filter_=_filterState if self.isParallel() else _filterInitialState)
         if len(initial) > 1 and not self.isParallel():
-            raise StateError('State {} should be have one initial state, found {}'.format(self, initial))
+            raise StateError(('State {} should be have one initial state, found {}').format(self, initial))
         return initial
 
     def addChildState(self, state):
@@ -166,21 +164,21 @@ class State(Node):
 
     def enter(self, event):
         if self.__isEntered:
-            raise StateError('{} is already activated'.format(self))
+            raise StateError(('{} is already activated').format(self))
         self.__isEntered = True
         self._onEntered(event)
 
     def exit(self):
         if not self.__isEntered:
-            raise StateError('{} is not activated'.format(self))
+            raise StateError(('{} is not activated').format(self))
         self.__isEntered = False
         self._onExited()
 
     def addChild(self, child):
-        raise StateError('Routine is not allowed in {}'.format(self.__class__.__name__))
+        raise StateError(('Routine is not allowed in {}').format(self.__class__.__name__))
 
     def removeChild(self, child):
-        raise StateError('Routine is not allowed in {}'.format(self.__class__.__name__))
+        raise StateError(('Routine is not allowed in {}').format(self.__class__.__name__))
 
     def _onEntered(self, event):
         pass
@@ -230,7 +228,8 @@ class _StateTogglingSortKey(object):
             return self.direction.ancestor
         if visitor.isDescendantOf(other.state, self.state):
             return self.direction.descendant
-        lca = visitor.getLCA([self.state, other.state], upper=self.state.getMachine()) or self.state.getMachine()
+        lca = visitor.getLCA([
+         self.state, other.state], upper=self.state.getMachine()) or self.state.getMachine()
         return cmp(visitor.getDescendantIndex(self.state, lca, filter_=_filterState), visitor.getDescendantIndex(other.state, lca, filter_=_filterState))
 
 

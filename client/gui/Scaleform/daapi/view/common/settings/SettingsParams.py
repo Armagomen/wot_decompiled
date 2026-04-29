@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/common/settings/SettingsParams.py
+from __future__ import absolute_import
 from itertools import chain
 import BigWorld
 from account_helpers.settings_core import settings_constants, options
@@ -15,7 +14,8 @@ class SettingsParams(object):
     lobbyContext = dependency.descriptor(ILobbyContext)
 
     def __settingsDiffPreprocessing(self, diff):
-        extendedOptions = chain(settings_constants.FEEDBACK.ALL(), (settings_constants.AIM.SPG, settings_constants.AIM.CONTOUR))
+        extendedOptions = chain(settings_constants.FEEDBACK.ALL(), (
+         settings_constants.AIM.SPG, settings_constants.AIM.CONTOUR))
         for option in extendedOptions:
             feedbackTab = diff.pop(option, None)
             if feedbackTab is not None:
@@ -36,11 +36,13 @@ class SettingsParams(object):
         return self.settingsCore.packSettings(settings_constants.MARKERS.ALL())
 
     def getFeedbackSettings(self):
-        return {settings_constants.FEEDBACK.DAMAGE_LOG: self.getDamageLogSettings(),
-         settings_constants.FEEDBACK.DAMAGE_INDICATOR: self.getDamageIndicatorSettings(),
-         settings_constants.FEEDBACK.BATTLE_EVENTS: self.getBattleEventsSettings(),
-         settings_constants.FEEDBACK.BATTLE_BORDER_MAP: self.getBattleBorderMapSettings(),
-         settings_constants.FEEDBACK.QUESTS_PROGRESS: self.getQuestsProgressAndScorePanelSettings()}
+        battleEventsSettings = self.getBattleEventsSettings()
+        battleEventsSettings.update(self.getSituationalPerksSettings())
+        return {settings_constants.FEEDBACK.DAMAGE_LOG: self.getDamageLogSettings(), 
+           settings_constants.FEEDBACK.DAMAGE_INDICATOR: self.getDamageIndicatorSettings(), 
+           settings_constants.FEEDBACK.BATTLE_EVENTS: battleEventsSettings, 
+           settings_constants.FEEDBACK.BATTLE_BORDER_MAP: self.getBattleBorderMapSettings(), 
+           settings_constants.FEEDBACK.QUESTS_PROGRESS: self.getQuestsProgressAndScorePanelSettings()}
 
     def getDamageLogSettings(self):
         return self.settingsCore.packSettings(settings_constants.DAMAGE_LOG.ALL())
@@ -58,6 +60,9 @@ class SettingsParams(object):
         settings = self.settingsCore.packSettings(settings_constants.QUESTS_PROGRESS.ALL() + settings_constants.ScorePanelStorageKeys.ALL())
         settings['allowQuestProgress'] = self.lobbyContext.getServerSettings().isPMBattleProgressEnabled()
         return settings
+
+    def getSituationalPerksSettings(self):
+        return self.settingsCore.packSettings(settings_constants.SITUATIONAL_PERKS.ALL())
 
     def getAimSettings(self):
         settings = {settings_constants.AIM.SPG: self.settingsCore.packSettings(settings_constants.SPGAim.ALL())}
@@ -107,4 +112,5 @@ class SettingsParams(object):
             method = options.APPLY_METHOD.NEXT_BATTLE
         else:
             method = options.APPLY_METHOD.NORMAL
-        return options.highestPriorityMethod((method, self.settingsCore.getApplyMethod(diff)))
+        return options.highestPriorityMethod((
+         method, self.settingsCore.getApplyMethod(diff)))

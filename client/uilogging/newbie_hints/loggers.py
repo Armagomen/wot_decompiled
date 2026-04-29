@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/uilogging/newbie_hints/loggers.py
-import BigWorld
-import typing
-import logging
+import BigWorld, typing, logging
 from helpers import dependency
 from wotdecorators import noexcept
 from uilogging.constants import DEFAULT_LOGGER_NAME
@@ -17,7 +13,7 @@ from hints.battle.schemas.newbie import NewbieClientHintModel
 if typing.TYPE_CHECKING:
     from gui.battle_control.controllers.battle_hints.queues import BattleHint
     from gui.Scaleform.framework.tooltip_mgr import ToolTip
-_logger = logging.getLogger('{0}.{1}'.format(DEFAULT_LOGGER_NAME, FEATURE_NEWBIE_HINTS.upper()))
+_logger = logging.getLogger(('{0}.{1}').format(DEFAULT_LOGGER_NAME, FEATURE_NEWBIE_HINTS.upper()))
 
 class NewbieHintsSettingsUILogger(MetricsLogger):
     __slots__ = ()
@@ -59,7 +55,10 @@ class NewbieHintsSettingsTooltipsUILogger(MetricsLogger):
     @property
     def tooltipMgr(self):
         app = self.appLoader.getApp()
-        return app.getToolTipMgr() if app is not None else None
+        if app is not None:
+            return app.getToolTipMgr()
+        else:
+            return
 
     def initialize(self):
         if self.tooltipMgr is not None:
@@ -105,7 +104,7 @@ class NewbieHintsSettingsTooltipsUILogger(MetricsLogger):
 
 
 class NewbieHintsShownUILogger(MetricsLogger):
-    __slots__ = ('_hint',)
+    __slots__ = ('_hint', )
 
     def __init__(self):
         super(NewbieHintsShownUILogger, self).__init__(FEATURE_NEWBIE_HINTS)

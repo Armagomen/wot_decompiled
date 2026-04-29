@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_pass/battle_pass_vehicle_award_view.py
 import SoundGroups
 from frameworks.wulf import ViewSettings
 from gui.battle_pass.sounds import BattlePassSounds
@@ -31,7 +29,7 @@ class BattlePassVehicleAwardView(ViewImpl):
 
     def _onLoading(self, data, *args, **kwargs):
         super(BattlePassVehicleAwardView, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setVehicleLevelPoints(data.get('vehiclePoints', 0))
             model.setBattlePassPointsAward(data.get('bonusPoints', 0))
             vehicle = self.__itemsCache.items.getItemByCD(data.get('vehTypeCompDescr', 0))
@@ -54,4 +52,4 @@ class BattlePassVehicleAwardWindow(LobbyNotificationWindow):
     __slots__ = ()
 
     def __init__(self, data):
-        super(BattlePassVehicleAwardWindow, self).__init__(content=BattlePassVehicleAwardView(R.views.lobby.battle_pass.BattlePassVehicleAwardView(), data=data))
+        super(BattlePassVehicleAwardWindow, self).__init__(content=BattlePassVehicleAwardView(R.views.mono.battle_pass.vehicle_cap_award(), data=data))

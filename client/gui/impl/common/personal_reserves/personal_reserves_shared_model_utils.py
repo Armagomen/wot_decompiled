@@ -1,8 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/common/personal_reserves/personal_reserves_shared_model_utils.py
+from __future__ import absolute_import
 from collections import namedtuple, defaultdict
 from time import time
 import typing
+from future.utils import iteritems
 from goodies.goodie_constants import GOODIE_RESOURCE_TYPE, GOODIE_STATE, BoosterCategory
 from gui.goodies.goodie_items import Booster, getFullNameForBoosterIcon, BoosterUICommon, BoostersType, getBoosterGuiType
 from gui.impl.common.personal_reserves.personal_reserves_shared_constants import BOOST_CATEGORY_TO_RESERVE_TYPE_LOOKUP, BOOSTER_STATE_TO_BOOSTER_MODEL_STATE, PREMIUM_BOOSTER_IDS, EVENT_BOOSTER_IDS, PERSONAL_RESOURCE_ORDER
@@ -17,41 +17,34 @@ if typing.TYPE_CHECKING:
     from skeletons.gui.goodies import IBoostersStateProvider, IGoodiesCache
     from frameworks.wulf import Array
 
-class BoosterModelData(namedtuple('BoosterModelArgs', ['resourceType',
- 'category',
- 'booster',
- 'depotCount',
- 'forcePremium',
- 'showHint'])):
+class BoosterModelData(namedtuple('BoosterModelArgs', ['resourceType', 'category', 'booster', 'depotCount',
+ 'forcePremium', 'showHint'])):
 
     def __new__(cls, resourceType, category, booster=None, depotCount=0, forcePremium=False, showHint=False):
-        return cls._make((resourceType,
-         category,
-         booster,
-         depotCount,
-         forcePremium,
-         showHint))
+        return cls._make((resourceType, category, booster, depotCount, forcePremium, showHint))
 
     def validate(self, data):
         allowedFields = self._fields
-        validData = {k:v for k, v in data.iteritems() if k in allowedFields}
+        validData = {k:v for k, v in iteritems(data) if k in allowedFields}
         return validData
 
     def replace(self, **kwargs):
         return self._replace(**self.validate(kwargs))
 
 
-RESERVE_GROUP_CATEGORY_LOOKUP = {GOODIE_RESOURCE_TYPE.XP: GroupCategory.XP,
- GOODIE_RESOURCE_TYPE.CREDITS: GroupCategory.CREDITS,
- GOODIE_RESOURCE_TYPE.FREE_XP_CREW_XP: GroupCategory.COMBINED_XP,
- GOODIE_RESOURCE_TYPE.FL_XP: GroupCategory.EVENT}
+RESERVE_GROUP_CATEGORY_LOOKUP = {GOODIE_RESOURCE_TYPE.XP: GroupCategory.XP, 
+   GOODIE_RESOURCE_TYPE.CREDITS: GroupCategory.CREDITS, 
+   GOODIE_RESOURCE_TYPE.FREE_XP_CREW_XP: GroupCategory.COMBINED_XP, 
+   GOODIE_RESOURCE_TYPE.FL_XP: GroupCategory.EVENT}
 NO_FUTURE_GIVEN = time() + ONE_YEAR * 10
 
 def getPersonalBoosterModelDataByResourceType(cache, controller=None):
     groupedBoosterModelDataByResourceType = defaultdict(list)
     category = BoosterCategory.PERSONAL
     enabledBoosters = cache.getBoosters(criteria=REQ_CRITERIA.BOOSTER.ENABLED)
-    sortedBoostersList = sorted(enabledBoosters.values(), key=lambda booster_: (booster_.finishTime if booster_.finishTime else NO_FUTURE_GIVEN, booster_.nextExpiryTime if booster_.nextExpiryTime else NO_FUTURE_GIVEN))
+    sortedBoostersList = sorted(enabledBoosters.values(), key=lambda booster_: (
+     booster_.finishTime if booster_.finishTime else NO_FUTURE_GIVEN,
+     booster_.nextExpiryTime if booster_.nextExpiryTime else NO_FUTURE_GIVEN))
     boostersByResource = {}
     premiumBoosterArgsByResource = {}
     boosterCountByResource = {}
@@ -62,7 +55,7 @@ def getPersonalBoosterModelDataByResourceType(cache, controller=None):
         resourceType = booster.boosterType
         if booster.boosterID in PREMIUM_BOOSTER_IDS:
             if booster.count != 0 or not (booster.isHidden or booster.isExpirable):
-                if premiumBoosterArgsByResource.get(resourceType, None) is None:
+                if premiumBoosterArgsByResource.get(resourceType) is None:
                     premiumBoosterArgsByResource[resourceType] = BoosterModelData(resourceType=resourceType, category=category, booster=booster, depotCount=booster.count, showHint=showHint)
                 else:
                     boosterData = premiumBoosterArgsByResource[resourceType]
@@ -79,11 +72,12 @@ def getPersonalBoosterModelDataByResourceType(cache, controller=None):
         boosterCountByResource[resourceType] = count
 
     for resourceType in PERSONAL_RESOURCE_ORDER:
-        booster = boostersByResource.get(resourceType, None)
+        booster = boostersByResource.get(resourceType)
         count = boosterCountByResource.get(resourceType, 0)
         showHint = controller is not None and booster is not None and booster.isExpirable and controller.shouldShowOnBoardingCardHint(booster.boosterID)
         nonPremiumBoosterArgs = BoosterModelData(resourceType=resourceType, category=category, booster=booster, depotCount=count, showHint=showHint)
-        groupedBoosterModelDataByResourceType[resourceType] = [nonPremiumBoosterArgs]
+        groupedBoosterModelDataByResourceType[resourceType] = [
+         nonPremiumBoosterArgs]
         premiumBoosterArgs = premiumBoosterArgsByResource.get(resourceType)
         if premiumBoosterArgs is not None:
             groupedBoosterModelDataByResourceType[resourceType].append(premiumBoosterArgs)
@@ -114,8 +108,6 @@ def addEventGroup(groupArray, cache):
 
     if boostersGroup:
         groupArray.addViewModel(group)
-    else:
-        group.unbind()
     return
 
 
@@ -155,25 +147,23 @@ def makeBonuses(booster):
         if len(bonus) > 1:
             return (max(bonus), min(bonus))
         bonus = bonus.pop()
-    return (0, bonus)
+    return (
+     0, bonus)
 
 
 def addToReserveArrayByCategory(reservesArray, boosters, category, cache, canAddEmpty=False):
     boosters = [ booster for booster in boosters if booster.category == category ]
     if not boosters and not canAddEmpty:
         return
-    else:
-        boostersByResourceType = {booster.boosterType:booster for booster in boosters}
-        resourceTypeOrder = getGUIResourceOrder(category, boostersByResourceType)
-        for resourceType in resourceTypeOrder:
-            nextExpirationTime, nextExpirationAmount = getNearestExpiryTimeAndAmountByGroup(category, resourceType, cache)
-            addBoosterModel(reservesArray, resourceType, category, booster=boostersByResourceType.get(resourceType, None), depotCount=getTotalBoostersByResourceType(category, resourceType, cache))
-            model = reservesArray[-1]
-            model.setNextExpirationTime(nextExpirationTime)
-            model.setNextExpirationAmount(nextExpirationAmount)
-            model.setInDepotExpirableAmount(getTotalLimitedBoostersByResourceType(category, resourceType, cache))
-
-        return
+    boostersByResourceType = {booster.boosterType:booster for booster in boosters}
+    resourceTypeOrder = getGUIResourceOrder(category, boostersByResourceType)
+    for resourceType in resourceTypeOrder:
+        nextExpirationTime, nextExpirationAmount = getNearestExpiryTimeAndAmountByGroup(category, resourceType, cache)
+        addBoosterModel(reservesArray, resourceType, category, booster=boostersByResourceType.get(resourceType), depotCount=getTotalBoostersByResourceType(category, resourceType, cache))
+        model = reservesArray[(-1)]
+        model.setNextExpirationTime(nextExpirationTime)
+        model.setNextExpirationAmount(nextExpirationAmount)
+        model.setInDepotExpirableAmount(getTotalLimitedBoostersByResourceType(category, resourceType, cache))
 
 
 def getReserveKind(boosterType):

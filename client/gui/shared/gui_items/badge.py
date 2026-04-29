@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/gui_items/badge.py
-import re
-import typing
+import re, typing
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import LAST_BADGES_VISIT
 from dossiers2.ui.achievements import BADGES_BLOCK
@@ -29,7 +26,8 @@ class BadgeLayouts(CONST_CONTAINER):
 
 
 class Badge(GUIItem):
-    __slots__ = ('badgeID', 'data', 'isSelected', 'isAchieved', 'achievedAt', 'group', 'isAchievable', 'isTemporary', 'showCongratsView')
+    __slots__ = ('badgeID', 'data', 'isSelected', 'isAchieved', 'achievedAt', 'group',
+                 'isAchievable', 'isTemporary', 'showCongratsView')
 
     def __init__(self, data, proxy=None, receivedBadges=None):
         super(Badge, self).__init__(proxy)
@@ -54,16 +52,18 @@ class Badge(GUIItem):
     def __cmp__(self, other):
         if self.achievedAt == other.achievedAt:
             return cmp(self.getWeight(), other.getWeight())
-        elif self.achievedAt is None:
-            return 1
         else:
-            return -1 if other.achievedAt is None else cmp(other.achievedAt, self.achievedAt)
+            if self.achievedAt is None:
+                return 1
+            if other.achievedAt is None:
+                return -1
+            return cmp(other.achievedAt, self.achievedAt)
 
     def hasDynamicContent(self):
         return False
 
     def getDynamicContent(self):
-        return None
+        return
 
     def getBadgeClass(self):
         return self.data.get('class', 0)
@@ -131,15 +131,20 @@ class Badge(GUIItem):
 
     def getShortUserName(self):
         key = BADGE.getShortName(self.badgeID)
-        return self.getUserName() if key is None else i18n.makeString(key)
+        if key is None:
+            return self.getUserName()
+        else:
+            return i18n.makeString(key)
 
     def getUserDescription(self):
         key = BADGE.badgeDescriptor(self.badgeID)
         return i18n.makeString(key)
 
     def getLongUserDescription(self):
-        longDescription = R.strings.badge.dyn('badge_{}_descr_long'.format(self.badgeID))
-        return backport.text(longDescription()) if longDescription.exists() else ''
+        longDescription = R.strings.badge.dyn(('badge_{}_descr_long').format(self.badgeID))
+        if longDescription.exists():
+            return backport.text(longDescription())
+        return ''
 
     def getHighlightIcon(self):
         highlight = self.data.get('highlight', '')
@@ -157,10 +162,10 @@ class Badge(GUIItem):
 
     def getBadgeVO(self, size, extraData=None, shortIconName=False):
         iconPath = self.__getIconPath(size, shortIconName)
-        result = {'icon': iconPath,
-         'content': self.getDynamicContent(),
-         'sizeContent': size,
-         'isDynamic': self.hasDynamicContent()}
+        result = {'icon': iconPath, 
+           'content': self.getDynamicContent(), 
+           'sizeContent': size, 
+           'isDynamic': self.hasDynamicContent()}
         if extraData:
             result.update(extraData)
         return result
@@ -171,7 +176,9 @@ class Badge(GUIItem):
     @staticmethod
     def getBadgeIDFromIconPath(iconPath):
         m = re.search('badge_([0-9]+)*', iconPath)
-        return m.group(1) if m else ''
+        if m:
+            return m.group(1)
+        return ''
 
     def __getIconPath(self, size, shortIconName=False):
         iconPostfix = self.getIconPostfix()

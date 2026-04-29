@@ -1,6 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_results/random_stats_ctrl.py
 import typing
+from constants import ARENA_BONUS_TYPE
 from gui.battle_control.battle_constants import WinStatus
 from gui.battle_results.settings import PLAYER_TEAM_RESULT
 from helpers import dependency
@@ -8,7 +7,7 @@ from skeletons.gui.battle_session import IBattleSessionProvider
 from soft_exception import SoftException
 from gui.battle_results.pbs_helpers.common import pushNoBattleResultsDataMessage
 from gui.battle_results.stats_ctrl import IBattleResultStatsCtrl, BattleResults
-from gui.shared.event_dispatcher import showRandomBattleResultsWindow
+from gui.shared.event_dispatcher import showBattleResultsWindow
 if typing.TYPE_CHECKING:
     from gui.battle_results.reusable import _ReusableInfo
 
@@ -40,13 +39,13 @@ class RandomBattleResultStatsCtrl(IBattleResultStatsCtrl):
         if self._battleResults:
             self.__setBattleContext()
             bonusType = self._battleResults.reusable.bonusType
-            showRandomBattleResultsWindow(arenaUniqueID, bonusType)
+            showBattleResultsWindow(arenaUniqueID, bonusType)
             return
         pushNoBattleResultsDataMessage()
 
     @staticmethod
     def onShowResults(arenaUniqueID):
-        return None
+        return
 
     def __setBattleContext(self):
         reusable = self._battleResults.reusable
@@ -62,3 +61,7 @@ class RandomBattleResultStatsCtrl(IBattleResultStatsCtrl):
             if sessionCtx.extractLastArenaWinStatus() is not None:
                 sessionCtx.setLastArenaWinStatus(WinStatus(winStatus))
         return
+
+    @classmethod
+    def representativeArenaBonusType(cls):
+        return ARENA_BONUS_TYPE.REGULAR

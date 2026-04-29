@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/gen/view_models/views/lobby/weekly_quests_widget_model.py
 from enum import Enum
 from frameworks.wulf import Array, ViewModel
 from comp7.gui.impl.gen.view_models.views.lobby.weekly_quest_model import WeeklyQuestModel
@@ -12,7 +10,8 @@ class State(Enum):
 
 
 class WeeklyQuestsWidgetModel(ViewModel):
-    __slots__ = ('onGoToWeeklyQuests', 'onMissionClick', 'onMarkAsViewed', 'onGoToRewardsSelection', 'onPollServerTime')
+    __slots__ = ('onGoToWeeklyQuests', 'onMissionClick', 'onMarkAsViewed', 'onGoToRewardsSelection',
+                 'onPollServerTime')
 
     def __init__(self, properties=6, commands=5):
         super(WeeklyQuestsWidgetModel, self).__init__(properties=properties, commands=commands)

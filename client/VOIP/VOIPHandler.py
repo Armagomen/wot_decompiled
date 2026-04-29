@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/VOIP/VOIPHandler.py
 import logging
 from wotdecorators import noexcept
 _logger = logging.getLogger(__name__)

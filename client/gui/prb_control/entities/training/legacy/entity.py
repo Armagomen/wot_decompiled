@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/entities/training/legacy/entity.py
 from functools import partial
-import BigWorld
-import account_helpers
+import typing, BigWorld, account_helpers
 from CurrentVehicle import g_currentVehicle
 from constants import PREBATTLE_TYPE
 from debug_utils import LOG_ERROR
@@ -25,6 +22,8 @@ from gui.prb_control.settings import PREBATTLE_SETTING_NAME, PREBATTLE_RESTRICTI
 from gui.prb_control.storages import legacy_storage_getter
 from gui.training_room_external_handlers import getTrainingRoomHandler
 from prebattle_shared import decodeRoster
+if typing.TYPE_CHECKING:
+    from typing import Callable
 
 class TrainingEntryPoint(LegacyEntryPoint):
 
@@ -80,7 +79,8 @@ class TrainingIntroEntity(LegacyIntroEntity):
     def fini(self, clientPrb=None, ctx=None, woEvents=False):
         result = super(TrainingIntroEntity, self).fini(clientPrb=clientPrb, ctx=ctx, woEvents=woEvents)
         if not woEvents:
-            aliasToLoad = [PREBATTLE_ALIASES.TRAINING_LIST_VIEW_PY, PREBATTLE_ALIASES.TRAINING_ROOM_VIEW_PY]
+            aliasToLoad = [
+             PREBATTLE_ALIASES.TRAINING_LIST_VIEW_PY, PREBATTLE_ALIASES.TRAINING_ROOM_VIEW_PY]
             if not self.canSwitch(ctx) and g_eventDispatcher.needToLoadHangar(ctx, self.getModeFlags(), aliasToLoad):
                 g_eventDispatcher.loadHangar()
             g_eventDispatcher.removeTrainingFromCarousel()
@@ -114,16 +114,16 @@ class TrainingIntroEntity(LegacyIntroEntity):
 class TrainingEntity(LegacyEntity):
 
     def __init__(self, settings):
-        requests = {REQUEST_TYPE.ASSIGN: self.assign,
-         REQUEST_TYPE.SET_TEAM_STATE: self.setTeamState,
-         REQUEST_TYPE.SET_PLAYER_STATE: self.setPlayerState,
-         REQUEST_TYPE.CHANGE_SETTINGS: self.changeSettings,
-         REQUEST_TYPE.SWAP_TEAMS: self.swapTeams,
-         REQUEST_TYPE.CHANGE_ARENA_VOIP: self.changeArenaVoip,
-         REQUEST_TYPE.CHANGE_USER_STATUS: self.changeUserObserverStatus,
-         REQUEST_TYPE.KICK: self.kickPlayer,
-         REQUEST_TYPE.SEND_INVITE: self.sendInvites,
-         REQUEST_TYPE.CHANGE_ARENA_GUI: self.changeArenaGui}
+        requests = {REQUEST_TYPE.ASSIGN: self.assign, 
+           REQUEST_TYPE.SET_TEAM_STATE: self.setTeamState, 
+           REQUEST_TYPE.SET_PLAYER_STATE: self.setPlayerState, 
+           REQUEST_TYPE.CHANGE_SETTINGS: self.changeSettings, 
+           REQUEST_TYPE.SWAP_TEAMS: self.swapTeams, 
+           REQUEST_TYPE.CHANGE_ARENA_VOIP: self.changeArenaVoip, 
+           REQUEST_TYPE.CHANGE_USER_STATUS: self.changeUserObserverStatus, 
+           REQUEST_TYPE.KICK: self.kickPlayer, 
+           REQUEST_TYPE.SEND_INVITE: self.sendInvites, 
+           REQUEST_TYPE.CHANGE_ARENA_GUI: self.changeArenaGui}
         super(TrainingEntity, self).__init__(FUNCTIONAL_FLAG.TRAINING, settings, permClass=TrainingPermissions, requestHandlers=requests)
         self.__settingRecords = []
         self.__watcher = None
@@ -135,18 +135,19 @@ class TrainingEntity(LegacyEntity):
         result = super(TrainingEntity, self).init(clientPrb=clientPrb, ctx=ctx)
         if self.storage.arenaGuiType is None:
             self.storage.arenaGuiType = self.getSettings()['arenaGuiType']
+        self.__updateTrainingLimits()
         self.__enterTrainingRoom(isInitial=ctx.getInitCtx() is None)
         g_eventDispatcher.addTrainingToCarousel(False)
         result = FUNCTIONAL_FLAG.addIfNot(result, FUNCTIONAL_FLAG.LOAD_WINDOW)
         result = FUNCTIONAL_FLAG.addIfNot(result, FUNCTIONAL_FLAG.LOAD_PAGE)
         self.__updateVehiclesWatcher()
-        self.__updateTrainingLimits()
         return result
 
     def fini(self, clientPrb=None, ctx=None, woEvents=False):
         result = super(TrainingEntity, self).fini(clientPrb=clientPrb, ctx=ctx, woEvents=woEvents)
         if not woEvents:
-            aliasToLoad = [PREBATTLE_ALIASES.TRAINING_LIST_VIEW_PY, PREBATTLE_ALIASES.TRAINING_ROOM_VIEW_PY]
+            aliasToLoad = [
+             PREBATTLE_ALIASES.TRAINING_LIST_VIEW_PY, PREBATTLE_ALIASES.TRAINING_ROOM_VIEW_PY]
             if not self.canSwitch(ctx) and g_eventDispatcher.needToLoadHangar(ctx, self.getModeFlags(), aliasToLoad):
                 g_eventDispatcher.loadHangar()
             g_eventDispatcher.removeTrainingFromCarousel(False)
@@ -165,29 +166,29 @@ class TrainingEntity(LegacyEntity):
     def getRosters(self, keys=None):
         rosters = prb_getters.getPrebattleRosters()
         if keys is None:
-            result = {PREBATTLE_ROSTER.ASSIGNED_IN_TEAM1: [],
-             PREBATTLE_ROSTER.ASSIGNED_IN_TEAM2: [],
-             PREBATTLE_ROSTER.UNASSIGNED: []}
+            result = {PREBATTLE_ROSTER.ASSIGNED_IN_TEAM1: [], PREBATTLE_ROSTER.ASSIGNED_IN_TEAM2: [], PREBATTLE_ROSTER.UNASSIGNED: []}
         else:
             result = {}
             for key in keys:
                 if PREBATTLE_ROSTER.UNASSIGNED & key != 0:
                     result[PREBATTLE_ROSTER.UNASSIGNED] = []
-                result[key] = []
+                else:
+                    result[key] = []
 
-        hasTeam1 = PREBATTLE_ROSTER.ASSIGNED_IN_TEAM1 in result
-        hasTeam2 = PREBATTLE_ROSTER.ASSIGNED_IN_TEAM2 in result
-        hasUnassigned = PREBATTLE_ROSTER.UNASSIGNED in result
-        for key, roster in rosters.iteritems():
-            accounts = [ prb_items.PlayerPrbInfo(accInfo[0], entity=self, roster=key, **accInfo[1]) for accInfo in roster.iteritems() ]
-            team, assigned = decodeRoster(key)
-            if assigned:
-                if hasTeam1 and team == 1:
-                    result[PREBATTLE_ROSTER.ASSIGNED_IN_TEAM1] = accounts
-                elif hasTeam2 and team == 2:
-                    result[PREBATTLE_ROSTER.ASSIGNED_IN_TEAM2] = accounts
-            if hasUnassigned:
-                result[PREBATTLE_ROSTER.UNASSIGNED].extend(accounts)
+            hasTeam1 = PREBATTLE_ROSTER.ASSIGNED_IN_TEAM1 in result
+            hasTeam2 = PREBATTLE_ROSTER.ASSIGNED_IN_TEAM2 in result
+            hasUnassigned = PREBATTLE_ROSTER.UNASSIGNED in result
+            for key, roster in rosters.iteritems():
+                accounts = [ prb_items.PlayerPrbInfo(accInfo[0], entity=self, roster=key, **accInfo[1]) for accInfo in roster.iteritems()
+                           ]
+                team, assigned = decodeRoster(key)
+                if assigned:
+                    if hasTeam1 and team == 1:
+                        result[PREBATTLE_ROSTER.ASSIGNED_IN_TEAM1] = accounts
+                    elif hasTeam2 and team == 2:
+                        result[PREBATTLE_ROSTER.ASSIGNED_IN_TEAM2] = accounts
+                elif hasUnassigned:
+                    result[PREBATTLE_ROSTER.UNASSIGNED].extend(accounts)
 
         return result
 
@@ -195,7 +196,10 @@ class TrainingEntity(LegacyEntity):
         return prb_getters.getPrebattleSettings().getTeamLimits(self.getPlayerTeam())
 
     def canPlayerDoAction(self):
-        return super(TrainingEntity, self).canPlayerDoAction() if self._isActive else ValidationResult(False, PREBATTLE_RESTRICTION.UNDEFINED, None)
+        if self._isActive:
+            return super(TrainingEntity, self).canPlayerDoAction()
+        else:
+            return ValidationResult(False, PREBATTLE_RESTRICTION.UNDEFINED, None)
 
     def doAction(self, action=None):
         self.__enterTrainingRoom()
@@ -233,67 +237,66 @@ class TrainingEntity(LegacyEntity):
             if callback is not None:
                 callback(False)
             return
-        elif self._cooldown.validate(REQUEST_TYPE.CHANGE_SETTINGS):
+        if self._cooldown.validate(REQUEST_TYPE.CHANGE_SETTINGS):
             if callback is not None:
                 callback(False)
             return
-        else:
-            player = BigWorld.player()
-            pPermissions = self.getPermissions()
-            self.__settingRecords = []
-            rejected = False
-            isOpenedChanged = ctx.isOpenedChanged(self._settings)
-            isCommentChanged = ctx.isCommentChanged(self._settings)
-            isArenaTypeIDChanged = ctx.isArenaTypeIDChanged(self._settings)
-            isRoundLenChanged = ctx.isRoundLenChanged(self._settings)
-            if isOpenedChanged:
-                if pPermissions.canMakeOpenedClosed():
-                    self.__settingRecords.append('isOpened')
-                else:
-                    LOG_ERROR('Player can not make training opened/closed', pPermissions)
-                    rejected = True
-            if isCommentChanged:
-                if pPermissions.canChangeComment():
-                    self.__settingRecords.append('comment')
-                else:
-                    LOG_ERROR('Player can not change comment', pPermissions)
-                    rejected = True
-            if isArenaTypeIDChanged:
-                if pPermissions.canChangeArena():
-                    self.__settingRecords.append('arenaTypeID')
-                else:
-                    LOG_ERROR('Player can not change comment', pPermissions)
-                    rejected = True
-            if isRoundLenChanged:
-                if pPermissions.canChangeArena():
-                    self.__settingRecords.append('roundLength')
-                else:
-                    LOG_ERROR('Player can not change comment', pPermissions)
-                    rejected = True
-            if rejected:
-                self.__settingRecords = []
-                if callback is not None:
-                    callback(False)
-                return
-            elif not self.__settingRecords:
-                if callback is not None:
-                    callback(False)
-                return
-            ctx.startProcessing(callback=callback)
-            if isOpenedChanged:
-                player.prb_changeOpenStatus(ctx.isOpened(), partial(self.__onSettingChanged, record='isOpened', callback=ctx.stopProcessing))
-            if isCommentChanged:
-                player.prb_changeComment(ctx.getComment(), partial(self.__onSettingChanged, record='comment', callback=ctx.stopProcessing))
-            if isArenaTypeIDChanged:
-                player.prb_changeArena(ctx.getArenaTypeID(), partial(self.__onSettingChanged, record='arenaTypeID', callback=ctx.stopProcessing))
-            if isRoundLenChanged:
-                player.prb_changeRoundLength(ctx.getRoundLen(), partial(self.__onSettingChanged, record='roundLength', callback=ctx.stopProcessing))
-            if not self.__settingRecords:
-                if callback is not None:
-                    callback(False)
+        player = BigWorld.player()
+        pPermissions = self.getPermissions()
+        self.__settingRecords = []
+        rejected = False
+        isOpenedChanged = ctx.isOpenedChanged(self._settings)
+        isCommentChanged = ctx.isCommentChanged(self._settings)
+        isArenaTypeIDChanged = ctx.isArenaTypeIDChanged(self._settings)
+        isRoundLenChanged = ctx.isRoundLenChanged(self._settings)
+        if isOpenedChanged:
+            if pPermissions.canMakeOpenedClosed():
+                self.__settingRecords.append('isOpened')
             else:
-                self._cooldown.process(REQUEST_TYPE.CHANGE_SETTINGS)
+                LOG_ERROR('Player can not make training opened/closed', pPermissions)
+                rejected = True
+        if isCommentChanged:
+            if pPermissions.canChangeComment():
+                self.__settingRecords.append('comment')
+            else:
+                LOG_ERROR('Player can not change comment', pPermissions)
+                rejected = True
+        if isArenaTypeIDChanged:
+            if pPermissions.canChangeArena():
+                self.__settingRecords.append('arenaTypeID')
+            else:
+                LOG_ERROR('Player can not change comment', pPermissions)
+                rejected = True
+        if isRoundLenChanged:
+            if pPermissions.canChangeArena():
+                self.__settingRecords.append('roundLength')
+            else:
+                LOG_ERROR('Player can not change comment', pPermissions)
+                rejected = True
+        if rejected:
+            self.__settingRecords = []
+            if callback is not None:
+                callback(False)
             return
+        if not self.__settingRecords:
+            if callback is not None:
+                callback(False)
+            return
+        ctx.startProcessing(callback=callback)
+        if isOpenedChanged:
+            player.prb_changeOpenStatus(ctx.isOpened(), partial(self.__onSettingChanged, record='isOpened', callback=ctx.stopProcessing))
+        if isCommentChanged:
+            player.prb_changeComment(ctx.getComment(), partial(self.__onSettingChanged, record='comment', callback=ctx.stopProcessing))
+        if isArenaTypeIDChanged:
+            player.prb_changeArena(ctx.getArenaTypeID(), partial(self.__onSettingChanged, record='arenaTypeID', callback=ctx.stopProcessing))
+        if isRoundLenChanged:
+            player.prb_changeRoundLength(ctx.getRoundLen(), partial(self.__onSettingChanged, record='roundLength', callback=ctx.stopProcessing))
+        if not self.__settingRecords:
+            if callback is not None:
+                callback(False)
+        else:
+            self._cooldown.process(REQUEST_TYPE.CHANGE_SETTINGS)
+        return
 
     def changeUserObserverStatus(self, ctx, callback=None):
         if ctx.isObserver():
@@ -308,21 +311,20 @@ class TrainingEntity(LegacyEntity):
             if callback is not None:
                 callback(True)
             return
-        elif self._cooldown.validate(REQUEST_TYPE.CHANGE_ARENA_VOIP):
+        if self._cooldown.validate(REQUEST_TYPE.CHANGE_ARENA_VOIP):
             if callback is not None:
                 callback(False)
             return
+        pPermissions = self.getPermissions()
+        if pPermissions.canChangeArenaVOIP():
+            ctx.startProcessing(callback=callback)
+            BigWorld.player().prb_changeArenaVoip(ctx.getChannels(), ctx.onResponseReceived)
+            self._cooldown.process(REQUEST_TYPE.CHANGE_ARENA_VOIP)
         else:
-            pPermissions = self.getPermissions()
-            if pPermissions.canChangeArenaVOIP():
-                ctx.startProcessing(callback=callback)
-                BigWorld.player().prb_changeArenaVoip(ctx.getChannels(), ctx.onResponseReceived)
-                self._cooldown.process(REQUEST_TYPE.CHANGE_ARENA_VOIP)
-            else:
-                LOG_ERROR('Player can not change arena VOIP', pPermissions)
-                if callback is not None:
-                    callback(False)
-            return
+            LOG_ERROR('Player can not change arena VOIP', pPermissions)
+            if callback is not None:
+                callback(False)
+        return
 
     def changeArenaGui(self, ctx, callback=None):
         self.__updateVehiclesWatcher()
@@ -361,14 +363,12 @@ class TrainingEntity(LegacyEntity):
             return
 
     def __onPlayerReady(self, result):
-        playerReadyHandler = getTrainingRoomHandler(self.getSettings()['arenaGuiType']).getPlayerReadyHandler()
-        if playerReadyHandler is not None:
-            playerReadyHandler()
-        elif result:
-            g_eventDispatcher.loadTrainingRoom()
+        if self._settings is None:
+            return
         else:
-            g_eventDispatcher.loadHangar()
-        return
+            arenaGuiType = self._settings[PREBATTLE_SETTING_NAME.ARENA_GUI_TYPE]
+            getTrainingRoomHandler(arenaGuiType).playerReadyHandler(result)
+            return
 
     def __onSettingChanged(self, code, record='', errorCode=None, callback=None):
         if code < 0:
@@ -376,12 +376,11 @@ class TrainingEntity(LegacyEntity):
             if callback is not None:
                 callback(False, errorCode)
             return
-        else:
-            if record in self.__settingRecords:
-                self.__settingRecords.remove(record)
-            if not self.__settingRecords and callback is not None:
-                callback(True, '')
-            return
+        if record in self.__settingRecords:
+            self.__settingRecords.remove(record)
+        if not self.__settingRecords and callback is not None:
+            callback(True, '')
+        return
 
     def __validateStatus(self, resetResult):
         if resetResult:

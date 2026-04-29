@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/SwitchPeripheryWindowMeta.py
 from gui.Scaleform.daapi.view.meta.SimpleWindowMeta import SimpleWindowMeta
 
 class SwitchPeripheryWindowMeta(SimpleWindowMeta):
@@ -11,10 +9,13 @@ class SwitchPeripheryWindowMeta(SimpleWindowMeta):
         self._printOverrideError('onDropDownOpened')
 
     def as_setServerParamsS(self, label, showDropDown):
-        return self.flashObject.as_setServerParams(label, showDropDown) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setServerParams(label, showDropDown)
 
     def as_setSelectedIndexS(self, index):
-        return self.flashObject.as_setSelectedIndex(index) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setSelectedIndex(index)
 
     def as_getServersDPS(self):
-        return self.flashObject.as_getServersDP() if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_getServersDP()

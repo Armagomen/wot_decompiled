@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/cgf_components/temperature_gun_rtpc_component.py
-import CGF
-import SoundGroups
+import CGF, SoundGroups
 from constants import IS_CLIENT
 from cgf_script.component_meta_class import CGFMetaTypes, ComponentProperty, registerComponent
 from cgf_script.managers_registrator import autoregister, onAddedQuery, onRemovedQuery, onProcessQuery
@@ -49,7 +46,10 @@ class TemperatureGunMechanicManager(CGF.ComponentManager):
     @classmethod
     def __getTemperatureGunProgress(cls, temperatureGunControllerGO):
         temperController = temperatureGunControllerGO.findComponentByType(TemperatureGunController)
-        return temperController.getMechanicState().temperatureProgress * 100.0 if temperController is not None else 0.0
+        if temperController is not None:
+            return temperController.getMechanicState().temperatureProgress * 100.0
+        else:
+            return 0.0
 
     @classmethod
     def __setGunTemperature(cls, temperatureGunRTPCComponent):

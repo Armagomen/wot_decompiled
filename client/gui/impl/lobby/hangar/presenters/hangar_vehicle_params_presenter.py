@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/hangar/presenters/hangar_vehicle_params_presenter.py
 from __future__ import absolute_import
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.impl.gen import R
@@ -31,7 +29,9 @@ class HangarVehicleParamsPresenter(CurrentVehicleParamsPresenter):
         return
 
     def _getEvents(self):
-        return super(HangarVehicleParamsPresenter, self)._getEvents() + ((self.__loadoutController.onInteractorUpdated, self.__onInteractorUpdated),)
+        return super(HangarVehicleParamsPresenter, self)._getEvents() + (
+         (
+          self.__loadoutController.onInteractorUpdated, self.__onInteractorUpdated),)
 
     def _isExtraParamEnabled(self):
         return True
@@ -46,7 +46,9 @@ class HangarVehicleParamsPresenter(CurrentVehicleParamsPresenter):
         if self.__vehicleAfterInstall is not None:
             return self.__vehicleAfterInstall
         else:
-            return self.__interactor.getVehicleAfterInstall() if self.__interactor is not None and self.__interactor.hasChanged() else super(HangarVehicleParamsPresenter, self)._getVehicle()
+            if self.__interactor is not None and self.__interactor.hasChanged():
+                return self.__interactor.getVehicleAfterInstall()
+            return super(HangarVehicleParamsPresenter, self)._getVehicle()
 
     def _getDefaultVehicle(self):
         return super(HangarVehicleParamsPresenter, self)._getVehicle()

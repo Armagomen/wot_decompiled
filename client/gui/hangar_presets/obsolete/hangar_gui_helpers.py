@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/hangar_presets/obsolete/hangar_gui_helpers.py
 import operator
 from functools import wraps
 from helpers import dependency
@@ -12,7 +10,8 @@ def ifComponentAvailable(componentType=None):
         @wraps(method)
         def wrapper(hangar, *args, **kwargs):
             hangarGuiCtrl = dependency.instance(IHangarGuiController)
-            return method(hangar, *args, **kwargs) if hangarGuiCtrl.sfController.isComponentAvailable(componentType) else None
+            if hangarGuiCtrl.sfController.isComponentAvailable(componentType):
+                return method(hangar, *args, **kwargs)
 
         return wrapper
 
@@ -29,7 +28,9 @@ def ifComponentInPreset(componentType=None, defReturn=None, abortAction=None):
             if preset is not None and componentType in preset.visibleComponents:
                 return method(presetGetter, preset, *args, **kwargs)
             else:
-                return operator.methodcaller(abortAction)(presetGetter) if abortAction is not None else defReturn
+                if abortAction is not None:
+                    return operator.methodcaller(abortAction)(presetGetter)
+                return defReturn
 
         return wrapper
 
@@ -46,7 +47,9 @@ def hasCurrentPreset(defReturn=None, abortAction=None):
             if currentPreset is not None:
                 return method(hangarGuiSfCtrl, currentPreset, *args, **kwargs)
             else:
-                return operator.methodcaller(abortAction)(hangarGuiSfCtrl) if abortAction is not None else defReturn
+                if abortAction is not None:
+                    return operator.methodcaller(abortAction)(hangarGuiSfCtrl)
+                return defReturn
 
         return wrapper
 

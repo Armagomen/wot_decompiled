@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/platform/base/statuses/events_mgr.py
-import typing
-import Event
+import typing, Event
 from gui.platform.base.logger import getWithContext
 from gui.platform.base.statuses.constants import StatusTypes, DEFAULT_CONTEXT
 if typing.TYPE_CHECKING:

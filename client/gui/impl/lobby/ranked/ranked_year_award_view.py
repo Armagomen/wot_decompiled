@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/ranked/ranked_year_award_view.py
 import logging
 from frameworks.wulf import ViewSettings, WindowFlags
 from gui.impl.auxiliary.rewards_helper import getRewardTooltipContent, getRewardRendererModelPresenter, RANKED_MODEL_PRESENTERS
@@ -44,8 +42,7 @@ class RankedYearAwardView(ViewImpl):
             if window is not None:
                 window.load()
             return window
-        else:
-            return super(RankedYearAwardView, self).createToolTip(event)
+        return super(RankedYearAwardView, self).createToolTip(event)
 
     def createToolTipContent(self, event, contentID):
         tooltipData = self.__getBackportTooltipData(event)
@@ -89,7 +86,7 @@ class RankedYearAwardView(ViewImpl):
             activeLabel = R.strings.ranked_battles.year_award.acceptButton.acceptLabel()
         surplusPoints = self.__rankedController.getCompensation(points)
         rate = self.__rankedController.getCurrentPointToCrystalRate()
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             tx.setAwardType(awardType)
             tx.setActionButtonLabel(activeLabel)
             if surplusPoints and rate:
@@ -101,7 +98,7 @@ class RankedYearAwardView(ViewImpl):
         return
 
     def __setBonuses(self, bonuses):
-        with self.getViewModel().transaction() as tx:
+        with self.getViewModel().transaction() as (tx):
             vmRewardsList = tx.getRewards()
             vmRewardsList.clear()
             for index, reward in enumerate(bonuses):
@@ -131,11 +128,14 @@ class RankedYearAwardView(ViewImpl):
         if tooltipId is None:
             return
         else:
-            return self.__items[tooltipId] if tooltipId in self.__items else None
+            if tooltipId in self.__items:
+                return self.__items[tooltipId]
+            return
 
     @staticmethod
     def __removeSelectableYearRewards(rawAwards, count):
-        selectableTokens = [ token for token in rawAwards.get('tokens', {}) if token.startswith(YEAR_AWARD_SELECTABLE_OPT_DEVICE_PREFIX) ]
+        selectableTokens = [ token for token in rawAwards.get('tokens', {}) if token.startswith(YEAR_AWARD_SELECTABLE_OPT_DEVICE_PREFIX)
+                           ]
         for token in selectableTokens:
             rewardCount = rawAwards['tokens'][token].get('count', 0) - count
             if rewardCount > 0:
@@ -147,7 +147,7 @@ class RankedYearAwardView(ViewImpl):
 
 
 class RankedYearAwardWindow(LobbyNotificationWindow):
-    __slots__ = ('__args',)
+    __slots__ = ('__args', )
 
     def __init__(self, rawAwards, points, showRemainedSelection):
         super(RankedYearAwardWindow, self).__init__(content=RankedYearAwardView(R.views.lobby.ranked.ranked_year_award.RankedYearAward(), rawAwards, points, showRemainedSelection), wndFlags=WindowFlags.WINDOW | WindowFlags.WINDOW_FULLSCREEN)

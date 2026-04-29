@@ -1,14 +1,10 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/vehicle_anchors_updater.py
-import logging
-import math
+import logging, math
 from collections import defaultdict
 from copy import copy
-import typing
-import GUI
-import Math
+import typing, GUI, Math
 from CurrentVehicle import g_currentVehicle
 from Math import Vector3
+from disjoint_set import DisjointSet
 from gui.Scaleform.daapi.view.lobby.customization.shared import isSlotFilled, isItemsQuantityLimitReached, CustomizationTabs, getProjectionSlotFormfactor
 from gui.Scaleform.daapi.view.lobby.customization.vehicle_anchor_states import Anchor
 from gui.customization.constants import CustomizationModes
@@ -216,7 +212,7 @@ class VehicleAnchorsUpdater(object):
             if isSlotFilled(outfit, slotId):
                 isDisplayed = self.__menuSlotId != slotId
                 self.changeAnchorParams(slotId, isDisplayed=isDisplayed, isAutoScalable=True)
-                root = self.__closeGroups.find(slotId)
+                root = self.__closeGroups.getRoot(slotId)
                 if root is not None:
                     visibleAnchors[root].add(slotId)
                 continue
@@ -224,7 +220,7 @@ class VehicleAnchorsUpdater(object):
                 anchor = g_currentVehicle.item.getAnchorBySlotId(slotId.slotType, slotId.areaId, slotId.regionIdx)
                 if anchor.isFitForFormfactor(formfactor):
                     self.changeAnchorParams(slotId, isDisplayed=True, isAutoScalable=True, isCollidable=True)
-                    root = self.__closeGroups.find(slotId)
+                    root = self.__closeGroups.getRoot(slotId)
                     if root is not None:
                         visibleAnchors[root].add(slotId)
                     continue
@@ -262,8 +258,9 @@ class VehicleAnchorsUpdater(object):
                     self.setAnchorShift(slotId, anchor.shift)
                     shift = rotor.applyPoint(shift)
 
-            slotId = slotIds.pop()
-            self.setAnchorShift(slotId, Vector3())
+            else:
+                slotId = slotIds.pop()
+                self.setAnchorShift(slotId, Vector3())
 
     def __onPropertySheetHidden(self):
         self.__menuSlotId = None
@@ -314,9 +311,9 @@ class VehicleAnchorsUpdater(object):
     def __onAnchorHovered(self, slotId):
         if self.__ctx.mode.tabId != CustomizationTabs.PROJECTION_DECALS:
             return
-        elif self.__ctx.mode.selectedItem is None:
-            return
         else:
+            if self.__ctx.mode.selectedItem is None:
+                return
             anchor = self.__processedAnchors.get(slotId)
             if anchor is not None:
                 item = self.__ctx.mode.getItemFromSlot(slotId)
@@ -329,9 +326,9 @@ class VehicleAnchorsUpdater(object):
     def __onAnchorUnhovered(self, slotId):
         if self.__ctx.mode.tabId != CustomizationTabs.PROJECTION_DECALS:
             return
-        elif self.__ctx.mode.selectedItem is None:
-            return
         else:
+            if self.__ctx.mode.selectedItem is None:
+                return
             anchor = self.__processedAnchors.get(slotId)
             if anchor is not None:
                 anchor.state.onUnhovered()
@@ -353,7 +350,8 @@ class VehicleAnchorsUpdater(object):
         for slotId, anchor in self.__processedAnchors.iteritems():
             if slotId == locatedSlotId:
                 anchor.state.onSelected()
-            anchor.state.onUnselected()
+            else:
+                anchor.state.onUnselected()
 
         self.__changeAnchorsStates()
 
@@ -371,7 +369,10 @@ class VehicleAnchorsUpdater(object):
         self.__vehicleCustomizationAnchors.setInterfaceScale(scale)
 
     def getProcessedAnchor(self, slotId):
-        return self.__processedAnchors[slotId] if slotId in self.__processedAnchors else None
+        if slotId in self.__processedAnchors:
+            return self.__processedAnchors[slotId]
+        else:
+            return
 
     def __subscribeToAppearanceChange(self):
         appearance = self.__hangarSpace.getVehicleEntityAppearance()
@@ -440,43 +441,3 @@ def getAnchorShiftParams(positionA, positionB, normal):
         distance = 0
     direction.normalise()
     return (direction, distance)
-
-
-class DisjointSet(object):
-
-    def __init__(self):
-        super(DisjointSet, self).__init__()
-        self._root = {}
-        self._set = {}
-
-    @property
-    def subsets(self):
-        return self._set.itervalues()
-
-    def add(self, element):
-        self._root[element] = element
-        self._set[element] = {element}
-
-    def find(self, element):
-        return self._root[element] if element in self._root else None
-
-    def get(self, element):
-        root = self.find(element)
-        return self._set[root] if root is not None and root in self._set else None
-
-    def union(self, elementA, elementB):
-        rootA = self.find(elementA)
-        rootB = self.find(elementB)
-        if rootA is not None and rootB is not None and rootA != rootB:
-            if len(self._set[rootA]) < len(self._set[rootB]):
-                rootA, rootB = rootB, rootA
-            setB = self._set.pop(rootB)
-            for element in setB:
-                self._root[element] = rootA
-
-            self._set[rootA].update(setB)
-        return
-
-    def clear(self):
-        self._root.clear()
-        self._set.clear()

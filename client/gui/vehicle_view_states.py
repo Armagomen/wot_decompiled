@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/vehicle_view_states.py
+from __future__ import absolute_import
 from gui.prb_control import prbDispatcherProperty
 from gui.shared.system_factory import registerVehicleViewState, collectVehicleViewStates
 from shared_utils import findFirst
@@ -100,7 +99,7 @@ class NoPresentViewState(IVehicleViewState):
         return False
 
     def getCustomizationTooltip(self):
-        pass
+        return ''
 
     def isEasyTankEquipEnabled(self):
         return False
@@ -110,7 +109,10 @@ class NoPresentViewState(IVehicleViewState):
 
 
 class SelectedViewState(IVehicleViewState):
-    __slots__ = ('_locked', '_isInHangar', '_isBroken', '_isDisabledInRent', '_isOnlyForEventBattles', '_isOutfitLocked', '_isCustomizationEnabled', '_isEliteShown', '_isLevelShown', '_isRoleShown', '_isMaintenanceVisible', '_isCustomizationVisible', '_isEasyTankEquipEnabled', '_isEasyTankEquipVisible')
+    __slots__ = ('_locked', '_isInHangar', '_isBroken', '_isDisabledInRent', '_isOnlyForEventBattles',
+                 '_isOutfitLocked', '_isCustomizationEnabled', '_isEliteShown', '_isLevelShown',
+                 '_isRoleShown', '_isMaintenanceVisible', '_isCustomizationVisible',
+                 '_isEasyTankEquipEnabled', '_isEasyTankEquipVisible')
 
     def __init__(self, vehicle):
         super(SelectedViewState, self).__init__()
@@ -126,10 +128,10 @@ class SelectedViewState(IVehicleViewState):
 
     @prbDispatcherProperty
     def prbDispatcher(self):
-        return None
+        return
 
     def getCustomizationTooltip(self):
-        pass
+        return ''
 
     def isLocked(self):
         return self._locked
@@ -195,7 +197,7 @@ class SelectedViewState(IVehicleViewState):
 
 
 class PremiumIGRViewState(SelectedViewState):
-    __slots__ = ('_isDisabledInPremIGR',)
+    __slots__ = ('_isDisabledInPremIGR', )
 
     @classmethod
     def isSuitableVehicle(cls, vehicle):

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/main_view.py
-import logging
-import typing
+import logging, typing
 from collections import namedtuple
 import BigWorld
 from CurrentVehicle import g_currentVehicle
@@ -29,13 +26,11 @@ from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.SystemMessages import SM_TYPE, CURRENCY_TO_SM_TYPE
 from gui.customization.constants import CustomizationModes
 from gui.customization.shared import chooseMode, appliedToFromSlotsIds, C11nId, SEASON_IDX_TO_TYPE, SEASON_TYPE_TO_NAME, SEASON_TYPE_TO_IDX, SEASONS_ORDER, getTotalPurchaseInfo, containsVehicleBound, C11N_ITEM_TYPE_MAP
-from gui.hangar_cameras.hangar_camera_common import CameraRelatedEvents
 from gui.impl import backport
 from gui.impl.dialogs import dialogs
 from gui.impl.dialogs.builders import ResSimpleDialogBuilder
 from gui.impl.gen import R
 from gui.impl.gen.view_models.constants.dialog_presets import DialogPresets
-from gui.impl.lobby.common.view_mixins import HeaderMenuVisibilityState, LobbyHeaderVisibility
 from gui.shared import events
 from gui.shared.event_bus import EVENT_BUS_SCOPE
 from gui.shared.event_dispatcher import showProgressiveItemsView, showOnboardingView, showShop, showHangar
@@ -66,8 +61,11 @@ _logger = logging.getLogger(__name__)
 
 class _ModalWindowsPopupHandler(IViewLifecycleHandler):
     service = dependency.descriptor(ICustomizationService)
-    __SUB_VIEWS = (VIEW_ALIAS.SETTINGS_WINDOW, VIEW_ALIAS.LOBBY_MENU)
-    __DYNAMIC = (VIEW_ALIAS.SIMPLE_DIALOG,
+    __SUB_VIEWS = (
+     VIEW_ALIAS.SETTINGS_WINDOW,
+     VIEW_ALIAS.LOBBY_MENU)
+    __DYNAMIC = (
+     VIEW_ALIAS.SIMPLE_DIALOG,
      CUSTOMIZATION_ALIASES.CONFIRM_CUSTOMIZATION_ITEM_DIALOG,
      R.views.lobby.customization.CustomizationCart(),
      R.views.lobby.customization.progressive_items_view.ProgressiveItemsView())
@@ -92,11 +90,14 @@ class _ModalWindowsPopupHandler(IViewLifecycleHandler):
                 self.__onViewDestroyedCallback()
 
 
-CustomizationAnchorInitVO = namedtuple('CustomizationAnchorInitVO', ('anchorUpdateVOs', 'typeRegions'))
+CustomizationAnchorInitVO = namedtuple('CustomizationAnchorInitVO', ('anchorUpdateVOs',
+                                                                     'typeRegions'))
 CustomizationAnchorsStateVO = namedtuple('CustomizationAnchorsStateVO', ('uid', 'value'))
-CustomizationAnchorsSetVO = namedtuple('CustomizationAnchorsSetVO', ('rendererList',))
-CustomizationAnchorPositionVO = namedtuple('CustomizationAnchorPositionVO', ('zIndex', 'slotId'))
-AnchorPositionData = namedtuple('AnchorPositionData', ('angleToCamera', 'clipSpacePos', 'slotId'))
+CustomizationAnchorsSetVO = namedtuple('CustomizationAnchorsSetVO', ('rendererList', ))
+CustomizationAnchorPositionVO = namedtuple('CustomizationAnchorPositionVO', ('zIndex',
+                                                                             'slotId'))
+AnchorPositionData = namedtuple('AnchorPositionData', ('angleToCamera', 'clipSpacePos',
+                                                       'slotId'))
 _WAITING_MESSAGE = 'loadHangarSpace'
 
 class _SeasonSoundAnimation(object):
@@ -162,12 +163,11 @@ class _VehicleSlotSelector(object):
         self.__ctx.mode.unselectSlot()
 
 
-class MainView(LobbySubView, CustomizationMainViewMeta, LobbyHeaderVisibility):
+class MainView(LobbySubView, CustomizationMainViewMeta):
     __background_alpha__ = 0.0
     _COMMON_SOUND_SPACE = C11N_SOUND_SPACE
     _ZOOM_ON_EMBLEM = 0.1
     _ZOOM_ON_INSCRIPTION = 0.1
-    _ENVIRONMENT_NAME = 'Customization'
     lobbyContext = dependency.descriptor(ILobbyContext)
     itemsCache = dependency.descriptor(IItemsCache)
     service = dependency.descriptor(ICustomizationService)
@@ -191,8 +191,8 @@ class MainView(LobbySubView, CustomizationMainViewMeta, LobbyHeaderVisibility):
         self.__selectedSlot = C11nId()
         self.__onVehicleLoadFinishedEvent = Event()
         self.__locateCameraToStyleInfo = False
-        self.__billPopoverButtonsCallbacks = {BillPopoverButtons.CUSTOMIZATION_CLEAR: self.__onCustomizationClear,
-         BillPopoverButtons.CUSTOMIZATION_CLEAR_LOCKED: self.__onCustomizationClearLocked}
+        self.__billPopoverButtonsCallbacks = {BillPopoverButtons.CUSTOMIZATION_CLEAR: self.__onCustomizationClear, 
+           BillPopoverButtons.CUSTOMIZATION_CLEAR_LOCKED: self.__onCustomizationClearLocked}
         self.__dontPlayTabChangeSound = False
         self.__resetCameraDistance = False
         self.__itemsGrabMode = False
@@ -467,7 +467,7 @@ class MainView(LobbySubView, CustomizationMainViewMeta, LobbyHeaderVisibility):
         filterMethod = REQ_CRITERIA.CUSTOM(lambda item: not item.isUnlockedByToken())
         modifiedOutfits = self.__ctx.mode.getModifiedOutfits()
         originalOutfits = self.__ctx.mode.getOriginalOutfits()
-        isStyleChanged = any((originalOutfits[season].id != modifiedOutfits[season].id for season in SeasonType.COMMON_SEASONS))
+        isStyleChanged = any(originalOutfits[season].id != modifiedOutfits[season].id for season in SeasonType.COMMON_SEASONS)
         revertToPrevious = not isStyleChanged
         for season in SeasonType.COMMON_SEASONS:
             self.__ctx.mode.removeItemsFromSeason(season, filterMethod=filterMethod, refresh=False, revertToPrevious=revertToPrevious)
@@ -549,9 +549,9 @@ class MainView(LobbySubView, CustomizationMainViewMeta, LobbyHeaderVisibility):
         slotId = C11nId(areaID, slotID, regionID)
         if slotId.slotType not in (GUI_ITEM_TYPE.PROJECTION_DECAL, GUI_ITEM_TYPE.EMBLEM, GUI_ITEM_TYPE.INSCRIPTION):
             return
-        elif self.__ctx.mode.selectedItem is not None or self.__ctx.mode.selectedSlot is not None:
-            return
         else:
+            if self.__ctx.mode.selectedItem is not None or self.__ctx.mode.selectedSlot is not None:
+                return
             item = self.__ctx.mode.getItemFromSlot(slotId)
             if item is not None:
                 component = self.__ctx.mode.getComponentFromSlot(slotId)
@@ -676,19 +676,19 @@ class MainView(LobbySubView, CustomizationMainViewMeta, LobbyHeaderVisibility):
             isStyle = item.itemTypeID == GUI_ITEM_TYPE.STYLE
             if isStyle and item.isProgression:
                 msgKey = msgKey.buyProgressionStyle()
-                msgCtx = {'name': item.userName,
-                 'level': int2roman(self.__ctx.mode.getStyleProgressionLevel()),
-                 'money': money}
+                msgCtx = {'name': item.userName, 
+                   'level': int2roman(self.__ctx.mode.getStyleProgressionLevel()), 
+                   'money': money}
             else:
                 msgKey = msgKey.buyOne()
                 itemTypeName = backport.text(R.strings.item_types.customization.style()) if isStyle else item.userType
-                msgCtx = {'itemType': itemTypeName,
-                 'itemName': item.userName,
-                 'money': money}
+                msgCtx = {'itemType': itemTypeName, 
+                   'itemName': item.userName, 
+                   'money': money}
         else:
             msgKey = msgKey.buyMany()
-            msgCtx = {'items': formatPurchaseItems(purchaseItems),
-             'money': money}
+            msgCtx = {'items': formatPurchaseItems(purchaseItems), 
+               'money': money}
         return backport.text(msgKey, **msgCtx)
 
     def __getModifyMessage(self, originalOutfits, modifiedOutfits, isAutoRentChanged):
@@ -782,11 +782,6 @@ class MainView(LobbySubView, CustomizationMainViewMeta, LobbyHeaderVisibility):
         self.__setSeasonData()
         self.__ctx.refreshOutfit()
         self.as_selectSeasonS(SEASON_TYPE_TO_IDX[self.__ctx.season])
-        self.fireEvent(CameraRelatedEvents(CameraRelatedEvents.FORCE_DISABLE_IDLE_PARALAX_MOVEMENT, ctx={'isDisable': True,
-         'setIdle': True,
-         'setParallax': True}), scope=EVENT_BUS_SCOPE.LOBBY)
-        self.suspendLobbyHeader(self.key, HeaderMenuVisibilityState.ONLINE_COUNTER)
-        self.__setEnvironment()
         if self.__ctx.vehicleAnchorsUpdater is not None:
             self.__ctx.vehicleAnchorsUpdater.setMainView(self.flashObject)
         entity = self.hangarSpace.getVehicleEntity()
@@ -801,23 +796,24 @@ class MainView(LobbySubView, CustomizationMainViewMeta, LobbyHeaderVisibility):
             self.service.startHighlighter(highlightingMode)
         self.__updateInnerEntryPoints()
         if not AccountSettings.getSettings(IS_CUSTOMIZATION_INTRO_VIEWED):
-            questProgressionStyles = self.service.getStyles(criteria=REQ_CRITERIA.CUSTOMIZATION.ON_ACCOUNT | REQ_CRITERIA.CUSTOMIZATION.HAS_TAGS([ItemTags.QUESTS_PROGRESSION]))
+            questProgressionStyles = self.service.getStyles(criteria=REQ_CRITERIA.CUSTOMIZATION.ON_ACCOUNT | REQ_CRITERIA.CUSTOMIZATION.HAS_TAGS([
+             ItemTags.QUESTS_PROGRESSION]))
             if questProgressionStyles:
                 showOnboardingView(first(questProgressionStyles), True)
         return
 
     def __updateInnerEntryPoints(self):
         statTrackerNovelty = g_currentVehicle.item.getC11nItemsNoveltyCounter(g_currentVehicle.itemsCache.items, CustomizationTabs.ITEM_TYPES[CustomizationTabs.STAT_TRACKERS])
-        statsTrackerEntry = {'itemId': CUSTOMIZATION_CONSTS.INNER_ENTRY_POINT_STATS_TRACKER,
-         'label': text_styles.middleTitle(backport.text(R.strings.vehicle_customization.statsTracker.entryPoint())),
-         'isVisible': isStatTrackerTabEnabled(),
-         'isSelected': self.__ctx.mode.tabId == CustomizationTabs.STAT_TRACKERS,
-         'hasNovelty': bool(statTrackerNovelty)}
-        progressiveEntry = {'itemId': CUSTOMIZATION_CONSTS.INNER_ENTRY_POINT_PROGRESSIVE,
-         'label': text_styles.middleTitle(backport.text(R.strings.vehicle_customization.progression.entryPoint())),
-         'isVisible': any((g_currentVehicle.item.getAnchors(GUI_ITEM_TYPE.PROJECTION_DECAL, areaId) for areaId in Area.ALL)),
-         'isSelected': False,
-         'hasNovelty': False}
+        statsTrackerEntry = {'itemId': CUSTOMIZATION_CONSTS.INNER_ENTRY_POINT_STATS_TRACKER, 
+           'label': text_styles.middleTitle(backport.text(R.strings.vehicle_customization.statsTracker.entryPoint())), 
+           'isVisible': isStatTrackerTabEnabled(), 
+           'isSelected': self.__ctx.mode.tabId == CustomizationTabs.STAT_TRACKERS, 
+           'hasNovelty': bool(statTrackerNovelty)}
+        progressiveEntry = {'itemId': CUSTOMIZATION_CONSTS.INNER_ENTRY_POINT_PROGRESSIVE, 
+           'label': text_styles.middleTitle(backport.text(R.strings.vehicle_customization.progression.entryPoint())), 
+           'isVisible': any(g_currentVehicle.item.getAnchors(GUI_ITEM_TYPE.PROJECTION_DECAL, areaId) for areaId in Area.ALL), 
+           'isSelected': False, 
+           'hasNovelty': False}
         self.as_updateInnerEntriesS([statsTrackerEntry, progressiveEntry])
 
     def _invalidate(self, *args, **kwargs):
@@ -835,15 +831,10 @@ class MainView(LobbySubView, CustomizationMainViewMeta, LobbyHeaderVisibility):
             entity.appearance.loadState.unsubscribe(self.__onVehicleLoadFinished, self.__onVehicleLoadStarted)
             entity.appearance.turretRotator.onTurretRotated -= self.__onTurretAndGunRotated
         self.__onVehicleLoadFinishedEvent = None
-        self.resumeLobbyHeader(self.key)
-        self.fireEvent(CameraRelatedEvents(CameraRelatedEvents.FORCE_DISABLE_IDLE_PARALAX_MOVEMENT, ctx={'isDisable': False,
-         'setIdle': True,
-         'setParallax': True}), scope=EVENT_BUS_SCOPE.LOBBY)
         if self.__styleInfo is not None:
             self.__styleInfo.disableBlur()
             self.__disableStyleInfoSound()
         self._seasonSoundAnimation = None
-        self.__resetEnvironment()
         self.__viewLifecycleWatcher.stop()
         self.__viewLifecycleWatcher = None
         self.__ctx.events.onCloseDialogShown -= self.__modalWindowsPopupHandler.onViewWithKeyCreated
@@ -896,18 +887,6 @@ class MainView(LobbySubView, CustomizationMainViewMeta, LobbyHeaderVisibility):
         self.__ctx = None
         return
 
-    def __setEnvironment(self):
-        if self.hangarSpace.space is not None:
-            space = self.hangarSpace.space.getSpace()
-            space.setEnvironment(self._ENVIRONMENT_NAME)
-        return
-
-    def __resetEnvironment(self):
-        if self.hangarSpace.space is not None:
-            space = self.hangarSpace.space.getSpace()
-            space.resetEnvironment()
-        return
-
     def _getUpdatedAnchorsData(self):
         anchorVOs = self.__ctx.mode.getAnchorVOs()
         anchorPositionVOs = []
@@ -929,7 +908,8 @@ class MainView(LobbySubView, CustomizationMainViewMeta, LobbyHeaderVisibility):
         self.as_setAnchorsDataS(self._getUpdatedAnchorsData())
 
     def __onRegionHighlighted(self, areaId, regionIdx, highlightingType, highlightingResult):
-        if self.__ctx.mode.tabId in (CustomizationTabs.MODIFICATIONS, CustomizationTabs.STYLES_2D, CustomizationTabs.STYLES_3D):
+        if self.__ctx.mode.tabId in (
+         CustomizationTabs.MODIFICATIONS, CustomizationTabs.STYLES_2D, CustomizationTabs.STYLES_3D):
             areaId = Area.MISC
         slotType = self.__ctx.mode.slotType
         if areaId != -1 and regionIdx != -1:
@@ -1018,7 +998,9 @@ class MainView(LobbySubView, CustomizationMainViewMeta, LobbyHeaderVisibility):
 
     def __onSlotSelected(self, slotId):
         if self.__ctx.mode.isRegion:
-            if self.__ctx.mode.tabId in (CustomizationTabs.MODIFICATIONS, CustomizationTabs.STYLES_2D, CustomizationTabs.STYLES_3D):
+            if self.__ctx.mode.tabId in (
+             CustomizationTabs.MODIFICATIONS, CustomizationTabs.STYLES_2D,
+             CustomizationTabs.STYLES_3D):
                 applyArea = ApplyArea.ALL
             else:
                 applyArea = appliedToFromSlotsIds([slotId])
@@ -1063,7 +1045,8 @@ class MainView(LobbySubView, CustomizationMainViewMeta, LobbyHeaderVisibility):
         isDndEnable = True
         if self.__propertiesSheet.visible:
             isDndEnable = False
-        if self.__ctx.mode.tabId in (CustomizationTabs.MODIFICATIONS, CustomizationTabs.STYLES_2D, CustomizationTabs.STYLES_3D):
+        if self.__ctx.mode.tabId in (
+         CustomizationTabs.MODIFICATIONS, CustomizationTabs.STYLES_2D, CustomizationTabs.STYLES_3D):
             isDndEnable = False
         self.as_enableDNDS(isDndEnable)
 
@@ -1088,14 +1071,14 @@ class MainView(LobbySubView, CustomizationMainViewMeta, LobbyHeaderVisibility):
                 _, filledSlotsCount = checkSlotsFilling(outfit, self.__ctx.mode.slotType)
                 isFilled = filledSlotsCount > 0
             filledSeasonSlots += int(isFilled)
-            seasonRenderersList.append({'nameText': VEHICLE_CUSTOMIZATION.getSeasonName(seasonName),
-             'nameSelectedText': VEHICLE_CUSTOMIZATION.getSeasonSelectedName(seasonName),
-             'seasonImageSrc': RES_ICONS.getSeasonImage(seasonName),
-             'seasonBGImageSrc': RES_ICONS.getSeasonBGImage(seasonName),
-             'seasonShineImageSrc': RES_ICONS.getSeasonShineImage(seasonName),
-             'isFilled': isFilled,
-             'forceAnim': False,
-             'tooltip': makeTooltip(body=VEHICLE_CUSTOMIZATION.getSheetSeasonName(seasonName))})
+            seasonRenderersList.append({'nameText': VEHICLE_CUSTOMIZATION.getSeasonName(seasonName), 
+               'nameSelectedText': VEHICLE_CUSTOMIZATION.getSeasonSelectedName(seasonName), 
+               'seasonImageSrc': RES_ICONS.getSeasonImage(seasonName), 
+               'seasonBGImageSrc': RES_ICONS.getSeasonBGImage(seasonName), 
+               'seasonShineImageSrc': RES_ICONS.getSeasonShineImage(seasonName), 
+               'isFilled': isFilled, 
+               'forceAnim': False, 
+               'tooltip': makeTooltip(body=VEHICLE_CUSTOMIZATION.getSheetSeasonName(seasonName))})
 
         self.as_setSeasonsBarDataS(seasonRenderersList)
         self._seasonSoundAnimation.setFilledSeasonSlots(filledSeasonSlots, self.__ctx.modeId)
@@ -1107,7 +1090,8 @@ class MainView(LobbySubView, CustomizationMainViewMeta, LobbyHeaderVisibility):
         else:
             seasonCounters = {season:0 for season in SEASONS_ORDER}
             if self.__ctx.modeId in CustomizationModes.BASE_STYLES:
-                itemTypes = (GUI_ITEM_TYPE.STYLE,)
+                itemTypes = (
+                 GUI_ITEM_TYPE.STYLE,)
             else:
                 itemTypes = getItemTypesAvailableForVehicle() - {GUI_ITEM_TYPE.STYLE}
             if self.__ctx.modeId == CustomizationModes.STYLE_2D_EDITABLE:
@@ -1117,7 +1101,8 @@ class MainView(LobbySubView, CustomizationMainViewMeta, LobbyHeaderVisibility):
             for season in SEASONS_ORDER:
                 if self.__ctx.season != season:
                     seasonCounters[season] = g_currentVehicle.item.getC11nItemsNoveltyCounter(g_currentVehicle.itemsCache.items, itemTypes, season, itemsFilter)
-                seasonCounters[season] = 0
+                else:
+                    seasonCounters[season] = 0
 
             self.as_setNotificationCountersS([ seasonCounters[season] for season in SEASONS_ORDER ])
             return
@@ -1171,13 +1156,13 @@ class MainView(LobbySubView, CustomizationMainViewMeta, LobbyHeaderVisibility):
             itemsCounter = textStyle(_ms(template, filled=filledSlotsCount, available=slotsCount))
         else:
             itemsCounter = ''
-        self.as_setHeaderDataS({'tankTier': str(int2roman(vehicle.level)),
-         'tankName': vehicle.shortUserName,
-         'tankInfo': itemsCounter,
-         'tankType': '{}_elite'.format(vehicle.type) if vehicle.isElite else vehicle.type,
-         'isElite': vehicle.isElite,
-         'closeBtnTooltip': VEHICLE_CUSTOMIZATION.CUSTOMIZATION_HEADERCLOSEBTN,
-         'isQuestProgressionInfoBtnVisible': isQuestProgressionInfoBtnVisible})
+        self.as_setHeaderDataS({'tankTier': str(int2roman(vehicle.level)), 
+           'tankName': vehicle.shortUserName, 
+           'tankInfo': itemsCounter, 
+           'tankType': ('{}_elite').format(vehicle.type) if vehicle.isElite else vehicle.type, 
+           'isElite': vehicle.isElite, 
+           'closeBtnTooltip': VEHICLE_CUSTOMIZATION.CUSTOMIZATION_HEADERCLOSEBTN, 
+           'isQuestProgressionInfoBtnVisible': isQuestProgressionInfoBtnVisible})
         return
 
     def __onProlongStyleRent(self):
@@ -1237,9 +1222,9 @@ class MainView(LobbySubView, CustomizationMainViewMeta, LobbyHeaderVisibility):
     def __onViewDestroyedCallback(self):
         if not g_currentVehicle.isPresent():
             return
-        elif self.__styleInfo is not None and self.__styleInfo.visible:
-            return
         else:
+            if self.__styleInfo is not None and self.__styleInfo.visible:
+                return
             self.__ctx.mode.unselectItem()
             self.__ctx.mode.unselectSlot()
             if self.__ctx.c11nCameraManager is not None and self.__ctx.c11nCameraManager.isStyleInfo():

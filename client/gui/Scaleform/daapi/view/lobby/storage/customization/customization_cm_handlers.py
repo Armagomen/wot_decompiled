@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/customization/customization_cm_handlers.py
 import math
 from adisp import adisp_process
 from gui import DialogsInterface
@@ -34,7 +32,7 @@ class CustomizationCMHandler(ContextMenu, EventSystemEntity):
 
     def _initFlashValues(self, ctx):
         self._id = int(ctx.id)
-        self._vehicleCD = int(ctx.vehicleCD) if not math.isnan(ctx.vehicleCD) else None
+        self._vehicleCD = (math.isnan(ctx.vehicleCD) or int)(ctx.vehicleCD) if 1 else None
         return
 
     def _getOptionCustomData(self, label):

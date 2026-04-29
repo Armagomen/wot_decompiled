@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_pass/state_machine/delegator.py
 import typing
 from battle_pass_common import BattlePassRewardReason as BPReason
 from frameworks.state_machine import StringEvent, StateEvent
@@ -35,18 +33,18 @@ class BattlePassRewardLogic(object):
         self.__machine.stop()
         self.__startAfterTurningOnMachine = False
 
-    def startRewardFlow(self, rewards, data, packageRewards):
+    def startRewardFlow(self, rewards, data, packageRewards, starterPack):
         defaultRewards, chapterStyle = separateRewards(rewards)
-        self.__machine.saveRewards(data, defaultRewards, chapterStyle, packageRewards)
+        self.__machine.saveRewards(data, defaultRewards, chapterStyle, packageRewards, starterPack)
         if not self.__machine.isRunning():
             self.__startAfterTurningOnMachine = True
         else:
             self.postStateEvent()
 
     def startManualFlow(self, rewardsToChoose, chapterID=None, level=0):
-        data = {'chapter': self.__getChapterFromRewardsToChoose(rewardsToChoose) if chapterID is None else chapterID,
-         'level': level,
-         'reason': BPReason.SELECT_REWARD}
+        data = {'chapter': self.__getChapterFromRewardsToChoose(rewardsToChoose) if chapterID is None else chapterID, 
+           'level': level, 
+           'reason': BPReason.SELECT_REWARD}
         self.__machine.saveRewards(data, rewardsToChoose=rewardsToChoose)
         self.__machine.setManualFlow()
         if not self.__machine.isRunning():
@@ -95,5 +93,7 @@ class BattlePassRewardLogic(object):
 
     @staticmethod
     def __getChapterFromRewardsToChoose(rewardsToChoose):
-        chapters = set((int(reward.split(':')[-2]) for reward in rewardsToChoose))
-        return next(iter(chapters)) if len(chapters) == 1 else 0
+        chapters = set(int(reward.split(':')[(-2)]) for reward in rewardsToChoose)
+        if len(chapters) == 1:
+            return next(iter(chapters))
+        return 0

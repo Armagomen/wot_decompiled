@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/skeletons/gui/customization.py
 import typing
 from Event import Event
 if typing.TYPE_CHECKING:

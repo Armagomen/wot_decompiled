@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/classic/page.py
+from __future__ import absolute_import
 from aih_constants import CTRL_MODE_NAME
 from constants import ARENA_PERIOD
 from debug_utils import LOG_DEBUG, LOG_ERROR
@@ -22,7 +21,11 @@ class DynamicAliases(CONST_CONTAINER):
 class ClassicComponentsConfig(ComponentsConfig):
 
     def __init__(self):
-        super(ClassicComponentsConfig, self).__init__(((BATTLE_CTRL_ID.ARENA_PERIOD, (BATTLE_VIEW_ALIASES.BATTLE_TIMER,
+        super(ClassicComponentsConfig, self).__init__((
+         (
+          BATTLE_CTRL_ID.ARENA_PERIOD,
+          (
+           BATTLE_VIEW_ALIASES.BATTLE_TIMER,
            BATTLE_VIEW_ALIASES.PREBATTLE_TIMER,
            DynamicAliases.PREBATTLE_TIMER_SOUND_PLAYER,
            BATTLE_VIEW_ALIASES.PLAYERS_PANEL,
@@ -30,22 +33,60 @@ class ClassicComponentsConfig(ComponentsConfig):
            BATTLE_VIEW_ALIASES.HINT_PANEL,
            BATTLE_VIEW_ALIASES.PREBATTLE_AMMUNITION_PANEL,
            DynamicAliases.DRONE_MUSIC_PLAYER)),
-         (BATTLE_CTRL_ID.PERKS, (BATTLE_VIEW_ALIASES.SITUATION_INDICATORS,)),
-         (BATTLE_CTRL_ID.TEAM_BASES, (BATTLE_VIEW_ALIASES.TEAM_BASES_PANEL, DynamicAliases.DRONE_MUSIC_PLAYER)),
-         (BATTLE_CTRL_ID.CALLOUT, (BATTLE_VIEW_ALIASES.CALLOUT_PANEL,)),
-         (BATTLE_CTRL_ID.MAPS, (BATTLE_VIEW_ALIASES.MINIMAP,)),
-         (BATTLE_CTRL_ID.DEBUG, (BATTLE_VIEW_ALIASES.DEBUG_PANEL,)),
-         (BATTLE_CTRL_ID.BATTLE_FIELD_CTRL, (DynamicAliases.DRONE_MUSIC_PLAYER, BATTLE_VIEW_ALIASES.FRAG_CORRELATION_BAR, BATTLE_VIEW_ALIASES.PLAYERS_PANEL)),
-         (BATTLE_CTRL_ID.ARENA_LOAD_PROGRESS, (DynamicAliases.DRONE_MUSIC_PLAYER,)),
-         (BATTLE_CTRL_ID.GAME_MESSAGES_PANEL, (BATTLE_VIEW_ALIASES.GAME_MESSAGES_PANEL,)),
-         (BATTLE_CTRL_ID.SPECTATOR, (BATTLE_VIEW_ALIASES.SPECTATOR_VIEW,)),
-         (BATTLE_CTRL_ID.PREBATTLE_SETUPS_CTRL, (BATTLE_VIEW_ALIASES.PREBATTLE_AMMUNITION_PANEL, BATTLE_VIEW_ALIASES.DAMAGE_PANEL)),
-         (BATTLE_CTRL_ID.AMMO, (BATTLE_VIEW_ALIASES.PREBATTLE_AMMUNITION_PANEL, BATTLE_VIEW_ALIASES.CONSUMABLES_PANEL))), viewsConfig=((DynamicAliases.DRONE_MUSIC_PLAYER, drone_music_player.DroneMusicPlayer), (DynamicAliases.PREBATTLE_TIMER_SOUND_PLAYER, StartCountdownSoundPlayer)))
+         (
+          BATTLE_CTRL_ID.PERKS, (BATTLE_VIEW_ALIASES.SITUATION_INDICATORS,)),
+         (
+          BATTLE_CTRL_ID.TEAM_BASES,
+          (
+           BATTLE_VIEW_ALIASES.TEAM_BASES_PANEL,
+           DynamicAliases.DRONE_MUSIC_PLAYER)),
+         (
+          BATTLE_CTRL_ID.CALLOUT, (BATTLE_VIEW_ALIASES.CALLOUT_PANEL,)),
+         (
+          BATTLE_CTRL_ID.MAPS, (BATTLE_VIEW_ALIASES.MINIMAP,)),
+         (
+          BATTLE_CTRL_ID.DEBUG, (BATTLE_VIEW_ALIASES.DEBUG_PANEL,)),
+         (
+          BATTLE_CTRL_ID.BATTLE_FIELD_CTRL,
+          (
+           DynamicAliases.DRONE_MUSIC_PLAYER,
+           BATTLE_VIEW_ALIASES.FRAG_CORRELATION_BAR,
+           BATTLE_VIEW_ALIASES.PLAYERS_PANEL)),
+         (
+          BATTLE_CTRL_ID.ARENA_LOAD_PROGRESS, (DynamicAliases.DRONE_MUSIC_PLAYER,)),
+         (
+          BATTLE_CTRL_ID.GAME_MESSAGES_PANEL, (BATTLE_VIEW_ALIASES.GAME_MESSAGES_PANEL,)),
+         (
+          BATTLE_CTRL_ID.SPECTATOR, (BATTLE_VIEW_ALIASES.SPECTATOR_VIEW,)),
+         (
+          BATTLE_CTRL_ID.PREBATTLE_SETUPS_CTRL,
+          (
+           BATTLE_VIEW_ALIASES.PREBATTLE_AMMUNITION_PANEL, BATTLE_VIEW_ALIASES.DAMAGE_PANEL)),
+         (
+          BATTLE_CTRL_ID.AMMO,
+          (
+           BATTLE_VIEW_ALIASES.PREBATTLE_AMMUNITION_PANEL, BATTLE_VIEW_ALIASES.CONSUMABLES_PANEL))), viewsConfig=(
+         (
+          DynamicAliases.DRONE_MUSIC_PLAYER, drone_music_player.DroneMusicPlayer),
+         (
+          DynamicAliases.PREBATTLE_TIMER_SOUND_PLAYER, StartCountdownSoundPlayer)))
 
 
-BATTLE_HINTS_CONFIG = ComponentsConfig(config=((BATTLE_CTRL_ID.BATTLE_HINTS, (BATTLE_VIEW_ALIASES.BATTLE_HINT, BATTLE_VIEW_ALIASES.NEWBIE_HINT)),), viewsConfig=())
+BATTLE_HINTS_CONFIG = ComponentsConfig(config=(
+ (
+  BATTLE_CTRL_ID.BATTLE_HINTS,
+  (
+   BATTLE_VIEW_ALIASES.BATTLE_HINT, BATTLE_VIEW_ALIASES.NEWBIE_HINT)),), viewsConfig=())
 COMMON_CLASSIC_CONFIG = ClassicComponentsConfig() + BATTLE_HINTS_CONFIG
-EXTENDED_CLASSIC_CONFIG = COMMON_CLASSIC_CONFIG + ComponentsConfig(config=((BATTLE_CTRL_ID.ARENA_PERIOD, (DynamicAliases.FINISH_SOUND_PLAYER,)), (BATTLE_CTRL_ID.TEAM_BASES, (DynamicAliases.FINISH_SOUND_PLAYER,)), (BATTLE_CTRL_ID.BATTLE_FIELD_CTRL, (DynamicAliases.FINISH_SOUND_PLAYER,))), viewsConfig=((DynamicAliases.FINISH_SOUND_PLAYER, finish_sound_player.FinishSoundPlayer),))
+EXTENDED_CLASSIC_CONFIG = COMMON_CLASSIC_CONFIG + ComponentsConfig(config=(
+ (
+  BATTLE_CTRL_ID.ARENA_PERIOD, (DynamicAliases.FINISH_SOUND_PLAYER,)),
+ (
+  BATTLE_CTRL_ID.TEAM_BASES, (DynamicAliases.FINISH_SOUND_PLAYER,)),
+ (
+  BATTLE_CTRL_ID.BATTLE_FIELD_CTRL, (DynamicAliases.FINISH_SOUND_PLAYER,))), viewsConfig=(
+ (
+  DynamicAliases.FINISH_SOUND_PLAYER, finish_sound_player.FinishSoundPlayer),))
 
 class ClassicPage(SharedPage):
 
@@ -65,9 +106,9 @@ class ClassicPage(SharedPage):
         radialMenu = self.getComponent(radialMenuLinkage)
         if radialMenu is None:
             return
-        elif self._fullStatsAlias and self.as_isComponentVisibleS(self._fullStatsAlias):
-            return
         else:
+            if self._fullStatsAlias and self.as_isComponentVisibleS(self._fullStatsAlias):
+                return
             if isShown:
                 radialMenu.show()
                 self.app.enterGuiControlMode(radialMenuLinkage, cursorVisible=False, enableAiming=False)
@@ -84,9 +125,9 @@ class ClassicPage(SharedPage):
         manager = self.app.containerManager
         if manager.isModalViewsIsExists() and isShown:
             return
-        elif not self._fullStatsAlias:
-            return
         else:
+            if not self._fullStatsAlias:
+                return
             fullStats = self.getComponent(self._fullStatsAlias)
             if fullStats is None:
                 return
@@ -104,7 +145,8 @@ class ClassicPage(SharedPage):
                         self._fsToggling.difference_update(permanent)
                     if doTabSwitch:
                         fullStats.setActiveTab(tabAlias)
-                    self._setComponentsVisibility(visible={self._fullStatsAlias}, hidden=self._fsToggling)
+                    self._setComponentsVisibility(visible={
+                     self._fullStatsAlias}, hidden=self._fsToggling)
                     fullStats.onToggleVisibility(True)
                 else:
                     self._setComponentsVisibility(visible=self._fsToggling, hidden={self._fullStatsAlias})
@@ -189,7 +231,8 @@ class ClassicPage(SharedPage):
         battleCtx = self.sessionProvider.getCtx()
         periodCtrl = self.sessionProvider.shared.arenaPeriod
         if battleCtx.isPlayerObserver() and periodCtrl.getPeriod() in (ARENA_PERIOD.WAITING, ARENA_PERIOD.PREBATTLE):
-            self._setComponentsVisibility(hidden={BATTLE_VIEW_ALIASES.DAMAGE_PANEL, BATTLE_VIEW_ALIASES.BATTLE_DAMAGE_LOG_PANEL})
+            self._setComponentsVisibility(hidden={
+             BATTLE_VIEW_ALIASES.DAMAGE_PANEL, BATTLE_VIEW_ALIASES.BATTLE_DAMAGE_LOG_PANEL})
 
     def _handleGUIToggled(self, event):
         if not self._fullStatsAlias or not self.as_isComponentVisibleS(self._fullStatsAlias):
@@ -245,11 +288,16 @@ class ClassicPage(SharedPage):
             return (vehicleType.hasSiegeMode or vehicleDescriptor.isTrackWithinTrack) and not vehicleType.isWheeledVehicle and not vehicleDescriptor.isDualgunVehicle and not hasVehicleDescrMechanic(vehicleDescriptor, VehicleMechanic.PILLBOX_SIEGE_MODE)
 
         if ctrlMode == CTRL_MODE_NAME.DEATH_FREE_CAM:
-            components = {BATTLE_VIEW_ALIASES.SPECTATOR_VIEW}
+            components = {
+             BATTLE_VIEW_ALIASES.SPECTATOR_VIEW}
         elif ctrlMode in (CTRL_MODE_NAME.KILL_CAM, CTRL_MODE_NAME.POSTMORTEM):
-            components = {BATTLE_VIEW_ALIASES.POSTMORTEM_PANEL, BATTLE_VIEW_ALIASES.DAMAGE_PANEL, BATTLE_VIEW_ALIASES.BATTLE_DAMAGE_LOG_PANEL}
+            components = {
+             BATTLE_VIEW_ALIASES.POSTMORTEM_PANEL, BATTLE_VIEW_ALIASES.DAMAGE_PANEL,
+             BATTLE_VIEW_ALIASES.BATTLE_DAMAGE_LOG_PANEL}
         else:
-            components = {BATTLE_VIEW_ALIASES.DAMAGE_PANEL, BATTLE_VIEW_ALIASES.BATTLE_DAMAGE_LOG_PANEL, BATTLE_VIEW_ALIASES.CONSUMABLES_PANEL}
+            components = {
+             BATTLE_VIEW_ALIASES.DAMAGE_PANEL, BATTLE_VIEW_ALIASES.BATTLE_DAMAGE_LOG_PANEL,
+             BATTLE_VIEW_ALIASES.CONSUMABLES_PANEL}
         if ctrlMode not in CTRL_MODE_NAME.POSTMORTEM_CONTROL_MODES:
             ctrl = self.sessionProvider.shared.vehicleState
             vehicle = ctrl.getControllingVehicle()

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/states.py
 import typing
 from frameworks.state_machine.transitions import TransitionType
 from gui.Scaleform.framework import ScopeTemplates
@@ -81,7 +79,8 @@ class PersonalCaseState(GuiImplViewLobbyState, _RemovableFromHistoryMixin):
         lsm.addNavigationTransitionFromParent(self)
 
     def getNavigationDescription(self):
-        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.crewPersonalCase()), infos=(LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=showCrewAboutView),))
+        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.crewPersonalCase()), infos=(
+         LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=showCrewAboutView),))
 
     def serializeParams(self):
         return self.__cachedParams
@@ -223,7 +222,8 @@ class QuickTrainingState(GuiImplViewLobbyState, _RemovableFromHistoryMixin):
         lsm.addNavigationTransitionFromParent(self)
 
     def getNavigationDescription(self):
-        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.crewQuickTraining()), infos=(LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=showCrewAboutView),))
+        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.crewQuickTraining()), infos=(
+         LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=showCrewAboutView),))
 
     def serializeParams(self):
         return self.__cachedParams

@@ -1,8 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_modifiers/scripts/common/battle_modifiers_ext/remappings_cache.py
+from __future__ import absolute_import
 from typing import Any, Dict, TYPE_CHECKING, Optional
 from battle_modifiers_ext.constants_ext import REMAPPING_XML_PATH, RemappingNames
-from remapping.remapping_readers import ERR_TEMPLATE, readComposers, readConditions
+from battle_modifiers_ext.remapping.remapping_readers import ERR_TEMPLATE, readComposers, readConditions
 from extension_utils import ResMgr
 from ResMgr import DataSection
 from soft_exception import SoftException
@@ -13,21 +12,27 @@ if TYPE_CHECKING:
 g_cache = None
 
 class RemappingCache(object):
-    __slots__ = ('__remapping',)
+    __slots__ = ('__remapping', )
 
     def __init__(self):
         self.__readConfig()
 
     def __repr__(self):
-        return 'RemappingCache({})'.format(self.__remapping)
+        return ('RemappingCache({})').format(self.__remapping)
 
     def getValue(self, modifierName, remappingName, oldValue, ctx):
         composer = self.__remapping.get(remappingName, {}).get(modifierName)
-        return composer.getValue(ctx, oldValue) if composer is not None else None
+        if composer is not None:
+            return composer.getValue(ctx, oldValue)
+        else:
+            return
 
     def getValues(self, modifierName, remappingName, oldValue):
         composer = self.__remapping.get(remappingName, {}).get(modifierName)
-        return composer.getValues(oldValue) if composer is not None else None
+        if composer is not None:
+            return composer.getValues(oldValue)
+        else:
+            return
 
     def reloadCache(self, configPath=''):
         self.__readConfig(configPath)
@@ -36,13 +41,13 @@ class RemappingCache(object):
         configPath = configPath or REMAPPING_XML_PATH
         config = ResMgr.openSection(configPath)
         if config is None:
-            raise SoftException("[Remapping] Cannot open or read '{}'".format(configPath))
+            raise SoftException(("[Remapping] Cannot open or read '{}'").format(configPath))
         self.__remapping = {}
         for remappingName, remappingSection in config.items():
             if remappingName == 'xmlns:xmlref':
                 continue
             if remappingName not in RemappingNames.ALL:
-                raise SoftException("[Remapping] Invalid remapping name '{}'".format(remappingName))
+                raise SoftException(("[Remapping] Invalid remapping name '{}'").format(remappingName))
             self.__remapping[remappingName] = self.__readRemappingSection(remappingSection)
 
         return

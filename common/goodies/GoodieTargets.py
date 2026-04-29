@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/goodies/GoodieTargets.py
 from abc import ABCMeta
 from typing import TypeVar
 
@@ -22,7 +20,9 @@ class GoodieTarget(object):
         return hash(self._targetID)
 
     def __eq__(self, other):
-        return self.targetID == other.targetID and self.limit == other.limit if isinstance(other, self.__class__) else False
+        if isinstance(other, self.__class__):
+            return self.targetID == other.targetID and self.limit == other.limit
+        return False
 
     def __ne__(self, other):
         return not self.__eq__(other)

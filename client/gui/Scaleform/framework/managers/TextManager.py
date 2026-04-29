@@ -1,5 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/framework/managers/TextManager.py
+from __future__ import absolute_import
+from future.utils import viewitems
 from debug_utils import LOG_ERROR
 from gui.Scaleform.framework.entities.abstract.TextManagerMeta import TextManagerMeta
 from gui.Scaleform.genConsts.TEXT_MANAGER_STYLES import TEXT_MANAGER_STYLES as _TMS
@@ -9,7 +9,7 @@ class TextManager(TextManagerMeta):
 
     def __init__(self):
         super(TextManager, self).__init__()
-        self.__styles = text_styles.getRawStyles([ v for k, v in _TMS.__dict__.iteritems() if not k.startswith('_') ])
+        self.__styles = text_styles.getRawStyles([ v for k, v in viewitems(_TMS.__dict__) if not k.startswith('_') ])
 
     def getTextStyle(self, style):
         if style in self.__styles:
@@ -45,23 +45,6 @@ class TextIcons(object):
     FREE_XP = 'freeXP'
     ARROW_BUTTON = 'arrowButton'
     NO_SEASON = 'noSeason'
-    ICONS = (NUT_ICON,
-     PERCENT_ICON,
-     ALERT_ICON,
-     INFO_ICON,
-     PREMIUM_IGR_SMALL,
-     PREMIUM_IGR_BIG,
-     ORDER_IN_PROGRESS_ICON,
-     CLOCK_ICON,
-     CHECKMARK_ICON,
-     NOT_AVAILABLE,
-     LEVEL_5,
-     LEVEL_10,
-     SWORDS,
-     HUMANS,
-     CREDITS,
-     GOLD,
-     XP,
-     FREE_XP,
-     ARROW_BUTTON,
-     NO_SEASON)
+    ICONS = (NUT_ICON, PERCENT_ICON, ALERT_ICON, INFO_ICON, PREMIUM_IGR_SMALL, PREMIUM_IGR_BIG,
+     ORDER_IN_PROGRESS_ICON, CLOCK_ICON, CHECKMARK_ICON, NOT_AVAILABLE, LEVEL_5, LEVEL_10, SWORDS,
+     HUMANS, CREDITS, GOLD, XP, FREE_XP, ARROW_BUTTON, NO_SEASON)

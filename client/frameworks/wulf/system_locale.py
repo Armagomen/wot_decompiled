@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/frameworks/wulf/system_locale.py
 import typing
 from .gui_constants import NumberFormatType, RealFormatType
 from .gui_constants import TimeFormatType, DateFormatType
@@ -19,8 +17,8 @@ class SystemLocale(PyObjectEntity):
     def getNumberFormat(self, value, formatType=NumberFormatType.INTEGRAL):
         return self.proxy.getNumberFormat(int(value), formatType)
 
-    def getRealFormat(self, value, formatType=RealFormatType.FRACTIONAL):
-        return self.proxy.getRealFormat(value, formatType)
+    def getRealFormat(self, value, formatType=RealFormatType.FRACTIONAL, fractionLen=2):
+        return self.proxy.getRealFormat(value, formatType, fractionLen)
 
     def getTimeFormat(self, value, formatType=TimeFormatType.SHORT_FORMAT):
         return self.proxy.getTimeFormat(value, formatType)

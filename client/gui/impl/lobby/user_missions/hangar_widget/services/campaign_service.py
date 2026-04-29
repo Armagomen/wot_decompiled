@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hangar_widget/services/campaign_service.py
 import logging
 from typing import List
 from shared_utils import first
@@ -31,10 +29,10 @@ class CampaignService(ICampaignService):
     __lobbyContext = dependency.descriptor(ILobbyContext)
     __itemsCache = dependency.descriptor(IItemsCache)
     __hangarGuiCtrl = dependency.descriptor(IHangarGuiController)
-    pm3bannerMap = {BANNER_TEASER_ID: PM3EventBannerTeaser.NAME,
-     BANNER_OPERATION_ONE_ID: PM3EventBannerOperation1.NAME,
-     BANNER_OPERATION_TWO_ID: PM3EventBannerOperation2.NAME,
-     BANNER_OPERATION_THREE_ID: PM3EventBannerOperation3.NAME}
+    pm3bannerMap = {BANNER_TEASER_ID: PM3EventBannerTeaser.NAME, 
+       BANNER_OPERATION_ONE_ID: PM3EventBannerOperation1.NAME, 
+       BANNER_OPERATION_TWO_ID: PM3EventBannerOperation2.NAME, 
+       BANNER_OPERATION_THREE_ID: PM3EventBannerOperation3.NAME}
 
     def __init__(self):
         super(CampaignService, self).__init__()
@@ -48,7 +46,10 @@ class CampaignService(ICampaignService):
         return
 
     def getEntries(self):
-        return [self.__visibleEntry] if self.__visibleEntry is not None else []
+        if self.__visibleEntry is not None:
+            return [self.__visibleEntry]
+        else:
+            return []
 
     def onPrbEntitySwitched(self):
         self.__tryToUpdateBanner()
@@ -82,10 +83,10 @@ class CampaignService(ICampaignService):
         if self.__isBannerVisible():
             currentOperation = first(self.__getActiveOperationsForPM3())
             pm3BannerOperationID = str(currentOperation.getID()) if currentOperation is not None else BANNER_TEASER_ID
-            pm3BannerData = {'id': self.pm3bannerMap.get(pm3BannerOperationID),
-             'startDate': '01.01.2020 00:00',
-             'endDate': '24.09.2025 23:59',
-             'weightConfig': 'PM3EntryPoint'}
+            pm3BannerData = {'id': self.pm3bannerMap.get(pm3BannerOperationID), 
+               'startDate': '01.01.2020 00:00', 
+               'endDate': '24.09.2025 23:59', 
+               'weightConfig': 'PM3EntryPoint'}
             entry = _EntryPointData(pm3BannerData)
             if entry.isValidData():
                 self.__tryToUpdateVisibleEntry(None if entry.isExpiredDate() else entry)
@@ -110,7 +111,7 @@ class CampaignService(ICampaignService):
             currentOperation = currentOperation if currentOperation is not None else first(operationsPM3.values())
             isPM3Available = isOperationAvailableByVehicles(currentOperation)
             isAnyPM3Active = len(pm3ActiveOperations) > 0
-            isPM3FullyCompleted = all((operation.isFullCompleted() for operation in operationsPM3.values()))
+            isPM3FullyCompleted = all(operation.isFullCompleted() for operation in operationsPM3.values())
             return not isPM3FullyCompleted and (isPM3Available or isAnyPM3Active) and not currentOperation.isDisabled()
 
     def __getActiveOperationsForPM3(self):

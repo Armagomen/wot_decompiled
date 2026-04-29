@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/utils/monitor_settings.py
-import math
-import BigWorld
-import GUI
+import math, BigWorld, GUI
 from shared_utils import findFirst
 from gui.shared.utils.graphics import getSuitableVideoModes, getSuitableWindowSizes, VideoMode, WindowSize, BorderlessSize
 
@@ -38,7 +34,9 @@ class MonitorSettings(object):
 
     @property
     def currentBorderlessSize(self):
-        return BorderlessSize(*map(int, BigWorld.getBorderlessParameters())) if self.windowMode == BigWorld.WindowModeBorderless else VideoMode(*BigWorld.listBorderlessResolutionsAllMonitors()[self.currentMonitor][0])
+        if self.windowMode == BigWorld.WindowModeBorderless:
+            return BorderlessSize(*map(int, BigWorld.getBorderlessParameters()))
+        return VideoMode(*BigWorld.listBorderlessResolutionsAllMonitors()[self.currentMonitor][0])
 
     @property
     def videoModes(self):
@@ -117,7 +115,8 @@ class MonitorSettings(object):
                 maxWdth = max(maxWdth, mode.width)
                 maxHght = max(maxHght, mode.height)
 
-        return (maxWdth, maxHght)
+        return (
+         maxWdth, maxHght)
 
     def isFullscreen(self):
         return BigWorld.getWindowMode() == BigWorld.WindowModeExclusiveFullscreen

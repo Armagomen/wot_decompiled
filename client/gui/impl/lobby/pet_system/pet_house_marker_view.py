@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/pet_system/pet_house_marker_view.py
 from Event import Event
 from frameworks.state_machine import BaseStateObserver
 from frameworks.wulf import ViewFlags, ViewSettings, WindowLayer, WindowStatus
@@ -52,8 +50,12 @@ class HangarMarkerStatesObserver(BaseStateObserver):
 class PetHangarMarkerView(ViewImpl):
     __guiLoader = dependency.descriptor(IGuiLoader)
     _settingsCore = dependency.descriptor(ISettingsCore)
-    __LAYERS_WITHOUT_MARKERS = {WindowLayer.FULLSCREEN_WINDOW, WindowLayer.OVERLAY, WindowLayer.TOP_SUB_VIEW}
-    __ALIASES_WITHOUT_MARKERS = {PREBATTLE_ALIASES.TRAINING_LIST_VIEW_PY,
+    __LAYERS_WITHOUT_MARKERS = {
+     WindowLayer.FULLSCREEN_WINDOW,
+     WindowLayer.OVERLAY,
+     WindowLayer.TOP_SUB_VIEW}
+    __ALIASES_WITHOUT_MARKERS = {
+     PREBATTLE_ALIASES.TRAINING_LIST_VIEW_PY,
      PREBATTLE_ALIASES.TRAINING_ROOM_VIEW_PY,
      PREBATTLE_ALIASES.EPICBATTLE_LIST_VIEW_PY,
      PREBATTLE_ALIASES.EPIC_TRAINING_ROOM_VIEW_PY,
@@ -63,7 +65,8 @@ class PetHangarMarkerView(ViewImpl):
      VIEW_ALIAS.STYLE_PREVIEW,
      VIEW_ALIAS.VEHICLE_PREVIEW,
      VIEW_ALIAS.HERO_VEHICLE_PREVIEW}
-    __ACTIVE_WINDOW_STATUSES = (WindowStatus.LOADING, WindowStatus.LOADED)
+    __ACTIVE_WINDOW_STATUSES = (
+     WindowStatus.LOADING, WindowStatus.LOADED)
 
     def __init__(self, settings):
         settings.flags = ViewFlags.VIEW
@@ -96,7 +99,9 @@ class PetHangarMarkerView(ViewImpl):
         blockedByGameMode = issubclass(type(dispatcher.getEntity()), (MapsTrainingEntity,))
         blockedByWindow = len(windowsManager.findWindows(lambda w: w.layer in self.__LAYERS_WITHOUT_MARKERS and w.windowStatus in self.__ACTIVE_WINDOW_STATUSES)) > 0
         blockedByAlias = len(windowsManager.findWindows(lambda w: w.layer == WindowLayer.SUB_VIEW and w.windowStatus in self.__ACTIVE_WINDOW_STATUSES and isinstance(w, SFWindow) and w.loadParams.viewKey.alias in self.__ALIASES_WITHOUT_MARKERS)) > 0
-        return not blockedByWindow and not blockedByAlias and not blockedByGameMode if self._statesObserver.currentState else False
+        if self._statesObserver.currentState:
+            return not blockedByWindow and not blockedByAlias and not blockedByGameMode
+        return False
 
     def _updateMarkerVisibility(self, *args, **kwargs):
         self._setMarkerVisible(self._canShowMarkers())
@@ -123,23 +128,31 @@ class PetHouseMarkerView(PetHangarMarkerView):
 
     def _getEvents(self):
         events = super(PetHouseMarkerView, self)._getEvents()
-        return events + ((self.__petController.onUpdateActivePet, self.__update), (self.__petController.onUpdateUnlockedPetsIDs, self.__update), (self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged))
+        return events + (
+         (
+          self.__petController.onUpdateActivePet, self.__update),
+         (
+          self.__petController.onUpdateUnlockedPetsIDs, self.__update),
+         (
+          self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged))
 
     def _getListeners(self):
         events = super(PetHouseMarkerView, self)._getListeners()
-        return events + ((events_constants.PetSystemEvent.SEEN_IN_STORAGE_PET_IDS_UPDATED, self.__update, EVENT_BUS_SCOPE.LOBBY),)
+        return events + (
+         (
+          events_constants.PetSystemEvent.SEEN_IN_STORAGE_PET_IDS_UPDATED, self.__update, EVENT_BUS_SCOPE.LOBBY),)
 
     @property
     def viewModel(self):
         return super(PetHouseMarkerView, self).getViewModel()
 
     def _setMarkerVisible(self, isVisible):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             if model.getIsVisible() != isVisible:
                 model.setIsVisible(isVisible)
 
     def __update(self, *_):
-        with self.getViewModel().transaction() as tx:
+        with self.getViewModel().transaction() as (tx):
             activePetId = self.__petController.getActivePet()
             if activePetId:
                 nameId = PetItem.getCurrentNameId(activePetId)
@@ -148,7 +161,7 @@ class PetHouseMarkerView(PetHangarMarkerView):
                 tx.setPetNameID(0)
             seenPetIDs = PetUISettings.getSeenInStoragePetIDs()
             petIDs = self.__petController.getUnlockedAndPromoPets()
-            tx.setHasUpdate(any((petID not in seenPetIDs for petID in petIDs)))
+            tx.setHasUpdate(any(petID not in seenPetIDs for petID in petIDs))
 
     def __onServerSettingsChanged(self, diff):
         sysDiff = diff.get(pet_constants.PETS_SYSTEM_CONFIG, {})

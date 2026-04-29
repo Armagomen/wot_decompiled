@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/spotting_indicators_ctrl.py
-import logging
-import typing
+import logging, typing
 from enum import Enum
 from functools import partial
 import BigWorld
@@ -22,8 +19,8 @@ _logger = logging.getLogger(__name__)
 
 class ISpottingIndicator(object):
     __slots__ = ()
-    ToggleType = typing.Callable[[bool, bool], None]
-    EnabledType = typing.Callable[[], bool]
+    ToggleType = typing.Callable[([bool, bool], None)]
+    EnabledType = typing.Callable[([], bool)]
 
     def getIndicatorTogglesByType(self):
         raise NotImplementedError
@@ -50,10 +47,13 @@ class IndicatorAction(Enum):
 
 
 _TYPE = DIRECT_DETECTION_TYPE
-SPOTTING_INDICATORS_PRIORITY = ((_TYPE.UNSPOTTED,), (_TYPE.RAYTRACE,
-  _TYPE.RECON,
-  _TYPE.FORCED,
-  _TYPE.STEALTH_RADAR), (_TYPE.SPECIAL_RECON,))
+SPOTTING_INDICATORS_PRIORITY = (
+ (
+  _TYPE.UNSPOTTED,),
+ (
+  _TYPE.RAYTRACE, _TYPE.RECON, _TYPE.FORCED, _TYPE.STEALTH_RADAR),
+ (
+  _TYPE.SPECIAL_RECON,))
 _PRIORITY_BY_DETECTION_TYPE = {detectionType:priority for priority, detectionTypes in enumerate(SPOTTING_INDICATORS_PRIORITY) for detectionType in detectionTypes}
 
 def bindSpottingIndicator(indicator):
@@ -73,7 +73,9 @@ def unbindSpottingIndicator(indicator):
 
 
 class SpottingIndicatorsController(ISpottingIndicatorsController):
-    __slots__ = ('onSpottingIndicatorAction', '_vehicleState', '__detectionType', '__visToggleByType', '_durationByType', '__showTimerID', '__prevControllingVehID', '__enabledByType', '__weakref__')
+    __slots__ = ('onSpottingIndicatorAction', '_vehicleState', '__detectionType', '__visToggleByType',
+                 '_durationByType', '__showTimerID', '__prevControllingVehID', '__enabledByType',
+                 '__weakref__')
 
     def __init__(self, vehicleState):
         self._vehicleState = vehicleState
@@ -138,7 +140,9 @@ class SpottingIndicatorsController(ISpottingIndicatorsController):
                 return IndicatorAction.SHOW
             oldPriority = _PRIORITY_BY_DETECTION_TYPE[oldDetectionType]
             newPriority = _PRIORITY_BY_DETECTION_TYPE[newDetectionType]
-            return IndicatorAction.PASS if oldPriority >= newPriority else IndicatorAction.SHOW
+            if oldPriority >= newPriority:
+                return IndicatorAction.PASS
+            return IndicatorAction.SHOW
 
     def _onObservedByEnemy(self, detectionType, isObserved):
         action = self._getIndicatorAction(detectionType, isObserved)
@@ -165,9 +169,9 @@ class SpottingIndicatorsController(ISpottingIndicatorsController):
     def _hideSpottingIndicator(self, detectionType=None, force=False):
         if self.__detectionType is None:
             return
-        elif detectionType is not None and self.__detectionType != detectionType:
-            return
         else:
+            if detectionType is not None and self.__detectionType != detectionType:
+                return
             detectionType = self.__detectionType
             toggle = self.__visToggleByType[detectionType]
             toggle(False, force)
@@ -250,15 +254,16 @@ class _Replay(SpottingIndicatorsController):
             return
         if g_replayEvents.isLastWarpRewind:
             now = BigWorld.time()
-            while events:
-                if events[-1][0] < now:
-                    break
-                del events[-1]
+            while 1:
+                if events:
+                    if events[(-1)][0] < now:
+                        break
+                    del events[-1]
             else:
                 self._hideSpottingIndicator(force=True)
                 return
 
-        _, detectionType, isVisible = events[-1]
+        _, detectionType, isVisible = events[(-1)]
         timeLeft = self.__getLastEventTimeLeft()
         if isVisible and (timeLeft or not self._durationByType[detectionType]):
             self._showSpottingIndicator(detectionType)
@@ -267,7 +272,7 @@ class _Replay(SpottingIndicatorsController):
         events = self.__stateTransitionEvents
         if not events:
             return 0.0
-        startTime, detectionType, isVisible = events[-1]
+        startTime, detectionType, isVisible = events[(-1)]
         if not isVisible:
             return 0.0
         now = BigWorld.time()
@@ -280,8 +285,10 @@ class _Replay(SpottingIndicatorsController):
         self.__stateTransitionEvents.append((BigWorld.time(), detectionType, isVisible))
 
     def __repr__(self):
-        pass
+        return '_Replay(SpottingIndicatorsController)'
 
 
 def createCtrl(setup, state):
-    return _Replay(state) if setup.isReplayPlaying else SpottingIndicatorsController(state)
+    if setup.isReplayPlaying:
+        return _Replay(state)
+    return SpottingIndicatorsController(state)

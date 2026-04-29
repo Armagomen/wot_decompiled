@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/Scaleform/daapi/view/lobby/battle_queue.py
 from __future__ import absolute_import
 from fun_random.gui.feature.util.fun_mixins import FunAssetPacksMixin, FunSubModesWatcher
 from fun_random.gui.feature.util.fun_wrappers import hasDesiredSubMode
@@ -17,12 +15,23 @@ class FunRandomQueueProvider(RandomQueueProvider, FunAssetPacksMixin, FunSubMode
     def processQueueInfo(self, qInfo):
         super(FunRandomQueueProvider, self).processQueueInfo(qInfo or {})
 
+    @hasDesiredSubMode(defReturn=False)
+    def needAdditionalInfo(self):
+        if self._needAdditionalInfo is not None:
+            return self._needAdditionalInfo
+        else:
+            hasBattleQueueWarning = self.getDesiredSubMode().getConfigurationModel().subMode.hasBattleQueueWarning
+            if not hasBattleQueueWarning:
+                self._needAdditionalInfo = False
+            return super(FunRandomQueueProvider, self).needAdditionalInfo()
+
     @hasDesiredSubMode()
     def _doRequestQueueInfo(self, currPlayer):
         super(FunRandomQueueProvider, self)._doRequestQueueInfo(currPlayer)
 
     def _getRequestQueueInfoParams(self):
-        return (self._queueType, self.getDesiredSubMode().getSubModeID())
+        return (
+         self._queueType, self.getDesiredSubMode().getSubModeID())
 
     @hasDesiredSubMode(defReturn='')
     def __getTitle(self):

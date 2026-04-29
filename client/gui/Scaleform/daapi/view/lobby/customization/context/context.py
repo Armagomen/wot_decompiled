@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/customization/context/context.py
-import logging
-import typing
-import Event
+import logging, typing, Event
 from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
 import adisp
 from gui import g_tankActiveCamouflage
@@ -83,10 +79,10 @@ class CustomizationContext(object):
         self.__season = None
         self.__modeId = None
         self.__styleModeId = None
-        self.__modes = {CustomizationModes.CUSTOM: CustomMode(self),
-         CustomizationModes.STYLE_2D: StyledMode(self, is3DMode=False),
-         CustomizationModes.STYLE_3D: StyledMode(self, is3DMode=True),
-         CustomizationModes.STYLE_2D_EDITABLE: EditableStyleMode(self)}
+        self.__modes = {CustomizationModes.CUSTOM: CustomMode(self), 
+           CustomizationModes.STYLE_2D: StyledMode(self, is3DMode=False), 
+           CustomizationModes.STYLE_3D: StyledMode(self, is3DMode=True), 
+           CustomizationModes.STYLE_2D_EDITABLE: EditableStyleMode(self)}
         self.__events = None
         self.__isItemsOnAnotherVeh = False
         self.__isProgressiveItemsExist = False
@@ -163,7 +159,9 @@ class CustomizationContext(object):
     def commonOriginalOutfit(self):
         if not self.__commonOriginalOutfit:
             self.updateCommonOutfits()
-        return self.__commonOriginal3DOutfit if self.isInStyleMode(CustomizationModes.STYLE_3D) else self.__commonOriginalOutfit
+        if self.isInStyleMode(CustomizationModes.STYLE_3D):
+            return self.__commonOriginal3DOutfit
+        return self.__commonOriginalOutfit
 
     @property
     def commonModifiedOutfit(self):
@@ -253,9 +251,9 @@ class CustomizationContext(object):
         if modeId not in CustomizationModes.ALL:
             _logger.warning('Wrong customization mode: %s', modeId)
             return
-        elif self.__modeId == modeId:
-            return
         else:
+            if self.__modeId == modeId:
+                return
             self.__isModeChangeInProgress = True
             prevMode = self.mode
             prevModeId = self.__modeId
@@ -283,10 +281,10 @@ class CustomizationContext(object):
         if style is None:
             _logger.error('Invalid style intCD: %s', intCD)
             return
-        elif not style.isEditable:
-            _logger.error('Failed to start Editable Style Mode: style is not editable: %s', style)
-            return
         else:
+            if not style.isEditable:
+                _logger.error('Failed to start Editable Style Mode: style is not editable: %s', style)
+                return
             self.changeMode(CustomizationModes.STYLE_3D if style.is3D else CustomizationModes.STYLE_2D, source=source)
             currentStyleItem = self.mode.currentOutfit.style
             currentStyleIntCD = currentStyleItem.compactDescr if currentStyleItem else None
@@ -421,7 +419,9 @@ class CustomizationContext(object):
     def isOutfitsModified(self):
         if self.mode.isOutfitsModified():
             return True
-        return True if self.isCommonOutfitModified() else False
+        if self.isCommonOutfitModified():
+            return True
+        return False
 
     @staticmethod
     def resetItemsNovelty(items):
@@ -473,9 +473,9 @@ class CustomizationContext(object):
         if self._vehicle is None or not g_currentVehicle.isPresent():
             _logger.error('There is no vehicle in hangar for customization.')
             return
-        elif self._vehicle.intCD == g_currentVehicle.item.intCD:
-            return
         else:
+            if self._vehicle.intCD == g_currentVehicle.item.intCD:
+                return
             for mode in self.__modes.itervalues():
                 if mode.isInited:
                     mode.onVehicleChangeStarted()
@@ -486,7 +486,9 @@ class CustomizationContext(object):
         self.refreshOutfit()
 
     def __getStartSeason(self):
-        return g_tankActiveCamouflage[g_currentVehicle.item.intCD] if g_currentVehicle.item.intCD in g_tankActiveCamouflage else first(SeasonType.COMMON_SEASONS)
+        if g_currentVehicle.item.intCD in g_tankActiveCamouflage:
+            return g_tankActiveCamouflage[g_currentVehicle.item.intCD]
+        return first(SeasonType.COMMON_SEASONS)
 
     def __getStartMode(self, modeId=None, tabId=None):
         if modeId is not None:
@@ -497,18 +499,19 @@ class CustomizationContext(object):
                 _logger.warning("Tried entering {} customization mode but the vehicle doesn't have a slot for a style.").format(modeId)
                 return CustomizationModes.CUSTOM
             return modeId
-        elif tabId is not None:
+        if tabId is not None:
             modeId = self.__getDefaultStartMode()
             if tabId not in CustomizationTabs.MODES[modeId]:
                 modeId = CustomizationTabs.TAB_TO_MODE[tabId]
             if modeId in CustomizationModes.BASE_STYLES and not vehicleHasSlot(GUI_ITEM_TYPE.STYLE):
                 return CustomizationModes.CUSTOM
             return modeId
-        else:
-            return self.__getDefaultStartMode()
+        return self.__getDefaultStartMode()
 
     def __getDefaultStartMode(self):
         style = self._service.getCurrentStyle()
         if style and style.is3D:
             return CustomizationModes.STYLE_3D
-        return CustomizationModes.STYLE_2D if style and not style.is3D or self._service.isNationalOutfitInstalled() else CustomizationModes.CUSTOM
+        if style and not style.is3D or self._service.isNationalOutfitInstalled():
+            return CustomizationModes.STYLE_2D
+        return CustomizationModes.CUSTOM

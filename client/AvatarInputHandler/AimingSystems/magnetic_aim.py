@@ -1,9 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/AvatarInputHandler/AimingSystems/magnetic_aim.py
 from collections import namedtuple
 from itertools import chain
-import math
-import BigWorld
+import math, BigWorld
 from Math import Vector3, Matrix
 import math_utils
 
@@ -34,34 +31,33 @@ def magneticAimFindTarget():
     aimCameraDirection = aimCamera.aimingSystem.matrixProvider.applyToAxis(2)
     if vehicleAttached is None or not vehicleAttached.isAlive():
         return
-    else:
-        minAngleVehicle = None
-        for vehicleID in playerAvatar.arena.vehicles.iterkeys():
-            vehicle = BigWorld.entity(vehicleID)
-            if vehicle is None:
-                continue
-            allyOrSelfVehicle = vehicle.publicInfo['team'] == playerAvatar.team or vehicle.isPlayerVehicle
-            if allyOrSelfVehicle or not vehicle.isStarted or not vehicle.isAlive():
-                continue
-            vehiclePositionDirection = vehicle.position - aimCamera.camera.position
-            vehiclePositionDirection.normalise()
-            dotResult = vehiclePositionDirection.dot(aimCameraDirection)
-            targetDistance = vehicle.position - vehicleAttached.position
-            if dotResult < MagneticAimSettings.getMagneticAngle():
-                continue
-            if not isVehicleVisibleFromCamera(vehicle, aimCamera):
-                continue
-            veh = _TargetVeh(vehicleRef=vehicle, dotResult=dotResult, distance=targetDistance.length)
-            if minAngleVehicle is None or dotResult >= minAngleVehicle.dotResult:
+    minAngleVehicle = None
+    for vehicleID in playerAvatar.arena.vehicles.iterkeys():
+        vehicle = BigWorld.entity(vehicleID)
+        if vehicle is None:
+            continue
+        allyOrSelfVehicle = vehicle.publicInfo['team'] == playerAvatar.team or vehicle.isPlayerVehicle
+        if allyOrSelfVehicle or not vehicle.isStarted or not vehicle.isAlive():
+            continue
+        vehiclePositionDirection = vehicle.position - aimCamera.camera.position
+        vehiclePositionDirection.normalise()
+        dotResult = vehiclePositionDirection.dot(aimCameraDirection)
+        targetDistance = vehicle.position - vehicleAttached.position
+        if dotResult < MagneticAimSettings.getMagneticAngle():
+            continue
+        if not isVehicleVisibleFromCamera(vehicle, aimCamera):
+            continue
+        veh = _TargetVeh(vehicleRef=vehicle, dotResult=dotResult, distance=targetDistance.length)
+        if minAngleVehicle is None or dotResult >= minAngleVehicle.dotResult:
+            minAngleVehicle = veh
+        if minAngleVehicle is not None and math_utils.almostZero(dotResult - minAngleVehicle.dotResult):
+            if targetDistance.length < minAngleVehicle.distance:
                 minAngleVehicle = veh
-            if minAngleVehicle is not None and math_utils.almostZero(dotResult - minAngleVehicle.dotResult):
-                if targetDistance.length < minAngleVehicle.distance:
-                    minAngleVehicle = veh
 
-        pickedVehicle = None
-        if minAngleVehicle:
-            pickedVehicle = minAngleVehicle.vehicleRef
-        return pickedVehicle
+    pickedVehicle = None
+    if minAngleVehicle:
+        pickedVehicle = minAngleVehicle.vehicleRef
+    return pickedVehicle
 
 
 def getVehiclePointsGen(vehicle):
@@ -87,7 +83,8 @@ def getVehiclePointsGen(vehicle):
 
 def getVisibilityCheckPointsGen(vehicle):
     matrix = Matrix(vehicle.matrix)
-    return chain((vehicle.position,), (matrix.applyPoint(pt) for pt in getVehiclePointsGen(vehicle)), BigWorld.getDynamicVisibilityPoints(vehicle.entityGameObject))
+    return chain((
+     vehicle.position,), (matrix.applyPoint(pt) for pt in getVehiclePointsGen(vehicle)), BigWorld.getDynamicVisibilityPoints(vehicle.entityGameObject))
 
 
 def isVehicleVisibleFromCamera(vehicle, aimCamera):

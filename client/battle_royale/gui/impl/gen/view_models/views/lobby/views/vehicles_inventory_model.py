@@ -1,9 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/impl/gen/view_models/views/lobby/views/vehicles_inventory_model.py
 from frameworks.wulf import Map, ViewModel
 
 class VehiclesInventoryModel(ViewModel):
-    __slots__ = ('onSelect',)
+    __slots__ = ('onSelect', )
     NO_VEHICLE_ID = -1
 
     def __init__(self, properties=3, commands=1):

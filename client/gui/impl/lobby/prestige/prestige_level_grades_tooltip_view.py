@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/prestige/prestige_level_grades_tooltip_view.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.prestige.prestige_emblem_model import PrestigeEmblemModel
@@ -20,7 +18,7 @@ class PrestigeLevelGradesTooltipView(ViewImpl):
 
     def _onLoading(self, vehIntCD, *args, **kwargs):
         currentLevel, _ = getVehiclePrestige(vehIntCD)
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             tx.setCurrentLevel(currentLevel)
             emblems = tx.getEmblems()
             emblems.clear()

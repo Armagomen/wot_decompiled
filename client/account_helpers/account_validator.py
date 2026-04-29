@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/account_helpers/account_validator.py
-import logging
-import BigWorld
-import wg_async
-import constants
+import logging, BigWorld, wg_async, constants
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from helpers import dependency
 from items import vehicles, tankmen, ITEM_TYPE_NAMES
@@ -39,7 +34,8 @@ class ValidationCodes(object):
 
 
 def _packItemData(itemTypeID, itemData, *args):
-    return (ITEM_TYPE_NAMES[itemTypeID], itemData) + args
+    return (
+     ITEM_TYPE_NAMES[itemTypeID], itemData) + args
 
 
 class AccountValidator(object):
@@ -66,7 +62,8 @@ class AccountValidator(object):
 class InventoryVehiclesValidator(AccountValidator):
 
     def _getHandlers(self):
-        return (self.__validateInventoryVehicles,)
+        return (
+         self.__validateInventoryVehicles,)
 
     @wg_async.wg_async
     def __validateInventoryVehicles(self):
@@ -78,7 +75,7 @@ class InventoryVehiclesValidator(AccountValidator):
                 try:
                     yield vehicles.VehicleDescr(vehCompDescr)
                 except Exception as e:
-                    raise ValidateException(e.message, ValidationCodes.VEHICLE_MISMATCH, _packItemData(GUI_ITEM_TYPE.VEHICLE, (invID, vehCompDescr)))
+                    raise ValidateException(str(e), ValidationCodes.VEHICLE_MISMATCH, _packItemData(GUI_ITEM_TYPE.VEHICLE, (invID, vehCompDescr)))
 
         yield wg_async.wg_await(wg_async.distributeLoopOverTicks(createVehicleDescrAsync(), minPerTick=10, maxPerTick=100, logID='createVehicleDescrAsync', tickLength=0.0))
 
@@ -99,7 +96,8 @@ class InventoryVehiclesValidator(AccountValidator):
 class InventoryOutfitValidator(AccountValidator):
 
     def _getHandlers(self):
-        return (self.__validateInventoryOutfit,)
+        return (
+         self.__validateInventoryOutfit,)
 
     @wg_async.wg_async
     def __validateInventoryOutfit(self):
@@ -120,7 +118,7 @@ class InventoryOutfitValidator(AccountValidator):
                     try:
                         yield self.itemsFactory.createOutfit(strCompactDescr=outfitCD, vehicleCD=vehicleCD)
                     except Exception as e:
-                        raise ValidateException(e.message, ValidationCodes.OUTFIT_MISMATCH, _packItemData(GUI_ITEM_TYPE.CUSTOMIZATION, (vehIntCD, outfitCD)))
+                        raise ValidateException(str(e), ValidationCodes.OUTFIT_MISMATCH, _packItemData(GUI_ITEM_TYPE.CUSTOMIZATION, (vehIntCD, outfitCD)))
 
             return
 
@@ -130,7 +128,8 @@ class InventoryOutfitValidator(AccountValidator):
 class InventoryTankmenValidator(AccountValidator):
 
     def _getHandlers(self):
-        return (self.__validateInventoryTankmen,)
+        return (
+         self.__validateInventoryTankmen,)
 
     @wg_async.wg_async
     def __validateInventoryTankmen(self):
@@ -143,7 +142,7 @@ class InventoryTankmenValidator(AccountValidator):
                 try:
                     yield tankmen.TankmanDescr(tmanCompDescr)
                 except Exception as e:
-                    raise ValidateException(e.message, ValidationCodes.TANKMEN_MISMATCH, _packItemData(GUI_ITEM_TYPE.TANKMAN, (invID, tmanCompDescr)))
+                    raise ValidateException(str(e), ValidationCodes.TANKMEN_MISMATCH, _packItemData(GUI_ITEM_TYPE.TANKMAN, (invID, tmanCompDescr)))
 
             return
 

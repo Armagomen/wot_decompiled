@@ -1,11 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicle_systems/components/shot_damage_components.py
 from cgf_script.component_meta_class import ComponentProperty, CGFMetaTypes, registerComponent
 from cgf_script.managers_registrator import autoregister, onAddedQuery, onRemovedQuery
-import CGF
-import Math
-import BigWorld
-import GenericComponents
+import CGF, Math, BigWorld, GenericComponents
 from items import vehicles
 from vehicle_systems.tankStructure import TankPartNames
 

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/tooltips/sorting_dropdown_tooltip.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen.view_models.views.lobby.crew.tooltips import sorting_dropdown_tooltip_model as tt_model
 from gui.impl.pub import ViewImpl

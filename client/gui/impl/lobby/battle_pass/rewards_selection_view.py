@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_pass/rewards_selection_view.py
 from functools import partial
 from AccountCommands import RES_SUCCESS
 from frameworks.wulf import WindowFlags
@@ -26,10 +24,10 @@ class RewardsSelectionView(SelectableRewardBase):
         self.__level = int(level)
         self.__onRewardsReceivedCallback = onRewardsReceivedCallback
         self.__onCloseCallback = onCloseCallback
-        super(RewardsSelectionView, self).__init__(R.views.lobby.battle_pass.RewardsSelectionView(), self._helper.getAvailableSelectableBonuses(partial(_isValidReward, self.__chapterID, self.__level)), RewardsSelectionViewModel)
+        super(RewardsSelectionView, self).__init__(R.views.mono.battle_pass.rewards_selection(), self._helper.getAvailableSelectableBonuses(partial(_isValidReward, self.__chapterID, self.__level)), RewardsSelectionViewModel)
 
     def _getReceivedRewards(self, rewardName):
-        pass
+        return 0
 
     @property
     def viewModel(self):
@@ -37,7 +35,7 @@ class RewardsSelectionView(SelectableRewardBase):
 
     def _onLoading(self, *args, **kwargs):
         super(RewardsSelectionView, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             tx.setChapterID(self.__chapterID)
             tx.setLevel(self.__level)
             tx.setIsExtra(self.__battlePass.isExtraChapter(self.__chapterID))

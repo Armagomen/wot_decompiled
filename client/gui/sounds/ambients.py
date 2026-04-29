@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/sounds/ambients.py
 from collections import defaultdict
 import MusicControllerWWISE as _MC
 from Event import Event
@@ -24,15 +22,21 @@ from skeletons.gui.impl import IGuiLoader
 def _getViewSoundEnv(view):
     if hasattr(view, 'getDynamicSoundEnv'):
         return getattr(view, 'getDynamicSoundEnv')()
-    elif hasattr(view, '__sound_env__'):
-        return getattr(view, '__sound_env__')
     else:
-        return ModalWindowEnv if isinstance(view, WindowViewMeta) and view.isViewModal() else None
+        if hasattr(view, '__sound_env__'):
+            return getattr(view, '__sound_env__')
+        if isinstance(view, WindowViewMeta) and view.isViewModal():
+            return ModalWindowEnv
+        return
 
 
 def _getGFViewSoundEnv(viewImplAdaptor):
     viewImpl = getattr(viewImplAdaptor, 'view', None)
-    return getattr(viewImpl, '__sound_env__', None) if viewImpl is not None else getattr(viewImplAdaptor, '__sound_env__', None)
+    view = viewImpl if viewImpl is not None else viewImplAdaptor
+    if hasattr(view, 'getDynamicSoundEnv'):
+        return getattr(view, 'getDynamicSoundEnv')()
+    else:
+        return getattr(view, '__sound_env__', None)
 
 
 class SoundEvent(Notifiable):
@@ -64,7 +68,8 @@ class SoundEvent(Notifiable):
             _MC.g_musicController.play(self._soundEventID, self._params)
             if self._checkFinish:
                 self._isStarted = True
-                self.addNotificators(PeriodicNotifier(self._getNotificationDelta, self._onCheckAmbientNotification, (PLAYING_SOUND_CHECK_PERIOD,)))
+                self.addNotificators(PeriodicNotifier(self._getNotificationDelta, self._onCheckAmbientNotification, (
+                 PLAYING_SOUND_CHECK_PERIOD,)))
                 self.startNotification()
                 self.onStarted()
         else:
@@ -93,7 +98,9 @@ class SoundEvent(Notifiable):
         _MC.g_musicController.setEventParam(paramName, int(value))
 
     def _getNotificationDelta(self):
-        return PLAYING_SOUND_CHECK_PERIOD if self._isStarted else 0
+        if self._isStarted:
+            return PLAYING_SOUND_CHECK_PERIOD
+        return 0
 
     def _onCheckAmbientNotification(self):
         SOUND_DEBUG('Current ambient playing check: is playing now', self, self.isPlaying())
@@ -110,7 +117,8 @@ class SoundEvent(Notifiable):
                 self.onFinished()
 
     def __repr__(self):
-        return '%s(id = %d, params = %s)' % (self.__class__.__name__, self._soundEventID, self._params)
+        return '%s(id = %d, params = %s)' % (
+         self.__class__.__name__, self._soundEventID, self._params)
 
 
 class EmptySound(SoundEvent):
@@ -132,7 +140,7 @@ class EmptySound(SoundEvent):
         return False
 
     def __repr__(self):
-        pass
+        return 'EmptySound()'
 
 
 class NoMusic(EmptySound):
@@ -148,7 +156,7 @@ class NoMusic(EmptySound):
         return False
 
     def __repr__(self):
-        pass
+        return 'NoMusic()'
 
 
 class NoAmbient(EmptySound):
@@ -164,7 +172,7 @@ class NoAmbient(EmptySound):
         return False
 
     def __repr__(self):
-        pass
+        return 'NoAmbient()'
 
 
 class SoundEnv(object):
@@ -207,10 +215,8 @@ class SoundEnv(object):
         self._music.setParam(paramName, value)
 
     def __repr__(self):
-        return '%s(music = %s, ambient = %s, filters = %d)' % (self.__class__.__name__,
-         self._music,
-         self._ambient,
-         len(self._filters))
+        return '%s(music = %s, ambient = %s, filters = %d)' % (
+         self.__class__.__name__, self._music, self._ambient, len(self._filters))
 
 
 class EmptySpaceEnv(SoundEnv):
@@ -296,37 +302,42 @@ class BattleSpaceEnv(SoundEnv, IArenaPeriodController):
 class LobbySubViewEnv(SoundEnv):
 
     def __init__(self, soundsCtrl):
-        super(LobbySubViewEnv, self).__init__(soundsCtrl, 'lobbySubView', filters=(SoundFilters.FILTERED_HANGAR,))
+        super(LobbySubViewEnv, self).__init__(soundsCtrl, 'lobbySubView', filters=(
+         SoundFilters.FILTERED_HANGAR,))
 
 
 class BattleQueueEnv(SoundEnv):
 
     def __init__(self, soundsCtrl):
-        super(BattleQueueEnv, self).__init__(soundsCtrl, 'queue', filters=(SoundFilters.FILTERED_HANGAR,))
+        super(BattleQueueEnv, self).__init__(soundsCtrl, 'queue', filters=(
+         SoundFilters.FILTERED_HANGAR,))
 
 
 class ShopEnv(SoundEnv):
 
     def __init__(self, soundsCtrl):
-        super(ShopEnv, self).__init__(soundsCtrl, 'shop', ambient=SoundEvent(_MC.AMBIENT_EVENT_SHOP), filters=(SoundFilters.FILTERED_HANGAR,))
+        super(ShopEnv, self).__init__(soundsCtrl, 'shop', ambient=SoundEvent(_MC.AMBIENT_EVENT_SHOP), filters=(
+         SoundFilters.FILTERED_HANGAR,))
 
 
 class HangarOverlayEnv(SoundEnv):
 
     def __init__(self, soundsCtrl):
-        super(HangarOverlayEnv, self).__init__(soundsCtrl, 'hangarOverlay', filters=(SoundFilters.HANGAR_OVERLAY,))
+        super(HangarOverlayEnv, self).__init__(soundsCtrl, 'hangarOverlay', filters=(
+         SoundFilters.HANGAR_OVERLAY,))
 
 
 class ModalWindowEnv(SoundEnv):
 
     def __init__(self, soundsCtrl):
-        super(ModalWindowEnv, self).__init__(soundsCtrl, 'modal', filters=(SoundFilters.FILTERED_HANGAR,))
+        super(ModalWindowEnv, self).__init__(soundsCtrl, 'modal', filters=(
+         SoundFilters.FILTERED_HANGAR,))
 
 
 class BattleResultsEnv(SoundEnv):
-    _sounds = {WinStatus.WIN: SoundEvent(_MC.MUSIC_EVENT_COMBAT_VICTORY, checkFinish=True),
-     WinStatus.DRAW: SoundEvent(_MC.MUSIC_EVENT_COMBAT_DRAW, checkFinish=True),
-     WinStatus.LOSE: SoundEvent(_MC.MUSIC_EVENT_COMBAT_LOSE, checkFinish=True)}
+    _sounds = {WinStatus.WIN: SoundEvent(_MC.MUSIC_EVENT_COMBAT_VICTORY, checkFinish=True), 
+       WinStatus.DRAW: SoundEvent(_MC.MUSIC_EVENT_COMBAT_DRAW, checkFinish=True), 
+       WinStatus.LOSE: SoundEvent(_MC.MUSIC_EVENT_COMBAT_LOSE, checkFinish=True)}
     sessionProvider = dependency.descriptor(IBattleSessionProvider)
 
     def __init__(self, soundsCtrl):
@@ -357,47 +368,46 @@ class BattleResultsEnv(SoundEnv):
         self._onChanged()
 
 
-class BattlePassSoundEnv(SoundEnv):
-
-    def __init__(self, soundsCtrl):
-        super(BattlePassSoundEnv, self).__init__(soundsCtrl, 'battlePass', filters=(SoundFilters.BATTLE_PASS_FILTER, SoundFilters.HANGAR_PLACE_TASKS_BATTLE_PASS))
-
-
 class MarathonPageSoundEnv(SoundEnv):
 
     def __init__(self, soundsCtrl):
-        super(MarathonPageSoundEnv, self).__init__(soundsCtrl, 'marathon', filters=(SoundFilters.MARATHON_FILTER,))
+        super(MarathonPageSoundEnv, self).__init__(soundsCtrl, 'marathon', filters=(
+         SoundFilters.MARATHON_FILTER,))
 
 
 class MissionsCategoriesSoundEnv(SoundEnv):
 
     def __init__(self, soundsCtrl):
-        super(MissionsCategoriesSoundEnv, self).__init__(soundsCtrl, 'missionCategories', filters=(SoundFilters.HANGAR_PLACE_TASKS_MISSIONS,))
+        super(MissionsCategoriesSoundEnv, self).__init__(soundsCtrl, 'missionCategories', filters=(
+         SoundFilters.HANGAR_PLACE_TASKS_MISSIONS,))
 
 
 class MissionsPremiumSoundEnv(SoundEnv):
 
     def __init__(self, soundsCtrl):
-        super(MissionsPremiumSoundEnv, self).__init__(soundsCtrl, 'dailyMissions', filters=(SoundFilters.HANGAR_PLACE_TASKS_DAILY,))
+        super(MissionsPremiumSoundEnv, self).__init__(soundsCtrl, 'dailyMissions', filters=(
+         SoundFilters.HANGAR_PLACE_TASKS_DAILY,))
 
 
 class MissionsEventsSoundEnv(SoundEnv):
 
     def __init__(self, soundsCtrl):
-        super(MissionsEventsSoundEnv, self).__init__(soundsCtrl, 'missionEvent', filters=(SoundFilters.HANGAR_PLACE_TASKS_EVENTS,))
+        super(MissionsEventsSoundEnv, self).__init__(soundsCtrl, 'missionEvent', filters=(
+         SoundFilters.HANGAR_PLACE_TASKS_EVENTS,))
 
 
 class BattleMattersSoundEnv(SoundEnv):
 
     def __init__(self, soundsCtrl):
-        super(BattleMattersSoundEnv, self).__init__(soundsCtrl, 'battleMatters', filters=(SoundFilters.HANGAR_PLACE_TASKS_BATTLE_MATTERS,))
+        super(BattleMattersSoundEnv, self).__init__(soundsCtrl, 'battleMatters', filters=(
+         SoundFilters.HANGAR_PLACE_TASKS_BATTLE_MATTERS,))
 
 
 class GuiAmbientsCtrl(object):
-    _spaces = {GuiGlobalSpaceID.LOGIN: LoginSpaceEnv,
-     GuiGlobalSpaceID.LOBBY: LobbySpaceEnv,
-     GuiGlobalSpaceID.BATTLE_LOADING: BattleLoadingSpaceEnv,
-     GuiGlobalSpaceID.BATTLE: BattleSpaceEnv}
+    _spaces = {GuiGlobalSpaceID.LOGIN: LoginSpaceEnv, 
+       GuiGlobalSpaceID.LOBBY: LobbySpaceEnv, 
+       GuiGlobalSpaceID.BATTLE_LOADING: BattleLoadingSpaceEnv, 
+       GuiGlobalSpaceID.BATTLE: BattleSpaceEnv}
     hangarSpace = dependency.descriptor(IHangarSpace)
     appLoader = dependency.descriptor(IAppLoader)
     guiLoader = dependency.descriptor(IGuiLoader)
@@ -471,14 +481,11 @@ class GuiAmbientsCtrl(object):
 
     @sf_lobby
     def app(self):
-        return None
+        return
 
     def _restartSounds(self):
         result = []
-        for layer in (WindowLayer.TOP_WINDOW,
-         WindowLayer.WINDOW,
-         WindowLayer.SUB_VIEW,
-         WindowLayer.TOP_SUB_VIEW):
+        for layer in (WindowLayer.TOP_WINDOW, WindowLayer.WINDOW, WindowLayer.SUB_VIEW, WindowLayer.TOP_SUB_VIEW):
             result.extend(self._customEnvs[layer].values())
 
         result.extend(self._gfCustomEnvs.values())
@@ -540,8 +547,9 @@ class GuiAmbientsCtrl(object):
                     view = container.getView(criteria={POP_UP_CRITERIA.VIEW_ALIAS: viewAlias})
                     if view is not None:
                         customViews.append(view)
-                    self._clearSoundEnv(self._customEnvs[layer][viewAlias])
-                    del self._customEnvs[layer][viewAlias]
+                    else:
+                        self._clearSoundEnv(self._customEnvs[layer][viewAlias])
+                        del self._customEnvs[layer][viewAlias]
 
             for view in customViews:
                 self.__onViewDisposed(view)
@@ -558,16 +566,15 @@ class GuiAmbientsCtrl(object):
         window = self.guiLoader.windowsManager.getWindow(uniqueID)
         if window is None or not window.windowFlags & (WindowFlags.WINDOW_FULLSCREEN | WindowFlags.WINDOW | WindowFlags.DIALOG):
             return
-        else:
-            if newStatus == ViewStatus.LOADED:
-                self.__registerGFSoundEnv(window.proxy.content)
+        if newStatus == ViewStatus.LOADED:
+            self.__registerGFSoundEnv(window.proxy.content)
+            self._restartSounds()
+        elif newStatus == ViewStatus.DESTROYING:
+            view = window.proxy.content
+            if view and view.uniqueID in self._gfCustomEnvs:
+                self.__removeGFSoundEnv(view)
                 self._restartSounds()
-            elif newStatus == ViewStatus.DESTROYING:
-                view = window.proxy.content
-                if view and view.uniqueID in self._gfCustomEnvs:
-                    self.__removeGFSoundEnv(view)
-                    self._restartSounds()
-            return
+        return
 
     def __onViewDisposed(self, view):
         uniqueName = view.getUniqueName()

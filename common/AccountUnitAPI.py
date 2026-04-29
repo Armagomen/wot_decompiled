@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/AccountUnitAPI.py
 import json
 from typing import Optional as TOptional
 from constants import PREBATTLE_TYPE, IS_DEVELOPMENT
@@ -12,13 +10,14 @@ class UNIT_API:
     CLIENT = 1
     WGSH = 2
     TMS = 3
-    EXTERNAL_API = (WGSH, TMS)
+    EXTERNAL_API = (
+     WGSH, TMS)
 
 
 UNIT_API_NAMES = dict([ (v, k) for k, v in UNIT_API.__dict__.iteritems() if not k.startswith('_') ])
 
 def makeServerRequestID(unitApiID, webRequestID):
-    return unitApiID << 32 | webRequestID & 4294967295L
+    return unitApiID << 32 | webRequestID & 4294967295
 
 
 def getUnitApiID(serverRequestID):
@@ -26,7 +25,7 @@ def getUnitApiID(serverRequestID):
 
 
 def getOriginalRequestID(serverRequestID):
-    return serverRequestID & 4294967295L
+    return serverRequestID & 4294967295
 
 
 class AccountUnitAPI:
@@ -59,7 +58,7 @@ class UnitClientAPI(object):
         pass
 
     def getUnitMgrID(self):
-        pass
+        return 0
 
     def _callUnitAPI(self, methodName, *args):
         unitMgrID = self.getUnitMgrID()
@@ -142,11 +141,8 @@ class UnitClientAPI(object):
         return self._doUnitCmd(CLIENT_UNIT_CMD.SET_UNIT_MEMBER_READY, int(isReady), int(resetVehicle))
 
     def setRosterSlot(self, rosterSlotIdx, vehTypeID=None, nationNames=[], levels=(1, 8), vehClassNames=[]):
-        LOG_DEBUG('setRosterSlot: slot=%s, vehTypeID=%s, nationNames=%s, levels=%s, vehClassNames=%s' % (rosterSlotIdx,
-         vehTypeID,
-         repr(nationNames),
-         repr(levels),
-         repr(vehClassNames)))
+        LOG_DEBUG('setRosterSlot: slot=%s, vehTypeID=%s, nationNames=%s, levels=%s, vehClassNames=%s' % (
+         rosterSlotIdx, vehTypeID, repr(nationNames), repr(levels), repr(vehClassNames)))
         rSlot = UnitRosterSlot(vehTypeID, nationNames, levels, vehClassNames)
         return self._doUnitCmd(CLIENT_UNIT_CMD.SET_ROSTER_SLOT, 0, rosterSlotIdx, rSlot.pack())
 
@@ -160,7 +156,8 @@ class UnitClientAPI(object):
         return self._doUnitCmd(CLIENT_UNIT_CMD.OPEN_UNIT, int(isOpen))
 
     def setDevMode(self, isDevMode=True):
-        return self._doUnitCmd(CLIENT_UNIT_CMD.SET_UNIT_DEV_MODE, int(isDevMode)) if IS_DEVELOPMENT else None
+        if IS_DEVELOPMENT:
+            return self._doUnitCmd(CLIENT_UNIT_CMD.SET_UNIT_DEV_MODE, int(isDevMode))
 
     def startBattle(self, vehInvID=0, gameplaysMask=None, arenaTypeID=0, randomFlags=None, stopAutoSearch=False, startBattleUnitCmd=CLIENT_UNIT_CMD.START_UNIT_BATTLE, extraModeData=''):
         if gameplaysMask is not None:
@@ -196,7 +193,7 @@ class UnitClientAPI(object):
         return self._doUnitCmd(CLIENT_UNIT_CMD.SET_ARENA_TYPE, arenaTypeID)
 
     def setVehicleList(self, vehicleList):
-        return self._doUnitCmd(CLIENT_UNIT_CMD.SET_VEHICLE_LIST, 0, 0, ','.join(map(str, vehicleList)))
+        return self._doUnitCmd(CLIENT_UNIT_CMD.SET_VEHICLE_LIST, 0, 0, (',').join(map(str, vehicleList)))
 
     def doUnitCmd(self, clientUnitCmdID, argInt64=0, argInt32=0, argStr=''):
         return self._doUnitCmd(clientUnitCmdID, argInt64, argInt32, argStr)

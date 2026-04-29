@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/header_helpers/quest_flags_getters.py
 import typing
 from gui.Scaleform.daapi.view.lobby.hangar.header_helpers.flag_constants import QuestFlagTypes
 from gui.shared.system_factory import collectQuestFlags
@@ -64,18 +62,15 @@ class BaseQuestFlagsGetter(IQuestFlagsGetter):
 
 
 class DefaultQuestFlagsGetter(BaseQuestFlagsGetter):
-    _SUPPORTED_FLAGS = (QuestFlagTypes.PERSONAL_MISSIONS,
-     QuestFlagTypes.BATTLE,
-     QuestFlagTypes.MARATHON,
-     QuestFlagTypes.ELEN)
+    _SUPPORTED_FLAGS = (
+     QuestFlagTypes.PERSONAL_MISSIONS, QuestFlagTypes.BATTLE, QuestFlagTypes.MARATHON, QuestFlagTypes.ELEN)
 
 
 class RankedQuestFlagsGetter(BaseQuestFlagsGetter):
-    _SUPPORTED_FLAGS = (QuestFlagTypes.RANKED,)
+    _SUPPORTED_FLAGS = (
+     QuestFlagTypes.RANKED,)
 
 
 class MapboxQuestFlagsGetter(BaseQuestFlagsGetter):
-    _SUPPORTED_FLAGS = (QuestFlagTypes.BATTLE,
-     QuestFlagTypes.MAPBOX,
-     QuestFlagTypes.MARATHON,
-     QuestFlagTypes.ELEN)
+    _SUPPORTED_FLAGS = (
+     QuestFlagTypes.BATTLE, QuestFlagTypes.MAPBOX, QuestFlagTypes.MARATHON, QuestFlagTypes.ELEN)

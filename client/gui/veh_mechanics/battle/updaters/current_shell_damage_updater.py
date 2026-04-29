@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/veh_mechanics/battle/updaters/current_shell_damage_updater.py
 from __future__ import absolute_import
-import logging
-import typing
+import logging, typing
 from gui.veh_mechanics.battle.updaters.updaters_common import ViewUpdater
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
@@ -48,7 +45,9 @@ class CurrentShellDamageUpdater(ViewUpdater):
             return 0
         else:
             quantity, _ = ammoCtrl.getShells(currentShellCD)
-            return 0 if quantity == 0 else ammoCtrl.getGunSettings().getShellDescriptor(currentShellCD).armorDamage[0]
+            if quantity == 0:
+                return 0
+            return ammoCtrl.getGunSettings().getShellDescriptor(currentShellCD).armorDamage[0]
 
     def __onCurrentShellDamageChanged(self, *_):
         newDamage = self.__getCurrentShellDamage()

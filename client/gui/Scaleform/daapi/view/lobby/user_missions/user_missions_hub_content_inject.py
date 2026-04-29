@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/user_missions/user_missions_hub_content_inject.py
 from gui.Scaleform.daapi.view.meta.UserMissionsHubContentInjectMeta import UserMissionsHubContentInjectMeta
 from gui.Scaleform.framework.entities.inject_component_adaptor import InjectComponentAdaptor
 

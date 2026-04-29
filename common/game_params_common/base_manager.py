@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/game_params_common/base_manager.py
-import logging
-import typing
+import logging, typing
 from dict2model.schemas import SchemaModelType
 from game_params_common.schema import GameParamsSchema
 from py2to3 import patched_typing
@@ -9,7 +6,7 @@ from soft_exception import SoftException
 _logger = logging.getLogger(__name__)
 
 class SchemaInfo(object):
-    __slots__ = ('schema',)
+    __slots__ = ('schema', )
 
     def __init__(self, schema):
         self.schema = schema

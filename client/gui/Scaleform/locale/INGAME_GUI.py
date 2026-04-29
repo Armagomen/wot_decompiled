@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/locale/INGAME_GUI.py
 from debug_utils import LOG_WARNING
 
 class INGAME_GUI(object):
@@ -35,6 +33,7 @@ class INGAME_GUI(object):
     PLAYER_ERRORS_CANT_SHOOT_GUN_RELOAD = '#ingame_gui:player_errors/cant_shoot/gun_reload'
     PLAYER_ERRORS_CANT_SHOOT_GUN_LOCKED = '#ingame_gui:player_errors/cant_shoot/gun_locked'
     PLAYER_ERRORS_CANT_SHOOT_GUN_OVERHEATED = '#ingame_gui:player_errors/cant_shoot/gun_overheated'
+    PLAYER_ERRORS_CANT_SHOOT_LOW_CHARGE_SHOT_BLOCKING = '#ingame_gui:player_errors/cant_shoot/low_charge_shot_blocking'
     PLAYER_ERRORS_CANT_SWITCH_ENGINE_DESTROYED = '#ingame_gui:player_errors/cant_switch/engine_destroyed'
     PLAYER_ERRORS_CANT_SWITCH_GUN_DESTROYED = '#ingame_gui:player_errors/cant_switch/gun_destroyed'
     PLAYER_ERRORS_CANT_SWITCH_ONE_SHELL_LEFT = '#ingame_gui:player_errors/cant_switch/one_shell_left'
@@ -237,6 +236,7 @@ class INGAME_GUI(object):
     SHELLS_KINDS_ARMOR_PIERCING = '#ingame_gui:shells_kinds/ARMOR_PIERCING'
     SHELLS_KINDS_ARMOR_PIERCING_HE = '#ingame_gui:shells_kinds/ARMOR_PIERCING_HE'
     SHELLS_KINDS_ARMOR_PIERCING_CR = '#ingame_gui:shells_kinds/ARMOR_PIERCING_CR'
+    SHELLS_KINDS_PARAMS_HEADER = '#ingame_gui:shells_kinds/params/header'
     SHELLS_KINDS_PARAMS_DAMAGE = '#ingame_gui:shells_kinds/params/damage'
     SHELLS_KINDS_PARAMS_DAMAGEPERSECOND = '#ingame_gui:shells_kinds/params/damagePerSecond'
     SHELLS_KINDS_PARAMS_PIERCINGPOWER = '#ingame_gui:shells_kinds/params/piercingPower'
@@ -425,6 +425,7 @@ class INGAME_GUI(object):
     PLAYER_MESSAGES_DEATH_FROM_SHOT_ALLY_ENEMY_COMP7 = '#ingame_gui:player_messages/DEATH_FROM_SHOT_ALLY_ENEMY_COMP7'
     PLAYER_MESSAGES_DEATH_FROM_SHOT_ENEMY_ALLY_POI = '#ingame_gui:player_messages/DEATH_FROM_SHOT_ENEMY_ALLY_POI'
     PLAYER_MESSAGES_DEATH_FROM_SHOT_ENEMY_ALLY_COMP7 = '#ingame_gui:player_messages/DEATH_FROM_SHOT_ENEMY_ALLY_COMP7'
+    PLAYER_MESSAGES_DEATH_FROM_SHOT_UNKNOWN_ALLY = '#ingame_gui:player_messages/DEATH_FROM_SHOT_UNKNOWN_ALLY'
     PLAYER_MESSAGES_DEATH_FROM_ARTILLERY_ENEMY_SUICIDE = '#ingame_gui:player_messages/DEATH_FROM_ARTILLERY_ENEMY_SUICIDE'
     PLAYER_MESSAGES_DEATH_FROM_ARTILLERY_ALLY_SUICIDE = '#ingame_gui:player_messages/DEATH_FROM_ARTILLERY_ALLY_SUICIDE'
     PLAYER_MESSAGES_DEATH_FROM_BOMBER_ENEMY_SUICIDE = '#ingame_gui:player_messages/DEATH_FROM_BOMBER_ENEMY_SUICIDE'
@@ -731,6 +732,7 @@ class INGAME_GUI(object):
     SIEGEMODE_HINT_TARGETDESIGNATOR = '#ingame_gui:siegeMode/hint/targetDesignator'
     SIEGEMODE_HINT_TWINGUN = '#ingame_gui:siegeMode/hint/twinGun'
     SIEGEMODE_HINT_STAGEDJETBOOSTERS = '#ingame_gui:siegeMode/hint/stagedJetBoosters'
+    SIEGEMODE_HINT_WHEELEDDASH = '#ingame_gui:siegeMode/hint/wheeledDash'
     EFFICIENCYRIBBONS_ENEMYSECTORCAPTURED = '#ingame_gui:efficiencyRibbons/enemySectorCaptured'
     EFFICIENCYRIBBONS_DESTRUCTIBLEDAMAGED = '#ingame_gui:efficiencyRibbons/destructibleDamaged'
     EFFICIENCYRIBBONS_DESTRUCTIBLEDESTROYED = '#ingame_gui:efficiencyRibbons/destructibleDestroyed'
@@ -1056,7 +1058,10 @@ class INGAME_GUI(object):
     BOT_BOSS = '#ingame_gui:bot/boss'
     GRILLE_STATUS_SPEEDLIMIT = '#ingame_gui:grille/status/speedlimit'
     GRILLE_STATUS_RELOAD = '#ingame_gui:grille/status/reload'
-    CHAT_SHORTCUTS_ENUM = (CHAT_SHORTCUTS_ATTENTION_TO_POSITION_GRIDINFO,
+    BATTLEMESSENGER_W2GT_WARNING_NODATA = '#ingame_gui:battleMessenger/w2gt/warning/noData'
+    BATTLEMESSENGER_W2GT_WARNING_GETTINGDATAERROR = '#ingame_gui:battleMessenger/w2gt/warning/gettingDataError'
+    CHAT_SHORTCUTS_ENUM = (
+     CHAT_SHORTCUTS_ATTENTION_TO_POSITION_GRIDINFO,
      CHAT_SHORTCUTS_ATTENTION_TO_POSITION,
      CHAT_SHORTCUTS_GOING_THERE_GRIDINFO,
      CHAT_SHORTCUTS_GOING_THERE,
@@ -1108,7 +1113,8 @@ class INGAME_GUI(object):
      CHAT_SHORTCUTS_GLOBAL_MSG_LANE_EAST,
      CHAT_SHORTCUTS_GLOBAL_MSG_ATK_FOCUS_HQ,
      CHAT_SHORTCUTS_GLOBAL_MSG_DEF_FOCUS_HQ)
-    CHAT_EXAMPLE_ENUM = (CHAT_EXAMPLE_ATTENTION_TO_BASE_DEF,
+    CHAT_EXAMPLE_ENUM = (
+     CHAT_EXAMPLE_ATTENTION_TO_BASE_DEF,
      CHAT_EXAMPLE_ATTENTION_TO_BASE_ATK,
      CHAT_EXAMPLE_GOING_THERE,
      CHAT_EXAMPLE_GLOBAL_MSG_DEF_SAVE_TANKS,
@@ -1139,7 +1145,8 @@ class INGAME_GUI(object):
      CHAT_EXAMPLE_SPG_AIM_AREA,
      CHAT_EXAMPLE_ATTENTION_TO_POSITION,
      CHAT_EXAMPLE_SUPPORTING_ALLY)
-    EFFICIENCYRIBBONS_ENUM = (EFFICIENCYRIBBONS_ARMOR,
+    EFFICIENCYRIBBONS_ENUM = (
+     EFFICIENCYRIBBONS_ARMOR,
      EFFICIENCYRIBBONS_CAPTURE,
      EFFICIENCYRIBBONS_DAMAGE,
      EFFICIENCYRIBBONS_RAM,
@@ -1197,11 +1204,13 @@ class INGAME_GUI(object):
      EFFICIENCYRIBBONS_DESTRUCTIBLESDEFENDED,
      EFFICIENCYRIBBONS_DEFENDERBONUS,
      EFFICIENCYRIBBONS_ASSISTBYABILITY)
-    SIEGEMODE_HINT_FORMODE_ENUM = (SIEGEMODE_HINT_FORMODE_0,
+    SIEGEMODE_HINT_FORMODE_ENUM = (
+     SIEGEMODE_HINT_FORMODE_0,
      SIEGEMODE_HINT_FORMODE_1,
      SIEGEMODE_HINT_FORMODE_2,
      SIEGEMODE_HINT_FORMODE_3)
-    REWARDWINDOW_ALL_HEADERTEXT_ENUM = (REWARDWINDOW_BASE_HEADERTEXT,
+    REWARDWINDOW_ALL_HEADERTEXT_ENUM = (
+     REWARDWINDOW_BASE_HEADERTEXT,
      REWARDWINDOW_WGCQ_CLAN_REWARD_HEADERTEXT,
      REWARDWINDOW_WGCQ_PLAYER_REWARD_HEADERTEXT,
      REWARDWINDOW_TWITCH0_HEADERTEXT,
@@ -1247,7 +1256,8 @@ class INGAME_GUI(object):
      REWARDWINDOW_PIGGYBANK_HEADERTEXT,
      REWARDWINDOW_COMMANDER_MARINA_HEADERTEXT,
      REWARDWINDOW_COMMANDER_PATRICK_HEADERTEXT)
-    REWARDWINDOW_ALL_SUBHEADERTEXT_ENUM = (REWARDWINDOW_BASE_SUBHEADERTEXT,
+    REWARDWINDOW_ALL_SUBHEADERTEXT_ENUM = (
+     REWARDWINDOW_BASE_SUBHEADERTEXT,
      REWARDWINDOW_WGCQ_CLAN_REWARD_SUBHEADERTEXT,
      REWARDWINDOW_WGCQ_PLAYER_REWARD_SUBHEADERTEXT,
      REWARDWINDOW_TWITCH0_SUBHEADERTEXT,
@@ -1287,7 +1297,8 @@ class INGAME_GUI(object):
      REWARDWINDOW_PIGGYBANK_SUBHEADERTEXT,
      REWARDWINDOW_COMMANDER_MARINA_SUBHEADERTEXT,
      REWARDWINDOW_COMMANDER_PATRICK_SUBHEADERTEXT)
-    REWARDWINDOW_ALL_BTNLABEL_ENUM = (REWARDWINDOW_BASE_BTNLABEL,
+    REWARDWINDOW_ALL_BTNLABEL_ENUM = (
+     REWARDWINDOW_BASE_BTNLABEL,
      REWARDWINDOW_WGCQ_CLAN_REWARD_BTNLABEL,
      REWARDWINDOW_WGCQ_PLAYER_REWARD_BTNLABEL,
      REWARDWINDOW_TWITCH0_BTNLABEL,
@@ -1329,7 +1340,8 @@ class INGAME_GUI(object):
      REWARDWINDOW_PIGGYBANK_BTNLABEL,
      REWARDWINDOW_COMMANDER_MARINA_BTNLABEL,
      REWARDWINDOW_COMMANDER_PATRICK_BTNLABEL)
-    REWARDWINDOW_ALL_DESCTEXT_ENUM = (REWARDWINDOW_BASE_DESCTEXT,
+    REWARDWINDOW_ALL_DESCTEXT_ENUM = (
+     REWARDWINDOW_BASE_DESCTEXT,
      REWARDWINDOW_WGCQ_CLAN_REWARD_DESCTEXT,
      REWARDWINDOW_WGCQ_PLAYER_REWARD_DESCTEXT,
      REWARDWINDOW_TWITCH0_DESCTEXT,
@@ -1378,72 +1390,72 @@ class INGAME_GUI(object):
 
     @classmethod
     def chat_shortcuts(cls, key0):
-        outcome = '#ingame_gui:chat_shortcuts/{}'.format(key0)
+        outcome = ('#ingame_gui:chat_shortcuts/{}').format(key0)
         if outcome not in cls.CHAT_SHORTCUTS_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def chat_example(cls, key0):
-        outcome = '#ingame_gui:chat_example/{}'.format(key0)
+        outcome = ('#ingame_gui:chat_example/{}').format(key0)
         if outcome not in cls.CHAT_EXAMPLE_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def efficiencyribbons(cls, key0):
-        outcome = '#ingame_gui:efficiencyRibbons/{}'.format(key0)
+        outcome = ('#ingame_gui:efficiencyRibbons/{}').format(key0)
         if outcome not in cls.EFFICIENCYRIBBONS_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def siegeModeHint(cls, mode):
-        outcome = '#ingame_gui:siegeMode/hint/forMode/{}'.format(mode)
+        outcome = ('#ingame_gui:siegeMode/hint/forMode/{}').format(mode)
         if outcome not in cls.SIEGEMODE_HINT_FORMODE_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getRewardWindowHeader(cls, eventName):
-        outcome = '#ingame_gui:rewardWindow/{}/headerText'.format(eventName)
+        outcome = ('#ingame_gui:rewardWindow/{}/headerText').format(eventName)
         if outcome not in cls.REWARDWINDOW_ALL_HEADERTEXT_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getRewardWindowSubHeader(cls, eventName):
-        outcome = '#ingame_gui:rewardWindow/{}/subHeaderText'.format(eventName)
+        outcome = ('#ingame_gui:rewardWindow/{}/subHeaderText').format(eventName)
         if outcome not in cls.REWARDWINDOW_ALL_SUBHEADERTEXT_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getRewardWindowBtnLabel(cls, eventName):
-        outcome = '#ingame_gui:rewardWindow/{}/btnLabel'.format(eventName)
+        outcome = ('#ingame_gui:rewardWindow/{}/btnLabel').format(eventName)
         if outcome not in cls.REWARDWINDOW_ALL_BTNLABEL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getRewardWindowDescText(cls, eventName):
-        outcome = '#ingame_gui:rewardWindow/{}/descText'.format(eventName)
+        outcome = ('#ingame_gui:rewardWindow/{}/descText').format(eventName)
         if outcome not in cls.REWARDWINDOW_ALL_DESCTEXT_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome

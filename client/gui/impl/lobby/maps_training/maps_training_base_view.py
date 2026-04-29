@@ -1,14 +1,11 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/maps_training/maps_training_base_view.py
 from gui.impl.pub import ViewImpl
-from gui.impl.lobby.common.view_mixins import LobbyHeaderVisibility
 from gui.hangar_cameras.hangar_camera_common import CameraRelatedEvents
 from gui.shared import g_eventBus, EVENT_BUS_SCOPE, events
 from frameworks.wulf import ViewSettings, ViewFlags
 from helpers import dependency
 from skeletons.gui.app_loader import IAppLoader
 
-class MapsTrainingBaseView(ViewImpl, LobbyHeaderVisibility):
+class MapsTrainingBaseView(ViewImpl):
     appLoader = dependency.descriptor(IAppLoader)
     _BACKGROUND_ALPHA = 0
 
@@ -26,7 +23,6 @@ class MapsTrainingBaseView(ViewImpl, LobbyHeaderVisibility):
 
     def _initialize(self, *args, **kwargs):
         super(MapsTrainingBaseView, self)._initialize(*args, **kwargs)
-        self.suspendLobbyHeader(self.uniqueID)
         app = self.appLoader.getApp()
         app.setBackgroundAlpha(self._BACKGROUND_ALPHA)
 
@@ -36,7 +32,6 @@ class MapsTrainingBaseView(ViewImpl, LobbyHeaderVisibility):
 
     def _finalize(self):
         self._removeListeners()
-        self.resumeLobbyHeader(self.uniqueID)
         super(MapsTrainingBaseView, self)._finalize()
 
     def _addListeners(self):
@@ -51,9 +46,7 @@ class MapsTrainingBaseView(ViewImpl, LobbyHeaderVisibility):
         if args is None:
             return
         else:
-            ctx = {'dx': args.get('dx'),
-             'dy': args.get('dy'),
-             'dz': args.get('dz')}
+            ctx = {'dx': args.get('dx'), 'dy': args.get('dy'), 'dz': args.get('dz')}
             g_eventBus.handleEvent(CameraRelatedEvents(CameraRelatedEvents.LOBBY_VIEW_MOUSE_MOVE, ctx=ctx), EVENT_BUS_SCOPE.GLOBAL)
             g_eventBus.handleEvent(events.LobbySimpleEvent(events.LobbySimpleEvent.NOTIFY_SPACE_MOVED, ctx=ctx), EVENT_BUS_SCOPE.GLOBAL)
             return

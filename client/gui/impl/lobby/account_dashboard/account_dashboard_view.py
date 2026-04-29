@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/account_dashboard/account_dashboard_view.py
 import logging
 from frameworks.wulf import ViewFlags, ViewSettings
 from gui.Scaleform.Waiting import Waiting
@@ -44,15 +42,15 @@ class AccountDashboardView(ViewImpl):
         settings.flags = ViewFlags.LOBBY_SUB_VIEW
         settings.model = AccountDashboardModel()
         super(AccountDashboardView, self).__init__(settings)
-        self._features = {Feature.HEADER: HeaderFeature(self.viewModel),
-         Feature.SUBSCRIPTIONS: SubscriptionsFeature(self.viewModel),
-         Feature.PREMIUM_ACCOUNT: PremiumAccountFeature(self.viewModel),
-         Feature.BONUS_XP: BonusXPFeature(self.viewModel),
-         Feature.RESERVER_STOCK: ReserveStockFeature(self.viewModel),
-         Feature.PREMIUM_QUESTS: PremiumQuestsFeature(self.viewModel),
-         Feature.EXCLUDED_MAPS: ExcludedMapsFeature(self.viewModel),
-         Feature.DOG_TAGS: DogTagsFeature(self.viewModel),
-         Feature.PARENTAL_CONTROL: ParentalControlFeature(self.viewModel)}
+        self._features = {Feature.HEADER: HeaderFeature(self.viewModel), 
+           Feature.SUBSCRIPTIONS: SubscriptionsFeature(self.viewModel), 
+           Feature.PREMIUM_ACCOUNT: PremiumAccountFeature(self.viewModel), 
+           Feature.BONUS_XP: BonusXPFeature(self.viewModel), 
+           Feature.RESERVER_STOCK: ReserveStockFeature(self.viewModel), 
+           Feature.PREMIUM_QUESTS: PremiumQuestsFeature(self.viewModel), 
+           Feature.EXCLUDED_MAPS: ExcludedMapsFeature(self.viewModel), 
+           Feature.DOG_TAGS: DogTagsFeature(self.viewModel), 
+           Feature.PARENTAL_CONTROL: ParentalControlFeature(self.viewModel)}
         self._wotPlusUILogger = WotPlusAccountDashboardLogger()
         self.modelDataControllers = {}
 
@@ -73,12 +71,12 @@ class AccountDashboardView(ViewImpl):
                 return content
 
         _logger.error('Crew header view tried creating invalid tooltip with contentID %d', contentID)
-        return None
+        return
 
     def _onLoading(self, *args, **kwargs):
         super(AccountDashboardView, self)._onLoading(*args, **kwargs)
         Waiting.show('loadPage')
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             for feature in self._features.values():
                 feature.fill(tx)
 

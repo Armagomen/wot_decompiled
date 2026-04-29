@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/mode_selector/items/comp7_mode_selector_item.py
 import typing
 from comp7.gui.impl.lobby.comp7_helpers import comp7_model_helpers, comp7_shared, comp7_qualification_helpers
 from comp7_core.gui.impl.lobby.comp7_core_helpers.comp7_core_model_helpers import getSeasonNameEnum
@@ -21,7 +19,7 @@ if typing.TYPE_CHECKING:
 
 class Comp7ModeSelectorItem(ModeSelectorLegacyItem):
     __comp7Controller = dependency.descriptor(IComp7Controller)
-    __slots__ = ('__currentSeason',)
+    __slots__ = ('__currentSeason', )
     _VIEW_MODEL = ModeSelectorComp7Model
 
     def __init__(self, oldSelectorItem):
@@ -36,7 +34,9 @@ class Comp7ModeSelectorItem(ModeSelectorLegacyItem):
     def createToolTipContent(self, event, contentID):
         if contentID == R.views.comp7.mono.lobby.tooltips.rank_inactivity_tooltip():
             return RankInactivityTooltip()
-        return ProgressionTooltip() if contentID == R.views.comp7.mono.lobby.tooltips.progression_tooltip() else super(Comp7ModeSelectorItem, self).createToolTipContent(event, contentID)
+        if contentID == R.views.comp7.mono.lobby.tooltips.progression_tooltip():
+            return ProgressionTooltip()
+        return super(Comp7ModeSelectorItem, self).createToolTipContent(event, contentID)
 
     def _onInitializing(self):
         super(Comp7ModeSelectorItem, self)._onInitializing()
@@ -78,7 +78,7 @@ class Comp7ModeSelectorItem(ModeSelectorLegacyItem):
         isInPreannounce = self.__comp7Controller.isInPreannounceState()
         isBeforeSeasons = not prevSeason and nextSeason
         isAfterLastSeason = not nextSeason and prevSeason
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             if isStarted:
                 vm.setTimeLeft(self.__getSeasonTimeLeft())
                 self._addReward(ModeSelectorRewardID.PROGRESSION_STYLE)
@@ -97,12 +97,15 @@ class Comp7ModeSelectorItem(ModeSelectorLegacyItem):
             vm.setExternalPath(R.views.comp7.lobby.Comp7BattleCard())
 
     def __getSeasonTimeLeft(self):
-        return time_formatters.getTillTimeByResource(max(0, self.__currentSeason.getEndDate() - time_utils.getServerUTCTime()), R.strings.menu.Time.timeLeftShort, removeLeadingZeros=True) if self.__currentSeason is not None else ''
+        if self.__currentSeason is not None:
+            return time_formatters.getTillTimeByResource(max(0, self.__currentSeason.getEndDate() - time_utils.getServerUTCTime()), R.strings.menu.Time.timeLeftShort, removeLeadingZeros=True)
+        else:
+            return ''
 
     def __fillWidgetData(self):
         division = comp7_shared.getPlayerDivision()
         rank = comp7_shared.getRankEnumValue(division)
-        with self.viewModel.widget.transaction() as vm:
+        with self.viewModel.widget.transaction() as (vm):
             vm.setSeasonName(getSeasonNameEnum(self.__comp7Controller, SeasonName))
             vm.setRank(rank)
             vm.setCurrentScore(self.__comp7Controller.rating)

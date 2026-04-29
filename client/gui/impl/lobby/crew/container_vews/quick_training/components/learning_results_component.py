@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/container_vews/quick_training/components/learning_results_component.py
 import typing
 from gui.impl.lobby.container_views.base.components import ComponentBase
 if typing.TYPE_CHECKING:
@@ -12,7 +10,11 @@ class LearningResultsComponent(ComponentBase):
         return vm.learningResults
 
     def _getEvents(self):
-        return super(LearningResultsComponent, self)._getEvents() + ((self.viewModel.learn, self.events.onLearn), (self.viewModel.cancel, self.events.onCancel))
+        return super(LearningResultsComponent, self)._getEvents() + (
+         (
+          self.viewModel.learn, self.events.onLearn),
+         (
+          self.viewModel.cancel, self.events.onCancel))
 
     def _fillViewModel(self, vm):
         freeXP = self.context.getAcquiringFreeXpValue()

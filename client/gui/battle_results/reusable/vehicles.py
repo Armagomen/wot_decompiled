@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_results/reusable/vehicles.py
 import weakref
 from collections import defaultdict, namedtuple
 import typing
@@ -9,12 +7,10 @@ from helpers import dependency
 from skeletons.gui.shared import IItemsCache
 if typing.TYPE_CHECKING:
     from players import PlayerInfo
-_VehicleShortInfo = namedtuple('_ShortVehicleInfo', ('intCD', 'team', 'accountDBID', 'deathReason', 'isTeamKiller'))
-_VehicleShortInfo.__new__.__defaults__ = (0,
- 0,
- 0,
- DEATH_REASON_ALIVE,
- False)
+_VehicleShortInfo = namedtuple('_ShortVehicleInfo', ('intCD', 'team', 'accountDBID',
+                                                     'deathReason', 'isTeamKiller'))
+_VehicleShortInfo.__new__.__defaults__ = (
+ 0, 0, 0, DEATH_REASON_ALIVE, False)
 
 def _getVehiclesGenerator(vehicles):
     for vehicleID, data in vehicles.iteritems():
@@ -38,7 +34,8 @@ def _getVehiclesGenerator(vehicles):
 
 
 class VehiclesInfo(shared.UnpackedInfo):
-    __slots__ = ('__vehicles', '__vehicleToAccountID', '__accountToVehicleID', '__details', '__bonusType')
+    __slots__ = ('__vehicles', '__vehicleToAccountID', '__accountToVehicleID', '__details',
+                 '__bonusType')
     itemsCache = dependency.descriptor(IItemsCache)
 
     def __init__(self, bonusType, vehicles):
@@ -58,7 +55,7 @@ class VehiclesInfo(shared.UnpackedInfo):
                 self._addUnpackedItemID(vehicleID)
             self.__vehicles[vehicleID] = sorted(items, key=_getKey)
             for idx, info in enumerate(self.__vehicles[vehicleID]):
-                self.__details[vehicleID, info.intCD] = idx
+                self.__details[(vehicleID, info.intCD)] = idx
 
             if accountDBID and vehicleID:
                 self.__vehicleToAccountID[vehicleID] = accountDBID
@@ -114,7 +111,7 @@ class VehiclesInfo(shared.UnpackedInfo):
                 if veh['typeCompDescr'] == intCD:
                     return veh
 
-            return None
+            return
 
         vehicleDetailedInfoCls = ReusableInfoFactory.vehicleDetailedInfoForBonusType(self.__bonusType)
         for idx, item in enumerate(items):

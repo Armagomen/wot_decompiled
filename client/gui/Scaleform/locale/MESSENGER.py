@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/locale/MESSENGER.py
 from debug_utils import LOG_WARNING
 
 class MESSENGER(object):
@@ -297,6 +295,7 @@ class MESSENGER(object):
     SERVICECHANNELMESSAGES_BATTLERESULTS_DEFEAT = '#messenger:serviceChannelMessages/battleResults/defeat'
     SERVICECHANNELMESSAGES_BATTLERESULTS_TECHDEFEAT = '#messenger:serviceChannelMessages/battleResults/techDefeat'
     SERVICECHANNELMESSAGES_BATTLERESULTS_BATTLE = '#messenger:serviceChannelMessages/battleResults/battle'
+    SERVICECHANNELMESSAGES_WOTPLUSEXTEND_BUTTON = '#messenger:serviceChannelMessages/wotPlusExtend/button'
     SERVICECHANNELMESSAGES_BATTLERESULTS_TANKS = '#messenger:serviceChannelMessages/battleResults/tanks'
     SERVICECHANNELMESSAGES_BATTLERESULTS_EXPERIENCE = '#messenger:serviceChannelMessages/battleResults/experience'
     SERVICECHANNELMESSAGES_BATTLERESULTS_FREEXP = '#messenger:serviceChannelMessages/battleResults/freeXP'
@@ -387,9 +386,6 @@ class MESSENGER(object):
     SERVICECHANNELMESSAGES_BATTLERESULTS_TANKWOMAN = '#messenger:serviceChannelMessages/battleResults/tankwoman'
     SERVICECHANNELMESSAGES_BATTLERESULTS_TANKMAN = '#messenger:serviceChannelMessages/battleResults/tankman'
     SERVICECHANNELMESSAGES_BATTLERESULTS_BATTLEPASS = '#messenger:serviceChannelMessages/battleResults/battlePass'
-    SERVICECHANNELMESSAGES_BRBATTLERESULTS_BATTLEPASS = '#messenger:serviceChannelMessages/BRbattleResults/battlePass'
-    SERVICECHANNELMESSAGES_BRBATTLERESULTS_BATTLEROYALEBRCOIN = '#messenger:serviceChannelMessages/BRbattleResults/battleRoyaleBrCoin'
-    SERVICECHANNELMESSAGES_BRBATTLERESULTS_BRPROGRESSIONTITLE = '#messenger:serviceChannelMessages/BRbattleResults/BRProgressionTitle'
     SERVICECHANNELMESSAGES_CURRENCYUPDATE_AUCTION = '#messenger:serviceChannelMessages/currencyUpdate/auction'
     SERVICECHANNELMESSAGES_CURRENCYUPDATE_BATTLEPASS = '#messenger:serviceChannelMessages/currencyUpdate/battlepass'
     SERVICECHANNELMESSAGES_CURRENCYUPDATE_INTEGRATEDAUCTION = '#messenger:serviceChannelMessages/currencyUpdate/integratedAuction'
@@ -1003,6 +999,7 @@ class MESSENGER(object):
     SERVICECHANNELMESSAGES_BATTLEPASSREWARD_POSTPROGRESSION_NEWLEVELS_TEXT = '#messenger:serviceChannelMessages/battlePassReward/postProgression/newLevels/text'
     SERVICECHANNELMESSAGES_BATTLEPASSREWARD_ACTIVATECHAPTER_TEXT = '#messenger:serviceChannelMessages/battlePassReward/activateChapter/text'
     SERVICECHANNELMESSAGES_BATTLEPASSREWARD_BUYWITHOUTREWARDS_TEXT = '#messenger:serviceChannelMessages/battlePassReward/buyWithoutRewards/text'
+    SERVICECHANNELMESSAGES_BATTLEPASSREWARD_BUYWITHOUTREWARDS_ADDITIONALTEXT = '#messenger:serviceChannelMessages/battlePassReward/buyWithoutRewards/additionalText'
     SERVICECHANNELMESSAGES_BATTLEPASSREWARD_BUYWITHREWARDS_TEXT = '#messenger:serviceChannelMessages/battlePassReward/buyWithRewards/text'
     SERVICECHANNELMESSAGES_BATTLEPASSREWARD_BUYBPWITHLEVELS_TEXT = '#messenger:serviceChannelMessages/battlePassReward/buyBPWithLevels/text'
     SERVICECHANNELMESSAGES_BATTLEPASSREWARD_BUYWITHREWARDS_ADDITIONALTEXT = '#messenger:serviceChannelMessages/battlePassReward/buyWithRewards/additionalText'
@@ -1011,6 +1008,9 @@ class MESSENGER(object):
     SERVICECHANNELMESSAGES_BATTLEPASSREWARD_BUYPROGRESS_FINALTEXT = '#messenger:serviceChannelMessages/battlePassReward/buyProgress/finalText'
     SERVICECHANNELMESSAGES_BATTLEPASSREWARD_BUY_GOLD = '#messenger:serviceChannelMessages/battlePassReward/buy/gold'
     SERVICECHANNELMESSAGES_BATTLEPASSREWARD_BUY_FREEXP = '#messenger:serviceChannelMessages/battlePassReward/buy/freeXP'
+    SERVICECHANNELMESSAGES_BATTLEPASSREWARD_BUYSINGLE_STARTERPACK = '#messenger:serviceChannelMessages/battlePassReward/buySingle/starterPack'
+    SERVICECHANNELMESSAGES_BATTLEPASSREWARD_BUYMULTIPLE_STARTERPACK = '#messenger:serviceChannelMessages/battlePassReward/buyMultiple/starterPack'
+    SERVICECHANNELMESSAGES_BATTLEPASSREWARD_BREAKLINE = '#messenger:serviceChannelMessages/battlePassReward/breakLine'
     SERVICECHANNELMESSAGES_BATTLEPASSREWARD_BUTTON = '#messenger:serviceChannelMessages/battlePassReward/button'
     SERVICECHANNELMESSAGES_BATTLEPASSREWARD_TMAN = '#messenger:serviceChannelMessages/battlePassReward/tman'
     SERVICECHANNELMESSAGES_BATTLEPASSEXTRASTART_BUTTON = '#messenger:serviceChannelMessages/battlePassExtraStart/button'
@@ -1074,14 +1074,24 @@ class MESSENGER(object):
     SERVICECHANNELMESSAGES_EXCLUDEDMAP_UNAVAILABLE_TITLE = '#messenger:serviceChannelMessages/excludedMap/unavailable/title'
     SERVICECHANNELMESSAGES_CURRENCIESRESERVES_SMASH_TITLE = '#messenger:serviceChannelMessages/currenciesReserves/smash/title'
     SERVICECHANNELMESSAGES_WOTPLUS_UNLOCKMESSAGE_TITLE = '#messenger:serviceChannelMessages/wotPlus/unlockMessage/title'
+    SERVICECHANNELMESSAGES_WOTPLUS_UNLOCKCOREMESSAGE_TITLE = '#messenger:serviceChannelMessages/wotPlus/unlockCoreMessage/title'
+    SERVICECHANNELMESSAGES_WOTPLUS_UNLOCKPROMESSAGE_TITLE = '#messenger:serviceChannelMessages/wotPlus/unlockProMessage/title'
     SERVICECHANNELMESSAGES_WOTPLUS_RENEWMESSAGE_TITLE = '#messenger:serviceChannelMessages/wotPlus/renewMessage/title'
+    SERVICECHANNELMESSAGES_WOTPLUS_UPGRADEMESSAGE_TITLE = '#messenger:serviceChannelMessages/wotPlus/upgradeMessage/title'
     SERVICECHANNELMESSAGES_WOTPLUS_EXPIREMESSAGE_TITLE = '#messenger:serviceChannelMessages/wotPlus/expireMessage/title'
+    SERVICECHANNELMESSAGES_WOTPLUS_EXPIRECOREMESSAGE_TITLE = '#messenger:serviceChannelMessages/wotPlus/expireCoreMessage/title'
+    SERVICECHANNELMESSAGES_WOTPLUS_EXPIREPROMESSAGE_TITLE = '#messenger:serviceChannelMessages/wotPlus/expireProMessage/title'
     SERVICECHANNELMESSAGES_WOTPLUS_UNAVAILABLEMESSAGE_TITLE = '#messenger:serviceChannelMessages/wotPlus/unavailableMessage/title'
     SERVICECHANNELMESSAGES_WOTPLUS_UNLOCKFREEDEMOUNT_TITLE = '#messenger:serviceChannelMessages/wotPlus/unlockFreeDemount/title'
     SERVICECHANNELMESSAGES_WOTPLUS_EXPIREFREEDEMOUNT_TITLE = '#messenger:serviceChannelMessages/wotPlus/expireFreeDemount/title'
     SERVICECHANNELMESSAGES_WOTPLUS_EXPIREMESSAGE_TEXT = '#messenger:serviceChannelMessages/wotPlus/expireMessage/text'
     SERVICECHANNELMESSAGES_WOTPLUS_UNAVAILABLEMESSAGE_TEXT = '#messenger:serviceChannelMessages/wotPlus/unavailableMessage/text'
     SERVICECHANNELMESSAGES_WOTPLUS_NEXTDATEOFRENEWAL = '#messenger:serviceChannelMessages/wotPlus/nextDateOfRenewal'
+    SERVICECHANNELMESSAGES_WOTPLUS_NEXTDATEOFRENEWALCHANGE = '#messenger:serviceChannelMessages/wotPlus/nextDateOfRenewalChange'
+    SERVICECHANNELMESSAGES_WOTPLUS_NEXTDATEOFRENEWALPRO = '#messenger:serviceChannelMessages/wotPlus/nextDateOfRenewalPro'
+    SERVICECHANNELMESSAGES_WOTPLUS_NEXTDATEOFRENEWALPROYEARLY = '#messenger:serviceChannelMessages/wotPlus/nextDateOfRenewalProYearly'
+    SERVICECHANNELMESSAGES_WOTPLUS_NEXTDATEOFUNLOCKPRO = '#messenger:serviceChannelMessages/wotPlus/nextDateOfUnlockPro'
+    SERVICECHANNELMESSAGES_WOTPLUS_NEXTDATEOFUNLOCKPROYEARLY = '#messenger:serviceChannelMessages/wotPlus/nextDateOfUnlockProYearly'
     SERVICECHANNELMESSAGES_WOTPLUS_GOLDRESERVE_SMASH_TITLE = '#messenger:serviceChannelMessages/wotPlus/goldReserve/smash/title'
     SERVICECHANNELMESSAGES_WOTPLUS_GOLDRESERVE_ISFULL_TITLE = '#messenger:serviceChannelMessages/wotPlus/goldReserve/isFull/title'
     SERVICECHANNELMESSAGES_WOTPLUS_GOLDRESERVE_ISDISABLED_TITLE = '#messenger:serviceChannelMessages/wotPlus/goldReserve/isDisabled/title'
@@ -1117,6 +1127,18 @@ class MESSENGER(object):
     SERVICECHANNELMESSAGES_WOTPLUS_DAILYATTENDANCEREWARDED_BIG_CYCLEENDED_TITLE = '#messenger:serviceChannelMessages/wotPlus/dailyAttendanceRewarded/big/cycleEnded/title'
     SERVICECHANNELMESSAGES_WOTPLUS_DAILYATTENDANCEREWARDED_BIG_CYCLEENDED_STARTTEXT = '#messenger:serviceChannelMessages/wotPlus/dailyAttendanceRewarded/big/cycleEnded/startText'
     SERVICECHANNELMESSAGES_WOTPLUS_DAILYATTENDANCEREWARDED_BIG_CYCLEENDED_ENDTEXT = '#messenger:serviceChannelMessages/wotPlus/dailyAttendanceRewarded/big/cycleEnded/endText'
+    SERVICECHANNELMESSAGES_WOTPLUS_PROBOOST_ISDISABLED_TITLE = '#messenger:serviceChannelMessages/wotPlus/proBoost/isDisabled/title'
+    SERVICECHANNELMESSAGES_WOTPLUS_PROBOOST_ISDISABLED_TEXT = '#messenger:serviceChannelMessages/wotPlus/proBoost/isDisabled/text'
+    SERVICECHANNELMESSAGES_WOTPLUS_PROBOOST_ISENABLED_TITLE = '#messenger:serviceChannelMessages/wotPlus/proBoost/isEnabled/title'
+    SERVICECHANNELMESSAGES_WOTPLUS_PROBOOST_ISACTIVATED_TITLE = '#messenger:serviceChannelMessages/wotPlus/proBoost/isActivated/title'
+    SERVICECHANNELMESSAGES_WOTPLUS_PROBOOST_ISACTIVATED_TEXT = '#messenger:serviceChannelMessages/wotPlus/proBoost/isActivated/text'
+    SERVICECHANNELMESSAGES_WOTPLUS_PROBOOST_ISDEACTIVATED_TITLE = '#messenger:serviceChannelMessages/wotPlus/proBoost/isDeactivated/title'
+    SERVICECHANNELMESSAGES_WOTPLUS_PROBOOST_ISDEACTIVATED_TEXT = '#messenger:serviceChannelMessages/wotPlus/proBoost/isDeactivated/text'
+    SERVICECHANNELMESSAGES_WOTPLUS_PROBOOST_SWITCH_TITLE = '#messenger:serviceChannelMessages/wotPlus/proBoost/switch/title'
+    SERVICECHANNELMESSAGES_WOTPLUS_PROBOOST_SWITCH_TEXT = '#messenger:serviceChannelMessages/wotPlus/proBoost/switch/text'
+    SERVICECHANNELMESSAGES_WOTPLUS_BATTLEPASS_ISDISABLED_TITLE = '#messenger:serviceChannelMessages/wotPlus/battlePass/isDisabled/title'
+    SERVICECHANNELMESSAGES_WOTPLUS_BATTLEPASS_ISDISABLED_TEXT = '#messenger:serviceChannelMessages/wotPlus/battlePass/isDisabled/text'
+    SERVICECHANNELMESSAGES_WOTPLUS_BATTLEPASS_ISENABLED_TITLE = '#messenger:serviceChannelMessages/wotPlus/battlePass/isEnabled/title'
     SERVICECHANNELMESSAGES_BATTLEBONUSES_AVAILABLE_TITLE = '#messenger:serviceChannelMessages/battleBonuses/available/title'
     SERVICECHANNELMESSAGES_BATTLEBONUSES_UNAVAILABLE_TITLE = '#messenger:serviceChannelMessages/battleBonuses/unavailable/title'
     SERVICECHANNELMESSAGES_BADGE_AVAILABLE_TITLE = '#messenger:serviceChannelMessages/badge/available/title'
@@ -1127,6 +1149,9 @@ class MESSENGER(object):
     SERVICECHANNELMESSAGES_OPTIONALDEVICESASSISTANT_UNAVAILABLE_TITLE = '#messenger:serviceChannelMessages/optionalDevicesAssistant/unavailable/title'
     SERVICECHANNELMESSAGES_CREWASSISTANT_AVAILABLE_TITLE = '#messenger:serviceChannelMessages/crewAssistant/available/title'
     SERVICECHANNELMESSAGES_CREWASSISTANT_UNAVAILABLE_TITLE = '#messenger:serviceChannelMessages/crewAssistant/unavailable/title'
+    SERVICECHANNELMESSAGES_SERVICERECORDCUSTOMIZATION_AVAILABLE_TITLE = '#messenger:serviceChannelMessages/serviceRecordCustomization/available/title'
+    SERVICECHANNELMESSAGES_SERVICERECORDCUSTOMIZATION_UNAVAILABLE_TITLE = '#messenger:serviceChannelMessages/serviceRecordCustomization/unavailable/title'
+    SERVICECHANNELMESSAGES_SERVICERECORDCUSTOMIZATION_UNAVAILABLE_TEXT = '#messenger:serviceChannelMessages/serviceRecordCustomization/unavailable/text'
     SERVICECHANNELMESSAGES_VEHICLEPOSTPROGRESSION_DISCARDALLPAIRSMODIFICATION_BODY = '#messenger:serviceChannelMessages/vehiclePostProgression/discardAllPairsModification/body'
     SERVICECHANNELMESSAGES_VEHICLEPOSTPROGRESSION_DISCARDALLPAIRSMODIFICATION_TITLE = '#messenger:serviceChannelMessages/vehiclePostProgression/discardAllPairsModification/title'
     SERVICECHANNELMESSAGES_VEHICLEPOSTPROGRESSION_PREBATTLESWITCHTOGGLED_SHELLS_CONSUMABLES_SWITCH = '#messenger:serviceChannelMessages/vehiclePostProgression/prebattleSwitchToggled/shells_consumables_switch'
@@ -1154,8 +1179,6 @@ class MESSENGER(object):
     PLATFORMCURRENCYMSG_DEBITED_WDRCOIN = '#messenger:platformCurrencyMsg/debited/wdrcoin'
     PLATFORMCURRENCYMSG_RECEIVED_BPBIT = '#messenger:platformCurrencyMsg/received/bpbit'
     PLATFORMCURRENCYMSG_DEBITED_BPBIT = '#messenger:platformCurrencyMsg/debited/bpbit'
-    PLATFORMCURRENCYMSG_RECEIVED_BRCOIN = '#messenger:platformCurrencyMsg/received/brcoin'
-    PLATFORMCURRENCYMSG_DEBITED_BRCOIN = '#messenger:platformCurrencyMsg/debited/brcoin'
     PLATFORMCURRENCYMSG_RECEIVED_EQUIP_COIN = '#messenger:platformCurrencyMsg/received/equip_coin'
     PLATFORMCURRENCYMSG_DEBITED_EQUIP_COIN = '#messenger:platformCurrencyMsg/debited/equip_coin'
     PLATFORMCURRENCYMSG_RECEIVED_FAMECOIN = '#messenger:platformCurrencyMsg/received/famecoin'
@@ -1269,7 +1292,13 @@ class MESSENGER(object):
     SERVICECHANNELMESSAGES_COLLECTOR20_MEDAL = '#messenger:serviceChannelMessages/collector20/medal'
     SERVICECHANNELMESSAGES_COLLECTOR20_BADGE = '#messenger:serviceChannelMessages/collector20/badge'
     SERVICECHANNELMESSAGES_COLLECTOR20_STRIPE = '#messenger:serviceChannelMessages/collector20/stripe'
-    CLIENT_ERROR_SHARED_ENUM = (CLIENT_ERROR_SHARED_TRY_LATER,
+    SERVICECHANNELMESSAGES_PETSYSTEM_EVENTS_FINANCIAL_TRANSACTION = '#messenger:serviceChannelMessages/petSystem/events/financial_transaction'
+    SERVICECHANNELMESSAGES_PETSYSTEM_EVENTS_RECEIPT = '#messenger:serviceChannelMessages/petSystem/events/receipt'
+    SERVICECHANNELMESSAGES_PETSYSTEM_EVENTS_DATE = '#messenger:serviceChannelMessages/petSystem/events/date'
+    SERVICECHANNELMESSAGES_PETSYSTEM_EVENTS_ITEMSRECEIVED = '#messenger:serviceChannelMessages/petSystem/events/itemsReceived'
+    SERVICECHANNELMESSAGES_PETSYSTEM_EVENTS_CREDITSRECEIVED = '#messenger:serviceChannelMessages/petSystem/events/creditsReceived'
+    CLIENT_ERROR_SHARED_ENUM = (
+     CLIENT_ERROR_SHARED_TRY_LATER,
      CLIENT_ERROR_SHARED_GENERIC,
      CLIENT_ERROR_SHARED_LOCKED,
      CLIENT_ERROR_SHARED_NOT_CONNECTED,
@@ -1279,7 +1308,8 @@ class MESSENGER(object):
      CLIENT_ERROR_SHARED_NAME_EMPTY,
      CLIENT_ERROR_SHARED_NAME_INVALID,
      CLIENT_ERROR_SHARED_WAITING_BEFORE_START)
-    CLIENT_ERROR_CONTACT_ENUM = (CLIENT_ERROR_CONTACT_CONTACT_ITEM_NOT_FOUND,
+    CLIENT_ERROR_CONTACT_ENUM = (
+     CLIENT_ERROR_CONTACT_CONTACT_ITEM_NOT_FOUND,
      CLIENT_ERROR_CONTACT_ROSTER_ITEM_EXISTS,
      CLIENT_ERROR_CONTACT_ROSTER_ITEM_NOT_FOUND,
      CLIENT_ERROR_CONTACT_FRIENDSHIP_APPROVED,
@@ -1294,7 +1324,8 @@ class MESSENGER(object):
      CLIENT_ERROR_CONTACT_GROUP_INVALID_NAME,
      CLIENT_ERROR_CONTACT_NOTE_EMPTY,
      CLIENT_ERROR_CONTACT_NOTE_NOT_FOUND)
-    CLIENT_ERROR_CHANNEL_ENUM = (CLIENT_ERROR_CHANNEL_NAME_EMPTY,
+    CLIENT_ERROR_CHANNEL_ENUM = (
+     CLIENT_ERROR_CHANNEL_NAME_EMPTY,
      CLIENT_ERROR_CHANNEL_NAME_INVALID,
      CLIENT_ERROR_CHANNEL_PASSWORD_EMPTY,
      CLIENT_ERROR_CHANNEL_PASSWORD_INVALID,
@@ -1303,20 +1334,23 @@ class MESSENGER(object):
      CLIENT_ERROR_CHANNEL_PASSWORDS_NOT_EQUALS,
      CLIENT_ERROR_CHANNEL_LIMIT_REACHED,
      CLIENT_ERROR_CHANNEL_NAME_ALREADY_EXISTS)
-    CLIENT_ERROR_LIMIT_ENUM = (CLIENT_ERROR_LIMIT_MAX_ROSTER_ITEMS,
+    CLIENT_ERROR_LIMIT_ENUM = (
+     CLIENT_ERROR_LIMIT_MAX_ROSTER_ITEMS,
      CLIENT_ERROR_LIMIT_MAX_GROUP,
      CLIENT_ERROR_LIMIT_MAX_BLOCK_ITEMS,
      CLIENT_ERROR_LIMIT_GROUP_INVALID_LENGTH,
      CLIENT_ERROR_LIMIT_NOTE_INVALID_LENGTH,
      CLIENT_ERROR_LIMIT_CHANNEL_INVALID_LENGTH,
      CLIENT_ERROR_LIMIT_PWD_INVALID_LENGTH)
-    SERVER_ERROR_USER_ROOM_CREATION_ENUM = (SERVER_ERROR_USER_ROOM_CREATION_NAME_EXISTS,
+    SERVER_ERROR_USER_ROOM_CREATION_ENUM = (
+     SERVER_ERROR_USER_ROOM_CREATION_NAME_EXISTS,
      SERVER_ERROR_USER_ROOM_CREATION_LIMIT_COUNT,
      SERVER_ERROR_USER_ROOM_CREATION_LIMIT_PASS,
      SERVER_ERROR_USER_ROOM_CREATION_LIMIT_NAME,
      SERVER_ERROR_USER_ROOM_CREATION_WRONG_SYMBOL,
      SERVER_ERROR_USER_ROOM_CREATION_WRONG_WORD)
-    CLIENT_ACTION_ENUM = (CLIENT_ACTION_ADD_FRIEND,
+    CLIENT_ACTION_ENUM = (
+     CLIENT_ACTION_ADD_FRIEND,
      CLIENT_ACTION_REMOVE_FRIEND,
      CLIENT_ACTION_ADD_IGNORED,
      CLIENT_ACTION_REMOVE_IGNORED,
@@ -1336,27 +1370,34 @@ class MESSENGER(object):
      CLIENT_ACTION_LEAVE_USER_ROOM,
      CLIENT_ACTION_SEARCH_USER_ROOM,
      CLIENT_ACTION_FIND_USERS_BY_PREFIX)
-    CHAT_ERROR_ENUM = (CHAT_ERROR_NOT_ALLOWED,
+    CHAT_ERROR_ENUM = (
+     CHAT_ERROR_NOT_ALLOWED,
      CHAT_ERROR_USER_NOT_FOUND,
      CHAT_ERROR_CANNOT_BAN_ONESELF,
      CHAT_ERROR_WRONG_ARGS,
      CHAT_ERROR_NOT_READY,
      CHAT_ERROR_IS_BUSY,
      CHAT_ERROR_GENERIC_ERROR)
-    CHAT_ACTION_ENUM = (CHAT_ACTION_BROADCAST_UNIT_MESSAGE,
+    CHAT_ACTION_ENUM = (
+     CHAT_ACTION_BROADCAST_UNIT_MESSAGE,
      CHAT_ACTION_BROADCAST_BATTLE_MESSAGE,
      CHAT_ACTION_FIND_USERS_BY_NAME,
      CHAT_ACTION_GET_VOIP_CREDENTIALS)
-    COMMAND_SUCCESS_ENUM = (COMMAND_SUCCESS_USERBAN, COMMAND_SUCCESS_USERUNBAN)
-    LISTVIEW_EMPTYLIST_ENUM = (LISTVIEW_EMPTYLIST_TEMPLATE,
+    COMMAND_SUCCESS_ENUM = (
+     COMMAND_SUCCESS_USERBAN,
+     COMMAND_SUCCESS_USERUNBAN)
+    LISTVIEW_EMPTYLIST_ENUM = (
+     LISTVIEW_EMPTYLIST_TEMPLATE,
      LISTVIEW_EMPTYLIST_INFO,
      LISTVIEW_EMPTYLIST_INVITE,
      LISTVIEW_EMPTYLIST_OFFER)
-    SERVICECHANNELMESSAGES_BATTLERESULTS_PERSONALMISSIONS_ENUM = (SERVICECHANNELMESSAGES_BATTLERESULTS_PERSONALMISSIONS_1,
+    SERVICECHANNELMESSAGES_BATTLERESULTS_PERSONALMISSIONS_ENUM = (
+     SERVICECHANNELMESSAGES_BATTLERESULTS_PERSONALMISSIONS_1,
      SERVICECHANNELMESSAGES_BATTLERESULTS_PERSONALMISSIONS_2,
      SERVICECHANNELMESSAGES_BATTLERESULTS_PERSONALMISSIONS_3,
      SERVICECHANNELMESSAGES_BATTLERESULTS_PERSONALMISSIONS_BOTH)
-    SERVICECHANNELMESSAGES_CURRENCYUPDATE_ALL_ENUM = (SERVICECHANNELMESSAGES_CURRENCYUPDATE_RECEIVED_CREDITS,
+    SERVICECHANNELMESSAGES_CURRENCYUPDATE_ALL_ENUM = (
+     SERVICECHANNELMESSAGES_CURRENCYUPDATE_RECEIVED_CREDITS,
      SERVICECHANNELMESSAGES_CURRENCYUPDATE_RECEIVED_GOLD,
      SERVICECHANNELMESSAGES_CURRENCYUPDATE_RECEIVED_CRYSTAL,
      SERVICECHANNELMESSAGES_CURRENCYUPDATE_RECEIVED_EVENTCOIN,
@@ -1373,108 +1414,108 @@ class MESSENGER(object):
 
     @classmethod
     def client_error_shared(cls, key0):
-        outcome = '#messenger:client_error/shared/{}'.format(key0)
+        outcome = ('#messenger:client_error/shared/{}').format(key0)
         if outcome not in cls.CLIENT_ERROR_SHARED_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def client_error_contact(cls, key0):
-        outcome = '#messenger:client_error/contact/{}'.format(key0)
+        outcome = ('#messenger:client_error/contact/{}').format(key0)
         if outcome not in cls.CLIENT_ERROR_CONTACT_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def client_error_channel(cls, key0):
-        outcome = '#messenger:client_error/channel/{}'.format(key0)
+        outcome = ('#messenger:client_error/channel/{}').format(key0)
         if outcome not in cls.CLIENT_ERROR_CHANNEL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def client_error_limit(cls, key0):
-        outcome = '#messenger:client_error/limit/{}'.format(key0)
+        outcome = ('#messenger:client_error/limit/{}').format(key0)
         if outcome not in cls.CLIENT_ERROR_LIMIT_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def server_error_user_room_creation(cls, key0):
-        outcome = '#messenger:server_error/user_room_creation/{}'.format(key0)
+        outcome = ('#messenger:server_error/user_room_creation/{}').format(key0)
         if outcome not in cls.SERVER_ERROR_USER_ROOM_CREATION_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def client_action(cls, key0):
-        outcome = '#messenger:client_action/{}'.format(key0)
+        outcome = ('#messenger:client_action/{}').format(key0)
         if outcome not in cls.CLIENT_ACTION_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def chat_error(cls, key0):
-        outcome = '#messenger:chat_error/{}'.format(key0)
+        outcome = ('#messenger:chat_error/{}').format(key0)
         if outcome not in cls.CHAT_ERROR_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def chat_action(cls, key0):
-        outcome = '#messenger:chat_action/{}'.format(key0)
+        outcome = ('#messenger:chat_action/{}').format(key0)
         if outcome not in cls.CHAT_ACTION_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def command_success(cls, key0):
-        outcome = '#messenger:command/success/{}'.format(key0)
+        outcome = ('#messenger:command/success/{}').format(key0)
         if outcome not in cls.COMMAND_SUCCESS_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def listview_emptylist(cls, key0):
-        outcome = '#messenger:listView/emptyList/{}'.format(key0)
+        outcome = ('#messenger:listView/emptyList/{}').format(key0)
         if outcome not in cls.LISTVIEW_EMPTYLIST_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def personalMissionText(cls, key0):
-        outcome = '#messenger:serviceChannelMessages/battleResults/personalMissions/{}'.format(key0)
+        outcome = ('#messenger:serviceChannelMessages/battleResults/personalMissions/{}').format(key0)
         if outcome not in cls.SERVICECHANNELMESSAGES_BATTLERESULTS_PERSONALMISSIONS_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def currencyUpdateSelect(cls, operationName, currencyName):
-        outcome = '#messenger:serviceChannelMessages/currencyUpdate/{}/{}'.format(operationName, currencyName)
+        outcome = ('#messenger:serviceChannelMessages/currencyUpdate/{}/{}').format(operationName, currencyName)
         if outcome not in cls.SERVICECHANNELMESSAGES_CURRENCYUPDATE_ALL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome

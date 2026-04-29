@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hangar_widget/services/battle_pass_service.py
 from gui.impl.lobby.user_missions.hangar_widget.services import IBattlePassService
 from gui.impl.lobby.user_missions.hangar_widget.services.service_events import ServiceEvents
 from gui.prb_control.dispatcher import g_prbLoader
@@ -41,7 +39,9 @@ class BattlePassService(IBattlePassService, ServiceEvents):
             return False
         else:
             prbEntity = prbDispatcher.getEntity()
-            return False if prbEntity is None else self.__battlePassController.isValidBattleType(prbEntity)
+            if prbEntity is None:
+                return False
+            return self.__battlePassController.isValidBattleType(prbEntity)
 
     def _onBattlePassEvent(self, *_):
         self.onBattlePassChanged()

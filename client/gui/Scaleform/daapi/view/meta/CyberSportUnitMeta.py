@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/CyberSportUnitMeta.py
 from gui.Scaleform.daapi.view.lobby.rally.BaseRallyRoomView import BaseRallyRoomView
 
 class CyberSportUnitMeta(BaseRallyRoomView):
@@ -23,22 +21,29 @@ class CyberSportUnitMeta(BaseRallyRoomView):
         self._printOverrideError('lockSlotRequest')
 
     def as_updateSlotSettingsS(self, value):
-        return self.flashObject.as_updateSlotSettings(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateSlotSettings(value)
 
     def as_closeSlotS(self, slotIdx, cost, slotsLabel):
-        return self.flashObject.as_closeSlot(slotIdx, cost, slotsLabel) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_closeSlot(slotIdx, cost, slotsLabel)
 
     def as_openSlotS(self, slotIdx, canBeTaken, slotsLabel, compatibleVehiclesCount):
-        return self.flashObject.as_openSlot(slotIdx, canBeTaken, slotsLabel, compatibleVehiclesCount) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_openSlot(slotIdx, canBeTaken, slotsLabel, compatibleVehiclesCount)
 
     def as_lockUnitS(self, isLocked, slotsLabel):
-        return self.flashObject.as_lockUnit(isLocked, slotsLabel) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_lockUnit(isLocked, slotsLabel)
 
     def as_setOpenedS(self, isOpened, statusLabel):
-        return self.flashObject.as_setOpened(isOpened, statusLabel) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setOpened(isOpened, statusLabel)
 
     def as_setTotalLabelS(self, hasTotalLevelError, totalLevelLabel, totalLevel):
-        return self.flashObject.as_setTotalLabel(hasTotalLevelError, totalLevelLabel, totalLevel) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setTotalLabel(hasTotalLevelError, totalLevelLabel, totalLevel)
 
     def as_setPlayerCountLblS(self, value):
-        return self.flashObject.as_setPlayerCountLbl(value) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setPlayerCountLbl(value)

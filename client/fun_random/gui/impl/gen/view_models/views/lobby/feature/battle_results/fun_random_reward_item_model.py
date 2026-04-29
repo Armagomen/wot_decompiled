@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/gen/view_models/views/lobby/feature/battle_results/fun_random_reward_item_model.py
 from enum import Enum
 from gui.impl.gen.view_models.views.lobby.battle_results.reward_item_model import RewardItemModel
 

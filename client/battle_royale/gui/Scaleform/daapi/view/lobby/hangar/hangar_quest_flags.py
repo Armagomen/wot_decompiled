@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/Scaleform/daapi/view/lobby/hangar/hangar_quest_flags.py
 from battle_royale.gui.Scaleform.daapi.view.lobby.hangar_constants import QuestFlagTypes
 from gui.impl import backport
 from gui.impl.gen import R
@@ -40,7 +38,8 @@ class _BattleRoyaleQuestsFlag(BattleQuestsFlag):
                 label = icons.makeImageTag(backport.image(libraryIcons.ConfirmIcon_1()))
             else:
                 label = icons.makeImageTag(backport.image(libraryIcons.time_icon()))
-        return (label, cls._QUEST_TYPE)
+        return (
+         label, cls._QUEST_TYPE)
 
 
 def registerQuestFlags():

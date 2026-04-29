@@ -1,6 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/pet_system/event_view.py
-import BigWorld
+import typing, BigWorld
 from frameworks.wulf import WindowFlags, WindowStatus
 from gui.impl import backport
 from gui.impl.gen import R
@@ -8,17 +6,23 @@ from gui.impl.gen.view_models.views.lobby.pet_system.event_view_model import Eve
 from gui.impl.lobby.common.view_helpers import packBonusModelAndTooltipData
 from gui.impl.pub import WindowImpl
 from gui.impl.pub.view_component import ViewComponent
-from gui.server_events.bonuses import getNonQuestBonuses
+from gui.server_events.bonuses import getNonQuestBonuses, CreditsBonus, GoodiesBonus, ItemsBonus
 from gui.shared.missions.packers.bonus import getDefaultBonusPacker
 from helpers import dependency
+from messenger.m_constants import SCH_CLIENT_MSG_TYPE
 from pet_system_common import pet_constants
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.pet_system import IPetSystemController
+from skeletons.gui.system_messages import ISystemMessages
+if typing.TYPE_CHECKING:
+    from typing import List
+    from gui.server_events.bonuses import SimpleBonus
 
 class PetEvent(ViewComponent):
     LAYOUT_ID = R.aliases.common.none()
     __petController = dependency.descriptor(IPetSystemController)
     __lobbyContext = dependency.descriptor(ILobbyContext)
+    __systemMessages = dependency.descriptor(ISystemMessages)
 
     def __init__(self, viewModel, ctx):
         super(PetEvent, self).__init__(layoutID=self.LAYOUT_ID, model=viewModel)
@@ -33,7 +37,9 @@ class PetEvent(ViewComponent):
         self._updateData()
 
     def _getEvents(self):
-        return ((self.__lobbyContext.getServerSettings().onServerSettingsChange, self._onServerSettingsChanged),)
+        return (
+         (
+          self.__lobbyContext.getServerSettings().onServerSettingsChange, self._onServerSettingsChanged),)
 
     def createToolTip(self, event):
         if event.contentID == R.aliases.hangar.shared.PetEvent():
@@ -48,10 +54,13 @@ class PetEvent(ViewComponent):
 
     def getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        return None if tooltipId is None else self.__tooltipData.get(tooltipId)
+        if tooltipId is None:
+            return
+        else:
+            return self.__tooltipData.get(tooltipId)
 
     def _updateData(self):
-        with self.getViewModel().transaction() as tx:
+        with self.getViewModel().transaction() as (tx):
             eventID = self._ctx.get('eventID')
             eventType = self.__petController.getPetEventConfig().getEventType(eventID)
             tx.setEventId(eventID)
@@ -64,12 +73,13 @@ class PetEvent(ViewComponent):
             rewards = self.__getRewards(rewardsData[0])
             if not rewards:
                 return
-            with self.getViewModel().transaction() as tx:
+            with self.getViewModel().transaction() as (tx):
                 self.__tooltipData.clear()
                 rewardsModel = tx.getRewards()
                 rewardsModel.clear()
                 packBonusModelAndTooltipData(rewards, rewardsModel, self.__tooltipData, self.__packer)
                 rewardsModel.invalidate()
+            self._pushRewardNotification(rewards)
 
     @staticmethod
     def __getRewards(rewardsData):
@@ -89,6 +99,30 @@ class PetEvent(ViewComponent):
     def _onClose(self):
         self.destroyWindow()
 
+    def _pushRewardNotification(self, rewards):
+        for item in rewards:
+            if isinstance(item, CreditsBonus):
+                self.__pushCreditsNotification(item)
+            if isinstance(item, GoodiesBonus):
+                self.__pushGoodieNotification(item)
+            if isinstance(item, ItemsBonus):
+                self.__pushItemNotification(item)
+
+    def __pushCreditsNotification(self, item):
+        data = {'amount': item.formatValue()}
+        self.__systemMessages.proto.serviceChannel.pushClientMessage(data, SCH_CLIENT_MSG_TYPE.PET_SYSTEM_EVENT_CREDITS_AWARD)
+
+    def __pushGoodieNotification(self, item):
+        formattedList = item.formattedList()
+        if formattedList:
+            data = {'item': formattedList[0]}
+            self.__systemMessages.proto.serviceChannel.pushClientMessage(data, SCH_CLIENT_MSG_TYPE.PET_SYSYEM_EVENT_ITEMS_AWARD)
+
+    def __pushItemNotification(self, item):
+        formattedItem = item.format()
+        data = {'item': formattedItem}
+        self.__systemMessages.proto.serviceChannel.pushClientMessage(data, SCH_CLIENT_MSG_TYPE.PET_SYSYEM_EVENT_ITEMS_AWARD)
+
 
 class EventView(PetEvent):
     LAYOUT_ID = R.views.mono.pet_system.event_view()
@@ -102,7 +136,9 @@ class EventView(PetEvent):
 
     def _getEvents(self):
         events = super(EventView, self)._getEvents()
-        return events + ((self.viewModel.onClose, self._onClose),)
+        return events + (
+         (
+          self.viewModel.onClose, self._onClose),)
 
 
 class EventViewWindow(WindowImpl):

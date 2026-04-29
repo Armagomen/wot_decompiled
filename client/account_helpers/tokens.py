@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/account_helpers/tokens.py
 from functools import partial
 import AccountCommands
 from shared_utils.account_helpers.diff_utils import synchronizeDicts
@@ -66,11 +64,13 @@ class Tokens(object):
             if callback is not None:
                 callback(resultID, None)
             return
-        else:
-            if callback is not None:
-                callback(resultID, self.__cache)
-            return
+        if callback is not None:
+            callback(resultID, self.__cache)
+        return
 
     def getToken(self, tokenID):
         cache = self.__cache
-        return cache['tokens'].get(tokenID) if cache and 'tokens' in cache else None
+        if cache and 'tokens' in cache:
+            return cache['tokens'].get(tokenID)
+        else:
+            return

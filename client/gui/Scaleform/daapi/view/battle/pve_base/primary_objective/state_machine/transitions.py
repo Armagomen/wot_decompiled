@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/pve_base/primary_objective/state_machine/transitions.py
+from __future__ import absolute_import
 from frameworks.state_machine import StateEvent
 from gui.Scaleform.daapi.view.battle.pve_base.base.state_machine.events import OneSecondEvent
 from gui.Scaleform.daapi.view.battle.pve_base.base.state_machine.transitions import ToStateTransition, BaseTimerCondition
@@ -92,5 +91,5 @@ class LastRemindTimerCondition(BaseTimerCondition):
             _, clientSettings = source.getSettings()
             remindTimers = getattr(clientSettings, 'remindTimers')
             if remindTimers:
-                return super(LastRemindTimerCondition, self)._condition(event, remindTimers[-1])
+                return super(LastRemindTimerCondition, self)._condition(event, remindTimers[(-1)])
         return False

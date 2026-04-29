@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/prb_control/entities/tournament/pre_queue/entity.py
 import logging
 from battle_royale.gui.impl.lobby.views.states import BattleRoyaleTournamentQueueState
 from constants import PREBATTLE_TYPE
@@ -59,7 +57,9 @@ class BattleRoyaleTournamentEntity(PreQueueEntity):
         return result
 
     def isPlayerJoined(self, ctx):
-        return False if ctx.getEntityType() != PREBATTLE_TYPE.BATTLE_ROYALE_TOURNAMENT else True
+        if ctx.getEntityType() != PREBATTLE_TYPE.BATTLE_ROYALE_TOURNAMENT:
+            return False
+        return True
 
     def canInvite(self, prbType):
         return prbType in PREBATTLE_TYPE.SQUAD_PREBATTLES

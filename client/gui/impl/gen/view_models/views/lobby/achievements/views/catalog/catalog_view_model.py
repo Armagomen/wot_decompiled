@@ -1,12 +1,11 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/achievements/views/catalog/catalog_view_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.achievements.views.catalog.achievement_card_model import AchievementCardModel
 from gui.impl.gen.view_models.views.lobby.achievements.views.catalog.breadcrumb_model import BreadcrumbModel
 from gui.impl.gen.view_models.views.lobby.achievements.views.catalog.details_model import DetailsModel
 
 class CatalogViewModel(ViewModel):
-    __slots__ = ('onClose', 'onBreadcrumbClick', 'onCatalogClick', 'onCardClick', 'onStylePreview', 'onDogTagPreview', 'onPurchaseVehicleClick', 'onHintClose', 'onCardHover')
+    __slots__ = ('onClose', 'onBreadcrumbClick', 'onCatalogClick', 'onCardClick', 'onStylePreview',
+                 'onDogTagPreview', 'onPurchaseVehicleClick', 'onHintClose', 'onCardHover')
 
     def __init__(self, properties=6, commands=9):
         super(CatalogViewModel, self).__init__(properties=properties, commands=commands)

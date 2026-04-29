@@ -1,12 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/gui/game_control/battle_royale_tournament_controller.py
-import logging
-import calendar
+import logging, calendar
 from collections import Counter
 import BigWorld
 from gui.prb_control.items import prb_seqs
-import AccountCommands
-import Event
+import AccountCommands, Event
 from adisp import adisp_process
 from constants import PREBATTLE_TYPE
 from gui import SystemMessages
@@ -177,32 +173,35 @@ class BattleRoyaleTournamentController(IBattleRoyaleTournamentController):
                 autoInvites.pop(key)
 
         tokens = self.__itemsCache.items.tokens
-        parsedTokens = [ BattleRoyaleTourmanentToken(token) for token in tokens.getTokens() if token.startswith('br_trn') and tokens.isTokenAvailable(token) ]
-        availableTokens = [ tokenData for tokenData in parsedTokens if tokenData.isValid and not self.__lobbyContext.isAnotherPeriphery(tokenData.peripheryID) ]
-        key = lambda v: (v.tournamentID, v.type)
-        counts = Counter((key(tokenData) for tokenData in availableTokens))
+        parsedTokens = [ BattleRoyaleTourmanentToken(token) for token in tokens.getTokens() if token.startswith('br_trn') and tokens.isTokenAvailable(token)
+                       ]
+        availableTokens = [ tokenData for tokenData in parsedTokens if tokenData.isValid and not self.__lobbyContext.isAnotherPeriphery(tokenData.peripheryID)
+                          ]
+        key = lambda v: (
+         v.tournamentID, v.type)
+        counts = Counter(key(tokenData) for tokenData in availableTokens)
         currentInviteID = _INVITE_START_ID
         for tokenData in availableTokens:
             if counts[key(tokenData)] > 1:
-                sessionName = '{} [{}]'.format(tokenData.tournamentID, tokenData.participantShortDescr)
+                sessionName = ('{} [{}]').format(tokenData.tournamentID, tokenData.participantShortDescr)
             else:
                 sessionName = str(tokenData.tournamentID)
             typeLabel = _R_BR_TOURNAMENT_TYPE.solo if tokenData.isSolo else _R_BR_TOURNAMENT_TYPE.squad
-            descr = {'localized_data': '',
-             'descr': {'event_name': backport.text(R.strings.battle_royale.tournament.description()),
-                       'session_name': sessionName},
-             'type': backport.text(typeLabel())}
+            descr = {'localized_data': '', 
+               'descr': {'event_name': backport.text(R.strings.battle_royale.tournament.description()), 
+                         'session_name': sessionName}, 
+               'type': backport.text(typeLabel())}
             startTimeTimeStamp = calendar.timegm(tokenData.startTime.utctimetuple())
             while currentInviteID in autoInvites:
                 currentInviteID += 1
 
             self.__tokens[currentInviteID] = tokenData
-            autoInvites[currentInviteID] = {'peripheryID': tokenData.peripheryID,
-             'type': PREBATTLE_TYPE.BATTLE_ROYALE_TOURNAMENT,
-             'startTime': startTimeTimeStamp,
-             'description': descr,
-             'isValid': True,
-             'addInfo': tokenData.data}
+            autoInvites[currentInviteID] = {'peripheryID': tokenData.peripheryID, 
+               'type': PREBATTLE_TYPE.BATTLE_ROYALE_TOURNAMENT, 
+               'startTime': startTimeTimeStamp, 
+               'description': descr, 
+               'isValid': True, 
+               'addInfo': tokenData.data}
             self.__isAvailable = True
 
         if savedPreviousIsAvailable and not self.__isAvailable:

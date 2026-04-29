@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/cgf_components/serial_number_component.py
 from functools import partial
 import CGF
 from GenericComponents import DecalComponent, EntityGOSync
@@ -18,7 +16,9 @@ class SerialNumberSwitcher(object):
         length = len(counterValue)
         if length > 4:
             return self.lamp5digits
-        return self.lamp4digits if length > 3 else self.lamp3digits
+        if length > 3:
+            return self.lamp4digits
+        return self.lamp3digits
 
 
 @registerComponent
@@ -73,10 +73,16 @@ class SerialNumberComponentManager(CGF.ComponentManager):
         hierarchy = CGF.HierarchyManager(self.spaceID)
         rootGameObject = hierarchy.getTopMostParent(gameObject)
         goSyncComponent = rootGameObject.findComponentByType(EntityGOSync)
-        return None if goSyncComponent is None else goSyncComponent.entity
+        if goSyncComponent is None:
+            return
+        else:
+            return goSyncComponent.entity
 
     def __getSerialNumberValue(self, vehicle):
         counterValue = str()
         if vehicle is not None:
             counterValue = vehicle.appearance.outfit.serialNumber
-        return counterValue if counterValue else self.DEFAULT_NUMBER
+        if counterValue:
+            return counterValue
+        else:
+            return self.DEFAULT_NUMBER

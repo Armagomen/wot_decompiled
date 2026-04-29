@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/hangar/presenters/vehicle_inventory_presenter.py
 from __future__ import absolute_import
-import typing
-import BigWorld
+import typing, BigWorld
 from account_helpers.telecom_rentals import TelecomRentals
 from CurrentVehicle import g_currentVehicle
 from gui.Scaleform.genConsts.STORAGE_CONSTANTS import STORAGE_CONSTANTS
@@ -10,7 +7,6 @@ from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.hangar.sub_views.vehicles_inventory_model import VehiclesInventoryModel
 from gui.impl.lobby.tooltips.carousel_vehicle_tooltip import CarouselVehicleTooltipView
 from gui.impl.pub.view_component import ViewComponent
-from gui.prb_control import prbEntityProperty
 from gui.prb_control.entities.listener import IGlobalListener
 from gui.battle_pass.battle_pass_helpers import getSupportedCurrentArenaBonusType
 from gui.shared import event_dispatcher
@@ -40,7 +36,9 @@ class VehicleInventoryPresenter(ViewComponent[VehiclesInventoryModel], IGlobalLi
         self.getViewModel().setBpEntityValid(self._getIsBpEntityValid())
 
     def createToolTipContent(self, event, contentID):
-        return CarouselVehicleTooltipView(event.getArgument('inventoryId')) if contentID == R.views.mono.hangar.vehicle_tooltip() else super(VehicleInventoryPresenter, self).createToolTipContent(event=event, contentID=contentID)
+        if contentID == R.views.mono.hangar.vehicle_tooltip():
+            return CarouselVehicleTooltipView(event.getArgument('inventoryId'))
+        return super(VehicleInventoryPresenter, self).createToolTipContent(event=event, contentID=contentID)
 
     @property
     def viewModel(self):
@@ -61,25 +59,35 @@ class VehicleInventoryPresenter(ViewComponent[VehiclesInventoryModel], IGlobalLi
         return
 
     def _getEvents(self):
-        return ((g_currentVehicle.onChanged, self.__onVehicleChanged),
-         (self.viewModel.onGoBuyVehicle, self.__onGoBuyVehicle),
-         (self.viewModel.onBuySlot, self.__onBuySlot),
-         (self.viewModel.onGoRecoverVehicle, self.__onGoRecoverVehicle),
-         (self.viewModel.onSelectTelecomRentalVehicle, event_dispatcher.showTelecomRentalPage),
-         (self._itemsCache.onSyncCompleted, self.__onCacheResync),
-         (self.viewModel.onSelect, self.__onSelectVehicle),
-         (self.__battlePass.onBattlePassSettingsChange, self.__onBattlePassSettingsChanged))
+        return (
+         (
+          g_currentVehicle.onChanged, self.__onVehicleChanged),
+         (
+          self.viewModel.onGoBuyVehicle, self.__onGoBuyVehicle),
+         (
+          self.viewModel.onBuySlot, self.__onBuySlot),
+         (
+          self.viewModel.onGoRecoverVehicle, self.__onGoRecoverVehicle),
+         (
+          self.viewModel.onSelectTelecomRentalVehicle, event_dispatcher.showTelecomRentalPage),
+         (
+          self._itemsCache.onSyncCompleted, self.__onCacheResync),
+         (
+          self.viewModel.onSelect, self.__onSelectVehicle),
+         (
+          self.__battlePass.onBattlePassSettingsChange, self.__onBattlePassSettingsChanged))
 
     def _getIsBpEntityValid(self):
         return self.__battlePass.isGameModeEnabled(self.__getCurrentArenaBonusType())
 
     def _getCallbacks(self):
         callbacksTuple = super(VehicleInventoryPresenter, self)._getCallbacks()
-        return callbacksTuple + (('tokens', self.__onTokensUpdated),)
+        return callbacksTuple + (
+         (
+          'tokens', self.__onTokensUpdated),)
 
-    @prbEntityProperty
-    def __prbEntity(self):
-        return None
+    def _autoSelectVehicle(self):
+        g_currentVehicle.selectVehicle()
 
     def __onVehicleChanged(self):
         self.__updateSelectedModel()
@@ -124,7 +132,7 @@ class VehicleInventoryPresenter(ViewComponent[VehiclesInventoryModel], IGlobalLi
             bpStatus = self.viewModel.DISABLED
         elif self.__battlePass.isPaused():
             bpStatus = self.viewModel.PAUSED
-        with self.viewModel as model:
+        with self.viewModel as (model):
             model.setRecoverableVehicleCount(len(items.getVehicles(criteria)))
             model.setBpEntityValid(self._getIsBpEntityValid())
             model.setBpStatus(bpStatus)
@@ -134,13 +142,16 @@ class VehicleInventoryPresenter(ViewComponent[VehiclesInventoryModel], IGlobalLi
             model.setSlotPriceCurrency(slotPriceCurrency)
             model.setFreeSlotsCount(emptySlotsCount)
             model.setHasDiscont(slotPrice != defaultSlotPrice)
+            self.__invalidateSelectedVehicle()
             self.__updateSelectedModel()
 
-    def __updateSelectedModel(self):
+    def __invalidateSelectedVehicle(self):
         if not g_currentVehicle.isPresent():
-            g_currentVehicle.selectVehicle()
+            self._autoSelectVehicle()
+
+    def __updateSelectedModel(self):
         if g_currentVehicle.isPresent() and g_currentVehicle.intCD in self._itemsCache.items.getVehicles(self.__vehiclesFilter.criteria):
-            with self.viewModel as model:
+            with self.viewModel as (model):
                 model.setCurrentVehicleInventoryId(g_currentVehicle.invID)
                 model.setCurrentVehicleIntCD(g_currentVehicle.intCD)
         else:
@@ -150,7 +161,9 @@ class VehicleInventoryPresenter(ViewComponent[VehiclesInventoryModel], IGlobalLi
     def __getTelecomRentStatus(self):
         if not self.__isTelecomRentalsEnabled() or self.__telecomRentals.getAvailableRentCount() == 0:
             return VehiclesInventoryModel.DISABLED
-        return VehiclesInventoryModel.PENDING if self.__telecomRentals.getRentsPending() else VehiclesInventoryModel.READY_TO_SELECT
+        if self.__telecomRentals.getRentsPending():
+            return VehiclesInventoryModel.PENDING
+        return VehiclesInventoryModel.READY_TO_SELECT
 
     def __isTelecomRentalsEnabled(self):
         hasTelecomRentalsActive = self.__telecomRentals.isActive()

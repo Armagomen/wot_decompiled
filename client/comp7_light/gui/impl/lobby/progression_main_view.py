@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_light/scripts/client/comp7_light/gui/impl/lobby/progression_main_view.py
 import typing
 from comp7_light.gui.impl.gen.view_models.views.lobby.progression.progression_main_view_model import MainViews, ProgressionMainViewModel
 from comp7_light.gui.impl.lobby.progression_view import ProgressionView
@@ -40,7 +38,9 @@ class ProgressionMainView(ViewImpl):
         if contentID == R.views.comp7_light.mono.lobby.leaderboard_reward_tooltip_view():
             return LeaderboardRewardTooltipView()
         content = self.currentPresenter.createToolTipContent(event, contentID)
-        return content if content else super(ProgressionMainView, self).createToolTipContent(event, contentID)
+        if content:
+            return content
+        return super(ProgressionMainView, self).createToolTipContent(event, contentID)
 
     def createToolTip(self, event):
         return self.currentPresenter.createToolTip(event) or super(ProgressionMainView, self).createToolTip(event)
@@ -66,7 +66,7 @@ class ProgressionMainView(ViewImpl):
         if not menuName:
             menuName = MainViews.PROGRESSION
         self.__viewType = menuName
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             self.currentPresenter.initialize(**self.__ctx)
             tx.setViewType(self.__viewType)
 

@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/dialogs/sub_views/icon/multiple_icons_set.py
+from __future__ import absolute_import
 import typing
 from gui.impl.gen import R
 from gui.impl.dialogs.sub_views.common import IconSetData
@@ -61,10 +60,10 @@ class MultipleIconsSet(ViewImpl):
     def __init__(self, iconResIDList=None, backgroundResIDList=None, overlayResIDList=None, layoutID=None, iconPositionLogic=IconPositionLogicEnum.CENTREDANDTHROUGHCONTENT.value):
         settings = ViewSettings(layoutID or R.views.dialogs.sub_views.icon.MultipleIconsSet())
         settings.model = MultipleIconsSetViewModel()
-        settings.kwargs = {'iconResIDList': iconResIDList,
-         'backgroundResIDList': backgroundResIDList,
-         'overlayResIDList': overlayResIDList,
-         'iconPositionLogic': iconPositionLogic}
+        settings.kwargs = {'iconResIDList': iconResIDList, 
+           'backgroundResIDList': backgroundResIDList, 
+           'overlayResIDList': overlayResIDList, 
+           'iconPositionLogic': iconPositionLogic}
         super(MultipleIconsSet, self).__init__(settings)
 
     def _onLoading(self, iconResIDList, backgroundResIDList, overlayResIDList, iconPositionLogic, *args, **kwargs):

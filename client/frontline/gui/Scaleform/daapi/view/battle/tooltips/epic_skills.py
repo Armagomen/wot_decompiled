@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/battle/tooltips/epic_skills.py
 from CurrentVehicle import g_currentVehicle
 from debug_utils import LOG_ERROR
 from gui.impl import backport
@@ -47,13 +45,19 @@ class EpicSkillBaseTooltipData(BlocksTooltipData):
     @staticmethod
     def _constructHeader(skillInfo):
         skillLevel = skillInfo.levels.get(1)
-        block = [formatters.packImageBlockData(img=backport.image(R.images.gui.maps.icons.epicBattles.skills.c_80x80.dyn(skillLevel.icon)()), padding=formatters.packPadding(right=10)), formatters.packBuildUpBlockData([formatters.packImageTextBlockData(title=text_styles.highTitle(skillLevel.name), txtPadding=formatters.packPadding(top=10)), formatters.packImageTextBlockData(title=text_styles.main(backport.text(R.strings.epic_battle.skill.category.dyn(skillInfo.category)())), txtPadding=formatters.packPadding(left=-5, top=7), padding=formatters.packPadding(left=-10), img=backport.image(R.images.frontline.gui.maps.icons.category.small.dyn(skillInfo.category)()))])]
+        block = [
+         formatters.packImageBlockData(img=backport.image(R.images.gui.maps.icons.epicBattles.skills.c_80x80.dyn(skillLevel.icon)()), padding=formatters.packPadding(right=10)),
+         formatters.packBuildUpBlockData([
+          formatters.packImageTextBlockData(title=text_styles.highTitle(skillLevel.name), txtPadding=formatters.packPadding(top=10)),
+          formatters.packImageTextBlockData(title=text_styles.main(backport.text(R.strings.epic_battle.skill.category.dyn(skillInfo.category)())), txtPadding=formatters.packPadding(left=-5, top=7), padding=formatters.packPadding(left=-10), img=backport.image(R.images.frontline.gui.maps.icons.category.small.dyn(skillInfo.category)()))])]
         return block
 
     def __constructDescr(self, skillLevel):
         block = []
         if skillLevel.longFilterAlert:
-            blocks = [formatters.packTextBlockData(text_styles.standard(skillLevel.longDescr)), formatters.packTextBlockData(text_styles.alert(skillLevel.longFilterAlert))]
+            blocks = [
+             formatters.packTextBlockData(text_styles.standard(skillLevel.longDescr)),
+             formatters.packTextBlockData(text_styles.alert(skillLevel.longFilterAlert))]
             block.append(formatters.packBuildUpBlockData(blocks=blocks, layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_VERTICAL))
         else:
             block.append(formatters.packTitleDescParameterWithIconBlockData(title=text_styles.middleTitle(backport.text(R.strings.tooltips.equipment.onUse())), desc=text_styles.main(skillLevel.longDescr)))
@@ -67,11 +71,11 @@ class EpicSkillBaseTooltipData(BlocksTooltipData):
         dynamicBlock = []
         g_battleAbilityTooltipMgr.createBattleAbilityTooltipRenderers(skillInfo, staticBlock, dynamicBlock)
         if staticBlock:
-            staticBlocks.append(formatters.packTextBlockData(text=text_styles.middleTitle('{}{}'.format(backport.text(R.strings.epic_battle.abilityInfo.properties.static()), backport.text(R.strings.common.common.colon()))), padding=formatters.packPadding(bottom=5)))
+            staticBlocks.append(formatters.packTextBlockData(text=text_styles.middleTitle(('{}{}').format(backport.text(R.strings.epic_battle.abilityInfo.properties.static()), backport.text(R.strings.common.common.colon()))), padding=formatters.packPadding(bottom=5)))
             staticBlocks.extend(staticBlock)
             blocks.append(staticBlocks)
         if dynamicBlock:
-            dynamicBlocks.append(formatters.packTextBlockData(text=text_styles.middleTitle('{}{}'.format(backport.text(R.strings.epic_battle.abilityInfo.properties.dynamic()), backport.text(R.strings.common.common.colon()))), padding=formatters.packPadding(bottom=10)))
+            dynamicBlocks.append(formatters.packTextBlockData(text=text_styles.middleTitle(('{}{}').format(backport.text(R.strings.epic_battle.abilityInfo.properties.dynamic()), backport.text(R.strings.common.common.colon()))), padding=formatters.packPadding(bottom=10)))
             dynamicBlocks.append(formatters.packAbilityBattleRanksBlockData())
             dynamicBlocks.extend(dynamicBlock)
             dynamicBlocks.append(formatters.packTextBlockData(text=text_styles.standard(backport.text(R.strings.epic_battle.metaAbilityScreen.activation_depends())), padding=formatters.packPadding(top=12)))
@@ -86,7 +90,8 @@ class EpicSkillBaseTooltipData(BlocksTooltipData):
 
     @staticmethod
     def __constructInactiveStateBlock(skillInfo):
-        return [formatters.packTitleDescBlock(title=text_styles.critical(backport.text(R.strings.epic_battle.metaAbilityScreen.Ability_not_unlocked())), desc=text_styles.standard(backport.text(R.strings.epic_battle.metaAbilityScreen.how_to_activate(), price=text_styles.stats(skillInfo.price), img=icons.makeImageTag(backport.image(R.images.frontline.gui.maps.icons.awards.c_16x16.abilityToken()), vSpace=-3))), gap=2)]
+        return [
+         formatters.packTitleDescBlock(title=text_styles.critical(backport.text(R.strings.epic_battle.metaAbilityScreen.Ability_not_unlocked())), desc=text_styles.standard(backport.text(R.strings.epic_battle.metaAbilityScreen.how_to_activate(), price=text_styles.stats(skillInfo.price), img=icons.makeImageTag(backport.image(R.images.frontline.gui.maps.icons.awards.c_16x16.abilityToken()), vSpace=-3))), gap=2)]
 
 
 def _equipmentToEpicSkillConverter(epicMetaGameCtrl, eqCompDescr):
@@ -121,7 +126,11 @@ class EpicSkillSlotTooltipAdvanced(BaseAdvancedTooltip):
 class EpicSkillSlotTooltip(EpicSkillBaseTooltipData):
 
     def _packBlocks(self, eqCompDescr, _=None):
-        return [formatters.packTitleDescBlock(backport.text(R.strings.epic_battle.abilityInfo.manage_abilities()), backport.text(R.strings.epic_battle.abilityInfo.manage_abilities_desc()))] if eqCompDescr == -1 else super(EpicSkillSlotTooltip, self)._packBlocks(_equipmentToEpicSkillConverter(self._epicMetaGameCtrl, eqCompDescr), None)
+        if eqCompDescr == -1:
+            return [
+             formatters.packTitleDescBlock(backport.text(R.strings.epic_battle.abilityInfo.manage_abilities()), backport.text(R.strings.epic_battle.abilityInfo.manage_abilities_desc()))]
+        else:
+            return super(EpicSkillSlotTooltip, self)._packBlocks(_equipmentToEpicSkillConverter(self._epicMetaGameCtrl, eqCompDescr), None)
 
 
 class EpicSkillSlotSetupInfoTooltip(BlocksTooltipData):

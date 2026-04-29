@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/battle/frontline_battle_modification_panel.py
 from PlayerEvents import g_playerEvents
 from constants import ARENA_PERIOD
 from frontline.gui.Scaleform.daapi.view.meta.FrontlineModificationPanelMeta import FrontlineModificationPanelMeta
@@ -53,6 +51,6 @@ class FrontlineBattleModificationPanel(FrontlineModificationPanelMeta, IArenaVeh
     def __getData(self):
         arenaDP = self.__sessionProvider.getArenaDP()
         modifier = arenaDP.getReservesModifier() if arenaDP else None
-        return {'modificationIconPath': FLBattleTypeDescription.getBattleTypeIconPath(modifier, 'c_64x64'),
-         'modificationTitle': FLBattleTypeDescription.getTitle(modifier),
-         'modificationDescription': FLBattleTypeDescription.getShortDescription(modifier)}
+        return {'modificationIconPath': FLBattleTypeDescription.getBattleTypeIconPath(modifier, 'c_64x64'), 
+           'modificationTitle': FLBattleTypeDescription.getTitle(modifier), 
+           'modificationDescription': FLBattleTypeDescription.getShortDescription(modifier)}

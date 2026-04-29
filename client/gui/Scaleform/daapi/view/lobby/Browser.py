@@ -1,7 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/Browser.py
-import typing
-import SCALEFORM
+from __future__ import absolute_import
+import typing, SCALEFORM
 from Event import Event
 from gui.browser import BrowserViewWebHandlers
 from gui.Scaleform.daapi.view.meta.BrowserMeta import BrowserMeta
@@ -15,12 +13,11 @@ from skeletons.gui.game_control import IBrowserController
 from soft_exception import SoftException
 if typing.TYPE_CHECKING:
     from WebBrowser import WebBrowser
-_CURSOR_TYPES = {CURSOR_TYPES.Hand: CursorManager.HAND,
- CURSOR_TYPES.Pointer: CursorManager.ARROW,
- CURSOR_TYPES.IBeam: CursorManager.IBEAM,
- CURSOR_TYPES.Grab: CursorManager.DRAG_OPEN,
- CURSOR_TYPES.Grabbing: CursorManager.DRAG_CLOSE,
- CURSOR_TYPES.ColumnResize: CursorManager.MOVE}
+_CURSOR_TYPES = {CURSOR_TYPES.Hand: CursorManager.HAND, CURSOR_TYPES.Pointer: CursorManager.ARROW, 
+   CURSOR_TYPES.IBeam: CursorManager.IBEAM, 
+   CURSOR_TYPES.Grab: CursorManager.DRAG_OPEN, 
+   CURSOR_TYPES.Grabbing: CursorManager.DRAG_CLOSE, 
+   CURSOR_TYPES.ColumnResize: CursorManager.MOVE}
 
 def _getCursorType(cursorType):
     return _CURSOR_TYPES.get(cursorType) or CursorManager.ARROW
@@ -113,7 +110,8 @@ class Browser(BrowserMeta):
         return
 
     def setBrowserSize(self, width, height, scale):
-        self.__size = (width, height, scale)
+        self.__size = (
+         width, height, scale)
         if self.__browser is not None:
             self.__browser.updateSize(self.__size)
         return
@@ -181,7 +179,9 @@ class Browser(BrowserMeta):
     def __checkIsPageLoaded(self):
         if not self.__isLoaded:
             return False
-        return False if self.__httpStatusCode and self.__httpStatusCode >= 400 else True
+        if self.__httpStatusCode and self.__httpStatusCode >= 400:
+            return False
+        return True
 
     def __onNavigate(self, _):
         self.as_hideServiceViewS()

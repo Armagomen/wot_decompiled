@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/common/info_view.py
-import logging
-import typing
+import logging, typing
 from functools import partial
 import wg_async
 from BWUtil import AsyncReturn
@@ -36,10 +33,11 @@ class InfoView(ViewImpl):
         self.destroyWindow()
 
 
-class ContentData(typing.NamedTuple('_ContentData', (('clazz', typing.Type),
- ('modelClazz', typing.Type),
- ('args', typing.Tuple),
- ('kwargs', typing.Dict)))):
+class ContentData(typing.NamedTuple('_ContentData', (
+ (
+  'clazz', typing.Type), ('modelClazz', typing.Type),
+ (
+  'args', typing.Tuple), ('kwargs', typing.Dict)))):
 
     def createContent(self, layoutID):
         settings = ViewSettings(layoutID=layoutID, model=self.modelClazz())
@@ -65,7 +63,7 @@ class IInfoWindowProcessor(object):
 
 
 class _InfoWindow(LobbyWindow):
-    __slots__ = ('__closeCallback',)
+    __slots__ = ('__closeCallback', )
 
     def __init__(self, layoutID, parent, contentData, wndFlags, callback):
         super(_InfoWindow, self).__init__(wndFlags=wndFlags, decorator=None, content=contentData.createContent(layoutID), parent=parent)

@@ -1,13 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/AvatarPositionControl.py
-import weakref
-import logging
-import math_utils
-import BigWorld
-import Math
+from __future__ import absolute_import
+import weakref, logging, math_utils, BigWorld, Math
 from Event import Event
-import constants
-import BattleReplay
+import constants, BattleReplay
 from helpers.CallbackDelayer import CallbackDelayer
 _logger = logging.getLogger(__name__)
 

@@ -1,16 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/avatar_components/CombatEquipmentManager.py
-import functools
-import math
-import SoundGroups
-import helpers
-import math_utils
-import BigWorld
+import functools, math, SoundGroups, helpers, math_utils, BigWorld
 from Math import Vector2, Vector3
 from helpers import dependency
 from helpers.CallbackDelayer import CallbackDelayer
-import BombersWing
-import Flock
+import BombersWing, Flock
 from constants import IS_DEVELOPMENT
 from debug_utils import LOG_DEBUG, LOG_ERROR
 import CombatSelectedArea
@@ -35,7 +27,8 @@ class _DebugFrontLine(CallbackDelayer):
         self.model.position = beginExplosionPos
         linearHomer = BigWorld.LinearHomer()
         self.model.addMotor(linearHomer)
-        linearHomer.align = math_utils.createSRTMatrix((areaWidth, 5, 1), (0.0, 0, 0), Vector3(0, 0, 0))
+        linearHomer.align = math_utils.createSRTMatrix((
+         areaWidth, 5, 1), (0.0, 0, 0), Vector3(0, 0, 0))
         linearHomer.acceleration = 0
         linearHomer.velocity = velocity
         linearHomer.target = math_utils.createTranslationMatrix(endExplosionPos)
@@ -108,7 +101,8 @@ class CombatEquipmentManager(object):
         startP = BombersWing.CurveControlPoint(planeTrajectory.curPos, Vector3(planeTrajectory.curDir.x, 0, planeTrajectory.curDir.y), planeTrajectory.curTime)
         nextP = BombersWing.CurveControlPoint(planeTrajectory.nextPos, nextDir3d, planeTrajectory.nextTime)
         points = (startP, nextP)
-        wingID = (planeTrajectory.team, planeTrajectory.equipmentID)
+        wingID = (
+         planeTrajectory.team, planeTrajectory.equipmentID)
         wing = self.__wings.get(wingID)
         if wing is None or wing.withdrawn:
             if wing is not None:
@@ -135,7 +129,7 @@ class CombatEquipmentManager(object):
             LOG_DEBUG('===== showHittingArea =====')
             LOG_DEBUG(equipmentID)
             LOG_DEBUG(pos, direction, time)
-        correctedCoords = tuple((int(x * 1000.0) for x in pos.tuple()))
+        correctedCoords = tuple(int(x * 1000.0) for x in pos.tuple())
         areaUID = (int(equipmentID), correctedCoords)
         if areaUID in self.__selectedAreas:
             return
@@ -152,10 +146,10 @@ class CombatEquipmentManager(object):
         equipment = vehicles.g_cache.equipments().get(equipmentID)
         if equipment is None:
             return
-        elif equipment.wwsoundShot is None:
-            LOG_DEBUG('LOG_GOGGI - wwsoundShot is None for ', equipment.name)
-            return
         else:
+            if equipment.wwsoundShot is None:
+                LOG_DEBUG('LOG_GOGGI - wwsoundShot is None for ', equipment.name)
+                return
             shotSoundPreDelay = 0.0
             if hasattr(equipment, 'shotSoundPreDelay'):
                 if equipment.shotSoundPreDelay is not None:
@@ -292,12 +286,11 @@ class CombatEquipmentManager(object):
         attachedVehicle = BigWorld.player().getVehicleAttached()
         if not attachedVehicle or not attachedVehicle.isAlive():
             return
-        else:
-            ctrl = self.guiSessionProvider.shared.vehicleState
-            self.__lastSmokeInfo = smokeInfo
-            if ctrl is not None:
-                ctrl.notifyStateChanged(VEHICLE_VIEW_STATE.SMOKE, smokeInfo)
-            return
+        ctrl = self.guiSessionProvider.shared.vehicleState
+        self.__lastSmokeInfo = smokeInfo
+        if ctrl is not None:
+            ctrl.notifyStateChanged(VEHICLE_VIEW_STATE.SMOKE, smokeInfo)
+        return
 
     @property
     def lastSmokeInfo(self):

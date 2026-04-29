@@ -1,9 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/web/web_client_api/shop/formatters.py
 import re
 from collections import namedtuple
-import typing
-import nations
+import typing, nations
 from constants import RentType
 from gui.Scaleform.genConsts.STORE_CONSTANTS import STORE_CONSTANTS
 from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
@@ -25,12 +22,12 @@ if typing.TYPE_CHECKING:
     from typing import Dict, Union, Any, Optional
     from gui.shared.gui_items.Tankman import Tankman
     from web.web_client_api.shop.crew import _ShopTankman, _ShopRecruit
-    AnyTankman = Union[Tankman, _ShopTankman, _ShopRecruit]
+    AnyTankman = Union[(Tankman, _ShopTankman, _ShopRecruit)]
 COLOR_TAG_OPEN = '{colorTagOpen}'
 COLOR_TAG_CLOSE = '{colorTagClose}'
 _WHITESPACE_RE = re.compile('\\s+')
-_RENT_DURATION_MAP = {SeasonRentDuration.ENTIRE_SEASON: SHOP_RENT_TYPE_MAP[RentType.SEASON_RENT],
- SeasonRentDuration.SEASON_CYCLE: SHOP_RENT_TYPE_MAP[RentType.SEASON_CYCLE_RENT]}
+_RENT_DURATION_MAP = {SeasonRentDuration.ENTIRE_SEASON: SHOP_RENT_TYPE_MAP[RentType.SEASON_RENT], 
+   SeasonRentDuration.SEASON_CYCLE: SHOP_RENT_TYPE_MAP[RentType.SEASON_CYCLE_RENT]}
 
 def formatValueToColorTag(value):
     return COLOR_TAG_OPEN + value + COLOR_TAG_CLOSE
@@ -54,15 +51,14 @@ def _formatKPI(kpiList):
     def _formatKPIValue(kpi, value):
         if kpi.type == KPI.Type.AGGREGATE_MUL:
             minValue, maxValue = value
-            return (_formatFloat(minValue), _formatFloat(maxValue))
-        return _formatFloat(value) if kpi.type in (KPI.Type.MUL, KPI.Type.ADD) else value
+            return (
+             _formatFloat(minValue), _formatFloat(maxValue))
+        if kpi.type in (KPI.Type.MUL, KPI.Type.ADD):
+            return _formatFloat(value)
+        return value
 
-    return [ {'name': kpi.name,
-     'type': kpi.type,
-     'specValue': _formatKPIValue(kpi, kpi.specValue) if kpi.specValue else None,
-     'vehicleTypes': kpi.vehicleTypes,
-     'value': _formatKPIValue(kpi, kpi.value) if kpi.type != KPI.Type.ONE_OF else _formatKPI(kpi.value),
-     'descr': backport.text(kpi.getDescriptionR()) if kpi.getDescriptionR() > 0 else ''} for kpi in kpiList ]
+    return [ {'name': kpi.name, 'type': kpi.type, 'specValue': _formatKPIValue(kpi, kpi.specValue) if kpi.specValue else None, 'vehicleTypes': kpi.vehicleTypes, 'value': _formatKPIValue(kpi, kpi.value) if kpi.type != KPI.Type.ONE_OF else _formatKPI(kpi.value), 'descr': backport.text(kpi.getDescriptionR()) if kpi.getDescriptionR() > 0 else ''} for kpi in kpiList
+           ]
 
 
 def _formatActionParams(actionInfo):
@@ -71,13 +67,15 @@ def _formatActionParams(actionInfo):
 
 def _formatTechName(value):
     parts = value.split(':')
-    return parts[1] if len(parts) > 1 else value
+    if len(parts) > 1:
+        return parts[1]
+    return value
 
 
 def _formatImagePaths(item):
-    return {'small': replaceImgPrefix(item.getShopIcon(size=STORE_CONSTANTS.ICON_SIZE_SMALL)),
-     'medium': replaceImgPrefix(item.getShopIcon(size=STORE_CONSTANTS.ICON_SIZE_MEDIUM)),
-     'large': replaceImgPrefix(item.getShopIcon(size=STORE_CONSTANTS.ICON_SIZE_LARGE))}
+    return {'small': replaceImgPrefix(item.getShopIcon(size=STORE_CONSTANTS.ICON_SIZE_SMALL)), 
+       'medium': replaceImgPrefix(item.getShopIcon(size=STORE_CONSTANTS.ICON_SIZE_MEDIUM)), 
+       'large': replaceImgPrefix(item.getShopIcon(size=STORE_CONSTANTS.ICON_SIZE_LARGE))}
 
 
 def _formatVehicleRestore(item):
@@ -89,8 +87,8 @@ def _formatVehicleRestore(item):
             restoreEndDate = time_utils.timestampToISO(restoreInfo.changedAt + restoreInfo.getRestoreTimeLeft())
         else:
             restoreEndDate = None
-        return {'price': {currency: restorePrice.getSignValue(currency)},
-         'endDate': restoreEndDate}
+        return {'price': {currency: restorePrice.getSignValue(currency)}, 
+           'endDate': restoreEndDate}
     else:
         return
 
@@ -98,9 +96,9 @@ def _formatVehicleRestore(item):
 def _formatVehicleOwnership(item):
     if item.isInInventory and item.activeInNationGroup:
         result = {}
-        if not item.isRented:
-            result['type'] = 'permanent'
-        elif item.rentalIsOver:
+        result['type'] = item.isRented or 'permanent'
+    else:
+        if item.rentalIsOver:
             result['type'] = 'rentalsOver'
         else:
             result['type'] = 'rented'
@@ -108,25 +106,24 @@ def _formatVehicleOwnership(item):
             event = info.getActiveSeasonRent()
 
             def _formatInfinite(val):
-                return val if val < float('inf') else -1
+                if val < float('inf'):
+                    return val
+                return -1
 
             if event:
                 rentType = 'event'
-            elif item.isTelecomRent:
-                rentType = 'telecom'
             else:
-                rentType = None
-            result['info'] = {'event': {'type': SHOP_RENT_SEASON_TYPE_MAP.get(event.seasonType, 'unknown'),
-                       'id': event.seasonID,
-                       'duration': _RENT_DURATION_MAP.get(event.duration, 'undefined'),
-                       'expire': event.expiryTime} if event else None,
-             'rentType': rentType,
-             'time': _formatInfinite(info.getTimeLeft()),
-             'battles': _formatInfinite(info.battlesLeft),
-             'wins': _formatInfinite(info.winsLeft)}
+                if item.isTelecomRent:
+                    rentType = 'telecom'
+                else:
+                    rentType = None
+                result['info'] = {'event': {'type': SHOP_RENT_SEASON_TYPE_MAP.get(event.seasonType, 'unknown'), 'id': event.seasonID, 'duration': _RENT_DURATION_MAP.get(event.duration, 'undefined'), 'expire': event.expiryTime} if event else None, 
+                   'rentType': rentType, 
+                   'time': _formatInfinite(info.getTimeLeft()), 
+                   'battles': _formatInfinite(info.battlesLeft), 
+                   'wins': _formatInfinite(info.winsLeft)}
         return result
-    else:
-        return
+    return
 
 
 def _formatVehicleNationChange(vehicle):
@@ -139,7 +136,7 @@ def _formatVehicleNationChange(vehicle):
         result['mainNation'] = nations.NAMES[nationID]
         return result
     else:
-        return None
+        return
 
 
 def _formatVehicleComparingAvailability(item):
@@ -147,15 +144,21 @@ def _formatVehicleComparingAvailability(item):
 
 
 def _formatUserName(item):
-    return getUserName(item.descriptor.type, textPrefix=True) if isinstance(item, Vehicle) else item.userName
+    if isinstance(item, Vehicle):
+        return getUserName(item.descriptor.type, textPrefix=True)
+    return item.userName
 
 
 def _formatShortUserName(item):
-    return getShortUserName(item.descriptor.type, textPrefix=True) if isinstance(item, Vehicle) else item.shortUserName
+    if isinstance(item, Vehicle):
+        return getShortUserName(item.descriptor.type, textPrefix=True)
+    return item.shortUserName
 
 
 def _formatOptDeviceCategories(item):
-    return list(item.descriptor.categories) if item.itemTypeID == GUI_ITEM_TYPE.OPTIONALDEVICE else []
+    if item.itemTypeID == GUI_ITEM_TYPE.OPTIONALDEVICE:
+        return list(item.descriptor.categories)
+    return []
 
 
 def _formatOptDeviceEffects(item):
@@ -198,7 +201,8 @@ imagesField = Field('images', _formatImagePaths)
 optDeviceCategoriesField = Field('categories', _formatOptDeviceCategories)
 optDeviceEffectField = Field('effects', _formatOptDeviceEffects)
 optDeviceGroupName = Field('groupName', lambda i: backport.text(R.strings.artefacts.dyn(i.descriptor.tierlessName).name()))
-_vehicleComponentsFieldSet = (idField,
+_vehicleComponentsFieldSet = (
+ idField,
  nameField,
  techNameField,
  buyPriceField,
@@ -209,20 +213,27 @@ _vehicleComponentsFieldSet = (idField,
  longDescriptionSpecialField,
  imagesField)
 _vehicleArtifactsFieldSet = _vehicleComponentsFieldSet + (tagsField, kpiField)
-_vehicleOptDeviceFieldSet = _vehicleArtifactsFieldSet + (optDeviceCategoriesField, optDeviceEffectField, optDeviceGroupName)
+_vehicleOptDeviceFieldSet = _vehicleArtifactsFieldSet + (
+ optDeviceCategoriesField,
+ optDeviceEffectField,
+ optDeviceGroupName)
 
 class Formatter(object):
-    __slots__ = ('__fields',)
+    __slots__ = ('__fields', )
 
     def __init__(self, fields):
         self.__fields = fields
 
     def format(self, item, allowedFields=None):
-        return {field.name:field.getter(item) for field in self.__fields} if allowedFields is None else {field.name:field.getter(item) for field in self.__fields if field.name in allowedFields}
+        if allowedFields is None:
+            return {field.name:field.getter(item) for field in self.__fields}
+        else:
+            return {field.name:field.getter(item) for field in self.__fields if field.name in allowedFields}
 
 
 def makeActionFormatter():
-    fields = [Field('id', lambda actionInfo: actionInfo.getID()),
+    fields = [
+     Field('id', lambda actionInfo: actionInfo.getID()),
      Field('startDate', lambda actionInfo: time_utils.timestampToISO(actionInfo.getExactStartTime())),
      Field('endDate', lambda actionInfo: time_utils.timestampToISO(actionInfo.getExactFinishTime())),
      Field('name', lambda actionInfo: actionInfo.getTitle()),
@@ -249,7 +260,8 @@ def makeVehicleFormatter(includeInventoryFields=False):
     isCollectibleField = Field('isCollectible', lambda i: i.isCollectible)
     isNotComparingAvailableField = Field('isNotComparingAvailable', _formatVehicleComparingAvailability)
     isOnlyForBattleRoyaleBattles = Field('isOnlyForBattleRoyaleBattles', lambda i: i.isOnlyForBattleRoyaleBattles)
-    fields = [idField,
+    fields = [
+     idField,
      nameField,
      shortName,
      techNameField,
@@ -283,11 +295,12 @@ def makeVehicleFormatter(includeInventoryFields=False):
         moduleFormatter = makeModuleFormatter()
         modulesField = Field('modules', lambda i: [ moduleFormatter.format(m) for m in i.modules if m is not None ])
         deviceFormatter = makeDeviceFormatter()
-        devicesField = Field('devices', lambda i: [ (deviceFormatter.format(d) if d is not None else None) for d in i.optDevices.installed ])
+        devicesField = Field('devices', lambda i: [ deviceFormatter.format(d) if d is not None else None for d in i.optDevices.installed ])
         equipmentFormatter = makeEquipmentFormatter()
-        equipmentField = Field('equipment', lambda i: [ (equipmentFormatter.format(e) if e is not None else None) for e in i.consumables.installed.getItems() ])
+        equipmentField = Field('equipment', lambda i: [ equipmentFormatter.format(e) if e is not None else None for e in i.consumables.installed.getItems()
+        ])
         crewFormatter = makeCrewFormatter()
-        crewField = Field('crew', lambda i: [ (crewFormatter.format(c) if c else None) for _, c in i.crew ])
+        crewField = Field('crew', lambda i: [ crewFormatter.format(c) if c else None for _, c in i.crew ])
 
         def formatReadiness(vehicle):
             isReady = vehicle.isReadyToFight
@@ -300,7 +313,8 @@ def makeVehicleFormatter(includeInventoryFields=False):
 
         readinessField = Field('readiness', formatReadiness)
         isFavoriteField = Field('isFavorite', lambda i: i.isFavorite)
-        fields.extend([shellsField,
+        fields.extend([
+         shellsField,
          modulesField,
          devicesField,
          equipmentField,
@@ -311,7 +325,8 @@ def makeVehicleFormatter(includeInventoryFields=False):
 
 
 def makeShopTankmanFormatter():
-    return Formatter((Field('groupName', lambda i: i.groupName),
+    return Formatter((
+     Field('groupName', lambda i: i.groupName),
      Field('location', lambda i: i.location.value),
      Field('role', _formatTankmanRole),
      Field('rank', _formatTankmanRank),
@@ -324,39 +339,40 @@ def makeShopTankmanFormatter():
 
 
 def _formatTankmanRole(crewItem):
-    return {'id': crewItem.roleID,
-     'name': crewItem.roleName,
-     'userName': crewItem.roleUserName}
+    return {'id': crewItem.roleID, 
+       'name': crewItem.roleName, 
+       'userName': crewItem.roleUserName}
 
 
 def _formatTankmanRank(crewItem):
-    return {'id': crewItem.rankID,
-     'userName': crewItem.rankUserName}
+    return {'id': crewItem.rankID, 
+       'userName': crewItem.rankUserName}
 
 
 def _formatVehicleInfo(crewItem):
-    return {vType:{'id': descr.type.compactDescr,
-     'type': first((t for t in vehicles.VEHICLE_CLASS_TAGS if t in descr.type.tags)),
-     'name': descr.type.userString,
-     'nation': nations.MAP[descr.type.id[0]]} for vType, descr in (('current', crewItem.vehicleDescr), ('native', crewItem.vehicleNativeDescr)) if descr is not None}
+    return {vType:{'id': descr.type.compactDescr, 'type': first(t for t in vehicles.VEHICLE_CLASS_TAGS if t in descr.type.tags), 'name': descr.type.userString, 'nation': nations.MAP[descr.type.id[0]]} for vType, descr in (
+     (
+      'current', crewItem.vehicleDescr),
+     (
+      'native', crewItem.vehicleNativeDescr)) if descr is not None if descr is not None}
 
 
 def _formatTankmanNames(crewItem):
-    return {'first': crewItem.firstUserName,
-     'last': crewItem.lastUserName,
-     'full': crewItem.fullUserName}
+    return {'first': crewItem.firstUserName, 
+       'last': crewItem.lastUserName, 
+       'full': crewItem.fullUserName}
 
 
 def _formatTankmanNationInfo(crewItem):
-    return {'id': crewItem.nationID,
-     'name': crewItem.nationName,
-     'userName': crewItem.nationUserName}
+    return {'id': crewItem.nationID, 
+       'name': crewItem.nationName, 
+       'userName': crewItem.nationUserName}
 
 
 def _formatTankmanIcons(crewItem):
-    return {'person': crewItem.icon,
-     'role': crewItem.role,
-     'rank': crewItem.iconRank}
+    return {'person': crewItem.icon, 
+       'role': crewItem.role, 
+       'rank': crewItem.iconRank}
 
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
@@ -373,7 +389,10 @@ def makeDeviceFormatter(compatVehGetter=None, fittedVehGetter=None, itemsCache=N
 def makeEquipmentFormatter(fittedVehGetter=None):
     fields = list(_vehicleArtifactsFieldSet)
     fields.remove(descriptionField)
-    fields.extend([Field('cooldown', lambda i: i.descriptor.cooldownSeconds), Field('nations', lambda i: [ nations.NAMES[i] for i in sorted(i.descriptor.compatibleNations()) ]), Field('description', lambda i: i.descriptor.description)])
+    fields.extend([
+     Field('cooldown', lambda i: i.descriptor.cooldownSeconds),
+     Field('nations', lambda i: [ nations.NAMES[i] for i in sorted(i.descriptor.compatibleNations()) ]),
+     Field('description', lambda i: i.descriptor.description)])
     if fittedVehGetter:
         fields.append(Field('fittedVehicles', lambda i: fittedVehGetter(i.intCD)))
     return Formatter(fields)
@@ -384,10 +403,14 @@ def makeBattleBoosterFormatter(fittedVehGetter=None):
     fields.remove(descriptionField)
 
     def formatAffectedSkill(i):
-        return CREW_SKILL_TO_KPI_NAME_MAP.get(i.getAffectedSkillName(), '') if i.isCrewBooster() else ''
+        if i.isCrewBooster():
+            return CREW_SKILL_TO_KPI_NAME_MAP.get(i.getAffectedSkillName(), '')
+        return ''
 
     def formatBoosterType(i):
-        return 'skill' if i.isCrewBooster() else 'device'
+        if i.isCrewBooster():
+            return 'skill'
+        return 'device'
 
     def formatBoosterTypeName(i):
         if i.isCrewBooster():
@@ -397,9 +420,13 @@ def makeBattleBoosterFormatter(fittedVehGetter=None):
         return i18n.makeString(key)
 
     def formatBoosterDescription(i):
-        return i.getCrewBoosterDescription(False) if i.isCrewBooster() else i.getOptDeviceBoosterDescription(vehicle=None, valueFormatter=formatValueToColorTag)
+        if i.isCrewBooster():
+            return i.getCrewBoosterDescription(False)
+        else:
+            return i.getOptDeviceBoosterDescription(vehicle=None, valueFormatter=formatValueToColorTag)
 
-    fields.extend([Field('affectedSkill', formatAffectedSkill),
+    fields.extend([
+     Field('affectedSkill', formatAffectedSkill),
      Field('affectedSkillName', lambda i: i.getAffectedSkillUserName()),
      Field('boosterType', formatBoosterType),
      Field('boosterTypeName', formatBoosterTypeName),
@@ -410,7 +437,8 @@ def makeBattleBoosterFormatter(fittedVehGetter=None):
 
 
 def makeBoosterFormatter():
-    fields = [Field('id', lambda booster: booster.boosterID),
+    fields = [
+     Field('id', lambda booster: booster.boosterID),
      Field('inventoryCount', lambda booster: booster.count),
      Field('kpi', lambda booster: _formatKPI(booster.kpi)),
      Field('description', lambda booster: booster.getBonusDescription(valueFormatter=formatValueToColorTag)),
@@ -425,7 +453,8 @@ def makeBoosterFormatter():
 
 
 def makeModuleFormatter():
-    fields = [idField,
+    fields = [
+     idField,
      Field('name', lambda i: i.longUserName),
      Field('type', lambda i: i.descriptor.itemTypeName),
      techNameField,
@@ -438,7 +467,8 @@ def makeModuleFormatter():
 
 
 def makeShellFormatter(includeCount=False):
-    fields = [idField,
+    fields = [
+     idField,
      nameField,
      inventoryCountField,
      sellPriceField,
@@ -453,12 +483,16 @@ def makeShellFormatter(includeCount=False):
 
 
 def makeCrewFormatter():
-    fields = [Field('fullName', lambda i: i.fullUserName), Field('role', lambda i: i.role), Field('roleLevel', lambda i: i.realRoleLevel.lvl)]
+    fields = [
+     Field('fullName', lambda i: i.fullUserName),
+     Field('role', lambda i: i.role),
+     Field('roleLevel', lambda i: i.realRoleLevel.lvl)]
     return Formatter(fields)
 
 
 def makePremiumPackFormatter():
-    fields = [nameField,
+    fields = [
+     nameField,
      shortDescriptionSpecialField,
      longDescriptionSpecialField,
      Field('buyPrice', lambda pack: _formatPrice(pack.buyPrice)),
@@ -468,7 +502,8 @@ def makePremiumPackFormatter():
 
 
 def makeCustomizationFormatter():
-    fields = [Field('id', lambda i: i.id),
+    fields = [
+     Field('id', lambda i: i.id),
      Field('type', lambda i: i.itemTypeName),
      Field('priceGroup', lambda i: i.priceGroup),
      Field('installedCount', lambda i: i.installedCount()),
@@ -478,20 +513,25 @@ def makeCustomizationFormatter():
 
 
 def makeInventoryEnhancementsFormatter():
-    fields = [Field('id', lambda i: i.id), Field('count', lambda i: i.count)]
+    fields = [
+     Field('id', lambda i: i.id),
+     Field('count', lambda i: i.count)]
     return Formatter(fields)
 
 
 def makeInstalledEnhancementsFormatter():
-    fields = [Field('vehicle_int_cd', lambda i: i.vehIntCD), Field('enhancements', lambda i: i.enhancements)]
+    fields = [
+     Field('vehicle_int_cd', lambda i: i.vehIntCD),
+     Field('enhancements', lambda i: i.enhancements)]
     return Formatter(fields)
 
 
 def makeCrewBooksFormatter():
-    fields = [idField,
-     Field('images', lambda item: {'small': replaceImgPrefix(item.getShopIcon(size='small')),
-      'medium': replaceImgPrefix(item.getShopIcon(size='big')),
-      'large': replaceImgPrefix(item.getShopIcon(size='large'))}),
+    fields = [
+     idField,
+     Field('images', lambda item: {'small': replaceImgPrefix(item.getShopIcon(size='small')), 
+        'medium': replaceImgPrefix(item.getShopIcon(size='big')), 
+        'large': replaceImgPrefix(item.getShopIcon(size='large'))}),
      Field('type', lambda book: book.getBookType()),
      Field('nation', lambda book: book.getNation())]
     return Formatter(fields)

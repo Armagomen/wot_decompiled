@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/maps_training/scenario_tooltip.py
 from frameworks.wulf.view.view import ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.maps_training.maps_training_scenario_tooltip_model import MapsTrainingScenarioTooltipModel
@@ -28,7 +26,7 @@ class ScenarioTooltip(ViewImpl):
         super(ScenarioTooltip, self)._onLoading(*args, **kwargs)
         self.viewModel.setVehicleType(self._vehicleType)
         self.viewModel.setTeam(self._team)
-        self.viewModel.setScenarioNum(SCENARIO_INDEXES[self._team, self._vehicleType])
+        self.viewModel.setScenarioNum(SCENARIO_INDEXES[(self._team, self._vehicleType)])
         self.viewModel.setMapId(self._mapId)
         targetsModel = self.viewModel.getTargets()
         for target in self._targets:

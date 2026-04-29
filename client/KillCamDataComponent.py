@@ -1,9 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/KillCamDataComponent.py
-import logging
-import BigWorld
-import CGF
-import Math
+from __future__ import absolute_import, division
+import logging, BigWorld, CGF, Math
 from GenericComponents import Sequence, StateSwitcherComponent
 from cgf_components_common.vehicle_mechanics import StationaryReloadSequenceParamsComponent
 from avatar_components.avatar_postmortem_component import SimulatedVehicleType
@@ -16,7 +12,8 @@ from shared_utils import first
 _logger = logging.getLogger(__name__)
 _UNSPOTTED_PIVOT_DISTANCE_FACTOR = 12
 _UNSPOTTED_MARKER_DISTANCE_FACTOR = 4
-_MECHANICS_WITH_DYN_ATTACHMENTS = (VehicleMechanic.STATIONARY_RELOAD,)
+_MECHANICS_WITH_DYN_ATTACHMENTS = (
+ VehicleMechanic.STATIONARY_RELOAD,)
 
 class KillCamDataComponent(BigWorld.DynamicScriptComponent):
 
@@ -54,7 +51,7 @@ class KillCamDataComponent(BigWorld.DynamicScriptComponent):
     def __captureKillCamSimulationData(self, vehicles, playerID):
         playerData = self.__captureVehSimulationData(BigWorld.entity(playerID))
         if not playerData:
-            return None
+            return
         else:
             serverKillCamData = self.capturedKillCamData
             attackerID = serverKillCamData['attacker']['attackerID']
@@ -69,12 +66,12 @@ class KillCamDataComponent(BigWorld.DynamicScriptComponent):
             projectileDataSpotted = serverKillCamData['projectile']['spottedData']
             if projectileDataSpotted:
                 projectileData.update(projectileDataSpotted)
-            self.processedData = {'attacker': self.__getAttackerData(),
-             'player': playerData,
-             'projectile': projectileData,
-             'others': self.__collectOtherVehiclesForKillCam(vehicles, attackerID, playerID),
-             'time': BigWorld.time()}
-            return None
+            self.processedData = {'attacker': self.__getAttackerData(), 
+               'player': playerData, 
+               'projectile': projectileData, 
+               'others': self.__collectOtherVehiclesForKillCam(vehicles, attackerID, playerID), 
+               'time': BigWorld.time()}
+            return
 
     def __getAttackerData(self):
         serverKillCamData = self.capturedKillCamData
@@ -89,6 +86,9 @@ class KillCamDataComponent(BigWorld.DynamicScriptComponent):
         attackerServerData = serverKillCamData['attacker']['unspottedData']
         if attackerServerData:
             attackerData.update(attackerServerData)
+        attackerServerData = serverKillCamData['attacker']['mechanicsInfo']
+        if attackerServerData:
+            attackerData.update({'mechanicsInfo': attackerServerData})
         attackerData['simulationType'] = SimulatedVehicleType.ATTACKER
         return attackerData
 
@@ -103,51 +103,53 @@ class KillCamDataComponent(BigWorld.DynamicScriptComponent):
         self.processedData['attacker'] = self.__getAttackerData()
 
     def __collectOtherVehiclesForKillCam(self, vehicles, attackerID, playerID):
-        return [ self.__captureVehSimulationData(veh) for veh in vehicles if veh.id not in (attackerID, playerID) and not veh.isDestroyed and veh.isStarted ]
+        return [ self.__captureVehSimulationData(veh) for veh in vehicles if veh.id not in (attackerID, playerID) and not veh.isDestroyed and veh.isStarted
+               ]
 
     def __captureVehSimulationData(self, vehicle):
         if vehicle is None or vehicle.isDestroyed or not vehicle.isStarted:
             return
-        else:
-            matrix = Math.Matrix(vehicle.matrix)
-            return {'vehicleID': vehicle.id,
-             'position': matrix.translation.tuple(),
-             'dynAttachmentsInfo': self.__getDynAttachmentsInfo(vehicle),
-             'rotation': (matrix.roll, matrix.pitch, matrix.yaw),
-             'health': vehicle.health,
-             'gunAngles': self.__getGunAngles(vehicle),
-             'turretAndGunSpeed': self.__getTurretAndGunSpeed(vehicle),
-             'burnoutLevel': vehicle.burnoutLevel,
-             'simulationType': SimulatedVehicleType.VEHICLE,
-             'damageStickers': vehicle.damageStickers,
-             'velocity': vehicle.filter.velocity,
-             'spotted': True,
-             'publicInfo': dict(vehicle.publicInfo),
-             'brokenTracks': vehicle.appearance.getTrackStates(),
-             'siegeState': vehicle.siegeState,
-             'wheelsState': vehicle.appearance.wheelsState,
-             'wheelsSteering': vehicle.appearance.wheelsSteering,
-             'trackInAir': (vehicle.appearance.isLeftSideFlying, vehicle.appearance.isRightSideFlying)}
+        matrix = Math.Matrix(vehicle.matrix)
+        return {'vehicleID': vehicle.id, 
+           'position': matrix.translation.tuple(), 
+           'dynAttachmentsInfo': self.__getDynAttachmentsInfo(vehicle), 
+           'rotation': (
+                      matrix.roll, matrix.pitch, matrix.yaw), 
+           'health': vehicle.health, 
+           'gunAngles': self.__getGunAngles(vehicle), 
+           'turretAndGunSpeed': self.__getTurretAndGunSpeed(vehicle), 
+           'burnoutLevel': vehicle.burnoutLevel, 
+           'simulationType': SimulatedVehicleType.VEHICLE, 
+           'damageStickers': vehicle.damageStickers, 
+           'velocity': vehicle.filter.velocity, 
+           'spotted': True, 
+           'publicInfo': dict(vehicle.publicInfo), 
+           'brokenTracks': vehicle.appearance.getTrackStates(), 
+           'siegeState': vehicle.siegeState, 
+           'wheelsState': vehicle.appearance.wheelsState, 
+           'wheelsSteering': vehicle.appearance.wheelsSteering, 
+           'trackInAir': (
+                        vehicle.appearance.isLeftSideFlying, vehicle.appearance.isRightSideFlying)}
 
     def __captureUnspottedVehSimulationData(self, vehicleID):
-        return {'vehicleID': vehicleID,
-         'position': (0, 0, 0),
-         'dynAttachmentsInfo': [],
-         'rotation': (0, 0, 0),
-         'health': 0,
-         'gunAngles': (0, 0),
-         'burnoutLevel': 0,
-         'simulationType': SimulatedVehicleType.VEHICLE,
-         'damageStickers': frozenset(),
-         'velocity': 0,
-         'spotted': False}
+        return {'vehicleID': vehicleID, 
+           'position': (0, 0, 0), 
+           'dynAttachmentsInfo': [], 'rotation': (0, 0, 0), 
+           'health': 0, 
+           'gunAngles': (0, 0), 
+           'burnoutLevel': 0, 
+           'simulationType': SimulatedVehicleType.VEHICLE, 
+           'damageStickers': frozenset(), 
+           'velocity': 0, 
+           'spotted': False}
 
     def __getGunAngles(self, veh):
         if veh.typeDescriptor:
             turretYaw, gunPitch = decodeGunAngles(veh.gunAnglesPacked, veh.typeDescriptor.gun.pitchLimits['absolute'])
         else:
             turretYaw = gunPitch = 0.0
-        return (turretYaw, gunPitch)
+        return (
+         turretYaw, gunPitch)
 
     def __getTurretAndGunSpeed(self, veh):
         if veh.typeDescriptor:
@@ -155,33 +157,35 @@ class KillCamDataComponent(BigWorld.DynamicScriptComponent):
             gunVelocity = veh.typeDescriptor.gun.rotationSpeed
         else:
             turretVelocity = gunVelocity = 0.0
-        return (turretVelocity, gunVelocity)
+        return (
+         turretVelocity, gunVelocity)
 
     def __getDynAttachmentsInfo(self, vehicle):
         parentGameObject = vehicle.entityGameObject
         hierarchy = CGF.HierarchyManager(parentGameObject.spaceID)
         result = hierarchy.findComponentsInHierarchy(parentGameObject, StationaryReloadSequenceParamsComponent)
         if not result:
-            return None
-        elif len(result) > 1:
-            _logger.warning('Multiple StationaryReloadSequenceParamsComponent is not supported in death cam')
-            return None
+            return
         else:
+            if len(result) > 1:
+                _logger.warning('Multiple StationaryReloadSequenceParamsComponent is not supported in death cam')
+                return
             gameObject, _ = first(result)
             if not gameObject.isValid():
-                return None
+                return
             sequence = gameObject.findComponentByType(Sequence)
             stateSwitcher = gameObject.findComponentByType(StateSwitcherComponent)
-            return None if sequence is None or stateSwitcher is None else {'activeSequenceLayer': sequence.activeLayerIdx,
-             'sequenceTime': sequence.time,
-             'attachmentState': stateSwitcher.getState()}
+            if sequence is None or stateSwitcher is None:
+                return
+            return {'activeSequenceLayer': sequence.activeLayerIdx, 'sequenceTime': sequence.time, 
+               'attachmentState': stateSwitcher.getState()}
 
     def __unpackShellData(self, shellCompDescr):
         shellDescr = getItemByCompactDescr(shellCompDescr)
-        return {'shellType': BATTLE_LOG_SHELL_TYPES.getShellType(shellDescr),
-         'shellKind': shellDescr.kind,
-         'shellIcon': shellDescr.iconName,
-         'shellCaliber': shellDescr.caliber}
+        return {'shellType': BATTLE_LOG_SHELL_TYPES.getShellType(shellDescr), 
+           'shellKind': shellDescr.kind, 
+           'shellIcon': shellDescr.iconName, 
+           'shellCaliber': shellDescr.caliber}
 
     def __setupTrajectory(self):
         projectileData = self.processedData['projectile']
@@ -193,28 +197,30 @@ class KillCamDataComponent(BigWorld.DynamicScriptComponent):
         unspottedOrigin = None
         if not self.__killerIsSpotted:
             directionVector = origin - impactPoint
-            directionVector *= 1 / directionVector.length
+            directionVector *= 1.0 / directionVector.length
             unspottedOrigin = impactPoint + directionVector * _UNSPOTTED_MARKER_DISTANCE_FACTOR
             origin = impactPoint + directionVector * _UNSPOTTED_PIVOT_DISTANCE_FACTOR
         elif self.processedData['attacker']['vehicleType'] == 'SPG':
             trajectoryPoints = calculateSPGTrajectory(origin, impactPoint, velocity, gravity)
             if self.__killerIsSpotted:
                 return (trajectoryPoints, unspottedOrigin)
-            trajectoryEndVector = Math.Vector3(trajectoryPoints[-1] - trajectoryPoints[-2])
+            trajectoryEndVector = Math.Vector3(trajectoryPoints[(-1)] - trajectoryPoints[(-2)])
             halfLength = trajectoryEndVector.length / 2.0
             trajectoryEndVector.normalise()
-            trajectoryPoints = [trajectoryPoints[-2] + trajectoryEndVector * halfLength, trajectoryPoints[-1]]
-            unspottedOrigin = trajectoryPoints[-2]
-            return (trajectoryPoints, unspottedOrigin)
+            trajectoryPoints = [trajectoryPoints[(-2)] + trajectoryEndVector * halfLength, trajectoryPoints[(-1)]]
+            unspottedOrigin = trajectoryPoints[(-2)]
+            return (
+             trajectoryPoints, unspottedOrigin)
         if self.__isRicochet:
             trajectoryPoints = []
             for index in range(len(projectileTrajectoryData) - 1):
                 nPointOrigin, nPointVelocity = projectileTrajectoryData[index]
-                n1PointOrigin, _ = projectileTrajectoryData[index + 1]
+                n1PointOrigin, _ = projectileTrajectoryData[(index + 1)]
                 trajectoryPoints += calculateSPGTrajectory(nPointOrigin, n1PointOrigin, nPointVelocity, gravity)
 
-            trajectoryPoints += calculateSPGTrajectory(projectileTrajectoryData[-1][0], impactPoint, projectileTrajectoryData[-1][1], gravity)
-            return (trajectoryPoints, unspottedOrigin)
+            trajectoryPoints += calculateSPGTrajectory(projectileTrajectoryData[(-1)][0], impactPoint, projectileTrajectoryData[(-1)][1], gravity)
+            return (
+             trajectoryPoints, unspottedOrigin)
         else:
             trajectoryPoints = calculateSPGTrajectory(origin, impactPoint, velocity, gravity)
             return (trajectoryPoints, unspottedOrigin)

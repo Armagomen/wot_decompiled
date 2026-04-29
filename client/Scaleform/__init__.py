@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/Scaleform/__init__.py
 AVAILABLE = False
 try:
     from _Scaleform import *
@@ -8,8 +6,7 @@ except ImportError:
     print 'There is no module named _Scaleform.  The most likely cause of this \tis the client was built without Scaleform support.  Please check the \tdocumentation for further details on enabling Scaleform support.'
 
 def showCursor():
-    import GUI
-    import BigWorld
+    import GUI, BigWorld
     c = GUI.mcursor()
     c.visible = 1
     BigWorld.setCursor(c)
@@ -78,7 +75,7 @@ def createAllFontsMovie():
 
 def createFlashText(fontName='Slate Mobile'):
     import GUI
-    g = GUI.FlashText(u'some label', fontName)
+    g = GUI.FlashText('some label', fontName)
     g.size = (2, 2)
     g.position = (0, 0, 0)
     return g

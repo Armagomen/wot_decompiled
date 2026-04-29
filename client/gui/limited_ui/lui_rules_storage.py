@@ -1,10 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/limited_ui/lui_rules_storage.py
 import logging
 from collections import namedtuple, defaultdict
 from enumerations import Enumeration, EnumItem
-import typing
-import BigWorld
+import typing, BigWorld
 from account_helpers import AccountSettings
 from expressions import parseExpression
 from helpers import dependency
@@ -19,10 +16,12 @@ class LuiRuleTypes(CONST_CONTAINER):
     PERMANENT = 'permanent'
     COMMON = 'common'
     VERSIONED = 'versioned'
-    NOVICE = (COMMON, VERSIONED)
+    NOVICE = (
+     COMMON, VERSIONED)
 
 
-LUI_RULES = Enumeration('Limited UI rules', ['store',
+LUI_RULES = Enumeration('Limited UI rules', [
+ 'store',
  'profile',
  'profileHof',
  'profileTechniquePage',
@@ -91,7 +90,7 @@ class _LimitedUIRules(object):
         return set(self.__rules.keys())
 
     def getRulesIDsByTypes(self, ruleTypes):
-        return set((ruleID for ruleID, rule in self.__rules.items() if rule.ruleType in ruleTypes))
+        return set(ruleID for ruleID, rule in self.__rules.items() if rule.ruleType in ruleTypes)
 
     def hasRule(self, ruleID):
         return ruleID in self.__rules
@@ -103,10 +102,13 @@ class _LimitedUIRules(object):
         return bool(self.getRulesIDsByTypes(ruleTypes))
 
     def getTokens(self, ruleID):
-        return self.getRule(ruleID).tokens if self.hasRule(ruleID) else set()
+        if self.hasRule(ruleID):
+            return self.getRule(ruleID).tokens
+        return set()
 
     def getSysMessage(self, ruleID):
-        return self.getRule(ruleID).message if self.hasRule(ruleID) else None
+        if self.hasRule(ruleID):
+            return self.getRule(ruleID).message
 
     def clear(self):
         self.__rules.clear()
@@ -117,8 +119,10 @@ class _LimitedUIRules(object):
         rule = self.getRule(ruleID)
         if rule is None or ruleID in self.__postponedCompletedRules[rule.ruleType]:
             return True
+        if rule.ruleType == LuiRuleTypes.VERSIONED:
+            return self.__isClientRuleCompleted(ruleID)
         else:
-            return self.__isClientRuleCompleted(ruleID) if rule.ruleType == LuiRuleTypes.VERSIONED else self.__isServerRuleCompleted(rule)
+            return self.__isServerRuleCompleted(rule)
 
     def completeRule(self, ruleID):
         rule = self.getRule(ruleID)
@@ -152,13 +156,14 @@ class _LimitedUIRules(object):
                 if ruleType == LuiRuleTypes.VERSIONED:
                     AccountSettings.completeVersionedRules([ ruleID.name() for ruleID in ruleIDs ])
                     del self.__postponedCompletedRules[ruleType]
-                for ruleID in ruleIDs:
-                    rule = self.getRule(ruleID)
-                    if rule is None:
-                        _logger.warning("Couldn't complete postponed rule, ruleID was not found: %s", ruleID.name())
-                        continue
-                    storage, offset = self.__getServerRuleStorageInfo(rule)
-                    serverRules[storage, ruleType].append(offset)
+                else:
+                    for ruleID in ruleIDs:
+                        rule = self.getRule(ruleID)
+                        if rule is None:
+                            _logger.warning("Couldn't complete postponed rule, ruleID was not found: %s", ruleID.name())
+                            continue
+                        storage, offset = self.__getServerRuleStorageInfo(rule)
+                        serverRules[(storage, ruleType)].append(offset)
 
             if serverRules and self.__settingsCore.serverSettings.setLimitedUIGroupProgress(serverRules):
                 self.__postponedCompletedRules.clear()
@@ -240,7 +245,7 @@ class RulesStorageMaker(object):
         for item in data.values():
             cls.__normalizeRuleItem(data, rulesIDs, item)
 
-        return {LUI_RULES.lookup(ruleID):_LimitedUIRule(**value) for ruleID, value in data.items() if LUI_RULES.lookup(ruleID) is not None}
+        return {LUI_RULES.lookup(ruleID):_LimitedUIRule(**value) for ruleID, value in data.items() if LUI_RULES.lookup(ruleID) is not None if LUI_RULES.lookup(ruleID) is not None}
 
     @classmethod
     def __makeRulesData(cls, ruleType, rules, idGen):
@@ -250,12 +255,12 @@ class RulesStorageMaker(object):
     @staticmethod
     def __makeRuleData(idGen, expressionStr, message, ruleType):
         expression, tokens = parseExpression(expressionStr)
-        return {'idx': idGen.next(),
-         'expressionStr': expressionStr,
-         'expression': expression,
-         'tokens': tokens,
-         'message': message,
-         'ruleType': ruleType}
+        return {'idx': idGen.next(), 
+           'expressionStr': expressionStr, 
+           'expression': expression, 
+           'tokens': tokens, 
+           'message': message, 
+           'ruleType': ruleType}
 
     @classmethod
     def __normalizeRuleItem(cls, data, rulesIDs, item):
@@ -267,7 +272,7 @@ class RulesStorageMaker(object):
                 ruleDependency = ruleDependencies.pop()
                 dependsItem = data[ruleDependency]
                 dependencyExpression = cls.__normalizeRuleItem(data, rulesIDs, dependsItem)
-                expressionStr = expressionStr.replace(ruleDependency, '({})'.format(dependencyExpression))
+                expressionStr = expressionStr.replace(ruleDependency, ('({})').format(dependencyExpression))
 
             expression, tokens = parseExpression(expressionStr)
             item['expressionStr'] = expressionStr

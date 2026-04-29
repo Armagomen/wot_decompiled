@@ -1,7 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/prime_time_view_base.py
-import time
-import typing
+from __future__ import absolute_import
+import time, typing
+from functools import total_ordering
 import constants
 from adisp import adisp_process
 from gui import GUI_SETTINGS
@@ -24,7 +23,7 @@ from skeletons.gui.game_control import IReloginController
 _PING_MAX_VALUE = 999
 
 def _emptyFmt(*_):
-    pass
+    return ''
 
 
 def makeServerString(serverInfo, isServerNameShort=False, customTextId=None):
@@ -33,6 +32,7 @@ def makeServerString(serverInfo, isServerNameShort=False, customTextId=None):
     return backport.text(textId(), server=server)
 
 
+@total_ordering
 class ServerListItemPresenter(object):
     _RES_ROOT = None
 
@@ -54,6 +54,18 @@ class ServerListItemPresenter(object):
         self.invalidatePingData()
         return
 
+    def __eq__(self, other):
+        return self._compare(other) == 0
+
+    def __ne__(self, other):
+        return not self == other
+
+    def __lt__(self, other):
+        return self._compare(other) < 0
+
+    def __hash__(self):
+        return id(self)
+
     @classmethod
     def deltaFormatter(cls, delta):
         return text_styles.neutral(backport.getTillTimeStringByRClass(delta, cls._RES_ROOT.timeLeft))
@@ -63,16 +75,16 @@ class ServerListItemPresenter(object):
         return backport.getTillTimeStringByRClass(delta, cls._RES_ROOT.timeLeft)
 
     def asDict(self):
-        return {'label': self.__name,
-         'id': self.__peripheryID,
-         'csisStatus': self.__csisStatus,
-         'data': self.__hostName,
-         'enabled': self.isEnabled(),
-         'timeLeft': self.getTimeLeft(),
-         'shortname': self.__shortName,
-         'pingValue': self.__pingValue,
-         'pingStatus': self.__pingStatus,
-         'tooltip': self._buildTooltip(self.__peripheryID)}
+        return {'label': self.__name, 
+           'id': self.__peripheryID, 
+           'csisStatus': self.__csisStatus, 
+           'data': self.__hostName, 
+           'enabled': self.isEnabled(), 
+           'timeLeft': self.getTimeLeft(), 
+           'shortname': self.__shortName, 
+           'pingValue': self.__pingValue, 
+           'pingStatus': self.__pingStatus, 
+           'tooltip': self._buildTooltip(self.__peripheryID)}
 
     def isActive(self):
         return self.__getPrimeTimeStatus() in (PrimeTimeStatus.AVAILABLE, PrimeTimeStatus.NOT_AVAILABLE)
@@ -111,10 +123,12 @@ class ServerListItemPresenter(object):
         params = periodInfo.getVO(withBNames=True, deltaFmt=self.deltaFormatter)
         params['serverName'] = self.getName()
         tooltip = backport.text(self._RES_ROOT.dyn(periodInfo.periodType.value, self._RES_ROOT.undefined)(), **params)
-        return {'tooltip': text_styles.main(tooltip),
-         'specialArgs': [],
-         'specialAlias': None,
-         'isSpecial': None}
+        return {'tooltip': text_styles.main(tooltip), 
+           'specialArgs': [], 'specialAlias': None, 
+           'isSpecial': None}
+
+    def _compare(self, other):
+        return self.orderID - other.orderID
 
     def _getIsAvailable(self):
         self.__invalidatePrimeTimeStatus()
@@ -130,9 +144,6 @@ class ServerListItemPresenter(object):
             primeTimeData = self.__periodsController.getPrimeTimeStatus(peripheryID=self.__peripheryID)
             self.__primeTimeStatus, self.__timeLeft, self.__isAvailable = primeTimeData
             self.__invalidationTime = currTime
-
-    def __cmp__(self, other):
-        return self.orderID - other.orderID
 
 
 class StubPresenterClass(ServerListItemPresenter):
@@ -209,7 +220,7 @@ class PrimeTimeViewBase(LobbySubView, PrimeTimeMeta, Notifiable, IPreQueueListen
         return not self._hasAvailableServers()
 
     def _hasAvailableServers(self):
-        return any((server.isAvailable() for server in self._getActualServers()))
+        return any(server.isAvailable() for server in self._getActualServers())
 
     def _getActualServers(self):
         activeServers = []
@@ -232,7 +243,9 @@ class PrimeTimeViewBase(LobbySubView, PrimeTimeMeta, Notifiable, IPreQueueListen
         raise NotImplementedError
 
     def _getServerText(self, serverList, serverInfo, isServerNameShort=False):
-        return makeServerString(serverInfo, isServerNameShort) if len(serverList) == 1 else backport.text(R.strings.menu.primeTime.servers())
+        if len(serverList) == 1:
+            return makeServerString(serverInfo, isServerNameShort)
+        return backport.text(R.strings.menu.primeTime.servers())
 
     def _getStatusText(self):
         resSection = self._RES_ROOT.statusText
@@ -261,13 +274,13 @@ class PrimeTimeViewBase(LobbySubView, PrimeTimeMeta, Notifiable, IPreQueueListen
 
     def _prepareData(self, serverList, serverInfo):
         isSingleServer = len(serverList) == 1
-        return {'warningIconSrc': self._getWarningIcon(),
-         'status': text_styles.grandTitle(self._getStatusText()),
-         'serversText': text_styles.expText(self._getServerText(serverList, serverInfo)),
-         'timeText': text_styles.expText(self._getTimeText(serverInfo)),
-         'showAlertBG': self._isAlertBGVisible(),
-         'serversDDEnabled': not isSingleServer,
-         'serverDDVisible': not isSingleServer}
+        return {'warningIconSrc': self._getWarningIcon(), 
+           'status': text_styles.grandTitle(self._getStatusText()), 
+           'serversText': text_styles.expText(self._getServerText(serverList, serverInfo)), 
+           'timeText': text_styles.expText(self._getTimeText(serverInfo)), 
+           'showAlertBG': self._isAlertBGVisible(), 
+           'serversDDEnabled': not isSingleServer, 
+           'serverDDVisible': not isSingleServer}
 
     def _startControllerListening(self):
         self._getController().onUpdated += self._onControllerUpdated
@@ -280,7 +293,8 @@ class PrimeTimeViewBase(LobbySubView, PrimeTimeMeta, Notifiable, IPreQueueListen
         def onLobbyInit():
             actions.SelectPrb(PrbAction(self._getPrbActionName())).invoke()
 
-        return [actions.OnLobbyInitedAction(onInited=onLobbyInit)]
+        return [
+         actions.OnLobbyInitedAction(onInited=onLobbyInit)]
 
     def __getInfoUpdatePeriod(self):
         minimumTime = 0
@@ -315,11 +329,8 @@ class PrimeTimeViewBase(LobbySubView, PrimeTimeMeta, Notifiable, IPreQueueListen
     def __buildServersList(self):
         hostsList = g_preDefinedHosts.getSimpleHostsList(g_preDefinedHosts.hostsWithRoaming(), withShortName=True)
         if self._connectionMgr.isStandalone():
-            hostsList.insert(0, (self._connectionMgr.url,
-             self._connectionMgr.serverUserName,
-             self._connectionMgr.serverUserNameShort,
-             HOST_AVAILABILITY.IGNORED,
-             0))
+            hostsList.insert(0, (self._connectionMgr.url, self._connectionMgr.serverUserName,
+             self._connectionMgr.serverUserNameShort, HOST_AVAILABILITY.IGNORED, 0))
         for idx, serverData in enumerate(hostsList):
             serverPresenter = self._serverPresenterClass(self._getController(), idx, *serverData)
             self._allServers[serverPresenter.getPeripheryID()] = serverPresenter
@@ -349,9 +360,9 @@ class PrimeTimeViewBase(LobbySubView, PrimeTimeMeta, Notifiable, IPreQueueListen
 
     def __updateServersDP(self):
         actualServers = sorted(self._getActualServers())
-        currentSet = set((s.get('id') for s in self.__serversDP.collection))
-        actualSet = set((s.getPeripheryID() for s in actualServers))
-        self.__serversDP.rebuildList((server.asDict() for server in actualServers))
+        currentSet = set(s.get('id') for s in self.__serversDP.collection)
+        actualSet = set(s.getPeripheryID() for s in actualServers)
+        self.__serversDP.rebuildList(server.asDict() for server in actualServers)
         if currentSet != actualSet:
             primeTimesForDay = self._getController().getPrimeTimesForDay(time.time(), groupIdentical=False)
             self.__serversDP.updatePrimeTimes(primeTimesForDay)
@@ -369,7 +380,7 @@ class PrimeTimeViewBase(LobbySubView, PrimeTimeMeta, Notifiable, IPreQueueListen
         actualServers = sorted(self._getActualServers())
         if self.__serversDP.getSelectedIdx() == -1:
             currentServerID = self._connectionMgr.peripheryID
-            if any((s.getPeripheryID() == currentServerID for s in actualServers)):
+            if any(s.getPeripheryID() == currentServerID for s in actualServers):
                 self.__serversDP.setSelectedID(currentServerID)
             else:
                 bestPeripheryID = self.__serversDP.getDefaultSelectedServer([ s.asDict() for s in actualServers ])

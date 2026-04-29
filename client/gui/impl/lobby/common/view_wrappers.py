@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/common/view_wrappers.py
 from functools import wraps
 from gui.impl import backport
 from gui.impl.gen import R

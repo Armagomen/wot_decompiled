@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/goodies/storage_novelty.py
 from constants import SwitchState
 import Event
 from account_helpers.AccountSettings import AccountSettings, DEMOUNT_KIT_SEEN, RECERTIFICATION_FORM_SEEN
@@ -22,10 +20,8 @@ class StorageNovelty(IStorageNovelty):
 
     @property
     def __noveltyData(self):
-        return [{'f': self.__goodiesCache.getDemountKits,
-          'seen': DEMOUNT_KIT_SEEN}, {'f': self.__goodiesCache.getRecertificationForms,
-          'seen': RECERTIFICATION_FORM_SEEN,
-          'status': self.__isRecertificationFormsEnabled}]
+        return [{'f': self.__goodiesCache.getDemountKits, 'seen': DEMOUNT_KIT_SEEN},
+         {'f': self.__goodiesCache.getRecertificationForms, 'seen': RECERTIFICATION_FORM_SEEN, 'status': self.__isRecertificationFormsEnabled}]
 
     @property
     def showNovelty(self):
@@ -57,7 +53,10 @@ class StorageNovelty(IStorageNovelty):
     @staticmethod
     def isItemsEnabled(args):
         func = args.get('status')
-        return func() if func is not None else True
+        if func is not None:
+            return func()
+        else:
+            return True
 
     def __isRecertificationFormsEnabled(self):
         return self.__lobbyContext.getServerSettings().recertificationFormState() != SwitchState.DISABLED.value

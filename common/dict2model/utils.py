@@ -1,11 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/dict2model/utils.py
 from __future__ import absolute_import
-import re
-import typing
-import copy
-import datetime
-import functools
+import re, typing, copy, datetime, functools
 from future.utils import string_types, binary_type
 from soft_exception import SoftException
 binaryType = binary_type
@@ -21,13 +15,16 @@ class UTC(datetime.tzinfo):
     _tzname = zone
 
     def fromutc(self, dt):
-        return self.localize(dt) if dt.tzinfo is None else super(UTC, self).fromutc(dt)
+        if dt.tzinfo is None:
+            return self.localize(dt)
+        else:
+            return super(UTC, self).fromutc(dt)
 
     def utcoffset(self, dt):
         return ZERO
 
     def tzname(self, dt):
-        pass
+        return 'UTC'
 
     def dst(self, dt):
         return ZERO
@@ -46,10 +43,10 @@ class UTC(datetime.tzinfo):
             return dt.astimezone(self)
 
     def __repr__(self):
-        pass
+        return '<UTC>'
 
     def __str__(self):
-        pass
+        return 'UTC'
 
 
 utc = UTC()
@@ -70,7 +67,7 @@ def fromIso(dateString):
     if '.' in dateString:
         dtNomsTz, mstz = dateString.split('.')
         msNoTz = mstz[:len(mstz) - len(mstz.lstrip('0123456789'))]
-        datestring = '.'.join((dtNomsTz, msNoTz))
+        datestring = ('.').join((dtNomsTz, msNoTz))
         return datetime.datetime.strptime(datestring[:26], '%Y-%m-%dT%H:%M:%S.%f')
     return datetime.datetime.strptime(dateString[:19], '%Y-%m-%dT%H:%M:%S')
 
@@ -102,10 +99,12 @@ def _mergeDicts(destination, source, deep=True):
                 elif isinstance(dstValue, tuple) and isinstance(srcValue, tuple):
                     destination[key] = dstValue + srcValueCopy
                 else:
-                    listTypes = (list, set, tuple)
+                    listTypes = (
+                     list, set, tuple)
                     destination[key] = list(dstValue) if isinstance(dstValue, listTypes) else [dstValue]
                     destination[key] += list(srcValueCopy) if isinstance(srcValue, listTypes) else [srcValueCopy]
-        destination[key] = _copy(source[key])
+        else:
+            destination[key] = _copy(source[key])
 
     return destination
 

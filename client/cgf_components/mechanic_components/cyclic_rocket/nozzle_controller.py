@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/cgf_components/mechanic_components/cyclic_rocket/nozzle_controller.py
 import CGF
 from GenericComponents import CyclicActivatorComponent
 from cache import cached_property
@@ -16,7 +14,7 @@ class NozzleController(object):
     activeStateGameObject = ComponentProperty(CGFMetaTypes.LINK, editorName='activeStateGameObject', value=CGF.GameObject)
     endStateGameObject = ComponentProperty(CGFMetaTypes.LINK, editorName='endStateGameObject', value=CGF.GameObject)
     failedStateGameObject = ComponentProperty(CGFMetaTypes.LINK, editorName='failedStateGameObject', value=CGF.GameObject)
-    boosterType = ComponentProperty(CGFMetaTypes.INT, editorName='boosterType', value=AcceleratorStatus.NONE, annotations={'comboBox': {e.name:str(e.value) for e in AcceleratorStatus.__members__.values() if e != AcceleratorStatus.BOTH}})
+    boosterType = ComponentProperty(CGFMetaTypes.INT, editorName='boosterType', value=AcceleratorStatus.NONE, annotations={'comboBox': {e.name:str(e.value) for e in AcceleratorStatus.__members__.values() if e != AcceleratorStatus.BOTH if e != AcceleratorStatus.BOTH}})
 
     def __init__(self):
         self.wasActive = False
@@ -82,7 +80,7 @@ class NozzleControllerComponentManager(CGF.ComponentManager):
             if not res:
                 return
             boosterCtrl = res[1]
-            acceleratorStatus = boosterCtrl.acceleratorStatus if not IS_EDITOR else AcceleratorStatus.BOTH
+            acceleratorStatus = (IS_EDITOR or boosterCtrl).acceleratorStatus if 1 else AcceleratorStatus.BOTH
             if acceleratorStatus & nozzle.boosterType:
                 self.__activate(nozzle.activeStateGameObject)
                 nozzle.wasActive = True

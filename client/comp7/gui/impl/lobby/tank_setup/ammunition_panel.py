@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/tank_setup/ammunition_panel.py
 from CurrentVehicle import g_currentVehicle
 from comp7.gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS as COMP7_TOOLTIPS
 from constants import ROLE_TYPE_TO_LABEL
@@ -17,7 +15,10 @@ class Comp7AmmunitionPanelView(HangarAmmunitionPanelView):
             tooltipId = event.getArgument('tooltipId')
             tooltipData = None
             if tooltipId == COMP7_TOOLTIPS.COMP7_ROLE_SKILL_LOBBY_TOOLTIP:
-                tooltipData = createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=(event.getArgument('roleSkill'), self.__getCurrentVehicleRole(), self.__getCurrentVehicleRoleSkillLevel()))
+                tooltipData = createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=(
+                 event.getArgument('roleSkill'),
+                 self.__getCurrentVehicleRole(),
+                 self.__getCurrentVehicleRoleSkillLevel()))
             if tooltipData is not None:
                 window = BackportTooltipWindow(tooltipData, self.getParentWindow())
                 window.load()
@@ -39,16 +40,24 @@ class Comp7AmmunitionPanelView(HangarAmmunitionPanelView):
 
     def __getCurrentVehicleRoleSkill(self):
         roleName = self.__getCurrentVehicleRole()
-        return None if roleName is None else self.__comp7Controller.getRoleEquipment(roleName)
+        if roleName is None:
+            return
+        else:
+            return self.__comp7Controller.getRoleEquipment(roleName)
 
     def __getCurrentVehicleRole(self):
         if not g_currentVehicle.isPresent():
-            return None
+            return
         else:
             vehicle = g_currentVehicle.item
             restriction = self.__comp7Controller.isSuitableVehicle(vehicle)
-            return None if restriction is not None else ROLE_TYPE_TO_LABEL.get(vehicle.descriptor.role)
+            if restriction is not None:
+                return
+            return ROLE_TYPE_TO_LABEL.get(vehicle.descriptor.role)
 
     def __getCurrentVehicleRoleSkillLevel(self):
         roleName = self.__getCurrentVehicleRole()
-        return None if roleName is None else self.__comp7Controller.getEquipmentStartLevel(roleName)
+        if roleName is None:
+            return
+        else:
+            return self.__comp7Controller.getEquipmentStartLevel(roleName)

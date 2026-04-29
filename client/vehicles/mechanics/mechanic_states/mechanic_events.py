@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicles/mechanics/mechanic_states/mechanic_events.py
 from __future__ import absolute_import
-import typing
-import weakref
+import typing, weakref
 from events_containers.common.containers import ClientEventsContainer
 from events_containers.components.common import ClientComponentEventsDebugger
 from vehicles.mechanics.mechanic_states.mechanic_interfaces import IMechanicStatesEventsLogic
@@ -45,7 +42,10 @@ class MechanicStatesEvents(ClientEventsContainer, IMechanicStatesEventsLogic):
         return newState.isTransition(prevState)
 
     def _getComponent(self):
-        return self.__componentRef() if self.__componentRef is not None else None
+        if self.__componentRef is not None:
+            return self.__componentRef()
+        else:
+            return
 
     def _createEventsDebugger(self):
         return MechanicStatesEventsDebugger(self, self._getComponent())
@@ -67,5 +67,6 @@ class MechanicStatesEvents(ClientEventsContainer, IMechanicStatesEventsLogic):
 
 
 class MechanicStatesEventsDebugger(ClientComponentEventsDebugger):
-    IGNORED_EVENTS = ClientComponentEventsDebugger.IGNORED_EVENTS + ('onStateTick', 'onStateTransition')
+    IGNORED_EVENTS = ClientComponentEventsDebugger.IGNORED_EVENTS + ('onStateTick',
+                                                                     'onStateTransition')
     _EVENTS_DEBUG_PREFIX = 'MECHANIC_STATE'

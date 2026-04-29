@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/meta/CyberSportUnitsListMeta.py
 from gui.Scaleform.daapi.view.lobby.rally.BaseRallyListView import BaseRallyListView
 
 class CyberSportUnitsListMeta(BaseRallyListView):
@@ -20,16 +18,21 @@ class CyberSportUnitsListMeta(BaseRallyListView):
         self._printOverrideError('loadNext')
 
     def as_setDummyS(self, data):
-        return self.flashObject.as_setDummy(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setDummy(data)
 
     def as_setDummyVisibleS(self, visible):
-        return self.flashObject.as_setDummyVisible(visible) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setDummyVisible(visible)
 
     def as_setHeaderS(self, data):
-        return self.flashObject.as_setHeader(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_setHeader(data)
 
     def as_updateNavigationBlockS(self, data):
-        return self.flashObject.as_updateNavigationBlock(data) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateNavigationBlock(data)
 
     def as_updateRallyIconS(self, iconPath):
-        return self.flashObject.as_updateRallyIcon(iconPath) if self._isDAAPIInited() else None
+        if self._isDAAPIInited():
+            return self.flashObject.as_updateRallyIcon(iconPath)

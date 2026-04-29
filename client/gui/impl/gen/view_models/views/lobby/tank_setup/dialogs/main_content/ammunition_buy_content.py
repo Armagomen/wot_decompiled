@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/tank_setup/dialogs/main_content/ammunition_buy_content.py
 from frameworks.wulf import Array
 from gui.impl.gen.view_models.views.lobby.common.multiple_items_content_model import MultipleItemsContentModel
 

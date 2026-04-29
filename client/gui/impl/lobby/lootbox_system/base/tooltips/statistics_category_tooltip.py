@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/lootbox_system/base/tooltips/statistics_category_tooltip.py
 import logging
 from typing import TYPE_CHECKING
 from frameworks.wulf import Array, ViewSettings
@@ -17,6 +15,7 @@ from gui.server_events.bonuses import BlueprintsBonusSubtypes, blueprintBonusFac
 from gui.server_events.recruit_helper import getRecruitInfo
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES, getItemTypeID
 from helpers import dependency
+from items.components.crew_books_constants import CREW_BOOK_RARITY
 from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.game_control import ILootBoxSystemController
 from skeletons.gui.goodies import IGoodiesCache
@@ -50,7 +49,7 @@ class StatisticsCategoryTooltipView(ViewImpl):
 
     def _onLoading(self, *args, **kwargs):
         super(StatisticsCategoryTooltipView, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as vmTX:
+        with self.viewModel.transaction() as (vmTX):
             vmTX.setEventName(self.__eventName)
             vmTX.setBonusesCategory(self.__bonusesCategory.value)
             self.__setBonuses(model=vmTX)
@@ -68,13 +67,15 @@ def _mergeCustomizations(customizations):
     result = []
     checking = {}
     for customization in customizations:
-        unicItem = (customization['id'], customization['custType'])
+        unicItem = (
+         customization['id'], customization['custType'])
         if customization.get('compensatedNumber', 0):
             result.append(customization)
-        if unicItem not in checking:
+        elif unicItem not in checking:
             checking[unicItem] = customization
             result.append(customization)
-        checking[unicItem]['value'] += customization.get('value', 0)
+        else:
+            checking[unicItem]['value'] += customization.get('value', 0)
 
     customizations[:] = result
 
@@ -85,7 +86,8 @@ def _packVehicles(rewards, model):
     for vehicle, compensatedCount in _iterVehicles(rewards):
         if not compensatedCount:
             vehicles.append(vehicle)
-        totalCompensatedCount += compensatedCount
+        else:
+            totalCompensatedCount += compensatedCount
 
     vehicles.sort(key=lambda v: v.level, reverse=True)
     model.setCompensatedCount(totalCompensatedCount)
@@ -105,7 +107,8 @@ def _pack3DStyles(rewards, model, itemsCache=None):
             if vehicleCD is not None:
                 vehicle = itemsCache.items.getItemByCD(vehicleCD)
                 suitable.append((style, vehicle))
-        totalCompensatedCount += compensatedCount
+        else:
+            totalCompensatedCount += compensatedCount
 
     suitable.sort(key=lambda s: s[1].level, reverse=True)
     model.setCompensatedCount(totalCompensatedCount)
@@ -126,7 +129,8 @@ def _pack2DStyles(rewards, model):
             bonusModel.setLabel(style.userName)
             bonusModel.setCount(count)
             model.bonuses.addViewModel(bonusModel)
-        totalCompensatedCount += compensatedCount
+        else:
+            totalCompensatedCount += compensatedCount
 
     model.setCompensatedCount(totalCompensatedCount)
 
@@ -136,7 +140,7 @@ def _packCrewMembers(rewards, model):
         bonusModel = StatisticsCategoryTooltipBonusModel()
         bonusModel.setName('tmanToken')
         bonusModel.setValue(recruit.getGroupName())
-        bonusModel.setIcon('tank{}man'.format('wo' if recruit.isFemale() else ''))
+        bonusModel.setIcon(('tank{}man').format('wo' if recruit.isFemale() else ''))
         bonusModel.setCount(count)
         bonusModel.setLabel(recruit.getFullUserName())
         skillsModel = Array()
@@ -188,10 +192,20 @@ def _packDirectives(rewards, model):
     _packItems(rewards, model, _isDirective)
 
 
-def _packTrainingMaterials(rewards, model):
-    _packGoodies(rewards, model, _isMentoringLicense)
-    _packGoodies(rewards, model, _isRecertificationForm)
-    _packItems(rewards, model, _isCrewBook)
+def _packCrewBooks(rewards, model):
+    _packItems(rewards, model, lambda b: _isCrewBook(b) and b.getBookType() == CREW_BOOK_RARITY.PERSONAL)
+    _packItems(rewards, model, lambda b: _isCrewBook(b) and b.getBookType() == CREW_BOOK_RARITY.UNIVERSAL)
+    _packItems(rewards, model, lambda b: _isCrewBook(b) and b.getBookType() == CREW_BOOK_RARITY.CREW_EPIC)
+
+
+def _packGuides(rewards, model):
+    _packItems(rewards, model, lambda b: _isCrewBook(b) and b.getBookType() == CREW_BOOK_RARITY.UNIVERSAL_GUIDE)
+    _packItems(rewards, model, lambda b: _isCrewBook(b) and b.getBookType() == CREW_BOOK_RARITY.CREW_RARE)
+
+
+def _packBrochures(rewards, model):
+    _packItems(rewards, model, lambda b: _isCrewBook(b) and b.getBookType() == CREW_BOOK_RARITY.UNIVERSAL_BROCHURE)
+    _packItems(rewards, model, lambda b: _isCrewBook(b) and b.getBookType() == CREW_BOOK_RARITY.CREW_COMMON)
 
 
 def _packConsumables(rewards, model):
@@ -238,7 +252,7 @@ def _packBlueprints(rewards, model):
     for blueprint in _mergeNationalBlueprints(blueprints):
         bonusModel = StatisticsCategoryTooltipBonusModel()
         bonusModel.setName(Type.BLUEPRINTS.value)
-        bonusModel.setIcon(blueprint.getImageCategory() if not isinstance(blueprint, LootBoxRandomNationalBonus) else 'randomNational')
+        bonusModel.setIcon((isinstance(blueprint, LootBoxRandomNationalBonus) or blueprint.getImageCategory)() if 1 else 'randomNational')
         label = ''
         if isinstance(blueprint, LootBoxRandomNationalBonus):
             label = backport.text(R.strings.lootbox_system.statisticsRewards.tooltips.category.nationalBlueprint())
@@ -249,22 +263,24 @@ def _packBlueprints(rewards, model):
         model.bonuses.addViewModel(bonusModel)
 
 
-_PACK_REWARDS = {Type.VEHICLES: _packVehicles,
- Type.STYLE3D: _pack3DStyles,
- Type.STYLE: _pack2DStyles,
- Type.CREWMEMBER: _packCrewMembers,
- Type.CUSTOMIZATIONS: _packCustomization,
- Type.ATTACHMENT: _packAttachments,
- Type.EXPERIMENTALEQUIPMENT: _packExperimentalEquipment,
- Type.IMPROVEDEQUIPMENT: _packImprovedEquipment,
- Type.BOUNTYEQUIPMENT: _packBountyEquipment,
- Type.STANDARDEQUIPMENT: _packStandardEquipment,
- Type.DIRECTIVES: _packDirectives,
- Type.TRAININGMATERIALS: _packTrainingMaterials,
- Type.BLUEPRINTS: _packBlueprints,
- Type.PERSONALRESERVES: _packPersonalReserves,
- Type.CONSUMABLES: _packConsumables,
- Type.RATIONS: _packRations}
+_PACK_REWARDS = {Type.VEHICLES: _packVehicles, 
+   Type.STYLE3D: _pack3DStyles, 
+   Type.STYLE: _pack2DStyles, 
+   Type.CREWMEMBER: _packCrewMembers, 
+   Type.CUSTOMIZATIONS: _packCustomization, 
+   Type.ATTACHMENT: _packAttachments, 
+   Type.EXPERIMENTALEQUIPMENT: _packExperimentalEquipment, 
+   Type.IMPROVEDEQUIPMENT: _packImprovedEquipment, 
+   Type.BOUNTYEQUIPMENT: _packBountyEquipment, 
+   Type.STANDARDEQUIPMENT: _packStandardEquipment, 
+   Type.DIRECTIVES: _packDirectives, 
+   Type.CREWBOOK: _packCrewBooks, 
+   Type.GUIDE: _packGuides, 
+   Type.BROCHURE: _packBrochures, 
+   Type.BLUEPRINTS: _packBlueprints, 
+   Type.PERSONALRESERVES: _packPersonalReserves, 
+   Type.CONSUMABLES: _packConsumables, 
+   Type.RATIONS: _packRations}
 
 def _mergeNationalBlueprints(blueprints):
     finalBlueprints = []
@@ -276,7 +292,8 @@ def _mergeNationalBlueprints(blueprints):
             nationalBlueprintsCount += blueprint.getCount()
             nations.add(blueprint.getImageCategory())
             nationalBlueprintsBonuses.append(blueprint)
-        finalBlueprints.append(blueprint)
+        else:
+            finalBlueprints.append(blueprint)
 
     finalBlueprints += [LootBoxRandomNationalBonus(LOOTBOX_RANDOM_NATIONAL_BLUEPRINT, (nationalBlueprintsCount, None))] if len(nations) > 1 else nationalBlueprintsBonuses
     return finalBlueprints
@@ -308,7 +325,8 @@ def _iterRecruits(rewards):
     for tokenID, tokenData in rewards.get('tokens').iteritems():
         recruit = getRecruitInfo(tokenID)
         if recruit is not None:
-            yield (recruit, tokenData['count'])
+            yield (
+             recruit, tokenData['count'])
 
     return
 
@@ -320,7 +338,8 @@ def _iterStyles(rewards, customization=None):
 
 @dependency.replace_none_kwargs(customization=ICustomizationService)
 def _iterCustomizations(rewards, customization=None):
-    excludedTypes = (GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.STYLE], GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.ATTACHMENT])
+    excludedTypes = (
+     GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.STYLE], GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.ATTACHMENT])
     return ((customization.getItemByID(getItemTypeID(cData['custType']), cData['id']), cData['value']) for cData in (c for c in rewards.get(Type.CUSTOMIZATIONS.value, {})) if cData['custType'] not in excludedTypes)
 
 
@@ -340,11 +359,16 @@ def _iterGoodies(rewards, goodiesCache=None):
 
 
 def _getItemIcons(item):
-    return (item.icon, '') if item.itemTypeID == GUI_ITEM_TYPE.CREW_BOOKS else (item.getGUIEmblemID(), item.getOverlayType())
+    if item.itemTypeID == GUI_ITEM_TYPE.CREW_BOOKS:
+        return (item.icon, '')
+    return (
+     item.getGUIEmblemID(), item.getOverlayType())
 
 
 def _getItemName(item):
-    return 'crewBooks' if item.itemTypeID == GUI_ITEM_TYPE.CREW_BOOKS else item.itemTypeName
+    if item.itemTypeID == GUI_ITEM_TYPE.CREW_BOOKS:
+        return 'crewBooks'
+    return item.itemTypeName
 
 
 def _isOptionalDevice(item):
@@ -365,14 +389,6 @@ def _isEquipment(item):
 
 def _isDemountKit(goodie):
     return isinstance(goodie, DemountKit)
-
-
-def _isRecertificationForm(goodie):
-    return isinstance(goodie, RecertificationForm)
-
-
-def _isMentoringLicense(goodie):
-    return isinstance(goodie, MentoringLicense)
 
 
 def _isPersonalReserves(goodie):

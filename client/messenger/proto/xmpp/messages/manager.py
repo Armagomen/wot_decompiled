@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/proto/xmpp/messages/manager.py
 from messenger import g_settings
 from messenger.m_constants import USER_TAG, CLIENT_ACTION_ID, PROTO_TYPE
 from messenger.proto.events import g_messengerEvents
@@ -18,10 +16,12 @@ from messenger.proto.xmpp.messages.muc import MUCProvider, ACTION_RESULT
 from messenger.proto.xmpp.xmpp_constants import XMPP_MUC_CHANNEL_TYPE
 from messenger.proto.xmpp.xmpp_limits import MessageLimits
 from messenger.storage import storage_getter
-_REQUIRED_USER_TAGS = {USER_TAG.FRIEND, USER_TAG.IGNORED}
+_REQUIRED_USER_TAGS = {
+ USER_TAG.FRIEND, USER_TAG.IGNORED}
 
 class MessagesManager(ClientEventsHandler):
-    __slots__ = ('__msgFilters', '__limits', '__chatSessions', '__muc', '__receivedTags', '__pending', '__cooldown')
+    __slots__ = ('__msgFilters', '__limits', '__chatSessions', '__muc', '__receivedTags',
+                 '__pending', '__cooldown')
 
     def __init__(self):
         super(MessagesManager, self).__init__()
@@ -37,7 +37,7 @@ class MessagesManager(ClientEventsHandler):
 
     @storage_getter('channels')
     def channelsStorage(self):
-        return None
+        return
 
     def clear(self):
         self.channelsStorage.onRestoredFromCache -= self.__cs_onChannelsRestoredFromCache
@@ -81,7 +81,8 @@ class MessagesManager(ClientEventsHandler):
     @xmpp_query(QUERY_SIGN.DATABASE_ID, QUERY_SIGN.ACCOUNT_NAME)
     def startChatSession(self, dbID, name):
         self.__chatSessions.startSession(jid_entity.makeContactJID(dbID), name)
-        return (True, None)
+        return (
+         True, None)
 
     def stopChatSession(self, jid):
         self.__chatSessions.stopSession(jid.getBareJID())

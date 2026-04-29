@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/dialogs/missions_dialogs_meta.py
+from __future__ import absolute_import
 from gui.Scaleform.daapi.view.dialogs import IDialogMeta
 from gui.Scaleform.framework import ScopeTemplates
 from gui.Scaleform.locale.PERSONAL_MISSIONS import PERSONAL_MISSIONS
@@ -53,7 +52,9 @@ class UseAwardSheetDialogMeta(IDialogMeta):
         if not self.__quest.hasRequiredVehicles():
             classifier = self.__quest.getQuestClassifier().classificationAttr
             return _ms(PERSONAL_MISSIONS.sheetNoVehicleWarning(self.__quest.getQuestBranchName()), vehicleClass=_ms('#menu:classes/short/' + classifier))
-        return _ms(PERSONAL_MISSIONS.USEAWARDSHEETWINDOW_LOCKED) if not self.__quest.isUnlocked() else ''
+        if not self.__quest.isUnlocked():
+            return _ms(PERSONAL_MISSIONS.USEAWARDSHEETWINDOW_LOCKED)
+        return ''
 
     def getFreeSheets(self):
         return self.__freeSheets

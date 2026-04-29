@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/web/web_client_api/ui/vehicle.py
 import random
 from functools import partial
 from itertools import groupby
@@ -41,23 +39,24 @@ from soft_exception import SoftException
 from web.web_client_api import Field, W2CSchema, w2c
 from web.web_client_api.common import CompensationSpec, CompensationType, ItemPackEntry, ItemPackType, ItemPackTypeGroup, VehicleOfferEntry
 _logger = getLogger(__name__)
-REQUIRED_ITEM_FIELDS = {'type',
- 'id',
- 'count',
- 'groupID'}
+REQUIRED_ITEM_FIELDS = {
+ 'type', 'id', 'count', 'groupID'}
 REQUIRED_COMPENSATION_FIELDS = {'type', 'value'}
 REQUIRED_CUSTOMCREW_FIELDS = {'extra'}
-REQUIRED_TANKMAN_FIELDS = {'isPremium',
+REQUIRED_TANKMAN_FIELDS = {
+ 'isPremium',
  'role',
  'roleLevel',
  'gId',
  'nationID',
  'vehicleTypeID'}
-DEFAULT_STYLED_VEHICLES = (15697,
+DEFAULT_STYLED_VEHICLES = (
+ 15697,
  6193,
  19969,
  3937)
-_CUSTOM_CREW_KEYS = {'telecom_rentals'}
+_CUSTOM_CREW_KEYS = {
+ 'telecom_rentals'}
 
 class _ItemPackValidationError(SoftException):
     pass
@@ -83,13 +82,13 @@ def _doesVehicleCDExist(vehicleCD):
 
 
 def _validateVehiclesCDList(vehiclesCDs):
-    return all((_doesVehicleCDExist(vehicleCD) for vehicleCD in vehiclesCDs))
+    return all(_doesVehicleCDExist(vehicleCD) for vehicleCD in vehiclesCDs)
 
 
 def _isValidObtainingMethod(obtainingMethod, _):
     if ObtainingMethods.hasValue(obtainingMethod):
         return True
-    raise SoftException('obtaining_method: "{}" is not supported'.format(obtainingMethod))
+    raise SoftException(('obtaining_method: "{}" is not supported').format(obtainingMethod))
 
 
 def _validateItemsPack(items, *_):
@@ -102,7 +101,7 @@ def _validateItemsPack(items, *_):
 
 
 def _validateItemsRequiredFields(items):
-    if not all((REQUIRED_ITEM_FIELDS.issubset(item) for item in items)):
+    if not all(REQUIRED_ITEM_FIELDS.issubset(item) for item in items):
         raise SoftException('Invalid item preview spec')
 
 
@@ -111,7 +110,7 @@ def _validateItemsPackTypes(items):
     specTypes = {item['type'] for item in items}
     invalidTypes = specTypes - validTypes
     if invalidTypes:
-        raise _ItemPackValidationError('Unexpected item types {}, valid type identifiers: {}'.format(', '.join(invalidTypes), ', '.join(validTypes)))
+        raise _ItemPackValidationError(('Unexpected item types {}, valid type identifiers: {}').format((', ').join(invalidTypes), (', ').join(validTypes)))
 
 
 def _validateItemsCompensationRequiredFields(items):
@@ -121,7 +120,7 @@ def _validateItemsCompensationRequiredFields(items):
                 if not REQUIRED_COMPENSATION_FIELDS.issubset(compensationSpec):
                     raise SoftException('Invalid compensation spec')
                 if not CompensationType.hasValue(compensationSpec['type']):
-                    raise SoftException('Unsupported compensation type "{}"'.format(compensationSpec['type']))
+                    raise SoftException(('Unsupported compensation type "{}"').format(compensationSpec['type']))
 
 
 def _validateItemsCustomCrewRequiredFields(items):
@@ -146,7 +145,8 @@ def _validateItemsCompensation(items):
 
 
 def _getItemKey(item):
-    return (item['id'], item['type'])
+    return (
+     item['id'], item['type'])
 
 
 def _equalsCompensations(itemA, itemB):
@@ -199,12 +199,16 @@ def _parseItemsPack(items):
 
 
 def _parseOffers(offers):
-    return [ _VehicleOfferEntry(id=_getOfferID(offer) or str(ndx), eventType=offer.get('event_type'), rent=offer.get('rent'), crew=_getOfferCrew(offer), name=_getOfferStr(offer, VEHICLE_PREVIEW.getOfferName), label=_getOfferStr(offer, VEHICLE_PREVIEW.getOfferLabel), left=_getRentLeft(offer), buyPrice=Money(**offer.get('buy_price', MONEY_UNDEFINED)), bestOffer=offer.get('best_offer'), buyParams=offer.get('buy_params'), preferred=bool(offer.get('preferred', False))) for ndx, offer in enumerate(offers) ]
+    return [ _VehicleOfferEntry(id=_getOfferID(offer) or str(ndx), eventType=offer.get('event_type'), rent=offer.get('rent'), crew=_getOfferCrew(offer), name=_getOfferStr(offer, VEHICLE_PREVIEW.getOfferName), label=_getOfferStr(offer, VEHICLE_PREVIEW.getOfferLabel), left=_getRentLeft(offer), buyPrice=Money(**offer.get('buy_price', MONEY_UNDEFINED)), bestOffer=offer.get('best_offer'), buyParams=offer.get('buy_params'), preferred=bool(offer.get('preferred', False))) for ndx, offer in enumerate(offers)
+           ]
 
 
 def _getOfferID(offer):
     buyParams = offer.get('buy_params')
-    return buyParams.get('transactionID') if buyParams else None
+    if buyParams:
+        return buyParams.get('transactionID')
+    else:
+        return
 
 
 @dependency.replace_none_kwargs(epicCtrl=IEpicBattleMetaGameController)
@@ -214,7 +218,7 @@ def _getOfferStr(offer, getKey, epicCtrl=None):
         indexes = str(epicCtrl.getCycleOrdinalNumber(first(values)))
     elif key == 'cycles':
         indexes = [ epicCtrl.getCycleOrdinalNumber(value) for value in values ]
-        indexes = '{}-{}'.format(min(indexes), max(indexes))
+        indexes = ('{}-{}').format(min(indexes), max(indexes))
     else:
         _, endTimestamp = epicCtrl.getSeasonTimeRange()
         indexes = str(getTimeStructInLocal(endTimestamp).tm_year)
@@ -274,7 +278,11 @@ def _getOfferCrew(offer):
 def _parseBuyPrice(buyPrice):
     buyPrice = buyPrice.copy()
     discount = buyPrice.pop('discount', None)
-    return (Money(**buyPrice), MONEY_UNDEFINED) if discount is None else (Money(**discount), Money(**buyPrice))
+    if discount is None:
+        return (Money(**buyPrice), MONEY_UNDEFINED)
+    else:
+        return (
+         Money(**discount), Money(**buyPrice))
 
 
 class _VehicleSchema(W2CSchema):
@@ -292,16 +300,16 @@ def _validatePrice(tData, errorStr=''):
     for pKey, pValue in tData.iteritems():
         if pValue is not None:
             if isinstance(pValue, dict):
-                _validatePrice(pValue, 'Field "{}". '.format(pKey))
+                _validatePrice(pValue, ('Field "{}". ').format(pKey))
             elif not isinstance(pValue, int):
-                errorStr = '{}Incorrect type of "{}" price value. Int type expected!'.format(errorStr, pKey)
+                errorStr = ('{}Incorrect type of "{}" price value. Int type expected!').format(errorStr, pKey)
                 raise SoftException(errorStr)
 
     return
 
 
 def _validateBlocks(hiddenBlocks, *_):
-    return all((block in OptionalBlocks.ALL for block in hiddenBlocks))
+    return all(block in OptionalBlocks.ALL for block in hiddenBlocks)
 
 
 class _VehiclePreviewSchema(W2CSchema):
@@ -371,7 +379,8 @@ class _VehicleMarathonStylePreviewSchema(W2CSchema):
 class _VehicleListStylePreviewSchema(W2CSchema):
     style_id = Field(required=True, type=int)
     vehicle_min_level = Field(required=False, type=int, default=10)
-    vehicle_list = Field(required=False, type=(list, NoneType), validator=lambda value, _: _validateVehiclesCDList(value), default=DEFAULT_STYLED_VEHICLES)
+    vehicle_list = Field(required=False, type=(
+     list, NoneType), validator=lambda value, _: _validateVehiclesCDList(value), default=DEFAULT_STYLED_VEHICLES)
     back_btn_descr = Field(required=True, type=basestring)
     back_url = Field(required=False, type=basestring)
     level = Field(required=False, type=int)
@@ -425,8 +434,8 @@ class VehicleCompareWebApiMixin(object):
 
     @w2c(W2CSchema, 'get_comparison_basket')
     def getVehicleComparisonBasket(self, cmd):
-        return {'basketMaxCount': self.comparisonBasket.maxVehiclesToCompare,
-         'basketContents': self.comparisonBasket.getVehiclesCDs()}
+        return {'basketMaxCount': self.comparisonBasket.maxVehiclesToCompare, 
+           'basketContents': self.comparisonBasket.getVehiclesCDs()}
 
 
 class VehicleComparisonBasketWebApiMixin(object):
@@ -562,16 +571,19 @@ class VehiclePreviewWebApiMixin(object):
         styleInfo = self.__c11n.getItemByID(GUI_ITEM_TYPE.STYLE, cmd.style_id)
         descrLabelResPath = R.strings.vehicle_preview.header.backBtn.descrLabel
         ClientSelectableCameraObject.switchCamera()
-        showStylePreview(vehCD=cmd.vehicle_cd, style=styleInfo, itemsPack=_parseItemsPack(cmd.items), backCallback=self._getVehicleStylePreviewCallback(cmd), backPreviewAlias=self._getVehiclePreviewReturnAlias(cmd), backBtnDescrLabel=backport.text(descrLabelResPath.dyn(cmd.back_btn_descr or 'hangar')()), topPanelData={'linkage': VEHPREVIEW_CONSTANTS.TOP_PANEL_TABS_LINKAGE,
-         'tabIDs': (TabID.VEHICLE, TabID.STYLE),
-         'currentTabID': TabID.STYLE,
-         'style': styleInfo})
+        showStylePreview(vehCD=cmd.vehicle_cd, style=styleInfo, itemsPack=_parseItemsPack(cmd.items), backCallback=self._getVehicleStylePreviewCallback(cmd), backPreviewAlias=self._getVehiclePreviewReturnAlias(cmd), backBtnDescrLabel=backport.text(descrLabelResPath.dyn(cmd.back_btn_descr or 'hangar')()), topPanelData={'linkage': VEHPREVIEW_CONSTANTS.TOP_PANEL_TABS_LINKAGE, 
+           'tabIDs': (
+                    TabID.VEHICLE, TabID.STYLE), 
+           'currentTabID': TabID.STYLE, 
+           'style': styleInfo})
 
     def _openVehicleStylePreview(self, cmd, showStyleFunc=None, **additionalStyleFuncKwargs):
         if cmd.vehicle_cd:
             return self.__showStylePreview(cmd.vehicle_cd, cmd, showStyleFunc, **additionalStyleFuncKwargs)
         styledVehicleCD = self.__getStyledVehicleCD(cmd.style_id)
-        return False if not styledVehicleCD else self.__showStylePreview(styledVehicleCD, cmd, showStyleFunc, **additionalStyleFuncKwargs)
+        if not styledVehicleCD:
+            return False
+        return self.__showStylePreview(styledVehicleCD, cmd, showStyleFunc, **additionalStyleFuncKwargs)
 
     @staticmethod
     def __setBackUrl(cmd, ctx):
@@ -617,7 +629,7 @@ class VehiclePreviewWebApiMixin(object):
         return showHangar
 
     def _getVehiclePreviewReturnCallback(self, cmd):
-        return None
+        return
 
     def _getVehiclePreviewReturnAlias(self, cmd):
         return VIEW_ALIAS.LOBBY_HANGAR
@@ -639,7 +651,10 @@ class VehiclePreviewWebApiMixin(object):
 
     def __getVehiclesIDs(self, items):
         vehiclesIDs = [ item.id for item in items if item.type in ItemPackTypeGroup.VEHICLE ]
-        return vehiclesIDs if vehiclesIDs and self.__validVehiclePreviewPack(vehiclesIDs) else None
+        if vehiclesIDs and self.__validVehiclePreviewPack(vehiclesIDs):
+            return vehiclesIDs
+        else:
+            return
 
     def __validVehiclePreview(self, intCD):
         vehicle = None
@@ -649,7 +664,7 @@ class VehiclePreviewWebApiMixin(object):
             pass
 
         if not vehicle:
-            LOG_ERROR("Couldn't find vehicle intCD={}".format(intCD))
+            LOG_ERROR(("Couldn't find vehicle intCD={}").format(intCD))
             return False
         else:
             return True
@@ -665,4 +680,6 @@ class VehiclePreviewWebApiMixin(object):
 def _getStylePreviewShowFunc(styleInfo, price):
     if price:
         return showStyleBuyingPreview
-    return showStyleProgressionPreview if styleInfo.isProgression else showStylePreview
+    if styleInfo.isProgression:
+        return showStyleProgressionPreview
+    return showStylePreview

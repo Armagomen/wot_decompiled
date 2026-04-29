@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/promo/hangar_teaser_widget.py
 import weakref
 from functools import partial
 import BigWorld
@@ -48,13 +46,13 @@ class TeaserViewer(object):
         self.__imagePath = getTextureLinkByID(ImageHelper.getMemoryTexturePath(image))
         self.__stopTimer()
         isShopPromo = self.__teaserData.get('promoType') == self._SALE_PROMO_TYPE
-        self.__viewProxy.as_showTeaserS({'postTitle': i18n.makeString(MENU.PROMO_TEASER_TITLE),
-         'postCounter': self.__promoCount,
-         'descr': self.__teaserData['description'],
-         'title': self.__teaserData.get('version', ''),
-         'isVideo': bool(self.__teaserData.get('video')),
-         'isShopPromo': isShopPromo,
-         'image': self.__imagePath})
+        self.__viewProxy.as_showTeaserS({'postTitle': i18n.makeString(MENU.PROMO_TEASER_TITLE), 
+           'postCounter': self.__promoCount, 
+           'descr': self.__teaserData['description'], 
+           'title': self.__teaserData.get('version', ''), 
+           'isVideo': bool(self.__teaserData.get('video')), 
+           'isShopPromo': isShopPromo, 
+           'image': self.__imagePath})
         self.__viewProxy.soundManager.playSound(PROMO_SOUNDS.SALE_TEASER if isShopPromo else PROMO_SOUNDS.INFO_TEASER)
         if self.__teaserData.get('finishTime'):
             self.__startTimer()

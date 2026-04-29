@@ -1,7 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/collector20_reward/packers.py
-import typing
-import logging
+from __future__ import absolute_import
+import typing, logging
 from gui.impl import backport
 from gui.impl.backport import createTooltipData
 from gui.impl.gen import R
@@ -17,18 +15,19 @@ class Collector20DossierBonusUIPacker(DossierBonusUIPacker):
 
     @classmethod
     def _getBadgeTooltip(cls, bonus):
-        return [ createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BADGE, specialArgs=[badge.badgeID, badge.isSuffixLayout()]) for badge in cls.__getSortedBadges(bonus) ]
+        return [ createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BADGE, specialArgs=[badge.badgeID, badge.isSuffixLayout()]) for badge in cls.__getSortedBadges(bonus)
+               ]
 
     @classmethod
     def _getToolTip(cls, bonus):
-        methodMapping = {'playerBadges': cls._getBadgeTooltip,
-         'singleAchievements': cls._getAchievementTooltip}
+        methodMapping = {'playerBadges': cls._getBadgeTooltip, 
+           'singleAchievements': cls._getAchievementTooltip}
         return cls.__applyPackMethodsInOrder(bonus, methodMapping)
 
     @classmethod
     def _pack(cls, bonus):
-        methodMapping = {'playerBadges': cls._packBadges,
-         'singleAchievements': cls._packAchievements}
+        methodMapping = {'playerBadges': cls._packBadges, 
+           'singleAchievements': cls._packAchievements}
         return cls.__applyPackMethodsInOrder(bonus, methodMapping)
 
     @classmethod
@@ -61,7 +60,8 @@ class Collector20DossierBonusUIPacker(DossierBonusUIPacker):
             method = methodMapping.get(dossierBonusName)
             if method is not None:
                 result += method(bonus)
-            _logger.warning('Unsupported dossier bonus: %s', dossierBonusName)
+            else:
+                _logger.warning('Unsupported dossier bonus: %s', dossierBonusName)
 
         return result
 

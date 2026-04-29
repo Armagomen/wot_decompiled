@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/impl/lobby/states.py
 import typing
 from WeakMethod import WeakMethodProxy
 from frameworks.state_machine import StateFlags
@@ -81,12 +79,18 @@ class FrontlineModeState(LobbyState):
 
         transitionCondition = WeakMethodProxy(self._hijackTransitionCondition)
         allVehicle.addTransition(HijackTransition(playlists.EditVehiclePlaylistsState, transitionCondition, record=True), editFrontlinePlaylist)
-        parentTransitionList = [(HijackTransition(HangarState, transitionCondition), frontlineHangar), (HijackTransition(playlists.EditVehiclePlaylistsState, transitionCondition), editFrontlinePlaylist)]
+        parentTransitionList = [
+         (
+          HijackTransition(HangarState, transitionCondition), frontlineHangar),
+         (
+          HijackTransition(playlists.EditVehiclePlaylistsState, transitionCondition), editFrontlinePlaylist)]
         parent = self.getParent()
         for condition, transition in parentTransitionList:
             parent.addTransition(condition, transition)
 
-        parentNavigationList = [frontlineHangar, lsm.getStateByCls(ProgressionScreenState), lsm.getStateByCls(FrontlinePostBattleResultsState)]
+        parentNavigationList = [
+         frontlineHangar, lsm.getStateByCls(ProgressionScreenState),
+         lsm.getStateByCls(FrontlinePostBattleResultsState)]
         for transition in parentNavigationList:
             parent.addNavigationTransition(transition)
 
@@ -156,7 +160,8 @@ class ProgressionScreenState(GuiImplViewLobbyState):
         super(ProgressionScreenState, self).__init__(ProgressionScreenView, ScopeTemplates.LOBBY_SUB_SCOPE)
 
     def getNavigationDescription(self):
-        return LobbyStateDescription(title=backport.text(R.strings.fl_progression_screen.title()), infos=(LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, tooltipHeader=backport.text(R.strings.fl_tooltips.infoButton.header()), tooltipBody=backport.text(R.strings.fl_tooltips.infoButton.body()), onMoreInfoRequested=self.__openInfoView),))
+        return LobbyStateDescription(title=backport.text(R.strings.fl_progression_screen.title()), infos=(
+         LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, tooltipHeader=backport.text(R.strings.fl_tooltips.infoButton.header()), tooltipBody=backport.text(R.strings.fl_tooltips.infoButton.body()), onMoreInfoRequested=self.__openInfoView),))
 
     def __openInfoView(self):
         showFrontlineInfoWindow()
@@ -167,7 +172,8 @@ FrontlineLoadoutStateBase, _, FrontlineLoadoutSectionState, FrontlineShellsLoado
 class _BattleAbilitiesLoadoutStatePrototype(LobbyState):
 
     def getNavigationDescription(self):
-        return LobbyStateDescription(title=backport.text(R.strings.fl_battle_abilities_setup.header.title()), infos=(LobbyStateDescription.Info(tooltipHeader=backport.text(R.strings.fl_tooltips.infoButton.header()), tooltipBody=backport.text(R.strings.fl_tooltips.infoButton.body()), onMoreInfoRequested=self.__openInfoView),))
+        return LobbyStateDescription(title=backport.text(R.strings.fl_battle_abilities_setup.header.title()), infos=(
+         LobbyStateDescription.Info(tooltipHeader=backport.text(R.strings.fl_tooltips.infoButton.header()), tooltipBody=backport.text(R.strings.fl_tooltips.infoButton.body()), onMoreInfoRequested=self.__openInfoView),))
 
     @staticmethod
     def __openInfoView(*_):
@@ -252,16 +258,15 @@ class FrontlinePostBattleResultsState(SFViewLobbyState):
         prbDispatcher = self.prbDispatcher
         if prbDispatcher is None or not prbDispatcher.getFunctionalState().isNavigationDisabled():
             return False
-        else:
-            targetID = event.targetStateID
-            lsm = self.getMachine()
-            target = lsm.getStateByID(targetID)
-            parentDescendants = self.getParent().getRecursiveChildrenStates()
-            battleQueueDescendants = lsm.getStateByCls(BattleQueueContainerState).getRecursiveChildrenStates()
-            eventTargetingOutside = target != self.getParent() and target not in parentDescendants and target not in battleQueueDescendants
-            if eventTargetingOutside:
-                SystemMessages.pushI18nMessage('#system_messages:queue/isInQueue', type=SystemMessages.SM_TYPE.Error, priority='high')
-            return eventTargetingOutside
+        targetID = event.targetStateID
+        lsm = self.getMachine()
+        target = lsm.getStateByID(targetID)
+        parentDescendants = self.getParent().getRecursiveChildrenStates()
+        battleQueueDescendants = lsm.getStateByCls(BattleQueueContainerState).getRecursiveChildrenStates()
+        eventTargetingOutside = target != self.getParent() and target not in parentDescendants and target not in battleQueueDescendants
+        if eventTargetingOutside:
+            SystemMessages.pushI18nMessage('#system_messages:queue/isInQueue', type=SystemMessages.SM_TYPE.Error, priority='high')
+        return eventTargetingOutside
 
     def getViewKey(self, params=None):
         arenaUniqueID = self.__cachedParams.get('arenaUniqueID', '')

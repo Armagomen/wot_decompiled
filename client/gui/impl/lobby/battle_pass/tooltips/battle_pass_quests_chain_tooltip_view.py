@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_pass/tooltips/battle_pass_quests_chain_tooltip_view.py
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.battle_pass.tooltips.battle_pass_quests_chain_tooltip_view_model import BattlePassQuestsChainTooltipViewModel
@@ -11,11 +9,11 @@ from shared_utils import first
 from skeletons.gui.server_events import IEventsCache
 
 class BattlePassQuestsChainTooltipView(ViewImpl):
-    __slots__ = ('__token',)
+    __slots__ = ('__token', )
     __eventsCache = dependency.descriptor(IEventsCache)
 
     def __init__(self, token):
-        settings = ViewSettings(R.views.lobby.battle_pass.tooltips.BattlePassQuestsChainTooltipView())
+        settings = ViewSettings(R.views.mono.battle_pass.tooltips.quest_chain())
         settings.model = BattlePassQuestsChainTooltipViewModel()
         super(BattlePassQuestsChainTooltipView, self).__init__(settings)
         self.__token = token
@@ -26,7 +24,7 @@ class BattlePassQuestsChainTooltipView(ViewImpl):
 
     def _onLoading(self, *args, **kwargs):
         super(BattlePassQuestsChainTooltipView, self)._onLoading(*args, **kwargs)
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             self.__setRewards(tx.rewards)
 
     def __setRewards(self, rewardsVM):

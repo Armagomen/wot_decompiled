@@ -1,26 +1,25 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/arena_info/interfaces.py
 import typing
-from typing import Tuple
 from gui.battle_control.arena_info.settings import ARENA_LISTENER_SCOPE as _SCOPE
 from gui.battle_control.controllers.interfaces import IBattleController
 from gui.battle_control.view_components import ViewComponentsController
 if typing.TYPE_CHECKING:
-    from typing import Optional
+    from typing import Optional, Sequence, Tuple, Any, List, Dict, Callable
     from Math import Matrix
     from EmptyEntity import EmptyEntity
-    from items.vehicles import VehicleDescr
-    from common_tank_structure import VehicleAppearanceCacheInfo
-    from gui.shared.gui_items.Vehicle import Vehicle
-    from vehicle_systems.CompoundAppearance import CompoundAppearance
-    from points_of_interest.components import PoiStateComponent
     from cgf_components.zone_components import ZoneMarker, RandomEventZoneUINotification, WeatherZoneUINotification
-    from UIComponents import MinimapChangerComponent
-    from pve_battle_hud import WidgetType
+    from common_tank_structure import VehicleAppearanceCacheInfo
+    from gui.battle_control.arena_info.arena_dp import ArenaDataProvider
+    from gui.battle_control.arena_info.arena_vos import VehicleArenaInfoVO
     from gui.battle_control.controllers.vse_hud_settings_ctrl.vse_hud_settings_ctrl import SettingsTypes, ItemSettingsTypes
+    from gui.shared.gui_items.Vehicle import Vehicle
+    from items.vehicles import VehicleDescr
+    from points_of_interest.components import PoiStateComponent
+    from pve_battle_hud import WidgetType
+    from UIComponents import MinimapChangerComponent
+    from vehicle_systems.CompoundAppearance import CompoundAppearance
 
 class IArenaController(IBattleController):
-    __slots__ = ('__weakref__',)
+    __slots__ = ('__weakref__', )
 
     def getControllerID(self):
         pass
@@ -91,10 +90,10 @@ class IArenaVehiclesController(IArenaLoadController, IContactsController):
     def updateVehiclesInfo(self, updated, arenaDP):
         pass
 
-    def invalidateVehicleStatus(self, flags, vo, arenaDP):
+    def invalidateVehicleStatus(self, flags, vInfoVO, arenaDP):
         pass
 
-    def invalidatePlayerStatus(self, flags, vo, arenaDP):
+    def invalidatePlayerStatus(self, flags, vInfoVO, arenaDP):
         pass
 
     def invalidateFogOfWarHiddenVehiclesFlag(self, flag):
@@ -619,4 +618,18 @@ class INitroController(IBattleController):
         raise NotImplementedError
 
     def processNitroCmd(self):
+        raise NotImplementedError
+
+
+class IW2GTBattleController(IArenaPeriodController, IArenaVehiclesController):
+    onStageChanged = None
+
+    def getCtrlScope(self):
+        return _SCOPE.LOAD | _SCOPE.VEHICLES | _SCOPE.PERIOD
+
+    @property
+    def isActive(self):
+        raise NotImplementedError
+
+    def isArenaSuitable(self, arena):
         raise NotImplementedError

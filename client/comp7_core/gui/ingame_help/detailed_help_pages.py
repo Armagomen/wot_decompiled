@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_core/scripts/client/comp7_core/gui/ingame_help/detailed_help_pages.py
 from __future__ import absolute_import
 from gui.impl.gen import R
 from gui.impl import backport
@@ -9,7 +7,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from typing import Union, List, Any
     from gui.impl.gen_utils import DynAccessor, _InvalidDynAccessor
-    Accessor = Union[DynAccessor, _InvalidDynAccessor]
+    Accessor = Union[(DynAccessor, _InvalidDynAccessor)]
 
 class Comp7CorePagesBuilder(DetailedHelpPagesBuilder):
     _PAGE_NAMES = ('seasonModifiers', 'poi', 'roleSkills', 'rules')
@@ -20,7 +18,7 @@ class Comp7CorePagesBuilder(DetailedHelpPagesBuilder):
 
     @classmethod
     def priority(cls):
-        raise NotImplementedError()
+        raise NotImplementedError
 
     @classmethod
     def buildPages(cls, ctx):
@@ -33,12 +31,16 @@ class Comp7CorePagesBuilder(DetailedHelpPagesBuilder):
     @classmethod
     def _getPageResBranchTexts(cls, pageName):
         corePageAccess = cls._CORE_RES_ROOT_TEXTS.dyn(pageName)
-        return corePageAccess if corePageAccess.isValid() else cls._MODE_RES_ROOT_TEXTS.dyn(pageName)
+        if corePageAccess.isValid():
+            return corePageAccess
+        return cls._MODE_RES_ROOT_TEXTS.dyn(pageName)
 
     @classmethod
     def _getPageResBranchImages(cls, pageName):
         corePageAccess = cls._CORE_RES_ROOT_IMAGES.dyn(pageName)
-        return corePageAccess if corePageAccess.isValid() else cls._MODE_RES_ROOT_IMAGES.dyn(pageName)
+        if corePageAccess.isValid():
+            return corePageAccess
+        return cls._MODE_RES_ROOT_IMAGES.dyn(pageName)
 
     @classmethod
     def _getHeader(cls, pageName):

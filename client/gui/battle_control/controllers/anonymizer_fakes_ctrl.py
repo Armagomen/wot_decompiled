@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/anonymizer_fakes_ctrl.py
-import typing
-import logging
-import BigWorld
-import constants
+import typing, logging, BigWorld, constants
 from avatar_helpers import getAvatarSessionID
 from constants import BattleUserActions
 from gui.anonymizer.battle_cooldown_manager import BattleCooldownManager
@@ -20,14 +15,17 @@ if typing.TYPE_CHECKING:
     from gui.battle_control.arena_info.arena_dp import ArenaDataProvider
     from gui.battle_control.arena_info.arena_vos import VehicleArenaInfoVO
 _logger = logging.getLogger(__name__)
-_ACTION_BY_TAG = {(USER_TAG.FRIEND, True): USER_ACTION_ID.FRIEND_ADDED,
- (USER_TAG.FRIEND, False): USER_ACTION_ID.FRIEND_REMOVED,
- (USER_TAG.IGNORED, True): USER_ACTION_ID.IGNORED_ADDED,
- (USER_TAG.IGNORED, False): USER_ACTION_ID.IGNORED_REMOVED,
- (USER_TAG.MUTED, True): USER_ACTION_ID.MUTE_SET}
-_CREATION_UPDATED_TAGS = (USER_TAG.FRIEND, USER_TAG.IGNORED, USER_TAG.MUTED)
-_IGNORED_DEPS_TAGS = [USER_TAG.IGNORED]
-_IGNORE_TMP_DEPS_TAGS = [USER_TAG.IGNORED_TMP]
+_ACTION_BY_TAG = {(USER_TAG.FRIEND, True): USER_ACTION_ID.FRIEND_ADDED, 
+   (USER_TAG.FRIEND, False): USER_ACTION_ID.FRIEND_REMOVED, 
+   (USER_TAG.IGNORED, True): USER_ACTION_ID.IGNORED_ADDED, 
+   (USER_TAG.IGNORED, False): USER_ACTION_ID.IGNORED_REMOVED, 
+   (USER_TAG.MUTED, True): USER_ACTION_ID.MUTE_SET}
+_CREATION_UPDATED_TAGS = (
+ USER_TAG.FRIEND, USER_TAG.IGNORED, USER_TAG.MUTED)
+_IGNORED_DEPS_TAGS = [
+ USER_TAG.IGNORED]
+_IGNORE_TMP_DEPS_TAGS = [
+ USER_TAG.IGNORED_TMP]
 
 class _RelationData(object):
     __slots__ = ('vehicleID', 'sessionID', 'databaseID', 'name')
@@ -43,7 +41,8 @@ class _RelationData(object):
 
 
 class AnonymizerFakesController(IAnonymizerFakesController):
-    __slots__ = ('__fakeIDs', '__relationsCache', '__arenaDP', '__avatarSessionID', '__postProcs', '__cooldown', '__mergedDBIDs')
+    __slots__ = ('__fakeIDs', '__relationsCache', '__arenaDP', '__avatarSessionID',
+                 '__postProcs', '__cooldown', '__mergedDBIDs')
 
     def __init__(self, setup):
         super(AnonymizerFakesController, self).__init__()
@@ -55,16 +54,16 @@ class AnonymizerFakesController(IAnonymizerFakesController):
         self.__avatarSessionID = ''
         self.__postProcs = {USER_ACTION_ID.FRIEND_ADDED: self.__addBattleFriend}
         if not constants.IS_CHINA:
-            self.__postProcs.update({USER_ACTION_ID.IGNORED_ADDED: self.__addBattleIgnored,
-             USER_ACTION_ID.IGNORED_REMOVED: self.__removeBattleIgnored})
+            self.__postProcs.update({USER_ACTION_ID.IGNORED_ADDED: self.__addBattleIgnored, 
+               USER_ACTION_ID.IGNORED_REMOVED: self.__removeBattleIgnored})
 
     @proto_getter(PROTO_TYPE.MIGRATION)
     def proto(self):
-        return None
+        return
 
     @storage_getter('users')
     def usersStorage(self):
-        return None
+        return
 
     def getControllerID(self):
         return BATTLE_CTRL_ID.ANONYMIZER_FAKES
@@ -281,7 +280,10 @@ class AnonymizerFakesController(IAnonymizerFakesController):
             realUser = self.usersStorage.getUser(vehicleData.databaseID)
             if realUser and realUser.isMuted():
                 tags.update((USER_TAG.MUTED,))
-        return BattleUserEntity(vehicleData.sessionID, vehicleData.name, tags) if tags else None
+        if tags:
+            return BattleUserEntity(vehicleData.sessionID, vehicleData.name, tags)
+        else:
+            return
 
     def __clear(self):
         for fakeSessionID in self.__fakeIDs:
@@ -353,7 +355,7 @@ class AnonymizerFakesController(IAnonymizerFakesController):
         if user is None:
             user = self.__addBattleUser(vehicleData)
             tags = user.getTags() if user else set()
-            actions.extend([ _ACTION_BY_TAG[tag, True] for tag in tags if tag in _CREATION_UPDATED_TAGS ])
+            actions.extend([ _ACTION_BY_TAG[(tag, True)] for tag in tags if tag in _CREATION_UPDATED_TAGS ])
         else:
             isCacheFriend = self.__relationsCache.isFriend(vehicleData.vehicleID)
             if isCacheFriend != user.isFriend():
@@ -361,17 +363,17 @@ class AnonymizerFakesController(IAnonymizerFakesController):
                     user.addTags((USER_TAG.FRIEND,))
                 else:
                     user.removeTags((USER_TAG.FRIEND,))
-                actions.append(_ACTION_BY_TAG[USER_TAG.FRIEND, isCacheFriend])
+                actions.append(_ACTION_BY_TAG[(USER_TAG.FRIEND, isCacheFriend)])
             isCacheIgnored = self.__relationsCache.isIgnored(vehicleData.vehicleID)
             if isCacheIgnored != (user.isIgnored() and not user.isTemporaryIgnored()):
                 if isCacheIgnored:
                     user.addTags((USER_TAG.IGNORED,))
                 else:
                     user.removeTags((USER_TAG.IGNORED,))
-                actions.append(_ACTION_BY_TAG[USER_TAG.IGNORED, isCacheIgnored])
-        for action in actions:
-            g_messengerEvents.users.onBattleUserActionReceived(action, user)
-            if action in self.__postProcs:
-                self.__postProcs[action](user)
+                actions.append(_ACTION_BY_TAG[(USER_TAG.IGNORED, isCacheIgnored)])
+            for action in actions:
+                g_messengerEvents.users.onBattleUserActionReceived(action, user)
+                if action in self.__postProcs:
+                    self.__postProcs[action](user)
 
         return

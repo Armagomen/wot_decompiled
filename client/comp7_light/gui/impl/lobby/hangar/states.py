@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_light/scripts/client/comp7_light/gui/impl/lobby/hangar/states.py
-import logging
-import typing
+import logging, typing
 from WeakMethod import WeakMethodProxy
 from comp7_light.gui.Scaleform.genConsts.COMP7_LIGHT_HANGAR_ALIASES import COMP7_LIGHT_HANGAR_ALIASES
 from comp7_light.gui.impl.lobby.comp7_light_intro_screen import Comp7LightIntroScreen
@@ -60,7 +57,8 @@ class Comp7LightModeState(LobbyState):
         parent.addNavigationTransition(comp7LightHangar)
         parent.addTransition(HijackTransition(HangarState, hijackCondition), comp7LightHangar)
         parent.addTransition(HijackTransition(EasyTankEquipState, hijackCondition), comp7LightEasyTankEquip)
-        for cls in (Comp7LightProgressionState,
+        for cls in (
+         Comp7LightProgressionState,
          Comp7LightAllVehiclesState,
          Comp7LightNoVehiclesState,
          Comp7LightIntroState,
@@ -151,7 +149,8 @@ class Comp7LightProgressionState(GuiImplViewLobbyState):
         super(Comp7LightProgressionState, self).__init__(ProgressionMainView, ScopeTemplates.LOBBY_SUB_SCOPE)
 
     def getNavigationDescription(self):
-        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.comp7_light.progression()), infos=(LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=showComp7LightInfoPage, tooltipHeader=backport.text(R.strings.comp7_light.tooltip.infoPageButton.header())),))
+        return LobbyStateDescription(title=backport.text(R.strings.pages.titles.comp7_light.progression()), infos=(
+         LobbyStateDescription.Info(type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=showComp7LightInfoPage, tooltipHeader=backport.text(R.strings.comp7_light.tooltip.infoPageButton.header())),))
 
 
 @Comp7LightModeState.parentOf
@@ -168,4 +167,4 @@ class _Comp7LightLoadoutConfirmStatePrototype(_LoadoutConfirmStatePrototype):
 
 
 Comp7LightLoadoutState, _, _, Comp7LightShellsLoadoutState, Comp7LightEquipmentLoadoutState, _, _ = generateBasicLoadoutStateClasses(Comp7LightHangarState, R.invalid, confirmStatePrototypeCls=_Comp7LightLoadoutConfirmStatePrototype)
-Comp7LightEasyTankEquipState = generateEasyTankEquipStates(Comp7LightHangarState)
+Comp7LightEasyTankEquipState, = generateEasyTankEquipStates(Comp7LightHangarState)

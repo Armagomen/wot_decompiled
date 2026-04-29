@@ -1,14 +1,12 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/maps_blacklist/maps_blacklist_view.py
-import typing
-import ArenaType
-import logging
-from constants import PREMIUM_TYPE, PremiumConfigs, RENEWABLE_SUBSCRIPTION_CONFIG
+import logging, typing, ArenaType
+from PlayerEvents import g_playerEvents
+from constants import PREMIUM_TYPE, PremiumConfigs
 from frameworks.wulf import View, ViewSettings, ViewFlags
 from gui import SystemMessages
 from gui.Scaleform import MENU
 from gui.Scaleform.Waiting import Waiting
 from gui.Scaleform.daapi.view.lobby.store.browser.shop_helpers import getWotPlusShopUrl, getBuyPremiumUrl
+from gui.game_control.wot_plus.utils import getExcludedMapsPromoData
 from gui.impl.dialogs import dialogs
 from gui.impl.gen import R
 from gui.impl.gen.view_models.views.lobby.account_dashboard.map_model import SlotTypeEnum
@@ -18,7 +16,7 @@ from gui.impl.gen.view_models.views.lobby.premacc.maps_blacklist_slot_model impo
 from gui.impl.gen.view_models.views.lobby.premacc.maps_blacklist_view_model import MapsBlacklistViewModel
 from gui.impl.gui_decorators import args2params
 from gui.impl.lobby.maps_blacklist.maps_blacklist_confirm_view import MapsBlacklistDialog
-from gui.impl.lobby.maps_blacklist.sound_constants import BLACKLIST_SOUND_SETTINGS
+from gui.impl.lobby.common.sound_constants import HANGAR_FILTERED_SOUND_SPACE
 from gui.impl.pub import ViewImpl
 from gui.shared.event_dispatcher import showShop
 from gui.shared.formatters import time_formatters
@@ -29,6 +27,8 @@ from helpers import dependency
 from helpers import i18n
 from helpers import time_utils
 from items.vehicles import CAMOUFLAGE_KINDS
+from renewable_subscription_common.schema import renewableSubscriptionsConfigSchema
+from renewable_subscription_common.settings_constants import RS_TIER
 from skeletons.gui.game_control import IGameSessionController, IWotPlusController
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
@@ -39,15 +39,20 @@ if typing.TYPE_CHECKING:
     from typing import List, Type, Any, Dict, Optional
     from frameworks.wulf import ViewEvent
 
-@dependency.replace_none_kwargs(lobbyContext=ILobbyContext, itemsCache=IItemsCache, wotPlusController=IWotPlusController)
-def buildSlotsMap(lobbyContext=None, itemsCache=None, wotPlusController=None):
+@dependency.replace_none_kwargs(lobbyContext=ILobbyContext, itemsCache=IItemsCache)
+def buildSlotsMap(lobbyContext=None, itemsCache=None):
     serverSettings = lobbyContext.getServerSettings()
     mapsConfig = serverSettings.getPreferredMapsConfig()
     defaultSlots = mapsConfig['defaultSlots']
     premiumSlots = mapsConfig['premiumSlots']
-    wotPlusSlots = mapsConfig['wotPlusSlots'] if serverSettings.isWotPlusExcludedMapEnabled() else 0
-    bonusTypes = [(SlotTypeEnum.PREMIUM, premiumSlots, itemsCache.items.stats.isActivePremium(PREMIUM_TYPE.PLUS)), (SlotTypeEnum.WOTPLUS, wotPlusSlots, wotPlusController.isEnabled())]
-    slotsMap = [SlotTypeEnum.NONE] * defaultSlots
+    hasWotPlusSubscription, wotPlusSlots = getExcludedMapsPromoData()
+    bonusTypes = [
+     (
+      SlotTypeEnum.PREMIUM, premiumSlots, itemsCache.items.stats.isActivePremium(PREMIUM_TYPE.PLUS)),
+     (
+      SlotTypeEnum.WOTPLUS, wotPlusSlots, hasWotPlusSubscription)]
+    slotsMap = [
+     SlotTypeEnum.NONE] * defaultSlots
     for slot, count, isActive in bonusTypes:
         if not isActive:
             continue
@@ -61,22 +66,23 @@ def buildSlotsMap(lobbyContext=None, itemsCache=None, wotPlusController=None):
     return slotsMap
 
 
-@dependency.replace_none_kwargs(lobbyContext=ILobbyContext, itemsCache=IItemsCache, wotPlusController=IWotPlusController)
-def buildSlotsModels(lobbyContext=None, itemsCache=None, wotPlusController=None):
+@dependency.replace_none_kwargs(lobbyContext=ILobbyContext, itemsCache=IItemsCache)
+def buildSlotsModels(lobbyContext=None, itemsCache=None):
     serverSettings = lobbyContext.getServerSettings()
     mapsConfig = serverSettings.getPreferredMapsConfig()
     slotCooldown = mapsConfig['slotCooldown']
     defaultSlots = mapsConfig['defaultSlots']
     premiumSlots = mapsConfig['premiumSlots']
-    wotPlusSlots = mapsConfig['wotPlusSlots'] if serverSettings.isWotPlusExcludedMapEnabled() else 0
+    hasWotPlusSubscription, wotPlusSlots = getExcludedMapsPromoData()
     totalSlots = defaultSlots + premiumSlots + wotPlusSlots
     slotsMap = buildSlotsMap()
-    maps = [ (mapId, selectedTime) for mapId, selectedTime in itemsCache.items.stats.getMapsBlackList() if mapId > 0 ]
+    maps = [ (mapId, selectedTime) for mapId, selectedTime in itemsCache.items.stats.getMapsBlackList() if mapId > 0
+           ]
     serverUTCTime = time_utils.getServerUTCTime()
     availableSlots = defaultSlots
     if itemsCache.items.stats.isActivePremium(PREMIUM_TYPE.PLUS):
         availableSlots += premiumSlots
-    if wotPlusController.isEnabled():
+    if hasWotPlusSubscription:
         availableSlots += wotPlusSlots
     disabledMaps = []
     for i in range(totalSlots):
@@ -107,7 +113,7 @@ class MapsBlacklistView(ViewImpl):
     __lobbyContext = dependency.descriptor(ILobbyContext)
     __gameSession = dependency.descriptor(IGameSessionController)
     __wotPlusCtrl = dependency.descriptor(IWotPlusController)
-    _COMMON_SOUND_SPACE = BLACKLIST_SOUND_SETTINGS
+    _COMMON_SOUND_SPACE = HANGAR_FILTERED_SOUND_SPACE
 
     def __init__(self, layoutID, wsFlags=ViewFlags.LOBBY_TOP_SUB_VIEW, viewModelClazz=MapsBlacklistViewModel, exitEvent=None):
         settings = ViewSettings(layoutID)
@@ -125,7 +131,9 @@ class MapsBlacklistView(ViewImpl):
 
     def createToolTipContent(self, event, contentID):
         viewID = R.views.lobby.excluded_maps.ExcludedMapsTooltip()
-        return ExcludedMapsTooltip() if event.contentID == viewID else super(MapsBlacklistView, self).createToolTipContent(event=event, contentID=contentID)
+        if event.contentID == viewID:
+            return ExcludedMapsTooltip()
+        return super(MapsBlacklistView, self).createToolTipContent(event=event, contentID=contentID)
 
     def _onLoading(self, *args, **kwargs):
         super(MapsBlacklistView, self)._onLoading()
@@ -146,27 +154,43 @@ class MapsBlacklistView(ViewImpl):
         super(MapsBlacklistView, self)._finalize()
 
     def _getCallbacks(self):
-        return (('preferredMaps', self.__update),)
+        return (
+         (
+          'preferredMaps', self.__update),)
 
     def _getEvents(self):
-        return ((self.viewModel.onCloseEvent, self.__onDestroy),
-         (self.viewModel.onBackAction, self.__onDestroy),
-         (self.viewModel.onFilterClick, self.__onFilterSelected),
-         (self.viewModel.onMapAddToBlacklistEvent, self.__onMapAddToBlacklist),
-         (self.viewModel.onMapRemoveFromBlacklistEvent, self.__onMapRemoveFromBlacklist),
-         (self.viewModel.onFilterReset, self.__onFilterReset),
-         (self.viewModel.onShopOpenWotPlus, self.__onShopOpenWotPlus),
-         (self.viewModel.onShopOpenPremium, self.__onShopOpenPremium),
-         (self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged),
-         (self.__gameSession.onPremiumNotify, self.__update),
-         (self.__wotPlusCtrl.onDataChanged, self.__onWotPlusChanged))
+        return (
+         (
+          self.viewModel.onCloseEvent, self.__onDestroy),
+         (
+          self.viewModel.onBackAction, self.__onDestroy),
+         (
+          self.viewModel.onFilterClick, self.__onFilterSelected),
+         (
+          self.viewModel.onMapAddToBlacklistEvent, self.__onMapAddToBlacklist),
+         (
+          self.viewModel.onMapRemoveFromBlacklistEvent, self.__onMapRemoveFromBlacklist),
+         (
+          self.viewModel.onFilterReset, self.__onFilterReset),
+         (
+          self.viewModel.onShopOpenWotPlus, self.__onShopOpenWotPlus),
+         (
+          self.viewModel.onShopOpenPremium, self.__onShopOpenPremium),
+         (
+          self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChanged),
+         (
+          self.__gameSession.onPremiumNotify, self.__update),
+         (
+          self.__wotPlusCtrl.onDataChanged, self.__onWotPlusChanged),
+         (
+          g_playerEvents.onConfigModelUpdated, self._onConfigModelUpdated))
 
     def __onWindowClose(self):
         self.destroyWindow()
 
     @args2params(int)
     def __onFilterSelected(self, seasonID):
-        with self.viewModel.transaction() as viewModel:
+        with self.viewModel.transaction() as (viewModel):
             for mapFilter in viewModel.mapsFilters.getItems():
                 if mapFilter.getFilterID() == seasonID:
                     mapFilter.setSelected(not mapFilter.getSelected())
@@ -175,7 +199,7 @@ class MapsBlacklistView(ViewImpl):
             self.__applyFilter(viewModel)
 
     def __onFilterReset(self, _=None):
-        with self.viewModel.transaction() as viewModel:
+        with self.viewModel.transaction() as (viewModel):
             mapsFilters = viewModel.mapsFilters.getItems()
             for mapFilter in mapsFilters:
                 mapFilter.setSelected(False)
@@ -188,7 +212,7 @@ class MapsBlacklistView(ViewImpl):
         selectedFilterIDs = [ mapFilter.getFilterID() for mapFilter in mapsFilters if mapFilter.getSelected() ]
         countSelectedMaps = 0
         allFiltered = all([ mapFilter.getSelected() for mapFilter in mapsFilters ]) or not selectedFilterIDs
-        with viewModel.maps.transaction() as viewModelMaps:
+        with viewModel.maps.transaction() as (viewModelMaps):
             maps = viewModelMaps.getItems()
             for itemModel in maps:
                 if allFiltered:
@@ -216,7 +240,7 @@ class MapsBlacklistView(ViewImpl):
         self.destroyWindow()
 
     def __initFilterData(self):
-        with self.viewModel.transaction() as viewModel:
+        with self.viewModel.transaction() as (viewModel):
             mapsFilters = viewModel.mapsFilters.getItems()
             for seasonName, seasonID in CAMOUFLAGE_KINDS.iteritems():
                 filterModel = MapsBlacklistMapFilterModel()
@@ -238,7 +262,7 @@ class MapsBlacklistView(ViewImpl):
 
     def __updateMainData(self, viewModel):
         hasFreeOrExpiredSlots = self.__hasFreeOrExpiredSlots()
-        with viewModel.maps.transaction() as viewModelMaps:
+        with viewModel.maps.transaction() as (viewModelMaps):
             maps = viewModelMaps.getItems()
             maps.clear()
             for geometryType in self.__availableMaps:
@@ -263,7 +287,7 @@ class MapsBlacklistView(ViewImpl):
         self.__applyFilter(viewModel)
 
     def __updateDisabledMaps(self, viewModel):
-        with viewModel.disabledMaps.transaction() as viewModelDisabledMaps:
+        with viewModel.disabledMaps.transaction() as (viewModelDisabledMaps):
             disabledMaps = viewModelDisabledMaps.getItems()
             disabledMaps.clear()
             minTimeToWait = 0
@@ -276,7 +300,7 @@ class MapsBlacklistView(ViewImpl):
                     if minTimeToWait == 0 or minTimeToWait > slotModel.getCooldownTime():
                         minTimeToWait = slotModel.getCooldownTime()
                     hasCooldown = True
-                if slotState != MapStateEnum.MAPS_BLACKLIST_SLOT_STATE_DISABLED:
+                elif slotState != MapStateEnum.MAPS_BLACKLIST_SLOT_STATE_DISABLED:
                     allInCooldownState = False
 
             disabledMaps.invalidate()
@@ -288,25 +312,31 @@ class MapsBlacklistView(ViewImpl):
                 self.__notifier.stopNotification()
 
     def __update(self, *args, **kwargs):
-        with self.viewModel.transaction() as viewModel:
+        with self.viewModel.transaction() as (viewModel):
             self.__updateDisabledMaps(viewModel)
             self.__updateMainData(viewModel)
 
     def __onWotPlusChanged(self, data):
-        if 'isEnabled' in data:
+        if RS_TIER in data:
             self.__update()
 
     def __onServerSettingsChanged(self, diff):
         if PremiumConfigs.IS_PREFERRED_MAPS_ENABLED in diff and not diff[PremiumConfigs.IS_PREFERRED_MAPS_ENABLED]:
             self.__onWindowClose()
             return
-        if PremiumConfigs.PREFERRED_MAPS in diff or RENEWABLE_SUBSCRIPTION_CONFIG in diff:
+        if PremiumConfigs.PREFERRED_MAPS in diff:
+            self.__updateAvailableMaps()
+            self.__update()
+
+    def _onConfigModelUpdated(self, gpKey):
+        if renewableSubscriptionsConfigSchema.gpKey == gpKey:
             self.__updateAvailableMaps()
             self.__update()
 
     def __hasFreeOrExpiredSlots(self):
         for model in self.viewModel.disabledMaps.getItems():
-            if model.getState() in (MapStateEnum.MAPS_BLACKLIST_SLOT_STATE_ACTIVE, MapStateEnum.MAPS_BLACKLIST_SLOT_STATE_CHANGE):
+            if model.getState() in (MapStateEnum.MAPS_BLACKLIST_SLOT_STATE_ACTIVE,
+             MapStateEnum.MAPS_BLACKLIST_SLOT_STATE_CHANGE):
                 return True
 
         return False
@@ -316,7 +346,7 @@ class MapsBlacklistView(ViewImpl):
             if model.getMapId() == mapName:
                 return model
 
-        return None
+        return
 
     @wg_async
     def __showMapConfirmDialog(self, mapId):
@@ -324,7 +354,7 @@ class MapsBlacklistView(ViewImpl):
         for item in self.viewModel.disabledMaps.getItems():
             if item.getState() == MapStateEnum.MAPS_BLACKLIST_SLOT_STATE_CHANGE:
                 changeableMaps.append(item.getMapId())
-            if item.getState() == MapStateEnum.MAPS_BLACKLIST_SLOT_STATE_ACTIVE:
+            elif item.getState() == MapStateEnum.MAPS_BLACKLIST_SLOT_STATE_ACTIVE:
                 changeableMaps = []
                 break
 
@@ -353,8 +383,7 @@ class MapsBlacklistView(ViewImpl):
             requester = MapsBlackListSetter(dstMapID)
         result = yield requester.request()
         if result and result.userMsg:
-            SystemMessages.pushMessage(result.userMsg % {'mapName': dstMapName,
-             'time': cooldown}, type=result.sysMsgType)
+            SystemMessages.pushMessage(result.userMsg % {'mapName': dstMapName, 'time': cooldown}, type=result.sysMsgType)
         return
 
     @decorators.adisp_process('updating')
@@ -382,8 +411,7 @@ class ExcludedMapsTooltip(ViewImpl):
         serverSettings = self._lobbyContext.getServerSettings()
         mapsConfig = serverSettings.getPreferredMapsConfig()
         timeLeft = time_formatters.getTillTimeByResource(mapsConfig['slotCooldown'], R.strings.premacc.piggyBankCard.timeLeft, removeLeadingZeros=True)
-        wotPlusSlots = mapsConfig['wotPlusSlots'] if serverSettings.isWotPlusExcludedMapEnabled() else 0
-        self.viewModel.setMapCount(wotPlusSlots)
+        self.viewModel.setMapCount(getExcludedMapsPromoData()[1])
         self.viewModel.setMaxCooldownTimeStr(timeLeft)
 
     @property

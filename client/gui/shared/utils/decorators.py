@@ -1,9 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/utils/decorators.py
 import time
 from string import join
-import adisp
-import BigWorld
+import adisp, BigWorld
 from debug_utils import LOG_DEBUG
 from gui.Scaleform.Waiting import Waiting
 
@@ -59,7 +56,8 @@ def debugTime(func):
     def wrapper(*args, **kwargs):
         startTime = time.time()
         result = func(*args, **kwargs)
-        LOG_DEBUG("Method '%s' measuring time: %.10f" % (func.__name__, time.time() - startTime))
+        LOG_DEBUG("Method '%s' measuring time: %.10f" % (
+         func.__name__, time.time() - startTime))
         return result
 
     return wrapper
@@ -102,7 +100,8 @@ def makeArr(obj):
         if len(obj) > 1:
             return [obj[0], obj[1]]
         return [obj[0], obj[0]]
-    return [obj, obj]
+    return [
+     obj, obj]
 
 
 class ReprInjector(object):
@@ -125,7 +124,7 @@ class InternalRepresenter(object):
     def __call__(self, clazz):
         if '__repr__' in dir(clazz):
             if hasattr(clazz, '__repr_params__') and self.reprParentFlag is not False:
-                clazz.__repr_params__ = tuple((arg for arg in self.argNames if arg not in clazz.__repr_params__)) + tuple((arg for arg in clazz.__repr_params__ if arg[0:2] != '__'))
+                clazz.__repr_params__ = tuple(arg for arg in self.argNames if arg not in clazz.__repr_params__) + tuple(arg for arg in clazz.__repr_params__ if arg[0:2] != '__')
             else:
                 clazz.__repr_params__ = self.argNames
         else:
@@ -134,17 +133,14 @@ class InternalRepresenter(object):
         attrMethNames = []
         for i in xrange(len(clazz.__repr_params__)):
             attrMethNames.append(makeArr(clazz.__repr_params__[i]))
-            if attrMethNames[-1][0][:2] == '__':
+            if attrMethNames[(-1)][0][:2] == '__':
                 if clazz.__name__[0] != '_':
-                    attrMethNames[-1][0] = join(['_', clazz.__name__, attrMethNames[-1][0]], sep='')
+                    attrMethNames[(-1)][0] = join(['_', clazz.__name__, attrMethNames[(-1)][0]], sep='')
                 else:
-                    attrMethNames[-1][0] = join([clazz.__name__, attrMethNames[-1][0]], sep='')
-            representation.append('{0} = {{{1}}}'.format(attrMethNames[-1][1], i))
+                    attrMethNames[(-1)][0] = join([clazz.__name__, attrMethNames[(-1)][0]], sep='')
+            representation.append(('{0} = {{{1}}}').format(attrMethNames[(-1)][1], i))
 
-        representation = join([clazz.__name__,
-         '(',
-         join(representation, sep=', '),
-         ')'], sep='')
+        representation = join([clazz.__name__, '(', join(representation, sep=', '), ')'], sep='')
 
         def __repr__(self):
             formatedArgs = []

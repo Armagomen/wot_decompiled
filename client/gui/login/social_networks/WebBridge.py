@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/login/social_networks/WebBridge.py
-import base64
-import socket
+import base64, socket
 from urllib import urlencode, quote_plus
 import BigWorld
 from constants import HAS_DEV_RESOURCES
@@ -71,9 +68,9 @@ class WebBridge(object):
         self.connectionMgr.setLastLogin(self.__loginParams['login'])
 
     def __getWgniParams(self, isExternal, isRegistration):
-        params = {'game': 'wot',
-         'game_port': self.__dataServer.server_port,
-         'remember': int(self.__preferences['remember_user'])}
+        params = {'game': 'wot', 
+           'game_port': self.__dataServer.server_port, 
+           'remember': int(self.__preferences['remember_user'])}
         if isExternal:
             params['external'] = self.__preferences['login_type']
         if GUI_SETTINGS.socialNetworkLogin['encryptToken'] and not isRegistration:
@@ -89,7 +86,7 @@ class WebBridge(object):
         if HAS_DEV_RESOURCES:
             from gui.development.mock.social_network_login import getServer as getWGNIServerMock
             if getWGNIServerMock() is not None:
-                baseUrl = 'http://127.0.0.1:{0}/'.format(getWGNIServerMock().server_port)
+                baseUrl = ('http://127.0.0.1:{0}/').format(getWGNIServerMock().server_port)
         return baseUrl
 
     def __initDataServer(self, enableEncryption):

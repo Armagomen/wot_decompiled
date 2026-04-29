@@ -1,12 +1,10 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/gui_items/dossier/achievements/abstract/nation_specific.py
 from simple_progress import SimpleProgressAchievement
 from dossiers2.custom import cache
 from dossiers2.custom.cache import getCache as getDossiersCache
 from gui import nationCompareByIndex
 
 class NationSpecificAchievement(SimpleProgressAchievement):
-    __slots__ = ('_nationID',)
+    __slots__ = ('_nationID', )
     _NATIONAL_VEHICLES = 'vehiclesInTreesByNation'
     _LIST_NAME = ''
 
@@ -28,7 +26,7 @@ class NationSpecificAchievement(SimpleProgressAchievement):
         return name
 
     def _readValue(self, dossier):
-        pass
+        return 0
 
     def _readLevelUpTotalValue(self, dossier):
         dossierCache = cache.getCache()
@@ -51,3 +49,4 @@ class NationSpecificAchievement(SimpleProgressAchievement):
         if isinstance(other, NationSpecificAchievement):
             if self._nationID != -1 and other._nationID != -1:
                 return nationCompareByIndex(self._nationID, other._nationID)
+        return 0

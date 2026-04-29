@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/personalreserves/boosters_view.py
 from gui.impl.lobby.personal_reserves.personal_reserves_utils import findNearestExpiryTimeInBoostersList
 from gui.shared.utils.scheduled_notifications import Notifiable, TimerNotifier
 from helpers.i18n import makeString as _ms
@@ -48,34 +46,35 @@ class _FilterBit(CONST_CONTAINER):
     PREMIUM = 2048
 
 
-_TYPE_BIT_TO_RESOURCE_TYPE_MAP = {_FilterBit.XP: GOODIE_RESOURCE_TYPE.XP,
- _FilterBit.CREDITS: GOODIE_RESOURCE_TYPE.CREDITS,
- _FilterBit.FREE_XP_CREW_XP: GOODIE_RESOURCE_TYPE.FREE_XP_CREW_XP}
+_TYPE_BIT_TO_RESOURCE_TYPE_MAP = {_FilterBit.XP: GOODIE_RESOURCE_TYPE.XP, 
+   _FilterBit.CREDITS: GOODIE_RESOURCE_TYPE.CREDITS, 
+   _FilterBit.FREE_XP_CREW_XP: GOODIE_RESOURCE_TYPE.FREE_XP_CREW_XP}
 _TYPE_BIT_TO_CRITERIA = {_FilterBit.PREMIUM: REQ_CRITERIA.BOOSTER.IN_BOOSTER_ID_LIST(PREMIUM_BOOSTER_IDS)}
-_TYPE_FILTER_ITEMS = [{'filterValue': _FilterBit.XP,
-  'selected': False,
-  'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_PERSONALRESERVES_BTNS_TYPE_VEHICLEEXP),
-  'icon': RES_ICONS.MAPS_ICONS_BOOSTERS_BOOSTER_XP_SMALL_BW},
- {'filterValue': _FilterBit.CREDITS,
-  'selected': False,
-  'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_PERSONALRESERVES_BTNS_TYPE_CREDITS),
-  'icon': RES_ICONS.MAPS_ICONS_BOOSTERS_BOOSTER_CREDITS_SMALL_BW},
- {'filterValue': _FilterBit.FREE_XP_CREW_XP,
-  'selected': False,
-  'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_PERSONALRESERVES_BTNS_TYPE_COMBOEXP),
-  'icon': RES_ICONS.MAPS_ICONS_BOOSTERS_BOOSTER_FREE_XP_AND_CREW_XP_SMALL_BW},
- {'filterValue': _FilterBit.PREMIUM,
-  'selected': False,
-  'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_PERSONALRESERVES_BTNS_TYPE_PREMIUM),
-  'icon': RES_ICONS.MAPS_ICONS_BOOSTERS_BOOSTER_FILTER_PREMIUM_SMALL_BW},
- {'filterValue': _FilterBit.NON_EXPIRABLE,
-  'selected': False,
-  'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_PERSONALRESERVES_BTNS_TYPE_NONEXPIRABLE),
-  'icon': RES_ICONS.MAPS_ICONS_BOOSTERS_BOOSTER_FILTER_NON_EXPIRABLE_SMALL_BW},
- {'filterValue': _FilterBit.EXPIRABLE,
-  'selected': False,
-  'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_PERSONALRESERVES_BTNS_TYPE_EXPIRABLE),
-  'icon': RES_ICONS.MAPS_ICONS_BOOSTERS_BOOSTER_FILTER_EXPIRABLE_SMALL_BW}]
+_TYPE_FILTER_ITEMS = [
+ {'filterValue': _FilterBit.XP, 
+    'selected': False, 
+    'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_PERSONALRESERVES_BTNS_TYPE_VEHICLEEXP), 
+    'icon': RES_ICONS.MAPS_ICONS_BOOSTERS_BOOSTER_XP_SMALL_BW},
+ {'filterValue': _FilterBit.CREDITS, 
+    'selected': False, 
+    'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_PERSONALRESERVES_BTNS_TYPE_CREDITS), 
+    'icon': RES_ICONS.MAPS_ICONS_BOOSTERS_BOOSTER_CREDITS_SMALL_BW},
+ {'filterValue': _FilterBit.FREE_XP_CREW_XP, 
+    'selected': False, 
+    'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_PERSONALRESERVES_BTNS_TYPE_COMBOEXP), 
+    'icon': RES_ICONS.MAPS_ICONS_BOOSTERS_BOOSTER_FREE_XP_AND_CREW_XP_SMALL_BW},
+ {'filterValue': _FilterBit.PREMIUM, 
+    'selected': False, 
+    'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_PERSONALRESERVES_BTNS_TYPE_PREMIUM), 
+    'icon': RES_ICONS.MAPS_ICONS_BOOSTERS_BOOSTER_FILTER_PREMIUM_SMALL_BW},
+ {'filterValue': _FilterBit.NON_EXPIRABLE, 
+    'selected': False, 
+    'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_PERSONALRESERVES_BTNS_TYPE_NONEXPIRABLE), 
+    'icon': RES_ICONS.MAPS_ICONS_BOOSTERS_BOOSTER_FILTER_NON_EXPIRABLE_SMALL_BW},
+ {'filterValue': _FilterBit.EXPIRABLE, 
+    'selected': False, 
+    'tooltip': makeTooltip(body=TOOLTIPS.STORAGE_FILTER_PERSONALRESERVES_BTNS_TYPE_EXPIRABLE), 
+    'icon': RES_ICONS.MAPS_ICONS_BOOSTERS_BOOSTER_FILTER_EXPIRABLE_SMALL_BW}]
 
 def getCriteriaFromFilterMask(filterMask):
     criteria = REQ_CRITERIA.EMPTY
@@ -120,7 +119,7 @@ class StorageCategoryPersonalReservesView(StorageCategoryPersonalReservesViewMet
         showBoostersActivation()
 
     def _getClientSectionKey(self):
-        pass
+        return 'storage_reserves'
 
     def _loadFilters(self):
         if isStorageSessionTimeout():
@@ -135,18 +134,18 @@ class StorageCategoryPersonalReservesView(StorageCategoryPersonalReservesViewMet
     def _onRegisterFlashComponent(self, viewPy, alias):
         super(StorageCategoryPersonalReservesView, self)._onRegisterFlashComponent(viewPy, alias)
         if alias == VIEW_ALIAS.BOOSTERS_PANEL:
-            viewPy.setSlotProps({'slotsCount': MAX_ACTIVE_BOOSTERS_COUNT,
-             'slotWidth': 50,
-             'paddings': 64,
-             'groupPadding': 18,
-             'ySlotPosition': 5,
-             'offsetSlot': -2,
-             'useOnlyLeftBtn': True})
+            viewPy.setSlotProps({'slotsCount': MAX_ACTIVE_BOOSTERS_COUNT, 
+               'slotWidth': 50, 
+               'paddings': 64, 
+               'groupPadding': 18, 
+               'ySlotPosition': 5, 
+               'offsetSlot': -2, 
+               'useOnlyLeftBtn': True})
 
     def _populate(self):
         super(StorageCategoryPersonalReservesView, self)._populate()
-        g_clientUpdateManager.addCallbacks({'goodies': self.__onGoodiesCacheUpdate,
-         'shop': self.__onUpdateBoosters})
+        g_clientUpdateManager.addCallbacks({'goodies': self.__onGoodiesCacheUpdate, 
+           'shop': self.__onUpdateBoosters})
         self._eventsCache.onSyncCompleted += self.__onQuestsUpdate
         self._epicCtrl.onUpdated += self.__onUpdateBoosters
         self.__onUpdateBoosters()
@@ -183,7 +182,7 @@ class StorageCategoryPersonalReservesView(StorageCategoryPersonalReservesViewMet
         for booster in self.__getBoosters():
             expirations = booster.expirations
             totalBoostersCount += len(expirations)
-            remaining = booster.count - sum((exp.amount for exp in expirations.itervalues()))
+            remaining = booster.count - sum(exp.amount for exp in expirations.itervalues())
             if remaining:
                 totalBoostersCount += 1
 
@@ -205,7 +204,7 @@ class StorageCategoryPersonalReservesView(StorageCategoryPersonalReservesViewMet
                 expirations = booster.expirations
                 if not filterNonExpirable:
                     newBoosters.extend(expirations.itervalues())
-                remaining = booster.count - sum((exp.amount for exp in expirations.itervalues()))
+                remaining = booster.count - sum(exp.amount for exp in expirations.itervalues())
                 if remaining and not filterExpirable:
                     newBoosters.append(GoodieExpirationData(booster, float('inf'), remaining))
 
@@ -248,8 +247,7 @@ class StorageCategoryPersonalReservesView(StorageCategoryPersonalReservesViewMet
             if self.__filterMask & item['filterValue'] == item['filterValue']:
                 item.update({'selected': True})
 
-        typeFilters = {'items': typeItems,
-         'minSelectedItems': 0}
+        typeFilters = {'items': typeItems, 'minSelectedItems': 0}
         self.as_initFilterS(typeFilters)
 
     def __updateFilterCounter(self, count, total):

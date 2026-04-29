@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/lobby/epicBattleTraining/epic_battles_list.py
 from frontline.gui.prb_control.entities.epic_battle_training.ctx import EpicTrainingSettingsCtx
 from frontline.gui.prb_control.entities.epic_battle_training.ctx import JoinEpicBattleTrainingCtx
 from adisp import adisp_process
@@ -42,9 +40,9 @@ class EpicBattlesList(TrainingsListBase):
         return
 
     def _getViewData(self):
-        return {'title': backport.text(R.strings.menu.epicTraining.title()),
-         'descr': backport.text(R.strings.menu.training.description()),
-         'battleTypeID': BATTLE_TYPES.EPIC_TRAINING}
+        return {'title': backport.text(R.strings.menu.epicTraining.title()), 
+           'descr': backport.text(R.strings.menu.training.description()), 
+           'battleTypeID': BATTLE_TYPES.EPIC_TRAINING}
 
     @adisp_process
     def joinTrainingRequest(self, prbID):
@@ -52,8 +50,7 @@ class EpicBattlesList(TrainingsListBase):
 
     def createTrainingRequest(self):
         settings = EpicTrainingSettingsCtx()
-        self.fireEvent(events.LoadViewEvent(SFViewLoadParams(PREBATTLE_ALIASES.EPIC_TRAINING_SETTINGS_WINDOW_PY), ctx={'isCreateRequest': True,
-         'settings': settings}), scope=EVENT_BUS_SCOPE.LOBBY)
+        self.fireEvent(events.LoadViewEvent(SFViewLoadParams(PREBATTLE_ALIASES.EPIC_TRAINING_SETTINGS_WINDOW_PY), ctx={'isCreateRequest': True, 'settings': settings}), scope=EVENT_BUS_SCOPE.LOBBY)
 
     def __updateWindowOpenState(self, flag):
         g_eventBus.handleEvent(ChannelCarouselEvent(self, ChannelCarouselEvent.ON_WINDOW_CHANGE_OPEN_STATE, channel_num_gen.getClientID4SpecialWindow(SPECIAL_CLIENT_WINDOWS.EPIC_TRAINING_LIST), MESSENGER_CHANNEL_CAROUSEL_ITEM_TYPES.CHANNEL_CAROUSEL_ITEM_TYPE_PREBATTLE, flag), scope=EVENT_BUS_SCOPE.LOBBY)

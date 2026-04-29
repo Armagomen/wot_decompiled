@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_results/progress/progress_filters.py
-import copy
-import typing
-import constants
-import personal_missions
+import copy, typing, constants, personal_missions
 from future.utils import itervalues
 from gui.battle_results.progress.progress_helpers import packQuestProgressData, isQuestCompleted, getPrestigeProgress, isPMOperationAndMissionEnabled
 from gui.server_events.events_helpers import isPremium, isDailyQuest, isWeeklyQuest, isBattleMattersQuestID, isCommonBattleQuest
@@ -14,6 +9,7 @@ from personal_missions import PM_BRANCH
 from gui.battle_results.progress.research import VehicleProgressHelper
 from skeletons.gui.game_control import IBattlePassController
 if typing.TYPE_CHECKING:
+    from typing import List, Tuple
     from gui.battle_results.reusable import _ReusableInfo
     from gui.server_events.event_items import PersonalMission
     from gui.server_events.personal_missions_cache import PersonalMissionsCache
@@ -61,10 +57,14 @@ def weeklyQuestsProgressFilter(reusable, allCommonQuests):
 
 
 def battlePassProgressFilter(reusable):
+    battlePassController = dependency.instance(IBattlePassController)
+    if battlePassController.isDisabled() or battlePassController.isPaused():
+        return
     battlePassProgress = reusable.battlePassProgress
     isNewPoints = battlePassProgress.pointsAux > 0 or battlePassProgress.questPoints > 0 or battlePassProgress.bonusCapPoints > 0 or battlePassProgress.bpTopPoints > 0
-    battlePassController = dependency.instance(IBattlePassController)
-    return battlePassProgress if (battlePassProgress.hasProgress(battlePassProgress.currentChapterID) or isNewPoints) and not battlePassController.isDisabled() else None
+    if battlePassProgress.hasProgress(battlePassProgress.currentChapterID) or isNewPoints:
+        return battlePassProgress
+    return
 
 
 def prestigeProgressFilter(reusable):
@@ -89,7 +89,8 @@ def personalMissionProgressFilter(reusable, eventsCache=None):
                     updatedPM3Quest = copy.deepcopy(currentPM3Quest)
                     currentBattlesUniqueVehicles = pCur.get('battlesUniqueVehicles', {})
                     updatedPM3Quest.getConditionsProgress().update({'battlesUniqueVehicles': currentBattlesUniqueVehicles})
-                    data = (updatedPM3Quest, isQuestCompleted(*qProgress))
+                    data = (
+                     updatedPM3Quest, isQuestCompleted(*qProgress))
                     personalMissionWithProgress.append(data)
 
     return personalMissionWithProgress
@@ -103,7 +104,8 @@ def vehicleProgressFilter(reusable):
         helper = VehicleProgressHelper(intCD)
         unlockVehicles, unlockModules = helper.getReady2UnlockItems(vehicleBattleXp)
         if unlockVehicles or unlockModules:
-            results[intCD] = (unlockVehicles, unlockModules)
+            results[intCD] = (
+             unlockVehicles, unlockModules)
         helper.clear()
 
     return results

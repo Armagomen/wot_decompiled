@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/lobby_state_machine/recorded_states.py
 from __future__ import absolute_import
-import logging
-import typing
+import logging, typing
 from frameworks.state_machine.visitor import isDescendantOf, getAncestors
 from frameworks.wulf import WindowStatus
 from gui.lobby_state_machine.states import LobbyState, compareViewKeys
@@ -23,7 +20,7 @@ class _RecordedStates(EventsHandler):
         self._subscribe()
 
     def __repr__(self):
-        return '{}'.format([ (s.getStateID(), p) for s, p in self.__stateWithParamStack ])
+        return ('{}').format([ (s.getStateID(), p) for s, p in self.__stateWithParamStack ])
 
     def getStateWithParamStack(self):
         return self.__stateWithParamStack[:]
@@ -42,7 +39,10 @@ class _RecordedStates(EventsHandler):
         return
 
     def peek(self):
-        return self.__stateWithParamStack[-1] if self.hasEntries() else (None, None)
+        if self.hasEntries():
+            return self.__stateWithParamStack[(-1)]
+        else:
+            return (None, None)
 
     def pop(self):
         return self.__stateWithParamStack.pop()
@@ -51,7 +51,7 @@ class _RecordedStates(EventsHandler):
         return bool(self.__stateWithParamStack)
 
     def contains(self, predicate):
-        return any((predicate(state, params) for state, params in self.__stateWithParamStack))
+        return any(predicate(state, params) for state, params in self.__stateWithParamStack)
 
     def pushRecordedTransitionSource(self, transition, isTransitioningByBackNavigation):
         sourceState = transition.getSource()
@@ -80,12 +80,16 @@ class _RecordedStates(EventsHandler):
             if lsm.findOwningSubtree(pastState) == subtree:
                 entriesToRemove.append((pastState, pastParams))
 
-        self.__stateWithParamStack = self.__stateWithParamStack[:repeatingStateIndex] + [ (state, params) for state, params in slicedStack if (state, params) not in entriesToRemove ]
+        self.__stateWithParamStack = self.__stateWithParamStack[:repeatingStateIndex] + [ (state, params) for state, params in slicedStack if (
+         state, params) not in entriesToRemove
+                                                                                        ]
 
     def _getEvents(self):
         uiLoader = dependency.instance(IGuiLoader)
         windowsManager = uiLoader.windowsManager
-        return ((windowsManager.onWindowStatusChanged, self.__onWindowStatusChanged),)
+        return (
+         (
+          windowsManager.onWindowStatusChanged, self.__onWindowStatusChanged),)
 
     def __onWindowStatusChanged(self, uniqueWindowId, status):
         uiLoader = dependency.instance(IGuiLoader)
@@ -98,7 +102,7 @@ class _RecordedStates(EventsHandler):
         entriesToRemove = []
         for state, params in self.__stateWithParamStack:
             viewKeysMatch = state.getViewKey(params) and compareViewKeys(view, state.getViewKey(params))
-            if viewKeysMatch and any((selector(state, params) for selector in self.removableStateSelectors)):
+            if viewKeysMatch and any(selector(state, params) for selector in self.removableStateSelectors):
                 entriesToRemove.append((state, params))
 
         if entriesToRemove:
@@ -113,7 +117,8 @@ class _RecordedStates(EventsHandler):
 
 def buildSerializedParamsTopDown(sourceState):
     params = []
-    stateStack = [sourceState] + getAncestors(sourceState)
+    stateStack = [
+     sourceState] + getAncestors(sourceState)
     while stateStack:
         state = stateStack.pop()
         if isinstance(state, LobbyState):

@@ -1,25 +1,20 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/helpers/log/handlers.py
 from __future__ import absolute_import, print_function
-import cStringIO
-import logging
-import sys
-import traceback
+import cStringIO, logging, sys, traceback
 from contextlib import closing
 import BigWorld
-_LOG_LEVEL_2_BW_FUNCTION = {logging.NOTSET: BigWorld.logTrace,
- logging.DEBUG: BigWorld.logDebug,
- logging.INFO: BigWorld.logInfo,
- logging.WARN: BigWorld.logWarning,
- logging.WARNING: BigWorld.logWarning,
- logging.ERROR: BigWorld.logError,
- logging.CRITICAL: BigWorld.logCritical,
- logging.FATAL: BigWorld.logCritical}
+_LOG_LEVEL_2_BW_FUNCTION = {logging.NOTSET: BigWorld.logTrace, 
+   logging.DEBUG: BigWorld.logDebug, 
+   logging.INFO: BigWorld.logInfo, 
+   logging.WARN: BigWorld.logWarning, 
+   logging.WARNING: BigWorld.logWarning, 
+   logging.ERROR: BigWorld.logError, 
+   logging.CRITICAL: BigWorld.logCritical, 
+   logging.FATAL: BigWorld.logCritical}
 
 class WotFormatter(logging.Formatter):
 
     def formatException(self, ei):
-        return ''.join(traceback.format_exception(*ei))
+        return ('').join(traceback.format_exception(*ei))
 
 
 class WotExtendedFormatter(WotFormatter):
@@ -40,20 +35,20 @@ class WotExtendedFormatter(WotFormatter):
             frames.append(frame)
             frame = frame.f_back
 
-        with closing(cStringIO.StringIO()) as sio:
+        with closing(cStringIO.StringIO()) as (sio):
             print(message, file=sio)
             for frame in reversed(frames):
                 print('', file=sio)
-                print('Frame {} in {} at line {}'.format(frame.f_code.co_name, frame.f_code.co_filename, frame.f_lineno), file=sio)
+                print(('Frame {} in {} at line {}').format(frame.f_code.co_name, frame.f_code.co_filename, frame.f_lineno), file=sio)
                 size = self._frameSize
                 for key, value in frame.f_locals.iteritems():
                     if not size:
                         break
                     size -= 1
                     try:
-                        print('\t{:>20} = {}'.format(key, repr(value)), file=sio)
+                        print(('\t{:>20} = {}').format(key, repr(value)), file=sio)
                     except Exception:
-                        print('\t{:>20} = <UNDEFINED>'.format(key), file=sio)
+                        print(('\t{:>20} = <UNDEFINED>').format(key), file=sio)
 
             return sio.getvalue()
 

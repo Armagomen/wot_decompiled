@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/pet_system/bonus_helper.py
 import typing
 from collections import namedtuple
 from gui.impl.gen.view_models.views.lobby.pet_system.pet_bonus_model import PetBonusModel

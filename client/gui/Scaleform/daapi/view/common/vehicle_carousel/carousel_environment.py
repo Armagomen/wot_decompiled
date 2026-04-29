@@ -1,14 +1,13 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/common/vehicle_carousel/carousel_environment.py
-from constants import Configs, IS_KOREA, RENEWABLE_SUBSCRIPTION_CONFIG
+from __future__ import absolute_import
 from CurrentVehicle import g_currentVehicle
 from PlayerEvents import g_playerEvents
 from account_helpers.settings_core import settings_constants
-from gui.filters.carousel_filter import CarouselFilter
+from constants import Configs, IS_KOREA
 from gui.Scaleform import getButtonsAssetPath
 from gui.Scaleform.daapi.view.common.filter_contexts import FilterSetupContext
 from gui.Scaleform.daapi.view.common.vehicle_carousel.carousel_data_provider import CarouselDataProvider
 from gui.Scaleform.daapi.view.meta.CarouselEnvironmentMeta import CarouselEnvironmentMeta
+from gui.filters.carousel_filter import CarouselFilter
 from gui.prb_control.ctrl_events import g_prbCtrlEvents
 from gui.prb_control.entities.listener import IGlobalListener
 from gui.shared.formatters import text_styles
@@ -17,6 +16,7 @@ from gui.shared.items_cache import CACHE_SYNC_REASON
 from gui.shared.utils.functions import makeTooltip
 from gui.shared.utils.requesters.ItemsRequester import REQ_CRITERIA
 from helpers import dependency, i18n
+from renewable_subscription_common.schema import renewableSubscriptionsConfigSchema
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.game_control import IRentalsController, IIGRController, IClanLockController, IEpicBattleMetaGameController, IRankedBattlesController
@@ -25,14 +25,14 @@ from skeletons.gui.shared import IItemsCache
 
 def formatCountString(currentVehiclesCount, totalVehiclesCount):
     style = text_styles.error if currentVehiclesCount == 0 else text_styles.stats
-    return '{} / {}'.format(style(currentVehiclesCount), text_styles.main(totalVehiclesCount))
+    return ('{} / {}').format(style(currentVehiclesCount), text_styles.main(totalVehiclesCount))
 
 
 class ICarouselEnvironment(object):
 
     @property
     def filter(self):
-        return None
+        return
 
     def applyFilter(self):
         pass
@@ -59,7 +59,7 @@ class ICarouselEnvironment(object):
         return False
 
     def getCustomParams(self):
-        return dict()
+        return {}
 
     def updateHotFilters(self):
         pass
@@ -79,13 +79,13 @@ class CarouselEnvironment(CarouselEnvironmentMeta, IGlobalListener, ICarouselEnv
     lobbyContext = dependency.descriptor(ILobbyContext)
     __battleSession = dependency.descriptor(IBattleSessionProvider)
     _DISABLED_FILTERS = []
-    _CAROUSEL_FILTERS = ('bonus', 'favorite', 'elite', 'premium') + (('igr',) if IS_KOREA else ())
+    _CAROUSEL_FILTERS = ('bonus', 'favorite', 'elite', 'premium') + (('igr', ) if IS_KOREA else ())
 
     def __init__(self):
         super(CarouselEnvironment, self).__init__()
         self._usedFilters = ()
-        self._carouselDPConfig = {'carouselFilter': None,
-         'itemsCache': None}
+        self._carouselDPConfig = {'carouselFilter': None, 
+           'itemsCache': None}
         self._carouselDPCls = CarouselDataProvider
         self._carouselFilterCls = CarouselFilter
         self._carouselDP = None
@@ -121,7 +121,10 @@ class CarouselEnvironment(CarouselEnvironmentMeta, IGlobalListener, ICarouselEnv
 
     @property
     def filter(self):
-        return self._carouselDP.filter if self._carouselDP is not None else None
+        if self._carouselDP is not None:
+            return self._carouselDP.filter
+        else:
+            return
 
     def getTotalVehiclesCount(self):
         return self._carouselDP.getTotalVehiclesCount()
@@ -141,7 +144,7 @@ class CarouselEnvironment(CarouselEnvironmentMeta, IGlobalListener, ICarouselEnv
         self.updateHotFilters()
 
     def updateHotFilters(self):
-        hotFilters = [ (False if key in self._DISABLED_FILTERS else self.filter.get(key)) for key in self._usedFilters ]
+        hotFilters = [ False if key in self._DISABLED_FILTERS else self.filter.get(key) for key in self._usedFilters ]
         self.as_setCarouselFilterS({'hotFilters': hotFilters})
 
     def applyFilter(self):
@@ -197,6 +200,7 @@ class CarouselEnvironment(CarouselEnvironmentMeta, IGlobalListener, ICarouselEnv
         self.lobbyContext.getServerSettings().onServerSettingsChange += self._onServerSettingChanged
         g_playerEvents.onVehicleBecomeElite += self.__onVehicleBecomeElite
         g_prbCtrlEvents.onVehicleClientStateChanged += self.__onVehicleClientStateChanged
+        g_playerEvents.onConfigModelUpdated += self._onConfigModelUpdated
         self.startGlobalListening()
         self.applyFilter()
         self.updateAvailability()
@@ -214,6 +218,7 @@ class CarouselEnvironment(CarouselEnvironmentMeta, IGlobalListener, ICarouselEnv
         self.settingsCore.onSettingsChanged -= self._onCarouselSettingsChange
         g_playerEvents.onVehicleBecomeElite -= self.__onVehicleBecomeElite
         g_prbCtrlEvents.onVehicleClientStateChanged -= self.__onVehicleClientStateChanged
+        g_playerEvents.onConfigModelUpdated -= self._onConfigModelUpdated
         self.stopGlobalListening()
         self._currentVehicle = None
         self._carouselDP.fini()
@@ -224,8 +229,8 @@ class CarouselEnvironment(CarouselEnvironmentMeta, IGlobalListener, ICarouselEnv
         return
 
     def _initDataProvider(self):
-        self._carouselDPConfig.update({'carouselFilter': self._carouselFilterCls(),
-         'itemsCache': self.itemsCache})
+        self._carouselDPConfig.update({'carouselFilter': self._carouselFilterCls(), 
+           'itemsCache': self.itemsCache})
         self._carouselDP = self._carouselDPCls(**self._carouselDPConfig)
 
     def _getFilters(self):
@@ -238,9 +243,12 @@ class CarouselEnvironment(CarouselEnvironmentMeta, IGlobalListener, ICarouselEnv
             self._carouselDP.updateVehicles()
 
     def _onServerSettingChanged(self, diff, skipVehicles=False):
-        if not skipVehicles and (Configs.CRYSTAL_REWARDS_CONFIG in diff or RENEWABLE_SUBSCRIPTION_CONFIG in diff):
+        if not skipVehicles and Configs.CRYSTAL_REWARDS_CONFIG in diff:
             self.updateVehicles()
-        if RENEWABLE_SUBSCRIPTION_CONFIG in diff:
+
+    def _onConfigModelUpdated(self, gpKey):
+        if renewableSubscriptionsConfigSchema.gpKey == gpKey:
+            self.updateVehicles()
             self.updateAvailability()
 
     def _callPopoverCallback(self):
@@ -253,11 +261,11 @@ class CarouselEnvironment(CarouselEnvironmentMeta, IGlobalListener, ICarouselEnv
     @classmethod
     def _makeFilterVO(cls, filterID, contexts, filters):
         filterCtx = contexts.get(filterID, FilterSetupContext())
-        return {'id': filterID,
-         'value': getButtonsAssetPath(filterCtx.asset or filterID),
-         'selected': filters[filterID],
-         'enabled': True,
-         'tooltip': makeTooltip('#tank_carousel_filter:tooltip/{}/header'.format(filterID), i18n.makeString('#tank_carousel_filter:tooltip/{}/body'.format(filterID), **filterCtx.ctx))}
+        return {'id': filterID, 
+           'value': getButtonsAssetPath(filterCtx.asset or filterID), 
+           'selected': filters[filterID], 
+           'enabled': True, 
+           'tooltip': makeTooltip(('#tank_carousel_filter:tooltip/{}/header').format(filterID), i18n.makeString(('#tank_carousel_filter:tooltip/{}/body').format(filterID), **filterCtx.ctx))}
 
     def __updateRent(self, vehicles):
         self.updateVehicles(vehicles)
@@ -282,7 +290,9 @@ class CarouselEnvironment(CarouselEnvironmentMeta, IGlobalListener, ICarouselEnv
             self.updateVehicles()
             self.updateAvailability()
             return
-        if reason in (CACHE_SYNC_REASON.STATS_RESYNC, CACHE_SYNC_REASON.INVENTORY_RESYNC, CACHE_SYNC_REASON.CLIENT_UPDATE):
+        if reason in (CACHE_SYNC_REASON.STATS_RESYNC,
+         CACHE_SYNC_REASON.INVENTORY_RESYNC,
+         CACHE_SYNC_REASON.CLIENT_UPDATE):
             self.updateAvailability()
         if GUI_ITEM_TYPE.VEHICLE in diff:
             self.updateVehicles(diff.get(GUI_ITEM_TYPE.VEHICLE))

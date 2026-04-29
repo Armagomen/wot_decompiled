@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/trainings/Trainings.py
 from adisp import adisp_process
 from constants import PREBATTLE_TYPE
 from frameworks.wulf import WindowLayer
@@ -42,9 +40,9 @@ class Trainings(TrainingsListBase):
         return
 
     def _getViewData(self):
-        return {'title': backport.text(R.strings.menu.training.title()),
-         'descr': backport.text(R.strings.menu.training.description()),
-         'battleTypeID': BATTLE_TYPES.TRAINING}
+        return {'title': backport.text(R.strings.menu.training.title()), 
+           'descr': backport.text(R.strings.menu.training.description()), 
+           'battleTypeID': BATTLE_TYPES.TRAINING}
 
     @adisp_process
     def joinTrainingRequest(self, prbID):
@@ -52,8 +50,7 @@ class Trainings(TrainingsListBase):
 
     def createTrainingRequest(self):
         settings = TrainingSettingsCtx()
-        self.fireEvent(events.LoadViewEvent(SFViewLoadParams(PREBATTLE_ALIASES.TRAINING_SETTINGS_WINDOW_PY), ctx={'isCreateRequest': True,
-         'settings': settings}), scope=EVENT_BUS_SCOPE.LOBBY)
+        self.fireEvent(events.LoadViewEvent(SFViewLoadParams(PREBATTLE_ALIASES.TRAINING_SETTINGS_WINDOW_PY), ctx={'isCreateRequest': True, 'settings': settings}), scope=EVENT_BUS_SCOPE.LOBBY)
 
     def __updateWindowOpenState(self, flag):
         g_eventBus.handleEvent(ChannelCarouselEvent(self, ChannelCarouselEvent.ON_WINDOW_CHANGE_OPEN_STATE, channel_num_gen.getClientID4SpecialWindow(SPECIAL_CLIENT_WINDOWS.TRAINING_LIST), MESSENGER_CHANNEL_CAROUSEL_ITEM_TYPES.CHANNEL_CAROUSEL_ITEM_TYPE_PREBATTLE, flag), scope=EVENT_BUS_SCOPE.LOBBY)

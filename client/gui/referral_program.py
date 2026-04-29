@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/referral_program.py
+from __future__ import absolute_import
 from adisp import adisp_process
 from gui import SystemMessages
 from gui.Scaleform.daapi.view.lobby.referral_program import referral_program_helpers as helpers

@@ -1,15 +1,14 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/arena_visitor.py
-import functools
-import weakref
-import BigWorld
-import win_points
+import functools, typing, weakref, BigWorld, win_points
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS as _CAPS
 from battle_modifiers_common import BattleParams, BattleModifiers
 from constants import ARENA_GUI_TYPE as _GUI_TYPE, ARENA_GUI_TYPE_LABEL as _GUI_TYPE_LABEL, ARENA_BONUS_TYPE as _BONUS_TYPE, ARENA_PERIOD as _PERIOD, QUEUE_TYPE, TEAMS_IN_ARENA, VISIBILITY
 from gui import GUI_SETTINGS
 from gui.shared.utils.functions import getArenaImage
 from skeletons.gui.battle_session import IClientArenaVisitor
+if typing.TYPE_CHECKING:
+    from typing import Optional
+    from Avatar import PlayerAvatar
+    from ClientArena import ClientArena
 
 def _getClientArena(avatar=None):
     if avatar is None:
@@ -99,6 +98,7 @@ class _ArenaTypeSkeleton(object):
     battleEndWarningAppearTime = 0
     battleEndWarningDuration = 0
     vehicleCamouflageKind = 0
+    wwmusicSetup = {}
 
 
 class IArenaVisitor(object):
@@ -109,7 +109,7 @@ class IArenaVisitor(object):
 
 
 class _ArenaTypeVisitor(IArenaVisitor):
-    __slots__ = ('_arenaType',)
+    __slots__ = ('_arenaType', )
 
     def __init__(self, arenaType=None):
         super(_ArenaTypeVisitor, self).__init__()
@@ -259,9 +259,13 @@ class _ArenaTypeVisitor(IArenaVisitor):
     def getVehicleCamouflageKind(self):
         return self._arenaType.vehicleCamouflageKind
 
+    @catch_attribute_exception(default=_ArenaTypeSkeleton.wwmusicSetup)
+    def getWWmusicSetup(self):
+        return self._arenaType.wwmusicSetup
+
 
 class _ArenaGuiTypeVisitor(IArenaVisitor):
-    __slots__ = ('_guiType',)
+    __slots__ = ('_guiType', )
 
     def __init__(self, guiType=_GUI_TYPE.UNKNOWN):
         super(_ArenaGuiTypeVisitor, self).__init__()
@@ -275,10 +279,13 @@ class _ArenaGuiTypeVisitor(IArenaVisitor):
         self._guiType = _GUI_TYPE.UNKNOWN
 
     def isRandomBattle(self):
-        return self._guiType in (_GUI_TYPE.EPIC_RANDOM, _GUI_TYPE.RANDOM)
+        return self._guiType in _GUI_TYPE.RANDOM_RANGE
 
     def isBattleChatSupported(self):
         return self._guiType in _GUI_TYPE.BATTLE_CHAT_SETTING_SUPPORTED
+
+    def isNonDesertionArena(self):
+        return self._guiType in _GUI_TYPE.NON_DESERTION_ARENAS
 
     def isEventBattle(self):
         return self._guiType == _GUI_TYPE.EVENT_BATTLES
@@ -317,7 +324,9 @@ class _ArenaGuiTypeVisitor(IArenaVisitor):
         return self._guiType != _GUI_TYPE.UNKNOWN and self._guiType in _GUI_TYPE_LABEL.LABELS
 
     def getLabel(self):
-        return _GUI_TYPE_LABEL.LABELS[self._guiType] if self._guiType in _GUI_TYPE_LABEL.LABELS else ''
+        if self._guiType in _GUI_TYPE_LABEL.LABELS:
+            return _GUI_TYPE_LABEL.LABELS[self._guiType]
+        return ''
 
 
 class _ArenaBonusTypeVisitor(IArenaVisitor):
@@ -396,9 +405,12 @@ class _ArenaBonusTypeVisitor(IArenaVisitor):
     def hasLiveTags(self):
         return self.hasAnyBonusCap(_CAPS.COMMENDATIONS_LIVE_TAGS)
 
+    def hasW2gtTag(self):
+        return self.hasAnyBonusCap(_CAPS.W2GT)
+
 
 class _ArenaExtraDataVisitor(IArenaVisitor):
-    __slots__ = ('_extra',)
+    __slots__ = ('_extra', )
 
     def __init__(self, extra=None):
         super(_ArenaExtraDataVisitor, self).__init__()
@@ -427,7 +439,7 @@ class _ArenaExtraDataVisitor(IArenaVisitor):
 
 
 class _ArenaVehiclesVisitor(IArenaVisitor):
-    __slots__ = ('_vehicles',)
+    __slots__ = ('_vehicles', )
 
     def __init__(self, vehicles=None):
         super(_ArenaVehiclesVisitor, self).__init__()
@@ -475,7 +487,8 @@ class _ArenaModifiersVisitor(IArenaVisitor):
 
 
 class _ClientArenaVisitor(IClientArenaVisitor):
-    __slots__ = ('__weakref__', '_arena', '_canSubscribe', '_gui', '_bonus', '_type', '_extra', '_vehicles', '_modifiers')
+    __slots__ = ('__weakref__', '_arena', '_canSubscribe', '_gui', '_bonus', '_type',
+                 '_extra', '_vehicles', '_modifiers')
 
     def __init__(self, arena, canSubscribe):
         super(_ClientArenaVisitor, self).__init__()
@@ -556,7 +569,10 @@ class _ClientArenaVisitor(IClientArenaVisitor):
 
     def isEnableExternalRespawn(self):
         ownVehicle = BigWorld.entities.get(BigWorld.player().playerVehicleID, None)
-        return bool(ownVehicle.enableExternalRespawn) if ownVehicle else False
+        if ownVehicle:
+            return bool(ownVehicle.enableExternalRespawn)
+        else:
+            return False
 
     def isArenaLeaveAllowed(self):
         isLeaveAllowed = None
@@ -605,11 +621,17 @@ class _ClientArenaVisitor(IClientArenaVisitor):
     def hasLiveTags(self):
         return self._bonus.hasLiveTags()
 
+    def hasW2gtTag(self):
+        return self._bonus.hasW2gtTag()
+
     def getArenaIcon(self, subdir=''):
         return getArenaImage(self._type.getGeometryName(), subdir)
 
     def getArenaSubscription(self):
-        return self._arena if self._canSubscribe else None
+        if self._canSubscribe:
+            return self._arena
+        else:
+            return
 
     def getRoundLength(self):
         return self.getArenaModifiers()(BattleParams.BATTLE_LENGTH, self._type.getTypeRoundLength())
@@ -627,7 +649,8 @@ class _ClientArenaVisitor(IClientArenaVisitor):
     def getTeamSpawnPointsIterator(self, team):
         for teamNum, points in enumerate(self.getTeamSpawnPoints(team), 1):
             for number, point in enumerate(points, 1):
-                yield (teamNum, (point[0], 0, point[1]), number)
+                yield (
+                 teamNum, (point[0], 0, point[1]), number)
 
     def getVehicleCircularAoiRadius(self):
         return self.getArenaModifiers().getConstantsModification().VEHICLE_CIRCULAR_AOI_RADIUS

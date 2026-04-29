@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/pve_base/minimap.py
-import typing
-import CommandMapping
-import GUI
+from __future__ import absolute_import
+import typing, CommandMapping, GUI
 from aih_constants import CTRL_MODE_NAME
 from constants import PVE_MINIMAP_DEFAULT_ZOOM, PVE_MINIMAP_DEFAULT_BORDERS
 from gui.Scaleform.daapi.view.battle.classic.minimap import GlobalSettingsPlugin
@@ -35,7 +32,7 @@ class PveMinimapGlobalSettingsPlugin(GlobalSettingsPlugin):
 
 
 class PveScaleCenteredPersonalEntriesPlugin(PersonalEntriesPlugin):
-    __slots__ = ('_isInBordersMode',)
+    __slots__ = ('_isInBordersMode', )
 
     def __init__(self, parentObj):
         super(PveScaleCenteredPersonalEntriesPlugin, self).__init__(parentObj)
@@ -69,7 +66,7 @@ class PveScaleCenteredPersonalEntriesPlugin(PersonalEntriesPlugin):
     def _onZoomLevelUpdated(self, event):
         zoomLevel = event.ctx.get('zoomLevel', 0)
         if zoomLevel < PVE_MINIMAP_DEFAULT_ZOOM:
-            _logger.warn('zoomLevel is out of scope: %f', zoomLevel)
+            _logger.warning('zoomLevel is out of scope: %f', zoomLevel)
         self._centerMapBasedOnMode()
         self._parentObj.setZoom(max(PVE_MINIMAP_DEFAULT_ZOOM, zoomLevel))
         self._isInBordersMode = False

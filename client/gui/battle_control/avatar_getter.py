@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/avatar_getter.py
-import logging
-import BigWorld
-import Math
+import logging, BigWorld, Math
 from gui import GUI_CTRL_MODE_FLAG
 _logger = logging.getLogger(__name__)
 
@@ -236,7 +232,7 @@ def getArenaInfo(avatar=None):
     except AttributeError:
         _logger.exception('Attribute "arenaInfo" not found')
 
-    return None
+    return
 
 
 def getArenaUniqueID(avatar=None):
@@ -245,7 +241,7 @@ def getArenaUniqueID(avatar=None):
     except AttributeError:
         _logger.exception('Attribute "arenaUniqueID" not found')
 
-    return None
+    return
 
 
 def predictVehicleSetting(code, value, avatar=None):
@@ -331,7 +327,10 @@ def getOwnVehiclePosition(avatar=None):
 
 def getDistanceToTarget(target, avatar=None):
     ownPosition = getOwnVehiclePosition(avatar=avatar)
-    return (target.position - ownPosition).length if ownPosition is not None else 0.0
+    if ownPosition is not None:
+        return (target.position - ownPosition).length
+    else:
+        return 0.0
 
 
 def getDistanceToGunMarker(avatar=None):
@@ -352,7 +351,10 @@ def getDistanceToGunMarker(avatar=None):
 
 def isVehicleStunned():
     attachedVehicle = BigWorld.player().getVehicleAttached()
-    return attachedVehicle.stunInfo > 0.0 if attachedVehicle is not None else False
+    if attachedVehicle is not None:
+        return attachedVehicle.stunInfo > 0.0
+    else:
+        return False
 
 
 def getHealthPercentage(avatar=None):
@@ -460,7 +462,7 @@ def isObserverBothTeams(avatar=None):
     if avatar is None:
         avatar = BigWorld.player()
     try:
-        result = avatar.isObserverBothTeams
+        result = bool(avatar.isObserverBothTeams)
     except AttributeError as error:
         _logger.exception('Attribute "isObserverBothTeams" not found, exception %s', error.message)
         result = False
@@ -523,19 +525,22 @@ def isPostmortemFeatureEnabled(ctrlModeName, avatar=None):
 
 def getTargetID(undefinedTargetID=None):
     player = BigWorld.player()
-    return player.target.id if player is not None and player.target is not None else undefinedTargetID
+    if player is not None and player.target is not None:
+        return player.target.id
+    else:
+        return undefinedTargetID
 
 
 def isFPV(vehicleID):
     avatar = BigWorld.player()
     if avatar is None:
         return False
-    vehAttachedID = getVehicleIDAttached(avatar)
-    if vehAttachedID is None:
-        return False
-    elif vehAttachedID == vehicleID:
-        if isObserver(avatar):
-            return getIsObserverFPV()
-        return isVehicleAlive(avatar)
     else:
+        vehAttachedID = getVehicleIDAttached(avatar)
+        if vehAttachedID is None:
+            return False
+        if vehAttachedID == vehicleID:
+            if isObserver(avatar):
+                return getIsObserverFPV()
+            return isVehicleAlive(avatar)
         return False

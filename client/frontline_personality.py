@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline_personality.py
 from account_helpers.AccountSettings import AccountSettings, KEY_SETTINGS
 from constants import ARENA_GUI_TYPE, PREBATTLE_TYPE, QUEUE_TYPE, ARENA_BONUS_TYPE, HAS_DEV_RESOURCES
 from constants_utils import AbstractBattleMode
@@ -18,11 +16,13 @@ from gui.Scaleform.genConsts.EPICBATTLES_ALIASES import EPICBATTLES_ALIASES
 from gui.override_scaleform_views_manager import g_overrideScaleFormViewsConfig
 from gui.prb_control.prb_utils import initHangarGuiConsts
 from gui.prb_control.settings import PREBATTLE_ACTION_NAME
-LOBBY_EXT_PACKAGES = ['frontline.gui.Scaleform.daapi.view.lobby',
+LOBBY_EXT_PACKAGES = [
+ 'frontline.gui.Scaleform.daapi.view.lobby',
  'frontline.gui.Scaleform.daapi.view.lobby.hangar',
  'frontline.gui.Scaleform.daapi.view.lobby.epicBattleTraining',
  'frontline.gui.impl.lobby']
-BATTLE_EXT_PACKAGES = ['frontline.gui.Scaleform.daapi.view.battle']
+BATTLE_EXT_PACKAGES = [
+ 'frontline.gui.Scaleform.daapi.view.battle']
 
 class ClientFrontlineBattleMode(AbstractBattleMode):
     _PREBATTLE_TYPE = PREBATTLE_TYPE.EPIC

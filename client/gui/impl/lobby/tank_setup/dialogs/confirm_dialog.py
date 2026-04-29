@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/dialogs/confirm_dialog.py
 import logging
 from frameworks.wulf import ViewSettings
 from gui.impl.gen import R
@@ -16,13 +14,14 @@ from gui.shared.money import ZERO_MONEY
 from gui.impl.lobby.tank_setup.dialogs.bottom_content.bottom_contents import AmmunitionBuyBottomContent
 from gui.shared.utils.requesters import REQ_CRITERIA
 _logger = logging.getLogger(__name__)
-_SECTION_TO_FITTING_TYPE = {TankSetupConstants.BATTLE_BOOSTERS: FittingTypes.BOOSTER,
- TankSetupConstants.CONSUMABLES: FittingTypes.EQUIPMENT,
- TankSetupConstants.OPT_DEVICES: FittingTypes.OPTIONAL_DEVICE,
- TankSetupConstants.BATTLE_ABILITIES: FittingTypes.BATTLE_ABILITY}
+_SECTION_TO_FITTING_TYPE = {TankSetupConstants.BATTLE_BOOSTERS: FittingTypes.BOOSTER, 
+   TankSetupConstants.CONSUMABLES: FittingTypes.EQUIPMENT, 
+   TankSetupConstants.OPT_DEVICES: FittingTypes.OPTIONAL_DEVICE, 
+   TankSetupConstants.BATTLE_ABILITIES: FittingTypes.BATTLE_ABILITY}
 
 class TankSetupConfirmDialog(BuyAndExchange):
-    __slots__ = ('__items', '__vehicleInvID', '__totalPrice', '_mainContent', '_buyContent', '__startState', '_itemsType')
+    __slots__ = ('__items', '__vehicleInvID', '__totalPrice', '_mainContent', '_buyContent',
+                 '__startState', '_itemsType')
 
     def __init__(self, *args, **kwargs):
         settings = ViewSettings(layoutID=R.views.lobby.tanksetup.dialogs.Confirm(), model=AmmunitionBuyModel())
@@ -103,7 +102,7 @@ class TankSetupConfirmDialog(BuyAndExchange):
 
 
 class TankSetupExitConfirmDialog(TankSetupConfirmDialog):
-    __slots__ = ('__rollBack',)
+    __slots__ = ('__rollBack', )
 
     def __init__(self, *args, **kwargs):
         super(TankSetupExitConfirmDialog, self).__init__(*args, **kwargs)
@@ -132,4 +131,4 @@ class TankSetupExitConfirmDialog(TankSetupConfirmDialog):
         return self._itemsType == _SECTION_TO_FITTING_TYPE[TankSetupConstants.OPT_DEVICES]
 
     def __isChangedInInventory(self):
-        return any((cachedItem.isInInventory != self._itemsCache.items.getItemByCD(cachedItem.intCD).isInInventory for cachedItem in self.items))
+        return any(cachedItem.isInInventory != self._itemsCache.items.getItemByCD(cachedItem.intCD).isInInventory for cachedItem in self.items)

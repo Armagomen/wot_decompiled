@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/maps_training/__init__.py
+from __future__ import absolute_import
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.framework.package_layout import PackageBusinessHandler
 from gui.app_loader import settings as app_settings
@@ -41,7 +40,8 @@ def getViewSettings():
     from gui.Scaleform.daapi.view.battle.maps_training.game_messages_panel import MapsTrainingGameMessagesPanel
     from gui.Scaleform.daapi.view.battle.maps_training.ribbon_panel import MapsTrainingRibbonPanel
     from gui.Scaleform.daapi.view.battle.maps_training.consumables_panel import MapsTrainingConsumablesPanel
-    return (ViewSettings(VIEW_ALIAS.MAPS_TRAINING_PAGE, MapsTrainingPage, 'mapsTrainingBattlePage.swf', WindowLayer.VIEW, None, ScopeTemplates.DEFAULT_SCOPE),
+    return (
+     ViewSettings(VIEW_ALIAS.MAPS_TRAINING_PAGE, MapsTrainingPage, 'mapsTrainingBattlePage.swf', WindowLayer.VIEW, None, ScopeTemplates.DEFAULT_SCOPE),
      ViewSettings(VIEW_ALIAS.INGAME_HELP, MapsTrainingIngameHelpWindow, 'mapsTrainingIngameHelpWindow.swf', WindowLayer.WINDOW, None, ScopeTemplates.DEFAULT_SCOPE, canClose=False, canDrag=False, isModal=True),
      ViewSettings(VIEW_ALIAS.INGAME_MENU, ingame_menu.IngameMenu, 'ingameMenu.swf', WindowLayer.TOP_WINDOW, None, ScopeTemplates.DEFAULT_SCOPE, isModal=True, canClose=False, canDrag=False),
      ComponentSettings(BATTLE_VIEW_ALIASES.BATTLE_DAMAGE_LOG_PANEL, damage_log_panel.DamageLogPanel, ScopeTemplates.DEFAULT_SCOPE),
@@ -75,14 +75,17 @@ def getViewSettings():
 
 
 def getBusinessHandlers():
-    return (_MapsTrainingPackageBusinessHandler(),) + shared.getBusinessHandlers()
+    return (
+     _MapsTrainingPackageBusinessHandler(),) + shared.getBusinessHandlers()
 
 
 class _MapsTrainingPackageBusinessHandler(PackageBusinessHandler):
     __slots__ = ()
 
     def __init__(self):
-        listeners = ((VIEW_ALIAS.MAPS_TRAINING_PAGE, self._loadPage),)
+        listeners = (
+         (
+          VIEW_ALIAS.MAPS_TRAINING_PAGE, self._loadPage),)
         super(_MapsTrainingPackageBusinessHandler, self).__init__(listeners, app_settings.APP_NAME_SPACE.SF_BATTLE, EVENT_BUS_SCOPE.BATTLE)
 
     def _loadPage(self, event):

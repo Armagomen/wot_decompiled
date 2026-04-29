@@ -1,12 +1,10 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/achievements20/Achievements20GeneralConfig.py
 from typing import TYPE_CHECKING
 from achievements20.settings import Achievements20GeneralConst
 if TYPE_CHECKING:
     from typing import Optional
 
 class Achievements20GeneralConfig(object):
-    __slots__ = ('_config',)
+    __slots__ = ('_config', )
 
     def __init__(self, config):
         self._config = config

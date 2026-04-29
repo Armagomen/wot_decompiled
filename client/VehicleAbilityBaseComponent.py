@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/VehicleAbilityBaseComponent.py
 import BigWorld
 from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID
 from Event import EventsSubscriber
@@ -79,7 +77,9 @@ class VehicleAbilityBaseComponent(BigWorld.DynamicScriptComponent):
 
     def _canUpdateTimer(self):
         modeName = self._avatar.inputHandler.ctrlModeName
-        return True if self.__entityIDMatches() and modeName != 'video' else False
+        if self.__entityIDMatches() and modeName != 'video':
+            return True
+        return False
 
     def _updateMarker(self, data, isHide=False):
         if self._markerID is None:
@@ -94,20 +94,22 @@ class VehicleAbilityBaseComponent(BigWorld.DynamicScriptComponent):
             return
 
     def _getTimerData(self, isShow=True):
-        data = {'duration': self._getDuration() if isShow else 0.0,
-         'endTime': self._finishTime}
+        data = {'duration': self._getDuration() if isShow else 0.0, 
+           'endTime': self._finishTime}
         return data
 
     def _getMarkerData(self, isShow=True):
-        data = {'isShown': isShow,
-         'isSourceVehicle': True,
-         'duration': self._getDuration() if isShow else 0.0,
-         'animated': True,
-         'markerID': self._markerID}
+        data = {'isShown': isShow, 
+           'isSourceVehicle': True, 
+           'duration': self._getDuration() if isShow else 0.0, 
+           'animated': True, 
+           'markerID': self._markerID}
         return data
 
     def _getDuration(self):
-        return self._finishTime - BigWorld.serverTime() if self._finishTime else 0.0
+        if self._finishTime:
+            return self._finishTime - BigWorld.serverTime()
+        return 0.0
 
     def _onUpdateObservedVehicleData(self, vehicleID, *args):
         if self.__isSwitching:
@@ -120,7 +122,7 @@ class VehicleAbilityBaseComponent(BigWorld.DynamicScriptComponent):
         appearance = vehicle.appearance
         if appearance is None or not appearance.isConstructed:
             return
-        elif vehicle.health <= 0:
+        if vehicle.health <= 0:
             return
         else:
             self._updateVisuals()

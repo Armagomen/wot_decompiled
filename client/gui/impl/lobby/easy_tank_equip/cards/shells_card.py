@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/easy_tank_equip/cards/shells_card.py
 import typing
 from gui.impl.gen.view_models.views.lobby.easy_tank_equip.shells_preset_slot_model import ShellsPresetSlotModel
 from gui.impl.gen.view_models.views.lobby.easy_tank_equip.shells_preset_model import ShellsPresetModel

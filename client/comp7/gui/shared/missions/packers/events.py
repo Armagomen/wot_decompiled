@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/shared/missions/packers/events.py
 import typing
 from comp7.gui.impl.gen.view_models.views.lobby.meta_view.pages.quest_card_model import QuestCardModel, CardState
 from comp7.gui.impl.gen.view_models.views.lobby.weekly_quest_model import WeeklyQuestModel
@@ -20,14 +18,9 @@ class Comp7WeeklyQuestPacker(object):
     __slots__ = ('__isUnavailablePeriod', '__isComp7Available', '__hasSuitableVehicles')
 
     def __init__(self):
-        self.__isUnavailablePeriod = self.__comp7Controller.getPeriodInfo().periodType in (PT.BEFORE_SEASON,
-         PT.BEFORE_CYCLE,
-         PT.BETWEEN_SEASONS,
-         PT.AFTER_SEASON,
-         PT.AFTER_CYCLE,
-         PT.ALL_NOT_AVAILABLE_END,
-         PT.NOT_AVAILABLE_END,
-         PT.STANDALONE_NOT_AVAILABLE_END)
+        self.__isUnavailablePeriod = self.__comp7Controller.getPeriodInfo().periodType in (
+         PT.BEFORE_SEASON, PT.BEFORE_CYCLE, PT.BETWEEN_SEASONS, PT.AFTER_SEASON, PT.AFTER_CYCLE,
+         PT.ALL_NOT_AVAILABLE_END, PT.NOT_AVAILABLE_END, PT.STANDALONE_NOT_AVAILABLE_END)
         self.__isComp7Available = self.__comp7Controller.isAvailable()
         self.__hasSuitableVehicles = self.__comp7Controller.hasSuitableVehicles()
 
@@ -46,7 +39,7 @@ class Comp7WeeklyQuestPacker(object):
 
     @staticmethod
     def getData(quest):
-        result = (u'', 0, 1, u'')
+        result = ('', 0, 1, '')
         if not quest:
             return result
         rootPostBattle = ConditionGroupModel()
@@ -58,12 +51,11 @@ class Comp7WeeklyQuestPacker(object):
         bonusCondPriority = bonusCond or postBattle
         if bonusCondPriority:
             postBattlePriority = postBattle or bonusCond
-            result = (postBattlePriority.getIconKey(),
+            result = (
+             postBattlePriority.getIconKey() or bonusCondPriority.getIconKey(),
              bonusCondPriority.getCurrent(),
              bonusCondPriority.getTotal() or 1,
              quest.getDescription() or bonusCondPriority.getDescrData())
-        rootBonusCond.unbind()
-        rootPostBattle.unbind()
         return result
 
     def __getQuestState(self, quest):
@@ -96,3 +88,18 @@ class Comp7WeeklyQuestWidgetPacker(Comp7WeeklyQuestPacker):
         if not isQuestAnimationSeen:
             model.setEarned(currentProgress - lastSeenProgress)
         return model
+
+
+class Comp7TokenQuestPacker(object):
+
+    @staticmethod
+    def getData(quest):
+        if quest:
+            tokenConditions = quest.accountReqs.getConditions().find('token')
+            if tokenConditions:
+                return (
+                 'folder',
+                 tokenConditions.getReceivedCount(),
+                 tokenConditions.getNeededCount(),
+                 quest.getDescription())
+        return ('', 0, 1, '')

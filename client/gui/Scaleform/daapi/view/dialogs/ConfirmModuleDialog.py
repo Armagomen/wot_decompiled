@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/dialogs/ConfirmModuleDialog.py
+from __future__ import absolute_import
 from PlayerEvents import g_playerEvents
 from debug_utils import LOG_ERROR
 from gui.Scaleform.daapi.view.meta.ConfirmItemWindowMeta import ConfirmItemWindowMeta
@@ -23,9 +22,9 @@ class ConfirmModuleDialog(ConfirmItemWindowMeta):
         super(ConfirmModuleDialog, self)._populate()
         g_playerEvents.onShopResync += self._onShopResync
         self._prepareAndSendData()
-        self.as_setSettingsS({'title': self.meta.getTitle(),
-         'submitBtnLabel': self.meta.getSubmitButtonLabel(),
-         'cancelBtnLabel': self.meta.getCancelButtonLabel()})
+        self.as_setSettingsS({'title': self.meta.getTitle(), 
+           'submitBtnLabel': self.meta.getSubmitButtonLabel(), 
+           'cancelBtnLabel': self.meta.getCancelButtonLabel()})
         self.meta.onInvalidate += self._prepareAndSendData
 
     def _dispose(self):
@@ -66,22 +65,22 @@ class ConfirmModuleDialog(ConfirmItemWindowMeta):
             action = None
             if actualPrices != defaultPrices:
                 action = self.meta.getActionVO(item)
-            resultData = {'id': self.meta.getTypeCompDescr(),
-             'price': getMoneyVO(actualPrices),
-             'actionPriceData': action,
-             'icon': icon,
-             'name': item.userName,
-             'description': item.getShortInfo(),
-             'currency': currency,
-             'defaultValue': self.meta.getDefaultValue(item),
-             'maxAvailableCount': self.meta.getMaxAvailableItemsCount(item),
-             'hasSeveralPrices': hasSeveralPrices,
-             'moduleLabel': item.getGUIEmblemID(),
-             'level': item.level,
-             'linkage': CONFIRM_DIALOG_ALIASES.MODULE_ICON,
-             EXTRA_MODULE_INFO: extraData,
-             FIELD_HIGHLIGHT_TYPE: item.getHighlightType(),
-             'overlayType': item.getOverlayType()}
+            resultData = {'id': self.meta.getTypeCompDescr(), 
+               'price': getMoneyVO(actualPrices), 
+               'actionPriceData': action, 
+               'icon': icon, 
+               'name': item.userName, 
+               'description': item.getShortInfo(), 
+               'currency': currency, 
+               'defaultValue': self.meta.getDefaultValue(item), 
+               'maxAvailableCount': self.meta.getMaxAvailableItemsCount(item), 
+               'hasSeveralPrices': hasSeveralPrices, 
+               'moduleLabel': item.getGUIEmblemID(), 
+               'level': item.level, 
+               'linkage': CONFIRM_DIALOG_ALIASES.MODULE_ICON, 
+               EXTRA_MODULE_INFO: extraData, 
+               FIELD_HIGHLIGHT_TYPE: item.getHighlightType(), 
+               'overlayType': item.getOverlayType()}
             self.as_setDataS(resultData)
         else:
             LOG_ERROR("Couldn't find module with given compact:", self.meta.getTypeCompDescr())
@@ -90,10 +89,10 @@ class ConfirmModuleDialog(ConfirmItemWindowMeta):
 
     @staticmethod
     def __getIcon(item):
-        return str(item.level) if item.itemTypeID not in (GUI_ITEM_TYPE.OPTIONALDEVICE,
-         GUI_ITEM_TYPE.SHELL,
-         GUI_ITEM_TYPE.EQUIPMENT,
-         GUI_ITEM_TYPE.CREW_BOOKS) else item.icon
+        if item.itemTypeID not in (GUI_ITEM_TYPE.OPTIONALDEVICE, GUI_ITEM_TYPE.SHELL, GUI_ITEM_TYPE.EQUIPMENT,
+         GUI_ITEM_TYPE.CREW_BOOKS):
+            return str(item.level)
+        return item.icon
 
     def onWindowClose(self):
         self._callHandler(False)

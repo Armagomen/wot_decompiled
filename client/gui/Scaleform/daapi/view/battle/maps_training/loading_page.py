@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/maps_training/loading_page.py
+from __future__ import absolute_import
 from gui.Scaleform.daapi.view.meta.MapsTrainingBattleLoadingMeta import MapsTrainingBattleLoadingMeta
 from gui.Scaleform.genConsts.BATTLE_VIEW_ALIASES import BATTLE_VIEW_ALIASES
 from gui.battle_control.arena_info.interfaces import IArenaLoadController
@@ -18,18 +17,18 @@ class MapsTrainingLoadingPage(MapsTrainingBattleLoadingMeta, IArenaLoadControlle
         self.sessionProvider.addArenaCtrl(self)
         self.app.enterGuiControlMode(BATTLE_VIEW_ALIASES.BATTLE_LOADING, cursorVisible=True, enableAiming=False)
         g_eventBus.addListener(events.GameEvent.BATTLE_LOADING, self.__handleBattleLoading, EVENT_BUS_SCOPE.BATTLE)
-        backgrounds = [ backport.image(R.images.gui.maps.icons.mapsTraining.dyn('tip_bg_0{}'.format(i))()) for i in range(1, 5) ]
+        backgrounds = [ backport.image(R.images.gui.maps.icons.mapsTraining.dyn(('tip_bg_0{}').format(i))()) for i in range(1, 5) ]
         self.as_setDataS({'backgrounds': backgrounds})
         pageData = [ self.__getPageConfig(pageNum) for pageNum in range(1, 5) ]
         self.as_setDataPageS(pageData)
 
     @staticmethod
     def __getPageConfig(pageNum):
-        pageData = {'rendererLinkage': 'MapsTrainingLoading{}PageBigUI'.format(pageNum),
-         'header1Text': backport.text(R.strings.maps_training.loadingScreen.num(pageNum).title()),
-         'header1AutoSize': 'center',
-         'description1Text': backport.text(R.strings.maps_training.loadingScreen.num(pageNum).description()),
-         'description1AutoSize': 'center'}
+        pageData = {'rendererLinkage': ('MapsTrainingLoading{}PageBigUI').format(pageNum), 
+           'header1Text': backport.text(R.strings.maps_training.loadingScreen.num(pageNum).title()), 
+           'header1AutoSize': 'center', 
+           'description1Text': backport.text(R.strings.maps_training.loadingScreen.num(pageNum).description()), 
+           'description1AutoSize': 'center'}
         return pageData
 
     def _dispose(self):

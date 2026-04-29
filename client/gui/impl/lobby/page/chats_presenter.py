@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/page/chats_presenter.py
 from __future__ import absolute_import
 import logging
 from constants import Configs
@@ -61,14 +59,24 @@ class ChatsPresenter(ViewComponent[ChatModel]):
         self.__updateModel()
 
     def _getEvents(self):
-        return ((self.viewModel.onViewMessageAction, self.__onViewMessageAction),
-         (self.viewModel.onDeleteMessageAction, self.__onDeleteMessageAction),
-         (self.viewModel.onWindowAnchorPositionUpdated, self.__onWindowAnchorPositionUpdated),
-         (self.viewModel.onChatsAction, self.__onChatsAction),
-         (self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingChanged))
+        return (
+         (
+          self.viewModel.onViewMessageAction, self.__onViewMessageAction),
+         (
+          self.viewModel.onDeleteMessageAction, self.__onDeleteMessageAction),
+         (
+          self.viewModel.onWindowAnchorPositionUpdated, self.__onWindowAnchorPositionUpdated),
+         (
+          self.viewModel.onChatsAction, self.__onChatsAction),
+         (
+          self.__lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingChanged))
 
     def _getListeners(self):
-        return ((events.ChannelWindowEvent.ON_WINDOW_POPULATE, self.__onWindowPopulate, EVENT_BUS_SCOPE.LOBBY), (events.ChannelWindowEvent.ON_WINDOW_MINIMIZE, self.__onWindowMinimize, EVENT_BUS_SCOPE.LOBBY))
+        return (
+         (
+          events.ChannelWindowEvent.ON_WINDOW_POPULATE, self.__onWindowPopulate, EVENT_BUS_SCOPE.LOBBY),
+         (
+          events.ChannelWindowEvent.ON_WINDOW_MINIMIZE, self.__onWindowMinimize, EVENT_BUS_SCOPE.LOBBY))
 
     @serverSettingsChangeListener(Configs.SYSTEM_CHANNELS.value)
     def __onServerSettingChanged(self, diff):
@@ -76,10 +84,7 @@ class ChatsPresenter(ViewComponent[ChatModel]):
 
     @args2params(int, int, int, int)
     def __onWindowAnchorPositionUpdated(self, x, y, width, height):
-        self.__carouselHandler.setNextWindowGeometry((x,
-         y,
-         width,
-         height))
+        self.__carouselHandler.setNextWindowGeometry((x, y, width, height))
 
     def __onWindowPopulate(self, event):
         self.__requestChange(event.ctx['clientID'], 'isWindowOpened', True)
@@ -88,15 +93,12 @@ class ChatsPresenter(ViewComponent[ChatModel]):
         self.__requestChange(event.ctx['clientID'], 'isWindowOpened', False)
 
     def __requestChange(self, clientID, key, value):
-        g_eventBus.handleEvent(ChannelManagementEvent(clientID, events.ChannelManagementEvent.REQUEST_TO_CHANGE, {'key': key,
-         'value': value}), scope=EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.handleEvent(ChannelManagementEvent(clientID, events.ChannelManagementEvent.REQUEST_TO_CHANGE, {'key': key, 
+           'value': value}), scope=EVENT_BUS_SCOPE.LOBBY)
 
     @args2params(int, int, int, int, int)
     def __onViewMessageAction(self, sessionID, x, y, width, height):
-        self.__carouselHandler.setWindowGeometry(sessionID, (x,
-         y,
-         width,
-         height))
+        self.__carouselHandler.setWindowGeometry(sessionID, (x, y, width, height))
         g_eventBus.handleEvent(ChannelCarouselEvent(self, ChannelCarouselEvent.OPEN_BUTTON_CLICK, sessionID), scope=EVENT_BUS_SCOPE.LOBBY)
 
     @args2params(int)
@@ -108,10 +110,7 @@ class ChatsPresenter(ViewComponent[ChatModel]):
         manager = self.__appLoader.getApp().containerManager
         window = manager.getView(WindowLayer.WINDOW, {POP_UP_CRITERIA.VIEW_ALIAS: g_entitiesFactories.getAliasByEvent(MESSENGER_VIEW_ALIAS.CHANNEL_MANAGEMENT_WINDOW)})
         if not window:
-            self.__carouselHandler.setManagerWindowGeometry((x,
-             y,
-             width,
-             height))
+            self.__carouselHandler.setManagerWindowGeometry((x, y, width, height))
             g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(MESSENGER_VIEW_ALIAS.CHANNEL_MANAGEMENT_WINDOW)), scope=EVENT_BUS_SCOPE.LOBBY)
         else:
             name = window.uniqueName

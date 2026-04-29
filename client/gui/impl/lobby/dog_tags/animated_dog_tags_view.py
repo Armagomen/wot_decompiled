@@ -1,10 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/dog_tags/animated_dog_tags_view.py
-import logging
-import typing
+import logging, typing
 from functools import partial
-import BigWorld
-import WWISE
+import BigWorld, WWISE
 from constants import DOG_TAGS_CONFIG
 from dog_tags_common.dog_tags_storage import UnlockedComponentsStorage, PlayerDogTagStorage
 from frameworks.wulf import ViewFlags, ViewSettings
@@ -35,7 +31,8 @@ if typing.TYPE_CHECKING:
 _logger = logging.getLogger(__name__)
 
 class AnimatedDogTagsView(ViewImpl):
-    __slots__ = ('_dogTagsHelper', '_composer', '__initBackgroundId', '__initEngravingId', '__uiLogger')
+    __slots__ = ('_dogTagsHelper', '_composer', '__initBackgroundId', '__initEngravingId',
+                 '__uiLogger')
     _webCtrl = dependency.descriptor(IWebController)
     lobbyContext = dependency.descriptor(ILobbyContext)
     _COMMON_SOUND_SPACE = ACC_DASHBOARD_SOUND_SPACE
@@ -58,15 +55,25 @@ class AnimatedDogTagsView(ViewImpl):
         return super(AnimatedDogTagsView, self).getViewModel()
 
     def _getEvents(self):
-        return ((self.viewModel.onEquip, self.__onEquip),
-         (self.viewModel.onGoToAchievement, self.__onGoToAchievement),
-         (self.viewModel.onInfoButtonClick, self.__onInfoButtonClicked),
-         (self.viewModel.onPlayVideo, self.__onPlayVideo),
-         (self.viewModel.onOnboardingCloseClick, self.__onOnboardingCloseClick),
-         (self.viewModel.onHideNewBubble, self.__onHideNewBubble),
-         (self.viewModel.onClose, self.__onClose),
-         (self.lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChange),
-         (self._dogTagsHelper.onDogTagDataChanged, self.__onDogTagDataChanged))
+        return (
+         (
+          self.viewModel.onEquip, self.__onEquip),
+         (
+          self.viewModel.onGoToAchievement, self.__onGoToAchievement),
+         (
+          self.viewModel.onInfoButtonClick, self.__onInfoButtonClicked),
+         (
+          self.viewModel.onPlayVideo, self.__onPlayVideo),
+         (
+          self.viewModel.onOnboardingCloseClick, self.__onOnboardingCloseClick),
+         (
+          self.viewModel.onHideNewBubble, self.__onHideNewBubble),
+         (
+          self.viewModel.onClose, self.__onClose),
+         (
+          self.lobbyContext.getServerSettings().onServerSettingsChange, self.__onServerSettingsChange),
+         (
+          self._dogTagsHelper.onDogTagDataChanged, self.__onDogTagDataChanged))
 
     def _onLoading(self):
         super(AnimatedDogTagsView, self)._onLoading()
@@ -75,7 +82,7 @@ class AnimatedDogTagsView(ViewImpl):
     def _onLoaded(self, *args, **kwargs):
         self.__uiLogger.onViewOpen(DogTagsViewKeys.ANIMATED_DOG_TAG, DogTagsViewKeys.ACCOUNT_DASHBOARD)
         if not userSettings.getDogTagsSettings().animatedDogTagsVisited:
-            with userSettings.dogTagsSettings() as dt:
+            with userSettings.dogTagsSettings() as (dt):
                 dt.setAnimatedDogTagsVisited(True)
         super(AnimatedDogTagsView, self)._onLoaded(*args, **kwargs)
 
@@ -85,17 +92,16 @@ class AnimatedDogTagsView(ViewImpl):
 
     def createToolTipContent(self, event, contentID):
         if contentID == R.views.lobby.dog_tags.CatalogAnimatedDogTagTooltip():
-            params = {'engravingId': event.getArgument('engravingId'),
-             'backgroundId': event.getArgument('backgroundId')}
+            params = {'engravingId': event.getArgument('engravingId'), 'backgroundId': event.getArgument('backgroundId')}
             return CatalogAnimatedDogTagTooltip(params=params, uiParent=DogTagsViewKeys.ANIMATED_DOG_TAG)
         else:
-            return None
+            return
 
     def __onClose(self):
         self.destroyWindow()
 
     def __update(self):
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             self._composer.fillAnimatedDogTags(tx, self.__initBackgroundId, self.__initEngravingId)
             tx.setOnboardingEnabled(userSettings.getDogTagsSettings().onboardingEnabled)
 
@@ -109,7 +115,7 @@ class AnimatedDogTagsView(ViewImpl):
     def __onEquip(self, background, engraving):
         _logger.debug('DogTags::onEquip(%s, %s)', background, engraving)
         self._dogTagsHelper.updatePlayerDT(background, engraving)
-        with userSettings.dogTagsSettings() as dt:
+        with userSettings.dogTagsSettings() as (dt):
             dt.setSelectedAnimated([background, engraving])
 
     @args2params(int, str, int, int)
@@ -131,14 +137,14 @@ class AnimatedDogTagsView(ViewImpl):
         showBrowserOverlayView(url, VIEW_ALIAS.WEB_VIEW_TRANSPARENT)
 
     def __onOnboardingCloseClick(self):
-        with userSettings.dogTagsSettings() as dt:
+        with userSettings.dogTagsSettings() as (dt):
             dt.setOnboardingEnabled(False)
-            with self.viewModel.transaction() as tx:
+            with self.viewModel.transaction() as (tx):
                 tx.setOnboardingEnabled(dt.onboardingEnabled)
 
     @args2params(int, int)
     def __onHideNewBubble(self, background, engraving):
-        with userSettings.dogTagsSettings() as dt:
+        with userSettings.dogTagsSettings() as (dt):
             dt.markComponentAsSeen(background)
             dt.markComponentAsSeen(engraving)
         g_eventBus.handleEvent(events.DogTagsEvent(events.DogTagsEvent.COUNTERS_UPDATED), EVENT_BUS_SCOPE.LOBBY)

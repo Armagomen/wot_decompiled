@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/frameworks/state_machine/transitions.py
-import weakref
-import typing
+import weakref, typing
 from enum import IntEnum
 from .events import StringEvent
 from .node import Node
@@ -23,7 +20,7 @@ class BaseTransition(Node):
         self.__type = transitionType
 
     def __repr__(self):
-        return '{}({}->{}, priority={})'.format(self.__class__.__name__, self.getSource(), self.getTargets(), self.getPriority())
+        return ('{}({}->{}, priority={})').format(self.__class__.__name__, self.getSource(), self.getTargets(), self.getPriority())
 
     def clear(self):
         del self.__targets[:]
@@ -69,11 +66,13 @@ class ConditionTransition(BaseTransition):
 
 
 class StringEventTransition(BaseTransition):
-    __slots__ = ('__token',)
+    __slots__ = ('__token', )
 
     def __init__(self, token='', priority=0):
         super(StringEventTransition, self).__init__(priority=priority)
         self.__token = token
 
     def execute(self, event):
-        return not self.__token or event.token == self.__token if isinstance(event, StringEvent) else False
+        if isinstance(event, StringEvent):
+            return not self.__token or event.token == self.__token
+        return False

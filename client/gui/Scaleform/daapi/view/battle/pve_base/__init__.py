@@ -1,6 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/pve_base/__init__.py
+from __future__ import absolute_import
 import typing
+from future.utils import listitems, listvalues
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.daapi.view.battle.shared.page import BattlePageBusinessHandler
 from gui.Scaleform.framework import GroupedViewSettings, ViewSettings, ScopeTemplates, ComponentSettings
@@ -11,14 +11,14 @@ if typing.TYPE_CHECKING:
     from gui.Scaleform.framework.package_layout import PackageBusinessHandler
 
 class OverridableViewSettingsMapping(object):
-    __slots__ = ('_settingsMap',)
+    __slots__ = ('_settingsMap', )
 
     def __init__(self, settings):
         super(OverridableViewSettingsMapping, self).__init__()
         self._settingsMap = {s.alias:s for s in settings}
 
     def getSettings(self):
-        return self._settingsMap.values()
+        return listvalues(self._settingsMap)
 
     def extend(self, settings=None):
         if not settings:
@@ -28,10 +28,10 @@ class OverridableViewSettingsMapping(object):
 
 
 class OverridableContextMenuHandlers(object):
-    __slots__ = ('_handlers',)
+    __slots__ = ('_handlers', )
 
     def __init__(self, handlers=None):
-        self._handlers = {key:handler for key, handler in handlers} if handlers else {}
+        self._handlers = dict(handlers) if handlers else {}
 
     def extend(self, handlers=None):
         if not handlers:
@@ -40,7 +40,7 @@ class OverridableContextMenuHandlers(object):
             self._handlers[key] = handler
 
     def getHandlers(self):
-        return self._handlers.items()
+        return listitems(self._handlers)
 
 
 def getDefaultViewSettings(battlePageAlias, battlePageClass, swfUrl='pveBaseBattlePage.swf'):
@@ -59,7 +59,8 @@ def getDefaultViewSettings(battlePageAlias, battlePageClass, swfUrl='pveBaseBatt
     from gui.Scaleform.daapi.view.battle.pve_base.status_notifications import panel as sn_panel
     from gui.Scaleform.daapi.view.battle.pve_base.damage_log_panel import PveDamageLogPanel
     from gui.Scaleform.daapi.view.battle.pve_base.ribbons_panel import PveRibbonsPanel
-    return OverridableViewSettingsMapping((ViewSettings(battlePageAlias, battlePageClass, swfUrl, WindowLayer.VIEW, None, ScopeTemplates.DEFAULT_SCOPE),
+    return OverridableViewSettingsMapping((
+     ViewSettings(battlePageAlias, battlePageClass, swfUrl, WindowLayer.VIEW, None, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(BATTLE_VIEW_ALIASES.PVE_PROGRESS_COUNTER, PveProgressCounter, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(BATTLE_VIEW_ALIASES.BATTLE_STATISTIC_DATA_CONTROLLER, PveStatisticsDataController, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(BATTLE_VIEW_ALIASES.PVE_PRIMARY_OBJECTIVE, PvePrimaryObjective, ScopeTemplates.DEFAULT_SCOPE),
@@ -83,4 +84,5 @@ def getDefaultContextMenuHandler():
 
 def getDefaultBusinessHandlers(battlePageAlias):
     from gui.Scaleform.daapi.view.battle import shared
-    return (BattlePageBusinessHandler(battlePageAlias),) + shared.getBusinessHandlers()
+    return (
+     BattlePageBusinessHandler(battlePageAlias),) + shared.getBusinessHandlers()

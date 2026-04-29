@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/training_room_external_handlers.py
 from account_helpers import isDemonstrator, isDemonstratorExpert
 from comp7.gui.prb_control.entities.limits import Comp7TrainingLimits
 from comp7.gui.prb_control.entities.pre_queue.vehicles_watcher import Comp7VehiclesWatcher
@@ -21,9 +19,9 @@ class Comp7TrainingRoomHandler(TrainingRoomBaseHandler):
         return _isComp7ArenaFilter
 
     def getArenaData(self):
-        return {'size': self.getMaxPlayersInTeam(),
-         'canChangeArenaTime': False,
-         'additionalInfo': self.getAdditionalInfo()}
+        return {'size': self.getMaxPlayersInTeam(), 
+           'canChangeArenaTime': False, 
+           'additionalInfo': self.getAdditionalInfo()}
 
     def getAdditionalInfo(self):
         return PREBATTLE_ALIASES.TRAINING_ADDITIONAL_INFO_COMP7
@@ -37,8 +35,8 @@ class Comp7TrainingRoomHandler(TrainingRoomBaseHandler):
     def getObserverValidator(self):
         return _canBeComp7Observer
 
-    def getPlayerReadyHandler(self):
-        return _handleComp7PlayerReady
+    def playerReadyHandler(self, result):
+        g_eventDispatcher.loadTrainingRoom(silently=True)
 
     def getPrebattleLimits(self):
         return Comp7TrainingLimits
@@ -50,7 +48,11 @@ class Comp7TrainingRoomHandler(TrainingRoomBaseHandler):
         return Comp7VehiclesWatcher
 
     def getClientMessageData(self, errorType=None):
-        return (SYSTEM_MESSAGES.TRAINING_ERROR_ONSLAUGHTROSTERLIMIT, {'numPlayers': self.getMaxPlayersInTeam()}) if errorType == PREBATTLE_ERRORS.ONSLAUGHT_ROSTER_LIMIT else None
+        if errorType == PREBATTLE_ERRORS.ONSLAUGHT_ROSTER_LIMIT:
+            return (
+             SYSTEM_MESSAGES.TRAINING_ERROR_ONSLAUGHTROSTERLIMIT, {'numPlayers': self.getMaxPlayersInTeam()})
+        else:
+            return
 
     def isEnabledForGuiTypeName(self, guiTypeName=None):
         return guiTypeName == self._GUI_TYPE_NAME
@@ -73,10 +75,6 @@ def _isComp7ArenaFilter(arena, settings, comp7Controller=None):
         return False
     comp7Config = comp7Controller.getModeSettings()
     return arena.geometryID in comp7Config.maps
-
-
-def _handleComp7PlayerReady():
-    g_eventDispatcher.loadTrainingRoom()
 
 
 def _shouldComp7PlayerStateBeValidated(propertyName):

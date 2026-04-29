@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/AvatarInputHandler/player_notifications/siege_mode/camera_shaker.py
-import BigWorld
-import Math
+import BigWorld, Math
 from constants import VEHICLE_SIEGE_STATE
 from vehicle_systems.tankStructure import TankNodeNames
 

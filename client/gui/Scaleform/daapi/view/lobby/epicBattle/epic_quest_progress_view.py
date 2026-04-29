@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/epicBattle/epic_quest_progress_view.py
 from gui.Scaleform.daapi.view.battle_results_window import IBattleResultsComponent
 from gui.Scaleform.daapi.view.meta.EpicQuestProgressInfoMeta import EpicQuestProgressInfoMeta
 from gui.shared import g_eventBus, events
@@ -11,8 +9,8 @@ class EpicQuestProgressView(EpicQuestProgressInfoMeta, IBattleResultsComponent):
     __battleResults = dependency.descriptor(IBattleResultsService)
 
     def showQuestById(self, questId, eventType):
-        g_eventBus.handleEvent(events.LobbySimpleEvent(events.LobbySimpleEvent.BATTLE_RESULTS_SHOW_QUEST, ctx={'questId': questId,
-         'eventType': eventType}))
+        g_eventBus.handleEvent(events.LobbySimpleEvent(events.LobbySimpleEvent.BATTLE_RESULTS_SHOW_QUEST, ctx={'questId': questId, 
+           'eventType': eventType}))
 
     def setArenaUniqueID(self, arenaUniqueID):
         self.updateQuestsInfo(arenaUniqueID)
@@ -27,16 +25,18 @@ class EpicQuestProgressView(EpicQuestProgressInfoMeta, IBattleResultsComponent):
         questsArray = []
         for quest in quests:
             questInfo = quest['questInfo']
-            questModel = {'id': questInfo['questID'],
-             'eventType': questInfo['eventType'],
-             'name': quest.get('title', '') or questInfo.get('description', ''),
-             'progressList': quest['progressList'],
-             'status': questInfo['status'],
-             'statusTooltip': questInfo.get('statusTooltip', '')}
+            questModel = {'id': questInfo['questID'], 
+               'eventType': questInfo['eventType'], 
+               'name': quest.get('title', '') or questInfo.get('description', ''), 
+               'progressList': quest['progressList'], 
+               'status': questInfo['status'], 
+               'statusTooltip': questInfo.get('statusTooltip', '')}
             rewards = self.__getRewards(quest)
             if rewards:
-                questModel['rewards'] = [{'linkage': 'EpicQuestTextAwardBlockUI',
-                  'items': [', '.join(rewards)]}]
+                questModel['rewards'] = [
+                 {'linkage': 'EpicQuestTextAwardBlockUI', 
+                    'items': [
+                            (', ').join(rewards)]}]
             questsArray.append(questModel)
 
         self.as_updateDataS(questsArray)
@@ -51,6 +51,6 @@ class EpicQuestProgressView(EpicQuestProgressInfoMeta, IBattleResultsComponent):
             if 'items' in award:
                 rewards.extend(award['items'])
             if 'list' in award:
-                rewards.extend((item.get('description', '') for item in award['list']))
+                rewards.extend(item.get('description', '') for item in award['list'])
 
         return rewards

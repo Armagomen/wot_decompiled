@@ -1,7 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/tabbed_full_stats.py
-import logging
-import BigWorld
+from __future__ import absolute_import
+import logging, BigWorld
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from gui.Scaleform.daapi.view.meta.TabbedFullStatsMeta import TabbedFullStatsMeta
 from gui.impl import backport
@@ -63,18 +61,18 @@ class _TabsBuilder(object):
         self.__tabs = []
 
     def addStatisticsTab(self):
-        self.__tabs.append({'label': backport.text(R.strings.ingame_gui.statistics.tab.line_up.header()),
-         'alias': TabsAliases.STATS})
+        self.__tabs.append({'label': backport.text(R.strings.ingame_gui.statistics.tab.line_up.header()), 
+           'alias': TabsAliases.STATS})
 
     def addPersonalQuestsTab(self):
         if self.__lobbyContext.getServerSettings().isPersonalMissionsEnabled():
-            self.__tabs.append({'label': backport.text(R.strings.ingame_gui.statistics.tab.quests.header()),
-             'alias': TabsAliases.QUESTS_PROGRESS})
+            self.__tabs.append({'label': backport.text(R.strings.ingame_gui.statistics.tab.quests.header()), 
+               'alias': TabsAliases.QUESTS_PROGRESS})
 
     def addBoostersTab(self):
         if self.__isBoosterProcessingAvailable():
-            self.__tabs.append({'label': backport.text(R.strings.ingame_gui.statistics.tab.personalReserves.header()),
-             'alias': TabsAliases.BOOSTERS})
+            self.__tabs.append({'label': backport.text(R.strings.ingame_gui.statistics.tab.personalReserves.header()), 
+               'alias': TabsAliases.BOOSTERS})
 
     def getTabs(self):
         return self.__tabs

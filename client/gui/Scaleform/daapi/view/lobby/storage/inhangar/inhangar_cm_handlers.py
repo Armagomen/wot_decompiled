@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/inhangar/inhangar_cm_handlers.py
 from gui.Scaleform.daapi.view.lobby.shared.cm_handlers import ContextMenu, option, CMLabel
 from gui.Scaleform.daapi.view.lobby.storage.storage_helpers import enoughCreditsForRestore, getVehicleRestoreInfo
 from gui.Scaleform.daapi.view.lobby.store.browser.shop_helpers import getTradeInVehiclesUrl

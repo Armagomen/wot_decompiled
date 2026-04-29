@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/meta_view/pages/progression_page.py
-import logging
-import typing
+import logging, typing
 from functools import partial
 from CurrentVehicle import g_currentVehicle
 from PlayerEvents import g_playerEvents
@@ -62,7 +59,7 @@ if typing.TYPE_CHECKING:
     from comp7.gui.event_boards.event_boards_items import AggregatedDailyData, Comp7PlayerProgression, DailyData
     from comp7.helpers.comp7_server_settings import Comp7RanksConfig
     from gui.shared.gui_items.Vehicle import Vehicle
-    CustData = Tuple[str, int, int, str, int, int, int]
+    CustData = Tuple[(str, int, int, str, int, int, int)]
 _logger = logging.getLogger(__name__)
 
 class ProgressionPage(PageSubModelPresenter):
@@ -108,114 +105,123 @@ class ProgressionPage(PageSubModelPresenter):
             if tooltipId == TOOLTIPS_CONSTANTS.SHOP_VEHICLE:
                 vehicleCD = int(event.getArgument('vehicleCD'))
                 tooltipData = createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=(vehicleCD,))
-            elif tooltipId == TOOLTIPS_CONSTANTS.TECH_CUSTOMIZATION_ITEM and g_currentVehicle.item is not None:
-                itemCD = int(event.getArgument('customizationId'))
-                level = int(event.getArgument('progressionLevel'))
-                tooltipData = createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=CustomizationTooltipContext(itemCD, -1, True, level))
-            if tooltipData:
-                window = BackportTooltipWindow(tooltipData, self.getParentWindow())
-                window.load()
-                return window
+            else:
+                if tooltipId == TOOLTIPS_CONSTANTS.TECH_CUSTOMIZATION_ITEM and g_currentVehicle.item is not None:
+                    itemCD = int(event.getArgument('customizationId'))
+                    level = int(event.getArgument('progressionLevel'))
+                    tooltipData = createTooltipData(isSpecial=True, specialAlias=tooltipId, specialArgs=CustomizationTooltipContext(itemCD, -1, True, level))
+                if tooltipData:
+                    window = BackportTooltipWindow(tooltipData, self.getParentWindow())
+                    window.load()
+                    return window
         return super(ProgressionPage, self).createToolTip(event)
 
     def createToolTipContent(self, event, contentID):
         if contentID == R.views.comp7.mono.lobby.tooltips.general_rank_tooltip():
-            params = {'rank': Rank(event.getArgument('rank')),
-             'divisions': event.getArgument('divisions'),
-             'from': event.getArgument('from'),
-             'to': event.getArgument('to')}
+            params = {'rank': Rank(event.getArgument('rank')), 'divisions': event.getArgument('divisions'), 
+               'from': event.getArgument('from'), 
+               'to': event.getArgument('to')}
             return GeneralRankTooltip(params=params)
-        elif contentID == R.views.comp7.mono.lobby.tooltips.division_tooltip():
-            params = {'rank': Rank(event.getArgument('rank')),
-             'division': Division(event.getArgument('division')),
-             'from': event.getArgument('from'),
-             'to': event.getArgument('to')}
-            return DivisionTooltip(params=params)
-        elif contentID == R.views.comp7.mono.lobby.tooltips.progression_table_tooltip():
-            return ProgressionTableTooltip()
-        elif contentID == R.views.comp7.mono.lobby.tooltips.fifth_rank_tooltip():
-            return FifthRankTooltip()
-        elif contentID == R.views.comp7.mono.lobby.tooltips.sixth_rank_tooltip():
-            return SixthRankTooltip()
-        elif contentID == R.views.comp7.mono.lobby.tooltips.rank_inactivity_tooltip():
-            return RankInactivityTooltip()
-        elif contentID == R.views.comp7.mono.lobby.tooltips.last_update_tooltip():
-            description = event.getArgument('description')
-            return LastUpdateTooltip(description=description, updateTime=self.__lastUpdateTime)
-        elif contentID == R.views.lobby.ranked.tooltips.RankedBattlesRolesTooltipView():
-            vehicleCD = int(event.getArgument('vehicleCD'))
-            return VehicleRolesTooltipView(vehicleCD)
-        elif contentID == R.views.comp7.mono.lobby.tooltips.day_tooltip():
-            rankValue = int(event.getArgument('rank') or 0)
-            divisionValue = int(event.getArgument('division') or 0)
-            rank = Rank(rankValue) if Rank.SIXTH <= rankValue <= Rank.FIRST else None
-            division = Division(divisionValue) if Division.A <= divisionValue <= Division.E else None
-            params = {'index': event.getArgument('index', 0),
-             'isQualification': event.getArgument('isQualification', False),
-             'hasBattles': event.getArgument('hasBattles', False),
-             'seasonName': SeasonName(event.getArgument('seasonName')),
-             'diff': event.getArgument('diff', 0),
-             'rank': rank,
-             'division': division,
-             'ratingPoints': event.getArgument('ratingPoints', 0),
-             'rankInactivityPenalty': event.getArgument('rankInactivityPenalty', 0),
-             'currentDayIndex': event.getArgument('currentDayIndex', 0)}
-            return DayTooltip(params=params)
-        elif contentID == R.views.comp7.mono.lobby.tooltips.rank_indicator_tooltip():
-            divisionValue = int(event.getArgument('division') or 0)
-            division = Division(divisionValue) if Division.A <= divisionValue <= Division.E else None
-            params = {'statisticsMode': StatisticsMode(event.getArgument('statisticsMode')),
-             'rank': Rank(event.getArgument('rank')),
-             'seasonName': SeasonName(event.getArgument('seasonName')),
-             'maxAchievedRatingPoints': event.getArgument('maxAchievedRatingPoints'),
-             'division': division,
-             'ratingPoints': event.getArgument('ratingPoints'),
-             'diff': event.getArgument('diff'),
-             'dayOfMaxRatingIndex': event.getArgument('dayOfMaxRatingIndex')}
-            return RankIndicatorTooltip(params=params)
-        elif contentID == R.views.comp7.mono.lobby.tooltips.battles_indicator_tooltip():
-            params = {'statisticsMode': StatisticsMode(event.getArgument('statisticsMode')),
-             'soloBattlesCount': event.getArgument('soloBattlesCount'),
-             'superPlatoonBattlesCount': event.getArgument('superPlatoonBattlesCount')}
-            return BattlesIndicatorTooltip(params=params)
-        elif contentID == R.views.comp7.mono.lobby.tooltips.wins_indicator_tooltip():
-            params = {'statisticsMode': StatisticsMode(event.getArgument('statisticsMode')),
-             'winRate': event.getArgument('winRate'),
-             'winsCount': event.getArgument('winsCount'),
-             'lossCount': event.getArgument('lossCount'),
-             'drawCount': event.getArgument('drawCount')}
-            return WinsIndicatorTooltip(params=params)
-        elif contentID == R.views.comp7.mono.lobby.tooltips.damage_indicator_tooltip():
-            params = {'statisticsMode': StatisticsMode(event.getArgument('statisticsMode')),
-             'averageDamageDealt': event.getArgument('averageDamageDealt'),
-             'recordDamageDealt': event.getArgument('recordDamageDealt'),
-             'recordDamageDealtVehicleName': event.getArgument('recordDamageDealtVehicleName')}
-            return DamageIndicatorTooltip(params=params)
-        elif contentID == R.views.comp7.mono.lobby.tooltips.prestige_indicator_tooltip():
-            params = {'statisticsMode': StatisticsMode(event.getArgument('statisticsMode')),
-             'averagePrestige': event.getArgument('averagePrestige'),
-             'recordPrestige': event.getArgument('recordPrestige'),
-             'recordPrestigeVehicleName': event.getArgument('recordPrestigeVehicleName')}
-            return PrestigeIndicatorTooltip(params=params)
         else:
+            if contentID == R.views.comp7.mono.lobby.tooltips.division_tooltip():
+                params = {'rank': Rank(event.getArgument('rank')), 'division': Division(event.getArgument('division')), 
+                   'from': event.getArgument('from'), 
+                   'to': event.getArgument('to')}
+                return DivisionTooltip(params=params)
+            if contentID == R.views.comp7.mono.lobby.tooltips.progression_table_tooltip():
+                return ProgressionTableTooltip()
+            if contentID == R.views.comp7.mono.lobby.tooltips.fifth_rank_tooltip():
+                return FifthRankTooltip()
+            if contentID == R.views.comp7.mono.lobby.tooltips.sixth_rank_tooltip():
+                return SixthRankTooltip()
+            if contentID == R.views.comp7.mono.lobby.tooltips.rank_inactivity_tooltip():
+                return RankInactivityTooltip()
+            if contentID == R.views.comp7.mono.lobby.tooltips.last_update_tooltip():
+                description = event.getArgument('description')
+                return LastUpdateTooltip(description=description, updateTime=self.__lastUpdateTime)
+            if contentID == R.views.lobby.ranked.tooltips.RankedBattlesRolesTooltipView():
+                vehicleCD = int(event.getArgument('vehicleCD'))
+                return VehicleRolesTooltipView(vehicleCD)
+            if contentID == R.views.comp7.mono.lobby.tooltips.day_tooltip():
+                rankValue = int(event.getArgument('rank') or 0)
+                divisionValue = int(event.getArgument('division') or 0)
+                rank = Rank(rankValue) if Rank.SIXTH <= rankValue <= Rank.FIRST else None
+                division = Division(divisionValue) if Division.A <= divisionValue <= Division.E else None
+                params = {'index': event.getArgument('index', 0), 
+                   'isQualification': event.getArgument('isQualification', False), 
+                   'hasBattles': event.getArgument('hasBattles', False), 
+                   'seasonName': SeasonName(event.getArgument('seasonName')), 
+                   'diff': event.getArgument('diff', 0), 
+                   'rank': rank, 
+                   'division': division, 
+                   'ratingPoints': event.getArgument('ratingPoints', 0), 
+                   'rankInactivityPenalty': event.getArgument('rankInactivityPenalty', 0), 
+                   'currentDayIndex': event.getArgument('currentDayIndex', 0)}
+                return DayTooltip(params=params)
+            if contentID == R.views.comp7.mono.lobby.tooltips.rank_indicator_tooltip():
+                divisionValue = int(event.getArgument('division') or 0)
+                division = Division(divisionValue) if Division.A <= divisionValue <= Division.E else None
+                params = {'statisticsMode': StatisticsMode(event.getArgument('statisticsMode')), 
+                   'rank': Rank(event.getArgument('rank')), 
+                   'seasonName': SeasonName(event.getArgument('seasonName')), 
+                   'maxAchievedRatingPoints': event.getArgument('maxAchievedRatingPoints'), 
+                   'division': division, 
+                   'ratingPoints': event.getArgument('ratingPoints'), 
+                   'diff': event.getArgument('diff'), 
+                   'dayOfMaxRatingIndex': event.getArgument('dayOfMaxRatingIndex')}
+                return RankIndicatorTooltip(params=params)
+            if contentID == R.views.comp7.mono.lobby.tooltips.battles_indicator_tooltip():
+                params = {'statisticsMode': StatisticsMode(event.getArgument('statisticsMode')), 'soloBattlesCount': event.getArgument('soloBattlesCount'), 
+                   'superPlatoonBattlesCount': event.getArgument('superPlatoonBattlesCount')}
+                return BattlesIndicatorTooltip(params=params)
+            if contentID == R.views.comp7.mono.lobby.tooltips.wins_indicator_tooltip():
+                params = {'statisticsMode': StatisticsMode(event.getArgument('statisticsMode')), 'winRate': event.getArgument('winRate'), 
+                   'winsCount': event.getArgument('winsCount'), 
+                   'lossCount': event.getArgument('lossCount'), 
+                   'drawCount': event.getArgument('drawCount')}
+                return WinsIndicatorTooltip(params=params)
+            if contentID == R.views.comp7.mono.lobby.tooltips.damage_indicator_tooltip():
+                params = {'statisticsMode': StatisticsMode(event.getArgument('statisticsMode')), 'averageDamageDealt': event.getArgument('averageDamageDealt'), 
+                   'recordDamageDealt': event.getArgument('recordDamageDealt'), 
+                   'recordDamageDealtVehicleName': event.getArgument('recordDamageDealtVehicleName')}
+                return DamageIndicatorTooltip(params=params)
+            if contentID == R.views.comp7.mono.lobby.tooltips.prestige_indicator_tooltip():
+                params = {'statisticsMode': StatisticsMode(event.getArgument('statisticsMode')), 'averagePrestige': event.getArgument('averagePrestige'), 
+                   'recordPrestige': event.getArgument('recordPrestige'), 
+                   'recordPrestigeVehicleName': event.getArgument('recordPrestigeVehicleName')}
+                return PrestigeIndicatorTooltip(params=params)
             return
 
     def _getEvents(self):
         vm = self.viewModel
         comp7Ctrl = self.__comp7Controller
-        return ((vm.qualificationModel.onRankRewardsPageOpen, self.__onRankRewardsPageOpen),
-         (vm.onSelectDay, self.__onSelectDay),
-         (vm.onOpenCustomization, self.__onOpenCustomization),
-         (vm.onCustomizationProgressShown, self.__onCustomizationProgressShown),
-         (vm.onOpenVehicleStats, self.__onOpenVehicleStats),
-         (vm.onRefresh, self.__onRefresh),
-         (comp7Ctrl.onRankUpdated, self.__updateData),
-         (comp7Ctrl.onModeConfigChanged, self.__updateData),
-         (comp7Ctrl.onComp7RanksConfigChanged, self.__updateData),
-         (comp7Ctrl.onQualificationBattlesUpdated, self.__updateData),
-         (comp7Ctrl.onQualificationStateUpdated, self.__updateData),
-         (g_playerEvents.onClientUpdated, self.__onClientUpdated),
-         (comp7Ctrl.progression.onDataFetched, self.__onProgressionDataUpdate))
+        return (
+         (
+          vm.qualificationModel.onRankRewardsPageOpen, self.__onRankRewardsPageOpen),
+         (
+          vm.onSelectDay, self.__onSelectDay),
+         (
+          vm.onOpenCustomization, self.__onOpenCustomization),
+         (
+          vm.onCustomizationProgressShown, self.__onCustomizationProgressShown),
+         (
+          vm.onOpenVehicleStats, self.__onOpenVehicleStats),
+         (
+          vm.onRefresh, self.__onRefresh),
+         (
+          comp7Ctrl.onRankUpdated, self.__updateData),
+         (
+          comp7Ctrl.onModeConfigChanged, self.__updateData),
+         (
+          comp7Ctrl.onComp7RanksConfigChanged, self.__updateData),
+         (
+          comp7Ctrl.onQualificationBattlesUpdated, self.__updateData),
+         (
+          comp7Ctrl.onQualificationStateUpdated, self.__updateData),
+         (
+          g_playerEvents.onClientUpdated, self.__onClientUpdated),
+         (
+          comp7Ctrl.progression.onDataFetched, self.__onProgressionDataUpdate))
 
     def __updateData(self, *_):
         isQualification = self.__comp7Controller.isQualificationActive()
@@ -225,12 +231,12 @@ class ProgressionPage(PageSubModelPresenter):
             self.__updateProgressionData()
 
     def __updateQualificationData(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             comp7_qualification_helpers.setQualificationInfo(vm.qualificationModel)
             comp7_qualification_helpers.setQualificationBattles(vm.qualificationModel.getBattles())
 
     def __updateProgressionData(self, *_):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.qualificationModel.setIsActive(False)
             vm.setRankInactivityCount(self.__comp7Controller.activityPoints)
             comp7_model_helpers.setElitePercentage(vm)
@@ -243,7 +249,7 @@ class ProgressionPage(PageSubModelPresenter):
     def __onClientUpdated(self, diff, _):
         if 'quests' in diff:
             quests = diff['quests']
-            if any((qID in quests for qID in self.__custProgQuestIDs)):
+            if any(qID in quests for qID in self.__custProgQuestIDs):
                 self.__updateCustomizationTasks()
 
     @replaceNoneKwargsModel
@@ -470,7 +476,7 @@ class ProgressionPage(PageSubModelPresenter):
 
     def __onProgressionDataUpdate(self):
         self.__progressionData = self.__comp7Controller.progression.playerProgression
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setIsStatisticsLoading(False)
             if self.__progressionData:
                 vm.setStatisticsUpdateTimestamp(self.__comp7Controller.progression.lastUpdatedTimestamp)
@@ -483,8 +489,8 @@ class ProgressionPage(PageSubModelPresenter):
             isBattlesPlayedToday = todayData and todayData.totalBattles > 0 if allDaysData else False
             selectedDayIndex = self.__selectedDayIndex or (todayIndex if isBattlesPlayedToday else None)
             vm.setCurrentDayIndex(todayIndex)
-            if selectedDayIndex is not None:
-                -1 < selectedDayIndex < len(allDaysData) and self.__updateDailyVehicleStats(selectedDayIndex, model=vm)
+            if selectedDayIndex is not None and -1 < selectedDayIndex < len(allDaysData):
+                self.__updateDailyVehicleStats(selectedDayIndex, model=vm)
                 vm.setStatisticsMode(StatisticsMode.DAY)
                 vm.setSelectedDayIndex(selectedDayIndex)
                 self.__selectedDayIndex = selectedDayIndex
@@ -501,7 +507,7 @@ class ProgressionPage(PageSubModelPresenter):
 
     @args2params(int)
     def __onSelectDay(self, index):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setSelectedDayIndex(index)
             if index == -1:
                 self.__updateSeasonVehicleStats(model=vm)
@@ -523,7 +529,7 @@ class ProgressionPage(PageSubModelPresenter):
         else:
             style = getComp7ProgressionStyle()
             if style is None:
-                _logger.error('Style could not be found')
+                _logger.debug('Comp7 Progression style is not found')
                 return
             allTokens = self.__itemsCache.items.tokens.getTokens()
             cacher = self.__c11nProgressCacher
@@ -534,18 +540,12 @@ class ProgressionPage(PageSubModelPresenter):
                 if not quests or not isC11nItemTokenAttainable(allTokens, item):
                     continue
                 quest = first(quests)
-                iconKey = item.texture.split('/')[-1].split('.')[0]
+                iconKey = item.texture.split('/')[(-1)].split('.')[0]
                 description, currentProgress, maxProgress = getDescriptionAndProgressFromC11nDecalQuest(quest)
                 delta = cacher.getDelta(item.intCD, currentProgress)
                 level = item.descriptor.requiredTokenCount if item.itemTypeID == GUI_ITEM_TYPE.EMBLEM else 0
                 questIDs.append(quest.getID())
-                itemsData.append((description,
-                 currentProgress,
-                 maxProgress,
-                 iconKey,
-                 item.intCD,
-                 delta,
-                 level))
+                itemsData.append((description, currentProgress, maxProgress, iconKey, item.intCD, delta, level))
 
             itemsData.sort(key=_c11nTaskSortKey, reverse=True)
             self.__populateCustomizationTasksModels(itemsData)
@@ -554,7 +554,7 @@ class ProgressionPage(PageSubModelPresenter):
             return
 
     def __populateCustomizationTasksModels(self, itemsData):
-        with self.getViewModel().transaction() as tx:
+        with self.getViewModel().transaction() as (tx):
             models = tx.getCustomizationTasks()
             models.clear()
             addViewModel = models.addViewModel
@@ -574,7 +574,7 @@ class ProgressionPage(PageSubModelPresenter):
 
     def __onCustomizationProgressShown(self, args):
         decalCD = int(args.get('customizationId', 0))
-        with self.getViewModel().transaction() as tx:
+        with self.getViewModel().transaction() as (tx):
             for task in tx.getCustomizationTasks():
                 if task.getCustomizationId() == decalCD:
                     task.setDelta(0)
@@ -610,4 +610,6 @@ class ProgressionPage(PageSubModelPresenter):
 def _c11nTaskSortKey(data):
     currentProgress = data[1]
     maxProgress = data[2]
-    return float(currentProgress) / float(maxProgress) if maxProgress > 0.0 else 0.0
+    if maxProgress > 0.0:
+        return float(currentProgress) / float(maxProgress)
+    return 0.0

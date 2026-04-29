@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/impl/lobby/presenters/sub_presenters/battle_info.py
 import typing
 from gui.battle_results.pbs_helpers.common import getArenaNameStr
 from gui.battle_results.presenters.battle_results_sub_presenter import BattleResultsSubPresenter
@@ -21,7 +19,7 @@ class FrontlineBattleInfoSubPresenter(BattleResultsSubPresenter):
         reusable, results = battleResults.reusable, battleResults.results
         common = results[_RECORD.COMMON]
         teamResult = reusable.getPersonalTeamResult()
-        with self.getViewModel().transaction() as model:
+        with self.getViewModel().transaction() as (model):
             model.setArenaName(getArenaNameStr(reusable))
             model.setBattleStartTime(common['arenaCreateTime'])
             model.setBattleDuration(common['duration'])

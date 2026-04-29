@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/AvatarInputHandler/PostmortemDelay.py
-import math
-import BigWorld
-import Math
-import math_utils
+import math, BigWorld, Math, math_utils
 from AvatarInputHandler.DynamicCameras.ArcadeCamera import ArcadeCamera
 from PlayerEvents import g_playerEvents
 from constants import ARENA_PERIOD
@@ -103,24 +98,24 @@ class PostmortemDelay(object):
                 self.__setCameraSettings(targetMP=targetMatrix, pivotSettings=self.__savedPivotSettings, cameraDistance=self.__savedCameraDistance, yawPitch=self.__savedYawPitch)
                 return True
             return False
-        else:
-            targetMatrix = vehicle.matrix
-            self.__setCameraSettings(targetMP=targetMatrix, pivotSettings=self.__savedPivotSettings, cameraDistance=self.__savedCameraDistance, yawPitch=self.__savedYawPitch)
-            if sourceVehicleID is not None:
-                sourceVehicle = BigWorld.entity(sourceVehicleID)
-                if sourceVehicle is not None:
-                    self.__savedPivotSettings = self.__arcadeCamera.getPivotSettings()
-                    self.__savedCameraDistance = self.__arcadeCamera.getCameraDistance()
-                    self.__savedYawPitch = self.__arcadeCamera.angles
-                    direction = Math.Matrix(vehicle.matrix).translation - Math.Matrix(sourceVehicle.matrix).translation
-                    yaw = direction.yaw
-                    pitch = direction.pitch + self.KILLER_VEHICLE_PITCH_OFFSET
-                    if pitch > math.pi * 0.5:
-                        pitch = math.pi * 0.5
-                    if pitch < -math.pi * 0.5:
-                        pitch = -math.pi * 0.5
-                    self.__setCameraSettings(pivotSettings=self.KILLER_VEHICLE_CAMERA_PIVOT_SETTINGS, cameraDistance=self.KILLER_VEHICLE_CAMERA_DISTANCE, yawPitch=(yaw, pitch))
-            return True
+        targetMatrix = vehicle.matrix
+        self.__setCameraSettings(targetMP=targetMatrix, pivotSettings=self.__savedPivotSettings, cameraDistance=self.__savedCameraDistance, yawPitch=self.__savedYawPitch)
+        if sourceVehicleID is not None:
+            sourceVehicle = BigWorld.entity(sourceVehicleID)
+            if sourceVehicle is not None:
+                self.__savedPivotSettings = self.__arcadeCamera.getPivotSettings()
+                self.__savedCameraDistance = self.__arcadeCamera.getCameraDistance()
+                self.__savedYawPitch = self.__arcadeCamera.angles
+                direction = Math.Matrix(vehicle.matrix).translation - Math.Matrix(sourceVehicle.matrix).translation
+                yaw = direction.yaw
+                pitch = direction.pitch + self.KILLER_VEHICLE_PITCH_OFFSET
+                if pitch > math.pi * 0.5:
+                    pitch = math.pi * 0.5
+                if pitch < -math.pi * 0.5:
+                    pitch = -math.pi * 0.5
+                self.__setCameraSettings(pivotSettings=self.KILLER_VEHICLE_CAMERA_PIVOT_SETTINGS, cameraDistance=self.KILLER_VEHICLE_CAMERA_DISTANCE, yawPitch=(
+                 yaw, pitch))
+        return True
 
     def __setCameraSettings(self, targetMP=None, pivotSettings=None, cameraDistance=None, yawPitch=None):
         if targetMP is not None:

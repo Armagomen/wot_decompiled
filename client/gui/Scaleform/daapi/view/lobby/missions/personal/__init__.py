@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/missions/personal/__init__.py
 from operator import methodcaller
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.Waiting import Waiting
@@ -15,8 +13,14 @@ from gui.shared import EVENT_BUS_SCOPE
 from gui.shared.event_dispatcher import showPersonalMissionCampaignSelectorWindow
 from gui.shared.events import LoadViewEvent
 
+def getStateMachineRegistrators():
+    from gui.Scaleform.daapi.view.lobby.missions.personal.state import registerStates, registerTransitions
+    return (
+     registerStates, registerTransitions)
+
+
 def getContextMenuHandlers():
-    pass
+    return ()
 
 
 def getViewSettings():
@@ -29,7 +33,8 @@ def getViewSettings():
     from gui.Scaleform.daapi.view.lobby.missions.personal.personal_missions_operations import PersonalMissionOperations
     from gui.Scaleform.daapi.view.lobby.missions.personal.personal_missions_quest_award_screen import PersonalMissionsQuestAwardScreen
     from gui.Scaleform.daapi.view.lobby.missions.personal.personal_missions_browser_view import PersonalMissionsBrowserView
-    return (ViewSettings(VIEW_ALIAS.LOBBY_PERSONAL_MISSIONS, PersonalMissionOperations, 'personalMissionsOperations.swf', WindowLayer.SUB_VIEW, VIEW_ALIAS.LOBBY_PERSONAL_MISSIONS, ScopeTemplates.LOBBY_SUB_SCOPE),
+    return (
+     ViewSettings(VIEW_ALIAS.LOBBY_PERSONAL_MISSIONS, PersonalMissionOperations, 'personalMissionsOperations.swf', WindowLayer.SUB_VIEW, VIEW_ALIAS.LOBBY_PERSONAL_MISSIONS, ScopeTemplates.LOBBY_SUB_SCOPE),
      ViewSettings(PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSIONS_PAGE_ALIAS, PersonalMissionsPage, 'personalMissionsPage.swf', WindowLayer.SUB_VIEW, PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSIONS_PAGE_ALIAS, ScopeTemplates.LOBBY_SUB_SCOPE),
      ViewSettings(PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSIONS_OPERATION_AWARDS_SCREEN_ALIAS, PersonalMissionsOperationAwardsScreen, 'personalMissionAwardsScreen.swf', WindowLayer.FULLSCREEN_WINDOW, PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSIONS_OPERATION_AWARDS_SCREEN_ALIAS, ScopeTemplates.LOBBY_TOP_SUB_SCOPE, True),
      ComponentSettings(PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSIONS_MAP_VIEW_ALIAS, PersonalMissionsMapView, ScopeTemplates.VIEW_SCOPE),
@@ -43,24 +48,38 @@ def getViewSettings():
 
 
 def getBusinessHandlers():
-    return (PersonalMissionsPackageBusinessHandler(),)
+    return (
+     PersonalMissionsPackageBusinessHandler(),)
 
 
 class PersonalMissionsPackageBusinessHandler(PackageBusinessHandler):
 
     def __init__(self):
-        listeners = ((VIEW_ALIAS.LOBBY_PERSONAL_MISSIONS, self.loadPersonalMissionsView),
-         (VIEW_ALIAS.LOBBY_PERSONAL_MISSION_DETAILS, self.loadViewByCtxEvent),
-         (PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSIONS_OPERATIONS_PAGE_ALIAS, self.loadPersonalMissionsView),
-         (PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSIONS2_OPERATIONS_PAGE_ALIAS, self.loadPersonalMissionsView),
-         (PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSIONS_PAGE_ALIAS, self.loadPersonalMissionsView),
-         (PERSONAL_MISSIONS_ALIASES.FREE_SHEET_POPOVER, self.loadViewByCtxEvent),
-         (PERSONAL_MISSIONS_ALIASES.TANK_GIRLS_POPOVER, self.loadViewByCtxEvent),
-         (PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSIONS_AWARDS_VIEW_ALIAS, self.loadAwardsView),
-         (PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSION_FIRST_ENTRY_AWARD_VIEW_ALIAS, self.loadViewByCtxEvent),
-         (PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSIONS_QUEST_AWARD_SCREEN_ALIAS, self.loadViewByCtxEvent),
-         (PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSIONS_OPERATION_AWARDS_SCREEN_ALIAS, self.loadViewByCtxEvent),
-         (PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSION_BROWSER_VIEW_ALIAS, self.loadViewByCtxEvent))
+        listeners = (
+         (
+          VIEW_ALIAS.LOBBY_PERSONAL_MISSIONS, self.loadPersonalMissionsView),
+         (
+          VIEW_ALIAS.LOBBY_PERSONAL_MISSION_DETAILS, self.loadViewByCtxEvent),
+         (
+          PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSIONS_OPERATIONS_PAGE_ALIAS, self.loadPersonalMissionsView),
+         (
+          PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSIONS2_OPERATIONS_PAGE_ALIAS, self.loadPersonalMissionsView),
+         (
+          PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSIONS_PAGE_ALIAS, self.loadPersonalMissionsView),
+         (
+          PERSONAL_MISSIONS_ALIASES.FREE_SHEET_POPOVER, self.loadViewByCtxEvent),
+         (
+          PERSONAL_MISSIONS_ALIASES.TANK_GIRLS_POPOVER, self.loadViewByCtxEvent),
+         (
+          PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSIONS_AWARDS_VIEW_ALIAS, self.loadAwardsView),
+         (
+          PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSION_FIRST_ENTRY_AWARD_VIEW_ALIAS, self.loadViewByCtxEvent),
+         (
+          PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSIONS_QUEST_AWARD_SCREEN_ALIAS, self.loadViewByCtxEvent),
+         (
+          PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSIONS_OPERATION_AWARDS_SCREEN_ALIAS, self.loadViewByCtxEvent),
+         (
+          PERSONAL_MISSIONS_ALIASES.PERSONAL_MISSION_BROWSER_VIEW_ALIAS, self.loadViewByCtxEvent))
         super(PersonalMissionsPackageBusinessHandler, self).__init__(listeners, app_settings.APP_NAME_SPACE.SF_LOBBY, EVENT_BUS_SCOPE.LOBBY)
 
     def loadAwardsView(self, event):

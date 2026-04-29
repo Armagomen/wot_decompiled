@@ -1,10 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/hangar_cameras/hangar_camera_parallax.py
-import Math
-import GUI
-import BigWorld
-import Windowing
-import Keys
+import Math, GUI, BigWorld, Windowing, Keys
 from helpers.CallbackDelayer import CallbackDelayer, TimeDeltaMeter
 import math_utils
 from account_helpers.settings_core.settings_constants import GAME
@@ -113,7 +107,9 @@ class HangarCameraParallax(CallbackDelayer, TimeDeltaMeter):
             return True
         if Waiting.isVisible():
             return True
-        return True if not self.__isWindowAccessible else False
+        if not self.__isWindowAccessible:
+            return True
+        return False
 
     def __getClampedCursor(self):
         cursorPosition = GUI.mcursor().position
@@ -140,6 +136,7 @@ class HangarCameraParallax(CallbackDelayer, TimeDeltaMeter):
             matrix.setRotateYPR((matrix.yaw + yawDelta, matrix.pitch + pitchDelta, 0.0))
             self.__camera.source = matrix
         self.__wasPreviousUpdateSkipped = skipUpdate
+        return 0.0
 
     def __handleIdleCameraActivation(self, event):
         self.__isInIdle = event.ctx['started']

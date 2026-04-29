@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/locale/ARTEFACTS.py
 from debug_utils import LOG_WARNING
 
 class ARTEFACTS(object):
@@ -873,7 +871,8 @@ class ARTEFACTS(object):
     ARCHETYPE_MODERNIZEDTURBOCHARGERROTATIONMECHANISM_NAME_NOTEMPLATE = '#artefacts:archetype/modernizedTurbochargerRotationMechanism/name/noTemplate'
     ARCHETYPE_MODERNIZEDEXTRAHEALTHRESERVEANTIFRAGMENTATIONLINING_NAME_NOTEMPLATE = '#artefacts:archetype/modernizedExtraHealthReserveAntifragmentationLining/name/noTemplate'
     ARCHETYPE_MODERNIZEDIMPROVEDSIGHTSENHANCEDAIMDRIVES_NAME_NOTEMPLATE = '#artefacts:archetype/modernizedImprovedSightsEnhancedAimDrives/name/noTemplate'
-    ALL_GAIN_ENUM = (IMPROVEDCONFIGURATIONBATTLEBOOSTER_GAIN_SIMPLE,
+    ALL_GAIN_ENUM = (
+     IMPROVEDCONFIGURATIONBATTLEBOOSTER_GAIN_SIMPLE,
      IMPROVEDCONFIGURATIONBATTLEBOOSTER_GAIN_DELUXE,
      IMPROVEDVENTILATIONBATTLEBOOSTER_GAIN_SIMPLE,
      IMPROVEDVENTILATIONBATTLEBOOSTER_GAIN_DELUXE,
@@ -891,7 +890,8 @@ class ARTEFACTS(object):
      IMPROVEDSIGHTSBATTLEBOOSTER_GAIN_DELUXE,
      ADDITINVISIBILITYDEVICEBATTLEBOOSTER_GAIN_SIMPLE,
      ADDITINVISIBILITYDEVICEBATTLEBOOSTER_GAIN_DELUXE)
-    ALL_ACTION_ENUM = (CAMOUFLAGEBATTLEBOOSTER_ACTION_PERK,
+    ALL_ACTION_ENUM = (
+     CAMOUFLAGEBATTLEBOOSTER_ACTION_PERK,
      CAMOUFLAGEBATTLEBOOSTER_ACTION_BOOST,
      SMOOTHTURRETBATTLEBOOSTER_ACTION_PERK,
      SMOOTHTURRETBATTLEBOOSTER_ACTION_BOOST,
@@ -912,31 +912,32 @@ class ARTEFACTS(object):
      PRACTICALITYBATTLEBOOSTER_ACTION_BOOST,
      ENEMYSHOTPREDICTORBATTLEBOOSTER_ACTION_PERK,
      ENEMYSHOTPREDICTORBATTLEBOOSTER_ACTION_BOOST)
-    ALL_DESCRIPTION_ENUM = (SIXTHSENSEBATTLEBOOSTER_DESCRIPTION_BUILTINPERKBOOSTER,)
+    ALL_DESCRIPTION_ENUM = (
+     SIXTHSENSEBATTLEBOOSTER_DESCRIPTION_BUILTINPERKBOOSTER,)
 
     @classmethod
     def getDeviceGainForBattleBooster(cls, boosterName, deviceType):
-        outcome = '#artefacts:{}/gain/{}'.format(boosterName, deviceType)
+        outcome = ('#artefacts:{}/gain/{}').format(boosterName, deviceType)
         if outcome not in cls.ALL_GAIN_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getCrewActionForBattleBooster(cls, crewBoosterName, crewFactor):
-        outcome = '#artefacts:{}/action/{}'.format(crewBoosterName, crewFactor)
+        outcome = ('#artefacts:{}/action/{}').format(crewBoosterName, crewFactor)
         if outcome not in cls.ALL_ACTION_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getDescriptionForBattleBooster(cls, crewBoosterName, crewFactor):
-        outcome = '#artefacts:{}/description/{}'.format(crewBoosterName, crewFactor)
+        outcome = ('#artefacts:{}/description/{}').format(crewBoosterName, crewFactor)
         if outcome not in cls.ALL_DESCRIPTION_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome

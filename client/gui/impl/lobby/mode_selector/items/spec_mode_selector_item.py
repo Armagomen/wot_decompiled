@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/mode_selector/items/spec_mode_selector_item.py
 import operator
 from gui.impl import backport
 from gui.impl.gen import R
@@ -10,7 +8,7 @@ from shared_utils import first
 from skeletons.gui.impl import IGuiLoader
 
 class SpecModeSelectorItem(ModeSelectorLegacyItem):
-    __slots__ = ('__requester',)
+    __slots__ = ('__requester', )
     __guiLoader = dependency.descriptor(IGuiLoader)
 
     def handleClick(self):

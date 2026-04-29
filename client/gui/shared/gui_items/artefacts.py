@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/gui_items/artefacts.py
 import typing
 from constants import MIN_VEHICLE_LEVEL, MAX_VEHICLE_LEVEL
 from debug_utils import LOG_CURRENT_EXCEPTION
@@ -43,7 +41,7 @@ class VehicleArtefact(FittingItem):
 
     @property
     def level(self):
-        pass
+        return 0
 
     @property
     def icon(self):
@@ -73,7 +71,9 @@ class VehicleArtefact(FittingItem):
 
     @property
     def crewLevelIncrease(self):
-        return 0.0 if not self.isStimulator else self.descriptor.crewLevelIncrease
+        if not self.isStimulator:
+            return 0.0
+        return self.descriptor.crewLevelIncrease
 
     @property
     def isRemovingStun(self):
@@ -85,18 +85,24 @@ class VehicleArtefact(FittingItem):
 
     def getShopIcon(self, size=STORE_CONSTANTS.ICON_SIZE_MEDIUM):
         resID = R.images.gui.maps.shop.artefacts.num(size).dyn(replaceHyphenToUnderscore(self.descriptor.iconName))()
-        return backport.image(resID) if resID != -1 else ''
+        if resID != -1:
+            return backport.image(resID)
+        return ''
 
     def getVehicleLevelRange(self):
         vehicleFilter = self.descriptor.getVehicleFilter()
-        return vehicleFilter.getLevelRange() if vehicleFilter else (MIN_VEHICLE_LEVEL, MAX_VEHICLE_LEVEL)
+        if vehicleFilter:
+            return vehicleFilter.getLevelRange()
+        return (MIN_VEHICLE_LEVEL, MAX_VEHICLE_LEVEL)
 
 
 class Equipment(VehicleArtefact):
     __slots__ = ()
 
     def _getAltPrice(self, buyPrice, proxy):
-        return buyPrice.exchange(Currency.GOLD, Currency.CREDITS, proxy.exchangeRateForShellsAndEqs, useDiscounts=False) if Currency.GOLD in buyPrice else super(Equipment, self)._getAltPrice(buyPrice, proxy)
+        if Currency.GOLD in buyPrice:
+            return buyPrice.exchange(Currency.GOLD, Currency.CREDITS, proxy.exchangeRateForShellsAndEqs, useDiscounts=False)
+        return super(Equipment, self)._getAltPrice(buyPrice, proxy)
 
     @property
     def icon(self):
@@ -110,7 +116,7 @@ class Equipment(VehicleArtefact):
 
     @property
     def defaultLayoutValue(self):
-        return (self.intCD if not self.isBoughtForAltPrice else -self.intCD, 1)
+        return ((self.isBoughtForAltPrice or self).intCD if 1 else -self.intCD, 1)
 
     @property
     def isRemovingStun(self):
@@ -187,31 +193,33 @@ class Equipment(VehicleArtefact):
         return True
 
     def getAffectedSkillName(self):
-        pass
+        return ''
 
     def isAffectedSkillLearnt(self, vehicle=None):
         return False
 
     def getCrewBoosterDescription(self, isPerkReplace, formatter=None):
-        pass
+        return ''
 
     def getCrewBoosterAction(self, isPerkReplace):
-        pass
+        return ''
 
     def getOptDeviceBoosterDescription(self, vehicle, valueFormatter=None):
-        pass
+        return ''
 
     def getOptDeviceBoosterGainValue(self, vehicle):
-        pass
+        return ''
 
     def getHighlightType(self, vehicle=None):
-        return SLOT_HIGHLIGHT_TYPES.BUILT_IN_EQUIPMENT if self.isBuiltIn else SLOT_HIGHLIGHT_TYPES.NO_HIGHLIGHT
+        if self.isBuiltIn:
+            return SLOT_HIGHLIGHT_TYPES.BUILT_IN_EQUIPMENT
+        return SLOT_HIGHLIGHT_TYPES.NO_HIGHLIGHT
 
     def getBuiltinPerkBoosterDescription(self, formatter=None):
-        pass
+        return ''
 
     def getBuiltinPerkBoosterAction(self):
-        pass
+        return ''
 
 
 class BattleBooster(Equipment):
@@ -241,15 +249,20 @@ class BattleBooster(Equipment):
         return TAG_BUILTIN_PERK_BOOSTER in self.tags
 
     def isHideIfNotInShop(self):
-        return TAG_OPT_DEVICE_HIDE_IF_NOT_IN_SHOP in self.tags if self.isHidden else False
+        if self.isHidden:
+            return TAG_OPT_DEVICE_HIDE_IF_NOT_IN_SHOP in self.tags
+        return False
 
     def isAffectsOnVehicle(self, vehicle, setupIdx=None):
 
         def getValidator(tankman):
-            return tankman.descriptor.validateSkillEquipment if tankman is not None else tankmen.iterAffectedRolesByEquipment
+            if tankman is not None:
+                return tankman.descriptor.validateSkillEquipment
+            else:
+                return tankmen.iterAffectedRolesByEquipment
 
         if self.isCrewBooster():
-            return any((getValidator(tankman)(vehicle.descriptor, idxInCrew, self.descriptor) for idxInCrew, tankman in vehicle.crew))
+            return any(getValidator(tankman)(vehicle.descriptor, idxInCrew, self.descriptor) for idxInCrew, tankman in vehicle.crew)
         else:
             if setupIdx is not None:
                 for device in vehicle.optDevices.setupLayouts.setups[setupIdx]:
@@ -264,10 +277,16 @@ class BattleBooster(Equipment):
             return False
 
     def isInstalled(self, vehicle, slotIdx=None):
-        return False if vehicle is None else vehicle.battleBoosters.installed.containsIntCD(self.intCD, slotIdx)
+        if vehicle is None:
+            return False
+        else:
+            return vehicle.battleBoosters.installed.containsIntCD(self.intCD, slotIdx)
 
     def isInSetup(self, vehicle, setupIndex=None, slotIdx=None):
-        return False if vehicle is None else vehicle.battleBoosters.setupLayouts.containsIntCD(self.intCD, setupIndex, slotIdx)
+        if vehicle is None:
+            return False
+        else:
+            return vehicle.battleBoosters.setupLayouts.containsIntCD(self.intCD, setupIndex, slotIdx)
 
     def isInOtherLayout(self, vehicle):
         return vehicle.battleBoosters.setupLayouts.isInOtherLayout(self)
@@ -281,7 +300,8 @@ class BattleBooster(Equipment):
         return result
 
     def mayInstall(self, vehicle, slotIdx=None):
-        return (True, None)
+        return (
+         True, None)
 
     def getBonusIcon(self, size='small'):
         return RES_ICONS.getBonusIcon(size, self.name.split('_')[0])
@@ -291,7 +311,9 @@ class BattleBooster(Equipment):
 
     def getOverlayType(self, vehicle=None):
         isLearnt = self.isAffectedSkillLearnt(vehicle)
-        return 'battleBoosterReplace' if self.isCrewBooster() and not isLearnt else 'battleBooster'
+        if self.isCrewBooster() and not isLearnt:
+            return 'battleBoosterReplace'
+        return 'battleBooster'
 
     def isOptionalDeviceCompatible(self, optionalDevice):
         return not self.isCrewBooster() and optionalDevice is not None and self.descriptor.getLevelParamsForDevice(optionalDevice.descriptor) is not None
@@ -311,13 +333,21 @@ class BattleBooster(Equipment):
         return not self.isCrewBooster() and self.descriptor.configContainCrewLevelIncrease()
 
     def getAffectedSkillName(self):
-        return self.descriptor.skillName if self.isCrewBooster() else None
+        if self.isCrewBooster():
+            return self.descriptor.skillName
+        else:
+            return
 
     def getAffectedSkillUserName(self):
-        return str(getRoleUserName(self.getAffectedSkillName())) if self.isCrewBooster() else ''
+        if self.isCrewBooster():
+            return str(getRoleUserName(self.getAffectedSkillName()))
+        return ''
 
     def isAffectedSkillLearnt(self, vehicle=None):
-        return isSkillLearnt(self.getAffectedSkillName(), vehicle) if vehicle is not None else False
+        if vehicle is not None:
+            return isSkillLearnt(self.getAffectedSkillName(), vehicle)
+        else:
+            return False
 
     def getCrewBoosterDescription(self, isPerkReplace, formatter=None):
         if not self.isCrewBooster():
@@ -363,7 +393,10 @@ class BattleBooster(Equipment):
         return gain
 
     def _getShortInfo(self, vehicle=None, expanded=False):
-        return self.getCrewBoosterDescription(isPerkReplace=False, formatter=None) if self.isCrewBooster() else self.getOptDeviceBoosterDescription(vehicle=None, valueFormatter=None)
+        if self.isCrewBooster():
+            return self.getCrewBoosterDescription(isPerkReplace=False, formatter=None)
+        else:
+            return self.getOptDeviceBoosterDescription(vehicle=None, valueFormatter=None)
 
     def _getAltPrice(self, buyPrice, proxy):
         return MONEY_UNDEFINED
@@ -440,11 +473,14 @@ class BattleAbility(Equipment):
         return result
 
     def mayPurchase(self, money):
-        return (False, GUI_ITEM_ECONOMY_CODE.ITEM_NO_PRICE)
+        return (
+         False, GUI_ITEM_ECONOMY_CODE.ITEM_NO_PRICE)
 
     def mayInstall(self, vehicle, slotIdx=None):
         slotCheck = slotIdx < self.__epicMetaGameCtrl.getNumAbilitySlots(vehicle.descriptor.type)
-        return (False, 'slot index exceeds limit of vehicle class') if not slotCheck else self.descriptor.checkCompatibilityWithVehicle(vehicle.descriptor)
+        if not slotCheck:
+            return (False, 'slot index exceeds limit of vehicle class')
+        return self.descriptor.checkCompatibilityWithVehicle(vehicle.descriptor)
 
     def _getAltPrice(self, buyPrice, proxy):
         return MONEY_UNDEFINED
@@ -467,7 +503,7 @@ class OptionalDevice(RemovableDevice):
     def __init__(self, intCompactDescr, proxy=None):
         super(OptionalDevice, self).__init__(intCompactDescr, proxy)
         splitIcon = self.icon.split('/')
-        labelWithExtension = splitIcon[len(splitIcon) - 1]
+        labelWithExtension = splitIcon[(len(splitIcon) - 1)]
         label = labelWithExtension.split('.')[0]
         self._GUIEmblemID = label
 
@@ -494,7 +530,9 @@ class OptionalDevice(RemovableDevice):
 
     @property
     def level(self):
-        return self.descriptor.level if self.isUpgradable or self.isUpgraded else super(OptionalDevice, self).level
+        if self.isUpgradable or self.isUpgraded:
+            return self.descriptor.level
+        return super(OptionalDevice, self).level
 
     @property
     def shortDescription(self):
@@ -586,7 +624,10 @@ class OptionalDevice(RemovableDevice):
         return False
 
     def isSimilarDevice(self, other):
-        return not self.descriptor.checkCompatibilityWithOther(other) if other is not None else False
+        if other is not None:
+            return not self.descriptor.checkCompatibilityWithOther(other)
+        else:
+            return False
 
     def mayInstall(self, vehicle, slotIdx=None):
         return vehicle.descriptor.mayInstallOptionalDevice(self.intCD, slotIdx)
@@ -599,7 +640,7 @@ class OptionalDevice(RemovableDevice):
             LOG_CURRENT_EXCEPTION()
             return (False, 'not installed on vehicle')
 
-        return None
+        return
 
     def getInstalledVehicles(self, vehicles):
         result = set()
@@ -617,22 +658,28 @@ class OptionalDevice(RemovableDevice):
             return SLOT_HIGHLIGHT_TYPES.EQUIPMENT_PLUS
         if self.isModernized:
             return SLOT_HIGHLIGHT_TYPES.EQUIPMENT_MODERNIZED
-        return SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY if self.isUpgradable or self.isUpgraded else SLOT_HIGHLIGHT_TYPES.NO_HIGHLIGHT
+        if self.isUpgradable or self.isUpgraded:
+            return SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY
+        return SLOT_HIGHLIGHT_TYPES.NO_HIGHLIGHT
 
     def getOverlayIconName(self):
-        return '{}_overlay'.format(self.getOverlayType())
+        return ('{}_overlay').format(self.getOverlayType())
 
     def getOverlayType(self, vehicle=None):
         if self.isDeluxe:
             return SLOT_HIGHLIGHT_TYPES.EQUIPMENT_PLUS
         if self.isModernized:
-            return '{}_{}'.format(SLOT_HIGHLIGHT_TYPES.EQUIPMENT_MODERNIZED, self.level)
+            return ('{}_{}').format(SLOT_HIGHLIGHT_TYPES.EQUIPMENT_MODERNIZED, self.level)
         if self.isUpgradable:
             return SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY_BASIC
-        return SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY_UPGRADED if self.isUpgraded else SLOT_HIGHLIGHT_TYPES.NO_HIGHLIGHT
+        if self.isUpgraded:
+            return SLOT_HIGHLIGHT_TYPES.EQUIPMENT_TROPHY_UPGRADED
+        return SLOT_HIGHLIGHT_TYPES.NO_HIGHLIGHT
 
     def getBigOverlayType(self, vehicle=None):
-        return '{}_{}'.format(SLOT_HIGHLIGHT_TYPES.EQUIPMENT_MODERNIZED_BIG, self.level) if self.isModernized else super(OptionalDevice, self).getBigOverlayType(vehicle)
+        if self.isModernized:
+            return ('{}_{}').format(SLOT_HIGHLIGHT_TYPES.EQUIPMENT_MODERNIZED_BIG, self.level)
+        return super(OptionalDevice, self).getBigOverlayType(vehicle)
 
     def getUpgradePrice(self, proxy=None):
         if self.isUpgradable and proxy is not None:
@@ -666,4 +713,6 @@ class OptionalDevice(RemovableDevice):
 
     def _getShortInfo(self, vehicle=None, expanded=False):
         kpi = self.getKpi()
-        return stripColorTagDescrTags(self.shortDescriptionSpecial) if not kpi or len(kpi) >= 2 or any((bonus.type == KPI.Type.AGGREGATE_MUL for bonus in kpi)) else getKpiFormatDescription(kpi[0])
+        if not kpi or len(kpi) >= 2 or any(bonus.type == KPI.Type.AGGREGATE_MUL for bonus in kpi):
+            return stripColorTagDescrTags(self.shortDescriptionSpecial)
+        return getKpiFormatDescription(kpi[0])

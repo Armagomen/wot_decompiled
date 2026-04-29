@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/cgf_script/managers_registrator.py
-import sys
-import CGF
+import sys, CGF
 from cgf_script.component_meta_class import registerComponent
 from soft_exception import SoftException
 
@@ -45,7 +42,7 @@ def onRemovedQuery(*args, **kwargs):
 
 
 class ManagerRegistrator(object):
-    __slots__ = ('__wrapper',)
+    __slots__ = ('__wrapper', )
 
     def __init__(self, wrapper):
         self.__wrapper = wrapper
@@ -72,7 +69,7 @@ def registerManager(manager, domain=CGF.DomainOption.DomainClient | CGF.DomainOp
 
         def wrapper_self(self):
             CGF.createManager(manager, func(self), self.spaceID)
-            return None
+            return
 
         return ManagerRegistrator(wrapper_self)
 

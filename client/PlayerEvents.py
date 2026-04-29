@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/PlayerEvents.py
+from __future__ import absolute_import
 import Event
 from events_containers.common.containers import ClientEventsContainer
 

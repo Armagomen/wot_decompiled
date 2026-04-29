@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/gen/view_models/views/lobby/alert_message_model.py
 from enum import Enum
 from frameworks.wulf import Array, ViewModel
 
@@ -8,6 +6,7 @@ class State(Enum):
     BAN = 'ban'
     PREANNOUNCE = 'preannounce'
     NOVEHICLES = 'noVehicles'
+    NOTENOUGHVEHICLES = 'notEnoughVehicles'
     QUALIFICATION = 'qualification'
     CEASEFIREAVAILABLE = 'ceasefireAvailable'
     CEASEFIREUNAVAILABLE = 'ceasefireUnavailable'
@@ -16,9 +15,9 @@ class State(Enum):
 
 
 class AlertMessageModel(ViewModel):
-    __slots__ = ('onClick',)
+    __slots__ = ('onClick', )
 
-    def __init__(self, properties=4, commands=1):
+    def __init__(self, properties=5, commands=1):
         super(AlertMessageModel, self).__init__(properties=properties, commands=commands)
 
     def getState(self):
@@ -49,10 +48,17 @@ class AlertMessageModel(ViewModel):
     def getLevelsType():
         return int
 
+    def getMinVehiclesRequired(self):
+        return self._getNumber(4)
+
+    def setMinVehiclesRequired(self, value):
+        self._setNumber(4, value)
+
     def _initialize(self):
         super(AlertMessageModel, self)._initialize()
         self._addStringProperty('state')
         self._addNumberProperty('banTimeleftInSeconds', 0)
         self._addStringProperty('startEventDateTime', '')
         self._addArrayProperty('levels', Array())
+        self._addNumberProperty('minVehiclesRequired', 0)
         self.onClick = self._addCommand('onClick')

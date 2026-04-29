@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/personal_missions_30/tooltips/mission_progress_tooltip.py
 import typing
 from frameworks.wulf import ViewSettings
 from frameworks.wulf.view.array import fillStringsArray
@@ -27,7 +25,7 @@ class MissionProgressTooltip(ViewImpl):
         return super(MissionProgressTooltip, self).getViewModel()
 
     def _onLoading(self):
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             questConfig = getMissionConfigData(self.__mission)
             totalMissionsAmount = questConfig.maxProgressValue
             tx.setTotalMissionsAmount(totalMissionsAmount)

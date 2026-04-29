@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/account_shared.py
-import collections
-import re
+import collections, re
 from constants import FairplayViolationType
 from items import vehicles, ITEM_TYPES
 from fairplay_violation_types import getViolationsByMask, FairplayViolations
@@ -24,7 +21,7 @@ class AmmoIterator(object):
             raise StopIteration
         idx = self.__idx
         self.__idx += 2
-        return (abs(self.__ammo[idx]), self.__ammo[idx + 1])
+        return (abs(self.__ammo[idx]), self.__ammo[(idx + 1)])
 
 
 class LayoutIterator(object):
@@ -42,7 +39,7 @@ class LayoutIterator(object):
         idx = self.__idx
         self.__idx += 2
         compDescr = self.__layout[idx]
-        return (abs(compDescr), self.__layout[idx + 1], compDescr < 0)
+        return (abs(compDescr), self.__layout[(idx + 1)], compDescr < 0)
 
 
 def getAmmoDiff(ammo1, ammo2):
@@ -89,7 +86,7 @@ def currentWeekPlayDaysCount(curTime, newDayStart, newWeekStart):
 
 def getFairPlayViolationName(violationsMask):
     if violationsMask == 0:
-        return None
+        return
     else:
         violationNamesByMask = getViolationsByMask(violationsMask)
         for vType in FairplayViolationType.PRIORITY:
@@ -98,19 +95,23 @@ def getFairPlayViolationName(violationsMask):
                 if violation in violationsByRule:
                     return violation
 
-        return None
+        return
 
 
 def getCustomizationItem(custType, custID):
     custTypeID = getattr(CustomizationType, str(custType).upper(), None)
     if not custTypeID:
-        return (None, 'Invalid customization type = {0}'.format(custType))
+        return (None, ('Invalid customization type = {0}').format(custType))
     else:
         c11nItems = vehicles.g_cache.customization20().itemTypes.get(custTypeID, None)
         if not c11nItems:
-            return (None, 'Unknown customization typeID = {0}. custType = {1}'.format(custTypeID, custType))
+            return (None, ('Unknown customization typeID = {0}. custType = {1}').format(custTypeID, custType))
         c11nItem = c11nItems.get(custID)
-        return (None, 'Invalid customization item id = {0}. typeID = {1}, custType = {2}'.format(custID, custTypeID, custType)) if not c11nItem else (c11nItem, '')
+        if not c11nItem:
+            return (None,
+             ('Invalid customization item id = {0}. typeID = {1}, custType = {2}').format(custID, custTypeID, custType))
+        return (
+         c11nItem, '')
 
 
 def validateCustomizationItem(custData):
@@ -122,15 +123,15 @@ def validateCustomizationItem(custData):
     vehTypeCompDescr = custData.get('vehTypeCompDescr', None)
     if custID is None:
         return (False, 'Cust id is not specified')
-    elif not custType:
-        return (False, 'Cust type is not specified')
-    elif not isinstance(value, int) or value == 0 and not isProgression:
-        return (False, 'Invalid value')
     else:
+        if not custType:
+            return (False, 'Cust type is not specified')
+        if not isinstance(value, int) or value == 0 and not isProgression:
+            return (False, 'Invalid value')
         c11nItem, errStr = getCustomizationItem(custType, custID)
         if not c11nItem:
             return (False, errStr)
-        elif custType == CustomizationType.STYLE and 'serialNumberSequence' in custData and not c11nItem.isWithSerialNumber:
+        if custType == CustomizationType.STYLE and 'serialNumberSequence' in custData and not c11nItem.isWithSerialNumber:
             return (False, 'Only styles with serial numbers can have serialNumberSequence')
         if vehTypeCompDescr is not None:
             itemTypeID, vehNationID, vehInnationID = vehicles.parseIntCompactDescr(vehTypeCompDescr)
@@ -143,8 +144,10 @@ def validateCustomizationItem(custData):
                 return (False, 'Invalid type compact descriptor')
 
             if not c11nItem.matchVehicleType(vehTypeDescr):
-                return (False, 'Customization item {} and vehTypeCompDescr {} mismatch'.format(c11nItem.id, vehTypeCompDescr))
-        return (True, c11nItem)
+                return (False,
+                 ('Customization item {} and vehTypeCompDescr {} mismatch').format(c11nItem.id, vehTypeCompDescr))
+        return (
+         True, c11nItem)
 
 
 class NotificationItem(object):
@@ -162,17 +165,19 @@ class NotificationItem(object):
         for s in sorted(item['requiredTokens']):
             cont.append(s)
 
-        self.asString = ''.join(cont)
+        self.asString = ('').join(cont)
 
     def __cmp__(self, other):
         if other is None:
             return 1
-        left = self.asString
-        right = other.asString
-        if left == right:
-            return 0
         else:
-            return -1 if left < right else 1
+            left = self.asString
+            right = other.asString
+            if left == right:
+                return 0
+            if left < right:
+                return -1
+            return 1
 
     def __hash__(self):
         return hash(self.asString)
@@ -189,7 +194,8 @@ def parseVersion(version):
         if mainVersion:
             realmCode = realmCode.replace('_', '') if realmCode else ''
             patchVersion = int(patchVersion.replace('_', '')) if patchVersion else 0
-            return (realmCode, mainVersion, patchVersion)
+            return (
+             realmCode, mainVersion, patchVersion)
         return
 
 

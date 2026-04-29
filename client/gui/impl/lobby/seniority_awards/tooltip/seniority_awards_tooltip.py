@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/seniority_awards/tooltip/seniority_awards_tooltip.py
 from __future__ import absolute_import
 from frameworks.wulf import ViewSettings
 from gui.impl.gen.view_models.views.lobby.seniority_awards.seniority_awards_tooltip_model import SeniorityAwardsTooltipModel
@@ -26,7 +24,7 @@ class SeniorityAwardsTooltip(ViewImpl):
     def _onLoading(self, category, maxCategory, years):
         categories = list(self.__seniorityAwardsCtrl.categories.items())
         categories = sorted(categories, key=lambda item: item[1][0])
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setCategory(category)
             vm.setMaxCategory(maxCategory)
             vm.setYears(years)

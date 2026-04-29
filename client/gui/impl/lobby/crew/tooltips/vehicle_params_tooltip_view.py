@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/tooltips/vehicle_params_tooltip_view.py
 import collections
 from functools import partial
 from typing import TYPE_CHECKING
@@ -16,7 +14,7 @@ from gui.impl.pub import ViewImpl
 from gui.shared.gui_items import KPI
 from gui.shared.items_parameters import isTemperatureGun
 from gui.shared.items_parameters import formatters as param_formatter
-from gui.shared.items_parameters.bonus_helper import isSituationalBonus
+from gui.shared.items_parameters.bonus_helper import isSituationalBonus, isAppropriateVehicle
 from gui.shared.items_parameters.comparator import addParameterValuesOfTheSameType
 from gui.shared.items_parameters.formatters import isRelativeParameter
 from gui.shared.items_parameters.param_name_helper import getVehicleParameterText
@@ -29,17 +27,18 @@ if TYPE_CHECKING:
     from typing import Optional
     from gui.shared.gui_items import Vehicle
     from gui.shared.tooltips.contexts import HangarParamContext
-_BONUS_TYPES_ORDER = {constants.BonusTypes.EXTRA: 6,
- constants.BonusTypes.SKILL: 5,
- constants.BonusTypes.ROLE: 5,
- constants.BonusTypes.PERK: 5,
- constants.BonusTypes.OPTIONAL_DEVICE: 4,
- constants.BonusTypes.EQUIPMENT: 3,
- constants.BonusTypes.BATTLE_BOOSTER: 2,
- constants.BonusTypes.PAIR_MODIFICATION: 1,
- constants.BonusTypes.BASE_MODIFICATION: 0}
-_CREW_TYPES = (constants.BonusTypes.PERK, constants.BonusTypes.SKILL)
-_MULTI_KPI_PARAMS = frozenset([KPI.Name.VEHICLE_REPAIR_SPEED,
+_BONUS_TYPES_ORDER = {constants.BonusTypes.EXTRA: 6, constants.BonusTypes.SKILL: 5, 
+   constants.BonusTypes.ROLE: 5, 
+   constants.BonusTypes.PERK: 5, 
+   constants.BonusTypes.OPTIONAL_DEVICE: 4, 
+   constants.BonusTypes.EQUIPMENT: 3, 
+   constants.BonusTypes.BATTLE_BOOSTER: 2, 
+   constants.BonusTypes.PAIR_MODIFICATION: 1, 
+   constants.BonusTypes.BASE_MODIFICATION: 0}
+_CREW_TYPES = (
+ constants.BonusTypes.PERK, constants.BonusTypes.SKILL)
+_MULTI_KPI_PARAMS = frozenset([
+ KPI.Name.VEHICLE_REPAIR_SPEED,
  KPI.Name.VEHICLE_GUN_SHOT_DISPERSION,
  KPI.Name.VEHICLE_GUN_SHOT_DISPERSION_AFTER_SHOT,
  KPI.Name.CREW_HIT_CHANCE,
@@ -89,9 +88,13 @@ _MULTI_KPI_PARAMS = frozenset([KPI.Name.VEHICLE_REPAIR_SPEED,
  'radioDistance',
  'turretRotationSpeed'])
 AUTORELOAD_TIME = 'autoReloadTime'
-_PARAMS_WITH_AGGREGATED_PENALTIES = {DUAL_ACCURACY_COOLING_DELAY}
+_PARAMS_WITH_AGGREGATED_PENALTIES = {
+ DUAL_ACCURACY_COOLING_DELAY}
 _CREW_ICON = 'all'
-BonusCreationParams = collections.namedtuple('BonusCreationParams', ('bnsType', 'bnsId', 'pInfo', 'scheme', 'isSituational', 'vehPostProgressionBonusLevels'))
+BonusCreationParams = collections.namedtuple('BonusCreationParams', ('bnsType', 'bnsId',
+                                                                     'pInfo', 'scheme',
+                                                                     'isSituational',
+                                                                     'vehPostProgressionBonusLevels'))
 
 def _optDeviceCmp(x, y):
 
@@ -101,7 +104,9 @@ def _optDeviceCmp(x, y):
             return 1
         if item.isTrophy:
             return 2
-        return 3 if item.isModernized else 0
+        if item.isModernized:
+            return 3
+        return 0
 
     return cmp(_getTypePriority(x), _getTypePriority(y))
 
@@ -109,18 +114,20 @@ def _optDeviceCmp(x, y):
 _TYPE_ITEMS_COMPARATORS = {constants.BonusTypes.OPTIONAL_DEVICE: _optDeviceCmp}
 
 def _bonusCmp(x, y):
-    return 0 if x[1] == constants.BonusTypes.SKILL and y[1] == constants.BonusTypes.SKILL else cmp(_BONUS_TYPES_ORDER.get(y[1], 0), _BONUS_TYPES_ORDER.get(x[1], 0)) or cmp(x[1], y[1]) or _TYPE_ITEMS_COMPARATORS.get(x[1], lambda _, __: 0)(x[0], y[0]) or cmp(x[0], y[0])
+    if x[1] == constants.BonusTypes.SKILL and y[1] == constants.BonusTypes.SKILL:
+        return 0
+    return cmp(_BONUS_TYPES_ORDER.get(y[1], 0), _BONUS_TYPES_ORDER.get(x[1], 0)) or cmp(x[1], y[1]) or _TYPE_ITEMS_COMPARATORS.get(x[1], lambda _, __: 0)(x[0], y[0]) or cmp(x[0], y[0])
 
 
 def _getBonusID(bnsType, bnsId):
     if bnsType == constants.BonusTypes.OPTIONAL_DEVICE:
         return bnsId.split('_tier')[0]
-    elif bnsType in (constants.BonusTypes.PAIR_MODIFICATION, constants.BonusTypes.BASE_MODIFICATION):
-        mod = vehicles.g_cache.postProgression().getModificationByName(bnsId)
-        if mod is not None:
-            return mod.locName
-        return bnsId
     else:
+        if bnsType in (constants.BonusTypes.PAIR_MODIFICATION, constants.BonusTypes.BASE_MODIFICATION):
+            mod = vehicles.g_cache.postProgression().getModificationByName(bnsId)
+            if mod is not None:
+                return mod.locName
+            return bnsId
         return bnsId
 
 
@@ -175,16 +182,20 @@ def _isUpgradedInstanceOfInstalled(installedDevices, deviceDescr):
         return False
     _, __, upgradedID = parseIntCompactDescr(deviceDescr.upgradeInfo.upgradedCompDescr)
     upgradedDescr = vehicles.g_cache.optionalDevices().get(upgradedID)
-    return True if upgradedDescr.name in installedDevices else _isUpgradedInstanceOfInstalled(installedDevices, upgradedDescr)
+    if upgradedDescr.name in installedDevices:
+        return True
+    return _isUpgradedInstanceOfInstalled(installedDevices, upgradedDescr)
 
 
 def _isDowngradedInstanceOfInstalled(installedDevices, deviceDescr):
     if not (deviceDescr.isUpgradable or deviceDescr.isUpgraded) or deviceDescr.downgradeInfo is None:
         return False
+    _, __, downgradedID = parseIntCompactDescr(deviceDescr.downgradeInfo.downgradedCompDescr)
+    downgradedDescr = vehicles.g_cache.optionalDevices().get(downgradedID)
+    if downgradedDescr.name in installedDevices:
+        return True
     else:
-        _, __, downgradedID = parseIntCompactDescr(deviceDescr.downgradeInfo.downgradedCompDescr)
-        downgradedDescr = vehicles.g_cache.optionalDevices().get(downgradedID)
-        return True if downgradedDescr.name in installedDevices else _isDowngradedInstanceOfInstalled(installedDevices, downgradedDescr)
+        return _isDowngradedInstanceOfInstalled(installedDevices, downgradedDescr)
 
 
 class BaseVehicleParamsTooltipView(ViewImpl):
@@ -208,7 +219,7 @@ class BaseVehicleParamsTooltipView(ViewImpl):
 
     @staticmethod
     def _formatValueText(style, text):
-        return '%({0}_open)s{1}%({0}_close)s'.format(style.value, text.replace('&lt;', '<'))
+        return ('%({0}_open)s{1}%({0}_close)s').format(style.value, text.replace('&lt;', '<'))
 
     def _onLoading(self, *args, **kwargs):
         super(BaseVehicleParamsTooltipView, self)._onLoading(*args, **kwargs)
@@ -218,7 +229,7 @@ class BaseVehicleParamsTooltipView(ViewImpl):
         else:
             self._extendedData = comparator.getExtendedData(self._paramName)
             self._hasPerksBonuses = comparator.hasBonusOfType(constants.BonusTypes.PERK)
-            with self.viewModel.transaction() as tx:
+            with self.viewModel.transaction() as (tx):
                 self._fillModel(tx)
             return
 
@@ -289,7 +300,9 @@ class BaseVehicleAdvancedParamsTooltipView(BaseVehicleParamsTooltipView):
             return backport.text(R.strings.tooltips.tank_params.desc.shotDispersionAngle.withDualAccuracy())
         if vehicle and vehicle.descriptor.isTwinGunVehicle:
             return backport.text(R.strings.tooltips.tank_params.desc.shotDispersionAngle.twinGun())
-        return backport.text(R.strings.tooltips.tank_params.desc.temperatureShotDispersionAngle()) if vehicle and isTemperatureGun(vehicle.descriptor) else backport.text(R.strings.tooltips.tank_params.desc.dyn(self._paramName)())
+        if vehicle and isTemperatureGun(vehicle.descriptor):
+            return backport.text(R.strings.tooltips.tank_params.desc.temperatureShotDispersionAngle())
+        return backport.text(R.strings.tooltips.tank_params.desc.dyn(self._paramName)())
 
     def __getTitleStr(self, titleParamName):
         strPath = R.strings.menu.tank_params.dyn(titleParamName)
@@ -307,9 +320,15 @@ class VehicleAdvancedParamsTooltipView(BaseVehicleAdvancedParamsTooltipView):
     def _fillBonuses(self, model):
         result = collections.defaultdict(list)
         vehicle = self.vehicle
-        situationalScheme = (partial(self._formatValueText, ValueStyleEnum.RED), partial(self._formatValueText, ValueStyleEnum.YELLOW), partial(self._formatValueText, ValueStyleEnum.YELLOW))
-        extractedBonusScheme = (partial(self._formatValueText, ValueStyleEnum.RED), partial(self._formatValueText, ValueStyleEnum.GREENBRIGHT), partial(self._formatValueText, ValueStyleEnum.GREENBRIGHT))
-        vehPostProgressionBonusLevels = {step.action.getTechName():step.getLevel() for step in vehicle.postProgression.iterUnorderedSteps() if step.action.actionType == ACTION_TYPES.MODIFICATION}
+        situationalScheme = (
+         partial(self._formatValueText, ValueStyleEnum.RED),
+         partial(self._formatValueText, ValueStyleEnum.WHITESPANISH),
+         partial(self._formatValueText, ValueStyleEnum.YELLOW))
+        extractedBonusScheme = (
+         partial(self._formatValueText, ValueStyleEnum.RED),
+         partial(self._formatValueText, ValueStyleEnum.WHITESPANISH),
+         partial(self._formatValueText, ValueStyleEnum.GREENBRIGHT))
+        vehPostProgressionBonusLevels = {step.action.getTechName():step.getLevel() for step in vehicle.postProgression.iterUnorderedSteps() if step.action.actionType == ACTION_TYPES.MODIFICATION if step.action.actionType == ACTION_TYPES.MODIFICATION}
         bonuses = sorted(self._extendedData.bonuses, cmp=_bonusCmp)
         bonusExtractor = self._context.getBonusExtractor(vehicle, bonuses, self._paramName)
         hasSituational = False
@@ -325,6 +344,8 @@ class VehicleAdvancedParamsTooltipView(BaseVehicleAdvancedParamsTooltipView):
                 installedArchetypes.add(archetype)
             formattedBnsID = _getBonusID(bnsType, bnsId)
             isSituational = isSituationalBonus(formattedBnsID, bnsType, pInfo.name)
+            if not isAppropriateVehicle(formattedBnsID, vehicle):
+                continue
             scheme = situationalScheme if isSituational else extractedBonusScheme
             valueStr = param_formatter.formatParameterDelta(pInfo, scheme)
             if valueStr is not None:
@@ -378,6 +399,8 @@ class VehicleAdvancedParamsTooltipView(BaseVehicleAdvancedParamsTooltipView):
             if (bnsId, bnsType) in self._extendedData.inactiveBonuses.keys():
                 isInactive = True
             formattedBnsID = _getBonusID(bnsType, bnsId)
+            if not isAppropriateVehicle(formattedBnsID, vehicle):
+                continue
             isEnabled = (formattedBnsID, bnsType) in bonuses if bnsType in _CREW_TYPES else False
             itemModel = VehicleParamsItem()
             if isInactive and bnsType != constants.BonusTypes.BATTLE_BOOSTER:
@@ -412,12 +435,19 @@ class VehicleAdvancedParamsTooltipView(BaseVehicleAdvancedParamsTooltipView):
         if len(self._extendedData.bonuses) > 1 and self._paramName in _MULTI_KPI_PARAMS:
             result.append((backport.text(R.strings.menu.extraParams.multiDesc()), None, NoteThemeEnum.TEXTONLY))
         if hasSituational:
-            result.append((backport.text(R.strings.tooltips.vehicleParams.bonus.situational()), R.images.gui.maps.icons.tooltip.asterisk_optional(), NoteThemeEnum.WARNING))
+            result.append((
+             backport.text(R.strings.tooltips.vehicleParams.bonus.situational()),
+             R.images.gui.maps.icons.tooltip.asterisk_optional(),
+             NoteThemeEnum.WARNING))
         if self._extendedData.inactiveBonuses:
             conditionsToActivate = set(self._extendedData.inactiveBonuses.values())
-            conditionsToActivate = [ backport.text(R.strings.crew_perks.dyn(bnsID).name()) for bnsID, _ in conditionsToActivate if R.strings.crew_perks.dyn(bnsID).isValid() ]
+            conditionsToActivate = [ backport.text(R.strings.crew_perks.dyn(bnsID).name()) for bnsID, _ in conditionsToActivate if R.strings.crew_perks.dyn(bnsID).isValid()
+                                   ]
             if conditionsToActivate:
-                result.append((backport.text(R.strings.tooltips.vehicleParams.bonus.inactiveDescription(), skillName=', '.join(conditionsToActivate)), R.images.gui.maps.icons.tooltip.asterisk_red(), NoteThemeEnum.WARNING))
+                result.append((
+                 backport.text(R.strings.tooltips.vehicleParams.bonus.inactiveDescription(), skillName=(', ').join(conditionsToActivate)),
+                 R.images.gui.maps.icons.tooltip.asterisk_red(),
+                 NoteThemeEnum.WARNING))
         for title, icon, theme in result:
             note = VehicleParamsNote()
             note.setTitle(title)
@@ -455,7 +485,8 @@ class VehicleAdvancedParamsTooltipView(BaseVehicleAdvancedParamsTooltipView):
                 artifact = vehicles.g_cache.postProgression().getModificationByName(bonusName)
             else:
                 artifact = vehicles.g_cache.getEquipmentByName(bonusName)
-            return (artifact.tooltipSection, getattr(artifact, 'archetype', None))
+            return (
+             artifact.tooltipSection, getattr(artifact, 'archetype', None))
 
     def _hasExtendedInfo(self):
         if g_currentPreviewVehicle.isPresent():
@@ -484,30 +515,33 @@ class VehicleAdvancedParamsTooltipView(BaseVehicleAdvancedParamsTooltipView):
 
 
 class VehicleAvgParamsTooltipView(BaseVehicleAdvancedParamsTooltipView):
-    _AVG_TO_RANGE_PARAMETER_NAME = {'avgDamage': 'damage',
-     'avgPiercingPower': 'piercingPower'}
+    _AVG_TO_RANGE_PARAMETER_NAME = {'avgDamage': 'damage', 
+       'avgPiercingPower': 'piercingPower'}
 
     def _fillModel(self, model):
         super(VehicleAvgParamsTooltipView, self)._fillModel(model)
         rangeParamNames = [self._AVG_TO_RANGE_PARAMETER_NAME[self._paramName]]
         shell = self.vehicle.descriptor.shot.shell
         if self._paramName == 'avgPiercingPower' and shell.isPiercingDistanceDependent:
-            rangeParamNames = ['maxPiercingPower', 'minPiercingPower']
-        elif self._paramName == 'avgDamage' and shell.isDamageMutable:
-            rangeParamNames = ['maxMutableDamage', 'minMutableDamage']
-        categories = model.getCategories()
-        category = VehicleParamsCategory()
-        items = category.getItems()
-        for rangeParamName in rangeParamNames:
-            value = self._context.getComparator().getExtendedData(rangeParamName).value
-            fmtValue = param_formatter.formatParameter(rangeParamName, value)
-            args = {'units': i18n.makeString(param_formatter.MEASURE_UNITS.get(rangeParamName))}
-            if rangeParamName in ('minPiercingPower', 'minMutableDamage'):
-                args['distance'] = int(min(self.vehicle.descriptor.shot.maxDistance, PIERCING_DISTANCES[1]))
-            title = backport.text(R.strings.tooltips.tank_params.avgParamComment.dyn(rangeParamName)(), **args)
-            avgItem = VehicleParamsItem()
-            avgItem.setValue(self._formatValueText(ValueStyleEnum.WHITESPANISH, fmtValue))
-            avgItem.setTitle(title)
-            items.addViewModel(avgItem)
+            rangeParamNames = [
+             'maxPiercingPower', 'minPiercingPower']
+        else:
+            if self._paramName == 'avgDamage' and shell.isDamageMutable:
+                rangeParamNames = [
+                 'maxMutableDamage', 'minMutableDamage']
+            categories = model.getCategories()
+            category = VehicleParamsCategory()
+            items = category.getItems()
+            for rangeParamName in rangeParamNames:
+                value = self._context.getComparator().getExtendedData(rangeParamName).value
+                fmtValue = param_formatter.formatParameter(rangeParamName, value)
+                args = {'units': i18n.makeString(param_formatter.MEASURE_UNITS.get(rangeParamName))}
+                if rangeParamName in ('minPiercingPower', 'minMutableDamage'):
+                    args['distance'] = int(min(self.vehicle.descriptor.shot.maxDistance, PIERCING_DISTANCES[1]))
+                title = backport.text(R.strings.tooltips.tank_params.avgParamComment.dyn(rangeParamName)(), **args)
+                avgItem = VehicleParamsItem()
+                avgItem.setValue(self._formatValueText(ValueStyleEnum.WHITESPANISH, fmtValue))
+                avgItem.setTitle(title)
+                items.addViewModel(avgItem)
 
         categories.addViewModel(category)

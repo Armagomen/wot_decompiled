@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/battleground/component_loading.py
-import functools
-import weakref
-import BigWorld
+import functools, weakref, BigWorld
 from battleground.iself_assembler import ISelfAssembler
 from cgf_obsolete_script.script_game_object import ComponentDescriptorTyped, ScriptGameObject
 from vehicle_systems import stricted_loading
@@ -37,7 +33,7 @@ class CompositeLoaderMixin(object):
         return
 
     def _piecesNum(self):
-        pass
+        return 1
 
 
 def loadComponentSystem(componentSystem, callback, resourceMapping=None, forceForegroundLoad=False):
@@ -63,9 +59,9 @@ def _processLoadedList(componentSystemWeak, callback, resourceMapping, resourceL
     componentSystem = componentSystemWeak()
     if componentSystem is None:
         return
-    elif getattr(componentSystem, 'stopLoading', False):
-        return
     else:
+        if getattr(componentSystem, 'stopLoading', False):
+            return
         for componentName, loader in resourceMapping.iteritems():
             classMember = getattr(componentSystem.__class__, componentName)
             resourceLoader = loader.resourceLoader

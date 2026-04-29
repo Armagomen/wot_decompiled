@@ -1,11 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/common/settings/SettingsWindow.py
-import Sound
-import functools
-import BattleReplay
-import BigWorld
-import WGC
-import VOIP
+from __future__ import absolute_import
+from future.utils import viewitems
+import Sound, functools, BattleReplay, BigWorld, WGC, VOIP
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import COLOR_SETTINGS_TAB_IDX
 from account_helpers.settings_core.ServerSettingsManager import LIMITED_UI_KEY
@@ -40,15 +35,11 @@ from skeletons.gui.battle_hints.newbie_battle_hints_controller import INewbieBat
 from uilogging.limited_ui.constants import LimitedUILogItem, LimitedUILogScreenParent
 from uilogging.limited_ui.loggers import LimitedUILogger
 from uilogging.newbie_hints.loggers import NewbieHintsSettingsUILogger, NewbieHintsSettingsTooltipsUILogger
-_PAGES = (SETTINGS.GAMETITLE,
- SETTINGS.GRAFICTITLE,
- SETTINGS.SOUNDTITLE,
- SETTINGS.KEYBOARDTITLE,
- SETTINGS.CURSORTITLE,
- SETTINGS.MARKERTITLE,
- SETTINGS.FEEDBACK,
- SETTINGS.OTHERTITLE)
-_PAGES_INDICES = dict(((v, k) for k, v in enumerate(_PAGES)))
+_PAGES = (
+ SETTINGS.GAMETITLE, SETTINGS.GRAFICTITLE, SETTINGS.SOUNDTITLE,
+ SETTINGS.KEYBOARDTITLE, SETTINGS.CURSORTITLE, SETTINGS.MARKERTITLE,
+ SETTINGS.FEEDBACK, SETTINGS.OTHERTITLE)
+_PAGES_INDICES = dict((v, k) for k, v in enumerate(_PAGES))
 _g_lastTabIdx = 0
 
 def _getLastTabIndex():
@@ -87,22 +78,21 @@ class SettingsWindow(SettingsWindowMeta):
 
     @proto_getter(PROTO_TYPE.BW_CHAT2)
     def bwProto(self):
-        return None
+        return
 
     def __getSettingsParam(self):
-        settings = {SETTINGS_GROUP.GAME_SETTINGS: self.params.getGameSettings(),
-         SETTINGS_GROUP.GRAPHICS_SETTINGS: self.params.getGraphicsSettings(),
-         SETTINGS_GROUP.SOUND_SETTINGS: self.params.getSoundSettings(),
-         SETTINGS_GROUP.CONTROLS_SETTINGS: self.params.getControlsSettings(),
-         SETTINGS_GROUP.AIM_SETTINGS: self.params.getAimSettings(),
-         SETTINGS_GROUP.MARKERS_SETTINGS: self.params.getMarkersSettings(),
-         SETTINGS_GROUP.FEEDBACK_SETTINGS: self.params.getFeedbackSettings()}
+        settings = {SETTINGS_GROUP.GAME_SETTINGS: self.params.getGameSettings(), 
+           SETTINGS_GROUP.GRAPHICS_SETTINGS: self.params.getGraphicsSettings(), 
+           SETTINGS_GROUP.SOUND_SETTINGS: self.params.getSoundSettings(), 
+           SETTINGS_GROUP.CONTROLS_SETTINGS: self.params.getControlsSettings(), 
+           SETTINGS_GROUP.AIM_SETTINGS: self.params.getAimSettings(), 
+           SETTINGS_GROUP.MARKERS_SETTINGS: self.params.getMarkersSettings(), 
+           SETTINGS_GROUP.FEEDBACK_SETTINGS: self.params.getFeedbackSettings()}
         return settings
 
     def __getSettings(self):
         settings = self.__getSettingsParam()
-        return {key:{'keys': value.keys(),
-         'values': value.values()} for key, value in settings.iteritems()}
+        return {key:{'keys': value.keys(), 'values': value.values()} for key, value in viewitems(settings)}
 
     def __commitSettings(self, settings=None, restartApproved=False, isCloseWnd=False):
         if settings is None:
@@ -141,16 +131,17 @@ class SettingsWindow(SettingsWindowMeta):
 
     def _populate(self):
         super(SettingsWindow, self)._populate()
-        dataVO = [{'label': SETTINGS.FEEDBACK_TAB_DAMAGEINDICATOR,
-          'linkage': VIEW_ALIAS.FEEDBACK_DAMAGE_INDICATOR},
-         {'label': SETTINGS.FEEDBACK_TAB_EVENTSINFO,
-          'linkage': VIEW_ALIAS.FEEDBACK_BATTLE_EVENTS},
-         {'label': SETTINGS.FEEDBACK_TAB_DAMAGELOGPANEL,
-          'linkage': VIEW_ALIAS.FEEDBACK_DAMAGE_LOG},
-         {'label': SETTINGS.FEEDBACK_TAB_BATTLEBORDERMAP,
-          'linkage': VIEW_ALIAS.FEEDBACK_BATTLE_BORDER_MAP},
-         {'label': SETTINGS.FEEDBACK_TAB_QUESTSPROGRESS,
-          'linkage': VIEW_ALIAS.FEEDBACK_QUESTS_PROGRESS}]
+        dataVO = [
+         {'label': SETTINGS.FEEDBACK_TAB_DAMAGEINDICATOR, 
+            'linkage': VIEW_ALIAS.FEEDBACK_DAMAGE_INDICATOR},
+         {'label': SETTINGS.FEEDBACK_TAB_EVENTSINFO, 
+            'linkage': VIEW_ALIAS.FEEDBACK_BATTLE_EVENTS},
+         {'label': SETTINGS.FEEDBACK_TAB_DAMAGELOGPANEL, 
+            'linkage': VIEW_ALIAS.FEEDBACK_DAMAGE_LOG},
+         {'label': SETTINGS.FEEDBACK_TAB_BATTLEBORDERMAP, 
+            'linkage': VIEW_ALIAS.FEEDBACK_BATTLE_BORDER_MAP},
+         {'label': SETTINGS.FEEDBACK_TAB_QUESTSPROGRESS, 
+            'linkage': VIEW_ALIAS.FEEDBACK_QUESTS_PROGRESS}]
         self.as_setFeedbackDataProviderS(dataVO)
         if self.__redefinedKeyModeEnabled:
             BigWorld.wg_setRedefineKeysMode(True)
@@ -259,7 +250,9 @@ class SettingsWindow(SettingsWindowMeta):
     def autodetectPhysicsSoundQuality(self):
         options = settings_constants.SoundPhysicsQuality.ORDER
         recommendedPreset = Sound.getRecommendedPreset()
-        return recommendedPreset if recommendedPreset in options else settings_constants.SoundPhysicsQuality.DISABLE
+        if recommendedPreset in options:
+            return recommendedPreset
+        return settings_constants.SoundPhysicsQuality.DISABLE
 
     def canSelectAcousticType(self, index):
         index = int(index)
@@ -288,10 +281,10 @@ class SettingsWindow(SettingsWindowMeta):
             return False
         return True
 
-    def startVOIPTest(self, isStart):
-        LOG_DEBUG('Vivox test: %s' % str(isStart))
+    def startVOIPTest(self, isVoiceTestStarted):
+        LOG_DEBUG('Vivox test: %s' % str(isVoiceTestStarted))
         rh = VOIP.getVOIPManager()
-        if isStart:
+        if isVoiceTestStarted:
             rh.enterTestChannel()
         else:
             rh.leaveTestChannel()
@@ -335,11 +328,9 @@ class SettingsWindow(SettingsWindowMeta):
         ctx = None
         applyMethod = functools.partial(self.applySettings, settings, False)
         if dialogID == SETTINGS_DIALOGS.MINIMAP_ALPHA_NOTIFICATION:
-            ctx = {'icon': icons.alert(),
-             'alert': makeHtmlString('html_templates:lobby/dialogs', 'minimapAlphaNotification', {'message': backport.text(R.strings.dialogs.minimapAlphaNotification.message.alert())})}
+            ctx = {'icon': icons.alert(), 'alert': makeHtmlString('html_templates:lobby/dialogs', 'minimapAlphaNotification', {'message': backport.text(R.strings.dialogs.minimapAlphaNotification.message.alert())})}
         elif dialogID == SETTINGS_DIALOGS.LIMITED_UI_OFF_NOTIFICATION:
-            ctx = {'icon': icons.alert(),
-             'alert': makeHtmlString('html_templates:lobby/dialogs', 'limitedUIOffNotification', {'message': backport.text(R.strings.dialogs.limitedUIOffNotification.message.alert())})}
+            ctx = {'icon': icons.alert(), 'alert': makeHtmlString('html_templates:lobby/dialogs', 'limitedUIOffNotification', {'message': backport.text(R.strings.dialogs.limitedUIOffNotification.message.alert())})}
             applyMethod = self.__applyLimitedUISetting
 
         def callback(isOk):
@@ -354,9 +345,9 @@ class SettingsWindow(SettingsWindowMeta):
         return
 
     def openGammaWizard(self, x, y, size):
-        g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.GAMMA_WIZARD), ctx={'x': x,
-         'y': y,
-         'size': size}), EVENT_BUS_SCOPE.DEFAULT)
+        g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.GAMMA_WIZARD), ctx={'x': x, 
+           'y': y, 
+           'size': size}), EVENT_BUS_SCOPE.DEFAULT)
 
     def openColorSettings(self):
         g_eventBus.handleEvent(events.LoadViewEvent(SFViewLoadParams(VIEW_ALIAS.COLOR_SETTING)), EVENT_BUS_SCOPE.DEFAULT)
@@ -371,12 +362,14 @@ class SettingsWindow(SettingsWindowMeta):
     def __isGraphicsPresetApplied(self, settings):
         allsettings = BigWorld.getGraphicsPresetPropertyNames()
         isGraphicsQualitySettings = False
-        for settingKey in settings.iterkeys():
+        for settingKey in settings:
             if settingKey in allsettings:
                 isGraphicsQualitySettings = True
                 break
 
-        return self.as_isPresetAppliedS() if isGraphicsQualitySettings else True
+        if isGraphicsQualitySettings:
+            return self.as_isPresetAppliedS()
+        return True
 
     def __onSettingsChanged(self, diff):
         if settings_constants.GRAPHICS.COLOR_GRADING_TECHNIQUE in diff:

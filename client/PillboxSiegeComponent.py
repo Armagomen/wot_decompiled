@@ -1,9 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/PillboxSiegeComponent.py
+from __future__ import absolute_import, division
 import weakref
 from collections import namedtuple
-import BigWorld
-import CGF
+import BigWorld, CGF
 from constants import VEHICLE_SIEGE_STATE
 from gui.shared.utils.decorators import ReprInjector
 from vehicles.components.component_wrappers import ifPlayerVehicle, ifObservedVehicle
@@ -31,7 +29,9 @@ class PillboxSiegeModeState(namedtuple('PillboxSiegeModeState', ('state', 'nextS
 
     @property
     def progress(self):
-        return 1.0 - self.timeLeft / self.baseTime if self.baseTime > 0 else 1.0
+        if self.baseTime > 0:
+            return 1.0 - self.timeLeft / self.baseTime
+        return 1.0
 
     @property
     def timeLeft(self):
@@ -49,7 +49,9 @@ class PillboxSiegeModeState(namedtuple('PillboxSiegeModeState', ('state', 'nextS
         nextMode = self.nextState
         if currentMode > nextMode:
             return VEHICLE_SIEGE_STATE.SWITCHING_OFF
-        return VEHICLE_SIEGE_STATE.SWITCHING_ON if currentMode < nextMode else currentMode
+        if currentMode < nextMode:
+            return VEHICLE_SIEGE_STATE.SWITCHING_ON
+        return currentMode
 
 
 @ReprInjector.withParent()
@@ -126,19 +128,20 @@ class PillboxSiegeComponent(VehicleDynamicComponent, IMechanicComponent, IMechan
     def __attachInput(self, _):
         if self.__tapAction is not None or self.__holdAction is not None:
             return
-        else:
-            self.__tapAction = tapAction = InputAction(CMD_CM_VEHICLE_SWITCH_AUTOROTATION, [InputTriggerTap(self.TAP_TIME)], PlayerVehicleInputPredicate(self.entity))
-            tapAction.bindEventReaction(TriggerEvent.Triggered, self.__onTapCompleted)
-            tapAction.bindEventReaction(TriggerEvent.Canceled, self.__onTapCanceled)
-            self.__holdAction = holdAction = InputAction(CMD_CM_VEHICLE_SWITCH_AUTOROTATION, [InputTriggerHold(self.HOLD_TIME)], PlayerVehicleInputPredicate(self.entity))
-            holdAction.bindEventReaction(TriggerEvent.Started, self.__onHoldStarted)
-            holdAction.bindEventReaction(TriggerEvent.Canceled, self.__onHoldCanceled)
-            holdAction.bindEventReaction(TriggerEvent.Completed, self.__onHoldCompleted)
-            inputSingleton = CGF.findSingleton(self.entity.spaceID, InputSingleton)
-            if inputSingleton is not None:
-                inputSingleton.addAction(self.TAP_ACTION_NAME, tapAction)
-                inputSingleton.addAction(self.HOLD_ACTION_NAME, holdAction)
-            return
+        self.__tapAction = tapAction = InputAction(CMD_CM_VEHICLE_SWITCH_AUTOROTATION, [
+         InputTriggerTap(self.TAP_TIME)], PlayerVehicleInputPredicate(self.entity))
+        tapAction.bindEventReaction(TriggerEvent.Triggered, self.__onTapCompleted)
+        tapAction.bindEventReaction(TriggerEvent.Canceled, self.__onTapCanceled)
+        self.__holdAction = holdAction = InputAction(CMD_CM_VEHICLE_SWITCH_AUTOROTATION, [
+         InputTriggerHold(self.HOLD_TIME)], PlayerVehicleInputPredicate(self.entity))
+        holdAction.bindEventReaction(TriggerEvent.Started, self.__onHoldStarted)
+        holdAction.bindEventReaction(TriggerEvent.Canceled, self.__onHoldCanceled)
+        holdAction.bindEventReaction(TriggerEvent.Completed, self.__onHoldCompleted)
+        inputSingleton = CGF.findSingleton(self.entity.spaceID, InputSingleton)
+        if inputSingleton is not None:
+            inputSingleton.addAction(self.TAP_ACTION_NAME, tapAction)
+            inputSingleton.addAction(self.HOLD_ACTION_NAME, holdAction)
+        return
 
     @ifPlayerVehicle
     def __detachInput(self, _):

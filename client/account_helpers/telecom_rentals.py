@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/account_helpers/telecom_rentals.py
-import logging
-import typing
-import AccountCommands
+import logging, typing, AccountCommands
 from Event import Event
 from account_helpers import AccountSyncData
 from gui.server_events import settings
@@ -49,26 +45,27 @@ class TelecomRentals(object):
         self._account._doCmdInt(AccountCommands.CMD_TELECOM_RENTALS_VEHICLE_RENT_AMOUNT, amount, self._onCmdResponseReceived)
 
     def hasPartnership(self):
-        subscritionToken = self._tokens.getToken(PARTNERSHIP_TOKEN_NAME)
-        return bool(subscritionToken)
+        return bool(self._tokens.getToken(PARTNERSHIP_TOKEN_NAME))
 
     def isBlocked(self):
-        subscritionToken = self._tokens.getToken(PARTNERSHIP_BLOCKED_TOKEN_NAME)
-        return bool(subscritionToken)
+        return bool(self._tokens.getToken(PARTNERSHIP_BLOCKED_TOKEN_NAME))
 
     def isActive(self):
         serverSettings = self._lobbyContext.getServerSettings()
         isRentalEnabled = serverSettings.isTelecomRentalsEnabled()
-        subscritionToken = self.hasPartnership()
-        return True if subscritionToken and isRentalEnabled else False
+        return self.hasPartnership() and isRentalEnabled
 
     def getRosterExpirationTime(self):
         rosterToken = self._tokens.getToken(ROSTER_EXPIRATION_TOKEN_NAME)
-        return rosterToken[0] if rosterToken else 0
+        if rosterToken:
+            return rosterToken[0]
+        return 0
 
     def getTotalRentCount(self):
         rentToken = self._tokens.getToken(ROSTER_EXPIRATION_TOKEN_NAME)
-        return 0 if not rentToken else rentToken[1]
+        if not rentToken:
+            return 0
+        return rentToken[1]
 
     def getAvailableRentCount(self):
         rentToken = self._tokens.getToken(ROSTER_EXPIRATION_TOKEN_NAME)
@@ -78,7 +75,7 @@ class TelecomRentals(object):
         return max(0, rentToken[1] - telecomVehiclesCount)
 
     def setRentPending(self, vehCD):
-        with settings.telecomRentalsSettings() as dt:
+        with settings.telecomRentalsSettings() as (dt):
             dt.setRentPending(vehCD)
         self.onPendingRentChanged(vehCD)
 
@@ -86,7 +83,7 @@ class TelecomRentals(object):
         return settings.getTelecomRentalsSettings().pendingRentals
 
     def resetRentsPending(self, vehCDs):
-        with settings.telecomRentalsSettings() as dt:
+        with settings.telecomRentalsSettings() as (dt):
             for vehCD in vehCDs:
                 dt.resetRentPending(vehCD)
 

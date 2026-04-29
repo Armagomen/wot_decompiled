@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/cyberSport/CyberSportMainWindow.py
 from UnitBase import UNIT_BROWSER_ERROR
 from adisp import adisp_process
 from constants import PREBATTLE_TYPE
@@ -56,7 +54,7 @@ class CyberSportMainWindow(CyberSportMainWindowMeta):
 
     @prbPeripheriesHandlerProperty
     def prbPeripheriesHandler(self):
-        return None
+        return
 
     def onUnitRejoin(self):
         if not self.prbEntity.getFlags().isInIdle():
@@ -212,13 +210,11 @@ class CyberSportMainWindow(CyberSportMainWindowMeta):
             model = self.__createAutoUpdateModel(self.__currentState, timeLeft, '', self.prbEntity.getReadyStates())
             _, unit = self.prbEntity.getUnit()
             if unit and unit.isRosterSet(ignored=CREATOR_ROSTER_SLOT_INDEXES):
-                model['extraData'] = {'showAlert': True,
-                 'alertTooltip': TOOLTIPS.CYBERSPORT_WAITINGPLAYERS_CONFIGALERT,
-                 'alertIcon': RES_ICONS.MAPS_ICONS_LIBRARY_GEAR}
+                model['extraData'] = {'showAlert': True, 'alertTooltip': TOOLTIPS.CYBERSPORT_WAITINGPLAYERS_CONFIGALERT, 
+                   'alertIcon': RES_ICONS.MAPS_ICONS_LIBRARY_GEAR}
             else:
-                model['extraData'] = {'showAlert': False,
-                 'alertTooltip': '',
-                 'alertIcon': ''}
+                model['extraData'] = {'showAlert': False, 'alertTooltip': '', 
+                   'alertIcon': ''}
         elif self.__currentState == CYBER_SPORT_ALIASES.AUTO_SEARCH_ENEMY_STATE:
             model = self.__createAutoUpdateModel(self.__currentState, timeLeft, '', [])
         elif self.__currentState == CYBER_SPORT_ALIASES.AUTO_SEARCH_ERROR_STATE:
@@ -234,12 +230,12 @@ class CyberSportMainWindow(CyberSportMainWindowMeta):
 
     def __createAutoUpdateModel(self, state, countDownSeconds, ctxMessage, playersReadiness):
         permissions = self.prbEntity.getPermissions(unitMgrID=self.prbEntity.getID())
-        model = {'state': state,
-         'countDownSeconds': countDownSeconds,
-         'contextMessage': ctxMessage,
-         'playersReadiness': playersReadiness,
-         'canInvokeAutoSearch': permissions.canStartAutoSearch(),
-         'canInvokeBattleQueue': permissions.canStopBattleQueue()}
+        model = {'state': state, 
+           'countDownSeconds': countDownSeconds, 
+           'contextMessage': ctxMessage, 
+           'playersReadiness': playersReadiness, 
+           'canInvokeAutoSearch': permissions.canStartAutoSearch(), 
+           'canInvokeBattleQueue': permissions.canStopBattleQueue()}
         return model
 
     def __addPlayerNotification(self, key, pInfo):

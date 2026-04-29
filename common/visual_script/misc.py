@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/visual_script/misc.py
 import typing
 from debug_utils import LOG_ERROR, LOG_WARNING
 if typing.TYPE_CHECKING:
@@ -17,7 +15,8 @@ class ASPECT(object):
     SERVER = 'SERVER'
     CLIENT = 'CLIENT'
     HANGAR = 'HANGAR'
-    ALL = [CLIENT, SERVER, HANGAR]
+    ALL = [
+     CLIENT, SERVER, HANGAR]
 
 
 class EDITOR_TYPE(object):
@@ -43,7 +42,7 @@ class BLOCK_MODE(object):
 
 
 def makePlanPath(planName):
-    return 'vscript/plans/{}.xml'.format(planName)
+    return ('vscript/plans/{}.xml').format(planName)
 
 
 def errorVScript(owner, msg):
@@ -57,12 +56,22 @@ def warningVScript(owner, msg):
 
 
 def readVisualScriptPlanParams(section, commonParams={}):
+    PARAM_READERS = {'string': lambda val: val.asString, 
+       'int': lambda val: val.asInt, 
+       'float': lambda val: val.asFloat, 
+       'bool': lambda val: val.asBool}
+    DEFAULT_PARAM_READER = PARAM_READERS['string']
     params = dict(commonParams.items())
     if section.has_key('params'):
         for name, subsection in section['params'].items():
+            if subsection.has_key('type'):
+                paramReader = PARAM_READERS.get(subsection['type'].asString, DEFAULT_PARAM_READER)
+            else:
+                paramReader = DEFAULT_PARAM_READER
             if subsection.has_key('item'):
-                params[name] = [ value.asString for idx, value in subsection.items() ]
-            params[name] = subsection.asString
+                params[name] = [ paramReader(value) for idx, value in subsection.items() ]
+            else:
+                params[name] = paramReader(subsection)
 
     return params
 
@@ -94,13 +103,13 @@ def readVisualScriptSection(section, aspects=None):
         aspects = ASPECT.ALL
     if not aspects:
         return {}
-    elif section.has_key(VisualScriptTag):
-        vseSection = section[VisualScriptTag]
-        commonParams = {}
-        if vseSection.has_key('common'):
-            commonParams = readVisualScriptPlanParams(vseSection['common'])
-        return {aspect:_readVisualScriptAspect(vseSection, aspect.lower(), commonParams) for aspect in aspects}
     else:
+        if section.has_key(VisualScriptTag):
+            vseSection = section[VisualScriptTag]
+            commonParams = {}
+            if vseSection.has_key('common'):
+                commonParams = readVisualScriptPlanParams(vseSection['common'])
+            return {aspect:_readVisualScriptAspect(vseSection, aspect.lower(), commonParams) for aspect in aspects}
         return {aspect:[] for aspect in aspects}
 
 

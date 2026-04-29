@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_results/progression/personal_missions_progress_model.py
 from enum import Enum
 from gui.impl.gen.view_models.views.lobby.personal_missions_30.common.enums import MissionCategory
 from frameworks.wulf import Array, ViewModel
@@ -14,7 +12,7 @@ class PM3Status(Enum):
 
 
 class PersonalMissionsProgressModel(ViewModel):
-    __slots__ = ('onNavigate',)
+    __slots__ = ('onNavigate', )
     PATH = 'coui://gui/gameface/_dist/production/mono/plugins/personal_missions_30/post_battle/post_battle.js'
 
     def __init__(self, properties=9, commands=1):

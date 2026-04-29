@@ -1,13 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/timers_panel.py
-import logging
-import math
-import typing
-import weakref
+from __future__ import absolute_import
+import logging, math, typing, weakref
 from collections import defaultdict
-import BigWorld
-import BattleReplay
-import SoundGroups
+from future.utils import viewitems, viewvalues
+from past.builtins import cmp
+import BigWorld, BattleReplay, SoundGroups
 from AvatarInputHandler import AvatarInputHandler
 from ReplayEvents import g_replayEvents
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
@@ -37,20 +33,21 @@ if typing.TYPE_CHECKING:
     from typing import List
     from TargetDesignatorTargetController import TargetDesignatorTargetController
 _logger = logging.getLogger(__name__)
-_TIMERS_PRIORITY = {(_TIMER_STATES.FIRE, _TIMER_STATES.WARNING_VIEW): 1,
- (_TIMER_STATES.OVERTURNED, _TIMER_STATES.CRITICAL_VIEW): 2,
- (_TIMER_STATES.OVERTURNED, _TIMER_STATES.WARNING_VIEW): 3,
- (_TIMER_STATES.DROWN, _TIMER_STATES.CRITICAL_VIEW): 4,
- (_TIMER_STATES.DANGER_ZONE, _TIMER_STATES.CRITICAL_VIEW): 5,
- (_TIMER_STATES.MAP_DEATH_ZONE, _TIMER_STATES.WARNING_VIEW): 6,
- (_TIMER_STATES.WARNING_ZONE, _TIMER_STATES.WARNING_VIEW): 7,
- (_TIMER_STATES.DROWN, _TIMER_STATES.WARNING_VIEW): 8,
- (_TIMER_STATES.TARGET_DESIGNATOR_SPOTTED_MARKER, _TIMER_STATES.WARNING_VIEW): 9,
- (_TIMER_STATES.STUN, _TIMER_STATES.WARNING_VIEW): 10,
- (_TIMER_STATES.INSPIRE, _TIMER_STATES.WARNING_VIEW): 11,
- (_TIMER_STATES.INSPIRE_SOURCE, _TIMER_STATES.WARNING_VIEW): 11,
- (_TIMER_STATES.INSPIRE_INACTIVATION_SOURCE, _TIMER_STATES.WARNING_VIEW): 11}
-_SECONDARY_TIMERS = (_TIMER_STATES.STUN,
+_TIMERS_PRIORITY = {(_TIMER_STATES.FIRE, _TIMER_STATES.WARNING_VIEW): 1, 
+   (_TIMER_STATES.OVERTURNED, _TIMER_STATES.CRITICAL_VIEW): 2, 
+   (_TIMER_STATES.OVERTURNED, _TIMER_STATES.WARNING_VIEW): 3, 
+   (_TIMER_STATES.DROWN, _TIMER_STATES.CRITICAL_VIEW): 4, 
+   (_TIMER_STATES.DANGER_ZONE, _TIMER_STATES.CRITICAL_VIEW): 5, 
+   (_TIMER_STATES.MAP_DEATH_ZONE, _TIMER_STATES.WARNING_VIEW): 6, 
+   (_TIMER_STATES.WARNING_ZONE, _TIMER_STATES.WARNING_VIEW): 7, 
+   (_TIMER_STATES.DROWN, _TIMER_STATES.WARNING_VIEW): 8, 
+   (_TIMER_STATES.TARGET_DESIGNATOR_SPOTTED_MARKER, _TIMER_STATES.WARNING_VIEW): 9, 
+   (_TIMER_STATES.STUN, _TIMER_STATES.WARNING_VIEW): 10, 
+   (_TIMER_STATES.INSPIRE, _TIMER_STATES.WARNING_VIEW): 11, 
+   (_TIMER_STATES.INSPIRE_SOURCE, _TIMER_STATES.WARNING_VIEW): 11, 
+   (_TIMER_STATES.INSPIRE_INACTIVATION_SOURCE, _TIMER_STATES.WARNING_VIEW): 11}
+_SECONDARY_TIMERS = (
+ _TIMER_STATES.STUN,
  _TIMER_STATES.CAPTURE_BLOCK,
  _TIMER_STATES.INSPIRE,
  _TIMER_STATES.INSPIRE_CD,
@@ -63,7 +60,8 @@ _SECONDARY_TIMERS = (_TIMER_STATES.STUN,
  _TIMER_STATES.REPAIRING,
  _TIMER_STATES.REPAIRING_CD,
  _TIMER_STATES.TARGET_DESIGNATOR_SPOTTED_MARKER)
-_ON_VEHICLE_CONTROLLING_UPDATE = (VEHICLE_VIEW_STATE.FIRE,
+_ON_VEHICLE_CONTROLLING_UPDATE = (
+ VEHICLE_VIEW_STATE.FIRE,
  VEHICLE_VIEW_STATE.DESTROY_TIMER,
  VEHICLE_VIEW_STATE.DEATHZONE_TIMER,
  VEHICLE_VIEW_STATE.STUN,
@@ -137,7 +135,7 @@ class _BaseTimersCollection(object):
     def clear(self):
         pass
 
-    def addTimer(self, typeID, viewID, totalTime, finishTime, startTimer=None):
+    def addTimer(self, typeID, viewID, totalTime, finishTime, startTime=None):
         pass
 
     def addSecondaryTimer(self, typeID, viewID, totalTime, finishTime, startTime=None):
@@ -160,7 +158,7 @@ class _TimersCollection(_BaseTimersCollection):
             _, timer = self._timers.popitem()
             timer.clear()
 
-    def addTimer(self, typeID, viewID, totalTime, finishTime, startTimer=None):
+    def addTimer(self, typeID, viewID, totalTime, finishTime, startTime=None):
         if typeID in self._timers:
             timer = self._timers.pop(typeID)
             timer.clear()
@@ -183,7 +181,9 @@ class _TimersCollection(_BaseTimersCollection):
 
 
 class _StackTimersCollection(_BaseTimersCollection):
-    __slots__ = ('_currentTimer', '_currentSecondaryTimers', '_priorityMap', '_prioritySecondaryMap', '_maxDisplayedSecondaryTimers')
+    __slots__ = ('_currentTimer', '_currentSecondaryTimers', '_priorityMap', '_prioritySecondaryMap',
+                 '_maxDisplayedSecondaryTimers')
+    _TIMERS_PRIORITY = _TIMERS_PRIORITY
 
     def __init__(self, panel, clazz):
         super(_StackTimersCollection, self).__init__(panel, clazz)
@@ -208,7 +208,7 @@ class _StackTimersCollection(_BaseTimersCollection):
             oldTimer = self._timers.pop(typeID)
             if self._currentTimer and self._currentTimer.typeID == typeID:
                 self._currentTimer = None
-            for timersSet in self._priorityMap.itervalues():
+            for timersSet in viewvalues(self._priorityMap):
                 timersSet.discard(typeID)
 
         else:
@@ -216,7 +216,7 @@ class _StackTimersCollection(_BaseTimersCollection):
         timer = self._clazz(self._panel, typeID, viewID, totalTime, finishTime, startTime)
         _logger.debug('Adds destroy timer %s', timer)
         self._timers[typeID] = timer
-        timerPriority = _TIMERS_PRIORITY[timer.typeID, timer.viewID]
+        timerPriority = self._TIMERS_PRIORITY[(timer.typeID, timer.viewID)]
         self._priorityMap[timerPriority].add(timer.typeID)
         if timerPriority == 0:
             timer.show()
@@ -225,7 +225,7 @@ class _StackTimersCollection(_BaseTimersCollection):
             if self._currentTimer is not None:
                 self._currentTimer.show(self._currentTimer.typeID == timer.typeID)
         else:
-            cmpResult = cmp(timerPriority, _TIMERS_PRIORITY[self._currentTimer.typeID, self._currentTimer.viewID])
+            cmpResult = cmp(timerPriority, self._TIMERS_PRIORITY[(self._currentTimer.typeID, self._currentTimer.viewID)])
             if cmpResult == -1 or cmpResult == 0 and self._currentTimer.finishTime >= timer.finishTime:
                 self._currentTimer.hide()
                 self._currentTimer = timer
@@ -238,7 +238,7 @@ class _StackTimersCollection(_BaseTimersCollection):
         timer = self._clazz(self._panel, typeID, viewID, totalTime, finishTime, startTime, secondInRow=secondInRow)
         _logger.debug('Adds secondary timer %s', timer)
         self._timers[typeID] = timer
-        timerPriority = _TIMERS_PRIORITY[timer.typeID, timer.viewID]
+        timerPriority = self._TIMERS_PRIORITY[(timer.typeID, timer.viewID)]
         self._prioritySecondaryMap[timerPriority].add(timer.typeID)
         if not self._currentSecondaryTimers:
             self._currentSecondaryTimers.append(timer)
@@ -261,7 +261,7 @@ class _StackTimersCollection(_BaseTimersCollection):
     def removeTimer(self, typeID):
         if typeID in self._timers:
             timer = self._timers.pop(typeID)
-            self._priorityMap[_TIMERS_PRIORITY[typeID, timer.viewID]].discard(typeID)
+            self._priorityMap[self._TIMERS_PRIORITY[(typeID, timer.viewID)]].discard(typeID)
             if self._currentTimer and self._currentTimer.typeID == typeID:
                 timer.hide()
                 self._currentTimer = None
@@ -273,7 +273,7 @@ class _StackTimersCollection(_BaseTimersCollection):
     def removeSecondaryTimer(self, typeID):
         if typeID in self._timers and typeID in _SECONDARY_TIMERS:
             timer = self._timers.pop(typeID)
-            self._prioritySecondaryMap[_TIMERS_PRIORITY[typeID, timer.viewID]].discard(typeID)
+            self._prioritySecondaryMap[self._TIMERS_PRIORITY[(typeID, timer.viewID)]].discard(typeID)
             if timer in self._currentSecondaryTimers:
                 timer.hide()
                 self._currentSecondaryTimers.remove(timer)
@@ -282,7 +282,7 @@ class _StackTimersCollection(_BaseTimersCollection):
     def removeTimers(self):
         if self._currentTimer:
             self._currentTimer.hide()
-        for timer in self._timers.itervalues():
+        for timer in viewvalues(self._timers):
             timer.hide()
 
         self._currentSecondaryTimers = []
@@ -307,14 +307,15 @@ class _StackTimersCollection(_BaseTimersCollection):
         for currTimer in self._currentSecondaryTimers:
             if currTimer.typeID in activeTimers and activeTimers.index(currTimer.typeID) >= self._maxDisplayedSecondaryTimers:
                 currTimer.hide()
-            currTimer.show(bubble)
+            else:
+                currTimer.show(bubble)
 
     def getActiveSecondaryTimerIDs(self):
         if not self._timers:
             return []
         activeTimers = []
         now = BigWorld.serverTime()
-        timerIDs = set((key for key, value in self._timers.iteritems() if now < value.finishTime or value.totalTime == 0))
+        timerIDs = set(key for key, value in viewitems(self._timers) if now < value.finishTime or value.totalTime == 0)
         for priority, timersSet in sorted(self._prioritySecondaryMap.items(), key=lambda x: x[0]):
             timers = timersSet & timerIDs
             if timers and priority != 0:
@@ -329,17 +330,17 @@ class _StackTimersCollection(_BaseTimersCollection):
 
     def __findNextPriorityByPriorityMap(self):
         if not self._timers:
-            return None
+            return
         else:
             now = BigWorld.serverTime()
-            timerIDs = set((key for key, value in self._timers.iteritems() if now < value.finishTime or value.totalTime == 0))
+            timerIDs = set(key for key, value in viewitems(self._timers) if now < value.finishTime or value.totalTime == 0)
             for priority, timersSet in sorted(self._priorityMap.items(), key=lambda x: x[0]):
                 timers = timersSet & timerIDs
                 if timers and priority != 0:
                     typeID = min(timers, key=lambda x: self._timers[x].finishTime)
                     return self._timers[typeID]
 
-            return None
+            return
 
 
 class _ActionScriptTimerMixin(_BaseTimersCollection):
@@ -386,17 +387,6 @@ class _RegularTimersCollection(_ActionScriptTimerMixin, _TimersCollection):
     pass
 
 
-def _createTimersCollection(panel):
-    sessionProvider = dependency.instance(IBattleSessionProvider)
-    lobbyContext = dependency.instance(ILobbyContext)
-    isReplayPlaying = sessionProvider.isReplayPlaying
-    if lobbyContext.getServerSettings().spgRedesignFeatures.isStunEnabled():
-        TimersCollection = _ReplayStackTimersCollection if isReplayPlaying else _RegularStackTimersCollection
-    else:
-        TimersCollection = _ReplayTimersCollection if isReplayPlaying else _RegularTimersCollection
-    return TimersCollection(weakref.proxy(panel))
-
-
 class TimersPanel(TimersPanelMeta, MethodsRules):
     sessionProvider = dependency.descriptor(IBattleSessionProvider)
     lobbyContext = dependency.descriptor(ILobbyContext)
@@ -408,7 +398,7 @@ class TimersPanel(TimersPanelMeta, MethodsRules):
             self._mapping = mapping
         else:
             self._mapping = _mapping.FrontendMapping()
-        self._timers = _createTimersCollection(self)
+        self._timers = self._getTimersCollectionCls()(weakref.proxy(self))
         self.__sound = None
         self.__stunSoundPlaying = None
         self.__vehicleID = None
@@ -448,7 +438,8 @@ class TimersPanel(TimersPanelMeta, MethodsRules):
             overturnedColor = BATTLE_NOTIFICATIONS_TIMER_COLORS.ORANGE
             iconOffsetY = 0
             overturnedText = ''
-        data = [self._getNotificationTimerData(_TIMER_STATES.DROWN, BATTLE_NOTIFICATIONS_TIMER_LINKAGES.DROWN_ICON, link),
+        data = [
+         self._getNotificationTimerData(_TIMER_STATES.DROWN, BATTLE_NOTIFICATIONS_TIMER_LINKAGES.DROWN_ICON, link),
          self._getNotificationTimerData(_TIMER_STATES.OVERTURNED, overturnedIcon, link, text=overturnedText, color=overturnedColor, iconOffsetY=iconOffsetY),
          self._getNotificationTimerData(_TIMER_STATES.FIRE, BATTLE_NOTIFICATIONS_TIMER_LINKAGES.FIRE_ICON, link),
          self._getNotificationTimerData(_TIMER_STATES.DANGER_ZONE, BATTLE_NOTIFICATIONS_TIMER_LINKAGES.DANGER_ICON, link, text=INGAME_GUI.DANGER_ZONE_INDICATOR, iconOffsetY=-10),
@@ -458,22 +449,24 @@ class TimersPanel(TimersPanelMeta, MethodsRules):
 
     def _generateSecondaryTimersData(self):
         link = BATTLE_NOTIFICATIONS_TIMER_LINKAGES.SECONDARY_TIMER_UI
-        data = [self._getNotificationTimerData(_TIMER_STATES.TARGET_DESIGNATOR_SPOTTED_MARKER, BATTLE_NOTIFICATIONS_TIMER_LINKAGES.TARGET_DESIGNATOR_ICON, link, noiseVisible=False, text=INGAME_GUI.SPOTTED_INDICATOR), self._getNotificationTimerData(_TIMER_STATES.STUN, BATTLE_NOTIFICATIONS_TIMER_LINKAGES.STUN_ICON, link, noiseVisible=True, text=INGAME_GUI.STUN_INDICATOR)]
+        data = [
+         self._getNotificationTimerData(_TIMER_STATES.TARGET_DESIGNATOR_SPOTTED_MARKER, BATTLE_NOTIFICATIONS_TIMER_LINKAGES.TARGET_DESIGNATOR_ICON, link, noiseVisible=False, text=INGAME_GUI.SPOTTED_INDICATOR),
+         self._getNotificationTimerData(_TIMER_STATES.STUN, BATTLE_NOTIFICATIONS_TIMER_LINKAGES.STUN_ICON, link, noiseVisible=True, text=INGAME_GUI.STUN_INDICATOR)]
         return data
 
     def _getNotificationTimerData(self, typeId, iconName, linkage, color=BATTLE_NOTIFICATIONS_TIMER_COLORS.ORANGE, noiseVisible=False, pulseVisible=False, text='', countdownVisible=True, isCanBeMainType=False, priority=10000, iconOffsetY=0, description=''):
-        return {'typeId': typeId,
-         'iconName': iconName,
-         'linkage': linkage,
-         'color': color,
-         'noiseVisible': noiseVisible,
-         'pulseVisible': pulseVisible,
-         'text': text,
-         'countdownVisible': countdownVisible,
-         'isCanBeMainType': isCanBeMainType,
-         'priority': priority,
-         'iconOffsetY': iconOffsetY,
-         'description': description}
+        return {'typeId': typeId, 
+           'iconName': iconName, 
+           'linkage': linkage, 
+           'color': color, 
+           'noiseVisible': noiseVisible, 
+           'pulseVisible': pulseVisible, 
+           'text': text, 
+           'countdownVisible': countdownVisible, 
+           'isCanBeMainType': isCanBeMainType, 
+           'priority': priority, 
+           'iconOffsetY': iconOffsetY, 
+           'description': description}
 
     def _dispose(self):
         ctrl = self.sessionProvider.shared.vehicleState
@@ -496,6 +489,17 @@ class TimersPanel(TimersPanelMeta, MethodsRules):
         self.__equipmentCtrl = None
         super(TimersPanel, self)._dispose()
         return
+
+    @classmethod
+    def _getTimersCollectionCls(cls):
+        isReplayPlaying = cls.sessionProvider.isReplayPlaying
+        if cls.lobbyContext.getServerSettings().spgRedesignFeatures.isStunEnabled():
+            if isReplayPlaying:
+                return _ReplayStackTimersCollection
+            return _RegularStackTimersCollection
+        if isReplayPlaying:
+            return _ReplayTimersCollection
+        return _RegularTimersCollection
 
     def __hideAll(self):
         self._timers.removeTimers()
@@ -584,7 +588,9 @@ class TimersPanel(TimersPanelMeta, MethodsRules):
         return
 
     def _getInspireSecondaryTimerText(self, isSourceVehicle=False):
-        return backport.text(R.strings.epic_battle.inspire.inspiring()) if isSourceVehicle else backport.text(R.strings.epic_battle.inspire.inspired())
+        if isSourceVehicle:
+            return backport.text(R.strings.epic_battle.inspire.inspiring())
+        return backport.text(R.strings.epic_battle.inspire.inspired())
 
     def __stopSound(self):
         if self.__sound is not None:
@@ -604,15 +610,14 @@ class TimersPanel(TimersPanelMeta, MethodsRules):
         vehicle = self.sessionProvider.shared.vehicleState.getControllingVehicle()
         if vehicle is None or not vehicle.isPlayerVehicle:
             return
-        else:
-            hasActiveSecondaryTimer = self._timers.hasActiveSecondaryTimer(_TIMER_STATES.STUN)
-            if isVisible:
-                SoundGroups.g_instance.playSound2D('artillery_stun_effect_start')
-                self.__stunSoundPlaying = True
-            elif not isVisible and hasActiveSecondaryTimer and self.__stunSoundPlaying:
-                SoundGroups.g_instance.playSound2D('artillery_stun_effect_end')
-                self.__stunSoundPlaying = False
-            return
+        hasActiveSecondaryTimer = self._timers.hasActiveSecondaryTimer(_TIMER_STATES.STUN)
+        if isVisible:
+            SoundGroups.g_instance.playSound2D('artillery_stun_effect_start')
+            self.__stunSoundPlaying = True
+        elif not isVisible and hasActiveSecondaryTimer and self.__stunSoundPlaying:
+            SoundGroups.g_instance.playSound2D('artillery_stun_effect_end')
+            self.__stunSoundPlaying = False
+        return
 
     def __showStunTimer(self, value):
         isVisible = value.duration > 0.0
@@ -675,8 +680,8 @@ class TimersPanel(TimersPanelMeta, MethodsRules):
 
     @MethodsRules.delayable()
     def __initData(self):
-        self.as_setInitDataS({'mainTimers': self._generateMainTimersData(),
-         'secondaryTimers': self._generateSecondaryTimersData()})
+        self.as_setInitDataS({'mainTimers': self._generateMainTimersData(), 
+           'secondaryTimers': self._generateSecondaryTimersData()})
 
     @MethodsRules.delayable('__initData')
     @MethodsRules.delayable()

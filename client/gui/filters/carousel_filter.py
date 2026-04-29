@@ -1,10 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/filters/carousel_filter.py
-import copy
-import typing
-import BattleReplay
-import constants
-import nations
+import copy, typing, BattleReplay, constants, nations
 from account_helpers.AccountSettings import AccountSettings, CAROUSEL_FILTER_1, CAROUSEL_FILTER_2, CAROUSEL_FILTER_3, CAROUSEL_FILTER_CLIENT_1
 from gui.prb_control.settings import VEHICLE_LEVELS
 from gui.shared.utils import makeSearchableString
@@ -45,7 +39,7 @@ class _CarouselFilter(object):
         self._clientSections = ()
         self._criteriesGroups = ()
         self._disabledUpdateCriteries = False
-        self.__filterDefaults = None
+        self._filterDefaults = None
         return
 
     @property
@@ -58,9 +52,9 @@ class _CarouselFilter(object):
 
     @property
     def filterDefaults(self):
-        if self.__filterDefaults is None:
-            self.__filterDefaults = AccountSettings.getFilterDefaults(self._serverSections + self._clientSections)
-        return self.__filterDefaults
+        if self._filterDefaults is None:
+            self._filterDefaults = AccountSettings.getFilterDefaults(self._serverSections + self._clientSections)
+        return self._filterDefaults
 
     def setDisabledUpdateCriteries(self, disabled):
         self._disabledUpdateCriteries = disabled
@@ -194,7 +188,9 @@ class CarouselFilter(_CarouselFilter):
         self._criteriesGroups = (EventCriteriesGroup(), CustomizationCriteriesGroup())
 
     def _getFromServerStorage(self, defaultFilters):
-        return defaultFilters if BattleReplay.isPlaying() else self.settingsCore.serverSettings.getSections(self._serverSections, defaultFilters)
+        if BattleReplay.isPlaying():
+            return defaultFilters
+        return self.settingsCore.serverSettings.getSections(self._serverSections, defaultFilters)
 
     def _saveToServer(self):
         if not BattleReplay.isPlaying():
@@ -213,7 +209,17 @@ class SessionCarouselFilter(_CarouselFilter):
     def __init__(self, criteries=None):
         super(SessionCarouselFilter, self).__init__()
         self._clientSections = tuple()
-        self._criteriesGroups = (EventCriteriesGroup(), BasicCriteriesGroup())
+        self._criteriesGroups = (
+         EventCriteriesGroup(), BasicCriteriesGroup())
+
+    @property
+    def filterDefaults(self):
+        if self._filterDefaults is None:
+            self._filterDefaults = dict()
+            for section in self._clientSections:
+                self._filterDefaults.update(AccountSettings.getSessionSettingsDefault(section))
+
+        return self._filterDefaults
 
     def load(self):
         defaultFilters = dict()
@@ -296,7 +302,7 @@ class BasicCriteriesGroup(CriteriesGroup):
     def _setLevelsCriteria(self, filters):
         selectedLevels = []
         for level in VEHICLE_LEVELS:
-            if filters['level_%d' % level]:
+            if filters[('level_%d' % level)]:
                 selectedLevels.append(level)
 
         if selectedLevels:

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/shared/tooltips/comp7_tooltips.py
 import logging
 from comp7.gui.shared.tooltips import TOOLTIP_TYPE
 from comp7_common_const import offerRewardGiftToken
@@ -31,11 +29,15 @@ class BattleResultsRatingPointsTooltip(BlocksTooltipData):
         return items
 
     def __packHeaderBlock(self):
-        blocks = [formatters.packTextBlockData(text_styles.highTitle(backport.text(R.strings.comp7_ext.battleResult.personal.tooltip.title()))), formatters.packTextBlockData(text_styles.main(backport.text(R.strings.comp7_ext.battleResult.personal.tooltip.descr())))]
+        blocks = [
+         formatters.packTextBlockData(text_styles.highTitle(backport.text(R.strings.comp7_ext.battleResult.personal.tooltip.title()))),
+         formatters.packTextBlockData(text_styles.main(backport.text(R.strings.comp7_ext.battleResult.personal.tooltip.descr())))]
         return formatters.packBuildUpBlockData(blocks=blocks)
 
     def __packDescriptionBlock(self):
-        blocks = [formatters.packTextBlockData(text_styles.alert(backport.text(R.strings.comp7_ext.battleResult.personal.tooltip.loseTitle())), padding=formatters.packPadding(top=-6, bottom=4)), formatters.packTextBlockData(text_styles.main(backport.text(R.strings.comp7_ext.battleResult.personal.tooltip.loseDescr())))]
+        blocks = [
+         formatters.packTextBlockData(text_styles.alert(backport.text(R.strings.comp7_ext.battleResult.personal.tooltip.loseTitle())), padding=formatters.packPadding(top=-6, bottom=4)),
+         formatters.packTextBlockData(text_styles.main(backport.text(R.strings.comp7_ext.battleResult.personal.tooltip.loseDescr())))]
         return formatters.packBuildUpBlockData(blocks=blocks, linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE)
 
 
@@ -54,7 +56,9 @@ class BattleResultsTournamentRatingPointsTooltip(BlocksTooltipData):
         return items
 
     def __packHeaderBlock(self):
-        blocks = [formatters.packTextBlockData(text_styles.highTitle(backport.text(R.strings.comp7_ext.battleResult.personal.tooltip.title()))), formatters.packTextBlockData(text_styles.main(backport.text(R.strings.comp7_ext.tournament.battleResult.personal.tooltip.descr())))]
+        blocks = [
+         formatters.packTextBlockData(text_styles.highTitle(backport.text(R.strings.comp7_ext.battleResult.personal.tooltip.title()))),
+         formatters.packTextBlockData(text_styles.main(backport.text(R.strings.comp7_ext.tournament.battleResult.personal.tooltip.descr())))]
         return formatters.packBuildUpBlockData(blocks=blocks)
 
 
@@ -73,7 +77,9 @@ class BattleResultsTrainingRatingPointsTooltip(BlocksTooltipData):
         return items
 
     def __packHeaderBlock(self):
-        blocks = [formatters.packTextBlockData(text_styles.highTitle(backport.text(R.strings.comp7_ext.battleResult.personal.tooltip.title()))), formatters.packTextBlockData(text_styles.main(backport.text(R.strings.comp7_ext.training.battleResult.personal.tooltip.descr())))]
+        blocks = [
+         formatters.packTextBlockData(text_styles.highTitle(backport.text(R.strings.comp7_ext.battleResult.personal.tooltip.title()))),
+         formatters.packTextBlockData(text_styles.main(backport.text(R.strings.comp7_ext.training.battleResult.personal.tooltip.descr())))]
         return formatters.packBuildUpBlockData(blocks=blocks)
 
 
@@ -100,7 +106,8 @@ class Comp7SelectableRewardTooltip(BlocksTooltipData):
 
     @staticmethod
     def __packRewardsBlock(tokenCategory):
-        blocks = [formatters.packTextBlockData(text=text_styles.highTitle(backport.text(R.strings.selectable_reward.tabs.items.dyn(tokenCategory)())), padding={'bottom': 10})]
+        blocks = [
+         formatters.packTextBlockData(text=text_styles.highTitle(backport.text(R.strings.selectable_reward.tabs.items.dyn(tokenCategory)())), padding={'bottom': 10})]
         selectableRewardList = R.strings.comp7_ext.rewardSelection.tooltip.selectableRewardList.dyn(tokenCategory)()
         if selectableRewardList:
             blocks.append(formatters.packTextBlockData(text=text_styles.main(backport.text(selectableRewardList))))

@@ -1,10 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/battle/death_cam/marker_view.py
-import logging
-import math
+from __future__ import absolute_import, division
+import logging, math
 from typing import Optional
-import GUI
-import BigWorld
+import GUI, BigWorld
 from constants import IMPACT_TYPES
 import Math
 from frameworks.wulf.view.submodel_presenter import SubModelPresenter
@@ -14,37 +11,42 @@ from gui.prb_control.entities.listener import IGlobalListener
 from gui.shared.events import DeathCamEvent
 from helpers import dependency
 from helpers.CallbackDelayer import CallbackDelayer
+from math_common import round_py2_style, round_py2_style_int
 from skeletons.gui.battle_session import IBattleSessionProvider
 from items import vehicles
 _logger = logging.getLogger(__name__)
 
 def hasShellPenetrationDistanceLoss(shellType):
-    return shellType == ShellType.ARMORPIERCING or shellType == ShellType.ARMORPIERCINGPREMIUM or shellType == ShellType.ARMORPIERCINGCR or shellType == ShellType.ARMORPIERCINGCRPREMIUM
+    return shellType in (
+     ShellType.ARMORPIERCING,
+     ShellType.ARMORPIERCINGPREMIUM,
+     ShellType.ARMORPIERCINGCR,
+     ShellType.ARMORPIERCINGCRPREMIUM)
 
 
 class DeathCamMarkerView(SubModelPresenter, IGlobalListener):
     __guiSessionProvider = dependency.descriptor(IBattleSessionProvider)
     _HIDE_MARKERS_DURING_PAUSE = False
-    shellIconMap = {'ARMOR_PIERCING': ShellType.ARMORPIERCING,
-     'ARMOR_PIERCING_CR': ShellType.ARMORPIERCINGCR,
-     'ARMOR_PIERCING_CR_GOLD': ShellType.ARMORPIERCINGCRPREMIUM,
-     'ARMOR_PIERCING_GOLD': ShellType.ARMORPIERCINGPREMIUM,
-     'HIGH_EXPLOSIVE': ShellType.HIGHEXPLOSIVE,
-     'HIGH_EXPLOSIVE_MODERN': ShellType.HIGHEXPLOSIVEMODERN,
-     'HIGH_EXPLOSIVE_MODERN_GOLD': ShellType.HIGHEXPLOSIVEMODERNPREMIUM,
-     'HIGH_EXPLOSIVE_GOLD': ShellType.HIGHEXPLOSIVEPREMIUM,
-     'HIGH_EXPLOSIVE_LEGACY_NO_STUN': ShellType.HIGHEXPLOSIVESPG,
-     'HIGH_EXPLOSIVE_LEGACY_STUN': ShellType.HIGHEXPLOSIVESPGSTUN,
-     'HOLLOW_CHARGE': ShellType.HOLLOWCHARGE,
-     'HOLLOW_CHARGE_GOLD': ShellType.HOLLOWCHARGEPREMIUM}
-    __DEATH_REASONS = {'hp': DeathReason.HP,
-     'crew': DeathReason.CREW,
-     'ignition': DeathReason.IGNITION,
-     'detonation': DeathReason.DETONATION}
-    __IMPACT_MODES = {IMPACT_TYPES.PENETRATION: ImpactMode.PENETRATION,
-     IMPACT_TYPES.LEGACY_HE: ImpactMode.LEGACYHE,
-     IMPACT_TYPES.MODERN_HE: ImpactMode.MODERNHE,
-     IMPACT_TYPES.NON_PENETRATION_DAMAGE: ImpactMode.NONPENETRATIONDAMAGE}
+    shellIconMap = {'ARMOR_PIERCING': ShellType.ARMORPIERCING, 
+       'ARMOR_PIERCING_CR': ShellType.ARMORPIERCINGCR, 
+       'ARMOR_PIERCING_CR_GOLD': ShellType.ARMORPIERCINGCRPREMIUM, 
+       'ARMOR_PIERCING_GOLD': ShellType.ARMORPIERCINGPREMIUM, 
+       'HIGH_EXPLOSIVE': ShellType.HIGHEXPLOSIVE, 
+       'HIGH_EXPLOSIVE_MODERN': ShellType.HIGHEXPLOSIVEMODERN, 
+       'HIGH_EXPLOSIVE_MODERN_GOLD': ShellType.HIGHEXPLOSIVEMODERNPREMIUM, 
+       'HIGH_EXPLOSIVE_GOLD': ShellType.HIGHEXPLOSIVEPREMIUM, 
+       'HIGH_EXPLOSIVE_LEGACY_NO_STUN': ShellType.HIGHEXPLOSIVESPG, 
+       'HIGH_EXPLOSIVE_LEGACY_STUN': ShellType.HIGHEXPLOSIVESPGSTUN, 
+       'HOLLOW_CHARGE': ShellType.HOLLOWCHARGE, 
+       'HOLLOW_CHARGE_GOLD': ShellType.HOLLOWCHARGEPREMIUM}
+    __DEATH_REASONS = {'hp': DeathReason.HP, 
+       'crew': DeathReason.CREW, 
+       'ignition': DeathReason.IGNITION, 
+       'detonation': DeathReason.DETONATION}
+    __IMPACT_MODES = {IMPACT_TYPES.PENETRATION: ImpactMode.PENETRATION, 
+       IMPACT_TYPES.LEGACY_HE: ImpactMode.LEGACYHE, 
+       IMPACT_TYPES.MODERN_HE: ImpactMode.MODERNHE, 
+       IMPACT_TYPES.NON_PENETRATION_DAMAGE: ImpactMode.NONPENETRATIONDAMAGE}
 
     def __init__(self, viewModel, parentView):
         super(DeathCamMarkerView, self).__init__(viewModel, parentView)
@@ -163,7 +165,7 @@ class DeathCamMarkerView(SubModelPresenter, IGlobalListener):
         self.viewModel.setShellDamageBasic(averageDamageOfShell)
         velocity = projectileData['velocity']
         projSpeedFactor = vehicles.g_cache.commonConfig['miscParams']['projectileSpeedFactor']
-        self.viewModel.setShellVelocityBasic(int(round(velocity.length / projSpeedFactor)))
+        self.viewModel.setShellVelocityBasic(round_py2_style_int(velocity.length / projSpeedFactor))
         caliberRule = CaliberRule.NONE
         if projectileData['is3CaliberRuleActive']:
             caliberRule = CaliberRule.THREECALIBER
@@ -199,19 +201,19 @@ class DeathCamMarkerView(SubModelPresenter, IGlobalListener):
         self.viewModel.setHasDistanceFalloff(projectileData['hasDistanceFalloff'])
         if 'damageDistanceModifier' in projectileData:
             self.viewModel.setDamageDistanceModifier(projectileData['damageDistanceModifier'])
-        hitAngleDegree = int(round(math.degrees(math.acos(projectileData['hitAngleCos']))))
+        hitAngleDegree = round_py2_style_int(math.degrees(math.acos(projectileData['hitAngleCos'])))
         self.viewModel.setAngleImpact(hitAngleDegree)
         if projectileData['is3CaliberRuleActive']:
             ricochetAngle = maxPenetrationAngle = 90
         else:
-            ricochetAngle = round(math.degrees(math.acos(projectileData['ricochetAngleCos'])))
+            ricochetAngle = round_py2_style(math.degrees(math.acos(projectileData['ricochetAngleCos'])))
             maxPenetrationAngle = min(projectileData['maxPenetrationAngle'], ricochetAngle)
         self.viewModel.setAngleFailure(maxPenetrationAngle)
         self.viewModel.setAngleRicochet(ricochetAngle)
         nominalBurst = projectileData['shellDamageBurstHE']
-        armorProtectionHE = -abs(int(round(projectileData['armorProtectionHE'])))
-        spallLinerProtectionHE = -abs(int(round(projectileData['spallLinerProtectionHE'])))
-        distanceLossHE = -abs(int(round(projectileData['distanceLossHE'])))
+        armorProtectionHE = -abs(round_py2_style_int(projectileData['armorProtectionHE']))
+        spallLinerProtectionHE = -abs(round_py2_style_int(projectileData['spallLinerProtectionHE']))
+        distanceLossHE = -abs(round_py2_style_int(projectileData['distanceLossHE']))
         randomization = -(nominalBurst - effectiveShellDamage + armorProtectionHE + spallLinerProtectionHE)
         self.viewModel.setShellDamageBurst(nominalBurst)
         self.viewModel.setShellDamageLossProtectionHe(armorProtectionHE)
@@ -262,4 +264,6 @@ class DeathCamMarkerView(SubModelPresenter, IGlobalListener):
 
     def __isSimplifiedView(self):
         avatar = BigWorld.player()
-        return False if not avatar else avatar.isSimpleDeathCam()
+        if not avatar:
+            return False
+        return avatar.isSimpleDeathCam()

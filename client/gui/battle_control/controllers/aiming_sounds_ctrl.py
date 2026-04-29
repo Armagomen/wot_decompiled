@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/aiming_sounds_ctrl.py
 import typing
 from helpers import dependency
 from gui.battle_control import avatar_getter

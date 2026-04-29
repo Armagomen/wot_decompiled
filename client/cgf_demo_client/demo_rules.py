@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/cgf_demo_client/demo_rules.py
 import CGF
 from cgf_demo.demo_category import DEMO_CATEGORY
 from cgf_demo_client.test_hierarchy_modificator import ModelSwapperManager
@@ -24,32 +22,32 @@ class TestClientDemoRules(Rule):
 
     @registerManager(EntranceModifierManager)
     def registerEntranceModifier(self):
-        return None
+        return
 
     @registerManager(StateMachineActivatorManager)
     def registerStateActivator(self):
-        return None
+        return
 
     @registerManager(ModelSwapperManager)
     def registerModelSwapper(self):
-        return None
+        return
 
     @registerManager(DisplayReplicableValuesManager, domain=CGF.DomainOption.DomainClient)
     def registerDisplayReplicable(self):
-        return None
+        return
 
     @registerManager(EntranceSpawnerManager)
     def registerEntranceSpawner(self):
-        return None
+        return
 
     @registerManager(EntranceSingleShotManager)
     def registerEntranceSingleShotManager(self):
-        return None
+        return
 
     @registerManager(EntranceContinuousBurstManager)
     def registerEntranceContinuousBurstManager(self):
-        return None
+        return
 
     @registerManager(TestHealthMonitoringManager)
     def registerHealthMonitorManager(self):
-        return None
+        return

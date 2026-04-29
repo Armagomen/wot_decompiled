@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/vehicle_systems/tankStructure.py
 from collections import namedtuple
 from constants import VehiclePartName
 
@@ -32,10 +30,8 @@ class TankCollisionPartNames(object):
     TURRET = 'turretCollision'
     GUN = 'gunCollision'
     WHEEL = 'wheelCollision'
-    ALL = (CHASSIS,
-     HULL,
-     TURRET,
-     GUN)
+    ALL = (
+     CHASSIS, HULL, TURRET, GUN)
 
     @staticmethod
     def getIdx(name):
@@ -43,7 +39,7 @@ class TankCollisionPartNames(object):
             if n == name:
                 return idx
 
-        return None
+        return
 
 
 class TankPartNames(object):
@@ -51,10 +47,8 @@ class TankPartNames(object):
     HULL = VehiclePartName.HULL
     TURRET = VehiclePartName.TURRET
     GUN = VehiclePartName.GUN
-    ALL = (CHASSIS,
-     HULL,
-     TURRET,
-     GUN)
+    ALL = (
+     CHASSIS, HULL, TURRET, GUN)
 
     @staticmethod
     def getIdx(name):
@@ -62,15 +56,18 @@ class TankPartNames(object):
             if n == name:
                 return idx
 
-        return None
+        return
 
     @staticmethod
     def getActualNodeNameByPartName(partName, isAlive=True):
-        return TankNodeNames.GUN_INCLINATION if isAlive and partName == TankPartNames.GUN else partName
+        if isAlive and partName == TankPartNames.GUN:
+            return TankNodeNames.GUN_INCLINATION
+        return partName
 
 
 class DetachedTurretPartNames(object):
-    ALL = (TankPartNames.TURRET, TankPartNames.GUN)
+    ALL = (
+     TankPartNames.TURRET, TankPartNames.GUN)
 
     @staticmethod
     def getIdx(name):
@@ -78,13 +75,14 @@ class DetachedTurretPartNames(object):
             if n == name:
                 return idx
 
-        return None
+        return
 
 
 class DetachedTurretPartIndexes(object):
     TURRET = 0
     GUN = 1
-    ALL = (TURRET, GUN)
+    ALL = (
+     TURRET, GUN)
 
     @staticmethod
     def getName(idx):
@@ -98,14 +96,15 @@ class TankPartIndexes(object):
     HULL = 1
     TURRET = 2
     GUN = 3
-    ALL = (CHASSIS,
-     HULL,
-     TURRET,
-     GUN)
+    ALL = (
+     CHASSIS, HULL, TURRET, GUN)
 
     @staticmethod
     def getName(idx):
-        return TankPartNames.ALL[idx] if 0 <= idx < len(TankPartNames.ALL) else None
+        if 0 <= idx < len(TankPartNames.ALL):
+            return TankPartNames.ALL[idx]
+        else:
+            return
 
 
 class TankNodeNames(object):
@@ -140,18 +139,42 @@ class TankSoundObjectsIndexes(object):
     COUNT = 4
 
 
-UNDAMAGED_SKELETON = VehiclePartsTuple(chassis=[('Tank', ''),
- (TankNodeNames.HULL_SWINGING, 'Tank'),
- (TankNodeNames.GUI, ''),
- (TankNodeNames.TRACK_LEFT_FRONT, ''),
- (TankNodeNames.TRACK_LEFT_REAR, ''),
- (TankNodeNames.TRACK_RIGHT_FRONT, ''),
- (TankNodeNames.TRACK_RIGHT_REAR, '')], hull=[('HP_Fire_1', ''),
- (TankNodeNames.TRACK_LEFT_UP_FRONT, ''),
- (TankNodeNames.TRACK_LEFT_UP_REAR, ''),
- (TankNodeNames.TRACK_RIGHT_UP_FRONT, ''),
- (TankNodeNames.TRACK_RIGHT_UP_REAR, '')], turret=[('HP_gunJoint', '')], gun=[(TankNodeNames.GUN_INCLINATION, ''), (TankNodeNames.GUN_RECOIL, TankNodeNames.GUN_INCLINATION), ('HP_gunFire', TankNodeNames.GUN_RECOIL)])
-CRASHED_SKELETON = VehiclePartsTuple(chassis=[('Tank', ''), ('V', 'Tank'), ('HP_gui', '')], hull=[('HP_Fire_1', '')], turret=[('HP_gunJoint', '')], gun=[])
+UNDAMAGED_SKELETON = VehiclePartsTuple(chassis=[
+ ('Tank', ''),
+ (
+  TankNodeNames.HULL_SWINGING, 'Tank'),
+ (
+  TankNodeNames.GUI, ''),
+ (
+  TankNodeNames.TRACK_LEFT_FRONT, ''),
+ (
+  TankNodeNames.TRACK_LEFT_REAR, ''),
+ (
+  TankNodeNames.TRACK_RIGHT_FRONT, ''),
+ (
+  TankNodeNames.TRACK_RIGHT_REAR, '')], hull=[
+ ('HP_Fire_1', ''),
+ (
+  TankNodeNames.TRACK_LEFT_UP_FRONT, ''),
+ (
+  TankNodeNames.TRACK_LEFT_UP_REAR, ''),
+ (
+  TankNodeNames.TRACK_RIGHT_UP_FRONT, ''),
+ (
+  TankNodeNames.TRACK_RIGHT_UP_REAR, '')], turret=[
+ ('HP_gunJoint', '')], gun=[
+ (
+  TankNodeNames.GUN_INCLINATION, ''),
+ (
+  TankNodeNames.GUN_RECOIL, TankNodeNames.GUN_INCLINATION),
+ (
+  'HP_gunFire', TankNodeNames.GUN_RECOIL)])
+CRASHED_SKELETON = VehiclePartsTuple(chassis=[
+ ('Tank', ''),
+ ('V', 'Tank'),
+ ('HP_gui', '')], hull=[
+ ('HP_Fire_1', '')], turret=[
+ ('HP_gunJoint', '')], gun=[])
 
 class ColliderTypes(object):
     DYNAMIC_FLAG = 1
@@ -167,7 +190,8 @@ class ColliderTypes(object):
 
 
 def getCrashedSkeleton(vehicleDesc):
-    turretJointNode = (vehicleDesc.hull.turretHardPoints[0], '')
+    turretJointNode = (
+     vehicleDesc.hull.turretHardPoints[0], '')
     result = VehiclePartsTuple(chassis=CRASHED_SKELETON.chassis, hull=CRASHED_SKELETON.hull + [turretJointNode], turret=CRASHED_SKELETON.turret, gun=CRASHED_SKELETON.gun)
     return result
 
@@ -193,9 +217,9 @@ def getCollisionModelsFromDesc(vehicleDesc, state):
         part = getattr(vehicleDesc, partName)
         if state == TankRenderMode.CLIENT_COLLISION:
             paths.append(part.hitTesterManager.edClientBspModel)
-        if state in (TankRenderMode.SERVER_COLLISION, TankRenderMode.ARMOR_WIDTH_COLLISION):
+        elif state in (TankRenderMode.SERVER_COLLISION, TankRenderMode.ARMOR_WIDTH_COLLISION):
             paths.append(part.hitTesterManager.edServerBspModel)
-        if state == TankRenderMode.CRASH_COLLISION:
+        elif state == TankRenderMode.CRASH_COLLISION:
             if part.hitTesterManager.edCrashBspModel != '':
                 paths.append(part.hitTesterManager.edCrashBspModel)
             else:

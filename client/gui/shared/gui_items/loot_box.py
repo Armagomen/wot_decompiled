@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/gui_items/loot_box.py
 from enum import Enum
 from typing import TYPE_CHECKING
 from gui.impl import backport
@@ -41,14 +39,19 @@ class LunarNYLootBoxTypes(Enum):
 ALL_LUNAR_NY_LOOT_BOX_TYPES = ('lunar_base', 'lunar_simple', 'lunar_special')
 LUNAR_NY_LOOT_BOXES_CATEGORIES = 'LunarNY'
 SENIORITY_AWARDS_LOOT_BOXES_TYPE = 'seniorityAwards'
-GUI_ORDER_NY = (NewYearLootBoxes.COMMON, NewYearLootBoxes.PREMIUM)
-CATEGORIES_GUI_ORDER_NY = (NewYearCategories.NEWYEAR,
+GUI_ORDER_NY = (
+ NewYearLootBoxes.COMMON,
+ NewYearLootBoxes.PREMIUM)
+CATEGORIES_GUI_ORDER_NY = (
+ NewYearCategories.NEWYEAR,
  NewYearCategories.CHRISTMAS,
  NewYearCategories.ORIENTAL,
  NewYearCategories.FAIRYTALE)
 
 class LootBox(GUIItem):
-    __slots__ = ('__id', '__invCount', '__isEnabled', '__type', '__category', '__bonus', '__historyName', '__statsName', '__guaranteedFrequency', '__guaranteedFrequencyName', '__probabilityBonusName', '__probabilityBonusLimit')
+    __slots__ = ('__id', '__invCount', '__isEnabled', '__type', '__category', '__bonus',
+                 '__historyName', '__statsName', '__guaranteedFrequency', '__guaranteedFrequencyName',
+                 '__probabilityBonusName', '__probabilityBonusLimit')
     __lootBoxSystem = dependency.descriptor(ILootBoxSystemController)
 
     def __init__(self, lootBoxID, lootBoxConfig, invCount):
@@ -58,10 +61,8 @@ class LootBox(GUIItem):
         self.__updateByConfig(lootBoxConfig)
 
     def __repr__(self):
-        return 'LootBox(id=%d, type=%s, category=%s, count=%d)' % (self.getID(),
-         self.getType(),
-         self.getCategory(),
-         self.getInventoryCount())
+        return 'LootBox(id=%d, type=%s, category=%s, count=%d)' % (self.getID(), self.getType(),
+         self.getCategory(), self.getInventoryCount())
 
     def __cmp__(self, other):
         return cmp(self.getID(), other.getID())
@@ -83,7 +84,7 @@ class LootBox(GUIItem):
 
     def getUserName(self):
         if self.__type in self.__lootBoxSystem.eventNames:
-            name = getTextResource('common/boxCategory/lowerCase'.split('/') + [self.__category], self.__type)
+            name = getTextResource(['common', 'boxCategory', 'lowerCase'] + [self.__category], self.__type)
             return backport.text(name() if name.exists() else R.strings.lootbox_system.common.boxCategory.lowerCase.default())
         return backport.text(R.strings.lootboxes.type.dyn(self.__type)())
 

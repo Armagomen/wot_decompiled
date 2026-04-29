@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/web/web_client_api/ui/chat.py
 from messenger.m_constants import PROTO_TYPE
 from messenger.proto import proto_getter
 from messenger.storage import storage_getter
@@ -15,11 +13,11 @@ class ChatWebApiMixin(object):
 
     @proto_getter(PROTO_TYPE.MIGRATION)
     def proto(self):
-        return None
+        return
 
     @storage_getter('users')
     def usersStorage(self):
-        return None
+        return
 
     @w2c(_OpenChatSchema, 'chat_window')
     def openChat(self, cmd):

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/AvatarInputHandler/commands/radar_control.py
 from AvatarInputHandler.commands.input_handler_command import InputHandlerCommand
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider

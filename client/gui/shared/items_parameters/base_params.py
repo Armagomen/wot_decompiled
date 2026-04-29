@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/items_parameters/base_params.py
 from collections import defaultdict
 import inspect
 from future.utils import iteritems, itervalues
@@ -21,8 +19,7 @@ class ParameterBase(object):
 
     def getAllDataDict(self):
         params = self.getParamsDict() if GUI_SETTINGS.technicalInfo else {}
-        return {'parameters': params,
-         'compatible': self._getCompatible()}
+        return {'parameters': params, 'compatible': self._getCompatible()}
 
     def _getPrecachedInfo(self):
         if self.__preCachedInfo is None:
@@ -60,7 +57,8 @@ class WeightedParam(CompatibleParams):
 
 
 class ParamsDictProxy(object):
-    __slots__ = ('__paramsCalculator', '__cachedParams', '__allAreLoaded', '__conditions', '__filteredByConditions', '__popped')
+    __slots__ = ('__paramsCalculator', '__cachedParams', '__allAreLoaded', '__conditions',
+                 '__filteredByConditions', '__popped')
 
     def __init__(self, calculator, preload=False, conditions=None):
         super(ParamsDictProxy, self).__init__()

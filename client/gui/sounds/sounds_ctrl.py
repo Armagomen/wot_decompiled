@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/sounds/sounds_ctrl.py
-import weakref
-import MusicControllerWWISE as _MC
-import SoundGroups
+import weakref, MusicControllerWWISE as _MC, SoundGroups
 from gui.sounds.ambients import GuiAmbientsCtrl
 from gui.sounds.sound_constants import EnabledStatus
 from gui.sounds.sound_systems import getCurrentSoundSystem

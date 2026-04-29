@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/gui/Scaleform/data/search_data_providers.py
 from debug_utils import LOG_DEBUG
 from gui import SystemMessages
 from gui.Scaleform.framework.entities.DAAPIDataProvider import DAAPIDataProvider
@@ -73,12 +71,12 @@ class SearchChannelsDataProvider(SearchDataProvider):
         self._list = []
         result = sorted(result, key=lambda item: item.getFullName().lower())
         for item in result:
-            self._list.append({'id': item.getID(),
-             'name': item.getFullName()})
+            self._list.append({'id': item.getID(), 
+               'name': item.getFullName()})
 
     def emptyItem(self):
-        return {'id': 0,
-         'name': ''}
+        return {'id': 0, 
+           'name': ''}
 
     def onExcludeFromSearch(self, entity):
         channelID = entity.getID()
@@ -107,7 +105,7 @@ class SearchUsersDataProvider(SearchDataProvider):
                 self._list.append(self._converter.makeVO(item))
 
     def emptyItem(self):
-        return None
+        return
 
     def init(self, flashObject, exHandlers=None):
         super(SearchUsersDataProvider, self).init(flashObject, exHandlers)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/vehicle_hub/views/vehicle_hub_view_model.py
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.common.vehicle_info_model import VehicleInfoModel
 from gui.impl.gen.view_models.views.lobby.common.router_model import RouterModel
@@ -13,14 +11,14 @@ from gui.impl.gen.view_models.views.lobby.vehicle_hub.views.sub_models.stats_mod
 from gui.impl.gen.view_models.views.lobby.vehicle_hub.views.sub_models.veh_skill_tree_model import VehSkillTreeModel
 
 class VehicleHubViewModel(ViewModel):
-    __slots__ = ('onMoveSpace', 'onMouseOver3dScene')
+    __slots__ = ('onMoveSpace', 'onMouseOver3dScene', 'onResize')
     OVERVIEW = 'overview'
     MODULES = 'modules'
     VEH_SKILL_TREE = 'vehSkillTree'
     STATS = 'stats'
     ARMOR = 'armor'
 
-    def __init__(self, properties=10, commands=2):
+    def __init__(self, properties=10, commands=3):
         super(VehicleHubViewModel, self).__init__(properties=properties, commands=commands)
 
     @property
@@ -119,3 +117,4 @@ class VehicleHubViewModel(ViewModel):
         self._addArrayProperty('menuItems', Array())
         self.onMoveSpace = self._addCommand('onMoveSpace')
         self.onMouseOver3dScene = self._addCommand('onMouseOver3dScene')
+        self.onResize = self._addCommand('onResize')

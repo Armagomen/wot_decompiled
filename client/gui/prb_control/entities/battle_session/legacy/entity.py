@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/entities/battle_session/legacy/entity.py
 from soft_exception import SoftException
 from constants import PREBATTLE_TYPE, QUEUE_TYPE, PREBATTLE_ROLE
 from gui import SystemMessages
@@ -15,8 +13,6 @@ from gui.prb_control.invites import AutoInvitesNotifier
 from gui.prb_control.items import prb_items, SelectResult
 from gui.prb_control.settings import PREBATTLE_SETTING_NAME, FUNCTIONAL_FLAG
 from gui.prb_control.settings import REQUEST_TYPE, PREBATTLE_ROSTER, PREBATTLE_ACTION_NAME
-from gui.shared import g_eventBus, EVENT_BUS_SCOPE
-from gui.shared.events import ChannelCarouselEvent
 from helpers import dependency
 from helpers import i18n
 from skeletons.gui.lobby_context import ILobbyContext
@@ -74,17 +70,16 @@ class BattleSessionEntryPoint(LegacyEntryPoint):
 class BattleSessionEntity(LegacyEntity):
 
     def __init__(self, settings):
-        requests = {REQUEST_TYPE.ASSIGN: self.assign,
-         REQUEST_TYPE.SET_TEAM_STATE: self.setTeamState,
-         REQUEST_TYPE.SET_PLAYER_STATE: self.setPlayerState,
-         REQUEST_TYPE.KICK: self.kickPlayer}
+        requests = {REQUEST_TYPE.ASSIGN: self.assign, 
+           REQUEST_TYPE.SET_TEAM_STATE: self.setTeamState, 
+           REQUEST_TYPE.SET_PLAYER_STATE: self.setPlayerState, 
+           REQUEST_TYPE.KICK: self.kickPlayer}
         super(BattleSessionEntity, self).__init__(FUNCTIONAL_FLAG.BATTLE_SESSION, settings, permClass=BattleSessionPermissions, limits=BattleSessionLimits(self), requestHandlers=requests)
 
     def init(self, clientPrb=None, ctx=None):
         result = super(BattleSessionEntity, self).init(clientPrb=clientPrb, ctx=ctx)
         result = FUNCTIONAL_FLAG.addIfNot(result, FUNCTIONAL_FLAG.LOAD_WINDOW)
         result = FUNCTIONAL_FLAG.addIfNot(result, FUNCTIONAL_FLAG.LOAD_PAGE)
-        g_eventBus.addListener(ChannelCarouselEvent.CAROUSEL_INITED, self.__handleCarouselInited, scope=EVENT_BUS_SCOPE.LOBBY)
         return result
 
     def isGUIProcessed(self):
@@ -98,7 +93,6 @@ class BattleSessionEntity(LegacyEntity):
                 g_eventDispatcher.removeSpecBattleFromCarousel(prbType)
         else:
             g_eventDispatcher.removeSpecBattleFromCarousel(prbType, closeWindow=False)
-        g_eventBus.removeListener(ChannelCarouselEvent.CAROUSEL_INITED, self.__handleCarouselInited, scope=EVENT_BUS_SCOPE.LOBBY)
         return result
 
     def getQueueType(self):
@@ -110,7 +104,7 @@ class BattleSessionEntity(LegacyEntity):
     def getRosters(self, keys=None):
         rosters = prb_getters.getPrebattleRosters()
         prbRosters = PREBATTLE_ROSTER.getRange(self.getEntityType(), self.getPlayerTeam())
-        result = dict(((r, []) for r in prbRosters))
+        result = dict((r, []) for r in prbRosters)
         for roster in prbRosters:
             if roster in rosters:
                 result[roster] = map(lambda accInfo, rosterBits=roster: prb_items.PlayerPrbInfo(accInfo[0], entity=self, roster=rosterBits, **accInfo[1]), rosters[roster].iteritems())
@@ -121,10 +115,9 @@ class BattleSessionEntity(LegacyEntity):
         result = super(BattleSessionEntity, self).getRoles(pDatabaseID, clanDBID, team)
         if self._settings is None or self._settings['type'] != PREBATTLE_TYPE.CLAN:
             return result
-        else:
-            if not result:
-                result = PREBATTLE_ROLE.SELF_ASSIGNMENT_1 if team == 1 else PREBATTLE_ROLE.SELF_ASSIGNMENT_2
-            return result
+        if not result:
+            result = PREBATTLE_ROLE.SELF_ASSIGNMENT_1 if team == 1 else PREBATTLE_ROLE.SELF_ASSIGNMENT_2
+        return result
 
     def getTeamLimits(self):
         return prb_getters.getPrebattleSettings().getTeamLimits(self.getPlayerTeam())
@@ -166,6 +159,3 @@ class BattleSessionEntity(LegacyEntity):
     @vehicleAmmoCheck
     def _setPlayerReady(self, ctx, callback=None):
         super(BattleSessionEntity, self)._setPlayerReady(ctx, callback)
-
-    def __handleCarouselInited(self, _):
-        g_eventDispatcher.addSpecBattleToCarousel(self.getEntityType())

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/battle_results/progression/common_battle_quest_progress_model.py
 from gui.impl.gen.view_models.common.missions.quest_model import QuestModel
 
 class CommonBattleQuestProgressModel(QuestModel):

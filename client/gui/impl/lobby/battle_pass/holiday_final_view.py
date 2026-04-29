@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_pass/holiday_final_view.py
 import logging
 from typing import TYPE_CHECKING
 from battle_pass_common import BattlePassConsts, BattlePassTankmenSource, FinalReward
@@ -22,10 +20,10 @@ if TYPE_CHECKING:
     from typing import List
     from gui.server_events.bonuses import SimpleBonus
 _logger = logging.getLogger(__name__)
-_CHAPTER_STATES = {ChapterState.ACTIVE: ChapterStates.ACTIVE,
- ChapterState.COMPLETED: ChapterStates.COMPLETED,
- ChapterState.PAUSED: ChapterStates.PAUSED,
- ChapterState.NOT_STARTED: ChapterStates.NOTSTARTED}
+_CHAPTER_STATES = {ChapterState.ACTIVE: ChapterStates.ACTIVE, 
+   ChapterState.COMPLETED: ChapterStates.COMPLETED, 
+   ChapterState.PAUSED: ChapterStates.PAUSED, 
+   ChapterState.NOT_STARTED: ChapterStates.NOTSTARTED}
 
 class HolidayFinalPresenter(ViewComponent[HolidayFinalViewModel]):
     __battlePass = dependency.descriptor(IBattlePassController)
@@ -43,7 +41,10 @@ class HolidayFinalPresenter(ViewComponent[HolidayFinalViewModel]):
 
     def getTooltipData(self, event):
         tooltipId = event.getArgument('tooltipId')
-        return None if tooltipId is None else self.__tooltipItems.get(tooltipId)
+        if tooltipId is None:
+            return
+        else:
+            return self.__tooltipItems.get(tooltipId)
 
     def updateInitialData(self, **kwargs):
         self.__updateState()
@@ -62,23 +63,35 @@ class HolidayFinalPresenter(ViewComponent[HolidayFinalViewModel]):
         return
 
     def _getEvents(self):
-        return ((self.viewModel.awardsWidget.onTakeRewardsClick, self.__takeAllRewards),
-         (self.viewModel.awardsWidget.showTankmen, self.__showTankmen),
-         (self.viewModel.onTakeRewardsClick, self.__takeAllRewards),
-         (self.viewModel.showTankmen, self.__showTankmen),
-         (self.viewModel.onPreviewVehicle, self.__onPreview),
-         (self.viewModel.showHangar, self.__showHangar),
-         (self.__battlePass.onBattlePassSettingsChange, self.__onBattlePassSettingsChanged),
-         (self.__battlePass.onSeasonStateChanged, self.__onBattlePassSettingsChanged),
-         (self.__battlePass.onEntitlementCacheUpdated, self.__updateState))
+        return (
+         (
+          self.viewModel.awardsWidget.onTakeRewardsClick, self.__takeAllRewards),
+         (
+          self.viewModel.awardsWidget.showTankmen, self.__showTankmen),
+         (
+          self.viewModel.onTakeRewardsClick, self.__takeAllRewards),
+         (
+          self.viewModel.showTankmen, self.__showTankmen),
+         (
+          self.viewModel.onPreviewVehicle, self.__onPreview),
+         (
+          self.viewModel.showHangar, self.__showHangar),
+         (
+          self.__battlePass.onBattlePassSettingsChange, self.__onBattlePassSettingsChanged),
+         (
+          self.__battlePass.onSeasonStateChanged, self.__onBattlePassSettingsChanged),
+         (
+          self.__battlePass.onEntitlementCacheUpdated, self.__updateState))
 
     def _getListeners(self):
-        return ((events.BattlePassEvent.AWARD_VIEW_CLOSE, self.__onAwardViewClose, EVENT_BUS_SCOPE.LOBBY),)
+        return (
+         (
+          events.BattlePassEvent.AWARD_VIEW_CLOSE, self.__onAwardViewClose, EVENT_BUS_SCOPE.LOBBY),)
 
     def __fillModel(self):
         self.__setChapter()
         self.__updateDetailRewards()
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.awardsWidget.setIsTalerEnabled(not self.__battlePass.isHoliday())
             model.awardsWidget.setIsBpCoinEnabled(not self.__battlePass.isHoliday())
             model.awardsWidget.setTankmenScreenID(self.__battlePass.getTankmenScreenID(self.__chapterID))
@@ -87,13 +100,13 @@ class HolidayFinalPresenter(ViewComponent[HolidayFinalViewModel]):
             self.__updateRewardChoice(model=model)
 
     def __setChapter(self):
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             tx.setChapterID(self.__chapterID)
             tx.setChapterState(_CHAPTER_STATES.get(self.__battlePass.getChapterState(self.__chapterID)))
             tx.setCurrentLevel(self.__battlePass.getLevelInChapter(self.__chapterID) + 1)
 
     def __isTankmenReceived(self, shopPackages):
-        return all((packageCount - getReceivedTankmenCount(tankman) == 0 for tankman, packageCount in shopPackages.iteritems())) and all((getReceivedTankmenCount(tankman) > 0 for tankman, info in self.__battlePass.getSpecialTankmen().iteritems() if info.get('source') == BattlePassTankmenSource.QUEST_CHAIN)) and all((info.get('availableCount', 0) - getReceivedTankmenCount(tankman) == 0 for tankman, info in self.__battlePass.getSpecialTankmen().iteritems() if info.get('source') in BattlePassTankmenSource.PROGRESSION))
+        return all(packageCount - getReceivedTankmenCount(tankman) == 0 for tankman, packageCount in shopPackages.iteritems()) and all(getReceivedTankmenCount(tankman) > 0 for tankman, info in self.__battlePass.getSpecialTankmen().iteritems() if info.get('source') == BattlePassTankmenSource.QUEST_CHAIN) and all(info.get('availableCount', 0) - getReceivedTankmenCount(tankman) == 0 for tankman, info in self.__battlePass.getSpecialTankmen().iteritems() if info.get('source') in BattlePassTankmenSource.PROGRESSION)
 
     def __update(self):
         self.__fillModel()
@@ -110,7 +123,7 @@ class HolidayFinalPresenter(ViewComponent[HolidayFinalViewModel]):
     def __updateDetailRewards(self):
         fromLevel = 1
         toLevel = self.__battlePass.getLevelInChapter(self.__chapterID)
-        with self.viewModel.rewards.transaction() as tx:
+        with self.viewModel.rewards.transaction() as (tx):
             tx.nowRewards.clearItems()
             tx.futureRewards.clearItems()
             tx.setFromLevel(fromLevel)
@@ -145,13 +158,13 @@ class HolidayFinalPresenter(ViewComponent[HolidayFinalViewModel]):
         rewardTypes = getAllFinalRewards(self.__chapterID, battlePass=self.__battlePass)
         if FinalReward.VEHICLE in rewardTypes:
             return FinalRewardTypes.VEHICLE
-        elif FinalReward.STYLE in rewardTypes or FinalReward.PROGRESSIVE_STYLE in rewardTypes:
-            return FinalRewardTypes.STYLE
-        elif FinalReward.TANKMAN in rewardTypes:
-            return FinalRewardTypes.TANKMAN
         else:
+            if FinalReward.STYLE in rewardTypes or FinalReward.PROGRESSIVE_STYLE in rewardTypes:
+                return FinalRewardTypes.STYLE
+            if FinalReward.TANKMAN in rewardTypes:
+                return FinalRewardTypes.TANKMAN
             _logger.error('Final reward types for chapter <%s> do not contain any supported types', self.__chapterID)
-            return None
+            return
 
     def __onPreview(self):
         showFinalRewardPreviewBattlePassState(chapterID=self.__chapterID)

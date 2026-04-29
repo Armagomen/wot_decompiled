@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/prb_control/entities/base/squad/actions_handler.py
 import typing
 from BWUtil import AsyncReturn
 from CurrentVehicle import g_currentVehicle
@@ -23,7 +21,7 @@ class SquadActionsHandler(AbstractActionsHandler):
 
     @storage_getter('users')
     def usersStorage(self):
-        return None
+        return
 
     def setUnitChanged(self, loadHangar=False):
         flags = self._entity.getFlags()
@@ -139,7 +137,7 @@ class SquadActionsHandler(AbstractActionsHandler):
         g_eventDispatcher.loadSquad(prbType, ctx, self._getTeamReady())
 
     def _setCreatorReady(self):
-        self._sendBattleQueueRequest(g_currentVehicle.item.invID if not self._entity.getPlayerInfo().isReady else 0)
+        self._sendBattleQueueRequest((self._entity.getPlayerInfo().isReady or g_currentVehicle.item).invID if 1 else 0)
 
     def _getTeamReady(self):
         for slot in self._entity.getSlotsIterator(*self._entity.getUnit(unitMgrID=self._entity.getID())):
@@ -154,7 +152,8 @@ class SquadActionsHandler(AbstractActionsHandler):
             user = getUser(dbID)
             if user is not None:
                 SystemMessages.pushI18nMessage('#system_messages:prebattle/invites/sendInvite/name', type=SystemMessages.SM_TYPE.Information, name=user.getFullName())
-            SystemMessages.pushI18nMessage('#system_messages:prebattle/invites/sendInvite', type=SystemMessages.SM_TYPE.Information)
+            else:
+                SystemMessages.pushI18nMessage('#system_messages:prebattle/invites/sendInvite', type=SystemMessages.SM_TYPE.Information)
 
         return
 

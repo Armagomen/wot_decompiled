@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/battle/frontline_score_panel.py
 import BigWorld
 from constants import ARENA_PERIOD
 from debug_utils import LOG_ERROR
@@ -213,12 +211,13 @@ class FrontlineScorePanel(FrontlineScorePanelMeta):
             if self.__currentMission.isBaseMission():
                 id_ = self.__currentMission.id
                 type_ = EPIC_CONSTS.TARGET_BASE
-            elif self.__currentMission.isObjectivesMission():
-                id_ = self.__nearestHQ
-                type_ = EPIC_CONSTS.TARGET_HQ
-            if id_ is None:
-                self.__removeTarget()
-                return
+            else:
+                if self.__currentMission.isObjectivesMission():
+                    id_ = self.__nearestHQ
+                    type_ = EPIC_CONSTS.TARGET_HQ
+                if id_ is None:
+                    self.__removeTarget()
+                    return
             if id_ != self.__currentTargetID or type_ != self.__currentTargetType:
                 self.__currentTargetID = id_
                 self.__currentTargetType = type_

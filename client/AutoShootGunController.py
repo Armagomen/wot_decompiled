@@ -1,7 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/AutoShootGunController.py
-import typing
-import BigWorld
+from __future__ import absolute_import, division
+import typing, BigWorld
 from auto_shoot_guns.auto_shoot_guns_common import AutoShootGunState
 from constants import UNKNOWN_GUN_INDEX
 from gui.shared.utils.decorators import ReprInjector

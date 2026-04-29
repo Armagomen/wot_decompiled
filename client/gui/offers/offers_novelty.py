@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/offers/offers_novelty.py
 import Event
 from account_helpers.AccountSettings import AccountSettings, VIEWED_OFFERS
 from helpers import dependency
@@ -70,7 +68,7 @@ class OffersNovelty(IOffersNovelty):
 
     def __updateNewOffers(self):
         viewedOffers = self.__getViewedOffers()
-        newOffers = set((offer.id for offer in self._offersProvider.iUnlockedOffers() if offer.id not in viewedOffers))
+        newOffers = set(offer.id for offer in self._offersProvider.iUnlockedOffers() if offer.id not in viewedOffers)
         if newOffers != self.__newOffers:
             self.__newOffers = newOffers
             self.onUpdated()
@@ -79,7 +77,7 @@ class OffersNovelty(IOffersNovelty):
         if self._offersProvider.isSynced:
             viewedOffers = self.__getViewedOffers()
             unlockedOffers = [ offer.id for offer in self._offersProvider.getUnlockedOffers() ]
-            activeViewedOffers = set((offerID for offerID in viewedOffers if offerID in unlockedOffers))
+            activeViewedOffers = set(offerID for offerID in viewedOffers if offerID in unlockedOffers)
             if activeViewedOffers != viewedOffers:
                 self.__setViewedOffers(activeViewedOffers)
 

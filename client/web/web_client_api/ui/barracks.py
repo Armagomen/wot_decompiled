@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/web/web_client_api/ui/barracks.py
 import logging
 from gui.Scaleform.genConsts.BARRACKS_CONSTANTS import BARRACKS_CONSTANTS
 from gui.shared import event_dispatcher as shared_events
@@ -14,11 +12,11 @@ from web.web_client_api import Field, W2CSchema, WebCommandException, w2c
 from web.web_client_api.common import TManLocation
 _logger = logging.getLogger(__name__)
 _ALL = 'all'
-_LOCATION = {TManLocation.TANKS.value: BARRACKS_CONSTANTS.LOCATION_FILTER_TANKS,
- TManLocation.BARRACKS.value: BARRACKS_CONSTANTS.LOCATION_FILTER_BARRACKS,
- _ALL: BARRACKS_CONSTANTS.LOCATION_FILTER_BARRACKS_AND_TANKS,
- TManLocation.DEMOBILIZED.value: BARRACKS_CONSTANTS.LOCATION_FILTER_DISMISSED,
- TManLocation.NEWBIES.value: BARRACKS_CONSTANTS.LOCATION_FILTER_NOT_RECRUITED}
+_LOCATION = {TManLocation.TANKS.value: BARRACKS_CONSTANTS.LOCATION_FILTER_TANKS, 
+   TManLocation.BARRACKS.value: BARRACKS_CONSTANTS.LOCATION_FILTER_BARRACKS, 
+   _ALL: BARRACKS_CONSTANTS.LOCATION_FILTER_BARRACKS_AND_TANKS, 
+   TManLocation.DEMOBILIZED.value: BARRACKS_CONSTANTS.LOCATION_FILTER_DISMISSED, 
+   TManLocation.NEWBIES.value: BARRACKS_CONSTANTS.LOCATION_FILTER_NOT_RECRUITED}
 _VEHICLE_CLASSES = frozenset(list(VEHICLE_CLASS_TAGS) + [_ALL])
 _TANKMAN_ROLES = frozenset(Tankman.TANKMEN_ROLES_ORDER.keys() + [_ALL])
 

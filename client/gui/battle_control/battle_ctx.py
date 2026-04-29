@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/battle_ctx.py
-import logging
-import Settings
+import logging, Settings
 from gui.battle_control.arena_info import player_format
 from gui.impl import backport
 from gui.impl.gen import R
@@ -131,7 +128,9 @@ class BattleContext(IBattleContext):
 
     def getArenaFrameLabel(self):
         iconRes = R.images.gui.maps.icons.battleTypes.c_136x136.dyn(self.__arenaDP.getPersonalDescription().getFrameLabel())
-        return backport.image(iconRes()) if iconRes.exists() else ''
+        if iconRes.exists():
+            return backport.image(iconRes())
+        return ''
 
     def getFrameLabel(self):
         return self.__arenaDP.getPersonalDescription().getFrameLabel()

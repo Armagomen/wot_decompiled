@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/clans/clan_account_profile.py
 import weakref
 from collections import namedtuple, defaultdict
 from account_helpers import getAccountDatabaseID
@@ -27,10 +25,8 @@ class SYNC_KEYS(CONST_CONTAINER):
     ALL = INVITES | APPS | CLAN_INFO
 
 
-_ClanInfo = namedtuple('_ClanInfo', ['clanName',
- 'clanAbbrev',
- 'chatChannelDBID',
- 'memberFlags',
+_ClanInfo = namedtuple('_ClanInfo', [
+ 'clanName', 'clanAbbrev', 'chatChannelDBID', 'memberFlags',
  'enteringTime'])
 
 class _CACHE_KEYS(CONST_CONTAINER):
@@ -61,10 +57,14 @@ class ClanAccountProfile(object):
         self._cache.clear()
 
     def getPermissions(self, clanDossier):
-        return ClanMemberPermissions(self.getRole()) if clanDossier and clanDossier.getDbID() == self._clanDbID else DefaultClanMemberPermissions()
+        if clanDossier and clanDossier.getDbID() == self._clanDbID:
+            return ClanMemberPermissions(self.getRole())
+        return DefaultClanMemberPermissions()
 
     def getMyClanPermissions(self):
-        return self.getPermissions(self.getClanDossier()) if self.isInClan() else DefaultClanMemberPermissions()
+        if self.isInClan():
+            return self.getPermissions(self.getClanDossier())
+        return DefaultClanMemberPermissions()
 
     def getClanDossier(self):
         return self._clansCtrl.getClanDossier(self._clanDbID)
@@ -76,8 +76,7 @@ class ClanAccountProfile(object):
                     return False
 
             return True
-        else:
-            return self._syncState & key
+        return self._syncState & key
 
     def getDbID(self):
         return self._accountDbID
@@ -98,7 +97,7 @@ class ClanAccountProfile(object):
         return passCensor(self._getClanInfoValue(0, ''))
 
     def getClanFullName(self):
-        return '{} {}'.format(clans_fmts.getClanAbbrevString(self.getClanAbbrev()), self.getClanName())
+        return ('{} {}').format(clans_fmts.getClanAbbrevString(self.getClanAbbrev()), self.getClanName())
 
     def getClanAbbrev(self):
         return passCensor(self._getClanInfoValue(1, ''))
@@ -108,16 +107,22 @@ class ClanAccountProfile(object):
 
     def isInClanEnterCooldown(self):
         self.resyncWebClanInfo()
-        return isInClanEnterCooldown(self.getClanCooldownTill()) if self._vitalWebInfo[SYNC_KEYS.CLAN_INFO] else False
+        if self._vitalWebInfo[SYNC_KEYS.CLAN_INFO]:
+            return isInClanEnterCooldown(self.getClanCooldownTill())
+        return False
 
     def getClanCooldownTill(self):
         return self._vitalWebInfo[SYNC_KEYS.CLAN_INFO].getClanCooldownTill()
 
     def hasClanInvite(self, clanDbID):
-        return clanDbID in self._cache[_CACHE_KEYS.INVITES] if self._cache[_CACHE_KEYS.INVITES] else False
+        if self._cache[_CACHE_KEYS.INVITES]:
+            return clanDbID in self._cache[_CACHE_KEYS.INVITES]
+        return False
 
     def isClanApplicationSent(self, clanDbID):
-        return clanDbID in self._cache[_CACHE_KEYS.APPS] if self._cache[_CACHE_KEYS.APPS] else False
+        if self._cache[_CACHE_KEYS.APPS]:
+            return clanDbID in self._cache[_CACHE_KEYS.APPS]
+        return False
 
     def getInvitesCount(self):
         self.resyncInvites()
@@ -321,7 +326,10 @@ class ClanAccountProfile(object):
                 self.__changeWebInfo(SYNC_KEYS.INVITES, count, 'onAccountInvitesReceived')
 
     def _getClanInfoValue(self, index, default):
-        return self._clanBwInfo[index] if self._clanBwInfo is not None else default
+        if self._clanBwInfo is not None:
+            return self._clanBwInfo[index]
+        else:
+            return default
 
     def _resyncBwInfo(self, clanDbID=0, clanBwInfo=None):
         needToRaiseEvent = self._clanDbID != clanDbID or self._clanBwInfo != clanBwInfo
@@ -365,7 +373,9 @@ class ClanAccountProfile(object):
     def __repr__(self):
         args = []
         if self.isInClan():
-            args.extend(['dbID = %s' % self._clanDbID, 'abbrev = %s' % self.getClanAbbrev()])
+            args.extend([
+             'dbID = %s' % self._clanDbID,
+             'abbrev = %s' % self.getClanAbbrev()])
         else:
             args.append('no clan')
         if self._vitalWebInfo[SYNC_KEYS.CLAN_INFO]:
@@ -374,7 +384,7 @@ class ClanAccountProfile(object):
             args.append('invites = %d' % len(self._vitalWebInfo[SYNC_KEYS.INVITES]))
         if self._vitalWebInfo[SYNC_KEYS.APPS]:
             args.append('apps = %d' % len(self._vitalWebInfo[SYNC_KEYS.APPS]))
-        return '%s(%s)' % (self.__class__.__name__, ', '.join(args))
+        return '%s(%s)' % (self.__class__.__name__, (', ').join(args))
 
 
 class MyClanAccountProfile(ClanAccountProfile):

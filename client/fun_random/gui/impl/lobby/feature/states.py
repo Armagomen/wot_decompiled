@@ -1,13 +1,11 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: fun_random/scripts/client/fun_random/gui/impl/lobby/feature/states.py
 from __future__ import absolute_import
 import typing
 from frameworks.state_machine import StateFlags
 from frameworks.state_machine.transitions import TransitionType
 from fun_random_common.fun_constants import FunSubModeImpl
-from fun_random.gui.battle_results.fun_battle_results_sub_presenter import FunBattleResultsSubPresenter
 from fun_random.gui.feature.util.fun_mixins import FunSubModesWatcher, FunAssetPacksMixin
 from fun_random.gui.impl.lobby.feature.fun_random_tier_list_view import FunRandomTierListView
+from fun_random.gui.shared.fun_system_factory import collectBattleResultsSubPresenters
 from gui.battle_results.service import PostBattleResultsStateMixin
 from gui.impl import backport
 from gui.impl.gen import R
@@ -39,7 +37,8 @@ class FunRandomProgressionState(ViewLobbyState):
         machine.addNavigationTransitionFromParent(funRandomProgression)
 
     def getNavigationDescription(self):
-        return LobbyStateDescription(title=backport.text(FunAssetPacksMixin.getModeLocalsResRoot().progression.title()), infos=(LobbyStateDescription.Info(tooltipHeader=backport.text(R.strings.menu.viewHeader.aboutBtn.label()), type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=FunSubModesWatcher.showCommonInfoPage),))
+        return LobbyStateDescription(title=backport.text(FunAssetPacksMixin.getModeLocalsResRoot().progression.title()), infos=(
+         LobbyStateDescription.Info(tooltipHeader=backport.text(R.strings.menu.viewHeader.aboutBtn.label()), type=LobbyStateDescription.Info.Type.INFO, onMoreInfoRequested=FunSubModesWatcher.showCommonInfoPage),))
 
 
 @SubScopeTopLayerState.parentOf
@@ -69,7 +68,6 @@ class FunRandomTierListState(GuiImplViewLobbyState):
 class FunPostBattleResultsState(ViewLobbyState, PostBattleResultsStateMixin):
     STATE_ID = FUNRANDOM_ALIASES.FUN_POST_BATTLE_RESULTS
     VIEW_KEY = ViewKey(FUNRANDOM_ALIASES.FUN_POST_BATTLE_RESULTS)
-    __layoutIDsAndSubPresenters = {FunSubModeImpl.DEFAULT: (FunBattleResultsSubPresenter, R.views.fun_random.mono.lobby.battle_results())}
 
     def __init__(self, flags=StateFlags.UNDEFINED):
         super(FunPostBattleResultsState, self).__init__(flags=flags | LobbyStateFlags.POST_BATTLE_RESULTS)
@@ -88,9 +86,13 @@ class FunPostBattleResultsState(ViewLobbyState, PostBattleResultsStateMixin):
         machine.addNavigationTransitionFromParent(self)
         self.addNavigationTransition(self, transitionType=TransitionType.EXTERNAL)
 
+    def serializeParams(self):
+        return self.__cachedParams
+
     def _getViewLoadCtx(self, event):
         ctx = dict(event.params)
-        subPresenterCls, layoutId = self.__layoutIDsAndSubPresenters.get(ctx['subModeImpl'], self.__layoutIDsAndSubPresenters[FunSubModeImpl.DEFAULT])
+        result = collectBattleResultsSubPresenters()
+        subPresenterCls, layoutId = result.get(ctx['subModeImpl'], result[FunSubModeImpl.DEFAULT])
         ctx['subPresenterCls'] = subPresenterCls
         ctx['layoutID'] = layoutId
         return ctx

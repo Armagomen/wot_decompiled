@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/shop/vehicle_sell_confirmation_popover.py
 import logging
 from gui.Scaleform.daapi.view.meta.VehicleSellConfirmationPopoverMeta import VehicleSellConfirmationPopoverMeta
 from gui.Scaleform.locale.STORE import STORE
@@ -32,10 +30,10 @@ class VehicleSellConfirmationPopover(VehicleSellConfirmationPopoverMeta):
     def __getInitialVO(self):
         tradeOffVehicle = self.itemsCache.items.getItemByCD(self.__tradeOffVehicleIntCD)
         if tradeOffVehicle:
-            dataVO = {'titleLabel': text_styles.main(_ms(STORE.SELLCONFIRMATIONPOPOVER_TITLELABEL, vehName=tradeOffVehicle.shortUserName)),
-             'priceLabel': text_styles.main(_ms(STORE.SELLCONFIRMATIONPOPOVER_PRICELABEL, price=text_styles.highlightText(backport.getIntegralFormat(self.__confirmGoldPrice)))),
-             'priceValue': self.__confirmGoldPrice}
+            dataVO = {'titleLabel': text_styles.main(_ms(STORE.SELLCONFIRMATIONPOPOVER_TITLELABEL, vehName=tradeOffVehicle.shortUserName)), 
+               'priceLabel': text_styles.main(_ms(STORE.SELLCONFIRMATIONPOPOVER_PRICELABEL, price=text_styles.highlightText(backport.getIntegralFormat(self.__confirmGoldPrice)))), 
+               'priceValue': self.__confirmGoldPrice}
             return dataVO
         else:
             _logger.error('Invalid trade off vehicle CD.')
-            return None
+            return

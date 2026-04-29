@@ -1,7 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/comp7_helpers/comp7_bonus_packer.py
-import logging
-import typing
+import logging, typing
+from shared_utils import findFirst, first
 from comp7.gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS as COMP7_TOOLTIPS
 from comp7.gui.impl.gen.view_models.views.lobby.comp7_bonus_model import Comp7BonusModel, DogTagType
 from comp7.gui.impl.gen.view_models.views.lobby.comp7_style_bonus_model import Comp7StyleBonusModel
@@ -23,12 +21,11 @@ from gui.server_events.bonuses import getNonQuestBonuses, mergeBonuses, splitBon
 from gui.shared.gui_items.Tankman import getFullUserName
 from gui.shared.gui_items.customization import CustomizationTooltipContext
 from gui.shared.missions.packers.bonus import DossierBonusUIPacker, DogTagComponentsUIPacker, BonusUIPacker, BaseBonusUIPacker, BACKPORT_TOOLTIP_CONTENT_ID, SimpleBonusUIPacker, CustomizationBonusUIPacker, VehiclesBonusUIPacker, TokenBonusUIPacker, TankmenBonusUIPacker
-from gui.shared.missions.packers.bonus import getDefaultBonusPackersMap
+from gui.shared.missions.packers.bonus import getDefaultBonusPackersMap, getWeeklyMissionsMapping
 from gui.shared.money import Currency
 from helpers import dependency
 from items import tankmen
 from items.tankmen import getNationConfig
-from shared_utils import findFirst, first
 from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.game_control import IComp7Controller
 from skeletons.gui.offers import IOffersDataProvider
@@ -37,67 +34,40 @@ if typing.TYPE_CHECKING:
     from gui.server_events.bonuses import SimpleBonus
     from gui.server_events.bonuses import SelectableBonus
 _logger = logging.getLogger(__name__)
-_DOG_TAG_VIEW_TYPE_TO_DOG_TAG_TYPE_ENUM = {ComponentViewType.ENGRAVING: DogTagType.ENGRAVING,
- ComponentViewType.BACKGROUND: DogTagType.BACKGROUND}
-_RANK_REWARDS_BONUSES_ORDER = (BonusTypes.STYLE_PROGRESS,
- BonusTypes.BADGE_SUFFIX,
- BonusTypes.BADGE,
- BonusTypes.DOGTAG_ENGRAVING,
- BonusTypes.DOGTAG_BACKGROUND,
- BonusTypes.CRYSTAL,
- BonusTypes.STYLE,
- BonusTypes.RENT_VEHICLE)
-_TOKENS_REWARDS_BONUSES_ORDER = (BonusTypes.ACHIEVEMENT,
- BonusTypes.DELUXE_DEVICE,
- BonusTypes.CREWBOOK,
- BonusTypes.PREMIUM,
- BonusTypes.CRYSTAL,
- BonusTypes.CREDITS,
- BonusTypes.OPTIONAL_DEVICE,
- BonusTypes.BOOSTER,
- BonusTypes.BATTLE_BOOSTER,
- BonusTypes.EQUIPMENT)
-_QUALIFICATION_REWARDS_BONUSES_ORDER = (BonusTypes.STYLE_PROGRESS,
- BonusTypes.BADGE_SUFFIX,
- BonusTypes.BADGE,
- BonusTypes.DOGTAG_BACKGROUND,
- BonusTypes.DOGTAG_ENGRAVING,
- BonusTypes.CRYSTAL,
- BonusTypes.STYLE,
- BonusTypes.RENT_VEHICLE)
-_YEARLY_REWARDS_BONUSES_ORDER = (BonusTypes.BADGE_SUFFIX,
- BonusTypes.BADGE,
- BonusTypes.ACHIEVEMENT,
- BonusTypes.STYLE,
- BonusTypes.STYLE_3D,
- BonusTypes.STYLE_PROGRESS,
- BonusTypes.DELUXE_DEVICE,
- BonusTypes.OFFER,
- BonusTypes.CRYSTAL)
-_YEARLY_REWARD_META_BONUSES_ORDER = (BonusTypes.OFFER,
- BonusTypes.RENT_VEHICLE,
- BonusTypes.STYLE_3D_PROGRESS,
- BonusTypes.TOKEN,
- BonusTypes.STYLE_3D,
- BonusTypes.BADGE_SUFFIX,
- BonusTypes.BADGE,
- BonusTypes.CREW,
- BonusTypes.ACHIEVEMENT,
- BonusTypes.CRYSTAL,
- BonusTypes.STYLE)
+_DOG_TAG_VIEW_TYPE_TO_DOG_TAG_TYPE_ENUM = {ComponentViewType.ENGRAVING: DogTagType.ENGRAVING, 
+   ComponentViewType.BACKGROUND: DogTagType.BACKGROUND}
+_RANK_REWARDS_BONUSES_ORDER = (
+ BonusTypes.STYLE_PROGRESS, BonusTypes.BADGE_SUFFIX, BonusTypes.BADGE,
+ BonusTypes.DOGTAG_ENGRAVING, BonusTypes.DOGTAG_BACKGROUND,
+ BonusTypes.CRYSTAL, BonusTypes.STYLE, BonusTypes.RENT_VEHICLE)
+_TOKENS_REWARDS_BONUSES_ORDER = (
+ BonusTypes.ACHIEVEMENT, BonusTypes.DELUXE_DEVICE, BonusTypes.CREWBOOK, BonusTypes.PREMIUM,
+ BonusTypes.CRYSTAL, BonusTypes.CREDITS, BonusTypes.OPTIONAL_DEVICE, BonusTypes.BOOSTER,
+ BonusTypes.BATTLE_BOOSTER, BonusTypes.EQUIPMENT)
+_QUALIFICATION_REWARDS_BONUSES_ORDER = (
+ BonusTypes.STYLE_PROGRESS, BonusTypes.BADGE_SUFFIX, BonusTypes.BADGE,
+ BonusTypes.DOGTAG_BACKGROUND, BonusTypes.DOGTAG_ENGRAVING,
+ BonusTypes.CRYSTAL, BonusTypes.STYLE, BonusTypes.RENT_VEHICLE)
+_YEARLY_REWARDS_BONUSES_ORDER = (
+ BonusTypes.BADGE_SUFFIX, BonusTypes.BADGE, BonusTypes.ACHIEVEMENT, BonusTypes.STYLE, BonusTypes.STYLE_3D,
+ BonusTypes.STYLE_PROGRESS, BonusTypes.DELUXE_DEVICE, BonusTypes.OFFER, BonusTypes.CRYSTAL)
+_YEARLY_REWARD_META_BONUSES_ORDER = (
+ BonusTypes.OFFER, BonusTypes.RENT_VEHICLE, BonusTypes.STYLE_3D_PROGRESS, BonusTypes.TOKEN, BonusTypes.STYLE_3D,
+ BonusTypes.BADGE_SUFFIX, BonusTypes.BADGE, BonusTypes.CREW, BonusTypes.ACHIEVEMENT,
+ BonusTypes.CRYSTAL, BonusTypes.STYLE)
 _OFFER_REWARDS_ORDER = ('deluxe', 'modernized_devices_t3')
 
 def _getComp7BonusPackersMap():
     mapping = getDefaultBonusPackersMap()
-    mapping.update({'dossier': Comp7DossierBonusUIPacker(),
-     'dogTagComponents': Comp7DogTagUIPacker(),
-     'customizations': Comp7CustomizationBonusUIPacker(),
-     'vehicles': Comp7VehicleBonusUIPacker(),
-     'tankmen': Comp7TankmenBonusUIPacker(),
-     SELECTABLE_BONUS_NAME: Comp7OfferBonusUIPacker(),
-     Currency.CRYSTAL: Comp7CrystalBonusPacker(),
-     C11nProgressTokenBonus.BONUS_NAME: Comp7StyleProgressBonusUIPacker(),
-     COMP7_TOKEN_WEEKLY_REWARD_NAME: Comp7TokenWeeklyRewardUIPacker()})
+    mapping.update({'dossier': Comp7DossierBonusUIPacker(), 
+       'dogTagComponents': Comp7DogTagUIPacker(), 
+       'customizations': Comp7CustomizationBonusUIPacker(), 
+       'vehicles': Comp7VehicleBonusUIPacker(), 
+       'tankmen': Comp7TankmenBonusUIPacker(), 
+       SELECTABLE_BONUS_NAME: Comp7OfferBonusUIPacker(), 
+       Currency.CRYSTAL: Comp7CrystalBonusPacker(), 
+       C11nProgressTokenBonus.BONUS_NAME: Comp7StyleProgressBonusUIPacker(), 
+       COMP7_TOKEN_WEEKLY_REWARD_NAME: Comp7TokenWeeklyRewardUIPacker()})
     return mapping
 
 
@@ -114,16 +84,23 @@ def getComp7YearlyBonusPacker():
 
 def getComp7YearlyMetaBonusPacker():
     mapping = _getComp7BonusPackersMap()
-    mapping.update({SELECTABLE_BONUS_NAME: Comp7YearlyMetaOfferPacker(),
-     'customizations': Comp7CustomizationBonusUIPacker(),
-     'tankmen': Comp7YearlyCrewBonusUIPacker()})
+    mapping.update({SELECTABLE_BONUS_NAME: Comp7YearlyMetaOfferPacker(), 
+       'customizations': Comp7CustomizationBonusUIPacker(), 
+       'tankmen': Comp7YearlyCrewBonusUIPacker()})
+    return BonusUIPacker(mapping)
+
+
+def getWeeklyPBSBonusPacker():
+    mapping = getWeeklyMissionsMapping()
+    mapping.update({SELECTABLE_BONUS_NAME: Comp7OfferBonusUIPacker(), 
+       'customizations': Comp7CustomizationBonusUIPacker()})
     return BonusUIPacker(mapping)
 
 
 def _getComp7YearlyBonuses(specificCustomization=None):
     bonuses = _BONUSES.copy()
-    bonuses.update({'slots': Comp7YearlySlotsBonus,
-     'customizations': specificCustomization or Comp7YearlyCustomizationsBonus})
+    bonuses.update({'slots': Comp7YearlySlotsBonus, 
+       'customizations': specificCustomization or Comp7YearlyCustomizationsBonus})
     return bonuses
 
 
@@ -133,7 +110,8 @@ class Comp7DossierBonusUIPacker(DossierBonusUIPacker):
     def _getBadgeTooltip(cls, bonus):
         tooltipData = []
         for badge in bonus.getBadges():
-            tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BADGE, specialArgs=[badge.badgeID, badge.isSuffixLayout()]))
+            tooltipData.append(TooltipData(tooltip=None, isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.BADGE, specialArgs=[
+             badge.badgeID, badge.isSuffixLayout()]))
 
         return tooltipData
 
@@ -213,7 +191,7 @@ class Comp7StyleProgressBonusUIPacker(BaseBonusUIPacker):
 
     @staticmethod
     def __getIcon(styleID, progressLevel):
-        return 'style_progress_{styleID}_{progressLevel}'.format(styleID=styleID, progressLevel=progressLevel)
+        return ('style_progress_{styleID}_{progressLevel}').format(styleID=styleID, progressLevel=progressLevel)
 
     @staticmethod
     def __getLabel(camo):
@@ -261,7 +239,8 @@ class Comp7VehicleBonusUIPacker(VehiclesBonusUIPacker):
 
     @classmethod
     def _packTooltip(cls, bonus, vehicle, vehInfo):
-        return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.SHOP_VEHICLE, specialArgs=(vehicle.intCD,))
+        return createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.SHOP_VEHICLE, specialArgs=(
+         vehicle.intCD,))
 
 
 class Comp7TankmenBonusUIPacker(BaseBonusUIPacker):
@@ -276,7 +255,7 @@ class Comp7TankmenBonusUIPacker(BaseBonusUIPacker):
 
     @classmethod
     def _packSingleBonus(cls, bonus):
-        cd = bonus['tmanCompDescr'] if 'tmanCompDescr' in bonus else bonus
+        cd = bonus.get('tmanCompDescr', bonus)
         tankmanData = tankmen.TankmanDescr(cd)
         model = Comp7BonusModel()
         model.setName('tankman')
@@ -288,9 +267,10 @@ class Comp7TankmenBonusUIPacker(BaseBonusUIPacker):
     def _getToolTip(cls, bonus):
         tooltipData = []
         for tankmanData in bonus.getValue():
-            cd = tankmanData['tmanCompDescr'] if 'tmanCompDescr' in tankmanData else tankmanData
+            cd = tankmanData.get('tmanCompDescr', tankmanData)
             tankman = tankmen.TankmanDescr(cd)
-            tooltipData.append(createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.SPECIAL_TANKMAN, specialArgs=(tankman, cls.__getTankmanGroupName(tankman))))
+            tooltipData.append(createTooltipData(isSpecial=True, specialAlias=TOOLTIPS_CONSTANTS.SPECIAL_TANKMAN, specialArgs=(
+             tankman, cls.__getTankmanGroupName(tankman))))
 
         return tooltipData
 
@@ -310,11 +290,13 @@ class Comp7YearlyCrewBonusUIPacker(TankmenBonusUIPacker):
         model.setName('onslaught_yearly_crew')
         model.setLabel(backport.text(R.strings.comp7_ext.yearlyRewards.rewards.crew()))
         model.setTooltipContentId(str(R.views.comp7.mono.lobby.tooltips.crew_members_tooltip()))
-        return [model]
+        return [
+         model]
 
     @classmethod
     def _getToolTip(cls, bonus):
-        return [createTooltipData()]
+        return [
+         createTooltipData()]
 
     @classmethod
     def _getBonusModel(cls):
@@ -328,7 +310,8 @@ class Comp7TokenWeeklyRewardUIPacker(TokenBonusUIPacker):
         model = cls._getBonusModel()
         model.setValue(str(bonus.getCount()))
         model.setName(bonus.getName())
-        return [model]
+        return [
+         model]
 
     @classmethod
     def _getBonusModel(cls):
@@ -370,7 +353,8 @@ class Comp7OfferBonusUIPacker(BaseBonusUIPacker):
     @classmethod
     def _getToolTip(cls, bonus):
         if cls._selectableRewardManager.getGiftCount(bonus) > 0:
-            return [ createTooltipData(isSpecial=True, specialAlias=COMP7_TOOLTIPS.COMP7_SELECTABLE_REWARD, specialArgs=(offerToken,)) for offerToken in sorted(bonus.getValue().iterkeys(), key=_getOfferRewardTokensSortKey(_OFFER_REWARDS_ORDER)) ]
+            return [ createTooltipData(isSpecial=True, specialAlias=COMP7_TOOLTIPS.COMP7_SELECTABLE_REWARD, specialArgs=(offerToken,)) for offerToken in sorted(bonus.getValue().iterkeys(), key=_getOfferRewardTokensSortKey(_OFFER_REWARDS_ORDER))
+                   ]
         return []
 
 
@@ -378,7 +362,7 @@ class Comp7YearlyMetaOfferPacker(Comp7OfferBonusUIPacker):
 
     @classmethod
     def _getGiftCount(cls, bonus):
-        return sum((v.get('count', 0) for t, v in bonus.getValue().iteritems() if isComp7OfferYearlyRewardToken(t)))
+        return sum(v.get('count', 0) for t, v in bonus.getValue().iteritems() if isComp7OfferYearlyRewardToken(t))
 
 
 def packQuestBonuses(bonuses, bonusPacker, order=None):
@@ -395,7 +379,8 @@ def packQuestBonuses(bonuses, bonusPacker, order=None):
             packedBonuses.extend(bonusPacker.pack(bonus))
             packedToolTips.extend(bonusPacker.getToolTip(bonus))
 
-    return (packedBonuses, packedToolTips)
+    return (
+     packedBonuses, packedToolTips)
 
 
 def mergeOffers(bonuses):
@@ -404,7 +389,8 @@ def mergeOffers(bonuses):
     for bonus in bonuses:
         if bonus.getName() == SELECTABLE_BONUS_NAME:
             offers.append(bonus)
-        result.append(bonus)
+        else:
+            result.append(bonus)
 
     if offers:
         offerBonus = offers.pop()
@@ -493,7 +479,7 @@ def _getSortKey(order):
 def _getOfferRewardTokensSortKey(order):
 
     def getSortKey(token):
-        reward = token.split(':')[-1]
+        reward = token.split(':')[(-1)]
         try:
             return order.index(reward)
         except ValueError:

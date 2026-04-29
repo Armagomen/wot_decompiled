@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/wgnc/WGNCDialog.py
 from gui.Scaleform.daapi.view.meta.WGNCDialogMeta import WGNCDialogMeta
 from gui.wgnc import g_wgncProvider
 

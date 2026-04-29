@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/proto/bw_chat2/search_processor.py
 from debug_utils import LOG_WARNING
 from messenger.m_constants import PROTO_TYPE
 from messenger.proto import proto_getter
@@ -22,7 +20,7 @@ class SearchUsersProcessor(SearchProcessor):
 
     @proto_getter(PROTO_TYPE.BW_CHAT2)
     def proto(self):
-        return None
+        return
 
     def getSearchResultLimit(self):
         return self.__limits.getMaxResultSize()

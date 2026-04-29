@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/free_skill_confirmation_dialog.py
 import typing
 from gui.impl import backport
 from gui.impl.dialogs.dialog_template_button import CancelButton, ConfirmButton
@@ -18,7 +16,7 @@ if typing.TYPE_CHECKING:
 
 class FreeSkillConfirmationDialog(BaseCrewDialogTemplateView):
     __appLoader = dependency.descriptor(IAppLoader)
-    __slots__ = ('__skill',)
+    __slots__ = ('__skill', )
     _itemsCache = dependency.descriptor(IItemsCache)
 
     def __init__(self, skill, layoutID=None, uniqueID=None):
@@ -31,8 +29,10 @@ class FreeSkillConfirmationDialog(BaseCrewDialogTemplateView):
         else:
             titleRes = R.strings.dialogs.freeSkillsLearning.title.learning
         self.setSubView(Placeholder.TITLE, SimpleTextTitle(str(backport.text(titleRes(), skillName=self.__skill.userName))))
-        self.setSubView(Placeholder.CONTENT, SimpleTextContent(R.strings.dialogs.freeSkillsLearning.message(), [ImageSubstitution(R.images.gui.maps.icons.library.alertIcon1(), 'iconWarning', 0, -2, 6, 0)]))
-        self.setSubView(Placeholder.ICON, IconSet(R.images.gui.maps.icons.tankmen.skills.dialogs.dyn(self.__skill.extensionLessIconName)(), [R.images.gui.maps.icons.tankmen.skills.dialogs.bgGlow()]))
+        self.setSubView(Placeholder.CONTENT, SimpleTextContent(R.strings.dialogs.freeSkillsLearning.message(), [
+         ImageSubstitution(R.images.gui.maps.icons.library.alertIcon1(), 'iconWarning', 0, -2, 6, 0)]))
+        self.setSubView(Placeholder.ICON, IconSet(R.images.gui.maps.icons.tankmen.skills.dialogs.dyn(self.__skill.extensionLessIconName)(), [
+         R.images.gui.maps.icons.tankmen.skills.dialogs.bgGlow()]))
         self.addButton(ConfirmButton())
         self.addButton(CancelButton())
         super(FreeSkillConfirmationDialog, self)._onLoading(*args, **kwargs)

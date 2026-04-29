@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/personal_reserves/personal_reserves_intro.py
 import typing
 from frameworks.wulf import ViewSettings, WindowFlags
 from gui.Scaleform.framework.entities.EventSystemEntity import EventSystemEntity

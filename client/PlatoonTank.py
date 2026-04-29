@@ -1,11 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/PlatoonTank.py
+from __future__ import absolute_import
 import typing
 from typing import TYPE_CHECKING
 from collections import namedtuple
-import logging
-import math
-import AccountCommands
+import logging, math, AccountCommands
 from ClientSelectableCameraVehicle import ClientSelectableCameraVehicle
 from constants import IS_DEVELOPMENT
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
@@ -24,7 +21,9 @@ if TYPE_CHECKING:
     from vehicle_outfit.outfit import Outfit as TOutfit
     from items.vehicles import VehicleDescrType
 _logger = logging.getLogger(__name__)
-PlatoonTankInfo = namedtuple('PlatoonTankInfo', ('canDisplayModel', 'vehCompDescr', 'vehOutfitCD', 'seasonType', 'marksOnGun', 'clanDBID', 'playerName', 'stFrags'))
+PlatoonTankInfo = namedtuple('PlatoonTankInfo', ('canDisplayModel', 'vehCompDescr',
+                                                 'vehOutfitCD', 'seasonType', 'marksOnGun',
+                                                 'clanDBID', 'playerName', 'stFrags'))
 
 class _PlatoonTankAppearance(HangarVehicleAppearance):
     _c11nService = dependency.descriptor(ICustomizationService)
@@ -69,7 +68,10 @@ class _PlatoonTankAppearance(HangarVehicleAppearance):
         callback(AccountCommands.RES_SUCCESS, self.__tankInfo.clanDBID)
 
     def _getThisVehicleDossierInsigniaRank(self):
-        return self.__tankInfo.marksOnGun if self.__tankInfo is not None else 0
+        if self.__tankInfo is not None:
+            return self.__tankInfo.marksOnGun
+        else:
+            return 0
 
     def _getTurretYaw(self):
         return self.__turretYaw
@@ -124,7 +126,9 @@ class PlatoonTank(ClientSelectableCameraVehicle):
         return
 
     def getStFrags(self):
-        return self.__tankInfo.stFrags if self.__tankInfo else 0
+        if self.__tankInfo:
+            return self.__tankInfo.stFrags
+        return 0
 
     if IS_DEVELOPMENT:
 
@@ -153,8 +157,8 @@ class PlatoonTank(ClientSelectableCameraVehicle):
 
     def _onVehicleLoaded(self):
         super(PlatoonTank, self)._onVehicleLoaded()
-        g_eventBus.handleEvent(events.HangarVehicleEvent(events.HangarVehicleEvent.ON_PLATOON_TANK_LOADED, ctx={'entity': self,
-         'playerName': self.__tankInfo.playerName if self.__tankInfo else ''}), scope=EVENT_BUS_SCOPE.LOBBY)
+        g_eventBus.handleEvent(events.HangarVehicleEvent(events.HangarVehicleEvent.ON_PLATOON_TANK_LOADED, ctx={'entity': self, 
+           'playerName': self.__tankInfo.playerName if self.__tankInfo else ''}), scope=EVENT_BUS_SCOPE.LOBBY)
 
     def _onVehicleDestroy(self):
         g_eventBus.handleEvent(events.HangarVehicleEvent(events.HangarVehicleEvent.ON_PLATOON_TANK_DESTROY, ctx={'entity': self}), scope=EVENT_BUS_SCOPE.LOBBY)

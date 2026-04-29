@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/marathon/marathon_event_controller.py
 import Event
 from gui.marathon.marathon_event import MarathonEvent
 from gui.marathon.marathon_resource_manager import MarathonResourceManager
@@ -55,21 +53,24 @@ class MarathonEventsController(IMarathonEventsController, Notifiable):
         return self.__marathons
 
     def getPrimaryMarathon(self):
-        return self.__marathons[0] if self.__marathons else None
+        if self.__marathons:
+            return self.__marathons[0]
+        else:
+            return
 
     def getFirstEnabledMarathon(self):
         for marathon in self.__marathons:
             if marathon.isEnabled():
                 return marathon
 
-        return None
+        return
 
     def getPrefix(self, eventID):
         for marathon in self.__marathons:
             if eventID.startswith(marathon.prefix):
                 return marathon.prefix
 
-        return None
+        return
 
     def getVisibleInPostBattleQuests(self):
         result = {}
@@ -80,16 +81,20 @@ class MarathonEventsController(IMarathonEventsController, Notifiable):
         return result
 
     def getQuestsData(self, prefix=None, postfix=None):
-        return self.getPrimaryMarathon().getQuestsData(prefix, postfix) if self.isAnyActive() else {}
+        if self.isAnyActive():
+            return self.getPrimaryMarathon().getQuestsData(prefix, postfix)
+        return {}
 
     def getTokensData(self, prefix=None, postfix=None):
-        return self.getPrimaryMarathon().getTokensData(prefix, postfix) if self.isAnyActive() else {}
+        if self.isAnyActive():
+            return self.getPrimaryMarathon().getTokensData(prefix, postfix)
+        return {}
 
     def isAnyActive(self):
-        return any((marathon.isAvailable() for marathon in self.__marathons))
+        return any(marathon.isAvailable() for marathon in self.__marathons)
 
     def doesShowAnyMissionsTab(self):
-        return any((marathon.isEnabled() for marathon in self.__marathons))
+        return any(marathon.isEnabled() for marathon in self.__marathons)
 
     def fini(self):
         self.__stop()
@@ -150,7 +155,9 @@ class MarathonEventsController(IMarathonEventsController, Notifiable):
             if time != 0:
                 timeList.append(time)
 
-        return min(timeList) if timeList else 0
+        if timeList:
+            return min(timeList)
+        return 0
 
     def __reloadNotification(self):
         self.clearNotification()
@@ -171,4 +178,4 @@ class MarathonEventsController(IMarathonEventsController, Notifiable):
             if marathon.prefix == prefix:
                 return marathon
 
-        return None
+        return

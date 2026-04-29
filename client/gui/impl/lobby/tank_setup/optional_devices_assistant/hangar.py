@@ -1,10 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/optional_devices_assistant/hangar.py
 import typing
 from CurrentVehicle import g_currentVehicle
 from account_helpers.AccountSettings import AccountSettings, OptionalDevicesAssistant
 from constants import QUEUE_TYPE
-from gui.game_control.wot_plus_opt_device_assist import OptionalDevicesAssistantCtrl
+from gui.game_control.wot_plus.wot_plus_opt_device_assist import OptionalDevicesAssistantCtrl
 from gui.game_control.wotlda.constants import OptDeviceAssistType
 from gui.impl.common.base_sub_model_view import BaseSubModelView
 from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.optional_devices_assistant_item import OptionalDevicesAssistantItem as ODAItem
@@ -24,30 +22,30 @@ if typing.TYPE_CHECKING:
     from typing import List
     from gui.impl.gen.view_models.views.lobby.tank_setup.sub_views.optional_devices_assistant_model import OptionalDevicesAssistantModel
     from renewable_subscription_common.optional_devices_usage_config import VehicleLoadout
-_GENERIC_INT_TYPE_TO_UI_ENUM = {GenericOptionalDevice.STEREOSCOPE: OptionalDevicesAssistantItemType.STEREOSCOPE,
- GenericOptionalDevice.TURBOCHARGER: OptionalDevicesAssistantItemType.TURBOCHARGER,
- GenericOptionalDevice.ENHANCED_AIM_DRIVES: OptionalDevicesAssistantItemType.ENHANCEDAIMDRIVES,
- GenericOptionalDevice.GROUSERS: OptionalDevicesAssistantItemType.GROUSERS,
- GenericOptionalDevice.AIMING_STABILIZER: OptionalDevicesAssistantItemType.AIMINGSTABILIZER,
- GenericOptionalDevice.ANTIFRAGMENTATION_LINING: OptionalDevicesAssistantItemType.ANTIFRAGMENTATIONLINING,
- GenericOptionalDevice.CAMOUFLAGE_NET: OptionalDevicesAssistantItemType.CAMOUFLAGENET,
- GenericOptionalDevice.IMPROVED_SIGHTS: OptionalDevicesAssistantItemType.IMPROVEDSIGHTS,
- GenericOptionalDevice.VENTILATION: OptionalDevicesAssistantItemType.VENTILATION,
- GenericOptionalDevice.HEALTH_RESERVE: OptionalDevicesAssistantItemType.HEALTHRESERVE,
- GenericOptionalDevice.ROTATION_MECHANISM: OptionalDevicesAssistantItemType.ROTATIONMECHANISM,
- GenericOptionalDevice.RAMMER: OptionalDevicesAssistantItemType.RAMMER,
- GenericOptionalDevice.COATED_OPTICS: OptionalDevicesAssistantItemType.COATEDOPTICS,
- GenericOptionalDevice.ADDIT_INVISIBILITY_DEVICE: OptionalDevicesAssistantItemType.ADDITINVISIBILITYDEVICE,
- GenericOptionalDevice.IMPROVED_CONFIGURATION: OptionalDevicesAssistantItemType.IMPROVEDCONFIGURATION,
- GenericOptionalDevice.RADIO_COMMUNICATION: OptionalDevicesAssistantItemType.RADIOCOMMUNICATION,
- GenericOptionalDevice.COMMANDERS_VIEW: OptionalDevicesAssistantItemType.COMMANDERSVIEW,
- GenericOptionalDevice.MODERNIZED_EXTRA_HEALTH_RESERVE_ANTIFRAGMENTATION_LINING: OptionalDevicesAssistantItemType.MODERNIZEDEXTRAHEALTHRESERVEANTIFRAGMENTATIONLINING,
- GenericOptionalDevice.MODERNIZED_TURBOCHARGER_ROTATION_MECHANISM: OptionalDevicesAssistantItemType.MODERNIZEDTURBOCHARGERROTATIONMECHANISM,
- GenericOptionalDevice.MODERNIZED_AIM_DRIVES_AIMING_STABILIZER: OptionalDevicesAssistantItemType.MODERNIZEDAIMDRIVESAIMINGSTABILIZER,
- GenericOptionalDevice.MODERNIZED_IMPROVED_SIGHTS_ENHANCED_AIM_DRIVES: OptionalDevicesAssistantItemType.MODERNIZEDIMPROVEDSIGHTSENHANCEDAIMDRIVES}
+_GENERIC_INT_TYPE_TO_UI_ENUM = {GenericOptionalDevice.STEREOSCOPE: OptionalDevicesAssistantItemType.STEREOSCOPE, 
+   GenericOptionalDevice.TURBOCHARGER: OptionalDevicesAssistantItemType.TURBOCHARGER, 
+   GenericOptionalDevice.ENHANCED_AIM_DRIVES: OptionalDevicesAssistantItemType.ENHANCEDAIMDRIVES, 
+   GenericOptionalDevice.GROUSERS: OptionalDevicesAssistantItemType.GROUSERS, 
+   GenericOptionalDevice.AIMING_STABILIZER: OptionalDevicesAssistantItemType.AIMINGSTABILIZER, 
+   GenericOptionalDevice.ANTIFRAGMENTATION_LINING: OptionalDevicesAssistantItemType.ANTIFRAGMENTATIONLINING, 
+   GenericOptionalDevice.CAMOUFLAGE_NET: OptionalDevicesAssistantItemType.CAMOUFLAGENET, 
+   GenericOptionalDevice.IMPROVED_SIGHTS: OptionalDevicesAssistantItemType.IMPROVEDSIGHTS, 
+   GenericOptionalDevice.VENTILATION: OptionalDevicesAssistantItemType.VENTILATION, 
+   GenericOptionalDevice.HEALTH_RESERVE: OptionalDevicesAssistantItemType.HEALTHRESERVE, 
+   GenericOptionalDevice.ROTATION_MECHANISM: OptionalDevicesAssistantItemType.ROTATIONMECHANISM, 
+   GenericOptionalDevice.RAMMER: OptionalDevicesAssistantItemType.RAMMER, 
+   GenericOptionalDevice.COATED_OPTICS: OptionalDevicesAssistantItemType.COATEDOPTICS, 
+   GenericOptionalDevice.ADDIT_INVISIBILITY_DEVICE: OptionalDevicesAssistantItemType.ADDITINVISIBILITYDEVICE, 
+   GenericOptionalDevice.IMPROVED_CONFIGURATION: OptionalDevicesAssistantItemType.IMPROVEDCONFIGURATION, 
+   GenericOptionalDevice.RADIO_COMMUNICATION: OptionalDevicesAssistantItemType.RADIOCOMMUNICATION, 
+   GenericOptionalDevice.COMMANDERS_VIEW: OptionalDevicesAssistantItemType.COMMANDERSVIEW, 
+   GenericOptionalDevice.MODERNIZED_EXTRA_HEALTH_RESERVE_ANTIFRAGMENTATION_LINING: OptionalDevicesAssistantItemType.MODERNIZEDEXTRAHEALTHRESERVEANTIFRAGMENTATIONLINING, 
+   GenericOptionalDevice.MODERNIZED_TURBOCHARGER_ROTATION_MECHANISM: OptionalDevicesAssistantItemType.MODERNIZEDTURBOCHARGERROTATIONMECHANISM, 
+   GenericOptionalDevice.MODERNIZED_AIM_DRIVES_AIMING_STABILIZER: OptionalDevicesAssistantItemType.MODERNIZEDAIMDRIVESAIMINGSTABILIZER, 
+   GenericOptionalDevice.MODERNIZED_IMPROVED_SIGHTS_ENHANCED_AIM_DRIVES: OptionalDevicesAssistantItemType.MODERNIZEDIMPROVEDSIGHTSENHANCEDAIMDRIVES}
 
 class OptionalDevicesAssistantView(BaseSubModelView):
-    __slots__ = ('_queueType',)
+    __slots__ = ('_queueType', )
     _wotPlusCtrl = dependency.descriptor(IWotPlusController)
     _comp7onslaughtCtrl = dependency.descriptor(IComp7Controller)
     _itemsCache = dependency.descriptor(IItemsCache)
@@ -87,7 +85,7 @@ class OptionalDevicesAssistantView(BaseSubModelView):
         if commonData[0] == OptDeviceAssistType.NODATA and legendaryData[0] == OptDeviceAssistType.NODATA:
             self.showNoDataState()
             return
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             tx.setState(OptionalDevicesAssistantStateEnum.VISIBLE)
             storedPresetVal = AccountSettings.getSettings(OptionalDevicesAssistant.SELECTED_PRESET)
             tx.selectedPreset.setMType(PresetType(storedPresetVal))
@@ -124,7 +122,8 @@ class OptionalDevicesAssistantView(BaseSubModelView):
             for device in loadout.devices:
                 if isinstance(device, GenericOptionalDevice):
                     loadoutItems.addString(_GENERIC_INT_TYPE_TO_UI_ENUM[device].value)
-                loadoutItems.addString(device)
+                else:
+                    loadoutItems.addString(device)
 
             popularItemsData.append(popularItem)
 
@@ -136,16 +135,18 @@ class OptionalDevicesAssistantView(BaseSubModelView):
     def __isSuitableVehicle(self, vehicle):
         if self._queueType == QUEUE_TYPE.RANDOMS:
             return vehicle.getState()[0] != Vehicle.VEHICLE_STATE.UNSUITABLE_TO_QUEUE
-        elif self._queueType == QUEUE_TYPE.COMP7:
-            suitableVehResult = self._comp7onslaughtCtrl.isSuitableVehicle(vehicle)
-            return suitableVehResult is None or suitableVehResult.isValid
         else:
+            if self._queueType == QUEUE_TYPE.COMP7:
+                suitableVehResult = self._comp7onslaughtCtrl.isSuitableVehicle(vehicle)
+                return suitableVehResult is None or suitableVehResult.isValid
             return True
 
     def __isVehicleDataAvailable(self, vehicle):
         if self._queueType == QUEUE_TYPE.RANDOMS:
             return not vehicle.isSecret
-        return not vehicle.isSecret or vehicle.isOnlyForComp7Battles if self._queueType == QUEUE_TYPE.COMP7 else True
+        if self._queueType == QUEUE_TYPE.COMP7:
+            return not vehicle.isSecret or vehicle.isOnlyForComp7Battles
+        return True
 
     def __createPreset(self, presetType, resultType, resultVehicle, loadouts):
         preset = OptDeviceAssistPresetUI()

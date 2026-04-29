@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/goodies/GoodieDefinition.py
 import time
 from typing import TYPE_CHECKING
 from Goodie import Goodie
@@ -19,24 +17,14 @@ class OverLimitException(SoftException):
 class ExpirationCountException(SoftException):
 
     def __init__(self, state):
-        msg = 'The number of expirations does not match the total number of goodies. {}'.format(state)
+        msg = ('The number of expirations does not match the total number of goodies. {}').format(state)
         super(ExpirationCountException, self).__init__(msg)
 
 
 class GoodieDefinition(object):
-    __slots__ = ['uid',
-     'variety',
-     'target',
-     'enabled',
-     'lifetime',
-     'useby',
-     'counter',
-     'autostart',
-     'resource',
-     'value',
-     'condition',
-     'expireAfter',
-     'roundToEndOfGameDay']
+    __slots__ = [
+     'uid', 'variety', 'target', 'enabled', 'lifetime', 'useby', 'counter', 'autostart',
+     'resource', 'value', 'condition', 'expireAfter', 'roundToEndOfGameDay']
 
     def __init__(self, uid, variety, target, enabled, lifetime, useby, counter, autostart, resource, value, condition, expireAfter, roundToEndOfGameDay):
         self.uid = uid
@@ -54,7 +42,7 @@ class GoodieDefinition(object):
         self.roundToEndOfGameDay = roundToEndOfGameDay
 
     def __repr__(self):
-        return '{}, {}, {}, {}, {}, {}, {}, {}'.format(self.uid, self.enabled, self.lifetime, self.useby, self.counter, self.resource, self.value, self.expireAfter, self.roundToEndOfGameDay)
+        return ('{}, {}, {}, {}, {}, {}, {}, {}').format(self.uid, self.enabled, self.lifetime, self.useby, self.counter, self.resource, self.value, self.expireAfter, self.roundToEndOfGameDay)
 
     def isActivatable(self):
         return self.lifetime is not None
@@ -77,7 +65,8 @@ class GoodieDefinition(object):
 
     def apply(self, resources, applyToZero):
         if not isinstance(resources, set):
-            resources = {resources}
+            resources = {
+             resources}
         for resource in resources:
             if resource.value == 0 and not applyToZero:
                 continue
@@ -97,9 +86,11 @@ class GoodieDefinition(object):
 
     def apply_delta(self, resource, applyToZero):
         if resource.value == 0 and not applyToZero:
-            return None
+            return
         else:
-            return resource.__class__(self.value.delta(resource.value)) if resource.__class__ == self.resource else None
+            if resource.__class__ == self.resource:
+                return resource.__class__(self.value.delta(resource.value))
+            return
 
     def createGoodie(self, state=None, finishTime=None, counter=None, expirations=None):
         if not self.enabled:
@@ -107,10 +98,7 @@ class GoodieDefinition(object):
         else:
             if self.expireAfter is not None:
                 if expirations is None or sum(expirations.itervalues()) != counter:
-                    raise ExpirationCountException((state,
-                     finishTime,
-                     counter,
-                     expirations))
+                    raise ExpirationCountException((state, finishTime, counter, expirations))
             if state is None:
                 if self.autostart:
                     state = GOODIE_STATE.ACTIVE

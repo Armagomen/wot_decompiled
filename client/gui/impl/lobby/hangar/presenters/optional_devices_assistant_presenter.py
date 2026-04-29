@@ -1,9 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/hangar/presenters/optional_devices_assistant_presenter.py
 from __future__ import absolute_import
-import logging
-import typing
-import Event
+import logging, typing, Event
 from CurrentVehicle import g_currentVehicle
 from constants import QUEUE_TYPE
 from frameworks.state_machine import BaseStateObserver, visitor
@@ -16,10 +12,9 @@ from gui.impl.pub.view_component import ViewComponent
 from gui.prb_control.entities.listener import IGlobalListener
 from helpers import dependency
 from skeletons.gui.game_control import IWotPlusController
-from skeletons.gui.lobby_context import ILobbyContext
 if typing.TYPE_CHECKING:
     from gui.lobby_state_machine.lobby_state_machine import LobbyStateMachine
-    from frameworks.state_machine import State
+    from frameworks.state_machine import State, StateEvent
     from typing import Optional
 _logger = logging.getLogger(__name__)
 
@@ -40,10 +35,17 @@ class _OptionalDevicesObserver(BaseStateObserver):
         lsm = state.getMachine()
         return visitor.isDescendantOf(state, lsm.getStateByCls(EquipmentLoadoutState)) or state.getStateID() == EquipmentLoadoutState.STATE_ID
 
+    def onEnterState(self, state, event):
+        super(_OptionalDevicesObserver, self).onEnterState(state, event)
+        self.onEquipEntered()
+
+    def onExitState(self, state, event):
+        super(_OptionalDevicesObserver, self).onExitState(state, event)
+        self.onEquipExited()
+
 
 class OptionalDevicesAssistantPresenter(ViewComponent[OptionalDevicesAssistantModel], IGlobalListener):
     _STATES_OBSERVER = _OptionalDevicesObserver
-    _lobbyContext = dependency.descriptor(ILobbyContext)
     _wotPlusController = dependency.descriptor(IWotPlusController)
 
     def __init__(self):
@@ -61,15 +63,17 @@ class OptionalDevicesAssistantPresenter(ViewComponent[OptionalDevicesAssistantMo
         return super(OptionalDevicesAssistantPresenter, self).getViewModel()
 
     def _getEvents(self):
-        return ((self._wotPlusController.onEnabledStatusChanged, self.__onWotPlusDataChanged), (g_currentVehicle.onChanged, self.__onVehicleChanged))
-
-    def _initialize(self, *args, **kwargs):
-        super(OptionalDevicesAssistantPresenter, self)._initialize(*args, **kwargs)
-        self._createOptionalDevicesAssistantPanel()
+        return (
+         (
+          self._wotPlusController.onEnabledStatusChanged, self.__onWotPlusDataChanged),
+         (
+          g_currentVehicle.onChanged, self.__onVehicleChanged),
+         (
+          self.optionalDevicesAssistantObserver.onEquipEntered, self.__onEquipEntered))
 
     def _finalize(self):
         super(OptionalDevicesAssistantPresenter, self)._finalize()
-        self._optionalDevicesAssistant = None
+        self._removeOptionalDevicesAssistantPanel()
         lsm = getLobbyStateMachine()
         lsm.disconnect(self.optionalDevicesAssistantObserver)
         self.__slotSelectionObserver = None
@@ -81,7 +85,7 @@ class OptionalDevicesAssistantPresenter(ViewComponent[OptionalDevicesAssistantMo
         if not self.prbEntity:
             return
         queueType = self.prbEntity.getQueueType()
-        if self._lobbyContext.getServerSettings().isOptionalDevicesAssistantEnabled() and self._wotPlusController.isEnabled() and queueType in (QUEUE_TYPE.RANDOMS, QUEUE_TYPE.COMP7):
+        if self._wotPlusController.getSettingsStorage().isOptionalDevicesAssistantAvailable() and queueType in (QUEUE_TYPE.RANDOMS, QUEUE_TYPE.COMP7):
             self._optionalDevicesAssistant = OptionalDevicesAssistantView(self.viewModel, queueType)
             self._optionalDevicesAssistant.onLoading()
 
@@ -97,7 +101,10 @@ class OptionalDevicesAssistantPresenter(ViewComponent[OptionalDevicesAssistantMo
         return
 
     def createToolTipContent(self, event, contentID):
-        return PopularLoadoutsTooltip(vehCompDescr=int(event.getArgument('sourceVehicleCompDescr', 0)), optionalDevicesResultType=int(event.getArgument('optionalDevicesResultType', 0))) if contentID == R.views.lobby.tanksetup.tooltips.PopularLoadoutsTooltip() else None
+        if contentID == R.views.lobby.tanksetup.tooltips.PopularLoadoutsTooltip():
+            return PopularLoadoutsTooltip(vehCompDescr=int(event.getArgument('sourceVehicleCompDescr', 0)), optionalDevicesResultType=int(event.getArgument('optionalDevicesResultType', 0)))
+        else:
+            return
 
     def __onWotPlusDataChanged(self, isEnabledVal):
         if isEnabledVal is None:
@@ -114,3 +121,11 @@ class OptionalDevicesAssistantPresenter(ViewComponent[OptionalDevicesAssistantMo
                 self._optionalDevicesAssistant.showHiddenState()
                 self._removeOptionalDevicesAssistantPanel()
             return
+
+    def __onEquipEntered(self):
+        if not self._optionalDevicesAssistant:
+            self._createOptionalDevicesAssistantPanel()
+            if self._optionalDevicesAssistant:
+                self._optionalDevicesAssistant.initialize()
+        else:
+            self._optionalDevicesAssistant.updateVehicle()

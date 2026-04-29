@@ -1,12 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/server_events/personal_missions_cache.py
-from typing import Any
-import typing
-import operator
+import typing, operator
 from collections import defaultdict
-import BigWorld
-import Event
-import personal_missions
+import BigWorld, Event, personal_missions
 from constants import BATTLE_MODE_VEHICLE_TAGS, MIN_VEHICLE_LEVEL, MAX_VEHICLE_LEVEL
 from gui.server_events import event_items
 from gui.server_events.event_items import PersonalMission, PMOperation
@@ -23,11 +17,12 @@ from skeletons.account_helpers.settings_core import ISettingsCore, ISettingsCach
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 from wg_async import wg_await, wg_async
+if typing.TYPE_CHECKING:
+    from typing import Any, Tuple, Iterable, List, Union, Dict, Optional
+    from skeletons.gui.server_events import IEventsCache
 _SETTINGS_SYNCED = 1
 _EVENTS_CACHE_UPDATED = 2
 _ALL_SYNCED = _SETTINGS_SYNCED | _EVENTS_CACHE_UPDATED
-if typing.TYPE_CHECKING:
-    from skeletons.gui.server_events import IEventsCache
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
 def vehicleRequirementsCheck(quest, operation, invVehicles, vehGetter, itemsCache=None):
@@ -40,9 +35,9 @@ def vehicleRequirementsCheck(quest, operation, invVehicles, vehGetter, itemsCach
         _, nationID, vehicleTypeID = vehicles.parseIntCompactDescr(vehCD)
         vehType = vehicles.g_cache.vehicle(nationID, vehicleTypeID)
         vehicle = itemsCache.items.getItemByCD(vehType.compactDescr)
-        if vehType.level >= level and classifier.matchVehicle(vehType):
-            if not checkForTags(vehType.tags, BATTLE_MODE_VEHICLE_TAGS) and not vehicle.isRented:
-                return vehGetter(vehCD).activeInNationGroup and True
+        if vehType.level >= level and classifier.matchVehicle(vehType) and not checkForTags(vehType.tags, BATTLE_MODE_VEHICLE_TAGS) and not vehicle.isRented:
+            if vehGetter(vehCD).activeInNationGroup:
+                return True
 
     return False
 
@@ -51,11 +46,14 @@ def processDisabledFlag(collection, disabledIds):
     for itemId, _ in collection.iteritems():
         if itemId in disabledIds:
             collection[itemId].setDisabledState(True)
-        collection[itemId].setDisabledState(False)
+        else:
+            collection[itemId].setDisabledState(False)
 
 
 class _PMBranch(object):
-    __slots__ = ('branch', 'questsProgress', 'vehRequirementsCache', 'hasQuestsForSelect', 'hasQuestsForReward', 'freeTokensCount', 'pawnedTokensCount', 'campaigns', 'operations', 'quests')
+    __slots__ = ('branch', 'questsProgress', 'vehRequirementsCache', 'hasQuestsForSelect',
+                 'hasQuestsForReward', 'freeTokensCount', 'pawnedTokensCount', 'campaigns',
+                 'operations', 'quests')
 
     def __init__(self, branch):
         self.branch = branch
@@ -125,7 +123,10 @@ class PersonalMissionsCache(object):
 
     def getQuestsProgress(self, branch):
         questData = self.__questsData.get(branch)
-        return questData.questsProgress if questData else None
+        if questData:
+            return questData.questsProgress
+        else:
+            return
 
     def isCampaignActive(self, branch):
         return branch in self.getActiveCampaigns()
@@ -155,7 +156,9 @@ class PersonalMissionsCache(object):
 
     def getQuestsForBranch(self, branch):
         questData = self.__questsData.get(branch)
-        return questData.quests if questData else {}
+        if questData:
+            return questData.quests
+        return {}
 
     def getAllOperations(self, branches=PM_BRANCH.V1_BRANCHES):
         result = {}
@@ -166,7 +169,10 @@ class PersonalMissionsCache(object):
 
     def getOperationsForBranch(self, branch):
         questData = self.__questsData.get(branch, None)
-        return questData.operations if questData else {}
+        if questData:
+            return questData.operations
+        else:
+            return {}
 
     def getAllCampaigns(self, branches=PM_BRANCH.V1_BRANCHES):
         result = {}
@@ -177,7 +183,10 @@ class PersonalMissionsCache(object):
 
     def getCampaignsForBranch(self, branch):
         questData = self.__questsData.get(branch, None)
-        return questData.campaigns if questData else {}
+        if questData:
+            return questData.campaigns
+        else:
+            return {}
 
     def getAllSelectedQuests(self):
         result = {}
@@ -200,14 +209,18 @@ class PersonalMissionsCache(object):
 
     def getFreeTokensCount(self, branch):
         questData = self.__questsData.get(branch, None)
-        return questData.freeTokensCount if questData else 0
+        if questData:
+            return questData.freeTokensCount
+        else:
+            return 0
 
-    def getOperationPmPointsData(self, branch, operation):
+    def getOperationPmPointsData(self, branch, operationID):
         branchData = self.__questsData.get(branch, None)
-        operationData = branchData.operations.get(operation) if branchData else None
+        operationData = branchData.operations.get(operationID) if branchData else None
         if operationData is not None:
             maxPmPointsCount = operationData.getMaxPmPointsCount()
-            return (min(operationData.getTotalPmPointsCount(), maxPmPointsCount), maxPmPointsCount)
+            return (
+             min(operationData.getTotalPmPointsCount(), maxPmPointsCount), maxPmPointsCount)
         else:
             return (0, 0)
 
@@ -224,13 +237,16 @@ class PersonalMissionsCache(object):
                     break
 
             if lastQuestIsCompleted and quests and withCompleted:
-                actualQuests.append(quests[-1])
+                actualQuests.append(quests[(-1)])
 
         return actualQuests
 
     def getPawnedTokensCount(self, branch):
         questData = self.__questsData.get(branch, None)
-        return questData.pawnedTokensCount if questData else 0
+        if questData:
+            return questData.pawnedTokensCount
+        else:
+            return 0
 
     def mayPawnQuest(self, quest):
         branch = quest.getPMType().branch
@@ -255,15 +271,24 @@ class PersonalMissionsCache(object):
 
     def hasVehicleForQuests(self, branch):
         questsData = self.__questsData.get(branch, None)
-        return self.isEnabled(branch) and any(questsData.vehRequirementsCache.itervalues()) if questsData else False
+        if questsData:
+            return self.isEnabled(branch) and any(questsData.vehRequirementsCache.itervalues())
+        else:
+            return False
 
     def hasQuestsForSelect(self, branch):
         questsData = self.__questsData.get(branch, None)
-        return questsData.hasQuestsForSelect if questsData else False
+        if questsData:
+            return questsData.hasQuestsForSelect
+        else:
+            return False
 
     def hasQuestsForReward(self, branch):
         questsData = self.__questsData.get(branch, None)
-        return questsData.hasQuestsForReward and self.isEnabled(branch) if questsData else False
+        if questsData:
+            return questsData.hasQuestsForReward and self.isEnabled(branch)
+        else:
+            return False
 
     @wg_async
     def questsProgressRequest(self):
@@ -283,7 +308,7 @@ class PersonalMissionsCache(object):
         return self.__lobbyContext.getServerSettings().isPersonalMissionsEnabled(branch)
 
     def isPM3Activated(self):
-        return self.getStartedOperations(PM_BRANCH.V2_BRANCHES) or self.__settingsCore.serverSettings.getLastFullCompletedPM3OperationID()
+        return bool(self.getStartedOperations(PM_BRANCH.V2_BRANCHES) or self.__settingsCore.serverSettings.getLastFullCompletedPM3OperationID())
 
     def isActiveOperationDisabled(self, branches=PM_BRANCH.V1_BRANCHES):
         activeOperations = self.getActiveOperations(branches)
@@ -359,7 +384,7 @@ class PersonalMissionsCache(object):
             if operations[oID].isUnlocked() and not operations[oID].isAwardAchieved():
                 return operations[oID]
 
-        return operations[sortedOID[-1]]
+        return operations[sortedOID[(-1)]]
 
     def __clearCaches(self):
         for qd in self.__questsData.itervalues():
@@ -430,11 +455,10 @@ class PersonalMissionsCache(object):
     def __tryToPreserveInitialFreeAwardSheetsCount(self):
         if self.__settingsCache.waitForSync or self.__syncStatus != _ALL_SYNCED:
             return
-        else:
-            storageData = self.__settingsCore.serverSettings.getUIStorage()
-            if storageData.get(PM_TUTOR_FIELDS.INITIAL_FAL_COUNT) is None:
-                self.__settingsCore.serverSettings.saveInUIStorage({PM_TUTOR_FIELDS.INITIAL_FAL_COUNT: self.getFreeTokensCount(PM_BRANCH.REGULAR)})
-            return
+        storageData = self.__settingsCore.serverSettings.getUIStorage()
+        if storageData.get(PM_TUTOR_FIELDS.INITIAL_FAL_COUNT) is None:
+            self.__settingsCore.serverSettings.saveInUIStorage({PM_TUTOR_FIELDS.INITIAL_FAL_COUNT: self.getFreeTokensCount(PM_BRANCH.REGULAR)})
+        return
 
     def __updateVehLevelRestrictions(self, quest):
         operationID = quest.getOperationID()

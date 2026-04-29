@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/gui/impl/lobby/feature/progression_view.py
 from __future__ import absolute_import
 import typing
 from future.builtins import round
@@ -50,7 +48,9 @@ class ProgressionView(ViewImpl):
     def createToolTipContent(self, event, contentID):
         if contentID == R.views.resource_well.mono.lobby.tooltips.serial_number_tooltip():
             return SerialNumberTooltip(parentLayout=self.layoutID)
-        return ProgressTooltip(progress=self.viewModel.getProgression()) if contentID == R.views.resource_well.mono.lobby.tooltips.progress_tooltip() else super(ProgressionView, self).createToolTipContent(event, contentID)
+        if contentID == R.views.resource_well.mono.lobby.tooltips.progress_tooltip():
+            return ProgressTooltip(progress=self.viewModel.getProgression())
+        return super(ProgressionView, self).createToolTipContent(event, contentID)
 
     def _onLoading(self, *args, **kwargs):
         super(ProgressionView, self)._onLoading(*args, **kwargs)
@@ -68,17 +68,26 @@ class ProgressionView(ViewImpl):
         return
 
     def _getEvents(self):
-        return ((self.viewModel.onPreview, self.__showPreview),
-         (self.viewModel.onHangarShow, self.__showHangar),
-         (self.viewModel.onRewardSelected, self.__selectReward),
-         (self.viewModel.onResourcesContribute, self.__contributeResources),
-         (self.viewModel.onResourcesReturn, self.__onResourcesReturn),
-         (self.__resourceWell.onNumberRequesterUpdated, self.__onNumberRequesterUpdated),
-         (self.__resourceWell.onEventUpdated, self.__onEventUpdated),
-         (self.__resourceWell.onSettingsChanged, self.__onSettingsChanged))
+        return (
+         (
+          self.viewModel.onPreview, self.__showPreview),
+         (
+          self.viewModel.onHangarShow, self.__showHangar),
+         (
+          self.viewModel.onRewardSelected, self.__selectReward),
+         (
+          self.viewModel.onResourcesContribute, self.__contributeResources),
+         (
+          self.viewModel.onResourcesReturn, self.__onResourcesReturn),
+         (
+          self.__resourceWell.onNumberRequesterUpdated, self.__onNumberRequesterUpdated),
+         (
+          self.__resourceWell.onEventUpdated, self.__onEventUpdated),
+         (
+          self.__resourceWell.onSettingsChanged, self.__onSettingsChanged))
 
     def __updateModel(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self.__fillEventInfo(model=model)
             self.__fillProgression(model=model)
             self.__updateEventTime(model=model)
@@ -147,14 +156,18 @@ class ProgressionView(ViewImpl):
             return RewardState.SOLD_OUT
         if not self.__resourceWell.isRewardAvailable(rewardID):
             return RewardState.NOT_AVAILABLE
-        return RewardState.COUNT_NOT_AVAILABLE if not self.__resourceWell.isRewardCountAvailable(rewardID) else RewardState.ACTIVE
+        if not self.__resourceWell.isRewardCountAvailable(rewardID):
+            return RewardState.COUNT_NOT_AVAILABLE
+        return RewardState.ACTIVE
 
     def __getProgressionState(self):
         if self.__resourceWell.isForbiddenAccount():
             return ProgressionState.FORBIDDEN
         if self.__resourceWell.isRewardsOver():
             return ProgressionState.NOVEHICLES
-        return ProgressionState.ACTIVE if self.__resourceWell.getCurrentPoints() else ProgressionState.NOPROGRESS
+        if self.__resourceWell.getCurrentPoints():
+            return ProgressionState.ACTIVE
+        return ProgressionState.NOPROGRESS
 
     def __showHangar(self):
         showHangar()
@@ -167,9 +180,9 @@ class ProgressionView(ViewImpl):
         purchaseMode = self.__resourceWell.getPurchaseMode()
         if purchaseMode == PurchaseMode.SEQUENTIAL_PRODUCT:
             style = previewStyle or (getRewardStyle(rewardConfig.availableAfter, resourceWell=self.__resourceWell) if rewardConfig.availableAfter else None)
-            topPanelData = {'linkage': VEHPREVIEW_CONSTANTS.TOP_PANEL_TABS_LINKAGE,
-             'tabIDs': PERSONAL_NUMBER_STYLE_TABS,
-             'currentTabID': TabID.PERSONAL_NUMBER_VEHICLE if previewStyle else TabID.BASE_VEHICLE}
+            topPanelData = {'linkage': VEHPREVIEW_CONSTANTS.TOP_PANEL_TABS_LINKAGE, 
+               'tabIDs': PERSONAL_NUMBER_STYLE_TABS, 
+               'currentTabID': TabID.PERSONAL_NUMBER_VEHICLE if previewStyle else TabID.BASE_VEHICLE}
         else:
             style = previewStyle
             topPanelData = None
@@ -207,7 +220,7 @@ class ProgressionView(ViewImpl):
         if not self.__resourceWell.isActive():
             self.__goBack()
             return
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self.__updateEventTime(model=model)
             self.__fillProgression(model=model)
             self.__fillRewards(model.getRewards())
@@ -226,7 +239,7 @@ class ProgressionView(ViewImpl):
         return max(0, self.__resourceWell.config.remindTime - time_utils.getServerUTCTime())
 
     def __onNumberRequesterUpdated(self):
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             self.__fillProgression(model=model)
             self.__fillRewards(model.getRewards())
 

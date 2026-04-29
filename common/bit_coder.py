@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/bit_coder.py
 
 
 class BitCoder:
@@ -14,7 +12,8 @@ class BitCoder:
         return 2 ** bits - 1
 
     def extract(self, bitField):
-        res = [0] * self.__fieldDescriptorLen
+        res = [
+         0] * self.__fieldDescriptorLen
         shift = self.__dimension
         mask = self.mask
         for i, v in enumerate(self.__fieldDescriptor):

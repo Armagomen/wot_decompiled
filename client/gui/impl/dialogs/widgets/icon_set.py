@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/dialogs/widgets/icon_set.py
+from __future__ import absolute_import
 import typing
 from gui.impl.dialogs.sub_views.common import IconSetData
 from gui.impl.dialogs.sub_views.icon.multiple_icons_set import MultipleIconsSet
@@ -23,6 +22,7 @@ class IconSet(MultipleIconsSet):
     __slots__ = ()
 
     def __init__(self, iconResID, backgroundResIDList=None, overlayResIDList=None, layoutID=None, iconPositionLogic=IconPositionLogicEnum.CENTREDANDTHROUGHCONTENT.value):
-        iconsRes = [IconSetData(iconResID, None, None)]
+        iconsRes = [
+         IconSetData(iconResID, None, None)]
         super(IconSet, self).__init__(iconsRes, backgroundResIDList, overlayResIDList, layoutID, iconPositionLogic)
         return

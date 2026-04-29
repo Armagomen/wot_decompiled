@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_results/components/style.py
 from collections import namedtuple
 from constants import IGR_TYPE
 from gui import makeHtmlString
@@ -22,13 +20,15 @@ _DIFF_FORMAT = '+ {}'
 _LINE_FEED = '\n'
 
 def getUnknownPlayerName(isEnemy=False):
-    return i18n.makeString(BATTLE_RESULTS.PLAYERS_ENEMY_UNKNOWN) if isEnemy else i18n.makeString(BATTLE_RESULTS.PLAYERS_TEAMMATE_UNKNOWN)
+    if isEnemy:
+        return i18n.makeString(BATTLE_RESULTS.PLAYERS_ENEMY_UNKNOWN)
+    return i18n.makeString(BATTLE_RESULTS.PLAYERS_TEAMMATE_UNKNOWN)
 
 
 I18nDeathReason = namedtuple('I18nDeathReason', 'i18nString prefix suffix')
 
 def makeI18nDeathReason(deathReason):
-    state = backport.text(R.strings.battle_results.common.vehicleState.dyn('dead{}'.format(deathReason), R.invalid)())
+    state = backport.text(R.strings.battle_results.common.vehicleState.dyn(('dead{}').format(deathReason), R.invalid)())
     return I18nDeathReason(state, _VEHICLE_STATE_PREFIX.format(state), _VEHICLE_STATE_SUFFIX)
 
 
@@ -41,16 +41,19 @@ def markValueAsEmpty(value):
 
 
 def makeMarksOfMasteryText(marksOfMastery, totalVehicles):
-    return makeHtmlString('html_templates:lobby/profileStatistics', 'marksOfMasteryText', {'marksOfMastery': marksOfMastery,
-     'totalVehicles': totalVehicles})
+    return makeHtmlString('html_templates:lobby/profileStatistics', 'marksOfMasteryText', {'marksOfMastery': marksOfMastery, 'totalVehicles': totalVehicles})
 
 
 def getIntegralFormatIfNoEmpty(value):
-    return backport.getIntegralFormat(value) if value else markValueAsEmpty(value)
+    if value:
+        return backport.getIntegralFormat(value)
+    return markValueAsEmpty(value)
 
 
 def getFractionalFormatIfNoEmpty(value):
-    return backport.getFractionalFormat(value) if value else markValueAsEmpty(value)
+    if value:
+        return backport.getFractionalFormat(value)
+    return markValueAsEmpty(value)
 
 
 _SPLASH_CHAR_NO_EMPTY_STAT = '/'
@@ -63,8 +66,8 @@ def getTooltipParamsStyle(paramKey=None):
 
 
 def _makeModuleTooltipLabel(module, suffix):
-    return makeHtmlString('html_templates:lobby/battle_results', 'tooltip_crit_label', {'image': '{0}{1}'.format(module, suffix),
-     'value': backport.text(R.strings.item_types.dyn(module).name())})
+    return makeHtmlString('html_templates:lobby/battle_results', 'tooltip_crit_label', {'image': ('{0}{1}').format(module, suffix), 
+       'value': backport.text(R.strings.item_types.dyn(module).name())})
 
 
 def makeCriticalModuleTooltipLabel(module):
@@ -76,8 +79,8 @@ def makeDestroyedModuleTooltipLabel(module):
 
 
 def makeTankmenTooltipLabel(role):
-    return makeHtmlString('html_templates:lobby/battle_results', 'tooltip_crit_label', {'image': '{0}Destroyed'.format(role),
-     'value': backport.text(R.strings.item_types.tankman.roles.dyn(role)())})
+    return makeHtmlString('html_templates:lobby/battle_results', 'tooltip_crit_label', {'image': ('{0}Destroyed').format(role), 
+       'value': backport.text(R.strings.item_types.tankman.roles.dyn(role)())})
 
 
 class StatRow(base.StatsItem):
@@ -97,13 +100,13 @@ class StatRow(base.StatsItem):
         pass
 
     def getVO(self):
-        return {'label': self.label,
-         'labelStripped': self.text,
-         'col1': self.column1,
-         'col2': self.column2,
-         'col3': self.column3,
-         'col4': self.column4,
-         'lineType': self.lineType}
+        return {'label': self.label, 
+           'labelStripped': self.text, 
+           'col1': self.column1, 
+           'col2': self.column2, 
+           'col3': self.column3, 
+           'col4': self.column4, 
+           'lineType': self.lineType}
 
 
 class EmptyStatRow(StatRow):
@@ -134,13 +137,13 @@ def makeStatRow(label='', labelArgs=None, column1=None, column2=None, column3=No
         label = makeHtmlString('html_templates:lobby/battle_results', htmlKey)
         import re
         i18nText = re.sub('<[^<]+?>', '', label)
-    return {'label': label,
-     'labelStripped': i18nText,
-     'col1': column1 if column1 is not None else _LINE_FEED,
-     'col2': column2 if column2 is not None else _LINE_FEED,
-     'col3': column3 if column3 is not None else _LINE_FEED,
-     'col4': column4 if column4 is not None else _LINE_FEED,
-     'lineType': lineType}
+    return {'label': label, 
+       'labelStripped': i18nText, 
+       'col1': column1 if column1 is not None else _LINE_FEED, 
+       'col2': column2 if column2 is not None else _LINE_FEED, 
+       'col3': column3 if column3 is not None else _LINE_FEED, 
+       'col4': column4 if column4 is not None else _LINE_FEED, 
+       'lineType': lineType}
 
 
 def makeCreditsLabel(value, canBeFaded=False, isDiff=False, useBigIcon=False, forceFade=False):
@@ -238,7 +241,9 @@ def makeMultiXPFactorValue(value, useFreeXPStyle=False):
 
 
 def makeAOGASFactorValue(value):
-    formatted = ''.join((i18n.makeString(BATTLE_RESULTS.COMMON_XPMULTIPLIERSIGN), backport.getFractionalFormat(value)))
+    formatted = ('').join((
+     i18n.makeString(BATTLE_RESULTS.COMMON_XPMULTIPLIERSIGN),
+     backport.getFractionalFormat(value)))
     formatted = markValueAsError(formatted)
     return formatted
 
@@ -252,14 +257,14 @@ def makeStatValue(field, value):
     tooltipHeader = _STATS_INFOTIP_HEADER_FORMAT.format(field)
     if i18n.doesTextExist(tooltipHeader):
         tooltip = makeTooltip(header=i18n.makeString(tooltipHeader), body=i18n.makeString(BATTLE_RESULTS.getTeamStatsInfotipBody(statName=field)))
-    return {'label': i18n.makeString(BATTLE_RESULTS.getTeamStatsLabel(statName=field)),
-     'value': value,
-     'infoTooltip': tooltip}
+    return {'label': i18n.makeString(BATTLE_RESULTS.getTeamStatsLabel(statName=field)), 
+       'value': value, 
+       'infoTooltip': tooltip}
 
 
 def makeTimeStatsVO(field, value):
-    return {'label': i18n.makeString(BATTLE_RESULTS.getDetailsTimeLbl(statName=field)),
-     'value': value}
+    return {'label': i18n.makeString(BATTLE_RESULTS.getDetailsTimeLbl(statName=field)), 
+       'value': value}
 
 
 def makeBadgeIcon(badge):
@@ -279,7 +284,7 @@ def makeRankedPointHugeValue(pointsValue):
 
 
 def markVehicleAsTeamKiller(vehicle):
-    vehicle.vehicleStatePrefix = vehicle.vehicleStatePrefix[:-1] + makeTeamKillerText(vehicle.vehicleStatePrefix[-1])
+    vehicle.vehicleStatePrefix = vehicle.vehicleStatePrefix[:-1] + makeTeamKillerText(vehicle.vehicleStatePrefix[(-1)])
     vehicle.vehicleStateSuffix = makeTeamKillerText(vehicle.vehicleStateSuffix)
 
 
@@ -316,7 +321,7 @@ class _SlashedValueItem(base.StatsItem):
 class _RedSlashedValueItem(base.StatsItem):
 
     def _convert(self, value, reusable):
-        isEmpty = False if value > 0 else True
+        isEmpty = value <= 0
         converted = str(value)
         return (isEmpty, converted)
 

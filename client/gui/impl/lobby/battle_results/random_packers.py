@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_results/random_packers.py
 import typing
 from gui.battle_results import stored_sorting
 from gui.battle_results.presenters.packers.team.team_stats_packer import TeamStats, TeamAchievementsPacker

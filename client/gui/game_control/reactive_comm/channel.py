@@ -1,19 +1,16 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/reactive_comm/channel.py
-import logging
-import re
-import zlib
+import logging, re, zlib
 from collections import deque
-import typing
-import Event
-import websocket
+import typing, Event, websocket
 from gui.game_control.reactive_comm import constants
 from gui.game_control.reactive_comm import packer
 _logger = logging.getLogger(__name__)
 _channelRegExp = re.compile('^[a-zA-Z0-9_-]{2,36}$')
 
 def isChannelNameValid(name):
-    return _channelRegExp.match(name) is not None if isinstance(name, str) else False
+    if isinstance(name, str):
+        return _channelRegExp.match(name) is not None
+    else:
+        return False
 
 
 class ChannelsEventsSender(object):
@@ -30,7 +27,8 @@ class ChannelsEventsSender(object):
 
 
 class Channel(object):
-    __slots__ = ('__weakref__', '__name', '__clientStatus', '__serverStatus', '__messages', '__subscriptions', '__eventsSender')
+    __slots__ = ('__weakref__', '__name', '__clientStatus', '__serverStatus', '__messages',
+                 '__subscriptions', '__eventsSender')
 
     def __init__(self, name, eventsSender=None):
         super(Channel, self).__init__()
@@ -63,7 +61,10 @@ class Channel(object):
 
     @property
     def lastMessage(self):
-        return self.__messages[-1] if self.__messages else None
+        if self.__messages:
+            return self.__messages[(-1)]
+        else:
+            return
 
     def clear(self):
         self.__clientStatus = constants.SubscriptionClientStatus.Unsubscribed
@@ -167,8 +168,7 @@ class Channel(object):
             if self.__eventsSender is not None:
                 self.__eventsSender.onChannelMessage(self.__name, message.data)
             return True
-        else:
-            return False
+        return False
 
     @staticmethod
     def __tryDecompressZip(data):
@@ -220,7 +220,7 @@ class SubscriptionStatus(object):
         self.__serverStatus = serverStatus
 
     def __repr__(self):
-        return '{}(client={}, server={})'.format(self.__class__.__name__, self.__clientStatus, self.__serverStatus)
+        return ('{}(client={}, server={})').format(self.__class__.__name__, self.__clientStatus, self.__serverStatus)
 
     def __nonzero__(self):
         return self.isSubscribed

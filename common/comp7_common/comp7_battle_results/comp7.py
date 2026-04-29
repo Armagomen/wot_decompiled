@@ -1,52 +1,19 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/common/comp7_common/comp7_battle_results/comp7.py
 from battle_results.battle_results_constants import BATTLE_RESULT_ENTRY_TYPE as ENTRY_TYPE
 from comp7_core_common.battle_results.comp7_core import BATTLE_RESULTS as COMP7_BATTLE_RESULTS
-BATTLE_RESULTS = COMP7_BATTLE_RESULTS + [('comp7Rating',
-  int,
-  0,
-  None,
-  'skip',
-  ENTRY_TYPE.ACCOUNT_SELF),
- ('comp7Rank',
-  tuple,
-  (0, 0, 0),
-  None,
-  'skip',
-  ENTRY_TYPE.ACCOUNT_SELF),
- ('comp7RatingDelta',
-  int,
-  0,
-  None,
-  'skip',
-  ENTRY_TYPE.ACCOUNT_SELF),
- ('comp7TeamStats',
-  dict,
-  {},
-  None,
-  'skip',
-  ENTRY_TYPE.SERVER),
- ('comp7QualActive',
-  None,
-  None,
-  None,
-  'skip',
-  ENTRY_TYPE.ACCOUNT_SELF),
- ('comp7QualBattleIndex',
-  int,
-  0,
-  None,
-  'skip',
-  ENTRY_TYPE.ACCOUNT_SELF),
- ('comp7QualRating',
-  int,
-  0,
-  None,
-  'skip',
-  ENTRY_TYPE.SERVER),
- ('comp7QualRank',
-  tuple,
-  (0, 0),
-  None,
-  'skip',
-  ENTRY_TYPE.SERVER)]
+BATTLE_RESULTS = COMP7_BATTLE_RESULTS + [
+ (
+  'comp7Rating', int, 0, None, 'skip', ENTRY_TYPE.ACCOUNT_SELF),
+ (
+  'comp7Rank', tuple, (0, 0, 0), None, 'skip', ENTRY_TYPE.ACCOUNT_ALL),
+ (
+  'comp7RatingDelta', int, 0, None, 'skip', ENTRY_TYPE.ACCOUNT_SELF),
+ (
+  'comp7TeamStats', dict, {}, None, 'skip', ENTRY_TYPE.SERVER),
+ (
+  'comp7QualActive', None, None, None, 'skip', ENTRY_TYPE.ACCOUNT_ALL),
+ (
+  'comp7QualBattleIndex', int, 0, None, 'skip', ENTRY_TYPE.ACCOUNT_SELF),
+ (
+  'comp7QualRating', int, 0, None, 'skip', ENTRY_TYPE.SERVER),
+ (
+  'comp7QualRank', tuple, (0, 0), None, 'skip', ENTRY_TYPE.SERVER)]

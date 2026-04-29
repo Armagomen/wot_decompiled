@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/deconstruction_device_view.py
 import logging
 from collections import namedtuple
 from copy import deepcopy
@@ -30,7 +28,8 @@ Cart = namedtuple('Cart', ('onVehicle', 'storage'))
 
 class DeconstructionDeviceView(ViewImpl):
     itemsCache = dependency.descriptor(IItemsCache)
-    __slots__ = ('_upgradedItemPair', '_storageProvider', '_onVehicleProvider', '_cart', '__deconstructedCallback')
+    __slots__ = ('_upgradedItemPair', '_storageProvider', '_onVehicleProvider', '_cart',
+                 '__deconstructedCallback')
 
     def __init__(self, upgradedItemPair=None, onDeconstructedCallback=None):
         settings = ViewSettings(layoutID=R.views.lobby.tanksetup.DeconstructionDeviceView(), model=DeconstructionDeviceViewModel())
@@ -94,7 +93,7 @@ class DeconstructionDeviceView(ViewImpl):
         if self._upgradedItemPair:
             upgradedItem, _ = self._upgradedItemPair
             ctx = ItemDeconstructContext(deepcopy(self._cart), self._upgradedItemPair)
-            with self.viewModel.transaction() as tx:
+            with self.viewModel.transaction() as (tx):
                 tx.setDeviceForUpgradeName(upgradedItem.userName)
                 upgradePrice = upgradedItem.getUpgradePrice(self.itemsCache.items).price.equipCoin
                 coinsOnAccount = self.itemsCache.items.stats.actualMoney.get(Currency.EQUIP_COIN, 0)
@@ -103,7 +102,7 @@ class DeconstructionDeviceView(ViewImpl):
                 tx.setEquipCoinsNeededForUpgrade(neededCoins)
 
     def _fillVehicle(self):
-        with self.viewModel.transaction() as tx:
+        with self.viewModel.transaction() as (tx):
             vehicle = g_currentVehicle.item
             if not vehicle:
                 return
@@ -112,22 +111,21 @@ class DeconstructionDeviceView(ViewImpl):
     def _updateSlots(self, ctx=None, fullUpdate=True, updateData=True):
         if self._storageProvider is None or self._onVehicleProvider is None:
             return
+        if ctx is None:
+            ctx = ItemDeconstructContext(deepcopy(self._cart), self._upgradedItemPair)
+        if updateData:
+            self._storageProvider.updateItems()
+            self._onVehicleProvider.updateItems()
+        if fullUpdate:
+            self._storageProvider.fillArray(self.viewModel.getModulesInStorage(), ctx, self._storageProvider.getFilterFunc(self._upgradedItemPair))
+            self._onVehicleProvider.fillArray(self.viewModel.getModulesOnVehicles(), ctx, self._onVehicleProvider.getFilterFunc(self._upgradedItemPair))
+            self._updateItemByFilter()
         else:
-            if ctx is None:
-                ctx = ItemDeconstructContext(deepcopy(self._cart), self._upgradedItemPair)
-            if updateData:
-                self._storageProvider.updateItems()
-                self._onVehicleProvider.updateItems()
-            if fullUpdate:
-                self._storageProvider.fillArray(self.viewModel.getModulesInStorage(), ctx, self._storageProvider.getFilterFunc(self._upgradedItemPair))
-                self._onVehicleProvider.fillArray(self.viewModel.getModulesOnVehicles(), ctx, self._onVehicleProvider.getFilterFunc(self._upgradedItemPair))
-                self._updateItemByFilter()
-            else:
-                self._storageProvider.updateArray(self.viewModel.getModulesInStorage(), ctx)
-                self._onVehicleProvider.updateArray(self.viewModel.getModulesOnVehicles(), ctx)
-                self._updateItemByFilter()
-            self._updateCounters(ctx)
-            return
+            self._storageProvider.updateArray(self.viewModel.getModulesInStorage(), ctx)
+            self._onVehicleProvider.updateArray(self.viewModel.getModulesOnVehicles(), ctx)
+            self._updateItemByFilter()
+        self._updateCounters(ctx)
+        return
 
     def _updateCounters(self, ctx):
         totalIncome = self._storageProvider.getTotalPrice(ctx) + self._onVehicleProvider.getTotalPrice(ctx)
@@ -157,7 +155,9 @@ class DeconstructionDeviceView(ViewImpl):
 
         def getLimit(intCD, upgradedPair):
             item = self.itemsCache.items.getItemByCD(intCD)
-            return item.inventoryCount - 1 if upgradedPair and not upgradedPair[1] and upgradedPair[0] == item else item.inventoryCount
+            if upgradedPair and not upgradedPair[1] and upgradedPair[0] == item:
+                return item.inventoryCount - 1
+            return item.inventoryCount
 
         if not vehCD:
             spec = ItemSellSpec(GUI_ITEM_TYPE.OPTIONALDEVICE, intCD, 1)
@@ -170,7 +170,7 @@ class DeconstructionDeviceView(ViewImpl):
             itemSellSpecs.update({intCD: spec})
         else:
             vehicleList = vehiclesLists.setdefault(vehCD, [])
-            if not any((spec.intCD == intCD for spec in vehicleList)):
+            if not any(spec.intCD == intCD for spec in vehicleList):
                 vehicleList.append(ItemDeconstructSpec(GUI_ITEM_TYPE.OPTIONALDEVICE, intCD, vehCD))
             else:
                 _logger.warning('Wrong event, intCD already in vehicleList')
@@ -228,7 +228,7 @@ class DeconstructionDeviceView(ViewImpl):
             tooltipBuilder = OptDeviceTooltipBuilder
             return tooltipBuilder.getTooltipData(None, 0, int(intCD))
         else:
-            return None
+            return
 
     def __onMoneyUpdated(self, _):
         ctx = ItemDeconstructContext(deepcopy(self._cart), self._upgradedItemPair)
@@ -237,7 +237,7 @@ class DeconstructionDeviceView(ViewImpl):
 
 
 class DeconstructionDeviceWindow(WindowImpl):
-    __slots__ = ('__blur',)
+    __slots__ = ('__blur', )
 
     def __init__(self, upgradedPair=None, parent=None, onDeconstructedCallback=None):
         super(DeconstructionDeviceWindow, self).__init__(WindowFlags.WINDOW_FULLSCREEN | WindowFlags.WINDOW, content=DeconstructionDeviceView(upgradedPair, onDeconstructedCallback), parent=parent)

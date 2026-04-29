@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/hangar/ammunition_panel_inject.py
 import BigWorld
 from shared_utils import nextTick
 from frameworks.wulf import ViewFlags
@@ -53,11 +51,11 @@ class AmmunitionPanelInject(AmmunitionPanelInjectMeta, IGlobalListener):
         self.getInjectView().onVehicleChanged -= self.__onVehicleChanged
 
     def __onPanelSectionResized(self, sectionType, offsetX, offsetY, width, height, **kwargs):
-        self.as_setHelpLayoutS({'sectionType': sectionType,
-         'offsetX': offsetX,
-         'offsetY': offsetY,
-         'width': width,
-         'height': height})
+        self.as_setHelpLayoutS({'sectionType': sectionType, 
+           'offsetX': offsetX, 
+           'offsetY': offsetY, 
+           'width': width, 
+           'height': height})
 
     def __onVehicleChanged(self):
         self.as_clearHelpLayoutS()
@@ -65,7 +63,10 @@ class AmmunitionPanelInject(AmmunitionPanelInjectMeta, IGlobalListener):
     def __getInjectViewClass(self):
         currentPresetGetter = self.__hangarGuiCtrl.sfController.currentPresetGetter
         ammunitionPanelViewCls = collectAmmunitionPanelView(currentPresetGetter.getAmmoInjectViewAlias())
-        return ammunitionPanelViewCls if ammunitionPanelViewCls is not None else HangarAmmunitionPanelView
+        if ammunitionPanelViewCls is not None:
+            return ammunitionPanelViewCls
+        else:
+            return HangarAmmunitionPanelView
 
     def __invalidateInjectView(self, *_):
         injectView = self.getInjectView()

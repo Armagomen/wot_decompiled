@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/hit_direction_ctrl/ctrl.py
-import logging
-import weakref
-import typing
+import logging, weakref, typing
 from account_helpers.settings_core import settings_constants
 from gui.battle_control import avatar_getter
 from gui.battle_control.battle_constants import HIT_INDICATOR_MAX_ON_SCREEN, BATTLE_CTRL_ID
@@ -20,15 +16,17 @@ from skeletons.gui.lobby_context import ILobbyContext
 _logger = logging.getLogger(__name__)
 
 class HitDirectionController(IViewComponentsController):
-    __slots__ = ('__uiHitComponents', '__isVisible', '__callbackIDs', '__damageIndicatorCrits', '__damageIndicatorAllies', '__damageIndicatorExtType', '__arenaDP', '__weakref__')
+    __slots__ = ('__uiHitComponents', '__isVisible', '__callbackIDs', '__damageIndicatorCrits',
+                 '__damageIndicatorAllies', '__damageIndicatorExtType', '__arenaDP',
+                 '__weakref__')
     settingsCore = dependency.descriptor(ISettingsCore)
     sessionProvider = dependency.descriptor(IBattleSessionProvider)
     lobbyContext = dependency.descriptor(ILobbyContext)
 
     def __init__(self, setup):
         super(HitDirectionController, self).__init__()
-        self.__uiHitComponents = {HitType.HIT_DAMAGE: HitDamageComponent(HitDamagePull()),
-         HitType.ARTY_HIT_PREDICTION: BaseHitComponent(ArtyHitPredictionPull())}
+        self.__uiHitComponents = {HitType.HIT_DAMAGE: HitDamageComponent(HitDamagePull()), 
+           HitType.ARTY_HIT_PREDICTION: BaseHitComponent(ArtyHitPredictionPull())}
         self.__isVisible = False
         self.__arenaDP = weakref.proxy(setup.arenaDP)
 

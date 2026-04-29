@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/ranked/__init__.py
+from __future__ import absolute_import
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.battle.shared.page import BattlePageBusinessHandler
@@ -9,7 +8,9 @@ from gui.Scaleform.genConsts.BATTLE_VIEW_ALIASES import BATTLE_VIEW_ALIASES
 
 def getContextMenuHandlers():
     from gui.Scaleform.daapi.view.battle.classic import player_menu_handler
-    return ((BATTLE_CONTEXT_MENU_HANDLER_TYPE.PLAYERS_PANEL, player_menu_handler.PlayerMenuHandler),)
+    return (
+     (
+      BATTLE_CONTEXT_MENU_HANDLER_TYPE.PLAYERS_PANEL, player_menu_handler.PlayerMenuHandler),)
 
 
 def getViewSettings():
@@ -33,7 +34,8 @@ def getViewSettings():
     from gui.Scaleform.daapi.view.battle.shared import messages
     from gui.impl.battle.battle_page.ammunition_panel import prebattle_ammunition_panel_inject
     from gui.Scaleform.daapi.view.battle.shared import postmortem_panel
-    return (ViewSettings(VIEW_ALIAS.RANKED_BATTLE_PAGE, ClassicPage, 'rankedBattlePage.swf', WindowLayer.VIEW, None, ScopeTemplates.DEFAULT_SCOPE),
+    return (
+     ViewSettings(VIEW_ALIAS.RANKED_BATTLE_PAGE, ClassicPage, 'rankedBattlePage.swf', WindowLayer.VIEW, None, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(BATTLE_VIEW_ALIASES.BATTLE_LOADING, battle_loading.RankedBattleLoading, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(BATTLE_VIEW_ALIASES.BATTLE_STATISTIC_DATA_CONTROLLER, stats_exchange.RankedStatisticsDataController, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(BATTLE_VIEW_ALIASES.TEAM_BASES_PANEL, team_bases_panel.TeamBasesPanel, ScopeTemplates.DEFAULT_SCOPE),
@@ -57,4 +59,5 @@ def getViewSettings():
 
 
 def getBusinessHandlers():
-    return (BattlePageBusinessHandler(VIEW_ALIAS.RANKED_BATTLE_PAGE),)
+    return (
+     BattlePageBusinessHandler(VIEW_ALIAS.RANKED_BATTLE_PAGE),)

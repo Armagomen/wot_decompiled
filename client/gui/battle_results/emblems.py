@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_results/emblems.py
 from adisp import adisp_process
 from gui.battle_results.settings import EMBLEM_TYPE
 from gui.clans.clan_cache import g_clanCache

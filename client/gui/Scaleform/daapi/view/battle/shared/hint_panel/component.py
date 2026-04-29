@@ -1,21 +1,16 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/hint_panel/component.py
+from __future__ import absolute_import
 from functools import partial
-import BigWorld
-import CommandMapping
-import SoundGroups
-from cgf_components.zone_components import IBattleSessionProvider
+from future.utils import viewitems
+import BigWorld, CommandMapping, SoundGroups
 from gui.Scaleform.daapi.view.battle.shared.hint_panel import plugins
 from gui.Scaleform.daapi.view.meta.BattleHintPanelMeta import BattleHintPanelMeta
 from gui.battle_control.controllers.period_ctrl import IAbstractPeriodView
 from gui.shared import EVENT_BUS_SCOPE, events
 from gui.shared.events import GameEvent
 from gui.shared.utils.plugins import PluginsCollection
-from helpers import dependency
 from shared_utils import first
 
 class BattleHintPanel(BattleHintPanelMeta, IAbstractPeriodView):
-    __sessionProvider = dependency.descriptor(IBattleSessionProvider)
 
     def __init__(self):
         super(BattleHintPanel, self).__init__()
@@ -87,7 +82,7 @@ class BattleHintPanel(BattleHintPanelMeta, IAbstractPeriodView):
         return plugins.createPlugins()
 
     def __getActiveHintData(self):
-        return first(sorted(self._hints.iteritems(), key=lambda h: h[1].priority, reverse=False))
+        return first(sorted(viewitems(self._hints), key=lambda h: h[1].priority, reverse=False))
 
     def __invalidateBtnHint(self, isRemoved=False):
         if self.__invalidateCallbackID is not None:
@@ -108,8 +103,7 @@ class BattleHintPanel(BattleHintPanelMeta, IAbstractPeriodView):
             if hintCanBeDisplayed:
                 btnID, hint = hintData
                 self.as_setDataS(self.__makeHotKey(hint), hint.messageLeft, hint.messageRight, hint.offsetX, hint.offsetY, hint.reducedPanning, hint.centeredMessage)
-                self.fireEvent(GameEvent(GameEvent.SHOW_BTN_HINT, ctx={'btnID': btnID,
-                 'hintCtx': hint.hintCtx}), scope=EVENT_BUS_SCOPE.GLOBAL)
+                self.fireEvent(GameEvent(GameEvent.SHOW_BTN_HINT, ctx={'btnID': btnID, 'hintCtx': hint.hintCtx}), scope=EVENT_BUS_SCOPE.GLOBAL)
             self.as_toggleS(hintCanBeDisplayed)
             return
 
@@ -118,9 +112,9 @@ class BattleHintPanel(BattleHintPanelMeta, IAbstractPeriodView):
         self.__invalidateBtnHint()
 
     def __makeHotKey(self, hint):
-        return {'vKey': hint.vKey,
-         'keyName': hint.key,
-         'isLong': hint.isKeyLong}
+        return {'vKey': hint.vKey, 
+           'keyName': hint.key, 
+           'isLong': hint.isKeyLong}
 
 
 class HintPluginsCollection(PluginsCollection):

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/techtree/settings.py
 from collections import namedtuple, defaultdict
 import nations
 from debug_utils import LOG_DEBUG
@@ -7,14 +5,17 @@ from gui.Scaleform.genConsts.NODE_STATE_FLAGS import NODE_STATE_FLAGS
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from items import getTypeInfoByName
 from items.vehicles import VEHICLE_CLASS_TAGS
-__all__ = ('NODE_STATE', 'RequestState', 'SelectedNation', 'UnlockProps', 'DEFAULT_UNLOCK_PROPS', 'BpfProps', '_DEFAULT_BPF_PROPS', 'VehicleClassInfo', 'MAX_PATH_LIMIT', 'RESEARCH_ITEMS', 'TREE_SHARED_REL_FILE_PATH', 'NATION_TREE_REL_FILE_PATH')
+__all__ = ('NODE_STATE', 'RequestState', 'SelectedNation', 'UnlockProps', 'DEFAULT_UNLOCK_PROPS',
+           'BpfProps', '_DEFAULT_BPF_PROPS', 'VehicleClassInfo', 'MAX_PATH_LIMIT',
+           'RESEARCH_ITEMS', 'TREE_SHARED_REL_FILE_PATH', 'NATION_TREE_REL_FILE_PATH')
 TREE_SHARED_REL_FILE_PATH = 'gui/flash/techtree/tree-shared.xml'
 NATION_TREE_REL_FILE_PATH = 'gui/flash/techtree/{}-tree.xml'
 NATION_TREE_REL_PREMIUM_FILE_PATH = 'gui/flash/techtree/{}-premium.xml'
 NODE_ORDER_PREFIX_COMMON = 0
 NODE_ORDER_PREFIX_PREMIUM = 1
 _VEHICLE_TYPE_NAME = GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.VEHICLE]
-RESEARCH_ITEMS = (GUI_ITEM_TYPE.GUN,
+RESEARCH_ITEMS = (
+ GUI_ITEM_TYPE.GUN,
  GUI_ITEM_TYPE.TURRET,
  GUI_ITEM_TYPE.ENGINE,
  GUI_ITEM_TYPE.CHASSIS,
@@ -29,6 +30,7 @@ class NODE_STATE(object):
         if not state & flag:
             state |= flag
             return state
+        return -1
 
     @classmethod
     def addIfNot(cls, state, flag):
@@ -41,6 +43,7 @@ class NODE_STATE(object):
         if state & flag > 0:
             state ^= flag
             return state
+        return -1
 
     @classmethod
     def removeIfHas(cls, state, flag):
@@ -192,16 +195,13 @@ class UnlockStats(namedtuple('UnlockStats', 'unlocked xps freeXP')):
         return self.freeXP + self.getVehXP(nodeCD)
 
 
-class UnlockProps(namedtuple('UnlockProps', ('parentID', 'unlockIdx', 'xpCost', 'required', 'discount', 'xpFullCost'))):
+class UnlockProps(namedtuple('UnlockProps', ('parentID', 'unlockIdx', 'xpCost', 'required', 'discount',
+                           'xpFullCost'))):
     __slots__ = ()
 
     def makeTuple(self):
-        return (self.parentID,
-         self.unlockIdx,
-         self.xpCost,
-         list(self.required),
-         self.discount,
-         self.xpFullCost)
+        return (
+         self.parentID, self.unlockIdx, self.xpCost, list(self.required), self.discount, self.xpFullCost)
 
 
 DEFAULT_UNLOCK_PROPS = UnlockProps(0, -1, 0, set(), 0, 0)
@@ -262,7 +262,7 @@ class RequestState(object):
 
 
 class VehicleClassInfo(object):
-    __slots__ = ('__info',)
+    __slots__ = ('__info', )
 
     def __init__(self):
         super(VehicleClassInfo, self).__init__()
@@ -272,7 +272,7 @@ class VehicleClassInfo(object):
             self.__info[frozenset((tag,))] = {'name': info['name']}
 
     def getInfoByTags(self, tags):
-        return self.__info[VEHICLE_CLASS_TAGS & tags]
+        return self.__info[(VEHICLE_CLASS_TAGS & tags)]
 
     def clear(self):
         self.__info.clear()

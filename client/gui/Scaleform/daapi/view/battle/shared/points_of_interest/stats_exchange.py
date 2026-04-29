@@ -1,8 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/points_of_interest/stats_exchange.py
-import logging
-import enum
-import typing
+from __future__ import absolute_import, division
+import logging, enum, typing
+from future.utils import viewitems, viewvalues
 import BigWorld
 from gui.Scaleform.daapi.view.battle.shared.points_of_interest.constants import POI_TYPE_UI_MAPPING
 from gui.Scaleform.daapi.view.battle.shared.points_of_interest.poi_helpers import getPoiEquipmentByType
@@ -49,14 +47,14 @@ class PointsOfInterestStatsController(PointsOfInterestListener):
 
     def onPoiAdded(self, poiState):
         poiTeamInfo = BigWorld.player().arena.teamInfo.PoiTeamInfoComponent
-        for vehId, points in poiTeamInfo.capturedPoints.iteritems():
+        for vehId, points in viewitems(poiTeamInfo.capturedPoints):
             if vehId != ENEMY_VEHICLE_ID and poiState.id in points:
                 self.__addCapturedPoint(poiState.id, vehId, poiState)
 
     def onProcessPoi(self, poiState):
         poiID = poiState.id
         invader = poiState.invader
-        for vehicleID, statusItems in self.__poiStatusItems.iteritems():
+        for vehicleID, statusItems in viewitems(self.__poiStatusItems):
             item = statusItems.get(poiID)
             if item is None:
                 continue
@@ -66,7 +64,7 @@ class PointsOfInterestStatsController(PointsOfInterestListener):
             if result == PoiStatusItemUpdateResult.INVALID:
                 self.__statsDataController.as_removePointOfInterestS(vehicleID=vehicleID, type=item.type)
                 del statusItems[poiID]
-            if result == PoiStatusItemUpdateResult.UPDATED:
+            elif result == PoiStatusItemUpdateResult.UPDATED:
                 self.__statsDataController.as_updatePointOfInterestS(data=item.getVO())
 
         if invader:
@@ -78,7 +76,7 @@ class PointsOfInterestStatsController(PointsOfInterestListener):
 
     def __onPoiEquipmentUsed(self, equipment, vehicleID):
         statusItems = self.__poiStatusItems.get(vehicleID, {})
-        for item in statusItems.itervalues():
+        for item in viewvalues(statusItems):
             poiEquipment = getPoiEquipmentByType(item.state.type)
             if poiEquipment is not None and poiEquipment.id == equipment.id:
                 item.setCaptured(isCaptured=False)
@@ -160,6 +158,6 @@ class PoiStatusItem(object):
         self.__invader = vehId
 
     def getVO(self):
-        return {'vehicleID': self.invader,
-         'type': self.type,
-         'progress': 1 if self.isCaptured else self.progress / 100}
+        return {'vehicleID': self.invader, 
+           'type': self.type, 
+           'progress': 1 if self.isCaptured else self.progress / 100}

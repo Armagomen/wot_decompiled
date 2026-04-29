@@ -1,9 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/BombersWing.py
-from collections import namedtuple
+from __future__ import absolute_import, division
 import math
-import AnimationSequence
-import helpers
+from collections import namedtuple
+from future.utils import lmap, lzip
+import AnimationSequence, helpers
 from helpers.CallbackDelayer import CallbackDelayer
 from debug_utils import LOG_CURRENT_EXCEPTION, LOG_ERROR
 from items import vehicles
@@ -12,11 +11,7 @@ from Math import Vector3
 import SoundGroups
 from vehicle_systems.stricted_loading import makeCallbackWeak
 CurveControlPoint = namedtuple('CurveControlPoint', ['position', 'direction', 'time'])
-BomberDesc = namedtuple('BomberDesc', ['modelName',
- 'soundEvent',
- 'initPointA',
- 'initPointB',
- 'flyAnimation'])
+BomberDesc = namedtuple('BomberDesc', ['modelName', 'soundEvent', 'initPointA', 'initPointB', 'flyAnimation'])
 AREA_LENGTH_SCALE_FACTOR = 0.05
 _INITIAL_RETREAT_SHIFT = 200.0
 _RETREAT_SUBDIVISION_FACTOR = 10
@@ -74,7 +69,8 @@ class Bomber(object):
         return
 
     def _loadRes(self):
-        BigWorld.loadResourceListBG((self._desc.modelName,), makeCallbackWeak(self._onModelLoaded))
+        BigWorld.loadResourceListBG((
+         self._desc.modelName,), makeCallbackWeak(self._onModelLoaded))
 
     def _onAttackEnded(self, position, velocity):
         self.startAttack(False)
@@ -133,7 +129,8 @@ class CompoundBomber(Bomber):
         return
 
     def _loadRes(self):
-        BigWorld.loadResourceListBG((self._desc.modelName, self._desc.flyAnimation), makeCallbackWeak(self._onModelLoaded))
+        BigWorld.loadResourceListBG((
+         self._desc.modelName, self._desc.flyAnimation), makeCallbackWeak(self._onModelLoaded))
         self._desc = BomberDesc(self._desc.modelName.name, self._desc.soundEvent, self._desc.initPointA, self._desc.initPointB, self._desc.flyAnimation.name)
 
     def _onAttackEnded(self, position, velocity):
@@ -175,11 +172,11 @@ class BombersWing(CallbackDelayer):
         self.__bombers = []
         modelName, soundEvent = self.__readData(equipmentID)
         speed = self.__calculateSpeed(wingControlPoints[0], wingControlPoints[1])
-        flatVectors = map(self.__calculateDirAndNorm, (wingControlPoints[0].direction, wingControlPoints[1].direction))
-        times = map(self.__convertTime, (wingControlPoints[0].time, wingControlPoints[1].time))
+        flatVectors = lmap(self.__calculateDirAndNorm, (wingControlPoints[0].direction, wingControlPoints[1].direction))
+        times = lmap(self.__convertTime, (wingControlPoints[0].time, wingControlPoints[1].time))
         for offset in self.__offsets:
             points = []
-            for i in xrange(2):
+            for i in range(2):
                 point = wingControlPoints[i]
                 realOffset = self.__calculateOffset(offset, flatVectors[i])
                 points.append(CurveControlPoint(point.position + realOffset, speed * point.direction, times[i]))
@@ -217,17 +214,18 @@ class BombersWing(CallbackDelayer):
 
     def __readData(self, equipmentID):
         self.__equipment = equipment = vehicles.g_cache.equipments()[equipmentID]
-        self.__offsets = zip(equipment.antepositions, [0.0] * len(equipment.antepositions), equipment.lateropositions)
+        self.__offsets = lzip(equipment.antepositions, [0.0] * len(equipment.antepositions), equipment.lateropositions)
         self.__fixedSpeed = equipment.speed
         self.__areaLength = equipment.areaLength * AREA_LENGTH_SCALE_FACTOR
-        return (equipment.modelName, equipment.soundEvent)
+        return (
+         equipment.modelName, equipment.soundEvent)
 
     def __onFlightComplete(self):
         self.__withdrawn = True
         self.destroy()
 
     def addControlPoint(self, curveControlPoints, bombing):
-        speed = self.__calculateSpeed(curveControlPoints[0], curveControlPoints[1]) if not bombing else self.__fixedSpeed
+        speed = (bombing or self.__calculateSpeed)(curveControlPoints[0], curveControlPoints[1]) if 1 else self.__fixedSpeed
         point = curveControlPoints[1]
         bombingTime = self.__convertTime(point.time)
         endOfBombingTime = 0.0
@@ -237,7 +235,8 @@ class BombersWing(CallbackDelayer):
             ascendPath = curveControlPoints[1].position - curveControlPoints[0].position
             ascendPath.y = -ascendPath.y
             descendTime = curveControlPoints[1].time - curveControlPoints[0].time
-            retreatPath.append((ascendPath, endOfBombingTime + descendTime))
+            retreatPath.append((
+             ascendPath, endOfBombingTime + descendTime))
         bomberSpeed = speed * point.direction
         for bomber, offset in zip(self.__bombers, self.__offsets):
             realOffset = self.__calculateOffset(offset, self.__calculateDirAndNorm(point.direction))
@@ -251,7 +250,7 @@ class BombersWing(CallbackDelayer):
                 for bomberRetreatPosition, retreatVelocity, bomberTime in retreatPath:
                     bomber.addControlPoint(bomberRetreatPosition, retreatVelocity, bomberTime, True)
 
-                time = retreatPath[-1].time - BigWorld.time()
+                time = retreatPath[(-1)].time - BigWorld.time()
                 self.delayCallback(time, self.__onFlightComplete)
 
     def __generateRetreatTrajectory(self, idealFlightHeight, bombingEndPosition, bombingDir, bombingEndTime):
@@ -260,7 +259,8 @@ class BombersWing(CallbackDelayer):
         segmentLength = (endTrajectoryPosition - bombingEndPosition).length / _RETREAT_SUBDIVISION_FACTOR
         firstRetreatPoint = Vector3(bombingEndPosition + bombingDir * _INITIAL_RETREAT_SHIFT)
         positions = [firstRetreatPoint]
-        positions += [ firstRetreatPoint + bombingDir * (segmentLength * (idx + 1)) for idx in xrange(_RETREAT_SUBDIVISION_FACTOR - 1) ]
+        positions += [ firstRetreatPoint + bombingDir * (segmentLength * (idx + 1)) for idx in range(_RETREAT_SUBDIVISION_FACTOR - 1)
+                     ]
         positions.append(endTrajectoryPosition - bombingDir * min(segmentLength * 0.1, 50.0))
         positions.append(endTrajectoryPosition + bombingDir * 100)
         retreatHeight = _MINIMAL_RETREAT_HEIGHT
@@ -268,15 +268,19 @@ class BombersWing(CallbackDelayer):
         for position in positions:
             zeroHeightPos = Vector3(position)
             zeroHeightPos.y = 0
-            collRes = BigWorld.wg_collideSegment(BigWorld.player().spaceID, zeroHeightPos + (0, 1000, 0), zeroHeightPos + (0, -1000, 0), 18)
+            collRes = BigWorld.wg_collideSegment(BigWorld.player().spaceID, zeroHeightPos + (0,
+                                                                                             1000,
+                                                                                             0), zeroHeightPos + (0,
+                                                                                                                  -1000,
+                                                                                                                  0), 18)
             if collRes is not None:
                 minFlightHeight = max(collRes.closestPoint.y + retreatHeight, minFlightHeight)
             else:
                 minFlightHeight = max(position.y, minFlightHeight)
             position.y = minFlightHeight
 
-        for idx in xrange(len(positions) - 1):
-            positions[idx].y = (positions[idx].y + positions[idx + 1].y) / 2.0
+        for idx in range(len(positions) - 1):
+            positions[idx].y = (positions[idx].y + positions[(idx + 1)].y) / 2.0
 
         result = self.__generateRetreatPoints(bombingEndPosition, bombingEndTime, positions)
         return result

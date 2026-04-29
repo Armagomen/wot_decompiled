@@ -1,7 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/view_state_component.py
-import weakref
-import typing
+from __future__ import absolute_import
+import weakref, typing
 from cache import cached_property
 from constants import BuffDisplayedState
 from gui.battle_control.battle_constants import FEEDBACK_EVENT_ID, VEHICLE_VIEW_STATE
@@ -64,8 +62,8 @@ class ViewStateComponentAdaptor(object):
 
     @property
     def timeInterval(self):
-        timeInterval = {'startTime': self.__state.timeInterval.startTime,
-         'endTime': self.__state.timeInterval.endTime}
+        timeInterval = {'startTime': self.__state.timeInterval.startTime, 
+           'endTime': self.__state.timeInterval.endTime}
         return timeInterval
 
     @property
@@ -100,9 +98,10 @@ class ViewStateUpdater(object):
         self._component = weakref.proxy(component)
         self._vehicleID = self._component.entity.id
         self._isActive = self._component.isActive
-        if self._vehicleStateCtrl:
+        if self._vehicleStateCtrl is not None:
             self._vehicleStateCtrl.onVehicleControlling += self.onVehicleControlling
         g_eventBus.addListener(MarkersManagerEvent.MARKERS_CREATED, self.invalidate, EVENT_BUS_SCOPE.BATTLE)
+        return
 
     @cached_property
     def _sessionProvider(self):
@@ -131,7 +130,7 @@ class ViewStateUpdater(object):
             return
 
     def destroy(self):
-        if self._vehicleStateCtrl:
+        if self._vehicleStateCtrl is not None:
             self._vehicleStateCtrl.onVehicleControlling -= self.onVehicleControlling
         g_eventBus.removeListener(MarkersManagerEvent.MARKERS_CREATED, self.invalidate, EVENT_BUS_SCOPE.BATTLE)
         self._component = None
@@ -152,8 +151,8 @@ class ViewStateUpdater(object):
     def _getState(self):
         if self._isActive:
             timeInterval = getTimeInterval(self._component.timeInterval)
-            state = {'endTime': timeInterval.endTime,
-             'duration': timeInterval.endTime - timeInterval.startTime}
+            state = {'endTime': timeInterval.endTime, 
+               'duration': timeInterval.endTime - timeInterval.startTime}
         else:
             state = {'finishing': True}
         return state
@@ -161,7 +160,10 @@ class ViewStateUpdater(object):
 
 def _viewStateUpdaterFactory(stateID, component):
     updater = _VIEW_STATE_UPDATERS.get(stateID)
-    return updater(component) if updater is not None else None
+    if updater is not None:
+        return updater(component)
+    else:
+        return
 
 
 class _AoeInspireStateUpdater(ViewStateUpdater):
@@ -246,17 +248,17 @@ class _AggressiveDetectionStateUpdater(ViewStateUpdater):
     _VEHICLE_VIEW_STATE = VEHICLE_VIEW_STATE.AGGRESSIVE_DETECTION
 
 
-_VIEW_STATE_UPDATERS = {BuffDisplayedState.AOE_INSPIRE: _AoeInspireStateUpdater,
- BuffDisplayedState.AOE_HEAL: _AoeHealStateUpdater,
- BuffDisplayedState.RISKY_ATTACK_BUFF: _RiskyAttackBuffStateUpdater,
- BuffDisplayedState.RISKY_ATTACK_HEAL: _RiskyAttackHealStateUpdater,
- BuffDisplayedState.BERSERK: _BerserkStateUpdater,
- BuffDisplayedState.SNIPER: _SniperStateUpdater,
- BuffDisplayedState.HUNTER: _HunterStateUpdater,
- BuffDisplayedState.FAST_RECHARGE: _FastRechargeStateUpdater,
- BuffDisplayedState.ALLY_SUPPORT: _AllySupportStateUpdater,
- BuffDisplayedState.JUGGERNAUT: _JuggernautStateUpdater,
- BuffDisplayedState.SURE_SHOT: _SureShotStateUpdater,
- BuffDisplayedState.CONCENTRATION: _ConcentrationStateUpdater,
- BuffDisplayedState.MARCH: _MarchStateUpdater,
- BuffDisplayedState.AGGRESSIVE_DETECTION: _AggressiveDetectionStateUpdater}
+_VIEW_STATE_UPDATERS = {BuffDisplayedState.AOE_INSPIRE: _AoeInspireStateUpdater, 
+   BuffDisplayedState.AOE_HEAL: _AoeHealStateUpdater, 
+   BuffDisplayedState.RISKY_ATTACK_BUFF: _RiskyAttackBuffStateUpdater, 
+   BuffDisplayedState.RISKY_ATTACK_HEAL: _RiskyAttackHealStateUpdater, 
+   BuffDisplayedState.BERSERK: _BerserkStateUpdater, 
+   BuffDisplayedState.SNIPER: _SniperStateUpdater, 
+   BuffDisplayedState.HUNTER: _HunterStateUpdater, 
+   BuffDisplayedState.FAST_RECHARGE: _FastRechargeStateUpdater, 
+   BuffDisplayedState.ALLY_SUPPORT: _AllySupportStateUpdater, 
+   BuffDisplayedState.JUGGERNAUT: _JuggernautStateUpdater, 
+   BuffDisplayedState.SURE_SHOT: _SureShotStateUpdater, 
+   BuffDisplayedState.CONCENTRATION: _ConcentrationStateUpdater, 
+   BuffDisplayedState.MARCH: _MarchStateUpdater, 
+   BuffDisplayedState.AGGRESSIVE_DETECTION: _AggressiveDetectionStateUpdater}

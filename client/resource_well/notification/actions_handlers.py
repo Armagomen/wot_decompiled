@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/notification/actions_handlers.py
 from __future__ import absolute_import
 from notification.actions_handlers import NavigationDisabledActionHandler
 from notification.settings import NOTIFICATION_TYPE
@@ -13,7 +11,7 @@ class OpenResourceWellProgressionStartWindow(NavigationDisabledActionHandler):
 
     @classmethod
     def getActions(cls):
-        pass
+        return ('openResourceWellProgressionStartWindow', )
 
     def doAction(self, model, entityID, action):
         showMainWindow()
@@ -27,7 +25,7 @@ class OpenResourceWellProgressionWindow(NavigationDisabledActionHandler):
 
     @classmethod
     def getActions(cls):
-        pass
+        return ('OpenResourceWellProgressionWindow', )
 
     def doAction(self, model, entityID, action):
         showMainWindow()

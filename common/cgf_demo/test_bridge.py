@@ -1,11 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/cgf_demo/test_bridge.py
 import CGF
 from cgf_script.component_meta_class import ComponentProperty, CGFMetaTypes, registerComponent
 from cgf_script.managers_registrator import autoregister, onProcessQuery, onAddedQuery
-import GenericComponents
-import Triggers
-import math
+import GenericComponents, Triggers, math
 from Math import Matrix
 from cgf_demo.demo_category import DEMO_CATEGORY
 import logging

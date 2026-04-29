@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/personal_missions_30/camera_mover.py
 import logging
 from gui.subhangar.subhangar_state_groups import CameraMover
 _logger = logging.getLogger(__name__)

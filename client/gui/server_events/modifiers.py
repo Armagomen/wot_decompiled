@@ -1,11 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/server_events/modifiers.py
 import operator
 from abc import ABCMeta, abstractmethod
 from collections import defaultdict, namedtuple
-import typing
-import constants
-import nations
+import typing, constants, nations
 from debug_utils import LOG_CURRENT_EXCEPTION, LOG_ERROR, LOG_WARNING
 from gui.server_events import formatters
 from gui.shared.economics import getActionPrc
@@ -52,12 +48,14 @@ class _ParamContext(object):
         self.__isMultiplier = isMultiplier
 
     def __repr__(self):
-        params = ['name = %s' % self.__name, 'value = %s' % self.__value]
+        params = [
+         'name = %s' % self.__name,
+         'value = %s' % self.__value]
         if self.hasCurrency():
             params.append('currency = %s' % self.__currency)
         if self.__isMultiplier:
             params.append('multiplier')
-        return '_ParamContext(%s)' % ', '.join(params)
+        return '_ParamContext(%s)' % (', ').join(params)
 
     def getName(self):
         return self.__name
@@ -156,17 +154,18 @@ class ActionModifier(object):
         return
 
     def splitModifiers(self):
-        return [self]
+        return [
+         self]
 
     def _parse(self):
-        return None
+        return
 
     def _calcDiscountValue(self, value, default):
         return _getPercentDiscountByValue(float(value), default)
 
     @abstractmethod
     def getDefaultParamValue(self):
-        return None
+        return
 
     def getDefaultDiscountType(self):
         return _DT.PERCENT
@@ -192,7 +191,7 @@ class _DiscountsListAction(ActionModifier):
 
     @abstractmethod
     def _getParamPattern(self):
-        pass
+        return ''
 
     @abstractmethod
     def _getMultName(self, idx):
@@ -240,7 +239,7 @@ class _PriceOpAbstract(object):
 
     @abstractmethod
     def _getDiscountParams(self, item, value):
-        pass
+        return (0, '')
 
 
 class _BuyPriceSet(_PriceOpAbstract):
@@ -262,13 +261,18 @@ class _RentPriceSet(_PriceOpAbstract):
             defaultGoldRentPrice = rentPackage.get('defaultRentPrice', MONEY_UNDEFINED).gold
             if defaultGoldRentPrice:
                 return (_getPercentDiscountByValue(value, defaultGoldRentPrice), _DT.GOLD)
-        return (_getPercentDiscountByValue(value, 0), _DT.CREDITS)
+        return (
+         _getPercentDiscountByValue(value, 0), _DT.CREDITS)
 
 
 class _BuyPriceMul(_PriceOpAbstract):
 
     def _getDiscountParams(self, item, value):
-        return (_getPercentDiscountByMultiplier(value, item.buyPrices.itemPrice.defPrice.gold), _DT.GOLD) if item.buyPrices.itemPrice.defPrice.isSet(Currency.GOLD) else (_getPercentDiscountByMultiplier(value, item.buyPrices.itemPrice.defPrice.getSignValue(Currency.CREDITS)), _DT.PERCENT)
+        if item.buyPrices.itemPrice.defPrice.isSet(Currency.GOLD):
+            return (_getPercentDiscountByMultiplier(value, item.buyPrices.itemPrice.defPrice.gold), _DT.GOLD)
+        return (
+         _getPercentDiscountByMultiplier(value, item.buyPrices.itemPrice.defPrice.getSignValue(Currency.CREDITS)),
+         _DT.PERCENT)
 
 
 class _RentPriceMul(_PriceOpAbstract):
@@ -281,7 +285,8 @@ class _RentPriceMul(_PriceOpAbstract):
                 if setValue:
                     return (_getPercentDiscountByMultiplier(value, setValue), currency)
 
-        return (_getPercentDiscountByMultiplier(value, 0), _DT.CREDITS)
+        return (
+         _getPercentDiscountByMultiplier(value, 0), _DT.CREDITS)
 
 
 class _SellPriceMul(_PriceOpAbstract):
@@ -292,8 +297,10 @@ class _SellPriceMul(_PriceOpAbstract):
             if isForGold:
                 return (int(item.buyPrices.itemPrice.price.gold * float(value)), _DT.GOLD)
             creditsPrice = item.buyPrices.itemPrice.price.gold * self.itemsCache.items.shop.defaults.exchangeRate
-            return (int(creditsPrice * float(value)), _DT.CREDITS)
-        return (int(item.buyPrices.itemPrice.price.getSignValue(Currency.CREDITS) * float(value)), _DT.CREDITS)
+            return (
+             int(creditsPrice * float(value)), _DT.CREDITS)
+        return (
+         int(item.buyPrices.itemPrice.price.getSignValue(Currency.CREDITS) * float(value)), _DT.CREDITS)
 
 
 class _ItemsPrice(_DiscountsListAction, _PriceOpAbstract):
@@ -316,7 +323,7 @@ class _ItemsPrice(_DiscountsListAction, _PriceOpAbstract):
         return 'itemName%d' % idx
 
     def _getParamPattern(self):
-        pass
+        return 'itemName'
 
     def _getMultName(self, idx):
         return 'price%d' % idx
@@ -344,12 +351,12 @@ class _SplitByCurrency(ActionModifier):
     def getParamName(self):
         if self._itemType in GUI_ITEM_TYPE.ALL() and self._paramName is not None:
             itemName = GUI_ITEM_TYPE_NAMES[self._itemType]
-            return '/'.join((itemName, self._paramName))
+            return ('/').join((itemName, self._paramName))
         else:
             return self.getName()
 
     def getDefaultParamValue(self):
-        return None
+        return
 
 
 class _ItemsPriceAll(ActionModifier):
@@ -384,20 +391,20 @@ class _ItemsPriceAll(ActionModifier):
         result = {}
         for v in self.itemsCache.items.getItems(itemTypeID=self._itemType, criteria=criteria).itervalues():
             if v.buyPrices.itemPrice.price.isSet(Currency.GOLD) and goldPriceMult is not None:
-                result[nation, v] = float(goldPriceMult)
-            if v.buyPrices.itemPrice.price.isSet(Currency.CREDITS) and creditsPriceMult is not None:
-                result[nation, v] = float(creditsPriceMult)
+                result[(nation, v)] = float(goldPriceMult)
+            elif v.buyPrices.itemPrice.price.isSet(Currency.CREDITS) and creditsPriceMult is not None:
+                result[(nation, v)] = float(creditsPriceMult)
 
         return result
 
     def _getGoldMultName(self):
-        pass
+        return 'goldPriceMultiplier'
 
     def _getCreditsMultName(self):
-        pass
+        return 'creditsPriceMultiplier'
 
     def _getNationName(self):
-        pass
+        return 'nation'
 
     def _packMultiplier(self, multName, multVal):
         return _ActionDiscountValue(discountName=multName, discountValue=int(round((1 - float(multVal)) * 100)), discountType=_DT.PERCENT)
@@ -445,13 +452,13 @@ class _VehiclePrice(_ItemsPrice):
             LOG_ERROR('There is error while getting vehicle item', vehName)
             LOG_CURRENT_EXCEPTION()
 
-        return None
+        return
 
     def _getParamName(self, idx):
         return 'vehName%d' % idx
 
     def _getParamPattern(self):
-        pass
+        return 'vehName'
 
 
 class _VehicleRentPrice(_VehiclePrice):
@@ -466,7 +473,7 @@ class _VehicleRentPrice(_VehiclePrice):
             items = sorted(items, key=operator.itemgetter(0))
         for (vehicle, package), value in items:
             dv, _ = self._getDiscountParams(vehicle, value)
-            res[vehicle.intCD, package] = _ActionDiscountValue(discountName=vehicle, discountValue=dv, discountType=_DT.PERCENT)
+            res[(vehicle.intCD, package)] = _ActionDiscountValue(discountName=vehicle, discountValue=dv, discountType=_DT.PERCENT)
 
         return res
 
@@ -486,14 +493,14 @@ class _VehicleRentPrice(_VehiclePrice):
                     if item is not None:
                         for rentPackage in item.rentPackages:
                             rentID = rentPackage['rentID']
-                            result[item, rentID] = float(self._params.get(self._getMultName(idx), self.DEFAULT_PRICE_MULT))
+                            result[(item, rentID)] = float(self._params.get(self._getMultName(idx), self.DEFAULT_PRICE_MULT))
 
         return result
 
     def getValues(self, action):
         result = {}
         for (vehicle, package), value in self.parse().iteritems():
-            result[vehicle.intCD, package] = [(value, action.getID())]
+            result[(vehicle.intCD, package)] = [(value, action.getID())]
 
         return result
 
@@ -541,7 +548,7 @@ class _ShellPrice(_ItemsPrice):
         return 'shellName%d' % idx
 
     def _getParamPattern(self):
-        pass
+        return 'shellName'
 
     def _makeResultItem(self, shellName):
         shellNation, shellName = shellName.split(':')
@@ -557,8 +564,12 @@ class _ShellPrice(_ItemsPrice):
         return
 
 
-_ECONOMICS_SET_EXCLUDE_IN_GUI = ('dailyXPFactor', 'exchangeRateForShellsAndEqs')
-_ECONOMICS_SET_EXCLUDE_IN_PARCING = ('tradeInAllowedVehicleLevels', 'tradeInForbiddenVehicles', 'freeXPConversionDiscrecitydailyXPFactor')
+_ECONOMICS_SET_EXCLUDE_IN_GUI = (
+ 'dailyXPFactor', 'exchangeRateForShellsAndEqs')
+_ECONOMICS_SET_EXCLUDE_IN_PARCING = (
+ 'tradeInAllowedVehicleLevels',
+ 'tradeInForbiddenVehicles',
+ 'freeXPConversionDiscrecitydailyXPFactor')
 
 class EconomicsSet(ActionModifier):
     itemsCache = dependency.descriptor(IItemsCache)
@@ -567,29 +578,29 @@ class EconomicsSet(ActionModifier):
         super(EconomicsSet, self).__init__(name, params, ACTION_MODIFIER_TYPE.DISCOUNT)
         self._paramName = paramName
         self._paramValue = paramValue
-        self.__handlers = {'premiumPacket1Cost': bwr(self.handlerPremiumPacket1),
-         'premiumPacket3Cost': bwr(self.handlerPremiumPacket3),
-         'premiumPacket7Cost': bwr(self.handlerPremiumPacket7),
-         'premiumPacket14Cost': bwr(self.handlerPremiumPacket14),
-         'premiumPacket30Cost': bwr(self.handlerPremiumPacket30),
-         'premiumPacket90Cost': bwr(self.handlerPremiumPacket90),
-         'premiumPacket180Cost': bwr(self.handlerPremiumPacket180),
-         'premiumPacket360Cost': bwr(self.handlerPremiumPacket360),
-         'freeXPConversionDiscrecity': bwr(self.handlerFreeXPConversionDiscrecity),
-         'exchangeRate': bwr(self.handlerExchangeRate),
-         'exchangeRateForShellsAndEqs': bwr(self.handlerExchangeRateForShellsAndEqs),
-         'slotsPrices': bwr(self.handlerSlotsPrices),
-         'creditsTankmanCost': bwr(self.handlerCreditsTankmanCost),
-         'goldTankmanCost': bwr(self.handlerGoldTankmanCost),
-         'changeRoleCost': bwr(self.handlerChangeRoleCost),
-         'creditsDropSkillsCost': bwr(self.handlerCreditsDropSkillsCost),
-         'goldDropSkillsCost': bwr(self.handlerGoldDropSkillsCost),
-         'clanCreationCost': bwr(self.handlerClanCreationCost),
-         'paidRemovalCost': bwr(self.handlerPaidRemovalCost),
-         'paidDeluxeRemovalCost': bwr(self.handlerPaidDeluxeRemovalCost),
-         'berthsPrices': bwr(self.handlerBerthsPrices),
-         'freeXPToTManXPRate': bwr(self.handlerFreeXPToTManXPRate),
-         'tradeInSellPriceFactor': bwr(self.handlerTradeInSellPriceFactor)}
+        self.__handlers = {'premiumPacket1Cost': bwr(self.handlerPremiumPacket1), 
+           'premiumPacket3Cost': bwr(self.handlerPremiumPacket3), 
+           'premiumPacket7Cost': bwr(self.handlerPremiumPacket7), 
+           'premiumPacket14Cost': bwr(self.handlerPremiumPacket14), 
+           'premiumPacket30Cost': bwr(self.handlerPremiumPacket30), 
+           'premiumPacket90Cost': bwr(self.handlerPremiumPacket90), 
+           'premiumPacket180Cost': bwr(self.handlerPremiumPacket180), 
+           'premiumPacket360Cost': bwr(self.handlerPremiumPacket360), 
+           'freeXPConversionDiscrecity': bwr(self.handlerFreeXPConversionDiscrecity), 
+           'exchangeRate': bwr(self.handlerExchangeRate), 
+           'exchangeRateForShellsAndEqs': bwr(self.handlerExchangeRateForShellsAndEqs), 
+           'slotsPrices': bwr(self.handlerSlotsPrices), 
+           'creditsTankmanCost': bwr(self.handlerCreditsTankmanCost), 
+           'goldTankmanCost': bwr(self.handlerGoldTankmanCost), 
+           'changeRoleCost': bwr(self.handlerChangeRoleCost), 
+           'creditsDropSkillsCost': bwr(self.handlerCreditsDropSkillsCost), 
+           'goldDropSkillsCost': bwr(self.handlerGoldDropSkillsCost), 
+           'clanCreationCost': bwr(self.handlerClanCreationCost), 
+           'paidRemovalCost': bwr(self.handlerPaidRemovalCost), 
+           'paidDeluxeRemovalCost': bwr(self.handlerPaidDeluxeRemovalCost), 
+           'berthsPrices': bwr(self.handlerBerthsPrices), 
+           'freeXPToTManXPRate': bwr(self.handlerFreeXPToTManXPRate), 
+           'tradeInSellPriceFactor': bwr(self.handlerTradeInSellPriceFactor)}
 
     def getParamName(self):
         return self._makeParamCtx(self._paramName, self._paramValue).getName()
@@ -636,7 +647,7 @@ class EconomicsSet(ActionModifier):
 
     def _makeParamCtx(self, name, value):
         if name == 'winXPFactorMode':
-            newName = '/'.join((name, self.getParamValue()))
+            newName = ('/').join((name, self.getParamValue()))
             currency = None
         else:
             newName, currency = self._extractCurrency(name)
@@ -656,11 +667,17 @@ class EconomicsSet(ActionModifier):
 
     def handlerCreditsTankmanCost(self, ctx):
         tankmanCost = self.itemsCache.items.shop.defaults.tankmanCost
-        return self._calculateDiscount('creditsTankmanCost', ctx.getValue(), tankmanCost[1][Currency.CREDITS], _DT.PERCENT) if tankmanCost is not None else float(ctx.getValue())
+        if tankmanCost is not None:
+            return self._calculateDiscount('creditsTankmanCost', ctx.getValue(), tankmanCost[1][Currency.CREDITS], _DT.PERCENT)
+        else:
+            return float(ctx.getValue())
 
     def handlerGoldTankmanCost(self, ctx):
         tankmanCost = self.itemsCache.items.shop.defaults.tankmanCost
-        return self._calculateDiscount('goldTankmanCost', ctx.getValue(), tankmanCost[2][Currency.GOLD], _DT.PERCENT) if tankmanCost is not None else float(ctx.getValue())
+        if tankmanCost is not None:
+            return self._calculateDiscount('goldTankmanCost', ctx.getValue(), tankmanCost[2][Currency.GOLD], _DT.PERCENT)
+        else:
+            return float(ctx.getValue())
 
     def handlerChangeRoleCost(self, ctx):
         default = self.itemsCache.items.shop.defaults.changeRoleCost
@@ -668,11 +685,17 @@ class EconomicsSet(ActionModifier):
 
     def handlerCreditsDropSkillsCost(self, ctx):
         dropSkillsCost = self.itemsCache.items.shop.defaults.dropSkillsCost
-        return self._calculateDiscount('creditsDropSkillsCost', ctx.getValue(), dropSkillsCost[1][Currency.CREDITS], _DT.PERCENT) if dropSkillsCost is not None else float(ctx.getValue())
+        if dropSkillsCost is not None:
+            return self._calculateDiscount('creditsDropSkillsCost', ctx.getValue(), dropSkillsCost[1][Currency.CREDITS], _DT.PERCENT)
+        else:
+            return float(ctx.getValue())
 
     def handlerGoldDropSkillsCost(self, ctx):
         dropSkillsCost = self.itemsCache.items.shop.defaults.dropSkillsCost
-        return self._calculateDiscount('goldDropSkillsCost', ctx.getValue(), dropSkillsCost[2][Currency.GOLD], _DT.PERCENT) if dropSkillsCost is not None else float(ctx.getValue())
+        if dropSkillsCost is not None:
+            return self._calculateDiscount('goldDropSkillsCost', ctx.getValue(), dropSkillsCost[2][Currency.GOLD], _DT.PERCENT)
+        else:
+            return float(ctx.getValue())
 
     def handlerExchangeRate(self, ctx):
         default = self.itemsCache.items.shop.defaults.exchangeRate
@@ -754,12 +777,16 @@ class EconomicsSet(ActionModifier):
         return _ActionDiscountValue(discountName=paramName, discountValue=value, discountType=discountType)
 
     def _calculateModifier(self, value, defaultValue):
-        return round(float(value) / defaultValue, 2) if value % defaultValue > 0 else int(value / defaultValue)
+        if value % defaultValue > 0:
+            return round(float(value) / defaultValue, 2)
+        return int(value / defaultValue)
 
     def getValues(self, action):
         result = defaultdict(dict)
         for key, value in self.parse().iteritems():
-            result[key] = [(value, action.getID())]
+            result[key] = [
+             (
+              value, action.getID())]
 
         return result
 
@@ -768,7 +795,8 @@ class EconomicsSet(ActionModifier):
             if name.endswith(cur.capitalize()):
                 return (name[:-len(cur)], cur)
 
-        return (name, None)
+        return (
+         name, None)
 
 
 class EconomicsMul(EconomicsSet):
@@ -845,8 +873,8 @@ class ShellPriceNation(ShellPriceAll):
         class_ = self.__class__
         name = self.getName()
         nation = self._params.get('nation')
-        res = [ class_(name, {param: value,
-         'nation': nation} if nation else {param: value}, param) for param, value in self._params.iteritems() if param != 'nation' ]
+        res = [ class_(name, {param: value, 'nation': nation} if nation else {param: value}, param) for param, value in self._params.iteritems() if param != 'nation'
+              ]
         return res
 
 
@@ -918,11 +946,10 @@ class VehRentPriceSet(_VehicleRentPrice, _RentPriceSet):
                     multName = self._getMultName(idx)
                     if paramName in self._params and multName in self._params:
                         rentID = makeRentID(constants.RentType.TIME_RENT, int(self._params.get(paramName, 0)))
-                        result[item, rentID] = int(self._params.get(multName, 0))
+                        result[(item, rentID)] = int(self._params.get(multName, 0))
 
             return result
-        else:
-            return
+        return
 
 
 class VehPriceMul(_VehiclePrice, _BuyPriceMul):
@@ -941,7 +968,8 @@ class VehPriceCond(_VehiclePrice, _BuyPriceMul):
     def _getRequestCriteria(self):
         criteria = ~REQ_CRITERIA.SECRET | ~REQ_CRITERIA.HIDDEN
         if 'nation' in self._params:
-            criteria |= REQ_CRITERIA.NATIONS([nations.INDICES[self._params['nation']]])
+            criteria |= REQ_CRITERIA.NATIONS([
+             nations.INDICES[self._params['nation']]])
         if 'levelEqual' in self._params:
             criteria |= REQ_CRITERIA.VEHICLE.LEVELS([int(self._params['levelEqual'])])
         else:
@@ -967,7 +995,7 @@ class VehPriceCond(_VehiclePrice, _BuyPriceMul):
         for v in self.itemsCache.items.getVehicles(criteria).itervalues():
             if v.buyPrices.itemPrice.price.isSet(Currency.GOLD) and goldPriceMult is not None:
                 result[v] = float(goldPriceMult)
-            if v.buyPrices.itemPrice.price.isSet(Currency.CREDITS) and creditsPriceMult is not None:
+            elif v.buyPrices.itemPrice.price.isSet(Currency.CREDITS) and creditsPriceMult is not None:
                 result[v] = float(creditsPriceMult)
 
         return result
@@ -982,9 +1010,9 @@ class VehRentPriceCond(VehPriceCond, _VehicleRentPrice, _RentPriceMul):
                 rentCost = rentPackage['rentPrice']
                 rentID = rentPackage['rentID']
                 if rentCost.isSet(Currency.GOLD) and goldPriceMult is not None:
-                    result[v, rentID] = float(goldPriceMult)
-                if rentCost.isSet(Currency.CREDITS) and creditsPriceMult is not None:
-                    result[v, rentID] = float(creditsPriceMult)
+                    result[(v, rentID)] = float(goldPriceMult)
+                elif rentCost.isSet(Currency.CREDITS) and creditsPriceMult is not None:
+                    result[(v, rentID)] = float(creditsPriceMult)
 
         return result
 
@@ -1015,7 +1043,7 @@ class VehSellPriceSet(_VehiclePrice, _SellPriceMul):
         return result
 
     def _getMultName(self, idx):
-        pass
+        return 'sellPriceFactor'
 
 
 class _BoosterPrice(_DiscountsListAction, _PriceOpAbstract):
@@ -1046,7 +1074,7 @@ class _BoosterPrice(_DiscountsListAction, _PriceOpAbstract):
         return 'goodieID%d' % idx
 
     def _getParamPattern(self):
-        pass
+        return 'goodieID'
 
     def _getMultName(self, idx):
         return 'price%d' % idx
@@ -1068,7 +1096,7 @@ class _BoosterPrice(_DiscountsListAction, _PriceOpAbstract):
         except Exception:
             LOG_CURRENT_EXCEPTION()
 
-        return None
+        return
 
 
 class BoosterPriceSet(_BoosterPrice, _BuyPriceSet):
@@ -1106,9 +1134,9 @@ class BoostersPriceAll(_ItemsPriceAll):
         for booster in self.goodiesCache.getBoosters(criteria=criteria).itervalues():
             buyPrices = booster.buyPrices
             if buyPrices.hasPriceIn(Currency.GOLD) and goldPriceMult is not None:
-                result[nation, booster] = float(goldPriceMult)
-            if buyPrices.hasPriceIn(Currency.CREDITS) and creditsPriceMult is not None:
-                result[nation, booster] = float(creditsPriceMult)
+                result[(nation, booster)] = float(goldPriceMult)
+            elif buyPrices.hasPriceIn(Currency.CREDITS) and creditsPriceMult is not None:
+                result[(nation, booster)] = float(creditsPriceMult)
 
         return result
 
@@ -1120,7 +1148,7 @@ class _C11nPrice(_ItemsPrice):
         return 'name%d' % idx
 
     def _getParamPattern(self):
-        pass
+        return 'name'
 
     def _parse(self):
         result = {}
@@ -1160,7 +1188,7 @@ class C11nPriceGroupPriceByTagMul(C11nPriceGroupPriceMul):
         return 'tag%d' % idx
 
     def _getParamPattern(self):
-        pass
+        return 'tag'
 
     def _parse(self):
         result = {}
@@ -1195,7 +1223,7 @@ class C11nPriceGroupPriceAll(_ItemsPriceAll):
         if sorting:
             items = sorted(items, key=operator.itemgetter(0))
         for (_, item), value in items:
-            result[item.itemTypeID, item.id] = _ActionDiscountValue(discountName=item, discountValue=int(round((1 - float(value)) * 100)), discountType=_DT.PERCENT)
+            result[(item.itemTypeID, item.id)] = _ActionDiscountValue(discountName=item, discountValue=int(round((1 - float(value)) * 100)), discountType=_DT.PERCENT)
 
         return result
 
@@ -1210,35 +1238,6 @@ class ReferralModifier(ActionModifier):
 
     def __init__(self, name, params):
         super(ReferralModifier, self).__init__('referralDisabled', params, modType=ACTION_MODIFIER_TYPE.AVAILABILITY)
-
-
-class CalendarModifier(ActionModifier):
-
-    def __init__(self, name, params):
-        super(CalendarModifier, self).__init__('calendar', params, modType=ACTION_MODIFIER_TYPE.AVAILABILITY)
-
-    def getDuration(self):
-        strDuration = self._params.get('duration')
-        return int(strDuration) if strDuration else None
-
-
-class CalendarSplashModifier(ActionModifier):
-
-    def __init__(self, name, params):
-        super(CalendarSplashModifier, self).__init__('calendarSplash', params, modType=ACTION_MODIFIER_TYPE.AVAILABILITY)
-
-    def getDuration(self):
-        strDuration = self._params.get('duration')
-        return int(strDuration) if strDuration else None
-
-
-class HeroTankAdventCalendarRedirectModifier(ActionModifier):
-
-    def __init__(self, _, params):
-        super(HeroTankAdventCalendarRedirectModifier, self).__init__('heroTankAdventCalendarRedirect', params, modType=ACTION_MODIFIER_TYPE.AVAILABILITY)
-
-    def getIsEnabled(self):
-        return self._params.get('enabled', '').lower() in ('1', 'yes', 'true')
 
 
 class TradeInModifier(ActionModifier):
@@ -1259,54 +1258,92 @@ class LobbyHeaderTabCounterModifier(ActionModifier):
         return self._params.get('counterValue', '')
 
 
-_MODIFIERS = (('mul_EconomicsParams', EconomicsMul),
- ('set_EconomicsParams', EconomicsSet),
- ('mul_EconomicsPrices', EconomicsMul),
- ('set_EconomicsPrices', EconomicsSet),
- ('set_TradeIn', TradeInModifier),
- ('cond_VehPrice', VehPriceCond),
- ('mul_VehPrice', VehPriceMul),
- ('set_VehPrice', VehPriceSet),
- ('mul_VehPriceAll', VehPriceAll),
- ('mul_VehPriceNation', VehPriceNation),
- ('set_VehSellPrice', VehSellPriceSet),
- ('cond_VehRentPrice', VehRentPriceCond),
- ('mul_VehRentPrice', VehRentPriceMul),
- ('set_VehRentPrice', VehRentPriceSet),
- ('mul_VehRentPriceAll', VehRentPriceAll),
- ('mul_VehRentPriceNation', VehRentPriceNation),
- ('mul_EquipmentPriceAll', EquipmentPriceAll),
- ('mul_EquipmentPrice', EquipmentPriceMul),
- ('set_EquipmentPrice', EquipmentPriceSet),
- ('mul_OptionalDevicePriceAll', OptDevicePriceAll),
- ('mul_OptionalDevicePrice', OptDevicePriceMul),
- ('set_OptionalDevicePrice', OptDevicePriceSet),
- ('mul_ShellPriceAll', ShellPriceAll),
- ('mul_ShellPriceNation', ShellPriceNation),
- ('mul_ShellPrice', ShellPriceMul),
- ('set_ShellPrice', ShellPriceSet),
- ('set_PriceGroupPrice', C11nPriceGroupPriceSet),
- ('mul_PriceGroupPrice', C11nPriceGroupPriceMul),
- ('mul_PriceGroupPriceByTag', C11nPriceGroupPriceByTagMul),
- ('mul_PriceGroupPriceAll', C11nPriceGroupPriceAll),
- ('set_GoodiePrice', BoosterPriceSet),
- ('mul_GoodiePrice', BoosterPriceMul),
- ('mul_GoodiePriceAll', BoostersPriceAll),
- ('set_MarathonAnnounce', MarathonEventModifier),
- ('set_MarathonInProgress', MarathonEventModifier),
- ('set_MarathonFinished', MarathonEventModifier),
- ('ReferralProgramDisabled', ReferralModifier),
- ('AdventCalendarEnabled', CalendarModifier),
- ('AdventCalendarForced', CalendarSplashModifier),
- ('HeroTankAdventCalendarRedirect', HeroTankAdventCalendarRedirectModifier),
- ('LobbyHeaderTabCounterModification', LobbyHeaderTabCounterModifier))
+_MODIFIERS = (
+ (
+  'mul_EconomicsParams', EconomicsMul),
+ (
+  'set_EconomicsParams', EconomicsSet),
+ (
+  'mul_EconomicsPrices', EconomicsMul),
+ (
+  'set_EconomicsPrices', EconomicsSet),
+ (
+  'set_TradeIn', TradeInModifier),
+ (
+  'cond_VehPrice', VehPriceCond),
+ (
+  'mul_VehPrice', VehPriceMul),
+ (
+  'set_VehPrice', VehPriceSet),
+ (
+  'mul_VehPriceAll', VehPriceAll),
+ (
+  'mul_VehPriceNation', VehPriceNation),
+ (
+  'set_VehSellPrice', VehSellPriceSet),
+ (
+  'cond_VehRentPrice', VehRentPriceCond),
+ (
+  'mul_VehRentPrice', VehRentPriceMul),
+ (
+  'set_VehRentPrice', VehRentPriceSet),
+ (
+  'mul_VehRentPriceAll', VehRentPriceAll),
+ (
+  'mul_VehRentPriceNation', VehRentPriceNation),
+ (
+  'mul_EquipmentPriceAll', EquipmentPriceAll),
+ (
+  'mul_EquipmentPrice', EquipmentPriceMul),
+ (
+  'set_EquipmentPrice', EquipmentPriceSet),
+ (
+  'mul_OptionalDevicePriceAll', OptDevicePriceAll),
+ (
+  'mul_OptionalDevicePrice', OptDevicePriceMul),
+ (
+  'set_OptionalDevicePrice', OptDevicePriceSet),
+ (
+  'mul_ShellPriceAll', ShellPriceAll),
+ (
+  'mul_ShellPriceNation', ShellPriceNation),
+ (
+  'mul_ShellPrice', ShellPriceMul),
+ (
+  'set_ShellPrice', ShellPriceSet),
+ (
+  'set_PriceGroupPrice', C11nPriceGroupPriceSet),
+ (
+  'mul_PriceGroupPrice', C11nPriceGroupPriceMul),
+ (
+  'mul_PriceGroupPriceByTag', C11nPriceGroupPriceByTagMul),
+ (
+  'mul_PriceGroupPriceAll', C11nPriceGroupPriceAll),
+ (
+  'set_GoodiePrice', BoosterPriceSet),
+ (
+  'mul_GoodiePrice', BoosterPriceMul),
+ (
+  'mul_GoodiePriceAll', BoostersPriceAll),
+ (
+  'set_MarathonAnnounce', MarathonEventModifier),
+ (
+  'set_MarathonInProgress', MarathonEventModifier),
+ (
+  'set_MarathonFinished', MarathonEventModifier),
+ (
+  'ReferralProgramDisabled', ReferralModifier),
+ (
+  'LobbyHeaderTabCounterModification', LobbyHeaderTabCounterModifier))
 _MODIFIERS_DICT = dict(_MODIFIERS)
-_MODIFIERS_ORDER = dict(((n, idx) for idx, (n, _) in enumerate(_MODIFIERS)))
+_MODIFIERS_ORDER = dict((n, idx) for idx, (n, _) in enumerate(_MODIFIERS))
 
 def compareModifiers(modName1, modName2):
     if modName1 not in _MODIFIERS_ORDER:
         return -1
-    return 1 if modName2 not in _MODIFIERS_ORDER else _MODIFIERS_ORDER[modName1] - _MODIFIERS_ORDER[modName2]
+    if modName2 not in _MODIFIERS_ORDER:
+        return 1
+    return _MODIFIERS_ORDER[modName1] - _MODIFIERS_ORDER[modName2]
 
 
 _g_cache = {}
@@ -1320,7 +1357,8 @@ def _freeze(obj):
 
 
 def getModifierObj(name, params):
-    key = (name, _freeze(params))
+    key = (
+     name, _freeze(params))
     if key in _g_cache:
         return _g_cache[key]
     else:

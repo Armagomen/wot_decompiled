@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/vehicle_hub/sub_presenters/sub_presenter_base.py
 from __future__ import absolute_import
 import typing
 from frameworks.wulf.view.submodel_presenter import SubModelPresenter
@@ -10,6 +8,7 @@ if typing.TYPE_CHECKING:
     from gui.impl.lobby.vehicle_hub.vehicle_hub_main_view import VehicleHubCtx
 
 class SubPresenterBase(SubModelPresenter):
+    __slots__ = ('__vhCtx', )
     _itemsCache = dependency.descriptor(IItemsCache)
 
     def __init__(self, model, parentView):
@@ -23,7 +22,10 @@ class SubPresenterBase(SubModelPresenter):
 
     @property
     def currentVehicle(self):
-        return self._itemsCache.items.getItemByCD(self.__vhCtx.intCD) if self.vehicleHubCtx else None
+        if self.vehicleHubCtx:
+            return self._itemsCache.items.getItemByCD(self.__vhCtx.intCD)
+        else:
+            return
 
     def setVehicleHubCtx(self, vhCtx):
         self.__vhCtx = vhCtx

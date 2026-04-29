@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/tooltips/commander_bonus_tooltip.py
 from frameworks.wulf import ViewSettings
 from gui.impl import backport
 from gui.impl.gen import R
@@ -14,7 +12,7 @@ DEF_COMMANDER_BONUS = 10
 
 class CommanderBonusTooltip(ViewImpl):
     _itemsCache = dependency.descriptor(IItemsCache)
-    __slots__ = ('_tankman',)
+    __slots__ = ('_tankman', )
 
     def __init__(self, tankmanId, *args, **kwargs):
         settings = ViewSettings(R.views.lobby.crew.tooltips.CrewPerksTooltip(), args=args, kwargs=kwargs)
@@ -32,7 +30,7 @@ class CommanderBonusTooltip(ViewImpl):
         self._fillModel()
 
     def _fillModel(self):
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             vm.setIconName(COMMANDER_BONUS)
             vm.setUserName(backport.text(R.strings.tooltips.commanderBonus.name()))
             vm.setSkillType(SkillTypeName.COMMANDER_SPECIAL)

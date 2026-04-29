@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/clans/__init__.py
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, ComponentSettings
 from gui.Scaleform.framework.package_layout import PackageBusinessHandler
@@ -10,7 +8,9 @@ from gui.shared.event_bus import EVENT_BUS_SCOPE
 
 def getContextMenuHandlers():
     from gui.Scaleform.daapi.view.lobby.clans import clan_cm_handlers
-    return ((CONTEXT_MENU_HANDLER_TYPE.BASE_CLAN, clan_cm_handlers.BaseClanCMHandler),)
+    return (
+     (
+      CONTEXT_MENU_HANDLER_TYPE.BASE_CLAN, clan_cm_handlers.BaseClanCMHandler),)
 
 
 def getViewSettings():
@@ -30,7 +30,8 @@ def getViewSettings():
     from gui.Scaleform.daapi.view.lobby.clans.invites.ClanRequestsView import ClanRequestsView
     from gui.Scaleform.daapi.view.lobby.clans.profile.ClanProfileSummaryView import ClanProfileSummaryView
     from gui.Scaleform.daapi.view.lobby.clans.profile.ClanProfileTableStatisticsView import ClanProfileTableStatisticsView
-    return (GroupedViewSettings(CLANS_ALIASES.CLAN_PROFILE_MAIN_WINDOW_PY, ClanProfileMainWindow, CLANS_ALIASES.CLAN_PROFILE_MAIN_WINDOW_UI, WindowLayer.WINDOW, '', CLANS_ALIASES.CLAN_PROFILE_MAIN_WINDOW_PY, ScopeTemplates.DEFAULT_SCOPE, True),
+    return (
+     GroupedViewSettings(CLANS_ALIASES.CLAN_PROFILE_MAIN_WINDOW_PY, ClanProfileMainWindow, CLANS_ALIASES.CLAN_PROFILE_MAIN_WINDOW_UI, WindowLayer.WINDOW, '', CLANS_ALIASES.CLAN_PROFILE_MAIN_WINDOW_PY, ScopeTemplates.DEFAULT_SCOPE, True),
      GroupedViewSettings(CLANS_ALIASES.CLAN_PROFILE_INVITES_WINDOW_PY, ClanInvitesWindow, 'clanInvitesWindow.swf', WindowLayer.WINDOW, CLANS_ALIASES.CLAN_PROFILE_INVITES_WINDOW_PY, None, ScopeTemplates.LOBBY_SUB_SCOPE),
      GroupedViewSettings(CLANS_ALIASES.CLAN_PROFILE_SEND_INVITES_WINDOW_PY, ClanSendInvitesWindow, 'sendInvitesWindow.swf', WindowLayer.WINDOW, '', CLANS_ALIASES.CLAN_PROFILE_SEND_INVITES_WINDOW_PY, ScopeTemplates.DEFAULT_SCOPE),
      GroupedViewSettings(CLANS_ALIASES.CLAN_PERSONAL_INVITES_WINDOW_PY, ClanPersonalInvitesWindow, CLANS_ALIASES.CLAN_PERSONAL_INVITES_WINDOW_UI, WindowLayer.WINDOW, CLANS_ALIASES.CLAN_PERSONAL_INVITES_WINDOW_PY, None, ScopeTemplates.LOBBY_SUB_SCOPE),
@@ -49,15 +50,22 @@ def getViewSettings():
 
 
 def getBusinessHandlers():
-    return (_ClanProfileBusinessHandler(),)
+    return (
+     _ClanProfileBusinessHandler(),)
 
 
 class _ClanProfileBusinessHandler(PackageBusinessHandler):
 
     def __init__(self):
-        listeners = ((CLANS_ALIASES.CLAN_PROFILE_MAIN_WINDOW_PY, self.loadViewByCtxEvent),
-         (CLANS_ALIASES.CLAN_PROFILE_INVITES_WINDOW_PY, self.loadViewByCtxEvent),
-         (CLANS_ALIASES.CLAN_PROFILE_SEND_INVITES_WINDOW_PY, self.loadViewByCtxEvent),
-         (CLANS_ALIASES.CLAN_SEARCH_WINDOW_PY, self.loadViewByCtxEvent),
-         (CLANS_ALIASES.CLAN_PERSONAL_INVITES_WINDOW_PY, self.loadViewByCtxEvent))
+        listeners = (
+         (
+          CLANS_ALIASES.CLAN_PROFILE_MAIN_WINDOW_PY, self.loadViewByCtxEvent),
+         (
+          CLANS_ALIASES.CLAN_PROFILE_INVITES_WINDOW_PY, self.loadViewByCtxEvent),
+         (
+          CLANS_ALIASES.CLAN_PROFILE_SEND_INVITES_WINDOW_PY, self.loadViewByCtxEvent),
+         (
+          CLANS_ALIASES.CLAN_SEARCH_WINDOW_PY, self.loadViewByCtxEvent),
+         (
+          CLANS_ALIASES.CLAN_PERSONAL_INVITES_WINDOW_PY, self.loadViewByCtxEvent))
         super(_ClanProfileBusinessHandler, self).__init__(listeners, app_settings.APP_NAME_SPACE.SF_LOBBY, EVENT_BUS_SCOPE.LOBBY)

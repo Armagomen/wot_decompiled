@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/vehicle_mechanics/mechanic_widgets/temp_heating_zones_widget.py
 from __future__ import absolute_import, division
 import typing
 from cache import last_cached_method
@@ -37,7 +35,10 @@ class TemperatureHeatingZonesGunWidget(TemperatureGunHeatZonesWidgetMeta, Contai
         self.__invalidateProgresses(state.temperatureProgress)
 
     def _getViewUpdaters(self):
-        return [VehicleMechanicLifeCycleUpdater(VehicleMechanic.HEATING_ZONES_GUN, self), VehicleMechanicPassengerUpdater(VehicleMechanic.HEATING_ZONES_GUN, self), VehicleMechanicStatesUpdater(VehicleMechanic.TEMPERATURE_GUN, self)]
+        return [
+         VehicleMechanicLifeCycleUpdater(VehicleMechanic.HEATING_ZONES_GUN, self),
+         VehicleMechanicPassengerUpdater(VehicleMechanic.HEATING_ZONES_GUN, self),
+         VehicleMechanicStatesUpdater(VehicleMechanic.TEMPERATURE_GUN, self)]
 
     def __invalidateAll(self, state, isInstantly=False):
         self.as_setStateS(MECHANICS_WIDGET_CONST.ACTIVE, isInstantly)

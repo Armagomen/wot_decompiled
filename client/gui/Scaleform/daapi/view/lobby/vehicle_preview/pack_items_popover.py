@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/vehicle_preview/pack_items_popover.py
 from gui.Scaleform.daapi.view.lobby.vehicle_preview.items_kit_helper import lookupItem, showItemTooltip
 from gui.Scaleform.daapi.view.meta.PackItemsPopoverMeta import PackItemsPopoverMeta
 from gui.impl import backport
@@ -40,14 +38,14 @@ class PackItemsPopover(PackItemsPopoverMeta):
         for item in self.__data.get('items'):
             item = flashObject2Dict(item)
             count = item.get('count') or 0
-            items.append({'id': item.get('id'),
-             'type': item.get('type'),
-             'value': backport.text(_R_SHOP_PACK.count()).format(count=count) if count > 1 else None,
-             'icon': item.get('icon'),
-             'overlayType': item.get('overlayType'),
-             'title': item.get('title'),
-             'description': item.get('description'),
-             'hasCompensation': item.get('hasCompensation', False)})
+            items.append({'id': item.get('id'), 
+               'type': item.get('type'), 
+               'value': backport.text(_R_SHOP_PACK.count()).format(count=count) if count > 1 else None, 
+               'icon': item.get('icon'), 
+               'overlayType': item.get('overlayType'), 
+               'title': item.get('title'), 
+               'description': item.get('description'), 
+               'hasCompensation': item.get('hasCompensation', False)})
 
         self.as_setItemsS(title, items)
         return

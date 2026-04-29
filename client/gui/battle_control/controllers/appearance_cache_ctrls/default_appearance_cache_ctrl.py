@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/appearance_cache_ctrls/default_appearance_cache_ctrl.py
-import logging
-import BigWorld
-import CGF
+import logging, BigWorld, CGF
 from common_tank_structure import VehicleAppearanceCacheInfo
 from gui.battle_control.arena_info.interfaces import IAppearanceCacheController
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID

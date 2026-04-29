@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/craftmachine_controller.py
 import logging
 from adisp import adisp_process
 from constants import EnhancementsConfig as config
@@ -13,11 +11,6 @@ from skeletons.gui.game_control import ICraftmachineController
 from skeletons.gui.web import IWebController
 from skeletons.gui.lobby_context import ILobbyContext
 _logger = logging.getLogger(__name__)
-
-@dependency.replace_none_kwargs(craftMachineController=ICraftmachineController)
-def getCraftMachineEntryPointIsActive(craftMachineController=None):
-    return craftMachineController.isCraftMachineEntryPointAvailable()
-
 
 class CraftmachineController(ICraftmachineController):
     __webController = dependency.descriptor(IWebController)
@@ -88,7 +81,3 @@ class CraftmachineController(ICraftmachineController):
     def __hasSuitableVehicles(self):
         criteria = self.__filterEnabledVehiclesCriteria(REQ_CRITERIA.INVENTORY)
         return len(self.__itemsCache.items.getVehicles(criteria)) > 0
-
-    def isCraftMachineEntryPointAvailable(self):
-        vehicleIsAvailable = self.__hasSuitableVehicles() or self.__suitableVehicleIsAvailable()
-        return vehicleIsAvailable

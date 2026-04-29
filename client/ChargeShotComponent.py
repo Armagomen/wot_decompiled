@@ -1,8 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/ChargeShotComponent.py
-import typing
-import BigWorld
-from constants import CHARGE_SHOT_FLAGS as FLAGS
+from __future__ import absolute_import, division
+import typing, BigWorld
+from constants import CHARGE_SHOT_FLAGS as FLAGS, HALF_SERVER_TICK as HALF_TICK, SHOT_PREDICTION_BUFFER as BUFFER
 from constants import VEHICLE_SETTING
 from events_handler import eventHandler
 from gui.battle_control.battle_constants import CANT_SHOOT_ERROR
@@ -11,6 +9,7 @@ from gui.shared.utils.decorators import ReprInjector
 from vehicles.components.component_wrappers import ifPlayerVehicle
 from vehicles.components.vehicle_component import VehicleDynamicComponent
 from vehicles.components.vehicle_prefabs import createMechanicPrefabSpawner
+from vehicles.entities import ShotParams
 from vehicles.mechanics.common import IMechanicComponent
 from vehicles.mechanics.mechanic_commands import IMechanicCommandsComponent, createMechanicCommandsEvents
 from vehicles.mechanics.mechanic_constants import VehicleMechanic, VehicleMechanicCommand
@@ -22,7 +21,8 @@ if typing.TYPE_CHECKING:
 
 @ReprInjector.simple('flags', 'level', 'baseTime', 'endTime')
 class ChargeShotState(IMechanicState):
-    __slots__ = ('flags', 'level', 'baseTime', 'endTime', 'hasCharging', 'hasShotBlock', 'canStart', 'isGunDestroyed')
+    __slots__ = ('flags', 'level', 'baseTime', 'endTime', 'hasCharging', 'hasShotBlock',
+                 'canStart', 'isGunDestroyed')
 
     def __init__(self, flags, level=0, baseTime=0.0, endTime=0.0):
         self.flags = flags
@@ -50,10 +50,14 @@ class ChargeShotAmmoState(DefaultComponentAmmoState):
         self.__mechanicState = mechanicState
 
     def canChangeVehicleSetting(self, code):
-        return not self.__mechanicState.hasCharging and not self.__mechanicState.hasShotBlock if code == VEHICLE_SETTING.CURRENT_SHELLS else super(ChargeShotAmmoState, self).canChangeVehicleSetting(code)
+        if code == VEHICLE_SETTING.CURRENT_SHELLS:
+            return not self.__mechanicState.hasCharging and not self.__mechanicState.hasShotBlock
+        return super(ChargeShotAmmoState, self).canChangeVehicleSetting(code)
 
     def canShootValidation(self):
-        return (False, CANT_SHOOT_ERROR.CHARGE_SHOT_BLOCKING) if self.__mechanicState.hasShotBlock else super(ChargeShotAmmoState, self).canShootValidation()
+        if self.__mechanicState.hasShotBlock:
+            return (False, CANT_SHOOT_ERROR.CHARGE_SHOT_BLOCKING)
+        return super(ChargeShotAmmoState, self).canShootValidation()
 
 
 @ReprInjector.withParent()
@@ -105,6 +109,11 @@ class ChargeShotComponent(VehicleDynamicComponent, IMechanicComponent, IMechanic
     @eventHandler
     def onCollectAmmoStates(self, ammoStates):
         ammoStates[self.vehicleMechanic.value] = ChargeShotAmmoState(self.__state)
+
+    @eventHandler
+    def onCollectShotParams(self, shotParamsList):
+        if self.__state.level >= self.__params.maxLevel and self.__state.timeLeft() <= max(BUFFER, BigWorld.LatencyInfo().value[3] + HALF_TICK):
+            shotParamsList.append(ShotParams(self.vehicleMechanic, 0, 0, False))
 
     @eventHandler
     def onDiscreteShotDone(self, gunInstallationSlot):

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/items_parameters/formatters.py
 from collections import namedtuple
 from itertools import chain
 from typing import TYPE_CHECKING
@@ -24,187 +22,205 @@ from web_stubs import i18n
 if TYPE_CHECKING:
     from typing import Optional
 ChangeCondition = namedtuple('ChangeCondition', ('predicate', 'alternativeParameter'))
-MEASURE_UNITS = {'aimingTime': MENU.TANK_PARAMS_S,
- 'areaRadius': MENU.TANK_PARAMS_M,
- 'areaSquare': MENU.TANK_PARAMS_SQM,
- 'armor': MENU.TANK_PARAMS_FACEFRONTBOARDINMM,
- 'artDelayRange': MENU.TANK_PARAMS_S,
- 'avgDamageList': MENU.TANK_PARAMS_VAL,
- 'maxAvgMutableDamageList': MENU.TANK_PARAMS_VAL,
- 'minAvgMutableDamageList': MENU.TANK_PARAMS_VAL,
- 'gunModuleAvgDamageList': MENU.TANK_PARAMS_VAL,
- 'avgPiercingPower': MENU.TANK_PARAMS_MM,
- 'bombDamage': MENU.TANK_PARAMS_VAL,
- 'bombsNumberRange': MENU.TANK_PARAMS_CNT,
- 'chassisRotationSpeed': MENU.TANK_PARAMS_GPS,
- 'circularVisionRadius': MENU.TANK_PARAMS_M,
- 'clipFireRate': MENU.TANK_PARAMS_CLIPSEC,
- AUTO_SHOOT_CLIP_FIRE_RATE: MENU.TANK_PARAMS_AUTOSHOOTCLIPSEC,
- BURST_FIRE_RATE: MENU.TANK_PARAMS_BURSTSEC,
- 'turboshaftBurstFireRate': MENU.TANK_PARAMS_BURSTSEC,
- BURST_TIME_INTERVAL: MENU.TANK_PARAMS_S,
- BURST_COUNT: MENU.TANK_PARAMS_CNT,
- BURST_SIZE: MENU.TANK_PARAMS_CNT,
- 'avgDamage': MENU.TANK_PARAMS_VAL,
- 'avgMutableDamage': MENU.TANK_PARAMS_VAL,
- 'avgDamagePerMinute': MENU.TANK_PARAMS_VPM,
- TEMPERATURE_AVG_DAMAGE_PER_MINUTE: MENU.TANK_PARAMS_VPM,
- AVG_DAMAGE_PER_SECOND: MENU.TANK_PARAMS_VPS,
- CONTINUOUS_DAMAGE_PER_SECOND: MENU.TANK_PARAMS_VPS,
- 'fireStartingChance': MENU.TANK_PARAMS_PERCENT,
- 'maxHealth': MENU.TANK_PARAMS_VAL,
- 'flyDelayRange': MENU.TANK_PARAMS_S,
- 'enginePower': MENU.TANK_PARAMS_P,
- TURBOSHAFT_ENGINE_POWER: MENU.TANK_PARAMS_P,
- ROCKET_ACCELERATION_ENGINE_POWER: MENU.TANK_PARAMS_P,
- ROCKET_ACCELERATION_REUSE_AND_DURATION: MENU.TANK_PARAMS_QPT,
- ROCKET_ACCELERATION_SPEED_LIMITS: MENU.TANK_PARAMS_MPH,
- 'enginePowerPerTon': MENU.TANK_PARAMS_PT,
- 'explosionRadius': MENU.TANK_PARAMS_M,
- 'gunYawLimits': MENU.TANK_PARAMS_GRADS,
- 'hullArmor': MENU.TANK_PARAMS_FACEFRONTBOARDINMM,
- 'piercingPower': MENU.TANK_PARAMS_MM,
- 'maxPiercingPower': MENU.TANK_PARAMS_MM,
- 'minPiercingPower': MENU.TANK_PARAMS_MM,
- 'pitchLimits': MENU.TANK_PARAMS_GRADS,
- 'radioDistance': MENU.TANK_PARAMS_M,
- 'radarRadius': MENU.TANK_PARAMS_M,
- 'radarCooldown': MENU.TANK_PARAMS_S,
- 'maxHullHealth': MENU.TANK_PARAMS_VAL,
- 'forwardMaxSpeed': MENU.TANK_PARAMS_MPH,
- 'reloadMagazineTime': MENU.TANK_PARAMS_S,
- RELOAD_TIME_PROP_NAME: MENU.TANK_PARAMS_SPM,
- TEMPERATURE_RELOAD_TIME: MENU.TANK_PARAMS_SPM,
- CONTINUOUS_SHOTS_PER_MINUTE: MENU.TANK_PARAMS_SPM,
- 'reloadTimeSecs': MENU.TANK_PARAMS_S,
- 'rotationSpeed': MENU.TANK_PARAMS_GPS,
- 'chassisModuleRotationSpeed': MENU.TANK_PARAMS_GPS,
- 'turretModuleRotationSpeed': MENU.TANK_PARAMS_GPS,
- SHELL_RELOADING_TIME_PROP_NAME: MENU.TANK_PARAMS_S,
- SHELL_LOADING_TIME_PROP_NAME: MENU.TANK_PARAMS_S,
- SHOT_DISPERSION_ANGLE: MENU.TANK_PARAMS_M,
- 'shotsNumberRange': MENU.TANK_PARAMS_CNT,
- 'shellsCount': MENU.TANK_PARAMS_CNT,
- 'speedLimits': MENU.TANK_PARAMS_MPH,
- 'turretArmor': MENU.TANK_PARAMS_FACEFRONTBOARDINMM,
- 'turretYawLimits': MENU.TANK_PARAMS_GRADS,
- 'vehicleWeight': MENU.TANK_PARAMS_T,
- 'weight': MENU.TANK_PARAMS_KG,
- 'hullWeight': MENU.TANK_PARAMS_KG,
- 'hullAndChassisWeight': MENU.TANK_PARAMS_KG,
- 'caliber': MENU.TANK_PARAMS_MM,
- 'damage': MENU.TANK_PARAMS_VAL,
- 'maxMutableDamage': MENU.TANK_PARAMS_VAL,
- 'minMutableDamage': MENU.TANK_PARAMS_VAL,
- 'turretRotationSpeed': MENU.TANK_PARAMS_GPS,
- 'invisibilityStillFactor': MENU.TANK_PARAMS_PERCENT,
- 'invisibilityMovingFactor': MENU.TANK_PARAMS_PERCENT,
- TURBOSHAFT_INVISIBILITY_STILL_FACTOR: MENU.TANK_PARAMS_PERCENT,
- TURBOSHAFT_INVISIBILITY_MOVING_FACTOR: MENU.TANK_PARAMS_PERCENT,
- 'maxShotDistance': MENU.TANK_PARAMS_M,
- 'switchOnTime': MENU.TANK_PARAMS_S,
- 'switchOffTime': MENU.TANK_PARAMS_S,
- 'switchTime': MENU.TANK_PARAMS_S,
- TURBOSHAFT_SWITCH_TIME: MENU.TANK_PARAMS_S,
- 'stunMaxDuration': MENU.TANK_PARAMS_S,
- 'stunMinDuration': MENU.TANK_PARAMS_S,
- 'stunDurationList': MENU.TANK_PARAMS_S,
- 'stunMaxDurationList': MENU.TANK_PARAMS_S,
- 'stunMinDurationList': MENU.TANK_PARAMS_S,
- 'cooldownSeconds': MENU.TANK_PARAMS_S,
- AUTO_RELOAD_PROP_NAME: MENU.TANK_PARAMS_S,
- MAX_STEERING_LOCK_ANGLE: MENU.TANK_PARAMS_GRADS,
- WHEELED_SWITCH_ON_TIME: MENU.TANK_PARAMS_S,
- WHEELED_SWITCH_OFF_TIME: MENU.TANK_PARAMS_S,
- WHEELED_SWITCH_TIME: MENU.TANK_PARAMS_S,
- WHEELED_SPEED_MODE_SPEED: MENU.TANK_PARAMS_MPH,
- TURBOSHAFT_SPEED_MODE_SPEED: MENU.TANK_PARAMS_MPH,
- DUAL_GUN_CHARGE_TIME: MENU.TANK_PARAMS_S,
- DUAL_GUN_RATE_TIME: MENU.TANK_PARAMS_S,
- DUAL_ACCURACY_COOLING_DELAY: MENU.TANK_PARAMS_S,
- 'shotSpeed': MENU.TANK_PARAMS_MPS,
- CHASSIS_REPAIR_TIME: MENU.TANK_PARAMS_S,
- CHASSIS_REPAIR_TIME_YOH: MENU.TANK_PARAMS_YOH_S_S,
- 'commonDelay': MENU.TANK_PARAMS_S,
- 'duration': MENU.TANK_PARAMS_S,
- 'inactivationDelay': MENU.TANK_PARAMS_S,
- 'commonAreaRadius': MENU.TANK_PARAMS_M,
- 'crewRolesFactor': MENU.TANK_PARAMS_PERCENT,
- 'maxDamage': MENU.TANK_PARAMS_VAL,
- 'increaseHealth': MENU.TANK_PARAMS_VAL,
- 'artNotificationDelayFactor': MENU.TANK_PARAMS_S,
- 'vehicleOwnSpottingTime': MENU.TANK_PARAMS_S,
- 'damagedModulesDetectionTime': MENU.TANK_PARAMS_S,
- 'commanderLampDelay': MENU.TANK_PARAMS_S,
- TWIN_GUN_RELOAD_ONE_GUN_TIME: MENU.TANK_PARAMS_S,
- TWIN_GUN_RELOAD_TWO_GUN_TIME: MENU.TANK_PARAMS_S,
- TWIN_GUN_TOP_SPEED: MENU.TANK_PARAMS_MPH,
- TWIN_GUN_SWITCH_FIRE_MODE_TIME: MENU.TANK_PARAMS_S,
- TWIN_GUN_RELOAD_TIME: MENU.TANK_PARAMS_S,
- 'concentrationModeCooldown': MENU.TANK_PARAMS_S,
- 'concentrationModeDuration': MENU.TANK_PARAMS_S,
- 'extraShotClipReloadTime': MENU.TANK_PARAMS_S,
- 'powerModeThreshold': MENU.TANK_PARAMS_S,
- 'powerModeDuration': MENU.TANK_PARAMS_S,
- 'secondaryReloadTimeSecs': MENU.TANK_PARAMS_S,
- 'secondaryTotalBurstSize': MENU.TANK_PARAMS_PERACTIVATION,
- 'secondaryAvgDamage': MENU.TANK_PARAMS_VAL,
- 'secondaryAvgPiercingPower': MENU.TANK_PARAMS_MM,
- 'pillboxHorizontalRotationSpeed': MENU.TANK_PARAMS_GPS,
- 'pillboxVerticalRotationSpeed': MENU.TANK_PARAMS_GPS,
- 'pillboxSwitchOnTime': MENU.TANK_PARAMS_S,
- 'pillboxSwitchOffTime': MENU.TANK_PARAMS_S,
- 'chargeableBurstPenetrationCount': MENU.TANK_PARAMS_QUANTITY,
- 'chargeableBurstSize': MENU.TANK_PARAMS_QUANTITY,
- 'chargeableBurstReload': MENU.TANK_PARAMS_S,
- 'chargeableBurstDispersion': MENU.TANK_PARAMS_M,
- 'stationaryReloadSwitchOnTime': MENU.TANK_PARAMS_S,
- 'stationaryReloadSwitchOffTime': MENU.TANK_PARAMS_S,
- 'furyMaxReloadEffAvgDpm': MENU.TANK_PARAMS_FACTOR,
- 'furyReloadSpeedBonusPerEfficiencyLevel': MENU.TANK_PARAMS_FACTOR,
- 'furyReloadEfficiencyLevelDuration': MENU.TANK_PARAMS_S,
- 'accuracyDispersionCap': MENU.TANK_PARAMS_FACTOR,
- 'accuracyWhileMovingDispersionCap': MENU.TANK_PARAMS_FACTOR,
- 'accuracyDispersionPerLevel': MENU.TANK_PARAMS_FACTOR,
- 'accuracySpeedLimit': MENU.TANK_PARAMS_MPH,
- 'accuracyLevelGainTime': MENU.TANK_PARAMS_S,
- 'preheatDmgCap': MENU.TANK_PARAMS_FACTOR,
- 'preheatDispersionCap': MENU.TANK_PARAMS_FACTOR,
- 'preheatTimeToFull': MENU.TANK_PARAMS_S,
- 'preheatTimeToZero': MENU.TANK_PARAMS_S,
- 'preheatSpeedLimit': MENU.TANK_PARAMS_MPH,
- 'preheatTransitionDelay': MENU.TANK_PARAMS_S,
- 'enginePowerWithBoosters': MENU.TANK_PARAMS_FACTOR,
- 'topSpeedWithBoosters': MENU.TANK_PARAMS_FACTOR,
- 'reverseSpeedReductionWithBoosters': MENU.TANK_PARAMS_FACTOR,
- 'traverseSpeedReductionWithBoosters': MENU.TANK_PARAMS_FACTOR,
- 'boosterDuration': MENU.TANK_PARAMS_S,
- 'boosterCoolingTime': MENU.TANK_PARAMS_S,
- 'reactivationLimit': MENU.TANK_PARAMS_FACTOR,
- 'reactivationDelay': MENU.TANK_PARAMS_S,
- 'heatAvgDmgPerLvl': MENU.TANK_PARAMS_FACTOR,
- 'heatTimeToReachLevel': MENU.TANK_PARAMS_S,
- 'heatTimeBeforeOverheat': MENU.TANK_PARAMS_S,
- 'heatChargeOverheatDuration': MENU.TANK_PARAMS_S,
- 'coincidenceElectromechanicalSightDuration': MENU.TANK_PARAMS_S,
- 'switchEngineModeBothModes': MENU.TANK_PARAMS_S,
- 'ionAfterburnerDuration': MENU.TANK_PARAMS_S,
- 'designatorInitialCooldownS': MENU.TANK_PARAMS_S,
- 'designatorCooldownS': MENU.TANK_PARAMS_S,
- 'designatorMarkDurationS': MENU.TANK_PARAMS_S,
- 'designatorMarkedEnemiesAdditionalDamage': MENU.TANK_PARAMS_FACTOR,
- 'coolingDelay': MENU.TANK_PARAMS_S,
- 'heatingPerShot': MENU.TANK_PARAMS_FACTOR,
- 'coolingTime': MENU.TANK_PARAMS_S,
- 'overheatDuration': MENU.TANK_PARAMS_S,
- 'timeToOverheat': MENU.TANK_PARAMS_S}
-MEASURE_UNITS_NO_BRACKETS = {'weight': MENU.TANK_PARAMS_NO_BRACKETS_KG,
- 'cooldownSeconds': MENU.TANK_PARAMS_NO_BRACKETS_S,
- 'reloadCooldownSeconds': MENU.TANK_PARAMS_NO_BRACKETS_S,
- 'caliber': MENU.TANK_PARAMS_NO_BRACKETS_MM}
-KPI_FORMATTERS = {KPI.Name.DAMAGED_MODULES_DETECTION_TIME: kpiFormatNoSignValue,
- KPI.Name.ART_NOTIFICATION_DELAY_FACTOR: kpiFormatNoSignValue}
-COLORLESS_SCHEME = (text_styles.stats, text_styles.stats, text_styles.stats)
+MEASURE_UNITS = {'aimingTime': MENU.TANK_PARAMS_S, 
+   'areaRadius': MENU.TANK_PARAMS_M, 
+   'areaSquare': MENU.TANK_PARAMS_SQM, 
+   'armor': MENU.TANK_PARAMS_FACEFRONTBOARDINMM, 
+   'artDelayRange': MENU.TANK_PARAMS_S, 
+   'avgDamageList': MENU.TANK_PARAMS_VAL, 
+   'maxAvgMutableDamageList': MENU.TANK_PARAMS_VAL, 
+   'minAvgMutableDamageList': MENU.TANK_PARAMS_VAL, 
+   'gunModuleAvgDamageList': MENU.TANK_PARAMS_VAL, 
+   'avgPiercingPower': MENU.TANK_PARAMS_MM, 
+   'bombDamage': MENU.TANK_PARAMS_VAL, 
+   'bombsNumberRange': MENU.TANK_PARAMS_CNT, 
+   'chassisRotationSpeed': MENU.TANK_PARAMS_GPS, 
+   'circularVisionRadius': MENU.TANK_PARAMS_M, 
+   'clipFireRate': MENU.TANK_PARAMS_CLIPSEC, 
+   AUTO_SHOOT_CLIP_FIRE_RATE: MENU.TANK_PARAMS_AUTOSHOOTCLIPSEC, 
+   BURST_FIRE_RATE: MENU.TANK_PARAMS_BURSTSEC, 
+   'turboshaftBurstFireRate': MENU.TANK_PARAMS_BURSTSEC, 
+   BURST_TIME_INTERVAL: MENU.TANK_PARAMS_S, 
+   BURST_COUNT: MENU.TANK_PARAMS_CNT, 
+   BURST_SIZE: MENU.TANK_PARAMS_CNT, 
+   'avgDamage': MENU.TANK_PARAMS_VAL, 
+   'avgMutableDamage': MENU.TANK_PARAMS_VAL, 
+   'avgDamagePerMinute': MENU.TANK_PARAMS_VPM, 
+   TEMPERATURE_AVG_DAMAGE_PER_MINUTE: MENU.TANK_PARAMS_VPM, 
+   AVG_DAMAGE_PER_SECOND: MENU.TANK_PARAMS_VPS, 
+   CONTINUOUS_DAMAGE_PER_SECOND: MENU.TANK_PARAMS_VPS, 
+   'fireStartingChance': MENU.TANK_PARAMS_PERCENT, 
+   'maxHealth': MENU.TANK_PARAMS_VAL, 
+   'flyDelayRange': MENU.TANK_PARAMS_S, 
+   'enginePower': MENU.TANK_PARAMS_P, 
+   TURBOSHAFT_ENGINE_POWER: MENU.TANK_PARAMS_P, 
+   ROCKET_ACCELERATION_ENGINE_POWER: MENU.TANK_PARAMS_P, 
+   ROCKET_ACCELERATION_REUSE_AND_DURATION: MENU.TANK_PARAMS_QPT, 
+   ROCKET_ACCELERATION_SPEED_LIMITS: MENU.TANK_PARAMS_MPH, 
+   'enginePowerPerTon': MENU.TANK_PARAMS_PT, 
+   'explosionRadius': MENU.TANK_PARAMS_M, 
+   'gunYawLimits': MENU.TANK_PARAMS_GRADS, 
+   'hullArmor': MENU.TANK_PARAMS_FACEFRONTBOARDINMM, 
+   'piercingPower': MENU.TANK_PARAMS_MM, 
+   'maxPiercingPower': MENU.TANK_PARAMS_MM, 
+   'minPiercingPower': MENU.TANK_PARAMS_MM, 
+   'pitchLimits': MENU.TANK_PARAMS_GRADS, 
+   'radioDistance': MENU.TANK_PARAMS_M, 
+   'radarRadius': MENU.TANK_PARAMS_M, 
+   'radarCooldown': MENU.TANK_PARAMS_S, 
+   'maxHullHealth': MENU.TANK_PARAMS_VAL, 
+   'forwardMaxSpeed': MENU.TANK_PARAMS_MPH, 
+   'reloadMagazineTime': MENU.TANK_PARAMS_S, 
+   RELOAD_TIME_PROP_NAME: MENU.TANK_PARAMS_SPM, 
+   TEMPERATURE_RELOAD_TIME: MENU.TANK_PARAMS_SPM, 
+   CONTINUOUS_SHOTS_PER_MINUTE: MENU.TANK_PARAMS_SPM, 
+   'reloadTimeSecs': MENU.TANK_PARAMS_S, 
+   'rotationSpeed': MENU.TANK_PARAMS_GPS, 
+   'chassisModuleRotationSpeed': MENU.TANK_PARAMS_GPS, 
+   'turretModuleRotationSpeed': MENU.TANK_PARAMS_GPS, 
+   SHELL_RELOADING_TIME_PROP_NAME: MENU.TANK_PARAMS_S, 
+   SHELL_LOADING_TIME_PROP_NAME: MENU.TANK_PARAMS_S, 
+   SHOT_DISPERSION_ANGLE: MENU.TANK_PARAMS_M, 
+   'shotsNumberRange': MENU.TANK_PARAMS_CNT, 
+   'shellsCount': MENU.TANK_PARAMS_CNT, 
+   'speedLimits': MENU.TANK_PARAMS_MPH, 
+   'turretArmor': MENU.TANK_PARAMS_FACEFRONTBOARDINMM, 
+   'turretYawLimits': MENU.TANK_PARAMS_GRADS, 
+   'vehicleWeight': MENU.TANK_PARAMS_T, 
+   'weight': MENU.TANK_PARAMS_KG, 
+   'hullWeight': MENU.TANK_PARAMS_KG, 
+   'hullAndChassisWeight': MENU.TANK_PARAMS_KG, 
+   'caliber': MENU.TANK_PARAMS_MM, 
+   'damage': MENU.TANK_PARAMS_VAL, 
+   'maxMutableDamage': MENU.TANK_PARAMS_VAL, 
+   'minMutableDamage': MENU.TANK_PARAMS_VAL, 
+   'turretRotationSpeed': MENU.TANK_PARAMS_GPS, 
+   'invisibilityStillFactor': MENU.TANK_PARAMS_PERCENT, 
+   'invisibilityMovingFactor': MENU.TANK_PARAMS_PERCENT, 
+   TURBOSHAFT_INVISIBILITY_STILL_FACTOR: MENU.TANK_PARAMS_PERCENT, 
+   TURBOSHAFT_INVISIBILITY_MOVING_FACTOR: MENU.TANK_PARAMS_PERCENT, 
+   'maxShotDistance': MENU.TANK_PARAMS_M, 
+   'switchOnTime': MENU.TANK_PARAMS_S, 
+   'switchOffTime': MENU.TANK_PARAMS_S, 
+   'switchTime': MENU.TANK_PARAMS_S, 
+   TURBOSHAFT_SWITCH_TIME: MENU.TANK_PARAMS_S, 
+   'stunMaxDuration': MENU.TANK_PARAMS_S, 
+   'stunMinDuration': MENU.TANK_PARAMS_S, 
+   'stunDurationList': MENU.TANK_PARAMS_S, 
+   'stunMaxDurationList': MENU.TANK_PARAMS_S, 
+   'stunMinDurationList': MENU.TANK_PARAMS_S, 
+   'cooldownSeconds': MENU.TANK_PARAMS_S, 
+   AUTO_RELOAD_PROP_NAME: MENU.TANK_PARAMS_S, 
+   MAX_STEERING_LOCK_ANGLE: MENU.TANK_PARAMS_GRADS, 
+   WHEELED_SWITCH_ON_TIME: MENU.TANK_PARAMS_S, 
+   WHEELED_SWITCH_OFF_TIME: MENU.TANK_PARAMS_S, 
+   WHEELED_SWITCH_TIME: MENU.TANK_PARAMS_S, 
+   WHEELED_SPEED_MODE_SPEED: MENU.TANK_PARAMS_MPH, 
+   TURBOSHAFT_SPEED_MODE_SPEED: MENU.TANK_PARAMS_MPH, 
+   DUAL_GUN_CHARGE_TIME: MENU.TANK_PARAMS_S, 
+   DUAL_GUN_RATE_TIME: MENU.TANK_PARAMS_S, 
+   DUAL_ACCURACY_COOLING_DELAY: MENU.TANK_PARAMS_S, 
+   'shotSpeed': MENU.TANK_PARAMS_MPS, 
+   CHASSIS_REPAIR_TIME: MENU.TANK_PARAMS_S, 
+   CHASSIS_REPAIR_TIME_YOH: MENU.TANK_PARAMS_YOH_S_S, 
+   'commonDelay': MENU.TANK_PARAMS_S, 
+   'duration': MENU.TANK_PARAMS_S, 
+   'inactivationDelay': MENU.TANK_PARAMS_S, 
+   'commonAreaRadius': MENU.TANK_PARAMS_M, 
+   'crewRolesFactor': MENU.TANK_PARAMS_PERCENT, 
+   'maxDamage': MENU.TANK_PARAMS_VAL, 
+   'increaseHealth': MENU.TANK_PARAMS_VAL, 
+   'artNotificationDelayFactor': MENU.TANK_PARAMS_S, 
+   'vehicleOwnSpottingTime': MENU.TANK_PARAMS_S, 
+   'damagedModulesDetectionTime': MENU.TANK_PARAMS_S, 
+   'commanderLampDelay': MENU.TANK_PARAMS_S, 
+   TWIN_GUN_RELOAD_ONE_GUN_TIME: MENU.TANK_PARAMS_S, 
+   TWIN_GUN_RELOAD_TWO_GUN_TIME: MENU.TANK_PARAMS_S, 
+   TWIN_GUN_TOP_SPEED: MENU.TANK_PARAMS_MPH, 
+   TWIN_GUN_SWITCH_FIRE_MODE_TIME: MENU.TANK_PARAMS_S, 
+   TWIN_GUN_RELOAD_TIME: MENU.TANK_PARAMS_S, 
+   'concentrationModeCooldown': MENU.TANK_PARAMS_S, 
+   'concentrationModeDuration': MENU.TANK_PARAMS_S, 
+   'extraShotClipReloadTime': MENU.TANK_PARAMS_S, 
+   'powerModeThreshold': MENU.TANK_PARAMS_S, 
+   'powerModeDuration': MENU.TANK_PARAMS_S, 
+   'secondaryReloadTimeSecs': MENU.TANK_PARAMS_S, 
+   'secondaryTotalBurstSize': MENU.TANK_PARAMS_PERACTIVATION, 
+   'secondaryAvgDamage': MENU.TANK_PARAMS_VAL, 
+   'secondaryAvgPiercingPower': MENU.TANK_PARAMS_MM, 
+   'pillboxHorizontalRotationSpeed': MENU.TANK_PARAMS_GPS, 
+   'pillboxVerticalRotationSpeed': MENU.TANK_PARAMS_GPS, 
+   'pillboxSwitchOnTime': MENU.TANK_PARAMS_S, 
+   'pillboxSwitchOffTime': MENU.TANK_PARAMS_S, 
+   'chargeableBurstPenetrationCount': MENU.TANK_PARAMS_QUANTITY, 
+   'chargeableBurstSize': MENU.TANK_PARAMS_QUANTITY, 
+   'chargeableBurstReload': MENU.TANK_PARAMS_S, 
+   'chargeableBurstDispersion': MENU.TANK_PARAMS_M, 
+   'stationaryReloadSwitchOnTime': MENU.TANK_PARAMS_S, 
+   'stationaryReloadSwitchOffTime': MENU.TANK_PARAMS_S, 
+   'furyMaxReloadEffAvgDpm': MENU.TANK_PARAMS_FACTOR, 
+   'furyReloadSpeedBonusPerEfficiencyLevel': MENU.TANK_PARAMS_FACTOR, 
+   'furyReloadEfficiencyLevelDuration': MENU.TANK_PARAMS_S, 
+   'accuracyDispersionCap': MENU.TANK_PARAMS_FACTOR, 
+   'accuracyWhileMovingDispersionCap': MENU.TANK_PARAMS_FACTOR, 
+   'accuracyDispersionPerLevel': MENU.TANK_PARAMS_FACTOR, 
+   'accuracySpeedLimit': MENU.TANK_PARAMS_MPH, 
+   'accuracyLevelGainTime': MENU.TANK_PARAMS_S, 
+   'preheatDmgCap': MENU.TANK_PARAMS_FACTOR, 
+   'preheatDispersionCap': MENU.TANK_PARAMS_FACTOR, 
+   'preheatTimeToFull': MENU.TANK_PARAMS_S, 
+   'preheatTimeToZero': MENU.TANK_PARAMS_S, 
+   'preheatSpeedLimit': MENU.TANK_PARAMS_MPH, 
+   'preheatTransitionDelay': MENU.TANK_PARAMS_S, 
+   'enginePowerWithBoosters': MENU.TANK_PARAMS_FACTOR, 
+   'topSpeedWithBoosters': MENU.TANK_PARAMS_FACTOR, 
+   'reverseSpeedReductionWithBoosters': MENU.TANK_PARAMS_FACTOR, 
+   'traverseSpeedReductionWithBoosters': MENU.TANK_PARAMS_FACTOR, 
+   'boosterDuration': MENU.TANK_PARAMS_S, 
+   'boosterCoolingTime': MENU.TANK_PARAMS_S, 
+   'reactivationLimit': MENU.TANK_PARAMS_FACTOR, 
+   'reactivationDelay': MENU.TANK_PARAMS_S, 
+   'heatAvgDmgPerLvl': MENU.TANK_PARAMS_FACTOR, 
+   'heatTimeToReachLevel': MENU.TANK_PARAMS_S, 
+   'heatTimeBeforeOverheat': MENU.TANK_PARAMS_S, 
+   'heatChargeOverheatDuration': MENU.TANK_PARAMS_S, 
+   'coincidenceElectromechanicalSightDuration': MENU.TANK_PARAMS_S, 
+   'switchEngineModeBothModes': MENU.TANK_PARAMS_S, 
+   'ionAfterburnerDuration': MENU.TANK_PARAMS_S, 
+   'designatorInitialCooldownS': MENU.TANK_PARAMS_S, 
+   'designatorCooldownS': MENU.TANK_PARAMS_S, 
+   'designatorMarkDurationS': MENU.TANK_PARAMS_S, 
+   'designatorMarkedEnemiesAdditionalDamage': MENU.TANK_PARAMS_FACTOR, 
+   'piercingHEShellsDistributionUpperBound': MENU.TANK_PARAMS_PERCENT, 
+   'suspensionDamageReduction': MENU.TANK_PARAMS_PERCENT, 
+   'hpRecover': MENU.TANK_PARAMS_PERCENT, 
+   'coolingDelay': MENU.TANK_PARAMS_S, 
+   'heatingPerShot': MENU.TANK_PARAMS_FACTOR, 
+   'coolingTime': MENU.TANK_PARAMS_S, 
+   'overheatDuration': MENU.TANK_PARAMS_S, 
+   'timeToOverheat': MENU.TANK_PARAMS_S, 
+   'normalizationAngle': MENU.TANK_PARAMS_GRADS, 
+   'ricochetAngle': MENU.TANK_PARAMS_GRADS, 
+   'penetrationLoss': MENU.TANK_PARAMS_PENETRATIONLOSS, 
+   'screensArmorMultiplier': '', 
+   'propellantChargeLimit': MENU.TANK_PARAMS_FACTOR, 
+   'propellantChargeSpendingAfterShot': MENU.TANK_PARAMS_FACTOR, 
+   'propellantChargingPerSec': MENU.TANK_PARAMS_PERCENT_PER_S, 
+   'propellantDischargingPerSec': MENU.TANK_PARAMS_PERCENT_PER_S, 
+   'propellantOverchargeSwitchCooldown': MENU.TANK_PARAMS_S, 
+   'propellantPreLimitDamageBonus': MENU.TANK_PARAMS_FACTOR, 
+   'propellantPostLimitDamageSpike': MENU.TANK_PARAMS_VAL, 
+   'propellantPostLimitDamageBonus': MENU.TANK_PARAMS_FACTOR, 
+   'propellantPostLimitDispersion': MENU.TANK_PARAMS_M, 
+   'propellantPostLimitAimingTime': MENU.TANK_PARAMS_S}
+MEASURE_UNITS_NO_BRACKETS = {'weight': MENU.TANK_PARAMS_NO_BRACKETS_KG, 
+   'cooldownSeconds': MENU.TANK_PARAMS_NO_BRACKETS_S, 
+   'reloadCooldownSeconds': MENU.TANK_PARAMS_NO_BRACKETS_S, 
+   'caliber': MENU.TANK_PARAMS_NO_BRACKETS_MM}
+KPI_FORMATTERS = {KPI.Name.DAMAGED_MODULES_DETECTION_TIME: kpiFormatNoSignValue, 
+   KPI.Name.ART_NOTIFICATION_DELAY_FACTOR: kpiFormatNoSignValue}
+COLORLESS_SCHEME = (
+ text_styles.stats, text_styles.stats, text_styles.stats)
 NO_BONUS_SIMPLIFIED_SCHEME = (text_styles.warning, text_styles.warning, text_styles.warning)
 NO_BONUS_BASE_SCHEME = (text_styles.error, text_styles.stats, text_styles.stats)
 SIMPLIFIED_SCHEME = (text_styles.critical, text_styles.warning, text_styles.statInfo)
@@ -212,56 +228,29 @@ BASE_SCHEME = (text_styles.error, text_styles.stats, text_styles.bonusAppliedTex
 EXTRACTED_BONUS_SCHEME = (text_styles.error, text_styles.bonusAppliedText, text_styles.bonusAppliedText)
 SITUATIONAL_SCHEME = (text_styles.critical, text_styles.warning, text_styles.bonusPreviewText)
 VEHICLE_PARAMS = tuple(chain(*[ PARAMS_GROUPS[param] for param in RELATIVE_PARAMS ]))
-ITEMS_PARAMS_LIST = {ITEM_TYPES.vehicleRadio: ('radioDistance', 'weight'),
- ITEM_TYPES.vehicleChassis: ('rotationSpeed',
-                             'weight',
-                             MAX_STEERING_LOCK_ANGLE,
-                             CHASSIS_REPAIR_TIME),
- ITEM_TYPES.vehicleEngine: ('enginePower',
-                            TURBOSHAFT_ENGINE_POWER,
-                            ROCKET_ACCELERATION_ENGINE_POWER,
-                            'fireStartingChance',
-                            'weight'),
- ITEM_TYPES.vehicleTurret: ('armor', 'rotationSpeed', 'circularVisionRadius', 'weight'),
- ITEM_TYPES.vehicle: VEHICLE_PARAMS,
- ITEM_TYPES.equipment: {artefacts.RageArtillery: ('damage', 'piercingPower', 'caliber', 'shotsNumberRange', 'areaRadius', 'artDelayRange'),
-                        artefacts.RageBomber: ('bombDamage', 'piercingPower', 'bombsNumberRange', 'areaSquare', 'flyDelayRange'),
-                        artefacts.AttackArtilleryFortEquipment: ('maxDamage', 'areaRadius', 'duration', 'commonDelay'),
-                        artefacts.FortConsumableInspire: ('crewRolesFactor', 'commonAreaRadius', 'inactivationDelay', 'duration'),
-                        artefacts.ConsumableInspire: ('crewRolesFactor', 'commonAreaRadius', 'inactivationDelay', 'duration')},
- ITEM_TYPES.shell: ('caliber',
-                    'avgDamage',
-                    'avgMutableDamage',
-                    AVG_DAMAGE_PER_SECOND,
-                    'avgPiercingPower',
-                    'shotSpeed',
-                    'explosionRadius',
-                    'stunDurationList'),
- ITEM_TYPES.optionalDevice: ('weight',),
- ITEM_TYPES.vehicleGun: ('caliber',
-                         'avgDamageList',
-                         'maxAvgDamageList',
-                         'minAvgDamageList',
-                         CONTINUOUS_DAMAGE_PER_SECOND,
-                         'avgPiercingPower',
-                         'shellsCount',
-                         'reloadTimeSecs',
-                         'shellReloadingTime',
-                         'reloadMagazineTime',
-                         AUTO_RELOAD_PROP_NAME,
-                         RELOAD_TIME_PROP_NAME,
-                         SHELL_LOADING_TIME_PROP_NAME,
-                         'rateTime',
-                         'chargeTime',
-                         TWIN_GUN_SWITCH_FIRE_MODE_TIME,
-                         CONTINUOUS_SHOTS_PER_MINUTE,
-                         'stunMinDurationList',
-                         'stunMaxDurationList',
-                         DISPERSION_RADIUS,
-                         DUAL_ACCURACY_COOLING_DELAY,
-                         'maxShotDistance',
-                         'aimingTime',
-                         'weight')}
+ITEMS_PARAMS_LIST = {ITEM_TYPES.vehicleRadio: ('radioDistance', 'weight'), 
+   ITEM_TYPES.vehicleChassis: (
+                             'rotationSpeed', 'weight', MAX_STEERING_LOCK_ANGLE, CHASSIS_REPAIR_TIME), 
+   ITEM_TYPES.vehicleEngine: (
+                            'enginePower', TURBOSHAFT_ENGINE_POWER, ROCKET_ACCELERATION_ENGINE_POWER, 'fireStartingChance', 'weight'), 
+   ITEM_TYPES.vehicleTurret: ('armor', 'rotationSpeed', 'circularVisionRadius', 'weight'), 
+   ITEM_TYPES.vehicle: VEHICLE_PARAMS, 
+   ITEM_TYPES.equipment: {artefacts.RageArtillery: ('damage', 'piercingPower', 'caliber', 'shotsNumberRange', 'areaRadius', 'artDelayRange'), 
+                          artefacts.RageBomber: ('bombDamage', 'piercingPower', 'bombsNumberRange', 'areaSquare', 'flyDelayRange'), 
+                          artefacts.AttackArtilleryFortEquipment: ('maxDamage', 'areaRadius', 'duration', 'commonDelay'), 
+                          artefacts.FortConsumableInspire: ('crewRolesFactor', 'commonAreaRadius', 'inactivationDelay', 'duration'), 
+                          artefacts.ConsumableInspire: ('crewRolesFactor', 'commonAreaRadius', 'inactivationDelay', 'duration')}, 
+   ITEM_TYPES.shell: (
+                    'caliber', 'avgDamage', 'avgMutableDamage', AVG_DAMAGE_PER_SECOND, 'avgPiercingPower', 'shotSpeed',
+                    'explosionRadius', 'stunDurationList', 'normalizationAngle', 'ricochetAngle', 'penetrationLoss',
+                    'screensArmorMultiplier'), 
+   ITEM_TYPES.optionalDevice: ('weight', ), 
+   ITEM_TYPES.vehicleGun: (
+                         'caliber', 'avgDamageList', 'maxAvgDamageList', 'minAvgDamageList', CONTINUOUS_DAMAGE_PER_SECOND,
+                         'avgPiercingPower', 'shellsCount', 'reloadTimeSecs', 'shellReloadingTime', 'reloadMagazineTime',
+                         AUTO_RELOAD_PROP_NAME, RELOAD_TIME_PROP_NAME, SHELL_LOADING_TIME_PROP_NAME, 'rateTime', 'chargeTime',
+                         TWIN_GUN_SWITCH_FIRE_MODE_TIME, CONTINUOUS_SHOTS_PER_MINUTE, 'stunMinDurationList', 'stunMaxDurationList',
+                         DISPERSION_RADIUS, DUAL_ACCURACY_COOLING_DELAY, 'maxShotDistance', 'aimingTime', 'weight')}
 FORMAT_NAME_C_S_VALUE_S_UNITS = '{paramName} {paramValue} {paramUnits}'
 _COUNT_OF_AUTO_RELOAD_SLOTS_TIMES_TO_SHOW_IN_INFO = 5
 _EQUAL_TO_ZERO_LITERAL = '~0'
@@ -283,7 +272,9 @@ def getMeasureParamName(vehicleDescr, paramName):
 def getMeasureUnitsForParameter(vehicleDescr, paramName):
     measureParamName = getMeasureParamName(vehicleDescr, paramName)
     measureUnitLoc = MEASURE_UNITS.get(measureParamName, '')
-    return makeString(measureUnitLoc) if isValidKey(measureUnitLoc) else ''
+    if isValidKey(measureUnitLoc):
+        return makeString(measureUnitLoc)
+    return ''
 
 
 MULTIPLE_TITLES_PARAMS = {CHASSIS_REPAIR_TIME: ChangeCondition(needUseYohChassisRepairTime, CHASSIS_REPAIR_TIME_YOH)}
@@ -340,7 +331,7 @@ def formatModuleParamName(paramName, vDescr=None):
 
 def formatNameColonValue(nameStr, valueStr):
     builder = text_styles.builder(delimiter=backport.text(_NBSP))
-    builder.addStyledText(text_styles.main, '{}{}'.format(makeString(nameStr), _COLON))
+    builder.addStyledText(text_styles.main, ('{}{}').format(makeString(nameStr), _COLON))
     builder.addStyledText(text_styles.expText, makeString(valueStr))
     return builder.render()
 
@@ -349,7 +340,7 @@ def formatParamNameColonValueUnits(paramName, paramValue):
     builder = text_styles.builder(delimiter=backport.text(_NBSP))
     resource = R.strings.menu.moduleInfo.params
     paramMsgId = backport.msgid(resource.dyn(paramName)()) if resource.dyn(paramName) else None
-    builder.addStyledText(text_styles.main, '{}{}'.format(makeString(paramMsgId), _COLON))
+    builder.addStyledText(text_styles.main, ('{}{}').format(makeString(paramMsgId), _COLON))
     builder.addStyledText(text_styles.expText, paramValue)
     builder.addStyledText(text_styles.standard, MEASURE_UNITS_NO_BRACKETS.get(paramName, ''))
     return builder.render()
@@ -376,15 +367,10 @@ _DASH = '-'
 _SLASH = '/'
 _COLON = ':'
 _niceFormat = {'rounder': backport.getNiceNumberFormat}
-_niceRangeFormat = {'rounder': backport.getNiceNumberFormat,
- 'separator': _DASH}
-_listFormat = {'rounder': lambda v: backport.getIntegralFormat(int(v)),
- 'separator': _SLASH}
-_niceListFormat = {'rounder': backport.getNiceNumberFormat,
- 'separator': _SLASH}
-_niceListFormatWithoutNone = {'rounder': backport.getNiceNumberFormat,
- 'separator': _SLASH,
- 'skipNone': True}
+_niceRangeFormat = {'rounder': backport.getNiceNumberFormat, 'separator': _DASH}
+_listFormat = {'rounder': lambda v: backport.getIntegralFormat(int(v)), 'separator': _SLASH}
+_niceListFormat = {'rounder': backport.getNiceNumberFormat, 'separator': _SLASH}
+_niceListFormatWithoutNone = {'rounder': backport.getNiceNumberFormat, 'separator': _SLASH, 'skipNone': True}
 _integralFormat = {'rounder': backport.getIntegralFormat}
 _percentFormat = {'rounder': lambda v: '%d%%' % v}
 _plusPercentFormat = {'rounder': lambda v: '+%d%%' % v}
@@ -393,37 +379,41 @@ def _autoReloadPreprocessor(reloadTimes, rowStates):
     times = []
     states = []
     if not hasattr(reloadTimes, '__iter__'):
-        return (times, _SLASH, states if states else None)
-    else:
-        for idx, slotTime in enumerate(reloadTimes):
-            if isinstance(slotTime, (float, int)) or slotTime is None:
-                times.append(slotTime)
+        return (
+         times, _SLASH, states if states else None)
+    for idx, slotTime in enumerate(reloadTimes):
+        if isinstance(slotTime, (float, int)) or slotTime is None:
+            times.append(slotTime)
+            if rowStates:
+                states.append(rowStates[idx])
+            continue
+        if isinstance(slotTime, tuple):
+            minSlotTime, maxSlotTime = slotTime
+            if minSlotTime == maxSlotTime:
+                times.append(minSlotTime)
                 if rowStates:
-                    states.append(rowStates[idx])
-                continue
-            if isinstance(slotTime, tuple):
-                minSlotTime, maxSlotTime = slotTime
-                if minSlotTime == maxSlotTime:
-                    times.append(minSlotTime)
-                    if rowStates:
-                        states.append(rowStates[idx][0])
-                else:
-                    LOG_ERROR('Different auto-reload times for same gun and slot')
-                    return
+                    states.append(rowStates[idx][0])
+            else:
+                LOG_ERROR('Different auto-reload times for same gun and slot')
+                return
 
-        if len(times) > _COUNT_OF_AUTO_RELOAD_SLOTS_TIMES_TO_SHOW_IN_INFO:
-            if states:
-                minTime, maxTime = min(times), max(times)
-                minState, maxState = (None, None)
-                for idx, time in enumerate(times):
-                    if time == minTime:
-                        minState = states[idx]
-                    if time == maxTime:
-                        maxState = states[idx]
+    if len(times) > _COUNT_OF_AUTO_RELOAD_SLOTS_TIMES_TO_SHOW_IN_INFO:
+        if states:
+            minTime, maxTime = min(times), max(times)
+            minState, maxState = (None, None)
+            for idx, time in enumerate(times):
+                if time == minTime:
+                    minState = states[idx]
+                if time == maxTime:
+                    maxState = states[idx]
 
-                return ((min(times), max(times)), _DASH, (minState, maxState))
-            return ((min(times), max(times)), _DASH, None)
-        return (times, _SLASH, states if states else None)
+            return (
+             (
+              min(times), max(times)), _DASH, (minState, maxState))
+        return ((min(times), max(times)), _DASH, None)
+    else:
+        return (
+         times, _SLASH, states if states else None)
 
 
 def clipFireRatePreprocessor(values, states):
@@ -443,126 +433,129 @@ def _getRoundReload(value):
     return backport.getNiceNumberFormat(round(value, 1))
 
 
-FORMAT_SETTINGS = {'relativePower': _integralFormat,
- 'damage': _niceRangeFormat,
- 'maxMutableDamage': _niceRangeFormat,
- 'minMutableDamage': _niceRangeFormat,
- 'piercingPower': _niceRangeFormat,
- 'maxPiercingPower': _niceRangeFormat,
- 'minPiercingPower': _niceRangeFormat,
- RELOAD_TIME_PROP_NAME: _niceRangeFormat,
- TEMPERATURE_RELOAD_TIME: _niceFormat,
- CONTINUOUS_SHOTS_PER_MINUTE: _niceRangeFormat,
- 'reloadTimeSecs': _niceListFormat,
- 'turretRotationSpeed': _niceListFormat,
- 'turretYawLimits': _niceListFormat,
- 'gunYawLimits': _niceListFormat,
- 'pitchLimits': _niceListFormat,
- 'clipFireRate': _niceListFormat,
- AUTO_SHOOT_CLIP_FIRE_RATE: _niceListFormat,
- BURST_FIRE_RATE: _niceListFormat,
- BURST_TIME_INTERVAL: _niceFormat,
- BURST_COUNT: _integralFormat,
- BURST_SIZE: _integralFormat,
- 'turboshaftBurstFireRate': _niceListFormat,
- 'aimingTime': _niceListFormat,
- 'avgDamagePerMinute': _niceFormat,
- TEMPERATURE_AVG_DAMAGE_PER_MINUTE: _niceFormat,
- 'relativeArmor': _integralFormat,
- 'avgDamage': _niceFormat,
- 'avgMutableDamage': _niceRangeFormat,
- AVG_DAMAGE_PER_SECOND: _niceFormat,
- CONTINUOUS_DAMAGE_PER_SECOND: _niceRangeFormat,
- 'maxHealth': _integralFormat,
- 'hullArmor': _listFormat,
- 'turretArmor': _listFormat,
- 'relativeMobility': _integralFormat,
- 'vehicleWeight': _niceFormat,
- 'weight': _niceRangeFormat,
- 'enginePower': _integralFormat,
- TURBOSHAFT_ENGINE_POWER: _integralFormat,
- ROCKET_ACCELERATION_ENGINE_POWER: _integralFormat,
- 'enginePowerPerTon': _niceListFormat,
- 'speedLimits': _niceListFormat,
- 'chassisRotationSpeed': _niceFormat,
- 'relativeVisibility': _integralFormat,
- 'relativeCamouflage': _integralFormat,
- 'circularVisionRadius': _niceListFormat,
- 'radioDistance': _niceFormat,
- 'rotationSpeed': _niceFormat,
- 'fireStartingChance': _percentFormat,
- 'armor': _listFormat,
- 'caliber': _niceFormat,
- 'shotsNumberRange': _niceFormat,
- 'areaRadius': _niceFormat,
- 'artDelayRange': _niceFormat,
- 'bombDamage': _niceRangeFormat,
- 'bombsNumberRange': _niceFormat,
- 'areaSquare': _niceFormat,
- 'flyDelayRange': _niceFormat,
- 'explosionRadius': _niceFormat,
- 'shellsCount': _niceRangeFormat,
- 'shellReloadingTime': _niceRangeFormat,
- 'reloadMagazineTime': _niceRangeFormat,
- SHELL_LOADING_TIME_PROP_NAME: _niceFormat,
- 'avgPiercingPower': _listFormat,
- 'avgDamageList': _listFormat,
- 'maxAvgMutableDamageList': _listFormat,
- 'minAvgMutableDamageList': _listFormat,
- SHOT_DISPERSION_ANGLE: _niceListFormatWithoutNone,
- DISPERSION_RADIUS: _niceListFormatWithoutNone,
- 'invisibilityStillFactor': _niceListFormat,
- 'invisibilityMovingFactor': _niceListFormat,
- TURBOSHAFT_INVISIBILITY_STILL_FACTOR: _niceListFormat,
- TURBOSHAFT_INVISIBILITY_MOVING_FACTOR: _niceListFormat,
- 'switchOnTime': _niceFormat,
- 'switchOffTime': _niceFormat,
- 'switchTime': _niceListFormat,
- TURBOSHAFT_SWITCH_TIME: _niceListFormat,
- 'stunMaxDuration': _niceFormat,
- 'stunMinDuration': _niceFormat,
- 'stunMaxDurationList': _niceListFormat,
- 'stunMinDurationList': _niceListFormat,
- 'stunDurationList': _niceRangeFormat,
- 'cooldownSeconds': _niceFormat,
- AUTO_RELOAD_PROP_NAME: {'preprocessor': _autoReloadPreprocessor,
-                         'rounder': _getRoundReload},
- MAX_STEERING_LOCK_ANGLE: _niceFormat,
- WHEELED_SWITCH_ON_TIME: _niceFormat,
- WHEELED_SWITCH_OFF_TIME: _niceFormat,
- WHEELED_SWITCH_TIME: _niceListFormat,
- WHEELED_SPEED_MODE_SPEED: _niceListFormat,
- DUAL_GUN_CHARGE_TIME: _niceListFormat,
- DUAL_GUN_RATE_TIME: _niceListFormat,
- DUAL_ACCURACY_COOLING_DELAY: _niceFormat,
- 'shotSpeed': _integralFormat,
- 'extraRepairSpeed': _percentFormat,
- TURBOSHAFT_SPEED_MODE_SPEED: _niceListFormat,
- ROCKET_ACCELERATION_SPEED_LIMITS: _niceListFormat,
- ROCKET_ACCELERATION_REUSE_AND_DURATION: _niceListFormat,
- CHASSIS_REPAIR_TIME: _niceListFormat,
- 'commonDelay': _niceFormat,
- 'duration': _niceFormat,
- 'inactivationDelay': _niceFormat,
- 'commonAreaRadius': _niceFormat,
- 'crewRolesFactor': _plusPercentFormat,
- 'maxDamage': _niceFormat,
- 'artNotificationDelayFactor': _niceFormat,
- 'vehicleOwnSpottingTime': _niceFormat,
- 'damagedModulesDetectionTime': _niceFormat,
- 'commanderLampDelay': _niceFormat,
- TWIN_GUN_SWITCH_FIRE_MODE_TIME: _niceListFormat,
- TWIN_GUN_TOP_SPEED: _niceListFormat,
- TWIN_GUN_RELOAD_ONE_GUN_TIME: _niceFormat,
- TWIN_GUN_RELOAD_TWO_GUN_TIME: _niceFormat}
+FORMAT_SETTINGS = {'relativePower': _integralFormat, 
+   'damage': _niceRangeFormat, 
+   'maxMutableDamage': _niceRangeFormat, 
+   'minMutableDamage': _niceRangeFormat, 
+   'piercingPower': _niceRangeFormat, 
+   'maxPiercingPower': _niceRangeFormat, 
+   'minPiercingPower': _niceRangeFormat, 
+   RELOAD_TIME_PROP_NAME: _niceRangeFormat, 
+   TEMPERATURE_RELOAD_TIME: _niceFormat, 
+   CONTINUOUS_SHOTS_PER_MINUTE: _niceRangeFormat, 
+   'reloadTimeSecs': _niceListFormat, 
+   'turretRotationSpeed': _niceListFormat, 
+   'turretYawLimits': _niceListFormat, 
+   'gunYawLimits': _niceListFormat, 
+   'pitchLimits': _niceListFormat, 
+   'clipFireRate': _niceListFormat, 
+   AUTO_SHOOT_CLIP_FIRE_RATE: _niceListFormat, 
+   BURST_FIRE_RATE: _niceListFormat, 
+   BURST_TIME_INTERVAL: _niceFormat, 
+   BURST_COUNT: _integralFormat, 
+   BURST_SIZE: _integralFormat, 
+   'turboshaftBurstFireRate': _niceListFormat, 
+   'aimingTime': _niceListFormat, 
+   'avgDamagePerMinute': _niceFormat, 
+   TEMPERATURE_AVG_DAMAGE_PER_MINUTE: _niceFormat, 
+   'relativeArmor': _integralFormat, 
+   'avgDamage': _niceFormat, 
+   'avgMutableDamage': _niceRangeFormat, 
+   AVG_DAMAGE_PER_SECOND: _niceFormat, 
+   CONTINUOUS_DAMAGE_PER_SECOND: _niceRangeFormat, 
+   'maxHealth': _integralFormat, 
+   'hullArmor': _listFormat, 
+   'turretArmor': _listFormat, 
+   'relativeMobility': _integralFormat, 
+   'vehicleWeight': _niceFormat, 
+   'weight': _niceRangeFormat, 
+   'enginePower': _integralFormat, 
+   TURBOSHAFT_ENGINE_POWER: _integralFormat, 
+   ROCKET_ACCELERATION_ENGINE_POWER: _integralFormat, 
+   'enginePowerPerTon': _niceListFormat, 
+   'speedLimits': _niceListFormat, 
+   'chassisRotationSpeed': _niceFormat, 
+   'relativeVisibility': _integralFormat, 
+   'relativeCamouflage': _integralFormat, 
+   'circularVisionRadius': _niceListFormat, 
+   'radioDistance': _niceFormat, 
+   'rotationSpeed': _niceFormat, 
+   'fireStartingChance': _percentFormat, 
+   'armor': _listFormat, 
+   'caliber': _niceFormat, 
+   'shotsNumberRange': _niceFormat, 
+   'areaRadius': _niceFormat, 
+   'artDelayRange': _niceFormat, 
+   'bombDamage': _niceRangeFormat, 
+   'bombsNumberRange': _niceFormat, 
+   'areaSquare': _niceFormat, 
+   'flyDelayRange': _niceFormat, 
+   'explosionRadius': _niceFormat, 
+   'shellsCount': _niceRangeFormat, 
+   'shellReloadingTime': _niceRangeFormat, 
+   'reloadMagazineTime': _niceRangeFormat, 
+   SHELL_LOADING_TIME_PROP_NAME: _niceFormat, 
+   'avgPiercingPower': _listFormat, 
+   'avgDamageList': _listFormat, 
+   'maxAvgMutableDamageList': _listFormat, 
+   'minAvgMutableDamageList': _listFormat, 
+   SHOT_DISPERSION_ANGLE: _niceListFormatWithoutNone, 
+   DISPERSION_RADIUS: _niceListFormatWithoutNone, 
+   'invisibilityStillFactor': _niceListFormat, 
+   'invisibilityMovingFactor': _niceListFormat, 
+   TURBOSHAFT_INVISIBILITY_STILL_FACTOR: _niceListFormat, 
+   TURBOSHAFT_INVISIBILITY_MOVING_FACTOR: _niceListFormat, 
+   'switchOnTime': _niceFormat, 
+   'switchOffTime': _niceFormat, 
+   'switchTime': _niceListFormat, 
+   TURBOSHAFT_SWITCH_TIME: _niceListFormat, 
+   'stunMaxDuration': _niceFormat, 
+   'stunMinDuration': _niceFormat, 
+   'stunMaxDurationList': _niceListFormat, 
+   'stunMinDurationList': _niceListFormat, 
+   'stunDurationList': _niceRangeFormat, 
+   'cooldownSeconds': _niceFormat, 
+   AUTO_RELOAD_PROP_NAME: {'preprocessor': _autoReloadPreprocessor, 'rounder': _getRoundReload}, MAX_STEERING_LOCK_ANGLE: _niceFormat, 
+   WHEELED_SWITCH_ON_TIME: _niceFormat, 
+   WHEELED_SWITCH_OFF_TIME: _niceFormat, 
+   WHEELED_SWITCH_TIME: _niceListFormat, 
+   WHEELED_SPEED_MODE_SPEED: _niceListFormat, 
+   DUAL_GUN_CHARGE_TIME: _niceListFormat, 
+   DUAL_GUN_RATE_TIME: _niceListFormat, 
+   DUAL_ACCURACY_COOLING_DELAY: _niceFormat, 
+   'shotSpeed': _integralFormat, 
+   'extraRepairSpeed': _percentFormat, 
+   TURBOSHAFT_SPEED_MODE_SPEED: _niceListFormat, 
+   ROCKET_ACCELERATION_SPEED_LIMITS: _niceListFormat, 
+   ROCKET_ACCELERATION_REUSE_AND_DURATION: _niceListFormat, 
+   CHASSIS_REPAIR_TIME: _niceListFormat, 
+   'commonDelay': _niceFormat, 
+   'duration': _niceFormat, 
+   'inactivationDelay': _niceFormat, 
+   'commonAreaRadius': _niceFormat, 
+   'crewRolesFactor': _plusPercentFormat, 
+   'maxDamage': _niceFormat, 
+   'artNotificationDelayFactor': _niceFormat, 
+   'vehicleOwnSpottingTime': _niceFormat, 
+   'damagedModulesDetectionTime': _niceFormat, 
+   'commanderLampDelay': _niceFormat, 
+   TWIN_GUN_SWITCH_FIRE_MODE_TIME: _niceListFormat, 
+   TWIN_GUN_TOP_SPEED: _niceListFormat, 
+   TWIN_GUN_RELOAD_ONE_GUN_TIME: _niceFormat, 
+   TWIN_GUN_RELOAD_TWO_GUN_TIME: _niceFormat, 
+   'piercingHEShellsDistributionUpperBound': _niceFormat, 
+   'suspensionDamageReduction': _percentFormat, 
+   'hpRecover': _percentFormat}
 
 def _deltaWrapper(fn):
 
     def wrapped(paramValue):
         formattedValue = fn(paramValue)
-        if formattedValue == '0':
+        if formattedValue == '0' or formattedValue == '-0':
             return _EQUAL_TO_ZERO_LITERAL
-        return '+%s' % formattedValue if isinstance(paramValue, (int, float)) and paramValue > 0 else formattedValue
+        if isinstance(paramValue, (int, float)) and paramValue > 0:
+            return '+%s' % formattedValue
+        return formattedValue
 
     return wrapped
 
@@ -579,32 +572,23 @@ def _getDeltaSettings():
 
 
 DELTA_PARAMS_SETTING = _getDeltaSettings()
-SMART_ROUND_PARAMS = {'damage',
- 'piercingPower',
- 'bombDamage',
- 'shellsCount',
- 'shellReloadingTime',
- 'reloadMagazineTime',
- RELOAD_TIME_PROP_NAME,
- DISPERSION_RADIUS,
- 'aimingTime',
- 'weight',
- DUAL_GUN_RATE_TIME,
- DUAL_GUN_CHARGE_TIME,
- 'crewRolesFactor',
- CONTINUOUS_SHOTS_PER_MINUTE,
- CONTINUOUS_DAMAGE_PER_SECOND}
-_STATES_INDEX_IN_COLOR_MAP = {PARAM_STATE.WORSE: 0,
- PARAM_STATE.NORMAL: 1,
- PARAM_STATE.BETTER: 2,
- PARAM_STATE.SITUATIONAL: 1}
+SMART_ROUND_PARAMS = {
+ 'damage', 'piercingPower', 'bombDamage', 'shellsCount', 'shellReloadingTime', 'reloadMagazineTime',
+ RELOAD_TIME_PROP_NAME, DISPERSION_RADIUS, 'aimingTime', 'weight', DUAL_GUN_RATE_TIME, DUAL_GUN_CHARGE_TIME,
+ 'crewRolesFactor', CONTINUOUS_SHOTS_PER_MINUTE, CONTINUOUS_DAMAGE_PER_SECOND}
+_STATES_INDEX_IN_COLOR_MAP = {PARAM_STATE.WORSE: 0, 
+   PARAM_STATE.NORMAL: 1, 
+   PARAM_STATE.BETTER: 2, 
+   PARAM_STATE.SITUATIONAL: 2}
 
 def colorize(paramStr, state, colorScheme):
     if isinstance(state, (tuple, list)):
         stateType, _ = state
     else:
         stateType = state
-    return paramStr if stateType == PARAM_STATE.NOT_APPLICABLE else colorScheme[_STATES_INDEX_IN_COLOR_MAP[stateType]](paramStr)
+    if stateType == PARAM_STATE.NOT_APPLICABLE:
+        return paramStr
+    return colorScheme[_STATES_INDEX_IN_COLOR_MAP[stateType]](paramStr)
 
 
 def colorizedFormatParameter(parameter, colorScheme):
@@ -665,28 +649,34 @@ def formatParameter(parameterName, paramValue, parameterState=None, colorScheme=
         separator = None
     if values is None:
         return
-    elif isinstance(values, (tuple, list)):
-        if parameterState is None:
-            parameterState = [None] * len(values)
-        if doSmartRound and len(set(values)) == 1:
-            if values[0] > 0:
-                return _applyFormat(values[0], parameterState[0], settings, doSmartRound, colorScheme)
-            return
-        separator = separator or settings.get('separator', '')
-        skipNone = settings.get('skipNone', False)
-        if skipNone:
-            params = [ (val, state) for val, state in zip(values, parameterState) if val is not None ]
-        else:
-            params = zip(values, parameterState)
-        paramsList = [ _applyFormat(val, state, settings, doSmartRound, colorScheme) for val, state in params ]
-        return separator.join(paramsList)
     else:
-        return None if not showZeroDiff and values == 0 and not isValidEmptyValue(parameterName, paramValue) else _applyFormat(values, parameterState, settings, doSmartRound, colorScheme)
+        if isinstance(values, (tuple, list)):
+            if parameterState is None:
+                parameterState = [
+                 None] * len(values)
+            if doSmartRound and len(set(values)) == 1:
+                if values[0] > 0:
+                    return _applyFormat(values[0], parameterState[0], settings, doSmartRound, colorScheme)
+                return
+            separator = separator or settings.get('separator', '')
+            skipNone = settings.get('skipNone', False)
+            if skipNone:
+                params = [ (val, state) for val, state in zip(values, parameterState) if val is not None ]
+            else:
+                params = zip(values, parameterState)
+            paramsList = [ _applyFormat(val, state, settings, doSmartRound, colorScheme) for val, state in params ]
+            return separator.join(paramsList)
+        if not showZeroDiff and values == 0 and not isValidEmptyValue(parameterName, paramValue):
+            return
+        return _applyFormat(values, parameterState, settings, doSmartRound, colorScheme)
 
 
 def formatParameterDelta(pInfo, deltaScheme=None, formatSettings=None, diffReady=None):
     diff = diffReady if diffReady is not None else pInfo.getParamDiff()
-    return formatParameter(pInfo.name, diff, pInfo.state, deltaScheme or BASE_SCHEME, formatSettings or DELTA_PARAMS_SETTING, allowSmartRound=False, showZeroDiff=True) if diff is not None else None
+    if diff is not None:
+        return formatParameter(pInfo.name, diff, pInfo.state, deltaScheme or BASE_SCHEME, formatSettings or DELTA_PARAMS_SETTING, allowSmartRound=False, showZeroDiff=True)
+    else:
+        return
 
 
 def getFormattedParamsList(descriptor, parameters, excludeRelative=False):
@@ -746,11 +736,13 @@ def getPenaltyIcon(penaltyId):
 
 
 def packSituationalIcon(text, icon):
-    return '<nobr>'.join((text, icon))
+    return ('<nobr>').join((text, icon))
 
 
 def getGroupPenaltyIcon(parameter, comparator):
-    return RES_ICONS.MAPS_ICONS_VEHPARAMS_ICON_DECREASE if hasGroupPenalties(parameter.name, comparator) else ''
+    if hasGroupPenalties(parameter.name, comparator):
+        return RES_ICONS.MAPS_ICONS_VEHPARAMS_ICON_DECREASE
+    return ''
 
 
 def getAllParametersTitles(hiddenParams=()):
@@ -775,4 +767,6 @@ def getAllParametersTitles(hiddenParams=()):
 def _cutDigits(value):
     if abs(value) > 99:
         return round(value)
-    return round(value, 1) if abs(value) > 9 else round(value, 2)
+    if abs(value) > 9:
+        return round(value, 1)
+    return round(value, 2)

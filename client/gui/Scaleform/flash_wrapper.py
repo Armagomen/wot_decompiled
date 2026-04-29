@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/flash_wrapper.py
-import json
-import logging
-import weakref
+from __future__ import absolute_import
+import json, logging, weakref
 from collections import defaultdict
 import GUI
 from gui.Scaleform import SCALEFORM_SWF_PATH_V3
@@ -39,15 +36,24 @@ class FlashComponentWrapper(object):
 
     @property
     def movie(self):
-        return self.__component.movie if self.__component is not None else None
+        if self.__component is not None:
+            return self.__component.movie
+        else:
+            return
 
     @property
     def moviePath(self):
-        return self.__component.moviePath if self.__component is not None else ''
+        if self.__component is not None:
+            return self.__component.moviePath
+        else:
+            return ''
 
     @property
     def movieUid(self):
-        return self.__component.movie.movieUid if self.__component is not None else 0
+        if self.__component is not None:
+            return self.__component.movie.movieUid
+        else:
+            return 0
 
     def isVisible(self):
         return self.component.visible
@@ -71,7 +77,7 @@ class FlashComponentWrapper(object):
 
     def createComponent(self, swf='', className=_DEFAULT_FLASH_COMPONENT_CLASS, args=None, path=SCALEFORM_SWF_PATH_V3, **kwargs):
         if swf:
-            fileName = '{}/{}'.format(path, swf)
+            fileName = ('{}/{}').format(path, swf)
         else:
             fileName = ''
         if self.__component is None:

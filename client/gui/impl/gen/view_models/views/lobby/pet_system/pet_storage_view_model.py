@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/gen/view_models/views/lobby/pet_system/pet_storage_view_model.py
 from enum import Enum, IntEnum
 from frameworks.wulf import Array, ViewModel
 from gui.impl.gen.view_models.views.lobby.pet_system.pet_bonus_model import PetBonusModel
@@ -20,7 +18,8 @@ class VisibilityStateEnum(IntEnum):
 
 
 class PetStorageViewModel(ViewModel):
-    __slots__ = ('onClose', 'onBonusSelect', 'onPetSelect', 'onCardSelect', 'onInfoPageOpen', 'onSaveVisibility', 'onSaveName', 'onCloseNameSelection')
+    __slots__ = ('onClose', 'onBonusSelect', 'onPetSelect', 'onCardSelect', 'onInfoPageOpen',
+                 'onSaveVisibility', 'onSaveName', 'onCloseNameSelection')
 
     def __init__(self, properties=18, commands=8):
         super(PetStorageViewModel, self).__init__(properties=properties, commands=commands)

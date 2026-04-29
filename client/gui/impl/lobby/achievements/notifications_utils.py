@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/achievements/notifications_utils.py
-import logging
-import weakref
+import logging, weakref
 from abc import ABCMeta, abstractmethod
 from constants import AchievementsLayoutStates
 from achievements20.WTRStageChecker import WTRStageChecker
@@ -19,7 +16,8 @@ class FLAG_STATUS(object):
 
 
 def buildRules(ctrl):
-    initialRules = [_NotificationNewSummaryPage(ctrl),
+    initialRules = [
+     _NotificationNewSummaryPage(ctrl),
      _NotificationAchievementEditingEnabled(ctrl),
      _NotificationNewMedal(ctrl),
      _NotificationChangeRank(ctrl),

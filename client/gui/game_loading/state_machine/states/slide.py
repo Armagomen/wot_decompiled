@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_loading/state_machine/states/slide.py
-import typing
-import game_loading_bindings
+import typing, game_loading_bindings
 from frameworks.state_machine import StateFlags
 from gui.game_loading import loggers
 from gui.game_loading.resources.consts import InfoStyles
@@ -23,15 +20,15 @@ def _showImage(image, settings):
     if not game_loading_bindings.isViewOpened():
         _logger.debug('Opening GF view.')
         game_loading_bindings.createLoadingView()
-    data = {'backgroundPath': imagePath,
-     'text': image.localizationText or '',
-     'description': image.descriptionText or '',
-     'contentState': settings.contentState,
-     'transitionTime': image.transition,
-     'ageRatingPath': settings.ageRatingPath,
-     'info': settings.info,
-     'infoStyle': InfoStyles.DEFAULT.value,
-     'showSmallLogo': settings.showSmallLogo}
+    data = {'backgroundPath': imagePath, 
+       'text': image.localizationText or '', 
+       'description': image.descriptionText or '', 
+       'contentState': settings.contentState, 
+       'transitionTime': image.transition, 
+       'ageRatingPath': settings.ageRatingPath, 
+       'info': settings.info, 
+       'infoStyle': InfoStyles.DEFAULT.value, 
+       'showSmallLogo': settings.showSmallLogo}
     game_loading_bindings.setViewData(data)
     _logger.debug('Image [%s] shown.', image)
 
@@ -52,7 +49,7 @@ class StaticSlideState(BaseState):
 
     @property
     def timeLeft(self):
-        pass
+        return 0.0
 
     def setImage(self, image):
         self._image = image
@@ -69,7 +66,8 @@ class StaticSlideState(BaseState):
 
 
 class SlideState(BaseViewResourcesTickingState):
-    __slots__ = ('_firstImageToShow', '_firstShownImage', '_lastShownImage', '_imageViewSettings', '_startFromFirstShownImage')
+    __slots__ = ('_firstImageToShow', '_firstShownImage', '_lastShownImage', '_imageViewSettings',
+                 '_startFromFirstShownImage')
 
     def __init__(self, stateID, images, imageViewSettings, flags=StateFlags.UNDEFINED, tickingMode=TickingMode.MANUAL, onCompleteEvent=None, startFromFirstShownImage=False):
         super(SlideState, self).__init__(stateID=stateID, resources=images, flags=flags, tickingMode=tickingMode, minDurationEventTime=imageViewSettings.minimalDuration, onCompleteEvent=onCompleteEvent)

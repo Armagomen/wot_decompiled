@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/battle_results/missions_progress/weekly_missions_progress.py
 from gui.battle_results.pbs_helpers.common import getBattleResults
 from gui.battle_results.progress.progress_helpers import getReceivedTokensInfo
 from gui.impl.backport import BackportTooltipWindow, TooltipData
@@ -84,7 +82,9 @@ class WeeklyMissionsProgressPresenter(ViewComponent[WeeklyQuestsProgressModel], 
         return
 
     def _getEvents(self):
-        return ((self.viewModel.onNavigate, self.__onNavigate),)
+        return (
+         (
+          self.viewModel.onNavigate, self.__onNavigate),)
 
     def _onLoading(self, *args, **kwargs):
         super(WeeklyMissionsProgressPresenter, self)._onLoading(*args, **kwargs)
@@ -102,7 +102,7 @@ class WeeklyMissionsProgressPresenter(ViewComponent[WeeklyQuestsProgressModel], 
 
     def _updateModel(self):
         questTokensConvertion, questTokensCount = getReceivedTokensInfo(self.__arenaUniqueID)
-        with self.viewModel.transaction() as vm:
+        with self.viewModel.transaction() as (vm):
             quests = vm.getWeeklyQuests()
             quests.clear()
             for event, pCur, pPrev, reset, complete in self.__progress:

@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/prb_control/entities/pre_queue/entity.py
-import BigWorld
-import typing
+import BigWorld, typing
 from CurrentVehicle import g_currentVehicle
 from comp7.gui.comp7_constants import FUNCTIONAL_FLAG, PREBATTLE_ACTION_NAME
 from comp7.gui.prb_control.entities.comp7_prb_helpers import Comp7ViewPresenter
@@ -39,18 +36,19 @@ class Comp7EntryPoint(PreQueueEntryPoint):
                 callback(False)
             g_prbCtrlEvents.onPreQueueJoinFailure(PRE_QUEUE_JOIN_ERRORS.DISABLED)
             return
-        elif status in self._getUnavailableStates():
-            if callback is not None:
-                callback(False)
-            g_prbCtrlEvents.onPreQueueJoinFailure(PRE_QUEUE_JOIN_ERRORS.NOT_AVAILABLE)
-            return
         else:
+            if status in self._getUnavailableStates():
+                if callback is not None:
+                    callback(False)
+                g_prbCtrlEvents.onPreQueueJoinFailure(PRE_QUEUE_JOIN_ERRORS.NOT_AVAILABLE)
+                return
             super(Comp7EntryPoint, self).select(ctx, callback)
             return
 
     @staticmethod
     def _getUnavailableStates():
-        return (PrimeTimeStatus.FROZEN,)
+        return (
+         PrimeTimeStatus.FROZEN,)
 
 
 class Comp7Entity(PreQueueEntity):
@@ -87,7 +85,9 @@ class Comp7Entity(PreQueueEntity):
 
     def doSelectAction(self, action):
         name = action.actionName
-        return SelectResult(True) if name in (PREBATTLE_ACTION_NAME.COMP7,) else super(Comp7Entity, self).doSelectAction(action)
+        if name in (PREBATTLE_ACTION_NAME.COMP7,):
+            return SelectResult(True)
+        return super(Comp7Entity, self).doSelectAction(action)
 
     def getPermissions(self, *_):
         return Comp7Permissions(self.isInQueue())

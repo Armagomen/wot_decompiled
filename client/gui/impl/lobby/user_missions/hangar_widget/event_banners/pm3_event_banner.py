@@ -1,10 +1,8 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/user_missions/hangar_widget/event_banners/pm3_event_banner.py
 from account_helpers.settings_core.settings_constants import PersonalMission3
 from gui.impl.gen import R
 from gui.impl import backport
-from gui.impl.gen.view_models.views.lobby.missions.widget.pm3_banner_tooltip_view_model import BannerTypeEnum
 from gui.impl.gen.view_models.views.lobby.user_missions.constants.event_banner_state import EventBannerState
+from gui.impl.gen.view_models.views.lobby.user_missions.tooltips.pm3_banner_tooltip_view_model import BannerTypeEnum
 from gui.impl.lobby.user_missions.hangar_widget.event_banners.base_event_banner import BaseEventBanner
 from gui.impl.lobby.user_missions.tooltips.pm3_banner_tooltip import PM3BannerTooltipView
 from gui.shared.event_dispatcher import showPersonalMissionMainWindow, showPersonalMissionCampaignSelectorWindow
@@ -15,7 +13,9 @@ class PM3BaseEventBanner(BaseEventBanner):
 
     @property
     def playAppearAnim(self):
-        return True if not isBannerAnimationShown(PersonalMission3.PM_BANNER_ANIMATION_KEY) else False
+        if not isBannerAnimationShown(PersonalMission3.PM_BANNER_ANIMATION_KEY):
+            return True
+        return False
 
     def onAppearAnimationPlayed(self):
         markBannerAnimationShown(PersonalMission3.PM_BANNER_ANIMATION_KEY)
@@ -34,7 +34,9 @@ class PM3EventBannerTeaser(PM3BaseEventBanner):
 
     @property
     def borderColor(self):
-        return '' if isIntroShown(IntroKeys.MAIN_INTRO_VIEW.value) else '#00FFAE'
+        if isIntroShown(IntroKeys.MAIN_INTRO_VIEW.value):
+            return ''
+        return '#00FFAE'
 
     def createToolTipContent(self, event):
         return PM3BannerTooltipView(bannerType=BannerTypeEnum.PM3ENTRYPOINTTEASER)

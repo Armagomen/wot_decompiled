@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_control/controllers/vehicles_tracking/tracking_ctrl.py
 from __future__ import absolute_import
-import weakref
-import typing
+import weakref, typing
 from future.utils import viewvalues, viewitems
 from constants import UNKNOWN_VEHICLE_ID
 from gui.battle_control.battle_constants import BATTLE_CTRL_ID
@@ -56,7 +53,7 @@ class _VehicleTrackers(_TrackersCollection, IVehicleTrackers):
         self.__currentVehicleID = UNKNOWN_VEHICLE_ID
 
     def __repr__(self):
-        return 'VehicleTrackers:\n{}'.format('\n'.join(('{}: {}'.format(k, v) for k, v in sorted(viewitems(self._trackers), key=lambda item: item[0]))))
+        return ('VehicleTrackers:\n{}').format(('\n').join(('{}: {}').format(k, v) for k, v in sorted(viewitems(self._trackers), key=lambda item: item[0])))
 
     def destroy(self):
         self.__currentVehicleID = UNKNOWN_VEHICLE_ID
@@ -95,7 +92,7 @@ class _VehicleMechanicTrackers(_TrackersCollection, IVehicleMechanicTrackers):
         self.__vehicleTrackers = vehicleTrackers
 
     def __repr__(self):
-        return 'VehicleMechanicTrackers:\n{}'.format('\n'.join(('{}: {}'.format(k[0], v) for k, v in sorted(viewitems(self._trackers), key=lambda item: item[0][0]))))
+        return ('VehicleMechanicTrackers:\n{}').format(('\n').join(('{}: {}').format(k[0], v) for k, v in sorted(viewitems(self._trackers), key=lambda item: item[0][0])))
 
     def destroy(self):
         self.__vehicleTrackers = None
@@ -135,7 +132,7 @@ class VehiclesTrackingController(IVehiclesTrackingController):
         self.__vehicleMechanicTrackers = _VehicleMechanicTrackers(self.__vehicleTrackers)
 
     def __repr__(self):
-        return 'VehiclesTrackingController:\nEntities - {}\nComponents - {}'.format(self.vehicleTrackers, self.vehicleMechanicTrackers)
+        return ('VehiclesTrackingController:\nEntities - {}\nComponents - {}').format(self.vehicleTrackers, self.vehicleMechanicTrackers)
 
     @property
     def vehicleTrackers(self):

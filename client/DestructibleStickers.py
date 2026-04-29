@@ -1,12 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/DestructibleStickers.py
-import logging
-import typing
-import BigWorld
-import CGF
-import GpuDecals
-import math_utils
-import VehicleStickers
+from __future__ import absolute_import
+import logging, typing, BigWorld, CGF, GpuDecals, math_utils, VehicleStickers
 from VehicleEffects import DamageFromShotDecoder
 from cgf_modules import game_events
 if typing.TYPE_CHECKING:
@@ -85,7 +78,9 @@ class DestructibleStickers(object):
             return
         else:
             sticker = self.__damageStickers.get(code)
-            return None if sticker is not None and sticker.handle else self.__stickerModel.addDamageSticker(stickerID, data.segStart, data.segEnd)
+            if sticker is not None and sticker.handle:
+                return
+            return self.__stickerModel.addDamageSticker(stickerID, data.segStart, data.segEnd)
 
     def __delDamageSticker(self, damageSticker):
         if self.__stickerModel is None:

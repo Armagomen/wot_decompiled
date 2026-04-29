@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/locale/BADGE.py
 from debug_utils import LOG_WARNING
 
 class BADGE(object):
@@ -495,7 +493,17 @@ class BADGE(object):
     BADGE_227 = '#badge:badge_227'
     BADGE_227_DESCR = '#badge:badge_227_descr'
     SUFFIX_BADGE_227 = '#badge:suffix/badge_227'
-    BADGE_ENUM = (BADGE_0,
+    BADGE_228 = '#badge:badge_228'
+    BADGE_228_DESCR = '#badge:badge_228_descr'
+    BADGE_231 = '#badge:badge_231'
+    BADGE_231_DESCR = '#badge:badge_231_descr'
+    BADGE_232 = '#badge:badge_232'
+    BADGE_232_DESCR = '#badge:badge_232_descr'
+    BADGE_233 = '#badge:badge_233'
+    BADGE_233_DESCR = '#badge:badge_233_descr'
+    SUFFIX_BADGE_233 = '#badge:suffix/badge_233'
+    BADGE_ENUM = (
+     BADGE_0,
      BADGE_0_DESCR,
      BADGE_1,
      BADGE_1_DESCR,
@@ -953,8 +961,17 @@ class BADGE(object):
      BADGE_226,
      BADGE_226_DESCR,
      BADGE_227,
-     BADGE_227_DESCR)
-    BADGE_ALL_SHORT_ENUM = (BADGE_10_SHORT,
+     BADGE_227_DESCR,
+     BADGE_228,
+     BADGE_228_DESCR,
+     BADGE_231,
+     BADGE_231_DESCR,
+     BADGE_232,
+     BADGE_232_DESCR,
+     BADGE_233,
+     BADGE_233_DESCR)
+    BADGE_ALL_SHORT_ENUM = (
+     BADGE_10_SHORT,
      BADGE_11_SHORT,
      BADGE_12_SHORT,
      BADGE_13_SHORT,
@@ -973,7 +990,8 @@ class BADGE(object):
      BADGE_58_SHORT,
      BADGE_59_SHORT,
      BADGE_94_SHORT)
-    BADGE_ALL_DESCR_ENUM = (BADGE_0_DESCR,
+    BADGE_ALL_DESCR_ENUM = (
+     BADGE_0_DESCR,
      BADGE_1_DESCR,
      BADGE_2_DESCR,
      BADGE_3_DESCR,
@@ -1191,41 +1209,46 @@ class BADGE(object):
      BADGE_224_DESCR,
      BADGE_225_DESCR,
      BADGE_226_DESCR,
-     BADGE_227_DESCR)
-    BADGE_ALL_DESCR_LONG_ENUM = (BADGE_102_DESCR_LONG,)
+     BADGE_227_DESCR,
+     BADGE_228_DESCR,
+     BADGE_231_DESCR,
+     BADGE_232_DESCR,
+     BADGE_233_DESCR)
+    BADGE_ALL_DESCR_LONG_ENUM = (
+     BADGE_102_DESCR_LONG,)
 
     @classmethod
     def badgeName(cls, key0):
-        outcome = '#badge:badge_{}'.format(key0)
+        outcome = ('#badge:badge_{}').format(key0)
         if outcome not in cls.BADGE_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getShortName(cls, key0):
-        outcome = '#badge:badge_{}_short'.format(key0)
+        outcome = ('#badge:badge_{}_short').format(key0)
         if outcome not in cls.BADGE_ALL_SHORT_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def badgeDescriptor(cls, key0):
-        outcome = '#badge:badge_{}_descr'.format(key0)
+        outcome = ('#badge:badge_{}_descr').format(key0)
         if outcome not in cls.BADGE_ALL_DESCR_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def longBadgeDescriptor(cls, key0):
-        outcome = '#badge:badge_{}_descr_long'.format(key0)
+        outcome = ('#badge:badge_{}_descr_long').format(key0)
         if outcome not in cls.BADGE_ALL_DESCR_LONG_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome

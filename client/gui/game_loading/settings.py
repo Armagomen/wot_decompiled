@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_loading/settings.py
 import typing
 from gui.game_loading import loggers
 from gui.game_loading.resources.cdn.consts import SequenceOrders
@@ -179,12 +177,12 @@ class GameLoadingSettings(object):
         if progressSettingsSection is None:
             _logger.error('No progressSettings section.')
             return
-        elif loadingType not in LoadingTypes.values():
-            _logger.error('Wrong loading type %s', loadingType)
-            return
-        loadingTypeSection = progressSettingsSection[loadingType]
-        if loadingTypeSection is None:
-            _logger.error('No loading type %s section.', loadingTypeSection)
-            return
         else:
+            if loadingType not in LoadingTypes.values():
+                _logger.error('Wrong loading type %s', loadingType)
+                return
+            loadingTypeSection = progressSettingsSection[loadingType]
+            if loadingTypeSection is None:
+                _logger.error('No loading type %s section.', loadingTypeSection)
+                return
             return loadingTypeSection

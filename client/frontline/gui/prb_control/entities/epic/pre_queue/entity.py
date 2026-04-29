@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/prb_control/entities/epic/pre_queue/entity.py
 import BigWorld
 from frontline.gui.prb_control.entities.epic.pre_queue.actions_validator import EpicActionsValidator
 from frontline.gui.prb_control.entities.epic.pre_queue.ctx import EpicQueueCtx
@@ -86,7 +84,9 @@ class EpicEntity(PreQueueEntity):
         name = action.actionName
         if name == PREBATTLE_ACTION_NAME.EPIC:
             return SelectResult(True)
-        return SelectResult(True, EpicSquadEntryPoint(accountsToInvite=action.accountsToInvite)) if name == PREBATTLE_ACTION_NAME.SQUAD else super(EpicEntity, self).doSelectAction(action)
+        if name == PREBATTLE_ACTION_NAME.SQUAD:
+            return SelectResult(True, EpicSquadEntryPoint(accountsToInvite=action.accountsToInvite))
+        return super(EpicEntity, self).doSelectAction(action)
 
     def getPermissions(self, pID=None, **kwargs):
         return EpicPermissions(self.isInQueue())

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/locale/VEHICLE_PREVIEW.py
 from debug_utils import LOG_WARNING
 
 class VEHICLE_PREVIEW(object):
@@ -9,7 +7,6 @@ class VEHICLE_PREVIEW(object):
     HEADER_BACKBTN_DESCRLABEL_PERSONALAWARDS = '#vehicle_preview:header/backBtn/descrLabel/personalAwards'
     HEADER_BACKBTN_DESCRLABEL_SHOP = '#vehicle_preview:header/backBtn/descrLabel/shop'
     HEADER_BACKBTN_DESCRLABEL_STORAGE = '#vehicle_preview:header/backBtn/descrLabel/storage'
-    HEADER_BACKBTN_DESCRLABEL_ADVENTCALENDAR = '#vehicle_preview:header/backBtn/descrLabel/adventCalendar'
     HEADER_BACKBTN_DESCRLABEL_HANGAR = '#vehicle_preview:header/backBtn/descrLabel/hangar'
     HEADER_BACKBTN_DESCRLABEL_VEHICLECOMPARE = '#vehicle_preview:header/backBtn/descrLabel/vehicleCompare'
     HEADER_BACKBTN_DESCRLABEL_REFERRALPROGRAM = '#vehicle_preview:header/backBtn/descrLabel/referralProgram'
@@ -72,7 +69,6 @@ class VEHICLE_PREVIEW(object):
     BUYINGPANEL_BUYBTN_LABEL_RESTORE = '#vehicle_preview:buyingPanel/buyBtn/label/restore'
     BUYINGPANEL_BUYBTN_LABEL_RESEARCH = '#vehicle_preview:buyingPanel/buyBtn/label/research'
     BUYINGPANEL_BUYBTN_LABEL_OBTAIN = '#vehicle_preview:buyingPanel/buyBtn/label/obtain'
-    BUYINGPANEL_BUYBTN_LABEL_SHOWADVENTCALENDAR = '#vehicle_preview:buyingPanel/buyBtn/label/showAdventCalendar'
     BUYINGPANEL_BUYBTN_LABEL_OFFSPRING = '#vehicle_preview:buyingPanel/buyBtn/label/offspring'
     BUYINGPANEL_NOTRESEARCHEDVEHICLEWARNING = '#vehicle_preview:buyingPanel/notResearchedVehicleWarning'
     BUYINGPANEL_COLLECTIBLE_NOTRESEARCHEDVEHICLESWARNING = '#vehicle_preview:buyingPanel/collectible/notResearchedVehiclesWarning'
@@ -132,11 +128,11 @@ class VEHICLE_PREVIEW(object):
     SHOWCASESTYLEBUYING_ACTIONBTN_TOOLTIP_NOTENOUGHFUNDS = '#vehicle_preview:showcaseStyleBuying/actionBtn/tooltip/notEnoughFunds'
     SHOWCASESTYLEBUYING_ACTIONBTN_TOOLTIP_UNAVAILABLE = '#vehicle_preview:showcaseStyleBuying/actionBtn/tooltip/unavailable'
     SHOWCASESTYLEBUYING_ACTIONBTN_TOOLTIP_SERVICEUNAVAILABLE = '#vehicle_preview:showcaseStyleBuying/actionBtn/tooltip/serviceUnavailable'
-    HEADER_BACKBTN_DESCRLABEL_ENUM = (HEADER_BACKBTN_DESCRLABEL_RESEARCHTREE,
+    HEADER_BACKBTN_DESCRLABEL_ENUM = (
+     HEADER_BACKBTN_DESCRLABEL_RESEARCHTREE,
      HEADER_BACKBTN_DESCRLABEL_PERSONALAWARDS,
      HEADER_BACKBTN_DESCRLABEL_SHOP,
      HEADER_BACKBTN_DESCRLABEL_STORAGE,
-     HEADER_BACKBTN_DESCRLABEL_ADVENTCALENDAR,
      HEADER_BACKBTN_DESCRLABEL_HANGAR,
      HEADER_BACKBTN_DESCRLABEL_VEHICLECOMPARE,
      HEADER_BACKBTN_DESCRLABEL_REFERRALPROGRAM,
@@ -153,32 +149,38 @@ class VEHICLE_PREVIEW(object):
      HEADER_BACKBTN_DESCRLABEL_BATTLEMATTERSMAINREWARD,
      HEADER_BACKBTN_DESCRLABEL_COLLECTIONS,
      HEADER_BACKBTN_DESCRLABEL_CLANSUPPLY)
-    BUYINGPANEL_OFFER_RENT_NAME_ENUM = (BUYINGPANEL_OFFER_RENT_NAME_CYCLE, BUYINGPANEL_OFFER_RENT_NAME_CYCLES, BUYINGPANEL_OFFER_RENT_NAME_SEASON)
-    BUYINGPANEL_OFFER_RENT_LABEL_ENUM = (BUYINGPANEL_OFFER_RENT_LABEL_CYCLE, BUYINGPANEL_OFFER_RENT_LABEL_CYCLES, BUYINGPANEL_OFFER_RENT_LABEL_SEASON)
+    BUYINGPANEL_OFFER_RENT_NAME_ENUM = (
+     BUYINGPANEL_OFFER_RENT_NAME_CYCLE,
+     BUYINGPANEL_OFFER_RENT_NAME_CYCLES,
+     BUYINGPANEL_OFFER_RENT_NAME_SEASON)
+    BUYINGPANEL_OFFER_RENT_LABEL_ENUM = (
+     BUYINGPANEL_OFFER_RENT_LABEL_CYCLE,
+     BUYINGPANEL_OFFER_RENT_LABEL_CYCLES,
+     BUYINGPANEL_OFFER_RENT_LABEL_SEASON)
 
     @classmethod
     def getBackBtnLabel(cls, key):
-        outcome = '#vehicle_preview:header/backBtn/descrLabel/{}'.format(key)
+        outcome = ('#vehicle_preview:header/backBtn/descrLabel/{}').format(key)
         if outcome not in cls.HEADER_BACKBTN_DESCRLABEL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getOfferName(cls, key):
-        outcome = '#vehicle_preview:buyingPanel/offer/rent/name/{}'.format(key)
+        outcome = ('#vehicle_preview:buyingPanel/offer/rent/name/{}').format(key)
         if outcome not in cls.BUYINGPANEL_OFFER_RENT_NAME_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getOfferLabel(cls, key):
-        outcome = '#vehicle_preview:buyingPanel/offer/rent/label/{}'.format(key)
+        outcome = ('#vehicle_preview:buyingPanel/offer/rent/label/{}').format(key)
         if outcome not in cls.BUYINGPANEL_OFFER_RENT_LABEL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome

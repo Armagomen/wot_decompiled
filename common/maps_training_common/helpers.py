@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/maps_training_common/helpers.py
 from collections import defaultdict
 from bonus_readers import SUPPORTED_BONUSES_IDS, SUPPORTED_BONUSES_NAMES
 from constants import VEHICLE_CLASS_INDICES, VEHICLE_CLASSES, MAPS_REWARDS_INDEX
@@ -29,9 +27,11 @@ def packMapsTrainingScenarios(scenarios):
             config = teamConfig.get(vehClass)
             if config is None:
                 continue
-            duration = [config['duration']['initial'], config['duration']['max']]
+            duration = [
+             config['duration']['initial'], config['duration']['max']]
             goals = [ config['goals'][vClass] for vClass in VEHICLE_CLASSES ]
-            packedTeam.append([i, duration, goals])
+            packedTeam.append([
+             i, duration, goals])
 
         out.append([team, packedTeam])
 
@@ -46,8 +46,8 @@ def unpackMapsTrainingScenarios(scenarios):
             vehClass = VEHICLE_CLASSES[vehClassIndex]
             duration = dict(zip(['initial', 'max'], durationConf))
             goals = dict(zip(VEHICLE_CLASSES, goalsConf))
-            out[team][vehClass] = {'duration': duration,
-             'goals': goals}
+            out[team][vehClass] = {'duration': duration, 
+               'goals': goals}
 
     return out
 

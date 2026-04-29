@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/BattleRoyalePersonality.py
 from battle_royale.gui.battle_control.controllers.repository import registerBRBattleRepo
 from battle_royale.gui.Scaleform import registerBRBattlePackages, registerBRLobbyPackages, registerBRTooltipsBuilders, registerCustomSwf, registerBRBattleQueueProvider, registerBRHangarPresetGetter
 from battle_royale.gui.battle_control.controllers.equipment_items import registerBREquipmentsItems
@@ -11,6 +9,7 @@ import gui.customization
 from battle_royale.gui.game_control import registerBRGameControllers
 from gui.prb_control.prb_utils import initHangarGuiConsts
 from battle_royale.gui.game_control.br_season_provider import registerBRSeasonProviderHandler
+from battle_royale import initProgression
 
 def preInit():
     initHangarGuiConsts(hangar_constants, __name__)
@@ -27,6 +26,7 @@ def preInit():
     registerBRSeasonProviderHandler()
     registerBRBattleResultsComposer()
     registerBRHangarPresetGetter()
+    initProgression()
 
 
 def init():

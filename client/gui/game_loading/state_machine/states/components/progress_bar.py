@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_loading/state_machine/states/components/progress_bar.py
 import typing
 from frameworks.state_machine import StateFlags
 import game_loading_bindings
@@ -14,7 +12,8 @@ if typing.TYPE_CHECKING:
 _logger = loggers.getStatesLogger()
 
 class ProgressBarStateComponent(BaseTickingState):
-    __slots__ = ('_ticks', '_progress', '_progressLimit', '_progressMax', '_settings', '_preferences')
+    __slots__ = ('_ticks', '_progress', '_progressLimit', '_progressMax', '_settings',
+                 '_preferences')
 
     def __init__(self, stateID, settings, preferences=None, flags=StateFlags.UNDEFINED, tickingMode=TickingMode.MANUAL, onCompleteEvent=None):
         super(ProgressBarStateComponent, self).__init__(stateID=stateID, flags=flags, tickingMode=tickingMode, onCompleteEvent=onCompleteEvent)
@@ -119,7 +118,10 @@ class MilestoneProgressBarStateComponent(ProgressBarStateComponent):
         self._milestone = newMilestone
 
     def _getMilestoneLimit(self):
-        return self._calcProgress(self._milestone.percent) if self._milestone else None
+        if self._milestone:
+            return self._calcProgress(self._milestone.percent)
+        else:
+            return
 
     def _isLimitReached(self):
         milestoneLimit = self._getMilestoneLimit()

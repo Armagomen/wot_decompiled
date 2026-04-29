@@ -1,10 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/server_events/events_helpers.py
-import re
-import typing
-import operator
-import time
-import BigWorld
+import re, typing, operator, time, BigWorld
 from constants import EVENT_TYPE, EMAIL_CONFIRMATION_QUEST_ID
 from customization_quests_common import deserializeToken, validateToken
 from gui import makeHtmlString
@@ -61,10 +55,11 @@ class EventInfoModel(object):
                 fmt = i18n.makeString('#quests:item/timer/tillFinish/onlyHours')
             else:
                 fmt = i18n.makeString('#quests:item/timer/tillFinish/lessThanHour')
-            fmt %= {'hours': time.strftime('%H', gmtime),
-             'min': time.strftime('%M', gmtime),
-             'days': str(gmtime.tm_mday)}
+            fmt %= {'hours': time.strftime('%H', gmtime), 
+               'min': time.strftime('%M', gmtime), 
+               'days': str(gmtime.tm_mday)}
             return makeHtmlString('html_templates:lobby/quests', 'timerTillFinish', {'time': fmt})
+        return ''
 
     def _getStatus(self, pCur=None):
         return (MISSIONS_STATES.NONE, '')
@@ -121,50 +116,60 @@ class EventInfoModel(object):
         else:
             if self.event.getStartTimeLeft() > 0:
                 i18nKey = '#quests:details/header/activeDuration'
-                args = {'startTime': self._getDateTimeString(self.event.getStartTime()),
-                 'finishTime': self._getDateTimeString(self.event.getFinishTime())}
-            elif self.event.getFinishTimeLeft() <= time_utils.HALF_YEAR:
-                i18nKey = '#quests:details/header/tillDate'
-                args = {'finishTime': self._getDateTimeString(self.event.getFinishTime())}
-            weekDays = self.event.getWeekDays()
-            intervals = self.event.getActiveTimeIntervals()
-            if weekDays or intervals:
-                if i18nKey is None:
-                    i18nKey = '#quests:details/header/schedule'
-                if weekDays:
-                    days = ', '.join([ i18n.makeString('#menu:dateTime/weekDays/full/%d' % idx) for idx in self.event.getWeekDays() ])
-                    i18nKey += 'Days'
-                    args['days'] = days
-                if intervals:
-                    times = []
-                    for low, high in intervals:
-                        times.append('%s - %s' % (backport.getShortTimeFormat(low), backport.getShortTimeFormat(high)))
+                args = {'startTime': self._getDateTimeString(self.event.getStartTime()), 
+                   'finishTime': self._getDateTimeString(self.event.getFinishTime())}
+            else:
+                if self.event.getFinishTimeLeft() <= time_utils.HALF_YEAR:
+                    i18nKey = '#quests:details/header/tillDate'
+                    args = {'finishTime': self._getDateTimeString(self.event.getFinishTime())}
+                weekDays = self.event.getWeekDays()
+                intervals = self.event.getActiveTimeIntervals()
+                if weekDays or intervals:
+                    if i18nKey is None:
+                        i18nKey = '#quests:details/header/schedule'
+                    if weekDays:
+                        days = (', ').join([ i18n.makeString('#menu:dateTime/weekDays/full/%d' % idx) for idx in self.event.getWeekDays()
+                                           ])
+                        i18nKey += 'Days'
+                        args['days'] = days
+                    if intervals:
+                        times = []
+                        for low, high in intervals:
+                            times.append('%s - %s' % (backport.getShortTimeFormat(low),
+                             backport.getShortTimeFormat(high)))
 
-                    i18nKey += 'Times'
-                    times = ', '.join(times)
-                    args['times'] = times
-            return None if i18nKey is None else i18n.makeString(i18nKey, **args)
+                        i18nKey += 'Times'
+                        times = (', ').join(times)
+                        args['times'] = times
+                if i18nKey is None:
+                    return
+            return i18n.makeString(i18nKey, **args)
 
     @classmethod
     def _getDateTimeString(cls, timeValue):
-        return '{0:>s} {1:>s}'.format(backport.getLongDateFormat(timeValue), backport.getShortTimeFormat(timeValue))
+        return ('{0:>s} {1:>s}').format(backport.getLongDateFormat(timeValue), backport.getShortTimeFormat(timeValue))
 
 
 class QuestInfoModel(EventInfoModel):
 
     def _getActiveDateTimeString(self):
         timeLeft = self.event.getFinishTimeLeft()
-        return formatters.formatYellow(QUESTS.DETAILS_HEADER_COMETOENDINMINUTES, minutes=getMinutesRoundByTime(timeLeft)) if timeLeft <= time_utils.THREE_QUARTER_HOUR else super(QuestInfoModel, self)._getActiveDateTimeString()
+        if timeLeft <= time_utils.THREE_QUARTER_HOUR:
+            return formatters.formatYellow(QUESTS.DETAILS_HEADER_COMETOENDINMINUTES, minutes=getMinutesRoundByTime(timeLeft))
+        return super(QuestInfoModel, self)._getActiveDateTimeString()
 
     def getTimerMsg(self, key='comeToEndInMinutes'):
         timeLeft = self.event.getFinishTimeLeft()
-        return makeHtmlString('html_templates:lobby/quests/', key, {'minutes': getMinutesRoundByTime(timeLeft)}) if timeLeft <= time_utils.THREE_QUARTER_HOUR else super(QuestInfoModel, self).getTimerMsg()
+        if timeLeft <= time_utils.THREE_QUARTER_HOUR:
+            return makeHtmlString('html_templates:lobby/quests/', key, {'minutes': getMinutesRoundByTime(timeLeft)})
+        return super(QuestInfoModel, self).getTimerMsg()
 
     def _getDailyResetStatus(self, resetLabelKey, labeFormatter):
         if self.event.bonusCond.isDaily():
             resetHourUTC = self._getDailyProgressResetTimeUTC() / time_utils.ONE_HOUR
             if resetHourUTC >= 0:
                 return labeFormatter(resetLabelKey) % {'time': time.strftime(i18n.makeString('#quests:details/conditions/postBattle/dailyReset/timeFmt'), time_utils.getTimeStructInLocal(time_utils.getTimeTodayForUTC(hour=resetHourUTC)))}
+        return ''
 
     def _getWeeklyResetStatus(self, resetLabelKey, labeFormatter):
         if self.event.bonusCond.isWeekly():
@@ -175,6 +180,7 @@ class QuestInfoModel(EventInfoModel):
                 resetTime = time_utils.getTimeStructInLocal(time_utils.getTimeTodayForUTC(hour=resetHourUTC))
                 resetTime = time.struct_time(resetTime[:6] + (day,) + resetTime[7:])
                 return labeFormatter(resetLabelKey) % {'time': dayStr + time.strftime(i18n.makeString('#quests:details/conditions/postBattle/weeklyReset/timeFmt'), resetTime)}
+        return ''
 
     def _getCompleteDailyStatus(self, completeKey):
         return backport.text(completeKey, time=self._getTillTimeString(time_utils.ONE_DAY - time_utils.getServerRegionalTimeCurrentDay()))
@@ -212,7 +218,8 @@ def getMinutesRoundByTime(timeLeft):
 def missionsSortFunc(q):
     isAvailable, status = q.isAvailable()
     isCompleted = q.isCompleted()
-    return (isAvailable and not isCompleted,
+    return (
+     isAvailable and not isCompleted,
      q.getPriority(),
      status == 'requirement',
      bool(status),
@@ -223,7 +230,9 @@ def missionsSortFunc(q):
 def premMissionsSortFunc(a, b):
 
     def isChild(a, b):
-        return 0 if not b.getParents() else a.getID() in b.getParents().values()[0]
+        if not b.getParents():
+            return 0
+        return a.getID() in b.getParents().values()[0]
 
     return isChild(a, b) - isChild(b, a)
 
@@ -233,15 +242,20 @@ def dailyQuestsSortFunc(q):
 
 
 def hasAnySavedProgresses(savedProgresses):
-    return True if savedProgresses else False
+    if savedProgresses:
+        return True
+    return False
 
 
 def questsSortFunc(q):
 
     def getPriority(event):
-        return -1 if isPremium(event.getGroupID()) else event.getPriority()
+        if isPremium(event.getGroupID()):
+            return -1
+        return event.getPriority()
 
-    return (q.isCompleted(),
+    return (
+     q.isCompleted(),
      getPriority(q),
      getPriority(q) == -1,
      q.getID())
@@ -259,25 +273,26 @@ def getBoosterQuests():
 
 
 def hasAtLeastOneAvailableQuest(quests):
-    return any((quest.isAvailable().isValid for quest in quests))
+    return any(quest.isAvailable().isValid for quest in quests)
 
 
 def hasAtLeastOneCompletedQuest(quests):
-    return any((quest.isCompleted() for quest in quests))
+    return any(quest.isCompleted() for quest in quests)
 
 
 def isAllQuestsCompleted(quests):
-    return all((quest.isCompleted() for quest in quests))
+    return all(quest.isCompleted() for quest in quests)
 
 
 def isSuitableForPM(diff):
     if not diff:
         return (False, True)
-    pmQuestsSet = {'potapovQuests', 'pm2_progress', 'pm3_progress'}
+    pmQuestsSet = {
+     'potapovQuests', 'pm2_progress', 'pm3_progress'}
     tokensSet = {'tokens'}
     excludedSet = {'prevRev', 'rev', 'quests'}
     diffKeys = set(diff.keys())
-    filteredPMTokenQuests = {qID for qID in diff.get('quests', {}).iterkeys() if qID.startswith(PM3_QUEST_PREFIX) and not isPM3Milestone(qID) or re.match(isPMQuestRegExp, qID)}
+    filteredPMTokenQuests = {qID for qID in diff.get('quests', {}).iterkeys() if qID.startswith(PM3_QUEST_PREFIX) and not isPM3Milestone(qID) or re.match(isPMQuestRegExp, qID) if qID.startswith(PM3_QUEST_PREFIX) and not isPM3Milestone(qID) or re.match(isPMQuestRegExp, qID)}
     otherKeys = bool(diffKeys - pmQuestsSet - tokensSet - excludedSet) or bool(set(diff.get('quests', {}).keys()) - filteredPMTokenQuests)
     hasPmQuests = bool(pmQuestsSet & diffKeys) or bool(filteredPMTokenQuests)
     hasPMTokens = False
@@ -285,7 +300,7 @@ def isSuitableForPM(diff):
     if 'tokens' in diff:
         tokens = set(diff['tokens'].keys())
         freeTokens = set(PM_BRANCH_TO_FREE_TOKEN_NAME.values())
-        pmTokens = {token for token in tokens if token.startswith(PT_TOKEN_PREFIX) or token.startswith(FINAL_PT_TOKEN_PREFIX) or isPM3Points(token)}
+        pmTokens = {token for token in tokens if token.startswith(PT_TOKEN_PREFIX) or token.startswith(FINAL_PT_TOKEN_PREFIX) or isPM3Points(token) if token.startswith(PT_TOKEN_PREFIX) or token.startswith(FINAL_PT_TOKEN_PREFIX) or isPM3Points(token)}
         hasPMTokens = bool(pmTokens or freeTokens & tokens)
         hasOtherTokens = bool(tokens - freeTokens - pmTokens)
     return (hasPMTokens or hasPmQuests, hasOtherTokens or otherKeys)
@@ -305,47 +320,69 @@ def isMapsTraining(groupID):
 
 
 def isMapsTrainingQuest(eventID):
-    return eventID.startswith(MAPS_TRAINING_QUEST_PREFIX) if eventID else False
+    if eventID:
+        return eventID.startswith(MAPS_TRAINING_QUEST_PREFIX)
+    return False
 
 
 def isBattleMattersQuestID(questID):
-    return questID.startswith(BATTLE_MATTERS_QUEST_ID) if questID else False
+    if questID:
+        return questID.startswith(BATTLE_MATTERS_QUEST_ID)
+    return False
 
 
 def isPremium(eventID):
-    return eventID.startswith(PREMIUM_GROUP_PREFIX) if eventID else False
+    if eventID:
+        return eventID.startswith(PREMIUM_GROUP_PREFIX)
+    return False
 
 
 def isDailyEpicReward(eventID):
-    return EPIC_QUEST_REWARD_ID in eventID if eventID else False
+    if eventID:
+        return EPIC_QUEST_REWARD_ID in eventID
+    return False
 
 
 def isDailyEpic(eventID):
-    return eventID.startswith(EPIC_BATTLE_GROUPS_ID) if eventID else False
+    if eventID:
+        return eventID.startswith(EPIC_BATTLE_GROUPS_ID)
+    return False
 
 
 def isBattleRoyale(eventID):
-    return eventID.startswith(BATTLE_ROYALE_GROUPS_ID) if eventID else False
+    if eventID:
+        return eventID.startswith(BATTLE_ROYALE_GROUPS_ID)
+    return False
 
 
 def isRankedDaily(eventID):
-    return eventID.startswith(RANKED_DAILY_GROUP_ID) if eventID else False
+    if eventID:
+        return eventID.startswith(RANKED_DAILY_GROUP_ID)
+    return False
 
 
 def isRankedPlatform(eventID):
-    return eventID.startswith(RANKED_PLATFORM_GROUP_ID) if eventID else False
+    if eventID:
+        return eventID.startswith(RANKED_PLATFORM_GROUP_ID)
+    return False
 
 
 def isDailyQuest(eventID):
-    return eventID.startswith(DAILY_QUEST_ID_PREFIX) if eventID else False
+    if eventID:
+        return eventID.startswith(DAILY_QUEST_ID_PREFIX)
+    return False
 
 
 def isWeeklyQuest(eventID):
-    return eventID.startswith(WEEKLY_QUEST_ID_PREFIX) if eventID else False
+    if eventID:
+        return eventID.startswith(WEEKLY_QUEST_ID_PREFIX)
+    return False
 
 
 def isACEmailConfirmationQuest(eventID):
-    return eventID == EMAIL_CONFIRMATION_QUEST_ID if eventID else False
+    if eventID:
+        return eventID == EMAIL_CONFIRMATION_QUEST_ID
+    return False
 
 
 def isPM30MilestoneQuest(eventID):
@@ -401,7 +438,7 @@ def getIdxFromQuestID(questID):
     result = -1
     if parts:
         try:
-            result = int(parts[-1])
+            result = int(parts[(-1)])
         except ValueError:
             result = -1
 
@@ -419,8 +456,7 @@ def getLootboxesFromBonuses(bonuses, itemsCache=None):
                 if 'lootBox' in token.id:
                     lootboxType = boxes[token.id].getType()
                     if lootboxType not in lootboxes:
-                        lootboxes[lootboxType] = {'count': token.count,
-                         'isFree': boxes[token.id].isFree()}
+                        lootboxes[lootboxType] = {'count': token.count, 'isFree': boxes[token.id].isFree()}
                     else:
                         lootboxes[lootboxType]['count'] += token.count
 
@@ -462,7 +498,8 @@ def getTankmanRewardQuests():
                     bonus = q.getTankmanBonus()
                     needToGetTankman = q.needToGetAddReward() and not bonus.isMain or q.needToGetMainReward() and bonus.isMain
                     if needToGetTankman and bonus.tankman is not None:
-                        yield (q, operationName)
+                        yield (
+                         q, operationName)
 
     return
 
@@ -533,7 +570,9 @@ def getWeeklyRerollTimeout(lobbyContext=None):
 
 
 def getEventsData(eventsTypeName):
-    return BigWorld.player().getUnpackedEventsData(eventsTypeName) if isPlayerAccount() else {}
+    if isPlayerAccount():
+        return BigWorld.player().getUnpackedEventsData(eventsTypeName)
+    return {}
 
 
 @dependency.replace_none_kwargs(lobbyContext=ILobbyContext)
@@ -546,10 +585,11 @@ class WeeklyQuestInfo(object):
     def __init__(self, token):
         tokenItems = token.split(_WQ_MAIN_SEPARATOR)
         self.id = int(tokenItems[_WQ_TOKEN_QUEST_ID_POS])
-        self.conditions = [ self._getCondition(item) for item in tokenItems[_WQ_TOKEN_ITEMS_POS:] if self._isCondition(item) ]
+        self.conditions = [ self._getCondition(item) for item in tokenItems[_WQ_TOKEN_ITEMS_POS:] if self._isCondition(item)
+                          ]
 
     def getMainConditionId(self):
-        return self.conditions[-1]
+        return self.conditions[(-1)]
 
     def getSpecialConditionIds(self):
         return self.conditions[:-1]

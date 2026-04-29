@@ -1,13 +1,11 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/visual_script/context.py
 from inspect import getargspec, ismethod, getmembers, getmro
 from functools import wraps
 from types import FunctionType
-from typing import Tuple, Callable, List, Sequence
+from typing import Tuple, Callable, Sequence
 from soft_exception import SoftException
 from misc import ASPECT
-from constants import IS_DEVELOPMENT
-if IS_DEVELOPMENT:
+from constants import IS_DEVELOPMENT, IS_PROCESS_REPLAY
+if IS_DEVELOPMENT and not IS_PROCESS_REPLAY:
     from debug_plan_loader import debugPlanLoader
 
 class UnsupportedMemberException(SoftException):
@@ -40,18 +38,17 @@ class MetaData(object):
         self.aspects = kwargs.get('aspects', ASPECT.ALL)
 
     def __repr__(self):
-        return 'MetaData(field=%s, name=%s, args=%s, abstract=%s, display_name=%s, display_group=%s, description=%s, aspects=%s)' % (self.field,
-         self.name,
-         self.args,
-         self.abstract,
-         self.display_name,
-         self.display_group,
-         self.description,
-         self.aspects)
+        return 'MetaData(field=%s, name=%s, args=%s, abstract=%s, display_name=%s, display_group=%s, description=%s, aspects=%s)' % (
+         self.field, self.name, self.args, self.abstract,
+         self.display_name, self.display_group, self.description, self.aspects)
 
     @staticmethod
     def make_res_record(res_type):
-        return ('', MetaData.UNDEFINED_SLOT_TYPE) if res_type is None else ('', res_type)
+        if res_type is None:
+            return ('', MetaData.UNDEFINED_SLOT_TYPE)
+        else:
+            return (
+             '', res_type)
 
 
 def vse_get_property(*args, **kwargs):
@@ -74,7 +71,8 @@ def vse_get_property(*args, **kwargs):
 def vse_get_param_property(res, args, **kwargs):
 
     def wrapper(f):
-        signature = [MetaData.make_res_record(res)] + zip(getargspec(f).args[1:], args)
+        signature = [
+         MetaData.make_res_record(res)] + zip(getargspec(f).args[1:], args)
         meta = MetaData(MetaData.PROPERTY_PARAM_GET, f.__name__, signature, **kwargs)
 
         @wraps(f)
@@ -109,7 +107,8 @@ def vse_set_property(*args, **kwargs):
 def vse_func_call(res, args, **kwargs):
 
     def wrapper(f):
-        signature = [MetaData.make_res_record(res)] + zip(getargspec(f).args[1:], args)
+        signature = [
+         MetaData.make_res_record(res)] + zip(getargspec(f).args[1:], args)
         meta = MetaData(MetaData.FUNC_CALL, f.__name__, signature, **kwargs)
 
         @wraps(f)
@@ -218,4 +217,4 @@ class VScriptContext(object):
 
     @classmethod
     def _is_sub_class_of(cls, cls_name):
-        return any((c.__name__ == cls_name for c in getmro(cls)))
+        return any(c.__name__ == cls_name for c in getmro(cls))

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/storage/__init__.py
 from frameworks.wulf import WindowLayer
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.storage.customization.customization_cm_handlers import CustomizationCMHandler
@@ -39,29 +37,48 @@ from gui.Scaleform.genConsts.CONTEXT_MENU_HANDLER_TYPE import CONTEXT_MENU_HANDL
 from gui.Scaleform.genConsts.STORAGE_CONSTANTS import STORAGE_CONSTANTS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.app_loader import settings as app_settings
+from gui.impl.lobby.offers.offer_gifts_window import OfferGiftsWindow
 from gui.shared import EVENT_BUS_SCOPE
 
 def getContextMenuHandlers():
-    return ((CONTEXT_MENU_HANDLER_TYPE.STORAGE_FOR_SELL_ITEM, ForSellCMHandler),
-     (CONTEXT_MENU_HANDLER_TYPE.STORAGE_MODULES_SHELLS_ITEM, ModulesShellsCMHandler),
-     (CONTEXT_MENU_HANDLER_TYPE.STORAGE_CREW_BOOKS_NO_SALE_ITEM, ModulesShellsNoSaleCMHandler),
-     (CONTEXT_MENU_HANDLER_TYPE.STORAGE_EQUIPMENT_ITEM, EquipmentCMHandler),
-     (CONTEXT_MENU_HANDLER_TYPE.STORAGE_OPTIONAL_DEVICE_ITEM, OptionalDeviceCMHandler),
-     (CONTEXT_MENU_HANDLER_TYPE.STORAGE_OPTIONAL_MODERNIZED_DEVICE_ITEM, OptionalModernizedDeviceCMHandler),
-     (CONTEXT_MENU_HANDLER_TYPE.STORAGE_BONS_ITEM, BattleBoostersCMHandler),
-     (CONTEXT_MENU_HANDLER_TYPE.STORAGE_DEMOUNT_KIT_ITEM, DemountKitsCMHandler),
-     (CONTEXT_MENU_HANDLER_TYPE.STORAGE_RECERTIFICATION_FORM_ITEM, RecertificationFormsCMHandler),
-     (CONTEXT_MENU_HANDLER_TYPE.STORAGE_MENTORING_LICENSE_ITEM, MentoringLicensesCMHandler),
-     (CONTEXT_MENU_HANDLER_TYPE.STORAGE_VEHICLES_REGULAR_ITEM, VehiclesRegularCMHandler),
-     (CONTEXT_MENU_HANDLER_TYPE.STORAGE_VEHICLES_RESTORE_ITEM, VehiclesRestoreCMHandler),
-     (CONTEXT_MENU_HANDLER_TYPE.STORAGE_VEHICLES_RENTED_ITEM, VehiclesRentedCMHandler),
-     (CONTEXT_MENU_HANDLER_TYPE.STORAGE_CUSTOMZIZATION_ITEM, CustomizationCMHandler),
-     (CONTEXT_MENU_HANDLER_TYPE.STORAGE_BLUEPRINTS_ITEM, BlueprintsCMHandler))
+    return (
+     (
+      CONTEXT_MENU_HANDLER_TYPE.STORAGE_FOR_SELL_ITEM, ForSellCMHandler),
+     (
+      CONTEXT_MENU_HANDLER_TYPE.STORAGE_MODULES_SHELLS_ITEM, ModulesShellsCMHandler),
+     (
+      CONTEXT_MENU_HANDLER_TYPE.STORAGE_CREW_BOOKS_NO_SALE_ITEM, ModulesShellsNoSaleCMHandler),
+     (
+      CONTEXT_MENU_HANDLER_TYPE.STORAGE_EQUIPMENT_ITEM, EquipmentCMHandler),
+     (
+      CONTEXT_MENU_HANDLER_TYPE.STORAGE_OPTIONAL_DEVICE_ITEM, OptionalDeviceCMHandler),
+     (
+      CONTEXT_MENU_HANDLER_TYPE.STORAGE_OPTIONAL_MODERNIZED_DEVICE_ITEM, OptionalModernizedDeviceCMHandler),
+     (
+      CONTEXT_MENU_HANDLER_TYPE.STORAGE_BONS_ITEM, BattleBoostersCMHandler),
+     (
+      CONTEXT_MENU_HANDLER_TYPE.STORAGE_DEMOUNT_KIT_ITEM, DemountKitsCMHandler),
+     (
+      CONTEXT_MENU_HANDLER_TYPE.STORAGE_RECERTIFICATION_FORM_ITEM, RecertificationFormsCMHandler),
+     (
+      CONTEXT_MENU_HANDLER_TYPE.STORAGE_MENTORING_LICENSE_ITEM, MentoringLicensesCMHandler),
+     (
+      CONTEXT_MENU_HANDLER_TYPE.STORAGE_VEHICLES_REGULAR_ITEM, VehiclesRegularCMHandler),
+     (
+      CONTEXT_MENU_HANDLER_TYPE.STORAGE_VEHICLES_RESTORE_ITEM, VehiclesRestoreCMHandler),
+     (
+      CONTEXT_MENU_HANDLER_TYPE.STORAGE_VEHICLES_RENTED_ITEM, VehiclesRentedCMHandler),
+     (
+      CONTEXT_MENU_HANDLER_TYPE.STORAGE_CUSTOMZIZATION_ITEM, CustomizationCMHandler),
+     (
+      CONTEXT_MENU_HANDLER_TYPE.STORAGE_BLUEPRINTS_ITEM, BlueprintsCMHandler))
 
 
 def getViewSettings():
     from gui.Scaleform.daapi.view.lobby.storage.storage_view import StorageView
-    return (ViewSettings(VIEW_ALIAS.LOBBY_STORAGE, StorageView, 'storageView.swf', WindowLayer.SUB_VIEW, VIEW_ALIAS.LOBBY_STORAGE, ScopeTemplates.LOBBY_SUB_SCOPE),
+    return (
+     ViewSettings(VIEW_ALIAS.LOBBY_STORAGE, StorageView, 'storageView.swf', WindowLayer.SUB_VIEW, VIEW_ALIAS.LOBBY_STORAGE, ScopeTemplates.LOBBY_SUB_SCOPE),
+     ViewSettings(VIEW_ALIAS.OFFER_GIFT_VIEW, OfferGiftsWindow, '', WindowLayer.SUB_VIEW, VIEW_ALIAS.OFFER_GIFT_VIEW, ScopeTemplates.LOBBY_SUB_SCOPE),
      ComponentSettings(STORAGE_CONSTANTS.FOR_SELL_VIEW, StorageCategoryForSellView, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(STORAGE_CONSTANTS.IN_HANGAR_VIEW, StorageCategoryInHangarView, ScopeTemplates.DEFAULT_SCOPE),
      ComponentSettings(STORAGE_CONSTANTS.IN_HANGAR_ALL_VEHICLES_TAB, AllVehiclesTabView, ScopeTemplates.DEFAULT_SCOPE),
@@ -84,43 +101,53 @@ def getViewSettings():
 
 
 def getSectionsList():
-    return ({'id': STORAGE_CONSTANTS.FOR_SELL,
-      'linkage': STORAGE_CONSTANTS.FOR_SELL_VIEW,
-      'tooltip': TOOLTIPS.STORAGE_MAINMENU_FOR_SELL},
-     {'id': STORAGE_CONSTANTS.STORAGE,
-      'linkage': STORAGE_CONSTANTS.STORAGE_VIEW,
-      'tooltip': TOOLTIPS.STORAGE_MAINMENU_STORAGE},
-     {'id': STORAGE_CONSTANTS.BLUEPRINTS,
-      'linkage': STORAGE_CONSTANTS.BLUEPRINTS_VIEW,
-      'tooltip': TOOLTIPS.STORAGE_MAINMENU_BLUEPRINTS},
-     {'id': STORAGE_CONSTANTS.IN_HANGAR,
-      'linkage': STORAGE_CONSTANTS.IN_HANGAR_VIEW,
-      'tooltip': TOOLTIPS.STORAGE_MAINMENU_IN_HANGAR},
-     {'id': STORAGE_CONSTANTS.PERSONAL_RESERVES,
-      'linkage': STORAGE_CONSTANTS.PERSONAL_RESERVES_VIEW,
-      'tooltip': TOOLTIPS.STORAGE_MAINMENU_PERSONAL_RESERVES},
-     {'id': STORAGE_CONSTANTS.CUSTOMIZATION,
-      'linkage': STORAGE_CONSTANTS.CUSTOMIZATION_VIEW,
-      'tooltip': TOOLTIPS.STORAGE_MAINMENU_CUSTOMIZATION},
-     {'id': STORAGE_CONSTANTS.OFFERS,
-      'linkage': STORAGE_CONSTANTS.OFFERS_VIEW,
-      'tooltip': TOOLTIPS.STORAGE_MAINMENU_OFFERS})
+    return (
+     {'id': STORAGE_CONSTANTS.FOR_SELL, 
+        'linkage': STORAGE_CONSTANTS.FOR_SELL_VIEW, 
+        'tooltip': TOOLTIPS.STORAGE_MAINMENU_FOR_SELL},
+     {'id': STORAGE_CONSTANTS.STORAGE, 
+        'linkage': STORAGE_CONSTANTS.STORAGE_VIEW, 
+        'tooltip': TOOLTIPS.STORAGE_MAINMENU_STORAGE},
+     {'id': STORAGE_CONSTANTS.BLUEPRINTS, 
+        'linkage': STORAGE_CONSTANTS.BLUEPRINTS_VIEW, 
+        'tooltip': TOOLTIPS.STORAGE_MAINMENU_BLUEPRINTS},
+     {'id': STORAGE_CONSTANTS.IN_HANGAR, 
+        'linkage': STORAGE_CONSTANTS.IN_HANGAR_VIEW, 
+        'tooltip': TOOLTIPS.STORAGE_MAINMENU_IN_HANGAR},
+     {'id': STORAGE_CONSTANTS.PERSONAL_RESERVES, 
+        'linkage': STORAGE_CONSTANTS.PERSONAL_RESERVES_VIEW, 
+        'tooltip': TOOLTIPS.STORAGE_MAINMENU_PERSONAL_RESERVES},
+     {'id': STORAGE_CONSTANTS.CUSTOMIZATION, 
+        'linkage': STORAGE_CONSTANTS.CUSTOMIZATION_VIEW, 
+        'tooltip': TOOLTIPS.STORAGE_MAINMENU_CUSTOMIZATION},
+     {'id': STORAGE_CONSTANTS.OFFERS, 
+        'linkage': STORAGE_CONSTANTS.OFFERS_VIEW, 
+        'tooltip': TOOLTIPS.STORAGE_MAINMENU_OFFERS})
 
 
 def getBusinessHandlers():
-    return (StoragePackageBusinessHandler(),)
+    return (
+     StoragePackageBusinessHandler(),)
 
 
 def getStateMachineRegistrators():
     from gui.Scaleform.daapi.view.lobby.storage.states import registerStates, registerTransitions
-    return (registerStates, registerTransitions)
+    return (
+     registerStates, registerTransitions)
 
 
 class StoragePackageBusinessHandler(PackageBusinessHandler):
 
     def __init__(self):
-        listeners = ((VIEW_ALIAS.LOBBY_STORAGE, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.STORAGE_VEHICLES_FILTER_POPOVER, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.STORAGE_BLUEPRINTS_FILTER_POPOVER, self.loadViewByCtxEvent),
-         (VIEW_ALIAS.STORAGE_VEHICLE_SELECTOR_POPOVER, self.loadViewByCtxEvent))
+        listeners = (
+         (
+          VIEW_ALIAS.LOBBY_STORAGE, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.STORAGE_VEHICLES_FILTER_POPOVER, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.STORAGE_BLUEPRINTS_FILTER_POPOVER, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.STORAGE_VEHICLE_SELECTOR_POPOVER, self.loadViewByCtxEvent),
+         (
+          VIEW_ALIAS.OFFER_GIFT_VIEW, self.loadView))
         super(StoragePackageBusinessHandler, self).__init__(listeners, app_settings.APP_NAME_SPACE.SF_LOBBY, EVENT_BUS_SCOPE.LOBBY)

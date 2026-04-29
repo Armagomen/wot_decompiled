@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/tooltips/premium_vehicle_tooltip.py
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.impl.pub import ViewImpl
@@ -26,6 +24,6 @@ class PremiumVehicleTooltip(ViewImpl):
 
     def _onLoading(self, *args, **kwargs):
         super(PremiumVehicleTooltip, self)._onLoading()
-        with self.viewModel.transaction() as model:
+        with self.viewModel.transaction() as (model):
             model.setVehTypeName(backport.text(R.strings.crew.premiumVehType.plural.lowerCase.base.dyn(self.__vehType.replace('-', '_'))()))
             model.setNationName(backport.text(R.strings.nations.dyn(self.__nation)()))

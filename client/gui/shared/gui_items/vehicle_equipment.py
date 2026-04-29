@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/gui_items/vehicle_equipment.py
-import logging
-import weakref
-import typing
+import logging, weakref, typing
 from itertools import chain
 from account_shared import LayoutIterator
 from items.components.supply_slots_components import SupplySlot
@@ -19,7 +15,8 @@ if typing.TYPE_CHECKING:
     from gui.shared.utils.requesters.ItemsRequester import ItemsRequester
 _logger = logging.getLogger(__name__)
 ZERO_COMP_DESCR = 0
-EMPTY_INVENTORY_DATA = [ZERO_COMP_DESCR]
+EMPTY_INVENTORY_DATA = [
+ ZERO_COMP_DESCR]
 LAYOUT_ITEM_SIZE = 2
 EMPTY_ITEM = None
 SUPPORT_EXT_DATA_FEATURES = 'vehiclePostProgressionFeatures'
@@ -39,10 +36,12 @@ class _Equipment(object):
             for item in args:
                 if fromRawData:
                     self._storage.append(item)
-                self._storage.append(self._getItemData(item) if item is not None else EMPTY_ITEM)
+                else:
+                    self._storage.append(self._getItemData(item) if item is not None else EMPTY_ITEM)
 
         else:
-            self._storage = [EMPTY_ITEM] * self.getCapacity()
+            self._storage = [
+             EMPTY_ITEM] * self.getCapacity()
         return
 
     def __setitem__(self, slotIdx, item):
@@ -59,7 +58,9 @@ class _Equipment(object):
             return EMPTY_ITEM
         else:
             data = self._storage[slotIdx]
-            return self._createItem(data) if data is not None else EMPTY_ITEM
+            if data is not None:
+                return self._createItem(data)
+            return EMPTY_ITEM
 
     def __contains__(self, item):
         return item.intCD in self.getIntCDs()
@@ -68,7 +69,8 @@ class _Equipment(object):
         for itemData in self._storage:
             if itemData:
                 yield self._createItem(itemData)
-            yield EMPTY_ITEM
+            else:
+                yield EMPTY_ITEM
 
     def __len__(self):
         return len(self._storage)
@@ -86,10 +88,11 @@ class _Equipment(object):
         return not self.__eq__(equipment)
 
     def __repr__(self):
-        return '{}, guiItemType: {}, capacity: {}'.format(self.__class__.__name__, GUI_ITEM_TYPE_NAMES[self.__guiItemType], self.__capacity)
+        return ('{}, guiItemType: {}, capacity: {}').format(self.__class__.__name__, GUI_ITEM_TYPE_NAMES[self.__guiItemType], self.__capacity)
 
     def clear(self):
-        self._storage = [EMPTY_ITEM] * self.getCapacity()
+        self._storage = [
+         EMPTY_ITEM] * self.getCapacity()
 
     def getCapacity(self):
         return self.__capacity
@@ -99,10 +102,12 @@ class _Equipment(object):
             installed = self.getIntCDs(default=EMPTY_ITEM)
             return intCD in installed
         else:
-            return False if slotIdx >= self.getCapacity() else self._storage[slotIdx] != EMPTY_ITEM and self._getIntCD(self._storage[slotIdx]) == intCD
+            if slotIdx >= self.getCapacity():
+                return False
+            return self._storage[slotIdx] != EMPTY_ITEM and self._getIntCD(self._storage[slotIdx]) == intCD
 
     def getIntCDs(self, default=ZERO_COMP_DESCR):
-        return [ (self._getIntCD(itemData) if itemData != EMPTY_ITEM else default) for itemData in self._storage ]
+        return [ self._getIntCD(itemData) if itemData != EMPTY_ITEM else default for itemData in self._storage ]
 
     def getItems(self, ignoreEmpty=True):
         return [ item for item in self if item != EMPTY_ITEM or not ignoreEmpty ]
@@ -112,7 +117,10 @@ class _Equipment(object):
 
     def index(self, item):
         intCDs = self.getIntCDs()
-        return intCDs.index(item.intCD) if item.intCD in intCDs else None
+        if item.intCD in intCDs:
+            return intCDs.index(item.intCD)
+        else:
+            return
 
     def swap(self, leftID, rightID):
         self._storage[leftID], self._storage[rightID] = self._storage[rightID], self._storage[leftID]
@@ -122,11 +130,11 @@ class _Equipment(object):
 
     def _validateIndex(self, idx):
         if idx >= self.getCapacity():
-            raise SoftException('Index {} exceeds the layout size!'.format(idx))
+            raise SoftException(('Index {} exceeds the layout size!').format(idx))
 
     def _validateType(self, item):
         if item is not None and item.itemTypeID != self.__guiItemType:
-            raise SoftException('The item {} is not suitable for {}!'.format(item, self))
+            raise SoftException(('The item {} is not suitable for {}!').format(item, self))
         return
 
     @property
@@ -158,8 +166,9 @@ class _EquipmentCollector(object):
         for idx, setup in enumerate(setups):
             if self.__setupLayouts.layoutIndex == idx:
                 self.__setupLayouts.addSetup(idx, self._installed)
-            setupItems = self._equipmentClazz()(self._guiItemType(), capacity, proxy, True, *setup)
-            self.__setupLayouts.addSetup(idx, setupItems)
+            else:
+                setupItems = self._equipmentClazz()(self._guiItemType(), capacity, proxy, True, *setup)
+                self.__setupLayouts.addSetup(idx, setupItems)
 
     @property
     def installed(self):
@@ -208,7 +217,7 @@ class _EquipmentCollector(object):
         raise NotImplementedError
 
     def _layoutType(self):
-        pass
+        return ''
 
     def _guiItemType(self):
         raise NotImplementedError
@@ -251,7 +260,8 @@ class _ExpendableCollector(_EquipmentCollector):
         return ITEM_TYPES.equipment
 
     def _readSlots(self, supplySlots):
-        return [ slot for slot in supplySlots if slot.itemType == self._itemType() and slot.equipmentType == self._expendableType() ]
+        return [ slot for slot in supplySlots if slot.itemType == self._itemType() and slot.equipmentType == self._expendableType()
+               ]
 
     def _expendableType(self):
         raise NotImplementedError
@@ -270,7 +280,7 @@ class _ConsumablesCollector(_ExpendableCollector):
         return TankSetupLayouts.EQUIPMENT
 
     def _invType(self):
-        pass
+        return 'eqs'
 
     def _parse(self, vehDescr, capacity, invData):
         setups = []
@@ -292,14 +302,15 @@ class _ConsumablesCollector(_ExpendableCollector):
                 resultLayoutItems = layoutItems
             setups.append(items)
 
-        return (setups, installedItems, resultLayoutItems)
+        return (
+         setups, installedItems, resultLayoutItems)
 
     def __getInvData(self, data, capacity, layout=None):
         layoutListSize = len(data)
         if layoutListSize < capacity:
             data += [ZERO_COMP_DESCR] * (capacity - layoutListSize)
         if layout is not None:
-            return [ (intCD if intCD and intCD in data else ZERO_COMP_DESCR) for intCD in layout ]
+            return [ intCD if intCD and intCD in data else ZERO_COMP_DESCR for intCD in layout ]
         else:
             return data
 
@@ -325,7 +336,7 @@ class _BattleBoostersCollector(_ConsumablesCollector):
         return TankSetupLayouts.BATTLE_BOOSTERS
 
     def _invType(self):
-        pass
+        return 'boosters'
 
 
 class _BattleAbilitiesCollector(_ExpendableCollector):
@@ -370,7 +381,8 @@ class _ShellsEquipment(_Equipment):
         return self.__itemsFactory.createShell(intCD, count, self._proxy, isBoughtForAltPrice)
 
     def _getItemData(self, item):
-        return (item.intCD, item.count, item.isBoughtForAltPrice)
+        return (
+         item.intCD, item.count, item.isBoughtForAltPrice)
 
     def _getIntCD(self, itemData):
         return first(itemData)
@@ -380,7 +392,7 @@ class _BattleAbilitesEquipment(_ExpendableEquipment):
     __slots__ = ()
 
     def getIntCDs(self, default=ZERO_COMP_DESCR):
-        return [ (itemData.intCD if itemData != EMPTY_ITEM else default) for itemData in self._storage ]
+        return [ itemData.intCD if itemData != EMPTY_ITEM else default for itemData in self._storage ]
 
     def _createItem(self, itemData):
         return itemData
@@ -431,7 +443,8 @@ class _ShellsCollector(_EquipmentCollector):
                 resultInstalledItems = installedItems
                 resultLayoutItems = layoutItems
 
-        return (setups, resultInstalledItems, resultLayoutItems)
+        return (
+         setups, resultInstalledItems, resultLayoutItems)
 
     def __parseInstalled(self, installed, shellsLayout, vehDescr, capacity):
         installedDict = {cd:count for cd, count, _ in LayoutIterator(installed)}
@@ -447,7 +460,8 @@ class _ShellsCollector(_EquipmentCollector):
                     count = min(installedDict.get(cd, 0), layoutDict.get(cd, 0))
                 idx = shellsCDs.index(cd) * 2 + 1
                 shellsLayout[idx] = count
-            missed.append(cd)
+            else:
+                missed.append(cd)
 
         for cd in missed:
             shellsLayout.extend([cd, 0])
@@ -459,7 +473,8 @@ class _ShellsCollector(_EquipmentCollector):
         return self.__fixSize(result, capacity)
 
     def __parseLayout(self, shellsInvLayout, vehDescr, capacity, layoutIdx):
-        shellsLayoutKey = (vehDescr.turret.compactDescr, vehDescr.gun.compactDescr)
+        shellsLayoutKey = (
+         vehDescr.turret.compactDescr, vehDescr.gun.compactDescr)
         if shellsLayoutKey in shellsInvLayout:
             shellsLayouts = shellsInvLayout[shellsLayoutKey]
             shellsLayoutsSize = len(shellsLayouts)
@@ -538,7 +553,9 @@ class _OptDevicesCollector(_EquipmentCollector):
     def getSlot(self, slotIdx):
         if slotIdx < 0 or slotIdx >= len(self.slots):
             raise SoftException('Wrong slotIdx=[%r]' % slotIdx)
-        return OptDeviceSlotData(self._dynSlotType, True) if self._dynSlotType and self.isSlotHasDynamicSpecialization(slotIdx) else OptDeviceSlotData(self.slots[slotIdx], False)
+        if self._dynSlotType and self.isSlotHasDynamicSpecialization(slotIdx):
+            return OptDeviceSlotData(self._dynSlotType, True)
+        return OptDeviceSlotData(self.slots[slotIdx], False)
 
     def isSlotHasDynamicSpecialization(self, slotIdx):
         return self._dynSlotTypeIdx == slotIdx
@@ -572,7 +589,7 @@ class _OptDevicesCollector(_EquipmentCollector):
                 dvsLayout = []
             else:
                 dvsLayout = devicesLayout[layoutIdx]
-            items = [ (item if item != ZERO_COMP_DESCR else EMPTY_ITEM) for item in dvsLayout ]
+            items = [ item if item != ZERO_COMP_DESCR else EMPTY_ITEM for item in dvsLayout ]
             layoutSize = len(dvsLayout)
             if layoutSize < capacity:
                 items += [EMPTY_ITEM] * (capacity - layoutSize)
@@ -586,6 +603,8 @@ class _OptDevicesCollector(_EquipmentCollector):
         for idx, slot in enumerate(self.slots):
             if not slot.categories:
                 return idx
+
+        return 0
 
 
 class _EquipmentsSetupGroups(object):
@@ -622,7 +641,9 @@ class _EquipmentsSetupGroups(object):
 
     def getNextLayoutIndex(self, groupID):
         index = self.getLayoutIndex(groupID) + 1
-        return index if index < self.getGroupCapacity(groupID) else 0
+        if index < self.getGroupCapacity(groupID):
+            return index
+        return 0
 
     def _parse(self, invData, postProgressionFeatures, vehDescr):
         groups = invData.get('layoutIndexes', {}).copy()
@@ -634,7 +655,8 @@ class _EquipmentsSetupGroups(object):
                     capacity[GROUP_ID_BY_FEATURE.get(feature.name)] = SWITCH_LAYOUT_CAPACITY
 
         for group, layouts in TANK_SETUP_GROUPS.iteritems():
-            possibleCapacities = [capacity.get(group, DEFAULT_LAYOUT_CAPACITY)]
+            possibleCapacities = [
+             capacity.get(group, DEFAULT_LAYOUT_CAPACITY)]
             for layout in layouts:
                 possibleCapacities.append(getLayoutCapacity(invData, layout, vehDescr))
 
@@ -702,23 +724,25 @@ class _EquipmentSetupLayout(object):
 
     def getIntCDs(self, setupIdx=None, default=ZERO_COMP_DESCR):
         if setupIdx is None:
-            return [ (self._getIntCD(itemData) if itemData != EMPTY_ITEM else default) for itemData in chain.from_iterable(self.__setups.itervalues()) ]
+            return [ self._getIntCD(itemData) if itemData != EMPTY_ITEM else default for itemData in chain.from_iterable(self.__setups.itervalues())
+                   ]
         else:
             setup = self.setupByIndex(setupIdx)
             if setup is not None:
-                return [ (self._getIntCD(itemData) if itemData != EMPTY_ITEM else default) for itemData in setup ]
+                return [ self._getIntCD(itemData) if itemData != EMPTY_ITEM else default for itemData in setup
+                       ]
             return [default] * self.__slotsCapacity
 
     def containsIntCD(self, intCD, setupIdx=None, slotIdx=None):
         if setupIdx is None:
             installed = self.getIntCDs(default=EMPTY_ITEM)
             return intCD in installed
-        elif slotIdx is None:
-            installed = self.getIntCDs(setupIdx=setupIdx, default=EMPTY_ITEM)
-            return intCD in installed
-        elif slotIdx >= self.__layoutCapacity(setupIdx):
-            return False
         else:
+            if slotIdx is None:
+                installed = self.getIntCDs(setupIdx=setupIdx, default=EMPTY_ITEM)
+                return intCD in installed
+            if slotIdx >= self.__layoutCapacity(setupIdx):
+                return False
             item = self.setupByIndex(setupIdx)[slotIdx]
             return item != EMPTY_ITEM and self._getIntCD(item) == intCD
 
@@ -772,18 +796,21 @@ class _ShellsSetupLayout(_EquipmentSetupLayout):
 
     def isAmmoNotFull(self, minAmmo=0):
         for idx, setup in self.setups.iteritems():
-            count = sum(((s.count if s != EMPTY_ITEM else 0) for s in setup))
+            count = sum((s.count if s != EMPTY_ITEM else 0) for s in setup)
             if count < minAmmo:
                 return (True, idx)
 
-        return (False, None)
+        return (
+         False, None)
 
     def isAmmoFull(self, setupIdx=None, minAmmo=0):
         if setupIdx is None:
-            return sum(((s.count if s != EMPTY_ITEM else 0) for s in chain.from_iterable(self.setups.itervalues()))) >= minAmmo
+            return sum((s.count if s != EMPTY_ITEM else 0) for s in chain.from_iterable(self.setups.itervalues())) >= minAmmo
         else:
             setup = self.setupByIndex(setupIdx)
-            return sum(((s.count if s != EMPTY_ITEM else 0) for s in setup)) >= minAmmo if setup is not None else True
+            if setup is not None:
+                return sum((s.count if s != EMPTY_ITEM else 0) for s in setup) >= minAmmo
+            return True
 
     def hasAlternativeItems(self, setupIdx):
         return self.__hasAlternativeAmmo(setupIdx)
@@ -796,11 +823,12 @@ class _ShellsSetupLayout(_EquipmentSetupLayout):
                 if shell.intCD not in intCDs:
                     intCDs.add(shell.intCD)
                     shells.append(shell)
-                for idx, item in enumerate(shells):
-                    if shell.intCD == item.intCD:
-                        if shell.count > item.count:
-                            shells[idx] = shell
-                        break
+                else:
+                    for idx, item in enumerate(shells):
+                        if shell.intCD == item.intCD:
+                            if shell.count > item.count:
+                                shells[idx] = shell
+                            break
 
         return shells
 
@@ -808,13 +836,14 @@ class _ShellsSetupLayout(_EquipmentSetupLayout):
         count = 0
         for idx, setup in self.setups.iteritems():
             if idx != setupIdx:
-                count += sum(((s.count if s != EMPTY_ITEM else 0) for s in setup))
+                count += sum((s.count if s != EMPTY_ITEM else 0) for s in setup)
 
         return count > 0
 
 
 class VehicleEquipment(object):
-    __slots__ = ('__consumables', '__battleBoosters', '__battleAbilities', '__shells', '__optDevices', '__setupLayouts')
+    __slots__ = ('__consumables', '__battleBoosters', '__battleAbilities', '__shells',
+                 '__optDevices', '__setupLayouts')
 
     def __init__(self, itemRequesterProxy, vehDescr, invData, postProgressionFeatures=None):
         proxy = weakref.proxy(itemRequesterProxy) if itemRequesterProxy else None

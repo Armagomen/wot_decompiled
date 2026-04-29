@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/helpers/EntityExtra.py
 from soft_exception import SoftException
 from debug_utils import LOG_CURRENT_EXCEPTION
 
@@ -12,7 +10,7 @@ class EntityExtra(object):
         self._readConfig(dataSection, containerName)
 
     def prerequisites(self):
-        pass
+        return ()
 
     def startFor(self, entity, args=None):
         if entity.extras.has_key(self.index):
@@ -84,8 +82,9 @@ class EntityExtra(object):
         pass
 
     def _raiseWrongConfig(self, paramName, containerName):
-        raise SoftException("missing or wrong parameter <%s> (entity extra '%s' in '%s')" % (paramName, self.name, containerName))
+        raise SoftException("missing or wrong parameter <%s> (entity extra '%s' in '%s')" % (
+         paramName, self.name, containerName))
 
     def _newData(self, entity):
-        return {'extra': self,
-         'entity': entity}
+        return {'extra': self, 
+           'entity': entity}

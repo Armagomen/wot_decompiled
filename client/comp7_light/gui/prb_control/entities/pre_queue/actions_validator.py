@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7_light/scripts/client/comp7_light/gui/prb_control/entities/pre_queue/actions_validator.py
 from CurrentVehicle import g_currentVehicle
 from gui.periodic_battles.models import PrimeTimeStatus
 from gui.prb_control.entities.base.actions_validator import BaseActionsValidator, ActionsValidatorComposite
@@ -16,7 +14,9 @@ class Comp7LightPrimeTimeValidator(BaseActionsValidator):
         status, _, isInPrimeTime = self.__comp7LightController.getPrimeTimeStatus()
         if status == PrimeTimeStatus.NOT_SET:
             return ValidationResult(False, PRE_QUEUE_RESTRICTION.MODE_NOT_SET)
-        return ValidationResult(False, PRE_QUEUE_RESTRICTION.MODE_NOT_AVAILABLE) if not self.__comp7LightController.isAvailable() or not isInPrimeTime else super(Comp7LightPrimeTimeValidator, self)._validate()
+        if not self.__comp7LightController.isAvailable() or not isInPrimeTime:
+            return ValidationResult(False, PRE_QUEUE_RESTRICTION.MODE_NOT_AVAILABLE)
+        return super(Comp7LightPrimeTimeValidator, self)._validate()
 
 
 class Comp7LightPlayerValidator(BaseActionsValidator):
@@ -25,7 +25,9 @@ class Comp7LightPlayerValidator(BaseActionsValidator):
     def _validate(self):
         if self.__comp7LightController.isOffline:
             return ValidationResult(False, PRE_QUEUE_RESTRICTION.MODE_OFFLINE)
-        return ValidationResult(False, PRE_QUEUE_RESTRICTION.BAN_IS_SET) if self.__comp7LightController.isBanned else super(Comp7LightPlayerValidator, self)._validate()
+        if self.__comp7LightController.isBanned:
+            return ValidationResult(False, PRE_QUEUE_RESTRICTION.BAN_IS_SET)
+        return super(Comp7LightPlayerValidator, self)._validate()
 
 
 class Comp7LightVehicleValidator(BaseActionsValidator):
@@ -36,16 +38,24 @@ class Comp7LightVehicleValidator(BaseActionsValidator):
             restriction = self.__comp7LightController.isSuitableVehicle(g_currentVehicle.item)
             if restriction is not None:
                 return restriction
-        return ValidationResult(False, PRE_QUEUE_RESTRICTION.LIMIT_NO_SUITABLE_VEHICLES, ctx={'levels': self.__comp7LightController.getModeSettings().levels}) if not self.__comp7LightController.hasSuitableVehicles() else None
+        if not self.__comp7LightController.hasSuitableVehicles():
+            return ValidationResult(False, PRE_QUEUE_RESTRICTION.LIMIT_NO_SUITABLE_VEHICLES, ctx={'levels': self.__comp7LightController.getModeSettings().levels})
+        else:
+            return
 
 
 class Comp7LightActionsValidator(PreQueueActionsValidator):
 
     def _createStateValidator(self, entity):
         baseValidator = super(Comp7LightActionsValidator, self)._createStateValidator(entity)
-        validators = [baseValidator, Comp7LightPrimeTimeValidator(entity), Comp7LightPlayerValidator(entity)]
+        validators = [
+         baseValidator,
+         Comp7LightPrimeTimeValidator(entity),
+         Comp7LightPlayerValidator(entity)]
         return ActionsValidatorComposite(entity, validators=validators)
 
     def _createVehiclesValidator(self, entity):
         baseValidator = super(Comp7LightActionsValidator, self)._createVehiclesValidator(entity)
-        return ActionsValidatorComposite(entity, [Comp7LightVehicleValidator(entity), baseValidator])
+        return ActionsValidatorComposite(entity, [
+         Comp7LightVehicleValidator(entity),
+         baseValidator])

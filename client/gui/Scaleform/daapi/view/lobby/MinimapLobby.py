@@ -1,6 +1,6 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/MinimapLobby.py
+from __future__ import absolute_import, division
 from typing import Union
+from past.utils import old_div
 import ArenaType
 from gui.Scaleform.daapi.view.meta.MinimapPresentationMeta import MinimapPresentationMeta
 from gui.Scaleform.genConsts.MINIMAPENTRIES_CONSTANTS import MINIMAPENTRIES_CONSTANTS
@@ -10,8 +10,8 @@ from gui.impl.gen import R
 from helpers import dependency
 from skeletons.account_helpers.settings_core import ISettingsCore
 from points_of_interest_shared import PoiType
-_POI_TYPE_TO_STR = {PoiType.ARTILLERY: MINIMAPENTRIES_CONSTANTS.POI_TYPE_ARTY,
- PoiType.RECON: MINIMAPENTRIES_CONSTANTS.POI_TYPE_RECON}
+_POI_TYPE_TO_STR = {PoiType.ARTILLERY: MINIMAPENTRIES_CONSTANTS.POI_TYPE_ARTY, 
+   PoiType.RECON: MINIMAPENTRIES_CONSTANTS.POI_TYPE_RECON}
 
 def _resilientMapIconPathGetter(gameplayName, geometryName):
     prefixedGeometryName = 'c_%s' % geometryName
@@ -21,7 +21,9 @@ def _resilientMapIconPathGetter(gameplayName, geometryName):
         if mapIconDynAccessor.isValid():
             return backport.image(mapIconDynAccessor())
     commonFolderMapIconAccessor = R.images.gui.maps.icons.map.dyn(prefixedGeometryName)
-    return backport.image(commonFolderMapIconAccessor()) if commonFolderMapIconAccessor.isValid() else ''
+    if commonFolderMapIconAccessor.isValid():
+        return backport.image(commonFolderMapIconAccessor())
+    return ''
 
 
 class MinimapLobby(MinimapPresentationMeta):
@@ -31,7 +33,7 @@ class MinimapLobby(MinimapPresentationMeta):
         super(MinimapLobby, self).__init__()
         self.__playerTeam = 1
         self.__arenaTypeID = None
-        self.__cfg = dict()
+        self.__cfg = {}
         self.__minimapSize = 300
         return
 
@@ -72,12 +74,12 @@ class MinimapLobby(MinimapPresentationMeta):
     def setArena(self, arenaTypeID):
         self.__arenaTypeID = int(arenaTypeID)
         arenaType = ArenaType.g_cache[self.__arenaTypeID]
-        self.setConfig({'texture': _resilientMapIconPathGetter(arenaType.gameplayName, arenaType.geometryName),
-         'size': arenaType.boundingBox,
-         'teamBasePositions': arenaType.teamBasePositions,
-         'teamSpawnPoints': arenaType.teamSpawnPoints,
-         'controlPoints': arenaType.controlPoints,
-         'pointsOfInterest': arenaType.pointsOfInterest})
+        self.setConfig({'texture': _resilientMapIconPathGetter(arenaType.gameplayName, arenaType.geometryName), 
+           'size': arenaType.boundingBox, 
+           'teamBasePositions': arenaType.teamBasePositions, 
+           'teamSpawnPoints': arenaType.teamSpawnPoints, 
+           'controlPoints': arenaType.controlPoints, 
+           'pointsOfInterest': arenaType.pointsOfInterest})
 
     def setEmpty(self):
         self.as_clearS()
@@ -96,7 +98,9 @@ class MinimapLobby(MinimapPresentationMeta):
         offset = (upperRight + bottomLeft) * 0.5
 
         def _normalizePoint(posX, posY):
-            return ((posX - offset.x) / mapWidthMult, (posY - offset.y) / mapHeightMult)
+            return (
+             old_div(posX - offset.x, mapWidthMult),
+             old_div(posY - offset.y, mapHeightMult))
 
         for team, teamSpawnPoints in enumerate(self.__cfg['teamSpawnPoints'], 1):
             for spawn, spawnPoint in enumerate(teamSpawnPoints, 1):
@@ -119,4 +123,6 @@ class MinimapLobby(MinimapPresentationMeta):
                 self.as_addPointS(posX, posY, MINIMAPENTRIES_CONSTANTS.POINT_TYPE_CONTROL, MINIMAPENTRIES_CONSTANTS.COLOR_EMPTY, index if len(self.__cfg['controlPoints']) > 1 else 1)
 
     def __getTeamColor(self, isPlayerTeam):
-        return MINIMAPENTRIES_CONSTANTS.COLOR_BLUE if isPlayerTeam else MINIMAPENTRIES_CONSTANTS.COLOR_RED
+        if isPlayerTeam:
+            return MINIMAPENTRIES_CONSTANTS.COLOR_BLUE
+        return MINIMAPENTRIES_CONSTANTS.COLOR_RED

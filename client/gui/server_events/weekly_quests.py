@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/server_events/weekly_quests.py
-import logging
-import BigWorld
-import wg_async
+import logging, BigWorld, wg_async
 from helpers import dependency, time_utils
 from skeletons.gui.server_events import IEventsCache
 from gui.shared.utils.requesters import REQ_CRITERIA
@@ -28,7 +24,9 @@ class WQRerollCooldown(SyncValidator):
         weeklyQuestsData = self.eventsCache.weeklyQuests
         qId = self.__quest.getInfo().id
         nextRerollAvailableTimestamp = weeklyQuestsData.getNextAvailableRerollTimestamp(qId)
-        return makeError('WQ_REROLL_TIMEOUT') if nextRerollAvailableTimestamp > time_utils.getCurrentLocalServerTimestamp() else makeSuccess()
+        if nextRerollAvailableTimestamp > time_utils.getCurrentLocalServerTimestamp():
+            return makeError('WQ_REROLL_TIMEOUT')
+        return makeSuccess()
 
 
 class WQNotCompletedValidator(SyncValidator):
@@ -38,7 +36,9 @@ class WQNotCompletedValidator(SyncValidator):
         self.__quest = quest
 
     def _validate(self):
-        return makeError('WQ_QUEST_COMPLETED') if self.__quest.isCompleted() else makeSuccess()
+        if self.__quest.isCompleted():
+            return makeError('WQ_QUEST_COMPLETED')
+        return makeSuccess()
 
 
 class WQRerollConfirmator(AwaitConfirmator):
@@ -69,12 +69,15 @@ class WQRerollConfirmator(AwaitConfirmator):
             warningString = backport.text(R.strings.dialogs.dailyQuests.dialogWarningConfirmReroll.warning())
             builder = WarningDialogBuilder()
             builder.setMessagesAndButtons(dialogParams)
-            builder.setMessageArgs(fmtArgs=[FmtArgs(warningString, 'warning', R.styles.NeutralTextBigStyle()), FmtArgs(timeLimitMsg, 'timeLimitMsg', R.styles.NeutralTextBigStyle())])
+            builder.setMessageArgs(fmtArgs=[
+             FmtArgs(warningString, 'warning', R.styles.NeutralTextBigStyle()),
+             FmtArgs(timeLimitMsg, 'timeLimitMsg', R.styles.NeutralTextBigStyle())])
         else:
             dialogParams = R.strings.dialogs.dailyQuests.dialogInfoConfirmReroll
             builder = ResSimpleDialogBuilder()
             builder.setMessagesAndButtons(dialogParams)
-            builder.setMessageArgs(fmtArgs=[FmtArgs(timeLimitMsg, 'timeLimitMsg', R.styles.NeutralTextBigStyle())])
+            builder.setMessageArgs(fmtArgs=[
+             FmtArgs(timeLimitMsg, 'timeLimitMsg', R.styles.NeutralTextBigStyle())])
         result = yield wg_async.wg_await(dialogs.showSimple(builder.build()))
         callback(makeSuccess() if result else makeError())
 
@@ -83,7 +86,10 @@ class WeeklyQuestReroll(Processor):
     eventsCache = dependency.descriptor(IEventsCache)
 
     def __init__(self, quest):
-        super(WeeklyQuestReroll, self).__init__(plugins=(WQRerollCooldown(quest), WQNotCompletedValidator(quest), WQRerollConfirmator()))
+        super(WeeklyQuestReroll, self).__init__(plugins=(
+         WQRerollCooldown(quest),
+         WQNotCompletedValidator(quest),
+         WQRerollConfirmator()))
         self._quest = quest
         self._callback = None
         return

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/events.py
 import logging
 from collections import namedtuple
 import typing
@@ -10,7 +8,15 @@ from shared_utils import CONST_CONTAINER
 if typing.TYPE_CHECKING:
     from gui.Scaleform.framework.managers.loaders import GuiImplViewLoadParams
     from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
-__all__ = ('ArgsEvent', 'ComponentEvent', 'LoadViewEvent', 'LoadGuiImplViewEvent', 'ShowDialogEvent', 'LoginEvent', 'LoginEventEx', 'LobbySimpleEvent', 'FightButtonDisablingEvent', 'FightButtonEvent', 'CloseWindowEvent', 'BrowserEvent', 'HangarVehicleEvent', 'HangarCustomizationEvent', 'GameEvent', 'ViewEventType', 'OpenLinkEvent', 'ChannelManagementEvent', 'PreBattleChannelEvent', 'AmmunitionSetupViewEvent', 'HasCtxEvent', 'DogTagsEvent', 'DeathCamEvent', 'FullscreenModeSelectorEvent', 'ModeSelectorPopoverEvent', 'ModeSubSelectorEvent', 'NavigationEvent', 'BackNavigationEvent', 'PersonalMissionsEvent', 'UserMissionsEvent', 'GUICommonEvent', 'PetObjectHoverEvent', 'PetSystemEvent')
+__all__ = ('ArgsEvent', 'ComponentEvent', 'LoadViewEvent', 'LoadGuiImplViewEvent',
+           'ShowDialogEvent', 'LoginEvent', 'LoginEventEx', 'LobbySimpleEvent', 'FightButtonDisablingEvent',
+           'FightButtonEvent', 'CloseWindowEvent', 'BrowserEvent', 'HangarVehicleEvent',
+           'HangarCustomizationEvent', 'GameEvent', 'ViewEventType', 'OpenLinkEvent',
+           'ChannelManagementEvent', 'PreBattleChannelEvent', 'AmmunitionSetupViewEvent',
+           'HasCtxEvent', 'DogTagsEvent', 'DeathCamEvent', 'FullscreenModeSelectorEvent',
+           'ModeSelectorPopoverEvent', 'ModeSubSelectorEvent', 'NavigationEvent',
+           'BackNavigationEvent', 'PersonalMissionsEvent', 'UserMissionsEvent', 'GUICommonEvent',
+           'PetObjectHoverEvent', 'PetSystemEvent')
 _logger = logging.getLogger(__name__)
 
 class HasCtxEvent(SharedEvent):
@@ -144,14 +150,13 @@ class LoadViewEvent(_ViewEvent):
     def __init__(self, loadParams, *args, **kwargs):
         if isinstance(loadParams, str):
             _logger.error('Wrong loadParams type for "%s"! Replace it by SFViewLoadParams.', loadParams)
-        super(LoadViewEvent, self).__init__(ViewEventType.LOAD_VIEW, loadParams.viewKey.alias, loadParams.viewKey.name, ctx=kwargs.get('ctx', None))
+        super(LoadViewEvent, self).__init__(ViewEventType.LOAD_VIEW, loadParams.viewKey.alias, loadParams.viewKey.name, ctx=kwargs.get('ctx'))
         self.loadParams = loadParams
         self.args = args
         self.kwargs = kwargs
-        return
 
     def __repr__(self):
-        return 'LoadViewEvent[loadParams={}, ctx={}, args={}, kwargs={}]'.format(repr(self.loadParams), self.ctx, self.args, self.kwargs)
+        return ('LoadViewEvent[loadParams={}, ctx={}, args={}, kwargs={}]').format(repr(self.loadParams), self.ctx, self.args, self.kwargs)
 
 
 class LoadViewsChainEvent(_ViewEvent):
@@ -201,7 +206,7 @@ class NavigationEvent(SharedEvent, StateEvent):
         self.params = params or {}
 
     def __repr__(self):
-        return '{}(targetStateID={}, params={})'.format(self.__class__.__name__, self.targetStateID, self.params)
+        return ('{}(targetStateID={}, params={})').format(self.__class__.__name__, self.targetStateID, self.params)
 
 
 class BackNavigationEvent(SharedEvent):
@@ -374,14 +379,10 @@ class LobbyHeaderControlsEvent(LobbySimpleEvent):
 
 class LobbyHeaderMenuEvent(LobbySimpleEvent):
     UPDATE_PREBATTLE_CONTROLS = 'updateControlsHeaderMenu'
-    TOGGLE_VISIBILITY = 'toggleVisibilityHeaderMenu'
-    MENU_CLICK = 'headerMenuClick'
-    DESELECT_HEADER_BUTTONS = 'deselectHeaderButtons'
 
 
 class CloseWindowEvent(SharedEvent):
     EULA_CLOSED = 'EULAClosed'
-    GOLD_FISH_CLOSED = 'GoldFishClosed'
     ELITE_WINDOW_CLOSED = 'EliteWindowClosed'
     BUY_VEHICLE_VIEW_CLOSED = 'BuyVehicleViewClosed'
 
@@ -433,11 +434,11 @@ class TutorialEvent(SharedEvent):
         self.arguments = arguments
 
     def getState(self):
-        return {'reloadIfRun': self.reloadIfRun,
-         'initialChapter': self.initialChapter,
-         'restoreIfRun': self.restoreIfRun,
-         'isStopForced': self.isStopForced,
-         'isAfterBattle': self.isAfterBattle}
+        return {'reloadIfRun': self.reloadIfRun, 
+           'initialChapter': self.initialChapter, 
+           'restoreIfRun': self.restoreIfRun, 
+           'isStopForced': self.isStopForced, 
+           'isAfterBattle': self.isAfterBattle}
 
 
 class MessengerEvent(HasCtxEvent):
@@ -479,8 +480,6 @@ class PreBattleChannelEvent(ChannelManagementEvent):
 
 
 class ChannelCarouselEvent(SharedEvent):
-    CAROUSEL_INITED = 'carouselInited'
-    CAROUSEL_DESTROYED = 'carouselDestroyed'
     OPEN_BUTTON_CLICK = 'openButtonClick'
     MINIMIZE_ALL_CHANNELS = 'minimizeAllChannels'
     CLOSE_ALL_EXCEPT_CURRENT = 'closeAllExceptCurrent'
@@ -637,6 +636,7 @@ class HangarVehicleEvent(HasCtxEvent):
     ON_HERO_TANK_DESTROY = 'hangarVehicle/onHeroTankDestroy'
     ON_PLATOON_TANK_LOADED = 'hangarVehicle/onPlatoonTankLoaded'
     ON_PLATOON_TANK_DESTROY = 'hangarVehicle/onPlatoonTankDestroy'
+    ON_CONTEXT_MENU_CLICKED = 'hangarVehicle/onContextMenuClicked'
     PLATOON_TANK_MARKER = 'hangarVehicle/platoonTankMarker'
     SELECT_VEHICLE_IN_HANGAR = 'hangarVehicle/selectVehicleInHangar'
 
@@ -666,11 +666,6 @@ class ReferralProgramEvent(HasCtxEvent):
     REFERRAL_PROGRAM_DEACTIVATED = 'referralProgrammDeactivated'
     SHOW_REFERRAL_PROGRAM_WINDOW = 'showReferralProgramWindow'
     DISABLE_REFERRAL_PROGRAM = 'disableReferralProgram'
-
-
-class AdventCalendarEvent(HasCtxEvent):
-    ADVENT_CALENDAR = 'adventCalendar'
-    HERO_ADVENT_ACTION_STATE_CHANGED = 'heroAdventActionStateChanged'
 
 
 class ProgressiveRewardEvent(HasCtxEvent):
@@ -798,14 +793,12 @@ class DeathCamEvent(HasCtxEvent):
         ENDING = 7
         FINISHED = 8
 
-    BEFORE_SIMULATION = (State.NONE, State.INACTIVE)
-    SIMULATION_EXCL_FADES = (State.ACTIVE, State.PAUSE, State.RESUME)
-    SIMULATION_INCL_FADES = (State.PREPARING,
-     State.STARTING,
-     State.ACTIVE,
-     State.PAUSE,
-     State.RESUME,
-     State.ENDING)
+    BEFORE_SIMULATION = (
+     State.NONE, State.INACTIVE)
+    SIMULATION_EXCL_FADES = (
+     State.ACTIVE, State.PAUSE, State.RESUME)
+    SIMULATION_INCL_FADES = (
+     State.PREPARING, State.STARTING, State.ACTIVE, State.PAUSE, State.RESUME, State.ENDING)
 
     class EventType(Enum):
         NONE = 'none'

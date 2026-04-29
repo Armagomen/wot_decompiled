@@ -1,7 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/status_notifications/replay_components.py
-import logging
-import BattleReplay
+from __future__ import absolute_import
+import logging, BattleReplay
 from ReplayEvents import g_replayEvents
 from gui.Scaleform.daapi.view.battle.shared.status_notifications.components import StatusNotificationContainer, StatusNotificationsGroup
 from gui.Scaleform.daapi.view.battle.shared.status_notifications.sn_items import TimerSN, TimeSnapshotHandler
@@ -22,7 +20,7 @@ class CallbackPrecisePythonTimer(object):
 
 
 class CallbackTruePythonTimer(PrecisePythonTimer):
-    __slots__ = ('__timeLeft',)
+    __slots__ = ('__timeLeft', )
 
     def __init__(self, viewObject, typeID, viewID, totalTime, finishTime, startTime=None, interval=1.0, secondInRow=False, **kwargs):
         super(CallbackTruePythonTimer, self).__init__(viewObject, typeID, viewID, totalTime, finishTime, startTime, interval, secondInRow, **kwargs)

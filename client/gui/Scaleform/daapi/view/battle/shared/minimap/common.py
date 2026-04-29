@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/minimap/common.py
+from __future__ import absolute_import
 from functools import partial
 import BigWorld
 from aih_constants import CTRL_MODE_NAME
@@ -74,9 +73,7 @@ class SimplePlugin(IPlugin):
         self._parentObj.playSound2D(soundID)
 
     def _isInStrategicMode(self):
-        return self._ctrlMode in (CTRL_MODE_NAME.STRATEGIC,
-         CTRL_MODE_NAME.ARTY,
-         CTRL_MODE_NAME.MAP_CASE,
+        return self._ctrlMode in (CTRL_MODE_NAME.STRATEGIC, CTRL_MODE_NAME.ARTY, CTRL_MODE_NAME.MAP_CASE,
          CTRL_MODE_NAME.MAP_CASE_EPIC)
 
     def _isInArcadeMode(self):
@@ -154,7 +151,7 @@ class EntriesPlugin(SimplePlugin):
 
 
 class IntervalPlugin(EntriesPlugin):
-    __slots__ = ('__callbackIDs',)
+    __slots__ = ('__callbackIDs', )
 
     def __init__(self, parent):
         super(IntervalPlugin, self).__init__(parent)
@@ -185,7 +182,10 @@ class IntervalPlugin(EntriesPlugin):
         return
 
     def _isCallbackExisting(self, uniqueID):
-        return self.__callbackIDs[uniqueID] is not None if uniqueID in self.__callbackIDs else False
+        if uniqueID in self.__callbackIDs:
+            return self.__callbackIDs[uniqueID] is not None
+        else:
+            return False
 
     def _clearAllCallbacks(self):
         for key in self.__callbackIDs:
@@ -201,8 +201,8 @@ class IntervalPlugin(EntriesPlugin):
                 self.__callbackIDs[key] = None
                 toKill.append(key)
 
-        for i in range(0, len(toKill)):
-            del self.__callbackIDs[toKill[i]]
+        for key in toKill:
+            del self.__callbackIDs[key]
 
         return
 
@@ -212,7 +212,10 @@ class BaseAreaMarkerEntriesPlugin(EntriesPlugin):
 
     def createMarker(self, uniqueID, symbol, container, matrix, active):
         model = self._addEntryEx(uniqueID, symbol, container, matrix=matrix, active=active)
-        return True if model is not None else False
+        if model is not None:
+            return True
+        else:
+            return False
 
     def deleteMarker(self, uniqueID):
         self._delEntryEx(uniqueID)

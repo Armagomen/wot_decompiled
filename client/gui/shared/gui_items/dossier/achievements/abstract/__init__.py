@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/gui_items/dossier/achievements/abstract/__init__.py
 from helpers import dependency
 from mixins import Deprecated
 from mixins import Quest
@@ -53,4 +51,8 @@ def getCompletedPersonalMissionsCount(branch, classifiers):
     return result
 
 
-__all__ = ('ClassProgressAchievement', 'HistoricalAchievement', 'NationSpecificAchievement', 'RareAchievement', 'RegularAchievement', 'RegularExtAchievement', 'SeriesAchievement', 'SimpleProgressAchievement', 'DeprecatedAchievement', 'QuestAchievement', 'isRareAchievement', 'isSeriesAchievement', 'achievementHasVehiclesList', 'StageAchievement')
+__all__ = ('ClassProgressAchievement', 'HistoricalAchievement', 'NationSpecificAchievement',
+           'RareAchievement', 'RegularAchievement', 'RegularExtAchievement', 'SeriesAchievement',
+           'SimpleProgressAchievement', 'DeprecatedAchievement', 'QuestAchievement',
+           'isRareAchievement', 'isSeriesAchievement', 'achievementHasVehiclesList',
+           'StageAchievement')

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/shared/cm_handlers.py
 import inspect
 from gui.Scaleform.framework.managers.context_menu import AbstractContextMenuHandler
 from gui.impl import backport
@@ -40,9 +38,9 @@ def option(order, label):
         def wrapper(self):
             method(self)
 
-        wrapper.cm = {'order': order,
-         'label': label,
-         'name': method.__name__}
+        wrapper.cm = {'order': order, 
+           'label': label, 
+           'name': method.__name__}
         return wrapper
 
     return optionDecorator
@@ -59,13 +57,14 @@ class StorageOptionCustomData(object):
         self.labelCtx = labelCtx
 
     def asDict(self):
-        return {key:value for key, value in inspect.getmembers(self, lambda m: not inspect.ismethod(m)) if not (key.startswith('_') or key.startswith('__')) and value is not None}
+        return {key:value for key, value in inspect.getmembers(self, lambda m: not inspect.ismethod(m)) if not (key.startswith('_') or key.startswith('__')) and value is not None if not (key.startswith('_') or key.startswith('__')) and value is not None}
 
 
 class ContextMenu(AbstractContextMenuHandler):
 
     def __init__(self, cmProxy=None, ctx=None):
-        self.__handlerMethods = sorted([ method for method in (member.__func__ for _, member in inspect.getmembers(self, inspect.ismethod)) if getattr(method, 'cm', None) is not None ], key=lambda m: m.cm['order'])
+        self.__handlerMethods = sorted([ method for method in (member.__func__ for _, member in inspect.getmembers(self, inspect.ismethod)) if getattr(method, 'cm', None) is not None
+                                       ], key=lambda m: m.cm['order'])
         super(ContextMenu, self).__init__(cmProxy, ctx, {handler.cm['label']:handler.cm['name'] for handler in self.__handlerMethods})
         return
 
@@ -73,7 +72,8 @@ class ContextMenu(AbstractContextMenuHandler):
         self._id = int(ctx.id)
 
     def _generateOptions(self, ctx=None):
-        return [ self._makeOption(method.cm['label'], self._getOptionCustomData(method.cm['label']).asDict()) for method in self.__handlerMethods if self._isVisible(method.cm['label']) ]
+        return [ self._makeOption(method.cm['label'], self._getOptionCustomData(method.cm['label']).asDict()) for method in self.__handlerMethods if self._isVisible(method.cm['label'])
+               ]
 
     def _makeOption(self, label, data):
         return self._makeItem(optId=label, optLabel=_makeMenuLabel(label, data), optInitData=data or None)

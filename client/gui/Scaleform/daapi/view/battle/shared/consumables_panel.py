@@ -1,9 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/consumables_panel.py
-import logging
-import math
-import weakref
+from __future__ import absolute_import, division
+import logging, math, weakref
 from functools import partial
+from future.utils import listitems, lrange
 import BigWorld
 from typing import TYPE_CHECKING
 import CommandMapping
@@ -26,15 +24,19 @@ from gui.shared.events import GameEvent
 from gui.shared.formatters import text_styles
 from gui.shared.items_parameters import NO_DATA
 from gui.shared.items_parameters.params import ShellParams
+from gui.shared.tooltips.consumables_panel import getLowChargeShotParams
 from gui.shared.utils.key_mapping import getScaleformKey
 from helpers import dependency
 from helpers.CallbackDelayer import CallbackDelayer
 from items import vehicles
 from items.artefacts import SharedCooldownConsumableConfigReader
+from math_common import round_py2_style_int
 from shared_utils import forEach
 from items.utils import getVehicleShotSpeedByFactors
 from skeletons.gui.battle_session import IBattleSessionProvider
 from skeletons.gui.lobby_context import ILobbyContext
+from vehicles.mechanics.mechanic_constants import VehicleMechanic
+from vehicles.mechanics.mechanic_helpers import hasVehicleDescrMechanic
 if TYPE_CHECKING:
     from gui.battle_control.controllers.consumables.equipment_ctrl import _OrderItem, _EquipmentItem
 _logger = logging.getLogger(__name__)
@@ -98,16 +100,17 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
 
     def __init__(self):
         super(ConsumablesPanel, self).__init__()
-        self.__ammoRange = range(self._AMMO_START_IDX, self._AMMO_END_IDX + 1)
+        self.__ammoRange = lrange(self._AMMO_START_IDX, self._AMMO_END_IDX + 1)
         self.__ammoFullMask = sum([ 1 << idx for idx in self.__ammoRange ])
-        self.__equipmentRange = range(self._EQUIPMENT_START_IDX, self._EQUIPMENT_END_IDX + 1)
+        self.__equipmentRange = lrange(self._EQUIPMENT_START_IDX, self._EQUIPMENT_END_IDX + 1)
         self.__equipmentFullMask = sum([ 1 << idx for idx in self.__equipmentRange ])
-        self.__ordersRange = range(self._ORDERS_START_IDX, self._ORDERS_END_IDX + 1)
+        self.__ordersRange = lrange(self._ORDERS_START_IDX, self._ORDERS_END_IDX + 1)
         self.__ordersFullMask = sum([ 1 << idx for idx in self.__ordersRange ])
-        self.__optDeviceRange = range(self._OPT_DEVICE_START_IDX, self._OPT_DEVICE_END_IDX + 1)
+        self.__optDeviceRange = lrange(self._OPT_DEVICE_START_IDX, self._OPT_DEVICE_END_IDX + 1)
         self.__optDeviceFullMask = sum([ 1 << idx for idx in self.__optDeviceRange ])
         self._emptyEquipmentsSlice = [0] * (self._EQUIPMENT_END_IDX - self._EQUIPMENT_START_IDX + 1)
-        self._cds = [None] * self._PANEL_MAX_LENGTH
+        self._cds = [
+         None] * self._PANEL_MAX_LENGTH
         self._mask = 0
         self._keys = {}
         self._extraKeys = {}
@@ -127,8 +130,8 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
     def isActive(self):
         return self.__isViewActive
 
-    def onClickedToSlot(self, bwKey, idx):
-        self.__handleBWKey(int(bwKey), idx)
+    def onClickedToSlot(self, keyCode, idx):
+        self.__handleBWKey(int(keyCode), idx)
 
     def onPanelShown(self):
         self.__isViewActive = True
@@ -210,12 +213,13 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
         self._cds[idx] = intCD
         bwKey, sfKeyCode = self._genKey(idx)
         self._extraKeys[idx] = self._keys[bwKey] = partial(self.__handleAmmoPressed, intCD)
-        tooltipText = self.__makeShellTooltip(descriptor, int(round(gunSettings.getPiercingPower(intCD))), gunSettings.getShotSpeed(intCD))
+        tooltipText = self._makeShellTooltip(descriptor, round_py2_style_int(gunSettings.getPiercingPower(intCD)), gunSettings.getShotSpeed(intCD))
         icon = descriptor.icon[0]
         iconName = icon.split('.png')[0]
-        shellIconPath = backport.image(R_AMMO_ICON.dyn(iconName)())
+        shellIconPath = self._getAmmoIcon(iconName)
         noShellIconPath = backport.image(R_AMMO_ICON.dyn(NO_AMMO_ICON.format(iconName))())
-        self.as_addShellSlotS(idx, bwKey, sfKeyCode, quantity, gunSettings.lowCurrentAmmo, shellIconPath, noShellIconPath, tooltipText, isInfinite)
+        lowCurrentAmmo = 0 if isInfinite else gunSettings.lowCurrentAmmo
+        self.as_addShellSlotS(idx, bwKey, sfKeyCode, quantity, lowCurrentAmmo, shellIconPath, noShellIconPath, tooltipText, isInfinite)
 
     def _updateEquipmentSlotTooltipText(self, idx, item):
         toolTip = self._buildEquipmentSlotTooltipText(item)
@@ -234,7 +238,7 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
             else:
                 cdSecVal = item.getTotalTime()
             paramsString = backport.text(tooltipStr, cooldownSeconds=str(int(cdSecVal)))
-            body = '\n\n'.join((body, paramsString))
+            body = ('\n\n').join((body, paramsString))
         toolTip = TOOLTIP_FORMAT.format(descriptor.userString, body)
         return toolTip
 
@@ -275,6 +279,9 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
 
     def _getEquipmentIcon(self, idx, item, icon):
         return backport.image(self._getEquipmentIconPath(item).dyn(icon)())
+
+    def _getAmmoIcon(self, icon):
+        return backport.image(R_AMMO_ICON.dyn(icon)())
 
     def _isIdxInKeysRange(self, idx):
         return idx in self.__equipmentRange or idx in self.__ordersRange
@@ -434,7 +441,7 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
         if eventID == FEEDBACK_EVENT_ID.VEHICLE_ATTRS_CHANGED:
             for payload in self.sessionProvider.shared.ammo.getOrderedShellsLayout():
                 intCD, descriptor, _, _, gunSettings = payload[:5]
-                self.as_updateTooltipS(idx=self._cds.index(intCD), tooltipStr=self.__makeShellTooltip(descriptor, int(round(gunSettings.getPiercingPower(intCD))), gunSettings.getShotSpeed(intCD)))
+                self.as_updateTooltipS(idx=self._cds.index(intCD), tooltipStr=self._makeShellTooltip(descriptor, round_py2_style_int(gunSettings.getPiercingPower(intCD)), gunSettings.getShotSpeed(intCD)))
 
     def _addListeners(self):
         vehicleCtrl = self.sessionProvider.shared.vehicleState
@@ -465,8 +472,8 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
         optDevicesCtrl = self.sessionProvider.shared.optionalDevices
         if optDevicesCtrl is not None:
             self.__fillOptionalDevices(optDevicesCtrl)
-            optDevicesCtrl.onOptionalDeviceAdded += self.__onOptionalDeviceAdded
-            optDevicesCtrl.onOptionalDeviceUpdated += self.__onOptionalDeviceUpdated
+            optDevicesCtrl.onOptionalDeviceAdded += self._onOptionalDeviceAdded
+            optDevicesCtrl.onOptionalDeviceUpdated += self._onOptionalDeviceUpdated
             optDevicesCtrl.onOptionalDevicesCleared += self.__onOptionalDevicesCleared
         crosshairCtrl = self.sessionProvider.shared.crosshair
         if crosshairCtrl is not None:
@@ -520,8 +527,8 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
             eqCtrl.onEquipmentsCleared -= self._onEquipmentsCleared
         optDevicesCtrl = self.sessionProvider.shared.optionalDevices
         if optDevicesCtrl is not None:
-            optDevicesCtrl.onOptionalDeviceAdded -= self.__onOptionalDeviceAdded
-            optDevicesCtrl.onOptionalDeviceUpdated -= self.__onOptionalDeviceUpdated
+            optDevicesCtrl.onOptionalDeviceAdded -= self._onOptionalDeviceAdded
+            optDevicesCtrl.onOptionalDeviceUpdated -= self._onOptionalDeviceUpdated
             optDevicesCtrl.onOptionalDevicesCleared -= self.__onOptionalDevicesCleared
         feedbackCtrl = self.sessionProvider.shared.feedback
         if feedbackCtrl is not None:
@@ -538,7 +545,10 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
         return idx
 
     def _generateEquipmentKey(self, idx, item):
-        return self._genKey(idx) if item.getTags() else (None, None)
+        if item.getTags():
+            return self._genKey(idx)
+        else:
+            return (None, None)
 
     def _genKey(self, idx):
         cmdMappingKey = COMMAND_AMMO_CHOICE_MASK.format(idx + 1 if idx < 9 else 0)
@@ -548,7 +558,7 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
             sfKey = getScaleformKey(bwKey)
         return (bwKey, sfKey)
 
-    def __makeShellTooltip(self, descriptor, piercingPower, shotSpeed):
+    def _makeShellTooltip(self, descriptor, piercingPower, shotSpeed):
         kind = descriptor.kind
         projSpeedFactor = vehicles.g_cache.commonConfig['miscParams']['projectileSpeedFactor']
         vehAttrs = self.sessionProvider.shared.feedback.getVehicleAttrs()
@@ -557,41 +567,48 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
         if GUI_SETTINGS.technicalInfo:
             vehicle = self.sessionProvider.shared.vehicleState.getControllingVehicle()
             vehicleDescriptor = vehicle.typeDescriptor if vehicle else None
-            shellParams = ShellParams(descriptor, vehicleDescriptor)
-            piercingPowerTable = shellParams.piercingPowerTable
-            isDistanceDependent = piercingPowerTable is not None
-            params = []
-            damageValue = backport.getNiceNumberFormat(shellParams.avgDamage)
-            showDistanceAsterisk = False
-            note = ''
-            footNotes = []
-            if descriptor.isDamageMutable:
-                damageValue = '%s-%s' % (backport.getNiceNumberFormat(shellParams.avgMutableDamage[0]), backport.getNiceNumberFormat(shellParams.avgMutableDamage[1]))
-                showDistanceAsterisk = True
-                note = ASTERISK
-                footNotes.append(ASTERISK + backport.text(R.strings.menu.moduleInfo.params.piercingDistance.footnote(), minDist=int(DAMAGE_INTERPOLATION_DIST_FIRST), maxDist=int(min(vehicleDescriptor.shot.maxDistance, DAMAGE_INTERPOLATION_DIST_LAST))))
-            params.append(backport.text(R.strings.ingame_gui.shells_kinds.params.damage(), value=damageValue) + note)
-            if vehicleDescriptor is not None and vehicleDescriptor.isAutoShootGunVehicle:
-                params.append(backport.text(R.strings.ingame_gui.shells_kinds.params.damagePerSecond(), value=backport.getIntegralFormat(int(round(descriptor.armorDamage[0] / vehicle.typeDescriptor.gun.clip[1])))))
-            if piercingPower != 0:
-                value = backport.getNiceNumberFormat(piercingPower)
-                if piercingPowerTable != NO_DATA and isDistanceDependent:
+            if hasVehicleDescrMechanic(vehicleDescriptor, VehicleMechanic.LOW_CHARGE_SHOT):
+                params = getLowChargeShotParams(descriptor, vehicleDescriptor, vehAttrs=vehAttrs)
+            else:
+                shellParams = ShellParams(descriptor, vehicleDescriptor)
+                piercingPowerTable = shellParams.piercingPowerTable
+                isDistanceDependent = piercingPowerTable is not None
+                params = []
+                damageValue = backport.getNiceNumberFormat(shellParams.avgDamage)
+                showDistanceAsterisk = False
+                note = ''
+                footNotes = []
+                if descriptor.isDamageMutable:
+                    damageValue = '%s-%s' % (
+                     backport.getNiceNumberFormat(shellParams.avgMutableDamage[0]),
+                     backport.getNiceNumberFormat(shellParams.avgMutableDamage[1]))
+                    showDistanceAsterisk = True
                     note = ASTERISK
-                    value = '%s-%s' % (backport.getNiceNumberFormat(piercingPowerTable[0][1]), backport.getNiceNumberFormat(piercingPowerTable[-1][1]))
-                    if not showDistanceAsterisk:
-                        footNotes.append(note + backport.text(R.strings.menu.moduleInfo.params.piercingDistance.footnote(), minDist=backport.getNiceNumberFormat(piercingPowerTable[0][0]), maxDist=backport.getNiceNumberFormat(piercingPowerTable[-1][0])))
-                else:
-                    note = ASTERISK if not showDistanceAsterisk else ASTERISK * 2
-                    footNotes.append(note + backport.text(R.strings.menu.moduleInfo.params.noPiercingDistance.footnote()))
-                params.append(backport.text(R.strings.ingame_gui.shells_kinds.params.piercingPower(), value=value) + note)
-            params.append(backport.text(R.strings.ingame_gui.shells_kinds.params.shotSpeed(), value=backport.getIntegralFormat(int(round(shotSpeed / projSpeedFactor)))))
-            if kind == SHELL_TYPES.HIGH_EXPLOSIVE and descriptor.type.explosionRadius > 0.0:
-                params.append(backport.text(R.strings.ingame_gui.shells_kinds.params.explosionRadius(), value=backport.getNiceNumberFormat(descriptor.type.explosionRadius)))
-            if descriptor.hasStun and self.lobbyContext.getServerSettings().spgRedesignFeatures.isStunEnabled():
-                stun = descriptor.stun
-                params.append(backport.text(R.strings.ingame_gui.shells_kinds.params.stunDuration(), minValue=backport.getNiceNumberFormat(stun.guaranteedStunDuration * stun.stunDuration), maxValue=backport.getNiceNumberFormat(stun.stunDuration)))
-            for footNote in footNotes:
-                params.append('\n' + footNote)
+                    footNotes.append(ASTERISK + backport.text(R.strings.menu.moduleInfo.params.piercingDistance.footnote(), minDist=int(DAMAGE_INTERPOLATION_DIST_FIRST), maxDist=int(min(vehicleDescriptor.shot.maxDistance, DAMAGE_INTERPOLATION_DIST_LAST))))
+                params.append(backport.text(R.strings.ingame_gui.shells_kinds.params.damage(), value=damageValue) + note)
+                if vehicleDescriptor is not None and vehicleDescriptor.isAutoShootGunVehicle:
+                    params.append(backport.text(R.strings.ingame_gui.shells_kinds.params.damagePerSecond(), value=backport.getIntegralFormat(round_py2_style_int(descriptor.armorDamage[0] / vehicle.typeDescriptor.gun.clip[1]))))
+                if piercingPower != 0:
+                    value = backport.getNiceNumberFormat(piercingPower)
+                    if piercingPowerTable != NO_DATA and isDistanceDependent:
+                        note = ASTERISK
+                        value = '%s-%s' % (
+                         backport.getNiceNumberFormat(piercingPowerTable[0][1]),
+                         backport.getNiceNumberFormat(piercingPowerTable[(-1)][1]))
+                        if not showDistanceAsterisk:
+                            footNotes.append(note + backport.text(R.strings.menu.moduleInfo.params.piercingDistance.footnote(), minDist=backport.getNiceNumberFormat(piercingPowerTable[0][0]), maxDist=backport.getNiceNumberFormat(piercingPowerTable[(-1)][0])))
+                    else:
+                        note = ASTERISK if not showDistanceAsterisk else ASTERISK * 2
+                        footNotes.append(note + backport.text(R.strings.menu.moduleInfo.params.noPiercingDistance.footnote()))
+                    params.append(backport.text(R.strings.ingame_gui.shells_kinds.params.piercingPower(), value=value) + note)
+                params.append(backport.text(R.strings.ingame_gui.shells_kinds.params.shotSpeed(), value=backport.getIntegralFormat(int(round_py2_style_int(shotSpeed / projSpeedFactor)))))
+                if kind == SHELL_TYPES.HIGH_EXPLOSIVE and descriptor.type.explosionRadius > 0.0:
+                    params.append(backport.text(R.strings.ingame_gui.shells_kinds.params.explosionRadius(), value=backport.getNiceNumberFormat(descriptor.type.explosionRadius)))
+                if descriptor.hasStun and self.lobbyContext.getServerSettings().spgRedesignFeatures.isStunEnabled():
+                    stun = descriptor.stun
+                    params.append(backport.text(R.strings.ingame_gui.shells_kinds.params.stunDuration(), minValue=backport.getNiceNumberFormat(stun.guaranteedStunDuration * stun.stunDuration), maxValue=backport.getNiceNumberFormat(stun.stunDuration)))
+                for footNote in footNotes:
+                    params.append('\n' + footNote)
 
             body = text_styles.concatStylesToMultiLine(*params)
             fmt = TOOLTIP_FORMAT
@@ -608,22 +625,19 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
         getEquipment = self.sessionProvider.shared.equipments.getEquipment
         for idx, intCD in enumerate(self._cds):
             if not intCD:
-                yield (idx,
-                 None,
-                 None,
-                 None)
-            bwKey, sfKey = self._genKey(idx)
-            handler = None
-            if idx in self.__ammoRange:
-                handler = partial(self.__handleAmmoPressed, intCD)
-            elif self._isIdxInKeysRange(idx) and hasEquipment(intCD):
-                item = getEquipment(intCD)
-                if item is not None and item.getTags():
-                    handler = self._getEquipmentKeyHandler(intCD, idx)
-            yield (idx,
-             bwKey,
-             sfKey,
-             handler)
+                yield (
+                 idx, None, None, None)
+            else:
+                bwKey, sfKey = self._genKey(idx)
+                handler = None
+                if idx in self.__ammoRange:
+                    handler = partial(self.__handleAmmoPressed, intCD)
+                elif self._isIdxInKeysRange(idx) and hasEquipment(intCD):
+                    item = getEquipment(intCD)
+                    if item is not None and item.getTags():
+                        handler = self._getEquipmentKeyHandler(intCD, idx)
+                yield (
+                 idx, bwKey, sfKey, handler)
 
         return
 
@@ -668,9 +682,9 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
         ctrl = self.sessionProvider.shared.equipments
         if ctrl is None:
             return
-        elif not self.as_isVisibleS():
-            return
         else:
+            if not self.as_isVisibleS():
+                return
             result, error = ctrl.changeSetting(intCD, entityName=entityName, avatar=BigWorld.player(), idx=idx)
             self._handleEquipmentPressedResult(result, error)
             return
@@ -683,7 +697,10 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
         return
 
     def _getEquipmentIdxByKey(self, key):
-        return self._cds.index(key) if key in self._cds else None
+        if key in self._cds:
+            return self._cds.index(key)
+        else:
+            return
 
     def __onDebuffStarted(self, debuffTime=None):
         self.delayedReload = debuffTime
@@ -717,12 +734,12 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
                 self.ammoReloadingStatus[shellIndex] = reloadingFinished
                 self.as_setCoolDownTimeS(shellIndex, actualValue, state.getBaseValue(), state.getTimePassed())
 
-    def __onOptionalDeviceAdded(self, optDeviceInBattle):
+    def _onOptionalDeviceAdded(self, optDeviceInBattle):
         if optDeviceInBattle.getIntCD() not in self._cds:
             idx = self.__genNextIdx(self.__optDeviceFullMask, self._OPT_DEVICE_START_IDX)
             self._addOptionalDeviceSlot(idx, optDeviceInBattle)
 
-    def __onOptionalDeviceUpdated(self, optDeviceInBattle):
+    def _onOptionalDeviceUpdated(self, optDeviceInBattle):
         intCD = optDeviceInBattle.getIntCD()
         if intCD in self._cds:
             self._updateOptionalDeviceSlot(self._cds.index(intCD), optDeviceInBattle)
@@ -742,9 +759,9 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
         if state == VEHICLE_VIEW_STATE.DESTROYED:
             self._clearAllEquipmentGlow()
             return
-        elif self._cds.count(None) == self._PANEL_MAX_LENGTH:
-            return
         else:
+            if self._cds.count(None) == self._PANEL_MAX_LENGTH:
+                return
             ctrl = self.sessionProvider.shared.equipments
             if ctrl is None:
                 return
@@ -780,7 +797,8 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
                             continue
                         if equipment.getDescriptor().autoactivate:
                             hasReadyAutoExt = True
-                        glowCandidates.append(intCD)
+                        else:
+                            glowCandidates.append(intCD)
 
                     if not hasReadyAutoExt:
                         for cID in glowCandidates:
@@ -820,10 +838,10 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
             del self._equipmentsGlowCallbacks[equipmentIndex]
 
     def _clearAllEquipmentGlow(self):
-        for equipmentIndex, callbackID in self._equipmentsGlowCallbacks.items():
+        for equipmentIndex, callbackID in listitems(self._equipmentsGlowCallbacks):
             BigWorld.cancelCallback(callbackID)
             self.as_hideGlowS(equipmentIndex)
-            del self._equipmentsGlowCallbacks[equipmentIndex]
+            self._equipmentsGlowCallbacks.pop(equipmentIndex)
 
     def __fillShells(self, ctrl):
         forEach(lambda args: self._onShellsAdded(*args), ctrl.getOrderedShellsLayout())
@@ -839,7 +857,7 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
         forEach(lambda args: self._onEquipmentAdded(*args), ctrl.getOrderedEquipmentsLayout())
 
     def __fillOptionalDevices(self, ctrl):
-        forEach(lambda args: self.__onOptionalDeviceAdded(*args), ctrl.getOrderedOptionalDevicesLayout())
+        forEach(lambda args: self._onOptionalDeviceAdded(*args), ctrl.getOrderedOptionalDevicesLayout())
 
     def __onSPGShotsIndicatorStateChanged(self, shotStates):
         vehicle = self.sessionProvider.shared.vehicleState.getControllingVehicle()
@@ -850,7 +868,8 @@ class ConsumablesPanel(IAmmoListener, ConsumablesPanelMeta, CallbackDelayer):
                 intCD = shotDescr.shell.compactDescr
                 if intCD in self._cds and ammoCtrl.shellInAmmo(intCD):
                     quantity, _ = ammoCtrl.getShells(intCD)
-                    shotState, _ = shotStates.get(i, (-1, None)) if quantity > 0 else (-1, None)
+                    shotState, _ = shotStates.get(i, (-1, None)) if quantity > 0 else (-1,
+                                                                                       None)
                     self.as_setSPGShotResultS(self._cds.index(intCD), int(shotState))
 
         return

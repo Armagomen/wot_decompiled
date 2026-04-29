@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/battle_results/reusable/extension_utils.py
 from enum import Enum
-from constants import ARENA_BONUS_TYPE_IDS
 
 class ReusableInfoFactory(object):
 

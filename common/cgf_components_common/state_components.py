@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/common/cgf_components_common/state_components.py
 import CGF
 from cgf_script.component_meta_class import ComponentProperty, CGFMetaTypes, registerComponent
 from GenericComponents import StateSwitcherComponent
@@ -45,7 +43,7 @@ class VehicleHealthObserverComponent(object):
     category = 'Common'
     editorTitle = 'Vehicle Health Observer Component'
     domain = CGF.DomainOption.DomainAll
-    state = ComponentProperty(type=CGFMetaTypes.INT, editorName='State', value=StateSwitcherComponent.NORMAL_STATE, annotations={'comboBox': {'None': str(StateSwitcherComponent.NONE_STATE),
-                  'Normal': str(StateSwitcherComponent.NORMAL_STATE),
-                  'Damaged': str(StateSwitcherComponent.DAMAGED_STATE),
-                  'Critical': str(StateSwitcherComponent.CRITICAL_STATE)}})
+    state = ComponentProperty(type=CGFMetaTypes.INT, editorName='State', value=StateSwitcherComponent.NORMAL_STATE, annotations={'comboBox': {'None': str(StateSwitcherComponent.NONE_STATE), 
+                    'Normal': str(StateSwitcherComponent.NORMAL_STATE), 
+                    'Damaged': str(StateSwitcherComponent.DAMAGED_STATE), 
+                    'Critical': str(StateSwitcherComponent.CRITICAL_STATE)}})

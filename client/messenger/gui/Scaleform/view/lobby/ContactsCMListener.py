@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/gui/Scaleform/view/lobby/ContactsCMListener.py
 from gui.shared import events
 from gui.shared.event_bus import EVENT_BUS_SCOPE
 from gui.Scaleform.framework.entities.EventSystemEntity import EventSystemEntity

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/tank_setup/tank_setup_helper.py
 import logging
 from wg_async import wg_async, wg_await, await_callback
 from BWUtil import AsyncReturn
@@ -10,11 +8,11 @@ NONE_ID = -1
 _CATEGORY_MASK = {category:1 << idx for idx, category in enumerate(SlotCategories.ORDER)}
 
 def getCategoriesMask(categories):
-    return sum((_CATEGORY_MASK[category] for category in categories))
+    return sum(_CATEGORY_MASK[category] for category in categories)
 
 
 def setLastSlotAction(viewModel, vehicle, setupName, actionType, intCD=NONE_ID, slotID=NONE_ID, leftID=NONE_ID, rightID=NONE_ID, leftIntCD=NONE_ID, rightIntCD=NONE_ID):
-    with viewModel.lastSlotAction.transaction() as tx:
+    with viewModel.lastSlotAction.transaction() as (tx):
         tx.setActionType(actionType)
         tx.setIntCD(intCD)
         tx.setInstalledSlotId(slotID)
@@ -26,7 +24,7 @@ def setLastSlotAction(viewModel, vehicle, setupName, actionType, intCD=NONE_ID, 
 
 
 def clearLastSlotAction(viewModel):
-    with viewModel.lastSlotAction.transaction() as tx:
+    with viewModel.lastSlotAction.transaction() as (tx):
         tx.setActionType('')
         tx.setIntCD(NONE_ID)
         tx.setInstalledSlotId(NONE_ID)
@@ -37,7 +35,7 @@ def clearLastSlotAction(viewModel):
 
 
 class TankSetupAsyncCommandLock(object):
-    __slots__ = ('__inProcess',)
+    __slots__ = ('__inProcess', )
 
     def __init__(self):
         self.__inProcess = False

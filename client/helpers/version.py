@@ -1,8 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/helpers/version.py
-import typing
-import ResMgr
-import section2dict
+import typing, ResMgr, section2dict
 from dict2model import models, schemas, fields
 from helpers import VERSION_FILE_PATH, LOC_VERSION_FILE_PATH
 _clientVersion = None
@@ -20,7 +16,7 @@ class ClientVersionMetaModel(models.Model):
         self.buildScriptsRevision = buildScriptsRevision
 
     def _reprArgs(self):
-        return 'client={}, overrides={}, realm={}, branch={}, buildScriptsRevision={}'.format(self.client, self.overrides, self.realm, self.branch, self.buildScriptsRevision)
+        return ('client={}, overrides={}, realm={}, branch={}, buildScriptsRevision={}').format(self.client, self.overrides, self.realm, self.branch, self.buildScriptsRevision)
 
 
 class ClientVersionModel(models.Model):
@@ -35,7 +31,7 @@ class ClientVersionModel(models.Model):
         self.meta = meta or ClientVersionMetaModel()
 
     def _reprArgs(self):
-        return 'appname={}, version={}, showLicense={}, ingameHelpVersion={}, meta={}'.format(self.appname, self.version, self.showLicense, self.ingameHelpVersion, self.meta)
+        return ('appname={}, version={}, showLicense={}, ingameHelpVersion={}, meta={}').format(self.appname, self.version, self.showLicense, self.ingameHelpVersion, self.meta)
 
 
 class LocalizationVersionModel(models.Model):
@@ -48,22 +44,22 @@ class LocalizationVersionModel(models.Model):
         self.language = language
 
     def _reprArgs(self):
-        return 'version={}, revision={}, language={}'.format(self.version, self.revision, self.language)
+        return ('version={}, revision={}, language={}').format(self.version, self.revision, self.language)
 
 
-_clientVersionMetaSchema = schemas.Schema[ClientVersionMetaModel](fields={'client': fields.String(required=False, default=''),
- 'overrides': fields.String(required=False, default=''),
- 'realm': fields.String(required=False, default=''),
- 'branch': fields.String(required=False, default=''),
- 'buildScriptsRevision': fields.String(required=False, default='')}, checkUnknown=False, modelClass=ClientVersionMetaModel)
-_clientVersionSchema = schemas.Schema[ClientVersionModel](fields={'appname': fields.String(required=False, default=''),
- 'version': fields.String(required=False, default=''),
- 'showLicense': fields.String(required=False, default=''),
- 'ingameHelpVersion': fields.String(required=False, default=''),
- 'meta': fields.Nested(schema=_clientVersionMetaSchema, required=False, default=ClientVersionMetaModel)}, checkUnknown=False, modelClass=ClientVersionModel)
-_localizationVersionSchema = schemas.Schema[LocalizationVersionModel](fields={'version': fields.String(required=False, default=''),
- 'revision': fields.String(required=False, default=''),
- 'language': fields.String(required=False, default='')}, checkUnknown=False, modelClass=LocalizationVersionModel)
+_clientVersionMetaSchema = schemas.Schema[ClientVersionMetaModel](fields={'client': fields.String(required=False, default=''), 
+   'overrides': fields.String(required=False, default=''), 
+   'realm': fields.String(required=False, default=''), 
+   'branch': fields.String(required=False, default=''), 
+   'buildScriptsRevision': fields.String(required=False, default='')}, checkUnknown=False, modelClass=ClientVersionMetaModel)
+_clientVersionSchema = schemas.Schema[ClientVersionModel](fields={'appname': fields.String(required=False, default=''), 
+   'version': fields.String(required=False, default=''), 
+   'showLicense': fields.String(required=False, default=''), 
+   'ingameHelpVersion': fields.String(required=False, default=''), 
+   'meta': fields.Nested(schema=_clientVersionMetaSchema, required=False, default=ClientVersionMetaModel)}, checkUnknown=False, modelClass=ClientVersionModel)
+_localizationVersionSchema = schemas.Schema[LocalizationVersionModel](fields={'version': fields.String(required=False, default=''), 
+   'revision': fields.String(required=False, default=''), 
+   'language': fields.String(required=False, default='')}, checkUnknown=False, modelClass=LocalizationVersionModel)
 
 def getClientVersion(force=False):
     global _clientVersion

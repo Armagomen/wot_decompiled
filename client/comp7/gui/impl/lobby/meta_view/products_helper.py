@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: comp7/scripts/client/comp7/gui/impl/lobby/meta_view/products_helper.py
 import typing
 from account_helpers.AccountSettings import AccountSettings, COMP7_UI_SECTION, COMP7_SHOP_SEEN_PRODUCTS
 from comp7.gui.impl.gen.view_models.views.lobby.base_product_model import BaseProductModel, ProductTypes, ProductState
@@ -18,30 +16,21 @@ from helpers import dependency
 from items.vehicles import g_cache
 from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.shared import IItemsCache
-_PRODUCT_TYPE_TO_MODEL = {ProductTypes.VEHICLE: VehicleProductModel,
- ProductTypes.STYLE3D: Style3dProductModel,
- ProductTypes.REWARD: RewardProductModel}
-_PRODUCT_TYPE_ORDER = [ProductTypes.VEHICLE, ProductTypes.STYLE3D, ProductTypes.REWARD]
-_COMP7_PREV_SEASON_PRODUCTS = {51313,
- 23884,
- 52049,
- 24140,
- 47121,
- 30969,
- 62753,
- 76876,
- 223820,
- 60977,
- 28665,
- 30201,
- 31225}
+_PRODUCT_TYPE_TO_MODEL = {ProductTypes.VEHICLE: VehicleProductModel, 
+   ProductTypes.STYLE3D: Style3dProductModel, 
+   ProductTypes.REWARD: RewardProductModel}
+_PRODUCT_TYPE_ORDER = [
+ ProductTypes.VEHICLE, ProductTypes.STYLE3D, ProductTypes.REWARD]
+_COMP7_PREV_SEASON_PRODUCTS = {
+ 51313, 23884, 52049, 24140, 47121, 30969, 62753, 76876, 223820, 60977, 28665, 30201, 31225, 31737, 31481,
+ 21793}
 if typing.TYPE_CHECKING:
     from comp7.gui.game_control.comp7_shop_controller import ShopPageProductInfo
 
 def packProduct(productData):
     productCD, productType = _getProductTypeData(productData)
     if not productCD:
-        LOG_WARNING('Unknown product with data: {}'.format(productData))
+        LOG_WARNING(('Unknown product with data: {}').format(productData))
         return None
     else:
         productModel = _PRODUCT_TYPE_TO_MODEL[productType]()
@@ -52,12 +41,12 @@ def packProduct(productData):
 def setProductModelData(productData, productModel):
     productCD, productType = _getProductTypeData(productData)
     if not productCD:
-        LOG_WARNING('Unknown product with data: {}'.format(productData))
-        return None
+        LOG_WARNING(('Unknown product with data: {}').format(productData))
+        return
     else:
         _setGenericData(productModel, productCD, productType, productData)
         _setSpecificData(productModel, productCD, productType)
-        return None
+        return
 
 
 @dependency.replace_none_kwargs(itemsCache=IItemsCache)
@@ -66,11 +55,11 @@ def getItemType(intCD, itemsCache=None):
         item = itemsCache.items.getItemByCD(intCD)
         if item:
             return item.itemTypeID
-        return None
+        return
     except KeyError:
-        return None
+        return
 
-    return None
+    return
 
 
 @dependency.replace_none_kwargs(c11nService=ICustomizationService)
@@ -150,13 +139,15 @@ def _getProductState(productCD, purchaseAllowed, isPersonalLimitsReached, itemsC
         if isSinglePurchasableItemType and not isInInventory:
             return ProductState.INPROGRESS
         return ProductState.PURCHASED
-    return ProductState.LOCKED if not purchaseAllowed else ProductState.READYTOPURCHASE
+    if not purchaseAllowed:
+        return ProductState.LOCKED
+    return ProductState.READYTOPURCHASE
 
 
 def _setSpecificData(model, productCD, productType):
-    productSetters = {ProductTypes.VEHICLE: _setVehicleSpecificData,
-     ProductTypes.STYLE3D: _setStyleSpecificData,
-     ProductTypes.REWARD: _setRewardSpecificData}
+    productSetters = {ProductTypes.VEHICLE: _setVehicleSpecificData, 
+       ProductTypes.STYLE3D: _setStyleSpecificData, 
+       ProductTypes.REWARD: _setRewardSpecificData}
     productSetters[productType](model, productCD)
 
 

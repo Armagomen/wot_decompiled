@@ -1,13 +1,10 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/managers/UtilsManager.py
-import calendar
-import Keys
+from __future__ import absolute_import
+import calendar, Keys
 from Keys import KEY_NONE
 from gui.Scaleform.framework.managers.TextManager import TextManager
 from gui.Scaleform.locale.MENU import MENU
 from gui.shared.utils.functions import getAbsoluteUrl
-import nations
-import BigWorld
+import nations, BigWorld
 from gui import GUI_NATIONS
 from gui.shared import utils
 from gui.Scaleform.framework.entities.abstract.UtilsManagerMeta import UtilsManagerMeta
@@ -53,7 +50,9 @@ class UtilsManager(UtilsManagerMeta):
         if inKey not in SCALEFORM_TO_BW or not self.__isKeyboardKey(inKey):
             return inKey
         tkey = SCALEFORM_TO_BW[inKey]
-        return inKey if tkey == KEY_NONE or not canGetVirtualKey(tkey) else BigWorld.mapVirtualKey(tkey, MappingType.MAPVK_VSC_TO_VK)
+        if tkey == KEY_NONE or not canGetVirtualKey(tkey):
+            return inKey
+        return BigWorld.mapVirtualKey(tkey, MappingType.MAPVK_VSC_TO_VK)
 
     def getCharFromVirtualKey(self, key):
         return BigWorld.mapVirtualKey(key, MappingType.MAPVK_VK_TO_CHAR)
@@ -61,12 +60,12 @@ class UtilsManager(UtilsManagerMeta):
     def getNationIndices(self):
         return nations.INDICES
 
-    def changeStringCasing(self, s, isUpper, _):
-        return utils.changeStringCasing(str(s).decode('utf-8'), isUpper)
+    def changeStringCasing(self, string, isUpper, _):
+        return utils.changeStringCasing(str(string).decode('utf-8'), isUpper)
 
     @classmethod
-    def getAbsoluteUrl(cls, value):
-        return getAbsoluteUrl(value)
+    def getAbsoluteUrl(cls, relativeUrl):
+        return getAbsoluteUrl(relativeUrl)
 
     @classmethod
     def getHtmlIconText(cls, properties):

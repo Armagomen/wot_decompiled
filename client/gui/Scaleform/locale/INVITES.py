@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/locale/INVITES.py
 
 
 class INVITES(object):
@@ -47,7 +45,6 @@ class INVITES(object):
     INVITES_TEXT_FORT_DIRECTION = '#invites:invites/text/fort/direction'
     CLAN_APPLICATIONS_TITLE = '#invites:clan/applications/title'
     CLAN_APPLICATIONS_COMMENT = '#invites:clan/applications/comment'
-    CLAN_APPLICATIONS_COMMENT_MINIMAP = '#invites:clan/applications/comment/minimap'
     CLAN_APPLICATIONS_BUTTONS_DETAILS = '#invites:clan/applications/buttons/details'
     CLAN_PERSONAL_INVITES_TITLE = '#invites:clan/personal/invites/title'
     CLAN_PERSONAL_INVITES_BUTTONS_DETAILS = '#invites:clan/personal/invites/buttons/details'

@@ -1,9 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: battle_royale/scripts/client/battle_royale/cgf_components/loot_transparency.py
-import CGF
-import GenericComponents
-import Math
-import Triggers
+import CGF, GenericComponents, Math, Triggers
 from aih_constants import CTRL_MODE_NAME, CTRL_MODES
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from cgf_script.bonus_caps_rules import bonusCapsManager
@@ -37,10 +32,8 @@ class LootTransparencyTriggerComponent(object):
     category = 'Steel Hunter'
     domain = CGF.DomainOption.DomainClient
     modelMaterial = ComponentProperty(type=CGFMetaTypes.STRING, editorName='MaterialName', value='TintlColor')
-    baseColor = ComponentProperty(type=CGFMetaTypes.VECTOR4, editorName='Base Color', value=Math.Vector4(1.0, 1.0, 1, 1.0), annotations={'colorPicker': {'255Range': False,
-                     'useAlpha': True}})
-    alphaColor = ComponentProperty(type=CGFMetaTypes.VECTOR4, editorName='Alpha Color', value=Math.Vector4(1.0, 1.0, 1, 0.5), annotations={'colorPicker': {'255Range': False,
-                     'useAlpha': True}})
+    baseColor = ComponentProperty(type=CGFMetaTypes.VECTOR4, editorName='Base Color', value=Math.Vector4(1.0, 1.0, 1, 1.0), annotations={'colorPicker': {'255Range': False, 'useAlpha': True}})
+    alphaColor = ComponentProperty(type=CGFMetaTypes.VECTOR4, editorName='Alpha Color', value=Math.Vector4(1.0, 1.0, 1, 0.5), annotations={'colorPicker': {'255Range': False, 'useAlpha': True}})
     baseOpacity = ComponentProperty(CGFMetaTypes.FLOAT, editorName='Base Opacity', value=1.0)
     alphaOpacity = ComponentProperty(CGFMetaTypes.FLOAT, editorName='Alpha Opacity', value=0.5)
     baseEmissionRate = ComponentProperty(CGFMetaTypes.FLOAT, editorName='Base Emission Rate', value=1.0)

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/lobby/special_mode_battle/prime_time_view.py
 import time
 from collections import namedtuple
 from gui.Scaleform import MENU
@@ -8,7 +6,9 @@ from gui.Scaleform.daapi.view.lobby.prime_time_servers_data_provider import Prim
 from gui.shared.formatters import icons, text_styles
 from helpers import time_utils
 from helpers.i18n import makeString as _ms
-LocaleData = namedtuple('LocaleData', ('enableTitle', 'enableWelcomeTitle', 'enableBtnTitle', 'disableTitle', 'disableStatusTitle', 'disableStatusDescr', 'disableBtnTitle'))
+LocaleData = namedtuple('LocaleData', ('enableTitle', 'enableWelcomeTitle', 'enableBtnTitle',
+                                       'disableTitle', 'disableStatusTitle', 'disableStatusDescr',
+                                       'disableBtnTitle'))
 ImgsData = namedtuple('ImgsData', ('enableBackground', 'disableBackground'))
 
 class SpecialModePrimeTimeView(PrimeTimeViewBase):
@@ -33,16 +33,15 @@ class SpecialModePrimeTimeView(PrimeTimeViewBase):
             title = text_styles.epicTitle(enableWelcomeTitle)
             applyButtonLabel = _ms(enableBtnTitle)
         else:
-            status = '{} {}\n{}'.format(icons.alert(-3), text_styles.alert(disableStatusTitle), text_styles.main(disableStatusDescr))
+            status = ('{} {}\n{}').format(icons.alert(-3), text_styles.alert(disableStatusTitle), text_styles.main(disableStatusDescr))
             mainBackground = disableBackground
             title = text_styles.epicTitle(disableTitle)
             applyButtonLabel = _ms(disableBtnTitle)
-        return {'title': title,
-         'apply': applyButtonLabel,
-         'mainBackground': mainBackground,
-         'status': status,
-         'serversDDEnabled': len(serverList) > 1,
-         'serverDDVisible': True}
+        return {'title': title, 'apply': applyButtonLabel, 
+           'mainBackground': mainBackground, 
+           'status': status, 
+           'serversDDEnabled': len(serverList) > 1, 
+           'serverDDVisible': True}
 
     def _getPrbActionName(self, isEnabled):
         return self._getPrbForcedActionName()

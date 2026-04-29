@@ -1,7 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/wgcg/requests.py
-import types
-import weakref
+import types, weakref
 from client_request_lib.exceptions import ResponseCodes
 from debug_utils import LOG_WARNING, LOG_DEBUG
 from gui.clans import formatters as clan_fmts
@@ -9,7 +6,6 @@ from gui.clans.settings import DEFAULT_COOLDOWN, REQUEST_TIMEOUT
 from gui.shared.rq_cooldown import RequestCooldownManager, REQUEST_SCOPE
 from gui.shared.utils.requesters.RequestsController import RequestsController
 from gui.shared.utils.requesters.abstract import Response, ClientRequestsByIDProcessor
-from gui.wgcg.advent_calendar.handlers import AdventCalendarRequestHandlers
 from gui.wgcg.agate.handlers import AgateRequestHandlers
 from gui.wgcg.base.handlers import BaseRequestHandlers
 from gui.wgcg.clan.handlers import ClanRequestHandlers
@@ -28,20 +24,29 @@ from gui.wgcg.settings import WebRequestDataType
 from gui.wgcg.uilogging.handlers import UILoggingRequestHandlers
 from gui.wgcg.utils.handlers import UtilsRequestHandlers
 from gui.wgcg.wot_shop.handlers import WotShopRequestHandlers
+from gui.wgcg.w2gt.handlers import W2gtRequestHandlers
 
 class WgcgRequestResponse(Response):
 
     def isSuccess(self):
-        return self.getCode() in (ResponseCodes.NO_ERRORS, ResponseCodes.STRONGHOLD_NOT_FOUND)
+        return self.getCode() in (
+         ResponseCodes.NO_ERRORS,
+         ResponseCodes.STRONGHOLD_NOT_FOUND)
 
     def getCode(self):
         return self.code
 
     def clone(self, data=None):
-        return WgcgRequestResponse(self.code, self.txtStr, data or self.data)
+        return WgcgRequestResponse(self.code, self.txtStr, data or self.data, self.extraCode, self.headers)
 
     def mergeData(self, data):
         self.data.update(data)
+
+    def getHeaderByKey(self, key, default=None):
+        return (self.headers or {}).get(key, default)
+
+    def getDataByKey(self, key, default=None):
+        return (self.getData() or {}).get(key, default)
 
 
 class WgcgRequester(ClientRequestsByIDProcessor):
@@ -101,7 +106,6 @@ class WgcgRequestsController(RequestsController):
         super(WgcgRequestsController, self).__init__(requester, cooldown)
         self.__webCtrl = weakref.proxy(webCtrl)
         self.__handlers = dict()
-        self.__handlers.update(AdventCalendarRequestHandlers(requester).get())
         self.__handlers.update(BaseRequestHandlers(requester).get())
         self.__handlers.update(ClanRequestHandlers(requester, self.__webCtrl).get())
         self.__handlers.update(BaseExternalBattleUnitRequestHandlers(requester).get())
@@ -119,6 +123,7 @@ class WgcgRequestsController(RequestsController):
         self.__handlers.update(ClanSupplyRequestHandlers(requester).get())
         self.__handlers.update(LoadoutsAssistantRequestHandlers(requester).get())
         self.__handlers.update(IngameTournamentHandlers(requester).get())
+        self.__handlers.update(W2gtRequestHandlers(requester).get())
 
     def fini(self):
         super(WgcgRequestsController, self).fini()
@@ -126,7 +131,10 @@ class WgcgRequestsController(RequestsController):
         return
 
     def _getHandlerByRequestType(self, requestTypeID):
-        return self.__handlers.get(requestTypeID) if self.__handlers else None
+        if self.__handlers:
+            return self.__handlers.get(requestTypeID)
+        else:
+            return
 
     def _getRequestTimeOut(self):
         return REQUEST_TIMEOUT

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: frontline/scripts/client/frontline/gui/Scaleform/daapi/view/tooltips/frontline_lobby_builders.py
 from gui.Scaleform.genConsts.TOOLTIPS_CONSTANTS import TOOLTIPS_CONSTANTS
 from gui.shared.tooltips import contexts
 from gui.shared.tooltips.builders import DataBuilder, AdvancedDataBuilder, AdvancedTooltipWindowBuilder
@@ -13,10 +11,11 @@ from frontline.gui.Scaleform.daapi.view.battle.tooltips.epic_skills import EpicS
 from frontline.gui.Scaleform.daapi.view.lobby.tooltips import frontline
 from frontline.gui.impl.lobby.tooltips.battle_ability_alt_tooltip import BattleAbilityAltTooltipData
 from frontline.gui.impl.lobby.tooltips.battle_ability_tooltip import BattleAbilityTooltipData
-__all__ = ('getTooltipBuilders',)
+__all__ = ('getTooltipBuilders', )
 
 def getTooltipBuilders():
-    return (DataBuilder(TOOLTIPS_CONSTANTS.EPIC_SKILL_INFO, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI, EpicSkillBaseTooltipData(contexts.QuestsBoosterContext())),
+    return (
+     DataBuilder(TOOLTIPS_CONSTANTS.EPIC_SKILL_INFO, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI, EpicSkillBaseTooltipData(contexts.QuestsBoosterContext())),
      DataBuilder(TOOLTIPS_CONSTANTS.EPIC_SKILL_SLOT_SETUP_INFO, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI, EpicSkillSlotSetupInfoTooltip(contexts.ToolTipContext(None))),
      DataBuilder(TOOLTIPS_CONSTANTS.EPIC_QUESTS_PREVIEW, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI, EpicBattleQuestsTooltipData(contexts.QuestsBoosterContext())),
      DataBuilder(TOOLTIPS_CONSTANTS.EPIC_BATTLE_COMPLETED_QUESTS_INFO, TOOLTIPS_CONSTANTS.BLOCKS_DEFAULT_UI, CompletedQuestsTooltipData(contexts.QuestsBoosterContext())),

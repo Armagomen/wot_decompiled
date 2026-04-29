@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/frameworks/wulf/windows_system/windows_area.py
 import typing
 from .window import Window
 from ..gui_constants import PositionAnchor
@@ -15,7 +13,10 @@ class WindowsArea(PyObjectEntity):
     @property
     def areaID(self):
         proxy = self.proxy
-        return proxy.areaID if proxy is not None else 0
+        if proxy is not None:
+            return proxy.areaID
+        else:
+            return 0
 
     def addWindow(self, window):
         return self.proxy.addPyWindow(window.proxy)

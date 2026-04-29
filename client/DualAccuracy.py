@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/DualAccuracy.py
+from __future__ import absolute_import, division
 import Event
 from constants import DUAL_ACCURACY_STATE
 from gui.shared.utils.decorators import ReprInjector
@@ -29,7 +28,9 @@ class DualAccuracy(VehicleDynamicComponent, IGunMechanicComponent):
         return self.getDualAccuracyFactor()
 
     def getCurrentDualAccuracyFactor(self):
-        return self.__dualAccuracyFactor if self.isActive() else _DEFAULT_ACCURACY_FACTOR
+        if self.isActive():
+            return self.__dualAccuracyFactor
+        return _DEFAULT_ACCURACY_FACTOR
 
     def getDualAccuracyFactor(self):
         return self.__dualAccuracyFactor

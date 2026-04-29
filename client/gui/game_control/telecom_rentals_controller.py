@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/game_control/telecom_rentals_controller.py
 import BigWorld
 from gui import SystemMessages
 from gui.ClientUpdateManager import g_clientUpdateManager
@@ -34,7 +32,7 @@ class TelecomRentalsNotificationController(ITelecomRentalsNotificationController
     def processSwitchNotifications(self):
         serverSettings = self._lobbyContext.getServerSettings()
         isEnabled = serverSettings.isTelecomRentalsEnabled()
-        with settings.telecomRentalsSettings() as dt:
+        with settings.telecomRentalsSettings() as (dt):
             hasPartnership = BigWorld.player().telecomRentals.hasPartnership()
             if not hasPartnership:
                 return

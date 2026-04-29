@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/locale/PERSONAL_MISSIONS.py
 from debug_utils import LOG_WARNING
 
 class PERSONAL_MISSIONS(object):
@@ -248,79 +246,87 @@ class PERSONAL_MISSIONS(object):
     NAVIGATION_BACKBUTTON_DASHBOARD = '#personal_missions:navigation/backButton/dashboard'
     NAVIGATION_BACKBUTTON_ASSEMBLING = '#personal_missions:navigation/backButton/assembling'
     NAVIGATION_BACKBUTTON_MISSIONS = '#personal_missions:navigation/backButton/missions'
-    SIDEBAR_VEHICLES_ENUM = (SIDEBAR_VEHICLES_LIGHTTANK,
+    NAVIGATION_BACKBUTTON_REWARDS = '#personal_missions:navigation/backButton/rewards'
+    SIDEBAR_VEHICLES_ENUM = (
+     SIDEBAR_VEHICLES_LIGHTTANK,
      SIDEBAR_VEHICLES_MEDIUMTANK,
      SIDEBAR_VEHICLES_HEAVYTANK,
      SIDEBAR_VEHICLES_AT_SPG,
      SIDEBAR_VEHICLES_SPG)
-    ALLIANCE_ALL_NAME_ENUM = (ALLIANCE_0_NAME,
+    ALLIANCE_ALL_NAME_ENUM = (
+     ALLIANCE_0_NAME,
      ALLIANCE_1_NAME,
      ALLIANCE_2_NAME,
      ALLIANCE_3_NAME)
-    ALLIANCE_ALL_DETAILS_ENUM = (ALLIANCE_0_DETAILS,
+    ALLIANCE_ALL_DETAILS_ENUM = (
+     ALLIANCE_0_DETAILS,
      ALLIANCE_1_DETAILS,
      ALLIANCE_2_DETAILS,
      ALLIANCE_3_DETAILS)
-    CHAINTOOLTIPDATA_DESCRIPTION_TEXT_ALLIANCE_ENUM = (CHAINTOOLTIPDATA_DESCRIPTION_TEXT_ALLIANCE0,
+    CHAINTOOLTIPDATA_DESCRIPTION_TEXT_ALLIANCE_ENUM = (
+     CHAINTOOLTIPDATA_DESCRIPTION_TEXT_ALLIANCE0,
      CHAINTOOLTIPDATA_DESCRIPTION_TEXT_ALLIANCE1,
      CHAINTOOLTIPDATA_DESCRIPTION_TEXT_ALLIANCE2,
      CHAINTOOLTIPDATA_DESCRIPTION_TEXT_ALLIANCE3)
-    BONUS_DESCR_ALL_ENUM = (BONUS_DESCR_PROGRESS_CARD,
+    BONUS_DESCR_ALL_ENUM = (
+     BONUS_DESCR_PROGRESS_CARD,
      BONUS_DESCR_PROGRESS_POSTBATTLE,
      BONUS_DESCR_ATTEMPTS_CARD,
      BONUS_DESCR_ATTEMPTS_POSTBATTLE)
-    USEAWARDSHEETWINDOW_ALL_NOVEHICLE_ENUM = (USEAWARDSHEETWINDOW_REGULAR_NOVEHICLE, USEAWARDSHEETWINDOW_PM2_NOVEHICLE)
+    USEAWARDSHEETWINDOW_ALL_NOVEHICLE_ENUM = (
+     USEAWARDSHEETWINDOW_REGULAR_NOVEHICLE,
+     USEAWARDSHEETWINDOW_PM2_NOVEHICLE)
 
     @classmethod
     def chainNameByVehicleType(cls, key0):
-        outcome = '#personal_missions:sidebar/vehicles/{}'.format(key0)
+        outcome = ('#personal_missions:sidebar/vehicles/{}').format(key0)
         if outcome not in cls.SIDEBAR_VEHICLES_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getAllianceName(cls, key0):
-        outcome = '#personal_missions:alliance/{}/name'.format(key0)
+        outcome = ('#personal_missions:alliance/{}/name').format(key0)
         if outcome not in cls.ALLIANCE_ALL_NAME_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getAllianceDetails(cls, key0):
-        outcome = '#personal_missions:alliance/{}/details'.format(key0)
+        outcome = ('#personal_missions:alliance/{}/details').format(key0)
         if outcome not in cls.ALLIANCE_ALL_DETAILS_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getAllianceChainTooltipDescr(cls, key0):
-        outcome = '#personal_missions:chainTooltipData/description/text/alliance{}'.format(key0)
+        outcome = ('#personal_missions:chainTooltipData/description/text/alliance{}').format(key0)
         if outcome not in cls.CHAINTOOLTIPDATA_DESCRIPTION_TEXT_ALLIANCE_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def getMultiplierDescr(cls, key0, key1):
-        outcome = '#personal_missions:bonus/descr/{}/{}'.format(key0, key1)
+        outcome = ('#personal_missions:bonus/descr/{}/{}').format(key0, key1)
         if outcome not in cls.BONUS_DESCR_ALL_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome
 
     @classmethod
     def sheetNoVehicleWarning(cls, mpType):
-        outcome = '#personal_missions:useAwardSheetWindow/{}/noVehicle'.format(mpType)
+        outcome = ('#personal_missions:useAwardSheetWindow/{}/noVehicle').format(mpType)
         if outcome not in cls.USEAWARDSHEETWINDOW_ALL_NOVEHICLE_ENUM:
-            LOG_WARNING('Localization key "{}" not found'.format(outcome))
+            LOG_WARNING(('Localization key "{}" not found').format(outcome))
             return None
         else:
             return outcome

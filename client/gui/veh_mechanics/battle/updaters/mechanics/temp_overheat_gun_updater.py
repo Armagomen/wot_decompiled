@@ -1,8 +1,5 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/veh_mechanics/battle/updaters/mechanics/temp_overheat_gun_updater.py
 from __future__ import absolute_import
-import typing
-import weakref
+import typing, weakref
 from events_handler import eventHandler
 from gui.veh_mechanics.battle.updaters.updaters_common import ViewUpdater, ViewUpdatersCollection
 from gui.veh_mechanics.battle.updaters.mechanics.mechanic_states_updater import VehicleMechanicStatesUpdater
@@ -95,4 +92,6 @@ class TemperatureOverheatGunStatesUpdater(ViewUpdater):
         super(TemperatureOverheatGunStatesUpdater, self).destroy()
 
     def _getViewUpdaters(self):
-        return [OverheatStatesBridge(self.onOverheatStatePrepared, self.onOverheatStateTransition), TemperatureStatesBridge(self.onTemperatureStatePrepared, self.onTemperatureStateObservation, self.onTemperatureStateTick)]
+        return [
+         OverheatStatesBridge(self.onOverheatStatePrepared, self.onOverheatStateTransition),
+         TemperatureStatesBridge(self.onTemperatureStatePrepared, self.onTemperatureStateObservation, self.onTemperatureStateTick)]

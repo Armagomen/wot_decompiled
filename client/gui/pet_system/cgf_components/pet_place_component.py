@@ -1,11 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/pet_system/cgf_components/pet_place_component.py
-import typing
-import WWISE
+import typing, WWISE
 from collections import namedtuple
 from functools import partial
-import Math
-import CGF
+import Math, CGF
 from cgf_script.component_meta_class import CGFMetaTypes, ComponentProperty, registerComponent
 from cgf_script.managers_registrator import onAddedQuery
 from gui.pet_system.constants import PetPlaceName
@@ -103,10 +99,10 @@ class PetPrefabManager(CGF.ComponentManager):
     def updateActivePet(self, petID):
         if self._activePet and self._activePet.petID == petID:
             return
-        elif petID is None:
-            self._removePet()
-            return
         else:
+            if petID is None:
+                self._removePet()
+                return
             prefab = getPetPrefabByID(petID)
             if not prefab:
                 return

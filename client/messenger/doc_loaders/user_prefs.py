@@ -1,60 +1,49 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/doc_loaders/user_prefs.py
 import types
 from helpers import dependency
 from messenger.doc_loaders import _xml_helpers
 from skeletons.account_helpers.settings_core import ISettingsCore
-_userProps = {'datetimeIdx': ('readInt',
-                 'writeInt',
-                 lambda value: value in xrange(0, 4),
-                 False),
- 'enableOlFilter': ('readBool',
-                    'writeBool',
-                    lambda value: isinstance(value, types.BooleanType),
-                    False),
- 'enableSpamFilter': ('readBool',
-                      'writeBool',
-                      lambda value: isinstance(value, types.BooleanType),
-                      False),
- 'invitesFromFriendsOnly': ('readBool',
-                            'writeBool',
-                            lambda value: isinstance(value, types.BooleanType),
-                            False),
- 'storeReceiverInBattle': ('readBool',
-                           'writeBool',
-                           lambda value: isinstance(value, types.BooleanType),
-                           False),
- 'disableBattleChat': ('readBool',
-                       'writeBool',
-                       lambda value: isinstance(value, types.BooleanType),
-                       False),
- 'chatContactsListOnly': ('readBool',
-                          'writeBool',
-                          lambda value: isinstance(value, types.BooleanType),
-                          True),
- 'receiveFriendshipRequest': ('readBool',
-                              'writeBool',
-                              lambda value: isinstance(value, types.BooleanType),
-                              False),
- 'receiveInvitesInBattle': ('readBool',
-                            'writeBool',
-                            lambda value: isinstance(value, types.BooleanType),
+_userProps = {'datetimeIdx': (
+                 'readInt', 'writeInt', lambda value: value in xrange(0, 4), False), 
+   'enableOlFilter': (
+                    'readBool', 'writeBool', lambda value: isinstance(value, types.BooleanType),
+                    False), 
+   'enableSpamFilter': (
+                      'readBool', 'writeBool', lambda value: isinstance(value, types.BooleanType),
+                      False), 
+   'invitesFromFriendsOnly': (
+                            'readBool', 'writeBool', lambda value: isinstance(value, types.BooleanType),
+                            False), 
+   'storeReceiverInBattle': (
+                           'readBool', 'writeBool', lambda value: isinstance(value, types.BooleanType),
+                           False), 
+   'disableBattleChat': (
+                       'readBool', 'writeBool', lambda value: isinstance(value, types.BooleanType),
+                       False), 
+   'chatContactsListOnly': (
+                          'readBool', 'writeBool', lambda value: isinstance(value, types.BooleanType),
+                          True), 
+   'receiveFriendshipRequest': (
+                              'readBool', 'writeBool', lambda value: isinstance(value, types.BooleanType),
+                              False), 
+   'receiveInvitesInBattle': (
+                            'readBool', 'writeBool', lambda value: isinstance(value, types.BooleanType),
                             True)}
 
 def loadDefault(xmlCtx, section, messengerSettings):
     data = {}
     for tagName, subSec in section.items():
         if tagName != 'preference':
-            raise _xml_helpers.XMLError(xmlCtx, 'Tag {0:>s} is invalid'.format(tagName))
+            raise _xml_helpers.XMLError(xmlCtx, ('Tag {0:>s} is invalid').format(tagName))
         ctx = xmlCtx.next(subSec)
         name = _xml_helpers.readNoEmptyStr(ctx, subSec, 'name', 'Preference name is not defined')
         if name not in _userProps:
-            raise _xml_helpers.XMLError(ctx, 'Preference {0:>s} is invalid'.format(name))
+            raise _xml_helpers.XMLError(ctx, ('Preference {0:>s} is invalid').format(name))
         reader, _, validator, _ = _userProps[name]
         value = getattr(subSec, reader)('value')
         if validator(value):
             data[name] = value
-        raise _xml_helpers.XMLError(ctx, 'Invalid value of preference {0:>s}'.format(name))
+        else:
+            raise _xml_helpers.XMLError(ctx, ('Invalid value of preference {0:>s}').format(name))
 
     if data:
         messengerSettings.userPrefs = messengerSettings.userPrefs._replace(**data)

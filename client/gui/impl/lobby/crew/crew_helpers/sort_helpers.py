@@ -1,12 +1,9 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/impl/lobby/crew/crew_helpers/sort_helpers.py
-import heapq
-import math
+import heapq, math
 from gui.shared.utils.requesters import REQ_CRITERIA, RequestCriteria
 
 class SortRequestCriteria(RequestCriteria):
     __slots__ = ()
-    MAX_MASK = 4294967295L
+    MAX_MASK = 4294967295
     MAX_CONDITIONS_NUM = int(round(math.log(MAX_MASK, 2)))
 
     def __init__(self, other):
@@ -42,7 +39,7 @@ class SortHeap(object):
     def __init__(self, items=None, criteria=REQ_CRITERIA.EMPTY, keys=REQ_CRITERIA.CUSTOM(lambda item: tuple())):
         self.condition = SortRequestCriteria(criteria)
         self.key = KeySortRequestCriteria(keys)
-        self.data = list(((self.condition(item),) + self.key(item) + (i, item) for i, item in enumerate(items or [])))
+        self.data = list((self.condition(item),) + self.key(item) + (i, item) for i, item in enumerate(items or []))
         self.rebuild()
 
     def rebuild(self):
@@ -53,13 +50,16 @@ class SortHeap(object):
         heapq.heappush(self.data, (self.condition(item),) + self.key(item) + (len(self.data), item))
 
     def pop(self):
-        return heapq.heappop(self.data)[-1] if self.data else None
+        if self.data:
+            return heapq.heappop(self.data)[(-1)]
+        else:
+            return
 
     def remove(self, item):
         if not self.data:
             return
         for _, row in enumerate(self.data):
-            if row[-1] != item:
+            if row[(-1)] != item:
                 continue
             self.data.remove(row)
 
@@ -70,7 +70,7 @@ class SortHeap(object):
             return
         else:
             if self.data:
-                root = heapq.heappop(self.data)[-1]
+                root = heapq.heappop(self.data)[(-1)]
                 if root != item:
                     self.push(root)
             self.remove(item)
@@ -81,6 +81,6 @@ class SortHeap(object):
         sortedList = []
         data = self.data[:]
         while data:
-            sortedList.append(heapq.heappop(data)[-1])
+            sortedList.append(heapq.heappop(data)[(-1)])
 
         return sortedList

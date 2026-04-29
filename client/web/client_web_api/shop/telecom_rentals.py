@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/web/client_web_api/shop/telecom_rentals.py
 from gui.ClientUpdateManager import g_clientUpdateManager
 from helpers import dependency
 from skeletons.gui.lobby_context import ILobbyContext
@@ -29,4 +27,4 @@ class TelecomTokenEventHandler(C2WHandler):
 
     @c2w(name='telecom_token_update')
     def __sendNotify(self):
-        return None
+        return

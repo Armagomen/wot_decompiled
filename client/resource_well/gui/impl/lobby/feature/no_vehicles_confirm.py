@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: resource_well/scripts/client/resource_well/gui/impl/lobby/feature/no_vehicles_confirm.py
 from __future__ import absolute_import
 from frameworks.wulf import ViewSettings, WindowFlags
 from gui.impl.gen import R
@@ -25,7 +23,13 @@ class NoVehiclesConfirm(ViewImpl):
         return super(NoVehiclesConfirm, self).getViewModel()
 
     def _getEvents(self):
-        return ((self.viewModel.showHangar, self.__showHangar), (self.__resourceWell.onEventUpdated, self.__onEventStateUpdated), (self.__resourceWell.onSettingsChanged, self.__onEventStateUpdated))
+        return (
+         (
+          self.viewModel.showHangar, self.__showHangar),
+         (
+          self.__resourceWell.onEventUpdated, self.__onEventStateUpdated),
+         (
+          self.__resourceWell.onSettingsChanged, self.__onEventStateUpdated))
 
     def __showHangar(self):
         self.destroyWindow()

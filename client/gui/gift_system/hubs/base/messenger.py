@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/gift_system/hubs/base/messenger.py
 import typing
 from gui.gift_system.constants import GiftMessageType
 from gui.gift_system.hubs.subsystems import BaseMessegesDelayer
@@ -30,13 +28,13 @@ class IGiftEventMessenger(BaseMessegesDelayer):
 
 
 class GiftEventBaseMessenger(IGiftEventMessenger):
-    __slots__ = ('__isMessagesAllowed',)
+    __slots__ = ('__isMessagesAllowed', )
 
     def __init__(self, eventSettings, isMessagesAllowed):
         super(GiftEventBaseMessenger, self).__init__(eventSettings)
-        self._msgHandlers.update({GiftMessageType.HISTORY: self._pushHistoryMessage,
-         GiftMessageType.INCOME: self._pushIncomeMessage,
-         GiftMessageType.OUTCOME: self._pushOutcomeMessage})
+        self._msgHandlers.update({GiftMessageType.HISTORY: self._pushHistoryMessage, 
+           GiftMessageType.INCOME: self._pushIncomeMessage, 
+           GiftMessageType.OUTCOME: self._pushOutcomeMessage})
         self.__isMessagesAllowed = isMessagesAllowed
 
     def isMessagesEnabled(self):

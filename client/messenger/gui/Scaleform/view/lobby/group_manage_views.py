@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/messenger/gui/Scaleform/view/lobby/group_manage_views.py
 from gui.Scaleform.locale.MESSENGER import MESSENGER
 from helpers import i18n
 from messenger.gui.Scaleform.meta.BaseManageContactViewMeta import BaseManageContactViewMeta
@@ -20,11 +18,11 @@ class GroupManageView(BaseManageContactViewMeta):
 
     @proto_getter(PROTO_TYPE.MIGRATION)
     def proto(self):
-        return None
+        return
 
     @storage_getter('users')
     def usersStorage(self):
-        return None
+        return
 
     def checkText(self, name):
         name = name.strip()

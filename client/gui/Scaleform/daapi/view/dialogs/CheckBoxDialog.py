@@ -1,5 +1,4 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/dialogs/CheckBoxDialog.py
+from __future__ import absolute_import
 from gui.Scaleform.daapi.view.meta.ConfirmDialogMeta import ConfirmDialogMeta
 
 class CheckBoxDialog(ConfirmDialogMeta):
@@ -17,12 +16,12 @@ class CheckBoxDialog(ConfirmDialogMeta):
     def _populate(self):
         super(CheckBoxDialog, self)._populate()
         buttonLabels = self.meta.getButtonsSubmitCancel()
-        self.as_setSettingsS({'title': self.meta.getTitle(),
-         'description': self.meta.getMessage(),
-         'submitBtnLabel': buttonLabels['submit'],
-         'cancelBtnLabel': buttonLabels['cancel'],
-         'checkBoxLabel': self.meta.getCheckBoxButtonLabel(),
-         'checkBoxSelected': self.meta.getCheckBoxSelected()})
+        self.as_setSettingsS({'title': self.meta.getTitle(), 
+           'description': self.meta.getMessage(), 
+           'submitBtnLabel': buttonLabels['submit'], 
+           'cancelBtnLabel': buttonLabels['cancel'], 
+           'checkBoxLabel': self.meta.getCheckBoxButtonLabel(), 
+           'checkBoxSelected': self.meta.getCheckBoxSelected()})
 
     def _dispose(self):
         if self.meta is not None:

@@ -1,5 +1,3 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/shared/tooltips/crew_bundle.py
 from collections import namedtuple
 from gui.Scaleform.genConsts.BLOCKS_TOOLTIP_TYPES import BLOCKS_TOOLTIP_TYPES
 from gui.impl import backport
@@ -17,7 +15,9 @@ class _Bonuses(CONST_CONTAINER):
     SAME_BLOOD_ZERO_SKILL = 'sameBloodZeroSkill'
 
 
-_BUNDLE_PRESETS = {'offspring': (_Bonuses.ANY_ADDITIONAL_SKILL, _Bonuses.SAME_BLOOD_ZERO_SKILL)}
+_BUNDLE_PRESETS = {'offspring': (
+               _Bonuses.ANY_ADDITIONAL_SKILL,
+               _Bonuses.SAME_BLOOD_ZERO_SKILL)}
 
 class _BonusPreset(namedtuple('BonusPreset', ('imageRPath', 'textRPath', 'top', 'left', 'bottom', 'right'))):
 
@@ -25,8 +25,8 @@ class _BonusPreset(namedtuple('BonusPreset', ('imageRPath', 'textRPath', 'top', 
         return super(_BonusPreset, cls).__new__(cls, imageRPath, textRPath, top, left, bottom, right)
 
 
-_BONUS_PRESETS = {_Bonuses.ANY_ADDITIONAL_SKILL: _BonusPreset(_R_SKILLS_IMAGES.new_skill, _R_TOOLTIPS_TEXT.bonus.anyAdditionalSkill),
- _Bonuses.SAME_BLOOD_ZERO_SKILL: _BonusPreset(_R_SKILLS_IMAGES.offspring_brotherhood, _R_TOOLTIPS_TEXT.bonus.sameBloodZeroSkill)}
+_BONUS_PRESETS = {_Bonuses.ANY_ADDITIONAL_SKILL: _BonusPreset(_R_SKILLS_IMAGES.new_skill, _R_TOOLTIPS_TEXT.bonus.anyAdditionalSkill), 
+   _Bonuses.SAME_BLOOD_ZERO_SKILL: _BonusPreset(_R_SKILLS_IMAGES.offspring_brotherhood, _R_TOOLTIPS_TEXT.bonus.sameBloodZeroSkill)}
 
 class CrewBundleTooltipData(BlocksTooltipData):
 
@@ -38,19 +38,27 @@ class CrewBundleTooltipData(BlocksTooltipData):
     def _packBlocks(self, *args, **kwargs):
         bundleName = args[0]
         if bundleName not in _BUNDLE_PRESETS:
-            raise SoftException('Bundle "{}" is not supported.'.format(bundleName))
-        return [formatters.packBuildUpBlockData(blocks=self.__packHeaderBlock(bundleName), layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_VERTICAL), formatters.packBuildUpBlockData(blocks=self.__packHowToGetBlock(bundleName), linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE), formatters.packBuildUpBlockData(blocks=self.__packInfoBlock(_BUNDLE_PRESETS[bundleName]), layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_VERTICAL)]
+            raise SoftException(('Bundle "{}" is not supported.').format(bundleName))
+        return [
+         formatters.packBuildUpBlockData(blocks=self.__packHeaderBlock(bundleName), layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_VERTICAL),
+         formatters.packBuildUpBlockData(blocks=self.__packHowToGetBlock(bundleName), linkage=BLOCKS_TOOLTIP_TYPES.TOOLTIP_BUILDUP_BLOCK_WHITE_BG_LINKAGE),
+         formatters.packBuildUpBlockData(blocks=self.__packInfoBlock(_BUNDLE_PRESETS[bundleName]), layout=BLOCKS_TOOLTIP_TYPES.LAYOUT_VERTICAL)]
 
     @staticmethod
     def __packHeaderBlock(bundleName):
-        return [formatters.packTextBlockData(text=text_styles.highTitle(backport.text(_R_TOOLTIPS_TEXT.header.dyn(bundleName)()))), formatters.packImageTextBlockData(img=backport.image(R.images.gui.maps.icons.crewBundles.dyn(bundleName)()), imgPadding=formatters.packPadding(top=17, left=24))]
+        return [
+         formatters.packTextBlockData(text=text_styles.highTitle(backport.text(_R_TOOLTIPS_TEXT.header.dyn(bundleName)()))),
+         formatters.packImageTextBlockData(img=backport.image(R.images.gui.maps.icons.crewBundles.dyn(bundleName)()), imgPadding=formatters.packPadding(top=17, left=24))]
 
     @staticmethod
     def __packHowToGetBlock(bundleName):
-        return [formatters.packTextBlockData(text=text_styles.middleTitle(backport.text(_R_TOOLTIPS_TEXT.howToGet())), padding=formatters.packPadding(bottom=4)), formatters.packTextBlockData(text=text_styles.main(backport.text(_R_TOOLTIPS_TEXT.howToGet.dyn(bundleName)())), padding=formatters.packPadding(bottom=7))]
+        return [
+         formatters.packTextBlockData(text=text_styles.middleTitle(backport.text(_R_TOOLTIPS_TEXT.howToGet())), padding=formatters.packPadding(bottom=4)),
+         formatters.packTextBlockData(text=text_styles.main(backport.text(_R_TOOLTIPS_TEXT.howToGet.dyn(bundleName)())), padding=formatters.packPadding(bottom=7))]
 
     def __packInfoBlock(self, bonuses):
-        return [formatters.packTextBlockData(text=text_styles.titleFont(backport.text(_R_TOOLTIPS_TEXT.bonuses())), padding=formatters.packPadding(bottom=20))] + [ self.__getBonus(_BONUS_PRESETS[bonusId]) for bonusId in bonuses ]
+        return [
+         formatters.packTextBlockData(text=text_styles.titleFont(backport.text(_R_TOOLTIPS_TEXT.bonuses())), padding=formatters.packPadding(bottom=20))] + [ self.__getBonus(_BONUS_PRESETS[bonusId]) for bonusId in bonuses ]
 
     @staticmethod
     def __getBonus(preset):

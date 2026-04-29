@@ -1,11 +1,7 @@
-# Python bytecode 2.7 (decompiled from Python 2.7)
-# Embedded file name: scripts/client/gui/Scaleform/daapi/view/battle/shared/postmortem_panel.py
-import logging
-import typing
+from __future__ import absolute_import
+import logging, typing
 from account_helpers.settings_core.settings_constants import GRAPHICS
-import BattleReplay
-import BigWorld
-import WWISE
+import BattleReplay, BigWorld, WWISE
 from aih_constants import CTRL_MODE_NAME
 from arena_bonus_type_caps import ARENA_BONUS_TYPE_CAPS
 from constants import ATTACK_REASON_INDICES, ATTACK_REASON, ARENA_BONUS_TYPE
@@ -43,25 +39,26 @@ _logger = logging.getLogger(__name__)
 _POSTMORTEM_PANEL_SETTINGS_PATH = 'gui/postmortem_panel.xml'
 _VEHICLE_SMALL_ICON_RES_PATH = '../maps/icons/vehicle/small/{0}.png'
 _BR_VEHICLE_SMALL_ICON_RES_PATH = '../maps/icons/battleRoyale/vehicles/{0}.png'
-_ATTACK_REASON_CODE_TO_MSG = {ATTACK_REASON_INDICES['shot']: 'DEATH_FROM_SHOT',
- ATTACK_REASON_INDICES['fire']: 'DEATH_FROM_FIRE',
- ATTACK_REASON_INDICES['ramming']: 'DEATH_FROM_RAMMING',
- ATTACK_REASON_INDICES['world_collision']: 'DEATH_FROM_WORLD_COLLISION',
- ATTACK_REASON_INDICES['death_zone']: 'DEATH_FROM_DEATH_ZONE',
- ATTACK_REASON_INDICES['drowning']: 'DEATH_FROM_DROWNING',
- ATTACK_REASON_INDICES['overturn']: 'DEATH_FROM_WORLD_COLLISION',
- ATTACK_REASON_INDICES['artillery_protection']: 'DEATH_FROM_ARTILLERY_PROTECTION',
- ATTACK_REASON_INDICES['artillery_sector']: 'DEATH_FROM_SECTOR_PROTECTION',
- ATTACK_REASON_INDICES['bombers']: 'DEATH_FROM_SECTOR_BOMBERS',
- ATTACK_REASON_INDICES['recovery']: 'DEATH_FROM_RECOVERY',
- ATTACK_REASON_INDICES['artillery_eq']: 'DEATH_FROM_SHOT',
- ATTACK_REASON_INDICES['bomber_eq']: 'DEATH_FROM_SHOT',
- ATTACK_REASON_INDICES[ATTACK_REASON.MINEFIELD_EQ]: 'DEATH_FROM_MINE_EXPLOSION',
- ATTACK_REASON_INDICES[ATTACK_REASON.FIRE_CIRCLE]: 'DEATH_FROM_FIRE_CIRCLE',
- ATTACK_REASON_INDICES[ATTACK_REASON.THUNDER_STRIKE]: 'DEATH_FROM_THUNDER_STRIKE',
- ATTACK_REASON_INDICES[ATTACK_REASON.CORRODING_SHOT]: 'DEATH_FROM_CORRODING_SHOT',
- ATTACK_REASON_INDICES[ATTACK_REASON.CLING_BRANDER]: 'DEATH_FROM_CLING_BRANDER'}
-_ALLOWED_EQUIPMENT_DEATH_CODES = ['DEATH_FROM_MINE_EXPLOSION',
+_ATTACK_REASON_CODE_TO_MSG = {ATTACK_REASON_INDICES['shot']: 'DEATH_FROM_SHOT', 
+   ATTACK_REASON_INDICES['fire']: 'DEATH_FROM_FIRE', 
+   ATTACK_REASON_INDICES['ramming']: 'DEATH_FROM_RAMMING', 
+   ATTACK_REASON_INDICES['world_collision']: 'DEATH_FROM_WORLD_COLLISION', 
+   ATTACK_REASON_INDICES['death_zone']: 'DEATH_FROM_DEATH_ZONE', 
+   ATTACK_REASON_INDICES['drowning']: 'DEATH_FROM_DROWNING', 
+   ATTACK_REASON_INDICES['overturn']: 'DEATH_FROM_WORLD_COLLISION', 
+   ATTACK_REASON_INDICES['artillery_protection']: 'DEATH_FROM_ARTILLERY_PROTECTION', 
+   ATTACK_REASON_INDICES['artillery_sector']: 'DEATH_FROM_SECTOR_PROTECTION', 
+   ATTACK_REASON_INDICES['bombers']: 'DEATH_FROM_SECTOR_BOMBERS', 
+   ATTACK_REASON_INDICES['recovery']: 'DEATH_FROM_RECOVERY', 
+   ATTACK_REASON_INDICES['artillery_eq']: 'DEATH_FROM_SHOT', 
+   ATTACK_REASON_INDICES['bomber_eq']: 'DEATH_FROM_SHOT', 
+   ATTACK_REASON_INDICES[ATTACK_REASON.MINEFIELD_EQ]: 'DEATH_FROM_MINE_EXPLOSION', 
+   ATTACK_REASON_INDICES[ATTACK_REASON.FIRE_CIRCLE]: 'DEATH_FROM_FIRE_CIRCLE', 
+   ATTACK_REASON_INDICES[ATTACK_REASON.THUNDER_STRIKE]: 'DEATH_FROM_THUNDER_STRIKE', 
+   ATTACK_REASON_INDICES[ATTACK_REASON.CORRODING_SHOT]: 'DEATH_FROM_CORRODING_SHOT', 
+   ATTACK_REASON_INDICES[ATTACK_REASON.CLING_BRANDER]: 'DEATH_FROM_CLING_BRANDER'}
+_ALLOWED_EQUIPMENT_DEATH_CODES = [
+ 'DEATH_FROM_MINE_EXPLOSION',
  'DEATH_FROM_FIRE_CIRCLE',
  'DEATH_FROM_THUNDER_STRIKE',
  'DEATH_FROM_CORRODING_SHOT',
@@ -122,10 +119,7 @@ class _BasePostmortemPanel(PostmortemPanelMeta):
         context = self.sessionProvider.getCtx()
         if context.isTeamKiller(killerVehID):
             _, colors = self._messages['DEATH_FROM_TEAM_KILLER']
-        self._deathInfo = {'text': msgText,
-         'colors': colors,
-         'killerVehicle': killerVehID,
-         'device': device}
+        self._deathInfo = {'text': msgText, 'colors': colors, 'killerVehicle': killerVehID, 'device': device}
         self._deathInfoReceived()
 
     def _onShowVehicleMessageByCode(self, code, postfix, entityID, extra, equipmentID, ignoreMessages):
@@ -135,11 +129,11 @@ class _BasePostmortemPanel(PostmortemPanelMeta):
             if code in _ALLOWED_EQUIPMENT_DEATH_CODES:
                 pass
             elif equipment is not None:
-                if not self.sessionProvider.arenaVisitor.getArenaBonusType() == ARENA_BONUS_TYPE.COMP7 and not self.sessionProvider.arenaVisitor.gui.isInEpicRange():
+                if self.sessionProvider.arenaVisitor.getArenaBonusType() != ARENA_BONUS_TYPE.COMP7 and not self.sessionProvider.arenaVisitor.gui.isInEpicRange():
                     entityID = 0
-                code = '_'.join((code, equipment.messagePostfix))
+                code = ('_').join((code, equipment.messagePostfix))
         elif postfix:
-            extCode = '{0}_{1}'.format(code, postfix)
+            extCode = ('{0}_{1}').format(code, postfix)
             if extCode in self._messages:
                 self._prepareMessage(extCode, entityID, device)
                 return
@@ -148,7 +142,10 @@ class _BasePostmortemPanel(PostmortemPanelMeta):
         return
 
     def _getDevice(self, extra):
-        return extra.deviceUserString if extra is not None else None
+        if extra is not None:
+            return extra.deviceUserString
+        else:
+            return
 
 
 class _SummaryPostmortemPanel(_BasePostmortemPanel):
@@ -202,11 +199,14 @@ class _SummaryPostmortemPanel(_BasePostmortemPanel):
             return _ENTITIES_POSTFIX.SELF_SUICIDE
         if battleCtx.isAlly(killerVehID):
             return _ENTITIES_POSTFIX.ALLY_SELF
-        return _ENTITIES_POSTFIX.ENEMY_SELF if battleCtx.isEnemy(killerVehID) else _ENTITIES_POSTFIX.UNKNOWN
+        if battleCtx.isEnemy(killerVehID):
+            return _ENTITIES_POSTFIX.ENEMY_SELF
+        return _ENTITIES_POSTFIX.UNKNOWN
 
 
 class PostmortemPanel(_SummaryPostmortemPanel):
-    __slots__ = ('__playerInfo', '_isPlayerVehicle', '_maxHealth', '__healthPercent', '_isInPostmortem', '_deathAlreadySet', '__isColorBlind', '__wasPostmortemInfoHidden')
+    __slots__ = ('__playerInfo', '_isPlayerVehicle', '_maxHealth', '__healthPercent',
+                 '_isInPostmortem', '_deathAlreadySet', '__isColorBlind', '__wasPostmortemInfoHidden')
 
     def __init__(self):
         super(PostmortemPanel, self).__init__()
@@ -231,7 +231,8 @@ class PostmortemPanel(_SummaryPostmortemPanel):
     def _populate(self):
         super(PostmortemPanel, self)._populate()
         if self._hasBonusCap(ARENA_BONUS_TYPE_CAPS.DOG_TAG) and self.__arenaInfo:
-            defaultComponents = [ pack_component(comp.componentId, 0) for comp in componentConfigAdapter.getDefaultDogTag().components ]
+            defaultComponents = [ pack_component(comp.componentId, 0) for comp in componentConfigAdapter.getDefaultDogTag().components
+                                ]
             self._preloadDTImages(defaultComponents, False)
             self._preloadDTImages(self.__arenaInfo.dogTagsInfo.usedDogTagsComponents)
         if self.sessionProvider.isReplayPlaying:
@@ -306,7 +307,8 @@ class PostmortemPanel(_SummaryPostmortemPanel):
                     componentImages.add(layoutComposer.getBottomPlateImage(compId))
                 isEngraving = component.viewType == ComponentViewType.ENGRAVING
                 componentImages.add(layoutComposer.getComponentImage(compId, grade, localized=isEngraving))
-            componentImages.add(layoutComposer.getComponentImage(compId, grade))
+            else:
+                componentImages.add(layoutComposer.getComponentImage(compId, grade))
 
         if componentImages:
             _logger.debug('PostmortemPanel preloading %s', str(componentImages))
@@ -315,7 +317,10 @@ class PostmortemPanel(_SummaryPostmortemPanel):
     @staticmethod
     def _hasBonusCap(cap):
         player = BigWorld.player()
-        return False if player is None else player.hasBonusCap(cap)
+        if player is None:
+            return False
+        else:
+            return player.hasBonusCap(cap)
 
     def _setHealthPercent(self, health):
         self.__healthPercent = normalizeHealthPercent(health, self._maxHealth)
@@ -336,10 +341,10 @@ class PostmortemPanel(_SummaryPostmortemPanel):
             if self._maxHealth != 0 and self._maxHealth >= value:
                 self._setHealthPercent(value)
                 self._updateVehicleInfo()
-            if BattleReplay.g_replayCtrl.isPlaying and value > 0 and self._maxHealth != 0 and self._maxHealth >= value:
+            if BattleReplay.g_replayCtrl.isPlaying and 0 < value <= self._maxHealth:
                 try:
                     self.as_hideComponentsS()
-                except:
+                except Exception:
                     pass
 
                 self.resetDeathInfo()
@@ -360,7 +365,7 @@ class PostmortemPanel(_SummaryPostmortemPanel):
         self._deathAlreadySet = False
         try:
             self.as_hideComponentsS()
-        except:
+        except Exception:
             pass
 
         self.resetDeathInfo()
@@ -417,12 +422,12 @@ class PostmortemPanel(_SummaryPostmortemPanel):
     def _makeKillerVO(self, vInfoVO):
         fullName = self.sessionProvider.getCtx().getPlayerFullNameParts(vInfoVO.vehicleID, showVehShortName=False)
         playerVO = vInfoVO.player
-        userVO = {'userName': fullName.playerName,
-         'fakeName': fullName.playerFakeName,
-         'clanAbbrev': playerVO.clanAbbrev,
-         'region': fullName.regionCode,
-         'igrType': playerVO.igrType,
-         'tags': self.__userInfoHelper.getUserTags(playerVO.avatarSessionID, playerVO.igrType)}
+        userVO = {'userName': fullName.playerName, 
+           'fakeName': fullName.playerFakeName, 
+           'clanAbbrev': playerVO.clanAbbrev, 
+           'region': fullName.regionCode, 
+           'igrType': playerVO.igrType, 
+           'tags': self.__userInfoHelper.getUserTags(playerVO.avatarSessionID, playerVO.igrType)}
         badgeID = vInfoVO.selectedBadge
         badge = buildBadge(badgeID, vInfoVO.getBadgeExtraInfo())
         if badge is not None:
@@ -435,10 +440,7 @@ class PostmortemPanel(_SummaryPostmortemPanel):
             color = colors[1]
         else:
             color = colors[0]
-        names = {'device': '',
-         'entity': '',
-         'killer': '',
-         'color': color}
+        names = {'device': '', 'entity': '', 'killer': '', 'color': color}
         device = deathInfo['device']
         if device:
             names['device'] = device
@@ -451,8 +453,8 @@ class PostmortemPanel(_SummaryPostmortemPanel):
         return reason
 
     def _showPlayerInfo(self):
-        ctx = {'name': self.__playerInfo.playerFullName,
-         'health': self.__healthPercent}
+        ctx = {'name': self.__playerInfo.playerFullName, 
+           'health': self.__healthPercent}
         template = 'other'
         msg = makeHtmlString('html_templates:battle/postmortemMessages', template, ctx=ctx)
         self.as_setPlayerInfoS(msg)
@@ -522,4 +524,6 @@ class PostmortemPanel(_SummaryPostmortemPanel):
 
     def __isSimpleDeathCam(self):
         avatar = BigWorld.player()
-        return False if not avatar else avatar.isSimpleDeathCam()
+        if not avatar:
+            return False
+        return avatar.isSimpleDeathCam()
